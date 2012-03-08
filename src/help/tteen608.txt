@@ -1,0 +1,15 @@
+\b;Libérer le passage
+Un petit malin a déposé des déchets dans le labyrinthe, qui empêchent le robot de passer. Heureusement, avec le bras manipulateur du robot, tu peux déplacer les déchets et libérer le passage.
+
+\b;Le programme
+Le programme de l'exercice précédent convient très bien comme base. Il faut simplement lui ajouter au début, juste après le \c;repeat(100)\n; et l'accolade ouvrante \c;{\n;, un test pour voir si un déchet est devant le robot. Pour poser la question "Y a-t-il un déchet¦?", il faut écrire \c;if(¦detect(Scrap)¦)\n; puis mettre les accolades \c;{}\n; comme d'habitude. Entre les accolades, tu dois écrire les 4 instructions suivantes¦:
+
+\s;o  Prendre le déchet avec \c;grab();\n;
+\s;o  Faire demi-tour
+\s;o  Déposer le déchet avec \c;drop();\n;
+\s;o  Faire demi-tour
+
+Donc, si le robot détecte un déchet devant lui, il le prend et le dépose derrière, libérant ainsi le passage¦...
+
+\b;Rappel
+Pour faire demi-tour, il faut écrire \c;turn(180);\n;.

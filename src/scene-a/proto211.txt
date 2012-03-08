@@ -1,0 +1,79 @@
+Title.F      text="Debug"
+Resume.F     text="Récupérer la boîte noire dans une vallée profonde et remplie de brouillard."
+Title.E      text="Debug"
+Resume.E     text="Récupérer la boîte noire dans une vallée profonde et remplie de brouillard."
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio          track=2
+AmbiantColor   air=102;102;102;102 water=20;20;20;20  // grey
+BackColor      air=180;222;255;0 water=10;20;100;0  // grey
+FogColor       air=180;222;255;0 water=10;20;100;0  // grey
+DeepView       air=100.00 water=25.00 
+FogStart       air=0.1 water=0.1
+SecondTexture  rank=3
+FrontsizeName  image="lens5.tga"
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.7
+TerrainRelief       image="textures\relief21.bmp" factor=1.0
+TerrainResource     image="textures\res00.bmp"
+//TerrainWater        image="lava04.tga" level=30.0 moveX=1.0 moveY=0.3 water=TO color=0;128;255;0
+TerrainInitTextures image="terra" dx=1 dy=1 table=2
+TerrainCreate
+
+//GroundSpot color=000;000;255 min=-10 max=31.25 smooth=10
+//GroundSpot color=250;150;100 min=31.25 max=999 smooth=60
+GroundSpot pos= 12; -75 radius=30 color=150;200;250  // base
+
+BeginObject
+CreateObject pos=32.50;-78.25 dir=1.5 type=Me
+CreateObject pos=29.50;-78.25 dir=1.5 type=WingedGrabber script1="exchg1.txt"
+CreateObject pos=26.50;-78.25 dir=1.5 type=WheeledGrabber script1="exchg1.txt"
+CreateObject pos=23.50;-78.25 dir=1.5 type=TrackedGrabber script1="exchg1.txt"
+CreateObject pos=20.50;-78.25 dir=1.5 type=LeggedGrabber script1="exchg1.txt"
+
+CreateObject pos=-147;-155 dir=1.5 type=LeggedGrabber script1="exchg1.txt"
+CreateObject pos=-114; -70 dir=1.5 type=LeggedGrabber script1="exchg1.txt"
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 1.00 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.64 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.64 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.32 type=Object
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.00; 0.30 type=Quartz
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.30; 0.00 type=Quartz
+WaterColor color=-0.6;-0.1;-0.1;0.0
+
+MapColor floor=115;193;237 water=188;225;246
+MapZoom  factor=2
+
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+
+EnableBuild type=BotFactory
+EnableBuild type=PowerStation
+EnableBuild type=RadarStation
+EnableBuild type=DefenseTower
+EnableBuild type=Derrick
+EnableBuild type=Converter
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WingedGrabber lost=0
+EndMissionTake pos=32.50;-75.00 type=BlackBox min=1
+
+Camera eye=0.00;5.00;0.00 lookat=0.00;1.00;0.00 delay=0

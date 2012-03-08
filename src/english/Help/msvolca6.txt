@@ -1,0 +1,9 @@
+\b;Walkthrough
+It is safer for \l;you\u object\human; to stay on the \l;spaceship\u object\base;. You may get hit a few times but not fatally.
+
+Put your new \l;winged orga shooter\u object\botoj; to good use and don't waste any time. First shoot the ants on your right, then turn clockwise around the spaceship, flying at low altitude.
+
+If you can not do it this way, place the \l;winged orga shooter\u object\botoj; on a safe place north of the spaceship, then save yourself. You can then take your time to shoot the ants one after another; they can do no harm to the spaceship and the black box.
+
+\t;See also
+\l;Controls\u command;

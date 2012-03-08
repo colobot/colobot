@@ -1,0 +1,2 @@
+Title.F text="Exemple #1" resume="Exemple"
+Title.E text="Sample #1" resume="Sample"

@@ -1,0 +1,39 @@
+extern void object::Bug( )
+{
+  try{  int a = 44 ; a = 12 / 0 ; }
+  catch(6000) { int b = 4 ; }
+  finally { int z = 1 ; }
+
+//	tp ( A, B );
+
+/*	int	a = 4, b = 2, c = nan;
+	float	x, y = 3/2, z = nan;
+	boolean	i, j = false, k = true;
+
+	string	s, ss = "xyz";
+
+	while ( false )
+ 	{
+  		object left, right;
+ 
+  		left  = Radar(TypeMarkPath, -45, 120, 100);
+  		right = Radar(TypeMarkPath,  45, 120, 100);
+ 
+		if ( left == null && right == null )
+  		{
+		}
+ 	}
+	int t = fact ( 4 ) ;*/
+}
+
+void tp( point a , point b )
+{
+	a.x += b.x;
+}
+
+
+int fact( int n )
+{
+	if ( n < 2 ) return n;
+	return n * fact ( n - 1 ) ;
+}

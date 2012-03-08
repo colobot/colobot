@@ -1,0 +1,44 @@
+\b;Dessiner mieux
+Les 4 traits du dessin de la maison mesurent tous 10 centimètres. On va maintenant définir une fois pour toutes la longueur de 10 centimètres, puis la réutiliser 4 fois dans le programme, comme ceci¦:
+\c;
+\s;int longueur = 10;
+\s;pendown(Orange);
+\s;move(longueur);
+\s;turn(45);
+\s;move(longueur);
+\s;turn(90);
+\s;move(longueur);
+\s;turn(45);
+\s;move(longueur);
+\n;
+L'instruction \c;int¦longueur¦=¦10;\n; définit une longueur de 10 centimètres. Dorénavant, tu peux remplacer \c;10\n; par \c;longueur\n;. Par exemple, tu peux remplacer¦:
+\c;
+\s;move(10);
+\n;
+par¦:
+\c;
+\s;move(longueur);
+\n;
+Pour l'instant, on n'explique pas la signification de \c;int\n;. Sache simplement qu'il faut toujours écrire ce mot avant de définir quelque chose.
+
+\b;Invention
+Tu remarques peut-être qu'on a écrit \c;longueur\n; en français, alors qu'on a toujours utilisé l'anglais jusqu'à présent. En fait, \c;longueur\n; est un nom inventé pour stocker le nombre \c;10\n;. Tu as tout à fait le droit d'inventer un autre nom. Par exemple¦:
+\c;
+\s;int toto = 10;
+\s;pendown(Orange);
+\s;move(toto);
+\s;turn(45);
+\s;move(toto);
+\s;turn(90);
+\s;move(toto);
+\s;turn(45);
+\s;move(toto);
+\n;
+Ce programme fonctionne aussi parfaitement bien. Evidemment, il est plus clair d'inventer un nom en rapport avec sa fonction, plutôt que \c;toto\n;, \c;truc\n; ou même \c;qwxks\n;.
+
+\b;Restrictions
+Lorsque tu inventes un nom, il n'est pas possible de choisir \c;move\n; ou \c;turn\n;, par exemple, puisque ces noms ont déjà une autre signification dans le programme.
+De plus, tu ne peux utiliser que des lettres, sans espaces¦!
+
+\b;Modifications
+A toi de modifier le programme précédent pour définir la longueur une fois pour toutes, en inventant le nom de ton choix¦...

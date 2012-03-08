@@ -1,0 +1,11 @@
+\b;Rozwi¹zanie
+Do zabicia wszystkich mrówek i paj¹ków na tym rozleg³ym, górzystym terenie, potrzebne bêdzie \l;lataj¹ce dzia³o organiczne\u object\botfj; zasilone \l;atomowym ogniwem elektrycznym\u object\atomic;. W ma³ej dolinie na po³udniowym wschodzie znajdziesz wszystkie potrzebne rzeczy: \l;kostki tytanu\u object\titanium;, \l;ogniwa elektryczne\u object\power; a nawet sprawny \l;transporter lataj¹ce\u object\botgj;.
+
+1) Zbuduj i zasil \l;radar\u object\radar; oraz \l;dzia³o lataj¹ce\u object\botfj;. Zabij mrówkê pilnuj¹c¹ \l;rudy uranu\u object\uranore; na pó³nocy.
+
+2)  U¿yj porzuconej \l;elektrowni atomowej\u object\nuclear; na wzgórzu powy¿ej oraz \l;transportera lataj¹cego\u object\botgj; do wyprodukowania kilku \l;atomowych ogniw elektrycznych\u object\atomic;, nastêpnie jednym z nich zasil \l;dzia³o lataj¹ce\u object\botfj;.
+
+3)  Pozb¹dŸ siê wszystkich owadów w okolicy. Jedna z mrówek ukrywa siê w jamie na pó³nocnym zachodzie: naj³atwiej j¹ trafiæ zbli¿aj¹c siê z zachodu, poprzez g³êbok¹ dolinê, .
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

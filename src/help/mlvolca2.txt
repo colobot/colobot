@@ -1,0 +1,51 @@
+\b;Programme envoyé par Houston
+Nous vous avons envoyé un programme qui s'occupe de recharger la \l;pile\u object\power; d'une \l;tour de défense\u object\tower;.
+
+1) Va vers une \l;tour de défense\u object\tower;
+2) Attend que la \l;pile\u object\power; soit à 80% vide pour la prendre.
+3) Va la recharger sur une \l;station de recharge\u object\station;.
+4) Revient la mettre sur la tour.
+
+Construisez la station de recharge aussi près que possible de la tour pour limiter le temps où la tour est inactive.
+\c;
+\s;extern void object::ServiceTour1()
+\s;{
+\s;	\l;object\u cbot\object;  tour;                // info sur tour
+\s;	\l;object\u cbot\object;  station;             // info sur station
+\s;	
+\s;	tour = \l;radar\u cbot\radar;(\l;DefenseTower\u cbot\category;);  // cherche une tour
+\s;	\l;goto\u cbot\goto;(tour.\l;position\u cbot\object;);         // va vers tour
+\s;	
+\s;	\l;while\u cbot\while; ( true )               // répète toujours¦:
+\s;	{
+\s;		// attend que la pile se vide
+\s;		\l;while\u cbot\while; ( tour.\l;energyCell.energyLevel\u cbot\object; > 0.2 )
+\s;		{
+\s;			\l;wait\u cbot\wait;(2);
+\s;		}
+\s;		\l;grab\u cbot\grab;();                  // prend pile
+\s;		
+\s;		// va vers une station de recharge
+\s;		station = \l;radar\u cbot\radar;(\l;PowerStation\u cbot\category;);
+\s;		\l;goto\u cbot\goto;(station.\l;position\u cbot\object;);  // va vers station
+\s;		\l;while\u cbot\while; ( \l;load.energyLevel\u cbot\object; < 1 )
+\s;		{
+\s;			\l;wait\u cbot\wait;(1);             // attend recharge
+\s;		}
+\s;		
+\s;		// va vers la tour de défense
+\s;		\l;goto\u cbot\goto;(tour.\l;position\u cbot\object;);     // va vers tour
+\s;		\l;drop\u cbot\drop;();                  // dépose pile
+\s;	}
+\s;}
+\n;
+\b;Archives
+Résumé des programmes déjà reçus¦:
+
+o  \c;\l;ApporteTitanium3\u mlvolca1;\n;
+o  \c;\l;TueFourmi1\u mlsaari2;\n;
+o  \c;\l;ApporteTitanium2\u mlcrys2;\n;
+o  \c;\l;ApporteTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;EchangePile1\u mllune1;\n;

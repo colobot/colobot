@@ -1,0 +1,9 @@
+\b;Rozwi¹zanie
+Na pocz¹tku zbuduj \l;radar\u object\radar;.
+
+Wygl¹da na to, ¿e \l;mrówki\u object\ant; uciekaj¹ od Ciebie. Spróbuj kr¹¿yæ dooko³a ka¿dej z nich a¿ znajd¹ siê pomiêdzy Tob¹ a \l;min¹\u object\mine;. Pójd¹ wtedy w stronê miny, która wybuchnie i je zabije.
+
+Nastêpnie przynieœ \l;czarn¹ skrzynkê\u object\bbox; na pok³ad statku. Mo¿esz j¹ znaleŸæ obok porzuconego statku kosmicznego.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

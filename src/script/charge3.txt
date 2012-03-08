@@ -1,0 +1,18 @@
+extern void object::Recharge3()
+{
+	point  depart;
+	object item;
+
+	depart = position;  // Mémorise position initiale
+
+	item = radar(PowerCaptor);  // Cherche station
+	goto(item.position);  // Va sur la station
+
+	while ( energyCell.energyLevel < 1 )
+	{
+		wait(1);  // Attend pile pleine
+	}
+
+	goto(depart);  // retourne à la position initiale
+	message("Recharge terminée");
+}

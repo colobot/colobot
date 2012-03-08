@@ -1,0 +1,21 @@
+\b;Instruction \c;strleft\n;
+Cette instruction extrait la partie gauche d'une chaîne de caractères.
+
+Syntaxe¦:
+\s;\c;strleft ( string, len );\n;
+
+\t;len: \c;\l;int\u cbot\int;\n;
+Nombre de caractères à extraire depuis la gauche.
+
+Exemples¦:
+\s;\c;	string s = strleft("abcdef", 2);  // s vaut "ab"
+\s;	string s = strleft("abc", 10);  // s vaut "abc"
+\n;
+\t;Dictionnaire anglais-français
+\c;string\n; = chaîne de caractères
+\c;left  \n; = gauche
+\c;length\n; = longueur
+
+\t;Voir aussi
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strupper\u cbot\strupper;\n;, \c;\l;strlower\u cbot\strlower;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

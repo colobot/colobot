@@ -1,0 +1,20 @@
+extern void object::Go( )
+{
+	int gauche = 90;
+	int droite = -90;
+	#
+	
+	repeat(6)
+	{
+		turn(droite);
+		
+		if( detect(Stone) )
+		{
+			
+			message(compteur);
+		}
+		
+		turn(gauche);
+		move(20);
+	}
+}

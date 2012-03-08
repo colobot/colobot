@@ -1,0 +1,51 @@
+\b;Instruction \c;public\n; (for specialists)
+This instruction has two distinct purposes¦:
+
+1) Make a function available to other bots.
+2) Make a class member accessible from outside the class definition.
+
+\b;Instruction \c;public\n; for functions
+If you put \c;public\n; before a \l;function\u cbot\function; definition, you can make the function available to programs in other bots in the same mission.
+
+For example in the first bot we would have¦:
+\c;
+\s;public void object::Segment(float dist, float angle)
+\s;{
+\s;	move(dist);
+\s;	turn(angle);
+\s;}
+\n;
+And in another bot we would have¦:
+\c;
+\s;extern void object::Square( )
+\s;{
+\s;	for ( int i=0 ; i<4 ; i++ )
+\s;	{
+\s;		Segment(10, 90);
+\s;		fire(1);
+\s;	}
+\s;}
+\n;
+If you have declared a function \c;public\n;, you cannot define a function with the same name and arguments in another bot of the same mission.
+
+If a bot containing a \c;public\n; function is destroyed, the other bots that make use of this function will be stopped with an error.
+
+\b;Instruction \c;public\n; for classes
+\l;Class\u cbot\class; members can be public (by default) or \l;privat\u cbot\private;. A member can be declared private by putting \c;private\n; before the member type. Private members are not accessible from outside the class definition.
+\c;
+\s;public class MyClass
+\s;{
+\s;	int    b;                // public by default
+\s;	public int a;            // also public 
+\s;	private point position;  // privat
+\s;}
+\s;void Test()
+\s;{
+\s;	MyClass item;
+\s;	item.a = item.b = 12;      // ok
+\s;	message( item.position );  // this is an error
+\s;}
+\n;
+\t;See also
+\c;\l;class\u cbot\class;\n;, \c;\l;private\u cbot\private;\n;, \c;\l;functions\u cbot\function;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

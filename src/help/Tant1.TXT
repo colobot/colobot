@@ -1,0 +1,32 @@
+\b;Objectif
+Pour vous défendre contre des \l;fourmis\u object\ant; qui attaquent depuis le nord, effectuez un tir de barrage en faisant tourner le robot pendant la salve de tir.
+
+\b;Principe
+Quand on prend les commandes d'un robot shooter, on peut faire basculer le canon pendant la salve de tir et balayer ainsi toute une zone. Ceci est également possible quand on programme le shooter: on utilise l'instruction \c;\l;motor\u cbot\motor;( , )\n;. Cette instruction demande deux nombres: la vitesse du moteur de gauche, et la vitesse du moteur de droite. Les valeurs peuvent aller de -1 à 1.\c; motor(1,1);\n; fait avancer le robot à la vitesse maximum. \c;motor(-1,-1);\n; fait reculer le robot à la vitesse maximum.\c; motor(1,0.9);\n; le fait avancer avec un léger virage à droite: le moteur de droite tourne un peu moins vite. Et \c;motor(1,-1);\n; le fait tourner sur place vers la droite: le moteur de gauche avance, le moteur de droite recule.
+
+Les moteurs garderont la vitesse qu'on leur a donnée jusqu'à la prochaine instruction \c;motor\n;, \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n; ou \c;\l;goto\u cbot\goto;\n;. Par exemple si on fait tourner le robot sur place avec \c;motor(1,-1);\n; et qu'ensuite on tire avec \c;\l;fire\u cbot\fire;(1);\n;, le robot continuera à tourner pendant le tir, et balayera toute une zone.
+
+\b;Programme
+Les fourmis attaquent depuis le nord. Pour balayer toute la zone au nord du robot, il faut commencer par faire tourner le robot de 90 degrés vers la gauche avec \c;\l;turn\u cbot\turn;(90);\n;.
+
+Ensuite, il faut abaisser de canon de 5 degrés vers le bas avec \c;\l;aim\u cbot\aim;(-5);\n;, pour compenser le recul du canon.
+
+Finalement, il faut répéter à l'infini avec \c;\l;while\u cbot\while;(true)\n; le \l;bloc\u cbot\bloc; suivant¦:
+1) Tourner le robot à droite
+2) Feu pendant 2 secondes
+3) Tourner le robot à gauche
+4) Feu pendant 2 secondes
+
+Le programme complet est donc¦:
+\s;o  Tourner à gauche de 90 degrés
+\s;o  Abaisser le canon de 5 degrés vers le bas
+\s;o  Répéter toujours¦:
+\s;	o  Tourner le robot à droite avec \c;motor(1,-1);\n;
+\s;	o  Feu pendant 2 secondes avec \c;fire(2);\n;
+\s;	o  Tourner le robot à gauche avec \c;motor(-1,1);\n;
+\s;	o  Feu pendant 2 secondes avec \c;fire(2);\n;
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tremova4; et \l;programmation\u cbot;.

@@ -1,0 +1,26 @@
+--------------------Configuration: metafile - Win32 Debug--------------------
+Begining build with project "D:\Robot\projet1\metafile\metafile.dsp", at root.
+Active configuration is Win32 (x86) Console Application (based on Win32 (x86) Console Application)
+
+Project's tools are:
+			"32-bit C/C++ Compiler for 80x86" with flags "/nologo /MLd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/metafile.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c "
+			"Win32 Resource Compiler" with flags "/l 0x100c /d "_DEBUG" "
+			"Browser Database Maker" with flags "/nologo /o"Debug/metafile.bsc" "
+			"COFF Linker for 80x86" with flags "kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/metafile.pdb" /debug /machine:I386 /out:"Debug/metafile.exe" /pdbtype:sept "
+			"Custom Build" with flags ""
+			"<Component 0xa>" with flags ""
+
+Creating temp file "C:\DOCUME~1\ROUXDA~1\LOCALS~1\Temp\RSP1AB.tmp" with contents </nologo /MLd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fp"Debug/metafile.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /c 
+"D:\Robot\projet1\metafile\main.cpp"
+>
+Creating command line "cl.exe @C:\DOCUME~1\ROUXDA~1\LOCALS~1\Temp\RSP1AB.tmp" 
+Creating temp file "C:\DOCUME~1\ROUXDA~1\LOCALS~1\Temp\RSP1AC.tmp" with contents <kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/metafile.pdb" /debug /machine:I386 /out:"Debug/metafile.exe" /pdbtype:sept 
+.\Debug\main.obj>
+Creating command line "link.exe @C:\DOCUME~1\ROUXDA~1\LOCALS~1\Temp\RSP1AC.tmp" 
+Compiling...
+main.cpp
+Linking...
+
+
+
+metafile.exe - 0 error(s), 0 warning(s)

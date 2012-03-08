@@ -1,0 +1,18 @@
+\b;\button 146; Uderzacz
+\image bottump 8 8;
+Robot na g¹sienicach zaprojektowany do uderzania w ziemi¹ z ogromn¹ si³¹. Celem tego dzia³ania jest przewrócenie wszystkich \l;mrówek\u object\ant; i \l;paj¹ków\u object\spider; w promieniu 100 metrów do góry brzuchem. Przewrócony owad nie jest martwy i bêdzie stara³ siê stan¹æ na nogi. Zajmuje mu to oko³o 60 sekund.
+
+Aby wyœwietliæ strefê jego dzia³ania, nale¿y klikn¹æ przycisk <zasiêgu> \button 41;. Czerwone kropki otocz¹ kolist¹ strefê na 20 sekund.
+
+Robot ten zu¿ywa bardzo du¿e iloœci energii. Jedno uderzenie poch³ania 2/5 pojemnoœci \l;zwyk³ego ogniwa elektrycznego\u object\power;.
+
+\t;Instrukcje
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania uderzenia nale¿y u¿yæ instrukcji \c;\l;thump\u cbot\thump;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;Thumper\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

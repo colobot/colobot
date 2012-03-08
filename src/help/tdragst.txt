@@ -1,0 +1,63 @@
+\b;Exercice
+Déplacez le \l;robot\u object\bottr; le plus rapidement possible, à l'aide de l'instruction \c;motor( )\n;. Il faudra programmer une décélération en bout de piste, pour ne pas percuter les \l;mines\u object\mine;.
+
+Un programme avec \c;\l;move\u cbot\move;(25);\n; fonctionnerait parfaitement, mais le but est d'apprendre le fonctionnement de l'instruction \c;\l;motor\u cbot\motor;\n;.
+
+Cette instruction reçoit deux valeurs¦:
+1) La consigne pour le moteur gauche.
+2) La consigne pour le moteur droite.
+
+\s;\c;	motor( left, right );
+\n;
+Il s'agit de deux valeurs comprises entre -1 et 1¦:
+-1 = marche arrière
+ 0 = arrêt
+ 1 = marche avant
+
+Par exemple, \c;motor(0.5, 0.5);\n; fait avancer le \l;robot\u object\bottr; à mi-vitesse, jusqu'à ce qu'une autre consigne soit donnée.
+
+Avec l'instruction \c;motor(0.5, 0.6);\n;, le \l;robot\u object\bottr; avance à mi-vitesse en tournant légèrement à gauche, puisque le moteur de droite va un peu plus vite (\c;0.6\n;) que le moteur de gauche (\c;0.5\n;).
+
+\b;Principe
+L'idée consiste à avancer à fond les 23 premiers mètres, puis à diminuer progressivement la vitesse les 2 derniers mètres.
+L'instruction \c;\l;distance\u cbot\dist;(p1, p2);\n; retourne la distance entre deux points. Il suffit donc de mémoriser la position de départ, puis de calculer la distance parcourue avec \c;distance(position, start)\n;.
+La \l;variable\u cbot\object; \c;position\n; donne la position actuelle du \l;robot\u object\bottr;. Donc, \c;distance(position, start);\n; retourne la distance parcourue.
+
+\b;Marche à suivre
+1) Mémoriser la position de départ¦:
+\s;\c;	point start;
+\s;	start = position;
+\n;
+2) Démarrer à fond¦:
+\s;\c;	motor(1, 1);
+\n;
+3) Faire une boucle infinie \c;\l;while\u cbot\while;\n;¦:
+\s;\c;	while ( true )
+\s;	{
+\s;		float len = distance(position, start);
+\s;		if ( len > 25-2 )
+\s;		{
+\s;			motor( moins qu'avant¦! );
+\s;		}
+\s;	}
+\n;
+Tant que la longueur est plus petite que 23 mètres, on n'effectue pas les instructions après le \c;\l;if\u cbot\if;\n;. Les moteurs conservent donc les consignes initiales \c;\l;motor\u cbot\motor;(1,1);\n;, vitesse maximale.
+
+Pour ralentir progressivement, il faut donner une consigne de vitesse proportionnelle au reste de la distance à parcourir¦:
+o  S'il reste \c;2.0\n; mètres -> consigne = \c;1.00\n; (maximum)
+o  S'il reste \c;1.5\n; mètres -> consigne = \c;0.75\n;
+o  S'il reste \c;1.0\n; mètre  -> consigne = \c;0.50\n;
+o  S'il reste \c;0.5\n; mètre  -> consigne = \c;0.25\n;
+o  S'il reste \c;0.0\n; mètre  -> consigne = \c;0.00\n; (arrêt)
+
+\image tdragst1 12 6;
+L'\l;expression\u cbot\expr; \c;(25-len)/2\n; est donc parfaite pour cela.
+A vous de terminer le programme ...
+
+\b;Remarque
+Si les consignes données sont des valeurs plus grandes que 1, le \l;robot\u object\bottr; n'avance pas plus vite.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tremote1; et \l;programmation\u cbot;.

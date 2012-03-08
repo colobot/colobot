@@ -1,0 +1,5 @@
+\b;Objectif
+Il s'agit ici d'un jeu libre, sans but défini. Vous pouvez donc faire tout ce que vous voulez, explorer les environs, construire des bâtiments ou des robots, effectuer des recherches, tuer des insectes s'il y en a, etc.
+
+\t;Voir aussi
+\l;Commandes\u command;.

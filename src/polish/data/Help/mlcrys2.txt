@@ -1,0 +1,38 @@
+\b;Programy przys³ane z Houston
+Poni¿ej znajdziesz jeden z programów napisanych przez naszych in¿ynierów.
+Poprzedni program zosta³ usprawniony: jeœli to konieczne \l;transporter\u object\botgr; w drodze powrotnej odwiedza \l;stacjê energetyczn¹\u object\station; w celu na³adowania ogniwa elektrycznego.
+
+Program ten dzia³a równie¿ na \l;transporterze lataj¹cym\u object\botgj;, co mo¿e byæ konieczne jeœli \l;kopalnia\u object\derrick; jest na innej wyspie ni¿ \l;huta\u object\convert;.
+\c;
+\s;extern void object::CollectTitanium2()
+\s;{
+\s;	// 1) Definicja zmiennej
+\s;	\l;object\u cbot\type;  item;            // informacja o obiekcie
+\s;	
+\s;	// 2) IdŸ do rudy tytanu i podnieœ j¹
+\s;	item = \l;radar\u cbot\radar;(\l;TitaniumOre\u cbot\category;);// znajdŸ rudê tytanu
+\s;	\l;goto\u cbot\goto;(item.position);     // idŸ do pozycji
+\s;	\l;grab\u cbot\grab;();                  // podnieœ porcjê rudy
+\s;	
+\s;	// 3) IdŸ do huty i zostaw rudê
+\s;	item = \l;radar\u cbot\radar;(\l;Converter\u cbot\category;); // znajdŸ hutê
+\s;	\l;goto\u cbot\goto;(item.position);     // idŸ do pozycji
+\s;	\l;drop\u cbot\drop;();                  // zostaw rudê
+\s;	\l;move\u cbot\move;(-2.5);              // cofnij siê o 2,5 m
+\s;		
+\s;	// 4) Na³aduj ogniwo elektryczne, jeœli jest w po³owie zu¿yte
+\s;	if ( energyCell.energyLevel < 0.5 )
+\s;	{                               // jeœli tak:
+\s;		item = \l;radar\u cbot\radar;(\l;PowerStation\u cbot\category;); // znajdŸ stacjê energetyczn¹
+\s;		\l;goto\u cbot\goto;(item.position);        // idŸ tam
+\s;		\l;wait\u cbot\wait;(5);                    // poczekaj
+\s;	}
+\s;}
+\n;
+\b;Archiwum
+Lista programów przys³anych w poprzednich misjach:
+
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;

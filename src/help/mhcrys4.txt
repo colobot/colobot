@@ -1,0 +1,9 @@
+\b;Instructions de Houston
+Cette planète ne convient pas à une colonisation à grande échelle. Trouvez et ramenez la \l;boîte noire\u object\bbox; de la première expédition, et décollez vers la prochaine planète.
+
+Le satellite d'observation \button 186; a repéré la \l;boîte noire\u object\bbox; au fond d'une vallée. Le brouillard électromagnétique qui y règne limite cependant la qualité de ses informations. Soyez vigilant.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

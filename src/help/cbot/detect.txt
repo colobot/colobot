@@ -1,0 +1,26 @@
+\b;Instruction \c;detect\n;
+Cette instruction détecte la présence d'un objet donné devant le robot, jusqu'à une distance maximale de 5 mètres. Elle retourne simplement une valeur \l;booléenne\u cbot\bool; pour indiquer si l'objet est présent ou non. Pour détecter un objet situé à gauche, le seul moyen est de tourner d'abord le robot pour faire face à l'objet. Ou d'utiliser l'instruction \c;\l;radar\u cbot\radar;\n;, plus complexe, mais permettant beaucoup plus de choses.
+
+\b;Utilisation courante
+Pour savoir s'il existe une barrière à moins de 5 mètres devant le robot, il suffit d'écrire¦:
+\c;
+\s;if ( detect(Barrier) )
+\s;{
+\s;	turn(90);  // par exemple
+\s;}
+\n;
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;detect ( catégorie );\n;
+
+\t;catégorie: \c;\l;int\u cbot\int;\n;
+\l;Catégorie\u cbot\category; des objets cherchés. Par exemple, \c;Barrier\n;.
+
+\t;Valeur retournée: \c;\l;boolean\u cbot\bool;\n;
+Indique si l'objet a été détecté droit devant. \c;\l;true\u cbot\bool;\n; s'il existe un objet à moins de 5 mètres devant le robot. \c;\l;false\u cbot\bool;\n; dans le cas contraire.
+
+\t;Dictionnaire anglais-français
+\c;detect\n; = détecter
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

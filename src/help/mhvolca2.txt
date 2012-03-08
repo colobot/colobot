@@ -1,0 +1,16 @@
+\b;Instructions de Houston
+L'expédition précédente avait transmis des informations sur une \l;matière organique\u object\bullet; produite par les \l;fourmis géantes\u object\ant;, qui ouvrirait des perspectives étonnantes: elle permettrait d'équiper les robots de certains organes des insectes, améliorant ainsi leurs performances.
+ 
+Votre mission consiste à expérimenter une première application de cet "or vert": Construisez un \l;robot déménageur à pattes\u object\botgs;, amenez-le sur votre \l;vaisseau spatial\u object\base; puis décollez.
+
+\b;Marche à suivre
+Prélevez un échantillon de \l;matière organique\u object\bullet; dans le nid des \l;fourmis géantes\u object\ant;. Un \l;laboratoire\u object\labo; vous permettra de l'analyser, et de faire les recherches menant à une application concrète.
+
+Afin de diminuer votre stress, nous vous avons envoyé un programme pour recharger automatiquement les \l;tours de défense\u object\tower;.
+
+Remarque: Vu la température plus basse dans cette région, le vol semble possible.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

@@ -1,0 +1,45 @@
+\b;Sterowanie
+Polecana jest gra z jedn¹ rêk¹ na klawiszach strza³ek a drug¹ na myszy.
+
+\t;Roboty
+\key;\key left;\norm; = skrêt w lewo
+\key;\key right;\norm; = skrêt w prawo
+\key;\key up;\norm; = ruch do przodu
+\key;\key down;\norm; = ruch do ty³u
+Klawisze te nie s¹ dostêpne dla \l;robota treningowego\u object\bottr;.
+
+\key;\key gup;\norm; = start i wznoszenie siê \button 28;
+\key;\key gdown;\norm; = opuszczanie siê i l¹dowanie \button 29;
+Te klawisze s¹ oczywiœcie dostêpne tylko dla \l;astronauty\u object\human; oraz \l;robotów lataj¹cych\u object\botgj; w niektórych misjach.
+
+mysz do przodu = celowanie wy¿ej
+mysz do ty³u = celowanie ni¿ej
+mysz w prawo = celowanie w prawo
+mysz w lewo = celowanie w lewo
+Klawisze te dostêpne s¹ tylko dla \l;dzia³\u object\botfr;, \l;dzia³ organicznych\u object\botor; i \l;dzia³a fazowego\u object\botphaz;.
+
+\key;\key action;\norm; = g³ówne dzia³anie zaznaczonego obiektu (cz³owieka lub robota)
+Klawisz ten pozwala np. na operowanie ramieniem \l;transportera\u object\botgr; lub strzelanie z \l;dzia³a\u object\botfr; \button 42;.
+
+\t;Zaznaczanie
+\key;\key next;\norm; = zaznacza nastêpny obiekt
+\key;\key human;\norm; = zaznacza astronautê
+\key;\key desel;\norm; = poprzednie zaznaczenie \button 10;
+
+\t;Kamera
+\key;\key camera;\norm; = prze³¹cza pomiêdzy kamer¹ pok³adow¹ i pod¹¿aj¹c¹ za robotem \button 13;
+\key;\key near;\norm; = powiêkszenie
+\key;\key away;\norm; = pomniejszenie
+\key;\key visit;\norm; = zatrzymuje grê i wyœwietla miejsce pochodzenia ostatniej wiadomoœci. Kolejne naciœniêcie pokazuje pochodzenie poprzedniej wiadomoœci.
+
+\t;Pomoc
+\key;\key help;\norm; = rozkazy dot. misji
+\key;\key prog;\norm; = podrêcznik programowania
+
+\t;Gra
+\key;\key speed10;\norm; = normalna prêdkoœæ x1
+\key;\key speed15;\norm; = œrednia prêdkoœæ x1,5
+\key;\key speed20;\norm; = du¿a prêdkoœæ x2
+\key;\key quit;\norm; = wyjœcie z misji \button 11;
+
+Wszystkie powy¿sze ustawienia klawiszy sterowania mog¹ byæ zmienione w menu opcje/sterowanie.

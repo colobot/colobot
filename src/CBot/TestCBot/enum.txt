@@ -1,0 +1,9 @@
+
+enum JourDeLaSemaine {
+	lundi = 1,
+	mardi,
+	mercredi,
+	jeudi,
+	vendredi,
+	samedi,
+	dimanche = 0 }

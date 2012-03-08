@@ -1,0 +1,11 @@
+\b;Z Centrum Kontroli Misji
+ZnajdŸ nieco \l;materii organicznej\u object\bullet; i po wykonaniu odpowiedniego programu badawczego w \l;laboratorium\u object\labo;, powinno \l;Ci\u object\human; siê udaæ samodzielnie zbudowaæ dzia³o organiczne.
+
+Zbuduj \l;dzia³o organiczne na nogach\u object\botos; i dostarcz je na \l;statek kosmiczny\u object\base;.
+
+Pamiêtaj, ¿e na tej planecie jest bardzo ma³o zasobów energetycznych.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

@@ -1,0 +1,20 @@
+\b;Rozwi¹zanie
+W ma³ej dolinie na pó³nocnym wschodzie znajdziesz kilka przydatnych przedmiotów:
+o  \l;Recykler\u object\botrecy; umo¿liwiaj¹cy wytworzenie pierwszej \l;kostki tytanu\u object\titan;.
+o  \l;Transporter na nogach\u object\botgs;, bardzo przydatny we wspinaniu siê po stromych zboczach.
+o  Prawie pe³ne \l;atomowe ogniwo elektryczne\u object\atomic;.
+
+1) Zasil \l;transporter na nogach\u object\botgs; \l;atomowym ogniwem elektrycznym\u object\atomic; i u¿yj go do dostarczenia \l;kostki tytanu\u object\titan; na \l;statek kosmiczny\u object\base;. Wybierz bezpoœredni¹ drogê przez góry.
+
+2) U¿yj tytanu do zbudowania \l;huty\u object\convert;. Aby otrzymaæ mnóstwo tytanu, uruchom program \c;CollectTitanium3\n; na \l;transporterze na nogach\u object\botgs;.
+
+3) Zatrzymaj program i u¿yj transportera do zbierania \l;rudy uranu\u object\uranore; w drugiej ma³ej dolinie na wschodzie. I tym razem nie idŸ przez dolinê pe³n¹ pe³zaj¹cych mrówek, ale wybierz bezpoœredni¹ drogê przez góry.
+
+4) Zbuduj \l;dzia³o lataj¹ce\u object\botfj; i zasil je \l;atomowym ogniwem elektrycznym\u object\atomic;. Jeœli polecisz na po³udniowy wschód, dotrzesz w pobli¿e gniazda mrówek. Zabij je wszystkie i dostarcz kulê \l;materii organicznej\u object\bullet; na \l;statek kosmiczny\u object\base;.
+
+5) Zbuduj \l;laboratorium\u object\labo;, umieœæ \l;materiê organiczn¹\u object\bullet; na jego platformie i kliknij przycisk \button 110;, aby otrzymaæ plany dzia³ka strzelaj¹cego materi¹ organiczn¹.
+
+6) Zbuduj \l;dzia³o organiczne na nogach\u object\botos;, dostarcz je na pok³ad statku kosmicznego i odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

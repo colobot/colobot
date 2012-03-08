@@ -1,0 +1,6 @@
+extern void object::Return()
+{
+	shield(1,15);  // activate the shield
+	goto(8,60);    // go to the spaceship
+	shield(0,15);  // deactivate the shield
+}

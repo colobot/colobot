@@ -1,0 +1,17 @@
+\b;Exercice
+Défendez-vous de toutes les attaques ennemies.
+
+\b;Idée
+La portée de votre canon est d'environ 40 mètres. Le type des fourmis est \c;AlienAnt\n;. Orientez votre canon en direction de la fourmi la plus proche, même si la distance dépasse 40 mètres. Mais ne tirez que lorsque la distance est inférieure à 40 mètres, pour ne pas gaspiller de l'énergie.
+
+\b;Instructions utiles
+\c;\l;radar\u cbot\radar;\n; pour détecter un ennemi (catégorie \c;\l;AlienAnt\u object\ant;\n;)
+\c;\l;direction\u cbot\direct;\n; pour calculer une direction
+\c;\l;distance\u cbot\dist;\n; pour calculer une longueur
+\c;\l;fire\u cbot\fire;\n; pour tirer
+\c;\l;wait\u cbot\wait;\n; pour attendre
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

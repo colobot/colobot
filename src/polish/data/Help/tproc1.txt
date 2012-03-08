@@ -1,0 +1,59 @@
+\b;Æwiczenie
+\l;Robot\u object\bottr; musi przejœæ przez wszystkie \l;niebieskie plusy\u object\waypoint; le¿¹ce na ziemi. Droga, któr¹ musi pokonaæ, sk³ada siê z dwóch kwadratów. Pierwszy ma bok równy 15 metrów a drugi, 25 metrów.
+
+\image tproc1a 8 8;
+\b;Ogólny algorytm
+Najbardziej efektywne rozwi¹zanie tego problemu polega na napisaniu \l;funkcji\u cbot\function;, która porusza robotem po kwadracie okreœlonego rozmiaru. G³ówny program staje siê wtedy bardzo prosty:\c;
+\s;extern void object::Funkcja1( )
+\s;{
+\s;	Kwadrat(15);
+\s;	Kwadrat(25);
+\s;}
+\n;
+Wci¹¿ jednak nale¿y zdefiniowaæ funkcjê nazwan¹ \c;Kwadrat\n;. Aby to zrobiæ, konieczne bêdzie napisanie kilku instrukcji poza \l;blokiem\u cbot\bloc; który dotychczas by³ ramk¹ dla ka¿dego z Twoich programów. Na samym koñcu programu, po ostatniej klamrze zamykaj¹cej, nale¿y zdefiniowaæ funkcjê \c;Kwadrat\n;. Program bêdzie wygl¹da³ nastêpuj¹co:
+\c;
+\s;extern void object::Funkcja1( )
+\s;{
+\s;	\n;g³ówna funkcja...\c;
+\s;}
+\s;
+\s;void object::Kwadrat(float bok)
+\s;{
+\s;	\n;nowa funkcja...\c;
+\s;}
+\n;
+Przyjrzyjmy siê uwa¿niej ró¿nym elementom deklaracji funkcji \c;Kwadrat\n;:
+
+\c;\l;void\u cbot\void;\n;
+Oznacza, ¿e ta funkcja nie zwraca ¿adnej wartoœci.
+
+\c;\l;object\u cbot\object;::\n;
+Napisanie tego przed nazw¹ funkcji oznacza, ¿e bêdzie ona mia³a dostêp do wszystkich charakterystyk robota, takich jak \c;position\n;, \c;orientation\n;, itd. W tym æwiczeniu element ten nie jest wymagany, jako ¿e w funkcji nie bêd¹ potrzebne charakterystyki robota.
+
+\c;Kwadrat (  )\n;
+To jest nazwa funkcji. Mo¿esz j¹ nazwaæ Kwadrat lub dowolnie inaczej.
+
+\c;\l;float\u cbot\float; bok\n;
+Tutaj definiujesz parametry, które otrzymuje funkcja podczas wywo³ania. Przy pierwszym wywo³aniu funkcji \c;Kwadrat(15)\n;, zmienna \c;bok\n; bêdzie mia³a wartoœæ \c;15\n;. Za drugim razem \c;bok\n; bêdzie równy \c;25\n;.
+
+Oto szczegó³y tego co zdarzy siê po wykonaniu programu:
+- Najpierw uruchamiana jest g³ówna funkcja \c;Funkcja1\n;.
+- W wierszu \c;Kwadrat(15)\n;, program pod¹¿y za czerwon¹ strza³k¹ i przejdzie do funkcji \c;Kwadrat\n; po raz pierwszy, \c;bok\n; równy \c;15\n;.
+- Na koñcu funkcji \c;Kwadrat\n;, program pod¹¿y za pomarañczow¹ strza³k¹ i wróci do funkcji g³ównej.
+- W wierszu \c;Kwadrat(25)\n;, program pod¹¿y za niebiesk¹ strza³k¹, przechodz¹c po raz drugi do funkcji \c;Kwadrat\n;.
+- Na koñcu funkcji \c;Kwadrat\n;, program pod¹¿y za jasno niebiesk¹ strza³k¹ i wróci do funkcji g³ównej.
+
+\image tproc1b 17 12;
+W funkcji \c;Kwadrat\n;, u¿yj instrukcji \c;\l;move\u cbot\move;\n; i \c;\l;turn\u cbot\turn;\n;. Aby skróciæ program mo¿esz u¿yæ pêtli \c;\l;for\u cbot\for;\n;, która powtórzy 4 razy instrukcje \c;\l;move\u cbot\move;\n; i \c;\l;turn\u cbot\turn;\n;, nie jest to jednak niezbêdne.
+\c;
+\s;void object::Kwadrat(float bok)
+\s;{
+\s;	for ( int i=0 ; i<4 ; i=i+1 )
+\s;	{
+\s;		move(bok);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

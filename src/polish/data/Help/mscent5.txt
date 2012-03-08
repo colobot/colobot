@@ -1,0 +1,8 @@
+\b;Rozwi¹zanie
+1) Uderz w pok³ad \l;statku kosmicznego\u object\base;. Nie musisz nigdzie siê ruszaæ robotem \l;uderzaczem\u object\bottump;.
+2) ZnajdŸ \l;dzia³o organiczne\u object\botoj; oko³o 70 metrów na wschód.
+3) Zabij wszystkie \l;mrówki\u object\ant;, póki jeszcze le¿¹ na plecach.
+4) Odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

@@ -1,0 +1,14 @@
+\b;Titanium
+\image titan 4 4;
+Titanium is indispensable for the construction of buildings, \l;bots\u object\factory; and \l;regular power cells\u object\energy;. There is usually some left on the \l;spaceship\u object\base; when you embark on a new mission.
+
+If more is needed, you'll have to \l;convert\u object\convert; chunks of \l;titanium ore\u object\titanore; into usable titanium cubes.
+
+\t;Transport
+All \l;grabbers\u object\botgr; and the \l;astronaut\u object\human;.
+
+\t;Object \l;Category\u cbot\category;
+\c;Titanium\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

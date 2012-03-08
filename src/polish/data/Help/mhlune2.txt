@@ -1,0 +1,17 @@
+\b;Z Centrum Kontroli Misji
+Ta aparatura zosta³a ustawiona przez poprzedni¹ ekspedycjê do testowania i trenowania mo¿liwoœci robotów lataj¹cych.
+
+\b;Zadanie
+U¿yj tych æwiczeñ dla zwiêkszenia swojej przewagi. Twoja zdolnoœæ do przetrwania krytycznych sytuacji w przysz³oœci mo¿e zale¿eæ od zrêcznoœci, któr¹ pomog¹ Ci one rozwin¹æ.
+
+\b;Procedura
+Przeleæ przez wszystkie cele jak najszybciej. Postaraj siê to zrobiæ bez przegrzania silnika. Jeœli to za trudne, po prostu wyl¹duj na chwilê aby och³odziæ silnik.
+
+Do sterowania robotem u¿ywaj klawiszy strza³ek na klawiaturze, ale jedn¹ rêkê trzymaj na myszy. Mysz nie jest potrzebna w tym æwiczeniu ale bêdzie istotna w póŸniejszych misjach.
+
+Mo¿e byæ przydatne powrócenie do tego æwiczenia za jakiœ czas, w celu poprawy refleksu.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

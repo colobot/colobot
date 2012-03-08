@@ -1,0 +1,66 @@
+\b;Exercice
+Cet exercice consiste à tracer un pseudo-cercle bleu à l'aide de petits segments de droites, comme dans l'exercice précédent. Le programme écrit était¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	pendown(Blue);
+\s;
+\s;	repeat ( 36 )  // répète 36x
+\s;	{
+\s;		move(2);
+\s;		turn(10);
+\s;	}
+\s;}
+\n;
+Nous allons maintenant utiliser deux \l;variables\u cbot\var;. La première est appelée \c;dist\n; et elle contient la distance à avancer par segment. La deuxième est appelée \c;n\n; et elle contient le nombre de segments à tracer pour faire un cercle complet. Le programme devient alors¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	float dist = 2;
+\s;	int n = 36;
+\s;	
+\s;	pendown(Blue);
+\s;
+\s;	repeat ( n )
+\s;	{
+\s;		move(dist);
+\s;		turn(360/n);
+\s;	}
+\n;
+\b;Les variables
+Vous vous rappelez certainement qu'une \l;variable\u cbot\var; est décrite par trois éléments¦:
+1) Son nom.
+2) Le type du contenu.
+3) Le contenu.
+
+Avant d'être utilisée, une variable doit être déclarée. Par exemple, pour déclarer la variable \c;angle\n; puis pour lui assigner la valeur \c;45\n;, il faut écrire¦:
+\s;\c;	float angle;  // déclaration
+\s;	angle = 45;  // assignation
+\n;
+Cette écriture peut être raccourcie en une seule ligne¦:
+\s;\c;	float angle = 45;
+\n;
+Dans notre exemple, deux variables sont déclarées et initialisées¦:
+\s;\c;	float dist = 2;
+\s;	int n = 36;
+\n;
+La première, \c;dist\n;, est de type \c;\l;float\u cbot\float;\n; car elle peut contenir un nombre réel (une distance peut valoir 1.5 mètres par exemple). La deuxième, \c;n\n;, est de type \c;\l;int\u cbot\int;\n; car elle contient un nombre entier, qui correspond au nombre de fois que l'on va exécuter la boucle \c;\l;repeat\u cbot\repeat;()\n;.
+
+L'instruction suivante mérite une explication¦:
+\s;\c;		turn(360/n);
+\n;
+On tourne d'un angle égal à 360 degrés divisé par le nombre de segments du cercle. Par exemple, si \n;n=36\n;, l'angle sera de 10 degrés. En tournant 36 fois de suite de 10 degrés, on aura effectué un tour complet.
+Maintenant que des variables sont utilisées, rien de plus simple pour améliorer la qualité du cercle obtenu. Si on désire doubler le nombre de segments, il faut diviser par deux la longueur d'un segment. On écrit alors¦:
+\s;\c;	float dist = 1;
+\s;	int n = 72;
+\n;
+\b;À vous de jouer
+A vous maintenant d'essayer avec différentes valeurs pour \c;dist\n; et \c;n\n;. Evidemment, si \c;n\n; est trop petit, le cercle devient tellement approximatif qu'il ne passe plus sur les croix bleues. Et plus \c;n\n; est grand, plus le dessin sera lent.
+
+\b;Accélérer le dessin
+Si vous souhaitez accélérer le dessin, appuyez sur la touche \key;\key speed20;\norm; x2. La touche \key;\key speed10;\norm; reviendra à une vitesse normale x1.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tcircle1; et \l;programmation\u cbot;.

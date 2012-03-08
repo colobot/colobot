@@ -1,0 +1,48 @@
+\b;Zadanie
+Zasil \l;dzia³a lataj¹ce\u object\botfj; \l;ogniwami elektrycznymi\u object\power;, aby mog³y zabiæ mrówki znajduj¹ce siê w gnieŸdzie mrówek w jamie na pó³noc od Ciebie.
+
+\t;Program
+\l;Transporter na ko³ach\u object\botgr; musi podejœæ do \l;ogniwa elektrycznego\u object\power;, podnieœæ je, podejœæ do \l;dzia³a lataj¹cego\u object\botfj; i umieœciæ w nim ogniwo. To zadanie jest bardzo podobne do zadania z poprzedniego æwiczenia. Oto jeszcze raz ten program:
+\c;
+\s;extern void object::Titanium2()
+\s;{
+\s;	object    item;
+\s;	
+\s;	item = radar(TitaniumOre);
+\s;	goto(item.position);
+\s;	grab();
+\s;	
+\s;	item = radar(Converter);
+\s;	goto(item.position);
+\s;	drop();
+\s;}
+\n;
+Najlepszym sposobem rozwi¹zania obecnego æwiczenia jest skopiowanie \button 61; powy¿szego programu do schowka (od \c;object\n; do \c;drop();\n;), i wklejenie \button 62; do edytora programu. Nastêpnie wystarczy dokonaæ niezbêdnych poprawek, aby przystosowaæ go do nowego zadania.
+
+Zamiast szukaæ rudy tytanu (\c;TitaniumOre\n;), poszukaj ogniwa elektrycznego (\c;PowerCell\n;). Zamiast iœæ do huty (\c;Converter\n;), idŸ do dzia³a lataj¹cego (\c;WingedShooter\n;). Dzia³o lataj¹ce zacznie pracê, jak tylko otrzyma nowe ogniwo elektryczne.
+
+Jeœli chcesz wiedzieæ wiêcej o "nazwach" ró¿nych obiektów jêzyka programowania, zobacz pomoc dotycz¹c¹ \l;kategorii\u cbot\category;.
+
+\t;Dalsze usprawnienia: pêtle
+Gdy opisany powy¿ej program bêdzie ju¿ dzia³a³ idealnie, mo¿esz go usprawniæ, aby wykonywa³ zadanie w nieskoñczonoœæ. W ten sposób nie bêdzie konieczne wielokrotne uruchamianie tego programu do zasilenia wielu robotów.
+
+Napisane dotychczas programy uruchamiaj¹ wszystkie instrukcje tylko raz, jedn¹ po drugiej, od pocz¹tku do koñca programu. Mo¿na kazaæ robotowi powtarzaæ niektóre instrukcje: wystarczy napisaæ \c;while (true)\n;, klamrê otwieraj¹c¹, instrukcje, które maj¹ byæ powtarzane oraz klamrê zamykaj¹c¹. Powtarzanie kilku instrukcji w ten sposób zwane jest pêtl¹. Oto przyk³ad programu umo¿liwiaj¹cego powtarzanie w nieskoñczonoœæ instrukcji szukaj¹cych ogniwa elektrycznego, podnoszenia go i umieszczania w dziale lataj¹cym:
+\c;
+\s;	while (true)
+\s;	{
+\s;		item = radar(PowerCell);
+\s;		goto(item.position);
+\s;		grab();
+\s;		
+\s;		item = radar(WingedShooter);
+\s;		goto(item.position);
+\s;		drop();
+\s;	}
+\n;
+Oczywiœcie deklaracja zmiennej \c;object item;\n; powinna pojawiæ siê przed pêtl¹, a nie wewn¹trz niej: zmienn¹ wystarczy zadeklarowaæ raz.
+
+\t;Uwaga
+Robot mo¿e z powodzeniem wykonywaæ program samodzielnie. W miêdzyczasie mo¿esz na przyk³ad zaznaczyæ astronautê i obejrzeæ co siê dzieje w gnieŸdzie - warto. Uwa¿aj jednak, aby nie postrzeli³ Ciê w³asny robot...
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

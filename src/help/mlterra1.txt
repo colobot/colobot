@@ -1,0 +1,30 @@
+\b;Programmes envoyés par Houston
+Voilà deux programmes développés par nos ingénieurs, en fonction des données récoltées par le satellite. Le premier amène le \l;robot bouclier\u object\botshld; à travers le passage étroit vers le nord. Vous pourrez ainsi le suivre en étant à l'abri de toute attaque¦:
+\c;
+\s;extern void object::Aller()
+\s;{
+\s;	shield(1,15);   // active le bouclier
+\s;	goto(6,160);    // va à la position indiquée
+\s;	shield(0,15);   // désactive le bouclier
+\s;}
+\n;
+Le deuxième programme redescend le \l;robot bouclier\u object\botshld; en direction du \l;vaisseau\u object\base;¦:
+\c;
+\s;extern void object::Retour()
+\s;{
+\s;	shield(1,15);   // active le bouclier
+\s;	goto(8,60);     // va à la position indiquée
+\s;	shield(0,15);   // désactive le bouclier
+\s;}
+\n;
+\b;Archives
+Résumé des programmes déjà reçus¦:
+
+o  \c;\l;ServiceTour1\u mlvolca2;\n;
+o  \c;\l;ApporteTitanium3\u mlvolca1;\n;
+o  \c;\l;TueFourmi1\u mlsaari2;\n;
+o  \c;\l;ApporteTitanium2\u mlcrys2;\n;
+o  \c;\l;ApporteTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;EchangePile1\u mllune1;\n;

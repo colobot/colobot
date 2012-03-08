@@ -1,0 +1,62 @@
+\b;Le tri
+Il y a maintenant des déchets métalliques et plastiques répartis un peu partout aléatoirement. Tu dois apprendre à en faire le tri, pour apporter les déchets à la bonne place¦:
+
+o  Déchets métalliques  >>  Désintégrateur
+o  Déchets plastiques   >>  Destructeur
+
+\b;Le programme
+Comme dans l'exercice précédent, le programme commence par une instruction \c;repeat(100)\n;. Ensuite, on va trouver un déchet et le prendre. Jusque là, c'est facile. Mais le problème, maintenant, est qu'on ne sait pas si le déchet dans la pince du robot est en métal ou en plastique. Donc, on ne sait pas s'il faut l'amener au désintégrateur ou au destructeur.
+
+\b;Les nouvelles instructions \c;if\n; et \c;else\n;
+C'est là qu'on utilise la nouvelle instruction \c;if\n; en écrivant exactement¦:
+\c;
+\s;if( load.material == Metal )
+\n;
+Ce qui signifie en français: "Est-ce que le déchet saisi est métallique¦?". Cette étape correspond à la partie verte du schéma ci-dessous¦:
+
+\image if 16 8;
+Si la réponse à la question est positive (donc si le déchet est métallique), on exécute les instructions contenues dans le bloc \c;{A}\n; bleu, pour trouver le désintégrateur et y déposer le déchet.
+
+Si la réponse à la question est négative (donc si le déchet est en plastique), on exécute les instructions contenues dans le bloc \c;{B}\n; rouge, pour trouver le destructeur et y déposer le déchet.
+
+Le programme complet est le suivant¦:
+
+\s;o  Répète 100 fois¦:
+\s;	o  Trouve un déchet
+\s;	o  Prend le déchet
+\s;	o  Est-ce que le déchet saisi est métallique¦?
+\s;		o  Trouve le désintégrateur
+\s;		o  Dépose le déchet métallique
+\s;		o  Recule de 10 centimètres
+\s;	o  Sinon (c'est donc du plastique)¦:
+\s;		o  Trouve le destructeur
+\s;		o  Dépose le déchet plastique
+\s;		o  Recule de 20 centimètres
+
+Voici plus précisément la partie centrale du programme¦:
+\c;
+\s;find(Scrap);
+\s;grab();
+\s;if( load.material == Metal )
+\s;{
+\s;	find(Disintegrator);
+\s;	drop();
+\s;	move(-10);
+\s;}
+\s;else
+\s;{
+\s;	find(Destroyer);
+\s;	drop();
+\s;	move(-20);
+\s;}
+\n;
+Il doit encore y avoir un \c;repeat(100)\n; qui englobe tout ça, avec les accolades \c;{}\n; correspondantes, comme d'habitude.
+
+\b;Attention
+L'instruction \c;if()\n; n'est jamais suivie d'un point-virgule, tout comme \c;repeat()\n;. L'instruction \c;else\n; n'a ni parenthèses, ni point-virgule¦!
+
+Les instructions \c;if()\n; et \c;else\n; sont toutes deux suivies d'un bloc d'instructions inclus dans des accolades \c;{}\n;.
+
+\b;Un peu d'anglais
+\c;if   = \n;si
+\c;else = \n;autrement

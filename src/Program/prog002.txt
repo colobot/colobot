@@ -1,0 +1,197 @@
+extern void object::RechargeBots()
+{
+	object item;
+	int List[], i;
+	point startpoint;
+	int retval;
+	int Angle;
+	
+	i=0;
+	Angle=0;
+	List[i++]=WingedShooter;
+	List[i++]=PracticeBot;
+	List[i++]=TargetBot;
+	List[i++]=WheeledGrabber;
+	List[i++]=TrackedGrabber;
+	List[i++]=WingedGrabber;
+	List[i++]=LeggedGrabber;
+	List[i++]=WheeledShooter;
+	List[i++]=TrackedShooter;
+	List[i++]=WingedShooter;
+	List[i++]=LeggedShooter;
+	List[i++]=WheeledSniffer;
+	List[i++]=TrackedSniffer;
+	List[i++]=WingedSniffer;
+	List[i++]=LeggedSniffer;
+	List[i++]=WheeledOrgaShooter;
+	List[i++]=TrackedOrgaShooter;
+	List[i++]=WingedOrgaShooter;
+	
+	i=0;
+	item = radar(List[i]);
+	while (true)
+	{
+		if (load!=null && load.category!=PowerCell)
+		{
+			message("Brazo de carga ocupado. Soltando objeto.",DisplayInfo);
+			drop(InFront); // No es una bateria, lo suelto
+		}
+		else
+		{
+			if (item!=null)
+			{
+				for (Angle=0;Angle<360;Angle++)
+				{
+					if (item!=null && item.energyCell!=null)
+					{
+						//message("Localizado un " + item.category + ". Investigando estado de baterias...",DisplayInfo);
+						if (item.energyCell.energyLevel==0)
+						{
+							message("El " + item.category + " tiene bateria agotada. Acudiendo en su auxilio.",DisplayInfo);
+							retval=0;
+							retval=goto(item.position);
+							if (retval==0)
+							{
+								message("Procediendo a recuperacion de bateria agotada...",DisplayInfo);
+								retval=grab(InFront); // Coge la bateria del otro robot
+								if (retval==0)
+								{
+									startpoint=item.position; // Memoriza la posicion actual
+									message("Regresando a base para recarga de bateria...",DisplayInfo);
+									RechargeBattery(); // A cargar las baterias
+									goto(startpoint); // Vuelvo donde estaba el robot
+									retval=drop(InFront); //Coloco la bateria
+									if (retval!=0)
+									{
+										message("Imposible cargar bateria.",DisplayInfo);
+									}
+									else
+									{
+										message("Recarga de bateria del " + item.category +" completada.",DisplayInfo);
+									}
+								}
+								else
+								{
+									message("Imposible recuperar la bateria. Operacion abortada.",DisplayInfo);
+								}
+							}
+						}
+					}
+					if (item!=null)
+					{
+						if (item.energyCell==null) // Si el robot no tiene bateria, le busco una
+						{
+							if(load!=null && load.category==PowerCell)
+							{
+								message("El " + item.category + " no tiene bateria. Transportando bateria cargada...",DisplayInfo);
+								if (load.energyLevel<0.5) // Miro si tiene energia
+								{
+									RechargeBattery();
+								}
+								goto(item.position);
+								drop(InFront);
+								message("Bateria cargada en " + item.category + ".",DisplayInfo);
+							}
+							else
+							{
+								message("El " + item.category + " no tiene bateria. Localizando una disponible...",DisplayInfo);
+								startpoint=position; // Memoriza la posicion actual
+								item=radar(PowerCell); //Localizo la celula de carga
+								message("Bateria localizada. Dirigiendose a su ubicacion...",DisplayInfo);
+								retval=goto(item.position);
+								if (retval==0)
+								{
+									retval=grab(InFront); //La cojo
+									if (retval==0)
+									{
+										if (load.energyLevel<0.5) // Miro si tiene enrgia
+										{
+											RechargeBattery();
+										}
+									}
+									else
+									{
+										message("Imposible recuperar bateria. Operacion abortada.",DisplayInfo);
+									}
+								}
+							}
+							
+						}
+					}
+					item = radar(List[i],Angle,10);
+				}
+			}
+		}
+		++i;
+		if (i>17)
+		{
+			i=0;
+		}
+		item = radar(List[i]);
+		CheckOwnState();
+	}
+}
+
+void object::RechargeBattery()
+{
+	point  start;          // variable for initial pos.
+	object item;           // info. about power station
+	
+	//start = position;      // stores initial position
+	
+	item = radar(PowerStation); // looks for station
+	goto(item.position);   // goes to the power station
+	
+	while ( energyCell.energyLevel < 1 )
+	{
+		wait(1);            // waits until recharged
+	}
+	if (load!=null)
+	{
+		if (load.category==PowerCell)
+		{
+			while ( load.energyLevel < 1 )
+			{
+				wait(1);            // waits until recharged
+			}
+		}
+	}
+	
+	//goto(start);           // comes back to initial pos.
+	message("Auto-recarga completada");
+}
+
+void object::RepairBot()
+{
+	point  start;          // variable for initial pos.
+	object item;           // info. about power station
+	
+	//start = position;      // stores initial position
+	
+	item = radar(RepairCenter); // looks for station
+	goto(item.position);   // goes to the power station
+	
+	while ( shieldLevel < 1 )
+	{
+		wait(1);            // waits until recharged
+	}
+	move(-1);
+	
+	//goto(start);           // comes back to initial pos.
+	message("Auto-reparacion completada.",DisplayInfo);
+}
+
+void object::CheckOwnState()
+{
+	// Comprobar estado propio
+	if (energyCell.energyLevel<0.6)
+	{
+		message("Nivel de bateria bajo. Regresando a base...",DisplayInfo);
+		RechargeBattery();
+	}
+	if (shieldLevel<1)
+	{
+		message("Nivel de escudos bajo. Regresando a base...",DisplayInfo);
+		RepairBot();
+	}
+}

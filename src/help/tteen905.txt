@@ -1,0 +1,31 @@
+\b;Dents de scie bicolores
+On va maintenant dessiner les mêmes dents de scie bleues et rouges, mais avec un principe différent.
+
+\image teen904 12 4;
+\b;Variable bonne à tout faire
+Lorsque tu écris¦...
+\c;
+\s;int compteur = 0;
+\n;
+...¦tu utilises une variable appelée \c;compteur\n; pour lui assigner la valeur zéro. Mais tu peux aussi utiliser une variable pour stocker une couleur directement. Par exemple¦:
+\c;
+\s;int couleur = Blue;
+\n;
+Puis, au lieu d'écrire \c;pendown(Blue);\n;, tu peux écrire¦:
+\c;
+\s;pendown(couleur);
+\n;
+Après cela, il ne reste qu'à changer le contenu de la variable \c;couleur\n;¦:
+\c;
+\s;if( couleur == Blue )
+\s;{
+\s;	couleur = Red;
+\s;}
+\s;else
+\s;{
+\s;	couleur = Blue;
+\s;}
+\n;
+Si la variable contient \c;Blue\n;, on lui met \c;Red\n;. Dans le cas contraire, on lui met \c;Blue\n;.
+
+Voilà, à toi de terminer le programme¦...

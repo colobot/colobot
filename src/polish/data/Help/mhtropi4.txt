@@ -1,0 +1,13 @@
+\b;Z Centrum Kontroli Misji
+Oto kolejny kurs szkoleniowy przygotowany przez Twoich poprzedników i przeznaczony tym razem do sprawdzenia mo¿liwoœci strzeleckich \l;robotów lataj¹cych\u object\botfj;. Dziêki niemu oswoisz siê ze strzelaniem podczas latania.
+
+Przeleæ szybko przez wszystkie cele i zestrzel 10 ³adunków wybuchowych rozrzuconych wzd³u¿ trasy lotu. Spróbuj wykonaæ to æwiczenie bez l¹dowania. Uwa¿aj jednak na reaktor: jeœli siê przegrzeje, wystarczy wyl¹dowaæ i poczekaæ a¿ ostygnie.
+
+U¿ywaj jednej rêki do kierowanie robotem u¿ywaj¹c klawiatury, a drugiej do celowania i strzelania (lewym klawiszem) mysz¹.
+
+Mo¿esz wróciæ do tego æwiczenia za jakiœ czas, aby poprawiæ swój refleks.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

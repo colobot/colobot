@@ -1,0 +1,36 @@
+\b;Dictionnaire anglais-français
+Voici, par ordre alphabétique, tous les termes anglais rencontrés dans les exercices¦:
+
+\s;\c;B: Barrier       = \n;barrière
+\s;\c;   Black         = \n;noir
+\s;\c;   Blue          = \n;bleu
+\s;\c;   Brown         = \n;brun
+\s;\c;C: continue      = \n;continuer, poursuivre
+\s;\c;D: Destroyer     = \n;destructeur
+\s;\c;   detect        = \n;détecter
+\s;\c;   Disintegrator = \n;désintégrateur
+\s;\c;   down          = \n;en bas
+\s;\c;   drop          = \n;laisser tomber
+\s;\c;E: else          = \n;autrement
+\s;\c;F: find          = \n;trouver
+\s;\c;   fire          = \n;feu
+\s;\c;G: grab          = \n;saisir
+\s;\c;   Green         = \n;vert
+\s;\c;I: if            = \n;si
+\s;\c;M: move          = \n;déplacer
+\s;\c;N: not           = \n;ne pas
+\s;\c;O: Orange        = \n;orange
+\s;\c;P: pen           = \n;plume
+\s;\c;   Purple        = \n;violet
+\s;\c;R: Red           = \n;rouge
+\s;\c;   repeat        = \n;répéter
+\s;\c;S: Scrap         = \n;déchet
+\s;\c;   Stone         = \n;pierre
+\s;\c;T: thump         = \n;marteler
+\s;\c;   turn          = \n;tourner
+\s;\c;U: up            = \n;en haut
+\s;\c;Y: Yellow        = \n;jaune
+
+Les mots qui commencent par une majuscule doivent s'écrire ainsi dans un programme.
+
+Clique sur le bouton \button 185; en haut à gauche pour revenir dans l'écran des instructions.

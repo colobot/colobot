@@ -1,0 +1,53 @@
+\b;Programy przys≥ane z Houston
+Napisaliúmy program zajmujπcy siÍ ≥adowaniem ogniwa elektrycznego \l;wieøy obronnej\u object\tower;:
+
+1) Idü do \l;wieøy obronnej\u object\tower;.
+2) Poczekaj aø \l;ogniwo elektryczne\u object\power; bÍdzie w 80% puste.
+3) Zabierz \l;ogniwo elektryczne\u object\power; i do≥aduj je w \l;stacji energetycznej\u object\station;.
+4) Odnieú je do \l;wieøy obronnej\u object\tower;.
+
+W celu zredukowania czasu gdy wieøa pozostaje bez zasilania, zbuduj \l;stacjÍ energetycznπ\u object\station; moøliwie najbliøej wieøy. Przydatnπ sztuczkπ jest zostawienie ogniwa elektrycznego na ziemi przed wieøπ. Osy bÍdπ atakowa≥y ogniwo i jeúli pierwszy strza≥ bÍdzie niecelny lub osa przybÍdzie gdy wieøa bÍdzie bez zasilania, zniszczone zostanie tylko ogniw, a nie wieøa obronna.
+\c;
+\s;extern void object::ServiceTower1()
+\s;{
+\s;	\l;object\u cbot\object;  tower;               // informacje o wieøy
+\s;	\l;object\u cbot\object;  station;             // informacje o stacji
+\s;	
+\s;	// 1) idü do wieøy obronnej
+\s;	tower = \l;radar\u cbot\radar;(DefenseTower); // znajdü wieøÍ
+\s;	\l;goto\u cbot\goto;(tower.position);        // i idü tam
+\s;	
+\s;	\l;while\u cbot\while; ( true )               // powtarzaj w nieskoÒczonoúÊ
+\s;	{
+\s;		// 2) poczekaj na wyczerpanie ogniwa elektrycznego
+\s;		\l;while\u cbot\while; ( tower.energyCell.energyLevel > 0.2 )
+\s;		{
+\s;			\l;wait\u cbot\wait;(2);
+\s;		}
+\s;		\l;grab\u cbot\grab;();                  // weü ogniwo elektryczne
+\s;		
+\s;		// 3) idü do elektrowni i na≥aduj je
+\s;		station = \l;radar\u cbot\radar;(PowerStation);
+\s;		\l;goto\u cbot\goto;(station.position);  // idü tam
+\s;		\l;while\u cbot\while; ( load.energyLevel < 1 )
+\s;		{
+\s;			\l;wait\u cbot\wait;(1);             // poczekaj aø siÍ na≥aduje
+\s;		}
+\s;		
+\s;		// 4) wrÛÊ do wieøy obronnej
+\s;		\l;goto\u cbot\goto;(tower.position);    // idü do wieøy
+\s;		\l;drop\u cbot\drop;();                  // zostaw ogniwo elektryczne
+\s;	}
+\s;}
+\n;
+\b;Archiwum
+Lista programÛw przys≥anych w poprzednich misjach:
+
+o  \c;\l;CollectTitanium3\u mlvolca1;\n;
+o  \c;\l;KillAnt1\u mlsaari2;\n;
+o  \c;\l;CollectTitanium2\u mlcrys2;\n;
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;
+

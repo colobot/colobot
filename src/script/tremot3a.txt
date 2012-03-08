@@ -1,0 +1,22 @@
+extern void object::Solution( )
+{
+	SendOrder( "move(20)" );
+	SendOrder( "turn(90)" );
+	SendOrder( "move(20)" );
+	SendOrder( "turn(90)" );
+	SendOrder( "move(10)" );
+	SendOrder( "turn(90)" );
+	SendOrder( "move(10)" );
+	SendOrder( "turn(-90)" );
+	SendOrder( "move(10)" );
+}
+
+void object::SendOrder(string order)
+{
+	exchange list = new exchange();
+
+	while ( list.put(order) == false )
+	{
+		wait(1);
+	}
+}

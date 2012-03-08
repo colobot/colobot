@@ -1,0 +1,14 @@
+extern void object::Solution()
+{
+	
+	grab();
+	turn(90);
+	drop();
+	
+	turn(-180);
+	
+	grab();
+	turn(90);
+	drop();
+	
+}

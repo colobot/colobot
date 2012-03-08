@@ -1,0 +1,25 @@
+extern void object::Remote( )
+{
+	SendToPost(1, 20);  // move(20);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 20);  // move(20);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 10);  // move(10);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 10);  // move(10);
+	SendToPost(2,-90);  // turn(-90);
+	SendToPost(1, 10);  // move(10);
+}
+
+void object::SendToPost(float order, float param)
+{
+	// send the order and the parameter
+	send("order", order, 100);
+	send("param", param, 100);
+
+	// wait for end of work
+	while ( testinfo("order", 100) )
+	{
+		wait(1);
+	}
+}

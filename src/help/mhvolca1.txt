@@ -1,0 +1,14 @@
+\b;Instructions de Houston
+Ramener une \l;caisse d'explosifs\u object\tnt; que le satellite d'observation a localisée au fond d'une vallée encaissée.
+
+En raison de la température élevée, les réacteurs ne fonctionnent pas et le vol est impossible. Comme le chemin est long, vous devez équiper les robots de \l;piles atomiques\u object\atomic; (recherche à faire) construites à base de \l;minerai d'uranium\u object\uranore;.
+
+Nous vous avons envoyé un programme \c;ApporteTitanium\n; plus performant (voir la page programme).
+
+\b;Attention
+La caisse d'explosifs est très fragile. Vous devez vous en approcher avec la plus grande prudence. Au moindre choc, elle explose.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

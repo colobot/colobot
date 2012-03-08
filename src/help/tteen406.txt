@@ -1,0 +1,7 @@
+\b;Et là ?
+Encore une situation qui a l'air très semblable aux deux précédentes¦:
+
+\image teen406 8 8;
+Mais, en y regardant de plus près, on se rend compte que le programme va encore un peu se compliquer.
+
+A toi de jouer ...

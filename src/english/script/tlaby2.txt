@@ -1,0 +1,28 @@
+extern void object::Solution( )
+{
+	while ( true )
+	{
+		object	front, left, right;
+
+		front = radar(Barrier,   0, 45, 0, 5);
+		left  = radar(Barrier,  90, 45, 0, 5);
+		right = radar(Barrier, -90, 45, 0, 5);
+
+		if ( front == null )
+		{
+			move(5);
+			continue;
+		}
+		if ( left == null )
+		{
+			turn(90);
+			continue;
+		}
+		if ( right == null )
+		{
+			turn(-90);
+			continue;
+		}
+		break;
+	}
+}

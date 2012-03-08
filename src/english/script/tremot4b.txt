@@ -1,0 +1,68 @@
+public class order
+{
+	int    m_type = nan;
+	float  m_param;
+}
+
+public class exchange
+{
+	static private order m_order = new order;
+
+	// Put an order
+	synchronized bool put(order a)
+	{
+		if ( m_order.m_type == nan )
+		{
+			m_order = a;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	// Get an order
+	synchronized order get()
+	{
+		return m_order;
+	}
+
+	// Delete an order.
+	synchronized void delete()
+	{
+		m_order.m_type = nan;
+	}
+}
+
+extern void object::Slave4( )
+{
+	exchange list();
+	order    todo;
+
+	while ( true )
+	{
+		while ( true )
+		{
+			todo = list.get();
+			if ( todo.m_type != nan )  break;
+			wait(1);
+		}
+
+		if ( todo.m_type == 1 )
+		{
+			message("move("+todo.m_param+")");
+			move(todo.m_param);
+		}
+		else if ( todo.m_type == 2 )
+		{
+			message("turn("+todo.m_param+")");
+			turn(todo.m_param);
+		}
+		else
+		{
+			message("Unknown order");
+		}
+		list.delete();
+	}
+}

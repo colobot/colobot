@@ -1,0 +1,11 @@
+\b;Fourmi
+\image ant 8 8;
+La fourmi représente l'ennemi le plus courant et sans doute le plus redoutable. Elle tire de petites boules corrosives, qui finissent par faire exploser les robots et les bâtiments.
+
+Vous êtes bien plus résistant contre les fourmis que les robots et les bâtiments et votre bouclier se régénère à fur et à mesure que vos blessures guérissent, mais si elles se mettent à plusieurs, elles finissent en général par vous avoir à l'usure.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;AlienAnt\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

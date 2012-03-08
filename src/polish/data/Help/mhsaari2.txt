@@ -1,0 +1,11 @@
+\b;Z Centrum Kontroli Misji
+Wyeliminuj wszystkich wrogów obecnych w okolicy.
+
+Twoja obecna sytuacja skrajnie nas niepokoi. Satelita wykry³ bardzo du¿¹ aktywnoœæ wroga, zbli¿aj¹cego siê do Twojego statku kosmicznego ze wszystkich kierunków. Musisz prawid³owo oceniæ sytuacjê i wybraæ najszybsz¹ i najskuteczniejsz¹ obronê: \l;wie¿e\u object\tower; lub\l;dzia³a\u object\botfr;.
+
+Aby zwiêkszyæ Twoje szanse przetrwania, opracowaliœmy program, który bêdzie broni³ Twojej zachodniej flanki, jeœli uruchomisz go na \l;dziale na ko³ach\u object\botfr;; zobacz stronê programu \button 53;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

@@ -1,0 +1,42 @@
+\b;Exercice
+Dans cet exercice, nous allons appronfondir les \l;variables\u cbot\var; avec le programme suivant¦:
+\c;
+\s;extern void object::Solution( )
+\s;{
+\s;	float a;
+\s;	int b;
+\s;	
+\s;	a = 7;
+\s;	b = a-4;
+\s;	a = (a*b)/2;
+\s;	b = a/2;
+\s;	message(a+b);
+\s;}
+\n;
+Il est vivement recommandé d'exécuter ce programme en pas à pas, comme dans l'\l;exercice précédent\u tvar1;. Voilà ce qui se passe¦:
+
+\c;\s;	float a;\n;
+Déclaration de la variable nommée \c;a\n;. Elle est de type \c;\l;float\u cbot\float;\n;, ce qui signifie qu'elle peut contenir un nombre réel (par exemple 2.00, 45.33, 1.50, etc.).
+
+\c;\s;	int b;\n;
+Déclaration de la variable nommée \c;b\n;. Elle est de type \c;\l;int\u cbot\int;\n;, c'est-à-dire qu'elle peut contenir un nombre entier (par exemple 10, 2, 1056, etc.).
+
+\c;\s;	a = 7;\n;
+La variable \c;a\n; reçoit la valeur \c;7\n;. Notez que l'affichage du contenu des variables en dessous du programme affiche \c;7.00\n;, pour mettre en évidence qu'il s'agit d'un nombre réel (type \c;\l;float\u cbot\float;\n;).
+
+\c;\s;	b = a-4;\n;
+La variable \c;b\n; reçoit la valeur de la variable \c;a\n; moins 4, c'est-à-dire \c;3\n;.
+
+\c;\s;	a = (a*b)/2;\n;
+La variable \c;a\n; reçoit la valeur \c;10.50\n;. Notez que la multiplication s'écrit \c;*\n; et la division \c;/\n;. \c;(a*b)/2\n; signifie donc \c;a\n; multiplié par \c;b\n;, le tout divisé par \c;2\n;. Cliquez \l;ici\u cbot\expr; pour voir le détail des expressions mathématiques possibles.
+
+\c;\s;	b = a/2;\n;
+La variable \c;b\n; reçoit la valeur de la variable \c;a\n; divisée par \c;2\n;. La variable \c;a\n; vaut \c;10.50\n; à cet instant. La variable \c;b\n; devrait donc valoir \c;5.25\n;. Mais ce n'est pas possible, car \c;b\n; est de type \c;\l;int\u cbot\int;\n;, donc ne peut contenir que des nombres entiers. Donc, la partie décimale est tronquée et c'est la valeur \c;5\n; qui est assignée à \c;b\n;.
+
+\c;\s;	message(a+b);\n;
+Finalement, on affiche la somme des variables \c;a\n; plus \c;b\n; dans un message à fond rouge en haut de l'écran. Si tout se passe bien, le programme affiche donc \c;15.50\n;.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tvar1; et \l;programmation\u cbot;.

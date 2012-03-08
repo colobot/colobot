@@ -1,0 +1,12 @@
+\b;Rozwi¹zanie
+1) ZnajdŸ \l;tytan\u object\titan;.
+2) Zbuduj \l;hutê\u object\convert;.
+3) Zbuduj \l;centrum badawcze\u object\research;.
+4) Uruchom <program badawczy uderzacza> \button 66;.
+5) Zbuduj robota \l;uderzacza\u object\bottump;.
+6) Umieœæ uderzacza w pobli¿u pozosta³oœci statku kosmicznego i "uderz" w ziemiê.
+7) Szybko zabierz \l;czarn¹ skrzynkê\u object\bbox; i przynieœ j¹ na pok³ad \l;statku kosmicznego\u object\base;.
+8) Zabierz ze sob¹ robota uderzacza i odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

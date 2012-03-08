@@ -1,0 +1,63 @@
+extern void object::Attack( )
+{
+	int		enemy;
+	object	p;
+	float	dist;
+	point	nav1, nav2, nav3, nav4, dest;
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+//	enemy = WheeledGrabber;
+	enemy = WingedOrgaShooter;
+
+	while ( true )
+	{
+		p = radar(enemy, 0, 360, 0, 50);
+		if ( p == null )
+		{
+			nav1.x = position.x+2.5;
+			nav1.y = position.y+2.5;
+			nav2.x = position.x+2.5;
+			nav2.y = position.y-2.5;
+			nav3.x = position.x-2.5;
+			nav3.y = position.y-2.5;
+			nav4.x = position.x-2.5;
+			nav4.y = position.y+2.5;
+
+			while ( true )
+			{
+				goto(nav1);
+				p = radar(enemy, 0, 360, 0, 50);
+				if ( p != null )  break;
+
+				goto(nav2);
+				p = radar(enemy, 0, 360, 0, 50);
+				if ( p != null )  break;
+
+				goto(nav3);
+				p = radar(enemy, 0, 360, 0, 50);
+				if ( p != null )  break;
+
+				goto(nav4);
+				p = radar(enemy, 0, 360, 0, 50);
+				if ( p != null )  break;
+			}
+		}
+		else
+		{
+			dist = distance(p.position, position);
+			if ( dist <= 7.5 )
+			{
+				fire();
+			}
+			else
+			{
+				dest.x = (position.x+p.position.x)/2;
+				dest.y = (position.y+p.position.y)/2;
+				dest.z = (position.z+p.position.z)/2;
+				goto(dest);
+			}
+		}
+	}
+}

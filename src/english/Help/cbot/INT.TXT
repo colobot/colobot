@@ -1,0 +1,20 @@
+\b;Type \c;int\n;
+Use this type for variables that contain only whole numbers, negative or positive. For example: 
+\c;
+\s;	12
+\s;	1000
+\s;	-4
+\n;
+To represent real numbers like 12.05 or -0.005, use the type \c;\l;float\u cbot\float;\n;.
+
+\t;Attention
+Do not put space or colon signs inside a number. 
+
+\t;For specialists
+Numbers of the type \c;int\n; are represented with 32 bits.
+The highest number that can be represented is (2^31)-1, that is 2'147'483'647.
+The smallest number that can be represented is -(2^31), that is -2'147'483'648.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.
+

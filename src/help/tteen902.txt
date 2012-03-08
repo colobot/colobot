@@ -1,0 +1,8 @@
+\b;Frise
+Tu vas maintenant dessiner un motif beaucoup plus compliqué, mais qui peut toujours se répèter en ligne à l'infini¦:
+
+\image teen902 12 11;
+Comme la feuille de papier n'est pas très grande, répète le motif seulement 3 fois.
+
+\b;Remarque
+A fin de la boucle, il faut prendre garde à orienter le robot dans le même sens qu'au début. Si tu as fait juste, il doit y avoir le même nombre de \c;turn(gauche);\n; et de \c;turn(droite);\n; dans ton programme¦!

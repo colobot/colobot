@@ -1,0 +1,24 @@
+\b;From Mission Control
+Your \l;spaceship\u object\base; is now standing on the launching pad, ready for takeoff.
+
+The last drill left for \l;you\u object\human; to perform before embarking on your journey is to equip your spaceship with its \l;black box\u object\bbox;. The only way to reach the \l;black box\u object\bbox; is by a steep path that can only be climbed by a \l;tracked grabber\u object\botgc; which you need to build.
+
+Unfortunately your \l;bot factory\u object\factory; hasn't yet got the capacity to assemble this type of bot. You need to request your \l;research center\u object\research; to come up with a blueprint for this particular propeller.
+
+\b;Procedure
+1) Power the research center with one of the green \l;power cells\u object\power;.
+2) Click on the <tracked bot research program> button \button 64;.
+3) Drop a \l;titanium cube\u object\titan; in the center of the \l;bot factory\u object\factory; and build a \l;tracked grabber\u object\botgc;.
+4) Power and radio-control the \l;tracked grabber\u object\botgc; to the top of the southwest-oriented mountain.
+5) Bring the black box back aboard your spaceship.
+6) Don't forget to take the \l;wheeled grabber\u object\botgr; along. These bots may prove very useful in the future.
+7) Climb aboard the \l;spaceship\u object\base;.
+11) Select the \l;spaceship\u object\base; and take off \button 28;.
+
+
+Please note: To work more efficiently, you can use the \l;wheeled grabber\u object\botgr;.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command;

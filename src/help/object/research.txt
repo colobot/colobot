@@ -1,0 +1,26 @@
+\b;\button 163; Centre de recherches
+\image research 8 8;
+Ce bâtiment est un gigantesque centre de calcul, qui développe les plans de nouvelles technologies pour certains bâtiments ou robots.
+
+Les 65'536 processeurs qu'il contient sont extrêmement gourmands en énergie. Chaque recherche nécessite une nouvelle \l;pile\u object\power; entièrement chargée.
+
+\t;Emplacement requis
+Surface plate quelconque de 5 mètres de diamètre.
+
+\t;Entrée
+Pile normale ou atomique.
+
+\t;Sortie
+Plans pour de nouveaux types de robots ou de bâtiments.
+
+\t;Energie consommée
+Pile normale ou atomique.
+
+\t;Durée de l'opération
+De 9 secondes à 1 minute, selon la recherche.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;ResearchCenter\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

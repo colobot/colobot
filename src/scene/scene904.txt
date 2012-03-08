@@ -1,0 +1,245 @@
+Title.F      text="La quatrième clé"
+Resume.F     text="Récupérez la quatrième et dernière clé."
+Title.E      text="Alien Queen"
+Resume.E     text="Get the fourth key, open the vault and make the planet safe for human habitation."
+Instructions name="mhterra4.txt"
+Satellite    name="miterra4.txt"
+Loading      name="mlterra4.txt"
+SoluceFile   name="msterra4.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=904 lost=0
+
+Audio         track=9
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=208;200;223;0 water=94;153;180;0  // magenta
+VehicleColor  color=200;196;174;0  // sable
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=1
+Background    up=239;223;224;0 down=191;192;223;0 cloudUp=78;78;127;0 cloudDown=78;78;127;0
+FrontsizeName image="lens5.tga"
+Planet        pos=3.0;0.2 dim=0.35 speed= 0.001 dir=0.4 image="planet03.tga" uv1=0.5;0.5 uv2=1.0;1.0
+Planet        pos=0.0;0.7 dim=0.20 speed= 0.002 dir=0.3 image="planet03.tga" uv1=0.0;0.5 uv2=0.5;1.0
+Planet        pos=0.5;0.5 dim=0.15 speed=-0.005 dir=0.5 image="planet03.tga" uv1=0.5;0.0 uv2=1.0;0.5
+
+TerrainGenerate vision=250.00 depth=1 slope=3.0 hard=0.3
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief34.bmp" factor=1.0
+TerrainResource image="textures\res15.bmp"
+TerrainCloud    image="cloud02.tga" level=87.5
+TerrainWater    image="water12.tga" level=22.5 moveX=1.0 moveY=0.3
+
+TerrainMaterial id=1 image="roca2" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.8
+TerrainMaterial      image="roca2" u=0.25 v=0.00 up=2 down=1 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.00 up=1 down=1 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.00 up=2 down=1 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.25 up=1 down=2 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.25 up=2 down=2 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.25 up=1 down=2 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.25 up=2 down=2 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.50 up=1 down=1 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.50 up=2 down=1 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.50 up=1 down=1 left=2 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.50 up=2 down=1 left=2 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.75 up=1 down=2 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.75 up=2 down=2 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.75 up=1 down=2 left=2 right=2 hard=0.6
+TerrainMaterial id=2 image="roca2" u=0.75 v=0.75 up=2 down=2 left=2 right=2 hard=0.3
+
+TerrainMaterial id=3 image="rocb2" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.8
+TerrainMaterial      image="rocb2" u=0.25 v=0.00 up=3 down=1 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.00 up=1 down=1 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.00 up=3 down=1 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.25 up=1 down=3 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.25 up=3 down=3 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.25 up=1 down=3 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.25 up=3 down=3 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.50 up=1 down=1 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.50 up=3 down=1 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.50 up=1 down=1 left=3 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.50 up=3 down=1 left=3 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.75 up=1 down=3 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.75 up=3 down=3 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.75 up=1 down=3 left=3 right=3 hard=0.4
+TerrainMaterial id=4 image="rocb2" u=0.75 v=0.75 up=3 down=3 left=3 right=3 hard=0.0
+
+TerrainInit     id=3
+TerrainLevel    id=1 min= 0.0 max=99.0 slope=0.0 freq= 50.0  // roc1
+TerrainLevel    id=2 min=17.5 max=25.0 slope=3.0 freq= 70.0  // grass
+TerrainLevel    id=4 min=37.5 max=99.0 slope=9.0 freq= 80.0  // snow
+TerrainLevel    id=2 min=25.0 max=37.5 slope=9.0 freq= 70.0  // grass
+
+TerrainCreate
+
+GroundSpot color=0;128;255 min=-10 max=24 smooth=10
+GroundSpot pos=-92;261 radius=70 color=0;255;0  // pondeuse
+GroundSpot pos=-250;-47 radius=100 color=255;128;0  // ouest (uranium)
+GroundSpot pos=256;-49 radius=60 color=0;128;128  // est (clé)
+
+MaxFlyingHeight max=45
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos= 0.00;-3.25 dir=1.5 type=Me
+//CreateObject pos=-90;200 dir=1.5 type=Me
+CreateObject pos=-3.25;-3.25 dir=1.5 type=Shielder power=20 script1="shield03.txt"
+CreateObject pos= 3.25;-3.25 dir=1.5 type=Subber script2="charge2.txt" script1="titan3.txt"
+//CreateObject pos= 3.25;20.00 dir=1.5 type=WingedGrabber script2="charge2.txt" script1="titan3.txt"//**
+CreateObject pos=-1.00;-2.00 dir=0.5 type=KeyA
+CreateObject pos= 0.00;-2.00 dir=0.5 type=KeyB
+CreateObject pos= 1.00;-2.00 dir=0.5 type=KeyC
+CreateObject pos=-3.75; 2.50 dir=0.0 type=Titanium
+CreateObject pos=-2.50; 2.50 dir=0.0 type=Titanium
+//CreateObject pos=-0.62; 2.50 dir=0.0 type=Titanium
+//CreateObject pos= 0.63; 2.50 dir=0.0 type=Titanium
+CreateObject pos= 2.50; 2.50 dir=0.0 type=Titanium
+CreateObject pos= 3.75; 2.50 dir=0.0 type=Titanium
+CreateObject pos=-3.75; 3.75 dir=0.0 type=PowerCell
+CreateObject pos=-2.50; 3.75 dir=0.0 type=PowerCell
+//CreateObject pos=-0.62; 3.75 dir=0.0 type=PowerCell
+//CreateObject pos= 0.63; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 2.50; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 3.75; 3.75 dir=0.0 type=PowerCell
+
+//CreateObject pos= 3.25;40.25 dir=1.5 type=PhazerShooter power=100
+//CreateObject pos=-3.25;40.25 dir=1.5 type=WingedOrgaShooter power=100
+
+// Lac sud-ouest
+CreateObject pos=-51;-72 dir=0.0 type=TitaniumOre
+CreateObject pos=-53;-69 dir=0.2 type=TitaniumOre
+CreateObject pos=-57;-71 dir=0.1 type=TitaniumOre
+CreateObject pos=-59;-69 dir=0.5 type=TitaniumOre
+CreateObject pos=-60;-67 dir=0.2 type=TitaniumOre
+CreateObject pos=-64;-68 dir=0.1 type=TitaniumOre
+CreateObject pos=-71;-67 dir=0.0 type=TitaniumOre
+CreateObject pos=-72;-70 dir=0.3 type=TitaniumOre
+CreateObject pos=-74;-72 dir=0.2 type=TitaniumOre
+CreateObject pos=-80;-76 dir=0.0 type=TitaniumOre
+CreateObject pos=-84;-78 dir=0.1 type=TitaniumOre
+CreateObject pos=-92;-76 dir=0.4 type=TitaniumOre
+
+// Plaine sud
+CreateObject pos= 42;-118 dir=0.5 type=RuinBaseCamp h=-9.0
+CreateObject pos= 21;-126 dir=0.6 type=RuinHeadCamp
+CreateObject pos=100; -93 dir=0.0 type=Vault proxyActivate=1 proxyDistance=20
+CreateObject pos=100; -92.5 dir=0.5 type=PhazerShooter power=100
+
+// Plaine est
+CreateObject pos=225;-47 dir=0.3 type=RuinBotFactory
+CreateObject pos=225;-47 dir=0.0 type=KeyD
+//CreateObject pos=217;-33 cmdline=217;-33;218;-33 dir=0.0 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=226;-38 cmdline=226;-38;228;-41 dir=0.0 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=223;-41 cmdline=223;-41;222;-42 dir=0.0 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=218;-50 cmdline=218;-50;219;-52 dir=0.0 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=225;-55 cmdline=225;-55;227;-56 dir=0.0 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=233;-63 cmdline=233;-63;238;-67 dir=0.0 type=AlienAnt script1="ant05.txt" run=1
+CreateObject pos=217;-33 cmdline=225;-45; 20 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=226;-38 cmdline=225;-45; 20 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=223;-41 cmdline=225;-45; 20 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=218;-50 cmdline=225;-45; 20 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=225;-55 cmdline=225;-45; 20 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=233;-63 cmdline=225;-45; 20 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+
+// Plaine ouest
+CreateObject pos=-244; 28 dir=0.1 type=UraniumOre
+CreateObject pos=-249; 29 dir=0.4 type=UraniumOre
+CreateObject pos=-251; 27 dir=0.7 type=UraniumOre
+CreateObject pos=-241; 21 dir=0.2 type=UraniumOre
+CreateObject pos=-234;-65 dir=0.6 type=UraniumOre
+CreateObject pos=-230;-73 dir=0.1 type=UraniumOre
+
+// Chemin vers le nord
+CreateObject pos=-14; 75 dir=0.4 type=Mushroom2 h= 1
+CreateObject pos= -8; 83 dir=1.2 type=Mushroom2 h= 2
+CreateObject pos=  2; 77 dir=0.5 type=Mushroom2 h= 0
+CreateObject pos=  1; 87 dir=0.0 type=Mushroom2 h= 1
+CreateObject pos= 10; 85 dir=1.1 type=Mushroom2 h=-1
+CreateObject pos=  7; 97 dir=1.8 type=Mushroom2 h= 1
+CreateObject pos= 20;120 dir=0.5 type=Mushroom2 h= 0
+CreateObject pos= 11;117 dir=0.0 type=Mushroom2 h=-2
+CreateObject pos= 10;121 dir=0.0 type=Mushroom2 h= 1
+CreateObject pos=  2;125 dir=1.9 type=Mushroom2 h= 0
+CreateObject pos=  3;136 dir=0.3 type=Mushroom2 h= 3
+CreateObject pos= -9;134 dir=1.0 type=Mushroom2 h= 1
+CreateObject pos= -8;144 dir=0.2 type=Mushroom2 h=-1
+CreateObject pos= -7;147 dir=1.0 type=Mushroom2 h= 0
+CreateObject pos=-22;155 dir=1.4 type=Mushroom2 h= 1
+CreateObject pos=-19;166 dir=0.2 type=Mushroom2 h= 0
+CreateObject pos=-12;183 dir=0.8 type=Mushroom2 h=-1
+
+// Plaine nord
+CreateObject pos=-90;222 cmdline=-90;222;-123;240;-125;277;-99;301;-68;295;-57;269;-64;232 dir=1.0 type=AlienQueen script1="lady02.txt" run=1
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.3;0.0;0.2
+
+MapColor floor=165;142;107 water=154;235;255
+MapZoom  factor=2
+
+NewScript name="shield3.txt" type=Shielder
+NewScript name="tower1.txt" type=WheeledGrabber
+NewScript name="tower1.txt" type=TrackedGrabber
+NewScript name="tower1.txt" type=WingedGrabber
+NewScript name="tower1.txt" type=LeggedGrabber
+NewScript name="titan3.txt" type=WheeledGrabber
+NewScript name="titan3.txt" type=TrackedGrabber
+NewScript name="titan3.txt" type=WingedGrabber
+NewScript name="titan3.txt" type=LeggedGrabber
+NewScript name="titan3.txt" type=Subber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=ResearchCenter
+EnableBuild type=BotFactory
+EnableBuild type=Derrick
+EnableBuild type=Converter
+EnableBuild type=RadarStation
+EnableBuild type=PowerPlant
+EnableBuild type=NuclearPlant
+EnableBuild type=PowerStation
+EnableBuild type=RepairCenter
+EnableBuild type=DefenseTower
+EnableBuild type=ResearchCenter
+//EnableBuild type=AutoLab
+EnableBuild type=ExchangePost
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+EnableResearch type=ATOMIC
+EnableResearch type=THUMPER
+EnableResearch type=iPAW
+EnableResearch type=iGUN
+EnableResearch type=SHIELDER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+DoneResearch type=ATOMIC
+DoneResearch type=THUMPER
+DoneResearch type=iPAW
+DoneResearch type=iGUN
+DoneResearch type=SHIELDER
+DoneResearch type=SUBBER
+DoneResearch type=SNIFFER
+DoneResearch type=RECYCLER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienAnt min=0 max=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienQueen min=0 max=0 immediat=1
+EndMissionDelay win=5 lost=1
+
+Camera eye=0.00;5.00;0.00 lookat=0.00;1.00;0.00 delay=0

@@ -1,0 +1,20 @@
+\b;Instruction \c;strmid\n;
+Extracts a substring of a given length starting at a given position from a string.
+
+Syntax¦:
+\s;\c;strmid ( string, pos, len );\n;
+
+\t;pos: \c;\l;int\u cbot\int;\n;
+The index of the first character that is to be included in the extracted substring.
+
+\t;len: \c;\l;int\u cbot\int;\n;
+Number of characters to be extracted.
+
+Examples¦:
+\s;\c;	string s = strmid("abcdef", 1, 2);  // s is "bc"
+\s;	string s = strmid("abcdef", 4, 5);  // s is "ef"
+\s;	string s = strmid("abcdef", 9, 2);  // s is ""
+\n;
+\t;See also
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strupper\u cbot\strupper;\n;, \c;\l;strlower\u cbot\strlower;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

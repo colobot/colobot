@@ -1,0 +1,15 @@
+\b;From Mission Control
+We've just received information that the first expedition designed a brand new weapon to be used on Terranova. It was safely stored away from possible enemy reach, inside a \l;vault\u object\safe; which can be accessed only by using four \l;keys\u object\key;. The keys are scattered on or under the planet surface.
+
+The observation satellite has located one of these keys (A) north of your present position.
+
+In compliance with Congress directives, our engineers have developed yet another strictly "defensive" bot : it is called a \l;shielder\u object\botshld; and it will offer adequate protection within a given perimeter. The data have been transmitted to your \l;research center\u object\research; along with a couple of relevant programs.
+
+As you may know, uranium ore in the subsoil is a powerful fertilizer, furthering the growth of a variety of mushrooms. Please also note that \l;titanium ore\u object\titanore; is often located at the bottom of lakes on this planet.
+
+When your mission is completed and before taking off, bring both a \l;shielder\u object\botshld; and a \l;subber\u object\botsub; aboard your spaceship.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

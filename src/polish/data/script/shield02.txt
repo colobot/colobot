@@ -1,0 +1,6 @@
+extern void object::Return()
+{
+	shield(1,15);  // uaktywnij os³onê
+	goto(8,60);    // wróæ na statek kosmiczny
+	shield(0,15);  // wy³¹cz os³onê
+}

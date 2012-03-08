@@ -1,0 +1,57 @@
+extern void object::Convert( )
+{
+	object p;
+	point pConvert;
+
+	p = radar(Converter);
+	if ( p == null )
+	{
+		message("Vous devez d'abord construire un convertisseur");
+		return;
+	}
+	pConvert = p.position;
+
+	while ( true )
+	{
+		if ( load.category != TitaniumOre )
+		{
+			p = radar(TitaniumOre);
+			if ( p == null )
+			{
+				message("Minerai pas trouvé");
+				return;
+			}
+			goto(p.position);
+			grab();  // prend minerai
+
+			p = radar(Converter);
+			if ( p == null )
+			{
+				message("Convertisseur pas trouvé");
+				return;
+			}
+			goto(p.position);
+			drop();  // dépose minerai
+			move(-4);
+			wait(15);  // attend conversion
+			move(4);
+			grab();  // prend métal
+			move(-4);
+		}
+
+		p = radar(SpaceShip);
+		if ( p == null )
+		{
+			message("Vaisseau spatial pas trouvé");
+			return;
+		}
+		goto(p.position);
+		drop();  // dépose minerai
+
+		if ( energyCell.energyLevel < 0.25 )
+		{
+			message("Veuillez changer la pile");
+			return;
+		}
+	}
+}

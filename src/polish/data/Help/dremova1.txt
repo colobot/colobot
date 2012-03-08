@@ -1,0 +1,35 @@
+\b;Æwiczenie
+Przetop nieco \l;rudy tytanu\u object\titanore; na \l;kostki tytanu\u object\titan; i dostarcz dwie z nich na platformy o nastêpuj¹cych wspó³rzêdnych:
+\c;
+	x=10, y=-60
+	x=10, y=-65
+\n;
+\image derrick 8 8;
+\l;Kopalnia\u object\derrick; wydobywa rudê tytanu z podglebia; póŸniej wystarczy j¹ podnieœæ.
+
+\image convert 8 8;
+\l;Huta\u object\convert; przetapia rudê tytanu na kostki tytanu. Wystarczy zostawiæ rudê tytanu na platformie, cofn¹æ siê i chwilê poczekaæ.
+
+\b;Ogólny algorytm
+Powtórz dwa razy:
+o  Poczekaj na pojawienie siê rudy tytanu.
+o  PodejdŸ do rudy tytanu.
+o  Podnieœ j¹.
+o  PodejdŸ do huty.
+o  Zostaw rudê tytanu.
+o  Cofnij siê o 2,5 metra.
+o  Poczekaj na kostkê tytanu.
+o  Podnieœ kostkê tytanu.
+o  IdŸ na platformê.
+o  Zostaw kostkê tytanu.
+
+\b;Przydatne instrukcje
+\c;\l;for\u cbot\for;\n; powtarzanie instrukcji
+\c;\l;do - while\u cbot\do;\n; powtarzanie instrukcji
+\c;\l;radar\u cbot\radar;\n; znajduje ró¿ne obiekty
+\c;\l;goto\u cbot\goto;\n; poruszanie robotem
+\c;\l;grab\u cbot\grab;\n; podnosi przedmiot
+\c;\l;drop\u cbot\drop;\n; upuszcza przedmiot
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

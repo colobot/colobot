@@ -1,0 +1,33 @@
+\b;\button 137; Robot déménageur
+\image botgr 8 8;
+Robot à roues avec un bras manipulateur.
+
+\button 32; Prend ou dépose un objet, à la position indiquée par les trois boutons suivants¦:
+\button 33; L'objet est devant le robot, au sol ou à l'arrière d'un autre robot.
+\button 35; L'objet est la propre pile du robot.
+\button 34; L'objet est derrière le robot, au sol.
+
+Les objets suivants peuvent être transportés¦:
+o  \l;Minerai de titanium\u object\titanore;.
+o  \l;Minerai d'uranium\u object\uranore;.
+o  \l;Cube de titanium\u object\titan;.
+o  \l;Pile normale\u object\power;.
+o  \l;Pile atomique\u object\atomic;.
+o  \l;Boîte noire\u object\bbox;.
+o  \l;Clé\u object\key;.
+o  \l;Matière organique\u object\bullet;.
+
+La propulsion avec des roues est le mode standard, rapide, consommant peu d'énergie et adapté aux terrains relativement plats. Lorsque le relief devient trop accidenté, il faut opter si possible pour un \l;robot volant\u object\botgj; ou, si le vol est impossible, pour une propulsion à \l;chenilles\u object\botgc;.
+
+Ce robot ne peut pas évoluer sous l'eau. Pour cela, utilisez un \l;sous-marin\u object\botsub;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;WheeledGrabber\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le bras manipulateur par programmation, il faut utiliser les instructions \c;\l;grab\u cbot\grab;\n; et \c;\l;drop\u cbot\drop;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

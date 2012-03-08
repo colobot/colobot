@@ -1,0 +1,36 @@
+\b;Instruction \c;turn\n;
+Utilisez l'instruction \c;turn();\n; pour faire tourner le robot d'un certain nombre de degrés sur lui-même.
+
+\b;Utilisation courante
+90 degrés signifie un quart de tour, 180 degrés signifie un demi-tour, 360 degrés signifie un tour complet. Voici quelques exemples avec \c;turn();\n;¦:
+
+\c;turn(90);\n;  quart de tour à gauche
+\c;turn(-90);\n; quart de tour à droite (angle négatif)
+\c;turn(180);\n; demi-tour
+
+Pour se tourner vers un objet trouvé avec l'instruction \c;\l;radar\u cbot\radar;();\n;, il faut calculer l'angle de la rotation avec l'instruction \c;\l;direction\u cbot\direct;()\n;:
+\c;
+\s;	chose = \l;radar\u cbot\radar;(AlienSpider);
+\s;	turn(\l;direction\u cbot\direct;(chose.position));
+\n;
+Puis il suffit de faire feu, et il y a un élément hostile en moins.
+
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;turn ( angle );\n;
+
+Tourne d'un certain angle, à gauche ou à droite, sans avancer ni reculer.
+
+\t;angle: \c;\l;float\u cbot\float;\n;
+Angle de la rotation désirée, en degrés. Une valeur positive fait tourner à gauche et une valeur négative à droite. 180 signifie un demi-tour.
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Zéro si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;rotation effectuée
+\c;!= 0 \n;rotation impossible
+
+\t;Dictionnaire anglais-français
+\c;turn\n; = tourner
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

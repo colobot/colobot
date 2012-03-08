@@ -1,0 +1,55 @@
+\b;Exercice
+Cet exercice a pour but de comprendre le fonctionnement des variables. Le robot restera immobile.
+
+Dans l'exercice précédent, nous avons vu qu'une \l;variable\u cbot\var; est décrite par trois éléments¦:
+1) Son nom.
+2) Le type du contenu.
+3) Le contenu.
+
+Dans cet exercice, nous allons déclarer une seule variable, puis effectuer divers calculs. Le programme à essayer est le suivant¦:
+\c;
+\s;extern void object::Calcule( )
+\s;{
+\s;	float a;
+\s;	a = 10;
+\s;	a = a+2;
+\s;	message(a);
+\s;}
+\n;
+Voici les explications détaillées de ces quatre lignes¦:
+
+\c;\s;	float a;\n;
+Déclaration de la variable nommée \c;a\n;. En français, on pourrait traduire cette instruction par: "crée une variable \c;a\n; pouvant contenir un nombre réel".
+
+\c;\s;	a = 10;\n;
+La variable \c;a\n; reçoit la valeur \c;10\n;.
+
+\c;\s;	a = a+2;\n;
+L'opérateur \c;=\n; est un peu spécial à comprendre. On donne un nom de variable à gauche du signe égal (ici \c;a\n;). Cette variable reçoit le résultat du calcul donné à droite du signe égal (ici \c;a+2\n;). Comme \c;a\n; vaut \c;10\n;, \c;a+2\n; vaut \c;12\n;. La variable \c;a\n; reçoit donc la valeur \c;12\n;.
+On pourrait aussi traduire \c;a=a+2\n; en français par "ajoute \c;2\n; à la variable \c;a\n;".
+
+\c;\s;	message(a);\n;
+Finalement, on affiche le contenu de la variable \c;a\n; dans un message à fond rouge en haut de l'écran. Si tout se passe bien, le programme affiche donc \c;12.00\n;.
+
+\m step;\b;Pas à pas
+Cet exercice est particulièrement intéressant à exécuter instruction après instruction, pour observer ce qui se passe.
+
+Cliquez d'abord sur le bouton \button 22; pour entrer dans l'éditeur de programme. Après avoir tapé les quatre instructions du programme, cliquez sur \button 21; en bas de la fenêtre de l'éditeur de programme (à ne pas confondre avec le même bouton sur la tableau de bord du robot).
+
+\image step1 13 10;
+La couleur de fond du programme devient orange, et 5 lignes jaunes apparaissent en bas, pour montrer le contenu des variables.
+
+Cliquez une première fois sur \button 93; pour avancer d'un pas dans le programme. La première ligne jaune indique¦:
+\c;\s;a = undefined;\n;
+La variable \c;a\n; existe maintenant, suite à l'instruction \c;float¦a;\n;. Mais elle n'a pas encore de valeur.
+
+\image step2 13 10;
+Après 3 nouveaux clics sur \button 93;, la première ligne jaune indique¦:
+\c;\s;a = 10.00;\n;
+
+Vous pouvez ainsi suivre pas à pas les différentes instructions, et observer l'évolution de la variable \c;a\n;.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tmove2; et \l;programmation\u cbot;.

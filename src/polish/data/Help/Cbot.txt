@@ -1,0 +1,91 @@
+\b;Programowanie - jêzyk CBOT
+Jêzyk CBOT jest zbli¿ony struktur¹ i sk³adni¹ do takich jêzyków programowania jak C++ i Java. Zosta³ on przystosowany do specyficznych zadañ gry COLOBOT, przy uwzglêdnieniu aspektu pedagogicznego.
+Sk³ada siê on z instrukcji (zobacz poni¿ej), \l;bloków\u cbot\bloc;, \l;funkcji\u cbot\function;, \l;klas\u cbot\class;, \l;zmiennych\u cbot\var;, \l;tablic\u cbot\array;, \l;wyra¿eñ\u cbot\expr; i \l;warunków\u cbot\cond;.
+
+o  \c;\token;Instrukcje\norm;\n;
+W edytorze programu, instrukcje jêzyka CBOT s¹ zawsze wyœwietlane na pomarañczowym tle. Jeœli jest inaczej, oznacza to literówkê w nazwie instrukcji. Nazwy instrukcji s¹ zawsze pisane ma³ymi literami. 
+
+o  \c;\type;Typy\norm;\n;
+\l;Typ\u cbot\type; zmiennej wyœwietlany jest na zielonym tle. 
+
+o  \c;\const;Sta³e\norm;\n;
+Sta³e, podobnie jak \l;kategorie\u cbot\category;, wyœwietlane s¹ na czerwonym tle. 
+
+\t;Instrukcje w jêzyku CBOT:
+\c;\l;extern\u cbot\extern;     \n;Oznacza g³ówn¹ funkcjê
+\c;\l;if\u cbot\if;         \n;Struktura wyboru
+\c;\l;else\u cbot\if;       \n;Struktura wyboru alternatywy
+\c;\l;for\u cbot\for;        \n;Struktura pêtli
+\c;\l;while\u cbot\while;      \n;Struktura kontroli
+\c;\l;do\u cbot\do;         \n;Struktura kontroli
+\c;\l;break\u cbot\break;      \n;Wychodzi z pêtli
+\c;\l;continue\u cbot\continue;   \n;Kontynuuje pêtlê
+\c;\l;return\u cbot\return;     \n;Wychodzi z funkcji
+\c;\l;sizeof\u cbot\sizeof;     \n;Rozmiar tablicy
+
+\t;Instrukcje specyficzne dla robotów:
+\c;\l;radar\u cbot\radar;      \n;Wykrywa obiekty
+\c;\l;direction\u cbot\direct;  \n;Oblicza k¹t obrotu
+\c;\l;distance\u cbot\dist;   \n;Oblicza odleg³oœæ
+\c;\l;distance2d\u cbot\dist2d; \n;Oblicza odleg³oœæ
+\c;\l;wait\u cbot\wait;       \n;Czeka
+\c;\l;move\u cbot\move;       \n;Przesuwa naprzód lub wstecz
+\c;\l;turn\u cbot\turn;       \n;Obraca
+\c;\l;goto\u cbot\goto;       \n;Przemieszcza siê do zadanej pozycji
+\c;\l;motor\u cbot\motor;      \n;Bezpoœrednia kontrola nad silnikiem
+\c;\l;jet\u cbot\jet;        \n;Bezpoœrednia kontrola nad odrzutem
+\c;\l;message\u cbot\message;    \n;Wyœwietla komunikat
+\c;\l;retobject\u cbot\retobj;  \n;Zwraca obiekt z funkcji
+\c;\l;errmode\u cbot\errmode;    \n;Sposób traktowania b³êdów
+\c;\l;abstime\u cbot\abstime;    \n;Zwraca czas absolutny
+
+\t;Instrukcje zwi¹zane z topologi¹ terenu:
+\c;\l;space\u cbot\space;      \n;Znajduje wolne miejsce
+\c;\l;topo\u cbot\topo;       \n;Zwraca wysokoœæ punktu
+\c;\l;flatground\u cbot\flatgrnd; \n;Zwraca promieñ p³askiego obszaru
+
+\t;Instrukcje specyficzne dla niektórych robotów:
+\c;\l;grab\u cbot\grab;       \n;Podnosi przedmiot
+\c;\l;drop\u cbot\drop;       \n;Upuszcza przedmiot
+\c;\l;sniff\u cbot\sniff;      \n;Nas³uchuje podglebie
+\c;\l;thump\u cbot\thump;      \n;Przewraca obce organizmy
+\c;\l;recycle\u cbot\recycle;    \n;Odzyskuje tytan z pozosta³oœci robota
+\c;\l;shield\u cbot\shield;     \n;Rozszerza lub wy³¹cza os³onê
+\c;\l;fire\u cbot\fire;       \n;Strzela z dzia³a
+\c;\l;aim\u cbot\aim;        \n;Ustawia k¹t lufy w pionie
+
+\t;Instrukcje specyficzne dla stacji przekaŸnikowych:
+\c;\l;receive\u cbot\receive;    \n;Odbiera informacjê
+\c;\l;send\u cbot\send;       \n;Wysy³a now¹ informacjê
+\c;\l;testinfo\u cbot\testinfo;   \n;Sprawdza czy istnieje informacja
+\c;\l;deleteinfo\u cbot\delinfo; \n;Usuwa istniej¹c¹ informacjê
+
+\t;Instrukcje specyficzne dla klas:
+\c;\l;class\u cbot\class;      \n;Deklaracja klasy
+\c;\l;public\u cbot\public;     \n;Deklaracja funkcji publicznej
+\c;\l;private\u cbot\private;    \n;Deklaracja prywatnego elementu klasy
+\c;\l;static\u cbot\static;     \n;Deklaracja statycznego elementu klasy
+\c;\l;synchronized\u cbot\synchro; \n;Zapobiega jednoczesnemu wykonywaniu
+\c;\l;new\u cbot\new;        \n;Tworzy now¹ instancjê
+\c;\l;this\u cbot\this;       \n;Odwo³anie do bie¿¹cej instancji
+
+\t;Instrukcje specyficzne dla ³añcuchów:
+\c;\l;strlen\u cbot\strlen;     \n;Podaje d³ugoœæ ³añcucha
+\c;\l;strleft\u cbot\strleft;    \n;Wyodrêbnia lew¹ czêœæ
+\c;\l;strright\u cbot\strright;   \n;Wyodrêbnia praw¹ czêœæ
+\c;\l;strmid\u cbot\strmid;     \n;Wyodrêbnia œrodkow¹ czêœæ
+\c;\l;strfind\u cbot\strfind;    \n;Znajduje pod³añcuch.
+\c;\l;strval\u cbot\strval;     \n;Zamienia ³añcuch na liczbê
+\c;\l;strupper\u cbot\strupper;   \n;Zamienia litery na wielkie
+\c;\l;strlower\u cbot\strlower;   \n;Zamienia litery na ma³e
+
+\t;Instrukcje specyficzne dla plików:
+\c;\l;open\u cbot\open;       \n;Otwiera plik
+\c;\l;close\u cbot\close;      \n;Zamyka plik
+\c;\l;writeln\u cbot\writeln;    \n;Zapisuje wiersz do pliku
+\c;\l;readln\u cbot\readln;     \n;Wczytuje wiersz z pliku
+\c;\l;eof\u cbot\eof;        \n;Sprawdza czy jest ju¿ koniec pliku
+\c;\l;deletefile\u cbot\deletef; \n;Usuwa plik
+
+\t;Zobacz równie¿
+\l;Typy\u cbot\type; i \l;kategorie\u cbot\category;.

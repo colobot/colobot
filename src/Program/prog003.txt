@@ -1,0 +1,70 @@
+extern void object::Equalizer()
+{
+	object item;
+	float turnangle;
+	float hyp;
+	float adangle;
+	float movedist;
+	
+	item = radar(BlueFlag);
+	GotoStart(item,-90,5);
+	Orient(item);
+	//Centralize(item);
+}
+
+void object::Centralize(object item) {
+	//Function for centering forward plane to item
+	float turnangle;
+	float hyp;
+	float adangle;
+	float movedist;
+	turnangle = abs(direction(item.position));
+	hyp = distance(position,item.position);
+	if(turnangle > 90) {
+		adangle = 180 - turnangle;
+		movedist = -(hyp * cos(adangle));
+	} else {
+		adangle = 90 - turnangle;
+		movedist = (hyp * sin(adangle));
+	}
+	move(movedist);
+}
+
+void object::Orient(object item) {
+	//Orient same as item
+	float odirection;
+	float idirection;
+	float turnangle;
+	
+	idirection = item.orientation;
+	odirection = orientation;
+	if(odirection > 360) {
+		odirection -= 360;
+	}
+	turn(idirection - odirection);
+}
+
+void object::GotoStart(object item,float tangle,float dist) {
+	//goto point tangle degrees dist distance from item
+	float x,y,xp,yp;
+	point start;
+	
+	x = dist;
+	y = 0;
+	
+	tangle = item.orientation + tangle;
+	
+	if(tangle < 0) {
+		tangle += 360;
+	} else {
+		if(tangle > 360) {
+			tangle -= 360;
+		}
+	}
+	
+	xp = (x * cos(tangle)) + (y * sin(tangle));
+	yp = (y * cos(tangle)) - (x * sin(tangle));
+	start.x = item.position.x + xp;
+	start.y = item.position.y + yp;
+	goto(start);
+}

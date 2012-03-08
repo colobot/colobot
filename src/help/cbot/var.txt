@@ -1,0 +1,74 @@
+\b;Les variables
+Une variable est un nom qui repère un emplacement en mémoire, dont on peut faire évoluer la valeur durant l'exécution du programme.
+Par exemple, pour compter le nombre d'\l;ennemis\u object\mother; présents, vous pouvez déclarer une variable \c;compteur\n; et l'initialiser à zéro. Chaque fois que vous rencontrez un ennemi, vous ajoutez 1 à la variable \c;compteur\n;. Lorsque vous aurez fini de balayer une zone donnée, la variable contiendra le nombre d'ennemis présents dans cette zone.
+
+La déclaration de la variable \c;compteur\n; s'écrit avec¦:
+\c;\s;	int  compteur;\n;
+
+L'initialisation à zéro se fait avec¦:
+\c;\s;	compteur = 0;\n;
+
+À chaque ennemi trouvé, vous l'augmentez de 1 avec¦:
+\c;\s;	compteur = compteur+1;\n;
+
+Notez bien que le nom \c;compteur\n; n'est qu'un exemple. Vous avez pratiquement toute liberté pour inventer le nom qui vous convient le mieux. Par exemple: \c;dist\n;, \c;direct\n;, \c;p2\n;, \c;a\n;, \c;x\n;, \c;chute_2_pierre\n;, etc.
+Le nom doit commencer par une lettre. Il peut contenir ensuite des lettres ou des chiffres, ainsi que le caractère souligné. De plus, vous ne pouvez pas utiliser les mots-clés réservés du langage, tels que \c;\l;for\u cbot\for;\n;, \c;\l;while\u cbot\while;\n;, \c;\l;break\u cbot\break;\n;, \c;\l;continue\u cbot\continue;\n;, \c;do\n;, etc.
+On utilise parfois des noms anglais, parfois des noms français, parfois des abréviations, cela n'a pas d'importance. Ce qu'il faut, c'est que le nom exprime clairement à quoi sert la variable. \c;Bmo45\n;, \c;a\n;, \c;tgbin\n; ne sont pas des très bons exemples, mais c'est à vous de choisir¦!
+
+L'exemple ci-dessus peut très bien s'écrire¦:
+\c;\s;	int  n;
+\s;	n = 0;
+\s;	\n;...\c;
+\s;	n = n+1;
+\n;
+Le mot-clé \c;int\n; indique que la variable contient un nombre entier, ce qui est approprié pour un compteur. Pour mesurer une distance, il sera préférable d'utiliser un nombre réel (fractionnaire), qui s'écrit \c;float\n;.
+En fait, une variable est décrite par trois éléments¦:
+1) Son nom.
+2) Le type du contenu.
+3) Le contenu.
+
+\t;Le nom
+Le nom permet d'accéder au contenu.
+
+\t;Le type
+Le \l;type\u cbot\type; détermine ce que contient la variable. En effet, une variable peut contenir un nombre entier, un nombre réel, une chaîne de caractères, une coordonnée d'un point, etc.
+Les types les plus courants sont¦:
+  o  \c;\l;int\u cbot\int;\n; pour un nombre entier (12, -500, etc.)
+  o  \c;\l;float\u cbot\float;\n; pour un nombre réel (3.14, 0.2, -99.98, etc.)
+  o  \c;\l;string\u cbot\string;\n; pour une chaîne de caractères ("bonjour", "le chat", etc.)
+  o  \c;\l;point\u cbot\point;\n; pour une coordonnée dans l'espace x,y,z
+  o  \c;\l;object\u cbot\object;\n; pour décrire un objet (robot, bâtiment, etc.)
+
+\t;Le contenu
+Le contenu d'une variable peut être une ou plusieurs valeurs, une chaîne de caractères ou une coordonnée, selon le type.
+
+Lorsqu'une variable est déclarée, elle n'a encore aucune valeur. Avant de l'utiliser, il faut obligatoirement lui assigner une valeur¦:
+\c;\s;	int  i, j;
+\s;	j = 25;  // j prend la valeur 25
+\s;	j = i;   // impossible, car i est inconnu
+\n;
+Notez que vous pouvez très bien déclarer une variable et l'initialiser directement avec¦:
+\c;\s;	int  i=0;
+\n;
+Ou même¦:
+\c;\s;	int  i=0, j=12, compteur=100;
+\n;
+Notez que l'assignation \c;=\n; copie la valeur de l'\l;expression\u cbot\expr; de droite dans la variable de gauche. Soit l'exemple suivant¦:
+\c;\s;	int  i, j;
+\s;	i = 5+2;  // i prend la valeur 7
+\s;	j = 6+i;  // j prend la valeur de i, c-à-d. 13
+\s;	i = j;    // i prend la valeur de j, c-à-d. 13
+\n;
+A la fin de cet exemple, les variables \c;i\n; et \c;j\n; contiennent toutes deux la valeur \c;13\n;.
+
+L'assignation suivante est incorrecte, car il ne peut y avoir qu'un nom de variable simple à gauche du signe \c;=\n;¦:
+\c;\s;	i+2 = j;  // impossible
+\n;
+Pour permuter les contenus de deux variables, il faut obligatoirement utiliser une troisième variable temporaire. Voici comment permuter \c;a\n; et \c;b\n;¦:
+\c;\s;	int temp;
+\s;	temp = a;  // temp prend la valeur de a
+\s;	a = b;     // b est copié dans a
+\s;	b = temp;  // temp est copié dans a
+\n;
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

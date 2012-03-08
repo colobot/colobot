@@ -1,0 +1,20 @@
+\b;Æwiczenie
+Nale¿y pod¹¿aæ za \l;robotem celem\u object\bottr; z urz¹dzeniem wybuchowym; nale¿y byæ ostro¿nym, gdy¿ zderzenie z nim grozi wybuchem. Podczas ka¿dego zatrzymania robota celu nale¿y byæ odpowiednio blisko (mniej ni¿ 10 metrów).  Gdy uda siê byæ w pobli¿u robota 10 razy z rzêdu, æwiczenie zakoñczy siê, wraz z jego dotarciem na platformê koñcow¹. Przy ka¿dym zatrzymaniu robot cel sprawdza, czy œledz¹cy go robot jest odpowiednio blisko. Jeœli nie, liczenie zaczyna siê od pocz¹tku.
+
+\b;Ogólny algorytm
+Powtarzaj w nieskoñczonoœæ:
+o  ZnajdŸ robot cel.
+o  Oblicz odleg³oœæ do robota.
+o  Jeœli odleg³oœæ jest mniejsza ni¿ 5 m, cofnij siê.
+o  W przeciwnym przypadku oblicz kierunek do robota celu i idŸ w jego kierunku.
+
+\b;Przydatne instrukcje
+\c;\l;radar\u cbot\radar;\n; znajdowanie robota (kategoria \c;\l;TargetBot\u object\bottarg;\n;)
+\c;\l;radar\u cbot\radar;\n; wykrywanie przeszkód
+\c;\l;distance\u cbot\dist;\n; obliczanie odleg³oœci
+\c;\l;direction\u cbot\direct;\n; obliczanie kierunku
+\c;\l;if\u cbot\if;\n; sprawdzanie warunku
+\c;\l;motor\u cbot\motor;\n; ustawianie prêdkoœci silników
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

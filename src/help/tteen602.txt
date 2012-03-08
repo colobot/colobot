@@ -1,0 +1,54 @@
+\b;Mieux
+La façon de déplacer le robot dans l'exercice précédent n'est pas passionnante. C'est un peu long et fastidieux, non¦?
+
+On va maintenant apprendre une méthode beaucoup plus efficace. Tu as peut-être constaté qu'il n'y a que des virages à droite. En fait, il n'y a que deux possibilités¦:
+
+1) Soit il y a une barrière devant le robot, et il doit tourner à droite.
+2) Soit il n'y a rien devant et il peut avancer de 20 centimètres.
+
+Avec un principe aussi "bête", le robot est capable d'avancer jusqu'à la croix bleue. essaie de te mettre à sa place, de raisonner comme lui, et de voir ce que cela donne avec le plan ci-dessous¦:
+
+\image teen602 8 8;
+\b;Programme
+Le programme va d'abord contenir une instruction \c;repeat(100)\n;, comme souvent. Dans les accolades répétées 100 fois, il faut résoudre le déplacement d'une case dans la suivante. Voilà ce que tu dois faire¦:
+
+\s;o  Répète 100 fois¦:
+\s;	o  Il y a-t-t il un mur devant le robot¦?
+\s;		o  Tourne à droite de 90 degrés
+\s;	o  Sinon¦:
+\s;		o  Avance de 20 centimètres
+
+Pour détecter la présence d'un obstacle devant le robot, tu vas utiliser la nouvelle instruction \c;detect()\n;. Il faut donner dans les parenthèses le nom de l'objet à détecter. Dans cet exercice, c'est \c;Barrier\n;. Ensuite, il faut utiliser l'instruction \c;if\n; pour poser la question. La ligne complète est donc¦:
+\c;
+\s;if( detect(Barrier) )
+\n;
+Attention à ne pas s'embrouiller avec les parenthèses. En tout, il y a 2 parenthèses ouvrantes et 2 parenthèses fermantes. Les espaces sont facultatifs. Ils permettent de rendre le programme plus lisible, mais à toi de faire comme tu le souhaites¦!
+
+Voici le squelette du programme¦:
+\c;
+repeat(100)
+{
+	if( detect(Barrier) )
+	{
+		...
+	}
+	else
+	{
+		...
+	}
+}
+\n;
+A toi de compléter le programme¦...
+
+\b;Rappel
+L'instruction \c;if()\n; n'est jamais suivie d'un point-virgule, tout comme \c;repeat()\n;. L'instruction \c;else\n; n'a ni parenthèses, ni point-virgule¦!
+
+Les instructions \c;if()\n; et \c;else\n; sont toutes deux suivies d'un bloc d'instructions inclus dans des accolades \c;{}\n;.
+
+Vérifie bien les lignes verticales pointillées rouges, qui lient les accolades par paires.
+
+\b;Un peu d'anglais
+\c;if      = \n;si
+\c;detect  = \n;détecter
+\c;Barrier = \n;barrière
+\c;else    = \n;autrement

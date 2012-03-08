@@ -1,0 +1,16 @@
+\b;Libérer le passage
+Le petit malin de tout à l'heure a maintenant déposé des cailloux dans le labyrinthe. Hélas, le robot de l'exercice précédent ne peut pas déplacer les cailloux avec son bras manipulateur. Ils sont trop lourds. Heureusement, voilà un nouveau robot hyper-puissant qui pourra venir à bout des cailloux¦:
+
+\image bottump 8 8;
+Ce robot dispose d'un marteau-pilon qui pulvérise les cailloux. Pour l'actionner, il faut utiliser l'instruction \c;thump();\n;, avec les parenthèses vides, comme souvent¦:
+\c;
+\s;thump();
+\n;
+\b;Le programme
+Le programme de l'exercice précédent convient très bien comme base. Il faut simplement lui ajouter au début, juste après le \c;repeat(100)\n; et l'accolade ouvrante \c;{\n;, un test pour voir s'il faut actionner le marteau-pilon. Pour poser la question "Y a-t-il un caillou¦?", il faut écrire \c;if(¦detect(Stone)¦)\n; puis mettre les accolades \c;{}\n; comme d'habitude. Entre les accolades, tu peux simplement écrire l'instruction \c;thump();\n;.
+
+Et voilà, cela devrait fonctionner¦...
+
+\b;Un peu d'anglais
+\c;stone = \n;pierre
+\c;thump = \n;marteler

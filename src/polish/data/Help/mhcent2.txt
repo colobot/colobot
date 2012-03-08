@@ -1,0 +1,7 @@
+\b;Z Centrum Kontroli Misji
+Nadszed³ czas na kolejne poprawienie \l;Twoich\u object\human; umiejêtnoœci strzeleckich. W tym æwiczeniu nale¿y zniszczyæ wszystkie \l;³adunki wybuchowe\u object\tnt;, ale uwaga: \l;dzia³o organiczne\u object\botoj; ma bardzo ma³o energii, zaledwie tyle, ile potrzeba na wykonanie tego æwiczenia.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

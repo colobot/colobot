@@ -1,0 +1,19 @@
+\b;Kilka s³ów o nowych wytycznych
+Bardzo nam przykro, ¿e musimy zwracaæ Ci na to uwagê, ale wydaje nam siê, ¿e nadszed³ odpowiedni czas na zapoznanie Ciê z naszymi obecnymi troskami. Silna reakcja opinii publicznej oraz Kongresu, dotycz¹ca systematycznego wyniszczania "rdzennych mieszkañców" odwiedzanych przez Ciebie planet spowodowa³a, ¿e Kongres postanowi³ okazaæ swoj¹ wra¿liwoœæ na troski wiêkszoœci ludnoœci.
+
+Niniejszym og³aszamy nowe wytyczne obliguj¹ce Ciê do ograniczenia ofiar i humanitarnego postêpowania. Innymi s³owy, rób wszystko co tylko mo¿liwe, aby od teraz oszczêdzaæ napotkane formy ¿ycia. Twoja misja nie powinna oczywiœcie zostaæ przez to nara¿ona na ¿adne niebezpieczeñstwo.
+
+\b;Z Centrum Kontroli Misji
+Tym razem Twoje zasoby energetyczne s¹ niebezpiecznie ograniczone, podobnie jak Twój arsena³, lecz musisz zlokalizowaæ i odzyskaæ \l;czarn¹ skrzynkê\u object\bbox; z poprzedniej ekspedycji, aby móc udaæ siê na nastêpn¹ planetê.
+
+Poprzez satelitê obserwacyjnego otrzymaliœmy fragmenty informacji od Twoich poprzedników, dotycz¹ce nowego typu broni, wynalezionej przez nich dok³adnie w tym celu.
+
+Ta nowa broñ oferuje mo¿liwoœæ okazania wspó³czucia wobec \l;rdzennych gatunków\u object\ant;, gdy¿ nie jest to broñ masowej zag³ady. Oferuje ona w zamian, wed³ug naszej wiedzy, mo¿liwoœæ ich chwilowego unieszkodliwienia. Jeœli rzeczywiœcie tak jest, musisz dzia³aæ szybko, zanim bêd¹ mia³y one szansê ponownie staæ siê groŸne.
+
+\b;Procedura
+Wykonaj \l;program badawczy\u object\research; przeprowadŸ niezbêdne eksperymenty, lecz pamiêtaj o dostarczeniu tej nowej broni na pok³ad. Bardzo nam zale¿y na zbadaniu tego urz¹dzenia.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

@@ -1,0 +1,11 @@
+\b;Z Centrum Kontroli Misji
+Ta planeta okaza³a siê nieodpowiednim kandydatem do przysz³ej kolonizacji. Lepiej opuœciæ j¹ na dobre. ZnajdŸ \l;czarn¹ skrzynkê\u object\bbox; z poprzedniej ekspedycji i skieruj siê na nastêpn¹ planetê.
+
+Z danych satelity obserwacyjnego wynika, ¿e jej znajduje siê ona na dnie doliny. Jednak¿e, z uwagi na warstwy przenikliwego smogu elektromagnetycznego, nie mo¿na do koñca polegaæ na danych satelitarnych.
+
+B¹dŸ w pogotowiu.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

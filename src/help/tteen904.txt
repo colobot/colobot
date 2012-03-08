@@ -1,0 +1,49 @@
+\b;Dents de scie bicolores
+Tu vas maintenant dessiner une dent de scie bleue, puis une rouge, puis de nouveau une bleue, etc.
+
+\image teen904 12 4;
+Le programme ressemblera à ceci¦:
+\c;
+\s;repeat(6)
+\s;{
+\s;	pendown(Blue puis Red);
+\s;	move(7);
+\s;	turn(droite);
+\s;	move(7);
+\s;	turn(gauche);
+\s;}
+\n;
+Evidemment, l'instruction \c;pendown(Blue¦puis¦Red);\n; n'existe pas. Il faut programmer quelque chose d'un peu plus compliqué¦!
+
+\b;Idée
+Tu vas utiliser une variable pour compter les dents de scie, comme cela¦:
+\c;
+\s;int compteur = 0;
+\s;repeat(6)
+\s;{
+\s;	compteur = compteur+1;
+\s;	move(7);
+\s;	turn(droite);
+\s;	move(7);
+\s;	turn(gauche);
+\s;}
+\n;
+Il ne reste plus qu'à choisir la couleur bleue si le compteur est pair, et la couleur rouge dans le cas contraire¦:
+
+\s;o  Est-ce que le compteur est pair¦?
+\s;	o  Abaisser le crayon bleu
+\s;o  Sinon :
+\s;	o  Abaisser le crayon rouge
+
+Sans entrer dans les détails, sache que la question "Est-ce que le compteur est pair¦?" s'écrit \c;if(¦compteur%2¦==¦0¦)\n;.
+\c;
+\s;if( compteur%2 == 0 )
+\s;{
+\s;	pendown(Blue);
+\s;}
+\s;else
+\s;{
+\s;	pendown(Red);
+\s;}
+\n;
+Voilà, à toi de compléter le programme¦...

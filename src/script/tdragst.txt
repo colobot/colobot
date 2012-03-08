@@ -1,0 +1,16 @@
+extern void object::Solution( )
+{
+	point  start;
+	start = position;  // mémorise départ
+
+	motor(1, 1);  // départ à donf !
+
+	while ( true )  // boucle infinie
+	{
+		float len = distance(position, start);
+		if ( len > 25-2 )
+		{
+			motor( (25-len)/2, (25-len)/2 );
+		}
+	}
+}

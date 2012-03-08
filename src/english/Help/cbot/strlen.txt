@@ -1,0 +1,14 @@
+\b;Instruction \c;strlen\n;
+Get the length of a string.
+
+Syntax¦:
+\s;\c;strlen ( string );\n;
+
+Examples¦:
+\s;\c;	int len = strlen("abc");  // len is 3
+\s;	int len = strlen("");  // len is 0
+\s;	if ( strlen(s) == 0 )  // is string empty ?
+\n;
+\t;See also
+\c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strupper\u cbot\strupper;\n;, \c;\l;strlower\u cbot\strlower;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

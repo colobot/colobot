@@ -1,0 +1,48 @@
+\b;Objective
+Power the \l;winged shooters\u object\botfj; with \l;power cells\u object\power;, so that they can kill the ants in the ant nest located in a hole north of your position.
+
+\t;Program
+The \l;wheeled grabber\u object\botgr; must go to a \l;power cell\u object\power;, grab it, go to a \l;winged shooter\u object\botfj;, and drop the cell. This task is very similar to the task performed in the previous exercise. Here is this program again:
+\c;
+\s;extern void object::Titanium2()
+\s;{
+\s;	object    item;
+\s;	
+\s;	item = radar(TitaniumOre);
+\s;	goto(item.position);
+\s;	grab();
+\s;	
+\s;	item = radar(Converter);
+\s;	goto(item.position);
+\s;	drop();
+\s;}
+\n;
+The best way to solve the present exercise is to copy \button 61; the program above into the clipboard (from \c;object\n; to \c;drop();\n;), and paste \button 62; it into the program editor. Then you just have to make the necessary changes in order to adapt it to the new task.
+
+Instead of looking for titanium ore (\c;TitaniumOre\n;), look for a power cell (\c;PowerCell\n;). Instead of going to a converter (\c;Converter\n;), go to a winged shooter (\c;WingedShooter\n;). As soon as the winged shooter has got a new power cell, it will get down to work.
+
+If you want to know more about the "names" of the different objects in the programming language, please refer to the \l;text about categories\u cbot\category;.
+
+\t;Further improvement: loops
+Once the program explained above works properly, you can improve it in order to repeat the task over and over again. Like this you will not have to execute the program several times in order to power several bots.
+
+All programs written until now execute all instructions only once, one after another, from the beginning to the end of the program. You can also tell the bot to repeat some instructions: just write \c;while (true)\n;, an open brace, the instructions to be repeated, and a closing brace. Repeating some instructions several times in this way is called a loop. Here is an example of a program that repeats over and over the instructions that look for a power cell, grab it, and drop it on a winged shooter:
+\c;
+\s;	while (true)
+\s;	{
+\s;		item = radar(PowerCell);
+\s;		goto(item.position);
+\s;		grab();
+\s;		
+\s;		item = radar(WingedShooter);
+\s;		goto(item.position);
+\s;		drop();
+\s;	}
+\n;
+Of course the variable declaration \c;object item;\n; must not be inside the loop, but just before: declare a variable only once.
+
+\t;Remark
+A bot can execute a program perfectly well on his own. Meantime you can for example select the astronaut and take a look at what is happening at the nest, the show is worth it. But be careful not to get shot by your own bots...
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

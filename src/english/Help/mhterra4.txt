@@ -1,0 +1,13 @@
+\b;From Mission Control
+With the help of the fourth \l;key\u object\key; (D) located nearby, you will finally gain access to the \l;vault\u object\safe;. The groundbreaking bot you'll find inside was named a "\l;phazer\u object\botphaz;".
+
+A program allowing for a collaboration between a \l;phazer\u object\botphaz; and a \l;shielder\u object\botshld; has been attached.
+
+You should soon find yourself in a position to test your new weapon. Your last mission is to dispose of the \l;Alien Queen\u object\mother;, the egglayer responsible for the growing number of insects on Terranova. The phazer might very well be the only bot capable of getting the job done.
+
+There will then be no further obstacle to the human colonization of this magnificent planet and you'll soon be able to notify Earth of the success of your mission.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

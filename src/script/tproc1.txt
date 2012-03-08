@@ -1,0 +1,14 @@
+extern void object::Solution( )
+{
+	Carré(15);
+	Carré(25);
+}
+
+void object::Carré(float length)
+{
+	for ( int i=0 ; i<4 ; i=i+1 )
+	{
+		move(length);
+		turn(90);
+	}
+}

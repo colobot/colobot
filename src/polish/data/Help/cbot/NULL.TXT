@@ -1,0 +1,7 @@
+\b;Typ \c;null\n;
+Specjalna wartoœæ oznaczaj¹ca, ¿e zmienna, która j¹ zawiera nie wskazuje na ¿adn¹ instancjê.
+
+\t;Zobacz równie¿
+\l;WskaŸniki\u cbot\pointer;
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.
+

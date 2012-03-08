@@ -1,0 +1,18 @@
+extern void object::Attack( )
+{
+	point	nav1, nav2;
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	nav1.x = cmdline(0);
+	nav1.y = cmdline(1);
+	nav2.x = cmdline(2);
+	nav2.y = cmdline(3);
+
+	while ( true )
+	{
+		goto(nav1);
+		goto(nav2);
+	}
+}

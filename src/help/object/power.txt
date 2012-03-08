@@ -1,0 +1,18 @@
+\b;Pile normale
+\image power 4 4;
+La pile fournit l'énergie aux robots, ainsi qu'à certains bâtiments. Une pile entièrement rouge est vide. L'énergie contenue est représentée par une zone verte plus ou moins grande.
+
+Vous pouvez recharger une pile en vous approchant d'une \l;station de recharge\u object\station;.
+
+Pour fabriquer une pile, il faut une \l;fabrique de piles\u object\energy; et un \l;cube de titanium\u object\titan;.
+
+La \l;pile atomique\u object\atomic; fabriquée à partir de \l;minerai d'uranium\u object\uranore; a une capacité 10 fois plus grande que la pile normale.
+
+\t;Transport
+Tous les \l;robots déménageurs\u object\botgr; ou le \l;cosmomaute\u object\human;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;PowerCell\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

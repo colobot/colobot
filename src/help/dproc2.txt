@@ -1,0 +1,16 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il suive le chemin en forme de spirale. Il faut avancer deux fois de 25 mètres, puis deux fois de 20 mètres. etc., jusqu'à l'arrêt.
+
+\image tproc2 8 8;
+\b;Fonction
+On constate que le mouvement est composé de "L" imbriqués. Le premier, en bleu foncé, avance deux fois de 25 mètres. Le deuxième, en bleu clair, avance de 5 mètres de moins, etc. On peut donc réaliser une \l;fonction\u cbot\function; qui déplace le robot le long d'un "L" dont on donne la longueur.
+
+\b;Instructions utiles
+\c;\l;for\u cbot\for;\n; pour répéter des instructions
+\c;\l;move\u cbot\move;\n; pour avancer le robot
+\c;\l;turn\u cbot\turn;\n; pour tourner le robot
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

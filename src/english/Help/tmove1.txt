@@ -1,0 +1,33 @@
+\b;Exercise
+Program the robot in such a way that it arrives on the finishing pad, after having passed by the three blue crosses.
+
+\b;Procedure
+1) Take the power cell and put it on the rear of the bot.
+2) Walk around on reconnaissance to understand what the bot must do. 
+3) Program the bot. To do so, you must select it, and then click on the braces button \button 22;; you will get into the program editor.
+4) Once you finished writing the program, click "OK", and execute the program with the arrow key \button 21;.
+
+\b;Program
+The pads are at a distance of 20 meters from each other.
+The instruction \c;move(20);\n; moves 20 meters forward. 
+The instruction \c;turn(90);\n; turns left with an angle of 90 degrees. 
+The instruction \c;turn(-90);\n; turns right with an angle of 90 degrees. 
+
+The frame of the program consists in:
+\c;
+\s;	extern void object::MoveBot( )
+\s;	{
+\s;		\n;\\write the necessary instructions here ...\c;
+\s;	}
+\n;
+For now, you must not change the frame of the program. Just insert the instructions you need to move the bot around between the braces \c;{ }\n;.
+
+\b;Attention
+Be very careful about upper case and lower case letters!
+Every instruction must be terminated with a semicolon. 
+
+\b;Helpful trick
+When you write the program, you can watch the scene by clicking on the button <Reduce> \button 51;, and by moving the mouse to the edges of the window to turn the camera. 
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

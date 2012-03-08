@@ -1,0 +1,7 @@
+\b;From Mission Control
+The observation satellite has detected a chunk of \l;uranium ore\u object\uranore; on the summit of the main mountain. You need to bring it back to your spaceship.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

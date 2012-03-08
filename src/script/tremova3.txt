@@ -1,0 +1,36 @@
+extern void object::Solution( )
+{
+	for ( int i=0 ; i<2 ; i=i+1 )
+	{
+		object  obj;
+		point   dest;
+
+		do
+		{
+			obj = radar(TitaniumOre);
+		}
+		while ( obj == null );
+		goto(obj.position);
+		grab();  // prend le minerai
+
+		obj = radar(Converter);
+		if ( obj == null )  return;
+		goto(obj.position);
+		drop();  // dépose minerai
+		move(-2.5);  // recule
+
+		do
+		{
+			obj = radar(Titanium, 0, 360, 0, 10);
+		}
+		while ( obj == null );
+		goto(obj.position);
+		grab();  // prend le métal
+
+		dest.x = 10;
+		dest.y = -60-5*i;
+		goto(dest);  // va sur la plateforme
+
+		drop();  // dépose le métal
+	}
+}

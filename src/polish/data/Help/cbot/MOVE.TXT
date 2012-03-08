@@ -1,0 +1,22 @@
+\b;Instrukcja \c;move\n;
+Instrukcja \c;move();\n; rozkazuje robotowi poruszaæ siê do przodu lub do ty³u przy zachowaniu niezmiennej orientacji. W nawiasie nale¿y podaæ odleg³oœæ (w metrach) o jak¹ powinien przemieœciæ siê robot.
+
+\b;Podstawowe u¿ycie
+Aby robot przemieœci³ siê do przodu o 30 metrów, nale¿y napisaæ \c;move(30);\n;. Aby robot cofn¹³ siê po umieszczeniu \l;rudy tytanu\u object\titanore; w \l;hucie\u object\convert;, nale¿y napisaæ \c;move(-2.5);\n;.
+
+\b;Dla specjalistów
+Sk³adnia:
+\s;\c;move ( odleg³oœæ );\n;
+
+Porusza robotem do przodu lub do ty³u o zadan¹ odleg³oœæ, zachowuj¹c bie¿¹c¹ orientacjê robota. 
+
+\t;odleg³oœæ: \c;\l;float\u cbot\float;\n;
+Odleg³oœæ w metrach. Wartoœæ ujemna powoduje ruch do ty³u. 
+
+\t;Typ wyniku: \c;\l;int\u cbot\int;\n;
+Zwykle wyst¹pienie b³êdu powoduje zatrzymanie programu. Mo¿na wy³¹czyæ zatrzymywanie siê programu w przypadku wyst¹pienia b³êdu, u¿ywaj¹c instrukcji \c;\l;errmode\u cbot\errmode;(0)\n;. Wtedy w przypadku wyst¹pienia b³êdu instrukcja \c;move();\n; zwraca w wyniku wartoœæ ró¿n¹ od zera.
+\c;== 0 \n;instrukcja move zosta³a wykonana
+\c;!= 0 \n;b³¹d, instrukcja nie zosta³a poprawnie wykonana
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

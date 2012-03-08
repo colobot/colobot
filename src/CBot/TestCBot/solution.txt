@@ -1,0 +1,13 @@
+extern void object::Solution( )
+{
+show ( "Solution " + Position ); 
+   Carré(15);
+   Carré(25);
+}
+ 
+void object::Carré(float côté)
+{
+show ( "Carré " + Position );
+  Move(côté);
+  Turn(-90);
+}

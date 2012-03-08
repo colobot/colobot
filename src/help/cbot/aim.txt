@@ -1,0 +1,24 @@
+\b;Instruction \c;aim\n;
+Syntaxe¦:
+\s;\c;aim ( angle );\n;
+
+Hausse du canon, pour les robots équipés d'un canon, à savoir¦:
+o  \l;Robot shooter\u object\botfr;
+o  \l;Robot orgaShooter\u object\botor;
+o  \l;Robot phazer\u object\botphaz;
+
+Pour diriger le canon vers la gauche  ou vers la droite, le seul moyen est d'orienter le robot avec l'instuction \c;\l;turn\u cbot\turn;\n;.
+
+\t;angle: \c;\l;float\u cbot\float;\n;
+Angle en degrés du canon. Un angle positif oriente le canon vers le haut. Pour les robots shooter, la valeur doit être comprise entre \c;-10\n; et \c;+20\n; degrés. Pour les robots orgaShooter, la valeur doit être comprise entre \c;-20\n; et \c;+20\n; degrés. Le robot phazer accepte des valeurs comprises entre \c;-20\n; et \c;45\n; degrés.
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Zéro si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;angle atteint
+\c;!= 0 \n;rotation impossible
+
+\t;Dictionnaire anglais-français
+\c;aim\n; = viser
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

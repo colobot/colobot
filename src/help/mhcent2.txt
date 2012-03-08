@@ -1,0 +1,9 @@
+\b;Instructions de Houston
+Il est grand temps d'améliorer vos performances aux commandes de robots équipés de canons. Dans cette mission d'entraînement, vous devez toucher toutes les cibles avec le peu d'énergie qui vous reste. 
+
+Lorsque toutes les cibles sont détruites, vous pouvez décoller.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

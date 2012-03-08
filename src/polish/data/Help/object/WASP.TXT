@@ -1,0 +1,11 @@
+\b;Osa
+\image wasp 8 8;
+Osy s¹ obc¹ form¹ wrogiego ¿ycia, bardzo trudn¹ do zestrzelenia z powodu czêstych zmian kierunku lotu. Osy przenosz¹ kule \l;materii organicznej\u object\bullet;, które zrzucaj¹ z góry na roboty, budynki i astronautê.
+
+Naj³atwiej pozbyæ siê ich buduj¹c \l;wie¿ê obronn¹\u object\tower;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;AlienWasp\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

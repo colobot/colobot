@@ -1,0 +1,129 @@
+\b;Exercise
+Remote control a slave robot without using an \l;information exchange post\u object\exchange;. The robot should pass over the 6 blue crosses. You must use a \c;\l;static\u cbot\static;\n; variable to pass the orders to the slave bot.
+
+The two main actors of this exercise are:
+1) The \l;wheeled grabber\u object\botgr; without an energy pack and therefore immobile. This is the master you should program so it will transmit orders to the slave.
+2) The slave \l;practice bot\u object\bottr; which is already programmed and just waits for orders from the master.
+
+\b;The slave
+First of all we must understand how the program of the slave works. The \l;class\u cbot\class; \c;order\n; contains two members: \c;m_type\n; is the order to execute (move or turn) and \c;m_param\n; is the distance to move or the rotation angle¦:
+
+\c;\s;\l;public\u cbot\public; \l;class\u cbot\class; order
+\s;{
+\s;	\l;int\u cbot\int;    m_type = \l;nan\u cbot\nan;;
+\s;	\l;float\u cbot\float;  m_param;
+\s;}
+\n;
+A second \l;class\u cbot\class; \c;exchange\n; contains the mechanism for exchanging the orders. We declare a \c;\l;static\u cbot\static;\n; class member \c;m_order\n; which will contain the order to be executed. The word \c;static\n; insures that the member \c;m_order\n; is shared between all instances of the \l;class\u cbot\class; exchange.
+
+\c;\s;\l;public\u cbot\public; \l;class\u cbot\class; exchange
+\s;{
+\s;	\l;static\u cbot\static; \l;private\u cbot\private; order m_order = new order;
+\n;
+\n;The \c;put\n; method will be used by the master robot for transmitting an order. As long as \c;m_order\n; is different from \c;\l;nan\u cbot\nan;\n;, the slave has not finished the order and the \c;put\n; method will return \c;false\n; and will do nothing¦:
+
+\c;\s;	\l;synchronized\u cbot\synchro; \l;bool\u cbot\bool; put(order a)
+\s;	{
+\s;		if ( m_order.m_type == nan )
+\s;		{
+\s;			m_order = a;
+\s;			return true;
+\s;		}
+\s;		else
+\s;		{
+\s;			return false;
+\s;		}
+\s;	}
+\n;
+Another method \c;get\n; will be used by the slave to retrieve the orders. This method returns the order to be executed:
+
+\c;\s;	\l;synchronized\u cbot\synchro; order get()
+\s;	{
+\s;		return m_order;
+\s;	}
+\n;
+A third method \c;delete\n; will be used by the slave to indicate that the order has been executed:
+
+\c;\s;	\l;synchronized\u cbot\synchro; void delete()
+\s;	{
+\s;		m_order.m_type = nan;
+\s;	}
+\s;}
+\n;
+The main program of the slave contains an instance of the class \c;exchange\n; called \c;list\n;. We put () after the word \c;list\n; in order to create an instance of the class \c;exchange\n;.
+
+\c;\s;\l;extern\u cbot\extern; void object::Slave3( )
+\s;{
+\s;	exchange list();
+\s;	order    todo;
+\n;
+The outer \c;while\n; loop lasts for ever. The inner \c;while\n; loop waits for an order by using the \c;get\n; method of the \c;exchange\n; class. As soon as \c;get\n; returns a value different from \c;nan\n;, the while loop stops.
+
+\c;\s;	\l;while\u cbot\while; ( true )
+\s;	{
+\s;		\l;while\u cbot\while; ( true )
+\s;		{
+\s;			todo = list.get();
+\s;			if ( todo.m_type != nan )  break;
+\s;			wait(1);
+\s;		}
+\n;
+Now we have received the order in the \c;todo\n; variable. All we have to do is execute it:
+
+\c;\s;		if ( todo.m_type == 1 )
+\s;		{
+\s;			move(todo.m_param);
+\s;		}
+\s;		else if ( todo.m_type == 2 )
+\s;		{
+\s;			turn(todo.m_param);
+\s;		}
+\s;		else
+\s;		{
+\s;			message("Unknown order");
+\s;		}
+\n;
+As soon as the execution of the order is finished, we must call the \c;delete\n; method so the master knows that another order can be sent¦:
+
+\c;\s;		list.delete();
+\s;	}
+\s;}
+\n;
+\b;The master
+In the master we write an function called \c;SendOrder\n; which will send an order to the slave:
+
+\c;\s;void object::SendOrder(float order, float param)
+\s;{
+\s;	exchange list();
+\s;	order    todo();
+\s;	
+\s;	todo.m_type = order;
+\s;	todo.m_param = param;
+\s;	
+\s;	while ( list.put(todo) == false )
+\s;	{
+\s;		wait(1);
+\s;	}
+\s;}
+\n;
+The \c;while\n; loop waits until a pending order has been terminated, that is the slaved has exited from the \c;get\n; method and the \c;delete\n; method has been called.
+Now the main program of the master is very simple:
+
+\c;\s;extern void object::Remote4( )
+\s;{
+\s;	SendOrder(1, 20);  // move(20);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 20);  // move(20);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;	SendOrder(2,-90);  // turn(-90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;}
+\n;
+\key;\key help;\norm; show these instruction at any time.
+
+
+\t;See also
+\l;Controls\u command; and \l;programming\u cbot;.

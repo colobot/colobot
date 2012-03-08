@@ -1,0 +1,13 @@
+\b;Les dernières croix
+Complète le programme pour trouver les 2 dernières croix, selon ce plan¦:
+
+\image teen105 8 8;
+Le dernier virage d'un huitième de tour à droite s'écrit \c;turn(-45);\n;.
+
+\b;Observer
+Après avoir fermé cette fenêtre, n'oublie pas que tu peux observer les alentours simplement en appuyant sur les touches flèches du clavier.
+
+\b;Un problème ?
+En cas d'erreur, tu peux remettre le robot à la position initiale avec le bouton \button 9;.
+
+La touche \key;\key help;\norm; ou l'icône \button 185; permettent de revoir ces instructions en tout temps¦!

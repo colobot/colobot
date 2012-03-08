@@ -1,0 +1,18 @@
+\b;Instrukcja \c;receive\n;
+Sk³adnia:
+\s;\c;receive ( nazwa, moc );\n;
+
+Pobiera informacjê z najbli¿szej \l;stacji przekaŸnikowej informacji\u object\exchange;.
+
+\t;nazwa: \c;string\n;
+Nazwa informacji ¿¹danej od stacji przekaŸnikowej. Jest ona ³añcuchem i powinna byæ zapisana w cudzys³owach "¦".
+
+\t;moc: \c;float\n;
+Moc odbiornika, która odpowiada maksymalnej odleg³oœci pomiêdzy odbiorc¹ i stacj¹ przekaŸnikow¹. Jeœli odleg³oœæ jest wiêksza, nie zostanie pobrana ¿adna informacja. Domyœln¹ wartoœci¹ jest 10 metrów.
+
+\t;Typ wyniku: \c;\l;float\u cbot\float;\n;
+Wartoœæ pobranej informacji. Jeœli wystarczaj¹co blisko nie ma ¿adnej stacji przekaŸnikowej, lub jeœli informacja o podanej nazwie nie istnieje, zwracana jest wartoœæ \c;nan\n;.
+
+\t;Zobacz równie¿
+\c;\l;send\u cbot\send;\n;, \c;\l;testinfo\u cbot\testinfo;\n; i \c;\l;deleteinfo\u cbot\delinfo;\n;.
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

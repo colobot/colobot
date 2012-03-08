@@ -1,0 +1,58 @@
+\b;Exercice
+Il faut convertir du \l;minerai de titanium\u object\titanore; en \l;titanium\u object\titan;, puis déposer 2 cubes de titanium sur les plates-formes dont les coordonnées sont¦:
+\c;
+	x=10, y=-60
+	x=10, y=-65
+\n;
+\image derrick 8 8;
+Le \l;derrick\u object\derrick; extrait automatiquement du minerai de titanium, qui ne demande qu'à être ramassé.
+
+\image convert 8 8;
+Le \l;convertisseur\u object\convert; transforme le minerai en titanium. Pour cela, il suffit de déposer le minerai, de reculer et d'attendre.
+
+\b;Principe
+\s;o  Répéter 2 fois¦:
+\s;	o  Attendre tant qu'on ne trouve pas de minerai.
+\s;	o  Aller vers le minerai.
+\s;	o  Prendre le minerai.
+\s;	o  Aller vers le convertisseur.
+\s;	o  Déposer le minerai.
+\s;	o  Reculer de 4 mètres.
+\s;	o  Attendre tant qu'on ne trouve pas de titanium.
+\s;	o  Prendre le titanium.
+\s;	o  Aller sur une plate-forme.
+\s;	o  Déposer le titanium.
+
+\b;Solution
+Une boucle \c;\l;for\u cbot\for;\n; permet de répéter 2 fois l'ensemble des instructions¦:
+\s;\c;	for ( int i=0 ; i<2 ; i=i+1 )
+\n;
+Le minerai n'est pas forcément disponible tout de suite. Il faut donc attendre que le derrick le produise, ce qui s'effectue avec une boucle \c;\l;do\u cbot\do;\n; comme suit¦:
+\s;\c;do
+\s;{
+\s;	obj = radar(TitaniumOre);
+\s;}
+\s;while ( obj == null );
+\n;
+Lorsque la boucle se termine, vous pouvez aller à la position \c;obj.position\n; avec l'instruction \c;\l;goto\u cbot\goto;\n;. Pour prendre le minerai, utilisez \c;\l;grab\u cbot\grab;\n;.
+Pour trouver le convertisseur, il faut utiliser¦:
+\s;\c;obj = radar(Converter);
+\n;
+Après avoir déposé le minerai sur le convertisseur, reculez de 4 mètres avec \c;\l;move\u cbot\move;(-4)\n;.
+Une deuxième boucle \c;do\n; permet d'attendre la disponibilité du titanium. Attention à limiter la distance maximale du radar à 10 mètres, pour ne pas reprendre du titanium déjà déposé sur une plate-forme¦:
+\s;\c;do
+\s;{
+\s;	obj = radar(Titanium, 0, 360, 0, 10);
+\s;}
+\s;while ( obj == null );
+\n;
+Les coordonnées \c;x\n; des 2 plates-formes sont toutes égales à 10. En revanche, les coordonnées \c;y\n; varient de -60 à -65. Une bonne idée pour calculer la position est de faire intervenir la variable \c;i\n; de la boucle \c;for\n;, qui prend les valeurs 0 et 1¦:
+\s;\c;dest.x = 10;
+\s;dest.y = -60-5*i;
+\n;
+A vous de terminer le programme ...
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tremova2; et \l;programmation\u cbot;.

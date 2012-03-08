@@ -1,0 +1,33 @@
+extern void object::FollowPhazer()
+{
+	object    item;              // info. about phazer
+	point     dest;              // position where to go
+	float     dist;              // distance to phazer
+
+	item = radar(PhazerShooter);
+	if ( item == null )
+	{
+		message("No phazer found");
+		return;                  // stop the program
+	}
+	shield(1, 25);               // activate the shield
+	
+	while ( true )               // repeat forever
+	{
+		item = radar(PhazerShooter);// look for phazer
+		if ( item == null )  break;
+
+		dist = distance(item.position, position);
+		if ( dist < 5 )
+		{                        // if closer than 5 m:
+			wait(1);             // wait
+		}
+		else                     // otherwise:
+		{	// Calculate a position 5 m before the phazer
+			dest.x = (item.position.x-position.x)*((dist-5)/dist)+position.x;
+			dest.y = (item.position.y-position.y)*((dist-5)/dist)+position.y;
+			dest.z = (item.position.z-position.z)*((dist-5)/dist)+position.z;
+			goto(dest, 0, 1, 1); // and go there
+		}
+	}
+}

@@ -1,0 +1,2 @@
+Title.F text="Fourmis et guêpes" resume="Combat contre des cibles mouvantes"
+Title.E text="Ants and wasps" resume="Fight against moving targets"

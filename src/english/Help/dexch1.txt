@@ -1,0 +1,19 @@
+\b;Exercice
+Several \l;information exchange posts\u object\exchange; are standing along the way. When the bot is close enough to a post, it can read the instructions it contains. The \l;information exchange posts\u object\exchange; along the way contain the direction of the next post and the distance. And you do not know how many exchange posts you must get in touch with before arriving at your goal.
+
+\b;General principle
+	Always repeat:
+	o  Retrieve the direction from the \l;exchange post\u object\exchange;.
+	o  Retrieve the distance from the \l;exchange post\u object\exchange;.
+	o  If no information could be retrieved, stop the program.
+	o  Execute the rotation.
+	o  Move forward to the next post.
+
+\b;Useful instructions
+\c;\l;while\u cbot\while;\n; to repeat the instructions
+\c;\l;receive\u cbot\receive;\n; to get the information from a post
+\c;\l;move\u cbot\move;\n; to move the bot
+\c;\l;turn\u cbot\turn;\n; to turn the bot
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

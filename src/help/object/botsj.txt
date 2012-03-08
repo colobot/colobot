@@ -1,0 +1,23 @@
+\b;\button 142; Robot renifleur
+\image botsj 8 8;
+Robot volant d'exploration du sous-sol. Si le robot découvre quelque chose, il dépose les marques suivantes¦:
+
+\l;Croix rouge\u object\stonspot; -> \l;minerai de titanium\u object\titanore;.
+\l;Rond jaune\u object\uranspot;  -> \l;minerai d'uranium\u object\uranore;.
+\l;Croix verte\u object\enerspot; -> énergie, utile par exemple pour la \l;station de recharge\u object\station;.
+
+Les robots volants peuvent franchir des obstacles tels que des montagnes ou des étendues d'eau, mais ils consomment beaucoup d'énergie. Au sol, ils se déplacent lentement. Pour des déplacements courts, il vaut mieux opter pour des \l;robots à roues\u object\botsr;.
+
+Il faut surveiller la température du réacteur affichée en bas de la fenêtre. Lorsque le réacteur surchauffe, il s'arrête complètement et le robot tombe.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;WingedSniffer\n;
+
+\t;Instruction
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;jet\u cbot\jet;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le bras chercheur par programmation, il faut utiliser l'instruction \c;\l;sniff\u cbot\sniff;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

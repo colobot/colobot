@@ -1,0 +1,377 @@
+Title.F      text="La troisième clé"
+Resume.F     text="Récupérez la troisième clé."
+Title.E      text="Gold Digger"
+Resume.E     text="Be prepared to dig for buried treasure."
+Instructions name="mhterra3.txt"
+Satellite    name="miterra3.txt"
+Loading      name="mlterra3.txt"
+SoluceFile   name="msterra3.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=9
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=208;200;223;0 water=94;153;180;0  // magenta
+VehicleColor  color=200;196;174;0  // sable
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=1
+Background    up=239;223;224;0 down=191;192;223;0 cloudUp=78;78;127;0 cloudDown=78;78;127;0
+FrontsizeName image="lens5.tga"
+Planet        pos=3.0;0.2 dim=0.35 speed= 0.001 dir=0.4 image="planet03.tga" uv1=0.5;0.5 uv2=1.0;1.0
+Planet        pos=0.0;0.7 dim=0.20 speed= 0.002 dir=0.3 image="planet03.tga" uv1=0.0;0.5 uv2=0.5;1.0
+Planet        pos=0.5;0.5 dim=0.15 speed=-0.005 dir=0.5 image="planet03.tga" uv1=0.5;0.0 uv2=1.0;0.5
+
+TerrainGenerate vision=250.00 depth=1 slope=3.0 hard=0.3
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief33.bmp" factor=1.0
+TerrainResource image="textures\res14.bmp"
+TerrainCloud    image="cloud02.tga" level=87.5
+TerrainWater    image="water12.tga" level=22.5 moveX=1.0 moveY=0.3
+
+TerrainMaterial id=1 image="roca2" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.8
+TerrainMaterial      image="roca2" u=0.25 v=0.00 up=2 down=1 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.00 up=1 down=1 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.00 up=2 down=1 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.25 up=1 down=2 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.25 up=2 down=2 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.25 up=1 down=2 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.25 up=2 down=2 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.50 up=1 down=1 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.50 up=2 down=1 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.50 up=1 down=1 left=2 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.50 up=2 down=1 left=2 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.75 up=1 down=2 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.75 up=2 down=2 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.75 up=1 down=2 left=2 right=2 hard=0.6
+TerrainMaterial id=2 image="roca2" u=0.75 v=0.75 up=2 down=2 left=2 right=2 hard=0.3
+
+TerrainMaterial id=3 image="rocb2" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.8
+TerrainMaterial      image="rocb2" u=0.25 v=0.00 up=3 down=1 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.00 up=1 down=1 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.00 up=3 down=1 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.25 up=1 down=3 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.25 up=3 down=3 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.25 up=1 down=3 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.25 up=3 down=3 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.50 up=1 down=1 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.50 up=3 down=1 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.50 up=1 down=1 left=3 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.50 up=3 down=1 left=3 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.75 up=1 down=3 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.75 up=3 down=3 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.75 up=1 down=3 left=3 right=3 hard=0.4
+TerrainMaterial id=4 image="rocb2" u=0.75 v=0.75 up=3 down=3 left=3 right=3 hard=0.0
+
+TerrainInit     id=3
+TerrainLevel    id=1 min= 0.0 max=99.0 slope=0.0 freq= 50.0  // roc1
+TerrainLevel    id=2 min=17.5 max=25.0 slope=3.0 freq= 70.0  // grass
+TerrainLevel    id=4 min=37.5 max=99.0 slope=9.0 freq= 80.0  // snow
+TerrainLevel    id=2 min=25.0 max=37.5 slope=9.0 freq= 70.0  // grass
+
+TerrainCreate
+
+GroundSpot color=0;128;255 min=-10 max=24 smooth=10
+
+MaxFlyingHeight max=42.5
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos= 0.00;-3.25 dir=1.5 type=Me
+CreateObject pos=-3.25;-3.25 dir=1.5 type=Shielder power=50
+CreateObject pos= 3.25;-3.25 dir=1.5 type=Subber power=0.6 script2="charge2.txt" script1="titan3.txt"
+CreateObject pos=-0.50;-2.00 dir=0.5 type=KeyA
+CreateObject pos= 0.50;-2.00 dir=0.5 type=KeyB
+CreateObject pos=-3.75; 2.50 dir=0.0 type=Titanium
+CreateObject pos=-2.50; 2.50 dir=0.0 type=Titanium
+CreateObject pos=-0.62; 2.50 dir=0.0 type=Titanium
+CreateObject pos= 0.63; 2.50 dir=0.0 type=Titanium
+CreateObject pos= 2.50; 2.50 dir=0.0 type=Titanium
+CreateObject pos= 3.75; 2.50 dir=0.0 type=Titanium
+CreateObject pos=-3.75; 3.75 dir=0.0 type=PowerCell
+CreateObject pos=-2.50; 3.75 dir=0.0 type=PowerCell
+CreateObject pos=-0.62; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 0.63; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 2.50; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 3.75; 3.75 dir=0.0 type=PowerCell
+
+// Zone d'atterrissage
+CreateObject pos= -47;  24 dir=0.9 type=Tree0
+CreateObject pos= -36;   9 dir=0.1 type=Tree1
+CreateObject pos= -14;  70 dir=1.4 type=Tree3
+CreateObject pos=  45;  15 dir=0.8 type=Tree2
+CreateObject pos=  45;  24 dir=1.3 type=Tree0
+CreateObject pos=  15;  45 dir=0.6 type=Tree1
+CreateObject pos=  84;  69 dir=0.0 type=Tree2
+CreateObject pos=  85;  85 dir=1.2 type=Tree3
+CreateObject pos= -43;  18 dir=0.1 type=Greenery0
+CreateObject pos=  -9;  65 dir=0.5 type=Greenery2
+CreateObject pos=  -3;  63 dir=1.2 type=Greenery3
+CreateObject pos=-109;  39 dir=1.2 type=TitaniumOre
+CreateObject pos=-113;  40 dir=0.4 type=TitaniumOre
+CreateObject pos=-103;  35 dir=1.3 type=TitaniumOre
+CreateObject pos= -99;  17 dir=0.4 type=TitaniumOre
+CreateObject pos=  55;  96 dir=0.4 type=TitaniumOre
+CreateObject pos=  56;  98 dir=0.1 type=TitaniumOre
+CreateObject pos=  84;  82 dir=0.1 type=TitaniumOre
+CreateObject pos=  87;  79 dir=0.1 type=TitaniumOre
+CreateObject pos=  86;  70 dir=0.1 type=TitaniumOre
+CreateObject pos=  84;  66 dir=0.3 type=TitaniumOre
+CreateObject pos=-161;  51 dir=0.3 type=UraniumOre
+CreateObject pos=-171;  66 dir=0.5 type=UraniumOre
+CreateObject pos=-159;  89 dir=0.1 type=UraniumOre
+CreateObject pos= -19; 140 dir=0.0 type=UraniumOre
+CreateObject pos=  -9; 141 dir=0.2 type=UraniumOre
+CreateObject pos=  52; 213 dir=0.3 type=UraniumOre
+CreateObject pos=  80; 215 dir=0.2 type=UraniumOre
+CreateObject pos=  99; 194 dir=0.0 type=UraniumOre
+CreateObject pos= 197; 230 dir=0.1 type=UraniumOre
+
+// Plaine sud-ouest (la bonne)
+CreateObject pos= -98; -96 dir=1.3 type=Tree2
+CreateObject pos=-114;-119 dir=0.9 type=Tree0
+CreateObject pos=-105;-124 dir=0.2 type=Tree1
+CreateObject pos=-115;-133 dir=1.5 type=Tree2
+CreateObject pos=-153;-135 dir=1.5 type=Tree3
+CreateObject pos=-143;-130 dir=0.3 type=Mushroom1 h=-2
+CreateObject pos=-151;-130 dir=0.6 type=Mushroom1 h= 0
+CreateObject pos=-157;-140 dir=0.1 type=Mushroom1 h=-1
+CreateObject pos=-158;-156 dir=1.3 type=Mushroom1 h= 2
+CreateObject pos=-165;-167 dir=1.0 type=Mushroom1 h= 0
+CreateObject pos=-179;-173 dir=0.7 type=Mushroom1 h= 1
+CreateObject pos=-109;-115 dir=0.1 type=Greenery0
+CreateObject pos=-104;-118 dir=0.3 type=Greenery1
+CreateObject pos=-120;-128 dir=0.6 type=Greenery2
+CreateObject pos=-148;-114 dir=0.2 type=Greenery3
+CreateObject pos=-150;-110 dir=0.0 type=Greenery4
+CreateObject pos=-155;-131 dir=1.1 type=Greenery2
+CreateObject pos=-178;-145 dir=0.4 type=Greenery1
+CreateObject pos=-171;-177 dir=0.3 type=Greenery0
+CreateObject pos=-140;-129 dir=0.1 type=Greenery5 h= 1
+CreateObject pos=-144;-127 dir=0.4 type=Greenery7 h= 0
+CreateObject pos=-148;-127 dir=0.9 type=Greenery6 h= 0
+CreateObject pos=-151;-140 dir=0.2 type=Greenery5 h= 1
+CreateObject pos=-155;-153 dir=0.7 type=Greenery6 h= 0
+CreateObject pos=-162;-155 dir=1.2 type=Greenery7 h= 0
+CreateObject pos=-162;-159 dir=0.3 type=Greenery5 h= 1
+
+// Plaine sud
+CreateObject pos=  91;-164 dir=0.2 type=Tree2
+CreateObject pos= 102;-164 dir=0.4 type=Tree3
+CreateObject pos= 111;-154 dir=0.9 type=Tree1
+CreateObject pos= 103;-142 dir=0.3 type=Mushroom1 h= 1
+CreateObject pos= 108;-146 dir=0.0 type=Mushroom1 h= 0
+CreateObject pos= 111;-142 dir=1.2 type=Mushroom1 h= 2
+CreateObject pos= 145;-161 dir=1.7 type=Mushroom1 h= 0
+CreateObject pos=  75;-130 dir=0.1 type=Greenery2
+CreateObject pos=  99;-159 dir=0.2 type=Greenery3
+CreateObject pos= 104;-150 dir=0.5 type=Greenery4
+CreateObject pos= 106;-142 dir=0.9 type=Greenery0
+CreateObject pos= 122;-136 dir=0.0 type=Greenery1
+CreateObject pos= 143;-141 dir=0.3 type=Greenery3
+CreateObject pos= 156;-140 dir=0.1 type=Greenery1
+CreateObject pos= 100;-141 dir=0.1 type=Greenery6 h= 1
+CreateObject pos= 104;-145 dir=0.4 type=Greenery7 h= 0
+CreateObject pos= 128;-150 dir=1.4 type=Greenery5 h= 0
+CreateObject pos= 131;-148 dir=0.2 type=Greenery7 h= 1
+CreateObject pos= 141;-160 dir=0.0 type=Greenery6 h= 0
+CreateObject pos= 147;-158 dir=0.7 type=Greenery5 h= 1
+CreateObject pos= 128;-163 dir=0.7 type=RuinBotFactory
+CreateObject pos= 138;-152 dir=0.1 type=RuinRadar
+CreateObject pos= 120;-170 dir=0.4 type=WreckBotw1
+CreateObject pos= 119;-168 dir=0.6 type=PowerCell power=0.8
+CreateObject pos= 123;-155 dir=0.6 type=WreckBotw2
+CreateObject pos= 123;-153 dir=0.1 type=PowerCell power=0.7
+CreateObject pos= 128;-162 dir=0.3 type=PowerCell power=1.0
+CreateObject pos= 129;-163 dir=0.2 type=PowerCell power=0.9
+CreateObject pos= 126;-165 dir=0.4 type=PowerCell power=0.3
+CreateObject pos= 132;-165 dir=0.1 type=PowerCell power=0.5
+CreateObject pos= 141;-165 dir=0.0 type=PowerCell power=0.8
+CreateObject pos= 141;-166 dir=0.6 type=PowerCell power=1.0
+CreateObject pos= 143;-166 dir=0.6 type=RuinDoor
+CreateObject pos= 140;-168 dir=0.3 type=RuinSupport
+
+// Plaine sud-est
+CreateObject pos= 311; -77 dir=0.1 type=Tree0
+CreateObject pos= 306; -62 dir=1.9 type=Tree3
+CreateObject pos= 343; -33 dir=0.5 type=Tree2
+CreateObject pos= 284; -92 dir=1.2 type=Mushroom1 h=-1
+CreateObject pos= 290; -94 dir=0.4 type=Mushroom1 h= 0
+CreateObject pos= 295; -85 dir=1.8 type=Mushroom1 h= 1
+CreateObject pos= 311; -80 dir=0.6 type=Mushroom1 h= 2
+CreateObject pos= 311; -37 dir=1.9 type=Mushroom1 h= 0
+CreateObject pos= 315; -33 dir=1.0 type=Mushroom1 h=-1
+CreateObject pos= 289;-111 dir=1.5 type=Greenery0
+CreateObject pos= 309; -99 dir=0.1 type=Greenery3
+CreateObject pos= 303; -82 dir=0.3 type=Greenery2
+CreateObject pos= 289; -48 dir=0.8 type=Greenery1
+CreateObject pos= 307; -44 dir=0.3 type=Greenery3
+CreateObject pos= 327; -40 dir=0.0 type=Greenery0
+CreateObject pos= 280; -92 dir=0.4 type=Greenery5 h= 1
+CreateObject pos= 285; -89 dir=1.4 type=Greenery7 h= 0
+CreateObject pos= 288; -94 dir=0.7 type=Greenery6 h= 0
+CreateObject pos= 293; -83 dir=0.0 type=Greenery7 h= 0
+CreateObject pos= 309; -80 dir=0.4 type=Greenery5 h= 1
+CreateObject pos= 314; -37 dir=0.2 type=Greenery6 h= 1
+CreateObject pos= 317; -34 dir=0.3 type=Greenery7 h= 0
+CreateObject pos= 312; -30 dir=1.1 type=Greenery5 h= 0
+CreateObject pos= 307; -28 dir=0.5 type=Greenery6 h= 1
+
+// Plaine est
+CreateObject pos= 190;  82 dir=0.1 type=Greenery15
+CreateObject pos= 194;  89 dir=0.5 type=Greenery18
+CreateObject pos= 203;  93 dir=1.1 type=Greenery19
+CreateObject pos= 222;  99 dir=0.4 type=Greenery16
+CreateObject pos= 209; 116 dir=0.1 type=Greenery15
+CreateObject pos= 202; 116 dir=1.2 type=Greenery17
+CreateObject pos= 190; 120 dir=0.1 type=Greenery18
+CreateObject pos= 188; 125 dir=0.4 type=Greenery19
+CreateObject pos= 174; 119 dir=1.8 type=Greenery15
+CreateObject pos= 146;  36 dir=0.4 type=Greenery16
+CreateObject pos= 123;  46 dir=1.1 type=Greenery17
+
+// Plaine nord
+CreateObject pos= 125; 318 dir=0.9 type=Tree0
+CreateObject pos= 103; 315 dir=0.2 type=Tree1
+CreateObject pos=  87; 305 dir=1.3 type=Tree2
+CreateObject pos=  57; 280 dir=0.4 type=Tree3
+CreateObject pos= 117; 326 dir=0.7 type=Mushroom1 h=-1
+CreateObject pos= 121; 325 dir=1.2 type=Mushroom1 h= 1
+CreateObject pos= 137; 310 dir=0.1 type=Greenery0
+CreateObject pos= 128; 322 dir=0.9 type=Greenery2
+CreateObject pos=  89; 311 dir=1.3 type=Greenery3
+CreateObject pos= 119; 322 dir=0.4 type=Greenery7 h= 0
+CreateObject pos= 112; 324 dir=0.0 type=Greenery5 h= 1
+CreateObject pos= 128; 334 dir=0.4 type=Greenery6 h= 0
+
+// Plaine nord-ouest proche
+CreateObject pos= -85; 147 dir=0.2 type=Tree1
+CreateObject pos= -75; 139 dir=1.2 type=Mushroom1 h=-1
+CreateObject pos= -78; 144 dir=1.8 type=Mushroom1 h= 0
+CreateObject pos= -68; 152 dir=0.3 type=Mushroom1 h= 1
+CreateObject pos= -64; 169 dir=0.1 type=Greenery0
+CreateObject pos= -61; 154 dir=0.5 type=Greenery1
+CreateObject pos= -78; 135 dir=0.3 type=Greenery2
+CreateObject pos= -66; 150 dir=0.4 type=Greenery5 h= 1
+CreateObject pos= -69; 150 dir=1.1 type=Greenery7 h= 0
+CreateObject pos= -76; 141 dir=1.1 type=Greenery6 h= 0
+CreateObject pos= -75; 146 dir=1.1 type=Greenery5 h= 1
+CreateObject pos= -75; 132 dir=0.7 type=Greenery7 h= 1
+
+// Plaine nord-ouest éloignée
+CreateObject pos=-207; 174 dir=0.3 type=Tree0
+CreateObject pos=-214; 160 dir=0.3 type=Tree3
+CreateObject pos=-205; 155 dir=0.3 type=Tree1
+CreateObject pos=-188; 166 dir=0.3 type=Tree1
+CreateObject pos=-167; 165 dir=1.0 type=Mushroom1 h= 0
+CreateObject pos=-181; 170 dir=0.2 type=Mushroom1 h=-1
+CreateObject pos=-189; 162 dir=1.6 type=Mushroom1 h= 2
+CreateObject pos=-209; 162 dir=0.9 type=Mushroom1 h= 0
+CreateObject pos=-211; 167 dir=0.3 type=Mushroom1 h= 1
+CreateObject pos=-115; 153 dir=0.8 type=Greenery1
+CreateObject pos=-146; 155 dir=0.1 type=Greenery0
+CreateObject pos=-174; 179 dir=1.1 type=Greenery3
+CreateObject pos=-188; 170 dir=0.3 type=Greenery2
+CreateObject pos=-230; 161 dir=0.2 type=Greenery4
+CreateObject pos=-226; 181 dir=0.8 type=Greenery0
+CreateObject pos=-165; 165 dir=1.1 type=Greenery5 h= 0
+CreateObject pos=-171; 164 dir=0.4 type=Greenery6 h= 0
+CreateObject pos=-178; 170 dir=0.3 type=Greenery7 h= 1
+CreateObject pos=-186; 162 dir=1.2 type=Greenery5 h= 1
+CreateObject pos=-192; 164 dir=0.8 type=Greenery7 h= 0
+CreateObject pos=-205; 161 dir=1.0 type=Greenery6 h= 1
+CreateObject pos=-208; 166 dir=1.2 type=Greenery5 h= 0
+CreateObject pos=-207; 169 dir=0.5 type=Greenery6 h= 0
+CreateObject pos=-219; 165 dir=1.9 type=Greenery7 h= 1
+
+// Ennemis
+CreateObject pos= 324; -98 dir=0.3 type=AlienNest
+//CreateObject pos=-160;-134 type=AlienAnt script1="ant02.txt" run=1 cmdline=100
+//CreateObject pos=-121;-144 type=AlienAnt script1="ant02.txt" run=1 cmdline=200
+//CreateObject pos=-118;-170 type=AlienAnt script1="ant02.txt" run=1 cmdline= 10
+//CreateObject pos= 305;-234 type=AlienAnt script1="ant02.txt" run=1 cmdline=300
+CreateObject pos=-160;-134 type=AlienAnt script1="antattaw.txt" run=1 cmdline=100
+CreateObject pos=-121;-144 type=AlienAnt script1="antattaw.txt" run=1 cmdline=200
+CreateObject pos=-118;-170 type=AlienAnt script1="antattaw.txt" run=1 cmdline= 10
+CreateObject pos= 305;-234 type=AlienAnt script1="antattaw.txt" run=1 cmdline=300
+CreateObject pos= 306; 147 type=AlienWasp script1="wasp03.txt" run=1
+CreateObject pos=-191; 188 type=AlienWasp script1="wasp03.txt" run=1
+CreateObject pos=-324;  98 type=AlienWasp script1="wasp03.txt" run=1
+CreateObject pos=-110;  29 type=AlienWasp script1="wasp03.txt" run=1
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.3;0.0;0.2
+
+MapColor floor=165;142;107 water=154;235;255
+MapZoom  factor=2
+
+NewScript name="tower1.txt" type=WheeledGrabber
+NewScript name="tower1.txt" type=TrackedGrabber
+NewScript name="tower1.txt" type=WingedGrabber
+NewScript name="tower1.txt" type=LeggedGrabber
+NewScript name="titan3.txt" type=WheeledGrabber
+NewScript name="titan3.txt" type=TrackedGrabber
+NewScript name="titan3.txt" type=WingedGrabber
+NewScript name="titan3.txt" type=LeggedGrabber
+NewScript name="titan3.txt" type=Subber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=ResearchCenter
+EnableBuild type=BotFactory
+EnableBuild type=Derrick
+EnableBuild type=Converter
+EnableBuild type=RadarStation
+EnableBuild type=PowerPlant
+EnableBuild type=NuclearPlant
+EnableBuild type=PowerStation
+EnableBuild type=RepairCenter
+EnableBuild type=DefenseTower
+EnableBuild type=ResearchCenter
+//EnableBuild type=AutoLab
+EnableBuild type=ExchangePost
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+EnableResearch type=ATOMIC
+EnableResearch type=THUMPER
+EnableResearch type=iPAW
+EnableResearch type=iGUN
+EnableResearch type=SHIELDER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+DoneResearch type=ATOMIC
+DoneResearch type=THUMPER
+DoneResearch type=iPAW
+DoneResearch type=iGUN
+DoneResearch type=SHIELDER
+DoneResearch type=SUBBER
+DoneResearch type=SNIFFER
+DoneResearch type=RECYCLER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=KeyA lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=KeyB lost=0
+EndMissionTake pos=0.00;0.00 type=KeyA min=1
+EndMissionTake pos=0.00;0.00 type=KeyB min=1
+EndMissionTake pos=0.00;0.00 type=KeyC min=1
+EndMissionTake pos=0.00;0.00 type=Shielder min=1
+EndMissionTake pos=0.00;0.00 type=Subber min=1
+
+Camera eye=0.00;5.00;0.00 lookat=0.00;1.00;0.00 delay=0

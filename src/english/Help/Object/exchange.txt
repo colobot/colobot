@@ -1,0 +1,31 @@
+\b;\button 172; Information Exchange Post
+\image info 8 8;
+This building stores digital information. A post can contain up to 10 pieces of information, each one referenced by a name.
+For example, a post can contain 3 informations¦:\c;
+\tab;"Position.x"  23.45
+\tab;"Position.y"  -102.70
+\tab;"Quantity"    3.00
+\n;
+To put new information, you must execute the command \c;\l;send\u cbot\send;\n;.
+To read information from a post, you must execute the command \c;\l;receive\u cbot\receive;\n;.
+
+\t;Requirements for building
+Any flat surface of at least 2.5 meters wide.
+
+\t;Input
+None.
+
+\t;Output
+Digital information.
+
+\t;Power source
+None.
+
+\t;Duration of operation
+1 second.
+
+\t;Object \l;Category\u cbot\category;
+\c;ExchangePost\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

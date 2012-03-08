@@ -1,0 +1,7 @@
+extern void object::Wait( )
+{
+	while ( true )
+	{
+		wait(2);
+	}
+}

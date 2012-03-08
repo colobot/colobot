@@ -1,0 +1,34 @@
+\b;Objectif
+Détruisez les trois \l;cibles\u object\bottarg; avec un petit programme. Vous aurez besoin des instructions suivantes¦:
+\c;
+\s;aim(0);\n;
+\n;Met le canon bien droit.
+\c;
+\s;turn();\n;
+\n;Tourne le robot d'un certain angle, donné en degrés entre les parenthèses. Par exemple \c;turn(90);\n; tourne le robot à gauche de 90 degrés, c'est-à-dire d'un quart de tour à gauche. \c;turn(-90);\n; tourne le robot à droite de 90 degrés (quart de tour à droite). Les valeurs négatives font tourner à droite. \c;turn(180);\n; fait faire un demi-tour.
+\c;
+\s;fire(1);
+\n;Tire avec le canon. La valeur entre parenthèses indique la durée de la rafale. En général, on tire toujours des rafales d'une seconde.
+
+Voyons le début du programme¦:
+o  on met le canon bien droit avec \c;aim(0);\n;
+o  on tire sur la cible qui est droit devant avec \c;fire(1);\n;
+o  on tourne à gauche de 90 degrés avec \c;turn(90)\n;
+o  on tire avec \c;fire(1);\n;
+o  etc.
+Voici le programme correspondant¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	aim(0);
+\s;	fire(1);
+\s;	turn(90);
+\s;	fire(1);
+\s;}
+\n;
+A vous de faire la suite¦!
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tcircle2; et \l;programmation\u cbot;.

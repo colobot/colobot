@@ -1,0 +1,14 @@
+\b;Minerai de titanium en sous-sol
+\image stonspot 4 4;
+Une croix rouge posée par un \l;robot renifleur\u object\botsr; indique la présence de \l;minerai de titanium\u object\titanore; en sous-sol, qu'il sera possible d'extraire en construisant un \l;derrick\u object\derrick;.
+
+Le sondage du sous-sol requiert un \l;robot renifleur\u object\botsr; qui peut détecter aussi des gisements de \l;minerai d'uranium\u object\uranore; indiqués par un \l;rond jaune\u object\uranspot; ou la présence d'énergie indiquée par une \l;croix verte\u object\enerspot;.
+
+\t;Transport
+Impossible.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;TitaniumSpot\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

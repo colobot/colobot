@@ -1,0 +1,26 @@
+\b;\button 168; Radar
+\image radar 8 8;
+Ce bâtiment indique la direction de l'\l;élément hostile\u object\mother; le plus proche. De plus, les informations fournies par le radar permettent à la mini-carte en bas à droite d'afficher la position des robots, bâtiments et ennemis par des carrés et triangles de diverses couleurs.
+
+Les stations de radar servent également de stations de relais pour les communications avec la terre depuis les planètes éloignées.
+
+\t;Emplacement requis
+Surface plate quelconque de 2.5 mètres de diamètre.
+
+\t;Entrée
+Aucune.
+
+\t;Sortie
+Aucune.
+
+\t;Energie consommée
+Aucune.
+
+\t;Durée de l'opération
+Instantané.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;RadarStation\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

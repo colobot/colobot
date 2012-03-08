@@ -1,0 +1,19 @@
+\b;Instrukcja \c;strval\n;
+Zamienia ³añcuch na liczbê. Nie nale¿y myliæ ³añcucha \c;"45"\n;, zawieraj¹cego dwa znaki \c;4\n; i \c;5\n; oraz liczby \c;45\n;.
+
+Przyk³ady¦:
+\s;\c;	string s = "45"+"12";  // s zawiera "4512"
+\s;	float  n =  45 + 12;   // n zawiera 67
+\n;
+Sk³adnia¦:
+\s;\c;strval ( ³añcuch );\n;
+\n;
+Przyk³ady¦:
+\s;\c;	float n = strval("1.23");     // n równe 1,23
+\s;	float n = strval("12abc45");  // n równe 12
+\s;	float n = strval("abc");      // n równe 0
+\s;	float n = strval("100")+2;    // n równe 102
+\n;
+\t;Zobacz równie¿
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strupper\u cbot\strupper;\n;, \c;\l;strlower\u cbot\strlower;\n;
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

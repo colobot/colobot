@@ -1,0 +1,103 @@
+Title.F      text="Chasseur de guêpes 1"
+Resume.F     text="Attrapez des guêpes en vol"
+Title.E      text="Wasp Hunter 1"
+Resume.E     text="Shoot down the flying wasps."
+ScriptName.F text="Guêpes1"
+ScriptName.E text="Wasp1"
+Instructions name="twasp1.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=4 lost=0
+
+Audio         track=0
+AmbiantColor  air=152;152;102;102 water=20;20;20;20  // grey
+FogColor      air=215;239;203;0 water=68;100;80;0  // bleu sale
+VehicleColor  color=141;175;129;0  // vert-sable
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=1
+Background    up=128;136;192;0 down=239;248;207;0 cloudUp=43;45;143;0 cloudDown=200;255;0;0
+FrontsizeName image="lens1.tga"
+Planet        pos=1.2;0.2 dim=0.35 speed= 0.001 dir=0.1 image="planet04.tga" uv1=0.0;0.5 uv2=0.5;1.0  // jaune
+Planet        pos=4.0;0.4 dim=0.20 speed= 0.012 dir=0.7 image="planet04.tga" uv1=0.5;0.0 uv2=1.0;0.5  // bleu
+Planet        pos=4.4;0.3 dim=0.30 speed=-0.002 dir=0.3 image="planet04.tga" uv1=0.0;0.5 uv2=0.5;1.0  // jaune
+Planet        pos=3.5;0.4 dim=0.12 speed= 0.001 dir=0.8 image="planet04.tga" uv1=0.5;0.5 uv2=1.0;1.0  // rouge
+Planet        pos=5.0;0.5 dim=0.04 speed= 0.025 dir=1.2 image="planet04.tga" uv1=0.5;0.5 uv2=1.0;1.0  // rouge
+
+TerrainGenerate vision=250.00 depth=1 slope=3.0
+TerrainWind     speed=0.0;2.0
+TerrainRelief   image="textures\relief56.bmp" factor=1.0
+TerrainResource image="textures\resae.bmp"
+TerrainWater    image="water16.tga" level=13.0 moveX=1.0 moveY=0.0 color=0;240;100;0 brightness=0.2
+TerrainCloud    image="cloud04.tga" level=125.0
+
+TerrainMaterial id=10 image="green01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=11 image="green01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=12 image="green01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=13 image="green01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.00 v=0.25 up=2 down=1 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.25 v=0.25 up=1 down=1 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.50 v=0.25 up=1 down=2 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.75 v=0.25 up=1 down=1 left=2 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.00 v=0.50 up=2 down=1 left=2 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.25 v=0.50 up=2 down=1 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.50 v=0.50 up=1 down=2 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.75 v=0.50 up=1 down=2 left=2 right=1 hard=0.2
+TerrainMaterial id=14 image="green01" u=0.00 v=0.75 up=2 down=2 left=2 right=2 hard=0.2
+TerrainMaterial id=15 image="green01" u=0.25 v=0.75 up=2 down=2 left=2 right=2 hard=0.2
+TerrainMaterial id=16 image="green01" u=0.50 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=17 image="green01" u=0.75 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+
+TerrainMaterial id=20 image="green02" u=0.00 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=21 image="green02" u=0.25 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=22 image="green02" u=0.50 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=23 image="green02" u=0.75 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial       image="green02" u=0.00 v=0.25 up=3 down=2 left=2 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.25 v=0.25 up=2 down=2 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.50 v=0.25 up=2 down=3 left=2 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.75 v=0.25 up=2 down=2 left=3 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.00 v=0.50 up=3 down=2 left=3 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.25 v=0.50 up=3 down=2 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.50 v=0.50 up=2 down=3 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.75 v=0.50 up=2 down=3 left=3 right=2 hard=0.5
+TerrainMaterial id=24 image="green02" u=0.00 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=25 image="green02" u=0.25 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=26 image="green02" u=0.50 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=27 image="green02" u=0.75 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+
+TerrainInit     id=10
+TerrainLevel    id=10;11;10;11;12;13 min= 0.0 max=99.0 slope=0.0 freq=100.0
+TerrainLevel    id=16;17             min= 0.0 max=99.0 slope=0.0 freq= 50.0
+TerrainLevel    id=14;15             min=40.0 max=99.0 slope=0.0 freq= 90.0
+TerrainLevel    id=20;21;22;23       min=45.0 max=99.0 slope=0.0 freq= 90.0
+TerrainLevel    id=24;25;26;27       min=45.0 max=99.0 slope=0.0 freq= 40.0
+
+TerrainCreate
+
+BeginObject
+CreateObject pos=-164;-143 dir=1.5 type=Me range=200
+CreateObject pos=-170;-135 dir=1.5 type=WingedShooter reset=1 trainer=1 script4="twasp1.txt" power=100 range=500 camera=BACK
+CreateObject pos=-200; -50 dir=0.5 type=AlienWasp reset=1 script1="waspe1.txt" run=1
+CreateObject pos=-150;-100 dir=0.5 type=AlienWasp reset=1 script1="waspe1.txt" run=1
+CreateObject pos=-100;-100 dir=0.7 type=AlienWasp reset=1 script1="waspe1.txt" run=1
+CreateObject pos=-100;-250 dir=1.0 type=AlienWasp reset=1 script1="waspe1.txt" run=1
+CreateObject pos=-176;-139 type=RadarStation
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+
+MapColor floor=180;157;72 water=154;235;255
+MapZoom  factor=2
+
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WingedShooter lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienWasp min=0 max=0
+
+Camera eye=50.00;20.00;-50.00 lookat=37.50;1.00;-75.00 delay=10

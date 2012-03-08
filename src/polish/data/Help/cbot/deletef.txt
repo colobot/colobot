@@ -1,0 +1,10 @@
+\b;Instrukcja \c;deletefile\n;
+Instrukcja deletefile usuwa istniej¹cy plik z folderu files/. 
+
+Pliki mog¹ byæ usuwane tylko w folderze files/ znajduj¹cym siê w folderze, w którym zosta³a zainstalowana gra Colobot. Nie jest mo¿liwe usuwanie plików znajduj¹cych siê w innych folderach.
+
+Sk³adnia¦:
+\s;\c;deletefile ( nazwa_pliku );\n;
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

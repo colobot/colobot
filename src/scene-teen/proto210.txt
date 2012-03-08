@@ -1,0 +1,118 @@
+Title.F      text="Terre + herbe"
+Resume.F     text="Terre + herbe"
+Title.E      text="Terre + herbe"
+Resume.E     text="Terre + herbe"
+Instructions name="pmetal.txt"
+HelpFile     name="cbot.txt"
+
+AmbiantColor   air=102;102;102;102 water=20;20;20;20  // grey
+BackColor      air=240;228;202;0     water=67;80;100;0  // magenta
+FogColor       air=176;174;195;0     water=67;80;100;0  // magenta
+VehicleColor   color=200;200;150;0  // light grey
+InsectColor    color=175;108;7;0  // braun
+DeepView       air=125.00 water=25.00 
+FogStart       air=0.8 water=0.5
+SecondTexture  rank=1
+//BackgroundName image="back24.tga"
+BackgroundName up=94;96;162;0 down=240;228;202;0
+FrontsizeName  image="lens1.tga"
+
+TerrainGenerate     vision=250.00 depth=1
+TerrainRelief       image="textures\relief07.bmp" factor=1.0
+TerrainResource     image="textures\res00.bmp"
+TerrainWater        image="water07.tga" level=18.75 moveX=1.0 moveY=0.3
+//TerrainInitTextures image="moon" dx=1 dy=1 table=101
+
+TerrainMaterial id=1 image="ground1" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial      image="ground1" u=0.25 v=0.00 up=2 down=1 left=1 right=1 hard=0.5
+TerrainMaterial      image="ground1" u=0.50 v=0.00 up=1 down=1 left=1 right=2 hard=0.5
+TerrainMaterial      image="ground1" u=0.75 v=0.00 up=2 down=1 left=1 right=2 hard=0.5
+TerrainMaterial      image="ground1" u=0.00 v=0.25 up=1 down=2 left=1 right=1 hard=0.5
+TerrainMaterial      image="ground1" u=0.25 v=0.25 up=2 down=2 left=1 right=1 hard=0.5
+TerrainMaterial      image="ground1" u=0.50 v=0.25 up=1 down=2 left=1 right=2 hard=0.5
+TerrainMaterial      image="ground1" u=0.75 v=0.25 up=2 down=2 left=1 right=2 hard=0.5
+TerrainMaterial      image="ground1" u=0.00 v=0.50 up=1 down=1 left=2 right=1 hard=0.5
+TerrainMaterial      image="ground1" u=0.25 v=0.50 up=2 down=1 left=2 right=1 hard=0.5
+TerrainMaterial      image="ground1" u=0.50 v=0.50 up=1 down=1 left=2 right=2 hard=0.5
+TerrainMaterial      image="ground1" u=0.75 v=0.50 up=2 down=1 left=2 right=2 hard=0.5
+TerrainMaterial      image="ground1" u=0.00 v=0.75 up=1 down=2 left=2 right=1 hard=0.5
+TerrainMaterial      image="ground1" u=0.25 v=0.75 up=2 down=2 left=2 right=1 hard=0.5
+TerrainMaterial      image="ground1" u=0.50 v=0.75 up=1 down=2 left=2 right=2 hard=0.5
+TerrainMaterial id=2 image="ground1" u=0.75 v=0.75 up=2 down=2 left=2 right=2 hard=0.8
+
+TerrainMaterial id=3 image="ground2" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial      image="ground2" u=0.25 v=0.00 up=3 down=1 left=1 right=1 hard=0.3
+TerrainMaterial      image="ground2" u=0.50 v=0.00 up=1 down=1 left=1 right=3 hard=0.3
+TerrainMaterial      image="ground2" u=0.75 v=0.00 up=3 down=1 left=1 right=3 hard=0.3
+TerrainMaterial      image="ground2" u=0.00 v=0.25 up=1 down=3 left=1 right=1 hard=0.3
+TerrainMaterial      image="ground2" u=0.25 v=0.25 up=3 down=3 left=1 right=1 hard=0.3
+TerrainMaterial      image="ground2" u=0.50 v=0.25 up=1 down=3 left=1 right=3 hard=0.3
+TerrainMaterial      image="ground2" u=0.75 v=0.25 up=3 down=3 left=1 right=3 hard=0.3
+TerrainMaterial      image="ground2" u=0.00 v=0.50 up=1 down=1 left=3 right=1 hard=0.3
+TerrainMaterial      image="ground2" u=0.25 v=0.50 up=3 down=1 left=3 right=1 hard=0.3
+TerrainMaterial      image="ground2" u=0.50 v=0.50 up=1 down=1 left=3 right=3 hard=0.3
+TerrainMaterial      image="ground2" u=0.75 v=0.50 up=3 down=1 left=3 right=3 hard=0.3
+TerrainMaterial      image="ground2" u=0.00 v=0.75 up=1 down=3 left=3 right=1 hard=0.3
+TerrainMaterial      image="ground2" u=0.25 v=0.75 up=3 down=3 left=3 right=1 hard=0.3
+TerrainMaterial      image="ground2" u=0.50 v=0.75 up=1 down=3 left=3 right=3 hard=0.3
+TerrainMaterial id=4 image="ground2" u=0.75 v=0.75 up=3 down=3 left=3 right=3 hard=0.4
+
+TerrainInit     id=3  // ground
+TerrainLevel    id=4 min=0.0 max=99.0 slope=3.0 freq=100.0  // grass
+
+TerrainCreate
+
+BeginObject
+CreateObject pos=0.00;0.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos=0.00;-3.25 dir=1.5 type=Me
+CreateObject pos=3.25;-3.25 dir=1.5 type=WheeledGrabber script1="charge.txt"
+CreateObject pos=-3.13;3.13 dir=0.0 type=Titanium
+CreateObject pos=0.00;3.13 dir=0.0 type=PowerCell
+CreateObject pos=3.13;3.13 dir=0.0 type=PowerCell
+CreateObject pos=-28.25;-116.75 dir=0.9 type=TitaniumOre
+CreateObject pos=-30.50;-120.75 dir=0.4 type=TitaniumOre
+CreateObject pos=80.00;-58.75 dir=0.4 type=TitaniumOre
+CreateObject pos=81.00;-57.00 dir=0.0 type=TitaniumOre
+CreateObject pos=83.00;-56.50 dir=0.9 type=TitaniumOre
+CreateObject pos=83.25;-58.50 dir=0.1 type=TitaniumOre
+CreateObject pos=83.75;-61.50 dir=0.2 type=TitaniumOre
+CreateObject pos=84.75;-56.75 dir=0.6 type=TitaniumOre
+CreateObject pos=85.00;-59.00 dir=0.4 type=TitaniumOre
+CreateObject pos=85.50;-64.50 dir=0.8 type=TitaniumOre
+CreateObject pos=86.25;-61.50 dir=0.1 type=TitaniumOre
+CreateObject pos=87.50;-57.25 dir=0.2 type=TitaniumOre
+CreateObject pos=87.75;-58.50 dir=0.5 type=TitaniumOre
+CreateObject pos=88.00;-59.25 dir=0.4 type=TitaniumOre
+CreateObject pos=32.50;-90.00 dir=0.5 type=TitaniumOre
+CreateObject pos=-145.00;-10.00 dir=0.5 type=AlienNest
+
+CreateObject pos=-9.25;-87.75 dir=0.0 type=MegaStalk0 h=0.0
+CreateObject pos=32.75;-94.50 dir=0.0 type=MegaStalk4 h=0.0
+
+CreateObject pos=-63.50;-34.50 dir=0.0 type=MegaStalk1 h=0.0
+CreateObject pos=-69.00;-1.00 dir=0.0 type=MegaStalk2 h=0.0
+CreateObject pos=-70.50;12.00 dir=0.0 type=MegaStalk3 h=0.0
+CreateObject pos=-69.25;25.00 dir=0.0 type=MegaStalk4 h=0.0
+CreateObject pos=-54.50;48.75 dir=0.0 type=MegaStalk2 h=0.0
+CreateObject pos=-30.25;69.75 dir=0.0 type=MegaStalk3 h=0.0
+CreateObject pos=-1.25;76.75 dir=0.0 type=MegaStalk0 h=0.0
+CreateObject pos=43.00;68.00 dir=0.0 type=MegaStalk1 h=0.0
+CreateObject pos=73.50;5.00 dir=0.0 type=MegaStalk4 h=0.0
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.6;-0.1;-0.1
+
+MapColor floor=165;142;107 water=154;235;255
+
+EnableBuild type=CONVERT
+DoneResearch type=WINGER
+
+EndMissionTake pos=12.50;-75.00 type=Titanium min=4
+
+Camera pos=12.50;-250.00 h=2.50 

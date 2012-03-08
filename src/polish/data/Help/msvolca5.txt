@@ -1,0 +1,11 @@
+\b;Rozwi¹zanie
+Wszystko dooko³a Ciebie wybucha. Musisz opuœciæ star¹ bazê jak najszybciej. Wycofaj siê drog¹ przybycia.
+
+Dosyæ ³atwo mo¿na unikn¹æ \l;mrówek\u object\ant;. Jeœli jednak powa¿nie Ciê trafi¹, znajdŸ spokojne miejsce i poczekaj a¿ Twoja os³ona siê zregeneruje.
+
+Z \l;paj¹kami\u object\spider; jest gorzej, ale s¹ one g³upsze. Jak tylko Ciê zobacz¹, ich odw³ok wybucha, a paj¹k przy tym umiera. Jeœli choæ jeden fragment Ciê trafi, równie¿ umrzesz. Ryzykownym ale skutecznym sposobem pozbycia siê paj¹ków, jest zbli¿enie siê do paj¹ka, a gdy jego odw³ok zaczyna siê nadymaæ, szybki odlot na bezpieczn¹ odleg³oœæ.
+
+Po dotarciu do spokojnej wyspy, mo¿esz u¿yæ \l;lataj¹cego dzia³a organicznego\u object\botoj; do oczyszczenia drogi z wrogich owadów. Postêpuj ostro¿nie, aby go nie straciæ, gdy¿ od tego zale¿y powodzenie misji.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

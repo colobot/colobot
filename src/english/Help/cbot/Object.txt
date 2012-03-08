@@ -1,0 +1,70 @@
+\b;Type \c;object\n;
+Use this type for variables that contain the characteristics of an object, be it a bot, a building, some raw material, an enemy, etc. 
+
+\c;\l;int\u cbot\int;    object.category     \n;\l;Category\u cbot\category; of the object
+\c;\l;point\u cbot\point;  object.position     \n;Position of the object (x,y,z)
+\c;\l;float\u cbot\float;  object.orientation  \n;Orientation of the object (0..360)
+\c;\l;float\u cbot\float;  object.pitch        \n;Forward/backward angle of the object
+\c;\l;float\u cbot\float;  object.roll         \n;Right/left angle of the object 
+\c;\l;float\u cbot\float;  object.energyLevel  \n;Energy level (0..1)
+\c;\l;float\u cbot\float;  object.shieldLevel  \n;Shield level (0..1)
+\c;\l;float\u cbot\float;  object.temperature  \n;Jet temperature (0..1)
+\c;\l;float\u cbot\float;  object.altitude     \n;Altitude above ground
+\c;\l;float\u cbot\float;  object.lifeTime     \n;Lifetime of the object
+\c;object object.energyCell   \n;Power cell on the bot
+\c;object object.load         \n;Object carried by the bot
+
+\s;\c;category\n;
+The \n;\l;category\u cbot\category; of an object allows you to know what it is, f. ex. what kind of bot, building, enemy, etc. 
+
+\s;\c;position\n;
+Position of the object on the planet, in meters. The coordinates \c;x\n; and \c;y\n; correspond to the location on a map, the \c;z\n; coordinate corresponds to the altitude above (respectively below) sea level. 
+
+\s;\c;orientation\n;
+Orientation of the object, in degrees. The orientation tells you what direction the object is facing. An orientation of \c;0\n; corresponds to an object facing eastwards, thus following the positive \c;x\n; axis. The orientation is measured counterclockwise. 
+
+\s;\c;pitch\n;
+Forward/backward angle of the robot. A pitch of \c;0\n; means that the bot is standing on flat ground. A positive inclination means that it is facing upwards, a negative inclination means that it is facing downwards. 
+
+\s;\c;roll\n;
+Left/right angle of the bot, in degrees. A positive value means that the bot is leaning to the left side, a negative value means that it is leaning to the right side. 
+
+\s;\c;energyLevel\n;
+Energy level, between 0 and 1. A normal \l;power cell\u object\power; that is fully charged returns the value \c;1\n;. A \l;nuclear power cell\u object\atomic; never returns a value higher than 1, it just lasts longer. Attention: The energy level of a bot is always zero, because the energy is not contained in the bot, but in the power cell. To know the energy level of the power cell of a bot, you must write \c;energyCell.energyLevel\n;. 
+
+\s;\c;shieldLevel\n;
+Shield level of a robot or building. A level \c;1\n; indicates that the shield is still perfect. Every time that the bot or building gets a bullet or collides with another object, the shield level decreases. When the level reaches \c;0\n;, the next bullet or collision will destroy the bot or building. 
+Bots can re-energize their shield on a \l;repair center\u object\repair;. The shield of a building is repaired if it lays inside the protection sphere of a \l;shielder\u object\botshld;.
+
+\s;\c;temperature\n;
+Temperature of the jet of \l;winged bots\u object\botgj;. \c;0\n; corresponds to a cold jet. When used, the temperature increases progressively. When it reaches the value \c;1\n;, the jet is overheated and stops working, until it cooled down a little. 
+
+\s;\c;altitude\n;
+The \c;z\n; coordinate of the position indicates the altitude above sea level, whereas the \c;altitude\n; indicates the height above ground. This value is meaningful only for \l;winged bots\u object\botgj; and for \l;wasps\u object\wasp;. For all other objects, this value is zero. 
+
+\s;\c;lifeTime\n;
+The age of the object in seconds since it's creation.
+
+\s;\c;energyCell\n;
+This information is special, because it returns the information about another object, in this case the power pack. This means that energyCell contains all the characteristics of a normal object, for example \c;category\n; (PowerCell or NuclearCell), \c;position\n; (the position of the cell), etc.
+If you want to know the energy level of a robot, you must not check \c;energyLevel\n;, but \c;energyCell.energyLevel\n;.
+If the bot has bot no power cell, \c;energyCell\n; returns \c;null\n;.
+
+\s;\c;load\n;
+This information also returns the description of a whole object: the description of the object carried by a \l;grabber\u object\botgr;. If it carries nothing, \c;load\n; returns \c;null\n;.
+
+\b;Examples
+The type \c;object\n; returns the special value \c;\l;null\u cbot\null;\n; when the object does not exist. For example:
+\c;
+\s;	object a;
+\s;	a = radar(BotGrabberRoller);
+\s;	if ( a == null )  // object does not exist ?
+\s;	{
+\s;	}
+\s;	if ( a.position.z > 50 )  // is it on a mountain ?
+\s;	{
+\s;	}
+\n; 
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.
+

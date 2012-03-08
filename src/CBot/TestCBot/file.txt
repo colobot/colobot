@@ -1,0 +1,70 @@
+class CLASS22
+{
+	static int	nb = 2;
+	void	T22 ( ) { nb = nb / 0 ; }
+}
+
+public extern void object :: TEST()
+{
+  switch ( 1 )
+  {
+	case 1:
+	{
+		file h();
+		h.open("Mon Fichier.txt", "r");
+show ( h.filename, h.handle );
+h.filename = "xx";
+h.handle = 1 ;
+		h.readln();
+		h.close();
+	}
+	case 2:
+	{
+		file h("Mon Fichier.txt");
+		h.open("r");
+		h.readln();
+		h.close();
+	}
+	case 3:
+	{
+		file h("Mon Fichier.txt", "r");
+		h.readln();
+		h.close();
+	}
+	case 4:
+	{
+		file h();
+		h.filename = "Mon Fichier.txt";
+		h.open("r");
+		h.readln();
+		h.close();
+	}
+	case 5:
+	{
+		file h = fileopen( "Mon 2Fichier.txt", "r" );
+		h.readln();
+		h.close();
+	}
+  }
+{
+	file	h( ) ;
+	h.filename = "Test.h";
+	h.open ( "r" );
+
+
+	file	pf ( "Mon Fichier.txt" ) ;
+	pf . open ( "w" ) ;
+	pf . writeln ( "Voici encore du texte" ) ;
+	pf . writeln ( "et une seconde ligne" ) ;
+	pf . close( );
+
+	pf . open ( "r" ) ;
+
+	while ( not pf . eof( ) )
+	{
+		string	s = pf . readln ( );
+		show ( s );
+	}
+	pf.close( );
+}
+}

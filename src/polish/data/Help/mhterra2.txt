@@ -1,0 +1,9 @@
+\b;Z Centrum Kontroli Misji
+Zdob¹dŸ drugi \l;klucz\u object\key; (B). Powinien on byæ w pobli¿u Twojej obecnej pozycji.
+
+Po zakoñczeniu misji, przed odlotem, zabierz na pok³ad statku kosmicznego robota \l;os³aniacza\u object\botshld; oraz \l;nurka\u object\botsub;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

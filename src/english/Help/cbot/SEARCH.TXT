@@ -1,0 +1,18 @@
+\b;Instruction \c;search\n;
+Syntax:
+\s;\c;search ( category, position );\n;
+
+Detects the object of the given category that is closest to the given position. 
+
+\t;category: \c;\l;int\u cbot\int;\n;
+\l;Category\u cbot\category; of the requested object.
+
+\t;position: \c;\l;point\u cbot\point;\n;
+\c;search\n; returns the object of the given category that is closest to the position indicated here. 
+
+\t;Return value: \c;\l;object\u cbot\object;\n;
+Characteristics of the object that has been found. The value \c;\l;null\u cbot\null;\n; means that no object of this category has been found. 
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.
+

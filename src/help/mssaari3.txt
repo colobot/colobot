@@ -1,0 +1,9 @@
+\b;Solution
+Construisez un \l;radar\u object\radar;.
+
+Les \l;fourmis\u object\ant; vous fuient. En plaçant la fourmi entre une \l;mine\u object\mine; et vous, elle se dirigera vers la mine. Dirigez ainsi les 4 fourmis sur les mines, et boum...
+
+Amenez ensuite la \l;boîte noire\u object\bbox; sur votre \l;vaisseau\u object\base;. Elle est à côté des ruines du vaisseau de la première expédition.
+
+\t;Voir aussi
+\l;Commandes\u command;.

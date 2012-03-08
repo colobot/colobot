@@ -1,0 +1,31 @@
+class ESSAI
+{
+	int x = 0;
+	static int nb = 3;
+	static int [ ] array ;
+
+	void	Put( int val)
+	{
+show(nb);
+		array[ nb ] = val;
+//		this.nb++;
+		this.nb = this.nb + 1;
+show(nb, array);
+	}
+	int		Get( )
+	{
+		nb--;
+show("out", nb, array);
+		return array[ nb ] ;
+	}
+}
+
+extern public void T()
+{
+	ESSAI	t1 ( ) ; 
+	ESSAI	t2 ( ) ; 
+	t1.nb++;
+	t1.Put( 11 ); t1.Put( 12 ); t2.Put( 13 );
+
+	show ( t1.Get(), t2.Get(), t2.Get() ) ;
+}

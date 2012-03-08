@@ -1,0 +1,24 @@
+\b;Un événement imprévu
+Zut, le chat est passé par là, et il a fait un peu de désordre. Le petit robot est maintenant tourné vers la droite. Bien sûr, tu pourrais le soulever pour le remettre dans la bonne direction, mais ce serait trop simple.
+
+Pour résoudre ce problème, le programme contiendra 2 instructions¦:
+\s;1) Tourner à gauche
+\s;2) Avancer de 40 centimètres
+Il faut savoir que les instructions d'un programme sont exécutées les unes après les autres, dans l'ordre.
+
+\b;Tourner le robot
+Pour orienter correctement le robot, il faut le tourner d'un huitième de tour à gauche. Un quart de tour correspond à 90 degrés. Un huitième de tour correspond donc à 45 degrés. L'instruction à utiliser est¦:
+\c;
+\s;turn(45);
+\n;
+Après cela, à la ligne suivante, tu écris de nouveau¦:
+\c;
+\s;move(40);
+\n;
+Sur le petit schéma en bas à droite de l'écran, on voit bien que le robot est mal orienté au départ¦:
+
+\image teen102 8 8;
+\b;Un problème ?
+En cas d'erreur, tu peux remettre le robot à la position initiale avec le bouton \button 9;.
+
+La touche \key;\key help;\norm; ou l'icône \button 185; permettent de revoir ces instructions en tout temps¦!

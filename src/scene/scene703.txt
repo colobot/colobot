@@ -1,0 +1,335 @@
+Title.F      text="Purification"
+Resume.F     text="A partir de trois fois rien, débrouillez-vous pour tuer tout ce qui bouge."
+Title.E      text="Cleansing"
+Resume.E     text="Find the resources you need to eradicate all life in the region."
+Instructions name="mhcent3.txt"
+Satellite    name="micent3.txt"
+Loading      name="mlcent3.txt"
+SoluceFile   name="mscent3.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=7
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=176;176;181;0 water=10;100;20;0  // grey
+VehicleColor  color=117;158;64;0  // vert
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.5 water=0.1
+SecondTexture rank=8
+Background    up=176;176;181;0 down=176;176;181;0 cloudUp=0;0;0;0 cloudDown=104;104;104;0
+FrontsizeName image="lens5.tga"
+
+TerrainGenerate vision=400.00 depth=1 hard=0.7
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief22.bmp" factor=1.0
+TerrainResource image="textures\res00.bmp"
+TerrainCloud    image="cloud03.tga" level=125.0
+
+TerrainMaterial id=1 image="mix01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=2 image="mix01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=3 image="mix01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=4 image="mix01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=5 image="mix01" u=0.00 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=6 image="mix01" u=0.25 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=7 image="mix01" u=0.50 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=8 image="mix01" u=0.75 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=9 image="mix01" u=0.00 v=0.50 up=1 down=1 left=1 right=1 hard=0.6
+
+TerrainInit     id=1
+TerrainLevel    id=2 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=3 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=4 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=5 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=6 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=7 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=8 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=9 min=0.0 max=900.0 slope=0.0 freq= 20.0
+
+TerrainCreate
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos= 0.00;-3.25 dir=1.5 type=Me
+
+CreateObject pos=-196; 203 dir=1.5 type=WingedGrabber power=0.4 proxyActivate=1 proxyDistance=12 script4="exchg1.txt" script3="charge2.txt" script2="titan3.txt" script1="tower1.txt"
+CreateObject pos=-165;  34 dir=1.0 type=WingedGrabber power=0.2 proxyActivate=1 proxyDistance=12 script4="exchg1.txt" script3="charge2.txt" script2="titan3.txt" script1="tower1.txt"
+CreateObject pos=-198;-107 dir=0.3 type=WingedGrabber power=0.6 proxyActivate=1 proxyDistance=12 script4="exchg1.txt" script3="charge2.txt" script2="titan3.txt" script1="tower1.txt"
+CreateObject pos= 134;-283 dir=0.1 type=WingedGrabber power=0.5 proxyActivate=1 proxyDistance=12 script4="exchg1.txt" script3="charge2.txt" script2="titan3.txt" script1="tower1.txt"
+CreateObject pos= 263;-159 dir=0.8 type=WingedGrabber power=0.4 proxyActivate=1 proxyDistance=12 script4="exchg1.txt" script3="charge2.txt" script2="titan3.txt" script1="tower1.txt"
+
+CreateObject pos=-139; -37 dir=0.2 type=Converter proxyActivate=1 proxyDistance=12
+CreateObject pos=-145; -16 dir=0.2 type=TitaniumOre
+CreateObject pos=-141; -21 dir=0.2 type=TitaniumOre
+CreateObject pos=-142; -24 dir=0.2 type=TitaniumOre
+CreateObject pos=-135; -32 dir=0.2 type=TitaniumOre
+CreateObject pos=-133; -44 dir=0.2 type=TitaniumOre
+CreateObject pos=-131; -44 dir=0.2 type=TitaniumOre
+CreateObject pos=-128; -49 dir=0.2 type=TitaniumOre
+CreateObject pos=-124; -51 dir=0.2 type=TitaniumOre
+CreateObject pos=-115; -48 dir=0.2 type=TitaniumOre
+CreateObject pos=-112; -48 dir=0.2 type=TitaniumOre
+CreateObject pos=-102; -47 dir=0.2 type=TitaniumOre
+
+CreateObject pos= 212; 236 dir=0.5 type=NuclearPlant proxyActivate=1 proxyDistance=24
+CreateObject pos= 289; 222 dir=0.0 type=UraniumOre
+CreateObject pos= 284; 212 dir=0.2 type=UraniumOre
+CreateObject pos= 280; 223 dir=0.1 type=UraniumOre
+CreateObject pos= 277; 227 dir=0.3 type=UraniumOre
+CreateObject pos= 280; 231 dir=0.0 type=UraniumOre
+CreateObject pos= 283; 231 dir=0.2 type=UraniumOre
+//CreateObject pos= 284; 220 cmdline=284;220;286;224 type=AlienAnt script1="ant05.txt" run=1
+CreateObject pos= 283; 230 cmdline=283;230; 10 type=AlienAnt script1="antict.txt" run=1
+
+CreateObject pos= 300; -87 dir=0.0 type=Titanium proxyActivate=1 proxyDistance=12
+CreateObject pos= 302; -92 dir=0.1 type=Titanium proxyActivate=1 proxyDistance=12
+CreateObject pos= 293; -94 dir=0.4 type=Titanium proxyActivate=1 proxyDistance=12
+CreateObject pos= 280; -99 dir=0.2 type=Titanium proxyActivate=1 proxyDistance=12
+CreateObject pos= 281; -99 dir=0.3 type=Titanium proxyActivate=1 proxyDistance=12
+CreateObject pos= 263;-111 dir=0.1 type=Titanium proxyActivate=1 proxyDistance=12
+
+CreateObject pos= 182;-130 dir=0.3 type=WreckBotw2
+CreateObject pos= 177;-130 dir=0.0 type=PowerCell power=0.5 proxyActivate=1 proxyDistance=12
+CreateObject pos= 179;-132 dir=0.1 type=PowerCell power=0.0 proxyActivate=1 proxyDistance=12
+CreateObject pos= 186;-126 dir=0.3 type=PowerCell power=0.8 proxyActivate=1 proxyDistance=12
+CreateObject pos= 188;-130 dir=0.0 type=PowerCell power=0.6 proxyActivate=1 proxyDistance=12
+CreateObject pos= 189;-128 dir=0.2 type=PowerCell power=0.4 proxyActivate=1 proxyDistance=12
+CreateObject pos= 192;-128 dir=0.5 type=PowerCell power=0.7 proxyActivate=1 proxyDistance=12
+CreateObject pos= 195;-127 dir=0.1 type=PowerCell power=0.2 proxyActivate=1 proxyDistance=12
+
+CreateObject pos=-281; 49 dir=0.2 type=RuinBotFactory
+CreateObject pos=-286; 54 dir=0.0 type=PowerCell power=0.5 proxyActivate=1 proxyDistance=12
+CreateObject pos=-284; 56 dir=0.1 type=PowerCell power=0.8 proxyActivate=1 proxyDistance=12
+CreateObject pos=-282; 37 dir=0.0 type=PowerCell power=0.7 proxyActivate=1 proxyDistance=12
+CreateObject pos=-280; 55 dir=0.1 type=PowerCell power=0.8 proxyActivate=1 proxyDistance=12
+CreateObject pos=-272; 54 dir=0.2 type=PowerCell power=0.4 proxyActivate=1 proxyDistance=12
+CreateObject pos=-266; 59 dir=0.0 type=PowerCell power=0.6 proxyActivate=1 proxyDistance=12
+
+//CreateObject pos=193;107 cmdline=193;107;194; 98 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=181; 90 cmdline=181; 90;171; 84 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=152; 83 cmdline=152; 83;150; 92 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=137; 82 cmdline=137; 82;129; 85 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=101; 84 cmdline=101; 84; 94; 93 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos= 96; 67 cmdline= 96; 67; 88; 66 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos= 75; 84 cmdline= 75; 84; 68; 89 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos= 50; 88 cmdline= 50; 88; 45; 84 type=AlienAnt script1="ant05.txt" run=1
+CreateObject pos= 65; 70 cmdline=130;90;100;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=120; 80 cmdline=130;90;100;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=120; 95 cmdline=130;90;100;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=110;125 cmdline=130;90;100;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=150; 65 cmdline=130;90;100;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=155;115 cmdline=130;90;100;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos= 90;115 cmdline=130;90;100;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=175; 55 cmdline=130;90;100;2 type=AlienAnt script1="antich2.txt" run=1
+
+//CreateObject pos=-152; 250 cmdline=-152; 250;-147; 256 type=AlienAnt script1="ant05.txt" run=1
+//CreateObject pos=-156;-190 cmdline=-156;-190;-158;-216 type=AlienAnt script1="ant05.txt" run=1
+CreateObject pos=-169; 297 type=AlienAnt script1="antsurp2.txt" run=1
+CreateObject pos=-193;-196 cmdline=-193;-196; 40 type=AlienAnt script1="antict.txt" run=1
+
+//CreateObject pos=-26;-273 cmdline=-26;-273;-29;-280 dir=0.0 type=AlienSpider script1="spider03.txt" run=1
+//CreateObject pos=-32;-260 cmdline=-32;-260;-35;-251 dir=0.0 type=AlienSpider script1="spider03.txt" run=1
+//CreateObject pos=-83;-239 cmdline=-83;-239;-88;-248 dir=0.0 type=AlienSpider script1="spider03.txt" run=1
+//CreateObject pos=-68;-282 cmdline=-68;-282;-60;-287 dir=0.0 type=AlienSpider script1="spider03.txt" run=1
+CreateObject pos=-46;-260 cmdline=-36;-260; 90 dir=0.0 type=AlienSpider script1="spidict.txt" run=1
+CreateObject pos=-36;-260 cmdline=-36;-260; 90 dir=0.0 type=AlienSpider script1="spidict.txt" run=1
+CreateObject pos=-46;-270 cmdline=-36;-260; 90 dir=0.0 type=AlienSpider script1="spidict.txt" run=1
+CreateObject pos=-36;-270 cmdline=-36;-260; 90 dir=0.0 type=AlienSpider script1="spidict.txt" run=1
+
+//CreateObject pos=-263;-102 cmdline=-263;-102;-257;-101 dir=0.0 type=AlienSpider script1="spider03.txt" run=1
+CreateObject pos=-273;-109 cmdline=-273;-109; 20 dir=0.0 type=AlienSpider script1="spidict.txt" run=1
+
+CreateObject pos= -21;  35 dir=0.3 type=Greenery4
+CreateObject pos= -26;  52 dir=0.0 type=Tree1
+CreateObject pos= -28;  49 dir=0.3 type=Greenery0
+CreateObject pos= -21;  47 dir=0.3 type=Greenery1
+CreateObject pos= -30;  67 dir=0.3 type=Greenery3
+CreateObject pos= -53; -20 dir=0.0 type=Tree0
+CreateObject pos= -50; -18 dir=0.3 type=Greenery0
+CreateObject pos= -47; -25 dir=0.0 type=Greenery1
+CreateObject pos= -61;  -3 dir=0.5 type=Greenery2
+CreateObject pos= -41;  -9 dir=0.5 type=Greenery3
+CreateObject pos= -84;  -9 dir=0.5 type=Tree1
+CreateObject pos= -77;  -6 dir=0.5 type=Greenery3
+CreateObject pos= -85;  -4 dir=0.0 type=Greenery0
+CreateObject pos= -86; -11 dir=0.2 type=Greenery2
+CreateObject pos= -94; -14 dir=0.0 type=Tree2
+CreateObject pos=-100; -17 dir=0.2 type=Greenery2
+CreateObject pos=-104; -16 dir=0.2 type=Greenery1
+CreateObject pos=-108; -13 dir=0.2 type=Greenery0
+CreateObject pos=-160;  30 dir=0.3 type=Greenery1
+CreateObject pos=-162;  31 dir=0.1 type=Greenery2
+CreateObject pos=-168;  34 dir=0.3 type=Greenery3
+CreateObject pos=-180;  40 dir=0.0 type=Greenery4
+CreateObject pos=-187;  47 dir=0.3 type=Tree3
+CreateObject pos=-191;  47 dir=0.9 type=Greenery0
+
+CreateObject pos= 148; 266 dir=0.0 type=Greenery1
+CreateObject pos= 141; 288 dir=0.0 type=Greenery3
+CreateObject pos= 145; 285 dir=0.2 type=Greenery2
+CreateObject pos= 153; 289 dir=0.5 type=Greenery0
+CreateObject pos= 157; 286 dir=0.3 type=Greenery1
+CreateObject pos= 197; 284 dir=0.3 type=Greenery2
+
+CreateObject pos= 205; -28 dir=0.3 type=Tree0
+CreateObject pos= 208; -23 dir=0.3 type=Greenery2
+CreateObject pos= 204; -21 dir=0.0 type=Greenery0
+CreateObject pos= 203; -34 dir=0.0 type=Greenery1
+CreateObject pos= 232; -19 dir=0.3 type=Tree1
+CreateObject pos= 240; -28 dir=0.5 type=Tree3
+
+CreateObject pos=-148; 148 dir=0.0 type=Tree4
+CreateObject pos=-151; 141 dir=0.0 type=Tree2
+CreateObject pos=-151; 149 dir=0.3 type=Greenery2
+CreateObject pos=-155; 141 dir=0.3 type=Greenery3
+CreateObject pos=-151; 132 dir=0.7 type=Greenery1
+CreateObject pos=-142; 239 dir=0.3 type=Greenery1
+CreateObject pos=-140; 244 dir=0.0 type=Tree1
+CreateObject pos=-133; 257 dir=0.3 type=Tree2
+CreateObject pos=-116; 327 dir=0.0 type=Tree3
+CreateObject pos=-140; 248 dir=0.0 type=Greenery0
+CreateObject pos=-121; 259 dir=0.3 type=Greenery3
+CreateObject pos= -66; 257 dir=0.0 type=Greenery2
+
+CreateObject pos=  42; 176 dir=0.2 type=Tree4
+CreateObject pos=  13; 135 dir=0.0 type=Tree1
+CreateObject pos=  13; 130 dir=0.3 type=WreckBotw1
+CreateObject pos=   8; 127 dir=0.3 type=Tree2
+CreateObject pos= -49;  92 dir=0.9 type=Tree3
+CreateObject pos= -50;  76 dir=0.9 type=Tree0
+CreateObject pos=  10; 112 dir=0.1 type=Tree1
+CreateObject pos= 168;-121 dir=0.1 type=Tree2
+CreateObject pos=  37;-142 dir=0.1 type=Tree3
+CreateObject pos=  18;-131 dir=0.8 type=Tree4
+CreateObject pos=  15;-134 dir=0.9 type=RuinBotFactory
+CreateObject pos= -49;-123 dir=0.0 type=Tree0
+CreateObject pos=-101;-239 dir=0.5 type=Tree1
+CreateObject pos=-103;-268 dir=0.2 type=Tree2
+CreateObject pos=-152;-288 dir=0.2 type=Tree3
+CreateObject pos=-284; -26 dir=0.1 type=Tree4
+CreateObject pos=-272;  91 dir=0.1 type=Tree0
+CreateObject pos=-261;  97 dir=0.5 type=Tree3
+CreateObject pos=-190;  93 dir=0.0 type=WreckBott1
+
+CreateFog pos=  57;  69 height=  3 dim=20 delay=4.0 type=4
+CreateFog pos=  57;  69 height=  4 dim=20 delay=5.0 type=5
+CreateFog pos=  71; 114 height=  5 dim=10 delay=4.0 type=4
+CreateFog pos=  71; 114 height=  6 dim=10 delay=5.0 type=5
+CreateFog pos=  96;  84 height=  3 dim=30 delay=4.0 type=4
+CreateFog pos=  96;  84 height=  4 dim=30 delay=5.0 type=5
+CreateFog pos= 133;  81 height=  3 dim=30 delay=4.0 type=4
+CreateFog pos= 133;  81 height=  4 dim=30 delay=5.0 type=5
+CreateFog pos= 143; 124 height=  5 dim=30 delay=4.0 type=4
+CreateFog pos= 143; 124 height=  6 dim=30 delay=5.0 type=5
+CreateFog pos= 139; 187 height=  2 dim=30 delay=4.0 type=4
+CreateFog pos= 139; 187 height=  3 dim=30 delay=5.0 type=5
+CreateFog pos= 109; 265 height=  4 dim=30 delay=4.0 type=4
+CreateFog pos= 109; 265 height=  5 dim=30 delay=5.0 type=5
+CreateFog pos= 179;  74 height=  4 dim=30 delay=4.0 type=4
+CreateFog pos= 179;  74 height=  5 dim=30 delay=5.0 type=5
+CreateFog pos= 197; 111 height=  4 dim=20 delay=4.0 type=4
+CreateFog pos= 197; 111 height=  5 dim=20 delay=5.0 type=5
+
+CreateFog pos=  95;   6 height=  4 dim= 7 delay=4.0 type=4
+CreateFog pos=  95;   6 height=  6 dim= 7 delay=5.0 type=5
+CreateFog pos= 104; -17 height= 10 dim=10 delay=4.0 type=4
+CreateFog pos= 104; -17 height= 11 dim=10 delay=5.0 type=5
+CreateFog pos= 140; -26 height=  4 dim= 7 delay=4.0 type=4
+CreateFog pos= 140; -26 height=  5 dim= 7 delay=5.0 type=5
+
+CreateFog pos= 275; 237 height=  4 dim=20 delay=4.0 type=4
+CreateFog pos= 275; 237 height=  5 dim=20 delay=5.0 type=5
+CreateFog pos= 287; 204 height=  4 dim=30 delay=4.0 type=4
+CreateFog pos= 287; 204 height=  5 dim=30 delay=5.0 type=5
+CreateFog pos= 281; 161 height=  4 dim=10 delay=4.0 type=4
+CreateFog pos= 281; 161 height=  5 dim=10 delay=5.0 type=5
+
+CreateFog pos= 208; -72 height=  2 dim=20 delay=4.0 type=4
+CreateFog pos= 208; -72 height=  3 dim=20 delay=5.0 type=5
+CreateFog pos= 245;-133 height= -2 dim=50 delay=4.0 type=4
+CreateFog pos= 245;-133 height= -3 dim=50 delay=5.0 type=5
+CreateFog pos= 269;-189 height=  4 dim=30 delay=4.0 type=4
+CreateFog pos= 269;-189 height=  5 dim=30 delay=5.0 type=5
+CreateFog pos= 233;-185 height=  2 dim=20 delay=4.0 type=4
+CreateFog pos= 233;-185 height=  3 dim=20 delay=5.0 type=5
+CreateFog pos= 159;-156 height=  4 dim=20 delay=4.0 type=4
+CreateFog pos= 159;-156 height=  5 dim=20 delay=5.0 type=5
+CreateFog pos= 180;-276 height=  1 dim=50 delay=4.0 type=4
+CreateFog pos= 180;-276 height=  2 dim=50 delay=5.0 type=5
+
+CreateFog pos= -52;-265 height= -1 dim=50 delay=4.0 type=4
+CreateFog pos= -52;-265 height= -2 dim=50 delay=5.0 type=5
+CreateFog pos= -53;-238 height=  3 dim=20 delay=4.0 type=4
+CreateFog pos= -53;-238 height=  4 dim=20 delay=5.0 type=5
+CreateFog pos=-192;-113 height=  4 dim=50 delay=4.0 type=4
+CreateFog pos=-192;-113 height=  5 dim=50 delay=5.0 type=5
+CreateFog pos=-233; -51 height=  4 dim=80 delay=4.0 type=4
+CreateFog pos=-233; -51 height=  5 dim=80 delay=5.0 type=5
+CreateFog pos=-278;  20 height=  4 dim=50 delay=4.0 type=4
+CreateFog pos=-278;  20 height=  5 dim=50 delay=5.0 type=5
+
+CreateFog pos= -93; 202 height=  4 dim=80 delay=4.0 type=4
+CreateFog pos= -93; 202 height=  5 dim=80 delay=5.0 type=5
+CreateFog pos=-176; 176 height=  2 dim=15 delay=4.0 type=4
+CreateFog pos=-176; 176 height=  3 dim=15 delay=5.0 type=5
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+
+MapColor floor=151;142;129 water=131;152;131
+MapZoom  factor=2
+
+NewScript name="tower1.txt" type=WheeledGrabber
+NewScript name="tower1.txt" type=TrackedGrabber
+NewScript name="tower1.txt" type=WingedGrabber
+NewScript name="tower1.txt" type=LeggedGrabber
+NewScript name="titan3.txt" type=WheeledGrabber
+NewScript name="titan3.txt" type=TrackedGrabber
+NewScript name="titan3.txt" type=WingedGrabber
+NewScript name="titan3.txt" type=LeggedGrabber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=BotFactory
+//EnableBuild type=Derrick
+EnableBuild type=Converter
+EnableBuild type=RadarStation
+//EnableBuild type=PowerPlant
+EnableBuild type=NuclearPlant
+//EnableBuild type=PowerStation
+EnableBuild type=RepairCenter
+EnableBuild type=DefenseTower
+//EnableBuild type=ResearchCenter
+//EnableBuild type=AutoLab
+EnableBuild type=ExchangePost
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+EnableResearch type=ATOMIC
+EnableResearch type=iPAW
+EnableResearch type=iGUN
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+DoneResearch type=ATOMIC
+DoneResearch type=iPAW
+DoneResearch type=iGUN
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=RadarStation min=1
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienAnt min=0 max=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienSpider min=0 max=0
+
+Camera eye=0.00;5.00;0.00 lookat=0.00;1.00;0.00 delay=0

@@ -1,0 +1,13 @@
+extern void object::Recharge1()
+{
+	point  start;          // variable for initial pos.
+	object item;           // info. about power station
+	
+	start = position;      // store initial position
+	
+	item = radar(PowerStation); // look for station
+	goto(item.position);   // go to the power station
+	wait(5);               // wait 5 seconds
+	
+	goto(start);           // go back to initial pos.
+}

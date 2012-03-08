@@ -1,0 +1,20 @@
+\b;Instruction \c;deleteinfo\n;
+Syntaxe¦:
+\s;\c;deleteinfo ( name, power );\n;
+
+Supprime une information de la \l;borne\u object\exchange; la plus proche.
+
+\t;name: \c;string\n;
+Nom de l'information à supprimer dans la borne. Ce nom est une chaîne de caractères; il doit donc être donné entre guillemets "¦".
+
+\t;power: \c;float\n;
+Puissance de l'émetteur, qui correspond à la distance maximale jusqu'où peut être la borne. La valeur par défaut est de 10 mètres.
+
+\t;Dictionnaire anglais-français
+\c;delete\n; = effacer
+\c;name  \n; = nom
+\c;power \n; = puissance
+
+\t;Voir aussi
+\c;\l;receive\u cbot\receive;\n;, \c;\l;send\u cbot\send;\n; et \c;\l;testinfo\u cbot\testinfo;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

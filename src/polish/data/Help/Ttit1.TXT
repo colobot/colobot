@@ -1,0 +1,14 @@
+\b;Zadanie
+Napisz program, który przenosi porcjê \l;rudy tytanu\u object\titanore; do \l;huty\u object\convert; w celu wytworzenia \l;kostki tytanu\u object\titan;.
+
+\t;Program
+Potrzebne Ci bêd¹ nowe instrukcje:
+\c;
+\s;move();\n;
+Porusza robotem do przodu lub do ty³u. Odleg³oœæ podawana jest w nawiasach, w metrach: \c;move(10);\n; przesuwa robota o 10m do przodu, \c;move(-1);\n; cofa robota o 1m.
+
+Instrukcje \c;\l;turn\u cbot\turn;()\n;, \c;\l;grab\u cbot\grab;()\n; i \c;\l;drop\u cbot\drop;()\n; zosta³y ju¿ wyjaœnione w poprzednich æwiczeniach. Jeœli masz jeszcze jakieœ pytania na ich temat, kliknij podkreœlon¹ na niebiesko nazwê instrukcji a pojawi siê jej opis.
+
+\l;Ruda tytanu\u object\titanore; jest 20m przed robotem, \l;huta\u object\convert; jest 10m za robotem. Po zaniesieniu rudy tytanu do huty nie zapomnij cofn¹æ robota (na przyk³ad \c;move(-2.5);\n;), aby umo¿liwiæ hucie rozpoczêcie pracy.
+
+Klawisz \key;\key help;\norm; pozwala wyœwietliæ te instrukcje w dowolnej chwili.

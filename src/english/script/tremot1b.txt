@@ -1,0 +1,46 @@
+extern void object::Slave( )
+{
+	float	order;
+
+	errmode(0);  // don't stop on errors
+
+	while ( true )
+	{
+		// wait for order completion ...
+		while ( !testinfo("order", 100) )
+		{
+			wait(1);
+		}
+
+		// get the order
+		order = receive("order", 100);
+
+		if ( order == 1 )
+		{
+			message("grab( )");
+			grab();
+		}
+		else if ( order == 2 )
+		{
+			message("drop( )");
+			drop();
+		}
+		else if ( order == 3 )
+		{
+			message("move(10)");
+			move(10);
+		}
+		else if ( order == 4 )
+		{
+			message("move(-10)");
+			move(-10);
+		}
+		else
+		{
+			message("Unknown order");
+		}
+
+		// signal "end of work"
+		deleteinfo("order", 100);
+	}
+}

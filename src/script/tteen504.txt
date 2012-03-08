@@ -1,0 +1,11 @@
+extern void object::Solution()
+{
+	repeat(100)
+	{
+		find(Scrap);
+		grab();
+		find(Disintegrator);
+		drop();
+		move(-10);
+	}
+}

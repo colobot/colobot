@@ -1,0 +1,9 @@
+\b;Walkthrough
+You will find a \l;radar\u object\radar;, a \l;power captor\u object\captor;, a \l;power cell\u object\power; and a \l;winged orga shooter\u object\botoj; in the valley south of the spaceship. This will allow you to kill the ants close to the spaceship and to locate the \l;black box\u object\bbox; in the north next to the remains of the first expedition spaceship.
+
+Build a succession of \l;power captors\u object\captor; along the natural path offered by the northern mountain peaks. 5 or 6 captors should offer sufficient protection against lightning.
+
+Bring the black box back aboard your \l;spaceship\u object\base; and take off.
+
+\t;See also
+\l;Controls\u command;

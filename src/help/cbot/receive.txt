@@ -1,0 +1,23 @@
+\b;Instruction \c;receive\n;
+Syntaxe¦:
+\s;\c;receive ( name, power );\n;
+
+Reçoit une information de la \l;borne\u object\exchange; la plus proche.
+
+\t;name: \c;string\n;
+Nom de l'information à lire dans la borne. Ce nom est une chaîne de caractères; il doit donc être donné entre guillemets "¦".
+
+\t;power: \c;float\n;
+Puissance du récepteur, qui correspond à la distance maximale jusqu'où peut être la borne. La valeur par défaut est de 10 mètres.
+
+\t;Valeur retournée: \c;\l;float\u cbot\float;\n;
+Valeur de l'information lue. Si aucune borne d'informations n'est à proximité, ou si le nom de l'information à lire n'existe pas dans la borne, la valeur \c;nan\n; est retournée.
+
+\t;Dictionnaire anglais-français
+\c;receive\n; = recevoir
+\c;name   \n; = nom
+\c;power  \n; = puissance
+
+\t;Voir aussi
+\c;\l;send\u cbot\send;\n;, \c;\l;testinfo\u cbot\testinfo;\n; et \c;\l;deleteinfo\u cbot\delinfo;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

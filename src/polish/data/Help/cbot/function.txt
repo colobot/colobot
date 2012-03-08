@@ -1,0 +1,85 @@
+\b;Funkcje
+U¿ywaj¹c funkcji mo¿na podzieliæ program na kilka czêœci, z których ka¿da bêdzie wykonywa³a okreœlone zadanie.
+WyobraŸmy sobie nastêpuj¹cy program¦:
+\c;
+\s;extern void object::Zdalnie( )
+\s;{
+\s;	send("order", 1, 100);
+\s;	wait(5);
+\s;	send("order", 3, 100);
+\s;	wait(5);
+\s;	send("order", 2, 100);
+\s;	wait(5);
+\s;	send("order", 4, 100);
+\s;	wait(5);
+\s;}
+\n;
+Instrukcje \c;send\n; i \c;wait\n; wykonywane s¹ wielokrotnie. By³oby dobrze utworzyæ funkcjê wykonuj¹c¹ te dwie instrukcje:
+\c;
+\s;void object::WyœlijDoStacji( float op )
+\s;{
+\s;	send("order", op, 100);
+\s;	wait(5);
+\s;}
+\s;extern void object::Zdalnie( )
+\s;{
+\s;	WyœlijDoStacji(1);
+\s;	WyœlijDoStacji(3);
+\s;	WyœlijDoStacji(2);
+\s;	WyœlijDoStacji(4);
+\s;}
+\n;
+Funkcja mo¿e mieæ parametry¦:
+\c;
+\s;void Przyk³ad( int a, float x, string s )
+\n;
+Funkcja \c;Przyk³ad\n; dostaje jako parametry liczbê ca³kowit¹ \c;a\n;, liczbê zmiennoprzecinkow¹ \c;x\n; oraz ³añcuch \c;s\n;. Parametry s¹ "przekazywane przez wartoœæ", czyli s¹ kopi¹ wartoœci okreœlonych jako zmienne podczas wywo³ania. Przy przekazaniu zmiennej \c;int\n; funkcji, jej parametr jest kopi¹ wartoœci przekazanej jako argument, wobec czego funkcja mo¿e zmieniaæ wartoœæ parametru bez zmiany wartoœci w miejscu, z którego by³a wywo³ana funkcja.
+
+Przy przekazaniu instancji \l;klasy\u cbot\class; lub \l;tablicy\u cbot\array; jako parametru, funkcja otrzymuje jedynie \l;wskaŸnik\u cbot\pointer; do instancji lub tablicy. Oznacza to, ¿e w przypadku modyfikacji instancji lub tablicy wewn¹trz funkcji, w rzeczywistoœci zostanie zmodyfikowana instancja lub tablica okreœlona podczas wywo³ania.
+
+Funkcja mo¿e równie¿ zwróciæ wynik przy u¿yciu instrukcji \c;\l;return\u cbot\return;\n;. Jednak¿e powinna byæ wówczas zadeklarowana nie jako void, ale powinna mieæ okreœlony typ:
+\c;
+\s;float Œrednia( float a, float b )
+\s;{
+\s;	return (a+b)/2;
+\s;}
+\s;
+\s;extern void object::Test( )
+\s;{
+\s;	float wartoœæ;
+\s;	wartoœæ = Œrednia(2, 6);
+\s;	message( wartoœæ );  // wyœwietli liczbê 4
+\s;}
+\n;
+I jeszcze kilka przyk³adów¦:
+\c;
+\s;float Pi( )
+\s;{
+\s;	return 3.1415;
+\s;}
+\s;
+\s;string Znak( float a )
+\s;{
+\s;	if ( a > 0 )  return "dodatnia";
+\s;	if ( a < 0 )  return "ujemna";
+\s;	return "zero";
+\s;}
+\n;
+Mo¿na zadeklarowaæ kilka funkcji o tej samej nazwie lecz o ró¿nych parametrach¦:
+\c;
+\s;float Pitagoras( float a, float b )
+\s;{
+\s;	return sqrt((a*a)+(b*b));
+\s;}
+\s;
+\s;float Pitagoras( float a, float b, float c )
+\s;{
+\s;	return sqrt((a*a)+(b*b)+(c*c));
+\s;}
+\n;
+CBOT wywo³a jedn¹ z nich, w zale¿noœci od przekazanych parametrów.
+
+Mo¿na te¿ zadeklarowaæ funkcjê \l;publiczn¹\u cbot\public;, która bêdzie dostêpna dla wszystkich robotów.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

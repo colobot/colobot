@@ -1,0 +1,27 @@
+\b;Exercice
+On complique encore un peu les choses. Il faut maintenant dessiner deux traits de 20 mètres chacuns, formant un angle droit entre eux. Donc une sorte de <\c;L\n;> majuscule.
+
+\image tline0 6 6;
+\b;Programme
+Pour dessiner un trait de 20 mètres, le programme de l'exercice précédent était¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	pendown(Red);
+\s;	move(20);
+\s;}
+\n;
+Maintenant, il va falloir utiliser une nouvelle instruction \c;turn\n;, pour tourner le robot. Comme d'habitude, cette instruction est suivie de parenthèses. Ici, le nombre entre parenthèses indique l'angle du virage. \c;turn(90);\n; signifie tourner de 90 degrès à gauche, donc un virage à angle droit à gauche.
+
+Le principe du programme à écrire est donc¦:
+o  Abaisser le crayon rouge.
+o  Avancer de 20 mètres.
+o  Tourner à gauche de 90 degrés.
+o  Avancer de 20 mètres.
+
+A vous d'écrire les quatre instructions du programme¦...
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tline1;.

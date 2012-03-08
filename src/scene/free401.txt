@@ -1,0 +1,159 @@
+Title.F      text="Jeu libre"
+Resume.F     text="Construisez quelques bâtiments et robots, juste pour vous amuser, sans but précis."
+Title.E      text="Free game"
+Resume.E     text="Do whatever you want, build a base camp and some bots, without any precise objective."
+Instructions name="fglobal.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=-1
+
+Audio         track=4
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=180;222;255;0 water=10;20;100;0  // grey
+VehicleColor  color=175;209;215;0  // bleu-sable
+DeepView      air=100.00 water=25.00 
+FogStart      air=0.1 water=0.1
+SecondTexture rank=3
+Background    up=76;105;226;0 down=192;250;255;0
+FrontsizeName image="lens5.tga"
+Planet        pos=0.00;0.70 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=1.00;0.60 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=1.20;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=2.00;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=2.50;0.50 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=3.00;0.30 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=3.85;0.30 dim=0.06 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=4.00;0.70 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=4.10;0.50 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=5.30;0.30 dim=0.08 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.7
+TerrainRelief       image="textures\relief05.bmp" factor=1.0
+TerrainResource     image="textures\res08.bmp"
+TerrainWater        image="lava04.tga" level=30.0 moveX=1.0 moveY=0.3 water=TO color=0;128;255;0
+TerrainInitTextures image="terra" dx=1 dy=1 table=2
+TerrainCreate
+
+GroundSpot color=0;0;255 min=-10 max=31.25 smooth=10
+GroundSpot pos= 12;-75 radius=30 color=150;200;250  // base
+GroundSpot pos= 75;-75 radius=15 color=200;200;250  // 
+GroundSpot pos=-32;-80 radius=50 color=200;200;250  // 
+GroundSpot pos=  0;100 radius=30 color=100;100;200  // volcan
+GroundSpot pos=  0;  0 radius=30 color=100;100;200  // plage
+
+CreateSpot pos= 12.50;50.00;-75.0 color= 1.00;-0.20; 0.10 type=Terrain  // base
+CreateSpot pos= 75.00;25.00;-75.0 color= 0.50; 0.00; 0.50 type=Terrain
+CreateSpot pos=-32.50;75.00;-80.0 color= 2.00;-0.10;-0.10 type=Terrain
+CreateSpot pos=  0.00;50.00;100.0 color= 2.00;-0.10;-0.10 type=Terrain  // volcan
+CreateSpot pos=  0.00;50.00;  0.0 color= 0.30; 0.30;-0.20 type=Terrain  // plage
+
+
+BeginObject
+CreateObject pos=12.50;-65.00 dir=0.0 type=BlueFlag
+CreateObject pos=12.50;-78.25 dir=1.5 type=Me
+//CreateObject pos=15.75;-78.25 dir=1.5 type=WheeledGrabber script1="exchg1.txt"
+//CreateObject pos= 9.50;-78.25 dir=1.5 type=WingedGrabber
+CreateObject pos= 8.75;-72.50 dir=0.0 type=PowerCell
+CreateObject pos=10.00;-72.50 dir=0.0 type=PowerCell
+CreateObject pos= 8.75;-71.25 dir=0.0 type=PowerCell
+CreateObject pos=10.00;-71.25 dir=0.0 type=PowerCell
+CreateObject pos=11.88;-72.50 dir=0.0 type=PowerCell
+CreateObject pos=11.88;-71.25 dir=0.0 type=PowerCell
+CreateObject pos=13.13;-72.50 dir=0.0 type=Titanium
+CreateObject pos=13.13;-71.25 dir=0.0 type=Titanium
+CreateObject pos=15.00;-72.50 dir=0.0 type=Titanium
+CreateObject pos=16.25;-72.50 dir=0.0 type=Titanium
+CreateObject pos=15.00;-71.25 dir=0.0 type=Titanium
+CreateObject pos=16.25;-71.25 dir=0.0 type=Titanium
+
+CreateObject pos=  0; 63 type=AlienWorm script1="worm02.txt" run=1 param=18;18
+CreateObject pos=-13; 67 type=AlienWorm script1="worm02.txt" run=1 param=15;17
+CreateObject pos=-33; 83 type=AlienWorm script1="worm02.txt" run=1 param=14;19
+CreateObject pos=-32;112 type=AlienWorm script1="worm02.txt" run=1 param=21;15
+CreateObject pos=-22;119 type=AlienWorm script1="worm02.txt" run=1 param=18;17
+CreateObject pos=  1;121 type=AlienWorm script1="worm02.txt" run=1 param=13;18
+CreateObject pos= 27;110 type=AlienWorm script1="worm02.txt" run=1 param=17;16
+CreateObject pos= 19; 90 type=AlienWorm script1="worm02.txt" run=1 param=15;18
+CreateObject pos=  2; 99 type=AlienWorm script1="worm02.txt" run=1 param=16;21
+
+// sud
+CreateObject pos=-52.50;23.75 dir=0.4 type=Quartz0
+CreateObject pos=-47.50;25.00 dir=0.0 type=Quartz1
+CreateObject pos=-15.00;16.25 dir=0.0 type=Quartz2
+CreateObject pos=-7.50;17.00 dir=0.7 type=Quartz3
+CreateObject pos=-5.00;15.00 dir=0.0 type=Quartz0
+CreateObject pos=0.00;20.00 dir=0.0 type=Quartz0
+CreateObject pos=12.50;12.50 dir=0.0 type=Quartz3
+CreateObject pos=50.00;37.50 dir=0.0 type=Quartz2
+CreateObject pos=57.50;55.00 dir=0.2 type=Quartz1
+
+// nord
+CreateObject pos=-22.50;170.00 dir=0.0 type=Quartz2
+CreateObject pos=-5.00;171.25 dir=0.4 type=Quartz0
+CreateObject pos=-1.25;165.00 dir=0.9 type=Quartz3
+CreateObject pos=0.00;170.00 dir=0.2 type=Quartz0
+CreateObject pos=25.00;165.00 dir=0.0 type=Quartz1
+
+// ouest
+CreateObject pos=-85.00;95.00 dir=0.1 type=Quartz1
+CreateObject pos=-90.00;97.50 dir=0.2 type=Quartz0
+CreateObject pos=-95.00;102.50 dir=0.1 type=Quartz2
+CreateObject pos=-85.00;80.00 dir=0.5 type=Quartz0
+
+// est
+CreateObject pos=70.00;75.00 dir=0.2 type=Quartz3
+CreateObject pos=80.00;90.00 dir=0.9 type=Quartz1
+CreateObject pos=82.50;96.25 dir=0.1 type=Quartz2
+CreateObject pos=85.00;100.00 dir=0.0 type=Quartz0
+
+// cratère
+CreateObject pos=-9.25; 97.50 dir=0.1 type=Quartz0 h=-0.5
+CreateObject pos=-8.00; 97.50 dir=0.2 type=Quartz1 h=1.5
+CreateObject pos=-5.00; 91.75 dir=0.0 type=Quartz2
+CreateObject pos=-3.75;106.50 dir=0.5 type=Quartz3 h=-1.0
+
+CreateObject pos=12.50; 88.25 dir=0.0 type=Quartz0 h=1.5
+CreateObject pos= 5.75; 89.00 dir=0.9 type=Quartz1 h=-0.6
+CreateObject pos=11.50;100.50 dir=0.5 type=Quartz2 h=1.0
+
+CreateObject pos=5.00;110.00 dir=0.0 type=Quartz1
+CreateObject pos=3.25;106.50 dir=0.9 type=Quartz2 h=1.5
+CreateObject pos=0.50;105.50 dir=0.8 type=Quartz0 h=-1.0
+
+CreateObject pos=106; -94 dir=0.0 type=TitaniumOre
+CreateObject pos=102; -96 dir=0.0 type=TitaniumOre
+CreateObject pos= 91; -92 dir=0.0 type=TitaniumOre
+CreateObject pos= 65;-106 dir=0.0 type=TitaniumOre
+CreateObject pos= 58;-112 dir=0.0 type=TitaniumOre
+CreateObject pos= 49;-148 dir=0.0 type=TitaniumOre
+CreateObject pos= 47;-152 dir=0.0 type=TitaniumOre
+CreateObject pos= 30;-141 dir=0.0 type=TitaniumOre
+
+CreateObject pos=   7;  99 dir=0.0 type=UraniumOre
+CreateObject pos=   6; 102 dir=0.1 type=UraniumOre
+CreateObject pos=   4;  91 dir=0.2 type=UraniumOre
+CreateObject pos=   1;  95 dir=0.3 type=UraniumOre
+CreateObject pos=  -5;  99 dir=0.4 type=UraniumOre
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 1.00 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.64 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.64 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.32 type=Object
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.00; 0.30 type=Quartz
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.30; 0.00 type=Quartz
+WaterColor color=-0.6;-0.1;-0.1;0.0
+
+MapColor floor=115;193;237 water=188;225;246
+MapZoom  factor=2
+
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=1000 type=TNT min=1
+
+Camera eye=12.50;5.00;-100.00 lookat=12.50;1.00;-78.25 delay=0

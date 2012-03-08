@@ -1,0 +1,8 @@
+\b;Exercise
+In this exercise, a "crazy bot" places many \l;blue crosses\u object\waypoint; on the ground. In order to find them, you can reuse the program written in the previous exercise. This can show you the flexibility of such a program: it adapts to whatever environment it encounters.
+
+\t;Remark
+Do not wait too long, because the crazy bot gets down to work immediately. Fortunately, as long as you are in the program editor, the game will pause.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

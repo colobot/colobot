@@ -1,0 +1,14 @@
+\b;Instruction \c;topo\n;
+Syntax:
+\s;\c;topo ( position );\n;
+
+Returns the altitude of the ground at a give position. The altitude zero corresponds to sea level. A negative value indicates that at this position ground is covered with water. 
+
+\t;position: \c;\l;point\u cbot\point;\n;
+Coordinates of the position whose altitude you want to know. 
+
+\t;Return value: \c;\l;float\u cbot\float;\n;
+Altitude of the ground at the given position.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

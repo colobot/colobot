@@ -1,0 +1,42 @@
+\b;Les références (pour spécialistes)
+CBOT travaille avec des références aux instances de \l;classes\u cbot\class; et aux \l;tableaux\u cbot\array;. Une instance est un élément physique contenant les informations liées à la classe. On peut comparer cela à une petite valise avec des conteneurs correspondants à la description de la classe. A chaque fois que l'on a besoin d'une nouvelle valise pour y mettre quelque chose, il faut créer une nouvelle instance. Les références, quant à elles, peuvent être considérées comme les porteurs de ces valises, à cela prêt qu'il y a souvent plusieurs porteurs pour la même valise. Une référence \c;\l;null\u cbot\null;\n; ne référence rien; c'est comparable à un porteur sans valise.
+Le fait qu'une instance à une classe soit créée automatiquement (\c;\l;new\u cbot\new;\n; sous-entendu) ne change pas ce concept. On peut donc copier une référence dans une autre et avoir plusieurs références vers une même instance¦:
+\c;\s;{
+\s;	MaClasse item1();  // crée une instance
+\s;	MaClasse item2;    // crée une référence nulle
+\s;	item2 = item1;     // copie la référence
+\s;	item1.a = 12;      // modifie aussi item2
+\s;	message(item2.a);  // affiche 12
+\s;}
+\n;
+En passage de paramètre, c'est toujours la référence qui est donnée à la \l;fonction\u cbot\function;¦:
+\c;\s;void Test( MaClasse item )
+\s;{
+\s;	item.a = 12;         // modifie l'instance d'origine
+\s;	item = new MaClasse();  // nouvelle instance locale
+\s;	item.a = 33;            // modifie l'instance locale
+\s;}
+\n;Un appel à cette fonction va donner cela¦:
+\c;\s;{
+\s;	MaClasse toto();
+\s;	Test(toto);
+\s;	message(toto.a);  // toto.a vaut 12
+\s;}
+\n;En effet, l'instance avec le résultat \c;33\n; n'était pointée que par \c;item\n; dans la fonction \c;Test\n;. A la sortie de \c;Test\n;, la référence \c;item\n; disparaît et l'instance qu'elle pointait n'a plus de raison d'être.
+
+Une \l;fonction\u cbot\function; peut rendre une instance en sortie. Pour cela, il faut la définir ainsi¦:
+\c;\s;MaClasse Test2( )
+\s;{
+\s;	MaClasse item = new MaClasse();
+\s;	item.x = 33;
+\s;	return item;
+\s;}
+\n;L'appel à cette fonction se fait alors ainsi¦:
+\c;\s;{
+\s;	MaClasse toto;
+\s;	toto = Test2();
+\s;	message(toto.a);  // affiche 33
+\s;}
+\n;
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

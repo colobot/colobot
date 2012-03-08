@@ -1,0 +1,11 @@
+\b;Solution
+Il faut quitter très vite l'ancienne base, car tout explose. Suivez ensuite le chemin de la mission précédente en sens inverse.
+
+Les \l;fourmis\u object\ant; sont assez faciles à éviter. Si le niveau de votre bouclier baisse de manière alarmante, trouvez un coin tranquille et attendez que vos blessures guérissent.
+
+Les \l;araignées\u object\spider; fonctionnent à la manière de commandos suicides. Dès qu'elles aperçoivent une cible, elles font exploser leur énorme abdomen. Un seul fragment suffit pour vous tuer. Par chance, l'araignée meurt dans l'opération. Une technique risquée mais efficace pour se débarrasser d'une araignée consiste à s'approcher assez près. Dès que son abdomen commence à gonfler, décollez en marche arrière. Vous pouvez également la survoler à basse altitude. Dans les deux cas, lors de l'explosion, vous êtes hors de portée.
+
+Dès que vous avez atteint un piton rocheux tranquille, vous pouvez utiliser le \l;robot orgaShooter\u object\botoj; pour éliminer les insectes qui rendent votre retour périlleux. Faites attention cependant à ne pas le perdre, sinon toute l'opération aura été inutile!
+
+\t;Voir aussi
+\l;Commandes\u command;.

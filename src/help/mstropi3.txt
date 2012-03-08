@@ -1,0 +1,13 @@
+\b;Solution
+1) Trouvez le \l;cube de titanium\u object\titan; à l'ouest, vers le drapeau bleu, marqué avec une croix bleue sur la mini-carte. Sans déplacer le cube, vous pouvez construire directement une \l;station de recharge\u object\station;.
+
+2) Avec les cubes de titanium sur le vaisseau, construisez un \l;centre de recherches\u object\research; et exécutez la recherche <canon shooter>.
+
+3) Construisez une \l;fabrique de robots\u object\factory; et un \l;robot shooter volant\u object\botfj;. Si ce robot est détruit par les tirs des fourmis, des cubes de titanium supplémentaires se trouvent dans une vallée au nord-ouest. Vous pouvez les ramener avec le \l;déménageur volant\u object\botgj;\n;.
+
+4) Construisez un \l;radar\u object\radar; pour voir les fourmis sur la carte. Vous pouvez à présent partir à la chasse aux fourmis. Faites cependant attention à ne pas tomber en panne d'énergie et à ne pas faire surchauffer le réacteur au-dessus de l'eau; votre robot explose s'il tombe dans l'eau.
+
+5) Une fois que vous avez éliminé toutes les fourmis, embarquez et décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

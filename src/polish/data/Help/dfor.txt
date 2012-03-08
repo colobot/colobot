@@ -1,0 +1,11 @@
+\b;Æwiczenie
+Zniszcz wszystkie cztery \l;cele\u object\bottarg; u¿ywaj¹c programu z pêtl¹ \c;for\n;. Odleg³oœæ pomiêdzy celami jest równa 10 metrów.
+
+\b;Przydatne instrukcje
+\c;\l;for\u cbot\for;\n; pêtla powtarzaj¹ca instrukcje
+\c;\l;move\u cbot\move;\n; poruszanie robotem
+\c;\l;turn\u cbot\turn;\n; obracanie robota
+\c;\l;fire\u cbot\fire;\n; strzelanie z dzia³a
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,0 +1,12 @@
+\b;Instruction \c;strupper\n;
+Convert all characters in a string to uppercase.
+
+Syntax¦:
+\s;\c;strupper ( string );\n;
+
+Examples¦:
+\s;\c;	string s = strupper("Abc");  // s is "ABC"
+\n;
+\t;See also
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strlower\u cbot\strlower;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

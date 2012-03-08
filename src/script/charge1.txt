@@ -1,0 +1,13 @@
+extern void object::Recharge1()
+{
+	point  depart;         // variable pour pos. initiale
+	object chose;          // info sur la station
+	
+	depart = position;     // mémorise position initiale
+	
+	chose = radar(PowerStation); // cherche station
+	goto(chose.position);  // va sur la station
+	wait(5);               // attend 5 secondes
+	
+	goto(depart);          // revient à la pos. initiale
+}

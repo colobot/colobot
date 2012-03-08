@@ -1,0 +1,20 @@
+\b;Rapport du satellite
+En orbite géostationnaire autour d'Orphéon.
+\c;
+\s;-> SURFACE\c;
+\tab;Température:      -72.8 degrés
+\tab;Atmosphère:       oxygène, ozone, oxydes d'azote
+\tab;Vent:             6.4 m/s
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+
+\s;-> SOUS-SOL\c;
+\tab;Energie:          aucune
+\tab;Minerai titanium: par endroits
+\tab;Minerai uranium:  aucun
+
+\s;-> INFORMATIONS SPECIALES\c;
+\tab;Détecté:          orages magnétiques violents
+\tab;Détecté:          fourmis géantes à proximité
+\tab;  - Danger:       oui, pas imminent
+\n;

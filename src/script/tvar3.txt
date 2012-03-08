@@ -1,0 +1,15 @@
+extern void object::Solution( )
+{
+	pendown(Pink);
+	int côté;
+	côté = 10;
+	repeat ( 3 )
+	{
+		repeat ( 4 )
+		{
+			move(côté);
+			turn(90);
+		}
+		côté = côté+5;
+	}
+}

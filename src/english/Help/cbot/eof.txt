@@ -1,0 +1,15 @@
+\b;Instruction \c;eof\n;
+Test the end of file condition of an open file. This is a method of the \c;\l;file\u cbot\file;\n; class; therefore you cannot write  \c;eof()\n; but only \c;handle.eof()\n;¦:
+\c;
+\s;	if ( handle.eof() )  
+\n;
+Example¦:
+\c;
+\s;	while ( not handle.eof() )
+\s;	{
+\s;		s = handle.readln();
+\s;	}
+\n;
+\t;See also
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;readln\u cbot\readln;\n; and \c;\l;writeln\u cbot\writeln;\n;.
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,33 @@
+extern void object::FollowPhazer()
+{
+	object    item;              // informacje o dziale fazowym
+	point     dest;              // pozycja docelowa
+	float     dist;              // odleg³oœæ do dzia³a fazowego
+
+	item = radar(PhazerShooter);
+	if ( item == null )
+	{
+		message("Nie znaleziono dzia³a fazowego");
+		return;                  // zatrzymaj program
+	}
+	shield(1, 25);               // aktywuj os³onê
+	
+	while ( true )               // powtarzaj w nieskoñczonoœæ
+	{
+		item = radar(PhazerShooter);// znajdŸ dzia³o fazowe
+		if ( item == null )  break;
+
+		dist = distance(item.position, position);
+		if ( dist < 5 )
+		{                        // jeœli jest bli¿ej ni¿ 5 m:
+			wait(1);             // czekaj
+		}
+		else                     // w przeciwnym przypadku:
+		{	// Oblicz pozycjê 5 m przed dzia³em fazowym
+			dest.x = (item.position.x-position.x)*((dist-5)/dist)+position.x;
+			dest.y = (item.position.y-position.y)*((dist-5)/dist)+position.y;
+			dest.z = (item.position.z-position.z)*((dist-5)/dist)+position.z;
+			goto(dest, 0, 1, 1); // i idŸ tam
+		}
+	}
+}

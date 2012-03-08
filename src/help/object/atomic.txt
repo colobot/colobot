@@ -1,0 +1,15 @@
+\b;Pile atomique
+\image atomic 4 4;
+La pile atomique fournit l'énergie aux robots, ainsi qu'à certains bâtiments. Elle offre une capacité 10 fois plus grande que la \l;pile normale\u object\power;.
+
+Les piles atomiques ne peuvent être ni rechargées, ni recyclées.
+Pour produire une pile atomique, il faut une \l;centrale nucléaire\u object\nuclear; et du \l;minerai d'uranium\u object\uranore;.
+
+\t;Transport
+Tous les \l;robots déménageurs\u object\botgr; ou le \l;cosmomaute\u object\human;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;NuclearCell\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

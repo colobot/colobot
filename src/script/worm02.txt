@@ -1,0 +1,111 @@
+extern void object::Attack( )
+{
+	int     list[];
+	int     i;
+	object  p;
+	float   dim, dist, prox;
+	point   nav1, nav2, nav3, nav4, dest, center;
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	i = 0;
+	list[i++] = WingedGrabber;
+	list[i++] = TrackedGrabber;
+	list[i++] = WheeledGrabber;
+	list[i++] = LeggedGrabber;
+	list[i++] = WingedShooter;
+	list[i++] = TrackedShooter;
+	list[i++] = WheeledShooter;
+	list[i++] = LeggedShooter;
+	list[i++] = WingedOrgaShooter;
+	list[i++] = TrackedOrgaShooter;
+	list[i++] = WheeledOrgaShooter;
+	list[i++] = LeggedOrgaShooter;
+	list[i++] = WingedSniffer;
+	list[i++] = TrackedSniffer;
+	list[i++] = WheeledSniffer;
+	list[i++] = LeggedSniffer;
+	list[i++] = Thumper;
+	list[i++] = PhazerShooter;
+	list[i++] = Recycler;
+	list[i++] = Shielder;
+	list[i++] = Subber;
+	list[i++] = RadarStation;
+//	list[i++] = DefenseTower;
+
+	while ( true )
+	{
+		p = TargetSearch(list);  // cherche cible
+		if ( p == null )
+		{
+			dim = 1+rand()*2;
+			nav1.x = position.x+dim;
+			nav1.y = position.y+dim;
+			nav2.x = position.x+dim;
+			nav2.y = position.y-dim;
+			nav3.x = position.x-dim;
+			nav3.y = position.y-dim;
+			nav4.x = position.x-dim;
+			nav4.y = position.y+dim;
+
+			while ( true )
+			{
+				goto(nav1);
+				p = TargetSearch(list);
+				if ( p != null )  break;
+
+				goto(nav2);
+				p = TargetSearch(list);
+				if ( p != null )  break;
+
+				goto(nav3);
+				p = TargetSearch(list);
+				if ( p != null )  break;
+
+				goto(nav4);
+				p = TargetSearch(list);
+				if ( p != null )  break;
+			}
+		}
+		else
+		{
+			dist = distance(p.position, position);
+			prox = dist/2;  // on se rapproche
+			if ( prox < 2.5 )
+			{
+				dest.x = position.x+(rand()-0.5)*8;
+				dest.y = position.y+(rand()-0.5)*8;
+				dest.z = position.z;
+			}
+			else
+			{
+				dest.x = (position.x-p.position.x)*prox/dist + p.position.x;
+				dest.y = (position.y-p.position.y)*prox/dist + p.position.y;
+				dest.z = (position.z-p.position.z)*prox/dist + p.position.z;
+			}
+			goto(dest);  // va sur la cible
+		}
+	}
+}
+
+// Cherche une cible sur l'île. Si la cible est plus loin,
+// elle est ignorée.
+
+object object::TargetSearch(int[] list)
+{
+	object  p;
+	point   center;
+	float   dist;
+
+	p = radar(list);
+	if ( p == null )  return null;
+
+	center.x = 0;
+	center.y = 100;  // sommet de l'île
+	center.z = p.position.z;
+	dist = distance(p.position, center);
+	if ( dist > 80 )  return null;  // ignore si trop loin
+
+	return p;
+}

@@ -1,0 +1,107 @@
+object object :: TT ( int n )
+{
+	object	XX = radar();
+	if ( n == 0 ) return null;
+
+	while ( null == XX ) XX = radar();
+	return XX;
+}
+
+extern void object::Attack( )
+{
+	show	( TT ( 0 ) ) ;
+	show	( TT ( 1 ) ) ;
+	return;
+
+	int		list[];
+	int		i;
+	object	p;
+	float	dist, prox;
+	point	dest;
+	boolean	advance = true;
+
+	TEST(0);  // ne stoppe pas si erreur
+//	while ( F () != 0 )  F(1);
+
+	i = 0;
+	list[i++] = WingedGrabber;
+	list[i++] = TrackedGrabber;
+	list[i++] = WheeledGrabber;
+	list[i++] = LeggedGrabber;
+	list[i++] = WingedShooter;
+	list[i++] = TrackedShooter;
+	list[i++] = WheeledShooter;
+	list[i++] = LeggedShooter;
+	list[i++] = WingedOrgaShooter;
+	list[i++] = TrackedOrgaShooter;
+	list[i++] = WheeledOrgaShooter;
+	list[i++] = LeggedOrgaShooter;
+	list[i++] = WingedSniffer;
+	list[i++] = TrackedSniffer;
+	list[i++] = WheeledSniffer;
+	list[i++] = LeggedSniffer;
+	list[i++] = Thumper;
+	list[i++] = PhazerShooter;
+	list[i++] = Recycler;
+	list[i++] = Shielder;
+	list[i++] = Subber;
+	list[i++] = Me;
+	list[i++] = 3333;
+	list[i++] = 3334;
+	list[i++] = 3335;
+	list[i++] = 3336;
+	list[i++] = 3337;
+	list[i++] = 3338;
+	list[i++] =  3339;
+	list[i++] = 3331;
+	list[i++] = 3332;
+	list[i++] = 3330;
+	list[i++] = 1111;
+	list[i++] = 1112;
+
+	F(F(0));
+
+	while ( true )
+	{
+		p = radar(list, 0, 360, 0, 1000);
+		if ( p == null )
+		{
+			F(2);
+		}
+		else
+		{
+			dist = F(p.position, position);
+			if ( dist <= 40 && !advance )
+			{
+				fire(p.position);
+				advance = true;
+			}
+			else
+			{
+//?				if ( RetBaseDistance() > 20 )
+				{
+					prox = dist-(5+F()*5);
+					if ( prox < 5 )  prox = 5;
+					dest.x = (position.x-p.position.x)*prox/dist + p.position.x;
+					dest.y = (position.y-p.position.y)*prox/dist + p.position.y;
+					dest.z = (position.z-p.position.z)*prox/dist + p.position.z;
+					goto(dest);
+					advance = false;
+				}
+			}
+		}
+	}
+}
+
+// Calcule la distance jusqu'à la base.
+
+float object::RetBaseDistance()
+{
+	object	p;
+	float	dist;
+
+	p = radar(4444, 0, 360, 0, 1000);
+	if ( p == null )  return 1000;
+	dist = F(p.position, position);
+	return dist;
+}

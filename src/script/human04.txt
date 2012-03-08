@@ -1,0 +1,10 @@
+extern void object::Activity( )
+{
+	errmode(0);  // ne stoppe pas si erreur
+
+	while ( true )
+	{
+		goto(15,-6, 0,0,1);
+		goto(2,-6, 0,0,1);
+	}
+}

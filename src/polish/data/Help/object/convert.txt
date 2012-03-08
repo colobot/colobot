@@ -1,0 +1,24 @@
+\b;\button 162; Huta
+\image convert 8 8;
+Ten budynek zosta³ zaprojektowany do przetapiania \l;rudy tytan\u object\titanore; na \l;kostki tytanu\u object\titan;. Wszystko, co trzeba zrobiæ, to umieœciæ porcjê rudy tytanu na œrodku platformy i cofn¹æ siê. Ruda zostanie przetopiona na tytan.
+
+\t;Wymagania
+P³aska powierzchnia szeroka na minimum 6 metrów.
+
+\t;Wejœcie
+Ruda tytanu.
+
+\t;Wyjœcie
+Tytan.
+
+\t;ród³o zasilania
+Brak.
+
+\t;Czas dzia³ania
+15 sekund.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;Converter\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,0 +1,5 @@
+\b;Type \c;bool\n;
+In a variable of this type you can put a boolean value, that is a value that can take only two states: true or false. 
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

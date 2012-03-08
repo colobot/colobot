@@ -1,0 +1,20 @@
+\b;\button 152; Robot renifleur
+\image botss 8 8;
+Robot à pattes d'exploration du sous-sol. Si le robot découvre quelque chose, il dépose les marques suivantes¦:
+
+\l;Croix rouge\u object\stonspot; -> \l;minerai de titanium\u object\titanore;.
+\l;Rond jaune\u object\uranspot;  -> \l;minerai d'uranium\u object\uranore;.
+\l;Croix verte\u object\enerspot; -> énergie, utile par exemple pour la \l;station de recharge\u object\station;.
+
+Les robots à pattes consomment deux fois moins d'énergie que les \l;robots à roues\u object\botsr; lors des déplacements. De plus, ils peuvent gravir de très fortes pentes.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;LeggedSniffer\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le bras chercheur par programmation, il faut utiliser l'instruction \c;\l;sniff\u cbot\sniff;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

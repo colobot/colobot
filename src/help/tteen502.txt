@@ -1,0 +1,31 @@
+\b;Désintégrateur
+Déplacer un vieux boulon rouillé est un bon début, mais ce n'est pas suffisant pour nettoyer la nature. Il faut encore le détruire définitivement. Pour cela, tu dois utiliser un désintégrateur miniature qui casse la structure moléculaire de la matière. Cet appareil fantastique est capable de détruire rapidement toutes les matières métalliques¦:
+
+\image energy 8 8;
+La situation est semblable à l'exercice précédent. Le désintégrateur remplace la plate-forme¦:
+
+\image teen501 8 8;
+Tu dois avancer, saisir le boulon, faire demi-tour, avancer jusqu'au désintégrateur et finalement déposer le boulon. Mais le désintégrateur produit un gros dégagement de chaleur. Par sécurité, il refuse de fonctionner tant que le robot reste à proximité.
+
+\b;Reculer
+Tu dois donc encore reculer le robot de 10 centimètres au moins. Tu te souviens sans doute de l'instruction \c;turn();\n; qui accepte des nombres positifs ou négatifs pour tourner à gauche ou à droite. Et bien, \c;move();\n; accepte aussi un nombre négatif, pour reculer. Par exemple, pour reculer de 10 centimètres¦:
+\c;
+\s;move(-10);
+\n;
+\b;Programme
+Le programme à écrire est donc¦:
+
+\s;o  Avance de 70 centimètres
+\s;o  Prend le boulon
+\s;o  Demi-tour
+\s;o  Avance de 110 centimètres (70+40)
+\s;o  Dépose le boulon
+\s;o  Recule de 10 centimètres
+
+\b;Rappel
+Utilise les instructions suivantes pour prendre et déposer des objets¦:
+
+\s;\c;grab();   \n;prend
+\s;\c;drop();   \n;dépose
+
+A toi d'écrire le programme ...

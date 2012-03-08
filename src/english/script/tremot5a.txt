@@ -1,0 +1,22 @@
+extern void object::Remote5( )
+{
+	SendOrder(1, 20);  // move(20);
+	SendOrder(2, 90);  // turn(90);
+	SendOrder(1, 20);  // move(20);
+	SendOrder(2, 90);  // turn(90);
+	SendOrder(1, 10);  // move(10);
+	SendOrder(2, 90);  // turn(90);
+	SendOrder(1, 10);  // move(10);
+	SendOrder(2,-90);  // turn(-90);
+	SendOrder(1, 10);  // move(10);
+}
+
+void object::SendOrder(float order, float param)
+{
+	exchange list();
+	order    todo();
+
+	todo.m_type = order;
+	todo.m_param = param;
+	list.put(todo);
+}

@@ -1,0 +1,13 @@
+\b;Instructions de Houston
+Nous avons reçu des informations sur un nouveau système d'armement que la première expédition a mis au point. Ce système est mis à l'abri des attaques ennemies dans un bunker. Les quatre \l;clés\u object\key; qui y donnent accès sont disséminées sur toute la planète. Le satellite en a repéré une au nord de votre position. Ramenez-la sur le vaisseau.
+
+Suite à la pression du Congrès, nous avons développé une arme défensive qui peut vous être utile. Il s'agit d'un \l;robot bouclier\u object\botshld;, qui vous protège dans un certain périmètre de toute attaque ennemie. Votre \l;centre de recherches\u object\research; a reçu les informations correspondantes. Nous vous avons transmis deux programmes adaptés à ce nouveau robot.
+
+La première expédition nous a indiqué que la présence d'\l;uranium\u object\uranore; dans le sous-sol favorise la croissance de certains champignons, et que le \l;minerai de titanium\u object\titanore; se trouve souvent au fond des lacs. 
+
+Avant de décoller, amenez un \l;robot bouclier\u object\botshld; et un \l;sous-marin\u object\botsub; sur le vaisseau.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

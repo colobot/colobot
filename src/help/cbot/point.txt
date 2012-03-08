@@ -1,0 +1,38 @@
+\b;Type \c;point\n;
+Ce type permet de représenter les coordonnées d'un point dans l'espace. Ce type contient en fait 3 nombres réels, pour les coordonnées \c;x\n;, \c;y\n; et \c;z\n;.
+\c;x\n; et \c;y\n; correspondent à la position sur le sol, à plat. \c;x\n; positif va en direction de l'est et \c;y\n; positif va en direction du nord.
+\c;z\n; correspond à l'élévation.
+
+Pour déclarer et initialiser un point, vous pouvez écrire¦:
+\c;
+\s;	point a (10, 20, 30);
+\n;
+Il est possible d'accéder à une coordonnée particulière avec¦:
+\c;
+\s;	point b;
+\s;	b.x = 10;
+\s;	b.y = 20;
+\s;	b.z = 30;
+\n;
+Avec ces deux exemples, la \l;condition\u cbot\cond; suivante est vraie¦:
+\c;
+\s;	if ( a == b )
+\s;	{
+\s;	}
+\n;
+La déclaration suivante¦:
+\c;
+\s;	point c (4, 7);
+\n;
+Est équivalente à¦:
+\c;
+\s;	point c;
+\s;	c.x = 4;
+\s;	c.y = 7;
+\s;	c.z = 0;
+\n;
+\t;Dictionnaire anglais-français
+\c;point\n; = point
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

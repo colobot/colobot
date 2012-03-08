@@ -1,0 +1,11 @@
+\b;Walkthrough
+1) Power a \l;legged shooter\u object\botfs;. There is even a \l;nuclear cell\u object\atomic; left behind the \l;bot factory\u object\factory;.
+
+2) Climb the northern cliff and kill a few \l;ants\u object\ant;. The best access is from the east.
+
+3) Keep going until all ants are out of the way.
+
+4) Climb the northern cliff with a \l;legged grabber\u object\botgs; and retrieve the \l;black box\u object\bbox; that you will find in the derelict bot factory.
+
+\t;See also
+\l;Controls\u command;

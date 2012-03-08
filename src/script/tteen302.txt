@@ -1,0 +1,9 @@
+extern void object::Solution()
+{
+	pendown(Orange);
+	repeat(4)
+	{
+		move(20);
+		turn(90);
+	}
+}

@@ -1,0 +1,20 @@
+\b;Instrukcja \c;readln\n;
+Wczytuje jedn¹ liniê z otwartego pliku w folderze files/. Jest to metoda klasy \c;\l;file\u cbot\file;\n;, dlatego te¿ zawsze nale¿y u¿ywaæ konstrukcji \c;handle.readln()\n;¦:
+\c;
+\s;	s = handle.readln();
+\n;
+Plik musi byæ otwarty do odczytu (\c;"r"\n;) przy u¿yciu instrukcji \c;\l;open\u cbot\open;\n;. Metoda \c;readln\n; zwraca ca³y wiersz ale bez znaków koñca linii 0x0D (CR) i 0x0A (LF)
+
+Sk³adnia¦:
+\s;\c;string = handle.readln ( );\n;
+
+Przyk³ad¦:
+\c;
+\s;	string s;
+\s;	s = handle.readln();
+\s;	if ( s == "abc" )
+\s;	...
+\n;
+\t;Zobacz równie¿
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;writeln\u cbot\writeln;\n; i \c;\l;eof\u cbot\eof;\n;.
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

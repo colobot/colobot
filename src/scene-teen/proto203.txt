@@ -1,0 +1,103 @@
+Title.F  text="Aride gris"
+Resume.F text="Aride gris"
+Title.E  text="Aride gris"
+Resume.E text="Aride gris"
+HelpFile name="cbot.txt"
+
+AmbiantColor   air=102;102;102;102 water=20;20;20;20  // grey
+BackColor      air=104;104;104;0 water=10;100;20;0  // grey
+FogColor       air=104;104;104;0 water=10;100;20;0  // grey
+DeepView       air=125.00 water=25.00 
+FogStart       air=0.5 water=0.1
+SecondTexture  rank=3
+FrontsizeName  image="lens5.tga"
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.7
+TerrainWind         speed=-2.0;0.0
+TerrainRelief       image="textures\relief05.bmp" factor=1.0
+TerrainResource     image="textures\res00.bmp"
+TerrainWater        image="lava02.tga" level=30.0 moveX=1.0 moveY=0.3
+TerrainCloud        image="cloud03.tga" level=125.0
+TerrainInitTextures image="terra" dx=1 dy=1 table=1
+TerrainCreate
+
+BeginObject
+CreateObject pos=12.50;-75.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos=12.50;-78.25 dir=1.5 type=Me
+CreateObject pos=15.75;-78.25 dir=1.5 type=WheeledGrabber script1="charge.txt"
+//CreateObject pos=  37.0;-313.0 dir=1.5 type=WingedGrabber
+CreateObject pos=8.75;-72.50 dir=0.0 type=Titanium
+CreateObject pos=10.00;-72.50 dir=0.0 type=Titanium
+CreateObject pos=8.75;-71.25 dir=0.0 type=Titanium
+CreateObject pos=10.00;-71.25 dir=0.0 type=Titanium
+CreateObject pos=11.88;-72.50 dir=0.0 type=Titanium
+CreateObject pos=11.88;-71.25 dir=0.0 type=Titanium
+CreateObject pos=13.13;-72.50 dir=0.0 type=PowerCell
+CreateObject pos=13.13;-71.25 dir=0.0 type=PowerCell
+CreateObject pos=15.00;-72.50 dir=0.0 type=PowerCell
+CreateObject pos=16.25;-72.50 dir=0.0 type=PowerCell
+CreateObject pos=15.00;-71.25 dir=0.0 type=PowerCell
+CreateObject pos=16.25;-71.25 dir=0.0 type=PowerCell
+
+// sud
+CreateObject pos=-52.50;23.75 dir=0.4 type=MegaStalk0
+CreateObject pos=-47.50;25.00 dir=0.0 type=MegaStalk1
+CreateObject pos=-15.00;16.25 dir=0.0 type=MegaStalk2
+CreateObject pos=-7.50;17.00 dir=0.7 type=MegaStalk3
+CreateObject pos=-5.00;15.00 dir=0.0 type=MegaStalk4
+CreateObject pos=0.00;20.00 dir=0.0 type=MegaStalk0
+CreateObject pos=12.50;12.50 dir=0.0 type=MegaStalk3
+CreateObject pos=50.00;37.50 dir=0.0 type=MegaStalk2
+CreateObject pos=57.50;55.00 dir=0.2 type=MegaStalk1
+
+// nord
+CreateObject pos=-22.50;170.00 dir=0.0 type=MegaStalk2
+CreateObject pos=-5.00;171.25 dir=0.4 type=MegaStalk4
+CreateObject pos=-1.25;165.00 dir=0.9 type=MegaStalk3
+CreateObject pos=0.00;170.00 dir=0.2 type=MegaStalk0
+CreateObject pos=25.00;165.00 dir=0.0 type=MegaStalk1
+
+// ouest
+CreateObject pos=-85.00;95.00 dir=0.1 type=MegaStalk1
+CreateObject pos=-90.00;97.50 dir=0.2 type=MegaStalk4
+CreateObject pos=-95.00;102.50 dir=0.1 type=MegaStalk2
+CreateObject pos=-85.00;80.00 dir=0.5 type=MegaStalk0
+
+// est
+CreateObject pos=70.00;75.00 dir=0.2 type=MegaStalk3
+CreateObject pos=80.00;90.00 dir=0.9 type=MegaStalk1
+CreateObject pos=82.50;96.25 dir=0.1 type=MegaStalk2
+CreateObject pos=85.00;100.00 dir=0.0 type=MegaStalk4
+
+// cratère
+CreateObject pos=-9.25;97.50 dir=0.1 type=MegaStalk0 h=-0.5
+CreateObject pos=-8.00;97.50 dir=0.2 type=MegaStalk1 h=1.5
+CreateObject pos=-5.00;95.75 dir=0.0 type=MegaStalk2
+CreateObject pos=-3.75;104.50 dir=0.5 type=MegaStalk3 h=-1.0
+
+CreateObject pos=12.50;88.25 dir=0.0 type=MegaStalk0 h=1.5
+CreateObject pos=5.75;95.00 dir=0.9 type=MegaStalk1 h=-0.6
+CreateObject pos=7.50;100.50 dir=0.3 type=MegaStalk2 h=1.0
+
+CreateObject pos=5.00;105.00 dir=0.0 type=MegaStalk1
+CreateObject pos=3.25;101.50 dir=0.2 type=MegaStalk4 h=1.5
+CreateObject pos=0.50;102.50 dir=0.8 type=MegaStalk3 h=-1.0
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.6;-0.1;-0.1;0.0
+MapColor floor=106;104;102 water=131;152;131
+
+EnableBuild type=FACTORY
+EnableBuild type=RADAR
+EnableBuild type=RESEARCH
+EnableResearch type=WINGER
+
+EndMissionTake pos=6.50;96.50 dist=45.00 type=RADAR min=1
+
+Camera pos=12.50;-250.00 h=2.50 

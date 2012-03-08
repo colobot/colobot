@@ -1,0 +1,18 @@
+\b;\button 154; Robot orgaShooter
+\image botoc 8 8;
+Robot à chenilles avec un canon orgaShooter.
+
+Le canon orgaShooter est plus efficace que le \l;canon shooter\u object\botfc;. Il projette de petites boules de matière organique corrosive. Une \l;pile normale\u object\power; permet de tirer onze fois.
+
+Les chenilles permettent de gravir de fortes pentes. En contre-partie, le déplacement est lent et gourmand en énergie. Pour de courtes distances en terrain relativement plat, il vaut mieux opter pour une propulsion à \l;roues\u object\botor;. Quand il est possible de construire des \l;robots volants\u object\botoj;, ceux-ci représentent la meilleure solution pour les longues distances.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;TrackedOrgaShooter\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le canon par programmation, il faut utiliser l'instruction \c;\l;fire\u cbot\fire;\n;. L'instruction \c;\l;aim\u cbot\aim;\n; permet de l'orienter vers le haut ou vers le bas.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

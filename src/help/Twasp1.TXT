@@ -1,0 +1,41 @@
+\b;Objectif
+Attraper des \l;guêpes\u object\wasp; en vol.
+
+\b;Programme
+Voici encore une fois le programme de l'exercice précédent qui tire sur les fourmis en s'adaptant à la topologie du terrain¦:
+\c;
+\s;extern void object::Chasseur2()
+\s;{
+\s;	object    chose;
+\s;	
+\s;	aim(-20);
+\s;	
+\s;	while ( true )
+\s;	{
+\s;		while ( radar(AlienAnt, 0, 360, 0, 20) == null )
+\s;		{
+\s;			chose = radar(AlienAnt);
+\s;			turn(direction(chose.position));
+\s;			motor(1,1);
+\s;			jet(0);
+\s;			if ( position.z-topo(position) < 6 )
+\s;			{
+\s;				jet(1);
+\s;			}
+\s;			
+\s;			if ( position.z-topo(position) > 9 )
+\s;			{
+\s;				jet(-1);
+\s;			}
+\s;			wait(0.2);
+\s;		}
+\s;		fire(1);
+\s;	}
+\s;}
+\n;
+Pour que le shooter soit capable d'attraper des guêpes en vol, il faut faire quelques changements. Il faut remplacer tous les \c;\l;radar\u cbot\radar;(AlienAnt)\n; par \c;radar(AlienWasp)\n;. Le canon doit viser tout droit et non pas vers le bas, remplacez \c;\l;aim\u cbot\aim;(-20);\n; par \c;aim(0);\n;. Et le robot doit voler à la même altitude que la guêpe. Pour cela, il faut comparer l'altitude du robot donnée par \c;position.z\n; avec l'altitude de la guêpe donné par \c;chose.position.z\n;. Si \c;position.z > chose.position.z\n;, il faut descendre doucement avec \c;\l;jet\u cbot\jet;(-0.3);\n;. Si \c;position.z < chose.position.z-1\n;, il faut monter doucement avec \c;\l;jet\u cbot\jet;(0.3);\n;. Comme un robot shooter est plus haut qu'une guêpe, il vaut mieux que le robot soit un peu plus bas: on admet donc que l'altitude du robot soit située entre l'altitude de la guêpe et l'altitude de la guêpe moins 1.
+
+\b;Perfectionnement
+Les guêpes se déplacent très vite. Pour avoir plus de chances de les attraper, il vaut mieux juste avant le \c;\l;fire\u cbot\fire;(1);\n; refaire un \c;\l;radar\u cbot\radar;()\n; et un \c;\l;turn\u cbot\turn;()\n; pour faire un dernier ajustement de la direction avant le tir.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!

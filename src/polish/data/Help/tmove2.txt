@@ -1,0 +1,66 @@
+\b;Æwiczenie
+To æwiczenie jest bardzo podobne do poprzedniego. Robot musi siê poruszaæ dok³adnie w ten sam sposób, ale podczas pisania programu musisz u¿yæ nowego, niezwykle wa¿nego w programowaniu rozwi¹zania, a mianowicie \l;zmiennych\u cbot\var;.
+Jak wiadomo, odleg³oœci pomiêdzy platformami wynosz¹ 20 metrów, a wszystkie wykonywane obroty maj¹ po 90 stopni. Zamiast w programie wci¹¿ przepisywaæ te same wartoœci, mo¿na przechowaæ je w zmiennych: 
+
+Zamiast:
+\c;\s;	move(20);
+\s;	turn(90);
+\s;	move(20);
+\s;	turn(-90);
+\s;	...
+\n;
+Napiszemy:
+\c;\s;	dist = 20;
+\s;	dir = 90;
+\s;	move(dist);
+\s;	turn(dir);
+\s;	move(dist);
+\s;	turn(-dir);
+\s;	...
+\n;
+\b;Zmienne
+\l;Zmienna\u cbot\var; sk³ada siê z trzech elementów: 
+1) Nazwy
+2) Typu zawartoœci
+3) Zawartoœci
+
+\t;Nazwa
+Nazwa s³u¿y do odwo³ywania siê do zmiennej. Zamiast pisaæ \c;move(20);\n;, wystarczy napisaæ \c;move(dist);\n;, gdzie "dist" jest nazw¹ zmiennej. Zmiennej mo¿na nadaæ prawie dowoln¹ nazwê, na przyk³ad \c;dist\n;, \c;dir\n;, \c;p2\n;, \c;a\n;, \c;x\n;, \c;nothing_2_grab\n;, itd.
+
+\t;Typ
+Typ zmiennej okreœla jaki rodzaj informacji jest przechowywany przez zmienn¹. Zale¿nie od typu, zmienna mo¿e zawieraæ liczby ca³kowite, liczby rzeczywiste, ci¹gi znakowe, wspó³rzêdne punktu, itd. Oto lista najbardziej popularnych typów zmiennych: 
+  o  \c;\l;int\u cbot\int;\n; dla liczb ca³kowitych (12, -500, itd.)
+  o  \c;\l;float\u cbot\float;\n; dla liczb rzeczywistych (3.14, 0.2, -99.98, itd.)
+  o  \c;\l;string\u cbot\string;\n; dla ³añcuchów znakowych ("Czeœæ!", "Nie ma nic do podniesienia", itd.)
+  o  \c;\l;point\u cbot\point;\n; dla wspó³rzêdnych przestrzeni x, y, z
+  o  \c;\l;object\u cbot\object;\n; dla informacji o obiekcie (robocie, budynku, itd.) 
+
+\t;Zawartoœæ
+Zawartoœci¹ zmiennej mo¿e byæ liczba, ³añcuch, wspó³rzêdne, itd., zale¿nie od typu zmiennej. Zawartoœæ zmiennej mo¿e byæ wielokrotnie modyfikowana w trakcie wykonywania programu. 
+
+Przed u¿yciem zmiennej konieczne jest jej zadeklarowanie. Na przyk³ad przed u¿yciem dwóch zmiennych \c;dist\n; i \c;dir\n;, nale¿y je zadeklarowaæ w nastêpuj¹cy sposób: 
+\c;
+\s;	float  dist;
+\s;	float  dir;
+\n;
+Teraz ju¿ mo¿na ich u¿ywaæ. Aby przypisaæ zmiennej \c;dist\n; wartoœæ 20 a zmiennej \c;dir\n; wartoœæ 90, napisz:
+\c;
+\s;	dist = 20;
+\s;	dir = 90;
+\n;
+Teraz mo¿na poruszaæ i obracaæ robota instrukcjami \c;\l;move\u cbot\move;\n; i \c;\l;turn\n;\u cbot\turn;:
+\c;
+\s;	move(dist);
+\s;	turn(dir);
+\n;
+Mo¿na równie¿ u¿yæ ca³ego \l;wyra¿enia matematycznego\u cbot\expr; zamiast samej zmiennej:
+\c;
+\s;	move(dist+100);
+\s;	turn(-dir);
+\n;
+Druga z instrukcji bêdzie potrzebna do obrócenia robota w prawo. 
+
+A teraz przepisz program z poprzedniego æwiczenia, u¿ywaj¹c jednak zmiennych dla odleg³oœci i k¹ta obrotu. 
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

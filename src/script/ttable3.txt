@@ -1,0 +1,49 @@
+extern void object::Solution( )
+{
+	errmode(0);
+	int list [4][4];
+	point pos;
+
+	for ( int x=0 ; x<4 ; x=x+1 )
+	{
+		for ( int y=0 ; y<4 ; y=y+1 )
+		{
+			// va sur une plateforme
+			pos.x = 10*x;
+			pos.y = 10*y;
+			goto(pos);
+			// essaye de prendre un objet
+			grab();
+			if ( load == null )
+			{
+				list[x][y] = 0;
+			}
+			else
+			{
+				// mémorise l'objet trouvé
+				list[x][y] = load.category;
+				// le dépose plus loin
+				move(-2);
+				drop(Behind);
+			}
+		}
+	}
+
+	// va replacer les objets
+	for ( int x=0 ; x<4 ; x=x+1 )
+	{
+		for ( int y=0 ; y<4 ; y=y+1 )
+		{
+			if ( list[y][x] == 0 ) continue;
+
+			// va rechercher l'objet de cette catégorie
+			object item = radar(list[y][x]);
+			goto(item.position); grab();
+			// va le poser sur une plateforme
+			pos.x = 10*x;
+			pos.y = 10*y;
+			goto(pos);
+			drop();
+		}
+	}
+}

@@ -1,0 +1,52 @@
+public class exchange
+{
+	static private string m_order = "";
+
+	// Put an order
+	synchronized bool put(string order)
+	{
+		if ( m_order == "" )
+		{
+			m_order = order;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	// Get an order
+	synchronized string get()
+	{
+		string ret = m_order;
+		m_order = "";
+		return ret;
+	}
+}
+
+extern void object::Slave3( )
+{
+	exchange list();
+	string   todo;
+
+	while ( true )
+	{
+		while ( true )
+		{
+			todo = list.get();
+			if ( todo != "" )  break;
+			wait(1);
+		}
+		message(todo);
+
+		if ( strfind(todo, "move") == 0 )
+		{
+			move(strval(strmid(todo,5)));
+		}
+		if ( strfind(todo, "turn") == 0 )
+		{
+			turn(strval(strmid(todo,5)));
+		}
+	}
+}

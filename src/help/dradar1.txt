@@ -1,0 +1,16 @@
+\b;Exercice
+Le robot <petit poucet> sème des \l;croix bleues\u object\waypoint; sur le sol. A vous de les trouver toutes.
+
+\b;Instructions utiles
+\c;\l;radar\u cbot\radar;\n; pour détecter une croix (catégorie \c;\l;WayPoint\u object\waypoint;\n;)
+\c;\l;direction\u cbot\direct;\n; pour calculer une direction
+\c;\l;if\u cbot\if;\n; pour tester une condition
+\c;\l;motor\u cbot\motor;\n; pour commander les moteurs du robot
+
+\t;Remarque
+N'attendez pas trop, car le petit poucet se met au travail tout de suite. Heureusement, pendant l'édition d'un programme, le jeu se met en pause, y compris le petit poucet.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

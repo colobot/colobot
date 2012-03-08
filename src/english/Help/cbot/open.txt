@@ -1,0 +1,20 @@
+\b;Instruction \c;open\n;
+Open a text file in the files/ folder. This is a method of the \c;\l;file\u cbot\file;\n; class. This is the reason why we always write \c;handle.open()\n;¦:
+\c;
+\s;	handle.open("test.txt", "w");
+\n;
+To open a file, proceed as follows¦:
+\c;
+\s;	file handle();
+\s;	handle.open("filename", "w");
+\s;	handle.writeln("abc");
+\s;	handle.close();
+\n;
+\c;"r"\n; mode: open for reading.
+\c;"w"\n; mode: open for writing.
+
+Files can only be created and opened in the files/ folder which is located in the folder where Colobot has been installed. You cannot not create or open files that are located elsewhere than in the files/ folder.
+
+\t;See also
+\c;\l;file\u cbot\file;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;readln\u cbot\readln;\n;, \c;\l;writeln\u cbot\writeln;\n; and \c;\l;eof\u cbot\eof;\n;.
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,18 @@
+extern public void  toto()
+{
+	print( "hello" ) ;
+	print( fac(5) );
+	print( t() ) ;
+}
+
+public int fac(int n)
+{
+	if ( n<2 ) return 1;
+	return n * fac(n-1);
+}
+
+point t()
+{
+	point	a(1,2);
+	return a;
+}

@@ -1,0 +1,33 @@
+\b;Instruction \c;grab\n;
+L'instruction \c;grab();\n; permet de saisir avec la pince du bras manipulateur un objet qui se trouve au sol, sur l'emplacement arrière d'un robot ou sur le socle d'un bâtiment.
+
+\b;Utilisation courante
+L'instruction \c;grab();\n; écrite sous cette forme permet de saisir l'objet qui se trouve devant le robot. Voici par exemple comment saisir ce qui se trouve devant le robot et le poser 5m plus loin¦:
+\c;
+\s;	grab();
+\s;	\l;move\u cbot\move;(5);
+\s;	\l;drop\u cbot\drop;();
+\n;
+\b;Pour spécialistes
+
+Syntaxe¦:
+\s;\c;grab ( oper );\n;
+
+Actionne le bras manipulateur du \l;robot déménageur\u object\botgr;, pour prendre l'objet le plus proche.
+
+\t;oper: \c;\l;int\u cbot\int;\n; (\c;InFront\n; par défaut)
+Position à atteindre avec la bras manipulateur. Si cette indication n'est pas fournie, on suppose qu'il s'agit du cas le plus fréquent où l'objet est pris ou déposé devant le robot.
+\c;InFront   \n;  Prend devant (par défaut).
+\c;Behind    \n;  Prend derrière.
+\c;EnergyCell\n;  Prend sa propre pile.
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Normalement, une erreur stoppe l'exécution du programme. Si l'instruction \c;grab\n; est précédée de \c;\l;errmode\u cbot\errmode;(0);\n;, une valeur nulle est retournée si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;objet pris
+\c;!= 0 \n;erreur, pas d'objet pris
+
+\t;Dictionnaire anglais-français
+\c;grab\n; = saisir
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

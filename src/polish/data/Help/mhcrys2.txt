@@ -1,0 +1,11 @@
+\b;Z Centrum Kontroli Misji
+Oczyœæ teren ze wszystkich wrogich organizmów. Sposób wykonania zadania (\l;wie¿a obronna\u object\tower; lub \l;dzia³o lataj¹ce\u object\botfj;) zale¿y od Ciebie.
+
+Wygl¹da na to, ¿e radar jest idealnie przystosowany do wykrywania robali. Nale¿y jednak pamiêtaæ, ¿e widoczne s¹ tylko te przebywaj¹ce na powierzchni.
+
+Przes³aliœmy transmisjê do Twojej \l;fabryki robotów\u object\factory;. Dotyczy ona robota zaprojektowanego do wykrywania surowców w podglebiu: Ÿróde³ energii i rudy. Dla uproszczenia nazwaliœmy go \l;szperaczem\u object\botsr;. Na podstawie wstêpnych analiz przypuszczamy, ¿e wystêpowanie rudy tytanu na Krystalii jest œciœle zwi¹zane z wystêpowaniem wielkich niebieskich kryszta³ów. Jeœli to prawda, informacja ta pozwoli Ci zaoszczêdziæ nieco cennego czasu. Oczywiœcie do wydobycia rudy niezbêdna jest \l;kopalnia\u object\derrick;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

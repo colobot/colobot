@@ -1,0 +1,9 @@
+\b;\button 175; Vault
+\image safe 8 8;
+This dome-shaped building was conceived by the first expedition. Its purpose was to offer protection to a new type of advanced bot. To protect it from insect attacks, the vault was locked by 4 \l;keys\u object\key;. Only after you find the 4 keys and place each one of them on their corresponding slots will you be given access to the bot.
+
+\t;Object \l;Category\u cbot\category;
+\c;Vault\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

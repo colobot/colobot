@@ -1,0 +1,10 @@
+extern void object::Solution( )
+{
+	pendown(Orange);
+
+	repeat ( 4 )  // répète 4x
+	{
+		move(20);  // va sur coin
+		turn(90);  // tourne à gauche
+	}
+}

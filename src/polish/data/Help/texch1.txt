@@ -1,0 +1,31 @@
+\b;Æwiczenie
+Kilka \l;stacji przekaŸnikowych informacji\u object\exchange; stoi na œrodku pola \l;minowego\u object\mine;. Gdy robot jest wystarczaj¹co blisko stacji przekaŸnikowej, mo¿e odczytaæ zawarte w niej informacje. Ka¿da stacja przekaŸnikowa zawiera k¹t obrotu, który powinien wykonaæ robot, aby dotrzeæ do nastêpnej stacji przekaŸnikowej bez wpadniêcia na \l;minê\u object\mine;.
+Odleg³oœæ pomiêdzy stacjami przekaŸnikowymi wynosi 20 metrów.
+
+\b;Ogólny algorytm
+Powtórz 5 razy:
+	o  IdŸ 20 m naprzód.
+	o  Odczytaj kierunek nastêpnej \l;stacji przekaŸnikowej informacji\u object\exchange;.
+	o  Wykonaj obrót.
+
+\image tinfo1 8 8;
+Do powtarzania powy¿szych instrukcji, tak jak poprzednio u¿yj instrukcji \c;\l;for\u cbot\for;\n;.
+\s;\c;	for ( int i=0 ; i<5 ; i=i+1 )
+\n;
+Przesuñ robota do przodu instrukcj¹ \c;move(20);\n;.
+
+Do odczytania informacji ze \l;stacji przekaŸnikowej\u object\exchange; u¿yj instrukcji \c;\l;receive\u cbot\receive;("Direction");\n;. Jest to oczywiœcie mo¿liwe tylko gdy robot jest wystarczaj¹co blisko stacji.
+Do przechowywania wartoœci pobranej ze stacji przekaŸnikowej potrzebna bêdzie \l;zmienna\u cbot\var;. Nazwijmy j¹ \c;dir\n;; nale¿y j¹ zadeklarowaæ w nastêpuj¹cy sposób:
+\s;\c;	float  dir;
+\n;
+Aby odczytaæ k¹t obrotu ze stacji przekaŸnikowej, przypisz zmiennej jej wartoœæ:
+\s;\c;	dir = receive(...);
+\n;
+Nastêpnie wykonaj obrót:
+\s;\c;	turn(dir);
+\n;
+\t;Uwaga
+Mo¿esz klikn¹æ na \l;stacji przekaŸnikowej informacji\u object\exchange; aby przeczytaæ zawarte w niej informacje. W tym æwiczeniu ka¿da stacja przekaŸnikowa zawiera tylko jedn¹ wartoœæ zwan¹ \c;"Direction"\n; (kierunek), ale mo¿e zawieraæ do 10 ró¿nych wartoœci, o czym przekonasz siê w niektórych z dalszych æwiczeñ.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,0 +1,48 @@
+extern void object::Solution( )
+{
+	while ( true )
+	{
+		object	spot;
+		float	bomb, dir;
+
+		spot = radar(Mine, 0, 180, 0, 5);
+		if ( spot == null )
+		{
+			bomb = 0;
+		}
+		else
+		{
+			bomb = direction(spot.position);
+			if ( bomb < 0 )
+			{
+				bomb = bomb+180;
+			}
+			else
+			{
+				bomb = bomb-180;
+			}
+		}
+
+		spot = radar(WayPoint, 0, 360, 0, 100);
+		if ( spot == null )  // plus rien ?
+		{
+			motor(0, 0);  // stoppe
+			break;
+		}
+
+		dir = direction(spot.position);
+		if ( bomb != 0 )
+		{
+			dir = (dir+bomb)/2;
+		}
+
+		if ( dir < 0 )  // à droite ?
+		{
+			motor(1, 1+dir/90);
+		}
+		else  // à gauche ?
+		{
+			motor(1-dir/90, 1);
+		}
+	}
+}

@@ -1,0 +1,25 @@
+\b;Instruction \c;wait\n;
+L'instruction \c;wait();\n; permet d'attendre un certain laps de temps donné en secondes.
+
+\b;Utilisation courante
+Pour attendre que le robot se soit rechargé sur une station des recharge, attendez 5 secondes en écrivant \c;wait(5);\n;.
+
+Pour attendre que le \l;convertisseur\u object\convert; ait transformé du \l;minerai d'uranium\u object\titanore; en un \l;cube de titanium\u object\titan;, attendez 15 secondes avec \c;wait(15);\n;.
+
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;wait ( time );\n;
+
+Attend un certain temps.
+
+\t;time: \c;\l;float\u cbot\float;\n;
+Durée à attendre, en secondes.
+
+\t;Valeur retournée: \c;\l;void\u cbot\void;\n;
+Aucune.
+
+\t;Dictionnaire anglais-français
+\c;wait\n; = attendre
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

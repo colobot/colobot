@@ -1,0 +1,31 @@
+\b;Arrays
+An array is basically a collection of variables of the same type or class. You can use N dimensionnal arrays in the CBOT language. Each dimension is limited to 9999 elements. You must use square brackets \c;[]\n; after the type name or the variable name to declare an array.
+\c;
+\s;int    [ ] a;   // an array of int
+\s;int    a [12];  // an array of int limited to 12 elements
+\s;string s[3];    // an array of 3 strings
+\s;float  xy[][];  // an 2 dimensionnal array of floats
+\n;
+Actually when the CBOT interpreter encounters an array declaration, it just creates a \c;\l;null\u cbot\null;\n; \l;reference\u cbot\pointer;:
+\c;
+\s;int a[5];  // a is now a null reference
+\n;
+As soon as you put values into the array, the elements are created and the reference is initialized:
+\c;
+\s;a[2] = 213;  // a points to
+\s;             // 3 élements [0], [1] et [2]
+\n;
+After this operation, \c;a\n; contains a reference to the elements of the array. Elements \c;[0]\n; and \c;[1]\n; are created but not initialized because an array cannot contain empty elements. The \c;\l;sizeof\u cbot\sizeof;\n; instruction allows you to obtain the number of elements contained in an array.
+
+When an array is declared with a maximum size, the program will stop as soon as there is an access beyond the maximum array size. No error is signalled during compilation even if the error is obvious:
+\c;
+\s;{
+\s;	int a[5];
+\s;	a[7] = 123;  // no error at compile time
+\s;	             // but error at run time
+\s;}
+\n;
+If you pass an array as parameter to a \l;function\u cbot\function;, the function only receives a \l;reference\u cbot\pointer; to the array. That means if you modify an array element in the function, the element of the array that has been passed the function will be actuallay modified.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

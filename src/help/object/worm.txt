@@ -1,0 +1,10 @@
+\b;Ver
+\image worm 8 8;
+Dès qu'un ver s'approche d'un robot programmé, celui-ci reçoit un virus. Le virus modifie le programme, qui ne fonctionne plus du tout ou de façon erronée.
+Le ver avance tantôt à découvert, tantôt sous terre. Lorsqu'il est sous terre, il est indétectable et indestructible.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;AlienWorm\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

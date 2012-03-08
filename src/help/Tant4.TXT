@@ -1,0 +1,25 @@
+\b;Objectif
+Programmez un \l;orgaShooter volant\u object\botoj; pour qu'il aille à la rencontre des \l;fourmis\u object\ant;.
+
+\b;Programme
+Dans ce terrain marécageux, un shooter à roues ou à chenilles est inopérant. En plus, les fourmis se déplacent: on ne peut donc pas se tourner en direction de la fourmi la plus proche, avancer, puis tirer. Le moyen le plus simple consiste à monter à une altitude de 10 mètres, à viser vers le bas avec \c;\l;aim\u cbot\aim;(-20);\n;, puis à s'approcher avec une boucle conditionnelle tant que la distance est supérieure à 20 mètres. Dans cette boucle, il faut chercher la fourmi la plus proche, se tourner vers elle, mettre les moteurs en avant toute avec \c;\l;motor\u cbot\motor;(1,1);\n;, puis attendre un petit moment, par exemple 0.2 secondes. Toutes ces instructions seront donc répétées jusqu'à ce que la fourmi soit à moins de 20 mètres et puisse être atteinte.
+
+\s;o  Abaisser le canon de 20 degrés vers le bas
+\s;o  Mettre la puissance du réacteur à 0.2
+\s;o  Répéter tant que l'altitude est inférieure à 10 mètres :
+\s;	o  Attendre 0.2 secondes
+\s;o  Mettre la puissance du réacteur à 0
+\s;o  Répéter à l'infini :
+\s;	o  Répéter tant que le radar ne détecte pas de
+\s;	    fourmi à moins de 20 mètres :
+\s;		o  Tourner en direction de la fourmi
+\s;		o  Mettre les moteurs à fond
+\s;		o  Attendre 0.2 secondes
+\s;	o  Tirer 1 seconde
+
+Les instructions suivantes seront nécessaires: \c;\l;aim\u cbot\aim;\n;, \c;\l;jet\u cbot\jet;\n;, \c;\l;while\u cbot\while;\n;, \c;\l;wait\u cbot\wait;\n;, \c;\l;radar\u cbot\radar;\n;, \c;\l;direction\u cbot\direct;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n; et \c;\l;fire\u cbot\fire;\n;.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tant3; et \l;programmation\u cbot;.

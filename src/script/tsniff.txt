@@ -1,0 +1,25 @@
+extern void object::Solution( )
+{
+	for ( int y=0 ; y<6 ; y=y+1 )
+	{
+		for ( int x=0 ; x<5 ; x=x+1 )
+		{
+			sniff();
+			move(5);
+		}
+		sniff();
+
+		if ( y%2 == 0 )
+		{
+			turn(90);
+			move(5);
+			turn(90);
+		}
+		else
+		{
+			turn(-90);
+			move(5);
+			turn(-90);
+		}
+	}
+}

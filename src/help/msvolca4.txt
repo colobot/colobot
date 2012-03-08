@@ -1,0 +1,13 @@
+\b;Solution
+Une découpe dans la montagne au nord-ouest de votre \l;vaisseau\u object\base; vous permet d'atteindre l'océan de lave brûlante.
+
+Il faut alors voler d'un piton rocheux à l'autre, en surveillant attentivement la température du réacteur. Après un atterrissage, attendez un refroidissement complet avant de décoller. La mini-carte permet de trouver à chaque fois le piton rocheux le plus proche.
+
+Si vous êtes attaqués par des \l;fourmis\u object\ant;, pas de panique. Attendez le refroidissement de votre réacteur avant de décoller. Votre bouclier de protection fera son travail en attendant... Il est tout de même conseillé d'enregistrer régulièrement la partie (appuyez sur Esc, puis "Enregistrer"). Ainsi vous ne devez pas recommencer à zéro en cas de plongeon dans la lave.
+
+Le robot cherché est à l'extrême ouest de la carte, mais il faut faire un grand détour pour l'atteindre. Lorsque vous l'avez trouvé, une \l;pile atomique\u object\atomic; n'est pas loin.
+
+Pour convoyer le robot jusqu'au \l;vaisseau spatial\u object\base;, vous n'êtes pas du tout obligé de suivre le même chemin en sens inverse, car son réacteur surchauffe moins rapidement. Il faut tout de même prévoir un ou deux arrêts. Et attention aux fourmis...
+
+\t;Voir aussi
+\l;Commandes\u command;.

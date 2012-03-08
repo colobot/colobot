@@ -1,0 +1,20 @@
+\b;Instruction \c;sniff\n;
+Syntaxe¦:
+\s;\c;sniff ( );\n;
+
+Effectue un sondage du sous-sol devant le \l;robot\u object\botsr;. En fonction du sous-sol, les objets suivants sont créés¦:
+
+\c;TitaniumSpot\n;  ->  \l;Croix rouge\u object\stonspot;
+\c;UraniumSpot \n;  ->  \l;Rond jaune\u object\uranspot;
+\c;PowerSpot   \n;  ->  \l;Croix verte\u object\enerspot;
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Zéro si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;sondage effectué
+\c;!= 0 \n;sondage impossible
+
+\t;Dictionnaire anglais-français
+\c;sniff\n; = renifler
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

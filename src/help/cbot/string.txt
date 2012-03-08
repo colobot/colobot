@@ -1,0 +1,29 @@
+\b;Type \c;string\n;
+Ce type permet de représenter une chaîne de caractères, qui contiendra quelques caractères, ou toute une phrase. Par exemple¦:
+\s;\c;"bonjour"
+\s;"c'est une chaîne"
+\s;"x"
+\s;""  // chaîne vide
+\n;
+Pour appondre deux chaînes, on utilise l'opérateur \c;+\n;¦:
+\s;\c;"bonjour" + " " + "Monsieur"
+\n;
+Donne la chaîne¦:
+\s;\c;"bonjour Monsieur"
+\n;
+Pour mettre un guillemet ou un slash inversé dans une chaîne, il faut écrire¦:
+\s;\c;"C'est \"très\" important" \n;donne\c; C'est "très" important
+\s;"%user%\\ant.txt" \n;donne\c; %user%\ant.txt
+\n;
+Les instructions suivantes sont utiles pour gérer les chaînes de caractères¦:
+\c;\l;strlen\u cbot\strlen;     \n;Longueur d'une chaîne.
+\c;\l;strleft\u cbot\strleft;    \n;Extrait la partie gauche.
+\c;\l;strright\u cbot\strright;   \n;Extrait la partie droite.
+\c;\l;strmid\u cbot\strmid;     \n;Extrait la partie centrale.
+\c;\l;strfind\u cbot\strfind;    \n;Cherche une sous-chaîne.
+\c;\l;strval\u cbot\strval;     \n;Convertit en un nombre.
+\c;\l;strupper\u cbot\strupper;   \n;Convertit en majuscules.
+\c;\l;strlower\u cbot\strlower;   \n;Convertit en minuscules.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

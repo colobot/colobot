@@ -1,0 +1,11 @@
+\b;\button 176; Mission Control
+\image huston 8 8;
+Earth control center for all \l;your\u object\human; space missions. Though still named after the well-known mission control of the old days, "Houston" is actually located in the middle of the Nevada Desert, the new center for space exploration activities.
+
+The Mission Control Center watches over you day and night, and a whole team of scientists and engineers are working hard trying to find a solution to all the problems that you encounter.
+
+\t;Object \l;Category\u cbot\category;
+\c;Houston\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

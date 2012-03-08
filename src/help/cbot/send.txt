@@ -1,0 +1,25 @@
+\b;Instruction \c;send\n;
+Syntaxe¦:
+\s;\c;send ( name, value, power );\n;
+
+Envoie une information dans la \l;borne\u object\exchange; la plus proche.
+
+\t;name: \c;string\n;
+Nom de l'information à écrire dans la borne. Ce nom est une chaîne de caractères; il doit donc être donné entre guillemets "¦".
+S'il n'existe aucune information ayant ce nom, une nouvelle entrée est créée, pour autant que le nombre total d'entrées ne dépasse pas 10. S'il existe déjà une information ayant ce nom, la valeur est simplement remplacée par la nouvelle.
+
+\t;value: \c;float\n;
+Valeur de l'information à envoyer.
+
+\t;power: \c;float\n;
+Puissance de l'émetteur, qui correspond à la distance maximale jusqu'où peut être la borne. La valeur par défaut est de 10 mètres.
+
+\t;Dictionnaire anglais-français
+\c;receive\n; = recevoir
+\c;name   \n; = nom
+\c;value  \n; = valeur
+\c;power  \n; = puissance
+
+\t;Voir aussi
+\c;\l;receive\u cbot\receive;\n;, \c;\l;testinfo\u cbot\testinfo;\n; et \c;\l;deleteinfo\u cbot\delinfo;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

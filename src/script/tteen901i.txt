@@ -1,0 +1,11 @@
+extern void object::Go( )
+{
+	int gauche = 90;
+	int droite = -90;
+	
+	pendown(Red);
+	repeat(3)
+	{
+		#
+	}
+}

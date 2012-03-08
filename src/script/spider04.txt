@@ -1,0 +1,14 @@
+extern void object::Attack( )
+{
+	point init, dest;
+
+	errmode(0);  // ne stoppe pas si erreur
+	init = position;
+
+	while ( true )
+	{
+		dest.x = init.x+(rand()-0.5)*4;
+		dest.y = init.y+(rand()-0.5)*4;
+		goto(dest);
+	}
+}

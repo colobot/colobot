@@ -1,0 +1,224 @@
+Title.F      text="Halte au massacre"
+Resume.F     text="Récupérez la boîte noire sans tuer une seule fourmi."
+Title.E      text="New Policies"
+Resume.E     text="Try a more humane method of dealing with insects."
+Instructions name="mhcent4.txt"
+Satellite    name="micent4.txt"
+Loading      name="mlcent4.txt"
+SoluceFile   name="mscent4.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=704 lost=0
+
+Audio         track=7
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=176;176;181;0 water=10;100;20;0  // grey
+VehicleColor  color=117;158;64;0  // vert
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.5 water=0.1
+SecondTexture rank=8
+Background    up=176;176;181;0 down=176;176;181;0 cloudUp=0;0;0;0 cloudDown=104;104;104;0
+FrontsizeName image="lens5.tga"
+
+TerrainGenerate vision=400.00 depth=1 hard=0.7
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief23.bmp" factor=1.0
+TerrainResource image="textures\res00.bmp"
+TerrainCloud    image="cloud03.tga" level=125.0
+
+TerrainMaterial id=1 image="mix01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=2 image="mix01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=3 image="mix01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=4 image="mix01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=5 image="mix01" u=0.00 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=6 image="mix01" u=0.25 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=7 image="mix01" u=0.50 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=8 image="mix01" u=0.75 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=9 image="mix01" u=0.00 v=0.50 up=1 down=1 left=1 right=1 hard=0.6
+
+TerrainInit     id=1
+TerrainLevel    id=2 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=3 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=4 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=5 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=6 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=7 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=8 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=9 min=0.0 max=900.0 slope=0.0 freq= 20.0
+
+TerrainCreate
+
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos= 0.00;-3.25 dir=1.5 type=Me
+CreateObject pos= 3.25;-3.25 dir=1.5 type=WingedGrabber script4="exchg1.txt" script3="charge2.txt" script2="titan3.txt" script1="tower1.txt"
+//CreateObject pos=-3.75; 2.50 dir=0.0 type=Titanium
+//CreateObject pos=-2.50; 2.50 dir=0.0 type=Titanium
+//CreateObject pos=-0.62; 2.50 dir=0.0 type=Titanium
+//CreateObject pos= 0.63; 2.50 dir=0.0 type=Titanium
+//CreateObject pos= 2.50; 2.50 dir=0.0 type=Titanium
+//CreateObject pos= 3.75; 2.50 dir=0.0 type=Titanium
+//CreateObject pos=-3.75; 3.75 dir=0.0 type=PowerCell
+//CreateObject pos=-2.50; 3.75 dir=0.0 type=PowerCell
+CreateObject pos=-0.62; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 0.63; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 2.50; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 3.75; 3.75 dir=0.0 type=PowerCell
+
+// Ruines proches.
+CreateObject pos= -48;  29 dir=1.1 type=RuinBotFactory
+CreateObject pos= -39;  19 dir=0.3 type=Greenery4
+CreateObject pos= -41;  26 dir=0.3 type=Greenery1
+CreateObject pos= -41;  38 dir=0.3 type=Greenery0
+CreateObject pos= -37;  35 dir=0.3 type=Greenery2
+CreateObject pos= -17;  46 dir=0.3 type=Greenery4
+CreateObject pos=  49;   7 dir=0.3 type=Greenery2
+CreateObject pos=  28; -55 dir=0.3 type=Greenery0
+CreateObject pos= -55; -17 dir=0.3 type=Greenery1
+CreateObject pos= -58; -14 dir=0.3 type=Greenery3
+CreateObject pos= -48;  29 dir=0.2 type=Titanium
+CreateObject pos= -58;  61 dir=0.2 type=TitaniumOre
+CreateObject pos= -59;  66 dir=0.0 type=TitaniumOre
+CreateObject pos= -73; -53 dir=0.2 type=TitaniumOre
+CreateObject pos= -47; -73 dir=0.0 type=TitaniumOre
+CreateObject pos=  71;  12 dir=0.1 type=TitaniumOre
+CreateObject pos=  38;  34 dir=0.1 type=TitaniumOre
+
+// Epave.
+CreateObject pos=115;-110 dir=0.0 type=RuinBaseCamp h=-9.0
+CreateObject pos=110;-140 dir=0.1 type=RuinHeadCamp
+CreateObject pos=115;-120 dir=0.3 type=BlackBox
+CreateObject pos=125;-100 cmdline=115;-120;40;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=125;-105 cmdline=115;-120;40;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=125;-110 cmdline=115;-120;40;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=125;-115 cmdline=115;-120;40;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=125;-120 cmdline=115;-120;40;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=125;-125 cmdline=115;-120;40;2 type=AlienAnt script1="antich2.txt" run=1
+CreateObject pos=125;-130 cmdline=115;-120;40;2 type=AlienAnt script1="antich2.txt" run=1
+
+// Cratère ouest.
+CreateObject pos=-230;   2 dir=0.2 type=TitaniumOre
+CreateObject pos=-233;   1 dir=0.0 type=TitaniumOre
+CreateObject pos=-234;   3 dir=0.1 type=TitaniumOre
+CreateObject pos=-236;   5 dir=0.4 type=TitaniumOre
+CreateObject pos=-240;   4 dir=0.1 type=TitaniumOre
+CreateObject pos=-241;   6 dir=0.3 type=TitaniumOre
+CreateObject pos=-241;   9 dir=0.0 type=TitaniumOre
+CreateObject pos=-223;  -3 dir=0.3 type=Greenery1
+CreateObject pos=-237;  45 dir=0.3 type=Greenery0
+CreateObject pos=-235;  51 dir=0.0 type=Greenery2
+CreateObject pos=-243;  55 dir=0.1 type=Greenery3
+CreateObject pos=-246;  79 dir=0.3 type=Greenery4
+
+// Cratère sud-ouest.
+CreateObject pos=-126;-126 dir=0.2 type=TitaniumOre
+CreateObject pos=-131;-131 dir=0.0 type=TitaniumOre
+CreateObject pos=-133;-132 dir=0.1 type=TitaniumOre
+CreateObject pos=-135;-135 dir=0.4 type=TitaniumOre
+CreateObject pos=-136;-139 dir=0.0 type=TitaniumOre
+CreateObject pos=-107;-137 dir=0.3 type=Greenery2
+CreateObject pos=-111; -92 dir=0.3 type=Greenery0
+CreateObject pos= -94; -66 dir=0.3 type=Greenery1
+
+// Cratère sud.
+CreateObject pos= -10;-194 dir=0.0 type=TitaniumOre
+CreateObject pos=  -6;-197 dir=0.2 type=TitaniumOre
+CreateObject pos= -14;-200 dir=0.1 type=TitaniumOre
+CreateObject pos= -15;-204 dir=0.4 type=TitaniumOre
+CreateObject pos= -13;-164 dir=0.3 type=Greenery0
+CreateObject pos= -16;-173 dir=0.0 type=Greenery2
+CreateObject pos= -10;-172 dir=0.3 type=Greenery3
+CreateObject pos= -44;-224 dir=0.3 type=Greenery1
+CreateObject pos= -48;-218 dir=0.0 type=Greenery2
+
+// Epave.
+CreateFog pos=  95; -70 height=-10 dim=10 delay=4.0 type=4
+CreateFog pos=  95; -70 height=-11 dim=10 delay=5.0 type=5
+CreateFog pos=  97; -96 height=  3 dim=20 delay=4.0 type=4
+CreateFog pos=  97; -96 height=  4 dim=20 delay=5.0 type=5
+CreateFog pos= 126;-102 height=  4 dim=20 delay=4.0 type=4
+CreateFog pos= 126;-102 height=  5 dim=20 delay=5.0 type=5
+CreateFog pos= 126;-139 height=  3 dim=20 delay=4.0 type=4
+CreateFog pos= 126;-139 height=  4 dim=20 delay=5.0 type=5
+CreateFog pos= 103;-134 height=  2 dim=30 delay=4.0 type=4
+CreateFog pos= 103;-134 height=  3 dim=30 delay=5.0 type=5
+CreateFog pos= 155;-125 height=-25 dim=20 delay=4.0 type=4
+CreateFog pos= 155;-125 height=-26 dim=20 delay=5.0 type=5
+
+// Cratère ouest.
+CreateFog pos=-217;  -2 height=  3 dim=20 delay=4.0 type=4
+CreateFog pos=-217;  -2 height=  4 dim=20 delay=5.0 type=5
+CreateFog pos=-233;   6 height=  2 dim=10 delay=4.0 type=4
+CreateFog pos=-233;   6 height=  3 dim=10 delay=5.0 type=5
+CreateFog pos=-186;  -2 height=  3 dim=30 delay=4.0 type=4
+CreateFog pos=-186;  -2 height=  4 dim=30 delay=5.0 type=5
+
+// Cratère sud-ouest.
+CreateFog pos=-138;-140 height=  3 dim=20 delay=4.0 type=4
+CreateFog pos=-138;-140 height=  4 dim=20 delay=5.0 type=5
+CreateFog pos=-112;-150 height=  3 dim=40 delay=4.0 type=4
+CreateFog pos=-112;-150 height=  4 dim=40 delay=5.0 type=5
+
+// Cratère sud.
+CreateFog pos= -13;-185 height=  4 dim=30 delay=4.0 type=4
+CreateFog pos= -13;-185 height=  5 dim=30 delay=5.0 type=5
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+
+MapColor floor=151;142;129 water=131;152;131
+MapZoom  factor=2
+
+NewScript name="tower1.txt" type=WheeledGrabber
+NewScript name="tower1.txt" type=TrackedGrabber
+NewScript name="tower1.txt" type=WingedGrabber
+NewScript name="tower1.txt" type=LeggedGrabber
+NewScript name="titan3.txt" type=WheeledGrabber
+NewScript name="titan3.txt" type=TrackedGrabber
+NewScript name="titan3.txt" type=WingedGrabber
+NewScript name="titan3.txt" type=LeggedGrabber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=BotFactory
+//EnableBuild type=Derrick
+EnableBuild type=Converter
+EnableBuild type=RadarStation
+//EnableBuild type=PowerPlant
+//EnableBuild type=NuclearPlant
+//EnableBuild type=PowerStation
+//EnableBuild type=RepairCenter
+//EnableBuild type=DefenseTower
+EnableBuild type=ResearchCenter
+//EnableBuild type=AutoLab
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+EnableResearch type=ATOMIC
+EnableResearch type=iPAW
+EnableResearch type=THUMPER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+DoneResearch type=ATOMIC
+DoneResearch type=iPAW
+
+EndMissionDelay win=-1
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 type=BlackBox min=1
+EndMissionTake pos=0.00;0.00 type=Thumper min=1
+
+Camera eye=0.00;5.00;0.00 lookat=0.00;1.00;0.00 delay=0

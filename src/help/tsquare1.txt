@@ -1,0 +1,20 @@
+\b;Exercice
+Déplacez le robot d'entraînement le long d'un grand carré de 20 mètres de côté, en passant par les croix bleues, tout en traçant un trait. Pour changer, le trait doit être orange cette fois.
+
+\b;Principe
+Voici les instructions que vous devrez utiliser¦:
+\c;\l;pendown\u cbot\pendown;(Orange);\n; laisse une trace orange au sol.
+\c;\l;move\u cbot\move;(20);\n; avance de 20 mètres.
+\c;\l;turn\u cbot\turn;(90);\n; tourne à gauche de 90 degrés.
+
+\b;Aide
+Lorsqu'un mot est souligné en bleu, cela indique un lien. Par exemple, si vous cliquez \l;ici\u navig;, une autre page est affichée.
+En principe, les explications d'un exercice sont entièrement contenues dans la première page. Il n'est donc pas obligatoire d'utiliser les liens.
+
+\b;À vous de jouer
+A vous maintenant d'écrire le programme complet, qui devra comporter 4 fois l'instruction \c;move(20);\n; suivie de \c;turn(90);\n;.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tline2; et \l;programmation\u cbot;.

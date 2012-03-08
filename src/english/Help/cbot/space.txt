@@ -1,0 +1,23 @@
+\b;Instruction \c;space\n;
+Syntax :
+\s;\c;space ( center, rmin, rmax, dist );\n;
+
+Determines the position of the nearest free space around a given position.
+
+\t;center: \c;\l;point\u cbot\point;\n; (default: bot position)
+Desired position of the free space.
+
+\t;rmin: \c;\l;float\u cbot\float;\n; (default value: \c;8\n;)
+Minimum distance from the desired position.
+
+\t;rmax: \c;\l;float\u cbot\float;\n; (default value: \c;50\n;)
+Maximum distance from the desired position.
+
+\t;dist: \c;\l;float\u cbot\float;\n; (default value: \c;4\n;)
+Required distance between two free spaces.
+
+\t;Return: \c;\l;point\u cbot\point;\n;
+Position of the free space.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

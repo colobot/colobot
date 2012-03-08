@@ -1,0 +1,37 @@
+extern void object::Attaque1()
+{
+
+object    alien;
+
+while(true)
+{
+if(energyCell != null) if(energyCell.energyLevel > 0.5) break;
+}
+
+aim(-20);
+
+while(true)
+{
+jet(0.4);
+while(position.z - topo(position) < 1.5)
+{
+wait(1);
+}
+
+alien = radar(AlienAnt, 0, 360, 0, 1000, -1);
+if (alien == null) break;
+turn(direction(alien.position));
+motor(1,1);
+while(distance(position, alien.position) > 50)
+{
+wait(0.2);
+alien = radar(AlienAnt, 0, 360, 0, 1000, -1);
+if (alien == null) break;
+turn(direction(alien.position));
+motor(1,1);
+}
+fire(3);
+wait(4);
+}
+
+}

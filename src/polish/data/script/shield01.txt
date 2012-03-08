@@ -1,0 +1,6 @@
+extern void object::Outward()
+{
+	shield(1,15);  // uaktywnij os³onê
+	goto(6,160);   // podejdŸ do klucza
+	shield(0,15);  // wy³¹cz os³onê
+}

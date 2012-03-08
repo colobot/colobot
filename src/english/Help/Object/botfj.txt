@@ -1,0 +1,22 @@
+\b;\button 145; Winged Shooter
+\image botfj 8 8;
+Jet propelled flying bot equipped with a fireball cannon.
+
+The fireball cannon is an efficient weapon against most kinds of \l;enemies\u object\mother;. Use it sparingly though for it requires large amounts of energy. A \l;regular power cell\u object\power; will only allow you to shoot 4 fireball bursts.
+
+Tip : it is possible to move the mouse while shooting, so as to sweep a larger area.
+
+The display at the bottom of your screen indicates the temperature of the reactor. Keep an eye on it. If the reactor overheats, the engine will stop and the bot will crash.
+
+Winged bots can fly across natural obstacles such as mountains or lakes but their energy supply is used up quickly. They're slow on the ground. To cover a short distance that will not call for flying, it is recommended to use a \l;wheeled shooter\u object\botfr; instead.
+
+\t;Programming
+To program the bot's movements, use the following commands : \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;jet\u cbot\jet;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+To program the fireball cannon, use \c;\l;fire\u cbot\fire;\n;. To raise or lower the aim, use \c;\l;aim\u cbot\aim;\n;.
+
+\t;Object \l;Category\u cbot\category;
+\c;WingedShooter\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

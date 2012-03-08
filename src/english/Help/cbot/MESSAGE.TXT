@@ -1,0 +1,25 @@
+\b;Instruction \c;message\n;
+Syntax:
+\s;\c;message ( text, type );\n;
+
+Prints a message on top of the screen. After a few seconds, the message disappears automatically. 
+
+\t;text: \c;\l;string\u cbot\string;\n;
+Text that is to be displayed. It is possible to append several texts and/or values with the operator \c;+\n;:
+\c;message("Not found");\n; 
+\c;message(angle);\n; 
+\c;message(n + " object(s) found");\n; 
+\c;message("Distance = " + dist + " meters");\n; 
+
+\t;type: \c;\l;int\u cbot\int;\n; (default value \c;DisplayMessage\n;)
+Type of the message, that determines the background color. 
+o  \c;DisplayMessage\n;  Standard message on yellow background.
+o  \c;DisplayInfo   \n;  Information on green background.
+o  \c;DisplayWarning\n;  Warning on blue background.
+o  \c;DisplayError  \n;  Error on red background.
+
+\t;Return value: \c;\l;void\u cbot\void;\n;
+None.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

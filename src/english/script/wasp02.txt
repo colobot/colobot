@@ -1,0 +1,74 @@
+extern void object::Attack( )
+{
+	int		list[], i;
+	object	p;
+	float	dist;
+	point	dest, center;
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	i = 0;
+	list[i++] = Derrick;
+
+	while ( true )
+	{
+		if ( load == null )  // ne porte rien ?
+		{
+			p = radar(OrgaMatter);  // cherche matière
+			if ( p == null )
+			{
+				jet(1);  // monte
+				dest = position;
+				dest.x += (rand()-0.5)*10;
+				dest.y += (rand()-0.5)*10;
+				goto(dest);  // va n'importe où
+				wait(2);
+			}
+			else
+			{
+				center = p.position;
+				dest = p.position;
+				dest.z = position.z;
+				dist = distance(dest, position);
+				if ( dist > 1.25 )
+				{
+					jet(1);  // monte
+					goto(p.position);  // va sur la matière
+				}
+				else
+				{
+					jet(-1);  // descend
+					while ( altitude > 0 );
+					grab();  // prend la matière
+				}
+			}
+		}
+		else  // porte matière ?
+		{
+			jet(1);  // monte
+			p = radar(list, 0, 360, 0, 1000, 1, FilterOnlyLanding);
+			if ( p == null )
+			{
+				dest = center;
+				dest.x += (rand()-0.5)*100;
+				dest.y += (rand()-0.5)*100;
+				goto(dest, 0, 1, 0);  // va n'importe où
+			}
+			else
+			{
+				dest = p.position;
+				dest.z = position.z;
+				dist = distance(dest, position);
+				if ( dist > 1.25 )
+				{
+					goto(p.position);  // va sur la cible
+				}
+				else
+				{
+					drop();  // lâche la matière
+				}
+			}
+		}
+	}
+}

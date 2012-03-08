@@ -1,0 +1,62 @@
+\b;Exercise
+You must follow the \l;target bot\u object\bottr; with the explosive device, but without touching it, otherwise it will blow up. Every time the target bot stops, you must be close to it (less than 10m). After you managed to stay close to the target bot at 10 successive stops, it will lead you to the finishing pad, and the exercise is over. At every stop, the target bot checks that you are there. If you are not there, you must start over again.
+
+\b;General principle
+Repeat forever :
+o  Look for the target bot.
+o  Calculate the distance to the bot.
+o  if the distance to the target bot is less than 5m, move backward.
+o  Otherwise, calculate the direction of the target bot, and move towards it.
+
+As many times before, use \c;\l;while\u cbot\while; (true)\n; in order to perform the infinite loop:
+\s;\c;while (true)
+\s;{
+\s;	\n;instructions to be repeated ...\c;
+\s;}
+\n;
+Look for the target bot with the instruction \c;\l;radar\u cbot\radar;\n;:
+\s;\c;	target = radar(TargetBot);
+\n;
+You do not have to test if the radar found a target bot: there must be one.
+
+Use the instruction \c;\l;distance\u cbot\dist;( , )\n; to calculate the distance between two points. The first point will be the position of your own bot, given by \c;position\n;. The second point is the position of the target bot, given by \c;target.position\n;.
+\s;\c;len = distance(position, target.position);
+\n;
+If the distance to the target bot is smaller than 5m, move backward with a speed inversely proportional to the distance: the closer you are to the bot, the faster you must move backward.
+	Distance = 5.0 meters -> speed =  0.0
+	Distance = 2.5 meters -> speed = -0.5
+	Distance = 0.0 meters -> speed = -1.0
+You can use the \l;expression\u cbot\expr; \c;distance/5-1\n; in order to achieve this, together with the \c;\l;if\u cbot\if;\n; to test if the target is closer than 5m:
+\s;\c;if ( len < 5 )  // too close ?
+\s;{
+\s;	motor(len/5-1, len/5-1);  // moves backward
+\s;}
+\n;
+If the distance to the target is greater than 5m, move towards the target. First calculate the angle necessary to face the target with the instruction \c;\l;direction\u cbot\direct;\n;. You can then adjust the speed of the right-hand and left-hand motor in order to follow the target:
+\s;\c;else
+\s;{
+\s;	dir = direction(target.position);
+\s;	if ( dir >= 0 )  // target on the left side?
+\s;	{
+\s;		motor(1-dir/90, 1);
+\s;	}
+\s;	else  // target on the right side?
+\s;	{
+\s;		\n;it is up to you to fill in\c;
+\s;	}
+\s;}
+\n;
+When the target is on your left, \c;dir\n; takes a positive value, ranging between 0 and 180. The \l;expression\u cbot\expr; \c;1-dir/90\n; returns a speed ranging between 1 and -1, according to the direction:
+	direction =   0 -> speed =  1.0
+	direction =  45 -> speed =  0.5
+	direction =  90 -> speed =  0.0
+	direction = 135 -> speed = -0.5
+	direction = 180 -> speed = -1.0
+
+\image radar2 14 10;
+When the target is on the right side, \c;dir\n; is negative, ranging between 0 and -180.
+
+The only task left for you now is to declare the \l;variables\u cbot\var; that you use in the program. \c;target\n; is of type \c;object\n;, whereas \c;dir\n; and \c;len\n; are of type \c;float\n;.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

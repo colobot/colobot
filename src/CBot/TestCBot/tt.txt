@@ -1,0 +1,12 @@
+extern public void T() { T1(); }
+
+public void T1()
+{
+	show( "T1" );
+	T2();
+}
+
+public void T2()
+{
+	show( "T2" );
+}

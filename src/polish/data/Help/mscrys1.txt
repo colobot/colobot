@@ -1,0 +1,12 @@
+\b;Rozwi¹zanie
+1) Zbuduj \l;fabrykê robotów\u object\factory;.
+2) Zbuduj \l;transporter lataj¹cy\u object\botgj;.
+3) Zanieœ \l;kostkê tytanu\u object\titan; na najwy¿szy punkt.
+4) Zbuduj tam \l;radar\u object\radar;.
+5) Zbuduj \l;centrum badawcze\u object\research; obok statku kosmicznego.
+6) Rozpocznij <program badawczy wie¿y obronnej> \button 68;.
+7) Zbuduj \l;wie¿ê obronn¹\u object\tower; obok radaru.
+8) Gdy zostan¹ zniszczone wszystkie robale mo¿esz wróciæ na statek kosmiczny i odlecieæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

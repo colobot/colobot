@@ -1,0 +1,55 @@
+extern void object::Explore()
+{
+	int    step, phase, i;
+	float  radius, dist;
+	point  pss, pos;
+	object item;
+
+	item = radar(SpaceShip);
+	if ( item == null )  return;
+	pss = item.position;
+	
+	pos = position;
+	step = 4;
+	phase = 0;
+	while ( true )
+	{
+		for ( i=0 ; i<step ; i++ )
+		{
+			if ( phase%4 == 0 )  pos.x += 10;
+			if ( phase%4 == 1 )  pos.y += 10;
+			if ( phase%4 == 2 )  pos.x -= 10;
+			if ( phase%4 == 3 )  pos.y -= 10;
+
+			dist = distance2d(pos, pss);
+			if ( dist < 50 )  continue;
+
+			radius = flatground(pos, 5);
+			if ( radius > 4 )
+			{
+				if ( energyCell.energyLevel < 0.5 )
+				{
+					if ( !Refuel() )  return;
+				}
+				
+				goto(pos);
+				sniff();
+			}
+		}
+		phase ++;
+		if ( phase%2 == 0 )  step++;
+	}
+}
+
+bool object::Refuel()
+{
+	object item = radar(PowerStation);
+	if ( item == null )  return false;
+	
+	goto(item.position);
+	while ( energyCell.energyLevel < 1 )
+	{
+		wait(1);		   // attend pile pleine
+	}
+	return true;
+}

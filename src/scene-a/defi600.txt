@@ -1,0 +1,2 @@
+Title.F text="Fonctions" resume="Fonctions"
+Title.E text="Functions" resume="Functions"

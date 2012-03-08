@@ -1,0 +1,9 @@
+\b;Araignée
+\image spider 8 8;
+L'araignée fonctionne à la manière d'un commando suicide: lorsqu'elle arrive à proximité d'une cible, elle gonfle son abdomen et explose en une multitude de petits fragments pyrogènes. Ces fragments incendient tout ce qu'ils heurtent.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;AlienSpider\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

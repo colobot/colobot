@@ -1,0 +1,9 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il trouve toutes les \l;croix bleues\u object\waypoint; posées au sol, en évitant les \l;mines\u object\mine;.
+
+On ne peut pas s'approcher à moins de 2 mètres d'une mine. Si vous utilisez cette distance dans l'instruction \c;\l;radar\u cbot\radar;\n;, cela ne fonctionnera pas. En effet, il faut tenir compte de l'inertie du robot. Une distance comprise entre 3 et 3.5 mètres semble appropriée. A vous de faire des essais ...
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

@@ -1,0 +1,35 @@
+\b;Les tableaux (pour spécialistes)
+CBOT gère des tableaux de N dimensions, mais limités volontairement à un maximum de 9999 éléments par dimension. Les tableaux peuvent être de chaque type de base et même avec des éléments d'une classe quelconque. Pour déclarer un tableau, il faut mettre des crochets \c;[]\n; après le type, ou/et après le nom de la variable déclarée.
+\c;
+\s;int    [ ] a;   // un tableau de nombre entier
+\s;int    a [12];  // idem limité à 12 éléments
+\s;string s[3];    // un tableau de 3 chaînes
+\s;float  xy[][];  // un tableau à 2 dimensions
+\n;
+En vérité, lors de la déclaration d'un tableau, CBOT attribue juste une \l;référence\u cbot\pointer; nulle initialement¦:
+\c;
+\s;int a[5];  // a est une référence nulle
+\n;
+Dès que l'on met une valeur dans le tableau, CBOT crée les éléments nécessaires et initialise la référence¦:
+\c;
+\s;a[2] = 213;  // a est une référence sur
+\s;             // 3 éléments [0], [1] et [2]
+\n;
+Après cette opération, \c;a\n; contient une référence vers les éléments du tableau. Les éléments \c;[0]\n; et \c;[1]\n; sont créés (non initialisés) car un tableau ne peut pas avoir d'éléments vides.
+L'instruction \c;\l;sizeof\u cbot\sizeof;\n; permet de connaître le nombre d'éléments d'un tableau.
+
+Lorsqu'un tableau est déclaré avec une taille maximale, le programme donne une erreur lors de l'exécution si on essaie de mettre un élément de trop. Aucune erreur n'est signalée lors de la compilation même si l'erreur paraît évidente¦:
+\c;
+\s;{
+\s;	int a[5];
+\s;	a[7] = 123;  // pas d'erreur à la compilation
+\s;	             // mais erreur lors de l'exécution
+\s;}
+\n;
+Lorsqu'on donne un tableau comme paramètre d'une \l;fonction\u cbot\function;, c'est toujours une \l;référence\u cbot\pointer; qui est passée.
+
+\t;Dictionnaire anglais-français
+\c;array\n; = tableau
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

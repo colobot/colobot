@@ -1,0 +1,14 @@
+\b;Instrukcja \c;topo\n;
+Sk³adnia:
+\s;\c;topo ( pozycja );\n;
+
+Podaje wysokoœæ gruntu w podanej pozycji. Wysokoœæ zerowa odpowiada poziomowi morza. Wartoœæ ujemna oznacza, ¿e sprawdzany punkt jest przykryty wod¹. 
+
+\t;pozycja: \c;\l;point\u cbot\point;\n;
+Wspó³rzêdne pozycji, której wysokoœæ ma byæ sprawdzona. 
+
+\t;Typ wyniku: \c;\l;float\u cbot\float;\n;
+Wysokoœæ gruntu w podanej pozycji.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

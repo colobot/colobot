@@ -1,0 +1,4 @@
+extern void object::Solution()
+{
+	move(40);
+}

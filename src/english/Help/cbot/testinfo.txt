@@ -1,0 +1,18 @@
+\b;Instruction \c;testinfo\n;
+Syntax¦:
+\s;\c;testinfo ( name, power );\n;
+
+Tests if an information exists in the closest \l;information exchange post\u object\exchange;.
+
+\t;name: \c;string\n;
+Name of the information to be tested in the exchange post. This name is a string: it must be written in quotation marks "¦".
+
+\t;power: \c;float\n;
+Power of the transmitter, which corresponds to the maximal distance between the transmitter and the exchange post. If the distance is longer, the function returns \c;false\n;. Default value is 10 metres.
+
+\t;Return: \c;\l;bool\u cbot\bool;\n;
+Return \c;true\n; if the information exists. Return and \c;false\n; if the information does not exist or if the receiver is too far away from the exchange post.
+
+\t;See also
+\c;\l;receive\u cbot\receive;\n;, \c;\l;send\u cbot\send;\n; and \c;\l;deleteinfo\u cbot\delinfo;\n;.
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,24 @@
+extern void object::ApporteTitanium2()
+{
+	// 1) Définition des variables.
+	object  chose;               // déclaration variable
+	
+	// 2) Va vers le minerai et le prend.
+	chose = radar(TitaniumOre);  // cherche minerai
+	goto(chose.position);        // va à la position
+	grab();                      // prend le titanium
+	
+	// 3) Va vers le convertisseur et pose le minerai.
+	chose = radar(Converter);    // cherche convertisseur
+	goto(chose.position);        // va à la position
+	drop();                      // pose le titanium
+	move(-2.5);                  // recule de 2.5m
+	
+	// 4) Si pile à moitié déchargée, va recharger.
+	if ( energyCell.energyLevel < 0.5 )
+	{                                // si oui:
+		chose = radar(PowerStation); // cherche station
+		goto(chose.position);        // va recharger
+		wait(5);                     // attend
+	}
+}

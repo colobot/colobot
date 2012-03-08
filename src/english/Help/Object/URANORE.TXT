@@ -1,0 +1,16 @@
+\b;Uranium Ore
+\image uranore 4 4;
+Uranium ore is essential to the production of \l;nuclear power cells\u object\atomic;.
+
+It is to be found on the surface or in the subsoil. In the latter case, it needs to be first located and identified by a \l;sniffer\u object\botsr;, then extracted using a \l;derrick\u object\derrick;. If a sniffer identifies a deposit of uranium ore, it lays down a \l;yellow circle\u object\uranspot;.
+
+A \l;nuclear plant\u object\nuclear; will then take care of converting the chunk into a new and fully charged \l;nuclear power cell\u object\atomic;.
+
+\t;Transport
+All \l;grabbers\u object\botgr;. Due to its radioactivity, the \l;astronaut\u object\human; can not transport it.
+
+\t;Object \l;Category\u cbot\category;
+\c;UraniumOre\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

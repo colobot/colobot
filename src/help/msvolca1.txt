@@ -1,0 +1,15 @@
+\b;Solution
+1) Rechargez une \l;pile\u object\power; puis mettez-la sur le \l;centre de recherches\u object\research;, afin de rechercher la technologie nucléaire.
+
+2) Construisez un \l;robot déménageur\u object\botgr; et exécutez le programme \c;ApporteTitanium3\n; pour disposer de suffisamment de cubes de titanium.
+
+3) Construisez un \l;radar\u object\radar; pour voir sur la carte les \l;araignées géantes\u object\spider; qui guettent sur le chemin vers la caisse d'explosifs.
+
+4) Construisez une \l;centrale nucléaire\u object\nuclear;. Utilisez le \l;robot déménageur\u object\botgr; pour l'alimenter en \l;minerai d'uranium\u object\uranore; que vous trouverez au nord-ouest. Equipez le \l;robot déménageur\u object\botgr; d'une \l;pile atomique\u object\atomic; ainsi produite.
+
+5) Construisez un \l;robot shooter\u object\botfr; et équipez-le également d'une \l;pile atomique\u object\atomic;. Il vous servira à ouvrir le chemin en tuant les \l;araignées géantes\u object\spider;.
+
+6) Un \l;robot déménageur\u object\botgr; équipé d'une pile atomique devra également faire partie de l'expédition, afin de déblayer le chemin des cailloux de \l;minerai de titanium\u object\titanore; qui l'encombrent. C'est lui qui rapportera la \l;caisse d'explosif\u object\tnt;.
+
+\t;Voir aussi
+\l;Commandes\u command;.

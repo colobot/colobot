@@ -1,0 +1,13 @@
+\b;Dessiner un "\c;L\n;"
+Dessine maintenant un "\c;L\n;" bleu constitué de 2 traits de 20 centimètres.
+
+\image teen203 8 8;
+\b;Rappel
+Rappelle-toi que pour tourner d'un quart de tour à gauche, il faut écrire l'instruction \c;turn(90);\n;¦!
+
+\b;Un peu d'anglais
+\c;pen  = \n;plume
+\c;down = \n;en bas
+\c;Blue = \n;bleu
+
+Si tu ne connais pas un autre terme anglais, clique sur le bouton \button 46; ci-contre.

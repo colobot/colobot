@@ -1,0 +1,10 @@
+extern void object::Win( )
+{
+	errmode(0);  // ne stoppe pas si erreur
+
+	while ( true )
+	{
+		goto( 13,  4, 0,0,1);
+		goto(-12, 13, 0,0,1);
+	}
+}

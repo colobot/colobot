@@ -1,0 +1,28 @@
+\b;Programmes envoyés par Houston
+Voilà un programme développé par nos ingénieurs pour les \l;robots déménageurs\u object\botgr;. Le robot va chercher le \l;minerai de titanium\u object\titanore; le plus proche puis le dépose sur le \l;convertisseur\u object\convert;.
+
+Pour exécuter ce programme, sélectionnez-le dans la liste des programmes disponibles sur le robot (à gauche de l'écran), puis cliquez sur l'icône flèche \button 21; pour l'exécuter. Vous pouvez à tout moment arrêter le programme avec le bouton stop \button 8; pour reprendre le contrôle.
+\c;
+\s;extern void object::ApporteTitanium1()
+\s;{
+\s;	// 1) Définition des variables.
+\s;	\l;object\u cbot\type;  chose;           // déclaration de variable
+\s;	
+\s;	// 2) Va vers le minerai et le prend.
+\s;	chose = \l;radar\u cbot\radar;(\l;TitaniumOre\u object\titanore;);// cherche le minerai
+\s;	\l;goto\u cbot\goto;(chose.position);    // va à la position
+\s;	\l;grab\u cbot\grab;();                  // prend le titanium
+\s;	
+\s;	// 3) Va vers le convertisseur et pose le minerai.
+\s;	chose = \l;radar\u cbot\radar;(Converter);// cherche le convertisseur
+\s;	\l;goto\u cbot\goto;(chose.position);    // va à la position
+\s;	\l;drop\u cbot\drop;();                  // pose le titanium
+\s;	\l;move\u cbot\move;(-2.5);              // recule de 2.5m
+\s;}
+\n;
+\b;Archives
+Résumé des programmes déjà reçus¦:
+
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;EchangePile1\u mllune1;\n;

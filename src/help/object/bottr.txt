@@ -1,0 +1,13 @@
+\b;\button 158; Robot d'entraînement
+\image bottr 8 8;
+Robot d'entraînement à roues, permettant de s'entraîner à la programmation des déplacements. Il possède un crayon imaginaire qui peut être abaissé pour laisser des traces sur le sol lors des déplacements.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;PracticeBot\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+Pour dessiner, il faut utiliser les instructions \c;\l;pendown\u cbot\pendown;\n;, \c;\l;penup\u cbot\penup;\n;, \c;\l;pencolor\u cbot\pencolor;\n; et \c;\l;penwidth\u cbot\penwidth;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

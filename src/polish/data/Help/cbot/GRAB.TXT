@@ -1,0 +1,29 @@
+\b;Instrukcja \c;grab\n;
+Instrukcja \c;grab();\n; rozkazuje robotowi podnieœæ za pomoc¹ ramienia chwytaj¹cego przedmiot znajduj¹cy siê na ziemi, platformie budynku lub miejscu na ogniwo robota.
+
+\b;Podstawowe u¿ycie
+Instrukcja \c;grab();\n; napisana w ten sposób, podniesie przedmiot znajduj¹cy siê przed robotem. Oto krótki program podnosz¹cy przedmiot przed robotem i upuszczaj¹cy go 5 metrów dalej:
+\c;
+\s;	grab();
+\s;	\l;move\u cbot\move;(5);
+\s;	\l;drop\u cbot\drop;();
+\n;
+\b;Dla specjalistów
+Sk³adnia:
+\s;\c;grab ( oper );\n;
+
+Instrukcja ta odwo³uje siê do ramienia \l;robota transportera\u object\botgr;, powoduj¹c chwycenie najbli¿szego obiektu.
+
+\t;oper: \c;\l;int\u cbot\int;\n; (domyœlna wartoœæ \c;InFront\n;)
+Parametr oper okreœla gdzie robot powinien szukaæ przedmiotu do podniesienia. Jeœli nie jest to okreœlone, podnoszony jest obiekt znajduj¹cy siê przed robotem:
+\c;InFront   \n;  przed (domyœlnie).
+\c;Behind    \n;  za.
+\c;EnergyCell\n;  wyjmuje w³asne ogniwo elektryczne.
+
+\t;Typ wyniku: \c;\l;int\u cbot\int;\n;
+Zwykle wyst¹pienie b³êdu powoduje zatrzymanie programu. Mo¿na wy³¹czyæ zatrzymywanie siê programu w przypadku wyst¹pienia b³êdu, u¿ywaj¹c instrukcji \c;\l;errmode\u cbot\errmode;(0)\n;. Wtedy w przypadku wyst¹pienia b³êdu instrukcja \c;grab();\n; zwraca w wyniku wartoœæ ró¿n¹ od zera.
+\c;== 0 \n;obiekt zosta³ chwycony
+\c;!= 0 \n;b³¹d, obiekt nie zosta³ chwycony
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

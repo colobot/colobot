@@ -1,0 +1,62 @@
+public class order
+{
+	int    m_type;
+	float  m_param;
+}
+
+public class exchange
+{
+	static private order m_fifo[] = null;
+
+	// Put an order into the fifo
+	synchronized void put(order a)
+	{
+		m_fifo[sizeof(m_fifo)] = a;
+	}
+
+	// Get an order from the fifo
+	synchronized order get()
+	{
+		if ( sizeof(m_fifo) == 0 )  return null;
+
+		order a = m_fifo[0];
+		order copy[] = null;
+		for ( int i=1 ; i<sizeof(m_fifo) ; i++ )
+		{
+			copy[i-1] = m_fifo[i];
+		}
+		m_fifo = copy;
+		return a;
+	}
+}
+
+extern void object::Slave5( )
+{
+	exchange list();
+	order    todo;
+
+	while ( true )
+	{
+		while ( true )
+		{
+			todo = list.get();
+			if ( todo != null )  break;
+			wait(1);
+		}
+
+		if ( todo.m_type == 1 )
+		{
+			message("move("+todo.m_param+")");
+			move(todo.m_param);
+		}
+		else if ( todo.m_type == 2 )
+		{
+			message("turn("+todo.m_param+")");
+			turn(todo.m_param);
+		}
+		else
+		{
+			message("Unknown order");
+		}
+	}
+}

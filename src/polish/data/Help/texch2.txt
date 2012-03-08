@@ -1,0 +1,36 @@
+\b;Æwiczenie
+W tym æwiczeniu \l;stacje przekaŸnikowe\u object\exchange; wzd³u¿ drogi zawieraj¹ kierunek i odleg³oœæ do nastêpnej stacji. Nie jest znana liczba stacji przekaŸnikowych koniecznych do dotarcia do celu.
+
+\b;Ogólny algorytm
+	Powtarzaj w nieskoñczonoœæ:
+	o  Pobierz kierunek ze \l;stacji przekaŸnikowej\u object\exchange;.
+	o  Pobierz odleg³oœæ ze \l;stacji przekaŸnikowej\u object\exchange;.
+	o  Jeœli nie ma ¿adnych informacji, zatrzymaj program.
+	o  Wykonaj obrót.
+	o  IdŸ do nastêpnej stacji.
+
+Do nieskoñczonego powtarzania u¿yj pêtli \c;\l;while\u cbot\while; (true)\n;. Instrukcje pomiêdzy klamrami \c;{ }\n; bêd¹ powtarzane w nieskoñczonoœæ lub do czasu wykonania instrukcji \c;\l;break\u cbot\break;\n;.
+\s;\c;	while ( true )
+\n;
+Tym razem potrzebne bêd¹ dwie \l;zmienne\u cbot\var;, jedna dla k¹ta obrotu, druga dla odleg³oœci, na przyk³ad \c;dir\n; i \c;len\n;:
+\s;\c;	float  dir, len;
+\n;
+Nastêpnie mo¿na pobraæ informacje:
+\s;\c;	dir = receive("Direction");
+\s;\c;	len = receive("Length");
+\n;
+Zmienna \l;typu\u cbot\type; \c;\l;float\u cbot\float;\n; mo¿e równie¿ przyjmowaæ specjaln¹ wartoœæ zwan¹ \c;\l;nan\u cbot\nan;\n;. Oznacza ona, ¿e zmienna nie zawiera liczby (Not A Number).
+Jeœli w pobli¿u nie ma \l;stacji przekaŸnikowej\u object\exchange; z powodu osi¹gniêcia przez robota celu, b¹dŸ zgubienia drogi, dwie zmienne \c;dir\n; i \c;len\n; zawieraj¹ wartoœæ \c;\l;nan\u cbot\nan;\n;. Mo¿esz to sprawdziæ instrukcj¹ \c;\l;if\u cbot\if;\n; i jeœli to konieczne zatrzymaæ program instrukcj¹ \c;\l;break\u cbot\break;\n;:
+\s;\c;	if ( dir == nan )  break;
+\n;
+Jeœli pomyœlnie pobrano informacje ze \l;stacji przekaŸnikowej\u object\exchange; wykonaj obrót:
+\s;\c;	turn(dir);
+\n;
+I idŸ naprzód:
+\s;\c;	move(len);
+\n;
+\t;Uwaga
+Mo¿esz klikn¹æ na \l;stacji przekaŸnikowej informacji\u object\exchange; aby przeczytaæ zawarte w niej informacje. W tym æwiczeniu, ka¿da stacja przekaŸnikowa zawiera dwie wartoœci \c;"Direction"\n; (kierunek) i \c;"Length"\n; (odleg³oœæ).
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

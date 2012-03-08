@@ -1,0 +1,15 @@
+\b;Satellite Report
+Currently in a geo-stationary orbit of Tropica.
+\c;
+\s;-> SURFACE\c;
+\tab;Temperature:      32.2C
+\tab;Atmosphere:       helium, oxygen
+\tab;Wind:             0.7 mps
+\tab;Titanium ore:     none
+\tab;Uranium ore:      none
+
+\s;-> SUBSOIL\c;
+\tab;Energy source:    none
+\tab;Titanium ore:     none
+\tab;Uranium ore:      none
+\n;

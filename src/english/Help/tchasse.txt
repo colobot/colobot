@@ -1,0 +1,18 @@
+\b;Exercise
+You must find a way to destroy the four moving \l;target bots\u object\bottarg; without wasting one shot. Notice that after every move, the targets will stay motionless during one second.
+
+\b;General principle
+1) Detect a target with the instruction \c;\l;radar\u cbot\radar;(TargetBot);\n;.
+2) Turn towards the target with \c;\l;turn\u cbot\turn;(direction());\n;.
+3) After the rotation, check if the target did not move.
+4) If it did not, wait 0.2 seconds with \c;\l;wait\u cbot\wait;(0.2);\n;.
+5) Re-check if the target did not move.
+6) If it did not, shoot with \c;\l;fire\u cbot\fire;(2);\n; and wait 2 seconds for the target to be hit by the bullets and destroyed.
+
+There are of course other ways to achieve the goal.
+
+\b;Remark
+In order to increase the efficiency of your shots, aim a little downward with \c;\l;aim\u cbot\aim;(-3);\n;.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

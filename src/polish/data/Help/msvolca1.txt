@@ -1,0 +1,15 @@
+\b;Rozwi¹zanie
+1) Zacznij od na³adowania \l;zwyk³ego ogniwa elektrycznego\u object\power; i zasilenia \l;centrum badawczego\u object\research;. U¿yj go do opracowania technologii budowy \l;elektrowni atomowej\u object\nuclear; \button 170;.
+
+2) Zbuduj \l;dzia³o na ko³ach\u object\botgr;.
+
+3) Na pó³nocnym zachodzie znajdziesz nieco \l;rudy uranu\u object\uranore;. Elektrownia atomowa przetworzy j¹ w \l;atomowe ogniwa elektryczne\u object\atomic;, dzia³aj¹ce d³u¿ej od zwyk³ych.
+
+4) Zasil \l;dzia³o na ko³ach\u object\botfr; w jedno z nowych ogniw atomowych. Wyœlij je i zabij wszystkie \l;paj¹ki\u object\spider; wzd³u¿ trasy.
+
+5) U¿ycie \l;radaru\u object\radar; nie jest konieczne, ale mo¿e byæ pomocne w oznaczeniu pozycji paj¹ków na mapce.
+
+6) Transporter na ko³ach powinien byæ czêœci¹ ekspedycji. Oczyœci on drogê z porozrzucanych kawa³ków \l;rudy tytanu\u object\titanore; oraz dostarczy \l;³adunek wybuchowy\u object\tnt; na statek.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

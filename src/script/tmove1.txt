@@ -1,0 +1,10 @@
+extern void object::Solution( )
+{
+	move(20);  // va sur borne 1
+	turn(90);
+	move(20);  // va sur borne 2
+	turn(-90);
+	move(20);  // va sur borne 3
+	turn(-90);
+	move(20);  // va sur arrivée
+}

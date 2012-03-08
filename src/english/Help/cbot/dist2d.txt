@@ -1,0 +1,14 @@
+\b;Instruction \c;distance2d\n;
+Syntax:
+\s;\c;distance2d ( pos1, pos2 );\n;
+
+Calculates the distance between two positions (ignores the z coordinate).
+
+\t;pos1, pos2: \c;\l;point\u cbot\point;\n;
+Coordinates of the two positions. 
+
+\t;Return value: \c;\l;float\u cbot\float;\n;
+Distance between the two positions.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

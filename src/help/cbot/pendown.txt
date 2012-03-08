@@ -1,0 +1,54 @@
+\b;Instruction \c;pendown\n;
+Avec l'instruction \c;pendown()\n;, le robot abaisse un crayon virtuel et dessine un trait sur le sol partout où il passe.
+
+\b;Utilisation courante
+Avec \c;pendown()\n;, un trait est dessiné par le robot chaque fois qu'il se déplace. Avec \c;penup()\n;, le robot ne dessine plus rien lorsqu'il se déplace (bien entendu, cela n'efface pas les traits déjà dessinés).
+\c;
+\s;	pendown();
+\s;	\l;move\u cbot\move;(5);
+\s;	\l;penup\u cbot\penup;();
+\n;
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;pendown ( couleur, épaisseur );\n;
+
+\t;couleur: \c;\l;int\u cbot\int;\n; (\c;Black\n; par défaut)
+Couleur du trait à dessiner¦:
+\c;White      \n;Trait blanc
+\c;Black      \n;Trait noir
+\c;Gray       \n;Trait gris
+\c;LightGray  \n;Trait gris clair
+\c;Red        \n;Trait rouge
+\c;Pink       \n;Trait rose
+\c;Purple     \n;Trait violet
+\c;Orange     \n;Trait orange
+\c;Yellow     \n;Trait jaune
+\c;Beige      \n;Trait beige
+\c;Brown      \n;Trait brun
+\c;Skin       \n;Trait peau
+\c;Green      \n;Trait vert
+\c;LightGreen \n;Trait vert clair
+\c;Blue       \n;Trait bleu
+\c;LightBlue  \n;Trait bleu clair
+\c;BlackArrow \n;Flèches noires
+\c;RedArrow   \n;Flèches rouges
+
+\t;épaisseur: \c;\l;float\u cbot\float;\n; (\c;0.5\n; par défaut)
+Epaisseur du trait, comprise entre 0.1 et 1 mètres.
+
+Si l'épaisseur ou la couleur sont omises, c'est les définitions réalisées avec \c;\l;pencolor\u cbot\pencolor;()\n; et \c;\l;penwidth\u cbot\penwidth;()\n; qui sont prises en compte. Voici deux exemples identiques¦:
+\c;
+\s;	pendown(Red, 0.1);
+\n;
+ou
+\c;
+\s;	\l;pencolor\u cbot\pencolor;(Red);
+\s;	\l;penwidth\u cbot\penwidth;(0.1);
+\s;	pendown();
+\n;
+\t;Dictionnaire anglais-français
+\c;pen \n; = plume
+\c;down\n; = en bas
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

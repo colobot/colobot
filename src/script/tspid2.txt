@@ -1,0 +1,11 @@
+extern void object::Solution()
+{
+	object    chose;
+	
+	while (true)
+	{
+		chose = radar(AlienSpider);
+		turn(direction(chose.position));
+		fire(1);
+	}
+}

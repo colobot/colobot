@@ -1,0 +1,24 @@
+\b;\button 174; Paratonnerre
+\image captor 8 8;
+Le paratonnerre protège de la foudre, dans un rayon de 50 mètres. De plus, tous les robots et toutes \l;piles normales\u object\power; placés dessous sont rechargés lorsque le paratonnerre est frappé par la foudre. Les \l;piles atomiques\u object\atomic; ne sont pas rechargées.
+
+Dans le vaste cosmos, rares sont les planètes ayant des orages magnétiques. Parmi les planètes visitées, seule Orphéon présente ce phénomène.
+
+Pour visualiser la zone de protection d'un paratonnerre, sélectionnez-le, puis utilisez le bouton <rayon d'action> \button 41;. Des points rouges bordent la zone circulaire pendant 20 secondes.
+
+Votre \l;vaisseau spatial\u object\base; fait également office de paratonnerre. Par contre il ne recharge pas les piles.
+
+\t;Emplacement requis
+Surface plate quelconque de 10 mètres de diamètre.
+
+\t;Energie consommée
+Foudre.
+
+\t;Durée de l'opération
+1 seconde.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;PowerCaptor\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

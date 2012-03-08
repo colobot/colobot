@@ -1,0 +1,17 @@
+\b;Instruction \c;jet\n;
+Syntaxe¦:
+\s;\c;jet ( power );\n;
+
+Commande directe du réacteur d'un \l;robot volant\u object\botgj;.
+
+\t;power: \c;\l;float\u cbot\float;\n;
+Puissance du réacteur, comprise entre \c;-1\n; et \c;1\n;. \c;jet(1);\n; fait monter le robot à la vitesse maximale, \c;jet(-1);\n; le fait descendre à la vitesse maximale, \c;jet(0);\n; lui fait garder son altitude actuelle. Pour obtenir des changements d'altitude plus doux, employez des valeurs intermédiaires, par exemple \c;jet(0.3);\n;.
+
+\t;Valeur retournée: \c;\l;void\u cbot\void;\n;
+Aucune.
+
+\t;Dictionnaire anglais-français
+\c;jet\n; = avion à réaction
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

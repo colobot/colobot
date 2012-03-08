@@ -1,0 +1,15 @@
+\b;Z Centrum Kontroli Misji
+W³aœnie dotar³a do nas wiadomoœæ, ¿e pierwsza ekspedycja zbudowa³a zupe³nie nowy typ broni, od u¿ycia na Nowej Ziemi. W celu ochrony przed dostêpem wroga, zosta³a ona bezpiecznie zamkniêta w \l;skrytce\u object\safe;. Dostêp do niej mo¿na uzyskaæ przy pomocy czterech \l;kluczy\u object\key;. S¹ one rozproszone na lub pod powierzchni¹ planety.
+
+Satelita obserwacyjny zlokalizowa³ jeden z tych kluczy (A) na pó³noc od Twojej obecnej pozycji.
+
+Zgodnie z wytycznymi Kongresu, nasi in¿ynierowie opracowali kolejny model œciœle "obronnego" robota, nazwanego \l;os³aniaczem\u object\botshld;, który umo¿liwia odpowiednie zabezpieczenie o okreœlonych parametrach. Dane zosta³y przes³ane do \l;centrum badawczego\u object\research; razem z paroma przydatnymi programami.
+
+Jak zapewne wiesz, ruda uranu w podglebiu jest skutecznym nawozem, przyœpieszaj¹cym wzrost rozmaitych grzybów. Ponadto warto zauwa¿yæ, ¿e \l;rudê tytanu\u object\titanore; na tej planecie mo¿na czêsto znaleŸæ na dnie jezior.
+
+Po zakoñczeniu misji, przed odlotem, zabierz na pok³ad statku kosmicznego robota \l;os³aniacza\u object\botshld; oraz \l;nurka\u object\botsub;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

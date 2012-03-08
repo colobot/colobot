@@ -1,0 +1,59 @@
+\b;Exercice
+Détruire les six \l;cibles\u object\bottarg; à l'aide d'un programme utilisant une boucle. Il faut avancer de 5 mètres pour passer d'une cible à l'autre. Cet exercice est presque semblable au précédent. Il faut simplement remplacer l'instuction \c;\l;repeat\u cbot\repeat;\n; par une instruction \c;\l;for\u cbot\for;\n;.
+
+\b;Principe
+Le programme va ressembler à ceci¦:
+\s;o  Répéter 6 fois¦:
+\s;	o  avancer de 5 mètres
+\s;	o  tourner de 90 degrés à gauche
+\s;	o  tirer
+\s;	o  tourner de 90 degrés à droite
+
+\image tfor1 14 5;
+\b;Instruction \c;for ( )\n;
+L'instruction \c;\l;for\u cbot\for;\n; utilise 3 expressions¦:
+1) L'initialisation du compteur.
+2) La \l;condition\u cbot\cond; de fin.
+3) L'\l;expression\u cbot\expr; de comptage.
+
+La boucle à utiliser intégrée dans le programme sera donc¦:
+\s;\c;extern void object::Go( )
+\s;{
+\s;	for ( int i=0 ; i<6 ; i=i+1 )
+\s;	{
+\s;		\n;instructions répétées 6x ...\c;
+\s;	}
+\s;}\n;
+ATTENTION: La ligne \c;for ( )\n; ne doit jamais être suivie d'un \l;point-virgule\u cbot\term;¦!
+
+\b;Explications de la ligne \c;for ( )\n;
+1) \c;int i=0\n;
+    La \l;variable\u cbot\var; \c;i\n; est initialisée à zéro avant le départ.
+
+2) \c;i<6\n;
+    On continue la boucle tant que \c;i\n; est plus petit que 6.
+
+3) \c;i=i+1\n;
+    On ajoute 1 à \c;i\n; à la fin de chaque boucle.
+
+\b;Les blocs
+Les accolades \c;{ }\n; servent à créer des \l;blocs\u cbot\bloc;. Ainsi, l'instruction \c;for\n; est suivie d'un bloc, qui est répété dans son ensemble.
+Le programme principal est lui-même constitué d'un bloc¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	\n;à compléter ...\c;
+\s;}
+\n;
+Il ne faut jamais modifier ces caractères. Le seul endroit où vous pouvez agir est dans le bloc, là où apparaît "à compléter".
+Il est possible de mettre des blocs dans d'autres blocs. C'est le cas du bloc \c;for\n; qui est à l'intérieur du bloc du programme principal. En général, pour des questions de lisibilité, on aligne verticalement l'accolade ouvrante \c;{\n; avec sa partenaire fermante \c;}\n;. Mais cela n'est pas obligatoire.
+
+\b;Remarques
+L'instruction pour avancer est \c;\l;move\u cbot\move;(distance);\n;.
+L'instruction pour tourner est \c;\l;turn\u cbot\turn;(angle);\n;. Un angle positif tourne à gauche.
+L'instruction pour tirer est \c;\l;fire\u cbot\fire;(time);\n;. Une durée d'une seconde permet d'économiser l'énergie pour pouvoir détruire les six \l;cibles\u object\bottarg;.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u trepeat; et \l;programmation\u cbot;.

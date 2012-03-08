@@ -1,0 +1,28 @@
+\b;Instruction \c;continue\n;
+Syntaxe¦:
+\s;\c;while ( condition )
+\s;{
+\s;	continue;
+\s;}
+\n;
+Cette instruction permet de passer prématurément au tour de boucle suivant. On peut l'utiliser dans un bloc après une instruction \c;\l;while\u cbot\while;\n; ou \c;\l;for\u cbot\for;\n;.
+
+Voici un exemple d'utilisation¦:
+\s;\c;int i = 0;
+\s;while ( i < 5 )
+\s;{
+\s;	i = i+1;
+\s;	if ( i == 3 )
+\s;	{
+\s;		continue;
+\s;	}
+\s;	\n;Instructions ...\c;
+\s;}
+\n;
+Les instructions seront exécutées pour les valeurs de \c;i\n; 1, 2, 4 et 5.
+
+\t;Dictionnaire anglais-français
+\c;continue\n; = continuer
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

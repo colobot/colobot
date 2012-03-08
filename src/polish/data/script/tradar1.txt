@@ -1,0 +1,26 @@
+extern void object::Solution( )
+{
+	while ( true )
+	{
+		object	spot;
+		float	dir;
+
+		spot = radar(WayPoint);
+		if ( spot == null )  // czy ju¿ koniec?
+		{
+			motor(0, 0);  // zatrzymuje siê
+			break;
+		}
+
+		dir = direction(spot.position);
+		if ( dir < 0 )  // po prawej?
+		{
+			motor(1, 1+dir/90);
+		}
+		else  // po lewej?
+		{
+			motor(1-dir/90, 1);
+		}
+	}
+}
+

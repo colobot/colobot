@@ -1,0 +1,22 @@
+extern void object::Solution( )
+{
+	SendOrder(1, 20);  // move(20);
+	SendOrder(2, 90);  // turn(90);
+	SendOrder(1, 20);  // move(20);
+	SendOrder(2, 90);  // turn(90);
+	SendOrder(1, 10);  // move(10);
+	SendOrder(2, 90);  // turn(90);
+	SendOrder(1, 10);  // move(10);
+	SendOrder(2,-90);  // turn(-90);
+	SendOrder(1, 10);  // move(10);
+}
+
+void object::SendOrder(float order, float param)
+{
+	exchange list = new exchange();
+	order    todo();
+
+	todo.global_type = order;
+	todo.global_param = param;
+	list.put(todo);
+}

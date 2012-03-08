@@ -1,0 +1,10 @@
+extern void object::Go()
+{
+	#
+	find(Scrap);
+	grab();
+	find(Disintegrator);
+	drop();
+	move(-10);
+	
+}

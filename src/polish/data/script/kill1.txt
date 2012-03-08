@@ -1,0 +1,18 @@
+extern void object::KillAnt1()
+{
+	object item;             // informacje o obiekcie
+	
+	goto(-30, 0);            // idŸ na zachód
+	aim(0);                  // celuj w poziomie
+	
+	while ( true )           // powtarzaj w nieskoñczonoœæ:
+	{
+		item = radar(AlienAnt, 0, 360, 0, 40);
+		if ( item != null )  // wykryto mrówkê?
+		{
+			turn(direction(item.position));
+			fire(0.5);       // strzelaj przez 0,5 s
+		}
+		wait(1);             // czekaj 1 sekundê
+	}
+}

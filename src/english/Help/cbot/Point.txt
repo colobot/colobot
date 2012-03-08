@@ -1,0 +1,36 @@
+\b;Type \c;point\n;
+Variables of this type contain the coordinates of a point in space. This type is made of three values that represent the \c;x\n;, \c;y\n; and \c;z\n; coordinates.
+\c;x\n; and \c;y\n; correspond to the place on the ground. The positive \c;x\n; axis faces towards east, the positive \c;y\n; axis faces towards north. 
+The \c;z\n; value corresponds to the altitude above sea level. 
+
+If you want to declare a variable of type point, you can write: 
+\c;
+\s;	point a (10, 20, 30);
+\n;
+You can also set the variable taking one value after another:
+\c;
+\s;	point b;
+\s;	b.x = 10;
+\s;	b.y = 20;
+\s;	b.z = 30;
+\n;
+With these examples, the following \l;condition\u cbot\cond; is true:
+\c;
+\s;	if ( a == b )
+\s;	{
+\s;	}
+\n; 
+The following declaration :
+\c;
+\s;	point c (4, 7);
+\n;
+Is equivalent to :
+\c;
+\s;	point c;
+\s;	c.x = 4;
+\s;	c.y = 7;
+\s;	c.z = 0;
+\n;
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

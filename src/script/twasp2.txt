@@ -1,0 +1,54 @@
+extern void object::Solution()
+{
+	object    chose;
+	float     angle;
+	
+	aim(0);
+	
+	while ( true )
+	{
+		while ( radar(AlienWasp, 0, 360, 0, 20) == null )
+		{
+			chose = radar(AlienWasp);
+			turn(direction(chose.position));
+			motor(1,1);
+			
+			jet(0);
+			if ( position.z > chose.position.z )
+			{
+				jet(-0.3);
+			}
+			
+			if ( position.z < chose.position.z - 1 )
+			{
+				jet(0.3);
+			}
+			
+			wait(0.2);
+		}
+		chose = radar(AlienWasp);
+		angle = direction(chose.position);
+		turn(angle);
+		if ( angle < 0 )
+		{
+			motor(1,0.5);
+		}
+		else
+		{
+			motor(0.5,1);
+		}
+		
+		jet(0);
+		if ( position.z > chose.position.z )
+		{
+			jet(-0.3);
+		}
+		
+		if ( position.z < chose.position.z - 1 )
+		{
+			jet(0.3);
+		}
+		
+		fire(1);
+	}
+}

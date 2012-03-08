@@ -1,0 +1,27 @@
+\b;\button 163; Research Center
+\image research 8 8;
+The research center is an enormous computer. Its most useful feature is its ability to come up with new technologies as well as improvements on existing ones regarding buildings and bots in particular.
+
+The 65'536 processors it contains use up a large amount of energy.
+Each research program necessitates a brand new and fully charged \l;power cell\u object\power;
+
+\t;Requirements for building
+Any flat surface of at least 5 meters wide.
+
+\t;Input
+Request for research.
+
+\t;Output
+New and improved technologies.
+
+\t;Power source
+Regular or nuclear power cell.
+
+\t;Duration of operation
+Between 9 seconds and 1 minute depending on the research.
+
+\t;Object \l;Category\u cbot\category;
+\c;ResearchCenter\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

@@ -1,0 +1,14 @@
+\b;From Mission Control
+This is your second drill. \l;You\u object\human; should now familiarize yourself with the handling of basic equipment. This could turn out to be your best ally during the course of this expedition.
+
+The construction of buildings and the manufacturing of bots all require the use of \l;titanium\u object\titan;. Titanium is a mineral found in most solar systems in the universe.
+
+\b;Procedure
+1) Position yourself close to the first \l;titanium cube\u object\titan;.
+2) Build a \l;research center\u object\research; \button 163;. Note that only \l;you\u object\human; can accomplish the task of building; no bot can be substituted.
+3) With a second \l;titanium cube\u object\titan;, build a \l;bot factory\u object\factory; \button 160;.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command;

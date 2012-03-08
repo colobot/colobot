@@ -1,0 +1,21 @@
+\b;Rozwi¹zanie
+Oto kolejne kroki powrotu na statek kosmiczny.
+
+1) IdŸ dooko³a jeziora, kieruj¹c siê w stronê zielonej opalizuj¹cej kuli. Kula ta jest generowana przez grawi-roœlinê, która uniemo¿liwia latanie wewn¹trz kuli.
+
+2) Pod¹¿aj lew¹ stron¹ doliny, mijaj¹c sadzawkê po prawej stronie i wejdŸ na niewielk¹ skarpê. Na szczycie spotkasz kilka ogromnych mrówek: biegnij jak najszybciej w kierunku kolejnej grawi-roœliny trochê dalej po prawej stronie, czas na leczenie ran przyjdzie póŸniej.
+
+3) U¿yj reaktora i przeleæ nad jeziorem przed grawi-roœlin¹ po prawej.
+
+4) Gdy opuœcisz grawi-roœlinê, trzymaj siê lewej strony jeziora i idŸ wzd³u¿ brzegu a¿ dojdziesz do pó³wyspu ozdobionego podobnymi do paproci roœlinami.
+
+5) Wiêksze jeziora pokonuj przeskakuj¹c po wyspach. Celuj w drzewa, aby nie spaœæ do wody po drugiej stronie wyspy. Ostatnia wyspa jest 50 cm pod wod¹, ale mo¿esz na niej bezpiecznie wyl¹dowaæ nie ryzykuj¹c zanurzenia g³owy. 
+
+6) Dalej œcie¿ka biegnie w lewo. Czeka tam ogromna mrówka, która jednak nie uszkodzi Ciê zbytnio.
+
+7) Pozwól reaktorowi och³odziæ siê, nastêpnie przeleæ nad ma³ym jeziorem. Spróbuj wyl¹dowaæ jak najwy¿ej po prawej stronie, aby nie wpaœæ do drugiego jeziora.
+
+8) Przekrocz drugie jezioro, wejdŸ na pok³ad statku kosmicznego i odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

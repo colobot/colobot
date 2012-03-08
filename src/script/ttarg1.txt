@@ -1,0 +1,11 @@
+extern void object::Solution()
+{
+	object    chose;
+	
+	repeat (4)
+	{
+		chose = radar(TargetBot);
+		turn(direction(chose.position));
+		fire(1);
+	}
+}

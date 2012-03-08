@@ -1,0 +1,14 @@
+\b;Æwiczenie
+IdŸ drog¹ w kszta³cie spirali. Robot musi iœæ 2 razy po 25 m naprzód i skrêciæ, nastêpnie 2 razy po 20 m i skrêciæ, itd.
+\image tproc2 8 8;
+
+\b;Funkcja
+Nale¿y zauwa¿yæ, ¿e droga sk³ada siê z pasuj¹cych do siebie "L"-kszta³tnych czêœci. Pierwsza z nich (ciemno niebieska) ma d³ugoœæ dwa razy po 25 metrów. Druga (jasno niebieska) jest 5 metrów krótsza. Zacznijmy od napisania \l;funkcji\u cbot\function; poruszaj¹cej robotem po "L"-kszta³tnej czêœci, której d³ugoœæ bêdzie podana jako parametr.
+
+\b;Przydatne instrukcje
+\c;\l;for\u cbot\for;\n; pêtla powtarzaj¹ca instrukcje
+\c;\l;move\u cbot\move;\n; poruszanie robotem
+\c;\l;turn\u cbot\turn;\n; obracanie robota
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

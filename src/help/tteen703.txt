@@ -1,0 +1,8 @@
+\b;Une maison plus grande
+Tu as sans doute l'impression qu'on a compliqué le premier programme pour pas grand chose. Mais imagine qu'on souhaite dessiner une maison plus grande ou plus petite¦!
+
+\b;Une seule modification
+Et bien, c'est justement ce que tu dois faire dans cet exercice. Dessine une maison 2 fois plus grande. Les 4 traits mesureront donc 20 centimètres chacun au lieu de 10. Pour cela, il suffit de modifier la définition de la longueur, qui est actuellement définie ainsi¦:
+\c;
+\s;int longueur = 10;
+\n;

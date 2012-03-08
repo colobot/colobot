@@ -1,0 +1,15 @@
+\b;Instruction \c;retobject\n;
+Syntax:
+\s;\c;retobject ( number );\n;
+
+Returns the object corresponding to the given number.
+
+\t;number: \c;\l;int\u cbot\int;\n;
+Number of the object, between 0 and n. "n" represents the total number of objects in the scene. 
+
+\t;Return value: \c;\l;object\u cbot\object;\n;
+Object corresponding to the number. The return value \c;\l;null\u cbot\null;\n; means that no object corresponds to this number, because the number was too high, and there are not so many objects in the scene. 
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.
+

@@ -1,0 +1,24 @@
+\b;\button 169; Repair Center
+\image repair 8 8;
+The repair center regenerates the shield on damaged bots. A bot's shield will absorb a certain amount of \l;enemy\u object\mother; hits. If there is no shield left, this means that the bot itself, when hit next, will be destroyed.
+
+\t;Requirements for building
+Any flat surface of at least 6 meters wide.
+
+\t;Input
+Damaged bot.
+
+\t;Output
+Repaired bot with regenerated shield.
+
+\t;Power source
+None.
+
+\t;Duration of operation
+A few seconds depending on the repair job to be done.
+
+\t;Object \l;Category\u cbot\category;
+\c;RepairCenter\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

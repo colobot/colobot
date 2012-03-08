@@ -1,0 +1,7 @@
+\b;Z Centrum Kontroli Misji
+Przed opuszczeniem tej planety musisz odeprzeæ ostatni atak mrówek.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

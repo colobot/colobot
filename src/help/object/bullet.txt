@@ -1,0 +1,14 @@
+\b;Matière organique
+\image bullet 4 4;
+La matière organique est sécrétée par les insectes. Si vous arrivez à en subtiliser dans un nid, cela vous permettra d'effectuer des analyses dans votre \l;laboratoire\u object\labo; afin de découvrir de nouvelles technologies dont vous pourrez équiper les robots.
+
+La \l;guêpe\u object\wasp; transporte souvent des boules de matière organique, afin de vous bombarder.
+
+\t;Transport
+Tous les \l;robots déménageurs\u object\botgr; ou le \l;cosmonaute\u object\human;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;OrgaMatter\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

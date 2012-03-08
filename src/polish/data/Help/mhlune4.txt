@@ -1,0 +1,20 @@
+\b;Z Centrum Kontroli Misji
+Nie mamy mo¿liwoœci ustalenia dok¹d uda³a siê poprzednia ekspedycja po opuszczeniu powierzchni Ksiê¿yca, ani dlaczego wybra³a miejsce, w które siê uda³a.
+
+ZnajdŸ \l;czarn¹ skrzynkê\u object\bbox; zostawion¹ przez poprzedni¹ ekspedycjê i dostarcz j¹ na pok³ad Twojego statku. Powinna ona zawieraæ wspó³rzêdne nastêpnej planety, do której zmierza³a ekspedycja.
+
+\l;Ogniwa elektryczne\u object\power; Twoich robotów s¹ prawie zupe³nie puste. Na³adowanie ich jest priorytetem. Z danych satelity obserwacyjnego wynika, ¿e podglebie w tej okolicy na³adowane jest energi¹, wobec czego budowa dzia³aj¹cej \l;stacji energetycznej\u object\station; mo¿liwa jest na ka¿dej p³askiej powierzchni.
+
+Opracowaliœmy program ³aduj¹cy \l;ogniwa elektryczne\u object\power; robota. Wiêcej informacji znajdziesz na stronie z programami w Twoim komunikatorze SatCom \button 53;.
+
+\b;Procedura
+1) Na pocz¹tek zbuduj \l;hutê\u object\convert;, w której przetopisz posiadane ju¿ kawa³ki rudy tytanu w u¿yteczne \l;kostki tytanu\u object\titan;.
+
+2) Nastêpnie zbuduj \l;stacjê energetyczn¹\u object\station; oraz \l;radar\u object\radar;, który wska¿e na mapce lokalizacjê czarnej skrzynki.
+
+3) Z na³adowanym w pe³ni ogniwem elektrycznym zdob¹dŸ czarn¹ skrzynkê. Aby móc odlecieæ, musisz dostarczyæ j¹ na pok³ad \l;statku kosmicznego\u object\base;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

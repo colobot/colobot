@@ -1,0 +1,19 @@
+\b;Rapport du satellite
+En orbite géostationnaire autour de Centaury.
+\c;
+\s;-> SURFACE\c;
+\tab;Température:      21.3 degrés
+\tab;Atmosphère:       oxygène, azote, ammoniaque
+\tab;Vent:             1.9 m/s
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+
+\s;-> SOUS-SOL\c;
+\tab;Energie:          aucune
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+
+\s;-> INFORMATIONS SPECIALES\c;
+\tab;Détecté:          fourmis géantes à proximité
+\tab;  - Danger:       oui, imminent
+\n;

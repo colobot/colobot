@@ -1,0 +1,11 @@
+\b;Solution
+\l;Vous\u object\human; êtes suffisamment résistant contre les tirs de fourmis pour pouvoir rester sur le \l;vaisseau\u object\base;. Les quelques tirs encaissés seront douloureux, mais pas fatals.
+
+Prenez les commandes du \l;robot orgaShooter\u object\botoj; et abattrez en premier les \l;fourmis\u object\ant; à votre droite, puis contournez le \l;vaisseau\u object\base; dans le sens des aiguilles d'une montre, et tirez sur tout ce qui bouge.
+
+Si vous n'y arrivez pas de cette manière, mettez le \l;robot orgaShooter\u object\botoj; en sécurité un peu plus loin, puis mettez-vous vous-même en sécurité. Vous pourrez alors en toute tranquillité éliminer les fourmis une à une. Le vaisseau et la \l;boîte noire\u object\bbox; ne risquent rien.
+
+Bonne chance¦!
+
+\t;Voir aussi
+\l;Commandes\u command;.

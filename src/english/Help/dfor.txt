@@ -1,0 +1,11 @@
+\b;Exercise
+Destroy all four \l;targets\u object\bottarg; with a program using a \c;for\n; loop. You must move 10m to get from one target to another.
+
+\b;Useful instructions
+\c;\l;for\u cbot\for;\n; loop to repeat the instructions
+\c;\l;move\u cbot\move;\n; to move the bot
+\c;\l;turn\u cbot\turn;\n; to turn the bot
+\c;\l;fire\u cbot\fire;\n; to fire the cannon
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

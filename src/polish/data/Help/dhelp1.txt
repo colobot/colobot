@@ -1,0 +1,15 @@
+\b;Æwiczenie
+Obroñ siê przed wrogimi atakami
+
+\b;Ogólny pomys³
+Broñ ma zasiêg oko³o 40 m. Kategoria wrogów to \c;AlienAnt\n;. Obróæ siê w stronê najbli¿szej mrówki, nawet jeœli jest dalej ni¿ 40 m, ale strzelaj dopiero gdy znajdzie siê w zasiêgu, aby nie marnowaæ energii.
+
+\b;Przydatne instrukcje
+\c;\l;radar\u cbot\radar;\n; wykrywanie wrogów (kategoria \c;\l;AlienAnt\u object\ant;\n;)
+\c;\l;direction\u cbot\direct;\n; obliczanie kierunku
+\c;\l;distance\u cbot\dist;\n; obliczanie odleg³oœci
+\c;\l;fire\u cbot\fire;\n; strzelanie z dzia³a
+\c;\l;wait\u cbot\wait;\n; czekanie
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

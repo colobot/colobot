@@ -1,0 +1,59 @@
+\b;Instruction \c;radar\n;
+Avec l'instruction \c;radar()\n;, le robot peut chercher des objets comme des \l;ennemis\u object\mother;, des robots ou des bâtiments.
+
+\b;Utilisation courante
+Donnez entre parenthèses le \l;nom de l'objet\u cbot\category; que vous cherchez. Mettez le résultat dans une variable de \l;type\u cbot\type; \c;object\n;. Voici par exemple comment chercher la fourmi la plus proche¦:
+\c;
+\s;// Tout au début du programme:
+\s;object  chose; // déclaration de la variable
+\s;
+\s;// Cherche la fourmi la plus proche
+\s;chose = radar(AlienAnt);
+\n;
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;radar ( catégorie, angle, focus, min, max, sens );\n;
+
+Détecte un objet selon divers critères.
+
+\image radar1 8 8;
+La zone arrondie violette correspond, vue d'en haut, à la zone dans laquelle les objets sont détectés.
+
+\t;catégorie: \c;\l;int\u cbot\int;\n;
+\l;Catégorie\u cbot\category; des objets cherchés. Par exemple, \c;WayPoint\n;.
+
+\t;angle: \c;\l;float\u cbot\float;\n; (\c;0\n; par défaut)
+Direction dans laquelle est dirigé le radar, en degrés.
+\c;  0\n; -> radar dirigé droit devant
+\c;-90\n; -> radar dirigé à gauche
+\c; 90\n; -> radar dirigé à droite
+
+\t;focus: \c;\l;float\u cbot\float;\n; (\c;360\n; par défaut)
+Angle d'ouverture du radar, en degrés.
+
+\t;min: \c;\l;float\u cbot\float;\n; (\c;0\n; par défaut)
+Distance minimale de détection, en mètres. Avant cette distance, les objets sont ignorés.
+
+\t;max: \c;\l;float\u cbot\float;\n; (\c;1000\n; par défaut)
+Distance maximale de détection, en mètres. Au delà de cette distance, les objets sont ignorés.
+
+\t;sens: \c;\l;float\u cbot\float;\n; (\c;1\n; par défaut)
+Sens dans lequel s'effectue la recherche. Avec la valeur \c;1\n;, on cherche de l'intérieur vers l'extérieur. Autrement dit, c'est l'objet le plus proche qui est trouvé. Avec \c;-1\n;, on cherche de l'extérieur vers l'intérieur. On trouvera donc l'objet le plus éloigné.
+
+\t;Valeur retournée: \c;\l;object\u cbot\object;\n;
+Objet trouvé le plus proche. La valeur \c;\l;null\u cbot\null;\n; indique que rien n'a été trouvé.
+
+\t;Remarque
+Il n'est pas nécessaire de donner tous les paramètres. Voici deux exemples identiques¦:
+\c;
+\s;	radar(Titanium, 0, 360, 0, 1000);
+\s;	radar(Titanium);  // identique
+
+\s;	radar(Titanium, 0, 90, 0, 1000);
+\s;	radar(Titanium, 0, 90);  // identique
+\n;
+En fait, lorsque des paramètres manquent, ils prennent les valeurs par défaut indiquées plus haut. Le premier paramètre \c;catégorie\n; est obligatoire. Les cinq paramètres suivants sont facultatifs, et sont remplacés par \c;0\n;, \c;360\n;, \c;0\n;, \c;1000\n; et \c;1\n; s'ils manquent.
+Ceci est très utile. En effet, \c;radar(XXX)\n; trouve l'objet le plus proche, où qu'il soit.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

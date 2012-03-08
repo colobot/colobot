@@ -1,0 +1,105 @@
+Title.F      text="Désarmé"
+Resume.F     text="Débarrassez-vous des insectes par la ruse."
+Title.E      text="Disarmed"
+Resume.E     text="Figure out a stratagem."
+Instructions name="mhsaari3.txt"
+Satellite    name="misaari3.txt"
+Loading      name="mlsaari3.txt"
+SoluceFile   name="mssaari3.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=5
+AmbiantColor  air=136;136;102;102 water=20;20;20;20  // grey
+FogColor      air=254;245;146;0 water=67;80;100;0  // yellow
+VehicleColor  color=158;143;68;0  // sable
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.1 water=0.5
+SecondTexture rank=6
+Background    image="back33.tga" up=254;245;146;0 down=254;245;146;0 cloudUp=254;245;146;0 cloudDown=254;245;146;0
+FrontsizeName image="lens4.tga"
+Planet        pos=4.8;0.2 dim=2.0 image="effect01.tga" uv1=0.00;0.25 uv2=0.25;0.50
+
+TerrainGenerate     vision=250.00 depth=1 hard=0.3
+TerrainWind         speed=0.0;-8.0
+TerrainRelief       image="textures\relief09.bmp" factor=1.0
+TerrainResource     image="textures\res00.bmp"
+TerrainCloud        image="cloud04.tga" level=80.0
+TerrainInitTextures image="mars" dx=1 dy=1 table=103
+//TerrainInitLevel image="roca" slope=3.0 min=0.0 max=900.0 invert=0
+TerrainCreate
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos= 0.00;-3.25 dir=1.5 type=Me
+CreateObject pos= 3.25;-3.25 dir=1.5 type=WheeledGrabber script3="exchg1.txt" script2="charge2.txt" script1="titan2.txt"
+CreateObject pos=-3.75; 2.50 dir=0.0 type=Titanium
+CreateObject pos=-2.50; 2.50 dir=0.0 type=Titanium
+CreateObject pos=-0.62; 2.50 dir=0.0 type=Titanium
+CreateObject pos= 0.63; 2.50 dir=0.0 type=Titanium
+CreateObject pos= 2.50; 2.50 dir=0.0 type=Titanium
+CreateObject pos= 3.75; 2.50 dir=0.0 type=Titanium
+CreateObject pos=-3.75; 3.75 dir=0.0 type=PowerCell
+CreateObject pos=-2.50; 3.75 dir=0.0 type=PowerCell
+CreateObject pos=-0.62; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 0.63; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 2.50; 3.75 dir=0.0 type=PowerCell
+CreateObject pos= 3.75; 3.75 dir=0.0 type=PowerCell
+
+CreateObject pos=-13;50 dir=0.0 type=BlackBox
+CreateObject pos=-23;48 dir=0.0 type=RuinBaseCamp h=-9.0
+CreateObject pos= -3;50 dir=0.1 type=RuinHeadCamp
+CreateObject pos= 20;43 dir=1.0 type=RuinBotFactory
+CreateObject pos=  8;41 dir=0.3 type=WreckBott1 h=-0.5
+CreateObject pos=-25;28 dir=0.3 type=RuinConverter
+CreateObject pos= 17;50 dir=0.0 type=Mine
+CreateObject pos=  5;69 dir=0.0 type=Mine
+CreateObject pos=-33;65 dir=0.0 type=Mine
+CreateObject pos=-42;49 dir=0.0 type=Mine
+CreateObject pos=-36;31 dir=0.0 type=Mine
+CreateObject pos= -4;35 dir=0.0 type=Mine
+
+CreateObject pos= 110;  80 type=AlienAnt script1="ant07.txt" run=1
+CreateObject pos=   0; 119 type=AlienAnt script1="ant07.txt" run=1
+CreateObject pos=-101; 107 type=AlienAnt script1="ant07.txt" run=1
+CreateObject pos=-110;  17 type=AlienAnt script1="ant07.txt" run=1
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+
+MapColor floor=180;157;72 water=154;235;255
+MapZoom  factor=2
+
+NewScript name="titan2.txt" type=WheeledGrabber
+NewScript name="titan2.txt" type=TrackedGrabber
+NewScript name="titan2.txt" type=WingedGrabber
+NewScript name="titan2.txt" type=LeggedGrabber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=RadarStation
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienAnt min=0 max=0
+EndMissionTake pos=0.00;0.00 type=BlackBox min=1
+
+Camera eye=0.00;5.00;0.00 lookat=0.00;1.00;0.00 delay=0

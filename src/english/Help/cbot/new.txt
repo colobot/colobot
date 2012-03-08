@@ -1,0 +1,21 @@
+\b;Instruction \c;new\n; (for specialists)
+The \c;new\n; operator creates a \l;class\u cbot\class; instance:
+\c;\s;	MyClass item;    // now item is a null reference
+\s;	item = new MyClass(); // now item is a reference
+\s;	                      // to a new class instance
+\n;
+If you want to create a new instance at declaration time you can ommit the new \c;new\n; operator by putting () after the declaration:
+
+Instead of:
+\c;\s;	MyClass item = new MyClass();
+\n;you can write:
+\c;\s;	MyClass item();
+\n;
+If your class has a constructor with parameters you can write:
+\c;\s;	MyClass item = new MyClass(2, 3);
+\n;or:
+\c;\s;	MyClass item(2, 3);
+\n;
+\t;See also
+\c;\l;class\u cbot\class;\n;, \c;\l;reference\u cbot\pointer;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

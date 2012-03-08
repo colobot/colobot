@@ -1,0 +1,18 @@
+extern void object::Recharge3()
+{
+	point  start;          // zmienna pozycji startowej
+	object item;           // informacja o stacji enrgetycznej
+	
+	start = position;      // zachowaj pozycjê startow¹
+	
+	item = radar(PowerCaptor); // znajdŸ stacjê
+	goto(item.position);   // idŸ do stacji energetycznej
+	
+	while ( energyCell.energyLevel < 1 )
+	{
+		wait(1);            // poczekaj a¿ siê na³aduje
+	}
+	
+	goto(start);           // wróæ do pozycji startowej
+	message("£adowanie zakoñczone");
+}

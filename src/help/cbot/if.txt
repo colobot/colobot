@@ -1,0 +1,44 @@
+\b;Instructions \c;if\n; et \c;else\n;
+L'instruction \c;if() {}\n; permet d'exécuter des instructions seulement à une certaine condition. La condition est donnée entre parenthèses \c;()\n;, les instructions entre accolades \c;{}\n;.
+
+\b;Utilisation courante
+Voici par exemple comment faire en sorte que le robot tire seulement si la distance à la cible est inférieure à 40m¦:
+\c;
+\s;	chose = \l;radar\u cbot\radar;(AlienAnt);
+\s;	if (\l;distance\u cbot\dist;(position, chose.position) < 40)
+\s;	{
+\s;		fire(1);
+\s;	}
+\n;
+Si l'instruction \c;\l;radar\u cbot\radar;();\n; ne trouve pas l'objet cherché, elle rend la valeur \c;null\n;. Ainsi il est possible de tester si un objet n'existe pas avec \c;(chose == null)\n;, ou de tester si l'objet existe avec \c;(chose¦!= null)\n;. Deux signes égal \c;==\n; testent l'égalité, un point d'exclamation suivi d'un signe égal \c;!=\n; teste l'inégalité. Voici comment aller se recharger seulement s'il y a une station de recharge¦:
+\c;
+\s;	chose = \l;radar\u cbot\radar;(PowerStation);
+\s;	if (chose¦!= null)
+\s;	{
+\s;		\l;goto\u cbot\goto;(chose.position);
+\s;		\l;wait\u cbot\wait;(5);
+\s;	}
+\n;
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;if ( condition )
+\s;{
+\s;	\n;Instructions A ...\c;
+\s;}
+\s;else
+\s;{
+\s;	\n;Instructions B ...\c;
+\s;}
+\n;
+Cette structure de choix permet d'exécuter le \l;bloc\u cbot\bloc; A ou le \l;bloc\u cbot\bloc; B en fonction d'une \l;condition\u cbot\cond;. Si la condition est vraie, le bloc A est exécuté. Si elle est fausse, c'est le bloc B qui est exécuté.
+La partie \c;else { }\n; est facultative.
+
+\t;Attention
+Il ne faut pas mettre un \l;point-virgule\u cbot\term; à la fin de la ligne \c;if ( )\n;.
+
+\t;Dictionnaire anglais-français
+\c;if  \n; = si
+\c;else\n; = autrement
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

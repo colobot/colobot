@@ -1,0 +1,23 @@
+\b;Un nouveau robot
+Youpie, tu as reçu un nouveau robot muni d'un canon miniature qui fonctionne pour de vrai. Ca va chauffer¦!
+
+\image botfc 8 8;
+Mais attention, les gaz dégagés par les tirs et les explosions seraient nocifs dans un endroit fermé. On va donc se risquer en plein air, sur un terrain vague au bord de la rivière. Cela ne devrait pas poser de problème, maintenant que tu as compris les bases de la programmation.
+
+\b;Feu
+Comme ton nouveau robot a un canon, il faut également une nouvelle instruction pour faire feu. Cette instruction s'appelle \c;fire()\n;. Il faut mettre entre parenthèses le nombre de secondes correspondant à la durée du tir. En général, un petit tir d'une seconde est suffisant. Donc, tu écris¦:
+\c;
+\s;fire(1);
+\n;
+Un tir trop long vide inutilement la batterie du robot¦!
+
+\b;Massacre
+2 vieilles bouteilles vides sont disposées autour du robot. La première est droit devant et la deuxième est à droite. Tu dois écrire le programme qui détruira les 2 bouteilles, en utilisant uniquement les instructions \c;fire()\n; et \c;turn()\n;.
+
+\image teen401 8 8;
+Le robot reste immobile. Les flèches rouges sur le plan indiquent la direction des tirs, et non des endroits où aller.
+
+Bonne chance (une fois le programme lancé, ne reste tout de même pas trop près)¦!
+
+\b;Un peu d'anglais
+\c;fire = \n;feu

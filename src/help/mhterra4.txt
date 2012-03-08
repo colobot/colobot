@@ -1,0 +1,11 @@
+\b;Instructions de Houston
+Avec la quatrième \l;clé\u object\key; qui se trouve à proximité, vous aurez accès au \l;bunker\u object\safe; contenant le nouveau système d'armement, que nous avons appelé "\l;robot phazer\u object\botphaz;". Nous vous avons transmis un programme pour faire collaborer le \l;robot bouclier\u object\botshld; avec le \l;robot phazer\u object\botphaz;.
+
+Vous pourrez immédiatement tester ce nouveau système: votre mission consiste à tuer la  \l;reine\u object\mother; qui pond les oeufs dont sortent les fourmis qui infestent Terranova. Le \l;robot phazer\u object\botphaz; semble être le seul qui puisse en venir à bout.
+
+La voie sera alors libre pour la colonisation de cette magnifique planète, et vous pourrez informer la terre que vous avez réussi votre mission¦!
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

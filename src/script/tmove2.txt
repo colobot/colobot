@@ -1,0 +1,15 @@
+extern void object::Solution( )
+{
+	float  gauche, droite;
+
+	gauche = 90;
+	droite = -90;
+
+	move(20);  // va sur borne 1
+	turn(gauche);
+	move(20);  // va sur borne 2
+	turn(droite);
+	move(20);  // va sur borne 3
+	turn(droite);
+	move(20);  // va sur arrivée
+}

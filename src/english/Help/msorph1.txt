@@ -1,0 +1,15 @@
+\b;Walkthrough
+1) Quickly build a \l;power captor\u object\captor; near the blue flag.
+All subsequent buildings should be erected within the <range> \button 41; covered by the power captor.
+2) Carry some empty \l;power cells\u object\power; under the power captor. When lightning strikes, they will be recharged.
+3) Build a \l;derrick\u object\derrick;.
+4) Build a \l;converter\u object\convert;.
+5) Execute the program \c;CollectTitanium3\n; in order to produce \l;titanium\u object\titan;.
+6) Build a \l;bot factory\u object\factory;.
+7) Manufacture a \l;winged orga shooter\u object\botoj;.
+8) Build a \l;radar\u object\radar;.
+9) Locate and terminate all \l;ants\u object\ant;.
+10) Return to your \l;spaceship\u object\base; and take off.
+
+\t;See also
+\l;Controls\u command;

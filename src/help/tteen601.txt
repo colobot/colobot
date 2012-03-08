@@ -1,0 +1,14 @@
+\b;Révision
+Voilà un exercice très simple, qui fait appel à des notions vues au tout début. Tu dois diriger le robot dans le labyrinthe jusqu'à la croix bleue¦:
+
+\image teen601 12 12;
+Pour cela, les seules instructions à disposition sont \c;move();\n; et \c;turn();\n;. Le labyrinthe est composé de "cases" carrées de 20 centimètres de côté.
+
+Le robot est posé au centre de la case de départ. Il faut toujours le déplacer au centre d'une autre case. Donc, les déplacements se feront toujours avec des longueurs multiples de 20 centimètres (20, 40, 60, etc.).
+
+\b;Rappel
+\c;
+\s;turn(90);   \n;tourne à gauche d'un quart de tour\c;
+\s;turn(-90);  \n;tourne à droite d'un quart de tour\c;
+\n;
+En cas d'erreur, tu peux remettre le robot à la position initiale avec le bouton \button 9;.

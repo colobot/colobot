@@ -1,0 +1,17 @@
+\b;Rozwi¹zanie
+1) Zbuduj \l;fabrykê robotów\u object\factory;.
+2) Zbuduj \l;szperacza lataj¹cego\u object\botsj;.
+3) Przebadaj ziemiê w pobli¿u ogromnych kryszta³ów, a¿ pojawi siê \l;czerwony plus\u object\stonspot;.
+4) Zbuduj \l;kopalniê\u object\derrick; w pobli¿u czerwonego plusa.
+5) Zbuduj \l;hutê\u object\convert;.
+
+Zbudowanie pary kopalni i huty zapewnia nieograniczone zaopatrzenie w \l;tytan\u object\titan;. Aby zostawiæ to zadanie robotowi, uruchom program \c;CollectTitanium2\n;.
+
+6) Przebadaj obszar w pobli¿u statku kosmicznego. \l;Zielony plus\u object\enerspot; oznacza miejsce, w którym mo¿na zbudowaæ \l;stacjê energetyczn¹\u object\station;.
+7) Zbuduj \l;radar\u object\radar;.
+8) Zbuduj \l;dzia³o lataj¹ce\u object\botfj;.
+9) Zabij wszystkie robale.
+10) Wróæ na statek i odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

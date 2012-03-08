@@ -1,0 +1,7 @@
+\b;Æwiczenie
+Zaprogramuj \l;robota\u object\bottr; tak, aby znalaz³ wszystkie \l;niebieskie plusy\u object\waypoint;, nie zbli¿aj¹c siê przy tym zanadto do \l;min\u object\mine;.
+
+Jeœli robot zbli¿y siê do miny na odleg³oœæ mniejsz¹ ni¿ 2 metry od jej œrodka (czyli pozycji zwracanej przez instrukcjê radar), mina wybuchnie. Ponadto nale¿y wzi¹æ pod uwagê wymiary samego robota. Dla wiêkszego bezpieczeñstwa odpowiedniejsza bêdzie odleg³oœæ 3 do 3,5 metra.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

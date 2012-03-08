@@ -1,0 +1,22 @@
+\b;Navigation
+The three buttons on the upper left-hand corner of the screen allow you to navigate in the different texts of the help file:
+
+\button 30; Home
+Get back to the home page, i.e. the first page that was displayed, for example when you hit the \key;\key help;\norm; or \key;\key prog;\norm; key.
+
+\button 55; Previous
+Get back to the previous page, i.e. the page that was displayed before you clicked on a link.
+
+\button 48; Next
+Get again to the next page, after you used the "Home" or "Previous" button.
+
+\t;Remark
+When a button is gray, this means that it can not be used at this precise moment. For example, when you are in the home page, the "Home" button is gray, because it does not make sense to use it.
+
+This remark is valid for all buttons in COLOBOT.
+
+\t;Text scrolling
+If your mouse is equipped with a wheel, you can use it to scroll the text up and down. Otherwise, use the arrow keys and the scroll bar on the right-hand side of the screen.
+
+\t;Font size
+The cursor on the upper side of the screen allows you to change the font size of the text.

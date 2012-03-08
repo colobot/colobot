@@ -1,0 +1,22 @@
+\b;Instruction \c;testinfo\n;
+Syntaxe¦:
+\s;\c;testinfo ( name, power );\n;
+
+Teste si une information existe dans la \l;borne\u object\exchange; la plus proche.
+
+\t;name: \c;string\n;
+Nom de l'information à tester dans la borne. Ce nom est une chaîne de caractères; il doit donc être donné entre guillemets "¦".
+
+\t;power: \c;float\n;
+Puissance de l'émetteur, qui correspond à la distance maximale jusqu'où peut être la borne. La valeur par défaut est de 10 mètres.
+
+\t;Valeur retournée: \c;\l;bool\u cbot\bool;\n;
+Retourne \c;true\n; si l'information et \c;false\n; dans le cas contraire.
+
+\t;Dictionnaire anglais-français
+\c;name \n; = nom
+\c;power\n; = puissance
+
+\t;Voir aussi
+\c;\l;receive\u cbot\receive;\n;, \c;\l;send\u cbot\send;\n; et \c;\l;deleteinfo\u cbot\delinfo;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

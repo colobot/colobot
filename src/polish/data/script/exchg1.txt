@@ -1,0 +1,11 @@
+extern void object::SwitchCell1()
+{
+	grab(InFront);     // podnieœ nowe ogniwo z przodu
+	drop(Behind);      // i zostaw je z ty³u
+	
+	grab(EnergyCell);  // wyjmij ogniwo z robota
+	drop(InFront);     // i zostaw je z przodu
+	
+	grab(Behind);      // podnieœ nowe ogniwo
+	drop(EnergyCell);  // i w³ó¿ je do robota
+}

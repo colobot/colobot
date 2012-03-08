@@ -1,0 +1,37 @@
+\b;Programmes envoyés par Houston
+Voilà une version améliorée du programme précédent. En effet, le robot refait le plein d'énergie sur une \l;station de recharge\u object\station; après avoir déposé le minerai, si nécessaire.
+
+Ce programme fonctionne aussi avec des \l;déménageurs volants\u object\botgj;, dans le cas où le \l;derrick\u object\derrick; serait sur une autre île que le \l;convertisseur\u object\convert;.
+\c;
+\s;extern void object::ApporteTitanium2()
+\s;{
+\s;	// 1) Définition des variables.
+\s;	\l;object\u cbot\type;	chose;               // déclaration variable
+\s;	
+\s;	// 2) Va vers le minerai et le prend.
+\s;	chose = \l;radar\u cbot\radar;(\l;TitaniumOre\u cbot\category;);  // cherche le minerai
+\s;	\l;goto\u cbot\goto;(chose.position);        // va à la position
+\s;	\l;grab\u cbot\grab;();                      // prend le titanium
+\s;	
+\s;	// 3) Va vers le convertisseur et pose le minerai.
+\s;	chose = \l;radar\u cbot\radar;(\l;Converter\u cbot\category;);    // cherche convertisseur
+\s;	\l;goto\u cbot\goto;(chose.position);        // va à la position
+\s;	\l;drop\u cbot\drop;();                      // pose le titanium
+\s;	\l;move\u cbot\move;(-2.5);                  // recule de 2.5 m.
+\s;	
+\s;	// 4) Si pile à moitié déchargée, va recharger.
+\s;	if ( \l;energyCell.energyLevel\u cbot\object; < 0.5 ) 
+\s;	{                                // si oui:
+\s;		chose = \l;radar\u cbot\radar;(\l;PowerStation\u cbot\category;); // cherche station
+\s;		\l;goto\u cbot\goto;(chose.position);        // va recharger
+\s;		\l;wait\u cbot\wait;(5);                     // attend
+\s;	}
+\s;}
+\n;
+\b;Archives
+Résumé des programmes déjà reçus¦:
+
+o  \c;\l;ApporteTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;EchangePile1\u mllune1;\n;

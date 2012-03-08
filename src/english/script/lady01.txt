@@ -1,0 +1,48 @@
+extern void object::Produce( )
+{
+	point	path[4];
+	int		i;
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	path[0].x = cmdline(0);
+	path[0].y = cmdline(1);
+	path[1].x = cmdline(2);
+	path[1].y = cmdline(3);
+	path[2].x = cmdline(4);
+	path[2].y = cmdline(5);
+	path[3].x = cmdline(6);
+	path[3].y = cmdline(7);
+
+	i = 1;
+	while ( true )
+	{
+		goto(path[i%4]);
+
+		if ( i%5 == 4 && WaspCount() < 2 )
+		{
+			produce(position, orientation, AlienWasp, "wasp01.txt");
+		}
+
+		i ++;
+	}
+}
+
+int object::WaspCount()
+{
+	object	item;
+	int		total = 0;
+	int		i = 0;
+
+	while ( true )
+	{
+		item = retobject(i++);
+		if ( item == null )  return total;
+
+		if ( item.category == AlienWasp )
+		{
+			total ++;
+		}
+	}
+}

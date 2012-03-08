@@ -1,0 +1,7 @@
+\b;Solution
+Vous trouverez quelque part au nord-est au fond de la vallée une précieuse \l;station de recharge\u object\station; encore fonctionnelle. Au nord-ouest se trouvent plusieurs \l;piles\u object\power;.
+
+Plusieurs \l;robots shooter\u object\botfj; sont abandonnés à différents endroits dans la vallée et vous permettront de tuer les fourmis. Puis, à l'aide du \l;robot déménageur volant\u object\botgj;, vous pourrez ramener la \l;boîte noire\u object\bbox; qui se trouve derrière la ruine du vaisseau et décoller.
+
+\t;Voir aussi
+\l;Commandes\u command;.

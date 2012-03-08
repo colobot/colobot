@@ -1,0 +1,2 @@
+Title.F text="Départ de la Terre" resume="Terre"
+Title.E text="Leaving Earth" resume="Earth"

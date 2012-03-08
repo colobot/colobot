@@ -1,0 +1,29 @@
+\b;Instrukcja \c;drop\n;
+Instrukcja \c;drop();\n; poleca robotowi upuœciæ niesiony przedmiot na ziemiê, platformê budynku lub miejsce na ogniwo elektryczne robota.
+
+\b;Podstawowe u¿ycie
+Instrukcja \c;drop();\n; napisana w takiej postaci upuszcza przedmiot przed robotem. Oto krótki program podnosz¹cy przedmiot bezpoœrednio przed robotem i upuszczaj¹cy go 5 metrów dalej:
+\c;
+\s;	\l;grab\u cbot\grab;();
+\s;	\l;move\u cbot\move;(5);
+\s;	drop();
+\n;
+\b;Dla specjalistów
+Sk³adnia:
+\s;\c;drop ( oper );\n;
+
+Instrukcja ta odwo³uje siê do ramienia \l;robota transportera\u object\botgr;, w celu upuszczenia niesionego przedmiotu.
+
+\t;oper: \c;\l;int\u cbot\int;\n; (domyœlna wartoœæ \c;InFront\n;)
+Oper oznacza gdzie robot powinien zostawiæ przedmiot. Jeœli nie jest to okreœlone, przedmiot zostawiany jest przed robotem. 
+\c;InFront   \n;  przed (domyœlnie).
+\c;Behind    \n;  za
+\c;EnergyCell\n;  w miejscu na bateriê samego robota.
+
+\t;Typ wyniku: \c;\l;int\u cbot\int;\n;
+Zwykle wyst¹pienie b³êdu powoduje zatrzymanie programu. Mo¿na wy³¹czyæ zatrzymywanie siê programu w przypadku wyst¹pienia b³êdu, u¿ywaj¹c instrukcji \c;\l;errmode\u cbot\errmode;(0)\n;. Wtedy w przypadku wyst¹pienia b³êdu instrukcja \c;drop();\n; zwraca w wyniku wartoœæ ró¿n¹ od zera.
+\c;== 0 \n;przedmiot zosta³ upuszczony
+\c;!= 0 \n;b³¹d, nie upuszczono ¿adnego przedmiotu
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

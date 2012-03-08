@@ -1,0 +1,18 @@
+\b;Objectif
+Les 4 \l;cibles\u object\bottarg; sont hors de portée de tir. Vous devez aller à leur rencontre.
+
+\t;Programme
+Le programme ressemble beaucoup au programme précédent, sauf qu'avant de tirer, il faut avancer en direction des cibles. Toute la question est de savoir de combien de mètres il faut avancer! La fonction \c;\l;distance\u cbot\dist;( , )\n; permet de calculer la distance entre deux positions. Dans ce cas, il faut calculer la distance entre la position du robot et la position de la cible. La position de la cible est donnée par \c;chose.position\n;, et la position du robot est donnée simplement par \c;position\n;. La distance entre le robot et la cible est donnée par \c;distance(position, chose.position)\n;. La portée du canon d'un shooter est de 40m. Il faut donc avancer de \c;distance(position, chose.position)-40\n;. Ce qui est fait par la ligne suivante¦:
+\c;
+\s;	move(distance(position, chose.position)-40);
+\n;
+Il suffit d'insérer cette ligne dans le programme de l'exercice précédent avant l'instruction \c;\l;fire\u cbot\fire;(1)\n;, et le shooter se met en mouvement.
+
+Comme la cible est assez loin, il faut encore attendre une seconde après le tir avec \c;\l;wait\u cbot\wait;(1)\n;, afin d'être sûr que les projectiles ont bien atteint et détruit la cible.
+
+Pour ne pas devoir exécuter à nouveau le programme pour chaque cible, vous pouvez faire une boucle avec \c;\l;repeat\u cbot\repeat;(4)\n; comme décrit précédemment.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u ttarg1; et \l;programmation\u cbot;.

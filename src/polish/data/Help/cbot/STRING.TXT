@@ -1,0 +1,33 @@
+\b;Typ \c;string\n;
+Zmiennej tego typu mo¿na u¿ywaæ do przechowywania znaków lub ci¹gów znaków.
+
+Na przyk³ad: 
+\s;\c;	"Czeœæ!"
+\s;	"To jest ³añcuch"
+\s;	"x"
+\s;	""  // pusty ³añcuch
+\n;
+Dwa ³añcuchy mo¿na z³¹czaæ, u¿ywaj¹c operatora \c;+\n;:
+\s;\c;	"Dzieñ dobry" + " " + "Panu"
+\n;
+Daje w wyniku ³añcuch:
+\s;\c;	"Dzieñ dobry Panu"
+\n;
+Aby u¿yæ cudzys³owu (") lub odwróconej kreski u³amkowej (\) w ³añcuchu, nale¿y napisaæ¦:
+\s;\c;"To jest \"bardzo\" wa¿ne"
+\n;czego wynikiem bêdzie \c; To jest "bardzo" wa¿ne.
+\s;\c;"%user%\\ant.txt"
+\n;czego wynikiem bêdzie \c;%user%\ant.txt
+\n;
+Nastêpuj¹ce instrukcje mog¹ byæ u¿ywane na ³añcuchach¦:
+\c;\l;strlen\u cbot\strlen;     \n;Podaje d³ugoœæ ³añcucha
+\c;\l;strleft\u cbot\strleft;    \n;Wyodrêbnia lew¹ czêœæ
+\c;\l;strright\u cbot\strright;   \n;Wyodrêbnia praw¹ czêœæ
+\c;\l;strmid\u cbot\strmid;     \n;Wyodrêbnia œrodkow¹ czêœæ
+\c;\l;strfind\u cbot\strfind;    \n;Znajduje pod³añcuch
+\c;\l;strval\u cbot\strval;     \n;Zamienia ³añcuch na liczbê
+\c;\l;strupper\u cbot\strupper;   \n;Zamienia litery na wielkie
+\c;\l;strlower\u cbot\strlower;   \n;Zamienia litery na ma³e
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

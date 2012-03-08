@@ -1,0 +1,103 @@
+\b;Exercice
+Remote control a slave robot without using an \l;information exchange post\u object\exchange;. The robot should pass over the 6 blue crosses. You must use a \l;string\u cbot\string; to pass the orders to the slave bot. This string contains the order the slave shoud execute, for exemple \c;"move(20)"\n;. You can see that this is the same syntax as used in the CBOT language but we could have chosen any other syntax for exemple something like \c;"advance=20"\n;. The string will be a \c;\l;static\u cbot\static;\n; class member that will be used to communicate from the master to the slave.
+
+The two main actors of this exercise are:
+1) The \l;wheeled grabber\u object\botgr; without an energy pack and therefore immobile. This is the master you should program so it will transmit orders to the slave.
+2) The slave \l;practice bot\u object\bottr; which is already programmed and just waits for orders from the master.
+
+\b;The slave
+First of all we must understand how the program of the slave works. The \l;class\u cbot\class; \c;exchange\n; contains the mechanism for exchaning the orders. We declare a \c;\l;static\u cbot\static;\n; class member \c;m_order\n; which will contain the order to be executed. The word \c;static\n; insures that the member \c;m_order\n; is shared between all instances of the \l;class\u cbot\class; exchange.
+
+\c;\s;\l;public\u cbot\public; \l;class\u cbot\class; exchange
+\s;{
+\s;	\l;static\u cbot\static; \l;private\u cbot\private; \l;string\u cbot\string; m_order = "";
+
+\n;The \c;put\n; method will be used by the master robot for transmitting an order. As long as the string \c;m_order\n; is not empty, the slave has not finished the order and the \c;put\n; method will return \c;false\n; and will do nothing.
+
+\c;\s;	\l;synchronized\u cbot\synchro; \l;bool\u cbot\bool; put(string order)
+\s;	{
+\s;		if ( m_order == "" )
+\s;		{
+\s;			m_order = order;
+\s;			return true;
+\s;		}
+\s;		else
+\s;		{
+\s;			return false;
+\s;		}
+\s;	}
+\n;
+Another method \c;get\n; will be used by the slave to retrieve the orders. This method returns the string contained in \c;m_order\n; and empties it, so a new order can be accepted:
+
+\c;\s;	\l;synchronized\u cbot\synchro; string get()
+\s;	{
+\s;		string ret = m_order;
+\s;		m_order = "";
+\s;		return ret;
+\s;	}
+\s;}
+\n;
+The main program of the slave contains an instance of the class \c;exchange\n; called \c;list\n;.
+
+\c;\s;\l;extern\u cbot\extern; void object::Slave3( )
+\s;{
+\s;	exchange list();
+\s;	string   todo;
+\n;
+The outer \c;while\n; loop lasts for ever. The inner \c;while\n; loop waits for an order by using the \c;get\n; method of the \c;exchange\n; class. As soon as \c;get\n; returns a non empty string, the while loop stops.
+
+\c;\s;	\l;while\u cbot\while; ( true )
+\s;	{
+\s;		\l;while\u cbot\while; ( true )
+\s;		{
+\s;			todo = list.get();
+\s;			if ( todo != "" )  break;
+\s;			wait(1);
+\s;		}
+\n;
+Now we have received the order in the \c;todo\n; variable. All we have to do is execute it:
+
+\c;\s;		if ( \l;strfind\u cbot\strfind;(todo, "move") == 0 )
+\s;		{
+\s;			move(\l;strval\u cbot\strval;(\l;strmid\u cbot\strmid;(todo,5)));
+\s;		}
+\s;		if ( strfind(todo, "turn") == 0 )
+\s;		{
+\s;			turn(strval(strmid(todo,5)));
+\s;		}
+\s;	}
+\s;}
+\n;
+\b;The master
+In the master we write an function called \c;SendOrder\n; which will send an order to the slave:
+
+\c;\s;void object::SendOrder(string order)
+\s;{
+\s;	exchange list();
+\s;	
+\s;	while ( list.put(order) == false )
+\s;	{
+\s;		wait(1);
+\s;	}
+\s;}
+\n;
+The \c;while\n; loop waits until a pending order has been terminated, that is the slaved has exited from the \c;get\n; method.
+Now the main program of the master is very simple:
+
+\c;\s;extern void object::Remote3( )
+\s;{
+\s;	SendOrder("move(20)");
+\s;	SendOrder("turn(90)");
+\s;	SendOrder("move(20)");
+\s;	SendOrder("turn(90)");
+\s;	SendOrder("move(10)");
+\s;	SendOrder("turn(90)");
+\s;	SendOrder("move(10)");
+\s;	SendOrder("turn(-90)");
+\s;	SendOrder("move(10)");
+\s;}
+\n;
+\key;\key help;\norm; show these instruction at any time.
+
+\t;See also
+\l;Controls\u command; and \l;programming\u cbot;.

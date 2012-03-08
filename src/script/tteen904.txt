@@ -1,0 +1,24 @@
+extern void object::Solution( )
+{
+	int gauche = 90;
+	int droite = -90;
+	int compteur = 0;
+	
+	repeat(6)
+	{
+		if( compteur%2 == 0 )
+		{
+			pendown(Blue);
+		}
+		else
+		{
+			pendown(Red);
+		}
+		compteur = compteur+1;
+		
+		move(7);
+		turn(droite);
+		move(7);
+		turn(gauche);
+	}
+}

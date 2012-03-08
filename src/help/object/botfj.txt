@@ -1,0 +1,22 @@
+\b;\button 145; Robot shooter
+\image botfj 8 8;
+Robot volant avec un canon shooter.
+
+Le canon permet de se défendre contre les \l;ennemis\u object\mother;. Mais attention, l'énergie consommée est très importante. Avec une \l;pile normale\u object\power;, il est possible de tirer quatre fois.
+
+Astuce: pendant le tir, il est possible de déplacer la souris, pour "balayer" toute une zone.
+
+Il faut surveiller la température du réacteur affichée en bas de la fenêtre. Lorsque le réacteur surchauffe, il s'arrête complètement et le robot tombe.
+
+Les robots volants peuvent franchir des obstacles tels que des montagnes ou des étendues d'eau, mais ils consomment beaucoup d'énergie. Au sol, ils se déplacent lentement. Pour des déplacements courts, il vaut mieux opter pour des \l;robots à roues\u object\botfr;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;WingedShooter\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;jet\u cbot\jet;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le canon par programmation, il faut utiliser l'instruction \c;\l;fire\u cbot\fire;\n;. L'instruction \c;\l;aim\u cbot\aim;\n; permet de l'orienter vers le haut ou vers le bas.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

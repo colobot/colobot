@@ -1,0 +1,22 @@
+\b;\button 142; Szperacz lataj¹cy
+\image botsj 8 8;
+Robot lataj¹cy z napêdem odrzutowym przystosowany do badania struktury geologicznej podglebia. Gdy znajdzie coœ u¿ytecznego, zostawia na ziemi nastêpuj¹ce znaczniki:
+
+- \l;czerwony plus\u object\stonspot;       -> \l;ruda tytanu\u object\titanore;.
+- \l;¿ó³te kó³ko\u object\uranspot;  -> \l;ruda uranu\u object\uranore;.
+- \l;zielony plus\u object\enerspot;   -> Ÿród³o energii, niezbêdne dla \l;stacji energetycznej\u object\station; lub \l;elektrowni\u object\energy;.
+
+Wyœwietlacz na dole ekranu pokazuje temperaturê reaktora. Nale¿y zwracaæ na niego uwagê. Jeœli reaktor siê przegrzeje, silnik siê zatrzyma i robot spadnie.
+
+Roboty lataj¹ce mog¹ przemieszczaæ siê ponad naturalnymi przeszkodami, takimi jak góry lub jeziora ale ich zapas energii szybko siê zu¿ywa. Na ziemi s¹ one powolne. Na krótkich odleg³oœciach, nie wymagaj¹cych latania, polecane jest u¿ycie \l;szperacza na ko³ach\u object\botsr;.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;jet\u cbot\jet;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania ramienia detekcyjnego mo¿na u¿yæ instrukcji \c;\l;sniff\u cbot\sniff;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;WingedSniffer\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

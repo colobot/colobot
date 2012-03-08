@@ -1,0 +1,100 @@
+\b;Programmation - le langage CBOT
+Le langage CBOT est très proche du C++ et du Java. Il est adapté à COLOBOT, et également adapté à une approche pédagogique simple.
+Ce langage est constitué d'instructions, de \l;blocs\u cbot\bloc;, de \l;fonctions\u cbot\function;, de \l;classes\u cbot\class;, de \l;variables\u cbot\var;, de \l;tableaux\u cbot\array;, d'\l;expressions\u cbot\expr; et de \l;conditions\u cbot\cond;.
+
+o  \c;\token;Instruction\norm;\n;
+Dans l'éditeur de programmes, une instruction du langage est coloriée en orange. Si une instruction n'est pas coloriée, c'est que son nom est mal orthographié. Il faut par exemple frapper tout le nom en minuscules.
+
+o  \c;\type;Type\norm;\n;
+Le \l;type\u cbot\type; d'une variable est colorié en vert.
+
+o  \c;\const;Constante\norm;\n;
+Une constante telle qu'une \l;catégorie\u cbot\category; est coloriée en rouge.
+
+\t;Instructions générales du langage¦:
+\c;\l;extern\u cbot\extern;     \n;Indique le programme principal
+\c;\l;if\u cbot\if;         \n;Structure de choix
+\c;\l;else\u cbot\if;       \n;Structure de choix
+\c;\l;repeat\u cbot\repeat;     \n;Structure de répétition
+\c;\l;for\u cbot\for;        \n;Structure de répétition
+\c;\l;while\u cbot\while;      \n;Stucture de contrôle
+\c;\l;do\u cbot\do;         \n;Stucture de contrôle
+\c;\l;break\u cbot\break;      \n;Sortie d'un boucle
+\c;\l;continue\u cbot\continue;   \n;Continue une boucle
+\c;\l;return\u cbot\return;     \n;Sort d'une fonction
+\c;\l;sizeof\u cbot\sizeof;     \n;Taille d'un tableau
+
+\t;Instructions pour les robots¦:
+\c;\l;find\u cbot\find;       \n;Va vers un objet
+\c;\l;detect\u cbot\detect;     \n;Détection simple d'objets
+\c;\l;radar\u cbot\radar;      \n;Détection généralisée d'objets
+\c;\l;direction\u cbot\direct;  \n;Calcule une direction
+\c;\l;distance\u cbot\dist;   \n;Calcule une distance
+\c;\l;distance2d\u cbot\dist2d; \n;Calcule une distance "à plat"
+\c;\l;wait\u cbot\wait;       \n;Attend
+\c;\l;move\u cbot\move;       \n;Avance ou recule
+\c;\l;turn\u cbot\turn;       \n;Tourne
+\c;\l;goto\u cbot\goto;       \n;Va à une position donnée
+\c;\l;motor\u cbot\motor;      \n;Commande directe des moteurs
+\c;\l;jet\u cbot\jet;        \n;Commande directe du réacteur
+\c;\l;message\u cbot\message;    \n;Affiche un message
+\c;\l;retobject\u cbot\retobj;  \n;Retourne un objet
+\c;\l;errmode\u cbot\errmode;    \n;Mode de gestion des erreurs
+\c;\l;abstime\u cbot\abstime;    \n;Retourne le temps absolu
+
+\t;Instructions pour dessiner¦:
+\c;\l;pendown\u cbot\pendown;    \n;Abaisse le crayon du robot
+\c;\l;penup\u cbot\penup;      \n;Relève le crayon du robot
+\c;\l;pencolor\u cbot\pencolor;   \n;Choix de la couleur
+\c;\l;penwidth\u cbot\penwidth;   \n;Choix de l'épaisseur du trait
+
+\t;Instructions sur le terrain¦:
+\c;\l;space\u cbot\space;      \n;Calcule une position libre
+\c;\l;topo\u cbot\topo;       \n;Retourne l'élévation d'un point
+\c;\l;flatground\u cbot\flatgrnd; \n;Retourne le rayon d'une zone plate
+
+\t;Instructions spécifiques à certains robots¦:
+\c;\l;grab\u cbot\grab;       \n;Prend un objet
+\c;\l;drop\u cbot\drop;       \n;Dépose un objet
+\c;\l;sniff\u cbot\sniff;      \n;Sonde le sous-sol
+\c;\l;thump\u cbot\thump;      \n;Secoue
+\c;\l;recycle\u cbot\recycle;    \n;Recycle une épave
+\c;\l;shield\u cbot\shield;     \n;Déploie le bouclier
+\c;\l;fire\u cbot\fire;       \n;Fait feu avec le canon
+\c;\l;aim\u cbot\aim;        \n;Hausse du canon
+
+\t;Instructions pour les bornes d'infomation¦:
+\c;\l;receive\u cbot\receive;    \n;Reçoit une information
+\c;\l;send\u cbot\send;       \n;Envoie une information
+\c;\l;testinfo\u cbot\testinfo;   \n;Teste la présence d'une information
+\c;\l;deleteinfo\u cbot\delinfo; \n;Supprime une information
+
+\t;Instructions pour les classes¦:
+\c;\l;class\u cbot\class;      \n;Déclaration d'une classe
+\c;\l;public\u cbot\public;     \n;Indique une fonction publique
+\c;\l;private\u cbot\private;    \n;Indique un champ privée dans une classe
+\c;\l;static\u cbot\static;     \n;Indique un champ statique dans une classe
+\c;\l;synchronized\u cbot\synchro; \n;Empêche l'exécution simultanée
+\c;\l;new\u cbot\new;        \n;Crée une nouvelle instance
+\c;\l;this\u cbot\this;       \n;Référence l'instance courante
+
+\t;Instructions pour les chaînes de caractères¦:
+\c;\l;strlen\u cbot\strlen;     \n;Longueur d'une chaîne.
+\c;\l;strleft\u cbot\strleft;    \n;Extrait la partie gauche.
+\c;\l;strright\u cbot\strright;   \n;Extrait la partie droite.
+\c;\l;strmid\u cbot\strmid;     \n;Extrait la partie centrale.
+\c;\l;strfind\u cbot\strfind;    \n;Cherche une sous-chaîne.
+\c;\l;strval\u cbot\strval;     \n;Convertit en un nombre.
+\c;\l;strupper\u cbot\strupper;   \n;Convertit en majuscules.
+\c;\l;strlower\u cbot\strlower;   \n;Convertit en minuscules.
+
+\t;Instructions pour les fichiers¦:
+\c;\l;open\u cbot\open;       \n;Ouvre un fichier
+\c;\l;close\u cbot\close;      \n;Ferme un fichier
+\c;\l;writeln\u cbot\writeln;    \n;Ecrit une ligne
+\c;\l;readln\u cbot\readln;     \n;Lit une ligne
+\c;\l;eof\u cbot\eof;        \n;Teste la fin du fichier
+\c;\l;deletefile\u cbot\deletef; \n;Supprime un fichier
+
+\t;Voir aussi
+\l;Types\u cbot\type; et \l;catégories\u cbot\category;.

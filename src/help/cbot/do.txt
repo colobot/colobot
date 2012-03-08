@@ -1,0 +1,32 @@
+\b;Instruction \c;do - while\n;
+Syntaxe¦:
+\s;\c;do
+\s;{
+\s;	\n;Instructions ...\c;
+\s;}
+\s;while ( condition );
+\n;
+Cette structure de boucle permet d'exécuter plusieurs fois les instructions comprises dans le \l;bloc\u cbot\bloc;. Ces instructions sont toujours exécutées au moins une fois, puisque la condition n'est examinée qu'après exécution de ces instructions.
+Attention à ne pas confondre \c;do { } while( );\n; avec \c;\l;while\u cbot\while;( ) { }\n;, qui effectue le test avant le premier tour de boucle.
+
+\t;\c;condition\n;
+Tant que cette \l;condition\u cbot\cond; est vraie, les instructions dans le bloc sont répétées.
+
+Voici un exemple d'utilisation¦:
+\s;\c;do
+\s;{
+\s;	p = radar(TitaniumOre);
+\s;}
+\s;while ( p == null );
+\n;
+\t;Attention
+Il faut toujours mettre un \l;point-virgule\u cbot\term; à la fin de la ligne \c;while ( )\n;.
+
+Les instructions \c;\l;break\u cbot\break;\n; et \c;\l;continue\u cbot\continue;\n; sont utiles à l'intérieur d'un bloc \c;while { }\n;.
+
+\t;Dictionnaire anglais-français
+\c;do   \n; = faire
+\c;while\n; = tant que
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

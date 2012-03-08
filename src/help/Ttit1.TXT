@@ -1,0 +1,30 @@
+\b;Objectif
+Aller chercher un \l;minerai de titanium\u object\titanore;, et le poser sur le \l;convertisseur\u object\convert; de manière à obtenir un \l;cube de titanium\u object\titan;.
+
+\b;Situation
+Le \l;minerai de titanium\u object\titanore; se trouve à 20 mètres devant le robot, et le \l;convertisseur\u object\convert; se trouve à 10 mètres derrière le robot. Après avoir posé le minerai sur le convertisseur, n'oubliez pas de reculer pour que le convertisseur puisse fermer les portes et se mettre au travail.
+Tout comme on peut passer une valeur positive ou une valeur négative à l'instruction \c;\l;turn\u cbot\turn;();\n;, si on passe un paramètre positif à \c;\l;move\u cbot\move;();\n;, le robot avance, et si on passe un paramètre négatif à \c;\l;move\u 
+cbot\move;();\n;, le robot recule.
+
+\b;Programme
+Il faut donc effectuer les actions suivantes¦:
+\s;o  Avancer de 20 mètres.
+\s;o  Prendre le minerai de titanium.
+\s;o  Faire demi-tour.
+\s;o  Avancer de 30 mètres.
+\s;o  Déposer le minerai.
+\s;o  Reculer de 3 mètres.
+
+Les instructions à utiliser sont¦:
+\c;\l;move\u cbot\move;();\n; pour avancer ou reculer.
+\c;\l;turn\u cbot\turn;();\n; pour tourner.
+\c;\l;grab\u cbot\grab;();\n; pour prendre l'objet devant le robot.
+\c;\l;drop\u cbot\drop;();\n; pour déposer l'objet transporté.
+
+\b;À vous de jouer
+A vous maintenant d'écrire le programme complet.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tfor2; et \l;programmation\u cbot;.

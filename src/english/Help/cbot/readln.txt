@@ -1,0 +1,20 @@
+\b;Instruction \c;readln\n;
+Read one line from an open file in the files/ folder. This is a method of the \c;\l;file\u cbot\file;\n; class. This is the reason why we always write \c;handle.readln()\n;¦:
+\c;
+\s;	s = handle.readln();
+\n;
+The file must have been opened for reading (\c;"r"\n;) with the \c;\l;open\u cbot\open;\n; instruction. \c;readln\n; returns the string containing the whole line but without the end of line characters 0x0D (CR) and 0x0A (LF).
+
+Syntax¦:
+\s;\c;string = handle.readln ( );\n;
+
+Example¦:
+\c;
+\s;	string s;
+\s;	s = handle.readln();
+\s;	if ( s == "abc" )
+\s;	...
+\n;
+\t;See also
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;writeln\u cbot\writeln;\n; and \c;\l;eof\u cbot\eof;\n;.
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

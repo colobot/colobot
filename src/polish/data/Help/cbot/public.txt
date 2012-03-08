@@ -1,0 +1,51 @@
+\b;Instrukcja \c;public\n; (dla specjalistów)
+Instrukcja ta ma dwa podstawowe zadania¦:
+
+1) Czyni funkcjê dostêpn¹ dla innych robotów.
+2) Sprawia, ¿e element klasy jest widoczny poza definicj¹ klasy.
+
+\b;Instrukcja \c;public\n; dla funkcji
+Umieszczenie instrukcji \c;public\n; przed definicj¹ \l;funkcji\u cbot\function; sprawi, ¿e funkcja bêdzie dostêpna dla innych robotów podczas tej misji.
+
+Na przyk³ad pierwszy robot mo¿e zawieraæ¦:
+\c;
+\s;public void object::Segment(float odl, float k¹t)
+\s;{
+\s;	move(odl);
+\s;	turn(k¹t);
+\s;}
+\n;
+A inny¦:
+\c;
+\s;extern void object::Kwadrat( )
+\s;{
+\s;	for ( int i=0 ; i<4 ; i++ )
+\s;	{
+\s;		Segment(10, 90);
+\s;		fire(1);
+\s;	}
+\s;}
+\n;
+Jeœli funkcjê zadeklarowano jako \c;public\n;, nie mo¿na zadeklarowaæ funkcji o tej samej nazwie i parametrach w innym robocie podczas tej samej misji.
+
+Jeœli robot zawieraj¹cy funkcjê zadeklarowan¹ jako \c;public\n; zostanie zniszczony, inne roboty u¿ywaj¹ce tej funkcji zatrzymaj¹ siê sygnalizuj¹c wyst¹pienie b³êdu.
+
+\b;Instrukcja \c;public\n; dla klas
+Elementy \l;klasy\u cbot\class; mog¹ byæ publiczne (domyœlnie) lub \l;prywatne\u cbot\private;. Aby zadeklarowaæ element jako prywatny, nale¿y umieœciæ instrukcjê \c;private\n; przed deklaracj¹ jego typu. Elementy prywatne nie s¹ dostêpne poza definicj¹ klasy.
+\c;
+\s;public class MojaKlasa
+\s;{
+\s;	int    b;                // publiczna domyœlnie
+\s;	public int a;            // równie¿ publiczna 
+\s;	private point position;  // prywatna
+\s;}
+\s;void Test()
+\s;{
+\s;	MojaKlasa item;
+\s;	item.a = item.b = 12;      // ok
+\s;	message( item.position );  // powoduje b³¹d
+\s;}
+\n;
+\t;Zobacz równie¿
+\c;\l;class\u cbot\class;\n;, \c;\l;private\u cbot\private;\n;, \c;\l;funkcje\u cbot\function;\n;
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

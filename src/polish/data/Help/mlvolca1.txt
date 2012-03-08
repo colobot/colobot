@@ -1,0 +1,61 @@
+\b;Programy przys³ane z Houston
+Poniewa¿ w tej misji potrzebne bêdzie mnóstwo tytanu, po raz kolejny usprawniliœmy program \c;CollectTitanium\n;. Gromadzi on ca³¹ seriê kostek tytanu na wolnej powierzchni, wiêc mo¿esz mu ju¿ pozwoliæ pracowaæ zupe³nie samodzielnie. £aduje on równie¿ swoje ogniwo elektryczne w \l;stacji energetycznej\u object\station; jeœli jest to konieczne.
+\c;
+\s;extern void object::CollectTitanium3()
+\s;{
+\s;	// 1) Deklaracje zmiennych.
+\s;	\l;object\u cbot\type;  item;            // informacja o obiekcie
+\s;	
+\s;	\l;while\u cbot\while; (true)             // informacja o obiekcie
+\s;	{
+\s;		
+\s;		// 2) IdŸ do rudy tytanu i podnieœ j¹
+\s;		item = \l;radar\u cbot\radar;(\l;TitaniumOre\u cbot\category;);// znajdŸ rudê tytanu
+\s;		\l;goto\u cbot\goto;(item.position);     // idŸ do pozycji
+\s;		\l;grab\u cbot\grab;();                  // podnieœ porcjê rudy
+\s;		
+\s;		// 3) IdŸ do huty i zostaw rudê
+\s;		item = \l;radar\u cbot\radar;(\l;Converter\u cbot\category;); // znajdŸ hutê
+\s;		\l;goto\u cbot\goto;(item.position);     // idŸ do pozycji
+\s;		\l;drop\u cbot\drop;();                  // zostaw rudê
+\s;		\l;move\u cbot\move;(-2.5);              // cofnij siê o 2,5 m
+\s;		
+\s;		// 4) Poczekaj na przetopienie rudy i zabierz tytan
+\s;		\l;do\u cbot\do;
+\s;		{
+\s;			\l;wait\u cbot\wait;(1);              // poczekaj na kostkê tytanu
+\s;			item = \l;radar\u cbot\radar;(\l;Titanium\u cbot\category;, 0, 45, 0, 5);
+\s;		}
+\s;		\l;while\u cbot\while; ( item == null );
+\s;		\l;goto\u cbot\goto;(item.position);
+\s;		\l;grab\u cbot\grab;();                   // weŸ j¹
+\s;		
+\s;		// 5) IdŸ do wolnego miejsca i zostaw j¹
+\s;		\l;goto\u cbot\goto;(\l;space\u cbot\space;(position));    // idŸ do wolnego miejsca
+\s;		\l;drop\u cbot\drop;();                   // zostaw tytan
+\s;		
+\s;		// 6) Na³aduj ogniwo elektryczne, jeœli jest w po³owie zu¿yte
+\s;		\l;if\u cbot\if; ( energyCell.energyLevel < 0.5 )
+\s;		{                         // jeœli tak:
+\s;			item = \l;radar\u cbot\radar;(\l;PowerStation\u cbot\category;);
+\s;			\l;if\u cbot\if; ( item != null )   // czy znaleziono stacjê 
+\s;			{
+\s;				\l;goto\u cbot\goto;(item.position); // idŸ tam
+\s;				\l;while\u cbot\while; ( energyCell.energyLevel < 1 )
+\s;				{                 // do czasu na³adowania:
+\s;					\l;wait\u cbot\wait;(1);      // czekaj
+\s;				}
+\s;			}
+\s;		}
+\s;	}
+\s;}
+\n;
+\b;Archiwum
+Lista programów przys³anych w poprzednich misjach:
+
+o  \c;\l;KillAnt1\u mlsaari2;\n;
+o  \c;\l;CollectTitanium2\u mlcrys2;\n;
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;

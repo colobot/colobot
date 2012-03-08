@@ -1,0 +1,9 @@
+\b;Ouh là
+essaie d'inventer un programme tout simple, un peu comme le précédent, pour parcourir ce nouveau labyrinthe¦:
+
+\image teen605 10 10;
+\b;Rappel
+L'instruction pour détecter une barrière est¦:
+\c;
+\s;if( detect(Barrier) )
+\n;

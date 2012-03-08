@@ -1,0 +1,45 @@
+\b;Controls
+You are advised to play with one hand on the arrow keys and the other hand on the mouse.
+
+\t;Bots
+\key;\key left;\norm; = turn left
+\key;\key right;\norm; = turn right
+\key;\key up;\norm; = move forward
+\key;\key down;\norm; = move back
+These controls are unavailable when working with the \l;practice bots\u object\bottr;.
+
+\key;\key gup;\norm; = take off and climb \button 28;
+\key;\key gdown;\norm; = descend and land \button 29;
+These controls are of course restricted to the \l;astronaut\u object\human; as well as the various \l;winged bots\u object\botgj; and in selected missions only.
+
+mouse forward = higher aim
+mouse backward = lower aim
+mouse right = aim right
+mouse left = aim left
+These controls are only available to the \l;shooters\u object\botfr;, the \l;orga shooters\u object\botor; and the \l;phazer shooter\u object\botphaz;.
+
+\key;\key action;\norm; = main action for a given selection (human or bot)
+This control will for example operate the arm of a \l;grabber\u object\botgr; or fire a \l;shooter\u object\botfr; \button 42;.
+
+\t;Selections
+\key;\key next;\norm; = selects next object
+\key;\key human;\norm; = selects astronaut
+\key;\key desel;\norm; = previous selection \button 10;
+
+\t;Camera
+\key;\key camera;\norm; = shifts between onboard and following cameras \button 13;
+\key;\key near;\norm; = zoom in
+\key;\key away;\norm; = zoom out
+\key;\key visit;\norm; = pauses the game and shows where the latest message originated. Press again to show origin of previous message.
+
+\t;Help
+\key;\key help;\norm; = mission instructions
+\key;\key prog;\norm; = programming help
+
+\t;Game
+\key;\key speed10;\norm; = normal speed x1
+\key;\key speed15;\norm; = medium speed x1.5
+\key;\key speed20;\norm; = faster speed x2
+\key;\key quit;\norm; = exits mission \button 11;
+
+All these commands can be redefined in the options/controls menu.

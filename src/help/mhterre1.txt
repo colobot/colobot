@@ -1,0 +1,20 @@
+\b;Instructions de Houston
+\l;Vous\u object\human; avez été sélectionné suite à votre profil psychologique et aux résultats obtenus lors des tests des derniers mois pour diriger la mission Colobot.
+
+Cette mission consiste à explorer les planètes des étoiles voisines pour évaluer leur potentiel à servir de refuge à l'humanité. Comme vous savez, notre survie sur terre est menacée par un cataclysme écologique imminent dû à la pollution atmosphérique.
+
+Vous partirez seul sur un vaisseau, accompagné de quelques robots.
+
+Il y a huit mois, une expédition d'observation composée uniquement de robots est partie explorer le cosmos, également à la recherche d'une autre planète habitable. Elle a connu plusieurs échecs sur des planètes apparemment peu propices à une colonisation durable. Mais, à cause de problèmes de transmission de données, les raisons en sont inconnues. Peut-être pourrez-vous quand même tirer profit des acquis de cette expédition lorsque vous serez sur place.
+
+\b;Objectif immédiat
+Le désert du Nevada est en effervescence. Plusieurs robots sont en train d'y préparer votre décollage.
+
+Afin de vous habituer à votre combinaison qui ne vous quittera plus durant le voyage et au matériel dont vous vous servirez, nous avons préparé quelques missions d'entraînement.
+
+La première consiste à trouver votre sac de survie, qui contient tout le nécessaire pour affronter l'espace et le froid. Ce sac est facilement reconnaissable à ses deux bouteilles orange et bleue.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

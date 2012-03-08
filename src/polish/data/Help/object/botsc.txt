@@ -1,0 +1,20 @@
+\b;\button 141; Szperacz na g¹sienicach
+\image botsc 8 8;
+Robot na g¹sienicach przystosowany do badania struktury geologicznej podglebia. Gdy znajdzie coœ u¿ytecznego, zostawia na ziemi nastêpuj¹ce znaczniki:
+
+- \l;czerwony plus\u object\stonspot;       -> \l;ruda tytanu\u object\titanore;.
+- \l;¿ó³te kó³ko\u object\uranspot;  -> \l;ruda uranu\u object\uranore;.
+- \l;zielony plus\u object\enerspot;   -> Ÿród³o energii, niezbêdne dla \l;stacji energetycznej\u object\station; lub \l;elektrowni\u object\energy;.
+
+Roboty na g¹sienicach mog¹ pokonywaæ strome pochy³oœci ale s¹ raczej powolne i zu¿ywaj¹ mnóstwo energii. Na p³askim terenie na krótszych dystansach lepszym wyborem jest \l;szperacz na ko³ach\u object\botsr;. Gdy jest to mo¿liwe, zbudowanie \l;robota lataj¹cego\u object\botsj; jest najlepszym sposobem pokonywania du¿ych odleg³oœci.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania ramienia detekcyjnego mo¿na u¿yæ instrukcji \c;\l;sniff\u cbot\sniff;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;TrackedSniffer\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

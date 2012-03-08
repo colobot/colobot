@@ -1,0 +1,22 @@
+\b;Kolorowa flaga
+\image flag 4 4;
+Kolorowe flagi mog¹ byæ pomocne w zaznaczeniu strategicznych lokacji lub pozycji, które \l;astronauta\u object\human; bêdzie musia³ ponownie znaleŸæ. Flagi pojawiaj¹ siê na mapce jako plusy w tym samym kolorze co kolor flagi.
+
+Do ustawiania i usuwania flag s³u¿¹ przyciski \button 118; i \button 119;, kolor wybierany jest przyciskami powy¿ej nich.
+
+Gdy nie dzia³a mapka, fakt ¿e flagi orientuj¹ siê zgodnie z wiatrem, mo¿e byæ pomocny w znalezieniu drogi i zapobie¿eniu chodzenia w kó³ko.
+
+Podczas programowania mo¿na u¿yæ flag jako punktów odniesienia dla robota: instrukcja \c;\l;radar\u cbot\radar;\n; umo¿liwia robotowi poznanie dok³adnej pozycji flagi okreœlonego koloru.
+
+\t;Transport
+Niemo¿liwy.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;BlueFlag\n;
+\c;RedFlag\n;
+\c;GreenFlag\n;
+\c;YellowFlag\n;
+\c;VioletFlag\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

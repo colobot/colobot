@@ -1,0 +1,121 @@
+extern void object::Nettoie()
+{
+	object Alien; //information about the alien
+	object PowStat; //information about PowerStation
+	float distAlien; //distance to the alien
+	float dirAlien; //direction of the alien
+	float motTime; //working time of the jet
+	int ifCool; //if the jet must rest
+
+	motTime = 0;
+	ifCool = 0;
+
+	while (radar (AlienAnt) != null) //as long as there are some aliens
+	{
+		Alien = radar (AlienAnt); //gets info about closest alien
+		distAlien = distance (position, Alien.position); //distance to alien
+		dirAlien = direction (Alien.position); //direction of alien
+		turn (dirAlien); //turns toward alien
+
+		if (distAlien > 35) //if alien is quite far
+		{
+			if (distAlien>70) //if alien is very far
+			{
+				if (motTime > 25) ifCool = 1;
+				if (motTime < 3) ifCool = 0;
+				if (ifCool == 1) //if the engine must rest
+				{
+					jet (-0.9); //go to the ground
+					motTime = motTime - 0.3*5;
+				}
+				else jet (0.1); //otherwise flies (not high)
+			}
+			else //alien is not too far
+			{
+				if (Alien.position.z>position.z) jet (0.1); //adjust hight
+				else jet (-0.5);
+			}
+			motor (1,1); //full power forward
+			wait (0.3); //waits (useful for time control)
+			motTime = motTime + 0.3; //increases engine working time
+		}
+		else //if alien is quite close
+		{
+			if (Alien.position.z>position.z) jet (0.15);
+			else jet (-0.3); //adjust hight
+			fire (0.5); //shoot (not too long)
+			wait (0.3); //waits for balls to arrive on alien
+			motTime = motTime + 0.8; //adjust engine working time
+
+			Alien = radar (AlienAnt); //is there an alien left?
+
+			if ((radar (AlienAnt) == null) or (energyCell.energyLevel<0.25))
+			{ //if no more alien or energy low
+				charge (motTime); //recharge PowerCell
+				motTime = 0; //engine could cool down
+			}
+		}
+	}
+}
+
+extern void object::charge(float motTime) //recharge PowerCell
+{
+	object PowStat; //info about PowerStation 
+	point posPow; //position of PowerStation
+	float distPow; //distance to PowerStation
+	float dirPow; //direction to PowerStation
+	float motPow; //necessary power of the motors
+	int ifCool; //if the jet must rest
+
+	ifCool = 0;
+	do //repeats until...
+	{
+		PowStat = radar (PowerStation); //gets info about PowerStation
+		if (PowStat == null)
+		{
+			PowStat = radar (SpaceShip); //if no PowerStation, goes to SpaceShip
+		}
+		posPow = PowStat.position; //position of PowerStation
+		distPow = sqrt((position.x-PowStat.position.x)*(position.x-PowStat.position.x) + (position.y-PowStat.position.y)*(position.y-PowStat.position.y)); //distance (x,y)
+		dirPow = direction (posPow); //direction of PowerStation
+
+		if (distPow>3) turn (dirPow); //turns toward PowerStation (if not too close)
+
+		if (distPow > 1) //if not very close
+		{
+			if (distPow > 18) //if quite far
+			{
+				if (motTime > 25) ifCool = 1;
+				if (motTime < 3) ifCool = 0;
+				if (ifCool == 1) //if jet must rest, go to the ground
+				{
+					jet (-0.9);
+					motTime = motTime - 0.3*5;
+				}
+				else jet (0.1); //otherwise fly
+
+				motor (1,1); //full power 
+				wait (0.3); //wait a little
+				motTime = motTime + 0.3; //measures working time of jet
+			}
+			else
+			{ //if not too far
+				if ((position.z - PowStat.position.z) > 10) jet (-0.2);
+				else (jet (0.1)); //adjust hight
+
+				motPow = distPow/15; //slows down
+				if ((dirPow > 90) or (dirPow < -90)) motPow = -motPow; //if too far
+				motor (motPow, motPow); //instruction to motor
+			}
+		}
+		else //if very close (<1 m)
+		{
+			jet (-0.9); //go to the ground (boom!)
+			if ((dirPow > 90) or (dirPow < -90)) motor (-0.1, -0.1);
+			else motor (0.1, 0.1); //last adjust of position
+			wait (0.05);
+		}
+	}
+	while (energyCell.energyLevel<1); //repeat until PowerCell full
+}
+

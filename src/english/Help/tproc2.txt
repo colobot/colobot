@@ -1,0 +1,34 @@
+\b;Exercise
+Follow the way in form of a spiral. The bot must move 2 times 25m forward and turn, then move 2 times 20m forward and turn, and so on.
+\image tproc2 8 8;
+\b;Function
+You will have noticed that the way is made of "L"-shaped parts that are fit one into another. The first one (dark blue) measures two times 25 meters. The second one (light blue) measures 5 meters less. Let us start with writing the \l;function\u cbot\function; that will move the bot on a "L"-shaped part whose length will be given as a parameter:
+\c;
+\s;void object::Part(float length)
+\s;{
+\s;	for ( int i=0 ; i<2 ; i=i+1 )
+\s;	{
+\s;		move(length);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+Now you just need to write the main function, that will call the function \c;Part\n;. At the beginning the variable \c;rest\n; will be set to 25m. The \c;while\n; loop will then repeat the instructions inside the block as long as \c;rest\n; is greater than zero. Inside the loop, first call the function \c;Part\n; (see above), then subtract 5m to the length of the L.
+\c;
+\s;extern void object::Function2( )
+\s;{
+\s;	float	rest = 25;
+\s;	while ( rest > 0 )
+\s;	{
+\s;		Part(rest);
+\s;		rest = rest-5;
+\s;	}
+\s;}
+\n;
+The function \c;Part\n; will be called a last time with the value \c;5\n;. Then the expression \c;rest-5\n; will set the value of the variable \c;rest\n; to zero, and the \c;while\n; loop will stop.
+
+\b;Remark
+You will have noticed that in the previous exercise, the main function was at the beginning of the program, whereas in this exercise, it is at the end of the program, after the function \c;Part\n;. The rank order of the functions in the program does not matter, you can write a program either way.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

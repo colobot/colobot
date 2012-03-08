@@ -1,0 +1,20 @@
+\b;\button 151; Dzia³ko na nogach
+\image botfs 8 8;
+Robot pe³zaj¹cy na mrówczych odnó¿ach, strzelaj¹cy kulami ognia.
+
+Dzia³ko strzelaj¹ce kulami ognia jest skuteczn¹ broni¹ przeciwko wiêkszoœci \l;wrogów\u object\mother;. Nale¿y u¿ywaæ go z rozwag¹, z uwagi na du¿e zu¿ycie energii. \l;Zwyk³e ogniwo elektryczne\u object\power; wystarcza na oddanie tylko 4 serii strza³ów.
+
+Porada: poruszanie mysz¹ podczas strzelania spowoduje ogarniêcie strza³ami wiêkszego obszaru.
+
+Podczas poruszania siê, dzia³o na nogach zu¿ywa o po³owê mniej energii od \l;dzia³a na ko³ach\u object\botfr;. Robot na nogach jest te¿ idealnie przystosowany do wspinania siê nawet po najbardziej stromych pochy³oœciach.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania dzia³ka strzelaj¹cego kulami ognia s³u¿y instrukcja \c;\l;fire\u cbot\fire;\n;. Lufê mo¿na podnieœæ lub opuœciæ u¿ywaj¹c instrukcji \c;\l;aim\u cbot\aim;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;LeggedShooter\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

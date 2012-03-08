@@ -1,0 +1,19 @@
+extern void object::Solution( )
+{
+	while ( true )
+	{
+		float	left, right;
+
+		left  = radar(WayPoint,  45, 120, 0, 20);
+		right = radar(WayPoint, -45, 120, 0, 20);
+
+		if ( left == 0 && right == 0 )  // nothing ?
+		{
+			turn(180);  // turn around
+		}
+		else
+		{
+			motor(left, right);
+		}
+	}
+}

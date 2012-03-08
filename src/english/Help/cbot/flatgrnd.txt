@@ -1,0 +1,17 @@
+\b;Instruction \c;flatground\n;
+Syntax¦:
+\s;\c;flatground ( center, rmax );\n;
+
+Calculates the maximal radius of a flat zone on which a building ca be built.
+
+\t;center: \c;\l;point\u cbot\point;\n;
+Center of the circlular zone.
+
+\t;rmax: \c;\l;float\u cbot\float;\n;
+Maximal radius.
+
+\t;Return value: \c;\l;float\u cbot\float;\n;
+Radius of the flat zone (always between 0 and rmax).
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

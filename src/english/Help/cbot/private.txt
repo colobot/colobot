@@ -1,0 +1,19 @@
+\b;Instruction \c;private\n; (for specialists)
+\l;Class\u cbot\class; members can be \l;public\u cbot\public; (by default) or private. A member can be declared privat by putting \c;private\n; before the type declaration of the member. Private members are not accessible from outside the class definition.
+\c;
+\s;public class MyClass
+\s;{
+\s;	int    b;                // public by défault
+\s;	public int a;            // als public 
+\s;	private point position;  // privat
+\s;}
+\s;void Test()
+\s;{
+\s;	MyClass item;
+\s;	item.a = item.b = 12;      // ok
+\s;	message( item.position );  // this is an error
+\s;}
+\n;
+\t;See also
+\c;\l;class\u cbot\class;\n;, \c;\l;public\u cbot\public;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,52 @@
+\b;Objectif
+Vous devez supprimer toutes les \l;araignées\u object\spider;, sans déplacer le \l;robot phazer\u object\botphaz;. Ce robot est équipé d'un canon orientable, qui peut tirer jusqu'à 45 degrés vers la haut. Plus l'angle est élevé, plus la distance de tir est grande¦:
+
+\image tballis1 16 8;
+Il faudra donc calculer la distance jusqu'à la cible, afin de déterminer l'angle d'orientation du canon. En balistique, on apprend la formule suivante¦:
+\c;
+\s;     v**2 * sin(2a)
+\s;d = ----------------
+\s;           g
+\n;
+\c;d\n; est la distance horitontale du tir (la portée)
+\c;v\n; est la vitesse initiale du projectile (\c;v**2\n; signifie \c;v\n; au carré)
+\c;a\n; est l'angle du canon
+\c;g\n; est une constante qui vaut 9.81 m/s**2 sur terre
+
+Dans notre cas, on cherche l'angle en fonction de la distance. Un peu d'algèbre nous donne donc¦:
+\c;
+\s;            d*g
+\s;     asin( ----- )
+\s;            v**2
+\s;a = ---------------
+\s;           2
+\n;
+Avec le robot phazer, la vitesse moyenne d'un projectile tiré est de 25¦m/s. Il résulte de tout cela l'expression suivante pour obtenir l'angle¦:
+\c;
+\s;angle = asin((dist*9.81)/(25**2))/2;
+\n;
+\b;Programme
+Le programme doit ressembler à ceci¦:
+
+\s;o  Répéter à l'infini :
+\s;	o  Détecter une araignée avec le radar
+\s;	o  Si tourner dans sa direction
+\s;	o  Orienter le canon
+\s;	o  Tirer une seconde
+\s;	o  Attendre une seconde
+
+L'instruction \c;\l;radar\u cbot\radar;()\n; permet de détecter l'araignée la plus proche. L'instruction \c;\l;distance\u cbot\dist;()\n; calcule la distance entre deux points, dans le cas présent entre la position du robot (\c;position\n;) et la position de l'araignée (\c;chose.position\n;).
+Les projectiles mettent du temps pour atteindre la cible. L'attente d'une seconde évite de tirer à nouveau sur une cible qui va être détruite par des projectiles encore en chemin¦!
+\c;
+\s;	chose = radar(AlienSpider);
+\s;	if ( chose == null )  break;
+\s;	turn(direction(chose.position));
+\s;	dist = distance(position, chose.position);
+\s;	angle = asin((dist*9.81)/(25**2))/2;
+\n;
+Pour orienter le canon, utilisez l'instruction \c;\l;aim\u cbot\aim;()\n;. A vous de terminer le programme¦...
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tant1; et \l;programmation\u cbot;.

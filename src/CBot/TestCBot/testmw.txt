@@ -1,0 +1,14 @@
+extern public int testmw( int a)
+{
+  boolean b = true ;
+
+  if (b)
+    return 1 ;
+  else
+    return a ;  0 * testmw(a-1) ; 
+}
+
+public int Fibo2 ( int n )
+{
+	print ( " bof " );
+}

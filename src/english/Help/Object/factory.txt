@@ -1,0 +1,33 @@
+\b;\button 160; Bot Factory
+\image factory 8 8;
+This building is intended for the manufacturing of bots using \l;titanium\u object\titan;.
+
+1) Place the titanium cube inside the factory.
+2) Step back out.
+3) Select the factory.
+4) Click on the button showing the diagram of the bot you want the factory to assemble (e.g. \button 137; for a \l;wheeled grabber\u object\botgr;).
+
+The finished bot does not include an onboard \l;power cell\u object\power;. You'll need to supply it with one for it to be able to leave the factory.
+
+The list of feasible bots will depend upon the research your \l;research center\u object\research; has completed at this time.
+
+\t;Requirements for building
+Any flat surface of at least 7.5 meters wide.
+
+\t;Input
+Titanium.
+
+\t;Output
+Completed bot.
+
+\t;Power source
+None.
+
+\t;Duration of operation
+15 seconds.
+
+\t;Object \l;Category\u cbot\category;
+\c;BotFactory\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

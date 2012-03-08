@@ -1,0 +1,5 @@
+\b;Solution
+La \l;boîte noire\u object\bbox; se trouve assez loin en direction du nord, derrière l'épave d'un robot à chenilles.
+
+\t;Voir aussi
+\l;Commandes\u command;.

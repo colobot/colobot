@@ -1,0 +1,60 @@
+\b;Exercice
+Le robot doit se déplacer le long d'un chemin étroit en avançant de 20 mètres, puis en tournant d'un angle variable. Contrairement aux exercices précédents, il n'y a qu'une seule \l;borne\u object\exchange; d'informations, qui contient les 6 angles pour les 6 déplacements.
+
+1) Dans une première phase, il faudra lire les 6 informations contenues dans la borne et les stocker dans un \l;tableau\u cbot\array;. A ce stade, le robot n'avance pas.
+
+2) Dans une deuxième phase, il faudra déplacer le robot selon les informations lues dans le tableau.
+
+\b;Principe
+\s;o  Répéter 6 fois¦:
+\s;	o  Lire une direction dans la \l;borne\u object\exchange;.
+\s;	o  Stocker la valeur dans un tableau.
+\s;o  Puis répéter de nouveau 6 fois¦:
+\s;	o  Avancer de 20 mètres.
+\s;	o  Tourner de l'angle contenu dans le tableau.
+
+\b;Programme
+Il faut commencer par déclarer une \l;variable\u cbot\var; tableau, avec¦:
+\s;\c;	float dir[6];
+\n;
+C'est un peu comme s'il existait 6 variables \c;dir\n;, nommées \c;dir[0]\n;, \c;dir[1]\n;, \c;dir[2]\n;, \c;dir[3]\n;, \c;dir[4]\n; et \c;dir[5]\n;. On aurait par exemple le droit d'écrire¦:
+\s;\c;	dir[0] = 12;
+\s;	dir[1] = 45;
+\s;	dir[3] = 100-dir[1];
+\s;	\n;etc.\c;
+\n;
+Dans cet exemple, \c;dir[3]\n; vaut 55. Les cases \c;dir[2]\n;, \c;dir[4]\n; et \c;dir[5]\n; existent, mais ne contiennent rien pour l'instant.
+
+\image texch3 15 5;
+N'oubliez pas qu'avec \c;float dir[6];\n;, le tableau contient 6 cases, numérotées à partir de 0. Les index sont donc compris entre 0 et 5. Il n'est pas possible d'accéder à la case \c;dir[6]\n;¦!
+
+\b;Première phase
+La première phase de lecture de la borne pourrait se programmer ainsi¦:
+\s;\c;	dir[0] = receive("Direction0");
+\s;	dir[1] = receive("Direction1");
+\s;	dir[2] = receive("Direction2");
+\s;	dir[3] = receive("Direction3");
+\s;	dir[4] = receive("Direction4");
+\s;	dir[5] = receive("Direction5");
+\n;
+Mais évidemment, on préfère utiliser une \l;boucle\u cbot\for; dans laquelle \c;i\n; prendra successivement les valeurs 0 à 5¦:
+\s;\c;	for ( int i=0 ; i<6 ; i=i+1 )  // répète 6x
+\s;	{
+\s;		dir[i] = receive("Direction"+i);
+\s;	}
+\n;
+\b;Deuxième phase
+La deuxième phase de déplacement s'écrit¦:
+\s;\c;	for ( int i=0 ; i<6 ; i=i+1 )  // répète 6x
+\s;	{
+\s;		move(20);
+\s;		turn(dir[i]);
+\s;	}
+\n;
+\b;Pas à pas
+Il est particulièrement intéressant d'exécuter ce programme pas à pas. Si vous ne vous souvenez plus comment faire, cliquez \l;ici\u tvar1 step;. Vous pourrez ainsi observer le remplissage du tableau \c;dir[]\n; lors des 6 lectures successives de la borne.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u texch2; et \l;programmation\u cbot;.

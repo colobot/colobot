@@ -1,0 +1,16 @@
+\b;Instrukcja \c;jet\n;
+Sk³adnia:
+\s;\c;jet ( moc );\n;
+
+Umo¿liwia bezpoœredni¹ kontrolê nad silnikiem odrzutowym \l;robota lataj¹cego\u object\botgj;. Silnik odrzutowy umo¿liwia robotom latanie. Instrukcja ta mo¿e s³u¿yæ do wznoszenia siê, zwiêkszania i zmniejszania wysokoœci lotu oraz l¹dowania.
+
+\t;moc: \c;\l;float\u cbot\float;\n;
+Moc silnika odrzutowego, mo¿e zawieraæ siê w zakresie od \c;-1\n; do \c;+1\n;. \c;jet(1);\n; to sposób na najszybsze wznoszenie siê robota, \c;jet(-1);\n; zmniejsza wysokoœæ tak szybko, jak to mo¿liwe, \c;jet(0);\n; utrzymuje sta³¹ wysokoœæ. W celu uzyskania wolniejszych zmian wysokoœci, nale¿y u¿yæ wartoœci poœrednich, na przyk³ad \c;jet(0.3);\n;.
+
+
+\t;Typ wyniku: \c;\l;void\u cbot\void;\n;
+Brak.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.
+

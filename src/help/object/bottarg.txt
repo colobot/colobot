@@ -1,0 +1,9 @@
+\b;\button 173; Robot cible
+\image bottarg 8 8;
+Robot cible pour l'entraînement au tir. Parfois il est immobile, parfois il se déplace tout seul, selon une trajectoire qui dépend de l'exercice à effectuer. Attention: il est très sensible aux chocs et explose pour un rien.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;TargetBot\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

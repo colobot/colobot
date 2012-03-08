@@ -1,0 +1,129 @@
+\b;Æwiczenie
+Pokieruj zdalnie robotem podleg³ym bez u¿ywania \l;stacji przekaŸnikowej informacji\u object\exchange;. Robot powinien przejœæ przez 6 niebieskich plusów. Musisz u¿yæ zmiennej zadeklarowanej jako \c;\l;static\u cbot\static;\n; do przekazania rozkazów robotowi podleg³emu.
+
+Dwoma g³ównymi postaciami tego æwiczenia s¹¦:
+1) \l;Transporter na ko³ach\u object\botgr; bez ogniwa elektrycznego, wobec czego unieruchomiony. Jest to robot nadrzêdny, który powinien zostaæ zaprogramowany aby móg³ przesy³aæ rozkazy do podleg³ego mu robota.
+2) Podleg³y \l;robot treningowy\u object\bottr;, który jest ju¿ zaprogramowany i tylko czeka na rozkazy od robota nadrzêdnego.
+
+\b;Robot podleg³y
+Najpierw musimy zrozumieæ jak dzia³a program robota podleg³ego. \l;Klasa\u cbot\class; \c;order\n; zawiera dwa elementy: \c;m_type\n; jest rozkazem do wykonania (move lub turn), a \c;m_param\n; jest odleg³oœci¹ do pokonania lub k¹tem obrotu¦:
+
+\c;\s;\l;public\u cbot\public; \l;class\u cbot\class; order
+\s;{
+\s;	\l;int\u cbot\int;    m_type = \l;nan\u cbot\nan;;
+\s;	\l;float\u cbot\float;  m_param;
+\s;}
+\n;
+Druga \l;klasa\u cbot\class; \c;exchange\n; zawiera mechanizm przekazywania rozkazów. Deklarujemy jako \c;\l;static\u cbot\static;\n; element klasy \c;m_order\n;, który bêdzie zawiera³ rozkaz do wykonania. S³owo \c;static\n; zapewnia, ¿e element \c;m_order\n; bêdzie wspó³u¿ytkowany przez wszystkie instancje \l;klasy\u cbot\class; exchange.
+
+\c;\s;\l;public\u cbot\public; \l;class\u cbot\class; exchange
+\s;{
+\s;	\l;static\u cbot\static; \l;private\u cbot\private; order m_order = new order;
+\n;
+\n;Metoda \c;put\n; bêdzie u¿ywana przez robota nadrzêdnego do przesy³ania rozkazów. Jeœli zmienna \c;m_order\n; jest ró¿na od \c;\l;nan\u cbot\nan;\n;, robot podleg³y nie zakoñczy³ wykonywania rozkazu a metoda \c;put\n; zwróci wartoœæ \c;false\n; i niczego nie zrobi¦:
+
+\c;\s;	\l;synchronized\u cbot\synchro; \l;bool\u cbot\bool; put(order a)
+\s;	{
+\s;		if ( m_order.m_type == nan )
+\s;		{
+\s;			m_order = a;
+\s;			return true;
+\s;		}
+\s;		else
+\s;		{
+\s;			return false;
+\s;		}
+\s;	}
+\n;
+Kolejna metoda \c;get\n; bêdzie u¿ywana przez robota podleg³ego do otrzymywania rozkazów. Metoda ta jako wynik zwraca rozkaz do wykonania:
+
+\c;\s;	\l;synchronized\u cbot\synchro; order get()
+\s;	{
+\s;		return m_order;
+\s;	}
+\n;
+Trzecia metoda \c;delete\n; bêdzie u¿ywana przez robota podleg³ego do zaznaczenia, ¿e rozkaz zosta³ wykonany:
+
+\c;\s;	\l;synchronized\u cbot\synchro; void delete()
+\s;	{
+\s;		m_order.m_type = nan;
+\s;	}
+\s;}
+\n;
+G³ówny program robota podleg³ego zawiera instancjê klasy \c;exchange\n; nazwan¹ \c;list\n;. Po s³owie \c;list\n; nale¿y napisaæ nawiasy (), w celu utworzenia instancji klasy \c;exchange\n;.
+
+\c;\s;\l;extern\u cbot\extern; void object::Slave3( )
+\s;{
+\s;	exchange list();
+\s;	order    todo;
+\n;
+Zewnêtrzna pêtla \c;while\n; dzia³a w nieskoñczonoœæ. Wewnêtrzna pêtla \c;while\n; czeka na rozkaz u¿ywaj¹c metody \c;get\n; z klasy \c;exchange\n;. Pêtla zatrzymuje siê gdy \c;get\n; zwróci wartoœæ ró¿n¹ od \c;nan\n;.
+
+\c;\s;	\l;while\u cbot\while; ( true )
+\s;	{
+\s;		\l;while\u cbot\while; ( true )
+\s;		{
+\s;			todo = list.get();
+\s;			if ( todo.m_type != nan )  break;
+\s;			wait(1);
+\s;		}
+\n;
+Po otrzymaniu rozkazu i zapisaniu go w zmiennej \c;todo\n; wystarczy jedynie go wykonaæ:
+
+\c;\s;		if ( todo.m_type == 1 )
+\s;		{
+\s;			move(todo.m_param);
+\s;		}
+\s;		else if ( todo.m_type == 2 )
+\s;		{
+\s;			turn(todo.m_param);
+\s;		}
+\s;		else
+\s;		{
+\s;			message("Nieznany rozkaz");
+\s;		}
+\n;
+Po zakoñczeniu wykonywania rozkazu, nale¿y wywo³aæ metodê \c;delete\n;, aby powiadomiæ robota nadrzêdnego, ¿e mo¿e ju¿ przes³aæ nastêpny rozkaz¦:
+
+\c;\s;		list.delete();
+\s;	}
+\s;}
+\n;
+\b;Robot nadrzêdny
+W robocie nadrzêdnym nale¿y napisaæ funkcjê nazwan¹ \c;SendOrder\n;, która wyœle rozkaz do robota podleg³ego:
+
+\c;\s;void object::SendOrder(float order, float param)
+\s;{
+\s;	exchange list();
+\s;	order    todo();
+\s;	
+\s;	todo.m_type = order;
+\s;	todo.m_param = param;
+\s;	
+\s;	while ( list.put(todo) == false )
+\s;	{
+\s;		wait(1);
+\s;	}
+\s;}
+\n;
+Pêtla \c;while\n; czeka na zakoñczenie oczekuj¹cego rozkazu, czyli na wyjœcie przez robota podleg³ego z metody \c;get\n; i wywo³anie metody \c;delete\n;.
+G³ówny program robota nadrzêdnego jest bardzo prosty:
+
+\c;\s;extern void object::Remote4( )
+\s;{
+\s;	SendOrder(1, 20);  // move(20);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 20);  // move(20);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;	SendOrder(2,-90);  // turn(-90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;}
+\n;
+Klawisz \key;\key help;\norm; umo¿liwia wyœwietlenie tych informacji w dowolnej chwili.
+
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;programowanie\u cbot;.

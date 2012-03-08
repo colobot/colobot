@@ -1,0 +1,26 @@
+\b;Exercise
+Instruct the bot to find all the \l;blue crosses\u object\waypoint; on the ground, but do not get too close to the \l;mines\u object\mine;. When the bot passes over a cross, it disappears. Here is the general principle:
+
+	Repeat forever:
+	o  Look for a mine
+	o  If a mine has been found, calculate the opposite direction
+	o  Look for a cross
+	o  If nothing has been found, stop the program
+	o  Calculate the direction of the cross
+	o  Calculate the mean value of the two directions
+	o  Set the motor speeds in order to head towards the mean direction
+
+\b;The instruction \c;radar\n;
+In order to detect a mine with the \c;\l;radar\u cbot\radar;\n;, we recommend the following parameters:
+\c;\s;	radar(Mine, 0, 180, 0, 5);\n;
+With the opening angle of 180 degrees, mines that are behind the bot will not be found. Mines that are at more than 5 meters are also ignored.
+
+In order to find a blue cross, simply write:
+\c;\s;	radar(WayPoint);\n;
+Blue crosses will be found everywhere.
+
+In order to calculate a direction, use \c;\l;direction\u cbot\direct;\n;.
+In order to set the motor speeds, use \c;\l;motor\u cbot\motor;\n;.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

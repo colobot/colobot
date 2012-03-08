@@ -1,0 +1,11 @@
+\b;Z Centrum Kontroli Misji
+Jak zwykle gratulujemy dobrej roboty.
+
+Ta nowa broñ jest kolejnym praktycznym zastosowaniem "zielonego z³ota", czyli \l;materii organicznej\u object\bullet; wytwarzanej przez owady. Nowy robot zosta³ nazwany \l;dzia³em organicznym\u object\botoj;, b¹dŸ te¿ robotem wyposa¿onym w dzia³ko organiczne.
+
+Na pewno bêdzie ono pomocne podczas Twojego powrotu na \l;statek kosmiczny\u object\base;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

@@ -1,0 +1,16 @@
+\b;Instructions de Houston
+Eliminez toute présence hostile.
+Faites les \l;recherches\u object\research; pour construire l'armement nécessaire.
+
+Le satellite d'information nous a transmis qu'il a détecté une zone riche en énergie, marquée par l'expédition précédente d'un drapeau bleu (croix bleue sur la mini-carte).
+
+N'oubliez pas de consulter le rapport du satellite \button 186; avant chaque mission; nous pensons que vous avez parfois négligé cette tâche.
+
+Nous avons légèrement amélioré le programme de recharge. Consultez la page \button 53;.
+
+Attention: les robots ne peuvent traverser que des plans d'eau peu profonds (hauteur des genoux).
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

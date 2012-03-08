@@ -1,0 +1,132 @@
+Title.F      text="A l'abri"
+Resume.F     text="Cherchez la boîte noire tout en restant à l'abri de la foudre."
+Title.E      text="A l'abri"
+Resume.E     text="Cherchez la boîte noire tout en restant à l'abri de la foudre."
+Instructions name="morph2.txt"
+SoluceFile   name="sorph2.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=3
+AmbiantColor  air=102;68;68;102 water=20;20;20;20  // grey
+FogColor      air=50;30;10;0 water=67;80;100;0  // braun-orange
+DeepView      air=150.00 water=25.00 
+FogStart      air=0.5 water=0.5
+SecondTexture rank=2
+VehicleColor  color=212;160;90;0
+Background    image="back01.tga" up=50;30;10;0 down=50;30;10;0
+Planet        pos=1.2;0.2 dim=0.40 speed= 0.000 dir=0.5 image="planet02.tga" uv1=0.0;0.0 uv2=0.5;0.5
+Planet        pos=4.0;0.4 dim=0.20 speed= 0.012 dir=0.7 image="planet02.tga" uv1=0.5;0.0 uv2=1.0;0.5
+Planet        pos=4.4;0.3 dim=0.30 speed=-0.002 dir=0.3 image="planet02.tga" uv1=0.0;0.5 uv2=0.5;1.0
+Planet        pos=3.5;0.4 dim=0.12 speed= 0.001 dir=0.8 image="planet02.tga" uv1=0.5;0.5 uv2=1.0;1.0
+Planet        pos=5.0;0.5 dim=0.04 speed= 0.025 dir=1.2 image="planet02.tga" uv1=0.5;0.5 uv2=1.0;1.0
+Planet        pos=0.0;0.2 dim=0.06 speed=-0.035 dir=0.4 image="planet02.tga" uv1=0.0;0.0 uv2=0.5;0.5
+Planet        pos=2.0;0.5 dim=0.05 speed= 0.015 dir=2.0 image="planet02.tga" uv1=0.5;0.5 uv2=1.0;1.0
+
+TerrainGenerate     vision=300.00 depth=1 hard=0.5
+//TerrainBlitz        sleep=10 delay=5 magnetic=200
+TerrainRelief       image="textures\relief27.bmp" factor=1.0
+TerrainResource     image="textures\res00.bmp"
+TerrainInitTextures image="mars" dx=4 dy=2 table=1;2;3;4;5;6;7;8
+TerrainCreate
+
+BeginObject
+CreateObject pos=  -20;-150 dir=0.0 type=PowerCaptor
+CreateObject pos=  -23;-157 dir=1.5 type=Me
+CreateObject pos=  -15;-160 dir=1.5 type=WingedGrabber
+
+CreateObject pos=   -40;  -135 dir=1.5 type=NuclearPlant magnifyDamage=0.001
+CreateObject pos=   -40;  -150 dir=0.6 type=DefenseTower power=1 magnifyDamage=0.001
+CreateObject pos=   -20;  -170 dir=1.5 type=DefenseTower power=1 magnifyDamage=0.001
+CreateObject pos=   -30;  -160 dir=1.2 type=BotFactory magnifyDamage=2
+CreateObject pos=   -35;  -175 dir=  0 type=WingedShooter
+CreateObject pos=   -25;  -170 dir=0.4 type=TrackedShooter
+CreateObject pos=   -38;  -160 dir=0.9 type=TrackedShooter
+CreateObject pos=     0;  -140 dir=1.5 type=Converter magnifyDamage=0.001
+
+CreateObject pos=-33;-220 type=AlienAnt script1="ant02.txt" run=1 cmdline=1
+CreateObject pos=-25;-194 dir=1.5 type=Titanium
+
+CreateObject pos=-38;-215 type=AlienAnt script1="ant02.txt" run=1 cmdline=1
+CreateObject pos=-41;-213 type=AlienAnt script1="ant02.txt" run=1 cmdline=1
+
+CreateObject pos=-32;-164 type=AlienAnt script1="ant02.txt" run=1 cmdline=1
+
+CreateObject pos=-20;-181 type=AlienAnt script1="ant02.txt" run=1 cmdline=3
+CreateObject pos=-25;-184 type=AlienAnt script1="ant02.txt" run=1 cmdline=3
+CreateObject pos=-13;-185 type=AlienAnt script1="ant02.txt" run=1 cmdline=3
+
+CreateObject pos=-10;-174 type=AlienAnt script1="ant02.txt" run=1 cmdline=3
+CreateObject pos=-13;-180 type=AlienAnt script1="ant02.txt" run=1 cmdline=3
+
+CreateObject pos=-4;-145 type=AlienAnt script1="ant02.txt" run=1 cmdline=3
+CreateObject pos=-2;-152 type=AlienAnt script1="ant02.txt" run=1 cmdline=3
+
+CreateObject pos=-50;-158 type=AlienAnt script1="ant02.txt" run=1 cmdline=1
+CreateObject pos=-54;-152 type=AlienAnt script1="ant02.txt" run=1 cmdline=1
+
+
+CreateObject pos=-3.75;-117.50 dir=0.0 type=Titanium
+CreateObject pos=-2.50;-117.50 dir=0.0 type=Titanium
+CreateObject pos= 2.50;-117.50 dir=0.0 type=Titanium
+CreateObject pos= 3.75;-117.50 dir=0.0 type=Titanium
+CreateObject pos=-3.75;-116.25 dir=0.0 type=Titanium
+CreateObject pos=-2.50;-116.25 dir=0.0 type=Titanium
+CreateObject pos= 2.50;-116.25 dir=0.0 type=Titanium
+CreateObject pos= 3.75;-116.25 dir=0.0 type=Titanium
+
+CreateObject pos= 25; 60 dir=0.0 type=RuinBaseCamp h=-9.0
+CreateObject pos=  0; 59 dir=0.6 type=RuinHeadCamp
+CreateObject pos= 14; 60 dir=0.3 type=BlackBox
+CreateObject pos= 60; 60 dir=0.0 type=RuinBotFactory
+CreateObject pos= 48; 67 dir=0.0 type=WreckBotw1
+CreateObject pos=-30; 74 dir=0.0 type=WreckBotw2
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+
+MapColor floor=179;128;79 water=154;235;255
+
+//EnableBuild type=BotFactory
+//EnableBuild type=Derrick
+//EnableBuild type=Converter
+//EnableBuild type=RadarStation
+//EnableBuild type=PowerPlant
+//EnableBuild type=NuclearPlant
+//EnableBuild type=PowerStation
+//EnableBuild type=RepairCenter
+//EnableBuild type=DefenseTower
+//EnableBuild type=ResearchCenter
+//EnableBuild type=AutoLab
+EnableBuild type=PowerCaptor
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+EnableResearch type=ATOMIC
+EnableResearch type=iPAW
+EnableResearch type=iGUN
+EnableResearch type=THUMPER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+DoneResearch type=ATOMIC
+DoneResearch type=iPAW
+DoneResearch type=iGUN
+DoneResearch type=THUMPER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=BlackBox lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WingedGrabber lost=0
+EndMissionTake pos=0.00;-120.00 type=BlackBox min=1
+
+Camera pos=12.50;-250.00 h=2.50 

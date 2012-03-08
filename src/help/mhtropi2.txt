@@ -1,0 +1,10 @@
+\b;Instructions de Houston
+Nous sommes très inquiets à votre sujet et espérons que ce message vous atteindra.
+
+Le satellite d'observation nous a transmis que vous erriez depuis plusieurs heures de manière désordonnée. Votre SatCom a cessé d'émettre, votre réacteur semble endommagé, et votre casque a été repéré au fond d'un lac. Si vous avez effectivement perdu votre casque, n'allez pas dans l'eau toxique de Tropica¦!
+
+Rejoignez le vaisseau spatial au plus vite pour pouvoir nous renseigner sur les causes de ce désastre; les informations transmises par le satellite à ce sujet sont difficiles à interpréter. Peut-être s'agit-il du "facteur X" qui a causé tellement d'ennuis à la première mission.
+
+Nous ne pouvons pas vous guider; des épaves de robot aux abords du vaisseau peuvent vous donner un indice. Si vous avez de la peine à retrouver le chemin vers le vaisseau, pensez aux drapeaux que vous pouvez planter pour éviter de tourner en rond ou pour marquer les culs-de-sac. Les drapeaux s'orientent dans le vent, ce qui vous permet de les utiliser comme une boussole.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.

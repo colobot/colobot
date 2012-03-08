@@ -1,0 +1,5 @@
+extern public void xxx ()
+{
+	CPoint	test = null  ;
+	if ( test == null ) show ( "NULL" );
+}

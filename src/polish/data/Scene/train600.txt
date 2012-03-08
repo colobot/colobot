@@ -1,0 +1,3 @@
+Title.E text="Functions" resume="Functions"
+Title.F text="Procédures" resume="Procédure"
+Title.P text="Funkcje" resume="Funkcje"

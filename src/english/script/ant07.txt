@@ -1,0 +1,86 @@
+extern void object::Attack( )
+{
+	int		list[];
+	int		i;
+	object	p;
+	float	dist, prox;
+	point	nav1, nav2, dest;
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	i = 0;
+	list[i++] = WingedGrabber;
+	list[i++] = TrackedGrabber;
+	list[i++] = WheeledGrabber;
+	list[i++] = LeggedGrabber;
+	list[i++] = WingedShooter;
+	list[i++] = TrackedShooter;
+	list[i++] = WheeledShooter;
+	list[i++] = LeggedShooter;
+	list[i++] = WingedOrgaShooter;
+	list[i++] = TrackedOrgaShooter;
+	list[i++] = WheeledOrgaShooter;
+	list[i++] = LeggedOrgaShooter;
+	list[i++] = WingedSniffer;
+	list[i++] = TrackedSniffer;
+	list[i++] = WheeledSniffer;
+	list[i++] = LeggedSniffer;
+	list[i++] = Thumper;
+	list[i++] = PhazerShooter;
+	list[i++] = Recycler;
+	list[i++] = Shielder;
+	list[i++] = Subber;
+	list[i++] = Me;
+	list[i++] = Derrick;
+	list[i++] = BotFactory;
+	list[i++] = PowerStation;
+	list[i++] = Converter;
+	list[i++] = RepairCenter;
+	list[i++] = DefenseTower;
+	list[i++] = ResearchCenter;
+	list[i++] = RadarStation;
+	list[i++] = ExchangePost;
+	list[i++] = PowerPlant;
+	list[i++] = AutoLab;
+	list[i++] = NuclearPlant;
+
+	while ( true )
+	{
+		p = radar(list, 0, 360, 0, 30);
+		if ( p == null )
+		{
+			nav1.x = position.x-5;
+			nav1.y = position.y;
+			nav2.x = position.x+5;
+			nav2.y = position.y;
+
+			while ( true )
+			{
+				goto(nav1);
+				p = radar(list, 0, 360, 0, 30);
+				if ( p != null )  break;
+
+				goto(nav2);
+				p = radar(list, 0, 360, 0, 30);
+				if ( p != null )  break;
+			}
+		}
+		else
+		{
+			dist = distance(p.position, position);
+			if ( dist < 5 )
+			{
+				fire(p.position);
+			}
+			else
+			{
+				prox = dist+5;  // fuite
+				dest.x = (position.x-p.position.x)*prox/dist + p.position.x;
+				dest.y = (position.y-p.position.y)*prox/dist + p.position.y;
+				dest.z = (position.z-p.position.z)*prox/dist + p.position.z;
+				goto(dest);
+			}
+		}
+	}
+}

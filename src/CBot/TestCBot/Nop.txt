@@ -1,0 +1,4 @@
+public extern void Nop()
+{
+	while ( true ) {}
+}

@@ -1,0 +1,10 @@
+extern void object::Solution( )
+{
+	move(20);  // go to checkpoint 1
+	turn(90);
+	move(20);  // go to checkpoint 2
+	turn(-90);
+	move(20);  // go to checkpoint 3
+	turn(-90);
+	move(20);  // go to finishing pad
+}

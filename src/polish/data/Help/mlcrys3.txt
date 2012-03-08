@@ -1,0 +1,11 @@
+\b;Programy przys³ane z Houston
+Nie napisaliœmy ¿adnego programu specjalnie dla tej misji. Jednak¿e mo¿esz napisaæ w³asny program, jeœli uwa¿asz, ¿e przyda siê on podczas tej misji.
+
+\b;Archiwum
+Lista programów przys³anych w poprzednich misjach:
+
+o  \c;\l;CollectTitanium2\u mlcrys2;\n;
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;

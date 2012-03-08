@@ -1,0 +1,24 @@
+\b;\button 169; Centre de réparation
+\image repair 8 8;
+Ce bâtiment répare le bouclier des robots endommagés. Le bouclier d'un robot permet d'encaisser un certain nombre de tirs \l;ennemis\u object\mother;. Si le niveau du bouclier d'approche de zéro, le prochain tir détruira définitivement le robot.
+
+\t;Emplacement requis
+Surface plate quelconque de 6 mètres de diamètre.
+
+\t;Entrée
+Robot endommagé.
+
+\t;Sortie
+Robot réparé (bouclier régénéré).
+
+\t;Energie consommée
+Aucune.
+
+\t;Durée de l'opération
+Quelques secondes, selon la réparation à effectuer.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;RepairCenter\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,145 @@
+extern void object::Attack( )
+{
+	int         list[], i;  // liste des objets cherchés
+	object      target;     // info sur la cible
+	point       lastPos;    // dernière position (pr test si bloquée)
+	float       distTar;    // distance de la cible
+	float       dirTar;     // direction de la cible
+	float       r;          // valeur aléatoire
+	float       mp;         // puissance moteur
+	float       tangle;     // angle d'esquive en cas d'eau
+	boolean	    ifmove;     // si on avance en tirant ou pas
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	i = 0;
+	list[i++] = WingedGrabber;
+	list[i++] = TrackedGrabber;
+	list[i++] = WheeledGrabber;
+	list[i++] = LeggedGrabber;
+	list[i++] = WingedShooter;
+	list[i++] = TrackedShooter;
+	list[i++] = WheeledShooter;
+	list[i++] = LeggedShooter;
+	list[i++] = WingedOrgaShooter;
+	list[i++] = TrackedOrgaShooter;
+	list[i++] = WheeledOrgaShooter;
+	list[i++] = LeggedOrgaShooter;
+	list[i++] = WingedSniffer;
+	list[i++] = TrackedSniffer;
+	list[i++] = WheeledSniffer;
+	list[i++] = LeggedSniffer;
+	list[i++] = Thumper;
+	list[i++] = PhazerShooter;
+	list[i++] = Recycler;
+	list[i++] = Shielder;
+	list[i++] = Subber;
+	list[i++] = Me;
+	list[i++] = Derrick;
+	list[i++] = BotFactory;
+	list[i++] = PowerStation;
+	list[i++] = Converter;
+	list[i++] = RepairCenter;
+	list[i++] = DefenseTower;
+	list[i++] = ResearchCenter;
+	list[i++] = RadarStation;
+	list[i++] = ExchangePost;
+	list[i++] = PowerPlant;
+	list[i++] = AutoLab;
+	list[i++] = NuclearPlant;
+
+	wait(cmdline(0));  // attend pour entrer en action
+	lastPos = position;  // initialise
+	ifmove = true;
+	while ( true )  // répète à l'infini
+	{
+		target = radar(list);
+		dirTar = direction(target.position);
+		distTar = distance(position, target.position);
+		if(distTar<30)
+		{
+			turn(dirTar);
+			fire(target.position);
+			target = radar(list);
+			turn(direction(target.position));
+			for(int i=0; i<3; i=i+1)
+			{
+				if(topo(position)<2 or distance(position, target.position) < 8 or !ifmove)
+				{
+					ifmove = false;
+				}
+				else
+				{
+					lastPos = position;
+					motor(1,1);
+					wait(0.5);
+					if (distance(position, lastPos) < 0.2) ifmove = false;
+				}
+			}
+		}
+		else
+		{
+			ifmove = true;
+			if (distance(lastPos, position) < 0.2)
+			{   //si elle est bloquée par obstacle
+				lastPos = position;
+				turn(rand()*360-180);
+				motor(1,1);
+				wait(1);
+				target = radar(list);
+				turn(direction(target.position));
+			}
+			else
+			{
+				lastPos = position;
+				if (topo(position)>1)
+				{
+					mp = direction(target.position)/180;
+					//if (mp>1) mp = 1;
+					//if (mp<-1) mp = -1;
+					if (mp>0)
+					{
+						motor(1-mp,1);
+					}
+					else
+					{
+						motor(1,1+mp);
+					}
+					wait(1);
+				}
+				else
+				{
+					motor (-0.5, -0.5);
+					wait(1.5);
+					target = radar(list);
+					turn(direction(target.position));
+					tangle = 0;
+					do
+					{
+						tangle = tangle + 22.5;
+						if (tp(tangle) == 0) break;
+						tangle = -tangle;
+						if (tp(tangle) == 0) break;
+						tangle = -tangle;
+						if (tangle > 180) break;
+					}
+					while (true);
+					turn(tangle);
+					motor(1,1);
+					wait(2);
+				}
+			}
+		}
+	}
+}
+
+int object::tp(float angle)
+{
+	point tpoint;
+
+	tpoint.x = position.x + cos(orientation + angle)*10;
+	tpoint.y = position.y + sin(orientation + angle)*10;
+	tpoint.z = 0;
+	if (topo(tpoint) < 1.5) return(1); else return(0);
+}

@@ -1,0 +1,17 @@
+\b;Programs dispatched by Houston
+Following is a program that has been developed by our engineers. It allows you to switch \l;power cells\u object\power;. A charged cell needs to be placed on the ground in front of the bot.
+
+In order to execute this program, select the program \c;SwitchCell1\n; in the list of the programs available on the bot (on the lower left-hand corner of your screen), and click on the arrow symbol \button 21;.
+\c;
+\s;extern void object::SwitchCell1()
+\s;{
+\s;	\l;grab\u cbot\grab;(InFront);     // take the new cell in front
+\s;	\l;drop\u cbot\drop;(Behind);      // and drop it behind
+\s;	
+\s;	\l;grab\u cbot\grab;(EnergyCell);  // take the cell from the bot
+\s;	\l;drop\u cbot\drop;(InFront);     // and drop it in front
+\s;	
+\s;	\l;grab\u cbot\grab;(Behind);      // take the new cell
+\s;	\l;drop\u cbot\drop;(EnergyCell);  // and drop it on the bot
+\s;}
+\n;

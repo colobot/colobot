@@ -1,0 +1,70 @@
+\b;Exercice
+Cet exercice est presque semblable au précédent. Le \l;robot\u object\bottr; doit effectuer un déplacement identique, mais en utilisant un concept nouveau et très important dans les langages informatiques: les \l;variables\u cbot\var;.
+
+Il n'est pas forcément facile de se souvenir qu'il faut utiliser \c;90\n; pour virer à gauche et \c;-90\n; pour virer à droite avec l'instruction \c;\l;turn\n;\u cbot\turn;. En stockant ces valeurs dans deux variables que l'on nomme \c;gauche\n; et \c;droite\n;, l'écriture devient plus simple.
+
+\b;Principe
+On remplace¦:
+\c;\s;move(20);
+\s;turn(90);
+\s;move(20);
+\s;turn(-90);
+\s;...
+\n;
+Par¦:
+\c;\s;gauche = 90;
+\s;droite = -90;
+\s;move(dist);
+\s;turn(gauche);
+\s;move(dist);
+\s;turn(droite);
+\s;...
+\n;
+\b;Les variables
+Une \l;variable\u cbot\var; est décrite par trois éléments¦:
+1) Son nom.
+2) Le type du contenu.
+3) Le contenu.
+
+\t;Le nom
+Le nom permet d'accéder au contenu. Par exemple, plutôt que d'écrire \c;turn(-90);\n;, on écrira \c;turn(droite);\n;. Vous avez toute liberté de choisir pratiquement n'importe quel nom pour une variable. Par exemple: \c;dist\n;, \c;gauche\n;, \c;p2\n;, \c;a\n;, \c;x\n;, \c;chute_2_pierre\n;, etc.
+
+\t;Le type
+Le type détermine ce que contient la variable. En effet, une variable peut contenir un nombre entier, un nombre réel, une chaîne de caractères, une coordonnée d'un point, etc.
+Les types les plus courants sont¦:
+  o  \c;\l;int\u cbot\int;\n; pour un nombre entier (12, -500, etc.)
+  o  \c;\l;float\u cbot\float;\n; pour un nombre réel (3.14, 0.2, -99.98, etc.)
+  o  \c;\l;string\u cbot\string;\n; pour une chaîne de caractères ("bonjour", "le chat", etc.)
+  o  \c;\l;point\u cbot\point;\n; pour une coordonnée dans l'espace x,y,z
+  o  \c;\l;object\u cbot\object;\n; pour décrire un objet (robot, bâtiment, etc.)
+
+\t;Le contenu
+Le contenu d'une variable peut être une valeur, une chaîne de caractères ou une coordonnée, selon le type.
+
+Avant d'être utilisée, une variable doit être déclarée. Par exemple, avant de pouvoir utiliser deux variables \c;gauche\n; et \c;droite\n;, il faut les déclarer comme suit¦:
+\c;
+\s;float  gauche;
+\s;float  droite;
+\n;
+Ceci peut s'écrire plus simplement¦:
+\c;
+\s;float  gauche, droite;
+\n;
+Ces deux variables peuvent maintenant être utilisées. Pour mettre la valeur 90 dans \c;gauche\n; et -90 dans \c;droite\n;, il suffit d'écrire¦:
+\c;
+\s;gauche = 90;
+\s;droite = -90;
+\n;
+Il est maintenant possible de faire tourner le \l;robot\u object\bottr; avec l'instruction \c;\l;turn\n;\u cbot\turn;¦:
+\c;
+\s;turn(gauche);
+\s;\n;  ou\c;
+\s;turn(droite);
+\n;
+\b;À vous de jouer
+A vous maintenant de ré-écrire le programme de l'exercice précédent, en utilisant deux variables pour tourner à gauche et à droite.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tmove1; et \l;programmation\u cbot;.

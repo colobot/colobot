@@ -1,0 +1,14 @@
+\b;\button 147; Dzia³o fazowe
+\image botphaz 8 8;
+Robot na g¹sienicach wyposa¿ony w bardzo silne dzia³ko fazowe, skuteczne przeciwko wiêkszoœci wrogów. Wycelowane w górê ma zasiêg do 60 metrów. Jest to jedyna broñ, z której mo¿na zabiæ \l;Królow¹ obcych\u object\mother;.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania dzia³ka fazowego s³u¿y instrukcja \c;\l;fire\u cbot\fire;\n;. Lufê mo¿na podnieœæ lub opuœciæ u¿ywaj¹c instrukcji \c;\l;aim\u cbot\aim;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;PhazerShooter\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

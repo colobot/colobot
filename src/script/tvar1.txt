@@ -1,0 +1,7 @@
+extern void object::Solution( )
+{
+	float a;
+	a = 10;
+	a = a+2;
+	message(a);
+}

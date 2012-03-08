@@ -1,0 +1,26 @@
+\b;Instruction \c;readln\n;
+L'instruction \c;readln();\n; lit une ligne de texte dans un fichier ouvert dans le dossier files/. Cette instruction est une méthode de la classe \c;\l;file\u cbot\file;\n;. C'est la raison pour laquelle on n'écrit jamais \c;readln()\n; tout seul, mais \c;handle.readln()\n;¦:
+\c;
+\s;	s = handle.readln();
+\n;
+Le fichier doit être ouvert avec l'instruction \c;\l;open\u cbot\open;\n; et le mode \c;"r"\n; (lecture). L'instruction \c;readln\n; retourne une chaîne de caractères contenant la ligne lue, sans les deux caractères de fin de ligne 0x0D (CR) et 0x0A (LF).
+
+Syntaxe¦:
+\s;\c;string readln ( );\n;
+
+Exemple¦:
+\c;
+\s;	string s;
+\s;	s = readln();
+\s;	if ( s == "abc" )
+\s;	...
+\n;
+\t;Dictionnaire anglais-français
+\c;file  \n; = fichier
+\c;handle\n; = poignée, manipuler
+\c;readln\n; = abréviation de "read line", lit une ligne
+\c;string\n; = chaîne de caractères
+
+\t;Voir aussi
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;writeln\u cbot\writeln;\n; et \c;\l;eof\u cbot\eof;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

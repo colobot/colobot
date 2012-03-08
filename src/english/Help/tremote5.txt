@@ -1,0 +1,113 @@
+\b;Exercise
+Remote control a slave robot without using an \l;information exchange post\u object\exchange;. The robot should pass over the 6 blue crosses. 
+
+The two main actors of this exercise are:
+1) The \l;wheeled grabber\u object\botgr; without an energy pack and therefore immobile. This is the master you should program so it will transmit orders to the slave.
+2) The slave \l;practice bot\u object\bottr; which is already programmed and just waits for orders from the master.
+
+The orders shall be stored, so the master will be able to transmit several orders without waiting for each order being processed. We use an \l;array\u cbot\array; for this purpose.
+
+\b;The slave
+First of all we must understand how the program of the slave works. The \l;class\u cbot\class; \c;order\n; contains two members: \c;m_type\n; is the order to execute (move or turn) and \c;m_param\n; is the distance to move or the rotation angle¦:
+
+\c;\s;\l;public\u cbot\public; \l;class\u cbot\class; order
+\s;{
+\s;	\l;int\u cbot\int;    m_type;
+\s;	\l;float\u cbot\float;  m_param;
+\s;}
+\n;
+A second \l;class\u cbot\class; \c;exchange\n; contains the mechanism for exchanging the orders. We declare a \c;\l;static\u cbot\static;\n; class member \c;m_fifo\n; which will contain the list of orders to be executed. The word \c;static\n; insures that the member \c;m_fifo\n; is shared between all instances of the \l;class\u cbot\class; exchange.
+
+\c;\s;{
+\s;	\l;static\u cbot\static; \l;private\u cbot\private; order m_fifo[] = null;
+\n;
+The \c;put\n; method will be used by the master robot for transmitting an order. The order will simply be added at the end of the \c;m_fifo\n; array:
+
+\c;\s;	\l;synchronized\u cbot\synchro; void put(order a)
+\s;	{
+\s;		m_fifo[sizeof(m_fifo)] = a;
+\s;	}
+\n;
+Another method \c;get\n; will be used by the slave to retrieve the orders. This method returns the order to be executed. If the list is empty, \c;null\n; will be returned and the robot must wait for more orders. Otherwise the first order in the list must be returned and the remaining orders must be "scrolled up". As an array can not be "shortened" we use a temporary array \c;copy\n;¦:
+
+\c;\s;	\l;synchronized\u cbot\synchro; order get()
+\s;	{
+\s;		if ( sizeof(m_fifo) == 0 )  return null;
+\s;
+\s;		order a = m_fifo[0];
+\s;		order copy[] = null;
+\s;		for ( int i=1 ; i<sizeof(m_fifo) ; i++ )
+\s;		{
+\s;			copy[i-1] = m_fifo[i];
+\s;		}
+\s;		m_fifo = copy;
+\s;		return a;
+\s;	}
+\n;
+The main program of the slave contains an instance of the class \c;exchange\n; called \c;list\n;. We put () after the word \c;list\n; in order to create an instance of the class \c;exchange\n;.
+
+\c;\s;\l;extern\u cbot\extern; void object::Slave5( )
+\s;{
+\s;	exchange list();
+\s;	order    todo;
+\n;
+The outer \c;while\n; loop lasts for ever. The inner \c;while\n; loop waits for an order by using the \c;get\n; method of the \c;exchange\n; class. As soon as \c;get\n; returns a value different from \c;null\n;, the while loop stops.
+
+\c;\s;	\l;while\u cbot\while; ( true )
+\s;	{
+\s;		\l;while\u cbot\while; ( true )
+\s;		{
+\s;			todo = list.get();
+\s;			if ( todo != null )  break;
+\s;			wait(1);
+\s;		}
+\n;
+Now we have received the order in the \c;todo\n; variable. All we have to do is execute it:
+
+\c;\s;		if ( todo.m_type == 1 )
+\s;		{
+\s;			move(todo.m_param);
+\s;		}
+\s;		else if ( todo.m_type == 2 )
+\s;		{
+\s;			turn(todo.m_param);
+\s;		}
+\s;		else
+\s;		{
+\s;			message("Unknown order");
+\s;		}
+\s;	}
+\s;}
+\n;
+\b;The master
+In the master we write a function called \c;SendOrder\n; which will send an order to the slave:
+
+\c;\s;void object::SendOrder(float order, float param)
+\s;{
+\s;	exchange list();
+\s;	order    todo();
+\s;	
+\s;	todo.m_type = order;
+\s;	todo.m_param = param;
+\s;	list.put(todo);
+\s;}
+\n;
+Now the main program of the master is very simple:
+
+\c;\s;extern void object::Remote5( )
+\s;{
+\s;	SendOrder(1, 20);  // move(20);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 20);  // move(20);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;	SendOrder(2, 90);  // turn(90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;	SendOrder(2,-90);  // turn(-90);
+\s;	SendOrder(1, 10);  // move(10);
+\s;}
+\n;
+\key;\key help;\norm; show these instruction at any time.
+
+\t;See also
+\l;Controls\u command; and \l;programming\u cbot;.

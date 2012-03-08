@@ -1,0 +1,12 @@
+\b;Instruction \c;deletefile\n;
+L'instruction \c;deletefile();\n; supprime un fichier dans le dossier files/.
+
+Syntaxe¦:
+\s;\c;deletefile ( filename );\n;
+
+\t;Dictionnaire anglais-français
+\c;delete\n; = effacer
+\c;file  \n; = fichier
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

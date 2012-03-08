@@ -1,0 +1,17 @@
+\b;Programy przys³ane z Houston
+Poni¿ej znajdziesz jeden z programów napisanych przez naszych in¿ynierów. Umo¿liwia on prostsz¹ wymianê \l;ogniw elektrycznych\u object\power;. Na³adowane ogniwo elektryczne powinno znajdowaæ siê przed robotem, na ziemi.
+
+Aby uruchomiæ ten program, zaznacz program \c;SwitchCell1\n; na liœcie dostêpnych dla robota programów (w lewej dolnej czêœci ekranu), a nastêpnie kliknij symbol strza³ki \button 21;.
+\c;
+\s;extern void object::SwitchCell1()
+\s;{
+\s;	\l;grab\u cbot\grab;(InFront);     // podnieœ nowe ogniwo z przodu
+\s;	\l;drop\u cbot\drop;(Behind);      // i zostaw je z ty³u
+\s;	
+\s;	\l;grab\u cbot\grab;(EnergyCell);  // wyjmij ogniwo z robota
+\s;	\l;drop\u cbot\drop;(InFront);     // i zostaw je z przodu
+\s;	
+\s;	\l;grab\u cbot\grab;(Behind);      // podnieœ nowe ogniwo
+\s;	\l;drop\u cbot\drop;(EnergyCell);  // i w³ó¿ je do robota
+\s;}
+\n;

@@ -1,0 +1,11 @@
+\b;From Mission Control
+This planet has turned out to be a very unlikely candidate for colonization. Better to leave it for good. Retrieve the \l;black box\u object\bbox; from the previous expedition and head towards the next planet.
+
+The observation satellite has indicated that its present location is at the bottom of a valley. However the pervasive stratum of electromagnetic smog could make all satellite information rather undependable.
+
+Stay alert.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

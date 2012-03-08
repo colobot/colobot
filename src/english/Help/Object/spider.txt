@@ -1,0 +1,9 @@
+\b;Spider
+\image spider 8 8;
+Spiders work like suicide commandoes: whenever a spider gets within a close enough range of its target, it inflates its abdomen and bursts into a multitude of tiny burning fragments. These fragments will set fire to everything they get in contact with. Luckily the spider won't survive.
+
+\t;Object \l;Category\u cbot\category;
+\c;AlienSpider\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

@@ -1,0 +1,29 @@
+\b;Compter différents objets
+Tu vas maintenant compter 2 types d'objets différents: des cailloux et des déchets. Pour cela, il faut 2 compteurs distincts. Tu dois donc créer 2 variables distinctes au début du programme, et les mettre à zéro¦:
+\c;
+\s;int cc = 0;
+\s;int cd = 0;
+\n;
+On aurait pu appeler les variables \c;compteurcailloux\n; et \c;compteurdéchets\n;, mais on a préféré ici 2 noms plus courts: \c;cc\n; et \c;cd\n;.
+
+La variable \c;cc\n; est le compteur des cailloux et la variable \c;cd\n; est le compteur des déchets.
+
+Si l'objet détecté est un caillou, tu dois augmenter de \c;1\n; la variable \c;cc\n;¦:
+\c;
+\s;if( detect(Stone) )
+\s;{
+\s;	cc = cc+1;
+\s;	message("Cailloux="+cc+"   Déchets="+cd);
+\s;}
+\n;
+Ne te soucie pas de l'instruction \c;message(...);\n; qui est assez compliquée. Elle est déjà programmée lorsque tu édites le programme. Elle sert à afficher les 2 compteurs ensembles.
+
+Si l'objet détecté est un déchet, tu dois augmenter de \c;1\n; la variable \c;cd\n;¦:
+\c;
+\s;if( detect(Scrap) )
+\s;{
+\s;	cd = cd+1;
+\s;	message("Cailloux="+cc+"   Déchets="+cd);
+\s;}
+\n;
+Voilà, à toi de jouer¦...

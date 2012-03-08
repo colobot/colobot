@@ -1,0 +1,20 @@
+\b;Type \c;file\n;
+Ce type permet d'accéder à un fichier de texte dans le dossier files/.
+\c;
+\s;	file handle();
+\n;
+Notez la présence des parenthèses, indispensables pour créer une instance de la classe \c;file\n;. Sans les parenthèses, \c;handle\n; aurait la valeur \c;null\n;.
+
+\b;Pour spécialistes
+En réalité, \c;file\n; n'est pas un type, mais une classe. \c;open\n;, \c;close\n;, \c;writeln\n; etc. sont des méthodes de la classe \c;file\n;. C'est la raison pour laquelle on écrit \c;classe.méthode()\n;¦:
+\c;
+\s;	handle.open("essai.txt", "w");
+\s;	handle.close();
+\n;
+\t;Dictionnaire anglais-français
+\c;file  \n; = fichier
+\c;handle\n; = poignée, manipuler
+
+\t;Voir aussi
+\c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;readln\u cbot\readln;\n;, \c;\l;writeln\u cbot\writeln;\n; et \c;\l;eof\u cbot\eof;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

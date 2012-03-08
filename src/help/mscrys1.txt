@@ -1,0 +1,13 @@
+\b;Solution
+1) Construisez une \l;fabrique de robots\u object\factory;.
+2) Fabriquez un \l;robot déménageur volant\u object\botgj;.
+3) Transportez un \l;cube de titanium\u object\titan; au sommet de l'île la plus haute, au nord.
+4) Construisez un \l;radar\u object\radar;.
+5) Construisez un \l;centre de recherches\u object\research; à côté de votre vaisseau.
+6) Effectuez la recherche <tour de défense> \button 68;.
+7) Construisez une \l;tour de défense\u object\tower; à environ 20 mètres du radar et équipez-la d'une pile.
+8) Attendez que la tour détruise tous les \l;vers\u object\worm;.
+9) Rejoignez le \l;vaisseau\u object\base; et décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

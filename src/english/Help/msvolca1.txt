@@ -1,0 +1,15 @@
+\b;Walkthrough
+1) Start by recharging a \l;regular power cell\u object\power; and power the \l;research center\u object\research;. Use it to research the technology for the building of a \l;nuclear plant\u object\nuclear; \button 170;.
+
+2) Produce a \l;wheeled grabber\u object\botgr;.
+
+3) Find some \l;uranium ore\u object\uranore; northwest of your position. The nuclear plant will then transform it into \l;nuclear power cells\u object\atomic; of a longer duration.
+
+4) Power a \l;wheeled shooter\u object\botfr; with one of your new nuclear cells. Dispatch it to kill all intruding \l;spiders\u object\spider; along the way.
+
+5) A \l;radar\u object\radar; is optional but could turn out useful to mark the position of the spiders on your mini map.
+
+6) A wheeled grabber should be part of the expedition. It will both clear the way cluttered with \l;titanium ore\u object\titanore; and bring the \l;explosive device\u object\tnt; back.
+
+\t;See also
+\l;Controls\u command;

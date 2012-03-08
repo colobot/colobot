@@ -1,0 +1,71 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il avance sans se cogner dans un labyrinthe. On part du principe que le labyrinthe n'est pas connu d'avance, et qu'il n'est constitué que d'un chemin, sans aucune bifurcation ni cul-de-sac. Les cases du labyrinthe sont des carrés de 5 mètres de côté.
+
+\b;Principe
+Le programme s'occupe de résoudre le déplacement d'une case dans la suivante. Comme il y a un nombre de cases inconnu, il faudrait englober tout le programme dans une boucle \c;\l;repeat\u cbot\repeat;(9999)\n;. Bien que cela fonctionnerait parfaitement, il est préférable d'utiliser un autre concept. Pour répéter un \l;bloc\u cbot\bloc; d'instructions à l'infini, on écrit \c;\l;while\u cbot\while;(true)\n;. Le programme sera donc¦:
+\s;\c;while ( true )
+\s;{
+\s;	\n;o  Si rien devant, avancer\c;
+\s;	\n;o  Si rien à gauche, quart de tour à gauche puis avancer\c;
+\s;	\n;o  Si rien à droite, quart de tour à droite puis avancer\c;
+\s;}
+\n;
+\b;L'instruction \c;radar\n;
+L'instruction \c;\l;radar\u cbot\radar;(Barrier, 0, 45, 0, 5);\n; teste la présence d'une \l;barrière\u object\barrier; devant le robot. Détaillons les cinq paramètres utilisés¦:
+
+\s;\c;Barrier\n;
+\l;Catégorie\u cbot\category; de l'objet cherché. Il s'agit ici d'une barrière.
+
+\s;\c;0\n;
+Direction dans laquelle est braqué le radar. \c;0\n; signifie que le radar est braqué droit devant.
+
+\s;\c;45\n;
+Angle d'ouverture en degrés. On détecte donc les barrières situées entre 22.5 degrés à gauche et 22.5 degrés à droite.
+
+\s;\c;0\n;
+Distance minimale de détection. \c;0\n; signifie que même les objets très proches sont détectés.
+
+\s;\c;5\n;
+Distance maximale de détection. Au delà de \c;5\n; mètres, les barrières sont ignorées. Donc, une barrière située une case plus loin dans le labyrinthe sera ignorée, ce qui est indispensable.
+
+Par exemple, \c;\l;radar\u cbot\radar;(Barrier, 90, 45, 0, 5);\n; dirige le radar 90 degrés sur la gauche, pour tester si le chemin est libre à gauche.
+
+\image tlaby1 10 10;
+\b;Programme
+1) On déclare trois \l;variables\u cbot\var; de type \c;\l;object\u cbot\object;\n;, appelées \c;front\n;, \c;left\n; et \c;right\n;. Ce type indique une variable qui décrit l'objet trouvé.
+\s;\c;	object   front, left, right;\n;
+
+2) On teste la présence des barrières dans les trois directions. Les objets trouvés seront contenus dans les trois variables définies au point 1). Si l'objet n'existe pas, la variable prend la valeur \c;\l;null\u cbot\null;\n;.
+\s;\c;	front = radar(Barrier,   0, 45, 0, 5);
+\s;	left  = radar(Barrier,  90, 45, 0, 5);
+\s;	right = radar(Barrier, -90, 45, 0, 5);
+\n;
+3) On teste s'il est possible d'avancer avec \c;\l;move\u cbot\move;\n; à l'aide d'un branchement conditionnel \c;\l;if\u cbot\if;\n;. Si le test est vrai, les instructions entre les accolades \c;{ }\n; sont exécutées. Si le test est faux, les instructions entre \c;{ }\n; sont sautées.
+Le \c;\l;continue\u cbot\continue;\n; stoppe l'exécution des instructions suivantes dans la boucle \c;\l;while\u cbot\while;\n;, car le travail à effectuer est alors terminé. On recommencera la boucle \c;while\n; depuis le début.
+\s;\c;if ( front == null )
+\s;{
+\s;	move(5);
+\s;	continue;
+\s;}
+\n;
+4) On teste s'il est possible de tourner à gauche avec \c;\l;turn\u cbot\turn;\n;.
+\s;\c;if ( left == null )
+\s;{
+\s;	turn(90);
+\s;	move(5);
+\s;	continue;
+\s;}
+\n;
+5) On teste s'il est possible de tourner à droite.
+    ...
+
+\b;Attention
+La ligne \c;if ( )\n; ne doit jamais être suivie d'un \l;point-virgule\u cbot\term;.
+
+\b;Enregistrer
+Lorsque le programme est terminé et qu'il fonctionne, il est conseillé de l'enregistrer, car vous en aurez encore besoin dans l'exercice suivant. Pour cela, cliquez sur \button 58; dans l'éditeur de programmes, puis donnez un nom à votre programme.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u ttarg2; et \l;programmation\u cbot;.

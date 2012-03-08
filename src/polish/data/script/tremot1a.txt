@@ -1,0 +1,14 @@
+extern void object::Remote( )
+{
+	send("order", 1, 100);  // wyœlij polecenie "grab"
+	wait(5);
+
+	send("order", 3, 100);  // wyœlij polecenie "move(10)" 
+	wait(5);
+
+	send("order", 2, 100);  // wyœlij polecenie "drop" 
+	wait(5);
+
+	send("order", 4, 100);  // wyœlij polecenie "move(-10)" 
+	wait(5);
+}

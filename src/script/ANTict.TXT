@@ -1,0 +1,105 @@
+extern void object::Attack( )
+{
+	int		list[], i;	// liste des objets cherchés
+	object	target;	// info sur la cible
+	point		center;	// coordonnées du centre de la zone
+	point		lastPos;	// dernière position (pr test si bloquée)
+	float		distCent;	// rayon de la zone
+	float		r;		// valeur aléatoire
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	i = 0;
+	list[i++] = WingedGrabber;
+	list[i++] = TrackedGrabber;
+	list[i++] = WheeledGrabber;
+	list[i++] = LeggedGrabber;
+	list[i++] = WingedShooter;
+	list[i++] = TrackedShooter;
+	list[i++] = WheeledShooter;
+	list[i++] = LeggedShooter;
+	list[i++] = WingedOrgaShooter;
+	list[i++] = TrackedOrgaShooter;
+	list[i++] = WheeledOrgaShooter;
+	list[i++] = LeggedOrgaShooter;
+	list[i++] = WingedSniffer;
+	list[i++] = TrackedSniffer;
+	list[i++] = WheeledSniffer;
+	list[i++] = LeggedSniffer;
+	list[i++] = Thumper;
+	list[i++] = PhazerShooter;
+	list[i++] = Recycler;
+	list[i++] = Shielder;
+	list[i++] = Subber;
+	list[i++] = Me;
+
+	center.x = cmdline(0);	// prend les coordonnée
+	center.y = cmdline(1);	// du centre de la zone
+	center.z = 0;		// à patrouiller
+	distCent = cmdline(2); 	// rayon de la zone
+
+	lastPos = position;	// initialise
+	motor(1,1);			// en avant toute
+	while ( true )		// répète à l'infini
+	{
+		target = radar(list, 0, 360, 0, 40);
+		if (target == null or topo(position)<0)// pas de cible à proximité
+		{                                      // ou pieds dans l'eau
+			if (distance2d(position, center) > distCent or topo(position)<0)
+			{   // si la fourmi est en dehors de la zone
+				motor(0, 0); //s'arrête
+				wait(0.5);   //marque un arrêt
+				motor (-0.5, -0.5);//recule lentement
+				wait (1.5);  //attend qu'ait reculé
+				turn(direction(center));
+				motor (1, 1); //puis en avant toute
+				do 
+				{
+					lastPos = position;
+					wait(0.5); //tant que pas dans la zone
+					if (distance2d(lastPos, position) < 0.2)
+					{   //si elle est bloquée par obstacle
+						turn(rand()*360-180);
+						motor(1,1);
+						wait(1);
+						turn(direction(center));
+					}
+				}
+				while (distance2d(position, center) > distCent or topo(position)<0);
+			}
+			else
+			{   //si elle est bien dans la zone
+				if (distance2d(lastPos, position) < 0.2)
+				{   //si elle est bloquée par obstacle
+					turn(rand()*360-180);
+					motor(1,1);
+					wait(1);
+				}
+				r = rand();
+				if (r > 0.6)
+				{  //dans un cas sur dix
+					motor (1, 0.7);// tourne à droite
+					wait(rand()*3);// pendant un moment
+					motor (1, 1);  // puis tout droit
+				}
+				if (r < 0.4)
+				{   //dans un cas sur dix
+					motor (0.7, 1);// tourne à gauche
+					wait(rand()*3);// pendant un moment
+					motor (1, 1);  // puis tout droit
+				}
+				lastPos = position;
+				wait(1);          //attend un moment
+			}
+		}
+		else
+		{   // si cible à proximité
+			turn(direction(target.position));
+			fire(target.position); // et tire deux fois
+			motor(1,1);            // avance
+			wait(1.5);             // pendant 1.5 s
+		}
+	}
+}
+

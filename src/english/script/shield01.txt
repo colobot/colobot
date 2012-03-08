@@ -1,0 +1,6 @@
+extern void object::Outward()
+{
+	shield(1,15);  // activate the shield
+	goto(6,160);   // go close to the key
+	shield(0,15);  // deactivate the shield
+}

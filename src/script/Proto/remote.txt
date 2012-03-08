@@ -1,0 +1,20 @@
+extern void object::Remote( )
+{
+	SendToPost(1, 20);  // move(20);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 20);  // move(20);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 10);  // move(10);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 10);  // move(10);
+	SendToPost(2,-90);  // turn(-90);
+	SendToPost(1, 10);  // move(10);
+}
+
+void object::SendToPost(float order, float param)
+{
+	fifo  orders();
+	order todo(order, param);
+
+	orders.put(todo);
+}

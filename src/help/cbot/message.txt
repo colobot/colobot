@@ -1,0 +1,32 @@
+\b;Instruction \c;message\n;
+Syntaxe¦:
+\s;\c;message ( texte, type );\n;
+
+Affiche un message en haut de l'écran. Après quelques secondes, le message disparaît automatiquement.
+
+\t;texte: \c;\l;string\u cbot\string;\n;
+Texte à afficher. Il est possible d'appondre plusieurs textes et/ou valeurs en utilisant l'opérateur \c;+\n;¦:
+\c;message("Pas trouvé");\n; 
+\c;message(angle);\n; 
+\c;message(n + " objet(s) trouvé(s)");\n; 
+\c;message("Distance = " + dist + " mètres");\n; 
+
+\t;type: \c;\l;int\u cbot\int;\n; (\c;DisplayMessage\n; par défaut)
+Type du message, qui détermine la couleur de fond du texte.
+o  \c;DisplayMessage\n;  Message standard sur fond jaune.
+o  \c;DisplayInfo   \n;  Information sur fond vert.
+o  \c;DisplayWarning\n;  Avertissement sur fond bleu.
+o  \c;DisplayError  \n;  Erreur sur fond rouge.
+
+\t;Valeur retournée: \c;\l;void\u cbot\void;\n;
+Aucune.
+
+\t;Dictionnaire anglais-français
+\c;message    \n; = message
+\c;display    \n; = affichage
+\c;information\n; = information
+\c;warning    \n; = avertisseement
+\c;error      \n; = erreur
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

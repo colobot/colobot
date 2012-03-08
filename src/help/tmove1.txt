@@ -1,0 +1,39 @@
+\b;Exercice
+Déplacer le robot d'entraînement sur la plate-forme d'arrivée, en passant par les 3 croix bleues.
+
+\b;Marche à suivre
+1) Sélectionner le \l;cosmonaute\u object\human; en cliquant le bouton \button 136; en haut à gauche.
+2) Se promener pour étudier le chemin à suivre.
+3) Sélectionner le \l;robot\u object\bottr; en cliquant le bouton \button 158; en haut à gauche.
+4) Programmer le robot en cliquant sur le bouton \button 22;.
+5) Exécuter le programme \button 21;.
+
+Pour savoir comment diriger le \l;cosmonaute\u object\human;, cliquez \l;ici\u command;.
+
+\b;Programme
+Les plates-formes et les indicateurs sont tous distants de 20 mètres.
+L'instruction \c;move(20);\n; avance de 20 mètres.
+L'instruction \c;turn(90);\n; tourne à gauche de 90 degrés.
+L'instruction \c;turn(-90);\n; tourne à droite de 90 degrés.
+
+Le corps du programme est constitué de¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	\n;à compléter ...\c;
+\s;}
+\n;
+Vous ne devez pas modifier ces caractères, pour l'instant. Les instructions doivent être données entre les accolades \c;{ }\n;.
+
+\b;Remarques
+Attention de respecter les majuscules et les minuscules¦!
+Chaque instruction est terminée par un point-virgule.
+Vous pouvez mettre plusieurs instructions par ligne, ou chaque instruction sur une ligne.
+
+\b;Astuce
+Pendant l'édition du programme, vous pouvez observer la scène en cliquant le bouton <Taille réduite> \button 51;, puis en déplaçant la souris dans les bords de la fenêtre.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tsquare2; et \l;programmation\u cbot;.

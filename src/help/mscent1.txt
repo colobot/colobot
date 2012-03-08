@@ -1,0 +1,20 @@
+\b;Solution
+Dans un creux au nord-est se trouvent plusieurs objets précieux au milieu de ruines¦:
+o  Un \l;robot recycleur\u object\botrecy;, qui permet d'obtenir le premier \l;cube de titanium\u object\titan;.
+o  Un \l;robot déménageur à pattes\u object\botgs;, très utile pour gravir les fortes pentes.
+o  Une \l;pile atomique\u object\atomic; presque pleine.
+
+1) Equipez le \l;déménageur à pattes\u object\botgs; de la pile atomique, et faites-lui porter un cube de titanium vers le \l;vaisseau spatial\u object\base; en prenant le chemin direct par les montagnes.
+
+2) Vous pourrez alors construire un convertisseur. Puis exécutez le programme \c;ApporteTitanium3\n; sur le \l;déménageur à pattes\u object\botgs; et vous aurez tout le titanium nécessaire.
+
+3) Stoppez le programme, et allez chercher du \l;minerai d'uranium\u object\uranore; dans un deuxième creux plus à l'est. Là encore, ne parcourez pas la vallée qui y mène, elle est infestée de fourmis, mais passez par les montagnes.
+
+4) Construisez un \l;shooter volant\u object\botfj; et équipez-le d'une pile nucléaire. En empruntant le col qui se trouve au sud-est du vaisseau, vous arriverez rapidement vers le nid des fourmis. Eliminez toutes les fourmis, et vous pourrez ramener une bulle de \l;matière organique\u object\bullet; vers la base.
+
+5) Construisez un \l;laboratoire\u object\labo;, posez-y la \l;matière organique\u object\bullet; et cliquez sur le bouton \button 110; pour développer les plans pour le canon orgaShooter.
+
+6) Lorsque la \l;matière organique\u object\bullet; a été analysée, construisez un \l;robot orgaShooter à pattes\u object\botos;, amenez-le sur votre \l;vaisseau spatial\u object\base; puis décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

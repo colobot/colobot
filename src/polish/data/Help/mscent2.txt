@@ -1,0 +1,5 @@
+\b;Rozwi¹zanie
+PodjedŸ \l;dzia³em organicznym na nogach\u object\botos; do ka¿dej z platform przed celami i zestrzel wszystkie widoczne cele jedn¹ seri¹, poruszaj¹c mysz¹ w trakcie strzelania. Do zniszczenia wszystkich celów musz¹ wystarczyæ tylko 4 serie strza³ów.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

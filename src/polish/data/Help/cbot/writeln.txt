@@ -1,0 +1,21 @@
+\b;Instrukcja \c;writeln\n;
+Zapisuje liniê tekstu do otwartego pliku w folderze files/. Jest to metoda klasy \c;\l;file\u cbot\file;\n;, dlatego te¿ zawsze nale¿y u¿ywaæ konstrukcji \c;handle.writeln()\n;¦:
+\c;
+\s;	handle.writeln("abc");
+\n;
+Plik musi byæ otwarty do zapisu (\c;"w"\n;) przy u¿yciu instrukcji \c;\l;open\u cbot\open;\n;. Zapisywany wiersz zostanie automatycznie zakoñczony znakami koñca linii 0x0D (CR) i 0x0A (LF).
+
+Sk³adnia¦:
+\s;\c;handle.writeln ( string );\n;
+
+Przyk³ady¦:
+\c;
+\s;	writeln("Linia tekstu");
+
+\s;	string s1 = "abc";
+\s;	string s2 = "def";
+\s;	writeln(s1 + " " + s2);
+\n;
+\t;Zobacz równie¿
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;readln\u cbot\readln;\n; i \c;\l;eof\u cbot\eof;\n;.
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

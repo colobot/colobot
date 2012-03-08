@@ -1,0 +1,4 @@
+\b;Sample link
+This text is just a little sample for illustrate text in user\sample01\ folder ...
+
+> \l;Return to initial text\u %user%\mhelp01;

@@ -1,0 +1,36 @@
+\b;Instruction \c;for\n;
+Syntaxe¦:
+\s;\c;for ( avant ; condition ; fin )
+\s;{
+\s;	\n;Instructions ...\c;
+\s;}
+\n;
+Cette structure de boucle permet d'exécuter plusieurs fois les instructions comprises dans le \l;bloc\u cbot\bloc;.
+
+\t;\c;avant\n;
+Cette instruction simple est exécutée avant le premier tour de boucle.
+
+\t;\c;condition\n;
+Cette \l;condition\u cbot\cond; détermine s'il faut continuer la boucle. Elle est examinée avant chaque tour de boucle, y compris le dernier.
+
+\t;\c;fin\n;
+Cette instruction simple est exécutée à la fin de chaque tour de boucle.
+
+L'instruction \c;for\n; est rigoureusement équivalente à l'exemple suivant, utilisant \c;\l;while\u cbot\while;\n;¦:
+\s;\c;avant;
+\s;while ( condition )
+\s;{
+\s;	\n;Instructions ...\c;
+\s;	fin;
+\s;}
+\n;
+\t;Attention
+Il ne faut pas mettre un \l;point-virgule\u cbot\term; à la fin de la ligne \c;for ( )\n;.
+
+Les instructions \c;\l;break\u cbot\break;\n; et \c;\l;continue\u cbot\continue;\n; sont utiles à l'intérieur d'un bloc \c;for { }\n;.
+
+\t;Dictionnaire anglais-français
+\c;for\n; = pour
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

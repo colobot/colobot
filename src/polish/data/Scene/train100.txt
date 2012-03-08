@@ -1,0 +1,3 @@
+Title.E text="Spiders and supply" resume="Supply problems and fight against motionless targets"
+Title.F text="Araignées et logistique" resume="Problèmes de logistique et combat contre des cibles immobiles"
+Title.P text="Paj¹ki i zaopatrzenie" resume="Problemy z zaopatrzeniem i walka z nieruchomymi celami"

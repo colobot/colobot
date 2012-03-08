@@ -1,0 +1,142 @@
+Title.F      text="Exercice"
+Resume.F     text="Exercice de pilotage et de tir simultané."
+Title.E      text="Shooting Drill #1"
+Resume.E     text="Sharpen your flying and shooting skills."
+Instructions name="mhtropi4.txt"
+Satellite    name="mitropi4.txt"
+Loading      name="mltropi4.txt"
+SoluceFile   name="mstropi4.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=3
+AmbiantColor  air=152;152;102;102 water=20;20;20;20  // grey
+FogColor      air=175;191;191;0 water=68;100;80;0  // bleu sale
+VehicleColor  color=141;175;129;0  // vert-sable
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=2
+Background    up=128;136;192;0 down=239;248;207;0
+FrontsizeName image="lens1.tga"
+
+TerrainGenerate vision=250.00 depth=1 slope=3.0
+TerrainWind     speed=0.0;2.0
+TerrainRelief   image="textures\relief30.bmp" factor=1.0
+TerrainResource image="textures\res00.bmp"
+
+TerrainMaterial id=10 image="green01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=11 image="green01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=12 image="green01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=13 image="green01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.00 v=0.25 up=2 down=1 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.25 v=0.25 up=1 down=1 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.50 v=0.25 up=1 down=2 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.75 v=0.25 up=1 down=1 left=2 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.00 v=0.50 up=2 down=1 left=2 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.25 v=0.50 up=2 down=1 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.50 v=0.50 up=1 down=2 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.75 v=0.50 up=1 down=2 left=2 right=1 hard=0.2
+TerrainMaterial id=14 image="green01" u=0.00 v=0.75 up=2 down=2 left=2 right=2 hard=0.2
+TerrainMaterial id=15 image="green01" u=0.25 v=0.75 up=2 down=2 left=2 right=2 hard=0.2
+TerrainMaterial id=16 image="green01" u=0.50 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=17 image="green01" u=0.75 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+
+TerrainMaterial id=20 image="green02" u=0.00 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=21 image="green02" u=0.25 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=22 image="green02" u=0.50 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=23 image="green02" u=0.75 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial       image="green02" u=0.00 v=0.25 up=3 down=2 left=2 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.25 v=0.25 up=2 down=2 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.50 v=0.25 up=2 down=3 left=2 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.75 v=0.25 up=2 down=2 left=3 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.00 v=0.50 up=3 down=2 left=3 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.25 v=0.50 up=3 down=2 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.50 v=0.50 up=2 down=3 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.75 v=0.50 up=2 down=3 left=3 right=2 hard=0.5
+TerrainMaterial id=24 image="green02" u=0.00 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=25 image="green02" u=0.25 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=26 image="green02" u=0.50 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=27 image="green02" u=0.75 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+
+TerrainInit     id=10
+TerrainLevel    id=10;11;10;11;12;13 min= 0.0 max=99.0 slope=0.0 freq=100.0
+TerrainLevel    id=16;17             min= 0.0 max=99.0 slope=0.0 freq= 10.0
+TerrainLevel    id=14;15             min=40.0 max=99.0 slope=0.0 freq= 90.0
+TerrainLevel    id=20;21;22;23       min=45.0 max=99.0 slope=0.0 freq= 90.0
+TerrainLevel    id=24;25;26;27       min=45.0 max=99.0 slope=0.0 freq= 40.0
+
+TerrainCreate
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos= 0.00;-3.25 dir=1.5 type=Me
+CreateObject pos=-1.00; 3.25 dir=1.5 type=WingedShooter power=100 range=100 magnifyDamage=2 select=1 script1="charge2.txt"
+
+CreateObject pos=  -1; 49 dir=0.0 h=-50 type=Target1
+CreateObject pos=  -1; 49 dir=0.0 h=-50 type=Target2
+CreateObject pos=  -2; 82 dir=0.2       type=TargetBot shield=0.01
+CreateObject pos=   5; 98 dir=0.2 h=-30 type=Target1
+CreateObject pos=   5; 98 dir=0.2 h=-30 type=Target2
+CreateObject pos=  67; 93 dir=0.9       type=TargetBot shield=0.01
+CreateObject pos= 101; 77 dir=0.4 h=-20 type=Target1
+CreateObject pos= 101; 77 dir=0.4 h=-20 type=Target2
+CreateObject pos= 122;142 dir=1.5       type=TargetBot shield=0.01
+CreateObject pos= 108;179 dir=0.0 h=  0 type=Target1
+CreateObject pos= 108;179 dir=0.0 h=  0 type=Target2
+CreateObject pos=  73;227 dir=0.2       type=TargetBot shield=0.01
+CreateObject pos=  48;214 dir=0.2 h=-20 type=Target1
+CreateObject pos=  48;214 dir=0.2 h=-20 type=Target2
+CreateObject pos= -27;203 dir=1.1       type=TargetBot shield=0.01
+CreateObject pos= -47;214 dir=0.5 h=-30 type=Target1
+CreateObject pos= -47;214 dir=0.5 h=-30 type=Target2
+CreateObject pos= -92;183 dir=0.3       type=TargetBot shield=0.01
+CreateObject pos=-111;176 dir=0.5 h=  0 type=Target1
+CreateObject pos=-111;176 dir=0.5 h=  0 type=Target2
+CreateObject pos=-147;133 dir=0.8       type=TargetBot shield=0.01
+CreateObject pos=-173;115 dir=0.3 h=-50 type=Target1
+CreateObject pos=-173;115 dir=0.3 h=-50 type=Target2
+CreateObject pos=-227; 48 dir=1.9       type=TargetBot shield=0.01
+CreateObject pos=-215; 26 dir=1.7 h=-50 type=Target1
+CreateObject pos=-215; 26 dir=1.7 h=-50 type=Target2
+CreateObject pos=-168;-32 dir=0.2       type=TargetBot shield=0.01
+CreateObject pos=-147;-52 dir=0.5 h=-40 type=Target1
+CreateObject pos=-147;-52 dir=0.5 h=-40 type=Target2
+CreateObject pos=-107;-18 dir=0.4       type=TargetBot shield=0.01
+CreateObject pos= -87; -6 dir=0.4 h=  0 type=Target1
+CreateObject pos= -87; -6 dir=0.4 h=  0 type=Target2
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.6;-0.1;-0.6
+
+MapColor floor=165;142;107 water=154;235;255
+MapZoom  factor=2
+
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WingedShooter lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=Target2 min=0 max=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=TargetBot min=0 max=0
+
+Camera eye=0.00;5.00;0.00 lookat=0.00;1.00;0.00 delay=0

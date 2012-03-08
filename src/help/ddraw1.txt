@@ -1,0 +1,20 @@
+\b;Exercice
+Vous pouvez dessiner librement à l'intérieur de la surface carrée, qui mesure approximativement 20 mètres sur 20. La position initiale du robot est \c;(30;-67)\n;. Le coin opposé se trouve en \c;(10;-87)\n;.
+
+Les principales instructions pour dessiner sont¦:
+
+\c;\l;pendown\u cbot\pendown;    \n;Abaisse le crayon du robot
+\c;\l;penup\u cbot\penup;      \n;Relève le crayon du robot
+\c;\l;pencolor\u cbot\pencolor;   \n;Choix de la couleur
+\c;\l;penwidth\u cbot\penwidth;   \n;Choix de l'épaisseur du trait
+\c;\l;move\u cbot\move;       \n;Avance ou recule
+\c;\l;turn\u cbot\turn;       \n;Tourne
+\c;\l;goto\u cbot\goto;       \n;Va à une position donnée
+
+Cet exercice n'a jamais de fin. Pour recommencer un nouveau dessin, cliquez sur le bouton \button 59;. Pour terminer l'exercice, cliquez sur le bouton \button 11; en haut à droite, puis <Abandonner>.
+
+\b;Accélérer le dessin
+Si vous souhaitez accélérer le dessin, appuyez sur la touche \key;\key speed20;\norm; x2. La touche \key;\key speed10;\norm; reviendra à une vitesse normale x1.
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

@@ -1,0 +1,14 @@
+\b;Tytan
+\image titan 4 4;
+Tytan jest niezast¹piony przy konstrukcji budynków, \l;robotów\u object\factory; oraz \l;zwyk³ych ogniw elektrycznych\u object\energy;. Zwykle jego niewielkie iloœci mo¿na znaleŸæ na \l;statku kosmicznym\u object\base; na pocz¹tku ka¿dej misji.
+
+Jeœli potrzeba wiêcej, nale¿y \l;przetopiæ\u object\convert; kawa³ki \l;rudy tytanu\u object\titanore; w u¿yteczne kostki tytanu.
+
+\t;Transport
+Wszystkie \l;transportery\u object\botgr; oraz \l;astronauta\u object\human;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;Titanium\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

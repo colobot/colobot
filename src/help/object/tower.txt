@@ -1,0 +1,26 @@
+\b;\button 165; Tour de défense
+\image tower 8 8;
+Ce bâtiment procure une excellente défense contre les attaques \l;ennemies\u object\mother; terrestres ou aériennes. Il faut mettre une \l;pile normale\u object\power; ou \l;atomique\u object\atomic; sur la tour. Attention: la consommation d'énergie est importante. Une pile normale permet 8 tirs. Lorsque la tour n'a pas ou plus d'énergie, elle clignote.
+
+Le rayon d'action d'une tour de défense est de 40 mètres. Pour visualiser la zone défendue, utilisez le bouton <rayon d'action> \button 41;. Des points rouges bordent la zone circulaire pendant 20 secondes.
+
+\t;Emplacement requis
+Surface plate quelconque de 3.5 mètres de diamètre.
+
+\t;Entrée
+Aucune.
+
+\t;Sortie
+Aucune.
+
+\t;Energie consommée
+Pile normale ou atomique.
+
+\t;Durée de l'opération
+Une seconde.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;DefenseTower\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,40 @@
+\b;Objectif
+Adaptez le programme précédent pour le rendre moins gourmand en énergie.
+
+\b;Programme
+Le programme étudié précédemment tire dans la direction de la \l;fourmi\u object\ant; la plus proche, même si elle est encore hors de portée du canon¦:
+\c;
+\s;extern void object::Tour1()
+\s;{
+\s;	object    chose;
+\s;	
+\s;	jet(0.2);
+\s;	while(position.z < 20)
+\s;	{
+\s;		wait(0.2);
+\s;	}
+\s;	jet(0);
+\s;	
+\s;	while(true)
+\s;	{
+\s;		chose = radar(AlienAnt);
+\s;		turn(direction(chose.position));
+\s;		fire(1);
+\s;	}
+\s;}
+\n;
+Pour que le programme arrive au bout de sa tâche même avec une pile normale, il faut juste inclure une boucle conditionnelle qui attend jusqu'à ce que la fourmi soit à moins de 40 mètres, ce qui représente la portée du canon. Ainsi une seule raffale sera tirée par fourmi.
+
+On peut donner à l'instruction \c;\l;radar\u cbot\radar;();\n; des paramètres supplémentaires pour que le radar ne détecte que les objets plus proches d'une certaine distance. \c;radar(AlienAnt,0,360,0,40);\n; par exemple ne détecte que des fourmis à moins de 40 mètres. Les deux premiers nombres indiquent qu'il doit chercher dans toutes les directions, les deux derniers nombres indiquent qu'il doit chercher à une distance minimale de 0 mètres et à une distance maximale de 40 mètres. Si aucune fourmi n'a été trouvée, l'instruction rend la valeur \c;null\n;. Ainsi nous pouvons écrire une boucle conditionnelle semblable à celle de l'exercice précédent qui attend tant qu'il n'y a pas de fourmi à moins de 40 mètres¦:
+\c;
+\s;		while ( radar(AlienAnt, 0, 360, 0, 40) == null )
+\s;		{
+\s;			wait(0.2);
+\s;		}
+\n;
+Il suffit d'insérer ces lignes avant l'instruction \c;\l;fire\u cbot\fire;(1);\n; pour que le robot attende avant de tirer que la fourmi soit à moins de 40 mètres. Ainsi, une pile normale permet de tuer toutes les fourmis.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tant2; et \l;programmation\u cbot;.

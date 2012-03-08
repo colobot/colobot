@@ -1,0 +1,12 @@
+\b;\button 158; Robot treningowy
+\image bottr 8 8;
+Robot na ko³ach u¿ywany g³ównie w æwiczeniach. Jego jedynym zadaniem jest pomoc w nauce programowania ró¿norodnych sposobów poruszania siê robotów.
+
+\t;Instrukcje
+Do zaprogramowania poruszania robotem, mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;PracticeBot\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

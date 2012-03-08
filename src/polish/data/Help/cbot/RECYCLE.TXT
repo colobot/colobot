@@ -1,0 +1,14 @@
+\b;Instrukcja \c;recycle\n;
+Sk³adnia:
+\s;\c;recycle ( );\n;
+
+Odzyskuje surowce z pozosta³oœci robota znajduj¹cego siê bezpoœrednio przed robotem \l;recyklerem\u object\botrecy; i tworzy \l;kostkê tytanu\u object\titan;.
+
+\t;Typ wyniku: \c;\l;int\u cbot\int;\n;
+Zero jeœli wszystko w porz¹dku, lub wartoœæ inna od zera w przypadku wyst¹pienia b³êdu.
+\c;== 0 \n;odzyskano surowce z pozosta³oœci robota
+\c;!= 0 \n;b³¹d, pozosta³oœæ robota nie mog³a zostaæ przetworzona
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.
+

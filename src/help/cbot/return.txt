@@ -1,0 +1,34 @@
+\b;Instruction \c;return\n;
+Syntaxe¦:
+\s;\c;void fonction ( )
+\s;{
+\s;	return;
+\s;}
+\n;
+Cette instruction permet de sortir immédiatement d'une \l;fonction\u cbot\function;.
+
+\b;Pour spécialistes
+Lorsqu'une \l;fonction\u cbot\function; rend un résultat, \c;return\n; doit être suivi de la valeur à retourner¦:
+\c;
+\s;float Pi ( )
+\s;{
+\s;	return 3.1415;
+\s;}
+
+\s;float Moyenne (float a, float b)
+\s;{
+\s;	return (a+b)/2;
+\s;}
+
+\s;string Signe (float a)
+\s;{
+\s;	if ( a > 0 )  return "positif";
+\s;	if ( a < 0 )  return "négatif";
+\s;	return "nul";
+\s;}
+\n;
+\t;Dictionnaire anglais-français
+\c;return\n; = retour
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

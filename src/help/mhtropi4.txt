@@ -1,0 +1,17 @@
+\b;Instructions de Houston
+Entraînement au pilotage.
+
+L'expédition précédente a installé ce dispositif pour tester les programmes de tir des robots volants. Utilisez-les pour vous familiariser avec le tir en vol des \l;robots shooter volants\u object\botfj;. Vos performances lors de la dernière mission nous semblent insuffisantes.
+
+Passez à travers toutes les cibles et tirez sur les 10 caisses le plus rapidement possible. Essayez de faire le tour sans que le moteur surchauffe; si vous n'y arrivez pas, posez-vous entre deux cibles pour laisser refroidir le réacteur.
+
+Pour viser, la main droite sur la souris devient indispensable. Le bouton gauche de la souris permet de tirer.
+
+Après avoir détruit toutes les cibles et vous être posé sur le vaisseau, décollez.
+
+Il est utile de revenir de temps en temps à cet entraînement pour améliorer vos réflexes. 
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

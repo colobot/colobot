@@ -1,0 +1,35 @@
+\b;Exercice
+Tracez un pseudo-cercle bleu à l'aide de petits segments de droites.
+Le programme ressemblera à ceci¦:
+\s;o  Répéter 36 fois¦:
+\s;	o  avancer de 2 mètres
+\s;	o  tourner de 10 degrés à gauche
+
+Après avoir tourné 36 fois de 10 degrés, le robot aura effectué un tour complet de 360 degrés. En avançant chaque fois de 2 mètres, on aura tracé un cercle d'environ 23 mètres de diamètre.
+
+\b;Principe
+La boucle à utiliser dans le programme est¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	repeat ( 36 )
+\s;	{
+\s;		\n;instructions répétées 36x ...\c;
+\s;	}
+\s;}
+\n;
+Les instructions à utiliser sont¦:
+\c;\l;pendown\u cbot\pendown;(Blue);\n; laisse une trace bleue au sol.
+\c;\l;move\u cbot\move;(2);\n; avance de 2 mètres.
+\c;\l;turn\u cbot\turn;(10);\n; tourne à gauche de 10 degrés.
+
+\b;À vous de jouer
+A vous maintenant d'écrire le programme complet.
+
+\b;Accélérer le dessin
+Si vous souhaitez accélérer le dessin, appuyez sur la touche \key;\key speed20;\norm; x2. La touche \key;\key speed10;\norm; reviendra à une vitesse normale x1.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tvar3; et \l;programmation\u cbot;.

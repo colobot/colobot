@@ -1,0 +1,13 @@
+\b;Z Centrum Kontroli Misji
+Twoim zadaniem jest odzyskanie \l;³adunku wybuchowego\u object\tnt;, znajduj¹cego siê w g³êbokiej dolinie, w pobli¿u jeziora wrz¹cej lawy.
+
+Z powodu wysokiej temperatury, reaktory przesta³y dzia³aæ, wobec czego nie jest mo¿liwe latanie. Masz przed sob¹ d³ug¹ drogê, dlatego roboty nale¿y tym razem zaopatrzyæ w \l;atomowe ogniwa elektryczne\u object\atomic;. Atomowe ogniwa elektryczne wytwarzane s¹ z \l;rudy uranu\u object\uranore;.
+
+Do tej wiadomoœci zosta³ do³¹czony nieco skuteczniejszy program do zbierania surowców.
+
+Ostrze¿enie: ³adunek wybuchowy jest niezwykle czu³y. Zachowaj ostro¿noœæ.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

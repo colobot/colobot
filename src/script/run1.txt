@@ -1,0 +1,49 @@
+extern void object::Run()
+{
+	point	circuit[];
+	int		i, max;
+	
+	i = 0;
+	circuit[i].x =  35;  circuit[i].y =  55;  circuit[i++].z = 10;
+	circuit[i].x =  37;  circuit[i].y =  90;  circuit[i++].z = 10;
+	circuit[i].x =  98;  circuit[i].y =  82;  circuit[i++].z = 10;
+	circuit[i].x = 134;  circuit[i].y = 104;  circuit[i++].z = 10;
+	circuit[i].x = 112;  circuit[i].y = 161;  circuit[i++].z = 10;
+	circuit[i].x = 148;  circuit[i].y = 190;  circuit[i++].z = 10;
+	circuit[i].x = 205;  circuit[i].y = 216;  circuit[i++].z = 10;
+	circuit[i].x = 244;  circuit[i].y = 219;  circuit[i++].z = 10;
+	circuit[i].x = 255;  circuit[i].y =  76;  circuit[i++].z =  4;
+	circuit[i].x = 185;  circuit[i].y =  45;  circuit[i++].z = 10;
+	circuit[i].x = 162;  circuit[i].y =  -1;  circuit[i++].z = 10;
+	circuit[i].x = 139;  circuit[i].y = -45;  circuit[i++].z = 90;
+	circuit[i].x = 165;  circuit[i].y = -80;  circuit[i++].z = 10;
+	circuit[i].x = 235;  circuit[i].y =-134;  circuit[i++].z = 10;
+	circuit[i].x = 226;  circuit[i].y =-203;  circuit[i++].z = 10;
+	circuit[i].x = 185;  circuit[i].y =-262;  circuit[i++].z = 90;
+	circuit[i].x = 173;  circuit[i].y =-300;  circuit[i++].z = 90;
+	circuit[i].x = 144;  circuit[i].y =-340;  circuit[i++].z = 90;
+	circuit[i].x =  35;  circuit[i].y =-322;  circuit[i++].z = 10;
+	circuit[i].x = -27;  circuit[i].y =-240;  circuit[i++].z = 10;
+	circuit[i].x = -87;  circuit[i].y =-250;  circuit[i++].z = 10;
+	circuit[i].x =-137;  circuit[i].y =-259;  circuit[i++].z = 10;
+	circuit[i].x =-182;  circuit[i].y =-274;  circuit[i++].z = 10;
+	max = i;
+
+//	for ( i=0 ; i<max ; i++ )
+//	{
+//		produce(circuit[i], 0, WayPoint, "");
+//	}
+
+	grab();
+
+	for ( i=0 ; i<max ; i++ )
+	{	
+		goto(circuit[i], circuit[i].z, 1,1);
+//		message(i);
+	}
+
+	goto(-233, -215, 10, 0,1);
+	drop();
+
+	goto(-333, -64, 20, 1,1);
+}

@@ -1,0 +1,13 @@
+extern void object::Solution( )
+{
+	int longueur = 10;
+	
+	pendown(Orange);
+	move(longueur);
+	turn(45);
+	move(longueur);
+	turn(90);
+	move(longueur);
+	turn(45);
+	move(longueur);
+}

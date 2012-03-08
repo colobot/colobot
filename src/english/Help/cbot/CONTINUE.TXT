@@ -1,0 +1,25 @@
+\b;Instruction \c;continue\n;
+Syntax :
+\s;\c;while ( condition )
+\s;{
+\s;	continue;
+\s;}
+\n;
+With this instruction, you can jump over the rest of instructions in the \c;\l;bloc\u cbot\bloc;\n; of a \c;\l;while\u cbot\while;\n; or \c;\l;for\u cbot\for;\n; loop: The execution will resume at the beginning of the bloc, the next time the loop is repeated.
+ 
+Here is an example:
+\s;\c;int i = 0;
+\s;while ( i < 5 )
+\s;{
+\s;	i = i+1;
+\s;	if ( i == 3 )
+\s;	{
+\s;		continue;
+\s;	}
+\s;	\n;Instructions ...\c;
+\s;}
+\n;
+The instructions will only be executed for the values of \c;i\n; 1, 2, 4 and 5.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

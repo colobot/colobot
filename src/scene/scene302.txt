@@ -1,0 +1,251 @@
+Title.F      text="Amnésique"
+Resume.F     text="Retrouvez le vaisseau spatial dans un labyrinthe végétal."
+Title.E      text="Amnesia"
+Resume.E     text="Find your spaceship in the Tropica maze."
+Instructions name="mhtropi2.txt"
+SoluceFile   name="mstropi2.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=3
+AmbiantColor  air=152;152;102;102 water=20;20;20;20  // grey
+FogColor      air=215;239;203;0 water=68;100;80;0  // bleu sale
+VehicleColor  color=141;175;129;0  // vert-sable
+DeepView      air=125.00 water=25.00
+FogStart      air=0.9 water=0.5
+SecondTexture rank=2
+Background    up=128;136;192;0 down=239;248;207;0 cloudUp=43;45;143;0 cloudDown=200;255;0;0
+FrontsizeName image="lens1.tga"
+Planet        pos=1.2;0.2 dim=0.35 speed= 0.001 dir=0.1 image="planet04.tga" uv1=0.0;0.5 uv2=0.5;1.0  // jaune
+Planet        pos=4.0;0.4 dim=0.20 speed= 0.012 dir=0.7 image="planet04.tga" uv1=0.5;0.0 uv2=1.0;0.5  // bleu
+Planet        pos=4.4;0.3 dim=0.30 speed=-0.002 dir=0.3 image="planet04.tga" uv1=0.0;0.5 uv2=0.5;1.0  // jaune
+Planet        pos=3.5;0.4 dim=0.12 speed= 0.001 dir=0.8 image="planet04.tga" uv1=0.5;0.5 uv2=1.0;1.0  // rouge
+Planet        pos=5.0;0.5 dim=0.04 speed= 0.025 dir=1.2 image="planet04.tga" uv1=0.5;0.5 uv2=1.0;1.0  // rouge
+
+TerrainGenerate vision=250.00 depth=1 slope=3.0
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief16.bmp" factor=1.0
+TerrainResource image="textures\res00.bmp"
+TerrainWater    image="water16.tga" level=27.5 moveX=1.0 moveY=0.3 color=0;240;100;0 brightness=0.2
+TerrainCloud    image="cloud04.tga" level=125.0
+
+TerrainMaterial id=10 image="green01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=11 image="green01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=12 image="green01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=13 image="green01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.00 v=0.25 up=2 down=1 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.25 v=0.25 up=1 down=1 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.50 v=0.25 up=1 down=2 left=1 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.75 v=0.25 up=1 down=1 left=2 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.00 v=0.50 up=2 down=1 left=2 right=1 hard=0.2
+TerrainMaterial       image="green01" u=0.25 v=0.50 up=2 down=1 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.50 v=0.50 up=1 down=2 left=1 right=2 hard=0.2
+TerrainMaterial       image="green01" u=0.75 v=0.50 up=1 down=2 left=2 right=1 hard=0.2
+TerrainMaterial id=14 image="green01" u=0.00 v=0.75 up=2 down=2 left=2 right=2 hard=0.2
+TerrainMaterial id=15 image="green01" u=0.25 v=0.75 up=2 down=2 left=2 right=2 hard=0.2
+TerrainMaterial id=16 image="green01" u=0.50 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=17 image="green01" u=0.75 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+
+TerrainMaterial id=20 image="green02" u=0.00 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=21 image="green02" u=0.25 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=22 image="green02" u=0.50 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=23 image="green02" u=0.75 v=0.00 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial       image="green02" u=0.00 v=0.25 up=3 down=2 left=2 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.25 v=0.25 up=2 down=2 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.50 v=0.25 up=2 down=3 left=2 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.75 v=0.25 up=2 down=2 left=3 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.00 v=0.50 up=3 down=2 left=3 right=2 hard=0.5
+TerrainMaterial       image="green02" u=0.25 v=0.50 up=3 down=2 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.50 v=0.50 up=2 down=3 left=2 right=3 hard=0.5
+TerrainMaterial       image="green02" u=0.75 v=0.50 up=2 down=3 left=3 right=2 hard=0.5
+TerrainMaterial id=24 image="green02" u=0.00 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=25 image="green02" u=0.25 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=26 image="green02" u=0.50 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+TerrainMaterial id=27 image="green02" u=0.75 v=0.75 up=3 down=3 left=3 right=3 hard=0.8
+
+TerrainInit     id=10
+TerrainLevel    id=10;11;10;11;12;13 min= 0.0 max=99.0 slope= 0.0 freq=100.0
+//TerrainLevel    id=14;15             min= 0.0 max=99.0 slope= 0.0 freq=100.0 center=-240; -20 radius=50
+//TerrainLevel    id=14;15             min= 0.0 max=99.0 slope= 0.0 freq=100.0 center=  55;-270 radius=90
+//TerrainLevel    id=20;21;22;23       min= 0.0 max=99.0 slope= 0.0 freq= 80.0 center=  55;-270 radius=90
+TerrainLevel    id=14;15             min= 0.0 max=99.0 slope=-4.0 freq=100.0
+TerrainLevel    id=20;21;22;23       min=50.0 max=99.0 slope=-2.0 freq=100.0
+
+TerrainCreate
+
+GroundSpot color=0;255;0 min=-10 max=28.75 smooth=10
+GroundSpot pos= -37; 105 radius=30 color=100;255;100  // MegaStalk5
+GroundSpot pos=  74; -48 radius=30 color=100;255;100  // MegaStalk5
+GroundSpot pos=  92;-245 radius=30 color=100;255;100  // MegaStalk5
+GroundSpot pos=-273; 266 radius=40 color=220;140;080
+GroundSpot pos=  40;  72 radius=50 color=250;255;150
+GroundSpot pos=-225; 112 radius=30 color=150;255;150
+GroundSpot pos=-300; 111 radius=40 color=100;200;230
+GroundSpot pos=-335;  32 radius=50 color=225;200;160
+GroundSpot pos= 144; -12 radius=50 color=255;160;160  // orange
+GroundSpot pos=-120; -80 radius=50 color=220;180;120
+GroundSpot pos= -64;-199 radius=50 color=100;200;230  // vaisseau
+
+MaxFlyingHeight max=40
+
+BeginObject
+CreateObject pos=-64;-199 dir=0.0 type=SpaceShip run=0 enable=1
+CreateObject pos=-182;180 dir=1.5 type=Me option=1 range=5
+CreateObject pos=-183;179 dir=1.5 type=RedFlag
+
+
+CreateObject pos=-200; 260 cmdline=-200; 260; 15 type=AlienAnt script1="anticp.txt" run=1
+
+CreateObject pos=   5; 135 cmdline=   5; 135; 10 type=AlienAnt script1="anticp.txt" run=1
+CreateObject pos=  25;  95 cmdline=  25;  95; 10 type=AlienAnt script1="anticp.txt" run=1
+CreateObject pos=  45;  85 cmdline=  45;  85; 10 type=AlienAnt script1="anticp.txt" run=1
+CreateObject pos=  55;  45 cmdline=  55;  45; 10 type=AlienAnt script1="anticp.txt" run=1
+
+CreateObject pos=-120; -85 cmdline=-120; -85; 10 type=AlienAnt script1="anticp.txt" run=1
+
+
+CreateObject pos=-177;180 dir=0.0 type=Greenery15
+CreateObject pos=-160;187 dir=0.0 type=Greenery19
+CreateObject pos=-155;183 dir=0.0 type=Greenery18
+CreateObject pos=-146;168 dir=0.0 type=Greenery16
+CreateObject pos=-155;152 dir=0.0 type=Greenery17
+CreateObject pos=-164;150 dir=0.4 type=Greenery15
+CreateObject pos=-168;148 dir=0.8 type=Greenery16
+CreateObject pos=-190;200 dir=0.0 type=MegaStalk4
+CreateObject pos=-185;210 dir=0.0 type=MegaStalk2
+CreateObject pos=-156;205 dir=0.0 type=MegaStalk1
+CreateObject pos=-152;200 dir=0.0 type=MegaStalk3
+
+CreateObject pos=-204;130 dir=0.5 type=Greenery13 h=-2
+CreateObject pos=-212;120 dir=0.8 type=Greenery10 h=0
+CreateObject pos=-219;118 dir=0.2 type=Greenery11 h=-1
+CreateObject pos=-220;113 dir=0.4 type=Greenery12 h=0
+CreateObject pos=-225;111 dir=0.0 type=Greenery13 h=-2
+CreateObject pos=-232;115 dir=0.3 type=Greenery14 h=3
+
+CreateObject pos=-154; 85 dir=0.3 type=Greenery15
+CreateObject pos=-150; 86 dir=0.8 type=Greenery16
+CreateObject pos=-145; 81 dir=0.0 type=Greenery17
+CreateObject pos=-149; 75 dir=0.3 type=Greenery18
+
+CreateObject pos=-280;267 dir=0.0 type=MegaStalk4
+CreateObject pos=-270;264 dir=0.0 type=MegaStalk1
+CreateObject pos=-214;270 dir=0.0 type=MegaStalk3
+
+CreateObject pos=-103;146 dir=0.0 type=MegaStalk2
+CreateObject pos= -97;138 dir=0.0 type=MegaStalk4 h=-2
+
+CreateObject pos=-80;104 dir=0.7 type=RuinBotFactory
+
+CreateObject pos=-67;101 dir=0.0 type=Greenery1
+CreateObject pos=-55;112 dir=0.6 type=Greenery2
+CreateObject pos=-55;107 dir=0.0 type=Greenery10
+CreateObject pos=-49;107 dir=0.2 type=Greenery12
+CreateObject pos=-47;113 dir=0.2 type=Greenery14
+CreateObject pos=-35;121 dir=0.0 type=Greenery11
+CreateObject pos=-50; 90 dir=0.7 type=MegaStalk4 h=-3
+CreateObject pos=-37;105 dir=0.0 type=MegaStalk5
+CreateObject pos=-31; 87 dir=0.5 type=MegaStalk2
+CreateObject pos=-22;110 dir=0.4 type=MegaStalk3
+CreateObject pos=-50;100 dir=1.0 type=Greenery7 h=-1
+CreateObject pos=-51; 98 dir=0.5 type=Greenery7 h=0.5
+CreateObject pos=-45;111 dir=0.0 type=Greenery5 h=0
+CreateObject pos=-40;114 dir=0.0 type=Greenery6 h=0
+CreateObject pos=-35;117 dir=0.0 type=Greenery7 h=0
+CreateObject pos=-39;112 dir=0.0 type=Greenery5 h=1.5
+CreateObject pos=-29;110 dir=0.0 type=Greenery7 h=-1
+CreateObject pos=-27;119 dir=0.0 type=Greenery5 h=0
+CreateObject pos=-28;102 dir=0.0 type=Greenery6 h=1
+CreateObject pos=-26; 97 dir=0.0 type=Greenery5 h=0
+CreateObject pos=-39; 92 dir=0.0 type=Greenery15
+CreateObject pos=-30; 94 dir=0.0 type=Greenery16
+CreateObject pos=-19;103 dir=0.0 type=Greenery18
+
+CreateObject pos= 9;146 dir=0.0 type=Greenery11
+CreateObject pos=20;151 dir=0.0 type=Greenery14 h=2
+CreateObject pos=37;173 dir=0.0 type=Greenery14 h=1
+CreateObject pos=42;173 dir=0.0 type=Greenery12 h=-2
+
+CreateObject pos= 18; 97 dir=0.0 type=MegaStalk4 h=-2
+CreateObject pos= 24; 87 dir=0.0 type=MegaStalk1
+CreateObject pos= 34; 81 dir=0.0 type=MegaStalk0
+CreateObject pos= 51; 74 dir=0.0 type=MegaStalk4
+CreateObject pos= 56; 79 dir=0.0 type=MegaStalk2
+CreateObject pos= 76; 81 dir=0.0 type=MegaStalk3
+CreateObject pos=116;124 dir=0.0 type=MegaStalk4
+
+CreateObject pos=53; 55 dir=0.0 type=WreckBotw1 h=-1
+CreateObject pos=52; 33 dir=0.0 type=MegaStalk2
+CreateObject pos=57; 40 dir=0.0 type=MegaStalk0
+CreateObject pos=81;  5 dir=0.0 type=Greenery15
+CreateObject pos=89;  0 dir=0.3 type=Greenery16
+CreateObject pos=90; -7 dir=1.0 type=Greenery17
+CreateObject pos=94;-15 dir=0.5 type=Greenery18
+
+CreateObject pos=81;-38 dir=0.0 type=Greenery16
+CreateObject pos=74;-48 dir=0.0 type=MegaStalk5
+CreateObject pos=66;-44 dir=0.0 type=MegaStalk3
+
+CreateObject pos=41;-75 dir=0.1 type=Greenery15
+CreateObject pos=43;-78 dir=0.5 type=Greenery18
+
+CreateObject pos=16;-102 dir=0.5 type=Greenery16
+CreateObject pos=22;-103 dir=1.2 type=Greenery17
+CreateObject pos=30;-113 dir=0.8 type=Greenery15
+
+CreateObject pos=-66;-85 dir=0.2 type=Greenery17
+
+CreateObject pos=-73;-47 dir=0.3 type=MegaStalk4
+CreateObject pos=-73;-47 dir=1.8 type=Greenery19
+
+CreateObject pos= -9;-68 dir=0.0 type=MegaStalk3
+CreateObject pos=-15;-66 dir=0.0 type=MegaStalk0
+CreateObject pos=-19;-69 dir=0.0 type=Greenery17
+
+CreateObject pos=-120;-77 dir=0.2 type=WreckBott2
+CreateObject pos=-122;-76 dir=0.2 type=PowerCell power=0.2
+CreateObject pos=-114;-64 dir=0.8 type=Greenery0
+CreateObject pos=-115;-71 dir=0.1 type=Greenery2
+CreateObject pos=-123;-77 dir=0.2 type=Greenery5
+CreateObject pos=-124;-79 dir=1.0 type=Greenery7
+CreateObject pos=-120;-79 dir=1.5 type=Greenery5 h=1
+CreateObject pos=-122;-84 dir=0.7 type=Greenery6 h=-0.5
+
+CreateObject pos= -75;-172 dir=0.0 type=MegaStalk0
+CreateObject pos= -85;-216 dir=0.0 type=MegaStalk3
+CreateObject pos= -86;-171 dir=0.0 type=MegaStalk2
+CreateObject pos= -97;-179 dir=0.0 type=MegaStalk4
+CreateObject pos= -97;-204 dir=0.0 type=MegaStalk1
+CreateObject pos= -55;-236 dir=0.0 type=MegaStalk3
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.6;-0.1;-0.6
+
+MapColor floor=165;142;107 water=154;235;255
+MapZoom  factor=2 enable=0
+
+NewScript name="charge1.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=-64;-199 type=Me min=1
+
+Camera eye=-182;1;170 lookat=-182;1.00;180 delay=0.1 fadeIn=1

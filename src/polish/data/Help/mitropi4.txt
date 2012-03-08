@@ -1,0 +1,15 @@
+\b;Raport z satelity
+Obecnie na orbicie geostacjonarnej planety Tropika.
+\c;
+\s;-> POWIERZCHNIA\c;
+\tab;Temperatura:      32,2C
+\tab;Atmosfera:        hel, tlen
+\tab;Wiatr:            0,7 m/s
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       brak
+
+\s;-> PODGLEBIE\c;
+\tab;ród³o energii:   brak
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       brak
+\n;

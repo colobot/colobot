@@ -1,0 +1,13 @@
+\b;Z Centrum Kontroli Misji
+Za pomoc¹ czwartego \l;klucza\u object\key; (D), który mo¿esz znaleŸæ w pobli¿u, uzyskasz ostatecznie dostêp do \l;skrytki\u object\safe;. Ten prze³omowy robot, którego znajdziesz wewn¹trz zosta³ nazwany "\l;dzia³em fazowym\u object\botphaz;".
+
+W za³¹czeniu przesy³amy program umo¿liwiaj¹cy wspó³pracê \l;dzia³a fazowego\u object\botphaz; z robotem \l;os³aniaczem\u object\botshld;.
+
+Wkrótce bêdziesz mia³ okazjê przetestowaæ now¹ broñ. Twoj¹ ostatni¹ misj¹ jest zlikwidowanie \l;Królowej obcych\u object\mother; sk³adaj¹cej jaja, odpowiedzialnej za pojawianie siê kolejnych owadów na Nowej Ziemi. Dzia³o fazowe mo¿e byæ jedyn¹ broni¹ zdoln¹ wykonaæ to zadanie.
+
+Nie bêdzie ju¿ dalszych przeszkód w ludzkiej kolonizacji tej wspania³ej planety i wkrótce bêdzie mo¿na powiadomiæ Ziemiê o zakoñczeniu misji.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

@@ -1,0 +1,19 @@
+\b;Rapport du satellite
+En orbite géostationnaire.
+\c;
+\s;-> SURFACE\c;
+\tab;Température:      73.4 degrés
+\tab;Atmosphère:       aucune
+\tab;Vent:             0.0 m/s
+\tab;Minerai titanium: par endroits
+\tab;Minerai uranium:  aucun
+
+\s;-> SOUS-SOL\c;
+\tab;Energie:          par endroits
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  par endroits
+
+\s;-> INFORMATIONS SPECIALES\c;
+\tab;Détecté:          fourmis géantes à proximité
+\tab;  - Danger:       oui, imminent
+\n;

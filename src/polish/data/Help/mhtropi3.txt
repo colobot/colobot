@@ -1,0 +1,16 @@
+\b;Z Centrum Kontroli Misji
+Wyeliminuj wszystkie wrogie formy ¿ycia.
+PrzeprowadŸ niezbêdne \l;badania\u object\research; w celu rozwiniêcia systemu broni ofensywnej.
+
+Satelita wykry³ Ÿród³o energii w punkcie oznaczonym przez poprzedni¹ ekspedycjê niebiesk¹ flag¹ (niebieski plus na mapce).
+
+Nie zapomnij zajrzeæ do raportu z satelity \button 186; zanim przedsiêweŸmiesz jakiekolwiek decyzje; podejrzewamy, ¿e nie zawsze o tym pamiêtasz.
+
+Udoskonaliliœmy program ³aduj¹cy ogniwa. Zobacz stronê \button 53;.
+
+Ostrze¿enie: roboty nie mog¹ siê zanurzaæ. W razie w¹tpliwoœci sprawdŸ sam, czy poziom wody nie jest wy¿szy ni¿ do kolan, jeœli zamierzasz zdalnie kierowaæ nielataj¹ce roboty przez wodê.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

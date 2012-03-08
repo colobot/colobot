@@ -1,0 +1,31 @@
+\b;Programy przys³ane z Houston
+Uruchom natychmiast program \c;KillAnt1\n; na Twoim \l;dziale na ko³ach\u object\botfr;, zabezpieczy on Twoj¹ zachodni¹ flankê. W miêdzyczasie mo¿esz opracowaæ strategiê obrony.
+\c;
+\s;extern void object::KillAnt1()
+\s;{
+\s;	\l;object\u cbot\type; item;             // informacja o obiekcie
+\s;	
+\s;	\l;goto\u cbot\goto;(-30, 0);            // idŸ na zachód
+\s;	\l;aim\u cbot\aim;(0);                  // celuj w poziomie
+\s;	
+\s;	\l;while\u cbot\while; ( true )           // powtarzaj w nieskoñczonoœæ:
+\s;	{
+\s;		item = \l;radar\u cbot\radar;(\l;AlienAnt\u cbot\category;, 0, 360, 0, 40);
+\s;		\l;if\u cbot\if; ( item != null )  // wykryto mrówkê?
+\s;		{
+\s;			\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(item.position));
+\s;			\l;fire\u cbot\fire;(0.5);       // strzelaj przez 0,5 s
+\s;		}
+\s;		\l;wait\u cbot\wait;(1);             // czekaj 1 sekundê
+\s;	}
+\s;}
+\n;
+\b;Archiwum
+Lista programów przys³anych w poprzednich misjach:
+
+o  \c;\l;CollectTitanium2\u mlcrys2;\n;
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;
+

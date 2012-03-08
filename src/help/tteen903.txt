@@ -1,0 +1,2 @@
+\b;Dents de scie
+Dessine maintenant un motif beaucoup plus simple, appelé "dents de scie". Il suffit d'avancer de 7 centimètres, de tourner à droite, d'avancer encore de 7 centimètres puis de tourner à gauche.

@@ -1,0 +1,72 @@
+\b;Instrukcja \c;class\n;
+Pozwala na zadeklarowanie definicji klasy, przy u¿yciu nastêpuj¹cej sk³adni:
+\c;
+\s;public class NazwaKlasy
+\s;{
+\s;	deklaracje;
+\s;}
+\n;
+Klasy mog¹ byæ tylko typu \l;public\u cbot\public; (publiczne), a wiêc mog¹ byæ u¿ywane podczas misji przez wszystkie roboty. Elementy klasy równie¿ s¹ publiczne, dostêpne spoza klasy. Do klasy mog¹ nale¿eæ pola lub funkcje (zwane równie¿ metodami), na przyk³ad nastêpuj¹ca klasa \c;MojaKlasa\n; zawiera 4 pola (a, b, x oraz s) i jedn¹ metodê (MojaFunkcja).
+\c;
+\s;public class MojaKlasa
+\s;{
+\s;	int     a, b;
+\s;	float   x = 3.33;
+\s;	string  s = "Czeœæ";
+\s;	float   MojaFunkcja( float value )
+\s;	{
+\s;		return (value*x)-1;
+\s;	}
+\s;}
+\n;
+Jak pokazano na tym przyk³adzie, elementy klasy mog¹ byæ inicjalizowane (\c;x=3.33\n;). Mo¿na te¿ zdefiniowaæ konstruktor, który jest specjaln¹ metod¹ o nazwie takiej samej jak nazwa klasy. Metoda ta jest wywo³ywana automatycznie podczas tworzenia instancji klasy. Mo¿liwe jest równie¿ zadeklarowanie wiêcej ni¿ jednej metody o tej samej nazwie ale o innych parametrach.
+\c;
+\s;public class MojaKlasa
+\s;{
+\s;	int  a, b;
+\s;	void MojaKlasa( )
+\s;	{
+\s;		a = 2;  b = 3;
+\s;	}
+\s;	void MojaKlasa( int a, int b )
+\s;	{
+\s;		this.a = a;  this.b = b;
+\s;	}
+\s;}
+\n;
+W tym przyk³adzie zadeklarowano dwa konstruktory dla klasy \c;MojaKlasa\n;, jeden bez parametrów, drugi z dwoma parametrami. Jako ¿e nazwy parametrów drugiego konstruktora s¹ takie same jak nazwy dwóch pól klasy \c;a\n; et \c;b\n; konieczne jest u¿ycie \c;\l;this\u cbot\this;.a\n; i \c;\l;this\u cbot\this;.b\n; w celu rozró¿nienia parametrów. Inne, prostsze rozwi¹zanie, to nadanie ró¿nych nazw parametrom.
+\c;
+\s;void Test( )
+\s;{
+\s;	MojaKlasa element1();      // konstruktor bez parametrów
+\s;	MojaKlasa element2(4, 5);  // konstruktor z 2 parametrami
+\s;	MojaKlasa element3;        // konstruktor nie jest wywo³ywany,
+\s;                                 // wiêc item3 == null
+\s;}
+\n;
+Mo¿na te¿ zdefinowaæ destruktor. Musi to byæ funkcja \c;void\n; bez parametrów o takiej samej nazwie jak nazwa klasy, poprzedzona znakiem ~. Destruktor jest wywo³ywany automatycznie gdy nie ma ju¿ ¿adnych odwo³añ do instancji klasy.
+\c;
+\s;public class MojaKlasa
+\s;{
+\s;	static private int licznik = 0; // licznik instancji
+\s;	void  MojaKlasa( )
+\s;	{
+\s;		licznik ++;  // jedna instancja wiêcej
+\s;	}
+\s;	void ~MojaKlasa( )
+\s;	{
+\s;		licznik --;  // jedna instancja mniej
+\s;	}
+\s;}
+\s;void Test()
+\s;{
+\s;	MojaKlasa element1( );  // licznik = 1
+\s;	MojaKlasa element2( );  // licznik = 2
+\s;	element1 = null;        // licznik = 1
+\s;}                             // licznik = 0
+\n;
+W przypadku przekazywania instancji klasy jako parametru \l;funkcji\u cbot\function;, otrzymuje ona tylko \l;wskaŸnik\u cbot\pointer; do instancji. Oznacza to, ¿e jeœli zostanie zmodyfikowana instancja wewn¹trz funkcji, w rzeczywistoœci zostanie zmodyfikowana instancja przekazana funkcji.
+
+\t;Zobacz równie¿
+\c;\l;public\u cbot\public;\n;, \c;\l;private\u cbot\private;\n;, \c;\l;static\u cbot\static;\n;, \c;\l;synchronized\u cbot\synchro;\n;, \c;\l;new\u cbot\new;\n;, \c;\l;wskaŸnik\u cbot\pointer;\n;, \c;\l;this\u cbot\this;\n;
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,0 +1,22 @@
+\b;Z Centrum Kontroli Misji
+Zbierz 4 porcje \l;rudy tytanu\u object\titanore; i dostarcz je na pok³ad \l;statku kosmicznego\u object\base;. Zbuduj niezbêdne do tego celu urz¹dzenia (\l;transportery lataj¹ce\u object\botgj;).
+
+Zamiast ryzykowaæ coraz bardziej, zawsze sprawdzaj raport satelitarny \button 186;.
+
+Przes³aliœmy do Twojego \l;statku kosmicznego\u object\base; program, który mo¿e Ci pomóc w tym zadaniu; zobacz odpowiedni¹ stronê na Twoim komunikatorze SatCom, naciskaj¹c przycisk \button 53;.
+
+\b;Procedura
+1) Aby dodaæ transportery lataj¹ce do listy robotów, które mog¹ byæ produkowane w fabryce, nale¿y wykonaæ wczeœniej odpowiedni \l;program badawczy\u object\research;. Badania umo¿liwi¹ ponadto uruchomienie reaktora w Twoim zestawie przetrwania.
+
+2) Zbuduj \l;transporter lataj¹cy\u object\botgj; i zbierz 4 kawa³ki \l;rudy tytanu\u object\titanore;.
+
+3) Zabierz ze sob¹ \l;transporter lataj¹cy\u object\botgj; oraz \l;transporter na ko³ach\u object\botgr; i odleæ. 
+
+Uwa¿aj, aby Twojemu transporterowi lataj¹cemu nie skoñczy³a siê energia daleko od bazy. Jeœli bêdzie to konieczne, wymieñ \l;ogniwo elektryczne\u object\power; przed opuszczeniem statku kosmicznego. Mo¿esz zrobiæ to osobiœcie lub wykonuj¹c za³¹czony program dostarczony z Houston \button 53;.
+
+Aby nie zgubiæ siê w ogromie kraterów na powierzchni Ksiê¿yca, skorzystaj z mapki, któr¹ mo¿esz znaleŸæ w prawej dolnej czêœci ekranu.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

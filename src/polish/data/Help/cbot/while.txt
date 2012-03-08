@@ -1,0 +1,47 @@
+\b;Instrukcja \c;while\n;
+Instrukcja \c;while () {}\n; jest u¿ywana do wielokrotnego powtarzania zbioru instrukcji.
+
+\b;Podstawowe u¿ycie
+Najczêstsze u¿ycie instrukcji \c;while\n; polega na nieskoñczonym powtarzaniu zbioru instrukcji. Aby to osi¹gn¹æ, nale¿y napisaæ \c;while (true) {}\n;, a instrukcje, które maj¹ byæ powtarzane zapisaæ w nawiasach klamrowych \c;{}\n;. Oto przyk³adowy program powtarzaj¹cy w nieskoñczonoœæ nastêpuj¹ce czynnoœci:
+o  znajdŸ paj¹ka,
+o  obróæ siê w jego stronê,
+o  strzelaj.
+\c;
+\s;	while (true)
+\s;	{
+\s;		item = \l;radar\u cbot\radar;(AlienSpider);
+\s;		\l;turn\u cbot\turn;(direction(item.position));
+\s;		\l;fire\u cbot\fire;(1);
+\s;	}
+\n;
+Wystarczy raz uruchomiæ ten program, a zabije on wszystkie paj¹ki dooko³a robota.
+
+\b;Dla specjalistów
+Sk³adnia:
+\s;\c;while ( warunek )
+\s;{
+\s;	\n;Instrukcje ...\c;
+\s;}
+\n;
+Instrukcja ta pozwala na wielokrotne powtarzanie instrukcji wewn¹trz \l;bloku\u cbot\bloc;.
+
+Nie nale¿y myliæ instrukcji \c;while( ) { }\n; z instrukcj¹ \c;\l;do\u cbot\do; { } while( );\n;; ta druga sprawdza warunek dopiero po pierwszym wykonaniu instrukcji w bloku. 
+
+\t;\c;warunek\n;
+Instrukcje w bloku s¹ wykonywane tak d³ugo, jak d³ugo prawdziwy jest \l;warunek\u cbot\cond;. 
+
+Oto przyk³ad:
+\s;\c;int i = 0;
+\s;while ( i < 10 )
+\s;{
+\s;	\n;Instrukcje...\c;
+\s;	i = i+1;
+\s;}
+\n;
+\t;Uwaga
+Na koñcu instrukcji \c;while ( )\n; nie nale¿y umieszczaæ \l;œrednika\u cbot\term;.
+
+Instrukcje \c;\l;break\u cbot\break;\n; i \c;\l;continue\u cbot\continue;\n; mog¹ byæ przydatne wewn¹trz bloku instrukcji \c;while ( )\n;.
+
+\t;Zobacz równie¿
+\l;Instrukcje\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

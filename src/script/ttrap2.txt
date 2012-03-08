@@ -1,0 +1,41 @@
+extern void object::Solution( )
+{
+	while ( true )
+	{
+		object	spot;
+		float	dir;
+
+		spot = radar(Mine, 0, 180, 0, 3.5);
+		if ( spot == null )
+		{
+			spot = radar(WayPoint, 0, 360);
+			if ( spot == null )  // plus rien ?
+			{
+				motor(0, 0);  // stoppe
+				break;
+			}
+			dir = direction(spot.position);
+		}
+		else
+		{
+			dir = direction(spot.position);
+			if ( dir < 0 )
+			{
+				dir = dir+180;
+			}
+			else
+			{
+				dir = dir-180;
+			}
+		}
+
+		if ( dir < 0 )  // à droite ?
+		{
+			motor(1, 1+dir/90);
+		}
+		else  // à gauche ?
+		{
+			motor(1-dir/90, 1);
+		}
+	}
+}

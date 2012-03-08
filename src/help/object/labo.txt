@@ -1,0 +1,24 @@
+\b;\button 166; Laboratoire
+\image labo 8 8;
+Ce bâtiment analyse la \l;matière organique\u object\bullet; afin de découvrir de nouvelles technologies inspirées des insectes. Posez une bulle de \l;matière organique\u object\bullet; sur le socle, sélectionnez le laboratoire, et cliquez sur le bouton correspondant à la recherche à effectuer.
+
+\t;Emplacement requis
+Surface plate quelconque de 6 mètres de diamètre.
+
+\t;Entrée
+Matière organique.
+
+\t;Sortie
+Plans pour de nouveaux types de robots.
+
+\t;Energie consommée
+Aucune.
+
+\t;Durée de l'opération
+20 secondes.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;AutoLab\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

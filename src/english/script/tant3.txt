@@ -1,0 +1,22 @@
+extern void object::Solution()
+{
+	object    item;
+	
+	jet(0.2);
+	while(position.z < 20)
+	{
+		wait(0.2);
+	}
+	jet(0);
+	
+	while(true)
+	{
+		item = radar(AlienAnt);
+		turn(direction(item.position));
+		while (radar(AlienAnt, 0, 360, 0, 40) == null)
+		{
+			wait(0.2);
+		}
+		fire(1);
+	}
+}

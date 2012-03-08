@@ -1,0 +1,13 @@
+extern void object::Solution()
+{
+	
+	aim(0);
+	fire(1);
+	
+	turn(90);
+	fire(1);
+	
+	turn(-180);
+	fire(1);
+	
+}

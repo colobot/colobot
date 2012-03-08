@@ -1,0 +1,40 @@
+\b;Instrukcja \c;for\n;
+Sk³adnia:
+\s;\c;for ( przed ; warunek ; koniec )
+\s;{
+\s;	\n;Instrukcje...\c;
+\s;}
+\n;
+Instrukcja ta pozwala na powtórzenie okreœlon¹ iloœæ razy instrukcji zawartych w \l;bloku\u cbot\bloc;.
+
+\t;\c;przed\n;
+Instrukcja wykonywana przed pierwszym przejœciem pêtli.
+
+\t;\c;warunek\n;
+\l;Warunek\u cbot\cond; okreœla, czy powinno byæ wykonane nastêpne przejœcie pêtli. Jest on sprawdzany przed ka¿dym jej przejœciem. 
+
+\t;\c;koniec\n;
+Instrukcja wykonywana po ka¿dym przejœciu pêtli. 
+
+Przyk³ad: liczenie od 1 do 4
+\c;\s;\c;for ( i = 0 ; i <= 4 ; i++ )
+\s;{
+\s;	message(i) ;
+\s;}
+\n;
+Nastêpuj¹cy przyk³ad, równowa¿ny pêtli \c;for\n;, u¿ywa instrukcji \c;\l;while\u cbot\while;\n;:
+\s;\c;przed;
+\s;while ( warunek )
+\s;{
+\s;	\n;Instrukcje...\c;
+\s;	koniec;
+\s;}
+\n;
+\t;Uwaga
+Na koñcu instrukcji \c;for ( )\n; nie nale¿y umieszczaæ \l;œrednika\u cbot\term;.
+
+Instrukcje \c;\l;break\u cbot\break;\n; i \c;\l;continue\u cbot\continue;\n; mog¹ byæ przydatne wewn¹trz bloku instrukcji \c;for \n;.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.
+

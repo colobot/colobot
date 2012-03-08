@@ -1,0 +1,9 @@
+\b;From Mission Control
+You're under attack and this is no time for compassion...
+
+Your new \l;thumper\u object\bottump; might come in very handy. However, we emphasize that you should not risk a takeoff if there are any ants still alive in the vicinity of the spaceship.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

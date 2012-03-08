@@ -1,0 +1,11 @@
+\b;Rozwi¹zanie
+1) Zasil \l;dzia³o na nogach\u object\botfs;. Za \l;fabryk¹ robotów\u object\factory; znajdziesz nawet \l;atomowe ogniwo elektryczne\u object\atomic;.
+
+2) WejdŸ na pó³nocne urwisko i zabij kilka \l;mrówek\u object\ant;. Najlepszy dostêp jest od wschodu.
+
+3) IdŸ dalej, a¿ pozbêdziesz siê wszystkich mrówek.
+
+4) WejdŸ na pó³nocne urwisko \l;transporterem na nogach\u object\botgs; i zdob¹dŸ \l;czarn¹ skrzynkê\u object\bbox;, któr¹ znajdziesz w ruinach fabryki robotów.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

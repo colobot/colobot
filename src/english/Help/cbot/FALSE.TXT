@@ -1,0 +1,6 @@
+\b;Type \c;false\n;
+This value means that a condition is not true; it is one of the two values that a \l;boolean\u cbot\bool; \l;variable\u cbot\var; can take.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.
+

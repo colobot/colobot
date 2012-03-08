@@ -1,0 +1,19 @@
+ \b;Rozwi¹zanie
+1) Szybko zbuduj \l;wie¿ê obronn¹\u object\tower; na pó³noc od statku kosmicznego. Po jej  \l;zasileniu\u object\power; na jednym z \l;transporterów\u object\botgr; uruchom program \c;ServiceTower1\n;, który zajmie siê ³adowaniem baterii, gdy ta bêdzie pusta. Umieœæ drugie ogniwo elektryczne 2 m na pó³noc od wie¿y, jako pierwszy cel dla atakuj¹cych os.
+
+2) Zbuduj \l;stacjê energetyczn¹\u object\station; w pobli¿u wie¿y obronnej.
+
+3) Zbuduj \l;hutê\u object\convert; na po³udnie od statku kosmicznego a w celu wyprodukowania \l;kostek tytanu\u object\titan; uruchom na drugim \l;transporterze\u object\botgr; program \c;CollectTitanium3\n;.
+
+4) Zbuduj  \l;fabrykê robotów\u object\factory;, a nastêpnie \l;dzia³o lataj¹ce\u object\botfj;, które pozwoli Ci wyeliminowaæ \l;mrówki\u object\ant;.
+
+5) U¿yj \l;transportera lataj¹cego\u object\botgj; do dostarczenia \l;materii organicznej\u object\bullet; z wyspy poœrodku jeziora lawy.
+
+6) Zbuduj \l;laboratorium\u object\labo;, umieœæ \l;materiê organiczn¹\u object\bullet; na jego platformie i kliknij przycisk \button 109;, aby otrzymaæ plany robotów na nogach.
+
+7) Jak tylko materia organiczna zostanie zanalizowana zbuduj \l;transporter na nogach\u object\botgs; i dostarcz go na pok³ad statku kosmicznego.
+
+8) Odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

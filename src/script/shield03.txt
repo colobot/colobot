@@ -1,0 +1,33 @@
+extern void object::SuivrePhazer()
+{
+	object	item;
+	point	dest;
+	float	dist;
+
+	item = radar(PhazerShooter);
+	if ( item == null )
+	{
+		message("Phazer pas trouvé");
+		return;
+	}
+	shield(1, 25);  // déploie le bouclier
+	
+	while ( true )
+	{
+		item = radar(PhazerShooter);
+		if ( item == null )  break;
+
+		dist = distance(item.position, position);
+		if ( dist < 5 )
+		{
+			wait(1);
+		}
+		else
+		{
+			dest.x = (item.position.x-position.x)*((dist-5)/dist)+position.x;
+			dest.y = (item.position.y-position.y)*((dist-5)/dist)+position.y;
+			dest.z = (item.position.z-position.z)*((dist-5)/dist)+position.z;
+			goto(dest, 0, 1, 1);
+		}
+	}
+}

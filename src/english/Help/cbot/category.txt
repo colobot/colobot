@@ -1,0 +1,108 @@
+\b;Value \c;Categories\n;
+Categories represent the names of objects in the CBOT language. Everything in COLOBOT is an object: robots, buildings, raw materials, etc., even yourself.
+
+In a program, categories are always displayed on a \const;red background\norm;. If a category isn't highlighted in red, it is misspelled. Caps and lower cases should be kept as is.
+
+Below are the different categories available :
+
+\t;Buildings :
+
+\button 176;   \c;\l;Houston\u object\Huston;          \n;Mission Control
+\button 171;   \c;\l;SpaceShip\u object\base;        \n;Spaceship
+\button 160;   \c;\l;BotFactory\u object\factory;       \n;Robot Factory
+\button 163;   \c;\l;ResearchCenter\u object\research;   \n;Research Center
+\button 168;   \c;\l;RadarStation\u object\radar;     \n;Radar
+\button 172;   \c;\l;ExchangePost\u object\exchange;     \n;Information Exchange Post
+\button 169;   \c;\l;RepairCenter\u object\repair;     \n;Repair Center
+\button 165;   \c;\l;DefenseTower\u object\tower;     \n;Defense Tower
+\button 166;   \c;\l;AutoLab\u object\labo;          \n;Organic Matter Analyzer 
+\button 164;   \c;\l;PowerStation\u object\station;     \n;Power Station
+\button 167;   \c;\l;PowerPlant\u object\energy;       \n;Power Cell Factory
+\button 170;   \c;\l;NuclearPlant\u object\nuclear;     \n;Nuclear Plant
+\button 162;   \c;\l;Converter\u object\convert;        \n;Titanium Converter
+\button 161;   \c;\l;Derrick\u object\derrick;          \n;Derrick
+\button 174;   \c;\l;PowerCaptor\u object\captor;      \n;Parabolic Lightning Conductor
+\button 175;   \c;\l;Vault\u object\safe;            \n;Vault
+       \c;\l;StartArea\u object\start;        \n;Starting Pad
+       \c;\l;GoalArea\u object\goal;         \n;Finishing Pad
+       \c;\l;AlienNest\u object\nest;        \n;Alien Nest
+
+
+\t;Portable Objects :
+
+       \c;\l;TitaniumOre\u object\titanore;          \n;Titanium Ore
+       \c;\l;UraniumOre\u object\uranore;           \n;Uranium Ore
+       \c;\l;Titanium\u object\titan;             \n;Cube of converted Titanium
+       \c;\l;PowerCell\u object\power;            \n;Regular Power Cell
+       \c;\l;NuclearCell\u object\atomic;          \n;Nuclear Power Cell
+       \c;\l;OrgaMatter\u object\bullet;           \n;Organic Matter
+       \c;\l;BlackBox\u object\bbox;             \n;Black Box
+       \c;\l;TNT\u object\tnt;                  \n;Explosive device
+       \c;\l;KeyA..D\u object\key;              \n;Keys A, B, C and D
+
+
+\t;Robots :
+
+\button 158;   \c;\l;PracticeBot\u object\bottr;            \n;Practice Bot
+\button 173;   \c;\l;TargetBot\u object\bottarg;              \n;Target Bot
+
+\button 137;   \c;\l;WheeledGrabber\u object\botgr;         \n;Wheeled Grabber
+\button 138;   \c;\l;TrackedGrabber\u object\botgc;         \n;Tracked Grabber
+\button 139;   \c;\l;WingedGrabber\u object\botgj;          \n;Winged Grabber
+\button 150;   \c;\l;LeggedGrabber\u object\botgs;          \n;Legged Grabber
+
+\button 140;   \c;\l;WheeledSniffer\u object\botsr;         \n;Wheeled Sniffer
+\button 141;   \c;\l;TrackedSniffer\u object\botsc;         \n;Tracked Sniffer
+\button 142;   \c;\l;WingedSniffer\u object\botsj;          \n;Winged Sniffer
+\button 152;   \c;\l;LeggedSniffer\u object\botss;          \n;Legged Sniffer
+
+\button 143;   \c;\l;WheeledShooter\u object\botfr;         \n;Wheeled Shooter
+\button 144;   \c;\l;TrackedShooter\u object\botfc;         \n;Tracked Shooter
+\button 145;   \c;\l;WingedShooter\u object\botfj;          \n;Winged Shooter
+\button 151;   \c;\l;LeggedShooter\u object\botfs;          \n;Legged Shooter
+
+\button 153;   \c;\l;WheeledOrgaShooter\u object\botor;     \n;Wheeled Orga Shooter
+\button 154;   \c;\l;TrackedOrgaShooter\u object\botoc;     \n;Tracked Orga Shooter
+\button 155;   \c;\l;WingedOrgaShooter\u object\botoj;      \n;Winged Orga Shooter
+\button 156;   \c;\l;LeggedOrgaShooter\u object\botos;      \n;Legged Orga Shooter
+
+\button 149;   \c;\l;Subber\u object\botsub;                 \n;Subber
+\button 148;   \c;\l;Recycler\u object\botrecy;               \n;Recycler
+\button 157;   \c;\l;Shielder\u object\botshld;               \n;Shielder
+\button 146;   \c;\l;Thumper\u object\bottump;                \n;Thumper
+\button 147;   \c;\l;PhazerShooter\u object\botphaz;          \n;Phazer Shooter
+
+
+\t;Enemies :
+
+       \c;\l;AlienQueen\u object\mother;         \n;Alien Queen
+       \c;\l;AlienEgg\u object\egg;           \n;Alien Egg
+       \c;\l;AlienAnt\u object\ant;           \n;Ant
+       \c;\l;AlienSpider\u object\spider;        \n;Spider
+       \c;\l;AlienWasp\u object\wasp;          \n;Wasp
+       \c;\l;AlienWorm\u object\worm;          \n;Worm
+
+
+\t;Miscellaneous :
+
+\button 136;   \c;\l;Me\u object\human;              \n;You!
+       \c;\l;Mine\u object\mine;            \n;Mine
+       \c;\l;Barrier\u object\barrier;         \n;Barrier
+       \c;\l;Wreck\u object\wreck;           \n;Derelict bot
+       \c;\l;Ruin\u object\ruin;            \n;Derelict building
+
+
+\t;Flags and Other Indicators :
+
+       \c;\l;BlueFlag\u object\flag;          \n;Blue Flag
+       \c;\l;RedFlag\u object\flag;           \n;Red Flag
+       \c;\l;GreenFlag\u object\flag;         \n;Green Flag
+       \c;\l;YellowFlag\u object\flag;        \n;Yellow Flag
+       \c;\l;VioletFlag\u object\flag;        \n;Violet Flag
+       \c;\l;WayPoint\u object\waypoint;          \n;Checkpoint
+       \c;\l;EnergySite\u object\enerspot;        \n;Underground Energy Deposit
+       \c;\l;TitaniumSite\u object\stonspot;      \n;Underground Titanium Deposit
+       \c;\l;UraniumSite\u object\uranspot;       \n;Underground Uranium Deposit
+
+\t;See also
+\l;CBOT Language\u cbot; and \l;Variables\u cbot\type;.

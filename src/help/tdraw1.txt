@@ -1,0 +1,55 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il dessine une fleur rouge stylisée qui passera par toutes les \l;croix bleues\u object\waypoint; posées au sol. La fleur sera composée de 12 carrés de 5 mètres de côté.
+
+\b;Fonction
+Pour résoudre ce problème, il est intéressant de créer une \l;fonction\u cbot\function; qui déplace le robot le long d'un carré. La fonction principale consiste simplement à dessiner 12 carrés décalés chacun de 30 degrés. Elle devient alors très simple¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	pendown(Red);
+\s;	
+\s;	repeat ( 12 )
+\s;	{
+\s;		Carré();
+\s;		turn(30);
+\s;	}
+\s;}
+\n;
+Évidemment, à ce stade, la fonction \c;Carré\n; n'existe pas encore. Pour la créer, vous devrez pour la première fois écrire des instructions hors du \l;bloc\u cbot\bloc;, tout à la fin du programme. La structure du programme devient¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	\n;fonction principale ...\c;
+\s;}
+\s;
+\s;void object::Carré()
+\s;{
+\s;	\n;nouvelle fonction ...\c;
+\s;}
+\n;
+Le flux du programme se déroule ainsi¦:
+- On exécute la fonction principale \c;Go\n; depuis le début.
+- Lorsqu'on rencontre \c;Carré()\n;, on entre une première fois dans la fonction \c;Carré\n;.
+- Lorsque la fonction \c;Carré\n; est terminée, on revient dans \c;Go\n;.
+- On continue \c;Go\n;, qui contient alors \c;turn(30)\n;.
+- Ensuite, la boucle \c;repeat\n; exécute une deuxième fois les instructions entre \c;{¦}\n;. On entre donc une deuxième fois dans \c;Carré\n;.
+- Et ainsi de suite¦...
+
+L'intérieur de la fonction \c;Carré\n; utilise les instructions \c;\l;move\u cbot\move;\n; et \c;\l;turn\u cbot\turn;\n;. L'utilisation d'une boucle \c;\l;repeat\u cbot\repeat;\n; répétée 4 fois allège l'écriture, mais n'est pas indispensable.
+\c;
+\s;void object::Carré()
+\s;{
+\s;	repeat ( 4 )
+\s;	{
+\s;		move(5);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+\b;Accélérer le dessin
+Si vous souhaitez accélérer le dessin, appuyez sur la touche \key;\key speed20;\norm; x2. La touche \key;\key speed10;\norm; reviendra à une vitesse normale x1.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tant5; et \l;programmation\u cbot;.

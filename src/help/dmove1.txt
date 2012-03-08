@@ -1,0 +1,12 @@
+\b;Exercice
+Déplacer le robot d'entraînement sur la plate-forme d'arrivée, en passant par les 4 croix bleues.
+Les plates-formes et les indicateurs sont tous distants de 20 mètres.
+
+\b;Instructions utiles
+\c;\l;move\u cbot\move;\n; pour avancer le robot
+\c;\l;turn\u cbot\turn;\n; pour tourner le robot
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

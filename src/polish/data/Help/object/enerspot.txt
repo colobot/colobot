@@ -1,0 +1,17 @@
+\b;Podziemne Ÿród³o energii
+\image enerspot 4 4;
+Gdy robot \l;szperacz\u object\botsr; odkryje Ÿród³o energii w podglebiu, zostawia w tym miejscu zielony plus. W pobli¿u mog¹ byæ postawione nastêpuj¹ce budynki:
+
+o  \l;Stacja energetyczna\u object\station;
+o  \l;Elektrownia\u object\energy;
+
+Do przebadania podglebia niezbêdny jest \l;robot szperacz\u object\botsr;, wykrywaj¹cy równie¿ z³o¿e \l;rudy tytanu\u object\titanore; (oznaczone \l;czerwonym plusem\u object\stonspot;) lub z³o¿e \l;rudy uranu\u object\uranore; (oznaczone \l;¿ó³tym kó³kiem\u object\uranspot;).
+
+\t;Transport
+Niemo¿liwy.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;EnergySite\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,0 +1,11 @@
+\b;Instructions de Houston
+Ramenez la boîte noire laissée par l'expédition précédente et décollez¦!
+
+Les décharges électromagnétiques semblent cependant encore plus fréquentes que dans la mission précédente. Protégez bien le matériel par des paratonnerres; vous pouvez visualiser le rayon de protection d'un \l;paratonnerre\u object\captor; en le sélectionnant, puis en cliquant sur le bouton <rayon d'action> \button 41;. Des points rouges indiquent la zone protégée. Votre vaisseau fait également office de paratonnerre.
+
+Nos ingénieurs affirment que vous-même ne risquez rien lorsque vous sortez de la zone protégée: votre combinaison n'attire pas la foudre.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

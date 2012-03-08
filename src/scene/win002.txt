@@ -1,0 +1,41 @@
+Audio         track=11 repeat=0
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=180;222;255;0 water=10;20;100;0  // grey
+VehicleColor  color=175;209;215;0  // bleu-sable
+DeepView      air=100.00 water=25.00 
+FogStart      air=0.1 water=0.1
+SecondTexture rank=3
+Background    up=76;105;226;0 down=192;250;255;0
+FrontsizeName image="lens5.tga"
+Planet        pos=0.00;0.70 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=1.00;0.60 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=1.20;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=2.00;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=2.50;0.50 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=3.00;0.30 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=3.85;0.30 dim=0.06 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=4.00;0.70 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=4.10;0.50 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=5.30;0.30 dim=0.08 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.7
+TerrainRelief       image="textures\relief12.bmp" factor=1.0
+TerrainResource     image="textures\res00.bmp"
+TerrainWater        image="lava04.tga" level=7.5 moveX=1.0 moveY=0.3 water=TO color=0;128;255;0
+TerrainInitTextures image="terra" dx=1 dy=1 table=2
+TerrainCreate
+
+BeginObject
+CreateObject pos=-2.50;0.00 dir=0.0 type=Me option=1
+CreateObject pos=0.00;0.00 dir=0.1 type=Firework pyro=WIN
+CreateObject pos=-1.25;3.75 dir=0.5 type=PracticeBot script1="flash.txt" run=1
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0; 0.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 0.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir= 1.0;-1.0; 0.0 color= 0.30; 0.30; 0.30 type=Object
+CreateLight dir=-1.0;-1.0; 0.0 color= 1.00; 1.00; 1.00 type=Object
+CreateLight dir= 0.0;-1.0; 1.0 color= 0.60; 0.60; 0.60 type=Object
+CreateLight dir= 0.0;-1.0;-1.0 color= 0.60; 0.60; 0.60 type=Object
+
+Camera eye=1.75;0.75;-1.25 lookat=1.10;0.75;-0.80

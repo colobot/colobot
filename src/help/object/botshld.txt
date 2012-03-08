@@ -1,0 +1,18 @@
+\b;\button 157; Robot bouclier
+\image botshld 8 8;
+Robot bouclier, qui protège de toutes les attaques \l;ennemies\u object\mother; dans un rayon variant entre 10 et 25 mètres. Ce robot est le seul moyen de traverser des passages infestés de champignons verts. Le bouclier personnel des robots et des bâtiments est régénéré par l'action de cette protection.
+
+Une \l;pile normale\u object\power; permet de maintenir le bouclier en activité pendant 20 secondes avec le rayon maximal de 25 mètres, ce qui est en général insuffisant. Une \l;pile atomique\u object\atomic; est beaucoup mieux adaptée à ce robot.
+
+La consommation d'énergie est proportionnelle au rayon du bouclier. Avec un rayon minimal de 10 mètres, le bouclier est maintenu 2.5x plus longtemps.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;Shielder\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour déployer le bouclier par programmation, il faut utiliser l'instruction \c;\l;shield\u cbot\shield;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

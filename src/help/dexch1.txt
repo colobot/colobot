@@ -1,0 +1,24 @@
+\b;Exercice
+Des \l;bornes\u object\exchange; d'informations sont placées le long d'un chemin. Lorsque le \l;robot\u object\bottr; est proche d'une borne, il peut lire les informations qu'elle contient. Ces informations donnent la direction et la distance jusqu'à la borne suivante.
+
+\b;Principe
+	Répéter toujours¦:
+	o  Lire la direction dans la \l;borne\u object\exchange;.
+	o  Lire la longueur dans la \l;borne\u object\exchange;.
+	o  Si rien n'a été lu, stopper.
+	o  Tourner dans la direction obtenue.
+	o  Avancer de la longueur obtenue.
+
+\b;Instructions utiles
+\c;\l;while\u cbot\while;\n; pour répéter des instructions
+\c;\l;receive\u cbot\receive;\n; pour lire les informations d'une borne
+\c;\l;move\u cbot\move;\n; pour avancer le robot
+\c;\l;turn\u cbot\turn;\n; pour tourner le robot
+
+\b;Pour tuer le temps
+N'oubliez pas que, pendant que le robot avance de borne en borne, vous pouvez changer de vue en cliquant sur l'icône \button 13; ou en appuyant sur la barre d'espace. Vous pouvez également sélectionner le \l;cosmonaute\u object\human; et suivre le robot. Mais attention à ne pas le heurter, ce qui le ferait dévier de sa trajectoire¦!
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

@@ -1,0 +1,9 @@
+\b;Instructions de Houston
+Il est évident que cette planète ne pourra jamais servir de refuge à l'humanité. Cette région servira cependant de poste de ravitaillement pour la migration depuis la terre vers la nouvelle planète. Eliminez donc toute présence hostile de la région (le Congrès n'en apprendra rien). Construisez aussi un radar comme relais pour les transmissions ultérieures.
+
+La première expédition avait découvert du \l;minerai de titanium\u object\titanore; en sous-sol. Cet endroit est marqué par un drapeau bleu.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

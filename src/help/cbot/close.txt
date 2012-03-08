@@ -1,0 +1,14 @@
+\b;Instruction \c;close\n;
+L'instruction \c;close();\n; ferme un fichier de texte dans le dossier files/. Cette instruction est une méthode de la classe \c;\l;file\u cbot\file;\n;. C'est la raison pour laquelle on n'écrit jamais \c;close()\n; tout seul, mais \c;handle.close()\n;¦:
+\c;
+\s;	handle.close();
+\n;
+\t;Dictionnaire anglais-français
+\c;file  \n; = fichier
+\c;handle\n; = poignée, manipuler
+\c;open  \n; = ouvre
+\c;close \n; = ferme
+
+\t;Voir aussi
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;readln\u cbot\readln;\n;, \c;\l;writeln\u cbot\writeln;\n; et \c;\l;eof\u cbot\eof;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

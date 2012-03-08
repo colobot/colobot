@@ -1,0 +1,11 @@
+\b;Mrówka
+\image ant 8 8;
+Mrówki strzelaj¹ ma³ymi ¿r¹cymi kulkami które wgryzaj¹ siê w os³ony ochronne robotów i budynków, powoduj¹c ich zniszczenie.
+
+\l;Cz³owiek\u object\human; mo¿e znacznie d³u¿ej wytrzymaæ ich ataki ni¿ wiêkszoœæ budynków i robotów, gdy¿ Twoja os³ona ochronna odnawia siê, gdy goj¹ siê jego rany. Jednka¿e, jeœli zostaniesz zbyt d³ugo w ich zasiêgu lub gdy jest ich zbyt du¿o, Twoje ¿ycie mo¿e byæ w wielkim niebezpieczeñstwie.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;AlienAnt\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,0 +1,36 @@
+extern void object::Guêpes()
+{
+float    p;// puissance max des moteurs
+float    r;// nombre aléatoire
+point    c;// centre de la zone permise
+
+c.x = 0;
+c.y = 0;
+c.z = 0;
+
+p = 1;
+jet( rand()*4 + 1);
+
+while (true)
+{
+if (distance(position, c) > 275)
+{
+if (direction(c) > 0) motor(0.7*p, p); else motor(p, 0.7*p);
+while (abs(direction(c)) > 30) wait(1); 
+}
+
+motor(p,p);
+r = rand();
+if (r < 0.4)
+{
+motor(p, p-rand()*0.8);
+}
+if (r > 0.6)
+{
+motor(p-rand()*0.8, p);
+}
+if (r <= 0.7 and r >= 0.3) jet(rand()*4 + 1);
+
+wait(1);
+}
+}

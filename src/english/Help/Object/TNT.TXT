@@ -1,0 +1,12 @@
+\b; Explosive (TNT)
+\image tnt 4 4;
+A TNT charge is extremely sensitive. You should approach it with caution so as not to hit it or give it any kind of shock. The risk is minimized once the explosive is within a \l;grabber\u object\botgr;'s grasp.
+
+\t;Transport
+All \l;grabbers\u object\botgr; and the \l;astronaut\u object\human;.
+
+\t;Object \l;Category\u cbot\category;
+\c;TNT\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

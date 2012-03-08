@@ -1,0 +1,38 @@
+\b;Æwiczenie
+Przenieœ \l;kostkê tytanu\u object\titan; na platformê koñcow¹. Pozycja tytanu nie jest znana, ale wspó³rzêdne platformy koñcowej to: x=10, y=-60.
+
+\b;Instrukcja \c;goto\n;
+Aby ³atwiej rozwi¹zaæ ten problem, u¿yjemy nowego sposobu poruszania robotem, instrukcji \c;\l;goto\u cbot\goto;\n;. Dziêki niej mo¿na bardzo ³atwo dotrzeæ do ka¿dej pozycji, jeœli tylko znana jest jej dok³adna lokalizacja w postaci wspó³rzêdnych x i y. Robot obróci siê w kierunku celu, pojedzie naprzód, a nawet ominie napotkane przeszkody.
+
+Podsumowuj¹c, s¹ trzy ró¿ne sposoby poruszania robotem:
+
+\s;\c;motor(lewy, prawy)\n;
+Umo¿liwia ci¹g³¹ i bezpoœredni¹ kontrolê nad oboma silnikami robota.
+
+\s;\c;move(distance)\n; i \c;turn(angle)\n;
+U¿yj tych instrukcji do przemieszczania robota o okreœlon¹ odleg³oœæ lub obrotu o okreœlony k¹t. Wszystkie parametry odnosz¹ siê do obecnej pozycji robota.
+
+\s;\c;goto(pozycja)\n;
+Umo¿liwia ³atwe dotarcie do podanej pozycji.
+
+\b;Program
+U¿yj instrukcji \c;\l;radar\u cbot\radar;(Titanium);\n; do znalezienia kostki tytanu. Nastêpnie sprawdŸ, czy kostka tytanu rzeczywiœcie zosta³a znaleziona. W tym æwiczeniu ta linia nie jest bardzo przydatna, gdy¿ wiadomo, ¿e gdzieœ jest kostka tytanu. Jednak¿e warto wyrobiæ sobie nawyk sprawdzania danych podawanych przez radar:
+\c;
+\s;object  item;
+\s;item = radar(Titanium);
+\s;if ( item == null )  return;
+\s;goto(item.position);
+\n;
+Zmienna \c;item\n; jest typu \c;\l;object\u cbot\object;\n;. Aby poznaæ dok³adn¹ pozycjê obiektu opisywanego przez zmienn¹, wystarczy napisaæ \c;item.position\n;.
+
+Do podniesienia kostki tytanu u¿yj instrukcji \c;\l;grab\u cbot\grab;()\n; bez parametrów.
+
+Do upuszczenia tytanu u¿yj instrukcji \c;\l;drop\u cbot\drop;()\n; bez parametrów.
+
+Wspó³rzêdne platformy koñcowej to: x=10, y=-60. Nale¿y zadeklarowaæ \l;zmienn¹\u cbot\var; typu \l;point\u cbot\point;, a nastêpnie przypisaæ jej odpowiednie wspó³rzêdne. PóŸniej mo¿na j¹ podaæ jako parametr instrukcji \c;\l;goto\u cbot\goto;\n;.
+Wskazówka: Nie musisz siê przejmowaæ wspó³rzêdn¹ \c;z\n; w przypadku robotów nie potrafi¹cych lataæ.
+
+Do Ciebie nale¿y dokoñczenie programu...
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

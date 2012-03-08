@@ -1,0 +1,9 @@
+\b;Instructions de Houston
+Au moment du décollage, le satellite d'observation nous a informé qu'il a découvert un robot d'un type inconnu. Ramenez ce robot sur le vaisseau.
+
+Nos ingénieurs ont trouvé entre-temps une manière de faire fonctionner les réacteurs dans les températures qui règnent sur Volcano, au moins pour de courtes durées. Les informations nécessaires ont été transmises à votre vaisseau.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

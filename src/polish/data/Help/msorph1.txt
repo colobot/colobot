@@ -1,0 +1,15 @@
+\b;Rozwi¹zanie
+1) Szybko zbuduj \l;stacjê odgromnikow¹\u object\captor; w pobli¿u niebieskiej flagi.
+Wszystkie pozosta³e budynki powinny znaleŸæ siê w jej <zasiêgu> \button 41;.
+2) Zanieœ puste \l;ogniwa elektryczne\u object\power; pod stacjê odgromnikow¹. Zostan¹ one na³adowane po uderzeniu pioruna.
+3) Zbuduj \l;kopalniê\u object\derrick;.
+4) Zbuduj \l;hutê\u object\convert;.
+5) Uruchom program \c;CollectTitanium3\n;, aby rozpocz¹æ produkcjê \l;tytanu\u object\titan;.
+6) Zbuduj \l;fabrykê robotów\u object\factory;.
+7) Zbuduj \l;lataj¹ce dzia³o organiczne\u object\botoj;.
+8) Zbuduj \l;radar\u object\radar;.
+9) ZnajdŸ i zniszcz wszystkie \l;mrówki\u object\ant;.
+10) Wróæ na \l;statek kosmiczny\u object\base; i odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

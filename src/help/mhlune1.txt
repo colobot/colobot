@@ -1,0 +1,27 @@
+\b;Instructions de Houston
+Ramenez 4 unités de \l;minerai de titanium\u object\titanore; sur votre \l;vaisseau\u object\base;.
+Construisez le matériel nécessaire (robots volants).
+
+Avant de vous lancer dans une mission, consultez toujours le rapport du satellite d'observation en cliquant sur l'icône correspondante ci-contre à gauche \button 186;.
+
+Nous vous avons envoyé un programme pour vous faciliter la tâche, référez-vous à la page correspondante à l'aide de l'icône \button 53;.
+ 
+\b;Marche à suivre
+1) Construisez un \l;centre de recherches\u object\research;.
+2) Effectuez la recherche <robots volants>.
+
+Lorsque la recherche est terminée, de nouveaux types de robots sont ajoutés à la liste que peut produire la fabrique. De plus, le réacteur placé sous votre sac de survie devient opérationnel.
+
+3) Construisez une \l;fabrique de robots\u object\factory;.
+4) Fabriquez un \l;robot déménageur volant\u object\botgj;.
+5) Ramenez 4 unités de \l;minerai de titanium\u object\titanore; sur votre \l;vaisseau\u object\base;.
+6) Embarquez le \l;robot déménageur à roues\u object\botgr; et le \l;robot déménageur volant\u object\botgj;, car ils seront peut-être utiles dans la mission suivante.
+
+Attention à ne pas tomber en panne d'énergie avec votre déménageur volant. Si nécessaire, changez la \l;pile\u object\power; avant de partir au loin (voir le programme envoyé par Houston \button 53;).
+
+Utilisez la mini-carte en bas à droite pour ne pas vous perdre dans les nombreux cratères présents sur la lune.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

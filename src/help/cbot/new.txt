@@ -1,0 +1,19 @@
+\b;Instruction \c;new\n; (pour spécialistes)
+Une instance de \l;classe\u cbot\class; peut être créée par l'opérateur \c;new\n;¦:
+\c;\s;	MaClasse item;  // item vaut null
+\s;	item = new MaClasse();
+\n;
+Lorsque l'instance est créée en même temps que la déclaration, il est possible de simplifier l'écriture¦:
+\c;\s;	MaClasse item = new MaClasse();
+\s;	MaClasse item();  // identique
+\n;
+Si, par exemple, la classe contient un constructeur avec deux paramètres numériques, il est possible d'écrire¦:
+\c;\s;	MaClasse item = new MaClasse(2, 3);
+\s;	MaClasse item(2, 3);  // identique
+\n;
+\t;Dictionnaire anglais-français
+\c;new\n; = nouveau
+
+\t;Voir aussi
+\l;Références\u cbot\pointer;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,11 @@
+\b;Solution
+Pour éliminer les fourmis et araignées dans ce paysage vaste et au relief accidenté, vous avez besoin de \l;robots shooter volants\u object\botfj; équipés de \l;piles atomiques\u object\atomic;. La cuvette au sud-est offre tout ce dont vous avez besoin: des cubes de titanium, des piles et même un \l;robot déménageur volant\u object\botgj; en état de marche.
+
+1)  Construisez un \l;radar\u object\radar; et un \l;robot shooter volant\u object\botfj; et équipez-le d'une pile. Tuez la fourmi qui empêche l'accès vers le minerai d'uranium à l'extrême nord-est.
+
+2)  En utilisant l'ancienne \l;centrale nucléaire\u object\nuclear; sur la colline et le \l;robot déménageur volant\u object\botgj;, confectionnez une ou plusieurs \l;piles atomiques\u object\atomic;, et équipez-en le \l;robot shooter volant\u object\botfj;
+
+3)  Eliminez toute présence hostile. La fourmi dans l'angle nord-ouest de la carte se cache dans un trou; contournez-le pour l'approcher depuis l'ouest.
+
+\t;Voir aussi
+\l;Commandes\u command;.

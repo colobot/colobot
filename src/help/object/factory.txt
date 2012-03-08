@@ -1,0 +1,32 @@
+\b;\button 160; Fabrique de robots
+\image factory 8 8;
+Ce bâtiment permet de construire un robot à choix, à partir de \l;titanium\u object\titan;.
+
+1) Déposer le \l;cube de titanium\u object\titan; à l'intérieur de la fabrique.
+2) S'éloigner.
+3) Sélectionner la fabrique.
+4) Cliquer sur le bouton correspondant au robot à produire.
+
+Le robot produit n'a pas de \l;pile\u object\power;. Il faut lui en apporter une pour qu'il puisse quitter la fabrique.
+La liste des robots qu'il est possible de produire dépend des \l;recherches\u object\research; effectuées.
+
+\t;Emplacement requis
+Surface plate quelconque de 7.5 mètres de diamètre.
+
+\t;Entrée
+Titanium.
+
+\t;Sortie
+Robot.
+
+\t;Energie consommée
+Aucune.
+
+\t;Durée de l'opération
+15 secondes.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;BotFactory\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,57 @@
+Audio         track=11 repeat=0
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=176;176;181;0 water=10;100;20;0  // grey
+VehicleColor  color=117;158;64;0  // vert
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.5 water=0.1
+SecondTexture rank=3
+Background    up=176;176;181;0 down=176;176;181;0 cloudUp=0;0;0;0 cloudDown=104;104;104;0
+FrontsizeName image="lens5.tga"
+
+TerrainGenerate vision=400.00 depth=1 hard=0.7
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief23.bmp" factor=1.0
+TerrainResource image="textures\res00.bmp"
+TerrainCloud    image="cloud03.tga" level=125.0
+
+TerrainMaterial id=1 image="mix01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=2 image="mix01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=3 image="mix01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=4 image="mix01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=5 image="mix01" u=0.00 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=6 image="mix01" u=0.25 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=7 image="mix01" u=0.50 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=8 image="mix01" u=0.75 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=9 image="mix01" u=0.00 v=0.50 up=1 down=1 left=1 right=1 hard=0.6
+
+TerrainInit     id=1
+TerrainLevel    id=2 min=0.0 max=99.0 slope=0.0 freq= 20.0
+TerrainLevel    id=3 min=0.0 max=99.0 slope=0.0 freq= 20.0
+TerrainLevel    id=4 min=0.0 max=99.0 slope=0.0 freq= 20.0
+TerrainLevel    id=5 min=0.0 max=99.0 slope=0.0 freq= 20.0
+TerrainLevel    id=6 min=0.0 max=99.0 slope=0.0 freq= 20.0
+TerrainLevel    id=7 min=0.0 max=99.0 slope=0.0 freq= 20.0
+TerrainLevel    id=8 min=0.0 max=99.0 slope=0.0 freq= 20.0
+TerrainLevel    id=9 min=0.0 max=99.0 slope=0.0 freq= 20.0
+
+TerrainCreate
+
+MaxFlyingHeight max=40
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=1.0 type=SpaceShip run=3
+CreateObject pos=-2.00;-3.25 dir=1.0 type=Me
+CreateObject pos= 2.25;-3.25 dir=1.5 type=Thumper
+CreateObject pos=-3.25;-3.25 dir=0.0 type=BlackBox
+CreateObject pos=-3.00; 0.00 dir=0.1 type=Firework pyro=WIN
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.2;-0.5;-0.8  // orange
+
+Camera eye=-12.00;10.00;-12.00 lookat=0.00;10.00;0.00

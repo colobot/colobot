@@ -1,0 +1,15 @@
+extern void object::Solution()
+{
+	
+	object    item;
+	
+	item = radar(TitaniumOre);
+	goto(item.position);
+	grab();
+	
+	item = radar(Converter);
+	goto(item.position);
+	drop();
+	move(-3);
+	
+}

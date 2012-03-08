@@ -1,0 +1,16 @@
+\b;Zadanie
+Zabij kilka paj¹ków, których po³o¿enie nie jest znane. Do ich znalezienia u¿yj radaru robota.
+
+\t;Program
+ZnajdŸ najbli¿szego paj¹ka instrukcj¹ \c;\l;radar\u cbot\radar;(AlienSpider);\n;, tak jak w poprzednich æwiczeniach z rud¹ tytanu i ogniwami elektrycznymi. Nie podchodŸ jednak do paj¹ka, gdy¿ robot ulegnie zniszczeniu, zanim tam dojdzie. Obróæ siê tylko w jego kierunku. Instrukcja \c;\l;direction\u cbot\direct;(item.position)\n; obliczy k¹t obrotu, jaki powinien wykonaæ robot, aby wycelowaæ w paj¹ka. Aby wycelowaæ w paj¹ka nale¿y napisaæ::
+\c;
+\s;	\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(item.position));
+\n;
+Zauwa¿ dwa nawiasy zamykaj¹ce na koñcu wiersza, przed œrednikiem. S¹ dwa nawiasy otwieraj¹ce, wiêc musz¹ siê te¿ pojawiæ dwa nawiasy zamykaj¹ce.
+
+Nastêpnie strzel, wykonuj¹c instrukcjê \c;\l;fire\u cbot\fire;(1);\n;.
+
+Równie¿ tutaj mo¿esz u¿yæ pêtli \c;\l;while\u cbot\while; (true)\n; aby nie musieæ ponownie wykonywaæ programu dla ka¿dego paj¹ka, tak jak w poprzednim æwiczeniu.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

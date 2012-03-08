@@ -1,0 +1,13 @@
+extern void object::Solution( )
+{
+	float h;
+	h = hypotenuse(10, 20);
+	message(h);
+}
+
+float object::hypotenuse(float a, float b)
+{
+	float hyp;
+	hyp = sqrt( a**2 + b**2 );
+	return hyp;
+}

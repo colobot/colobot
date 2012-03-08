@@ -1,0 +1,22 @@
+\b;Type \c;int\n;
+Ce type permet de représenter des nombres entiers positifs ou négatifs. Par exemple¦:
+\c;
+\s;	12
+\s;	1000
+\s;	-4
+\n;
+Pour représenter un nombre réel (12.05 ou -0.005 par exemple) il faut utiliser le type \c;\l;float\u cbot\float;\n;.
+
+\t;Remarque
+Vous ne pouvez pas utiliser d'espace ou d'apostrophe dans un nombre.
+
+\t;Le coin du spécialiste
+Sachez que ce type utilise 32 bits.
+La valeur maximale représentable est (2^31)-1, soit 2'147'483'647.
+La valeur minimale représentable est -(2^31), soit -2'147'483'648.
+
+\t;Dictionnaire anglais-français
+\c;integer\n; = nombre entier
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

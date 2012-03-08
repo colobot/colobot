@@ -1,0 +1,9 @@
+extern void object::Solution()
+{
+	move(70);
+	grab();
+	turn(180);
+	move(110);
+	drop();
+	move(-10);
+}

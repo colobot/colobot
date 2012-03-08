@@ -1,0 +1,33 @@
+\b;Une deuxième croix
+Le robot est de nouveau posé au départ, comme avant (toujours mal orienté à cause du chat), mais une deuxième croix bleue a été ajoutée par terre, un peu plus loin à gauche. Il faut compléter le programme pour la trouver.
+
+\image teen103 8 8;
+\b;Compléter le programme
+Dans l'exercice précédent, le programme avait 2 instructions¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	turn(45);
+\s;	move(40);
+\s;}
+\n;
+Tu dois maintenant lui ajouter 2 instructions. La première pour tourner à gauche d'un quart de tour, c'est-à-dire 90 degrés. Et la deuxième pour avancer de 80 centimètres. Le programme complet sera¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	turn(45);
+\s;	move(40);
+\s;	
+\s;	turn(90);
+\s;	move(80);
+\s;}
+\n;
+A toi de jouer¦...
+
+\b;Observer
+Après avoir fermé cette fenêtre, tu peux observer les alentours simplement en appuyant sur les touches flèches du clavier.
+
+\b;Un problème ?
+En cas d'erreur, tu peux remettre le robot à la position initiale avec le bouton \button 9;.
+
+La touche \key;\key help;\norm; ou l'icône \button 185; permettent de revoir ces instructions en tout temps¦!

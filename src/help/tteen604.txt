@@ -1,0 +1,7 @@
+\b;Une question astucieuse
+Toujours avec exactement le même programme, essaie d'imaginer ce qui va se passer dans cette situation¦:
+
+\image teen604 10 10;
+N'oublie pas que le robot avance tout droit, sauf lorsqu'il est face à un mur. Dans ce cas, il tourne toujours à droite (c'est-à-dire dans le sens des aiguilles d'une montre).
+
+Seulement lorsque tu penses avoir compris le comportement du robot, ferme cette fenêtre et exécute le programme¦...

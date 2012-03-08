@@ -1,0 +1,11 @@
+\b;Æwiczenie
+Zaprogramuj robota tak, aby znajdowa³ wyjœcie z labiryntu bez uderzania o œciany. Zak³adamy, ¿e uk³ad labiryntu nie jest znany, ale nie ma w nim zapêtleñ ani œlepych korytarzy. Labirynt sk³ada siê z kwadratów o boku 5 m ka¿dy.
+
+\b;Przydatne instrukcje
+\c;\l;radar\u cbot\radar;\n; wykrywanie przeszkód
+\c;\l;if\u cbot\if;\n; sprawdzanie warunku
+\c;\l;move\u cbot\move;\n; poruszanie robotem
+\c;\l;turn\u cbot\turn;\n; obracanie robota
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

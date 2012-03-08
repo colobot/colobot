@@ -1,0 +1,20 @@
+\b;From Mission Control
+We have no way of being sure where the previous expedition was headed when it left the Moon surface nor why it chose to go wherever it was going.
+
+Locate the \l;black box\u object\bbox; they must have left behind and bring it back aboard your ship. The black box should contain the coordinates of the next planet the expedition was planning to visit.
+
+Your bot's \l;power cells\u object\power; are almost entirely empty. Recharging them should be your priority. The observation satellite in orbit indicates that the subsoil in this particular area is loaded with energy. You should therefore be able to build a functional \l;power station\u object\station; on any flat surface.
+
+We have developed a program that will recharge the \l;power cell\u object\power; of a bot. Refer to the program page of your SatCom \button 53;.
+
+\b;Procedure
+1) You first need to build a \l;converter\u object\convert; that converts the chunks of titanium ore already in your possession into usable \l;titanium cubes\u object\titan;.
+
+2) You should then build both a \l;power station\u object\station; and a \l;radar\u object\radar; which will indicate the location of the black box on your mini map.
+
+3) With your power cells fully charged, retrieve the black box. It needs to be placed on the \l;spaceship\u object\base; platform for you to be able to take off.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

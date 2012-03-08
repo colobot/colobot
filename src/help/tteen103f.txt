@@ -1,0 +1,21 @@
+\b;Dessin libre
+Tu peux déplacer librement le petit robot, soit en le programmant, soit en le dirigeant directement avec les touches flèches.
+
+\image teendraw1 5 5;
+Ces boutons permettent de choisir directement le crayon à utiliser. Le bouton central relève le crayon.
+
+\b;Enregistrer un programme
+Pour enregistrer un programme, clique d'abord sur le programme de ton choix (1 à 10) dans la liste en bas à gauche.
+Clique ensuite sur le bouton d'enregistrement \button 44;¦:
+
+\image teendraw2 5 4;
+Tout ce que tu fais maintenant est enregistré: déplacements, rotations et changements de crayons. Clique sur le bouton stop \button 45; lorsque c'est fini. Un programme nommé \c;AutoDraw\n; est alors disponible.
+
+Tu peux répèter le dessin simplement en exécutant le programme \c;AutoDraw\n; avec \button 21;. Bien sûr, tu peux aussi modifier le programme avec \button 22;. Profites-en pour changer le nom \c;AutoDraw\n; en quelque chose de plus clair (\c;Fleur\n;, \c;Maison\n;, etc.). Mais le nom que tu donnes ne doit pas contenir d'espaces.
+
+\b;Astuce
+Il est amusant de créer des petits programmes pour dessiner des parties d'un plus grand ensemble. Par exemple, une fenêtre d'une maison.
+C'est souvent bien plus simple si tu abaisses le crayon au début du programme, et si tu le relèves à la fin.
+
+\b;Nouveau dessin
+Tu peux effacer le dessin et remettre le robot au centre de la page avec le bouton \button 9;. Bien sûr, les programmes ne sont pas effacés.

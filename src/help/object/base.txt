@@ -1,0 +1,11 @@
+\b;\button 171; Vaisseau spatial
+\image base 8 8;
+Vaisseau spatial avec lequel vous atterrissez sur les planètes, afin de remplir une mission. Lorsque la mission est terminée, il faut sélectionner ce vaisseau, puis cliquer sur le bouton <décoller> \button 28;.
+
+En plus de votre propre personne, ce vaisseau peut transporter des robots et des matières premières.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;SpaceShip\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

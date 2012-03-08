@@ -1,0 +1,25 @@
+\b;Instrukcja \c;break\n;
+Sk³adnia:
+\s;\c;while ( warunek )
+\s;{
+\s;	break;
+\s;}
+\n;
+Instrukcja break koñczy wykonywanie pêtli \c;\l;while\u cbot\while;\n; lub \c;\l;for\u cbot\for;\n;.
+
+Oto przyk³ad:
+\s;\c;int i = 0;
+\s;while ( true )
+\s;{
+\s;	\n;Instrukcje ...\c;
+\s;	i = i+1;
+\s;	if ( i >= 10 )
+\s;	{
+\s;		break;
+\s;	}
+\s;	\n;wiêcej instrukcji ...\c;
+\s;}
+\n; 
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

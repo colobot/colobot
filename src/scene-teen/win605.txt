@@ -1,0 +1,78 @@
+Audio         track=11 repeat=0
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=205;86;21;0 water=200;100;0;0  // beige/orange
+VehicleColor  color=234;129;26;0  // orange
+GreeneryColor color=250;187;69;0
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=1
+Background    up=192;72;0;0 down=207;192;15;0 cloudUp=0;0;0;0 cloudDown=205;86;21;0
+FrontsizeName image="lens5.tga"
+Planet        pos=4.8;0.0 dim=2.0 image="effect01.tga" uv1=0.00;0.25 uv2=0.25;0.50
+
+TerrainGenerate vision=250.00 depth=1 slope=3.0 hard=0.6
+TerrainWind     speed=0.0;-5.0
+TerrainRelief   image="textures\relief18.bmp" factor=1.0
+TerrainResource image="textures\resae.bmp"
+TerrainCloud    image="cloud05.tga" level=125.0
+
+TerrainMaterial id=10 image="chili01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.8
+TerrainMaterial id=11 image="chili01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.7
+TerrainMaterial id=12 image="chili01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.7
+TerrainMaterial id=13 image="chili01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.7
+TerrainMaterial       image="chili01" u=0.00 v=0.25 up=2 down=1 left=1 right=1 hard=0.7
+TerrainMaterial       image="chili01" u=0.25 v=0.25 up=1 down=1 left=1 right=2 hard=0.7
+TerrainMaterial       image="chili01" u=0.50 v=0.25 up=1 down=2 left=1 right=1 hard=0.7
+TerrainMaterial       image="chili01" u=0.75 v=0.25 up=1 down=1 left=2 right=1 hard=0.7
+TerrainMaterial       image="chili01" u=0.00 v=0.50 up=2 down=1 left=2 right=1 hard=0.7
+TerrainMaterial       image="chili01" u=0.25 v=0.50 up=2 down=1 left=1 right=2 hard=0.7
+TerrainMaterial       image="chili01" u=0.50 v=0.50 up=1 down=2 left=1 right=2 hard=0.7
+TerrainMaterial       image="chili01" u=0.75 v=0.50 up=1 down=2 left=2 right=1 hard=0.7
+TerrainMaterial id=14 image="chili01" u=0.00 v=0.75 up=2 down=2 left=2 right=2 hard=0.7
+TerrainMaterial id=15 image="chili01" u=0.25 v=0.75 up=2 down=2 left=2 right=2 hard=0.7
+TerrainMaterial id=16 image="chili01" u=0.50 v=0.75 up=2 down=2 left=2 right=2 hard=0.7
+TerrainMaterial id=17 image="chili01" u=0.75 v=0.75 up=2 down=2 left=2 right=2 hard=0.5
+
+TerrainMaterial id=20 image="chili02" u=0.00 v=0.00 up=3 down=3 left=3 right=3 hard=0.0
+TerrainMaterial id=21 image="chili02" u=0.25 v=0.00 up=3 down=3 left=3 right=3 hard=0.0
+TerrainMaterial id=22 image="chili02" u=0.50 v=0.00 up=3 down=3 left=3 right=3 hard=0.0
+TerrainMaterial id=23 image="chili02" u=0.75 v=0.00 up=3 down=3 left=3 right=3 hard=0.0
+TerrainMaterial id=24 image="chili02" u=0.00 v=0.25 up=3 down=3 left=3 right=3 hard=0.1
+TerrainMaterial id=25 image="chili02" u=0.25 v=0.25 up=3 down=3 left=3 right=3 hard=0.1
+TerrainMaterial id=26 image="chili02" u=0.50 v=0.25 up=3 down=3 left=3 right=3 hard=0.1
+TerrainMaterial id=27 image="chili02" u=0.75 v=0.25 up=3 down=3 left=3 right=3 hard=0.1
+TerrainMaterial       image="chili02" u=0.00 v=0.50 up=3 down=1 left=1 right=1 hard=0.5
+TerrainMaterial       image="chili02" u=0.25 v=0.50 up=1 down=1 left=1 right=3 hard=0.5
+TerrainMaterial       image="chili02" u=0.50 v=0.50 up=1 down=3 left=1 right=1 hard=0.5
+TerrainMaterial       image="chili02" u=0.75 v=0.50 up=1 down=1 left=3 right=1 hard=0.5
+TerrainMaterial       image="chili02" u=0.00 v=0.75 up=3 down=1 left=3 right=1 hard=0.5
+TerrainMaterial       image="chili02" u=0.25 v=0.75 up=3 down=1 left=1 right=3 hard=0.5
+TerrainMaterial       image="chili02" u=0.50 v=0.75 up=1 down=3 left=1 right=3 hard=0.5
+TerrainMaterial       image="chili02" u=0.75 v=0.75 up=1 down=3 left=3 right=1 hard=0.5
+
+TerrainInit     id=10
+TerrainLevel    id=20;21;22;23 min=50.0 max=99.0 slope=0.0 freq=100.0
+TerrainLevel    id=10;11;12;13 min= 0.0 max=50.0 slope=0.0 freq=100.0
+TerrainLevel    id=14;15;16;17 min=25.0 max=45.0 slope=7.0 freq=100.0
+TerrainLevel    id=20;21;22;23;24;25;26;27 min=140.0 max=900.0 slope=7.0 freq=100.0
+
+TerrainCreate
+
+MaxFlyingHeight max=40
+
+BeginObject
+CreateObject pos=160.00;-260.00 dir=1.0 type=SpaceShip run=3
+CreateObject pos=162.25;-256.75 dir=1.0 type=Me
+CreateObject pos=160.00;-257.75 dir=1.5 type=WingedOrgaShooter
+CreateObject pos=157.00;-260.00 dir=0.1 type=Firework pyro=WIN
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.2;-0.5;-0.8  // orange
+
+Camera eye=145.00;10.00;-245.00 lookat=160.00;10.00;-260.00

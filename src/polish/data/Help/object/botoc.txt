@@ -1,0 +1,18 @@
+\b;\button 154; Dzia³o organiczne na g¹sienicach
+\image botoc 8 8;
+Robot na g¹sienicach strzelaj¹cy kulami organicznymi.
+
+Dzia³ko organiczne jest efektywniejsze od \l;dzia³ka ogniowego\u object\botfc;. Strzela ono ma³ymi kulkami ¿r¹cej \l;materii organicznej\u object\bullet;. \l;Zwyk³e ogniwo elektryczne\u object\power; wystarcza na oddanie 11 serii strza³ów.
+
+Roboty na g¹sienicach mog¹ pokonywaæ strome pochy³oœci ale s¹ raczej powolne i zu¿ywaj¹ mnóstwo energii. Na p³askim terenie na krótszych dystansach lepszym wyborem jest \l;dzia³o organiczne na ko³ach\u object\botor;. Gdy jest to mo¿liwe, zbudowanie \l;robota lataj¹cego\u object\botoj; jest najlepszym sposobem pokonywania du¿ych odleg³oœci.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania dzia³ka strzelaj¹cego kulami organicznymi s³u¿y instrukcja \c;\l;fire\u cbot\fire;\n;. Lufê mo¿na podnieœæ lub opuœciæ u¿ywaj¹c instrukcji \c;\l;aim\u cbot\aim;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;TrackedOrgaShooter\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

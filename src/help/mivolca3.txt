@@ -1,0 +1,19 @@
+\b;Rapport du satellite
+En orbite géostationnaire autour de Volcano.
+\c;
+\s;-> SURFACE\c;
+\tab;Température:      83.5 degrés
+\tab;Atmosphère:       CO2, SO2, HCN, HS, CH4, NH3
+\tab;Vent:             3.4 m/s
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+
+\s;-> SOUS-SOL\c;
+\tab;Energie:          partout
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+
+\s;-> INFORMATIONS SPECIALES\c;
+\tab;Détecté:          fourmis géantes
+\tab;  - Danger:       oui, pas imminent
+\n;

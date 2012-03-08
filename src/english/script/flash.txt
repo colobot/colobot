@@ -1,0 +1,8 @@
+extern void object::Flash( )
+{
+	while ( true )
+	{
+		if ( energyCell.energyLevel == 0 )  break;
+		wait(1);
+	}
+}

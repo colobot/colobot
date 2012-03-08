@@ -1,0 +1,7 @@
+\b;Z Centrum Kontroli Misji
+Satelita obserwacyjny wykry³ porcjê \l;rudy uranu\u object\uranore; na szczycie g³ównego wzniesienia. Twoim zadaniem jest dostarczenie jej na statek kosmiczny.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

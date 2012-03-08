@@ -1,0 +1,15 @@
+\b;Walkthrough
+In order to build the \l;research center\u object\research;, drop a \l;titanium cube\u object\titan; on a flat surface not too far from the spaceship. \l;You\u object\human; can carry the cube yourself, or use the available \l;grabber\u object\botgr;.
+
+If you used the bot, move it away from the cube in order not to interfere with the construction. To shift the selection from the bot to yourself (remember that only you can build), use \key;\key human;\norm;.
+
+Position yourself close to the \l;titanium cube\u object\titan; and build a \l;research center\u object\research; \button 163;. Drop a \l;power cell\u object\power; on the \l;research center\u object\research;, select the building and click the \button 65; symbol in order to perform the <winged bots research program>.
+
+Build a \l;bot factory\u object\factory; in the same way, and drop a \l;titanium cube\u object\titan; in the center. Build a \l;winged grabber\u object\botgj; with the \button 139; symbol, and power it with a \l;power cell\u object\power;.
+
+It may be preferable to scout the area yourself in order to save power. You'll find the chunks of titanium ore at the bottom of a few craters located north of the spaceship. A \l;flag\u object\flag; may help you pin down the spot faster on subsequent trips.
+
+Collect 4 chunks of \l;titanium ore\u object\titanore; and bring them back aboard your \l;spaceship\u object\base;. Take the \l;winged grabber\u object\botgj; and the \l;wheeled grabber\u object\botgr; along with you and take off \button 28;.
+
+\t;See also
+\l;Controls\u command;

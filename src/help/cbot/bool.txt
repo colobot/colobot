@@ -1,0 +1,11 @@
+\b;Type \c;bool\n;
+Ce type permet de représenter une valeur booléenne, c'est-à-dire une valeur ne pouvant prendre que deux états: vrai ou faux.
+
+\s;\c;	true   \n;vrai
+\s;\c;	false  \n;faux
+
+\t;Dictionnaire anglais-français
+\c;boolean\n; = booléen
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

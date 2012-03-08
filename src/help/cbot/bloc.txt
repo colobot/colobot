@@ -1,0 +1,49 @@
+\b;Les blocs
+Les accolades \c;{ }\n; permettent de grouper plusieurs instructions dans un bloc. Par exemple¦:
+\c;
+\s;	{
+\s;		float  t;
+\s;		t = a;
+\s;		a = b;
+\s;		b = t;  // permute a et b
+\s;	}
+\n;
+Chaque instruction dans le bloc est terminée par un \l;point-virgule\u cbot\term;, mais pas le bloc lui-même.
+Considérons l'exemple suivant utilisant l'instruction \c;\l;if\u cbot\if;\n;¦:
+\c;
+\s;	if ( a < b )
+\s;		\n;instruction 1\c;;
+\s;		\n;instruction 2\c;;
+\s;	\n;instruction 3\c;;
+\n;
+Si la \l;condition\u cbot\cond; est vraie, les instructions 1, 2 et 3 sont exécutées. En revanche, si la condition est fausse, seule l'instruction 1 est sautée (on exécute donc les instructions 2 et 3). Le fait que l'instruction 2 soit alignée avec la 1 n'y change rien.
+Pour n'exécuter les instructions 1 et 2 que si la condition est vraie, il faut les grouper dans un bloc¦:
+\c;
+\s;	if ( a < b )
+\s;	{
+\s;		\n;instruction 1\c;;
+\s;		\n;instruction 2\c;;
+\s;	}
+\s;	\n;instruction 3\c;;
+\n;
+Les blocs sont très utilisés avec les instructions \c;\l;if\u cbot\if;\n;, \c;\l;while\u cbot\while;\n; et \c;\l;for\u cbot\for;\n;, pour grouper plusieurs instructions à exécuter ou à répéter.
+On imbrique très souvent des blocs dans d'autres blocs, et ceci à autant de niveaux que nécessaire. Voici un exemple d'imbrication à deux niveaux¦:
+\c;
+\s;	if ( a > b )
+\s;	{
+\s;		int  i = 0;
+\s;		while ( i < 18 )
+\s;		{
+\s;			move(10);
+\s;			turn(5);
+\s;			i = i+1;
+\s;		}
+\s;	}
+\n;
+En général, pour des questions de lisibilité, on aligne verticalement l'accolade ouvrante \c;{\n; avec sa partenaire fermante \c;}\n;. Mais cela n'est pas obligatoire. L'exemple suivant, beaucoup plus compact mais déconseillé, est strictement équivalent à l'exemple précédent¦:
+\c;
+\s;	if(a>b) { int i=0; while(i<18) {
+\s;	move(10);turn(5);i=i+1; }}
+\n;
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

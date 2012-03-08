@@ -1,0 +1,14 @@
+\b;\button 148; Robot recycleur
+\image botrecy 8 8;
+Robot de récupération, permettant de transformer une \l;épave de robot\u object\wreck; en un \l;cube de titanium\u object\titan;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;Recycler\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour récupérer une épave par programmation, il faut utiliser l'instruction \c;\l;recycle\u cbot\recycle;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

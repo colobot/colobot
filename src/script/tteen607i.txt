@@ -1,0 +1,22 @@
+extern void object::Go( )
+{
+	repeat(100)
+	{
+		if( not detect(Barrier) )
+		{
+			#
+		}
+		
+		turn(-90);
+		if( not detect(Barrier) )
+		{
+			
+		}
+		
+		turn(180);
+		if( not detect(Barrier) )
+		{
+			
+		}
+	}
+}

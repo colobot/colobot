@@ -1,0 +1,11 @@
+\b;Instruction \c;abstime\n;
+Syntax¦:
+\s;\c;abstime ( );\n;
+
+Return the time in seconds elapsed since the beginning of the mission.
+
+\t;Return: \c;\l;float\u cbot\float;\n;
+Time in seconds.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,5 @@
+\b;Zadanie
+W tej misji mo¿esz graæ bez okreœlonego konkretnego celu. Mo¿esz robiæ co chcesz, poznawaæ okolicê, budowaæ bazê i roboty, wykonywaæ programy badawcze, zabijaæ ewentualnych wrogów, itp.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;.

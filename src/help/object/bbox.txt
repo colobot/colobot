@@ -1,0 +1,14 @@
+\b;Boîte noire
+\image bbox 4 4;
+Une boîte noire est en réalité orange, afin d'être facilement repérable. Chaque \l;vaisseau spatial\u object\base; est équipé d'une boîte noire qui enregistre en continu tous les événements notables.
+
+Une boîte noire peut également servir à laisser des informations sur place. La première expédition a laissé sur chaque planète une boîte noire contenant les coordonnées de la planète vers laquelle elle s'est dirigée ensuite.
+
+\t;Transport
+Tous les \l;robots déménageurs\u object\botgr; ou le \l;cosmomaute\u object\human;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;BlackBox\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

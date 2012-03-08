@@ -1,0 +1,36 @@
+
+extern void TheTest()
+{
+	for (int x = 130; x>0; x--) print (x);
+}
+
+extern void Test()
+{
+	int var = 10000 ;
+	while (var > 0) var = var -1;
+}
+// exécuté en 30 secondes
+
+extern void Autre()
+{
+	int var = 10000 ;
+	while (var > 0) if ( var > 0 ) var = var -1;
+}
+// exécuté en 45 secondes
+
+int Y ( int n )
+{
+	if ( n < 2 ) return n;
+	int a = Y(n-1) + Y(n-2);
+	return a;
+}
+
+extern int X ( int n )
+{
+	if ( n < 2 ) { print(n); return n; }
+	int a = X(n-1) + Y(n-2);
+	print (a);
+	return a;
+}
+
+

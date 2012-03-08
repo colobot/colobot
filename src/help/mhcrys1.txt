@@ -1,0 +1,13 @@
+\b;Objectif transmis par Houston
+Construisez un \l;radar\u object\radar; sur le sommet le plus haut. Assurez sa sécurité à l'aide d'une \l;tour de défense\u object\tower; (\l;recherche\u object\research; à faire).
+
+Les organismes inconnus détectés par le satellite correspondent peut-être aux \l;vers\u object\worm; dont la première expédition nous a transmis des images. Ils ne semblent pas dangereux, mais transmettent des virus aux programmes informatiques qui perturbent le fonctionnement des robots et machines.
+
+Les radars ne vous donnent pas seulement des informations sur les objets et organismes présents dans la région, ils servent aussi de relais pour la communication avec la Terre. Il est probable que des défaillances des stations radar construites par la première expédition aient été à l'origine des problèmes de communication.
+
+Pour vous décharger de la tâche répétitive de recherche des matières premières, nous vous avons transmis un programme rendant le \l;robot déménageur\u object\botgr; plus autonome (voir la page programmation \button 53;).
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

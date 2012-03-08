@@ -1,0 +1,7 @@
+extern public void X()
+{
+	point	A [ ] ;
+	A[5] = new point (2,3);
+	int val = A[5].x++ + --A[5].y;
+	show ( A, val );
+}

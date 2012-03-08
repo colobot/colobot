@@ -1,0 +1,2 @@
+Title.F text="Sur la Lune" resume="Lune"
+Title.E text="On the Moon" resume="Moon"

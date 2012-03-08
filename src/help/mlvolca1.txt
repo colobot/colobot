@@ -1,0 +1,54 @@
+\b;Programme envoyé par Houston
+Comme vous aurez beaucoup à construire, nous avons amélioré le programme \c;ApporteTitanium\n;. Le robot répartit maintenant toute une série de \l;cubes de titanium\u object\titan; autour du \l;convertisseur\u object\convert;. Ainsi vous n'avez plus à vous occuper de lui. Il va aussi se \l;recharger\u object\station; tout seul.
+\c;
+\s;extern void object::ApporteTitanium3()
+\s;{
+\s;	\l;object\u cbot\type;  chose;                // info sur objet
+\s;	
+\s;	\l;while\u cbot\while; ( true )                // répète¦:
+\s;	{
+\s;		chose = \l;radar\u cbot\radar;(\l;TitaniumOre\u cbot\category;); // cherche minerai
+\s;		\l;goto\u cbot\goto;(chose.position);     // va vers minerai
+\s;		\l;grab\u cbot\grab;();                   // prend minerai
+\s;		
+\s;		chose = \l;radar\u cbot\radar;(\l;Converter\u cbot\category;); // cherche convert.
+\s;		\l;goto\u cbot\goto;(chose.position);     // va sur convert.
+\s;		\l;drop\u cbot\drop;();                   // pose minerai
+\s;		\l;move\u cbot\move;(-2.5);               // recule 2.5m
+\s;		do
+\s;		{
+\s;			\l;wait\u cbot\wait;(1);              // attend le cube
+\s;			chose = \l;radar\u cbot\radar;(\l;Titanium\u cbot\category;, 0, 45, 0, 5);
+\s;		}
+\s;		\l;while\u cbot\while; ( chose == null );
+\s;		\l;goto\u cbot\goto;(chose.position);
+\s;		\l;grab\u cbot\grab;();                   // prend le cube
+\s;		
+\s;		\l;goto\u cbot\goto;(\l;space\u cbot\space;(position));    // va où déposer
+\s;		\l;drop\u cbot\drop;();                   // dépose titanium
+\s;		
+\s;		// Pile à moitié vide¦?
+\s;		\l;if\u cbot\if; ( energyCell.energyLevel < 0.5 )
+\s;		{
+\s;			chose = \l;radar\u cbot\radar;(\l;PowerStation\u cbot\category;);
+\s;			\l;if\u cbot\if; ( chose¦!= null )  // station trouvée¦?
+\s;			{
+\s;				\l;goto\u cbot\goto;(chose.position); // va recharger
+\s;				\l;while\u cbot\while; ( \l;energyCell.energyLevel\u cbot\object; < 1 )
+\s;				{
+\s;					\l;wait\u cbot\wait;(1);      // attend pile pleine
+\s;				}
+\s;			}
+\s;		}
+\s;	}
+\s;}
+\n;
+\b;Archives
+Résumé des programmes déjà reçus¦:
+
+o  \c;\l;TueFourmi1\u mlsaari2;\n;
+o  \c;\l;ApporteTitanium2\u mlcrys2;\n;
+o  \c;\l;ApporteTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;EchangePile1\u mllune1;\n;

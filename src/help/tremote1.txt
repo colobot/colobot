@@ -1,0 +1,40 @@
+\b;Exercice
+Télécommandez un robot par le biais d'une \l;borne d'information\u object\exchange; pour qu'il déplace du \l;minerai d'uranium\u object\uranore;. Les 3 acteurs principaux de cet exercice sont¦:
+
+1) Un \l;robot sniffer\u object\botsr;, qui ne peut rien porter. C'est lui l'émetteur que vous devez programmer.
+2) Une \l;borne d'information\u object\exchange; qui reçoit des informations de l'émetteur puis les transmet au récepteur.
+3) Un \l;robot déménageur\u object\botgr; qui attend les ordres de la borne. Ce robot est déjà programmé. Vous n'avez aucun moyen d'action directe sur lui¦!
+
+\image tremot1a 16 8;
+Une borne stocke des couples "nom/valeur". Pour commander le robot esclave, nous avons choisi d'utiliser un seul couple¦:
+
+    nom="order", valeur=numéro de l'opération à effectuer
+
+Les ordres suivants sont compris par le robot esclave¦:
+\c;
+    1 -> grab();     // prend
+    2 -> drop();     // dépose
+    3 -> move(10);   // avance
+    4 -> move(-10);  // recule
+\n;
+Par exemple, pour demander au robot esclave d'avancer de 10 mètres, il faut utiliser l'instruction \c;\l;send\u cbot\send;\n; et écrire¦:
+\c;\s;	send("order", 3);  // order "move(10)"
+\n;
+Après avoir envoyé l'ordre, il faut attendre 5 secondes pour être certain qu'il soit terminé¦:
+\c;\s;	wait(5);
+\n;
+Remarque: Il existe une meilleure façon d'attendre l'exécution de l'ordre, mais elle sera étudiée plus tard, dans l'exercice "Télécommande¦2".
+
+Pour effectuer cet exercice, il faut¦:
+
+1) Prendre le minerai
+2) Avancer de 10 mètres
+3) Déposer le minerai
+4) Reculer de 10 mètres
+
+A vous de terminer le programme ...
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tsniff; et \l;programmation\u cbot;.

@@ -1,0 +1,13 @@
+\b;Rozwi¹zanie
+Szczelina w pó³nocno zachodniej górze prowadzi do jeziora wrz¹cej lawy.
+
+Wystarczy skakaæ z jednej skalistej wyspy na drug¹. Czêsto sprawdzaj reaktor i pozwól mu zupe³nie ostygn¹æ przed kolejnym startem. W znalezieniu najbli¿szej wyspy mo¿e byæ pomocna mapka.
+
+Nie martw siê zbytnio atakiem mrówek. Poczekaj, a¿ reaktor ostygnie, nie zwlekaj¹c jednak d³u¿ej ni¿ to konieczne, a Twoja wbudowana os³ona powinna spe³niæ swoj¹ rolê. Jednak¿e zalecane jest zapisanie gry co jakiœ czas (klawisz Esc, nastêpnie "Zapisz"), aby nie zaczynaæ gry od pocz¹tku w przypadku wyl¹dowania w jeziorze lawy.
+
+Robot znajduje siê w najbardziej wysuniêtym na zachód punkcie, jednak mo¿esz tam dotrzeæ tylko okrê¿n¹ drog¹. W pobli¿u znajdziesz \l;atomowe ogniwo elektryczne\u object\atomic;.
+
+Nie musisz w drodze powrotnej kierowaæ robota t¹ sam¹ drog¹, gdy¿ jego reaktor ma wiêkszy zasiêg ni¿ Twój. Wci¹¿ mo¿e byæ potrzebny jedne lub dwa przystanki, uwa¿aj równie¿ na mrówki.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

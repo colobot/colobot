@@ -1,0 +1,15 @@
+\b;Alien Queen
+\image mother 8 8;
+This huge insect is the mother of them all. It lays \l;eggs\u object\egg; and from these eggs will hatch all the various kinds of insects \l;you\u object\human;'re likely to encounter. All of them are extremely hazardous to yourself and your mission. The queen's protective shell is particularly resistant to attack.
+
+It gives birth to the following insects :
+o  \l;ants\u object\ant;
+o  \l;spiders\u object\spider;
+o  \l;wasps\u object\wasp;
+o  \l;worms\u object\worm;
+
+\t;Object \l;Category\u cbot\category;
+\c;AlienQueen\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

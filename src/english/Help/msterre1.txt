@@ -1,0 +1,11 @@
+\b;Walkthrough
+To find the survival kit from your starting point :
+
+1) Follow the road heading south.
+2) Turn east (left) at the first crossroad.
+3) The survival kit is lying between the northern wall of Mission Control and the first tree on the right hand side of the road.
+
+Just position yourself close to it to successfully complete the drill.
+
+\t;See also
+\l;Controls\u command;

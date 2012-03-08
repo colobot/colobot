@@ -1,0 +1,174 @@
+Title.F      text="Entraînement"
+Resume.F     text="Entraînez-vous à tirer avec le nouveau canon orgaShooter."
+Title.E      text="Target Practice"
+Resume.E     text="Practise shooting with your new orgaball canon."
+Instructions name="mhcent2.txt"
+Satellite    name="micent2.txt"
+Loading      name="mlcent2.txt"
+SoluceFile   name="mscent2.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=7
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=176;176;181;0 water=10;100;20;0  // grey
+VehicleColor  color=117;158;64;0  // vert
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.5 water=0.1
+SecondTexture rank=8
+Background    up=176;176;181;0 down=176;176;181;0 cloudUp=0;0;0;0 cloudDown=104;104;104;0
+FrontsizeName image="lens5.tga"
+
+TerrainGenerate vision=400.00 depth=1 hard=0.7
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief29.bmp" factor=1.0
+TerrainResource image="textures\res00.bmp"
+TerrainCloud    image="cloud03.tga" level=125.0
+
+TerrainMaterial id=1 image="mix01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=2 image="mix01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=3 image="mix01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=4 image="mix01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=5 image="mix01" u=0.00 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=6 image="mix01" u=0.25 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=7 image="mix01" u=0.50 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=8 image="mix01" u=0.75 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=9 image="mix01" u=0.00 v=0.50 up=1 down=1 left=1 right=1 hard=0.6
+
+TerrainInit     id=1
+TerrainLevel    id=2 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=3 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=4 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=5 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=6 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=7 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=8 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=9 min=0.0 max=900.0 slope=0.0 freq= 20.0
+
+TerrainCreate
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos= 0.00;-3.25 dir=1.5 type=Me
+CreateObject pos= 1.00; 3.25 dir=1.5 type=LeggedOrgaShooter power=0.55 script1="charge2.txt"
+
+CreateObject pos= 25.0; 22.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0; 17.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0; 12.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0;  7.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0;  2.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0; -2.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0; -7.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0;-12.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0;-17.5 dir=0.5 type=Barrier1
+CreateObject pos= 25.0;-22.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0; 22.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0; 17.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0; 12.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0;  7.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0;  2.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0; -2.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0; -7.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0;-12.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0;-17.5 dir=0.5 type=Barrier1
+CreateObject pos=-25.0;-22.5 dir=0.5 type=Barrier1
+CreateObject pos= 22.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos= 17.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos= 12.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos=  7.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos=  2.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos= -2.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos= -7.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos=-12.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos=-17.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos=-22.5; 25.0 dir=0.0 type=Barrier1
+CreateObject pos= 22.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos= 17.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos= 12.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos=  7.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos=  2.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos= -2.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos= -7.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos=-12.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos=-17.5;-25.0 dir=0.0 type=Barrier1
+CreateObject pos=-22.5;-25.0 dir=0.0 type=Barrier1
+
+CreateObject pos=  0.0; 21.0 dir=0.0 type=GoalArea
+CreateObject pos=-21.0; 21.0 dir=0.0 type=GoalArea
+CreateObject pos=-21.0;-21.0 dir=0.0 type=GoalArea
+CreateObject pos= 21.0;  2.5 dir=0.0 type=GoalArea
+
+CreateObject pos= 17; 42.5 dir=1.5 type=TargetBot shield=0.01
+CreateObject pos=  7; 42.5 dir=1.5 type=TargetBot shield=0.01
+CreateObject pos= -3; 42.5 dir=1.5 type=TargetBot shield=0.01
+CreateObject pos=-13; 42.5 dir=1.5 type=TargetBot shield=0.01
+
+CreateObject pos=-47; 32.5 dir=0.0 type=TargetBot shield=0.01
+CreateObject pos=-47; 17.5 dir=0.0 type=TargetBot shield=0.01
+CreateObject pos=-47; -7.5 dir=0.0 type=TargetBot shield=0.01
+CreateObject pos=-47;-22.5 dir=0.0 type=TargetBot shield=0.01
+
+CreateObject pos= 57;-12.5 dir=1.0 type=TargetBot shield=0.01
+CreateObject pos= 47; 12.5 dir=1.0 type=TargetBot shield=0.01
+CreateObject pos= 37;  2.5 dir=1.0 type=TargetBot shield=0.01
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+
+MapColor floor=151;142;129 water=131;152;131
+MapZoom  factor=4
+
+NewScript name="tower1.txt" type=WheeledGrabber
+NewScript name="tower1.txt" type=TrackedGrabber
+NewScript name="tower1.txt" type=WingedGrabber
+NewScript name="tower1.txt" type=LeggedGrabber
+NewScript name="titan3.txt" type=WheeledGrabber
+NewScript name="titan3.txt" type=TrackedGrabber
+NewScript name="titan3.txt" type=WingedGrabber
+NewScript name="titan3.txt" type=LeggedGrabber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+//EnableBuild type=BotFactory
+//EnableBuild type=Derrick
+//EnableBuild type=Converter
+//EnableBuild type=RadarStation
+//EnableBuild type=PowerPlant
+//EnableBuild type=NuclearPlant
+//EnableBuild type=PowerStation
+//EnableBuild type=RepairCenter
+//EnableBuild type=DefenseTower
+//EnableBuild type=ResearchCenter
+//EnableBuild type=AutoLab
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+EnableResearch type=ATOMIC
+EnableResearch type=iPAW
+EnableResearch type=iGUN
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+DoneResearch type=ATOMIC
+DoneResearch type=iPAW
+DoneResearch type=iGUN
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=LeggedOrgaShooter lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=TargetBot min=0 max=0
+
+Camera eye=0.00;15.00;-30.00 lookat=0.00;1.00;0.00 delay=2

@@ -1,0 +1,9 @@
+\b;Z Centrum Kontroli Misji
+W³aœnie otrzymaliœmy ostrze¿enie z satelity obserwacyjnego: niesforny robot z poprzedniej ekspedycji wykrad³ czarn¹ skrzynkê z Twojego statku kosmicznego.
+ 
+Zamierzamy póŸniej zbadaæ ten incydent, lecz teraz najwa¿niejsz¹ spraw¹ jest jak najszybsze odzyskanie czarnej skrzynki.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

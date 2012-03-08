@@ -1,0 +1,20 @@
+\b;\button 136; Cosmonaute
+\image human 8 8;
+Le cosmonaute vous représente dans le jeu. Si vous mourez, la mission échoue immédiatement.
+
+Pour sélectionner le cosmonaute, cliquez le bouton \button 136; en haut à gauche ou appuyez sur la touche \key;\key human;\norm;.
+Les touches \key;\key gup;\norm; et \key;\key gdown;\norm; permettent de voler. Cliquez \l;ici\u command; pour voir le détail des commandes de déplacement.
+
+Le sac de survie que vous portez sur le dos vous permet de nager dans l'eau sans limite de temps. Le réacteur placé sous ce sac vous permet de voler dans la plupart des missions. 
+
+Vous pouvez transporter la plupart des objets, mais vos déplacements sont alors fortement ralentis. Quand vous portez un objet, vous ne pouvez ni voler, ni vous déplacer sous l'eau. Utilisez dans ce cas un \l;robot déménageur\u object\botgr;. A cause de la radioactivité, vous ne pouvez pas transporter du minerai d'uranium.
+
+Vous pouvez construire plusieurs types de bâtiments à l'aide du pistolet à neutrons accroché à votre sac de survie. Un bouton \button 111; permet de vérifier si le sol est suffisamment plat pour construire des bâtiments. Les zones plates sont vertes, les zones inclinées rouges.
+
+Deux boutons \button 118; et \button 119; permettent de poser ou d'enlever des \l;drapeaux de couleur\u object\flag;. Ils sont utiles pour trouver votre chemin, pour retrouver des positions importantes ou pour indiquer des positions à des robots programmés. Il est possible de poser au maximum 5 drapeaux par couleur.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;Me\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

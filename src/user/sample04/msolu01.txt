@@ -1,0 +1,13 @@
+\b;Walkthrough
+1) There is a \l;titanium cube\u object\titan; west of your present location, near the blue flag/blue cross on your mini map. You don't need to move the cube, just build a \l;power station\u object\station; right there on the spot.
+
+2) With the titanium cubes on the spaceship, build a \l;research center\u object\research; and execute the <shooter cannon research program> \button 67;.
+
+3) Build a \l;bot factory\u object\factory; and a \l;winged shooter\u object\botfj;. If this bot is destroyed by enemy fire, you will find some additional \l;titanium cubes\u object\titan; in a small foggy valley northwest of the spaceship. You can bring them back with the \l;winged grabber\u object\botgj;\n;.
+
+4) Build a \l;radar station\u object\radar; in order to see the location of the ants on the mini-map, and let the hunt begin. Be careful not to run out of energy and not to overheat the reactor of a bot while over water. If a bot falls into deep water, it explodes.
+
+5) Once you have killed all the ants, get on board and take off.
+
+\t;See also
+\l;Controls\u command;

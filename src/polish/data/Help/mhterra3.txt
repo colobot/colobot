@@ -1,0 +1,9 @@
+\b;Z Centrum Kontroli Misji
+Trzeci \l;klucz\u object\key; (C) zakopany jest na terenie opanowanym przez grzyby. Do jego znalezienia u¿yj \l;szperacza\u object\botss;, a nastêpnie wydob¹dŸ go, u¿ywaj¹c do tego \l;kopalni\u object\derrick;.
+
+Po zakoñczeniu misji, przed odlotem, zabierz na pok³ad statku kosmicznego robota \l;os³aniacza\u object\botshld; oraz \l;nurka\u object\botsub;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

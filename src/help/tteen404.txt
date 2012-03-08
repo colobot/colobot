@@ -1,0 +1,12 @@
+\b;Tir et bouge
+Le robot peut maintenant se déplacer dans un petit enclôs carré de 40 centimètres de côté. Il faut tirer sur les 4 bouteilles¦:
+
+\image teen404 8 8;
+Le programme à écrire est celui-ci¦:
+
+\s;o  Répète 4 fois¦:
+\s;	o  Tire une seconde
+\s;	o  Tourne à droite de 90 degrés
+\s;	o  Avance de 40 centimètres
+
+A la fin de la boucle, le robot est de nouveau en face de la prochaine cible. Astucieux, non ?

@@ -1,0 +1,19 @@
+\b;Raport z satelity
+Obecnie na orbicie geostacjonarnej planety Krystalia.
+\c;
+\s;-> POWIERZCHNIA\c;
+\tab;Temperatura:      3,2C
+\tab;Atmosfera:        azot
+\tab;Wiatr:            0,0 m/s
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       brak
+
+\s;-> PODGLEBIE\c;
+\tab;ród³o energii:   odizolowane (blisko statku kosmicznego)
+\tab;Ruda tytanu:      rozproszona
+\tab;Ruda uranu:       brak
+
+\s;-> DODATKOWE INFORMACJE\c;
+\tab;Wykryto:          robale
+\tab;  - Zagro¿enie:   nie
+\n;

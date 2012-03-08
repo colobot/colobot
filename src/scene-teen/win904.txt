@@ -1,0 +1,110 @@
+Audio         track=12 repeat=0
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=208;200;223;0 water=67;80;100;0  // magenta
+VehicleColor  color=200;196;174;0  // sable
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=1
+Background    up=239;223;224;0 down=191;192;223;0 cloudUp=78;78;127;0 cloudDown=78;78;127;0
+FrontsizeName image="lens5.tga"
+Planet        pos=3.0;0.2 dim=0.35 speed= 0.001 dir=0.4 image="planet03.tga" uv1=0.5;0.5 uv2=1.0;1.0
+Planet        pos=0.0;0.7 dim=0.20 speed= 0.002 dir=0.3 image="planet03.tga" uv1=0.0;0.5 uv2=0.5;1.0
+Planet        pos=0.5;0.5 dim=0.15 speed=-0.005 dir=0.5 image="planet03.tga" uv1=0.5;0.0 uv2=1.0;0.5
+
+TerrainGenerate vision=250.00 depth=1 slope=3.0 hard=0.3
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief34.bmp" factor=1.0
+TerrainResource image="textures\res15.bmp"
+TerrainCloud    image="cloud02.tga" level=87.5
+TerrainWater    image="water12.tga" level=22.5 moveX=1.0 moveY=0.3
+
+TerrainMaterial id=1 image="roca2" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.8
+TerrainMaterial      image="roca2" u=0.25 v=0.00 up=2 down=1 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.00 up=1 down=1 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.00 up=2 down=1 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.25 up=1 down=2 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.25 up=2 down=2 left=1 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.25 up=1 down=2 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.25 up=2 down=2 left=1 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.50 up=1 down=1 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.50 up=2 down=1 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.50 up=1 down=1 left=2 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.75 v=0.50 up=2 down=1 left=2 right=2 hard=0.6
+TerrainMaterial      image="roca2" u=0.00 v=0.75 up=1 down=2 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.25 v=0.75 up=2 down=2 left=2 right=1 hard=0.6
+TerrainMaterial      image="roca2" u=0.50 v=0.75 up=1 down=2 left=2 right=2 hard=0.6
+TerrainMaterial id=2 image="roca2" u=0.75 v=0.75 up=2 down=2 left=2 right=2 hard=0.3
+
+TerrainMaterial id=3 image="rocb2" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.8
+TerrainMaterial      image="rocb2" u=0.25 v=0.00 up=3 down=1 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.00 up=1 down=1 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.00 up=3 down=1 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.25 up=1 down=3 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.25 up=3 down=3 left=1 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.25 up=1 down=3 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.25 up=3 down=3 left=1 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.50 up=1 down=1 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.50 up=3 down=1 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.50 up=1 down=1 left=3 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.75 v=0.50 up=3 down=1 left=3 right=3 hard=0.4
+TerrainMaterial      image="rocb2" u=0.00 v=0.75 up=1 down=3 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.25 v=0.75 up=3 down=3 left=3 right=1 hard=0.4
+TerrainMaterial      image="rocb2" u=0.50 v=0.75 up=1 down=3 left=3 right=3 hard=0.4
+TerrainMaterial id=4 image="rocb2" u=0.75 v=0.75 up=3 down=3 left=3 right=3 hard=0.0
+
+TerrainInit     id=3
+TerrainLevel    id=1 min= 0.0 max=99.0 slope=0.0 freq= 50.0  // roc1
+TerrainLevel    id=2 min=17.5 max=25.0 slope=3.0 freq= 70.0  // grass
+TerrainLevel    id=4 min=37.5 max=99.0 slope=9.0 freq= 80.0  // snow
+TerrainLevel    id=2 min=25.0 max=37.5 slope=9.0 freq= 70.0  // grass
+
+TerrainCreate
+
+BeginObject
+//CreateObject pos=0;-18 dir=1.5 type=Me option=1
+
+CreateObject pos=  7;-17 dir=0.8 type=Home  // premier plan droite
+CreateObject pos= 17; 10 dir=1.5 type=Home  // 
+CreateObject pos= -6; -7 dir=0.7 type=Home  // 
+CreateObject pos=  6; -1 dir=0.1 type=Home  // 
+CreateObject pos=  2; 17 dir=1.1 type=Home  // 
+CreateObject pos= -3.5;-21 dir=0.8 type=Tree2  // premier plan gauche
+CreateObject pos=  3;-10 dir=0.8 type=Tree3  // 
+CreateObject pos=-20; 10 dir=0.4 type=Tree0  // 
+CreateObject pos=-15;  5 dir=1.0 type=Tree1  // 
+CreateObject pos=-13; 22 dir=1.8 type=Tree2  // 
+CreateObject pos= -5; 21 dir=0.5 type=Tree0  // 
+CreateObject pos=  9; 11 dir=1.2 type=Tree1  // 
+CreateObject pos= -1;-22 dir=0.2 type=Greenery5
+CreateObject pos= -5;-17 dir=1.5 type=Greenery15
+CreateObject pos= -6;-12 dir=1.2 type=Greenery19
+CreateObject pos=  3;-20 dir=1.5 type=Greenery7 h=0
+CreateObject pos=  2;-12 dir=1.2 type=Greenery5 h=-1
+CreateObject pos=  2; -9 dir=0.8 type=Greenery6 h=1
+CreateObject pos=  4;-12 dir=0.0 type=TitaniumOre
+CreateObject pos=  8;-10 dir=0.3 type=Greenery18
+CreateObject pos= -4; 16 dir=0.3 type=Greenery16
+CreateObject pos= -8; 18 dir=1.5 type=Greenery17
+
+CreateObject pos=  1; -6 dir=0.6 type=Tech option=2 script1="human04.txt" run=1
+CreateObject pos= 14;-12 dir=1.0 type=Tech option=2 script1="human05.txt" run=1
+CreateObject pos= -3;-12 dir=0.4 type=Tech option=2 script1="human06.txt" run=1
+CreateObject pos=-11;-12 dir=0.0 type=TitaniumOre
+CreateObject pos=  0; 12 dir=0.5 type=Tech option=2 script1="human07.txt" run=1
+
+CreateObject pos= 10;-37 dir=1.5 type=PracticeBot    power=100 script1="win904a.txt" run=1
+CreateObject pos=-12; 13 dir=1.5 type=TrackedSniffer power=100 script1="win904b.txt" run=1
+CreateObject pos=-22;-42 dir=1.0 type=WingedGrabber  power=100 script1="win904c.txt" run=1 range=1000
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0; 0.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 0.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir= 1.0;-1.0; 0.0 color= 0.30; 0.30; 0.30 type=Object
+CreateLight dir=-1.0;-1.0; 0.0 color= 1.00; 1.00; 1.00 type=Object
+CreateLight dir= 0.0;-1.0; 1.0 color= 0.60; 0.60; 0.60 type=Object
+CreateLight dir= 0.0;-1.0;-1.0 color= 0.60; 0.60; 0.60 type=Object
+
+EndMissionTake pos=12.50;-75.00 type=TitaniumOre    min=4
+
+Camera eye=0.0;2.5;-25.0 lookat=0.0;2.0;-18.0

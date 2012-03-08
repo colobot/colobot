@@ -1,0 +1,21 @@
+\b;Instruction \c;writeln\n;
+Write one line of text to an open file in the files/ folder. This is a method of the \c;\l;file\u cbot\file;\n; class. This is the reason why we always write \c;handle.writeln()\n;¦:
+\c;
+\s;	handle.writeln("abc");
+\n;
+The file must have been opened for writing (\c;"w"\n;) with the \c;\l;open\u cbot\open;\n; instruction. The line will automatically be terminated by the end of line characters 0x0D (CR) and 0x0A (LF).
+
+Syntax¦:
+\s;\c;handle.writeln ( string );\n;
+
+Examples¦:
+\c;
+\s;	writeln("Line of text");
+
+\s;	string s1 = "abc";
+\s;	string s2 = "def";
+\s;	writeln(s1 + " " + s2);
+\n;
+\t;See also
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;readln\u cbot\readln;\n; and \c;\l;eof\u cbot\eof;\n;.
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

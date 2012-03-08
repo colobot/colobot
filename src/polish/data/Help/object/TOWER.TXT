@@ -1,0 +1,22 @@
+\b;\button 165; Wieøa obronna
+\image tower 8 8;
+Wieøa umoøliwia najlepszπ obronÍ przeciwko atakom \l;wrogÛw\u object\mother;, zarÛwno naziemnych, jak i powietrznych.
+
+Do dzia≥ania wieøy potrzebne jest \l;zwyk≥e\u object\power; lub \l;atomowe\u object\atomic; ogniwo elektryczne. Zwyk≥e ogniwo elektryczne umoøliwia oddanie 8 strza≥Ûw. Oczywiúcie duøo lepsze jest ogniwo atomowe. Gdy skoÒczy siÍ energia, wieøa sygnalizuje to miganiem.
+
+Wieøa ma zasiÍg 40 metrÛw. Aby go wyúwietliÊ na powierzchni planety, naleøy zaznaczyÊ wieøÍ i nacisnπÊ przycisk <zasiÍgu> \button 41;. Czerwone kropki wyrÛøniπ kolistπ strefÍ przez 20 sekund.
+
+\t;Wymagania
+P≥aska powierzchnia szeroka na minimum 3,5 metra.
+
+\t;èrÛd≥o zasilania
+Zwyk≥e lub atomowe ogniwo elektryczne.
+
+\t;Czas dzia≥ania
+1 sekunda.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;DefenseTower\n;
+
+\t;Zobacz rÛwnieø
+\l;JÍzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

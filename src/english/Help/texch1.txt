@@ -1,0 +1,31 @@
+\b;Exercise
+Several \l;information exchange posts\u object\exchange; stand in the middle of a \l;mine\u object\mine; field. When the bot is close enough to an exchange post, it can read the information that it contains. Every exchange post contains the angle of the rotation that must be performed in order to reach the next exchange post, without touching a \l;mine\u object\mine;.
+The exchange posts are distant 20m from each other.
+
+\b;General principe
+Repeat 5 times :
+	o  Move 20m forward.
+	o  Read the direction of the next \l;information exchange post\u object\exchange;.
+	o  Execute the necessary rotation.
+
+\image tinfo1 8 8;
+In order to repeat the steps above, use a \c;\l;for\u cbot\for;\n; loop, as we saw it before.
+\s;\c;	for ( int i=0 ; i<5 ; i=i+1 )
+\n;
+Move forward with the instruction \c;move(20);\n;.
+
+Use the instruction \c;\l;receive\u cbot\receive;("Direction");\n; in order to read the information contained in the \l;exchange post\u object\exchange;. This is of course possible only when the bot is close enough to the exchange post.
+You will need a \l;variable\u cbot\var; to contain the value retrieved from the exchange post. Let us call it \c;dir\n;; you must declare it with the following line:
+\s;\c;	float  dir;
+\n;
+Then retrieve the rotation angle from the exchange post, and put it into the variable:
+\s;\c;	dir = receive(...);
+\n;
+Then you can execute the rotation:
+\s;\c;	turn(dir);
+\n;
+\b;Remark
+You can click on an \l;information exchange post\u object\exchange; in order to read what information it contains. In this exercise, every exchange post contains only one value called \c;"Direction"\n;, but it can contain up to 10 different values, as you will see in some of the following exercises.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

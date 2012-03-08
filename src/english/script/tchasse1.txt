@@ -1,0 +1,33 @@
+extern void object::Solution( )
+{
+	aim(-3);
+	while ( true )
+	{
+		object	target;
+		float	a, b;
+
+		target = radar(TargetBot);
+		if ( target == null )  break;
+		a = direction(target.position);
+		turn(a);
+
+		target = radar(TargetBot);
+		if ( target == null )  break;
+		b = direction(target.position);
+		if ( a == b )  // standing still ?
+		{
+			wait(0.2);
+
+			target = radar(TargetBot);
+			if ( target == null )  break;
+			a = direction(target.position);
+			
+			if ( a == b )
+			{
+				fire(2);
+				wait(2);
+			}
+		}
+	}
+}
+

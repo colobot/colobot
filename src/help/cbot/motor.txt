@@ -1,0 +1,39 @@
+\b;Instruction \c;motor\n;
+L'instruction \c;motor( , );\n; permet de donner directement une vitesse aux moteurs gauche et droite du robot.
+
+\b;Utilisation courante
+\c;motor( , );\n; conserve la vitesse du moteur pendant l'exécution des instructions suivantes. Ceci est utile pour faire tourner le robot pendant l'instruction \c;\l;fire\u cbot\fire;();\n;. Ainsi, il est possible de balayer toute une zone avec la rafale. Voici par exemple comment balayer toute la zone qui se trouve devant le robot¦:
+\c;
+\s;	\l;turn\u cbot\turn;(45);         // tourne à gauche de 45 degrés
+\s;	motor(0.5, -0.5); // rotation lente à droite
+\s;	\l;fire\u cbot\fire;(2);          // feu
+\s;	motor(0,0);       // immobilise le robot
+\n;
+En faisant avancer le moteur gauche à demi-vitesse et en faisant reculer le moteur de droite à demi-vitesse, le robot tourne lentement sur lui-même pendant la rafale de 2 secondes.
+
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;motor ( left, right );\n;
+
+Donne une consigne de vitesse aux deux moteurs gauche et droite du robot. La vitesse restera constante, jusqu'à ce qu'une nouvelle consigne soit donnée, ou jusqu'à l'utilisation d'une instruction \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n; ou \c;\l;goto\u cbot\goto;\n;.
+
+\t;left: \c;\l;float\u cbot\float;\n;
+Consigne pour le moteur gauche, comprise entre -1 et 1.
+
+\t;right: \c;\l;float\u cbot\float;\n;
+Consigne pour le moteur droite, comprise entre -1 et 1.
+
+Exemples¦:
+\c;motor(1, 1);\n; pour avancer tout droit à la vitesse maximale.
+\c;motor(0.5, 0.6);\n; pour avancer à mi-vitesse en tournant légèrement à gauche.
+\c;motor(-0.5, -0.5);\n; pour reculer à mi-vitesse.
+\c;motor(1, -1);\n; pour tourner à droite le plus vite possible.
+
+\t;Valeur retournée: \c;\l;void\u cbot\void;\n;
+Aucune.
+
+\t;Dictionnaire anglais-français
+\c;motor\n; = moteur
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

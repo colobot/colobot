@@ -1,0 +1,7 @@
+\b;Instructions de Houston
+Défendez-vous contre l'attaque des \l;fourmis\u object\ant;, et décollez¦!
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

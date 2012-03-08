@@ -1,0 +1,24 @@
+\b;Z Centrum Kontroli Misji
+Twój \l;statek kosmiczny\u object\base; znajduje siê ju¿ na p³ycie wyrzutni rakietowej, gotowy do startu.
+
+\l;Twoje\u object\human; ostatnie æwiczenie przed wyruszeniem w podró¿ polega na zaopatrzeniu statku kosmicznego w \l;czarn¹ skrzynkê\u object\bbox;. Jedyn¹ drog¹ do \l;czarnej skrzynki\u object\bbox; jest stroma œcie¿ka, któr¹ mo¿e wspi¹æ siê tylko \l;transporter na g¹sienicach\u object\botgc;, którego musisz wczeœniej zbudowaæ.
+
+Niestety \l;fabryka robotów\u object\factory;, nie potrafi jeszcze sk³adaæ robotów tego typu. Musisz za¿¹daæ od \l;centrum badawczego\u object\research; planów tego szczególnego napêdu.
+
+\b;Procedura
+1) Zasil centrum badawcze przy pomocy jednego z zielonych \l;ogniw elektrycznych\u object\power;.
+2) Kliknij na przycisku <prace badawcze nad transporterem na g¹sienicach> \button 64;.
+3) Zostaw \l;kostkê tytanu\u object\titan; poœrodku \l;fabryki robotów\u object\factory; i zbuduj \l;transporter na g¹sienicach\u object\botgc;.
+4) Zasil i wyœlij \l;transporter na g¹sienicach\u object\botgc; na szczyt góry na po³udniowym zachodzie.
+5) Dostarcz czarn¹ skrzynkê na pok³ad statku kosmicznego.
+6) Nie zapomnij równie¿ zabraæ \l;transportera na ko³ach\u object\botgr;. Roboty te mog¹ okazaæ siê bardzo przydatne w przysz³oœci.
+7) WejdŸ na pok³ad \l;statku kosmicznego\u object\base;.
+8) Zaznacz \l;statek kosmiczny\u object\base; i odleæ \button 28;.
+
+
+Uwaga: Dla zwiêkszenia efektywnoœci mo¿esz u¿yæ \l;transportera na ko³ach\u object\botgr;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

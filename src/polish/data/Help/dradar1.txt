@@ -1,0 +1,14 @@
+\b;Æwiczenie
+W tym æwiczeniu  "szalony robot" zostawia za sob¹ wiele \l;niebieskich plusów\u object\waypoint;. Nale¿y znaleŸæ je wszystkie.
+
+\b;Przydatne instrukcje
+\c;\l;radar\u cbot\radar;\n; wykrywanie niebieskich plusów (kategoria \c;\l;WayPoint\u object\waypoint;\n;)
+\c;\l;direction\u cbot\direct;\n; obliczanie kierunku
+\c;\l;if\u cbot\if;\n; sprawdzanie warunku
+\c;\l;motor\u cbot\motor;\n; ustawianie prêdkoœci silników
+
+\t;Uwaga
+Nie nale¿y zwlekaæ zbyt d³ugo, gdy¿ szalony robot rozpoczyna swoj¹ pracê natychmiast. Na szczêœcie gra jest zatrzymywana podczas edytowania kodu programu.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

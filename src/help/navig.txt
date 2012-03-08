@@ -1,0 +1,21 @@
+\b;Navigation
+Les trois boutons en haut à gauche de cette fenêtre permettent de naviguer dans les différentes pages¦:
+
+\button 30; Page initiale
+Revient à la page initiale, qui était affichée en début de mission, ou lorsque vous avez appuyé sur \key;\key help;\norm; ou \key;\key prog;\norm;.
+
+\button 55; Page précédente 
+Revient à la page précédente, affichée avant d'avoir cliqué sur un lien.
+
+\button 48; Page suivante
+Retourne à la page suivante, après utilisation du bouton "page initiale" ou "page précédente".
+
+\t;Remarque
+Lorsqu'un bouton est gris, cela signifie qu'il ne peut pas être utilisé à cet instant. Par exemple, si vous être dans la page initiale, le bouton "page initiale" est gris, car cela n'a pas de sens d'y revenir, puisque vous y êtes déjà.
+Cette remarque est valable pour tous les boutons dans COLOBOT.
+
+\t;Défilement du texte
+Si votre souris dispose d'une molette, vous pouvez l'utiliser pour faire défiler ce texte. Vous pouvez également utiliser les touches flèches, ou cliquer dans l'ascenseur à droite.
+
+\t;Dimensions du texte
+Le curseur en haut à gauche permet d'ajuster la taille des caractères à votre convenance.

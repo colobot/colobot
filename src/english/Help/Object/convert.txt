@@ -1,0 +1,24 @@
+\b;\button 162; Converter
+\image convert 8 8;
+This building was designed to convert chunks of \l;titanium ore\u object\titanore; into usable \l;titanium cubes\u object\titan;. All \l;you\u object\human; need to do is place a chunk at the center of the platform and step back. The converter takes care of the rest.
+
+\t;Requirements for building
+Any flat surface of at least 6 meters wide.
+
+\t;Input
+Titanium ore.
+
+\t;Output
+Titanium.
+
+\t;Power source
+None.
+
+\t;Duration of operation
+15 seconds.
+
+\t;Object \l;Category\u cbot\category;
+\c;Converter\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

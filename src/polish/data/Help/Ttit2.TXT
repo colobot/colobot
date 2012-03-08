@@ -1,0 +1,51 @@
+\b;Zadanie
+Zabierz porcjê \l;rudy tytanu\u object\titanore;, której dok³adne po³o¿enie nie jest znane. U¿yj radaru robota, aby j¹ znaleŸæ. Dostarcz rudê tytanu do \l;huty\u object\convert;.
+
+\t;Program
+Mo¿na zauwa¿yæ, ¿e programy napisane w poprzednich æwiczeniach by³y zupe³nie "œlepe": jeœli ruda tytanu, ogniwo elektryczne lub paj¹ki by³yby w innym miejscu, robot by ich nie znalaz³.
+
+Radar to "oczy" robota. Za pomoc¹ radaru mo¿na wykrywaæ obiekty dooko³a niego. Na przyk³ad instrukcja \c;\l;radar\u cbot\radar;(TitaniumOre);\n; poda informacje o najbli¿szej porcji \l;rudy tytanu\u object\titanore;. Jednak¿e trzeba gdzieœ "przechowaæ" informacjê zwrócon¹ przez instrukcjê \c;\l;radar\u cbot\radar;(TitaniumOre);\n;. Do tego zadania potrzebna bêdzie \l;zmienna\u cbot\var;.
+
+\l;Zmienna\u cbot\var; jest jak ma³e podpisane pude³ko, w którym mo¿na umieœciæ informacje, odczytaæ je, zmieniæ, itd. Przed u¿yciem zmiennej trzeba j¹ zadeklarowaæ. Najpierw nale¿y okreœliæ jej \l;typ\u cbot\type;, w tym przypadku \c;object\n;. Zmienna tego typu mo¿e zawieraæ wszystkie informacje opisuj¹ce obiekt, taki jak porcja rudy tytanu, paj¹k, mrówka, robot, ogniwo elektryczne itd. Potem trzeba napisaæ nazwê, któr¹ chcesz nadaæ zmiennej, na przyk³ad \c;item\n;. Otrzymamy poni¿szy wiersz:
+\c;
+\s;\l;object\u cbot\type; item;
+\n;
+Nastêpnie nale¿y przypisaæ zmiennej wartoœæ zwrócon¹ przez instrukcjê \c;\l;radar\u cbot\radar;(TitaniumOre)\n;:
+\c;
+\s;item = \l;radar\u cbot\radar;(TitaniumOre);
+\n;
+Zmienna \c;item\n; zawiera wiele ró¿nych rodzajów informacji: zawiera pozycjê, orientacjê, pochylenie, itd. Aby otrzymaæ pozycjê kawa³ka rudy tytanu, napisz \c;item.position\n;. Nastêpnie u¿yj instrukcji \c;goto();\n;, aby wys³aæ robota na tê pozycjê. Oto wiersz wykonuj¹cy opisane czynnoœci:
+\c;
+\s;\l;goto\u cbot\goto;(item.position);
+\n;
+Jeœli "przet³umaczymy" to na jêzyk polski, bêdzie to oznaczaæ: idŸ na pozycjê obiektu opisanego przez zmienn¹ \c;item\n;.
+
+Nastêpnie mo¿na podnieœæ przedmiot znajduj¹cy siê przed robotem, u¿ywaj¹c instrukcji \c;\l;grab\u cbot\grab;();\n;.
+
+Po z³o¿eniu tego wszystkiego razem, otrzymamy nastêpuj¹cy program:
+\c;
+\s;extern void object::Titanium2( )
+\s;{
+\s;	
+\s;	\l;object\u cbot\type; item;
+\s;	item = \l;radar\u cbot\radar;(TitaniumOre);
+\s;	\l;goto\u cbot\goto;(item.position);
+\s;	grab();
+\s;	
+\s;}
+\n;
+PóŸniej musisz znaleŸæ \l;hutê\u cbot\convert; i umieœciæ informacje o niej w zmiennej \c;item\n;:
+\c;
+\s;item = \l;radar\u cbot\radar;(Converter);
+\n;
+PodejdŸ do huty, u¿ywaj¹c tej samej instrukcji \c;\l;goto\u cbot\goto;(item.position);\n; co powy¿ej, zostaw tytan i cofnij siê. Huta wykona resztê roboty.
+
+Jeœli chcesz wiedzieæ wiêcej o "nazwach" ró¿nych obiektów w jêzyku programowania, przeczytaj \l;tekst o kategoriach\u cbot\category;.
+
+\t;Uwagi
+\l;Zmienne\u cbot\var; musz¹ zostaæ zadeklarowane tylko raz, na pocz¹tku programu! PóŸniej mo¿na u¿ywaæ ich wielokrotnie.
+
+Aby unikn¹æ przepisywania opisanych powy¿ej instrukcji, mo¿esz zaznaczyæ je mysz¹ oraz skopiowaæ i wkleiæ \button 61; do Twojego programu.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

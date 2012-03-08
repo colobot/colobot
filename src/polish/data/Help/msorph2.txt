@@ -1,0 +1,9 @@
+\b;Rozwi¹zanie
+W dolinie na po³udnie od statku kosmicznego znajdziesz \l;radar\u object\radar;, \l;stacjê odgromnikow¹\u object\captor;, \l;ogniwo elektryczne\u object\power; oraz \l;lataj¹ce dzia³o organiczne\u object\botoj;. Korzystaj¹c z tego mo¿esz zabiæ mrówki w pobli¿u statku i znaleŸæ \l;czarn¹ skrzynkê\u object\bbox; w pobli¿u szcz¹tków statku kosmicznego pierwszej ekspedycji na pó³nocy.
+
+Zbuduj szereg \l;stacji odgromnikowych\u object\captor; wzd³u¿ naturalnej œcie¿ki pó³nocnych szczytów gór. 5 lub 6 odgromników powinno zapewniæ wystarczaj¹c¹ ochronê przed piorunami.
+
+Dostarcz czarn¹ skrzynkê na pok³ad \l;statku kosmicznego\u object\base; i odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

@@ -1,0 +1,34 @@
+\b;Exercice
+Deux \l;tableaux\u cbot\array; contiennent des informations de distance et d'angle pour réaliser un dessin surprise. A vous de déplacer le robot en fonction de ces informations¦...
+
+\b;Tableaux
+Le dessin est composé de 7 traits. Les deux tableaux sont donc définis comme suit¦:
+\s;\c;	float dist[7];
+\s;	float angle[7];
+\n;
+Ils sont ensuite initialisés avec les bonnes valeurs. Le programme contient déjà ces instructions¦:
+\s;\c;	dist[0] = 4;
+\s;	dist[1] = 6;
+\s;	...
+\s;	angle[0] = 90;
+\s;	angle[1] = -90;
+\s;	...
+\n;
+N'oubliez pas qu'avec \c;float dist[7];\n;, le tableau contient 7 cases, numérotées à partir de 0. Les index sont donc compris entre 0 et 6. Il n'est pas possible d'accéder à la case \c;dist[7]\n;¦!
+
+\b;Programme
+Ce que vous devez faire, c'est déplacer le robot avec \c;\l;move\u cbot\move;()\n; selon le tableau \c;dist[]\n; puis le tourner avec \c;\l;turn\u cbot\turn;()\n; selon le tableau \c;angle[]\n;. La boucle principale \c;\l;for\u cbot\for;()\n; ressemblera à ceci¦:
+
+\s;\c;	for ( int i=0 ; i<7 ; i=i+1 )
+\s;	{
+\s;		move( dist[i] );
+\s;		...
+\s;	}
+\n;
+Au début, n'oubliez pas d'abaisser le crayon avec \c;\l;pendown\u cbot\pendown;(Red);\n;.
+A vous de terminer le programme.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tremote2; et \l;programmation\u cbot;.

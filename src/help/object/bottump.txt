@@ -1,0 +1,18 @@
+\b;\button 146; Robot secoueur
+\image bottump 8 8;
+Ce robot frappe un énorme coup par terre, ce qui retourne sur le dos toutes les \l;fourmis\u object\ant; et les \l;araignées\u object\spider; dans un rayon de 100 mètres. Un insecte sur le dos n'est pas mort. Il essaie désespérément de se retourner. Après environ 60 secondes, il y parvient généralement.
+
+Pour visualiser la zone d'impact, utilisez le bouton <rayon d'action> \button 41;. Des points rouges bordent la zone circulaire pendant 20 secondes.
+
+L'énergie consommée par le robot est importante. Avec une \l;pile normale\u object\power;, un coup vide les 2/5ème de la pile.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;Thumper\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour secouer par programmation, il faut utiliser l'instruction \c;\l;thump\u cbot\thump;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

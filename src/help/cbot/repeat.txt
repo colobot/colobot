@@ -1,0 +1,22 @@
+\b;Instruction \c;repeat\n;
+Syntaxe¦:
+\s;\c;repeat ( nombre )
+\s;{
+\s;	\n;Instructions ...\c;
+\s;}
+\n;
+Cette structure de boucle permet d'exécuter plusieurs fois les instructions comprises dans le \l;bloc\u cbot\bloc;.
+
+\t;\c;nombre\n;
+Cette expression indique combien de fois il faut exécuter les instructions contenues dans le bloc.
+
+\t;Attention
+Il ne faut pas mettre un \l;point-virgule\u cbot\term; à la fin de la ligne \c;repeat ( )n;.
+
+Les instructions \c;\l;break\u cbot\break;\n; et \c;\l;continue\u cbot\continue;\n; sont utiles à l'intérieur d'un bloc \c;repeat { }\n;.
+
+\t;Dictionnaire anglais-français
+\c;repeat\n; = répéter
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,12 @@
+\b;Solution
+1) Explorez les environs à la recherche de \l;minerai de titanium\u object\titanore;.
+2) Construisez un \l;convertisseur\u object\convert;.
+3) Construisez un \l;centre de recherches\u object\research;.
+4) Effectuez la recherche <secoueur> \button 66;.
+5) Construisez un \l;robot secoueur\u object\bottump;.
+6) Approchez-vous de l'épave et frappez un grand coup.
+7) Dérobez la \l;boîte noire\u object\bbox; et ramenez-la sur votre \l;vaisseau\u object\base;.
+8) Ramenez également le \l;robot secoueur\u object\bottump; sur le vaisseau.
+
+\t;Voir aussi
+\l;Commandes\u command;.

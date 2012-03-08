@@ -1,0 +1,5 @@
+\b;Typ \c;bool\n;
+Zmiennej tego typu mo¿na przypisaæ wartoœæ logiczn¹, czyli wartoœæ która ma dwa stany: true (prawda) lub false (fa³sz). 
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

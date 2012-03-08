@@ -1,0 +1,30 @@
+\b;Instruction \c;extern\n;
+L'instruction \c;extern\n; détermine quelle est la \l;fonction\u cbot\function; qui fait office de programme principal. La fonction déclarée \c;extern\n; aura son nom dans la liste des programmes, en bas à gauche de la fenêtre.
+\c;
+\s;extern void object::Boum( )
+\s;{
+\s;	while ( true )
+\s;	{
+\s;		fire(1);
+\s;		turn(10);
+\s;	}
+\s;}
+\n;
+Si le programme utilise d'autres fonctions, seule la fonction principale doit être précédée de \c;extern\n;.
+\c;
+\s;extern void object::Square( )
+\s;{
+\s;	for ( int i=0 ; i<4 ; i++ )
+\s;	{
+\s;		Line(10);
+\s;	}
+\s;}
+\s;
+\s;void object::Line(float dist)
+\s;{
+\s;	move(dist);
+\s;	turn(90);
+\s;}
+\n;
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

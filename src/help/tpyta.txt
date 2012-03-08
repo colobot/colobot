@@ -1,0 +1,52 @@
+\b;Exercice
+Cet exercice a pour but d'approfondir la compréhension des \l;fonctions\u cbot\function;. Le robot restera immobile.
+
+\b;Pythagore
+Jusqu'à présent, les fonctions que nous avons créées effectuaient un certain travail directement. Maintenant, nous allons créer une fonction qui effectue un travail, et qui, en plus, retourne le résultat à l'appelant.
+Cette fonction va calculer l'hypoténuse d'un triangle rectangle, selon le théorème du mathématicien Pythagore (si vous ne le connaissez pas, rien n'empêche de faire l'exercice). Ce théorème dit que l'hypoténuse d'un triangle rectangle est égale à la racine carré de la somme des carrés des deux côtés¦:
+\c;
+\s;h = sqrt( a**2 + b**2 )
+\n;
+La racine carrée s'écrit \c;\l;sqrt\u cbot\expr;\n;, et l'élévation à la puissance \c;\l;**\u cbot\expr;\n;.
+
+\b;Fonction qui retourne une valeur
+Pour que la fonction puisse retourner un valeur, il faut débuter sa déclaration par le type de la valeur retournée (ici \c;\l;float\u cbot\float;\n;). Les parenthèses contiennent ensuite normalement les paramètres (ici \c;float¦a\n; et \c;float¦b\n;)¦:
+\c;
+\s;\l;float\u cbot\float; object::hypotenuse(float a, float b)
+\n;
+Le corps de la fonction peut s'écrire ainsi¦:
+\c;
+\s;float object::hypotenuse(float a, float b)
+\s;{
+\s;	float hyp;
+\s;	hyp = sqrt( a**2 + b**2 );
+\s;	return hyp;
+\s;}
+\n;
+Notez que la fonction ci-dessous, plus compacte, a exectement le même résultat¦:
+\c;
+\s;float object::hypotenuse(float a, float b)
+\s;{
+\s;	return sqrt( a**2 + b**2 );
+\s;}
+\n;
+\b;Programme principal
+Il s'agit de calculer l'hypoténuse d'un triangle rectangle donc les deux côtés mesurent 10 et 20 mètres¦:
+
+\image tpyta 12 8;
+Le programme principal n'a plus qu'à appeler la fonction \c;hypotenuse\n; comme cela¦:
+\c;
+\s;extern void object::Solution( )
+\s;{
+\s;	float h;
+\s;	h = hypotenuse(10, 20);
+\s;	message(h);
+\s;}
+\n;
+\m step;\b;Pas à pas
+Il est particulièrement intéressant d'exécuter ce programme pas à pas. Si vous ne vous souvenez plus comment faire, cliquez \l;ici\u tvar1 step;.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tproc2; et \l;programmation\u cbot;.

@@ -1,0 +1,88 @@
+\b;Expressions
+Expressions can include the following operators: 
+
+\c;+\n;  addition
+\c;-\n;  subtraction
+\c;*\n;  multiplication
+\c;/\n;  division
+\c;%\n;  remainder of the division (only for the type \c;\l;int\u cbot\int;\n;)
+
+With the addition operator \c;+\n;, you can not only add numbers, you can also append \l;strings\u cbot\string;.
+\c;
+\s;	int    i = 12+3;      // returns 15
+\s;	string s = "a"+"bc";  // returns "abc"
+\s;	int    i = 2-5;       // returns -3
+\s;	float  f = 3.01*10;   // returns 30.1
+\s;	int    i = 5/3;       // returns 1
+\s;	float  f = 5/3;       // returns 1.67
+\s;	float  f = 5/0;       // returns an error
+\s;	int    i = 13%5;      // returns 3
+\s;	int    i = -8%3;      // returns -2
+\n;
+An expression can include constants or \l;variables\u cbot\var;. For example:
+
+\s;\c;	12+dist\n;
+
+Multiplications and divisions are performed before additions and subtractions. In order to be sure that the operations are performed in the right order, use brackets: 
+\c;
+\s;	12*a+b/c \n;is equivalent to\c; (12*a)+(b/c)
+\s;	2.5*(dist+range)
+\n;
+In order to improve readability, you can put as many spaces as you want: 
+\c;
+\s;	12*a + b/c
+\s;	2.5 * (dist+range)
+\n;
+Here is a list of mathematical functions: 
+
+\c;sin(angle)    \n;sinus
+\c;cos(angle)    \n;cosinus
+\c;tan(angle)    \n;tangent
+\c;asin(value)   \n;arc-sinus
+\c;acos(value)   \n;arc-cosinus
+\c;atan(value)   \n;arc-tangente
+\c;sqrt(value)   \n;square root
+\c;pow(x, y)     \n;x power y
+\c;rand()        \n;random value ranging between 0 and 1
+
+Angles are in degrees.
+
+\t;Compound assignment operators (for specialists)
+Besides the \c;=\n; operators for variable assignment there are several compound-assignment operators.
+
+The compound-assignment operators combine the \c;=\n; assignment operator with another binary operator such as \c;+\n; or \c;-\n;. Compound-assignment operators perform the operation specified by the additional operator and then assign the result to the left operand. For example, a compound-assignment expression such as   
+
+\c;\s;expression1 += expression2
+  
+is equivalent to
+
+\c;\s;expression1 = expression1 + expression2
+
+\c;+=\n;  addition
+\c;-=\n;  subtraction
+\c;*=\n;  multiplication
+\c;/=\n;  division
+\c;%=\n;  remainder of the division (only for the type \c;\l;int\u cbot\int;\n;)
+
+\t;Prefix and posfix increment- and decrement operators (for specialists)
+The operators \c;++\n; and \c;--\n; allow you to increment (++) or to decrement (--) a variable in very compact and efficient manner.
+
+For example to increment the variable \c;a\n; you can write
+\c;\s;	a++ ;
+\n;instead of
+\c;\s;	a = a + 1 ;
+\n;
+The value of the expression \c;a++\n; is the value of the variable \c;a\n; before the increment. If you use the prefix operator \c;++a\n; the value of the expression is the value of the variable \c;a\n; after the increment. The same holds for the \c;--\n; decrement operator.
+
+Exemples:
+\c;\s;	a = 2 ;
+\s;	b = a++ ;
+\s;	// now b contains 2 and a contains 3
+
+\c;\s;	a = 2 ;
+\s;	b = ++a ;
+\s;	// now b contains 3 and a contains 3
+\n;
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

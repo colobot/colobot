@@ -1,0 +1,50 @@
+\b;Programy przys³ane z Houston
+Poni¿ej znajdziesz jeden z programów napisanych przez naszych in¿ynierów.
+
+Poleca on \l;os³aniaczowi\u object\botshld; œledzenie i ochronê \l;dzia³a fazowego\u object\botphaz;.
+\c;
+\s;extern void object::FollowPhazer()
+\s;{
+\s;	\l;object\u cbot\type;    item;              // informacje o dziale fazowym
+\s;	\l;point\u cbot\type;     dest;              // pozycja docelowa
+\s;	\l;float\u cbot\type;     dist;              // odleg³oœæ do dzia³a fazowego
+\s;	
+\s;	item = \l;radar\u cbot\radar;(\l;PhazerShooter\u cbot\category;);
+\s;	\l;if\u cbot\if; ( item == null )
+\s;	{
+\s;		\l;message\u cbot\message;("Nie znaleziono dzia³a fazowego");
+\s;		\l;return\u cbot\return;;                  // zatrzymaj program
+\s;	}
+\s;	\l;shield\u cbot\shield;(1, 25);               // aktywuj os³onê
+\s;	
+\s;	\l;while\u cbot\while; ( true )               // powtarzaj w nieskoñczonoœæ
+\s;	{
+\s;		item = \l;radar\u cbot\radar;(PhazerShooter);// znajdŸ dzia³o fazowe
+\s;		\l;if\u cbot\if; ( item == null )  break;
+\s;		
+\s;		dist = \l;distance\u cbot\dist;(item.position, position);
+\s;		\l;if\u cbot\if; ( dist < 5 )
+\s;		{                        // jeœli jest bli¿ej ni¿ 5 m:
+\s;			\l;wait\u cbot\wait;(1);             // czekaj
+\s;		}
+\s;		\l;else\u cbot\if;                     // w przeciwnym przypadku:
+\s;		{ // Oblicz pozycjê 5 m przed dzia³em fazowym
+\s;			dest.x = (item.position.x-position.x)*((dist-5)/dist)+position.x;
+\s;			dest.y = (item.position.y-position.y)*((dist-5)/dist)+position.y;
+\s;			dest.z = (item.position.z-position.z)*((dist-5)/dist)+position.z;
+\s;			\l;goto\u cbot\goto;(dest, 0, 1, 1); // i idŸ tam
+\s;		}
+\s;	}
+\s;}
+\n;
+\b;Archiwum
+Lista programów przys³anych w poprzednich misjach:
+
+o  \c;\l;ServiceTower1\u mlvolca2;\n;
+o  \c;\l;CollectTitanium3\u mlvolca1;\n;
+o  \c;\l;KillAnt1\u mlsaari2;\n;
+o  \c;\l;CollectTitanium2\u mlcrys2;\n;
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;

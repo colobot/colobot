@@ -1,0 +1,213 @@
+// test de l'interpréteur CBot, (c) D. Dumoulin 2000
+
+Int Somme ( Int x, Int y )
+{
+	return x + y;
+}
+
+Real Somme ( Real x, Real y )
+{
+	return x + y;
+}
+
+void A_Faire()
+{
+	CPoint	position;	// utilise une classe externe
+	position.x = 123.5;
+	position.y = -45.1;
+
+	show ( position );
+}
+	
+/*	Les nouveautés sont les suivantes
+	__________________________________________________
+
+	On peut définir des fonctions, avec la syntaxe habituelle au C
+	void	MaFonction( Int x, Real y ) { ... }
+
+	Les caractéristiques sont pour l'instant les suivantes:
+
+	-	ce programme TstCBot exécute la dernière fonction définie
+
+	-	on peut définir deux fonctions du même nom,
+		si la liste de paramètres est différente.
+		Par exemple
+			Int Somme( Int x, Int y )
+			Real Somme( Real x, Real y );
+		Note: si la seconde n'existait pas, Somme ( 1.3, 4.8 )
+			   serait fait sur les nombres entier 1 + 4
+		La priorité est donnée à la routine qui ne pert pas
+		de bits dans la conversion des paramètres.
+
+	-	il n'y a pas d'erreur de compilation si une routine
+		ne retourne pas de valeur alors qu'elle devrait,
+		par contre il y a une erreur "correcte" à l'exécution
+
+	-	il est possible d'utiliser une fonction qui est définie
+		plus bas dans le programme.
+	__________________________________________________
+
+	Tous les blocs d'instructions existent maintenant, à savoir
+
+	label :
+	while (condition) { instructions; break label; continue label; }
+
+	label :
+	do  { instructions; break label; continue label; } while (condition)
+
+	label:
+	for (initial; condition; incrément) { instructions; break; continue }
+
+	switch ( valeur ) { case 1: instructions; case 2: break ; }
+
+	try {instructions; throw exception; } catch (exception) {instructions;}
+	catch (testlogique) {instructions;}
+	finally {instructions;}
+	// le bloc finally est exécuter dans tous les cas 
+	// qu'il y ait eu exception ou non, et aussi en cas de break, continue ou return
+	__________________________________________________
+
+	Les "exceptions" sont juste des numéros (31 bits)
+	6000 = division par zéro
+	6001 = variable non initialisée
+	6002 = valeur négative pour un throw
+	6003 = la fonction n'a pas retourné de valeur
+
+	les autres numéros sont à disposition
+	(COLOBOT aura surement des numéros d'exception propre)
+	l'association d'un mot clef pour ces exceptions est à venir.
+	__________________________________________________
+
+	L'interpréteur a été un peu optimiser, une boucle de un millon de décrément
+	ne prend plus que 
+*/
+
+void	Test ()
+{	// début du bloc d'instructions
+
+	Int	z = 1000000;
+	while ( z>0 ) z--;
+
+	return;
+	{
+		// test la préséance pour les assignations
+		Int a = 9;
+		a += (a = 3);
+		if ( a != 12 ) 1/0;			// le résultat correct est 12
+
+		Int b = 9;
+		b = b + (b = 3);
+		if (b != 12) 1/0;				// même chose
+
+		// la fonction show est une fonction externe
+		// définie par TstCBot
+		// elle peut prendre un nombre quelconque de paramètres
+		show ( a, b );
+	}
+
+	{
+		// petit test sur les chaînes
+		String  x = "ch." ;	
+		String  y ;
+		x += y = x + " de la brume.";
+
+		// concaténation de chaînes, accepte des autres types
+		String	s = 1 + 2 + " test " + 3 + 4 ;
+
+		show( x, y, s );
+
+		// les tests sur les chaînes ne sont pas standard en Java
+		// mais c'est si pratique :
+
+		if ( s != "3 test 34" ) 1/0;	// le résultat correct est "3 test 34"
+									// car 1+2 est évalué en premier entre 2 nombres
+									// et ensuite on additionne des chaînes "3" "4"
+	}
+
+	{
+		// teste toutes les opérations avec les entiers (32 bits)
+		Int 	a = 4;
+		Int  b = 4;
+
+		Int c = a++ * --b;					// post incrément, pré décrément
+		if ( c != 12 ) 1/0;
+
+		c = ++a * b--;						// pré incrément, post décrément
+		if ( c!=18 ) 1/0;
+
+		a = a+b-a*b/a%3;					// 6 + 2 - ( 6 * 2 / 6 % 3 ) -> 6
+		if ( a != 6 ) 1/0;
+
+		a += 2; a-=1; a*=3; a/=4; a%=3;	// (6+2 -1) *3 /4 modulo 3	= 21 / 4 modulo 3 = 2
+		if ( a!= 2) 0/0;
+
+		if (-5 << 3 != -40) 0/0;				// shift à gauche
+		if ( -5 >> 1 != -3) 0/0;				// shift arithmétique à droite 11111011 -> 11111101 = -3
+		if ( -5 >>> 1 != 0x3ffffffd) 0/0;		// shift non signé à droite
+
+		a = -10;							// fait la même chose en assignation
+		a <<= 1;							// -20
+		a >>= 2;							// -5
+		a >>>= 1;							// pert le signe 
+		if ( a != 0x3ffffffd) 0/0;				//
+
+		Int	x = 5/3;						// division d'entiers
+		if ( x != 1 ) 0/0;
+		Int	xx = 5.0/3.0;					// division de réels, assigné à un entier
+		if ( xx != 1 ) 0/0;
+
+		Int	y = 0xF0035678;
+		if ( ~y != 0x0FFCA987 ) 0/0;		// NOT bit à bit
+		if ( (0x3456 ^ 0x54f0) != 0x60A6) 	// XOR bit à bit
+				0/0;						
+		if ( (0x23 | 0x83) != 0xA3 ) 0/0;	// OR bit à bit
+		if ( (0x23 & 0x83) != 0x03 ) 0/0;	// AND bit à bit
+
+		Int	z = 0x0123;
+		z |= 0x8010; if ( z != 0x8133) 0/0;
+		z &= 0xF018; if ( z != 0x8010) 0/0;
+		z ^= 0xFF17; if ( z != 0x7F07) 0/0;
+	}
+
+	{
+		// test pour les booléens
+		Boolean	a, b= true, c = false;
+		a = b | c & b;
+		if ( a != b ) 0/0;
+		if ( !a ) 0/0;
+		if ( b ^ a ) 0/0;					// XOR
+		if ( true || 0/0<1 ) {};
+		if ( false && 0/0<1) {};
+	//	a ? "vrai" : "faux";
+	}
+
+	{
+		// petit test sur les nombres réels
+		Real 	x = 1. / 3, y = 0;
+
+		if ( 3 * x != 1 ) x = x / y;		// provoque une division par zéro
+		else	y = 1.123;
+	}
+
+
+	// test de durée
+	// attention, le programme de test ne stoppe qu'à la fin d'exécution
+	// bien que la boucle est interrompue plusieures fois
+
+	// la boucle est plus rapide si elle est au début du programme !
+	{
+		Int z = 10000;
+		while ( z > 0 ) z = z - 1; 
+	}
+
+}
+
+void t()
+{
+	A_Faire();
+
+	show ( Somme ( 1, 2 ) );
+	show ( Somme ( 1., 2 ) );
+	show ( Somme ( 4.5, 2.7 ) );
+}
+

@@ -1,0 +1,46 @@
+\b;Exercice
+Cet exercice est presque semblable au précédent. Il faut tracer un carré orange de 20 mètres de côté. Mais il faudra utiliser une boucle, ce qui est un concept nouveau très puissant.
+
+\b;Principe
+Le programme va ressembler à ceci¦:
+\s;o  Répéter 4 fois¦:
+\s;	o  avancer de 20 mètres
+\s;	o  tourner de 90 degrés à gauche
+
+\b;Instruction \c;repeat ( )\n;
+L'instruction à utiliser pour répéter 4 fois un groupe d'instructions est¦:
+\s;\c;	repeat ( 4 )
+\s;	{
+\s;		\n;instructions répétées 4x ...\c;
+\s;	}
+\n;
+Attention à ne pas faire suivre la ligne \c;repeat ( )\n; d'un \l;point-virgule\u cbot\term;¦! Lorsque vous tapez l'accolade ouvrante \c;{\n;, l'accolade fermante \c;}\n; est automatiquement insérée.
+
+\b;Les blocs
+Les accolades \c;{ }\n; servent à créer des \l;blocs\u cbot\bloc;. Ainsi, l'instruction \c;\l;repeat\u cbot\repeat;()\n; est suivie d'un bloc, qui est répété dans son ensemble.
+Le programme principal est lui-même constitué d'un bloc¦:
+\s;\c;extern void object::Go( )
+\s;{
+\s;	\n;à compléter ...\c;
+\s;}
+\n;
+Il ne faut jamais modifier ces caractères. Le seul endroit où vous pouvez agir est dans le bloc, là où apparaît "à compléter".
+Il est possible de mettre des blocs dans d'autres blocs. C'est le cas du bloc \c;repeat\n; qui est à l'intérieur du bloc du programme principal. En général, pour des questions de lisibilité, on aligne verticalement l'accolade ouvrante \c;{\n; avec sa partenaire fermante \c;}\n;. Mais cela n'est pas obligatoire.
+
+\b;Solution
+Voici donc le programme que vous devez écrire¦:
+\s;\c;extern void object::Go( )
+\s;{
+\s;	pendown(Orange);
+\s;	
+\s;	repeat ( 4 )
+\s;	{
+\s;		move(20);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tsquare1; et \l;programmation\u cbot;.

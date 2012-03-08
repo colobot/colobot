@@ -1,0 +1,23 @@
+\b;Programy przys³ane z Houston
+Poni¿ej znajdziesz jeden z programów napisanych przez naszych in¿ynierów. Umo¿liwia on na³adowanie \l;ogniwa elektrycznego\u object\power; robota: idzie on do najbli¿szej \l;stacji energetycznej\u object\station;, czeka 5 sekund, a nastêpnie wraca do pozycji wyjœciowej.
+
+Wskazówka: Klikniêcie elementu programu podkreœlonego na niebiesko spowoduje wyœwietlenie tekstu opisuj¹cego ten element na komunikatorze SatCom. Teksty po podwójnych ukoœnikach \c;//\n; nie s¹ czêœci¹ programu ale komentarzem pozwalaj¹cym na lepsze zrozumienie programu.
+\c;
+\s;extern void object::Recharge1()
+\s;{
+\s;	\l;point\u cbot\type;  start;          // zmienna pozycji startowej
+\s;	\l;object\u cbot\type; item;           // informacja o stacji energetycznej
+\s;	
+\s;	start = position;      // zachowaj pozycjê startow¹
+\s;	
+\s;	item = \l;radar\u cbot\radar;(\l;PowerStation\u cbot\category;); // znajdŸ stacjê
+\s;	\l;goto\u cbot\goto;(item.position);   // idŸ do stacji
+\s;	\l;wait\u cbot\wait;(5);               // poczekaj 5 sekund
+\s;	
+\s;	\l;goto\u cbot\goto;(start);           // wróæ do pozycji startowej
+\s;}
+\n;
+\b;Archiwum
+Lista programów przys³anych w poprzednich misjach:
+
+o  \c;\l;SwitchCell1\u mllune1;\n;

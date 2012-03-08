@@ -1,0 +1,16 @@
+\b;Instruction \c;strlower\n;
+Cette instruction convertit tous les caractères d'une chaîne en minuscules.
+
+Syntaxe¦:
+\s;\c;strlower ( string );\n;
+
+Exemples¦:
+\s;\c;	string s = strlower("Abc");  // s vaut "abc"
+\n;
+\t;Dictionnaire anglais-français
+\c;string\n; = chaîne de caractères
+\c;lower \n; = minuscules
+
+\t;Voir aussi
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strupper\u cbot\strupper;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

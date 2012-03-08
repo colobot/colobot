@@ -1,0 +1,6 @@
+extern void object::Aller()
+{
+	shield(1,15);  // active le bouclier
+	goto(6,160);   // va à la position indiquée
+	shield(0,15);  // désactive le bouclier
+}

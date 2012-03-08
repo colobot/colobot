@@ -1,0 +1,95 @@
+Global        unitScale=1 traceQuality=5 shortcut=0
+Audio         track=0
+AmbiantColor  air=152;152;102;102 water=20;20;20;20  // grey
+FogColor      air=0;0;0;0 water=68;100;80;0  // bleu sale
+VehicleColor  color=255;200;0;0
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=1
+Background    up=96;96;96;0 down=0;0;0;0 cloudUp=43;45;143;0 cloudDown=200;255;0;0
+
+TerrainGenerate mosaic=10 brick=2 size=10 vision=250.00 depth=1 slope=3.0
+TerrainWind     speed=0;0
+TerrainRelief   image="textures\relief60.bmp" factor=1.0 border=0
+
+TerrainMaterial id=10 image="cellar01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=11 image="cellar01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=12 image="cellar01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=13 image="cellar01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=14 image="cellar01" u=0.00 v=0.25 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=15 image="cellar01" u=0.25 v=0.25 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=16 image="cellar01" u=0.50 v=0.25 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=17 image="cellar01" u=0.75 v=0.25 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=18 image="cellar01" u=0.00 v=0.50 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=19 image="cellar01" u=0.25 v=0.50 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=20 image="cellar01" u=0.50 v=0.50 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=21 image="cellar01" u=0.75 v=0.50 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=22 image="cellar01" u=0.00 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=23 image="cellar01" u=0.25 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=24 image="cellar01" u=0.50 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=25 image="cellar01" u=0.75 v=0.75 up=1 down=1 left=1 right=1 hard=0.6
+
+TerrainInit     id=10
+TerrainLevel    id=10;11;12;13;14;15;16;17 min= 0.0 max=99.0 slope=0.0 freq=100.0
+
+TerrainLevel    id=24 center=-20;-20 radius=10
+TerrainLevel    id=24 center=  0;-20 radius=10
+TerrainLevel    id=24 center= 20;-20 radius=10
+TerrainLevel    id=24 center=-20;  0 radius=10
+TerrainLevel    id=24 center=  0;  0 radius=10
+TerrainLevel    id=24 center= 20;  0 radius=10
+TerrainLevel    id=24 center=-20; 20 radius=10
+TerrainLevel    id=24 center=  0; 20 radius=10
+TerrainLevel    id=24 center= 20; 20 radius=10
+
+TerrainCreate
+
+BeginObject
+CreateObject pos=  8;  0 dir=0.35 type=Scribbler reset=1 trainer=1 toy=1 script4="tteen305.txt" select=1 camera=PLANE
+CreateObject pos= 18;  0 dir=0.1 type=Firework pyro=WIN
+CreateObject pos= -2;  0 dir=0.1 type=Firework pyro=WIN
+
+CreateObject pos=  10;  10 dir=0.00 type=Teen26
+
+CreateObject pos=   0;-200 dir=1.00 type=Teen21
+CreateObject pos= 200;   0 dir=0.50 type=Teen22
+CreateObject pos=   0; 200 dir=0.00 type=Teen21
+CreateObject pos=-200;   0 dir=1.50 type=Teen20
+
+CreateObject pos= -80;   0 dir=1.50 type=Teen14
+CreateObject pos= -51; -51 dir=1.40 type=Teen15
+CreateObject pos= -51;  17 dir=1.40 type=Teen23
+
+CreateObject pos= -32; 109 dir=1.05 type=Teen13
+CreateObject pos=  10; 120 dir=1.99 type=Teen13
+
+CreateObject pos=  80;   0 dir=0.45 type=Teen14
+CreateObject pos=  80;  -9 dir=0.30 type=Teen28
+CreateObject pos=  83;   1 dir=1.10 type=Teen28
+CreateObject pos=  73;   7 dir=0.75 type=Teen28
+CreateObject pos=  33; -53 dir=0.95 type=Teen28
+
+CreateObject pos=   0; -80 dir=1.00 type=Teen13
+CreateObject pos=  54;-159 dir=1.20 type=Teen19
+CreateObject pos= -24;-190 dir=1.00 type=Teen17
+CreateObject pos= -94;-185 dir=0.50 type=Teen24
+CreateObject pos=-185;  30 dir=1.50 type=Teen17
+CreateObject pos=-111; 169 dir=0.00 type=Teen30
+CreateObject pos=  94; 140 dir=1.05 type=Teen44
+CreateObject pos=  84; 150 dir=0.90 type=Teen13 h=62
+CreateObject pos= 190; 110 dir=0.40 type=Teen28 h=42
+CreateObject pos=-150; -81 dir=0.95 type=Teen40
+
+CreateObject pos=  14; -34 dir=1.20 type=Teen4
+CreateObject pos=  -5;  50 dir=1.10 type=Teen1
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.45; 0.45; 0.45 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 0.70; 0.70; 0.70 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.28; 0.28; 0.28 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.16; 0.16; 0.16 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.08; 0.08; 0.08 type=Object
+CreateLight dir=-0.5; 1.0;-0.5 color= 0.12; 0.12; 0.12 type=Object
+
+Camera eye=0;10;-60 lookat=8;10;0

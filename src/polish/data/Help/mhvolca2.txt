@@ -1,0 +1,17 @@
+\b;Z Centrum Kontroli Misji
+Poprzednia ekspedycja dostarczy³a pewnych informacji o \l;materii organicznej\u object\bullet; produkowanej prawdopodobnie przez \l;mrówki\u object\ant;. Otwiera ona przed Tob¹ nowe mo¿liwoœci. Niew¹tpliwie pozwala na stworzenie nowego typu hybrydowego robota o zwiêkszonej wydajnoœci, dziêki zastosowaniu fragmentów owadzich.
+
+Twoja misja polega na eksperymentowaniu z pierwszym praktycznym zastosowaniem "zielonego z³ota". Zbuduj \l;transporter na nogach\u object\botgs;, dostarcz go na statek kosmiczny i odleæ.
+
+\b;Procedura
+Zdob¹dŸ próbkê materii organicznej z gniazda olbrzymich mrówek. Jej analiza zostanie wykonana w \l;laboratorium\u object\labo;, które przeprowadzi równie¿ odpowiednie badania umo¿liwiaj¹ce praktyczne zastosowanie.
+
+W celu poprawienia zdolnoœci obronnych, przes³aliœmy program dla \l;robotów transporterów\u object\botgr;, który zajmie siê wymian¹ i ³adowaniem ogniwa elektrycznego \l;wie¿y obronnej\u object\tower; (zobacz \button 53; ).
+
+\b;Uwaga
+Wobec znacznego spadku temperatury, latanie powinno ju¿ byæ mo¿liwe.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

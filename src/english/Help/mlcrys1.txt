@@ -1,0 +1,29 @@
+\b;Programs dispatched by Houston
+Below is one of the programs that has been developed by our engineers.
+It instructs a \l;grabber\u object\botgr; to retrieve the nearest chunk of \l;titanium ore\u object\titanore; and place it on the \l;converter\u object\convert;.
+
+In order to execute this program, select the program \c;CollectTitanium1\n; in the list of the programs available on the bot (on the lower left-hand corner of your screen), and click on the arrow symbol \button 21;. At any moment you can stop the program and take over at the controls with the stop button \button 8;.
+\c;
+\s;extern void object::CollectTitanium1()
+\s;{
+\s;	// 1) Variable definition.
+\s;	\l;object\u cbot\type;  item;            // info. about objects
+\s;	
+\s;	// 2) Go to the titanium ore and grab it.
+\s;	item = \l;radar\u cbot\radar;(\l;TitaniumOre\u cbot\category;);// look for titanium ore
+\s;	\l;goto\u cbot\goto;(item.position);     // go to the position
+\s;	\l;grab\u cbot\grab;();                  // grab the titanium
+\s;	
+\s;	// 3) Go to the converter and drop it.
+\s;	item = \l;radar\u cbot\radar;(\l;Converter\u cbot\category;); // look for converter
+\s;	\l;goto\u cbot\goto;(item.position);     // go to the position
+\s;	\l;drop\u cbot\drop;();                  // drop the titanium
+\s;	\l;move\u cbot\move;(-2.5);              // step back 2.5 m
+\s;}
+\n;
+\b;Archives
+Index of the programs dispatched in former missions:
+
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;

@@ -1,0 +1,70 @@
+Title.F      text="Tous"
+Resume.F     text="Tous les robots et tous les bâtiments."
+Title.E      text="Tous"
+Resume.E     text="Tous les robots et tous les bâtiments."
+HelpFile     name="cbot.txt"
+
+AmbiantColor  air= 136;136;136;136  // grey
+BackColor     air= 0;0;0;0 // black
+FogColor      air= 0;0;0;0 // black
+VehicleColor  color=200;196;174;0  // sable
+DeepView      air=250.00 
+FogStart      air= 0.1
+SecondTexture rank=1
+TerrainGenerate vision=125.00 depth=1
+TerrainRelief image="textures\relief00.bmp" full=1
+TerrainResource image="textures\resae.bmp"
+TerrainInitTextures image="black" dx=1 dy=1 table=0
+TerrainCreate
+
+BeginObject
+CreateObject pos=  0.00;-100.00 dir=0.0 type=Me
+CreateObject pos=  5.00;-100.00 dir=0.0 type=WingedGrabber
+CreateObject pos= 10.00;-100.00 dir=0.0 type=TrackedGrabber
+CreateObject pos= 15.00;-100.00 dir=0.0 type=WheeledGrabber
+CreateObject pos= 20.00;-100.00 dir=0.0 type=LeggedGrabber
+CreateObject pos= 25.00;-100.00 dir=0.0 type=WingedShooter
+CreateObject pos= 30.00;-100.00 dir=0.0 type=TrackedShooter
+CreateObject pos= 35.00;-100.00 dir=0.0 type=WheeledShooter
+CreateObject pos= 40.00;-100.00 dir=0.0 type=LeggedShooter
+CreateObject pos= 45.00;-100.00 dir=0.0 type=WingedSniffer
+CreateObject pos= 50.00;-100.00 dir=0.0 type=TrackedSniffer
+CreateObject pos= 55.00;-100.00 dir=0.0 type=WheeledSniffer
+CreateObject pos= 60.00;-100.00 dir=0.0 type=LeggedSniffer
+CreateObject pos= 70.00;-100.00 dir=0.0 type=Thumper
+CreateObject pos= 80.00;-100.00 dir=0.0 type=PhazerShooter
+CreateObject pos= 90.00;-100.00 dir=0.0 type=Recycler
+CreateObject pos=100.00;-100.00 dir=0.0 type=Shielder
+CreateObject pos=110.00;-100.00 dir=0.0 type=Subber
+CreateObject pos=125.00;-100.00 dir=0.0 type=WingedOrgaShooter
+CreateObject pos=130.00;-100.00 dir=0.0 type=TrackedOrgaShooter
+CreateObject pos=135.00;-100.00 dir=0.0 type=WheeledOrgaShooter
+CreateObject pos=140.00;-100.00 dir=0.0 type=LeggedOrgaShooter
+CreateObject pos=145.00;-100.00 dir=0.0 type=PracticeBot
+
+CreateObject pos= -25.00;-100.00 dir=0.5 type=Derrick
+CreateObject pos= -37.50;-100.00 dir=0.5 type=BotFactory
+CreateObject pos= -50.00;-100.00 dir=0.5 type=RepairCenter
+CreateObject pos= -62.50;-100.00 dir=0.5 type=PowerStation
+CreateObject pos= -75.00;-100.00 dir=0.5 type=Converter
+CreateObject pos= -87.50;-100.00 dir=0.5 type=DefenseTower
+CreateObject pos=-100.00;-100.00 dir=0.5 type=ResearchCenter
+CreateObject pos=-112.50;-100.00 dir=0.5 type=RadarStation
+CreateObject pos=-125.00;-100.00 dir=0.0 type=PowerPlant
+CreateObject pos=-137.50;-100.00 dir=0.0 type=AutoLab
+CreateObject pos=-150.00;-100.00 dir=0.5 type=NuclearPlant
+CreateObject pos=-162.50;-100.00 dir=0.5 type=ExchangePost
+//CreateObject pos=-800.0;-400.0 dir=0.0 type=SpaceShip
+CreateObject pos=-225.00;-100.00 dir=0.5 type=TitaniumOre
+CreateObject pos=-227.50;-100.00 dir=0.5 type=Titanium
+CreateObject pos=-230.00;-100.00 dir=0.5 type=PowerCell
+
+//CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+//CreateLight dir= 1.0; 0.0; 0.0 color=-0.70;-0.70;-0.70 type=Terrain
+//CreateLight dir=-1.0; 0.0; 0.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir= 1.0;-1.0; 0.0 color= 0.30; 0.30; 0.30 type=Object
+CreateLight dir=-1.0;-1.0; 0.0 color= 1.00; 1.00; 1.00 type=Object
+CreateLight dir= 0.0;-1.0; 1.0 color= 0.60; 0.60; 0.60 type=Object
+CreateLight dir= 0.0;-1.0;-1.0 color= 0.60; 0.60; 0.60 type=Object
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me min=2

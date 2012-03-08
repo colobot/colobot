@@ -1,0 +1,35 @@
+extern void object::Slave( )
+{
+	float	order, param;
+
+	while ( true )
+	{
+		// attend un ordre ...
+		while ( !testinfo("order", 100) )
+		{
+			wait(1);
+		}
+
+		// lit l'ordre puis le paramètre
+		order = receive("order", 100);
+		param = receive("param", 100);
+
+		if ( order == 1 )
+		{
+			message("move("+param+")");
+			move(param);
+		}
+		else if ( order == 2 )
+		{
+			message("turn("+param+")");
+			turn(param);
+		}
+		else
+		{
+			message("Unknown order");
+		}
+
+		// indique "fin du travail"
+		deleteinfo("order", 100);
+	}
+}

@@ -1,0 +1,14 @@
+\b;Contournement
+Il y a toujours les 2 feuilles posées sur la table. Mais un cornichon a posé un obstacle en plein sur le chemin. A toi d'ajouter des instructions \c;turn\n; et \c;move\n; pour remplacer le \c;move(30)\n; pour passer d'une feuille à l'autre¦...
+
+\image teen206 8 8;
+Note que le contournement peut se faire par la droite ou par la gauche, à choix.
+
+\b;Rappel
+\s;\c;turn(90);   \n;pour tourner à gauche
+\s;\c;turn(-90);  \n;pour tourner à droite
+
+En cas d'erreur, tu peux remettre le robot à la position initiale avec le bouton \button 9;.
+
+\b;Observer
+Après avoir fermé cette fenêtre, n'oublie pas que tu peux observer les alentours simplement en appuyant sur les touches flèches du clavier.

@@ -1,0 +1,38 @@
+\b;Exercise
+Move the \l;titanium cube\u object\titan; on the finishing pad. You do not know the position of the titanium, but we can tell you the position of the finishing pad x=10 and y=-60.
+
+\b;The instruction \c;goto\n;
+In order to solve this problem easily, we will use a new way to move the bot with the instruction \c;\l;goto\u cbot\goto;\n;. With this instruction you can very easily reach every position, if you know the exact location in the form of its x and y coordinates. The bot will turn towards the goal, move forward, and even turn around any obstacle.
+
+If we summarize, the following are the different ways to move a bot:
+
+\s;\c;motor(left, right)\n;
+Allows a direct, precise control of the two motors, and allows you to stay in control of the motors at every fraction of a second.
+
+\s;\c;move(distance)\n; and \c;turn(angle)\n;
+Use these instructions in order to move forward of a certain distance, or to perform a rotation of a certain angle. All parameters are relative to the current position of the bot.
+
+\s;\c;goto(position)\n;
+Allows you to reach easily a given absolute position.
+
+\b;The program
+Use the instruction \c;\l;radar\u cbot\radar;(Titanium);\n; in order to find the titanium cube. Then test if a titanium cube has actually been found. In this exercise, this line is not very useful, because we know that there is a titanium cube somewhere. However, it is better to take the habit of testing whatever your radar returns:
+\c;
+\s;object  item;
+\s;item = radar(Titanium);
+\s;if ( item == null )  return;
+\s;goto(item.position);
+\n;
+The variable \c;item\n; is of type \c;\l;object\u cbot\object;\n;. In order to know the exact location of the object described by the variable, just write \c;item.position\n;.
+
+In order to take the titanium cube, use the instruction \c;\l;grab\u cbot\grab;()\n; without any parameter.
+
+In order to drop the titanium, use the instruction \c;\l;drop\u cbot\drop;()\n; without any parameter.
+
+We know the coordinates of the finishing pad: x=10 et y=-60. You must declare a \l;variable\u cbot\var; of the type \l;point\u cbot\point;, then fill it with the right coordinates. Then you can give this variable as a parameter to the instruction \c;\l;goto\u cbot\goto;\n;.
+Remark: You do not have to take care of the \c;z\n; coordinate in the case of a bot that can not fly.
+
+It is now up to you to finish the program...
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

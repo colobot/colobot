@@ -1,0 +1,15 @@
+extern void object::Solution( )
+{
+	float  dist, dir;
+
+	dist = 20;
+	dir = 90;
+
+	move(dist);  // go to checkpoint 1
+	turn(dir);
+	move(dist);  // go to checkpoint 2
+	turn(-dir);
+	move(dist);  // go to checkpoint 3
+	turn(-dir);
+	move(dist);  // goeto finishing pad
+}

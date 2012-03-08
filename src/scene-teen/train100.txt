@@ -1,0 +1,2 @@
+Title.F text="Bouge" resume="Bouge"
+Title.E text="Move" resume="Move"

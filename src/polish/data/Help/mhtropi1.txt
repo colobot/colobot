@@ -1,0 +1,10 @@
+\b;Z Centrum Kontroli Misji
+Satelita obserwacyjny wykry³ nowy rodzaj materia³ów wybuchowych, zaprojektowany przez poprzedni¹ ekspedycjê. Musisz go znaleŸæ i dostarczyæ na \l;statek kosmiczny\u object\base;.
+
+\b;Procedura
+Lokalizacja materia³ów wybuchowych jest zaznaczona na mapce czerwonym plusem.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

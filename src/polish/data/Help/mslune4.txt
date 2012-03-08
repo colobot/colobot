@@ -1,0 +1,19 @@
+\b;Rozwi¹zanie
+1) Z jedynej dostêpnej kostki tytanu zbuduj hutê \button 162;.
+
+2) Umieœæ porcjê rudy tytanu na œrodku platformy huty.
+
+3) Z powsta³ej kostki tytanu zbuduj stacjê energetyczn¹ \button 164;.
+
+4) Jeœli nie chcesz sam szukaæ czarnej skrzynki, zbuduj radar \button 168; a pojawi siê ona na mapce, na pó³noc od Ciebie, na dnie krateru, obok wraku statku kosmicznego i szcz¹tków poprzedniej ekspedycji.
+
+5) Umieœæ transportery na œrodku platformy stacji energetycznej aby je do³adowaæ. Energia w ich ogniwach powinna wystarczyæ na wys³anie ich na platformê.
+
+6) U¿yj transportera lataj¹cego do dostarczenia czarn¹ skrzynkê na statek kosmiczny.
+
+7) Zabierz ze sob¹ na statek kosmiczny transportery i czarn¹ skrzynkê.
+
+8) Odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

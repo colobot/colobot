@@ -1,0 +1,17 @@
+extern void object::Solution( )
+{
+	object  item;
+	point   dest;
+
+	item = radar(Titanium);
+	if ( item == null )  return;
+	goto(item.position);
+
+	grab();  // prend le métal
+
+	dest.x = 10;
+	dest.y = -60;
+	goto(dest);  // va sur la plateforme
+
+	drop();  // dépose le métal
+}

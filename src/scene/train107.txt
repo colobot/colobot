@@ -1,0 +1,68 @@
+Title.F      text="Araignées 3"
+Resume.F     text="Allez à la rencontre des araignées."
+Title.E      text="Spiders 3"
+Resume.E     text="Learn to move the bot so that no spider can escape."
+ScriptName.F text="Araignée3"
+ScriptName.E text="Spider3"
+Instructions name="tspid3.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=2 lost=0
+
+Audio         track=0
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=180;222;255;0 water=10;20;100;0  // grey
+VehicleColor  color=175;209;215;0  // bleu-sable
+DeepView      air=100.00 water=25.00 
+FogStart      air=0.1 water=0.1
+SecondTexture rank=3
+Background    up=76;105;226;0 down=192;250;255;0
+FrontsizeName image="lens5.tga"
+Planet        pos=0.00;0.70 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=1.00;0.60 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=1.20;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=2.00;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=2.50;0.50 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=3.00;0.30 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=3.85;0.30 dim=0.06 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=4.00;0.70 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=4.10;0.50 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=5.30;0.30 dim=0.08 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.7
+TerrainRelief       image="textures\relief47.bmp" factor=1.0
+TerrainResource     image="textures\res00.bmp"
+TerrainWater        image="lava04.tga" level=-10.0 moveX=1.0 moveY=0.3 water=TO color=0;128;255;0
+TerrainInitTextures image="terra" dx=1 dy=1 table=2
+TerrainCreate
+
+BeginObject
+CreateObject pos=   7; -10 dir=1.5 type=Me
+CreateObject pos=   0;   0 dir=1.5 type=WheeledShooter reset=1 trainer=1 script4="tspid3.txt" power=1 camera=BACK
+CreateObject pos=  -4; -20 dir=0.0 type=RadarStation
+CreateObject pos= -20;  60 dir=0.4 type=AlienSpider reset=1
+CreateObject pos=  40;  65 dir=1.0 type=AlienSpider reset=1
+CreateObject pos=  65; 110 dir=0.6 type=AlienSpider reset=1
+CreateObject pos= -10; 130 dir=0.2 type=AlienSpider reset=1
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.50; 0.00; 0.40 type=Quartz
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.40; 0.10; 0.00 type=Quartz
+WaterColor color=-0.6;-0.1;-0.1
+
+MapColor floor=104;185;205 water=154;235;255
+MapZoom  factor=2
+
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WheeledShooter lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienSpider min=0 max=0
+
+Camera eye=7.00;20.00;-50.00 lookat=7.00;1.00;-10.00 delay=10 fixDirection=-0.25

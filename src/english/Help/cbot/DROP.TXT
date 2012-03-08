@@ -1,0 +1,29 @@
+\b;Instruction \c;drop\n;
+The instruction \c;drop();\n; instructs the bot to drop whatever the operating arm is carrying on the ground, on the platform of a building or on the power cell location of a bot.
+
+\b;Basic use
+The instruction \c;drop();\n; written in this form drops the object in front of the bot. Here is a short program that grabs an object in front of the bot and drops it 5 meters further:
+\c;
+\s;	\l;grab\u cbot\grab;();
+\s;	\l;move\u cbot\move;(5);
+\s;	drop();
+\n;
+\b;For specialists
+Syntax:
+\s;\c;drop ( oper );\n;
+
+This instruction appeals to the operating arm of a \l;grabber bot\u object\botgr;, in order to drop what it is holding.
+
+\t;oper: \c;\l;int\u cbot\int;\n; (default value\c;InFront\n;)
+Oper indicates where the robot should drop the object. If no indication is given, the object is dropped in front of the bot. 
+\c;InFront   \n;  Drops in front (default value).
+\c;Behind    \n;  Drops behind.
+\c;EnergyCell\n;  Drops on the bot's own power cell location.
+
+\t;Return value: \c;\l;int\u cbot\int;\n;
+Normally an error stops the program. You can prevent the program from stopping on errors by using the \c;\l;errmode\u cbot\errmode;(0)\n; instruction. A value different from zero if an error occurred is then returned by \c;drop();\n;.
+\c;== 0 \n;object was dropped
+\c;!= 0 \n;error, no object was dropped
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,18 @@
+extern void object::KillAnt1()
+{
+	object item;             // info. about object
+	
+	goto(-30, 0);            // go west
+	aim(0);                  // aim straight
+	
+	while ( true )           // repeat forever:
+	{
+		item = radar(AlienAnt, 0, 360, 0, 40);
+		if ( item != null )  // ant detected ?
+		{
+			turn(direction(item.position));
+			fire(0.5);       // shoot 0.5 s
+		}
+		wait(1);             // wait 1 second
+	}
+}

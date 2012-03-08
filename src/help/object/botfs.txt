@@ -1,0 +1,20 @@
+\b;\button 151; Robot shooter
+\image botfs 8 8;
+Robot à pattes avec un canon shooter.
+
+Le canon permet de se défendre contre les \l;ennemis\u object\mother;. Mais attention, l'énergie consommée est très importante. Avec une \l;pile normale\u object\power;, il est possible de tirer quatre fois.
+
+Astuce: pendant le tir, il est possible de déplacer la souris, pour "balayer" toute une zone.
+
+Les robots à pattes consomment deux fois moins d'énergie que les \l;robots à roues\u object\botfr; lors des déplacements. De plus, ils peuvent gravir de très fortes pentes.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;LeggedShooter\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le canon par programmation, il faut utiliser l'instruction \c;\l;fire\u cbot\fire;\n;. L'instruction \c;\l;aim\u cbot\aim;\n; permet de l'orienter vers le haut ou vers le bas.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

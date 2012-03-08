@@ -1,0 +1,6 @@
+extern void object::Retour()
+{
+	shield(1,15);  // active le bouclier
+	goto(8,60);    // va à la position indiquée
+	shield(0,15);  // désactive le bouclier
+}

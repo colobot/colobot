@@ -1,0 +1,17 @@
+\b;Energie en sous-sol
+\image enerspot 4 4;
+Une croix verte posée par un \l;robot renifleur\u object\botsr; indique la présence d'énergie en sous-sol. Les bâtiments suivants peuvent être construits à proximité¦:
+
+o  \l;Station de recharge\u object\station;
+o  \l;Fabrique de piles\u object\energy;
+
+Le sondage du sous-sol requiert un \l;robot renifleur\u object\botsr; qui peut détecter aussi des gisements de \l;minerai de titanium\u object\titanore; indiqués par une \l;croix rouge\u object\stonspot; ou de \l;minerai d'uranium\u object\uranore; indiqués par un \l;rond jaune\u object\uranspot;.
+
+\t;Transport
+Impossible.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;PowerSpot\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

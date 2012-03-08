@@ -1,0 +1,39 @@
+\b;Hello
+Tu es en train de lire les instructions du premier exercice, à l'aide d'un petit appareil bien pratique appelé "SatCom" (c'est le nom qu'on donne à cette fenêtre). Il te donne beaucoup d'indications précises qu'il faut mémoriser ou écrire sur une feuille de papier.
+
+\image iconhelp 4 2;
+Si tu as oublié certains détails, tu peux toujours utiliser la touche \key;\key help;\norm; ou l'icône \button 185; pour revenir dans cet écran¦!
+
+\b;Exercice
+Ce premier exercice est vraiment très simple.
+
+\image teen101a 17 6;
+Tu dois programmer le petit robot à roues pour qu'il avance de 40 centimètres, jusqu'à la croix bleue.
+
+\b;Le programme
+Un programme est une suite de caractères que le robot "comprend". Le programme nécessaire pour faire avancer le robot de 40 centimètres est celui-çi¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	move(40);
+\s;}
+\n;
+A première vue, cela a l'air assez compliqué. Mais en fait, c'est beaucoup plus simple qu'il n'y paraît puisque les seuls caractères qu'il faut taper sont¦:
+\c;
+\s;move(40);
+\n;
+Tout le reste est déjà tapé automatiquement¦!
+
+\b;En deux temps
+\image iconedit 2 2;
+Tu devras d'abord cliquer cette icône pour taper les caractères \c;move(40);\n;. Attention à tout taper en minuscules. N'oublie pas les parenthèses et le point-virgule à la fin.
+
+\image iconrun 2 2;
+Tu devras ensuite cliquer cette icône pour exécuter le programme. Si tout se passe bien, le petit robot avance alors jusqu'à la croix bleue.
+
+\b;Un peu d'anglais
+La plupart des langages de programmation s'écrivent en anglais. L'instruction "\c;move\n;" signifie "déplacer" en français.
+
+\b;Au travail
+N'oublie pas la touche \key;\key help;\norm; ou l'icône \button 185; pour revoir ces instructions en tout temps¦!
+Clique sur le bouton en bas à gauche pour fermer cette fenêtre (on dit aussi "Mettre le SatCom en veille").

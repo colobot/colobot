@@ -1,0 +1,43 @@
+\b;Exercice
+Cet exercice ressemble beaucoup au précédent. En plus d'avancer le robot de 20 mètres, il faut dessiner un trait rouge sur le sol.
+
+\b;Programme
+Pour avancer de 20 mètres, le programme de l'exercice précédent était¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	move(20);
+\s;}
+\n;
+Dans cet exercice, il faut donner une instruction avant le déplacement, pour signifier au robot qu'il doit laisser une trace rouge sur le sol. On peut se représenter cela en disant que le robot abaisse un crayon imaginaire. Le programme devient donc¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	pendown(Red);
+\s;	move(20);
+\s;}
+\n;
+Les instructions sont exécutées les unes après les autres¦:
+1) Le robot abaisse son crayon imaginaire.
+2) Le robot avance de 20 mètres.
+
+\b;Instructions
+L'instruction pour abaisser le crayon est \c;pendown\n;. L'instruction pour avancer est \c;move\n;. Une instruction est toujours suivie de parenthèses, pour indiquer les détails de l'instruction (plus tard, on parlera de paramètres).
+
+Par exemple, avec \c;pendown\n;, on donne entre les parenthèses la couleur du trait qui sera tracé¦:
+\c;\s;	pendown(Red);\n;
+
+Avec \c;move\n;, on donne entre les parenthèses la longueur à avancer¦:
+\c;\s;	move(20);\n;
+
+\b;Remarques
+Attention de respecter les majuscules et les minuscules. Ici, seul le mot \c;Red\n; commence par un "R" majuscule. Tout le reste doit s'écrire en minuscules.
+Chaque instruction est terminée par un point-virgule.
+Vous pouvez mettre plusieurs instructions par ligne, ou chaque instruction sur une ligne.
+
+En cas de tentative infructueuse, vous pouvez remettre le robot à la position initiale avec le bouton \button 59;. Le programme que vous avez déjà écrit ne sera pas perdu.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tmove0;.

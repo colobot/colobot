@@ -1,0 +1,34 @@
+\b;Exercise
+Move the \l;titanium cube\u object\titan; on the finishing pad. You do not know the position of the titanium, but we can tell you the position of the finishing pad x=10 and y=-60.
+
+\b;The instruction \c;goto\n;
+The winged bot can get across obstacles. The instruction \c;\l;goto\u cbot\goto;\n;, if performed on a winged bot, will automatically perform a flying move, with a take-off at the beginning, and a landing at the end.
+This instruction can actually receive a second parameter, which is not compulsory: the flying altitude. If no second parameter is given, the flying altitude will be set to the default value of 10m.
+
+Therefore, the instruction:
+\c;\s;goto(item.position);\n;
+
+Is equivalent to:
+\c;\s;goto(item.position, 10);\n;
+
+\b;The program
+Use the instruction \c;\l;radar\u cbot\radar;(Titanium);\n; in order to find the titanium cube. Then test if a titanium cube has actually been found. In this exercise, this line is not very useful, because we know that there is a titanium cube somewhere. However, it is better to take the habit of testing whatever your radar returns:
+\c;
+\s;object  item;
+\s;item = radar(Titanium);
+\s;if ( item == null )  return;
+\s;goto(item.position);
+\n;
+The variable \c;item\n; is of type \c;\l;object\u cbot\object;\n;. In order to know the exact location of the object described by the variable, just write \c;item.position\n;.
+
+In order to take the titanium cube, use the instruction \c;\l;grab\u cbot\grab;()\n; without any parameter.
+
+In order to drop the titanium, use the instruction \c;\l;drop\u cbot\drop;()\n; without any parameter.
+
+We know the coordinates of the finishing pad: x=10 et y=-60. You must declare a \l;variable\u cbot\var; of the type \l;point\u cbot\point;, then fill it with the right coordinates. Then you can give this variable as a parameter to the instruction \c;\l;goto\u cbot\goto;\n;.
+Remark: You do not have to take care of the \c;z\n; coordinate in the case of a bot that can not fly.
+
+It is now up to you to finish the program...
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

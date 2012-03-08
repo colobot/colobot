@@ -1,0 +1,19 @@
+\b;\button 153; Dzia³o organiczne na ko³ach
+\image botor 8 8;
+Robot na ko³ach strzelaj¹cy kulami organicznymi.
+
+Dzia³ko organiczne jest efektywniejsze od \l;dzia³ka ogniowego\u object\botfr;. Strzela ono ma³ymi kulkami ¿r¹cej \l;materii organicznej\u object\bullet;. \l;Zwyk³e ogniwo elektryczne\u object\power; wystarcza na oddanie 11 serii strza³ów.
+
+Ko³a to standardowy, szybki i energooszczêdny sposób napêdu, idealny do poruszania siê po relatywnie p³askich powierzchniach. Na pochy³ym terenie polecane jest u¿ycie \l;lataj¹cego dzia³a organicznego\u object\botoj;, a jeœli jest to niemo¿liwe, \l;dzia³a organicznego na g¹sienicach\u object\botoc;.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania dzia³ka strzelaj¹cego kulami organicznymi s³u¿y instrukcja \c;\l;fire\u cbot\fire;\n;. Lufê mo¿na podnieœæ lub opuœciæ u¿ywaj¹c instrukcji \c;\l;aim\u cbot\aim;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;WheeledOrgaShooter\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.
+

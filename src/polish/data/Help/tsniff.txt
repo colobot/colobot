@@ -1,0 +1,43 @@
+\b;Æwiczenie
+Przeszukaj \l;robotem szperaczem\u object\botsr; ca³¹ strefê otoczon¹ barierami, aby znaleŸæ odpowiednie miejsce na kopalniê. Gdy robot przebada podglebie i odkryje odpowiednie miejsce na kopalniê, oznaczy je czerwonym plusem.
+
+\b;Opis
+Strefa otoczona barierami jest kwadratem o boku 25 metrów. Najskuteczniejszym sposobem dzia³ania jest sprawdzanie podglebia co 5 metrów.
+
+\image sniff1 12 12;
+Jedynym sposobem osi¹gniêcia tego jest zagnie¿d¿enie wewn¹trz siebie dwóch pêtli \c;\l;for\u cbot\for;\n;:
+\c;
+\s;for ( int y=0 ; y<6 ; y=y+1 )
+\s;{
+\s;	for ( int x=0 ; x<5 ; x=x+1 )
+\s;	{
+\s;		\n;bada podglebie\c;
+\s;		\n;jedzie 5m naprzód\c;
+\s;	}
+\s;	\n;bada podglebie\c;
+\s;	\n;æwieræ obrotu w lewo\c;
+\s;	\n;jedzie 5m naprzód\c;
+\s;	\n;æwieræ obrotu w lewo\c;
+\s;}
+\n;
+Program dzia³a dobrze tylko na pocz¹tku. Po pierwszym wierszu robot obraca siê prawid³owo w lewo i bada drug¹ liniê. Ale po drugiej linii powinien skrêciæ w prawo!
+Nale¿y zauwa¿yæ, ¿e jeœli \c;y\n; jest parzyste, robot powinien skrêciæ w lewo, a jeœli \c;y\n; jest nieparzyste, powinien skrêciæ w prawo.
+\l;Wyra¿enie\u cbot\expr; \c;y%2\n; podaje resztê z dzielenia \c;y\n; przez \c;2\n;. Na przyk³ad jeœli \c;y=3\n;, wyra¿enie zwróci wartoœæ \c;1\n;.
+Po teœcie \c;\l;if\u cbot\if; { }\n; mo¿e pojawiæ siê instrukcja \c;else { }\n;. Jeœli warunek jest prawdziwy, wykonywany jest pierwszy \l;blok\u cbot\bloc; \c;{ }\n;. W przeciwnym przypadku zostanie wykonany drugi blok \c;{ }\n;.
+\c;
+\s;if ( y%2 == 0 )
+\s;{
+\s;	y \n;jest parzyste\c;
+\s;}
+\s;else
+\s;{
+\s;	y \n;jest nieparzyste\c;
+\s;}
+\n;
+Do Ciebie nale¿y dokoñczenie programu.
+
+\b;Uwaga
+U¿yj instrukcji \c;\l;sniff\u cbot\sniff;( )\n; do badania podglebia oraz instrukcji \c;\l;move\u cbot\move;( )\n; i \c;\l;turn\u cbot\turn;( )\n; przemieszczania robota.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

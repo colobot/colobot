@@ -1,0 +1,11 @@
+\b;Instructions de Houston
+La troisième \l;clé\u object\key; a été enterrée par la première expédition dans un "endroit riche en champignons". Un \l;robot renifleur\u object\botss; devrait pouvoir la détecter, et un \l;derrick\u object\derrick; pourra la remonter à la surface.
+
+N'oubliez pas que les \l;robots à pattes\u object\botgs; sont très utiles dans ces régions montagneuses.
+
+Avant de décoller, pensez à prendre avec vous le \l;robot bouclier\u object\botshld; et le \l;sous-marin\u object\botsub;.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

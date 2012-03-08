@@ -1,0 +1,31 @@
+\b;Œrednik
+Po prostych wyra¿eniach zawsze nale¿y u¿ywaæ œrednika \c;;\n;. Na przyk³ad: 
+\c;
+\s;	int licznik = 0;
+\n;
+Nie nale¿y jednak u¿ywaæ œrednika na zakoñczenie \l;bloku\u cbot\bloc;:
+\c;
+\s;	{
+\s;		float odl;
+\s;		odl = distance(p1, p2);
+\s;	} \n;// tutaj bez œrednika!\c;
+\n;
+Nie nale¿y równie¿ stosowaæ œrednika bezpoœrednio po instrukcjach \c;\l;while\u cbot\while;\n;, \c;\l;if\u cbot\if;\n; lub \c;\l;for\u cbot\for;\n;:
+\c;
+\s;	if ( a < b ) \n;// tutaj bez œrednika!\c;
+\s;	{
+\s;		b = 100-a;
+\s;	}
+\n;
+Poniewa¿ instrukcje zawsze koñcz¹ siê œrednikiem a nie znakiem koñca linii, mo¿na umieœciæ kilka instrukcji w jednej linii: 
+\c;
+\s;	int d=20;
+\s;	move(d);
+\s;	turn(90);
+\n;
+Jest równowa¿ne:
+\c;
+\s;	int d=20; move(d); turn(90);
+\n;
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

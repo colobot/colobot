@@ -1,0 +1,25 @@
+\b;Type \c;float\n;
+Use this type for most variables that contains numbers. Variables of this type can contain positive and negative numbers, whole or real numbers, for example: 
+\c;
+\s;	12.9
+\s;	1.125
+\s;	0.002
+\s;	-4.1
+\n;
+If you need only whole numbers (f. ex. 12 or -5000), you should rather use the type \c;\l;int\u cbot\int;\n;.
+
+\t;Attention
+Do not insert space or colon characters into a number. To separate the whole part from the fractional part, use a dot. 
+\c;
+\s;   Write       and not
+\s;   12.56       12 . 56
+\s;  -54.34       -54,34
+\s;12895.69    12,895.69
+\n;
+\t;For specialists
+Floating point numbers are represented in Colobot with 32 bits.
+The highest value that can be represented is 3.4E+38.
+The smallest value that can be represented is 3.4E-38.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,17 @@
+\b;Objectif
+Détruisez 4 \l;cibles\u object\bottarg; dont on ne connaît pas la position en utilisant le radar du robot. Le robot n'a pas besoin de bouger car les cibles sont proches.
+
+\t;Programme
+Il faut chercher la cible la plus proche avec l'instruction \c;\l;radar\u cbot\radar;(\l;TargetBot\u object\bottarg;)\n;, comme nous l'avons fait dans les exercices précédents pour le minerai ou les piles. Il ne faut cependant pas aller à la position de la cible, ce qui serait fatal, mais se tourner dans sa direction. La fonction \c;\l;direction\u cbot\direct;(chose.position)\n; calcule la rotation qu'il faut effectuer pour que le robot pointe dans la direction de l'objet décrit dans la variable \c;chose\n;. Pour tourner effectivement dans cette direction, il faut donc écrire¦:
+\s;\c;	\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(chose.position));
+\n;
+Notez bien les deux parenthèses fermantes à la fin de la ligne avant le point-virgule: on en a ouvert deux, il faut en fermer deux.
+
+Puis il suffit de faire feu avec l'instruction \c;\l;fire\u cbot\fire;(1)\n;.
+
+Pour ne pas devoir exécuter à nouveau le programme pour chaque cible, vous pouvez faire une boucle avec \c;\l;repeat\u cbot\repeat;(4)\n; comme décrit précédemment.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u texch3; et \l;programmation\u cbot;.

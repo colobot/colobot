@@ -1,0 +1,24 @@
+public extern void Test ()
+{
+	for ( int x = 100000; x>0 ; x-- ) { }
+}
+
+float MaRoutine( CPoint A, CPoint B )
+{
+    A.x -= B.x ;    // distance en x
+    A.y -= B.y ;    // distance en y
+    A.x *= A.x;    // carré de la distance
+    A.y += A.y;    // carré de la distance
+    println ( A, B ) ;
+    return ( A.x + A.y ) ;
+}
+
+public extern void TestAB ( )
+{
+    CPoint    A(3, 5) ;
+    CPoint    B(4, -2);
+    println ( A, B ) ;
+    MaRoutine( A, B ) ;
+    println ( A, B ) ;
+}
+

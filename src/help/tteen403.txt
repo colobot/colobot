@@ -1,0 +1,10 @@
+\b;8 bouteilles
+Il y a maintenant 8 bouteilles disposées en cercle autour du robot. Modifie le programme de l'exercice précédent pour les détruire toutes.
+
+\image teen403 8 8;
+\b;Aide
+Il faut modifier uniquement le nombre de répétitions à effectuer dans l'instruction \c;repeat(4)\n; et l'angle de la rotation dans l'instruction \c;turn(90);\n;.
+
+Peut-être que tu n'es pas très familier avec les mesures d'angles en degrés. Voici une petite explication pour éclairer ta lanterne¦:
+
+\image angles 16 8;

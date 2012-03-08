@@ -1,0 +1,8 @@
+\b;Nid
+Le nid est une étrange structure de laquelle sort régulièrement de la \l;matière organique\u object\bullet;. Les \l;guêpes\u object\wasp; viennent vers les nids pour s'approvisionner en munitions: elles utilisent des boules de \l;matière organique\u object\bullet; pour bombarder vos robots, vos bâtiments et votre personne.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;AlienNest\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

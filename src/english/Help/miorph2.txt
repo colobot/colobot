@@ -1,0 +1,20 @@
+\b;Satellite Report
+Currently in a geo-stationary orbit of Orpheon.
+\c;
+\s;-> SURFACE\c;
+\tab;Temperature:      -64.7C
+\tab;Atmosphere:       none
+\tab;Wind:             0.0 mps
+\tab;Titanium ore:     none
+\tab;Uranium ore:      none
+
+\s;-> SUBSOIL\c;
+\tab;Energy source:    none
+\tab;Titanium ore:     none
+\tab;Uranium ore:      none
+
+\s;-> ADDITIONAL INFORMATION\c;
+\tab;Detected:         giant ants
+\tab;  - Danger:       not immediate
+\tab;Detected:         fierce electromagnetic storms
+\n;

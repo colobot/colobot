@@ -1,0 +1,16 @@
+\b;From Mission Control
+Terminate all hostile life-form.
+Perform the necessary \l;research program\u object\research; in order to develop an offensive weapon system.
+
+The satellite has detected an energy source, on a spot marked by the previous expedition with a blue flag (blue cross on the mini-map).
+
+Do not forget to take a look at the satellite report \button 186; before you venture any further in a mission; we suspect that you have not always done this.
+
+We have improved the recharge program. Please refer to the page \button 53;.
+
+A note of warning: bots cannot be submerged. If in doubt, test the water yourself if you plan to radio-control a non-winged bot across - water shouldn't be deeper than knee-level.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

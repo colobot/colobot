@@ -1,0 +1,35 @@
+\b;Instrukcja \c;goto\n;
+Instrukcja \c;goto();\n; rozkazuje robotowi udaæ siê do podanej pozycji.
+
+\b;Podstawowe u¿ycie
+Najczêstsze u¿ycie polega na wys³aniu robota do obiektu zlokalizowanego przy u¿yciu instrukcji \c;\l;radar\u cbot\radar;();\n;. Jeœli jego dane zasta³y zapisane w zmiennej, nale¿y po nazwie zmiennej napisaæ \c;.position\n; aby otrzymaæ pozycjê obiektu. Oto przyk³adowy program znajduj¹cy \l;kostkê tytanu\u object\titan; id¹cy na jej pozycjê i podnosz¹cy j¹:
+\c;
+\s;	element = \l;radar\u cbot\radar;(Titanium);
+\s;	goto(element.position);
+\s;	\l;grab\u cbot\grab;();
+\n;
+\b;Dla specjalistów
+Sk³adnia:
+\s;\c;goto ( pozycja, wysokoœæ, cel, zderzenie );\n;
+
+Rozkazuje robotowi udaæ siê w podane miejsce unikaj¹c wszelkich przeszkód, jeœli to mo¿liwe. 
+
+\t;pozycja: \c;\l;point\u cbot\point;\n;
+Wspó³rzêdne pozycji docelowej.
+
+\t;wysokoœæ: \c;\l;float\u cbot\float;\n;
+Wysokoœæ lotu \l;robota lataj¹cego\u object\botgj;. Parametr ten jest u¿yteczny tylko w przypadku \l;robota lataj¹cego\u object\botgj;. Z wysokoœci pocz¹tkowej, robot wznosi siê do góry, do czasu osi¹gniêcia okreœlonej wysokoœci. Po zbli¿eniu siê do miejsca docelowego, zmniejsza wysokoœæ, aby opaœæ na ziemiê w zadanej pozycji. Jeœli nie okreœlono wysokoœci, domyœln¹ wartoœci¹ jest 10 metrów. Przy bardzo krótkich trasach, nawet robot lataj¹cy mo¿e poruszaæ siê po ziemi. Parametr ten jest ignorowany dla wszystkich robotów poza robotem lataj¹cym. 
+
+\t;cel: \c;\l;int\u cbot\int;\n; (domyœlna wartoœæ: \c;0\n;)
+Okreœla sposób w jaki robot powinien osi¹gn¹æ swoj cel: 
+\c;0\n;  zatrzymuje siê dok³adnie w pozycji docelowej
+\c;1\n;  zbli¿a siê do pozycji docelowej bez zatrzymywania siê.
+Jeœli nie okreœlono wartoœci, domyœlnie przyjmowane jest \c;1\n; (dok³adnie). 
+
+\t;Typ wyniku: \c;\l;int\u cbot\int;\n;
+Zwykle wyst¹pienie b³êdu powoduje zatrzymanie programu. Mo¿na wy³¹czyæ zatrzymywanie siê programu w przypadku wyst¹pienia b³êdu, u¿ywaj¹c instrukcji \c;\l;errmode\u cbot\errmode;(0)\n;. Wtedy w przypadku wyst¹pienia b³êdu instrukcja \c;goto()\n; zwraca w wyniku wartoœæ ró¿n¹ od zera.
+\c;== 0 \n;Pozycja docelowa zosta³a osi¹gniêta
+\c;!= 0 \n;Osi¹gniêcie pozycji docelowej jest niemo¿liwe
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

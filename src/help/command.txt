@@ -1,0 +1,38 @@
+\b;Commandes
+Il est recommandé de jouer avec la main gauche sur les touches flèches du clavier, et la main droite sur la souris.
+
+\t;Robots
+\key;\key left;\norm; = tourne à gauche.
+\key;\key right;\norm; = tourne à droite.
+\key;\key up;\norm; = avance.
+\key;\key down;\norm; = recule.
+Ces commandes ne sont pas disponibles avec les \l;robots d'entraînement\u object\bottr;.
+
+\key;\key gup;\norm; = monte (bouton \button 28;).
+\key;\key gdown;\norm; = descend (bouton \button 29;).
+Evidemment, ces deux commandes ne sont valables que pour le \l;cosmonaute\u object\human; et les \l;robots volants\u object\botgj;, seulement dans certaines missions.
+
+\key;\key action;\norm; = action principale selon le robot sélectionné. Par exemple, avec un \l;robot déménageur\u object\botgr;, cette commande actionne le bras. Avec un robot \l;shooter\u object\botfr;, cette commande fait feu (bouton \button 42;).
+
+\t;Sélections
+\key;\key next;\norm; = sélectionne l'objet suivant.
+\key;\key human;\norm; = sélectionne le cosmonaute.
+\key;\key desel;\norm; = sélection précédente (bouton \button 10;).
+
+\t;Caméra
+\key;\key camera;\norm; = passe d'une vue externe à une vue interne (bouton \button 13;).
+\key;\key near;\norm; = caméra plus proche (si vue externe).
+\key;\key away;\norm; = caméra plus loin (si vue externe).
+\key;\key visit;\norm; = montre le lieu d'un message et met le jeu en pause. Une nouvelle action de cette commande montre le message suivant.
+
+\t;Aide
+\key;\key help;\norm; = instructions sur la mission.
+\key;\key prog;\norm; = instructions sur la programmation.
+
+\t;Jeu
+\key;\key speed10;\norm; = vitesse normale x1.
+\key;\key speed15;\norm; = vitesse moyenne x1.5.
+\key;\key speed20;\norm; = vitesse rapide x2.
+\key;\key quit;\norm; = quitte la mission (bouton \button 11;).
+
+Toutes ces touches peuvent être redéfinies dans les options/commandes.

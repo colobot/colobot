@@ -1,0 +1,49 @@
+\b;Blocks
+You can use braces \c;{ }\n; to group a number of instructions together in order to make one single block out of them, for example: 
+\c;
+\s;	{
+\s;		float  t;
+\s;		t = a;
+\s;		a = b;
+\s;		b = t;  // switches round a and b
+\s;	}
+\n;
+Every instruction in the block is followed by a \l;semicolon\u cbot\term;, but the block itself is not. 
+Let us take the following example with the instruction \c;\l;if\u cbot\if;\n; to illustrate the use of blocks in a program:
+\c;
+\s;	if ( a < b )
+\s;		\n;instruction 1\c;;
+\s;		\n;instruction 2\c;;
+\s;	\n;instruction 3\c;;
+\n;
+If the \l;condition\u cbot\cond; is true, instructions 1, 2 and 3 are performed. If the condition is false, only instruction 1 is ignored, instructions 2 and 3 are performed. The fact that instruction 2 is lined up with instruction 1 does not matter. 
+If you want to perform instructions 1 and 2 only if the condition is true, you have to bracket them together in a block: 
+\c;
+\s;	if ( a < b )
+\s;	{
+\s;		\n;instruction 1\c;;
+\s;		\n;instruction 2\c;;
+\s;	}
+\s;	\n;instruction 3\c;;
+\n;
+Blocks may be needed with instructions \c;\l;if\u cbot\if;\n;, \c;\l;while\u cbot\while;\n; and \c;\l;for\u cbot\for;\n;, in order to group several instructions that should be performed only if a condition is true, or repeated several times. 
+You can fit blocks into other blocks, on as many levels as you need. Here is an example of imbrication on two levels :
+\c;
+\s;	if ( a > b )
+\s;	{
+\s;		int  i = 0;
+\s;		while ( i < 18 )
+\s;		{
+\s;			move(10);
+\s;			turn(5);
+\s;			i = i+1;
+\s;		}
+\s;	}
+\n;
+You had better line up the open brace \c;{\n; with the closing brace \c;}\n; in order to improve readability, but it is not compulsory. The following example takes less space, is equivalent to the previous example, but it is not advisable to write your programs in the following style : 
+\c;
+\s;	if(a>b) { int i=0; while(i<18) {
+\s;	move(10);turn(5);i=i+1; }}
+\n;
+\t;See also
+\l;Instructions\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

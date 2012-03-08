@@ -1,0 +1,23 @@
+\b;Solution
+Voici le chemin à suivre pour arriver au vaisseau:
+
+1) Contournez le lac, et dirigez-vous vers le globe vert fluorescent. Ce globe est généré par une gravi-plante qui rend impossible le vol à l'intérieur du globe.
+
+2) Contournez le petit lac avec la gravi-plante par la gauche, et montez la petite pente. Arrivé en haut, vous vous trouverez face à des fourmis géantes: courez le plus vite possible vers une autre gravi-plante un peu plus loin à droite, vos blessures guériront plus tard.
+
+3) Contournez le lac avant la gravi-plante par la droite en volant.
+
+4) Arrivé vers la gravi-plante, contournez le lac par la gauche jusqu'à la presque-île ornée de fougères.
+
+5) Décollez pour vous poser sur l'île au milieu du lac. Pour ne pas être emporté par votre élan et finir dans l'eau, visez les grands troncs verts, ils vous freineront.
+
+6) Rejoignez l'île au fond du lac également en volant. Cette île est immergée sous 50 cm d'eau, cependant l'eau ne vous fait rien tant que votre tête est hors de l'eau.
+
+7) Prenez la vallée à gauche. Une fourmi vous y attend, passez à côté en courant.
+
+8) Attendez que votre réacteur ait refroidi, puis passez par-dessus le petit lac. Atterrissez le plus à droite possible pour ne pas tomber dans le lac suivant, emporté par votre élan.
+
+9) Passez par-dessus le deuxième lac, et vous êtes arrivé au vaisseau. Montez à bord, et décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

@@ -1,0 +1,179 @@
+Title.F      text="Uranium"
+Resume.F     text="A la recherche de minerai d'uranium."
+Title.E      text="Uranium"
+Resume.E     text="A la recherche de minerai d'uranium."
+Instructions name="msaari1.txt"
+SoluceFile   name="ssaari1.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=3
+AmbiantColor  air=136;136;102;102 water=20;20;20;20  // grey
+FogColor      air=254;245;146;0 water=67;80;100;0  // yellow
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.1 water=0.5
+SecondTexture rank=11
+VehicleColor  color=247;194;95;0
+Background    image="back33.tga" up=254;245;146;0 down=254;245;146;0 cloudUp=254;245;146;0 cloudDown=254;245;146;0
+FrontsizeName image="lens4.tga"
+Planet        pos=4.8;0.2 dim=2.0 image="effect01.tga" uv1=0.00;0.25 uv2=0.25;0.50
+
+TerrainGenerate     vision=250.00 depth=1 hard=0.3
+TerrainWind         speed=0.0;-8.0
+TerrainRelief       image="textures\relief06.bmp" factor=1.0
+TerrainResource     image="textures\resae.bmp"
+TerrainCloud        image="cloud04.tga" level=80.0
+TerrainInitTextures image="mars" dx=1 dy=1 table=103
+TerrainCreate
+
+BeginObject
+CreateObject pos=-160.00;40.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos=-332.00;-5.00 dir=0.7 type=Me
+
+CreateObject pos=-310.00;-47.00 dir=0.0 type=RuinBaseCamp h=-9.0
+CreateObject pos=-315.00;-20.00 dir=0.3 type=RuinHeadCamp
+CreateObject pos=-332.50;-33.00 dir=0.2 type=RuinBotFactory
+CreateObject pos=-321.00; 40.00 dir=0.0 type=Greenery1
+CreateObject pos=-318.50;-32.00 dir=0.0 type=Greenery2
+CreateObject pos=-331.50;-28.00 dir=0.5 type=Greenery3
+CreateObject pos=-329.50;-34.60 dir=0.0 type=Greenery0
+CreateObject pos=-332.00;-30.00 dir=0.0 type=WheeledGrabber power=0.2
+CreateObject pos=-325.00;-57.00 dir=0.0 type=Greenery0
+CreateObject pos=-327.00;-60.00 dir=0.0 type=Greenery3
+CreateObject pos=-318.00;-64.00 dir=0.0 type=Greenery2
+//CreateObject pos=-315.00;-56.00 dir=2.3 type=WreckBotw2
+CreateObject pos=-330.00;-19.00 dir=1.1 type=WreckBotr1
+CreateObject pos=-318.00;-20.30 dir=0.0 type=Greenery3
+CreateObject pos=-318.00;-17.00 dir=0.0 type=Greenery2
+
+
+//CreateObject pos=-175.00;  2.50 dir=0.3 type=RuinRadar
+//CreateObject pos=-172.00;  3.25 dir=1.2 type=RuinSupport
+//CreateObject pos=-173.50; -4.60 dir=0.0 type=Greenery1
+//CreateObject pos=-189.20; 42.90 dir=0.0 type=Greenery3
+//CreateObject pos=-109.00;-32.00 dir=0.5 type=Recycler power=0.9
+//CreateObject pos= -87.00;-30.00 dir=1.2 type=WingedShooter power=-1
+//CreateObject pos=-194.00; 40.00 dir=0.4 type=Greenery4
+//CreateObject pos=-104.00;-11.00 dir=1.0 type=WreckBott1
+//CreateObject pos=-104.00;-38.00 dir=1.0 type=WreckBotw1
+//CreateObject pos=-100.00;-24.00 dir=1.5 type=WreckBotw2
+//CreateObject pos=-134.00;-30.00 dir=1.0 type=PowerCell power=0
+//CreateObject pos=-147.00;-29.00 dir=0.4 type=WingedShooter power=-1
+//CreateObject pos= -96.00; -6.00 dir=0.1 type=RuinConvert
+
+// fourmis sur la montagne
+//CreateObject pos=-111; 77 cmdline=-111; 77;-109; 70 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+//CreateObject pos=-102; 49 cmdline=-102; 49; -98; 45 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+//CreateObject pos= -56; 13 cmdline= -56; 13; -50;  8 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+//CreateObject pos=  17; 36 cmdline=  17; 36;  22; 41 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+//CreateObject pos=  51; 86 cmdline=  51; 86;  47; 91 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+//CreateObject pos=  27;136 cmdline=  27;136;  27;149 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+//CreateObject pos= -27;158 cmdline= -27;158; -29;162 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+//CreateObject pos=  12; 90 cmdline=  12; 90;  12; 96 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+//CreateObject pos= -24; 45 cmdline= -24; 45; -30; 45 dir=0.0 type=AlienAnt //script1="ant05.txt" run=1
+
+// sol
+CreateObject pos=-87.75;7.25 dir=0.0 type=Greenery0
+CreateObject pos=-98.50;20.50 dir=0.0 type=Greenery2
+CreateObject pos=-102.50;22.25 dir=0.0 type=Greenery1
+CreateObject pos=-127.00;54.50 dir=0.0 type=Greenery4
+CreateObject pos=-132.25;80.25 dir=0.0 type=Greenery3
+CreateObject pos=-123.25;88.50 dir=0.0 type=Greenery2
+CreateObject pos=-121.00;132.00 dir=0.0 type=Greenery0
+CreateObject pos=-83.25;193.50 dir=0.0 type=Greenery1
+CreateObject pos=-35.75;192.75 dir=0.0 type=PowerCell power=0.3
+CreateObject pos=15.25;176.75 dir=0.0 type=Greenery4
+CreateObject pos=19.75;176.50 dir=0.0 type=Greenery3
+CreateObject pos=71.25;119.25 dir=0.0 type=Greenery2
+CreateObject pos=87.00;72.50 dir=0.0 type=Greenery0
+CreateObject pos=84.00;67.75 dir=0.0 type=Greenery1
+CreateObject pos=82.75;60.50 dir=0.0 type=Greenery0
+CreateObject pos=27.50;12.75 dir=0.0 type=Greenery4
+CreateObject pos=-35.50;-12.25 dir=0.0 type=Greenery2
+CreateObject pos=-73.00;1.50 dir=0.0 type=Greenery0
+
+// 1er étage
+CreateObject pos=-99.50;55.75 dir=0.0 type=WreckBotw1
+CreateObject pos=-95.00;55.00 dir=0.0 type=PowerCell power=0.1
+CreateObject pos=-97.75;65.00 dir=0.0 type=Greenery2
+CreateObject pos=-103.25;109.25 dir=0.0 type=Greenery4
+CreateObject pos=-105.75;117.50 dir=0.0 type=Greenery0
+CreateObject pos=-90.50;142.00 dir=0.0 type=Greenery3
+CreateObject pos=-80.75;151.75 dir=0.0 type=PowerCell power=0.2
+CreateObject pos=-67.25;162.00 dir=0.0 type=Greenery1
+CreateObject pos=-60.50;159.50 dir=0.0 type=Greenery0
+CreateObject pos=-54.25;166.50 dir=0.0 type=Greenery1
+CreateObject pos=-10.25;140.00 dir=0.0 type=Greenery4
+CreateObject pos=36.00;128.50 dir=0.0 type=Greenery0
+CreateObject pos=44.75;106.75 dir=0.0 type=Greenery2
+CreateObject pos=43.50;84.00 dir=0.0 type=Greenery3
+CreateObject pos=29.00;57.25 dir=0.0 type=Greenery0
+CreateObject pos=18.75;32.00 dir=0.0 type=Greenery1
+CreateObject pos=9.00;31.00 dir=0.0 type=Greenery0
+CreateObject pos=-44.00;19.00 dir=0.0 type=Greenery2
+CreateObject pos=-71.00;34.50 dir=0.0 type=Greenery0
+
+// 2ème étage
+CreateObject pos=3.00;99.75 dir=0.0 type=Greenery4
+CreateObject pos=15.75;81.25 dir=0.0 type=Greenery1
+CreateObject pos=-4.50;65.25 dir=0.0 type=Greenery0
+CreateObject pos=-18.25;46.50 dir=0.0 type=Greenery2
+CreateObject pos=-41.25;45.75 dir=0.0 type=Greenery3
+CreateObject pos=-49.25;45.00 dir=0.0 type=WreckBotw2
+CreateObject pos=-50.00;50.00 dir=0.0 type=PowerCell power=0.4
+CreateObject pos=-66.00;63.50 dir=0.0 type=Greenery4
+CreateObject pos=-86.00;83.50 dir=0.0 type=Greenery1
+CreateObject pos=-89.50;92.25 dir=0.0 type=Greenery0
+CreateObject pos=-74.25;118.50 dir=0.0 type=Greenery2
+CreateObject pos=-59.75;135.75 dir=0.0 type=Greenery3
+CreateObject pos=-8.25;115.00 dir=0.0 type=Greenery0
+CreateObject pos=-2.25;116.50 dir=0.0 type=Greenery2
+CreateObject pos=6.50;118.25 dir=0.0 type=Greenery4
+CreateObject pos=32.00;113.00 dir=0.0 type=Greenery3
+
+// 3ème étage
+CreateObject pos=-42.25;64.50 dir=0.0 type=Greenery2
+CreateObject pos=-48.50;78.25 dir=0.0 type=Greenery4
+CreateObject pos=-66.75;95.00 dir=0.0 type=Greenery0
+CreateObject pos=-55.00;105.00 dir=0.0 type=PowerCell power=0.1
+CreateObject pos=-46.00;101.50 dir=0.0 type=Greenery3
+CreateObject pos=-12.75;102.50 dir=0.0 type=Greenery1
+CreateObject pos=-23.25;75.25 dir=0.0 type=Greenery0
+
+// 4ème étage
+CreateObject pos=-26.50;92.50 dir=0.0 type=Greenery2
+CreateObject pos=-16.50;86.50 dir=0.0 type=Greenery4
+CreateObject pos=-20.50;91.20 dir=0.0 type=UraniumOre
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 1.00; 1.00; 0.90 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.78;-0.55;-0.22 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.10; 1.30; 2.20 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.28; 0.28; 0.28 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.16; 0.16; 0.16 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.08; 0.08; 0.08 type=Object
+
+MapColor floor=180;157;72 water=154;235;255
+MapZoom  factor=2
+
+EnableBuild type=PowerStation
+EnableBuild type=PowerPlant
+EnableBuild type=RadarStation
+EnableBuild type=RepairCenter
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WheeledGrabber lost=0
+EndMissionTake pos=-160.00;40.00 type=UraniumOre min=1
+
+Camera eye=0.00;5.00;0.00 lookat=0.00;1.00;0.00 delay=0

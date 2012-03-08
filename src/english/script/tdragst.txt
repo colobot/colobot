@@ -1,0 +1,17 @@
+extern void object::Solution( )
+{
+	point  start;
+	start = position;  // remember starting position
+
+	motor(1, 1);  // full throttle
+
+	while ( true )  // repeat forever
+	{
+		float len = distance(position, start);
+		if ( len > 25-2 )
+		{
+			motor( (25-len)/2, (25-len)/2 );
+		}
+	}
+}
+

@@ -1,0 +1,9 @@
+\b;Solution
+Exécutez immédiatement le programme \c;TueFourmi1\n; dans le shooter à roues; il s'occupera de la première vague venant de l'ouest.
+
+Pendant que ce programme fait son travail, construisez vite deux \l;tours de défense\u object\tower;, la première au nord du \l;vaisseau\u object\base; et la deuxième au sud. Pendant que \l;vous\u object\human; construisez la tour, utilisez le \l;robot déménageur\u object\botgr; pour aller chercher une \l;pile\u object\power;.
+
+Lorsque les vagues d'assaut successives constituées d'une quinzaine de \l;fourmis\u object\ant; sont décimées, vous aurez tout le temps de construire un \l;radar\u object\radar; pour repérer les fourmis restées en retrait, et un \l;convertisseur\u object\convert;, une \l;fabrique de robots\u object\factory;, une \l;station de recharge\u object\station; et un \l;shooter volant\u object\botfj; pour finir le travail.
+
+\t;Voir aussi
+\l;Commandes\u command;.

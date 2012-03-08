@@ -1,0 +1,64 @@
+\b;Exercise
+Reach the finishing pad (25m in front of you) as fast as possible, using the instruction \c;motor( , )\n;. You will have to slow down progressively at the end of the move, otherwise the bot will get blown up on the \l;mines\u object\mine;.
+
+You could very well write no more than \c;\l;move\u cbot\move;(25);\n;, this would work perfectly well. However, the aim of this exercise is to learn how to use the instruction \c;\l;motor\u cbot\motor;\n;.
+
+This instruction asks for two values:
+1) The speed of the left-hand motor.
+2) The speed of the right-hand motor.
+
+\s;\c;	motor( left, right );
+\n;
+The values must range between -1 and 1:
+-1 = full throttle backward
+ 0 = stop
+ 1 = full throttle forward
+
+For example, \c;motor(0.5, 0.5);\n; will move the motor forward with half-speed, until new instructions are given to the motors.
+
+With the instruction \c;motor(0.5, 0.6);\n;, the bot will move forward with half-speed, turning at the same time slightly to the left: the right-hand motor moves a little faster (\c;0.6\n;) than the left-hand motor (\c;0.5\n;).
+
+\b;General principle
+In order to move forward for exactly 25 meters and not more, you must move full speed during the first 23 meters, then reduce the speed of the motors progressively during the last two meters.
+The \l;variable\u cbot\var; \l;position\u cbot\object; gives you at any moment the current position of the bot, and the instruction \c;\l;distance\u cbot\dist;( , );\n; returns the distance between two points. The best way to know where you are consists in saving the current position before the start into a \l;variable\u cbot\var;, for example a variable called \c;start\n;. Then you can calculate the distance between the starting position and your current position with \c;distance(position, start)\n;.
+
+\b;The program
+1) declare the variables
+\s;\c;	point start;
+\s;	float len;
+\n;
+2) save the starting position
+\s;\c;	start = position;
+\n;
+3) start full throttle :
+\s;\c;	motor(1, 1);
+\n;
+4) Perform an infinite \c;\l;while\u cbot\while;\n; loop:
+\s;\c;	while ( true )
+\s;	{
+\s;		len = distance(position, start);
+\s;		if ( len > 25-2 )
+\s;		{
+\s;			motor( less than before ! );
+\s;		}
+\s;	}
+\n;
+As long as the distance between the start and the current position is smaller than 23m, the instruction in braces after the \c;\l;if\u cbot\if;\n; instruction will not be executed, so the motors keep their maximum speed as they were told by the \c;\l;motor\u cbot\motor;(1,1);\n; instruction.
+
+In order to slow down progressively, the speed of the motors must be proportional to the remaining distance:
+o  \c;2.0\n; meters left -> speed = \c;1.00\n; (maximum)
+o  \c;1.5\n; meters left -> speed = \c;0.75\n;
+o  \c;1.0\n; meter left  -> speed = \c;0.50\n;
+o  \c;0.5\n; meter left  -> speed = \c;0.25\n;
+o  \c;0.0\n; meter left  -> speed = \c;0.00\n; (stop)
+
+\image tdragst1 12 6;
+You can use the following \l;expression\u cbot\expr; \c;(25-len)/2\n; in order to calculate the value for the speed instruction that must be given to the motors.
+
+It is now up to you to put everything together and to test the program.
+
+\b;Remark
+You can use values greater than 1 for the instruction \c;\l;motor\u cbot\motor;();\n;, but the bot will not move any faster.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,11 @@
+\b;Æwiczenie
+Dostarcz \l;kostkê tytanu\u object\titan; na platformê koñcow¹. Pozycja tytanu nie jest znana, natomiast wspó³rzêdne platformy to x=10, y=-60.
+
+\b;Przydatne instrukcje
+\c;\l;radar\u cbot\radar;\n; znalezienie kostki tytanu (kategoria \c;\l;Titanium\u object\titan;\n;)
+\c;\l;goto\u cbot\goto;\n; poruszanie robotem
+\c;\l;grab\u cbot\grab;\n; podnosi przedmiot
+\c;\l;drop\u cbot\drop;\n; upuszcza przedmiot
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

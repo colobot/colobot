@@ -1,0 +1,43 @@
+extern void object::Hare( )
+{
+	int		nb = 0;
+
+	while ( true )
+	{
+		point	dest;
+		float	dist;
+		object	bot;
+
+		do
+		{
+			dest.x = 8+rand()*24;
+			dest.y = -89.5+rand()*24;
+			dist = distance(dest, position);
+		}
+		while ( dist < 10 );
+		goto(dest);
+		wait(2);
+
+		bot = radar(PracticeBot, 0, 360, 0, 10);
+		if ( bot == null )
+		{
+			nb = 0;
+			message("Fiasko, jesteœ za daleko. Zosta³o jeszcze 10.");
+		}
+		else
+		{
+			nb ++;
+			if ( nb < 10 )
+			{
+				message("Odleg³oœæ OK, jeszcze "+(10-nb)+" do przejœcia");
+			}
+			else
+			{
+				message("Dobra robota, wracajmy do domu.");
+				goto(-2, -77.5, 0);
+				break;
+			}
+		}
+	}
+}
+

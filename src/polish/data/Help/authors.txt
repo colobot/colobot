@@ -1,0 +1,7 @@
+Zespó³ projektowy:                Zespó³ wewnêtrznych beta testerów:
+
+- Daniel Roux                  - Adrien Roux       - Michael Jubin
+- Denis Dumoulin               - Didier Raboud     - Daniel Sauthier
+- Otto Kolbl                   - Nicolas Beuchat   - Nicolas Stubi
+- Michael Walz                 - Joel Roux         - Patrick Thevoz
+- Didier Gertsch                

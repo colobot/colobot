@@ -1,0 +1,22 @@
+extern void object::Activity( )
+{
+	float	dist;
+
+	errmode(0);  // ne stoppe pas si erreur
+
+	while ( true )
+	{
+		dist = 2+rand()*3;
+
+		turn(90);
+		move(dist);
+		wait(0.5);
+		turn(-90);
+		wait(2+rand()*3);
+		turn(-90);
+		move(dist);
+		wait(0.5);
+		turn(90);
+		wait(1+rand()*1);
+	}
+}

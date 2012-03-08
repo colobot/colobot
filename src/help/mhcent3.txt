@@ -1,0 +1,9 @@
+\b;Instructions de Houston
+Construisez une \l;station radar\u object\radar; sur un des haut-plateaux, et assurez-vous qu'aucun organisme hostile ne viendra la détruire après votre départ.
+
+La destruction du radar construit par la première expédition est probablement à l'origine de l'interruption des transmissions qui nous a fait perdre le contact après son départ pour la destination suivante.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

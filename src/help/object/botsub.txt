@@ -1,0 +1,16 @@
+\b;\button 149; Robot sous-marin
+\image botsub 8 8;
+Robot sous-marin avec un bras manipulateur. Avec le \l;cosmonaute\u object\human;, ce robot est le seul à pouvoir se déplacer sous l'eau. Il faut contrôler le niveau de la \l;pile\u object\power; avant de plonger, car le remplacement ou la recharge de la pile est impossible sous l'eau.
+
+Le sous-marin ne peut prendre ou déposer des objets qu'au sol. Il est incapable de prendre la pile à l'arrière d'un robot, par exemple.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;Subber\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le bras manipulateur par programmation, il faut utiliser les instructions \c;\l;grab\u cbot\grab;\n; et \c;\l;drop\u cbot\drop;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,9 @@
+\b;Instructions de Houston
+Retrouvez de la \l;matière organique\u object\bullet; pour faire dans votre \l;laboratoire\u object\labo; les recherches nécessaires à la construction des canons orgaShooter. Construisez ensuite un \l;robot orgaShooter à pattes\u object\botos; et amenez-le sur le \l;vaisseau\u object\base;.
+
+Nous attirons vous attention sur l'approvisionnement en énergie qui est un problème majeur sur cette planète.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

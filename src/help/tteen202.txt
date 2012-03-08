@@ -1,0 +1,12 @@
+\b;Trait vert
+Pour tester ton nouveau robot, dessine maintenant un trait vert de 20 centimètres, comme dans l'exercice précédent.
+
+\image teen202 8 8;
+\b;Un peu d'anglais
+\c;pen   = \n;plume
+\c;down  = \n;en bas
+\c;Green = \n;vert
+
+Si tu ne connais pas un autre terme anglais, clique sur le bouton \button 46; ci-contre.
+
+La touche \key;\key help;\norm; ou l'icône \button 185; permettent de revoir ces instructions en tout temps¦!

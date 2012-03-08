@@ -1,0 +1,21 @@
+\b;Gauche et droite
+Cela fait maintenant pas mal d'exercices dans lesquels tu utilises l'instruction \c;turn();\n; pour tourner à gauche ou à droite.
+
+\s;90 pour tourner d'un quart de tour à gauche
+\s;-90 pour tourner d'un quart de tour à droite
+
+Ce système n'est vraiment pas pratique. On a beaucoup de peine à se souvenir du sens de rotation. Pour tourner d'un quart de tour à droite, imagine un instant qui tu puisses écrire \c;turn(droite);\n; au lieu de \c;turn(-90);\n;. Ce serait super, non¦?
+
+\b;Les variables
+Avec les variables, tu peux faire cela. Au début du programme, il suffit d'écrire une seule fois¦:
+\c;
+\s;int gauche = 90;
+\s;int droite = -90;
+\n;
+Après cela, tu peux effectuer autant de virages que tu le souhaites, en écrivant simplement¦:
+\c;
+\s;turn(gauche);
+\s;\n;  ou\c;
+\s;turn(droite);
+\n;
+Cet exercice est exactement identique au précédent. Tu dois simplement compléter les deux instructions \c;turn();\n;.

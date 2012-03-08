@@ -1,0 +1,27 @@
+
+class CPoint2
+{
+	float x, y;
+	void	CPoint2(float x, float y)
+	{
+		this.x = x;
+		this.y = y;
+	}
+}
+
+public extern void T ( )
+{
+	CPoint2	X( 12, 33 ), Y ( -4, 4/3 );
+	print ( X, Y ) ;
+}
+
+public extern void Hello (  )
+
+{
+	println ( "Hello" );
+}
+
+public extern void test ( int n )
+{
+	for ( int i = n; i>0 ; i--) print (i);
+}

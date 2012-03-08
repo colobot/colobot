@@ -1,0 +1,20 @@
+\b;\button 152; Legged Sniffer
+\image botss 8 8;
+Ant-legged creeping bot equipped to prospect the geological structure of the subsoil. Whenever it locates something of use, the sniffer lays down the following marks:
+
+- a \l;red cross\u object\stonspot;       -> \l;titanium ore\u object\titanore;.
+- a \l;yellow circle\u object\uranspot;  -> \l;uranium ore\u object\uranore;.
+- a \l;green cross\u object\enerspot;   -> energy deposit, useful for a \l;power station\u object\station; or a \l;power plant\u object\energy;.
+
+A moving legged shooter uses up half as much energy as a \l;wheeled sniffer\u object\botsr;. A legged bot is also perfectly adapted to climb the steepest slopes.
+
+\t;Programming
+To program the bot's movements, use the following commands : \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+To program the sniffing arm, use \c;\l;sniff\u cbot\sniff;\n;.
+
+\t;Object \l;Category\u cbot\category;
+\c;LeggedSniffer\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

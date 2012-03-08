@@ -1,0 +1,16 @@
+extern void object::Solution( )
+{
+	float	dir, len;
+
+	while ( true )
+	{
+		dir = receive("Direction");
+		if ( dir == nan )  break;
+
+		len = receive("Length");
+		if ( len == nan )  break;
+
+		turn(dir);
+		move(len);
+	}
+}

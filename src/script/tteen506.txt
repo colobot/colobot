@@ -1,0 +1,20 @@
+extern void object::Solution()
+{
+	repeat(100)
+	{
+		find(Scrap);
+		grab();
+		if ( load.material == Metal )
+		{
+			find(Disintegrator);
+			drop();
+			move(-10);
+		}
+		else
+		{
+			find(Destroyer);
+			drop();
+			move(-20);
+		}
+	}
+}

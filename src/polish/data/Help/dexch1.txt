@@ -1,0 +1,19 @@
+\b;Æwiczenie
+Wzd³u¿ drogi stoi kilka \l;stacji przekaŸnikowych informacji\u object\exchange;. Gdy robot jest wystarczaj¹co blisko stacji, mo¿e odczytaæ przechowywane w niej informacje. \l;Stacje przekaŸnikowe\u object\exchange; wzd³u¿ drogi zawieraj¹ kierunek i odleg³oœæ do nastêpnej stacji. Nie jest znana liczba stacji przekaŸnikowych, wymaganych do dotarcia do celu.
+
+\b;Ogólny algorytm
+	Zawsze powtarzaj:
+	o  Pobierz kierunek ze \l;stacji przekaŸnikowej\u object\exchange;.
+	o  Pobierz odleg³oœæ ze \l;stacji przekaŸnikowej\u object\exchange;.
+	o  Jeœli nie ma ¿adnych informacji, zatrzymaj program.
+	o  Wykonaj obrót.
+	o  IdŸ do nastêpnej stacji.
+
+\b;Przydatne instrukcje
+\c;\l;while\u cbot\while;\n; powtarzanie instrukcji
+\c;\l;receive\u cbot\receive;\n; pobieranie informacji ze stacji
+\c;\l;move\u cbot\move;\n; poruszanie robotem
+\c;\l;turn\u cbot\turn;\n; obracanie robota
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

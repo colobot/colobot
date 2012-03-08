@@ -1,0 +1,34 @@
+\b;Exercice
+Déplacez le cube de \l;titanium\u object\titan; sur la plate-forme d'arrivée. On ne connaît pas la position du titanium. En revanche, on sait que la plate-forme est à la position x=10 et y=-60.
+
+\b;L'instruction \c;goto\n;
+Le robot volant permet de passer par dessus les obstacles. L'instruction \c;\l;goto\u cbot\goto;\n; élève les robots volants automatiquement, avec un décollage au début du déplacement et un atterrissage à la fin.
+En fait, cette instruction peut recevoir un deuxième paramètre optionnel qui est l'altitude de croisière. Mais il n'est même pas obligatoire de le donner, car une altitude de 10 mètres est prise si ce paramètre manque, et bien entendu, si le robot peut voler.
+
+Donc, l'instruction¦:
+\c;\s;goto(item.position);\n;
+
+Est équivalente à¦:
+\c;\s;goto(item.position, 10);\n;
+
+\b;Solution
+Pour trouver le titanium, utilisez l'instruction \c;\l;radar\u cbot\radar;(Titanium);\n;. La troisième ligne teste si le titanium est trouvé. Dans cet exercice, c'est inutile, mais il vaut mieux prendre l'habitude de faire ce genre de test systématiquement¦:
+\s;\c;object  item;
+\s;item = radar(Titanium);
+\s;if ( item == null )  return;
+\s;goto(item.position);
+\n;
+La variable \c;item\n; est de type \c;\l;object\u cbot\object;\n;. Pour connaître la position de l'objet décrit par la variable, il faut donc écrire \c;item.position\n;.
+
+Pour prendre le titanium, il suffit d'effectuer \c;\l;grab\u cbot\grab;()\n;, sans aucun paramètre.
+Pour déposer le titanium, il suffit d'effectuer \c;\l;drop\u cbot\drop;()\n;, sans aucun paramètre.
+
+Les coordonnées de la plate-forme d'arrivée sont connues: x=10 et y=-60. Il faut donc déclarer une \l;variable\u cbot\var; de type \l;point\u cbot\point;, puis lui assigner les bonnes coordonnées. Cette variable pourra ensuite être donnée comme argument à l'instruction \c;\l;goto\u cbot\goto;\n;.
+Remarque: la coordonnée \c;z\n; peut être ignorée dans le cas d'un robot qui ne vole pas¦!
+
+A vous de terminer le programme ...
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tremova3; et \l;programmation\u cbot;.

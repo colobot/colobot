@@ -1,0 +1,2 @@
+Title.F text="Moteurs" resume="Moteur"
+Title.E text="Motors" resume="Motor"

@@ -1,0 +1,8 @@
+\b;Type \c;void\n;
+Ce type particulier signifie qu'il n'y a rien.
+
+\t;Dictionnaire anglais-français
+\c;void\n; = nul
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

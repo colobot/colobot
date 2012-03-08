@@ -1,0 +1,20 @@
+\b;\button 140; Robot renifleur
+\image botsr 8 8;
+Robot à roues d'exploration du sous-sol. Si le robot découvre quelque chose, il dépose les marques suivantes¦:
+
+\l;Croix rouge\u object\stonspot; -> \l;minerai de titanium\u object\titanore;.
+\l;Rond jaune\u object\uranspot;  -> \l;minerai d'uranium\u object\uranore;.
+\l;Croix verte\u object\enerspot; -> énergie, utile par exemple pour la \l;station de recharge\u object\station;.
+
+La propulsion avec des roues est le mode standard, rapide, consommant peu d'énergie et adapté aux terrains relativement plats. Lorsque le relief devient trop accidenté, il faut opter si possible pour un \l;robot volant\u object\botsj; ou, si le vol est impossible, pour une propulsion à \l;chenilles\u object\botsc;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;WheeledSniffer\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le bras chercheur par programmation, il faut utiliser l'instruction \c;\l;sniff\u cbot\sniff;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

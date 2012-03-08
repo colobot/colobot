@@ -1,0 +1,10 @@
+extern void object::Solution( )
+{
+	move(20);  // idü do 1 punktu kontrolnego
+	turn(90);
+	move(20);  // idü do 2 punktu kontrolnego
+	turn(-90);
+	move(20);  // idü do 3 punktu kontrolnego
+	turn(-90);
+	move(20);  // idü do punktu docelowego
+}

@@ -1,0 +1,13 @@
+extern void object::Solution( )
+{
+	float dist = 2;
+	int n = 36;
+	
+	pendown(Blue);
+
+	repeat ( n )
+	{
+		move(dist);
+		turn(360/n);
+	}
+}

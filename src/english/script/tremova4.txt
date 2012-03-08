@@ -1,0 +1,18 @@
+extern void object::Solution( )
+{
+	object  item;
+	point   dest;
+
+	item = radar(Titanium);
+	if ( item == null )  return;
+	goto(item.position);
+
+	grab();  // grab the titanium cube
+
+	dest.x = 10;
+	dest.y = -60;
+	goto(dest);  // go to the plateform
+
+	drop();  // drop the titanium cube
+}
+

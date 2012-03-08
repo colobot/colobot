@@ -1,0 +1,48 @@
+\b;Programmes envoyés par Houston
+Voilà un programme développé par nos ingénieurs. Il permet au \l;robot bouclier\u object\botshld; de suivre et de protéger le \l;robot phazer\u object\botphaz;.
+\c;
+\s;extern void object::SuivrePhazer()
+\s;{
+\s;	object  item;
+\s;	point   dest;
+\s;	float   dist;
+\s;	
+\s;	item = radar(PhazerShooter);
+\s;	if ( item == null )
+\s;	{
+\s;		message("Phazer pas trouvé");
+\s;		return;
+\s;	}
+\s;	shield(1);  // déploie le bouclier
+\s;	
+\s;	while ( true )
+\s;	{
+\s;		item = radar(PhazerShooter);
+\s;		if ( item == null )  break;
+\s;		
+\s;		dist = distance(item.position, position);
+\s;		if ( dist < 5 )
+\s;		{
+\s;			wait(1);
+\s;		}
+\s;		else
+\s;		{
+\s;			dest.x = (item.position.x-position.x)*((dist-5)/dist)+position.x;
+\s;			dest.y = (item.position.y-position.y)*((dist-5)/dist)+position.y;
+\s;			dest.z = (item.position.z-position.z)*((dist-5)/dist)+position.z;
+\s;			goto(dest, 0, 1, 1);
+\s;		}
+\s;	}
+\s;}
+\n;
+\b;Archives
+Résumé des programmes déjà reçus¦:
+
+o  \c;\l;ServiceTour1\u mlvolca2;\n;
+o  \c;\l;ApporteTitanium3\u mlvolca1;\n;
+o  \c;\l;TueFourmi1\u mlsaari2;\n;
+o  \c;\l;ApporteTitanium2\u mlcrys2;\n;
+o  \c;\l;ApporteTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;EchangePile1\u mllune1;\n;

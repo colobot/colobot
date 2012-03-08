@@ -1,0 +1,12 @@
+\b;Instrukcja \c;strlower\n;
+Zamienia wszystkie znaki ³añcucha na ma³e litery.
+
+Sk³adnia¦:
+\s;\c;strlower ( ³añcuch );\n;
+
+Przyk³ady¦:
+\s;\c;	string s = strlower("Abc");  // s jest równe "abc"
+\n;
+\t;Zobacz równie¿
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strupper\u cbot\strupper;\n;
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

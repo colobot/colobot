@@ -1,0 +1,48 @@
+\b;Objectif
+Equipez les \l;robots shooter\u object\botfj; de \l;piles\u object\power;, pour que ceux-ci puissent assainir le nid de \l;fourmis\u object\ant; qui se trouve dans un cratère au nord de votre position.
+
+\b;Programme
+Le robot déménageur doit aller vers une pile, prendre celle-ci, aller vers un robot, et poser la pile. Voici un programme d'un exercice précédent qui accomplit une tâche semblable¦:
+\c;
+\s;extern void object::Titanium2()
+\s;{
+\s;	object    chose;
+\s;	
+\s;	chose = radar(TitaniumOre);
+\s;	goto(chose.position);
+\s;	grab();
+\s;	
+\s;	chose = radar(Converter);
+\s;	goto(chose.position);
+\s;	drop();
+\s;}
+\n;
+Vous pouvez reprendre ce programme avec couper-coller, et apporter les changements nécessaires. Au lieu de chercher un minerai de titanium (\c;TitaniumOre\n;), cherchez une pile (\c;\l;PowerCell\u object\power;\n;). Au lieu d'aller ensuite vers un convertisseur (\c;Converter\n;), allez vers un robot shooter (\c;\l;WingedShooter\u object\botfj;\n;). Le shooter fera ensuite son travail. Pour savoir comment s'appellent les différents objets dans le langage de programmation, reportez-vous au \l;texte décrivant les catégories\u cbot\category;.
+
+\b;Perfectionnement: les boucles
+Une fois que le programme expliqué ci-dessus fonctionne, vous pouvez l'améliorer de manière à ce qu'il répète les actions nécessaires tout seul. Vous n'aurez plus à exécuter le programme plusieurs fois pour qu'il équipe plusieurs robots.
+Ajoutez simplement une instruction \c;\l;while\u cbot\while;(true)\n; au début du programme, avec toutes les instructions à répéter entre les accolades \c;{¦}\n;¦:
+\c;
+\s;	while (true)
+\s;	{
+\s;		chose = radar(PowerCell);
+\s;		goto(chose.position);
+\s;		grab();
+\s;		
+\s;		chose = radar(WingedShooter);
+\s;		goto(chose.position);
+\s;		drop();
+\s;	}
+\n;
+N'oubliez pas de déclararer la variable \c;object chose;\n; avant de l'utiliser la première fois.
+
+\b;Remarque
+Un robot peut exécuter un programme tout seul: pendant ce temps, vous pouvez sélectionner le \l;cosmonaute\u object\human; et aller observer ce qui se passe vers le nid, en faisant cependant attention de ne pas vous mettre dans la ligne de tir. Les touches \key;\key gup;\norm; et \key;\key gdown;\norm; permettent de voler. Cliquez \l;ici\u command; pour voir le détail des commandes de déplacement.
+
+\b;Messages
+Lorsqu'un message s'affiche en haut de l'écran, vous pouvez visionner le lieu correspondant en cliquant sur le bouton \button 14; à gauche du message. L'action est mise en pause pendant ce temps. Cliquez le bouton \button 16; en bas à gauche pour reprendre l'action.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tlaby2; et \l;programmation\u cbot;.

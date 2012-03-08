@@ -1,0 +1,5 @@
+\b;Walkthrough
+Drive the \l;legged orga shooter\u object\botos; to each of the pads in front of the targets, and hit all targets that you see with only one burst, moving the mouse during the burst. With 4 bursts, you must be able to hit all the targets.
+
+\t;See also
+\l;Controls\u command;

@@ -1,0 +1,16 @@
+\b;\button 149; Nurek
+\image botsub 8 8;
+Robot-amfibia na g¹sienicach wyposa¿ony w zacisk chwytaj¹cy. Jest on jedynym robotem zdolnym do poruszania siê i dzia³ania pod wod¹.
+
+Przed zanurzeniem nale¿y sprawdziæ wskaŸniki poziomu na³adowania \l;ogniwa elektrycznego\u object\power;, gdy¿ jego wymiana ani do³adowanie pod wod¹ nie jest mo¿liwe. Robot nurek mo¿e podnosiæ przedmioty jedynie z ziemi, w odró¿nieniu od np. baterii z ty³u innego robota.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania zacisku chwytaj¹cego mo¿na u¿ywaæ instrukcji \c;\l;grab\u cbot\grab;\n; i \c;\l;drop\u cbot\drop;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;Subber\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

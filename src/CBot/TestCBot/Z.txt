@@ -1,0 +1,14 @@
+public extern void tp()
+{
+	int	a [4], b[];
+	a [ 0 ] = 8 ;
+
+	b = T ( a ) ;
+	show ( a, b );
+}
+
+int[] T ( int[] Z )
+{
+	for ( int i = 0; i < 4 ; i++ ) Z[ i ] = i * i ;
+	return Z;
+}

@@ -1,0 +1,21 @@
+\b;Exercice
+\b;Exercise
+The \l;bot\u object\bottr; must pass over all the \l;blue crosses\u object\waypoint; on the ground. The way that must be covered is made of two squares. The first one measures 15 meters, the second 25 meters.
+
+\image tproc1a 8 8;
+\b;General principle
+In order to solve this problem, the most efficient solution consists in creating a \l;function\u cbot\function; that instructs the bot to move on a square shape of a certain size. The main program becomes then very simple:\c;
+\c;
+\s;	extern void object::Function3( )
+\s;	{
+\s;		Square(15);
+\s;		Square(25);
+\s;	}
+\n;
+\b;Useful instructions
+\c;\l;for\u cbot\for;\n; loop to repeat some instructions
+\c;\l;move\u cbot\move;\n; to move the bot
+\c;\l;turn\u cbot\turn;\n; to turn the bot
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

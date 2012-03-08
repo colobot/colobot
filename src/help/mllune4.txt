@@ -1,0 +1,23 @@
+\b;Programmes envoyés par Houston
+Nous avons réalisé un programme très simple mais efficace qui recharge la \l;pile\u object\power; d'un robot: il va sur la \l;station de recharge\u object\station; la plus proche, attend 5 secondes, puis revient à la position initiale.
+
+Remarque: Les textes qui suivent une double barre oblique ne sont que des commentaires pour vous aider à comprendre le programme. En cliquant sur un élément du programme souligné en bleu, votre SatCom affiche un texte expliquant l'élément concerné.
+\c;
+\s;extern void object::Recharge1()
+\s;{
+\s;	\l;point\u cbot\type;  depart;         // variable pour pos. initiale
+\s;	\l;object\u cbot\type; chose;          // info sur la station
+\s;	
+\s;	depart = position;     // mémorise position initiale
+\s;	
+\s;	chose = \l;radar\u cbot\radar;(\l;PowerStation\u object\station;); // cherche station
+\s;	\l;goto\u cbot\goto;(chose.position);  // va sur la station
+\s;	\l;wait\u cbot\wait;(5);               // attend 5 secondes
+\s;	
+\s;	\l;goto\u cbot\goto;(depart);          // revient à la pos. initiale
+\s;}
+\n;
+\b;Archives
+Résumé des programmes déjà reçus¦:
+
+o  \c;\l;EchangePile1\u mllune1;\n;

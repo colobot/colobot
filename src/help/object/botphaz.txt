@@ -1,0 +1,14 @@
+\b;\button 147; Robot phazer
+\image botphaz 8 8;
+Robot à canon phazer très puissant. En orientant le canon vers le haut, on arrive à tirer jusqu'à la distance de 60 mètres. Ce canon est la seule arme qui puisse venir à bout de la \l;reine pondeuse\u object\mother;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;PhazerShooter\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le canon par programmation, il faut utiliser l'instruction \c;\l;fire\u cbot\fire;\n;. L'instruction \c;\l;aim\u cbot\aim;\n; permet de l'orienter vers le haut ou vers le bas.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,54 @@
+\b;Instruction \c;this\n;
+Occasionally, a \l;class\u cbot\class; method needs to know the reference to the instance it is acting upon. For example the instance might want to pass it's own reference to another function. An implicit reference name \c;this\n; is available to methods and \c;this\n; is a reference to the current instance.
+\c;
+\s;public class MyClass
+\s;{
+\s;	int    m_int;
+\s;	string m_str;
+\s;	void MyFunction()
+\s;	{
+\s;		OtherFunction(this);
+\s;		m_int = 2;
+\s;	}
+\s;}
+\s;
+\s;void OtherFunction(MyClass obj)
+\s;{
+\s;	message(obj.m_str);
+\s;}
+\s;
+\s;extern void object::Test()
+\s;{
+\s;	MyClass item();
+\s;	item.m_str = "Hello";
+\s;	item.MyFunction();  // display "Hello"
+\s;}
+\n;
+You can also put \c;this\n; before a field name in a method but this is not necessary. In the example above in the method \c;MyFunction()\n; following two lines have strictly the same meaning:
+\c;
+\s;	m_int = 2;
+\s;	this.m_int = 2;  // identical
+\n;
+In a method of the \c;\l;object\u cbot\object;\n; class, you can also use \c;this.\n; before a fieldname.
+\c;
+\s;extern void object::Display()
+\s;{
+\s;	message(orientation);
+\s;	message(this.orientation); // same thing but
+\s;	                           // more explicit
+\s;}
+\n;
+However if a field name is hidden by a parameter declaration or a variable declaration you must use \c;this\n;. In the following example the name \c;value\n; of the parameter is the same as the name of the field \c;value\n; of the \l;class\u cbot\class; \c;MyClass\n;, we must therefore write \c;this.value\n; in order to distinguish the field from the parameter.
+\c;
+\s;public class MyClass
+\s;{
+\s;	int  value;
+\s;	void Put( int value )
+\s;	{
+\s;		this.value = value;
+\s;	}
+\s;}
+\n;
+\t;See also
+\c;\l;class\u cbot\class;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

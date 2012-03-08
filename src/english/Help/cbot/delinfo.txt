@@ -1,0 +1,15 @@
+\b;Instruction \c;deleteinfo\n;
+Syntax¦:
+\s;\c;deleteinfo ( name, power );\n;
+
+Delete an existing information in the closest \l;information exchange post\u object\exchange;.
+
+\t;name: \c;string\n;
+Name of the information to be deleted. This name is a string: it must be written in quotation marks "¦".
+
+\t;power: \c;float\n;
+Power of the transmitter, which corresponds to the maximal distance between the sender and the exchange post. If the distance is longer, the information won't be deleted. Default value is 10 metres.
+
+\t;See also
+\c;\l;receive\u cbot\receive;\n;, \c;\l;send\u cbot\send;\n; and \c;\l;testinfo\u cbot\testinfo;\n;.
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

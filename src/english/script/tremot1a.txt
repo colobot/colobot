@@ -1,0 +1,14 @@
+extern void object::Remote( )
+{
+	send("order", 1, 100);  // send "grab" order
+	wait(5);
+
+	send("order", 3, 100);  // send "move(10)" order
+	wait(5);
+
+	send("order", 2, 100);  // send "drop" order
+	wait(5);
+
+	send("order", 4, 100);  // send "move(-10)" order
+	wait(5);
+}

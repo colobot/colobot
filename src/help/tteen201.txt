@@ -1,0 +1,26 @@
+\b;Cadeau
+Chouette, un nouveau robot tout neuf¦!
+
+\image botdr 8 8;
+Et en plus, il peut dessiner lorsque tu le poses sur une feuille de papier. Pour cela, il transporte 8 crayons de couleur qu'il peut traîner sur le sol.
+
+\b;Juste un trait
+Pour commencer tranquillement avec ce petit robot, tu vas lui faire tracer un trait rouge de 20 centimètres, en ligne droite.
+
+Si tu programmes seulement l'instruction \c;move(20);\n;, le robot avancera sans rien dessiner. Pour tracer un trait, il faut lui demander d'abaisser le crayon rouge AVANT qu'il se déplace. Pour cela, il suffit d'écrire \c;pendown(Red);\n; (attention au \c;R\n; majuscule). Le programme complet est donc¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	pendown(Red);
+\s;	move(20);
+\s;}
+\n;
+\b;Un peu d'anglais
+\c;pen  = \n;plume
+\c;down = \n;en bas
+\c;Red  = \n;rouge
+
+Le bouton ...
+Si tu ne connais pas un autre terme anglais, clique sur le bouton \button 46; ci-contre.
+
+La touche \key;\key help;\norm; ou l'icône \button 185; permettent de revoir ces instructions en tout temps¦!

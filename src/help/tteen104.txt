@@ -1,0 +1,29 @@
+\b;Une troisième croix
+Ca n'en finira donc jamais ?
+Le robot est de nouveau posé au départ, comme avant, mais une troisième croix bleue a été ajoutée par terre, encore plus loin. Il faut compléter le programme pour la trouver.
+
+\image teen104 8 8;
+\b;Tourner à droite
+Jusqu'à présent, le robot n'a viré qu'à gauche. En regardant le plan ci-dessus, tu remarques qu'il faudra virer à droite. Comment faire¦?
+
+En fait, l'instruction \c;turn()\n; s'utilise pour tourner dans tous les sens, selon la valeur de l'angle. Une valeur négative (avec un \c;-\n; devant le nombre) signifie un virage à droite. Par exemple, pour tourner d'un quart de tour à droite¦:
+\c;
+\s;turn(-90);
+\n;
+\b;Résumé
+Donc, pour bien comprendre, voici quelques exemples de rotations¦:
+\c;
+\s;turn(45);   \n;tourne à gauche d'un huitième de tour\c;
+\s;turn(90);   \n;tourne à gauche d'un quart de tour\c;
+\s;turn(-45);  \n;tourne à droite d'un huitième de tour\c;
+\s;turn(-90);  \n;tourne à droite d'un quart de tour\c;
+\n;
+\b;A toi de jouer
+Complète simplement le programme comme cela¦:
+\s;Tourne à droite de 90 degrés
+\s;Avance de 100 centimètres
+
+\b;Un problème ?
+En cas d'erreur, tu peux remettre le robot à la position initiale avec le bouton \button 9;.
+
+La touche \key;\key help;\norm; ou l'icône \button 185; permettent de revoir ces instructions en tout temps¦!

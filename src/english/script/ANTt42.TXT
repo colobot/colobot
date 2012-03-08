@@ -1,0 +1,132 @@
+extern void object::Attack( )
+{
+	int      list[], i; // liste des objets cherchés
+	object   target;    // info sur la cible
+	point    center;    // coordonnées du centre de la zone
+	float    distCent;  // rayon de la zone
+	float    r;         // valeur aléatoire
+	int      ifTarget;  // si on a trouvé une cible et quel genre
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	i = 0;
+	list[i++] = WingedGrabber;
+	list[i++] = TrackedGrabber;
+	list[i++] = WheeledGrabber;
+	list[i++] = LeggedGrabber;
+	list[i++] = WingedShooter;
+	list[i++] = TrackedShooter;
+	list[i++] = WheeledShooter;
+	list[i++] = LeggedShooter;
+	list[i++] = WingedOrgaShooter;
+	list[i++] = TrackedOrgaShooter;
+	list[i++] = WheeledOrgaShooter;
+	list[i++] = LeggedOrgaShooter;
+	list[i++] = WingedSniffer;
+	list[i++] = TrackedSniffer;
+	list[i++] = WheeledSniffer;
+	list[i++] = LeggedSniffer;
+	list[i++] = Thumper;
+	list[i++] = PhazerShooter;
+	list[i++] = Recycler;
+	list[i++] = Shielder;
+	list[i++] = Subber;
+	list[i++] = Me;
+
+	center.x = -65; // prend les coordonnée
+	center.y = 255; // du centre de la zone
+	center.z = 0;   // à patrouiller
+	distCent = 140; // rayon de la zone
+
+	motor(1,1);     // en avant toute
+	ifTarget = 0;   // pas de cible précise
+	while ( true )  // répète à l'infini
+	{
+		target = radar(list);
+		if(target.position.y > 65)
+		{
+			if(distance2d(position, target.position)<40)
+			{
+				shoot(target.position);
+			}
+			else
+			{
+				head(target.position);
+			}
+		}
+		else Random(center, distCent);
+	}
+}
+
+void object::head(point tarPos)
+{
+	float  mp;// puissance du moteur
+	mp = direction(tarPos)/180;
+	//if (mp>1) mp = 1;
+	//if (mp<-1) mp = -1;
+	if (mp>0)
+	{
+		motor(1-mp,1);
+	}
+	else
+	{
+		motor(1,1+mp);
+	}
+	wait(1);
+}
+
+void object::Random(point center, float distCent)
+{
+	if (distance2d(position, center) > distCent or topo(position)<2)
+	{
+		HorsZone(center, distCent);
+	}
+	else
+	{
+		DansZone();
+	}
+}
+
+void object::HorsZone(point center, float distCent)
+{   // si la fourmi est en dehors de la zone
+	motor(0, 0); //s'arrête
+	wait(0.5);   //marque un arrêt
+	motor (-0.5, -0.5);//recule lentement
+	wait (1.5);  //attend qu'ait reculé
+	turn(direction(center));
+	motor (1, 1); //puis en avant toute
+	do 
+	{
+		wait(1); //tant que pas dans la zone
+	}
+	while (distance2d(position, center) > distCent or topo(position)<2);
+}
+
+void object::DansZone()
+{   //si elle est bien dans la zone
+	float r = rand();
+	if (r > 0.8)
+	{  //dans un cas sur dix
+		motor (1, 0.8); // tourne à droite
+		wait(rand()*2); // pendant un moment
+		motor (1, 1);   // puis tout droit
+	}
+	if (r < 0.2)
+	{   //dans un cas sur dix
+		motor (0.8, 1); // tourne à gauche
+		wait(rand()*2); // pendant un moment
+		motor (1, 1);   // puis tout droit
+	}
+	motor(1,1);
+	wait(1);            //attend un moment
+}
+
+void object::shoot(point tarPos)
+{   // si cible à proximité
+	turn(direction(tarPos));
+	fire(tarPos); // tourne vers la cible
+	fire(tarPos); // et tire deux fois
+	motor(1,1);   // avance
+	wait(1.5);    // pendant 1.5 s
+}

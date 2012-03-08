@@ -1,0 +1,49 @@
+\b;Instruction \c;public\n; (pour spécialistes)
+Cette instruction a deux rôles distincts¦:
+
+1) Rendre une fonction accessible de tous les robots.
+2) Rendre une méthode d'une classe accessible de l'extérieur.
+
+\b;Instruction \c;public\n; pour les fonctions
+La présence de ce mot rend la \l;fonction\u cbot\function; disponible partout dans la mission. Cette fonction peut alors être utilisée dans le programme d'un autre robot.
+Par exemple, dans un premier robot¦:
+\c;
+\s;public void object::Segment(float dist, float angle)
+\s;{
+\s;	move(dist);
+\s;	turn(angle);
+\s;}
+\n;
+Et dans un autre robot¦:
+\c;
+\s;extern void object::Square( )
+\s;{
+\s;	for ( int i=0 ; i<4 ; i++ )
+\s;	{
+\s;		Segment(10, 90);
+\s;		fire(1);
+\s;	}
+\s;}
+\n;
+Il ne peut y avoir qu'une seule fonction ayant le même nom, parmi tous les programmes des robots de la mission en cours.
+Si le robot qui contenait la fonction déclarée \c;public\n; est détruit, les autres robots qui utilisent cette fonction sont stoppés sur une erreur¦!
+
+\b;Instruction \c;public\n; pour les classes
+Les éléments déclarés dans une \l;classe\u cbot\class; peuvent être publics (par défaut) ou \l;privés\u cbot\private;. Un élément est privé en plaçant \c;private\n; devant le type de l'élément. Dès lors, ces éléments ne seront plus accessibles depuis l'extérieur de la définition de la classe elle-même.
+\c;
+\s;public class MaClasse
+\s;{
+\s;	int    b;                // public par défaut
+\s;	public int a;            // public aussi
+\s;	private point position;  // privé
+\s;}
+\s;void Test()
+\s;{
+\s;	MaClasse item;
+\s;	item.a = item.b = 12;      // ok
+\s;	message( item.position );  // erreur
+\s;}
+\n;
+\t;Voir aussi
+\c;\l;class\u cbot\class;\n;, \c;\l;private\u cbot\private;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

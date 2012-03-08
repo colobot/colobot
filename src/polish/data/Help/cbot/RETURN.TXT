@@ -1,0 +1,31 @@
+\b;Instrukcja \c;return\n;
+Powrót z funkcji. Sk³adnia:
+\c;
+\s;void funkcja ( )
+\s;{
+\s;	return;
+\s;}
+\n;
+\b;Dla specjalistów
+Jeœli \l;funkcja\u cbot\function; ma okreœlony typ wyniku, po instrukcji \c;return\n; musi wyst¹piæ wartoœæ, która ma byæ zwrócona przez funkcjê:
+\c;
+\s;float Pi ( )
+\s;{
+\s;	return 3.1415;
+\s;}
+
+\s;float Œrednia (float a, float b)
+\s;{
+\s;	return (a+b)/2;
+\s;}
+
+\s;string Znak (float a)
+\s;{
+\s;	if ( a > 0 )  return "dodatnia";
+\s;	if ( a < 0 )  return "ujemna";
+\s;	return "zero";
+\s;}
+\n;
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.
+

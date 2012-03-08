@@ -1,0 +1,5 @@
+\b;Encore des bouteilles
+Il y a maintenant 4 vieilles bouteilles vides autour du robot. Tu dois les détruire en utilisant une seule instruction \c;fire()\n; et une seule instruction \c;turn()\n;, à l'intérieur d'une boucle \c;repeat(4)\n;.
+
+\image teen402 8 8;
+Attention de ne pas marcher dans les briques de verre si tu dois aller rechercher le robot¦!

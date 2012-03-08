@@ -1,0 +1,14 @@
+\b;Zadanie
+Zbli¿ siê do paj¹ków bêd¹cych poza zasiêgiem.
+
+\t;Program
+Ten program bêdzie podobny do poprzedniego, ale przed strza³em u¿yj instrukcji \c;\l;move\u cbot\move;();\n; aby zbli¿yæ siê do celu na odpowiedni¹ odleg³oœæ.
+
+Pytanie tylko, ile metrów powinien przejechaæ robot. Instrukcja \c;\l;distance\u cbot\dist;( , )\n; oblicza odleg³oœæ pomiêdzy dwoma punktami. W tym przypadku, konieczne jest poznanie odleg³oœci pomiêdzy robotem i celem. Pozycja celu podawana jest przez \c;item.position\n;, pozycja robota przez \c;position\n;. Odleg³oœæ pomiêdzy celem i robotem jest podana przez\c;\l;distance\u cbot\dist;(position, item.position)\n;. Zasiêg dzia³ka strzelaj¹cego kulami ognia to 40 metrów. Aby siê zbli¿yæ wystarczaj¹co, robot musi iœæ naprzód \c;\l;distance\u cbot\dist;(position, item.position)-40\n; metrów. Robi to nastêpuj¹cy wiersz:
+\c;
+\s;	\l;move\u cbot\move;(\l;distance\u cbot\dist;(position, item.position)-40);
+\n;
+Wystarczy wstawiæ tê liniê do poprzedniego programu przed instrukcj¹ \c;fire(1);\n;, a robot zacznie siê poruszaæ.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

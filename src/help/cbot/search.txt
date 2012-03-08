@@ -1,0 +1,20 @@
+\b;Instruction \c;search\n;
+Syntaxe¦:
+\s;\c;search ( catégorie, pos );\n;
+
+Cherche l'objet d'une catégorie donnée, le plus proche d'une position donnée.
+
+\t;catégorie: \c;\l;int\u cbot\int;\n;
+\l;Catégorie\u cbot\category; d'objet cherché.
+
+\t;pos: \c;\l;point\u cbot\point;\n;
+Position à partir de laquelle s'effectue la recherche.
+
+\t;Valeur retournée: \c;\l;object\u cbot\object;\n;
+Objet trouvé. La valeur \c;\l;null\u cbot\null;\n; indique que rien n'a été trouvé.
+
+\t;Dictionnaire anglais-français
+\c;search\n; = chercher
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

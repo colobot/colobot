@@ -1,0 +1,16 @@
+\b;Rapport du satellite
+En orbite géostationnaire autour de Centaury.
+\c;
+\s;-> SURFACE\c;
+\tab;Température:      25.41 degrés
+\tab;Atmosphère:       oxygène, azote, ammoniaque
+\tab;Vent:             1.2 m/s
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+
+\s;-> SOUS-SOL\c;
+\tab;Energie:          aucune
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+\n;
+

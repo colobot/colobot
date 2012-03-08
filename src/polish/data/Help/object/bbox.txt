@@ -1,0 +1,14 @@
+\b;Czarna skrzynka
+\image bbox 4 4;
+Czarna skrzynka tak naprawdê jest pomarañczowa, ¿eby ³atwiej mo¿na j¹ by³o rozpoznaæ i znaleŸæ. Ka¿dy \l;statek kosmiczny\u object\base; wyposa¿ony jest w czarn¹ skrzynkê zapisuj¹c¹ i przechowuj¹c¹ informacje o przebiegu lotu.
+
+Czarna skrzynka mo¿e byæ tak¿e u¿yta do pozostawienia wa¿nych informacji. Pierwsza ekspedycja zostawi³a na ka¿dej z planet czarn¹ skrzynkê zawieraj¹c¹ wspó³rzêdne planety, do której zmierza³a w nastêpnej kolejnoœci.
+
+\t;Transport
+Wszystkie \l;transportery\u object\botgr; oraz \l;astronauta\u object\human;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;BlackBox\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;..

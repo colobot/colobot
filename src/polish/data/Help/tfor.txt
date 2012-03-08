@@ -1,0 +1,57 @@
+\b;Æwiczenie
+Zniszcz szeœæ \l;celów\u object\bottarg; u¿ywaj¹c programu z pêtl¹. Odleg³oœci pomiêdzy celami wynosz¹ 5 metrów.
+
+\b;Ogólny algorytm
+Program powinien byæ uruchomiony wed³ug nastêpuj¹cego schematu:
+Powtórz 6 razy:
+	o  idŸ 5 m naprzód.
+	o  skrêæ o 90 stopni w lewo
+	o  strzelaj
+	o  skrêæ o 90 stopni w prawo
+
+\image tfor1 14 5;
+\b;Instrukcja \c;for ( )\n;
+Instrukcja \c;\l;for\u cbot\for;\n; wymaga 3 wyra¿eñ:
+1) Inicjalizacji zmiennej licz¹cej.
+2) \l;Warunku\u cbot\cond; zakoñczenia pêtli.
+3) \l;Wyra¿enia\u cbot\expr; licz¹cego.
+
+Oto pêtla umieszczona w programie:
+\s;\c;extern void object::Masakra( )
+\s;{
+\s;	for ( int i=0 ; i<6 ; i=i+1 )
+\s;	{
+\s;		\n;instrukcje powtarzane 6 razy...\c;
+\s;	}
+\s;}
+\n;
+UWAGA: Na koñcu wiersza z \c;for ( )\n; nie powinno byæ \l;œrednika\u cbot\term;!
+
+\b;Opis instrukcji \c;for ( )\n;
+1) \c;int i=0\n;
+    Przed rozpoczêciem pêtli \l;zmiennej\u cbot\var; i jest przypisywana wartoœæ 0.
+
+2) \c;i<6\n;
+    Pêtla bêdzie wykonywana tak d³ugo, a¿ wartoœæ zmiennej i bêdzie mniejsza od 6.
+
+3) \c;i=i+1\n;
+    Zwiêksza o 1 zmienn¹ i na koñcu ka¿dej pêtli.
+
+\b;Bloki
+Do utworzenia \l;bloku\u cbot\bloc; u¿yj nawiasów klamrowych \c;{ }\n;. Wszystkie instrukcje, które powinny byæ wykonywane przez pêtlê \c;for\n; s¹ zgrupowane w blok. Równie¿ ca³y program jest blokiem:
+\c;
+\s;extern void object::Masakra( )
+\s;{
+\s;	\n;tutaj wpisz instrukcje...\c;
+\s;}
+\n;
+Nigdy nie zmieniaj tych znaków. Wystarczy dodaæ instrukcje programu pomiêdzy klamrami.
+Mo¿esz umieszczaæ bloki wewn¹trz innego bloku. Na przyk³ad blok \c;for\n; jest zagnie¿d¿ony w bloku ca³ego programu. W celu poprawy czytelnoœci programu, edytor ustawia w odpowiednich liniach klamry nale¿¹ce do ró¿nych bloków.
+
+\b;Zapamiêtaj
+Instrukcja u¿ywana do poruszania siê naprzód: \c;\l;move\u cbot\move;();\n;.
+Instrukcja u¿ywana do obracania robota: \c;\l;turn\u cbot\turn;();\n;. K¹t dodatni obraca w lewo.
+Instrukcja u¿ywana do strzelania z dzia³ka: \c;\l;fire\u cbot\fire;(1);\n;. Jednosekundowa seria umo¿liwia zniszczenie wszystkich szeœciu \l;celów\u object\bottarg;.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

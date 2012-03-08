@@ -1,0 +1,36 @@
+\b;Typ \c;point\n;
+Zmienne tego typu zawieraj¹ wspó³rzêdne punktu w przestrzeni. Sk³ada siê on z trzech wartoœci reprezentuj¹cych wspó³rzêdne \c;x\n;, \c;y\n; oraz \ c;z\n;.
+\c;x\n; i \c;y\n; odpowiadaj¹ miejscu na powierzchni ziemi. Dodatnia oœ \c;x\n; wskazuje wschód, dodatnia oœ \c;y\n; wskazuje pó³noc. 
+Wartoœæ \c;z\n; odpowiada wysokoœci nad poziomem morza. 
+
+Aby zadeklarowaæ zmienn¹ typu point, mo¿na napisaæ: 
+\c;
+\s;	point a (10, 20, 30);
+\n;
+Mo¿na równie¿ pojedynczo ustawiæ wartoœci wspó³rzêdnych:
+\c;
+\s;	point b;
+\s;	b.x = 10;
+\s;	b.y = 20;
+\s;	b.z = 30;
+\n;
+W przyk³adach tych, nastêpuj¹cy \l;warunek\u cbot\cond; jest prawdziwy:
+\c;
+\s;	if ( a == b )
+\s;	{
+\s;	}
+\n; 
+Nastêpuj¹ca deklaracja:
+\c;
+\s;	point c (4, 7);
+\n;
+Jest równowa¿na poni¿szej:
+\c;
+\s;	point c;
+\s;	c.x = 4;
+\s;	c.y = 7;
+\s;	c.z = 0;
+\n;
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

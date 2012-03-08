@@ -1,0 +1,27 @@
+\b;Instruction \c;find\n;
+L'instruction \c;find()\n; cherche un objet donné puis déplace le robot à proximité. Exemple d'utilisation¦:
+\c;
+\s;find(Titanium);
+\n;
+Cet exemple est équivalent à ceci¦:
+\c;
+\s;object chose = radar(Titanium);
+\s;goto(chose.position);
+\n;
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;find ( catégorie );\n;
+
+\t;catégorie: \c;\l;int\u cbot\int;\n;
+\l;Catégorie\u cbot\category; de l'objet cherché. Par exemple, \c;WayPoint\n;.
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Normalement, une erreur stoppe l'exécution du programme. Si l'instruction \c;find\n; est précédée de \c;\l;errmode\u cbot\errmode;(0);\n;, une valeur nulle est retournée si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;position atteinte
+\c;!= 0 \n;objet introuvable ou impossible d'atteindre la position
+
+\t;Dictionnaire anglais-français
+\c;find\n; = trouver
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

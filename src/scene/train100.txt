@@ -1,0 +1,2 @@
+Title.F text="Araignées et logistique" resume="Problèmes de logistique et combat contre des cibles immobiles"
+Title.E text="Spiders and supply" resume="Supply problems and fight against motionless targets"

@@ -1,0 +1,13 @@
+extern void object::Evite( )
+{
+	while ( true )
+	{
+		float	front, left, right;
+
+		front = radar(Mine,   0, 30, 0, 20);
+		left  = radar(Mine,  30, 60, 0, 20);
+		right = radar(Mine, -30, 60, 0, 20);
+
+		motor(1-right, 1-left+front);
+	}
+}

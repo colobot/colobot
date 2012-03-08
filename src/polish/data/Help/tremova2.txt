@@ -1,0 +1,35 @@
+\b;Æwiczenie
+To æwiczenie jest bardzo podobne do poprzedniego. Tym razem mamy trzy \l;kostki tytanu\u object\titan;, które nale¿y przenieœæ na 3 platformy koñcowe. Oto wspó³rzêdne platform koñcowych:
+\c;
+	x=10, y=-60
+	x=10, y=-65
+	x=10, y=-70
+\n;
+\b;Ogólny algorytm
+Powtórz 3 razy:
+o  ZnajdŸ najdalsz¹ kostkê tytanu za pomoc¹ instrukcji \c;\l;radar\u cbot\radar;\n;.
+o  Podnieœ j¹ instrukcj¹ \c;\l;grab\u cbot\grab;\n;.
+o  PodjedŸ do jednej z platform: \c;\l;goto\u cbot\goto;\n;.
+o  Zostaw tytan: \c;\l;drop\u cbot\drop;\n;.
+
+W przypadku szukania najbli¿szej kostki tytanu, radar znajdzie tytan dopiero co zaniesiony na platformê. Nale¿y wiêc szukaæ najdalszej kostki tytanu.
+
+\b;Program
+U¿yj pêtli \c;\l;for\u cbot\for;\n; do trzykrotnego powtórzenia wszystkich instrukcji niezbêdnych do przeniesienia kostki tytanu. Wewn¹trz pêtli, aby znaleŸæ najdalsz¹ kostkê tytanu, u¿yj instrukcji \c;\l;radar\u cbot\radar;(Titanium, 0, 360, 0, 1000, -1);\n;. Ostatnia wartoœæ \c;-1\n; oznacza, ¿e zamiast szukaæ najbli¿szego przedmiotu, radar podaje w wyniku najdalszy przedmiot, który mo¿e znaleŸæ.
+\c;
+\s;object  metal;
+\s;metal = radar(Titanium, 0, 360, 0, 1000, -1);
+\s;if ( metal == null )  return;
+\s;goto(metal.position);
+\n;
+Zmienna \c;metal\n; jest typu \c;\l;object\u cbot\object;\n;. Aby poznaæ pozycjê obiektu opisanego przez zmienn¹, musisz napisaæ \c;metal.position\n;.
+
+Wspó³rzêdna \c;x\n; wszystkich trzech platform jest taka sama i równa 10. Wspó³rzêdne \c;y\n; odpowiednio wynosz¹ -60, -65 i -70. Najefektywniejszym sposobem otrzymania wspó³rzêdnych platform jest u¿ycie wartoœci \c;i\n; z pêtli \c;for\n;, która przyjmuje kolejno wartoœci 0, 1 i 2:
+\c;
+\s;dest.x = 10;
+\s;dest.y = -60-5*i;
+\n;
+Do Ciebie nale¿y dokoñczenie programu...
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

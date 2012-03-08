@@ -1,0 +1,19 @@
+\b;Un dessin surprise
+Les répétitions permettent de réaliser de très jolis dessins, avec des programmes d'une étonnante simplicité. Par exemple, essaie le programme suivant¦:
+
+\s;o  Baisse le crayon rouge
+\s;o  répète 18 fois¦:
+\s;	o  Avance de 10 centimètres
+\s;	o  Tourne de 160 degrés à gauche (160)
+\s;	o  Avance de 10 centimètres
+\s;	o  Tourne de 140 degrés à droite (-140)
+
+Tu verras apparaître un dessin surprise¦!
+
+\b;Plus vite
+Comme ce dessin est assez long à réaliser, tu peux éventuellement accélérer le mouvement du petit robot en appuyant sur la touche \key;\key speed20;\norm; pour obtenir une vitesse x2. La touche \key;\key speed10;\norm; revient à une vitesse normale x1.
+
+\b;Caméra
+Tu peux aussi utiliser les touches flèches du clavier pendant le dessin, pour observer la scène sous un autre angle. Cela ne dérange pas du tout le dessin en cours.
+
+En cliquant l'icône \button 13; ou en appuyant sur la touche \key;\key camera;\norm;, tu peux rendre la caméra solidaire du robot.

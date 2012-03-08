@@ -1,0 +1,16 @@
+\b;Carrément
+On va maintenant carrément s'attaquer au dessin d'un carré orange.
+
+\image teen301 8 8;
+\b;Programme
+Après avoir actionné le crayon orange, il suffit d'écrire 4 fois¦:
+\c;
+\s;move(20);
+\s;turn(90);
+\n;
+Le robot revient donc à la position de départ. Le dernier \c;turn(90);\n; n'est pas indispensable, mais il oriente le robot dans le même sens qu'au départ¦!
+
+\b;Un peu d'anglais
+\c;pen    = \n;plume
+\c;down   = \n;en bas
+\c;Orange = \n;orange (trop fort !)

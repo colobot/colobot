@@ -1,0 +1,8 @@
+\b;Barrier
+The barrier is nothing more than an obstacle used in the exercises.
+
+\t;Object \l;Category\u cbot\category;
+\c;Barrier\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

@@ -1,0 +1,40 @@
+\b;Instrukcje \c;if\n; i \c;else\n;
+U¿ywaj¹c instrukcji \c;if() {}\n; mo¿na uzale¿niæ wykonanie zbioru instrukcji od spe³nienia okreœlonego warunku. Warunek nale¿y zapisaæ w nawiasach \c;()\n;, a instrukcje w nawiasach klamrowych \c;{}\n;.
+
+\b;Podstawowe u¿ycie
+Oto konkretny przyk³ad: Robot bêdzie strzela³ dopiero wtedy, gdy cel bêdzie bli¿ej ni¿ 40 metrów:
+\c;
+\s;	item = \l;radar\u cbot\radar;(AlienAnt);
+\s;	if (\l;distance\u cbot\dist;(position, item.position) < 40)
+\s;	{
+\s;		fire(1);
+\s;	}
+\n;
+Mo¿na te¿ sprawdziæ czy obiekt istnieje w ogóle. Jeœli instrukcja \c;\l;radar\u cbot\radar;();\n; nie znajdzie ¿¹danego obiektu, zwraca wartoœæ \c;null\n;. Mo¿na wiêc sprawdziæ czy obiekt istnieje, warunkiem \c;(item != null)\n;  lub czy nie istnieje \c;(item == null)\n;. Dwa znaki równoœci \c;==\n; sprawdzaj¹ równoœæ, znak równoœci poprzedzony wykrzyknikiem \c;!=\n;  sprawdza nierównoœæ. Oto program testowy, który bêdzie ³adowa³ \l;ogniwa elektryczne\u object\power; tylko wtedy, gdy znajdzie \l;stacjê energetyczn¹\u object\station;:
+\c;
+\s;	item = \l;radar\u cbot\radar;(PowerStation);
+\s;	if (item != null)
+\s;	{
+\s;		\l;goto\u cbot\goto;(item.position);
+\s;		\l;wait\u cbot\wait;(5);
+\s;	}
+\n;
+\b;Dla specjalistów
+Sk³adnia:
+\s;\c;if ( warunek )
+\s;{
+\s;	\n;Instrukcje A ...\c;
+\s;}
+\s;else
+\s;{
+\s;	\n;Instrukcje B ...\c;
+\s;}
+\n;
+Przy u¿yciu tej struktury warunkowej mo¿na wykonaæ \l;blok\u cbot\bloc; A lub \l;blok\u cbot\bloc; B w zale¿noœci od \l;warunku\u cbot\cond;. Jeœli warunek jest prawdziwy, wykonywany jest blok A. Jeœli warunek jest fa³szywy, wykonywany jest blok B. 
+Czêœæ \c;else { }\n; nie jest obowi¹zkowa. 
+
+\t;Uwaga
+Na koñcu linii \c;if ( )\n; nie nale¿y stawiaæ \l;œrednika\u cbot\term;.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

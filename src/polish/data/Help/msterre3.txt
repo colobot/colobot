@@ -1,0 +1,28 @@
+\b;Rozwi¹zanie
+Przed odlotem na pok³adzie statku kosmicznego powinny siê znaleŸæ:
+
+1) \l;Czarna skrzynka\u object\bbox;.
+2) Transportery \l;na ko³ach\u object\botgr; i \l;na g¹sienicach\u object\botgc;s.
+3) \l;Ty\u object\human;.
+
+Oto szczegó³owy plan dzia³ania:
+1) Zasil \l;centrum badawcze\u object\research; jednym z zielonych \l;ogniw elektrycznych\u object\power;.
+2) Zaznacz \l;centrum badawcze\u object\research; i kliknij przycisk \button 64; <program badawczy robota na g¹sienicach>.
+3) Umieœæ \l;kostkê tytanu\u object\titan; wewn¹trz \l;fabryki robotów\u object\factory;.
+4) Cofnij siê i zaznacz \l;fabrykê robotów\u object\factory;.
+5) Kliknij przycisk \button 138; <zbuduj \l;transporter na g¹sienicach\u object\botgc;>.
+6) Zasil \l;transporter na g¹sienicach\u object\botgc; nowym \l;ogniwem elektrycznym\u object\power;.
+7) Wyœlij \l;transporter na g¹sienicach\u object\botgc; na szczyt góry na po³udniowym zachodzie.
+8) Dostarcz \l;czarn¹ skrzynkê\u object\bbox; na pok³ad \l;statku kosmicznego\u object\base;.
+9) Wyœlij transportery \l;na g¹sienicach\u object\botgc; oraz \l;na ko³ach\u object\botgr; na pok³ad statku kosmicznego.
+10) WejdŸ na pok³ad \l;statku kosmicznego\u object\base;.
+11) Odleæ!
+
+Aby wystartowaæ, zaznacz \l;statek kosmiczny\u object\base; poprzez klikniêcie na nim, o ile jest widoczny. Jeœli nie, kliknij jeden z przycisków w lewej górnej czêœci ekranu. Niebieski trójk¹t \button 130; umo¿liwia prze³¹czanie pomiêdzy symbolami robotów a symbolami budynków. Kliknij przycisk <budynki> aby uaktywniæ ich listê. Pojawi siê przycisk \button 171; <statek kosmiczny>. Kliknij ten przycisk, aby zaznaczyæ statek kosmiczny.
+
+Gdy statek kosmiczny jest ju¿ zaznaczony, kliknij du¿y przycisk \button 28; <odleæ> w dolnej czêœci ekranu. Jeœli Ty oraz przedmioty wspomniane powy¿ej znajduj¹ siê na pok³adzie, statek kosmiczny wystartuje.
+
+¯aden przedmiot ani robot nie powinny przeszkadzaæ w zamykaniu oœmiu wielkich paneli drzwi.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

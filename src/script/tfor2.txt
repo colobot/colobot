@@ -1,0 +1,11 @@
+extern void object::Solution( )
+{
+	for ( int i=0 ; i<6 ; i=i+1 )  // répète 6x
+	{
+		move(5);    // avance de 5 mètres
+		if ( i == 2 )  continue;
+		turn(90);   // quart de tour à gauche
+		fire(1);    // détruit la cible
+		turn(-90);  // quart de tour à droite
+	}
+}

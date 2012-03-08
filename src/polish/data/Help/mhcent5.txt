@@ -1,0 +1,9 @@
+\b;Z Centrum Kontroli Misji
+Jesteœ atakowany i tym razem nie ma miejsca na litoœæ...
+
+Nowy robot, \l;uderzacz\u object\bottump; mo¿e byæ bardzo pomocny. Jednak¿e chcielibyœmy podkreœliæ, ¿e nie nale¿y ryzykowaæ startu, dopóki s¹ jeszcze jakiekolwiek ¿ywe mrówki w pobli¿u statku kosmicznego.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

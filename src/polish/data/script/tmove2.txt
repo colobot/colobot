@@ -1,0 +1,15 @@
+extern void object::Solution( )
+{
+	float  dist, dir;
+
+	dist = 20;
+	dir = 90;
+
+	move(dist);  // idü do 1 punktu kontrolnego
+	turn(dir);
+	move(dist);  // idü do 2 punktu kontrolnego
+	turn(-dir);
+	move(dist);  // idü do 3 punktu kontrolnego
+	turn(-dir);
+	move(dist);  // idü do punktu docelowego
+}

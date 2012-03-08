@@ -1,0 +1,31 @@
+\b;\button 172; Borne d'informations
+\image info 8 8;
+Ce bâtiment stocke des informations numériques, sur demande. Une borne peut contenir jusqu'à 10 informations. Chaque information est référencée par un nom.
+Par exemple, une borne peut contenir les 3 infomations suivantes¦:\c;
+\tab;"Position.x"  23.45
+\tab;"Position.y"  -102.70
+\tab;"Quantité"    3.00
+\n;
+Pour envoyer une nouvelle information, il faut exécuter l'instruction \c;\l;send\u cbot\send;\n;.
+Pour obtenir une information existante, il faut exécuter l'instruction \c;\l;receive\u cbot\receive;\n;.
+
+\t;Emplacement requis
+Surface plate quelconque de 2.5 mètres de diamètre.
+
+\t;Entrée
+Aucune.
+
+\t;Sortie
+Informations numériques.
+
+\t;Energie consommée
+Aucune.
+
+\t;Durée de l'opération
+1 seconde.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;ExchangePost\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

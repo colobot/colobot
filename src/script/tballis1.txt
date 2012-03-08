@@ -1,0 +1,17 @@
+extern void object::Solution()
+{
+	object chose;
+	float  dist, angle;
+
+	while(true)
+	{
+		chose = radar(AlienSpider);
+		if ( chose == null )  break;
+		turn(direction(chose.position));
+		dist = distance(position, chose.position);
+		angle = asin((dist*9.81)/(25**2))/2;
+		aim(angle);
+		fire(1);
+		wait(1);
+	}
+}

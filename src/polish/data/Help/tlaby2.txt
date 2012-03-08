@@ -1,0 +1,55 @@
+\b;Æwiczenie
+To æwiczenie jest bardzo podobne do poprzedniego. Tym razem robot powinien samodzielnie znaleŸæ drogê od startu do celu; musisz uruchomiæ program tylko jeden raz.
+
+\b;Uwaga
+Labirynt nie jest dok³adnie taki sam ale powinno to byæ bez znaczenia, gdy¿ program przystosowuje siê do tego co "widzi".
+
+\image tlaby1 10 10;
+\b;Ogólny algorytm
+U¿yj nieskoñczonej pêtli \c;\l;while\u cbot\while;\n; aby wielokrotnie wykonaæ poprzedni program:
+\s;\c;while ( true )
+\s;{
+\s;	\n;Jeœli nie ma niczego z przodu, idŸ naprzód\c;
+\s;	\n;Jeœli nie ma niczego po lewej, skrêæ w lewo\c;
+\s;	\n;Jeœli nie ma niczego po prawej, skrêæ w prawo\c;
+\s;}
+\n;
+Wewn¹trz pêtli \c;while\n; zast¹p instrukcje \c;return\n; instrukcjami \c;\l;continue\u cbot\continue;\n;. \c;return\n; koñczy dzia³anie programu, co nie jest po¿¹dane w tym przypadku. \c;continue\n; wznawia wykonywanie na pocz¹tku pêtli \c;\l;while\u cbot\while;\n;:
+\s;\c;if ( front == null )
+\s;{
+\s;	move(5);
+\s;	continue;
+\s;}
+\n;
+\b;Zapamiêtaj
+Oto jeszcze raz program z poprzedniego æwiczenia:
+\c;
+\s;object   front, left, right;
+\s;
+\s;front = radar(Barrier,   0, 45, 0, 5);
+\s;left  = radar(Barrier,  90, 45, 0, 5);
+\s;right = radar(Barrier, -90, 45, 0, 5);
+\s;
+\s;if ( front == null )
+\s;{
+\s;	move(5);
+\s;	return;
+\s;}
+\s;if ( left == null )
+\s;{
+\s;	turn(90);
+\s;	move(5);
+\s;	return;
+\s;}
+\s;if ( right == null )
+\s;{
+\s;	turn(-90);
+\s;	move(5);
+\s;	return;
+\s;}
+\n;
+\b;Pomoc
+Jeœli potrzebujesz pomocy, kliknij na hiper³¹czu instrukcji \c;\l;radar\u cbot\radar;\n;, \c;\l;if\u cbot\if;\n;, \c;\l;move\u cbot\move;\n; lub \c;\l;turn\u cbot\turn;\n;.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

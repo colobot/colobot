@@ -1,0 +1,7 @@
+\b;Programy przys³ane z Houston
+Nie napisaliœmy ¿adnego programu specjalnie dla tej misji. Jednak¿e mo¿esz napisaæ w³asny program, jeœli uwa¿asz, ¿e przyda siê on podczas tej misji.
+
+\b;Archiwum
+Lista programów przys³anych w poprzednich misjach:
+
+o  \c;\l;SwitchCell1\u mllune1;\n;

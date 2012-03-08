@@ -1,0 +1,64 @@
+Title.F text="Module de texturage"
+Title.E text="Module de texturage"
+Resume  text="Module interractif permettant de texturer des fichiers DXF et MOD."
+
+AmbiantColor  air= 136;136;136;136  // grey
+BackColor     air= 0;0;0;0 // black
+FogColor      air= 0;0;0;0 // black
+DeepView      air= 1000.0
+FogStart      air= 0.1
+SecondTexture rank=1
+TerrainGenerate vision=500.0 depth=1
+TerrainRelief image="textures\relief00.bmp" full=1
+TerrainResource image="textures\resae.bmp"
+TerrainInitTextures image="black" dx=1 dy=1 table=0
+TerrainCreate
+
+BeginObject
+CreateObject pos=  0.0;-400.0 dir=0.0 type=Me
+CreateObject pos= 20.0;-400.0 dir=0.0 type=WingedGrabber
+CreateObject pos= 40.0;-400.0 dir=0.0 type=TrackedGrabber
+CreateObject pos= 60.0;-400.0 dir=0.0 type=WheeledGrabber
+CreateObject pos= 80.0;-400.0 dir=0.0 type=LeggedGrabber
+CreateObject pos=100.0;-400.0 dir=0.0 type=TrackedShooter
+CreateObject pos=120.0;-400.0 dir=0.0 type=TrackedShooter
+CreateObject pos=140.0;-400.0 dir=0.0 type=WheeledShooter
+CreateObject pos=160.0;-400.0 dir=0.0 type=LeggedShooter
+CreateObject pos=180.0;-400.0 dir=0.0 type=WingedSniffer
+CreateObject pos=200.0;-400.0 dir=0.0 type=TrackedSniffer
+CreateObject pos=220.0;-400.0 dir=0.0 type=WheeledSniffer
+CreateObject pos=240.0;-400.0 dir=0.0 type=LeggedSniffer
+CreateObject pos=280.0;-400.0 dir=0.0 type=Thumper
+CreateObject pos=320.0;-400.0 dir=0.0 type=PhazerShooter
+CreateObject pos=360.0;-400.0 dir=0.0 type=Recycler
+CreateObject pos=400.0;-400.0 dir=0.0 type=Shielder
+CreateObject pos=440.0;-400.0 dir=0.0 type=Subber
+CreateObject pos=500.0;-400.0 dir=0.0 type=WingedOrgaShooter
+CreateObject pos=520.0;-400.0 dir=0.0 type=TrackedOrgaShooter
+CreateObject pos=540.0;-400.0 dir=0.0 type=WheeledOrgaShooter
+CreateObject pos=560.0;-400.0 dir=0.0 type=LeggedOrgaShooter
+CreateObject pos=580.0;-400.0 dir=0.0 type=PracticeBot
+
+CreateObject pos=-100.0;-400.0 dir=0.5 type=Derrick
+CreateObject pos=-150.0;-400.0 dir=0.5 type=BotFactory
+CreateObject pos=-200.0;-400.0 dir=0.5 type=RepairCenter
+CreateObject pos=-250.0;-400.0 dir=0.5 type=PowerStation
+CreateObject pos=-300.0;-400.0 dir=0.5 type=Converter
+CreateObject pos=-350.0;-400.0 dir=0.5 type=DefenseTower
+CreateObject pos=-400.0;-400.0 dir=0.5 type=ResearchCenter
+CreateObject pos=-450.0;-400.0 dir=0.5 type=RadarStation
+CreateObject pos=-500.0;-400.0 dir=0.0 type=PowerPlant
+CreateObject pos=-550.0;-400.0 dir=0.0 type=AutoLab
+CreateObject pos=-600.0;-400.0 dir=0.5 type=NuclearPlant
+//CreateObject pos=-800.0;-400.0 dir=0.0 type=SpaceShip
+CreateObject pos=-900.0;-400.0 dir=0.5 type=TitaniumOre
+CreateObject pos=-910.0;-400.0 dir=0.5 type=Titanium
+CreateObject pos=-920.0;-400.0 dir=0.5 type=PowerCell
+
+//CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+//CreateLight dir= 1.0; 0.0; 0.0 color=-0.70;-0.70;-0.70 type=Terrain
+//CreateLight dir=-1.0; 0.0; 0.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir= 1.0;-1.0; 0.0 color= 0.30; 0.30; 0.30 type=Object
+CreateLight dir=-1.0;-1.0; 0.0 color= 1.00; 1.00; 1.00 type=Object
+CreateLight dir= 0.0;-1.0; 1.0 color= 0.60; 0.60; 0.60 type=Object
+CreateLight dir= 0.0;-1.0;-1.0 color= 0.60; 0.60; 0.60 type=Object

@@ -1,0 +1,74 @@
+extern void object::Produce( )
+{
+	point   path[7];
+	int     i;
+	float   r;
+
+	errmode(0);  // ne stoppe pas si erreur
+	ipf(10);     // 10 instructions / second
+	while ( ismovie() != 0 )  wait(1);
+
+	path[0].x = cmdline(0);
+	path[0].y = cmdline(1);
+	path[1].x = cmdline(2);
+	path[1].y = cmdline(3);
+	path[2].x = cmdline(4);
+	path[2].y = cmdline(5);
+	path[3].x = cmdline(6);
+	path[3].y = cmdline(7);
+	path[4].x = cmdline(8);
+	path[4].y = cmdline(9);
+	path[5].x = cmdline(10);
+	path[5].y = cmdline(11);
+	path[6].x = cmdline(12);
+	path[6].y = cmdline(13);
+
+	i = 1;
+	while ( true )
+	{
+		goto(path[i%7]);
+
+		if ( rand() < 0.2 )  // attaqueuse 1x / 5
+		{
+			produce(position, orientation, AlienAnt, "antattsw.txt");
+		}
+		else
+		{
+			if ( AlienCount() < 10 )
+			{
+				r = rand();
+				if( r < 0.3 )
+				{
+					produce(position, orientation, AlienAnt, "antt41.txt");
+				}
+				if( r >= 0.6 )
+				{
+					produce(position, orientation, AlienAnt, "antt42.txt");
+				}
+				if( r < 0.6 and r >= 0.3 )
+				{
+					produce(position, orientation, AlienAnt, "antt43.txt");
+				}
+			}
+		}
+		i ++;
+	}
+}
+
+int object::AlienCount()
+{
+	object  item;
+	int     total = 0;
+	int     i = 0;
+
+	while ( true )
+	{
+		item = retobject(i++);
+		if ( item == null )  return total;
+
+		if ( item.category == AlienAnt )
+		{
+			total ++;
+		}
+	}
+}

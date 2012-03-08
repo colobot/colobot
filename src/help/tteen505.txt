@@ -1,0 +1,14 @@
+\b;Les matières plastiques
+L'élimination des matières plastiques pose des problèmes écologiques. Le désintégrateur moléculaire utilisé dans les exercices précédents n'est efficace qu'avec les matières métalliques. Pour éliminer un déchet plastique, il faut utiliser une méthode brutale qui consiste à l'écraser très violemment, avec un destructeur miniature.
+
+\image destroy 8 8;
+\b;Modification
+Le programme de l'exercice précédent ne fonctionne pas tel quel. Si tu déposes le déchet de plastique sur le désintégrateur, il ne se passe rien. Il faut le déposer sur le destructeur. Pour cela, remplace l'instruction \c;find(Disitegrator);\n; par \c;find(Destroyer);\n;.
+
+La destruction étant extrêmement violente, il faut reculer de 20 centimères au minimum pour ne pas endommager le robot. Le destructeur est muni d'une sécurité; il ne se met pas en marche tant que le robot est trop proche. Corrige aussi cela dans le programme.
+
+\b;Un peu d'anglais
+\c;find          = \n;trouver
+\c;Scrap         = \n;déchet
+\c;Disintegrator = \n;désintégrateur
+\c;Destroyer     = \n;destructeur

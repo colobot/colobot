@@ -1,0 +1,31 @@
+\b;Objectif
+Changez la \l;pile\u object\power; du robot \l;shooter\u object\botfj;, pour qu'il puisse partir à la chasse aux \l;cibles\u object\bottarg;. 
+
+\b;Marche à suivre
+1) Programmez le robot déménageur.
+2) Exécutez le programme en cliquant sur le bouton \button 21;.
+Le robot shooter est déjà programmé, et entrera en action dès qu'il aura une pile neuve.
+
+\b;Programme
+Vous aurez besoin des instructions suivantes¦:
+\c;
+\s;\l;grab\u cbot\grab;();\n;
+\n;Prend ce qui se trouve devant le robot.
+\c;
+\s;\l;drop\u cbot\drop;();\n;
+\n;Pose ce que le robot porte devant lui.
+\c;
+\s;\l;turn\u cbot\turn;();\n;
+\n;Cette instruction a déjà été vue dans l'exercice précédent: elle tourne le robot d'un certain angle, donné en degrés entre les parenthèses.
+
+Voyons le début du programme:
+o  on prend la pile vide avec \c;grab();\n;
+o  on tourne à gauche de 90 degrés \c;turn(90)\n;
+o  on pose la pile vide \c;drop();\n;
+o  etc.
+A vous de faire la suite¦!
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tspid1; et \l;programmation\u cbot;.

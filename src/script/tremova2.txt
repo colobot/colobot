@@ -1,0 +1,20 @@
+extern void object::Solution( )
+{
+	for ( int i=0 ; i<3 ; i=i+1 )
+	{
+		object  item;
+		point   dest;
+
+		item = radar(Titanium, 0, 360, 0, 1000, -1);
+		if ( item == null )  return;
+		goto(item.position);
+
+		grab();  // prend le métal
+
+		dest.x = 10;
+		dest.y = -60-5*i;
+		goto(dest);  // va sur la plateforme
+
+		drop();  // dépose le métal
+	}
+}

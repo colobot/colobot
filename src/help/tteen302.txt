@@ -1,0 +1,57 @@
+\b;Mieux
+Le programme précédent pour dessiner le carré était¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	pendown(Orange);
+\s;	move(20);
+\s;	turn(90);
+\s;	move(20);
+\s;	turn(90);
+\s;	move(20);
+\s;	turn(90);
+\s;	move(20);
+\s;	turn(90);
+\s;}
+\n;
+Tu remarques que la séquence "move/turn" est répétée 4 fois. Dans un cas comme celui-là, il est beaucoup plus malin de l'écrire une seule fois, et de demander au robot de répèter 4 fois la séquence. On peut imaginer d'écrire quelque chose comme cela¦:
+
+\s;o  Baisse le crayon orange
+\s;o  Répète 4 fois¦:
+\s;	o  Avance de 20 centimètres
+\s;	o  Tourne de 90 degrés à gauche
+
+\b;Instruction \c;repeat( )\n;
+L'instruction à utiliser pour répèter 4 fois un groupe d'instructions est¦:
+\c;
+\s;	repeat(4)
+\s;	{
+\s;		\n;instructions répétées 4x ...\c;
+\s;	}
+\n;
+Il faut mettre toutes les instructions à répèter entre les accolades \c;{¦}\n;. Attention à ne pas faire suivre la ligne \c;repeat(4)\n; d'un point-virgule¦! Lorsque tu tapes l'accolade ouvrante \c;{\n;, l'accolade fermante \c;}\n; est automatiquement insérée.
+
+\b;Les paires d'accolades
+Les accolades \c;{¦}\n; vont par paires. Une ligne verticale rouge pointillée relie les accolades qui vont ensemble. Dans notre programme, il y a 2 paires d'accolades.
+
+1) La première paire est là depuis le début; tu n'y as peut-être même pas pris garde. C'est elle qui délimite l'ensemble du programme.
+
+2) La deuxième paire est celle qui délimite les instructions à répèter dans le groupe \c;repeat\n;.
+
+\b;Solution
+Voici donc le programme que tu dois écrire. Observe bien les lignes rouges pointillées qui relient les accolades¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	pendown(Orange);
+\s;	repeat(4)
+\s;	{
+\s;		move(20);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+Rappel: pas de point-virgule après \c;repeat(4)\n;¦!
+
+\b;Un peu d'anglais
+\c;repeat = \n;répèter

@@ -1,0 +1,53 @@
+\b;Programs dispatched by Houston
+We have developed a program that takes care of recharging the power cell of a \l;defense tower\u object\tower;:
+
+1) Go to a \l;defense tower\u object\tower;.
+2) Wait until the \l;power cell\u object\power; is 80% empty.
+3) Grab the \l;power cell\u object\power; and recharge it on a \l;power station\u object\station;.
+4) Put it back on the \l;defense tower\u object\tower;.
+
+Build the \l;power station\u object\station; as close as possible to the tower in order to reduce the time when the tower has got no power cell. A good trick is to place a power cell on the ground in front of the tower. The wasp will attack the power cell, and if the first shoot misses or a wasp arrives when the defense tower has got no energy, only the power cell is destroyed and not the defense tower.
+\c;
+\s;extern void object::ServiceTower1()
+\s;{
+\s;	\l;object\u cbot\object;  tower;               // info. about tower
+\s;	\l;object\u cbot\object;  station;             // info. about station
+\s;	
+\s;	// 1) go to the defense tower
+\s;	tower = \l;radar\u cbot\radar;(DefenseTower); // look for tower
+\s;	\l;goto\u cbot\goto;(tower.position);        // go there
+\s;	
+\s;	\l;while\u cbot\while; ( true )               // repeat forever
+\s;	{
+\s;		// 2) wait until power cell is empty
+\s;		\l;while\u cbot\while; ( tower.energyCell.energyLevel > 0.2 )
+\s;		{
+\s;			\l;wait\u cbot\wait;(2);
+\s;		}
+\s;		\l;grab\u cbot\grab;();                  // grab the power cell
+\s;		
+\s;		// 3) go to the power station to recharge
+\s;		station = \l;radar\u cbot\radar;(PowerStation);
+\s;		\l;goto\u cbot\goto;(station.position);  // go there
+\s;		\l;while\u cbot\while; ( load.energyLevel < 1 )
+\s;		{
+\s;			\l;wait\u cbot\wait;(1);             // wait until recharged
+\s;		}
+\s;		
+\s;		// 4) go back to defense tower
+\s;		\l;goto\u cbot\goto;(tower.position);    // go to tower
+\s;		\l;drop\u cbot\drop;();                  // drop the power cell
+\s;	}
+\s;}
+\n;
+\b;Archives
+Index of the programs dispatched in former missions:
+
+o  \c;\l;CollectTitanium3\u mlvolca1;\n;
+o  \c;\l;KillAnt1\u mlsaari2;\n;
+o  \c;\l;CollectTitanium2\u mlcrys2;\n;
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;
+

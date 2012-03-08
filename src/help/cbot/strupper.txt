@@ -1,0 +1,16 @@
+\b;Instruction \c;strupper\n;
+Cette instruction convertit tous les caractères d'une chaîne en majuscules.
+
+Syntaxe¦:
+\s;\c;strupper ( string );\n;
+
+Exemples¦:
+\s;\c;	string s = strupper("Abc");  // s vaut "ABC"
+\n;
+\t;Dictionnaire anglais-français
+\c;string\n; = chaîne de caractères
+\c;upper \n; = majuscule
+
+\t;Voir aussi
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strlower\u cbot\strlower;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

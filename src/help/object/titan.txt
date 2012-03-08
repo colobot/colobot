@@ -1,0 +1,12 @@
+\b;Titanium
+\image titan 4 4;
+Le titanium permet de fabriquer une grande quantité de bâtiments ou de robots différents. Il est généralement apporté en petite quantité par le \l;vaisseau spatial\u object\base;. Pour en obtenir plus, il faudra \l;convertir\u object\convert; du \l;minerai de titanium\u object\titanore;.
+
+\t;Transport
+Tous les \l;robots déménageurs\u object\botgr; ou le \l;cosmonaute\u object\human;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;Titanium\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

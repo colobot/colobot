@@ -1,0 +1,21 @@
+\b;Instruction \c;strval\n;
+Cette instruction convertit une chaîne représentant un nombre en un nombre. Il ne faut pas confondre la chaîne \c;"45"\n; qui contient les deux caractères \c;4\n; et \c;5\n; et le nombre \c;45\n;.
+Exemples¦:
+\s;\c;	string s = "45"+"12";  // s vaut "4512"
+\s;	float  n =  45 + 12;   // n vaut 67
+\n;
+Syntaxe¦:
+\s;\c;strval ( string );\n;
+\n;
+Exemples¦:
+\s;\c;	float n = strval("1.23");     // n vaut 1.23
+\s;	float n = strval("12abc45");  // n vaut 12
+\s;	float n = strval("abc");      // n vaut 0
+\s;	float n = strval("100")+2;    // n vaut 102
+\n;
+\t;Dictionnaire anglais-français
+\c;string\n; = chaîne de caractères
+
+\t;Voir aussi
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strupper\u cbot\strupper;\n;, \c;\l;strlower\u cbot\strlower;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,43 @@
+\b;Zadanie
+Zestrzel wszystkie lataj¹ce osy.
+
+\t;Program
+Oto program z poprzedniego æwiczenia, który zabija wszystkie mrówki, przystosowuj¹c siê do rzeŸby terenu:
+\c;
+\s;extern void object::JetFighter2()
+\s;{
+\s;	\l;object\u cbot\type; item;
+\s;	
+\s;	\l;aim\u cbot\aim;(-20);
+\s;	
+\s;	\l;while\u cbot\while; (true)
+\s;	{
+\s;		\l;while\u cbot\while; (\l;radar\u cbot\radar;(AlienAnt, 0, 360, 0, 20) == null)
+\s;		{
+\s;			item = \l;radar\u cbot\radar;(AlienAnt);
+\s;			\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(item.position));
+\s;			\l;motor\u cbot\motor;(1,1);
+\s;			
+\s;			\l;jet\u cbot\jet;(0);
+\s;			\l;if\u cbot\if; (position.z-topo(position) < 6)
+\s;			{
+\s;				\l;jet\u cbot\jet;(1);
+\s;			}
+\s;			
+\s;			\l;if\u cbot\if; (position.z-topo(position) > 9)
+\s;			{
+\s;				\l;jet\u cbot\jet;(-1);
+\s;			}
+\s;			\l;wait\u cbot\wait;(0.2);
+\s;		}
+\s;		\l;fire\u cbot\fire;(1);
+\s;	}
+\s;}
+\n;
+Aby przystosowaæ ten program do zestrzeliwania os, konieczne bêdzie wprowadzenie kilku poprawek. Zamieñ wszystkie wyst¹pienia \c;radar(AlienAnt)\n; na \c;radar(AlienWasp)\n;. Dzia³ko musi celowaæ prosto naprzód, a nie w dó³, zamieñ wiêc równie¿ \c;aim(-20);\n; na \c;aim(0);\n;. Robot powinien lecieæ na tej samej wysokoœci co osa. Musi wiêc porównywaæ wysokoœæ robota podan¹ przez \c;position.z\n; z wysokoœci¹ osy podan¹ przez \c;item.position.z\n;: jeœli \c;position.z > item.position.z\n;, powoli zmniejsz wysokoœæ \c;jet(-0.3);\n;. Jeœli \c;position.z < item.position.z-1\n;, powoli zwiêksz wysokoœæ \c;jet(0.3);\n;. Dzia³o lataj¹ce jest nieco wy¿sze od osy, dlatego lepiej jeœli wysokoœæ robota bêdzie trochê mniejsza od wysokoœci osy. W tym przypadku sugerujemy, aby wysokoœæ robota by³a pomiêdzy wysokoœci¹ osy a wysokoœci¹ osy minus 1.
+
+\t;Dalsze usprawnienia
+Osy poruszaj¹ siê bardzo szybko. Aby zwiêkszyæ szanse ich trafienia, przed samym strza³em (\c;fire(1);\n;) mo¿na powtórzyæ instrukcje \c;radar\n; i \c;turn\n; w celu ostatniej korekty kierunku.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

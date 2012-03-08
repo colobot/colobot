@@ -1,0 +1,59 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il trouve toutes les \l;croix bleues\u object\waypoint; posées au sol. Dès que le robot est sur une croix, elle disparaît. Le principe à utiliser est le suivant¦:
+
+\s;o  Répéter à l'infini¦:
+\s;	o  Chercher une croix
+\s;	o  Si rien n'est trouvé, stopper
+\s;	o  Calculer la direction de la croix
+\s;	o  Donner une consigne de vitesse aux moteurs pour se diriger dans la bonne direction
+
+\b;Le programme
+La boucle infinie s'écrit avec \c;\l;while\u cbot\while;\n;¦:
+\s;\c;while ( true )
+\s;{
+\s;	\n;instructions...\c;
+\s;}
+\n;
+L'instruction \c;\l;radar\u cbot\radar;\n; détecte un objet. Cette instruction reçoit de 1 à 6 paramètres. Dans notre cas, il suffit de spécifier le premier paramètre, pour détecter toutes les croix¦:
+\s;\c;spot = radar(WayPoint);
+\n;
+Si toutes les croix sont trouvées, \c;radar\n; retourne un \l;objet nul\u cbot\null;, qu'il faut détecter comme suit avec un \c;\l;if\u cbot\if;\n;¦:
+\s;\c;if ( spot == null )  // plus rien¦?
+\s;{
+\s;	motor(0, 0);  // stoppe
+\s;	break;
+\s;}
+\n;L'instruction \c;\l;break\u cbot\break;\n; sort de la boucle infinie \c;while ( true )\n;.
+
+Le calcul de la direction est obtenu par l'instruction \c;\l;direction\u cbot\direct;(point)\n;, qui retourne l'angle permettant d'orienter le \l;robot\u object\bottr; vers le point spécifié. La coordonnée de l'objet s'obtient simplement avec \c;spot.position\n;. La ligne suivante met donc dans la \l;variable\u cbot\var; \c;dir\n; l'angle correspondant à la direction de la croix¦:
+\s;\c;dir = direction(spot.position);
+\n;
+L'angle obtenu est positif si le point est à gauche, et négatif s'il est à droite. Si la croix à atteindre est à gauche, il faut donner une consigne de vitesse maximale au moteur droite, et une consigne proportionnelle à l'angle au moteur gauche¦:
+
+    direction = \c;  0\n; -> vitesse = \c; 1.0\n;
+    direction = \c; 45\n; -> vitesse = \c; 0.5\n;
+    direction = \c; 90\n; -> vitesse = \c; 0.0\n;
+    direction = \c;135\n; -> vitesse = \c;-0.5\n;
+    direction = \c;180\n; -> vitesse = \c;-1.0\n;
+
+Le diagramme ci-dessous montre les consignes aux moteurs gauche et droite selon l'angle, pour l'instruction \c;\l;motor\u cbot\motor;\n;¦:
+
+\image radar2 14 10;
+Si la croix est droit devant, la direction vaut 0 degrés. Les deux moteurs recevront les consignes 1 et 1, ce qui signifie avancer tout droit à la vitesse maximale. Si la croix est derrière, la vitesse du moteur droite sera -1. Le \l;robot\u object\bottr; effectue donc un demi-tour par la droite, ce qui est bien le comportement souhaité. L'\l;expression\u cbot\expr; \c;1+dir/90\n; donne exactement le résultat souhaité.
+\s;\c;if ( dir < 0 )  // à droite¦?
+\s;{
+\s;	motor(1, 1+dir/90);  // tourne plus ou moins
+\s;}
+\n;
+Le même raisonnement s'applique lorsque la direction est positive, comprise entre 0 et 180 degrés, et que la croix est à gauche. A vous de trouver les instructions nécessaires.
+\s;\c;else  // à gauche¦?
+\s;{
+\s;	\n;à vous de trouver ...\c;
+\s;}
+\n;
+Pour que ce programme fonctionne, il faut encore déclarer toutes les variables utilisées, au début. \c;spot\n; est de type \c;\l;object\u cbot\object;\n;, alors que \c;dir\n; est de type \c;\l;float\u cbot\float;\n;.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tcircle3; et \l;programmation\u cbot;.

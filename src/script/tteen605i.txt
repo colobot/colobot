@@ -1,0 +1,7 @@
+extern void object::Go( )
+{
+	repeat(100)
+	{
+		#
+	}
+}

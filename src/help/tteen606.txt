@@ -1,0 +1,16 @@
+\b;Ne pas
+Jusqu'à présent, l'instruction utilisée pour détecter une barrière était¦:
+\c;
+\s;if( detect(Barrier) )
+\n;
+Ce qui peut se traduire par "Il y a-t-t il un mur devant le robot¦?".
+
+Comment formuler la question "Est-ce libre devant le robot¦?". En fait, en programmation, il faut dire "N'y a-t-il pas de mur devant le robot¦?". Et cela s'écrit ainsi¦:
+\c;
+\s;if( not detect(Barrier) )
+\n;
+A toi de compléter le programme pour qu'il fonctionne, toujours dans la même situation avec une avance de 20 centimètres d'une case à l'autre¦...
+
+\image teen606 8 8;
+\b;Un peu d'anglais
+\c;not = \n;ne pas

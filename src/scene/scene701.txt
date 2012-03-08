@@ -1,0 +1,191 @@
+Title.F      text="Le canon orgaShooter"
+Resume.F     text="Faites les recherches nécessaires pour pouvoir construire des canons orgaShooter."
+Title.E      text="Cloning"
+Resume.E     text="Reproduce the technology to manufacture an orga shooter yourself."
+Instructions name="mhcent1.txt"
+Satellite    name="micent1.txt"
+Loading      name="mlcent1.txt"
+SoluceFile   name="mscent1.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=7
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=176;176;181;0 water=10;100;20;0  // grey
+VehicleColor  color=117;158;64;0  // vert
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.5 water=0.1
+SecondTexture rank=8
+Background    up=176;176;181;0 down=176;176;181;0 cloudUp=0;0;0;0 cloudDown=104;104;104;0
+FrontsizeName image="lens5.tga"
+Planet        mode=1 pos=4.1;0.1 dim=0.05 speed=0.0 dir=0.3 image="planet01.tga" uv1=0.5;0.5 uv2=1.0;1.0
+
+TerrainGenerate vision=400.00 depth=1 hard=0.7
+TerrainWind     speed=-2.0;0.0
+TerrainRelief   image="textures\relief28.bmp" factor=1.0
+TerrainResource image="textures\res00.bmp"
+TerrainCloud    image="cloud03.tga" level=125.0
+
+TerrainMaterial id=1 image="mix01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=2 image="mix01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=3 image="mix01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=4 image="mix01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=5 image="mix01" u=0.00 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=6 image="mix01" u=0.25 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=7 image="mix01" u=0.50 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=8 image="mix01" u=0.75 v=0.25 up=1 down=1 left=1 right=1 hard=0.6
+TerrainMaterial id=9 image="mix01" u=0.00 v=0.50 up=1 down=1 left=1 right=1 hard=0.6
+
+TerrainInit     id=1
+TerrainLevel    id=2 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=3 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=4 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=5 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=6 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=7 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=8 min=0.0 max=900.0 slope=0.0 freq= 20.0
+TerrainLevel    id=9 min=0.0 max=900.0 slope=0.0 freq= 20.0
+
+TerrainCreate
+
+MaxFlyingHeight max=25
+
+BeginObject
+CreateObject pos= 0.00; 0.00 dir=0.0 type=SpaceShip run=11
+CreateObject pos= 0.00;-3.25 dir=1.5 type=Me
+CreateObject pos= 3.25;-3.25 dir=1.5 type=WingedGrabber script4="exchg1.txt" script3="charge2.txt" script2="titan3.txt" script1="tower1.txt"
+CreateObject pos= 0.00; 3.25 dir=0.0 type=PowerCell
+CreateObject pos= 3.25; 3.25 dir=0.0 type=PowerCell
+
+CreateObject pos=-36; 39 dir=0.0 type=TitaniumOre
+CreateObject pos=-50; 26 dir=0.0 type=TitaniumOre
+CreateObject pos=-47; 27 dir=0.0 type=TitaniumOre
+CreateObject pos=-27;-46 dir=0.0 type=TitaniumOre
+CreateObject pos=-24;-42 dir=0.0 type=TitaniumOre
+CreateObject pos=-22;-44 dir=0.0 type=TitaniumOre
+CreateObject pos= 49;-47 dir=0.0 type=TitaniumOre
+CreateObject pos= 50;-52 dir=0.0 type=TitaniumOre
+CreateObject pos= 48;-59 dir=0.0 type=TitaniumOre
+CreateObject pos= 43;-52 dir=0.0 type=TitaniumOre
+CreateObject pos= 44;-48 dir=0.0 type=TitaniumOre
+CreateObject pos= 45;-47 dir=0.0 type=TitaniumOre
+CreateObject pos= 71; 16 dir=0.0 type=TitaniumOre
+CreateObject pos= 70; 14 dir=0.0 type=TitaniumOre
+CreateObject pos= 68; 10 dir=0.0 type=TitaniumOre
+
+CreateObject pos=  79;  94 dir=0.3 type=Recycler power=0.8 proxyActivate=1
+CreateObject pos=  77; 103 dir=0.7 type=LeggedGrabber power=0.4 proxyActivate=1  script4="exchg1.txt" script3="charge2.txt" script2="titan3.txt" script1="tower1.txt"
+CreateObject pos=  72;  98 dir=0.3 type=RuinBotFactory
+CreateObject pos=  68; 102 dir=0.0 type=RuinRadar
+CreateObject pos=  70; 108 dir=0.5 type=RuinDoor
+CreateObject pos=  81; 103 dir=0.1 type=WreckBotw1
+CreateObject pos=  77;  84 dir=0.1 type=WreckBotw2
+CreateObject pos=  76; 109 dir=0.4 type=WreckBott1
+CreateObject pos=  79; 104 dir=0.1 type=PowerCell power=0.6
+CreateObject pos=  71;  98 dir=0.1 type=PowerCell power=0.9
+CreateObject pos=  73;  98 dir=0.3 type=PowerCell power=0.8
+CreateObject pos=  73;  95 dir=0.1 type=PowerCell power=0.7
+CreateObject pos=  75; 103 dir=0.0 type=PowerCell power=1.0
+CreateObject pos=  73;  85 dir=0.1 type=PowerCell power=0.8
+CreateObject pos=  75; 111 dir=0.2 type=NuclearCell power=0.8
+
+CreateObject pos= 50; 165 cmdline= 50; 165; 15 type=AlienAnt script1="antict.txt" run=1
+//CreateObject pos= 54; 169 cmdline= 54; 169; 56; 169 type=AlienAnt script1="ant05.txt" run=1
+CreateObject pos= 55; 165 cmdline= 50; 165; 15 type=AlienAnt script1="antict.txt" run=1
+
+CreateObject pos=220;  85 cmdline=220;  85; 15 type=AlienAnt script1="antict.txt" run=1
+//CreateObject pos=215; 107 cmdline=215; 107;217; 106 type=AlienAnt script1="ant05.txt" run=1
+CreateObject pos=215;  85 cmdline=220;  85; 15 type=AlienAnt script1="antict.txt" run=1
+//CreateObject pos=218;  91 cmdline=218;  91;219;  89 type=AlienAnt script1="ant05.txt" run=1
+CreateObject pos=225;  85 cmdline=220;  85; 15 type=AlienAnt script1="antict.txt" run=1
+
+CreateObject pos=180;-150 cmdline=180;-150; 20 type=AlienAnt script1="antict.txt" run=1
+//CreateObject pos=173;-142 cmdline=173;-142;176;-145 type=AlienAnt script1="ant05.txt" run=1
+CreateObject pos=185;-150 cmdline=180;-150; 20 type=AlienAnt script1="antict.txt" run=1
+
+CreateObject pos=164; 96 dir=0.2 type=Greenery0
+CreateObject pos=162; 99 dir=0.5 type=Greenery1
+CreateObject pos=168;104 dir=0.0 type=Greenery2
+CreateObject pos=172;103 dir=0.3 type=Greenery3
+CreateObject pos=178; 97 dir=0.2 type=Greenery4
+CreateObject pos=176; 90 dir=1.1 type=Greenery1
+CreateObject pos=161; 95 dir=0.0 type=UraniumOre
+CreateObject pos=158; 99 dir=0.2 type=UraniumOre
+CreateObject pos=170;106 dir=0.1 type=UraniumOre
+CreateObject pos=172; 91 dir=0.3 type=UraniumOre
+
+CreateObject pos=149;-220 dir=0.0 type=AlienNest
+CreateObject pos=148;-215 dir=0.2 type=Greenery4
+CreateObject pos=145;-222 dir=0.5 type=Greenery3
+CreateObject pos=146;-227 dir=0.0 type=Greenery2
+CreateObject pos=153;-225 dir=0.1 type=Greenery1
+CreateObject pos=147;-221 dir=1.1 type=Greenery0
+CreateObject pos=136;-211 dir=0.4 type=Greenery3
+CreateObject pos=135;-224 dir=0.0 type=Greenery2
+CreateObject pos=163;-220 dir=0.0 type=Greenery0
+CreateObject pos=125;-220 cmdline=135;-220; 30 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=135;-220 cmdline=135;-220; 30 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=130;-220 cmdline=135;-220; 30 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=140;-220 cmdline=135;-220; 30 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=135;-225 cmdline=135;-220; 30 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=135;-215 cmdline=135;-220; 30 type=AlienAnt script1="antict.txt" run=1
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+
+MapColor floor=151;142;129 water=131;152;131
+MapZoom  factor=2
+
+NewScript name="tower1.txt" type=WheeledGrabber
+NewScript name="tower1.txt" type=TrackedGrabber
+NewScript name="tower1.txt" type=WingedGrabber
+NewScript name="tower1.txt" type=LeggedGrabber
+NewScript name="titan3.txt" type=WheeledGrabber
+NewScript name="titan3.txt" type=TrackedGrabber
+NewScript name="titan3.txt" type=WingedGrabber
+NewScript name="titan3.txt" type=LeggedGrabber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=BotFactory
+//EnableBuild type=Derrick
+EnableBuild type=Converter
+EnableBuild type=RadarStation
+//EnableBuild type=PowerPlant
+EnableBuild type=NuclearPlant
+//EnableBuild type=PowerStation
+EnableBuild type=RepairCenter
+EnableBuild type=DefenseTower
+//EnableBuild type=ResearchCenter
+EnableBuild type=AutoLab
+EnableBuild type=ExchangePost
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+EnableResearch type=ATOMIC
+EnableResearch type=iPAW
+EnableResearch type=iGUN
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+DoneResearch type=ATOMIC
+DoneResearch type=iPAW
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 type=LeggedOrgaShooter min=1
+
+Camera eye=0.00;15.00;-30.00 lookat=0.00;1.00;0.00 delay=2

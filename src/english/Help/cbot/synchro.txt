@@ -1,0 +1,25 @@
+\b;Instruction \c;synchronized\n; (for specialists)
+A \l;class\u cbot\class; method can be declared \c;synchronized\n;. This is to make sure that the method is never being executed by more than one bot at the same time.
+
+The following example illustrates the problem:
+\c;
+\s;class blocking
+\s;{
+\s;	static int nb = 33;
+\s;	synchronized int inc( )
+\s;	{
+\s;		int val = nb;
+\s;		wait ( 2 );  // wait 2 sec.
+\s;		nb = nb + 1;
+\s;		return val;
+\s;	}
+\s;}
+\n;
+What happens if two bots execute the \c;inc\n; method at the same time¦?
+Both of them will execute \c;val=nb\n; and wait 2 seconds so both of them will have \c;val=33\n;. With \c;synchronized\n; the first bot starts execution with \c;val=33\n; and then waits 2 seconds and returns. Only once the first bot has returned from the \c;inc\n; method, the second bot will be allowed to enter the \c;inc\n; method and therefore the second bot will always have \c;val=34\n;.
+
+You can have more than one synchronized method in your \l;class\u cbot\class; in order to prevent simultaneous execution across more than one method. In other words: as long as a bot's program is inside a synchronized method, no other bot can enter any synchronized method of the same class.
+
+\t;See also
+\c;\l;class\u cbot\class;\n;, \c;\l;static\u cbot\static;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

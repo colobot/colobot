@@ -1,0 +1,13 @@
+\b;Z Centrum Kontroli Misji
+Zbuduj \l;radar\u object\radar; na najwy¿szym punkcie w okolicy. Upewnij siê, ¿e dzia³anie radaru nie bêdzie zagro¿one nawet po Twoim opuszczeniu planety. \l;Centrum badawcze\u object\research; powinno pomóc w znalezieniu odpowiedniego rozwi¹zania.
+
+Mo¿liwe, ¿e wykryte organizmy s¹ w rzeczywistoœci \l;robalami\u object\worm; wspomnianymi przez pierwsz¹ ekspedycjê. Jeœli to prawda, nie nale¿y zbytnio siê niepokoiæ: nie s¹ one groŸne dla ¿ywych organizmów, jednak mog¹ spowodowaæ nieprawid³owe dzia³anie robotów i budynków, zara¿aj¹c je wirusami.
+
+Radary nie tylko dostarczaj¹ dok³adne informacje o obiektach i organizmach wystêpuj¹cych w regionie, ale równie¿ przekazuj¹ informacje pomiêdzy Ziemi¹ po Twoim odlocie na inne planety. Jest bardzo prawdopodobne, ¿e problemy z ³¹cznoœci¹, których siê tak obawiamy, by³y spowodowane problemami ze stacjami radarowymi zbudowanymi przez pierwsz¹ ekspedycjê.
+
+Aby pomóc Ci w nudnym zadaniu zbierania niezbêdnych surowców, napisaliœmy program, dziêki któremu \l;transporter na ko³ach\u object\botgr; bêdzie samodzielnie szuka³ \l;rudy tytanu\u object\titanore; (zobacz podrêcznik programowania \button 53;).
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

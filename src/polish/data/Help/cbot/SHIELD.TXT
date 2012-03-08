@@ -1,0 +1,19 @@
+\b;Instrukcja \c;shield\n;
+Sk³adnia:
+\s;\c;shield ( oper );\n;
+
+Aktywuje lub dezaktywuje os³onê robota \l;os³aniacza\u object\botshld;. Oczywiœcie mo¿na poruszaæ robotem przy aktywnej os³onie. Zabezpiecza ona wszystkie obiekty znajduj¹ce siê wewn¹trz strefy przed atakami wroga. Promieñ sfery mo¿e siê zawieraæ pomiêdzy 10 a 25 metrami.
+ 
+\t;oper: \c;\l;float\u cbot\float;\n;
+\c;1\n; aktywuje os³onê.
+\c;0\n; dezaktywuje os³onê
+Zwyk³e, w pe³ni na³adowane \l;ogniwo elektryczne\u object\power; wystarcza na 20 sekund aktywnoœci os³ony. Gdy ogniwo siê wyczerpie, os³ona jest wy³¹czana.
+ 
+\t;promieñ: \c;\l;float\u cbot\float;\n;
+Promieñ sfery ochronnej, pomiêdzy 10 a 25 metrów.
+
+\t;Typ wyniku: \c;\l;void\u cbot\void;\n;
+Brak.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

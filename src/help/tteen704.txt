@@ -1,0 +1,13 @@
+\b;Un petit carré
+Pour dessiner un carré rouge, on peut très bien imaginer de définir séparément la longueur d'un côté, au début du programme¦:
+\c;
+\s;int longueur = 10;
+\s;
+\s;pendown(Red);
+\s;repeat(4)
+\s;{
+\s;	move(longueur);
+\s;	turn(90);
+\s;}
+\n;
+Naturellement, ce programme va dessiner un petit carré de 10 centimètres de côté. essaie-le¦...

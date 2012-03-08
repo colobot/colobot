@@ -1,0 +1,19 @@
+\b;\button 136; Astronaut
+\image human 8 8;
+The astronaut is you within the game.
+
+If you die, the mission immediately fails.
+
+You can construct buildings with the help of the neutron gun holstered to your survival kit. The survival kit allows you, in most missions, to fly, thanks to the reactor placed underneath, or to swim with no time limit. You can carry most objects but the weight will slow down your movements considerably. Flying, swimming and walking underwater are also made impossible if you are carrying an object. The use of a \l;grabber\u object\botgr; or a \l;subber\u object\botsub; is advised for tasks such as these.
+
+You cannot carry \l;uranium ore\u object\uranore; because of the risks attached to radioactivity. 
+
+A special button \button 111; allows you to ensure that the ground around you is flat. This is important since building is only possible on a flat surface. A flat surface is designated green while a sloping one is red.
+
+A button \button 118; allows you to mark a location with \l;flags\u object\flag; of various colors. This can help you not to get lost, to find important positions again, or to indicate a position to a bot. 5 flags of 5 different colors are at your disposal. You can remove a flag by using the next button \button 119; and store it for further use.
+
+\t;Object \l;Category\u cbot\category;
+\c;Me\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

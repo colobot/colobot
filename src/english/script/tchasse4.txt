@@ -1,0 +1,10 @@
+extern void object::Chasse( )
+{
+	while ( true )
+	{
+		float x = 10+rand()*20;
+		float y = -88;
+		goto(x,y,0);
+		wait(1);
+	}
+}

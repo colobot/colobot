@@ -1,0 +1,16 @@
+\b;Objective
+As a defense against several giant ants attacking from the north, rotate the bot when shooting in order to perform barrage fire.
+
+\t;Program
+When you are radio-guiding a bot, you can rotate the cannon during the burst in order to sweep a whole zone. You can also do this when programming the bot, but you have to turn the whole bot with the instruction \c;\l;motor\u cbot\motor;( , )\n;. This instruction asks for two numbers: the speed of the left-hand motor, and the speed of the right-hand motor. These numbers must range between -1 and +1.\c; motor(1,1);\n; moves the bot forward with maximum speed (both motors at full power).\c; motor(-1,-1);\n; moves the bot backward with maximum speed.\c; motor(1,0.9);\n; moves the bot forward with a slight turn to the right: the left-hand motor turns a little faster than the right-hand motor. And \c;motor(1,-1);\n; will turn the bot clockwise on the spot: the left-hand motor moves forward, the right-hand motor moves backward.
+
+After a \l;motor\u cbot\motor; instruction the motors will keep this speed until the next \c;motor\n;, \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n; or \c;\l;goto\u cbot\goto;\n; instruction. For example, if you perform a rotation on the spot with \c;motor(1,-1);\n; and afterward you shoot with \c;fire(1);\n;, the bot will continue to turn during the burst, and will sweep a whole zone.
+
+The ants attack from the north. In order to sweep the whole zone north of the bot, first turn 90 degrees left with \c;turn(90);\n;, then repeat always with \c;\l;while\u cbot\while; (true)\n; the following instructions:
+o  rotate clockwise with \c;motor(1,-1);\n;
+o  a 2 seconds burst with \c;fire(2);\n;
+o  rotate counter-clockwise with \c;motor(-1,1);\n;
+o  a 2 seconds burst.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

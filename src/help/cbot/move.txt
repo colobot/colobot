@@ -1,0 +1,25 @@
+\b;Instruction \c;move\n;
+L'instruction \c;move();\n; fait se déplacer le robot d'une longueur donnée en mètres.
+
+\b;Utilisation courante
+Pour faire avancer le robot de 30m, écrivez \c;move(30);\n;. Pour faire reculer le robot après avoir posé un \l;minerai de titanium\u object\titanore; sur le \l;convertisseur\u object\convert;, écrivez \c;move(-2.5);\n;.
+
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;move ( length );\n;
+
+Avance d'une certaine distance, dans la direction actuelle.
+
+\t;length: \c;\l;float\u cbot\float;\n;
+Longueur à avancer, en mètres. Une longueur négative fait reculer le robot.
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Normalement, une erreur stoppe l'exécution du programme. Si l'instruction \c;move\n; est précédée de \c;\l;errmode\u cbot\errmode;(0);\n;, une valeur nulle est retournée si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;déplacement effectué
+\c;!= 0 \n;déplacement impossible
+
+\t;Dictionnaire anglais-français
+\c;move\n; = déplacer
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

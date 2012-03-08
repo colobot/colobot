@@ -1,0 +1,11 @@
+extern void object::Solution()
+{
+	pendown(Red);
+	repeat(18)
+	{
+		move(10);
+		turn(160);
+		move(10);
+		turn(-140);
+	}
+}

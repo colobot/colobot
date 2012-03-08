@@ -1,0 +1,13 @@
+\b;Rapport du satellite
+\c;
+\s;-> SURFACE\c;
+\tab;Température:      25.4 degrés
+\tab;Atmosphère:       oxygène, azote, ammoniaque
+\tab;Vent:             0.7 m/s
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+
+\s;-> SOUS-SOL\c;
+\tab;Energie:          aucune
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun

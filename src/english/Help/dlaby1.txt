@@ -1,0 +1,11 @@
+\b;Exercise
+Program the bot so that it will find its way without hitting the walls of the labyrinth. We suppose that you do not know the configuration of the labyrinth, but there are no bifurcations, and no dead-ends. The labyrinth is made of squares measuring 5m each.
+
+\b;Useful instructions
+\c;\l;radar\u cbot\radar;\n; to detect obstacles
+\c;\l;if\u cbot\if;\n; to test a condition
+\c;\l;move\u cbot\move;\n; to move the bot
+\c;\l;turn\u cbot\turn;\n; to turn the bot
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

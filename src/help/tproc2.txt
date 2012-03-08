@@ -1,0 +1,37 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il suive le chemin en forme de spirale. Il faut avancer deux fois de 25 mètres, puis deux fois de 20 mètres. etc., jusqu'à l'arrêt.
+
+\image tproc2 8 8;
+\b;Fonction
+On constate que le mouvement est composé de "L" imbriqués. Le premier, en bleu foncé, avance deux fois de 25 mètres. Le deuxième, en bleu clair, avance de 5 mètres de moins, etc. On peut donc commencer par réaliser la \l;fonction\u cbot\function; qui déplace le robot le long d'un "L" dont on donne la longueur¦:
+\c;
+\s;void object::Part(float length)
+\s;{
+\s;	for ( int i=0 ; i<2 ; i=i+1 )
+\s;	{
+\s;		move(length);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+Il ne reste plus qu'à écrire la fonction principale, qui fera appel à \c;Part\n;. La variable \c;rest\n; est initialisée au départ à 25 mètres. La boucle \c;while\n; est ensuite répétée tant que \c;rest\n; est plus grand que zéro. A l'intérieur de la boucle, on appelle la fonction \c;Part\n; définie plus haut, puis on enlève 5 mètres à la longueur à parcourir.
+\c;
+\s;extern void object::Déplacer( )
+\s;{
+\s;	float	rest = 25;
+\s;	while ( rest > 0 )
+\s;	{
+\s;		Part(rest);
+\s;		rest = rest-5;
+\s;	}
+\s;}
+\n;
+Le dernier appel de \c;Part\n; a lieu avec la valeur \c;5\n;. Ensuite, l'expression \c;rest-5\n; met la valeur zéro dans la variable \c;rest\n;. La boucle \c;while\n; est donc stoppée.
+
+\b;Remarque
+Vous aurez peut-être remarqué que dans l'exercice précédent, la fonction principale était au début, alors qu'ici elle vient après la fonction secondaire \c;Part\n;. En fait, les deux façons de faire sont possibles et rigoureusement identiques.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tproc1; et \l;programmation\u cbot;.

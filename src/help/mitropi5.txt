@@ -1,0 +1,20 @@
+\b;Rapport du satellite
+En orbite géostationnaire autour de Tropica.
+\c;
+\s;-> SURFACE\c;
+\tab;Température:      29.4 degrés
+\tab;Atmosphère:       hélium, oxygène
+\tab;Vent:             0.3 m/s
+\tab;Minerai titanium: par endroits
+\tab;Minerai uranium:  aucun
+
+\s;-> SOUS-SOL\c;
+\tab;Energie:          aucune
+\tab;Minerai titanium: aucun
+\tab;Minerai uranium:  aucun
+
+\s;-> INFORMATIONS SPECIALES\c;
+\tab;Détecté:          minerai de titanium
+\tab;  - Solution:     convertisseur (à construire)
+\tab;Détecté:          boîte noire (sous l'eau)
+\n;

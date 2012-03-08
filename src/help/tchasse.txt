@@ -1,0 +1,20 @@
+\b;Exercice
+Il faut trouver un moyen d'abattre les quatre \l;cibles\u object\bottarg; mouvantes, sans gaspiller un seul coup. Pour cela, vous remarquerez qu'après chaque déplacement, les cibles restent immobiles une seconde.
+
+\b;Idée
+1) Détecter la direction d'une cible avec \c;\l;radar\u cbot\radar;(TargetBot);\n;.
+2) Se tourner dans cette direction avec \c;\l;turn\u cbot\turn;(angle);\n;.
+3) Re-détecter la direction de la cible.
+4) Si la direction est la même, attendre 0.2 seconde avec \c;\l;wait\u cbot\wait;(0.2);\n;.
+5) Re-détecter la direction de la cible.
+6) Si la direction est la même, tirer avec \c;\l;fire\u cbot\fire;(2);\n; et attendre la destruction de la cible 2 secondes.
+
+Il est tout à fait possible d'utiliser une autre idée ...
+
+\b;Remarque
+Avant de tirer, il est préférable d'abaisser le canon de 3 degrés avec \c;\l;aim\u cbot\aim;(-3);\n;. Vous améliorez ainsi les chances de succès.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tradar2; et \l;programmation\u cbot;.

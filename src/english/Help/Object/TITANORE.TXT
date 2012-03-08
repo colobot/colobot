@@ -1,0 +1,14 @@
+\b;Titanium Ore
+\image titanore 4 4;
+\l;Titanium\u object\titan; is indispensable for the construction of buildings, \l;bots\u object\factory; and \l;regular power cells\u object\energy;. The titanium \l;you\u object\human; see in its usable, cube shaped form has been \l;converted\u object\convert; from raw chunks of titanium ore.
+
+Titanium ore can be found either directly on the surface or in the subsoil. In the latter case, it needs to be first located and identified by a \l;sniffer\u object\botsr;, then extracted using a \l;derrick\u object\derrick;. If a sniffer identifies a titanium ore deposit, it lays down a \l;red cross\u object\stonspot;.
+
+\t;Transport
+All \l;grabbers\u object\botgr; and the \l;astronaut\u object\human;.
+
+\t;Object \l;Category\u cbot\category;
+\c;TitaniumOre\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

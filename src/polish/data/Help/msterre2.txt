@@ -1,0 +1,11 @@
+\b;Rozwi¹zanie
+IdŸ w dó³ ulic¹ biegn¹c¹ obok \l;Centrum Kontroli Misji\u object\Huston;. Po lewej stronie drogi, zaraz za \l;transporterem\u object\botgr; znajdziesz \l;kostkê tytanu\u object\titan;.
+
+1) Zbli¿ siê do kostki. Kliknij na pierwszym przycisku w lewej dolnej czêœci ekranu: \button 163; <zbuduj \l;centrum badawcze\u object\research;>.
+2) IdŸ dalej t¹ drog¹. Druga kostka jest po prawej stronie, zaraz za czterema zielonymi \l;ogniwami elektrycznymi\u object\power;.
+3) Powtórz punkt 1) ale kliknij na drugim przycisku: \button 160; <zbuduj \l;fabrykê robotów\u object\factory;>.
+
+Po ukoñczeniu obu budynków misja jest wype³niona.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

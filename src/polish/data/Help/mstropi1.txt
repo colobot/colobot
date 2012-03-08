@@ -1,0 +1,5 @@
+\b;Rozwi¹zanie
+IdŸ œcie¿k¹ pokazan¹ na mapce. £adunek wybuchowy znajdziesz na dnie ma³ej doliny zasiedlonej przez olbrzymie mrówki. Prawdopodobnie Ciê zaatakuj¹ i stracisz przytomnoœæ. Niestety nic na to nie poradzisz.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

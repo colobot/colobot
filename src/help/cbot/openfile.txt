@@ -1,0 +1,15 @@
+\b;Instruction \c;openfile\n;
+L'instruction \c;openfile();\n; ouvre un fichier de texte dans le dossier files/. Elle ne fait pas partie de la classe \c;\l;file\u cbot\file;\n; mais retourne une \l;référence\u cbot\pointer; à une instance de cette classe avec le fichier ouvert. Cette fonction demande deux paramètres: le nom du fichier et le mode d'ouverture.
+\c;
+\s;file handle = openfile("filename", "r");
+\n;
+Le mode \c;"r"\n; permet d'ouvrir le fichier en lecture (read).
+Le mode \c;"w"\n; permet d'ouvrir le fichier en écriture (write).
+
+\t;Dictionnaire anglais-français
+\c;file  \n; = fichier
+\c;handle\n; = poignée, manipuler
+\c;open  \n; = ouvre
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

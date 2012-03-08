@@ -1,0 +1,65 @@
+class order
+{
+	int    m_type;
+	float  m_param;
+
+	// Constructeur
+	void   order(int type, float param)
+	{
+		m_type  = type;
+		m_param = param;
+	}
+}
+
+class fifo
+{
+	static private order[] m_list = null;
+
+	// Met un ordre dans le fifo
+	synchronized void put(order a)
+	{
+		m_list[sizeof(m_list)] = a;
+	}
+
+	// Enlève un ordre du fifo
+	synchronized order get()
+	{
+		if ( sizeof(m_list) == 0 )  return null;
+		order a = m_list[0];
+		order copy[] = null;
+		for ( int i=1 ; i<sizeof(m_list) ; i++ )
+		{
+			copy[i-1] = m_list[i];
+		}
+		m_list = copy;
+		return a;
+	}
+}
+
+extern void object::Slave( )
+{
+	fifo  orders();
+	order todo;
+
+	while ( true )
+	{
+		todo = orders.get();
+		if ( todo != null )
+		{
+			if ( todo.m_type == 1 )
+			{
+				message("move("+todo.m_param+")");
+				move(todo.m_param);
+			}
+			else if ( todo.m_type == 2 )
+			{
+				message("turn("+todo.m_param+")");
+				turn(todo.m_param);
+			}
+			else
+			{
+				message("Unknown order");
+			}
+		}
+	}
+}

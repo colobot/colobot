@@ -1,0 +1,30 @@
+\b;Programy przys³ane z Houston
+Zgodnie z danymi dostarczonymi przez satelitê, nasi in¿ynierowie napisali dwa programy. Pierwszy z nich prowadzi \l;robota os³aniacza\u object\botshld; przez w¹sk¹ dolinê na pó³noc, w pobli¿e klucza. Mo¿esz za nim iœæ nie obawiaj¹c siê ¿adnego ataku:
+\c;
+\s;extern void object::Outward()
+\s;{
+\s;	\l;shield\u cbot\shield;(1,15);   // uaktywnij os³onê
+\s;	\l;goto\u cbot\goto;(6,160);    // podejdŸ do klucza
+\s;	\l;shield\u cbot\shield;(0,15);   // wy³¹cz os³onê
+\s;}
+\n;
+Drugi program kieruje \l;robota os³aniacza\u object\botshld; z powrotem do \l;statku kosmicznego\u object\base;:
+\c;
+\s;extern void object::Return()
+\s;{
+\s;	\l;shield\u cbot\shield;(1,15);   // uaktywnij os³onê
+\s;	\l;goto\u cbot\goto;(8,60);     // wróæ na statek kosmiczny
+\s;	\l;shield\u cbot\shield;(0,15);   // wy³¹cz os³onê
+\s;}
+\n;
+\b;Archiwum
+Lista programów przys³anych w poprzednich misjach:
+
+o  \c;\l;ServiceTower1\u mlvolca2;\n;
+o  \c;\l;CollectTitanium3\u mlvolca1;\n;
+o  \c;\l;KillAnt1\u mlsaari2;\n;
+o  \c;\l;CollectTitanium2\u mlcrys2;\n;
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;

@@ -1,0 +1,38 @@
+\b;Objective
+Program the \l;grabber bot\u object\botgr; to change the \l;power cell\u object\power; of the \l;winged shooter\u object\botfj;. The winged shooter can then shoot the spiders.
+
+\t;Procedure
+1) Program the \l;grabber bot\u object\botgr;.
+2) Execute the program with the arrow button \button 21;.
+The \l;winged shooter\u object\botfj; is already programmed, it will do its job as soon as it has got a new power cell.
+
+\t;Program
+You will need the following instructions:
+\c;
+\s;grab();\n;
+\n;Takes whatever there is in front of the bot.
+\c;
+\s;drop();\n;
+\n;Drops whatever the bot is carrying in front.
+\c;
+\s;turn();\n;
+\n;We have seen this instruction already in the previous exercise: it performs a rotation of a certain angle, given in degrees.
+
+Let us see the beginning of the program:
+o  pick up the empty power cell with \c;grab();\n;
+o  turn left 90 degrees (quarter turn) with \c;turn(90)\n;
+o  drop the empty cell with \c;drop();\n;
+o  etc.
+
+It is up to you now to write the rest of the program!
+
+If you have got a problem, you can always look at the solution: select the \c;Solution\n; program, and click the braces button \button 22;.
+
+\t;Remarks
+Be careful to write the instructions precisely, respecting lower and upper case letters.
+
+Always write one instruction per line, finishing each line with a semicolon.
+
+In case your program does not do exactly what you wanted, you can put the bot back at the starting point with the button \button 59;. You can also start over again from the beginning (hit the key "Esc", the click "Restart"). The program you have written will not be lost.
+
+\key;\key help;\norm; allows you to review these instructions at all times.

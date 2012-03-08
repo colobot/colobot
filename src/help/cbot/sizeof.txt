@@ -1,0 +1,25 @@
+\b;Instruction \c;sizeof\n;
+L'instruction \c;sizeof(array)\n; permet de connaître le nombre d'éléments contenus dans un \l;tableau\u cbot\array;. En fait, c'est le dernier élément existant plus 1 (les cases "vides" sont comptées).
+\c;
+\s;{
+\s;	int a[12];
+\s;	a[5] = 345;
+\s;	message( sizeof(a) );  // affiche 6
+\s;}
+\n;
+Dans cet exemple, il y a 6 éléments dans le tableau après avoir fait \c;a[5]=345\n;. Les éléments non initialisés \c;[0]\n;, \c;[1]\n;, \c;[2]\n;, \c;[3]\n; et \c;[4]\n; sont comptés avec l'élément \c;[5]\n;.
+
+Avec un tableau à plusieurs dimensions, il est possible d'obtenir n'importe quelle taille¦:
+\c;
+\s;float xy[][];  // un tableau à 2 dimensions
+\s;xy[5][10] = 67;
+\s;message( sizeof(xy)    );  // affiche 6
+\s;message( sizeof(xy[5]) );  // affiche 11
+\s;
+\n;
+\t;Dictionnaire anglais-français
+\c;array \n; = tableau
+\c;sizeof\n; = taille de
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

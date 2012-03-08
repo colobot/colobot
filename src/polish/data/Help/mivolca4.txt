@@ -1,0 +1,21 @@
+\b;Raport z satelity
+Obecnie na orbicie geostacjonarnej planety Wulkania.
+\c;
+\s;-> POWIERZCHNIA\c;
+\tab;Temperatura:      96,7C
+\tab;Atmosfera:        CO2, SO2, HCN, HS, CH4, NH3
+\tab;Wiatr:            2,8 m/s
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       brak
+
+\s;-> PODGLEBIE\c;
+\tab;ród³o energii:   brak
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       brak
+
+\s;-> DODATKOWE INFORMACJE\c;
+\tab;Wykryto:          robot
+\tab;  - Typ:          nieznany
+\tab;Wykryto:          olbrzymie mrówki
+\tab;  - Zagro¿enie:   niebezpoœrednie
+\n;

@@ -1,0 +1,10 @@
+extern void object::Go()
+{
+	turn(45);
+	move(40);
+	
+	turn(90);
+	move(80);
+	
+	#
+}

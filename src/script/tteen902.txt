@@ -1,0 +1,30 @@
+extern void object::Solution( )
+{
+	int gauche = 90;
+	int droite = -90;
+	
+	pendown(Red);
+	repeat(3)
+	{
+		move(16);
+		turn(gauche);
+		move(12);
+		turn(gauche);
+		move(8);
+		turn(gauche);
+		move(4);
+		turn(gauche);
+		move(4);
+		turn(droite);
+		move(4);
+		turn(droite);
+		move(8);
+		turn(droite);
+		move(12);
+		turn(droite);
+		move(16);
+		turn(droite);
+		move(16);
+		turn(gauche);
+	}
+}

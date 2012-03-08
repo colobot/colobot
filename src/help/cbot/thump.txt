@@ -1,0 +1,16 @@
+\b;Instruction \c;thump\n;
+Syntaxe¦:
+\s;\c;thump ( );\n;
+
+Applanit le terrain autour du \l;robot\u object\bottump;.
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Zéro si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;terrain applani
+\c;!= 0 \n;opération impossible
+
+\t;Dictionnaire anglais-français
+\c;thump\n; = marteler
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

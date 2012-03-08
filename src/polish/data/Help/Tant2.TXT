@@ -1,0 +1,33 @@
+\b;Zadanie
+Przystosuj program \c;Spider2\n; do lotu na zadanej wysokoœci, w celu obrony przed atakuj¹cymi z ka¿dej strony mrówkami.
+
+\t;Program
+Program niezbêdny do wykonania tego zadania jest podobny do programu \c;Spider2\n;, który szuka najbli¿szego paj¹ka, obraca siê w jego kierunku i strzela:
+\c;
+\s;extern void object::Spider2()
+\s;{	
+\s;	object    item;
+\s;	
+\s;	while (true)
+\s;	{
+\s;		item = radar(AlienSpider);
+\s;		turn(direction(item.position));
+\s;		fire(1);
+\s;	}
+\s;}
+\n;
+Mo¿esz go skopiowaæ i wkleiæ do edytora oraz przystosowaæ do nowego zadania. Zamieñ \c;radar(AlienSpider);\n; na \c;radar(AlienAnt);\n;, i napisz przed pêtl¹ \c;while\n; inn¹ pêtlê uruchamiaj¹c¹ napêd odrzutowy \l;dzia³a lataj¹cego\u object\botfj; do chwili osi¹gniêcia przez robota wysokoœci 20 metrów.
+
+Instrukcja \c;\l;jet\u cbot\jet;()\n; kontroluje napêd odrzutowy robota lataj¹cego. Liczba w nawiasach musi siê zawieraæ w przedziale od \c;-1\n; do \c;1\n;.\c; jet(1);\n; unosi robota do góry z maksymaln¹ prêdkoœci¹. \c; jet(-1);\n; opuszcza robota w dó³ z maksymaln¹ prêdkoœci¹, a \c;jet(0);\n; powoduje, ¿e robot utrzymuje uzyskan¹ wysokoœæ. Poniewa¿ robot musi osi¹gn¹æ dok³adn¹ wysokoœæ, wzlatuj nim powoli u¿ywaj¹c instrukcji \c;jet(0.2);\n;, poczekaj a¿ osi¹gnie po¿¹dan¹ wysokoœæ i ustabilizuj wysokoœæ instrukcj¹ \c;jet(0);\n;.
+
+Aby "czekaæ a¿ do osi¹gniêcia ¿¹danej wysokoœci", konieczne jest u¿ycie pêtli warunkowej: instrukcje wewn¹trz niej bêd¹ powtarzane tak d³ugo, jak podany warunek jest prawdziwy. Wysokoœæ robota jest podawana przez \c;position.z\n;. Jak ju¿ widzieliœmy, instrukcja \c;position\n; podaje pozycjê robota. Jest ona okreœlona przez trzy wspó³rzêdne x, y oraz z: oœ x jest osi¹ zachód-wschód, oœ y jest osi¹ po³udnie-pó³noc, a oœ z jest osi¹ pionow¹. Wobec tego nale¿y poczekaæ tak d³ugo jak \c;position.z\n; bêdzie mniejsze ni¿ 20:
+\c;
+\s;	while (position.z < 20)
+\s;	{
+\s;		wait(0.2);
+\s;	}
+\n;
+Po odczekaniu 0,2 sekundy, program sprawdzi czy wysokoœæ jest wci¹¿ mniejsza od 20 metrów. Jeœli tak, poczeka jeszcze chwilê, a jeœli nie, program bêdzie kontynuowany po pêtli, tzn. po klamrze zamykaj¹cej \c;}\n;. Nie zapomnij po pêtli ustabilizowaæ wysokoœci instrukcj¹ \c;jet(0);\n;.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

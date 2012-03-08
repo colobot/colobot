@@ -1,0 +1,29 @@
+\b;Conditions
+A condition is a special \l;expression\u cbot\expr; that returns a \l;boolean\u cbot\bool; value, that can only be either \c;\l;true\u cbot\true;\n; or \c;\l;false\u cbot\false;\n;. With a condition, you can choose f. ex. if the instructions in a \c;\l;while\u cbot\while;\n; loop must be repeated again, or if the instruction in a \c;\l;if\u cbot\if;\n; bloc must be executed.
+Here are some operators that you can use in conditions to compare two values :
+
+\c;a == b  \n;\c;a\n; equals \c;b\n;
+\c;a != b  \n;\c;a\n; is different from \c;b\n;
+\c;a <  b  \n;\c;a\n; smaller than \c;b\n;
+\c;a <= b  \n;\c;a\n; smaller than or equal to \c;b\n;
+\c;a >  b  \n;\c;a\n; greater than \c;b\n;
+\c;a >= b  \n;\c;a\n; greater than or equal to \c;b\n;
+
+For example :
+
+\c;12 == 12  \n;returns true
+\c;45 != 47  \n;returns true 
+\c;99 == 98  \n;returns false
+\c;12 <  -1  \n;returns false
+\c;12 >= 10  \n;returns true 
+\c;12 >= 12  \n;returns true 
+
+\t;Remarque
+Be careful not to confuse the equality comparison \c;==\n; with the assignment of a \l;variable\u cbot\var; \c;=\n;.
+
+\c;a == b\n; is an expression that compares \c;a\n; with \c;b\n;.
+\c;a = b\n; is an expression that copies the value of \c;b\n; into \c;a\n;.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.
+

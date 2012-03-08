@@ -1,0 +1,50 @@
+\b;Æwiczenie
+Zaprogramuj zdalnie robota u¿ywaj¹c \l;stacji przekaŸnikowej informacji\u object\exchange;, aby przeszed³ on przez 6 punktów kontrolnych.
+G³ównymi postaciami tego æwiczenia s¹¦:
+ 
+1) \l;Transporter na ko³ach\u object\botgr; bez ogniwa elektrycznego. Jest to robot nadrzêdny, którego musisz zaprogramowaæ.
+2) \l;Stacja przekaŸnikowa informacji\u object\exchange;, otrzymuj¹ca informacje od nadawcy i przekazuj¹ca je do odbiorcy.
+3) \l;Robot treningowy\u object\bottr; czekaj¹cy na rozkazy ze stacji przekaŸnikowej. Ten robot zosta³ ju¿ zaprogramowany.
+
+\image tremot2a 16 8;
+Stacja przekaŸnikowa informacji przechowuje pary "nazwa/wartoœæ". Aby kontrolowaæ robota podleg³ego nale¿y u¿yæ dwóch par¦:
+
+1) nazwa="order", wartosc=numer rozkazu
+2) nom="param", wartoscr=parametr dla rozkazu
+
+Rozkaz numer 1 oznacza "move" a rozkaz numer 2 oznacza "turn". Parametr jest d³ugoœci¹ ruchu lub k¹tem obrotu. Na przyk³ad robota podleg³ego mo¿na przemieœciæ o 20 metrów pisz¹c¦:
+\c;\s;	\l;send\u cbot\send;("order",  1, 100);  // rozkaz "move"
+\s;	\l;send\u cbot\send;("param", 20, 100);  // odleg³oœæ 20 metrów
+\n;
+Te dwie instrukcje wysy³aj¹ nastêpuj¹ce informacje do stacji przekaŸnikowej¦:
+\c;    order=1
+    param=20
+\n;
+Robot podleg³y czeka na rozkaz i wykonuje go. Po wykonaniu rozkazu, zostanie on usuniêty ze stacji przekaŸnikowej. Po wys³aniu rozkazu, robot nadrzêdny musi poczekaæ na wykonanie rozkazu przed wys³aniem nastêpnego. Mo¿na to zrobiæ, sprawdzaj¹c czy rozkaz wci¹¿ jest w stacji przekaŸnikowej. Wystarczy napisaæ¦:
+\c;\s;	while ( \l;testinfo\u cbot\testinfo;("order", 100) )  // czekaj na koniec pracy
+\s;	{
+\s;		wait(1);
+\s;	}
+\n;
+Poniewa¿ konieczne jest wydanie wiêcej ni¿ jednego rozkazu, przydatne bêdzie napisanie \l;funkcji\u cbot\function; \c;SendToPost\n;, która wysy³a rozkaz i czeka na jego wykonanie¦:
+\c;\s;void object::SendToPost(float order, float param)
+\s;{
+\s;	send("param", param, 100);  // wyœlij parametr
+\s;	send("order", order, 100);  // wyœlij rozkaz
+\s;
+\s;	while ( testinfo("order", 100) )  // czekaj na koniec pracy
+\s;	{
+\s;		wait(1);
+\s;	}
+\s;}
+\n;
+Aby przemieœciæ robota o 20 metrów naprzód, nale¿y napisaæ w g³ównym programie¦:
+\c;\s;	SendToPost(1, 20);  // move(20);
+\n;
+Oto droga, któr¹ powinien podró¿owaæ robot¦:
+
+\image tremot2b 8 8;
+Do Ciebie nale¿y dokoñczenie programu.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

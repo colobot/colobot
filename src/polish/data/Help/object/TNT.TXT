@@ -1,0 +1,12 @@
+\b; £adunek wybuchowy (TNT)
+\image tnt 4 4;
+£adunek TNT jest bardzo czu³y. Nale¿y zbli¿aæ siê do niego bardzo ostro¿nie, aby nie uderzyæ go ani nie nara¿aæ na jakiekolwiek wstrz¹sy. Po chwyceniu ³adunku przez ramiê \l;transportera\u object\botgr; ryzyko jest ju¿ minimalne.
+
+\t;Transport
+Wszystkie \l;transportery\u object\botgr; oraz \l;astronauta\u object\human;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;TNT\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

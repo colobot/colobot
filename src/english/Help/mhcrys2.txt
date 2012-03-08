@@ -1,0 +1,11 @@
+\b;From Mission Control
+Cleanse the area of all hostile organisms. The way you accomplish this (\l;defense tower\u object\tower; or \l;winged shooter\u object\botfj;) is up to you.
+
+The radar seems to be perfectly suited to the detection of worms. Keep in mind though that they only appear when they are on the surface.
+
+We relayed a transmission to your \l;bot factory\u object\factory;. It concerns a bot designed to detect raw materials in the subsoil: energy sources, ore. We call it a \l;sniffer\u object\botsr; for short. Preliminary analysis leads us to believe that the presence of titanium ore on Crystalium is closely linked to the growth of large blue crystals. If this is indeed the case, this information should allow you to save some precious time. A \l;derrick\u object\derrick; is of course required for the extraction.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

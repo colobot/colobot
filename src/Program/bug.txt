@@ -1,0 +1,6 @@
+extern void object::bug()
+{
+	
+	message("abc"+100);
+	
+}

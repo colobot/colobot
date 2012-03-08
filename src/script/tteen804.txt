@@ -1,0 +1,27 @@
+extern void object::Solution( )
+{
+	int gauche = 90;
+	int droite = -90;
+	int cc = 0;
+	int cd = 0;
+	
+	repeat(6)
+	{
+		turn(droite);
+		
+		if( detect(Stone) )
+		{
+			cc = cc+1;
+			message("Cailloux="+cc+"   Déchets="+cd);
+		}
+		
+		if( detect(Scrap) )
+		{
+			cd = cd+1;
+			message("Cailloux="+cc+"   Déchets="+cd);
+		}
+		
+		turn(gauche);
+		move(20);
+	}
+}

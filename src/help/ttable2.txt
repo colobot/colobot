@@ -1,0 +1,57 @@
+\b;Exercice
+Un couloir est formé de 5 emplacements espacés de 5 mètres. 3 objets \c;[A]\n;, \c;[B]\n; et \c;[C]\n; sont placés dans le couloir, à des endroits à priori inconnus¦:
+
+\image ttable1 20 5;
+Le but de l'exercice et de retirer ces objets pour les replacer dans l'ordre inverse¦:
+
+\image ttable2 20 4;
+\b;Indices
+Pour chercher le premier objet, un \c;move(5)\n; fait l'affaire.
+Dans un premier temps, il faut faire un programme qui va chercher les objets et les place autour de la plateforme de départ (à 90, 180 et 270 degrés).
+Pour savoir si un objet est devant le robot, on pourrait utiliser l'appel \c;\l;radar\u cbot\radar;()\n;, mais comme on ne sait pas de quel type sont les objets, il est possible d'utiliser la fonction \c;\l;grab\u cbot\grab;()\n; à la place. Il faut toutefois faire \c;\l;errmode\u cbot\errmode;(0)\n; avant, pour que le programme ne stoppe pas s'il n'y a rien à prendre.
+\s;\c;extern void object::Tableau()
+\s;{
+\s;	errmode(0);
+\s;	move(5);
+\s;	grab();
+\n;
+On peut alors savoir si on a pris quelque chose en testant la variable \c;\l;load\u cbot\object;\n; qui est \c;null\n; si on a rien pris. On peut savoir quel est le type d'objet ramassé avec \c;\l;load.category\u cbot\object;\n;.
+
+Pour pouvoir remettre les objets en place, il faut mémoriser leurs positions relatives. Pour cela, on peut utiliser un \l;tableau\u cbot\array;.
+Un tableau pouvant mémoriser 5 valeurs entières se défini ainsi¦:
+\s;\c;	int   table[5];
+\n;
+On peut alors y placer les catégories d'objets ramassés à la position \c;i\n; (de 0 à 4)¦:
+\s;\c;	if ( load == null )
+\s;	{
+\s;		table[i] = 0;
+\s;	}
+\s;	else
+\s;	{
+\s;		table[i] = load.category;
+\s;	}
+\n;
+\b;Remarque
+Il est nécessaire de mettre \c;table[i]¦=¦0;\n; si on a pas d'objet, pour pouvoir utiliser ensuite \c;table[i]\n; dans un test.
+
+\b;Seconde partie
+Une fois les objets retirés du couloir, il est possible de les remettre en place dans l'autre sens, en reprennant le contenu du tableau à partir du premier élément qui sera placé le plus loin.
+Cette partie peut ressembler à quelque chose comme¦:
+\s;\c;	for ( int i=0 ; i<5 ; i=i+1 )
+\s;	{
+\s;		if (table[i] == 0)  continue;  // rien ici
+\s;		item = radar(table[i]);  // retrouve l'objet
+\s;		dir = direction(item.position);
+\s;		turn(dir);      // se retourne vers lui
+\s;		grab();         // le prend
+\s;		turn(-dir);     // face au couloir
+\s;		move(5*(5-i));  // avance à la position
+\s;		drop();         // dépose l'objet là-bas
+\s;		move(5*(i-5));  // revient.
+\n;
+A vous de compléter tout cela.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u ttable1; et \l;programmation\u cbot;.

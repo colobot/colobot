@@ -1,0 +1,14 @@
+extern void object::Go( )
+{
+	repeat(100)
+	{
+		if( not detect(Barrier) )
+		{
+			#
+		}
+		else
+		{
+			
+		}
+	}
+}

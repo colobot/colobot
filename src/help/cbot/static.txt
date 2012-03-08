@@ -1,0 +1,22 @@
+\b;Instruction \c;static\n; (pour spécialistes)
+Les éléments d'une \l;classe\u cbot\class; précédés du mot \c;static\n; sont partagés en commun avec toutes les instances de cette classe. C'est à dire qu'une valeur écrite par l'une des instances sera lisible par toutes les autres.
+\c;
+\s;public class MaClass
+\s;{
+\s;	static int nb = 1;
+\s;	static string [ ] liste = null;
+\s;}
+\s;void Test ()
+\s;{
+\s;	MaClasse item1();
+\s;	MaClasse item2();
+\s;	item1.nb = 3;
+\s;	item1.liste[item1.nb] = "Hello";
+\s;	message( item2.liste[item2.nb] ); // affiche "Hello"
+\s;}
+\n;
+Les éléments \c;static\n; peuvent également être déclarés comme \c;\l;private\u cbot\private;\n;. Dans ce cas, ces éléments ne sont accessibles que dans les méthodes de la classe (constructeur et destructeur inclus).
+
+\t;Voir aussi
+\c;\l;class\u cbot\class;\n;, \c;\l;synchronized\u cbot\synchro;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

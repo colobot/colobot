@@ -1,0 +1,55 @@
+\b;Exercise
+This exercise is very similar to the previous one. This time the bot should find its way alone from the start to the goal; you will have to execute the program only once.
+
+\b;Remark
+The labyrinth is not exactly the same, but this should be of no importance, as the program adapts to what it "sees".
+
+\image tlaby1 10 10;
+\b;General principle
+Use an infinite \c;\l;while\u cbot\while;\n; loop in order to execute the previous program several times:
+\s;\c;while ( true )
+\s;{
+\s;	\n;If there is nothing in front, move forward\c;
+\s;	\n;If there is nothing on your left hand, turn left\c;
+\s;	\n;If there is nothing on your right hand, turn right\c;
+\s;}
+\n;
+Inside this \c;while\n; loop, replace the \c;return\n; instructions by \c;\l;continue\u cbot\continue;\n; instructions. \c;return\n; would quit the program, which is not what we want here. \c;continue\n; will just resume the execution at the beginning of the \c;\l;while\u cbot\while;\n; loop:
+\s;\c;if ( front == null )
+\s;{
+\s;	move(5);
+\s;	continue;
+\s;}
+\n;
+\b;Remember
+Here is again the program of the previous exercise :
+\c;
+\s;object   front, left, right;
+\s;
+\s;front = radar(Barrier,   0, 45, 0, 5);
+\s;left  = radar(Barrier,  90, 45, 0, 5);
+\s;right = radar(Barrier, -90, 45, 0, 5);
+\s;
+\s;if ( front == null )
+\s;{
+\s;	move(5);
+\s;	return;
+\s;}
+\s;if ( left == null )
+\s;{
+\s;	turn(90);
+\s;	move(5);
+\s;	return;
+\s;}
+\s;if ( right == null )
+\s;{
+\s;	turn(-90);
+\s;	move(5);
+\s;	return;
+\s;}
+\n;
+\b;Help
+If you need some help, just click on the hyperlinks of the instructions \c;\l;radar\u cbot\radar;\n;, \c;\l;if\u cbot\if;\n;, \c;\l;move\u cbot\move;\n; or \c;\l;turn\u cbot\turn;\n;.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

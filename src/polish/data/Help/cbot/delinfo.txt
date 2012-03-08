@@ -1,0 +1,15 @@
+\b;Instrukcja \c;deleteinfo\n;
+Sk³adnia¦:
+\s;\c;deleteinfo ( nazwa, moc );\n;
+
+Usuwa istniej¹c¹ informacjê z najbli¿szej \l;stacji przekaŸnikowej\u object\exchange;.
+
+\t;nazwa: \c;string\n;
+Nazwa informacji do usuniêcia. Nazwa jest typu string i musi byæ napisana w cudzys³owach "¦".
+
+\t;moc: \c;float\n;
+Moc transmitera, odpowiadaj¹ca maksymalnej odleg³oœci pomiêdzy nadawc¹ i stacj¹ przekaŸnikow¹. Jeœli odleg³oœæ jest wiêksza, informacja nie zostanie usuniêta. Domyœlana wartoœæ to 10 metrów.
+
+\t;Zobacz równie¿
+\c;\l;receive\u cbot\receive;\n;, \c;\l;send\u cbot\send;\n; i \c;\l;testinfo\u cbot\testinfo;\n;.
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

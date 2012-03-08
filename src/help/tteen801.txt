@@ -1,0 +1,26 @@
+\b;Vilains cailloux
+Quelques cailloux sont disposés en ligne. Il existe 6 emplacements suceptibles de contenir des cailloux, marqués par des croix rouges, mais tous ne sont pas occupés¦:
+
+\image teen801 12 12;
+\b;Le programme
+Tu dois programmer une boucle \c;repeat\n; pour les détruire. Le programme sera le suivant¦:
+
+\s;o  Répète 6 fois¦:
+\s;	o  Tourne de 90 degrés à droite
+\s;	o  S'il y a un caillou, détruit-le
+\s;	o  Tourne de 90 degrés à gauche
+\s;	o  Avance de 20 centimètres
+
+\b;Rappel
+Pour détruire un caillou, tu dois écrire cela¦:
+\c;
+\s;if( detect(Stone) )
+\s;{
+\s;	thump();
+\s;}
+\n;
+Voilà, à toi de jouer¦...
+
+\b;Un peu d'anglais
+\c;stone = \n;pierre
+\c;thump = \n;marteler

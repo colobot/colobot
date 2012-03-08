@@ -1,0 +1,20 @@
+\b;\button 152; Szperacz na nogach
+\image botss 8 8;
+Robot pe³zaj¹cy na mrówczych odnó¿ach, przystosowany do badania struktury geologicznej podglebia. Gdy znajdzie coœ u¿ytecznego, zostawia na ziemi nastêpuj¹ce znaczniki:
+
+- \l;czerwony plus\u object\stonspot;       -> \l;ruda tytanu\u object\titanore;.
+- \l;¿ó³te kó³ko\u object\uranspot;  -> \l;ruda uranu\u object\uranore;.
+- \l;zielony plus\u object\enerspot;   -> Ÿród³o energii, niezbêdne dla \l;stacji energetycznej\u object\station; lub \l;elektrowni\u object\energy;.
+
+Podczas poruszania siê, szperacz na nogach zu¿ywa o po³owê mniej energii od \l;szperacza na ko³ach\u object\botsr;. Robot na nogach jest te¿ idealnie przystosowany do wspinania siê nawet po najbardziej stromych pochy³oœciach.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do zaprogramowania ramienia detekcyjnego mo¿na u¿yæ instrukcji \c;\l;sniff\u cbot\sniff;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;LeggedSniffer\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

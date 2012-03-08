@@ -1,0 +1,16 @@
+\b;Instruction \c;jet\n;
+Syntax:
+\s;\c;jet ( power );\n;
+
+Direct control of the jet of a \l;winged bot\u object\botgj;. The jet is what makes the bot fly. Use this instruction in order to take off, climb, descend or land.
+
+\t;power: \c;\l;float\u cbot\float;\n;
+Power of the jet, ranges between \c;-1\n; and \c;+1\n;. \c;jet(1);\n; instructs the bot to climb as fast as possible, \c;jet(-1);\n; descends as fast as possible, \c;jet(0);\n; stabilizes the altitude. In order to get slower altitude changes, use intermediate values, for example \c;jet(0.3);\n;.
+
+
+\t;Return value: \c;\l;void\u cbot\void;\n;
+None.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.
+

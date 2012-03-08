@@ -1,0 +1,30 @@
+extern void object::ServiceTour1()
+{
+	object  tour;                // info sur tour
+	object  station;             // info sur station
+	
+	tour = radar(DefenseTower);  // cherche une tour
+	goto(tour.position);         // va vers tour
+	
+	while ( true )               // répète toujours :
+	{
+		// attend que la pile se vide
+		while ( tour.energyCell.energyLevel > 0.2 )
+		{
+			wait(2);
+		}
+		grab();                  // prend pile
+		
+		// va vers une station de recharge
+		station = radar(PowerStation);
+		goto(station.position);  // va vers station
+		while ( load.energyLevel < 1 )
+		{
+			wait(1);             // attend recharge
+		}
+		
+		// va vers la tour de défense
+		goto(tour.position);     // va vers tour
+		drop();                  // dépose pile
+	}
+}

@@ -1,0 +1,5 @@
+\b;Solution
+Suivez la vallée visible sur la mini-carte, en bas à droite. La caisse d'explosifs se trouve au fond d'une vallée remplie de fourmis géantes, à côté de la croix rouge sur la mini-carte. Les fourmis vont vous toucher et vous faire tomber dans le comas. Vous ne pouvez pas l'éviter...
+
+\t;Voir aussi
+\l;Commandes\u command;.

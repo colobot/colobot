@@ -1,0 +1,26 @@
+\b;\button 168; Radar
+\image radar 8 8;
+Radar okreœla kierunek najbli¿szego \l;wroga\u object\mother;. Co wiêcej, informacje uzyskane dziêki radarowi umo¿liwiaj¹ pokazanie pozycji wszystkich robotów, budynków i wrogów, jako ma³ych ró¿nokolorowych kwadratów i trójk¹tów na mapce, znajduj¹cej siê w prawej dolnej czêœci ekranu.
+
+Stacje radarowe spe³niaj¹ równie¿ rolê stacji przekaŸnikowych w komunikacji pomiêdzy Ziemi¹ i odleg³ymi planetami.
+
+\t;Wymagania
+P³aska powierzchnia szeroka na minimum 2,5 metra.
+
+\t;Wejœcie
+Brak.
+
+\t;Wyjœcie
+Informacje na mapce.
+
+\t;ród³o zasilania
+Brak.
+
+\t;Czas dzia³ania
+Sta³y.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;RadarStation\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,0 +1,13 @@
+\b;Instructions de Houston
+Eliminez toute présence nuisible de la région. A vous de trouver le moyen le plus efficace (\l;tour de défense\u object\tower; ou robot \l;shooter\u object\botfj;).
+
+Nous avons constaté que le \l;radar\u object\radar; détecte parfaitement les \l;vers\u object\worm;, du moins tant qu'ils sont en surface. Ceci peut vous être utile.
+
+Nous avons transmis à votre \l;fabrique de robots\u object\factory; les informations nécessaires pour construire un robot capable de \l;détecter\u object\botsj; les richesses du sous-sol (énergie, minerai). Les informations transmises par l'expédition précédente laissent à penser que la présence de titanium en sous-sol favorise la croissance de grands cristaux bleu-violets. Ceci peut vous permettre de gagner du temps dans vos recherches des gisements de \l;minerai de titanium\u object\titanore;, que vous pouvez ensuite exploiter à l'aide d'un \l;derrick\u object\derrick;.
+
+Nous avons amélioré le programme permettant à un robot d'amener le minerai vers le \l;convertisseur\u object\convert; (voir la page programmes \button 53;).
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

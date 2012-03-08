@@ -1,0 +1,13 @@
+\b;Walkthrough
+A gap in the northwest mountain leads the way to a lake of boiling lava.
+
+Just hop from one rocky island to the next. Keep checking your reactor, let it cool off completely before taking off again. The mini map will help you to figure out where the closest island is.
+
+In case of an ant attack, don't worry too much. Just take the time for your reactor to cool off, without lingering longer than necessary, and your built-in shield should do its duty. However we advise you to save the game from time to time (key Esc, and "Save"), so you will not have to start from the beginning in case of a landing in the lava lake.
+
+The bot is at the westernmost point on your map though you'll have to take a roundabout route to reach it. A \l;nuclear power cell\u object\atomic; lies nearby.
+
+You don't have to radio-control the bot back to the spaceship by the same way you came because its reactor has a greater range than yours. One or two stops may still be needed and watch out for those ants.
+
+\t;See also
+\l;Controls\u command;

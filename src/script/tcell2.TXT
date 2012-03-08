@@ -1,0 +1,15 @@
+extern void object::Solution()
+{
+	object    chose;
+	
+	while(true)
+	{
+		chose = radar(PowerCell);
+		goto(chose.position);
+		grab();
+		
+		chose = radar(WingedShooter);
+		goto(chose.position);
+		drop();
+	}
+}

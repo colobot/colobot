@@ -1,0 +1,13 @@
+extern void object::Go( )
+{
+	#
+	
+	pendown(Orange);
+	move( );
+	turn(45);
+	move( );
+	turn(90);
+	move( );
+	turn(45);
+	move( );
+}

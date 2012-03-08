@@ -1,0 +1,8 @@
+\b;Type \c;false\n;
+Cette valeur signifie "faux" pour une \l;variable\u cbot\var; \l;booléenne\u cbot\bool;.
+
+\t;Dictionnaire anglais-français
+\c;false\n; = faux
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

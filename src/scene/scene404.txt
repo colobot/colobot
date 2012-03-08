@@ -1,0 +1,247 @@
+Title.F      text="La vallée perdue"
+Resume.F     text="Récupérer la boîte noire dans une vallée profonde et remplie de brouillard."
+Title.E      text="The Lost Valley"
+Resume.E     text="Explore a foggy and perilous valley."
+Instructions name="mhcrys4.txt"
+Satellite    name="micrys4.txt"
+Loading      name="mlcrys4.txt"
+SoluceFile   name="mscrys4.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=4
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=180;222;255;0 water=10;20;100;0  // grey
+VehicleColor  color=175;209;215;0  // bleu-sable
+DeepView      air=100.00 water=25.00 
+FogStart      air=0.1 water=0.1
+SecondTexture rank=3
+Background    up=180;222;255;0 down=180;222;255;0
+FrontsizeName image="lens5.tga"
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.7
+TerrainWind         speed=0.0;0.1
+TerrainRelief       image="textures\relief20.bmp" factor=1.0
+TerrainResource     image="textures\resae.bmp"
+//TerrainWater        image="lava04.tga" level=30.0 moveX=1.0 moveY=0.3 water=TO color=0;128;255;0
+TerrainInitTextures image="terra" dx=1 dy=1 table=2
+TerrainCreate
+
+//GroundSpot color=000;000;255 min=-10 max=31.25 smooth=10
+//GroundSpot color=250;150;100 min= 31.25 max=999 smooth=60
+GroundSpot pos= 12; -75 radius=30 color=150;200;250  // base
+
+BeginObject
+CreateObject pos=32.50;-75.00 dir=0.0 type=SpaceShip run=1
+CreateObject pos=32.50;-78.25 dir=1.5 type=Me
+CreateObject pos=29.50;-78.25 dir=1.5 type=WingedGrabber script3="exchg1.txt" script2="charge2.txt" script1="titan2.txt"
+
+// Cratère entrée
+CreateObject pos=  32;103 dir=0.3 type=WreckBotw1
+CreateObject pos=  28; 84 dir=1.2 type=TrackedShooter power=0 proxyActivate=1
+
+// Cratère ouest
+CreateObject pos=-136;200 dir=0.7 type=RuinBotFactory
+CreateObject pos=-130;204 dir=0.3 type=WreckBott2
+CreateObject pos=-135;200 dir=0.4 type=PowerCell power=0.0 proxyActivate=1
+CreateObject pos=-136;200 dir=0.1 type=PowerCell power=0.2 proxyActivate=1
+CreateObject pos=-136;205 dir=0.5 type=PowerCell power=0.0 proxyActivate=1
+CreateObject pos=-140;202 dir=0.2 type=PowerCell power=0.0 proxyActivate=1
+CreateObject pos=-142;198 dir=0.3 type=PowerCell power=0.3 proxyActivate=1
+CreateObject pos=-170;278 dir=1.2 type=WingedShooter power=0 proxyActivate=1
+CreateObject pos=-161;274 dir=0.3 type=WreckBotw2
+CreateObject pos=-171;281 dir=0.7 type=WreckBott1
+CreateObject pos=-163;282 dir=1.8 type=TrackedShooter power=0 proxyActivate=1
+CreateObject pos=-166;282 dir=0.3 type=PowerCell power=0.0 proxyActivate=1
+CreateObject pos=-116;197 dir=0.8 type=TrackedShooter power=0 proxyActivate=1
+CreateObject pos=-114;200 dir=0.4 type=PowerCell power=0.0 proxyActivate=1
+CreateObject pos=-113;193 dir=0.9 type=Quartz1
+CreateObject pos=-129;212 dir=0.5 type=Quartz3
+CreateObject pos=-127;210 dir=0.1 type=Quartz1
+CreateObject pos=-133;205 dir=0.1 type=Quartz0
+CreateObject pos=-141;194 dir=0.9 type=Quartz3
+CreateObject pos=-146;198 dir=0.3 type=Quartz2
+CreateObject pos=-145;205 dir=0.3 type=Quartz1
+CreateObject pos=-125;185 dir=0.3 type=Quartz3
+CreateObject pos=-120;186 dir=0.6 type=Quartz2
+CreateObject pos=-109;180 dir=0.9 type=Quartz0
+CreateObject pos=-100;202 dir=0.8 type=Quartz3
+CreateObject pos=-105;204 dir=0.2 type=Quartz2
+CreateObject pos=-107;202 dir=0.0 type=Quartz0
+
+CreateObject pos=-151;243 dir=0.5 type=Quartz3
+CreateObject pos=-149;246 dir=0.8 type=Quartz1
+CreateObject pos=-147;234 dir=0.5 type=Quartz0
+CreateObject pos=-140;246 dir=1.5 type=Quartz2
+CreateObject pos=-149;267 dir=0.1 type=Quartz3
+
+// Cratère est
+CreateObject pos=  79;204 dir=0.7 type=RuinRadar
+CreateObject pos= 105;223 dir=0.8 type=TrackedShooter power=0 proxyActivate=1
+CreateObject pos=  97;223 dir=0.9 type=WreckBott2
+CreateObject pos= 116;235 dir=0.5 type=Quartz1
+CreateObject pos= 117;241 dir=0.5 type=Quartz3
+CreateObject pos= 123;240 dir=0.5 type=Quartz2
+CreateObject pos= 123;246 dir=0.5 type=Quartz0
+CreateObject pos= 127;260 dir=0.2 type=Quartz3
+CreateObject pos= 129;256 dir=0.2 type=Quartz1
+CreateObject pos= 130;250 dir=1.0 type=Quartz3
+CreateObject pos= 138;265 dir=0.2 type=Quartz2
+CreateObject pos= 138;298 dir=0.5 type=Quartz1
+CreateObject pos= 163;295 dir=1.0 type=WingedShooter power=0 proxyActivate=1
+CreateObject pos= 177;288 dir=0.3 type=WreckBott1 h=-1
+CreateObject pos= 181;293 dir=0.9 type=PowerStation proxyActivate=1
+CreateObject pos= 190;300 dir=1.3 type=RuinBotFactory
+CreateObject pos= 194;295 dir=0.2 type=PowerCell power=0.3 proxyActivate=1
+
+// Cratère central
+CreateObject pos= -15;180 dir=0.0 type=RuinBaseCamp h=-9.0
+CreateObject pos=  13;184 dir=0.1 type=RuinHeadCamp
+CreateObject pos= -21;187 dir=0.1 type=BlackBox
+CreateObject pos= -60; 185 cmdline= -60; 185; 15 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=  -5; 180 cmdline=  -5; 180; 25 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=  -5; 175 cmdline=  -5; 180; 25 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=  -5; 170 cmdline=  -5; 180; 25 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos= -10; 170 cmdline=  -5; 180; 25 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=  10; 170 cmdline=  10; 170; 25 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=  10; 175 cmdline=  10; 170; 25 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos=  50; 175 cmdline=  50; 175; 15 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+
+// Vallée ouest
+CreateObject pos=-289; 37 dir=0.5 type=Quartz3
+CreateObject pos=-284; 35 dir=0.8 type=Quartz0
+CreateObject pos=-285; 44 dir=0.5 type=Quartz2
+CreateObject pos=-278; 39 dir=0.5 type=Quartz0
+CreateObject pos=-283;141 dir=0.1 type=Quartz3
+CreateObject pos=-282;152 dir=0.5 type=Quartz1
+CreateObject pos=-289;161 dir=0.5 type=Quartz2
+CreateObject pos=-295;163 dir=0.1 type=Quartz0
+CreateObject pos=-297;166 dir=0.1 type=Quartz2
+
+CreateFog pos=  45;  25 height=-18 dim=10 delay=4.0 type=4
+CreateFog pos=  45;  25 height=-19 dim=10 delay=5.0 type=5
+CreateFog pos=  65;  65 height=-27 dim=20 delay=4.0 type=4
+CreateFog pos=  65;  65 height=-28 dim=20 delay=5.0 type=5
+CreateFog pos=  50;  75 height= -5 dim=10 delay=4.0 type=4
+CreateFog pos=  50;  75 height= -6 dim=10 delay=5.0 type=5
+CreateFog pos=  25; 120 height= -5 dim=10 delay=4.0 type=4
+CreateFog pos=  25; 120 height= -6 dim=10 delay=5.0 type=5
+CreateFog pos=  10;  90 height=-35 dim=10 delay=4.0 type=4
+CreateFog pos=  10;  90 height=-36 dim=10 delay=5.0 type=5
+CreateFog pos=  40;  65 height=  2 dim=10 delay=4.0 type=4
+CreateFog pos=  40;  65 height=  3 dim=10 delay=5.0 type=5
+CreateFog pos=  34;  85 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos=  34;  85 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos=  19; 138 height=  2 dim=20 delay=4.0 type=4
+CreateFog pos=  19; 138 height=  3 dim=20 delay=5.0 type=5
+CreateFog pos=  22; 164 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos=  22; 164 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos=   8; 177 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos=   8; 177 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos=  -9; 174 height=  3 dim=25 delay=4.0 type=4
+CreateFog pos=  -9; 174 height=  4 dim=25 delay=5.0 type=5
+CreateFog pos=  -5; 186 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos=  -5; 186 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos= -45; 182 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos= -45; 182 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos= -59; 190 height=  1 dim=15 delay=4.0 type=4
+CreateFog pos= -59; 190 height=  2 dim=15 delay=5.0 type=5
+CreateFog pos= -95; 190 height=  2 dim=15 delay=4.0 type=4
+CreateFog pos= -95; 190 height=  3 dim=15 delay=5.0 type=5
+CreateFog pos=-117; 197 height=  3 dim=20 delay=4.0 type=4
+CreateFog pos=-117; 197 height=  4 dim=20 delay=5.0 type=5
+CreateFog pos=-134; 200 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos=-134; 200 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos=-164; 274 height=  3 dim= 8 delay=4.0 type=4
+CreateFog pos=-164; 274 height=  4 dim= 8 delay=5.0 type=5
+CreateFog pos=-167; 279 height=  1 dim= 5 delay=4.0 type=4
+CreateFog pos=-167; 279 height=1.3 dim= 5 delay=5.0 type=5
+CreateFog pos=-177; 284 height=  2 dim= 8 delay=4.0 type=4
+CreateFog pos=-177; 284 height=  3 dim= 8 delay=5.0 type=5
+CreateFog pos=  38; 170 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos=  38; 170 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos=  45; 195 height=-35 dim=20 delay=4.0 type=4
+CreateFog pos=  45; 195 height=-36 dim=20 delay=5.0 type=5
+CreateFog pos=  50; 176 height=  2 dim=10 delay=4.0 type=4
+CreateFog pos=  50; 176 height=  3 dim=10 delay=5.0 type=5
+CreateFog pos= 120; 242 height=  1 dim= 7 delay=4.0 type=4
+CreateFog pos= 120; 242 height=  2 dim= 7 delay=5.0 type=5
+CreateFog pos= 131; 256 height=  2 dim=10 delay=4.0 type=4
+CreateFog pos= 131; 256 height=  3 dim=10 delay=5.0 type=5
+CreateFog pos= 140; 277 height=  2 dim=15 delay=4.0 type=4
+CreateFog pos= 140; 277 height=  3 dim=15 delay=5.0 type=5
+CreateFog pos= 150; 300 height= -6 dim=10 delay=4.0 type=4
+CreateFog pos= 150; 300 height= -7 dim=10 delay=5.0 type=5
+CreateFog pos= 164; 290 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos= 164; 290 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos= 182; 294 height=  3 dim=20 delay=4.0 type=4
+CreateFog pos= 182; 294 height=  4 dim=20 delay=5.0 type=5
+CreateFog pos= 210; 275 height=-30 dim=20 delay=4.0 type=4
+CreateFog pos= 210; 275 height=-31 dim=20 delay=5.0 type=5
+CreateFog pos= 117; -99 height=  5 dim=10 delay=4.0 type=4
+CreateFog pos= 117; -99 height=  6 dim=10 delay=5.0 type=5
+CreateFog pos= 226; -92 height=  5 dim=10 delay=4.0 type=4
+CreateFog pos= 226; -92 height=  6 dim=10 delay=5.0 type=5
+CreateFog pos= 280;  74 height=  4 dim=10 delay=4.0 type=4
+CreateFog pos= 280;  74 height=  5 dim=10 delay=5.0 type=5
+CreateFog pos= 278; 125 height=  2 dim= 6 delay=4.0 type=4
+CreateFog pos= 278; 125 height=  3 dim= 6 delay=5.0 type=5
+CreateFog pos= -76;-142 height=  3 dim=10 delay=4.0 type=4
+CreateFog pos= -76;-142 height=  4 dim=10 delay=5.0 type=5
+CreateFog pos=-169;-164 height=  2 dim= 6 delay=4.0 type=4
+CreateFog pos=-169;-164 height=  3 dim= 6 delay=5.0 type=5
+CreateFog pos=-219; -53 height=  3 dim=15 delay=4.0 type=4
+CreateFog pos=-219; -53 height=  4 dim=15 delay=5.0 type=5
+CreateFog pos=-203; -34 height=  1 dim=10 delay=4.0 type=4
+CreateFog pos=-203; -34 height=  2 dim=10 delay=5.0 type=5
+CreateFog pos=-251;   5 height=  2 dim=10 delay=4.0 type=4
+CreateFog pos=-251;   5 height=  3 dim=10 delay=5.0 type=5
+CreateFog pos=-249;  39 height=  3 dim=15 delay=4.0 type=4
+CreateFog pos=-249;  39 height=  4 dim=15 delay=5.0 type=5
+CreateFog pos=-261;  78 height=  2 dim=10 delay=4.0 type=4
+CreateFog pos=-261;  78 height=  3 dim=10 delay=5.0 type=5
+CreateFog pos=-275;  60 height= -5 dim=10 delay=4.0 type=4
+CreateFog pos=-275;  60 height= -6 dim=10 delay=5.0 type=5
+
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 1.00 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.64 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.64 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.32 type=Object
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.00; 0.30 type=Quartz
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.30; 0.00 type=Quartz
+WaterColor color=-0.6;-0.1;-0.1;0.0
+
+MapColor floor=115;193;237 water=188;225;246
+MapZoom  factor=1
+
+NewScript name="titan2.txt" type=WheeledGrabber
+NewScript name="titan2.txt" type=TrackedGrabber
+NewScript name="titan2.txt" type=WingedGrabber
+NewScript name="titan2.txt" type=LeggedGrabber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WingedGrabber lost=0
+EndMissionTake pos=32.50;-75.00 type=BlackBox min=1
+
+Camera eye=32.50;5.00;-78.25 lookat=32.50;1.00;-78.25 delay=0

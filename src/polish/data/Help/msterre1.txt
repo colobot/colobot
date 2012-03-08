@@ -1,0 +1,11 @@
+\b;Rozwi¹zanie
+Aby znaleŸæ zestaw przetrwania:
+
+1) IdŸ drog¹ na po³udnie.
+2) Skrêæ na wschód (w lewo) na pierwszym skrzy¿owaniu.
+3) Zestaw przetrwania le¿y pomiêdzy pó³nocn¹ œcian¹ Centrum Kontroli Misji a pierwszym drzewem po prawej stronie drogi.
+
+Wystarczy, ¿e zbli¿ysz siê do niego, aby ukoñczyæ to æwiczenie.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

@@ -1,0 +1,85 @@
+\b;Objectif
+Attraper des \l;guêpes\u object\wasp; en vol de manière plus efficace qu'avec le programme précédent.
+
+\b;Programme
+Voici encore une fois le programme de l'exercice précédent qui tire sur les guêpes¦:
+\c;
+\s;extern void object::Guêpes1()
+\s;{
+\s;	object    chose;
+\s;	
+\s;	aim(0);
+\s;	
+\s;	while ( true )
+\s;	{
+\s;		while ( radar(AlienWasp, 0, 360, 0, 20) == null )
+\s;		{
+\s;			chose = radar(AlienWasp);
+\s;			turn(direction(chose.position));
+\s;			motor(1,1);
+\s;			
+\s;			jet(0);
+\s;			if ( position.z > chose.position.z )
+\s;			{
+\s;				jet(-0.3);
+\s;			}
+\s;			
+\s;			if ( position.z < chose.position.z - 1 )
+\s;			{
+\s;				jet(0.3);
+\s;			}
+\s;			
+\s;			wait(0.2);
+\s;		}
+\s;		chose = radar(AlienWasp);
+\s;		turn(direction(chose.position));
+\s;		fire(1);
+\s;	}
+\s;}
+\n;
+Comme vous l'avez constaté, le taux de réussite de ce programme n'est pas très élevé, car les guèpes ont souvent le temps de partir.
+
+Le seul moyen pour rendre le programme plus efficace consiste à régler la vitesse des moteurs de gauche et de droite ainsi que du réacteur de manière à ce que le mouvement du robot pendant la salve de tir accompagne le mouvement de la cible.
+
+Juste avant le tir, le programme fait un dernier ajustement avec un \c;\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(chose.position));\n;. Pour suivre la guêpe, il faut mémoriser l'angle de cette dernière rotation: si l'angle est positif, il faut continuer à tourner à gauche pendant le tir; si l'angle est négatif, il faut continuer à tourner à droite.
+
+Pour mémoriser l'angle de la dernière rotation, nous avons besoin d'une variable qui puisse contenir un simple nombre. Nous définissons donc tout au début du programme une variable \c;angle\n; du type \c;\l;float\u cbot\float;\n;¦:
+\c;
+\s;	float    angle;
+\n;
+Référez-vous au texte sur les \l;types de variables\u cbot\type; pour en savoir plus.
+
+Juste avant l'instruction \c;\l;fire\u cbot\fire;(1);\n;, au lieu de tourner directement de l'angle nécessaire, nous mettons la valeur dans la variable \c;angle\n;¦:
+\c;
+\s;	angle = direction(chose.position);
+\n;
+Puis nous tournons de l'angle nécessaire, et nous réglons la puissance des moteurs pour que le robot continue le mouvement¦:
+\c;
+\s;	turn(angle);
+\s;	if ( angle < 0 )
+\s;	{
+\s;		motor(1,0.5);
+\s;	}
+\s;	else
+\s;	{
+\s;		motor(0.5,1);
+\s;	}
+\n;
+L'instruction \c;else\n; indique ce qu'il faut faire dans le cas où la condition de \c;\l;if\u cbot\if;\n; n'est pas remplie.
+
+Puis il faut remettre les instructions qui règlent la puissance du réacteur pour que le robot suive le mouvement de la guêpe dans la direction verticale¦:
+\c;
+\s;	jet(0);
+\s;	if ( position.z > chose.position.z )
+\s;	{
+\s;		jet(-0.3);
+\s;	}
+\s;	
+\s;	if ( position.z < chose.position.z - 1 )
+\s;	{
+\s;		jet(0.3);
+\s;	}
+\n;
+Comme vous pourrez le constater, le taux de réussite est nettement plus élevé que dans l'exercice précédent.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!

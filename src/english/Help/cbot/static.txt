@@ -1,0 +1,22 @@
+\b;Instruction \c;static\n; (for specialists)
+\l;Class\u cbot\class; members declared with \c;static\n; are shared between all instances of the class.
+\c;
+\s;public class MyClass
+\s;{
+\s;	static int nb = 1;
+\s;	static string [ ] list = null;
+\s;}
+\s;void Test ()
+\s;{
+\s;	MyClasse item1();
+\s;	MyClasse item2();
+\s;	item1.nb = 3;
+\s;	item1.list[item1.nb] = "Hello";
+\s;	message( item2.list[item2.nb] ); // display "Hello"
+\s;}
+\n;
+\c;Static\n; members can be declared \c;\l;private\u cbot\private;\n; so they will be only acessible from within class members (including constructors and destructors).
+
+\t;See also
+\c;\l;class\u cbot\class;\n;, \c;\l;synchronized\u cbot\synchro;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

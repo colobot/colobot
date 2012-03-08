@@ -1,0 +1,13 @@
+\b;Instructions de Houston
+Entraînement au pilotage.
+
+L'expédition précédente a installé ce dispositif pour tester les programmes des robots volants. Utilisez-le pour vous familiariser avec le pilotage. De votre habileté peut dépendre votre survie dans une situation critique. Il est utile de revenir de temps en temps à cet entraînement pour améliorer vos réflexes.
+
+Passez à travers toutes les cibles, le plus rapidement possible. Essayez de faire le tour sans que le moteur surchauffe; si vous n'y arrivez pas, posez-vous entre deux cibles pour laisser refroidir le réacteur.
+
+Prenez l'habitude de jouer avec la main gauche sur les touches flèches du clavier, et la main droite sur la souris. Vous devez diriger le robot et actionner les commandes monter et descendre uniquement avec la main gauche. La main droite n'est pas utile dans cet entraînement, mais elle deviendra indispensable dans des exercices ultérieurs¦!
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

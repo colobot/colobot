@@ -1,0 +1,72 @@
+\b;Exercice
+Vous devez programmer le \l;robot\u object\bottr; d'entraînement pour suivre la caisse d'explosifs, mais sans la toucher, car elle est très fragile. Chaque fois que la caisse s'arrête 2 secondes, vous devez être à proximité immédiate (moins de 10 mètres). Après 10 arrêts, la caisse s'approche de la plate-forme d'arrivée, pous vous y ammener.
+A chaque arrêt, la caisse vérifie que vous êtes bien là. Si ce n'est pas le cas, le compteur est remis à zéro. Vous devez donc réussir 10 fois consécutives¦!
+
+\b;Principe
+\s;o  Répéter à l'infini¦:
+\s;	o  Chercher la caisse.
+\s;	o  Calculer la distance jusqu'à la caisse.
+\s;	o  Si cette distance est plus petite que 5 mètres, reculer.
+\s;	o  Sinon, calculer la direction de la caisse et s'y diriger.
+
+La boucle infinie s'effectue avec un traditionnel \c;\l;while\u cbot\while;( true )\n;.
+\s;\c;while ( true )
+\s;{
+\s;	\n;instructions à répéter ...\c;
+\s;}
+\n;
+La recherche de la caisse se fait dans toutes les directions, avec \c;\l;radar\u cbot\radar;\n; ¦:
+\s;\c;	target = radar(TargetBot);
+\n;
+Normalement, la caisse est toujours trouvée. Vous pouvez éventuellement ajouter un test \c;\l;if\u cbot\if;\n; pour stopper le \l;robot\u object\bottr; et quitter le programme si la caisse n'est plus là, mais cela devrait être inutile¦:
+\s;\c;if ( target == null )
+\s;{
+\s;	motor(0, 0);  // stoppe
+\s;	break;  // plus rien à faire
+\s;}
+\n;
+Le calcul de la distance jusqu'à la caisse utilise l'instruction \c;\l;distance\u cbot\dist;(p1, p2)\n;. Cette instruction retourne la distance entre deux points \c;p1\n; et \c;p2\n;. Le premier point sera ici la position du \l;robot\u object\bottr;, obtenue simplement avec \c;pos\n;. La position de la caisse est obtenue à travers la description de l'objet \c;target\n; avec l'expression \c;target.position\n;.
+\s;\c;len = distance(pos, target.position);
+\n;
+Si la distance est inférieure à 5 mètres, il faut reculer d'une vitesse proportionnelle à la distance. Plus la distance est petite, plus il faut reculer vivement.
+	Distance = 5.0 mètres -> vitesse =  0.0
+	Distance = 2.5 mètres -> vitesse = -0.5
+	Distance = 0.0 mètres -> vitesse = -1.0
+Ceci s'obtient très simplement avec l'\l;expression\u cbot\expr; \c;distance/5-1\n;. Donc, avec un \c;\l;if\u cbot\if;\n;¦:
+\s;\c;if ( len < 5 )  // trop proche¦?
+\s;{
+\s;	motor(len/5-1, len/5-1);  // recule
+\s;}
+\n;
+Si la distance dépasse 5 mètres, on avance en direction de la caisse en calculant l'angle avec \c;\l;direction\u cbot\direct;\n;.
+\s;\c;else
+\s;{
+\s;	dir = direction(target.position);
+\s;	if ( dir < 0 )  // à droite¦?
+\s;	{
+\s;		motor(1, 1+dir/90);
+\s;	}
+\s;	else  // à gauche¦?
+\s;	{
+\s;		\n;à vous de trouver ...\c;
+\s;	}
+\s;}
+\n;
+Lorsque la caisse est à gauche, \c;dir\n; est positif, compris entre 0 et 180 degrés. L'\l;expression\u cbot\expr; \c;1-dir/90\n; donne une vitesse comprise entre 1 et -1, selon la direction.
+	direction =   0 -> vitesse =  1.0
+	direction =  45 -> vitesse =  0.5
+	direction =  90 -> vitesse =  0.0
+	direction = 135 -> vitesse = -0.5
+	direction = 180 -> vitesse = -1.0
+
+\image radar2 14 10;
+Lorsque la caisse est à droite, \c;dir\n; est négatif, compris entre 0 et -180 degrés.
+
+\b;À vous de jouer
+Pour que ce programme fonctionne, il faut encore déclarer toutes les \l;variables\u cbot\var; utilisées.
+\c;target\n; est de type \c;object\n;, alors que \c;dir\n; et \c;len\n; sont de type \c;float\n;.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tchasse; et \l;programmation\u cbot;.

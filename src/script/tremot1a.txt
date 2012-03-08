@@ -1,0 +1,14 @@
+extern void object::Solution( )
+{
+	send("order", 1);  // grab
+	wait(5);
+
+	send("order", 3);  // move(10)
+	wait(5);
+
+	send("order", 2);  // drop
+	wait(5);
+
+	send("order", 4);  // move(-10)
+	wait(5);
+}

@@ -1,0 +1,14 @@
+\b;Instruction \c;topo\n;
+Syntaxe¦:
+\s;\c;topo ( position );\n;
+
+Retourne l'élévation d'un point quelconque du terrain. Le niveau zéro correspond toujours au niveau de la mer. Une valeur négative indique donc que le point en question se trouve sous l'eau.
+
+\t;pos: \c;\l;point\u cbot\point;\n;
+Coordonnée de la position dont on désire connaître l'élévation.
+
+\t;Valeur retournée: \c;\l;float\u cbot\float;\n;
+Elévation du point donné en entrée.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,15 @@
+\b;Indicateur de chemin
+\image waypoint 4 4;
+Les croix bleues indiquent une position à atteindre, dans les exercices. Elles disparaissent automatiquement dès qu'un \l;robot d'entraînement\u object\bottr; s'approche.
+
+\t;Transport
+Impossible.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;WayPoint\n;
+
+\t;Dictionnaire anglais-français
+\c;way point\n; = point de passage
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

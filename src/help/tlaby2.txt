@@ -1,0 +1,13 @@
+\b;Exercice
+Le programme écrit dans l'\l;exercice précédent\u tlaby1; doit fonctionner quel que soit la disposition du labyrinthe. Pour vérifier cela, exécutez le même programme. Le \l;robot\u object\bottr; devrait se déplacer correctement dans ce nouveau labyrinthe qu'il ne connait pas.
+
+\b;Ouvrir
+Si vous avez bien enregistré votre programme dans l'exercice précédent, vous pouvez l'ouvrir ici, en cliquant \button 57; dans l'éditeur de programmes.
+
+\b;Aide
+Si vous avez besoin d'aide, consultez la documentation des instructions \c;\l;while\u cbot\while;\n;, \c;\l;radar\u cbot\radar;\n;, \c;\l;if\u cbot\if;\n;, \c;\l;move\u cbot\move;\n; et \c;\l;turn\u cbot\turn;\n;.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tlaby1; et \l;programmation\u cbot;.

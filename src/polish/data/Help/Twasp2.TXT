@@ -1,0 +1,84 @@
+\b;Zadanie
+Zestrzel wszystkie osy nieco efektywniej ni¿ w poprzednim programie.
+
+\b;Program
+Oto program z poprzedniego æwiczenia, który zabija wszystkie osy, jednak po bardzo wielu nieudanych próbach:
+\c;
+\s;extern void object::Wasp1()
+\s;{
+\s;	\l;object\u cbot\type;    item;
+\s;	
+\s;	\l;aim\u cbot\aim;(0);
+\s;	
+\s;	\l;while\u cbot\while; (true)
+\s;	{
+\s;		\l;while\u cbot\while; (\l;radar\u cbot\radar;(AlienWasp, 0, 360, 0, 20) == null)
+\s;		{
+\s;			item = \l;radar\u cbot\radar;(AlienWasp);
+\s;			\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(item.position));
+\s;			\l;motor\u cbot\motor;(1,1);
+\s;			
+\s;			\l;jet\u cbot\jet;(0);
+\s;			\l;if\u cbot\if; (position.z > item.position.z)
+\s;			{
+\s;				\l;jet\u cbot\jet;(-0.3);
+\s;			}
+\s;			
+\s;			\l;if\u cbot\if; (position.z < item.position.z - 1)
+\s;			{
+\s;				\l;jet\u cbot\jet;(0.3);
+\s;			}
+\s;			
+\s;			\l;wait\u cbot\wait;(0.2);
+\s;		}
+\s;		item = \l;radar\u cbot\radar;(AlienWasp);
+\s;		\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(item.position));
+\s;		\l;fire\u cbot\fire;(1);
+\s;	}
+\s;}
+\n;
+Wiele niecelnych strza³ów jest spowodowanych faktem, ¿e osa odlecia³a, zanim dolecia³ do niej pocisk. Jedynym sposobem usprawnienia programu jest ustawienie mocy obu silników oraz silnika odrzutowego w ten sposób, aby robot pod¹¿a³ t¹ sam¹ tras¹ co cel podczas strza³u.
+
+Bezpoœrednio przed strza³em program po raz ostatni reguluje kierunek instrukcj¹ \c;turn(direction(item.position));\n;. Aby pod¹¿aæ za os¹ w trakcie strzelania, nale¿y "zapamiêtaæ" k¹t ostatniego obrotu: jeœli by³ on dodatni(obrót w lewo), robot powinien siê obracaæ w lewo podczas strzelania; jeœli by³ ujemny, robot powinien obracaæ siê w prawo.
+
+Do "zapamiêtania" k¹ta ostatniego obrotu potrzebna bêdzie zmienna, zawieraj¹ca tylko jedn¹ liczbê. Jeœli nazwiesz j¹ \c;angle\n;, nale¿y zdefiniowaæ zmienn¹ za pomoc¹ nastêpuj¹cego wiersza na pocz¹tku programu:
+\c;
+\s;	\l;float\u cbot\type; angle;
+\n;
+Zmienna typu \l;float\u cbot\type; jest zmienn¹ typu, który mo¿e przechowywaæ ka¿d¹ liczbê, ca³kowit¹ b¹dŸ rzeczywist¹. Zobacz \l;tekst o typach zmiennych\u cbot\type; jeœli chcesz wiedzieæ wiêcej o ró¿nych typach zmiennych oraz co one zawieraj¹.
+
+Bezpoœrednio przed instrukcj¹ \c;fire(1);\n;, zamiast pisaæ \c;\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(item.position));\n;, umieœæ k¹t obrotu w zmiennej \c;angle\n;:
+\c;
+\s;	angle = direction(item.position);
+\n;
+Nastêpnie wykonaj obrót i ustaw moc silników tak, aby robot kontynuowa³ poruszanie siê:
+\c;
+\s;	turn(angle);
+\s;	if (angle < 0)
+\s;	{
+\s;		motor(1,0.5);
+\s;	}
+\s;	else
+\s;	{
+\s;		motor(0.5,1);
+\s;	}
+\n;
+Instrukcja \c;else\n; okreœla jakie instrukcje powinien wykonaæ program jeœli warunek podany instrukcji \c;if\n; jest fa³szywy.
+
+Nastêpnie trzeba ustawiæ moc silników odrzutowych, aby robot utrzymywa³ równie¿ t¹ sam¹ wysokoœæ co osa:
+\c;
+\s;	jet(0);
+\s;	if(position.z > item.position.z)
+\s;	{
+\s;		jet(-0.3);
+\s;	}
+\s;	
+\s;	if(position.z < item.position.z - 1)
+\s;	{
+\s;		jet(0.3);
+\s;	}
+\n;
+Ka¿dy zauwa¿y, ¿e ten program jest o wiele skuteczniejszy od poprzedniego!
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

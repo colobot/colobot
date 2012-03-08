@@ -1,0 +1,9 @@
+\b;Situation
+Félicitations¦! En suivant votre parcours, nous étions inquiets à votre sujet. Retournez à présent sur le \l;vaisseau spatial\u object\base;.
+
+Le nouveau système d'armement semble être une autre application de l'"or vert", la \l;matière organique\u object\bullet; produite par les insectes. Nous l'avons appelé \l;robot orgaShooter\u object\botoj;. Il va peut-être se révéler utile pour couvrir votre retour sur le \l;vaisseau\u object\base;.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Commandes\u command;.

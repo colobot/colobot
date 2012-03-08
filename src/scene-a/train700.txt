@@ -1,0 +1,2 @@
+Title.F text="Fonctions et tableaux" resume="Fonctions et tableaux"
+Title.E text="Functions and tables" resume="Functions and tables"

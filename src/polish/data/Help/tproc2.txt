@@ -1,0 +1,34 @@
+\b;Æwiczenie
+IdŸ drog¹ w kszta³cie spirali. Robot musi przejœæ 2 razy 25 metrów naprzód i skrêciæ, a nastêpnie 2 razy przejœæ po 20 metrów naprzód i skrêciæ, itd.
+\image tproc2 8 8;
+\b;Funkcja
+Warto zauwa¿yæ, ¿e "L"-kszta³tne czêœci pasuj¹ do siebie. Pierwsza czêœæ (ciemno niebieska) ma rozmiar dwa razy po 25 metrów. Druga (jasno niebieska) jest 5 metrów krótsza. Zacznijmy od napisania \l;funkcji\u cbot\function; która bêdzie poruszaæ robotem po "L"-kszta³tnej czêœci o d³ugoœci podanej jako parametr:
+\c;
+\s;void object::Part(float length)
+\s;{
+\s;	for ( int i=0 ; i<2 ; i=i+1 )
+\s;	{
+\s;		move(length);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+Teraz wystarczy tylko napisaæ g³ówn¹ funkcjê, która bêdzie wywo³ywa³a funkcjê \c;Part\n;. Na pocz¹tku zmienna \c;rest\n; bêdzie mia³a wartoœæ 25m. Pêtla \c;while\n; bêdzie powtarza³a instrukcje wewn¹trz bloku tak d³ugo, jak d³ugo zmienna \c;rest\n; bêdzie wiêksza od zera. Wewn¹trz pêtli najpierw nale¿y wywo³aæ funkcjê \c;Part\n; (zobacz powy¿ej), a nastêpnie odj¹æ 5m od d³ugoœci L.
+\c;
+\s;extern void object::Funkcja2( )
+\s;{
+\s;	float	rest = 25;
+\s;	while ( rest > 0 )
+\s;	{
+\s;		Part(rest);
+\s;		rest = rest-5;
+\s;	}
+\s;}
+\n;
+Funkcja \c;Part\n; zostanie po raz ostatni wywo³ana z wartoœci¹ \c;5\n;. Nastêpnie wyra¿enie \c;rest-5\n; przypisze zmiennej \c;rest\n; wartoœæ zero i pêtla \c;while\n; zatrzyma siê.
+
+\b;Uwaga
+Mo¿na zauwa¿yæ, ¿e w poprzednim æwiczeniu g³ówna funkcja by³a na pocz¹tku programu, podczas gdy w tym æwiczeniu jest ona na koñcu programu, za funkcj¹ \c;Part\n;. Kolejnoœæ funkcji w programie nie ma znaczenia, mo¿na je uszeregowaæ dowolnie.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

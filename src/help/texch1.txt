@@ -1,0 +1,36 @@
+\b;Exercice
+Des \l;bornes d'informations\u object\exchange; sont placées au milieu d'un champ de \l;mines\u object\mine;. Lorsque le \l;robot\u object\bottr; est proche d'une borne, il peut lire les informations qu'elle contient et qui donnent la direction à prendre pour atteindre la borne suivante, sans heurter les \l;mines\u object\mine;.
+Les bornes sont distantes de 20 mètres.
+
+\b;Principe
+\s;o  Répéter 5 fois¦:
+\s;	o  Avancer de 20 mètres.
+\s;	o  Lire la nouvelle direction dans la \l;borne\u object\exchange;.
+\s;	o  Tourner de l'angle obtenu.
+
+\image tinfo1 8 8;
+La répétition s'effectue avec une boucle \c;\l;repeat\u cbot\repeat;\n; comme vu précédemment¦:
+\s;\c;	repeat ( 5 )
+\s;	{
+\s;		\n;instructions à répéter ...\c;
+\s;	}
+\n;
+L'avance s'effectue avec un \c;\l;move\u cbot\move;(20);\n;.
+
+La lecture de la \l;borne\u object\exchange; s'obtient avec \c;\l;receive\u cbot\receive;("Direction");\n;. Ceci n'est évidemment possible que lorsque le \l;robot\u object\bottr; est proche de la borne. L'orientation du robot n'a pas d'importance.
+Il faudra définir une \l;variable\u cbot\var; \c;dir\n;, juste avant de l'utiliser ou tout au début du programme, à choix¦:
+\s;\c;	float  dir;
+\n;
+Et ensuite lui assigner la direction à prendre¦:
+\s;\c;	dir = receive("Direction");
+\n;
+Ce qui permet de tourner dans la bonne direction avec¦:
+\s;\c;	turn(dir);
+\n;
+\b;Remarque
+En cliquant sur une \l;borne\u object\exchange; pour la sélectionner, vous pouvez voir les paramètres qu'elle contient. Dans cet exercice, chaque borne contient une seule information appelée \c;"Direction"\n;, mais une borne peut contenir jusqu'à 10 valeurs. Ceci sera utilisé dans des exercices ultérieurs.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u ttit2; et \l;programmation\u cbot;.

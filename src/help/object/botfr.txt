@@ -1,0 +1,20 @@
+\b;\button 143; Robot shooter
+\image botfr 8 8;
+Robot à roues avec un canon shooter.
+
+Le canon permet de se défendre contre les \l;ennemis\u object\mother;. Mais attention, l'énergie consommée est très importante. Avec une \l;pile normale\u object\power;, il est possible de tirer quatre fois.
+
+Astuce: pendant le tir, il est possible de déplacer la souris, pour "balayer" toute une zone.
+
+La propulsion avec des roues est le mode standard, rapide, consommant peu d'énergie et adapté aux terrains relativement plats. Lorsque le relief devient trop accidenté, il faut opter si possible pour un \l;robot volant\u object\botfj; ou, si le vol est impossible, pour une propulsion à \l;chenilles\u object\botfc;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;WheeledShooter\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le canon par programmation, il faut utiliser l'instruction \c;\l;fire\u cbot\fire;\n;. L'instruction \c;\l;aim\u cbot\aim;\n; permet de l'orienter vers le haut ou vers le bas.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

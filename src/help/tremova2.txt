@@ -1,0 +1,37 @@
+\b;Exercice
+Cet exercice ressemble beaucoup au précédent. Il faut maintenant déplacer 3 cubes de \l;titanium\u object\titan; sur 3 plates-formes. Les coordonnées des plates-formes sont¦:
+\c;
+	x=10, y=-60
+	x=10, y=-65
+	x=10, y=-70
+\n;
+\b;Principe
+\s;o  Répéter 3 fois¦:
+\s;	o  Chercher le cube de titanium le plus loin avec \c;\l;radar\u cbot\radar;\n;.
+\s;	o  Prendre le titanium avec \c;\l;grab\u cbot\grab;\n;.
+\s;	o  Aller sur une plate-forme avec \c;\l;goto\u cbot\goto;\n;.
+\s;	o  Déposer le titanium avec \c;\l;drop\u cbot\drop;\n;.
+
+Il est nécessaire de chercher le titanium le plus éloigné, car il ne faut pas détecter celui que l'on vient de déposer sur une plate-forme.
+
+\b;Solution
+Une boucle \c;\l;for\u cbot\for;\n; permet de répéter 3 fois l'ensemble des instructions. A l'intérieur de la boucle, pour trouver le titanium le plus éloigné, utilisez l'instruction \c;\l;radar\u cbot\radar;(Titanium, 0, 360, 0, 1000, -1);\n;. La dernière valeur \c;-1\n; signifie que la recherche va de l'extérieur vers l'intérieur. On privilégie donc les objets les plus éloignés.
+\c;
+\s;object  metal;
+\s;metal = radar(Titanium, 0, 360, 0, 1000, -1);
+\s;if ( metal == null )  return;
+\s;goto(metal.position);
+\n;
+La variable \c;metal\n; est de type \c;\l;object\u cbot\object;\n;. Pour connaître la position de l'objet décrit par la variable, il faut donc écrire \c;metal.position\n;.
+
+Les coordonnées \c;x\n; des 3 plates-formes sont toutes égales à 10. En revanche, les coordonnées \c;y\n; varient de -60, -65 à -70. Une bonne idée pour calculer la position est de faire intervenir la variable \c;i\n; de la boucle \c;for\n;, qui prend les valeurs 0, 1 et 2¦:
+\c;
+\s;dest.x = 10;
+\s;dest.y = -60-5*i;
+\n;
+A vous de terminer le programme ...
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tremova1; et \l;programmation\u cbot;.

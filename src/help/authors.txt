@@ -1,0 +1,6 @@
+Equipe de développement¦:      Beta testeurs¦:
+
+- Daniel Roux                  - Adrien Roux       - Michael Jubin
+- Denis Dumoulin               - Didier Raboud     - Daniel Sauthier
+- Otto Kölbl                   - Nicolas Beuchat   - Nicolas Stubi
+- Michael Walz                 - Patrick Thévoz

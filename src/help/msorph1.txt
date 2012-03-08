@@ -1,0 +1,15 @@
+\b;Solution
+Construisez un \l;paratonnerre\u object\captor; près du drapeau bleu, le plus vite possible. Il vous protège de la foudre. Le bouton <rayon d'action> \button 41; montre la zone circulaire à l'intérieur de laquelle vous êtes protégé. Tous les bâtiments suivants doivent être construits dans ce périmètre sécurisé.
+
+Transportez les \l;piles\u object\power; vides qui sont sur le \l;vaisseau spatial\u object\base; sous le \l;paratonnerre\u object\captor;. Elles seront rechargées dès que la foudre tombe sur le paratonnerre.
+
+Construisez un \l;derrick\u object\derrick; puis un \l;convertisseur\u object\convert;.
+
+Vous pouvez maintenant produire du \l;titanium\u object\titan;. Construisez une \l;fabrique de robots\u object\factory; puis un \l;robot orgaShooter volant\u object\botoj;.
+
+Construisez un \l;radar\u object\radar;. Avec le robot orgaShooter, vous pouvez alors trouver et tuer toutes les \l;fourmis\u object\ant;.
+
+Dès que le \l;radar\u object\radar; ne détecte plus de \l;fourmis\u object\ant;, retournez sur le \l;vaisseau\u object\base; et décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

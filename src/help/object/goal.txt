@@ -1,0 +1,8 @@
+\b;Plate-forme d'arrivée
+La plate-forme d'arrivée est utilisée dans les exercices comme but à atteindre.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;GoalArea\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

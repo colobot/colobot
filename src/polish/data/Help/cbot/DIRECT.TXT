@@ -1,0 +1,15 @@
+\b;Instrukcja \c;direction\n;
+Sk³adnia:
+\s;\c;direction ( pozycja );\n;
+
+Oblicza k¹t obrotu, niezbêdny do skierowania robota w kierunku zadanej pozycji. 
+
+\t;pozycja: \c;\l;point\u cbot\point;\n;
+Pozycja, w kierunku której ma byæ skierowany robot.
+
+\t;Typ wyniku: \c;\l;float\u cbot\float;\n;
+K¹t obrotu, który powinien byæ wykonany. -90 oznacza obrót o 90 stopni w prawo. 
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.
+

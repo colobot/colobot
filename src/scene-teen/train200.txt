@@ -1,0 +1,2 @@
+Title.F text="Dessin élémentaire" resume="Dessin élémentaire"
+Title.E text="Drawing" resume="Drawing"

@@ -1,0 +1,19 @@
+\b;Instruction \c;private\n; (pour spécialistes)
+Les éléments déclarés dans une \l;classe\u cbot\class; peuvent être \l;publics\u cbot\public; (par défaut) ou privés. Un élément est privé en plaçant \c;private\n; devant le type de l'élément. Dès lors, ces éléments ne seront plus accessibles depuis l'extérieur de la définition de la classe elle-même.
+\c;
+\s;public class MaClasse
+\s;{
+\s;	int    b;                // public par défaut
+\s;	public int a;            // public aussi
+\s;	private point position;  // privé
+\s;}
+\s;void Test()
+\s;{
+\s;	MaClasse item;
+\s;	item.a = item.b = 12;      // ok
+\s;	message( item.position );  // erreur élément non accessible
+\s;}
+\n;
+\t;Voir aussi
+\c;\l;class\u cbot\class;\n;, \c;\l;public\u cbot\public;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

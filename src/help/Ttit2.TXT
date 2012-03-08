@@ -1,0 +1,40 @@
+\b;Exercice
+Amener sur le \l;convertisseur\u object\convert; un \l;minerai de titanium\u object\titanore; dont on ne connaît pas la position exacte en utilisant le \l;radar\u cbot\radar; du robot. 
+
+\b;Programme
+Comme vous l'aurez constaté, les programmes faits dans les exercices précédents sont complètement "aveugles": si le minerai, la pile ou les cibles se trouvaient à un autre endroit, le robot ne les trouverait pas.
+
+Le \l;radar\u cbot\radar; représente les "yeux" du robot et lui permet de détecter les objets qui l'entourent. Par exemple l'instruction \c;radar(TitaniumOre);\n; retournera toutes les informations sur le \l;minerai de titanium\u object\titanore; le plus proche. Cependant, il faut pouvoir mettre "quelque part" les informations que la fonction \c;radar(TitaniumOre);\n; va retourner. Pour ceci, nous aurons besoin d'une \l;variable\u cbot\var;.
+
+Une variable est comme une petite boîte avec un nom dans laquelle on peut mettre des informations, les retirer, les modifier, etc. Avant d'utiliser une variable, il faut la déclarer. D'abord, il faut donner le type de la variable, ici \c;\l;object\u cbot\object;\n;. Une variable de ce type contient les informations décrivant un objet, comme un minerai de titanium, une araignée, une fourmi, un robot, une pile, etc. Puis il faut donner un nom à la variable, par exemple \c;chose\n;. Nous aurons donc la ligne suivante¦:
+\c;
+\s;object chose;
+\n;
+Puis il faut mettre les informations que nous donne l'instruction \c;radar(TitaniumOre)\n; dans cette variable¦:
+\c;
+\s;chose = radar(TitaniumOre);
+\n;
+La variable \c;chose\n; contient beaucoup d'informations: la position, l'orientation, l'inclinaison, etc. Pour connaître la position, il faut écrire \c;chose.position\n;. Puis on utilise l'instruction \c;\l;goto\u cbot\goto;();\n; pour déplacer le robot vers cette position. On écrit simplement¦:
+\c;
+\s;goto(chose.position);
+\n;
+Ce qui se traduit en français par: va à la position de l'objet décrit par la variable \c;chose\n;.
+Puis il suffit de prendre ce qui s'y trouve avec \c;\l;grab\u cbot\grab;();\n;.
+
+Il faut ensuite chercher le \l;convertisseur\u object\convert;, et mettre les informations sur le convertisseur dans la variable \c;chose\n;¦:
+\c;
+\s;chose = radar(Converter);
+\n;
+On se déplace avec l'instruction \c;goto(chose.position);\n; comme ci-dessus, on pose le minerai, on recule, et c'est terminé.
+
+Pour savoir comment s'appellent les différents objets dans le langage de programmation, reportez-vous au \l;texte décrivant les catégories\u cbot\category;.
+
+\b;Remarques
+Il ne faut déclarer une variable qu'une seule fois tout au début du programme¦! On peut ensuite l'utiliser autant de fois qu'on veut.
+
+Pour vous éviter de recopier les instructions expliquées ci-dessus, vous pouvez les sélectionner avec la souris, et les reporter avec copier-coller dans le programme.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u ttit1; et \l;programmation\u cbot;.

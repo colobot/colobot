@@ -1,0 +1,21 @@
+\b;Instruction \c;flatground\n;
+Syntaxe¦:
+\s;\c;flatground ( center, rmax );\n;
+
+Calcule le rayon maximal de la zone plate, permettant par exemple de construire un bâtiment.
+
+\t;center: \c;\l;point\u cbot\point;\n;
+Position centrale de la zone circulaire.
+
+\t;rmax: \c;\l;float\u cbot\float;\n;
+Rayon maximal après lequel le calcul est stoppé.
+
+\t;Valeur retournée: \c;\l;float\u cbot\float;\n;
+Rayon maximal de la zone plate, compris entre zéro et rmax.
+
+\t;Dictionnaire anglais-français
+\c;flat  \n; = plat
+\c;ground\n; = sol
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

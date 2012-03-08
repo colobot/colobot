@@ -1,0 +1,21 @@
+\b;Instruction \c;eof\n;
+L'instruction \c;eof();\n; teste s'il existe encore une ou plusieurs lignes à lire dans le fichier de texte ouvert dans le dossier files/. Cette instruction est une méthode de la classe \c;\l;file\u cbot\file;\n;. C'est la raison pour laquelle on n'écrit jamais \c;eof()\n; tout seul, mais \c;handle.eof()\n;¦:
+\c;
+\s;	if ( handle.eof() )
+\n;
+Exemple¦:
+\c;
+\s;	while ( not handle.eof() )
+\s;	{
+\s;		s = handle.readln();
+\s;	}
+\n;
+\t;Dictionnaire anglais-français
+\c;file  \n; = fichier
+\c;handle\n; = poignée, manipuler
+\c;readln\n; = abréviation de "read line", lit une ligne
+\c;eof   \n; = abréviation de "end of file", fin de fichier
+
+\t;Voir aussi
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;readln\u cbot\readln;\n; et \c;\l;writeln\u cbot\writeln;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

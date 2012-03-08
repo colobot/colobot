@@ -1,0 +1,16 @@
+public extern void TestIntrinsic()
+{
+	point	a ( 1, 2 );
+	print (a);
+
+	a.x = 3;
+	a.y = 4;
+
+	point	b = a; 
+
+	println ( b.x, b.y, b )  ;
+	if ( b == a ) b.y = 0;
+	println (a,b);
+	if ( b != a ) b.y = a.y;
+	println(a,b);
+}

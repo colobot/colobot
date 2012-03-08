@@ -1,0 +1,28 @@
+\b;Drapeau de couleur
+\image flag 4 4;
+Les drapeaux de couleur permettent de marquer un position stratégique. \l;Vous\u object\human; pouvez les poser pour vous faciliter l'orientation, ou pour marquer des endroits que vous voudrez retrouver par la suite. Les drapeaux apparaissent sur la mini-carte sous forme d'une croix de la même couleur que le drapeau.
+
+Lorsque votre mini-carte est en panne, le fait que les drapeaux s'orientent dans le vent peut vous permettre de ne pas tourner en rond et de retrouver votre chemin.
+
+Vous pouvez aussi utiliser les drapeaux pour donner aux robots un point de référence: l'instruction \c;\l;radar\u cbot\radar;\n; permet aux robots programmés de connaître la position des drapeaux d'une certaine couleur.
+
+\t;Transport
+Impossile.
+
+\t;\l;Catégories\u cbot\category; de l'objet
+\c;BlueFlag\n;
+\c;RedFlag\n;
+\c;GreenFlag\n;
+\c;YellowFlag\n;
+\c;VioletFlag\n;
+
+\t;Dictionnaire anglais-français
+\c;blue  \n; = bleu
+\c;red   \n; = rouge
+\c;green \n; = vert
+\c;yellow\n; = jaune
+\c;violet\n; = violet
+\c;flag  \n; = drapeau
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

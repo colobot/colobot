@@ -1,0 +1,25 @@
+extern void object::Solution( )
+{
+	SendToPost(1, 20);  // move(20);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 20);  // move(20);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 10);  // move(10);
+	SendToPost(2, 90);  // turn(90);
+	SendToPost(1, 10);  // move(10);
+	SendToPost(2,-90);  // turn(-90);
+	SendToPost(1, 10);  // move(10);
+}
+
+void object::SendToPost(float order, float param)
+{
+	// envoie l'ordre puis le paramètre
+	send("order", order, 100);
+	send("param", param, 100);
+
+	// attend la fin du travail de l'esclave :
+	while ( testinfo("order", 100) )
+	{
+		wait(1);
+	}
+}

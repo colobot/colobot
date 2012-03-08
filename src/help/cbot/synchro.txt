@@ -1,0 +1,23 @@
+\b;Instruction \c;synchronized\n; (pour spécialistes)
+Les méthodes d'une \l;classe\u cbot\class; peuvent être déclarées \c;synchronized\n;. Dans ce cas, on assure que deux exécutions de ces méthodes ne peuvent pas être simultanées. Considérez par exemple, la classe absurde suivante¦:
+\c;
+\s;public class bloquage
+\s;{
+\s;	static int nb = 33;
+\s;	synchronized inc( )
+\s;	{
+\s;		int val = nb;
+\s;		wait ( 2 );  // pour voir
+\s;		nb = nb + 1;
+\s;		return val;
+\s;	}
+\s;}
+\n;
+Que se passe-t-il, sans le mot \c;synchronized\n;, si deux robots exécutent la méthode \c;inc\n; à peu prêt en même temps¦?
+Tous les deux vont faire \c;val=nb\n; avant d'attendre 2 secondes, donc les deux auront \c;val=33\n;.
+Puis tous les deux vont incrémenter \c;nb\n;, qui va passer à \c;35\n;.
+Avec \c;synchronized\n;, le premier des robots va commencer l'exécution avec \c;val=33\n;, et attendre les 2 secondes, alors que le second robot va attendre. Lorsque le premier robot va poursuivre, mettre \c;nb=34\n; et quitter en rendant la valeur \c;33\n;, alors seulement le second robot va pouvoir commencer la fonction avec \c;val=34\n;.
+
+\t;Voir aussi
+\c;\l;class\u cbot\class;\n;, \c;\l;static\u cbot\static;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

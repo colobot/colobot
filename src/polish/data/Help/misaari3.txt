@@ -1,0 +1,20 @@
+\b;Raport z satelity
+Obecnie na orbicie geostacjonarnej planety Saari.
+\c;
+\s;-> POWIERZCHNIA\c;
+\tab;Temperatura:      44,3C
+\tab;Atmosfera:        CO2, tlen, azot
+\tab;Wiatr:            2,3 m/s
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       brak
+
+\s;-> PODGLEBIE\c;
+\tab;ród³o energii:   brak
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       brak
+
+\s;-> DODATKOWE INFORMACJE\c;
+\tab;Wykryto:          u¿yteczne pozosta³oœci 
+\tab;Wykryto:          olbrzymie mrówki
+\tab;  - Zagro¿enie:   ?
+\n;

@@ -1,0 +1,17 @@
+extern public void TSTR()
+{
+	string s = "C'est un essai";
+
+	print ( s, strlen(s), strleft(s, 3), strright(s,3), strmid(s, 2), strmid(s,2,3), strfind(s, "un"), strfind(s, "sdgfld") );
+
+	show ( strupper(s), strlower(s) );
+
+	s = "123.45" ;
+	print ( strval(s) );
+
+
+	string sub = strright("abcdef", 2);  // sub vaut "ef###", # étant un caractère bizarre quelconque
+	show (sub);
+	int pos = strfind("abcdef", "xy");  // pos vaut -1. Pourquoi pas nan ?
+	show(pos);
+}

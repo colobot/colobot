@@ -1,0 +1,33 @@
+\b;Le grand nettoyage
+Cette fois, un grand coup de balai est nécessaire. Plusieurs vieilles pièces mécaniques sont abandonnées un peu partout. Il s'agit de toutes les trouver et de les désintégrer.
+
+\b;Programme
+Le programme de l'exercice précédent fait presque l'affaire. Il suffit de répèter plusieurs fois le programme, jusqu'à ce que toutes les pièces soient trouvées.
+
+Ajoute donc une instruction \c;repeat(100)\n; au début du programme. Comme on ne sait pas combien de pièces sont abandonnées, on donne le nombre arbitraire de 100 répétitions. Le programme s'arrêtera de toute façon avant¦:
+
+\s;o  Répète 100 fois¦:
+\s;	o  Trouve un déchet
+\s;	o  Prend le déchet
+\s;	o  Trouve le désintégrateur
+\s;	o  Dépose le déchet
+\s;	o  Recule de 10 centimètres
+
+En fait, lorsque l'instruction \c;find(Scrap);\n; ne trouve plus de déchet, le message "Objet n'existe pas" s'affiche en rouge, et le programme s'arrête automatiquement.
+
+\b;Attention
+Il faut d'abord écrire l'instruction \c;repeat(100)\n;. Ensuite, lorsque tu tapes l'accolade ouvrante \c;{\n;, une accolade fermante \c;}\n; est automatiquement insérée juste après. C'est généralement très pratique. Malheureusement, ici, ce n'est pas du tout ce qu'il faut. Supprime donc l'accolade fermante, pour la retaper à la fin du programme.
+La structure générale du programme doit être celle-çi¦:
+\c;
+extern void object::Go()
+{
+	repeat(100)
+	{
+		find(Scrap);
+		...
+		move(-10);
+	}
+}
+\n;
+Vérifie bien que les lignes rouges pointillées lient les bonnes accolades.
+A toi de compléter le programme ...

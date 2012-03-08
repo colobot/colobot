@@ -1,0 +1,2 @@
+Title.F text="Déplacements" resume="Déplace"
+Title.E text="Mover" resume="Move"

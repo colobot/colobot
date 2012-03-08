@@ -1,0 +1,55 @@
+\b;Instruction \c;this\n;
+A l'intérieur d'une méthode d'une \l;classe\u cbot\class;, il est possible d'utiliser le mot \c;this\n; qui est une référence à l'instance courante. La plupart du temps, la référence \c;this\n; est utilisée lorsqu'on désire passer une référence à l'instance courante comme paramètre à une fonction.
+\c;
+\s;public class MyClass
+\s;{
+\s;	int    m_int;
+\s;	string m_str;
+\s;	void MyFunction()
+\s;	{
+\s;		OtherFunction(this);
+\s;		m_int = 2;
+\s;	}
+\s;}
+\s;
+\s;void OtherFunction(MyClass obj)
+\s;{
+\s;	message(obj.m_str);
+\s;}
+\s;
+\s;extern void object::Test()
+\s;{
+\s;	MyClass item();
+\s;	item.m_str = "Hello";
+\s;	item.MyFunction();  // affiche "Hello"
+\s;}
+\n;
+Il est aussi possible d'écrire \c;this.\n; devant un nom de champ, ce qui est plus explicite mais pas nécessaire. Dans l'exemple ci-dessus, nous pouvons écrire dans la fonction \c;MyFunction()\n;¦:
+\c;
+\s;	m_int = 2;
+\s;	this.m_int = 2;  // identique
+\n;
+Dans une fonction de la classe \c;\l;object\u cbot\object;\n;, il est possible d'accéder à la position du robot, à son orientation, etc. En fait, on accède ainsi implicitement à l'instance du robot. Il est aussi possible d'écrire \c;this.\n; devant un nom de champ, ce qui est plus explicite¦:
+\c;
+\s;extern void object::Display()
+\s;{
+\s;	message(orientation);
+\s;	message(this.orientation);  // plus explicite
+\s;}
+\n;
+Il est cependant nécessaire d'utiliser \c;this\n; lorsque le nom d'un champ est caché par une déclaration de variable ou de paramètre. L'exemple suivant montre une \l;classe\u cbot\class; appelée \c;MaClasse\n; avec une méthode \c;Put\n;. Comme le nom \c;value\n; du paramètre est le même que le nom du champ de la classe, il est nécessaire d'utiliser \c;this.value\n; pour utiliser le champ de la classe¦:
+\c;
+\s;public class MaClasse
+\s;{
+\s;	int  value;
+\s;	void Put( int value )
+\s;	{
+\s;		this.value = value;
+\s;	}
+\s;}
+\n;
+\t;Dictionnaire anglais-français
+\c;this\n; = ce
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

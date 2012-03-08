@@ -1,0 +1,17 @@
+\b;Keys A, B, C and D
+\image key 4 4;
+The keys give \l;you\u object\human; access to the \l;vault\u object\safe;. You'll need 4 of them.
+
+o  Key A, blue and triangle-shaped
+o  Key B, red and pentagon-shaped
+o  Key C, green and shaped like a 6-pointed star
+o  Key D, yellow and circular
+
+\t;Transport
+All \l;grabbers\u object\botgr; and the \l;astronaut\u object\human;.
+
+\t;Objects \l;Category\u cbot\category;
+\c;KeyA\n;, \c;KeyB\n;, \c;KeyC\n; and \c;KeyD\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

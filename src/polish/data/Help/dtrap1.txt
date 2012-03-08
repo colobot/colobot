@@ -1,0 +1,26 @@
+\b;Æwiczenie
+Zaprogramuj \l;robota\u object\bottr; tak, aby znalaz³ wszystkie \l;niebieskie plusy\u object\waypoint;, nie zbli¿aj¹c siê przy tym zanadto do \l;min\u object\mine;. Plus znika gdy przejdzie przez niego robot. Oto ogólna zasada dzia³ania:
+
+	Powtarzaj w nieskoñczonoœæ:
+	o  Poszukaj miny
+	o  Jeœli znaleziono minê, oblicz przeciwny kierunek
+	o  Poszukaj plusa
+	o  Jeœli nie znaleziono, zatrzymaj program
+	o  Oblicz kierunek do plusa
+	o  Oblicz œredni¹ wartoœæ tych dwóch kierunków
+	o  Ustaw prêdkoœci silników tak, aby robot kierowa³ siê na uœredniony kierunek
+
+\b;Instrukcja \c;radar\n;
+Do znajdowania min przy pomocy \c;\l;radaru\u cbot\radar;\n;, polecane s¹ nastêpuj¹ce parametry:
+\c;\s;	radar(Mine, 0, 180, 0, 5);\n;
+Z k¹tem widzenia 180 stopni nie bêd¹ wykrywane miny znajduj¹ce siê za robotem. Równie¿ miny bêd¹ce dalej ni¿ 5 metrów bêd¹ ignorowane.
+
+Aby znaleŸæ niebieski plus, wystarczy napisaæ:
+\c;\s;	radar(WayPoint);\n;
+Niebieskie plusy mo¿na znaleŸæ wszêdzie.
+
+Do obliczania kierunku s³u¿y instrukcja \c;\l;direction\u cbot\direct;\n;.
+Do ustawiania prêdkoœci silników s³u¿y instrukcja \c;\l;motor\u cbot\motor;\n;.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,0 +1,9 @@
+\b;Instructions de Houston
+Ramenez la deuxième \l;clé\u object\key;, qui doit se trouver près de votre position. 
+
+Avant de décoller, amenez le \l;robot bouclier\u object\botshld; et le \l;sous-marin\u object\botsub; sur le vaisseau.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

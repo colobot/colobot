@@ -1,0 +1,119 @@
+Title.F      text="Déplacement libre"
+Resume.F     text="Déplacer librement le petit robot."
+Title.E      text="First turn"
+Resume.E     text="Draw a upper <L>."
+ScriptName.F text="Go"
+ScriptName.E text="Go"
+Instructions name="tteen101f.txt" immediat=1
+HelpFile     name="cbot.txt"
+Satellite    name="dico.txt"
+EndingFile   win=-1 lost=-1
+
+Global        unitScale=1 traceQuality=5 shortcut=0
+Audio         track=0
+AmbiantColor  air=152;152;102;102 water=20;20;20;20  // grey
+FogColor      air=0;0;0;0 water=68;100;80;0  // bleu sale
+VehicleColor  color=255;200;0;0
+DeepView      air=250.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=1
+Background    up=50;150;180;0 down=64;64;64;0 cloudUp=43;45;143;0 cloudDown=200;255;0;0
+
+TerrainGenerate mosaic=5 brick=3 size=10 vision=500.00 depth=1 slope=3.0
+TerrainWind     speed=0;0
+TerrainRelief   image="textures\relief60.bmp" factor=1.0 border=0
+
+TerrainMaterial id=10 image="cellar01" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=11 image="cellar01" u=0.25 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=12 image="cellar01" u=0.50 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=13 image="cellar01" u=0.75 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=14 image="cellar01" u=0.00 v=0.25 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=15 image="cellar01" u=0.25 v=0.25 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=16 image="cellar01" u=0.50 v=0.25 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=17 image="cellar01" u=0.75 v=0.25 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=18 image="cellar01" u=0.00 v=0.50 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=19 image="cellar01" u=0.25 v=0.50 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=20 image="cellar01" u=0.50 v=0.50 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=21 image="cellar01" u=0.75 v=0.50 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=22 image="cellar01" u=0.00 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=23 image="cellar01" u=0.25 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=24 image="cellar01" u=0.50 v=0.75 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial id=25 image="cellar01" u=0.75 v=0.75 up=1 down=1 left=1 right=1 hard=0.6
+
+TerrainInit     id=10
+TerrainLevel    id=10;11;12;13;14;15;16;17 min= 0.0 max=99.0 slope=0.0 freq=100.0
+
+TerrainCreate
+
+BeginObject
+CreateObject pos= -40;   0 dir=0.00 type=PracticeBot reset=1 toy=1 select=1 power=100 camera=BACK
+//CreateObject pos=  0;  0 dir=1.50 type=PracticeBot reset=1 trainer=1 toy=1 script4="tline2.txt" camera=PLANE
+//CreateObject pos=-60;-60 dir=1.50 type=Me option=1 select=1
+
+CreateObject pos=-124;  74 dir=0.25 type=WayPoint reset=1
+CreateObject pos=-184;  74 dir=0.25 type=WayPoint reset=1
+CreateObject pos=-113; 135 dir=0.25 type=WayPoint reset=1
+CreateObject pos= -80; 174 dir=0.25 type=WayPoint reset=1
+CreateObject pos=  46;  53 dir=0.25 type=WayPoint reset=1
+CreateObject pos= 183; -27 dir=0.25 type=WayPoint reset=1
+CreateObject pos= 157;-109 dir=0.25 type=WayPoint reset=1
+CreateObject pos=  28;-184 dir=0.25 type=WayPoint reset=1
+CreateObject pos= -27;-184 dir=0.25 type=WayPoint reset=1
+CreateObject pos=-145; -15 dir=0.25 type=WayPoint reset=1
+CreateObject pos=  17; 193 dir=0.25 type=WayPoint reset=1
+CreateObject pos=  85;  18 dir=0.25 type=WayPoint reset=1
+
+CreateObject pos=   0;-200 dir=1.00 type=Teen20
+CreateObject pos= 200;   0 dir=0.50 type=Teen21
+CreateObject pos=   0; 200 dir=0.00 type=Teen22
+CreateObject pos=-200;   0 dir=1.50 type=Teen21
+
+CreateObject pos=  19;  15 dir=0.45 type=Teen2
+CreateObject pos= -15;  65 dir=0.80 type=Teen4
+
+CreateObject pos=-150; -80 dir=1.45 type=Teen30
+CreateObject pos=-130; -11 dir=0.10 type=Teen32
+CreateObject pos=-102;  69 dir=1.05 type=Teen13
+CreateObject pos=  23;  55 dir=1.99 type=Teen15
+CreateObject pos=  70;  10 dir=0.45 type=Teen14
+CreateObject pos= -61; 163 dir=1.70 type=Teen9
+CreateObject pos= -44; 169 dir=1.20 type=Teen9 h=42
+CreateObject pos= -91; 153 dir=1.10 type=Teen8
+CreateObject pos=-111; 120 dir=1.45 type=Teen6
+CreateObject pos=  10; -26 dir=0.20 type=Teen8
+CreateObject pos=  86;  25 dir=0.20 type=Teen1
+CreateObject pos= 110;   6 dir=0.55 type=Teen0
+CreateObject pos=  12; 173 dir=0.15 type=Teen13
+CreateObject pos=  60;  80 dir=0.60 type=Teen23
+CreateObject pos=-185;  70 dir=1.00 type=Teen24
+CreateObject pos= 185; -95 dir=0.00 type=Teen25
+
+CreateObject pos= 133;-104 dir=0.00 type=Teen15
+CreateObject pos= 178; -62 dir=0.10 type=Teen15
+CreateObject pos= 172;  -8 dir=1.45 type=Teen15
+CreateObject pos= 126;  77 dir=1.70 type=Teen16
+CreateObject pos= 180; 150 dir=0.60 type=Teen15
+
+CreateObject pos= 127;-178 dir=0.05 type=Teen13 h=72
+CreateObject pos=  96;-190 dir=1.00 type=Teen17
+CreateObject pos=   0;-160 dir=1.00 type=Teen19
+CreateObject pos=-152;-172 dir=1.00 type=Teen18
+CreateObject pos= -29;-175 dir=1.90 type=Teen8 h=72
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.90; 0.90; 0.90 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+CreateLight dir=-0.5; 1.0;-0.5 color= 0.24; 0.24; 0.24 type=Object
+
+MapColor image=1 filename="diagram\teen101f.bmp" offset=0;0 zoom=0.85 angle=90 toyIcon=1 debug=0
+
+DoneResearch type=WINGER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=PracticeBot lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WayPoint min=0 max=0
+
+Camera eye=-140;50;0 lookat=-40;1;0 delay=2

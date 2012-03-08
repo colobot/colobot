@@ -1,0 +1,486 @@
+Several people have asked me for the sample code I use to program
+the mixer in Windows. Since it's a fairly short sample and there's
+clearly some interest, I thought I'd post it directly to the newsgroup.
+Here it is ... enjoy! (?)
+
+Julian
+
+// Example routine that manipulates the mixer controls for Win32
+// This code is not a stand-alone application ...
+//
+// It's also not very pretty ...
+//
+// But then, neither is the API ...
+//
+// Julian Bunn, 1998, julianb@altavista.net
+
+
+#include <windows.h>
+#include <mmsystem.h>
+
+
+MIXERCONTROLDETAILS mixDetailsMic,mixDetailsSpk,mixDetailsLin;
+LONG
+lMaximumSpk,lMaximumMic,lMaximumLin,lMinimumMic,lMinimumSpk,lMinimumLin;
+
+int         nMixerDevs;
+int         nMicMixID;
+
+LPHMIXER    hMixer;
+UINT        IdMixer;
+
+
+/****************************************************************************
+
+        Function: ProgramInitMixer()
+
+        PURPOSE : Initialises the mixer
+*****************************************************************************/
+
+LONG WINAPI ProgramInitMixer()
+{
+ UINT iS,iD,iDC,iC, itype;
+ UINT volume;
+ MMRESULT mmres;
+ MIXERCAPS mixCaps;
+ MIXERLINE mixLine;
+ MIXERLINECONTROLS mixControls;
+ MIXERCONTROL mixClist[50];
+ MIXERCONTROLDETAILS mixDetails;
+ MIXERCONTROLDETAILS_UNSIGNED mixValue;
+ MIXERCONTROLDETAILS_BOOLEAN mixMute;
+ MIXERCONTROLDETAILS_BOOLEAN mixBoolean[50];
+ MIXERCONTROLDETAILS_LISTTEXT mixList[50];
+ BOOL bDoneMike = FALSE;
+ BOOL bDoneSpkr = FALSE;
+ UINT LineID = 0;
+
+ if(!bMixerOpened) {
+// check first if we have a mixer
+    if((nMixerDevs = mixerGetNumDevs()) < 1) {
+       return (Program_ERROR);
+    }
+
+// really need to pop up a chooser for which mixer device, in
+// cases where there is more than one.
+// In the meantime, I select the last one listed
+
+    IdMixer = nMixerDevs-1;
+
+    mmres = mixerOpen((LPHMIXER) &hMixer, IdMixer, (DWORD) 0, (DWORD)
+NULL,
+          MIXER_OBJECTF_MIXER);
+    if(mmres != MMSYSERR_NOERROR) {
+           return (Program_ERROR);
+       }
+
+    bMixerOpened = TRUE;
+ }
+
+ mmres = mixerGetDevCaps(IdMixer, (LPMIXERCAPS) &mixCaps,
+sizeof(MIXERCAPS));
+ if(mmres != MMSYSERR_NOERROR) {
+        return (Program_ERROR);
+    }
+// Set the manufacturer's name for the mixer ...
+    SetDlgItemText(hWndDialogBox,IDC_MIXERNAME,mixCaps.szPname);
+    if(nMixerDevs>1) {
+       DialogBox(g_hInstance,MAKEINTRESOURCE(IDD_INFOMESSAGE1),
+hWndDialogBox, DialogBoxCallback);
+    }
+
+
+// Loop over the destination mixer lines
+ for (iD=0;iD<mixCaps.cDestinations;iD++) {
+      mixLine.cbStruct = sizeof(MIXERLINE);
+      mixLine.dwDestination = (DWORD) iD;
+   mixLine.dwSource = (DWORD) 0;
+// Get information on this line
+   mmres = mixerGetLineInfo(hMixer, (LPMIXERLINE) &mixLine,
+        MIXER_GETLINEINFOF_DESTINATION);
+
+         if(mmres != MMSYSERR_NOERROR) {
+               return (Program_ERROR);
+            }
+
+// I select types I'm interested in: the speaker output, the input
+(voice and wave)
+   itype = 0;
+   if(mixLine.dwComponentType == MIXERLINE_COMPONENTTYPE_DST_SPEAKERS)
+itype = 1; // Output for speakers ... only allow WAVEOUT
+                  if(mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_DST_VOICEIN)   itype = 2; // Input for ADC ...
+only allow Microphone (or AUX)
+                  if(mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_DST_WAVEIN)   itype = 2; // Input for ADC ...
+only allow Microphone (or AUX)
+   if(itype == 2 && !bMicrophone) {
+    itype = 3;
+   }
+
+
+      mixControls.cbStruct = sizeof(MIXERLINECONTROLS);
+      mixControls.dwLineID = mixLine.dwLineID;
+      mixControls.cControls = mixLine.cControls;
+      mixControls.cbmxctrl = sizeof(mixClist[0]);
+      mixControls.pamxctrl = (LPMIXERCONTROL) &mixClist[0];
+// Get the controls for the current destination mixer line
+      mmres = mixerGetLineControls(hMixer,
+       (LPMIXERLINECONTROLS) &mixControls,
+    MIXER_GETLINECONTROLSF_ALL);
+         if(mmres != MMSYSERR_NOERROR) {
+               return (Program_ERROR);
+              }
+            for (iDC=0;iDC<mixLine.cControls;iDC++) {
+// For this control, I make various checks on its type
+    if(mixClist[iDC].dwControlType == MIXERCONTROL_CONTROLTYPE_MUX ||
+                           mixClist[iDC].dwControlType ==
+MIXERCONTROL_CONTROLTYPE_MIXER) {
+
+// This is a control that defines a set of connections ... get all the
+types, and the values
+// for the connection
+       mixDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
+       mixDetails.dwControlID = mixClist[iDC].dwControlID;
+       mixDetails.cChannels = 1;//mixLine.cChannels;
+       mixDetails.hwndOwner = (HWND) mixClist[iDC].cMultipleItems;
+       mixDetails.cbDetails = sizeof(MIXERCONTROLDETAILS_LISTTEXT);
+       mixDetails.paDetails = (LPMIXERCONTROLDETAILS_LISTTEXT)
+&mixList[0];
+                           mmres = mixerGetControlDetails(hMixer,
+         (LPMIXERCONTROLDETAILS) &mixDetails,
+      MIXER_GETCONTROLDETAILSF_LISTTEXT);
+                      if(mmres != MMSYSERR_NOERROR) {
+                                return (Program_ERROR);
+                           }
+
+       mixDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
+       mixDetails.dwControlID = mixClist[iDC].dwControlID;
+       mixDetails.cChannels = 1;//mixLine.cChannels;
+       mixDetails.hwndOwner = (HWND) mixClist[iDC].cMultipleItems;
+       mixDetails.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
+       mixDetails.paDetails = (LPMIXERCONTROLDETAILS_BOOLEAN)
+&mixBoolean[0];
+                           mmres = mixerGetControlDetails(hMixer,
+         (LPMIXERCONTROLDETAILS) &mixDetails,
+      MIXER_GETCONTROLDETAILSF_VALUE);
+                      if(mmres != MMSYSERR_NOERROR) {
+                              return (Program_ERROR);
+                           }
+// In this application, I want to set only the microphone or line as
+input sources ...
+
+for(iS=0;iS<mixClist[iDC].cMultipleItems;iS++) {
+        mixBoolean[iS].fValue = FALSE;
+                                 if(itype == 2 && mixList[iS].dwParam2
+== MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE) {
+         mixBoolean[iS].fValue = TRUE;
+         bDoneMike = TRUE;
+        }
+                                 if(itype == 3 && (mixList[iS].dwParam2
+== MIXERLINE_COMPONENTTYPE_SRC_LINE ||
+                       mixList[iS].dwParam2 ==
+MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY)) {
+         if(strncmp(mixList[iS].szName,"Line",4) == 0) {
+            mixBoolean[iS].fValue = TRUE;
+            bDoneMike = TRUE;
+         }
+        }
+        if(itype == 1 && mixList[iS].dwParam2 ==
+MIXERLINE_COMPONENTTYPE_DST_SPEAKERS) {
+                                       mixBoolean[iS].fValue = TRUE;
+         bDoneSpkr = TRUE;
+                                 }
+       }
+// I've prepared the settings accordingly ... now I set them in the
+mixer
+       mmres = mixerSetControlDetails(hMixer,
+            (LPMIXERCONTROLDETAILS) &mixDetails,
+          MIXER_SETCONTROLDETAILSF_VALUE);
+                      if(mmres != MMSYSERR_NOERROR) {
+                                return (Program_ERROR);
+                           }
+    }
+    if(mixClist[iDC].dwControlType == MIXERCONTROL_CONTROLTYPE_VOLUME ||
+
+       mixClist[iDC].dwControlType == MIXERCONTROL_CONTROLTYPE_TREBLE ||
+
+       mixClist[iDC].dwControlType == MIXERCONTROL_CONTROLTYPE_BASS) {
+// This is a control of a volume
+       volume = 0;
+
+       mixDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
+       mixDetails.dwControlID = mixClist[iDC].dwControlID;
+       mixDetails.cChannels = (DWORD) 1;
+       mixDetails.hwndOwner = NULL;
+       mixDetails.cbDetails = sizeof(MIXERCONTROLDETAILS_UNSIGNED);
+       mixDetails.paDetails = (LPMIXERCONTROLDETAILS_UNSIGNED)
+&mixValue;
+                           mmres = mixerGetControlDetails(hMixer,
+         (LPMIXERCONTROLDETAILS) &mixDetails,
+      MIXER_GETCONTROLDETAILSF_VALUE);
+
+                      if(mmres != MMSYSERR_NOERROR) {
+                               return (Program_ERROR);
+                           }
+// I want to set all volumes to maximum, treble and bass boost to
+minimum
+       if(mixClist[iDC].dwControlType ==
+MIXERCONTROL_CONTROLTYPE_VOLUME) {
+           if(mixValue.dwValue != 0) mixValue.dwValue =
+mixClist[iDC].Bounds.lMaximum;
+       } else {
+           mixValue.dwValue = mixClist[iDC].Bounds.lMinimum;
+       }
+       mmres = mixerSetControlDetails(hMixer,
+         (LPMIXERCONTROLDETAILS) &mixDetails,
+      MIXER_SETCONTROLDETAILSF_VALUE);
+                      if(mmres != MMSYSERR_NOERROR) {
+                               return (Program_ERROR);
+                           }
+    }
+    if(mixClist[iDC].dwControlType == MIXERCONTROL_CONTROLTYPE_MUTE) {
+// A mute control _in principle_ I've already set all these up ...
+             mixDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
+       mixDetails.dwControlID = mixClist[iDC].dwControlID;
+       mixDetails.cChannels = (DWORD) 1;
+       mixDetails.hwndOwner = NULL;
+       mixDetails.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
+       mixDetails.paDetails = (LPMIXERCONTROLDETAILS_BOOLEAN) &mixMute;
+                           mmres = mixerGetControlDetails(hMixer,
+            (LPMIXERCONTROLDETAILS) &mixDetails,
+            MIXER_GETCONTROLDETAILSF_VALUE);
+       mixMute.fValue = mixClist[iDC].Bounds.lMinimum;
+       mmres = mixerSetControlDetails(hMixer,
+           (LPMIXERCONTROLDETAILS) &mixDetails,
+           MIXER_SETCONTROLDETAILSF_VALUE);
+                      if(mmres != MMSYSERR_NOERROR) {
+                               return (Program_ERROR);
+                           }
+    }
+    if(mixClist[iDC].dwControlType == MIXERCONTROL_CONTROLTYPE_ONOFF) {
+// An "on-off" control ... sort of like a mute, but different (used e.g
+for AGC)
+             mixDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
+       mixDetails.dwControlID = mixClist[iDC].dwControlID;
+       mixDetails.cChannels = (DWORD) 1;
+       mixDetails.hwndOwner = NULL;
+       mixDetails.cbDetails = sizeof(MIXERCONTROLDETAILS_BOOLEAN);
+       mixDetails.paDetails = (LPMIXERCONTROLDETAILS_BOOLEAN) &mixMute;
+                           mmres = mixerGetControlDetails(hMixer,
+            (LPMIXERCONTROLDETAILS) &mixDetails,
+            MIXER_GETCONTROLDETAILSF_VALUE);
+                      if(mmres != MMSYSERR_NOERROR) {
+                               return (Program_ERROR);
+                           }
+       mixMute.fValue = mixClist[iDC].Bounds.lMinimum;
+       mmres = mixerSetControlDetails(hMixer,
+           (LPMIXERCONTROLDETAILS) &mixDetails,
+           MIXER_SETCONTROLDETAILSF_VALUE);
+                      if(mmres != MMSYSERR_NOERROR) {
+                               return (Program_ERROR);
+                           }
+    }
+
+   }
+
+
+   iDC = mixLine.cConnections;
+// Now I start looking over all the source lines coming into this mixer
+line ..
+   for (iS=0;iS<iDC;iS++) {
+               mixLine.cbStruct = sizeof(MIXERLINE);
+                 mixLine.dwDestination = (DWORD) iD;
+            mixLine.dwSource = (DWORD) iS;
+
+          mmres = mixerGetLineInfo(hMixer, (LPMIXERLINE) &mixLine,
+            MIXER_GETLINEINFOF_SOURCE);
+                    if(mmres != MMSYSERR_NOERROR) {
+                            return (Program_ERROR);
+                         }
+
+       mixControls.cbStruct = sizeof(MIXERLINECONTROLS);
+       mixControls.dwLineID = mixLine.dwLineID;
+       mixControls.cControls = mixLine.cControls;
+       mixControls.cbmxctrl = sizeof(mixClist[0]);
+       mixControls.pamxctrl = (LPMIXERCONTROL) &mixClist[0];
+       mmres = mixerGetLineControls(hMixer,
+         (LPMIXERLINECONTROLS) &mixControls,
+      MIXER_GETLINECONTROLSF_ALL);
+                      if(mmres != MMSYSERR_NOERROR) {
+                              return (Program_ERROR);
+                           }
+// for this source line ... loop over all the control. Very like what
+was done above for the
+// destination line ...
+       for(iC=0;iC<mixLine.cControls;iC++) {
+           if(mixClist[iC].dwControlType ==
+MIXERCONTROL_CONTROLTYPE_VOLUME) {
+
+              mixDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
+              mixDetails.dwControlID = mixClist[iC].dwControlID;
+              mixDetails.cChannels = (DWORD) 1;
+              mixDetails.hwndOwner = NULL;
+              mixDetails.cbDetails =
+sizeof(MIXERCONTROLDETAILS_UNSIGNED);
+              mixDetails.paDetails = (LPMIXERCONTROLDETAILS_UNSIGNED)
+&mixValue;
+// I want to make a copy of the waveout, microphone, aux and line lines
+for later use .... hence memcpy
+              if(itype == 1 && mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) {
+
+memcpy(&mixDetailsSpk,&mixDetails,sizeof(MIXERCONTROLDETAILS));
+        lMaximumSpk = mixClist[iC].Bounds.lMaximum;
+        lMinimumSpk = mixClist[iC].Bounds.lMinimum;
+         }
+              if(itype == 2 && mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE) {
+
+memcpy(&mixDetailsMic,&mixDetails,sizeof(MIXERCONTROLDETAILS));
+        lMaximumMic = mixClist[iC].Bounds.lMaximum;
+        lMinimumMic = mixClist[iC].Bounds.lMinimum;
+         }
+                                  if(itype == 3 &&
+(mixLine.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_LINE ||
+                          mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY)) {
+// I'm not sure why I had to check the string like this ...
+            if(strncmp(mixLine.szName,"Line",4) == 0) {
+
+memcpy(&mixDetailsLin,&mixDetails,sizeof(MIXERCONTROLDETAILS));
+            lMaximumLin = mixClist[iC].Bounds.lMaximum;
+            lMinimumLin = mixClist[iC].Bounds.lMinimum;
+       }
+         }
+
+
+                                  mmres = mixerGetControlDetails(hMixer,
+
+                  (LPMIXERCONTROLDETAILS) &mixDetails,
+               MIXER_GETCONTROLDETAILSF_VALUE);
+                               if(mmres != MMSYSERR_NOERROR) {
+                                       return (Program_ERROR);
+                                  }
+// Now I'm going to set the input levels the way I want them ..
+         mixValue.dwValue = mixClist[iC].Bounds.lMinimum;
+              if(itype == 1 && mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) {
+        mixValue.dwValue = mixClist[iC].Bounds.lMaximum;
+        }
+              if(itype == 2 && mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE) {
+        mixValue.dwValue = mixClist[iC].Bounds.lMaximum;
+        }
+                                  if(itype == 3 &&
+(mixLine.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_LINE ||
+                          mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY)) {
+              if(strncmp(mixLine.szName,"Line",4) == 0) {
+           mixValue.dwValue = mixClist[iC].Bounds.lMaximum;
+        }
+        }
+
+              mmres = mixerSetControlDetails(hMixer,
+                  (LPMIXERCONTROLDETAILS) &mixDetails,
+               MIXER_SETCONTROLDETAILSF_VALUE);
+                               if(mmres != MMSYSERR_NOERROR) {
+                                       return (Program_ERROR);
+                                  }
+      }
+           if(mixClist[iC].dwControlType ==
+MIXERCONTROL_CONTROLTYPE_MUTE) {
+                    mixDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
+              mixDetails.dwControlID = mixClist[iC].dwControlID;
+              mixDetails.cChannels = (DWORD) 1;
+              mixDetails.hwndOwner = NULL;
+              mixDetails.cbDetails =
+sizeof(MIXERCONTROLDETAILS_BOOLEAN);
+              mixDetails.paDetails = (LPMIXERCONTROLDETAILS_BOOLEAN)
+&mixMute;
+                                  mmres = mixerGetControlDetails(hMixer,
+
+                     (LPMIXERCONTROLDETAILS) &mixDetails,
+                     MIXER_GETCONTROLDETAILSF_VALUE);
+                               if(mmres != MMSYSERR_NOERROR) {
+                                      return (Program_ERROR);
+                                  }
+// I run the risk of inverting my boolean selections, so jump out if
+already done ...
+         if(itype != 0 && (bDoneSpkr || bDoneMike)) break;
+
+        mixMute.fValue = mixClist[iC].Bounds.lMaximum;
+              if(itype == 1 && mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) {
+        mixMute.fValue = mixClist[iC].Bounds.lMinimum;
+        }
+              if(itype == 2 && mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE) {
+        mixMute.fValue = mixClist[iC].Bounds.lMinimum;
+        }
+                                  if(itype == 3 &&
+(mixLine.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_LINE ||
+                          mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY)) {
+           if(strncmp(mixLine.szName,"Line",4) == 0) {
+           mixMute.fValue = mixClist[iC].Bounds.lMinimum;
+        }
+         }
+
+         mmres = mixerSetControlDetails(hMixer,
+                     (LPMIXERCONTROLDETAILS) &mixDetails,
+                     MIXER_SETCONTROLDETAILSF_VALUE);
+                               if(mmres != MMSYSERR_NOERROR) {
+                                       return (Program_ERROR);
+                                  }
+        }
+        if(mixClist[iC].dwControlType == MIXERCONTROL_CONTROLTYPE_ONOFF)
+{
+                    mixDetails.cbStruct = sizeof(MIXERCONTROLDETAILS);
+              mixDetails.dwControlID = mixClist[iC].dwControlID;
+              mixDetails.cChannels = (DWORD) 1;
+              mixDetails.hwndOwner = NULL;
+              mixDetails.cbDetails =
+sizeof(MIXERCONTROLDETAILS_BOOLEAN);
+              mixDetails.paDetails = (LPMIXERCONTROLDETAILS_BOOLEAN)
+&mixMute;
+                                  mmres = mixerGetControlDetails(hMixer,
+
+                     (LPMIXERCONTROLDETAILS) &mixDetails,
+                     MIXER_GETCONTROLDETAILSF_VALUE);
+                               if(mmres != MMSYSERR_NOERROR) {
+                                     return (Program_ERROR);
+                                  }
+
+         mixMute.fValue = mixClist[iC].Bounds.lMinimum;
+              if(itype == 1 && mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_WAVEOUT) {
+        mixMute.fValue = mixClist[iC].Bounds.lMaximum;
+         }
+              if(itype == 2 && mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_MICROPHONE) {
+        mixMute.fValue = mixClist[iC].Bounds.lMaximum;
+         }
+                                  if(itype == 3 &&
+(mixLine.dwComponentType == MIXERLINE_COMPONENTTYPE_SRC_LINE ||
+                          mixLine.dwComponentType ==
+MIXERLINE_COMPONENTTYPE_SRC_AUXILIARY)) {
+              if(strncmp(mixLine.szName,"Line",4) == 0) {
+           mixMute.fValue = mixClist[iC].Bounds.lMaximum;
+        }
+         }
+
+              mmres = mixerSetControlDetails(hMixer,
+                     (LPMIXERCONTROLDETAILS) &mixDetails,
+                     MIXER_SETCONTROLDETAILSF_VALUE);
+                               if(mmres != MMSYSERR_NOERROR) {
+                                      return (Program_ERROR);
+                                  }
+        }
+       }
+      }
+ }
+ return Program_NOERROR;
+}
+
+

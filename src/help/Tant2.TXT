@@ -1,0 +1,31 @@
+\b;Objectif
+Le \l;robot shooter volant\u object\botfj; est au fond d'un trou. Des \l;fourmis\u object\ant; agressives arrivent plus haut, de tous les côtés. Il faudra donc décoller jusqu'au niveau des fourmis, puis tirer tout en maintenant une altitude constante.
+
+\b;Décollage
+La commande \c;\l;jet\u cbot\jet;()\n; active le réacteur qui se trouve sous les robots volants. La valeur qu'on donne entre parenthèses doit être comprise entre \c;-1\n; et \c;1\n;.\c; jet(1);\n; fait monter le robot le plus vite possible.\c; jet(-1);\n; le fait descendre à la vitesse maximale, et \c;jet(0);\n; lui fait garder son altitude. Comme le robot doit atteindre une altitude précise, on le fait monter doucement avec \c;jet(0.2);\n;, on attend jusqu'à ce qu'il ait atteint l'altitude voulue, puis on le stabilise avec \c;jet(0);\n;.
+
+Pour "attendre que le robot ait atteint l'altitude voulue", il faut faire une boucle conditionnelle: ce qui se trouve à l'intérieur de la boucle se répète tant qu'une certaine condition est remplie. L'altitude du robot est donné par \c;position.z\n;. Nous avons vu que \c;position\n; donne la position du robot. Or une position est donnée par les trois coordonnées x, y et z de l'espace cartésien: l'axe des x est l'axe est-ouest, l'axe des y est l'axe nord-sud, et l'axe des z est l'axe vertical. Il suffit donc d'attendre tant que \c;position.z\n; est plus petit que 20 mètres, ce qui s'écrit¦:
+\c;
+\s;	while ( position.z < 20 )
+\s;	{
+\s;		wait(0.2);
+\s;	}
+\n;
+Toutes les 0.2 secondes, il va voir si l'altitude est encore inférieure à 20 mètres. Si oui, on attend encore. Si non, on continue. N'oubliez pas après cette boucle de stabiliser l'altitude avec \c;jet(0);\n;.
+
+\b;Tir
+Pour tuer les fourmis, on les cherche avec le \c;\l;radar\u cbot\radar;()\n;, on tourne ensuite dans leur direction puis on tire une seconde. Le tout répété à l'infini avec une boucle \c;\l;while\u cbot\while;(true)\n; comme d'habitude¦:
+\c;
+\s;	while ( true )
+\s;	{
+\s;		chose = radar(AlienAnt);
+\s;		turn(direction(chose.position));
+\s;		fire(1);
+\s;	}
+\n;
+N'oubliez pas de déclarer la variable \c;chose\n;, qui est de type \c;\l;object\u cbot\object;\n;
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tballis1; et \l;programmation\u cbot;.

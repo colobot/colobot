@@ -1,0 +1,27 @@
+\b;Objectif
+Votre \l;vaisseau spatial\u object\base; est arrivé sur l'aire de lancement. Votre dernière mission d'entraînement consiste à l'équiper de sa \l;boîte noire\u object\bbox;.
+
+Celle-ci se trouve sur une montagne proche. Le seul moyen d'accès est une route à forte déclivité, qui ne peut être pratiquée qu'avec un robot équipé de chenilles que vous devez construire.
+
+Votre \l;fabrique de robots\u object\factory; n'a pas les informations nécessaires pour produire ce type de robot. Activez votre \l;centre de recherches\u object\research;, doté d'une énorme puissance de calcul, afin qu'il fournisse les plans de ce nouveau mode de propulsion.
+
+\b;Marche à suivre
+1) Amenez une \l;pile\u object\power; sur le \l;centre de recherches\u object\research;.
+2) Sélectionnez le centre de recherches et cliquez sur le bouton <Recherche les chenilles> \button 64;.
+3) Déposez un bloc de \l;titanium\u object\titan; dans la \l;fabrique de robots\u object\factory;.
+4) Reculez, puis sélectionnez la fabrique.
+5) Cliquez sur le bouton <Fabrique un déménageur à chenilles> \button 138;.
+6) Equipez le \l;robot déménageur\u object\botgc; d'une \l;pile\u object\power;.
+7) Prenez les commandes du \l;robot déménageur à chenilles\u object\botgc;, et faites-lui gravir la montagne située au sud-ouest pour chercher la \l;boîte noire\u object\bbox;.
+8) Amenez cette boîte noire sur votre \l;vaisseau spatial\u object\base;.
+9) Prenez avec vous le \l;robot déménageur à roues\u object\botgr;, qui sera très utile par la suite.
+10) Prenez place sur le vaisseau spatial.
+11) Sélectionnez le \l;vaisseau spatial\u object\base;
+12) Décollez \button 28;.
+
+Remarque: Pour travailler plus efficacement, vous pouvez utiliser le \l;robot déménageur\u object\botgr;.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

@@ -1,0 +1,127 @@
+extern void object::AttackEnemy()
+{
+	object item;
+	int List[], i;
+	point startpoint;
+	int retval;
+	int Angle;
+	
+	i=0;
+	Angle=0;
+	List[i++]=AlienAnt;
+	List[i++]=AlienEgg;
+	List[i++]=AlienQueen;
+	List[i++]=AlienWasp;
+	List[i++]=AlienSpider;
+	List[i++]=AlienWorm;
+	
+	i=0;
+	item = radar(List[i]);
+	while (true)
+	{
+		if (item!=null)
+		{
+			//Enemigo localizado
+			//Despegando...
+			message("Despegando rumbo a " + item.category,DisplayInfo);
+			while (altitude<10)
+			{
+				jet(1);
+			}
+			turn(direction(item.position));
+			move(distance2d(position,item.position)-20); // Desplazamiento hasta 20 m del objetivo
+			//Localizo de nuevo (por si se ha movido)
+			item = radar(List[i]);
+			if (item!=null)
+			{
+				turn(direction(item.position));
+				motor(0,0);
+				message("Descendiendo al nivel del objetivo...",DisplayInfo);
+				while (altitude!=item.altitude)
+				{
+					jet(-0.5);
+				}
+				turn(10);
+				motor(0.2,-0.2); // Giro lento para hacer rafaga de disparos
+				message("Atacando " + item.category,DisplayInfo);
+				aim(0);
+				fire(1);
+				motor(0,0);
+			}
+			else
+			{
+				//Se ha pirado
+				message("Objetivo no disponible. Vigilando..." + item.category,DisplayInfo);
+			}
+		}
+		CheckOwnState();
+		i++;
+		if (i>5)
+		{
+			i=0;
+		}
+		item=radar(List[i]);
+	}
+}
+
+void object::RechargeBattery()
+{
+	point  start;          // variable for initial pos.
+	object item;           // info. about power station
+	
+	//start = position;      // stores initial position
+	
+	item = radar(PowerStation); // looks for station
+	goto(item.position);   // goes to the power station
+	
+	while ( energyCell.energyLevel < 1 )
+	{
+		wait(1);            // waits until recharged
+	}
+	if (load!=null)
+	{
+		if (load.category == EnergyCell) // Si lleva una betria, espera a que se cargue tambien
+		{
+			while ( load.energyLevel < 1 )
+			{
+				wait(1);            // waits until recharged
+			}
+		}
+	}
+	
+	//goto(start);           // comes back to initial pos.
+	message("Auto-recarga completada",DisplayInfo);
+}
+
+void object::RepairBot()
+{
+	point  start;          // variable for initial pos.
+	object item;           // info. about power station
+	
+	//start = position;      // stores initial position
+	
+	item = radar(RepairCenter); // looks for station
+	goto(item.position);   // goes to the power station
+	
+	while ( shieldLevel < 1 )
+	{
+		wait(1);            // waits until recharged
+	}
+	
+	//goto(start);           // comes back to initial pos.
+	message("Auto-reparacion completada",DisplayInfo);
+}
+
+void object::CheckOwnState()
+{
+	if (energyCell.energyLevel<0.3)
+	{
+		message("Nivel de bateria bajo. Dirigiendose a base para recarga...",DisplayInfo);
+		RechargeBattery();
+	}
+	if (shieldLevel<0.6)
+	{
+		message("Nivel de escudo bajo. Dirigiendose a base para paracion...",DisplayInfo);
+		RepairBot();
+	}
+}

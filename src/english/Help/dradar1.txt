@@ -1,0 +1,14 @@
+\b;Exercise
+In this exercise, a "crazy bot" places many \l;blue crosses\u object\waypoint; on the ground. Just try to find them all.
+
+\b;Useful instructions
+\c;\l;radar\u cbot\radar;\n; to detect the blue crosses (category \c;\l;WayPoint\u object\waypoint;\n;)
+\c;\l;direction\u cbot\direct;\n; to calculate a direction
+\c;\l;if\u cbot\if;\n; to test a condition
+\c;\l;motor\u cbot\motor;\n; to set the motor speeds
+
+\t;Remark
+Do not wait too long, because the crazy bot gets down to work immediately. Fortunately, as long as you are in the program editor, the game will pause.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

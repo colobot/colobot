@@ -1,0 +1,17 @@
+\b;Solution
+1) Construisez rapidement une \l;tour de défense\u object\tower; au nord de votre vaisseau, pour vous défendre des \l;guêpes géantes\u object\wasp;. Après l'avoir équipée d'une \l;pile\u object\power;, exécutez le programme \c;ServiceTour\n; sur un des \l;robot déménageur\u object\botgr; qui rechargera la pile quand elle sera vide.
+
+2) Construisez une \l;station de recharge\u object\station; à proximité pour que le \l;robot déménageur\u object\botgr; puisse y recharger la pile.
+
+3) Construisez un \l;convertisseur\u object\convert; au sud de votre vaisseau, et exécutez le programme \c;ApporteTitanium3\n; sur le second \l;robot déménageur\u object\botgr; pour produire du \l;titanium\u object\titan;.
+
+4) Construisez une \l;fabrique de robots\u object\factory; puis un \l;robot shooter volant\u object\botfj;, afin d'éliminer les \l;fourmis géantes\u object\ant;.
+
+5) Construisez un \l;déménageur volant\u object\botgj; pour ramener une boule de \l;matière organique\u object\bullet; depuis l'île au milieu du lac de lave.
+
+6) Construisez un \l;laboratoire\u object\labo;, posez-y la \l;matière organique\u object\bullet; et cliquez sur le bouton \button 109; pour développer les plans pour les robots à pattes.
+
+7) Lorsque la \l;matière organique\u object\bullet; a été analysée, construisez un \l;robot déménageur à pattes\u object\botgs;, amenez-le sur votre \l;vaisseau spatial\u object\base; puis décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

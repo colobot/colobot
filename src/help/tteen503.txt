@@ -1,0 +1,36 @@
+\b;Sherlock Holmes
+Une vieille pièce mécanique est cachée quelque part. Tu dois jouer au détective et la trouver, afin de la désintégrer.
+
+\b;Un radar génial
+Avancer d'un nombre de centimètres donné pour trouver un boulon n'est pas très utile dans la pratique, car on ne connaît généralement pas sa position exacte.
+Il existe une autre instruction bien plus utile nommée \c;find();\n;. En fait, le robot dispose d'un radar très perfectionné, qui est actionné par cette instruction. Il va chercher l'objet dont on a donné le nom dans les parenthèses, et s'y dirige directement. Par exemple, avec \c;find(Scrap);\n;, le robot va vers le déchet le plus proche. Il est même tellement malin qu'il contournera automatiquement les obstacles sur sa route. Génial, non¦?
+
+\b;L'instruction \c;find();\n;
+Avec l'instruction \c;move();\n;, par exemple, on donne un nombre entre les parenthèses. Avec l'instruction \c;find();\n;, on donne un nom d'objet. Par exemple \c;Scrap\n; pour un déchet, boulon, pièce mécanique, etc.
+
+\s;\c;find(Scrap);\n;
+
+Lorsque la pièce est trouvée et saisie avec \c;grab();\n;, on utilise de nouveau le radar pour retourner vers le désintégrateur en écrivant¦:
+
+\s;\c;find(Disintegrator);\n;
+
+Il ne reste plus qu'à déposer la pièce avec \c;drop();\n; puis à reculer de 10 centimètres.
+
+\b;Programme
+Le programme à écrire est donc¦:
+
+\s;o  Trouve un déchet
+\s;o  Prend le déchet
+\s;o  Trouve le désintégrateur
+\s;o  Dépose le déchet
+\s;o  Recule de 10 centimètres
+
+Ne mets rien entre les parenthèses des instructions \c;grab();\n; et \c;drop();\n;.
+A toi d'écrire correctement le programme ...
+
+\b;Un peu d'anglais
+\c;find          = \n;trouver
+\c;Scrap         = \n;déchet
+\c;Disintegrator = \n;désintégrateur
+\c;grab          = \n;saisir
+\c;drop          = \n;laisser tomber

@@ -1,0 +1,24 @@
+\b;Instruction \c;strfind\n;
+Cette instruction cherche une sous-chaîne dans une chaîne et retourne la position du début de la sous-chaîne.
+
+Syntaxe¦:
+\s;\c;strfind ( string, sub );\n;
+
+\t;string: \c;\l;string\u cbot\string;\n;
+Chaîne dans laquelle on effectue la recherche.
+
+\t;sub: \c;\l;string\u cbot\string;\n;
+Sous-chaîne recherchée.
+
+Exemples¦:
+\s;\c;	int pos = strfind("abcdef", "ab");  // pos vaut 0
+\s;	int pos = strfind("abcdef", "de");  // pos vaut 3
+\s;	int pos = strfind("abcdef", "xy");  // pos vaut \l;nan\u cbot\nan;
+\n;
+\t;Dictionnaire anglais-français
+\c;string\n; = chaîne de caractères
+\c;find  \n; = trouve
+
+\t;Voir aussi
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strupper\u cbot\strupper;\n;, \c;\l;strlower\u cbot\strlower;\n;
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

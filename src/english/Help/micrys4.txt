@@ -1,0 +1,19 @@
+\b;Satellite Report
+Currently in a geo-stationary orbit of Crystalium.
+\c;
+\s;-> SURFACE\c;
+\tab;Temperature:      1.2C
+\tab;Atmosphere:       nitrogen
+\tab;Wind:             0.0 mps
+\tab;Titanium ore:     none
+\tab;Uranium ore:      none
+
+\s;-> SUBSOIL\c;
+\tab;Energy source:    none
+\tab;Titanium ore:     none
+\tab;Uranium ore:      none
+
+\s;-> ADDITIONAL INFORMATION\c;
+\tab;Detected:         electromagnetic smog
+\tab;Detected:         reusable derelicts
+\n;

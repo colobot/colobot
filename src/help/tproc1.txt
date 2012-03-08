@@ -1,0 +1,62 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il trouve toutes les \l;croix bleues\u object\waypoint; posées au sol. Le trajet à effectuer est composé de deux carrés. Le premier mesure 15 mètres de côté, et le deuxième 25 mètres.
+
+\image tproc1a 8 8;
+\b;Fonction
+Pour résoudre ce problème, il est intéressant de créer une \l;fonction\u cbot\function; qui déplace le robot le long d'un carré. La fonction principale devient alors très simple¦:
+\c;
+\s;extern void object::Déplacer( )
+\s;{
+\s;	Carré(15);
+\s;	Carré(25);
+\s;}
+\n;
+Évidemment, à ce stade, la fonction \c;Carré\n; n'existe pas encore. Pour la créer, vous devrez écrire des instructions hors du \l;bloc\u cbot\bloc;, tout à la fin du programme. La structure du programme devient¦:
+\c;
+\s;extern void object::Déplacer( )
+\s;{
+\s;	\n;fonction principale ...\c;
+\s;}
+\s;
+\s;void object::Carré(float length)
+\s;{
+\s;	\n;nouvelle fonction ...\c;
+\s;}
+\n;
+Examinons en détail la déclaration de cette fonction \c;Carré\n;¦:
+
+\c;\l;void\u cbot\void;\n;
+Ceci indique que la fonction ne retourne aucune valeur.
+
+\c;\l;object\u cbot\object;::\n;
+Permet d'accéder aux caractéristiques du robot, telles que \c;pos\n;, \c;angle\n;, etc. Dans cet exercice, cette déclaration est facultative, car on n'accède pas à ces variables.
+
+\c;Carré (  )\n;
+Nom de la fonction. Vous pouvez choisir le nom qui vous plaît le mieux.
+
+\c;\l;float\u cbot\float; length\n;
+Paramètre que reçoit la fonction. A l'intérieur de la fonction, \c;length\n; prendra une première fois la valeur 15 et une deuxième fois la valeur 25.
+
+Le flux du programme se déroule ainsi¦:
+- On exécute la fonction principale \c;Déplace\n; depuis le début.
+- Lorsqu'on rencontre \c;Carré(15)\n;, on suit la flèche rouge pour entrer une première fois dans la fonction \c;Carré\n;.
+- Lorsque la fonction \c;Carré\n; est terminée, on revient dans \c;Déplace\n; selon la flèche orange.
+- On continue \c;Déplace\n;, qui contient alors \c;Carré(25)\n;. On suit donc la flèche bleue pour entrer une deuxième fois dans \c;Carré\n;.
+- Lorsque \c;Carré\n; est terminé, on revient dans \c;Déplace\n; en suivant la flèche bleu clair.
+
+\image tproc1b 17 12;
+L'intérieur de la fonction \c;Carré\n; utilise les instructions \c;\l;move\u cbot\move;\n; et \c;\l;turn\u cbot\turn;\n;. L'utilisation d'une boucle \c;\l;for\u cbot\for;\n; répétée 4 fois allège l'écriture, mais n'est pas indispensable.
+\c;
+\s;void object::Carré(float length)
+\s;{
+\s;	for ( int i=0 ; i<4 ; i=i+1 )
+\s;	{
+\s;		move(length);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tdraw1; et \l;programmation\u cbot;.

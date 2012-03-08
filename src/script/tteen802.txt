@@ -1,0 +1,18 @@
+extern void object::Solution( )
+{
+	int gauche = 90;
+	int droite = -90;
+	
+	repeat(6)
+	{
+		turn(droite);
+		
+		if( detect(Stone) )
+		{
+			thump();
+		}
+		
+		turn(gauche);
+		move(20);
+	}
+}

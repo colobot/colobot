@@ -1,0 +1,25 @@
+class Guepet
+{
+	
+	point  pos;
+	float t = 0.1;
+	
+	void init()
+	{
+		pos.x = 12.123;
+		pos.y = 34.345;
+		
+		F(t);
+	}
+	
+	
+}
+
+extern void object::Fourmi6()
+{
+	Guepet guepe=new Guepet();
+	
+	guepe.init();
+	
+	show ( guepe );	
+}

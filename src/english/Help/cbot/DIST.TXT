@@ -1,0 +1,30 @@
+\b;Instruction \c;distance\n;
+With the instruction \c;distance( , )\n; you can calculate the distance between two positions.
+
+\b;Basic use
+If you write \c;position\n; alone, this gives you the position of the bot that executes the program. If you write the name of a variable followed by \c;.position\n;, this gives you the position of the object described in the variable.
+
+Here is a program that moves forward, covering exactly the distance between the bot and the closest ant:
+\c;
+\s;	item = \l;radar\u cbot\radar;(AlienAnt);
+\s;	\l;move\u cbot\move;(distance(position, item.position));
+\n;
+This is of course pure suicide. Better to stop 40 meters before, in order to be at shooting range:
+\c;
+\s;	item = radar(AlienAnt);
+\s;	move(distance(position, item.position) - 40);
+\n;
+\b;For specialists
+Syntax:
+\s;\c;distance ( pos1, pos2 );\n;
+
+Calculates the distance between two positions. 
+
+\t;pos1, pos2: \c;\l;point\u cbot\point;\n;
+Coordinates of the two positions. 
+
+\t;Return value: \c;\l;float\u cbot\float;\n;
+Distance between the two positions.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

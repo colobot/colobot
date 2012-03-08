@@ -1,0 +1,22 @@
+\b;Instruction \c;shield\n;
+Syntaxe¦:
+\s;\c;shield ( oper, radius );\n;
+
+Déploie ou replie le bouclier du \l;robot\u object\botshld;. Lorsque le bouclier est déployé, il est possible d'avancer. Le bouclier protège de toutes les attaques \l;ennemies\u object\mother; dans un rayon compris entre 10 et 25 mètres.
+
+\t;oper: \c;\l;float\u cbot\float;\n;
+\c;1\n; déploie le bouclier.
+\c;0\n; replie le bouclier.
+Une \l;pile normale\u object\power; à pleine charge permet de maintenir le bouclier pendant 20 secondes avec le rayon maximal de 25 mètres. Lorsque la pile est plate, le bouclier se replie.
+
+\t;radius: \c;\l;float\u cbot\float;\n;
+Rayon du bouclier, compris entre 10 et 25 mètres.
+
+\t;Valeur retournée: \c;\l;void\u cbot\void;\n;
+Aucune.
+
+\t;Dictionnaire anglais-français
+\c;shield\n; = bouclier
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

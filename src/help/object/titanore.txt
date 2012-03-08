@@ -1,0 +1,14 @@
+\b;Minerai de titanium
+\image titanore 4 4;
+Le minerai de titanium est à la base de pratiquement toutes les constructions, qu'il s'agisse de bâtiments ou de robots. Il se trouve directement à la surface de certaines planètes, ou en sous-sol. Dans ce dernier cas, il faudra construire un \l;derrick\u object\derrick; pour l'extraire.
+
+Tel quel, le minerai de titanium n'est pas utile. Pour pouvoir l'exploiter, il faut le transformer en \l;titanium\u object\titan; à l'aide d'un \l;convertisseur\u object\convert;.
+
+\t;Transport
+Tous les \l;robots déménageurs\u object\botgr; ou le \l;cosmonaute\u object\human;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;TitaniumOre\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,53 @@
+\b;Objectif
+Adaptez la hauteur de vol du \l;orgaShooter volant\u object\botoj; à la topologie du terrain.
+
+\b;Programme
+Voici encore une fois le programme de l'exercice précédent qui tire sur les \l;fourmis\u object\ant;¦:
+\c;
+\s;extern void object::Chasseur1()
+\s;{
+\s;	object    chose;
+\s;	
+\s;	aim(-20);
+\s;	jet(0.2);
+\s;	while ( position.z < 10 )
+\s;	{
+\s;		wait(0.2);
+\s;	}
+\s;	
+\s;	while ( true )
+\s;	{
+\s;		while ( radar(AlienAnt, 0, 360, 0, 20) == null )
+\s;		{
+\s;			chose = radar(AlienAnt);
+\s;			turn(direction(chose.position));
+\s;			motor(1,1);
+\s;			wait(0.2);
+\s;		}
+\s;		fire(1);
+\s;	}
+\s;}
+\n;
+Le robot reste toujours à une altitude de 10 mètres au-dessus du niveau de la mer. Dans le relief accidenté du présent exercice, ceci ne suffit pas, il faut pouvoir s'adapter au terrain. Juste avant le \c;wait(0.2);\n; on peut tester si l'altitude est trop basse ou trop haute et réagir en conséquence.
+
+Nous avons vu que \c;position.z\n; donne l'altitude au-dessus du niveau de la mer. \c;\l;topo\u cbot\topo;(position)\n; donne l'altitude du terrain à la position du robot. Si nous voulons rester à une altitude comprise entre 6 et 9 mètres au-dessus du sol, il faut traiter les cas suivants: si \c;position.z-topo(position)\n; est plus petit que 6, on monte avec \c;jet(1);\n;. Si \c;position.z-topo(position)\n; est plus grand que 9, on descend avec \c;jet(-1);\n;. Pour programmer ces tests, on utilise l'instruction \c;\l;if\u cbot\if;\n;, qui exécute les instructions entre les accolades une seule fois si la condition est remplie¦:
+\c;
+\s;	jet(0);
+\s;	if (position.z-topo(position) < 6)
+\s;	{
+\s;		jet(1);
+\s;	}
+\s;	
+\s;	if (position.z-topo(position) > 9)
+\s;	{
+\s;		jet(-1);
+\s;	}
+\n;
+Il faut commencer par stabiliser l'altitude avec \c;jet(0);\n; pour que dans le cas où l'altitude est comprise entre 6 et 9 mètres, on reste à cette altitude. Si ensuite un \c;jet(1);\n; ou un \c;jet(-1);\n; est exécuté, cette instruction annulera le \c;jet(0);\n; précédent.
+
+Il suffit d'insérer ces quelques lignes avant le \c;wait(0.2)\n; pour que le robot s'adapte au relief. On peut alors effacer les premières lignes qui font monter le robot à une altitude de 10 mètres.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tant4; et \l;programmation\u cbot;.

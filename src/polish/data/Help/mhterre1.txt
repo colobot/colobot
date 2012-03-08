@@ -1,0 +1,27 @@
+\b;Z Centrum Szkoleniowego NASA
+Mi³o nam poinformowaæ, ¿e zosta³eœ wybrany do misji eksploracji kosmosu, nazwanej Colobot.
+
+Twój profil psychologiczny zosta³ zosta³ uznany za korzystny w ponad 98,84%, a Twoje uzdolnienia podczas okresu obszernych badañ by³y niezaprzeczalne. Szczegó³owe wyniki s¹ do Twojej dyspozycji w komputerze centralnym pod przypisanym Ci numerem rejestracyjnym.
+
+W sprawie wskazówek dotycz¹cych Twoich nadchodz¹cych misji, zg³oœ siê do\l; Centrum Kontroli Misji Houston\u object\Huston;.
+
+\b;Z Centrum Kontroli Misji Houston
+Jak wiesz, Ziemiê czeka nieuchronna zag³ada, spowodowanego rosn¹cym zanieczyszczeniem atmosfery.
+
+\l;Twoja\u object\human; misja polega na zbadaniu s¹siednich galaktyk z nadziej¹ znalezienia planety odpowiedniej dla cz³owieka i mog¹cej s³u¿yæ jako przysz³e schronienie dla ludzkoœci. Podczas misji mo¿esz liczyæ tylko na siebie, choæ na Twoim statku kosmicznym bêdzie te¿ kilka robotów.
+
+Osiem miesiêcy temu zosta³a wys³ana ekspedycja maj¹ca ten sam cel, sk³adaj¹ca siê jedynie z robotów. Napotka³a ona wiele przeszkód na swej drodze, zwykle l¹duj¹c na planetach nieodpowiednich do kolonizacji, a nawet wyraŸnie wrogich. Ca³kiem niedawno ³¹cznoœæ zosta³a zupe³nie zerwana.
+
+Powody niepowodzenia tamtej misji wci¹¿ s¹ nieznane, g³ównie z powodu powtarzaj¹cych siê problemów z transmisj¹. Mamy jednak nadziejê, ¿e uda Ci siê wykorzystaæ czêœæ zebranych przez ni¹ danych.
+
+\b;Bezpoœredni cel
+Pustynia Nevada wre aktywnoœci¹. Roboty buduj¹ stacjê kosmiczn¹, która bêdzie troszczyæ siê o zaspokojenie Twoich specyficznych potrzeb.
+
+Aby zapoznaæ Ciê ze skafandrem i wyposa¿eniem, przygotowaliœmy kilka æwiczeñ treningowych.
+
+W pierwszym æwiczeniu musisz znaleŸæ swój zestaw przetrwania, zawieraj¹cy wszystkie narzêdzia niezbêdne do stawienia czo³a zimnej przestrzeni kosmicznej. Jest on ³atwy do zauwa¿enia, gdy¿ zawiera dwa pojemniki: pomarañczowy i niebieski.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

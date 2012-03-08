@@ -1,0 +1,22 @@
+\b;Rozwi¹zanie
+1) W zniszczonej fabryce robotów znajdziesz \l;kostkê tytanu\u object\titan;. Wykorzystaj j¹ do budowy \l;stacji energetycznej\u object\station;.
+
+2) \l;Recykler\u object\botrecy; jest zaprojektowany to przetapiania wraków robotów z powrotem na u¿yteczne kostki tytanu.
+
+3) Zbuduj \l;warsztat\u object\repair; i \l;radar\u object\radar;.
+
+4) Na³aduj jedno z dostêpnych \l;ogniw elektrycznych\u object\power; i zasil nim \l;dzia³o lataj¹ce\u object\botfj;.
+
+5) Zabij wszystkie \l;mrówki\u object\ant;. Pamiêtaj o regularnym naprawianiu i ³adowaniu ogniwa dzia³a. Sprawdzaj poziom os³on i energii.
+
+6) Na³aduj ogniwo elektryczne \l;transportera\u object\botgr; i wyœlij go na szczyt...
+      a) Na pierwszy poziom wjedŸ ramp¹ od wschodu;
+      b) Na pierwszym poziomie jedŸ na wschód do drugiej rampy;
+      c) Na drugim poziomie jedŸ na po³udnie do trzeciej rampy;
+      d) Na trzecim poziomie jedŸ na zachód aby dotrzeæ na szczyt;
+...nastêpnie, z rud¹, jedŸ bezpoœredni¹ tras¹ prosto do statku kosmicznego, aby zaoszczêdziæ pozosta³¹ energiê.
+
+7) Wróæ na pok³ad statku kosmicznego i odleæ.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

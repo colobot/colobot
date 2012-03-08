@@ -1,0 +1,32 @@
+\b;Instruction \c;drop\n;
+L'instruction \c;drop()\n; permet de poser au sol, sur l'emplacement arrière d'un robot ou sur le socle d'un bâtiment, l'objet que le robot tient dans la pince de son bras manipulateur.
+
+\b;Utilisation courante
+L'instruction \c;drop();\n; écrite sous cette forme pose devant le robot l'objet que le robot tient. Voici par exemple comment saisir ce qui se trouve devant le robot pour le poser 5m plus loin¦:
+\c;
+\s;	\l;grab\u cbot\grab;();
+\s;	\l;move\u cbot\move;(5);
+\s;	drop();
+\n;
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;drop ( oper );\n;
+
+Actionne le bras manipulateur du \l;robot déménageur\u object\botgr;, pour déposer l'objet saisi.
+
+\t;oper: \c;\l;int\u cbot\int;\n; (\c;InFront\n; par défaut)
+Position à atteindre avec la bras manipulateur. Si cette indication n'est pas fournie, on suppose qu'il s'agit du cas le plus fréquent où l'objet est pris ou déposé devant le robot.
+\c;InFront   \n;  Dépose devant (par défaut).
+\c;Behind    \n;  Dépose derrière.
+\c;EnergyCell\n;  Dépose sa propre pile.
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Normalement, une erreur stoppe l'exécution du programme. Si l'instruction \c;drop\n; est précédée de \c;\l;errmode\u cbot\errmode;(0);\n;, une valeur nulle est retournée si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;objet déposé
+\c;!= 0 \n;erreur, pas d'objet déposé
+
+\t;Dictionnaire anglais-français
+\c;drop\n; = laisser tomber
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

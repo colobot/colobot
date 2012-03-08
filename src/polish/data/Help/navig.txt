@@ -1,0 +1,22 @@
+\b;Nawigacja
+Trzy przyciski w lewej górnej czêœci ekranu pozwalaj¹ na nawigacjê po ró¿nych stronach pliku pomocy:
+
+\button 30; Dom
+Wraca do strony g³ównej, czyli wyœwietlonej na pocz¹tku, na przyk³ad po naciœniêciu klawisza \key;\key help;\norm; lub \key;\key prog;\norm;.
+
+\button 55; Poprzedni
+Wraca do poprzedniej strony, czyli tej która by³a wyœwietlana przed klikniêciem ³¹cza.
+
+\button 48; Nastêpny
+Wyœwietla ponownie nastêpn¹ stronê, wyœwietlan¹ przed u¿yciem przycisku "Dom" lub "Poprzedni".
+
+\t;Uwaga
+Jeœli przycisk jest szary, oznacza to, ¿e w danej chwili nie mo¿e byæ u¿yty. Na przyk³ad na stronie g³ównej przycisk "Dom" jest szary, gdy¿ jego u¿ycie nie mia³oby sensu.
+
+Uwaga ta dotyczy wszystkich przycisków w grze COLOBOT.
+
+\t;Przewijanie tekstu
+Jeœli mysz jest wyposa¿ona w kó³ko, mo¿na go u¿ywaæ do przewijania tekstu w górê i w dó³. Jeœli nie, mo¿na u¿yæ klawiszy strza³ek oraz paska przewijania po prawej stronie ekranu.
+
+\t;Wielkoœæ czcionki
+WskaŸnik w górnej czêœci ekranu umo¿liwia zmianê wielkoœci czcionki tekstu.

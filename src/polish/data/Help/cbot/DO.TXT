@@ -1,0 +1,28 @@
+\b;Instrukcja \c;do - while\n;
+Sk³adnia:
+\s;\c;do
+\s;{
+\s;	\n;Instrukcje ...\c;
+\s;}
+\s;while ( warunek );
+\n;
+Instrukcja ta umo¿liwia kilkukrotne wykonanie instrukcji w \l;bloku\u cbot\bloc;. Instrukcje wykonywane s¹ conajmniej jeden raz, gdy¿ warunek sprawdzany jest dopiero na koñcu pêtli.
+Nale¿y uwa¿aæ, aby nie pomyliæ instrukcji \c;do { } while ( );\n; z instrukcj¹ \c;\l;while\u cbot\while; ( ) { }\n;; ta druga sprawdza warunek przed wykonaniem instrukcji w bloku. 
+
+\t;\c;warunek\n;
+Instrukcje w bloku wykonywane s¹ tak d³ugo, jak d³ugo \l;warunek\u cbot\cond; jest prawdziwy. 
+
+Oto przyk³ad:
+\s;\c;do
+\s;{
+\s;	p = radar(TitaniumOre);
+\s;}
+\s;while ( p == null );
+\n;
+\t;Uwaga
+Zawsze nale¿y umieszczaæ \l;œrednik\u cbot\term; na koñcu wiersza z instrukcj¹ \c;while ( )\n;.
+
+Instrukcje \c;\l;break\u cbot\break;\n; i \c;\l;continue\u cbot\continue;\n; mog¹ byæ przydatne wewn¹trz bloku instrukcji \c;do { }\n;.
+
+\t;Zobacz równie¿
+\l;Instrukcje\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

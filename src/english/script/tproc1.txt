@@ -1,0 +1,15 @@
+extern void object::Solution( )
+{
+	Square(15);
+	Square(25);
+}
+
+void object::Square(float length)
+{
+	for ( int i=0 ; i<4 ; i=i+1 )
+	{
+		move(length);
+		turn(90);
+	}
+}
+

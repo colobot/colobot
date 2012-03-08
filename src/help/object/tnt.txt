@@ -1,0 +1,12 @@
+\b;Caisse d'explosifs
+\image tnt 4 4;
+La caisse d'explosifs TNT est extrêmement fragile. Il faut s'en approcher très lentement, car au moindre choc elle explose. Une fois qu'elle se trouve dans vos bras ou dans le bras manipulateur d'un \l;robot déménageur\u object\botgr;, elle ne risque plus rien.
+
+\t;Transport
+Tous les \l;robots déménageurs\u object\botgr; ou le \l;cosmonaute\u object\human;.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;TNT\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

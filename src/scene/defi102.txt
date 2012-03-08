@@ -1,0 +1,129 @@
+Title.F      text="Massacre"
+Resume.F     text="Détruire quatre cibles à l'aide d'une boucle."
+Title.E      text="Massacre"
+Resume.E     text="Use a loop in order to destroy four targets."
+ScriptName.F text="Go"
+ScriptName.E text="Go"
+Instructions name="dfor.txt" immediat=1
+HelpFile     name="cbot.txt"
+EndingFile   win=1 lost=0
+
+Audio         track=0
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=78;78;127;0 water=67;80;100;0  // magenta
+VehicleColor  color=168;158;118;0  // sable
+DeepView      air=125.00 water=25.00 
+FogStart      air=0.9 water=0.5
+SecondTexture rank=1
+FrontsizeName image="lens5.tga"
+Background    up=192;160;160;0 down=208;192;128;0 cloudUp=128;64;64;0 cloudDown=210;210;0;0
+
+TerrainGenerate vision=250.00 depth=1 slope=3.0
+TerrainWind     speed=-3.0;0.0
+TerrainRelief   image="textures\relief02.bmp" factor=1.0
+TerrainResource image="textures\res00.bmp"
+//TerrainWater    image="water12.tga" level=30.0 moveX=1.0 moveY=0.3
+TerrainCloud    image="cloud03.tga" level=125.0
+
+TerrainMaterial id=1 image="desert4" u=0.00 v=0.00 up=1 down=1 left=1 right=1 hard=0.2
+TerrainMaterial      image="desert4" u=0.25 v=0.00 up=2 down=1 left=1 right=1 hard=0.4
+TerrainMaterial      image="desert4" u=0.50 v=0.00 up=1 down=1 left=1 right=2 hard=0.4
+TerrainMaterial      image="desert4" u=0.75 v=0.00 up=2 down=1 left=1 right=2 hard=0.4
+TerrainMaterial      image="desert4" u=0.00 v=0.25 up=1 down=2 left=1 right=1 hard=0.4
+TerrainMaterial      image="desert4" u=0.25 v=0.25 up=2 down=2 left=1 right=1 hard=0.4
+TerrainMaterial      image="desert4" u=0.50 v=0.25 up=1 down=2 left=1 right=2 hard=0.4
+TerrainMaterial      image="desert4" u=0.75 v=0.25 up=2 down=2 left=1 right=2 hard=0.4
+TerrainMaterial      image="desert4" u=0.00 v=0.50 up=1 down=1 left=2 right=1 hard=0.4
+TerrainMaterial      image="desert4" u=0.25 v=0.50 up=2 down=1 left=2 right=1 hard=0.4
+TerrainMaterial      image="desert4" u=0.50 v=0.50 up=1 down=1 left=2 right=2 hard=0.4
+TerrainMaterial      image="desert4" u=0.75 v=0.50 up=2 down=1 left=2 right=2 hard=0.4
+TerrainMaterial      image="desert4" u=0.00 v=0.75 up=1 down=2 left=2 right=1 hard=0.4
+TerrainMaterial      image="desert4" u=0.25 v=0.75 up=2 down=2 left=2 right=1 hard=0.4
+TerrainMaterial      image="desert4" u=0.50 v=0.75 up=1 down=2 left=2 right=2 hard=0.4
+TerrainMaterial id=2 image="desert4" u=0.75 v=0.75 up=2 down=2 left=2 right=2 hard=0.6
+
+TerrainMaterial id=3 image="desert5" u=0.00 v=0.00 up=2 down=2 left=2 right=2 hard=0.6
+TerrainMaterial      image="desert5" u=0.25 v=0.00 up=3 down=2 left=2 right=2 hard=0.6
+TerrainMaterial      image="desert5" u=0.50 v=0.00 up=2 down=2 left=2 right=3 hard=0.6
+TerrainMaterial      image="desert5" u=0.75 v=0.00 up=3 down=2 left=2 right=3 hard=0.6
+TerrainMaterial      image="desert5" u=0.00 v=0.25 up=2 down=3 left=2 right=2 hard=0.6
+TerrainMaterial      image="desert5" u=0.25 v=0.25 up=3 down=3 left=2 right=2 hard=0.6
+TerrainMaterial      image="desert5" u=0.50 v=0.25 up=2 down=3 left=2 right=3 hard=0.6
+TerrainMaterial      image="desert5" u=0.75 v=0.25 up=3 down=3 left=2 right=3 hard=0.6
+TerrainMaterial      image="desert5" u=0.00 v=0.50 up=2 down=2 left=3 right=2 hard=0.6
+TerrainMaterial      image="desert5" u=0.25 v=0.50 up=3 down=2 left=3 right=2 hard=0.6
+TerrainMaterial      image="desert5" u=0.50 v=0.50 up=2 down=2 left=3 right=3 hard=0.6
+TerrainMaterial      image="desert5" u=0.75 v=0.50 up=3 down=2 left=3 right=3 hard=0.6
+TerrainMaterial      image="desert5" u=0.00 v=0.75 up=2 down=3 left=3 right=2 hard=0.6
+TerrainMaterial      image="desert5" u=0.25 v=0.75 up=3 down=3 left=3 right=2 hard=0.6
+TerrainMaterial      image="desert5" u=0.50 v=0.75 up=2 down=3 left=3 right=3 hard=0.6
+TerrainMaterial id=4 image="desert5" u=0.75 v=0.75 up=3 down=3 left=3 right=3 hard=0.6
+
+TerrainInit     id=2  // roc1
+TerrainLevel    id=1 min= 0.0 max=99.0 slope=8.0 freq= 70.0  // sand
+TerrainLevel    id=2 min=37.5 max=99.0 slope=0.0 freq= 20.0  // roc2
+
+TerrainCreate
+
+BeginObject
+CreateObject pos=27.50;-72.50 dir=0.7 type=Me option=2
+CreateObject pos=32.50;-77.50 dir=1.0 type=WheeledShooter reset=1 trainer=1 soluce="tfor2.txt" select=1 camera=FIX cameraDist=100
+
+CreateObject pos=42.50;-80.00 dir=0.0 type=Barrier1
+CreateObject pos=37.50;-80.00 dir=0.0 type=Barrier1
+CreateObject pos=32.50;-80.00 dir=0.0 type=Barrier1
+CreateObject pos=27.50;-80.00 dir=0.0 type=Barrier1
+CreateObject pos=25.00;-82.50 dir=0.5 type=Barrier1
+CreateObject pos=25.00;-87.50 dir=0.5 type=Barrier1
+CreateObject pos=22.50;-90.00 dir=0.0 type=Barrier1
+CreateObject pos=20.00;-87.50 dir=0.5 type=Barrier1
+CreateObject pos=20.00;-82.50 dir=0.5 type=Barrier1
+CreateObject pos=20.00;-77.50 dir=0.5 type=Barrier1
+CreateObject pos=20.00;-72.50 dir=0.5 type=Barrier1
+CreateObject pos=17.50;-70.00 dir=0.0 type=Barrier1
+CreateObject pos=12.50;-70.00 dir=0.0 type=Barrier1
+CreateObject pos=10.00;-67.50 dir=0.5 type=Barrier1
+CreateObject pos=12.50;-65.00 dir=0.0 type=Barrier1
+CreateObject pos=17.50;-65.00 dir=0.0 type=Barrier1
+CreateObject pos=22.50;-65.00 dir=0.0 type=Barrier1
+CreateObject pos=27.50;-65.00 dir=0.0 type=Barrier1
+CreateObject pos=30.00;-62.50 dir=0.5 type=Barrier1
+CreateObject pos=30.00;-57.50 dir=0.5 type=Barrier1
+CreateObject pos=32.50;-55.00 dir=0.0 type=Barrier1
+CreateObject pos=35.00;-57.50 dir=0.5 type=Barrier1
+CreateObject pos=35.00;-62.50 dir=0.5 type=Barrier1
+CreateObject pos=35.00;-67.50 dir=0.5 type=Barrier1
+CreateObject pos=35.00;-72.50 dir=0.5 type=Barrier1
+CreateObject pos=37.50;-75.00 dir=0.0 type=Barrier1
+CreateObject pos=42.50;-75.00 dir=0.0 type=Barrier1
+CreateObject pos=45.00;-77.50 dir=0.5 type=Barrier1
+
+CreateObject pos=27.50;-75.00 dir=0.0 type=Barrier1
+CreateObject pos=27.50;-70.00 dir=0.0 type=Barrier1
+CreateObject pos=25.00;-72.50 dir=0.5 type=Barrier1
+CreateObject pos=30.00;-72.50 dir=0.5 type=Barrier1
+
+CreateObject pos=22.50;-87.50 dir=1.5 type=TargetBot reset=1 script1="flash.txt" run=1
+CreateObject pos=12.50;-67.50 dir=0.0 type=TargetBot reset=1 script1="flash.txt" run=1
+CreateObject pos=32.50;-57.50 dir=0.5 type=TargetBot reset=1 script1="flash.txt" run=1
+CreateObject pos=42.50;-77.50 dir=1.0 type=TargetBot reset=1 script1="flash.txt" run=1
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.6;-0.1;-0.1
+
+MapColor floor=165;142;107 water=154;235;255
+MapZoom  factor=8
+
+EnableResearch type=WINGER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WheeledShooter lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=TargetBot min=0 max=0
+
+Camera eye=100.00;20.00;-100.00 lookat=37.50;1.00;-75.00 delay=10

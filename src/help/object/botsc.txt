@@ -1,0 +1,20 @@
+\b;\button 141; Robot renifleur
+\image botsc 8 8;
+Robot à chenilles d'exploration du sous-sol. Si le robot découvre quelque chose, il dépose les marques suivantes¦:
+
+\l;Croix rouge\u object\stonspot; -> \l;minerai de titanium\u object\titanore;.
+\l;Rond jaune\u object\uranspot;  -> \l;minerai d'uranium\u object\uranore;.
+\l;Croix verte\u object\enerspot; -> énergie, utile par exemple pour la \l;station de recharge\u object\station;.
+
+Les chenilles permettent de gravir de fortes pentes. En contre-partie, le déplacement est lent et gourmand en énergie. Pour de courtes distances en terrain relativement plat, il vaut mieux opter pour une propulsion à \l;roues\u object\botsr;. Quand il est possible de construire des \l;robots volants\u object\botsj;, ceux-ci représentent la meilleure solution pour les longues distances.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;TrackedSniffer\n;
+
+\t;Programmation
+Pour déplacer le robot par programmation, il faut utiliser les instructions \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Pour actionner le bras chercheur par programmation, il faut utiliser l'instruction \c;\l;sniff\u cbot\sniff;\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

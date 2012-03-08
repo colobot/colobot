@@ -1,0 +1,24 @@
+\b;Mouvement libre
+Tu peux déplacer librement le petit robot, soit en le programmant, soit en le dirigeant directement avec les touches flèches.
+
+12 croix bleues sont cachées un peu partout¦...
+
+\b;Instructions
+Les instructions les plus utiles sont¦:
+
+\s;\c;move(distance);\n;
+Pour avancer en ligne droite.
+
+\s;\c;turn(angle);\n;
+Pour tourner d'un angle quelconque.
+\c; 45  \n;Huitième de tour à gauche
+\c;-45  \n;Huitième de tour à droite
+\c; 90  \n;Quart de tour à gauche
+\c;-90  \n;Quart de tour à droite
+\c;180  \n;Demi-tour
+
+\s;\c;repeat()\n;
+Pour répèter les instructions dans les accolades \c;{}\n; qui suivent.
+
+\b;Nouveau départ
+Tu peux remettre le robot à la position de départ avec le bouton \button 9;.

@@ -1,0 +1,34 @@
+\b;Compter les cailloux
+Une variable est extrêmement utile pour mémoriser une information, car son contenu subsiste tant qu'on n'y met pas autre chose, un peu comme la mémoire d'une calculatrice.
+
+Dans cet exercice, il y a de nouveau des cailloux en ligne. Mais il ne faut plus les détruire. Il faut seulement les compter.
+
+\b;Le programme
+Une variable se prête bien à compter des éléments. Au début du programme, on crée la variable et on lui assigne la valeur zéro¦:
+\c;
+\s;int compteur = 0;
+\n;
+Chaque fois que le robot détecte un caillou, il augmente de \c;1\n; le contenu de la variable¦:
+\c;
+\s;if( detect(Stone) )
+\s;{
+\s;	compteur = compteur+1;
+\s;}
+\n;
+Le contenu d'une variable est quelque chose d'invisible. Pour voir le contenu de la variable augmenter à chaque caillou détecté, il faut utiliser une nouvelle instruction \c;message();\n;, comme cela¦:
+\c;
+\s;if( detect(Stone) )
+\s;{
+\s;	compteur = compteur+1;
+\s;	message(compteur);
+\s;}
+\n;
+Cette instruction affiche une ligne en haut de l'écran. Tu verras donc s'afficher \c;1\n;, \c;2\n;, etc.
+
+\image message1 16 4;
+\b;Compléter
+A toi de compléter le programme à 2 endroits¦:
+
+1) Au début, tu dois créer la variable \c;compteur\n; et lui mettre la valeur zéro.
+
+2) Dans les accolades du \c;if\n;, tu dois augmenter son contenu de \c;1\n;, juste avant l'instruction \c;message(compteur);\n;.

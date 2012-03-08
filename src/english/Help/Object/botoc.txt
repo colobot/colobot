@@ -1,0 +1,18 @@
+\b;\button 154; Tracked Orga Shooter
+\image botoc 8 8;
+Tracked bot equipped with an orgaball cannon.
+
+The orgaball cannon is more effective than the \l;fireball cannon\u object\botfc;. It shoots small spheres of corrosive \l;organic matter\u object\bullet;. A \l;regular power cell\u object\power; will allow you to shoot 11 orgaball bursts.
+
+Tracked bots can ascend steep inclinations but they are quite slow and use a lot of energy. On flat ground for short distances, a \l;wheeled orga shooter\u object\botor; is a better option. When it is possible to build \l;winged bots\u object\botoj;, these represent the best solution for long distances.
+
+\t;Programming
+To program the bot's movements, use the following commands : \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+To program the orgaball cannon, use \c;\l;fire\u cbot\fire;\n;. To raise or lower the aim, use \c;\l;aim\u cbot\aim;\n;.
+
+\t;Object \l;Category\u cbot\category;
+\c;TrackedOrgaShooter\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

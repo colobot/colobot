@@ -1,0 +1,13 @@
+extern void object::Activity( )
+{
+	errmode(0);  // ne stoppe pas si erreur
+
+	while ( true )
+	{
+		wait(2);
+		goto(-13,-16, 0,0,1);
+		turn(180);
+		goto(14,-12, 0,0,1);
+		turn(180);
+	}
+}

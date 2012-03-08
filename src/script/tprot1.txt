@@ -1,0 +1,24 @@
+extern void object::Solution( )
+{
+	object	item;
+	float	dir, dist;
+
+	while ( true )
+	{
+		do
+		{
+			item = radar(AlienAnt, 0, 360, 0, 100);
+		}
+		while ( item == null );
+
+		dir = direction(item.position);
+		turn(dir);
+
+		dist = distance(item.position, position);
+		if ( dist < 40 )
+		{
+			fire(0.2);
+			wait(2);
+		}
+	}
+}

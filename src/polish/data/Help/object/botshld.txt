@@ -1,0 +1,18 @@
+\b;\button 157; Os³aniacz
+\image botshld 8 8;
+Robot na g¹sienicach zaprojektowany do obrony przed wszelkimi mo¿liwymi atakami \l;wrogów\u object\mother; w strefie od 10 do 25 metrów. Jego dzia³anie powoduje regeneracjê osobistych os³on robotów i budynków. U¿ycie tego robota to jedyna mo¿liwoœæ przedostania siê przez w¹skie przejœcia pomiêdzy truj¹cymi zielonymi grzybami.
+
+\l;Zwyk³e ogniwo elektryczne\u object\power; pozwala na 20 sekundowe dzia³anie os³ony o promieniu 25 metrów, co jest zwykle za krótkim czasem. Bardziej odpowiednie dla tego robota jest \l;atomowe ogniwo elektryczne\u object\atomic;.
+
+Zu¿ycie energii jest wprost proporcjonalne do promienia strefy ochronnej. Z promieniem pow³oki ochronnej równym 10 metrów robot mo¿e pracowaæ 2,5 raza d³u¿ej, ni¿ przy maksymalnym promieniu równym 25 metrów.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem, mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Do programowego u¿ycia os³ony, przeznaczona jest instrukcja \c;\l;shield\u cbot\shield;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;Shielder\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

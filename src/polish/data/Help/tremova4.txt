@@ -1,0 +1,34 @@
+\b;Æwiczenie
+Przenieœ \l;kostkê tytanu\u object\titan; na platformê koñcow¹. Pozycja tytanu nie jest znana, ale wspó³rzêdne platformy koñcowej to: x=10, y=-60.
+
+\b;Instrukcja \c;goto\n;
+Robot lataj¹cy mo¿e omijaæ przeszkody. Instrukcja \c;\l;goto\u cbot\goto;\n;, wykonana przez robota lataj¹cego automatycznie spowoduje jego lot, start na pocz¹tku trasy  i l¹dowanie na jej koñcu.
+Instrukcja ta mo¿e w rzeczywistoœci otrzymaæ równie¿ drugi parametr, który jednak nie jest obowi¹zkowy. Jeœli nie zostanie podany drugi parametr, przyjêta zostanie domyœlna wysokoœæ lotu równa 10 metrów.
+
+Wobec czego, instrukcja:
+\c;\s;goto(item.position);\n;
+
+Jest równowa¿na:
+\c;\s;goto(item.position, 10);\n;
+
+\b;Program
+U¿yj instrukcji \c;\l;radar\u cbot\radar;(Titanium);\n; do znalezienia kostki tytanu. Nastêpnie sprawdŸ, czy kostka tytanu rzeczywiœcie zosta³a znaleziona. W tym æwiczeniu ta linia nie jest bardzo przydatna, gdy¿ wiadomo, ¿e gdzieœ jest kostka tytanu. Jednak¿e warto wyrobiæ sobie nawyk sprawdzania danych podawanych przez radar:
+\c;
+\s;object  item;
+\s;item = radar(Titanium);
+\s;if ( item == null )  return;
+\s;goto(item.position);
+\n;
+Zmienna \c;item\n; jest typu \c;\l;object\u cbot\object;\n;. Aby poznaæ dok³adn¹ pozycjê obiektu opisywanego przez zmienn¹, wystarczy napisaæ \c;item.position\n;.
+
+Do podniesienia kostki tytanu u¿yj instrukcji \c;\l;grab\u cbot\grab;()\n; bez parametrów.
+
+Do upuszczenia tytanu u¿yj instrukcji \c;\l;drop\u cbot\drop;()\n; bez parametrów.
+
+Wspó³rzêdne platformy koñcowej to: x=10, y=-60. Nale¿y zadeklarowaæ \l;zmienn¹\u cbot\var; typu \l;point\u cbot\point;, a nastêpnie przypisaæ jej odpowiednie wspó³rzêdne. PóŸniej mo¿na j¹ podaæ jako parametr instrukcji \c;\l;goto\u cbot\goto;\n;.
+Wskazówka: Nie musisz siê przejmowaæ wspó³rzêdn¹ \c;z\n; w przypadku robotów nie potrafi¹cych lataæ.
+
+Do Ciebie nale¿y dokoñczenie programu...
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

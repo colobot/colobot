@@ -1,0 +1,9 @@
+extern void object::Go()
+{
+	move(70);
+	grab();
+	turn(180);
+	move(110);
+	drop();
+	#
+}

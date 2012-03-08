@@ -1,0 +1,28 @@
+\b;\button 164; Station de recharge
+\image station 8 8;
+Ce bâtiment extrait l'énergie du sous-sol et recharge les \l;piles\u object\power; par induction. Pour recharger un robot, il suffit d'avancer sur la plate-forme de la station, et d'attendre quelques secondes. Une \l;pile\u object\power; transportée est également rechargée. Les \l;piles atomiques\u object\atomic; ne sont pas rechargeables.
+
+Une station de recharge a besoin d'un sous-sol riche en énergie pour être fonctionnelle. Si le rapport du satellite indique que l'énergie n'est présente que par endroits, il faut au préalable sonder le sous-sol avec un \l;robot renifleur\u object\botsr;. S'il dépose une \l;croix verte\u object\enerspot;, l'endroit est adapté à la construction d'une station de recharge ou d'une \l;fabrique de piles\u object\energy;.
+
+Si après la construction la grosse pile de la station reste vide (rouge), cela signifie que le sous-sol à cet endroit ne contient pas d'énergie.
+
+\t;Emplacement requis
+Surface plate de 6 mètres de diamètre riche en énergie.
+
+\t;Entrée
+Energie au sous-sol.
+
+\t;Sortie
+Recharge les piles proches.
+
+\t;Energie consommée
+Extraite du sous-sol.
+
+\t;Durée de l'opération
+Quelques secondes, selon la capacité à recharger.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;PowerStation\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

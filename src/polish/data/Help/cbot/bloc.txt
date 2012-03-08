@@ -1,0 +1,49 @@
+\b;Bloki
+Do zgrupowania razem kilku instrukcji mo¿na u¿yæ nawiasów klamrowych \c;{ }\n; i utworzyæ z nich jeden blok, na przyk³ad: 
+\c;
+\s;	{
+\s;		float  t;
+\s;		t = a;
+\s;		a = b;
+\s;		b = t;  // zamienia zawartoœci a i b
+\s;	}
+\n;
+Ka¿da instrukcja w bloku zakoñczona jest \l;œrednikiem\u cbot\term; ale sam blok ju¿ nie. 
+W celu zilustrowania u¿ycia bloków w programie rozwa¿my nastêpuj¹cy przyk³ad z instrukcj¹ \c;\l;if\u cbot\if;\n;:
+\c;
+\s;	if ( a < b )
+\s;		\n;instrukcja 1\c;;
+\s;		\n;instrukcja 2\c;;
+\s;	\n;instrukcja 3\c;;
+\n;
+Jeœli \l;warunek\u cbot\cond; jest prawdziwy, wykonywane s¹ instrukcje 1, 2 i 3. Jeœli nie, tylko instrukcja 1 jest pomijana, instrukcje 2 i 3 s¹ wykonywane. Fakt, ¿e instrukcja 2 jest na tym samym poziomie co instrukcja 1 nie ma znaczenia. 
+Jeœli instrukcje 1 i 2 maj¹ byæ wykonywane tylko gdy warunek jest prawdziwy, nale¿y u¿yæ nawiasów klamrowych do z³¹czenie ich w jeden blok: 
+\c;
+\s;	if ( a < b )
+\s;	{
+\s;		\n;instrukcja 1\c;;
+\s;		\n;instrukcja 2\c;;
+\s;	}
+\s;	\n;instrukcja 3\c;;
+\n;
+Bloki mog¹ byæ niezbêdne w przypadku instrukcji \c;\l;if\u cbot\if;\n;, \c;\l;while\u cbot\while;\n; oraz \c;\l;for\u cbot\for;\n;, w celu zgrupowania instrukcji, które maj¹ byæ wykonywane tylko w przypadku prawdziwoœci warunku b¹dŸ powtarzane wielokrotnie. 
+Bloki mo¿na umieszczaæ wewn¹trz innych bloków dowoln¹ liczbê razy. Oto przyk³ad dwupoziomowego zagnie¿d¿enia:
+\c;
+\s;	if ( a > b )
+\s;	{
+\s;		int  i = 0;
+\s;		while ( i < 18 )
+\s;		{
+\s;			move(10);
+\s;			turn(5);
+\s;			i = i+1;
+\s;		}
+\s;	}
+\n;
+Aby poprawiæ czytelnoœæ programu, najlepiej jest wyrównaæ klamrê otwieraj¹c¹\c;{\n; z zamykaj¹c¹ \c;}\n;, chocia¿ nie jest to obowi¹zkowe. Nastêpuj¹cy przyk³ad zajmuje mniej miejsca i jest równowa¿ny poprzedniemu, nie jest jednak polecane u¿ywanie takiego stylu: 
+\c;
+\s;	if(a>b) { int i=0; while(i<18) {
+\s;	move(10);turn(5);i=i+1; }}
+\n;
+\t;Zobacz równie¿
+\l;Instrukcje\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

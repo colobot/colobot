@@ -1,0 +1,9 @@
+\b;Rozwi¹zanie
+Bezpieczniej bêdzie jeœli zostaniesz na \l;statku kosmicznym\u object\base;. Mo¿esz oberwaæ kilka razy, ale nie œmiertelnie.
+
+Nie marnuj ju¿ wiêcej czasu i u¿yj nowego \l;lataj¹cego dzia³a organicznego\u object\botoj;. Najpierw zabij mrówki po prawej stronie, a nastêpnie dooko³a statku kosmicznego zgodnie z ruchem wskazówek zegara, lec¹c na niskiej wysokoœci.
+
+Jeœli to siê nie uda, umieœæ \l;lataj¹ce dzia³o organiczne\u object\botoj; w bezpiecznym miejscu na pó³noc od statku kosmicznego, nastêpnie sam uciekaj. PóŸniej mo¿esz zabijaæ mrówki pojedynczo; nie mog¹ one uszkodziæ statku kosmicznego ani czarnej skrzynki.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

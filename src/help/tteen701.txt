@@ -1,0 +1,11 @@
+\b;A la maison
+Après tous ces exercices en plein air, on rentre à la maison pour faire de nouveau un peu de dessin. Tu en as profité pour ramener quelques plantes qu'il ne faudra pas oublier d'arroser de temps en temps¦...
+
+\b;Dessiner une maison
+Voilà un petit exercice pas compliqué du tout. Tu dois dessiner une maison orange, composée de 4 traits de 10 centimètres chacun, comme ceci¦:
+
+\image teen701 8 8;
+\b;Rappel
+Pour abaisser le crayon orange, utilise \c;pendown(Orange);\n;.
+Pour tourner d'un huitième de tour à gauche, utilise \c;turn(45);\n;.
+Pour tourner d'un quart de tour à gauche, utilise \c;turn(90);\n;.

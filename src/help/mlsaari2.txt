@@ -1,0 +1,30 @@
+\b;Programmes envoyés par Houston
+Vue l'urgence de la situation, nous avons rédigé un petit programme pour votre \l;robot shooter\u object\botfr;, afin qu'il protège votre flan ouest.
+\c;
+\s;extern void object::TueFourmi1()
+\s;{
+\s;	\l;object\u cbot\type; chose;              // déclaration variable
+\s;	
+\s;	\l;goto\u cbot\goto;(-30, 0);              // va à l'ouest
+\s;	\l;aim\u cbot\aim;(0);                    // met le canon droit
+\s;	
+\s;	\l;while\u cbot\while; ( true )             // répète toujours¦:
+\s;	{
+\s;		chose = \l;radar\u cbot\radar;(\l;AlienAnt\u object\ant;, 0, 360, 0, 40);
+\s;		\l;if\u cbot\if; ( chose¦!= null )   // détecté fourmi¦?
+\s;		{
+\s;			\l;turn\u cbot\turn;(\l;direction\u cbot\direct;(chose.position));
+\s;			\l;fire\u cbot\fire;(0.5);         // tire 0.5s
+\s;		}
+\s;		\l;wait\u cbot\wait;(1);               // attend 1s
+\s;	}
+\s;}
+\n;
+\b;Archives
+Résumé des programmes déjà reçus¦:
+
+o  \c;\l;ApporteTitanium2\u mlcrys2;\n;
+o  \c;\l;ApporteTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;EchangePile1\u mllune1;\n;

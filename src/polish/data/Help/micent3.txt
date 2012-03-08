@@ -1,0 +1,22 @@
+\b;Raport z satelity
+Obecnie na orbicie geostacjonarnej planety Centuria.
+\c;
+\s;-> POWIERZCHNIA\c;
+\tab;Temperatura:      25,4C
+\tab;Atmosfera:        tlen, azot, amoniak
+\tab;Wiatr:            0,7 m/s
+\tab;Ruda tytanu:      trochê
+\tab;Ruda uranu:       trochê
+
+\s;-> PODGLEBIE\c;
+\tab;ród³o energii:   brak
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       brak
+
+\s;-> DODATKOWE INFORMACJE\c;
+\tab;Wykryto:          olbrzymie mrówki
+\tab;  - Zagro¿enie:   niebezpoœrednie
+\tab;Wykryto:          paj¹ki
+\tab;  - Zagro¿enie:   niebezpoœrednie
+\tab;Wykryto:          u¿yteczne pozosta³oœci
+\n;

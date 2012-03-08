@@ -1,0 +1,28 @@
+\b;\button 161; Derrick
+\image derrick 8 8;
+Ce bâtiment permet d'extraire du sous-sol différentes matières premières. Afin de déterminer l'emplacement adapté pour la construction d'un derrick, il faut au préalable sonder le sous-sol avec un \l;robot renifleur\u object\botsr;. En fonction des marques qu'il dépose, vous pouvez déterminer ce qu'un derrick construit à cet endroit pourra extraire¦:
+
+\l;Croix rouge\u object\stonspot; -> \l;minerai de titanium\u object\titanore;.
+\l;Rond jaune\u object\uranspot;  -> \l;minerai d'uranium\u object\uranore;.
+\l;Croix verte\u object\enerspot;  -> énergie, ne convient pas pour la construction d'un derrick.
+
+\t;Emplacement requis
+Surface plate de 2.5 mètres de diamètre riche en minerai.
+
+\t;Entrée
+Minerai au sous-sol.
+
+\t;Sortie
+Minerai de titanium ou d'uranium.
+
+\t;Energie consommée
+Aucune.
+
+\t;Durée de l'opération
+10 secondes pour le titanium et 30 secondes pour l'uranium.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;Derrick\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

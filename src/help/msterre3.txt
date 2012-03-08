@@ -1,0 +1,7 @@
+\b;Solution
+Toute la marche à suivre pour mener à bien la mission est indiquée dans les instructions de Houston. Voici cependant quelques indications sur la manière de sélectionner les différents éléments du jeu.
+
+Vous pouvez sélectionner un bâtiment ou un robot en cliquant dessus avec la souris. Lorsque l'élément que vous désirez sélectionner n'est pas visible, les icônes en haut de l'écran permettent de sélectionner soit les robots (mode par défaut), soit les bâtiments. Pour que les icônes correspondant aux bâtiments soient affichées, cliquez une fois sur le flèche tout à gauche \button 130;. Le \l;vaisseau spatial\u object\base; est alors représenté par la première icône. Un nouveau clic sur la flèche fait revenir les icônes correspondant aux robots.
+
+\t;Voir aussi
+\l;Commandes\u command;.

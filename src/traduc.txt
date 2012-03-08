@@ -1,0 +1,151 @@
+Types des objets COLOBOT
+------------------------
+
+
+	...					// sac de survie
+
+	BaseCamp			// fusée principale
+	Derrick				// derrick
+	BotFactory			// fabrique de véhicules
+	PowerStation		// station de recharge
+	Converter			// conversion minerai en titanium
+	RepairCenter		// centre de réparation
+	DefenceTower		// tour de défense
+	AlienNest			// nid
+	ResearchCenter		// centre de recherches
+	RadarStation		// radar
+	PowerPlant			// fabrique de piles
+	AutoLab				// analyseur de matières organiques
+	NuclearPlant		// centrale nucléaire
+	StartArea			// départ
+	GoalArea			// arrivée
+	ExchangePost		// borne d'information
+
+	TitaniumOre			// minerai de titanium
+	UraniumOre			// minerai d'uranium
+	Titanium			// titanium
+	PowerPack			// pile normale
+	NuclearPack			// pile nucléaire
+	OrgaStuff			// matière organique
+	BlackBox			// boîte noire
+	TNT					// explosif
+
+	PowerSpot			// énergie en sous-sol
+	TitaniumSpot		// titanium en sous-sol
+	UraniumSpot			// uranium en sous-sol
+	PathSpot			// chemin
+
+	TrainingRollerBot	// véhicule d'entraînement :
+	TrainingCrawlerBot
+	TrainingJetBot
+	TrainingSpiderBot
+
+	GrabberRollerBot	// véhicule manipulateur :
+	GrabberCrawlerBot
+	GrabberJetBot
+	GrabberSpiderBot
+
+	FireballRollerBot	// véhicule de défense :
+	FireballCrawlerBot
+	FireballJetBot
+	FireballSpiderBot
+
+	OrgaballRollerBot	// véhicule de défense :
+	OrgaballCrawlerBot
+	OrgaballJetBot
+	OrgaballSpiderBot
+
+	SnifferRollerBot	// véhicule sondeur :
+	SnifferCrawlerBot
+	SnifferJetBot
+	SnifferSpiderBot
+
+	ThumperBot			// véhicule de terrassement
+	FazerBot			// véhicule de défense
+	RecyclerBot			// véhicule de récupération
+	ShieldBot			// véhicule de protection
+	SubBot				// sous-marin
+	TargetBot			// cible d'entraînement
+
+	Me					// homme
+	Wiz					// toto
+
+	AlienBigLady		// mère pondeuse
+	AlienEgg			// oeuf
+	AlienAnt			// fourmi
+	AlienSpider			// araignée
+	AlienWasp			// guèpe
+	AlienWorm			// ver
+
+	Wreck				// épave de véhicule
+	Ruin				// bâtiment en ruine
+	Firework			// feu d'artifice
+	Mine				// mine
+	Barrier				// barrière
+	Greenery			// plante
+	Tree				// arbre
+	Quartz				// quartz
+	MegaStalk			// racine
+	...					// gravi-plante
+
+
+Fonction du langage CBOT :
+
+	Move				// avance d'une certaine distance
+	Turn				// tourne d'un certain angle
+	Goto				// va à une coordonnée donnée
+	Motor				// commande directe des moteurs gauche & droite
+	Jet					// commande directe du réacteur
+
+	Radar				// détecte un objet
+	Direction			// calcule une direction
+	Distance			// calcule la distance entre deux points
+	Wait				// attend
+	Produce				// crée un objet
+	Message				// affiche un message
+
+	Grab				// prend un objet avec le bras manipulateur
+	Drop				// dépose un objet avec le bras manipulateur
+	Sniff				// sonde le sous-sol
+	Receive				// reçoit une information
+	Send				// envoie une information
+	Thump				// terraforme le terrain
+	Recycle				// récupère une épave
+	Shield				// actionne le bouclier de protection
+	Fire				// tir avec un canon
+	Aim					// hausse du canon
+
+
+Classes :
+
+	point				// point avec coordonnées x,y,z
+	object				// descriptif d'un objet
+
+
+Descripteur d'un objet :
+
+	category			// catégorie de l'objet
+	energyPack			// object pile
+	load				// objet transporté
+	position			// position x,y,z
+	direction			// orientation
+	energyLevel			// niveau d'énergie
+	shieldLevel			// niveau du bouclier
+	altitude			// hauteur par rapport au sol
+
+
+Argument de la commande Manip( ) :
+
+	InFront				// prend ou dépose devant
+	Behind				// prend ou dépose derrière
+	EnergyPack			// prend ou dépose sa propre pile
+
+
+Filtre pour la commande Radar( ) ;
+
+	FilterNone			// pas de filtre
+	FilterOnlyLanding	// seulement les robots qui roulent
+	FilterOnlyFliying	// seulement les robots qui volent
+
+
+DR 14.03.01

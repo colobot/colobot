@@ -1,0 +1,18 @@
+
+    float [ ] TEST2 ( int [ ] param )
+    {
+        float [ ] z;
+        for ( int i = 0 ; i < sizeof( param ) ; i++ ) try { z [i] = param [i] / 3; }
+        return z;
+    }
+
+extern public void T()
+{
+	int a [4];
+	for ( int i = 0 ; i < 3 ; i++ ) a[i] = 4*i;
+	a [2] = 22;
+
+	float [] b ;
+	b = TEST2 ( a ) ;
+	show ( a, b );
+}

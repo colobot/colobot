@@ -1,0 +1,14 @@
+\b;\button 148; Recykler
+\image botrecy 8 8;
+Robot na g¹sienicach zaprojektowany do przetwarzania \l;wraków robotów\u object\wreck; na u¿yteczne \l;kostki tytanu\u object\titan;.
+
+\t;Programowanie
+Do zaprogramowania poruszania robotem, mo¿na u¿ywaæ nastêpuj¹cych instrukcji: \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+Aby zaprogramowaæ odzyskanie surowców z pozosta³oœci robota, nale¿y u¿yæ instrukcji \c;\l;recycle\u cbot\recycle;\n;.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;RecyclerBot\n;
+
+\t;Zobacz równie¿
+\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

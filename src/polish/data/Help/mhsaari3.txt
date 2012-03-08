@@ -1,0 +1,9 @@
+\b;Z Centrum Kontroli Misji
+Twój satelita zlokalizowa³ pozosta³oœci poprzedniej ekspedycji. W pobli¿u powinna te¿ byæ \l;czarna skrzynka\u object\bbox; ze wspó³rzêdnymi Twojego nastêpnego celu.
+
+Zlikwiduj kilka pozosta³ych mrówek. Zauwa¿yliœmy, ¿e Twoje dzia³o neutronowe przesta³o dzia³aæ, wobec czego nie bêdzie mo¿liwa budowa nowych robotów. Jesteœmy jednak przekonani, ¿e znajdziesz odpowiednie rozwi¹zanie wykorzystuj¹c jedynie posiadane przez Ciebie zasoby.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

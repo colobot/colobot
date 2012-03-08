@@ -1,0 +1,8 @@
+\b;Æwiczenie
+W tym æwiczeniu "szalony robot" porozrzuca³ wiele \l;niebieskich plusów\u object\waypoint; na ziemi. Aby je znaleŸæ, mo¿esz u¿yæ ponownie programu napisanego w poprzednim æwiczeniu. Ukazuje to elastycznoœæ takiego programu: przystosowuje siê on do ka¿dego napotkanego œrodowiska.
+
+\t;Uwaga
+Nie czekaj zbyt d³ugo, gdy¿ szalony robot natychmiast rozpoczyna swoj¹ pracê. Na szczêœcie gra jest zatrzymywana, gdy jesteœ w edytorze programu.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

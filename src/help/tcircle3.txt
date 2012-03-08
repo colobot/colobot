@@ -1,0 +1,15 @@
+\b;Exercice
+Dessinez un cercle noir parfait en utilisant l'instruction \c;\l;motor\u cbot\motor;()\n;.
+
+\b;Principe
+Avec une consigne de 0.84 pour le moteur gauche et de 1 pour le moteur droite, le robot va effectuer un long cercle en virant légèrement à gauche.
+L'instruction \c;motor()\n; est instantanée. Les moteurs continuent de tourner tant qu'une autre instruction n'est pas donnée, ou que le programme s'arrête. Pour dessiner le cercle, il suffit donc d'attendre environ 20 secondes, avec l'instruction \c;\l;wait\u cbot\wait;(20)\n;.
+N'oubliez pas l'instruction \c;pendown(Black)\n; au début du programme.
+
+\b;À vous de jouer
+A vous maintenant d'écrire le programme complet.
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tdragst; et \l;programmation\u cbot;.

@@ -1,0 +1,3 @@
+Title.E text="Fundamentals" resume="Fundamentals"
+Title.F text="Base" resume="Base"
+Title.P text="Podstawy" resume="Podstawy"

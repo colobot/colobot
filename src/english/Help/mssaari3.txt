@@ -1,0 +1,9 @@
+\b;Walkthrough
+You should build a \l;radar\u object\radar; first.
+
+The \l;ants\u object\ant; appear to be running away from you. Try to circle around each one of them until they find themselves trapped between you and a \l;mine\u object\mine;. They'll opt for the mine and blow themselves up.
+
+Then bring the \l;black box\u object\bbox; aboard your ship. It is next to the derelict spaceship.
+
+\t;See also
+\l;Controls\u command;

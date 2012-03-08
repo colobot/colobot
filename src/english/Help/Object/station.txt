@@ -1,0 +1,28 @@
+\b;\button 164; Power Station
+\image station 8 8;
+The power station extracts energy from the underground and recharges \l;regular power cells\u object\power; through induction. To recharge a power cell loaded at the back of a bot, just move the bot to the center of the platform and wait a few seconds. A \l;power cell\u object\power; carried at arm's length can also be recharged. \l;Nuclear power cells\u object\atomic; are non-rechargeable.
+
+A power plant needs some energy in the subsoil. If the satellite report says that energy is available only at some places, you will need a \l;sniffer bot\u object\botsr; to prospect the subsoil. The marks it lays down provide information about the specifics of its findings: a \l;green cross\u object\enerspot; means that there is an energy deposit at this location beneath the surface, which is indispensable to the construction of a power station or a \l;power plant\u object\energy;.
+
+The large power cell at the top of the station remaining red after the construction is completed can only mean that the site is not geologically adequate.
+
+\t;Requirements for building
+Any flat and geologically adequate surface at least 6 meters wide.
+
+\t;Input
+Empty power cell.
+
+\t;Output
+Recharged power cell.
+
+\t;Power source
+Subsoil energy.
+
+\t;Duration of operation
+A few seconds, depending on the capacity to be recharged.
+
+\t;Object \l;Category\u cbot\category;
+\c;PowerStation\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

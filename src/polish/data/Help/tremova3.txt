@@ -1,0 +1,58 @@
+\b;Æwiczenie
+Przetop nieco \l;rudy tytanu\u object\titanore; na \l;kostki tytanu\u object\titan;, a nastêpnie dostarcz dwie kostki tytanu na platformy o podanych wspó³rzêdnych:
+\c;
+	x=10, y=-60
+	x=10, y=-65
+\n;
+\image derrick 8 8;
+\l;Kopalnia\u object\derrick; wydobywa rudê tytanu z podglebia; wystarczy tylko j¹ podnieœæ.
+
+\image convert 8 8;
+\l;Huta\u object\convert; przetapia rudê tytanu na kostki tytanu. Wystarczy zostawiæ rudê tytanu na platformie, cofn¹æ siê i poczekaæ na jej przetopienie.
+
+\b;Ogólny algorytm
+Powtórz dwa razy:
+o  Poczekaj na rudê tytanu.
+o  PodejdŸ do rudy tytanu.
+o  Podnieœ j¹.
+o  PodejdŸ do huty.
+o  Zostaw rudê tytanu.
+o  Cofnij siê o 2,5 metra.
+o  Poczekaj na kostkê tytanu.
+o  Podnieœ kostkê tytanu.
+o  PodejdŸ do platformy.
+o  Zostaw kostkê tytanu.
+
+\b;Program
+Pêtla \c;\l;for\u cbot\for;\n; umo¿liwia dwukrotne powtórzenie wszystkich instrukcji.
+Ruda tytanu nie jest dostêpna natychmiast. Nale¿y poczekaæ na jej wydobycie przez kopalniê. U¿yj do tego pêtli \c;\l;do\u cbot\do;\n;:
+\c;
+\s;do
+\s;{
+\s;	obj = radar(TitaniumOre);
+\s;}
+\s;while ( obj == null );
+\n;
+Po tej pêtli (gdy radar znajdzie rudê tytanu), mo¿esz do niej podejœæ \c;obj.position\n; u¿ywaj¹c instrukcji \c;\l;goto\u cbot\goto;\n;. Do podniesienia rudy tytanu u¿yj instrukcji \c;\l;grab\u cbot\grab;\n;.
+U¿yj nastêpuj¹cej instrukcji do znalezienia huty:
+\c;
+\s;obj = radar(Converter);
+\n;
+Po umieszczeniu rudy w hucie, cofnij siê o 2,5 metra: \c;\l;move\u cbot\move;(-2.5)\n;.
+Druga pêtla \c;do\n; czeka a¿ bêdzie dostêpna kostka tytanu. Musisz ograniczyæ zasiêg radaru do 5 metrów, w przeciwnym wypadku natychmiast znajdziesz kostkê tytanu w³aœnie dostarczon¹ na platformê:
+\c;
+\s;do
+\s;{
+\s;	obj = radar(Titanium, 0, 360, 0, 5);
+\s;}
+\s;while ( obj == null );
+\n;
+Wspó³rzêdne \c;x\n; dwóch platform s¹ równe. Wspó³rzêdne \c;y\n; s¹ odpowiednio równe -60 i -65. Najefektywniejszym sposobem otrzymania wspó³rzêdnych platform jest u¿ycie wartoœci \c;i\n; z pêtli \c;for\n;, która przyjmuje kolejno wartoœci 0 i 1:
+\c;
+\s;dest.x = 10;
+\s;dest.y = -60-5*i;
+\n;
+Do Ciebie nale¿y dokoñczenie programu...
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

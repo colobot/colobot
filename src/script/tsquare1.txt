@@ -1,0 +1,16 @@
+extern void object::Solution( )
+{
+	pendown(Orange);
+
+	move(20);  // va sur coin 1
+	turn(90);
+
+	move(20);  // va sur coin 2
+	turn(90);
+
+	move(20);  // va sur coin 3
+	turn(90);
+
+	move(20);  // revient au départ
+	turn(90);
+}

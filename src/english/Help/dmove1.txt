@@ -1,0 +1,10 @@
+\b;Exercise
+Program the robot in such a way that it arrives on the finishing pad, after having passed by the three blue crosses.
+The platforms and the crosses are all distant of 20m from each other.
+
+\b;Useful instructions
+\c;\l;move\u cbot\move;\n; to move the bot
+\c;\l;turn\u cbot\turn;\n; to turn the bot
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

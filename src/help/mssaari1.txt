@@ -1,0 +1,19 @@
+\b;Solution
+Dans une fabrique de robots en ruine se trouve un \l;cube de titanium\u object\titan;. Utilisez-le pour construire une \l;station de recharge\u object\station;.
+
+Le \l;robot recycleur\u object\botrecy; permet de transformer les épaves de robot en \l;titanium\u object\titan;. Avec le titanium obtenu, construisez un \l;centre de réparation\u object\repair; et un \l;radar\u object\radar;.
+
+Il faut ensuite trouver une \l;pile\u object\power;, la recharger et la mettre sur un \l;robot shooter\u object\botfj;. Tuez alors toutes les \l;fourmis\u object\ant; avec le robot, sans oublier de le recharger tous les deux tirs environ. Il faut également le réparer lorsqu'il essuie des tirs ennemis et que le niveau du bouclier (indicateur jaune) baisse trop.
+
+Lorsque toutes les fourmis sont tuées, chargez à fond la \l;pile\u object\power; du \l;robot déménageur\u object\botgr;, puis partez au sommet de la montagne. Vous pouvez également emporter une \l;pile\u object\power; chargée pour être sûr de ne pas tomber en panne d'énergie en chemin.
+1) Le premier niveau s'atteint grâce à un passage à l'ouest.
+2) Le deuxième niveau s'atteint grâce à un passage à l'est.
+3) Le troisième niveau s'atteint grâce à un passage au sud.
+4) Le quatrième et dernier niveau s'atteint par l'ouest.
+
+Après avoir pris le \l;minerai d'uranium\u object\uranore;, rejoignez le \l;vaisseau\u object\base; en descendant en ligne droite dans la bonne direction, pour économiser l'énergie.
+
+Posez le minerai d'uranium sur le vaisseau, embarquez et décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

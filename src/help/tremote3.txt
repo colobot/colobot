@@ -1,0 +1,96 @@
+\b;Exercice
+Télécommandez un robot, sans utiliser une \l;borne d'information\u object\exchange;, pour qu'il passe par les 6 croix bleues. Il faudra utiliser une seule \l;chaîne de caractère\u cbot\string; pour communiquer. Cette chaîne contiendra l'ordre à effectuer, par exemple \c;"move(20)"\n;. On utilise donc la même syntaxe que le langage CBOT, mais on aurait tout aussi bien pu changer complètement et utiliser \c;"advance=20"\n; par exemple. La chaîne de caractère sera \c;\l;static\u cbot\static;\n; pour communiquer directement d'un programme à un autre.
+Les 2 acteurs principaux de cet exercice sont¦:
+
+1) Un \l;robot déménageur\u object\botgr; sans pile, donc immobile. C'est lui l'émetteur que vous devez programmer.
+2) Un \l;robot d'entraînement\u object\bottr; qui attend les ordres. Ce robot est déjà programmé.
+
+\b;Le robot récepteur
+Pour commencer, il faut comprendre le programme du robot d'entraînement qui attend les ordres.
+Une \l;classe\u cbot\class; \c;exchange\n; contient le mécanisme d'échange et de mémorisation des ordres. Il faut d'abord déclarer une variable \c;\l;static\u cbot\static;\n; appelée ici \c;global_order\n;. Cette variable contient l'ordre à effectuer. L'instruction \c;static\n; permet à tous les robots d'accéder à la même variable unique.
+\c;\s;\l;public\u cbot\public; \l;class\u cbot\class; exchange
+\s;{
+\s;	\l;static\u cbot\static; \l;private\u cbot\private; \l;string\u cbot\string; global_order = "";
+\n;
+Une première méthode \c;put\n; sera utilisée par le robot émetteur pour donner un ordre. Si la chaîne n'est pas vide, cela signifie que le robot récepteur n'a pas terminé l'exécution d'un ordre. Dans ce cas, la méthode \c;get\n; ne fait rien et retourne \c;false\n;¦:
+\c;\s;	\l;synchronized\u cbot\synchro; \l;bool\u cbot\bool; put(string order)
+\s;	{
+\s;		if ( global_order == "" )
+\s;		{
+\s;			global_order = order;
+\s;			return true;
+\s;		}
+\s;		else
+\s;		{
+\s;			return false;
+\s;		}
+\s;	}
+\n;
+Une deuxième méthode \c;get\n; sera utilisée par le robot récepteur pour prendre connaissance d'un ordre à effectuer. La chaîne \c;global_order\n; est directement vidée, pour indiquer que la classe \c;exchange\n; est prête à recevoir un nouvel ordre¦:
+\c;\s;	\l;synchronized\u cbot\synchro; string get()
+\s;	{
+\s;		string ret = global_order;
+\s;		global_order = "";
+\s;		return ret;
+\s;	}
+\s;}
+\n;
+Le programme principal peut maintenant exister. La variable \c;list\n; est de type \c;exchange\n;, qui est une \l;classe\u cbot\class;. Il faut utiliser l'instruction \c;\l;new\u cbot\new;\n; pour créer immédiatement une instance.
+\c;\s;\l;extern\u cbot\extern; void object::Slave3( )
+\s;{
+\s;	exchange list = new exchange();
+\s;	string   todo;
+\n;
+La première boucle \c;while\n; exécute les ordres à l'infini. La deuxième boucle \c;while\n; attend un ordre en exécutant la méthode \c;get\n; de la classe \c;exchange\n;. Dès qu'un ordre contenant une chaîne non vide est reçu, la boucle est stoppée.
+\c;\s;	\l;while\u cbot\while; ( true )
+\s;	{
+\s;		\l;while\u cbot\while; ( true )
+\s;		{
+\s;			todo = list.get();
+\s;			if ( todo != "" )  break;
+\s;			wait(1);
+\s;		}
+\n;
+Il ne reste plus qu'à exécuter l'ordre reçu¦:
+\c;\s;		if ( \l;strfind\u cbot\strfind;(todo, "move") == 0 )
+\s;		{
+\s;			move(\l;strval\u cbot\strval;(\l;strmid\u cbot\strmid;(todo,5)));
+\s;		}
+\s;		if ( strfind(todo, "turn") == 0 )
+\s;		{
+\s;			turn(strval(strmid(todo,5)));
+\s;		}
+\s;	}
+\s;}
+\n;
+\b;Le robot émetteur
+Dans le robot émetteur, il est plus simple d'écrire une procédure \c;SendOrder\n; qui se charge d'envoyer un ordre au robot récepteur¦:
+\c;\s;void object::SendOrder(string order)
+\s;{
+\s;	exchange list = new exchange();
+\s;	
+\s;	while ( list.put(order) == false )
+\s;	{
+\s;		wait(1);
+\s;	}
+\s;}
+\n;
+La boucle \c;while\n; attend qu'un éventuel ordre précédent soit terminé, ce qui arrive lorsque le robot récepteur exécute la méthode \c;get\n;.
+Le programme principal est finalement d'une simplicité enfantine¦:
+\c;\s;extern void object::Remote3( )
+\s;{
+\s;	SendOrder( "move(20)" );
+\s;	SendOrder( "turn(90)" );
+\s;	SendOrder( "move(20)" );
+\s;	SendOrder( "turn(90)" );
+\s;	SendOrder( "move(10)" );
+\s;	SendOrder( "turn(90)" );
+\s;	SendOrder( "move(10)" );
+\s;	SendOrder( "turn(-90)" );
+\s;	SendOrder( "move(10)" );
+\s;}
+\n;
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u ttable3; et \l;programmation\u cbot;.

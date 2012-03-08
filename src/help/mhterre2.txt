@@ -1,0 +1,12 @@
+\b;Instructions de Houston
+Vous devez à présent apprendre le maniement du matériel qui vous accompagnera durant votre voyage. Tout est construit à base de titanium, disponible sur la plupart des systèmes solaires de l'univers. 
+
+\b;Marche à suivre
+1) Approchez-vous à environ 5 mètres du premier \l;cube de titanium\u object\titan;.
+2) Construisez un \l;centre de recherches\u object\research; \button 163;. Notez bien que \l;vous\u object\human; seul êtes capable de construire. Aucun robot ne peut vous remplacer pour cette tâche.
+3) Construisez une \l;fabrique de robots\u object\factory; \button 160; avec le deuxième cube de titanium.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

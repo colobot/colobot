@@ -1,0 +1,9 @@
+\b;Rozwi¹zanie
+Uruchom natychmiast program \c;KillAnt1\n; na Twoim \l;dziale na ko³ach\u object\botfr; a zajmie siê on pierwsz¹ fal¹ ataku mrówek zmierzaj¹cych z zachodu.
+
+Nastêpnie zbuduj dwie \l;wie¿e obronne\u object\tower;, jedn¹ na pó³noc od \l;statku kosmicznego\u object\base;, drug¹ na po³udniu (musisz zrobiæ to BARDZO szybko). Podczas budowania, u¿yj \l;transportera\u object\botgr; do zdobycia \l;ogniwa elektrycznego\u object\power;.
+
+Jak tylko poradzisz sobie z kolejnymi falami ataków oko³o piêtnastu \l;mrówek\u object\ant;, zajmij siê pozosta³ymi mrówkami, które nie zaatakowa³y. W celu ich wykrycia zbuduj \l;radar\u object\radar; a tak¿e \l;hutê\u object\convert;, \l;fabrykê robotów \u object\factory;, \l;stacjê energetyczn¹\u object\station; i \l;dzia³o lataj¹ce\u object\botfj; aby siê ich pozbyæ...
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

@@ -1,0 +1,12 @@
+public extern void object::Bug()
+{
+    point a;
+    a = position;
+    TEST();
+    float d=dist(a, position);
+}
+ 
+float dist(point a, point b)
+{
+    return a.x-b.x;
+}

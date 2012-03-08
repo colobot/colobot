@@ -1,0 +1,29 @@
+\b;Un hexagone, késako ?
+Un hexagone est une figure à 6 côtés, tout comme le carré en a 4.
+
+\image hexa 9 5;
+Le programme précédent pour dessiner le carré avec une boucle \c;repeat\n; était¦:
+\c;
+\s;extern void object::Go( )
+\s;{
+\s;	pendown(Orange);
+\s;	repeat(4)
+\s;	{
+\s;		move(20);
+\s;		turn(90);
+\s;	}
+\s;}
+\n;
+En répétant la boucle 6 fois et en tournant un peu moins (60¦degrés au lieu de 90¦degrés), tu obtiens exactement l'hexagone souhaité¦:
+
+\s;o  Baisse le crayon orange
+\s;o  répète 6 fois¦:
+\s;	o  Avance de 20 centimètres
+\s;	o  Tourne de 60 degrés à gauche
+
+Rappel: pas de point-virgule après \c;repeat(6)\n;¦!
+
+\b;Les angles et les degrés
+Peut-être que tu n'es pas très familier avec les mesures d'angles en degrés. Voici une petite explication pour éclairer ta lanterne¦:
+
+\image angles 16 8;

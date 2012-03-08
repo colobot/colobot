@@ -1,0 +1,57 @@
+\b;Exercise
+Let the bot find all the \l;blue crosses\u object\waypoint; on the ground. As soon as the bot passed over one of the crosses, it will disappear. Here is the general principle that you will apply:
+
+Repeat forever:
+	o  Look for a cross
+	o  If there is none, stop the program.
+	o  Calculate the direction of the cross.
+	o  Set the speed of the motors in such a way that they will find their way to the cross.
+
+\b;The program
+Use a \c;\l;while\u cbot\while;\n; loop in order to repeat several instructions over and over:
+\s;\c;while ( true )
+\s;{
+\s;	\n;instructions...\c;
+\s;}
+\n;
+The instruction \c;\l;radar\u cbot\radar;\n; will detect the blue crosses and put their description into a variable, for example \c;spot\n;. In this case, \c;\l;radar\u cbot\radar;()\n; needs only one parameter, i.e. the category of the object that it must look for:
+\s;\c;spot = radar(WayPoint);
+\n;
+Once all the crosses have been found, \c;radar\n; will return the value \c;\l;null\u cbot\null;\n;. You will have to test this case and react accordingly with the instruction \c;\l;if\u cbot\if;\n;:
+\s;\c;if ( spot == null )  // no more ?
+\s;{
+\s;	motor(0, 0);  // stops the motors
+\s;	break;        // stops the loop
+\s;}
+\n;The instruction \c;\l;break\u cbot\break;\n; will stop the infinite loop \c;while (true)\n;.
+
+Use the instruction \c;\l;direction\u cbot\direct;()\n; to calculate the angle of the rotation that the bot must perform in order to turn towards the blue cross. The coordinates of the object are given by \c;spot.position\n;. The following line will put the angle of the necessary rotation into the \l;variable\u cbot\var; \c;dir\n;:
+\s;\c;dir = direction(spot.position);
+\n;
+The value of the angle is positive if the blue cross is on your left hand, and negative if it is on your right hand. If the cross to be reached is on your left hand, you must set the right-hand motor to full speed, and set the left-hand motor to a lower speed, according to the angle:
+
+    direction = \c;  0\n; -> speed = \c; 1.0\n;
+    direction = \c; 45\n; -> speed = \c; 0.5\n;
+    direction = \c; 90\n; -> speed = \c; 0.0\n;
+    direction = \c;135\n; -> speed = \c;-0.5\n;
+    direction = \c;180\n; -> speed = \c;-1.0\n;
+
+The graphic below shows the speed of the left-hand and right-hand motor as set by the instruction \c;\l;motor\u cbot\motor;\n;, according to the angle:
+
+\image radar2 14 10;
+If the cross is straight ahead, the angle is 0 degrees. The motors will get the speeds 1 and 1, which means full speed ahead. If the cross is behind, the right motor will be set to speed -1: it will turn around. You can use the \l;expression\u cbot\expr; \c;1+dir/90\n; in order to calculate the necessary speed of the motors:
+\s;\c;if ( dir < 0 )  // on the right side?
+\s;{
+\s;	motor(1, 1+dir/90);  // turns more or less
+\s;}
+\n;
+Use the same principle if the angle has got a positive value, ranging between 0 and 180 degrees. It is up to you to work out the exact instructions to be performed:
+\s;\c;else  // on the left side?
+\s;{
+\s;	\n;up to you to fill in here...\c;
+\s;}
+\n;
+At the beginning of the program, you must still declare all the variables. \c;spot\n; is of type \c;\l;object\u cbot\object;\n;, whereas \c;dir\n; is of type \c;\l;float\u cbot\float;\n;.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,12 @@
+\b;Instruction \c;strlower\n;
+Convert all characters in a string to lowercase.
+
+Syntax¦:
+\s;\c;strlower ( string );\n;
+
+Examples¦:
+\s;\c;	string s = strlower("Abc");  // s is "abc"
+\n;
+\t;See also
+\c;\l;strlen\u cbot\strlen;\n;, \c;\l;strleft\u cbot\strleft;\n;, \c;\l;strright\u cbot\strright;\n;, \c;\l;strmid\u cbot\strmid;\n;, \c;\l;strfind\u cbot\strfind;\n;, \c;\l;strval\u cbot\strval;\n;, \c;\l;strupper\u cbot\strupper;\n;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

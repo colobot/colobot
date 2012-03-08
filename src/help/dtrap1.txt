@@ -1,0 +1,31 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il trouve toutes les \l;croix bleues\u object\waypoint; posées au sol, en évitant les \l;mines\u object\mine;. Dès que le robot est sur une croix, elle disparaît. Le principe à utiliser est le suivant¦:
+
+	Répéter à l'infini¦:
+	o  Chercher une mine
+	o  Si une mine est trouvée, calculer la direction opposée
+	o  Chercher une croix
+	o  Si rien n'est trouvé, stopper
+	o  Calculer la direction de la croix
+	o  Calculer la moyenne des deux directions
+	o  Donner une consigne de vitesse aux moteurs pour se diriger dans la direction moyenne
+
+\b;L'instruction \c;radar\n;
+Pour détecter une mine avec \c;\l;radar\u cbot\radar;\n;, nous vous conseillons d'utiliser les paramètres suivants¦:
+\c;\s;	radar(Mine, 0, 180, 0, 5);\n;
+La détection s'effectue sur 180 degrés. Si la mine est derrière, elle est donc ignorée.
+La distance maximale est de 5 mètres. Si la mine est devant mais plus loin, elle est également ignorée.
+
+Pour détecter une croix, utilisez¦:
+\c;\s;	radar(WayPoint, 0, 360, 0, 100);\n;
+La détection s'effectue sur 360 degrés, c'est-à-dire partout. La distance de 100 mètres est nettement plus grande que l'enclos. Toutes les croix sont donc détectées.
+
+Pour calculer la direction, utilisez \c;\l;direction\u cbot\direct;\n;.
+Pour la commande des moteurs, utilisez \c;\l;motor\u cbot\motor;\n;.
+
+A vous de jouer ...
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

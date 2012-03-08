@@ -1,0 +1,11 @@
+\b;Solution
+Pour trouver le sac de survie depuis la position de départ, il faut¦:
+
+1) Suivre la route qui descend, plein sud.
+2) A la première bifurcation, tourner à gauche (direction est).
+3) Le sac de survie se trouve à côté du centre de contrôle sous un arbre sur la droite de la route.
+
+Il suffit de s'en approcher et la mission est réussie.
+
+\t;Voir aussi
+\l;Commandes\u command;.

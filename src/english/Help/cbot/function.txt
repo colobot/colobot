@@ -1,0 +1,85 @@
+\b;Functions
+With functions you can divide your program into several parts, each of them will execute a specific task.
+Let's imagine following program¦:
+\c;
+\s;extern void object::Remote( )
+\s;{
+\s;	send("order", 1, 100);
+\s;	wait(5);
+\s;	send("order", 3, 100);
+\s;	wait(5);
+\s;	send("order", 2, 100);
+\s;	wait(5);
+\s;	send("order", 4, 100);
+\s;	wait(5);
+\s;}
+\n;
+\c;send\n; and \c;wait\n; are repeated several times. So it would be a good thing if we created a function that executes these two instructions:
+\c;
+\s;void object::SendToPost( float op )
+\s;{
+\s;	send("order", op, 100);
+\s;	wait(5);
+\s;}
+\s;extern void object::Remote( )
+\s;{
+\s;	SendToPost(1);
+\s;	SendToPost(3);
+\s;	SendToPost(2);
+\s;	SendToPost(4);
+\s;}
+\n;
+A function can have paramteters¦:
+\c;
+\s;void Example( int a, float x, string s )
+\n;
+The \c;Exemple\n; function will reveive un integer \c;a\n;, a floating point number \c;x\n; and a string \c;s\n;. Parameters are "passed by value", that is the values of parameter variables in a function are copies of the values the caller specified as variables. If you pass an \c;int\n; to a function, its parameter is a copy of whatever value was being passed as argument, and the function can change its parameter value without affecting values in the code that invoked the function.
+
+If you pass a \l;class\u cbot\class; instance or an \l;array\u cbot\array; as parameter to a function, the function only receives a \l;reference\u cbot\pointer; to the instance or the array. That means if you modify the instance or the array in the function, the instance or the array that has been specified by the caller will be actuallay modified.
+
+A function can also return a result with the \c;\l;return\u cbot\return;\n; instruction. Therefore the function must be declared no longer as void but as a type:
+\c;
+\s;float Mean( float a, float b )
+\s;{
+\s;	return (a+b)/2;
+\s;}
+\s;
+\s;extern void object::Test( )
+\s;{
+\s;	float value;
+\s;	value = Mean(2, 6);
+\s;	message( value );  // will display 4
+\s;}
+\n;
+Some other examples¦:
+\c;
+\s;float Pi( )
+\s;{
+\s;	return 3.1415;
+\s;}
+\s;
+\s;string Sign( float a )
+\s;{
+\s;	if ( a > 0 )  return "positive";
+\s;	if ( a < 0 )  return "négative";
+\s;	return "null";
+\s;}
+\n;
+You can declare several functions with the same name but different parameters¦:
+\c;
+\s;float Pythagoras( float a, float b )
+\s;{
+\s;	return sqrt((a*a)+(b*b));
+\s;}
+\s;
+\s;float Pythagoras( float a, float b, float c )
+\s;{
+\s;	return sqrt((a*a)+(b*b)+(c*c));
+\s;}
+\n;
+CBOT will call either the one or the other function depending on the paramteres passed.
+
+You can also declare a function \l;public\u cbot\public; so it can be used by other bots.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

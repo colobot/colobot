@@ -1,0 +1,7 @@
+\b;Solution
+Si votre robot explose, c'est que vous avez heurté trop souvent et trop violemment les supports en acier. Allez-y plus doucement, ainsi même en cas de pépin le robot ne sera pas endommagé.
+
+Si la mission ne se termine pas lorsque vous arrivez sur le vaisseau, cela signifie que vous n'avez pas passé à travers toutes les cibles. Faites encore une fois le tour et passez à travers les cibles où il reste encore la croix.
+
+\t;Voir aussi
+\l;Commandes\u command;.

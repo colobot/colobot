@@ -1,0 +1,18 @@
+void object::Part(float length)
+{
+	for ( int i=0 ; i<2 ; i=i+1 )
+	{
+		move(length);
+		turn(90);
+	}
+}
+
+extern void object::Solution( )
+{
+	float	rest = 25;
+	while ( rest > 0 )
+	{
+		Part(rest);
+		rest = rest-5;
+	}
+}

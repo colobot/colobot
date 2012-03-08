@@ -1,0 +1,31 @@
+extern void object::Attack( )
+{
+	int		enemy;
+	object	p;
+	float	dist, prox;
+	point	dest;
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	enemy = WheeledGrabber;
+
+	while ( true )
+	{
+		p = radar(enemy);  // cherche cible
+		if ( p == null )
+		{
+			wait(2);
+		}
+		else
+		{
+			dist = distance(p.position, position);
+			prox = dist/2;  // on se rapproche
+			if ( prox < 2.5 )  prox = 2.5;  // pas trop tout de même
+			dest.x = (position.x-p.position.x)*prox/dist + p.position.x;
+			dest.y = (position.y-p.position.y)*prox/dist + p.position.y;
+			dest.z = (position.z-p.position.z)*prox/dist + p.position.z;
+			goto(dest);  // va sur la cible
+		}
+	}
+}

@@ -1,0 +1,12 @@
+\b;Minerai d'uranium
+\image uranore 4 4;
+Le minerai d'uranium permet de fabriquer des \l;piles atomiques\u object\atomic; dans une \l;centrale nucléaire\u object\nuclear;. Ce minerai se trouve en surface ou en sous-sol. Dans ce dernier cas, il faut construire un \l;derrick\u object\derrick; pour l'extraire.
+
+\t;Transport
+Tous les \l;robots déménageurs\u object\botgr;. A cause de sa forte radioactivité, le \l;cosmonaute\u object\human; ne peut pas le transporter.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;UraniumOre\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

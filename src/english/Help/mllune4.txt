@@ -1,0 +1,23 @@
+\b;Programs dispatched by Houston
+Below is a program that has been developed by our engineers. It allows you to recharge the \l;power cell\u object\power; of a bot: it goes to the closest \l;power station\u object\station;, waits 5 seconds, and comes back to the initial position.
+
+Remark: If you click on an element of the program underlined in blue, your SatCom will display a text that explains this element. The texts that follow a double slash \c;//\n; are not part of the program, but are comments that help you to understand the program.
+\c;
+\s;extern void object::Recharge1()
+\s;{
+\s;	\l;point\u cbot\type;  start;          // variable for initial pos.
+\s;	\l;object\u cbot\type; item;           // info. about power station
+\s;	
+\s;	start = position;      // store initial position
+\s;	
+\s;	item = \l;radar\u cbot\radar;(\l;PowerStation\u cbot\category;); // look for station
+\s;	\l;goto\u cbot\goto;(item.position);   // go to the power station
+\s;	\l;wait\u cbot\wait;(5);               // wait 5 seconds
+\s;	
+\s;	\l;goto\u cbot\goto;(start);           // go back to initial pos.
+\s;}
+\n;
+\b;Archives
+Index of the programs dispatched in former missions:
+
+o  \c;\l;SwitchCell1\u mllune1;\n;

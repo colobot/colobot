@@ -1,0 +1,38 @@
+\b;Zadanie
+Zaprogramuj \l;transporter\u object\botgr; do zmiany  \l;ogniwa elektrycznego\u object\power; \l;dzia³a lataj¹cego\u object\botfj;. Wtedy bêdzie ono mog³o strzelaæ do paj¹ków.
+
+\t;Procedura
+1) Zaprogramuj \l;transporter\u object\botgr;.
+2) Uruchom program klawiszem strza³ki \button 21;.
+\l;Dzia³o lataj¹ce\u object\botfj; jest ju¿ zaprogramowane, wystarczy je zasiliæ nowym ogniwem elektrycznym, aby wykona³o swoj¹ robotê.
+
+\t;Program
+Potrzebne Ci bêd¹ nastêpuj¹ce instrukcje:
+\c;
+\s;grab();\n;
+\n;Podnosi przedmiot znajduj¹cy siê przed robotem.
+\c;
+\s;drop();\n;
+\n;Wypuszcza przedmiot niesiony przez robota.
+\c;
+\s;turn();\n;
+\n;Instrukcja ta ju¿ siê pojawi³a w poprzednim æwiczeniu: obraca ona robota o podany w stopniach k¹t.
+
+Zobaczmy pocz¹tek programu:
+o  podnieœ puste ogniwo elektryczne: \c;grab();\n;
+o  obróæ siê w lewo o 90 stopni (æwieræ obrotu): \c;turn(90)\n;
+o  upuœæ puste ogniwo: \c;drop();\n;
+o  itd.
+
+Do Ciebie nale¿y napisanie reszty programu!
+
+Jeœli masz problem, zawsze mo¿esz zerkn¹æ na rozwi¹zanie: zaznacz program \c;Solution\n; i kliknij przycisk z klamrami \button 22;.
+
+\t;Uwagi
+Zachowaj ostro¿noœæ i pisz instrukcje dok³adnie, uwzglêdniaj¹c ma³e i wielkie litery.
+
+W ka¿dymi wierszu powinna byæ jedna instrukcja, a wiersz zakoñczony œrednikiem.
+
+Jeœli Twój program nie robi tego czego oczekujesz, mo¿esz wróciæ do pozycji wyjœciowej, naciskaj¹c przycisk \button 59;. Mo¿na równie¿ zacz¹æ wszystko od pocz¹tku (naciœnij klawisz "Esc", a nastêpnie kliknij "Uruchom ponownie"). Napisany program nie zostanie usuniêty.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala przejrzeæ te instrukcje w dowolnej chwili.

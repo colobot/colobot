@@ -1,0 +1,20 @@
+extern void object::Attack( )
+{
+	point	traject[10];
+	int		nb, i;
+
+	errmode(0);
+	nb = cmdline(0)+1;
+
+	traject[0] = position;
+	for ( i=1 ; i<nb ; i++ )
+	{
+		traject[i].x = cmdline((i-1)*2+1);
+		traject[i].y = cmdline((i-1)*2+2);
+	}
+
+	for ( i=1 ; true ; i++ )
+	{
+		goto(traject[i%nb] ,0,0,2);
+	}
+}

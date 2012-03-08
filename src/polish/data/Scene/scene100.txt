@@ -1,0 +1,3 @@
+Title.E text="Leaving Earth" resume="Earth"
+Title.F text="Départ de la Terre" resume="Terre"
+Title.P text="Po¿egnanie z Ziemi¹" resume="Ziemia"

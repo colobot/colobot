@@ -1,0 +1,19 @@
+\b;Solution
+1) Construisez une \l;fabrique de robots\u object\factory;.
+2) Construisez un \l;robot renifleur\u object\botsj;.
+
+Sondez le sol avec le robot renifleur à proximité des cristaux, jusqu'à obtenir une \l;croix rouge\u object\stonspot;.
+
+3) Construisez un \l;derrick\u object\derrick; proche de la croix rouge.
+4) Construisez un \l;convertisseur\u object\convert;.
+
+Le couple derrick-convertisseur permet de produire du \l;titanium\u object\titan; tant qu'il en faut. Pour automatiser cette tâche, exécutez le programme \c;ApporteTitanium2\n; dans le \l;robot déménageur volant\u object\botgj;.
+
+5) Sondez les zones plates proches du vaisseau avec le renifleur. Lorsqu'une \l;croix verte\u object\enerspot; est trouvée, construisez une \l;station de recharge\u object\station;.
+6) Construisez un \l;radar\u object\radar;.
+7) Construisez un \l;robot shooter volant\u object\botfj;.
+8) Tuez tous les \l;vers\u object\worm;.
+9) Retournez sur le \l;vaisseau\u object\base; et décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

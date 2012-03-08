@@ -1,0 +1,11 @@
+\b;Worm
+\image worm 8 8;
+Worms transmit viruses to programmed bots. The virus alters the programming to such an extent that the bot either functions in a very erratic way or stops functioning altogether.
+
+Worms live in the subsoil but sometimes emerge and crawl on the surface. When they are underground they are undetectable and indestructible.
+
+\t;Object \l;Category\u cbot\category;
+\c;AlienWorm\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

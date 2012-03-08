@@ -1,0 +1,15 @@
+\b;Solution
+Pour construire le \l;centre de recherches\u object\research;, il faut déplacer un \l;cube de titanium\u object\titan; sur une zone plate proche du vaisseau spatial. \l;Vous\u object\human; pouvez directement transporter le cube, ou utiliser le \l;robot déménageur\u object\botgr;, qui se déplace plus rapidement que vous.
+
+Si vous avez utilisé le robot, il faut reculer une fois le cube posé. \l;Vous\u object\human; seul pouvez construire. Si le robot est sélectionné, appuyez sur la touche \key;\key human;\norm; pour vous sélectionner. Placez-vous face au cube, puis cliquez le premier bouton en bas à gauche \button 163; pour construire le \l;centre de recherches\u object\research;.
+
+Pour pouvoir effectuer la recherche, il faut d'abord déposer une \l;pile\u object\power; sur le \l;centre de recherches\u object\research;, à l'endroit indiqué par la flèche rouge. Sélectionnez ensuite le bâtiment, puis cliquez sur le bouton <robots volants> \button 65;.
+
+Construisez ensuite sur le même schéma une \l;fabrique de robots\u object\factory;, et placez-y un cube de titanium. Vous pourrez alors construire un \l;robot déménageur volant\u object\botgj; avec le bouton \button 139;, qu'il faut équiper d'une \l;pile\u object\power; pour qu'il soit opérationnel.
+
+Une fois le \l;robot déménageur volant\u object\botgj; fabriqué, il est préférable d'explorer les environs \l;vous-même\u object\human;, afin d'économiser les \l;piles\u object\power;. Vous trouverez le \l;minerai de titanium\u object\titanore; au fond de quelques cratères situés au nord. Par exemple, si vous partez depuis le \l;vaisseau spatial\u object\base; en direction du nord, vous trouverez du minerai dans le deuxième grand cratère survolé.
+
+La pose d'un \l;drapeau\u object\flag; vous permet de retrouver facilement l'endroit.
+
+\t;Voir aussi
+\l;Commandes\u command;.

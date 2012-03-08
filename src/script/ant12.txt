@@ -1,0 +1,92 @@
+extern void object::Attack( )
+{
+	int		list[], i;
+	object	p;
+	float	dist, prox;
+	point	nav1, nav2, dest;
+	boolean	lock, advance;
+
+	errmode(0);  // ne stoppe pas si erreur
+	while ( ismovie() != 0 )  wait(1);
+
+	i = 0;
+	list[i++] = WingedGrabber;
+	list[i++] = TrackedGrabber;
+	list[i++] = WheeledGrabber;
+	list[i++] = LeggedGrabber;
+	list[i++] = WingedShooter;
+	list[i++] = TrackedShooter;
+	list[i++] = WheeledShooter;
+	list[i++] = LeggedShooter;
+	list[i++] = WingedOrgaShooter;
+	list[i++] = TrackedOrgaShooter;
+	list[i++] = WheeledOrgaShooter;
+	list[i++] = LeggedOrgaShooter;
+	list[i++] = WingedSniffer;
+	list[i++] = TrackedSniffer;
+	list[i++] = WheeledSniffer;
+	list[i++] = LeggedSniffer;
+	list[i++] = Thumper;
+	list[i++] = PhazerShooter;
+	list[i++] = Recycler;
+	list[i++] = Shielder;
+	list[i++] = Subber;
+	list[i++] = Me;
+
+	nav1.x = cmdline(0);
+	nav1.y = cmdline(1);
+	nav2.x = cmdline(2);
+	nav2.y = cmdline(3);
+
+	lock = false;
+	while ( !lock )
+	{
+		p = radar(list, 0, 360, 0, 40);
+		if ( p != null )
+		{
+			fire(p.position);
+			lock = true;
+			break;
+		}
+		goto(nav1);
+
+		p = radar(list, 0, 360, 0, 40);
+		if ( p != null )
+		{
+			fire(p.position);
+			lock = true;
+			break;
+		}
+		goto(nav2);
+	}
+
+	advance = true;
+	while ( true )
+	{
+		p = radar(list, 0, 360, 0, 1000);
+		if ( p == null )
+		{
+			wait(1);
+		}
+		else
+		{
+			dist = distance(p.position, position);
+			if ( dist <= 40 && !advance )
+			{
+				fire(p.position);
+				advance = true;
+			}
+			else
+			{
+				prox = dist-5;
+				if ( prox > 40 )  prox = 40;
+				if ( prox <  5 )  prox = 5;
+				dest.x = (position.x-p.position.x)*prox/dist + p.position.x;
+				dest.y = (position.y-p.position.y)*prox/dist + p.position.y;
+				dest.z = (position.z-p.position.z)*prox/dist + p.position.z;
+				goto(dest);
+				advance = false;
+			}
+		}
+	}
+}

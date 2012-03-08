@@ -1,0 +1,13 @@
+\b;Instructions de Houston
+Nettoyer la région de toute présence hostile.
+
+Les informations transmises par le satellite d'observation \button 186; ont révélé une forte concentration d'éléments hostiles près de votre vaisseau, votre situation nous préoccupe¦!
+
+Pour cette raison, nous vous avons envoyé un programme pour le \l;robot shooter\u object\botfr; permettant de parer au plus pressé. Exécutez-le rapidement; il protègera votre flanc ouest.
+
+A vous de planifier la suite des opérations à l'aide des techniques d'attaque et de défense disponibles: \l;tours de défense\u object\tower; et \l;robot shooter\u object\botfj;.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

@@ -1,0 +1,24 @@
+\b;\button 162; Convertisseur
+\image convert 8 8;
+Ce bâtiment permet de convertir du \l;minerai de titanium\u object\titanore; en \l;titanium\u object\titan;. Il suffit pour cela de déposer le minerai au centre de la plate-forme, et de reculer pour laisser le champ libre à l'action du convertisseur.
+
+\t;Emplacement requis
+Surface plate quelconque de 6 mètres de diamètre.
+
+\t;Entrée
+Minerai de titanium.
+
+\t;Sortie
+Titanium.
+
+\t;Energie consommée
+Aucune.
+
+\t;Durée de l'opération
+15 secondes.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;Converter\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

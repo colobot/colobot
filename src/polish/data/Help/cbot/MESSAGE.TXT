@@ -1,0 +1,25 @@
+\b;Instrukcja \c;message\n;
+Sk³adnia:
+\s;\c;message ( tekst, typ );\n;
+
+Wyœwietla wiadomoœæ na górze ekranu. Wiadomoœæ znika automatycznie po kilku sekundach. 
+
+\t;tekst: \c;\l;string\u cbot\string;\n;
+Tekst do wyœwietlenia. Mo¿liwe jest z³¹czanie tekstów i/lub wartoœci przy u¿yciu operatora \c;+\n;:
+\c;message("Nie znaleziono");\n; 
+\c;message(k¹t);\n; 
+\c;message(n + " obiektów");\n; 
+\c;message("Odleg³oœæ = " + dist + " metrów");\n; 
+
+\t;typ: \c;\l;int\u cbot\int;\n; (domyœlna wartoœæ: \c;DisplayMessage\n;)
+Typ wiadomoœci, okreœlaj¹cy kolor t³a. 
+o  \c;DisplayMessage\n;  Standardowa wiadomoœæ na ¿ó³tym tle.
+o  \c;DisplayInfo   \n;  Informacja na zielonym tle.
+o  \c;DisplayWarning\n;  Ostrze¿enie na niebieskim tle.
+o  \c;DisplayError  \n;  B³¹d na czerwonym tle.
+
+\t;Typ wyniku: \c;\l;void\u cbot\void;\n;
+Brak.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

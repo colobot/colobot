@@ -1,0 +1,57 @@
+\b;Æwiczenie
+Napisz program umo¿liwiaj¹cy robotowi znalezienie wszystkich \l;niebieskich plusów\u object\waypoint; le¿¹cych na ziemi. Plusy znikaj¹ po przejœciu przez nie robota. Oto g³ówna zasada dzia³ania programu:
+
+Powtarzaj w nieskoñczonoœæ:
+	o  Szukaj plusa
+	o  Jeœli nie ma ¿adnego, zatrzymaj program.
+	o  Oblicz kierunek do plusa.
+	o  Ustaw prêdkoœci silników tak, aby robot dotar³ do znalezionego plusa.
+
+\b;Program
+U¿yj pêtli \c;\l;while\u cbot\while;\n; do wielokrotnego powtarzania instrukcji:
+\s;\c;while ( true )
+\s;{
+\s;	\n;instrukcje...\c;
+\s;}
+\n;
+Instrukcja \c;\l;radar\u cbot\radar;\n; wykryje niebieskie plusy i umieœci ich opis w zmiennej, na przyk³ad \c;spot\n;. W tym przypadku instrukcja \c;\l;radar\u cbot\radar;()\n; potrzebuje tylko jednego parametru, to jest kategorii obiektu, który musi znaleŸæ:
+\s;\c;spot = radar(WayPoint);
+\n;
+Po znalezieniu wszystkich plusów, instrukcja \c;radar\n; zwróci wartoœæ \c;\l;null\u cbot\null;\n;. Konieczne bêdzie sprawdzanie tego warunku instrukcj¹ \c;\l;if\u cbot\if;\n; i odpowiednie reagowanie:
+\s;\c;if ( spot == null )  // nie ma wiêcej?
+\s;{
+\s;	motor(0, 0);  // zatrzymaj silniki
+\s;	break;        // zatrzymaj pêtlê
+\s;}
+\n;Instrukcja \c;\l;break\u cbot\break;\n; zatrzyma nieskoñczon¹ pêtlê \c;while (true)\n;.
+
+U¿yj instrukcji \c;\l;direction\u cbot\direct;()\n; do obliczenia k¹ta obrotu, jaki musi wykonaæ robot, aby iœæ w kierunku niebieskiego plusa. Wspó³rzêdne obiektu s¹ podawane przez \c;spot.position\n;. Nastêpuj¹cy wiersz umieœci k¹t niezbêdnego obrotu w \l;zmiennej\u cbot\var; \c;dir\n;:
+\s;\c;dir = direction(spot.position);
+\n;
+Wartoœæ k¹ta jest dodatnia, gdy niebieski plus jest po lewej stronie a ujemna, gdy jest po prawej. Jeœli plus jest po lewej stronie, nale¿y ustawiæ pe³n¹ prêdkoœæ prawego silnika i zmniejszyæ prêdkoœæ lewego silnika w zale¿noœci od k¹ta:
+
+    kierunek = \c;  0\n; -> prêdkoœæ = \c; 1.0\n;
+    kierunek = \c; 45\n; -> prêdkoœæ = \c; 0.5\n;
+    kierunek = \c; 90\n; -> prêdkoœæ = \c; 0.0\n;
+    kierunek = \c;135\n; -> prêdkoœæ = \c;-0.5\n;
+    kierunek = \c;180\n; -> prêdkoœæ = \c;-1.0\n;
+
+Poni¿szy schemat pokazuje zale¿noœæ prêdkoœci lewego i prawego silnika, ustawianego instrukcj¹ \c;\l;motor\u cbot\motor;\n;, od k¹ta:
+
+\image radar2 14 10;
+Jeœli plus jest wprost przed robotem, k¹t jest równy 0 stopni. Prêdkoœci obu silników zostan¹ ustawione na 1, czyli pe³n¹ prêdkoœæ naprzód. Jeœli plus jest za robotem, prêdkoœæ prawego silnika zostanie ustawiona na -1, co obróci robota dooko³a. Mo¿na u¿yæ \l;wyra¿enia\u cbot\expr; \c;1+dir/90\n; w celu obliczenia niezbêdnej prêdkoœci silników:
+\s;\c;if ( dir < 0 )  // po prawej stronie?
+\s;{
+\s;	motor(1, 1+dir/90);  // skrêca bardziej lub mniej
+\s;}
+\n;
+U¿yj tej samej metody w przypadku dodatniej wartoœci k¹ta, w przedziale od 0 do 180 stopni. Do Ciebie nale¿y napisanie dok³adnych instrukcji do wykonania:
+\s;\c;else  // po lewej stronie?
+\s;{
+\s;	\n;do Ciebie nale¿y wype³nienie tego...\c;
+\s;}
+\n;
+Na pocz¹tku programu musisz zadeklarowaæ wszystkie zmienne. \c;spot\n; jest typu \c;\l;object\u cbot\object;\n;, podczas gdy \c;dir\n; jest typu \c;\l;float\u cbot\float;\n;.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

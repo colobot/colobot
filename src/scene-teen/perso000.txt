@@ -1,0 +1,15 @@
+AmbiantColor  air=120;120;120;0
+FogColor      air=100;100;90;0
+DeepView      air=100.00
+FogStart      air=0.9
+//VehicleColor  color=200;196;174;0  // sable
+SecondTexture rank=1
+Background    up=47;39;47;0 down=47;39;47;0
+
+BeginObject
+CreateObject pos=0;0 dir=1.85 type=Me option=0
+
+CreateLight dir= 1.0;-1.0; 0.0 color= 0.30; 0.30; 0.30 type=Object
+CreateLight dir=-1.0;-1.0; 0.0 color= 1.00; 1.00; 1.00 type=Object
+CreateLight dir= 0.0;-1.0; 1.0 color= 0.60; 0.60; 0.60 type=Object
+CreateLight dir= 0.0;-1.0;-1.0 color= 0.60; 0.60; 0.60 type=Object

@@ -1,0 +1,13 @@
+extern void object::Solution( )
+{
+	repeat ( 9 )
+	{
+		float  dir, len;
+	
+		dir = receive("Direction");
+		len = receive("Length");
+
+		turn(dir);
+		move(len);
+	}
+}

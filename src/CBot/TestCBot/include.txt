@@ -1,0 +1,27 @@
+class Z
+{
+	static	int	x = 0;
+	private	int	y;
+
+	void	T(  )
+	{
+		// autorisé ici
+		y = x ;
+		this.y = this.x ;
+		x = y ;
+		this.x = this.y ;
+	}
+}
+
+extern public void test()
+{
+	Z	a();
+	3 * a.x;		// autorisé
+//vu	3 * a.y;		// interdit
+//vu	a.y = 3;	// interdit ici
+	a.x = 1;	// autorisé
+
+	show ( a );
+	a.T();
+	show ( a );
+}

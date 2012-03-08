@@ -1,0 +1,10 @@
+extern public void object::TEST23()
+{
+	CLASS22	T;
+	T.T22( ) ;
+
+	show( position );
+	show( this.position );
+
+//	T22();
+}

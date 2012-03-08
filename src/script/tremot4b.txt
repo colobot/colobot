@@ -1,0 +1,68 @@
+public class order
+{
+	int    global_type = nan;
+	float  global_param;
+}
+
+public class exchange
+{
+	static private order global_order = new order;
+
+	// Put an order
+	synchronized bool put(order a)
+	{
+		if ( global_order.global_type == nan )
+		{
+			global_order = a;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	// Get an order
+	synchronized order get()
+	{
+		return global_order;
+	}
+
+	// Delete an order.
+	synchronized void delete()
+	{
+		global_order.global_type = nan;
+	}
+}
+
+extern void object::Slave4( )
+{
+	exchange list = new exchange();
+	order    todo;
+
+	while ( true )
+	{
+		while ( true )
+		{
+			todo = list.get();
+			if ( todo.global_type != nan )  break;
+			wait(1);
+		}
+
+		if ( todo.global_type == 1 )
+		{
+			message("move("+todo.global_param+")");
+			move(todo.global_param);
+		}
+		else if ( todo.global_type == 2 )
+		{
+			message("turn("+todo.global_param+")");
+			turn(todo.global_param);
+		}
+		else
+		{
+			message("Unknown order");
+		}
+		list.delete();
+	}
+}

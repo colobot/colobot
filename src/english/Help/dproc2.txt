@@ -1,0 +1,14 @@
+\b;Exercise
+Follow the way in form of a spiral. The bot must move 2 times 25m forward and turn, then move 2 times 20m forward and turn, and so on.
+\image tproc2 8 8;
+
+\b;Function
+You will have noticed that the way is made of "L"-shaped parts that are fit one into another. The first one (dark blue) measures two times 25 meters. The second one (light blue) measures 5 meters less. Let us start with writing the \l;function\u cbot\function; that will move the bot on a "L"-shaped part whose length will be given as a parameter.
+
+\b;Useful instructions
+\c;\l;for\u cbot\for;\n; loop to repeat some instructions
+\c;\l;move\u cbot\move;\n; to move the bot
+\c;\l;turn\u cbot\turn;\n; to turn the bot
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

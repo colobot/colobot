@@ -1,0 +1,22 @@
+\b;Raport z satelity
+Obecnie na orbicie geostacjonarnej Nowej Ziemi.
+\c;
+\s;-> POWIERZCHNIA\c;
+\tab;Temperatura:      24,8C
+\tab;Atmosfera:        tlen
+\tab;Wiatr:            0,7 m/s
+\tab;Ruda tytanu:      pod wod¹
+\tab;Ruda uranu:       brak
+
+\s;-> PODGLEBIE\c;
+\tab;ród³o energii:   w niektórych miejscach
+\tab;Ruda tytanu:      brak
+\tab;Ruda uranu:       trochê
+
+\s;-> DODATKOWE INFORMACJE\c;
+\tab;Wykryto:          olbrzymie mrówki
+\tab;  - Zagro¿enie:   bezpoœrednie
+\tab;Wykryto:          olbrzymie osy
+\tab;  - Zagro¿enie:   niebezpoœrednie
+\tab;Wykryto:          u¿yteczne pozosta³oœci
+\n;

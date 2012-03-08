@@ -1,0 +1,13 @@
+\b;Z Centrum Kontroli Misji
+Jest ju¿ chyba oczywiste, ¿e planeta ta nie bêdzie rajem dla ludzkoœci. 
+
+Zbuduj radar, który bêdzie przekazywa³ przysz³e transmisje.
+
+Ponadto... niestety musimy poinformowaæ Ciê, ¿e bêdziesz musia³ unicestwiæ wszystkie wrogie organizmy.
+
+Pierwsza ekspedycja odkry³a pok³ady \l;rudy tytanu\u object\titanore; pod powierzchni¹ Orfenii. Miejsce to zosta³o oznaczone niebiesk¹ \l;flag¹\u object\flag;.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;

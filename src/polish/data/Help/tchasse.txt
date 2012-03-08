@@ -1,0 +1,18 @@
+\b;Æwiczenie
+Musisz znaleŸæ sposób na zniszczenie czterech \l;robotów celów\u object\bottarg; bez marnowania amunicji. Warto zauwa¿yæ, ¿e po ka¿dym ruchu cele s¹ nieruchome przez jedn¹ sekundê.
+
+\b;Ogólny algorytm
+1) Wykryj cel instrukcj¹ \c;\l;radar\u cbot\radar;(TargetBot);\n;.
+2) Obróæ siê w kierunku celu: \c;\l;turn\u cbot\turn;(direction());\n;.
+3) Po wykonaniu obrotu sprawdŸ, czy cel siê nie poruszy³.
+4) Jeœli nie, poczekaj 0,2 sekundy: \c;\l;wait\u cbot\wait;(0.2);\n;.
+5) Ponownie sprawdŸ, czy cel siê nie poruszy³.
+6) Jeœli nie, strzel, wykonuj¹c instrukcjê \c;\l;fire\u cbot\fire;(2);\n; i czekaj¹c przez 2 sekundy na trafienie i zniszczenie celu.
+
+S¹ oczywiœcie równie¿ inne sposoby osi¹gniêcia tego samego celu.
+
+\t;Uwaga
+Aby zwiêkszyæ skutecznoœæ strza³ów, celuj nieco w dó³ instrukcj¹ \c;\l;aim\u cbot\aim;(-3);\n;.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

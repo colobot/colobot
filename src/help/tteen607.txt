@@ -1,0 +1,50 @@
+\b;Gauche-droite
+Dans un "vrai" labyrinthe, il y a des virages à gauche et à droite. Et cela devient nettement plus compliqué¦...
+
+\image teen607 8 8;
+Il faut bien comprendre que l'instruction \c;detect(Barrier)\n; observe devant le robot. Si le robot veut savoir s'il y a une barrière à sa gauche, il doit d'abord se tourner à gauche.
+
+Le principe que tu vas utiliser est le suivant¦:
+
+1) S'il n'y a pas de barrière devant, avance.
+2) Tourne à droite d'un quart de tour et, s'il n'y a pas de barrière devant, avance.
+3) Tourne à gauche d'un demi-tour et, s'il n'y a pas de barrière devant, avance.
+
+Attention: au point 3), tu remarques que le robot effectue un demi-tour à gauche. C'est nécessaire à cause du quart de tour à droite précédent¦:
+
+\image teen607x 18 8;
+\b;Le programme
+Le programme va ressembler à ceci¦:
+\c;
+\s;repeat(100)
+\s;{
+\s;	// Etape 1)
+\s;	if ( not detect(Barrier) )
+\s;	{
+\s;		...
+\s;	}
+\s;
+\s;	// Etape 2)
+\s;	turn(-90);
+\s;	if ( not detect(Barrier) )
+\s;	{
+\s;		...
+\s;	}
+\s;
+\s;	// Etape 3)
+\s;	turn(180);
+\s;	if ( not detect(Barrier) )
+\s;	{
+\s;		...
+\s;	}
+\s;}
+\n;
+Aux 3 emplacements où tu vois \c;...\n;, il faut avancer de 20 centimètres puis exécuter une nouvelle instruction \c;continue;\n;, comme cela¦:
+\c;
+\s;	move(20);
+\s;	continue;
+\n;
+L'instruction \c;continue;\n; indique qu'on recommence tout de suite au début du bloc \c;repeat(100)\n;, c'est-à-dire qu'on recommence au point 1).
+
+\b;Un peu d'anglais
+\c;continue = \n;continuer, poursuivre

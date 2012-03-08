@@ -1,0 +1,7 @@
+\b;From Mission Control
+You need to repel a last minute ant attack before taking off.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command; and \l;CBOT Language\u cbot;

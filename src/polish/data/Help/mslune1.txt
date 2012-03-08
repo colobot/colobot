@@ -1,0 +1,15 @@
+\b;Rozwi¹zanie
+Aby zbudowaæ \l;centrum badawcze\u object\research;, po³ó¿ \l;kostkê tytanu\u object\titan; na p³askiej powierzchni w pobli¿u statku kosmicznego. Mo¿esz \l;sam\u object\human; nieœæ kostkê lub u¿yæ dostêpnego\l;transportera\u object\botgr;.
+
+Jeœli u¿yjesz robota, odsuñ go od kostki, aby nie przeszkadza³ podczas budowy. Aby przenieœæ zaznaczenie z robota na siebie (pamiêtaj, ¿e tylko Ty mo¿esz budowaæ), naciœnij klawisz \key;\key human;\norm;.
+
+Stañ w pobli¿u \l;kostki tytanu\u object\titan; i zbuduj \l;centrum badawcze\u object\research; \button 163;. Zasil je \l;ogniwem elektrycznym\u object\power;, zaznacz budynek i kliknij symbol \button 65; aby wykonaæ <program badawczy robotów lataj¹cych>.
+
+W ten sam sposób zbuduj \l;fabrykê robotów\u object\factory; i zanieœ do jej œrodka \l;kostkê tytanu\u object\titan;. Zbuduj \l;transporter lataj¹cy\u object\botgj; klikaj¹c symbol \button 139; a nastêpnie zasil go \l;ogniwem elektrycznym\u object\power;.
+
+Mo¿esz sam zwiedzaæ okolicê jeœli chcesz oszczêdzaæ energiê. Na dnie kilku kraterów na pó³noc od statku kosmicznego znajdziesz kawa³ki rudy tytanu. Postawienie \l;flagi\u object\flag; mo¿e przyspieszyæ znalezienie tego miejsca w przysz³oœci.
+
+Zbierz 4 kawa³ki \l;rudy tytanu\u object\titanore; i dostarcz je na pok³ad \l;statku kosmicznego\u object\base;. Zabierz ze sob¹ \l;transporter lataj¹cy\u object\botgj; oraz \l;transporter na ko³ach\u object\botgr; i odleæ \button 28;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

@@ -1,0 +1,47 @@
+\b;Exercice
+Programmez le \l;robot\u object\botsr; renifleur pour quadriller le secteur entre les barrières.
+Vous devez trouver 3 emplacements permettant de construire un derrick. Un emplacement découvert est marqué d'une croix rouge.
+
+\b;Description
+L'enclos est carré et mesure 25 mètres de côté. Une bonne base consiste à effectuer un sondage tous les 5 mètres.
+
+\image sniff1 12 12;
+Une façon d'y parvenir consiste à imbriquer deux boucles \c;\l;for\u cbot\for;\n; l'une dans l'autre¦:
+\c;
+\s;for ( int y=0 ; y<6 ; y=y+1 )
+\s;{
+\s;	for ( int x=0 ; x<5 ; x=x+1 )
+\s;	{
+\s;		\n;o  sondage ...\c;
+\s;		\n;o  avancer de 5 mètres\c;
+\s;	}
+\s;	\n;o  sondage ...\c;
+\s;	\n;o  quart de tour à gauche\c;
+\s;	\n;o  avancer de 5 mètres\c;
+\s;	\n;o  quart de tour à gauche\c;
+\s;}
+\n;
+Ce programme ne fonctionne pas. Après la première ligne sondée, le \l;robot\u object\botsr; tourne à gauche puis sonde la deuxième ligne en revenant en arrière. Au deuxième virage, il doit tourner à droite¦!
+On constate que si \c;y\n; est pair, il faut tourner à gauche. A l'inverse, si \c;y\n; est impair, il faut tourner à droite.
+L'\l;expression\u cbot\expr; \c;y%2\n; permet d'obtenir le reste de la division de \c;y\n; par \c;2\n;. Donc, si \c;y=3\n;, on obtient \c;1\n;.
+Le test \c;\l;if\u cbot\if; { }\n; peut être suivi d'un \c;else { }\n;. Si le test est vrai, le premier \l;bloc\u cbot\bloc; \c;{ }\n; est exécuté, sinon c'est le deuxième bloc \c;{ }\n;.
+\c;
+\s;if ( y%2 == 0 )
+\s;{
+\s;	y \n;est pair ...\c;
+\s;}
+\s;else
+\s;{
+\s;	y \n;est impair ...\c;
+\s;}
+\n;
+A vous de terminer le programme ...
+
+\b;Remarque
+L'instruction \c;\l;sniff\u cbot\sniff;( )\n; effectue un sondage.
+Utilisez également les instructions \c;\l;move\u cbot\move;( )\n; et \c;\l;turn\u cbot\turn;( )\n;.
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Exercice précédent\u tcell2; et \l;programmation\u cbot;.

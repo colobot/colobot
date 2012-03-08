@@ -1,0 +1,112 @@
+Title.F      text="Pile 2"
+Resume.F     text="Equiper les robots shooters de piles"
+Title.E      text="Power Cell 2"
+Resume.E     text="Power all the winged shooters."
+ScriptName.F text="Pile2"
+ScriptName.E text="Spider2"
+Instructions name="tcell2.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=2 lost=0
+
+Audio         track=0
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=180;222;255;0 water=10;20;100;0  // grey
+VehicleColor  color=175;209;215;0  // bleu-sable
+DeepView      air=100.00 water=25.00 
+FogStart      air=0.1 water=0.1
+SecondTexture rank=3
+Background    up=76;105;226;0 down=192;250;255;0
+FrontsizeName image="lens5.tga"
+Planet        pos=0.00;0.70 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=1.00;0.60 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=1.20;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=2.00;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=2.50;0.50 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=3.00;0.30 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=3.85;0.30 dim=0.06 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=4.00;0.70 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=4.10;0.50 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet        pos=5.30;0.30 dim=0.08 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.7
+TerrainRelief       image="textures\relief45.bmp" factor=1.0
+TerrainResource     image="textures\resae.bmp"
+TerrainWater        image="lava04.tga" level=0.0 moveX=1.0 moveY=0.3 water=TO color=0;128;255;0
+TerrainInitTextures image="terra" dx=1 dy=1 table=2
+TerrainCreate
+
+BeginObject
+CreateObject pos=  16; -13 dir=1.5 type=Me range=200
+CreateObject pos=   8;  -3 dir=1.5 type=WheeledGrabber reset=1 trainer=1 script4="tcell2.txt" power=1
+CreateObject pos=  15;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=  12;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=   9;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=   6;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=   3;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=   0;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=  -3;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=  -6;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=  -9;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos= -12;   5 dir=1.5 type=WingedShooter reset=1 script1="wingsh02.txt" run=1 range=200 power=0 selectable=0
+CreateObject pos=   0;  -3 dir=0.0 type=PowerCell
+CreateObject pos=   1;  -4 dir=0.0 type=PowerCell
+CreateObject pos=   2;  -6 dir=0.0 type=PowerCell
+CreateObject pos=  -3;  -8 dir=0.0 type=PowerCell
+CreateObject pos=   1;  -8 dir=0.0 type=PowerCell
+CreateObject pos=   3;  -7 dir=0.0 type=PowerCell
+CreateObject pos=  -1;  -7 dir=0.0 type=PowerCell
+CreateObject pos=  -2;  -4 dir=0.0 type=PowerCell
+CreateObject pos=  -2;  -9 dir=0.0 type=PowerCell
+CreateObject pos=  -1; -10 dir=0.0 type=PowerCell
+CreateObject pos=  -7; -22 dir=0.0 type=RadarStation
+
+CreateObject pos= -30; 83 dir=0.0 type=Quartz0
+CreateObject pos= -35; 82 dir=1.2 type=Quartz2
+CreateObject pos= -32; 86 dir=0.6 type=Quartz3
+CreateObject pos= -30;105 dir=0.8 type=Quartz1
+CreateObject pos= -33;107 dir=1.9 type=Quartz0
+CreateObject pos= -34;114 dir=1.0 type=Quartz3
+CreateObject pos= -30;129 dir=0.3 type=Quartz2
+CreateObject pos= -27;134 dir=1.2 type=Quartz1
+CreateObject pos=  -4;148 dir=0.8 type=Quartz0
+CreateObject pos=  11;146 dir=0.5 type=Quartz2
+CreateObject pos=  15;145 dir=0.2 type=Quartz3
+CreateObject pos=  18;139 dir=0.7 type=Quartz1
+CreateObject pos=  17; 83 dir=1.0 type=Quartz0
+CreateObject pos=  21; 84 dir=1.3 type=Quartz3
+CreateObject pos=  25; 81 dir=0.6 type=Quartz1
+
+CreateObject pos=   0; 120 dir=0.0 type=AlienNest
+CreateObject pos=   5; 120 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+CreateObject pos=  -5; 120 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+CreateObject pos=   0; 125 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+CreateObject pos=   5; 125 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+CreateObject pos=  -5; 125 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+CreateObject pos=   0; 110 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+CreateObject pos=  -5; 110 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+CreateObject pos=   5; 110 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+//CreateObject pos=  10; 110 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+//CreateObject pos= -10; 110 cmdline=   0; 120; 25 dir=0.0 type=AlienAnt script1="antice.txt" run=1
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.00; 0.30 type=Quartz
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.30; 0.00 type=Quartz
+WaterColor color=-0.6;-0.1;-0.1
+
+MapColor floor=104;185;205 water=154;235;255
+MapZoom  factor=2
+
+EnableResearch type=WINGER
+DoneResearch type=WINGER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=WheeledGrabber lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienAnt min=0 max=0
+
+Camera eye=7.00;20.00;-50.00 lookat=7.00;1.00;-10.00 delay=10 fixDirection=-0.25

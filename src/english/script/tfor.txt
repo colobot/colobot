@@ -1,0 +1,10 @@
+extern void object::Solution( )
+{
+	for ( int i=0 ; i<6 ; i=i+1 )  // repeat 6 times
+	{
+		move(5);    // move 5m forward
+		turn(90);   // quarter turn left
+		fire(1);    // shoot
+		turn(-90);  // quarter turn right
+	}
+}

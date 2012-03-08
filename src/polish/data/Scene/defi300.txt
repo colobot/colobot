@@ -1,0 +1,3 @@
+Title.E text="Mover" resume="Move"
+Title.F text="Déplacements" resume="Déplace"
+Title.P text="Poruszanie siê" resume="Poruszanie siê"

@@ -1,0 +1,18 @@
+extern void object::Recharge2()
+{
+	point  start;          // zmienna pozycji startowej
+	object item;           // informacja o elektrowni
+	
+	start = position;      // zachowaj pozycjê startow¹
+	
+	item = radar(PowerStation); // znajdŸ elektrowniê
+	goto(item.position);   // idŸ do elektrowni
+	
+	while ( energyCell.energyLevel < 1 )
+	{
+		wait(1);            // poczekaj a¿ siê na³aduje
+	}
+	
+	goto(start);           // wróæ do pozycji startowej
+	message("£adowanie zakoñczone");
+}

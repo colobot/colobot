@@ -1,0 +1,66 @@
+\b;Zadanie
+Napisz krótki program zabijaj¹cy trzy paj¹ki.
+
+\t;Procedura
+1) Aby zaprogramowaæ robota, zaznacz go.
+2) Liczby od 1 do 4 odpowiadaj¹ce programom zawartym w robocie s¹ widoczne w lewej dolnej czêœci ekranu. Zaznacz pierwsz¹ liniê.
+3) Kliknij przycisk z klamrami \button 22; a dostaniesz siê do edytora, w którym mo¿esz pisaæ program.
+4) Podczas pisania programu, klawisz key \key;\key help;\norm; wyœwietli czytany w³aœnie przez Ciebie tekst. Po skoñczeniu pisania programu, kliknij przycisk "OK".
+5) Aby wykonaæ program, kliknij przycisk strza³ki \button 21;.
+
+\t;Program
+Musisz dok³adnie, krok po kroku wyjaœniæ robotowi co powinien zrobiæ, aby zabiæ trzy paj¹ki. Robot rozumie tylko precyzyjne instrukcje, które wykona jedn¹ po drugiej.
+
+Po klikniêciu przycisku z klamrami \button 22; w celu pisania programu, bêdzie ju¿ tam jego czêœæ:
+\c;
+\s;extern void object::Spider1( )
+\s;{
+\s;	
+\s;	\n;tutaj napisz Twój program...\c;
+\s;	
+\s;}
+\n;
+Nie zmieniaj tego, co zosta³o ju¿ napisane w edytorze, gdy go otworzysz. Dopisz tylko niezbêdne instrukcje w miejscu kursora.
+
+Potrzebne Ci bêd¹ nastêpuj¹ce instrukcje:
+\c;
+\s;aim(0);\n;
+\n;Ustawia dzia³ko w poziomie.
+\c;
+\s;turn();\n;
+\n;Wykonuje obrót o zadany k¹t, podany w nawiasach w stopniach. Na przyk³ad \c;turn(90);\n; obróci robota o 90 stopni czyli æwieræ obrotu w lewo. \c;turn(-90);\n; obróci o 90 stopni w prawo (równie¿ æwieræ obrotu). Wartoœci dodatnie obracaj¹ w prawo, ujemne w lewo. \c;turn(180);\n; spowoduje obrót w przeciwnym kierunku.
+\c;
+\s;fire(1);
+\n;Strzela z dzia³ka. Liczba w nawiasach okreœla czas trwania serii. W wiêkszoœci przypadków wystarcza 1 sekundowa seria.
+
+Zobaczmy pocz¹tek programu:
+o  ustaw dzia³o poziomo: \c;aim(0);\n;
+o  zastrzel paj¹ka przed robotem: \c;fire(1);\n;
+o  obróæ o 90 stopni w lewo: \c;turn(90)\n;
+o  strzelaj: \c;fire(1);\n;
+o  itd.
+
+Oto program wykonuj¹cy to wszystko:
+\c;
+\s;extern void object::Spider1( )
+\s;{
+\s;	
+\s;	aim(0);
+\s;	fire(1);
+\s;	turn(90);
+\s;	fire(1);
+\s;	
+\s;}
+\n;
+Teraz do Ciebie nale¿y napisanie reszty programu!
+
+Jeœli masz problem, zawsze mo¿esz obejrzeæ rozwi¹zanie: zaznacz program\c;Solution\n; w lewej dolnej czêœci ekranu i kliknij przycisk z klamrami \button 22;. Mo¿esz nawet uruchomiæ program rozwi¹zanie, klikaj¹c przycisk strza³ki \button 21;.
+
+\t;Uwagi
+Uwa¿aj, ¿eby dok³adnie pisaæ instrukcje, zwracaj¹c uwagê na ma³e i wielkie litery.
+
+Pisz zawsze jedn¹ instrukcjê w wierszy, koñcz¹c ka¿dy wiersz œrednikiem.
+
+Jeœli program nie dzia³a dok³adnie w po¿¹dany sposób, zawsze mo¿esz umieœciæ robota w punkcie startowym, klikaj¹c przycisk \button 59;. Mo¿esz równie¿ rozpocz¹æ zadanie od samego pocz¹tku (klikaj¹c przycisk "Esc", a nastêpnie "Uruchom ponownie"). Napisany program nie bêdzie stracony.
+
+Klawisz \key;\key help;\norm; pozwala wyœwietliæ te instrukcje w dowolnej chwili.

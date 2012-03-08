@@ -1,0 +1,33 @@
+\b;Type \c;string\n;
+Use a variable of this type for storing characters or strings.
+
+For example: 
+\s;\c;	"Hello!"
+\s;	"This is a string"
+\s;	"x"
+\s;	""  // empty string
+\n;
+You can append two strings with the \c;+\n; operator :
+\s;\c;	"Good morning," + " " + "Sir"
+\n;
+Returns the string:
+\s;\c;	"Good morning, Sir"
+\n;
+If you want to put a quotation mark (") or a backslash (\) in a string you must write¦:
+\s;\c;"This is \"very\" important"
+\n;which will result in the string \c; This is "very" important.
+\s;\c;"%user%\\ant.txt"
+\n;will result in \c;%user%\ant.txt
+\n;
+Following instructions can be used with strings¦:
+\c;\l;strlen\u cbot\strlen;     \n;Get string length
+\c;\l;strleft\u cbot\strleft;    \n;Extract left part
+\c;\l;strright\u cbot\strright;   \n;Extract right part
+\c;\l;strmid\u cbot\strmid;     \n;Extract center part
+\c;\l;strfind\u cbot\strfind;    \n;Find a substring.
+\c;\l;strval\u cbot\strval;     \n;Convert string to number
+\c;\l;strupper\u cbot\strupper;   \n;Convert to upper case
+\c;\l;strlower\u cbot\strlower;   \n;Convert to lower case
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

@@ -1,0 +1,182 @@
+Title.F      text="Alerte"
+Resume.F     text="Alerte, vous base est attaquée ..."
+Title.E      text="Alert"
+Resume.E     text="Alert, your base is under attack ..."
+Instructions name="%user%\mhelp01.txt"
+Satellite    name="%user%\minfo01.txt"
+Loading      name="%user%\mload01.txt"
+SoluceFile   name="%user%\msolu01.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+AmbiantColor   air=102;102;102;102 water=20;20;20;20  // grey
+BackColor      air=0;0;0;0 water=107;84;127;0  // magenta
+FogColor       air=0;0;0;0 water=107;84;127;0  // magenta
+VehicleColor   color=200;196;174;0
+InsectColor    color=200;164;83;0
+DeepView       air=200.00 water=25.00 
+FogStart       air=0.8 water=0.5
+SecondTexture  rank=1
+Background     image="%user%\back01.bmp"
+FrontsizeName  image="lens1.tga"
+Planet         pos=0.00;0.70 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=1.00;0.60 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=1.20;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=2.00;0.40 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=2.50;0.50 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=3.00;0.30 dim=0.04 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=3.85;0.30 dim=0.06 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=4.00;0.70 dim=0.02 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=4.10;0.50 dim=0.03 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+Planet         pos=5.30;0.30 dim=0.08 image="effect01.tga" uv1=0.00;0.50 uv2=0.25;0.75
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.3
+TerrainWind         speed=0.0;0.0
+TerrainBlitz        sleep=0 delay=10 magnetic=200
+TerrainRelief       image="%user%\relief01.bmp" factor=1.0
+TerrainResource     image="%user%\res01.bmp"
+TerrainWater        image="%user%\water01.bmp" level=30.0 moveX=1.0 moveY=0.3 color=129;113;163;0
+TerrainInitTextures image="%user%\terra.bmp" dx=1 dy=1 table=1
+TerrainCreate
+
+GroundSpot pos=  0.00;-100.0 radius=25 color=128;128;255
+GroundSpot pos= 50.00;-100.0 radius=25 color=128;255;128
+GroundSpot pos=-50.00;-100.0 radius=25 color=128;128;255
+GroundSpot pos=  0.00;  37.5 radius=25 color=128;255;128
+GroundSpot pos=-12.50;-150.0 radius=12 color=128;255;128
+GroundSpot pos=150.00;-125.0 radius=25 color=128;128;255
+GroundSpot pos= 75.00;-225.0 radius=50 color=128;200;200
+GroundSpot pos= 85.00; -57.5 radius= 6 color=160;128;160
+
+BeginObject
+CreateObject pos=21.00;-107.00 dir=1.0 type=Me
+CreateObject pos=-25.00;147.50 dir=0.5 type=SpaceShip run=0 proxyActivate=1 proxyDistance=50
+CreateObject pos=12.50;-102.50 dir=1.0 type=WheeledGrabber power=0.7 script3="exchg1.txt" script2="charge2.txt" script1="titan3.txt"
+CreateObject pos=12.50;-107.50 dir=1.0 type=WingedGrabber power=0.6 script3="exchg1.txt" script2="charge2.txt" script1="titan3.txt"
+CreateObject pos=12.50;-112.50 dir=1.0 type=WingedOrgaShooter power=0.2 script2="charge2.txt" script1="%user%\skill.txt"
+CreateObject pos=37.50; -97.50 dir=1.0 type=Shielder script1="charge.txt"
+CreateObject pos=-7.50; -96.00 dir=0.0 type=PowerCell power=0.2
+CreateObject pos=-7.50; -94.00 dir=0.0 type=PowerCell power=0.4
+CreateObject pos=-5.50; -96.00 dir=0.0 type=PowerCell power=0.9
+CreateObject pos=-5.50; -94.00 dir=0.0 type=PowerCell power=0.5
+CreateObject pos=-5.00; -75.00 dir=0.5 type=PowerStation
+CreateObject pos=40.00; -75.00 dir=1.0 type=Derrick
+CreateObject pos=12.50; -87.50 dir=0.5 type=BotFactory
+CreateObject pos=25.00; -87.50 dir=0.5 type=PowerCaptor
+CreateObject pos= 5.00;-100.00 dir=1.0 type=RepairCenter
+CreateObject pos=-9.00; -87.50 dir=0.0 type=DefenseTower
+CreateObject pos=62.00; -77.50 dir=1.0 type=DefenseTower
+CreateObject pos=38.00; -83.50 dir=1.0 type=RadarStation
+CreateObject pos= 5.00; -75.00 dir=0.5 type=PowerPlant
+CreateObject pos=20.00; -65.00 dir=0.5 type=NuclearPlant
+CreateObject pos=55.00; -57.00 dir=0.5 type=Converter
+
+CreateObject pos=70.00;-58.75 dir=0.4 type=TitaniumOre
+CreateObject pos=71.00;-57.00 dir=0.0 type=TitaniumOre
+CreateObject pos=73.00;-56.50 dir=0.9 type=TitaniumOre
+CreateObject pos=73.25;-58.50 dir=0.1 type=TitaniumOre
+CreateObject pos=73.75;-61.50 dir=0.2 type=TitaniumOre
+CreateObject pos=74.75;-56.75 dir=0.6 type=TitaniumOre
+CreateObject pos=75.00;-59.00 dir=0.4 type=TitaniumOre
+CreateObject pos=75.50;-64.50 dir=0.8 type=TitaniumOre
+CreateObject pos=76.25;-61.50 dir=0.1 type=TitaniumOre
+CreateObject pos=77.50;-57.25 dir=0.2 type=TitaniumOre
+CreateObject pos=77.75;-58.50 dir=0.5 type=TitaniumOre
+CreateObject pos=78.00;-59.25 dir=0.4 type=TitaniumOre
+CreateObject pos=54.00;-86.00 dir=0.5 type=TitaniumOre
+
+// Première vague à l'ouest
+CreateObject pos= -81;-103 dir=0.2 type=AlienEgg autoValue1=30 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos=-113;-131 dir=0.7 type=AlienEgg autoValue1=10 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos=-115;  97 dir=0.3 type=AlienEgg autoValue1=15 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= -95;  97 dir=1.4 type=AlienEgg autoValue1=25 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= -72;  97 dir=0.0 type=AlienEgg autoValue1=35 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+
+// Deuxième vague à l'est
+CreateObject pos= 275; -75 dir=0.3 type=AlienEgg autoValue1=20 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= 266; -95 dir=0.7 type=AlienEgg autoValue1=35 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= 306;-242 dir=1.2 type=AlienEgg autoValue1=50 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+
+// Troisième vague au sud
+CreateObject pos= 151;-282 dir=0.3 type=AlienEgg autoValue1=220 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= 148;-314 dir=0.0 type=AlienEgg autoValue1=200 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos=  97;-317 dir=1.5 type=AlienEgg autoValue1=230 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos=  38;-313 dir=0.7 type=AlienEgg autoValue1=250 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos=   6;-297 dir=0.4 type=AlienEgg autoValue1=220 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= -12;-279 dir=1.0 type=AlienEgg autoValue1=320 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= -49;-276 dir=0.1 type=AlienEgg autoValue1=280 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= -80;-245 dir=0.7 type=AlienEgg autoValue1=260 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+
+// Quatrième vague partout
+CreateObject pos=-261;-265 dir=0.1 type=AlienEgg autoValue1=300 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos=-229;  -9 dir=1.4 type=AlienEgg autoValue1=340 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos=-241; 140 dir=0.8 type=AlienEgg autoValue1=410 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= -57; 283 dir=0.5 type=AlienEgg autoValue1=440 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+CreateObject pos= 155; 135 dir=1.3 type=AlienEgg autoValue1=390 autoType=AlienAnt autoString="%user%\sant01.txt" run=1
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 0.56 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.32 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.16 type=Object
+WaterColor color=-0.1;-0.6;-0.1
+MapColor floor=165;142;107 water=154;235;255
+
+NewScript name="%user%\skill.txt" type=WheeledShooter
+NewScript name="%user%\skill.txt" type=TrackedShooter
+NewScript name="%user%\skill.txt" type=WingedShooter
+NewScript name="%user%\skill.txt" type=LeggedShooter
+NewScript name="%user%\skill.txt" type=WheeledOrgaShooter
+NewScript name="%user%\skill.txt" type=TrackedOrgaShooter
+NewScript name="%user%\skill.txt" type=WingedOrgaShooter
+NewScript name="%user%\skill.txt" type=LeggedOrgaShooter
+NewScript name="titan3.txt" type=WheeledGrabber
+NewScript name="titan3.txt" type=TrackedGrabber
+NewScript name="titan3.txt" type=WingedGrabber
+NewScript name="titan3.txt" type=LeggedGrabber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=ResearchCenter
+EnableBuild type=BotFactory
+EnableBuild type=Converter
+EnableBuild type=PowerStation
+EnableBuild type=RadarStation
+EnableBuild type=RepairCenter
+EnableBuild type=DefenseTower
+EnableBuild type=PowerPlant
+EnableBuild type=Derrick
+EnableBuild type=NuclearPlant
+EnableBuild type=PowerCaptor
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=THUMPER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+EnableResearch type=SHIELDER
+EnableResearch type=ATOMIC
+EnableResearch type=iPAW
+EnableResearch type=iGUN
+
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=THUMPER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+DoneResearch type=SHIELDER
+DoneResearch type=ATOMIC
+DoneResearch type=iPAW
+DoneResearch type=iGUN
+DoneResearch type=SNIFFER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienEgg min=0 max=0
+EndMissionTake pos=0.00;0.00 dist=1000.00 type=AlienAnt min=0 max=0

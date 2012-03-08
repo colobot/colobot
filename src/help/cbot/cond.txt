@@ -1,0 +1,28 @@
+\b;Les conditions
+Une condition est une \l;expression\u cbot\expr; particulière, qui prend une valeur \l;booléenne\u cbot\bool;, c'est-à-dire pouvant être vraie ou fausse (\c;\l;true\u cbot\true;\n; ou \c;\l;false\u cbot\false;\n;). Une condition détermine par exemple s'il faut continuer ou non une boucle \c;\l;while\u cbot\while;\n;.
+Les opérateurs de comparaison sont¦:
+
+\c;a == b  \n;\c;a\n; égal à \c;b\n;
+\c;a¦!= b  \n;\c;a\n; différent de \c;b\n;
+\c;a <  b  \n;\c;a\n; plus petit que \c;b\n;
+\c;a <= b  \n;\c;a\n; plus petit ou égal à \c;b\n;
+\c;a >  b  \n;\c;a\n; plus grand que \c;b\n;
+\c;a >= b  \n;\c;a\n; plus grand ou égal à \c;b\n;
+
+Par exemple¦:
+
+\c;12 == 12  \n;retourne vrai
+\c;45¦!= 47  \n;retourne vrai
+\c;99 == 98  \n;retourne faux
+\c;12 <  -1  \n;retourne faux
+\c;12 >= 10  \n;retourne vrai
+\c;12 >= 12  \n;retourne vrai
+
+\t;Remarque
+Il faut faire très attention à ne pas confondre la comparaison d'égalité \c;==\n; avec l'affectation d'une \l;variable\u cbot\var; \c;=\n;.
+
+\c;a == b\n; est une expression qui compare \c;a\n; avec \c;b\n;.
+\c;a = b\n; est une expression qui copie la valeur de \c;b\n; dans \c;a\n;.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

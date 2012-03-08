@@ -1,0 +1,5 @@
+\b;Solution
+Pas de solution pour cette mission. Débrouillez-vous avec les moyens du bord¦...
+
+\t;Voir aussi
+\l;Commandes\u command;.

@@ -1,0 +1,16 @@
+extern void object::ApporteTitanium1()
+{
+	// 1) Définition des variables.
+	object  chose;           // déclaration de variable
+	
+	// 2) Va vers le minerai et le prend.
+	chose = radar(TitaniumOre);// cherche minerai
+	goto(chose.position);    // va à la position
+	grab();                  // prend le titanium
+	
+	// 3) Va vers le convertisseur et pose le minerai.
+	chose = radar(Converter);// cherche le convertisseur
+	goto(chose.position);    // va à la position
+	drop();                  // pose le titanium
+	move(-2.5);              // recule de 2.5m
+}

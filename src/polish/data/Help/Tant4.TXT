@@ -1,0 +1,10 @@
+\b;Zadanie
+Zaprogramuj \l;dzia³o lataj¹ce\u object\botfj; do zabicia wszystkich mrówek w okolicy.
+
+\t;Program
+Na tych bagnach dzia³a na ko³ach lub g¹sienicach bêd¹ niezbyt przydatne. A mrówki, w odró¿nieniu od paj¹ków, poruszaj¹ siê: nie wystarczy obróciæ siê w kierunku najbli¿szej mrówki, podejœæ i strzeliæ.
+
+Najprostszy sposób rozwi¹zania tego problemu polega na lataniu na wysokoœci 10 metrów, celowaniu w dó³: \c;aim(-20);\n; i zbli¿aniu siê do mrówki u¿ywaj¹c pêtli warunkowej, o ile \l;odleg³oœæ\u cbot\dist; jest wiêksza ni¿ 20 m. W pêtli warunkowej musisz znaleŸæ najbli¿sz¹ mrówkê, obróciæ siê w jej kierunku, ustawiæ silniki na pe³n¹ moc instrukcj¹ \c;motor(1,1);\n; i chwilê poczekaæ, na przyk³ad 0,2 sekundy. Te wszystkie instrukcje musz¹ byæ powtarzane a¿ do zbli¿enia siê na odleg³oœæ mniejsz¹ ni¿ 20 metrów od mrówki. Wtedy wystarczy tylko j¹ zastrzeliæ.
+
+\t;Zobacz równie¿
+\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

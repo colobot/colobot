@@ -1,0 +1,16 @@
+
+class MaClass
+{
+	int			a = 1 ;
+	MaClass	pointeur ;
+	MaClass	next = null ;
+	CPoint		autre = new CPoint( 1 , 1 ) ;
+}
+
+extern public void Test ( )
+{
+	MaClass	x () ;
+	x.next = new MaClass ( ) ;
+	println ( x ) ;
+}
+

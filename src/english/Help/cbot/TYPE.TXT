@@ -1,0 +1,33 @@
+\b;Variable types
+When you define a \l;variable\u cbot\var;, you must give two elements: 
+
+1) a name
+2) a type
+
+Once you defined a variable, you can use it to put information in it. However, the information that a variable can contain must always be of the correct type: a variable of type \l;float\u cbot\float; can not contain a string, etc.
+
+In a program, the name of a type is always written on \type;green background\norm;. If the name of a type is not colored, this means that the name is misspelled. Type names are always written with lower case characters. Here is a list of the different types: 
+
+\s;\c;\l;int\u cbot\int;\n;
+For a whole number (12, -500, etc.).
+
+\s;\c;\l;float\u cbot\float;\n;
+For a real number (12, 3.14, 0.2, -99.98, etc.).
+
+\s;\c;\l;bool\u cbot\bool;\n;
+For a boolean variable, that can only take the values \c;true\n; or \c;false\n;.
+
+\s;\c;\l;string\u cbot\string;\n;
+For texts ("Hello!", "No object found", etc.)
+
+\s;\c;\l;point\u cbot\point;\n;
+For the coordinates of a point in space; a variable of this type consists of three parts named x, y and z.
+
+\s;\c;\l;object\u cbot\object;\n;
+A variable of this type contains the information about an object (bot, building, enemy, etc.).
+
+\s;\c;\l;void\u cbot\void;\n;
+This type is an "empty type", that you use when you do not want to specify a type.
+
+\t;See also
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

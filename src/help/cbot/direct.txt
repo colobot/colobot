@@ -1,0 +1,17 @@
+\b;Instruction \c;direction\n;
+Syntaxe¦:
+\s;\c;direction ( pos );\n;
+
+Calcule la direction que doit prendre le robot pour se diriger vers une position donnée.
+
+\t;pos: \c;\l;point\u cbot\point;\n;
+Position à atteindre.
+
+\t;Valeur retournée: \c;\l;float\u cbot\float;\n;
+Angle en degré de la rotation à effectuer. -90 signifie une rotation d'un quart de tour vers la droite, par exemple.
+
+\t;Dictionnaire anglais-français
+\c;direction\n; = direction
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

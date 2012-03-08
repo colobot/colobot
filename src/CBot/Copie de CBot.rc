@@ -1,0 +1,184 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_IF                   "if"
+    ID_ELSE                 "else"
+    ID_WHILE                "while"
+    ID_DO                   "do"
+    ID_ADD                  "+"
+    ID_SUB                  "-"
+    ID_MUL                  "*"
+    ID_DIV                  "/"
+    ID_OPENPAR              "("
+    ID_CLOSEPAR             ")"
+    ID_SEP                  ";"
+    ID_INT                  "int"
+    ID_ASS                  "="
+    ID_TRUE                 "true"
+    ID_FALSE                "false"
+    ID_OPBLK                "{"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_CLBLK                "}"
+    ID_FOR                  "for"
+    ID_COMMA                ","
+    ID_LO                   "<"
+    ID_HI                   ">"
+    ID_LS                   "<="
+    ID_HS                   ">="
+    ID_EQ                   "=="
+    ID_NE                   "!="
+    ID_FLOAT                "float"
+    ID_STRING               "String"
+    ID_BOOLEAN              "boolean"
+    ID_AND                  "&"
+    ID_XOR                  "^"
+    ID_OR                   "|"
+    ID_LOG_AND              "&&"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_OPENPAR              "Il manque une parenthèse ouvrante."
+    TX_CLOSEPAR             "Il manque une parenthèse fermante."
+    TX_NOTBOOL              "L'expression doit être un boolean."
+    TX_UNDEFVAR             "Variable non déclarée."
+    TX_BADLEFT              "Assignation impossible."
+    TX_ENDOF                "Instruction non terminée."
+    TX_OUTCASE              "Instruction ""case"" hors d'un bloc ""switch""."
+    TX_NOTERM               "Instructions après la fin."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_CLOSEBLK             "Il manque la fin du bloc."
+    TX_ELSEWITHOUTIF        "Instruction ""else"" sans ""if"" correspondant."
+    TX_OPENBLK              "Début d'un bloc attendu."
+    TX_BADTYPE              "Mauvais type de résultat pour l'assignation."
+    TX_REDEFVAR             "Redéfinition d'une variable."
+    TX_BAD2TYPE             "Les deux opérandes ne sont pas de types compatibles."
+    TX_UNDEFCALL            "Routine inconnue."
+    TX_MISDOTS              "Séparateur "" : "" attendu."
+    TX_WHILE                "Manque le mot ""while""."
+    TX_BREAK                "Instruction ""break"" en dehors d'une boucle."
+    TX_LABEL                "Un label ne peut se placer que devant un ""for"", un ""while"", un ""do"" ou un ""switch""."
+    TX_NOLABEL              "Cette étiquette n'existe pas"
+    TX_NOCASE               "Manque une instruction ""case""."
+    TX_BADNUM               "Un nombre est attendu."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_DIVZERO              "Division par zéro."
+    TX_NOTINIT              "Variable non initialisée."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_LOG_OR               "||"
+    ID_LOG_NOT              "!"
+    ID_NOT                  "~"
+    ID_ASSADD               "+="
+    ID_ASSSUB               "-="
+    ID_ASSMUL               "*="
+    ID_ASSDIV               "/="
+    ID_ASSOR                "|="
+    ID_ASSAND               "&="
+    ID_ASSXOR               "^="
+    ID_ASSSL                "<<="
+    ID_ASSSR                ">>>="
+    ID_ASSASR               ">>="
+    ID_SL                   "<<"
+    ID_SR                   ">>>"
+    ID_ASR                  ">>"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_INC                  "++"
+    ID_DEC                  "--"
+    ID_MODULO               "%"
+    ID_ASSMODULO            "%="
+    ID_LOGIC                "?"
+    ID_DOTS                 ":"
+    ID_BREAK                "break"
+    ID_SWITCH               "switch"
+    ID_CASE                 "case"
+    ID_CONTINUE             "continue"
+    ID_TRY                  "try"
+    ID_CATCH                "catch"
+    ID_THROW                "throw"
+    ID_FINALLY              "finally"
+    ID_DEFAULT              "default"
+END
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

@@ -1,0 +1,30 @@
+\b;Programs dispatched by Houston
+According to the data transmitted by the satellite, our engineers have developed two programs. The first one guides the \l;shielder bot\u object\botshld; through the narrow valley north close to the place where the key has been located. You can follow it without fearing any attack:
+\c;
+\s;extern void object::Outward()
+\s;{
+\s;	\l;shield\u cbot\shield;(1,15);   // activate the shield
+\s;	\l;goto\u cbot\goto;(6,160);    // go close to the key
+\s;	\l;shield\u cbot\shield;(0,15);   // deactivate the shield
+\s;}
+\n;
+The second program guides the \l;shielder bot\u object\botshld; back to the \l;spaceship\u object\base;:
+\c;
+\s;extern void object::Return()
+\s;{
+\s;	\l;shield\u cbot\shield;(1,15);   // activate the shield
+\s;	\l;goto\u cbot\goto;(8,60);     // go to the spaceship
+\s;	\l;shield\u cbot\shield;(0,15);   // deactivate the shield
+\s;}
+\n;
+\b;Archives
+Index of the programs dispatched in former missions:
+
+o  \c;\l;ServiceTower1\u mlvolca2;\n;
+o  \c;\l;CollectTitanium3\u mlvolca1;\n;
+o  \c;\l;KillAnt1\u mlsaari2;\n;
+o  \c;\l;CollectTitanium2\u mlcrys2;\n;
+o  \c;\l;CollectTitanium1\u mlcrys1;\n;
+o  \c;\l;Recharge2\u mltropi3;\n;
+o  \c;\l;Recharge1\u mllune4;\n;
+o  \c;\l;SwitchCell1\u mllune1;\n;

@@ -1,0 +1,8 @@
+\b;Solution
+1) Frappez un grand coup avec le \l;robot secoueur\u object\bottump;.
+2) Trouvez le \l;robot orgaShooter\u object\botoj;, environ 70 mètres à l'est du \l;vaisseau\u object\base;.
+3) Tuez toutes les \l;fourmis\u object\ant;.
+4) Embarquez et décollez.
+
+\t;Voir aussi
+\l;Commandes\u command;.

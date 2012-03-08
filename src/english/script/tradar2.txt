@@ -1,0 +1,32 @@
+extern void object::Sow( )
+{
+	while ( true )
+	{
+		float	x, y;
+		x = 8+rand()*24;
+		y = -89.5+rand()*24;
+		goto(x,y,0);
+		produce(position, 0, WayPoint, "");
+
+		while ( Compte(WayPoint) >= 20 )
+		{
+			wait(2);
+		}
+	}
+}
+
+int Compte(int cat)
+{
+	int		i, total;
+	object	p;
+
+	total = 0;
+	for ( i=0 ; i<10000 ; i++ )
+	{
+		p = retobject(i);
+		if ( p == null )  break;
+		if ( p.category == cat )  total ++;
+	}
+	return total;
+}
+

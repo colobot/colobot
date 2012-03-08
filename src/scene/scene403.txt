@@ -1,0 +1,138 @@
+Title.F      text="La panne"
+Resume.F     text="Poursuivez un robot fou."
+Title.E      text="System Failure"
+Resume.E     text="Pursue a rogue bot."
+Instructions name="mhcrys3.txt"
+Satellite    name="micrys3.txt"
+Loading      name="mlcrys3.txt"
+SoluceFile   name="mscrys3.txt"
+HelpFile     name="cbot.txt"
+EndingFile   win=-1 lost=0
+
+Audio         track=4
+AmbiantColor  air=102;102;102;102 water=20;20;20;20  // grey
+FogColor      air=180;222;255;0 water=10;20;100;0  // grey
+VehicleColor  color=175;209;215;0  // bleu-sable
+DeepView      air=100.00 water=25.00 
+FogStart      air=0.1 water=0.1
+SecondTexture rank=3
+Background    up=180;222;255;0 down=180;222;255;0
+FrontsizeName image="lens5.tga"
+
+TerrainGenerate     vision=400.00 depth=1 hard=0.7
+TerrainWind         speed=0.0;0.1
+TerrainRelief       image="textures\relief25.bmp" factor=1.0
+TerrainResource     image="textures\resae.bmp"
+//TerrainWater        image="lava04.tga" level=30.0 moveX=1.0 moveY=0.3 water=TO color=0;128;255;0
+TerrainInitTextures image="terra" dx=1 dy=1 table=2
+TerrainCreate
+
+//GroundSpot color=000;000;255 min=-10 max=31.25 smooth=10
+//GroundSpot color=250;150;100 min= 31.25 max=999 smooth=60
+GroundSpot pos= 12; -75 radius=30 color=150;200;250  // base
+
+BeginObject
+CreateObject pos=22.50;-75.00 dir=0.0 type=SpaceShip run=0
+CreateObject pos=22.50;-78.50 dir=1.5 type=Me
+CreateObject pos=19.25;-78.50 dir=1.5 type=WingedGrabber script3="exchg1.txt" script2="charge2.txt" script1="titan2.txt"
+CreateObject pos=20.00;-10.00 dir=1.5 type=WingedGrabber script3="exchg1.txt" script2="charge2.txt" script1="titan2.txt" range=200 power=1 camera=ONBOARD select=1
+CreateObject pos=36.30; 16.40 dir=1.6 type=WingedGrabber range=500 power=1 script1="run1.txt" run=1 selectable=0
+CreateObject pos=36.90; 18.20 dir=1.6 type=BlackBox
+
+CreateObject pos= 174;  31 dir=0.0 type=Quartz1
+CreateObject pos= 170;  17 dir=0.0 type=Quartz2
+CreateObject pos= 166;  19 dir=0.0 type=Quartz3
+CreateObject pos= 148;  30 dir=0.7 type=Quartz3
+CreateObject pos= 166;  -1 dir=0.4 type=Quartz0
+CreateObject pos= 168;  -5 dir=1.2 type=Quartz3
+CreateObject pos= 154; -26 dir=0.4 type=Quartz2
+CreateObject pos= 143; -32 dir=0.1 type=Quartz1
+
+// Arrivée :
+//CreateObject pos=-233;-208 dir=0.0 type=PowerCell power=0.6
+//CreateObject pos=-239;-214 dir=0.0 type=PowerCell power=0.2
+CreateObject pos=-222;-218 dir=0.0 type=Quartz2
+CreateObject pos=-231;-220 dir=0.0 type=Quartz1
+CreateObject pos=-229;-208 dir=0.0 type=Quartz3
+CreateObject pos=-239;-217 dir=0.4 type=Quartz3
+CreateObject pos=-244;-211 dir=1.2 type=Quartz3
+CreateObject pos=-241;-206 dir=1.2 type=Quartz2
+
+// Première combe (nord-est) :
+CreateFog pos= 220; 235 height= 5 dim=15 delay=4.0 type=4
+CreateFog pos= 220; 235 height= 6 dim=15 delay=5.0 type=5
+CreateFog pos= 268; 156 height= 5 dim=20 delay=4.0 type=4
+CreateFog pos= 268; 156 height= 6 dim=20 delay=5.0 type=5
+CreateFog pos= 256; 128 height= 5 dim=20 delay=4.0 type=4
+CreateFog pos= 256; 128 height= 6 dim=20 delay=5.0 type=5
+CreateFog pos= 262;  89 height= 5 dim=20 delay=4.0 type=4
+CreateFog pos= 262;  89 height= 6 dim=20 delay=5.0 type=5
+CreateFog pos= 254; 142 height= 8 dim=50 delay=4.0 type=4
+CreateFog pos= 254; 142 height= 9 dim=50 delay=5.0 type=5
+CreateFog pos= 254; 189 height=13 dim=90 delay=4.0 type=4
+CreateFog pos= 254; 189 height=14 dim=90 delay=5.0 type=5
+CreateFog pos= 292; 137 height=13 dim=70 delay=4.0 type=4
+CreateFog pos= 292; 137 height=14 dim=70 delay=5.0 type=5
+CreateFog pos= 242;  62 height= 5 dim=15 delay=4.0 type=4
+CreateFog pos= 242;  62 height= 6 dim=15 delay=5.0 type=5
+CreateFog pos= 257; 135 height=25 dim=99 delay=4.0 type=4
+CreateFog pos= 257; 135 height=26 dim=99 delay=5.0 type=5
+
+// Deuxième combe (sud) :
+CreateFog pos=  25;-317 height= 5 dim=30 delay=4.0 type=4
+CreateFog pos=  25;-317 height= 6 dim=30 delay=5.0 type=5
+CreateFog pos=   9;-277 height=10 dim=50 delay=4.0 type=4
+CreateFog pos=   9;-277 height=11 dim=50 delay=5.0 type=5
+CreateFog pos= -21;-348 height= 5 dim=20 delay=4.0 type=4
+CreateFog pos= -21;-348 height= 6 dim=20 delay=5.0 type=5
+CreateFog pos=  13;-252 height=13 dim=80 delay=4.0 type=4
+CreateFog pos=  13;-252 height=14 dim=80 delay=5.0 type=5
+CreateFog pos=  39;-293 height= 8 dim=50 delay=4.0 type=4
+CreateFog pos=  39;-293 height= 9 dim=50 delay=5.0 type=5
+
+CreateObject pos= 129;-105 cmdline= 129;-105; 10 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos= 237;-136 cmdline= 237;-136; 10 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos= 240;-187 cmdline= 240;-187; 10 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos= 231;-198 cmdline= 231;-198; 10 dir=0.0 type=AlienAnt script1="antict.txt" run=1
+CreateObject pos= -83;-248 cmdline= -83;-248;  5 dir=0.0 type=AlienSpider script1="SPIDict.txt" run=1
+
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.63; 0.63; 0.63 type=Terrain
+CreateLight dir= 1.0; 0.0;-1.0 color=-0.70;-0.70;-0.70 type=Terrain
+CreateLight dir=-1.0; 0.0; 1.0 color= 1.40; 1.40; 1.40 type=Terrain
+CreateLight dir=-1.0;-1.0; 1.0 color= 0.56; 0.56; 1.00 type=Object
+CreateLight dir= 1.0;-1.0; 1.0 color= 0.32; 0.32; 0.64 type=Object
+CreateLight dir=-1.0;-1.0;-1.0 color= 0.32; 0.32; 0.64 type=Object
+CreateLight dir= 1.0;-1.0;-1.0 color= 0.16; 0.16; 0.32 type=Object
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.00; 0.30 type=Quartz
+CreateLight dir= 0.0;-1.0; 0.0 color= 0.30; 0.30; 0.00 type=Quartz
+WaterColor color=-0.6;-0.1;-0.1;0.0
+
+MapColor floor=115;193;237 water=188;225;246
+MapZoom  factor=1
+
+NewScript name="titan2.txt" type=WheeledGrabber
+NewScript name="titan2.txt" type=TrackedGrabber
+NewScript name="titan2.txt" type=WingedGrabber
+NewScript name="titan2.txt" type=LeggedGrabber
+NewScript name="charge2.txt" type=All
+NewScript name="exchg1.txt" type=WheeledGrabber
+NewScript name="exchg1.txt" type=TrackedGrabber
+NewScript name="exchg1.txt" type=WingedGrabber
+NewScript name="exchg1.txt" type=LeggedGrabber
+
+EnableBuild type=FlatGround
+EnableBuild type=Flag
+
+EnableResearch type=TRACKER
+EnableResearch type=WINGER
+EnableResearch type=SHOOTER
+EnableResearch type=TOWER
+DoneResearch type=TRACKER
+DoneResearch type=WINGER
+DoneResearch type=SHOOTER
+DoneResearch type=TOWER
+
+EndMissionTake pos=0.00;0.00 dist=25000.00 type=Me lost=0
+EndMissionTake pos=22.50;-75.00 type=BlackBox min=1
+
+Camera eye=32.50;5.00;-78.25 lookat=32.50;1.00;-78.25 delay=0

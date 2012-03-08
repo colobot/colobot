@@ -1,0 +1,7 @@
+\b;Rozwi¹zanie
+Jeœli Twój robot nagle wybuchnie, oznacza to, ¿e za du¿o razy uderzy³ w stalowe elementy. Leæ trochê wolniej, a wtedy robot nie zostanie uszkodzony, nawet jeœli wpadnie na przeszkodê.
+
+Jeœli nie mo¿esz wystartowaæ po wykonaniu æwiczenia, nie wszystkie cele zosta³y zaliczone. Przeleæ przez okrêgi oznaczone plusem w œrodku.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command;

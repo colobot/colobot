@@ -1,0 +1,29 @@
+\b;\button 161; Kopalnia
+\image derrick 8 8;
+Kopalnia umoøliwia wydobywanie surowcÛw.
+
+Do okreúlenia najlepszego miejsca na wybudowanie kopalni naleøy uøyÊ \l;szperacza\u object\botsr;, ktÛry zbada podglebie. Pozostawione przez niego znaczniki okreúlajπ jakie surowce mogπ byÊ wydobyte:
+
+- a \l;czerwony plus\u object\stonspot; -> \l;ruda tytanu\u object\titanore;.
+- a \l;øÛ≥te kÛ≥ko\u object\uranspot;  -> \l;ruda uranu\u object\uranore;.
+
+\t;Wymagania
+P≥aska powierzchnia z odpowiednimi warunkami geologicznymi szeroka na minimum 2,5 metra.
+
+\t;Wejúcie
+Ruda tytanu lub uranu w podglebiu.
+
+\t;Wyjúcie
+Kawa≥ki rudy tytanu lub uranu.
+
+\t;èrÛd≥o zasilania
+Brak.
+
+\t;Czas dzia≥ania
+10 sekund dla tytanu i 30 dla uranu.
+
+\t;\l;Kategoria\u cbot\category; obiektu
+\c;Derrick\n;
+
+\t;Zobacz rÛwnieø
+\l;JÍzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

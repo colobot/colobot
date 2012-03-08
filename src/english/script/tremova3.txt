@@ -1,0 +1,37 @@
+extern void object::Solution( )
+{
+	for ( int i=0 ; i<2 ; i=i+1 )
+	{
+		object  obj;
+		point   dest;
+
+		do
+		{
+			obj = radar(TitaniumOre);
+		}
+		while ( obj == null );
+		goto(obj.position);
+		grab();  // grab the titanium ore
+
+		obj = radar(Converter);
+		if ( obj == null )  return;
+		goto(obj.position);
+		drop();  // drop the titanium ore
+		move(-2.5);  // move backward
+
+		do
+		{
+			obj = radar(Titanium, 0, 360, 0, 5);
+		}
+		while ( obj == null );
+		goto(obj.position);
+		grab();  // grab the titanium cube
+
+		dest.x = 10;
+		dest.y = -60-5*i;
+		goto(dest);  // go to the plateform
+
+		drop();  // drop the titanium cube
+	}
+}
+

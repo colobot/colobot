@@ -1,0 +1,14 @@
+\b;\button 147; Phazer Shooter
+\image botphaz 8 8;
+Tracked bot equipped with a very powerful phazer cannon, efficient against most kinds of enemies. When you aim upward, it can shoot up to 60 meters. It is the only weapon that can kill the \l;Alien Queen\u object\mother;.
+
+\t;Programming
+To program the bot's movements, use the following commands : \c;\l;move\u cbot\move;\n;, \c;\l;turn\u cbot\turn;\n;, \c;\l;motor\u cbot\motor;\n;, \c;\l;goto\u cbot\goto;\n;.
+
+To program the phazer cannon, use \c;\l;fire\u cbot\fire;\n;. To raise or lower the aim, use \c;\l;aim\u cbot\aim;\n;.
+
+\t;Object \l;Category\u cbot\category;
+\c;PhazerShooter\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

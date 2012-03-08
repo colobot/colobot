@@ -1,0 +1,32 @@
+LICENCE
+Il est recommandé de lire attentivement ce contrat de licence avant d'utiliser le logiciel. Le fait d'installer ce logiciel vous lie aux exigences de cette licence. Si vous n'en acceptez pas certains termes, nous vous demandons de rapporter le logiciel inutilisé là où vous l'avez acheté. Votre achat vous sera remboursé.
+
+1. Licence
+L'application, le logiciel et le contenu de ce CD-ROM ainsi que sa documentation vous sont délivrés sous licence par Alsyd Multimédia. Le média sur lequel ils sont enregistrés vous appartient, mais Alsyd Multimédia  et ses concesseurs retiennent tous leurs droits de propriété sur le logiciel, le contenu et la documentation qui vous ont été délivrés. Cette licence ne vous autorise à utiliser le logiciel que sur un seul ordinateur. Vous pouvez également transférer à une tierce partie tous vos droits de licence sur le logiciel, le contenu et la documentation, à condition que celle-ci lise et accepte les conditions de cette licence.
+
+2. Restrictions
+Le logiciel, le contenu et la documentation contiennent des droits de copyright, des secrets commerciaux et autres droits de propriété. Pour les protéger, et sauf législation contraire, il vous est interdit de décompiler, de développer un autre code source ou de réduire le logiciel à une forme immédiatement compréhensible. Il vous est interdit de modifier, de mettre en réseau, de louer, de céder, de prêter, de distribuer ou de créer des travaux induits ou basés sur tout ou partie du logiciel. Il vous est interdit de transmettre électroniquement le logiciel d'un ordinateur à un autre ou au moyen d'un réseau.
+
+3. Fin
+Cette licence est valable jusqu'à sa résiliation. Vous pouvez résilier une licence à tout moment en détruisant le logiciel, la documentation correspondante et toutes les copies existantes. Alsyd Multimédia se réserve le droit de vous retirer cette licence sans préavis en cas de non-observation d'une ou plusieurs de ses dispositions.
+
+4. Limitation des garanties sur le média
+Alsyd Multimédia garantit le CD-ROM sur lequel le logiciel est enregistré, pièces et main-d'Ïuvre pendant une période de 90 jours à partir de la date d'achat, prouvée par une copie de la facture d'achat. La responsabilité d'Alsyd Multimédia et votre recours sont limités au remplacement du CD-ROM si celui-ci n'était pas conforme à la garantie limitée offerte par Alsyd Multimédia. Il doit être retourné à Alsyd Multimédia ou à un représentant autorisé avec une copie de la facture d'achat. Alsyd Multimédia n'aura aucune obligation de remplacer le CD-ROM endommagé par accident, abus d'utilisation ou défaut d'utilisation.
+
+Toutes les garanties implicites des CD-ROM, y compris les garanties implicites de commercialité ou de conformité à un usage spécifique sont limitées en durée à 90 jours à partir de la date de livraison. Cette garantie vous donne des droits contractuels spécifiques et vous disposez peut-être en sus de droits spécifiques liés à la loi et à la réglementation du pays dans lequel vous avez acheté le logiciel.
+
+5. Abandon de garantie
+Vous reconnaissez expressément et acceptez que l'utilisation du logiciel se fasse à votre risque exclusif. Le logiciel et sa documentation vous sont fournis "en l'état" et sans garantie d'aucune sorte de la part d'Alsyd Multimédia ou de ses concesseurs. Alsyd Multimédia et ses concesseurs excluent expressément toute garantie, explicite ou implicite, comprenant mais ne se limitant pas aux garanties implicites de commercialité ou de conformité à un usage spécifique. Alsyd Multimédia ne garantit pas que les fonctions du logiciel correspondront à vos besoins, ou que le fonctionnement du logiciel sera ininterrompu et sans erreur, ou que les défauts seront corrigés. De plus, Alsyd Multimédia ne garantit pas l'utilisation ou les résultats de l'utilisation du logiciel ou de la documentation correspondante en termes de justesse, précision, fiabilité ou autres. Aucun renseignement oral ou écrit de la part d'Alsyd Multimédia ou d'un de ses représentants autorisés ne peut valoir garantie ou augmenter le champ d'application de cette garantie. Si le logiciel s'avère défectueux, vous (et non Alsyd Multimédia ou un représentant autorisé) assumez le coût total de la maintenance, des réparations ou des corrections. Si la loi ou la réglementation propre au pays dans lequel le logiciel a été acquis n'admet pas les exclusions de garantie implicites, l'exclusion ci-dessus ne vous concerne pas.
+
+6. Limitation de responsabilité
+Dans aucun cas, y compris la négligence, Alsyd Multimédia ou ses concesseurs ne sont responsables des dommages accidentels, spéciaux ou indirects résultant de l'utilisation ou de la mauvaise utilisation du logiciel ou de la documentation correspondante, même si Alsyd Multimédia ou un représentant autorisé ont été avertis de la possibilité de tels dommages. Si la loi ou la réglementation propre au pays dans lequel le logiciel a été acquis n'admet pas les exclusions de garantie implicites, l'exclusion ci-dessus ne vous concerne pas.
+En aucun cas, la responsabilité totale pour tous les dommages, les pertes, les actions en justice (que ce soit par contrat, par faute - y compris la négligence - ou autres causes) ne peut être supérieure à la valeur d'achat du logiciel.
+
+7. Juridictions compétentes
+Cette licence est régie par la loi française. Si pour quelque raison que ce soit, un tribunal compétent trouve un article de la licence, ou de la partie susmentionnée, non exécutoire, illégale ou nulle, l'article concerné sera exécuté jusqu'aux limites autorisées, et le reste de la licence gardera toute sa validité.
+
+8. Accord
+Cette licence constitue un accord entre les parties, dans le cadre de l'utilisation du logiciel et de sa documentation, et elle remplace tout accord ou entente antérieurs ou simultanés, écrits ou oraux, concernant ce type de sujet. Il ne sera tenu compte d'aucun amendement ou ajout à cette licence, sauf s'il a été rédigé et signé par un représentant d'Alsyd Multimédia dûment autorisé.
+
+Tous droits réservés.
+© 1998 version française éditée par Alsyd Multimédia 

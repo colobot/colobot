@@ -1,0 +1,2 @@
+Title.F text="Libre" resume="Libre"
+Title.E text="Free" resume="Free"

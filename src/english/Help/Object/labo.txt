@@ -1,0 +1,24 @@
+\b;\button 166; Autolab
+\image labo 8 8;
+The lab is intended for the analysis of \l;organic matter\u object\bullet;. It will help \l;you\u object\human; become familiar with the insects' very own technology and perhaps even use it to your advantage. Place a chunk of \l;organic matter\u object\bullet; on the platform, select the lab, and click the button corresponding to the desired research program.
+
+\t;Requirements for building
+Any flat surface of at least 6 meters wide.
+
+\t;Input
+Organic matter.
+
+\t;Output
+New and improved technologies.
+
+\t;Power source
+None.
+
+\t;Duration of operation
+20 seconds.
+
+\t;Object \l;Category\u cbot\category;
+\c;AutoLab\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

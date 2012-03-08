@@ -1,0 +1,15 @@
+extern void object::Solution( )
+{
+	float  dist, dir;
+
+	dist = 20;
+	dir = 90;
+
+	move(dist);
+	turn(dir);
+	move(dist*2);
+	turn(dir);
+	move(dist);
+	turn(dir);
+	move(dist);
+}

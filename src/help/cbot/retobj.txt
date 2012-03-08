@@ -1,0 +1,14 @@
+\b;Instruction \c;retobject\n;
+Syntaxe¦:
+\s;\c;retobject ( rank );\n;
+
+Retourne un objet d'après son rang.
+
+\t;rank: \c;\l;int\u cbot\int;\n;
+Rang de l'objet, compris entre 0 et n. "n" représente ici le nombre total d'objets dans la scène.
+
+\t;Valeur retournée: \c;\l;object\u cbot\object;\n;
+Objet trouvé. La valeur \c;\l;null\u cbot\null;\n; indique que rien n'a été trouvé, par exemple lorsque le rang est trop grand.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

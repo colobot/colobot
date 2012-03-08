@@ -1,0 +1,8 @@
+extern void object::Solution()
+{
+	repeat(8)
+	{
+		fire(1);
+		turn(45);
+	}
+}

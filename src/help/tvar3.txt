@@ -1,0 +1,43 @@
+\b;Exercice
+Dans cet exercice, nous allons dessiner trois carrés roses comme ceci¦:
+
+\image tvar3 8 8;
+Le premier carré a un côté de 10 mètres, le deuxième 15 mètres et le dernier 20 mètres.
+
+\b;Ebauche
+Le programme contient 2 boucles \c;\l;repeat\u cbot\repeat;()\n; impriquées. Le premier \c;repeat(3)\n; s'occupe de dessiner les 3 carrés. Le deuxième \c;repeat(4)\n; est impriqué à l'intérieur du premier. Il s'occupe de dessiner les 4 côtés du carré. Les 2 instructions \c;\l;move\u cbot\move;()\n; et \c;\l;turn\u cbot\turn;()\n; dans cette boucle seront donc exécutées \c;3*4=12\n; fois chacune¦:
+\c;
+\s;extern void object::Solution( )
+\s;{
+\s;	pendown(Pink);
+\s;	int côté;
+\s;	côté = 10;
+\s;	repeat ( 3 )
+\s;	{
+\s;		repeat ( 4 )
+\s;		{
+\s;			move(côté);
+\s;			turn(90);
+\s;		}
+\s;	}
+\s;}
+\n;
+Notez l'alignement des accolades \c;{\n; et \c;}\n; de chaque \c;repeat\n;.
+
+\b;Finitions
+Le programme donné ci-dessus fonctionne, mais il ne réalise pas le travail souhaité. Il dessine simplement 3 carrés de 10 mètres de côté, les uns sur les autres.
+
+Au début du programme, la \l;variable\u cbot\var; \c;côté\n; est créée puis initialisée avec la valeur 10¦:
+\s;\c;	int côté;
+\s;	côté = 10;
+\n;
+Pour que le programme dessine successivement 3 carrés ayant 10, 15 et 20 mètres de côté, il faudra ajouter quelque part l'instruction¦:
+\c;
+\s;	côté = côté+5;
+\n;
+A vous de trouver où !
+
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tvar2; et \l;programmation\u cbot;.

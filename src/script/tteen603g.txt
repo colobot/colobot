@@ -1,0 +1,14 @@
+extern void object::Go( )
+{
+	repeat(100)
+	{
+		if( detect(Barrier) )
+		{
+			turn(-90);
+		}
+		else
+		{
+			move(20);
+		}
+	}
+}

@@ -1,0 +1,11 @@
+\b;Wasp
+\image wasp 8 8;
+The wasp is a formidable enemy, very hard to shoot down since its flying is particularly swift. Wasps carry balls of \l;organic matter\u object\bullet; that they will hurl at your bots and buildings and at yourself from above.
+
+The \l;defense tower\u object\tower; is the easiest way to get rid of them.
+
+\t;Object \l;Category\u cbot\category;
+\c;AlienWasp\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

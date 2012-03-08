@@ -1,0 +1,22 @@
+extern void object::Remote3( )
+{
+	SendOrder("move(20)");
+	SendOrder("turn(90)");
+	SendOrder("move(20)");
+	SendOrder("turn(90)");
+	SendOrder("move(10)");
+	SendOrder("turn(90)");
+	SendOrder("move(10)");
+	SendOrder("turn(-90)");
+	SendOrder("move(10)");
+}
+
+void object::SendOrder(string order)
+{
+	exchange list();
+
+	while ( list.put(order) == false )
+	{
+		wait(1);
+	}
+}

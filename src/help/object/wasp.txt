@@ -1,0 +1,11 @@
+\b;Guêpe
+\image wasp 8 8;
+La guêpe est redoutable, car elle vole rapidement, ce qui la rend difficile à abattre. Elle cherche des boules de \l;matière organique\u object\bullet; qu'elle lâche de haut sur vos robots, vos bâtiments et sur votre personne.
+
+La \l;tour de défense\u object\tower; est le meilleur moyen de s'en débarrasser.
+
+\t;\l;Catégorie\u cbot\category; de l'objet
+\c;AlienWasp\n;
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

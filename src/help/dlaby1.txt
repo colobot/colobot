@@ -1,0 +1,13 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il avance sans se cogner dans un labyrinthe. On part du principe que le labyrinthe n'est pas connu d'avance, et qu'il n'est constitué que d'un chemin, sans aucune bifurcation ni cul-de-sac. Les cases du labyrinthe sont des carrés mesurant 5 mètres de côté.
+
+\b;Instructions utiles
+\c;\l;radar\u cbot\radar;\n; pour détecter un obstacle
+\c;\l;if\u cbot\if;\n; pour test une condition
+\c;\l;move\u cbot\move;\n; pour avancer le robot
+\c;\l;turn\u cbot\turn;\n; pour tourner le robot
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

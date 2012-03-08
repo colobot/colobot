@@ -1,0 +1,14 @@
+\b;Instructions de Houston
+Trouvez et ramenez la \l;boîte noire\u object\bbox; de la première expédition pour explorer la prochaine planète.
+
+Vos réserves énergétiques semblent limitées, et la région n'offre toujours rien pour les renouveler. Nous avons maintenant reçu des informations que la première expédition avait laissées sur place et qui nous ont été transmises par le radar construit par vos soins. Il est question entre autres d'un système d'armement qui mettrait toutes les \l;fourmis\u object\ant; hors combat pendant un certain temps, dans un certain rayon. Essayez de faire marcher votre \l;centre de recherches\u object\research;; peut-être que ce système vous facilitera la tâche¦?
+
+Ramenez également un exemplaire de ce nouveau robot sur le \l;vaisseau\u object\base;. Nous sommes curieux de voir de quoi il a l'air.
+
+\b;Politique
+Nous n'avons pas osé vous le dire avant, mais ce nouveau système d'armement nous en donne l'occasion: nous subissons des pressions de plus en plus fortes de la part du Congrès et de l'opinion publique pour cesser ces "massacres" que vous perpétrez parmi la "population indigène". Essayez d'éviter les exterminations systématiques à l'avenir. Mais en cas de danger, n'hésitez pas à faire feu (faut-il vous le dire¦?). Nous essayerons de contribuer à rendre votre arsenal d'armes défensives plus complet et efficace.
+
+\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
+
+\t;Voir aussi
+\l;Commandes\u command;.

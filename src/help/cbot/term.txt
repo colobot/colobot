@@ -1,0 +1,31 @@
+\b;Le point-virgule
+Le point-virgule \c;;\n; termine une expression simple. Par exemple¦:
+\c;
+\s;	int compteur = 0;
+\n;
+Il n'est pas nécessaire pour terminer un \l;bloc\u cbot\bloc;¦:
+\c;
+\s;	{
+\s;		float dist;
+\s;		dist = distance(p1, p2);
+\s;	} \n;// pas de ; ici¦!\c;
+\n;
+Il ne doit jamais être utilisé après un \c;\l;while\u cbot\while;\n;, un \c;\l;if\u cbot\if;\n; ou un \c;\l;for\u cbot\for;\n;¦:
+\c;
+\s;	if ( a < b ) \n;// surtout pas de ; ici\c;
+\s;	{
+\s;		b = 100-a;
+\s;	}
+\n;
+Une instruction est terminée par le point-virgule, et non par la fin de la ligne. Vous pouvez donc très bien mettre plusieurs instructions sur la même ligne¦:
+\c;
+\s;	int d=20;
+\s;	move(d);
+\s;	turn(90);
+\n;
+Est équivalent à¦:
+\c;
+\s;	int d=20; move(d); turn(90);
+\n;
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

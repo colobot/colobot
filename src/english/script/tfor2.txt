@@ -1,0 +1,10 @@
+extern void object::Solution( )
+{
+	for ( int i=0 ; i<4 ; i=i+1 )  // repeat 4 times
+	{
+		move(10);   // move 10m forward
+		turn(90);   // quarter turn left
+		fire(1);    // destroy the target
+		turn(-180); // turns around
+	}
+}

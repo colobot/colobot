@@ -1,0 +1,17 @@
+\b;Solution
+1) Cherchez la \l;boîte noire\u object\bbox; en volant et en nageant.
+2) Construisez un \l;convertisseur\u object\convert; à proximité du \l;minerai de titanium\u object\titanore;.
+3) Produisez 2 \l;cubes de titanium\u object\titan;.
+4) Construisez une \l;fabrique de robots\u object\factory; à proximité de la \l;boîte noire\u object\bbox;.
+5) Fabriquez un \l;sous-marin\u object\botsub;.
+6) Ramenez la \l;boîte noire\u object\bbox; sur le \l;vaisseau spatial\u object\base;.
+7) Décollez.
+
+Vous trouverez du \l;minerai de titanium\u object\titanore; presque à côté du vaisseau spatial, vers l'ouest.
+
+La \l;boîte noire\u object\bbox; se trouve au fond du petit lac rond, au nord-est du vaisseau spatial.
+
+Vous pouvez construire la \l;fabrique de robots\u object\factory; sur la rive sud du petit lac, ou à côté du vaisseau spatial.
+
+\t;Voir aussi
+\l;Commandes\u command;.

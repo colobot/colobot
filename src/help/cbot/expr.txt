@@ -1,0 +1,55 @@
+\b;Les expressions
+Les expressions peuvent contenir les opérations suivantes¦:
+
+\c;+ \n;  addition
+\c;- \n;  soustraction
+\c;* \n;  multiplication
+\c;/ \n;  division
+\c;% \n;  reste de la division (seulement pour le type \c;\l;int\u cbot\int;\n;)
+\c;**\n;  élévation à la puissance
+
+L'addition permet non seulement d'additionner des nombres, mais également d'appondre des \l;chaînes de caractères\u cbot\string;.
+L'opérateur \c;%\n; est parfois appelé "modulo".
+\c;
+\s;	int    i = 12+3;      // donne 15
+\s;	string s = "a"+"bc";  // donne "abc"
+\s;	int    i = 2-5;       // donne -3
+\s;	float  f = 3.01*10;   // donne 30.1
+\s;	int    i = 5/3;       // donne 1
+\s;	float  f = 5/3;       // donne 1.67
+\s;	float  f = 5/0;       // donne une erreur
+\s;	int    i = 13%5;      // donne 3
+\s;	int    i = -8%3;      // donne -2
+\s;	float  f = 6**2;      // donne 36
+\n;
+Une expression peut contenir des constantes ou des \l;variables\u cbot\var;. Par exemple¦:
+
+\s;\c;	12+distance\n;
+
+Les multiplications et les divisions sont effectuées avant les additions et les soustractions. En cas de doute, mieux vaut utiliser des parenthèses.
+\c;
+\s;	12*a+b/c \n;est équivalent à\c; (12*a)+(b/c)
+\s;	2.5*(distance+marge)
+\n;
+Vous pouvez mettre autant d'espaces que vous le désirez, pour améliorer la lisibilité¦:
+\c;
+\s;	12*a + b/c
+\s;	2.5 * (distance+marge)
+\n;
+Les fonctions mathématiques suivantes sont disponibles¦:
+
+\c;sin(angle)    \n;sinus
+\c;cos(angle)    \n;cosinus
+\c;tan(angle)    \n;tangente
+\c;asin(valeur)  \n;arc-sinus
+\c;acos(valeur)  \n;arc-cosinus
+\c;atan(valeur)  \n;arc-tangente
+\c;sqrt(valeur)  \n;racine carrée
+\c;pow(x, y)     \n;x puissance y
+\c;rand()        \n;valeur aléatoire comprise entre 0 et 1
+\c;abs(valeur)   \n;valeur absolue
+
+Les angles sont exprimés en degrés.
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

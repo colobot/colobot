@@ -1,0 +1,27 @@
+\b;From the NASA Training Center
+We are pleased to inform you that you have been selected for the space exploration mission Colobot.
+
+Your psychological profile has been established as more than 98.84% favorable, and your aptitude during the extensive testing period was undeniable. The detailed results are at your disposal in the central computer under the registration number that was assigned to you.
+
+Please report to the \l;Houston Mission Control\u object\Huston; for further directives about your forthcoming mission.
+
+\b;From Houston Mission Control
+As you know, Earth is heading towards imminent disaster, due to increasing atmospheric pollution.
+
+\l;Your\u object\human; mission consists of exploring neighboring galaxies with the hopes of finding a planet that will be suitable to human needs and possibly serve as a shelter for mankind. You will be on your own for the entire mission but your spaceship will be carrying a few bots along.
+
+Eight months ago an expedition composed entirely of robots was sent across the cosmos with the same objective. It encountered a fair share of obstacles along the way, apparently landing on planets that were unsuitable for colonization, even possibly outright hostile. Very recently all communications were terminated.
+
+The reasons for the mission's failure are unclear at this date, mainly because of recurrent transmission problems. It is our hope that you will be able to use some of the data it gathered to your advantage.
+
+\b;Immediate Objective
+The Nevada desert is already bustling with activity. Bots are setting up a space station catered to your specific needs.
+
+In order to let you familiarize with your spacesuit and equipment, we have set up a few training drills.
+
+In the first drill, you need to find your survival kit that contains all the tools necessary to brave the cold of outer space. It is easy to spot since it contains both an orange and a blue tank.
+
+\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
+
+\t;See also
+\l;Controls\u command;

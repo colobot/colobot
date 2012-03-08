@@ -1,0 +1,33 @@
+\b;Instruction \c;goto\n;
+L'instruction \c;goto();\n; permet de déplacer le robot vers une certaine position.
+
+\b;Utilisation courante
+En général on déplace le robot vers un objet qu'on a détecté avec l'instruction \c;\l;radar\u cbot\radar;();\n;. Si on a mis les informations rendues par \c;\l;radar\u cbot\radar;();\n; dans une certaine variable, il faut écrire le nom de la variable suivi de \c;.position\n; pour obtenir la position de l'objet. Voici par exemple comment chercher un cube de titanium, aller vers la position du cube et le saisir¦:
+\c;
+\s;	object chose;
+\s;	chose = \l;radar\u cbot\radar;(Titanium);
+\s;	goto(chose.position);
+\s;	\l;grab\u cbot\grab;();
+\n;
+\b;Pour spécialistes
+Syntaxe¦:
+\s;\c;goto ( pos, altitude );\n;
+
+Va à une certaine position, en évitant les obstacles tels que les autres robots, les bâtiments, les plans d'eau et les pentes trop raides.
+
+\t;pos: \c;\l;point\u cbot\point;\n;
+Coordonnée de la position à atteindre.
+
+\t;altitude: \c;\l;float\u cbot\float;\n;
+Altitude moyenne pendant le déplacement, pour les \l;robots volants\u object\botgj;. Si ce paramètre est omis, une altitude de 12.5 mètres est automatiquement utilisée comme consigne. Lorsque le déplacement mesure moins de 20 mètres à vol d'oiseau, le robot reste au sol.
+
+\t;Valeur retournée: \c;\l;int\u cbot\int;\n;
+Normalement, une erreur stoppe l'exécution du programme. Si l'instruction \c;goto\n; est précédée de \c;\l;errmode\u cbot\errmode;(0);\n;, une valeur nulle est retournée si tout est ok, ou valeur non nulle si une erreur est intervenue.
+\c;== 0 \n;position atteinte
+\c;!= 0 \n;impossible d'atteindre la position
+
+\t;Dictionnaire anglais-français
+\c;go to\n; = aller à
+
+\t;Voir aussi
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

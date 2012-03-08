@@ -1,0 +1,57 @@
+\b;Exercice
+Cet exercice est presque semblable au précédent. Mais attention, la troisième \l;cible\u object\bottarg; sur les six a été remplacée par le \l;cosmonaute\u object\human;. Et il faut absolument éviter de lui tirer dessus¦!
+
+\b;Principe
+Le programme qui détruisait les 6 cibles ressemblait à ceci¦:
+\s;o  Répéter 6 fois¦:
+\s;	o  avancer de 5 mètres
+\s;	o  tourner de 90 degrés à gauche
+\s;	o  tirer
+\s;	o  tourner de 90 degrés à droite
+
+Maintenant, il va falloir faire quelques chose comme cela¦:
+\s;o  Répéter 6 fois¦:
+\s;	o  avancer de 5 mètres
+\s;	o  si on est devant le cosmonaute,
+\s;	    sauter les 3 instructions suivantes.
+\s;	o  tourner de 90 degrés à gauche
+\s;	o  tirer
+\s;	o  tourner de 90 degrés à droite
+
+\image tfor2 14 5;
+\b;Instruction \c;for ( )\n;
+L'instruction \c;\l;for\u cbot\for;\n; utilisée ici est¦:
+\s;\c;	for ( int i=0 ; i<6 ; i=i+1 )\n;
+
+Une \l;variable\u cbot\var; \c;i\n; est utilisée. Elle prend successivement les valeurs 0 à 5. Lorsqu'elle vaudra 2, il ne faudra pas tirer.
+
+Remarque: Le cosmonaute est en troisième position. On est devant lui lorsque \c;i\n; vaut 2 puisqu'on commence de numéroter à partir de 0¦!
+
+\b;Instruction \c;if ( )\n;
+L'instruction \c;\l;if\u cbot\if;\n; permet de n'exécuter l'instruction qui suit que si l'expression entre les parenthèses est vraie. Dans notre cas, il faut écrire¦:
+\s;\c;	if ( i == 2 )  continue;
+\n;
+En français, on dirait: "Si \c;i\n; est égal à 2, continue".
+
+Notez la différence entre \c;i¦=¦2;\n; (la variable \c;i\n; prend la valeur 2) et \c;i¦==¦2;\n; (on teste si \c;i\n; vaut 2, sans modifier sa valeur).
+
+\b;L'instuction \c;continue\n;
+L'instruction \c;\l;continue\u cbot\continue;\n; ne peut s'utiliser que dans une boucle \c;\l;for\u cbot\for;\n;. Normalement, toutes les instructions contenues dans le \l;bloc\u cbot\bloc; après le \c;for\n; sont exécutées successivement. La présence d'un \c;continue\n; stoppe ce processus. Les instructions suivantes sont sautées et la boucle reprend au début.
+
+Le programme s'écrit donc¦:
+\s;\c;extern void object::Go( )
+\s;{
+\s;	for ( int i=0 ; i<6 ; i=i+1 )
+\s;	{
+\s;		move(5);    // avance de 5 mètres
+\s;		if ( i == 2 )  continue;
+\s;		turn(90);   // quart de tour à gauche
+\s;		fire(1);    // détruit la cible
+\s;		turn(-90);  // quart de tour à droite
+\s;	}
+\s;}
+\n;
+\key;\key help;\norm; permet de revoir les instructions générales en tout temps. De même, \key;\key prog;\norm; accède aux explications du langage de programmation CBOT.
+
+\t;Voir aussi
+\l;Exercice précédent\u tfor1; et \l;programmation\u cbot;.

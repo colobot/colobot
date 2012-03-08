@@ -1,0 +1,22 @@
+\b;Exercice
+Programmez le \l;robot\u object\bottr; pour qu'il trouve toutes les \l;croix bleues\u object\waypoint; posées au sol. Le trajet à effectuer est composé de deux carrés. Le premier mesure 15 mètres de côté, et le deuxième 25 mètres.
+
+\image tproc1a 8 8;
+\b;Fonction
+Pour résoudre ce problème, il est intéressant de créer une \l;fonction\u cbot\function; qui déplace le robot le long d'un carré. La fonction principale devient alors très simple¦:
+\c;
+\s;	extern void object::Déplacer( )
+\s;	{
+\s;		Carré(15);
+\s;		Carré(25);
+\s;	}
+\n;
+\b;Instructions utiles
+\c;\l;for\u cbot\for;\n; boucle pour répéter des instructions
+\c;\l;move\u cbot\move;\n; pour avancer le robot
+\c;\l;turn\u cbot\turn;\n; pour tourner le robot
+
+\key;\key help;\norm; permet de revoir ces instructions en tout temps¦!
+
+\t;Voir aussi
+\l;Programmation\u cbot;.

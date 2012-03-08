@@ -1,0 +1,17 @@
+\b;Underground Energy Deposit
+\image enerspot 4 4;
+Whenever a \l;sniffer\u object\botsr; uncovers a source of energy in the subsoil, it lays down a green cross. The following buildings can be erected nearby :
+
+o  \l;Power station\u object\station;
+o  \l;Power plant\u object\energy;
+
+In order to prospect the subsoil you need a \l;sniffer bot\u object\botsr;, which can also discover \l;titanium ore\u object\titanore; deposits (indicated by a \l;red cross\u object\stonspot;) or \l;uranium ore\u object\uranore; deposits (indicated by a \l;yellow circle\u object\uranspot;).
+
+\t;Transport
+Impossible.
+
+\t;Object \l;Category\u cbot\category;
+\c;EnergySite\n;
+
+\t;See also
+\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

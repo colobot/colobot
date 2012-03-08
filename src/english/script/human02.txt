@@ -1,0 +1,16 @@
+extern void object::Activity( )
+{
+	errmode(0);  // ne stoppe pas si erreur
+
+	while ( true )
+	{
+		turn(-144);
+		move(2);
+		turn(-90);
+		wait(5+rand()*8);
+		turn(-90);
+		move(2);
+		turn(-36);
+		wait(2+rand()*5);
+	}
+}

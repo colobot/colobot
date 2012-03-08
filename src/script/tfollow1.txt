@@ -1,0 +1,33 @@
+extern void object::Solution( )
+{
+	while ( true )
+	{
+		object	target;
+		float	dir, len;
+
+		target = radar(TargetBot);
+		if ( target == null )
+		{
+			motor(0, 0);  // stoppe
+			break;
+		}
+
+		len = distance(position, target.position);
+		if ( len < 5 )  // trop proche ?
+		{
+			motor(len/5-1, len/5-1);  // recule
+		}
+		else
+		{
+			dir = direction(target.position);
+			if ( dir < 0 )  // à droite ?
+			{
+				motor(1, 1+dir/90);
+			}
+			else  // à gauche ?
+			{
+				motor(1-dir/90, 1);
+			}
+		}
+	}
+}

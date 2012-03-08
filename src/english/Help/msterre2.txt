@@ -1,0 +1,11 @@
+\b;Walkthrough
+Walk down the street that runs beside \l;Mission Control\u object\Huston;. You will find a \l;titanium cube\u object\titan; on the left hand side of the road, right after the \l;grabber bot\u object\botgr;.
+
+1) Face the cube. Click on the first button at the bottom left of your screen: \button 163; <build a \l;research center\u object\research;>.
+2) Walk further down the road. The second cube is on the right past the four green \l;power cells\u object\power;.
+3) Repeat 1) but click on the second button: \button 160; <build a \l;bot factory\u object\factory;>.
+
+As soon as both buildings are completed, the mission is at an end.
+
+\t;See also
+\l;Controls\u command;

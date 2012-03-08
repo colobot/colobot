@@ -1,0 +1,27 @@
+\b;Instruction \c;writeln\n;
+L'instruction \c;writeln();\n; écrit une ligne de texte dans un fichier ouvert dans le dossier files/. Cette instruction est une méthode de la classe \c;\l;file\u cbot\file;\n;. C'est la raison pour laquelle on n'écrit jamais \c;writeln()\n; tout seul, mais \c;handle.writeln()\n;¦:
+\c;
+\s;	handle.writeln("abc");
+\n;
+Le fichier doit être ouvert avec l'instruction \c;\l;open\u cbot\open;\n; et le mode \c;"w"\n; (écriture). Dans le fichier, la ligne sera automatiquement terminée par les deux caractères de fin de ligne 0x0D (CR) et 0x0A (LF).
+
+Syntaxe¦:
+\s;\c;writeln ( string );\n;
+
+Exemples¦:
+\c;
+\s;	writeln("Ligne de texte");
+
+\s;	string s1 = "abc";
+\s;	string s2 = "def";
+\s;	writeln(s1 + " " + s2);
+\n;
+\t;Dictionnaire anglais-français
+\c;file   \n; = fichier
+\c;handle \n; = poignée, manipuler
+\c;writeln\n; = abréviation de "write line", écrit une ligne
+\c;string \n; = chaîne de caractères
+
+\t;Voir aussi
+\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;close\u cbot\close;\n;, \c;\l;readln\u cbot\readln;\n; et \c;\l;eof\u cbot\eof;\n;.
+\l;Programmation\u cbot;, \l;types\u cbot\type; et \l;catégories\u cbot\category;.

@@ -1,0 +1,7 @@
+\b;Type \c;null\n;
+This special value indicates that the variable containing it does not reference an instance.
+
+\t;See also
+\l;References\u cbot\pointer;
+\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.
+

@@ -1,0 +1,7 @@
+\b;Z Centrum Kontroli Misji
+Æwiczenie podobne do poprzedniego, z t¹ tylko ró¿nic¹, ¿e tym razem dostêpny jest jedynie widok z kamery pok³adowej.
+
+Naciœniêcie klawisza \key;\key help;\norm; pozwala ponownie przejrzeæ te instrukcje na Twoim osobistym komunikatorze SatCom \button 63;.
+
+\t;Zobacz równie¿
+\l;Sterowanie\u command; i \l;Jêzyk CBOT\u cbot;
