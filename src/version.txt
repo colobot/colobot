@@ -1,0 +1,108 @@
+1.18 (24.01.08)
+- Ne vérifie plus la présence des pistes audio.
+
+1.17 (08.01.08)
+- Sound.cpp:InitAudioTrackVolume:mixerGetLineControls ne devrait plus planter
+  sous Vista, grace à l'abandon de MIXER_GETLINECONTROLSF_ALL.
+- CoLoBoT ne joue plus les pistes audio, et le réglage du volume a disparu
+- CoLoBoT n'affiche plus Alsyd
+- Texte "www.colobot.com" remplacé par "www.ceebot.com"
+
+1.16 (10.11.03)
+- Options: si "accès aux solutions" décoché -> Lancer défi,
+  éditer programme, Esc, Abandonner: plus de bouton "accès à la solution"
+
+1.15 (02.09.03)
+- EVENT_INTERFACE_KGUP:    plus si CeeBot-Teen !
+- EVENT_INTERFACE_KGDOWN:  plus si CeeBot-Teen !
+- EVENT_INTERFACE_KACTION: plus si CeeBot-Teen !
+- EVENT_INTERFACE_KVISIT:  plus si CeeBot-Teen !
+- EVENT_INTERFACE_KNEXT:   plus si CeeBot-Teen !
+- EVENT_INTERFACE_KHUMAN:  plus si CeeBot-Teen !
+- EVENT_INTERFACE_KDESEL:  plus si CeeBot-Teen !
+- EVENT_INTERFACE_KCBOT:   plus si CeeBot-Teen !
+
+1.14 (28.07.03)
+- Switch -nosetup -> plus de bouton "Options" pendant jeu
+
+1.8 ()
+- instruction shield(1, radius) ok avec radius 10..25
+- instruction shield(1, radius) possible si bouclier déjà déployé
+
+1.8 BETA (05.10.01)
+- CBOT: public, static, synchronized, private, protected
+- CBOT: strlen, strleft, strright, strmid, strval, strfind, strupper, strlower
+- CBOT: file, open, close, writeln, readln, eof, deletefile
+- extern/public: aide en cliquant dans la ligne d'info de l'éditeur
+- ExchangePost: UpdateList si infos reçues
+- ok si lien d'un seul caractère: \l;x\u file;
+- colobot.ini: [Setup] DeleteGamer=1
+- colobot.ini: [Directory] files=files
+- studio: nb max de caractères: 10000 -> 20000
+- script antt41 (scene904): AlienMother -> AlienQueen
+- load: recompilation ok si procédures "public" dans d'autres robots
+- si le volume CD est nul, la piste n'est pas du tout jouée
+- goto ResearchCenter toujours possible
+- meilleure gestion des touches Ctrl et Shift dans l'éditeur
+- object.temperature=12 impossible (PR_READ)
+- studio: ne plante plus si on tape plus de 100 car. sans espace
+- studio: "enregistrer" se rappelle du nom de fichier dans la mission
+- studio: Ctrl+A sélectionne tout
+- studio: run: si liste < 5 variables -> fond gris
+
+1.7 (13.09.01)
+- object.lifeTime
+- object.range Winged* idem si camera OnBoard/Back
+- float flatground(center, rmax);
+- float abstime();
+- float receive(name, power);
+- void send(name, value, power);
+- void deleteinfo(name, power);
+- bool testinfo(name, power);
+- Le cosmonaute peut construire une borne d'information
+
+1.6 (06.09.01)
+- niveaux supplémentaires avec %user%
+- fonction "send" plus coloriée
+- english help: EnergyPack -> EnergyCell
+- english help: energyPack -> energyCell
+- english help: FinishArea -> GoalArea
+
+1.5 (24.08.01)
+- first execute: prefered first non-T&L, second T&L
+- fondus welcome: D3DSTATETTb/w -> D3DSTATETCb/w
+
+1.4 (02.08.01)
+- n'importe quelle touche/clic passe les écrans welcome1, 2 et 3
+- icône associée au CD dans autorun.inf
+- SatCom: icône "Aide à la programmation" présente dans exercices
+- welcome: phase "Alsyd" plus longue (8s)
+- SaveOneScript quand on quitte le studio par ok, cancel ou run
+
+1.3 (27.07.01)
+- goto BotFactory toujours possible
+- documentation errmode(0)
+- petites corrections anglaises par MW
+- enlever pile pendant recherche ne bloque plus
+- si human porte qq chose et vaisseau décole -> ne reste plus sur place
+- robot sur vaisseau puis sauvegarder-reprendre -> impossible gravir pentes
+
+GoldMaster 1.3 /e envoyé à CD PRESS pour 1000x
+
+1.2
+- bouton de fermeture (en haut à droite) supprimé en mode fenêtré
+- suppression du réglage "nice reset"
+
+1.1 (20.07.01)
+- volume du son non nul après installation
+- images logo au démarrage du jeu
+- image generic != si français ou anglais
+- install: nouvelle clé pour uninstall depuis autorun
+
+GoldMaster 1.1 /f envoyé à Alsyd
+
+1.0
+- commande "reset" (exercices) tjrs ok (fichier rechargé)
+- nom sauvegarde avec date/heure au format anglais
+- ScriptName.F et .E
+

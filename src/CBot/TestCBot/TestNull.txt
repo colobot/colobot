@@ -1,0 +1,15 @@
+extern public void TestNull ()
+{
+	CPoint	pointeur = null;
+
+	try {
+	pointeur.x = 4; }
+	catch ( 6007 ) {}
+
+	pointeur = new CPoint(1,2);
+
+	print ( pointeur.x, pointeur.y, 
+			pointeur );
+
+	pointeur.x = 5;
+}

@@ -1,0 +1,25 @@
+
+extern public int Fibo( int n, boolean b )
+{
+	if ( n < 2 ) return n;
+	int a = Fibo(n-1, b) + Fibo(n-2, false);
+	if ( b ) print (n + "=" + a);
+	return a;
+}
+
+extern public void t()
+{
+	Fibo( 23, true);
+}
+
+extern public void tt()
+{
+	t();
+}
+
+// cette routine n'est évidemment pas du tout obtimisée
+// c'est même un très mauvais exemple de programmation récursive
+
+// pour un test de durée,  Fibo(23, true) prend
+// en mode Debug 67 secondes
+// en mode Release 8 secondes

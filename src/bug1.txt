@@ -1,0 +1,68 @@
+extern void object::Solution( )
+{
+	while ( true )
+	{
+		object	left, right;
+
+		left  = Radar(TypeMarkPath, -45, 120, 100);
+		right = Radar(TypeMarkPath,  45, 120, 100);
+
+		if ( left == null && right == null )
+		{
+		}
+	}
+}
+
+CBotString::CBotString(const CBotString &)
+CBotVar::GivName()
+CBotStack::FindVar(CBotToken * &, int, int)
+CBotStack::FindVar(CBotToken &, int, int)
+CBotStack::CopyVar(CBotToken &, int)
+CBotExpression::Execute(CBotStack * &)
+CBotListInstr::Execute(CBotStack * &)
+CBotWhile::Execute(CBotStack * &)
+CBotListInstr::Execute(CBotStack * &)
+CBotFunction::Execute(CBotVar * *, CBotStack * &)
+CBotProgram::Run(void *)
+CScript::Continue(const Event &)
+
+
+
+CBotString::CBotString(const CBotString &) :
+	m_token = 0xdddddddd
+
+CBotVar::GivName() :
+	return	m_token->GivString();
+
+CBotStack::FindVar(CBotToken * &, int, int) :
+	CBotStack*	p = this;
+	CBotString	name = pToken->GivString();
+
+	while (p != NULL)
+	{
+		CBotVar*	pp = p->m_listVar;
+		while ( pp != NULL)
+		{
+			if (pp->GivName() == name) <- paf
+
+	avec :
+	pp->__vfprt = 0xdddddddd
+	pp->m_token = 0xdddddddd
+	pp->m_next = 0xdddddddd
+	pp->m_type = -572662307
+	pp->m_binit = -572662307
+	pp->m_pMyThis = 0xdddddddd
+	pp->m_pUserPtr = 0xdddddddd
+	pp->m_InitExpr = 0xdddddddd
+
+CBotStack::FindVar(CBotToken &, int, int) :
+	CBotToken*	pt = &Token;
+	pt->m_next = 0
+	pt->m_prev = 0
+	pt->m_type = 4
+	pt->m_IdKeyWord = -1
+	pt->m_Text = "right"
+	pt->m_Sep = " "
+	pt->m_start = 124
+	pt->m_end = 129
+

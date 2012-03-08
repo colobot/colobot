@@ -1,0 +1,16 @@
+extern public void main()
+{
+//	goto( 3, 4 );
+
+	while( true )
+	{
+		try { goto (12) ; }
+		catch( FF( ) )
+		{ show( "ko"); }
+	}
+}
+
+boolean FF()
+{
+	return false;
+}

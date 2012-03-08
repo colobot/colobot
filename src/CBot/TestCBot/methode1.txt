@@ -1,0 +1,57 @@
+class	t {
+	point p;
+}
+
+void object :: toto()
+{
+	show ( Position ) ;
+}
+
+extern public void  object :: XX()
+{
+	int		test [];
+	test [ 9999 ] = 3;
+
+	toto () ;
+/*
+	Radar();
+
+	object	test ;
+	test = this. Radar();
+
+	do {
+	test = this.Radar(); 
+	} while ( test == null );
+
+/*
+	t	test [ 4 ];
+	for ( int i = 0 ; i < 4 ; i++ ) test [ i ] = new t();
+	test [ 3 ] .p.x	= 2;
+	show ( test );
+/*
+	int		a = nan;
+	show ( a ) ;
+
+	a = TypeMarkPath;
+	show ( a, a++, --a ) ;
+
+	if ( a != nan ) a += 1 ;
+
+	a = TypeMarkPath;
+	float	q = a ;
+	show ( a, q ) ;
+
+return;
+
+	a += ++a;
+	show ( a ) ;
+
+	boolean	i = false;
+
+	if ( i == true ) {}
+
+	object	p;
+	if ( p == null) { p = p ; }
+*/
+}
+

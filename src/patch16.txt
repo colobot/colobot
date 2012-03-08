@@ -1,0 +1,10 @@
+Liste des fichiers pour le patch 1.6
+
+help\cbot.txt            (/f)
+help\cbot\object.txt
+help\cbot\grab.txt
+help\cbot\drop.txt
+help\cbot\category.txt
+help\cbot\extern.txt     (/f)
+help\object\goal.txt
+help\object\atomic.txt

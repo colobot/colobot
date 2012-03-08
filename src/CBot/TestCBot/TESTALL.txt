@@ -1,0 +1,161 @@
+int T ( int z )
+{
+	return 45 + z ;
+}
+
+class	toto
+{
+	int	val = 3 ;
+	int	x = 3 * 3 ;
+	void	toto( int n )
+			{ val = n + 3 ; }
+	int retval ( int param )
+			{ int r = val + param + x ;
+			  val = param ;
+			  return r ; }
+}
+
+public extern void object :: Chose( ) 
+{
+	int	z [ 6 ];
+	for ( int i = 0 ; i < 6 ; ) z [ i++ ] = 3 - i ;
+	show ( z ) ;
+	return;
+
+	// test des tableaux
+	int	[ ]	a [ 3 ] ;
+//	a = null;
+	if ( a == null ) show ( "NULL" );
+
+	a [ 2 / 2 ] [ 2 ]= 5 ;
+	int	[ ]	b ; b = a [1] ;
+	b [ 0 ] = -4;
+	a [ 4 / 2 ] [ 1 ]= 1 ;
+	show ( a , b ) ;
+	return ; 
+ {
+	toto	chose = new toto (5 ) ;
+	toto	truc = chose ;
+	show ( chose, chose.retval( 100 ) , 
+			truc, truc.retval (40 ) ) ;
+
+	return;
+  }
+  {
+	point	A = new 
+			point ( 4 * 4 , 2 ) ;
+	show ( A ) ;
+	return;
+  }
+  {
+	show ( T ( 1 ) ,  T ( 3.7 ) ) ;
+	return;  
+  }
+ 
+  {
+	point		A ( 3, 4 ) , 
+				B = A ;
+
+	int		n = -4;
+	show ( n );
+
+	show ( A, B ) ;
+
+	boolean	a = false;
+	boolean	b = a or true;
+	if ( not a and b ) ;
+	return;
+  }
+  {
+	// test try
+	float	x = nan ; int z = 0 ;
+	try {
+//		throw ( 3 * 4 + 33 ) ;
+		int zz ; goto ( 12 ) ; z = 1 ; z = 0 / 0 ; z = 2 ;
+	}
+	catch ( 45 + 0 * 6000 )
+	{
+		show( "Exception 6000", z ) ;
+	}
+	catch ( x == 0 ) { show( "x nul" ) ; }
+	finally { show ( "fini" ) ; }
+	show ( "continue" );
+	return;
+  }
+  {
+	// test des if
+	int		a = 3;
+	if ( a == 3 ) show ( "33");
+	else		show ( "44");
+	if ( a != 3 ) show ( "333");
+	else		show ( "444");
+	return;
+  }
+  {
+	int		a = 0;
+	// test break
+un:
+	while ( true )
+	{
+deux:
+		while ( true )
+		{
+			a++;
+			if ( a == 2 ) continue;
+			if ( a == 3 ) break deux;
+			show ( a ) ;
+			if ( a == 5 ) break un;
+		}
+		show ( "DEUX" );
+	}
+	return;
+  }
+  {
+	// test switch
+	int	a = 0;
+
+	switch ( a )
+	{
+	case 1 : show( "un" ) ; break;
+	case 2 : show( "deux" ) ; // break;
+	case 3 : show( "trois" ) ; break;
+	case 4 : show( "quatre" ) ; // break;
+	default : show( "par défaut" ) ;
+	}
+	return;
+  }
+  {
+	// test boucle while
+	float	z = 3.3;
+	while ( z > 0 )
+	{ show ( z-- ) ; }
+	return;
+  }
+
+  {
+	// test boucle do
+	float	y = 3.3;
+	do { int x = 0; show(y); y++; } while ( y < 7 ) ;
+	return;
+  }
+	// test boucle for
+	int j = -7; show ( j );
+	for ( int ii = 3, j = 31; ii < 6 ; ++ii, j = j -3 )
+	{
+		j = 10 * j;
+		show ( ii, j );
+	}
+	return;
+{
+	// déclarations de variables
+	int	a;	int b = 3; int c = 4*b, d = 1, e;
+	float	x; float y = 3.3; float z = y / 2, u = 1, v;
+	boolean	t; boolean tt = true or false; boolean ttt = false, tttt = true, t5;
+	string	s; string ss = "hello"; string s2 = ss + " plus", s3 = "s3", s4;
+
+	show( b, c, d );
+	show( y, z, u );
+	show( tt, ttt, tttt );
+	show( ss, s2, s3 );
+}
+}

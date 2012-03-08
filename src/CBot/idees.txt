@@ -1,0 +1,39 @@
+pour la gestion des instances d'une classe.
+
+l'objet créé actuellement avec CBotVar::Create(nom, pClasse)
+est a conserver tel quel, en dehors des vars sur la pile
+
+il faut un autre type de variable pour garder les pointeurs
+CBotTypPtClass par exemple
+
+L'instance de la classe doit avoir un compteur d'utilisation
+qui est le nombre d'objet de classe CBotTypPtClass qui y réfèrent.
+Le compteur est décrémenté lorsque le pointeur est détruit,
+l'objet supprimé lorsqu'il n'y a plus de pointeurs.
+
+
+Dans le cas des robots, Daniel crée une instance de sa classe "Object"
+et peut retourner des pointeurs à cette instance par des routines genre FindRobot()
+
+Object FindRobot(int n) { }
+
+pResult dans ce cas est un pointeur CBotTypPtClass
+lorsqu'il a trouvé le robot concerné, il lui faudra faire
+
+pResult->SetPointeur(InstanceDeLaClassObject);
+
+cette opération incrémente le compteur des références
+
+--
+
+lorsque le robot est détruit, l'instance de la classe Object correspondant
+est détruit également.
+s'il reste des pointeurs à cet objet, et l'on risque la planté
+
+solution 1:
+	garder non pas le pointeur à l'objet directement, mais
+	un index dans une tables de pointeurs
+
+solution 2:
+	ne pas détruire l'objet imédiatement lorsqu'il reste des pointeurs
+	mais le marqué comme virtuellement détruit

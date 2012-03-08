@@ -1,0 +1,23 @@
+public extern void object :: ESSAI()
+{
+	while(true)
+  {
+	if ( true )
+	{
+		goto(12);
+		break;
+	}
+  }
+	object	x = null ;
+
+	while ( x == null ) x = radar();
+
+	show ( x.position ) ;
+
+	TEST(5, x);
+
+	if ( x == null ) show ( "DELETED" );
+
+	show ( x.position ) ;
+
+}

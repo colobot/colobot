@@ -1,0 +1,20 @@
+extern public void xx ()
+{
+	CPoint	pointeur, test = null  ;
+	pointeur = new CPoint ( 3, 4 );
+
+	if ( test == null ) show ( "NULL" );
+
+	CPoint	pp = pointeur;
+
+show( pointeur , pp );
+
+	pp.x = 33.3;
+	if ( pointeur.x != pp.x ) 0/0;
+
+	pp = new CPoint();
+//	pointeur = pp;
+
+show( pointeur , pp );
+
+}

@@ -1,0 +1,43 @@
+// test de l'interpréteur CBot, (c) D. Dumoulin 2000
+
+// pour l'instant, seule les primitives suivantes sont implémentées
+
+// { ... ; ... ; ... } un bloc d'instructions
+// int x, y = 12, z; // déclaration de nombre entier
+// float a, b= 2/3, c=b+1; // déclaration de nombres réels
+// boolean tst = true; // déclaration d'un booléen 
+// String x = "hello"; // déclaration d'une chaînes
+
+// z = x = x * y / ( z + 1 - x ); // assignation en chaîne et les 4 opérations
+
+// while ( x >= 0 ) x = x - 1; // boucle while, et test > >= < <= == !=
+// if ( x < y ) x = x + 1; // test si
+// else y = y + 1; // sinon
+
+/* et les opérations suivantes:
+ + plus unaire x = +y;
+ - moins unaire x = -y;
+
+ || OU logique
+ && ET logique
+ ! NOT logique
+ | OU bit à bit
+ & ET bit à bit
+ ^ XOR bit à bit
+ ~ NON bit à bit
+
+// les commentaires sont acceptés
+/* y compris les commentaires
+   sur plusieures lignes */
+
+
+{
+String str ;
+
+str = "abc" ;
+
+show (str) ;
+
+show( str = str + "+++" ,  ) ;
+
+}

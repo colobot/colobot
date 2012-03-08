@@ -1,0 +1,5 @@
+void tf()
+{
+	file h;
+	h.handle += 1 ;
+}

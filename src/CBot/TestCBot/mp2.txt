@@ -1,0 +1,28 @@
+class Guepet
+{
+	
+	float a;
+	float b;
+	
+	void init()
+	{
+		a = 12.34;
+		b = 56.78;
+		
+		object x = radar(123);
+		show("radar "+x.position.x);
+		show("C'est fait");
+	}
+	
+	
+}
+
+extern void object::Fourmi6()
+{
+	Guepet guepe=new Guepet();
+	
+	guepe.init();
+	
+	show("test "+guepe.a+" "+guepe.b);
+	
+}

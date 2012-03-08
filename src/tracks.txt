@@ -1,0 +1,17 @@
+Utilisation des tracks
+
+ 1: data
+ 2: terre      Terre
+ 3: tropica    Tropica
+ 4: crystalium Crystalium
+ 5: saari      Saari
+ 6: volcano    Volcano
+ 7: centaury   Centaury
+ 8: orpheon    Orphéon
+ 9: terranova  Terranova
+10: lost       perdu
+11: win        gagné
+12: fox        fin du jeu
+13: shuffle    -
+
+DR 12.06.01

@@ -1,0 +1,8 @@
+public extern void ccc()
+{
+	int	a;
+	a = 0 ;
+
+	if ( a == 0 );
+
+}

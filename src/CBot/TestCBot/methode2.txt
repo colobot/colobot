@@ -1,0 +1,50 @@
+
+extern void Toto()
+{
+	TEST(12);
+
+	for ( int i = 0 ; i<1000; i++)
+	{
+		int j = 1;
+		if (i==55) TEST(12);
+	}
+
+	TEST(2);
+
+
+// Nouveau();
+	int		toto[4];
+	point	Z[3];
+
+	Z[1].x = 11; Z[1].y = 12;
+
+	toto[2] = 12;
+	toto[1] = nan;
+
+//	point	test, autre(2,3) ;
+//	object	titi = Radar();
+
+	TEST ( 1 ) ;
+
+	toto[0] = 11;
+
+	TEST ( 2 ) ;
+
+	toto[6] = 0;
+}
+
+extern void object::Nouveau()
+{
+	point a;
+	a = np(Position);
+}
+
+point np(point b)
+{
+	point c;
+	c.x = b.y;
+	c.y = b.x;
+	return c ;
+}
+
+ 

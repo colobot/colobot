@@ -1,0 +1,67 @@
+// routine de Daniel qui plante après RestoreState
+
+extern void object::Attack( )
+{
+	int  list[], i;
+	object p;
+	float dist, prox;
+	point nav1, nav2, dest;
+	boolean advance = true;
+ 
+	i = 0;
+	list[i++] = WingedGrabber;
+	list[i++] = TrackedGrabber;
+	list[i++] = WheeledGrabber;
+	list[i++] = LeggedGrabber;
+	list[i++] = WingedShooter;
+	list[i++] = TrackedShooter;
+	list[i++] = WheeledShooter;
+	list[i++] = LeggedShooter;
+	list[i++] = WingedOrgaShooter;
+	list[i++] = TrackedOrgaShooter;
+	list[i++] = WheeledOrgaShooter;
+	list[i++] = LeggedOrgaShooter;
+	list[i++] = WingedSniffer;
+	list[i++] = TrackedSniffer;
+	list[i++] = WheeledSniffer;
+	list[i++] = LeggedSniffer;
+	list[i++] = Thumper;
+	list[i++] = PhazerShooter;
+	list[i++] = Recycler;
+	list[i++] = Shielder;
+	list[i++] = Subber;
+	list[i++] = Me;
+ 
+	nav1.x = 1;//cmdline(0);
+	nav1.y = 1;//cmdline(1);
+	nav2.x = 2;//cmdline(2);
+	nav2.y = 2;//cmdline(3);
+ 
+	while ( true )
+	{
+ 		while ( true )
+		{
+			// ennemi à proximité ?
+ 			p = radar(list, 0, 360, 0, 40);
+ 			if ( p == null )  break;
+			// lui tire dessus
+ 			fire(p.position);
+		}
+
+		// se promène vers le point A
+		goto(nav1);
+ 
+		while ( true )
+		{
+			// ennemi à proximité ?
+			p = radar(list, 0, 360, 0, 40);
+			if ( p == null )  break;
+			// lui tire dessus
+			fire(p.position);
+		}
+
+		// se promène vers le point B
+		goto(nav2);
+ 	}
+}
+

@@ -1,0 +1,11 @@
+extern void object::Go()
+{
+//float a = energyLevel;
+//message(a);
+
+//object item=energyCell;
+//float i = item.energyLevel;
+//message(i);
+float i = energyCell.energyLevel;
+
+}

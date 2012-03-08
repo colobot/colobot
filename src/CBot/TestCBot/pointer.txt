@@ -1,0 +1,41 @@
+extern public void x ()
+{
+	show ( 3 ** 4 );
+	float z = 1e-3;
+	show ( z );
+
+	CPoint b ( 4,5 );
+	show ( b );
+
+	CPoint a ( ) ;
+	a.x = 21;  a.y = 12;
+	show ( a ) ;
+
+	CPoint	test = new CPoint ( 1,1 );
+	test = new CPoint ( 2, 2 );
+	show ( test );
+}
+
+// crée un objet et retourne son pointeur
+CPoint newcpoint()
+{
+	CPoint p = new CPoint ( 3, 3 );
+	return p;
+}
+
+extern public void y ()
+{
+	CPoint test = newcpoint();
+	println ( test );
+	dontmodif( test );
+	println ( test );
+}
+
+// ne doit pas modifier l'objet en paramètre
+void dontmodif ( CPoint pp )
+{
+	pp.x = 5;
+	pp.y = 2;
+	println ( pp, pp.x, pp.y );
+}
+

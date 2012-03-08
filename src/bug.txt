@@ -1,0 +1,94 @@
+void CD3DApplication::StepSimul(float rTime)
+{
+	Event	event;
+
+	if ( m_pRobotMain == 0 )  return;
+
+	if ( rTime > 0.5f )  rTime = 0.5f;  // jamais plus de 0.5s !
+
+	ZeroMemory(&event, sizeof(Event));
+	event.event = EVENT_FRAME;
+	event.rTime = rTime;
+	event.axeX = AxeLimit(m_axeKey.x + m_axeJoy.x);
+	event.axeY = AxeLimit(m_axeKey.y + m_axeJoy.y);
+	event.axeZ = AxeLimit(m_axeKey.z + m_axeJoy.z);
+	event.keyState = m_keyState;
+
+//?char s[100];
+//?sprintf(s, "StepSimul %.3f\n", event.rTime);
+//?OutputDebugString(s);
+	m_pRobotMain->EventProcess(event);
+}
+
+
+
+1347: void CD3DApplication::StepSimul(float rTime)
+1348: {
+0041E950   sub         esp,24h
+0041E953   push        esi
+0041E954   mov         esi,ecx
+1349:     Event   event;
+1350:
+1351:     if ( m_pRobotMain == 0 )  return;
+0041E956   mov         eax,dword ptr [esi+0ECh]
+0041E95C   test        eax,eax
+0041E95E   je          CD3DApplication::StepSimul(0x0041ea08)+0B8h
+1352:
+1353:     if ( rTime > 0.5f )  rTime = 0.5f;  // jamais plus de 0.5s !
+0041E964   fld         dword ptr [esp+2Ch]
+0041E968   fcomp       dword ptr [??_7CControl@@6B@(0x004b9ed4)+94h]
+0041E96E   push        edi
+0041E96F   fnstsw      ax
+0041E971   test        ah,41h
+0041E974   jne         CD3DApplication::StepSimul(0x0041e97e)+2Eh
+0041E976   mov         dword ptr [esp+30h],3F000000h
+1354:
+1355:     ZeroMemory(&event, sizeof(Event));
+1356:     event.event = EVENT_FRAME;
+1357:     event.rTime = rTime;
+1358:     event.axeX = AxeLimit(m_axeKey.x + m_axeJoy.x);
+0041E97E   fld         dword ptr [esi+0F8h]
+0041E984   fadd        dword ptr [esi+104h]
+0041E98A   mov         eax,dword ptr [esp+30h]
+0041E98E   mov         ecx,9
+0041E993   mov         dword ptr [esp+28h],eax
+0041E997   push        ecx
+0041E998   xor         eax,eax
+0041E99A   lea         edi,dword ptr [esp+0Ch]
+0041E99E   fstp        dword ptr [esp]
+0041E9A1   rep stos    dword ptr es:[edi]
+0041E9A3   mov         dword ptr [esp+0Ch],2
+0041E9AB   call        AxeLimit(0x0041cae0)
+1359:     event.axeY = AxeLimit(m_axeKey.y + m_axeJoy.y);
+0041E9B0   fld         dword ptr [esi+0FCh]
+0041E9B6   fadd        dword ptr [esi+108h]
+0041E9BC   fxch        st(1)
+0041E9BE   fstp        dword ptr [esp+1Ch]
+0041E9C2   fstp        dword ptr [esp]
+0041E9C5   call        AxeLimit(0x0041cae0)
+1360:     event.axeZ = AxeLimit(m_axeKey.z + m_axeJoy.z);
+0041E9CA   fld         dword ptr [esi+100h]
+0041E9D0   fadd        dword ptr [esi+10Ch]
+0041E9D6   fxch        st(1)
+0041E9D8   fstp        dword ptr [esp+20h]
+0041E9DC   fstp        dword ptr [esp]
+0041E9DF   call        AxeLimit(0x0041cae0)
+1361:     event.keyState = m_keyState;
+1362:
+1363: //?char s[100];
+1364: //?sprintf(s, "StepSimul %.3f\n", event.rTime);
+1365: //?OutputDebugString(s);
+1366:     m_pRobotMain->EventProcess(event);
+0041E9E4   mov         dx,word ptr [esi+0F4h]
+0041E9EB   mov         ecx,dword ptr [esi+0ECh]
+0041E9F1   fstp        dword ptr [esp+24h]
+0041E9F5   add         esp,4
+0041E9F8   lea         eax,dword ptr [esp+8]
+0041E9FC   mov         word ptr [esp+24h],dx
+0041EA01   push        eax
+0041EA02   call        CRobotMain::EventProcess(0x0047fba0)
+0041EA07   pop         edi
+1367: }
+0041EA08   pop         esi
+0041EA09   add         esp,24h
+0041EA0C   ret         4

@@ -1,0 +1,279 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// French (France) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_FRA)
+#ifdef _WIN32
+LANGUAGE LANG_FRENCH, SUBLANG_FRENCH
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_IF                   "if"
+    ID_ELSE                 "else"
+    ID_WHILE                "while"
+    ID_DO                   "do"
+    ID_FOR                  "for"
+    ID_BREAK                "break"
+    ID_CONTINUE             "continue"
+    ID_SWITCH               "switch"
+    ID_CASE                 "case"
+    ID_DEFAULT              "default"
+    ID_TRY                  "try"
+    ID_THROW                "throw"
+    ID_CATCH                "catch"
+    ID_FINALLY              "finally"
+    ID_TXT_AND              "and"
+    ID_TXT_OR               "or"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_DEBUGDD              "STARTDEBUGDD"
+    ID_INT                  "int"
+    ID_FLOAT                "float"
+    ID_BOOLEAN              "boolean"
+    ID_STRING               "string"
+    ID_VOID                 "void"
+    ID_BOOL                 "bool"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_TXT_NOT              "not"
+    ID_RETURN               "return"
+    ID_CLASS                "class"
+    ID_EXTENDS              "extends"
+    ID_SYNCHO               "synchronized"
+    ID_NEW                  "new"
+    ID_PUBLIC               "public"
+    ID_EXTERN               "extern"
+    ID_FINAL                "final"
+    ID_STATIC               "static"
+    ID_PROTECTED            "protected"
+    ID_PRIVATE              "private"
+    ID_REPEAT               "repeat"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_OPENPAR              "Il manque une parenthèse ouvrante."
+    TX_CLOSEPAR             "Il manque une parenthèse fermante."
+    TX_NOTBOOL              "L'expression doit être un boolean."
+    TX_UNDEFVAR             "Variable non déclarée."
+    TX_BADLEFT              "Assignation impossible."
+    TX_ENDOF                "Terminateur point-virgule non trouvé."
+    TX_OUTCASE              "Instruction ""case"" hors d'un bloc ""switch""."
+    TX_NOTERM               "Instructions après la fin."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_CLOSEBLK             "Il manque la fin du bloc."
+    TX_ELSEWITHOUTIF        "Instruction ""else"" sans ""if"" correspondant."
+    TX_OPENBLK              "Début d'un bloc attendu."
+    TX_BADTYPE              "Mauvais type de résultat pour l'assignation."
+    TX_REDEFVAR             "Redéfinition d'une variable."
+    TX_BAD2TYPE             "Les deux opérandes ne sont pas de types compatibles."
+    TX_UNDEFCALL            "Routine inconnue."
+    TX_MISDOTS              "Séparateur "" : "" attendu."
+    TX_WHILE                "Manque le mot ""while""."
+    TX_BREAK                "Instruction ""break"" en dehors d'une boucle."
+    TX_LABEL                "Un label ne peut se placer que devant un ""for"", un ""while"" ou un ""do""."
+    TX_NOLABEL              "Cette étiquette n'existe pas"
+    TX_NOCASE               "Manque une instruction ""case""."
+    TX_BADNUM               "Un nombre est attendu."
+    TX_VOID                 "Paramètre void."
+    TX_NOTYP                "Déclaration de type attendu."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_DIVZERO              "Division par zéro."
+    TX_NOTINIT              "Variable non initialisée."
+    TX_BADTHROW             "Valeur négative refusée pour ""throw""."
+    TX_NORETVAL             "La fonction n'a pas retourné de résultat"
+    TX_NORUN                "Pas de fonction en exécution"
+    TX_NOCALL               "Appel d'une fonction inexistante"
+    TX_NOCLASS              "Cette classe n'existe pas"
+    TX_NULLPT               "Pointeur nul."
+    TX_OPNAN                "Opération sur un ""nan"""
+    TX_OUTARRAY             "Accès hors du tableau"
+    TX_STACKOVER            "Dépassement de la pile"
+    TX_DELETEDPT            "Pointeur à un objet détruit"
+    TX_FILEOPEN             "Ouverture du fichier impossible"
+    TX_NOTOPEN              "Fichier pas ouvert"
+    TX_ERRREAD              "Erreur de lecture"
+    TX_ERRWRITE             "Erreur d'écriture"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_NOVAR                "Nom d'une variable attendu."
+    TX_NOFONC               "Nom de la fonction attendu."
+    TX_OVERPARAM            "Trop de paramètres."
+    TX_REDEF                "Cette fonction existe déjà."
+    TX_LOWPARAM             "Pas assez de paramètres."
+    TX_BADPARAM             "Aucune fonction de ce nom n'accepte ce(s) type(s) de paramètre(s)."
+    TX_NUMPARAM             "Aucune fonction de ce nom n'accepte ce nombre de paramètres."
+    TX_NOITEM               "Cet élément n'existe pas dans cette classe."
+    TX_DOT                  "L'objet n'est pas une instance d'une classe."
+    TX_NOCONST              "Il n'y a pas de constructeur approprié."
+    TX_REDEFCLASS           "Cette classe existe déjà."
+    TX_CLBRK                """ ] "" attendu."
+    TX_RESERVED             "Ce mot est réservé."
+    TX_BADNEW               "Mauvais argument pour ""new""."
+    TX_OPBRK                """ [ "" attendu."
+    TX_BADSTRING            "Une chaîne de caractère est attendue."
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_BADINDEX             "Mauvais type d'index"
+    TX_PRIVATE              "Membre privé de la classe"
+    TX_NOPUBLIC             """public"" manque"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_OPENPAR              "("
+    ID_CLOSEPAR             ")"
+    ID_OPBLK                "{"
+    ID_CLBLK                "}"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_SEP                  ";"
+    ID_COMMA                ","
+    ID_DOTS                 ":"
+    ID_DOT                  "."
+    ID_OPBRK                "["
+    ID_CLBRK                "]"
+    ID_DBLDOTS              "::"
+    ID_LOGIC                "?"
+    ID_ADD                  "+"
+    ID_SUB                  "-"
+    ID_MUL                  "*"
+    ID_DIV                  "/"
+    ID_ASS                  "="
+    ID_ASSADD               "+="
+    ID_ASSSUB               "-="
+    ID_ASSMUL               "*="
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_TRUE                 "true"
+    ID_FALSE                "false"
+    ID_NULL                 "null"
+    ID_NAN                  "nan"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_ASSDIV               "/="
+    ID_ASSOR                "|="
+    ID_ASSAND               "&="
+    ID_ASSXOR               "^="
+    ID_ASSSL                "<<="
+    ID_ASSSR                ">>>="
+    ID_ASSASR               ">>="
+    ID_SL                   "<<"
+    ID_SR                   ">>>"
+    ID_ASR                  ">>"
+    ID_INC                  "++"
+    ID_DEC                  "--"
+    ID_LO                   "<"
+    ID_HI                   ">"
+    ID_LS                   "<="
+    ID_HS                   ">="
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_EQ                   "=="
+    ID_NE                   "!="
+    ID_AND                  "&"
+    ID_XOR                  "^"
+    ID_OR                   "|"
+    ID_LOG_AND              "&&"
+    ID_LOG_OR               "||"
+    ID_LOG_NOT              "!"
+    ID_NOT                  "~"
+    ID_MODULO               "%"
+    ID_POWER                "**"
+    ID_ASSMODULO            "%="
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    TX_UNDEF                "undefined"
+    TX_NAN                  "not a number"
+END
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    ID_SUPER                "super"
+END
+
+#endif    // French (France) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

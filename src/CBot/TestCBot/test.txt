@@ -1,0 +1,8 @@
+extern public void x()
+{
+    float a= 1, b = 2;
+    a = b * ( 2 + 2 );
+//	print (a);
+	a += 4;
+//	print (a);
+}

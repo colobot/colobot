@@ -1,0 +1,13 @@
+extern void object :: TEST22 ( ) 
+{
+	show( position );
+	show( this.position );
+
+	T();
+}
+
+public void object :: T22()
+{
+	show( position );
+	show( this.position );
+}

@@ -1,0 +1,4 @@
+public extern int T ( float n )
+{
+	return n * 1.1;
+} 
