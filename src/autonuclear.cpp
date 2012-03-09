@@ -1,4 +1,18 @@
-// autonuclear.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -31,7 +45,7 @@
 
 
 
-#define NUCLEAR_DELAY		30.0f		// durée de la génération
+#define NUCLEAR_DELAY		30.0f		// durï¿½e de la gï¿½nï¿½ration
 
 
 
@@ -55,7 +69,7 @@ CAutoNuclear::~CAutoNuclear()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoNuclear::DeleteObject(BOOL bAll)
 {
@@ -66,7 +80,7 @@ void CAutoNuclear::DeleteObject(BOOL bAll)
 		fret = SearchUranium();
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // détruit le métal
+			fret->DeleteObject();  // dï¿½truit le mï¿½tal
 			delete fret;
 		}
 	}
@@ -103,7 +117,7 @@ void CAutoNuclear::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoNuclear::EventProcess(const Event &event)
 {
@@ -122,7 +136,7 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -137,7 +151,7 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			fret = SearchUranium();  // uranium à transformer ?
+			fret = SearchUranium();  // uranium ï¿½ transformer ?
 			if ( fret == 0 || SearchVehicle() )
 			{
 				m_phase    = ANUP_WAIT;  // attend encore ...
@@ -233,12 +247,12 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 			fret = SearchUranium();
 			if ( fret != 0 )
 			{
-				fret->DeleteObject();  // détruit l'uranium
+				fret->DeleteObject();  // dï¿½truit l'uranium
 				delete fret;
 				m_object->SetPower(0);
 			}
 
-			CreatePower();  // crée la pile atomique
+			CreatePower();  // crï¿½e la pile atomique
 
 			max = (int)(20.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
@@ -289,7 +303,7 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoNuclear::CreateInterface(BOOL bSelect)
 {
@@ -331,7 +345,7 @@ CObject* CAutoNuclear::SearchUranium()
 	return 0;
 }
 
-// Cherche si un véhicule est trop proche.
+// Cherche si un vï¿½hicule est trop proche.
 
 BOOL CAutoNuclear::SearchVehicle()
 {
@@ -390,7 +404,7 @@ BOOL CAutoNuclear::SearchVehicle()
 	return FALSE;
 }
 
-// Crée un objet pile.
+// Crï¿½e un objet pile.
 
 void CAutoNuclear::CreatePower()
 {
@@ -415,7 +429,7 @@ void CAutoNuclear::CreatePower()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoNuclear::RetError()
 {
@@ -444,7 +458,7 @@ Error CAutoNuclear::RetError()
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoNuclear::Write(char *line)
 {
@@ -470,7 +484,7 @@ BOOL CAutoNuclear::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoNuclear::Read(char *line)
 {

@@ -1,4 +1,18 @@
-// metafile.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -175,7 +189,7 @@ int CMetaFile::Open(char *metaname, char *filename)
 {
 	int		index, i;
 
-	if ( m_bOpen )  // fichier déjà ouvert ?
+	if ( m_bOpen )  // fichier dï¿½jï¿½ ouvert ?
 	{
 		Close();
 	}
@@ -231,7 +245,7 @@ int CMetaFile::RetLength()
 	return len;
 }
 
-// Positionnement dans le fichier, relatif au début.
+// Positionnement dans le fichier, relatif au dï¿½but.
 
 int CMetaFile::Seek(int offset)
 {
@@ -336,7 +350,7 @@ int CMetaFile::MetaOpen(char *metaname)
 			m_list[i].stream = fopen(metaname, "rb");
 			if ( m_list[i].stream == 0 )  return -1;
 
-			strcpy(m_list[i].name, metaname);  // mémorise le nom
+			strcpy(m_list[i].name, metaname);  // mï¿½morise le nom
 
 			fread(&m_list[i].total, sizeof(int), 1, m_list[i].stream);
 			m_list[i].headers = (MetaHeader*)malloc(sizeof(MetaHeader)*m_list[i].total);
@@ -355,7 +369,7 @@ int CMetaFile::MetaOpen(char *metaname)
 	return -1;
 }
 
-// Cherche si le metafile est déjà ouvert. Retourne l'index ou -1.
+// Cherche si le metafile est dï¿½jï¿½ ouvert. Retourne l'index ou -1.
 
 int CMetaFile::MetaSearch(char *metaname)
 {

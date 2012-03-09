@@ -1,4 +1,18 @@
-// blitz.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -46,7 +60,7 @@ CBlitz::~CBlitz()
 }
 
 
-// Supprime les éclairs.
+// Supprime les ï¿½clairs.
 
 void CBlitz::Flush()
 {
@@ -66,7 +80,7 @@ void CBlitz::Flush()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CBlitz::EventProcess(const Event &event)
 {
@@ -77,7 +91,7 @@ BOOL CBlitz::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait évoluer les éclairs.
+// Fait ï¿½voluer les ï¿½clairs.
 
 BOOL CBlitz::EventFrame(const Event &event)
 {
@@ -120,7 +134,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 				type = pObj->RetType();
 				if ( type == OBJECT_BASE )
 				{
-					m_pos.y += 120.0f;  // sommet de la fusée
+					m_pos.y += 120.0f;  // sommet de la fusï¿½e
 				}
 				else if ( type == OBJECT_PARA )
 				{
@@ -192,7 +206,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 }
 
 
-// Dessine les éclairs.
+// Dessine les ï¿½clairs.
 
 void CBlitz::Draw()
 {
@@ -277,7 +291,7 @@ void CBlitz::Draw()
 }
 
 
-// Enclanche les éclairs.
+// Enclanche les ï¿½clairs.
 
 BOOL CBlitz::Create(float sleep, float delay, float magnetic)
 {
@@ -310,7 +324,7 @@ BOOL CBlitz::Create(float sleep, float delay, float magnetic)
 }
 
 
-// Donne l'état des éclairs.
+// Donne l'ï¿½tat des ï¿½clairs.
 
 BOOL CBlitz::GetStatus(float &sleep, float &delay, float &magnetic, float &progress)
 {
@@ -324,7 +338,7 @@ BOOL CBlitz::GetStatus(float &sleep, float &delay, float &magnetic, float &progr
 	return TRUE;
 }
 
-// Spécifie l'état des éclairs.
+// Spï¿½cifie l'ï¿½tat des ï¿½clairs.
 
 BOOL CBlitz::SetStatus(float sleep, float delay, float magnetic, float progress)
 {
@@ -341,7 +355,7 @@ BOOL CBlitz::SetStatus(float sleep, float delay, float magnetic, float progress)
 }
 
 
-// Cherche l'objet le plus proche de l'éclair.
+// Cherche l'objet le plus proche de l'ï¿½clair.
 
 CObject* CBlitz::SearchObject(D3DVECTOR pos)
 {
@@ -361,11 +375,11 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 		if ( pObj == 0 )  break;
 
 		if ( !pObj->RetActif() )  continue;  // objet inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet transportï¿½ ?
 
 		type = pObj->RetType();
 		if ( type == OBJECT_BASE ||
-			 type == OBJECT_PARA )  // bâtiment à effet paratonnerre ?
+			 type == OBJECT_PARA )  // bï¿½timent ï¿½ effet paratonnerre ?
 		{
 			pObjPara[nbPara] = pObj;
 			pPos[nbPara] = pObj->RetPosition(0);
@@ -439,7 +453,7 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 			pBest = pObj;
 		}
 	}
-	if ( pBest == 0 )  return 0;  // rien trouvé
+	if ( pBest == 0 )  return 0;  // rien trouvï¿½
 
 	// Sous la protection d'un paratonnerre ?
 	oPos = pBest->RetPosition(0);

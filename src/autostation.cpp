@@ -1,4 +1,18 @@
-// autostation.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -48,7 +62,7 @@ CAutoStation::~CAutoStation()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoStation::DeleteObject(BOOL bAll)
 {
@@ -77,7 +91,7 @@ void CAutoStation::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoStation::EventProcess(const Event &event)
 {
@@ -96,7 +110,7 @@ BOOL CAutoStation::EventProcess(const Event &event)
 
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( !m_bLastVirus )
 		{
@@ -148,7 +162,7 @@ BOOL CAutoStation::EventProcess(const Event &event)
 				energy += add;  // recharge la pile
 				power->SetEnergy(energy);
 				if ( energy < freq )  freq = energy;
-				big -= add/4.0f;  // décharge la grosse pile
+				big -= add/4.0f;  // dï¿½charge la grosse pile
 			}
 
 			power = vehicule->RetFret();
@@ -161,11 +175,11 @@ BOOL CAutoStation::EventProcess(const Event &event)
 				energy += add;  // recharge la pile
 				power->SetEnergy(energy);
 				if ( energy < freq )  freq = energy;
-				big -= add/4.0f;  // décharge la grosse pile
+				big -= add/4.0f;  // dï¿½charge la grosse pile
 			}
 		}
 	}
-	used -= big;  // énergie utilisée
+	used -= big;  // ï¿½nergie utilisï¿½e
 
 	if ( freq < 1.0f )  // charge en cours ?
 	{
@@ -231,13 +245,13 @@ BOOL CAutoStation::EventProcess(const Event &event)
 
 	if ( big < 0.0f )  big = 0.0f;
 	if ( big > 1.0f )  big = 1.0f;
-	m_object->SetEnergy(big);  // màj la grosse pile
+	m_object->SetEnergy(big);  // mï¿½j la grosse pile
 
 	return TRUE;
 }
 
 
-// Cherche le véhicule placé sur la station.
+// Cherche le vï¿½hicule placï¿½ sur la station.
 
 CObject* CAutoStation::SearchVehicle()
 {
@@ -292,7 +306,7 @@ CObject* CAutoStation::SearchVehicle()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoStation::RetError()
 {
@@ -310,7 +324,7 @@ Error CAutoStation::RetError()
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoStation::CreateInterface(BOOL bSelect)
 {
@@ -345,8 +359,8 @@ BOOL CAutoStation::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met à jour l'état de tous les boutons de l'interface,
-// suite au temps qui s'écoule ...
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface,
+// suite au temps qui s'ï¿½coule ...
 
 void CAutoStation::UpdateInterface(float rTime)
 {

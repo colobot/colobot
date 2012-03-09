@@ -1,4 +1,18 @@
-// autoportico.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -29,7 +43,7 @@
 
 
 
-#define PARAM_DEPOSE		2		// run=2 -> dépose le vaisseau
+#define PARAM_DEPOSE		2		// run=2 -> dï¿½pose le vaisseau
 
 #define PORTICO_POSa		75.0f
 #define PORTICO_POSb		65.0f
@@ -77,7 +91,7 @@ CAutoPortico::~CAutoPortico()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoPortico::DeleteObject(BOOL bAll)
 {
@@ -109,7 +123,7 @@ void CAutoPortico::Init()
 }
 
 
-// Démarre l'objet.
+// Dï¿½marre l'objet.
 
 void CAutoPortico::Start(int param)
 {
@@ -117,7 +131,7 @@ void CAutoPortico::Start(int param)
 
 	pos = m_object->RetPosition(0);
 	m_finalPos = pos;
-	pos.z += PORTICO_TIME_MOVE*5.0f;  // recule au départ
+	pos.z += PORTICO_TIME_MOVE*5.0f;  // recule au dï¿½part
 	m_object->SetPosition(0, pos);
 	m_finalPos.z += PORTICO_TIME_OPEN*5.3f;
 
@@ -137,7 +151,7 @@ void CAutoPortico::Start(int param)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoPortico::EventProcess(const Event &event)
 {
@@ -151,7 +165,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 
 	if ( m_phase == APOP_START )
 	{
-		if ( m_param == PARAM_DEPOSE )  // dépose le vaisseau ?
+		if ( m_param == PARAM_DEPOSE )  // dï¿½pose le vaisseau ?
 		{
 			m_startPos = m_object->RetPosition(0);
 
@@ -164,7 +178,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 			m_progress = 0.0f;
 			m_speed    = 1.0f/PORTICO_TIME_MOVE;
 
-			m_main->SetMovieLock(TRUE);  // bloque tout jusqu'à la fin de l'atterrissage
+			m_main->SetMovieLock(TRUE);  // bloque tout jusqu'ï¿½ la fin de l'atterrissage
 
 			m_camera->SetType(CAMERA_SCRIPT);
 
@@ -392,7 +406,7 @@ BOOL CAutoPortico::Abort()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoPortico::RetError()
 {
@@ -400,7 +414,7 @@ Error CAutoPortico::RetError()
 }
 
 
-// Met à jour le mapping de la texture des chenilles.
+// Met ï¿½ jour le mapping de la texture des chenilles.
 
 void CAutoPortico::UpdateTrackMapping(float left, float right)
 {

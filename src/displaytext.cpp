@@ -1,4 +1,18 @@
-// displaytext.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -50,7 +64,7 @@ CDisplayText::CDisplayText(CInstanceManager* iMan)
 		m_visitGoal[i] = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		m_visitDist[i] = 0.0f;
 		m_visitHeight[i] = 0.0f;
-		m_time[i] = 0.0f;  // rien d'affiché
+		m_time[i] = 0.0f;  // rien d'affichï¿½
 	}
 
 	m_bHide = FALSE;
@@ -66,7 +80,7 @@ CDisplayText::~CDisplayText()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CDisplayText::DeleteObject()
 {
@@ -74,7 +88,7 @@ void CDisplayText::DeleteObject()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CDisplayText::EventProcess(const Event &event)
 {
@@ -382,7 +396,7 @@ BOOL CDisplayText::ClearLastText()
 	if ( pw == 0 )  return FALSE;
 
 	pb2 = (CButton*)pw->SearchControl(EVENT_DT_VISIT0);
-	if ( pb2 == 0 )  return FALSE;  // même pas de première ligne
+	if ( pb2 == 0 )  return FALSE;  // mï¿½me pas de premiï¿½re ligne
 	pg2 = (CGroup*)pw->SearchControl(EVENT_DT_GROUP0);
 	if ( pg2 == 0 )  return FALSE;
 	pl2 = (CLabel*)pw->SearchControl(EVENT_DT_LABEL0);
@@ -421,7 +435,7 @@ BOOL CDisplayText::ClearLastText()
 }
 
 
-// Spécifie le facteur du délai.
+// Spï¿½cifie le facteur du dï¿½lai.
 
 void CDisplayText::SetDelay(float factor)
 {
@@ -471,7 +485,7 @@ float CDisplayText::RetVisitHeight(EventMsg event)
 }
 
 
-// Retourne la distance de visite idéale pour un objet donné.
+// Retourne la distance de visite idï¿½ale pour un objet donnï¿½.
 
 float CDisplayText::RetIdealDist(CObject* pObj)
 {
@@ -490,7 +504,7 @@ float CDisplayText::RetIdealDist(CObject* pObj)
 	return 60.0f;
 }
 
-// Retourne la hauteur de visite idéale pour un objet donné.
+// Retourne la hauteur de visite idï¿½ale pour un objet donnï¿½.
 
 float CDisplayText::RetIdealHeight(CObject* pObj)
 {

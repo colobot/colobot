@@ -1,4 +1,18 @@
-// camera.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _CAMERA_H_
 #define	_CAMERA_H_
@@ -14,18 +28,18 @@ enum D3DMouse;
 
 enum CameraType
 {
-	CAMERA_NULL		= 0,	// caméra indéfinie
-	CAMERA_FREE		= 1,	// caméra libre (jamais en principe)
-	CAMERA_EDIT		= 2,	// caméra pendant l'édition d'un programme
-	CAMERA_ONBOARD	= 3,	// caméra à bord d'un robot
-	CAMERA_BACK		= 4,	// caméra derrière un robot
-	CAMERA_FIX		= 5,	// caméra fixe après robot
-	CAMERA_EXPLO	= 6,	// caméra immobile après explosion
-	CAMERA_SCRIPT	= 7,	// caméra pendant un film scripté
-	CAMERA_INFO		= 8,	// caméra pendant l'affichage des informations
+	CAMERA_NULL		= 0,	// camï¿½ra indï¿½finie
+	CAMERA_FREE		= 1,	// camï¿½ra libre (jamais en principe)
+	CAMERA_EDIT		= 2,	// camï¿½ra pendant l'ï¿½dition d'un programme
+	CAMERA_ONBOARD	= 3,	// camï¿½ra ï¿½ bord d'un robot
+	CAMERA_BACK		= 4,	// camï¿½ra derriï¿½re un robot
+	CAMERA_FIX		= 5,	// camï¿½ra fixe aprï¿½s robot
+	CAMERA_EXPLO	= 6,	// camï¿½ra immobile aprï¿½s explosion
+	CAMERA_SCRIPT	= 7,	// camï¿½ra pendant un film scriptï¿½
+	CAMERA_INFO		= 8,	// camï¿½ra pendant l'affichage des informations
 	CAMERA_VISIT	= 9,	// visite du lieu d'une erreur
-	CAMERA_DIALOG	= 10,	// caméra pendant dialogue
-	CAMERA_PLANE	= 11,	// caméra fixe en hauteur
+	CAMERA_DIALOG	= 10,	// camï¿½ra pendant dialogue
+	CAMERA_PLANE	= 11,	// camï¿½ra fixe en hauteur
 };
 
 enum CameraSmooth
@@ -33,7 +47,7 @@ enum CameraSmooth
 	CS_NONE			= 0,	// brusque
 	CS_NORM			= 1,	// normal
 	CS_HARD			= 2,	// dur
-	CS_SPEC			= 3,	// spécial
+	CS_SPEC			= 3,	// spï¿½cial
 };
 
 enum CenteringPhase
@@ -48,11 +62,11 @@ enum CameraEffect
 {
 	CE_NULL			= 0,	// pas d'effet
 	CE_TERRAFORM	= 1,	// terrassement
-	CE_CRASH		= 2,	// véhicule volant posé violemment
+	CE_CRASH		= 2,	// vï¿½hicule volant posï¿½ violemment
 	CE_EXPLO		= 3,	// explosion
 	CE_SHOT			= 4,	// coup non mortel
 	CE_VIBRATION	= 5,	// vibration pendant construction
-	CE_PET			= 6,	// raté du réacteur
+	CE_PET			= 6,	// ratï¿½ du rï¿½acteur
 };
 
 enum OverEffect
@@ -62,7 +76,7 @@ enum OverEffect
 	OE_FADEINw		= 2,	// blanc -> rien
 	OE_FADEOUTw		= 3,	// rien -> blanc
 	OE_FADEOUTb		= 4,	// rien -> bleu
-	OE_BLITZ		= 5,	// éclair
+	OE_BLITZ		= 5,	// ï¿½clair
 };
 
 
@@ -159,19 +173,19 @@ protected:
 	CTerrain*	m_terrain;
 	CWater*		m_water;
 
-	CameraType	m_type;				// type de la caméra (CAMERA_*)
+	CameraType	m_type;				// type de la camï¿½ra (CAMERA_*)
 	CameraSmooth m_smooth;			// type de lissage
-	CObject*	m_cameraObj;		// objet lié à la caméra
+	CObject*	m_cameraObj;		// objet liï¿½ ï¿½ la camï¿½ra
 
 	float		m_eyeDistance;		// distance entre les yeux
-	float		m_initDelay;		// délai du centrage initial
+	float		m_initDelay;		// dï¿½lai du centrage initial
 
 	D3DVECTOR	m_actualEye;		// oeil actuel
-	D3DVECTOR	m_actualLookat;		// visée actuelle
+	D3DVECTOR	m_actualLookat;		// visï¿½e actuelle
 	D3DVECTOR	m_finalEye;			// oeil final
-	D3DVECTOR	m_finalLookat;		// visée finale
+	D3DVECTOR	m_finalLookat;		// visï¿½e finale
 	D3DVECTOR	m_normEye;			// oeil normal
-	D3DVECTOR	m_normLookat;		// visée normale
+	D3DVECTOR	m_normLookat;		// visï¿½e normale
 	float		m_focus;
 
 	BOOL		m_bRightDown;
@@ -184,20 +198,20 @@ protected:
 	float		m_directionV;		// CAMERA_FREE: direction verticale
 	float		m_heightEye;		// CAMERA_FREE: hauteur au-dessus du sol
 	float		m_heightLookat;		// CAMERA_FREE: hauteur au-dessus du sol
-	float		m_speed;			// CAMERA_FREE: vitesse de déplacement
+	float		m_speed;			// CAMERA_FREE: vitesse de dï¿½placement
 
-	float		m_backDist;			// CAMERA_BACK: éloignement
-	float		m_backMin;			// CAMERA_BACK: éloignement minimal
-	float		m_addDirectionH;	// CAMERA_BACK: direction supplémentaire
-	float		m_addDirectionV;	// CAMERA_BACK: direction supplémentaire
+	float		m_backDist;			// CAMERA_BACK: ï¿½loignement
+	float		m_backMin;			// CAMERA_BACK: ï¿½loignement minimal
+	float		m_addDirectionH;	// CAMERA_BACK: direction supplï¿½mentaire
+	float		m_addDirectionV;	// CAMERA_BACK: direction supplï¿½mentaire
 	BOOL		m_bTransparency;
 
-	float		m_fixDist;			// CAMERA_FIX: éloignement
+	float		m_fixDist;			// CAMERA_FIX: ï¿½loignement
 	float		m_fixDirectionH;	// CAMERA_FIX: direction
 	float		m_fixDirectionV;	// CAMERA_FIX: direction
 
-	D3DVECTOR	m_visitGoal;		// CAMERA_VISIT: position visée
-	float		m_visitDist;		// CAMERA_VISIT: éloignement
+	D3DVECTOR	m_visitGoal;		// CAMERA_VISIT: position visï¿½e
+	float		m_visitDist;		// CAMERA_VISIT: ï¿½loignement
 	float		m_visitTime;		// CAMERA_VISIT: temps relatif
 	CameraType	m_visitType;		// CAMERA_VISIT: type initial
 	float		m_visitDirectionH;	// CAMERA_VISIT: direction

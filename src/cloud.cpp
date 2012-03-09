@@ -1,4 +1,18 @@
-// cloud.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -58,7 +72,7 @@ BOOL CCloud::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait évoluer les nuages.
+// Fait ï¿½voluer les nuages.
 
 BOOL CCloud::EventFrame(const Event &event)
 {
@@ -212,7 +226,7 @@ void CCloud::Draw()
 }
 
 
-// Met à jour les positions par-rapport au terrain.
+// Met ï¿½ jour les positions par-rapport au terrain.
 
 BOOL CCloud::CreateLine(int x, int y, int len)
 {
@@ -233,7 +247,7 @@ BOOL CCloud::CreateLine(int x, int y, int len)
 	return ( m_lineUsed < MAXCLOUDLINE );
 }
 
-// Crée toutes les étendues de nuages.
+// Crï¿½e toutes les ï¿½tendues de nuages.
 
 BOOL CCloud::Create(const char *filename,
 					D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,

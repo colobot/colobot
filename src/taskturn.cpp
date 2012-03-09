@@ -1,4 +1,18 @@
-// taskturn.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,14 +52,14 @@ CTaskTurn::~CTaskTurn()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskTurn::EventProcess(const Event &event)
 {
 	if ( m_engine->RetPause() )  return TRUE;
 	if ( event.event != EVENT_FRAME )  return TRUE;
 
-	// Objet momentanément immobile (fourmi sur le dos) ?
+	// Objet momentanï¿½ment immobile (fourmi sur le dos) ?
 	if ( m_object->RetFixed() )
 	{
 		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
@@ -58,8 +72,8 @@ BOOL CTaskTurn::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
-// Un angle positif effectue un virage à droite.
+// Assigne le but ï¿½ atteindre.
+// Un angle positif effectue un virage ï¿½ droite.
 
 Error CTaskTurn::Start(float angle)
 {
@@ -69,13 +83,13 @@ Error CTaskTurn::Start(float angle)
 	if ( angle < 0.0f )
 	{
 		m_angle = angle+m_physics->RetCirStopLength();
-		m_physics->SetMotorSpeedZ(-1.0f);  // tourne à gauche
+		m_physics->SetMotorSpeedZ(-1.0f);  // tourne ï¿½ gauche
 		m_bLeft = TRUE;
 	}
 	else
 	{
 		m_angle = angle-m_physics->RetCirStopLength();
-		m_physics->SetMotorSpeedZ(1.0f);  // tourne à droite
+		m_physics->SetMotorSpeedZ(1.0f);  // tourne ï¿½ droite
 		m_bLeft = FALSE;
 	}
 	m_physics->SetMotorSpeedX(0.0f);
@@ -85,7 +99,7 @@ Error CTaskTurn::Start(float angle)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskTurn::IsEnded()
 {

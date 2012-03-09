@@ -1,4 +1,18 @@
-// taskinfo.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -41,7 +55,7 @@ CTaskInfo::~CTaskInfo()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskInfo::EventProcess(const Event &event)
 {
@@ -49,14 +63,14 @@ BOOL CTaskInfo::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ça avance
+	m_progress += event.rTime*m_speed;  // ï¿½a avance
 	m_time += event.rTime;
 
 	return TRUE;
 }
 
 
-// Assigne le but à atteindre.
+// Assigne le but ï¿½ atteindre.
 
 Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 {
@@ -81,7 +95,7 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 		return ERR_INFO_NULL;
 	}
 
-	op = 1;  // émission impossible
+	op = 1;  // ï¿½mission impossible
 	if ( bSend )  // send ?
 	{
 		total = pInfo->RetInfoTotal();
@@ -102,12 +116,12 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 				strcpy(info.name, name);
 				info.value = value;
 				pInfo->SetInfo(total, info);
-				op = 2;  // début de réception (pour la borne)
+				op = 2;  // dï¿½but de rï¿½ception (pour la borne)
 			}
 		}
 		else
 		{
-			op = 2;  // début de réception (pour la borne)
+			op = 2;  // dï¿½but de rï¿½ception (pour la borne)
 		}
 	}
 	else	// receive ?
@@ -124,13 +138,13 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 		}
 		if ( i < total )
 		{
-			op = 0;  // début d'émission (pour la borne)
+			op = 0;  // dï¿½but d'ï¿½mission (pour la borne)
 		}
 	}
 
 	pAuto->Start(op);
 
-	if ( op == 0 )  // émission ?
+	if ( op == 0 )  // ï¿½mission ?
 	{
 		pos = pInfo->RetPosition(0);
 		pos.y += 9.5f;
@@ -138,7 +152,7 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 		goal.y += 4.0f;
 		m_particule->CreateRay(pos, goal, PARTIRAY3, FPOINT(2.0f, 2.0f), 1.0f);
 	}
-	if ( op == 2 )  // réception ?
+	if ( op == 2 )  // rï¿½ception ?
 	{
 		goal = pInfo->RetPosition(0);
 		goal.y += 9.5f;
@@ -156,7 +170,7 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskInfo::IsEnded()
 {

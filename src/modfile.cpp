@@ -1,4 +1,18 @@
-// modfile.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -46,7 +60,7 @@ CModFile::~CModFile()
 
 
 
-// Crée un triangle dans la structure interne.
+// Crï¿½e un triangle dans la structure interne.
 
 BOOL CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 							  float min, float max)
@@ -428,25 +442,25 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 
 	if ( !bEdit )
 	{
-		limit[0] = m_engine->RetLimitLOD(0);  // frontière AB selon config
-		limit[1] = m_engine->RetLimitLOD(1);  // frontière BC selon config
+		limit[0] = m_engine->RetLimitLOD(0);  // frontiï¿½re AB selon config
+		limit[1] = m_engine->RetLimitLOD(1);  // frontiï¿½re BC selon config
 
-		// Frontières standard -> config.
+		// Frontiï¿½res standard -> config.
 		for ( i=first ; i<m_triangleUsed ; i++ )
 		{
 			if ( m_triangleTable[i].min == 0.0f &&
-				 m_triangleTable[i].max == 100.0f )  // résolution A ?
+				 m_triangleTable[i].max == 100.0f )  // rï¿½solution A ?
 			{
 				m_triangleTable[i].max = limit[0];
 			}
 			else if ( m_triangleTable[i].min == 100.0f &&
-					  m_triangleTable[i].max == 200.0f )  // résolution B ?
+					  m_triangleTable[i].max == 200.0f )  // rï¿½solution B ?
 			{
 				m_triangleTable[i].min = limit[0];
 				m_triangleTable[i].max = limit[1];
 			}
 			else if ( m_triangleTable[i].min == 200.0f &&
-					  m_triangleTable[i].max == 1000000.0f )  // résolution C ?
+					  m_triangleTable[i].max == 1000000.0f )  // rï¿½solution C ?
 			{
 				m_triangleTable[i].min = limit[1];
 			}
@@ -498,7 +512,7 @@ BOOL CModFile::WriteModel(char *filename)
 }
 
 
-// Crée l'objet dans le moteur 3D.
+// Crï¿½e l'objet dans le moteur 3D.
 
 BOOL CModFile::CreateEngineObject(int objRank, int addState)
 {
@@ -619,7 +633,7 @@ void CModFile::Mirror()
 }
 
 
-// Retourne le pointeur à la liste de triangles.
+// Retourne le pointeur ï¿½ la liste de triangles.
 
 void CModFile::SetTriangleUsed(int total)
 {

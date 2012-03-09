@@ -1,4 +1,18 @@
-// group.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -34,7 +48,7 @@ CGroup::~CGroup()
 }
 
 
-// Crée un nouveau bouton.
+// Crï¿½e un nouveau bouton.
 
 BOOL CGroup::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -57,7 +71,7 @@ BOOL CGroup::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CGroup::EventProcess(const Event &event)
 {
@@ -112,7 +126,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 2 )  // dégradé orange -> transparent ?
+	if ( m_icon == 2 )  // dï¿½gradï¿½ orange -> transparent ?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -126,7 +140,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 3 )  // dégradé transparent -> gris ?
+	if ( m_icon == 3 )  // dï¿½gradï¿½ transparent -> gris ?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -140,7 +154,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 4 )  // coin bleu dégradé ?
+	if ( m_icon == 4 )  // coin bleu dï¿½gradï¿½ ?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -154,7 +168,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 5 )  // coin orange dégradé ?
+	if ( m_icon == 5 )  // coin orange dï¿½gradï¿½ ?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -396,7 +410,7 @@ void CGroup::Draw()
 		corner.y = 6.0f/480.0f;
 		DrawIcon(m_pos, m_dim, uv1, uv2, corner, 2.0f/256.0f);
 	}
-	if ( m_icon == 18 )  // flèche > pour SatCom ?
+	if ( m_icon == 18 )  // flï¿½che > pour SatCom ?
 	{
 		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -489,7 +503,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button3.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =  80.0f/256.0f;  // orangé
+		uv1.x =  80.0f/256.0f;  // orangï¿½
 		uv1.y = 192.0f/256.0f;
 		uv2.x =  96.0f/256.0f;
 		uv2.y = 208.0f/256.0f;
@@ -548,7 +562,7 @@ void CGroup::Draw()
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
 
-	if ( m_icon >= 100 && m_icon <= 120 )  // bâtiment ?
+	if ( m_icon >= 100 && m_icon <= 120 )  // bï¿½timent ?
 	{
 		pos = m_pos;
 		dim = m_dim;
@@ -616,7 +630,7 @@ void CGroup::Draw()
 		if ( m_icon == 112 )  icon = 44;  // info ?
 		if ( m_icon == 113 )  icon = 46;  // paratonnerre ?
 		if ( m_icon == 114 )  icon = 47;  // coffre-fort ?
-		if ( m_icon == 115 )  icon = 48;  // centre de contrôle ?
+		if ( m_icon == 115 )  icon = 48;  // centre de contrï¿½le ?
 		uv1.x = (32.0f/256.0f)*(icon%8);
 		uv1.y = (32.0f/256.0f)*(icon/8);  // uv texture
 		uv2.x = uv1.x+32.0f/256.0f;

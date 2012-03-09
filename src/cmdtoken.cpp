@@ -1,4 +1,18 @@
-// cmdtoken.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -34,7 +48,7 @@ char* SkipSpace(char *line)
 	return line;
 }
 
-// Vérifie si une ligne contient une commande.
+// Vï¿½rifie si une ligne contient une commande.
 
 BOOL Cmd(char *line, char *token)
 {
@@ -42,10 +56,10 @@ BOOL Cmd(char *line, char *token)
 
 	line = SkipSpace(line);
 	p = strstr(line, token);
-	return ( p == line );  // commande au début ?
+	return ( p == line );  // commande au dï¿½but ?
 }
 
-// Cherche un opérateur.
+// Cherche un opï¿½rateur.
 
 char* SearchOp(char *line, char *op)
 {
@@ -57,14 +71,14 @@ char* SearchOp(char *line, char *op)
 	strcat(opeq, "=");
 
 	p = strstr(line, opeq);
-	if ( p == 0 )  // pas trouvé ?
+	if ( p == 0 )  // pas trouvï¿½ ?
 	{
-		return line+strlen(line);  // pointe le zéro terminateur
+		return line+strlen(line);  // pointe le zï¿½ro terminateur
 	}
-	return p+strlen(opeq);  // pointe après le "="
+	return p+strlen(opeq);  // pointe aprï¿½s le "="
 }
 
-// Cherche le nième argument.
+// Cherche le niï¿½me argument.
 
 char* SearchArg(char *line, int rank)
 {
@@ -86,7 +100,7 @@ char* SearchArg(char *line, int rank)
 	return line;
 }
 
-// Lit un nombre entier, éventuellement hexadécimal.
+// Lit un nombre entier, ï¿½ventuellement hexadï¿½cimal.
 
 int GetInt(char *line, int rank, int def)
 {
@@ -124,7 +138,7 @@ int GetInt(char *line, int rank, int def)
 	return n;
 }
 
-// Lit un nombre réel.
+// Lit un nombre rï¿½el.
 
 float GetFloat(char *line, int rank, float def)
 {
@@ -138,7 +152,7 @@ float GetFloat(char *line, int rank, float def)
 	return n;
 }
 
-// Lit une chaîne.
+// Lit une chaï¿½ne.
 
 void GetString(char *line, int rank, char *buffer)
 {
@@ -684,7 +698,7 @@ D3DTypeObj GetTypeTerrain(char *line, int rank, D3DTypeObj def)
 	return def;
 }
 
-// Retourne le numéro d'un bâtiment.
+// Retourne le numï¿½ro d'un bï¿½timent.
 
 int GetBuild(char *line, int rank)
 {
@@ -713,7 +727,7 @@ int GetBuild(char *line, int rank)
 	return 0;
 }
 
-// Retourne le numéro d'une recherche.
+// Retourne le numï¿½ro d'une recherche.
 
 int GetResearch(char *line, int rank)
 {
@@ -770,7 +784,7 @@ PyroType GetPyro(char *line, int rank)
 	return PT_NULL;
 }
 
-// Retourne le type d'une caméra.
+// Retourne le type d'une camï¿½ra.
 
 CameraType GetCamera(char *line, int rank)
 {
@@ -805,7 +819,7 @@ int OpInt(char *line, char *op, int def)
 	return GetInt(line, 0, def);
 }
 
-// Retourne un nombre réel.
+// Retourne un nombre rï¿½el.
 
 float OpFloat(char *line, char *op, float def)
 {
@@ -814,7 +828,7 @@ float OpFloat(char *line, char *op, float def)
 	return GetFloat(line, 0, def);
 }
 
-// Retourne une chaîne de caractères.
+// Retourne une chaï¿½ne de caractï¿½res.
 
 void OpString(char *line, char *op, char *buffer)
 {
@@ -856,7 +870,7 @@ D3DTypeObj OpTypeTerrain(char *line, char *op, D3DTypeObj def)
 	return GetTypeTerrain(line, 0, def);
 }
 
-// Retourne le numéro d'une recherche.
+// Retourne le numï¿½ro d'une recherche.
 
 int OpResearch(char *line, char *op)
 {
@@ -874,7 +888,7 @@ PyroType OpPyro(char *line, char *op)
 	return GetPyro(line, 0);
 }
 
-// Retourne le type d'une caméra.
+// Retourne le type d'une camï¿½ra.
 
 CameraType OpCamera(char *line, char *op)
 {
@@ -883,7 +897,7 @@ CameraType OpCamera(char *line, char *op)
 	return GetCamera(line, 0);
 }
 
-// Retourne le numéro d'un bâtiment.
+// Retourne le numï¿½ro d'un bï¿½timent.
 
 int OpBuild(char *line, char *op)
 {

@@ -1,4 +1,18 @@
-// physics.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _PHYSICS_H_
 #define	_PHYSICS_H_
@@ -42,21 +56,21 @@ enum PhysicsMode
 
 typedef struct
 {
-	D3DVECTOR	advanceAccel;	// accélération de départ (+)
-	D3DVECTOR	recedeAccel;	// accélération de départ (+)
-	D3DVECTOR	stopAccel;		// accélération d'arrêt (+)
-	D3DVECTOR	motorAccel;		// accélération actuelle (+/-)
+	D3DVECTOR	advanceAccel;	// accï¿½lï¿½ration de dï¿½part (+)
+	D3DVECTOR	recedeAccel;	// accï¿½lï¿½ration de dï¿½part (+)
+	D3DVECTOR	stopAccel;		// accï¿½lï¿½ration d'arrï¿½t (+)
+	D3DVECTOR	motorAccel;		// accï¿½lï¿½ration actuelle (+/-)
 
 	D3DVECTOR	advanceSpeed;	// vitesse en marche avant (+)
-	D3DVECTOR	recedeSpeed;	// vitesse en marche arrière (+)
-	D3DVECTOR	motorSpeed;		// vitesse souhaitée (+/-)
+	D3DVECTOR	recedeSpeed;	// vitesse en marche arriï¿½re (+)
+	D3DVECTOR	motorSpeed;		// vitesse souhaitï¿½e (+/-)
 	D3DVECTOR	currentSpeed;	// vitesse actuelle (+/-)
 
-	D3DVECTOR	terrainForce;	// force de résistance du terrain (+)
+	D3DVECTOR	terrainForce;	// force de rï¿½sistance du terrain (+)
 	D3DVECTOR	terrainSpeed;	// vitesse du terrain (+/-)
 	D3DVECTOR	terrainSlide;	// limite vitesse de glissement (+)
 
-	D3DVECTOR	realSpeed;		// vitesse réelle (+/-)
+	D3DVECTOR	realSpeed;		// vitesse rï¿½elle (+/-)
 
 	D3DVECTOR	finalInclin;	// inclinaison finale
 }
@@ -182,7 +196,7 @@ protected:
 	float		m_gravity;		// force de gravitation
 	float		m_time;			// temps absolu
 	D3DVECTOR	m_motorSpeed;	// vitesse du moteur (-1..1)
-	Motion		m_linMotion;	// mouvement linéaire
+	Motion		m_linMotion;	// mouvement linï¿½aire
 	Motion		m_cirMotion;	// mouvement circulaire
 	BOOL		m_bMotor;
 	BOOL		m_bLand;

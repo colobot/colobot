@@ -1,4 +1,18 @@
-// autodestroyer.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -52,7 +66,7 @@ CAutoDestroyer::~CAutoDestroyer()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoDestroyer::DeleteObject(BOOL bAll)
 {
@@ -76,7 +90,7 @@ void CAutoDestroyer::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoDestroyer::EventProcess(const Event &event)
 {
@@ -93,7 +107,7 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -115,8 +129,8 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 			}
 			else
 			{
-				scrap->SetLock(TRUE);  // déchet plus utilisable
-//?				scrap->SetTruck(m_object);  // déchet plus utilisable
+				scrap->SetLock(TRUE);  // dï¿½chet plus utilisable
+//?				scrap->SetTruck(m_object);  // dï¿½chet plus utilisable
 
 				if ( SearchVehicle() )
 				{
@@ -204,7 +218,7 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoDestroyer::CreateInterface(BOOL bSelect)
 {
@@ -234,7 +248,7 @@ BOOL CAutoDestroyer::CreateInterface(BOOL bSelect)
 }
 
 
-// Cherche le déchet placé sous le destructeur.
+// Cherche le dï¿½chet placï¿½ sous le destructeur.
 
 CObject* CAutoDestroyer::SearchPlastic()
 {
@@ -263,7 +277,7 @@ CObject* CAutoDestroyer::SearchPlastic()
 	return 0;
 }
 
-// Cherche si un véhicule est trop proche.
+// Cherche si un vï¿½hicule est trop proche.
 
 BOOL CAutoDestroyer::SearchVehicle()
 {
@@ -325,7 +339,7 @@ BOOL CAutoDestroyer::SearchVehicle()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoDestroyer::RetError()
 {
@@ -338,7 +352,7 @@ Error CAutoDestroyer::RetError()
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoDestroyer::Write(char *line)
 {
@@ -363,7 +377,7 @@ BOOL CAutoDestroyer::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoDestroyer::Read(char *line)
 {

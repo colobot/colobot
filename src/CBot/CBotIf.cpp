@@ -1,5 +1,18 @@
-///////////////////////////////////////////////////////////////////////
-// instruction if (condition) opération1 else opération2;
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #include "CBot.h"
 
@@ -14,23 +27,23 @@ CBotIf::CBotIf()
 
 CBotIf::~CBotIf()
 {
-	delete	m_Condition;		// libère la condition
-	delete	m_Block;			// libère le bloc d'instruction1
-	delete	m_BlockElse;		// libère le bloc d'instruction2
+	delete	m_Condition;		// libï¿½re la condition
+	delete	m_Block;			// libï¿½re le bloc d'instruction1
+	delete	m_BlockElse;		// libï¿½re le bloc d'instruction2
 }
 
 // compilation (routine statique)
-// appelé lorsque le token "if" a été trouvé
+// appelï¿½ lorsque le token "if" a ï¿½tï¿½ trouvï¿½
 
 CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-	CBotToken*	pp = p;							// conserve le ^au token (début instruction)
+	CBotToken*	pp = p;							// conserve le ^au token (dï¿½but instruction)
 
 	if (!IsOfType(p, ID_IF)) return NULL;		// ne doit jamais arriver
 
 	CBotCStack* pStk = pStack->TokenStack(pp);	// un petit bout de pile svp
 
-	CBotIf*	inst = new CBotIf();				// crée l'object
+	CBotIf*	inst = new CBotIf();				// crï¿½e l'object
 	inst->SetToken( pp );
 
 	if ( NULL != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
@@ -40,7 +53,7 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 		inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, TRUE );
 		if ( pStk->IsOk() )
 		{
-			// le bloc d'instruction est ok (peut être vide)
+			// le bloc d'instruction est ok (peut ï¿½tre vide)
 
 			// regarde si l'instruction suivante est le token "else"
 			if (IsOfType(p, ID_ELSE))
@@ -49,57 +62,57 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 				inst->m_BlockElse = CBotBlock::CompileBlkOrInst( p, pStk, TRUE );
 				if (!pStk->IsOk())
 				{
-					// il n'y a pas de bloc correct après le else
-					// libère l'objet, et transmet l'erreur qui est sur la pile
+					// il n'y a pas de bloc correct aprï¿½s le else
+					// libï¿½re l'objet, et transmet l'erreur qui est sur la pile
 					delete inst;
 					return pStack->Return(NULL, pStk);
 				}
 			}
 
-			// rend l'object correct à qui le demande.
+			// rend l'object correct ï¿½ qui le demande.
 			return pStack->Return(inst, pStk);
 		}
 	}
 
-	// erreur, libère l'objet
+	// erreur, libï¿½re l'objet
 	delete inst;
 	// et transmet l'erreur qui se trouve sur la pile.
 	return pStack->Return(NULL, pStk);
 }
 
 
-// exécution de l'instruction
+// exï¿½cution de l'instruction
 
 BOOL CBotIf :: Execute(CBotStack* &pj)
 {
-	CBotStack* pile = pj->AddStack(this);		// ajoute un élément à la pile
+	CBotStack* pile = pj->AddStack(this);		// ajoute un ï¿½lï¿½ment ï¿½ la pile
 												// ou le retrouve en cas de reprise
 //	if ( pile == EOX ) return TRUE;
 
 	if ( pile->IfStep() ) return FALSE;
 
-	// selon la reprise, on peut être dans l'un des 2 états
+	// selon la reprise, on peut ï¿½tre dans l'un des 2 ï¿½tats
 	if( pile->GivState() == 0 )
 	{
-		// évalue la condition
+		// ï¿½value la condition
 		if ( !m_Condition->Execute(pile) ) return FALSE;	// interrompu ici ?
 
 		// termine s'il y a une erreur
 		if ( !pile->IsOk() )
 		{
-			return pj->Return(pile);						// transmet le résultat et libère la pile
+			return pj->Return(pile);						// transmet le rï¿½sultat et libï¿½re la pile
 		}
 
-		// passe dans le second état
-		if (!pile->SetState(1)) return FALSE;				// prêt pour la suite
+		// passe dans le second ï¿½tat
+		if (!pile->SetState(1)) return FALSE;				// prï¿½t pour la suite
 	}
 	
-	// second état, évalue les instructions associées
-	// le résultat de la condition est sur la pile
+	// second ï¿½tat, ï¿½value les instructions associï¿½es
+	// le rï¿½sultat de la condition est sur la pile
 
-	if ( pile->GivVal() == TRUE )							// condition était vraie ?
+	if ( pile->GivVal() == TRUE )							// condition ï¿½tait vraie ?
 	{
-		if ( m_Block != NULL &&								// bloc peut être absent
+		if ( m_Block != NULL &&								// bloc peut ï¿½tre absent
 			!m_Block->Execute(pile) ) return FALSE;			// interrompu ici ?
 	}
 	else
@@ -108,7 +121,7 @@ BOOL CBotIf :: Execute(CBotStack* &pj)
 			!m_BlockElse->Execute(pile) ) return FALSE;		// interrompu ici
 	}
 
-	// transmet le résultat et libère la pile
+	// transmet le rï¿½sultat et libï¿½re la pile
 	return pj->Return(pile);
 }
 
@@ -117,23 +130,23 @@ void CBotIf :: RestoreState(CBotStack* &pj, BOOL bMain)
 {
 	if ( !bMain ) return;
 
-	CBotStack* pile = pj->RestoreStack(this);		// ajoute un élément à la pile
+	CBotStack* pile = pj->RestoreStack(this);		// ajoute un ï¿½lï¿½ment ï¿½ la pile
 	if ( pile == NULL ) return;
 
-	// selon la reprise, on peut être dans l'un des 2 états
+	// selon la reprise, on peut ï¿½tre dans l'un des 2 ï¿½tats
 	if( pile->GivState() == 0 )
 	{
-		// évalue la condition
+		// ï¿½value la condition
 		m_Condition->RestoreState(pile, bMain);	// interrompu ici !
 		return;
 	}
 	
-	// second état, évalue les instructions associées
-	// le résultat de la condition est sur la pile
+	// second ï¿½tat, ï¿½value les instructions associï¿½es
+	// le rï¿½sultat de la condition est sur la pile
 
-	if ( pile->GivVal() == TRUE )							// condition était vraie ?
+	if ( pile->GivVal() == TRUE )							// condition ï¿½tait vraie ?
 	{
-		if ( m_Block != NULL )								// bloc peut être absent
+		if ( m_Block != NULL )								// bloc peut ï¿½tre absent
 			 m_Block->RestoreState(pile, bMain);			// interrompu ici !
 	}
 	else

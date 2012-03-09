@@ -1,4 +1,18 @@
-// autobase.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _AUTOBASE_H_
 #define	_AUTOBASE_H_
@@ -13,10 +27,10 @@ class CObject;
 
 
 
-#define PARAM_STOP				0		// run=0 -> stoppé et ouvert
+#define PARAM_STOP				0		// run=0 -> stoppï¿½ et ouvert
 #define PARAM_LANDING			1		// run=1 -> atterrissage
-#define PARAM_PORTICO			2		// run=2 -> porté par le portique
-#define PARAM_FIXSCENE			3		// run=3 -> stoppé et ouvert pour win/lost
+#define PARAM_PORTICO			2		// run=2 -> portï¿½ par le portique
+#define PARAM_FIXSCENE			3		// run=3 -> stoppï¿½ et ouvert pour win/lost
 #define PARAM_TRANSIT1			11		// run=11 -> transit dans l'espace
 #define PARAM_TRANSIT2			12		// run=12 -> transit dans l'espace
 #define PARAM_TRANSIT3			13		// run=13 -> transit dans l'espace
@@ -25,18 +39,18 @@ class CObject;
 enum AutoBasePhase
 {
 	ABP_WAIT		= 1,	// attend
-	ABP_START		= 2,	// démarrage
+	ABP_START		= 2,	// dï¿½marrage
 
 	ABP_LAND		= 3,	// atterissage
 	ABP_OPENWAIT	= 4,	// attente avant ouverture
 	ABP_OPEN		= 5,	// ouvre les portes
-	ABP_OPEN2		= 6,	// ouvre les suppléments
+	ABP_OPEN2		= 6,	// ouvre les supplï¿½ments
 	ABP_LDWAIT		= 7,	// attend
 
-	ABP_CLOSE2		= 8,	// ferme les suppléments
+	ABP_CLOSE2		= 8,	// ferme les supplï¿½ments
 	ABP_CLOSE		= 9,	// ferme les portes
-	ABP_TOWAIT		= 10,	// attente avant décollage
-	ABP_TAKEOFF		= 11,	// décollage
+	ABP_TOWAIT		= 10,	// attente avant dï¿½collage
+	ABP_TAKEOFF		= 11,	// dï¿½collage
 
 	ABP_PORTICO_MOVE = 12,	// portique avance
 	ABP_PORTICO_WAIT1= 13,	// portique attend
@@ -44,7 +58,7 @@ enum AutoBasePhase
 	ABP_PORTICO_WAIT2= 15,	// portique attend
 	ABP_PORTICO_OPEN = 16,	// portique s'ouvre
 
-	ABP_TRANSIT_MOVE = 17,	// transit - déplacement
+	ABP_TRANSIT_MOVE = 17,	// transit - dï¿½placement
 };
 
 

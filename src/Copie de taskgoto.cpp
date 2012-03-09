@@ -1,4 +1,18 @@
-// taskgoto.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -46,7 +60,7 @@ CTaskGoto::~CTaskGoto()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskGoto::EventProcess(const Event &event)
 {
@@ -58,7 +72,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 	if ( m_engine->RetPause() )  return TRUE;
 	if ( event.event != EVENT_FRAME )  return TRUE;
 
-	// Objet momentanément immobile (fourmi sur le dos) ?
+	// Objet momentanï¿½ment immobile (fourmi sur le dos) ?
 	if ( m_object->RetFixed() )
 	{
 		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
@@ -95,7 +109,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 		a = NormAngle(a);
 		if ( a > PI*0.5f && a < PI*1.5f )
 		{
-			linSpeed = 1.0f;  // obstacle derrière -> avance
+			linSpeed = 1.0f;  // obstacle derriï¿½re -> avance
 			cirSpeed = -cirSpeed;
 		}
 		else
@@ -103,7 +117,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 			linSpeed = -1.0f;  // obstacle devant -> recule
 		}
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne ï¿½ gauche/droite
 		m_physics->SetMotorSpeedX(linSpeed);  // avance
 		return TRUE;
 	}
@@ -165,7 +179,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 		return TRUE;
 	}
 
-	if ( m_phase == TGP_BEAMUP )  // décolle ?
+	if ( m_phase == TGP_BEAMUP )  // dï¿½colle ?
 	{
 		m_physics->SetMotorSpeedY(1.0f);  // monte
 		return TRUE;
@@ -248,7 +262,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 		}
 		else
 		{
-			linSpeed = 1.0f;  // fonce sans s'arrêter
+			linSpeed = 1.0f;  // fonce sans s'arrï¿½ter
 		}
 
 		linSpeed *= 1.0f-(1.0f-0.3f)*Abs(cirSpeed);
@@ -258,7 +272,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 			linSpeed = 0.0f;  // tourne d'abord, puis avance
 		}
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne ï¿½ gauche/droite
 		m_physics->SetMotorSpeedX(linSpeed);  // avance
 		return TRUE;
 	}
@@ -312,7 +326,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne ï¿½ gauche/droite
 		m_physics->SetMotorSpeedX(1.0f);  // avance
 		return TRUE;
 	}
@@ -388,7 +402,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 //?		if ( m_physics->RetType() == TYPE_FLYING &&
 //?			 m_physics->RetLand()                )  // volant au sol ?
 //?		{
-//?			cirSpeed *= 4.0f;  // plus de pèche
+//?			cirSpeed *= 4.0f;  // plus de pï¿½che
 //?		}
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
@@ -398,7 +412,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 //?		if ( m_physics->RetType() == TYPE_FLYING &&
 //?			 m_physics->RetLand()                )  // volant au sol ?
 //?		{
-//?			linSpeed *= 8.0f;  // plus de pèche
+//?			linSpeed *= 8.0f;  // plus de pï¿½che
 //?		}
 		if ( linSpeed > 1.0f )  linSpeed =  1.0f;
 
@@ -410,13 +424,13 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 		}
 #endif
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne ï¿½ gauche/droite
 		m_physics->SetMotorSpeedX(linSpeed);  // avance
 	}
 
 	if ( m_phase == TGP_TURN   ||  // tourne vers l'objet ?
-		 m_phase == TGP_CRTURN ||  // tourne après collision ?
-		 m_phase == TGP_CLTURN )   // tourne après collision ?
+		 m_phase == TGP_CRTURN ||  // tourne aprï¿½s collision ?
+		 m_phase == TGP_CLTURN )   // tourne aprï¿½s collision ?
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
@@ -424,18 +438,18 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne ï¿½ gauche/droite
 	}
 
-	if ( m_phase == TGP_CRWAIT ||  // attend après collision ?
-		 m_phase == TGP_CLWAIT )   // attend après collision ?
+	if ( m_phase == TGP_CRWAIT ||  // attend aprï¿½s collision ?
+		 m_phase == TGP_CLWAIT )   // attend aprï¿½s collision ?
 	{
 		m_time += event.rTime;
 		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
 		m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
 	}
 
-	if ( m_phase == TGP_CRADVANCE )  // avance après collision ?
+	if ( m_phase == TGP_CRADVANCE )  // avance aprï¿½s collision ?
 	{
 		if ( m_physics->RetCollision() )  // collision ?
 		{
@@ -447,7 +461,7 @@ BOOL CTaskGoto::EventProcess(const Event &event)
 		m_physics->SetMotorSpeedX(0.5f);  // avance mollo
 	}
 
-	if ( m_phase == TGP_CLADVANCE )  // avance après collision ?
+	if ( m_phase == TGP_CLADVANCE )  // avance aprï¿½s collision ?
 	{
 		if ( m_physics->RetCollision() )  // collision ?
 		{
@@ -531,7 +545,7 @@ CObject* CTaskGoto::WormSearch(D3DVECTOR &impact)
 			 oType != OBJECT_SAFE     &&
 			 oType != OBJECT_HUSTON   )  continue;
 
-		if ( pObj->RetVirusMode() )  continue;  // objet infecté ?
+		if ( pObj->RetVirusMode() )  continue;  // objet infectï¿½ ?
 
 		if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
 		distance = Length2d(oPos, iPos);
@@ -568,7 +582,7 @@ void CTaskGoto::WormFrame(float rTime)
 			dist = Length(pos, impact);
 			if ( dist <= 15.0f )
 			{
-				pObj->SetVirusMode(TRUE);  // paf, infecté !
+				pObj->SetVirusMode(TRUE);  // paf, infectï¿½ !
 			}
 		}
 	}
@@ -576,9 +590,9 @@ void CTaskGoto::WormFrame(float rTime)
 
 
 
-// Assigne le but à atteindre.
-// "dist" est la distance de laquelle il faut s'éloigner pour
-// prendre ou déposer un objet.
+// Assigne le but ï¿½ atteindre.
+// "dist" est la distance de laquelle il faut s'ï¿½loigner pour
+// prendre ou dï¿½poser un objet.
 
 Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 					   TaskGotoGoal goalMode, TaskGotoCrash crashMode)
@@ -671,7 +685,7 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 				dist = 0.0f;
 				AdjustTarget(target, m_goal, dist);
 			}
-			m_bTake = TRUE;  // objet à prendre à l'arrivée (rotation finale)
+			m_bTake = TRUE;  // objet ï¿½ prendre ï¿½ l'arrivï¿½e (rotation finale)
 		}
 	}
 
@@ -694,23 +708,23 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 				dist = 4.0f;
 				if ( AdjustTarget(target, m_goal, dist) )
 				{
-					m_bmFretObject = target;  // fret posé au sol
+					m_bmFretObject = target;  // fret posï¿½ au sol
 				}
 				else
 				{
 					m_bmFinalMove = dist;
 				}
 			}
-			m_bTake = TRUE;  // objet à prendre à l'arrivée (rotation finale)
+			m_bTake = TRUE;  // objet ï¿½ prendre ï¿½ l'arrivï¿½e (rotation finale)
 		}
 
 		if ( m_physics->RetType() == TYPE_FLYING && m_altitude == 0.0f )
 		{
 			pos = m_object->RetPosition(0);
 			dist = Length2d(pos, m_goal);
-			if ( dist > 40.0f )  // plus de 10 mètres ?
+			if ( dist > 40.0f )  // plus de 10 mï¿½tres ?
 			{
-				m_altitude = 20.0f;  // altitude par défaut
+				m_altitude = 20.0f;  // altitude par dï¿½faut
 			}
 		}
 
@@ -720,7 +734,7 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 		{
 			x = (int)((m_goal.x+1600.0f)/BM_DIM_STEP);
 			y = (int)((m_goal.z+1600.0f)/BM_DIM_STEP);
-			if ( BitmapTestDot(0, x, y) )  // arrivée occupée ?
+			if ( BitmapTestDot(0, x, y) )  // arrivï¿½e occupï¿½e ?
 			{
 				m_error = ERR_GOTO_IMPOSSIBLE;
 				return m_error;
@@ -731,7 +745,7 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskGoto::IsEnded()
 {
@@ -760,13 +774,13 @@ Error CTaskGoto::IsEnded()
 		return ERR_CONTINUE;
 	}
 
-	if ( m_phase == TGP_BEAMUP )  // décolle ?
+	if ( m_phase == TGP_BEAMUP )  // dï¿½colle ?
 	{
 		if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
 		{
 			h = m_terrain->RetFloorHeight(pos, TRUE);
 			if ( h < m_altitude-20.0f )  return ERR_CONTINUE;
-			m_physics->SetMotorSpeedY(0.0f);  // stoppe la montée
+			m_physics->SetMotorSpeedY(0.0f);  // stoppe la montï¿½e
 		}
 		m_phase = TGP_BEAMGOTO;
 	}
@@ -780,7 +794,7 @@ Error CTaskGoto::IsEnded()
 		else	// en vol ?
 		{
 			limit = 2.0f;
-			if ( m_bmIndex < m_bmTotal )  limit *= 2.0f;  // point intermédiaire
+			if ( m_bmIndex < m_bmTotal )  limit *= 2.0f;  // point intermï¿½diaire
 		}
 		if ( m_bApprox )  limit = 2.0f;
 
@@ -880,7 +894,7 @@ Error CTaskGoto::IsEnded()
 		}
 	}
 
-	if ( m_phase == TGP_CRWAIT )  // attend après collision ?
+	if ( m_phase == TGP_CRWAIT )  // attend aprï¿½s collision ?
 	{
 		if ( m_crashMode == TGC_HALT )
 		{
@@ -892,15 +906,15 @@ Error CTaskGoto::IsEnded()
 		if ( m_time >= 1.0f )
 		{
 			if ( m_crashMode == TGC_RIGHTLEFT ||
-				 m_crashMode == TGC_RIGHT     )  angle =  PI/2.0f;  // 90 à droite
-			else                            angle = -PI/2.0f;  // 90 à gauche
+				 m_crashMode == TGC_RIGHT     )  angle =  PI/2.0f;  // 90 ï¿½ droite
+			else                            angle = -PI/2.0f;  // 90 ï¿½ gauche
 			m_angle = NormAngle(m_object->RetAngleY(0)+angle);
 			m_phase = TGP_CRTURN;
 //?			m_phase = TGP_ADVANCE;
 		}
 	}
 
-	if ( m_phase == TGP_CRTURN )  // tourne après collision ?
+	if ( m_phase == TGP_CRTURN )  // tourne aprï¿½s collision ?
 	{
 		angle = NormAngle(m_object->RetAngleY(0));
 		limit = 0.1f;
@@ -912,7 +926,7 @@ Error CTaskGoto::IsEnded()
 		}
 	}
 
-	if ( m_phase == TGP_CRADVANCE )  // avance après collision ?
+	if ( m_phase == TGP_CRADVANCE )  // avance aprï¿½s collision ?
 	{
 		if ( Length(pos, m_pos) >= 5.0f )
 		{
@@ -920,7 +934,7 @@ Error CTaskGoto::IsEnded()
 		}
 	}
 
-	if ( m_phase == TGP_CLWAIT )  // attend après collision ?
+	if ( m_phase == TGP_CLWAIT )  // attend aprï¿½s collision ?
 	{
 		if ( m_time >= 1.0f )
 		{
@@ -933,7 +947,7 @@ Error CTaskGoto::IsEnded()
 		}
 	}
 
-	if ( m_phase == TGP_CLTURN )  // tourne après collision ?
+	if ( m_phase == TGP_CLTURN )  // tourne aprï¿½s collision ?
 	{
 		angle = NormAngle(m_object->RetAngleY(0));
 		limit = 0.1f;
@@ -945,7 +959,7 @@ Error CTaskGoto::IsEnded()
 		}
 	}
 
-	if ( m_phase == TGP_CLADVANCE )  // avance après collision ?
+	if ( m_phase == TGP_CLADVANCE )  // avance aprï¿½s collision ?
 	{
 		if ( Length(pos, m_pos) >= 10.0f )
 		{
@@ -973,7 +987,7 @@ Error CTaskGoto::IsEnded()
 }
 
 
-// Cherche l'objet à la position cible.
+// Cherche l'objet ï¿½ la position cible.
 
 CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
 {
@@ -988,7 +1002,7 @@ CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
 		if ( pObj == 0 )  break;
 
 		if ( !pObj->RetActif() )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;  // objet porté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet portï¿½ ?
 
 		oPos = pObj->RetPosition(0);
 		dist = Length2d(pos, oPos);
@@ -1000,7 +1014,7 @@ CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
 }
 
 // Ajuste la cible en fonction de l'objet.
-// Retourne TRUE s'il s'agit de fret posé au sol.
+// Retourne TRUE s'il s'agit de fret posï¿½ au sol.
 
 BOOL CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
 {
@@ -1088,8 +1102,8 @@ BOOL CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
 	return FALSE;
 }
 
-// S'il on est sur un objet produit par un bâtiment (minerai produit
-// par derrick), modifie la position par-rapport au bâtiment.
+// S'il on est sur un objet produit par un bï¿½timent (minerai produit
+// par derrick), modifie la position par-rapport au bï¿½timent.
 
 BOOL CTaskGoto::AdjustBuilding(D3DVECTOR &pos, float margin, float &distance)
 {
@@ -1104,7 +1118,7 @@ BOOL CTaskGoto::AdjustBuilding(D3DVECTOR &pos, float margin, float &distance)
 		if ( pObj == 0 )  break;
 
 		if ( !pObj->RetActif() )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;  // objet porté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet portï¿½ ?
 
 		if ( !GetHotPoint(pObj, oPos, FALSE, 0.0f, suppl) )  continue;
 		dist = Length2d(pos, oPos);
@@ -1118,7 +1132,7 @@ BOOL CTaskGoto::AdjustBuilding(D3DVECTOR &pos, float margin, float &distance)
 	return FALSE;
 }
 
-// Retourne le point où est produit ou posé qq chose sur un bâtiment.
+// Retourne le point oï¿½ est produit ou posï¿½ qq chose sur un bï¿½timent.
 
 BOOL CTaskGoto::GetHotPoint(CObject *pObj, D3DVECTOR &pos,
 							BOOL bTake, float distance, float &suppl)
@@ -1240,7 +1254,7 @@ BOOL CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
 
 		if ( pObj == m_object )  continue;
 		if ( !pObj->RetActif() )  continue;
-		if ( pObj->RetTruck() != 0 )  continue;  // objet porté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet portï¿½ ?
 
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
@@ -1262,7 +1276,7 @@ BOOL CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
 }
 
 
-// Calcule la force de répulsion en fonction des obstacles.
+// Calcule la force de rï¿½pulsion en fonction des obstacles.
 // La longueur du vecteur rendu est comprise entre 0 et 1.
 
 void CTaskGoto::ComputeRepulse(FPOINT &dir)
@@ -1323,7 +1337,7 @@ void CTaskGoto::ComputeRepulse(FPOINT &dir)
 	dir.x = 0.0f;
 	dir.y = 0.0f;
 
-	// Le ver passe partout et à travers tout !
+	// Le ver passe partout et ï¿½ travers tout !
 	iType = m_object->RetType();
 	if ( iType == OBJECT_WORM )  return;
 
@@ -1377,7 +1391,7 @@ void CTaskGoto::ComputeRepulse(FPOINT &dir)
 		add = 4.0f;
 		fac = 1.5f;
 	}
-	if ( iType == OBJECT_BEE )  // guêpe ?
+	if ( iType == OBJECT_BEE )  // guï¿½pe ?
 	{
 		if ( m_physics->RetLand() )
 		{
@@ -1438,7 +1452,7 @@ void CTaskGoto::ComputeRepulse(FPOINT &dir)
 		if ( iType == OBJECT_BEE &&
 			 oType == OBJECT_BEE )
 		{
-			addi = 2.0f;  // entre guèpes, faut pas trop s'embêter
+			addi = 2.0f;  // entre guï¿½pes, faut pas trop s'embï¿½ter
 		}
 		
 		j = 0;
@@ -1471,7 +1485,7 @@ void CTaskGoto::ComputeRepulse(FPOINT &dir)
 #endif
 }
 
-// Calcule la force de répulsion verticale en fonction des obstacles.
+// Calcule la force de rï¿½pulsion verticale en fonction des obstacles.
 // La longueur du vecteur rendu est comprise entre -1 et 1.
 
 void CTaskGoto::ComputeFlyingRepulse(float &dir)
@@ -1525,8 +1539,8 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
 
 
 // Parmi tous les points suivants, cherche s'il en existe un qui
-// permet d'y aller directement à vol d'oiseau. Si oui, saute tous
-// les points intermédiaires inutiles.
+// permet d'y aller directement ï¿½ vol d'oiseau. Si oui, saute tous
+// les points intermï¿½diaires inutiles.
 
 int CTaskGoto::BeamShortcut()
 {
@@ -1536,14 +1550,14 @@ int CTaskGoto::BeamShortcut()
 	{
 		if ( BitmapTestLine(m_bmPoints[m_bmIndex], m_bmPoints[i], 0.0f, FALSE) )
 		{
-			return i;  // bingo, trouvé
+			return i;  // bingo, trouvï¿½
 		}
 	}
 
 	return m_bmIndex+1;  // va simplement au point suivant
 }
 
-// C'est le grand départ.
+// C'est le grand dï¿½part.
 
 void CTaskGoto::BeamStart()
 {
@@ -1589,13 +1603,13 @@ void CTaskGoto::BeamInit()
 	}
 }
 
-// Calcule les points par où passer pour aller de start à goal.
+// Calcule les points par oï¿½ passer pour aller de start ï¿½ goal.
 // Retourne :
 // ERR_OK si c'est bon
 // ERR_GOTO_IMPOSSIBLE si impossible
-// ERR_GOTO_ITER si avorté car trop de récursions
+// ERR_GOTO_ITER si avortï¿½ car trop de rï¿½cursions
 // ERR_CONTINUE si pas encore fini
-// goalRadius: distance à laquelle il faut s'approcher du but
+// goalRadius: distance ï¿½ laquelle il faut s'approcher du but
 
 Error CTaskGoto::BeamSearch(const D3DVECTOR &start, const D3DVECTOR &goal,
 							float goalRadius)
@@ -1612,13 +1626,13 @@ Error CTaskGoto::BeamSearch(const D3DVECTOR &start, const D3DVECTOR &goal,
 	return BeamExplore(start, start, goal, goalRadius, 165.0f*PI/180.0f, 22, step, 0, nbIter);
 }
 
-// prevPos: position précédente
+// prevPos: position prï¿½cï¿½dente
 // curPos:  position courante
-// goalPos: position qu'on cherche à atteindre
+// goalPos: position qu'on cherche ï¿½ atteindre
 // angle:   angle par rapport au but qu'on explore
 // nbDiv:   nombre du sous-divisions qu'on fait avec angle
 // step     longuer d'un pas
-// i        nombre de récursions effectuées
+// i        nombre de rï¿½cursions effectuï¿½es
 // nbIter   nombre max. d'iterations qu'on a le droit de faire avant d'interrompre provisoirement
 
 Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
@@ -1631,7 +1645,7 @@ Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
 	int			iDiv, iClear, iLar;
 	
 	iLar = 0;
-	if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // trop de récursion
+	if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // trop de rï¿½cursion
 	
 	if ( m_bmIter[i] == -1 )
 	{
@@ -1709,7 +1723,7 @@ Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
 	return ERR_GOTO_IMPOSSIBLE;
 }
 
-// Soit une droite "start-goal". Calcule le point situé à la distance
+// Soit une droite "start-goal". Calcule le point situï¿½ ï¿½ la distance
 // "step" du point "start" et faisant un angle "angle" avec la droite.
 
 D3DVECTOR CTaskGoto::BeamPoint(const D3DVECTOR &startPoint,
@@ -1831,7 +1845,7 @@ BOOL CTaskGoto::BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal,
 	{
 		x = (int)((pos.x+1600.0f)/BM_DIM_STEP);
 		y = (int)((pos.z+1600.0f)/BM_DIM_STEP);
-		BitmapSetDot(1, x, y);  // met le flag du point de départ
+		BitmapSetDot(1, x, y);  // met le flag du point de dï¿½part
 	}
 
 	max = (int)(dist/step);
@@ -1841,7 +1855,7 @@ BOOL CTaskGoto::BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal,
 	{
 		if ( i == max-1 )
 		{
-			pos = goal;  // teste le point d'arrivée
+			pos = goal;  // teste le point d'arrivï¿½e
 		}
 		else
 		{

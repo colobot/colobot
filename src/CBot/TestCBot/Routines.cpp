@@ -1,10 +1,25 @@
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 
 ////////////////////////////////////////////////////////////////////
 // routine show()
-// utilisable depuis le programme écrit en CBot
+// utilisable depuis le programme ï¿½crit en CBot
 
-// exécution
+// exï¿½cution
 BOOL	rShow( CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser )
 {
 	CString		s;
@@ -32,15 +47,15 @@ BOOL	rShow( CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser )
 CBotTypResult	cShow( CBotVar* &pVar, void* pUser)
 {
 	if ( pVar == NULL ) return CBotTypResult(5028);
-	return CBotTypResult(0);		// tous paramètres acceptés, void en retour
+	return CBotTypResult(0);		// tous paramï¿½tres acceptï¿½s, void en retour
 }
 
 
 ////////////////////////////////////////////////////////////////////
 // routine print()
-// utilisable depuis le programme écrit en CBot
+// utilisable depuis le programme ï¿½crit en CBot
 
-// exécution
+// exï¿½cution
 BOOL	rPrintLn( CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser )
 {
 	CString		s;
@@ -90,19 +105,19 @@ BOOL	rPrint( CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser )
 
 CBotTypResult	cPrint( CBotVar* &pVar, void* pUser)
 {
-	return CBotTypResult(0);				// tous paramètres acceptés, un entier en retour
+	return CBotTypResult(0);				// tous paramï¿½tres acceptï¿½s, un entier en retour
 }
 
 
 //////////////////////////////////////////////////////////////////
 // class CPoint pour essayer
 
-// exécution
+// exï¿½cution
 BOOL	rCPoint( CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception )
 {
 	CString		s;
 
-	if ( pVar == NULL )return TRUE;			// constructeur sans paramètres est ok
+	if ( pVar == NULL )return TRUE;			// constructeur sans paramï¿½tres est ok
 
 	CBotVar*	pX = pThis->GivItem("x");
 	pX->SetValFloat( pVar->GivValFloat() );
@@ -117,20 +132,20 @@ BOOL	rCPoint( CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception )
 
 CBotTypResult cCPoint( CBotVar* pThis, CBotVar* &pVar)
 {
-	// ok si aucun paramètres !
+	// ok si aucun paramï¿½tres !
 	if ( pVar == NULL ) return CBotTypResult(0);
 
-	// paramètre de type numérique svp
+	// paramï¿½tre de type numï¿½rique svp
 	if ( pVar->GivType() > CBotTypDouble ) return CBotTypResult(5011);
 	pVar	= pVar->GivNext();
 
-	// il doit y avoir un second paramètre
+	// il doit y avoir un second paramï¿½tre
 	if ( pVar == NULL ) return 5028;
-	// également de type numérique
+	// ï¿½galement de type numï¿½rique
 	if ( pVar->GivType() > CBotTypDouble )return CBotTypResult(5011);
 	pVar	= pVar->GivNext();
 
-	// et pas plus de 2 paramètres svp
+	// et pas plus de 2 paramï¿½tres svp
 	if ( pVar != NULL ) return CBotTypResult(5026);
 
 	return CBotTypResult(0);		// cette fonction retourne void

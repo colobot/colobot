@@ -1,4 +1,18 @@
-// map.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -67,7 +81,7 @@ CMap::~CMap()
 }
 
 
-// Crée un nouveau bouton.
+// Crï¿½e un nouveau bouton.
 
 BOOL CMap::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -78,7 +92,7 @@ BOOL CMap::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Choix de l'offset, lorsqu'une image fixe est affichée.
+// Choix de l'offset, lorsqu'une image fixe est affichï¿½e.
 
 void CMap::SetOffset(float ox, float oy)
 {
@@ -94,14 +108,14 @@ void CMap::SetAngle(float angle)
 	m_angle = angle;
 }
 
-// Spécifie le mode spécial.
+// Spï¿½cifie le mode spï¿½cial.
 
 void CMap::SetMode(int mode)
 {
 	m_mode = mode;
 }
 
-// Spécifie le type de l'icône pour l'objet sélectionné.
+// Spï¿½cifie le type de l'icï¿½ne pour l'objet sï¿½lectionnï¿½.
 
 void CMap::SetToy(BOOL bToy)
 {
@@ -129,7 +143,7 @@ float CMap::RetZoom()
 
 // Choix d'un offset fixe.
 
-// Active ou désactive la carte.
+// Active ou dï¿½sactive la carte.
 
 void CMap::SetEnable(BOOL bEnable)
 {
@@ -158,7 +172,7 @@ void CMap::SetWaterColor(D3DCOLORVALUE color)
 }
 
 
-// Spécifie une image fixe à la place du dessin du relief.
+// Spï¿½cifie une image fixe ï¿½ la place du dessin du relief.
 
 void CMap::SetFixImage(char *filename)
 {
@@ -173,7 +187,7 @@ BOOL CMap::RetFixImage()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CMap::EventProcess(const Event &event)
 {
@@ -209,7 +223,7 @@ BOOL CMap::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Ajuste l'offset pour ne pas dépasser la carte.
+// Ajuste l'offset pour ne pas dï¿½passer la carte.
 
 FPOINT CMap::AdjustOffset(FPOINT offset)
 {
@@ -224,7 +238,7 @@ FPOINT CMap::AdjustOffset(FPOINT offset)
 	return offset;
 }
 
-// Indique l'objet survolé par la souris.
+// Indique l'objet survolï¿½ par la souris.
 
 void CMap::SetHilite(CObject* pObj)
 {
@@ -246,7 +260,7 @@ void CMap::SetHilite(CObject* pObj)
 	}
 }
 
-// Détecte un objet dans la carte.
+// Dï¿½tecte un objet dans la carte.
 
 CObject* CMap::DetectObject(FPOINT pos, BOOL &bInMap)
 {
@@ -286,7 +300,7 @@ CObject* CMap::DetectObject(FPOINT pos, BOOL &bInMap)
 	return m_map[best].object;
 }
 
-// Sélectionne un objet.
+// Sï¿½lectionne un objet.
 
 void CMap::SelectObject(FPOINT pos)
 {
@@ -342,7 +356,7 @@ void CMap::Draw()
 	}
 
 	i = MAPMAXOBJECT-1;
-	if ( m_map[i].bUsed )  // sélection :
+	if ( m_map[i].bUsed )  // sï¿½lection :
 	{
 		DrawFocus(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color);
 	}
@@ -360,7 +374,7 @@ void CMap::Draw()
 	}
 
 	i = MAPMAXOBJECT-1;
-	if ( m_map[i].bUsed && i != m_hiliteRank )  // sélection :
+	if ( m_map[i].bUsed && i != m_hiliteRank )  // sï¿½lection :
 	{
 		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, TRUE, FALSE);
 	}
@@ -388,25 +402,25 @@ FPOINT CMap::MapInter(FPOINT pos, float dir)
 	p1.y -= pos.y;
 
 	limit = m_mapPos.x+m_mapDim.x-pos.x;
-	if ( p1.x > limit )  // dépasse à droite ?
+	if ( p1.x > limit )  // dï¿½passe ï¿½ droite ?
 	{
 		p1.y = limit*p1.y/p1.x;
 		p1.x = limit;
 	}
 	limit = m_mapPos.y*0.75f+m_mapDim.y*0.75f-pos.y;
-	if ( p1.y > limit )  // dépasse en haut ?
+	if ( p1.y > limit )  // dï¿½passe en haut ?
 	{
 		p1.x = limit*p1.x/p1.y;
 		p1.y = limit;
 	}
 	limit = m_mapPos.x-pos.x;
-	if ( p1.x < limit )  // dépasse à gauche ?
+	if ( p1.x < limit )  // dï¿½passe ï¿½ gauche ?
 	{
 		p1.y = limit*p1.y/p1.x;
 		p1.x = limit;
 	}
 	limit = m_mapPos.y*0.75f-pos.y;
-	if ( p1.y < limit )  // dépasse en bas ?
+	if ( p1.y < limit )  // dï¿½passe en bas ?
 	{
 		p1.x = limit*p1.x/p1.y;
 		p1.y = limit;
@@ -417,7 +431,7 @@ FPOINT CMap::MapInter(FPOINT pos, float dir)
 	return p1;
 }
 
-// Dessine le champ de vision de l'objet sélectionné.
+// Dessine le champ de vision de l'objet sï¿½lectionnï¿½.
 
 void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 {
@@ -449,7 +463,7 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 
 	if ( aMin > aMax )
 	{
-		aMax += PI*2.0f;  // aMax toujours après aMin
+		aMax += PI*2.0f;  // aMax toujours aprï¿½s aMin
 	}
 
 	limit[0] = RotateAngle( 1.0f-rel.x,  1.0f-rel.y);  // sup/droite
@@ -466,7 +480,7 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 	}
 	if ( quart == 4 )  quart = -1;
 
-	uv1.x = 113.0f/256.0f;  // dégradé vert
+	uv1.x = 113.0f/256.0f;  // dï¿½gradï¿½ vert
 	uv1.y = 240.5f/256.0f;
 	uv2.x = 126.0f/256.0f;
 	uv2.y = 255.0f/256.0f;
@@ -770,7 +784,7 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
 	}
 }
 
-// Dessine l'icône d'un objet.
+// Dessine l'icï¿½ne d'un objet.
 
 void CMap::DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color,
 						  ObjectType type, BOOL bHilite)
@@ -804,7 +818,7 @@ void CMap::DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color,
 	uv1.y += dp;
 	uv2.x -= dp;
 	uv2.y -= dp;
-	DrawIcon(pos, dim, uv1, uv2);  // fond coloré
+	DrawIcon(pos, dim, uv1, uv2);  // fond colorï¿½
 
 	if ( bHilite )
 	{
@@ -874,11 +888,11 @@ void CMap::DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color,
 		uv1.y += dp;
 		uv2.x -= dp;
 		uv2.y -= dp;
-		DrawIcon(pos, dim, uv1, uv2);  // icône
+		DrawIcon(pos, dim, uv1, uv2);  // icï¿½ne
 	}
 }
 
-// Dessine l'objet survolé par la souris.
+// Dessine l'objet survolï¿½ par la souris.
 
 void CMap::DrawHilite(FPOINT pos)
 {
@@ -914,7 +928,7 @@ void CMap::DrawHilite(FPOINT pos)
 	DrawIcon(pos, dim, uv1, uv2);
 }
 
-// Dessine une icône triangulaire.
+// Dessine une icï¿½ne triangulaire.
 
 void CMap::DrawTriangle(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT uv1, FPOINT uv2)
 {
@@ -934,7 +948,7 @@ void CMap::DrawTriangle(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT uv1, FPOINT uv2)
 	m_engine->AddStatisticTriangle(1);
 }
 
-// Dessine une icône pentagonulaire (à 5 côtés, quoi !).
+// Dessine une icï¿½ne pentagonulaire (ï¿½ 5 cï¿½tï¿½s, quoi !).
 
 void CMap::DrawPenta(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4, FPOINT p5, FPOINT uv1, FPOINT uv2)
 {
@@ -1005,7 +1019,7 @@ void CMap::DrawVertex(FPOINT uv1, FPOINT uv2, float zoom)
 }
 
 
-// Met à jour le terrain dans la carte.
+// Met ï¿½ jour le terrain dans la carte.
 
 void CMap::UpdateTerrain()
 {
@@ -1060,11 +1074,11 @@ void CMap::UpdateTerrain()
 		}
 	}
 
-	m_engine->CopyImage();  // copie avec juste le terrain dessiné
+	m_engine->CopyImage();  // copie avec juste le terrain dessinï¿½
 	m_engine->CloseImage();
 }
 
-// Met à jour le terrain dans la carte.
+// Met ï¿½ jour le terrain dans la carte.
 
 void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 {
@@ -1120,7 +1134,7 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 		}
 	}
 
-	m_engine->CopyImage();  // copie avec juste le terrain dessiné
+	m_engine->CopyImage();  // copie avec juste le terrain dessinï¿½
 	m_engine->CloseImage();
 }
 
@@ -1132,7 +1146,7 @@ void CMap::FlushObject()
 	int		i;
 
 	m_totalFix  = 0;  // index objet fixes
-	m_totalMove = MAPMAXOBJECT-2;  // index véhicules mobiles
+	m_totalMove = MAPMAXOBJECT-2;  // index vï¿½hicules mobiles
 	m_bRadar = m_main->RetCheatRadar();  // pas de radar
 
 	for ( i=0 ; i<MAPMAXOBJECT ; i++ )
@@ -1141,7 +1155,7 @@ void CMap::FlushObject()
 	}
 }
 
-// Met à jour un objet dans la carte.
+// Met ï¿½ jour un objet dans la carte.
 
 void CMap::UpdateObject(CObject* pObj)
 {
@@ -1241,7 +1255,7 @@ void CMap::UpdateObject(CObject* pObj)
 		 type == OBJECT_MOBILEft ||
 		 type == OBJECT_MOBILEit ||
 		 type == OBJECT_MOBILEdr ||
-		 type == OBJECT_APOLLO2  )  // véhicule mobile ?
+		 type == OBJECT_APOLLO2  )  // vï¿½hicule mobile ?
 	{
 		color = MAPCOLOR_MOVE;
 	}

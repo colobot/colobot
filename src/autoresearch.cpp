@@ -1,4 +1,18 @@
-// autoresearch.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,7 +46,7 @@
 
 
 
-#define SEARCH_TIME		30.0f		// durée d'une recherche
+#define SEARCH_TIME		30.0f		// durï¿½e d'une recherche
 
 
 
@@ -62,7 +76,7 @@ CAutoResearch::~CAutoResearch()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoResearch::DeleteObject(BOOL bAll)
 {
@@ -93,7 +107,7 @@ void CAutoResearch::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoResearch::EventProcess(const Event &event)
 {
@@ -112,7 +126,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		if ( m_object->RetSelect() )  CreateInterface(TRUE);
 	}
 
-	if ( m_object->RetSelect() &&  // centre sélectionné ?
+	if ( m_object->RetSelect() &&  // centre sï¿½lectionnï¿½ ?
 		 (event.event == EVENT_OBJECT_RTANK   ||
 		  event.event == EVENT_OBJECT_RFLY    ||
 		  event.event == EVENT_OBJECT_RTHUMP  ||
@@ -177,7 +191,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -197,7 +211,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 
 	if ( m_phase == ALP_WAIT )
 	{
-		FireStopUpdate(m_progress, FALSE);  // éteint
+		FireStopUpdate(m_progress, FALSE);  // ï¿½teint
 		return TRUE;
 	}
 
@@ -237,7 +251,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		}
 		else
 		{
-			SetResearch(m_research);  // recherche effectuée
+			SetResearch(m_research);  // recherche effectuï¿½e
 			m_displayText->DisplayError(INFO_RESEARCH, m_object);
 
 			message = ERR_OK;
@@ -267,7 +281,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoResearch::RetError()
 {
@@ -301,7 +315,7 @@ Error CAutoResearch::RetError()
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoResearch::CreateInterface(BOOL bSelect)
 {
@@ -372,7 +386,7 @@ BOOL CAutoResearch::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met à jour l'état de tous les boutons de l'interface.
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface.
 
 void CAutoResearch::UpdateInterface()
 {
@@ -413,8 +427,8 @@ void CAutoResearch::UpdateInterface()
 	VisibleInterface(pw, EVENT_OBJECT_RATOMIC, !m_bBusy);
 }
 
-// Met à jour l'état de tous les boutons de l'interface,
-// suite au temps qui s'écoule ...
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface,
+// suite au temps qui s'ï¿½coule ...
 
 void CAutoResearch::UpdateInterface(float rTime)
 {
@@ -446,7 +460,7 @@ void CAutoResearch::UpdateInterface(float rTime)
 	}
 }
 
-// Indique les recherches déjà effectuées pour un bouton.
+// Indique les recherches dï¿½jï¿½ effectuï¿½es pour un bouton.
 
 void CAutoResearch::OkayButton(CWindow *pw, EventMsg event)
 {
@@ -459,7 +473,7 @@ void CAutoResearch::OkayButton(CWindow *pw, EventMsg event)
 }
 
 
-// Teste si une recherche a déjà été effectuée.
+// Teste si une recherche a dï¿½jï¿½ ï¿½tï¿½ effectuï¿½e.
 
 BOOL CAutoResearch::TestResearch(EventMsg event)
 {
@@ -475,7 +489,7 @@ BOOL CAutoResearch::TestResearch(EventMsg event)
 	return FALSE;
 }
 
-// Indique une recherche comme effectuée.
+// Indique une recherche comme effectuï¿½e.
 
 void CAutoResearch::SetResearch(EventMsg event)
 {
@@ -498,7 +512,7 @@ void CAutoResearch::SetResearch(EventMsg event)
 }
 
 
-// Met à jour les feux de stop.
+// Met ï¿½ jour les feux de stop.
 
 void CAutoResearch::FireStopUpdate(float progress, BOOL bLightOn)
 {
@@ -517,7 +531,7 @@ void CAutoResearch::FireStopUpdate(float progress, BOOL bLightOn)
 		 4.7f,	-8.2f,
 	};
 
-	if ( !bLightOn )  // éteint ?
+	if ( !bLightOn )  // ï¿½teint ?
 	{
 		for ( i=0 ; i<6 ; i++ )
 		{
@@ -563,7 +577,7 @@ void CAutoResearch::FireStopUpdate(float progress, BOOL bLightOn)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoResearch::Write(char *line)
 {
@@ -591,7 +605,7 @@ BOOL CAutoResearch::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoResearch::Read(char *line)
 {

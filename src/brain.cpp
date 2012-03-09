@@ -1,4 +1,18 @@
-// brain.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -135,7 +149,7 @@ CBrain::~CBrain()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CBrain::DeleteObject(BOOL bAll)
 {
@@ -156,7 +170,7 @@ void CBrain::DeleteObject(BOOL bAll)
 		}
 	}
 
-	if ( m_studio != 0 )  // édition en cours ?
+	if ( m_studio != 0 )  // ï¿½dition en cours ?
 	{
 		StopEditScript(TRUE);
 	}
@@ -174,7 +188,7 @@ void CBrain::SetMotion(CMotion* motion)
 }
 
 
-// Sauve tous les paramètres de l'objet.
+// Sauve tous les paramï¿½tres de l'objet.
 
 BOOL CBrain::Write(char *line)
 {
@@ -186,7 +200,7 @@ BOOL CBrain::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'objet.
+// Restitue tous les paramï¿½tres de l'objet.
 
 BOOL CBrain::Read(char *line)
 {
@@ -196,7 +210,7 @@ BOOL CBrain::Read(char *line)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CBrain::EventProcess(const Event &event)
 {
@@ -210,12 +224,12 @@ BOOL CBrain::EventProcess(const Event &event)
 
 	type = m_object->RetType();
 
-	if ( m_primaryTask != 0 )  // tâche en cours ?
+	if ( m_primaryTask != 0 )  // tï¿½che en cours ?
 	{
 		m_primaryTask->EventProcess(event);
 	}
 
-	if ( m_secondaryTask != 0 )  // tâche en cours ?
+	if ( m_secondaryTask != 0 )  // tï¿½che en cours ?
 	{
 		m_secondaryTask->EventProcess(event);
 	}
@@ -257,8 +271,8 @@ BOOL CBrain::EventProcess(const Event &event)
 		EventFrame(event);
 	}
 
-	if ( m_object->RetSelect() &&  // robot sélectionné ?
-		 m_studio != 0         )   // édition en cours ?
+	if ( m_object->RetSelect() &&  // robot sï¿½lectionnï¿½ ?
+		 m_studio != 0         )   // ï¿½dition en cours ?
 	{
 		m_studio->EventProcess(event);
 
@@ -295,16 +309,16 @@ BOOL CBrain::EventProcess(const Event &event)
 		return TRUE;
 	}
 
-	if ( !m_object->RetSelect() &&  // robot pas sélectionné ?
+	if ( !m_object->RetSelect() &&  // robot pas sï¿½lectionnï¿½ ?
 		 m_program == -1        &&
 		 m_primaryTask == 0     )
 	{
 		axeX = 0.0f;
 		axeY = 0.0f;
 		axeZ = 0.0f;
-		if ( m_object->RetBurn() )  // brûle ?
+		if ( m_object->RetBurn() )  // brï¿½le ?
 		{
-			if ( !m_bBurn )  // début ?
+			if ( !m_bBurn )  // dï¿½but ?
 			{
 				m_bBurn = TRUE;
 				m_burnTime = 0.0f;
@@ -317,7 +331,7 @@ BOOL CBrain::EventProcess(const Event &event)
 				  type == OBJECT_SPIDER ||
 				  type == OBJECT_WORM   ) )
 			{
-				axeY = 2.0f;  // zig-zag désordonné rapide
+				axeY = 2.0f;  // zig-zag dï¿½sordonnï¿½ rapide
 				if ( type == OBJECT_WORM )  axeY = 5.0f;
 				axeX = 0.5f+sinf(m_time* 1.0f)*0.5f+
 							sinf(m_time* 6.0f)*2.0f+
@@ -341,19 +355,19 @@ BOOL CBrain::EventProcess(const Event &event)
 		return TRUE;
 	}
 
-	if ( !m_object->RetSelect() )  // robot pas sélectionné ?
+	if ( !m_object->RetSelect() )  // robot pas sï¿½lectionnï¿½ ?
 	{
 		return TRUE;
 	}
 
-	if ( m_secondaryTask != 0 )  // tâche en cours ?
+	if ( m_secondaryTask != 0 )  // tï¿½che en cours ?
 	{
 		if ( action == EVENT_OBJECT_ENDSHIELD )
 		{
 			m_secondaryTask->StartTaskShield(TSM_DOWN, 0.0f);
 		}
 	}
-	if ( m_primaryTask != 0 ||  // tâche en cours ?
+	if ( m_primaryTask != 0 ||  // tï¿½che en cours ?
 		 m_program != -1    )
 	{
 		if ( action == EVENT_OBJECT_PROGRUN )
@@ -387,11 +401,11 @@ BOOL CBrain::EventProcess(const Event &event)
 	axeZ = event.axeZ;
 
 	if ( !m_main->RetTrainerPilot() &&
-		 m_object->RetTrainer()     )  // véhicule d'entraînement ?
+		 m_object->RetTrainer()     )  // vï¿½hicule d'entraï¿½nement ?
 	{
 		axeX = 0.0f;
 		axeY = 0.0f;
-		axeZ = 0.0f;  // télécommande impossible !
+		axeZ = 0.0f;  // tï¿½lï¿½commande impossible !
 	}
 
 	if ( m_buttonAxe == EVENT_OBJECT_LEFT    )  axeX = -1.0f;
@@ -413,7 +427,7 @@ BOOL CBrain::EventProcess(const Event &event)
 		axeZ = -1.0f;  // tombe
 	}
 
-	axeX += m_camera->RetMotorTurn();  // force additionnelle selon caméra
+	axeX += m_camera->RetMotorTurn();  // force additionnelle selon camï¿½ra
 	if ( axeX >  1.0f )  axeX =  1.0f;
 	if ( axeX < -1.0f )  axeX = -1.0f;
 
@@ -740,7 +754,7 @@ BOOL CBrain::EventProcess(const Event &event)
 }
 
 
-// Fait évoluer le cerveau selon le temps écoulé.
+// Fait ï¿½voluer le cerveau selon le temps ï¿½coulï¿½.
 
 BOOL CBrain::EventFrame(const Event &event)
 {
@@ -752,7 +766,7 @@ BOOL CBrain::EventFrame(const Event &event)
 		m_sound->Position(m_soundChannelAlarm, m_object->RetPosition(0));
 	}
 
-	if ( m_studio != 0 )  // édition en cours ?
+	if ( m_studio != 0 )  // ï¿½dition en cours ?
 	{
 		m_studio->EventProcess(event);
 	}
@@ -810,21 +824,21 @@ void CBrain::StopProgram()
 	m_object->CreateSelectParticule();
 }
 
-// Stoppe la tâche en cours.
+// Stoppe la tï¿½che en cours.
 
 void CBrain::StopTask()
 {
 	if ( m_primaryTask != 0 )
 	{
 		m_primaryTask->Abort();
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 }
 
 
 // Introduit un virus dans un programme.
-// Retourne TRUE s'il a été introduit.
+// Retourne TRUE s'il a ï¿½tï¿½ introduit.
 
 BOOL CBrain::IntroduceVirus()
 {
@@ -845,16 +859,16 @@ BOOL CBrain::IntroduceVirus()
 	return FALSE;
 }
 
-// ActiveVirus indique que l'objet est contaminé. Contrairement aux
-// chtites lettres qui disparaissent automatiquement après un certain
-// temps, ActiveVirus ne disparaît qu'après avoir édité le programme
-// (même si le virus n'est pas corrigé).
+// ActiveVirus indique que l'objet est contaminï¿½. Contrairement aux
+// chtites lettres qui disparaissent automatiquement aprï¿½s un certain
+// temps, ActiveVirus ne disparaï¿½t qu'aprï¿½s avoir ï¿½ditï¿½ le programme
+// (mï¿½me si le virus n'est pas corrigï¿½).
 
 void CBrain::SetActiveVirus(BOOL bActive)
 {
 	m_bActiveVirus = bActive;
 
-	if ( !m_bActiveVirus )  // virus désactivé ?
+	if ( !m_bActiveVirus )  // virus dï¿½sactivï¿½ ?
 	{
 		m_object->SetVirusMode(FALSE);  // chtites lettres aussi
 	}
@@ -866,7 +880,7 @@ BOOL CBrain::RetActiveVirus()
 }
 
 
-// Début de l'édition d'un programme.
+// Dï¿½but de l'ï¿½dition d'un programme.
 
 void CBrain::StartEditScript(int rank, char* name)
 {
@@ -881,7 +895,7 @@ void CBrain::StartEditScript(int rank, char* name)
 	m_studio->StartEditScript(m_script[rank], name, rank);
 }
 
-// Fin de l'édition d'un programme.
+// Fin de l'ï¿½dition d'un programme.
 
 void CBrain::StopEditScript(BOOL bCancel)
 {
@@ -905,7 +919,7 @@ Error CBrain::StartTaskTake()
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -923,7 +937,7 @@ Error CBrain::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -933,7 +947,7 @@ Error CBrain::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 	return err;
 }
 
-// Met ou enlève un drapeau.
+// Met ou enlï¿½ve un drapeau.
 
 Error CBrain::StartTaskFlag(TaskFlagOrder order, int rank)
 {
@@ -941,7 +955,7 @@ Error CBrain::StartTaskFlag(TaskFlagOrder order, int rank)
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -959,7 +973,7 @@ Error CBrain::StartTaskBuild(ObjectType type)
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -977,7 +991,7 @@ Error CBrain::StartTaskSearch()
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -995,7 +1009,7 @@ Error CBrain::StartTaskTerraform()
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -1017,7 +1031,7 @@ Error CBrain::StartTaskPen(BOOL bDown, int color)
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -1027,7 +1041,7 @@ Error CBrain::StartTaskPen(BOOL bDown, int color)
 	return err;
 }
 
-// Récupère une ruine.
+// Rï¿½cupï¿½re une ruine.
 
 Error CBrain::StartTaskRecover()
 {
@@ -1035,7 +1049,7 @@ Error CBrain::StartTaskRecover()
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -1045,7 +1059,7 @@ Error CBrain::StartTaskRecover()
 	return err;
 }
 
-// Déploie le bouclier.
+// Dï¿½ploie le bouclier.
 
 Error CBrain::StartTaskShield(TaskShieldMode mode)
 {
@@ -1053,7 +1067,7 @@ Error CBrain::StartTaskShield(TaskShieldMode mode)
 
 	if ( m_secondaryTask != 0 )
 	{
-		delete m_secondaryTask;  // stoppe la tâche en cours
+		delete m_secondaryTask;  // stoppe la tï¿½che en cours
 		m_secondaryTask = 0;
 	}
 
@@ -1071,7 +1085,7 @@ Error CBrain::StartTaskFire(float delay)
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -1089,7 +1103,7 @@ Error CBrain::StartTaskFireAnt(D3DVECTOR impact)
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -1107,7 +1121,7 @@ Error CBrain::StartTaskGunGoal(float dirV, float dirH)
 
 	if ( m_secondaryTask != 0 )
 	{
-		delete m_secondaryTask;  // stoppe la tâche en cours
+		delete m_secondaryTask;  // stoppe la tï¿½che en cours
 		m_secondaryTask = 0;
 	}
 
@@ -1125,7 +1139,7 @@ Error CBrain::StartTaskReset(D3DVECTOR goal, D3DVECTOR angle)
 
 	if ( m_primaryTask != 0 )
 	{
-		delete m_primaryTask;  // stoppe la tâche en cours
+		delete m_primaryTask;  // stoppe la tï¿½che en cours
 		m_primaryTask = 0;
 	}
 
@@ -1135,16 +1149,16 @@ Error CBrain::StartTaskReset(D3DVECTOR goal, D3DVECTOR angle)
 	return err;
 }
 
-// Termine la tâche lorsque le moment est venu.
+// Termine la tï¿½che lorsque le moment est venu.
 
 Error CBrain::EndedTask()
 {
 	Error	err;
 
-	if ( m_secondaryTask != 0 )  // tâche en cours ?
+	if ( m_secondaryTask != 0 )  // tï¿½che en cours ?
 	{
 		err = m_secondaryTask->IsEnded();
-		if ( err != ERR_CONTINUE )  // tâche terminée ?
+		if ( err != ERR_CONTINUE )  // tï¿½che terminï¿½e ?
 		{
 			delete m_secondaryTask;
 			m_secondaryTask = 0;
@@ -1152,10 +1166,10 @@ Error CBrain::EndedTask()
 		}
 	}
 
-	if ( m_primaryTask != 0 )  // tâche en cours ?
+	if ( m_primaryTask != 0 )  // tï¿½che en cours ?
 	{
 		err = m_primaryTask->IsEnded();
-		if ( err != ERR_CONTINUE )  // tâche terminée ?
+		if ( err != ERR_CONTINUE )  // tï¿½che terminï¿½e ?
 		{
 			delete m_primaryTask;
 			m_primaryTask = 0;
@@ -1208,7 +1222,7 @@ void CBrain::ColorFlag(int color)
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CBrain::CreateInterface(BOOL bSelect)
 {
@@ -1226,8 +1240,8 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
 	if ( pw != 0 )
 	{
-		pw->Flush();  // détruit les boutons de la fenêtre
-		m_interface->DeleteControl(EVENT_WINDOW0);  // détruit la fenêtre
+		pw->Flush();  // dï¿½truit les boutons de la fenï¿½tre
+		m_interface->DeleteControl(EVENT_WINDOW0);  // dï¿½truit la fenï¿½tre
 	}
 	m_defaultEnter = EVENT_NULL;
 
@@ -1290,7 +1304,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		 type == OBJECT_ANT      ||
 		 type == OBJECT_SPIDER   ||
 		 type == OBJECT_BEE      ||
-		 type == OBJECT_WORM     )  // véhicule ?
+		 type == OBJECT_WORM     )  // vï¿½hicule ?
 	{
 		ddim.x = dim.x*5.1f;
 		ddim.y = dim.y*2.0f;
@@ -1525,7 +1539,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		pw->CreateButton(pos, dim, 41, EVENT_OBJECT_LIMIT);
 	}
 
-	if ( type == OBJECT_MOBILErr &&  // récupérateur ?
+	if ( type == OBJECT_MOBILErr &&  // rï¿½cupï¿½rateur ?
 		 !m_object->RetTrainer() )
 	{
 		pos.x = ox+sx*7.7f;
@@ -1756,7 +1770,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 #if _TEEN
 	pw->CreateButton(pos, dim, 9, EVENT_OBJECT_RESET);
 #else
-	if ( m_object->RetTrainer() )  // entraînement ?
+	if ( m_object->RetTrainer() )  // entraï¿½nement ?
 	{
 		pw->CreateButton(pos, dim, 9, EVENT_OBJECT_RESET);
 	}
@@ -1790,7 +1804,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		 type == OBJECT_MOBILEft ||
 		 type == OBJECT_MOBILEtt ||
 		 type == OBJECT_MOBILEwt ||
-		 type == OBJECT_MOBILEit )  // véhicule ?
+		 type == OBJECT_MOBILEit )  // vï¿½hicule ?
 	{
 		pos.x = ox+sx*14.5f;
 		pos.y = oy+sy*0;
@@ -1826,7 +1840,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		 type == OBJECT_MOBILEft ||
 		 type == OBJECT_MOBILEtt ||
 		 type == OBJECT_MOBILEwt ||
-		 type == OBJECT_MOBILEit )  // véhicule ?
+		 type == OBJECT_MOBILEit )  // vï¿½hicule ?
 	{
 		pos.x = ox+sx*14.9f;
 		pos.y = oy+sy*0;
@@ -1907,8 +1921,8 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met à jour l'état de tous les boutons de l'interface,
-// suite au temps qui s'écoule ...
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface,
+// suite au temps qui s'ï¿½coule ...
 
 void CBrain::UpdateInterface(float rTime)
 {
@@ -2111,7 +2125,7 @@ void CBrain::UpdateInterface(float rTime)
 	}
 }
 
-// Met à jour l'état de tous les boutons de l'interface.
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface.
 
 void CBrain::UpdateInterface()
 {
@@ -2235,7 +2249,7 @@ void CBrain::UpdateInterface()
 	}
 	EnableInterface(pw, EVENT_OBJECT_GASUP,   bFly);
 	EnableInterface(pw, EVENT_OBJECT_GASDOWN, bFly);
-	if ( m_object->RetTrainer() )  // entraînement ?
+	if ( m_object->RetTrainer() )  // entraï¿½nement ?
 	{
 		DeadInterface(pw, EVENT_OBJECT_GASUP,   FALSE);
 		DeadInterface(pw, EVENT_OBJECT_GASDOWN, FALSE);
@@ -2279,7 +2293,7 @@ void CBrain::UpdateInterface()
 		 type == OBJECT_ANT      ||
 		 type == OBJECT_SPIDER   ||
 		 type == OBJECT_BEE      ||
-		 type == OBJECT_WORM     )  // véhicule ?
+		 type == OBJECT_WORM     )  // vï¿½hicule ?
 	{
 		bRun = FALSE;
 		if ( m_script[m_selScript] != 0 )
@@ -2306,7 +2320,7 @@ void CBrain::UpdateInterface()
 //?			pb->SetIcon(m_program==-1?22:40);  // edit/debug
 //?		}
 
-		BlinkScript(m_program != -1);  // clignotte si script en exécution
+		BlinkScript(m_program != -1);  // clignotte si script en exï¿½cution
 	}
 
 	if ( type == OBJECT_MOBILEfa ||
@@ -2422,7 +2436,7 @@ void CBrain::UpdateInterface()
 #endif
 }
 
-// Met à jour la liste des programmes.
+// Met ï¿½ jour la liste des programmes.
 
 void CBrain::UpdateScript(CWindow *pw)
 {
@@ -2470,7 +2484,7 @@ void CBrain::UpdateScript(CWindow *pw)
 	pl->ShowSelect(TRUE);
 }
 
-// Retourne le rang du script sélectionné.
+// Retourne le rang du script sï¿½lectionnï¿½.
 
 int CBrain::RetSelScript()
 {
@@ -2486,14 +2500,14 @@ int CBrain::RetSelScript()
 	return pl->RetSelect();
 }
 
-// Fait clignotter le programme en exécution.
+// Fait clignotter le programme en exï¿½cution.
 
 void CBrain::BlinkScript(BOOL bEnable)
 {
 	CWindow*	pw;
 	CList*		pl;
 
-	if ( !m_object->RetSelect() )  return;  // robot pas sélectionné ?
+	if ( !m_object->RetSelect() )  return;  // robot pas sï¿½lectionnï¿½ ?
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
 	if ( pw == 0 )  return;
@@ -2504,7 +2518,7 @@ void CBrain::BlinkScript(BOOL bEnable)
 	pl->SetBlink(bEnable);
 }
 
-// Modifie l'état d'un bouton de l'interface.
+// Modifie l'ï¿½tat d'un bouton de l'interface.
 
 void CBrain::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -2516,7 +2530,7 @@ void CBrain::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_CHECK, bState);
 }
 
-// Modifie l'état d'un bouton de l'interface.
+// Modifie l'ï¿½tat d'un bouton de l'interface.
 
 void CBrain::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -2528,7 +2542,7 @@ void CBrain::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_ENABLE, bState);
 }
 
-// Modifie l'état d'un bouton de l'interface.
+// Modifie l'ï¿½tat d'un bouton de l'interface.
 
 void CBrain::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -2540,7 +2554,7 @@ void CBrain::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_DEAD, !bState);
 }
 
-// Modifie l'état d'entrée par défaut d'un bouton de l'onterface.
+// Modifie l'ï¿½tat d'entrï¿½e par dï¿½faut d'un bouton de l'onterface.
 
 void CBrain::DefaultEnter(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -2561,14 +2575,14 @@ void CBrain::DefaultEnter(CWindow *pw, EventMsg event, BOOL bState)
 }
 
 
-// Indique si l'objet est occupé dans une tâche.
+// Indique si l'objet est occupï¿½ dans une tï¿½che.
 
 BOOL CBrain::IsBusy()
 {
 	return (m_primaryTask != 0);
 }
 
-// Gestion de l'activité d'un objet.
+// Gestion de l'activitï¿½ d'un objet.
 
 void CBrain::SetActivity(BOOL bMode)
 {
@@ -2580,7 +2594,7 @@ BOOL CBrain::RetActivity()
 	return m_bActivity;
 }
 
-// Indique si un programme est en cours d'exécution.
+// Indique si un programme est en cours d'exï¿½cution.
 
 BOOL CBrain::IsProgram()
 {
@@ -2594,7 +2608,7 @@ BOOL CBrain::ProgramExist(int rank)
 	return ( m_script[rank] != 0 );
 }
 
-// Démarre un programme donné.
+// Dï¿½marre un programme donnï¿½.
 
 void CBrain::RunProgram(int rank)
 {
@@ -2603,7 +2617,7 @@ void CBrain::RunProgram(int rank)
 	if ( m_script[rank] != 0 &&
 		 m_script[rank]->Run() )
 	{
-		m_program = rank;  // démarre nouveau programme
+		m_program = rank;  // dï¿½marre nouveau programme
 		BlinkScript(TRUE);  // clignotte
 		m_object->CreateSelectParticule();
 		m_main->UpdateShortcuts();
@@ -2632,7 +2646,7 @@ int CBrain::RetProgram()
 }
 
 
-// Gestion du nom des scripts à charger.
+// Gestion du nom des scripts ï¿½ charger.
 
 void CBrain::SetScriptRun(int rank)
 {
@@ -2666,7 +2680,7 @@ char* CBrain::RetSoluceName()
 
 
 // Charge un script solution, dans le premier script libre.
-// S'il existe déjà un script identique, rien n'est chargé.
+// S'il existe dï¿½jï¿½ un script identique, rien n'est chargï¿½.
 
 BOOL CBrain::ReadSoluce(char* filename)
 {
@@ -2681,7 +2695,7 @@ BOOL CBrain::ReadSoluce(char* filename)
 	{
 		if ( i == rank || m_script[i] == 0 )  continue;
 
-		if ( m_script[i]->Compare(m_script[rank]) )  // déjà un même ?
+		if ( m_script[i]->Compare(m_script[rank]) )  // dï¿½jï¿½ un mï¿½me ?
 		{
 			delete m_script[rank];
 			m_script[rank] = 0;
@@ -2709,7 +2723,7 @@ BOOL CBrain::ReadProgram(int rank, char* filename)
 	return FALSE;
 }
 
-// Indique si un programme est correctement compilé.
+// Indique si un programme est correctement compilï¿½.
 
 BOOL CBrain::RetCompile(int rank)
 {
@@ -2735,7 +2749,7 @@ BOOL CBrain::WriteProgram(int rank, char* filename)
 }
 
 
-// Charge un stack de script en exécution avec un fichier.
+// Charge un stack de script en exï¿½cution avec un fichier.
 
 BOOL CBrain::ReadStack(FILE *file)
 {
@@ -2747,7 +2761,7 @@ BOOL CBrain::ReadStack(FILE *file)
 		fRead(&op, sizeof(short), 1, file);  // program rank
 		if ( op >= 0 && op < BRAINMAXSCRIPT )
 		{
-			m_program = op;  // redémarre programme
+			m_program = op;  // redï¿½marre programme
 			m_selScript = op;
 			BlinkScript(TRUE);  // clignotte
 
@@ -2762,7 +2776,7 @@ BOOL CBrain::ReadStack(FILE *file)
 	return TRUE;
 }
 
-// Sauve le stack du script en exécution dans un fichier.
+// Sauve le stack du script en exï¿½cution dans un fichier.
 
 BOOL CBrain::WriteStack(FILE *file)
 {
@@ -2787,7 +2801,7 @@ BOOL CBrain::WriteStack(FILE *file)
 
 
 
-// Début de l'enregistrement du dessin.
+// Dï¿½but de l'enregistrement du dessin.
 
 void CBrain::TraceRecordStart()
 {
@@ -2796,11 +2810,11 @@ void CBrain::TraceRecordStart()
 	m_tracePos = m_object->RetPosition(0);
 	m_traceAngle = m_object->RetAngleY(0);
 
-	if ( m_object->RetTraceDown() )  // crayon baissé ?
+	if ( m_object->RetTraceDown() )  // crayon baissï¿½ ?
 	{
 		m_traceColor = m_object->RetTraceColor();
 	}
-	else	// crayon levé ?
+	else	// crayon levï¿½ ?
 	{
 		m_traceColor = -1;
 	}
@@ -2826,11 +2840,11 @@ void CBrain::TraceRecordFrame()
 	speed = m_physics->RetCirMotionY(MO_REASPEED);
 	if ( speed != 0.0f )  oper = TO_TURN;
 
-	if ( m_object->RetTraceDown() )  // crayon baissé ?
+	if ( m_object->RetTraceDown() )  // crayon baissï¿½ ?
 	{
 		color = m_object->RetTraceColor();
 	}
-	else	// crayon levé ?
+	else	// crayon levï¿½ ?
 	{
 		color = -1;
 	}
@@ -2863,7 +2877,7 @@ void CBrain::TraceRecordFrame()
 	}
 }
 
-// Fin de l'enregistrement du dessin. Génère le programme CBOT.
+// Fin de l'enregistrement du dessin. Gï¿½nï¿½re le programme CBOT.
 
 void CBrain::TraceRecordStop()
 {
@@ -2937,7 +2951,7 @@ BOOL CBrain::TraceRecordOper(TraceOper oper, float param)
 	return TRUE;
 }
 
-// Génère une instruction CBOT.
+// Gï¿½nï¿½re une instruction CBOT.
 
 BOOL CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
 {

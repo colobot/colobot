@@ -1,4 +1,18 @@
-// script.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _SCRIPT_H_
 #define	_SCRIPT_H_
@@ -80,10 +94,10 @@ public:
 	int				m_ipf;			// nb d'instructions / seconde
 	int				m_errMode;		// que faire en cas d'erreur
 	int				m_len;			// longueur du script (sans le <0>)
-	char*			m_script;		// script terminé par <0>
-	BOOL			m_bRun;			// programme en cours d'exécution ?
+	char*			m_script;		// script terminï¿½ par <0>
+	BOOL			m_bRun;			// programme en cours d'exï¿½cution ?
 	BOOL			m_bStepMode;	// step by step
-	BOOL			m_bContinue;	// fonction externe à continuer
+	BOOL			m_bContinue;	// fonction externe ï¿½ continuer
 	BOOL			m_bCompile;		// compilation ok ?
 	char			m_title[50];	// titre du script
 	char			m_filename[50];	// nom du fichier

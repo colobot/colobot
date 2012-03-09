@@ -1,4 +1,18 @@
-// taskmanager.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -83,7 +97,7 @@ Error CTaskManager::StartTaskTurn(float angle)
 	return ((CTaskTurn*)m_task)->Start(angle);
 }
 
-// Atteint une position donnée.
+// Atteint une position donnï¿½e.
 
 Error CTaskManager::StartTaskGoto(D3DVECTOR pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
@@ -107,7 +121,7 @@ Error CTaskManager::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 	return ((CTaskManip*)m_task)->Start(order, arm);
 }
 
-// Met ou enlève un drapeau.
+// Met ou enlï¿½ve un drapeau.
 
 Error CTaskManager::StartTaskFlag(TaskFlagOrder order, int rank)
 {
@@ -155,7 +169,7 @@ Error CTaskManager::StartTaskPen(BOOL bDown, int color)
 	return ((CTaskPen*)m_task)->Start(bDown, color);
 }
 
-// Récupère une ruine.
+// Rï¿½cupï¿½re une ruine.
 
 Error CTaskManager::StartTaskRecover()
 {
@@ -163,7 +177,7 @@ Error CTaskManager::StartTaskRecover()
 	return ((CTaskRecover*)m_task)->Start();
 }
 
-// Déploie le bouclier.
+// Dï¿½ploie le bouclier.
 
 Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 {
@@ -208,7 +222,7 @@ Error CTaskManager::StartTaskGunGoal(float dirV, float dirH)
 	return ((CTaskGunGoal*)m_task)->Start(dirV, dirH);
 }
 
-// Suicide de l'araignée.
+// Suicide de l'araignï¿½e.
 
 Error CTaskManager::StartTaskSpiderExplo()
 {
@@ -228,7 +242,7 @@ Error CTaskManager::StartTaskReset(D3DVECTOR goal, D3DVECTOR angle)
 
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskManager::EventProcess(const Event &event)
 {
@@ -237,7 +251,7 @@ BOOL CTaskManager::EventProcess(const Event &event)
 }
 
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskManager::IsEnded()
 {
@@ -255,8 +269,8 @@ BOOL CTaskManager::IsBusy()
 }
 
 
-// Indique s'il est possible de piloter le robot pendant l'exécution
-// de la tâche en cours.
+// Indique s'il est possible de piloter le robot pendant l'exï¿½cution
+// de la tï¿½che en cours.
 
 BOOL CTaskManager::IsPilot()
 {

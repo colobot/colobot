@@ -1,4 +1,18 @@
-// autoflag.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -51,7 +65,7 @@ CAutoFlag::~CAutoFlag()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoFlag::DeleteObject(BOOL bAll)
 {
@@ -78,7 +92,7 @@ void CAutoFlag::Init()
 }
 
 
-// Début d'une action (1 = secoue).
+// Dï¿½but d'une action (1 = secoue).
 
 void CAutoFlag::Start(int param)
 {
@@ -90,7 +104,7 @@ void CAutoFlag::Start(int param)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoFlag::EventProcess(const Event &event)
 {
@@ -154,7 +168,7 @@ BOOL CAutoFlag::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoFlag::RetError()
 {

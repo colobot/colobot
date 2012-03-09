@@ -1,4 +1,18 @@
-// motion.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _MOTION_H_
 #define	_MOTION_H_
@@ -66,7 +80,7 @@ protected:
 	float			m_actionTime;
 	float			m_progress;
 
-	D3DVECTOR		m_linVibration;		// vibration linéaire
+	D3DVECTOR		m_linVibration;		// vibration linï¿½aire
 	D3DVECTOR		m_cirVibration;		// vibration circulaire
 	D3DVECTOR		m_inclinaison;		// inclinaison
 };

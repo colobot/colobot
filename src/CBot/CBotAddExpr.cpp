@@ -1,6 +1,18 @@
-///////////////////////////////////////////////////
-// expression du genre Opérande1 + Opérande2
-//					   Opérande1 - Opérande2
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #include "CBot.h"
 
@@ -26,9 +38,9 @@ CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
 {
 	CBotStack* pStk = pStack->TokenStack();					// un bout de pile svp
 
-	// cherche des instructions qui peuvent convenir à gauche de l'opération + ou -
+	// cherche des instructions qui peuvent convenir ï¿½ gauche de l'opï¿½ration + ou -
 
-	CBotInstr*	left = CBotMulExpr::Compile( p, pStk );		// expression A * B à gauche
+	CBotInstr*	left = CBotMulExpr::Compile( p, pStk );		// expression A * B ï¿½ gauche
 	if (left == NULL) return pStack->Return(NULL, pStk);	// si erreur, la transmet
 
 	// est-ce qu'on a le token + ou - ensuite ?
@@ -36,80 +48,80 @@ CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
 	if ( p->GetType() == ID_ADD ||
 		 p->GetType() == ID_SUB)							// plus ou moins
 	{
-		CBotAddExpr* inst = new CBotAddExpr();				// élément pour opération
-		inst->SetToken(p);									// mémorise l'opération
+		CBotAddExpr* inst = new CBotAddExpr();				// ï¿½lï¿½ment pour opï¿½ration
+		inst->SetToken(p);									// mï¿½morise l'opï¿½ration
 
 		int			 type1, type2;
-		type1 = pStack->GetType();							// de quel type le premier opérande ?
+		type1 = pStack->GetType();							// de quel type le premier opï¿½rande ?
 
-		p = p->Next();										// saute le token de l'opération 
+		p = p->Next();										// saute le token de l'opï¿½ration 
 
-		// cherche des instructions qui peuvent convenir à droite
+		// cherche des instructions qui peuvent convenir ï¿½ droite
 
-		if ( NULL != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )	// expression (...) à droite
+		if ( NULL != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )	// expression (...) ï¿½ droite
 		{
-			// il y a un second opérande acceptable
+			// il y a un second opï¿½rande acceptable
 
-			type2 = pStack->GetType();						// de quel type le résultat ?
+			type2 = pStack->GetType();						// de quel type le rï¿½sultat ?
 
-			if ( type1 == type2 )							// les résultats sont-ils compatibles
+			if ( type1 == type2 )							// les rï¿½sultats sont-ils compatibles
 			{
-				// si ok, enregistre l'opérande dans l'objet
+				// si ok, enregistre l'opï¿½rande dans l'objet
 				inst->m_leftop = left;
-				// et rend l'object à qui l'a demandé
+				// et rend l'object ï¿½ qui l'a demandï¿½
 				return pStack->Return(inst, pStk);
 			}
 		}
 
-		// en cas d'erreur, libère les éléments
+		// en cas d'erreur, libï¿½re les ï¿½lï¿½ments
 		delete left;
 		delete inst;
 		// et transmet l'erreur qui se trouve sur la pile
 		return pStack->Return(NULL, pStk);
 	}
 
-	// si on n'a pas affaire à une opération + ou -
-	// rend à qui l'a demandé, l'opérande (de gauche) trouvé
-	// à la place de l'objet "addition"
+	// si on n'a pas affaire ï¿½ une opï¿½ration + ou -
+	// rend ï¿½ qui l'a demandï¿½, l'opï¿½rande (de gauche) trouvï¿½
+	// ï¿½ la place de l'objet "addition"
 	return pStack->Return(left, pStk);
 }
 
 
 
 
-// fait l'opération d'addition ou de soustraction
+// fait l'opï¿½ration d'addition ou de soustraction
 
 BOOL CBotAddExpr::Execute(CBotStack* &pStack)
 {
-	CBotStack* pStk1 = pStack->AddStack(this);	// ajoute un élément à la pile
+	CBotStack* pStk1 = pStack->AddStack(this);	// ajoute un ï¿½lï¿½ment ï¿½ la pile
 												// ou le retrouve en cas de reprise
 //	if ( pSk1 == EOX ) return TRUE;
 
 
-	// selon la reprise, on peut être dans l'un des 2 états
+	// selon la reprise, on peut ï¿½tre dans l'un des 2 ï¿½tats
 
-	if ( pStk1->GetState() == 0 &&				// 1er état, évalue l'opérande de gauche
+	if ( pStk1->GetState() == 0 &&				// 1er ï¿½tat, ï¿½value l'opï¿½rande de gauche
 		!m_leftop->Execute(pStk1) ) return FALSE; // interrompu ici ?
 
-	// passe à l'étape suivante
-	pStk1->SetState(1);							// prêt pour la suite
+	// passe ï¿½ l'ï¿½tape suivante
+	pStk1->SetState(1);							// prï¿½t pour la suite
 
-	// demande un peu plus de stack pour ne pas toucher le résultat de gauche
+	// demande un peu plus de stack pour ne pas toucher le rï¿½sultat de gauche
 	// qui se trouve sur la pile, justement.
 
-	CBotStack* pStk2 = pStk1->AddStack();		// ajoute un élément à la pile
+	CBotStack* pStk2 = pStk1->AddStack();		// ajoute un ï¿½lï¿½ment ï¿½ la pile
 												// ou le retrouve en cas de reprise
 
-	// 2e état, évalue l'opérande de droite
+	// 2e ï¿½tat, ï¿½value l'opï¿½rande de droite
 	if ( !m_rightop->Execute(pStk2) ) return FALSE; // interrompu ici ?
 
-	int		type1 = pStk1->GetType();			// de quels types les résultats ?
+	int		type1 = pStk1->GetType();			// de quels types les rï¿½sultats ?
 	int		type2 = pStk2->GetType();
 
-	// crée une variable temporaire pour y mettre le résultat
+	// crï¿½e une variable temporaire pour y mettre le rï¿½sultat
 	CBotVar*	result = new CBotVar( NULL, MAX(type1, type2));
 
-	// fait l'opération selon la demande
+	// fait l'opï¿½ration selon la demande
 	switch (GetTokenType())
 	{
 	case ID_ADD:
@@ -119,10 +131,10 @@ BOOL CBotAddExpr::Execute(CBotStack* &pStack)
 		result->Sub(pStk1->GetVar(), pStk2->GetVar());		// soustrait
 		break;
 	}
-	pStk2->SetVar(result);						// met le résultat sur la pile
+	pStk2->SetVar(result);						// met le rï¿½sultat sur la pile
 
-	pStk1->Return(pStk2);						// libère la pile
-	return pStack->Return(pStk1);				// transmet le résultat
+	pStk1->Return(pStk2);						// libï¿½re la pile
+	return pStack->Return(pStk1);				// transmet le rï¿½sultat
 }
 
 

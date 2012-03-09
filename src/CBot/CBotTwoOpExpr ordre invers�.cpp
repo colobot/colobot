@@ -1,6 +1,18 @@
-///////////////////////////////////////////////////
-// expression du genre Opérande1 + Opérande2
-//					   Opérande1 > Opérande2
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #include "CBot.h"
 
@@ -19,14 +31,14 @@ CBotTwoOpExpr::~CBotTwoOpExpr()
 	delete	m_rightop;
 }
 
-// type d'opérandes acceptés par les opérations
+// type d'opï¿½randes acceptï¿½s par les opï¿½rations
 #define		ENTIER		((1<<CBotTypByte)|(1<<CBotTypShort)|(1<<CBotTypChar)|(1<<CBotTypInt)|(1<<CBotTypLong))
 #define		FLOTANT		((1<<CBotTypFloat)|(1<<CBotTypDouble))
 #define		BOOLEEN		(1<<CBotTypBoolean)
 #define		CHAINE		(1<<CBotTypString)
 #define		CLASSE		(1<<CBotTypClass)
 
-// liste des opérations (précéance)
+// liste des opï¿½rations (prï¿½cï¿½ance)
 static int	ListOp[] = 
 {
 	BOOLEEN,				ID_LOG_OR, 0,
@@ -82,40 +94,40 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
 	CBotCStack* pStk = pStack->TokenStack();					// un bout de pile svp
 
-	// cherche des instructions qui peuvent convenir à gauche de l'opération
-	CBotInstr*	left = CBotParExpr::Compile( p, pStk ) ;		// expression (...) à gauche
+	// cherche des instructions qui peuvent convenir ï¿½ gauche de l'opï¿½ration
+	CBotInstr*	left = CBotParExpr::Compile( p, pStk ) ;		// expression (...) ï¿½ gauche
 
 	if (left == NULL) return pStack->Return(NULL, pStk);		// si erreur, la transmet
 
 
 	CBotToken*	pp = p;
-	int	TypeOp = pp->GetType();									// type d'opération
-	p = p->Next();												// saute le token de l'opération 
+	int	TypeOp = pp->GetType();									// type d'opï¿½ration
+	p = p->Next();												// saute le token de l'opï¿½ration 
 
-	// cherche des instructions qui peuvent convenir à droite
+	// cherche des instructions qui peuvent convenir ï¿½ droite
 
 	CBotInstr*	right = (*pOp == 0) ?
-						CBotParExpr::Compile( p, pStk ) :		// expression (...) à droite
-						CBotTwoOpExpr::Compile( p, pStk, pOp );	// expression A op B à droite
+						CBotParExpr::Compile( p, pStk ) :		// expression (...) ï¿½ droite
+						CBotTwoOpExpr::Compile( p, pStk, pOp );	// expression A op B ï¿½ droite
 
-	if (right == NULL) 	return pStack->Return(left, pStk);		// pas d'opérande à droite ?
+	if (right == NULL) 	return pStack->Return(left, pStk);		// pas d'opï¿½rande ï¿½ droite ?
 
-	// est-ce qu'on a l'opération prévue entre les deux ?
+	// est-ce qu'on a l'opï¿½ration prï¿½vue entre les deux ?
 	if ( IsInList( TypeOp, pOperations, typemasque ) )
 	{
-		CBotTwoOpExpr* inst = new CBotTwoOpExpr();				// élément pour opération
-		inst->SetToken(pp);										// mémorise l'opération
+		CBotTwoOpExpr* inst = new CBotTwoOpExpr();				// ï¿½lï¿½ment pour opï¿½ration
+		inst->SetToken(pp);										// mï¿½morise l'opï¿½ration
 
 		int			 type1, type2;
-		type1 = pStk->GetType();								// de quel type le premier opérande ?
+		type1 = pStk->GetType();								// de quel type le premier opï¿½rande ?
 
 		inst->m_rightop = right;
 		{
-			// il y a un second opérande acceptable
+			// il y a un second opï¿½rande acceptable
 
-			type2 = pStk->GetType();							// de quel type le résultat ?
+			type2 = pStk->GetType();							// de quel type le rï¿½sultat ?
 
-			// quel est le type du résultat ?
+			// quel est le type du rï¿½sultat ?
 			int	TypeRes = MAX( type1, type2 );
 			if (!TypeOk( TypeRes, typemasque )) type1 = 99;		// erreur de type
 
@@ -131,83 +143,83 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 			case ID_LS:
 				TypeRes = CBotTypBoolean;
 			}
-			if ( TypeCompatible (type1, type2) ||				// les résultats sont-ils compatibles
-			// cas particulier pour les concaténation de chaînes
+			if ( TypeCompatible (type1, type2) ||				// les rï¿½sultats sont-ils compatibles
+			// cas particulier pour les concatï¿½nation de chaï¿½nes
 				 (TypeOp == ID_ADD && (type1 == CBotTypString || type2 == CBotTypString)))
 			{
-				// si ok, enregistre l'opérande dans l'objet
+				// si ok, enregistre l'opï¿½rande dans l'objet
 				inst->m_leftop = left;
-				// met une variable sur la pile pour avoir le type de résultat
+				// met une variable sur la pile pour avoir le type de rï¿½sultat
 				pStk->SetVar(new CBotVar(NULL, TypeRes));
-				// et rend l'object à qui l'a demandé
+				// et rend l'object ï¿½ qui l'a demandï¿½
 				return pStack->Return(inst, pStk);
 			}
 			pStk->SetError(TX_BAD2TYPE, &inst->m_token);
 		}
 
-		// en cas d'erreur, libère les éléments
+		// en cas d'erreur, libï¿½re les ï¿½lï¿½ments
 		delete left;
 		delete inst;
 		// et transmet l'erreur qui se trouve sur la pile
 		return pStack->Return(NULL, pStk);
 	}
 
-	// si on n'a pas affaire à une opération + ou -
-	// rend à qui l'a demandé, l'opérande (de gauche) trouvé
-	// à la place de l'objet "addition"
+	// si on n'a pas affaire ï¿½ une opï¿½ration + ou -
+	// rend ï¿½ qui l'a demandï¿½, l'opï¿½rande (de gauche) trouvï¿½
+	// ï¿½ la place de l'objet "addition"
 	return pStack->Return(left, pStk);
 }
 
 
 
 
-// fait l'opération d'addition ou de soustraction
+// fait l'opï¿½ration d'addition ou de soustraction
 
 BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 {
-	CBotStack* pStk1 = pStack->AddStack();			// ajoute un élément à la pile
+	CBotStack* pStk1 = pStack->AddStack();			// ajoute un ï¿½lï¿½ment ï¿½ la pile
 													// ou le retrouve en cas de reprise
 //	if ( pStk1 == EOX ) return TRUE;
 
 
-	// selon la reprise, on peut être dans l'un des 2 états
+	// selon la reprise, on peut ï¿½tre dans l'un des 2 ï¿½tats
 
-	if ( pStk1->GetState() == 0 &&					// 1er état, évalue l'opérande de gauche
+	if ( pStk1->GetState() == 0 &&					// 1er ï¿½tat, ï¿½value l'opï¿½rande de gauche
 		!m_leftop->Execute(pStk1) ) return FALSE;	// interrompu ici ?
 
-	// passe à l'étape suivante
-	pStk1->SetState(1);								// prêt pour la suite
+	// passe ï¿½ l'ï¿½tape suivante
+	pStk1->SetState(1);								// prï¿½t pour la suite
 
-	// pour les OU et ET logique, n'évalue pas la seconde expression si pas nécessaire
+	// pour les OU et ET logique, n'ï¿½value pas la seconde expression si pas nï¿½cessaire
 	if ( GetTokenType() == ID_LOG_AND && pStk1->GetVal() == FALSE )
 	{
 		CBotVar*	res = CBotVar::Create( NULL, CBotTypBoolean);
 		res->SetValInt(FALSE);
 		pStk1->SetVar(res);
-		return pStack->Return(pStk1);				// transmet le résultat
+		return pStack->Return(pStk1);				// transmet le rï¿½sultat
 	}
 	if ( GetTokenType() == ID_LOG_OR && pStk1->GetVal() == TRUE )
 	{
 		CBotVar*	res = CBotVar::Create( NULL, CBotTypBoolean);
 		res->SetValInt(TRUE);
 		pStk1->SetVar(res);
-		return pStack->Return(pStk1);				// transmet le résultat
+		return pStack->Return(pStk1);				// transmet le rï¿½sultat
 	}
 
-	// demande un peu plus de stack pour ne pas toucher le résultat de gauche
+	// demande un peu plus de stack pour ne pas toucher le rï¿½sultat de gauche
 	// qui se trouve sur la pile, justement.
 
-	CBotStack* pStk2 = pStk1->AddStack();			// ajoute un élément à la pile
+	CBotStack* pStk2 = pStk1->AddStack();			// ajoute un ï¿½lï¿½ment ï¿½ la pile
 													// ou le retrouve en cas de reprise
 
-	// 2e état, évalue l'opérande de droite
+	// 2e ï¿½tat, ï¿½value l'opï¿½rande de droite
 	if ( !m_rightop->Execute(pStk2) ) return FALSE; // interrompu ici ?
 
-	int		type1 = pStk1->GetType();				// de quels types les résultats ?
+	int		type1 = pStk1->GetType();				// de quels types les rï¿½sultats ?
 	int		type2 = pStk2->GetType();
 
-	// crée une variable temporaire pour y mettre le résultat
-	// quel est le type du résultat ?
+	// crï¿½e une variable temporaire pour y mettre le rï¿½sultat
+	// quel est le type du rï¿½sultat ?
 	int	TypeRes = MAX(type1, type2);
 	switch ( GetTokenType() )
 	{
@@ -225,7 +237,7 @@ BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 	CBotVar*	temp   = CBotVar::Create( NULL, MAX(type1, type2) );
 
 	int	err = 0;
-	// fait l'opération selon la demande
+	// fait l'opï¿½ration selon la demande
 	switch (GetTokenType())
 	{
 	case ID_ADD:
@@ -244,28 +256,28 @@ BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 		err = result->Modulo(pStk1->GetVar(), pStk2->GetVar());// reste de division
 		break;
 	case ID_LO:
-		temp->Lo(pStk1->GetVar(), pStk2->GetVar());			// inférieur
-		result->SetValInt(temp->GetValInt());				// converti le résultat
+		temp->Lo(pStk1->GetVar(), pStk2->GetVar());			// infï¿½rieur
+		result->SetValInt(temp->GetValInt());				// converti le rï¿½sultat
 		break;
 	case ID_HI:
-		temp->Hi(pStk1->GetVar(), pStk2->GetVar());			// supérieur
-		result->SetValInt(temp->GetValInt());				// converti le résultat
+		temp->Hi(pStk1->GetVar(), pStk2->GetVar());			// supï¿½rieur
+		result->SetValInt(temp->GetValInt());				// converti le rï¿½sultat
 		break;
 	case ID_LS:
-		temp->Ls(pStk1->GetVar(), pStk2->GetVar());			// inférieur ou égal
-		result->SetValInt(temp->GetValInt());				// converti le résultat
+		temp->Ls(pStk1->GetVar(), pStk2->GetVar());			// infï¿½rieur ou ï¿½gal
+		result->SetValInt(temp->GetValInt());				// converti le rï¿½sultat
 		break;
 	case ID_HS:
-		temp->Hs(pStk1->GetVar(), pStk2->GetVar());			// supérieur ou égal
-		result->SetValInt(temp->GetValInt());				// converti le résultat
+		temp->Hs(pStk1->GetVar(), pStk2->GetVar());			// supï¿½rieur ou ï¿½gal
+		result->SetValInt(temp->GetValInt());				// converti le rï¿½sultat
 		break;
 	case ID_EQ:
-		temp->Eq(pStk1->GetVar(), pStk2->GetVar());			// égal
-		result->SetValInt(temp->GetValInt());				// converti le résultat
+		temp->Eq(pStk1->GetVar(), pStk2->GetVar());			// ï¿½gal
+		result->SetValInt(temp->GetValInt());				// converti le rï¿½sultat
 		break;
 	case ID_NE:
-		temp->Ne(pStk1->GetVar(), pStk2->GetVar());			// différent
-		result->SetValInt(temp->GetValInt());				// converti le résultat
+		temp->Ne(pStk1->GetVar(), pStk2->GetVar());			// diffï¿½rent
+		result->SetValInt(temp->GetValInt());				// converti le rï¿½sultat
 		break;
 	case ID_LOG_AND:
 	case ID_AND:
@@ -292,11 +304,11 @@ BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 	}
 	delete temp;
 
-	pStk2->SetVar(result);						// met le résultat sur la pile
-	if ( err ) pStk2->SetError(err, &m_token);	// et l'erreur éventuelle (division par zéro)
+	pStk2->SetVar(result);						// met le rï¿½sultat sur la pile
+	if ( err ) pStk2->SetError(err, &m_token);	// et l'erreur ï¿½ventuelle (division par zï¿½ro)
 
-	pStk1->Return(pStk2);						// libère la pile
-	return pStack->Return(pStk1);				// transmet le résultat
+	pStk1->Return(pStk2);						// libï¿½re la pile
+	return pStack->Return(pStk1);				// transmet le rï¿½sultat
 }
 
 

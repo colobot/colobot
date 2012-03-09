@@ -1,4 +1,18 @@
-// motion.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -83,14 +97,14 @@ void CMotion::SetBrain(CBrain* brain)
 }
 
 
-// Crée.
+// Crï¿½e.
 
 BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
 {
 	return TRUE;
 }
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CMotion::EventProcess(const Event &event)
 {
@@ -136,11 +150,11 @@ BOOL CMotion::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// (*)	Evite le bug des fourmis retournées par le thumper et dont
-//		l'abdomen grossi à l'infini !
+// (*)	Evite le bug des fourmis retournï¿½es par le thumper et dont
+//		l'abdomen grossi ï¿½ l'infini !
 
 
-// Démarre une action.
+// Dï¿½marre une action.
 
 Error CMotion::SetAction(int action, float time)
 {
@@ -158,7 +172,7 @@ int CMotion::RetAction()
 }
 
 
-// Spécifie un paramètre spécial.
+// Spï¿½cifie un paramï¿½tre spï¿½cial.
 
 BOOL CMotion::SetParam(int rank, float value)
 {
@@ -171,7 +185,7 @@ float CMotion::RetParam(int rank)
 }
 
 
-// Sauve tous les paramètres de l'objet.
+// Sauve tous les paramï¿½tres de l'objet.
 
 BOOL CMotion::Write(char *line)
 {
@@ -191,7 +205,7 @@ BOOL CMotion::Write(char *line)
 	return FALSE;
 }
 
-// Restitue tous les paramètres de l'objet.
+// Restitue tous les paramï¿½tres de l'objet.
 
 BOOL CMotion::Read(char *line)
 {
@@ -203,7 +217,7 @@ BOOL CMotion::Read(char *line)
 }
 
 
-// Donne la vibration linéaire.
+// Donne la vibration linï¿½aire.
 
 void CMotion::SetLinVibration(D3DVECTOR dir)
 {

@@ -1,4 +1,18 @@
-// cbottoken.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -112,7 +126,7 @@ char* RetObjectName(ObjectType type)
 }
 
 // Cherche le nom secondaire d'un objet.
-// (à cause d'Otto qui pense que les allemands n'aiment pas le nucléaire)
+// (ï¿½ cause d'Otto qui pense que les allemands n'aiment pas le nuclï¿½aire)
 
 char* RetObjectAlias(ObjectType type)
 {
@@ -125,7 +139,7 @@ char* RetObjectAlias(ObjectType type)
 }
 
 
-// Retourne le fichier d'aide à utiliser pour l'objet.
+// Retourne le fichier d'aide ï¿½ utiliser pour l'objet.
 
 char* RetHelpFilename(ObjectType type)
 {
@@ -210,7 +224,7 @@ char* RetHelpFilename(ObjectType type)
 }
 
 
-// Retourne le fichier d'aide à utiliser pour une instruction.
+// Retourne le fichier d'aide ï¿½ utiliser pour une instruction.
 
 char* RetHelpFilename(const char *token)
 {
@@ -333,7 +347,7 @@ char* RetHelpFilename(const char *token)
 }
 
 
-// Teste si un mot clé est un type de variable.
+// Teste si un mot clï¿½ est un type de variable.
 
 BOOL IsType(const char *token)
 {
@@ -349,7 +363,7 @@ BOOL IsType(const char *token)
 	return FALSE;
 }
 
-// Teste si un mot clé est une fonction.
+// Teste si un mot clï¿½ est une fonction.
 
 BOOL IsFunction(const char *token)
 {

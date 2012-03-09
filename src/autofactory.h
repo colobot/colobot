@@ -1,4 +1,18 @@
-// autofactory.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _AUTOFACTORY_H_
 #define	_AUTOFACTORY_H_
@@ -15,10 +29,10 @@ class CObject;
 
 enum AutoFactoryPhase
 {
-	AFP_WAIT		= 1,	// attend métal
+	AFP_WAIT		= 1,	// attend mï¿½tal
 	AFP_CLOSE_S		= 2,	// ferme les portes (shift)
 	AFP_CLOSE_T		= 3,	// ferme les portes (turn)
-	AFP_BUILD		= 4,	// construit le véhicule
+	AFP_BUILD		= 4,	// construit le vï¿½hicule
 	AFP_OPEN_T		= 5,	// ouvre les portes (turn)
 	AFP_OPEN_S		= 6,	// ouvre les portes (shift)
 	AFP_ADVANCE		= 7,	// avance devant la porte

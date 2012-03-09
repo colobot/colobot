@@ -1,4 +1,18 @@
-// particule.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,7 +46,7 @@
 
 
 
-// Vérifie si un objet est destructible, mais pas un ennemi.
+// Vï¿½rifie si un objet est destructible, mais pas un ennemi.
 
 BOOL IsSoft(ObjectType type)
 {
@@ -79,10 +93,10 @@ BOOL IsSoft(ObjectType type)
 			 type == OBJECT_ENERGY   ||
 			 type == OBJECT_LABO     ||
 			 type == OBJECT_NUCLEAR  ||
-			 type == OBJECT_PARA     );  // bâtiment ?
+			 type == OBJECT_PARA     );  // bï¿½timent ?
 }
 
-// Vérifie si un objet est un ennemi destructible.
+// Vï¿½rifie si un objet est un ennemi destructible.
 
 BOOL IsAlien(ObjectType type)
 {
@@ -99,7 +113,7 @@ BOOL IsAlien(ObjectType type)
 			 type == OBJECT_TEEN31   );
 }
 
-// Retourne le facteur d'aténumation pour les tirs amis.
+// Retourne le facteur d'atï¿½numation pour les tirs amis.
 
 float RetDecay(ObjectType type)
 {
@@ -213,7 +227,7 @@ void CParticule::FlushParticule(int sheet)
 
 
 // Construit le nom de fichier de l'effet.
-//	effectNN.tga, avec NN = numéro
+//	effectNN.tga, avec NN = numï¿½ro
 
 void NameParticule(char *buffer, int num)
 {
@@ -229,8 +243,8 @@ void NameParticule(char *buffer, int num)
 }
 
 
-// Créé une nouvelle particule.
-// Retourne le canal de la particule crée ou -1 en cas d'erreur.
+// Crï¿½ï¿½ une nouvelle particule.
+// Retourne le canal de la particule crï¿½e ou -1 en cas d'erreur.
 
 int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 								ParticuleType type,
@@ -434,8 +448,8 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 	return -1;
 }
 
-// Créé une nouvelle particule triangulaire (débris).
-// Retourne le canal de la particule crée ou -1 en cas d'erreur.
+// Crï¿½ï¿½ une nouvelle particule triangulaire (dï¿½bris).
+// Retourne le canal de la particule crï¿½e ou -1 en cas d'erreur.
 
 int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 						   D3DTriangle *triangle,
@@ -542,8 +556,8 @@ int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 	return -1;
 }
 
-// Créé une nouvelle particule étant une partie d'objet.
-// Retourne le canal de la particule crée ou -1 en cas d'erreur.
+// Crï¿½ï¿½ une nouvelle particule ï¿½tant une partie d'objet.
+// Retourne le canal de la particule crï¿½e ou -1 en cas d'erreur.
 
 int CParticule::CreatePart(D3DVECTOR pos, D3DVECTOR speed,
 						   ParticuleType type,
@@ -594,8 +608,8 @@ int CParticule::CreatePart(D3DVECTOR pos, D3DVECTOR speed,
 	return -1;
 }
 
-// Créé une nouvelle particule linéaire (rayon).
-// Retourne le canal de la particule crée ou -1 en cas d'erreur.
+// Crï¿½ï¿½ une nouvelle particule linï¿½aire (rayon).
+// Retourne le canal de la particule crï¿½e ou -1 en cas d'erreur.
 
 int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
 						  ParticuleType type, FPOINT dim,
@@ -657,8 +671,8 @@ int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
 	return -1;
 }
 
-// Crée une particule avec une traînée.
-// "length" est la durée de la queue de la traînée (en secondes) !
+// Crï¿½e une particule avec une traï¿½nï¿½e.
+// "length" est la durï¿½e de la queue de la traï¿½nï¿½e (en secondes) !
 
 int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 							ParticuleType type, float duration, float mass,
@@ -666,11 +680,11 @@ int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 {
 	int		channel, rank, i;
 
-	// Crée la particule normale.
+	// Crï¿½e la particule normale.
 	channel = CreateParticule(pos, speed, dim, type, duration, mass, 0.0f, 0);
 	if ( channel == -1 )  return -1;
 
-	// Cherche une traînée libre.
+	// Cherche une traï¿½nï¿½e libre.
 	for ( i=0 ; i<MAXTRACK ; i++ )
 	{
 		if ( !m_track[i].bUsed )  // libre ?
@@ -694,7 +708,7 @@ int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 	return channel;
 }
 
-// Crée une trace de pneu.
+// Crï¿½e une trace de pneu.
 
 void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 								  const D3DVECTOR &p3, const D3DVECTOR &p4,
@@ -742,8 +756,8 @@ void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 }
 
 
-// Check un numéro de canal.
-// Adapte le canal pour qu'il puisse être utilisé comme offset
+// Check un numï¿½ro de canal.
+// Adapte le canal pour qu'il puisse ï¿½tre utilisï¿½ comme offset
 // dans m_particule.
 
 BOOL CParticule::CheckChannel(int &channel)
@@ -776,7 +790,7 @@ BOOL CParticule::CheckChannel(int &channel)
 	return TRUE;
 }
 
-// Supprime une particule d'après son rang.
+// Supprime une particule d'aprï¿½s son rang.
 
 void CParticule::DeleteRank(int rank)
 {
@@ -788,15 +802,15 @@ void CParticule::DeleteRank(int rank)
 	}
 
 	i = m_particule[rank].trackRank;
-	if ( i != -1 )  // traînée associée ?
+	if ( i != -1 )  // traï¿½nï¿½e associï¿½e ?
 	{
-		m_track[i].bUsed = FALSE;  // libère la traînée
+		m_track[i].bUsed = FALSE;  // libï¿½re la traï¿½nï¿½e
 	}
 
 	m_particule[rank].bUsed = FALSE;
 }
 
-// Supprime toutes les particules d'un type donné.
+// Supprime toutes les particules d'un type donnï¿½.
 
 void CParticule::DeleteParticule(ParticuleType type)
 {
@@ -811,7 +825,7 @@ void CParticule::DeleteParticule(ParticuleType type)
 	}
 }
 
-// Supprime une particule d'après son canal.
+// Supprime une particule d'aprï¿½s son canal.
 
 void CParticule::DeleteParticule(int channel)
 {
@@ -825,16 +839,16 @@ void CParticule::DeleteParticule(int channel)
 	}
 
 	i = m_particule[channel].trackRank;
-	if ( i != -1 )  // traînée associée ?
+	if ( i != -1 )  // traï¿½nï¿½e associï¿½e ?
 	{
-		m_track[i].bUsed = FALSE;  // libère la traînée
+		m_track[i].bUsed = FALSE;  // libï¿½re la traï¿½nï¿½e
 	}
 
 	m_particule[channel].bUsed = FALSE;
 }
 
 
-// Spécifie l'objet auquel la particule est liée.
+// Spï¿½cifie l'objet auquel la particule est liï¿½e.
 
 void CParticule::SetObjectLink(int channel, CObject *object)
 {
@@ -842,7 +856,7 @@ void CParticule::SetObjectLink(int channel, CObject *object)
 	m_particule[channel].objLink = object;
 }
 
-// Spécifie l'objet père qui a créé la particule.
+// Spï¿½cifie l'objet pï¿½re qui a crï¿½ï¿½ la particule.
 
 void CParticule::SetObjectFather(int channel, CObject *object)
 {
@@ -909,14 +923,14 @@ BOOL CParticule::GetPosition(int channel, D3DVECTOR &pos)
 }
 
 
-// Indique si une feuille évolue ou non.
+// Indique si une feuille ï¿½volue ou non.
 
 void CParticule::SetFrameUpdate(int sheet, BOOL bUpdate)
 {
 	m_bFrameUpdate[sheet] = bUpdate;
 }
 
-// Fait évoluer toutes les particules.
+// Fait ï¿½voluer toutes les particules.
 
 void CParticule::FrameParticule(float rTime)
 {
@@ -975,7 +989,7 @@ void CParticule::FrameParticule(float rTime)
 
 		progress = (m_particule[i].time-m_particule[i].phaseTime)/m_particule[i].duration;
 
-		// Gère les particules avec masse qui rebondissent.
+		// Gï¿½re les particules avec masse qui rebondissent.
 		if ( m_particule[i].mass != 0.0f        &&
 			 m_particule[i].type != PARTIQUARTZ )
 		{
@@ -1013,7 +1027,7 @@ void CParticule::FrameParticule(float rTime)
 					m_particule[i].speed.z *=  0.4f;
 					m_particule[i].bounce ++;  // un choc de plus
 				}
-				else	// disparaît après 3 rebonds ?
+				else	// disparaï¿½t aprï¿½s 3 rebonds ?
 				{
 					if ( m_particule[i].pos.y < h-10.0f ||
 						 m_particule[i].time >= 20.0f   )
@@ -1025,9 +1039,9 @@ void CParticule::FrameParticule(float rTime)
 			}
 		}
 
-		// Gère la traînée associée.
+		// Gï¿½re la traï¿½nï¿½e associï¿½e.
 		r = m_particule[i].trackRank;
-		if ( r != -1 )  // traînée existe ?
+		if ( r != -1 )  // traï¿½nï¿½e existe ?
 		{
 			if ( TrackMove(r, m_particule[i].pos, progress) )
 			{
@@ -1058,7 +1072,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK3 )  // araignée ?
+		if ( m_particule[i].type == PARTITRACK3 )  // araignï¿½e ?
 		{
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
@@ -1133,7 +1147,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK12 )  // traînée réacteur ?
+		if ( m_particule[i].type == PARTITRACK12 )  // traï¿½nï¿½e rï¿½acteur ?
 		{
 			m_particule[i].zoom = 1.0f;
 
@@ -1399,7 +1413,7 @@ void CParticule::FrameParticule(float rTime)
 				m_particule[i].goal = m_particule[i].pos;
 				if ( object != 0 )
 				{
-					if ( object->RetShieldRadius() > 0.0f )  // protégé par bouclier ?
+					if ( object->RetShieldRadius() > 0.0f )  // protï¿½gï¿½ par bouclier ?
 					{
 						CreateParticule(m_particule[i].pos, D3DVECTOR(0.0f, 0.0f, 0.0f), FPOINT(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
 						if ( m_lastTimeGunDel > 0.2f )
@@ -1416,7 +1430,7 @@ void CParticule::FrameParticule(float rTime)
 						{
 							Play(SOUND_TOUCH, m_particule[i].pos, 1.0f);
 						}
-						object->ExploObject(EXPLO_BOUM, 0.0f);  // démarre explosion
+						object->ExploObject(EXPLO_BOUM, 0.0f);  // dï¿½marre explosion
 					}
 				}
 			}
@@ -1430,7 +1444,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTIGUN3 )  // suicide araignée ?
+		if ( m_particule[i].type == PARTIGUN3 )  // suicide araignï¿½e ?
 		{
 			if ( progress >= 1.0f )
 			{
@@ -1458,7 +1472,7 @@ void CParticule::FrameParticule(float rTime)
 					}
 					else
 					{
-						object->ExploObject(EXPLO_BURN, 1.0f);  // démarre explosion
+						object->ExploObject(EXPLO_BURN, 1.0f);  // dï¿½marre explosion
 					}
 				}
 			}
@@ -1762,8 +1776,8 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.25f;
 		}
 
-		// Diminue l'intensité si la caméra est presque à la même
-		// hauteur (nappe de brouillard à hauteur des yeux).
+		// Diminue l'intensitï¿½ si la camï¿½ra est presque ï¿½ la mï¿½me
+		// hauteur (nappe de brouillard ï¿½ hauteur des yeux).
 		if ( m_particule[i].type >= PARTIFOG0 &&
 			 m_particule[i].type <= PARTIFOG9 )
 		{
@@ -2729,8 +2743,8 @@ void CParticule::FrameParticule(float rTime)
 }
 
 
-// Déplace une traînée.
-// Retourne TRUE lorsque la traînée est terminée.
+// Dï¿½place une traï¿½nï¿½e.
+// Retourne TRUE lorsque la traï¿½nï¿½e est terminï¿½e.
 
 BOOL CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 {
@@ -2767,7 +2781,7 @@ BOOL CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 //?		m_track[i].intensity = 1.0f;
 		m_track[i].intensity = 1.0f-progress;
 	}
-	else	// mort lente de la traînée ?
+	else	// mort lente de la traï¿½nï¿½e ?
 	{
 //?		m_track[i].intensity = 1.0f-(progress-1.0f)/(m_track[i].step*MAXTRACKLEN);
 		m_track[i].intensity = 0.0f;
@@ -2776,7 +2790,7 @@ BOOL CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 	return (m_track[i].intensity <= 0.0f);
 }
 
-// Dessine une traînée.
+// Dessine une traï¿½nï¿½e.
 
 void CParticule::TrackDraw(int i, ParticuleType type)
 {
@@ -2787,7 +2801,7 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 	float		lTotal, f1, f2, a;
 	int			counter, h;
 
-	// Calcule la longueur totale mémorisée.
+	// Calcule la longueur totale mï¿½morisï¿½e.
 	lTotal = 0.0f;
 	h = m_track[i].head;
 	for ( counter=0 ; counter<m_track[i].used-1 ; counter++ )
@@ -2813,7 +2827,7 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 		texSup.x = 95.5f/256.0f;
 		texSup.y = 14.0f/256.0f;  // bleu
 	}
-	if ( type == PARTITRACK3 )  // araignée ?
+	if ( type == PARTITRACK3 )  // araignï¿½e ?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y =  5.0f/256.0f;
@@ -2825,14 +2839,14 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 		texInf.x = 64.5f/256.0f;
 		texInf.y =  9.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 10.0f/256.0f;  // vert foncé
+		texSup.y = 10.0f/256.0f;  // vert foncï¿½
 	}
 	if ( type == PARTITRACK5 )  // derrick ?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 29.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 30.0f/256.0f;  // brun foncé
+		texSup.y = 30.0f/256.0f;  // brun foncï¿½
 	}
 	if ( type == PARTITRACK6 )  // reset in/out ?
 	{
@@ -2876,7 +2890,7 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 		texSup.x = 95.5f/256.0f;
 		texSup.y = 22.0f/256.0f;  // orange
 	}
-	if ( type == PARTITRACK12 )  // traînée réacteur ?
+	if ( type == PARTITRACK12 )  // traï¿½nï¿½e rï¿½acteur ?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 21.0f/256.0f;
@@ -3428,7 +3442,7 @@ void CParticule::DrawParticuleRay(int i)
 	}
 }
 
-// Dessine une particule sphérique.
+// Dessine une particule sphï¿½rique.
 
 void CParticule::DrawParticuleSphere(int i)
 {
@@ -3589,17 +3603,17 @@ void CParticule::DrawParticuleCylinder(int i)
 		if ( progress <= 0.5f )
 		{
 			p1 = progress/0.5f;  // avant
-			p2 = 0.0f;  // arrière
+			p2 = 0.0f;  // arriï¿½re
 		}
 		else
 		{
 			p1 = 1.0f;  // avant
-			p2 = (progress-0.5f)/0.5f;  // arrière
+			p2 = (progress-0.5f)/0.5f;  // arriï¿½re
 			ts.y += (ti.y-ts.y)*p2;
 		}
 #else
 		p1 = progress;  // avant
-		p2 = powf(progress, 5.0f);  // arrière
+		p2 = powf(progress, 5.0f);  // arriï¿½re
 #endif
 
 		for ( ring=0 ; ring<=numRings ; ring++ )
@@ -3613,7 +3627,7 @@ void CParticule::DrawParticuleCylinder(int i)
 	j = 0;
 	for ( ring=0 ; ring<numRings ; ring++ )
 	{
-		r0   = 1.0f*d[ring+0];  // rayon à la base
+		r0   = 1.0f*d[ring+0];  // rayon ï¿½ la base
 		r1   = 1.0f*d[ring+1];  // rayon en haut
 		v0.y = 1.0f*h[ring+0];  // bas
 		v1.y = 1.0f*h[ring+1];  // haut
@@ -3744,12 +3758,12 @@ void CParticule::DrawParticuleWheel(int i)
 		ts.x =  56.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE16 )  // trace au sol flèche noire ?
+	else if ( m_wheelTrace[i].type == PARTITRACE16 )  // trace au sol flï¿½che noire ?
 	{
 		ts.x = 160.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE17 )  // trace au sol flèche rouge ?
+	else if ( m_wheelTrace[i].type == PARTITRACE17 )  // trace au sol flï¿½che rouge ?
 	{
 		ts.x = 176.0f/256.0f;
 		ts.y = 224.0f/256.0f;
@@ -3803,7 +3817,7 @@ void CParticule::DrawParticule(int sheet)
 //?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
 
-	// Dessine les particules à base de triangles.
+	// Dessine les particules ï¿½ base de triangles.
 	if ( m_totalInterface[0][sheet] > 0 )
 	{
 		for ( i=0 ; i<MAXPARTICULE ; i++ )
@@ -3819,7 +3833,7 @@ void CParticule::DrawParticule(int sheet)
 		}
 	}
 
-	// Dessines les particules à base de carrés calculés.
+	// Dessines les particules ï¿½ base de carrï¿½s calculï¿½s.
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
 
 	ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
@@ -3850,7 +3864,7 @@ void CParticule::DrawParticule(int sheet)
 	}
 
 //?	for ( t=1 ; t<MAXPARTITYPE ; t++ )
-	for ( t=MAXPARTITYPE-1 ; t>=1 ; t-- )  // noir derrière !
+	for ( t=MAXPARTITYPE-1 ; t>=1 ; t-- )  // noir derriï¿½re !
 	{
 		if ( m_totalInterface[t][sheet] == 0 )  continue;
 
@@ -3877,7 +3891,7 @@ void CParticule::DrawParticule(int sheet)
 			if ( r != -1 )
 			{
 				m_engine->SetState(state);
-				TrackDraw(r, m_particule[i].type);  // dessine la traînée
+				TrackDraw(r, m_particule[i].type);  // dessine la traï¿½nï¿½e
 				if ( !m_track[r].bDrawParticule )  continue;
 			}
 
@@ -3900,7 +3914,7 @@ void CParticule::DrawParticule(int sheet)
 				DrawParticuleFog(i);
 			}
 			else if ( m_particule[i].type >= PARTISPHERE0 &&
-					  m_particule[i].type <= PARTISPHERE9 )  // sphère ?
+					  m_particule[i].type <= PARTISPHERE9 )  // sphï¿½re ?
 			{
 				DrawParticuleSphere(i);
 			}
@@ -3940,7 +3954,7 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 
 	min = 5.0f;
 	if ( type == PARTIGUN2 ) min = 2.0f;  // tir insecte ?
-	if ( type == PARTIGUN3 ) min = 3.0f;  // suicide araignée ?
+	if ( type == PARTIGUN3 ) min = 3.0f;  // suicide araignï¿½e ?
 
 	box1 = old;
 	box2 = pos;
@@ -3971,12 +3985,12 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 		if ( type == PARTIGUN1 )  // tir fireball ?
 		{
 			if ( oType == OBJECT_MOTHER )  continue;
-			if ( bHimself )  // dégâts à soi-même ?
+			if ( bHimself )  // dï¿½gï¿½ts ï¿½ soi-mï¿½me ?
 			{
 				if ( !IsAlien(oType) &&
 					 !IsSoft(oType)  )  continue;
 			}
-			else	// dégats seulement aux ennemis ?
+			else	// dï¿½gats seulement aux ennemis ?
 			{
 				if ( !IsAlien(oType) )  continue;
 			}
@@ -3985,31 +3999,31 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 		{
 			if ( !IsSoft(oType) )  continue;
 		}
-		else if ( type == PARTIGUN3 )  // suicide araignée ?
+		else if ( type == PARTIGUN3 )  // suicide araignï¿½e ?
 		{
 			if ( !IsSoft(oType) )  continue;
 		}
 		else if ( type == PARTIGUN4 )  // tir orgaball ?
 		{
 			if ( oType == OBJECT_MOTHER )  continue;
-			if ( bHimself )  // dégâts à soi-même ?
+			if ( bHimself )  // dï¿½gï¿½ts ï¿½ soi-mï¿½me ?
 			{
 				if ( !IsAlien(oType) &&
 					 !IsSoft(oType)  )  continue;
 			}
-			else	// dégats seulement aux ennemis ?
+			else	// dï¿½gats seulement aux ennemis ?
 			{
 				if ( !IsAlien(oType) )  continue;
 			}
 		}
 		else if ( type == PARTITRACK11 )  // tir phazer ?
 		{
-			if ( bHimself )  // dégâts à soi-même ?
+			if ( bHimself )  // dï¿½gï¿½ts ï¿½ soi-mï¿½me ?
 			{
 				if ( !IsAlien(oType) &&
 					 !IsSoft(oType)  )  continue;
 			}
-			else	// dégats seulement aux ennemis ?
+			else	// dï¿½gats seulement aux ennemis ?
 			{
 				if ( !IsAlien(oType) )  continue;
 			}
@@ -4022,9 +4036,9 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 		oPos = pObj->RetPosition(0);
 
 		if ( type == PARTIGUN2 ||  // tir insecte ?
-			 type == PARTIGUN3 )   // suicide araignée ?
+			 type == PARTIGUN3 )   // suicide araignï¿½e ?
 		{
-			// Test si la balle est entrée dans la sphère d'un bouclier.
+			// Test si la balle est entrï¿½e dans la sphï¿½re d'un bouclier.
 			shieldRadius = pObj->RetShieldRadius();
 			if ( shieldRadius > 0.0f )
 			{
@@ -4038,19 +4052,19 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 		}
 		if ( bShield )  continue;
 
-		// Test au centre de l'objet, ce qui est nécessaire pour
-		// les objets qui n'ont pas de sphère au centre (station).
+		// Test au centre de l'objet, ce qui est nï¿½cessaire pour
+		// les objets qui n'ont pas de sphï¿½re au centre (station).
 		dist = Length(oPos, pos)-4.0f;
 		if ( dist < min )
 		{
 			pBest = pObj;
 		}
 
-		// Test avec toutes les sphères de l'objet.
+		// Test avec toutes les sphï¿½res de l'objet.
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
-			if ( oPos.x+oRadius < box1.x || oPos.x-oRadius > box2.x ||  // hors de la boîte ?
+			if ( oPos.x+oRadius < box1.x || oPos.x-oRadius > box2.x ||  // hors de la boï¿½te ?
 				 oPos.y+oRadius < box1.y || oPos.y-oRadius > box2.y ||
 				 oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )  continue;
 
@@ -4118,7 +4132,7 @@ CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
 
 		oPos = pObj->RetPosition(0);
 
-		if ( oPos.x < box1.x || oPos.x > box2.x ||  // hors de la boîte ?
+		if ( oPos.x < box1.x || oPos.x > box2.x ||  // hors de la boï¿½te ?
 			 oPos.y < box1.y || oPos.y > box2.y ||
 			 oPos.z < box1.z || oPos.z > box2.z )  continue;
 

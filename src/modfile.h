@@ -1,4 +1,18 @@
-// modfile.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _MODFILE_H_
 #define	_MODFILE_H_
@@ -12,8 +26,8 @@ class CD3DEngine;
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> utilisé
-	char			bSelect;	// TRUE -> sélectionné
+	char			bUsed;		// TRUE -> utilisï¿½
+	char			bSelect;	// TRUE -> sï¿½lectionnï¿½
 	D3DVERTEX		p1;
 	D3DVERTEX		p2;
 	D3DVERTEX		p3;
@@ -26,8 +40,8 @@ OldModelTriangle1;		// longueur = 196 bytes
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> utilisé
-	char			bSelect;	// TRUE -> sélectionné
+	char			bUsed;		// TRUE -> utilisï¿½
+	char			bSelect;	// TRUE -> sï¿½lectionnï¿½
 	D3DVERTEX		p1;
 	D3DVERTEX		p2;
 	D3DVERTEX		p3;
@@ -45,8 +59,8 @@ OldModelTriangle2;
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> utilisé
-	char			bSelect;	// TRUE -> sélectionné
+	char			bUsed;		// TRUE -> utilisï¿½
+	char			bSelect;	// TRUE -> sï¿½lectionnï¿½
 	D3DVERTEX2		p1;
 	D3DVERTEX2		p2;
 	D3DVERTEX2		p3;
