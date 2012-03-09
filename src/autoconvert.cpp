@@ -1,4 +1,18 @@
-// autoconvert.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -52,7 +66,7 @@ CAutoConvert::~CAutoConvert()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoConvert::DeleteObject(BOOL bAll)
 {
@@ -63,7 +77,7 @@ void CAutoConvert::DeleteObject(BOOL bAll)
 		fret = SearchStone(OBJECT_STONE);
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // détruit la pierre
+			fret->DeleteObject();  // dï¿½truit la pierre
 			delete fret;
 		}
 	}
@@ -94,7 +108,7 @@ void CAutoConvert::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoConvert::EventProcess(const Event &event)
 {
@@ -111,7 +125,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -136,7 +150,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			fret = SearchStone(OBJECT_STONE);  // pierre à transformer ?
+			fret = SearchStone(OBJECT_STONE);  // pierre ï¿½ transformer ?
 			if ( fret == 0 || SearchVehicle() )
 			{
 				m_phase    = ACP_WAIT;  // attend encore ...
@@ -197,7 +211,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 		{
 			if ( m_progress < 0.5f )
 			{
-				angle = powf((m_progress*2.0f)*5.0f, 2.0f);  // accélère
+				angle = powf((m_progress*2.0f)*5.0f, 2.0f);  // accï¿½lï¿½re
 			}
 			else
 			{
@@ -236,11 +250,11 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 			if ( fret != 0 )
 			{
 				m_bResetDelete = ( fret->RetResetCap() != RESET_NONE );
-				fret->DeleteObject();  // détruit la pierre
+				fret->DeleteObject();  // dï¿½truit la pierre
 				delete fret;
 			}
 
-			CreateMetal();  // c'est du métal
+			CreateMetal();  // c'est du mï¿½tal
 			m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 1.5f);
 
 			m_phase    = ACP_OPEN;
@@ -290,7 +304,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoConvert::RetError()
 {
@@ -331,7 +345,7 @@ BOOL CAutoConvert::Abort()
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoConvert::CreateInterface(BOOL bSelect)
 {
@@ -361,7 +375,7 @@ BOOL CAutoConvert::CreateInterface(BOOL bSelect)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoConvert::Write(char *line)
 {
@@ -387,7 +401,7 @@ BOOL CAutoConvert::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoConvert::Read(char *line)
 {
@@ -435,7 +449,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
 	return 0;
 }
 
-// Cherche si un véhicule est trop proche.
+// Cherche si un vï¿½hicule est trop proche.
 
 BOOL CAutoConvert::SearchVehicle()
 {
@@ -503,7 +517,7 @@ BOOL CAutoConvert::SearchVehicle()
 	return FALSE;
 }
 
-// Crée un objet métal.
+// Crï¿½e un objet mï¿½tal.
 
 void CAutoConvert::CreateMetal()
 {

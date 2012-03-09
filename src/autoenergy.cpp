@@ -1,4 +1,18 @@
-// autoenergy.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -31,8 +45,8 @@
 
 
 
-#define ENERGY_POWER	 0.4f		// énergie nécessaire pour une pile
-#define ENERGY_DELAY	12.0f		// durée de la transformation
+#define ENERGY_POWER	 0.4f		// ï¿½nergie nï¿½cessaire pour une pile
+#define ENERGY_DELAY	12.0f		// durï¿½e de la transformation
 
 
 
@@ -56,7 +70,7 @@ CAutoEnergy::~CAutoEnergy()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoEnergy::DeleteObject(BOOL bAll)
 {
@@ -73,14 +87,14 @@ void CAutoEnergy::DeleteObject(BOOL bAll)
 		fret = SearchMetal();
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // détruit le métal
+			fret->DeleteObject();  // dï¿½truit le mï¿½tal
 			delete fret;
 		}
 
 		fret = SearchPower();
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // détruit la pile
+			fret->DeleteObject();  // dï¿½truit la pile
 			delete fret;
 		}
 	}
@@ -106,7 +120,7 @@ void CAutoEnergy::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoEnergy::EventProcess(const Event &event)
 {
@@ -125,7 +139,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -163,7 +177,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 		if ( m_progress >= 1.0f )
 		{
 			bGO = FALSE;
-			fret = SearchMetal();  // métal à transformer ?
+			fret = SearchMetal();  // mï¿½tal ï¿½ transformer ?
 			if ( fret != 0 )
 			{
 				if ( fret->RetType() == OBJECT_METAL )
@@ -180,8 +194,8 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 			{
 				if ( fret->RetType() == OBJECT_METAL )
 				{
-					fret->SetLock(TRUE);  // métal plus utilisable
-					CreatePower();  // crée la pile
+					fret->SetLock(TRUE);  // mï¿½tal plus utilisable
+					CreatePower();  // crï¿½e la pile
 				}
 
 				SetBusy(TRUE);
@@ -312,7 +326,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 			if ( fret != 0 )
 			{
 				m_object->SetPower(0);
-				fret->DeleteObject();  // détruit le métal
+				fret->DeleteObject();  // dï¿½truit le mï¿½tal
 				delete fret;
 			}
 
@@ -367,13 +381,13 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 
 	if ( big < 0.0f )  big = 0.0f;
 	if ( big > 1.0f )  big = 1.0f;
-	m_object->SetEnergy(big);  // màj la grosse pile
+	m_object->SetEnergy(big);  // mï¿½j la grosse pile
 
 	return TRUE;
 }
 
 
-// Cherche l'objet métal.
+// Cherche l'objet mï¿½tal.
 
 CObject* CAutoEnergy::SearchMetal()
 {
@@ -392,7 +406,7 @@ CObject* CAutoEnergy::SearchMetal()
 	return 0;
 }
 
-// Cherche si un véhicule est trop proche.
+// Cherche si un vï¿½hicule est trop proche.
 
 BOOL CAutoEnergy::SearchVehicle()
 {
@@ -453,7 +467,7 @@ BOOL CAutoEnergy::SearchVehicle()
 	return FALSE;
 }
 
-// Crée un objet pile.
+// Crï¿½e un objet pile.
 
 void CAutoEnergy::CreatePower()
 {
@@ -511,7 +525,7 @@ CObject* CAutoEnergy::SearchPower()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoEnergy::RetError()
 {
@@ -545,7 +559,7 @@ Error CAutoEnergy::RetError()
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoEnergy::CreateInterface(BOOL bSelect)
 {
@@ -580,8 +594,8 @@ BOOL CAutoEnergy::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met à jour l'état de tous les boutons de l'interface,
-// suite au temps qui s'écoule ...
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface,
+// suite au temps qui s'ï¿½coule ...
 
 void CAutoEnergy::UpdateInterface(float rTime)
 {
@@ -606,7 +620,7 @@ void CAutoEnergy::UpdateInterface(float rTime)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoEnergy::Write(char *line)
 {
@@ -632,7 +646,7 @@ BOOL CAutoEnergy::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoEnergy::Read(char *line)
 {

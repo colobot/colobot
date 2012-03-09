@@ -1,4 +1,18 @@
-// light.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _LIGHT_H_
 #define	_LIGHT_H_
@@ -25,15 +39,15 @@ LightProg;
 
 typedef struct
 {
-	char			bUsed;			// TRUE -> lumière existe
-	char			bEnable;		// TRUE -> lumière allumée
+	char			bUsed;			// TRUE -> lumiï¿½re existe
+	char			bEnable;		// TRUE -> lumiï¿½re allumï¿½e
 
 	D3DTypeObj		incluType;		// type de tous les objets inclus
 	D3DTypeObj		excluType;		// type de tous les objets exclus
 
-	D3DLIGHT7		light;			// configuration de la lumière
+	D3DLIGHT7		light;			// configuration de la lumiï¿½re
 
-	LightProg		intensity;		// intensité (0..1)
+	LightProg		intensity;		// intensitï¿½ (0..1)
 	LightProg		colorRed;
 	LightProg		colorGreen;
 	LightProg		colorBlue;

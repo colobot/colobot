@@ -1,4 +1,18 @@
-// taskflag.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -46,7 +60,7 @@ CTaskFlag::~CTaskFlag()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskFlag::EventProcess(const Event &event)
 {
@@ -61,7 +75,7 @@ BOOL CTaskFlag::EventProcess(const Event &event)
 
 
 
-// Assigne le but à atteindre.
+// Assigne le but ï¿½ atteindre.
 
 Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 {
@@ -71,7 +85,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 	m_order = order;
 	m_time = 0.0f;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // opï¿½ration impossible
 	if ( !m_physics->RetLand() )
 	{
 		pos = m_object->RetPosition(0);
@@ -99,13 +113,13 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 
 	m_bError = FALSE;
 
-	m_motion->SetAction(MHS_FLAG);  // met/enlève drapeau
+	m_motion->SetAction(MHS_FLAG);  // met/enlï¿½ve drapeau
 	m_camera->StartCentering(m_object, PI*0.3f, 99.9f, 0.0f, 0.5f);
 
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskFlag::IsEnded()
 {
@@ -129,7 +143,7 @@ BOOL CTaskFlag::Abort()
 
 
 
-// Retourne l'objet le plus proche d'une position donnée.
+// Retourne l'objet le plus proche d'une position donnï¿½e.
 
 CObject* CTaskFlag::SearchNearest(D3DVECTOR pos, ObjectType type)
 {
@@ -209,7 +223,7 @@ int CTaskFlag::CountObject(ObjectType type)
 	return count;
 }
 
-// Crée un indicateur de couleur.
+// Crï¿½e un indicateur de couleur.
 
 Error CTaskFlag::CreateFlag(int rank)
 {

@@ -1,4 +1,18 @@
-// control.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -61,7 +75,7 @@ CControl::~CControl()
 }
 
 
-// Crée un nouveau bouton.
+// Crï¿½e un nouveau bouton.
 //	pos: [0..1]
 
 BOOL CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
@@ -91,7 +105,7 @@ BOOL CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	}
 	else
 	{
-		strcpy(m_tooltip, p+1);  // texte après "\\"
+		strcpy(m_tooltip, p+1);  // texte aprï¿½s "\\"
 	}
 
 	return TRUE;
@@ -129,7 +143,7 @@ FPOINT CControl::RetDim()
 }
 
 
-// Modifie un attribut d'état.
+// Modifie un attribut d'ï¿½tat.
 
 BOOL CControl::SetState(int state, BOOL bState)
 {
@@ -138,7 +152,7 @@ BOOL CControl::SetState(int state, BOOL bState)
 	return TRUE;
 }
 
-// Met un attribut d'état.
+// Met un attribut d'ï¿½tat.
 
 BOOL CControl::SetState(int state)
 {
@@ -146,7 +160,7 @@ BOOL CControl::SetState(int state)
 	return TRUE;
 }
 
-// Enlève un attribut d'état.
+// Enlï¿½ve un attribut d'ï¿½tat.
 
 BOOL CControl::ClearState(int state)
 {
@@ -154,14 +168,14 @@ BOOL CControl::ClearState(int state)
 	return TRUE;
 }
 
-// Teste un attribut d'état.
+// Teste un attribut d'ï¿½tat.
 
 BOOL CControl::TestState(int state)
 {
 	return (m_state & state) ? TRUE:FALSE;
 }
 
-// Retourne tous les attributs d'état.
+// Retourne tous les attributs d'ï¿½tat.
 
 int CControl::RetState()
 {
@@ -169,7 +183,7 @@ int CControl::RetState()
 }
 
 
-// Gestion de l'icône.
+// Gestion de l'icï¿½ne.
 
 void CControl::SetIcon(int icon)
 {
@@ -200,7 +214,7 @@ void CControl::SetName(char* name, BOOL bTooltip)
 		{
 			char	buffer[100];
 
-			strncpy(m_tooltip, p+1, 100);  // texte après "\\"
+			strncpy(m_tooltip, p+1, 100);  // texte aprï¿½s "\\"
 			m_tooltip[100-1] = 0;
 
 			strncpy(buffer, name, 100);
@@ -276,7 +290,7 @@ FontType CControl::RetFontType()
 }
 
 
-// Spécifie le tooltip.
+// Spï¿½cifie le tooltip.
 
 BOOL CControl::SetTooltip(char* name)
 {
@@ -310,7 +324,7 @@ BOOL CControl::RetFocus()
 }
 
 
-// Retourne l'événement associé au contrôle.
+// Retourne l'ï¿½vï¿½nement associï¿½ au contrï¿½le.
 
 EventMsg CControl::RetEventMsg()
 {
@@ -318,7 +332,7 @@ EventMsg CControl::RetEventMsg()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CControl::EventProcess(const Event &event)
 {
@@ -386,7 +400,7 @@ void CControl::GlintDelete()
 	m_bGlint = FALSE;
 }
 
-// Crée un reflet pour ce bouton.
+// Crï¿½e un reflet pour ce bouton.
 
 void CControl::GlintCreate(FPOINT ref, BOOL bLeft, BOOL bUp)
 {
@@ -519,7 +533,7 @@ void CControl::Draw()
 	if ( m_state & STATE_OKAY )
 	{
 		m_engine->SetTexture("button3.tga");
-		icon = 3;  // jaune pressé avec point vert
+		icon = 3;  // jaune pressï¿½ avec point vert
 	}
 
 	if ( m_name[0] == 0 )  // bouton sans nom ?
@@ -634,7 +648,7 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 	DrawIcon(p1, p2, uv1, uv2, ex);
 }
 
-// Dessine une icône rectangulaire composée de 1 (si ex=0)
+// Dessine une icï¿½ne rectangulaire composï¿½e de 1 (si ex=0)
 // ou 3 morceaux.
 
 void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
@@ -703,7 +717,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	}
 }
 
-// Dessine une icône rectangulaire composée de 9 morceaux.
+// Dessine une icï¿½ne rectangulaire composï¿½e de 9 morceaux.
 
 void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 						FPOINT corner, float ex)
@@ -734,7 +748,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	p4.x = p2.x - corner.x;
 	p4.y = p2.y - corner.y;
 
-	// Bande horizontale inférieure.
+	// Bande horizontale infï¿½rieure.
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,   uv2.y   );
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
 	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p1.y, 0.0f), n, uv1.x+ex,uv2.y   );
@@ -746,7 +760,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 	m_engine->AddStatisticTriangle(6);
 
-	// Bande horizontale médiane.
+	// Bande horizontale mï¿½diane.
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
 	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv1.x+ex,uv2.y-ex);
@@ -758,7 +772,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 	m_engine->AddStatisticTriangle(6);
 
-	// Bande horizontale supérieure.
+	// Bande horizontale supï¿½rieure.
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,   uv1.y   );
 	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p4.y, 0.0f), n, uv1.x+ex,uv1.y+ex);
@@ -849,7 +863,7 @@ void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
 }
 
 
-// Détecte si une position est dans le bouton.
+// Dï¿½tecte si une position est dans le bouton.
 
 BOOL CControl::Detect(FPOINT pos)
 {

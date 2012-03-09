@@ -1,4 +1,18 @@
-// autopara.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -51,7 +65,7 @@ CAutoPara::~CAutoPara()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoPara::DeleteObject(BOOL bAll)
 {
@@ -87,7 +101,7 @@ void CAutoPara::Init()
 }
 
 
-// Réception de l'éclair.
+// Rï¿½ception de l'ï¿½clair.
 
 void CAutoPara::StartBlitz()
 {
@@ -97,7 +111,7 @@ void CAutoPara::StartBlitz()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoPara::EventProcess(const Event &event)
 {
@@ -113,7 +127,7 @@ BOOL CAutoPara::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -190,7 +204,7 @@ BOOL CAutoPara::EventProcess(const Event &event)
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoPara::CreateInterface(BOOL bSelect)
 {
@@ -226,7 +240,7 @@ BOOL CAutoPara::CreateInterface(BOOL bSelect)
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoPara::RetError()
 {
@@ -238,7 +252,7 @@ Error CAutoPara::RetError()
 }
 
 
-// Charge tous les objets placés sous le paratonnerre.
+// Charge tous les objets placï¿½s sous le paratonnerre.
 
 void CAutoPara::ChargeObject(float rTime)
 {
@@ -288,7 +302,7 @@ void CAutoPara::ChargeObject(float rTime)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoPara::Write(char *line)
 {
@@ -313,7 +327,7 @@ BOOL CAutoPara::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoPara::Read(char *line)
 {

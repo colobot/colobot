@@ -1,6 +1,18 @@
-// TestCBotDoc.h : interface of the CTestCBotDoc class
-//
-/////////////////////////////////////////////////////////////////////////////
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #if !defined(AFX_TESTCBOTDOC_H__4D1BB90B_8E74_11D4_A439_00D059085115__INCLUDED_)
 #define AFX_TESTCBOTDOC_H__4D1BB90B_8E74_11D4_A439_00D059085115__INCLUDED_
@@ -18,8 +30,8 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	CEdit*			m_pEdit;			// pour mémoriser le texte, et l'afficher
-	CBotProgram*	m_pProg;			// le programme compilé
+	CEdit*			m_pEdit;			// pour mï¿½moriser le texte, et l'afficher
+	CBotProgram*	m_pProg;			// le programme compilï¿½
 	CString			m_DocText;
 	CBotStringArray	m_Liste;
 	BOOL			m_bModified;

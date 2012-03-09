@@ -1,4 +1,18 @@
-// editvalue.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -48,7 +62,7 @@ CEditValue::~CEditValue()
 }
 
 
-// Crée un nouveau bouton.
+// Crï¿½e un nouveau bouton.
 
 BOOL CEditValue::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -128,7 +142,7 @@ void CEditValue::MoveAdjust()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CEditValue::EventProcess(const Event &event)
 {
@@ -208,7 +222,7 @@ BOOL CEditValue::EventProcess(const Event &event)
 }
 
 
-// Met en évidence la valeur éditée.
+// Met en ï¿½vidence la valeur ï¿½ditï¿½e.
 
 void CEditValue::HiliteValue(const Event &event)
 {
@@ -219,7 +233,7 @@ void CEditValue::HiliteValue(const Event &event)
 	pos = m_edit->RetTextLength();
 	if ( m_type == EVT_100 && pos > 0 )
 	{
-		pos --;  // ne sélectionne pas le "%"
+		pos --;  // ne sï¿½lectionne pas le "%"
 	}
 
 	m_edit->SetCursor(pos, 0);
@@ -228,7 +242,7 @@ void CEditValue::HiliteValue(const Event &event)
 	Event newEvent = event;
 	newEvent.event = EVENT_FOCUS;
 	newEvent.param = m_edit->RetEventMsg();
-	m_event->AddEvent(newEvent);  // défocus les autres objets
+	m_event->AddEvent(newEvent);  // dï¿½focus les autres objets
 }
 
 
@@ -306,7 +320,7 @@ void CEditValue::SetValue(float value, BOOL bSendMessage)
 	}
 }
 
-// Retourne la valeur éditée.
+// Retourne la valeur ï¿½ditï¿½e.
 
 float CEditValue::RetValue()
 {

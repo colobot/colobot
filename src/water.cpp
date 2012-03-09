@@ -1,4 +1,18 @@
-// water.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -134,7 +148,7 @@ BOOL CWater::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait évoluer l'eau.
+// Fait ï¿½voluer l'eau.
 
 BOOL CWater::EventFrame(const Event &event)
 {
@@ -151,7 +165,7 @@ BOOL CWater::EventFrame(const Event &event)
 	return TRUE;
 }
 
-// Fait évoluer les jets de vapeur sur la lave.
+// Fait ï¿½voluer les jets de vapeur sur la lave.
 
 void CWater::LavaFrame(float rTime)
 {
@@ -228,7 +242,7 @@ void CWater::VaporFlush()
 	}
 }
 
-// Crée un nouveau jet de vapeur.
+// Crï¿½e un nouveau jet de vapeur.
 
 BOOL CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 {
@@ -264,7 +278,7 @@ BOOL CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 	return FALSE;
 }
 
-// Fait évoluer un jet de vapeur,
+// Fait ï¿½voluer un jet de vapeur,
 
 void CWater::VaporFrame(int i, float rTime)
 {
@@ -337,7 +351,7 @@ void CWater::VaporFrame(int i, float rTime)
 
 
 // Ajuste la position et la normale, pour imiter des reflets
-// sur une étendue d'eau au repos.
+// sur une ï¿½tendue d'eau au repos.
 
 void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
 						 FPOINT &uv1, FPOINT &uv2)
@@ -382,8 +396,8 @@ void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
 #endif
 }
 
-// Dessine la surface arrière de l'eau.
-// Cette surface empèche de voir le ciel (background) sous l'eau !
+// Dessine la surface arriï¿½re de l'eau.
+// Cette surface empï¿½che de voir le ciel (background) sous l'eau !
 
 void CWater::DrawBack()
 {
@@ -586,7 +600,7 @@ void CWater::DrawSurf()
 }
 
 
-// Indique s'il y a de l'eau à une position donnée.
+// Indique s'il y a de l'eau ï¿½ une position donnï¿½e.
 
 BOOL CWater::RetWater(int x, int y)
 {
@@ -614,7 +628,7 @@ BOOL CWater::RetWater(int x, int y)
 	return FALSE;
 }
 
-// Met à jour les positions par-rapport au terrain.
+// Met ï¿½ jour les positions par-rapport au terrain.
 
 BOOL CWater::CreateLine(int x, int y, int len)
 {
@@ -635,7 +649,7 @@ BOOL CWater::CreateLine(int x, int y, int len)
 	return ( m_lineUsed < MAXWATERLINE );
 }
 
-// Crée toutes les étendues d'eau.
+// Crï¿½e toutes les ï¿½tendues d'eau.
 
 BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 					D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,
@@ -734,7 +748,7 @@ float CWater::RetLevel()
 	return m_level;
 }
 
-// Retourne le niveau actuel de l'eau pour un objet donné.
+// Retourne le niveau actuel de l'eau pour un objet donnï¿½.
 
 float CWater::RetLevel(CObject* object)
 {
@@ -796,7 +810,7 @@ BOOL CWater::RetLava()
 }
 
 
-// Ajuste l'oeil de la caméra, pour ne pas être entre deux eaux.
+// Ajuste l'oeil de la camï¿½ra, pour ne pas ï¿½tre entre deux eaux.
 
 void CWater::AdjustEye(D3DVECTOR &eye)
 {

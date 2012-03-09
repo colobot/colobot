@@ -1,4 +1,18 @@
-// control.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _CONTROL_H_
 #define	_CONTROL_H_
@@ -15,20 +29,20 @@ enum FontType;
 
 
 #define STATE_ENABLE	(1<<0)	// actif
-#define STATE_CHECK		(1<<1)	// enfoncé
-#define STATE_HILIGHT	(1<<2)	// survolé par la souris
-#define STATE_PRESS		(1<<3)	// pressé par la souris
+#define STATE_CHECK		(1<<1)	// enfoncï¿½
+#define STATE_HILIGHT	(1<<2)	// survolï¿½ par la souris
+#define STATE_PRESS		(1<<3)	// pressï¿½ par la souris
 #define STATE_VISIBLE	(1<<4)	// visible
 #define STATE_DEAD		(1<<5)	// inaccessible (x)
-#define STATE_DEFAULT	(1<<6)	// actionné par RETURN
-#define STATE_OKAY		(1<<7)	// point vert en bas à droite
+#define STATE_DEFAULT	(1<<6)	// actionnï¿½ par RETURN
+#define STATE_OKAY		(1<<7)	// point vert en bas ï¿½ droite
 #define STATE_SHADOW	(1<<8)	// ombre
 #define STATE_GLINT		(1<<9)	// reflet dynamique
 #define STATE_CARD		(1<<10)	// onglet
-#define STATE_EXTEND	(1<<11)	// mode étendu
+#define STATE_EXTEND	(1<<11)	// mode ï¿½tendu
 #define STATE_SIMPLY	(1<<12)	// sans ornements
-#define STATE_FRAME		(1<<13)	// cadre de mise en évidence
-#define STATE_WARNING	(1<<14)	// cadre hachuré jaune/noir
+#define STATE_FRAME		(1<<13)	// cadre de mise en ï¿½vidence
+#define STATE_WARNING	(1<<14)	// cadre hachurï¿½ jaune/noir
 #define STATE_VALUE		(1<<15)	// affiche la valeur
 #define STATE_RUN		(1<<16)	// programme en cours
 
@@ -96,8 +110,8 @@ protected:
 	FPOINT		m_pos;			// coin sup/gauche
 	FPOINT		m_dim;			// dimensions
 	int			m_icon;
-	EventMsg	m_eventMsg;		// message à envoyer si clic
-	int			m_state;		// états (STATE_*)
+	EventMsg	m_eventMsg;		// message ï¿½ envoyer si clic
+	int			m_state;		// ï¿½tats (STATE_*)
 	float		m_fontSize;		// taille du nom du bouton
 	float		m_fontStretch;	// stretch de la fonte
 	FontType	m_fontType;		// type de la fonte

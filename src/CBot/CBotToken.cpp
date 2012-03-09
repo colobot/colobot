@@ -1,10 +1,21 @@
-//////////////////////////////////////////////////////////////////
-// Gestion des Tokens
-// le texte d'un programme est d'abord transformé
-// en une suite de tokens pour facilité l'interprétation
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 // il faudra traiter le seul cas d'erreur possible
-// qui est un caractère illégal dans une string
+// qui est un caractï¿½re illï¿½gal dans une string
 
 
 #include "CBot.h"
@@ -20,7 +31,7 @@ CBotToken::CBotToken()
 	m_next	= NULL;
 	m_prev  = NULL;
 
-	m_type = TokenTypVar;			// à priori un nom d'une variable
+	m_type = TokenTypVar;			// ï¿½ priori un nom d'une variable
 	m_IdKeyWord = -1;
 }
 
@@ -53,14 +64,14 @@ CBotToken::CBotToken(const CBotToken* pSrc)
 
 CBotToken::CBotToken(CBotString& mot, CBotString& sep, int start, int end)
 {
-	m_Text	= mot;					// mot trouvé comme token
-	m_Sep	= sep;					// séparateurs qui suivent
+	m_Text	= mot;					// mot trouvï¿½ comme token
+	m_Sep	= sep;					// sï¿½parateurs qui suivent
 	m_next	= NULL;
 	m_prev	= NULL;
 	m_start	= start;
 	m_end	= end;
 
-	m_type = TokenTypVar;			// à priori un nom d'une variable
+	m_type = TokenTypVar;			// ï¿½ priori un nom d'une variable
 	m_IdKeyWord = -1;
 }
 
@@ -71,13 +82,13 @@ CBotToken::CBotToken(const char* mot, const char* sep)
 	m_next	= NULL;
 	m_prev	= NULL;
 
-	m_type = TokenTypVar;			// à priori un nom d'une variable
+	m_type = TokenTypVar;			// ï¿½ priori un nom d'une variable
 	m_IdKeyWord = -1;
 }
 
 CBotToken::~CBotToken()
 {
-	delete	m_next;					// récursif
+	delete	m_next;					// rï¿½cursif
 	m_next = NULL;
 }
 
@@ -199,54 +210,54 @@ BOOL Char2InList(const char c, const char cc, const char* list)
 }
 
 static char*	sep1 = " \r\n\t,:()[]{}-+*/=;><!~^|&%.";
-static char*	sep2 = " \r\n\t";							// séparateurs pures
-static char*	sep3 = ",:()[]{}-+*/=;<>!~^|&%.";			// séparateurs opérationnels
-static char*	num	 = "0123456789";						// le point (unique) est testé séparément
+static char*	sep2 = " \r\n\t";							// sï¿½parateurs pures
+static char*	sep3 = ",:()[]{}-+*/=;<>!~^|&%.";			// sï¿½parateurs opï¿½rationnels
+static char*	num	 = "0123456789";						// le point (unique) est testï¿½ sï¿½parï¿½ment
 static char*	hexnum	 = "0123456789ABCDEFabcdef";
-static char*	nch	 = "\"\r\n\t";							// refusé dans les chaines
+static char*	nch	 = "\"\r\n\t";							// refusï¿½ dans les chaines
 
-//static char*	duo	 = "+=-=*=/===!=<=>=++--///**/||&&";// les opérateurs doubles
+//static char*	duo	 = "+=-=*=/===!=<=>=++--///**/||&&";// les opï¿½rateurs doubles
 
 // cherche le prochain token dans une phrase
-// ne doit pas commencer par des séparateurs
-// qui sont pris avec le token précédent
+// ne doit pas commencer par des sï¿½parateurs
+// qui sont pris avec le token prï¿½cï¿½dent
 CBotToken*	CBotToken::NextToken(char* &program, int& error, BOOL first)
 {
-	CBotString		mot;				// le mot trouvé
-	CBotString		sep;				// les séparateurs qui le suivent
+	CBotString		mot;				// le mot trouvï¿½
+	CBotString		sep;				// les sï¿½parateurs qui le suivent
 	char			c;
 	BOOL			stop = first;
 
 	if (*program == 0) return NULL;
 
-	c   = *(program++);					// prochain caractère
+	c   = *(program++);					// prochain caractï¿½re
 
 	if (!first)
 	{
 		mot = c;							// construit le mot
-		c   = *(program++);					// prochain caractère
+		c   = *(program++);					// prochain caractï¿½re
 
-		// cas particulier pour les chaînes de caractères
+		// cas particulier pour les chaï¿½nes de caractï¿½res
 		if ( mot[0] == '\"' )
 		{
 			while (c != 0 && !CharInList(c, nch))
 			{
 				mot += c;
-				c   = *(program++);					// prochain caractère
+				c   = *(program++);					// prochain caractï¿½re
 				if ( c == '\\' )
 				{
-					c   = *(program++);					// prochain caractère
+					c   = *(program++);					// prochain caractï¿½re
 					if ( c == 'n' ) c = '\n';
 					if ( c == 'r' ) c = '\r';
 					if ( c == 't' ) c = '\t';
 					mot += c;
-					c   = *(program++);					// prochain caractère
+					c   = *(program++);					// prochain caractï¿½re
 				}
 			}
 			if ( c == '\"' )
 			{
-				mot += c;							// chaîne complète
-				c   = *(program++);					// prochain caractère
+				mot += c;							// chaï¿½ne complï¿½te
+				c   = *(program++);					// prochain caractï¿½re
 			}
 			stop = TRUE;
 		}
@@ -254,30 +265,30 @@ CBotToken*	CBotToken::NextToken(char* &program, int& error, BOOL first)
 		// cas particulier pour les nombres
 		if ( CharInList(mot[0], num ))
 		{
-			BOOL	bdot = FALSE;	// trouvé un point ?
-			BOOL	bexp = FALSE;	// trouvé un exposant ?
+			BOOL	bdot = FALSE;	// trouvï¿½ un point ?
+			BOOL	bexp = FALSE;	// trouvï¿½ un exposant ?
 
 			char*	liste = num;
-			if (mot[0] == '0' && c == 'x')			// valeur hexadécimale ?
+			if (mot[0] == '0' && c == 'x')			// valeur hexadï¿½cimale ?
 			{
 				mot += c;
-				c   = *(program++);					// prochain caractère
+				c   = *(program++);					// prochain caractï¿½re
 				liste = hexnum;
 			}
 cw:
 			while (c != 0 && CharInList(c, liste))
 			{
 cc:				mot += c;
-				c   = *(program++);					// prochain caractère
+				c   = *(program++);					// prochain caractï¿½re
 			}
-			if ( liste == num )						// pas pour les exadécimaux
+			if ( liste == num )						// pas pour les exadï¿½cimaux
 			{
 				if ( !bdot && c == '.' ) { bdot = TRUE; goto cc; }
 				if ( !bexp && ( c == 'e' || c == 'E' ) )
 				{
 					bexp = TRUE;
 					mot += c;
-					c   = *(program++);					// prochain caractère
+					c   = *(program++);					// prochain caractï¿½re
 					if ( c == '-' ||
 						 c == '+' ) goto cc;
 					goto cw;
@@ -287,13 +298,13 @@ cc:				mot += c;
 			stop = TRUE;
 		}
 
-		if (CharInList(mot[0], sep3))				// un séparateur opérationnel ?
+		if (CharInList(mot[0], sep3))				// un sï¿½parateur opï¿½rationnel ?
 		{
 			CBotString	motc = mot;
-			while (motc += c, c != 0 && GivKeyWords(motc)>0)	// cherche l'opérande le plus long possible
+			while (motc += c, c != 0 && GivKeyWords(motc)>0)	// cherche l'opï¿½rande le plus long possible
 			{
 				mot += c;							// construit le mot
-				c = *(program++);					// prochain caractère
+				c = *(program++);					// prochain caractï¿½re
 			}
 
 			stop = TRUE;
@@ -310,7 +321,7 @@ cc:				mot += c;
 bis:
 			while (CharInList(c, sep2))
 			{
-				sep += c;							// tous les séparateurs qui suivent
+				sep += c;							// tous les sï¿½parateurs qui suivent
 				c = *(program++);
 			}
 			if (c == '/' && *program == '/')		// un commentaire dans le tas ?
@@ -318,7 +329,7 @@ bis:
 				while( c != '\n' && c != 0 )
 				{
 					sep += c;
-					c = *(program++);				// prochain caractère
+					c = *(program++);				// prochain caractï¿½re
 				}
 				goto bis;
 			}
@@ -328,14 +339,14 @@ bis:
 				while( c != 0 && (c != '*' || *program != '/'))
 				{
 					sep += c;
-					c = *(program++);				// prochain caractère
+					c = *(program++);				// prochain caractï¿½re
 				}
 				if ( c != 0 )
 				{
 					sep += c;
-					c = *(program++);				// prochain caractère
+					c = *(program++);				// prochain caractï¿½re
 					sep += c;
-					c = *(program++);				// prochain caractère
+					c = *(program++);				// prochain caractï¿½re
 				}
 				goto bis;
 			}
@@ -356,7 +367,7 @@ bis:
 		}
 
 		mot += c;						// construit le mot
-		c = *(program++);				// prochain caractère
+		c = *(program++);				// prochain caractï¿½re
 	}
 }
 
@@ -379,12 +390,12 @@ CBotToken* CBotToken::CompileTokens(const char* program, int& error)
 	char* pp = p;
 	while (NULL != (nxt = NextToken(p, error)))
 	{
-		prv->m_next = nxt;				// ajoute à la suite
+		prv->m_next = nxt;				// ajoute ï¿½ la suite
 		nxt->m_prev = prv;
 		prv = nxt;						// avance
 
 		nxt->m_start	= pos;
-/*		pos += nxt->m_Text.GivLength();	// la chaîne peut être plus courte (BOA supprimés)
+/*		pos += nxt->m_Text.GivLength();	// la chaï¿½ne peut ï¿½tre plus courte (BOA supprimï¿½s)
 		nxt->m_end	= pos;
 		pos += nxt->m_Sep.GivLength();*/
 		pos += (p - pp);				// taille totale
@@ -393,10 +404,10 @@ CBotToken* CBotToken::CompileTokens(const char* program, int& error)
 	}
 
 	// ajoute un token comme terminateur
-	// ( utile pour avoir le précédent )
+	// ( utile pour avoir le prï¿½cï¿½dent )
 	nxt = new CBotToken();
 	nxt->m_type = 0;
-	prv->m_next = nxt;				// ajoute à la suite
+	prv->m_next = nxt;				// ajoute ï¿½ la suite
 	nxt->m_prev = prv;
 
 	return tokenbase;
@@ -417,7 +428,7 @@ int CBotToken::GivKeyWords(const char* w)
 
 	if (l == 0)
 	{
-		LoadKeyWords();							// prend la liste la première fois
+		LoadKeyWords();							// prend la liste la premiï¿½re fois
 		l = m_ListKeyWords.GivSize();
 	}
 
@@ -511,8 +522,8 @@ BOOL IsOfType(CBotToken* &p, int type1, int type2)
 	return FALSE;
 }
 
-// idem avec un nombre indéfini d'arguments
-// il faut mettre un zéro comme dernier argument
+// idem avec un nombre indï¿½fini d'arguments
+// il faut mettre un zï¿½ro comme dernier argument
 BOOL IsOfTypeList(CBotToken* &p, int type1, ...)
 {
 	int		i = type1;

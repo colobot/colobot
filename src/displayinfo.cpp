@@ -1,4 +1,18 @@
-// displayinfo.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -69,7 +83,7 @@ CDisplayInfo::~CDisplayInfo()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CDisplayInfo::EventProcess(const Event &event)
 {
@@ -195,7 +209,7 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 			UpdateCopyButton();
 		}
 
-		if ( event.event == EVENT_WINDOW4 )  // fenêtre déplacée ?
+		if ( event.event == EVENT_WINDOW4 )  // fenï¿½tre dï¿½placï¿½e ?
 		{
 			m_infoNormalPos = m_infoActualPos = m_infoFinalPos = pw->RetPos();
 			m_infoNormalDim = m_infoActualDim = m_infoFinalDim = pw->RetDim();
@@ -258,7 +272,7 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 }
 
 
-// Fait évoluer le cerveau selon le temps écoulé.
+// Fait ï¿½voluer le cerveau selon le temps ï¿½coulï¿½.
 
 BOOL CDisplayInfo::EventFrame(const Event &event)
 {
@@ -281,7 +295,7 @@ BOOL CDisplayInfo::EventFrame(const Event &event)
 }
 
 
-// Met à jour les boutons pour les liens hyper-texte.
+// Met ï¿½ jour les boutons pour les liens hyper-texte.
 
 void CDisplayInfo::HyperUpdate()
 {
@@ -318,7 +332,7 @@ void CDisplayInfo::HyperUpdate()
 }
 
 
-// Début de l'affichage des informations.
+// Dï¿½but de l'affichage des informations.
 
 void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 {
@@ -336,7 +350,7 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 //?	CreateObjectsFile();
 
 	m_bEditLock = m_main->RetEditLock();
-	if ( m_bEditLock )  // édition programme en cours ?
+	if ( m_bEditLock )  // ï¿½dition programme en cours ?
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
 		if ( pw != 0 )
@@ -398,7 +412,7 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	button = pw->CreateButton(pos, dim, 20, EVENT_SATCOM_SOLUCE);
 	button->SetState(STATE_SHADOW);
 
-	pw->CreateGroup(pos, dim, 18, EVENT_LABEL1);  // flèche >
+	pw->CreateGroup(pos, dim, 18, EVENT_LABEL1);  // flï¿½che >
 	pw->CreateGroup(pos, dim, 19, EVENT_LABEL2);  // sigle SatCom
 
 	button = pw->CreateButton(pos, dim, 55, EVENT_HYPER_PREV);
@@ -458,7 +472,7 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	m_light->SetLightExcluType(m_lightSuppl, TYPETERRAIN);
 }
 
-// Repositionne tous les contrôles d'édition.
+// Repositionne tous les contrï¿½les d'ï¿½dition.
 
 void CDisplayInfo::AdjustDisplayInfo(FPOINT wpos, FPOINT wdim)
 {
@@ -822,12 +836,12 @@ void CDisplayInfo::StopDisplayInfo()
 
 	m_interface->DeleteControl(EVENT_WINDOW4);
 
-	if ( m_bEditLock )  // édition programme en cours ?
+	if ( m_bEditLock )  // ï¿½dition programme en cours ?
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
 		if ( pw != 0 )
 		{
-			pw->SetState(STATE_ENABLE);  // CStudio opérationnel
+			pw->SetState(STATE_ENABLE);  // CStudio opï¿½rationnel
 		}
 	}
 	else
@@ -857,7 +871,7 @@ void CDisplayInfo::StopDisplayInfo()
 }
 
 
-// Spécifie la position.
+// Spï¿½cifie la position.
 
 void CDisplayInfo::SetPosition(int pos)
 {
@@ -932,7 +946,7 @@ CObject* CDisplayInfo::SearchToto()
 }
 
 
-// Création de la liste des objets.
+// Crï¿½ation de la liste des objets.
 
 typedef struct
 {
@@ -991,7 +1005,7 @@ void ObjectWrite(FILE* file, ObjectList list[], int i)
 	fputs(line, file);
 }
 
-// Crée le fichier contenant la liste des objets.
+// Crï¿½e le fichier contenant la liste des objets.
 
 void CDisplayInfo::CreateObjectsFile()
 {

@@ -1,4 +1,18 @@
-// autolabo.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,7 +46,7 @@
 
 
 
-#define LABO_DELAY		20.0f		// durée de l'analyse
+#define LABO_DELAY		20.0f		// durï¿½e de l'analyse
 
 
 
@@ -64,7 +78,7 @@ CAutoLabo::~CAutoLabo()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoLabo::DeleteObject(BOOL bAll)
 {
@@ -112,7 +126,7 @@ void CAutoLabo::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoLabo::EventProcess(const Event &event)
 {
@@ -131,7 +145,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 		if ( m_object->RetSelect() )  CreateInterface(TRUE);
 	}
 
-	if ( m_object->RetSelect() &&  // centre sélectionné ?
+	if ( m_object->RetSelect() &&  // centre sï¿½lectionnï¿½ ?
 		 (event.event == EVENT_OBJECT_RiPAW ||
 		  event.event == EVENT_OBJECT_RiGUN) )
 	{
@@ -178,7 +192,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -341,13 +355,13 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 		}
 		else
 		{
-			SetResearch(m_research);  // recherche effectuée
+			SetResearch(m_research);  // recherche effectuï¿½e
 
 			power = m_object->RetPower();
 			if ( power != 0 )
 			{
 				m_object->SetPower(0);
-				power->DeleteObject();  // détruit le boulet
+				power->DeleteObject();  // dï¿½truit le boulet
 				delete power;
 			}
 
@@ -426,7 +440,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoLabo::RetError()
 {
@@ -447,7 +461,7 @@ Error CAutoLabo::RetError()
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoLabo::CreateInterface(BOOL bSelect)
 {
@@ -488,7 +502,7 @@ BOOL CAutoLabo::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met à jour l'état de tous les boutons de l'interface.
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface.
 
 void CAutoLabo::UpdateInterface()
 {
@@ -511,7 +525,7 @@ void CAutoLabo::UpdateInterface()
 	VisibleInterface(pw, EVENT_OBJECT_RiGUN, !m_bBusy);
 }
 
-// Indique les recherches déjà effectuées pour un bouton.
+// Indique les recherches dï¿½jï¿½ effectuï¿½es pour un bouton.
 
 void CAutoLabo::OkayButton(CWindow *pw, EventMsg event)
 {
@@ -524,7 +538,7 @@ void CAutoLabo::OkayButton(CWindow *pw, EventMsg event)
 }
 
 
-// Teste si une recherche a déjà été effectuée.
+// Teste si une recherche a dï¿½jï¿½ ï¿½tï¿½ effectuï¿½e.
 
 BOOL CAutoLabo::TestResearch(EventMsg event)
 {
@@ -534,7 +548,7 @@ BOOL CAutoLabo::TestResearch(EventMsg event)
 	return FALSE;
 }
 
-// Indique une recherche comme effectuée.
+// Indique une recherche comme effectuï¿½e.
 
 void CAutoLabo::SetResearch(EventMsg event)
 {
@@ -563,7 +577,7 @@ void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoLabo::Write(char *line)
 {
@@ -592,7 +606,7 @@ BOOL CAutoLabo::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoLabo::Read(char *line)
 {

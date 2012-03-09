@@ -1,15 +1,18 @@
-//-----------------------------------------------------------------------------
-// File: D3DTextr.h
-//
-// Desc: Functions to manage textures, including creating (loading from a
-//       file), restoring lost surfaces, invalidating, and destroying.
-//
-//       Note: the implementation of these fucntions maintain an internal list
-//       of loaded textures. After creation, individual textures are referenced
-//       via their ASCII names.
-//
-// Copyright (c) 1997-1999 Microsoft Corporation. All rights reserved
-//-----------------------------------------------------------------------------
+﻿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 #ifndef D3DTEXTR_H
 #define D3DTEXTR_H
 #include <ddraw.h>

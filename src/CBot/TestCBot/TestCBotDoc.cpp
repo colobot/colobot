@@ -1,5 +1,18 @@
-// TestCBotDoc.cpp : implementation of the CTestCBotDoc class
-//
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #include "stdafx.h"
 #include "TestCBot.h"
@@ -125,7 +138,7 @@ void CTestCBotDoc::OnRun()
 		m_pProg = NULL;
 
 		m_pEdit->SetSel( start, end );
-		m_pEdit->SetFocus();				// met en évidence la partie avec problème
+		m_pEdit->SetFocus();				// met en ï¿½vidence la partie avec problï¿½me
 
 		TextError = CBotProgram::GivErrorText( code );
 		AfxMessageBox( TextError );
@@ -136,7 +149,7 @@ void CTestCBotDoc::OnRun()
 
 	if( m_Liste.GivSize() == 0 )
 	{
-		AfxMessageBox("Aucune fonction marquée \"extern\" !");
+		AfxMessageBox("Aucune fonction marquï¿½e \"extern\" !");
 		return;
 	}
 
@@ -160,7 +173,7 @@ void CTestCBotDoc::OnRun()
 		TextError = m_pProg->GivErrorText( dlg.m_code );
 
 		m_pEdit->SetSel( dlg.m_start, dlg.m_end );
-		m_pEdit->SetFocus();				// met en évidence la partie avec problème
+		m_pEdit->SetFocus();				// met en ï¿½vidence la partie avec problï¿½me
 
 		AfxMessageBox(TextError);
 	}
@@ -187,7 +200,7 @@ BOOL CTestCBotDoc::Compile()
 	if ( m_pProg == NULL ) m_pProg = new CBotProgram();
 
 	char	buffer[100];
-	strcpy(buffer, "le pointeur à passer pour voir");
+	strcpy(buffer, "le pointeur ï¿½ passer pour voir");
 
 	if (m_bModified && !m_pProg->Compile(m_DocText, m_Liste, (void*)buffer))
 	{
@@ -196,7 +209,7 @@ BOOL CTestCBotDoc::Compile()
 		m_pProg = NULL;
 
 		m_pEdit->SetSel( start, end );
-		m_pEdit->SetFocus();				// met en évidence la partie avec problème
+		m_pEdit->SetFocus();				// met en ï¿½vidence la partie avec problï¿½me
 
 		TextError = CBotProgram::GivErrorText( code );
 		AfxMessageBox( TextError );
@@ -209,7 +222,7 @@ BOOL CTestCBotDoc::Compile()
 	if ( m_pProg->GetPosition( "TheTest", start, end) )
 	{
 		m_pEdit->SetSel( start, end );
-		m_pEdit->SetFocus();				// met en évidence la partie avec problème
+		m_pEdit->SetFocus();				// met en ï¿½vidence la partie avec problï¿½me
 	}
 
 	m_bModified = FALSE;
@@ -219,7 +232,7 @@ BOOL CTestCBotDoc::Compile()
 
 
 static int compt = 0;
-// routine retournant le "pointeur" à un autre object
+// routine retournant le "pointeur" ï¿½ un autre object
 BOOL rRetObject( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
 	pResult->SetPointer( NULL );
@@ -318,7 +331,7 @@ CBotTypResult cRadar( CBotVar* &pVar, void* pUser )
 	return CBotTypResult( CBotTypPointer, "object");
 }
 
-// routine retournant le "pointeur" à un autre object
+// routine retournant le "pointeur" ï¿½ un autre object
 BOOL rTEST( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
 	test = 1 ;
@@ -338,7 +351,7 @@ CBotTypResult cTEST( CBotVar* &pVar, void* pUser )
 	return CBotTypResult( 0 );
 }
 
-// routine retournant le "pointeur" à un autre object
+// routine retournant le "pointeur" ï¿½ un autre object
 BOOL rF( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
 	if ( pResult == NULL )	return TRUE;
@@ -353,7 +366,7 @@ CBotTypResult cF( CBotVar* &pVar, void* pUser )
 
 /////////////////////////////////////////////////////////////////
 
-// Compilation d'une procédure avec un "point".
+// Compilation d'une procï¿½dure avec un "point".
 
 CBotTypResult	cPoint(CBotVar* &var, void* user)
 {
@@ -381,7 +394,7 @@ CBotTypResult	cPoint(CBotVar* &var, void* user)
 	return CBotTypResult( CBotErrBadParam );
 }
 
-// Donne un paramètre de type "point".
+// Donne un paramï¿½tre de type "point".
 #define UNIT	1
 
 
@@ -495,13 +508,13 @@ void CTestCBotDoc::OnTest()
 //	dlg.m_Script = m_DocText;
 //	dlg.DoModal();
 
-	// défini la routine RetObject
+	// dï¿½fini la routine RetObject
 	CBotProgram::AddFunction( "Radar", rRetObject, cRetObject );
 	
 	// ajoute une routine pour cette classe
 	CBotProgram::AddFunction("Space", rSpace, cSpace);
 
-	// défini la routine Test
+	// dï¿½fini la routine Test
 	CBotProgram::AddFunction( "TEST", rTEST, cTEST );
 	CBotProgram::AddFunction( "F", rF, cF );
 	
@@ -509,13 +522,13 @@ void CTestCBotDoc::OnTest()
 	CBotProgram::AddFunction( "fire", rTurn, cTurn );
 	CBotProgram::AddFunction( "radar", rRadar, cRadar );
 
-	// crée une instance de la classe "Bot" pour ce robot
+	// crï¿½e une instance de la classe "Bot" pour ce robot
 	CBotVar*	pThisRobot = CBotVar::Create( "", CBotTypResult(CBotTypClass, "object") );
 	pThisRobot->SetUserPtr( (void*)1 );
 	pThisRobot->SetIdent( 1234 );
 
 	delete m_pProg;
-	// crée un objet programme associé à cette instance
+	// crï¿½e un objet programme associï¿½ ï¿½ cette instance
 	m_pProg = new CBotProgram(pThisRobot);
 
 	// compile le programme
@@ -532,7 +545,7 @@ void CTestCBotDoc::OnTest()
 		delete pThisRobot;
 
 		m_pEdit->SetSel( start, end );
-		m_pEdit->SetFocus();				// met en évidence la partie avec problème
+		m_pEdit->SetFocus();				// met en ï¿½vidence la partie avec problï¿½me
 
 		TextError = CBotProgram::GivErrorText( code );
 		AfxMessageBox( TextError );
@@ -541,14 +554,14 @@ void CTestCBotDoc::OnTest()
 		return;
 	}
 
-	// exécute pour voir
+	// exï¿½cute pour voir
 	m_pProg->Start(m_Liste[0]);
 
 	int mode = -1;
 
 	if ( mode >= 0 ) {
 
-	// sauve et restore à chaque pas possible
+	// sauve et restore ï¿½ chaque pas possible
 	while (!m_pProg->Run(NULL, 1))
 	{
 		const char* FunctionName;
@@ -575,7 +588,7 @@ if ( mode == 2 ) if (!m_pProg->Compile(m_DocText, m_Liste, (void*) 44))
 		delete pThisRobot;
 
 		m_pEdit->SetSel( start, end );
-		m_pEdit->SetFocus();				// met en évidence la partie avec problème
+		m_pEdit->SetFocus();				// met en ï¿½vidence la partie avec problï¿½me
 
 		TextError = CBotProgram::GivErrorText( code );
 		AfxMessageBox( TextError );

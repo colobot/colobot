@@ -1,4 +1,18 @@
-// planet.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,7 +52,7 @@ CPlanet::~CPlanet()
 }
 
 
-// Supprime toutes les planètes.
+// Supprime toutes les planï¿½tes.
 
 void CPlanet::Flush()
 {
@@ -58,7 +72,7 @@ void CPlanet::Flush()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CPlanet::EventProcess(const Event &event)
 {
@@ -69,7 +83,7 @@ BOOL CPlanet::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait évoluer les planètes.
+// Fait ï¿½voluer les planï¿½tes.
 
 BOOL CPlanet::EventFrame(const Event &event)
 {
@@ -97,7 +111,7 @@ BOOL CPlanet::EventFrame(const Event &event)
 }
 
 
-// Charge toutes les textures pour les planètes.
+// Charge toutes les textures pour les planï¿½tes.
 
 void CPlanet::LoadTexture()
 {
@@ -114,7 +128,7 @@ void CPlanet::LoadTexture()
 	}
 }
 
-// Dessine toutes les planètes.
+// Dessine toutes les planï¿½tes.
 
 void CPlanet::Draw()
 {
@@ -174,7 +188,7 @@ void CPlanet::Draw()
 }
 
 
-// Crée une nouvelle planète.
+// Crï¿½e une nouvelle planï¿½te.
 
 BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 					 float dir, char *name, FPOINT uv1, FPOINT uv2)
@@ -208,7 +222,7 @@ BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 	return FALSE;
 }
 
-// Indique s'il existe au moins une planète.
+// Indique s'il existe au moins une planï¿½te.
 
 BOOL CPlanet::PlanetExist()
 {

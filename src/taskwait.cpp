@@ -1,4 +1,18 @@
-// taskwait.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,7 +52,7 @@ CTaskWait::~CTaskWait()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskWait::EventProcess(const Event &event)
 {
@@ -51,17 +65,17 @@ BOOL CTaskWait::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigne le but ï¿½ atteindre.
 
 Error CTaskWait::Start(float time)
 {
-	m_waitTime = time;  // durée à attendre
-	m_passTime = 0.0f;  // durée écoulée
+	m_waitTime = time;  // durï¿½e ï¿½ attendre
+	m_passTime = 0.0f;  // durï¿½e ï¿½coulï¿½e
 	m_bEnded = FALSE;
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskWait::IsEnded()
 {

@@ -1,5 +1,18 @@
-// TstCBot.cpp : Defines the class behaviors for the application.
-//
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #include "stdafx.h"
 #include "TstCBot.h"
@@ -19,9 +32,9 @@ static char THIS_FILE[] = __FILE__;
 
 ////////////////////////////////////////////////////////////////////
 // routine show()
-// utilisable depuis le programme écrit en CBot
+// utilisable depuis le programme ï¿½crit en CBot
 
-// exécution
+// exï¿½cution
 BOOL	rShow( CBotVar* pVar, CBotVar* pResult, int& Exception )
 {
 	CString		s;
@@ -56,7 +69,7 @@ BOOL	rShow( CBotVar* pVar, CBotVar* pResult, int& Exception )
 int	cShow( CBotVar* &pVar, CBotString& RetClass)
 {
 	if ( pVar == NULL ) return 22;
-	return CBotTypInt;		// tous paramètres acceptés, un entier en retour
+	return CBotTypInt;		// tous paramï¿½tres acceptï¿½s, un entier en retour
 }
 
 int	cErr( CBotVar* &pVar, CBotString& RetClass)
@@ -67,9 +80,9 @@ int	cErr( CBotVar* &pVar, CBotString& RetClass)
 
 ////////////////////////////////////////////////////////////////////
 // routine print()
-// utilisable depuis le programme écrit en CBot
+// utilisable depuis le programme ï¿½crit en CBot
 
-// exécution
+// exï¿½cution
 BOOL	rPrintLn( CBotVar* pVar, CBotVar* pResult, int& Exception )
 {
 	CString		s;
@@ -118,19 +131,19 @@ BOOL	rPrint( CBotVar* pVar, CBotVar* pResult, int& Exception )
 
 int	cPrint( CBotVar* &pVar, CBotString& RetClass)
 {
-	return 0;				// tous paramètres acceptés, un entier en retour
+	return 0;				// tous paramï¿½tres acceptï¿½s, un entier en retour
 }
 
 
 //////////////////////////////////////////////////////////////////
 // class CPoint pour essayer
 
-// exécution
+// exï¿½cution
 BOOL	rCPoint( CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception )
 {
 	CString		s;
 
-	if ( pVar == NULL )return TRUE;			// constructeur sans paramètres est ok
+	if ( pVar == NULL )return TRUE;			// constructeur sans paramï¿½tres est ok
 
 	if ( pVar->RetType() > CBotTypDouble )
 	{
@@ -175,41 +188,41 @@ BOOL	rCPoint( CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception )
 
 int	cCPoint( CBotVar* pThis, CBotVar* &pVar, CBotString& RetClass)
 {
-	// l'objet doit être de la classe CPoint
+	// l'objet doit ï¿½tre de la classe CPoint
 	if ( !pThis->IsElemOfClass("CPoint") ) return 6021;
 
-	// ok si aucun paramètres !
+	// ok si aucun paramï¿½tres !
 	if ( pVar == NULL ) return 0;
 
-	// paramètre de type numérique svp
+	// paramï¿½tre de type numï¿½rique svp
 	if ( pVar->RetType() > CBotTypDouble ) return 6023;
 	pVar	= pVar->RetNext();
 
-	// il doit y avoir un second paramètre
+	// il doit y avoir un second paramï¿½tre
 	if ( pVar == NULL ) return 6022;
-	// également de type numérique
+	// ï¿½galement de type numï¿½rique
 	if ( pVar->RetType() > CBotTypDouble )return 6023;
 	pVar	= pVar->RetNext();
 
-	// et pas plus de 2 paramètres svp
+	// et pas plus de 2 paramï¿½tres svp
 	if ( pVar != NULL ) return 6025;
 
 	return 0;		// cette fonction retourne void
 }
 
-// méthode déterminant l'opposé
+// mï¿½thode dï¿½terminant l'opposï¿½
 BOOL	rOppose( CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception )
 {
 	CString		s;
 
-	if ( pVar != NULL )								// pas de paramètre
+	if ( pVar != NULL )								// pas de paramï¿½tre
 	{
 		Exception = 6025; return FALSE;
 	}
 
-	CBotVar*	pvar = pThis->RetItemList();		// demande la chaîne des items
+	CBotVar*	pvar = pThis->RetItemList();		// demande la chaï¿½ne des items
 
-	// tous les paramètres sont des nombres
+	// tous les paramï¿½tres sont des nombres
 	while (pvar != NULL)
 	{
 		pvar->SetValFloat( -pvar->RetValFloat() );
@@ -222,15 +235,15 @@ BOOL	rOppose( CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception )
 
 int	cOppose( CBotVar* pThis, CBotVar* &pVar, CBotString& RetClass)
 {
-	// l'objet doit être de la classe CPoint
+	// l'objet doit ï¿½tre de la classe CPoint
 	if ( !pThis->IsElemOfClass("CPoint") ) return 6021;
 
 	RetClass = "CPoint";									// l'objet rendu est de cette class
 
-	// ok si aucun paramètres !
-	if ( pVar == NULL ) return CBotTypClass;				// le paramètre retourné est une instance de la classe
+	// ok si aucun paramï¿½tres !
+	if ( pVar == NULL ) return CBotTypClass;				// le paramï¿½tre retournï¿½ est une instance de la classe
 
-	return TX_OVERPARAM;		// ça va pas
+	return TX_OVERPARAM;		// ï¿½a va pas
 }
 
 
@@ -313,7 +326,7 @@ BOOL CTstCBotApp::InitInstance()
 
  
 ///////////////////////////////////
-//	défini la fonction "show()"
+//	dï¿½fini la fonction "show()"
 // --------------------------------
 
 	CBotProgram::AddFunction("show", rShow, cShow);
@@ -323,7 +336,7 @@ BOOL CTstCBotApp::InitInstance()
 
 
 ///////////////////////////////////
-// définie la classe globale CPoint
+// dï¿½finie la classe globale CPoint
 // --------------------------------
 
 	CBotClass*	m_pClassPoint;
@@ -336,8 +349,8 @@ BOOL CTstCBotApp::InitInstance()
 
 	// ajoute le constructeur pour cette classe
 	m_pClassPoint->AddFunction("CPoint", rCPoint, cCPoint);
-	// ajoute la méthode Opposé
-	m_pClassPoint->AddFunction("Opposé", rOppose, cOppose);
+	// ajoute la mï¿½thode Opposï¿½
+	m_pClassPoint->AddFunction("Opposï¿½", rOppose, cOppose);
 
 
 //////////////////////////////////////////////////////////////////
@@ -348,7 +361,7 @@ BOOL CTstCBotApp::InitInstance()
 	CBotStringArray	Liste;
 	p->Compile(" public void MonProgram( ) { show (\"mon programme\") ;}", Liste );
 
-	// l'objet n'est pas détruit et plus référencé
+	// l'objet n'est pas dï¿½truit et plus rï¿½fï¿½rencï¿½
 	// je sais c'est pas bien
 
 

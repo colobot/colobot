@@ -1,4 +1,18 @@
-// autohuston.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -64,7 +78,7 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 	m_lens[2].off = 0.4f;
 	m_lens[3].off = 0.4f;
 
-	// Pièce sous radar.
+	// Piï¿½ce sous radar.
 	i = 4;
 	m_lens[i].type = PARTISELR;
 	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 9.9f, 40.1f);
@@ -112,7 +126,7 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 	m_lens[i].off = 0.7f;
 	i ++;
 
-	// Pièce avec 3 fenêtres.
+	// Piï¿½ce avec 3 fenï¿½tres.
 	m_lens[i].type = PARTISELR;
 	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 9.9f, -19.9f);
 	m_lens[i].dim = 1.0f;
@@ -179,7 +193,7 @@ CAutoHuston::~CAutoHuston()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoHuston::DeleteObject(BOOL bAll)
 {
@@ -198,14 +212,14 @@ void CAutoHuston::Init()
 }
 
 
-// Démarre l'objet.
+// Dï¿½marre l'objet.
 
 void CAutoHuston::Start(int param)
 {
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoHuston::EventProcess(const Event &event)
 {
@@ -227,7 +241,7 @@ BOOL CAutoHuston::EventProcess(const Event &event)
 
 	m_progress += event.rTime*m_speed;
 
-	// Fait clignotter les clés.
+	// Fait clignotter les clï¿½s.
 	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	for ( i=0 ; i<m_lensTotal ; i++ )
 	{
@@ -262,7 +276,7 @@ BOOL CAutoHuston::Abort()
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoHuston::CreateInterface(BOOL bSelect)
 {
@@ -292,7 +306,7 @@ BOOL CAutoHuston::CreateInterface(BOOL bSelect)
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoHuston::RetError()
 {

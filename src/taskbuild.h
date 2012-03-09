@@ -1,4 +1,18 @@
-// taskbuild.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _TASKBUILD_H_
 #define	_TASKBUILD_H_
@@ -21,7 +35,7 @@ enum TaskBuildPhase
 	TBP_TURN	= 1,	// tourne
 	TBP_MOVE	= 2,	// avance/recule
 	TBP_TAKE	= 3,	// prend arme
-	TBP_PREP	= 4,	// prépare
+	TBP_PREP	= 4,	// prï¿½pare
 	TBP_BUILD	= 5,	// construit
 	TBP_TERM	= 6,	// termine
 	TBP_RECEDE	= 7,	// recule terminal
@@ -51,22 +65,22 @@ protected:
 
 protected:
 	ObjectType		m_type;			// type de construction
-	CObject*		m_metal;		// objet metal transformé
-	CObject*		m_power;		// pile du véhicule
+	CObject*		m_metal;		// objet metal transformï¿½
+	CObject*		m_power;		// pile du vï¿½hicule
 	CObject*		m_building;		// batiment construit
-	TaskBuildPhase	m_phase;		// phase de l'opération
-	BOOL			m_bError;		// TRUE -> opération impossible
+	TaskBuildPhase	m_phase;		// phase de l'opï¿½ration
+	BOOL			m_bError;		// TRUE -> opï¿½ration impossible
 	BOOL			m_bBuild;		// TRUE -> batiment construit
-	BOOL			m_bBlack;		// TRUE -> lumières noir -> blanc
+	BOOL			m_bBlack;		// TRUE -> lumiï¿½res noir -> blanc
 	float			m_time;			// temps absolu
-	float			m_lastParticule;// temps génération dernière particule
+	float			m_lastParticule;// temps gï¿½nï¿½ration derniï¿½re particule
 	float			m_progress;		// progression (0..1)
 	float			m_speed;		// vitesse de la progression
-	float			m_angleY;		// angle de rotation du véhicule
+	float			m_angleY;		// angle de rotation du vï¿½hicule
 	float			m_angleZ;		// angle de rotation du canon
 	D3DVECTOR		m_buildingPos;	// position initiale du batiment
 	float			m_buildingHeight;// hauteur du building
-	int				m_lightRank[TBMAXLIGHT];// lumières pour les effets
+	int				m_lightRank[TBMAXLIGHT];// lumiï¿½res pour les effets
 	int				m_soundChannel;
 };
 

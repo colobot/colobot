@@ -1,4 +1,18 @@
-// autojostle.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -48,7 +62,7 @@ CAutoJostle::~CAutoJostle()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoJostle::DeleteObject(BOOL bAll)
 {
@@ -67,7 +81,7 @@ void CAutoJostle::Init()
 }
 
 
-// Démarre une émission.
+// Dï¿½marre une ï¿½mission.
 
 void CAutoJostle::Start(int param, float force)
 {
@@ -84,14 +98,14 @@ void CAutoJostle::Start(int param, float force)
 
 	type = m_object->RetType();
 	if ( type >= OBJECT_PLANT5 &&
-		 type <= OBJECT_PLANT7 )  // trèfle ?
+		 type <= OBJECT_PLANT7 )  // trï¿½fle ?
 	{
 		m_force *= 3.0f;
 	}
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoJostle::EventProcess(const Event &event)
 {
@@ -143,7 +157,7 @@ BOOL CAutoJostle::EventProcess(const Event &event)
 }
 
 
-// Indique si l'automate a terminé son activité.
+// Indique si l'automate a terminï¿½ son activitï¿½.
 
 Error CAutoJostle::IsEnded()
 {

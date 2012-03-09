@@ -1,4 +1,18 @@
-// tasksearch.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -43,7 +57,7 @@ CTaskSearch::~CTaskSearch()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskSearch::EventProcess(const Event &event)
 {
@@ -57,7 +71,7 @@ BOOL CTaskSearch::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ça avance
+	m_progress += event.rTime*m_speed;  // ï¿½a avance
 	m_time += event.rTime;
 
 	if ( m_phase == TSP_DOWN ||
@@ -118,7 +132,7 @@ void CTaskSearch::InitAngle()
 }
 
 
-// Assigne le but à atteindre.
+// Assigne le but ï¿½ atteindre.
 
 Error CTaskSearch::Start()
 {
@@ -161,7 +175,7 @@ Error CTaskSearch::Start()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskSearch::IsEnded()
 {
@@ -222,7 +236,7 @@ BOOL CTaskSearch::Abort()
 }
 
 
-// Crée une marque si c'est possible.
+// Crï¿½e une marque si c'est possible.
 
 BOOL CTaskSearch::CreateMark()
 {
@@ -293,7 +307,7 @@ BOOL CTaskSearch::CreateMark()
 	return TRUE;
 }
 
-// Détruit les marques d'un type donné..
+// Dï¿½truit les marques d'un type donnï¿½..
 
 void CTaskSearch::DeleteMark(ObjectType type)
 {

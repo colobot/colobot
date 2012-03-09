@@ -1,4 +1,18 @@
-// auto.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -80,7 +94,7 @@ CAuto::~CAuto()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAuto::DeleteObject(BOOL bAll)
 {
@@ -94,7 +108,7 @@ void CAuto::Init()
 	m_bBusy = FALSE;
 }
 
-// Démarre l'objet.
+// Dï¿½marre l'objet.
 
 void CAuto::Start(int param)
 {
@@ -123,7 +137,7 @@ BOOL CAuto::SetString(char *string)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAuto::EventProcess(const Event &event)
 {
@@ -134,7 +148,7 @@ BOOL CAuto::EventProcess(const Event &event)
 		UpdateInterface(event.rTime);
 	}
 
-	if ( !m_object->RetSelect() )  // robot pas sélectionné ?
+	if ( !m_object->RetSelect() )  // robot pas sï¿½lectionnï¿½ ?
 	{
 		return TRUE;
 	}
@@ -142,7 +156,7 @@ BOOL CAuto::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Indique si l'automate a terminé son activité.
+// Indique si l'automate a terminï¿½ son activitï¿½.
 
 Error CAuto::IsEnded()
 {
@@ -157,7 +171,7 @@ BOOL CAuto::Abort()
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAuto::CreateInterface(BOOL bSelect)
 {
@@ -169,8 +183,8 @@ BOOL CAuto::CreateInterface(BOOL bSelect)
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
 	if ( pw != 0 )
 	{
-		pw->Flush();  // détruit les boutons de la fenêtre
-		m_interface->DeleteControl(EVENT_WINDOW0);  // détruit la fenêtre
+		pw->Flush();  // dï¿½truit les boutons de la fenï¿½tre
+		m_interface->DeleteControl(EVENT_WINDOW0);  // dï¿½truit la fenï¿½tre
 	}
 
 	if ( !bSelect )  return TRUE;
@@ -271,7 +285,7 @@ BOOL CAuto::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Modifie l'état d'un bouton de l'interface.
+// Modifie l'ï¿½tat d'un bouton de l'interface.
 
 void CAuto::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -283,7 +297,7 @@ void CAuto::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_CHECK, bState);
 }
 
-// Modifie l'état d'un bouton de l'interface.
+// Modifie l'ï¿½tat d'un bouton de l'interface.
 
 void CAuto::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -295,7 +309,7 @@ void CAuto::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_ENABLE, bState);
 }
 
-// Modifie l'état d'un bouton de l'interface.
+// Modifie l'ï¿½tat d'un bouton de l'interface.
 
 void CAuto::VisibleInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -307,7 +321,7 @@ void CAuto::VisibleInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_VISIBLE, bState);
 }
 
-// Modifie l'état d'un bouton de l'interface.
+// Modifie l'ï¿½tat d'un bouton de l'interface.
 
 void CAuto::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -319,7 +333,7 @@ void CAuto::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_DEAD, !bState);
 }
 
-// Met à jour l'état de tous les boutons de l'interface.
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface.
 
 void CAuto::UpdateInterface()
 {
@@ -333,8 +347,8 @@ void CAuto::UpdateInterface()
 	VisibleInterface(pw, EVENT_OBJECT_GPROGRESS, m_bBusy);
 }
 
-// Met à jour l'état de tous les boutons de l'interface,
-// suite au temps qui s'écoule ...
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface,
+// suite au temps qui s'ï¿½coule ...
 
 void CAuto::UpdateInterface(float rTime)
 {
@@ -363,7 +377,7 @@ void CAuto::UpdateInterface(float rTime)
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAuto::RetError()
 {
@@ -408,7 +422,7 @@ void CAuto::SetMotor(BOOL bMotor)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAuto::Write(char *line)
 {
@@ -432,7 +446,7 @@ BOOL CAuto::Write(char *line)
 	return FALSE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAuto::Read(char *line)
 {

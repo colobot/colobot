@@ -1,4 +1,18 @@
-// autosafe.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,7 +46,7 @@
 
 
 
-#define OPEN_DELAY		8.0f		// durée de l'ouverture
+#define OPEN_DELAY		8.0f		// durï¿½e de l'ouverture
 
 
 
@@ -66,7 +80,7 @@ CAutoSafe::~CAutoSafe()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoSafe::DeleteObject(BOOL bAll)
 {
@@ -110,7 +124,7 @@ void CAutoSafe::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoSafe::EventProcess(const Event &event)
 {
@@ -127,7 +141,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -153,7 +167,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			count = CountKeys();  // compte les clés présentes
+			count = CountKeys();  // compte les clï¿½s prï¿½sentes
 			if ( count != m_countKeys )
 			{
 				m_countKeys = count;
@@ -164,7 +178,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 				if ( count == 3 )  m_finalAngle =  15.0f*PI/180.0f;
 				if ( count == 4 )  m_finalAngle = 120.0f*PI/180.0f;
 
-				if ( count == 4 )  // toutes les clés ?
+				if ( count == 4 )  // toutes les clï¿½s ?
 				{
 					LockKeys();
 
@@ -283,7 +297,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 		m_object->SetAngleZ(2, -m_actualAngle);
 	}
 
-	// Fait clignotter les clés.
+	// Fait clignotter les clï¿½s.
 	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	dim.x = 2.0f;
 	dim.y = dim.x;
@@ -312,7 +326,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoSafe::CreateInterface(BOOL bSelect)
 {
@@ -342,7 +356,7 @@ BOOL CAutoSafe::CreateInterface(BOOL bSelect)
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoSafe::RetError()
 {
@@ -354,7 +368,7 @@ Error CAutoSafe::RetError()
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoSafe::Write(char *line)
 {
@@ -379,7 +393,7 @@ BOOL CAutoSafe::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoSafe::Read(char *line)
 {
@@ -397,7 +411,7 @@ BOOL CAutoSafe::Read(char *line)
 }
 
 
-// Compte le nombre de clés présentes.
+// Compte le nombre de clï¿½s prï¿½sentes.
 
 int CAutoSafe::CountKeys()
 {
@@ -462,7 +476,7 @@ int CAutoSafe::CountKeys()
 		angle = RotateAngle(oPos.x-cPos.x, oPos.z-cPos.z)+cAngle;
 		if ( !TestAngle(angle, limit-8.0f*PI/180.0f, limit+8.0f*PI/180.0f) )  continue;
 
-		// Déplace la clé sur la forme du socle.
+		// Dï¿½place la clï¿½ sur la forme du socle.
 		rot = RotatePoint(FPOINT(cPos.x, cPos.z), limit-cAngle, FPOINT(cPos.x+16.0f, cPos.z));
 		oPos.x = rot.x;
 		oPos.z = rot.y;
@@ -482,7 +496,7 @@ int CAutoSafe::CountKeys()
 	return i;
 }
 
-// Bloque toutes les clés présentes.
+// Bloque toutes les clï¿½s prï¿½sentes.
 
 void CAutoSafe::LockKeys()
 {
@@ -515,7 +529,7 @@ void CAutoSafe::LockKeys()
 	}
 }
 
-// Fait descendre toutes les clés présentes.
+// Fait descendre toutes les clï¿½s prï¿½sentes.
 
 void CAutoSafe::DownKeys(float progress)
 {
@@ -549,7 +563,7 @@ void CAutoSafe::DownKeys(float progress)
 	}
 }
 
-// Supprime toutes les clés présentes.
+// Supprime toutes les clï¿½s prï¿½sentes.
 
 void CAutoSafe::DeleteKeys()
 {
@@ -590,7 +604,7 @@ void CAutoSafe::DeleteKeys()
 	while ( bDelete );
 }
 
-// Cherche le véhicule dans le coffre-fort.
+// Cherche le vï¿½hicule dans le coffre-fort.
 
 CObject* CAutoSafe::SearchVehicle()
 {

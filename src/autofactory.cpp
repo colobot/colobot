@@ -1,4 +1,18 @@
-// autofactory.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -57,7 +71,7 @@ CAutoFactory::~CAutoFactory()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoFactory::DeleteObject(BOOL bAll)
 {
@@ -66,17 +80,17 @@ void CAutoFactory::DeleteObject(BOOL bAll)
 
 	if ( !bAll )
 	{
-		fret = SearchFret();  // métal à transformer ?
+		fret = SearchFret();  // mï¿½tal ï¿½ transformer ?
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // détruit le métal
+			fret->DeleteObject();  // dï¿½truit le mï¿½tal
 			delete fret;
 		}
 
 		vehicle = SearchVehicle();
 		if ( vehicle != 0 )
 		{
-			vehicle->DeleteObject();  // détruit le véhicule
+			vehicle->DeleteObject();  // dï¿½truit le vï¿½hicule
 			delete vehicle;
 		}
 	}
@@ -109,7 +123,7 @@ void CAutoFactory::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoFactory::EventProcess(const Event &event)
 {
@@ -127,7 +141,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 
 	if ( m_engine->RetPause() )  return TRUE;
 
-	if ( m_object->RetSelect() )  // usine sélectionnée ?
+	if ( m_object->RetSelect() )  // usine sï¿½lectionnï¿½e ?
 	{
 		if ( event.event == EVENT_UPDINTERFACE )
 		{
@@ -166,7 +180,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				return FALSE;
 			}
 
-			fret = SearchFret();  // métal à transformer ?
+			fret = SearchFret();  // mï¿½tal ï¿½ transformer ?
 			if ( fret == 0 )
 			{
 				m_displayText->DisplayError(ERR_FACTORY_NULL, m_object);
@@ -182,7 +196,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 			InitProgressTotal(3.0f+2.0f+15.0f+2.0f+3.0f);
 			UpdateInterface();
 
-			fret->SetLock(TRUE);  // métal plus utilisable
+			fret->SetLock(TRUE);  // mï¿½tal plus utilisable
 			SoundManip(3.0f, 1.0f, 0.5f);
 
 			m_phase    = AFP_CLOSE_S;
@@ -272,10 +286,10 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 		{
 			if ( !CreateVehicle() )
 			{
-				fret = SearchFret();  // métal à transformer ?
+				fret = SearchFret();  // mï¿½tal ï¿½ transformer ?
 				if ( fret != 0 )
 				{
-					fret->SetLock(FALSE);  // métal de nouveau utilisable
+					fret->SetLock(FALSE);  // mï¿½tal de nouveau utilisable
 				}
 
 				if ( m_channelSound != -1 )
@@ -315,7 +329,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				vehicle->SetZoom(0, m_progress);
 			}
 
-			fret = SearchFret();  // métal à transformer ?
+			fret = SearchFret();  // mï¿½tal ï¿½ transformer ?
 			if ( fret != 0 )
 			{
 				fret->SetZoom(0, 1.0f-m_progress);
@@ -338,7 +352,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 #else
 				mat = m_object->RetWorldMatrix(0);
-				pos = D3DVECTOR(-12.0f, 20.0f, -4.0f);  // position cheminée
+				pos = D3DVECTOR(-12.0f, 20.0f, -4.0f);  // position cheminï¿½e
 				pos = Transform(*mat, pos);
 				pos.y += 2.0f;
 				pos.x += (Rand()-0.5f)*2.0f;
@@ -357,10 +371,10 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 			m_displayText->DisplayError(INFO_FACTORY, m_object);
 			SoundManip(2.0f, 1.0f, 1.2f);
 
-			fret = SearchFret();  // métal à transformer ?
+			fret = SearchFret();  // mï¿½tal ï¿½ transformer ?
 			if ( fret != 0 )
 			{
-				fret->DeleteObject();  // supprime le métal
+				fret->DeleteObject();  // supprime le mï¿½tal
 				delete fret;
 			}
 
@@ -373,7 +387,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 					physics->SetFreeze(FALSE);  // on peut bouger
 				}
 
-				vehicle->SetLock(FALSE);  // véhicule utilisable
+				vehicle->SetLock(FALSE);  // vï¿½hicule utilisable
 //?				vehicle->RetPhysics()->RetBrain()->StartTaskAdvance(16.0f);
 				vehicle->SetAngleY(0, m_object->RetAngleY(0)+PI);
 				vehicle->SetZoom(0, 1.0f);
@@ -476,7 +490,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoFactory::Write(char *line)
 {
@@ -501,7 +515,7 @@ BOOL CAutoFactory::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoFactory::Read(char *line)
 {
@@ -548,7 +562,7 @@ CObject* CAutoFactory::SearchFret()
 	return 0;
 }
 
-// Cherche si un véhicule est trop proche.
+// Cherche si un vï¿½hicule est trop proche.
 
 BOOL CAutoFactory::NearestVehicle()
 {
@@ -610,7 +624,7 @@ BOOL CAutoFactory::NearestVehicle()
 }
 
 
-// Crée un véhicule pas utilisable tout de suite.
+// Crï¿½e un vï¿½hicule pas utilisable tout de suite.
 
 BOOL CAutoFactory::CreateVehicle()
 {
@@ -665,7 +679,7 @@ BOOL CAutoFactory::CreateVehicle()
 	return TRUE;
 }
 
-// Cherche le véhicule en cours de fabrication.
+// Cherche le vï¿½hicule en cours de fabrication.
 
 CObject* CAutoFactory::SearchVehicle()
 {
@@ -696,7 +710,7 @@ CObject* CAutoFactory::SearchVehicle()
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoFactory::CreateInterface(BOOL bSelect)
 {
@@ -788,7 +802,7 @@ BOOL CAutoFactory::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met à jour l'état de tous les boutons de l'interface.
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface.
 
 void CAutoFactory::UpdateInterface()
 {
@@ -823,7 +837,7 @@ void CAutoFactory::UpdateInterface()
 	UpdateButton(pw, EVENT_OBJECT_FACTORYsa, m_bBusy);
 }
 
-// Met à jour un bouton de l'interface.
+// Met ï¿½ jour un bouton de l'interface.
 
 void CAutoFactory::UpdateButton(CWindow *pw, EventMsg event, BOOL bBusy)
 {

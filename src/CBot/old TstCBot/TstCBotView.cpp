@@ -1,5 +1,18 @@
-// TstCBotView.cpp : implementation of the CTstCBotView class
-//
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #include "stdafx.h"
 #include "TstCBot.h"
@@ -189,13 +202,13 @@ void CTstCBotView::OnCp1()
 		m_pProg = NULL;
 
 		m_pEdit->SetSel( start, end );
-		m_pEdit->SetFocus();				// met en évidence la partie avec problème
+		m_pEdit->SetFocus();				// met en ï¿½vidence la partie avec problï¿½me
 
 		TextError.LoadString( code );
 		if (TextError.IsEmpty())
 		{
 			char	buf[100];
-			sprintf(buf, "Erreur numéro %d.", code);
+			sprintf(buf, "Erreur numï¿½ro %d.", code);
 			TextError = buf;
 		}
 		AfxMessageBox( TextError );
@@ -214,13 +227,13 @@ void CTstCBotView::OnExe()
 
 	if( m_pProg	== NULL)
 	{
-		AfxMessageBox("Pas de programme compilé !");
+		AfxMessageBox("Pas de programme compilï¿½ !");
 		return;
 	}
 
 	if( pApp->m_Liste.RetSize() == 0 )
 	{
-		AfxMessageBox("Aucune fonction marquée \"extern\" !");
+		AfxMessageBox("Aucune fonction marquï¿½e \"extern\" !");
 		return;
 	}
 
@@ -234,13 +247,13 @@ void CTstCBotView::OnExe()
 		CString	TextError;
 
 		m_pEdit->SetSel( dlg.m_start, dlg.m_end );
-		m_pEdit->SetFocus();				// met en évidence la partie avec problème
+		m_pEdit->SetFocus();				// met en ï¿½vidence la partie avec problï¿½me
 
 		TextError.LoadString( dlg.m_code );
 		if (TextError.IsEmpty())
 		{
 			char	buf[100];
-			sprintf(buf, "Erreur numéro %d.", dlg.m_code);
+			sprintf(buf, "Erreur numï¿½ro %d.", dlg.m_code);
 			TextError = buf;
 		}
 //		AfxMessageBox( TextError );

@@ -1,4 +1,18 @@
-// taskspiderexplo.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -42,14 +56,14 @@ CTaskSpiderExplo::~CTaskSpiderExplo()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskSpiderExplo::EventProcess(const Event &event)
 {
 	if ( m_engine->RetPause() )  return TRUE;
 	if ( event.event != EVENT_FRAME )  return TRUE;
 
-	// Objet momentanément immobile (fourmi sur le dos) ?
+	// Objet momentanï¿½ment immobile (fourmi sur le dos) ?
 	if ( m_object->RetFixed() )
 	{
 		m_bError = TRUE;
@@ -62,7 +76,7 @@ BOOL CTaskSpiderExplo::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigne le but ï¿½ atteindre.
 
 Error CTaskSpiderExplo::Start()
 {
@@ -76,7 +90,7 @@ Error CTaskSpiderExplo::Start()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskSpiderExplo::IsEnded()
 {
@@ -93,7 +107,7 @@ Error CTaskSpiderExplo::IsEnded()
 	if ( m_time < 1.0f )  return ERR_CONTINUE;
 
 	pyro = new CPyro(m_iMan);
-	pyro->Create(PT_SPIDER, m_object);  // l'araignée explose (suicide)
+	pyro->Create(PT_SPIDER, m_object);  // l'araignï¿½e explose (suicide)
 
 	Abort();
 	return ERR_STOP;

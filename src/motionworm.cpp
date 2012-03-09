@@ -1,4 +1,18 @@
-// motionworm.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -27,7 +41,7 @@
 
 
 
-#define START_TIME		1000.0f		// début du temps relatif
+#define START_TIME		1000.0f		// dï¿½but du temps relatif
 #define TIME_UPDOWN		2.0f		// temps pour up/down
 #define DOWN_ALTITUDE	3.0f		// distance sous terre
 #define WORM_PART		7			// nb de parties d'un ver
@@ -72,7 +86,7 @@ void CMotionWorm::DeleteObject(BOOL bAll)
 }
 
 
-// Crée un véhicule roulant quelconque posé sur le sol.
+// Crï¿½e un vï¿½hicule roulant quelconque posï¿½ sur le sol.
 
 BOOL CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 						 float power)
@@ -87,23 +101,23 @@ BOOL CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	m_object->SetType(type);
 
-	// Crée la base principale.
+	// Crï¿½e la base principale.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
 	m_object->SetObjectRank(0, rank);
-	pModFile->ReadModel("objects\\worm0.mod");  // n'existe pas exprès !
+	pModFile->ReadModel("objects\\worm0.mod");  // n'existe pas exprï¿½s !
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Un véhicule doit avoir obligatoirement une sphère de
+	// Un vï¿½hicule doit avoir obligatoirement une sphï¿½re de
 	// collision avec un centre (0;y;0) (voir GetCrashSphere).
 	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
 	m_object->SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 5.0f);
 
 	px = 1.0f+WORM_PART/2;
 
-	// Crée la tête.
+	// Crï¿½e la tï¿½te.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(1, rank);
@@ -113,7 +127,7 @@ BOOL CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(1, D3DVECTOR(px, 0.0f, 0.0f));
 	px -= 1.0f;
 
-	// Crée le corps.
+	// Crï¿½e le corps.
 	for ( i=0 ; i<WORM_PART ; i++ )
 	{
 		rank = m_engine->CreateObject();
@@ -126,7 +140,7 @@ BOOL CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 		px -= 1.0f;
 	}
 
-	// Crée la queue.
+	// Crï¿½e la queue.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(2+WORM_PART, rank);
@@ -149,7 +163,7 @@ BOOL CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Crée la physique de l'objet.
+// Crï¿½e la physique de l'objet.
 
 void CMotionWorm::CreatePhysics()
 {
@@ -184,7 +198,7 @@ void CMotionWorm::CreatePhysics()
 
 
 
-// Spécifie un paramètre spécial.
+// Spï¿½cifie un paramï¿½tre spï¿½cial.
 
 BOOL CMotionWorm::SetParam(int rank, float value)
 {
@@ -212,7 +226,7 @@ float CMotionWorm::RetParam(int rank)
 
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CMotionWorm::EventProcess(const Event &event)
 {
@@ -230,7 +244,7 @@ BOOL CMotionWorm::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CMotionWorm::EventFrame(const Event &event)
 {
@@ -265,7 +279,7 @@ BOOL CMotionWorm::EventFrame(const Event &event)
 		else if ( phase < TIME_UPDOWN+m_timeDown )  // avance sous terre ?
 		{
 			h = -DOWN_ALTITUDE;
-			under ++;  // un morceau entièrement sous terre de plus
+			under ++;  // un morceau entiï¿½rement sous terre de plus
 		}
 		else if ( phase < TIME_UPDOWN+m_timeDown+TIME_UPDOWN )  // monte ?
 		{
@@ -275,7 +289,7 @@ BOOL CMotionWorm::EventFrame(const Event &event)
 		{
 			h = 0.0f;
 		}
-		if ( m_object->RetBurn() )  // brûle ?
+		if ( m_object->RetBurn() )  // brï¿½le ?
 		{
 			h = 0.0f;  // reste sur terre
 		}

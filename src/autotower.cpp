@@ -1,4 +1,18 @@
-// autotower.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,8 +46,8 @@
 
 
 
-#define TOWER_SCOPE		200.0f		// portée du rayon
-#define ENERGY_FIRE		0.125f		// énergie consommée par tir
+#define TOWER_SCOPE		200.0f		// portï¿½e du rayon
+#define ENERGY_FIRE		0.125f		// ï¿½nergie consommï¿½e par tir
 
 
 // Constructeur de l'objet.
@@ -64,7 +78,7 @@ CAutoTower::~CAutoTower()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoTower::DeleteObject(BOOL bAll)
 {
@@ -88,7 +102,7 @@ void CAutoTower::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoTower::EventProcess(const Event &event)
 {
@@ -104,7 +118,7 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -153,7 +167,7 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 	if ( m_phase == ATP_SEARCH )
 	{
-		FireStopUpdate(m_progress, FALSE);  // éteint
+		FireStopUpdate(m_progress, FALSE);  // ï¿½teint
 		if ( m_progress < 1.0f )
 		{
 			quick = 1.0f;
@@ -317,7 +331,7 @@ CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoTower::RetError()
 {
@@ -337,14 +351,14 @@ Error CAutoTower::RetError()
 	{
 		if ( power->RetEnergy() < ENERGY_FIRE )
 		{
-			return ERR_TOWER_ENERGY;  // plus assez d'énergie
+			return ERR_TOWER_ENERGY;  // plus assez d'ï¿½nergie
 		}
 	}
 	return ERR_OK;
 }
 
 
-// Met à jour les feux de stop.
+// Met ï¿½ jour les feux de stop.
 
 void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 {
@@ -361,7 +375,7 @@ void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 		 0.0f,	-4.5f,
 	};
 
-	if ( !bLightOn )  // éteint ?
+	if ( !bLightOn )  // ï¿½teint ?
 	{
 		for ( i=0 ; i<4 ; i++ )
 		{
@@ -407,7 +421,7 @@ void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoTower::CreateInterface(BOOL bSelect)
 {
@@ -448,8 +462,8 @@ BOOL CAutoTower::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met à jour l'état de tous les boutons de l'interface,
-// suite au temps qui s'écoule ...
+// Met ï¿½ jour l'ï¿½tat de tous les boutons de l'interface,
+// suite au temps qui s'ï¿½coule ...
 
 void CAutoTower::UpdateInterface(float rTime)
 {
@@ -482,7 +496,7 @@ void CAutoTower::UpdateInterface(float rTime)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoTower::Write(char *line)
 {
@@ -522,7 +536,7 @@ BOOL CAutoTower::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoTower::Read(char *line)
 {

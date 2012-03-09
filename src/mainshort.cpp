@@ -1,4 +1,18 @@
-// mainshort.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -52,7 +66,7 @@ void CMainShort::SetMode(BOOL bBuilding)
 
 
 
-// Remise à zéro de tous les raccourcis.
+// Remise ï¿½ zï¿½ro de tous les raccourcis.
 
 void CMainShort::FlushShortcuts()
 {
@@ -88,7 +102,7 @@ static EventMsg table_sc_em[20] =
 	EVENT_OBJECT_SHORTCUT19,
 };
 
-// Crée l'interface des raccourcis aux unités.
+// Crï¿½e l'interface des raccourcis aux unitï¿½s.
 
 BOOL CMainShort::CreateShortcuts()
 {
@@ -117,14 +131,14 @@ BOOL CMainShort::CreateShortcuts()
 	pos.y = (480.0f-32.0f)/480.0f;
 
 	if ( m_main->RetMovieLock() &&
-		!m_main->RetEditLock()  )  // bloqué pendant film ?
+		!m_main->RetEditLock()  )  // bloquï¿½ pendant film ?
 	{
 		m_interface->CreateShortcut(pos, dim, 7, EVENT_OBJECT_MOVIELOCK);
 		return TRUE;
 	}
 	if ( !m_main->RetFreePhoto() &&
 		 (m_main->RetEditLock() ||
-		  m_engine->RetPause()) )  // bloqué pendant édition ?
+		  m_engine->RetPause()) )  // bloquï¿½ pendant ï¿½dition ?
 	{
 		m_interface->CreateShortcut(pos, dim, 6, EVENT_OBJECT_EDITLOCK);
 		return TRUE;
@@ -220,7 +234,7 @@ BOOL CMainShort::CreateShortcuts()
 	return TRUE;
 }
 
-// Met à jour l'interface des raccourcis aux unités.
+// Met ï¿½ jour l'interface des raccourcis aux unitï¿½s.
 
 BOOL CMainShort::UpdateShortcuts()
 {
@@ -241,7 +255,7 @@ BOOL CMainShort::UpdateShortcuts()
 	return TRUE;
 }
 
-// Sélectionne un objet à travers un raccourci.
+// Sï¿½lectionne un objet ï¿½ travers un raccourci.
 
 void CMainShort::SelectShortcut(EventMsg event)
 {
@@ -253,7 +267,7 @@ void CMainShort::SelectShortcut(EventMsg event)
 		{
 			if ( i != 0 && m_shortcuts[i] == 0 )  continue;
 
-			if ( i == 0 )  // bâtiments <-> véhicules ?
+			if ( i == 0 )  // bï¿½timents <-> vï¿½hicules ?
 			{
 				m_bBuilding = !m_bBuilding;
 				CreateShortcuts();
@@ -268,7 +282,7 @@ void CMainShort::SelectShortcut(EventMsg event)
 }
 
 
-// Sélectionne l'objet suivant.
+// Sï¿½lectionne l'objet suivant.
 
 void CMainShort::SelectNext()
 {
@@ -301,7 +315,7 @@ void CMainShort::SelectNext()
 }
 
 
-// Détecte l'objet survolé par la souris.
+// Dï¿½tecte l'objet survolï¿½ par la souris.
 
 CObject* CMainShort::DetectShort(FPOINT pos)
 {
@@ -331,7 +345,7 @@ CObject* CMainShort::DetectShort(FPOINT pos)
 	return 0;
 }
 
-// Signale l'objet survolé par la souris.
+// Signale l'objet survolï¿½ par la souris.
 
 void CMainShort::SetHilite(CObject* pObj)
 {

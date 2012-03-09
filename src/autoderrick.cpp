@@ -1,4 +1,18 @@
-// autoderrick.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -29,7 +43,7 @@
 
 
 
-#define DERRICK_DELAY		10.0f		// durée de l'extraction
+#define DERRICK_DELAY		10.0f		// durï¿½e de l'extraction
 #define DERRICK_DELAYu		30.0f		// idem, mais pour l'uranium
 
 
@@ -55,7 +69,7 @@ CAutoDerrick::~CAutoDerrick()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoDerrick::DeleteObject(BOOL bAll)
 {
@@ -132,7 +146,7 @@ void CAutoDerrick::Init()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoDerrick::EventProcess(const Event &event)
 {
@@ -150,7 +164,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminé par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminï¿½ par un virus ?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -185,7 +199,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 4.0f, SOPER_STOP);
 		}
 
-		if ( m_progress >= 6.0f/16.0f &&  // pénètre dans le sol ?
+		if ( m_progress >= 6.0f/16.0f &&  // pï¿½nï¿½tre dans le sol ?
 			 m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
 		{
 			m_lastParticule = m_time;
@@ -199,7 +213,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 		}
 
-		if ( m_progress >= 6.0f/16.0f &&  // pénètre dans le sol ?
+		if ( m_progress >= 6.0f/16.0f &&  // pï¿½nï¿½tre dans le sol ?
 			 m_lastTrack+m_engine->ParticuleAdapt(0.5f) <= m_time )
 		{
 			m_lastTrack = m_time;
@@ -375,7 +389,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 		}
 		else
 		{
-			if ( ExistKey() )  // clé existe déjà ?
+			if ( ExistKey() )  // clï¿½ existe dï¿½jï¿½ ?
 			{
 				m_phase    = ADP_WAIT;
 				m_progress = 0.0f;
@@ -394,7 +408,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 }
 
 
-// Crée toute l'interface lorsque l'objet est sélectionné.
+// Crï¿½e toute l'interface lorsque l'objet est sï¿½lectionnï¿½.
 
 BOOL CAutoDerrick::CreateInterface(BOOL bSelect)
 {
@@ -424,7 +438,7 @@ BOOL CAutoDerrick::CreateInterface(BOOL bSelect)
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoDerrick::Write(char *line)
 {
@@ -449,7 +463,7 @@ BOOL CAutoDerrick::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoDerrick::Read(char *line)
 {
@@ -516,14 +530,14 @@ BOOL CAutoDerrick::SearchFree(D3DVECTOR pos)
 		{
 			distance = Length(sPos, pos);
 			distance -= sRadius;
-			if ( distance < 2.0f )  return FALSE;  // emplacement occupé
+			if ( distance < 2.0f )  return FALSE;  // emplacement occupï¿½
 		}
 	}
 
 	return TRUE;  // emplacement libre
 }
 
-// Crée un objet transportable.
+// Crï¿½e un objet transportable.
 
 void CAutoDerrick::CreateFret(D3DVECTOR pos, float angle, ObjectType type,
 							  float height)
@@ -549,7 +563,7 @@ void CAutoDerrick::CreateFret(D3DVECTOR pos, float angle, ObjectType type,
 	fret->SetPosition(0, pos);
 }
 
-// Cherche s'il existe déjà une clé.
+// Cherche s'il existe dï¿½jï¿½ une clï¿½.
 
 BOOL CAutoDerrick::ExistKey()
 {
@@ -575,7 +589,7 @@ BOOL CAutoDerrick::ExistKey()
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoDerrick::RetError()
 {

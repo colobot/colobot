@@ -1,4 +1,18 @@
-// motionhuman.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,7 +46,7 @@
 #define ADJUST_ANGLE	FALSE		// TRUE -> ajuste les angles des membres
 #define ADJUST_ACTION	(3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM)
 
-#define START_TIME		1000.0f		// début du temps relatif
+#define START_TIME		1000.0f		// dï¿½but du temps relatif
 
 
 
@@ -79,7 +93,7 @@ void CMotionHuman::DeleteObject(BOOL bAll)
 }
 
 
-// Démarre une action.
+// Dï¿½marre une action.
 
 Error CMotionHuman::SetAction(int action, float time)
 {
@@ -89,7 +103,7 @@ Error CMotionHuman::SetAction(int action, float time)
 }
 
 
-// Crée le cosmonaute posé sur le sol.
+// Crï¿½e le cosmonaute posï¿½ sur le sol.
 
 BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 						  float power)
@@ -136,20 +150,20 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 		return TRUE;
 	}
 
-	// Crée la base principale.
+	// Crï¿½e la base principale.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
 	m_object->SetObjectRank(0, rank);
 
-	if ( option == 0 )  // tête dans casque ?
+	if ( option == 0 )  // tï¿½te dans casque ?
 	{
 		pModFile->ReadModel("objects\\human1c.mod");
 	}
-	if ( option == 1 )  // tête à l'air ?
+	if ( option == 1 )  // tï¿½te ï¿½ l'air ?
 	{
 		pModFile->ReadModel("objects\\human1h.mod");
 	}
-	if ( option == 2 )  // sans sac à dos ?
+	if ( option == 2 )  // sans sac ï¿½ dos ?
 	{
 		pModFile->ReadModel("objects\\human1v.mod");
 	}
@@ -158,12 +172,12 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Un véhicule doit avoir obligatoirement une sphère de
+	// Un vï¿½hicule doit avoir obligatoirement une sphï¿½re de
 	// collision avec un centre (0;y;0) (voir GetCrashSphere).
 	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f);
 	m_object->SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 4.0f);
 
-	// Crée la tête.
+	// Crï¿½e la tï¿½te.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(1, rank);
@@ -171,14 +185,14 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_HUMAN )
 	{
-		if ( option == 0 )  // tête dans casque ?
+		if ( option == 0 )  // tï¿½te dans casque ?
 		{
 			face = m_main->RetGamerFace();
 			sprintf(filename, "objects\\human2c%d.mod", face+1);
 			pModFile->ReadModel(filename);
 		}
-		if ( option == 1 ||  // tête à l'air ?
-			 option == 2 )   // sans sac à dos ?
+		if ( option == 1 ||  // tï¿½te ï¿½ l'air ?
+			 option == 2 )   // sans sac ï¿½ dos ?
 		{
 			face = m_main->RetGamerFace();
 			sprintf(filename, "objects\\human2h%d.mod", face+1);
@@ -191,13 +205,13 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	}
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(1, D3DVECTOR(0.0f, 2.7f, 0.0f));
-	if ( option == 1 ||  // tête à l'air ?
-		 option == 2 )   // sans sac à dos ?
+	if ( option == 1 ||  // tï¿½te ï¿½ l'air ?
+		 option == 2 )   // sans sac ï¿½ dos ?
 	{
 		m_object->SetZoom(1, D3DVECTOR(1.0f, 1.05f, 1.0f));
 	}
 
-	// Crée les lunettes.
+	// Crï¿½e les lunettes.
 	glasses = m_main->RetGamerGlasses();
 	if ( glasses != 0 && type == OBJECT_HUMAN )
 	{
@@ -210,7 +224,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 	}
 
-	// Crée le bras droite.
+	// Crï¿½e le bras droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(2, rank);
@@ -220,7 +234,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(2, D3DVECTOR(0.0f, 2.3f, -1.2f));
 	m_object->SetAngle(2, D3DVECTOR(90.0f*PI/180.0f, 90.0f*PI/180.0f, -50.0f*PI/180.0f));
 
-	// Crée l'avant-bras droite.
+	// Crï¿½e l'avant-bras droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(3, rank);
@@ -230,7 +244,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(3, D3DVECTOR(1.3f, 0.0f, 0.0f));
 	m_object->SetAngle(3, D3DVECTOR(0.0f*PI/180.0f, -20.0f*PI/180.0f, 0.0f*PI/180.0f));
 
-	// Crée la main droite.
+	// Crï¿½e la main droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(4, rank);
@@ -239,7 +253,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(4, D3DVECTOR(1.2f, 0.0f, 0.0f));
 
-	// Crée la cuisse droite.
+	// Crï¿½e la cuisse droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(5, rank);
@@ -249,7 +263,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -0.7f));
 	m_object->SetAngle(5, D3DVECTOR(10.0f*PI/180.0f, 0.0f*PI/180.0f, 5.0f*PI/180.0f));
 
-	// Crée la jambe droite.
+	// Crï¿½e la jambe droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(6, rank);
@@ -259,7 +273,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(6, D3DVECTOR(0.0f, -1.5f, 0.0f));
 	m_object->SetAngle(6, D3DVECTOR(0.0f*PI/180.0f, 0.0f*PI/180.0f, -10.0f*PI/180.0f));
 
-	// Crée le pied droite.
+	// Crï¿½e le pied droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(7, rank);
@@ -269,7 +283,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(7, D3DVECTOR(0.0f, -1.5f, 0.0f));
 	m_object->SetAngle(7, D3DVECTOR(-10.0f*PI/180.0f, 5.0f*PI/180.0f, 5.0f*PI/180.0f));
 
-	// Crée le bras gauche.
+	// Crï¿½e le bras gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(8, rank);
@@ -280,7 +294,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(8, D3DVECTOR(0.0f, 2.3f, 1.2f));
 	m_object->SetAngle(8, D3DVECTOR(-90.0f*PI/180.0f, -90.0f*PI/180.0f, -50.0f*PI/180.0f));
 
-	// Crée l'avant-bras gauche.
+	// Crï¿½e l'avant-bras gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(9, rank);
@@ -291,7 +305,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(9, D3DVECTOR(1.3f, 0.0f, 0.0f));
 	m_object->SetAngle(9, D3DVECTOR(0.0f*PI/180.0f, 20.0f*PI/180.0f, 0.0f*PI/180.0f));
 
-	// Crée la main gauche.
+	// Crï¿½e la main gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(10, rank);
@@ -301,7 +315,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(10, D3DVECTOR(1.2f, 0.0f, 0.0f));
 
-	// Crée la cuisse gauche.
+	// Crï¿½e la cuisse gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(11, rank);
@@ -312,7 +326,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, 0.7f));
 	m_object->SetAngle(11, D3DVECTOR(-10.0f*PI/180.0f, 0.0f*PI/180.0f, 5.0f*PI/180.0f));
 
-	// Crée la jambe gauche.
+	// Crï¿½e la jambe gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(12, rank);
@@ -323,7 +337,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(12, D3DVECTOR(0.0f, -1.5f, 0.0f));
 	m_object->SetAngle(12, D3DVECTOR(0.0f*PI/180.0f, 0.0f*PI/180.0f, -10.0f*PI/180.0f));
 
-	// Crée le pied gauche.
+	// Crï¿½e le pied gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(13, rank);
@@ -334,8 +348,8 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(13, D3DVECTOR(0.0f, -1.5f, 0.0f));
 	m_object->SetAngle(13, D3DVECTOR(10.0f*PI/180.0f, -5.0f*PI/180.0f, 5.0f*PI/180.0f));
 
-	// Crée le pistolet.
-	if ( option != 2 )  // avec sac à dos ?
+	// Crï¿½e le pistolet.
+	if ( option != 2 )  // avec sac ï¿½ dos ?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -361,7 +375,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Crée la physique de l'objet.
+// Crï¿½e la physique de l'objet.
 
 void CMotionHuman::CreatePhysics(ObjectType type)
 {
@@ -378,7 +392,7 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 		125,115,-45,10,0,50,	0,0,0,		// t1: bras/cuisses/-
 		0,-20,0,	-5,0,-15,	0,0,0,		// t1: avant-bras/jambes/-
 		0,0,0,		-5,0,0,		0,0,0,		// t1: mains/pieds/-
-											// au sol derrière :
+											// au sol derriï¿½re :
 		25,55,-40,	10,0,-15,	0,0,0,		// t2: bras/cuisses/-
 		30,-50,40,	-5,0,-55,	0,0,0,		// t2: avant-bras/jambes/-
 		0,0,0,		-5,0,25,	0,0,0,		// t2: mains/pieds/-
@@ -394,7 +408,7 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 		15,50,-55,	10,0,50,	0,0,0,		// t1: bras/cuisses/-
 		45,-70,10,	-5,0,-15,	0,0,0,		// t1: avant-bras/jambes/-
 		-10,25,0,	-5,0,0,		0,0,0,		// t1: mains/pieds/-
-											// au sol derrière :
+											// au sol derriï¿½re :
 		15,50,-45,	10,0,-15,	0,0,0,		// t2: bras/cuisses/-
 		45,-70,10,	-5,0,-55,	0,0,0,		// t2: avant-bras/jambes/-
 		-10,25,0,	-5,0,45,	0,0,0,		// t2: mains/pieds/-
@@ -410,7 +424,7 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 		90,110,-45,	10,0,0,		0,0,0,		// t1: bras/cuisses/-
 		0,-20,0,	-5,5,0,		0,0,0,		// t1: avant-bras/jambes/-
 		0,0,0,		-5,10,0,	0,0,0,		// t1: mains/pieds/-
-											// au sol derrière :
+											// au sol derriï¿½re :
 		90,70,-45,	10,0,0,		0,0,0,		// t2: bras/cuisses/-
 		0,-20,10,	-5,-5,0,	0,0,0,		// t2: avant-bras/jambes/-
 		0,0,0,		-5,-10,0,	0,0,0,		// t2: mains/pieds/-
@@ -502,7 +516,7 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 		160,135,-20,10,0,5,		0,0,0,		// s1: bras/cuisses/-
 		10,-60,40,	0,0,-10,	0,0,0,		// s1: avant-bras/jambes/-
 		0,-5,-25,	-10,5,5,	0,0,0,		// s1: mains/pieds/-
-											// porte à terre :
+											// porte ï¿½ terre :
 		25,40,-40,	10,0,60,	0,0,0,		// s2: bras/cuisses/-
 		0,-45,0,	0,0,-120,	0,0,0,		// s2: avant-bras/jambes/-
 		0,15,5,		-10,0,70,	0,0,0,		// s2: mains/pieds/-
@@ -514,11 +528,11 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 		-30,15,-5,	10,0,15,	0,0,0,		// s4: bras/cuisses/-
 		0,-15,15,	0,0,-30,	0,0,0,		// s4: avant-bras/jambes/-
 		35,0,-15,	-10,0,25,	0,0,0,		// s4: mains/pieds/-
-											// se relève :
+											// se relï¿½ve :
 		15,50,-50,	10,0,5,		0,0,0,		// s5: bras/cuisses/-
 		45,-70,10,	0,0,-10,	0,0,0,		// s5: avant-bras/jambes/-
 		-10,25,0,	-10,5,5,	0,0,0,		// s5: mains/pieds/-
-											// gagné :
+											// gagnï¿½ :
 		90,90,-30,	20,0,5,		0,0,0,		// s6: bras/cuisses/-
 		0,-90,0,	-10,0,-10,	0,0,0,		// s6: avant-bras/jambes/-
 		0,25,0,		-10,5,5,	0,0,0,		// s6: mains/pieds/-
@@ -546,11 +560,11 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 		110,100,-25,25,0,10,	0,0,0,		// s12: bras/cuisses/-
 		0,-40,20,	0,0,-25,	0,0,0,		// s12: avant-bras/jambes/-
 		0,0,0,		-10,5,5,	0,0,0,		// s12: mains/pieds/-
-											// mort noyé :
+											// mort noyï¿½ :
 		110,100,-25,25,0,10,	0,0,0,		// s13: bras/cuisses/-
 		0,-40,20,	0,0,-25,	0,0,0,		// s13: avant-bras/jambes/-
 		0,0,0,		-10,5,5,	0,0,0,		// s13: mains/pieds/-
-											// met/enlève drapeau :
+											// met/enlï¿½ve drapeau :
 		85,45,-50,	10,0,60,	0,0,0,		// s14: bras/cuisses/-
 		-60,15,65,	0,0,-105,	0,0,0,		// s14: avant-bras/jambes/-
 		0,10,0,		-10,0,60,	0,0,0,		// s14: mains/pieds/-
@@ -649,7 +663,7 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CMotionHuman::EventProcess(const Event &event)
 {
@@ -701,7 +715,7 @@ BOOL CMotionHuman::EventProcess(const Event &event)
 }
 
 // Calcule une valeur (radians) proportionnelle comprise
-// entre a et b (degrés).
+// entre a et b (degrï¿½s).
 
 inline float Propf(float a, float b, float p)
 {
@@ -713,7 +727,7 @@ inline float Propf(float a, float b, float p)
 	return aa+p*(bb-aa);
 }
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CMotionHuman::EventFrame(const Event &event)
 {
@@ -759,7 +773,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	}
 
 	shield = m_object->RetShield();
-	shield += event.rTime*(1.0f/120.0f);  // régénération en 120 secondes
+	shield += event.rTime*(1.0f/120.0f);  // rï¿½gï¿½nï¿½ration en 120 secondes
 	if ( shield > 1.0f )  shield = 1.0f;
 	m_object->SetShield(shield);
 
@@ -852,7 +866,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		m_armTimeSwim += Min(Max(s,a,3.0f),15.0f)*event.rTime*0.05f;
 	}
 
-	bStop = ( s == 0.0f );  // à l'arrêt ?
+	bStop = ( s == 0.0f );  // ï¿½ l'arrï¿½t ?
 	prog = 0.0f;
 
 	if ( m_physics->RetLand() )  // au sol ?
@@ -969,7 +983,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			time = 100.0f;
 			m_armTimeAction = 0.0f;
 		}
-		else if ( m_actionType != -1 )  // action spéciale en cours ?
+		else if ( m_actionType != -1 )  // action spï¿½ciale en cours ?
 		{
 			st = 3*3*3*3*MH_SPEC + 3*3*3*m_actionType + (i%2)*3;
 			nd = st;
@@ -1074,7 +1088,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 #if 1
 		if ( i%2 == 1           &&  // jambe ?
-			 m_actionType == -1 )   // pas action spéciale ?
+			 m_actionType == -1 )   // pas action spï¿½ciale ?
 		{
 			if ( i == 1 )  // jambe droite ?
 			{
@@ -1139,7 +1153,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		}
 #endif
 
-		if ( m_actionType == MHS_DEADw )   // mort noyé ?
+		if ( m_actionType == MHS_DEADw )   // mort noyï¿½ ?
 		{
 			if ( m_progress < 0.5f )
 			{
@@ -1215,7 +1229,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 		dir.x = (Rand()-0.5f)/8.0f;
 		dir.z = (Rand()-0.5f)/8.0f;
-		dir.y = -0.5f;  // légèrement plus bas
+		dir.y = -0.5f;  // lï¿½gï¿½rement plus bas
 		actual = m_object->RetLinVibration();
 		dir.x = Smooth(actual.x, dir.x, time);
 //?		dir.y = Smooth(actual.y, dir.y, time);
@@ -1225,7 +1239,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 		dir.x = 0.0f;
 		dir.y = (Rand()-0.5f)/3.0f;
-		dir.z = -0.1f;  // légèrement penché en avant
+		dir.z = -0.1f;  // lï¿½gï¿½rement penchï¿½ en avant
 		actual = m_object->RetInclinaison();
 		dir.x = Smooth(actual.x, dir.x, time);
 		dir.y = Smooth(actual.y, dir.y, time);
@@ -1239,7 +1253,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 		dir.x = 0.0f;
 		dir.z = 0.0f;
-		dir.y = -1.5f;  // légèrement plus bas
+		dir.y = -1.5f;  // lï¿½gï¿½rement plus bas
 		actual = m_object->RetLinVibration();
 		dir.x = Smooth(actual.x, dir.x, time);
 //?		dir.y = Smooth(actual.y, dir.y, time);
@@ -1260,7 +1274,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	{
 		time = event.rTime*m_actionTime*2.0f;
 
-		dir.x = 0.4f;  // avance légèrement
+		dir.x = 0.4f;  // avance lï¿½gï¿½rement
 		dir.z = 0.0f;
 		dir.y = 0.0f;
 		actual = m_object->RetLinVibration();
@@ -1285,7 +1299,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 		dir.x = 0.0f;
 		dir.z = 0.0f;
-		dir.y = -2.0f;  // légèrement plus bas
+		dir.y = -2.0f;  // lï¿½gï¿½rement plus bas
 		actual = m_object->RetLinVibration();
 		dir.x = Smooth(actual.x, dir.x, time);
 //?		dir.y = Smooth(actual.y, dir.y, time);
@@ -1450,13 +1464,13 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_DEADw )   // mort noyé ?
+	else if ( m_actionType == MHS_DEADw )   // mort noyï¿½ ?
 	{
 		pos = m_object->RetPosition(0);
 		level = m_water->RetLevel()-0.5f;
 		if ( pos.y < level )
 		{
-			pos.y += 4.0f*event.rTime;  // remonte à la surface
+			pos.y += 4.0f*event.rTime;  // remonte ï¿½ la surface
 			if ( pos.y > level )  pos.y = level;
 			m_object->SetPosition(0, pos);
 		}
@@ -1493,7 +1507,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	else if ( m_actionType == MHS_LOST )   // perdu ?
 	{
 		time = m_time;
-		if ( time < 10.0f )  time *= time/10.0f;  // démarre lentement
+		if ( time < 10.0f )  time *= time/10.0f;  // dï¿½marre lentement
 
 		dir.x = time*2.0f;
 		dir.y = sinf(m_time*0.8f)*0.8f;
@@ -1612,7 +1626,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		}
 	}
 
-	// Gestion de la tête.
+	// Gestion de la tï¿½te.
 	if ( m_actionType == MHS_TAKE ||  // prend ?
 		 m_actionType == MHS_FLAG )   // prend ?
 	{
@@ -1627,7 +1641,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
 		m_object->SetAngleY(1, Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
 	}
-	else if ( m_actionType == MHS_WIN )   // gagné ?
+	else if ( m_actionType == MHS_WIN )   // gagnï¿½ ?
 	{
 		float	factor = 0.6f+(sinf(m_armTimeAbs*0.5f)*0.40f);
 		m_object->SetAngleZ(1, sinf(m_armTimeAbs*5.0f)*0.20f*factor);
@@ -1670,12 +1684,12 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		if ( m_object->RetFret() == 0 )
 		{
 			if ( speed > 0.0f )  synchro = 0.21f;  // synchro en avant
-			else                 synchro = 0.29f;  // synchro en arrière
+			else                 synchro = 0.29f;  // synchro en arriï¿½re
 		}
 		else
 		{
 			if ( speed > 0.0f )  synchro = 0.15f;  // synchro en avant
-			else                 synchro = 0.35f;  // synchro en arrière
+			else                 synchro = 0.35f;  // synchro en arriï¿½re
 		}
 		time = rTime[1]+synchro;
 

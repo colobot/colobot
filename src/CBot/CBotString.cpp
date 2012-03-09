@@ -1,13 +1,24 @@
-/////////////////////////////////////////////////////
-// gestion de chaine
-// basé sur le CString de MFC
-// mais moins complet
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #include "CBot.h"
 
 #include <string.h>
 
-HINSTANCE CBotString::m_hInstance = (HINSTANCE)LoadLibrary("Cbot.dll");	// comment le récupérer autrement ??
+HINSTANCE CBotString::m_hInstance = (HINSTANCE)LoadLibrary("Cbot.dll");	// comment le rï¿½cupï¿½rer autrement ??
 
 
 CBotString::CBotString()
@@ -438,7 +449,7 @@ CBotStringArray::CBotStringArray()
 
 CBotStringArray::~CBotStringArray()
 {
-	SetSize(0);					// détruit les données !
+	SetSize(0);					// dï¿½truit les donnï¿½es !
 }
 
 
@@ -503,7 +514,7 @@ static void CopyElements(CBotString* pDest, CBotString* pSrc, int nCount)
 
 
 
-// sélect la taille du tableau
+// sï¿½lect la taille du tableau
 
 void CBotStringArray::SetSize(int nNewSize)
 {

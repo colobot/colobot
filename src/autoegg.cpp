@@ -1,4 +1,18 @@
-// autoegg.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -49,7 +63,7 @@ CAutoEgg::~CAutoEgg()
 }
 
 
-// Détruit l'objet.
+// Dï¿½truit l'objet.
 
 void CAutoEgg::DeleteObject(BOOL bAll)
 {
@@ -65,7 +79,7 @@ void CAutoEgg::DeleteObject(BOOL bAll)
 			if ( alien->RetZoom(0) == 1.0f )
 			{
 				alien->SetLock(FALSE);
-				alien->SetActivity(TRUE);  // l'insect né est actif
+				alien->SetActivity(TRUE);  // l'insect nï¿½ est actif
 			}
 			else
 			{
@@ -141,7 +155,7 @@ BOOL CAutoEgg::SetString(char *string)
 }
 
 
-// Démarre l'objet.
+// Dï¿½marre l'objet.
 
 void CAutoEgg::Start(int param)
 {
@@ -156,7 +170,7 @@ void CAutoEgg::Start(int param)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CAutoEgg::EventProcess(const Event &event)
 {
@@ -201,14 +215,14 @@ BOOL CAutoEgg::EventProcess(const Event &event)
 			 m_type == OBJECT_SPIDER ||
 			 m_type == OBJECT_BEE    )
 		{
-			alien->SetZoom(0, 0.2f+m_progress*0.8f);  // ça pousse
+			alien->SetZoom(0, 0.2f+m_progress*0.8f);  // ï¿½a pousse
 		}
 	}
 
 	return TRUE;
 }
 
-// Indique si l'automate a terminé son activité.
+// Indique si l'automate a terminï¿½ son activitï¿½.
 
 Error CAutoEgg::IsEnded()
 {
@@ -239,7 +253,7 @@ Error CAutoEgg::IsEnded()
 		pyro = new CPyro(m_iMan);
 		pyro->Create(PT_EGG, m_object);  // explosion de l'oeuf
 
-		alien->SetZoom(0, 1.0f);  // c'est un grand garçon, maintenant
+		alien->SetZoom(0, 1.0f);  // c'est un grand garï¿½on, maintenant
 
 		m_phase    = AEP_WAIT;
 		m_progress = 0.0f;
@@ -251,14 +265,14 @@ Error CAutoEgg::IsEnded()
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
 		alien->SetLock(FALSE);
-		alien->SetActivity(TRUE);  // l'insect né est actif
+		alien->SetActivity(TRUE);  // l'insect nï¿½ est actif
 	}
 
 	return ERR_STOP;
 }
 
 
-// Retourne une erreur liée à l'état de l'automate.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat de l'automate.
 
 Error CAutoEgg::RetError()
 {
@@ -305,7 +319,7 @@ CObject* CAutoEgg::SearchAlien()
 }
 
 
-// Sauve tous les paramètres de l'automate.
+// Sauve tous les paramï¿½tres de l'automate.
 
 BOOL CAutoEgg::Write(char *line)
 {
@@ -339,7 +353,7 @@ BOOL CAutoEgg::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'automate.
+// Restitue tous les paramï¿½tres de l'automate.
 
 BOOL CAutoEgg::Read(char *line)
 {

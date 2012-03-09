@@ -1,4 +1,18 @@
-// D3DApp.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,7 +46,7 @@
 #define AUDIO_TRACK		13			// nb total de pistes audio sur le CD
 #define MAX_STEP		0.2f		// temps maximum pour un step
 
-#define WINDOW_DX		(640+6)		// dimensions en mode fenêtré
+#define WINDOW_DX		(640+6)		// dimensions en mode fenï¿½trï¿½
 #define WINDOW_DY		(480+25)
 
 #define USE_THREAD		FALSE		// TRUE ne fonctionne pas !
@@ -41,7 +55,7 @@
 
 
 
-// Limite le débattement des commandes clavier & joystick.
+// Limite le dï¿½battement des commandes clavier & joystick.
 
 float AxeLimit(float value)
 {
@@ -78,7 +92,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 		return 0;
 	}
 
-	return d3dApp.Run();  // exécution du tout
+	return d3dApp.Run();  // exï¿½cution du tout
 }
 
 
@@ -152,7 +166,7 @@ CD3DApplication::CD3DApplication()
 
 	g_pD3DApp = this;
 
-	// Demande l'événement envoyé par les souris Logitech.
+	// Demande l'ï¿½vï¿½nement envoyï¿½ par les souris Logitech.
 	m_mshMouseWheel = RegisterWindowMessage(MSH_MOUSEWHEEL); 
 
 	_mkdir("files\\");
@@ -168,7 +182,7 @@ CD3DApplication::~CD3DApplication()
 
 
 
-// Retourne le chemin d'accès du CD.
+// Retourne le chemin d'accï¿½s du CD.
 
 char* CD3DApplication::RetCDpath()
 {
@@ -217,7 +231,7 @@ Error CD3DApplication::RegQuery()
 	return ERR_OK;
 }
 
-// Vérifie la présence des pistes audio sur le CD.
+// Vï¿½rifie la prï¿½sence des pistes audio sur le CD.
 
 Error CD3DApplication::AudioQuery()
 {
@@ -279,7 +293,7 @@ Error CD3DApplication::AudioQuery()
 	return ERR_OK;
 }
 
-// Vérifie la présence de la clé.
+// Vï¿½rifie la prï¿½sence de la clï¿½.
 
 Error CD3DApplication::CheckMistery(char *strCmdLine)
 {
@@ -338,7 +352,7 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
 }
 
 
-// Retourne la quantité totale de mémoire vidéo pour les textures.
+// Retourne la quantitï¿½ totale de mï¿½moire vidï¿½o pour les textures.
 
 int CD3DApplication::GetVidMemTotal()
 {
@@ -473,7 +487,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 
 	if ( !m_bDebugMode )
 	{
-		m_pDeviceInfo->bWindowed = FALSE;  // plein écran
+		m_pDeviceInfo->bWindowed = FALSE;  // plein ï¿½cran
 	}
 	if ( GetProfileInt("Device", "FullScreen", bFull) )
 	{
@@ -565,13 +579,13 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 		ChangeDevice(deviceName, modeName, bFull);
 	}
 
-	// Première exécution ?
+	// Premiï¿½re exï¿½cution ?
 	if ( !GetProfileInt("Setup", "ObjectDirty", iValue) )
 	{
 		m_pD3DEngine->FirstExecuteAdapt(TRUE);
 	}
 
-	// Crée le fichier colobot.ini à la première exécution.
+	// Crï¿½e le fichier colobot.ini ï¿½ la premiï¿½re exï¿½cution.
 	m_pRobotMain->CreateIni();
 
 #if _DEMO
@@ -706,7 +720,7 @@ FPOINT CD3DApplication::ConvPosToInterface(HWND hWnd, LPARAM lParam)
 	return pos;
 }
 
-// Déplace physiquement la souris.
+// Dï¿½place physiquement la souris.
 
 void CD3DApplication::SetMousePos(FPOINT pos)
 {
@@ -820,7 +834,7 @@ void CD3DApplication::SetNiceMouse(BOOL bNice)
 	}
 }
 
-// Indique s'il faut utiliser la jolie souris ombrée.
+// Indique s'il faut utiliser la jolie souris ombrï¿½e.
 
 BOOL CD3DApplication::RetNiceMouse()
 {
@@ -830,7 +844,7 @@ BOOL CD3DApplication::RetNiceMouse()
 	return m_bNiceMouse;
 }
 
-// Indique s'il est possible d'utiliser la jolie souris ombrée.
+// Indique s'il est possible d'utiliser la jolie souris ombrï¿½e.
 
 BOOL CD3DApplication::RetNiceMouseCap()
 {
@@ -889,7 +903,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 			 uMsg == WM_RBUTTONDOWN ||
 			 uMsg == WM_LBUTTONUP   ||
 			 uMsg == WM_RBUTTONUP   ||
-			 uMsg == WM_MOUSEMOVE   )  // événement souris ?
+			 uMsg == WM_MOUSEMOVE   )  // ï¿½vï¿½nement souris ?
 		{
 			event.pos = g_pD3DApp->ConvPosToInterface(hWnd, lParam);
 			g_pD3DApp->m_mousePos = event.pos;
@@ -956,7 +970,7 @@ BOOL CALLBACK AboutProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM )
 
 
 
-// Ignore les touches pressées.
+// Ignore les touches pressï¿½es.
 
 void CD3DApplication::FlushPressKey()
 {
@@ -965,7 +979,7 @@ void CD3DApplication::FlushPressKey()
 	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
 }
 
-// Remet les touches par défaut.
+// Remet les touches par dï¿½faut.
 
 void CD3DApplication::ResetKey()
 {
@@ -1087,7 +1101,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 		uMsg = WM_KEYUP;
 	}
 
-	// Mange l'événement "menu" envoyé par Alt ou F10.
+	// Mange l'ï¿½vï¿½nement "menu" envoyï¿½ par Alt ou F10.
 	if ( uMsg == WM_SYSCOMMAND && wParam == SC_KEYMENU )
 	{
 		return 0;
@@ -1281,7 +1295,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 			if ( m_bActivateApp && m_bJoystick )
 			{
-				SetAcquire(TRUE);  // ré-active le joystick
+				SetAcquire(TRUE);  // rï¿½-active le joystick
 			}
 			break;
 
@@ -1530,7 +1544,7 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 		m_ddsdRenderTarget.dwSize = sizeof(m_ddsdRenderTarget);
 		m_pddsRenderTarget->GetSurfaceDesc( &m_ddsdRenderTarget );
 
-		// Demande la quantité de mémoire vidéo.
+		// Demande la quantitï¿½ de mï¿½moire vidï¿½o.
 		ZeroMemory(&ddsCaps2, sizeof(ddsCaps2));
 		ddsCaps2.dwCaps = DDSCAPS_TEXTURE; 
 		dwTotal = 0;
@@ -1658,7 +1672,7 @@ HRESULT CD3DApplication::Change3DEnvironment()
 
 
 
-// Fait évoluer tout le jeu.
+// Fait ï¿½voluer tout le jeu.
 
 void CD3DApplication::StepSimul(float rTime)
 {
@@ -1667,7 +1681,7 @@ void CD3DApplication::StepSimul(float rTime)
 	if ( m_pRobotMain == 0 )  return;
 
 	ZeroMemory(&event, sizeof(Event));
-	event.event = EVENT_FRAME;  // drôle de bug en release "Maximize speed" !!!
+	event.event = EVENT_FRAME;  // drï¿½le de bug en release "Maximize speed" !!!
 	event.rTime = rTime;
 	event.axeX = AxeLimit(m_axeKey.x + m_axeJoy.x);
 	event.axeY = AxeLimit(m_axeKey.y + m_axeJoy.y);
@@ -1835,7 +1849,7 @@ LRESULT CD3DApplication::OnResumeSuspend( DWORD dwData )
 }
 
 
-// Dessine tous les éléments graphiques supplémentaires.
+// Dessine tous les ï¿½lï¿½ments graphiques supplï¿½mentaires.
 
 void CD3DApplication::DrawSuppl()
 {
@@ -1851,7 +1865,7 @@ void CD3DApplication::DrawSuppl()
 
 	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return;
 
-	// Affiche le rectangle de sélection.
+	// Affiche le rectangle de sï¿½lection.
 	if ( m_pD3DEngine->GetHilite(p1, p2) )
 	{
 		nbOut = 0;
@@ -2118,7 +2132,7 @@ BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBM
 	return TRUE;
 }
 
-// Ecrit un fichier .BMP copie d'écran.
+// Ecrit un fichier .BMP copie d'ï¿½cran.
 
 BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 {
@@ -2179,7 +2193,7 @@ BOOL CD3DApplication::GetRenderDC(HDC &hDC)
 	return TRUE;
 }
 
-// Libère le hDC sur la surface de rendu.
+// Libï¿½re le hDC sur la surface de rendu.
 
 BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
 {
@@ -2191,7 +2205,7 @@ BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
 
 
 // Effectue la liste de tous les devices graphiques disponibles.
-// Pour le device sélectionné, donne la liste des modes plein écran
+// Pour le device sï¿½lectionnï¿½, donne la liste des modes plein ï¿½cran
 // possibles.
 // buf* --> nom1<0> nom2<0> <0>
 
@@ -2256,7 +2270,7 @@ BOOL CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
 	return TRUE;
 }
 
-// Indique si on est en mode plein écran.
+// Indique si on est en mode plein ï¿½cran.
 
 BOOL CD3DApplication::RetFullScreen()
 {

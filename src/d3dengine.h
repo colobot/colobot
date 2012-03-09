@@ -1,4 +1,18 @@
-// D3DEngine.h
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #ifndef _D3DENGINE_H_
 #define	_D3DENGINE_H_
@@ -33,7 +47,7 @@ enum D3DTypeObj
 	TYPEVEHICULE	= 3,		// objet mobile
 	TYPEDESCENDANT	= 4,		// partie d'un objet mobile
 	TYPEQUARTZ		= 5,		// objet fixe de type quartz
-	TYPEMETAL		= 6,		// objet fixe de type métalique
+	TYPEMETAL		= 6,		// objet fixe de type mï¿½talique
 };
 
 enum D3DTypeTri
@@ -81,12 +95,12 @@ enum D3DShadowType
 };
 
 
-#define D3DSTATENORMAL	0		// matériaux opaque normal
+#define D3DSTATENORMAL	0		// matï¿½riaux opaque normal
 #define D3DSTATETTb		(1<<0)	// transparent selon texture (noir=rien)
 #define D3DSTATETTw		(1<<1)	// transparent selon texture (blanc=rien)
 #define D3DSTATETD		(1<<2)	// transparent selon couleur diffuse
-#define D3DSTATEWRAP	(1<<3)	// texture wrappée
-#define D3DSTATECLAMP	(1<<4)	// texture bordée d'une couleur unie
+#define D3DSTATEWRAP	(1<<3)	// texture wrappï¿½e
+#define D3DSTATECLAMP	(1<<4)	// texture bordï¿½e d'une couleur unie
 #define D3DSTATELIGHT	(1<<5)	// texture lumineuse (ambiance max)
 #define D3DSTATEDUALb	(1<<6)	// double texturage noir
 #define D3DSTATEDUALw	(1<<7)	// double texturage blanc
@@ -96,7 +110,7 @@ enum D3DShadowType
 #define D3DSTATEPART4	(1<<11)	// partie 4
 #define D3DSTATE2FACE	(1<<12)	// mode double-face
 #define D3DSTATEALPHA	(1<<13)	// image avec canal alpha
-#define D3DSTATESECOND	(1<<14)	// utilise tjrs 2ème étage de texturage
+#define D3DSTATESECOND	(1<<14)	// utilise tjrs 2ï¿½me ï¿½tage de texturage
 #define D3DSTATEFOG		(1<<15)	// force le brouillard
 #define D3DSTATETCb		(1<<16)	// transparent selon couleur (noir=rien)
 #define D3DSTATETCw		(1<<17)	// transparent selon couleur (blanc=rien)
@@ -174,16 +188,16 @@ typedef struct
 {
 	char		bUsed;			// TRUE -> objet existe
 	char		bVisible;		// TRUE -> objet visible
-	char		bDrawWorld;		// TRUE -> dessine derrière l'interface
+	char		bDrawWorld;		// TRUE -> dessine derriï¿½re l'interface
 	char		bDrawFront;		// TRUE -> dessine devant l'interface
-	int			totalTriangle;	// nb de triangles utilisés
+	int			totalTriangle;	// nb de triangles utilisï¿½s
 	D3DTypeObj	type;			// type de l'objet (TYPE*)
 	D3DMATRIX	transform;		// matrice de transformation
 	float		distance;		// distance point de vue - origine
 	D3DVECTOR	bboxMin;		// bounding box de l'objet
 	D3DVECTOR	bboxMax;		// (l'origine 0;0;0 est tjrs incluse)
-	float		radius;			// rayon de la sphère à l'origine
-	int			shadowRank;		// rang de l'ombre associée
+	float		radius;			// rayon de la sphï¿½re ï¿½ l'origine
+	int			shadowRank;		// rang de l'ombre associï¿½e
 	float		transparency;	// transparence de l'objet (0..1)
 }
 D3DObject;
@@ -191,14 +205,14 @@ D3DObject;
 typedef struct
 {
 	char		bUsed;			// TRUE -> objet existe
-	char		bHide;			// TRUE -> ombre invisible (objet porté par ex.)
+	char		bHide;			// TRUE -> ombre invisible (objet portï¿½ par ex.)
 	int			objRank;		// rang de l'objet
 	D3DShadowType type;			// type de l'ombre
 	D3DVECTOR	pos;			// position pour l'ombre
 	D3DVECTOR	normal;			// normale au terrain
 	float		angle;			// angle de l'ombre
 	float		radius;			// rayon de l'ombre
-	float		intensity;		// intensité de l'ombre
+	float		intensity;		// intensitï¿½ de l'ombre
 	float		height;			// hauteur depuis le sol
 }
 D3DShadow;
@@ -211,26 +225,26 @@ typedef struct
 	float		smooth;			// zone de transition
 	D3DVECTOR	pos;			// position pour l'ombre
 	float		radius;			// rayon de l'ombre
-	D3DVECTOR	drawPos;		// position pour l'ombre dessinée
-	float		drawRadius;		// rayon de l'ombre dessinée
+	D3DVECTOR	drawPos;		// position pour l'ombre dessinï¿½e
+	float		drawRadius;		// rayon de l'ombre dessinï¿½e
 }
 D3DGroundSpot;
 
 typedef struct
 {
 	char		bUsed;			// TRUE -> objet existe
-	char		bDraw;			// TRUE -> marque dessinée
-	int			phase;			// 1=croissance, 2=fixe, 3=décroissance
-	float		delay[3];		// délais pour les 3 phases
+	char		bDraw;			// TRUE -> marque dessinï¿½e
+	int			phase;			// 1=croissance, 2=fixe, 3=dï¿½croissance
+	float		delay[3];		// dï¿½lais pour les 3 phases
 	float		fix;			// temps fixe
 	D3DVECTOR	pos;			// position pour marques
 	float		radius;			// rayon des marques
-	float		intensity;		// intensité couleur
-	D3DVECTOR	drawPos;		// position pour marques dessinées
-	float		drawRadius;		// rayon des marques dessinées
-	float		drawIntensity;	// intensité dessinée
+	float		intensity;		// intensitï¿½ couleur
+	D3DVECTOR	drawPos;		// position pour marques dessinï¿½es
+	float		drawRadius;		// rayon des marques dessinï¿½es
+	float		drawIntensity;	// intensitï¿½ dessinï¿½e
 	int			dx, dy;			// dimensions table
-	char*		table;			// pointeur à la table
+	char*		table;			// pointeur ï¿½ la table
 }
 D3DGroundMark;
 

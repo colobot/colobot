@@ -1,4 +1,18 @@
-// key.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -63,7 +77,7 @@ CKey::~CKey()
 }
 
 
-// Crée un nouveau bouton.
+// Crï¿½e un nouveau bouton.
 
 BOOL CKey::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -83,7 +97,7 @@ BOOL CKey::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CKey::EventProcess(const Event &event)
 {
@@ -137,33 +151,33 @@ BOOL CKey::EventProcess(const Event &event)
 }
 
 
-// Cherche si une touche est déjà utilisée.
+// Cherche si une touche est dï¿½jï¿½ utilisï¿½e.
 
 BOOL CKey::TestKey(int key)
 {
 	int		i, j;
 
 	if ( key == VK_PAUSE    ||
-		 key == VK_SNAPSHOT )  return TRUE;  // touche bloquée
+		 key == VK_SNAPSHOT )  return TRUE;  // touche bloquï¿½e
 
 	for ( i=0 ; i<20 ; i++ )
 	{
 		for ( j=0 ; j<2 ; j++ )
 		{
-			if ( key == m_engine->RetKey(i, j) )  // touche utilisée ?
+			if ( key == m_engine->RetKey(i, j) )  // touche utilisï¿½e ?
 			{
 				m_engine->SetKey(i, j, 0);  // plus rien !
 			}
 		}
 
-		if ( m_engine->RetKey(i, 0) == 0 )  // première option libre ?
+		if ( m_engine->RetKey(i, 0) == 0 )  // premiï¿½re option libre ?
 		{
 			m_engine->SetKey(i, 0, m_engine->RetKey(i, 1));  // shift
 			m_engine->SetKey(i, 1, 0);
 		}
 	}
 
-	return FALSE;  // pas utilisée
+	return FALSE;  // pas utilisï¿½e
 }
 
 

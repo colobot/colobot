@@ -1,4 +1,18 @@
-// taskfire.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -24,9 +38,9 @@
 
 
 
-#define ENERGY_FIRE		(0.25f/2.5f)	// énergie consommée /s de tir
-#define ENERGY_FIREr	(0.25f/1.5f)	// énergie consommée /s de rayon
-#define ENERGY_FIREi	(0.10f/2.5f)	// énergie consommée /s d'organique
+#define ENERGY_FIRE		(0.25f/2.5f)	// ï¿½nergie consommï¿½e /s de tir
+#define ENERGY_FIREr	(0.25f/1.5f)	// ï¿½nergie consommï¿½e /s de rayon
+#define ENERGY_FIREi	(0.10f/2.5f)	// ï¿½nergie consommï¿½e /s d'organique
 
 
 // Constructeur de l'objet.
@@ -51,7 +65,7 @@ CTaskFire::~CTaskFire()
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CTaskFire::EventProcess(const Event &event)
 {
@@ -261,7 +275,7 @@ BOOL CTaskFire::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigne le but ï¿½ atteindre.
 
 Error CTaskFire::Start(float delay)
 {
@@ -270,7 +284,7 @@ Error CTaskFire::Start(float delay)
 	float		energy, fire;
 	ObjectType	type;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // opï¿½ration impossible
 
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILEfc &&
@@ -349,7 +363,7 @@ Error CTaskFire::Start(float delay)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indique si l'action est terminï¿½e.
 
 Error CTaskFire::IsEnded()
 {

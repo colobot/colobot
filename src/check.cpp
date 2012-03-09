@@ -1,4 +1,18 @@
-// check.cpp
+ï»¿// * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see .
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -35,7 +49,7 @@ CCheck::~CCheck()
 }
 
 
-// Crée un nouveau bouton.
+// Crï¿½e un nouveau bouton.
 
 BOOL CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -55,7 +69,7 @@ BOOL CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Gestion d'un ï¿½vï¿½nement.
 
 BOOL CCheck::EventProcess(const Event &event)
 {
@@ -91,7 +105,7 @@ void CCheck::Draw()
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
 	iDim = m_dim;
-	m_dim.x = m_dim.y*0.75f;  // carré
+	m_dim.x = m_dim.y*0.75f;  // carrï¿½
 
 	if ( m_state & STATE_SHADOW )
 	{
@@ -138,7 +152,7 @@ void CCheck::Draw()
 		if ( m_state & STATE_CHECK )
 		{
 			icon = 16;  // vu
-			DrawPart(icon, zoomInt, 0.0f);  // dessine l'icône
+			DrawPart(icon, zoomInt, 0.0f);  // dessine l'icï¿½ne
 		}
 	}
 
