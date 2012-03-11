@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see .
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
 #define IDI_MAIN_ICON                   101
 #define IDR_MAIN_ACCEL                  113
 #define IDR_MENU                        141

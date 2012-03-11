@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see .
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 // derni�re r�vision : 03/10/2002	DD
 

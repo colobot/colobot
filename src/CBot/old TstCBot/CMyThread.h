@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see .
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 #if !defined(AFX_MAINFRM_H__20B3756C_5DFD_11D4_A15E_00E0189013DF__INCLUDED_)
 #define AFX_MAINFRM_H__20B3756C_5DFD_11D4_A15E_00E0189013DF__INCLUDED_

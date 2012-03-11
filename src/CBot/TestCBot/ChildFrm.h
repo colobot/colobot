@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see .
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 #if !defined(AFX_CHILDFRM_H__4D1BB909_8E74_11D4_A439_00D059085115__INCLUDED_)
 #define AFX_CHILDFRM_H__4D1BB909_8E74_11D4_A439_00D059085115__INCLUDED_
