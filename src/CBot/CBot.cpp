@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see .
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 // principe de compilation:
 //	les routines Compile retournent un objet de la classe correspondant � l'op�ration trouv�e

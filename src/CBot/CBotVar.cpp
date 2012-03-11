@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see .
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 // on ne cr�e jamais d'instance de la class m�re CBotVar
 
