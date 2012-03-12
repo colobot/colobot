@@ -16,7 +16,7 @@
 
 
 
-// Variables statiques
+// Static variables
 
 static CBotClass*	m_pClassFILE;
 static CBotProgram*	m_pFuncFile;
@@ -25,7 +25,7 @@ static char*		m_filesDir;
 
 
 
-// Pr�pare un nom de fichier.
+// Prepares a file name.
 
 void PrepareFilename(CBotString &filename)
 {
@@ -34,67 +34,67 @@ void PrepareFilename(CBotString &filename)
 	pos = filename.ReverseFind('\\');
 	if ( pos > 0 )
 	{
-		filename = filename.Mid(pos+1);  // enl�ve les dossiers
+		filename = filename.Mid(pos+1);  // Remove files with \\
 	}
 
 	pos = filename.ReverseFind('/');
 	if ( pos > 0 )
 	{
-		filename = filename.Mid(pos+1);  // aussi ceux avec /
+		filename = filename.Mid(pos+1);  // also with /
 	}
 
 	pos = filename.ReverseFind(':');
 	if ( pos > 0 )
 	{
-		filename = filename.Mid(pos+1);  // enl�ve aussi la lettre d'unit� C:
+		filename = filename.Mid(pos+1);  // also removes the drive letter C:
 	}
 
 	filename = CBotString(m_filesDir) + CBotString("\\") + filename;
 }
 
 
-// constructeur de la classe
-// re�ois le nom du fichier en param�tre
+// constructor of the class
+// get the filename as a parameter
 
-// ex�cution
+// execution
 BOOL rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception) 
 {
 	CBotString	mode;
 
-	// accepte sans param�tre
+	// accepts no parameters
 	if ( pVar == NULL ) return TRUE;
 
-	// qui doit �tre une cha�ne de caract�res
+	// must be a character string
 	if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return FALSE; }
 
 	CBotString	filename = pVar->GivValString();
 	PrepareFilename(filename);
 
-	// il peut y avoir  un second param�tre
+	// there may be a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar != NULL )
 	{
-		// r�cup�re le mode
+		// recover mode
 		mode = pVar->GivValString();
 		if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return FALSE; }
 
-		// pas de 3e param�tre
+		// no third parameter
 		if ( pVar->GivNext() != NULL ) { Exception = CBotErrOverParam; return FALSE; } 
 	}
 
-	// enregistre le nom du fichier
+	// saves the file name
 	pVar = pThis->GivItem("filename");
 	pVar->SetValString(filename);
 
 	if ( ! mode.IsEmpty() )
 	{
-		// ouvre le ficher demand�
+		// opens the requested file
 		FILE*	pFile = fopen( filename, mode );
 		if ( pFile == NULL ) { Exception = CBotErrFileOpen; return FALSE; }
 
 		m_CompteurFileOpen ++;
 
-		// enregiste le canal du fichier
+		// save the channel file
 		pVar = pThis->GivItem("handle");
 		pVar->SetValInt((long)pFile);
 	}
@@ -105,38 +105,38 @@ BOOL rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exceptio
 // compilation
 CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar)
 {
-	// accepte sans param�tre
+	// accepts no parameters
 	if ( pVar == NULL ) return CBotTypResult( 0 );
 
-	// qui doit �tre une chaine
+	// must be a character string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( CBotErrBadString );
 
-	// il peut y avoir un second param�tre
+	// there may be a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar != NULL )
 	{
-		// qui doit �tre une chaine
+		// which must be a string
 		if ( pVar->GivType() != CBotTypString )
 							return CBotTypResult( CBotErrBadString );
-		// pas de 3e param�tre
+		// no third parameter
 		if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
 	}
 
-	// le r�sultat est de type void (constructeur)
+	// the result is void (constructor)
 	return CBotTypResult( 0 );
 }
 
 
-// destructeur de la classe
+// destructor of the class
 
-// ex�cution
+// execution
 BOOL rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
-	// r�cup�re l'�l�ment "handle"
+	// retrieve the item "handle"
 	pVar = pThis->GivItem("handle");
 
-	// pas ouvert ? pas de probl�me
+	// don't open? no problem :)
 	if ( pVar->GivInit() != IS_DEF) return TRUE;
 
 	FILE* pFile= (FILE*)pVar->GivValInt();
@@ -149,52 +149,52 @@ BOOL rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception
 }
 
 
-// m�thode FILE :: open
-// re�ois le mode r/w en param�tre
+// process FILE :: open
+// get the r/w mode as a parameter
 
-// ex�cution
+// execution
 BOOL rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
-	// il doit y avoir un param�tre
+	// there must be a parameter
 	if ( pVar == NULL ) { Exception = CBotErrLowParam; return FALSE; }
 
-	// qui doit �tre une cha�ne de caract�res
+	// which must be a character string
 	if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return FALSE; }
 
-	// il peut y avoir  un second param�tre
+	// There may be a second parameter
 	if ( pVar->GivNext() != NULL )
 	{
-		// dans ce cas le premier param�tre est le nom du fichier
+		// if the first parameter is the file name
 		CBotString	filename = pVar->GivValString();
 		PrepareFilename(filename);
 
-		// enregistre le nom du fichier
+		// saves the file name
 		CBotVar* pVar2 = pThis->GivItem("filename");
 		pVar2->SetValString(filename);
 
-		// param�tre suivant est le mode
+		// next parameter is the mode
 		pVar = pVar -> GivNext();
 	}
 
 	CBotString	mode = pVar->GivValString();
 	if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return FALSE; }
 
-	// pas de 3e param�tre
+	// no third parameter
 	if ( pVar->GivNext() != NULL ) { Exception = CBotErrOverParam; return FALSE; }
 
-	// r�cup�re l'�l�ment "handle"
+	// retrieve the item "handle"
 	pVar = pThis->GivItem("handle");
 
-	// qui doit pas �tre initialis�
+	// which must not be initialized
 	if ( pVar->GivInit() == IS_DEF) { Exception = CBotErrFileOpen; return FALSE; }
 
-	// reprend le nom du fichier
+	// file contains the name
 	pVar = pThis->GivItem("filename");
 	CBotString	filename = pVar->GivValString();
 
-	PrepareFilename(filename);  // si le nom a �t� attribu� par h.filename = "...";
+	PrepareFilename(filename);  // if the name was h.filename attribute = "...";
 
-	// ouvre le ficher demand�
+	// opens the requested file
 	FILE*	pFile = fopen( filename, mode );
 	if ( pFile == NULL )
 	{
@@ -204,7 +204,7 @@ BOOL rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 
 	m_CompteurFileOpen ++;
 
-	// enregiste le canal du fichier
+	// Registered the channel file
 	pVar = pThis->GivItem("handle");
 	pVar->SetValInt((long)pFile);
 
@@ -215,39 +215,39 @@ BOOL rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 // compilation
 CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar)
 {
-	// il doit y avoir un param�tre
+	// there must be a parameter
 	if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
 
-	// qui doit �tre une chaine
+	// which must be a string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( CBotErrBadString );
 
-	// il peut y avoir  un second param�tre
+	// there may be a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar != NULL )
 	{
-		// qui doit �tre une chaine
+		// which must be a string
 		if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( CBotErrBadString );
 
-		// pas de 3e param�tre
+		// no third parameter
 		if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
 	}
 
-	// le r�sultat est de type bool
+	// the result is bool
 	return CBotTypResult(CBotTypBoolean);
 }
 
 	
-// m�thode FILE :: close
+// process FILE :: close
 
-// ex�cution
+// execeution
 BOOL rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
-	// il ne doit pas y avoir de param�tre
+	// it shouldn't be any parameters
 	if ( pVar != NULL ) return CBotErrOverParam;
 
-	// r�cup�re l'�l�ment "handle"
+	// retrieve the item "handle"
 	pVar = pThis->GivItem("handle");
 
 	if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return FALSE; }
@@ -264,27 +264,27 @@ BOOL rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 // compilation
 CBotTypResult cfclose (CBotVar* pThis, CBotVar* &pVar)
 {
-	// il ne doit pas y avoir de param�tre
+	// it shouldn't be any parameters
 	if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
 
-	// la fonction retourne un r�sultat "void"
+	// function returns a result "void"
 	return CBotTypResult( 0 );
 }
 
-// m�thode FILE :: writeln
+// process FILE :: writeln
 
-// ex�cution
+// execution
 BOOL rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
-	// il doit y avoir un param�tre
+	// there must be a parameter
 	if ( pVar == NULL ) { Exception = CBotErrLowParam; return FALSE; }
 
-	// qui doit �tre une cha�ne de caract�res
+	// which must be a character string
 	if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return FALSE; }
 
 	CBotString param = pVar->GivValString();
 
-	// r�cup�re l'�l�ment "handle"
+	// retrieve the item "handle"
 	pVar = pThis->GivItem("handle");
 
 	if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return FALSE; }
@@ -293,7 +293,7 @@ BOOL rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 	
 	int res = fputs(param+"\n", pFile);
 
-	// en cas d'erreur g�n�re une exception
+	// if an error occurs generate an exception
 	if ( res < 0 ) { Exception = CBotErrWrite; return FALSE; }
 
 	return TRUE;
@@ -302,28 +302,28 @@ BOOL rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 // compilation
 CBotTypResult cfwrite (CBotVar* pThis, CBotVar* &pVar)
 {
-	// il doit y avoir un param�tre
+	// there must be a parameter
 	if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
 
-	// qui doit �tre une cha�ne de caract�res
+	// which must be a character string
 	if ( pVar->GivType() != CBotTypString ) return CBotTypResult( CBotErrBadString );
 
-	// pas d'autre param�tre
+	// no other parameter
 	if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
 
-	// la fonction retourne un r�sultat void
+	// the function returns a void result
 	return CBotTypResult( 0 );
 }
 
-// m�thode FILE :: readln
+// process FILE :: readln
 
-// ex�cution
+// execution
 BOOL rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
-	// il ne doit pas y avoir de param�tre
+	// it shouldn't be any parameters
 	if ( pVar != NULL ) { Exception = CBotErrOverParam; return FALSE; }
 
-	// r�cup�re l'�l�ment "handle"
+	// retrieve the item "handle"
 	pVar = pThis->GivItem("handle");
 
 	if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return FALSE; }
@@ -338,7 +338,7 @@ BOOL rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 
 	for ( i = 0 ; i < 2000 ; i++ ) if (chaine[i] == '\n') chaine[i] = 0;
 
-	// en cas d'erreur g�n�re une exception
+	// if an error occurs generate an exception
 	if ( ferror(pFile) ) { Exception = CBotErrRead; return FALSE; }
 
 	pResult->SetValString( chaine );
@@ -349,22 +349,22 @@ BOOL rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 // compilation
 CBotTypResult cfread (CBotVar* pThis, CBotVar* &pVar)
 {
-	// il ne doit pas y avoir de param�tre
+	// it should not be any parameter
 	if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
 
-	// la fonction retourne un r�sultat "string"
+	// function returns a result "string"
 	return CBotTypResult( CBotTypString );
 }
-// m�thode FILE :: readln
+// process FILE :: readln
 
 
-// ex�cution
+// execution
 BOOL rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
-	// il ne doit pas y avoir de param�tre
+	// it should not be any parameter
 	if ( pVar != NULL ) { Exception = CBotErrOverParam; return FALSE; }
 
-	// r�cup�re l'�l�ment "handle"
+	// retrieve the item "handle"
 	pVar = pThis->GivItem("handle");
 
 	if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return FALSE; }
@@ -379,10 +379,10 @@ BOOL rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 // compilation
 CBotTypResult cfeof (CBotVar* pThis, CBotVar* &pVar)
 {
-	// il ne doit pas y avoir de param�tre
+	// it shouldn't be any parameter
 	if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
 
-	// la fonction retourne un r�sultat booleen
+	// the function returns a boolean result
 	return CBotTypResult( CBotTypBoolean );
 }
 
@@ -392,25 +392,25 @@ CBotTypResult cfeof (CBotVar* pThis, CBotVar* &pVar)
 
 void InitClassFILE()
 {
-// cr�e une classe pour la gestion des fichiers
-// l'utilisation en est la suivante:
+// create a class for file management
+// the use is as follows:
 // file canal( "NomFichier.txt" )
-// canal.open( "r" );	// ouvre en lecture
-// s = canal.readln( ); // lit une ligne
-// canal.close();		// referme le fichier
+// canal.open( "r" );	// open for read
+// s = canal.readln( ); // reads a line
+// canal.close();	// close the file
 
-	// cr�e la classe FILE
+	// create the class FILE
 	m_pClassFILE	= new CBotClass("file", NULL);
-	// ajoute le composant ".filename"
+	// adds the component ".filename"
 	m_pClassFILE->AddItem("filename", CBotTypString);
-	// ajoute le composant ".handle"
+	// adds the component ".handle"
 	m_pClassFILE->AddItem("handle", CBotTypInt, PR_PRIVATE);
 
-	// d�fini un constructeur et un destructeur
+	// define a constructor and a destructor
 	m_pClassFILE->AddFunction("file", rfconstruct, cfconstruct );
 	m_pClassFILE->AddFunction("~file", rfdestruct, NULL );
 
-	// d�fini les m�thodes associ�es
+	// end of the methods associated
 	m_pClassFILE->AddFunction("open", rfopen, cfopen );
 	m_pClassFILE->AddFunction("close", rfclose, cfclose );
 	m_pClassFILE->AddFunction("writeln", rfwrite, cfwrite );
@@ -420,6 +420,6 @@ void InitClassFILE()
 	m_pFuncFile = new CBotProgram( );
 	CBotStringArray ListFonctions;
 	m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
-	m_pFuncFile->SetIdent(-2);	// identificateur sp�cial pour RestoreState dans cette fonction
+	m_pFuncFile->SetIdent(-2);	// restoreState in special identifier for this function
 }
 
