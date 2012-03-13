@@ -47,7 +47,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoDestroyer::CAutoDestroyer(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
@@ -55,10 +55,10 @@ CAutoDestroyer::CAutoDestroyer(CInstanceManager* iMan, CObject* object)
 	CAuto::CAuto(iMan, object);
 
 	Init();
-	m_phase = ADEP_WAIT;  // en pause jusqu'au premier Init()
+	m_phase = ADEP_WAIT;  // paused until the first Init ()
 }
 
-// Destructeur de l'objet.
+// Destructive of the object.
 
 CAutoDestroyer::~CAutoDestroyer()
 {
@@ -66,7 +66,7 @@ CAutoDestroyer::~CAutoDestroyer()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoDestroyer::DeleteObject(BOOL bAll)
 {
@@ -74,7 +74,7 @@ void CAutoDestroyer::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoDestroyer::Init()
 {
@@ -90,7 +90,7 @@ void CAutoDestroyer::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoDestroyer::EventProcess(const Event &event)
 {
@@ -107,7 +107,7 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -123,18 +123,18 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 			scrap = SearchPlastic();
 			if ( scrap == 0 )
 			{
-				m_phase    = ADEP_WAIT;  // attend encore ...
+				m_phase    = ADEP_WAIT;  // still waiting ...
 				m_progress = 0.0f;
 				m_speed    = 1.0f/0.5f;
 			}
 			else
 			{
-				scrap->SetLock(TRUE);  // d�chet plus utilisable
-//?				scrap->SetTruck(m_object);  // d�chet plus utilisable
+				scrap->SetLock(TRUE);  // usable waste
+//?				scrap->SetTruck(m_object);  // usable waste
 
 				if ( SearchVehicle() )
 				{
-					m_phase    = ADEP_WAIT;  // attend encore ...
+					m_phase    = ADEP_WAIT;  // still waiting ...
 					m_progress = 0.0f;
 					m_speed    = 1.0f/0.5f;
 				}
@@ -218,7 +218,7 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoDestroyer::CreateInterface(BOOL bSelect)
 {
@@ -248,7 +248,7 @@ BOOL CAutoDestroyer::CreateInterface(BOOL bSelect)
 }
 
 
-// Cherche le d�chet plac� sous le destructeur.
+// Seeks plate waste in the destroyer.
 
 CObject* CAutoDestroyer::SearchPlastic()
 {
@@ -277,7 +277,7 @@ CObject* CAutoDestroyer::SearchPlastic()
 	return 0;
 }
 
-// Cherche si un v�hicule est trop proche.
+// Seeks if one vehicle is too close.
 
 BOOL CAutoDestroyer::SearchVehicle()
 {
@@ -339,7 +339,7 @@ BOOL CAutoDestroyer::SearchVehicle()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoDestroyer::RetError()
 {
@@ -352,7 +352,7 @@ Error CAutoDestroyer::RetError()
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoDestroyer::Write(char *line)
 {
@@ -377,7 +377,7 @@ BOOL CAutoDestroyer::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoDestroyer::Read(char *line)
 {
