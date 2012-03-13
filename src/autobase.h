@@ -27,38 +27,38 @@ class CObject;
 
 
 
-#define PARAM_STOP				0		// run=0 -> stopp� et ouvert
-#define PARAM_LANDING			1		// run=1 -> atterrissage
-#define PARAM_PORTICO			2		// run=2 -> port� par le portique
-#define PARAM_FIXSCENE			3		// run=3 -> stopp� et ouvert pour win/lost
-#define PARAM_TRANSIT1			11		// run=11 -> transit dans l'espace
-#define PARAM_TRANSIT2			12		// run=12 -> transit dans l'espace
-#define PARAM_TRANSIT3			13		// run=13 -> transit dans l'espace
+#define PARAM_STOP			0		// run=0 -> stops and open
+#define PARAM_LANDING			1		// run=1 -> landing
+#define PARAM_PORTICO			2		// run=2 -> gate on the ground
+#define PARAM_FIXSCENE			3		// run=3 -> open and stops to win / lost
+#define PARAM_TRANSIT1			11		// run=11 -> transit in space
+#define PARAM_TRANSIT2			12		// run=12 -> transit in space
+#define PARAM_TRANSIT3			13		// run=13 -> transit in space
 
 
 enum AutoBasePhase
 {
-	ABP_WAIT		= 1,	// attend
-	ABP_START		= 2,	// d�marrage
+	ABP_WAIT		= 1,	// expected
+	ABP_START		= 2,	// start-up
 
-	ABP_LAND		= 3,	// atterissage
-	ABP_OPENWAIT	= 4,	// attente avant ouverture
-	ABP_OPEN		= 5,	// ouvre les portes
-	ABP_OPEN2		= 6,	// ouvre les suppl�ments
-	ABP_LDWAIT		= 7,	// attend
+	ABP_LAND		= 3,	// landing
+	ABP_OPENWAIT		= 4,	// wait before opening
+	ABP_OPEN		= 5,	// opens the gate
+	ABP_OPEN2		= 6,	// opens supplements
+	ABP_LDWAIT		= 7,	// expected
 
-	ABP_CLOSE2		= 8,	// ferme les suppl�ments
-	ABP_CLOSE		= 9,	// ferme les portes
-	ABP_TOWAIT		= 10,	// attente avant d�collage
-	ABP_TAKEOFF		= 11,	// d�collage
+	ABP_CLOSE2		= 8,	// closes supplements
+	ABP_CLOSE		= 9,	// closes gate
+	ABP_TOWAIT		= 10,	// wait before takeoff
+	ABP_TAKEOFF		= 11,	// take-off
 
-	ABP_PORTICO_MOVE = 12,	// portique avance
-	ABP_PORTICO_WAIT1= 13,	// portique attend
-	ABP_PORTICO_DOWN = 14,	// portique descend
-	ABP_PORTICO_WAIT2= 15,	// portique attend
-	ABP_PORTICO_OPEN = 16,	// portique s'ouvre
+	ABP_PORTICO_MOVE = 12,	// gate advance
+	ABP_PORTICO_WAIT1= 13,	// gate expected
+	ABP_PORTICO_DOWN = 14,	// gate down
+	ABP_PORTICO_WAIT2= 15,	// gate expected
+	ABP_PORTICO_OPEN = 16,	// gate opens
 
-	ABP_TRANSIT_MOVE = 17,	// transit - d�placement
+	ABP_TRANSIT_MOVE = 17,	// transit - moving
 };
 
 
