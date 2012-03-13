@@ -53,7 +53,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAuto::CAuto(CInstanceManager* iMan, CObject* object)
 {
@@ -86,7 +86,7 @@ CAuto::CAuto(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAuto::~CAuto()
 {
@@ -94,42 +94,42 @@ CAuto::~CAuto()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAuto::DeleteObject(BOOL bAll)
 {
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAuto::Init()
 {
 	m_bBusy = FALSE;
 }
 
-// D�marre l'objet.
+// Starts the object.
 
 void CAuto::Start(int param)
 {
 }
 
 
-// Donne un type.
+// Give a type.
 
 BOOL CAuto::SetType(ObjectType type)
 {
 	return FALSE;
 }
 
-// Donne une valeur.
+// Gives a value.
 
 BOOL CAuto::SetValue(int rank, float value)
 {
 	return FALSE;
 }
 
-// Donne la string.
+// Gives the string.
 
 BOOL CAuto::SetString(char *string)
 {
@@ -137,7 +137,7 @@ BOOL CAuto::SetString(char *string)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAuto::EventProcess(const Event &event)
 {
@@ -148,7 +148,7 @@ BOOL CAuto::EventProcess(const Event &event)
 		UpdateInterface(event.rTime);
 	}
 
-	if ( !m_object->RetSelect() )  // robot pas s�lectionn� ?
+	if ( !m_object->RetSelect() )  // robot not selected?
 	{
 		return TRUE;
 	}
@@ -156,14 +156,14 @@ BOOL CAuto::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Indique si l'automate a termin� son activit�.
+// Indicates whether the controller has finished its activity.
 
 Error CAuto::IsEnded()
 {
 	return ERR_CONTINUE;
 }
 
-// Stoppe l'automate.
+// Stops the controller
 
 BOOL CAuto::Abort()
 {
@@ -171,7 +171,7 @@ BOOL CAuto::Abort()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAuto::CreateInterface(BOOL bSelect)
 {
@@ -183,8 +183,8 @@ BOOL CAuto::CreateInterface(BOOL bSelect)
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
 	if ( pw != 0 )
 	{
-		pw->Flush();  // d�truit les boutons de la fen�tre
-		m_interface->DeleteControl(EVENT_WINDOW0);  // d�truit la fen�tre
+		pw->Flush();  // destroys the window buttons
+		m_interface->DeleteControl(EVENT_WINDOW0);  // destroys the window
 	}
 
 	if ( !bSelect )  return TRUE;
@@ -253,11 +253,11 @@ BOOL CAuto::CreateInterface(BOOL bSelect)
 	pos.y = oy+sy*-0.1f;
 	ddim.x = dim.x*1.0f;
 	ddim.y = dim.y*2.1f;
-	pw->CreateGroup(pos, ddim, 20, EVENT_NULL);  // fond bleu uni
+	pw->CreateGroup(pos, ddim, 20, EVENT_NULL);  // solid blue background
 
 	pos.x = ox+sx*12.3f;
 	pos.y = oy+sy*1;
-	pw->CreateGroup(pos, dim, 19, EVENT_NULL);  // signe SatCom
+	pw->CreateGroup(pos, dim, 19, EVENT_NULL);  // sign SatCom
 
 	pos.x = ox+sx*12.4f;
 	pos.y = oy+sy*0.5f;
@@ -285,7 +285,7 @@ BOOL CAuto::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Modifie l'�tat d'un bouton de l'interface.
+// Change the state of a button interface.
 
 void CAuto::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -297,7 +297,7 @@ void CAuto::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_CHECK, bState);
 }
 
-// Modifie l'�tat d'un bouton de l'interface.
+// Change the state of a button interface.
 
 void CAuto::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -309,7 +309,7 @@ void CAuto::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_ENABLE, bState);
 }
 
-// Modifie l'�tat d'un bouton de l'interface.
+// Change the state of a button interface.
 
 void CAuto::VisibleInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -321,7 +321,7 @@ void CAuto::VisibleInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_VISIBLE, bState);
 }
 
-// Modifie l'�tat d'un bouton de l'interface.
+// Change the state of a button interface.
 
 void CAuto::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
@@ -333,7 +333,7 @@ void CAuto::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
 	control->SetState(STATE_DEAD, !bState);
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface.
+// Change the state of a button interface.
 
 void CAuto::UpdateInterface()
 {
@@ -347,8 +347,8 @@ void CAuto::UpdateInterface()
 	VisibleInterface(pw, EVENT_OBJECT_GPROGRESS, m_bBusy);
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface,
-// suite au temps qui s'�coule ...
+// Updates the state of all buttons on the interface,
+// following the time that elapses ...
 
 void CAuto::UpdateInterface(float rTime)
 {
@@ -377,7 +377,7 @@ void CAuto::UpdateInterface(float rTime)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAuto::RetError()
 {
@@ -385,7 +385,7 @@ Error CAuto::RetError()
 }
 
 
-// Gestion de l'occupation.
+// Management of the occupation.
 
 BOOL CAuto::RetBusy()
 {
@@ -409,7 +409,7 @@ void CAuto::EventProgress(float rTime)
 }
 
 
-// Gestion du moteur.
+// Engine management.
 
 BOOL CAuto::RetMotor()
 {
@@ -422,7 +422,7 @@ void CAuto::SetMotor(BOOL bMotor)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAuto::Write(char *line)
 {
@@ -446,7 +446,7 @@ BOOL CAuto::Write(char *line)
 	return FALSE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Return all settings to the controller.
 
 BOOL CAuto::Read(char *line)
 {
