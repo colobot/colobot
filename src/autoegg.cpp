@@ -39,7 +39,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoEgg::CAutoEgg(CInstanceManager* iMan, CObject* object)
 				   : CAuto(iMan, object)
@@ -55,7 +55,7 @@ CAutoEgg::CAutoEgg(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoEgg::~CAutoEgg()
 {
@@ -63,7 +63,7 @@ CAutoEgg::~CAutoEgg()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoEgg::DeleteObject(BOOL bAll)
 {
@@ -79,7 +79,7 @@ void CAutoEgg::DeleteObject(BOOL bAll)
 			if ( alien->RetZoom(0) == 1.0f )
 			{
 				alien->SetLock(FALSE);
-				alien->SetActivity(TRUE);  // l'insect n� est actif
+				alien->SetActivity(TRUE);  // the insect is active
 			}
 			else
 			{
@@ -91,7 +91,7 @@ void CAutoEgg::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoEgg::Init()
 {
@@ -129,7 +129,7 @@ void CAutoEgg::Init()
 }
 
 
-// Donne une valeur.
+// Gives a value.
 
 BOOL CAutoEgg::SetType(ObjectType type)
 {
@@ -137,7 +137,7 @@ BOOL CAutoEgg::SetType(ObjectType type)
 	return TRUE;
 }
 
-// Donne une valeur.
+// Gives a value.
 
 BOOL CAutoEgg::SetValue(int rank, float value)
 {
@@ -146,7 +146,7 @@ BOOL CAutoEgg::SetValue(int rank, float value)
 	return TRUE;
 }
 
-// Donne la string.
+// Gives the string.
 
 BOOL CAutoEgg::SetString(char *string)
 {
@@ -155,7 +155,7 @@ BOOL CAutoEgg::SetString(char *string)
 }
 
 
-// D�marre l'objet.
+// Start object.
 
 void CAutoEgg::Start(int param)
 {
@@ -170,7 +170,7 @@ void CAutoEgg::Start(int param)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoEgg::EventProcess(const Event &event)
 {
@@ -215,14 +215,14 @@ BOOL CAutoEgg::EventProcess(const Event &event)
 			 m_type == OBJECT_SPIDER ||
 			 m_type == OBJECT_BEE    )
 		{
-			alien->SetZoom(0, 0.2f+m_progress*0.8f);  // �a pousse
+			alien->SetZoom(0, 0.2f+m_progress*0.8f);  // Others push
 		}
 	}
 
 	return TRUE;
 }
 
-// Indique si l'automate a termin� son activit�.
+// Indicates whether the controller has completed its activity.
 
 Error CAutoEgg::IsEnded()
 {
@@ -251,9 +251,9 @@ Error CAutoEgg::IsEnded()
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
 		pyro = new CPyro(m_iMan);
-		pyro->Create(PT_EGG, m_object);  // explosion de l'oeuf
+		pyro->Create(PT_EGG, m_object);  // exploding egg
 
-		alien->SetZoom(0, 1.0f);  // c'est un grand gar�on, maintenant
+		alien->SetZoom(0, 1.0f);  // this is a big boy now
 
 		m_phase    = AEP_WAIT;
 		m_progress = 0.0f;
@@ -265,14 +265,14 @@ Error CAutoEgg::IsEnded()
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
 		alien->SetLock(FALSE);
-		alien->SetActivity(TRUE);  // l'insect n� est actif
+		alien->SetActivity(TRUE);  // the insect is active
 	}
 
 	return ERR_STOP;
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoEgg::RetError()
 {
@@ -280,7 +280,7 @@ Error CAutoEgg::RetError()
 }
 
 
-// Cherche l'insect qui prend naissance dans l'oeuf.
+// Seeking the insect that starts in the egg.
 
 CObject* CAutoEgg::SearchAlien()
 {
@@ -319,7 +319,7 @@ CObject* CAutoEgg::SearchAlien()
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoEgg::Write(char *line)
 {
@@ -353,7 +353,7 @@ BOOL CAutoEgg::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoEgg::Read(char *line)
 {
