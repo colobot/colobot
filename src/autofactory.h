@@ -29,13 +29,13 @@ class CObject;
 
 enum AutoFactoryPhase
 {
-	AFP_WAIT		= 1,	// attend m�tal
-	AFP_CLOSE_S		= 2,	// ferme les portes (shift)
-	AFP_CLOSE_T		= 3,	// ferme les portes (turn)
-	AFP_BUILD		= 4,	// construit le v�hicule
-	AFP_OPEN_T		= 5,	// ouvre les portes (turn)
-	AFP_OPEN_S		= 6,	// ouvre les portes (shift)
-	AFP_ADVANCE		= 7,	// avance devant la porte
+	AFP_WAIT		= 1,	// expected metal
+	AFP_CLOSE_S		= 2,	// closes doors (shift)
+	AFP_CLOSE_T		= 3,	// closes doors (turn)
+	AFP_BUILD		= 4,	// building the vehicle
+	AFP_OPEN_T		= 5,	// opens the doors (turn)
+	AFP_OPEN_S		= 6,	// opens the doors (shift)
+	AFP_ADVANCE		= 7,	// advance at the door
 };
 
 
