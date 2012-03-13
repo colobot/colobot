@@ -37,7 +37,7 @@
 
 
 
-#define ADJUST_ANGLE	FALSE		// TRUE -> ajuste les angles des membres
+#define ADJUST_ANGLE	FALSE		// TRUE -> adjusts the angles of the members
 
 
 #if ADJUST_ANGLE
@@ -47,7 +47,7 @@ static float g_flag3 = 2.00f;
 #endif
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoFlag::CAutoFlag(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
@@ -57,7 +57,7 @@ CAutoFlag::CAutoFlag(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoFlag::~CAutoFlag()
 {
@@ -65,7 +65,7 @@ CAutoFlag::~CAutoFlag()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoFlag::DeleteObject(BOOL bAll)
 {
@@ -73,7 +73,7 @@ void CAutoFlag::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoFlag::Init()
 {
@@ -86,13 +86,13 @@ void CAutoFlag::Init()
 
 	wind = m_terrain->RetWind();
 	angle = RotateAngle(wind.x, -wind.z);
-	m_object->SetAngleY(0, angle);  // oriente le drapeau dans le vent
+	m_object->SetAngleY(0, angle);  // directs the flag in the wind
 
 	m_strong = Length(wind);
 }
 
 
-// D�but d'une action (1 = secoue).
+// Beginning of an action (1 = shakes).
 
 void CAutoFlag::Start(int param)
 {
@@ -104,7 +104,7 @@ void CAutoFlag::Start(int param)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoFlag::EventProcess(const Event &event)
 {
@@ -128,7 +128,7 @@ BOOL CAutoFlag::EventProcess(const Event &event)
 	if ( m_engine->RetPause() )  return TRUE;
 	if ( event.event != EVENT_FRAME )  return TRUE;
 
-	if ( m_param == 1 )  // secoue ?
+	if ( m_param == 1 )  // shakes?
 	{
 		m_progress += event.rTime*(1.0f/2.0f);
 		if ( m_progress < 1.0f )
@@ -147,7 +147,7 @@ BOOL CAutoFlag::EventProcess(const Event &event)
 		}
 	}
 
-	if ( m_strong == 0.0f )  return TRUE;  // pas de vent ?
+	if ( m_strong == 0.0f )  return TRUE;  // no wind?
 
 	for ( i=0 ; i<4 ; i++ )
 	{
@@ -168,7 +168,7 @@ BOOL CAutoFlag::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation
 
 Error CAutoFlag::RetError()
 {
