@@ -45,7 +45,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoConvert::CAutoConvert(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
@@ -58,7 +58,7 @@ CAutoConvert::CAutoConvert(CInstanceManager* iMan, CObject* object)
 	m_soundChannel = -1;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoConvert::~CAutoConvert()
 {
@@ -66,7 +66,7 @@ CAutoConvert::~CAutoConvert()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoConvert::DeleteObject(BOOL bAll)
 {
@@ -77,7 +77,7 @@ void CAutoConvert::DeleteObject(BOOL bAll)
 		fret = SearchStone(OBJECT_STONE);
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // d�truit la pierre
+			fret->DeleteObject();  // destroy the stone
 			delete fret;
 		}
 	}
@@ -93,7 +93,7 @@ void CAutoConvert::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoConvert::Init()
 {
@@ -108,7 +108,7 @@ void CAutoConvert::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoConvert::EventProcess(const Event &event)
 {
@@ -125,7 +125,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -150,16 +150,16 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			fret = SearchStone(OBJECT_STONE);  // pierre � transformer ?
+			fret = SearchStone(OBJECT_STONE);  // Has stone transformed?
 			if ( fret == 0 || SearchVehicle() )
 			{
-				m_phase    = ACP_WAIT;  // attend encore ...
+				m_phase    = ACP_WAIT;  // still waiting ...
 				m_progress = 0.0f;
 				m_speed    = 1.0f/2.0f;
 			}
 			else
 			{
-				fret->SetLock(TRUE);  // pierre plus utilisable
+				fret->SetLock(TRUE);  // stone usable
 
 				SetBusy(TRUE);
 				InitProgressTotal(3.0f+10.0f+1.5f);
@@ -211,11 +211,11 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 		{
 			if ( m_progress < 0.5f )
 			{
-				angle = powf((m_progress*2.0f)*5.0f, 2.0f);  // acc�l�re
+				angle = powf((m_progress*2.0f)*5.0f, 2.0f);  // accelerates
 			}
 			else
 			{
-				angle = -powf((2.0f-m_progress*2.0f)*5.0f, 2.0f);  // freine
+				angle = -powf((2.0f-m_progress*2.0f)*5.0f, 2.0f);  // slows
 			}
 			m_object->SetAngleY(1, angle);
 			m_object->SetAngleY(2, angle);
@@ -250,11 +250,11 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 			if ( fret != 0 )
 			{
 				m_bResetDelete = ( fret->RetResetCap() != RESET_NONE );
-				fret->DeleteObject();  // d�truit la pierre
+				fret->DeleteObject();  // destroy the stone
 				delete fret;
 			}
 
-			CreateMetal();  // c'est du m�tal
+			CreateMetal();  // Create the metal
 			m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 1.5f);
 
 			m_phase    = ACP_OPEN;
@@ -304,7 +304,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoConvert::RetError()
 {
@@ -317,7 +317,7 @@ Error CAutoConvert::RetError()
 	return ERR_OK;
 }
 
-// Annule la transformation en cours.
+// Cancels the current transformation.
 
 BOOL CAutoConvert::Abort()
 {
@@ -345,7 +345,7 @@ BOOL CAutoConvert::Abort()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoConvert::CreateInterface(BOOL bSelect)
 {
@@ -375,7 +375,7 @@ BOOL CAutoConvert::CreateInterface(BOOL bSelect)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoConvert::Write(char *line)
 {
@@ -401,7 +401,7 @@ BOOL CAutoConvert::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoConvert::Read(char *line)
 {
@@ -419,7 +419,7 @@ BOOL CAutoConvert::Read(char *line)
 }
 
 
-// Cherche l'objet avant ou pendant transformation.
+// Searches for the object before or during processing.
 
 CObject* CAutoConvert::SearchStone(ObjectType type)
 {
@@ -449,7 +449,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
 	return 0;
 }
 
-// Cherche si un v�hicule est trop proche.
+// Search if a vehicle is too close.
 
 BOOL CAutoConvert::SearchVehicle()
 {
@@ -517,7 +517,7 @@ BOOL CAutoConvert::SearchVehicle()
 	return FALSE;
 }
 
-// Cr�e un objet m�tal.
+// Creates an object metal.
 
 void CAutoConvert::CreateMetal()
 {
