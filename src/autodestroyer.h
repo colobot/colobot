@@ -29,10 +29,10 @@ class CObject;
 
 enum AutoDestroyerPhase
 {
-	ADEP_WAIT		= 1,	// attend m�tal
-	ADEP_DOWN		= 2,	// descend le couvercle
-	ADEP_REPAIR		= 3,	// construit le v�hicule
-	ADEP_UP			= 4,	// remonte le couvercle
+	ADEP_WAIT		= 1,	// expected metal
+	ADEP_DOWN		= 2,	// down the cover
+	ADEP_REPAIR		= 3,	// built the vehicle
+	ADEP_UP			= 4,	// up the cover
 };
 
 
