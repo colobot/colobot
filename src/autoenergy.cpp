@@ -45,13 +45,13 @@
 
 
 
-#define ENERGY_POWER	 0.4f		// �nergie n�cessaire pour une pile
-#define ENERGY_DELAY	12.0f		// dur�e de la transformation
+#define ENERGY_POWER	 0.4f		// Necessary energy for a battery
+#define ENERGY_DELAY	12.0f		// processing time
 
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoEnergy::CAutoEnergy(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
@@ -62,7 +62,7 @@ CAutoEnergy::CAutoEnergy(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoEnergy::~CAutoEnergy()
 {
@@ -70,7 +70,7 @@ CAutoEnergy::~CAutoEnergy()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoEnergy::DeleteObject(BOOL bAll)
 {
@@ -87,14 +87,14 @@ void CAutoEnergy::DeleteObject(BOOL bAll)
 		fret = SearchMetal();
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // d�truit le m�tal
+			fret->DeleteObject();  // destroys the metal
 			delete fret;
 		}
 
 		fret = SearchPower();
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // d�truit la pile
+			fret->DeleteObject();  // destroys the cell
 			delete fret;
 		}
 	}
@@ -103,7 +103,7 @@ void CAutoEnergy::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoEnergy::Init()
 {
@@ -112,7 +112,7 @@ void CAutoEnergy::Init()
 	m_lastUpdateTime = 0.0f;
 	m_lastParticule = 0.0f;
 
-	m_phase    = AENP_WAIT;  // attend ...
+	m_phase    = AENP_WAIT;  // waiting ...
 	m_progress = 0.0f;
 	m_speed    = 1.0f/2.0f;
 
@@ -120,7 +120,7 @@ void CAutoEnergy::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoEnergy::EventProcess(const Event &event)
 {
@@ -139,7 +139,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -169,7 +169,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 	res = m_terrain->RetResource(m_object->RetPosition(0));
 	if ( res == TR_POWER )
 	{
-		big += event.rTime*0.01f;  // recharge la grosse pile
+		big += event.rTime*0.01f;  // recharges the big pile
 	}
 
 	if ( m_phase == AENP_WAIT )
@@ -177,7 +177,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 		if ( m_progress >= 1.0f )
 		{
 			bGO = FALSE;
-			fret = SearchMetal();  // m�tal � transformer ?
+			fret = SearchMetal();  // transform metal?
 			if ( fret != 0 )
 			{
 				if ( fret->RetType() == OBJECT_METAL )
@@ -194,8 +194,8 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 			{
 				if ( fret->RetType() == OBJECT_METAL )
 				{
-					fret->SetLock(TRUE);  // m�tal plus utilisable
-					CreatePower();  // cr�e la pile
+					fret->SetLock(TRUE);  // usable metal
+					CreatePower();  // creates the battery
 				}
 
 				SetBusy(TRUE);
@@ -223,7 +223,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 				}
 				else
 				{
-					m_phase    = AENP_WAIT;  // attend encore ...
+					m_phase    = AENP_WAIT;  // still waiting ...
 					m_progress = 0.0f;
 					m_speed    = 1.0f/2.0f;
 				}
@@ -250,7 +250,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 		}
 		else
 		{
-			m_phase    = AENP_WAIT;  // attend encore ...
+			m_phase    = AENP_WAIT;  // still waiting ...
 			m_progress = 0.0f;
 			m_speed    = 1.0f/2.0f;
 		}
@@ -326,7 +326,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 			if ( fret != 0 )
 			{
 				m_object->SetPower(0);
-				fret->DeleteObject();  // d�truit le m�tal
+				fret->DeleteObject();  // destroys the metal
 				delete fret;
 			}
 
@@ -334,7 +334,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 			if ( fret != 0 )
 			{
 				fret->SetZoom(0, 1.0f);
-				fret->SetLock(FALSE);  // pile utilisable
+				fret->SetLock(FALSE);  // usable battery
 				fret->SetTruck(m_object);
 				fret->SetPosition(0, D3DVECTOR(0.0f, 3.0f, 0.0f));
 				m_object->SetPower(fret);
@@ -381,13 +381,13 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 
 	if ( big < 0.0f )  big = 0.0f;
 	if ( big > 1.0f )  big = 1.0f;
-	m_object->SetEnergy(big);  // m�j la grosse pile
+	m_object->SetEnergy(big);  // shift the big pile
 
 	return TRUE;
 }
 
 
-// Cherche l'objet m�tal.
+// Seeking the metal object.
 
 CObject* CAutoEnergy::SearchMetal()
 {
@@ -406,7 +406,7 @@ CObject* CAutoEnergy::SearchMetal()
 	return 0;
 }
 
-// Cherche si un v�hicule est trop proche.
+// Search if a vehicle is too close.
 
 BOOL CAutoEnergy::SearchVehicle()
 {
@@ -467,7 +467,7 @@ BOOL CAutoEnergy::SearchVehicle()
 	return FALSE;
 }
 
-// Cr�e un objet pile.
+// Create a cell.
 
 void CAutoEnergy::CreatePower()
 {
@@ -485,14 +485,14 @@ void CAutoEnergy::CreatePower()
 		m_displayText->DisplayError(ERR_TOOMANY, m_object);
 		return;
 	}
-	power->SetLock(TRUE);  // pile pas encore utilisable
+	power->SetLock(TRUE);  // battery not yet usable
 
 	pos = power->RetPosition(0);
 	pos.y += 3.0f;
 	power->SetPosition(0, pos);
 }
 
-// Cherche la pile en cours de fabrication.
+// Seeking the battery during manufacture.
 
 CObject* CAutoEnergy::SearchPower()
 {
@@ -525,7 +525,7 @@ CObject* CAutoEnergy::SearchPower()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoEnergy::RetError()
 {
@@ -559,7 +559,7 @@ Error CAutoEnergy::RetError()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoEnergy::CreateInterface(BOOL bSelect)
 {
@@ -594,8 +594,8 @@ BOOL CAutoEnergy::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface,
-// suite au temps qui s'�coule ...
+// Updates the state of all buttons on the interface,
+// following the time that elapses ...
 
 void CAutoEnergy::UpdateInterface(float rTime)
 {
@@ -620,7 +620,7 @@ void CAutoEnergy::UpdateInterface(float rTime)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoEnergy::Write(char *line)
 {
@@ -646,7 +646,7 @@ BOOL CAutoEnergy::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoEnergy::Read(char *line)
 {
@@ -663,4 +663,3 @@ BOOL CAutoEnergy::Read(char *line)
 
 	return TRUE;
 }
-
