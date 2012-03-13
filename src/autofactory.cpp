@@ -50,7 +50,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoFactory::CAutoFactory(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
@@ -59,11 +59,11 @@ CAutoFactory::CAutoFactory(CInstanceManager* iMan, CObject* object)
 
 	Init();
 	m_type  = OBJECT_MOBILEws;
-	m_phase = AFP_WAIT;  // en pause jusqu'au premier Init()
+	m_phase = AFP_WAIT;  // paused until the first Init ()
 	m_channelSound = -1;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoFactory::~CAutoFactory()
 {
@@ -71,7 +71,7 @@ CAutoFactory::~CAutoFactory()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoFactory::DeleteObject(BOOL bAll)
 {
@@ -80,17 +80,17 @@ void CAutoFactory::DeleteObject(BOOL bAll)
 
 	if ( !bAll )
 	{
-		fret = SearchFret();  // m�tal � transformer ?
+		fret = SearchFret();  // transform metal?
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // d�truit le m�tal
+			fret->DeleteObject();  // destroys the metal
 			delete fret;
 		}
 
 		vehicle = SearchVehicle();
 		if ( vehicle != 0 )
 		{
-			vehicle->DeleteObject();  // d�truit le v�hicule
+			vehicle->DeleteObject();  // destroys the vehicle
 			delete vehicle;
 		}
 	}
@@ -106,7 +106,7 @@ void CAutoFactory::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoFactory::Init()
 {
@@ -123,7 +123,7 @@ void CAutoFactory::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoFactory::EventProcess(const Event &event)
 {
@@ -141,7 +141,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 
 	if ( m_engine->RetPause() )  return TRUE;
 
-	if ( m_object->RetSelect() )  // usine s�lectionn�e ?
+	if ( m_object->RetSelect() )  // factory selected?
 	{
 		if ( event.event == EVENT_UPDINTERFACE )
 		{
@@ -180,7 +180,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				return FALSE;
 			}
 
-			fret = SearchFret();  // m�tal � transformer ?
+			fret = SearchFret();  // transform metal?
 			if ( fret == 0 )
 			{
 				m_displayText->DisplayError(ERR_FACTORY_NULL, m_object);
@@ -196,7 +196,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 			InitProgressTotal(3.0f+2.0f+15.0f+2.0f+3.0f);
 			UpdateInterface();
 
-			fret->SetLock(TRUE);  // m�tal plus utilisable
+			fret->SetLock(TRUE);  // usable metal
 			SoundManip(3.0f, 1.0f, 0.5f);
 
 			m_phase    = AFP_CLOSE_S;
@@ -215,7 +215,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			m_phase    = AFP_WAIT;  // attend encore ...
+			m_phase    = AFP_WAIT;  // still waiting ...
 			m_progress = 0.0f;
 			m_speed    = 1.0f/2.0f;
 		}
@@ -286,10 +286,10 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 		{
 			if ( !CreateVehicle() )
 			{
-				fret = SearchFret();  // m�tal � transformer ?
+				fret = SearchFret();  // transform metal?
 				if ( fret != 0 )
 				{
-					fret->SetLock(FALSE);  // m�tal de nouveau utilisable
+					fret->SetLock(FALSE);  // metal usable again
 				}
 
 				if ( m_channelSound != -1 )
@@ -329,7 +329,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				vehicle->SetZoom(0, m_progress);
 			}
 
-			fret = SearchFret();  // m�tal � transformer ?
+			fret = SearchFret();  // transform metal?
 			if ( fret != 0 )
 			{
 				fret->SetZoom(0, 1.0f-m_progress);
@@ -352,7 +352,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 #else
 				mat = m_object->RetWorldMatrix(0);
-				pos = D3DVECTOR(-12.0f, 20.0f, -4.0f);  // position chemin�e
+				pos = D3DVECTOR(-12.0f, 20.0f, -4.0f);  // position of chimney
 				pos = Transform(*mat, pos);
 				pos.y += 2.0f;
 				pos.x += (Rand()-0.5f)*2.0f;
@@ -371,10 +371,10 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 			m_displayText->DisplayError(INFO_FACTORY, m_object);
 			SoundManip(2.0f, 1.0f, 1.2f);
 
-			fret = SearchFret();  // m�tal � transformer ?
+			fret = SearchFret();  // transform metal?
 			if ( fret != 0 )
 			{
-				fret->DeleteObject();  // supprime le m�tal
+				fret->DeleteObject();  // removes the metal
 				delete fret;
 			}
 
@@ -384,10 +384,10 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				physics = vehicle->RetPhysics();
 				if ( physics != 0 )
 				{
-					physics->SetFreeze(FALSE);  // on peut bouger
+					physics->SetFreeze(FALSE);  // can move
 				}
 
-				vehicle->SetLock(FALSE);  // v�hicule utilisable
+				vehicle->SetLock(FALSE);  // vehicle useable
 //?				vehicle->RetPhysics()->RetBrain()->StartTaskAdvance(16.0f);
 				vehicle->SetAngleY(0, m_object->RetAngleY(0)+PI);
 				vehicle->SetZoom(0, 1.0f);
@@ -490,7 +490,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoFactory::Write(char *line)
 {
@@ -515,7 +515,7 @@ BOOL CAutoFactory::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller
 
 BOOL CAutoFactory::Read(char *line)
 {
@@ -534,7 +534,7 @@ BOOL CAutoFactory::Read(char *line)
 }
 
 
-// Cherche l'objet fret.
+//Seeks the cargo.
 
 CObject* CAutoFactory::SearchFret()
 {
@@ -562,7 +562,7 @@ CObject* CAutoFactory::SearchFret()
 	return 0;
 }
 
-// Cherche si un v�hicule est trop proche.
+// Search if a vehicle is too close.
 
 BOOL CAutoFactory::NearestVehicle()
 {
@@ -624,7 +624,7 @@ BOOL CAutoFactory::NearestVehicle()
 }
 
 
-// Cr�e un v�hicule pas utilisable tout de suite.
+// Creates a vehicle.
 
 BOOL CAutoFactory::CreateVehicle()
 {
@@ -660,13 +660,13 @@ BOOL CAutoFactory::CreateVehicle()
 		return FALSE;
 	}
 	vehicle->UpdateMapping();
-	vehicle->SetLock(TRUE);  // pas utilisable
+	vehicle->SetLock(TRUE);  // not usable
 	vehicle->SetRange(30.0f);
 
 	physics = vehicle->RetPhysics();
 	if ( physics != 0 )
 	{
-		physics->SetFreeze(TRUE);  // on ne bouge plus
+		physics->SetFreeze(TRUE);  // it doesn't move
 	}
 
 	for ( i=0 ; i<10 ; i++ )
@@ -679,7 +679,7 @@ BOOL CAutoFactory::CreateVehicle()
 	return TRUE;
 }
 
-// Cherche le v�hicule en cours de fabrication.
+// Seeking the vehicle during manufacture.
 
 CObject* CAutoFactory::SearchVehicle()
 {
@@ -710,7 +710,7 @@ CObject* CAutoFactory::SearchVehicle()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoFactory::CreateInterface(BOOL bSelect)
 {
@@ -802,7 +802,7 @@ BOOL CAutoFactory::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface.
+// Updates the status of all interface buttons.
 
 void CAutoFactory::UpdateInterface()
 {
@@ -837,7 +837,7 @@ void CAutoFactory::UpdateInterface()
 	UpdateButton(pw, EVENT_OBJECT_FACTORYsa, m_bBusy);
 }
 
-// Met � jour un bouton de l'interface.
+// Updates the status of one interface button.
 
 void CAutoFactory::UpdateButton(CWindow *pw, EventMsg event, BOOL bBusy)
 {
@@ -947,7 +947,7 @@ void CAutoFactory::UpdateButton(CWindow *pw, EventMsg event, BOOL bBusy)
 	DeadInterface(pw, event, bEnable);
 }
 
-// Fait entendre le son du bras manipulateur.
+// Plays the sound of the manipulator arm.
 
 void CAutoFactory::SoundManip(float time, float amplitude, float frequency)
 {
