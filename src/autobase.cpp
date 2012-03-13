@@ -634,7 +634,7 @@ begin:
 	{
 		if ( m_progress >= 1.0f )
 		{
-			FreezeCargo(FALSE);  // freeze all cargo
+			FreezeCargo(FALSE);  // frees all cargo
 
 			if ( m_param != PARAM_PORTICO )
 			{
@@ -1199,7 +1199,7 @@ BOOL CAutoBase::Abort()
 	}
 
 	m_object->SetAngleZ(0, 0.0f);
-	FreezeCargo(FALSE);  // freeze all cargo
+	FreezeCargo(FALSE);  // frees all cargo
 
 	if ( m_soundChannel != -1 )
 	{
