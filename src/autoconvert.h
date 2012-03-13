@@ -31,9 +31,9 @@ enum AutoConvertPhase
 {
 	ACP_STOP		= 1,
 	ACP_WAIT		= 2,
-	ACP_CLOSE		= 3,	// ferme le couvervle
-	ACP_ROTATE		= 4,	// tourne le couvercle
-	ACP_OPEN		= 5,	// ouvre le couvercle
+	ACP_CLOSE		= 3,	// close the cover
+	ACP_ROTATE		= 4,	// turn the cover
+	ACP_OPEN		= 5,	// opens the cover
 };
 
 
