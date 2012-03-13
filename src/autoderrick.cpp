@@ -43,13 +43,13 @@
 
 
 
-#define DERRICK_DELAY		10.0f		// dur�e de l'extraction
-#define DERRICK_DELAYu		30.0f		// idem, mais pour l'uranium
+#define DERRICK_DELAY		10.0f		// duration of the extraction
+#define DERRICK_DELAYu		30.0f		// same, but for uranium
 
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoDerrick::CAutoDerrick(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
@@ -57,11 +57,11 @@ CAutoDerrick::CAutoDerrick(CInstanceManager* iMan, CObject* object)
 	CAuto::CAuto(iMan, object);
 
 	Init();
-	m_phase = ADP_WAIT;  // en pause jusqu'au premier Init()
+	m_phase = ADP_WAIT;  // paused until the first Init ()
 	m_soundChannel = -1;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoDerrick::~CAutoDerrick()
 {
@@ -69,7 +69,7 @@ CAutoDerrick::~CAutoDerrick()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoDerrick::DeleteObject(BOOL bAll)
 {
@@ -96,7 +96,7 @@ void CAutoDerrick::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoDerrick::Init()
 {
@@ -146,7 +146,7 @@ void CAutoDerrick::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoDerrick::EventProcess(const Event &event)
 {
@@ -164,7 +164,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -173,9 +173,9 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			pos.x = 0.0f;
 			pos.z = 0.0f;
 			pos.y = -2.0f*Rand();
-			m_object->SetPosition(1, pos);  // monte/descend le foret
+			m_object->SetPosition(1, pos);  // up / down the drill
 
-			m_object->SetAngleY(1, Rand()*0.5f);  // tourne le foret
+			m_object->SetAngleY(1, Rand()*0.5f);  // rotates the drill
 		}
 		return TRUE;
 	}
@@ -199,7 +199,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 4.0f, SOPER_STOP);
 		}
 
-		if ( m_progress >= 6.0f/16.0f &&  // p�n�tre dans le sol ?
+		if ( m_progress >= 6.0f/16.0f &&  // penetrates into the ground?
 			 m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
 		{
 			m_lastParticule = m_time;
@@ -213,7 +213,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 		}
 
-		if ( m_progress >= 6.0f/16.0f &&  // p�n�tre dans le sol ?
+		if ( m_progress >= 6.0f/16.0f &&  // penetrates into the ground?
 			 m_lastTrack+m_engine->ParticuleAdapt(0.5f) <= m_time )
 		{
 			m_lastTrack = m_time;
@@ -236,11 +236,11 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			pos.x = 0.0f;
 			pos.z = 0.0f;
 			pos.y = -m_progress*16.0f;
-			m_object->SetPosition(1, pos);  // descend le foret
+			m_object->SetPosition(1, pos);  // down the drill
 
 			angle = m_object->RetAngleY(1);
 			angle += event.rTime*8.0f;
-			m_object->SetAngleY(1, angle);  // tourne le foret
+			m_object->SetAngleY(1, angle);  // rotates the drill
 		}
 		else
 		{
@@ -289,11 +289,11 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			pos.x = 0.0f;
 			pos.z = 0.0f;
 			pos.y = -(1.0f-m_progress)*16.0f;
-			m_object->SetPosition(1, pos);  // remonte le foret
+			m_object->SetPosition(1, pos);  // back the drill
 
 			angle = m_object->RetAngleY(1);
 			angle -= event.rTime*2.0f;
-			m_object->SetAngleY(1, angle);  // tourne le foret
+			m_object->SetAngleY(1, angle);  // rotates the drill
 		}
 		else
 		{
@@ -373,7 +373,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			if ( fret != 0 )
 			{
 				pos = fret->RetPosition(0);
-				pos.y -= event.rTime*20.0f;  // tombe
+				pos.y -= event.rTime*20.0f;  // grave
 				if ( !m_bSoundFall && pos.y < m_fretPos.y )
 				{
 					m_sound->Play(SOUND_BOUM, m_fretPos);
@@ -382,14 +382,14 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 				if ( pos.y < m_fretPos.y )
 				{
 					pos.y = m_fretPos.y;
-					fret->SetLock(FALSE);  // objet utilisable
+					fret->SetLock(FALSE);  // object usable
 				}
 				fret->SetPosition(0, pos);
 			}
 		}
 		else
 		{
-			if ( ExistKey() )  // cl� existe d�j� ?
+			if ( ExistKey() )  // key already exists?
 			{
 				m_phase    = ADP_WAIT;
 				m_progress = 0.0f;
@@ -408,7 +408,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoDerrick::CreateInterface(BOOL bSelect)
 {
@@ -438,7 +438,7 @@ BOOL CAutoDerrick::CreateInterface(BOOL bSelect)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoDerrick::Write(char *line)
 {
@@ -463,7 +463,7 @@ BOOL CAutoDerrick::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoDerrick::Read(char *line)
 {
@@ -481,7 +481,7 @@ BOOL CAutoDerrick::Read(char *line)
 }
 
 
-// Cherche l'objet fret.
+// Seeks the subject cargo.
 
 CObject* CAutoDerrick::SearchFret()
 {
@@ -507,7 +507,7 @@ CObject* CAutoDerrick::SearchFret()
 	return 0;
 }
 
-// Cherche si un emplacement est libre.
+// Seeks if a site is free.
 
 BOOL CAutoDerrick::SearchFree(D3DVECTOR pos)
 {
@@ -530,14 +530,14 @@ BOOL CAutoDerrick::SearchFree(D3DVECTOR pos)
 		{
 			distance = Length(sPos, pos);
 			distance -= sRadius;
-			if ( distance < 2.0f )  return FALSE;  // emplacement occup�
+			if ( distance < 2.0f )  return FALSE;  // location occupied
 		}
 	}
 
-	return TRUE;  // emplacement libre
+	return TRUE;  // location free
 }
 
-// Cr�e un objet transportable.
+// Create a transportable object.
 
 void CAutoDerrick::CreateFret(D3DVECTOR pos, float angle, ObjectType type,
 							  float height)
@@ -551,7 +551,7 @@ void CAutoDerrick::CreateFret(D3DVECTOR pos, float angle, ObjectType type,
 		m_displayText->DisplayError(ERR_TOOMANY, m_object);
 		return;
 	}
-	fret->SetLock(TRUE);  // objet pas encore utilisable
+	fret->SetLock(TRUE);  // object not yet usable
 
 	if ( m_object->RetResetCap() == RESET_MOVE )
 	{
@@ -563,7 +563,7 @@ void CAutoDerrick::CreateFret(D3DVECTOR pos, float angle, ObjectType type,
 	fret->SetPosition(0, pos);
 }
 
-// Cherche s'il existe d�j� une cl�.
+// Look if there is already a key.
 
 BOOL CAutoDerrick::ExistKey()
 {
@@ -589,7 +589,7 @@ BOOL CAutoDerrick::ExistKey()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automaton.
 
 Error CAutoDerrick::RetError()
 {
