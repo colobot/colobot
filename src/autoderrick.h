@@ -32,10 +32,10 @@ enum ObjectType;
 enum AutoDerrickPhase
 {
 	ADP_WAIT		= 1,
-	ADP_EXCAVATE	= 2,	// descend le foret
-	ADP_ASCEND		= 3,	// remonte le foret
-	ADP_EXPORT		= 4,	// exporte la mati�re
-	ADP_ISFREE		= 5,	// attend disparition mati�re
+	ADP_EXCAVATE		= 2,	// down the drill
+	ADP_ASCEND		= 3,	// up the drill
+	ADP_EXPORT		= 4,	// exports matter
+	ADP_ISFREE		= 5,	// expected material loss
 };
 
 
