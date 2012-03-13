@@ -48,19 +48,19 @@
 
 
 
-#define BASE_LAND_TIME			 7.5f	// dur�e atterrissage
-#define BASE_TAKO_TIME			10.0f	// dur�e atterrissage
-#define BASE_DOOR_TIME			 6.0f	// dur�e ouverture/fermeture
-#define BASE_DOOR_TIME2			 2.0f	// dur�e ouverture/fermeture suppl.
-#define BASE_PORTICO_TIME_MOVE	16.0f	// dur�e avance portique
-#define BASE_PORTICO_TIME_DOWN	 4.0f	// dur�e descente portique
-#define BASE_PORTICO_TIME_OPEN	 4.0f	// dur�e ouverture portique
-#define BASE_TRANSIT_TIME		15.0f	// dur�e transit
+#define BASE_LAND_TIME			 7.5f	// hard landing
+#define BASE_TAKO_TIME			10.0f	// hard landing
+#define BASE_DOOR_TIME			 6.0f	// time opening / closing
+#define BASE_DOOR_TIME2			 2.0f	// time opening / closing suppl.
+#define BASE_PORTICO_TIME_MOVE	16.0f	// gate advance time
+#define BASE_PORTICO_TIME_DOWN	 4.0f	// gate length down
+#define BASE_PORTICO_TIME_OPEN	 4.0f	// gate opening duration
+#define BASE_TRANSIT_TIME		15.0f	// transit duration
 
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoBase::CAutoBase(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
@@ -74,7 +74,7 @@ CAutoBase::CAutoBase(CInstanceManager* iMan, CObject* object)
 	m_soundChannel = -1;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoBase::~CAutoBase()
 {
@@ -82,7 +82,7 @@ CAutoBase::~CAutoBase()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoBase::DeleteObject(BOOL bAll)
 {
@@ -97,7 +97,7 @@ void CAutoBase::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoBase::Init()
 {
@@ -115,7 +115,7 @@ void CAutoBase::Init()
 }
 
 
-// D�marre l'objet.
+// Start the object.
 
 void CAutoBase::Start(int param)
 {
@@ -127,7 +127,7 @@ void CAutoBase::Start(int param)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoBase::EventProcess(const Event &event)
 {
@@ -149,13 +149,13 @@ begin:
 
 	if ( m_phase == ABP_START )
 	{
-		if ( m_param != PARAM_STOP     &&  // pas pos� au sol ?
+		if ( m_param != PARAM_STOP     &&  // not placed on the ground?
 			 m_param != PARAM_FIXSCENE )
 		{
-			FreezeCargo(TRUE);  // g�le toute la cargaison
+			FreezeCargo(TRUE);  // freeze whole cargo
 		}
 
-		if ( m_param == PARAM_STOP )  // pos� au sol ?
+		if ( m_param == PARAM_STOP )  // raises the ground?
 		{
 			m_phase    = ABP_WAIT;
 			m_progress = 0.0f;
@@ -186,7 +186,7 @@ begin:
 			m_main->StartMusic();
 		}
 
-		if ( m_param == PARAM_FIXSCENE )  // pos� au sol ?
+		if ( m_param == PARAM_FIXSCENE )  // raises the ground?
 		{
 			m_phase    = ABP_WAIT;
 			m_progress = 0.0f;
@@ -202,14 +202,14 @@ begin:
 			}
 		}
 
-		if ( m_param == PARAM_LANDING )  // atterrissage ?
+		if ( m_param == PARAM_LANDING )  // Landing?
 		{
 			m_phase    = ABP_LAND;
 			m_progress = 0.0f;
 			m_speed    = 1.0f/BASE_LAND_TIME;
 
-			m_main->SetMovieLock(TRUE);  // bloque tout jusqu'� la fin de l'atterrissage
-			m_bMotor = TRUE;  // allume le r�acteur
+			m_main->SetMovieLock(TRUE);  // blocks everything until the end of the landing
+			m_bMotor = TRUE;  // lights the jet engine
 
 			m_camera->SetType(CAMERA_SCRIPT);
 
@@ -239,14 +239,14 @@ begin:
 			m_main->StartMusic();
 		}
 
-		if ( m_param == PARAM_PORTICO )  // port� par le portique ?
+		if ( m_param == PARAM_PORTICO )  // gate on the porch?
 		{
 			pos = m_object->RetPosition(0);
 			m_finalPos = pos;
-			pos.z += BASE_PORTICO_TIME_MOVE*5.0f;  // recule
-			pos.y += 10.0f;  // monte (port� par le portique)
+			pos.z += BASE_PORTICO_TIME_MOVE*5.0f;  // back
+			pos.y += 10.0f;  // rises (the gate)
 			m_object->SetPosition(0, pos);
-			MoveCargo();  // d�place toute la cargaison
+			MoveCargo();  // all cargo moves
 
 			m_phase    = ABP_PORTICO_MOVE;
 			m_progress = 0.0f;
@@ -257,7 +257,7 @@ begin:
 
 		if ( m_param == PARAM_TRANSIT1 ||
 			 m_param == PARAM_TRANSIT2 ||
-			 m_param == PARAM_TRANSIT3 )  // transit dans l'espace ?
+			 m_param == PARAM_TRANSIT3 )  // transit in space?
 		{
 			m_phase    = ABP_TRANSIT_MOVE;
 			m_progress = 0.0f;
@@ -265,12 +265,12 @@ begin:
 
 			m_object->SetAngleZ(0, -PI/2.0f);
 			pos = m_object->RetPosition(0);
-			pos.y += 10000.0f;  // dans l'espace
+			pos.y += 10000.0f;  // in space
 			m_finalPos = pos;
 			m_object->SetPosition(0, pos);
 
-			m_main->SetMovieLock(TRUE);  // bloque tout jusqu'� la fin de l'atterrissage
-			m_bMotor = TRUE;  // allume le r�acteur
+			m_main->SetMovieLock(TRUE);  // blocks everything until the end of the landing
+			m_bMotor = TRUE;  // lights the jet engine
 
 			m_camera->SetType(CAMERA_SCRIPT);
 			pos.x += 1000.0f;
@@ -342,8 +342,8 @@ begin:
 			return FALSE;
 		}
 
-		FreezeCargo(TRUE);  // g�le toute la cargaison
-		m_main->SetMovieLock(TRUE);  // bloque tout jusqu'� la fin
+		FreezeCargo(TRUE);  // freeze whole cargo
+		m_main->SetMovieLock(TRUE);  // blocks everything until the end
 		m_main->DeselectAll();
 
 		m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
@@ -386,7 +386,7 @@ begin:
 			pos = m_pos;
 			pos.y += powf(1.0f-m_progress, 2.0f)*300.0f;
 			m_object->SetPosition(0, pos);
-			MoveCargo();  // d�place toute la cargaison
+			MoveCargo();  // all cargo moves
 
 			vibCir.z = sinf(m_time*PI* 2.01f)*(PI/150.0f)+
 					   sinf(m_time*PI* 2.51f)*(PI/200.0f)+
@@ -414,7 +414,7 @@ begin:
 			{
 				m_lastParticule = m_time;
 
-				// Poussi�re �ject�e au sol.
+				// Dust thrown to the ground.
 				pos = m_pos;
 				pos.x += (Rand()-0.5f)*10.0f;
 				pos.z += (Rand()-0.5f)*10.0f;
@@ -431,7 +431,7 @@ begin:
 					m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 2.0f);
 				}
 
-				// Particules �ject�es du r�acteur.
+				// Particles are ejected from the jet engine.
 				pos = m_object->RetPosition(0);
 				pos.y += 6.0f;
 				h = m_terrain->RetFloorHeight(pos)/300.0f;
@@ -442,7 +442,7 @@ begin:
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
 
-				// Fum�e noire du r�acteur.
+				// Black smoke from the jet engine.
 				if ( m_progress > 0.8f )
 				{
 					pos = m_pos;
@@ -460,13 +460,13 @@ begin:
 		}
 		else
 		{
-			m_bMotor = FALSE;  // �teint le r�acteur
+			m_bMotor = FALSE;  // put out the reactor
 
-			m_object->SetPosition(0, m_pos);  // pos� au sol
+			m_object->SetPosition(0, m_pos);  // setting down
 			m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-			MoveCargo();  // d�place toute la cargaison
+			MoveCargo();  // all cargo moves
 
-			// Choc avec le sol.
+			// Impact with the ground.
 			max = (int)(50.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
@@ -501,7 +501,7 @@ begin:
 			{
 				m_lastParticule = m_time;
 
-				// Fum�e noire du r�acteur.
+				// Black smoke from the reactor.
 				pos = m_pos;
 				pos.x += (Rand()-0.5f)*8.0f;
 				pos.z += (Rand()-0.5f)*8.0f;
@@ -559,7 +559,7 @@ begin:
 				m_object->SetAngleZ(1+i, PI/2.0f-124.0f*PI/180.0f);
 			}
 
-			// Choc des portes avec le sol.
+			// Clash the doors with the ground.
 			max = (int)(20.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
@@ -634,11 +634,11 @@ begin:
 	{
 		if ( m_progress >= 1.0f )
 		{
-			FreezeCargo(FALSE);  // lib�re toute la cargaison
+			FreezeCargo(FALSE);  // freeze all cargo
 
 			if ( m_param != PARAM_PORTICO )
 			{
-				m_main->SetMovieLock(FALSE);  // on peut jouer !
+				m_main->SetMovieLock(FALSE);  // you can play!
 
 				pObj = m_main->RetSelectObject();
 				m_main->SelectObject(pObj);
@@ -715,9 +715,9 @@ begin:
 			{
 				m_object->SetAngleZ(1+i, PI/2.0f);
 			}
-			m_bMotor = TRUE;  // allume le r�acteur
+			m_bMotor = TRUE;  // lights the jet engine
 
-			// Choc de la fermeture des portes.
+			// Shock of the closing doors.
 			max = (int)(20.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
@@ -764,7 +764,7 @@ begin:
 			{
 				m_lastParticule = m_time;
 
-				// Particules �ject�es du r�acteur.
+				// Particles are ejected from the reactor.
 				pos = m_object->RetPosition(0);
 				pos.y += 6.0f;
 				speed.x = (Rand()-0.5f)*160.0f;
@@ -794,7 +794,7 @@ begin:
 			pos = m_pos;
 			pos.y += powf(m_progress, 2.0f)*600.0f;
 			m_object->SetPosition(0, pos);
-			MoveCargo();  // d�place toute la cargaison
+			MoveCargo();  // all cargo moves
 
 			vibCir.z = sinf(m_time*PI*19.01f)*(PI/400.0f);
 			vibCir.x = sinf(m_time*PI*19.53f)*(PI/400.0f);
@@ -817,7 +817,7 @@ begin:
 			{
 				m_lastParticule = m_time;
 
-				// Poussi�re �ject�e au sol.
+				// Dust thrown to the ground.
 				pos = m_pos;
 				pos.x += (Rand()-0.5f)*10.0f;
 				pos.z += (Rand()-0.5f)*10.0f;
@@ -834,7 +834,7 @@ begin:
 					m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 2.0f);
 				}
 
-				// Particules �ject�es du r�acteur.
+				// Particles are ejected from the reactor.
 				pos = m_object->RetPosition(0);
 				pos.y += 6.0f;
 				speed.x = (Rand()-0.5f)*40.0f;
@@ -846,7 +846,7 @@ begin:
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
 
-				// Fum�e noire du r�acteur.
+				// Black smoke from the reactor.
 				pos = m_object->RetPosition(0);
 				pos.y += 3.0f;
 				speed.x = (Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
@@ -869,14 +869,14 @@ begin:
 		}
 	}
 
-	if ( m_phase == ABP_PORTICO_MOVE )  // avance du portique ?
+	if ( m_phase == ABP_PORTICO_MOVE )  // advance of the gate?
 	{
 		if ( m_progress < 1.0f )
 		{
 			pos = m_object->RetPosition(0);
 			pos.z -= event.rTime*5.0f;
 			m_object->SetPosition(0, pos);
-			MoveCargo();  // d�place toute la cargaison
+			MoveCargo();  // all cargo moves
 		}
 		else
 		{
@@ -886,7 +886,7 @@ begin:
 		}
 	}
 
-	if ( m_phase == ABP_PORTICO_WAIT1 )  // attente du portique ?
+	if ( m_phase == ABP_PORTICO_WAIT1 )  // expectation the gate?
 	{
 		if ( m_progress >= 1.0f )
 		{
@@ -896,18 +896,18 @@ begin:
 		}
 	}
 
-	if ( m_phase == ABP_PORTICO_DOWN )  // descente du portique ?
+	if ( m_phase == ABP_PORTICO_DOWN )  // down the gate?
 	{
 		if ( m_progress < 1.0f )
 		{
 			pos = m_object->RetPosition(0);
 			pos.y -= event.rTime*(10.0f/BASE_PORTICO_TIME_DOWN);
 			m_object->SetPosition(0, pos);
-			MoveCargo();  // d�place toute la cargaison
+			MoveCargo();  // all cargo moves
 		}
 		else
 		{
-			// Choc avec le sol.
+			// Impact with the ground.
 			max = (int)(50.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
@@ -929,7 +929,7 @@ begin:
 		}
 	}
 
-	if ( m_phase == ABP_PORTICO_WAIT2 )  // attente du portique ?
+	if ( m_phase == ABP_PORTICO_WAIT2 )  // expectation the gate?
 	{
 		if ( m_progress >= 1.0f )
 		{
@@ -939,7 +939,7 @@ begin:
 		}
 	}
 
-	if ( m_phase == ABP_PORTICO_OPEN )  // ouverture du portique ?
+	if ( m_phase == ABP_PORTICO_OPEN )  // opening the gate?
 	{
 		if ( m_progress < 1.0f )
 		{
@@ -952,7 +952,7 @@ begin:
 		}
 	}
 
-	if ( m_phase == ABP_TRANSIT_MOVE )  // transit dans l'espace ?
+	if ( m_phase == ABP_TRANSIT_MOVE )  // transit in space?
 	{
 		if ( m_progress < 1.0f )
 		{
@@ -1106,7 +1106,7 @@ begin:
 	return TRUE;
 }
 
-// Stoppe l'automate.
+// Stops the controller.
 
 BOOL CAutoBase::Abort()
 {
@@ -1134,10 +1134,10 @@ BOOL CAutoBase::Abort()
 		return TRUE;
 	}
 
-	if ( m_param == PARAM_PORTICO )  // port� par le portique ?
+	if ( m_param == PARAM_PORTICO )  // gate on the porch?
 	{
 		m_object->SetPosition(0, m_finalPos);
-		MoveCargo();  // d�place toute la cargaison
+		MoveCargo();  // all cargo moves
 
 		for ( i=0 ; i<8 ; i++ )
 		{
@@ -1153,15 +1153,14 @@ BOOL CAutoBase::Abort()
 		if ( m_phase == ABP_LAND     ||
 			 m_phase == ABP_OPENWAIT ||
 			 m_phase == ABP_OPEN     ||
-			 m_phase == ABP_OPEN2    )  // atterrissage ?
+			 m_phase == ABP_OPEN2    )  // Landing?
 		{
-			m_bMotor = FALSE;  // �teint le r�acteur
+			m_bMotor = FALSE;  // put out the jet engine
 			m_bOpen = TRUE;
 
-			m_object->SetPosition(0, m_pos);  // pos� au sol
+			m_object->SetPosition(0, m_pos);  // setting down
 			m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-			MoveCargo();  // d�place toute la cargaison
-
+			MoveCargo();  // all cargo moves
 			for ( i=0 ; i<8 ; i++ )
 			{
 				m_object->SetAngleZ(1+i, PI/2.0f-124.0f*PI/180.0f);
@@ -1171,7 +1170,7 @@ BOOL CAutoBase::Abort()
 				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
 			}
 
-			m_main->SetMovieLock(FALSE);  // on peut jouer !
+			m_main->SetMovieLock(FALSE);  // you can play!
 
 			pObj = m_main->RetSelectObject();
 			m_main->SelectObject(pObj);
@@ -1192,7 +1191,7 @@ BOOL CAutoBase::Abort()
 		if ( m_phase == ABP_CLOSE2  ||
 			 m_phase == ABP_CLOSE   ||
 			 m_phase == ABP_TOWAIT  ||
-			 m_phase == ABP_TAKEOFF )  // d�collage ?
+			 m_phase == ABP_TAKEOFF )  // off?
 		{
 			m_event->MakeEvent(newEvent, EVENT_WIN);
 			m_event->AddEvent(newEvent);
@@ -1200,7 +1199,7 @@ BOOL CAutoBase::Abort()
 	}
 
 	m_object->SetAngleZ(0, 0.0f);
-	FreezeCargo(FALSE);  // lib�re toute la cargaison
+	FreezeCargo(FALSE);  // freeze all cargo
 
 	if ( m_soundChannel != -1 )
 	{
@@ -1217,7 +1216,7 @@ BOOL CAutoBase::Abort()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoBase::RetError()
 {
@@ -1225,7 +1224,7 @@ Error CAutoBase::RetError()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoBase::CreateInterface(BOOL bSelect)
 {
@@ -1279,7 +1278,7 @@ BOOL CAutoBase::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface.
+// Updates the status of all interface buttons.
 
 void CAutoBase::UpdateInterface()
 {
@@ -1293,7 +1292,7 @@ void CAutoBase::UpdateInterface()
 }
 
 
-// G�le ou lib�re toute la cargaison.
+// Freeze or frees all cargo.
 
 void CAutoBase::FreezeCargo(BOOL bFreeze)
 {
@@ -1310,8 +1309,8 @@ void CAutoBase::FreezeCargo(BOOL bFreeze)
 
 		pObj->SetCargo(FALSE);
 
-		if ( pObj == m_object )  continue;  // soi-m�me ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transport� ?
+		if ( pObj == m_object )  continue;  // yourself?
+		if ( pObj->RetTruck() != 0 )  continue;  // transport object?
 
 		oPos = pObj->RetPosition(0);
 		dist = Length2d(m_pos, oPos);
@@ -1331,7 +1330,7 @@ void CAutoBase::FreezeCargo(BOOL bFreeze)
 	}
 }
 
-// D�place verticalement toute la cargaison avec le vaisseau.
+// All cargo moves vertically with the ship.
 
 void CAutoBase::MoveCargo()
 {
@@ -1360,7 +1359,7 @@ void CAutoBase::MoveCargo()
 }
 
 
-// V�rifie s'il est possible de fermer les portes.
+// Checks whether it is possible to close the doors.
 
 Error CAutoBase::CheckCloseDoor()
 {
@@ -1375,8 +1374,8 @@ Error CAutoBase::CheckCloseDoor()
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( pObj == m_object )  continue;  // soi-m�me ?
-		if ( !pObj->RetActif() )  continue;  // inactif ?
+		if ( pObj == m_object )  continue;  // yourself?
+		if ( !pObj->RetActif() )  continue;  // inactive?
 
 		type = pObj->RetType();
 		if ( type == OBJECT_PORTICO )  continue;
@@ -1402,7 +1401,7 @@ Error CAutoBase::CheckCloseDoor()
 }
 
 
-// D�but d'un transit.
+// Start a transit.
 
 void CAutoBase::BeginTransit()
 {
@@ -1410,23 +1409,23 @@ void CAutoBase::BeginTransit()
 
 	if ( m_param == PARAM_TRANSIT2 )
 	{
-		strcpy(m_bgBack, "back01.tga");  // nuages oranges/bleus
+		strcpy(m_bgBack, "back01.tga");  // clouds orange / blue
 	}
 	else if ( m_param == PARAM_TRANSIT3 )
 	{
-		strcpy(m_bgBack, "back22.tga");  // nuages bleut�s
+		strcpy(m_bgBack, "back22.tga");  // blueberries clouds
 	}
 	else
 	{
 #if _DEMO
-		strcpy(m_bgBack, "back46b.tga");  // �toiles
+		strcpy(m_bgBack, "back46b.tga");  // paintings
 #else
-		strcpy(m_bgBack, "back46.tga");  // �toiles
+		strcpy(m_bgBack, "back46.tga");  // paintings
 #endif
 	}
 
-	m_engine->SetFogStart(0.9f);  // presque pas de brouillard
-	m_engine->SetDeepView(2000.0f);  // on voit tr�s loin
+	m_engine->SetFogStart(0.9f);  // hardly any fog
+	m_engine->SetDeepView(2000.0f);  // we see very far
 	m_engine->ApplyChange();
 
 	m_engine->RetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, bFull, bQuarter);
@@ -1435,16 +1434,16 @@ void CAutoBase::BeginTransit()
 	m_engine->SetBackground(m_bgBack, 0x00000000, 0x00000000, 0x00000000, 0x00000000);
 	m_engine->LoadTexture(m_bgBack);
 
-	m_cloud->SetEnable(FALSE);  // cache les nuages
+	m_cloud->SetEnable(FALSE);  // cache clouds
 	m_planet->SetMode(1);
 }
 
-// Fin d'un transit.
+// End of a transit.
 
 void CAutoBase::EndTransit()
 {
-	m_engine->SetFogStart(m_fogStart);  // remet brouillard initial
-	m_engine->SetDeepView(m_deepView);  // remet profondeur initiale
+	m_engine->SetFogStart(m_fogStart);  // gives initial fog
+	m_engine->SetDeepView(m_deepView);  // gives initial depth
 	m_engine->ApplyChange();
 
 	m_engine->FreeTexture(m_bgBack);
@@ -1452,7 +1451,7 @@ void CAutoBase::EndTransit()
 	m_engine->SetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown);
 	m_engine->LoadTexture(m_bgName);
 
-	m_cloud->SetEnable(TRUE);  // remet les nuages
+	m_cloud->SetEnable(TRUE);  // gives the clouds
 	m_planet->SetMode(0);
 
 	m_main->StartMusic();
