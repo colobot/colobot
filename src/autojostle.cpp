@@ -44,7 +44,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoJostle::CAutoJostle(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
@@ -54,7 +54,7 @@ CAutoJostle::CAutoJostle(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoJostle::~CAutoJostle()
 {
@@ -62,7 +62,7 @@ CAutoJostle::~CAutoJostle()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoJostle::DeleteObject(BOOL bAll)
 {
@@ -70,7 +70,7 @@ void CAutoJostle::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoJostle::Init()
 {
@@ -81,7 +81,7 @@ void CAutoJostle::Init()
 }
 
 
-// D�marre une �mission.
+// Start an emission.
 
 void CAutoJostle::Start(int param, float force)
 {
@@ -98,14 +98,14 @@ void CAutoJostle::Start(int param, float force)
 
 	type = m_object->RetType();
 	if ( type >= OBJECT_PLANT5 &&
-		 type <= OBJECT_PLANT7 )  // tr�fle ?
+		 type <= OBJECT_PLANT7 )  // clover?
 	{
 		m_force *= 3.0f;
 	}
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoJostle::EventProcess(const Event &event)
 {
@@ -157,7 +157,7 @@ BOOL CAutoJostle::EventProcess(const Event &event)
 }
 
 
-// Indique si l'automate a termin� son activit�.
+// Indicates whether the controller has completed its activity.
 
 Error CAutoJostle::IsEnded()
 {
