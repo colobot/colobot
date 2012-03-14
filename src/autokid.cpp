@@ -41,7 +41,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoKid::CAutoKid(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
@@ -52,7 +52,7 @@ CAutoKid::CAutoKid(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's constructor.
 
 CAutoKid::~CAutoKid()
 {
@@ -67,7 +67,7 @@ CAutoKid::~CAutoKid()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoKid::DeleteObject(BOOL bAll)
 {
@@ -75,7 +75,7 @@ void CAutoKid::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoKid::Init()
 {
@@ -85,21 +85,21 @@ void CAutoKid::Init()
 	m_progress = 0.0f;
 	m_lastParticule = 0.0f;
 
-	if ( m_type == OBJECT_TEEN36 )  // tronc ?
+	if ( m_type == OBJECT_TEEN36 )  // trunk ?
 	{
 		pos = m_object->RetPosition(0);
 		m_speed = 1.0f/(1.0f+(Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f));
 		m_progress = Mod(pos.x/10.0f, 1.0f);
 	}
 
-	if ( m_type == OBJECT_TEEN37 )  // bateau ?
+	if ( m_type == OBJECT_TEEN37 )  // boat?
 	{
 		pos = m_object->RetPosition(0);
 		m_speed = 1.0f/(1.0f+(Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f))*2.5f;
 		m_progress = Mod(pos.x/10.0f, 1.0f);
 	}
 
-	if ( m_type == OBJECT_TEEN38 )  // ventillateur ?
+	if ( m_type == OBJECT_TEEN38 )  // fan?
 	{
 		if ( m_soundChannel == -1 )
 		{
@@ -110,7 +110,7 @@ void CAutoKid::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoKid::EventProcess(const Event &event)
 {
@@ -144,7 +144,7 @@ BOOL CAutoKid::EventProcess(const Event &event)
 
 	m_progress += event.rTime*m_speed;
 
-	if ( m_type == OBJECT_TEEN36 )  // tronc ?
+	if ( m_type == OBJECT_TEEN36 )  // trunk?
 	{
 		vib.x = 0.0f;
 		vib.y = sinf(m_progress)*1.0f;
@@ -173,7 +173,7 @@ BOOL CAutoKid::EventProcess(const Event &event)
 		}
 	}
 
-	if ( m_type == OBJECT_TEEN37 )  // bateau ?
+	if ( m_type == OBJECT_TEEN37 )  // boat?
 	{
 		vib.x = 0.0f;
 		vib.y = sinf(m_progress)*1.0f;
@@ -202,7 +202,7 @@ BOOL CAutoKid::EventProcess(const Event &event)
 		}
 	}
 
-	if ( m_type == OBJECT_TEEN38 )  // ventillateur ?
+	if ( m_type == OBJECT_TEEN38 )  // fan?
 	{
 		m_object->SetAngleY(1, sinf(m_progress*0.6f)*0.4f);
 		m_object->SetAngleX(2, m_progress*5.0f);
@@ -212,7 +212,7 @@ BOOL CAutoKid::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoKid::RetError()
 {
