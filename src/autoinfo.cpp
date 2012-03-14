@@ -45,7 +45,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoInfo::CAutoInfo(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
@@ -55,7 +55,7 @@ CAutoInfo::CAutoInfo(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's constructor.
 
 CAutoInfo::~CAutoInfo()
 {
@@ -63,7 +63,7 @@ CAutoInfo::~CAutoInfo()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoInfo::DeleteObject(BOOL bAll)
 {
@@ -71,7 +71,7 @@ void CAutoInfo::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoInfo::Init()
 {
@@ -84,7 +84,7 @@ void CAutoInfo::Init()
 }
 
 
-// D�marre une �mission.
+// Start a emission.
 
 void CAutoInfo::Start(int param)
 {
@@ -142,7 +142,7 @@ void CAutoInfo::Start(int param)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoInfo::EventProcess(const Event &event)
 {
@@ -158,7 +158,7 @@ BOOL CAutoInfo::EventProcess(const Event &event)
 
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -186,13 +186,13 @@ BOOL CAutoInfo::EventProcess(const Event &event)
 		if ( m_bLastVirus )
 		{
 			m_bLastVirus = FALSE;
-			UpdateList();  // remet la liste normalement
+			UpdateList();  // normally returns the list
 		}
 		else
 		{
 			if ( m_object->RetInfoUpdate() )
 			{
-				UpdateList();  // actualise la liste
+				UpdateList();  // updates the list
 			}
 		}
 	}
@@ -315,7 +315,7 @@ BOOL CAutoInfo::EventProcess(const Event &event)
 		if ( m_progress < 1.0f )
 		{
 			m_progress += rTime*m_speed;
-			rTime = 0.0f;  // stoppe la rotation
+			rTime = 0.0f;  // stops the rotation
 
 			if ( m_progress < 0.5f )
 			{
@@ -359,7 +359,7 @@ BOOL CAutoInfo::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoInfo::RetError()
 {
@@ -372,7 +372,7 @@ Error CAutoInfo::RetError()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoInfo::CreateInterface(BOOL bSelect)
 {
@@ -410,8 +410,8 @@ BOOL CAutoInfo::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface,
-// suite au temps qui s'�coule ...
+// Updates the state of all buttons on the interface,
+// following the time that elapses ...
 
 void CAutoInfo::UpdateInterface(float rTime)
 {
@@ -419,7 +419,7 @@ void CAutoInfo::UpdateInterface(float rTime)
 }
 
 
-// Met � jour le contenu de la liste.
+// Updates the contents of the list.
 
 void CAutoInfo::UpdateList()
 {
@@ -456,7 +456,7 @@ void CAutoInfo::UpdateList()
 	m_object->SetInfoUpdate(FALSE);
 }
 
-// Met � jour le contenu contamin� de la liste.
+// Updates the content of contaminating the list.
 
 void CAutoInfo::UpdateListVirus()
 {
@@ -492,7 +492,7 @@ void CAutoInfo::UpdateListVirus()
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoInfo::Write(char *line)
 {
@@ -517,7 +517,7 @@ BOOL CAutoInfo::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoInfo::Read(char *line)
 {
