@@ -55,7 +55,7 @@ CAutoInfo::CAutoInfo(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Object's constructor.
+// Object's destructor.
 
 CAutoInfo::~CAutoInfo()
 {
