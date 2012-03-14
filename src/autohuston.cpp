@@ -41,7 +41,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
@@ -78,7 +78,7 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 	m_lens[2].off = 0.4f;
 	m_lens[3].off = 0.4f;
 
-	// Pi�ce sous radar.
+	// Part under the radar.
 	i = 4;
 	m_lens[i].type = PARTISELR;
 	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 9.9f, 40.1f);
@@ -126,7 +126,7 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 	m_lens[i].off = 0.7f;
 	i ++;
 
-	// Pi�ce avec 3 fen�tres.
+	// Part with three windows.
 	m_lens[i].type = PARTISELR;
 	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 9.9f, -19.9f);
 	m_lens[i].dim = 1.0f;
@@ -185,7 +185,7 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoHuston::~CAutoHuston()
 {
@@ -193,7 +193,7 @@ CAutoHuston::~CAutoHuston()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoHuston::DeleteObject(BOOL bAll)
 {
@@ -201,7 +201,7 @@ void CAutoHuston::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoHuston::Init()
 {
@@ -212,14 +212,14 @@ void CAutoHuston::Init()
 }
 
 
-// D�marre l'objet.
+// Start the object.
 
 void CAutoHuston::Start(int param)
 {
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoHuston::EventProcess(const Event &event)
 {
@@ -233,7 +233,7 @@ BOOL CAutoHuston::EventProcess(const Event &event)
 	if ( m_engine->RetPause() )  return TRUE;
 
 	angle = -m_time*1.0f;
-	m_object->SetAngleY(1, angle);  // fait tourner le radar
+	m_object->SetAngleY(1, angle);  // rotates the radar
 	angle = sinf(m_time*4.0f)*0.3f;
 	m_object->SetAngleX(2, angle);
 
@@ -241,7 +241,7 @@ BOOL CAutoHuston::EventProcess(const Event &event)
 
 	m_progress += event.rTime*m_speed;
 
-	// Fait clignotter les cl�s.
+	// Flashes the keys.
 	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	for ( i=0 ; i<m_lensTotal ; i++ )
 	{
@@ -268,7 +268,7 @@ BOOL CAutoHuston::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Stoppe l'automate.
+// Stops the controller.
 
 BOOL CAutoHuston::Abort()
 {
@@ -276,7 +276,7 @@ BOOL CAutoHuston::Abort()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoHuston::CreateInterface(BOOL bSelect)
 {
@@ -306,7 +306,7 @@ BOOL CAutoHuston::CreateInterface(BOOL bSelect)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due to state of the automation.
 
 Error CAutoHuston::RetError()
 {
