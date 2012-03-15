@@ -40,7 +40,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoMush::CAutoMush(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
@@ -50,7 +50,7 @@ CAutoMush::CAutoMush(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoMush::~CAutoMush()
 {
@@ -58,7 +58,7 @@ CAutoMush::~CAutoMush()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoMush::DeleteObject(BOOL bAll)
 {
@@ -66,7 +66,7 @@ void CAutoMush::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoMush::Init()
 {
@@ -79,7 +79,7 @@ void CAutoMush::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoMush::EventProcess(const Event &event)
 {
@@ -234,7 +234,7 @@ BOOL CAutoMush::EventProcess(const Event &event)
 }
 
 
-// Cherche une cible proche.
+// Seeking a nearby target.
 
 BOOL CAutoMush::SearchTarget()
 {
@@ -306,7 +306,7 @@ BOOL CAutoMush::SearchTarget()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoMush::RetError()
 {
@@ -314,7 +314,7 @@ Error CAutoMush::RetError()
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoMush::Write(char *line)
 {
@@ -340,7 +340,7 @@ BOOL CAutoMush::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoMush::Read(char *line)
 {
