@@ -43,7 +43,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoRadar::CAutoRadar(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
@@ -55,7 +55,7 @@ CAutoRadar::CAutoRadar(CInstanceManager* iMan, CObject* object)
 	m_totalDetect = 0;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoRadar::~CAutoRadar()
 {
@@ -63,7 +63,7 @@ CAutoRadar::~CAutoRadar()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoRadar::DeleteObject(BOOL bAll)
 {
@@ -71,7 +71,7 @@ void CAutoRadar::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoRadar::Init()
 {
@@ -85,7 +85,7 @@ void CAutoRadar::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoRadar::EventProcess(const Event &event)
 {
@@ -102,7 +102,7 @@ BOOL CAutoRadar::EventProcess(const Event &event)
 	m_aTime += event.rTime;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -138,7 +138,7 @@ BOOL CAutoRadar::EventProcess(const Event &event)
 			if ( !SearchEnemy(ePos) )
 			{
 				m_phase    = ARAP_SEARCH;
-				m_progress = 10.0f/50.0f;  // plein r�gime tout de suite
+				m_progress = 10.0f/50.0f;  // full speed immediately
 				m_speed    = 1.0f/3.0f;
 			}
 			else
@@ -202,7 +202,7 @@ BOOL CAutoRadar::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoRadar::RetError()
 {
@@ -215,7 +215,7 @@ Error CAutoRadar::RetError()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoRadar::CreateInterface(BOOL bSelect)
 {
@@ -251,7 +251,7 @@ BOOL CAutoRadar::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface.
+// Updates the status of all interface buttons.
 
 void CAutoRadar::UpdateInterface()
 {
@@ -276,7 +276,7 @@ void CAutoRadar::UpdateInterface()
 }
 
 
-// Cherche la position d'un ennemi.
+// Seeking the position of an enemy.
 
 BOOL CAutoRadar::SearchEnemy(D3DVECTOR &pos)
 {
