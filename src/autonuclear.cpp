@@ -45,12 +45,12 @@
 
 
 
-#define NUCLEAR_DELAY		30.0f		// dur�e de la g�n�ration
+#define NUCLEAR_DELAY		30.0f		// duration of the generation
 
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoNuclear::CAutoNuclear(CInstanceManager* iMan, CObject* object)
 						  : CAuto(iMan, object)
@@ -61,7 +61,7 @@ CAutoNuclear::CAutoNuclear(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoNuclear::~CAutoNuclear()
 {
@@ -69,7 +69,7 @@ CAutoNuclear::~CAutoNuclear()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoNuclear::DeleteObject(BOOL bAll)
 {
@@ -80,7 +80,7 @@ void CAutoNuclear::DeleteObject(BOOL bAll)
 		fret = SearchUranium();
 		if ( fret != 0 )
 		{
-			fret->DeleteObject();  // d�truit le m�tal
+			fret->DeleteObject();  // destroys the metal
 			delete fret;
 		}
 	}
@@ -96,7 +96,7 @@ void CAutoNuclear::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoNuclear::Init()
 {
@@ -109,7 +109,7 @@ void CAutoNuclear::Init()
 	mat = m_object->RetWorldMatrix(0);
 	m_pos = Transform(*mat, D3DVECTOR(22.0f, 4.0f, 0.0f));
 
-	m_phase    = ANUP_WAIT;  // attend ...
+	m_phase    = ANUP_WAIT;  // waiting ...
 	m_progress = 0.0f;
 	m_speed    = 1.0f/2.0f;
 
@@ -117,7 +117,7 @@ void CAutoNuclear::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoNuclear::EventProcess(const Event &event)
 {
@@ -136,7 +136,7 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -151,16 +151,16 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			fret = SearchUranium();  // uranium � transformer ?
+			fret = SearchUranium();  // transform uranium?
 			if ( fret == 0 || SearchVehicle() )
 			{
-				m_phase    = ANUP_WAIT;  // attend encore ...
+				m_phase    = ANUP_WAIT;  // still waiting ...
 				m_progress = 0.0f;
 				m_speed    = 1.0f/2.0f;
 			}
 			else
 			{
-				fret->SetLock(TRUE);  // uranium plus utilisable
+				fret->SetLock(TRUE);  // usable uranium
 
 				SetBusy(TRUE);
 				InitProgressTotal(1.5f+NUCLEAR_DELAY+1.5f);
@@ -247,12 +247,12 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 			fret = SearchUranium();
 			if ( fret != 0 )
 			{
-				fret->DeleteObject();  // d�truit l'uranium
+				fret->DeleteObject();  // destroyed uranium
 				delete fret;
 				m_object->SetPower(0);
 			}
 
-			CreatePower();  // cr�e la pile atomique
+			CreatePower();  // creates the atomic cell
 
 			max = (int)(20.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
@@ -303,7 +303,7 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoNuclear::CreateInterface(BOOL bSelect)
 {
@@ -333,7 +333,7 @@ BOOL CAutoNuclear::CreateInterface(BOOL bSelect)
 }
 
 
-// Cherche l'objet uranium.
+// Seeking the uranium.
 
 CObject* CAutoNuclear::SearchUranium()
 {
@@ -345,7 +345,7 @@ CObject* CAutoNuclear::SearchUranium()
 	return 0;
 }
 
-// Cherche si un v�hicule est trop proche.
+// Seeks if a vehicle is too close.
 
 BOOL CAutoNuclear::SearchVehicle()
 {
@@ -404,7 +404,7 @@ BOOL CAutoNuclear::SearchVehicle()
 	return FALSE;
 }
 
-// Cr�e un objet pile.
+// Creates an object stack.
 
 void CAutoNuclear::CreatePower()
 {
@@ -429,7 +429,7 @@ void CAutoNuclear::CreatePower()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoNuclear::RetError()
 {
@@ -458,7 +458,7 @@ Error CAutoNuclear::RetError()
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoNuclear::Write(char *line)
 {
@@ -484,7 +484,7 @@ BOOL CAutoNuclear::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoNuclear::Read(char *line)
 {
