@@ -29,13 +29,13 @@ class CObject;
 
 enum AutoPorticoPhase
 {
-	APOP_WAIT		= 1,	// attend
-	APOP_START		= 2,	// d�part de l'action
-	APOP_MOVE		= 3,	// avance
-	APOP_WAIT1		= 4,	// attend
-	APOP_DOWN		= 5,	// descend
-	APOP_WAIT2		= 6,	// attend
-	APOP_OPEN		= 7,	// ouvre
+	APOP_WAIT		= 1,	// waits
+	APOP_START		= 2,	// start of the action
+	APOP_MOVE		= 3,	// advance
+	APOP_WAIT1		= 4,	// waits
+	APOP_DOWN		= 5,	// down
+	APOP_WAIT2		= 6,	// waits
+	APOP_OPEN		= 7,	// opens
 };
 
 
