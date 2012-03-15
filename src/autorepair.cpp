@@ -46,7 +46,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoRepair::CAutoRepair(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
@@ -54,10 +54,10 @@ CAutoRepair::CAutoRepair(CInstanceManager* iMan, CObject* object)
 	CAuto::CAuto(iMan, object);
 
 	Init();
-	m_phase = ARP_WAIT;  // en pause jusqu'au premier Init()
+	m_phase = ARP_WAIT;  // paused until the first Init ()
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoRepair::~CAutoRepair()
 {
@@ -65,7 +65,7 @@ CAutoRepair::~CAutoRepair()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoRepair::DeleteObject(BOOL bAll)
 {
@@ -73,7 +73,7 @@ void CAutoRepair::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoRepair::Init()
 {
@@ -89,7 +89,7 @@ void CAutoRepair::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoRepair::EventProcess(const Event &event)
 {
@@ -106,7 +106,7 @@ BOOL CAutoRepair::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -121,7 +121,7 @@ BOOL CAutoRepair::EventProcess(const Event &event)
 		{
 			if ( SearchVehicle() == 0 )
 			{
-				m_phase    = ARP_WAIT;  // attend encore ...
+				m_phase    = ARP_WAIT;  // still waiting ...
 				m_progress = 0.0f;
 				m_speed    = 1.0f/1.0f;
 			}
@@ -215,7 +215,7 @@ BOOL CAutoRepair::EventProcess(const Event &event)
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoRepair::CreateInterface(BOOL bSelect)
 {
@@ -245,7 +245,7 @@ BOOL CAutoRepair::CreateInterface(BOOL bSelect)
 }
 
 
-// Cherche le v�hicule plac� sur la station.
+// Seeking the vehicle on the station.
 
 CObject* CAutoRepair::SearchVehicle()
 {
@@ -293,7 +293,7 @@ CObject* CAutoRepair::SearchVehicle()
 			 type != OBJECT_MOBILEdr )  continue;
 
 		physics = pObj->RetPhysics();
-		if ( physics != 0 && !physics->RetLand() )  continue;  // en vol ?
+		if ( physics != 0 && !physics->RetLand() )  continue;  // in flight?
 
 		oPos = pObj->RetPosition(0);
 		dist = Length(oPos, sPos);
@@ -304,7 +304,7 @@ CObject* CAutoRepair::SearchVehicle()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoRepair::RetError()
 {
@@ -317,7 +317,7 @@ Error CAutoRepair::RetError()
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoRepair::Write(char *line)
 {
@@ -342,7 +342,7 @@ BOOL CAutoRepair::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoRepair::Read(char *line)
 {
