@@ -46,12 +46,12 @@
 
 
 
-#define OPEN_DELAY		8.0f		// dur�e de l'ouverture
+#define OPEN_DELAY		8.0f		// duration of opening
 
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoSafe::CAutoSafe(CInstanceManager* iMan, CObject* object)
 						  : CAuto(iMan, object)
@@ -72,7 +72,7 @@ CAutoSafe::CAutoSafe(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoSafe::~CAutoSafe()
 {
@@ -80,7 +80,7 @@ CAutoSafe::~CAutoSafe()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoSafe::DeleteObject(BOOL bAll)
 {
@@ -104,7 +104,7 @@ void CAutoSafe::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoSafe::Init()
 {
@@ -116,7 +116,7 @@ void CAutoSafe::Init()
 	m_actualAngle = 0.0f;
 	m_finalAngle  = 0.0f;
 
-	m_phase    = ASAP_WAIT;  // attend ...
+	m_phase    = ASAP_WAIT;  // waiting ...
 	m_progress = 0.0f;
 	m_speed    = 1.0f/1.0f;
 
@@ -124,7 +124,7 @@ void CAutoSafe::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoSafe::EventProcess(const Event &event)
 {
@@ -141,7 +141,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -157,7 +157,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 		pObj = SearchVehicle();
 		if ( pObj != 0 )
 		{
-			pObj->SetLock(TRUE);  // objet pas encore utilisable
+			pObj->SetLock(TRUE);  // object not yet usable
 			m_main->CreateShortcuts();
 			m_bLock = TRUE;
 		}
@@ -167,7 +167,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			count = CountKeys();  // compte les cl�s pr�sentes
+			count = CountKeys();  // count these key
 			if ( count != m_countKeys )
 			{
 				m_countKeys = count;
@@ -178,7 +178,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 				if ( count == 3 )  m_finalAngle =  15.0f*PI/180.0f;
 				if ( count == 4 )  m_finalAngle = 120.0f*PI/180.0f;
 
-				if ( count == 4 )  // toutes les cl�s ?
+				if ( count == 4 )  // all the keys?
 				{
 					LockKeys();
 
@@ -255,7 +255,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 			pObj = SearchVehicle();
 			if ( pObj != 0 )
 			{
-				pObj->SetLock(FALSE);  // objet utilisable
+				pObj->SetLock(FALSE);  // object usable
 				m_main->CreateShortcuts();
 			}
 
@@ -280,7 +280,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 		}
 	}
 
-	// Ouvre ou ferme les portes.
+	// Opens or closes the doors.
 	if ( m_actualAngle != m_finalAngle )
 	{
 		if ( m_actualAngle < m_finalAngle )
@@ -297,7 +297,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 		m_object->SetAngleZ(2, -m_actualAngle);
 	}
 
-	// Fait clignotter les cl�s.
+	// Blinks the keys.
 	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	dim.x = 2.0f;
 	dim.y = dim.x;
@@ -326,7 +326,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoSafe::CreateInterface(BOOL bSelect)
 {
@@ -356,7 +356,7 @@ BOOL CAutoSafe::CreateInterface(BOOL bSelect)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoSafe::RetError()
 {
@@ -368,7 +368,7 @@ Error CAutoSafe::RetError()
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoSafe::Write(char *line)
 {
@@ -393,7 +393,7 @@ BOOL CAutoSafe::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoSafe::Read(char *line)
 {
@@ -411,7 +411,7 @@ BOOL CAutoSafe::Read(char *line)
 }
 
 
-// Compte le nombre de cl�s pr�sentes.
+// Counts the number of keys
 
 int CAutoSafe::CountKeys()
 {
@@ -476,7 +476,7 @@ int CAutoSafe::CountKeys()
 		angle = RotateAngle(oPos.x-cPos.x, oPos.z-cPos.z)+cAngle;
 		if ( !TestAngle(angle, limit-8.0f*PI/180.0f, limit+8.0f*PI/180.0f) )  continue;
 
-		// D�place la cl� sur la forme du socle.
+		// Key changes the shape of the base.
 		rot = RotatePoint(FPOINT(cPos.x, cPos.z), limit-cAngle, FPOINT(cPos.x+16.0f, cPos.z));
 		oPos.x = rot.x;
 		oPos.z = rot.y;
@@ -496,7 +496,7 @@ int CAutoSafe::CountKeys()
 	return i;
 }
 
-// Bloque toutes les cl�s pr�sentes.
+// Blocks all keys.
 
 void CAutoSafe::LockKeys()
 {
@@ -529,7 +529,7 @@ void CAutoSafe::LockKeys()
 	}
 }
 
-// Fait descendre toutes les cl�s pr�sentes.
+// Sent down all the keys.
 
 void CAutoSafe::DownKeys(float progress)
 {
@@ -563,7 +563,7 @@ void CAutoSafe::DownKeys(float progress)
 	}
 }
 
-// Supprime toutes les cl�s pr�sentes.
+// Delete all the keys.
 
 void CAutoSafe::DeleteKeys()
 {
@@ -604,7 +604,7 @@ void CAutoSafe::DeleteKeys()
 	while ( bDelete );
 }
 
-// Cherche le v�hicule dans le coffre-fort.
+// Seeking a vehicle in the safe.
 
 CObject* CAutoSafe::SearchVehicle()
 {
