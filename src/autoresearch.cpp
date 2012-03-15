@@ -46,11 +46,11 @@
 
 
 
-#define SEARCH_TIME		30.0f		// dur�e d'une recherche
+#define SEARCH_TIME		30.0f		// duration of a research
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoResearch::CAutoResearch(CInstanceManager* iMan, CObject* object)
 							 : CAuto(iMan, object)
@@ -68,7 +68,7 @@ CAutoResearch::CAutoResearch(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoResearch::~CAutoResearch()
 {
@@ -76,7 +76,7 @@ CAutoResearch::~CAutoResearch()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoResearch::DeleteObject(BOOL bAll)
 {
@@ -92,7 +92,7 @@ void CAutoResearch::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoResearch::Init()
 {
@@ -107,7 +107,7 @@ void CAutoResearch::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoResearch::EventProcess(const Event &event)
 {
@@ -126,7 +126,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		if ( m_object->RetSelect() )  CreateInterface(TRUE);
 	}
 
-	if ( m_object->RetSelect() &&  // centre s�lectionn� ?
+	if ( m_object->RetSelect() &&  // center selected?
 		 (event.event == EVENT_OBJECT_RTANK   ||
 		  event.event == EVENT_OBJECT_RFLY    ||
 		  event.event == EVENT_OBJECT_RTHUMP  ||
@@ -191,7 +191,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -204,24 +204,24 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 	EventProgress(event.rTime);
 
 	angle = m_time*0.1f;
-	m_object->SetAngleY(1, angle);  // tourne l'antenne
+	m_object->SetAngleY(1, angle);  // rotates the antenna
 
 	angle = (30.0f+sinf(m_time*0.3f)*20.0f)*PI/180.0f;
-	m_object->SetAngleZ(2, angle);  // oriente l'antenne
+	m_object->SetAngleZ(2, angle);  // directs the antenna
 
 	if ( m_phase == ALP_WAIT )
 	{
-		FireStopUpdate(m_progress, FALSE);  // �teint
+		FireStopUpdate(m_progress, FALSE);  // extinguished
 		return TRUE;
 	}
 
 	if ( m_phase == ALP_SEARCH )
 	{
-		FireStopUpdate(m_progress, TRUE);  // clignotte
+		FireStopUpdate(m_progress, TRUE);  // flashes
 		if ( m_progress < 1.0f )
 		{
 			power = m_object->RetPower();
-			if ( power == 0 )  // plus de pile ?
+			if ( power == 0 )  // more battery?
 			{
 				SetBusy(FALSE);
 				UpdateInterface();
@@ -251,7 +251,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		}
 		else
 		{
-			SetResearch(m_research);  // recherche effectu�e
+			SetResearch(m_research);  // research done
 			m_displayText->DisplayError(INFO_RESEARCH, m_object);
 
 			message = ERR_OK;
@@ -281,7 +281,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoResearch::RetError()
 {
@@ -315,7 +315,7 @@ Error CAutoResearch::RetError()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoResearch::CreateInterface(BOOL bSelect)
 {
@@ -386,7 +386,7 @@ BOOL CAutoResearch::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface.
+// Updates the status of all interface buttons.
 
 void CAutoResearch::UpdateInterface()
 {
@@ -427,8 +427,8 @@ void CAutoResearch::UpdateInterface()
 	VisibleInterface(pw, EVENT_OBJECT_RATOMIC, !m_bBusy);
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface,
-// suite au temps qui s'�coule ...
+// Updates the state of all buttons on the interface,
+// following the time that elapses ...
 
 void CAutoResearch::UpdateInterface(float rTime)
 {
@@ -460,7 +460,7 @@ void CAutoResearch::UpdateInterface(float rTime)
 	}
 }
 
-// Indique les recherches d�j� effectu�es pour un bouton.
+// Research shows already performed button.
 
 void CAutoResearch::OkayButton(CWindow *pw, EventMsg event)
 {
@@ -473,7 +473,7 @@ void CAutoResearch::OkayButton(CWindow *pw, EventMsg event)
 }
 
 
-// Teste si une recherche a d�j� �t� effectu�e.
+// Test whether a search has already been done.
 
 BOOL CAutoResearch::TestResearch(EventMsg event)
 {
@@ -489,7 +489,7 @@ BOOL CAutoResearch::TestResearch(EventMsg event)
 	return FALSE;
 }
 
-// Indique une recherche comme effectu�e.
+// Indicates a search as made.
 
 void CAutoResearch::SetResearch(EventMsg event)
 {
@@ -512,7 +512,7 @@ void CAutoResearch::SetResearch(EventMsg event)
 }
 
 
-// Met � jour les feux de stop.
+// Updates the stop lights.
 
 void CAutoResearch::FireStopUpdate(float progress, BOOL bLightOn)
 {
@@ -577,7 +577,7 @@ void CAutoResearch::FireStopUpdate(float progress, BOOL bLightOn)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoResearch::Write(char *line)
 {
@@ -605,7 +605,7 @@ BOOL CAutoResearch::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoResearch::Read(char *line)
 {
