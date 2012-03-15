@@ -46,7 +46,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoPara::CAutoPara(CInstanceManager* iMan, CObject* object)
 						  : CAuto(iMan, object)
@@ -57,7 +57,7 @@ CAutoPara::CAutoPara(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoPara::~CAutoPara()
 {
@@ -65,7 +65,7 @@ CAutoPara::~CAutoPara()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoPara::DeleteObject(BOOL bAll)
 {
@@ -80,7 +80,7 @@ void CAutoPara::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoPara::Init()
 {
@@ -93,7 +93,7 @@ void CAutoPara::Init()
 	mat = m_object->RetWorldMatrix(0);
 	m_pos = Transform(*mat, D3DVECTOR(22.0f, 4.0f, 0.0f));
 
-	m_phase    = APAP_WAIT;  // attend ...
+	m_phase    = APAP_WAIT;  // waiting ...
 	m_progress = 0.0f;
 	m_speed    = 1.0f/1.0f;
 
@@ -101,7 +101,7 @@ void CAutoPara::Init()
 }
 
 
-// R�ception de l'�clair.
+// Reception of lightning.
 
 void CAutoPara::StartBlitz()
 {
@@ -111,7 +111,7 @@ void CAutoPara::StartBlitz()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoPara::EventProcess(const Event &event)
 {
@@ -127,7 +127,7 @@ BOOL CAutoPara::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -204,7 +204,7 @@ BOOL CAutoPara::EventProcess(const Event &event)
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoPara::CreateInterface(BOOL bSelect)
 {
@@ -240,7 +240,7 @@ BOOL CAutoPara::CreateInterface(BOOL bSelect)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoPara::RetError()
 {
@@ -252,7 +252,7 @@ Error CAutoPara::RetError()
 }
 
 
-// Charge tous les objets plac�s sous le paratonnerre.
+// Load all objects under the lightning rod.
 
 void CAutoPara::ChargeObject(float rTime)
 {
@@ -302,7 +302,7 @@ void CAutoPara::ChargeObject(float rTime)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoPara::Write(char *line)
 {
@@ -327,7 +327,7 @@ BOOL CAutoPara::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoPara::Read(char *line)
 {
