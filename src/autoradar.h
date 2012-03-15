@@ -29,10 +29,10 @@ class CObject;
 
 enum AutoRadarPhase
 {
-	ARAP_WAIT		= 1,	// attend
-	ARAP_SEARCH		= 2,	// cherche
-	ARAP_SHOW		= 3,	// montre
-	ARAP_SINUS		= 4,	// oscille
+	ARAP_WAIT		= 1,	// waiting
+	ARAP_SEARCH		= 2,	// seeking
+	ARAP_SHOW		= 3,	// watching
+	ARAP_SINUS		= 4,	// oscillates
 };
 
 
