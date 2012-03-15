@@ -32,7 +32,7 @@ enum ObjectType;
 enum AutoResearchPhase
 {
 	ALP_WAIT		= 1,
-	ALP_SEARCH		= 2,	// recherche en cours
+	ALP_SEARCH		= 2,	// research in progress
 };
 
 
