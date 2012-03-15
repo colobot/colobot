@@ -29,10 +29,11 @@ class CObject;
 
 enum AutoRepairPhase
 {
-	ARP_WAIT		= 1,	// attend m�tal
-	ARP_DOWN		= 2,	// descend le couvercle
-	ARP_REPAIR		= 3,	// construit le v�hicule
-	ARP_UP			= 4,	// remonte le couvercle
+	ARP_WAIT		= 1,	// expected metal
+	ARP_DOWN		= 2,	// down the cover
+	ARP_REPAIR		= 3,	// repair the vehicle
+	ARP_UP			= 4,	// back cover
+
 };
 
 
