@@ -43,7 +43,7 @@
 
 
 
-#define PARAM_DEPOSE		2		// run=2 -> d�pose le vaisseau
+#define PARAM_DEPOSE		2		// run=2 -> deposits the spaceship
 
 #define PORTICO_POSa		75.0f
 #define PORTICO_POSb		65.0f
@@ -71,7 +71,7 @@ float Progress(float a, float b, float progress)
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoPortico::CAutoPortico(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
@@ -83,7 +83,7 @@ CAutoPortico::CAutoPortico(CInstanceManager* iMan, CObject* object)
 	m_soundChannel = -1;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoPortico::~CAutoPortico()
 {
@@ -91,7 +91,7 @@ CAutoPortico::~CAutoPortico()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoPortico::DeleteObject(BOOL bAll)
 {
@@ -106,7 +106,7 @@ void CAutoPortico::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoPortico::Init()
 {
@@ -123,7 +123,7 @@ void CAutoPortico::Init()
 }
 
 
-// D�marre l'objet.
+// Starts the object.
 
 void CAutoPortico::Start(int param)
 {
@@ -131,7 +131,7 @@ void CAutoPortico::Start(int param)
 
 	pos = m_object->RetPosition(0);
 	m_finalPos = pos;
-	pos.z += PORTICO_TIME_MOVE*5.0f;  // recule au d�part
+	pos.z += PORTICO_TIME_MOVE*5.0f;  // back to start
 	m_object->SetPosition(0, pos);
 	m_finalPos.z += PORTICO_TIME_OPEN*5.3f;
 
@@ -151,7 +151,7 @@ void CAutoPortico::Start(int param)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoPortico::EventProcess(const Event &event)
 {
@@ -165,7 +165,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 
 	if ( m_phase == APOP_START )
 	{
-		if ( m_param == PARAM_DEPOSE )  // d�pose le vaisseau ?
+		if ( m_param == PARAM_DEPOSE )  // deposits the ship?
 		{
 			m_startPos = m_object->RetPosition(0);
 
@@ -178,7 +178,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 			m_progress = 0.0f;
 			m_speed    = 1.0f/PORTICO_TIME_MOVE;
 
-			m_main->SetMovieLock(TRUE);  // bloque tout jusqu'� la fin de l'atterrissage
+			m_main->SetMovieLock(TRUE);  // blocks everything until the end of the landing
 
 			m_camera->SetType(CAMERA_SCRIPT);
 
@@ -199,12 +199,12 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 	}
 
 	angle = -m_time*1.0f;
-	m_object->SetAngleY(8, angle);  // fait tourner le radar droite
+	m_object->SetAngleY(8, angle);  // rotates the radar right
 	angle = sinf(m_time*4.0f)*0.3f;
 	m_object->SetAngleX(9, angle);
 
 	angle = -m_time*1.0f+PI/2.3f;
-	m_object->SetAngleY(10, angle);  // fait tourner le radar gauche
+	m_object->SetAngleY(10, angle);  // turns the left side radar
 	angle = sinf(m_time*4.0f)*0.3f;
 	m_object->SetAngleX(11, angle);
 
@@ -219,7 +219,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 		if ( m_progress < 1.0f )
 		{
 			pos = m_object->RetPosition(0);
-			pos.z -= event.rTime*5.0f;  // avance
+			pos.z -= event.rTime*5.0f;  // advance
 			m_object->SetPosition(0, pos);
 
 			m_posTrack += event.rTime*0.5f;
@@ -295,7 +295,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 		if ( m_progress < 1.0f )
 		{
 			pos = m_object->RetPosition(0);
-			pos.z += event.rTime*5.3f;  // recule
+			pos.z += event.rTime*5.3f;  // back
 			m_object->SetPosition(0, pos);
 
 			m_posTrack -= event.rTime*1.0f;
@@ -325,7 +325,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 		}
 		else
 		{
-			m_main->SetMovieLock(FALSE);  // on peut jouer !
+			m_main->SetMovieLock(FALSE);  // you can play!
 
 			pObj = m_main->SearchHuman();
 			m_main->SelectObject(pObj);
@@ -369,7 +369,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Stoppe l'automate.
+// Stops the controller.
 
 BOOL CAutoPortico::Abort()
 {
@@ -384,7 +384,7 @@ BOOL CAutoPortico::Abort()
 	m_object->SetAngleY(6, -PORTICO_ANGLE2b);
 	m_object->SetAngleY(7, -PORTICO_ANGLE3b);
 
-	m_main->SetMovieLock(FALSE);  // on peut jouer !
+	m_main->SetMovieLock(FALSE);  // you can play!
 
 	pObj = m_main->SearchHuman();
 	m_main->SelectObject(pObj);
@@ -406,7 +406,7 @@ BOOL CAutoPortico::Abort()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoPortico::RetError()
 {
@@ -414,7 +414,7 @@ Error CAutoPortico::RetError()
 }
 
 
-// Met � jour le mapping de la texture des chenilles.
+// Updates the mapping of the texture of the caterpillars.
 
 void CAutoPortico::UpdateTrackMapping(float left, float right)
 {
@@ -425,7 +425,7 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
 	ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
 	mat.diffuse.r = 1.0f;
 	mat.diffuse.g = 1.0f;
-	mat.diffuse.b = 1.0f;  // blanc
+	mat.diffuse.b = 1.0f;  // blank
 	mat.ambient.r = 0.5f;
 	mat.ambient.g = 0.5f;
 	mat.ambient.b = 0.5f;
