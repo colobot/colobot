@@ -32,7 +32,7 @@ enum ObjectType;
 enum AutoNestPhase
 {
 	ANP_WAIT		= 1,
-	ANP_BIRTH		= 2,	// apparition d'un boulet
+	ANP_BIRTH		= 2,	// appearance of a ball
 };
 
 
