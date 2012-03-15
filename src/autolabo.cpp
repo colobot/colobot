@@ -46,12 +46,12 @@
 
 
 
-#define LABO_DELAY		20.0f		// dur�e de l'analyse
+#define LABO_DELAY		20.0f		// duration of the analysis
 
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoLabo::CAutoLabo(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
@@ -70,7 +70,7 @@ CAutoLabo::CAutoLabo(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoLabo::~CAutoLabo()
 {
@@ -78,7 +78,7 @@ CAutoLabo::~CAutoLabo()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoLabo::DeleteObject(BOOL bAll)
 {
@@ -110,7 +110,7 @@ void CAutoLabo::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoLabo::Init()
 {
@@ -118,7 +118,7 @@ void CAutoLabo::Init()
 	m_timeVirus = 0.0f;
 	m_lastParticule = 0.0f;
 
-	m_phase    = ALAP_WAIT;  // attend ...
+	m_phase    = ALAP_WAIT;  // waiting ...
 	m_progress = 0.0f;
 	m_speed    = 1.0f/2.0f;
 
@@ -126,7 +126,7 @@ void CAutoLabo::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoLabo::EventProcess(const Event &event)
 {
@@ -145,7 +145,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 		if ( m_object->RetSelect() )  CreateInterface(TRUE);
 	}
 
-	if ( m_object->RetSelect() &&  // centre s�lectionn� ?
+	if ( m_object->RetSelect() &&  // center selected?
 		 (event.event == EVENT_OBJECT_RiPAW ||
 		  event.event == EVENT_OBJECT_RiGUN) )
 	{
@@ -178,7 +178,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 		InitProgressTotal(1.0f+1.5f+1.5f+LABO_DELAY+1.5f+1.5f+1.0f);
 		UpdateInterface();
 
-		power->SetLock(TRUE);  // boulet plus utilisable
+		power->SetLock(TRUE);  // ball longer usable
 
 		SoundManip(1.0f, 1.0f, 1.0f);
 		m_phase    = ALAP_OPEN1;
@@ -192,7 +192,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -207,7 +207,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			m_phase    = ALAP_WAIT;  // attend encore ...
+			m_phase    = ALAP_WAIT;  // still waiting ...
 			m_progress = 0.0f;
 			m_speed    = 1.0f/2.0f;
 		}
@@ -317,7 +317,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 			{
 				angle -= event.rTime*(20.0f-m_progress*20.0f);
 			}
-			m_object->SetAngleY(2, angle);  // tourne l'analyseur
+			m_object->SetAngleY(2, angle);  // rotates the analyzer
 
 			angle += m_object->RetAngleY(0);
 			for ( i=0 ; i<3 ; i++ )
@@ -327,7 +327,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 				pos.x += rot.x;
 				pos.z += rot.y;
 				pos.y += 3.0f+4.0f;;
-				m_particule->SetPosition(m_partiRank[i], pos);  // ajuste rayon
+				m_particule->SetPosition(m_partiRank[i], pos);  // adjusts ray
 
 				angle += PI*2.0f/3.0f;
 			}
@@ -355,13 +355,13 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 		}
 		else
 		{
-			SetResearch(m_research);  // recherche effectu�e
+			SetResearch(m_research);  // research done
 
 			power = m_object->RetPower();
 			if ( power != 0 )
 			{
 				m_object->SetPower(0);
-				power->DeleteObject();  // d�truit le boulet
+				power->DeleteObject();  // destroys the ball
 				delete power;
 			}
 
@@ -440,7 +440,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoLabo::RetError()
 {
@@ -461,7 +461,7 @@ Error CAutoLabo::RetError()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoLabo::CreateInterface(BOOL bSelect)
 {
@@ -502,7 +502,7 @@ BOOL CAutoLabo::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface.
+// Updates the status of all interface buttons.
 
 void CAutoLabo::UpdateInterface()
 {
@@ -525,7 +525,7 @@ void CAutoLabo::UpdateInterface()
 	VisibleInterface(pw, EVENT_OBJECT_RiGUN, !m_bBusy);
 }
 
-// Indique les recherches d�j� effectu�es pour un bouton.
+// Indicates the research conducted for a button.
 
 void CAutoLabo::OkayButton(CWindow *pw, EventMsg event)
 {
@@ -538,7 +538,7 @@ void CAutoLabo::OkayButton(CWindow *pw, EventMsg event)
 }
 
 
-// Teste si une recherche a d�j� �t� effectu�e.
+// Test whether a search has already been done.
 
 BOOL CAutoLabo::TestResearch(EventMsg event)
 {
@@ -548,7 +548,7 @@ BOOL CAutoLabo::TestResearch(EventMsg event)
 	return FALSE;
 }
 
-// Indique une recherche comme effectu�e.
+// Indicates a search as made.
 
 void CAutoLabo::SetResearch(EventMsg event)
 {
@@ -564,7 +564,7 @@ void CAutoLabo::SetResearch(EventMsg event)
 	UpdateInterface();
 }
 
-// Fait entendre le son du bras manipulateur.
+// Plays the sound of the manipulator arm.
 
 void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 {
@@ -577,7 +577,7 @@ void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoLabo::Write(char *line)
 {
@@ -606,7 +606,7 @@ BOOL CAutoLabo::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoLabo::Read(char *line)
 {
