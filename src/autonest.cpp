@@ -39,7 +39,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoNest::CAutoNest(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
@@ -49,7 +49,7 @@ CAutoNest::CAutoNest(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoNest::~CAutoNest()
 {
@@ -57,7 +57,7 @@ CAutoNest::~CAutoNest()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoNest::DeleteObject(BOOL bAll)
 {
@@ -77,7 +77,7 @@ void CAutoNest::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoNest::Init()
 {
@@ -96,7 +96,7 @@ void CAutoNest::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoNest::EventProcess(const Event &event)
 {
@@ -158,7 +158,7 @@ BOOL CAutoNest::EventProcess(const Event &event)
 }
 
 
-// Cherche si un emplacement est libre.
+// Seeks if a site is free.
 
 BOOL CAutoNest::SearchFree(D3DVECTOR pos)
 {
@@ -181,14 +181,14 @@ BOOL CAutoNest::SearchFree(D3DVECTOR pos)
 		{
 			distance = Length(sPos, pos);
 			distance -= sRadius;
-			if ( distance < 2.0f )  return FALSE;  // emplacement occup�
+			if ( distance < 2.0f )  return FALSE;  // location occupied
 		}
 	}
 
-	return TRUE;  // emplacement libre
+	return TRUE;  // free location
 }
 
-// Cr�e un objet transportable.
+// Create a transportable object.
 
 void CAutoNest::CreateFret(D3DVECTOR pos, float angle, ObjectType type)
 {
@@ -200,11 +200,11 @@ void CAutoNest::CreateFret(D3DVECTOR pos, float angle, ObjectType type)
 		delete fret;
 		return;
 	}
-	fret->SetLock(TRUE);  // pas utilisable
+	fret->SetLock(TRUE);  // not usable
 	fret->SetZoom(0, 0.0f);
 }
 
-// Cherche le boullet en cours de fabrication.
+// Looking for the ball during manufacture.
 
 CObject* CAutoNest::SearchFret()
 {
@@ -235,7 +235,7 @@ CObject* CAutoNest::SearchFret()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoNest::RetError()
 {
@@ -243,7 +243,7 @@ Error CAutoNest::RetError()
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoNest::Write(char *line)
 {
@@ -269,7 +269,7 @@ BOOL CAutoNest::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoNest::Read(char *line)
 {
