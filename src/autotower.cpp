@@ -46,11 +46,11 @@
 
 
 
-#define TOWER_SCOPE		200.0f		// port�e du rayon
-#define ENERGY_FIRE		0.125f		// �nergie consomm�e par tir
+#define TOWER_SCOPE		200.0f		// range of beam
+#define ENERGY_FIRE		0.125f		// energy consumed by fire
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoTower::CAutoTower(CInstanceManager* iMan, CObject* object)
 					   : CAuto(iMan, object)
@@ -65,12 +65,12 @@ CAutoTower::CAutoTower(CInstanceManager* iMan, CObject* object)
 	}
 
 	Init();
-	m_phase = ATP_WAIT;  // en pause jusqu'au premier Init()
+	m_phase = ATP_WAIT;  // paused until the first Init ()
 	m_time = 0.0f;
 	m_lastUpdateTime = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoTower::~CAutoTower()
 {
@@ -78,7 +78,7 @@ CAutoTower::~CAutoTower()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoTower::DeleteObject(BOOL bAll)
 {
@@ -87,7 +87,7 @@ void CAutoTower::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoTower::Init()
 {
@@ -102,7 +102,7 @@ void CAutoTower::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoTower::EventProcess(const Event &event)
 {
@@ -118,7 +118,7 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
@@ -141,7 +141,7 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 	if ( m_phase == ATP_ZERO )
 	{
-		FireStopUpdate(m_progress, TRUE);  // clignotte
+		FireStopUpdate(m_progress, TRUE);  // blinks
 		if ( m_progress < 1.0f )
 		{
 			energy = 0.0f;
@@ -167,7 +167,7 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 	if ( m_phase == ATP_SEARCH )
 	{
-		FireStopUpdate(m_progress, FALSE);  // �teint
+		FireStopUpdate(m_progress, FALSE);  // extinguished
 		if ( m_progress < 1.0f )
 		{
 			quick = 1.0f;
@@ -275,7 +275,7 @@ BOOL CAutoTower::EventProcess(const Event &event)
 }
 
 
-// Cherche l'objet cible le plus proche.
+// Seeks the nearest target object.
 
 CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 {
@@ -302,7 +302,7 @@ CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 			 oType != OBJECT_BEE    &&
 			 oType != OBJECT_WORM   )  continue;
 
-		if ( !pObj->RetActif() )  continue;  // inactif ?
+		if ( !pObj->RetActif() )  continue;  // inactive?
 
 //?		if ( g_researchDone & RESEARCH_QUICK )
 		if ( FALSE )
@@ -311,13 +311,13 @@ CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 			if ( physics != 0 )
 			{
 				speed = Abs(physics->RetLinMotionX(MO_REASPEED));
-				if ( speed > 20.0f )  continue;  // avance trop vite ?
+				if ( speed > 20.0f )  continue;  // moving too fast?
 			}
 		}
 
 		if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
 		distance = Length(oPos, iPos);
-		if ( distance > TOWER_SCOPE )  continue;  // trop loin
+		if ( distance > TOWER_SCOPE )  continue;  // too far
 		if ( distance < min )
 		{
 			min = distance;
@@ -331,7 +331,7 @@ CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoTower::RetError()
 {
@@ -345,20 +345,20 @@ Error CAutoTower::RetError()
 	power = m_object->RetPower();
 	if ( power == 0 )
 	{
-		return ERR_TOWER_POWER;  // pas de pile
+		return ERR_TOWER_POWER;  // no battery
 	}
 	else
 	{
 		if ( power->RetEnergy() < ENERGY_FIRE )
 		{
-			return ERR_TOWER_ENERGY;  // plus assez d'�nergie
+			return ERR_TOWER_ENERGY;  // not enough energy
 		}
 	}
 	return ERR_OK;
 }
 
 
-// Met � jour les feux de stop.
+// Updates the stop lights.
 
 void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 {
@@ -375,7 +375,7 @@ void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 		 0.0f,	-4.5f,
 	};
 
-	if ( !bLightOn )  // �teint ?
+	if ( !bLightOn )  // extinguished?
 	{
 		for ( i=0 ; i<4 ; i++ )
 		{
@@ -421,7 +421,7 @@ void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Creates all the interface when the object is selected.
 
 BOOL CAutoTower::CreateInterface(BOOL bSelect)
 {
@@ -462,8 +462,8 @@ BOOL CAutoTower::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface,
-// suite au temps qui s'�coule ...
+// Updates the state of all buttons on the interface,
+// following the time that elapses ...
 
 void CAutoTower::UpdateInterface(float rTime)
 {
@@ -496,7 +496,7 @@ void CAutoTower::UpdateInterface(float rTime)
 }
 
 
-// Sauve tous les param�tres de l'automate.
+// Saves all parameters of the controller.
 
 BOOL CAutoTower::Write(char *line)
 {
@@ -536,7 +536,7 @@ BOOL CAutoTower::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les param�tres de l'automate.
+// Restores all parameters of the controller.
 
 BOOL CAutoTower::Read(char *line)
 {
