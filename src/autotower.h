@@ -32,10 +32,10 @@ enum ObjectType;
 enum AutoTowerPhase
 {
 	ATP_WAIT		= 1,
-	ATP_ZERO		= 2,	// plus d'�nergie
-	ATP_SEARCH		= 3,	// cherche une cible
-	ATP_TURN		= 4,	// tourne vers la cible
-	ATP_FIRE		= 5,	// tire sur la cible
+	ATP_ZERO		= 2,	// more energy
+	ATP_SEARCH		= 3,	// search a target
+	ATP_TURN		= 4,	// turns to the target
+	ATP_FIRE		= 5,	// shoots on the target
 };
 
 
