@@ -38,7 +38,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoRoot::CAutoRoot(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
@@ -48,7 +48,7 @@ CAutoRoot::CAutoRoot(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoRoot::~CAutoRoot()
 {
@@ -56,7 +56,7 @@ CAutoRoot::~CAutoRoot()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoRoot::DeleteObject(BOOL bAll)
 {
@@ -64,7 +64,7 @@ void CAutoRoot::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoRoot::Init()
 {
@@ -76,7 +76,7 @@ void CAutoRoot::Init()
 	m_lastParticule = 0.0f;
 
 	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(-5.0f, 28.0f, -4.0f);  // position pointe
+	pos = D3DVECTOR(-5.0f, 28.0f, -4.0f);  // peak position
 	pos = Transform(*mat, pos);
 	m_center = pos;
 
@@ -89,7 +89,7 @@ void CAutoRoot::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoRoot::EventProcess(const Event &event)
 {
@@ -125,7 +125,7 @@ BOOL CAutoRoot::EventProcess(const Event &event)
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoRoot::RetError()
 {
