@@ -44,7 +44,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CAutoStation::CAutoStation(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
@@ -54,7 +54,7 @@ CAutoStation::CAutoStation(CInstanceManager* iMan, CObject* object)
 	Init();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CAutoStation::~CAutoStation()
 {
@@ -62,7 +62,7 @@ CAutoStation::~CAutoStation()
 }
 
 
-// D�truit l'objet.
+// Destroys the object.
 
 void CAutoStation::DeleteObject(BOOL bAll)
 {
@@ -76,7 +76,7 @@ void CAutoStation::DeleteObject(BOOL bAll)
 }
 
 
-// Initialise l'objet.
+// Initialize the object.
 
 void CAutoStation::Init()
 {
@@ -91,7 +91,7 @@ void CAutoStation::Init()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CAutoStation::EventProcess(const Event &event)
 {
@@ -110,7 +110,7 @@ BOOL CAutoStation::EventProcess(const Event &event)
 
 	m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contamin� par un virus ?
+	if ( m_object->RetVirusMode() )  // contaminated by a virus?
 	{
 		if ( !m_bLastVirus )
 		{
@@ -142,7 +142,7 @@ BOOL CAutoStation::EventProcess(const Event &event)
 	res = m_terrain->RetResource(m_object->RetPosition(0));
 	if ( res == TR_POWER )
 	{
-		big += event.rTime*0.01f;  // recharge la grosse pile
+		big += event.rTime*0.01f;  // recharges the large battery
 	}
 
 	used = big;
@@ -159,10 +159,10 @@ BOOL CAutoStation::EventProcess(const Event &event)
 				add = event.rTime*0.2f;
 				if ( add > big*4.0f )  add = big*4.0f;
 				if ( add > 1.0f-energy )  add = 1.0f-energy;
-				energy += add;  // recharge la pile
+				energy += add;  // Charging the battery
 				power->SetEnergy(energy);
 				if ( energy < freq )  freq = energy;
-				big -= add/4.0f;  // d�charge la grosse pile
+				big -= add/4.0f;  // discharge the large battery
 			}
 
 			power = vehicule->RetFret();
@@ -172,16 +172,16 @@ BOOL CAutoStation::EventProcess(const Event &event)
 				add = event.rTime*0.2f;
 				if ( add > big*4.0f )  add = big*4.0f;
 				if ( add > 1.0f-energy )  add = 1.0f-energy;
-				energy += add;  // recharge la pile
+				energy += add;  // Charging the battery
 				power->SetEnergy(energy);
 				if ( energy < freq )  freq = energy;
-				big -= add/4.0f;  // d�charge la grosse pile
+				big -= add/4.0f;  // discharge the large battery
 			}
 		}
 	}
-	used -= big;  // �nergie utilis�e
+	used -= big;  // energy used
 
-	if ( freq < 1.0f )  // charge en cours ?
+	if ( freq < 1.0f )  // charging in progress?
 	{
 		freq = 1.0f+3.0f*freq;
 		if ( m_soundChannel == -1 )
@@ -206,7 +206,7 @@ BOOL CAutoStation::EventProcess(const Event &event)
 		m_lastParticule = m_time;
 
 		mat = m_object->RetWorldMatrix(0);
-		pos = D3DVECTOR(-15.0f, 7.0f, 0.0f);  // position batterie
+		pos = D3DVECTOR(-15.0f, 7.0f, 0.0f);  // battery position
 		pos = Transform(*mat, pos);
 		speed.x = (Rand()-0.5f)*20.0f;
 		speed.y = (Rand()-0.5f)*20.0f;
@@ -245,13 +245,13 @@ BOOL CAutoStation::EventProcess(const Event &event)
 
 	if ( big < 0.0f )  big = 0.0f;
 	if ( big > 1.0f )  big = 1.0f;
-	m_object->SetEnergy(big);  // m�j la grosse pile
+	m_object->SetEnergy(big);  // Shift the large battery
 
 	return TRUE;
 }
 
 
-// Cherche le v�hicule plac� sur la station.
+// Seeking the vehicle on the station.
 
 CObject* CAutoStation::SearchVehicle()
 {
@@ -306,7 +306,7 @@ CObject* CAutoStation::SearchVehicle()
 }
 
 
-// Retourne une erreur li�e � l'�tat de l'automate.
+// Returns an error due the state of the automation.
 
 Error CAutoStation::RetError()
 {
@@ -324,7 +324,7 @@ Error CAutoStation::RetError()
 }
 
 
-// Cr�e toute l'interface lorsque l'objet est s�lectionn�.
+// Crée toute l'interface lorsque l'objet est sélectionné .
 
 BOOL CAutoStation::CreateInterface(BOOL bSelect)
 {
@@ -359,8 +359,8 @@ BOOL CAutoStation::CreateInterface(BOOL bSelect)
 	return TRUE;
 }
 
-// Met � jour l'�tat de tous les boutons de l'interface,
-// suite au temps qui s'�coule ...
+// Updates the state of all buttons on the interface,
+// following the time that elapses ...
 
 void CAutoStation::UpdateInterface(float rTime)
 {
