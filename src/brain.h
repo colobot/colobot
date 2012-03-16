@@ -49,11 +49,11 @@ enum TaskShieldMode;
 
 enum TraceOper
 {
-	TO_STOP			= 0,	// arr�t
-	TO_ADVANCE		= 1,	// avance
-	TO_RECEDE		= 2,	// recule
-	TO_TURN			= 3,	// tourne
-	TO_PEN			= 4,	// changement de couleur
+	TO_STOP			= 0,	// stop
+	TO_ADVANCE		= 1,	// advance
+	TO_RECEDE		= 2,	// back
+	TO_TURN			= 3,	// rotate
+	TO_PEN			= 4,	// color change
 };
 
 typedef struct
@@ -173,8 +173,8 @@ protected:
 	CTaskManager*	m_secondaryTask;
 
 	CScript*	m_script[BRAINMAXSCRIPT];
-	int			m_selScript;		// rang du script s�lectionn�
-	int			m_program;			// rang du programme ex�cut� / -1
+	int			m_selScript;		// rank of the selected script
+	int			m_program;		// rank of the executed program / ​​-1
 	BOOL		m_bActivity;
 	BOOL		m_bBurn;
 	BOOL		m_bActiveVirus;
