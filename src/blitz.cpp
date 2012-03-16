@@ -39,7 +39,7 @@
 
 
 
-// Constructeur du terrain.
+// Constructor of the terrain.
 
 CBlitz::CBlitz(CInstanceManager* iMan, CD3DEngine* engine)
 {
@@ -53,14 +53,14 @@ CBlitz::CBlitz(CInstanceManager* iMan, CD3DEngine* engine)
 	Flush();
 }
 
-// Destructeur du terrain.
+// Destructor of the terrain.
 
 CBlitz::~CBlitz()
 {
 }
 
 
-// Supprime les �clairs.
+// Removes lightning.
 
 void CBlitz::Flush()
 {
@@ -80,7 +80,7 @@ void CBlitz::Flush()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event
 
 BOOL CBlitz::EventProcess(const Event &event)
 {
@@ -91,7 +91,7 @@ BOOL CBlitz::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait �voluer les �clairs.
+// Evolved lightning.
 
 BOOL CBlitz::EventFrame(const Event &event)
 {
@@ -134,7 +134,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 				type = pObj->RetType();
 				if ( type == OBJECT_BASE )
 				{
-					m_pos.y += 120.0f;  // sommet de la fus�e
+					m_pos.y += 120.0f;  // top of the rocket
 				}
 				else if ( type == OBJECT_PARA )
 				{
@@ -143,7 +143,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 					{
 						automat->StartBlitz();
 					}
-					m_pos.y += 67.0f;  // sommet du paratonnerre
+					m_pos.y += 67.0f;  // top of lightning rod
 				}
 				else
 				{
@@ -157,7 +157,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 
 			if ( dist < deep )
 			{
-				pos = eye+((m_pos-eye)*0.2f);  // comme si proche !
+				pos = eye+((m_pos-eye)*0.2f);  // like so close!
 				m_sound->Play(SOUND_BLITZ, pos);
 
 				m_camera->StartOver(OE_BLITZ, m_pos, 1.0f);
@@ -206,7 +206,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 }
 
 
-// Dessine les �clairs.
+// Draw lightning.
 
 void CBlitz::Draw()
 {
@@ -232,7 +232,7 @@ void CBlitz::Draw()
 	texInf.x = 64.5f/256.0f;
 	texInf.y = 33.0f/256.0f;
 	texSup.x = 95.5f/256.0f;
-	texSup.y = 34.0f/256.0f;  // blanc
+	texSup.y = 34.0f/256.0f;  // blank
 
 	p1 = m_pos;
 	eye = m_engine->RetEyePt();
@@ -291,7 +291,7 @@ void CBlitz::Draw()
 }
 
 
-// Enclanche les �clairs.
+// Triggers lightning.
 
 BOOL CBlitz::Create(float sleep, float delay, float magnetic)
 {
@@ -324,7 +324,7 @@ BOOL CBlitz::Create(float sleep, float delay, float magnetic)
 }
 
 
-// Donne l'�tat des �clairs.
+// Gives the status of lightning.
 
 BOOL CBlitz::GetStatus(float &sleep, float &delay, float &magnetic, float &progress)
 {
@@ -338,7 +338,7 @@ BOOL CBlitz::GetStatus(float &sleep, float &delay, float &magnetic, float &progr
 	return TRUE;
 }
 
-// Sp�cifie l'�tat des �clairs.
+// Specifies the status of lightning.
 
 BOOL CBlitz::SetStatus(float sleep, float delay, float magnetic, float progress)
 {
@@ -355,7 +355,7 @@ BOOL CBlitz::SetStatus(float sleep, float delay, float magnetic, float progress)
 }
 
 
-// Cherche l'objet le plus proche de l'�clair.
+// Seeking the object closest to the lightning.
 
 CObject* CBlitz::SearchObject(D3DVECTOR pos)
 {
@@ -365,7 +365,7 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 	float		min, dist, detect;
 	int			i, nbPara;
 
-	// Cherche l'objet le plus proche du point d'impact de la foudre.
+	// Seeking the object closest to the point of impact of lightning.
 	pBest = 0;
 	min = 100000.0f;
 	nbPara = 0;
@@ -374,12 +374,12 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( !pObj->RetActif() )  continue;  // objet inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transport� ?
+		if ( !pObj->RetActif() )  continue;  // inactive object?
+		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 
 		type = pObj->RetType();
 		if ( type == OBJECT_BASE ||
-			 type == OBJECT_PARA )  // b�timent � effet paratonnerre ?
+			 type == OBJECT_PARA )  // building a lightning effect?
 		{
 			pObjPara[nbPara] = pObj;
 			pPos[nbPara] = pObj->RetPosition(0);
@@ -453,9 +453,9 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 			pBest = pObj;
 		}
 	}
-	if ( pBest == 0 )  return 0;  // rien trouv�
+	if ( pBest == 0 )  return 0;  // nothing found
 
-	// Sous la protection d'un paratonnerre ?
+	// Under the protection of a lightning conductor?
 	oPos = pBest->RetPosition(0);
 	for ( i=nbPara-1 ; i>=0 ; i-- )
 	{
