@@ -38,7 +38,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CButton::CButton(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -50,7 +50,7 @@ CButton::CButton(CInstanceManager* iMan) : CControl(iMan)
 	m_repeat = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CButton::~CButton()
 {
@@ -58,7 +58,7 @@ CButton::~CButton()
 }
 
 
-// Cr�e un nouveau bouton.
+// Creates a new button.
 
 BOOL CButton::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -81,7 +81,7 @@ BOOL CButton::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CButton::EventProcess(const Event &event)
 {
@@ -150,7 +150,7 @@ BOOL CButton::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draw button.
 
 void CButton::Draw()
 {
@@ -161,7 +161,7 @@ void CButton::Draw()
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-	if ( m_state & STATE_WARNING )  // hachures jaunes-noires ?
+	if ( m_state & STATE_WARNING )  // shading yellow-black?
 	{
 		pos.x = m_pos.x-( 8.0f/640.0f);
 		pos.y = m_pos.y-( 4.0f/480.0f);
@@ -182,7 +182,7 @@ void CButton::Draw()
 	CControl::Draw();
 
 #if !_NEWLOOK
-	if ( m_name[0] != 0                &&  // bouton avec nom ?
+	if ( m_name[0] != 0                &&  // button with the name?
 		 (m_state & STATE_CARD  ) == 0 &&
 		 (m_state & STATE_SIMPLY) == 0 )
 	{
@@ -222,8 +222,8 @@ void CButton::Draw()
 }
 
 
-// Gestion du mode imm�diat, qui envoie l'�v�nement "press�"
-// avant que le bouton de la souris soit rel�ch�.
+// Management of immediate mode, which sends the event "press"
+// before the mouse button is released.
 
 void CButton::SetImmediat(BOOL bImmediat)
 {
@@ -236,8 +236,8 @@ BOOL CButton::RetImmediat()
 }
 
 
-// Gestion du mode "r�p�tition automatique", lorsque le bouton
-// de la souris est maintenu press�.
+// Mode management "autorepeat", when the button
+// mouse is held down.
 
 void CButton::SetRepeat(BOOL bRepeat)
 {
