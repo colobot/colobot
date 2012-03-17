@@ -26,7 +26,7 @@ enum CameraType;
 
 
 
-// Proc�dures.
+// Procedures.
 
 extern BOOL Cmd(char *line, char *token);
 extern char* SearchOp(char *line, char *op);
