@@ -32,7 +32,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CCompass::CCompass(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -41,7 +41,7 @@ CCompass::CCompass(CInstanceManager* iMan) : CControl(iMan)
 	m_dir = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CCompass::~CCompass()
 {
@@ -49,7 +49,7 @@ CCompass::~CCompass()
 }
 
 
-// Cr�e un nouveau bouton.
+// Creates a new button.
 
 BOOL CCompass::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -60,7 +60,7 @@ BOOL CCompass::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CCompass::EventProcess(const Event &event)
 {
@@ -81,7 +81,7 @@ BOOL CCompass::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draw button.
 
 void CCompass::Draw()
 {
@@ -104,7 +104,7 @@ void CCompass::Draw()
 	p2.y = m_pos.y + m_dim.y;
 
 	c.x = (p1.x+p2.x)/2.0f;
-	c.y = (p1.y+p2.y)/2.0f;  // centre
+	c.y = (p1.y+p2.y)/2.0f;  // center
 
 	uv1.x = 64.0f/256.0f;
 	uv1.y = 32.0f/256.0f;
@@ -117,7 +117,7 @@ void CCompass::Draw()
 	uv2.x -= dp;
 	uv2.y -= dp;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
@@ -164,7 +164,7 @@ void CCompass::Draw()
 }
 
 
-// Gestion des directions de la boussole.
+// Management directions of the compass.
 
 void CCompass::SetDirection(float dir)
 {
