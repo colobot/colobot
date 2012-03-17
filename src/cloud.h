@@ -28,8 +28,8 @@ class CTerrain;
 
 typedef struct
 {
-	short		x, y;		// d�but
-	short		len;		// longueur en x
+	short		x, y;		// beginning
+	short		len;		// in length x
 	float		px1, px2, pz;
 }
 CloudLine;
@@ -59,23 +59,23 @@ protected:
 
 protected:
 	CInstanceManager*	m_iMan;
-	CD3DEngine*			m_engine;
-	CTerrain*			m_terrain;
+	CD3DEngine*		m_engine;
+	CTerrain*		m_terrain;
 
 	char			m_filename[100];
-	float			m_level;		// niveau global
-	FPOINT			m_speed;		// vitesse d'avance (vent)
-	D3DCOLORVALUE	m_diffuse;		// couleur diffuse
-	D3DCOLORVALUE	m_ambient;		// couleur ambiante
+	float			m_level;		// overall level
+	FPOINT			m_speed;		// feedrate (wind)
+	D3DCOLORVALUE		m_diffuse;		// diffuse color
+	D3DCOLORVALUE		m_ambient;		// ambient color
 	float			m_time;
 	float			m_lastTest;
 	int				m_subdiv;
 
-	D3DVECTOR		m_wind;			// vitesse du vent
-	int				m_brick;		// nb de briques*mosa�que
-	float			m_size;			// taille d'un �l�ment dans une brique
+	D3DVECTOR		m_wind;			// wind speed
+	int			m_brick;		// brick mosaic
+	float			m_size;			// size of a brick element
 
-	int				m_lineUsed;
+	int			m_lineUsed;
 	CloudLine		m_line[MAXCLOUDLINE];
 
 	BOOL			m_bEnable;
