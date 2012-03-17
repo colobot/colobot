@@ -39,7 +39,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CControl::CControl(CInstanceManager* iMan)
 {
@@ -68,14 +68,14 @@ CControl::CControl(CInstanceManager* iMan)
 	m_glintMouse    = FPOINT(0.0f, 0.0f);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CControl::~CControl()
 {
 }
 
 
-// Cr�e un nouveau bouton.
+// Creates a new button.
 //	pos: [0..1]
 
 BOOL CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
@@ -105,7 +105,7 @@ BOOL CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	}
 	else
 	{
-		strcpy(m_tooltip, p+1);  // texte apr�s "\\"
+		strcpy(m_tooltip, p+1);  // text after "\\"
 	}
 
 	return TRUE;
@@ -143,7 +143,7 @@ FPOINT CControl::RetDim()
 }
 
 
-// Modifie un attribut d'�tat.
+// Modify an attribute of state.
 
 BOOL CControl::SetState(int state, BOOL bState)
 {
@@ -152,7 +152,7 @@ BOOL CControl::SetState(int state, BOOL bState)
 	return TRUE;
 }
 
-// Met un attribut d'�tat.
+// Sets an attribute of state.
 
 BOOL CControl::SetState(int state)
 {
@@ -160,7 +160,7 @@ BOOL CControl::SetState(int state)
 	return TRUE;
 }
 
-// Enl�ve un attribut d'�tat.
+// Removes an attribute of state.
 
 BOOL CControl::ClearState(int state)
 {
@@ -168,14 +168,14 @@ BOOL CControl::ClearState(int state)
 	return TRUE;
 }
 
-// Teste un attribut d'�tat.
+// Tests an attribute of state.
 
 BOOL CControl::TestState(int state)
 {
 	return (m_state & state) ? TRUE:FALSE;
 }
 
-// Retourne tous les attributs d'�tat.
+// Returns all attributes of state.
 
 int CControl::RetState()
 {
@@ -183,7 +183,7 @@ int CControl::RetState()
 }
 
 
-// Gestion de l'ic�ne.
+// Management icon.
 
 void CControl::SetIcon(int icon)
 {
@@ -196,7 +196,7 @@ int CControl::RetIcon()
 }
 
 
-// Gestion du nom du bouton.
+// Management of the button name.
 
 void CControl::SetName(char* name, BOOL bTooltip)
 {
@@ -214,7 +214,7 @@ void CControl::SetName(char* name, BOOL bTooltip)
 		{
 			char	buffer[100];
 
-			strncpy(m_tooltip, p+1, 100);  // texte apr�s "\\"
+			strncpy(m_tooltip, p+1, 100);  // text after "\\"
 			m_tooltip[100-1] = 0;
 
 			strncpy(buffer, name, 100);
@@ -238,7 +238,7 @@ char* CControl::RetName()
 }
 
 
-// Gestion du mode de justification (-1,0,1).
+// Management of the mode of justification (-1,0,1).
 
 void CControl::SetJustif(int mode)
 {
@@ -251,7 +251,7 @@ int CControl::RetJustif()
 }
 
 
-// Gestion de la taille de la fonte.
+// Management of the size of the font.
 
 void CControl::SetFontSize(float size)
 {
@@ -264,7 +264,7 @@ float CControl::RetFontSize()
 }
 
 
-// Gestion du stretch de la fonte.
+// Management of the stretch of font.
 
 void CControl::SetFontStretch(float stretch)
 {
@@ -277,7 +277,7 @@ float CControl::RetFontStretch()
 }
 
 
-// Choix de la fonte.
+// Choice of the font.
 
 void CControl::SetFontType(FontType font)
 {
@@ -290,7 +290,7 @@ FontType CControl::RetFontType()
 }
 
 
-// Sp�cifie le tooltip.
+// Specifies the tooltip.
 
 BOOL CControl::SetTooltip(char* name)
 {
@@ -311,7 +311,7 @@ BOOL CControl::GetTooltip(FPOINT pos, char* name)
 }
 
 
-// Gestion de qui a la focus.
+// Management of the focus.
 
 void CControl::SetFocus(BOOL bFocus)
 {
@@ -324,7 +324,7 @@ BOOL CControl::RetFocus()
 }
 
 
-// Retourne l'�v�nement associ� au contr�le.
+// Returns the event associated with the control.
 
 EventMsg CControl::RetEventMsg()
 {
@@ -332,7 +332,7 @@ EventMsg CControl::RetEventMsg()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CControl::EventProcess(const Event &event)
 {
@@ -393,14 +393,14 @@ BOOL CControl::EventProcess(const Event &event)
 }
 
 
-// Supprime le reflet.
+// Removes the reflection.
 
 void CControl::GlintDelete()
 {
 	m_bGlint = FALSE;
 }
 
-// Cr�e un reflet pour ce bouton.
+// Creates a reflection for that button.
 
 void CControl::GlintCreate(FPOINT ref, BOOL bLeft, BOOL bUp)
 {
@@ -437,7 +437,7 @@ void CControl::GlintCreate(FPOINT ref, BOOL bLeft, BOOL bUp)
 	m_bGlint = TRUE;
 }
 
-// Gestion du reflet.
+// Management of reflection.
 
 void CControl::GlintFrame(const Event &event)
 {
@@ -468,7 +468,7 @@ void CControl::GlintFrame(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draw button.
 
 void CControl::Draw()
 {
@@ -533,10 +533,10 @@ void CControl::Draw()
 	if ( m_state & STATE_OKAY )
 	{
 		m_engine->SetTexture("button3.tga");
-		icon = 3;  // jaune press� avec point vert
+		icon = 3;  // yellow with green point pressed
 	}
 
-	if ( m_name[0] == 0 )  // bouton sans nom ?
+	if ( m_name[0] == 0 )  // button without name?
 	{
 //?		DrawPart(icon, zoomExt, 0.0f);
 		DrawPart(icon, zoomExt, 8.0f/256.0f);
@@ -575,7 +575,7 @@ void CControl::Draw()
 			DrawPart(icon, zoomInt, 0.0f);
 		}
 	}
-	else	// bouton avec nom ?
+	else	// button with the name?
 	{
 		DrawPart(icon, 1.0f, 8.0f/256.0f);
 
@@ -605,7 +605,7 @@ void CControl::Draw()
 	}
 }
 
-// Dessine le tableau des vertex.
+// Draw the vertex array.
 
 void CControl::DrawPart(int icon, float zoom, float ex)
 {
@@ -620,11 +620,11 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 	if ( (m_state & STATE_CARD ) &&
 		 (m_state & STATE_CHECK) )
 	{
-		p2.y += (2.0f/480.0f);  // un poil plus haut
+		p2.y += (2.0f/480.0f);  // a bit above
 	}
 
 	c.x = (p1.x+p2.x)/2.0f;
-	c.y = (p1.y+p2.y)/2.0f;  // centre
+	c.y = (p1.y+p2.y)/2.0f;  // center
 
 	p1.x = (p1.x-c.x)*zoom + c.x;
 	p1.y = (p1.y-c.y)*zoom + c.y;
@@ -648,8 +648,8 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 	DrawIcon(p1, p2, uv1, uv2, ex);
 }
 
-// Dessine une ic�ne rectangulaire compos�e de 1 (si ex=0)
-// ou 3 morceaux.
+// Draws an icon made up of a rectangular (if x = 0)
+// or 3 pieces.
 
 void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 						float ex)
@@ -666,9 +666,9 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	p2.x = pos.x + dim.x;
 	p2.y = pos.y + dim.y;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
-	if ( ex == 0.0f )  // un seul morceau ?
+	if ( ex == 0.0f )  // one piece?
 	{
 		vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
 		vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
@@ -678,7 +678,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 		device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 		m_engine->AddStatisticTriangle(2);
 	}
-	else	// 3 morceaux ?
+	else	// 3 pieces?
 	{
 		if ( dim.x >= dim.y )
 		{
@@ -717,7 +717,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	}
 }
 
-// Dessine une ic�ne rectangulaire compos�e de 9 morceaux.
+// Draws a rectangular icon made up of 9 pieces.
 
 void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 						FPOINT corner, float ex)
@@ -734,7 +734,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	p2.x = pos.x + dim.x;
 	p2.y = pos.y + dim.y;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
 	if ( corner.x > dim.x/2.0f )  corner.x = dim.x/2.0f;
 	if ( corner.y > dim.y/2.0f )  corner.y = dim.y/2.0f;
@@ -748,7 +748,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	p4.x = p2.x - corner.x;
 	p4.y = p2.y - corner.y;
 
-	// Bande horizontale inf�rieure.
+	// Bottom horizontal band.
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,   uv2.y   );
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
 	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p1.y, 0.0f), n, uv1.x+ex,uv2.y   );
@@ -760,7 +760,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 	m_engine->AddStatisticTriangle(6);
 
-	// Bande horizontale m�diane.
+	// Central horizontal band.
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
 	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv1.x+ex,uv2.y-ex);
@@ -772,7 +772,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 	m_engine->AddStatisticTriangle(6);
 
-	// Bande horizontale sup�rieure.
+	// Top horizontal band.
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,   uv1.y   );
 	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p4.y, 0.0f), n, uv1.x+ex,uv1.y+ex);
@@ -785,7 +785,7 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 	m_engine->AddStatisticTriangle(6);
 }
 
-// Dessine les hachures autour d'un bouton.
+// Draw round the hatch of a button.
 
 void CControl::DrawWarning(FPOINT pos, FPOINT dim)
 {
@@ -829,7 +829,7 @@ void CControl::DrawWarning(FPOINT pos, FPOINT dim)
 	}
 }
 
-// Dessine l'ombre sous un bouton.
+// Draw the shade under a button.
 
 void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
 {
@@ -863,7 +863,7 @@ void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
 }
 
 
-// D�tecte si une position est dans le bouton.
+// Detects whether a position is in the button.
 
 BOOL CControl::Detect(FPOINT pos)
 {
