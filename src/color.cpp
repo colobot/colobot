@@ -38,7 +38,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CColor::CColor(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -53,7 +53,7 @@ CColor::CColor(CInstanceManager* iMan) : CControl(iMan)
 	m_color.a = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CColor::~CColor()
 {
@@ -61,7 +61,7 @@ CColor::~CColor()
 }
 
 
-// Cr�e un nouveau bouton.
+// Creates a new button.
 
 BOOL CColor::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -84,7 +84,7 @@ BOOL CColor::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CColor::EventProcess(const Event &event)
 {
@@ -156,7 +156,7 @@ void CColor::Draw()
 #if _TEEN
 	color = ::RetColor(m_color);
 
-	m_engine->SetTexture("xxx.tga");  // pas de texture
+	m_engine->SetTexture("xxx.tga");  // no texture
 	m_engine->SetState(D3DSTATENORMAL);
 
 	device = m_engine->RetD3DDevice();
@@ -190,7 +190,7 @@ void CColor::Draw()
 
 	color = ::RetColor(m_color);
 
-	m_engine->SetTexture("xxx.tga");  // pas de texture
+	m_engine->SetTexture("xxx.tga");  // no texture
 	m_engine->SetState(D3DSTATENORMAL);
 
 	vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
