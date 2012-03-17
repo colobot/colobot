@@ -34,11 +34,11 @@
 
 
 
-#define DIMEXPAND	4		// extension des dimensions
+#define DIMEXPAND	4		// extension of the dimensions
 
 
 
-// Constructeur des nuages.
+// Constructor of clouds.
 
 CCloud::CCloud(CInstanceManager* iMan, CD3DEngine* engine)
 {
@@ -55,7 +55,7 @@ CCloud::CCloud(CInstanceManager* iMan, CD3DEngine* engine)
 	m_bEnable = TRUE;
 }
 
-// Destructeur des nuages.
+// Destructor of clouds.
 
 CCloud::~CCloud()
 {
@@ -72,7 +72,7 @@ BOOL CCloud::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait �voluer les nuages.
+// Makes the clouds evolve.
 
 BOOL CCloud::EventFrame(const Event &event)
 {
@@ -89,8 +89,8 @@ BOOL CCloud::EventFrame(const Event &event)
 }
 
 
-// Ajuste la position et la normale, pour imiter des nuages
-// en mouvement.
+// Adjusts the position to normal, to imitate the clouds
+// at movement.
 
 void CCloud::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep,
 						 FPOINT &uv1, FPOINT &uv2)
@@ -115,7 +115,7 @@ inline DWORD F2DW( FLOAT f )
 	return *((DWORD*)&f);
 }
 
-// Dessine les nuages.
+// Draw the clouds.
 
 void CCloud::Draw()
 {
@@ -139,7 +139,7 @@ void CCloud::Draw()
 	deep = (m_brick*m_size)/2.0f;
 	m_engine->SetDeepView(deep);
 	m_engine->SetFocus(m_engine->RetFocus());
-	m_engine->UpdateMatProj();  // augmente la profondeur de vue
+	m_engine->UpdateMatProj();  // increases the depth of view
 
 //?	fogStart = deep*0.10f;
 //?	fogEnd   = deep*0.16f;
@@ -177,7 +177,7 @@ void CCloud::Draw()
 	eye = m_engine->RetEyePt();
 	n = D3DVECTOR(0.0f, -1.0f, 0.0f);
 
-	// Dessine toutes les lignes.
+	// Draws all the lines.
 	for ( i=0 ; i<m_lineUsed ; i++ )
 	{
 		pos.y = m_level;
@@ -220,13 +220,13 @@ void CCloud::Draw()
 
 	m_engine->SetDeepView(iDeep);
 	m_engine->SetFocus(m_engine->RetFocus());
-	m_engine->UpdateMatProj();  // remet profondeur de vue initiale
+	m_engine->UpdateMatProj();  // gives depth to initial
 
 	free(vertex);
 }
 
 
-// Met � jour les positions par-rapport au terrain.
+// Updates the positions, relative to the ground.
 
 BOOL CCloud::CreateLine(int x, int y, int len)
 {
@@ -247,7 +247,7 @@ BOOL CCloud::CreateLine(int x, int y, int len)
 	return ( m_lineUsed < MAXCLOUDLINE );
 }
 
-// Cr�e toutes les �tendues de nuages.
+// Creates all areas of cloud.
 
 BOOL CCloud::Create(const char *filename,
 					D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,
@@ -291,7 +291,7 @@ BOOL CCloud::Create(const char *filename,
 	return TRUE;
 }
 
-// Supprime tous les nuages.
+// Removes all the clouds.
 
 void CCloud::Flush()
 {
@@ -299,7 +299,7 @@ void CCloud::Flush()
 }
 
 
-// Modifie le niveau des nuages.
+// Modifies the cloud level.
 
 BOOL CCloud::SetLevel(float level)
 {
@@ -309,7 +309,7 @@ BOOL CCloud::SetLevel(float level)
 				  m_level);
 }
 
-// Retourne le niveau actuel des nuages.
+// Returns the current level of clouds.
 
 float CCloud::RetLevel()
 {
@@ -317,7 +317,7 @@ float CCloud::RetLevel()
 }
 
 
-// Gestion de l'activation des nuages.
+// Activate management of clouds.
 
 void CCloud::SetEnable(BOOL bEnable)
 {
