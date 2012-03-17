@@ -38,7 +38,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CCamera::CCamera(CInstanceManager* iMan)
 {
@@ -128,7 +128,7 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_bCameraInvertY = FALSE;
 }
 
-// Destructeur de l'objet.
+// Object's constructor.
 
 CCamera::~CCamera()
 {
@@ -156,7 +156,7 @@ void CCamera::SetCameraInvertY(BOOL bInvert)
 }
 
 
-// Retourne une force additionnelle pour tourner.
+// Returns an additional force to turn.
 
 float CCamera::RetMotorTurn()
 {
@@ -166,7 +166,7 @@ float CCamera::RetMotorTurn()
 
 
 
-// Initialise la cam�ra.
+// Initializes the camera.
 
 void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
 {
@@ -209,7 +209,7 @@ void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
 }
 
 
-// Donne l'objet pilotant la cam�ra.
+// Gives the object controlling the camera.
 
 void CCamera::SetObject(CObject* object)
 {
@@ -222,8 +222,8 @@ CObject* CCamera::RetObject()
 }
 
 
-// Modifie le niveau de transparence d'un objet et des objets
-// transport�s (pile & fret).
+// Changes the level of transparency of an object and objects
+// transported (battery & cargo).
 
 void SetTransparency(CObject* pObj, float value)
 {
@@ -244,7 +244,7 @@ void SetTransparency(CObject* pObj, float value)
 	}
 }
 
-// Modifie le type de la cam�ra.
+// Change the type of camera.
 
 void CCamera::SetType(CameraType type)
 {
@@ -263,9 +263,9 @@ void CCamera::SetType(CameraType type)
 			pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 			if ( pObj == 0 )  break;
 
-			if ( pObj->RetTruck() )  continue;  // pile ou fret?
+			if ( pObj->RetTruck() )  continue;  // battery or cargo?
 
-			SetTransparency(pObj, 0.0f);  // objet opaque
+			SetTransparency(pObj, 0.0f);  // opaque object
 		}
 	}
 	m_bTransparency = FALSE;
@@ -284,7 +284,7 @@ void CCamera::SetType(CameraType type)
 	if ( m_type == CAMERA_INFO  ||
 		 m_type == CAMERA_VISIT )  // info -> xx ?
 	{
-		m_engine->SetFocus(m_focus);  // remet focus initial
+		m_engine->SetFocus(m_focus);  // gives initial focus
 		m_type = type;
 
 		vUpVec = D3DVECTOR(0.0f, 1.0f, 0.0f);
@@ -325,7 +325,7 @@ void CCamera::SetType(CameraType type)
 	if ( type == CAMERA_FIX   ||
 		 type == CAMERA_PLANE )
 	{
-		AbortCentering();  // stoppe cadrage sp�cial
+		AbortCentering();  // Special stops framing
 	}
 
 	m_fixDist = 50.0f;
@@ -336,7 +336,7 @@ void CCamera::SetType(CameraType type)
 
 	if ( type == CAMERA_BACK )
 	{
-		AbortCentering();  // stoppe cadrage sp�cial
+		AbortCentering();  // Special stops framing
 		m_addDirectionH = 0.0f;
 		m_addDirectionV = -PI*0.05f;
 
@@ -371,12 +371,12 @@ void CCamera::SetType(CameraType type)
 
 	if ( type != CAMERA_ONBOARD && m_cameraObj != 0 )
 	{
-		m_cameraObj->SetGunGoalH(0.0f);  // met le canon droit
+		m_cameraObj->SetGunGoalH(0.0f);  // puts the cannon right
 	}
 
 	if ( type == CAMERA_ONBOARD )
 	{
-		m_focus = 1.50f;  // grand-angle
+		m_focus = 1.50f;  // Wide
 	}
 	else
 	{
@@ -395,7 +395,7 @@ CameraType CCamera::RetType()
 }
 
 
-// Gestion du mode de lissage.
+// Management of the smoothing mode.
 
 void CCamera::SetSmooth(CameraSmooth type)
 {
@@ -408,7 +408,7 @@ CameraSmooth CCamera::RetSmoth()
 }
 
 
-// Gestion de la distance de recul.
+// Management of the setback distance.
 
 void CCamera::SetDist(float dist)
 {
@@ -421,7 +421,7 @@ float CCamera::RetDist()
 }
 
 
-// Gestion de l'angle en mode CAMERA_FIX.
+// Manage angle mode CAMERA_FIX.
 
 void CCamera::SetFixDirection(float angle)
 {
@@ -434,7 +434,7 @@ float CCamera::RetFixDirection()
 }
 
 
-// Gestion de la t�l�commande panoramique de la cam�ra.
+// Managing the triggering mode of the camera panning.
 
 void CCamera::SetRemotePan(float value)
 {
@@ -446,7 +446,7 @@ float CCamera::RetRemotePan()
 	return m_remotePan;
 }
 
-// Gestion de la t�l�commande zoom (0..1) de la cam�ra.
+// Management of the remote zoom (0 .. 1) of the camera.
 
 void CCamera::SetRemoteZoom(float value)
 {
@@ -481,7 +481,7 @@ float CCamera::RetRemoteZoom()
 
 
 
-// D�but d'une visite circulaire avec la cam�ra.
+// Start with a tour round the camera.
 
 void CCamera::StartVisit(D3DVECTOR goal, float dist)
 {
@@ -494,15 +494,15 @@ void CCamera::StartVisit(D3DVECTOR goal, float dist)
 	m_visitDirectionV = -PI*0.10f;
 }
 
-// Fin d'une visite circulaire avec la cam�ra.
+// Circular end of a visit with the camera.
 
 void CCamera::StopVisit()
 {
-	SetType(m_visitType);  // remet le type initial
+	SetType(m_visitType);  // presents the initial type
 }
 
 
-// Retourne le point de vue de la cam�ra.
+// Returns the point of view of the camera.
 
 void CCamera::RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat)
 {
@@ -511,7 +511,7 @@ void CCamera::RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat)
 }
 
 
-// Sp�cifie un mouvement sp�cial de cam�ra pour cadrer une action.
+// Specifies a special movement of camera to frame action.
 
 BOOL CCamera::StartCentering(CObject *object, float angleH, float angleV,
 							 float dist, float time)
@@ -538,7 +538,7 @@ BOOL CCamera::StartCentering(CObject *object, float angleH, float angleV,
 	return TRUE;
 }
 
-// Termine un mouvement sp�cial de cam�ra pour cadrer une action.
+// Ends a special movement of camera to frame action.
 
 BOOL CCamera::StopCentering(CObject *object, float time)
 {
@@ -565,7 +565,7 @@ BOOL CCamera::StopCentering(CObject *object, float time)
 	return TRUE;
 }
 
-// Stoppe le cadrage sp�cial dans la position actuelle.
+// Stop framing special in the current position.
 
 void CCamera::AbortCentering()
 {
@@ -588,7 +588,7 @@ void CCamera::AbortCentering()
 
 
 
-// Supprime l'effet sp�cial avec la cam�ra.
+// Removes the special effect with the camera
 
 void CCamera::FlushEffect()
 {
@@ -598,7 +598,7 @@ void CCamera::FlushEffect()
 	m_effectOffset   = D3DVECTOR(0.0f, 0.0f, 0.0f);
 }
 
-// D�marre un effet sp�cial avec la cam�ra.
+// Starts a special effect with the camera.
 
 void CCamera::StartEffect(CameraEffect effect, D3DVECTOR pos, float force)
 {
@@ -610,7 +610,7 @@ void CCamera::StartEffect(CameraEffect effect, D3DVECTOR pos, float force)
 	m_effectProgress = 0.0f;
 }
 
-// Fait progresser l'effet de la cam�ra.
+// Advances the effect of the camera.
 
 void CCamera::EffectFrame(const Event &event)
 {
@@ -694,26 +694,26 @@ void CCamera::EffectFrame(const Event &event)
 }
 
 
-// Supprime l'effet de superposition au premier plan.
+// Removes the effect of superposition in the foreground.
 
 void CCamera::FlushOver()
 {
 	m_overType = OE_NULL;
-	m_overColorBase.r = 0.0f;  // noir
+	m_overColorBase.r = 0.0f;  // black
 	m_overColorBase.g = 0.0f;
 	m_overColorBase.b = 0.0f;
 	m_overColorBase.a = 0.0f;
-	m_engine->SetOverColor();  // rien
+	m_engine->SetOverColor();  // nothing
 }
 
-// Sp�cifie la couleur de base.
+// Specifies the base color.
 
 void CCamera::SetOverBaseColor(D3DCOLORVALUE color)
 {
 	m_overColorBase = color;
 }
 
-// D�marre un effet de superposition au premier plan.
+// Starts a layering effect in the foreground.
 
 void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 {
@@ -736,7 +736,7 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 	{
 		m_overColor.r = 0.8f;
 		m_overColor.g = 0.1f;
-		m_overColor.b = 0.1f;  // rouge
+		m_overColor.b = 0.1f;  // red
 		m_overMode    = D3DSTATETCb;
 
 		m_overFadeIn  = 0.4f;
@@ -748,7 +748,7 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 	{
 		m_overColor.r = 1.0f;
 		m_overColor.g = 1.0f;
-		m_overColor.b = 1.0f;  // blanc
+		m_overColor.b = 1.0f;  // white
 		m_overMode    = D3DSTATETCb;
 
 		m_overFadeIn  = 0.0f;
@@ -760,7 +760,7 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 	{
 		m_overColor.r = 1.0f;
 		m_overColor.g = 1.0f;
-		m_overColor.b = 1.0f;  // blanc
+		m_overColor.b = 1.0f;  // white
 		m_overMode    = D3DSTATETCb;
 
 		m_overFadeIn  = 6.0f;
@@ -770,7 +770,7 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 
 	if ( m_overType == OE_FADEOUTb )
 	{
-		color = m_engine->RetFogColor(1);  // couleur brouillard sous-marin
+		color = m_engine->RetFogColor(1);  // fog color underwater
 		m_overColor = RetColor(color);
 		m_overMode = D3DSTATETCw;
 
@@ -783,7 +783,7 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 	{
 		m_overColor.r = 0.9f;
 		m_overColor.g = 1.0f;
-		m_overColor.b = 1.0f;  // blanc-cyan
+		m_overColor.b = 1.0f;  // white-cyan
 		m_overMode    = D3DSTATETCb;
 
 		m_overFadeIn  = 0.0f;
@@ -791,7 +791,7 @@ void CCamera::StartOver(OverEffect effect, D3DVECTOR pos, float force)
 	}
 }
 
-// Fait progresser l'effet de superposition au premier plan.
+// Advanced overlay effect in the foreground.
 
 void CCamera::OverFrame(const Event &event)
 {
@@ -886,7 +886,7 @@ void CCamera::OverFrame(const Event &event)
 
 
 
-// Fixe le mouvement mou de la cam�ra.
+// Sets the soft movement of the camera.
 
 void CCamera::FixCamera()
 {
@@ -896,7 +896,7 @@ void CCamera::FixCamera()
 	SetViewTime(m_scriptEye, m_scriptLookat, 0.0f);
 }
 
-// Sp�cifie l'emplacement et la direction du point de vue au moteur 3D.
+// Specifies the location and direction of view to the 3D engine.
 
 void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
 						  const D3DVECTOR &vLookatPt,
@@ -974,7 +974,7 @@ void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
 }
 
 
-// Evite les obstacles.
+// Avoid the obstacles.
 
 BOOL CCamera::IsCollision(D3DVECTOR &eye, D3DVECTOR lookat)
 {
@@ -984,7 +984,7 @@ BOOL CCamera::IsCollision(D3DVECTOR &eye, D3DVECTOR lookat)
 	return FALSE;
 }
 
-// Evite les obstacles.
+// Avoid the obstacles.
 
 BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 {
@@ -1012,7 +1012,7 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 	max.y = Max(eye.y, lookat.y);
 	max.z = Max(eye.z, lookat.z);
 
-	prox = 8.0f;  // proximit� maximale du v�hicule
+	prox = 8.0f;  // maximum proximity of the vehicle
 
 	for ( i=0 ; i<1000000 ; i++ )
 	{
@@ -1123,13 +1123,13 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( pObj->RetTruck() )  continue;  // pile ou fret?
+		if ( pObj->RetTruck() )  continue;  // battery or cargo?
 
-		SetTransparency(pObj, 0.0f);  // objet opaque
+		SetTransparency(pObj, 0.0f);  // opaque object
 
 		if ( pObj == m_cameraObj )  continue;
 
-		if ( iType == OBJECT_BASE     ||  // b�timent ?
+		if ( iType == OBJECT_BASE     ||  // building?
 			 iType == OBJECT_DERRICK  ||
 			 iType == OBJECT_FACTORY  ||
 			 iType == OBJECT_STATION  ||
@@ -1158,7 +1158,7 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 			 oType == OBJECT_WORM   )  continue;
 
 		pObj->GetGlobalSphere(oPos, oRadius);
-		if ( oRadius <= 2.0f )  continue;  // ignore les petits objets
+		if ( oRadius <= 2.0f )  continue;  // ignores small objects
 
 		if ( oPos.x+oRadius < min.x ||
 			 oPos.y+oRadius < min.y ||
@@ -1175,7 +1175,7 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		{
 			angle = RotateAngle(m_actualEye.x-oPos.x, oPos.z-m_actualEye.z);  // CW !
 			angle = Direction(angle, pObj->RetAngleY(0));
-			if ( Abs(angle) < 30.0f*PI/180.0f )  continue;  // dans la porte ?
+			if ( Abs(angle) < 30.0f*PI/180.0f )  continue;  // in the gate?
 		}
 
 		del = Length(m_actualEye, m_actualLookat);
@@ -1187,14 +1187,14 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		len = Length(m_actualEye, proj);
 		if ( len > del )  continue;
 
-		SetTransparency(pObj, 1.0f);  // objet transparent
+		SetTransparency(pObj, 1.0f);  // transparent object
 		m_bTransparency = TRUE;
 	}
 	return FALSE;
 #endif
 }
 
-// Evite les obstacles.
+// Avoid the obstacles.
 
 BOOL CCamera::IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat)
 {
@@ -1246,7 +1246,7 @@ BOOL CCamera::IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CCamera::EventProcess(const Event &event)
 {
@@ -1286,7 +1286,7 @@ BOOL CCamera::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait �voluer la cam�ra selon la souris d�plac�e.
+// Changed the camera according to the mouse moved.
 
 BOOL CCamera::EventMouseMove(const Event &event)
 {
@@ -1294,7 +1294,7 @@ BOOL CCamera::EventMouseMove(const Event &event)
 	return TRUE;
 }
 
-// Molette souris actionn�e.
+// Mouse wheel operated.
 
 void CCamera::EventMouseWheel(int dir)
 {
@@ -1342,7 +1342,7 @@ void CCamera::EventMouseWheel(int dir)
 	}
 }
 
-// Fait �voluer la cam�ra selon le temps �coul�.
+// Changed the camera according to the time elapsed.
 
 BOOL CCamera::EventFrame(const Event &event)
 {
@@ -1395,7 +1395,7 @@ BOOL CCamera::EventFrame(const Event &event)
 }
 
 
-// Retourne le sprite par d�faut � utiliser pour la souris.
+// Returns the default sprite to use for the mouse.
 
 D3DMouse CCamera::RetMouseDef(FPOINT pos)
 {
@@ -1406,7 +1406,7 @@ D3DMouse CCamera::RetMouseDef(FPOINT pos)
 
 	if ( m_type == CAMERA_INFO )  return type;
 
-	if ( m_bRightDown )  // bouton droite press� ?
+	if ( m_bRightDown )  // the right button pressed?
 	{
 		m_rightPosMove.x = pos.x - m_rightPosCenter.x;
 		m_rightPosMove.y = pos.y - m_rightPosCenter.y;
@@ -1480,7 +1480,7 @@ D3DMouse CCamera::RetMouseDef(FPOINT pos)
 
 
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameFree(const Event &event)
 {
@@ -1564,7 +1564,7 @@ BOOL CCamera::EventFrameFree(const Event &event)
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameEdit(const Event &event)
 {
@@ -1624,14 +1624,14 @@ BOOL CCamera::EventFrameEdit(const Event &event)
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameDialog(const Event &event)
 {
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameBack(const Event &event)
 {
@@ -1708,10 +1708,10 @@ BOOL CCamera::EventFrameBack(const Event &event)
 
 	if ( m_mouseDirH != 0 || m_mouseDirV != 0 )
 	{
-		AbortCentering();  // stoppe cadrage sp�cial
+		AbortCentering();  // special stops framing
 	}
 
-	// Progression du cadrage sp�cial.
+	// Increase the special framework.
 	centeringH = 0.0f;
 	centeringV = 0.0f;
 	centeringD = 0.0f;
@@ -1761,7 +1761,7 @@ BOOL CCamera::EventFrameBack(const Event &event)
 		else if ( type == OBJECT_TECH  )  vLookatPt.y +=  1.0f;
 		else                              vLookatPt.y +=  4.0f;
 
-		h = -m_cameraObj->RetAngleY(0);  // angle v�hicule/batiment
+		h = -m_cameraObj->RetAngleY(0);  // angle vehicle / building
 		
 		if ( type == OBJECT_DERRICK  ||
 			 type == OBJECT_FACTORY  ||
@@ -1780,13 +1780,13 @@ BOOL CCamera::EventFrameBack(const Event &event)
 			 type == OBJECT_SAFE     ||
 			 type == OBJECT_HUSTON   ||
 			 type == OBJECT_START    ||
-			 type == OBJECT_END      )  // batiment ?
+			 type == OBJECT_END      )  // building?
 		{
-			h += PI*0.20f;  // presque de face
+			h += PI*0.20f;  // nearly face
 		}
-		else	// v�hicule ?
+		else	// vehicle?
 		{
-			h += PI;  // de dos
+			h += PI;  // back
 		}
 		h = NormAngle(h)+m_remotePan;
 		v = 0.0f;  //?
@@ -1795,9 +1795,9 @@ BOOL CCamera::EventFrameBack(const Event &event)
 		h += m_addDirectionH*(1.0f-centeringH);
 		h = NormAngle(h);
 
-		if ( type == OBJECT_MOBILEdr )  // dessinateur ?
+		if ( type == OBJECT_MOBILEdr )  // designer?
 		{
-			v -= 0.3f;  // cam�ra plus haute
+			v -= 0.3f;  // Camera top
 		}
 
 		v += m_centeringCurrentV;
@@ -1812,13 +1812,13 @@ BOOL CCamera::EventFrameBack(const Event &event)
 		m_eyePt = RotateView(vLookatPt, h, v, d);
 
 		physics = m_cameraObj->RetPhysics();
-		if ( physics != 0 && physics->RetLand() )  // au sol ?
+		if ( physics != 0 && physics->RetLand() )  // ground?
 		{
 			pos = vLookatPt+(vLookatPt-m_eyePt);
 			floor = m_terrain->RetFloorHeight(pos)-4.0f;
 			if ( floor > 0.0f )
 			{
-				m_eyePt.y += floor;  // montre la descente devant
+				m_eyePt.y += floor;  // shows the descent in front
 			}
 		}
 
@@ -1834,7 +1834,7 @@ BOOL CCamera::EventFrameBack(const Event &event)
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameFix(const Event &event)
 {
@@ -1867,7 +1867,7 @@ BOOL CCamera::EventFrameFix(const Event &event)
 
 	if ( m_mouseDirH != 0 || m_mouseDirV != 0 )
 	{
-		AbortCentering();  // stoppe cadrage sp�cial
+		AbortCentering();  // special stops framing
 	}
 
 	if ( m_cameraObj != 0 )
@@ -1894,7 +1894,7 @@ BOOL CCamera::EventFrameFix(const Event &event)
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameExplo(const Event &event)
 {
@@ -1938,7 +1938,7 @@ BOOL CCamera::EventFrameExplo(const Event &event)
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameOnBoard(const Event &event)
 {
@@ -1958,7 +1958,7 @@ BOOL CCamera::EventFrameOnBoard(const Event &event)
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameInfo(const Event &event)
 {
@@ -1968,7 +1968,7 @@ BOOL CCamera::EventFrameInfo(const Event &event)
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameVisit(const Event &event)
 {
@@ -2018,7 +2018,7 @@ BOOL CCamera::EventFrameVisit(const Event &event)
 	return TRUE;
 }
 
-// D�place le point de vue.
+// Moves the point of view.
 
 BOOL CCamera::EventFrameScript(const Event &event)
 {
@@ -2038,7 +2038,7 @@ void CCamera::SetScriptLookat(D3DVECTOR lookat)
 }
 
 
-// Sp�cifie l'emplacement et la direction du point de vue.
+// Specifies the location and direction of view.
 
 void CCamera::SetViewParams(const D3DVECTOR &eye, const D3DVECTOR &lookat,
 							const D3DVECTOR &up)
@@ -2047,13 +2047,13 @@ void CCamera::SetViewParams(const D3DVECTOR &eye, const D3DVECTOR &lookat,
 
 	m_engine->SetViewParams(eye, lookat, up, m_eyeDistance);
 
-	bUnder = (eye.y < m_water->RetLevel());  // est-on sous l'eau ?
+	bUnder = (eye.y < m_water->RetLevel());  // Is it underwater?
 	if ( m_type == CAMERA_INFO )  bUnder = FALSE;
 	m_engine->SetRankView(bUnder?1:0);
 }
 
 
-// Adapte la cam�ra pour ne pas entrer dans le terrain.
+// Adjusts the camera not to enter the field.
 
 D3DVECTOR CCamera::ExcludeTerrain(D3DVECTOR eye, D3DVECTOR lookat,
 								  float &angleH, float &angleV)
@@ -2075,7 +2075,7 @@ D3DVECTOR CCamera::ExcludeTerrain(D3DVECTOR eye, D3DVECTOR lookat,
 	return eye;
 }
 
-// Adapte la cam�ra pour ne pas p�n�trer dans un objet.
+// Adjusts the camera not to enter an object.
 
 D3DVECTOR CCamera::ExcludeObject(D3DVECTOR eye, D3DVECTOR lookat,
 								 float &angleH, float &angleV)
