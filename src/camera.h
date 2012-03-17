@@ -28,26 +28,26 @@ enum D3DMouse;
 
 enum CameraType
 {
-	CAMERA_NULL		= 0,	// cam�ra ind�finie
-	CAMERA_FREE		= 1,	// cam�ra libre (jamais en principe)
-	CAMERA_EDIT		= 2,	// cam�ra pendant l'�dition d'un programme
-	CAMERA_ONBOARD	= 3,	// cam�ra � bord d'un robot
-	CAMERA_BACK		= 4,	// cam�ra derri�re un robot
-	CAMERA_FIX		= 5,	// cam�ra fixe apr�s robot
-	CAMERA_EXPLO	= 6,	// cam�ra immobile apr�s explosion
-	CAMERA_SCRIPT	= 7,	// cam�ra pendant un film script�
-	CAMERA_INFO		= 8,	// cam�ra pendant l'affichage des informations
-	CAMERA_VISIT	= 9,	// visite du lieu d'une erreur
-	CAMERA_DIALOG	= 10,	// cam�ra pendant dialogue
-	CAMERA_PLANE	= 11,	// cam�ra fixe en hauteur
+	CAMERA_NULL		= 0,	// camera undefined
+	CAMERA_FREE		= 1,	// camera free (never in principle)
+	CAMERA_EDIT		= 2,	// camera while editing a program
+	CAMERA_ONBOARD		= 3,	// camera on board a robot
+	CAMERA_BACK		= 4,	// camera behind a robot
+	CAMERA_FIX		= 5,	// static camera following robot
+	CAMERA_EXPLO		= 6,	// camera steady after explosion
+	CAMERA_SCRIPT		= 7,	// camera during a film script
+	CAMERA_INFO		= 8,	// camera for displaying information
+	CAMERA_VISIT		= 9,	// visit instead of an error
+	CAMERA_DIALOG		= 10,	// camera for dialogue
+	CAMERA_PLANE		= 11,	// static camera height
 };
 
 enum CameraSmooth
 {
-	CS_NONE			= 0,	// brusque
+	CS_NONE			= 0,	// sharp
 	CS_NORM			= 1,	// normal
-	CS_HARD			= 2,	// dur
-	CS_SPEC			= 3,	// sp�cial
+	CS_HARD			= 2,	// hard
+	CS_SPEC			= 3,	// special
 };
 
 enum CenteringPhase
@@ -60,23 +60,23 @@ enum CenteringPhase
 
 enum CameraEffect
 {
-	CE_NULL			= 0,	// pas d'effet
-	CE_TERRAFORM	= 1,	// terrassement
-	CE_CRASH		= 2,	// v�hicule volant pos� violemment
+	CE_NULL			= 0,	// no effect
+	CE_TERRAFORM		= 1,	// digging in
+	CE_CRASH		= 2,	// Vehicle driving is severely
 	CE_EXPLO		= 3,	// explosion
-	CE_SHOT			= 4,	// coup non mortel
-	CE_VIBRATION	= 5,	// vibration pendant construction
-	CE_PET			= 6,	// rat� du r�acteur
+	CE_SHOT			= 4,	// not mortal shot
+	CE_VIBRATION		= 5,	// vibration during construction
+	CE_PET			= 6,	// spleen reactor
 };
 
 enum OverEffect
 {
-	OE_NULL			= 0,	// pas d'effet
-	OE_BLOOD		= 1,	// flash rouge
-	OE_FADEINw		= 2,	// blanc -> rien
-	OE_FADEOUTw		= 3,	// rien -> blanc
-	OE_FADEOUTb		= 4,	// rien -> bleu
-	OE_BLITZ		= 5,	// �clair
+	OE_NULL			= 0,	// no effect
+	OE_BLOOD		= 1,	// flash red
+	OE_FADEINw		= 2,	// white -> nothing
+	OE_FADEOUTw		= 3,	// nothing -> white
+	OE_FADEOUTb		= 4,	// nothing -> blue
+	OE_BLITZ		= 5,	// lightning
 };
 
 
@@ -173,19 +173,19 @@ protected:
 	CTerrain*	m_terrain;
 	CWater*		m_water;
 
-	CameraType	m_type;				// type de la cam�ra (CAMERA_*)
-	CameraSmooth m_smooth;			// type de lissage
-	CObject*	m_cameraObj;		// objet li� � la cam�ra
+	CameraType	m_type;			// the type of camera (CAMERA *)
+	CameraSmooth	m_smooth;		// type of smoothing
+	CObject*	m_cameraObj;		// object linked to the camera
 
-	float		m_eyeDistance;		// distance entre les yeux
-	float		m_initDelay;		// d�lai du centrage initial
+	float		m_eyeDistance;		// distance between the eyes
+	float		m_initDelay;		// time of initial centering
 
-	D3DVECTOR	m_actualEye;		// oeil actuel
-	D3DVECTOR	m_actualLookat;		// vis�e actuelle
-	D3DVECTOR	m_finalEye;			// oeil final
-	D3DVECTOR	m_finalLookat;		// vis�e finale
-	D3DVECTOR	m_normEye;			// oeil normal
-	D3DVECTOR	m_normLookat;		// vis�e normale
+	D3DVECTOR	m_actualEye;		// current eye
+	D3DVECTOR	m_actualLookat;		// aim current
+	D3DVECTOR	m_finalEye;		// final eye
+	D3DVECTOR	m_finalLookat;		// aim final
+	D3DVECTOR	m_normEye;		// normal eye
+	D3DVECTOR	m_normLookat;		// aim normal
 	float		m_focus;
 
 	BOOL		m_bRightDown;
@@ -193,31 +193,31 @@ protected:
 	FPOINT		m_rightPosCenter;
 	FPOINT		m_rightPosMove;
 
-	D3DVECTOR	m_eyePt;			// CAMERA_FREE: oeil
-	float		m_directionH;		// CAMERA_FREE: direction horizontale
-	float		m_directionV;		// CAMERA_FREE: direction verticale
-	float		m_heightEye;		// CAMERA_FREE: hauteur au-dessus du sol
-	float		m_heightLookat;		// CAMERA_FREE: hauteur au-dessus du sol
-	float		m_speed;			// CAMERA_FREE: vitesse de d�placement
+	D3DVECTOR	m_eyePt;		// CAMERA_FREE: eye
+	float		m_directionH;		// CAMERA_FREE: horizontal direction
+	float		m_directionV;		// CAMERA_FREE: vertical direction
+	float		m_heightEye;		// CAMERA_FREE: height above the ground
+	float		m_heightLookat;		// CAMERA_FREE: height above the ground
+	float		m_speed;		// CAMERA_FREE: speed of movement
 
-	float		m_backDist;			// CAMERA_BACK: �loignement
-	float		m_backMin;			// CAMERA_BACK: �loignement minimal
-	float		m_addDirectionH;	// CAMERA_BACK: direction suppl�mentaire
-	float		m_addDirectionV;	// CAMERA_BACK: direction suppl�mentaire
+	float		m_backDist;		// CAMERA_BACK: distance
+	float		m_backMin;		// CAMERA_BACK: distance minimal
+	float		m_addDirectionH;	// CAMERA_BACK: additional direction
+	float		m_addDirectionV;	// CAMERA_BACK: additional direction
 	BOOL		m_bTransparency;
 
-	float		m_fixDist;			// CAMERA_FIX: �loignement
+	float		m_fixDist;		// CAMERA_FIX: distance
 	float		m_fixDirectionH;	// CAMERA_FIX: direction
 	float		m_fixDirectionV;	// CAMERA_FIX: direction
 
-	D3DVECTOR	m_visitGoal;		// CAMERA_VISIT: position vis�e
-	float		m_visitDist;		// CAMERA_VISIT: �loignement
-	float		m_visitTime;		// CAMERA_VISIT: temps relatif
-	CameraType	m_visitType;		// CAMERA_VISIT: type initial
+	D3DVECTOR	m_visitGoal;		// CAMERA_VISIT: target position
+	float		m_visitDist;		// CAMERA_VISIT: distance
+	float		m_visitTime;		// CAMERA_VISIT: relative time
+	CameraType	m_visitType;		// CAMERA_VISIT: initial type
 	float		m_visitDirectionH;	// CAMERA_VISIT: direction
 	float		m_visitDirectionV;	// CAMERA_VISIT: direction
 
-	float		m_editHeight;		// CAMERA_EDIT: hauteur
+	float		m_editHeight;		// CAMERA_EDIT: height
 
 	float		m_remotePan;
 	float		m_remoteZoom;
@@ -256,10 +256,10 @@ protected:
 	D3DVECTOR	m_scriptEye;
 	D3DVECTOR	m_scriptLookat;
 
-	BOOL		m_bEffect;			// secousses si explosion ?
-	BOOL		m_bCameraScroll;	// scroll dans les bords ?
-	BOOL		m_bCameraInvertX;	// inversion X dans les bords ?
-	BOOL		m_bCameraInvertY;	// inversion Y dans les bords ?
+	BOOL		m_bEffect;		// shocks if explosion?
+	BOOL		m_bCameraScroll;	// scroll in the edges?
+	BOOL		m_bCameraInvertX;	// X inversion in the edges?
+	BOOL		m_bCameraInvertY;	// Y inversion in the edges?
 };
 
 
