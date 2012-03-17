@@ -34,14 +34,14 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CCheck::CCheck(CInstanceManager* iMan) : CControl(iMan)
 {
 	CControl::CControl(iMan);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CCheck::~CCheck()
 {
@@ -49,7 +49,7 @@ CCheck::~CCheck()
 }
 
 
-// Cr�e un nouveau bouton.
+// Creates a new button.
 
 BOOL CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -69,7 +69,7 @@ BOOL CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CCheck::EventProcess(const Event &event)
 {
@@ -94,7 +94,7 @@ BOOL CCheck::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draw button.
 
 void CCheck::Draw()
 {
@@ -105,7 +105,7 @@ void CCheck::Draw()
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
 	iDim = m_dim;
-	m_dim.x = m_dim.y*0.75f;  // carr�
+	m_dim.x = m_dim.y*0.75f;  // square
 
 	if ( m_state & STATE_SHADOW )
 	{
@@ -143,7 +143,7 @@ void CCheck::Draw()
 	{
 		icon = 17;
 	}
-	DrawPart(icon, zoomExt, 0.0f);  // dessine le bouton
+	DrawPart(icon, zoomExt, 0.0f);  // draws the button
 
 	if ( (m_state & STATE_DEAD) == 0 )
 	{
@@ -151,8 +151,8 @@ void CCheck::Draw()
 
 		if ( m_state & STATE_CHECK )
 		{
-			icon = 16;  // vu
-			DrawPart(icon, zoomInt, 0.0f);  // dessine l'ic�ne
+			icon = 16;  // seen
+			DrawPart(icon, zoomInt, 0.0f);  // draw the icon
 		}
 	}
 
@@ -160,7 +160,7 @@ void CCheck::Draw()
 
 	if ( m_state & STATE_DEAD )  return;
 
-	// Dessine le nom.
+	// Draw the name.
 	pos.x = m_pos.x+m_dim.y/0.9f;
 	pos.y = m_pos.y+m_dim.y*0.50f;
 	pos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
