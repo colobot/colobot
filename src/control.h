@@ -28,23 +28,23 @@ class CSound;
 enum FontType;
 
 
-#define STATE_ENABLE	(1<<0)	// actif
-#define STATE_CHECK		(1<<1)	// enfonc�
-#define STATE_HILIGHT	(1<<2)	// survol� par la souris
-#define STATE_PRESS		(1<<3)	// press� par la souris
-#define STATE_VISIBLE	(1<<4)	// visible
+#define STATE_ENABLE		(1<<0)	// active
+#define STATE_CHECK		(1<<1)	// pressed
+#define STATE_HILIGHT		(1<<2)	// overflown by mouse
+#define STATE_PRESS		(1<<3)	// pressed by mouse
+#define STATE_VISIBLE		(1<<4)	// visible
 #define STATE_DEAD		(1<<5)	// inaccessible (x)
-#define STATE_DEFAULT	(1<<6)	// actionn� par RETURN
-#define STATE_OKAY		(1<<7)	// point vert en bas � droite
-#define STATE_SHADOW	(1<<8)	// ombre
-#define STATE_GLINT		(1<<9)	// reflet dynamique
-#define STATE_CARD		(1<<10)	// onglet
-#define STATE_EXTEND	(1<<11)	// mode �tendu
-#define STATE_SIMPLY	(1<<12)	// sans ornements
-#define STATE_FRAME		(1<<13)	// cadre de mise en �vidence
-#define STATE_WARNING	(1<<14)	// cadre hachur� jaune/noir
-#define STATE_VALUE		(1<<15)	// affiche la valeur
-#define STATE_RUN		(1<<16)	// programme en cours
+#define STATE_DEFAULT		(1<<6)	// actuated by RETURN
+#define STATE_OKAY		(1<<7)	// green point at the bottom right
+#define STATE_SHADOW		(1<<8)	// shadow
+#define STATE_GLINT		(1<<9)	// dynamic reflection
+#define STATE_CARD		(1<<10)	// tab
+#define STATE_EXTEND		(1<<11)	// extended mode
+#define STATE_SIMPLY		(1<<12)	// undecorated
+#define STATE_FRAME		(1<<13)	// framework highlighting
+#define STATE_WARNING		(1<<14)	// framework hatched yellow / black
+#define STATE_VALUE		(1<<15)	// displays the value
+#define STATE_RUN		(1<<16)	// running program
 
 
 
@@ -107,17 +107,17 @@ protected:
 	CParticule*	m_particule;
 	CSound*		m_sound;
 
-	FPOINT		m_pos;			// coin sup/gauche
+	FPOINT		m_pos;			// corner upper / left
 	FPOINT		m_dim;			// dimensions
-	int			m_icon;
-	EventMsg	m_eventMsg;		// message � envoyer si clic
-	int			m_state;		// �tats (STATE_*)
-	float		m_fontSize;		// taille du nom du bouton
-	float		m_fontStretch;	// stretch de la fonte
-	FontType	m_fontType;		// type de la fonte
-	int			m_justif;		// type de justification (-1,0,1)
-	char		m_name[100];	// nom du bouton
-	char		m_tooltip[100];	// nom du tooltip
+	int		m_icon;
+	EventMsg	m_eventMsg;		// message to send when clicking
+	int		m_state;		// states (STATE_ *)
+	float		m_fontSize;		// size of the button name
+	float		m_fontStretch;		// stretch of the font
+	FontType	m_fontType;		// type of font
+	int		m_justif;		// type of justification (-1,0,1)
+	char		m_name[100];		// name of the button
+	char		m_tooltip[100];		// name of tooltip
 	BOOL		m_bFocus;
 	BOOL		m_bCapture;
 
