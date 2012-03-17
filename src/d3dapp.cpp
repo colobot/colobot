@@ -43,19 +43,19 @@
 
 
 
-#define AUDIO_TRACK		13			// nb total de pistes audio sur le CD
-#define MAX_STEP		0.2f		// temps maximum pour un step
+#define AUDIO_TRACK		13		// total number of audio tracks on the CD
+#define MAX_STEP		0.2f		// maximum time for a step
 
-#define WINDOW_DX		(640+6)		// dimensions en mode fen�tr�
+#define WINDOW_DX		(640+6)		// dimensions in windowed mode
 #define WINDOW_DY		(480+25)
 
-#define USE_THREAD		FALSE		// TRUE ne fonctionne pas !
+#define USE_THREAD		FALSE		// TRUE does not work!
 #define TIME_THREAD		0.02f
 
 
 
 
-// Limite le d�battement des commandes clavier & joystick.
+// Limit the use of the controls keyboard & joystick.
 
 float AxeLimit(float value)
 {
@@ -73,7 +73,7 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 	Error	err;
 	char	string[100];
 
-	CD3DApplication d3dApp;  // unique instance de l'application
+	CD3DApplication d3dApp;  // single instance of the application
 
 	err = d3dApp.CheckMistery(strCmdLine);
 	if ( err != ERR_OK )
@@ -92,11 +92,11 @@ INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 		return 0;
 	}
 
-	return d3dApp.Run();  // ex�cution du tout
+	return d3dApp.Run();  // execution of all
 }
 
 
-// Internal function prototypes and variables.
+// Internal variables and function prototypes.
 
 enum APPMSGTYPE { MSG_NONE, MSGERR_APPMUSTEXIT, MSGWARN_SWITCHEDTOSOFTWARE };
 
@@ -166,7 +166,7 @@ CD3DApplication::CD3DApplication()
 
 	g_pD3DApp = this;
 
-	// Demande l'�v�nement envoy� par les souris Logitech.
+	// Request event sent by Logitech.
 	m_mshMouseWheel = RegisterWindowMessage(MSH_MOUSEWHEEL); 
 
 	_mkdir("files\\");
@@ -182,14 +182,14 @@ CD3DApplication::~CD3DApplication()
 
 
 
-// Retourne le chemin d'acc�s du CD.
+// Returns the path of the CD.
 
 char* CD3DApplication::RetCDpath()
 {
 	return m_CDpath;
 }
 
-// Lit les informations dans la base de registre.
+// Reads the information in the registry.
 
 Error CD3DApplication::RegQuery()
 {
@@ -224,14 +224,14 @@ Error CD3DApplication::RegQuery()
 	if ( i != DRIVE_CDROM )  return ERR_NOCD;
 
 	strcat(filename, "install.ini");
-	file = fopen(filename, "rb");  // fichier install.ini inexistant ?
+	file = fopen(filename, "rb");  // install.ini file exist?
 	if ( file == NULL )  return ERR_NOCD;
 	fclose(file);
 
 	return ERR_OK;
 }
 
-// V�rifie la pr�sence des pistes audio sur le CD.
+// Checks for audio tracks on the CD.
 
 Error CD3DApplication::AudioQuery()
 {
@@ -293,7 +293,7 @@ Error CD3DApplication::AudioQuery()
 	return ERR_OK;
 }
 
-// V�rifie la pr�sence de la cl�.
+// Checks for the key.
 
 Error CD3DApplication::CheckMistery(char *strCmdLine)
 {
@@ -352,7 +352,7 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
 }
 
 
-// Retourne la quantit� totale de m�moire vid�o pour les textures.
+// Returns the total amount of video memory for textures.
 
 int CD3DApplication::GetVidMemTotal()
 {
@@ -362,13 +362,13 @@ int CD3DApplication::GetVidMemTotal()
 BOOL CD3DApplication::IsVideo8MB()
 {
 	if ( m_vidMemTotal == 0 )  return FALSE;
-	return (m_vidMemTotal <= 8388608L);  // 8 Mb ou moins (2^23) ?
+	return (m_vidMemTotal <= 8388608L);  // 8 Mb or less (2 ^ 23)?
 }
 
 BOOL CD3DApplication::IsVideo32MB()
 {
 	if ( m_vidMemTotal == 0 )  return FALSE;
-	return (m_vidMemTotal > 16777216L);  // plus de 16 Mb (2^24) ?
+	return (m_vidMemTotal > 16777216L);  // more than 16 Mb (2 ^ 24)?
 }
 
 
@@ -402,7 +402,7 @@ BOOL CD3DApplication::RetSetupMode()
 
 
 
-// Processus fils de gestion du temps.
+// Son process of time management.
 
 DWORD WINAPI ThreadRoutine(LPVOID)
 {
@@ -436,7 +436,7 @@ DWORD WINAPI ThreadRoutine(LPVOID)
 		delay = ms-(end-start);
 		if ( delay > 0 )
 		{
-			Sleep(delay);  // attend 20ms-used
+			Sleep(delay);  // waiting 20ms-used
 		}
 		time += TIME_THREAD;
 	}
@@ -487,7 +487,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 
 	if ( !m_bDebugMode )
 	{
-		m_pDeviceInfo->bWindowed = FALSE;  // plein �cran
+		m_pDeviceInfo->bWindowed = FALSE;  // full screen
 	}
 	if ( GetProfileInt("Device", "FullScreen", bFull) )
 	{
@@ -541,7 +541,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 
 	// Create the render window
 	style = WS_CAPTION|WS_VISIBLE;
-	if ( m_bDebugMode )  style |= WS_SYSMENU;  // case de fermeture
+	if ( m_bDebugMode )  style |= WS_SYSMENU;  // close box
 	m_hWnd = CreateWindow( _T("D3D Window"), m_strWindowTitle,
 //?						   WS_OVERLAPPEDWINDOW|WS_VISIBLE,
 						   style, CW_USEDEFAULT, CW_USEDEFAULT,
@@ -579,13 +579,13 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 		ChangeDevice(deviceName, modeName, bFull);
 	}
 
-	// Premi�re ex�cution ?
+	// First execution?
 	if ( !GetProfileInt("Setup", "ObjectDirty", iValue) )
 	{
 		m_pD3DEngine->FirstExecuteAdapt(TRUE);
 	}
 
-	// Cr�e le fichier colobot.ini � la premi�re ex�cution.
+	// Creates the file colobot.ini at the first execution.
 	m_pRobotMain->CreateIni();
 
 #if _DEMO
@@ -691,9 +691,9 @@ INT CD3DApplication::Run()
 
 
 
-// Conversion de la position de la souris.
-// x: 0=gauche, 1=droite
-// y: 0=bas, 1=haut
+// Conversion of the position of the mouse.
+// x: 0=left, 1=right
+// y: 0=down, 1=up
 
 FPOINT CD3DApplication::ConvPosToInterface(HWND hWnd, LPARAM lParam)
 {
@@ -720,7 +720,7 @@ FPOINT CD3DApplication::ConvPosToInterface(HWND hWnd, LPARAM lParam)
 	return pos;
 }
 
-// D�place physiquement la souris.
+// Physically moves the mouse.
 
 void CD3DApplication::SetMousePos(FPOINT pos)
 {
@@ -738,7 +738,7 @@ void CD3DApplication::SetMousePos(FPOINT pos)
 	SetCursorPos(p.x, p.y);
 }
 
-// Choix du type de curseur pour la souris.
+// Choosing the type of cursor for the mouse.
 
 void CD3DApplication::SetMouseType(D3DMouse type)
 {
@@ -815,7 +815,7 @@ void CD3DApplication::SetMouseType(D3DMouse type)
 	}
 }
 
-// Choix du mode pour la souris.
+// Choice of mode for the mouse.
 
 void CD3DApplication::SetNiceMouse(BOOL bNice)
 {
@@ -824,17 +824,17 @@ void CD3DApplication::SetNiceMouse(BOOL bNice)
 
 	if ( m_bNiceMouse )
 	{
-		ShowCursor(FALSE);  // cache la vilaine souris windows
+		ShowCursor(FALSE);  // hides the ugly windows mouse
 		SetCursor(NULL);
 	}
 	else
 	{
-		ShowCursor(TRUE);  // montre la vilaine souris windows
+		ShowCursor(TRUE);  // shows the ugly windows mouse
 		SetCursor(LoadCursor(NULL, IDC_ARROW));
 	}
 }
 
-// Indique s'il faut utiliser la jolie souris ombr�e.
+// Whether to use the mouse pretty shaded.
 
 BOOL CD3DApplication::RetNiceMouse()
 {
@@ -844,7 +844,7 @@ BOOL CD3DApplication::RetNiceMouse()
 	return m_bNiceMouse;
 }
 
-// Indique s'il est possible d'utiliser la jolie souris ombr�e.
+// Indicates whether it is possible to use the mouse pretty shaded.
 
 BOOL CD3DApplication::RetNiceMouseCap()
 {
@@ -903,14 +903,14 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 			 uMsg == WM_RBUTTONDOWN ||
 			 uMsg == WM_LBUTTONUP   ||
 			 uMsg == WM_RBUTTONUP   ||
-			 uMsg == WM_MOUSEMOVE   )  // �v�nement souris ?
+			 uMsg == WM_MOUSEMOVE   )  // mouse event?
 		{
 			event.pos = g_pD3DApp->ConvPosToInterface(hWnd, lParam);
 			g_pD3DApp->m_mousePos = event.pos;
 			g_pD3DApp->m_pD3DEngine->SetMousePos(event.pos);
 		}
 
-		if ( uMsg == WM_MOUSEWHEEL )  // molette souris ?
+		if ( uMsg == WM_MOUSEWHEEL )  // mouse wheel?
 		{
 			event.event = EVENT_KEYDOWN;
 			event.pos = g_pD3DApp->m_mousePos;
@@ -919,7 +919,7 @@ LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 			if ( move/WHEEL_DELTA < 0 )  event.param = VK_WHEELDOWN;
 		}
 		if ( g_pD3DApp->m_mshMouseWheel != 0 &&
-			 uMsg == g_pD3DApp->m_mshMouseWheel )  // molette souris Logitech ?
+			 uMsg == g_pD3DApp->m_mshMouseWheel )  // Logitech mouse wheel?
 		{
 			event.event = EVENT_KEYDOWN;
 			event.pos = g_pD3DApp->m_mousePos;
@@ -970,7 +970,7 @@ BOOL CALLBACK AboutProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM )
 
 
 
-// Ignore les touches press�es.
+// Ignore keypresses.
 
 void CD3DApplication::FlushPressKey()
 {
@@ -979,7 +979,7 @@ void CD3DApplication::FlushPressKey()
 	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
 }
 
-// Remet les touches par d�faut.
+// Resets the default keys.
 
 void CD3DApplication::ResetKey()
 {
@@ -1021,7 +1021,7 @@ void CD3DApplication::ResetKey()
 //	m_key[KEYRANK_SPEED30][0] = VK_F7;
 }
 
-// Modifie une touche.
+// Modifies a button.
 
 void CD3DApplication::SetKey(int keyRank, int option, int key)
 {
@@ -1034,7 +1034,7 @@ void CD3DApplication::SetKey(int keyRank, int option, int key)
 	m_key[keyRank][option] = key;
 }
 
-// Donne une touche.
+// Gives a hint.
 
 int CD3DApplication::RetKey(int keyRank, int option)
 {
@@ -1049,7 +1049,7 @@ int CD3DApplication::RetKey(int keyRank, int option)
 
 
 
-// Utilise le joystick ou le clavier.
+// Use the joystick or keyboard.
 
 void CD3DApplication::SetJoystick(BOOL bEnable)
 {
@@ -1067,7 +1067,7 @@ void CD3DApplication::SetJoystick(BOOL bEnable)
 			SetTimer(m_hWnd, 0, 1000/30, NULL);
 		}
 	}
-	else	// clavier ?
+	else	// keyboard?
 	{
         KillTimer(m_hWnd, 0);
 		SetAcquire(FALSE);
@@ -1090,8 +1090,8 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 	DIJOYSTATE	js;
 	int			i;
 
-	// La touche F10 envoie un autre message pour activer
-	// le menu dans les applications Windows standard !
+	// The F10 key sends another message to activate
+	// menu in standard Windows applications!
 	if ( uMsg == WM_SYSKEYDOWN && wParam == VK_F10 )
 	{
 		uMsg = WM_KEYDOWN;
@@ -1101,7 +1101,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 		uMsg = WM_KEYUP;
 	}
 
-	// Mange l'�v�nement "menu" envoy� par Alt ou F10.
+	// Mange event "menu" sent by Alt or F10.
 	if ( uMsg == WM_SYSCOMMAND && wParam == SC_KEYMENU )
 	{
 		return 0;
@@ -1295,7 +1295,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
 			if ( m_bActivateApp && m_bJoystick )
 			{
-				SetAcquire(TRUE);  // r�-active le joystick
+				SetAcquire(TRUE);  // re-enables the joystick
 			}
 			break;
 
@@ -1544,7 +1544,7 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 		m_ddsdRenderTarget.dwSize = sizeof(m_ddsdRenderTarget);
 		m_pddsRenderTarget->GetSurfaceDesc( &m_ddsdRenderTarget );
 
-		// Demande la quantit� de m�moire vid�o.
+		// Request the amount of video memory.
 		ZeroMemory(&ddsCaps2, sizeof(ddsCaps2));
 		ddsCaps2.dwCaps = DDSCAPS_TEXTURE; 
 		dwTotal = 0;
@@ -1663,7 +1663,7 @@ HRESULT CD3DApplication::Change3DEnvironment()
 
 	if( m_pDeviceInfo->bWindowed )
 	{
-		SetNiceMouse(FALSE);  // cache la vilaine souris windows
+		SetNiceMouse(FALSE);  // hides the ugly windows mouse
 	}
 
 	return S_OK;
@@ -1672,7 +1672,7 @@ HRESULT CD3DApplication::Change3DEnvironment()
 
 
 
-// Fait �voluer tout le jeu.
+// Evolved throughout the game
 
 void CD3DApplication::StepSimul(float rTime)
 {
@@ -1681,7 +1681,7 @@ void CD3DApplication::StepSimul(float rTime)
 	if ( m_pRobotMain == 0 )  return;
 
 	ZeroMemory(&event, sizeof(Event));
-	event.event = EVENT_FRAME;  // dr�le de bug en release "Maximize speed" !!!
+	event.event = EVENT_FRAME;  // funny bug release "Maximize speed"!
 	event.rTime = rTime;
 	event.axeX = AxeLimit(m_axeKey.x + m_axeJoy.x);
 	event.axeY = AxeLimit(m_axeKey.y + m_axeJoy.y);
@@ -1725,7 +1725,7 @@ HRESULT CD3DApplication::Render3DEnvironment()
 
 	// Get the relative time, in seconds
 	rTime = m_pD3DEngine->TimeGet();
-	if ( rTime > MAX_STEP )  rTime = MAX_STEP;  // jamais plus de 0.5s !
+	if ( rTime > MAX_STEP )  rTime = MAX_STEP;  // never more than 0.5s!
 	m_aTime += rTime;
 
 #if !USE_THREAD
@@ -1849,7 +1849,7 @@ LRESULT CD3DApplication::OnResumeSuspend( DWORD dwData )
 }
 
 
-// Dessine tous les �l�ments graphiques suppl�mentaires.
+// Draw all the additional graphic elements.
 
 void CD3DApplication::DrawSuppl()
 {
@@ -1865,7 +1865,7 @@ void CD3DApplication::DrawSuppl()
 
 	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return;
 
-	// Affiche le rectangle de s�lection.
+	// Displays the selection rectangle.
 	if ( m_pD3DEngine->GetHilite(p1, p2) )
 	{
 		nbOut = 0;
@@ -1894,7 +1894,7 @@ void CD3DApplication::DrawSuppl()
 			p2.x -= d;
 			p2.y -= d;
 
-			hPen = CreatePen(PS_SOLID, 1, RGB(255,255,0));  // jaune
+			hPen = CreatePen(PS_SOLID, 1, RGB(255,255,0));  // yellow
 			old = SelectObject(hDC, hPen);
 
 			rect.left   = (int)(p1.x*m_ddsdRenderTarget.dwWidth);
@@ -2132,7 +2132,7 @@ BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBM
 	return TRUE;
 }
 
-// Ecrit un fichier .BMP copie d'�cran.
+// Write a file. BMP screenshot.
 
 BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 {
@@ -2185,7 +2185,7 @@ BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 }
 
 
-// Initialise un hDC sur la surface de rendu.
+// Initializes an hDC on the rendering surface.
 
 BOOL CD3DApplication::GetRenderDC(HDC &hDC)
 {
@@ -2193,7 +2193,7 @@ BOOL CD3DApplication::GetRenderDC(HDC &hDC)
 	return TRUE;
 }
 
-// Lib�re le hDC sur la surface de rendu.
+// Frees the hDC of the rendering surface.
 
 BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
 {
@@ -2204,9 +2204,9 @@ BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
 
 
 
-// Effectue la liste de tous les devices graphiques disponibles.
-// Pour le device s�lectionn�, donne la liste des modes plein �cran
-// possibles.
+// Perform the list of all graphics devices available.
+// For the device selected, lists the full screen modes
+// possible.
 // buf* --> nom1<0> nom2<0> <0>
 
 BOOL CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
@@ -2231,7 +2231,7 @@ BOOL CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
 		pDevice = &pDeviceList[device];
 
 		len = strlen(pDevice->strDesc)+1;
-		if ( len >= lenDevices )  break;  // bufDevices plein !
+		if ( len >= lenDevices )  break;  // bufDevices full!
 		strcpy(bufDevices, pDevice->strDesc);
 		bufDevices += len;
 		lenDevices -= len;
@@ -2250,7 +2250,7 @@ BOOL CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
 								pddsdMode->ddpfPixelFormat.dwRGBBitCount);
 
 				len = strlen(text)+1;
-				if ( len >= lenModes )  break;  // bufModes plein !
+				if ( len >= lenModes )  break;  // bufModes full !
 				strcpy(bufModes, text);
 				bufModes += len;
 				lenModes -= len;
@@ -2270,14 +2270,14 @@ BOOL CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
 	return TRUE;
 }
 
-// Indique si on est en mode plein �cran.
+// Indicates whether it is in full screen mode.
 
 BOOL CD3DApplication::RetFullScreen()
 {
 	return !m_pDeviceInfo->bWindowed;
 }
 
-// Change le mode graphique.
+// Change the graphics mode.
 
 BOOL CD3DApplication::ChangeDevice(char *deviceName, char *modeName,
 								   BOOL bFull)
