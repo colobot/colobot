@@ -37,7 +37,7 @@
 
 
 
-// Saute les espaces.
+// Skips spaces.
 
 char* SkipSpace(char *line)
 {
@@ -48,7 +48,7 @@ char* SkipSpace(char *line)
 	return line;
 }
 
-// V�rifie si une ligne contient une commande.
+// Checks if a line contains a command.
 
 BOOL Cmd(char *line, char *token)
 {
@@ -56,10 +56,10 @@ BOOL Cmd(char *line, char *token)
 
 	line = SkipSpace(line);
 	p = strstr(line, token);
-	return ( p == line );  // commande au d�but ?
+	return ( p == line );  // command at the beginning?
 }
 
-// Cherche un op�rateur.
+// Seeking an operator.
 
 char* SearchOp(char *line, char *op)
 {
@@ -71,14 +71,14 @@ char* SearchOp(char *line, char *op)
 	strcat(opeq, "=");
 
 	p = strstr(line, opeq);
-	if ( p == 0 )  // pas trouv� ?
+	if ( p == 0 )  // not found?
 	{
-		return line+strlen(line);  // pointe le z�ro terminateur
+		return line+strlen(line);  // point zero terminator
 	}
-	return p+strlen(opeq);  // pointe apr�s le "="
+	return p+strlen(opeq);  // after the point "="
 }
 
-// Cherche le ni�me argument.
+// Seeks the argument.
 
 char* SearchArg(char *line, int rank)
 {
@@ -100,7 +100,7 @@ char* SearchArg(char *line, int rank)
 	return line;
 }
 
-// Lit un nombre entier, �ventuellement hexad�cimal.
+// Reads an integer, eventually hexadecimal.
 
 int GetInt(char *line, int rank, int def)
 {
@@ -111,7 +111,7 @@ int GetInt(char *line, int rank, int def)
 	if ( *p == 0 )  return def;
 
 	if ( p[0] == '0' &&
-		 p[1] == 'x' )  // commence par "0x" (hexa) ?
+		 p[1] == 'x' )  // begins with "0x" (hexadecimal)?
 	{
 		p += 2;
 		while ( TRUE )
@@ -131,14 +131,14 @@ int GetInt(char *line, int rank, int def)
 			break;
 		}
 	}
-	else	// nombre entier ?
+	else	// integer?
 	{
 		sscanf(p, "%d", &n);
 	}
 	return n;
 }
 
-// Lit un nombre r�el.
+// Reads a float number.
 
 float GetFloat(char *line, int rank, float def)
 {
@@ -152,7 +152,7 @@ float GetFloat(char *line, int rank, float def)
 	return n;
 }
 
-// Lit une cha�ne.
+// Reads a string.
 
 void GetString(char *line, int rank, char *buffer)
 {
@@ -178,7 +178,7 @@ void GetString(char *line, int rank, char *buffer)
 	*buffer = 0;
 }
 
-// Retourne le type d'un objet.
+// Returns the type of an object.
 
 ObjectType GetTypeObject(char *line, int rank, ObjectType def)
 {
@@ -418,7 +418,7 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
 	return def;
 }
 
-// Retourne le nom d'un type d'objet.
+// Returns the name of an object type.
 
 char* GetTypeObject(ObjectType type)
 {
@@ -663,7 +663,7 @@ char* GetTypeObject(ObjectType type)
 	return "";
 }
 
-// Retourne le type de l'eau.
+// Returns the type of water.
 
 WaterType GetTypeWater(char *line, int rank, WaterType def)
 {
@@ -681,7 +681,7 @@ WaterType GetTypeWater(char *line, int rank, WaterType def)
 	return def;
 }
 
-// Retourne le type de terrain.
+// Returns the type of terrain.
 
 D3DTypeObj GetTypeTerrain(char *line, int rank, D3DTypeObj def)
 {
@@ -698,7 +698,7 @@ D3DTypeObj GetTypeTerrain(char *line, int rank, D3DTypeObj def)
 	return def;
 }
 
-// Retourne le num�ro d'un b�timent.
+// Returns the type of a building.
 
 int GetBuild(char *line, int rank)
 {
@@ -727,7 +727,7 @@ int GetBuild(char *line, int rank)
 	return 0;
 }
 
-// Retourne le num�ro d'une recherche.
+// Returns the type of search.
 
 int GetResearch(char *line, int rank)
 {
@@ -753,7 +753,7 @@ int GetResearch(char *line, int rank)
 	return 0;
 }
 
-// Retourne le type d'un effet pyrotechnique.
+// Returns the type of pyrotechnic effect.
 
 PyroType GetPyro(char *line, int rank)
 {
@@ -784,7 +784,7 @@ PyroType GetPyro(char *line, int rank)
 	return PT_NULL;
 }
 
-// Retourne le type d'une cam�ra.
+// Returns the type of camera.
 
 CameraType GetCamera(char *line, int rank)
 {
@@ -801,7 +801,7 @@ CameraType GetCamera(char *line, int rank)
 	return CAMERA_NULL;
 }
 
-// Retourne le nom d'une camera.
+// Returns the name of a camera.
 
 char* GetCamera(CameraType type)
 {
@@ -810,7 +810,7 @@ char* GetCamera(CameraType type)
 	return "BACK";
 }
 
-// Retourne un nombre entier.
+// Returns an integer.
 
 int OpInt(char *line, char *op, int def)
 {
@@ -819,7 +819,7 @@ int OpInt(char *line, char *op, int def)
 	return GetInt(line, 0, def);
 }
 
-// Retourne un nombre r�el.
+// Returns a float number.
 
 float OpFloat(char *line, char *op, float def)
 {
@@ -828,7 +828,7 @@ float OpFloat(char *line, char *op, float def)
 	return GetFloat(line, 0, def);
 }
 
-// Retourne une cha�ne de caract�res.
+// Returns a string.
 
 void OpString(char *line, char *op, char *buffer)
 {
@@ -843,7 +843,7 @@ void OpString(char *line, char *op, char *buffer)
 	}
 }
 
-// Retourne le type d'un objet.
+// Returns the type of an object.
 
 ObjectType OpTypeObject(char *line, char *op, ObjectType def)
 {
@@ -852,7 +852,7 @@ ObjectType OpTypeObject(char *line, char *op, ObjectType def)
 	return GetTypeObject(line, 0, def);
 }
 
-// Retourne le type d'un objet.
+// Returns the type of a water.
 
 WaterType OpTypeWater(char *line, char *op, WaterType def)
 {
@@ -861,7 +861,7 @@ WaterType OpTypeWater(char *line, char *op, WaterType def)
 	return GetTypeWater(line, 0, def);
 }
 
-// Retourne le type d'un objet.
+// Returns the type of a terrain.
 
 D3DTypeObj OpTypeTerrain(char *line, char *op, D3DTypeObj def)
 {
@@ -870,7 +870,7 @@ D3DTypeObj OpTypeTerrain(char *line, char *op, D3DTypeObj def)
 	return GetTypeTerrain(line, 0, def);
 }
 
-// Retourne le num�ro d'une recherche.
+// Returns the type of research.
 
 int OpResearch(char *line, char *op)
 {
@@ -879,7 +879,7 @@ int OpResearch(char *line, char *op)
 	return GetResearch(line, 0);
 }
 
-// Retourne le type d'un effet pyrotechnique.
+// Returns the type of pyrotechnic effect.
 
 PyroType OpPyro(char *line, char *op)
 {
@@ -888,7 +888,7 @@ PyroType OpPyro(char *line, char *op)
 	return GetPyro(line, 0);
 }
 
-// Retourne le type d'une cam�ra.
+// Returns the type of camera.
 
 CameraType OpCamera(char *line, char *op)
 {
@@ -897,7 +897,7 @@ CameraType OpCamera(char *line, char *op)
 	return GetCamera(line, 0);
 }
 
-// Retourne le num�ro d'un b�timent.
+// Returns the type of a building.
 
 int OpBuild(char *line, char *op)
 {
@@ -906,7 +906,7 @@ int OpBuild(char *line, char *op)
 	return GetBuild(line, 0);
 }
 
-// Retourne une position dans le plan XZ (vue d'en haut).
+// Returns a position in the XZ plane (top view).
 
 D3DVECTOR OpPos(char *line, char *op)
 {
@@ -924,7 +924,7 @@ D3DVECTOR OpPos(char *line, char *op)
 	return pos;
 }
 
-// Retourne une direction.
+// Returns a direction.
 
 D3DVECTOR OpDir(char *line, char *op)
 {
@@ -942,7 +942,7 @@ D3DVECTOR OpDir(char *line, char *op)
 	return dir;
 }
 
-// Lit une couleur (0..255).
+// Reads a color (0 .. 255).
 
 D3DCOLOR OpColor(char *line, char *op, D3DCOLOR def)
 {
@@ -959,7 +959,7 @@ D3DCOLOR OpColor(char *line, char *op, D3DCOLOR def)
 	return color;
 }
 
-// Lit une couleur (-1..1).
+// Reads a color (-1 .. 1).
 
 D3DCOLORVALUE OpColorValue(char *line, char *op, D3DCOLORVALUE def)
 {
