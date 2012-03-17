@@ -23,7 +23,7 @@ enum ObjectType;
 
 
 
-// Proc�dures.
+// Procedures.
 
 extern char* RetObjectName(ObjectType type);
 extern char* RetObjectAlias(ObjectType type);
