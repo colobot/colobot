@@ -33,7 +33,7 @@
 
 
 
-// Cherche le nom d'un objet.
+// Seeking the name of an object.
 
 char* RetObjectName(ObjectType type)
 {
@@ -125,8 +125,8 @@ char* RetObjectName(ObjectType type)
 	return "";
 }
 
-// Cherche le nom secondaire d'un objet.
-// (� cause d'Otto qui pense que les allemands n'aiment pas le nucl�aire)
+// Seeking the name of a secondary object.
+// (because Otto thinks that Germans do not like nuclear power)
 
 char* RetObjectAlias(ObjectType type)
 {
@@ -134,12 +134,12 @@ char* RetObjectAlias(ObjectType type)
 	if ( type == OBJECT_URANIUM     )  return "PlatinumOre";
 	if ( type == OBJECT_ATOMIC      )  return "FuelCell";
 	if ( type == OBJECT_MARKURANIUM )  return "PlatinumSpot";
-	if ( type == OBJECT_ENERGY      )  return "Disintegrator";  // pour CeeBot-K
+	if ( type == OBJECT_ENERGY      )  return "Disintegrator";  // for K-CeeBot
 	return "";
 }
 
 
-// Retourne le fichier d'aide � utiliser pour l'objet.
+// Returns the help file to use for the object.
 
 char* RetHelpFilename(ObjectType type)
 {
@@ -224,7 +224,7 @@ char* RetHelpFilename(ObjectType type)
 }
 
 
-// Retourne le fichier d'aide � utiliser pour une instruction.
+// Returns the help file to use for instruction.
 
 char* RetHelpFilename(const char *token)
 {
@@ -347,7 +347,7 @@ char* RetHelpFilename(const char *token)
 }
 
 
-// Teste si un mot cl� est un type de variable.
+// Test if a keyword is a type of variable.
 
 BOOL IsType(const char *token)
 {
@@ -363,7 +363,7 @@ BOOL IsType(const char *token)
 	return FALSE;
 }
 
-// Teste si un mot cl� est une fonction.
+// Test if a keyword is a function.
 
 BOOL IsFunction(const char *token)
 {
@@ -436,7 +436,7 @@ BOOL IsFunction(const char *token)
 }
 
 
-// Retourne l'aide compacte pour une instruction.
+// Returns using a compact instruction.
 
 char* RetHelpText(const char *token)
 {
