@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// pyro.h
 
 #ifndef _PYRO_H_
 #define	_PYRO_H_
@@ -45,19 +45,19 @@ enum PyroType
 	PT_SHOTM	= 11,		// coup pondeuse
 	PT_SHOTW	= 12,		// coup sous l'eau
 	PT_EGG		= 13,		// casse l'oeuf
-	PT_BURNT	= 14,		// brï¿½le objet technique
-	PT_BURNO	= 15,		// brï¿½le objet organique
-	PT_SPIDER	= 16,		// explosion araignï¿½e
+	PT_BURNT	= 14,		// brûle objet technique
+	PT_BURNO	= 15,		// brûle objet organique
+	PT_SPIDER	= 16,		// explosion araignée
 	PT_FALL		= 17,		// fret qui tombe
 	PT_WPCHECK	= 18,		// indicateur atteint
-	PT_FLCREATE	= 19,		// drapeau crï¿½ï¿½
-	PT_FLDELETE	= 20,		// drapeau dï¿½truit
+	PT_FLCREATE	= 19,		// drapeau créé
+	PT_FLDELETE	= 20,		// drapeau détruit
 	PT_RESET	= 21,		// reset position de l'objet
 	PT_WIN		= 22,		// feu d'artifice
-	PT_LOST		= 23,		// fumï¿½e noire
+	PT_LOST		= 23,		// fumée noire
 	PT_DEADG	= 24,		// mort par balle
-	PT_DEADW	= 25,		// mort noyï¿½
-	PT_FINDING	= 26,		// objet dï¿½couvert
+	PT_DEADW	= 25,		// mort noyé
+	PT_FINDING	= 26,		// objet découvert
 };
 
 
@@ -163,7 +163,7 @@ protected:
 	float			m_fallBulletTime;
 	BOOL			m_bFallEnding;
 
-	int				m_crashSphereUsed;	// nb de sphï¿½res utilisï¿½es
+	int				m_crashSphereUsed;	// nb de sphères utilisées
 	D3DVECTOR		m_crashSpherePos[50];
 	float			m_crashSphereRadius[50];
 };

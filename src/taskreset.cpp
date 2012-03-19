@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskreset.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -60,7 +60,7 @@ CTaskReset::~CTaskReset()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskReset::EventProcess(const Event &event)
 {
@@ -78,7 +78,7 @@ BOOL CTaskReset::EventProcess(const Event &event)
 	if ( m_phase == TRSP_ZOUT )
 	{
 		angle = m_iAngle;
-		angle += powf(m_progress*5.0f, 2.0f);  // accï¿½lï¿½re
+		angle += powf(m_progress*5.0f, 2.0f);  // accélère
 		m_object->SetAngleY(0, angle);
 		m_object->SetZoom(0, 1.0f-m_progress);
 
@@ -173,8 +173,8 @@ BOOL CTaskReset::EventProcess(const Event &event)
 }
 
 
-// Assigne le but ï¿½ atteindre.
-// Un angle positif effectue un virage ï¿½ droite.
+// Assigne le but à atteindre.
+// Un angle positif effectue un virage à droite.
 
 Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 {
@@ -202,7 +202,7 @@ Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 	m_goal = goal;
 	m_angle = angle;
 
-	if ( SearchVehicle() )  // emplacement de dï¿½part occupï¿½ ?
+	if ( SearchVehicle() )  // emplacement de départ occupé ?
 	{
 		m_bError = TRUE;
 		return ERR_RESET_NEAR;
@@ -224,7 +224,7 @@ Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskReset::IsEnded()
 {
@@ -279,7 +279,7 @@ Error CTaskReset::IsEnded()
 }
 
 
-// Cherche si un vï¿½hicule est trop proche.
+// Cherche si un véhicule est trop proche.
 
 BOOL CTaskReset::SearchVehicle()
 {

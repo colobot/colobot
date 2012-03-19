@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// edit.h
 
 #ifndef _EDIT_H_
 #define	_EDIT_H_
@@ -26,11 +26,11 @@ class CScroll;
 
 
 
-#define EDITSTUDIOMAX	20000		// nb max de caractï¿½res pour ï¿½diter CBOT
+#define EDITSTUDIOMAX	20000		// nb max de caractères pour éditer CBOT
 #define EDITLINEMAX		1000		// nb max total de lignes
 #define EDITIMAGEMAX	50			// nb max total de lignes avec images
 #define EDITLINKMAX		100			// nb max de liens
-#define EDITHISTORYMAX	50			// nb max de niveaux concervï¿½s
+#define EDITHISTORYMAX	50			// nb max de niveaux concervés
 
 #define EDITUNDOMAX		20			// nb max de undo successifs
 
@@ -40,16 +40,16 @@ typedef struct
 	int		len;			// longueur du texte
 	int		cursor1;		// offset curseur
 	int		cursor2;		// offset curseur
-	int		lineFirst;		// premiï¿½re ligne affichï¿½e.
+	int		lineFirst;		// première ligne affichée.
 
 }
 EditUndo;
 
 enum OperUndo
 {
-	OPERUNDO_SPEC	= 0,	// opï¿½ration spï¿½ciale
-	OPERUNDO_INSERT	= 1,	// insertion de caractï¿½res
-	OPERUNDO_DELETE	= 2,	// suppression de caractï¿½res
+	OPERUNDO_SPEC	= 0,	// opération spéciale
+	OPERUNDO_INSERT	= 1,	// insertion de caractères
+	OPERUNDO_DELETE	= 2,	// suppression de caractères
 };
 
 typedef struct
@@ -78,7 +78,7 @@ HyperMarker;
 typedef struct
 {
 	char	filename[50];	// nom complet du fichier texte
-	int		firstLine;		// rang de la premiï¿½re ligne affichï¿½e
+	int		firstLine;		// rang de la première ligne affichée
 }
 HyperHistory;
 
@@ -199,30 +199,30 @@ protected:
 	BOOL		UndoRecall();
 
 protected:
-	CScroll*	m_scroll;			// ascenseur vertical ï¿½ droite
+	CScroll*	m_scroll;			// ascenseur vertical à droite
 
 	int			m_maxChar;			// lg max du buffer m_text
-	char*		m_text;				// texte (sans zï¿½ro terminateur)
-	char*		m_format;			// format des caractï¿½res
-	int			m_len;				// longueur utilisï¿½e dans m_text
+	char*		m_text;				// texte (sans zéro terminateur)
+	char*		m_format;			// format des caractères
+	int			m_len;				// longueur utilisée dans m_text
 	int			m_cursor1;			// offset curseur
 	int			m_cursor2;			// offset curseur
 
 	BOOL		m_bMulti;			// TRUE -> multi lignes
-	BOOL		m_bEdit;			// TRUE -> ï¿½ditable
+	BOOL		m_bEdit;			// TRUE -> éditable
 	BOOL		m_bHilite;			// TRUE -> hilitable
 	BOOL		m_bInsideScroll;	// TRUE -> ascenseur dans le cadre
-	BOOL		m_bDisplaySpec;		// TRUE -> affiche les caractï¿½res spï¿½ciaux
+	BOOL		m_bDisplaySpec;		// TRUE -> affiche les caractères spéciaux
 	BOOL		m_bMultiFont;		// TRUE -> plusieurs fontes possible
 	BOOL		m_bSoluce;			// TRUE -> montre les liens-solution
-	BOOL		m_bGeneric;			// TRUE -> gï¿½nï¿½rique qui dï¿½file
+	BOOL		m_bGeneric;			// TRUE -> générique qui défile
 	BOOL		m_bAutoIndent;		// TRUE -> indentation automatique
 	float		m_lineHeight;		// hauteur d'une ligne
 	float		m_lineAscent;		// hauteur au-dessus de la ligne de base
 	float		m_lineDescent;		// hauteur au-dessous de la ligne de base
 	int			m_lineVisible;		// nb total de ligne affichables
-	int			m_lineFirst;		// premiï¿½re ligne affichï¿½e
-	int			m_lineTotal;		// nb lignes utilisï¿½es (ds m_lineOffset)
+	int			m_lineFirst;		// première ligne affichée
+	int			m_lineTotal;		// nb lignes utilisées (ds m_lineOffset)
 	int			m_lineOffset[EDITLINEMAX];
 	char		m_lineIndent[EDITLINEMAX];
 	int			m_imageTotal;

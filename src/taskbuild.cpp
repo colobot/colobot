@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskbuild.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -87,7 +87,7 @@ CTaskBuild::~CTaskBuild()
 }
 
 
-// Crï¿½e un batiment.
+// Crée un batiment.
 
 BOOL CTaskBuild::CreateBuilding(D3DVECTOR pos, float angle)
 {
@@ -122,7 +122,7 @@ BOOL CTaskBuild::CreateBuilding(D3DVECTOR pos, float angle)
 	return TRUE;
 }
 
-// Crï¿½e les lumiï¿½res pour les effets.
+// Crée les lumières pour les effets.
 
 void CTaskBuild::CreateLight()
 {
@@ -186,7 +186,7 @@ void CTaskBuild::CreateLight()
 	m_bBlack = FALSE;
 }
 
-// Fait passer les lumiï¿½res du noir au blanc.
+// Fait passer les lumières du noir au blanc.
 
 void CTaskBuild::BlackLight()
 {
@@ -208,7 +208,7 @@ void CTaskBuild::BlackLight()
 	m_bBlack = TRUE;
 }
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskBuild::EventProcess(const Event &event)
 {
@@ -223,9 +223,9 @@ BOOL CTaskBuild::EventProcess(const Event &event)
 
 	m_time += event.rTime;
 
-	m_progress += event.rTime*m_speed;  // ï¿½a avance
+	m_progress += event.rTime*m_speed;  // ça avance
 
-	if ( m_phase == TBP_TURN )  // rotation prï¿½liminaire ?
+	if ( m_phase == TBP_TURN )  // rotation préliminaire ?
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angleY;
@@ -233,11 +233,11 @@ BOOL CTaskBuild::EventProcess(const Event &event)
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne ï¿½ gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
 		return TRUE;
 	}
 
-	if ( m_phase == TBP_MOVE )  // avance/recule prï¿½liminaire ?
+	if ( m_phase == TBP_MOVE )  // avance/recule préliminaire ?
 	{
 		dist = Length(m_object->RetPosition(0), m_metal->RetPosition(0));
 		linSpeed = 0.0f;
@@ -258,7 +258,7 @@ BOOL CTaskBuild::EventProcess(const Event &event)
 		return TRUE;
 	}
 
-	if ( m_phase == TBP_PREP )  // prï¿½pare ?
+	if ( m_phase == TBP_PREP )  // prépare ?
 	{
 		return TRUE;
 	}
@@ -268,7 +268,7 @@ BOOL CTaskBuild::EventProcess(const Event &event)
 		return TRUE;
 	}
 
-	if ( !m_bBuild )  // batiment ï¿½ construire ?
+	if ( !m_bBuild )  // batiment à construire ?
 	{
 		m_bBuild = TRUE;
 
@@ -342,7 +342,7 @@ BOOL CTaskBuild::EventProcess(const Event &event)
 }
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskBuild::Start(ObjectType type)
 {
@@ -358,7 +358,7 @@ Error CTaskBuild::Start(ObjectType type)
 	iAngle = NormAngle(iAngle);  // 0..2*PI
 	oAngle = iAngle;
 
-	m_bError = TRUE;  // opï¿½ration impossible
+	m_bError = TRUE;  // opération impossible
 
 	pos = m_object->RetPosition(0);
 	if ( pos.y < m_water->RetLevel() )  return ERR_BUILD_WATER;
@@ -386,8 +386,8 @@ Error CTaskBuild::Start(ObjectType type)
 	m_metal->SetLock(TRUE);  // plus utilisable
 	m_camera->StartCentering(m_object, PI*0.15f, 99.9f, 0.0f, 1.0f);
 		
-	m_phase = TBP_TURN;  // rotation prï¿½liminaire nï¿½cessaire
-	m_angleY = oAngle;  // angle ï¿½ atteindre
+	m_phase = TBP_TURN;  // rotation préliminaire nécessaire
+	m_angleY = oAngle;  // angle à atteindre
 
 	pv = m_object->RetPosition(0);
 	pv.y += 8.3f;
@@ -401,7 +401,7 @@ Error CTaskBuild::Start(ObjectType type)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskBuild::IsEnded()
 {
@@ -411,7 +411,7 @@ Error CTaskBuild::IsEnded()
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
 	if ( m_bError )  return ERR_STOP;
 
-	if ( m_phase == TBP_TURN )  // rotation prï¿½liminaire ?
+	if ( m_phase == TBP_TURN )  // rotation préliminaire ?
 	{
 		angle = m_object->RetAngleY(0);
 		angle = NormAngle(angle);  // 0..2*PI
@@ -437,7 +437,7 @@ Error CTaskBuild::IsEnded()
 		return ERR_CONTINUE;
 	}
 
-	if ( m_phase == TBP_MOVE )  // avance/recule prï¿½liminaire ?
+	if ( m_phase == TBP_MOVE )  // avance/recule préliminaire ?
 	{
 		dist = Length(m_object->RetPosition(0), m_metal->RetPosition(0));
 
@@ -476,7 +476,7 @@ Error CTaskBuild::IsEnded()
 		m_progress = 0.0f;
 	}
 
-	if ( m_phase == TBP_PREP )  // prï¿½pare ?
+	if ( m_phase == TBP_PREP )  // prépare ?
 	{
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -488,7 +488,7 @@ Error CTaskBuild::IsEnded()
 		m_camera->StartEffect(CE_VIBRATION, m_metal->RetPosition(0), 1.0f);
 
 		m_phase = TBP_BUILD;
-		m_speed = 1.0f/10.f;  // durï¿½e de 10s
+		m_speed = 1.0f/10.f;  // durée de 10s
 		m_progress = 0.0f;
 	}
 
@@ -498,7 +498,7 @@ Error CTaskBuild::IsEnded()
 
 		DeleteMark(m_metal->RetPosition(0), 20.0f);
 
-		m_metal->DeleteObject();  // supprime le mï¿½tal
+		m_metal->DeleteObject();  // supprime le métal
 		delete m_metal;
 		m_metal = 0;
 
@@ -568,7 +568,7 @@ BOOL CTaskBuild::Abort()
 }
 
 
-// Vï¿½rifie si le terrain est assez plat et s'il n'y a pas
+// Vérifie si le terrain est assez plat et s'il n'y a pas
 // un autre objet trop proche.
 
 Error CTaskBuild::FlatFloor()
@@ -619,7 +619,7 @@ Error CTaskBuild::FlatFloor()
 		if ( pObj == 0 )  break;
 
 		if ( !pObj->RetActif() )  continue;  // inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transportï¿½ ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
 		if ( pObj == m_metal )  continue;
 		if ( pObj == m_object )  continue;
 
@@ -667,7 +667,7 @@ Error CTaskBuild::FlatFloor()
 		if ( pObj == 0 )  break;
 
 		if ( !pObj->RetActif() )  continue;  // inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transportï¿½ ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
 		if ( pObj == m_metal )  continue;
 		if ( pObj == m_object )  continue;
 
@@ -688,7 +688,7 @@ Error CTaskBuild::FlatFloor()
 			 type == OBJECT_INFO     ||
 			 type == OBJECT_PARA     ||
 			 type == OBJECT_SAFE     ||
-			 type == OBJECT_HUSTON   )  // bï¿½timent ?
+			 type == OBJECT_HUSTON   )  // bâtiment ?
 		{
 			j = 0;
 			while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
@@ -713,7 +713,7 @@ Error CTaskBuild::FlatFloor()
 	return ERR_OK;
 }
 
-// Cherche l'objet mï¿½tal le plus proche.
+// Cherche l'objet métal le plus proche.
 
 CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 									   float aLimit, Error &err)
@@ -738,12 +738,12 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 		if ( pObj == 0 )  break;
 
 		if ( !pObj->RetActif() )  continue;  // objet inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transportï¿½ ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
 
 		type = pObj->RetType();
 		if ( type != OBJECT_METAL )  continue;
 
-		bMetal = TRUE;  // mï¿½tal existe
+		bMetal = TRUE;  // métal existe
 
 		oPos = pObj->RetPosition(0);
 		distance = Length(oPos, iPos);
@@ -783,7 +783,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 	return pBest;
 }
 
-// Dï¿½truit toutes les marques proches.
+// Détruit toutes les marques proches.
 
 void CTaskBuild::DeleteMark(D3DVECTOR pos, float radius)
 {

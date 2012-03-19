@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// metafile.h
 
 #ifndef _METAFILE_H_
 #define	_METAFILE_H_
@@ -24,7 +24,7 @@
 typedef struct
 {
 	char		name[14];	// nom du fichier (8.3 max)
-	int			start;		// position depuis le dï¿½but du metafile
+	int			start;		// position depuis le début du metafile
 	int			len;		// longueur du fichier
 }
 MetaHeader;
@@ -65,7 +65,7 @@ protected:
 	BOOL		m_bOpen;			// fichier ouvert
 	BOOL		m_bMeta;			// metafile ouvert
 	FILE*		m_stream;			// canal
-	int			m_start;			// position depuis le dï¿½but
+	int			m_start;			// position depuis le début
 	int			m_pos;				// position courante
 	int			m_len;				// longueur du fichier
 };

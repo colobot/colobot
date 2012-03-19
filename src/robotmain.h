@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// robotmain.h
 
 #ifndef _ROBOTMAIN_H_
 #define	_ROBOTMAIN_H_
@@ -93,8 +93,8 @@ typedef struct
 	D3DVECTOR	pos;
 	float		dist;
 	ObjectType	type;
-	int			min;		// gagnï¿½ si >
-	int			max;		// gagnï¿½ si <
+	int			min;		// gagné si >
+	int			max;		// gagné si <
 	int			lost;		// perdu si <=
 	BOOL		bImmediat;
 	char		message[100];
@@ -354,7 +354,7 @@ protected:
 	float			m_checkEndTime;
 	float			m_winDelay;
 	float			m_lostDelay;
-	BOOL			m_bFixScene;	// scï¿½ne fixe, sans interraction
+	BOOL			m_bFixScene;	// scène fixe, sans interraction
 	BOOL			m_bBase;		// OBJECT_BASE existe dans mission
 	FPOINT			m_lastMousePos;
 	CObject*		m_selectObject;
@@ -376,14 +376,14 @@ protected:
 	int				m_movieInfoIndex;
 
 	BOOL			m_bImmediatSatCom;	// SatCom tout de suite ?
-	BOOL			m_bBeginSatCom;		// message SatCom affichï¿½ ?
+	BOOL			m_bBeginSatCom;		// message SatCom affiché ?
 	BOOL			m_bMovieLock;		// film en cours ?
 	BOOL			m_bSatComLock;		// appel du SatCom possible ?
-	BOOL			m_bEditLock;		// ï¿½dition en cours ?
-	BOOL			m_bEditFull;		// ï¿½dition en plein ï¿½cran ?
+	BOOL			m_bEditLock;		// édition en cours ?
+	BOOL			m_bEditFull;		// édition en plein écran ?
 	BOOL			m_bPause;			// simulation en pause
 	BOOL			m_bHilite;
-	BOOL			m_bTrainerPilot;	// tï¿½lï¿½commande trainer ?
+	BOOL			m_bTrainerPilot;	// télécommande trainer ?
 	BOOL			m_bSuspend;
 	BOOL			m_bFriendAim;
 	BOOL			m_bResetCreate;
@@ -443,8 +443,8 @@ protected:
 
 	char			m_gamerName[100];
 
-	long			m_freeBuild;		// bï¿½timents constructibles
-	long			m_freeResearch;		// recherches effectuï¿½es
+	long			m_freeBuild;		// bâtiments constructibles
+	long			m_freeResearch;		// recherches effectuées
 
 	ShowLimit		m_showLimit[MAXSHOWLIMIT];
 

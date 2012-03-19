@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskfire.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,9 +38,9 @@
 
 
 
-#define ENERGY_FIRE		(0.25f/2.5f)	// ï¿½nergie consommï¿½e /s de tir
-#define ENERGY_FIREr	(0.25f/1.5f)	// ï¿½nergie consommï¿½e /s de rayon
-#define ENERGY_FIREi	(0.10f/2.5f)	// ï¿½nergie consommï¿½e /s d'organique
+#define ENERGY_FIRE		(0.25f/2.5f)	// énergie consommée /s de tir
+#define ENERGY_FIREr	(0.25f/1.5f)	// énergie consommée /s de rayon
+#define ENERGY_FIREi	(0.10f/2.5f)	// énergie consommée /s d'organique
 
 
 // Constructeur de l'objet.
@@ -65,7 +65,7 @@ CTaskFire::~CTaskFire()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskFire::EventProcess(const Event &event)
 {
@@ -275,7 +275,7 @@ BOOL CTaskFire::EventProcess(const Event &event)
 }
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskFire::Start(float delay)
 {
@@ -284,7 +284,7 @@ Error CTaskFire::Start(float delay)
 	float		energy, fire;
 	ObjectType	type;
 
-	m_bError = TRUE;  // opï¿½ration impossible
+	m_bError = TRUE;  // opération impossible
 
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILEfc &&
@@ -363,7 +363,7 @@ Error CTaskFire::Start(float delay)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskFire::IsEnded()
 {

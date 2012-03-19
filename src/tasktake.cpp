@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// tasktake.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -63,7 +63,7 @@ CTaskTake::~CTaskTake()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskTake::EventProcess(const Event &event)
 {
@@ -73,7 +73,7 @@ BOOL CTaskTake::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	if ( m_bTurn )  // rotation prï¿½liminaire ?
+	if ( m_bTurn )  // rotation préliminaire ?
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
@@ -81,11 +81,11 @@ BOOL CTaskTake::EventProcess(const Event &event)
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne ï¿½ gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
 		return TRUE;
 	}
 
-	m_progress += event.rTime*m_speed;  // ï¿½a avance
+	m_progress += event.rTime*m_speed;  // ça avance
 
 	m_physics->SetMotorSpeed(D3DVECTOR(0.0f, 0.0f, 0.0f));  // immobile !
 
@@ -93,7 +93,7 @@ BOOL CTaskTake::EventProcess(const Event &event)
 }
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskTake::Start()
 {
@@ -110,7 +110,7 @@ Error CTaskTake::Start()
 	iAngle = NormAngle(iAngle);  // 0..2*PI
 	oAngle = iAngle;
 
-	m_bError = TRUE;  // opï¿½ration impossible
+	m_bError = TRUE;  // opération impossible
 	if ( !m_physics->RetLand() )
 	{
 		pos = m_object->RetPosition(0);
@@ -192,8 +192,8 @@ Error CTaskTake::Start()
 		}
 	}
 
-	m_bTurn = TRUE;  // rotation prï¿½liminaire nï¿½cessaire
-	m_angle = oAngle;  // angle ï¿½ atteindre
+	m_bTurn = TRUE;  // rotation préliminaire nécessaire
+	m_angle = oAngle;  // angle à atteindre
 
 	m_physics->SetFreeze(TRUE);  // on ne bouge plus
 
@@ -201,7 +201,7 @@ Error CTaskTake::Start()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskTake::IsEnded()
 {
@@ -211,14 +211,14 @@ Error CTaskTake::IsEnded()
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
 	if ( m_bError )  return ERR_STOP;
 
-	if ( m_bTurn )  // rotation prï¿½liminaire ?
+	if ( m_bTurn )  // rotation préliminaire ?
 	{
 		angle = m_object->RetAngleY(0);
 		angle = NormAngle(angle);  // 0..2*PI
 
 		if ( TestAngle(angle, m_angle-PI*0.01f, m_angle+PI*0.01f) )
 		{
-			m_bTurn = FALSE;  // rotation terminï¿½e
+			m_bTurn = FALSE;  // rotation terminée
 			m_physics->SetMotorSpeedZ(0.0f);
 
 			if ( m_arm == TTA_FFRONT )
@@ -260,7 +260,7 @@ Error CTaskTake::IsEnded()
 					m_sound->Play(SOUND_POWEROFF, m_object->RetPosition(0));
 				}
 			}
-			m_motion->SetAction(MHS_UPRIGHT, 0.4f);  // se relï¿½ve
+			m_motion->SetAction(MHS_UPRIGHT, 0.4f);  // se relève
 			m_progress = 0.0f;
 			m_speed = 1.0f/0.8f;
 			m_camera->StopCentering(m_object, 0.8f);
@@ -284,7 +284,7 @@ Error CTaskTake::IsEnded()
 			{
 				m_main->ShowDropZone(fret, m_object);  // montre zone constructible
 			}
-			m_motion->SetAction(-1);  // se relï¿½ve
+			m_motion->SetAction(-1);  // se relève
 			m_progress = 0.0f;
 			m_speed = 1.0f/0.4f;
 			m_camera->StopCentering(m_object, 0.8f);
@@ -307,7 +307,7 @@ BOOL CTaskTake::Abort()
 }
 
 
-// Cherche l'objet ï¿½ prendre devant.
+// Cherche l'objet à prendre devant.
 
 CObject* CTaskTake::SearchTakeObject(float &angle,
 									 float dLimit, float aLimit)
@@ -346,7 +346,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
 			 type != OBJECT_KEYd    &&
 			 type != OBJECT_TNT     )  continue;
 
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transportï¿½ ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
 		if ( pObj->RetLock() )  continue;
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
@@ -396,7 +396,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( pObj == m_object )  continue;  // soi-mï¿½me ?
+		if ( pObj == m_object )  continue;  // soi-même ?
 
 		type = pObj->RetType();
 		if ( type != OBJECT_MOBILEfa &&
@@ -462,7 +462,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 	return 0;
 }
 
-// Prend l'objet placï¿½ devant.
+// Prend l'objet placé devant.
 
 BOOL CTaskTake::TruckTakeObject()
 {
@@ -475,7 +475,7 @@ BOOL CTaskTake::TruckTakeObject()
 	{
 //?		fret = SearchTakeObject(angle, 1.5f, PI*0.04f);
 		fret = SearchTakeObject(angle, 1.5f, PI*0.15f);  //OK 1.9
-		if ( fret == 0 )  return FALSE;  // rien ï¿½ prendre ?
+		if ( fret == 0 )  return FALSE;  // rien à prendre ?
 		m_fretType = fret->RetType();
 
 		fret->SetTruck(m_object);
@@ -515,7 +515,7 @@ BOOL CTaskTake::TruckTakeObject()
 	return TRUE;
 }
 
-// Dï¿½pose l'objet pris.
+// Dépose l'objet pris.
 
 BOOL CTaskTake::TruckDeposeObject()
 {
@@ -526,7 +526,7 @@ BOOL CTaskTake::TruckDeposeObject()
 	D3DVECTOR	pos;
 	float		angle;
 
-	if ( m_arm == TTA_FFRONT )  // dï¿½pose au sol devant ?
+	if ( m_arm == TTA_FFRONT )  // dépose au sol devant ?
 	{
 		fret = m_object->RetFret();
 		if ( fret == 0 )  return FALSE;  // ne porte rien ?
@@ -542,16 +542,16 @@ BOOL CTaskTake::TruckDeposeObject()
 		fret->FloorAdjust();  // plaque bien au sol
 
 		fret->SetTruck(0);
-		m_object->SetFret(0);  // dï¿½pose
+		m_object->SetFret(0);  // dépose
 	}
 
-	if ( m_arm == TTA_FRIEND )  // dï¿½pose pile sur amis ?
+	if ( m_arm == TTA_FRIEND )  // dépose pile sur amis ?
 	{
 		other = SearchFriendObject(angle, 1.5f, PI*0.04f);
 		if ( other == 0 )  return FALSE;
 
 		fret = other->RetPower();
-		if ( fret != 0 )  return FALSE;  // l'autre a dï¿½jï¿½ une pile ?
+		if ( fret != 0 )  return FALSE;  // l'autre a déjà une pile ?
 
 		fret = m_object->RetFret();
 		if ( fret == 0 )  return FALSE;
@@ -565,15 +565,15 @@ BOOL CTaskTake::TruckDeposeObject()
 		fret->SetAngleY(0, 0.0f);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, 0.0f);
-		fret->SetTruckPart(0);  // portï¿½ par la base
+		fret->SetTruckPart(0);  // porté par la base
 
-		m_object->SetFret(0);  // dï¿½pose
+		m_object->SetFret(0);  // dépose
 	}
 
 	return TRUE;
 }
 
-// Cherche si un emplacement permet de dï¿½poser un objet.
+// Cherche si un emplacement permet de déposer un objet.
 
 BOOL CTaskTake::IsFreeDeposeObject(D3DVECTOR pos)
 {
@@ -593,14 +593,14 @@ BOOL CTaskTake::IsFreeDeposeObject(D3DVECTOR pos)
 
 		if ( pObj == m_object )  continue;
 		if ( !pObj->RetActif() )  continue;  // inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transportï¿½ ?
+		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
 
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
 			if ( Length(iPos, oPos)-(oRadius+1.0f) < 1.0f )
 			{
-				return FALSE;  // emplacement occupï¿½
+				return FALSE;  // emplacement occupé
 			}
 		}
 	}

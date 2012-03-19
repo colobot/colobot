@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// planet.h
 
 #ifndef _PLANET_H_
 #define	_PLANET_H_
@@ -27,9 +27,9 @@ class CD3DEngine;
 
 typedef struct
 {
-	char		bUsed;		// TRUE -> planï¿½te existe
-	FPOINT		start;		// position initiale en degrï¿½s
-	FPOINT		angle;		// position actuelle en degrï¿½s
+	char		bUsed;		// TRUE -> planète existe
+	FPOINT		start;		// position initiale en degrés
+	FPOINT		angle;		// position actuelle en degrés
 	float		dim;		// dimensions (0..1)
 	float		speed;		// vitesse
 	float		dir;		// direction dans le ciel

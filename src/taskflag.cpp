@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskflag.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -60,7 +60,7 @@ CTaskFlag::~CTaskFlag()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskFlag::EventProcess(const Event &event)
 {
@@ -75,7 +75,7 @@ BOOL CTaskFlag::EventProcess(const Event &event)
 
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 {
@@ -85,7 +85,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 	m_order = order;
 	m_time = 0.0f;
 
-	m_bError = TRUE;  // opï¿½ration impossible
+	m_bError = TRUE;  // opération impossible
 	if ( !m_physics->RetLand() )
 	{
 		pos = m_object->RetPosition(0);
@@ -113,13 +113,13 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 
 	m_bError = FALSE;
 
-	m_motion->SetAction(MHS_FLAG);  // met/enlï¿½ve drapeau
+	m_motion->SetAction(MHS_FLAG);  // met/enlève drapeau
 	m_camera->StartCentering(m_object, PI*0.3f, 99.9f, 0.0f, 0.5f);
 
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskFlag::IsEnded()
 {
@@ -143,7 +143,7 @@ BOOL CTaskFlag::Abort()
 
 
 
-// Retourne l'objet le plus proche d'une position donnï¿½e.
+// Retourne l'objet le plus proche d'une position donnée.
 
 CObject* CTaskFlag::SearchNearest(D3DVECTOR pos, ObjectType type)
 {
@@ -223,7 +223,7 @@ int CTaskFlag::CountObject(ObjectType type)
 	return count;
 }
 
-// Crï¿½e un indicateur de couleur.
+// Crée un indicateur de couleur.
 
 Error CTaskFlag::CreateFlag(int rank)
 {

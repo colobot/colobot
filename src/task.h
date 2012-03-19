@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// task.h
 
 #ifndef _TASK_H_
 #define	_TASK_H_
@@ -36,7 +36,7 @@ class CSound;
 
 
 #define TAKE_DIST		6.0f		// distance d'un objet pour le prendre
-#define TAKE_DIST_OTHER	1.5f		// distance supplï¿½mentaire si sur ami
+#define TAKE_DIST_OTHER	1.5f		// distance supplémentaire si sur ami
 
 //?#define ARM_NEUTRAL_ANGLE1	 155.0f*PI/180.0f
 //?#define ARM_NEUTRAL_ANGLE2	-125.0f*PI/180.0f

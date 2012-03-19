@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// slider.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -73,7 +73,7 @@ CSlider::~CSlider()
 }
 
 
-// Crï¿½e un nouveau bouton.
+// Crée un nouveau bouton.
 
 BOOL CSlider::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -104,7 +104,7 @@ void CSlider::MoveAdjust()
 	m_bHoriz = ( m_dim.x > m_dim.y );
 
 	if ( ( m_bHoriz && m_dim.x < m_dim.y*4.0f) ||
-		 (!m_bHoriz && m_dim.y < m_dim.x*4.0f) )  // slider trï¿½s court ?
+		 (!m_bHoriz && m_dim.y < m_dim.x*4.0f) )  // slider très court ?
 	{
 		delete m_buttonLeft;
 		m_buttonLeft = 0;
@@ -245,7 +245,7 @@ BOOL CSlider::ClearState(int state)
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CSlider::EventProcess(const Event &event)
 {

@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,8 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// MetaFile
+// décembre 2000, Daniel Roux
 
 #include <windows.h>
 #include <stdlib.h>
@@ -298,7 +299,7 @@ int main(int argc, char** argv)
 
 	fclose(dest);
 
-	printf("Terminï¿½ correctement.\n");
+	printf("Terminé correctement.\n");
 	return 0;
 }
 

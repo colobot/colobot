@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// global.h
 
 #ifndef _GLOBAL_H_
 #define	_GLOBAL_H_
@@ -22,26 +22,26 @@
 #define BUILD_DERRICK		(1<<1)		// derrick
 #define BUILD_CONVERT		(1<<2)		// convertisseur
 #define BUILD_RADAR			(1<<3)		// radar
-#define BUILD_ENERGY		(1<<4)		// fabrique ï¿½ pile
-#define BUILD_NUCLEAR		(1<<5)		// centrale nuclï¿½aire
+#define BUILD_ENERGY		(1<<4)		// fabrique à pile
+#define BUILD_NUCLEAR		(1<<5)		// centrale nucléaire
 #define BUILD_STATION		(1<<6)		// station de recharge
-#define BUILD_REPAIR		(1<<7)		// centre de rï¿½paration
-#define BUILD_TOWER			(1<<8)		// tour de dï¿½fense
+#define BUILD_REPAIR		(1<<7)		// centre de réparation
+#define BUILD_TOWER			(1<<8)		// tour de défense
 #define BUILD_RESEARCH		(1<<9)		// centre de recherche
 #define BUILD_LABO			(1<<10)		// laboratoire
 #define BUILD_PARA			(1<<11)		// paratonnerre
 #define BUILD_INFO			(1<<12)		// borne d'information
 #define BUILD_GFLAT			(1<<16)		// montre le sol plat
-#define BUILD_FLAG			(1<<17)		// met/enlï¿½ve drapeau de couleur
+#define BUILD_FLAG			(1<<17)		// met/enlève drapeau de couleur
 
 
-// Ne pas changer les valeurs ï¿½ cause des sauvegardes (bits=...).
+// Ne pas changer les valeurs à cause des sauvegardes (bits=...).
 
 #define RESEARCH_TANK		(1<<0)		// chenilles
 #define RESEARCH_FLY		(1<<1)		// ailes
 #define RESEARCH_CANON		(1<<2)		// canon
-#define RESEARCH_TOWER		(1<<3)		// tour de dï¿½fense
-#define RESEARCH_ATOMIC		(1<<4)		// nuclï¿½aire
+#define RESEARCH_TOWER		(1<<3)		// tour de défense
+#define RESEARCH_ATOMIC		(1<<4)		// nucléaire
 #define RESEARCH_THUMP		(1<<5)		// thumper
 #define RESEARCH_SHIELD		(1<<6)		// bouclier
 #define RESEARCH_PHAZER		(1<<7)		// canon phazer
@@ -52,8 +52,8 @@
 #define RESEARCH_SNIFFER	(1<<12)		// sniffeur
 
 extern long		g_id;					// identificateur unique
-extern long		g_build;				// bï¿½timents constructibles
-extern long		g_researchDone;			// recherches effectuï¿½es
+extern long		g_build;				// bâtiments constructibles
+extern long		g_researchDone;			// recherches effectuées
 extern long		g_researchEnable;		// recherches accessbles
 extern float	g_unit;					// facteur de conversion
 

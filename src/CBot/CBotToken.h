@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,14 +12,15 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.////////////////////////////////////////////////////////////////////
+// interpréteur pour le language CBot du jeu COLOBOT
 
 
-// un programme ï¿½crit est tout d'abord transformï¿½ en une liste de tokens
+// un programme écrit est tout d'abord transformé en une liste de tokens
 // avant d'aborder le compilateur proprement dit
 // par exemple 
 // int var = 3 * ( pos.y + x )
-// est dï¿½composï¿½ en (chaque ligne est un token)
+// est décomposé en (chaque ligne est un token)
 //		int
 //		var
 //		=

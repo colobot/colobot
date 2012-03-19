@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// sound.h
 
 
 #include <dsound.h>
@@ -59,7 +59,7 @@ enum Sound
 	SOUND_SWIM		= 28,
 	SOUND_RADAR		= 29,
 	SOUND_BUILD		= 30,
-	SOUND_ALARM		= 31,	// alarme ï¿½nergie
+	SOUND_ALARM		= 31,	// alarme énergie
 	SOUND_SLIDE		= 32,
 	SOUND_EXPLOi	= 33,	// insect
 	SOUND_INSECTa	= 34,	// ant
@@ -98,10 +98,10 @@ enum Sound
 	SOUND_JOSTLE	= 67,
 	SOUND_GFLAT		= 68,
 	SOUND_DEADg		= 69,	// mort par balle
-	SOUND_DEADw		= 70,	// mort noyï¿½
+	SOUND_DEADw		= 70,	// mort noyé
 	SOUND_FLYf		= 71,	// reactor fail
-	SOUND_ALARMt	= 72,	// alarme tempï¿½rature
-	SOUND_FINDING	= 73,	// trouvï¿½ un objet cachï¿½
+	SOUND_ALARMt	= 72,	// alarme température
+	SOUND_FINDING	= 73,	// trouvé un objet caché
 	SOUND_THUMP		= 74,
 	SOUND_TOUCH		= 75,
 	SOUND_BLITZ		= 76,
@@ -109,7 +109,7 @@ enum Sound
 	SOUND_FIREp		= 78,	// tir avec phazer
 	SOUND_EXPLOg1	= 79,	// impact gun 1
 	SOUND_EXPLOg2	= 80,	// impact gun 2
-	SOUND_MOTORd	= 81,	// moteur ï¿½ friction
+	SOUND_MOTORd	= 81,	// moteur à friction
 };
 
 enum SoundNext
@@ -132,7 +132,7 @@ SoundOper;
 
 typedef struct
 {
-	char					bUsed;			// buffer utilisï¿½ ?
+	char					bUsed;			// buffer utilisé ?
 	char					bMute;			// silence ?
 	Sound					type;			// SOUND_*
 	int						priority;		// si grand -> important

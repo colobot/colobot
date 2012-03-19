@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskgoto.h
 
 #ifndef _TASKGOTO_H_
 #define	_TASKGOTO_H_
@@ -32,14 +32,14 @@ class CObject;
 
 enum TaskGotoGoal
 {
-	TGG_DEFAULT		= -1,	// mode par dï¿½faut
-	TGG_STOP		= 0,	// va ï¿½ destination en s'arrï¿½tant avec prï¿½cision
-	TGG_EXPRESS		= 1,	// va ï¿½ destination sans s'arrï¿½ter
+	TGG_DEFAULT		= -1,	// mode par défaut
+	TGG_STOP		= 0,	// va à destination en s'arrêtant avec précision
+	TGG_EXPRESS		= 1,	// va à destination sans s'arrêter
 };
 
 enum TaskGotoCrash
 {
-	TGC_DEFAULT		= -1,	// mode par dï¿½faut
+	TGC_DEFAULT		= -1,	// mode par défaut
 	TGC_HALT		= 0,	// stoppe si collision
 	TGC_RIGHTLEFT	= 1,	// droite-gauche
 	TGC_LEFTRIGHT	= 2,	// gauche-droite
@@ -55,16 +55,16 @@ enum TaskGotoPhase
 	TGP_LAND		= 2,	// atterri
 	TGP_TURN		= 3,	// tourne pour finir
 	TGP_MOVE		= 4,	// avance pour finir
-	TGP_CRWAIT		= 5,	// attend aprï¿½s collision
-	TGP_CRTURN		= 6,	// tourne ï¿½ droite aprï¿½s collision
-	TGP_CRADVANCE	= 7,	// avance ï¿½ droite aprï¿½s collision
-	TGP_CLWAIT		= 8,	// attend aprï¿½s collision
-	TGP_CLTURN		= 9,	// tourne ï¿½ gauche aprï¿½s collision
-	TGP_CLADVANCE	= 10,	// avance ï¿½ gauche aprï¿½s collision
+	TGP_CRWAIT		= 5,	// attend après collision
+	TGP_CRTURN		= 6,	// tourne à droite après collision
+	TGP_CRADVANCE	= 7,	// avance à droite après collision
+	TGP_CLWAIT		= 8,	// attend après collision
+	TGP_CLTURN		= 9,	// tourne à gauche après collision
+	TGP_CLADVANCE	= 10,	// avance à gauche après collision
 	TGP_BEAMLEAK	= 11,	// beam: leak (fuite)
 	TGP_BEAMSEARCH	= 12,	// beam: search
-	TGP_BEAMWCOLD	= 13,	// beam: attend refroidissement rï¿½acteur
-	TGP_BEAMUP		= 14,	// beam: dï¿½colle
+	TGP_BEAMWCOLD	= 13,	// beam: attend refroidissement réacteur
+	TGP_BEAMUP		= 14,	// beam: décolle
 	TGP_BEAMGOTO	= 15,	// beam: goto dot list
 	TGP_BEAMDOWN	= 16,	// beam: atterri
 };
@@ -134,7 +134,7 @@ protected:
 
 	int				m_bmSize;		// largeur ou hauteur du tableau
 	int				m_bmOffset;		// m_bmSize/2
-	int				m_bmLine;		// incrï¿½ment ligne m_bmSize/8
+	int				m_bmLine;		// incrément ligne m_bmSize/8
 	unsigned char*	m_bmArray;		// tableau de bits
 	int				m_bmMinX, m_bmMinY;
 	int				m_bmMaxX, m_bmMaxY;
@@ -144,14 +144,14 @@ protected:
 	char			m_bmIter[MAXPOINTS+2];
 	int				m_bmIterCounter;
 	CObject*		m_bmFretObject;
-	float			m_bmFinalMove;	// distance finale ï¿½ avancer
-	float			m_bmFinalDist;	// distance effective ï¿½ avancer
+	float			m_bmFinalMove;	// distance finale à avancer
+	float			m_bmFinalDist;	// distance effective à avancer
 	D3DVECTOR		m_bmFinalPos;	// position initiale avant avance
 	float			m_bmTimeLimit;
 	int				m_bmStep;
 	D3DVECTOR		m_bmWatchDogPos;
 	float			m_bmWatchDogTime;
-	D3DVECTOR		m_leakPos;		// position initiale ï¿½ fuire
+	D3DVECTOR		m_leakPos;		// position initiale à fuire
 	float			m_leakDelay;
 	float			m_leakTime;
 	BOOL			m_bLeakRecede;

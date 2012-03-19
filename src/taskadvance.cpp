@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskadvance.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -52,7 +52,7 @@ CTaskAdvance::~CTaskAdvance()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskAdvance::EventProcess(const Event &event)
 {
@@ -61,7 +61,7 @@ BOOL CTaskAdvance::EventProcess(const Event &event)
 
 	m_fixTime += event.rTime;
 
-	// Objet momentanï¿½ment immobile (fourmi sur le dos) ?
+	// Objet momentanément immobile (fourmi sur le dos) ?
 	if ( m_object->RetFixed() )
 	{
 		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
@@ -75,7 +75,7 @@ BOOL CTaskAdvance::EventProcess(const Event &event)
 }
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskAdvance::Start(float length)
 {
@@ -97,7 +97,7 @@ Error CTaskAdvance::Start(float length)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskAdvance::IsEnded()
 {

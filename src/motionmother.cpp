@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// motionmother.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -42,7 +42,7 @@
 
 
 #define ADJUST_ANGLE	FALSE		// TRUE -> ajuste les angles des membres
-#define START_TIME		1000.0f		// dï¿½but du temps relatif
+#define START_TIME		1000.0f		// début du temps relatif
 
 
 
@@ -79,7 +79,7 @@ void CMotionMother::DeleteObject(BOOL bAll)
 }
 
 
-// Crï¿½e un vï¿½hicule roulant quelconque posï¿½ sur le sol.
+// Crée un véhicule roulant quelconque posé sur le sol.
 
 BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 						  float power)
@@ -93,7 +93,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	m_object->SetType(type);
 
-	// Crï¿½e la base principale.
+	// Crée la base principale.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
 	m_object->SetObjectRank(0, rank);
@@ -104,12 +104,12 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Un vï¿½hicule doit avoir obligatoirement une sphï¿½re de
+	// Un véhicule doit avoir obligatoirement une sphère de
 	// collision avec un centre (0;y;0) (voir GetCrashSphere).
 	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 20.0f, SOUND_BOUM, 0.20f);
 	m_object->SetGlobalSphere(D3DVECTOR(-2.0f, 10.0f, 0.0f), 25.0f);
 
-	// Crï¿½e la tï¿½te.
+	// Crée la tête.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(1, rank);
@@ -118,7 +118,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(1, D3DVECTOR(16.0f, 3.0f, 0.0f));
 
-	// Crï¿½e la jambe 1 arriï¿½re-droite.
+	// Crée la jambe 1 arrière-droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(2, rank);
@@ -127,7 +127,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(2, D3DVECTOR(-5.0f, -1.0f, -12.0f));
 
-	// Crï¿½e le pied 1 arriï¿½re-droite.
+	// Crée le pied 1 arrière-droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(3, rank);
@@ -136,7 +136,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(3, D3DVECTOR(0.0f, 0.0f, -8.5f));
 
-	// Crï¿½e la jambe 2 milieu-droite.
+	// Crée la jambe 2 milieu-droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(4, rank);
@@ -145,7 +145,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(4, D3DVECTOR(3.5f, -1.0f, -12.0f));
 
-	// Crï¿½e le pied 2 milieu-droite.
+	// Crée le pied 2 milieu-droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(5, rank);
@@ -154,7 +154,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -8.5f));
 
-	// Crï¿½e la jambe 3 avant-droite.
+	// Crée la jambe 3 avant-droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(6, rank);
@@ -163,7 +163,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(6, D3DVECTOR(10.0f, -1.0f, -10.0f));
 
-	// Crï¿½e le pied 3 avant-droite.
+	// Crée le pied 3 avant-droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(7, rank);
@@ -172,7 +172,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(7, D3DVECTOR(0.0f, 0.0f, -8.5f));
 
-	// Crï¿½e la jambe 1 arriï¿½re-gauche.
+	// Crée la jambe 1 arrière-gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(8, rank);
@@ -182,7 +182,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(8, D3DVECTOR(-5.0f, -1.0f, 12.0f));
 	m_object->SetAngleY(8, PI);
 
-	// Crï¿½e le pied 1 arriï¿½re-gauche.
+	// Crée le pied 1 arrière-gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(9, rank);
@@ -191,7 +191,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(9, D3DVECTOR(0.0f, 0.0f, -8.5f));
 
-	// Crï¿½e la jambe 2 milieu-gauche.
+	// Crée la jambe 2 milieu-gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(10, rank);
@@ -201,7 +201,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(10, D3DVECTOR(3.5f, -1.0f, 12.0f));
 	m_object->SetAngleY(10, PI);
 
-	// Crï¿½e le pied 2 milieu-gauche.
+	// Crée le pied 2 milieu-gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(11, rank);
@@ -210,7 +210,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, -8.5f));
 
-	// Crï¿½e la jambe 3 avant-gauche.
+	// Crée la jambe 3 avant-gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(12, rank);
@@ -220,7 +220,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(12, D3DVECTOR(10.0f, -1.0f, 10.0f));
 	m_object->SetAngleY(12, PI);
 
-	// Crï¿½e le pied 3 avant-gauche.
+	// Crée le pied 3 avant-gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(13, rank);
@@ -229,7 +229,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(13, D3DVECTOR(0.0f, 0.0f, -8.5f));
 
-	// Crï¿½e l'antenne droite.
+	// Crée l'antenne droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(14, rank);
@@ -246,7 +246,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(15, D3DVECTOR(8.0f, 0.0f, 0.0f));
 
-	// Crï¿½e l'antenne gauche.
+	// Crée l'antenne gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(16, rank);
@@ -263,7 +263,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(17, D3DVECTOR(8.0f, 0.0f, 0.0f));
 
-	// Crï¿½e la pince droite.
+	// Crée la pince droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(18, rank);
@@ -273,7 +273,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(18, D3DVECTOR(-4.0f, -3.5f, -8.0f));
 	m_object->SetZoomX(18, 1.2f);
 
-	// Crï¿½e la pince gauche.
+	// Crée la pince gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(19, rank);
@@ -298,7 +298,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Crï¿½e la physique de l'objet.
+// Crée la physique de l'objet.
 
 void CMotionMother::CreatePhysics()
 {
@@ -310,15 +310,15 @@ void CMotionMother::CreatePhysics()
 	//	x1,y1,z1,		x2,y2,z2,		x3,y3,z3,		// en l'air :
 		30,30,10,		35,-15,10,		35,-35,10,		// t0: jambes 1..3
 		-80,-45,-35,	-115,-40,-35,	-90,10,-55,		// t0: pieds 1..3
-		0,0,0,			0,0,0,			0,0,0,			// t0: inutilisï¿½
+		0,0,0,			0,0,0,			0,0,0,			// t0: inutilisé
 														// au sol devant :
 		15,-5,10,		10,-30,10,		5,-50,10,		// t1: jambes 1..3
 		-90,-15,-15,	-110,-55,-35,	-75,-75,-30,	// t1: pieds 1..3
-		0,0,0,			0,0,0,			0,0,0,			// t1: inutilisï¿½
-														// au sol derriï¿½re :
+		0,0,0,			0,0,0,			0,0,0,			// t1: inutilisé
+														// au sol derrière :
 		0,40,10,		5,5,10,			0,-15,10,		// t2: jambes 1..3
 		-45,0,-55,		-65,10,-50,		-125,-85,-45,	// t2: pieds 1..3
-		0,0,0,			0,0,0,			0,0,0,			// t2: inutilisï¿½
+		0,0,0,			0,0,0,			0,0,0,			// t2: inutilisé
 	};
 
 	m_physics->SetType(TYPE_ROLLING);
@@ -354,7 +354,7 @@ void CMotionMother::CreatePhysics()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CMotionMother::EventProcess(const Event &event)
 {
@@ -398,7 +398,7 @@ BOOL CMotionMother::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CMotionMother::EventFrame(const Event &event)
 {
@@ -419,13 +419,13 @@ BOOL CMotionMother::EventFrame(const Event &event)
 	m_armTimeMarch += (s)*event.rTime*0.05f;
 	m_armMember += (s+a)*event.rTime*0.05f;
 
-	bStop = ( a == 0.0f && s == 0.0f );  // a l'arrï¿½t ?
+	bStop = ( a == 0.0f && s == 0.0f );  // a l'arrêt ?
 
 	if ( bStop )
 	{
 		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
 		a = Mod(m_armMember, 1.0f);
-		a = (prog-a)*event.rTime*1.0f;  // vient gentiment ï¿½ position stop
+		a = (prog-a)*event.rTime*1.0f;  // vient gentiment à position stop
 		m_armMember += a;
 	}
 
@@ -519,9 +519,9 @@ BOOL CMotionMother::EventFrame(const Event &event)
 		m_object->SetLinVibration(dir);
 	}
 
-	m_object->SetAngleZ(1, sinf(m_armTimeAbs*0.5f)*0.20f);  // tï¿½te
-	m_object->SetAngleX(1, sinf(m_armTimeAbs*0.6f)*0.10f);  // tï¿½te
-	m_object->SetAngleY(1, sinf(m_armTimeAbs*0.7f)*0.20f);  // tï¿½te
+	m_object->SetAngleZ(1, sinf(m_armTimeAbs*0.5f)*0.20f);  // tête
+	m_object->SetAngleX(1, sinf(m_armTimeAbs*0.6f)*0.10f);  // tête
+	m_object->SetAngleY(1, sinf(m_armTimeAbs*0.7f)*0.20f);  // tête
 
 	m_object->SetAngleZ(14,  0.50f);
 	m_object->SetAngleZ(16,  0.50f);

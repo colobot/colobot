@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskterraform.h
 
 #ifndef _TASKSTERRAFORM_H_
 #define	_TASKSTERRAFORM_H_
@@ -28,7 +28,7 @@ class CObject;
 
 enum TaskTerraPhase
 {
-	TTP_CHARGE	= 1,	// charge d'ï¿½nergie
+	TTP_CHARGE	= 1,	// charge d'énergie
 	TTP_DOWN	= 2,	// descend
 	TTP_TERRA	= 3,	// frappe
 	TTP_UP		= 4,	// remonte

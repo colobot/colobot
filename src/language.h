@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// language.h
 
 #define _FULL			TRUE		// CoLoBoT
 #define _SCHOOL			FALSE		// CeeBot-A ou Teen
@@ -33,7 +33,7 @@
 #define _SOUNDTRACKS	FALSE		// toujours FALSE depuis que InitAudioTrackVolume plante sous Vista
 
 
-// Vï¿½rifications
+// Vérifications
 
 #if !_FULL & !_SCHOOL & !_NET & !_DEMO
 -> aucune version choisie !!!
@@ -44,6 +44,6 @@
 -> EDU ou PERSO ou CEEBOTDEMO ?
 #endif
 #if _EDU & _PERSO & _CEEBOTDEMO
--> pas EDU et PERSO et CEEBOTDEMO en mï¿½me temps !!!
+-> pas EDU et PERSO et CEEBOTDEMO en même temps !!!
 #endif
 #endif

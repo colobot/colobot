@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskterraform.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -42,7 +42,7 @@
 #include "taskterraform.h"
 
 
-#define ENERGY_TERRA	0.40f		// ï¿½nergie consommï¿½e par coup
+#define ENERGY_TERRA	0.40f		// énergie consommée par coup
 #define ACTION_RADIUS	400.0f
 
 
@@ -64,7 +64,7 @@ CTaskTerraform::~CTaskTerraform()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskTerraform::EventProcess(const Event &event)
 {
@@ -78,7 +78,7 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ï¿½a avance
+	m_progress += event.rTime*m_speed;  // ça avance
 	m_time += event.rTime;
 
 	if ( m_phase == TTP_CHARGE )
@@ -206,7 +206,7 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 }
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskTerraform::Start()
 {
@@ -217,7 +217,7 @@ Error CTaskTerraform::Start()
 
 	ObjectType	type;
 
-	m_bError = TRUE;  // opï¿½ration impossible
+	m_bError = TRUE;  // opération impossible
 	if ( !m_physics->RetLand() )  return ERR_TERRA_VEH;
 
 	type = m_object->RetType();
@@ -252,7 +252,7 @@ Error CTaskTerraform::Start()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskTerraform::IsEnded()
 {
@@ -365,7 +365,7 @@ BOOL CTaskTerraform::Abort()
 }
 
 
-// Retourne toutes les fourmis et les araignï¿½es proches.
+// Retourne toutes les fourmis et les araignées proches.
 
 BOOL CTaskTerraform::Terraform()
 {

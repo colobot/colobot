@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// editvalue.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -62,7 +62,7 @@ CEditValue::~CEditValue()
 }
 
 
-// Crï¿½e un nouveau bouton.
+// Crée un nouveau bouton.
 
 BOOL CEditValue::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -142,7 +142,7 @@ void CEditValue::MoveAdjust()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CEditValue::EventProcess(const Event &event)
 {
@@ -222,7 +222,7 @@ BOOL CEditValue::EventProcess(const Event &event)
 }
 
 
-// Met en ï¿½vidence la valeur ï¿½ditï¿½e.
+// Met en évidence la valeur éditée.
 
 void CEditValue::HiliteValue(const Event &event)
 {
@@ -233,7 +233,7 @@ void CEditValue::HiliteValue(const Event &event)
 	pos = m_edit->RetTextLength();
 	if ( m_type == EVT_100 && pos > 0 )
 	{
-		pos --;  // ne sï¿½lectionne pas le "%"
+		pos --;  // ne sélectionne pas le "%"
 	}
 
 	m_edit->SetCursor(pos, 0);
@@ -242,7 +242,7 @@ void CEditValue::HiliteValue(const Event &event)
 	Event newEvent = event;
 	newEvent.event = EVENT_FOCUS;
 	newEvent.param = m_edit->RetEventMsg();
-	m_event->AddEvent(newEvent);  // dï¿½focus les autres objets
+	m_event->AddEvent(newEvent);  // défocus les autres objets
 }
 
 
@@ -320,7 +320,7 @@ void CEditValue::SetValue(float value, BOOL bSendMessage)
 	}
 }
 
-// Retourne la valeur ï¿½ditï¿½e.
+// Retourne la valeur éditée.
 
 float CEditValue::RetValue()
 {

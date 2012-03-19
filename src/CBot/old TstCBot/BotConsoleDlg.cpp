@@ -1,18 +1,5 @@
-ï»¿// * This file is part of the COLOBOT source code
-// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
-// *
-// * This program is free software: you can redistribute it and/or modify
-// * it under the terms of the GNU General Public License as published by
-// * the Free Software Foundation, either version 3 of the License, or
-// * (at your option) any later version.
-// *
-// * This program is distributed in the hope that it will be useful,
-// * but WITHOUT ANY WARRANTY; without even the implied warranty of
-// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-// * GNU General Public License for more details.
-// *
-// * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// BotConsoleDlg.cpp : implementation file
+//
 
 #include "stdafx.h"
 #include "TstCBot.h"
@@ -81,7 +68,7 @@ UINT ThreadProc(ThreadInfo *info)
 		CTimeSpan ts = t - t0;
 
 		char	buffer[200];
-		sprintf( buffer, "\r\nExï¿½cution terminï¿½e en %d secondes.\r\nInterrompue %d fois.\r\n",
+		sprintf( buffer, "\r\nExécution terminée en %d secondes.\r\nInterrompue %d fois.\r\n",
 				 ts.GetTotalSeconds(), Cpt);
 
 		info->m_pEdit1->ReplaceSel(buffer);
@@ -139,7 +126,7 @@ void CBotConsoleDlg::OnOK()
 	m_Edit2.EnableWindow(FALSE);
 	m_cOK.EnableWindow(FALSE);
 
-	// lance un processus paralï¿½le pour l'exï¿½cution
+	// lance un processus paralèle pour l'exécution
 	m_threadinfo.m_pWndMessage = this ;
 
 	m_threadinfo.m_pEdit1 = &m_Edit1;

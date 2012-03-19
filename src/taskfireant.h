@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskfireant.h
 
 #ifndef _TASKFIREANT_H_
 #define	_TASKTIREANT_H_
@@ -28,9 +28,9 @@ class CObject;
 
 enum TaskFireAnt
 {
-	TFA_NULL		= 0,	// rien ï¿½ faire
+	TFA_NULL		= 0,	// rien à faire
 	TFA_TURN		= 1,	// tourne
-	TFA_PREPARE		= 2,	// prï¿½pare position de tir
+	TFA_PREPARE		= 2,	// prépare position de tir
 	TFA_FIRE		= 3,	// tir
 	TFA_TERMINATE	= 4,	// termine position de tir
 };

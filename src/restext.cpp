@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// restext.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -2846,7 +2846,6 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == RT_TITLE_FREE          )  strcpy(text, "Swobodna gra");
 		if ( num == RT_TITLE_TEEN          )  strcpy(text, "Swobodna gra");
 		if ( num == RT_TITLE_USER          )  strcpy(text, "Poziomy u¿ytkownika");
-		if ( num == RT_TITLE_EDITOR        )  strcpy(text, "Edytor poziomów");
 		if ( num == RT_TITLE_PROTO         )  strcpy(text, "Prototypy");
 		if ( num == RT_TITLE_SETUP         )  strcpy(text, "Opcje");
 		if ( num == RT_TITLE_NAME          )  strcpy(text, "Imiê gracza");
@@ -2880,10 +2879,6 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == RT_PERSO_HAIR          )  strcpy(text, "Kolor w³osów:");
 		if ( num == RT_PERSO_COMBI         )  strcpy(text, "Kolor skafandra:");
 		if ( num == RT_PERSO_BAND          )  strcpy(text, "Kolor pasków:");
-
-		if ( num == RT_EDITOR_TITLE        )  strcpy(text, "Nazwa:");
-		if ( num == RT_EDITOR_RESUME       )  strcpy(text, "Opis:");
-		if ( num == RT_EDITOR_AUTHOR       )  strcpy(text, "Autor:");
 
 #if _NEWLOOK
 		if ( num == RT_DIALOG_TITLE        )  strcpy(text, "CeeBot");
@@ -2952,7 +2947,6 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 		if ( num == EVENT_INTERFACE_FREE   )  strcpy(text, "Swobodna gra\\Swobodna gra bez konkretnych celów");
 		if ( num == EVENT_INTERFACE_TEEN   )  strcpy(text, "Swobodna gra\\Swobodna gra bez konkretnych celów");
 		if ( num == EVENT_INTERFACE_USER   )  strcpy(text, "Poziomy\\Poziomy u¿ytkownika");
-		if ( num == EVENT_INTERFACE_EDITOR )  strcpy(text, "Edytor\\Edytor poziomów");
 		if ( num == EVENT_INTERFACE_PROTO  )  strcpy(text, "Prototypy\\Prototypy w trakcie rozwijania");
 		if ( num == EVENT_INTERFACE_NAME   )  strcpy(text, "Nowy gracz\\Wybierz imiê gracza");
 		if ( num == EVENT_INTERFACE_SETUP  )  strcpy(text, "Opcje\\Preferencje");
@@ -2968,7 +2962,6 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 #endif
 		if ( num == EVENT_INTERFACE_BACK   )  strcpy(text, "<<  Wstecz  \\Wraca do poprzedniego ekranu");
 		if ( num == EVENT_INTERFACE_PLAY   )  strcpy(text, "Graj\\Rozpoczyna misjê!");
-		if ( num == EVENT_INTERFACE_DOWNLOAD)  strcpy(text, "Pobierz\\Pobierz wiêciej poziomów z internetu");
 		if ( num == EVENT_INTERFACE_SETUPd )  strcpy(text, "Urz¹dzenie\\Ustawienia sterownika i rozdzielczoœci");
 		if ( num == EVENT_INTERFACE_SETUPg )  strcpy(text, "Grafika\\Ustawienia grafiki");
 		if ( num == EVENT_INTERFACE_SETUPp )  strcpy(text, "Gra\\Ustawienia gry");
@@ -3355,7 +3348,6 @@ BOOL GetResourceBase(ResType type, int num, char* text)
 	{
 		strcpy(text, "B³¹d");
 		if ( num == ERR_CMD             )  strcpy(text, "Nieznane polecenie");
-		if ( num == ERR_DOWNLOAD        )  strcpy(text, "Pobrano! ;)");
 #if _NEWLOOK
 		if ( num == ERR_INSTALL         )  strcpy(text, "Gra CeeBot nie jest zainstalowana.");
 		if ( num == ERR_NOCD            )  strcpy(text, "W³ó¿ dysk CD z gr¹ CeeBot\ni uruchom grê jeszcze raz.");

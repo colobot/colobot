@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// studio.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -87,7 +87,7 @@ CStudio::~CStudio()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CStudio::EventProcess(const Event &event)
 {
@@ -119,12 +119,12 @@ BOOL CStudio::EventProcess(const Event &event)
 		m_event->AddEvent(newEvent);
 	}
 
-	if ( event.event == EVENT_STUDIO_EDIT )  // texte modifiï¿½ ?
+	if ( event.event == EVENT_STUDIO_EDIT )  // texte modifié ?
 	{
 		ColorizeScript(edit);
 	}
 
-	if ( event.event == EVENT_STUDIO_LIST )  // liste cliquï¿½e ?
+	if ( event.event == EVENT_STUDIO_LIST )  // liste cliquée ?
 	{
 		m_main->StartDisplayInfo(m_helpFilename, -1);
 	}
@@ -222,7 +222,7 @@ BOOL CStudio::EventProcess(const Event &event)
 		}
 	}
 
-	if ( event.event == EVENT_STUDIO_REALTIME )  // temps rï¿½el ?
+	if ( event.event == EVENT_STUDIO_REALTIME )  // temps réel ?
 	{
 		m_bRealTime = !m_bRealTime;
 		m_script->SetStepMode(!m_bRealTime);
@@ -247,7 +247,7 @@ BOOL CStudio::EventProcess(const Event &event)
 		}
 	}
 
-	if ( event.event == EVENT_WINDOW3 )  // fenï¿½tre dï¿½placï¿½e ?
+	if ( event.event == EVENT_WINDOW3 )  // fenêtre déplacée ?
 	{
 		m_editActualPos = m_editFinalPos = pw->RetPos();
 		m_editActualDim = m_editFinalDim = pw->RetDim();
@@ -312,7 +312,7 @@ BOOL CStudio::EventProcess(const Event &event)
 }
 
 
-// Fait ï¿½voluer une valeur en fonction du temps ï¿½coulï¿½.
+// Fait évoluer une valeur en fonction du temps écoulé.
 
 float Evolution(float final, float actual, float time)
 {
@@ -322,17 +322,17 @@ float Evolution(float final, float actual, float time)
 
 	if ( final > actual )
 	{
-		if ( value > final )  value = final;  // ne dï¿½passe pas
+		if ( value > final )  value = final;  // ne dépasse pas
 	}
 	else
 	{
-		if ( value < final )  value = final;  // ne dï¿½passe pas
+		if ( value < final )  value = final;  // ne dépasse pas
 	}
 
 	return value;
 }
 
-// Fait ï¿½voluer le studio selon le temps ï¿½coulï¿½.
+// Fait évoluer le studio selon le temps écoulé.
 
 BOOL CStudio::EventFrame(const Event &event)
 {
@@ -355,7 +355,7 @@ BOOL CStudio::EventFrame(const Event &event)
 	list = (CList*)pw->SearchControl(EVENT_STUDIO_LIST);
 	if ( list == 0 )  return FALSE;
 
-	if ( !m_script->IsRunning() && m_bRunning )  // arrï¿½t ?
+	if ( !m_script->IsRunning() && m_bRunning )  // arrêt ?
 	{
 		m_bRunning = FALSE;
 		UpdateFlux();  // stop
@@ -368,7 +368,7 @@ BOOL CStudio::EventFrame(const Event &event)
 		m_event->AddEvent(newEvent);  // stoppe
 	}
 
-	if ( m_script->IsRunning() && !m_bRunning )  // dï¿½part ?
+	if ( m_script->IsRunning() && !m_bRunning )  // départ ?
 	{
 		m_bRunning = TRUE;
 		UpdateFlux();  // run
@@ -381,13 +381,13 @@ BOOL CStudio::EventFrame(const Event &event)
 		m_script->GetCursor(cursor1, cursor2);
 		edit->GetCursor(iCursor1, iCursor2);
 		if ( cursor1 != iCursor1 ||
-			 cursor2 != iCursor2 )  // curseurs changï¿½s ?
+			 cursor2 != iCursor2 )  // curseurs changés ?
 		{
-			edit->SetCursor(cursor1, cursor2);  // montre oï¿½ en est l'exï¿½cution
+			edit->SetCursor(cursor1, cursor2);  // montre où en est l'exécution
 			edit->ShowSelect();
 		}
 
-		m_script->UpdateList(list);  // met ï¿½ jour la liste des variables
+		m_script->UpdateList(list);  // met à jour la liste des variables
 	}
 	else
 	{
@@ -411,7 +411,7 @@ BOOL CStudio::EventFrame(const Event &event)
 }
 
 
-// Indique si un caractï¿½re fait partie d'un mot.
+// Indique si un caractère fait partie d'un mot.
 
 BOOL IsToken(int character)
 {
@@ -424,7 +424,7 @@ BOOL IsToken(int character)
 			 c == '_' );
 }
 
-// Cherche si le curseur est sur un mot-clï¿½.
+// Cherche si le curseur est sur un mot-clé.
 
 void CStudio::SearchToken(CEdit* edit)
 {
@@ -545,7 +545,7 @@ void CStudio::ColorizeScript(CEdit* edit)
 }
 
 
-// Dï¿½but de l'ï¿½dition d'un programme.
+// Début de l'édition d'un programme.
 
 void CStudio::StartEditScript(CScript *script, char* name, int rank)
 {
@@ -655,7 +655,7 @@ void CStudio::StartEditScript(CScript *script, char* name, int rank)
 	AdjustEditScript();
 }
 
-// Repositionne tous les contrï¿½les d'ï¿½dition.
+// Repositionne tous les contrôles d'édition.
 
 void CStudio::AdjustEditScript()
 {
@@ -840,7 +840,7 @@ void CStudio::AdjustEditScript()
 	}
 }
 
-// Fin de l'ï¿½dition d'un programme.
+// Fin de l'édition d'un programme.
 
 BOOL CStudio::StopEditScript(BOOL bCancel)
 {
@@ -882,9 +882,9 @@ BOOL CStudio::StopEditScript(BOOL bCancel)
 	return TRUE;
 }
 
-// Spï¿½cifie le message ï¿½ afficher.
-// Les messages non cliquables restent 8 secondes, mï¿½me si un
-// message cliquable est affichï¿½ avant.
+// Spécifie le message à afficher.
+// Les messages non cliquables restent 8 secondes, même si un
+// message cliquable est affiché avant.
 
 void CStudio::SetInfoText(char *text, BOOL bClickable)
 {
@@ -922,7 +922,7 @@ void CStudio::SetInfoText(char *text, BOOL bClickable)
 }
 
 
-// Changement de la taille l'ï¿½dition d'un programme.
+// Changement de la taille l'édition d'un programme.
 
 void CStudio::ViewEditScript()
 {
@@ -941,7 +941,7 @@ void CStudio::ViewEditScript()
 }
 
 
-// Met ï¿½ jour le mode de fonctionnement.
+// Met à jour le mode de fonctionnement.
 
 void CStudio::UpdateFlux()
 {
@@ -970,7 +970,7 @@ void CStudio::UpdateFlux()
 	}
 }
 
-// Met ï¿½ jour les boutons.
+// Met à jour les boutons.
 
 void CStudio::UpdateButtons()
 {
@@ -1016,7 +1016,7 @@ void CStudio::UpdateButtons()
 }
 
 
-// Dï¿½but de l'affichage d'un dialogue.
+// Début de l'affichage d'un dialogue.
 
 void CStudio::StartDialog(StudioDialog type)
 {
@@ -1134,7 +1134,7 @@ void CStudio::StartDialog(StudioDialog type)
 		UpdateDialogPublic();
 		UpdateDialogAction();
 
-		pe->SetCursor(999, 0);  // sï¿½lectionne tout
+		pe->SetCursor(999, 0);  // sélectionne tout
 		pe->SetFocus(TRUE);
 	}
 
@@ -1181,7 +1181,7 @@ void CStudio::StopDialog()
 	m_main->SetSatComLock(FALSE);  // possible d'utiliser le SatCom
 }
 
-// Ajuste tous les contrï¿½les de dialogue suite ï¿½ un changement de gï¿½omï¿½trie.
+// Ajuste tous les contrôles de dialogue suite à un changement de géométrie.
 
 void CStudio::AdjustDialog()
 {
@@ -1200,7 +1200,7 @@ void CStudio::AdjustDialog()
 
 	wpos = pw->RetPos();
 	wdim = pw->RetDim();
-	pw->SetPos(wpos);  // pour dï¿½placer les boutons de la barre de titre
+	pw->SetPos(wpos);  // pour déplacer les boutons de la barre de titre
 
 	if ( m_dialog == SD_OPEN ||
 		 m_dialog == SD_SAVE )
@@ -1306,7 +1306,7 @@ void CStudio::AdjustDialog()
 	}
 }
 
-// Gestion de l'ï¿½vï¿½nement d'un dialogue.
+// Gestion de l'événement d'un dialogue.
 
 BOOL CStudio::EventDialog(const Event &event)
 {
@@ -1316,7 +1316,7 @@ BOOL CStudio::EventDialog(const Event &event)
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
 	if ( pw == 0 )  return FALSE;
 
-	if ( event.event == EVENT_WINDOW9 )  // fenï¿½tre dï¿½placï¿½e ?
+	if ( event.event == EVENT_WINDOW9 )  // fenêtre déplacée ?
 	{
 		wpos = pw->RetPos();
 		wdim = pw->RetDim();
@@ -1378,7 +1378,7 @@ BOOL CStudio::EventDialog(const Event &event)
 	return TRUE;
 }
 
-// Met ï¿½ jour le nom suite ï¿½ un clic dans la liste.
+// Met à jour le nom suite à un clic dans la liste.
 
 void CStudio::UpdateChangeList()
 {
@@ -1396,17 +1396,17 @@ void CStudio::UpdateChangeList()
 	if ( pe == 0 )  return;
 
 	strcpy(name, pl->RetName(pl->RetSelect()));
-	name[pe->RetMaxChar()] = 0;  // tronque selon lg max ï¿½ditable
+	name[pe->RetMaxChar()] = 0;  // tronque selon lg max éditable
 	p = strchr(name, '\t');  // cherche 1er tabulateur
 	if ( p != 0 )  *p = 0;
 	pe->SetText(name);
-	pe->SetCursor(999, 0);  // sï¿½lectionne tout
+	pe->SetCursor(999, 0);  // sélectionne tout
 	pe->SetFocus(TRUE);
 
 	UpdateDialogAction();
 }
 
-// Met ï¿½ jour la liste suite ï¿½ un changement dans le nom.
+// Met à jour la liste suite à un changement dans le nom.
 
 void CStudio::UpdateChangeEdit()
 {
@@ -1423,7 +1423,7 @@ void CStudio::UpdateChangeEdit()
 	UpdateDialogAction();
 }
 
-// Met ï¿½ jour le bouton d'action.
+// Met à jour le bouton d'action.
 
 void CStudio::UpdateDialogAction()
 {
@@ -1467,7 +1467,7 @@ void CStudio::UpdateDialogAction()
 	pb->SetState(STATE_ENABLE, !bError);
 }
 
-// Met ï¿½ jour les boutons private/public.
+// Met à jour les boutons private/public.
 
 void CStudio::UpdateDialogPublic()
 {
@@ -1503,7 +1503,7 @@ void CStudio::UpdateDialogPublic()
 	}
 }	
 
-// Remplit la liste avec tous les programmes sauvï¿½s.
+// Remplit la liste avec tous les programmes sauvés.
 
 void CStudio::UpdateDialogList()
 {
@@ -1547,7 +1547,7 @@ void CStudio::UpdateDialogList()
 		{
 			if ( strcmp(listBuffer[i].name, listBuffer[i+1].name) > 0 )
 			{
-				fileBuffer = listBuffer[i];  // ï¿½change i et i+1
+				fileBuffer = listBuffer[i];  // échange i et i+1
 				listBuffer[i] = listBuffer[i+1];
 				listBuffer[i+1] = fileBuffer;
 				bDo = TRUE;
@@ -1566,8 +1566,8 @@ void CStudio::UpdateDialogList()
 	free(listBuffer);
 }
 
-// Construit le nom du dossier oï¿½ ouvrir/enregistrer.
-// Si le dossier n'existe pas, il est ï¿½ventuellement crï¿½ï¿½.
+// Construit le nom du dossier où ouvrir/enregistrer.
+// Si le dossier n'existe pas, il est éventuellement créé.
 
 void CStudio::SearchDirectory(char *dir, BOOL bCreate)
 {

@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskreset.h
 
 #ifndef _TASKRESET_H_
 #define	_TASKRESET_H_
@@ -28,9 +28,9 @@ class CObject;
 
 enum TaskResetPhase
 {
-	TRSP_ZOUT	= 1,	// disparaï¿½t
-	TRSP_MOVE	= 2,	// dï¿½place
-	TRSP_ZIN	= 3,	// rï¿½apparaï¿½t
+	TRSP_ZOUT	= 1,	// disparaît
+	TRSP_MOVE	= 2,	// déplace
+	TRSP_ZIN	= 3,	// réapparaît
 };
 
 
@@ -59,7 +59,7 @@ protected:
 	float			m_time;
 	float			m_speed;
 	float			m_progress;
-	float			m_lastParticule;  // temps gï¿½nï¿½ration derniï¿½re particule
+	float			m_lastParticule;  // temps génération dernière particule
 	float			m_iAngle;
 };
 
