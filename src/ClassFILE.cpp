@@ -34,7 +34,7 @@ void PrepareFilename(CBotString &filename)
 	pos = filename.ReverseFind('\\');
 	if ( pos > 0 )
 	{
-		filename = filename.Mid(pos+1);  // Remove files with \\
+		filename = filename.Mid(pos+1);  // Remove files with 
 	}
 
 	pos = filename.ReverseFind('/');
