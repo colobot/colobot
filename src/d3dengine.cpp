@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// D3DEngine.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// D3DEngine.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -144,7 +146,7 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_secondTexNum    = 0;
 	m_eyeDirH         = 0.0f;
 	m_eyeDirV         = 0.0f;
-	m_backgroundName[0] = 0;  // pas d'image de fond
+	m_backgroundName[0] = 0;  // no background image
 	m_backgroundColorUp   = 0;
 	m_backgroundColorDown = 0;
 	m_backgroundCloudUp   = 0;
@@ -154,8 +156,8 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_bOverFront = TRUE;
 	m_overColor = 0;
 	m_overMode  = D3DSTATETCb;
-	m_frontsizeName[0] = 0;  // pas d'image de devant
-	m_hiliteRank[0] = -1;  // liste vide
+	m_frontsizeName[0] = 0;  // no front image
+	m_hiliteRank[0] = -1;  // empty list
 	m_mousePos = FPOINT(0.5f, 0.5f);
 	m_mouseType = D3DMOUSENORM;
 	m_bMouseHide = FALSE;
@@ -359,7 +361,7 @@ LPDIRECT3DDEVICE7 CD3DEngine::RetD3DDevice()
 }
 
 
-// Donne le pointeur au terrain existant.
+// Gives the pointer to the existing terrain.
 
 void CD3DEngine::SetTerrain(CTerrain* terrain)
 {
@@ -367,7 +369,7 @@ void CD3DEngine::SetTerrain(CTerrain* terrain)
 }
 
 
-// Sauvegarde l'état du moteur graphique dans COLOBOT.INI.
+// Saving the state of the graphics engine in COLOBOT.INI.
 
 BOOL CD3DEngine::WriteProfile()
 {
@@ -418,7 +420,7 @@ float CD3DEngine::TimeGet()
 {
 	float	aTime, rTime;
 
-	aTime = (timeGetTime()-m_baseTime)*0.001f;  // en ms
+	aTime = (timeGetTime()-m_baseTime)*0.001f;  // in ms
 	rTime = (aTime - m_lastTime)*m_speed;
 	m_absTime += rTime;
 	m_lastTime = aTime;
@@ -466,8 +468,8 @@ void CD3DEngine::SetRenderEnable(BOOL bEnable)
 }
 
 
-// Prépare une structure D3DObjLevel6 pour pouvoir ajouter
-// qq éléments D3DVERTEX2.
+// Prepare a structure to add D3DObjLevel6
+// qq D3DVERTEX2 elements.
 
 void CD3DEngine::MemSpace6(D3DObjLevel6 *&p, int nb)
 {
@@ -497,8 +499,8 @@ void CD3DEngine::MemSpace6(D3DObjLevel6 *&p, int nb)
 	}
 }
 
-// Prépare une structure D3DObjLevel5 pour pouvoir ajouter
-// qq éléments D3DObjLevel6.
+// Prepare a structure to add D3DObjLevel5
+// qq elements D3DObjLevel6.
 
 void CD3DEngine::MemSpace5(D3DObjLevel5 *&p, int nb)
 {
@@ -528,8 +530,8 @@ void CD3DEngine::MemSpace5(D3DObjLevel5 *&p, int nb)
 	}
 }
 
-// Prépare une structure D3DObjLevel4 pour pouvoir ajouter
-// qq éléments D3DObjLevel5.
+// Prepare a structure to add D3DObjLevel4
+// qq D3DObjLevel5 elements.
 
 void CD3DEngine::MemSpace4(D3DObjLevel4 *&p, int nb)
 {
@@ -559,8 +561,8 @@ void CD3DEngine::MemSpace4(D3DObjLevel4 *&p, int nb)
 	}
 }
 
-// Prépare une structure D3DObjLevel3 pour pouvoir ajouter
-// qq éléments D3DObjLevel4.
+// Prepare a structure to add D3DObjLevel3
+// qq D3DObjLevel4 elements.
 
 void CD3DEngine::MemSpace3(D3DObjLevel3 *&p, int nb)
 {
@@ -590,8 +592,8 @@ void CD3DEngine::MemSpace3(D3DObjLevel3 *&p, int nb)
 	}
 }
 
-// Prépare une structure D3DObjLevel2 pour pouvoir ajouter
-// qq éléments D3DObjLevel3.
+// Prepare a structure to add D3DObjLevel2
+// qq D3DObjLevel3 elements.
 
 void CD3DEngine::MemSpace2(D3DObjLevel2 *&p, int nb)
 {
@@ -621,8 +623,8 @@ void CD3DEngine::MemSpace2(D3DObjLevel2 *&p, int nb)
 	}
 }
 
-// Prépare une structure D3DObjLevel1 pour pouvoir ajouter
-// qq éléments D3DObjLevel2.
+// Prepare a structure to add D3DObjLevel1
+// qq D3DObjLevel2 elements.
 
 void CD3DEngine::MemSpace1(D3DObjLevel1 *&p, int nb)
 {
@@ -653,14 +655,14 @@ void CD3DEngine::MemSpace1(D3DObjLevel1 *&p, int nb)
 }
 
 
-// Retourne le nombre d'objets qu'il est encore possible de créer.
+// Returns the number of objects that can still be created.
 
 int CD3DEngine::RetRestCreate()
 {
 	return D3DMAXOBJECT-m_objectParamTotal-2;
 }
 
-// Crée un nouvel objet. Retourne son rang ou -1 en cas d'erreur.
+// Creates a new object. Returns its rank or -1 on error.
 
 int CD3DEngine::CreateObject()
 {
@@ -695,7 +697,7 @@ int CD3DEngine::CreateObject()
 }
 
 
-// Supprime tous les objets.
+// Removes all objects.
 
 void CD3DEngine::FlushObject()
 {
@@ -753,7 +755,7 @@ void CD3DEngine::FlushObject()
 	GroundSpotFlush();
 }
 
-// Détruit un objet existant.
+// Destroys an existing object.
 
 BOOL CD3DEngine::DeleteObject(int objRank)
 {
@@ -798,7 +800,7 @@ BOOL CD3DEngine::DeleteObject(int objRank)
 		}
 	}
 
-	ShadowDelete(objRank);  // supprime l'ombre
+	ShadowDelete(objRank);  // removes the shadow
 
 	m_objectParam[objRank].bUsed = FALSE;
 
@@ -815,7 +817,7 @@ BOOL CD3DEngine::DeleteObject(int objRank)
 }
 
 
-// Indique si un objet doit être dessiné par dessous l'interface.
+// Indicates whether an object should be drawn underneath the interface.
 
 BOOL CD3DEngine::SetDrawWorld(int objRank, BOOL bDraw)
 {
@@ -825,7 +827,7 @@ BOOL CD3DEngine::SetDrawWorld(int objRank, BOOL bDraw)
 	return TRUE;
 }
 
-// Indique si un objet doit être dessiné par dessus l'interface.
+// Indicates whether an object should be drawn over the interface.
 
 BOOL CD3DEngine::SetDrawFront(int objRank, BOOL bDraw)
 {
@@ -836,7 +838,7 @@ BOOL CD3DEngine::SetDrawFront(int objRank, BOOL bDraw)
 }
 
 
-// Prépare le niveau 1 pour ajouter un triangle.
+// Prepare Level 1 to add a triangle.
 
 D3DObjLevel2* CD3DEngine::AddLevel1(D3DObjLevel1 *&p1, char* texName1, char* texName2)
 {
@@ -865,7 +867,7 @@ D3DObjLevel2* CD3DEngine::AddLevel1(D3DObjLevel1 *&p1, char* texName1, char* tex
 	return p1->table[l1];
 }
 
-// Prépare le niveau 2 pour ajouter un triangle.
+// Prepare Level 2 to add a triangle.
 
 D3DObjLevel3* CD3DEngine::AddLevel2(D3DObjLevel2 *&p2, int objRank)
 {
@@ -892,7 +894,7 @@ D3DObjLevel3* CD3DEngine::AddLevel2(D3DObjLevel2 *&p2, int objRank)
 	return p2->table[l2];
 }
 
-// Prépare le niveau 3 pour ajouter un triangle.
+// Prepare Level 3 to add a triangle.
 
 D3DObjLevel4* CD3DEngine::AddLevel3(D3DObjLevel3 *&p3, float min, float max)
 {
@@ -920,7 +922,7 @@ D3DObjLevel4* CD3DEngine::AddLevel3(D3DObjLevel3 *&p3, float min, float max)
 	return p3->table[l3];
 }
 
-// Prépare le niveau 4 pour ajouter un triangle.
+// Prepare Level 4 to add a triangle.
 
 D3DObjLevel5* CD3DEngine::AddLevel4(D3DObjLevel4 *&p4, int reserve)
 {
@@ -947,7 +949,7 @@ D3DObjLevel5* CD3DEngine::AddLevel4(D3DObjLevel4 *&p4, int reserve)
 	return p4->table[l4];
 }
 
-// Prépare le niveau 5 pour ajouter des vertex.
+// Prepares Level 5 to add vertices.
 
 D3DObjLevel6* CD3DEngine::AddLevel5(D3DObjLevel5 *&p5, D3DTypeTri type,
 									const D3DMATERIAL7 &mat, int state,
@@ -983,8 +985,8 @@ D3DObjLevel6* CD3DEngine::AddLevel5(D3DObjLevel5 *&p5, D3DTypeTri type,
 	return p5->table[l5];
 }
 
-// Ajoute un ou plusieurs triangles à un objet existant.
-// Le nombre doit être multiple de 3.
+// Adds one or more triangles to an existing object.
+// The number must be divisible by 3.
 
 BOOL CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 							 const D3DMATERIAL7 &mat, int state,
@@ -1006,7 +1008,7 @@ BOOL CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 	p3 = AddLevel2(p2, objRank);
 	p4 = AddLevel3(p3, min, max);
 	p5 = AddLevel4(p4, 0);
-	p6 = AddLevel5(p5, D3DTYPE6T, mat, state, nb);  // place pour nb vertex
+	p6 = AddLevel5(p5, D3DTYPE6T, mat, state, nb);  // place for number of vertex
 
 	CopyMemory(&p6->vertex[p6->totalUsed], vertex, sizeof(D3DVERTEX2)*nb);
 	p6->totalUsed += nb;
@@ -1035,7 +1037,7 @@ BOOL CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 	return TRUE;
 }
 
-// Ajoute une surface constituée de triangles jointifs.
+// Adds a surface consisting of triangles joined.
 
 BOOL CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 							const D3DMATERIAL7 &mat, int state,
@@ -1053,7 +1055,7 @@ BOOL CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 	p3 = AddLevel2(p2, objRank);
 	p4 = AddLevel3(p3, min, max);
 	p5 = AddLevel4(p4, 0);
-	p6 = AddLevel5(p5, D3DTYPE6S, mat, state, nb);  // place pour nb vertex
+	p6 = AddLevel5(p5, D3DTYPE6S, mat, state, nb);  // place for number of vertex
 
 	CopyMemory(&p6->vertex[p6->totalUsed], vertex, sizeof(D3DVERTEX2)*nb);
 	p6->totalUsed += nb;
@@ -1082,8 +1084,8 @@ BOOL CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 	return TRUE;
 }
 
-// Ajoute une surface constituée de triangles jointifs.
-// Le buffer n'est pas copié.
+// Adds a surface consisting of triangles joined.
+// The buffer is not copied.
 
 BOOL CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 						  char* texName1, char* texName2,
@@ -1129,7 +1131,7 @@ BOOL CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 }
 
 
-// Cherche une liste de triangles.
+// Looking for a list of triangles.
 
 void CD3DEngine::ChangeLOD()
 {
@@ -1194,7 +1196,7 @@ void CD3DEngine::ChangeLOD()
 	m_lastClippingDistance = m_clippingDistance;
 }
 
-// Cherche une liste de triangles.
+// Looking for a list of triangles.
 
 D3DObjLevel6* CD3DEngine::SearchTriangle(int objRank,
 										 const D3DMATERIAL7 &mat, int state,
@@ -1248,7 +1250,7 @@ D3DObjLevel6* CD3DEngine::SearchTriangle(int objRank,
 	return 0;
 }
 
-// Change la texture secondaire d'un objet.
+// Secondary changes the texture of an object.
 
 BOOL CD3DEngine::ChangeSecondTexture(int objRank, char* texName2)
 {
@@ -1263,7 +1265,7 @@ BOOL CD3DEngine::ChangeSecondTexture(int objRank, char* texName2)
 	{
 		p2 = p1->table[l1];
 		if ( p2 == 0 )  continue;
-		if ( strcmp(p2->texName2, texName2) == 0 )  continue;  // déjà nouvelle
+		if ( strcmp(p2->texName2, texName2) == 0 )  continue;  // already new
 		for ( l2=0 ; l2<p2->totalUsed ; l2++ )
 		{
 			p3 = p2->table[l2];
@@ -1272,7 +1274,7 @@ BOOL CD3DEngine::ChangeSecondTexture(int objRank, char* texName2)
 
 			newp2 = AddLevel1(m_objectPointer, p2->texName1, texName2);
 
-			if ( newp2->totalUsed >= newp2->totalPossible )  continue;  // faire mieux !!!
+			if ( newp2->totalUsed >= newp2->totalPossible )  continue;  // to do better!!!
 			newp2->table[newp2->totalUsed++] = p3;
 
 			p2->table[l2] = 0;
@@ -1282,16 +1284,16 @@ BOOL CD3DEngine::ChangeSecondTexture(int objRank, char* texName2)
 }
 
 
-// Retourne le nombre de triangles de l'objet.
+// Returns the number of triangles of the object.
 
 int CD3DEngine::RetTotalTriangles(int objRank)
 {
 	return m_objectParam[objRank].totalTriangle;
 }
 
-// Retourne qq triangles d'un objet. Utilisé pour extraire qq
-// triangles d'un objet qui explose.
-// "percent" est compris entre 0 et 1.
+// Return qq triangles of an object. 
+// qq triangles used to extract an object that explodes. 
+// "Percent" is between 0 and 1.
 
 int CD3DEngine::GetTriangles(int objRank, float min, float max,
 							  D3DTriangle* buffer, int size, float percent)
@@ -1382,7 +1384,7 @@ int CD3DEngine::GetTriangles(int objRank, float min, float max,
 	return i;
 }
 
-// Donne la bbox d'un objet.
+// Give the box of an object.
 
 BOOL CD3DEngine::GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max)
 {
@@ -1392,7 +1394,7 @@ BOOL CD3DEngine::GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max)
 }
 
 
-// Change le mapping de texture pour toute une liste de triangles.
+// Change the texture mapping for a list of triangles.
 
 BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 									  const D3DMATERIAL7 &mat, int state,
@@ -1472,17 +1474,17 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 	return TRUE;
 }
 
-// Change le mapping de texture pour toute une liste de triangles,
-// afin de simuler une chenille qui tourne.
-// Seul le mapping selon "u" est changé.
+// Change the texture mapping for a list of triangles
+// to simulate a caterpillar that turns.
+// Only the mapping as "u" is changed.
 //
-//	pos: position sur le pourtour [p]
-//	tl:  longeur élément répétitif de la texture [t]
-//	ts:  début de la texture [t]
-//	tt:  largeur totale de la texture [t]
+//	pos: position on the periphery [p]
+//	tl:  length repetitive element of the texture [t]
+//	ts:  beginning of the texture[t]
+//	tt:  total width of the texture [t]
 //
-//	[p] = distance dans l'univers 3D
-//	[t] = position dans la texture (pixels)
+//	[p] = distance in the 3D world
+//	[t] = position in the texture (pixels)
 
 //  ^ y         5 
 //  |   6  o---------o  4
@@ -1498,7 +1500,7 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 //
 // Quand l6=1 :
 //     0      1     2  3  4  ...  7
-//    o--o---------o--o--o--o-//-o--o développement chenille
+//    o--o---------o--o--o--o-//-o--o development track
 //    |ps|         |
 //    <-->  pe     |
 //    <------------>
@@ -1507,7 +1509,7 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 //   o---------------o
 //   |               |
 //   |     o-o-o-o-o |
-//   |     | | | | |<--- texture de la chenille
+//   |     | | | | |<--- texture of the track
 //   |     o-o-o-o-o |
 //   |     | | tl    |
 //   |   ->|-|<---   |
@@ -1541,7 +1543,7 @@ BOOL CD3DEngine::TrackTextureMapping(int objRank,
 
 	while ( pos < 0.0f )
 	{
-		pos += 1000000.0f;  // jamais négatif !
+		pos += 1000000.0f;  // never negative!
 	}
 
 	for ( i=0 ; i<6 ; i++ )
@@ -1551,14 +1553,14 @@ BOOL CD3DEngine::TrackTextureMapping(int objRank,
 			if ( pv[i].x == pv[j+6].x &&
 				 pv[i].y == pv[j+6].y )
 			{
-				current.x = pv[i].x;  // position fin maillon
+				current.x = pv[i].x;  // position end link
 				current.y = pv[i].y;
 				break;
 			}
 		}
 	}
 
-	ps = 0.0f;  // position de début sur le pourtour
+	ps = 0.0f;  // start position on the periphery
 	for ( l6=0 ; l6<nb/6 ; l6++ )
 	{
 		s = e = 0;
@@ -1577,7 +1579,7 @@ BOOL CD3DEngine::TrackTextureMapping(int objRank,
 		if ( s == 3 && e == 3 )
 		{
 			pe = ps+Length(pv[is[0]].x-pv[ie[0]].x,
-						   pv[is[0]].y-pv[ie[0]].y)/factor;  // position de fin sur le pourtour
+						   pv[is[0]].y-pv[ie[0]].y)/factor;  // end position on the periphery
 
 			pps = ps+pos;
 			ppe = pe+pos;
@@ -1598,12 +1600,12 @@ BOOL CD3DEngine::TrackTextureMapping(int objRank,
 			if ( Abs(pv[i+6].x-current.x) > 0.0001f ||
 				 Abs(pv[i+6].y-current.y) > 0.0001f )
 			{
-				current.x = pv[i+6].x;  // fin maillon suivant
+				current.x = pv[i+6].x;  // end next link
 				current.y = pv[i+6].y;
 				break;
 			}
 		}
-		ps = pe;  // position de début suivante sur le pourtour
+		ps = pe;  // following start position on the periphery
 		pv += 6;
 	}
 
@@ -1611,7 +1613,7 @@ BOOL CD3DEngine::TrackTextureMapping(int objRank,
 }
 
 
-// Met à jour tous les paramètres géométriques des objets.
+// Updates all the geometric parameters of objects.
 
 void CD3DEngine::UpdateGeometry()
 {
@@ -1681,8 +1683,8 @@ void CD3DEngine::UpdateGeometry()
 }
 
 
-// Détermine si un objet est visible, même partiellement.
-// La transformation "world" doit être faite !
+// Determines whether an object is visible, even partially.
+// Transformation of "world" must be doneâ€‹â€‹!
 
 BOOL CD3DEngine::IsVisible(int objRank)
 {
@@ -1704,8 +1706,8 @@ BOOL CD3DEngine::IsVisible(int objRank)
 }
 
 
-// Détecte l'objet visé par la souris.
-// Retourne le rang de l'objet ou -1.
+// Detects the target object with the mouse.
+// Returns the rank of the object or -1.
 
 int CD3DEngine::DetectObject(FPOINT mouse)
 {
@@ -1738,7 +1740,7 @@ int CD3DEngine::DetectObject(FPOINT mouse)
 			{
 				p4 = p3->table[l3];
 				if ( p4 == 0 )  continue;
-				if ( p4->min != 0.0f )  continue;  // LOD B ou C ?
+				if ( p4->min != 0.0f )  continue;  // LOD B or C?
 				for ( l4=0 ; l4<p4->totalUsed ; l4++ )
 				{
 					p5 = p4->table[l4];
@@ -1784,7 +1786,7 @@ int CD3DEngine::DetectObject(FPOINT mouse)
 	return nearest;
 }
 
-// Détecte si la souris est dans un triangle.
+// Detects whether the mouse is in a triangle.
 
 BOOL CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
 								int objRank, float &dist)
@@ -1826,7 +1828,7 @@ BOOL CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
 	return TRUE;
 }
 
-// Détecte si un objet est visé par la souris.
+// Detects whether an object is affected by the mouse.
 
 BOOL CD3DEngine::DetectBBox(int objRank, FPOINT mouse)
 {
@@ -1862,15 +1864,15 @@ BOOL CD3DEngine::DetectBBox(int objRank, FPOINT mouse)
 			 mouse.y <= max.y );
 }
 
-// Transforme un point 3D (x,y,z) dans l'espace 2D (x,y,-) de la fenêtre.
-// La coordonnée p2D.z donne l'éloignement.
+// Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window.
+// The coordinated p2D.z gives the distance.
 
 BOOL CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
 {
 	p3D = Transform(m_objectParam[objRank].transform, p3D);
 	p3D = Transform(m_matView, p3D);
 
-	if ( p3D.z < 2.0f )  return FALSE;  // derrière ?
+	if ( p3D.z < 2.0f )  return FALSE;  // behind?
 
 	p2D.x = (p3D.x/p3D.z)*m_matProj._11;
 	p2D.y = (p3D.y/p3D.z)*m_matProj._22;
@@ -1883,8 +1885,8 @@ BOOL CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
 }
 
 
-// Calcul les distances entre le point de vue et l'origine
-// des différents objets.
+// Calculating the distances between the viewpoint and the origin
+// of different objects.
 
 void CD3DEngine::ComputeDistance()
 {
@@ -1939,7 +1941,7 @@ void CD3DEngine::ComputeDistance()
 }
 
 
-// Adapte les réglages lors de la première exécution.
+// Adjusts settings when first run.
 
 void CD3DEngine::FirstExecuteAdapt(BOOL bFirst)
 {
@@ -1955,7 +1957,7 @@ void CD3DEngine::FirstExecuteAdapt(BOOL bFirst)
 	}
 }
 
-// Retourne la quantité totale de mémoire vidéo pour les textures.
+// Returns the total amount of video memory for textures.
 
 int CD3DEngine::GetVidMemTotal()
 {
@@ -1973,7 +1975,7 @@ BOOL CD3DEngine::IsVideo32MB()
 }
 
 
-// Effectue la liste de tous les devices graphiques disponibles.
+// Perform the list of all graphics devices available.
 
 BOOL CD3DEngine::EnumDevices(char *bufDevices, int lenDevices,
 							 char *bufModes, int lenModes,
@@ -2014,7 +2016,7 @@ D3DMATRIX* CD3DEngine::RetMatRightView()
 }
 
 
-// Spécifie l'emplacement et la direction du point de vue.
+// Specifies the location and direction of view.
 
 void CD3DEngine::SetViewParams(const D3DVECTOR &vEyePt,
 							   const D3DVECTOR &vLookatPt,
@@ -2054,7 +2056,7 @@ void CD3DEngine::SetViewParams(const D3DVECTOR &vEyePt,
 }
 
 
-// Spécifie la matrice de transformation d'un objet.
+// Specifies the transformation matrix of an object.
 
 BOOL CD3DEngine::SetObjectTransform(int objRank, const D3DMATRIX &transform)
 {
@@ -2064,7 +2066,7 @@ BOOL CD3DEngine::SetObjectTransform(int objRank, const D3DMATRIX &transform)
 	return TRUE;
 }
 
-// Donne la matrice de transformation d'un objet.
+// Gives the transformation matrix of an object.
 
 BOOL CD3DEngine::GetObjectTransform(int objRank, D3DMATRIX &transform)
 {
@@ -2074,7 +2076,7 @@ BOOL CD3DEngine::GetObjectTransform(int objRank, D3DMATRIX &transform)
 	return TRUE;
 }
 
-// Spécifie le type d'un objet.
+// Specifies the type of an object.
 
 BOOL CD3DEngine::SetObjectType(int objRank, D3DTypeObj type)
 {
@@ -2084,14 +2086,14 @@ BOOL CD3DEngine::SetObjectType(int objRank, D3DTypeObj type)
 	return TRUE;
 }
 
-// Retourne le type d'un objet.
+// Returns the type of an object.
 
 D3DTypeObj CD3DEngine::RetObjectType(int objRank)
 {
 	return m_objectParam[objRank].type;
 }
 
-// Spécifie la transparence d'un objet.
+// Specifies the transparency of an object.
 
 BOOL CD3DEngine::SetObjectTransparency(int objRank, float value)
 {
@@ -2102,18 +2104,18 @@ BOOL CD3DEngine::SetObjectTransparency(int objRank, float value)
 }
 
 
-// Alloue une table pour l'ombre, si nécessaire.
+// Allocates a table for shade, if necessary.
 
 BOOL CD3DEngine::ShadowCreate(int objRank)
 {
 	int		i;
 
-	// Déjà alloué ?
+	// Already allocated?
 	if ( m_objectParam[objRank].shadowRank != -1 )  return TRUE;
 
 	for ( i=0 ; i<D3DMAXSHADOW ; i++ )
 	{
-		if ( m_shadow[i].bUsed == FALSE )  // libre ?
+		if ( m_shadow[i].bUsed == FALSE )  // Free?
 		{
 			ZeroMemory(&m_shadow[i], sizeof(D3DShadow));
 
@@ -2130,10 +2132,10 @@ BOOL CD3DEngine::ShadowCreate(int objRank)
 			return TRUE;
 		}
 	}
-	return FALSE;  // pas trouvé
+	return FALSE;  // not found
 }
 
-// Supprime l'ombre associée à un objet.
+// Removes the shadow associated with an object.
 
 void CD3DEngine::ShadowDelete(int objRank)
 {
@@ -2158,8 +2160,8 @@ void CD3DEngine::ShadowDelete(int objRank)
 	}
 }
 
-// Spécifie si l'ombre est visible. Par exemple, lorsqu'un objet est
-// porté, il n'a plus d'ombre.
+// Specifies if the shadow is visible. 
+// For example, when an object is carried, he has no shadow.
 
 BOOL CD3DEngine::SetObjectShadowHide(int objRank, BOOL bHide)
 {
@@ -2172,7 +2174,7 @@ BOOL CD3DEngine::SetObjectShadowHide(int objRank, BOOL bHide)
 	return TRUE;
 }
 
-// Spécifie le type de l'ombre de l'objet.
+// Specifies the type of the shadow of the object.
 
 BOOL CD3DEngine::SetObjectShadowType(int objRank, D3DShadowType type)
 {
@@ -2185,7 +2187,7 @@ BOOL CD3DEngine::SetObjectShadowType(int objRank, D3DShadowType type)
 	return TRUE;
 }
 
-// Spécifie la position de l'ombre de l'objet.
+// Specifies the position of the shadow of the object.
 
 BOOL CD3DEngine::SetObjectShadowPos(int objRank, const D3DVECTOR &pos)
 {
@@ -2198,7 +2200,7 @@ BOOL CD3DEngine::SetObjectShadowPos(int objRank, const D3DVECTOR &pos)
 	return TRUE;
 }
 
-// Spécifie la normale au terrain de l'ombre de l'objet.
+// Specifies the normal shadow to the field of the object.
 
 BOOL CD3DEngine::SetObjectShadowNormal(int objRank, const D3DVECTOR &n)
 {
@@ -2211,7 +2213,7 @@ BOOL CD3DEngine::SetObjectShadowNormal(int objRank, const D3DVECTOR &n)
 	return TRUE;
 }
 
-// Spécifie l'angle de l'ombre de l'objet.
+// Specifies the angle of the shadow of the object.
 
 BOOL CD3DEngine::SetObjectShadowAngle(int objRank, float angle)
 {
@@ -2224,7 +2226,7 @@ BOOL CD3DEngine::SetObjectShadowAngle(int objRank, float angle)
 	return TRUE;
 }
 
-// Spécifie le rayon de l'ombre de l'objet.
+// Specifies the radius of the shadow of the object.
 
 BOOL CD3DEngine::SetObjectShadowRadius(int objRank, float radius)
 {
@@ -2237,7 +2239,7 @@ BOOL CD3DEngine::SetObjectShadowRadius(int objRank, float radius)
 	return TRUE;
 }
 
-// Retourne le rayon de l'ombre de l'objet.
+// Returns the radius of the shadow of the object.
 
 float CD3DEngine::RetObjectShadowRadius(int objRank)
 {
@@ -2249,7 +2251,7 @@ float CD3DEngine::RetObjectShadowRadius(int objRank)
 	return m_shadow[i].radius;
 }
 
-// Spécifie l'intensité de l'ombre de l'objet.
+// Specifies the intensity of the shadow of the object.
 
 BOOL CD3DEngine::SetObjectShadowIntensity(int objRank, float intensity)
 {
@@ -2262,7 +2264,7 @@ BOOL CD3DEngine::SetObjectShadowIntensity(int objRank, float intensity)
 	return TRUE;
 }
 
-// Spécifie la hauteur de l'ombre de l'objet.
+// Specifies the height of the shadow of the object.
 
 BOOL CD3DEngine::SetObjectShadowHeight(int objRank, float h)
 {
@@ -2276,7 +2278,7 @@ BOOL CD3DEngine::SetObjectShadowHeight(int objRank, float h)
 }
 
 
-// Efface toutes les marques au sol.
+// Clears all marks on the ground.
 
 void CD3DEngine::GroundSpotFlush()
 {
@@ -2287,7 +2289,7 @@ void CD3DEngine::GroundSpotFlush()
 	int						s, y;
 
 	ZeroMemory(m_groundSpot, sizeof(D3DGroundSpot)*D3DMAXGROUNDSPOT);
-	m_bFirstGroundSpot = TRUE;  // force le dessin la première fois
+	m_bFirstGroundSpot = TRUE;  // drawing power first
 
 	for ( s=0 ; s<16 ; s++ )
 	{
@@ -2305,14 +2307,14 @@ void CD3DEngine::GroundSpotFlush()
 		{
 			pbSurf = (WORD*)ddsd.lpSurface;
 			pbSurf += ddsd.lPitch*y/2;
-			memset(pbSurf, -1, ddsd.lPitch);  // tout blanc
+			memset(pbSurf, -1, ddsd.lPitch);  // all blank
 		}
 
 		surface->Unlock(NULL);
 	}
 }
 
-// Alloue une table pour une marque au sol, si nécessaire.
+// Allocates a table for a mark on the ground, if necessary.
 
 int CD3DEngine::GroundSpotCreate()
 {
@@ -2320,7 +2322,7 @@ int CD3DEngine::GroundSpotCreate()
 
 	for ( i=0 ; i<D3DMAXGROUNDSPOT ; i++ )
 	{
-		if ( m_groundSpot[i].bUsed == FALSE )  // libre ?
+		if ( m_groundSpot[i].bUsed == FALSE )  // free?
 		{
 			ZeroMemory(&m_groundSpot[i], sizeof(D3DGroundSpot));
 			m_groundSpot[i].bUsed = TRUE;
@@ -2328,10 +2330,10 @@ int CD3DEngine::GroundSpotCreate()
 			return i;
 		}
 	}
-	return -1;  // pas trouvé
+	return -1;  // not found
 }
 
-// Supprime une marque au sol.
+// Removes a mark on the ground.
 
 void CD3DEngine::GroundSpotDelete(int rank)
 {
@@ -2339,7 +2341,7 @@ void CD3DEngine::GroundSpotDelete(int rank)
 	m_groundSpot[rank].pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
 }
 
-// Spécifie la position d'une marque au sol de l'objet.
+// Specifies the position of surface marking of the object.
 
 BOOL CD3DEngine::SetObjectGroundSpotPos(int rank, const D3DVECTOR &pos)
 {
@@ -2347,7 +2349,7 @@ BOOL CD3DEngine::SetObjectGroundSpotPos(int rank, const D3DVECTOR &pos)
 	return TRUE;
 }
 
-// Spécifie le rayon d'une marque au sol de l'objet.
+// Specifies the radius of surface marking of the object.
 
 BOOL CD3DEngine::SetObjectGroundSpotRadius(int rank, float radius)
 {
@@ -2355,7 +2357,7 @@ BOOL CD3DEngine::SetObjectGroundSpotRadius(int rank, float radius)
 	return TRUE;
 }
 
-// Spécifie la couleur d'une marque au sol.
+// Specifies the color of a mark on the ground.
 
 BOOL CD3DEngine::SetObjectGroundSpotColor(int rank, D3DCOLORVALUE color)
 {
@@ -2363,7 +2365,7 @@ BOOL CD3DEngine::SetObjectGroundSpotColor(int rank, D3DCOLORVALUE color)
 	return TRUE;
 }
 
-// Spécifie les hauteurs min/max.
+// Specifies the height min / max.
 
 BOOL CD3DEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
 {
@@ -2372,7 +2374,7 @@ BOOL CD3DEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
 	return TRUE;
 }
 
-// Spécifie le facteur de transition.
+// Specifies the transition factor.
 
 BOOL CD3DEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
 {
@@ -2381,7 +2383,7 @@ BOOL CD3DEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
 }
 
 
-// Crée les marques au sol.
+// Creates ground marks.
 
 int CD3DEngine::GroundMarkCreate(D3DVECTOR pos, float radius,
 								 float delay1, float delay2, float delay3,
@@ -2402,7 +2404,7 @@ int CD3DEngine::GroundMarkCreate(D3DVECTOR pos, float radius,
 	return 0;
 }
 
-// Efface les marques au sol.
+// Clears the ground.
 
 BOOL CD3DEngine::GroundMarkDelete(int rank)
 {
@@ -2411,7 +2413,7 @@ BOOL CD3DEngine::GroundMarkDelete(int rank)
 }
 
 
-// Gestion des frontières (distances limites) pour changer de résolution.
+// Border management (distance limits) depends of the resolution.
 // LOD = level-of-detail.
 
 void CD3DEngine::SetLimitLOD(int rank, float limit)
@@ -2426,14 +2428,14 @@ float CD3DEngine::RetLimitLOD(int rank, BOOL bLast)
 	if ( bLast )
 	{
 		limit = m_limitLOD[rank];
-		limit *= m_lastDim.x/640.0f;  // limite plus loin si fenêtre grande !
+		limit *= m_lastDim.x/640.0f;  // limit further if large window!
 //?		limit += m_limitLOD[0]*(m_lastObjectDetail*2.0f-1.0f);
 		limit += m_limitLOD[0]*(m_lastObjectDetail*2.0f);
 	}
 	else
 	{
 		limit = m_limitLOD[rank];
-		limit *= m_dim.x/640.0f;  // limite plus loin si fenêtre grande !
+		limit *= m_dim.x/640.0f;  // limit further if large window!
 //?		limit += m_limitLOD[0]*(m_objectDetail*2.0f-1.0f);
 		limit += m_limitLOD[0]*(m_objectDetail*2.0f);
 	}
@@ -2443,7 +2445,7 @@ float CD3DEngine::RetLimitLOD(int rank, BOOL bLast)
 }
 
 
-// Définition de la distance de vision du terrain.
+// Definition of the distance field of vision.
 
 void CD3DEngine::SetTerrainVision(float vision)
 {
@@ -2451,7 +2453,7 @@ void CD3DEngine::SetTerrainVision(float vision)
 }
 
 
-// Gestion du mode global d'ombrage.
+// Management of the global mode of shading.
 
 void CD3DEngine::SetShadow(BOOL bMode)
 {
@@ -2464,7 +2466,7 @@ BOOL CD3DEngine::RetShadow()
 }
 
 
-// Gestion du mode global de marquage au sol.
+// Management of the global mode of marking.
 
 void CD3DEngine::SetGroundSpot(BOOL bMode)
 {
@@ -2477,7 +2479,7 @@ BOOL CD3DEngine::RetGroundSpot()
 }
 
 
-// Gestion du mode global de salissure.
+// Management of the global mode of contamination.
 
 void CD3DEngine::SetDirty(BOOL bMode)
 {
@@ -2490,7 +2492,7 @@ BOOL CD3DEngine::RetDirty()
 }
 
 
-// Gestion du mode global de nappes de brouillard horizontales.
+// Management of the global mode of horizontal fog patches.
 
 void CD3DEngine::SetFog(BOOL bMode)
 {
@@ -2503,7 +2505,7 @@ BOOL CD3DEngine::RetFog()
 }
 
 
-// Indique s'il est possible de donner une couleur dans SetState.
+// ndicates whether it is possible to give a color SetState.
 
 BOOL CD3DEngine::RetStateColor()
 {
@@ -2511,7 +2513,7 @@ BOOL CD3DEngine::RetStateColor()
 }
 
 
-// Gestion du mode global de texturage secondaire.
+// Management of the global mode of secondary texturing.
 
 void CD3DEngine::SetSecondTexture(int texNum)
 {
@@ -2524,19 +2526,19 @@ int CD3DEngine::RetSecondTexture()
 }
 
 
-// Choix du rang de la vue active.
+// Choice of the rank of the active view.
 
 void CD3DEngine::SetRankView(int rank)
 {
 	if ( rank < 0 )  rank = 0;
 	if ( rank > 1 )  rank = 1;
 
-	if ( m_rankView == 0 && rank == 1 )  // entre dans l'eau ?
+	if ( m_rankView == 0 && rank == 1 )  // enters the water?
 	{
 		m_light->AdaptLightColor(m_waterAddColor, +1.0f);
 	}
 
-	if ( m_rankView == 1 && rank == 0 )  // sort de l'eau ?
+	if ( m_rankView == 1 && rank == 0 )  // out of the water?
 	{
 		m_light->AdaptLightColor(m_waterAddColor, -1.0f);
 	}
@@ -2549,25 +2551,25 @@ int CD3DEngine::RetRankView()
 	return m_rankView;
 }
 
-// Indique s'il faut dessiner le monde sous l'interface.
+// Whether to draw the world from the interface.
 
 void CD3DEngine::SetDrawWorld(BOOL bDraw)
 {
 	m_bDrawWorld = bDraw;
 }
 
-// Indique s'il faut dessiner le monde sur l'interface.
+// Whether to draw the world on the interface.
 
 void CD3DEngine::SetDrawFront(BOOL bDraw)
 {
 	m_bDrawFront = bDraw;
 }
 
-// Gestion de la couleur ambiante.
+// Color management ambient.
 // color = 0x00rrggbb
-//	rr: rouge
-//	gg: vert
-//	bb: bleu
+//	rr: red
+//	gg: green
+//	bb: blue
 
 void CD3DEngine::SetAmbiantColor(D3DCOLOR color, int rank)
 {
@@ -2580,7 +2582,7 @@ D3DCOLOR CD3DEngine::RetAmbiantColor(int rank)
 }
 
 
-// Gestion de la couleur sous l'eau.
+// Color management under water.
 
 void CD3DEngine::SetWaterAddColor(D3DCOLORVALUE color)
 {
@@ -2593,7 +2595,7 @@ D3DCOLORVALUE CD3DEngine::RetWaterAddColor()
 }
 
 
-// Gestion de la couleur du brouillard.
+// Management of the fog color.
 
 void CD3DEngine::SetFogColor(D3DCOLOR color, int rank)
 {
@@ -2606,9 +2608,9 @@ D3DCOLOR CD3DEngine::RetFogColor(int rank)
 }
 
 
-// Gestion de la profondeur de champ.
-// Au-delà de cette distance, plus rien n'est visible.
-// Un peu avant (selon SetFogStart), on entre dans le brouillard.
+// Management of the depth of field.
+// Beyond this distance, nothing is visible.
+// Shortly (according SetFogStart), one enters the fog.
 
 void CD3DEngine::SetDeepView(float length, int rank, BOOL bRef)
 {
@@ -2626,9 +2628,9 @@ float CD3DEngine::RetDeepView(int rank)
 }
 
 
-// Gestion du départ de brouillard.
-// Avec 0.0, le brouillard part du point de vue (brouillard max).
-// Avec 1.0, le brouillard part de la profondeur de champ (pas de brouillard).
+// Management the start of fog.
+// With 0.0, the fog from the point of view (fog max).
+// With 1.0, the fog from the depth of field (no fog).
 
 void CD3DEngine::SetFogStart(float start, int rank)
 {
@@ -2641,7 +2643,7 @@ float CD3DEngine::RetFogStart(int rank)
 }
 
 
-// Donne l'image d'arrière-plan à utiliser.
+// Gives the background image to use.
 
 void CD3DEngine::SetBackground(char *name, D3DCOLOR up, D3DCOLOR down,
 							   D3DCOLOR cloudUp, D3DCOLOR cloudDown,
@@ -2656,7 +2658,7 @@ void CD3DEngine::SetBackground(char *name, D3DCOLOR up, D3DCOLOR down,
 	m_bBackgroundQuarter  = bQuarter;
 }
 
-// Donne l'image d'arrière-plan utilisée.
+// Gives the background image used.
 
 void CD3DEngine::RetBackground(char *name, D3DCOLOR &up, D3DCOLOR &down,
 							   D3DCOLOR &cloudUp, D3DCOLOR &cloudDown,
@@ -2671,7 +2673,7 @@ void CD3DEngine::RetBackground(char *name, D3DCOLOR &up, D3DCOLOR &down,
 	bQuarter  = m_bBackgroundQuarter;
 }
 
-// Donne l'image d'avant-plan à utiliser.
+// Gives the foreground image to use.
 
 void CD3DEngine::SetFrontsizeName(char *name)
 {
@@ -2683,14 +2685,14 @@ void CD3DEngine::SetFrontsizeName(char *name)
 	strcpy(m_frontsizeName, name);
 }
 
-// Indique s'il faut dessiner d'avant-plan.
+// Specifies whether to draw the foreground.
 
 void CD3DEngine::SetOverFront(BOOL bFront)
 {
 	m_bOverFront = bFront;
 }
 
-// Donne la couleur d'avant-plan.
+// Gives color to the foreground.
 
 void CD3DEngine::SetOverColor(D3DCOLOR color, int mode)
 {
@@ -2700,7 +2702,7 @@ void CD3DEngine::SetOverColor(D3DCOLOR color, int mode)
 
 
 
-// Gestion de la densité des particules.
+// Management of the particle density.
 
 void CD3DEngine::SetParticuleDensity(float value)
 {
@@ -2723,7 +2725,7 @@ float CD3DEngine::ParticuleAdapt(float factor)
 	return factor/m_particuleDensity;
 }
 
-// Gestion de la distance de clipping.
+// Management of the distance of clipping.
 
 void CD3DEngine::SetClippingDistance(float value)
 {
@@ -2737,7 +2739,7 @@ float CD3DEngine::RetClippingDistance()
 	return m_clippingDistance;
 }
 
-// Gestion du détail des objets.
+// Management of objects detals.
 
 void CD3DEngine::SetObjectDetail(float value)
 {
@@ -2751,7 +2753,7 @@ float CD3DEngine::RetObjectDetail()
 	return m_objectDetail;
 }
 
-// Gestion de la quantité d'objets gadgets.
+// The amount of management objects gadgets.
 
 void CD3DEngine::SetGadgetQuantity(float value)
 {
@@ -2766,7 +2768,7 @@ float CD3DEngine::RetGadgetQuantity()
 	return m_gadgetQuantity;
 }
 
-// Gestion de la qualité des textures.
+// Managing the quality of textures.
 
 void CD3DEngine::SetTextureQuality(int value)
 {
@@ -2786,7 +2788,7 @@ int CD3DEngine::RetTextureQuality()
 }
 
 
-// Gestion du mode de toto.
+// Management mode of toto.
 
 void CD3DEngine::SetTotoMode(BOOL bPresent)
 {
@@ -2799,7 +2801,7 @@ BOOL CD3DEngine::RetTotoMode()
 }
 
 
-// Gestion du mode d'avant-plan.
+// Managing the mode of foreground.
 
 void CD3DEngine::SetLensMode(BOOL bPresent)
 {
@@ -2812,7 +2814,7 @@ BOOL CD3DEngine::RetLensMode()
 }
 
 
-// Gestion du mode de l'eau.
+// Managing the mode of water.
 
 void CD3DEngine::SetWaterMode(BOOL bPresent)
 {
@@ -2825,7 +2827,7 @@ BOOL CD3DEngine::RetWaterMode()
 }
 
 
-// Gestion du mode de ciel.
+// Managing the mode of sky.
 
 void CD3DEngine::SetSkyMode(BOOL bPresent)
 {
@@ -2838,7 +2840,7 @@ BOOL CD3DEngine::RetSkyMode()
 }
 
 
-// Gestion du mode d'arrière-plan.
+// Managing the mode of background.
 
 void CD3DEngine::SetBackForce(BOOL bPresent)
 {
@@ -2851,7 +2853,7 @@ BOOL CD3DEngine::RetBackForce()
 }
 
 
-// Gestion du mode des planètes.
+// Managing the mode of planets.
 
 void CD3DEngine::SetPlanetMode(BOOL bPresent)
 {
@@ -2864,7 +2866,7 @@ BOOL CD3DEngine::RetPlanetMode()
 }
 
 
-// Gestion du mode des lumières dynamiques.
+// Managing the mode of dymanic lights.
 
 void CD3DEngine::SetLightMode(BOOL bPresent)
 {
@@ -2877,7 +2879,7 @@ BOOL CD3DEngine::RetLightMode()
 }
 
 
-// Gestion du mode d'indentation pendant l'édition (CEdit).
+// Management of the indentation mode while editing (CEdit).
 
 void CD3DEngine::SetEditIndentMode(BOOL bAuto)
 {
@@ -2890,7 +2892,7 @@ BOOL CD3DEngine::RetEditIndentMode()
 }
 
 
-// Gestion de l'avance d'un tabulateur pendant l'édition (CEdit).
+// Management in advance of a tab when editing (CEdit).
 
 void CD3DEngine::SetEditIndentValue(int value)
 {
@@ -2925,7 +2927,7 @@ float CD3DEngine::RetTracePrecision()
 }
 
 
-// Met à jour la scène après un changement de paramètres.
+// Updates the scene after a change of parameters.
 
 void CD3DEngine::ApplyChange()
 {
@@ -2941,7 +2943,7 @@ void CD3DEngine::ApplyChange()
 
 
 
-// Retourne le point de vue de l'utilisateur.
+// Returns the point of view of the user.
 
 D3DVECTOR CD3DEngine::RetEyePt()
 {
@@ -2969,7 +2971,7 @@ POINT CD3DEngine::RetDim()
 }
 
 
-// Génère un nom de quart d'image.
+// Generates an image name of the watch.
 
 void QuarterName(char *buffer, char *name, int quarter)
 {
@@ -2984,7 +2986,7 @@ void QuarterName(char *buffer, char *name, int quarter)
 	*buffer++ = 0;
 }
 
-// Libère une texture.
+// Frees texture.
 
 BOOL CD3DEngine::FreeTexture(char* name)
 {
@@ -2997,7 +2999,7 @@ BOOL CD3DEngine::FreeTexture(char* name)
 	return TRUE;
 }
 
-// Charge une texture.
+// Load a texture.
 
 BOOL CD3DEngine::LoadTexture(char* name, int stage)
 {
@@ -3029,7 +3031,7 @@ BOOL CD3DEngine::LoadTexture(char* name, int stage)
 	return TRUE;
 }
 
-// Charge toutes les textures de la scène.
+// Load all the textures of the scene.
 
 BOOL CD3DEngine::LoadAllTexture()
 {
@@ -3055,7 +3057,7 @@ BOOL CD3DEngine::LoadAllTexture()
 
 	if ( m_backgroundName[0] != 0 )
 	{
-		if ( m_bBackgroundQuarter )  // image en 4 morceaux ?
+		if ( m_bBackgroundQuarter )  // image into 4 pieces?
 		{
 			for ( i=0 ; i<4 ; i++ )
 			{
@@ -3103,7 +3105,7 @@ HRESULT CD3DEngine::OneTimeSceneInit()
 }
 
 
-// Mise à jour après avoir créé des objets.
+// Updated after creating objects.
 
 void CD3DEngine::Update()
 {
@@ -3123,7 +3125,7 @@ HRESULT CD3DEngine::FrameMove(float rTime)
 
 	if ( m_groundMark.bUsed )
 	{
-		if ( m_groundMark.phase == 1 )  // croissance ?
+		if ( m_groundMark.phase == 1 )  // growing?
 		{
 			m_groundMark.intensity += rTime*(1.0f/m_groundMark.delay[0]);
 			if ( m_groundMark.intensity >= 1.0f )
@@ -3133,7 +3135,7 @@ HRESULT CD3DEngine::FrameMove(float rTime)
 				m_groundMark.phase = 2;
 			}
 		}
-		else if ( m_groundMark.phase == 2 )  // fixe ?
+		else if ( m_groundMark.phase == 2 )  // fixed?
 		{
 			m_groundMark.fix += rTime*(1.0f/m_groundMark.delay[1]);
 			if ( m_groundMark.fix >= 1.0f )
@@ -3141,7 +3143,7 @@ HRESULT CD3DEngine::FrameMove(float rTime)
 				m_groundMark.phase = 3;
 			}
 		}
-		else if ( m_groundMark.phase == 3 )  // décroissance ?
+		else if ( m_groundMark.phase == 3 )  // decay?
 		{
 			m_groundMark.intensity -= rTime*(1.0f/m_groundMark.delay[2]);
 			if ( m_groundMark.intensity < 0.0f )
@@ -3162,7 +3164,7 @@ HRESULT CD3DEngine::FrameMove(float rTime)
 	return S_OK;
 }
 
-// Fait évoluer tout le jeu.
+// Evolved throughout the game
 
 void CD3DEngine::StepSimul(float rTime)
 {
@@ -3171,8 +3173,8 @@ void CD3DEngine::StepSimul(float rTime)
 
 
 
-// Modifie l'état associé à un matériaux.
-// (*) Ne fonctionne pas sans cette instruction, mystère !
+// Changes the state associated with a material.
+// (*) Does not work without this instruction, mystery!
 
 void CD3DEngine::SetState(int state, D3DCOLOR color)
 {
@@ -3193,7 +3195,7 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 		}
 	}
 
-	if ( state & D3DSTATETTb )  // transparent selon noir de la texture ?
+	if ( state & D3DSTATETTb )  // The transparent black texture?
 	{
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
@@ -3211,7 +3213,7 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
 	}
-	else if ( state & D3DSTATETTw )  // transparent selon blanc de la texture ?
+	else if ( state & D3DSTATETTw )  // The transparent white texture?
 	{
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
@@ -3229,7 +3231,7 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_TFACTOR);
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
 	}
-	else if ( state & D3DSTATETCb )  // transparent selon noir de la couleur ?
+	else if ( state & D3DSTATETCb )  // The transparent black color?
 	{
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
@@ -3244,7 +3246,7 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_DISABLE);
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
 	}
-	else if ( state & D3DSTATETCw )  // transparent selon blanc de la couleur ?
+	else if ( state & D3DSTATETCw )  // The transparent white color?
 	{
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
@@ -3259,7 +3261,7 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_DISABLE);
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
 	}
-	else if ( state & D3DSTATETD )  // transparent selon couleur diffuse ?
+	else if ( state & D3DSTATETD )  // diffuse color as transparent?
 	{
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
@@ -3272,7 +3274,7 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
 	}
-	else if ( state & D3DSTATEALPHA )  // image avec canal alpha ?
+	else if ( state & D3DSTATEALPHA )  // image with alpha channel?
 	{
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
@@ -3372,7 +3374,7 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 	}
 }
 
-// Spécifie une texture à utiliser.
+// Specifies a texture to use.
 
 void CD3DEngine::SetTexture(char *name, int stage)
 {
@@ -3385,7 +3387,7 @@ void CD3DEngine::SetTexture(char *name, int stage)
 	m_pD3DDevice->SetTexture(stage, D3DTextr_GetSurface(name));
 }
 
-// Spécifie le matérial à utiliser.
+// Specifies the material to use.
 
 void CD3DEngine::SetMaterial(const D3DMATERIAL7 &mat)
 {
@@ -3396,7 +3398,7 @@ void CD3DEngine::SetMaterial(const D3DMATERIAL7 &mat)
 }
 
 
-// Efface un point dans une surface (dessine en blanc).
+// Deletes a point in a surface (draw in white).
 
 inline void ClearDot(DDSURFACEDESC2* ddsd, int x, int y)
 {
@@ -3408,10 +3410,10 @@ inline void ClearDot(DDSURFACEDESC2* ddsd, int x, int y)
 	pbSurf += ddsd->lPitch*y/2;
 	pbSurf += x;
 
-	*pbSurf = 0xffff;  // blanc
+	*pbSurf = 0xffff;  // white
 }
 
-// Affiche un point dans une surface.
+// Deletes a point in a surface (draw in white)
 
 void AddDot(DDSURFACEDESC2* ddsd, int x, int y, D3DCOLORVALUE color)
 {
@@ -3445,7 +3447,7 @@ void AddDot(DDSURFACEDESC2* ddsd, int x, int y, D3DCOLORVALUE color)
 	}
 	else
 	{
-		w = -1;  // blanc
+		w = -1;  // blank
 	}
 
 	pbSurf = (WORD*)ddsd->lpSurface;
@@ -3455,7 +3457,7 @@ void AddDot(DDSURFACEDESC2* ddsd, int x, int y, D3DCOLORVALUE color)
 	*pbSurf &= w;
 }
 
-// Affiche un point dans une surface.
+// Displays a point in a surface.
 
 void SetDot(DDSURFACEDESC2* ddsd, int x, int y, D3DCOLORVALUE color)
 {
@@ -3489,7 +3491,7 @@ void SetDot(DDSURFACEDESC2* ddsd, int x, int y, D3DCOLORVALUE color)
 		}
 		else
 		{
-			w = -1;  // blanc
+			w = -1;  // blank
 		}
 
 		pbSurf = (WORD*)ddsd->lpSurface;
@@ -3527,13 +3529,13 @@ void SetDot(DDSURFACEDESC2* ddsd, int x, int y, D3DCOLORVALUE color)
 			pbSurf += ddsd->lPitch*y/4;
 			pbSurf += x;
 
-			*pbSurf &= 0xff000000;  // garde canal alpha
+			*pbSurf &= 0xff000000;  // keeps alpha channel
 			*pbSurf |= w;
 		}
 	}
 }
 
-// Donne un point dans une surface.
+// Gives a point in a surface.
 
 D3DCOLORVALUE GetDot(DDSURFACEDESC2* ddsd, int x, int y)
 {
@@ -3566,7 +3568,7 @@ D3DCOLORVALUE GetDot(DDSURFACEDESC2* ddsd, int x, int y)
 		{
 			r = 0;
 			g = 0;
-			b = 0;  // noir
+			b = 0;  // black
 		}
 
 		color.r = (float)r/63.0f;
@@ -3597,7 +3599,7 @@ D3DCOLORVALUE GetDot(DDSURFACEDESC2* ddsd, int x, int y)
 		{
 			r = 0;
 			g = 0;
-			b = 0;  // noir
+			b = 0;  // black
 		}
 
 		color.r = (float)r/255.0f;
@@ -3610,13 +3612,13 @@ D3DCOLORVALUE GetDot(DDSURFACEDESC2* ddsd, int x, int y)
 	color.r = 0.0f;
 	color.g = 0.0f;
 	color.b = 0.0f;
-	color.a = 0.0f;  // noir
+	color.a = 0.0f;  // black
 	return color;
 }
 
-// Dessine toutes les ombres.
+// Draw all the shadows.
 
-// Il y a 1 pixel de recouvrement autour de chacune des 16 surfaces :
+// There is a pixel collection around each of the 16 surfaces:
 //
 //	    |<----------------------->|<----------------------->|<---- ...
 //	  0 | 1   2            253 254|255                      |
@@ -3624,9 +3626,9 @@ D3DCOLORVALUE GetDot(DDSURFACEDESC2* ddsd, int x, int y)
 //	                            0 | 1   2            253 254|255
 //	                          |---|---|---|-- ... --|---|---|---|
 //
-// On dessine donc dans des surfaces de 254x254 pixels. Le pixel de
-// marge tout autour est dessiné à double (dans 2 surfaces adjacentes),
-// pour que le filtrage produise des résultats identiques !
+// So we draw in 254x254 pixels surfaces. 
+// The pixel margin around it is drawn twice (in two adjacent surfaces),
+// so that the filter produces the same results!
 
 void CD3DEngine::RenderGroundSpot()
 {
@@ -3650,7 +3652,7 @@ void CD3DEngine::RenderGroundSpot()
 	
 	for ( s=0 ; s<16 ; s++ )
 	{
-		min.x = (s%4)*254.0f-1.0f;  // 1 pixel de recouvrement
+		min.x = (s%4)*254.0f-1.0f;  // 1 pixel cover
 		min.y = (s/4)*254.0f-1.0f;
 		max.x = min.x+254.0f+2.0f;
 		max.y = min.y+254.0f+2.0f;
@@ -3658,7 +3660,7 @@ void CD3DEngine::RenderGroundSpot()
 		bClear = FALSE;
 		bSet   = FALSE;
 
-		// Calcule la zone à effacer.
+		// Calculate the area to be erased.
 		dot = (int)(m_groundMark.drawRadius/2.0f);
 
 		tu = (m_groundMark.drawPos.x+1600.0f)/3200.0f;
@@ -3674,7 +3676,7 @@ void CD3DEngine::RenderGroundSpot()
 		}
 
 		px = cx-Mod(cx, 1.0f);
-		py = cy-Mod(cy, 1.0f);  // multiple de 1
+		py = cy-Mod(cy, 1.0f);  // multiple of 1
 
 		if ( m_bFirstGroundSpot ||
 			 ( m_groundMark.drawRadius != 0.0f    &&
@@ -3684,7 +3686,7 @@ void CD3DEngine::RenderGroundSpot()
 			bClear = TRUE;
 		}
 
-		// Calcule la zone à dessiner.
+		// Calculate the area to draw.
 		dot = (int)(m_groundMark.radius/2.0f);
 
 		tu = (m_groundMark.pos.x+1600.0f)/3200.0f;
@@ -3700,7 +3702,7 @@ void CD3DEngine::RenderGroundSpot()
 		}
 
 		px = cx-Mod(cx, 1.0f);
-		py = cy-Mod(cy, 1.0f);  // multiple de 1
+		py = cy-Mod(cy, 1.0f);  // multiple of 1
 
 		if ( m_groundMark.bUsed                 &&
 			 px+dot >= min.x && py+dot >= min.y &&
@@ -3711,7 +3713,7 @@ void CD3DEngine::RenderGroundSpot()
 		
 		if ( bClear || bSet )
 		{
-			// Charge le morceau.
+			// Load the song.
 			sprintf(texName, "shadow%.2d.tga", s);
 			surface = D3DTextr_GetSurface(texName);
 			if ( surface == 0 )  continue;
@@ -3720,18 +3722,18 @@ void CD3DEngine::RenderGroundSpot()
 			ddsd.dwSize = sizeof(DDSURFACEDESC2);
 			if ( surface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL) != DD_OK )  continue;
 
-			// Efface en blanc tout le morceau.
+			// Clears in blank whole piece.
 			if ( ddsd.ddpfPixelFormat.dwRGBBitCount == 16 )
 			{
 				for ( y=0 ; y<(int)ddsd.dwHeight ; y++ )
 				{
 					pbSurf = (WORD*)ddsd.lpSurface;
 					pbSurf += ddsd.lPitch*y/2;
-					memset(pbSurf, -1, ddsd.lPitch);  // tout blanc
+					memset(pbSurf, -1, ddsd.lPitch);  // all blank
 				}
 			}
 
-			// Dessine les nouvelles ombres.
+			// Draw the new shadows.
 			for ( i=0 ; i<D3DMAXGROUNDSPOT ; i++ )
 			{
 				if ( m_groundSpot[i].bUsed == FALSE ||
@@ -3755,7 +3757,7 @@ void CD3DEngine::RenderGroundSpot()
 					}
 
 					px = cx-Mod(cx, 1.0f);
-					py = cy-Mod(cy, 1.0f);  // multiple de 1
+					py = cy-Mod(cy, 1.0f);  // multiple of 1
 
 					if ( px+dot < min.x || py+dot < min.y ||
 						 px-dot > max.x || py-dot > max.y )  continue;
@@ -3784,7 +3786,7 @@ void CD3DEngine::RenderGroundSpot()
 							color.g = m_groundSpot[i].color.g+intensity;
 							color.b = m_groundSpot[i].color.b+intensity;
 
-							ppx -= min.x;  // relatif à la texture
+							ppx -= min.x;  // on the texture
 							ppy -= min.y;
 							AddDot(&ddsd, (int)ppx, (int)ppy, color);
 						}
@@ -3840,7 +3842,7 @@ void CD3DEngine::RenderGroundSpot()
 				}
 
 				px = cx-Mod(cx, 1.0f);
-				py = cy-Mod(cy, 1.0f);  // multiple de 1
+				py = cy-Mod(cy, 1.0f);  // multiple of 1
 
 				for ( iy=-dot ; iy<=dot ; iy++ )
 				{
@@ -3852,7 +3854,7 @@ void CD3DEngine::RenderGroundSpot()
 						if ( ppx <  min.x || ppy <  min.y ||
 							 ppx >= max.x || ppy >= max.y )  continue;
 
-						ppx -= min.x;  // relatif à la texture
+						ppx -= min.x;  // on the texture
 						ppy -= min.y;
 
 						intensity = 1.0f-Length((float)ix, (float)iy)/dot;
@@ -3860,14 +3862,14 @@ void CD3DEngine::RenderGroundSpot()
 						intensity *= m_groundMark.intensity;
 
 						j = (ix+dot) + (iy+dot)*m_groundMark.dx;
-						if ( m_groundMark.table[j] == 1 )  // vert ?
+						if ( m_groundMark.table[j] == 1 )  // green ?
 						{
 							color.r = 1.0f-intensity;
 							color.g = 1.0f;
 							color.b = 1.0f-intensity;
 							AddDot(&ddsd, (int)ppx, (int)ppy, color);
 						}
-						if ( m_groundMark.table[j] == 2 )  // rouge ?
+						if ( m_groundMark.table[j] == 2 )  // red ?
 						{
 							color.r = 1.0f;
 							color.g = 1.0f-intensity;
@@ -3903,7 +3905,7 @@ void CD3DEngine::RenderGroundSpot()
 	m_bFirstGroundSpot = FALSE;
 }
 
-// Dessine toutes les ombres.
+// Draw all the shadows.
 
 void CD3DEngine::DrawShadow()
 {
@@ -3926,7 +3928,7 @@ void CD3DEngine::DrawShadow()
 	ZeroMemory( &material, sizeof(D3DMATERIAL7) );
 	material.diffuse.r = 1.0f;
 	material.diffuse.g = 1.0f;
-	material.diffuse.b = 1.0f;  // blanc
+	material.diffuse.b = 1.0f;  // white
 	material.ambient.r = 0.5f;
 	material.ambient.g = 0.5f;
 	material.ambient.b = 0.5f;
@@ -3955,13 +3957,13 @@ void CD3DEngine::DrawShadow()
 		if ( !m_shadow[i].bUsed )  continue;
 		if ( m_shadow[i].bHide )  continue;
 
-		pos = m_shadow[i].pos;  // pos = centre de l'ombre au sol
+		pos = m_shadow[i].pos;  // pos = center of the shadow on the ground
 
-		if ( m_eyePt.y == pos.y )  continue;  // caméra au même niveau ?
+		if ( m_eyePt.y == pos.y )  continue;  // camera at the same level?
 
-		// h est la hauteur au dessus du sol à laquelle l'ombre
-		// sera dessinée.
-		if ( m_eyePt.y > pos.y )  // caméra en dessus ?
+		// h is the height above the ground to which the shadow
+		// will be drawn.
+		if ( m_eyePt.y > pos.y )  // camera on?
 		{
 			height = m_eyePt.y-pos.y;
 			h = m_shadow[i].radius;
@@ -3977,7 +3979,7 @@ void CD3DEngine::DrawShadow()
 			pos.z += (m_eyePt.z-pos.z)*d/D;
 			pos.y += h;
 		}
-		else	// caméra en dessous ?
+		else	// camera underneath?
 		{
 			height = pos.y-m_eyePt.y;
 			h = m_shadow[i].radius;
@@ -3994,8 +3996,8 @@ void CD3DEngine::DrawShadow()
 			pos.y -= h;
 		}
 
-		// Le hFactor diminue l'intensité et augmente la taille plus
-		// l'objet est haut par rapport au sol.
+		// The hFactor decreases the intensity and size increases more
+		// the object is high relative to the ground.
 		hFactor = m_shadow[i].height/20.0f;
 		if ( hFactor < 0.0f )  hFactor = 0.0f;
 		if ( hFactor > 1.0f )  hFactor = 1.0f;
@@ -4003,8 +4005,8 @@ void CD3DEngine::DrawShadow()
 		if ( hFactor < 0.2f )  hFactor = 0.2f;
 
 		radius = m_shadow[i].radius*1.5f;
-		radius *= 2.0f-hFactor;  // plus grand si haut
-		radius *= 1.0f-d/D;  // plus petit si proche
+		radius *= 2.0f-hFactor;  // greater if high
+		radius *= 1.0f-d/D;  // smaller if close
 
 		if ( m_shadow[i].type == D3DSHADOWNORM )
 		{
@@ -4081,20 +4083,20 @@ void CD3DEngine::DrawShadow()
 
 		intensity = (0.5f+m_shadow[i].intensity*0.5f)*hFactor;
 
-		// Diminue l'intensité de l'ombre si on est dans la zone
-		// comprise entre le début et la fin du brouillard.
+		// Decreases the intensity of the shade if you're in the area
+		// between the beginning and the end of the fog.
 		if ( D > startDeepView )
 		{
 			intensity *= 1.0f-(D-startDeepView)/(endDeepView-startDeepView);
 		}
 
-		// Diminue l'intensité si on est presque à l'horizontale
-		// avec l'ombre (ombre très platte).
+		// Decreases if the intensity is almost horizontal
+		// with shade (shade very platte).
 //?		if ( height < 4.0f )  intensity *= height/4.0f;
 
 		if ( intensity == 0.0f )  continue;
 
-		if ( lastIntensity != intensity )  // intensité changée ?
+		if ( lastIntensity != intensity )  // intensity changed?
 		{
 			lastIntensity = intensity;
 			SetState(D3DSTATETTw, RetColor(intensity));
@@ -4109,8 +4111,8 @@ void CD3DEngine::DrawShadow()
 }
 
 
-// Called once per frame, the call is the entry point for 3d
-// rendering. This function sets up render states, clears the
+// Called ounces per frame, the call is the entry point for 3d rendering. 
+// This function sets up render states, clears the
 // viewport, and renders the scene.
 
 HRESULT CD3DEngine::Render()
@@ -4142,7 +4144,7 @@ HRESULT CD3DEngine::Render()
 	}
 
 	// Clear the viewport
-	if ( m_bSkyMode && m_cloud->RetLevel() != 0.0f )  // nuages ?
+	if ( m_bSkyMode && m_cloud->RetLevel() != 0.0f )  // clouds?
 	{
 		color = m_backgroundCloudDown;
 	}
@@ -4160,9 +4162,9 @@ HRESULT CD3DEngine::Render()
 
 	if ( m_bDrawWorld )
 	{
-		DrawBackground();  // dessine l'arrière-plan
-		if ( m_bPlanetMode )  DrawPlanet();  // dessine les planètes
-		if ( m_bSkyMode )  m_cloud->Draw();  // dessine les nuages
+		DrawBackground();  // draws the background
+		if ( m_bPlanetMode )  DrawPlanet();  // draws the planets
+		if ( m_bSkyMode )  m_cloud->Draw();  // draws the clouds
 
 		// Display the objects
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
@@ -4179,11 +4181,11 @@ HRESULT CD3DEngine::Render()
 
 		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &m_matView);
 
-		if ( m_bWaterMode )  m_water->DrawBack();  // dessine l'eau
+		if ( m_bWaterMode )  m_water->DrawBack();  // draws water
 
 		if ( m_bShadow )
 		{
-			// Dessine le terrain.
+			// Draw the field.
 			p1 = m_objectPointer;
 			for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 			{
@@ -4242,10 +4244,10 @@ HRESULT CD3DEngine::Render()
 				}
 			}
 
-			DrawShadow();  // dessine les ombres
+			DrawShadow();  // draws the shadows
 		}
 
-		// Dessine les objets.
+		// Draw objects.
 		bTransparent = FALSE;
 		p1 = m_objectPointer;
 		for ( l1=0 ; l1<p1->totalUsed ; l1++ )
@@ -4323,7 +4325,7 @@ HRESULT CD3DEngine::Render()
 				tColor = 0x88888888;
 			}
 
-			// Dessine les objets transparents.
+			// Draw transparent objects.
 			p1 = m_objectPointer;
 			for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 			{
@@ -4385,16 +4387,16 @@ HRESULT CD3DEngine::Render()
 		}
 
 		m_light->LightUpdate(TYPETERRAIN);
-		if ( m_bWaterMode )  m_water->DrawSurf();  // dessine l'eau
-//?		m_cloud->Draw();  // dessine les nuages
+		if ( m_bWaterMode )  m_water->DrawSurf();  // draws water
+//?		m_cloud->Draw();  // draws the clouds
 
-		m_particule->DrawParticule(SH_WORLD);  // dessine les particules du monde 3D
-		m_blitz->Draw();  // dessine les éclairs
-		if ( m_bLensMode )  DrawFrontsize();  // dessine l'avant-plan
-		if ( !m_bOverFront )  DrawOverColor();  // dessine la couleur d'avant-plan
+		m_particule->DrawParticule(SH_WORLD);  // draws the particles of the 3D world
+		m_blitz->Draw();  // draws lightning
+		if ( m_bLensMode )  DrawFrontsize();  // draws the foreground
+		if ( !m_bOverFront )  DrawOverColor();  // draws the foreground color
 	}
 
-	// Dessine l'interface utilisateur par-dessus la scène.
+	// Draw the user interface over the scene.
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
@@ -4407,9 +4409,9 @@ HRESULT CD3DEngine::Render()
 	pInterface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
 	if ( pInterface != 0 )
 	{
-		pInterface->Draw();  // dessine toute l'interface
+		pInterface->Draw();  // draws the entire interface
 	}
-	m_particule->DrawParticule(SH_INTERFACE);  // dessine les particules de l'interface
+	m_particule->DrawParticule(SH_INTERFACE);  // draws the particles of the interface
 
 	if ( m_bDrawFront )
 	{
@@ -4486,7 +4488,7 @@ HRESULT CD3DEngine::Render()
 			}
 		}
 
-		m_particule->DrawParticule(SH_FRONT);  // dessine les particules du monde 3D
+		m_particule->DrawParticule(SH_FRONT);  // draws the particles of the 3D world
 
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
@@ -4498,7 +4500,7 @@ HRESULT CD3DEngine::Render()
 		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
 	}
 
-	if ( m_bOverFront )  DrawOverColor();  // dessine la couleur d'avant-plan
+	if ( m_bOverFront )  DrawOverColor();  // draws the foreground color
 
 	if ( m_mouseType != D3DMOUSEHIDE )
 	{
@@ -4513,20 +4515,20 @@ HRESULT CD3DEngine::Render()
 }
 
 
-// Dessine le dégradé d'arrière-plan.
+// Draw the gradient background.
 
 void CD3DEngine::DrawBackground()
 {
-	if ( m_bSkyMode && m_cloud->RetLevel() != 0.0f )  // nuages ?
+	if ( m_bSkyMode && m_cloud->RetLevel() != 0.0f )  // clouds ?
 	{
-		if ( m_backgroundCloudUp != m_backgroundCloudDown )  // dégradé ?
+		if ( m_backgroundCloudUp != m_backgroundCloudDown )  // degraded?
 		{
 			DrawBackgroundGradient(m_backgroundCloudUp, m_backgroundCloudDown);
 		}
 	}
 	else
 	{
-		if ( m_backgroundColorUp != m_backgroundColorDown )  // dégradé ?
+		if ( m_backgroundColorUp != m_backgroundColorDown )  // degraded?
 		{
 			DrawBackgroundGradient(m_backgroundColorUp, m_backgroundColorDown);
 		}
@@ -4538,7 +4540,7 @@ void CD3DEngine::DrawBackground()
 	}
 }
 
-// Dessine le dégradé d'arrière-plan.
+// Draw the gradient background.
 
 void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
 {
@@ -4561,7 +4563,7 @@ void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 
-	SetTexture("xxx.tga");  // pas de texture
+	SetTexture("xxx.tga");  // no texture
 	SetState(D3DSTATENORMAL);
 
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
@@ -4577,7 +4579,7 @@ void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
 	AddStatisticTriangle(2);
 }
 	
-// Dessine une partie de l'image d'arrière-plan.
+// Draws a portion of the image background.
 
 void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
 {
@@ -4585,7 +4587,7 @@ void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
 	D3DVECTOR	n;
 	float		u1, u2, v1, v2, h, a;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
 	if ( m_bBackgroundFull )
 	{
@@ -4604,7 +4606,7 @@ void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
 	}
 	else
 	{
-		h = 0.5f;  // partie visible verticalement (1=tout)
+		h = 0.5f;  // visible area vertically (1=all)
 		a = m_eyeDirV-PI*0.15f;
 		if ( a >  PI      )  a -= PI*2.0f;  // a = -PI..PI
 		if ( a >  PI/4.0f )  a =  PI/4.0f;
@@ -4641,7 +4643,7 @@ void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
 	AddStatisticTriangle(2);
 }
 
-// Dessine l'image d'arrière-plan.
+// Draws the image background.
 
 void CD3DEngine::DrawBackgroundImage()
 {
@@ -4688,7 +4690,7 @@ void CD3DEngine::DrawBackgroundImage()
 	}
 }
 
-// Dessine toutes les planètes.
+// Draws all the planets.
 
 void CD3DEngine::DrawPlanet()
 {
@@ -4704,10 +4706,10 @@ void CD3DEngine::DrawPlanet()
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
 
-	m_planet->Draw();  // dessine les planètes
+	m_planet->Draw();  // draws the planets
 }
 
-// Dessine l'image d'avant-plan.
+// Draws the image foreground.
 
 void CD3DEngine::DrawFrontsize()
 {
@@ -4718,7 +4720,7 @@ void CD3DEngine::DrawFrontsize()
 
 	if ( m_frontsizeName[0] == 0 )  return;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
 	p1.x = 0.0f;
 	p1.y = 0.0f;
@@ -4759,7 +4761,7 @@ void CD3DEngine::DrawFrontsize()
 	AddStatisticTriangle(2);
 }
 
-// Dessine la couleur d'avant-plan.
+// Draws the foreground color.
 
 void CD3DEngine::DrawOverColor()
 {
@@ -4786,7 +4788,7 @@ void CD3DEngine::DrawOverColor()
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
 
-	SetTexture("xxx.tga");  // pas de texture
+	SetTexture("xxx.tga");  // no texture
 	SetState(m_overMode);
 
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
@@ -4803,7 +4805,7 @@ void CD3DEngine::DrawOverColor()
 }
 
 
-// Donne la liste des rangs des objets et sous-objets sélectionnés.
+// Lists the ranks of objects and subobjects selected.
 
 void CD3DEngine::SetHiliteRank(int *rankList)
 {
@@ -4814,10 +4816,10 @@ void CD3DEngine::SetHiliteRank(int *rankList)
 	{
 		m_hiliteRank[i++] = *rankList++;
 	}
-	m_hiliteRank[i] = -1;  // terminateur
+	m_hiliteRank[i] = -1;  // terminator
 }
 
-// Donne la bbox dans l'écran 2D d'un objet quelconque.
+// Give the box in the 2D screen of any object.
 
 BOOL CD3DEngine::GetBBox2D(int objRank, FPOINT &min, FPOINT &max)
 {
@@ -4854,8 +4856,7 @@ BOOL CD3DEngine::GetBBox2D(int objRank, FPOINT &min, FPOINT &max)
 	return TRUE;
 }
 
-// Détermine le rectangle de l'objet mis en évidence, qui sera
-// dessiné par CD3DApplication.
+// Determines the rectangle of the object highlighted, which will be designed by CD3DApplication.
 
 void CD3DEngine::DrawHilite()
 {
@@ -4884,7 +4885,7 @@ void CD3DEngine::DrawHilite()
 		 max.x == -1000000.0f ||
 		 max.y == -1000000.0f )
 	{
-		m_bHilite = FALSE;  // pas de mise en évidence
+		m_bHilite = FALSE;  // not highlighted
 	}
 	else
 	{
@@ -4894,8 +4895,7 @@ void CD3DEngine::DrawHilite()
 	}
 }
 
-// Donne le rectangle de mise en évidence à dessiner
-// par CD3DApplication.
+// Give the rectangle highlighted by drawing CD3DApplication.
 
 BOOL CD3DEngine::GetHilite(FPOINT &p1, FPOINT &p2)
 {
@@ -4905,14 +4905,14 @@ BOOL CD3DEngine::GetHilite(FPOINT &p1, FPOINT &p2)
 }
 
 
-// Ajoute qq triangles rendus pour les statistiques.
+// Triangles adds qq records for statistics.
 
 void CD3DEngine::AddStatisticTriangle(int nb)
 {
 	m_statisticTriangle += nb;
 }
 
-// Retourne le nombre de triangles rendus.
+// Returns the number of triangles rendered.
 
 int CD3DEngine::RetStatisticTriangle()
 {
@@ -4941,7 +4941,7 @@ BOOL CD3DEngine::GetSpriteCoord(int &x, int &y)
 }
 
 
-// Teste s'il faut exclure un point.
+// Tests whether to exclude a point.
 
 BOOL IsExcludeColor(FPOINT *pExclu, int x, int y)
 {
@@ -4954,15 +4954,15 @@ BOOL IsExcludeColor(FPOINT *pExclu, int x, int y)
 		if ( x >= (int)(pExclu[i+0].x*256.0f) &&
 			 x <  (int)(pExclu[i+1].x*256.0f) &&
 			 y >= (int)(pExclu[i+0].y*256.0f) &&
-			 y <  (int)(pExclu[i+1].y*256.0f) )  return TRUE;  // exclure
+			 y <  (int)(pExclu[i+1].y*256.0f) )  return TRUE;  // exclude
 
 		i += 2;
 	}
 
-	return FALSE;  // point à inclure
+	return FALSE;  // point to include
 }
 
-// Change la couleur d'une texture.
+// Change the color of a texture.
 
 BOOL CD3DEngine::ChangeColor(char *name,
 							 D3DCOLORVALUE colorRef1, D3DCOLORVALUE colorNew1,
@@ -4978,7 +4978,7 @@ BOOL CD3DEngine::ChangeColor(char *name,
 	int						dx, dy, x, y, sx, sy, ex, ey;
 
 	D3DTextr_Invalidate(name);
-	LoadTexture(name);  // recharge la texture initiale
+	LoadTexture(name);  // reloads the initial texture
 
 	if ( colorRef1.r == colorNew1.r &&
 		 colorRef1.g == colorNew1.g &&
@@ -5078,7 +5078,7 @@ BOOL CD3DEngine::ChangeColor(char *name,
 }
 
 
-// Ouvre une image pour travailler directement dedans.
+// Open an image to work directly in it.
 
 BOOL CD3DEngine::OpenImage(char *name)
 {
@@ -5107,7 +5107,7 @@ BOOL CD3DEngine::OpenImage(char *name)
 	return TRUE;
 }
 
-// Copie l'image de travail.
+// Copy the working image.
 
 BOOL CD3DEngine::CopyImage()
 {
@@ -5128,7 +5128,7 @@ BOOL CD3DEngine::CopyImage()
 	return TRUE;
 }
 
-// Restitue l'image de travail.
+// Restores the image work.
 
 BOOL CD3DEngine::LoadImage()
 {
@@ -5146,7 +5146,7 @@ BOOL CD3DEngine::LoadImage()
 	return TRUE;
 }
 
-// Scroll la copie de l'image de travial.
+// Scroll the copy of the working image.
 
 BOOL CD3DEngine::ScrollImage(int dx, int dy)
 {
@@ -5193,7 +5193,7 @@ BOOL CD3DEngine::ScrollImage(int dx, int dy)
 	return TRUE;
 }
 
-// Dessine un point dans l'image de travail.
+// Draws a point in the image work.
 
 BOOL CD3DEngine::SetDot(int x, int y, D3DCOLORVALUE color)
 {
@@ -5234,7 +5234,7 @@ BOOL CD3DEngine::SetDot(int x, int y, D3DCOLORVALUE color)
 	}
 	else
 	{
-		w = -1;  // blanc
+		w = -1;  // blank
 	}
 
 	pbSurf = (WORD*)m_imageDDSD.lpSurface;
@@ -5245,7 +5245,7 @@ BOOL CD3DEngine::SetDot(int x, int y, D3DCOLORVALUE color)
 	return TRUE;
 }
 
-// Ferme l'image de travail.
+// Closes the working image.
 
 BOOL CD3DEngine::CloseImage()
 {
@@ -5254,21 +5254,21 @@ BOOL CD3DEngine::CloseImage()
 }
 
 
-// Ecrit un fichier .BMP copie d'écran.
+// Writes a .BMP screenshot.
 
 BOOL CD3DEngine::WriteScreenShot(char *filename, int width, int height)
 {
 	return m_app->WriteScreenShot(filename, width, height);
 }
 
-// Initialise un hDC sur la surface de rendu.
+// Initializes an hDC on the rendering surface.
 
 BOOL CD3DEngine::GetRenderDC(HDC &hDC)
 {
 	return m_app->GetRenderDC(hDC);
 }
 
-// Libère le hDC sur la surface de rendu.
+// Frees the hDC of the rendering surface.
 
 BOOL CD3DEngine::ReleaseRenderDC(HDC &hDC)
 {
@@ -5285,7 +5285,7 @@ BOOL CD3DEngine::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HD
 	return m_app->CreateBMPFile(pszFile, pbi, hBMP, hDC);
 }
 
-// Retourne le pointeur à la classe CText.
+// Returns the pointer to the class cText.
 
 CText* CD3DEngine::RetText()
 {
@@ -5293,7 +5293,7 @@ CText* CD3DEngine::RetText()
 }
 
 
-// Gestion du texte d'informations affiché dans la fenêtre.
+// Managing of information text displayed in the window.
 
 void CD3DEngine::SetInfoText(int line, char* text)
 {
@@ -5307,9 +5307,9 @@ char* CD3DEngine::RetInfoText(int line)
 
 
 
-// Spécifie la focale de la caméra.
+// Specifies the length of the camera.
 //	0.75 = normal
-//	1.50 = grand-angle
+//	1.50 = wide-angle
 
 void CD3DEngine::SetFocus(float focus)
 {
@@ -5344,28 +5344,28 @@ void CD3DEngine::UpdateMatProj()
 
 
 
-// Ignore les touches pressées.
+// Ignores key presses.
 
 void CD3DEngine::FlushPressKey()
 {
 	m_app->FlushPressKey();
 }
 
-// Remet les touches par défaut.
+// Resets the default keys.
 
 void CD3DEngine::ResetKey()
 {
 	m_app->ResetKey();
 }
 
-// Modifie une touche.
+// Modifies a button.
 
 void CD3DEngine::SetKey(int keyRank, int option, int key)
 {
 	m_app->SetKey(keyRank, option, key);
 }
 
-// Donne une touche.
+// Gives a key.
 
 int CD3DEngine::RetKey(int keyRank, int option)
 {
@@ -5373,7 +5373,7 @@ int CD3DEngine::RetKey(int keyRank, int option)
 }
 
 
-// Utilise le joystick ou le clavier.
+// Use the joystick or keyboard.
 
 void CD3DEngine::SetJoystick(BOOL bEnable)
 {
@@ -5402,7 +5402,7 @@ BOOL CD3DEngine::RetSetupMode()
 }
 
 
-// Indique si un point est visible.
+// Indicates whether a point is visible.
 
 BOOL CD3DEngine::IsVisiblePoint(const D3DVECTOR &pos)
 {
@@ -5429,7 +5429,7 @@ HRESULT CD3DEngine::InitDeviceObjects()
 
 	SetFocus(m_focus);
 
-	// Définitions des matrices pour l'interface.
+	// Definitions of the matrices for the interface.
 	D3DUtil_SetIdentityMatrix(m_matWorldInterface);
 
 	D3DUtil_SetIdentityMatrix(m_matViewInterface);
@@ -5535,7 +5535,7 @@ LRESULT CD3DEngine::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam 
 }
 
 
-// Gestion de la souris.
+// Mouse control.
 
 void CD3DEngine::MoveMousePos(FPOINT pos)
 {
@@ -5567,7 +5567,7 @@ void CD3DEngine::SetMouseHide(BOOL bHide)
 {
 	if ( m_bMouseHide == bHide )  return;
 
-	if ( bHide )  // cache la souris ?
+	if ( bHide )  // hide the mouse?
 	{
 		m_bNiceMouse = m_app->RetNiceMouse();
 		if ( !m_bNiceMouse )
@@ -5576,7 +5576,7 @@ void CD3DEngine::SetMouseHide(BOOL bHide)
 		}
 		m_bMouseHide = TRUE;
 	}
-	else	// montre la souris ?
+	else	// shows the mouse?
 	{
 		if ( !m_bNiceMouse )
 		{
@@ -5606,7 +5606,7 @@ BOOL CD3DEngine::RetNiceMouseCap()
 	return m_app->RetNiceMouseCap();
 }
 
-// Dessine le sprite de la souris.
+// Draws the sprite of the mouse.
 
 void CD3DEngine::DrawMouse()
 {
@@ -5645,7 +5645,7 @@ void CD3DEngine::DrawMouse()
 	};
 
 	if ( m_bMouseHide )  return;
-	if ( !m_app->RetNiceMouse() )  return;  // souris windows ?
+	if ( !m_app->RetNiceMouse() )  return;  // mouse windows?
 
 	ZeroMemory( &material, sizeof(D3DMATERIAL7) );
 	material.diffuse.r = 1.0f;
@@ -5685,7 +5685,7 @@ void CD3DEngine::DrawMouse()
 	}
 }
 
-// Dessine le sprite de la souris.
+// Draws the sprite of the mouse.
 
 void CD3DEngine::DrawSprite(FPOINT pos, FPOINT dim, int icon)
 {
@@ -5712,7 +5712,7 @@ void CD3DEngine::DrawSprite(FPOINT pos, FPOINT dim, int icon)
 	u2 -= dp;
 	v2 -= dp;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
