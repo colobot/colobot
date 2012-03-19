@@ -1,4 +1,4 @@
-﻿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
