@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ static char			g_userDir[100] = "";
 
 
 
-// Donne un ï¿½vï¿½nement utilisateur unique.
+// Donne un événement utilisateur unique.
 
 EventMsg GetUniqueEventMsg()
 {
@@ -54,73 +54,73 @@ EventMsg GetUniqueEventMsg()
 
 
 
-// Retourne une lettre non accentuï¿½e.
+// Retourne une lettre non accentuée.
 
 char RetNoAccent(char letter)
 {
 	if ( letter < 0 )
 	{
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'a';
+		if ( letter == 'á' ||
+			 letter == 'à' ||
+			 letter == 'â' ||
+			 letter == 'ä' ||
+			 letter == 'ã' )  return 'a';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'e';
+		if ( letter == 'é' ||
+			 letter == 'è' ||
+			 letter == 'ê' ||
+			 letter == 'ë' )  return 'e';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'i';
+		if ( letter == 'í' ||
+			 letter == 'ì' ||
+			 letter == 'î' ||
+			 letter == 'ï' )  return 'i';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'o';
+		if ( letter == 'ó' ||
+			 letter == 'ò' ||
+			 letter == 'ô' ||
+			 letter == 'ö' ||
+			 letter == 'õ' )  return 'o';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'u';
+		if ( letter == 'ú' ||
+			 letter == 'ù' ||
+			 letter == 'û' ||
+			 letter == 'ü' )  return 'u';
 
-		if ( letter == 'ï¿½' )  return 'c';
+		if ( letter == 'ç' )  return 'c';
 
-		if ( letter == 'ï¿½' )  return 'n';
+		if ( letter == 'ñ' )  return 'n';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'A';
+		if ( letter == 'Á' ||
+			 letter == 'À' ||
+			 letter == 'Â' ||
+			 letter == 'Ä' ||
+			 letter == 'Ã' )  return 'A';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'E';
+		if ( letter == 'É' ||
+			 letter == 'È' ||
+			 letter == 'Ê' ||
+			 letter == 'Ë' )  return 'E';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'I';
+		if ( letter == 'Í' ||
+			 letter == 'Ì' ||
+			 letter == 'Î' ||
+			 letter == 'Ï' )  return 'I';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'O';
+		if ( letter == 'Ó' ||
+			 letter == 'Ò' ||
+			 letter == 'Ô' ||
+			 letter == 'Ö' ||
+			 letter == 'Õ' )  return 'O';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'U';
+		if ( letter == 'Ú' ||
+			 letter == 'Ù' ||
+			 letter == 'Û' ||
+			 letter == 'Ü' )  return 'U';
 
-		if ( letter == 'ï¿½' )  return 'C';
+		if ( letter == 'Ç' )  return 'C';
 
-		if ( letter == 'ï¿½' )  return 'N';
+		if ( letter == 'Ñ' )  return 'N';
 	}
 
 	return letter;
@@ -132,36 +132,36 @@ char RetToUpper(char letter)
 {
 	if ( letter < 0 )
 	{
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'á' )  return 'Á';
+		if ( letter == 'à' )  return 'À';
+		if ( letter == 'â' )  return 'Â';
+		if ( letter == 'ä' )  return 'Ä';
+		if ( letter == 'ã' )  return 'Ã';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'é' )  return 'É';
+		if ( letter == 'è' )  return 'È';
+		if ( letter == 'ê' )  return 'Ê';
+		if ( letter == 'ë' )  return 'Ë';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'í' )  return 'Í';
+		if ( letter == 'ì' )  return 'Ì';
+		if ( letter == 'î' )  return 'Î';
+		if ( letter == 'ï' )  return 'Ï';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'ó' )  return 'Ó';
+		if ( letter == 'ò' )  return 'Ò';
+		if ( letter == 'ô' )  return 'Ô';
+		if ( letter == 'ö' )  return 'Ö';
+		if ( letter == 'õ' )  return 'Õ';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'ú' )  return 'Ú';
+		if ( letter == 'ù' )  return 'Ù';
+		if ( letter == 'û' )  return 'Û';
+		if ( letter == 'ü' )  return 'Ü';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'ç' )  return 'Ç';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'ñ' )  return 'Ñ';
 	}
 
 	return toupper(letter);
@@ -173,43 +173,43 @@ char RetToLower(char letter)
 {
 	if ( letter < 0 )
 	{
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Á' )  return 'á';
+		if ( letter == 'À' )  return 'à';
+		if ( letter == 'Â' )  return 'â';
+		if ( letter == 'Ä' )  return 'ä';
+		if ( letter == 'Ã' )  return 'ã';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'É' )  return 'é';
+		if ( letter == 'È' )  return 'è';
+		if ( letter == 'Ê' )  return 'ê';
+		if ( letter == 'Ë' )  return 'ë';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Í' )  return 'í';
+		if ( letter == 'Ì' )  return 'ì';
+		if ( letter == 'Î' )  return 'î';
+		if ( letter == 'Ï' )  return 'ï';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Ó' )  return 'ó';
+		if ( letter == 'Ò' )  return 'ò';
+		if ( letter == 'Ô' )  return 'ô';
+		if ( letter == 'Ö' )  return 'ö';
+		if ( letter == 'Õ' )  return 'õ';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Ú' )  return 'ú';
+		if ( letter == 'Ù' )  return 'ù';
+		if ( letter == 'Û' )  return 'û';
+		if ( letter == 'Ü' )  return 'ü';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Ç' )  return 'ç';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Ñ' )  return 'ñ';
 	}
 
 	return tolower(letter);
 }
 
 
-// Conversion du temps en chaï¿½ne.
+// Conversion du temps en chaîne.
 
 void TimeToAscii(time_t time, char *buffer)
 {
@@ -239,7 +239,7 @@ void TimeToAscii(time_t time, char *buffer)
 	{
 		strcpy(format, "am");
 	}
-	else	// aprï¿½s-midi ?
+	else	// après-midi ?
 	{
 		strcpy(format, "pm");
 		hour -= 12;  // 0..11
@@ -316,7 +316,7 @@ BOOL CopyFileToTemp(char* filename)
 	return TRUE;
 }
 
-// Copie une liste de fichiers numï¿½rotï¿½s dans le dossier temporaire.
+// Copie une liste de fichiers numérotés dans le dossier temporaire.
 
 BOOL CopyFileListToTemp(char* filename, int* list, int total)
 {
@@ -355,16 +355,16 @@ BOOL CopyFileListToTemp(char* filename, int* list, int total)
 }
 
 
-// Ajoute une extension ï¿½ un fichier, s'il n'en a pas dï¿½jï¿½ une.
+// Ajoute une extension à un fichier, s'il n'en a pas déjà une.
 
 void AddExt(char* filename, char* ext)
 {
-	if ( strchr(filename, '.') != 0 )  return;  // dï¿½jï¿½ une extension ?
+	if ( strchr(filename, '.') != 0 )  return;  // déjà une extension ?
 	strcat(filename, ext);
 }
 
 
-// Spï¿½cifie le dossier utilisateur.
+// Spécifie le dossier utilisateur.
 
 void UserDir(BOOL bUser, char* dir)
 {
@@ -372,7 +372,7 @@ void UserDir(BOOL bUser, char* dir)
 	strcpy(g_userDir, dir);
 }
 
-// Remplace la chaï¿½ne %user% par le dossier utilisateur.
+// Remplace la chaîne %user% par le dossier utilisateur.
 // in:	dir = "%user%toto.txt"
 //		def = "abc\"
 // out:	buffer = "abc\toto.txt"
@@ -418,7 +418,7 @@ void UserDir(char* buffer, char* dir, char* def)
 }
 
 
-// Retourne la lettre correspondant ï¿½ la langue.
+// Retourne la lettre correspondant à la langue.
 
 char RetLanguageLetter()
 {
