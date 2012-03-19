@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// sound.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -188,7 +188,7 @@ void InitMidiVolume(int volume)
 // Modifie le volume CD audio.
 // Le volume est compris entre 0 et 20 !
 // Plantait sous Vista. Le bricolage actuel (si _SOUNDTRACKS = TRUE) ne plante
-// plus, mais ce n'est pas le bon volume qui est modifiï¿½ !
+// plus, mais ce n'est pas le bon volume qui est modifié !
 
 BOOL InitAudioTrackVolume(int volume)
 {
@@ -362,7 +362,7 @@ CSound::~CSound()
 }
 
 
-// Spï¿½cifie si on est en mode debug.
+// Spécifie si on est en mode debug.
 
 void CSound::SetDebugMode(BOOL bMode)
 {
@@ -516,7 +516,7 @@ BOOL CSound::RetSound3DCap()
 
 
 
-// Retourne l'ï¿½tat de DirectSound.
+// Retourne l'état de DirectSound.
 
 BOOL CSound::RetEnable()
 {
@@ -524,21 +524,21 @@ BOOL CSound::RetEnable()
 }
 
 
-// Enclenche ou dï¿½clenche le son.
+// Enclenche ou déclenche le son.
 
 void CSound::SetState(BOOL bState)
 {
 	m_bState = bState;
 }
 
-// Spï¿½cifie le chamin d'accï¿½s au CD.
+// Spécifie le chamin d'accès au CD.
 
 void CSound::SetCDpath(char *path)
 {
 	strcpy(m_CDpath, path);
 }
 
-// Enclenche ou dï¿½clenche les musiques CD-audio.
+// Enclenche ou déclenche les musiques CD-audio.
 
 void CSound::SetAudioTrack(BOOL bAudio)
 {
@@ -646,7 +646,7 @@ void CSound::CacheAll()
 }
 
 
-// Retourne la prioritï¿½ d'un son.
+// Retourne la priorité d'un son.
 // Plus la valeur est grande et plus le son est important.
 
 int CSound::RetPriority(Sound sound)
@@ -707,7 +707,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 	priority = RetPriority(sound);
 
 #if 1
-	// Cherche un canal utilisï¿½ dont le son est stoppï¿½.
+	// Cherche un canal utilisé dont le son est stoppé.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )  continue;
@@ -725,7 +725,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 	}
 #endif
 
-	// Cherche un canal complï¿½tement libre.
+	// Cherche un canal complètement libre.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )
@@ -738,7 +738,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 		}
 	}
 
-	// Cherche un canal utilisï¿½ dont le son est stoppï¿½.
+	// Cherche un canal utilisé dont le son est stoppé.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )  continue;
@@ -757,7 +757,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 		}
 	}
 
-	// Cherche un canal utilisï¿½ moins prioritaire.
+	// Cherche un canal utilisé moins prioritaire.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )  continue;
@@ -774,7 +774,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 		return TRUE;
 	}
 
-	// Cherche un canal utilisï¿½ moins prioritaire ou identique.
+	// Cherche un canal utilisé moins prioritaire ou identique.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )  continue;
@@ -941,13 +941,13 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 
 #if _TEEN
 	dist = Length(pos, m_eye);
-	if ( dist >= 210.0f )  // trï¿½s loin ?
+	if ( dist >= 210.0f )  // très loin ?
 	{
 		m_channel[channel].volume = 0.0f;  // silence
 		m_channel[channel].pan    = 0.0f;  // au centre
 		return;
 	}
-	if ( dist <= 10.0f )  // trï¿½s proche ?
+	if ( dist <= 10.0f )  // très proche ?
 	{
 		m_channel[channel].volume = 1.0f;  // volume maximal
 		m_channel[channel].pan    = 0.0f;  // au centre
@@ -956,13 +956,13 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 	m_channel[channel].volume = 1.0f-((dist-10.0f)/200.0f);
 #else
 	dist = Length(pos, m_eye);
-	if ( dist >= 110.0f )  // trï¿½s loin ?
+	if ( dist >= 110.0f )  // très loin ?
 	{
 		m_channel[channel].volume = 0.0f;  // silence
 		m_channel[channel].pan    = 0.0f;  // au centre
 		return;
 	}
-	if ( dist <= 10.0f )  // trï¿½s proche ?
+	if ( dist <= 10.0f )  // très proche ?
 	{
 		m_channel[channel].volume = 1.0f;  // volume maximal
 		m_channel[channel].pan    = 0.0f;  // au centre
@@ -977,15 +977,15 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 }
 
 // Fait entendre un son au milieu.
-// Retourne le canal associï¿½ ou -1.
+// Retourne le canal associé ou -1.
 
 int CSound::Play(Sound sound, float amplitude, float frequency, BOOL bLoop)
 {
 	return Play(sound, m_lookat, amplitude, frequency, bLoop);
 }
 
-// Fait entendre un son ï¿½ une position donnï¿½e.
-// Retourne le canal associï¿½ ou -1.
+// Fait entendre un son à une position donnée.
+// Retourne le canal associé ou -1.
 
 int CSound::Play(Sound sound, D3DVECTOR pos,
 				 float amplitude, float frequency, BOOL bLoop)
@@ -1111,8 +1111,8 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 	return channel | ((uniqueStamp&0xffff)<<16);
 }
 
-// Check un numï¿½ro de canal.
-// Adapte le canal pour qu'il puisse ï¿½tre utilisï¿½ comme offset
+// Check un numéro de canal.
+// Adapte le canal pour qu'il puisse être utilisé comme offset
 // dans m_channel.
 
 BOOL CSound::CheckChannel(int &channel)
@@ -1143,7 +1143,7 @@ BOOL CSound::FlushEnvelope(int channel)
 	return TRUE;
 }
 
-// Ajoute une opï¿½ration d'enveloppe.
+// Ajoute une opération d'enveloppe.
 
 BOOL CSound::AddEnvelope(int channel, float amplitude, float frequency,
 						 float time, SoundNext oper)
@@ -1211,7 +1211,7 @@ BOOL CSound::Position(int channel, D3DVECTOR pos)
 	return TRUE;
 }
 
-// Modifie la frï¿½quence d'un son.
+// Modifie la fréquence d'un son.
 // 0.5 descend d'une octave et 2.0 monte d'une octave.
 
 BOOL CSound::Frequency(int channel, float frequency)
@@ -1284,7 +1284,7 @@ BOOL CSound::MuteAll(BOOL bMute)
 }
 
 
-// Passe ï¿½ l'opï¿½ration suivante pour un canal.
+// Passe à l'opération suivante pour un canal.
 
 void CSound::OperNext(int channel)
 {
@@ -1303,7 +1303,7 @@ void CSound::OperNext(int channel)
 	m_channel[channel].oper[i].bUsed = FALSE;
 }
 
-// Met ï¿½ jour les buffers des sons.
+// Met à jour les buffers des sons.
 
 void CSound::FrameMove(float rTime)
 {
@@ -1376,8 +1376,8 @@ void CSound::FrameMove(float rTime)
 	}
 }
 
-// Spï¿½cifie la position de l'auditeur.
-// Doit ï¿½tre appelï¿½ chaque fois que la camï¿½ra se dï¿½place.
+// Spécifie la position de l'auditeur.
+// Doit être appelé chaque fois que la caméra se déplace.
 
 void CSound::SetListener(D3DVECTOR eye, D3DVECTOR lookat)
 {
@@ -1633,7 +1633,7 @@ BOOL CSound::IsPlayingMusic()
 	return (m_MIDIMusic != 0);
 }
 
-// Adapte le volume de la musique en cours, si nï¿½cessaire.
+// Adapte le volume de la musique en cours, si nécessaire.
 
 void CSound::AdaptVolumeMusic()
 {

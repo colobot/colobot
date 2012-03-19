@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// scroll.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -63,7 +63,7 @@ CScroll::~CScroll()
 }
 
 
-// Crï¿½e un nouveau bouton.
+// Crée un nouveau bouton.
 
 BOOL CScroll::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -94,7 +94,7 @@ void CScroll::MoveAdjust()
 	CButton*	pc;
 	FPOINT		pos, dim;
 
-	if ( m_dim.y < m_dim.x*2.0f )  // ascenseur trï¿½s court ?
+	if ( m_dim.y < m_dim.x*2.0f )  // ascenseur très court ?
 	{
 		delete m_buttonUp;
 		m_buttonUp = 0;
@@ -199,7 +199,7 @@ BOOL CScroll::ClearState(int state)
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CScroll::EventProcess(const Event &event)
 {

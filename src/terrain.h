@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// terrain.h
 
 #ifndef _TERRAIN_H_
 #define	_TERRAIN_H_
@@ -170,19 +170,19 @@ protected:
 	CD3DEngine*		m_engine;
 	CWater*			m_water;
 
-	int				m_mosaic;		// nb de mosaï¿½que
-	int				m_brick;		// nb de briques par mosaï¿½que
-	float			m_size;			// taille d'un ï¿½lï¿½ment dans une brique
-	float			m_vision;		// vision avant un changement de rï¿½solution
+	int				m_mosaic;		// nb de mosaïque
+	int				m_brick;		// nb de briques par mosaïque
+	float			m_size;			// taille d'un élément dans une brique
+	float			m_vision;		// vision avant un changement de résolution
 	float*			m_relief;		// table du relief
 	int*			m_texture;		// table des textures
 	int*			m_objRank;		// table des rangs des objets
 	BOOL			m_bMultiText;
 	BOOL			m_bLevelText;
-	float			m_scaleMapping;	// ï¿½chelle du mapping
+	float			m_scaleMapping;	// échelle du mapping
 	float			m_scaleRelief;
 	int				m_subdivMapping;
-	int				m_depth;		// nb de rï¿½solutions diffï¿½rentes (1,2,3,4)
+	int				m_depth;		// nb de résolutions différentes (1,2,3,4)
 	char			m_texBaseName[20];
 	char			m_texBaseExt[10];
 	float			m_defHardness;

@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// motionspider.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -42,7 +42,7 @@
 
 
 #define ADJUST_ANGLE	FALSE		// TRUE -> ajuste les angles des membres
-#define START_TIME		1000.0f		// dï¿½but du temps relatif
+#define START_TIME		1000.0f		// début du temps relatif
 
 
 
@@ -79,7 +79,7 @@ void CMotionSpider::DeleteObject(BOOL bAll)
 }
 
 
-// Crï¿½e un vï¿½hicule roulant quelconque posï¿½ sur le sol.
+// Crée un véhicule roulant quelconque posé sur le sol.
 
 BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 						   float power)
@@ -91,12 +91,12 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	float			table[] =
 	{
 	//	  x		  y		  z
-		 0.6f,	 0.0f,	 0.0f,	// patte arriï¿½re
+		 0.6f,	 0.0f,	 0.0f,	// patte arrière
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 
-		 0.8f,	 0.0f,	-0.2f,	// patte arriï¿½re-milieu
+		 0.8f,	 0.0f,	-0.2f,	// patte arrière-milieu
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
@@ -118,7 +118,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	m_object->SetType(type);
 
-	// Crï¿½e la base principale.
+	// Crée la base principale.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
 	m_object->SetObjectRank(0, rank);
@@ -127,12 +127,12 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Un vï¿½hicule doit avoir obligatoirement une sphï¿½re de
+	// Un véhicule doit avoir obligatoirement une sphère de
 	// collision avec un centre (0;y;0) (voir GetCrashSphere).
 	m_object->CreateCrashSphere(D3DVECTOR(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
 	m_object->SetGlobalSphere(D3DVECTOR(-0.5f, 1.0f, 0.0f), 4.0f);
 
-	// Crï¿½e l'abdomen.
+	// Crée l'abdomen.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(1, rank);
@@ -141,7 +141,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(1, D3DVECTOR(1.0f, 0.0f, 0.0f));
 
-	// Crï¿½e la tï¿½te.
+	// Crée la tête.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(2, rank);
@@ -150,14 +150,14 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(2, D3DVECTOR(1.0f, 0.0f, 0.0f));
 
-	// Crï¿½e les pattes.
+	// Crée les pattes.
 	for ( i=0 ; i<4 ; i++ )
 	{
 		for ( j=0 ; j<4 ; j++ )
 		{
 			sprintf(name, "objects\\spider%d.mod", j+3);  // 3..6
 
-			// Crï¿½e la patte droite.
+			// Crée la patte droite.
 			rank = m_engine->CreateObject();
 			m_engine->SetObjectType(rank, TYPEDESCENDANT);
 			m_object->SetObjectRank(3+i*4+j, rank);
@@ -171,7 +171,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 			pos.z = table[i*12+j*3+2];
 			m_object->SetPosition(3+i*4+j, pos);
 
-			// Crï¿½e la patte gauche.
+			// Crée la patte gauche.
 			rank = m_engine->CreateObject();
 			m_engine->SetObjectType(rank, TYPEDESCENDANT);
 			m_object->SetObjectRank(19+i*4+j, rank);
@@ -188,7 +188,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 		}
 	}
 
-	// Crï¿½e la mandibule droite.
+	// Crée la mandibule droite.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(35, rank);
@@ -197,7 +197,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(35, D3DVECTOR(0.0f, 0.0f, -0.3f));
 
-	// Crï¿½e la mandibule gauche.
+	// Crée la mandibule gauche.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(36, rank);
@@ -221,7 +221,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Crï¿½e la physique de l'objet.
+// Crée la physique de l'objet.
 
 void CMotionSpider::CreatePhysics()
 {
@@ -240,7 +240,7 @@ void CMotionSpider::CreatePhysics()
 		-10,40,0,	-45,0,0,	-45,0,0,	-45,-40,0,	// t1: jambes 1..4
 		-90,0,0,	-20,0,0,	-20,0,0,	-20,0,0,	// t1: pieds 1..4
 		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t1: doigt 1..4
-														// au sol derriï¿½re :
+														// au sol derrière :
 		35,35,0,	40,10,0,	40,-15,0,	40,-40,0,	// t2: cuisses 1..4
 		-35,40,0,	-35,0,0,	-35,0,0,	-25,-40,0,	// t2: jambes 1..4
 		-50,-25,-30,-65,0,0,	-65,0,0,	-90,0,30,	// t2: pieds 1..4
@@ -259,7 +259,7 @@ void CMotionSpider::CreatePhysics()
 		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// t1: jambes 1..4
 		-55,-25,-30,-25,0,0,	-25,0,0,	-25,0,0,	// t1: pieds 1..4
 		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t1: doigt 1..4
-														// au sol derriï¿½re :
+														// au sol derrière :
 		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// t2: cuisses 1..4
 		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// t2: jambes 1..4
 		-50,-25,-30,-20,0,0,	-20,0,0,	-20,0,30,	// t2: pieds 1..4
@@ -268,7 +268,7 @@ void CMotionSpider::CreatePhysics()
 
 	int member_spec[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	x4,y4,z4,	// brï¿½le :
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	x4,y4,z4,	// brûle :
 		30,25,0,	30,0,0,		30,-25,0,	30,-50,0,	// s0: cuisses 1..4
 		-45,0,0,	-45,0,0,	-45,0,0,	-45,0,0,	// s0: jambes 1..4
 		-20,0,0,	-20,0,0,	-20,0,0,	-20,0,0,	// s0: pieds 1..4
@@ -341,7 +341,7 @@ void CMotionSpider::CreatePhysics()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CMotionSpider::EventProcess(const Event &event)
 {
@@ -387,7 +387,7 @@ BOOL CMotionSpider::EventProcess(const Event &event)
 }
 
 // Calcule une valeur (radians) proportionnelle comprise
-// entre a et b (degrï¿½s).
+// entre a et b (degrés).
 
 inline float Propf(float a, float b, float p)
 {
@@ -399,7 +399,7 @@ inline float Propf(float a, float b, float p)
 	return aa+p*(bb-aa);
 }
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CMotionSpider::EventFrame(const Event &event)
 {
@@ -423,7 +423,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 	m_armTimeMarch += (s)*event.rTime*0.15f;
 	m_armMember += (s+a)*event.rTime*0.15f;
 
-	bStop = ( a == 0.0f && s == 0.0f );  // a l'arrï¿½t ?
+	bStop = ( a == 0.0f && s == 0.0f );  // a l'arrêt ?
 
 	action = MS_MARCH;  // marche
 	if ( s == 0.0f && a == 0.0f )
@@ -435,7 +435,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 	{
 		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
 		a = Mod(m_armMember, 1.0f);
-		a = (prog-a)*event.rTime*2.0f;  // vient gentiment ï¿½ position stop
+		a = (prog-a)*event.rTime*2.0f;  // vient gentiment à position stop
 		m_armMember += a;
 	}
 
@@ -443,7 +443,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 	{
 		m_actionType = MSS_RUIN;
 	}
-	if ( m_object->RetBurn() )  // brï¿½le ?
+	if ( m_object->RetBurn() )  // brûle ?
 	{
 		if ( m_object->RetFixed() )
 		{
@@ -457,7 +457,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 
 	for ( i=0 ; i<8 ; i++ )  // les 8 pattes
 	{
-		if ( m_actionType != -1 )  // action spï¿½ciale en cours ?
+		if ( m_actionType != -1 )  // action spéciale en cours ?
 		{
 			st = 3*4*4*3*MS_SPEC + 3*4*4*m_actionType + (i%4)*3;
 			nd = st;
@@ -579,7 +579,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 	}
 #endif
 
-	if ( m_actionType == MSS_BURN )  // brï¿½le ?
+	if ( m_actionType == MSS_BURN )  // brûle ?
 	{
 		dir = D3DVECTOR(PI, 0.0f, 0.0f);
 		SetCirVibration(dir);
@@ -588,7 +588,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		SetInclinaison(dir);
 
 		time = event.rTime*1.0f;
-		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), 0.0f, time));  // tï¿½te
+		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), 0.0f, time));  // tête
 	}
 	else if ( m_actionType == MSS_RUIN )  // ruine ?
 	{
@@ -690,9 +690,9 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		SetInclinaison(dir);
 
 		m_object->SetAngleY(1, sinf(m_armTimeAbs*5.0f)*0.05f);  // queue
-		m_object->SetAngleY(2, cosf(m_armTimeAbs*5.0f)*0.20f);  // tï¿½te
+		m_object->SetAngleY(2, cosf(m_armTimeAbs*5.0f)*0.20f);  // tête
 		m_object->SetAngleZ(1, 0.4f);  // queue
-		m_object->SetAngleZ(2, 0.0f);  // tï¿½te
+		m_object->SetAngleZ(2, 0.0f);  // tête
 
 		if ( m_progress >= 1.0f )
 		{
@@ -774,7 +774,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		m_object->SetAngleY(1, sinf(m_armTimeAbs*2.4f)*0.10f);
 		m_object->SetZoom(1, 1.0f+sinf(m_armTimeAbs*3.3f)*0.05f);
 
-		m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.4f)*0.20f);  // tï¿½te
+		m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.4f)*0.20f);  // tête
 		m_object->SetAngleX(2, sinf(m_armTimeAbs*1.9f)*0.10f);
 		m_object->SetAngleY(2, sinf(m_armTimeAbs*2.1f)*0.10f);
 

@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// motion.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -97,14 +97,14 @@ void CMotion::SetBrain(CBrain* brain)
 }
 
 
-// Crï¿½e.
+// Crée.
 
 BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
 {
 	return TRUE;
 }
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CMotion::EventProcess(const Event &event)
 {
@@ -150,11 +150,11 @@ BOOL CMotion::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// (*)	Evite le bug des fourmis retournï¿½es par le thumper et dont
-//		l'abdomen grossi ï¿½ l'infini !
+// (*)	Evite le bug des fourmis retournées par le thumper et dont
+//		l'abdomen grossi à l'infini !
 
 
-// Dï¿½marre une action.
+// Démarre une action.
 
 Error CMotion::SetAction(int action, float time)
 {
@@ -172,7 +172,7 @@ int CMotion::RetAction()
 }
 
 
-// Spï¿½cifie un paramï¿½tre spï¿½cial.
+// Spécifie un paramètre spécial.
 
 BOOL CMotion::SetParam(int rank, float value)
 {
@@ -185,7 +185,7 @@ float CMotion::RetParam(int rank)
 }
 
 
-// Sauve tous les paramï¿½tres de l'objet.
+// Sauve tous les paramètres de l'objet.
 
 BOOL CMotion::Write(char *line)
 {
@@ -205,7 +205,7 @@ BOOL CMotion::Write(char *line)
 	return FALSE;
 }
 
-// Restitue tous les paramï¿½tres de l'objet.
+// Restitue tous les paramètres de l'objet.
 
 BOOL CMotion::Read(char *line)
 {
@@ -217,7 +217,7 @@ BOOL CMotion::Read(char *line)
 }
 
 
-// Donne la vibration linï¿½aire.
+// Donne la vibration linéaire.
 
 void CMotion::SetLinVibration(D3DVECTOR dir)
 {

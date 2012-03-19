@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// mainmovie.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -71,7 +71,7 @@ void CMainMovie::Flush()
 }
 
 
-// Dï¿½but d'un film.
+// Début d'un film.
 
 BOOL CMainMovie::Start(MainMovieType type, float time)
 {
@@ -89,7 +89,7 @@ BOOL CMainMovie::Start(MainMovieType type, float time)
 		pObj = m_main->SearchHuman();
 		if ( pObj == 0 )
 		{
-			m_type = MM_NONE;  // c'est dï¿½jï¿½ fini !
+			m_type = MM_NONE;  // c'est déjà fini !
 			return TRUE;
 		}
 
@@ -126,7 +126,7 @@ BOOL CMainMovie::Start(MainMovieType type, float time)
 		}
 
 		m_camera->SetType(CAMERA_BACK);
-		m_type = MM_NONE;  // c'est dï¿½jï¿½ fini !
+		m_type = MM_NONE;  // c'est déjà fini !
 	}
 
 	return TRUE;
@@ -164,7 +164,7 @@ BOOL CMainMovie::IsExist()
 }
 
 
-// Traite un ï¿½vï¿½nement.
+// Traite un événement.
 
 BOOL CMainMovie::EventProcess(const Event &event)
 {
@@ -237,7 +237,7 @@ MainMovieType CMainMovie::RetType()
 	return m_type;
 }
 
-// Retourne le type du film stoppï¿½.
+// Retourne le type du film stoppé.
 
 MainMovieType CMainMovie::RetStopType()
 {

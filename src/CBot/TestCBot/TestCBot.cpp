@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,8 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// TestCBot.cpp : Defines the class behaviors for the application.
+//
 
 #include "stdafx.h"
 #include "TestCBot.h"
@@ -68,7 +69,7 @@ static char BASED_CODE szFilename[]   = "File1";
 
 #include "../ClassFILE.cpp"
 
-// routine pour mettre ï¿½ jour l'instance de la classe Bot courante
+// routine pour mettre à jour l'instance de la classe Bot courante
 void rMajObject( CBotVar* pThis, void* pUser )
 {
 	if (!pThis->IsElemOfClass("object")) 
@@ -89,7 +90,7 @@ void rMajObject( CBotVar* pThis, void* pUser )
 //	pX = pThis->GivItem( "xx" );
 //	pX->SetValFloat( (float)22 );
 
-	// crï¿½e une instance sur une classe object
+	// crée une instance sur une classe object
 //	CBotVar* pAutre = CBotVar::Create("autre", CBotTypClass, "object");
 //	pAutre->SetUserPtr( (void*)3 );
 //	pPt->SetPointer( pAutre );
@@ -101,13 +102,13 @@ void rMajObject( CBotVar* pThis, void* pUser )
 BOOL CTestCBotApp::InitInstance()
 {
 //////////////////////////////////////////////
-//	dï¿½fini les mots clefs supplï¿½mentaires
+//	défini les mots clefs supplémentaires
 // -------------------------------------------
 
 	CBotProgram::Init();
  
 //////////////////////////////////////////////
-//	dï¿½fini les fonctions "show()" et "print()"
+//	défini les fonctions "show()" et "print()"
 // -------------------------------------------
 
 	CBotProgram::AddFunction("show", rShow, cShow);
@@ -116,7 +117,7 @@ BOOL CTestCBotApp::InitInstance()
 
 
 ///////////////////////////////////
-// dï¿½finie la classe globale CPoint
+// définie la classe globale CPoint
 // --------------------------------
 
 	m_pClassPoint	= new CBotClass("CPoint", NULL);
@@ -139,7 +140,7 @@ BOOL CTestCBotApp::InitInstance()
 	// ajoute le constructeur pour cette classe
 	m_pClassPointIntr->AddFunction("point", rCPoint, cCPoint);
 
-	// dï¿½fini la classe "object"
+	// défini la classe "object"
 	CBotClass*	pClassObject = new CBotClass( "object", NULL ) ;
 	pClassObject->AddItem( "xx", CBotTypFloat );
 	pClassObject->AddItem( "position", CBotTypResult( CBotTypIntrinsic, "point" ) );

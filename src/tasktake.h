@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// tasktake.h
 
 #ifndef _TASKTAKE_H_
 #define	_TASKTAKE_H_
@@ -29,14 +29,14 @@ class CObject;
 enum TaskTakeOrder
 {
 	TTO_TAKE	= 1,	// prend un objet
-	TTO_DEPOSE	= 2,	// dï¿½pose l'objet
+	TTO_DEPOSE	= 2,	// dépose l'objet
 };
 
 enum TaskTakeArm
 {
 	TTA_NEUTRAL	= 1,	// bras vide au repos
 	TTA_FFRONT	= 2,	// bras au sol
-	TTA_FRIEND	= 3,	// bras derriï¿½re un robot amis
+	TTA_FRIEND	= 3,	// bras derrière un robot amis
 };
 
 

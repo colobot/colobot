@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,18 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.//-----------------------------------------------------------------------------
+// File: D3DTextr.cpp
+//
+// Desc: Functions to manage textures, including creating (loading from a
+//       file), restoring lost surfaces, invalidating, and destroying.
+//
+//       Note: the implementation of these fucntions maintain an internal list
+//       of loaded textures. After creation, individual textures are referenced
+//       via their ASCII names.
+//
+// Copyright (c) 1996-1999 Microsoft Corporation. All rights reserved
+//-----------------------------------------------------------------------------
 #define STRICT
 #include <tchar.h>
 #include <stdio.h>
@@ -458,7 +469,7 @@ HRESULT TextureContainer::LoadTargaFile( TCHAR* strMetaname, TCHAR* strFilename 
 	for( DWORD i=0; i<(m_dwWidth*m_dwHeight); i++ )
 	{
 //? 	if( m_pRGBAData[i] & 0x000000ff != 0xff )
-		if( (m_pRGBAData[i] & 0x000000ff) != 0xff )  // erreur corrigï¿½e !
+		if( (m_pRGBAData[i] & 0x000000ff) != 0xff )  // erreur corrigée !
 		{
 			m_bHasAlpha = TRUE;
 			break;

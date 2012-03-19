@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// list.h
 
 #ifndef _LIST_H_
 #define	_LIST_H_
@@ -97,8 +97,8 @@ protected:
 	float		m_expand;
 	int			m_totalLine;	// nb total de lignes
 	int			m_displayLine;	// nb de lignes visibles
-	int			m_selectLine;	// ligne sï¿½lectionnï¿½e
-	int			m_firstLine;	// premiï¿½re ligne visible
+	int			m_selectLine;	// ligne sélectionnée
+	int			m_firstLine;	// première ligne visible
 	BOOL		m_bBlink;
 	BOOL		m_bSelectCap;
 	float		m_blinkTime;

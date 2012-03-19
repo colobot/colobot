@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskmanip.h
 
 #ifndef _TASKMANIP_H_
 #define	_TASKMANIP_H_
@@ -28,9 +28,9 @@ class CObject;
 
 enum TaskManipOrder
 {
-	TMO_AUTO	= 0,	// prend ou dï¿½pose automatique
+	TMO_AUTO	= 0,	// prend ou dépose automatique
 	TMO_GRAB	= 1,	// prend un objet
-	TMO_DROP	= 2,	// dï¿½pose l'objet
+	TMO_DROP	= 2,	// dépose l'objet
 };
 
 enum TaskManipArm
@@ -38,16 +38,16 @@ enum TaskManipArm
 	TMA_NEUTRAL	= 1,	// bras vide au repos
 	TMA_STOCK	= 2,	// bras plein au repos
 	TMA_FFRONT	= 3,	// bras au sol
-	TMA_FBACK	= 4,	// bras derriï¿½re le robot
-	TMA_POWER	= 5,	// bras derriï¿½re le robot
-	TMA_OTHER	= 6,	// bras derriï¿½re un robot amis
-	TMA_GRAB	= 7,	// prend immï¿½diatement
+	TMA_FBACK	= 4,	// bras derrière le robot
+	TMA_POWER	= 5,	// bras derrière le robot
+	TMA_OTHER	= 6,	// bras derrière un robot amis
+	TMA_GRAB	= 7,	// prend immédiatement
 };
 
 enum TaskManipHand
 {
 	TMH_OPEN	= 1,	// pince ouverte
-	TMH_CLOSE	= 2,	// pince fermï¿½e
+	TMH_CLOSE	= 2,	// pince fermée
 };
 
 

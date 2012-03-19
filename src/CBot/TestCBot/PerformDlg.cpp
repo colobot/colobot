@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,8 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// PerformDlg.cpp : implementation file
+//
 
 #include "stdafx.h"
 #include "testcbot.h"
@@ -135,7 +136,7 @@ BOOL CPerformDlg::OnInitDialog()
 
 
 	CBotStringArray liste;
-	// crï¿½e les scripts pour les tests
+	// crée les scripts pour les tests
 	for ( int i = 0; i < 100; i++ )
 	{
 		m_pProg[i] = new CBotProgram();
@@ -143,7 +144,7 @@ BOOL CPerformDlg::OnInitDialog()
 		m_pProg[i]->Start(liste[0]);
 	}
 
-	// lance un processus paralï¿½le pour l'exï¿½cution
+	// lance un processus paralèle pour l'exécution
 //	m_threadinfo2.m_pWndMessage = this ;
 
 	m_threadinfo2.m_pEdit  = &m_Edit1;

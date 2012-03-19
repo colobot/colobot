@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// tasksearch.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -57,7 +57,7 @@ CTaskSearch::~CTaskSearch()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskSearch::EventProcess(const Event &event)
 {
@@ -71,7 +71,7 @@ BOOL CTaskSearch::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ï¿½a avance
+	m_progress += event.rTime*m_speed;  // ça avance
 	m_time += event.rTime;
 
 	if ( m_phase == TSP_DOWN ||
@@ -132,7 +132,7 @@ void CTaskSearch::InitAngle()
 }
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskSearch::Start()
 {
@@ -175,7 +175,7 @@ Error CTaskSearch::Start()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskSearch::IsEnded()
 {
@@ -236,7 +236,7 @@ BOOL CTaskSearch::Abort()
 }
 
 
-// Crï¿½e une marque si c'est possible.
+// Crée une marque si c'est possible.
 
 BOOL CTaskSearch::CreateMark()
 {
@@ -307,7 +307,7 @@ BOOL CTaskSearch::CreateMark()
 	return TRUE;
 }
 
-// Dï¿½truit les marques d'un type donnï¿½..
+// Détruit les marques d'un type donné..
 
 void CTaskSearch::DeleteMark(ObjectType type)
 {

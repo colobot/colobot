@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskshield.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,7 +38,7 @@
 #include "taskshield.h"
 
 
-#define ENERGY_TIME		20.0f		// durï¿½e maximale si pile pleine
+#define ENERGY_TIME		20.0f		// durée maximale si pile pleine
 
 
 
@@ -62,7 +62,7 @@ CTaskShield::~CTaskShield()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskShield::EventProcess(const Event &event)
 {
@@ -78,13 +78,13 @@ BOOL CTaskShield::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ï¿½a avance
+	m_progress += event.rTime*m_speed;  // ça avance
 	m_time += event.rTime;
 	m_delay -= event.rTime;
 
 	mat = m_object->RetWorldMatrix(0);
 	pos = D3DVECTOR(7.0f, 15.0f, 0.0f);
-	pos = Transform(*mat, pos);  // position sphï¿½re
+	pos = Transform(*mat, pos);  // position sphère
 	m_shieldPos = pos;
 
 	if ( m_rankSphere != -1 )
@@ -233,8 +233,8 @@ BOOL CTaskShield::EventProcess(const Event &event)
 }
 
 
-// Dï¿½ploie le bouclier.
-// Le dï¿½lai n'est utile qu'avec TSM_UP !
+// Déploie le bouclier.
+// Le délai n'est utile qu'avec TSM_UP !
 
 Error CTaskShield::Start(TaskShieldMode mode, float delay)
 {
@@ -261,7 +261,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILErs )  return ERR_SHIELD_VEH;
 
-	m_bError = TRUE;  // opï¿½ration impossible
+	m_bError = TRUE;  // opération impossible
 	if ( !m_physics->RetLand() )  return ERR_SHIELD_VEH;
 
 	power = m_object->RetPower();
@@ -271,7 +271,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	
 	mat = m_object->RetWorldMatrix(0);
 	pos = D3DVECTOR(7.0f, 15.0f, 0.0f);
-	pos = Transform(*mat, pos);  // position sphï¿½re
+	pos = Transform(*mat, pos);  // position sphère
 	m_shieldPos = pos;
 
 	m_sound->Play(SOUND_PSHHH2, m_shieldPos, 1.0f, 0.7f);
@@ -337,7 +337,7 @@ Error CTaskShield::Stop()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskShield::IsEnded()
 {
@@ -488,7 +488,7 @@ BOOL CTaskShield::Abort()
 }
 
 
-// Crï¿½e la lumiï¿½re pour accompagner un effet pyrotechnique.
+// Crée la lumière pour accompagner un effet pyrotechnique.
 
 BOOL CTaskShield::CreateLight(D3DVECTOR pos)
 {
@@ -525,7 +525,7 @@ BOOL CTaskShield::CreateLight(D3DVECTOR pos)
 }
 
 
-// Rï¿½pare le bouclier des objets dans la sphï¿½re du bouclier.
+// Répare le bouclier des objets dans la sphère du bouclier.
 
 void CTaskShield::IncreaseShield()
 {

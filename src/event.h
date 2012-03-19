@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// event.h
 
 #ifndef _EVENT_H_
 #define	_EVENT_H_
@@ -32,7 +32,7 @@ class CInstanceManager;
 
 #define MAXEVENT	100
 
-// Evï¿½nements.
+// Evénements.
 
 enum EventMsg
 {
@@ -526,13 +526,13 @@ enum EventMsg
 
 typedef struct
 {
-	EventMsg	event;		// ï¿½vï¿½nement (EVENT_*)
-	long		param;		// paramï¿½tre
+	EventMsg	event;		// événement (EVENT_*)
+	long		param;		// paramètre
 	FPOINT		pos;		// position de la souris (0..1)
 	float		axeX;		// commande de l'axe X (-1..1)
 	float		axeY;		// commande de l'axe Y (-1..1)
 	float		axeZ;		// commande de l'axe Z (-1..1)
-	short		keyState;	// ï¿½tat du clavier (KS_*)
+	short		keyState;	// état du clavier (KS_*)
 	float		rTime;		// temps relatif
 }
 Event;

@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskmanager.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -97,7 +97,7 @@ Error CTaskManager::StartTaskTurn(float angle)
 	return ((CTaskTurn*)m_task)->Start(angle);
 }
 
-// Atteint une position donnï¿½e.
+// Atteint une position donnée.
 
 Error CTaskManager::StartTaskGoto(D3DVECTOR pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
@@ -121,7 +121,7 @@ Error CTaskManager::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 	return ((CTaskManip*)m_task)->Start(order, arm);
 }
 
-// Met ou enlï¿½ve un drapeau.
+// Met ou enlève un drapeau.
 
 Error CTaskManager::StartTaskFlag(TaskFlagOrder order, int rank)
 {
@@ -169,7 +169,7 @@ Error CTaskManager::StartTaskPen(BOOL bDown, int color)
 	return ((CTaskPen*)m_task)->Start(bDown, color);
 }
 
-// Rï¿½cupï¿½re une ruine.
+// Récupère une ruine.
 
 Error CTaskManager::StartTaskRecover()
 {
@@ -177,7 +177,7 @@ Error CTaskManager::StartTaskRecover()
 	return ((CTaskRecover*)m_task)->Start();
 }
 
-// Dï¿½ploie le bouclier.
+// Déploie le bouclier.
 
 Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 {
@@ -222,7 +222,7 @@ Error CTaskManager::StartTaskGunGoal(float dirV, float dirH)
 	return ((CTaskGunGoal*)m_task)->Start(dirV, dirH);
 }
 
-// Suicide de l'araignï¿½e.
+// Suicide de l'araignée.
 
 Error CTaskManager::StartTaskSpiderExplo()
 {
@@ -242,7 +242,7 @@ Error CTaskManager::StartTaskReset(D3DVECTOR goal, D3DVECTOR angle)
 
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskManager::EventProcess(const Event &event)
 {
@@ -251,7 +251,7 @@ BOOL CTaskManager::EventProcess(const Event &event)
 }
 
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskManager::IsEnded()
 {
@@ -269,8 +269,8 @@ BOOL CTaskManager::IsBusy()
 }
 
 
-// Indique s'il est possible de piloter le robot pendant l'exï¿½cution
-// de la tï¿½che en cours.
+// Indique s'il est possible de piloter le robot pendant l'exécution
+// de la tâche en cours.
 
 BOOL CTaskManager::IsPilot()
 {

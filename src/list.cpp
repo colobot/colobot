@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// list.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -90,7 +90,7 @@ CList::~CList()
 }
 
 
-// Crï¿½e une nouvelle liste.
+// Crée une nouvelle liste.
 
 BOOL CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 				   float expand)
@@ -107,7 +107,7 @@ BOOL CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 	return MoveAdjust();
 }
 
-// Ajuste aprï¿½s un changement de dimensions.
+// Ajuste après un changement de dimensions.
 
 BOOL CList::MoveAdjust()
 {
@@ -250,7 +250,7 @@ BOOL CList::ClearState(int state)
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CList::EventProcess(const Event &event)
 {
@@ -330,7 +330,7 @@ BOOL CList::EventProcess(const Event &event)
 
 					Event newEvent = event;
 					newEvent.event = m_eventMsg;
-					m_event->AddEvent(newEvent);  // ligne sï¿½lectionnï¿½e changï¿½e
+					m_event->AddEvent(newEvent);  // ligne sélectionnée changée
 				}
 			}
 		}
@@ -397,7 +397,7 @@ void CList::Draw()
 			if ( m_button[0] != 0 )
 			{
 				dim = m_button[0]->RetDim();
-				dim.y *= m_displayLine;  // fond pile-poil derriï¿½re
+				dim.y *= m_displayLine;  // fond pile-poil derrière
 			}
 		}
 
@@ -508,7 +508,7 @@ void CList::Draw()
 					uv1.y += dp;
 					uv2.x -= dp;
 					uv2.y -= dp;
-					DrawIcon(pos, dim, uv1, uv2);  // dessine carrï¿½
+					DrawIcon(pos, dim, uv1, uv2);  // dessine carré
 
 					m_engine->SetState(D3DSTATETTw);
 					uv1.x =  0.0f/256.0f;  // v
@@ -576,7 +576,7 @@ void CList::DrawCase(char *text, FPOINT pos, float width, int justif)
 }
 
 
-// Vide complï¿½tement la liste.
+// Vide complètement la liste.
 
 void CList::Flush()
 {
@@ -588,7 +588,7 @@ void CList::Flush()
 }
 
 
-// Spï¿½cifie le nombre total de lignes.
+// Spécifie le nombre total de lignes.
 
 void CList::SetTotal(int i)
 {
@@ -603,7 +603,7 @@ int CList::RetTotal()
 }
 
 
-// Sï¿½lectionne une ligne.
+// Sélectionne une ligne.
 
 void CList::SetSelect(int i)
 {
@@ -620,7 +620,7 @@ void CList::SetSelect(int i)
 	UpdateButton();
 }
 
-// Retourne la ligne sï¿½lectionnï¿½e.
+// Retourne la ligne sélectionnée.
 
 int CList::RetSelect()
 {
@@ -635,7 +635,7 @@ int CList::RetSelect()
 }
 
 
-// Gestion de la capacitï¿½ ï¿½ sï¿½lectionner une case.
+// Gestion de la capacité à sélectionner une case.
 
 void CList::SetSelectCap(BOOL bEnable)
 {
@@ -676,7 +676,7 @@ BOOL CList::RetBlink()
 }
 
 
-// Spï¿½cifie le texte d'une ligne.
+// Spécifie le texte d'une ligne.
 
 void CList::SetName(int i, char* name)
 {
@@ -709,7 +709,7 @@ char* CList::RetName(int i)
 }
 
 
-// Spï¿½cifie le bit "check" pour une case.
+// Spécifie le bit "check" pour une case.
 
 void CList::SetCheck(int i, BOOL bMode)
 {
@@ -728,7 +728,7 @@ BOOL CList::RetCheck(int i)
 }
 
 
-// Spï¿½cifie le bit "enable" pour une case.
+// Spécifie le bit "enable" pour une case.
 
 void CList::SetEnable(int i, BOOL bMode)
 {
@@ -763,7 +763,7 @@ float  CList::RetTabs(int i)
 }
 
 
-// Dï¿½place l'ascenseur de la liste pour voir la ligne sï¿½lectionnï¿½e.
+// Déplace l'ascenseur de la liste pour voir la ligne sélectionnée.
 
 void CList::ShowSelect(BOOL bFixed)
 {
@@ -790,7 +790,7 @@ void CList::ShowSelect(BOOL bFixed)
 }
 
 
-// Met ï¿½ jour tous les noms des boutons.
+// Met à jour tous les noms des boutons.
 
 void CList::UpdateButton()
 {
@@ -820,7 +820,7 @@ void CList::UpdateButton()
 	}
 }
 
-// Met ï¿½ jour l'ascenseur.
+// Met à jour l'ascenseur.
 
 void CList::UpdateScroll()
 {
@@ -852,7 +852,7 @@ void CList::UpdateScroll()
 	m_scroll->SetArrowStep(step);
 }
 
-// Mise ï¿½ jour lorsque l'ascenseur a ï¿½tï¿½ bougï¿½.
+// Mise à jour lorsque l'ascenseur a été bougé.
 
 void CList::MoveScroll()
 {

@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// maindialog.h
 
 #ifndef _MAINDIALOG_H_
 #define	_MAINDIALOG_H_
@@ -184,7 +184,7 @@ protected:
 	GamerPerso		m_perso;			// perso: description
 	GamerPerso		m_persoCopy;		// perso: copie pour annulation
 	int				m_persoTab;			// perso: onglet choisi
-	float			m_persoAngle;		// perso: angle de prï¿½sentation
+	float			m_persoAngle;		// perso: angle de présentation
 
 	char			m_sceneDir[_MAX_FNAME];		// dossier scene\ 
 	char			m_savegameDir[_MAX_FNAME];	// dossier savegame\ 
@@ -197,12 +197,12 @@ protected:
 	int				m_sel[10];			// mission choisie (0..98)
 	int				m_maxList;
 	int				m_accessChap;
-	char			m_sceneRead[100];	// nom de la scï¿½ne ï¿½ lire
-	char			m_stackRead[100];	// nom de la scï¿½ne ï¿½ lire
-	char			m_sceneName[20];	// nom de la scï¿½ne ï¿½ jouer
-	int				m_sceneRank;		// rang de la scï¿½ne ï¿½ jouer
+	char			m_sceneRead[100];	// nom de la scène à lire
+	char			m_stackRead[100];	// nom de la scène à lire
+	char			m_sceneName[20];	// nom de la scène à jouer
+	int				m_sceneRank;		// rang de la scène à jouer
 	BOOL			m_bSceneSoluce;		// montre la solution
-	BOOL			m_bSimulSetup;		// rï¿½glages pendant le jeu
+	BOOL			m_bSimulSetup;		// réglages pendant le jeu
 	BOOL			m_accessEnable;
 	BOOL			m_accessMission;
 	BOOL			m_accessUser;
@@ -212,17 +212,17 @@ protected:
 	char			m_userList[USERLISTMAX][100];
 
 	int				m_shotDelay;		// nb de frames avant copie
-	char			m_shotName[100];	// nom du fichier ï¿½ gï¿½nï¿½rer
+	char			m_shotName[100];	// nom du fichier à générer
 
 	int				m_setupSelDevice;
 	int				m_setupSelMode;
 	BOOL			m_setupFull;
 
-	BOOL			m_bTooltip;			// info-bulles ï¿½ afficher ?
+	BOOL			m_bTooltip;			// info-bulles à afficher ?
 	BOOL			m_bGlint;			// reflets sur boutons ?
 	BOOL			m_bRain;			// pluie dans l'interface ?
 	BOOL			m_bSoluce4;			// solutions dans programme 4 ?
-	BOOL			m_bMovies;			// cinï¿½matiques ?
+	BOOL			m_bMovies;			// cinématiques ?
 	BOOL			m_bNiceReset;		// pour CTaskReset
 	BOOL			m_bHimselfDamage;	// pour les tirs
 	BOOL			m_bCameraScroll;	// pour CCamera
@@ -235,7 +235,7 @@ protected:
 
 	int				m_loadingCounter;
 
-	BOOL			m_bDialog;			// dialogue prï¿½sent ?
+	BOOL			m_bDialog;			// dialogue présent ?
 	BOOL			m_bDialogFire;		// cadre en feu ?
 	BOOL			m_bDialogDelete;
 	FPOINT			m_dialogPos;

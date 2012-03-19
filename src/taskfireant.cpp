@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskfireant.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -57,7 +57,7 @@ CTaskFireAnt::~CTaskFireAnt()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskFireAnt::EventProcess(const Event &event)
 {
@@ -77,7 +77,7 @@ BOOL CTaskFireAnt::EventProcess(const Event &event)
 	m_time += event.rTime;
 	m_progress += event.rTime*m_speed;
 
-	if ( m_phase == TFA_TURN )  // rotation prï¿½liminaire ?
+	if ( m_phase == TFA_TURN )  // rotation préliminaire ?
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
@@ -85,14 +85,14 @@ BOOL CTaskFireAnt::EventProcess(const Event &event)
 		if ( cirSpeed >  2.0f )  cirSpeed =  2.0f;
 		if ( cirSpeed < -2.0f )  cirSpeed = -2.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne ï¿½ gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
 	}
 
 	return TRUE;
 }
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskFireAnt::Start(D3DVECTOR impact)
 {
@@ -101,7 +101,7 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 
 	m_impact = impact;
 
-	m_bError = TRUE;  // opï¿½ration impossible
+	m_bError = TRUE;  // opération impossible
 	if ( !m_physics->RetLand() )  return ERR_FIRE_VEH;
 
 	type = m_object->RetType();
@@ -126,7 +126,7 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskFireAnt::IsEnded()
 {
@@ -146,7 +146,7 @@ Error CTaskFireAnt::IsEnded()
 		angle = NormAngle(angle);  // 0..2*PI
 		if ( !TestAngle(angle, m_angle-PI*0.05f, m_angle+PI*0.05f) )  return ERR_CONTINUE;
 
-		m_physics->SetMotorSpeedZ(0.0f);  // rotation terminï¿½e
+		m_physics->SetMotorSpeedZ(0.0f);  // rotation terminée
 
 		m_phase = TFA_PREPARE;
 //?		m_speed = 1.0f/1.5f;
@@ -156,7 +156,7 @@ Error CTaskFireAnt::IsEnded()
 		m_motion->SetAction(MAS_PREPARE, 0.4f);
 	}
 
-	if ( m_phase == TFA_PREPARE )  // prï¿½paration ?
+	if ( m_phase == TFA_PREPARE )  // préparation ?
 	{
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 

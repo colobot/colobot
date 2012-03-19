@@ -1,4 +1,4 @@
-﻿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,26 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.//-----------------------------------------------------------------------------
+// File: D3DFrame.h
+//
+// Desc: Class to manage the Direct3D environment objects such as buffers,
+//       viewports, and 3D devices.
+//
+//       The class is initialized with the Initialize() function, after which
+//       the Get????() functions can be used to access the objects needed for
+//       rendering. If the device or display needs to be changed, the
+//       ChangeDevice() function can be called. If the display window is moved
+//       the changes need to be reported with the Move() function.
+//
+//       After rendering a frame, the ShowFrame() function filps or blits the
+//       backbuffer contents to the primary. If surfaces are lost, they can be
+//       restored with the RestoreSurfaces() function. Finally, if normal
+//       Windows output is needed, the FlipToGDISurface() provides a GDI
+//       surface to draw on.
+//
+// Copyright (c) 1997-1999 Microsoft Corporation. All rights reserved
+//-----------------------------------------------------------------------------
 #ifndef D3DFRAME_H
 #define D3DFRAME_H
 #include <ddraw.h>

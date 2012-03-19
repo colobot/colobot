@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// object.h
 
 #ifndef _OBJECT_H_
 #define	_OBJECT_H_
@@ -40,8 +40,8 @@ enum D3DShadowType;
 
 
 
-// Le pï¿½re de toutes les parties doit toujours ï¿½tre la partie
-// numï¿½ro zï¿½ro !
+// Le père de toutes les parties doit toujours être la partie
+// numéro zéro !
 
 #define OBJECTMAXPART		40
 #define MAXCRASHSPHERE		40
@@ -51,52 +51,52 @@ enum D3DShadowType;
 
 enum ObjectType
 {
-	OBJECT_NULL		    = 0,	// objet dï¿½truit
-	OBJECT_FIX		    = 1,	// dï¿½cor fixe
+	OBJECT_NULL		    = 0,	// objet détruit
+	OBJECT_FIX		    = 1,	// décor fixe
 	OBJECT_PORTICO	    = 2,	// portique
 	OBJECT_BASE		    = 3,	// grande base principale
 	OBJECT_DERRICK	    = 4,	// derrick fixe
 	OBJECT_FACTORY	    = 5,	// usine fixe
 	OBJECT_STATION	    = 6,	// station de recharge
 	OBJECT_CONVERT	    = 7,	// station de transformation
-	OBJECT_REPAIR	    = 8,	// rï¿½paration
-	OBJECT_TOWER	    = 9,	// tour de dï¿½fense
+	OBJECT_REPAIR	    = 8,	// réparation
+	OBJECT_TOWER	    = 9,	// tour de défense
 	OBJECT_NEST		    = 10,	// nid
 	OBJECT_RESEARCH     = 11,	// centre de recherches
 	OBJECT_RADAR	    = 12,	// radar
-	OBJECT_ENERGY	    = 13,	// centrale d'ï¿½nergie
+	OBJECT_ENERGY	    = 13,	// centrale d'énergie
 	OBJECT_LABO		    = 14,	// laboratoire d'analyse pour insectes
-	OBJECT_NUCLEAR		= 15,	// centrale nuclï¿½aire
-	OBJECT_START		= 16,	// dï¿½part
-	OBJECT_END			= 17,	// arrivï¿½e
+	OBJECT_NUCLEAR		= 15,	// centrale nucléaire
+	OBJECT_START		= 16,	// départ
+	OBJECT_END			= 17,	// arrivée
 	OBJECT_INFO		    = 18,	// borne d'information
 	OBJECT_PARA			= 19,	// paratonnerre
 	OBJECT_TARGET1		= 20,	// portique cible
 	OBJECT_TARGET2		= 21,	// centre cible
 	OBJECT_SAFE			= 22,	// coffre fort
-	OBJECT_HUSTON		= 23,	// centre de contrï¿½le
+	OBJECT_HUSTON		= 23,	// centre de contrôle
 	OBJECT_DESTROYER	= 24,	// destructeur
 	OBJECT_FRET		    = 30,	// transportable
 	OBJECT_STONE	    = 31,	// pierre
 	OBJECT_URANIUM	    = 32,	// uranium
-	OBJECT_METAL	    = 33,	// mï¿½tal
+	OBJECT_METAL	    = 33,	// métal
 	OBJECT_POWER	    = 34,	// pile normale
 	OBJECT_ATOMIC	    = 35,	// pile atomique
 	OBJECT_BULLET	    = 36,	// boulet
 	OBJECT_BBOX		    = 37,	// black-box
 	OBJECT_TNT			= 38,	// caisse de TNT
-	OBJECT_SCRAP1		= 40,	// dï¿½chet mï¿½tallique
-	OBJECT_SCRAP2		= 41,	// dï¿½chet mï¿½tallique
-	OBJECT_SCRAP3		= 42,	// dï¿½chet mï¿½tallique
-	OBJECT_SCRAP4		= 43,	// dï¿½chet plastique
-	OBJECT_SCRAP5		= 44,	// dï¿½chet plastique
+	OBJECT_SCRAP1		= 40,	// déchet métallique
+	OBJECT_SCRAP2		= 41,	// déchet métallique
+	OBJECT_SCRAP3		= 42,	// déchet métallique
+	OBJECT_SCRAP4		= 43,	// déchet plastique
+	OBJECT_SCRAP5		= 44,	// déchet plastique
 	OBJECT_MARKPOWER	= 50,	// marque pile en sous-sol
 	OBJECT_MARKSTONE	= 51,	// marque minerai en sous-sol
 	OBJECT_MARKURANIUM  = 52,	// marque uranium en sous-sol
-	OBJECT_MARKKEYa		= 53,	// marque clï¿½ en sous-sol
-	OBJECT_MARKKEYb		= 54,	// marque clï¿½ en sous-sol
-	OBJECT_MARKKEYc		= 55,	// marque clï¿½ en sous-sol
-	OBJECT_MARKKEYd		= 56,	// marque clï¿½ en sous-sol
+	OBJECT_MARKKEYa		= 53,	// marque clé en sous-sol
+	OBJECT_MARKKEYb		= 54,	// marque clé en sous-sol
+	OBJECT_MARKKEYc		= 55,	// marque clé en sous-sol
+	OBJECT_MARKKEYd		= 56,	// marque clé en sous-sol
 	OBJECT_BOMB			= 60,	// bombe
 	OBJECT_WINFIRE		= 61,	// feu d'artifice
 	OBJECT_SHOW			= 62,	// montre un lieu
@@ -164,22 +164,22 @@ enum ObjectType
 	OBJECT_FLAGg		= 262,	// drapeau vert
 	OBJECT_FLAGy		= 263,	// drapeau jaune
 	OBJECT_FLAGv		= 264,	// drapeau violet
-	OBJECT_KEYa			= 270,	// clï¿½ a
-	OBJECT_KEYb			= 271,	// clï¿½ b
-	OBJECT_KEYc			= 272,	// clï¿½ c
-	OBJECT_KEYd			= 273,	// clï¿½ d
+	OBJECT_KEYa			= 270,	// clé a
+	OBJECT_KEYb			= 271,	// clé b
+	OBJECT_KEYc			= 272,	// clé c
+	OBJECT_KEYd			= 273,	// clé d
 	OBJECT_HUMAN	    = 300,	// homme
 	OBJECT_TOTO		    = 301,	// toto
 	OBJECT_TECH		    = 302,	// technicien
-	OBJECT_BARRIER0		= 400,	// barriï¿½re
-	OBJECT_BARRIER1		= 401,	// barriï¿½re
-	OBJECT_BARRIER2		= 402,	// barriï¿½re
-	OBJECT_BARRIER3		= 403,	// barriï¿½re
-	OBJECT_BARRIER4		= 404,	// barriï¿½re
-	OBJECT_MOTHER	    = 500,	// mï¿½re pondeuse
+	OBJECT_BARRIER0		= 400,	// barrière
+	OBJECT_BARRIER1		= 401,	// barrière
+	OBJECT_BARRIER2		= 402,	// barrière
+	OBJECT_BARRIER3		= 403,	// barrière
+	OBJECT_BARRIER4		= 404,	// barrière
+	OBJECT_MOTHER	    = 500,	// mère pondeuse
 	OBJECT_EGG		    = 501,	// oeuf
 	OBJECT_ANT		    = 502,	// fourmi
-	OBJECT_SPIDER	    = 503,	// araignï¿½e
+	OBJECT_SPIDER	    = 503,	// araignée
 	OBJECT_BEE		    = 504,	// abeille
 	OBJECT_WORM		    = 505,	// ver
 	OBJECT_RUINmobilew1 = 600,	// ruine 1
@@ -296,7 +296,7 @@ enum ObjectType
 
 enum ObjectMaterial
 {
-	OM_METAL			= 0,	// mï¿½tal
+	OM_METAL			= 0,	// métal
 	OM_PLASTIC			= 1,	// plastique
 	OM_HUMAN			= 2,	// cosmonaute
 	OM_ANIMAL			= 3,	// insecte
@@ -307,9 +307,9 @@ enum ObjectMaterial
 typedef struct
 {
 	char		bUsed;
-	int			object;			// numï¿½ro de l'objet dans CD3DEngine
-	int			parentPart;		// numï¿½ro de la partie pï¿½re
-	int			masterParti;	// canal de la particule maï¿½tre
+	int			object;			// numéro de l'objet dans CD3DEngine
+	int			parentPart;		// numéro de la partie père
+	int			masterParti;	// canal de la particule maître
 	D3DVECTOR	position;
 	D3DVECTOR	angle;
 	D3DVECTOR	zoom;
@@ -326,7 +326,7 @@ ObjectPart;
 typedef struct
 {
 	float		wheelFront;		// position X des roues avant
-	float		wheelBack;		// position X des roues arriï¿½res
+	float		wheelBack;		// position X des roues arrières
 	float		wheelLeft;		// position Z des roues gauches
 	float		wheelRight;		// position Z des roues droites
 	float		height;			// hauteur normale au-dessus du sol
@@ -686,40 +686,40 @@ protected:
 	ObjectType	m_type;				// OBJECT_*
 	int			m_id;				// identificateur unique
 	char		m_name[50];			// nom de l'objet
-	Character	m_character;		// caractï¿½ristiques
+	Character	m_character;		// caractéristiques
 	int			m_option;			// option
-	int			m_partiReactor;		// numï¿½ro de la particule du rï¿½acteur
-	int			m_shadowLight;		// numï¿½ro de la lumiï¿½re de l'ombre
-	float		m_shadowHeight;		// hauteur de la lumiï¿½re de l'ombre
-	int			m_effectLight;		// numï¿½ro de la lumiï¿½re des effets
-	float		m_effectHeight;		// hauteur de la lumiï¿½re des effets
-	D3DVECTOR	m_linVibration;		// vibration linï¿½aire
+	int			m_partiReactor;		// numéro de la particule du réacteur
+	int			m_shadowLight;		// numéro de la lumière de l'ombre
+	float		m_shadowHeight;		// hauteur de la lumière de l'ombre
+	int			m_effectLight;		// numéro de la lumière des effets
+	float		m_effectHeight;		// hauteur de la lumière des effets
+	D3DVECTOR	m_linVibration;		// vibration linéaire
 	D3DVECTOR	m_cirVibration;		// vibration circulaire
 	D3DVECTOR	m_inclinaison;		// inclinaison
-	CObject*	m_power;			// pile utilisï¿½e par le vï¿½hicule
-	CObject*	m_fret;				// objet transportï¿½
+	CObject*	m_power;			// pile utilisée par le véhicule
+	CObject*	m_fret;				// objet transporté
 	CObject*	m_truck;			// objet portant celui-ci
 	int			m_truckLink;		// partie
-	float		m_energy;			// ï¿½nergie contenue (si pile)
+	float		m_energy;			// énergie contenue (si pile)
 	float		m_lastEnergy;
-	float		m_capacity;			// capacitï¿½ (si pile)
+	float		m_capacity;			// capacité (si pile)
 	float		m_shield;			// bouclier
 	float		m_range;			// autonomie de vol
 	float		m_transparency;		// transparence (0..1)
-	int			m_material;			// matiï¿½re (0..n)
+	int			m_material;			// matière (0..n)
 	float		m_aTime;
 	float		m_shotTime;			// temps depuis dernier coup
-	BOOL		m_bVirusMode;		// virus enclanchï¿½/dï¿½clanchï¿½
+	BOOL		m_bVirusMode;		// virus enclanché/déclanché
 	float		m_virusTime;		// temps de vie du virus
 	float		m_lastVirusParticule;
 	float		m_lastParticule;
 	BOOL		m_bHilite;
-	BOOL		m_bSelect;			// objet sï¿½lectionnï¿½
-	BOOL		m_bSelectable;		// objet sï¿½lectionnable
-	BOOL		m_bCheckToken;		// objet avec tokens vï¿½rifiï¿½s
-	BOOL		m_bVisible;			// objet actif mais indï¿½tectable
+	BOOL		m_bSelect;			// objet sélectionné
+	BOOL		m_bSelectable;		// objet sélectionnable
+	BOOL		m_bCheckToken;		// objet avec tokens vérifiés
+	BOOL		m_bVisible;			// objet actif mais indétectable
 	BOOL		m_bEnable;			// objet mort
-	BOOL		m_bProxyActivate;	// objet activï¿½ si proche
+	BOOL		m_bProxyActivate;	// objet activé si proche
 	BOOL		m_bGadget;			// objet non indispensable
 	BOOL		m_bLock;
 	BOOL		m_bExplo;
@@ -727,8 +727,8 @@ protected:
 	BOOL		m_bBurn;
 	BOOL		m_bDead;
 	BOOL		m_bFlat;
-	BOOL		m_bTrainer;			// vï¿½hicule d'entraï¿½nement (sans tï¿½lï¿½commande)
-	BOOL		m_bToy;				// jouet ï¿½ clï¿½
+	BOOL		m_bTrainer;			// véhicule d'entraînement (sans télécommande)
+	BOOL		m_bToy;				// jouet à clé
 	BOOL		m_bManual;			// commandes manuelles (Scribbler)
 	BOOL		m_bFixed;
 	BOOL		m_bClip;
@@ -744,7 +744,7 @@ protected:
 	float		m_proxyDistance;
 	float		m_param;
 
-	int			m_crashSphereUsed;	// nb de sphï¿½res utilisï¿½es
+	int			m_crashSphereUsed;	// nb de sphères utilisées
 	D3DVECTOR	m_crashSpherePos[MAXCRASHSPHERE];
 	float		m_crashSphereRadius[MAXCRASHSPHERE];
 	float		m_crashSphereHardness[MAXCRASHSPHERE];

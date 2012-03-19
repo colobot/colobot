@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskgungoal.h
 
 #ifndef _TASKGUNGOAL_H_
 #define	_TASKGUNGOAL_H_
@@ -43,9 +43,9 @@ protected:
 	float		m_progress;
 	float		m_speed;
 	float		m_initialDirV;	// direction initiale
-	float		m_finalDirV;	// direction ï¿½ atteindre
+	float		m_finalDirV;	// direction à atteindre
 	float		m_initialDirH;	// direction initiale
-	float		m_finalDirH;	// direction ï¿½ atteindre
+	float		m_finalDirH;	// direction à atteindre
 };
 
 

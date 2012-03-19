@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// light.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -44,7 +44,7 @@ void ProgInit(LightProg &p, float value)
 	p.speed    = 100.0f;
 }
 
-// Fait ï¿½voluer une progression.
+// Fait évoluer une progression.
 
 void ProgFrame(LightProg &p, float rTime)
 {
@@ -112,7 +112,7 @@ void CLight::SetD3DDevice(LPDIRECT3DDEVICE7 device)
 }
 
 
-// Supprime toutes les lumiï¿½res.
+// Supprime toutes les lumières.
 
 void CLight::FlushLight()
 {
@@ -127,7 +127,7 @@ void CLight::FlushLight()
 }
 
 
-// Crï¿½e une nouvelle lumiï¿½re. Retourne son rang ou -1 en cas d'erreur.
+// Crée une nouvelle lumière. Retourne son rang ou -1 en cas d'erreur.
 
 int CLight::CreateLight()
 {
@@ -170,7 +170,7 @@ int CLight::CreateLight()
 	return -1;
 }
 
-// Supprime une lumiï¿½re.
+// Supprime une lumière.
 
 BOOL CLight::DeleteLight(int lightRank)
 {
@@ -194,7 +194,7 @@ BOOL CLight::DeleteLight(int lightRank)
 }
 
 
-// Spï¿½cifie une lumiï¿½re.
+// Spécifie une lumière.
 
 BOOL CLight::SetLight(int lightRank, const D3DLIGHT7 &light)
 {
@@ -209,7 +209,7 @@ BOOL CLight::SetLight(int lightRank, const D3DLIGHT7 &light)
 	return TRUE;
 }
 
-// Donne les spï¿½cifications d'une lumiï¿½re.
+// Donne les spécifications d'une lumière.
 
 BOOL CLight::GetLight(int lightRank, D3DLIGHT7 &light)
 {
@@ -220,7 +220,7 @@ BOOL CLight::GetLight(int lightRank, D3DLIGHT7 &light)
 }
 
 
-// Allume ou ï¿½teint une lumiï¿½re.
+// Allume ou éteint une lumière.
 
 BOOL CLight::LightEnable(int lightRank, BOOL bEnable)
 {
@@ -231,8 +231,8 @@ BOOL CLight::LightEnable(int lightRank, BOOL bEnable)
 }
 
 
-// Spï¿½cifie le type (TYPE*) des objets inclus par cette lumiï¿½re.
-// Cette lumiï¿½re n'ï¿½clairera donc que ce type d'objets.
+// Spécifie le type (TYPE*) des objets inclus par cette lumière.
+// Cette lumière n'éclairera donc que ce type d'objets.
 
 BOOL CLight::SetLightIncluType(int lightRank, D3DTypeObj type)
 {
@@ -242,8 +242,8 @@ BOOL CLight::SetLightIncluType(int lightRank, D3DTypeObj type)
 	return TRUE;
 }
 
-// Spï¿½cifie le type (TYPE*) des objets exclus par cette lumiï¿½re.
-// Cette lumiï¿½re n'ï¿½clairera donc jamais ce type d'objets.
+// Spécifie le type (TYPE*) des objets exclus par cette lumière.
+// Cette lumière n'éclairera donc jamais ce type d'objets.
 
 BOOL CLight::SetLightExcluType(int lightRank, D3DTypeObj type)
 {
@@ -254,7 +254,7 @@ BOOL CLight::SetLightExcluType(int lightRank, D3DTypeObj type)
 }
 
 
-// Gestion de la position de la luniï¿½re.
+// Gestion de la position de la lunière.
 
 BOOL CLight::SetLightPos(int lightRank, D3DVECTOR pos)
 {
@@ -272,7 +272,7 @@ D3DVECTOR CLight::RetLightPos(int lightRank)
 }
 
 
-// Gestion de la direction de la lumiï¿½re.
+// Gestion de la direction de la lumière.
 
 BOOL CLight::SetLightDir(int lightRank, D3DVECTOR dir)
 {
@@ -290,7 +290,7 @@ D3DVECTOR CLight::RetLightDir(int lightRank)
 }
 
 
-// Spï¿½cifie la vitesse de changement.
+// Spécifie la vitesse de changement.
 
 BOOL CLight::SetLightIntensitySpeed(int lightRank, float speed)
 {
@@ -300,7 +300,7 @@ BOOL CLight::SetLightIntensitySpeed(int lightRank, float speed)
 	return TRUE;
 }
 
-// Gestion de l'intensitï¿½ de la lumiï¿½re.
+// Gestion de l'intensité de la lumière.
 
 BOOL CLight::SetLightIntensity(int lightRank, float value)
 {
@@ -318,7 +318,7 @@ float CLight::RetLightIntensity(int lightRank)
 }
 
 
-// Spï¿½cifie la vitesse de changement.
+// Spécifie la vitesse de changement.
 
 BOOL CLight::SetLightColorSpeed(int lightRank, float speed)
 {
@@ -330,7 +330,7 @@ BOOL CLight::SetLightColorSpeed(int lightRank, float speed)
 	return TRUE;
 }
 
-// Gestion de la couleur de la lumiï¿½re.
+// Gestion de la couleur de la lumière.
 
 BOOL CLight::SetLightColor(int lightRank, D3DCOLORVALUE color)
 {
@@ -362,7 +362,7 @@ D3DCOLORVALUE CLight::RetLightColor(int lightRank)
 }
 
 
-// Adapte la couleur de toutes les lumiï¿½res.
+// Adapte la couleur de toutes les lumières.
 
 void CLight::AdaptLightColor(D3DCOLORVALUE color, float factor)
 {
@@ -391,7 +391,7 @@ void CLight::AdaptLightColor(D3DCOLORVALUE color, float factor)
 
 
 
-// Fait ï¿½voluer toutes les lumiï¿½res.
+// Fait évoluer toutes les lumières.
 
 void CLight::FrameLight(float rTime)
 {
@@ -431,7 +431,7 @@ void CLight::FrameLight(float rTime)
 }
 
 
-// Met ï¿½ jour toutes les lumiï¿½res.
+// Met à jour toutes les lumières.
 
 void CLight::LightUpdate()
 {
@@ -471,7 +471,7 @@ void CLight::LightUpdate()
 	}
 }
 
-// Met ï¿½ jour les lumiï¿½res pour un type donnï¿½.
+// Met à jour les lumières pour un type donné.
 
 void CLight::LightUpdate(D3DTypeObj type)
 {

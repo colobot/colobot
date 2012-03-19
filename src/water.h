@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// water.h
 
 #ifndef _WATER_H_
 #define	_WATER_H_
@@ -32,7 +32,7 @@ enum ParticuleType;
 
 typedef struct
 {
-	short		x, y;		// dï¿½but
+	short		x, y;		// début
 	short		len;		// longueur en x
 	float		px1, px2, pz;
 }
@@ -115,8 +115,8 @@ protected:
 	float			m_lastLava;
 	int				m_subdiv;
 
-	int				m_brick;		// nb de briques*mosaï¿½que
-	float			m_size;			// taille d'un ï¿½lï¿½ment dans une brique
+	int				m_brick;		// nb de briques*mosaïque
+	float			m_size;			// taille d'un élément dans une brique
 
 	int				m_lineUsed;
 	WaterLine		m_line[MAXWATERLINE];

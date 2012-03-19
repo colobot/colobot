@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// mainmap.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -65,7 +65,7 @@ CMainMap::~CMainMap()
 }
 
 
-// Crï¿½e la mini-carte et les boutons correspondants.
+// Crée la mini-carte et les boutons correspondants.
 
 void CMainMap::CreateMap()
 {
@@ -272,7 +272,7 @@ void CMainMap::ZoomMap()
 	DimMap();
 }
 
-// Active ou dï¿½sactive la carte.
+// Active ou désactive la carte.
 
 void CMainMap::MapEnable(BOOL bEnable)
 {
@@ -296,7 +296,7 @@ void CMainMap::MapEnable(BOOL bEnable)
 	}
 }
 
-// Spï¿½cifie le type de l'icï¿½ne pour l'objet sï¿½lectionnï¿½.
+// Spécifie le type de l'icône pour l'objet sélectionné.
 
 void CMainMap::SetToy(BOOL bToy)
 {
@@ -312,7 +312,7 @@ void CMainMap::SetToy(BOOL bToy)
 	pm->SetToy(bToy);
 }
 
-// Spï¿½cifie les paramï¿½tres lors de l'usage d'une image fixe.
+// Spécifie les paramètres lors de l'usage d'une image fixe.
 
 void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
 						   int mode, BOOL bDebug)
@@ -333,7 +333,7 @@ void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
 	pm->SetDebug(bDebug);
 }
 
-// Met ï¿½ jour la mini-carte suite ï¿½ un changement du terrain.
+// Met à jour la mini-carte suite à un changement du terrain.
 
 void CMainMap::UpdateMap()
 {
@@ -365,7 +365,7 @@ BOOL CMainMap::RetFixImage()
 }
 
 
-// Dï¿½tecte l'objet visï¿½ dans la mini-carte.
+// Détecte l'objet visé dans la mini-carte.
 
 CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
 {
@@ -382,7 +382,7 @@ CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
 }
 
 
-// Indique l'objet survolï¿½ par la souris.
+// Indique l'objet survolé par la souris.
 
 void CMainMap::SetHilite(CObject* pObj)
 {

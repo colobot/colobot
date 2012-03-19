@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskpen.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -56,7 +56,7 @@ CTaskPen::~CTaskPen()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CTaskPen::EventProcess(const Event &event)
 {
@@ -74,7 +74,7 @@ BOOL CTaskPen::EventProcess(const Event &event)
 	}
 	else
 	{
-		m_progress += event.rTime*(1.0f/m_delay);  // ï¿½a avance
+		m_progress += event.rTime*(1.0f/m_delay);  // ça avance
 		if ( m_progress > 1.0f )  m_progress = 1.0f;
 	}
 
@@ -142,7 +142,7 @@ BOOL CTaskPen::EventProcess(const Event &event)
 }
 
 
-// Assigne le but ï¿½ atteindre.
+// Assigne le but à atteindre.
 
 Error CTaskPen::Start(BOOL bDown, int color)
 {
@@ -151,7 +151,7 @@ Error CTaskPen::Start(BOOL bDown, int color)
 	ObjectType	type;
 	int			i;
 
-	m_bError = TRUE;  // opï¿½ration impossible
+	m_bError = TRUE;  // opération impossible
 
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILEdr )  return ERR_FIRE_VEH;
@@ -204,7 +204,7 @@ Error CTaskPen::Start(BOOL bDown, int color)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminï¿½e.
+// Indique si l'action est terminée.
 
 Error CTaskPen::IsEnded()
 {
@@ -265,7 +265,7 @@ void CTaskPen::SoundManip(float time, float amplitude, float frequency)
 }
 
 
-// Conversion d'un angle en numï¿½ro de crayon.
+// Conversion d'un angle en numéro de crayon.
 
 int CTaskPen::AngleToRank(float angle)
 {
@@ -282,7 +282,7 @@ float CTaskPen::ColorToAngle(int color)
 	return -45.0f*PI/180.0f*ColorToRank(color);
 }
 
-// Conversion d'une couleur en numï¿½ro de crayon (0..7).
+// Conversion d'une couleur en numéro de crayon (0..7).
 
 int CTaskPen::ColorToRank(int color)
 {

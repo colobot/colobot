@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,8 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// TestCBotView.cpp : implementation of the CTestCBotView class
+//
 
 #include "stdafx.h"
 #include "TestCBot.h"
@@ -106,7 +107,7 @@ void CTestCBotView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* 
 
 	if ( !bActivate && !pDoc->Compile() )
 	{
-//		comment faire pour rï¿½activer l'ancien document
+//		comment faire pour réactiver l'ancien document
 	}
 
 	CView::OnActivateView(bActivate, pActivateView, pDeactiveView);

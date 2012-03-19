@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// planet.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -52,7 +52,7 @@ CPlanet::~CPlanet()
 }
 
 
-// Supprime toutes les planï¿½tes.
+// Supprime toutes les planètes.
 
 void CPlanet::Flush()
 {
@@ -72,7 +72,7 @@ void CPlanet::Flush()
 }
 
 
-// Gestion d'un ï¿½vï¿½nement.
+// Gestion d'un événement.
 
 BOOL CPlanet::EventProcess(const Event &event)
 {
@@ -83,7 +83,7 @@ BOOL CPlanet::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait ï¿½voluer les planï¿½tes.
+// Fait évoluer les planètes.
 
 BOOL CPlanet::EventFrame(const Event &event)
 {
@@ -111,7 +111,7 @@ BOOL CPlanet::EventFrame(const Event &event)
 }
 
 
-// Charge toutes les textures pour les planï¿½tes.
+// Charge toutes les textures pour les planètes.
 
 void CPlanet::LoadTexture()
 {
@@ -128,7 +128,7 @@ void CPlanet::LoadTexture()
 	}
 }
 
-// Dessine toutes les planï¿½tes.
+// Dessine toutes les planètes.
 
 void CPlanet::Draw()
 {
@@ -188,7 +188,7 @@ void CPlanet::Draw()
 }
 
 
-// Crï¿½e une nouvelle planï¿½te.
+// Crée une nouvelle planète.
 
 BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 					 float dir, char *name, FPOINT uv1, FPOINT uv2)
@@ -222,7 +222,7 @@ BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 	return FALSE;
 }
 
-// Indique s'il existe au moins une planï¿½te.
+// Indique s'il existe au moins une planète.
 
 BOOL CPlanet::PlanetExist()
 {

@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// terrain.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -85,14 +85,14 @@ CTerrain::~CTerrain()
 }
 
 
-// Gï¿½nï¿½re un nouveau terrain plat.
-// Le terrain est composï¿½ de mosaï¿½ques, elles-mï¿½mes composï¿½es
-// de briques. Chaque brique est composï¿½e de 2 triangles.
-// mosaic:       nombre de mosaï¿½ques selon les axes X et Z
+// Génère un nouveau terrain plat.
+// Le terrain est composé de mosaïques, elles-mêmes composées
+// de briques. Chaque brique est composée de 2 triangles.
+// mosaic:       nombre de mosaïques selon les axes X et Z
 // brick:        nombre de briques (puissance de 2)
 // size:         taille d'une brique selon les axes X et Z
-// vision:       vision avant un changement de rï¿½solution
-// scaleMapping: ï¿½chelle pour mapper les textures
+// vision:       vision avant un changement de résolution
+// scaleMapping: échelle pour mapper les textures
 //
 //          ^ z
 //	        |   <--->  brick*size
@@ -167,7 +167,7 @@ float CTerrain::RetScaleRelief()
 }
 
 
-// Initialise les noms des textures ï¿½ utiliser pour le terrain.
+// Initialise les noms des textures à utiliser pour le terrain.
 
 BOOL CTerrain::InitTextures(char* baseName, int* table, int dx, int dy)
 {
@@ -177,7 +177,7 @@ BOOL CTerrain::InitTextures(char* baseName, int* table, int dx, int dy)
 	m_bLevelText = FALSE;
 
 	strcpy(m_texBaseName, baseName);
-	p = strchr(m_texBaseName, '.');  // p <- ^dï¿½but de l'extension
+	p = strchr(m_texBaseName, '.');  // p <- ^début de l'extension
 	if ( p == 0 )
 	{
 		strcpy(m_texBaseExt, ".tga");
@@ -209,7 +209,7 @@ void CTerrain::LevelFlush()
 	LevelCloseTable();
 }
 
-// Initialise les noms des textures ï¿½ utiliser pour le terrain.
+// Initialise les noms des textures à utiliser pour le terrain.
 
 BOOL CTerrain::LevelMaterial(int id, char* baseName, float u, float v,
 							 int up, int right, int down, int left,
@@ -251,16 +251,16 @@ BOOL CTerrain::LevelMaterial(int id, char* baseName, float u, float v,
 
 
 // Charge le relief dans un fichier BMP.
-// La taille de l'image doit ï¿½tre de dimension dx et dy,
+// La taille de l'image doit être de dimension dx et dy,
 // avec dx=dy=(mosaic*brick)+1.
 // L'image doit avoir 8 bits/pixels, 256 couleurs avec
 // une palette standard.
 
-// Conversion coordonnï¿½e image (x;y) -> world (x;-;z) :
+// Conversion coordonnée image (x;y) -> world (x;-;z) :
 //	Wx =   5*Ix-400
 //	Wz = -(5*Iy-400)
 
-// Conversion coordonnï¿½e world (x;-;z) -> image (x;y) :
+// Conversion coordonnée world (x;-;z) -> image (x;y) :
 //	Ix = (400+Wx)/5
 //	Iy = (400-Wz)/5
 
@@ -273,7 +273,7 @@ BOOL CTerrain::ResFromBMP(const char* filename)
 	if ( file == NULL )  return FALSE;
 
 	size  = (m_mosaic*m_brick)+1;
-	sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supï¿½rieur
+	sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supérieur
 
 	if ( m_resources != 0 )
 	{
@@ -311,7 +311,7 @@ TerrainRes CTerrain::RetResource(const D3DVECTOR &p)
 		 y < 0 || y > m_mosaic*m_brick )  return TR_NULL;
 
 	size  = (m_mosaic*m_brick)+1;
-	sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supï¿½rieur
+	sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supérieur
 
 	ress = m_resources[BMPHEAD+x+sizem*y];
 	if ( ress ==  5 )  return TR_STONE;    // rouge ?
@@ -335,17 +335,17 @@ void CTerrain::FlushRelief()
 }
 
 // Charge le relief dans un fichier BMP.
-// La taille de l'image doit ï¿½tre de dimension dx et dy,
+// La taille de l'image doit être de dimension dx et dy,
 // avec dx=dy=(mosaic*brick)+1.
 // L'image doit avoir 8 bits/pixels, 256 niveaux de gris :
 // blanc = sol (y=0)
 // noir = montagne (y=255*scaleRelief)
 
-// Conversion coordonnï¿½e image (x;y) -> world (x;-;z) :
+// Conversion coordonnée image (x;y) -> world (x;-;z) :
 //	Wx =   5*Ix-400
 //	Wz = -(5*Iy-400)
 
-// Conversion coordonnï¿½e world (x;-;z) -> image (x;y) :
+// Conversion coordonnée world (x;-;z) -> image (x;y) :
 //	Ix = (400+Wx)/5
 //	Iy = (400-Wz)/5
 
@@ -363,7 +363,7 @@ BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
 	if ( file == NULL )  return FALSE;
 
 	size  = (m_mosaic*m_brick)+1;
-	sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supï¿½rieur
+	sizem = ((size+4-1)/4)*4;  // taille multiple de 4 supérieur
 
 	buffer = (unsigned char*)malloc(BMPHEAD+sizem*size);
 	fread(buffer, BMPHEAD+sizem*size, 1, file);
@@ -403,7 +403,7 @@ BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
 	return TRUE;
 }
 
-// Ajoute un point d'ï¿½lï¿½vation dans le buffer du relief.
+// Ajoute un point d'élévation dans le buffer du relief.
 
 BOOL CTerrain::ReliefAddDot(D3DVECTOR pos, float scaleRelief)
 {
@@ -564,7 +564,7 @@ BOOL CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 }
 
 
-// Ajuste une position pour qu'elle ne dï¿½passe pas les limites.
+// Ajuste une position pour qu'elle ne dépasse pas les limites.
 
 void CTerrain::LimitPos(D3DVECTOR &pos)
 {
@@ -583,8 +583,8 @@ void CTerrain::LimitPos(D3DVECTOR &pos)
 }
 
 
-// Ajuste les bords de chaque mosaï¿½que pour ï¿½tre compatible
-// avec toutes les rï¿½solutions infï¿½rieures.
+// Ajuste les bords de chaque mosaïque pour être compatible
+// avec toutes les résolutions inférieures.
 
 void CTerrain::AdjustRelief()
 {
@@ -749,8 +749,8 @@ D3DVERTEX2 CTerrain::RetVertex(int x, int y, int step)
 	return v;
 }
 
-// Crï¿½e tous les objets d'une mosaï¿½que.
-// L'origine d'une mosaï¿½que est son centre.
+// Crée tous les objets d'une mosaïque.
+// L'origine d'une mosaïque est son centre.
 //
 //	^ z
 //	|
@@ -934,12 +934,12 @@ BOOL CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 //	  |   |                     |   |
 //   0.0 min                   max 1.0
 //
-// Les coordonnï¿½es u-v utilisï¿½es pour le texturage sont comprises
+// Les coordonnées u-v utilisées pour le texturage sont comprises
 // entre min et max (au lieu de 0 et 1). Ceci permet d'exclure les
-// pixels situï¿½s dans une marge d'un pixel tout autour de la surface.
+// pixels situés dans une marge d'un pixel tout autour de la surface.
 
 
-// Cherche un matï¿½riaux d'aprï¿½s son identificateur.
+// Cherche un matériaux d'après son identificateur.
 
 TerrainMaterial* CTerrain::LevelSearchMat(int id)
 {
@@ -956,7 +956,7 @@ TerrainMaterial* CTerrain::LevelSearchMat(int id)
 	return 0;
 }
 
-// Choix de la texture ï¿½ utiliser pour un carrï¿½ donnï¿½.
+// Choix de la texture à utiliser pour un carré donné.
 
 void CTerrain::LevelTextureName(int x, int y, char *name, FPOINT &uv)
 {
@@ -997,7 +997,7 @@ float CTerrain::LevelRetHeight(int x, int y)
 	return m_relief[x+y*size];
 }
 
-// Dï¿½cide si un point utilise le matï¿½riaux.
+// Décide si un point utilise le matériaux.
 
 BOOL CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 {
@@ -1045,7 +1045,7 @@ BOOL CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 	return FALSE;
 }
 
-// Cherche si un matï¿½riau existe.
+// Cherche si un matériau existe.
 // Retourne l'index dans m_levelMat ou -1 s'il n'existe pas.
 // m_levelMat[i].id donne l'identificateur.
 
@@ -1064,7 +1064,7 @@ int CTerrain::LevelTestMat(char *mat)
 	return -1;
 }
 
-// Modifie l'ï¿½tat d'un point et de ses 4 voisins, sans tester si
+// Modifie l'état d'un point et de ses 4 voisins, sans tester si
 // c'est possible.
 
 void CTerrain::LevelSetDot(int x, int y, int id, char *mat)
@@ -1092,7 +1092,7 @@ void CTerrain::LevelSetDot(int x, int y, int id, char *mat)
 	m_levelDot[x+y*m_levelDotSize].mat[2] = mat[2];
 	m_levelDot[x+y*m_levelDotSize].mat[3] = mat[3];
 
-	// Modifie le voisin infï¿½rieur.
+	// Modifie le voisin inférieur.
 	if ( (x+0) >= 0 && (x+0) < m_levelDotSize &&
 		 (y-1) >= 0 && (y-1) < m_levelDotSize )
 	{
@@ -1124,7 +1124,7 @@ void CTerrain::LevelSetDot(int x, int y, int id, char *mat)
 		}
 	}
 
-	// Modifie le voisin supï¿½rieur.
+	// Modifie le voisin supérieur.
 	if ( (x+0) >= 0 && (x+0) < m_levelDotSize &&
 		 (y+1) >= 0 && (y+1) < m_levelDotSize )
 	{
@@ -1157,14 +1157,14 @@ void CTerrain::LevelSetDot(int x, int y, int id, char *mat)
 	}
 }
 
-// Teste si un matï¿½riau est possible ï¿½ un endroit donnï¿½, en fonction
+// Teste si un matériau est possible à un endroit donné, en fonction
 // de ses 4 voisins. Si oui, met le point.
 
 BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
 {
 	char			test[4];
 
-	// Compatible avec voisin infï¿½rieur ?
+	// Compatible avec voisin inférieur ?
 	if ( x+0 >= 0 && x+0 < m_levelDotSize &&
 		 y-1 >= 0 && y-1 < m_levelDotSize )
 	{
@@ -1188,7 +1188,7 @@ BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
 		if ( LevelTestMat(test) == -1 )  return FALSE;
 	}
 
-	// Compatible avec voisin supï¿½rieur ?
+	// Compatible avec voisin supérieur ?
 	if ( x+0 >= 0 && x+0 < m_levelDotSize &&
 		 y+1 >= 0 && y+1 < m_levelDotSize )
 	{
@@ -1216,7 +1216,7 @@ BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
 	return TRUE;
 }
 
-// Modifie l'ï¿½tat d'un point.
+// Modifie l'état d'un point.
 
 BOOL CTerrain::LevelPutDot(int x, int y, int id)
 {
@@ -1380,7 +1380,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 	return FALSE;
 }
 
-// Initialise tout le terrain avec un matï¿½riau.
+// Initialise tout le terrain avec un matériau.
 
 BOOL CTerrain::LevelInit(int id)
 {
@@ -1403,7 +1403,7 @@ BOOL CTerrain::LevelInit(int id)
 	return TRUE;
 }
 
-// Gï¿½nï¿½re un niveau dans le terrain.
+// Génère un niveau dans le terrain.
 
 BOOL CTerrain::LevelGenerate(int *id, float min, float max,
 							 float slope, float freq,
@@ -1438,7 +1438,7 @@ BOOL CTerrain::LevelGenerate(int *id, float min, float max,
 
 	group = m_brick/m_subdivMapping;
 
-	if ( radius > 0.0f && radius < 5.0f )  // juste un carrï¿½ ?
+	if ( radius > 0.0f && radius < 5.0f )  // juste un carré ?
 	{
 		dim = (m_mosaic*m_brick*m_size)/2.0f;
 
@@ -1497,7 +1497,7 @@ void CTerrain::LevelOpenTable()
 	int		i, j;
 
 	if ( !m_bLevelText )  return;
-	if ( m_levelDot != 0 )  return;  // dï¿½jï¿½ allouï¿½
+	if ( m_levelDot != 0 )  return;  // déjà alloué
 
 	m_levelDotSize = (m_mosaic*m_brick)/(m_brick/m_subdivMapping)+1;
 	m_levelDot = (DotLevel*)malloc(m_levelDotSize*m_levelDotSize*sizeof(DotLevel));
@@ -1521,7 +1521,7 @@ void CTerrain::LevelCloseTable()
 
 
 
-// Crï¿½e tous les objets pour une maille carrï¿½e du terrain.
+// Crée tous les objets pour une maille carrée du terrain.
 
 BOOL CTerrain::CreateSquare(BOOL bMultiRes, int x, int y)
 {
@@ -1563,7 +1563,7 @@ BOOL CTerrain::CreateSquare(BOOL bMultiRes, int x, int y)
 	return TRUE;
 }
 
-// Crï¿½e tous les objets du terrain dans le moteur 3D.
+// Crée tous les objets du terrain dans le moteur 3D.
 
 BOOL CTerrain::CreateObjects(BOOL bMultiRes)
 {
@@ -1664,7 +1664,7 @@ BOOL CTerrain::Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height)
 		for ( x=pp1.x ; x<=pp2.x ; x++ )
 		{
 			m_engine->DeleteObject(m_objRank[x+y*m_mosaic]);
-			CreateSquare(m_bMultiText, x, y);  // recrï¿½e le carrï¿½
+			CreateSquare(m_bMultiText, x, y);  // recrée le carré
 		}
 	}
 	m_engine->Update();
@@ -1686,7 +1686,7 @@ D3DVECTOR CTerrain::RetWind()
 }
 
 
-// Donne la pente exacte du terrain ï¿½ un endroit donnï¿½.
+// Donne la pente exacte du terrain à un endroit donné.
 
 float CTerrain::RetFineSlope(const D3DVECTOR &pos)
 {
@@ -1696,7 +1696,7 @@ float CTerrain::RetFineSlope(const D3DVECTOR &pos)
 	return Abs(RotateAngle(Length(n.x, n.z), n.y)-PI/2.0f);
 }
 
-// Donne la pente approximative du terrain ï¿½ un endroit donnï¿½.
+// Donne la pente approximative du terrain à un endroit donné.
 
 float CTerrain::RetCoarseSlope(const D3DVECTOR &pos)
 {
@@ -1724,7 +1724,7 @@ float CTerrain::RetCoarseSlope(const D3DVECTOR &pos)
 	return atanf((max-min)/m_size);
 }
 
-// Donne le vecteur normal ï¿½ la position p(x,-,z) du terrain.
+// Donne le vecteur normal à la position p(x,-,z) du terrain.
 
 BOOL CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
 {
@@ -1841,7 +1841,7 @@ float CTerrain::RetFloorHeight(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 	return p.y-ps.y;
 }
 
-// Modifie la coordonnï¿½e "y" du point "p" pour qu'il repose
+// Modifie la coordonnée "y" du point "p" pour qu'il repose
 // sur le sol du terrain.
 
 BOOL CTerrain::MoveOnFloor(D3DVECTOR &p, BOOL bBrut, BOOL bWater)
@@ -1883,8 +1883,8 @@ BOOL CTerrain::MoveOnFloor(D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 	return TRUE;
 }
 
-// Modifie une coordonnï¿½e pour qu'elle soit sur le terrain.
-// Retourne FALSE si la coordonnï¿½e initiale ï¿½tait trop loin.
+// Modifie une coordonnée pour qu'elle soit sur le terrain.
+// Retourne FALSE si la coordonnée initiale était trop loin.
 
 BOOL CTerrain::ValidPosition(D3DVECTOR &p, float marging)
 {
@@ -1922,14 +1922,14 @@ BOOL CTerrain::ValidPosition(D3DVECTOR &p, float marging)
 
 
 
-// Vide la table des ï¿½lï¿½vations.
+// Vide la table des élévations.
 
 void CTerrain::FlushBuildingLevel()
 {
 	m_buildingUsed = 0;
 }
 
-// Ajoute une nouvelle ï¿½lï¿½vation pour un batiment.
+// Ajoute une nouvelle élévation pour un batiment.
 
 BOOL CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
 								float height, float factor)
@@ -1963,8 +1963,8 @@ BOOL CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
 	return TRUE;
 }
 
-// Met ï¿½ jour l'ï¿½lï¿½vation pour un batiment lorsqu'il a ï¿½tï¿½ dï¿½placï¿½
-// en hauteur (suite ï¿½ un terraformage).
+// Met à jour l'élévation pour un batiment lorsqu'il a été déplacé
+// en hauteur (suite à un terraformage).
 
 BOOL CTerrain::UpdateBuildingLevel(D3DVECTOR center)
 {
@@ -1983,7 +1983,7 @@ BOOL CTerrain::UpdateBuildingLevel(D3DVECTOR center)
 	return FALSE;
 }
 
-// Supprime l'ï¿½lï¿½vation pour un batiment lorsqu'il a ï¿½tï¿½ dï¿½truit.
+// Supprime l'élévation pour un batiment lorsqu'il a été détruit.
 
 BOOL CTerrain::DeleteBuildingLevel(D3DVECTOR center)
 {
@@ -2006,7 +2006,7 @@ BOOL CTerrain::DeleteBuildingLevel(D3DVECTOR center)
 }
 
 // Retourne le facteur d'influence si une position est sur une
-// ï¿½lï¿½vation ï¿½ventuelle.
+// élévation éventuelle.
 
 float CTerrain::RetBuildingFactor(const D3DVECTOR &p)
 {
@@ -2030,7 +2030,7 @@ float CTerrain::RetBuildingFactor(const D3DVECTOR &p)
 	return 1.0f;  // on est sur le sol normnal
 }
 
-// Ajuste une position en fonction d'une ï¿½lï¿½vation ï¿½ventuelle.
+// Ajuste une position en fonction d'une élévation éventuelle.
 
 void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
 {
@@ -2081,8 +2081,8 @@ void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
 }
 
 
-// Retourne la duretï¿½ du terrain ï¿½ un endroit donnï¿½.
-// La duretï¿½ dï¿½termine le bruit (SOUND_STEP et SOUND_BOUM).
+// Retourne la dureté du terrain à un endroit donné.
+// La dureté détermine le bruit (SOUND_STEP et SOUND_BOUM).
 
 float CTerrain::RetHardness(const D3DVECTOR &p)
 {
@@ -2091,7 +2091,7 @@ float CTerrain::RetHardness(const D3DVECTOR &p)
 	int					x, y, id;
 
 	factor = RetBuildingFactor(p);
-	if ( factor != 1.0f )  return 1.0f;  // sur bï¿½timent
+	if ( factor != 1.0f )  return 1.0f;  // sur bâtiment
 
 	if ( m_levelDot == 0 )  return m_defHardness;
 
@@ -2159,7 +2159,7 @@ void CTerrain::GroundFlat(D3DVECTOR pos)
 
 
 // Calcule le rayon de la plus grande zone platte disponible.
-// Ce calcul n'est pas optimisï¿½ !
+// Ce calcul n'est pas optimisé !
 
 float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
 {
@@ -2200,7 +2200,7 @@ float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
 
 
 
-// Spï¿½cifie la hauteur maximale de vol.
+// Spécifie la hauteur maximale de vol.
 
 void CTerrain::SetFlyingMaxHeight(float height)
 {

@@ -1,4 +1,4 @@
-ï»¿// * This file is part of the COLOBOT source code
+// * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// * along with this program. If not, see  http://www.gnu.org/licenses/.// particule.h
 
 #ifndef _PARTICULE_H_
 #define	_PARTICULE_H_
@@ -55,28 +55,28 @@ enum ParticuleType
 {
 	PARTIEXPLOT		= 1,		// explosion technique
 	PARTIEXPLOO		= 2,		// explosion organique
-	PARTIMOTOR		= 3,		// gaz d'ï¿½chappement du moteur
+	PARTIMOTOR		= 3,		// gaz d'échappement du moteur
 	PARTIGLINT		= 4,		// reflet
-	PARTIBLITZ		= 5,		// ï¿½clair recharge batterie
-	PARTICRASH		= 6,		// poussiï¿½re aprï¿½s chute
-	PARTIGAS		= 7,		// gaz du rï¿½acteur
-	PARTIFIRE		= 9,		// boule de feu qui rï¿½tricit
+	PARTIBLITZ		= 5,		// éclair recharge batterie
+	PARTICRASH		= 6,		// poussière après chute
+	PARTIGAS		= 7,		// gaz du réacteur
+	PARTIFIRE		= 9,		// boule de feu qui rétricit
 	PARTIFIREZ		= 10,		// boule de feu qui grandit
 	PARTIBLUE		= 11,		// boule bleu
-	PARTISELY		= 12,		// sï¿½lection jaune
-	PARTISELR		= 13,		// sï¿½lection rouge
+	PARTISELY		= 12,		// sélection jaune
+	PARTISELR		= 13,		// sélection rouge
 	PARTIGUN1		= 18,		// balle 1 (fireball)
 	PARTIGUN2		= 19,		// balle 2 (fourmi)
-	PARTIGUN3		= 20,		// balle 3 (araignï¿½e)
+	PARTIGUN3		= 20,		// balle 3 (araignée)
 	PARTIGUN4		= 21,		// balle 4 (orgaball)
 	PARTIFRAG		= 22,		// fragment triangulaire
-	PARTIQUEUE		= 23,		// queue enflammï¿½e
-	PARTIORGANIC1	= 24,		// boule organique mï¿½re
+	PARTIQUEUE		= 23,		// queue enflammée
+	PARTIORGANIC1	= 24,		// boule organique mère
 	PARTIORGANIC2	= 25,		// boule organique fille
-	PARTISMOKE1		= 26,		// fumï¿½e noire
-	PARTISMOKE2		= 27,		// fumï¿½e noire
-	PARTISMOKE3		= 28,		// fumï¿½e noire
-	PARTISMOKE4		= 29,		// fumï¿½e noire
+	PARTISMOKE1		= 26,		// fumée noire
+	PARTISMOKE2		= 27,		// fumée noire
+	PARTISMOKE3		= 28,		// fumée noire
+	PARTISMOKE4		= 29,		// fumée noire
 	PARTIBLOOD		= 30,		// sang homme
 	PARTIBLOODM		= 31,		// sang pondeuse
 	PARTIVAPOR		= 32,		// vapeur
@@ -97,57 +97,57 @@ enum ParticuleType
 	PARTIFLAME		= 47,		// flamme
 	PARTIBUBBLE		= 48,		// bubble
 	PARTIFLIC		= 49,		// rond dans l'eau
-	PARTIEJECT		= 50,		// ï¿½jection du rï¿½acteur
-	PARTISCRAPS		= 51,		// dï¿½chets du rï¿½acteur
-	PARTITOTO		= 52,		// rï¿½acteur de toto
+	PARTIEJECT		= 50,		// éjection du réacteur
+	PARTISCRAPS		= 51,		// déchets du réacteur
+	PARTITOTO		= 52,		// réacteur de toto
 	PARTIERROR		= 53,		// toto dit non
 	PARTIWARNING	= 54,		// toto dit bof
 	PARTIINFO		= 54,		// toto dit oui
 	PARTIQUARTZ		= 55,		// reflet quartz
-	PARTISPHERE0	= 56,		// sphï¿½re d'explosion
-	PARTISPHERE1	= 57,		// sphï¿½re d'ï¿½nergie
-	PARTISPHERE2	= 58,		// sphï¿½re d'analyse
-	PARTISPHERE3	= 59,		// sphï¿½re de bouclier
-	PARTISPHERE4	= 60,		// sphï¿½re d'information (emette)
-	PARTISPHERE5	= 61,		// sphï¿½re vï¿½gï¿½tale (gravity root)
-	PARTISPHERE6	= 62,		// sphï¿½re d'information (receive)
-	PARTISPHERE7	= 63,		// sphï¿½re
-	PARTISPHERE8	= 64,		// sphï¿½re
-	PARTISPHERE9	= 65,		// sphï¿½re
+	PARTISPHERE0	= 56,		// sphère d'explosion
+	PARTISPHERE1	= 57,		// sphère d'énergie
+	PARTISPHERE2	= 58,		// sphère d'analyse
+	PARTISPHERE3	= 59,		// sphère de bouclier
+	PARTISPHERE4	= 60,		// sphère d'information (emette)
+	PARTISPHERE5	= 61,		// sphère végétale (gravity root)
+	PARTISPHERE6	= 62,		// sphère d'information (receive)
+	PARTISPHERE7	= 63,		// sphère
+	PARTISPHERE8	= 64,		// sphère
+	PARTISPHERE9	= 65,		// sphère
 	PARTIGUNDEL		= 66,		// destruction balle par bouclier
 	PARTIPART		= 67,		// partie d'objet
-	PARTITRACK1		= 68,		// traï¿½nï¿½e 1
-	PARTITRACK2		= 69,		// traï¿½nï¿½e 2
-	PARTITRACK3		= 70,		// traï¿½nï¿½e 3
-	PARTITRACK4		= 71,		// traï¿½nï¿½e 4
-	PARTITRACK5		= 72,		// traï¿½nï¿½e 5
-	PARTITRACK6		= 73,		// traï¿½nï¿½e 6
-	PARTITRACK7		= 74,		// traï¿½nï¿½e 7
-	PARTITRACK8		= 75,		// traï¿½nï¿½e 8
-	PARTITRACK9		= 76,		// traï¿½nï¿½e 9
-	PARTITRACK10	= 77,		// traï¿½nï¿½e 10
-	PARTITRACK11	= 78,		// traï¿½nï¿½e 11
-	PARTITRACK12	= 79,		// traï¿½nï¿½e 12
-	PARTITRACK13	= 80,		// traï¿½nï¿½e 13
-	PARTITRACK14	= 81,		// traï¿½nï¿½e 14
-	PARTITRACK15	= 82,		// traï¿½nï¿½e 15
-	PARTITRACK16	= 83,		// traï¿½nï¿½e 16
-	PARTITRACK17	= 84,		// traï¿½nï¿½e 17
-	PARTITRACK18	= 85,		// traï¿½nï¿½e 18
-	PARTITRACK19	= 86,		// traï¿½nï¿½e 19
-	PARTITRACK20	= 87,		// traï¿½nï¿½e 20
+	PARTITRACK1		= 68,		// traînée 1
+	PARTITRACK2		= 69,		// traînée 2
+	PARTITRACK3		= 70,		// traînée 3
+	PARTITRACK4		= 71,		// traînée 4
+	PARTITRACK5		= 72,		// traînée 5
+	PARTITRACK6		= 73,		// traînée 6
+	PARTITRACK7		= 74,		// traînée 7
+	PARTITRACK8		= 75,		// traînée 8
+	PARTITRACK9		= 76,		// traînée 9
+	PARTITRACK10	= 77,		// traînée 10
+	PARTITRACK11	= 78,		// traînée 11
+	PARTITRACK12	= 79,		// traînée 12
+	PARTITRACK13	= 80,		// traînée 13
+	PARTITRACK14	= 81,		// traînée 14
+	PARTITRACK15	= 82,		// traînée 15
+	PARTITRACK16	= 83,		// traînée 16
+	PARTITRACK17	= 84,		// traînée 17
+	PARTITRACK18	= 85,		// traînée 18
+	PARTITRACK19	= 86,		// traînée 19
+	PARTITRACK20	= 87,		// traînée 20
 	PARTIGLINTb		= 88,		// reflet bleu
 	PARTIGLINTr		= 89,		// reflet rouge
-	PARTILENS1		= 90,		// ï¿½clat 1 (orange)
-	PARTILENS2		= 91,		// ï¿½clat 2 (jaune)
-	PARTILENS3		= 92,		// ï¿½clat 3 (rouge)
-	PARTILENS4		= 93,		// ï¿½clat 4 (violet)
+	PARTILENS1		= 90,		// éclat 1 (orange)
+	PARTILENS2		= 91,		// éclat 2 (jaune)
+	PARTILENS3		= 92,		// éclat 3 (rouge)
+	PARTILENS4		= 93,		// éclat 4 (violet)
 	PARTICONTROL	= 94,		// reflet sur bouton
 	PARTISHOW		= 95,		// montre un lieu
 	PARTICHOC		= 96,		// onde de choc
 	PARTIGFLAT		= 97,		// montre si le sol est plat
 	PARTIRECOVER	= 98,		// boule bleu pour recycleur
-	PARTIROOT		= 100,		// fumï¿½e gravity root
+	PARTIROOT		= 100,		// fumée gravity root
 	PARTIPLOUF0		= 101,		// plouf
 	PARTIPLOUF1		= 102,		// plouf
 	PARTIPLOUF2		= 103,		// plouf
@@ -202,7 +202,7 @@ enum ParticulePhase
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> particule utilisï¿½e
+	char			bUsed;		// TRUE -> particule utilisée
 	char			bRay;		// TRUE -> rayon avec but
 	unsigned short	uniqueStamp;// marque unique
 	short			sheet;		// feuille (0..n)
@@ -210,38 +210,38 @@ typedef struct
 	ParticulePhase	phase;		// phase PARPH*
 	float			mass;		// masse de la particule (pour les rebonds)
 	float			weight;		// poids de la particule (pour le bruit)
-	float			duration;	// durï¿½e de vie
-	D3DVECTOR		pos;		// position absolue (relative si objet liï¿½)
+	float			duration;	// durée de vie
+	D3DVECTOR		pos;		// position absolue (relative si objet lié)
 	D3DVECTOR		goal;		// position but (si bRay)
-	D3DVECTOR		speed;		// vitesses de dï¿½placement
+	D3DVECTOR		speed;		// vitesses de déplacement
 	float			windSensitivity;
 	short			bounce;		// nb de rebonds
 	FPOINT			dim;		// dimensions du rectangle
 	float			zoom;		// zoom (0..1)
 	float			angle;		// angle de rotation
-	float			intensity;	// intensitï¿½
-	FPOINT			texSup;		// coordonnï¿½e texture supï¿½rieure
-	FPOINT			texInf;		// cooddonnï¿½e texture infï¿½rieure
-	float			time;		// ï¿½ge de la particule (0..n)
-	float			phaseTime;	// ï¿½ge au dï¿½but de la phase
+	float			intensity;	// intensité
+	FPOINT			texSup;		// coordonnée texture supérieure
+	FPOINT			texInf;		// cooddonnée texture inférieure
+	float			time;		// âge de la particule (0..n)
+	float			phaseTime;	// âge au début de la phase
 	float			testTime;	// temps depuis dernier test
-	CObject*		objLink;	// objet pï¿½re (pour rï¿½acteur par exemple)
-	CObject*		objFather;	// objet pï¿½re (pour rï¿½acteur par exemple)
+	CObject*		objLink;	// objet père (pour réacteur par exemple)
+	CObject*		objFather;	// objet père (pour réacteur par exemple)
 	short			objRank;	// rang de l'objet, ou -1
-	short			trackRank;	// rang de la traï¿½nï¿½e
+	short			trackRank;	// rang de la traînée
 }
 Particule;
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> traï¿½nï¿½e utilisï¿½e
+	char			bUsed;		// TRUE -> traînée utilisée
 	char			bDrawParticule;
-	float			step;		// durï¿½e d'un pas
-	float			last;		// progression dernier pas mï¿½morisï¿½
-	float			intensity;	// intensitï¿½ au dï¿½part (0..1)
+	float			step;		// durée d'un pas
+	float			last;		// progression dernier pas mémorisé
+	float			intensity;	// intensité au départ (0..1)
 	float			width;		// largeur queue
 	int				used;		// nb de positions dans "pos"
-	int				head;		// index tï¿½te d'ï¿½criture
+	int				head;		// index tête d'écriture
 	D3DVECTOR		pos[MAXTRACKLEN];
 	float			len[MAXTRACKLEN];
 }
@@ -251,7 +251,7 @@ typedef struct
 {
 	ParticuleType	type;		// type PARTI*
 	D3DVECTOR		pos[4];		// positions rectangle
-	float			startTime;	// dï¿½but de vie
+	float			startTime;	// début de vie
 }
 WheelTrace;
 
