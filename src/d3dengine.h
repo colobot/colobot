@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// D3DEngine.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// D3DEngine.h
 
 #ifndef _D3DENGINE_H_
 #define	_D3DENGINE_H_
@@ -41,13 +43,13 @@ class CTerrain;
 
 enum D3DTypeObj
 {
-	TYPENULL		= 0,		// object inexistant
+	TYPENULL		= 0,		// object doesn't exist
 	TYPETERRAIN		= 1,		// terrain
-	TYPEFIX			= 2,		// objet fixe
-	TYPEVEHICULE	= 3,		// objet mobile
-	TYPEDESCENDANT	= 4,		// partie d'un objet mobile
-	TYPEQUARTZ		= 5,		// objet fixe de type quartz
-	TYPEMETAL		= 6,		// objet fixe de type métalique
+	TYPEFIX			= 2,		// fixed object
+	TYPEVEHICULE		= 3,		// moving object
+	TYPEDESCENDANT		= 4,		// part of a moving object
+	TYPEQUARTZ		= 5,		// fixed object type quartz
+	TYPEMETAL		= 6,		// fixed object type metal
 };
 
 enum D3DTypeTri
@@ -68,14 +70,14 @@ enum D3DMaping
 
 enum D3DMouse
 {
-	D3DMOUSEHIDE	= 0,		// pas de souris
+	D3DMOUSEHIDE	= 0,		// no mouse
 	D3DMOUSENORM	= 1,
 	D3DMOUSEWAIT	= 2,
 	D3DMOUSEEDIT	= 3,
 	D3DMOUSEHAND	= 4,
 	D3DMOUSECROSS	= 5,
 	D3DMOUSESHOW	= 6,
-	D3DMOUSENO		= 7,
+	D3DMOUSENO	= 7,
 	D3DMOUSEMOVE	= 8,		// +
 	D3DMOUSEMOVEH	= 9,		// -
 	D3DMOUSEMOVEV	= 10,		// |
@@ -95,25 +97,25 @@ enum D3DShadowType
 };
 
 
-#define D3DSTATENORMAL	0		// matériaux opaque normal
-#define D3DSTATETTb		(1<<0)	// transparent selon texture (noir=rien)
-#define D3DSTATETTw		(1<<1)	// transparent selon texture (blanc=rien)
-#define D3DSTATETD		(1<<2)	// transparent selon couleur diffuse
-#define D3DSTATEWRAP	(1<<3)	// texture wrappée
-#define D3DSTATECLAMP	(1<<4)	// texture bordée d'une couleur unie
-#define D3DSTATELIGHT	(1<<5)	// texture lumineuse (ambiance max)
-#define D3DSTATEDUALb	(1<<6)	// double texturage noir
-#define D3DSTATEDUALw	(1<<7)	// double texturage blanc
-#define D3DSTATEPART1	(1<<8)	// partie 1 (ne pas changer, dans .MOD !)
-#define D3DSTATEPART2	(1<<9)	// partie 2
-#define D3DSTATEPART3	(1<<10)	// partie 3
-#define D3DSTATEPART4	(1<<11)	// partie 4
-#define D3DSTATE2FACE	(1<<12)	// mode double-face
-#define D3DSTATEALPHA	(1<<13)	// image avec canal alpha
-#define D3DSTATESECOND	(1<<14)	// utilise tjrs 2ème étage de texturage
-#define D3DSTATEFOG		(1<<15)	// force le brouillard
-#define D3DSTATETCb		(1<<16)	// transparent selon couleur (noir=rien)
-#define D3DSTATETCw		(1<<17)	// transparent selon couleur (blanc=rien)
+#define D3DSTATENORMAL	0	// normal opaque materials
+#define D3DSTATETTb	(1<<0)	// the transparent texture (black = no)
+#define D3DSTATETTw	(1<<1)	// the transparent texture (white = no)
+#define D3DSTATETD	(1<<2)	// the transparent diffuse color
+#define D3DSTATEWRAP	(1<<3)	// texture wrappe
+#define D3DSTATECLAMP	(1<<4)	// texture borders with solid color
+#define D3DSTATELIGHT	(1<<5)	// light texture (ambient max)
+#define D3DSTATEDUALb	(1<<6)	// double black texturing
+#define D3DSTATEDUALw	(1<<7)	// double white texturing
+#define D3DSTATEPART1	(1<<8)	// part 1 (no change in. MOD!)
+#define D3DSTATEPART2	(1<<9)	// part 2
+#define D3DSTATEPART3	(1<<10)	// part 3
+#define D3DSTATEPART4	(1<<11)	// part 4
+#define D3DSTATE2FACE	(1<<12)	// double-sided face
+#define D3DSTATEALPHA	(1<<13)	// image using alpha channel
+#define D3DSTATESECOND	(1<<14)	// always use 2nd floor texturing
+#define D3DSTATEFOG	(1<<15)	// causes the fog
+#define D3DSTATETCb	(1<<16)	// the transparent color (black = no)
+#define D3DSTATETCw	(1<<17)	// the transparent color (white = no)
 
 
 typedef struct
@@ -186,65 +188,65 @@ D3DObjLevel1;
 
 typedef struct
 {
-	char		bUsed;			// TRUE -> objet existe
-	char		bVisible;		// TRUE -> objet visible
-	char		bDrawWorld;		// TRUE -> dessine derrière l'interface
-	char		bDrawFront;		// TRUE -> dessine devant l'interface
-	int			totalTriangle;	// nb de triangles utilisés
-	D3DTypeObj	type;			// type de l'objet (TYPE*)
-	D3DMATRIX	transform;		// matrice de transformation
-	float		distance;		// distance point de vue - origine
-	D3DVECTOR	bboxMin;		// bounding box de l'objet
-	D3DVECTOR	bboxMax;		// (l'origine 0;0;0 est tjrs incluse)
-	float		radius;			// rayon de la sphère à l'origine
-	int			shadowRank;		// rang de l'ombre associée
-	float		transparency;	// transparence de l'objet (0..1)
+	char		bUsed;			// TRUE -> object exists
+	char		bVisible;		// TRUE -> visible object
+	char		bDrawWorld;		// TRUE -> shape behind the interface
+	char		bDrawFront;		// TRUE -> shape before the interface
+	int		totalTriangle;		// number of triangles used
+	D3DTypeObj	type;			// type of the object (TYPE*)
+	D3DMATRIX	transform;		// transformation matrix
+	float		distance;		// distance point of view - original
+	D3DVECTOR	bboxMin;		// bounding box of the object
+	D3DVECTOR	bboxMax;		// (the origin 0, 0, 0 is always included)
+	float		radius;			// radius of the sphere at the origin
+	int		shadowRank;		// rank of the associated shadow
+	float		transparency;		// transparency of the object (0 .. 1)
 }
 D3DObject;
 
 typedef struct
 {
-	char		bUsed;			// TRUE -> objet existe
-	char		bHide;			// TRUE -> ombre invisible (objet porté par ex.)
-	int			objRank;		// rang de l'objet
-	D3DShadowType type;			// type de l'ombre
-	D3DVECTOR	pos;			// position pour l'ombre
-	D3DVECTOR	normal;			// normale au terrain
-	float		angle;			// angle de l'ombre
-	float		radius;			// rayon de l'ombre
-	float		intensity;		// intensité de l'ombre
-	float		height;			// hauteur depuis le sol
+	char		bUsed;			// TRUE -> object exists
+	char		bHide;			// TRUE -> invisible shadow (object carried by ex.)
+	int		objRank;		// rank of the object
+	D3DShadowType 	type;			// type of shadow
+	D3DVECTOR	pos;			// position for the shadow
+	D3DVECTOR	normal;			// normal terrain
+	float		angle;			// angle of the shadow
+	float		radius;			// radius of the shadow
+	float		intensity;		// intensity of the shadow
+	float		height;			// height from the ground
 }
 D3DShadow;
 
 typedef struct
 {
-	char		bUsed;			// TRUE -> objet existe
-	D3DCOLORVALUE color;		// couleur de l'ombre
-	float		min, max;		// altitudes min/max
-	float		smooth;			// zone de transition
-	D3DVECTOR	pos;			// position pour l'ombre
-	float		radius;			// rayon de l'ombre
-	D3DVECTOR	drawPos;		// position pour l'ombre dessinée
-	float		drawRadius;		// rayon de l'ombre dessinée
+	char		bUsed;			// TRUE -> object exists
+	D3DCOLORVALUE	color;			// color of the shadow
+	float		min, max;		// altitudes min / max
+	float		smooth;			// transition area
+	D3DVECTOR	pos;			// position for the shadow
+	float		radius;			// radius of the shadow
+	D3DVECTOR	drawPos;		// drawn to position the shade
+	float		drawRadius;		// radius of the shadow drawn
 }
 D3DGroundSpot;
 
 typedef struct
 {
-	char		bUsed;			// TRUE -> objet existe
-	char		bDraw;			// TRUE -> marque dessinée
-	int			phase;			// 1=croissance, 2=fixe, 3=décroissance
-	float		delay[3];		// délais pour les 3 phases
-	float		fix;			// temps fixe
-	D3DVECTOR	pos;			// position pour marques
-	float		radius;			// rayon des marques
-	float		intensity;		// intensité couleur
-	D3DVECTOR	drawPos;		// position pour marques dessinées
-	float		drawRadius;		// rayon des marques dessinées
-	float		drawIntensity;	// intensité dessinée
-	int			dx, dy;			// dimensions table
-	char*		table;			// pointeur à la table
+	char		bUsed;			// TRUE -> object exists
+	char		bDraw;			// TRUE -> drawn mark
+	int		phase;			// 1 = increase, 2 = fixed, 3 = decrease
+	float		delay[3];		// time for 3 phases
+	float		fix;			// fixed time
+	D3DVECTOR	pos;			// position for marks
+	float		radius;			// radius of marks
+	float		intensity;		// color intensity
+	D3DVECTOR	drawPos;		// drawn in position marks
+	float		drawRadius;		// radius marks drawn
+	float		drawIntensity;		// current drawn
+	int		dx, dy;			// dimensions table
+	char*		table;			// pointer to the table
 }
 D3DGroundMark;
 
