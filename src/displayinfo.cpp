@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// displayinfo.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// displayinfo.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -50,7 +52,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CDisplayInfo::CDisplayInfo(CInstanceManager* iMan)
 {
@@ -75,7 +77,7 @@ CDisplayInfo::CDisplayInfo(CInstanceManager* iMan)
 	m_toto = 0;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CDisplayInfo::~CDisplayInfo()
 {
@@ -83,7 +85,7 @@ CDisplayInfo::~CDisplayInfo()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CDisplayInfo::EventProcess(const Event &event)
 {
@@ -157,28 +159,28 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 			}
 		}
 
-		if ( event.event == EVENT_HYPER_SIZE1 )  // taille 1 ?
+		if ( event.event == EVENT_HYPER_SIZE1 )  // size 1?
 		{
 			m_main->SetFontSize(9.0f);
 			slider = (CSlider*)pw->SearchControl(EVENT_STUDIO_SIZE);
 			if ( slider != 0 )  slider->SetVisibleValue((m_main->RetFontSize()-9.0f)/6.0f);
 			ViewDisplayInfo();
 		}
-		if ( event.event == EVENT_HYPER_SIZE2 )  // taille 2 ?
+		if ( event.event == EVENT_HYPER_SIZE2 )  // size 2?
 		{
 			m_main->SetFontSize(10.0f);
 			slider = (CSlider*)pw->SearchControl(EVENT_STUDIO_SIZE);
 			if ( slider != 0 )  slider->SetVisibleValue((m_main->RetFontSize()-9.0f)/6.0f);
 			ViewDisplayInfo();
 		}
-		if ( event.event == EVENT_HYPER_SIZE3 )  // taille 3 ?
+		if ( event.event == EVENT_HYPER_SIZE3 )  // size 3?
 		{
 			m_main->SetFontSize(12.0f);
 			slider = (CSlider*)pw->SearchControl(EVENT_STUDIO_SIZE);
 			if ( slider != 0 )  slider->SetVisibleValue((m_main->RetFontSize()-9.0f)/6.0f);
 			ViewDisplayInfo();
 		}
-		if ( event.event == EVENT_HYPER_SIZE4 )  // taille 4 ?
+		if ( event.event == EVENT_HYPER_SIZE4 )  // size 4?
 		{
 			m_main->SetFontSize(15.0f);
 			slider = (CSlider*)pw->SearchControl(EVENT_STUDIO_SIZE);
@@ -186,7 +188,7 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 			ViewDisplayInfo();
 		}
 
-		if ( event.event == EVENT_STUDIO_SIZE )  // taille ?
+		if ( event.event == EVENT_STUDIO_SIZE )  // size?
 		{
 			slider = (CSlider*)pw->SearchControl(EVENT_STUDIO_SIZE);
 			if ( slider == 0 )  return FALSE;
@@ -194,7 +196,7 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 			ViewDisplayInfo();
 		}
 
-		if ( event.event == EVENT_HYPER_COPY )  // copie ?
+		if ( event.event == EVENT_HYPER_COPY )  // copy ?
 		{
 			edit = (CEdit*)pw->SearchControl(EVENT_EDIT1);
 			if ( edit != 0 )
@@ -209,7 +211,7 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 			UpdateCopyButton();
 		}
 
-		if ( event.event == EVENT_WINDOW4 )  // fenêtre déplacée ?
+		if ( event.event == EVENT_WINDOW4 )  // window moved?
 		{
 			m_infoNormalPos = m_infoActualPos = m_infoFinalPos = pw->RetPos();
 			m_infoNormalDim = m_infoActualDim = m_infoFinalDim = pw->RetDim();
@@ -272,7 +274,7 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 }
 
 
-// Fait évoluer le cerveau selon le temps écoulé.
+// The brain is changing by time.
 
 BOOL CDisplayInfo::EventFrame(const Event &event)
 {
@@ -295,7 +297,7 @@ BOOL CDisplayInfo::EventFrame(const Event &event)
 }
 
 
-// Met à jour les boutons pour les liens hyper-texte.
+// Updates the buttons for hyperlinks.
 
 void CDisplayInfo::HyperUpdate()
 {
@@ -332,7 +334,7 @@ void CDisplayInfo::HyperUpdate()
 }
 
 
-// Début de l'affichage des informations.
+// Beginning of the display of information.
 
 void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 {
@@ -350,12 +352,12 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 //?	CreateObjectsFile();
 
 	m_bEditLock = m_main->RetEditLock();
-	if ( m_bEditLock )  // édition programme en cours ?
+	if ( m_bEditLock )  // edition running program?
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
 		if ( pw != 0 )
 		{
-			pw->ClearState(STATE_ENABLE);  // CStudio inactif
+			pw->ClearState(STATE_ENABLE);  // CStudio inactive
 		}
 	}
 
@@ -387,7 +389,7 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	edit->SetSoluceMode(bSoluce);
 	edit->ReadText(filename);
 	edit->HyperHome(filename);
-	edit->SetEditCap(FALSE);  // juste pour voir !
+	edit->SetEditCap(FALSE);  // just to see!
 	edit->SetHiliteCap(FALSE);
 	edit->SetFocus(TRUE);
 
@@ -412,8 +414,8 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	button = pw->CreateButton(pos, dim, 20, EVENT_SATCOM_SOLUCE);
 	button->SetState(STATE_SHADOW);
 
-	pw->CreateGroup(pos, dim, 18, EVENT_LABEL1);  // flèche >
-	pw->CreateGroup(pos, dim, 19, EVENT_LABEL2);  // sigle SatCom
+	pw->CreateGroup(pos, dim, 18, EVENT_LABEL1);  // arrow >
+	pw->CreateGroup(pos, dim, 19, EVENT_LABEL2);  // symbol SatCom
 
 	button = pw->CreateButton(pos, dim, 55, EVENT_HYPER_PREV);
 	button->SetState(STATE_SHADOW);
@@ -440,14 +442,14 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	button->SetState(STATE_SHADOW);
 	button->SetState(STATE_SIMPLY);
 	button->SetState(STATE_DEFAULT);
-	pw->CreateGroup(pos, dim, 21, EVENT_LABEL3);  // sigle stand-by
+	pw->CreateGroup(pos, dim, 21, EVENT_LABEL3);  // symbol stand-by
 
 	AdjustDisplayInfo(m_infoActualPos, m_infoActualDim);
 	UpdateIndexButton();
 
-	m_engine->SetDrawWorld(FALSE);  // ne dessine rien sous l'interface
-	m_engine->SetDrawFront(TRUE);  // dessine toto sur l'interface
-	m_particule->SetFrameUpdate(SH_WORLD, FALSE);  // pause pour particules dans monde
+	m_engine->SetDrawWorld(FALSE);  // doesn't draw anything in the interface
+	m_engine->SetDrawFront(TRUE);  // toto draws on the interface
+	m_particule->SetFrameUpdate(SH_WORLD, FALSE);  // particles break into world
 
 	m_toto = SearchToto();
 	if ( m_toto != 0 )
@@ -472,7 +474,7 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	m_light->SetLightExcluType(m_lightSuppl, TYPETERRAIN);
 }
 
-// Repositionne tous les contrôles d'édition.
+// Repositions all controls editing.
 
 void CDisplayInfo::AdjustDisplayInfo(FPOINT wpos, FPOINT wdim)
 {
@@ -638,7 +640,7 @@ void CDisplayInfo::AdjustDisplayInfo(FPOINT wpos, FPOINT wdim)
 	pos.y = (30.0f+10.0f+24.0f+10.0f+324.0f+6.0f)/480.0f;
 	dim.x = 48.0f/640.0f;
 	dim.y = 40.0f/480.0f;
-	group = (CGroup*)pw->SearchControl(EVENT_LABEL2);  // sigle SatCom
+	group = (CGroup*)pw->SearchControl(EVENT_LABEL2);  // symbol SatCom
 	if ( group != 0 )
 	{
 		group->SetPos(pos);
@@ -649,7 +651,7 @@ void CDisplayInfo::AdjustDisplayInfo(FPOINT wpos, FPOINT wdim)
 	pos.y = (30.0f+10.0f+6.0f)/480.0f;
 	dim.x = 20.0f/640.0f;
 	dim.y = 20.0f/480.0f;
-	group = (CGroup*)pw->SearchControl(EVENT_LABEL3);  // sigle stand-by
+	group = (CGroup*)pw->SearchControl(EVENT_LABEL3);  // symbol stand-by
 	if ( group != 0 )
 	{
 		group->SetPos(pos);
@@ -657,7 +659,7 @@ void CDisplayInfo::AdjustDisplayInfo(FPOINT wpos, FPOINT wdim)
 	}
 }
 
-// Change le bouton d'index.
+// Change the index button.
 
 void CDisplayInfo::ChangeIndexButton(int index)
 {
@@ -686,7 +688,7 @@ void CDisplayInfo::ChangeIndexButton(int index)
 	UpdateIndexButton();
 }
 
-// Adapte les boutons d'index.
+// Adapts the index buttons.
 
 void CDisplayInfo::UpdateIndexButton()
 {
@@ -799,7 +801,7 @@ void CDisplayInfo::UpdateIndexButton()
 	UpdateCopyButton();
 }
 
-// Adapte le bouton de copie.
+// Adjusts the copy button.
 
 void CDisplayInfo::UpdateCopyButton()
 {
@@ -824,7 +826,7 @@ void CDisplayInfo::UpdateCopyButton()
 
 }
 
-// Fin de l'affichage des informations.
+// End of the display of information.
 
 void CDisplayInfo::StopDisplayInfo()
 {
@@ -836,12 +838,12 @@ void CDisplayInfo::StopDisplayInfo()
 
 	m_interface->DeleteControl(EVENT_WINDOW4);
 
-	if ( m_bEditLock )  // édition programme en cours ?
+	if ( m_bEditLock )  // editing running program?
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
 		if ( pw != 0 )
 		{
-			pw->SetState(STATE_ENABLE);  // CStudio opérationnel
+			pw->SetState(STATE_ENABLE);  // CStudio operating
 		}
 	}
 	else
@@ -851,8 +853,8 @@ void CDisplayInfo::StopDisplayInfo()
 	}
 	m_camera->SetType(m_infoCamera);
 
-	m_engine->SetDrawWorld(TRUE);  // dessine tout sous l'interface
-	m_engine->SetDrawFront(FALSE);  // ne dessine rien sur l'interface
+	m_engine->SetDrawWorld(TRUE);  // draws all on the interface
+	m_engine->SetDrawFront(FALSE);  // draws nothing on the interface
 	m_particule->SetFrameUpdate(SH_WORLD, TRUE);
 	m_particule->FlushParticule(SH_FRONT);
 	m_particule->FlushParticule(SH_INTERFACE);
@@ -871,7 +873,7 @@ void CDisplayInfo::StopDisplayInfo()
 }
 
 
-// Spécifie la position.
+// Specifies the position.
 
 void CDisplayInfo::SetPosition(int pos)
 {
@@ -887,7 +889,7 @@ void CDisplayInfo::SetPosition(int pos)
 	edit->SetFirstLine(pos);
 }
 
-// Retourne la position.
+// Returns the position.
 
 int CDisplayInfo::RetPosition()
 {
@@ -905,7 +907,7 @@ int CDisplayInfo::RetPosition()
 
 
 
-// Changement de la taille de l'affichage des informations.
+// Changing the size of the display of information.
 
 void CDisplayInfo::ViewDisplayInfo()
 {
@@ -923,7 +925,7 @@ void CDisplayInfo::ViewDisplayInfo()
 	edit->SetFontSize(m_main->RetFontSize()/(dim.x/640.0f));
 }
 
-// Retourne l'objet de l'homme.
+// Returns the object human.
 
 CObject* CDisplayInfo::SearchToto()
 {
@@ -946,7 +948,7 @@ CObject* CDisplayInfo::SearchToto()
 }
 
 
-// Création de la liste des objets.
+// Creating the list of objects.
 
 typedef struct
 {
@@ -1005,7 +1007,7 @@ void ObjectWrite(FILE* file, ObjectList list[], int i)
 	fputs(line, file);
 }
 
-// Crée le fichier contenant la liste des objets.
+// Creates the file containing the list of objects.
 
 void CDisplayInfo::CreateObjectsFile()
 {
@@ -1020,7 +1022,7 @@ void CDisplayInfo::CreateObjectsFile()
 	file = fopen("help\\objects.txt", "w");
 	if ( file == 0 )  return;
 
-	list[0].total = 0;  // vide la liste
+	list[0].total = 0;  // empty list
 	bRadar = FALSE;
 	for ( i=0 ; i<1000000 ; i++ )
 	{
@@ -1047,7 +1049,7 @@ void CDisplayInfo::CreateObjectsFile()
 		bAtLeast = FALSE;
 		for ( i=0 ; i<200 ; i++ )
 		{
-			if ( list[i].total == 0 )  break;  // fin de la liste ?
+			if ( list[i].total == 0 )  break;  // end of the list?
 
 			if ( list[i].type == OBJECT_BASE  ||
 				 list[i].type == OBJECT_HUMAN )
@@ -1069,7 +1071,7 @@ void CDisplayInfo::CreateObjectsFile()
 		bAtLeast = FALSE;
 		for ( i=0 ; i<200 ; i++ )
 		{
-			if ( list[i].total == 0 )  break;  // fin de la liste ?
+			if ( list[i].total == 0 )  break;  // end of the list?
 
 			if ( list[i].type == OBJECT_MOBILEwt ||
 				 list[i].type == OBJECT_MOBILEtt ||
@@ -1116,7 +1118,7 @@ void CDisplayInfo::CreateObjectsFile()
 		bAtLeast = FALSE;
 		for ( i=0 ; i<200 ; i++ )
 		{
-			if ( list[i].total == 0 )  break;  // fin de la liste ?
+			if ( list[i].total == 0 )  break;  // end of the list?
 
 			if ( list[i].type == OBJECT_DERRICK  ||
 				 list[i].type == OBJECT_FACTORY  ||
@@ -1157,7 +1159,7 @@ void CDisplayInfo::CreateObjectsFile()
 		bAtLeast = FALSE;
 		for ( i=0 ; i<200 ; i++ )
 		{
-			if ( list[i].total == 0 )  break;  // fin de la liste ?
+			if ( list[i].total == 0 )  break;  // end of the list?
 
 			if ( list[i].type == OBJECT_STONE   ||
 				 list[i].type == OBJECT_URANIUM ||
@@ -1185,7 +1187,7 @@ void CDisplayInfo::CreateObjectsFile()
 		bAtLeast = FALSE;
 		for ( i=0 ; i<200 ; i++ )
 		{
-			if ( list[i].total == 0 )  break;  // fin de la liste ?
+			if ( list[i].total == 0 )  break;  // end of the list?
 
 			if ( list[i].type == OBJECT_MOTHER ||
 				 list[i].type == OBJECT_ANT    ||
