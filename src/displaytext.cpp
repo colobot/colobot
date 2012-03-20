@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// displaytext.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// displaytext.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -45,7 +47,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CDisplayText::CDisplayText(CInstanceManager* iMan)
 {
@@ -64,7 +66,7 @@ CDisplayText::CDisplayText(CInstanceManager* iMan)
 		m_visitGoal[i] = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		m_visitDist[i] = 0.0f;
 		m_visitHeight[i] = 0.0f;
-		m_time[i] = 0.0f;  // rien d'affiché
+		m_time[i] = 0.0f;  // nothing displayed
 	}
 
 	m_bHide = FALSE;
@@ -72,7 +74,7 @@ CDisplayText::CDisplayText(CInstanceManager* iMan)
 	m_delayFactor = 1.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CDisplayText::~CDisplayText()
 {
@@ -80,7 +82,7 @@ CDisplayText::~CDisplayText()
 }
 
 
-// Détruit l'objet.
+// Destroys the object.
 
 void CDisplayText::DeleteObject()
 {
@@ -88,7 +90,7 @@ void CDisplayText::DeleteObject()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CDisplayText::EventProcess(const Event &event)
 {
@@ -115,7 +117,7 @@ BOOL CDisplayText::EventProcess(const Event &event)
 }
 
 
-// Affiche une erreur.
+// Displays an error.
 
 void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 {
@@ -130,7 +132,7 @@ void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 	DisplayError(err, pos, h, d, time);
 }
 
-// Affiche une erreur.
+// Displays an error.
 
 void CDisplayText::DisplayError(Error err, D3DVECTOR goal, float height,
 								float dist, float time)
@@ -176,7 +178,7 @@ void CDisplayText::DisplayError(Error err, D3DVECTOR goal, float height,
 	DisplayText(text, goal, height, dist, time, type);
 }
 
-// Affiche le texte.
+// Displays text.
 
 void CDisplayText::DisplayText(char *text, CObject* pObj,
 							   float time, TextType type)
@@ -192,7 +194,7 @@ void CDisplayText::DisplayText(char *text, CObject* pObj,
 	DisplayText(text, pos, h, d, time, type);
 }
 
-// Affiche le texte.
+// Displays text.
 
 void CDisplayText::DisplayText(char *text, D3DVECTOR goal, float height,
 							   float dist, float time, TextType type)
@@ -242,11 +244,11 @@ void CDisplayText::DisplayText(char *text, D3DVECTOR goal, float height,
 	dim.x = 0.80f;
 	dim.y = hBox;
 
-	icon = 1;  // jaune
-	if ( type == TT_ERROR   )  icon =  9;  // rouge
-	if ( type == TT_WARNING )  icon = 10;  // bleu
-	if ( type == TT_INFO    )  icon =  8;  // vert
-	if ( type == TT_MESSAGE )  icon = 11;  // jaune
+	icon = 1;  // yellow
+	if ( type == TT_ERROR   )  icon =  9;  // red
+	if ( type == TT_WARNING )  icon = 10;  // blue
+	if ( type == TT_INFO    )  icon =  8;  // green
+	if ( type == TT_MESSAGE )  icon = 11;  // yellow
 	pw->CreateGroup(pos, dim, icon, EventMsg(EVENT_DT_GROUP0+nLine));
 
 	pw->SetTrashEvent(FALSE);
@@ -303,7 +305,7 @@ void CDisplayText::DisplayText(char *text, D3DVECTOR goal, float height,
 
 	if ( m_bHide )
 	{
-		HideText(m_bHide);  // cache tout
+		HideText(m_bHide);  // hide all
 	}
 	else
 	{
@@ -320,7 +322,7 @@ void CDisplayText::DisplayText(char *text, D3DVECTOR goal, float height,
 	}
 }
 
-// Efface tous les textes.
+// Clears all text.
 
 void CDisplayText::ClearText()
 {
@@ -345,7 +347,7 @@ void CDisplayText::ClearText()
 	}
 }
 
-// Cache ou montre tous les textes.
+// Hides or shows all texts.
 
 void CDisplayText::HideText(BOOL bHide)
 {
@@ -382,7 +384,7 @@ void CDisplayText::HideText(BOOL bHide)
 	}
 }
 
-// Efface le dernier texte (en haut de la liste).
+// Removes the last text (top of the list).
 
 BOOL CDisplayText::ClearLastText()
 {
@@ -396,7 +398,7 @@ BOOL CDisplayText::ClearLastText()
 	if ( pw == 0 )  return FALSE;
 
 	pb2 = (CButton*)pw->SearchControl(EVENT_DT_VISIT0);
-	if ( pb2 == 0 )  return FALSE;  // même pas de première ligne
+	if ( pb2 == 0 )  return FALSE;  // same not of first-line
 	pg2 = (CGroup*)pw->SearchControl(EVENT_DT_GROUP0);
 	if ( pg2 == 0 )  return FALSE;
 	pl2 = (CLabel*)pw->SearchControl(EVENT_DT_LABEL0);
@@ -435,7 +437,7 @@ BOOL CDisplayText::ClearLastText()
 }
 
 
-// Spécifie le facteur du délai.
+// Specifies the factor of time.
 
 void CDisplayText::SetDelay(float factor)
 {
@@ -443,7 +445,7 @@ void CDisplayText::SetDelay(float factor)
 }
 
 
-// Active l'affichage des textes.
+// Enables the display of text.
 
 void CDisplayText::SetEnable(BOOL bEnable)
 {
@@ -451,7 +453,7 @@ void CDisplayText::SetEnable(BOOL bEnable)
 }
 
 
-// Retourne le goal lors d'une visite.
+// Returns the goal during a visit.
 
 D3DVECTOR CDisplayText::RetVisitGoal(EventMsg event)
 {
@@ -462,7 +464,7 @@ D3DVECTOR CDisplayText::RetVisitGoal(EventMsg event)
 	return m_visitGoal[i];
 }
 
-// Retourne la distance lors d'une visite.
+// Returns the distance during a visit.
 
 float CDisplayText::RetVisitDist(EventMsg event)
 {
@@ -473,7 +475,7 @@ float CDisplayText::RetVisitDist(EventMsg event)
 	return m_visitDist[i];
 }
 
-// Retourne la hauteur lors d'une visite.
+// Returns the height on a visit.
 
 float CDisplayText::RetVisitHeight(EventMsg event)
 {
@@ -485,7 +487,7 @@ float CDisplayText::RetVisitHeight(EventMsg event)
 }
 
 
-// Retourne la distance de visite idéale pour un objet donné.
+// Ranges from ideal visit for a given object.
 
 float CDisplayText::RetIdealDist(CObject* pObj)
 {
@@ -504,7 +506,7 @@ float CDisplayText::RetIdealDist(CObject* pObj)
 	return 60.0f;
 }
 
-// Retourne la hauteur de visite idéale pour un objet donné.
+// Returns the height of ideal visit for a given object.
 
 float CDisplayText::RetIdealHeight(CObject* pObj)
 {
@@ -533,7 +535,7 @@ float CDisplayText::RetIdealHeight(CObject* pObj)
 }
 
 
-// Supprime toutes les visites.
+// Removes all visits.
 
 void CDisplayText::ClearVisit()
 {
@@ -548,11 +550,11 @@ void CDisplayText::ClearVisit()
 	{
 		pb = (CButton*)pw->SearchControl(EventMsg(EVENT_DT_VISIT0+i));
 		if ( pb == 0 )  break;
-		pb->SetIcon(14);  // yeux
+		pb->SetIcon(14);  // eyes
 	}
 }
 
-// Met un bouton en mode "visite".
+// Puts a button in "visit".
 
 void CDisplayText::SetVisit(EventMsg event)
 {
@@ -570,7 +572,7 @@ void CDisplayText::SetVisit(EventMsg event)
 	pb->SetIcon(48);  // >
 }
 
-// Indique si un bouton est en mode "visite".
+// Indicates whether a button is set to "visit".
 
 BOOL CDisplayText::IsVisit(EventMsg event)
 {
@@ -589,7 +591,7 @@ BOOL CDisplayText::IsVisit(EventMsg event)
 }
 
 
-// Retourne l'objet de toto.
+// Returns the object toto.
 
 CObject* CDisplayText::SearchToto()
 {
