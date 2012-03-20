@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// Compilation d'une procédure avec un "point".
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// Compilation of a procedure with a "dot".
 
 int	cPoint(CBotVar* &var, CBotString& retClass, void* user)
 {
@@ -40,7 +42,7 @@ int	cPoint(CBotVar* &var, CBotString& retClass, void* user)
 	return CBotErrBadParam;
 }
 
-// Donne un paramètre de type "point".
+// Gives a parameter of type "point".
 
 BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
 {
@@ -87,7 +89,7 @@ BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
 
 
 
-// Compilation de l'instruction "space(center, rMin, rMax, dist)".
+// Compilation of the instruction "space(center, rMin, rMax, dist)".
 
 int	cSpace(CBotVar* &var, CBotString& retClass, void* user)
 {
