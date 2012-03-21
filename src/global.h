@@ -12,50 +12,52 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// global.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// global.h
 
 #ifndef _GLOBAL_H_
 #define	_GLOBAL_H_
 
 
-#define BUILD_FACTORY		(1<<0)		// usine
+#define BUILD_FACTORY		(1<<0)		// factory
 #define BUILD_DERRICK		(1<<1)		// derrick
-#define BUILD_CONVERT		(1<<2)		// convertisseur
+#define BUILD_CONVERT		(1<<2)		// converter
 #define BUILD_RADAR			(1<<3)		// radar
-#define BUILD_ENERGY		(1<<4)		// fabrique à pile
-#define BUILD_NUCLEAR		(1<<5)		// centrale nucléaire
-#define BUILD_STATION		(1<<6)		// station de recharge
-#define BUILD_REPAIR		(1<<7)		// centre de réparation
-#define BUILD_TOWER			(1<<8)		// tour de défense
-#define BUILD_RESEARCH		(1<<9)		// centre de recherche
-#define BUILD_LABO			(1<<10)		// laboratoire
-#define BUILD_PARA			(1<<11)		// paratonnerre
-#define BUILD_INFO			(1<<12)		// borne d'information
-#define BUILD_GFLAT			(1<<16)		// montre le sol plat
-#define BUILD_FLAG			(1<<17)		// met/enlève drapeau de couleur
+#define BUILD_ENERGY		(1<<4)		// factory of cells
+#define BUILD_NUCLEAR		(1<<5)		// nuclear power plant
+#define BUILD_STATION		(1<<6)		// base station
+#define BUILD_REPAIR		(1<<7)		// repair center
+#define BUILD_TOWER			(1<<8)		// defense tower
+#define BUILD_RESEARCH	(1<<9)		// research center
+#define BUILD_LABO			(1<<10)		// laboratory
+#define BUILD_PARA			(1<<11)		// lightning protection
+#define BUILD_INFO			(1<<12)		// information terminal
+#define BUILD_GFLAT			(1<<16)		// flat floor
+#define BUILD_FLAG			(1<<17)		// puts / removes colored flag
 
 
-// Ne pas changer les valeurs à cause des sauvegardes (bits=...).
+// Do not change values â€‹â€‹was because of backups (bits = ...).
 
-#define RESEARCH_TANK		(1<<0)		// chenilles
-#define RESEARCH_FLY		(1<<1)		// ailes
-#define RESEARCH_CANON		(1<<2)		// canon
-#define RESEARCH_TOWER		(1<<3)		// tour de défense
-#define RESEARCH_ATOMIC		(1<<4)		// nucléaire
-#define RESEARCH_THUMP		(1<<5)		// thumper
-#define RESEARCH_SHIELD		(1<<6)		// bouclier
-#define RESEARCH_PHAZER		(1<<7)		// canon phazer
-#define RESEARCH_iPAW		(1<<8)		// pattes des insectes
-#define RESEARCH_iGUN		(1<<9)		// canon des insectes
-#define RESEARCH_RECYCLER	(1<<10)		// recycleur
-#define RESEARCH_SUBM		(1<<11)		// sous-marin
-#define RESEARCH_SNIFFER	(1<<12)		// sniffeur
+#define RESEARCH_TANK		  (1<<0)		// caterpillars
+#define RESEARCH_FLY		  (1<<1)		// wings
+#define RESEARCH_CANON	  (1<<2)		// cannon
+#define RESEARCH_TOWER	  (1<<3)		// defense tower
+#define RESEARCH_ATOMIC	  (1<<4)		// nuclear
+#define RESEARCH_THUMP	  (1<<5)		// thumper
+#define RESEARCH_SHIELD	  (1<<6)		// shield
+#define RESEARCH_PHAZER	  (1<<7)		// phazer gun
+#define RESEARCH_iPAW		  (1<<8)		// legs of insects
+#define RESEARCH_iGUN		  (1<<9)		// cannon of insects
+#define RESEARCH_RECYCLER (1<<10)		// recycler
+#define RESEARCH_SUBM		  (1<<11)		// submarine
+#define RESEARCH_SNIFFER	(1<<12)		// sniffer
 
-extern long		g_id;					// identificateur unique
-extern long		g_build;				// bâtiments constructibles
-extern long		g_researchDone;			// recherches effectuées
-extern long		g_researchEnable;		// recherches accessbles
-extern float	g_unit;					// facteur de conversion
+extern long		g_id;					// unique identifier
+extern long		g_build;				// constructible buildings
+extern long		g_researchDone;			// research done
+extern long		g_researchEnable;		// research available
+extern float	g_unit;					// conversion factor
 
 
 
