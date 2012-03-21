@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// edit.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// edit.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,14 +40,14 @@
 #define MARGY			(5.0f/480.0f)
 #define MARGYS			(4.0f/480.0f)
 #define MARGY1			(1.0f/480.0f)
-#define DELAY_DBCLICK	0.3f			// délai pour double-clic
-#define DELAY_SCROLL	0.1f			// délai pour défilement
-#define BIG_FONT		1.6f			// agrandissement pour \b;
+#define DELAY_DBCLICK	0.3f			// time limit for double-click
+#define DELAY_SCROLL	0.1f			// time limit for scroll
+#define BIG_FONT	1.6f			// expansion for \b;
 
 
 
 
-// Indique si un caractère est un espace.
+// Indicates whether a character is a space.
 
 BOOL IsSpace(int character)
 {
@@ -54,7 +56,7 @@ BOOL IsSpace(int character)
 			 character == '\n' );
 }
 
-// Indique si un caractère fait partie d'un mot.
+// Indicates whether a character is part of a word.
 
 BOOL IsWord(int character)
 {
@@ -67,7 +69,7 @@ BOOL IsWord(int character)
 			 c == '_' );
 }
 
-// Indique si un caractère est un séparateur de mot.
+// Indicates whether a character is a word separator.
 
 BOOL IsSep(int character)
 {
@@ -77,7 +79,7 @@ BOOL IsSep(int character)
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -116,7 +118,7 @@ CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
 	m_undoOper = OPERUNDO_SPEC;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CEdit::~CEdit()
 {
@@ -136,7 +138,7 @@ CEdit::~CEdit()
 }
 
 
-// Crée une nouvelle ligne éditable.
+// Creates a new editable line.
 
 BOOL CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -162,7 +164,7 @@ BOOL CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	else
 	{
 		m_bMulti = TRUE;
-		MoveAdjust();  // réajuste en mode multi-lignes
+		MoveAdjust();  // readjusts multi-line mode
 		m_scroll = new CScroll(m_iMan);
 		pc = (CScroll*)m_scroll;
 		pc->Create(pos, dim, -1, EVENT_NULL);
@@ -231,7 +233,7 @@ void CEdit::MoveAdjust()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CEdit::EventProcess(const Event &event)
 {
@@ -525,7 +527,7 @@ BOOL CEdit::EventProcess(const Event &event)
 		}
 		if ( m_bCapture )
 		{
-			if ( m_timeLastClick+DELAY_DBCLICK > m_time )  // double-clic ?
+			if ( m_timeLastClick+DELAY_DBCLICK > m_time )  // double-click ?
 			{
 				MouseDoubleClick(event.pos);
 			}
@@ -538,7 +540,7 @@ BOOL CEdit::EventProcess(const Event &event)
 }
 
 
-// Envoie un événement pour indiquer que le texte a été modifié.
+// Sends an event to indicate that the text was modified.
 
 void CEdit::SendModifEvent()
 {
@@ -549,7 +551,7 @@ void CEdit::SendModifEvent()
 }
 
 
-// Détecte si la souris est sur un caractère lien hypertexte.
+// Detects whether the mouse is over a hyperlink character.
 
 BOOL CEdit::IsLinkPos(FPOINT pos)
 {
@@ -566,13 +568,13 @@ BOOL CEdit::IsLinkPos(FPOINT pos)
 }
 
 
-// Positionne le curseur suite à un double-clic.
+// Positions the cursor after a double click.
 
 void CEdit::MouseDoubleClick(FPOINT mouse)
 {
 	int		i, character;
 
-	if ( m_bMulti )  // multi-lignes ?
+	if ( m_bMulti )  // Multi-line?
 	{
 		i = MouseDetect(mouse);
 		if ( i == -1 )  return;
@@ -593,10 +595,10 @@ void CEdit::MouseDoubleClick(FPOINT mouse)
 		}
 		m_cursor1 = i;
 	}
-	else	// mono-ligne ?
+	else	// single-line?
 	{
 		m_cursor2 = 0;
-		m_cursor1 = m_len;  // sélectionne tout
+		m_cursor1 = m_len;  // selects all
 	}
 
 	m_bUndoForce = TRUE;
@@ -605,7 +607,7 @@ void CEdit::MouseDoubleClick(FPOINT mouse)
 	ColumnFix();
 }
 
-// Positionne le curseur suite à un clic.
+// Positions the cursor when clicked.
 
 void CEdit::MouseClick(FPOINT mouse)
 {
@@ -619,12 +621,12 @@ void CEdit::MouseClick(FPOINT mouse)
 		m_cursor1 = i;
 		m_cursor2 = i;
 		m_bUndoForce = TRUE;
-		m_timeBlink = 0.0f;  // allume le curseur immédiatement
+		m_timeBlink = 0.0f;  // lights the cursor immediately
 		ColumnFix();
 	}
 }
 
-// Positionne le curseur suite à un clic relâché.
+// Positions the cursor when clicked released.
 
 void CEdit::MouseRelease(FPOINT mouse)
 {
@@ -652,7 +654,7 @@ void CEdit::MouseRelease(FPOINT mouse)
 	}
 }
 
-// Positionne le curseur suite à un déplacement.
+// Positions the cursor after movement.
 
 void CEdit::MouseMove(FPOINT mouse)
 {
@@ -661,12 +663,12 @@ void CEdit::MouseMove(FPOINT mouse)
 	if ( m_bMulti &&
 		 m_timeLastScroll+DELAY_SCROLL <= m_time )
 	{
-		if ( mouse.y > m_pos.y+m_dim.y )  // plus haut ?
+		if ( mouse.y > m_pos.y+m_dim.y )  // above?
 		{
 			Scroll(m_lineFirst-1, FALSE);
 			mouse.y = m_pos.y+m_dim.y-MARGY-m_lineHeight/2.0f;
 		}
-		if ( mouse.y < m_pos.y )  // plus bas ?
+		if ( mouse.y < m_pos.y )  // lower?
 		{
 			Scroll(m_lineFirst+1, FALSE);
 			mouse.y = m_pos.y+m_dim.y-MARGY-m_lineVisible*m_lineHeight+m_lineHeight/2.0f;
@@ -679,12 +681,12 @@ void CEdit::MouseMove(FPOINT mouse)
 	{
 		m_cursor1 = i;
 		m_bUndoForce = TRUE;
-		m_timeBlink = 0.0f;  // allume le curseur immédiatement
+		m_timeBlink = 0.0f;  // lights the cursor immediately
 		ColumnFix();
 	}
 }
 
-// Positionne le curseur suite à un clic.
+// Positions the cursor when clicked.
 
 int CEdit::MouseDetect(FPOINT mouse)
 {
@@ -745,7 +747,7 @@ int CEdit::MouseDetect(FPOINT mouse)
 }
 
 
-// Efface tout l'historique.
+// Clears all history.
 
 void CEdit::HyperFlush()
 {
@@ -753,7 +755,7 @@ void CEdit::HyperFlush()
 	m_historyCurrent = -1;
 }
 
-// Indique quelle est la page home.
+// Indicates which is the home page.
 
 void CEdit::HyperHome(char *filename)
 {
@@ -761,7 +763,7 @@ void CEdit::HyperHome(char *filename)
 	HyperAdd(filename, 0);
 }
 
-// Effectue un hyper saut à travers un lien.
+// Performs a hyper jump through a link.
 
 void CEdit::HyperJump(char *name, char *marker)
 {
@@ -812,7 +814,7 @@ void CEdit::HyperJump(char *name, char *marker)
 	}
 }
 
-// Ajoute un texte visité à l'historique.
+// Adds text to the history of visited.
 
 BOOL CEdit::HyperAdd(char *filename, int firstLine)
 {
@@ -826,7 +828,7 @@ BOOL CEdit::HyperAdd(char *filename, int firstLine)
 	return TRUE;
 }
 
-// Indique si un bouton EVENT_HYPER_* est actif ou non.
+// Indicates whether a button EVENT_HYPER_ * is active or not.
 
 BOOL CEdit::HyperTest(EventMsg event)
 {
@@ -848,7 +850,7 @@ BOOL CEdit::HyperTest(EventMsg event)
 	return FALSE;
 }
 
-// Effectue l'action correspondant à un bouton EVENT_HYPER_*.
+// Performs the action corresponding to a button EVENT_HYPER_ *.
 
 BOOL CEdit::HyperGo(EventMsg event)
 {
@@ -878,7 +880,7 @@ BOOL CEdit::HyperGo(EventMsg event)
 }
 
 
-// Dessine la ligne éditable.
+// Draw the editable line.
 
 void CEdit::Draw()
 {
@@ -898,12 +900,12 @@ void CEdit::Draw()
 	dim.x = m_dim.x;
 	if ( !m_bInsideScroll )  dim.x -= m_bMulti?SCROLL_WIDTH:0.0f;
 	dim.y = m_dim.y;
-	DrawBack(pos, dim);  // fond
+	DrawBack(pos, dim);  // background
 
-	// Affiche toutes les lignes.
+	// Displays all lines.
 	c1 = m_cursor1;
 	c2 = m_cursor2;
-	if ( c1 > c2 )  Swap(c1, c2);  // toujours c1 <= c2
+	if ( c1 > c2 )  Swap(c1, c2);  // always c1 <= c2
 
 	if ( m_bInsideScroll )
 	{
@@ -922,7 +924,7 @@ void CEdit::Draw()
 		if ( i == m_lineFirst && i < m_lineTotal-1 &&
 			 m_lineOffset[i] == m_lineOffset[i+1] )
 		{
-			pos.y -= m_lineHeight;  // saute double ligne \b;
+			pos.y -= m_lineHeight;  // Double jump line \b;
 			i ++;
 		}
 
@@ -933,7 +935,7 @@ void CEdit::Draw()
 		{
 			for ( j=0 ; j<m_lineIndent[i] ; j++ )
 			{
-				char s = '\t';  // ligne | pointillée
+				char s = '\t';  // line | dotted
 				m_engine->RetText()->DrawText(&s, 1, pos, 1.0f, 1, m_fontSize, m_fontStretch, m_fontType, 0);
 				pos.x += indentLength;
 			}
@@ -945,7 +947,7 @@ void CEdit::Draw()
 		ppos = pos;
 		size = m_fontSize;
 
-		// Grand titre \b; ?
+		// Headline \b;?
 		if ( beg+len < m_len && m_format != 0 &&
 			 (m_format[beg]&TITLE_MASK) == TITLE_BIG )
 		{
@@ -953,13 +955,13 @@ void CEdit::Draw()
 			end.x   = dim.x-MARGX*2.0f;
 			start.y = ppos.y-(m_bMulti?0.0f:MARGY1)-m_lineHeight*(BIG_FONT-1.0f);
 			end.y   = m_lineHeight*BIG_FONT;
-			DrawPart(start, end, 2);  // fond bleu dégradé ->
+			DrawPart(start, end, 2);  // blue gradient background ->
 
 			size *= BIG_FONT;
 			ppos.y -= m_lineHeight*(BIG_FONT-1.0f);
 		}
 
-		// Titre \t; ?
+		// As \t;?
 		if ( beg+len < m_len && m_format != 0 &&
 			 (m_format[beg]&TITLE_MASK) == TITLE_NORM )
 		{
@@ -967,10 +969,10 @@ void CEdit::Draw()
 			end.x   = dim.x-MARGX*2.0f;
 			start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
 			end.y   = m_lineHeight;
-			DrawPart(start, end, 2);  // fond bleu dégradé ->
+			DrawPart(start, end, 2);  // blue gradient background ->
 		}
 
-		// Sous-titre \s; ?
+		// Subtitle \s;?
 		if ( beg+len < m_len && m_format != 0 &&
 			 (m_format[beg]&TITLE_MASK) == TITLE_LITTLE )
 		{
@@ -978,10 +980,10 @@ void CEdit::Draw()
 			end.x   = dim.x-MARGX*2.0f;
 			start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
 			end.y   = m_lineHeight;
-			DrawPart(start, end, 3);  // fond jaune dégradé ->
+			DrawPart(start, end, 3);  // yellow background gradient ->
 		}
 
-		// Tableau \tab; ?
+		// Table \tab;?
 		if ( beg+len < m_len && m_format != 0 &&
 			 (m_format[beg]&COLOR_MASK) == COLOR_TABLE )
 		{
@@ -989,7 +991,7 @@ void CEdit::Draw()
 			end.x   = dim.x-MARGX*2.0f;
 			start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
 			end.y   = m_lineHeight;
-			DrawPart(start, end, 11);  // fond orange dégradé ->
+			DrawPart(start, end, 11);  // fond orange dï¿½gradï¿½ ->
 		}
 
 		// Image \image; ?
@@ -997,7 +999,7 @@ void CEdit::Draw()
 			 (m_format[beg]&IMAGE_MASK) != 0 )
 		{
 			line = 1;
-			while ( true )  // regroupe les tranches d'image
+			while ( true )  // includes the image slices
 			{
 				if ( i+line >= m_lineTotal                ||
 					 i+line >= m_lineFirst+m_lineVisible  ||
@@ -1005,7 +1007,7 @@ void CEdit::Draw()
 				line ++;
 			}
 
-			iIndex = m_text[beg];  // caractère = index dans m_image
+			iIndex = m_text[beg];  // character = index in m_image
 			pos.y -= m_lineHeight*(line-1);
 			DrawImage(pos, m_image[iIndex].name,
 					  m_image[iIndex].width*(m_fontSize/SMALLFONT),
@@ -1017,7 +1019,7 @@ void CEdit::Draw()
 
 		if ( ((m_bEdit && m_bFocus && m_bHilite) ||
 			  (!m_bEdit && m_bHilite)            ) &&
-			 c1 != c2 && beg <= c2 && beg+len >= c1 )  // zone sélectionnée ?
+			 c1 != c2 && beg <= c2 && beg+len >= c1 )  // selected area?
 		{
 			o1 = c1;  if ( o1 < beg     )  o1 = beg;
 			o2 = c2;  if ( o2 > beg+len )  o2 = beg+len;
@@ -1036,18 +1038,18 @@ void CEdit::Draw()
 			start.y = ppos.y-(m_bMulti?0.0f:MARGY1);
 			end.y   = m_lineHeight;
 			if ( m_format != 0 && (m_format[beg]&TITLE_MASK) == TITLE_BIG )  end.y *= BIG_FONT;
-			DrawPart(start, end, 1);  // fond jaune uni
+			DrawPart(start, end, 1);  // plain yellow background
 		}
 
 		eol = 16;  // >
 		if ( len > 0 && m_text[beg+len-1] == '\n' )
 		{
-			len --;  // n'affiche pas le '\n'
-			eol = 0;  // rien
+			len --;  // does not display the '\ n'
+			eol = 0;  // nothing
 		}
 		if ( beg+len >= m_len )
 		{
-			eol = 2;  // carré (eot)
+			eol = 2;  // square (eot)
 		}
 		if ( !m_bMulti || !m_bDisplaySpec )  eol = 0;
 		if ( m_format == 0 )
@@ -1063,13 +1065,13 @@ void CEdit::Draw()
 
 		if ( i < m_lineTotal-2 && m_lineOffset[i+1] == m_lineOffset[i+2] )
 		{
-			pos.y -= m_lineHeight;  // saute double ligne \b;
+			pos.y -= m_lineHeight;  // double jump line \b;
 			i ++;
 		}
 	}
 
-	// Affiche le curseur.
-	if ( (m_bEdit && m_bFocus && m_bHilite && Mod(m_timeBlink, 1.0f) <= 0.5f) )  // ça clignotte
+	// Shows the cursor.
+	if ( (m_bEdit && m_bFocus && m_bHilite && Mod(m_timeBlink, 1.0f) <= 0.5f) )  // it blinks
 	{
 		pos.y = m_pos.y+m_dim.y-m_lineHeight-(m_bMulti?MARGY:MARGY1*2.0f);
 		for ( i=m_lineFirst ; i<m_lineTotal ; i++ )
@@ -1108,7 +1110,7 @@ void CEdit::Draw()
 		pos.x -= 1.0f/640.0f;
 		dim.x = 2.0f/640.0f;
 		dim.y = m_lineHeight;
-		DrawPart(pos, dim, 0);  // rouge
+		DrawPart(pos, dim, 0);  // red
 	}
 
 	if ( m_scroll != 0 && !m_bGeneric )
@@ -1117,7 +1119,7 @@ void CEdit::Draw()
 	}
 }
 
-// Dessine une partie d'image.
+// Draw an image part.
 
 void CEdit::DrawImage(FPOINT pos, char *name, float width,
 					  float offset, float height, int nbLine)
@@ -1149,7 +1151,7 @@ void CEdit::DrawImage(FPOINT pos, char *name, float width,
 	DrawIcon(pos, dim, uv1, uv2);
 }
 
-// Dessine le fond.
+// Draw the background.
 
 void CEdit::DrawBack(FPOINT pos, FPOINT dim)
 {
@@ -1163,14 +1165,14 @@ void CEdit::DrawBack(FPOINT pos, FPOINT dim)
 
 	if ( m_bMulti )
 	{
-		uv1.x = 128.0f/256.0f;  // bleu clair
+		uv1.x = 128.0f/256.0f;  // light blue
 		uv1.y =  64.0f/256.0f;
 		uv2.x = 160.0f/256.0f;
 		uv2.y =  96.0f/256.0f;
 	}
 	else
 	{
-		uv1.x = 160.0f/256.0f;  // bleu moyen
+		uv1.x = 160.0f/256.0f;  // medium blue
 		uv1.y = 192.0f/256.0f;
 		uv2.x = 192.0f/256.0f;
 		uv2.y = 224.0f/256.0f;
@@ -1201,7 +1203,7 @@ void CEdit::DrawBack(FPOINT pos, FPOINT dim)
 	}
 }
 
-// Dessine une icône de fond.
+// Draws an icon background.
 
 void CEdit::DrawPart(FPOINT pos, FPOINT dim, int icon)
 {
@@ -1230,7 +1232,7 @@ void CEdit::DrawPart(FPOINT pos, FPOINT dim, int icon)
 }
 
 
-// Donne le texte à éditer.
+// Give the text to edit.
 
 void CEdit::SetText(char *text, BOOL bNew)
 {
@@ -1253,7 +1255,7 @@ void CEdit::SetText(char *text, BOOL bNew)
 				if ( text[i] == '\t' )
 				{
 					if ( !bBOL )  m_text[j++] = ' ';
-					continue;  // enlève les tabulateurs
+					continue;  // removes tabs
 				}
 				bBOL = ( text[i] == '\n' );
 
@@ -1283,7 +1285,7 @@ void CEdit::SetText(char *text, BOOL bNew)
 						m_format[j] = font;
 						j ++;
 					}
-					continue;  // enlève les tabulateurs
+					continue;  // removes tabs
 				}
 				bBOL = ( text[i] == '\n' );
 			}
@@ -1314,7 +1316,7 @@ void CEdit::SetText(char *text, BOOL bNew)
 					font |= TITLE_NORM;
 					i += 2;
 				}
-				else if ( text[i+1] == 's' )  // sbttl ?
+				else if ( text[i+1] == 's' )  // subtitle ?
 				{
 					font &= ~TITLE_MASK;
 					font |= TITLE_LITTLE;
@@ -1336,12 +1338,12 @@ void CEdit::SetText(char *text, BOOL bNew)
 	if ( bNew )  UndoFlush();
 
 	m_cursor1 = 0;
-	m_cursor2 = 0;  // curseur au début
+	m_cursor2 = 0;  // cursor to the beginning
 	Justif();
 	ColumnFix();
 }
 
-// Retourne un pointeur au texte édité.
+// Returns a pointer to the edited text.
 
 char* CEdit::RetText()
 {
@@ -1349,7 +1351,7 @@ char* CEdit::RetText()
 	return m_text;
 }
 
-// Retourne le texte édité.
+// Returns the edited text.
 
 void CEdit::GetText(char *buffer, int max)
 {
@@ -1360,7 +1362,7 @@ void CEdit::GetText(char *buffer, int max)
 	buffer[max] = 0;
 }
 
-// Retourne la longueur du texte.
+// Returns the length of the text.
 
 int CEdit::RetTextLength()
 {
@@ -1369,7 +1371,7 @@ int CEdit::RetTextLength()
 
 
 
-// Retourne un nom dans une commande.
+// Returns a name in a command.
 // \x nom1 nom2 nom3;
 
 void GetNameParam(char *cmd, int rank, char *buffer)
@@ -1392,7 +1394,7 @@ void GetNameParam(char *cmd, int rank, char *buffer)
 	*buffer = 0;
 }
 
-// Retourne un nombre dans une commande.
+// Returns a number of a command.
 // \x nom n1 n2;
 
 int RetValueParam(char *cmd, int rank)
@@ -1412,7 +1414,7 @@ int RetValueParam(char *cmd, int rank)
 	return n;
 }
 
-// Libère toutes les images.
+// Frees all images.
 
 void CEdit::FreeImage()
 {
@@ -1428,7 +1430,7 @@ void CEdit::FreeImage()
 	}
 }
 
-// Lit la texture d'une image.
+// Reads the texture of an image.
 
 void CEdit::LoadImage(char *name)
 {
@@ -1440,7 +1442,7 @@ void CEdit::LoadImage(char *name)
 	m_engine->LoadTexture(filename);
 }
 
-// Lit le contenu d'un fichier texte.
+// Read from a text file.
 
 BOOL CEdit::ReadText(char *filename, int addSize)
 {
@@ -1501,12 +1503,12 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 					j ++;
 				}
 				i ++;
-				continue;  // enlève les tabulateurs
+				continue;  // removes the tabs
 			}
 			bBOL = ( buffer[i] == '\n' || buffer[i] == '\r' );
 		}
 
-		if ( buffer[i] == '\r' )  // supprime les \r
+		if ( buffer[i] == '\r' )  // removes \ r
 		{
 			i ++;
 		}
@@ -1548,7 +1550,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 				}
 				i += 3;
 			}
-			else if ( buffer[i+1] == 's' )  // sbttl ?
+			else if ( buffer[i+1] == 's' )  // subtitle ?
 			{
 				if ( m_bSoluce || !bInSoluce )
 				{
@@ -1572,7 +1574,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 			}
 		}
 		else if ( m_format != 0       &&
-				  buffer[i+0] == '\\' &&  // \u nom marker; ?
+				  buffer[i+0] == '\\' &&  // \u marker name; ?
 				  buffer[i+1] == 'u'  &&
 				  buffer[i+2] == ' '  )
 		{
@@ -1605,7 +1607,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 			i += strchr(buffer+i, ';')-(buffer+i)+1;
 		}
 		else if ( m_format != 0       &&
-				  buffer[i+0] == '\\' &&  // \image nom lx ly; ?
+				  buffer[i+0] == '\\' &&  // \image name lx ly; ?
 				  buffer[i+1] == 'i'  &&
 				  buffer[i+2] == 'm'  &&
 				  buffer[i+3] == 'a'  &&
@@ -1626,7 +1628,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 				iLines = RetValueParam(buffer+i+7, 2);
 				LoadImage(iName);
 
-				// Une tranche d'image par ligne de texte.
+				// A part of image per line of text.
 				for ( iCount=0 ; iCount<iLines ; iCount++ )
 				{
 					strcpy(m_image[iIndex].name, iName);
@@ -1634,7 +1636,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 					m_image[iIndex].height = 1.0f/iLines;
 					m_image[iIndex].width = iWidth*0.75f;
 
-					m_text[j] = (char)(iIndex++);  // un car index dans m_image
+					m_text[j] = (char)(iIndex++);  // as an index into m_image
 					m_format[j] = (unsigned char)IMAGE_MASK;
 					j ++;
 				}
@@ -1859,7 +1861,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 	return TRUE;
 }
 
-// Ecrit tout le texte dans un fichier.
+// Writes all the text in a file.
 
 BOOL CEdit::WriteText(char *filename)
 {
@@ -1875,7 +1877,7 @@ BOOL CEdit::WriteText(char *filename)
 	if ( m_bAutoIndent )
 	{
 		iDim = m_dim.x;
-		m_dim.x = 1000.0f;  // met une largeur infinie !
+		m_dim.x = 1000.0f;  // puts an infinite width!
 		Justif();
 	}
 
@@ -1916,7 +1918,7 @@ BOOL CEdit::WriteText(char *filename)
 
 	if ( m_bAutoIndent )
 	{
-		m_dim.x = iDim;  // remet la largeur initiale
+		m_dim.x = iDim;  // presents the initial width
 		Justif();
 	}
 
@@ -1924,7 +1926,7 @@ BOOL CEdit::WriteText(char *filename)
 }
 
 
-// Gestion du nombre max de caractères éditables.
+// Manage the number of max characters editable.
 
 void CEdit::SetMaxChar(int max)
 {
@@ -1952,7 +1954,7 @@ int CEdit::RetMaxChar()
 }
 
 
-// Gestion du mode "éditable".
+// Mode management "editable".
 
 void CEdit::SetEditCap(BOOL bMode)
 {
@@ -1964,7 +1966,7 @@ BOOL CEdit::RetEditCap()
 	return m_bEdit;
 }
 
-// Gestion du mode "hilitable" (ça c'est du franch).
+// Mode management "hilitable" (that's the franch).
 
 void CEdit::SetHiliteCap(BOOL bEnable)
 {
@@ -1976,7 +1978,7 @@ BOOL CEdit::RetHiliteCap()
 	return m_bHilite;
 }
 
-// Ascenseur dans/hors cadre.
+// Lift in / out connection.
 
 void CEdit::SetInsideScroll(BOOL bInside)
 {
@@ -1988,7 +1990,7 @@ BOOL CEdit::RetInsideScroll()
 	return m_bInsideScroll;
 }
 
-// Indique s'il faut afficher les liens montrant la solution.
+// Specifies whether to display the links showing the solution.
 
 void CEdit::SetSoluceMode(BOOL bSoluce)
 {
@@ -2000,7 +2002,7 @@ BOOL CEdit::RetSoluceMode()
 	return m_bSoluce;
 }
 
-// Indique si le texte est un générique qui défile.
+// Indicates whether the text is a defile that generic.
 
 void CEdit::SetGenericMode(BOOL bGeneric)
 {
@@ -2013,7 +2015,7 @@ BOOL CEdit::RetGenericMode()
 }
 
 
-// Gestion du mode d'indentation automatique avec { }.
+// Management of automatic indentation mode with {}.
 
 void CEdit::SetAutoIndent(BOOL bMode)
 {
@@ -2027,7 +2029,7 @@ BOOL CEdit::RetAutoIndent()
 
 
 
-// Déplace les curseurs.
+// Moves the cursors.
 
 void CEdit::SetCursor(int cursor1, int cursor2)
 {
@@ -2040,7 +2042,7 @@ void CEdit::SetCursor(int cursor1, int cursor2)
 	ColumnFix();
 }
 
-// Retourne les curseurs.
+// Returns the sliders.
 
 void CEdit::GetCursor(int &cursor1, int &cursor2)
 {
@@ -2049,14 +2051,14 @@ void CEdit::GetCursor(int &cursor1, int &cursor2)
 }
 
 
-// Modifie la première ligne affichée.
+// Displayed line modifies the first.
 
 void CEdit::SetFirstLine(int rank)
 {
 	Scroll(rank, TRUE);
 }
 
-// Retourne la première ligne affichée.
+// Returns the first displayed line.
 
 int CEdit::RetFirstLine()
 {
@@ -2075,7 +2077,7 @@ int CEdit::RetFirstLine()
 }
 
 
-// Montre la zone sélectionnée.
+// Shows the selected area.
 
 void CEdit::ShowSelect()
 {
@@ -2108,7 +2110,7 @@ void CEdit::ShowSelect()
 }
 
 
-// Gestion du mode d'affichage des caractères spéciaux.
+// Management of the display mode of special characters.
 
 void CEdit::SetDisplaySpec(BOOL bDisplay)
 {
@@ -2121,7 +2123,7 @@ BOOL CEdit::RetDisplaySpec()
 }
 
 
-// Gestion du mode multi-fontes.
+// Multi-fonts mode management.
 
 void CEdit::SetMultiFont(BOOL bMulti)
 {
@@ -2144,7 +2146,7 @@ BOOL CEdit::RetMultiFont()
 }
 
 
-// Gestion de la taille des caractères.
+// Management of the character size.
 
 void CEdit::SetFontSize(float size)
 {
@@ -2154,7 +2156,7 @@ void CEdit::SetFontSize(float size)
 }
 
 
-// Déplace la partie visible selon l'ascenseur.
+// Moves according to the visible lift.
 
 void CEdit::Scroll()
 {
@@ -2168,7 +2170,7 @@ void CEdit::Scroll()
 	}
 }
 
-// Déplace la partie visible selon l'ascenseur.
+// Moves according to the visible lift.
 
 void CEdit::Scroll(int pos, BOOL bAdjustCursor)
 {
@@ -2186,14 +2188,14 @@ void CEdit::Scroll(int pos, BOOL bAdjustCursor)
 
 	if ( bAdjustCursor && m_bEdit )
 	{
-		// Curseur trop haut ?
+		// Cursor too high?
 		if ( line < m_lineFirst )
 		{
 			MoveLine(m_lineFirst-line, FALSE, FALSE);
 			return;
 		}
 
-		// Curseur trop bas ?
+		// Cursor too low?
 		if ( line >= m_lineFirst+m_lineVisible )
 		{
 			MoveLine(m_lineFirst+m_lineVisible-line-1, FALSE, FALSE);
@@ -2204,7 +2206,7 @@ void CEdit::Scroll(int pos, BOOL bAdjustCursor)
 	Justif();
 }
 
-// Déplace le curseur au début de la ligne.
+// Moves the cursor to the beginning of the line.
 
 void CEdit::MoveHome(BOOL bWord, BOOL bSelect)
 {
@@ -2244,7 +2246,7 @@ void CEdit::MoveHome(BOOL bWord, BOOL bSelect)
 	ColumnFix();
 }
 
-// Déplace le curseur à la fin de la ligne.
+// Moves the cursor to the end of the line.
 
 void CEdit::MoveEnd(BOOL bWord, BOOL bSelect)
 {
@@ -2266,13 +2268,13 @@ void CEdit::MoveEnd(BOOL bWord, BOOL bSelect)
 	ColumnFix();
 }
 
-// Déplace le curseur par caractères.
+// Moves the cursor through characters.
 
 void CEdit::MoveChar(int move, BOOL bWord, BOOL bSelect)
 {
 	int		character;
 
-	if ( move == -1 )  // recule ?
+	if ( move == -1 )  // back?
 	{
 		if ( bWord )
 		{
@@ -2322,7 +2324,7 @@ void CEdit::MoveChar(int move, BOOL bWord, BOOL bSelect)
 		}
 	}
 
-	if ( move == 1 )  // avance ?
+	if ( move == 1 )  // advance?
 	{
 		if ( bWord )
 		{
@@ -2379,7 +2381,7 @@ void CEdit::MoveChar(int move, BOOL bWord, BOOL bSelect)
 	ColumnFix();
 }
 
-// Déplace le curseur par lignes.
+// Moves the cursor lines.
 
 void CEdit::MoveLine(int move, BOOL bWord, BOOL bSelect)
 {
@@ -2388,7 +2390,7 @@ void CEdit::MoveLine(int move, BOOL bWord, BOOL bSelect)
 
 	if ( move == 0 )  return;
 
-	for ( i=0 ; i>move ; i-- )  // recule ?
+	for ( i=0 ; i>move ; i-- )  // back?
 	{
 		while ( m_cursor1 > 0 && m_text[m_cursor1-1] != '\n' )
 		{
@@ -2408,7 +2410,7 @@ void CEdit::MoveLine(int move, BOOL bWord, BOOL bSelect)
 		}
 	}
 
-	for ( i=0 ; i<move ; i++ )  // avance ?
+	for ( i=0 ; i<move ; i++ )  // advance?
 	{
 		while ( m_cursor1 < m_len )
 		{
@@ -2451,7 +2453,7 @@ void CEdit::MoveLine(int move, BOOL bWord, BOOL bSelect)
 	Justif();
 }
 
-// Fixe la position horizontale.
+// Sets the horizontal position.
 
 void CEdit::ColumnFix()
 {
@@ -2489,7 +2491,7 @@ void CEdit::ColumnFix()
 }
 
 
-// Coupe les caractères sélectionnés, ou toute la ligne.
+// Cut the selected characters or entire line.
 
 BOOL CEdit::Cut()
 {
@@ -2502,7 +2504,7 @@ BOOL CEdit::Cut()
 
 	c1 = m_cursor1;
 	c2 = m_cursor2;
-	if ( c1 > c2 )  Swap(c1, c2);  // toujours c1 <= c2
+	if ( c1 > c2 )  Swap(c1, c2);  // always c1 <= c2
 
 	if ( c1 == c2 )
 	{
@@ -2563,14 +2565,14 @@ BOOL CEdit::Cut()
 	UndoMemorize(OPERUNDO_SPEC);
 	m_cursor1 = c1;
 	m_cursor2 = c2;
-	DeleteOne(0);  // supprime les caractères sélectionnés
+	DeleteOne(0);  // deletes the selected characters
 	Justif();
 	ColumnFix();
 	SendModifEvent();
 	return TRUE;
 }
 
-// Copie les caractères sélectionnés, ou toute la ligne.
+// Copy the selected characters or entire line.
 
 BOOL CEdit::Copy()
 {
@@ -2581,7 +2583,7 @@ BOOL CEdit::Copy()
 
 	c1 = m_cursor1;
 	c2 = m_cursor2;
-	if ( c1 > c2 )  Swap(c1, c2);  // toujours c1 <= c2
+	if ( c1 > c2 )  Swap(c1, c2);  // always c1 <= c2
 
 	if ( c1 == c2 )
 	{
@@ -2642,7 +2644,7 @@ BOOL CEdit::Copy()
 	return TRUE;
 }
 
-// Colle le contenu du bloc-notes.
+// Paste the contents of the notebook.
 
 BOOL CEdit::Paste()
 {
@@ -2689,7 +2691,7 @@ BOOL CEdit::Paste()
 }
 
 
-// Annule la dernière action.
+// Cancels the last action.
 
 BOOL CEdit::Undo()
 {
@@ -2699,7 +2701,7 @@ BOOL CEdit::Undo()
 }
 
 
-// Insère un caractère.
+// Inserts a character.
 
 void CEdit::Insert(char character)
 {
@@ -2707,7 +2709,7 @@ void CEdit::Insert(char character)
 
 	if ( !m_bEdit )  return;
 
-	if ( !m_bMulti )  // mono-ligne ?
+	if ( !m_bMulti )  // single-line?
 	{
 		if ( character == '\n' ||
 			 character == '\t' )  return;
@@ -2797,7 +2799,7 @@ void CEdit::Insert(char character)
 	ColumnFix();
 }
 
-// Insère un caractère brut.
+// Inserts a plain character.
 
 void CEdit::InsertOne(char character)
 {
@@ -2808,18 +2810,18 @@ void CEdit::InsertOne(char character)
 
 	if ( m_cursor1 != m_cursor2 )
 	{
-		DeleteOne(0);  // supprime les caractères sélectionnés
+		DeleteOne(0);  // deletes the selected characters
 	}
 
 	if ( m_len >= m_maxChar )  return;
 
 	for ( i=m_len ; i>=m_cursor1 ; i-- )
 	{
-		m_text[i] = m_text[i-1];  // pousse
+		m_text[i] = m_text[i-1];  // shoot
 
 		if ( m_format != 0 )
 		{
-			m_format[i] = m_format[i-1];  // pousse
+			m_format[i] = m_format[i-1];  // shoot
 		}
 	}
 
@@ -2836,8 +2838,7 @@ void CEdit::InsertOne(char character)
 	m_cursor2 = m_cursor1;
 }
 
-// Supprime le caractère à gauche du curseur ou tous les
-// caractères sélectionnés.
+// Deletes the character left of cursor or all selected characters.
 
 void CEdit::Delete(int dir)
 {
@@ -2850,8 +2851,7 @@ void CEdit::Delete(int dir)
 	ColumnFix();
 }
 
-// Supprime le caractère à gauche du curseur ou tous les
-// caractères sélectionnés brut.
+// Deletes the character left of cursor or all selected plain characters.
 
 void CEdit::DeleteOne(int dir)
 {
@@ -2890,7 +2890,7 @@ void CEdit::DeleteOne(int dir)
 }
 
 
-// Calcule le niveau d'indentation des crochets { et }.
+// Calculates the indentation level of brackets {and}.
 
 int CEdit::IndentCompute()
 {
@@ -2907,8 +2907,8 @@ int CEdit::IndentCompute()
 	return level;
 }
 
-// Compte le nombre de tabulateurs avant le curseur.
-// Retourne -1 s'il y a autre chose.
+// Counts the number of tabs before the cursor.
+// Returns -1 if there is something else.
 
 int CEdit::IndentTabCount()
 {
@@ -2928,25 +2928,25 @@ int CEdit::IndentTabCount()
 	return nb;
 }
 
-// Ajoute ou supprime qq tabulateurs.
+// Adds or removes qq tabs.
 
 void CEdit::IndentTabAdjust(int number)
 {
 	int		i;
 
-	for ( i=0 ; i<number ; i++ )  // ajoute ?
+	for ( i=0 ; i<number ; i++ )  // add?
 	{
 		InsertOne('\t');
 	}
 
-	for ( i=0 ; i>number ; i-- )  // supprime ?
+	for ( i=0 ; i>number ; i-- )  // delete?
 	{
 		DeleteOne(-1);
 	}
 }
 
 
-// Indente à gauche ou à droite toute la sélection.
+// Indent the left or right the entire selection.
 
 BOOL CEdit::Shift(BOOL bLeft)
 {
@@ -2961,7 +2961,7 @@ BOOL CEdit::Shift(BOOL bLeft)
 	c2 = m_cursor2;
 	if ( c1 > c2 )
 	{
-		Swap(c1, c2);  // toujours c1 <= c2
+		Swap(c1, c2);  // always c1 <= c2
 		bInvert = TRUE;
 	}
 
@@ -2974,7 +2974,7 @@ BOOL CEdit::Shift(BOOL bLeft)
 		if ( m_text[c2-1] != '\n' )  return FALSE;
 	}
 
-	if ( bLeft )  // décale à gauche ?
+	if ( bLeft )  // shifts left?
 	{
 		i = c1;
 		while ( i < c2 )
@@ -2989,7 +2989,7 @@ BOOL CEdit::Shift(BOOL bLeft)
 			while ( i < c2 && m_text[i++] != '\n' );
 		}
 	}
-	else	// décale à droite ?
+	else	// shifts right?
 	{
 		i = c1;
 		while ( i < c2 )
@@ -3011,7 +3011,7 @@ BOOL CEdit::Shift(BOOL bLeft)
 	return TRUE;
 }
 
-// Conversion min <-> maj de la sélection.
+// Min conversion <-> shift the selection.
 
 BOOL CEdit::MinMaj(BOOL bMaj)
 {
@@ -3023,7 +3023,7 @@ BOOL CEdit::MinMaj(BOOL bMaj)
 
 	c1 = m_cursor1;
 	c2 = m_cursor2;
-	if ( c1 > c2 )  Swap(c1, c2);  // toujours c1 <= c2
+	if ( c1 > c2 )  Swap(c1, c2);  // alwyas c1 <= c2
 
 	for ( i=c1 ; i<c2 ; i++ )
 	{
@@ -3040,7 +3040,7 @@ BOOL CEdit::MinMaj(BOOL bMaj)
 }
 
 
-// Coupe tout le texte en lignes.
+// Cut all text lines.
 
 void CEdit::Justif()
 {
@@ -3082,15 +3082,15 @@ void CEdit::Justif()
 		{
 			size = m_fontSize;
 
-			if ( (m_format[i]&TITLE_MASK) == TITLE_BIG )  // grand titre ?
+			if ( (m_format[i]&TITLE_MASK) == TITLE_BIG )  // headline?
 			{
 				size *= BIG_FONT;
 				bDual = TRUE;
 			}
 
-			if ( (m_format[i]&IMAGE_MASK) != 0 )  // tranche d'image ?
+			if ( (m_format[i]&IMAGE_MASK) != 0 )  // image part?
 			{
-				i ++;  // saute juste un caractère (index dans m_image)
+				i ++;  // jumps just a character (index in m_image)
 			}
 			else
 			{
@@ -3189,10 +3189,10 @@ void CEdit::Justif()
 		}
 	}
 
-	m_timeBlink = 0.0f;  // allume le curseur immédiatement
+	m_timeBlink = 0.0f;  // lights the cursor immediately
 }
 
-// Retourne le rang de la ligne dans laquelle se trouve le curseur.
+// Returns the rank of the line where the cursor is located.
 
 int CEdit::RetCursorLine(int cursor)
 {
@@ -3210,7 +3210,7 @@ int CEdit::RetCursorLine(int cursor)
 }
 
 
-// Vide le buffer undo.
+// Flush the buffer undo.
 
 void CEdit::UndoFlush()
 {
@@ -3226,7 +3226,7 @@ void CEdit::UndoFlush()
 	m_undoOper = OPERUNDO_SPEC;
 }
 
-// Mémorise l'état actuel avant une modification.
+// Memorize the current state before a change.
 
 void CEdit::UndoMemorize(OperUndo oper)
 {
@@ -3258,7 +3258,7 @@ void CEdit::UndoMemorize(OperUndo oper)
 	m_undo[0].lineFirst = m_lineFirst;
 }
 
-// Revient à l'état précédent.
+// Back to previous state.
 
 BOOL CEdit::UndoRecall()
 {
@@ -3287,7 +3287,7 @@ BOOL CEdit::UndoRecall()
 }
 
 
-// Efface le format de tous les caractères.
+// Clears the format of all characters.
 
 BOOL CEdit::ClearFormat()
 {
@@ -3300,7 +3300,7 @@ BOOL CEdit::ClearFormat()
 	return TRUE;
 }
 
-// Modifie le format d'une suite de caractères.
+// Changes the format of a sequence of characters.
 
 BOOL CEdit::SetFormat(int cursor1, int cursor2, int format)
 {
