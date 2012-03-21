@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// editvalue.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// editvalue.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -34,7 +36,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CEditValue::CEditValue(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -50,7 +52,7 @@ CEditValue::CEditValue(CInstanceManager* iMan) : CControl(iMan)
 	m_maxValue = 1.0f;  // 100%
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CEditValue::~CEditValue()
 {
@@ -62,7 +64,7 @@ CEditValue::~CEditValue()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CEditValue::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -142,7 +144,7 @@ void CEditValue::MoveAdjust()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CEditValue::EventProcess(const Event &event)
 {
@@ -222,7 +224,7 @@ BOOL CEditValue::EventProcess(const Event &event)
 }
 
 
-// Met en évidence la valeur éditée.
+// Puts in evidence the edited value.
 
 void CEditValue::HiliteValue(const Event &event)
 {
@@ -233,7 +235,7 @@ void CEditValue::HiliteValue(const Event &event)
 	pos = m_edit->RetTextLength();
 	if ( m_type == EVT_100 && pos > 0 )
 	{
-		pos --;  // ne sélectionne pas le "%"
+		pos --;  // not only selects the "%"
 	}
 
 	m_edit->SetCursor(pos, 0);
@@ -242,11 +244,11 @@ void CEditValue::HiliteValue(const Event &event)
 	Event newEvent = event;
 	newEvent.event = EVENT_FOCUS;
 	newEvent.param = m_edit->RetEventMsg();
-	m_event->AddEvent(newEvent);  // défocus les autres objets
+	m_event->AddEvent(newEvent);  // defocus the other objects
 }
 
 
-// Dessine le bouton.
+// Draw button.
 
 void CEditValue::Draw()
 {
@@ -272,7 +274,7 @@ void CEditValue::Draw()
 }
 
 
-// Choix du type de la valeur.
+// Choosing the type of value.
 
 void CEditValue::SetType(EditValueType type)
 {
@@ -285,7 +287,7 @@ EditValueType CEditValue::RetType()
 }
 
 
-// Modifie la valeur.
+// Changes the value.
 
 void CEditValue::SetValue(float value, BOOL bSendMessage)
 {
@@ -320,7 +322,7 @@ void CEditValue::SetValue(float value, BOOL bSendMessage)
 	}
 }
 
-// Retourne la valeur éditée.
+// Return the edited value.
 
 float CEditValue::RetValue()
 {
@@ -335,14 +337,14 @@ float CEditValue::RetValue()
 	if ( m_type == EVT_100 )
 	{
 		value = (value+0.5f)/100.0f;
-		if ( value < 0.01f )  value = 0.0f;  // moins que 1% ?
+		if ( value < 0.01f )  value = 0.0f;  // less than 1%?
 	}
 
 	return value;
 }
 
 
-// Gestion du pas pour les boutons.
+// Management not for buttons.
 
 void CEditValue::SetStepValue(float value)
 {
@@ -355,7 +357,7 @@ float CEditValue::RetStepValue()
 }
 
 
-// Gestion de la valeur minimale.
+// Management of the minimum value.
 
 void CEditValue::SetMinValue(float value)
 {
@@ -368,7 +370,7 @@ float CEditValue::RetMinValue()
 }
 
 
-// Gestion de la valeur maximale.
+// Management of the maximum value.
 
 void CEditValue::SetMaxValue(float value)
 {
