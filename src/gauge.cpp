@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// gauge.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// gauge.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,7 +34,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CGauge::CGauge(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -41,7 +43,7 @@ CGauge::CGauge(CInstanceManager* iMan) : CControl(iMan)
 	m_level = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CGauge::~CGauge()
 {
@@ -49,7 +51,7 @@ CGauge::~CGauge()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CGauge::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -60,7 +62,7 @@ BOOL CGauge::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CGauge::EventProcess(const Event &event)
 {
@@ -81,7 +83,7 @@ BOOL CGauge::EventProcess(const Event &event)
 }
 
 
-// Dessine la jauge.
+// Draw the gauge.
 
 void CGauge::Draw()
 {
@@ -119,14 +121,14 @@ void CGauge::Draw()
 	dim.x -= 6.0f/640.0f;
 	dim.y -= 6.0f/480.0f;
 
-	if ( m_dim.x < m_dim.y )  // jauge verticale ?
+	if ( m_dim.x < m_dim.y )  // vertical gauge?
 	{
 		uv1.x = (0.0f+m_icon*16.0f)/256.0f;
 		uv2.x = uv1.x+16.0f/256.0f;
 		uv1.y = 128.0f/256.0f+m_level*(64.0f/256.0f);
 		uv2.y = uv1.y+64.0f/256.0f;
 	}
-	else	// jauge horizontale ?
+	else	// horizontal gauge?
 	{
 		uv1.x = 64.0f/256.0f+(1.0f-m_level)*(64.0f/256.0f);
 		uv2.x = uv1.x+64.0f/256.0f;
@@ -143,7 +145,7 @@ void CGauge::Draw()
 }
 
 
-// Gestion du niveau de la jauge.
+// Management of level of the gauge.
 
 void CGauge::SetLevel(float level)
 {
