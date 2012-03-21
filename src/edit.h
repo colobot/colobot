@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// edit.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// edit.h
 
 #ifndef _EDIT_H_
 #define	_EDIT_H_
@@ -26,59 +28,59 @@ class CScroll;
 
 
 
-#define EDITSTUDIOMAX	20000		// nb max de caractères pour éditer CBOT
-#define EDITLINEMAX		1000		// nb max total de lignes
-#define EDITIMAGEMAX	50			// nb max total de lignes avec images
-#define EDITLINKMAX		100			// nb max de liens
-#define EDITHISTORYMAX	50			// nb max de niveaux concervés
+#define EDITSTUDIOMAX	20000		// maximum number of characters in CBOT edit
+#define EDITLINEMAX	1000		// maximum total number of lines
+#define EDITIMAGEMAX	50		// maximum total number of lines with images
+#define EDITLINKMAX	100		// maximum number of links
+#define EDITHISTORYMAX	50		// max number of levels preserves
 
-#define EDITUNDOMAX		20			// nb max de undo successifs
+#define EDITUNDOMAX	20		// max number of successive undo
 
 typedef struct
 {
-	char*	text;			// texte original
-	int		len;			// longueur du texte
-	int		cursor1;		// offset curseur
-	int		cursor2;		// offset curseur
-	int		lineFirst;		// première ligne affichée.
+	char*		text;			// original text
+	int		len;			// length of the text
+	int		cursor1;		// offset cursor
+	int		cursor2;		// offset cursor
+	int		lineFirst;		// the first line displayed.
 
 }
 EditUndo;
 
 enum OperUndo
 {
-	OPERUNDO_SPEC	= 0,	// opération spéciale
-	OPERUNDO_INSERT	= 1,	// insertion de caractères
-	OPERUNDO_DELETE	= 2,	// suppression de caractères
+	OPERUNDO_SPEC	= 0,	// special operation
+	OPERUNDO_INSERT	= 1,	// inserting characters
+	OPERUNDO_DELETE	= 2,	// deleting characters
 };
 
 typedef struct
 {
-	char	name[40];		// nom de l'image (sans diagram\)
-	float	offset;			// offset vertical (v texture)
-	float	height;			// hauteur de la tranche (dv texture)
-	float	width;			// largeur
+	char	name[40];		// name of the image (without diagram \)
+	float	offset;			// vertical offset (v texture)
+	float	height;			// height of the part (dv texture)
+	float	width;			// width
 }
 ImageLine;
 
 typedef struct
 {
-	char	name[40];		// nom du fichier texte (sans help\)
-	char	marker[20];		// nom du marqueur
+	char	name[40];		// text file name (without help \)
+	char	marker[20];		// name of the marker
 }
 HyperLink;
 
 typedef struct
 {
-	char	name[20];		// nom du marqueur
-	int		pos;			// position dans le texte
+	char	name[20];		// name of the marker
+	int	pos;			// position in the text
 }
 HyperMarker;
 
 typedef struct
 {
-	char	filename[50];	// nom complet du fichier texte
-	int		firstLine;		// rang de la première ligne affichée
+	char	filename[50];		// full file name text
+	int	firstLine;		// rank of the first displayed line
 }
 HyperHistory;
 
@@ -199,41 +201,41 @@ protected:
 	BOOL		UndoRecall();
 
 protected:
-	CScroll*	m_scroll;			// ascenseur vertical à droite
+	CScroll*	m_scroll;			// vertical scrollbar on the right
 
-	int			m_maxChar;			// lg max du buffer m_text
-	char*		m_text;				// texte (sans zéro terminateur)
-	char*		m_format;			// format des caractères
-	int			m_len;				// longueur utilisée dans m_text
-	int			m_cursor1;			// offset curseur
-	int			m_cursor2;			// offset curseur
+	int		m_maxChar;			// max length of the buffer m_text
+	char*		m_text;				// text (without zero terminator)
+	char*		m_format;			// format characters
+	int		m_len;				// length used in m_text
+	int		m_cursor1;			// offset cursor
+	int		m_cursor2;			// offset cursor
 
-	BOOL		m_bMulti;			// TRUE -> multi lignes
-	BOOL		m_bEdit;			// TRUE -> éditable
+	BOOL		m_bMulti;			// TRUE -> multi-line
+	BOOL		m_bEdit;			// TRUE -> editable
 	BOOL		m_bHilite;			// TRUE -> hilitable
-	BOOL		m_bInsideScroll;	// TRUE -> ascenseur dans le cadre
-	BOOL		m_bDisplaySpec;		// TRUE -> affiche les caractères spéciaux
-	BOOL		m_bMultiFont;		// TRUE -> plusieurs fontes possible
-	BOOL		m_bSoluce;			// TRUE -> montre les liens-solution
-	BOOL		m_bGeneric;			// TRUE -> générique qui défile
-	BOOL		m_bAutoIndent;		// TRUE -> indentation automatique
-	float		m_lineHeight;		// hauteur d'une ligne
-	float		m_lineAscent;		// hauteur au-dessus de la ligne de base
-	float		m_lineDescent;		// hauteur au-dessous de la ligne de base
-	int			m_lineVisible;		// nb total de ligne affichables
-	int			m_lineFirst;		// première ligne affichée
-	int			m_lineTotal;		// nb lignes utilisées (ds m_lineOffset)
-	int			m_lineOffset[EDITLINEMAX];
+	BOOL		m_bInsideScroll;		// TRUE -> lift as part
+	BOOL		m_bDisplaySpec;			// TRUE -> displays the special characters
+	BOOL		m_bMultiFont;			// TRUE -> more fonts possible
+	BOOL		m_bSoluce;			// TRUE -> shows the links-solution
+	BOOL		m_bGeneric;			// TRUE -> generic that defile
+	BOOL		m_bAutoIndent;			// TRUE -> automatic indentation
+	float		m_lineHeight;			// height of a row
+	float		m_lineAscent;			// height above the baseline
+	float		m_lineDescent;			// height below the baseline
+	int		m_lineVisible;			// total number of viewable lines
+	int		m_lineFirst;			// the first line displayed
+	int		m_lineTotal;			// number lines used (in m_lineOffset)
+	int		m_lineOffset[EDITLINEMAX];
 	char		m_lineIndent[EDITLINEMAX];
-	int			m_imageTotal;
+	int		m_imageTotal;
 	ImageLine	m_image[EDITIMAGEMAX];
 	HyperLink	m_link[EDITLINKMAX];
-	int			m_markerTotal;
+	int		m_markerTotal;
 	HyperMarker	m_marker[EDITLINKMAX];
-	int			m_historyTotal;
-	int			m_historyCurrent;
-	HyperHistory m_history[EDITHISTORYMAX];
-	float		m_time;				// temps absolu
+	int		m_historyTotal;
+	int		m_historyCurrent;
+	HyperHistory 	m_history[EDITHISTORYMAX];
+	float		m_time;				// absolute time
 	float		m_timeBlink;
 	float		m_timeLastClick;
 	float		m_timeLastScroll;
