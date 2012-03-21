@@ -32,7 +32,7 @@ class CInstanceManager;
 
 #define MAXEVENT	100
 
-// Evénements.
+// Events.
 
 enum EventMsg
 {
@@ -92,7 +92,7 @@ enum EventMsg
 	EVENT_EDIT8				= 78,
 	EVENT_EDIT9				= 79,
 
-	EVENT_WINDOW0			= 80,	// tableau de bord en bas
+	EVENT_WINDOW0			= 80,	// the bottom panel
 	EVENT_WINDOW1			= 81,	// map
 	EVENT_WINDOW2			= 82,	// CDisplayText
 	EVENT_WINDOW3			= 83,	// CStudio
@@ -526,14 +526,14 @@ enum EventMsg
 
 typedef struct
 {
-	EventMsg	event;		// événement (EVENT_*)
-	long		param;		// paramètre
-	FPOINT		pos;		// position de la souris (0..1)
-	float		axeX;		// commande de l'axe X (-1..1)
-	float		axeY;		// commande de l'axe Y (-1..1)
-	float		axeZ;		// commande de l'axe Z (-1..1)
-	short		keyState;	// état du clavier (KS_*)
-	float		rTime;		// temps relatif
+	EventMsg	event;		// event (EVENT *)
+	long		param;		// parameter
+	FPOINT		pos;		// mouse position (0 .. 1)
+	float		axeX;		// control the X axis (-1 .. 1)
+	float		axeY;		// control of the Y axis (-1 .. 1)
+	float		axeZ;		// control the Z axis (-1 .. 1)
+	short		keyState;	// state of the keyboard (KS_ *)
+	float		rTime;		// relative time
 }
 Event;
 
@@ -571,8 +571,8 @@ Event;
 #define VK_BUTTON31		(0x100+31)	// joystick button 31
 #define VK_BUTTON32		(0x100+32)	// joystick button 32
 
-#define VK_WHEELUP		(0x200+1)	// molette souris up
-#define VK_WHEELDOWN	(0x200+2)	// molette souris down
+#define VK_WHEELUP		(0x200+1)	// Mousewheel up
+#define VK_WHEELDOWN	(0x200+2)	// Mousewheel down
 
 
 enum KeyRank
