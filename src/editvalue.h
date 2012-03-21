@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// editvalue.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// editvalue.h
 
 #ifndef _EDITVALUE_H_
 #define	_EDITVALUE_H_
@@ -23,9 +25,9 @@
 
 enum EditValueType
 {
-	EVT_INT		= 1,	// valeur entière
-	EVT_FLOAT	= 2,	// valeur réelle
-	EVT_100		= 3,	// pour-cent (0..1)
+	EVT_INT		= 1,	// integer
+	EVT_FLOAT	= 2,	// float value
+	EVT_100		= 3,	// percent (0 .. 1)
 };
 
 
