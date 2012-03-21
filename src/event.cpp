@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// event.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// event.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -27,7 +29,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CEvent::CEvent(CInstanceManager* iMan)
 {
@@ -37,14 +39,14 @@ CEvent::CEvent(CInstanceManager* iMan)
 	Flush();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CEvent::~CEvent()
 {
 }
 
 
-// Vide le fifo des événements.
+// Empty the FIFO of events.
 
 void CEvent::Flush()
 {
@@ -53,7 +55,7 @@ void CEvent::Flush()
 	m_total = 0;
 }
 
-// Fabrique un événement.
+// Produces an event.
 
 void CEvent::MakeEvent(Event &event, EventMsg msg)
 {
@@ -61,7 +63,7 @@ void CEvent::MakeEvent(Event &event, EventMsg msg)
 	event.event = msg;
 }
 
-// Ajoute un événement dans le fifo.
+// Adds an event in the FIFO.
 
 BOOL CEvent::AddEvent(const Event &event)
 {
@@ -74,7 +76,7 @@ BOOL CEvent::AddEvent(const Event &event)
 	return TRUE;
 }
 
-// Enlève un événement du fifo.
+// Removes an event from the FIFO.
 
 BOOL CEvent::GetEvent(Event &event)
 {
