@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// group.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// group.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -33,14 +35,14 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CGroup::CGroup(CInstanceManager* iMan) : CControl(iMan)
 {
 	CControl::CControl(iMan);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CGroup::~CGroup()
 {
@@ -48,7 +50,7 @@ CGroup::~CGroup()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CGroup::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -71,7 +73,7 @@ BOOL CGroup::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CGroup::EventProcess(const Event &event)
 {
@@ -79,7 +81,7 @@ BOOL CGroup::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draw button.
 
 void CGroup::Draw()
 {
@@ -96,7 +98,7 @@ void CGroup::Draw()
 
 	dp = 0.5f/256.0f;
 
-	if ( m_icon == 0 )  // cadre en creux ?
+	if ( m_icon == 0 )  // hollow frame?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
@@ -112,7 +114,7 @@ void CGroup::Draw()
 		corner.y = 10.0f/480.0f;
 		DrawIcon(m_pos, m_dim, uv1, uv2, corner, 8.0f/256.0f);
 	}
-	if ( m_icon == 1 )  // orange uni opaque ?
+	if ( m_icon == 1 )  // orange solid opaque?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
@@ -126,7 +128,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 2 )  // dégradé orange -> transparent ?
+	if ( m_icon == 2 )  // orange degrade -> transparent?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -140,7 +142,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 3 )  // dégradé transparent -> gris ?
+	if ( m_icon == 3 )  // transparent gradient -> gray?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -154,7 +156,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 4 )  // coin bleu dégradé ?
+	if ( m_icon == 4 )  // degrade blue corner?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -168,7 +170,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 5 )  // coin orange dégradé ?
+	if ( m_icon == 5 )  // degrade orange corner?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -186,7 +188,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTb);
-		uv1.x =   0.0f/256.0f;  // brun transparent
+		uv1.x =   0.0f/256.0f;  // brown transparent
 		uv1.y =  75.0f/256.0f;
 		uv2.x =  64.0f/256.0f;
 		uv2.y = 128.0f/256.0f;
@@ -216,7 +218,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTb);
-		uv1.x =  64.0f/256.0f;  // vert transparent
+		uv1.x =  64.0f/256.0f;  // green transparent
 		uv1.y = 160.0f/256.0f;
 		uv2.x = 160.0f/256.0f;
 		uv2.y = 176.0f/256.0f;
@@ -230,7 +232,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTb);
-		uv1.x =  64.0f/256.0f;  // rouge transparent
+		uv1.x =  64.0f/256.0f;  // red transparent
 		uv1.y = 176.0f/256.0f;
 		uv2.x = 160.0f/256.0f;
 		uv2.y = 192.0f/256.0f;
@@ -244,7 +246,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTb);
-		uv1.x =  64.0f/256.0f;  // bleu transparent
+		uv1.x =  64.0f/256.0f;  // blue transparent
 		uv1.y = 192.0f/256.0f;
 		uv2.x = 160.0f/256.0f;
 		uv2.y = 208.0f/256.0f;
@@ -258,7 +260,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTb);
-		uv1.x =  64.0f/256.0f;  // jaune transparent
+		uv1.x =  64.0f/256.0f;  // yellow transparent
 		uv1.y = 224.0f/256.0f;
 		uv2.x = 160.0f/256.0f;
 		uv2.y = 240.0f/256.0f;
@@ -268,7 +270,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2, 8.0f/256.0f);
 	}
-	if ( m_icon == 12 )  // viseur en croix ?
+	if ( m_icon == 12 )  // viewfinder cross?
 	{
 		dim.x = m_dim.x/2.0f;
 		dim.y = m_dim.y/2.0f;
@@ -310,7 +312,7 @@ void CGroup::Draw()
 		Swap(uv1.x, uv2.x);
 		DrawIcon(pos, dim, uv1, uv2);  // dl
 	}
-	if ( m_icon == 13 )  // coin sup/gauche ?
+	if ( m_icon == 13 )  // corner upper / left?
 	{
 		m_engine->SetTexture("mouse.tga");
 		m_engine->SetState(D3DSTATETTb);
@@ -331,7 +333,7 @@ void CGroup::Draw()
 		uv2.y = 255.5f/256.0f;
 		DrawIcon(pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 14 )  // coin sup/droite ?
+	if ( m_icon == 14 )  // corner upper / right?
 	{
 		m_engine->SetTexture("mouse.tga");
 		m_engine->SetState(D3DSTATETTb);
@@ -352,7 +354,7 @@ void CGroup::Draw()
 		uv2.y = 255.5f/256.0f;
 		DrawIcon(pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 15 )  // coin inf/gauche ?
+	if ( m_icon == 15 )  // corner lower / left?
 	{
 		m_engine->SetTexture("mouse.tga");
 		m_engine->SetState(D3DSTATETTb);
@@ -373,7 +375,7 @@ void CGroup::Draw()
 		uv1.y = 255.5f/256.0f;
 		DrawIcon(pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 16 )  // coin inf/droite ?
+	if ( m_icon == 16 )  // corner lower / left?
 	{
 		m_engine->SetTexture("mouse.tga");
 		m_engine->SetState(D3DSTATETTb);
@@ -398,7 +400,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =   0.0f/256.0f;  // cadre bleu
+		uv1.x =   0.0f/256.0f;  // blue frame
 		uv1.y =  75.0f/256.0f;
 		uv2.x =  64.0f/256.0f;
 		uv2.y = 128.0f/256.0f;
@@ -410,7 +412,7 @@ void CGroup::Draw()
 		corner.y = 6.0f/480.0f;
 		DrawIcon(m_pos, m_dim, uv1, uv2, corner, 2.0f/256.0f);
 	}
-	if ( m_icon == 18 )  // flèche > pour SatCom ?
+	if ( m_icon == 18 )  // arrow> for SatCom?
 	{
 		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -424,11 +426,11 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 19 )  // sigle SatCom ?
+	if ( m_icon == 19 )  // SatCom symbol?
 	{
 		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATETTw);
-		uv1.x = 224.0f/256.0f;  // sigle SatCom
+		uv1.x = 224.0f/256.0f;  // SatCom symbol
 		uv1.y = 224.0f/256.0f;
 		uv2.x = 256.0f/256.0f;
 		uv2.y = 256.0f/256.0f;
@@ -438,7 +440,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 20 )  // fond fleu uni ?
+	if ( m_icon == 20 )  // solid blue background?
 	{
 		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -452,7 +454,7 @@ void CGroup::Draw()
 		uv2.y -= dp;
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
-	if ( m_icon == 21 )  // sigle stand-by ?
+	if ( m_icon == 21 )  // stand-by symbol?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATETTw);
@@ -470,7 +472,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =  64.0f/256.0f;  // jaune opaque
+		uv1.x =  64.0f/256.0f;  // opaque yellow
 		uv1.y = 224.0f/256.0f;
 		uv2.x = 160.0f/256.0f;
 		uv2.y = 240.0f/256.0f;
@@ -487,7 +489,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button3.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =  64.0f/256.0f;  // jaune
+		uv1.x =  64.0f/256.0f;  // yellow
 		uv1.y = 192.0f/256.0f;
 		uv2.x =  80.0f/256.0f;
 		uv2.y = 208.0f/256.0f;
@@ -503,7 +505,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button3.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =  80.0f/256.0f;  // orangé
+		uv1.x =  80.0f/256.0f;  // orange
 		uv1.y = 192.0f/256.0f;
 		uv2.x =  96.0f/256.0f;
 		uv2.y = 208.0f/256.0f;
@@ -535,7 +537,7 @@ void CGroup::Draw()
 	{
 		m_engine->SetTexture("button3.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =  80.0f/256.0f;  // rouge
+		uv1.x =  80.0f/256.0f;  // red
 		uv1.y = 208.0f/256.0f;
 		uv2.x =  96.0f/256.0f;
 		uv2.y = 224.0f/256.0f;
@@ -562,7 +564,7 @@ void CGroup::Draw()
 		DrawIcon(m_pos, m_dim, uv1, uv2);
 	}
 
-	if ( m_icon >= 100 && m_icon <= 120 )  // bâtiment ?
+	if ( m_icon >= 100 && m_icon <= 120 )  // building?
 	{
 		pos = m_pos;
 		dim = m_dim;
@@ -628,9 +630,9 @@ void CGroup::Draw()
 		if ( m_icon == 110 )  icon = 42;  // nuclear ?
 		if ( m_icon == 111 )  icon = 38;  // labo ?
 		if ( m_icon == 112 )  icon = 44;  // info ?
-		if ( m_icon == 113 )  icon = 46;  // paratonnerre ?
-		if ( m_icon == 114 )  icon = 47;  // coffre-fort ?
-		if ( m_icon == 115 )  icon = 48;  // centre de contrôle ?
+		if ( m_icon == 113 )  icon = 46;  // lightning protection ?
+		if ( m_icon == 114 )  icon = 47;  // vault ?
+		if ( m_icon == 115 )  icon = 48;  // control center?
 		uv1.x = (32.0f/256.0f)*(icon%8);
 		uv1.y = (32.0f/256.0f)*(icon/8);  // uv texture
 		uv2.x = uv1.x+32.0f/256.0f;
