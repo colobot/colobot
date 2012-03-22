@@ -12,9 +12,12 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// joystick.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// joystick.cpp
 
 #define STRICT
+#define DIRECTINPUT_VERSION 0x0700
 
 #include <windows.h>
 #include <dinput.h>
