@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// interface.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// interface.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -51,7 +53,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CInterface::CInterface(CInstanceManager* iMan)
 {
@@ -69,7 +71,7 @@ CInterface::CInterface(CInstanceManager* iMan)
 	}
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CInterface::~CInterface()
 {
@@ -77,7 +79,7 @@ CInterface::~CInterface()
 }
 
 
-// Purge tous les contrôles.
+// Purge all controls.
 
 void CInterface::Flush()
 {
@@ -94,7 +96,7 @@ void CInterface::Flush()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 CWindow* CInterface::CreateWindows(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -130,7 +132,7 @@ CWindow* CInterface::CreateWindows(FPOINT pos, FPOINT dim, int icon, EventMsg ev
 	return 0;
 }
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 CButton* CInterface::CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -152,7 +154,7 @@ CButton* CInterface::CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 	return 0;
 }
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 CColor* CInterface::CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -174,7 +176,7 @@ CColor* CInterface::CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg event
 	return 0;
 }
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 CCheck* CInterface::CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -196,7 +198,7 @@ CCheck* CInterface::CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg event
 	return 0;
 }
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 CKey* CInterface::CreateKey(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -218,7 +220,7 @@ CKey* CInterface::CreateKey(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	return 0;
 }
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 CGroup* CInterface::CreateGroup(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -240,7 +242,7 @@ CGroup* CInterface::CreateGroup(FPOINT pos, FPOINT dim, int icon, EventMsg event
 	return 0;
 }
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 CImage* CInterface::CreateImage(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -262,7 +264,7 @@ CImage* CInterface::CreateImage(FPOINT pos, FPOINT dim, int icon, EventMsg event
 	return 0;
 }
 
-// Crée un nouveau label.
+// Creates a new label.
 
 CLabel* CInterface::CreateLabel(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 							 char *name)
@@ -286,7 +288,7 @@ CLabel* CInterface::CreateLabel(FPOINT pos, FPOINT dim, int icon, EventMsg event
 	return 0;
 }
 
-// Crée un nouveau pavé éditable.
+// Creates a new pave editable.
 
 CEdit* CInterface::CreateEdit(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -308,7 +310,7 @@ CEdit* CInterface::CreateEdit(FPOINT pos, FPOINT dim, int icon, EventMsg eventMs
 	return 0;
 }
 
-// Crée un nouveau pavé éditable.
+// Creates a new pave editable.
 
 CEditValue* CInterface::CreateEditValue(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -330,7 +332,7 @@ CEditValue* CInterface::CreateEditValue(FPOINT pos, FPOINT dim, int icon, EventM
 	return 0;
 }
 
-// Crée un nouvel ascenseur.
+// Creates a new lift.
 
 CScroll* CInterface::CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -352,7 +354,7 @@ CScroll* CInterface::CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 	return 0;
 }
 
-// Crée un nouveau curseur.
+// Creates a new cursor.
 
 CSlider* CInterface::CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -374,7 +376,7 @@ CSlider* CInterface::CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 	return 0;
 }
 
-// Crée une nouvelle liste.
+// Creates a new list.
 
 CList* CInterface::CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 							float expand)
@@ -397,7 +399,7 @@ CList* CInterface::CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMs
 	return 0;
 }
 
-// Crée un nouveau raccourci.
+// Creates a new shortcut.
 
 CShortcut* CInterface::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -419,7 +421,7 @@ CShortcut* CInterface::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg
 	return 0;
 }
 
-// Crée un nouvelle boussole.
+// Creates a new compass.
 
 CCompass* CInterface::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -441,7 +443,7 @@ CCompass* CInterface::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg e
 	return 0;
 }
 
-// Crée un nouvelle cible.
+// Creates a new target.
 
 CTarget* CInterface::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -463,7 +465,7 @@ CTarget* CInterface::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 	return 0;
 }
 
-// Crée une nouvelle carte.
+// Creates a new map.
 
 CMap* CInterface::CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -485,7 +487,7 @@ CMap* CInterface::CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	return 0;
 }
 
-// Supprime un contrôle.
+// Removes a control.
 
 BOOL CInterface::DeleteControl(EventMsg eventMsg)
 {
@@ -506,7 +508,7 @@ BOOL CInterface::DeleteControl(EventMsg eventMsg)
 	return FALSE;
 }
 
-// Donne un contrôle.
+// Gives a control.
 
 CControl* CInterface::SearchControl(EventMsg eventMsg)
 {
@@ -525,7 +527,7 @@ CControl* CInterface::SearchControl(EventMsg eventMsg)
 	return 0;
 }
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CInterface::EventProcess(const Event &event)
 {
@@ -556,7 +558,7 @@ BOOL CInterface::EventProcess(const Event &event)
 }
 
 
-// Donne le tooltip lié à la fenêtre.
+// Gives the tooltip binding to the window.
 
 BOOL CInterface::GetTooltip(FPOINT pos, char* name)
 {
@@ -576,7 +578,7 @@ BOOL CInterface::GetTooltip(FPOINT pos, char* name)
 }
 
 
-// Dessine tous les boutons.
+// Draws all buttons.
 
 void CInterface::Draw()
 {
