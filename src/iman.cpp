@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// iman.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// iman.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -26,7 +28,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CInstanceManager::CInstanceManager()
 {
@@ -40,7 +42,7 @@ CInstanceManager::CInstanceManager()
 	}
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CInstanceManager::~CInstanceManager()
 {
@@ -56,7 +58,7 @@ CInstanceManager::~CInstanceManager()
 }
 
 
-// Vide toute la liste des classes.
+// Empty the list of all classes.
 
 void CInstanceManager::Flush()
 {
@@ -72,7 +74,7 @@ void CInstanceManager::Flush()
 	}
 }
 
-// Vide toutes les instances d'une classe donnée.
+// Empty all instances of a given class.
 
 void CInstanceManager::Flush(ClassType classType)
 {
@@ -84,7 +86,7 @@ void CInstanceManager::Flush(ClassType classType)
 }
 
 
-// Ajoute une nouvelle instance d'une classe.
+// Adds a new instance of a class.
 
 BOOL CInstanceManager::AddInstance(ClassType classType, void* pointer, int max)
 {
@@ -106,7 +108,7 @@ BOOL CInstanceManager::AddInstance(ClassType classType, void* pointer, int max)
 	return TRUE;
 }
 
-// Supprime une instance d'une classe.
+// Deletes an instance of a class.
 
 BOOL CInstanceManager::DeleteInstance(ClassType classType, void* pointer)
 {
@@ -126,8 +128,8 @@ BOOL CInstanceManager::DeleteInstance(ClassType classType, void* pointer)
 	return TRUE;
 }
 
-// Cherche une instance existante. Retourne 0 si elle n'existe pas.
-// Doit être super-rapide !
+// Seeking an existing instance. Returns 0 if it does not exist.
+// Must be super fast!
 
 void* CInstanceManager::SearchInstance(ClassType classType, int rank)
 {
@@ -141,7 +143,7 @@ void* CInstanceManager::SearchInstance(ClassType classType, int rank)
 }
 
 
-// Bouche les trous dans une table.
+// Fills holes in a table.
 
 void CInstanceManager::Compress(ClassType classType)
 {
