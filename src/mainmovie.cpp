@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// mainmovie.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// mainmovie.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -39,7 +41,7 @@
 
 
 
-// Constructeur de l'application carte.
+// Constructor of the application card.
 
 CMainMovie::CMainMovie(CInstanceManager* iMan)
 {
@@ -56,14 +58,14 @@ CMainMovie::CMainMovie(CInstanceManager* iMan)
 	Flush();
 }
 
-// Destructeur de l'application robot.
+// Destructor of the application card.
 
 CMainMovie::~CMainMovie()
 {
 }
 
 
-// Stoppe le film en cours.
+// Stops the current movie.
 
 void CMainMovie::Flush()
 {
@@ -71,7 +73,7 @@ void CMainMovie::Flush()
 }
 
 
-// Début d'un film.
+// Start of a film.
 
 BOOL CMainMovie::Start(MainMovieType type, float time)
 {
@@ -89,14 +91,14 @@ BOOL CMainMovie::Start(MainMovieType type, float time)
 		pObj = m_main->SearchHuman();
 		if ( pObj == 0 )
 		{
-			m_type = MM_NONE;  // c'est déjà fini !
+			m_type = MM_NONE;  // it's over!
 			return TRUE;
 		}
 
 		motion = pObj->RetMotion();
 		if ( motion != 0 )
 		{
-			motion->SetAction(MHS_SATCOM, 0.5f);  // lit le SatCom
+			motion->SetAction(MHS_SATCOM, 0.5f);  // reads the SatCom
 		}
 
 		m_camera->RetCamera(m_initialEye, m_initialLookat);
@@ -121,18 +123,18 @@ BOOL CMainMovie::Start(MainMovieType type, float time)
 			motion = pObj->RetMotion();
 			if ( motion != 0 )
 			{
-				motion->SetAction(-1);  // termine lecture du SatCom
+				motion->SetAction(-1);  // finishes reading SatCom
 			}
 		}
 
 		m_camera->SetType(CAMERA_BACK);
-		m_type = MM_NONE;  // c'est déjà fini !
+		m_type = MM_NONE;  // it's already over!
 	}
 
 	return TRUE;
 }
 
-// Stoppe un film en cours.
+// Stop a current movie.
 
 BOOL CMainMovie::Stop()
 {
@@ -147,7 +149,7 @@ BOOL CMainMovie::Stop()
 			motion = pObj->RetMotion();
 			if ( motion != 0 )
 			{
-				motion->SetAction(-1);  // termine lecture du SatCom
+				motion->SetAction(-1);  // finishes reading SatCom
 			}
 		}
 	}
@@ -156,7 +158,7 @@ BOOL CMainMovie::Stop()
 	return TRUE;
 }
 
-// Indique si un film est en cours.
+// Indicates whether a film is in progress.
 
 BOOL CMainMovie::IsExist()
 {
@@ -164,7 +166,7 @@ BOOL CMainMovie::IsExist()
 }
 
 
-// Traite un événement.
+// Processing an event.
 
 BOOL CMainMovie::EventProcess(const Event &event)
 {
@@ -230,14 +232,14 @@ BOOL CMainMovie::EventProcess(const Event &event)
 }
 
 
-// Retourne le type du film en cours.
+// Returns the type of the current movie.
 
 MainMovieType CMainMovie::RetType()
 {
 	return m_type;
 }
 
-// Retourne le type du film stoppé.
+// Returns the type of movie stop.
 
 MainMovieType CMainMovie::RetStopType()
 {
