@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// light.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// light.h
 
 #ifndef _LIGHT_H_
 #define	_LIGHT_H_
@@ -39,15 +41,15 @@ LightProg;
 
 typedef struct
 {
-	char			bUsed;			// TRUE -> lumière existe
-	char			bEnable;		// TRUE -> lumière allumée
+	char			bUsed;			// TRUE -> light exists
+	char			bEnable;		// TRUE -> light turned on
 
-	D3DTypeObj		incluType;		// type de tous les objets inclus
-	D3DTypeObj		excluType;		// type de tous les objets exclus
+	D3DTypeObj		incluType;		// type of all objects included
+	D3DTypeObj		excluType;		// type of all objects excluded
 
-	D3DLIGHT7		light;			// configuration de la lumière
+	D3DLIGHT7		light;			// configuration of the light
 
-	LightProg		intensity;		// intensité (0..1)
+	LightProg		intensity;		// intensity (0 .. 1)
 	LightProg		colorRed;
 	LightProg		colorGreen;
 	LightProg		colorBlue;
