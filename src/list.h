@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// list.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// list.h
 
 #ifndef _LIST_H_
 #define	_LIST_H_
@@ -26,8 +28,8 @@ class CButton;
 class CScroll;
 
 
-#define LISTMAXDISPLAY	20		// nb max de lignes visibles
-#define LISTMAXTOTAL	100		// nb max de lignes total
+#define LISTMAXDISPLAY	20		// maximum number of visible lines
+#define LISTMAXTOTAL	100		// maximum total number of lines
 
 
 
@@ -95,10 +97,10 @@ protected:
 	EventMsg	m_eventScroll;
 
 	float		m_expand;
-	int			m_totalLine;	// nb total de lignes
-	int			m_displayLine;	// nb de lignes visibles
-	int			m_selectLine;	// ligne sélectionnée
-	int			m_firstLine;	// première ligne visible
+	int			m_totalLine;	// total number of lines
+	int			m_displayLine;	// number of visible lines
+	int			m_selectLine;	// selected line
+	int			m_firstLine;	// first visible line
 	BOOL		m_bBlink;
 	BOOL		m_bSelectCap;
 	float		m_blinkTime;
