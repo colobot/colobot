@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// label.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// label.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -33,14 +35,14 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CLabel::CLabel(CInstanceManager* iMan) : CControl(iMan)
 {
 	CControl::CControl(iMan);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CLabel::~CLabel()
 {
@@ -48,7 +50,7 @@ CLabel::~CLabel()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CLabel::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -59,7 +61,7 @@ BOOL CLabel::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CLabel::EventProcess(const Event &event)
 {
@@ -68,7 +70,7 @@ BOOL CLabel::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draws button.
 
 void CLabel::Draw()
 {
