@@ -12,16 +12,18 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// language.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// language.h
 
 #define _FULL			TRUE		// CoLoBoT
-#define _SCHOOL			FALSE		// CeeBot-A ou Teen
-  #define _TEEN			FALSE		// FALSE si CeeBot-A, TRUE si CeeBot-Teen
+#define _SCHOOL			FALSE		// CeeBot-A or Teen
+  #define _TEEN			FALSE		// FALSE for CeeBot-A, TRUE for CeeBot-Teen
   #define _EDU			FALSE
   #define _PERSO		FALSE
   #define _CEEBOTDEMO	FALSE
 #define _NET			FALSE
-#define _DEMO			FALSE		// DEMO uniquement de CoLoBoT (avec _FULL = FALSE) !
+#define _DEMO			FALSE		// DEMO only CoLoBoT (with _Full = FALSE)!
 
 #define _FRENCH			TRUE
 #define _ENGLISH		FALSE
@@ -29,21 +31,21 @@
 #define _WG				FALSE
 #define _POLISH			FALSE
 
-#define _NEWLOOK		FALSE		// FALSE pour CoLoBoT, TRUE pour tous les CeeBot
-#define _SOUNDTRACKS	FALSE		// toujours FALSE depuis que InitAudioTrackVolume plante sous Vista
+#define _NEWLOOK		FALSE		// FALSE for CoLoBoT, TRUE for all CeeBot
+#define _SOUNDTRACKS	FALSE		// always FALSE since InitAudioTrackVolume crop in Vista
 
 
-// Vérifications
+// Verifications
 
 #if !_FULL & !_SCHOOL & !_NET & !_DEMO
--> aucune version choisie !!!
+-> no version chosen!
 #endif
 
 #if _SCHOOL
 #if !_EDU & !_PERSO & !_CEEBOTDEMO
--> EDU ou PERSO ou CEEBOTDEMO ?
+-> EDU or PERSO or CEEBOTDEMO?
 #endif
 #if _EDU & _PERSO & _CEEBOTDEMO
--> pas EDU et PERSO et CEEBOTDEMO en même temps !!!
+-> EDU and PERSO and CEEBOTDEMO not at the same time!!!
 #endif
 #endif
