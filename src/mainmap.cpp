@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// mainmap.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// mainmap.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -43,7 +45,7 @@
 
 
 
-// Constructeur de l'application carte.
+// Constructor of the application card.
 
 CMainMap::CMainMap(CInstanceManager* iMan)
 {
@@ -58,14 +60,14 @@ CMainMap::CMainMap(CInstanceManager* iMan)
 	m_bFixImage = FALSE;
 }
 
-// Destructeur de l'application robot.
+// Destructor of the application card.
 
 CMainMap::~CMainMap()
 {
 }
 
 
-// Crée la mini-carte et les boutons correspondants.
+// Created the mini-map and the corresponding buttons.
 
 void CMainMap::CreateMap()
 {
@@ -92,7 +94,7 @@ void CMainMap::CreateMap()
 	DimMap();
 }
 
-// Indique si la mini-carte doit afficher une image fixe.
+// Indicates whether the mini-map should display a still image.
 
 void CMainMap::SetFixImage(char *filename)
 {
@@ -111,7 +113,7 @@ void CMainMap::SetFixImage(char *filename)
 	pm->SetFixImage(filename);
 }
 
-// Choix des couleurs du sol et de l'eau pour la mini-carte.
+// Choosing colors of soil and water for the mini-map.
 
 void CMainMap::FloorColorMap(D3DCOLORVALUE floor, D3DCOLORVALUE water)
 {
@@ -129,7 +131,7 @@ void CMainMap::FloorColorMap(D3DCOLORVALUE floor, D3DCOLORVALUE water)
 	}
 }
 
-// Montre ou cache la mini-carte.
+// Shows or hides the minimap.
 
 void CMainMap::ShowMap(BOOL bShow)
 {
@@ -160,7 +162,7 @@ void CMainMap::ShowMap(BOOL bShow)
 	}
 }
 
-// Dimensions de la mini-carte.
+// Dimensions of the mini-map.
 
 void CMainMap::DimMap()
 {
@@ -204,7 +206,7 @@ void CMainMap::DimMap()
 	}
 }
 
-// Retourne le zoom actuel de la mini-carte.
+// Returns the current zoom of the minimap.
 
 float CMainMap::RetZoomMap()
 {
@@ -224,7 +226,7 @@ float CMainMap::RetZoomMap()
 	return pm->RetZoom();
 }
 
-// Zoom la mini-carte d'un facteur quelconque.
+// Zoom the mini-map of any factor.
 
 void CMainMap::ZoomMap(float zoom)
 {
@@ -247,7 +249,7 @@ void CMainMap::ZoomMap(float zoom)
 	DimMap();
 }
 
-// Zoom la mini-carte selon le slider.
+// The mini-map zoom depending on the slider.
 
 void CMainMap::ZoomMap()
 {
@@ -272,7 +274,7 @@ void CMainMap::ZoomMap()
 	DimMap();
 }
 
-// Active ou désactive la carte.
+// Enables or disables the card.
 
 void CMainMap::MapEnable(BOOL bEnable)
 {
@@ -296,7 +298,7 @@ void CMainMap::MapEnable(BOOL bEnable)
 	}
 }
 
-// Spécifie le type de l'icône pour l'objet sélectionné.
+// Specifies the type of icon for the selected object.
 
 void CMainMap::SetToy(BOOL bToy)
 {
@@ -312,7 +314,7 @@ void CMainMap::SetToy(BOOL bToy)
 	pm->SetToy(bToy);
 }
 
-// Spécifie les paramètres lors de l'usage d'une image fixe.
+// Specifies the parameters when using a still image.
 
 void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
 						   int mode, BOOL bDebug)
@@ -333,7 +335,7 @@ void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
 	pm->SetDebug(bDebug);
 }
 
-// Met à jour la mini-carte suite à un changement du terrain.
+// Updates the mini-map following to a change of terrain.
 
 void CMainMap::UpdateMap()
 {
@@ -350,14 +352,14 @@ void CMainMap::UpdateMap()
 	}
 }
 
-// Indique si la mini-carte est visible.
+// Indicates if the mini-map is visible.
 
 BOOL CMainMap::RetShowMap()
 {
 	return ( m_mapMode != 0 );
 }
 
-// Indique si la mini-carte affiche une image fixe.
+// Indicates whether the mini-map displays a still image.
 
 BOOL CMainMap::RetFixImage()
 {
@@ -365,7 +367,7 @@ BOOL CMainMap::RetFixImage()
 }
 
 
-// Détecte l'objet visé dans la mini-carte.
+// The object is detected in the mini-map.
 
 CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
 {
@@ -382,7 +384,7 @@ CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
 }
 
 
-// Indique l'objet survolé par la souris.
+// Indicates the object with the mouse hovers over.
 
 void CMainMap::SetHilite(CObject* pObj)
 {
