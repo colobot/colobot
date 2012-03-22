@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// image.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// image.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -33,7 +35,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CImage::CImage(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -42,7 +44,7 @@ CImage::CImage(CInstanceManager* iMan) : CControl(iMan)
 	m_filename[0] = 0;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CImage::~CImage()
 {
@@ -55,7 +57,7 @@ CImage::~CImage()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CImage::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -78,7 +80,7 @@ BOOL CImage::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Spécifie le nom de l'image à afficher.
+// Specifies the name of the image display.
 
 void CImage::SetFilenameImage(char *name)
 {
@@ -96,7 +98,7 @@ char* CImage::RetFilenameImage()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CImage::EventProcess(const Event &event)
 {
@@ -104,7 +106,7 @@ BOOL CImage::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draws button.
 
 void CImage::Draw()
 {
@@ -120,7 +122,7 @@ void CImage::Draw()
 
 	dp = 0.5f/256.0f;
 
-	if ( m_icon == 0 )  // cadre en creux ?
+	if ( m_icon == 0 )  // hollow frame?
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
@@ -137,7 +139,7 @@ void CImage::Draw()
 		DrawIcon(m_pos, m_dim, uv1, uv2, corner, 8.0f/256.0f);
 	}
 
-	if ( m_filename[0] != 0 )  // affiche une image ?
+	if ( m_filename[0] != 0 )  // displays an image?
 	{
 		m_engine->LoadTexture(m_filename);
 		m_engine->SetTexture(m_filename);
