@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// light.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// light.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -33,7 +35,7 @@
 
 
 
-// Initialise une progression.
+// Initializes a progression.
 
 void ProgInit(LightProg &p, float value)
 {
@@ -44,7 +46,7 @@ void ProgInit(LightProg &p, float value)
 	p.speed    = 100.0f;
 }
 
-// Fait évoluer une progression.
+// Makes evolve a progression.
 
 void ProgFrame(LightProg &p, float rTime)
 {
@@ -67,7 +69,7 @@ void ProgFrame(LightProg &p, float rTime)
 	}
 }
 
-// Change la valeur courante.
+// Change the current value.
 
 void ProgSet(LightProg &p, float value)
 {
@@ -80,7 +82,7 @@ void ProgSet(LightProg &p, float value)
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CLight::CLight(CInstanceManager* iMan, CD3DEngine* engine)
 {
@@ -97,7 +99,7 @@ CLight::CLight(CInstanceManager* iMan, CD3DEngine* engine)
 	m_time = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CLight::~CLight()
 {
@@ -112,7 +114,7 @@ void CLight::SetD3DDevice(LPDIRECT3DDEVICE7 device)
 }
 
 
-// Supprime toutes les lumières.
+// Removes all the lights.
 
 void CLight::FlushLight()
 {
@@ -127,7 +129,7 @@ void CLight::FlushLight()
 }
 
 
-// Crée une nouvelle lumière. Retourne son rang ou -1 en cas d'erreur.
+// Creates a new light. Returns its rank or -1 on error.
 
 int CLight::CreateLight()
 {
@@ -147,7 +149,7 @@ int CLight::CreateLight()
 			m_lightTable[i].light.dltType       = D3DLIGHT_DIRECTIONAL;
 			m_lightTable[i].light.dcvDiffuse.r  =   0.5f;
 			m_lightTable[i].light.dcvDiffuse.g  =   0.5f;
-			m_lightTable[i].light.dcvDiffuse.b  =   0.5f;  // blanc
+			m_lightTable[i].light.dcvDiffuse.b  =   0.5f;  // white
 			m_lightTable[i].light.dvPosition.x  =-100.0f;
 			m_lightTable[i].light.dvPosition.y  = 100.0f;
 			m_lightTable[i].light.dvPosition.z  =-100.0f;
@@ -158,7 +160,7 @@ int CLight::CreateLight()
 			ProgInit(m_lightTable[i].intensity,  1.0f);  // maximum
 			ProgInit(m_lightTable[i].colorRed,   0.5f);
 			ProgInit(m_lightTable[i].colorGreen, 0.5f);
-			ProgInit(m_lightTable[i].colorBlue,  0.5f);  // gris
+			ProgInit(m_lightTable[i].colorBlue,  0.5f);  // gray
 
 			if ( m_lightUsed < i+1 )
 			{
@@ -170,7 +172,7 @@ int CLight::CreateLight()
 	return -1;
 }
 
-// Supprime une lumière.
+// Deletes a light.
 
 BOOL CLight::DeleteLight(int lightRank)
 {
@@ -194,7 +196,7 @@ BOOL CLight::DeleteLight(int lightRank)
 }
 
 
-// Spécifie une lumière.
+// Specifies a light.
 
 BOOL CLight::SetLight(int lightRank, const D3DLIGHT7 &light)
 {
@@ -209,7 +211,7 @@ BOOL CLight::SetLight(int lightRank, const D3DLIGHT7 &light)
 	return TRUE;
 }
 
-// Donne les spécifications d'une lumière.
+// Gives the specifications of a light.
 
 BOOL CLight::GetLight(int lightRank, D3DLIGHT7 &light)
 {
@@ -220,7 +222,7 @@ BOOL CLight::GetLight(int lightRank, D3DLIGHT7 &light)
 }
 
 
-// Allume ou éteint une lumière.
+// Lights up or put out a light.
 
 BOOL CLight::LightEnable(int lightRank, BOOL bEnable)
 {
@@ -231,8 +233,8 @@ BOOL CLight::LightEnable(int lightRank, BOOL bEnable)
 }
 
 
-// Spécifie le type (TYPE*) des objets inclus par cette lumière.
-// Cette lumière n'éclairera donc que ce type d'objets.
+// Specifies the type (TYPE *) items included in this light.
+// This light does not light up so that this type of objects.
 
 BOOL CLight::SetLightIncluType(int lightRank, D3DTypeObj type)
 {
@@ -242,8 +244,8 @@ BOOL CLight::SetLightIncluType(int lightRank, D3DTypeObj type)
 	return TRUE;
 }
 
-// Spécifie le type (TYPE*) des objets exclus par cette lumière.
-// Cette lumière n'éclairera donc jamais ce type d'objets.
+// Specifies the type (TYPE *) items excluded by this light.
+// This light does not illuminate then ever these objects.
 
 BOOL CLight::SetLightExcluType(int lightRank, D3DTypeObj type)
 {
@@ -254,7 +256,7 @@ BOOL CLight::SetLightExcluType(int lightRank, D3DTypeObj type)
 }
 
 
-// Gestion de la position de la lunière.
+// Management of the position of the light.
 
 BOOL CLight::SetLightPos(int lightRank, D3DVECTOR pos)
 {
@@ -272,7 +274,7 @@ D3DVECTOR CLight::RetLightPos(int lightRank)
 }
 
 
-// Gestion de la direction de la lumière.
+// Management direction of the light.
 
 BOOL CLight::SetLightDir(int lightRank, D3DVECTOR dir)
 {
@@ -290,7 +292,7 @@ D3DVECTOR CLight::RetLightDir(int lightRank)
 }
 
 
-// Spécifie la vitesse de changement.
+// Specifies the rate of change.
 
 BOOL CLight::SetLightIntensitySpeed(int lightRank, float speed)
 {
@@ -300,7 +302,7 @@ BOOL CLight::SetLightIntensitySpeed(int lightRank, float speed)
 	return TRUE;
 }
 
-// Gestion de l'intensité de la lumière.
+// Management of the intensity of light.
 
 BOOL CLight::SetLightIntensity(int lightRank, float value)
 {
@@ -318,7 +320,7 @@ float CLight::RetLightIntensity(int lightRank)
 }
 
 
-// Spécifie la vitesse de changement.
+// Specifies the rate of change.
 
 BOOL CLight::SetLightColorSpeed(int lightRank, float speed)
 {
@@ -330,7 +332,7 @@ BOOL CLight::SetLightColorSpeed(int lightRank, float speed)
 	return TRUE;
 }
 
-// Gestion de la couleur de la lumière.
+// Color management for light.
 
 BOOL CLight::SetLightColor(int lightRank, D3DCOLORVALUE color)
 {
@@ -362,7 +364,7 @@ D3DCOLORVALUE CLight::RetLightColor(int lightRank)
 }
 
 
-// Adapte la couleur de toutes les lumières.
+// Adjusts the color of all lights.
 
 void CLight::AdaptLightColor(D3DCOLORVALUE color, float factor)
 {
@@ -391,7 +393,7 @@ void CLight::AdaptLightColor(D3DCOLORVALUE color, float factor)
 
 
 
-// Fait évoluer toutes les lumières.
+// Makes all the lights evolve.
 
 void CLight::FrameLight(float rTime)
 {
@@ -431,7 +433,7 @@ void CLight::FrameLight(float rTime)
 }
 
 
-// Met à jour toutes les lumières.
+// Updates all the lights.
 
 void CLight::LightUpdate()
 {
@@ -471,7 +473,7 @@ void CLight::LightUpdate()
 	}
 }
 
-// Met à jour les lumières pour un type donné.
+// Updates the lights for a given type.
 
 void CLight::LightUpdate(D3DTypeObj type)
 {
