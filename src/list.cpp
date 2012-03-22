@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// list.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// list.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,7 +40,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CList::CList(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -74,7 +76,7 @@ CList::CList(CInstanceManager* iMan) : CControl(iMan)
 	m_blinkTime = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CList::~CList()
 {
@@ -90,7 +92,7 @@ CList::~CList()
 }
 
 
-// Crée une nouvelle liste.
+// Creates a new list.
 
 BOOL CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 				   float expand)
@@ -107,7 +109,7 @@ BOOL CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 	return MoveAdjust();
 }
 
-// Ajuste après un changement de dimensions.
+// Adjusted after a change of dimensions.
 
 BOOL CList::MoveAdjust()
 {
@@ -170,7 +172,7 @@ BOOL CList::MoveAdjust()
 }
 
 
-// Retourne le message d'un bouton.
+// Returns the message of a button.
 
 EventMsg CList::RetEventMsgButton(int i)
 {
@@ -179,7 +181,7 @@ EventMsg CList::RetEventMsgButton(int i)
 	return m_button[i]->RetEventMsg();
 }
 
-// Retourne le message de l'ascenseur.
+// Returns the message from the elevator.
 
 EventMsg CList::RetEventMsgScroll()
 {
@@ -250,13 +252,13 @@ BOOL CList::ClearState(int state)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CList::EventProcess(const Event &event)
 {
 	int		i;
 
-	if ( m_bBlink                   &&  // clignotte ?
+	if ( m_bBlink                   &&  // blinks?
 		 event.event == EVENT_FRAME )
 	{
 		i = m_selectLine-m_firstLine;
@@ -330,7 +332,7 @@ BOOL CList::EventProcess(const Event &event)
 
 					Event newEvent = event;
 					newEvent.event = m_eventMsg;
-					m_event->AddEvent(newEvent);  // ligne sélectionnée changée
+					m_event->AddEvent(newEvent);  // selected line changes
 				}
 			}
 		}
@@ -351,7 +353,7 @@ BOOL CList::EventProcess(const Event &event)
 }
 
 
-// Dessine la liste.
+// Draws the list.
 
 void CList::Draw()
 {
@@ -397,7 +399,7 @@ void CList::Draw()
 			if ( m_button[0] != 0 )
 			{
 				dim = m_button[0]->RetDim();
-				dim.y *= m_displayLine;  // fond pile-poil derrière
+				dim.y *= m_displayLine;  // background sounds spot behind
 			}
 		}
 
@@ -411,7 +413,7 @@ void CList::Draw()
 		DrawIcon(m_pos, dim, uv1, uv2, corner, 8.0f/256.0f);
 	}
 
-	if ( m_totalLine < m_displayLine )  // boutons pas jusqu'en bas ?
+	if ( m_totalLine < m_displayLine )  // no buttons to the bottom?
 	{
 		i = m_totalLine;
 		if ( m_button[i] != 0 )
@@ -432,7 +434,7 @@ void CList::Draw()
 			uv1.y -= dp;
 			uv2.x -= dp;
 			uv2.y += dp;
-			DrawIcon(pos, dim, uv1, uv2);  // ch'tite ombre mignonne
+			DrawIcon(pos, dim, uv1, uv2);  // ch'tite shadow cute  (?)
 		}
 	}
 	
@@ -446,9 +448,9 @@ void CList::Draw()
 			{
 				m_button[i]->SetState(STATE_ENABLE, m_enable[i+m_firstLine] && (m_state & STATE_ENABLE) );
 			}
-			m_button[i]->Draw();  // dessine une case sans texte
+			m_button[i]->Draw();  // draws a box without text
 
-			// dessine le texte dans la case
+			// draws text in the box
 			pos = m_button[i]->RetPos();
 			dim = m_button[i]->RetDim();
 			if ( m_tabs[0] == 0.0f )
@@ -508,7 +510,7 @@ void CList::Draw()
 					uv1.y += dp;
 					uv2.x -= dp;
 					uv2.y -= dp;
-					DrawIcon(pos, dim, uv1, uv2);  // dessine carré
+					DrawIcon(pos, dim, uv1, uv2);  // square shape
 
 					m_engine->SetState(D3DSTATETTw);
 					uv1.x =  0.0f/256.0f;  // v
@@ -519,7 +521,7 @@ void CList::Draw()
 					uv1.y += dp;
 					uv2.x -= dp;
 					uv2.y -= dp;
-					DrawIcon(pos, dim, uv1, uv2);  // dessine v
+					DrawIcon(pos, dim, uv1, uv2);  // draws v
 				}
 				else
 				{
@@ -543,7 +545,7 @@ void CList::Draw()
 					uv1.y += dp;
 					uv2.x -= dp;
 					uv2.y -= dp;
-					DrawIcon(pos, dim, uv1, uv2);  // dessine x
+					DrawIcon(pos, dim, uv1, uv2);  // draws x
 				}
 			}
 		}
@@ -551,11 +553,11 @@ void CList::Draw()
 
 	if ( m_scroll != 0 )
 	{
-		m_scroll->Draw();  // dessine l'ascenseur
+		m_scroll->Draw();  // draws the lift
 	}
 }
 
-// Affiche un texte dans une case.
+// Displays text in a box.
 
 void CList::DrawCase(char *text, FPOINT pos, float width, int justif)
 {
@@ -576,7 +578,7 @@ void CList::DrawCase(char *text, FPOINT pos, float width, int justif)
 }
 
 
-// Vide complètement la liste.
+// Empty the list completely.
 
 void CList::Flush()
 {
@@ -588,14 +590,14 @@ void CList::Flush()
 }
 
 
-// Spécifie le nombre total de lignes.
+// Specifies the total number of lines.
 
 void CList::SetTotal(int i)
 {
 	m_totalLine = i;
 }
 
-// Retourne le nombre total de lignes.
+// Returns the total number of lines.
 
 int CList::RetTotal()
 {
@@ -603,7 +605,7 @@ int CList::RetTotal()
 }
 
 
-// Sélectionne une ligne.
+// Selects a line.
 
 void CList::SetSelect(int i)
 {
@@ -620,7 +622,7 @@ void CList::SetSelect(int i)
 	UpdateButton();
 }
 
-// Retourne la ligne sélectionnée.
+// Returns the selected line.
 
 int CList::RetSelect()
 {
@@ -635,7 +637,7 @@ int CList::RetSelect()
 }
 
 
-// Gestion de la capacité à sélectionner une case.
+// Management of capability has a select box.
 
 void CList::SetSelectCap(BOOL bEnable)
 {
@@ -648,7 +650,7 @@ BOOL CList::RetSelectCap()
 }
 
 
-// Fait cligontter une ligne.
+// Blink a line.
 
 void CList::SetBlink(BOOL bEnable)
 {
@@ -676,7 +678,7 @@ BOOL CList::RetBlink()
 }
 
 
-// Spécifie le texte d'une ligne.
+// Specifies the text of a line.
 
 void CList::SetName(int i, char* name)
 {
@@ -684,7 +686,7 @@ void CList::SetName(int i, char* name)
 
 	if ( i >= m_totalLine )
 	{
-		m_totalLine = i+1;  // allonge la liste
+		m_totalLine = i+1;  // expands the list
 	}
 
 	if ( name[0] == 0 )
@@ -699,7 +701,7 @@ void CList::SetName(int i, char* name)
 	UpdateScroll();
 }
 
-// Retourne le texte d'une ligne.
+// Returns the text of a line.
 
 char* CList::RetName(int i)
 {
@@ -709,7 +711,7 @@ char* CList::RetName(int i)
 }
 
 
-// Spécifie le bit "check" pour une case.
+// Specifies the bit "check" for a box.
 
 void CList::SetCheck(int i, BOOL bMode)
 {
@@ -718,7 +720,7 @@ void CList::SetCheck(int i, BOOL bMode)
 	m_check[i] = bMode;
 }
 
-// Retourne le bit "check" pour une case.
+// Returns the bit "check" for a box.
 
 BOOL CList::RetCheck(int i)
 {
@@ -728,7 +730,7 @@ BOOL CList::RetCheck(int i)
 }
 
 
-// Spécifie le bit "enable" pour une case.
+// Specifies the bit "enable" for a box.
 
 void CList::SetEnable(int i, BOOL bMode)
 {
@@ -737,7 +739,7 @@ void CList::SetEnable(int i, BOOL bMode)
 	m_enable[i] = bMode;
 }
 
-// Retourne le bit "enable" pour une case.
+// Returns the bit "enable" for a box.
 
 BOOL CList::RetEnable(int i)
 {
@@ -747,7 +749,7 @@ BOOL CList::RetEnable(int i)
 }
 
 
-// Gestion de la position des tabulateurs.
+// Management of the position of the tabs.
 
 void CList::SetTabs(int i, float pos, int justif)
 {
@@ -763,7 +765,7 @@ float  CList::RetTabs(int i)
 }
 
 
-// Déplace l'ascenseur de la liste pour voir la ligne sélectionnée.
+// Moves the lift to see the list of the selected line.
 
 void CList::ShowSelect(BOOL bFixed)
 {
@@ -771,15 +773,15 @@ void CList::ShowSelect(BOOL bFixed)
 
 	if ( bFixed &&
 		 m_selectLine >= m_firstLine &&
-		 m_selectLine <  m_firstLine+m_displayLine )  return;  // tout bon
+		 m_selectLine <  m_firstLine+m_displayLine )  return;  // all good
 
 	sel = m_selectLine;
 
-	// Descend de 1/2*h.
+	// Down from 1/2 * h.
 	sel += m_displayLine/2;
 	if ( sel > m_totalLine-1 )  sel = m_totalLine-1;
 
-	// Remonte de h-1.
+	// Back to h-1.
 	sel -= m_displayLine-1;
 	if ( sel < 0 )  sel = 0;
 
@@ -790,7 +792,7 @@ void CList::ShowSelect(BOOL bFixed)
 }
 
 
-// Met à jour tous les noms des boutons.
+// Updates all button names.
 
 void CList::UpdateButton()
 {
@@ -808,19 +810,19 @@ void CList::UpdateButton()
 		if ( j < m_totalLine )
 		{
 //?			m_button[i]->SetName(m_text[j]);
-			m_button[i]->SetName(" ");  // bouton vide
+			m_button[i]->SetName(" ");  // blank button
 			m_button[i]->SetState(STATE_ENABLE, (state & STATE_ENABLE));
 		}
 		else
 		{
-			m_button[i]->SetName(" ");  // bouton vide
+			m_button[i]->SetName(" ");  // blank button
 			m_button[i]->ClearState(STATE_ENABLE);
 		}
 		j ++;
 	}
 }
 
-// Met à jour l'ascenseur.
+// Updates the lift.
 
 void CList::UpdateScroll()
 {
@@ -852,7 +854,7 @@ void CList::UpdateScroll()
 	m_scroll->SetArrowStep(step);
 }
 
-// Mise à jour lorsque l'ascenseur a été bougé.
+// Update when the lift is moving.
 
 void CList::MoveScroll()
 {
@@ -863,7 +865,7 @@ void CList::MoveScroll()
 
 	n = m_totalLine-m_displayLine;
 	pos = m_scroll->RetVisibleValue();
-	pos += m_scroll->RetArrowStep()/2.0f;  // c'est magique !
+	pos += m_scroll->RetArrowStep()/2.0f;  // it's magic!
 	m_firstLine = (int)(pos*n);
 	if ( m_firstLine < 0 )  m_firstLine = 0;
 	if ( m_firstLine > n )  m_firstLine = n;
