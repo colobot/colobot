@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// key.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// key.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -35,7 +37,7 @@
 
 
 
-// COnstruit le nom d'une touche.
+// Constructs the name of a button.
 
 void GetKeyName(char *name, int key)
 {
@@ -58,7 +60,7 @@ void GetKeyName(char *name, int key)
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CKey::CKey(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -69,7 +71,7 @@ CKey::CKey(CInstanceManager* iMan) : CControl(iMan)
 	m_bCatch = FALSE;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CKey::~CKey()
 {
@@ -77,7 +79,7 @@ CKey::~CKey()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CKey::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -97,7 +99,7 @@ BOOL CKey::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CKey::EventProcess(const Event &event)
 {
@@ -151,37 +153,37 @@ BOOL CKey::EventProcess(const Event &event)
 }
 
 
-// Cherche si une touche est déjà utilisée.
+// Seeks when a key is already used.
 
 BOOL CKey::TestKey(int key)
 {
 	int		i, j;
 
 	if ( key == VK_PAUSE    ||
-		 key == VK_SNAPSHOT )  return TRUE;  // touche bloquée
+		 key == VK_SNAPSHOT )  return TRUE;  // blocked key
 
 	for ( i=0 ; i<20 ; i++ )
 	{
 		for ( j=0 ; j<2 ; j++ )
 		{
-			if ( key == m_engine->RetKey(i, j) )  // touche utilisée ?
+			if ( key == m_engine->RetKey(i, j) )  // key used?
 			{
-				m_engine->SetKey(i, j, 0);  // plus rien !
+				m_engine->SetKey(i, j, 0);  // nothing!
 			}
 		}
 
-		if ( m_engine->RetKey(i, 0) == 0 )  // première option libre ?
+		if ( m_engine->RetKey(i, 0) == 0 )  // first free option?
 		{
 			m_engine->SetKey(i, 0, m_engine->RetKey(i, 1));  // shift
 			m_engine->SetKey(i, 1, 0);
 		}
 	}
 
-	return FALSE;  // pas utilisée
+	return FALSE;  // not used
 }
 
 
-// Dessine le bouton.
+// Draws button.
 
 void CKey::Draw()
 {
@@ -208,7 +210,7 @@ void CKey::Draw()
 
 	icon = 2;
 	if ( m_key[0] == 0 &&
-		 m_key[1] == 0 )  // pas de raccourci ?
+		 m_key[1] == 0 )  // no shortcut?
 	{
 		icon = 3;
 	}
@@ -244,7 +246,7 @@ void CKey::Draw()
 	{
 		icon = 23;
 	}
-	DrawPart(icon, zoomExt, 8.0f/256.0f);  // dessine le bouton
+	DrawPart(icon, zoomExt, 8.0f/256.0f);  // draws the button
 
 	h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
 
@@ -264,7 +266,7 @@ void CKey::Draw()
 
 	if ( m_state & STATE_DEAD )  return;
 
-	// Dessine le nom.
+	// Draws the name.
 	pos.x = m_pos.x+(214.0f/640.0f);
 	pos.y = m_pos.y+m_dim.y*0.5f;
 	pos.y -= h;
