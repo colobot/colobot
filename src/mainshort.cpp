@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// mainshort.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// mainshort.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -36,7 +38,7 @@
 
 
 
-// Constructeur de l'application carte.
+// Constructor of the application card.
 
 CMainShort::CMainShort(CInstanceManager* iMan)
 {
@@ -51,7 +53,7 @@ CMainShort::CMainShort(CInstanceManager* iMan)
 	FlushShortcuts();
 }
 
-// Destructeur de l'application robot.
+// Destructor of the application card.
 
 CMainShort::~CMainShort()
 {
@@ -66,7 +68,7 @@ void CMainShort::SetMode(BOOL bBuilding)
 
 
 
-// Remise à zéro de tous les raccourcis.
+// Reset all shortcuts.
 
 void CMainShort::FlushShortcuts()
 {
@@ -102,7 +104,7 @@ static EventMsg table_sc_em[20] =
 	EVENT_OBJECT_SHORTCUT19,
 };
 
-// Crée l'interface des raccourcis aux unités.
+// Interface creates shortcuts to the units.
 
 BOOL CMainShort::CreateShortcuts()
 {
@@ -131,14 +133,14 @@ BOOL CMainShort::CreateShortcuts()
 	pos.y = (480.0f-32.0f)/480.0f;
 
 	if ( m_main->RetMovieLock() &&
-		!m_main->RetEditLock()  )  // bloqué pendant film ?
+		!m_main->RetEditLock()  )  // hangs during film?
 	{
 		m_interface->CreateShortcut(pos, dim, 7, EVENT_OBJECT_MOVIELOCK);
 		return TRUE;
 	}
 	if ( !m_main->RetFreePhoto() &&
 		 (m_main->RetEditLock() ||
-		  m_engine->RetPause()) )  // bloqué pendant édition ?
+		  m_engine->RetPause()) )  // hangs during edition?
 	{
 		m_interface->CreateShortcut(pos, dim, 6, EVENT_OBJECT_EDITLOCK);
 		return TRUE;
@@ -234,7 +236,7 @@ BOOL CMainShort::CreateShortcuts()
 	return TRUE;
 }
 
-// Met à jour l'interface des raccourcis aux unités.
+// Updates the interface shortcuts to the units.
 
 BOOL CMainShort::UpdateShortcuts()
 {
@@ -255,7 +257,7 @@ BOOL CMainShort::UpdateShortcuts()
 	return TRUE;
 }
 
-// Sélectionne un objet à travers un raccourci.
+// Selects an object through a shortcut.
 
 void CMainShort::SelectShortcut(EventMsg event)
 {
@@ -267,7 +269,7 @@ void CMainShort::SelectShortcut(EventMsg event)
 		{
 			if ( i != 0 && m_shortcuts[i] == 0 )  continue;
 
-			if ( i == 0 )  // bâtiments <-> véhicules ?
+			if ( i == 0 )  // buildings <-> vehicles?
 			{
 				m_bBuilding = !m_bBuilding;
 				CreateShortcuts();
@@ -282,7 +284,7 @@ void CMainShort::SelectShortcut(EventMsg event)
 }
 
 
-// Sélectionne l'objet suivant.
+// Selects the next object.
 
 void CMainShort::SelectNext()
 {
@@ -315,7 +317,7 @@ void CMainShort::SelectNext()
 }
 
 
-// Détecte l'objet survolé par la souris.
+// The object detected by the mouse hovers over.
 
 CObject* CMainShort::DetectShort(FPOINT pos)
 {
@@ -345,7 +347,7 @@ CObject* CMainShort::DetectShort(FPOINT pos)
 	return 0;
 }
 
-// Signale l'objet survolé par la souris.
+// Reports the object with the mouse hovers over.
 
 void CMainShort::SetHilite(CObject* pObj)
 {
