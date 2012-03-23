@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// maindialog.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// maindialog.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -59,12 +61,12 @@
 
 
 
-#define KEY_VISIBLE		6		// nb de touches redéfinissables visibles
+#define KEY_VISIBLE		6		// number of visible keys redefinable
 
 #if _SCHOOL & _TEEN
-#define KEY_TOTAL		13		// nb total de touches redéfinissables
+#define KEY_TOTAL		13		// total number of keys redefinable
 #else
-#define KEY_TOTAL		21		// nb total de touches redéfinissables
+#define KEY_TOTAL		21		// total number of keys redefinable
 #endif
 
 #define WELCOME_LENGTH	6.0f
@@ -73,44 +75,44 @@
 
 static int perso_color[3*10*3] =
 {
-	// cheveux :
-	193, 221, 226,  // blanc
-	255, 255, 181,  // jaune
-	204, 155,  84,  // châtin
-	165,  48,  10,  // roux
-	140,  75,  84,  // brun
-	 83,  64,  51,  // brun
-	 90,  95,  85,  // noir
-	 85,  48,   9,  // brun
-	 60,   0,  23,  // noir
+	// hair:
+	193, 221, 226,  // white
+	255, 255, 181,  // yellow
+	204, 155,  84,  // blond
+	165,  48,  10,  // red
+	140,  75,  84,  // brown
+	 83,  64,  51,  // brown
+	 90,  95,  85,  // black
+	 85,  48,   9,  // brown
+	 60,   0,  23,  // black
 	  0,   0,   0,  // 
-	// combinaison :
-	203, 206, 204,  // blanc sale
-	  0, 205, 203,  // bleuté
-	108, 176,   0,  // verdatre
-	207, 207,  32,  // jaune
-	170, 141,   0,  // orangé
-	108,  84,   0,  // brun
-	  0,  84, 136,  // bleuté
-	 56,  61, 146,  // bleuté
-	 56,  56,  56,  // noir
+	// spacesuit:
+	203, 206, 204,  // dirty white
+	  0, 205, 203,  // bluish
+	108, 176,   0,  // greenish
+	207, 207,  32,  // yellow
+	170, 141,   0,  // orange
+	108,  84,   0,  // brown
+	  0,  84, 136,  // bluish
+	 56,  61, 146,  // bluish
+	 56,  56,  56,  // black
 	  0,   0,   0,  // 
-	// bandes :
-	255, 255, 255,  // blanc
-	255, 255,   0,  // jaune
+	// strips:
+	255, 255, 255,  // white
+	255, 255,   0,  // yellow
 	255, 132,   1,  // orange
 	255,   0, 255,  // magenta
-	255,   0,   0,  // rouge
-	  0, 255,   0,  // vert
+	255,   0,   0,  // red
+	  0, 255,   0,  // green
 	  0, 255, 255,  // cyan
-	  0,   0, 255,  // bleu
-	 70,  51,  84,  // foncé
+	  0,   0, 255,  // blue
+	 70,  51,  84,  // dark
 	  0,   0,   0,  // 
 };
 
 
 #if _NET
-// Vérifie si la clé "school" est présente dans la base de registres.
+// Check if the key "school" is present in the registry.
 
 BOOL SchoolCheck()
 {
@@ -140,7 +142,7 @@ BOOL SchoolCheck()
 #endif
 
 
-// Constructeur de l'application robot.
+// Constructor of robot application.
 
 CMainDialog::CMainDialog(CInstanceManager* iMan)
 {
@@ -223,14 +225,14 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
 	m_bDialog = FALSE;
 }
 
-// Destructeur de l'application robot.
+// Destructor of robot application.
 
 CMainDialog::~CMainDialog()
 {
 }
 
 
-// Change de phase.
+// Changes phase.
 
 void CMainDialog::ChangePhase(Phase phase)
 {
@@ -260,7 +262,7 @@ void CMainDialog::ChangePhase(Phase phase)
 	{
 		phase = m_phaseTerm;
 	}
-	m_phase = phase;  // copie l'info de CRobotMain
+	m_phase = phase;  // copy the info to CRobotMain
 	m_phaseTime = 0.0f;
 
 	dim.x = 32.0f/640.0f;
@@ -288,26 +290,26 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 0.60f;
 		ddim.x = 0.30f;
 		ddim.y = 0.30f;
-		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // coin orange
+		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
 		pos.x  = 0.35f;
 		pos.y  = 0.10f;
 		ddim.x = 0.30f;
 		ddim.y = 0.30f;
-		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
 #if _SCHOOL
 		ddim.x = 0.20f;
 		ddim.y = dim.y*2.4f;
 		pos.x = 0.40f;
 		pos.y = oy+sy*7.9f;
-		pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orangé
+		pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
 		pg->SetState(STATE_SHADOW);
 		pos.y = oy+sy*3.9f;
 		pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
 		pg->SetState(STATE_SHADOW);
 		ddim.y = dim.y*1.2f;
 		pos.y = oy+sy*1.9f;
-		pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // rouge
+		pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
 		pg->SetState(STATE_SHADOW);
 #else
 		ddim.x = 0.20f;
@@ -316,18 +318,18 @@ void CMainDialog::ChangePhase(Phase phase)
 		if ( m_accessEnable && m_accessMission )
 		{
 			pos.y = oy+sy*9.1f;
-			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // jaune
+			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // yellow
 			pg->SetState(STATE_SHADOW);
 		}
 		pos.y = oy+sy*6.8f;
-		pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orangé
+		pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // orange
 		pg->SetState(STATE_SHADOW);
 		pos.y = oy+sy*3.9f;
 		pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // orange
 		pg->SetState(STATE_SHADOW);
 		ddim.y = dim.y*1.2f;
 		pos.y = oy+sy*1.9f;
-		pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // rouge
+		pg = pw->CreateGroup(pos, ddim, 26, EVENT_LABEL1);  // red
 		pg->SetState(STATE_SHADOW);
 #endif
 
@@ -451,7 +453,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  =  93.0f/480.0f;
 		ddim.x = 285.0f/640.0f;
 		ddim.y = 266.0f/480.0f;
-		pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // bleu
+		pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
 		pg->SetState(STATE_SHADOW);
 		pos.x  = 372.0f/640.0f;
 		ddim.x = 188.0f/640.0f;
@@ -463,12 +465,12 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 0.40f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // coin orange
+		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
 		pos.x  = 0.40f;
 		pos.y  = 0.10f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
 		pos.x =  60.0f/640.0f;
 		pos.y = 313.0f/480.0f;
@@ -576,24 +578,24 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 0.40f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // coin orange
+		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
 		pos.x  = 0.40f;
 		pos.y  = 0.10f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
 		pos.x  =  95.0f/640.0f;
 		pos.y  = 108.0f/480.0f;
 		ddim.x = 220.0f/640.0f;
 		ddim.y = 274.0f/480.0f;
-		pw->CreateGroup(pos, ddim, 17, EVENT_NULL);  // cadre
+		pw->CreateGroup(pos, ddim, 17, EVENT_NULL);  // frame
 		
 		pos.x  = 100.0f/640.0f;
 		pos.y  = 364.0f/480.0f;
 		ddim.x = 210.0f/640.0f;
 		ddim.y =  14.0f/480.0f;
-		pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gris
+		pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gray
 
 		pos.x  = 120.0f/640.0f;
 		pos.y  = 364.0f/480.0f;
@@ -615,14 +617,14 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 354.0f/480.0f;
 		ddim.x = 210.0f/640.0f;
 		ddim.y =  10.0f/480.0f;
-		pw->CreateGroup(pos, ddim, 1, EVENT_INTERFACE_GLINTb);  // barre orange
+		pw->CreateGroup(pos, ddim, 1, EVENT_INTERFACE_GLINTb);  // orange bar
 		pos.x  = 100.0f/640.0f;
 		pos.y  = 154.0f/480.0f;
 		ddim.x = 210.0f/640.0f;
 		ddim.y = 200.0f/480.0f;
 		pw->CreateGroup(pos, ddim, 2, EVENT_INTERFACE_GLINTu);  // orange -> transparent
 
-		// Visage
+		// Face
 		pos.x  = 340.0f/640.0f;
 		pos.y  = 356.0f/480.0f;
 		ddim.x = 200.0f/640.0f;
@@ -646,7 +648,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		pb = pw->CreateButton(pos, ddim, 44, EVENT_INTERFACE_PFACE2);
 		pb->SetState(STATE_SHADOW);
 
-		// Lunettes
+		// Glasses
 		pos.x  = 340.0f/640.0f;
 		pos.y  = 270.0f/480.0f;
 		ddim.x = 200.0f/640.0f;
@@ -666,7 +668,7 @@ void CMainDialog::ChangePhase(Phase phase)
 			pos.x += (30.0f+2.8f)/640.0f;
 		}
 
-		// Couleur a
+		// Color A
 		pos.x  = 340.0f/640.0f;
 		pos.y  = 300.0f/480.0f;
 		ddim.x = 200.0f/640.0f;
@@ -702,7 +704,7 @@ void CMainDialog::ChangePhase(Phase phase)
 			pos.y -= 20.0f/480.0f;
 		}
 
-		// Couleur b
+		// Color B
 		pos.x  = 340.0f/640.0f;
 		pos.y  = 192.0f/480.0f;
 		ddim.x = 200.0f/640.0f;
@@ -838,7 +840,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 226.0f/480.0f;
 		ddim.x = 216.0f/640.0f;
 		ddim.y = 160.0f/480.0f;
-		pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // bleu
+		pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
 		pg->SetState(STATE_SHADOW);
 		pos.x  = 322.0f/640.0f;
 		pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
@@ -848,7 +850,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 122.0f/480.0f;
 		ddim.x = 438.0f/640.0f;
 		ddim.y =  98.0f/480.0f;
-		pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // vert
+		pg = pw->CreateGroup(pos, ddim, 25, EVENT_LABEL1);  // green
 		pg->SetState(STATE_SHADOW);
 		pos.y  =  66.0f/480.0f;
 		ddim.y =  42.0f/480.0f;
@@ -860,14 +862,14 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 0.40f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // coin orange
+		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
 		pos.x  = 0.40f;
 		pos.y  = 0.10f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
-		// Affiche la liste des chapitres :
+		// Displays a list of chapters:
 		pos.x = ox+sx*3;
 		pos.y = oy+sy*10.5f;
 		ddim.x = dim.x*7.5f;
@@ -891,7 +893,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		UpdateSceneChap(m_chap[m_index]);
 		if ( m_phase != PHASE_USER )  pli->SetState(STATE_EXTEND);
 		
-		// Affiche la liste des missions :
+		// Displays a list of missions:
 		pos.x = ox+sx*9.5f;
 		pos.y = oy+sy*10.5f;
 		ddim.x = dim.x*7.5f;
@@ -917,7 +919,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos = pli->RetPos();
 		ddim = pli->RetDim();
 
-		// Affiche le résumé :
+		// Displays the summary:
 		pos.x = ox+sx*3;
 		pos.y = oy+sy*5.4f;
 		ddim.x = dim.x*6.5f;
@@ -933,10 +935,10 @@ void CMainDialog::ChangePhase(Phase phase)
 		pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_RESUME);
 		pe->SetState(STATE_SHADOW);
 		pe->SetMaxChar(500);
-		pe->SetEditCap(FALSE);  // juste pour voir
+		pe->SetEditCap(FALSE);  // just to see
 		pe->SetHiliteCap(FALSE);
 
-		// Affiche le bouton "soluce" :
+		// Button displays the "soluce":
 		if ( m_phase != PHASE_TRAINER &&
 			 m_phase != PHASE_FREE    &&
 			 m_phase != PHASE_TEEN    )
@@ -972,7 +974,7 @@ void CMainDialog::ChangePhase(Phase phase)
 			ddim.x = dim.x*2.5f;
 			pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_READ);
 			pb->SetState(STATE_SHADOW);
-			if ( !IsIOReadScene() )  // aucun fichier à lire ?
+			if ( !IsIOReadScene() )  // no file to read?
 			{
 				pb->ClearState(STATE_ENABLE);
 			}
@@ -1055,13 +1057,13 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 0.10f;
 		ddim.x = 0.20f;
 		ddim.y = 0.20f;
-		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
 		pos.x  = 0.10f;
 		ddim.x = 0.80f;
 		pos.y  = 0.76f;
 		ddim.y = 0.05f;
-		pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gris
+		pw->CreateGroup(pos, ddim, 3, EVENT_NULL);  // transparent -> gray
 
 #if _NEWLOOK
 		if ( m_phase == PHASE_SETUPd  || // setup/display ?
@@ -1071,7 +1073,7 @@ void CMainDialog::ChangePhase(Phase phase)
 			pos.y  = 130.0f/480.0f;
 			ddim.x = 216.0f/640.0f;
 			ddim.y = 212.0f/480.0f;
-			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // bleu
+			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
 			pg->SetState(STATE_SHADOW);
 			pos.x  = 324.0f/640.0f;
 			pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
@@ -1084,35 +1086,35 @@ void CMainDialog::ChangePhase(Phase phase)
 			pos.y  = 130.0f/480.0f;
 			ddim.x = 174.0f/640.0f;
 			ddim.y = 212.0f/480.0f;
-			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // bleu
+			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
 			pg->SetState(STATE_SHADOW);
 			pos.x  = 282.0f/640.0f;
 			ddim.x = 258.0f/640.0f;
 			pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
 			pg->SetState(STATE_SHADOW);
 		}
-		if ( m_phase == PHASE_SETUPp  || // setup/jeu ?
+		if ( m_phase == PHASE_SETUPp  || // setup/game ?
 			 m_phase == PHASE_SETUPps )
 		{
 			pos.x  = 100.0f/640.0f;
 			pos.y  = 130.0f/480.0f;
 			ddim.x = 226.0f/640.0f;
 			ddim.y = 212.0f/480.0f;
-			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // bleu
+			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
 			pg->SetState(STATE_SHADOW);
 			pos.x  = 334.0f/640.0f;
 			ddim.x = 206.0f/640.0f;
 			pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
 			pg->SetState(STATE_SHADOW);
 		}
-		if ( m_phase == PHASE_SETUPc  || // setup/commande ?
+		if ( m_phase == PHASE_SETUPc  || // setup/command ?
 			 m_phase == PHASE_SETUPcs )
 		{
 			pos.x  = 100.0f/640.0f;
 			pos.y  = 125.0f/480.0f;
 			ddim.x = 440.0f/640.0f;
 			ddim.y = 222.0f/480.0f;
-			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // bleu
+			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
 			pg->SetState(STATE_SHADOW);
 		}
 		if ( m_phase == PHASE_SETUPs  || // setup/sound ?
@@ -1122,7 +1124,7 @@ void CMainDialog::ChangePhase(Phase phase)
 			pos.y  = 130.0f/480.0f;
 			ddim.x = 216.0f/640.0f;
 			ddim.y = 212.0f/480.0f;
-			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // bleu
+			pg = pw->CreateGroup(pos, ddim, 23, EVENT_LABEL1);  // blue
 			pg->SetState(STATE_SHADOW);
 			pos.x  = 324.0f/640.0f;
 			pg = pw->CreateGroup(pos, ddim, 24, EVENT_LABEL1);  // cyan
@@ -1179,7 +1181,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.x = 0.80f-(11.0f/640.0f);
 		pos.y  = 0.74f;
 		ddim.y = 0.02f;
-		pw->CreateGroup(pos, ddim, 1, EVENT_INTERFACE_GLINTb);  // barre orange
+		pw->CreateGroup(pos, ddim, 1, EVENT_INTERFACE_GLINTb);  // orange bar
 
 		ddim.x = dim.x*4;
 		ddim.y = dim.y*1;
@@ -1393,7 +1395,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		UpdateSetupButtons();
 	}
 
-	if ( m_phase == PHASE_SETUPp  ||  // setup/jeu ?
+	if ( m_phase == PHASE_SETUPp  ||  // setup/game ?
 		 m_phase == PHASE_SETUPps )
 	{
 		ddim.x = dim.x*6;
@@ -1461,7 +1463,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		UpdateSetupButtons();
 	}
 
-	if ( m_phase == PHASE_SETUPc  ||  // setup/commandes ?
+	if ( m_phase == PHASE_SETUPc  ||  // setup/commands ?
 		 m_phase == PHASE_SETUPcs )
 	{
 		pos.x = ox+sx*3;
@@ -1582,12 +1584,12 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 0.40f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // coin orange
+		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
 		pos.x  = 0.40f;
 		pos.y  = 0.10f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
 #if _NEWLOOK
 		pos.x  = 100.0f/640.0f;
@@ -1666,12 +1668,12 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 0.40f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // coin orange
+		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
 		pos.x  = 0.40f;
 		pos.y  = 0.10f;
 		ddim.x = 0.50f;
 		ddim.y = 0.50f;
-		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
 #if _NEWLOOK
 		pos.x  = 100.0f/640.0f;
@@ -1747,12 +1749,12 @@ void CMainDialog::ChangePhase(Phase phase)
 		pos.y  = 0.60f;
 		ddim.x = 0.30f;
 		ddim.y = 0.30f;
-		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // coin orange
+		pw->CreateGroup(pos, ddim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
 		pos.x  = 0.35f;
 		pos.y  = 0.10f;
 		ddim.x = 0.30f;
 		ddim.y = 0.30f;
-		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+		pw->CreateGroup(pos, ddim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
 		pos.x  = 254.0f/640.0f;
 		pos.y  = 208.0f/480.0f;
@@ -1773,7 +1775,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		m_engine->SetBackground("inter01.tga", 0,0, 0,0, TRUE, TRUE);
 		m_engine->SetBackForce(TRUE);
 
-		m_loadingCounter = 1;  // laisse le temps de s'afficher !
+		m_loadingCounter = 1;  // enough time to display!
 	}
 
 	if ( m_phase == PHASE_WELCOME1 )
@@ -2072,8 +2074,8 @@ void CMainDialog::ChangePhase(Phase phase)
 }
 
 
-// Traite un événement.
-// Retourne FALSE si l'événement a été traîté complètement.
+// Processing an event.
+// Returns FALSE if the event has been processed completely.
 
 BOOL CMainDialog::EventProcess(const Event &event)
 {
@@ -2140,7 +2142,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			return TRUE;
 		}
 
-		if ( m_shotDelay > 0 && !m_bDialog )  // copie d'écran à faire ?
+		if ( m_shotDelay > 0 && !m_bDialog )  // screenshot done?
 		{
 			m_shotDelay --;
 			if ( m_shotDelay == 0 )
@@ -2161,11 +2163,11 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		}
 
 		m_glintTime += event.rTime;
-		GlintMove();  // bouge les reflets
+		GlintMove();  // moves reflections
 
 		FrameParticule(event.rTime);
 
-		if ( m_bDialog )  // dialogue présent ?
+		if ( m_bDialog )  // this dialogue?
 		{
 			FrameDialog(event.rTime);
 		}
@@ -2179,7 +2181,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		NiceParticule(event.pos, event.keyState&KS_MLEFT);
 	}
 
-	if ( m_bDialog )  // dialogue présent ?
+	if ( m_bDialog )  // this dialogue?
 	{
 		m_interface->EventProcess(event);
 
@@ -2258,14 +2260,14 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			case EVENT_KEYDOWN:
 				if ( event.param == VK_ESCAPE )
 				{
-//?					StartQuit();  // voulez-vous quitter ?
+//?					StartQuit();  // would you leave?
 					m_sound->Play(SOUND_TZOING);
 					m_main->ChangePhase(PHASE_GENERIC);
 				}
 				break;
 
 			case EVENT_INTERFACE_QUIT:
-//?				StartQuit();  // voulez-vous quitter ?
+//?				StartQuit();  // would you leave?
 				m_sound->Play(SOUND_TZOING);
 				m_main->ChangePhase(PHASE_GENERIC);
 				break;
@@ -2665,12 +2667,12 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				if ( pl == 0 )  break;
 				if ( pc->TestState(STATE_CHECK) )
 				{
-					pc->ClearState(STATE_CHECK);  // fenêtré
+					pc->ClearState(STATE_CHECK);  // window
 					pl->ClearState(STATE_ENABLE);
 				}
 				else
 				{
-					pc->SetState(STATE_CHECK);  // plein écran
+					pc->SetState(STATE_CHECK);  // fullscreen
 					pl->SetState(STATE_ENABLE);
 				}
 				UpdateApply();
@@ -2768,7 +2770,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		return FALSE;
 	}
 
-	if ( m_phase == PHASE_SETUPp  ||  // setup/jeu ?
+	if ( m_phase == PHASE_SETUPp  ||  // setup/game ?
 		 m_phase == PHASE_SETUPps )
 	{
 		switch( event.event )
@@ -2877,7 +2879,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		return FALSE;
 	}
 
-	if ( m_phase == PHASE_SETUPc  ||  // setup/commandes ?
+	if ( m_phase == PHASE_SETUPc  ||  // setup/commands ?
 		 m_phase == PHASE_SETUPcs )
 	{
 		switch( event.event )
@@ -3095,7 +3097,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 }
 
 
-// Fait bouger les reflets.
+// Moves the reflections.
 
 void CMainDialog::GlintMove()
 {
@@ -3251,7 +3253,7 @@ void CMainDialog::GlintMove()
 }
 
 
-// Retourne la position pour un son.
+// Returns the position for a sound.
 
 D3DVECTOR SoundPos(FPOINT pos)
 {
@@ -3264,7 +3266,7 @@ D3DVECTOR SoundPos(FPOINT pos)
 	return s;
 }
 
-// Retourne une position aléatoire pour un son.
+// Returns a random position for a sound.
 
 D3DVECTOR SoundRand()
 {
@@ -3277,7 +3279,7 @@ D3DVECTOR SoundRand()
 	return s;
 }
 
-// Fait évoluer qq joiles particules.
+// Makes pretty qq particles evolve.
 
 void CMainDialog::FrameParticule(float rTime)
 {
@@ -3292,18 +3294,18 @@ void CMainDialog::FrameParticule(float rTime)
 	static float partiPosInit[1+5*12] =
 	{ //  x       x      t2    t2   type
 		 12.0f,
-		607.0f, 164.0f, 0.2f, 0.8f, 1.0f,  // câble sup.
-		604.0f, 205.0f, 0.1f, 0.3f, 1.0f,  // câble mid.
-		603.0f, 247.0f, 0.1f, 0.3f, 1.0f,  // câble inf.
-		119.0f, 155.0f, 0.2f, 0.4f, 2.0f,  // tuyau gauche
-		366.0f,  23.0f, 0.5f, 1.5f, 4.0f,  // tuyau sup.
-		560.0f, 414.0f, 0.1f, 0.1f, 1.0f,  // bouton inf/droite
-		 20.0f, 413.0f, 0.1f, 0.1f, 2.0f,  // bouton inf/gauche
-		 39.0f,  78.0f, 0.1f, 0.2f, 1.0f,  // pot gauche
-		 39.0f,  78.0f, 0.5f, 0.9f, 1.0f,  // pot gauche
-		170.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // fumée gauche
-		170.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // fumée gauche
-		474.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // fumée droite
+		607.0f, 164.0f, 0.2f, 0.8f, 1.0f,  // upper cable
+		604.0f, 205.0f, 0.1f, 0.3f, 1.0f,  // middle cable
+		603.0f, 247.0f, 0.1f, 0.3f, 1.0f,  // lower cable
+		119.0f, 155.0f, 0.2f, 0.4f, 2.0f,  // left pipe
+		366.0f,  23.0f, 0.5f, 1.5f, 4.0f,  // upper pipe
+		560.0f, 414.0f, 0.1f, 0.1f, 1.0f,  // button lower/right
+		 20.0f, 413.0f, 0.1f, 0.1f, 2.0f,  // button lower/left
+		 39.0f,  78.0f, 0.1f, 0.2f, 1.0f,  // left pot
+		 39.0f,  78.0f, 0.5f, 0.9f, 1.0f,  // left pot
+		170.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // left smoke
+		170.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // left smoke
+		474.0f, 229.0f, 0.5f, 0.5f, 3.0f,  // right smoke
 	};
 
 	static float glintPosInit[1+2*14] =
@@ -3328,18 +3330,18 @@ void CMainDialog::FrameParticule(float rTime)
 	static float partiPosBig[1+5*12] =
 	{ //  x       x      t2    t2   type
 		 12.0f,
-		607.0f, 164.0f, 0.2f, 0.8f, 1.0f,  // câble sup.
-		604.0f, 205.0f, 0.1f, 0.3f, 1.0f,  // câble mid.
-		603.0f, 247.0f, 0.1f, 0.3f, 1.0f,  // câble inf.
-		 64.0f, 444.0f, 0.2f, 0.8f, 1.0f,  // câble bas gauche
-		113.0f, 449.0f, 0.1f, 0.3f, 1.0f,  // câble bas gauche
-		340.0f, 463.0f, 0.2f, 0.8f, 1.0f,  // câble bas milieu
-		 36.0f, 155.0f, 0.2f, 0.4f, 2.0f,  // tuyau gauche
-		366.0f,  23.0f, 0.5f, 1.5f, 4.0f,  // tuyau sup.
-		612.0f, 414.0f, 0.1f, 0.1f, 1.0f,  // bouton inf/droite
-		 20.0f, 413.0f, 0.1f, 0.1f, 2.0f,  // bouton inf/gauche
-		 39.0f,  78.0f, 0.1f, 0.2f, 1.0f,  // pot gauche
-		 39.0f,  78.0f, 0.5f, 0.9f, 1.0f,  // pot gauche
+		607.0f, 164.0f, 0.2f, 0.8f, 1.0f,  // upper cable
+		604.0f, 205.0f, 0.1f, 0.3f, 1.0f,  // middle cable
+		603.0f, 247.0f, 0.1f, 0.3f, 1.0f,  // lower cable
+		 64.0f, 444.0f, 0.2f, 0.8f, 1.0f,  // down the left cable
+		113.0f, 449.0f, 0.1f, 0.3f, 1.0f,  // down the left cable
+		340.0f, 463.0f, 0.2f, 0.8f, 1.0f,  // down the middle cable
+		 36.0f, 155.0f, 0.2f, 0.4f, 2.0f,  // left pipe
+		366.0f,  23.0f, 0.5f, 1.5f, 4.0f,  // upper pipe
+		612.0f, 414.0f, 0.1f, 0.1f, 1.0f,  // button lower/right
+		 20.0f, 413.0f, 0.1f, 0.1f, 2.0f,  // button lower/left
+		 39.0f,  78.0f, 0.1f, 0.2f, 1.0f,  // left pot
+		 39.0f,  78.0f, 0.5f, 0.9f, 1.0f,  // left pot
 	};
 
 	static float glintPosBig[1+2*12] =
@@ -3395,7 +3397,7 @@ void CMainDialog::FrameParticule(float rTime)
 
 	for ( i=0 ; i<10 ; i++ )
 	{
-		if ( m_partiPhase[i] == 0 )  // attente ?
+		if ( m_partiPhase[i] == 0 )  // waiting?
 		{
 			m_partiTime[i] -= rTime;
 			if ( m_partiTime[i] <= 0.0f )
@@ -3479,12 +3481,12 @@ void CMainDialog::FrameParticule(float rTime)
 			}
 		}
 
-		if ( m_partiPhase[i] != 0 )  // génère ?
+		if ( m_partiPhase[i] != 0 )  // generates?
 		{
 			m_partiTime[i] -= rTime;
 			if ( m_partiTime[i] > 0.0f )
 			{
-				if ( m_partiPhase[i] == 1 )  // étincelles ?
+				if ( m_partiPhase[i] == 1 )  // sparks?
 				{
 					pos.x = m_partiPos[i].x;
 					pos.y = m_partiPos[i].y;
@@ -3512,7 +3514,7 @@ void CMainDialog::FrameParticule(float rTime)
 												 Rand()*0.5f+0.5f, 2.0f, 0.0f,
 												 SH_INTERFACE);
 				}
-				if ( m_partiPhase[i] == 2 )  // étincelles ?
+				if ( m_partiPhase[i] == 2 )  // sparks?
 				{
 					pos.x = m_partiPos[i].x;
 					pos.y = m_partiPos[i].y;
@@ -3539,7 +3541,7 @@ void CMainDialog::FrameParticule(float rTime)
 												 Rand()*0.5f+0.5f, 2.0f, 0.0f,
 												 SH_INTERFACE);
 				}
-				if ( m_partiPhase[i] == 3 )  // fumée ?
+				if ( m_partiPhase[i] == 3 )  // smoke?
 				{
 					pos.x = m_partiPos[i].x;
 					pos.y = m_partiPos[i].y;
@@ -3566,7 +3568,7 @@ void CMainDialog::FrameParticule(float rTime)
 #endif
 }
 
-// Quelques jolies particules pour suivre la souris.
+// Some nice particles following the mouse.
 
 void CMainDialog::NiceParticule(FPOINT mouse, BOOL bPress)
 {
@@ -3613,7 +3615,7 @@ void CMainDialog::NiceParticule(FPOINT mouse, BOOL bPress)
 
 
 
-// Spécifie le dossier spécial utilisateur si nécessaire.
+// Specifies the special user folder if needed.
 
 void CMainDialog::SetUserDir(char *base, int rank)
 {
@@ -3630,7 +3632,7 @@ void CMainDialog::SetUserDir(char *base, int rank)
 	}
 }
 
-// Construit le nom de fichier d'une mission.
+// Builds the file name of a mission.
 
 void CMainDialog::BuildSceneName(char *filename, char *base, int rank)
 {
@@ -3644,14 +3646,14 @@ void CMainDialog::BuildSceneName(char *filename, char *base, int rank)
 	}
 }
 
-// Construit le nom descriptif par défaut d'une mission.
+// Built the default descriptive name of a mission.
 
 void CMainDialog::BuildResumeName(char *filename, char *base, int rank)
 {
 	sprintf(filename, "Scene %s %d", base, rank);
 }
 
-// Retourne le nom du dossier où mettre les fichiers.
+// Returns the name of the file or save the files.
 
 char* CMainDialog::RetFilesDir()
 {
@@ -3659,7 +3661,7 @@ char* CMainDialog::RetFilesDir()
 }
 
 
-// Met à jour la liste des joueurs d'après les dossiers sur disque.
+// Updates the list of players after checking the files on disk.
 
 void CMainDialog::ReadNameList()
 {
@@ -3693,7 +3695,7 @@ void CMainDialog::ReadNameList()
 		}
 		while ( _findnext(hFile, &fBuffer) == 0 && nbFilenames < 100 );
 	}
-	do  // trie tous les noms :
+	do  // sorts all names:
 	{
 		bDo = FALSE;
 		for ( i=0 ; i<nbFilenames-1 ; i++ )
@@ -3715,7 +3717,7 @@ void CMainDialog::ReadNameList()
 	}
 }
 
-// Met à jour les contrôles des joueurs.
+// Updates the controls of the players.
 
 void CMainDialog::UpdateNameControl()
 {
@@ -3764,7 +3766,7 @@ void CMainDialog::UpdateNameControl()
 	}
 }
 
-// Met à jour la liste des joueurs en fonction du nom frapé.
+// Updates the list of players by name frape.
 
 void CMainDialog::UpdateNameList()
 {
@@ -3798,7 +3800,7 @@ void CMainDialog::UpdateNameList()
 	pl->SetSelect(-1);
 }
 
-// Met à jour le nom du joueur et fonction de la liste sélectionnée.
+// Updates the player's name and function of the selected list.
 
 void CMainDialog::UpdateNameEdit()
 {
@@ -3831,7 +3833,7 @@ void CMainDialog::UpdateNameEdit()
 	UpdateNameControl();
 }
 
-// Met à jour la représentation du joueur en fonction de la liste sélectionnée.
+// Updates the representation of the player depending on the selected list.
 
 void CMainDialog::UpdateNameFace()
 {
@@ -3852,7 +3854,7 @@ void CMainDialog::UpdateNameFace()
 	ReadGamerPerso(name);
 }
 
-// Sélectionne un joueur.
+// Selects a player.
 
 void CMainDialog::NameSelect()
 {
@@ -3887,7 +3889,7 @@ void CMainDialog::NameSelect()
 	SetProfileString("Gamer", "LastName", m_main->RetGamerName());
 }
 
-// Crée un nouveau joueur.
+// Creates a new player.
 
 void CMainDialog::NameCreate()
 {
@@ -3934,7 +3936,7 @@ void CMainDialog::NameCreate()
 		return;
 	}
 
-	_mkdir(m_savegameDir);  // si n'existe pas encore !
+	_mkdir(m_savegameDir);  // if does not exist yet!
 
 	sprintf(dir, "%s\\%s", m_savegameDir, name);
 	if ( _mkdir(dir) != 0 )
@@ -3952,7 +3954,7 @@ void CMainDialog::NameCreate()
 	m_main->ChangePhase(PHASE_INIT);
 }
 
-// Supprime un dossier et toute sa descendance.
+// Deletes a folder and all its offspring.
 
 BOOL RemoveDir(char *dirname)
 {
@@ -3990,7 +3992,7 @@ BOOL RemoveDir(char *dirname)
 	return TRUE;
 }
 
-// Supprime un joueur.
+// Removes a player.
 
 void CMainDialog::NameDelete()
 {
@@ -4013,7 +4015,7 @@ void CMainDialog::NameDelete()
 	}
 	gamer = pl->RetName(sel);
 
-	// Supprime tout le contenu du dossier.
+	// Deletes all the contents of the file.
 	sprintf(dir, "%s\\%s", m_savegameDir, gamer);
 	if ( !RemoveDir(dir) )
 	{
@@ -4031,7 +4033,7 @@ void CMainDialog::NameDelete()
 
 
 
-// Teste si deux couleurs sont égales ou presque.
+// ests whether two colors are equal or nearly are.
 
 BOOL EqColor(const D3DCOLORVALUE &c1, const D3DCOLORVALUE &c2)
 {
@@ -4040,7 +4042,7 @@ BOOL EqColor(const D3DCOLORVALUE &c1, const D3DCOLORVALUE &c2)
 			Abs(c1.b-c2.b) < 0.01f );
 }
 
-// Met à jour tous les boutons pour le personnage.
+// Updates all the buttons for the character.
 
 void CMainDialog::UpdatePerso()
 {
@@ -4193,7 +4195,7 @@ void CMainDialog::UpdatePerso()
 	if ( ps != 0 )  ps->SetVisibleValue(color.b*255.0f);
 }
 
-// Met à jour la caméra pour le personnage.
+// Updates the camera for the character.
 
 void CMainDialog::CameraPerso()
 {
@@ -4214,7 +4216,7 @@ void CMainDialog::CameraPerso()
 	m_camera->FixCamera();
 }
 
-// Met une couleur fixe.
+// Sets a fixed color.
 
 void CMainDialog::FixPerso(int rank, int index)
 {
@@ -4244,7 +4246,7 @@ void CMainDialog::FixPerso(int rank, int index)
 	}
 }
 
-// Met à jour les couleurs du personnage.
+// Updates the color of the character.
 
 void CMainDialog::ColorPerso()
 {
@@ -4275,13 +4277,13 @@ void CMainDialog::ColorPerso()
 	else                    m_perso.colorBand = color;
 }
 
-// Met à jour les paramètres par défaut du personnage.
+// Updates the default settings of the character.
 
 void CMainDialog::DefPerso()
 {
 	m_perso.colorCombi.r = 206.0f/256.0f;
 	m_perso.colorCombi.g = 206.0f/256.0f;
-	m_perso.colorCombi.b = 204.0f/256.0f;  // ~blanc
+	m_perso.colorCombi.b = 204.0f/256.0f;  // ~white
 	m_perso.colorBand.r  = 255.0f/256.0f;
 	m_perso.colorBand.g  = 132.0f/256.0f;
 	m_perso.colorBand.b  =   1.0f/256.0f;  // orange
@@ -4291,28 +4293,28 @@ void CMainDialog::DefPerso()
 		m_perso.glasses = 0;
 		m_perso.colorHair.r =  90.0f/256.0f;
 		m_perso.colorHair.g =  95.0f/256.0f;
-		m_perso.colorHair.b =  85.0f/256.0f;  // noir
+		m_perso.colorHair.b =  85.0f/256.0f;  // black
 	}
-	if ( m_perso.face == 1 )  // chauve ?
+	if ( m_perso.face == 1 )  // bald ?
 	{
 		m_perso.glasses = 0;
 		m_perso.colorHair.r =  83.0f/256.0f;
 		m_perso.colorHair.g =  64.0f/256.0f;
-		m_perso.colorHair.b =  51.0f/256.0f;  // brun
+		m_perso.colorHair.b =  51.0f/256.0f;  // brown
 	}
 	if ( m_perso.face == 2 )  // carlos ?
 	{
 		m_perso.glasses = 1;
 		m_perso.colorHair.r =  85.0f/256.0f;
 		m_perso.colorHair.g =  48.0f/256.0f;
-		m_perso.colorHair.b =   9.0f/256.0f;  // brun
+		m_perso.colorHair.b =   9.0f/256.0f;  // brown
 	}
 	if ( m_perso.face == 3 )  // blond ?
 	{
 		m_perso.glasses = 4;
 		m_perso.colorHair.r = 255.0f/256.0f;
 		m_perso.colorHair.g = 255.0f/256.0f;
-		m_perso.colorHair.b = 181.0f/256.0f;  // jaune
+		m_perso.colorHair.b = 181.0f/256.0f;  // yellow
 	}
 
 	m_perso.colorHair.a  = 0.0f;
@@ -4321,7 +4323,7 @@ void CMainDialog::DefPerso()
 }
 
 
-// Indique s'il existe au moins une sauvegarde.
+// Indicates if there is at least one backup.
 
 BOOL CMainDialog::IsIOReadScene()
 {
@@ -4335,7 +4337,7 @@ BOOL CMainDialog::IsIOReadScene()
 	return TRUE;
 }
 
-// Construit le nom du fichier par défaut.
+// Builds the file name by default.
 
 void CMainDialog::IOReadName()
 {
@@ -4364,7 +4366,7 @@ void CMainDialog::IOReadName()
 		{
 			for ( i=0 ; i<500 ; i++ )
 			{
-				if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+				if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
 				if ( line[i] == '/' && line[i+1] == '/' )
 				{
 					line[i] = 0;
@@ -4390,7 +4392,7 @@ void CMainDialog::IOReadName()
 	pe->SetFocus(TRUE);
 }
 
-// Met à jour la liste des parties enregistrées sur disque.
+// Updates the list of games recorded on disk.
 
 void CMainDialog::IOReadList()
 {
@@ -4415,12 +4417,12 @@ void CMainDialog::IOReadList()
 		file = fopen(filename, "r");
 		if ( file == NULL )  break;
 
-		strcmp(name, filename);  // nom par défaut
+		strcmp(name, filename);  // default name
 		while ( fgets(line, 500, file) != NULL )
 		{
 			for ( i=0 ; i<500 ; i++ )
 			{
-				if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+				if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
 				if ( line[i] == '/' && line[i+1] == '/' )
 				{
 					line[i] = 0;
@@ -4448,11 +4450,10 @@ void CMainDialog::IOReadList()
 	}
 
 	pl->SetSelect(j-1);
-	pl->ShowSelect(FALSE);  // montre la ligne sélectionnée
+	pl->ShowSelect(FALSE);  // shows the selected columns
 }
 
-// Met à jour les boutons en fonction de la partie sélectionnée
-// dans la liste.
+// Updates the buttons according to the selected part in the list.
 
 void CMainDialog::IOUpdateList()
 {
@@ -4500,7 +4501,7 @@ void CMainDialog::IOUpdateList()
 	}
 }
 
-// Supprime la scène sélectionnée.
+// Deletes the selected scene.
 
 void CMainDialog::IODeleteScene()
 {
@@ -4524,7 +4525,7 @@ void CMainDialog::IODeleteScene()
 		return;
 	}
 
-	// Supprime tout le contenu du dossier.
+	// Deletes all the contents of the file.
 	sprintf(dir, "%s\\%s\\save%c%.3d\\*", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], sel);
 	hFile = _findfirst(dir, &fBuffer);
 	if ( hFile != -1 )
@@ -4557,7 +4558,7 @@ void CMainDialog::IODeleteScene()
 	IOReadList();
 }
 
-// Ecrit la scène.
+// Writes the scene.
 
 BOOL CMainDialog::IOWriteScene()
 {
@@ -4579,7 +4580,7 @@ BOOL CMainDialog::IOWriteScene()
 	sel = pl->RetSelect();
 	if ( sel == -1 )  return FALSE;
 
-	_mkdir("Savegame");  // si n'existe pas encore !
+	_mkdir("Savegame");  // if doesn't exist yet!
 	sprintf(filename, "%s\\%s", m_savegameDir, m_main->RetGamerName());
 	_mkdir(filename);
 	sprintf(filename, "%s\\%s\\save%c%.3d", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], sel);
@@ -4596,7 +4597,7 @@ BOOL CMainDialog::IOWriteScene()
 	return TRUE;
 }
 
-// Lit la scène.
+// Reads the scene.
 
 BOOL CMainDialog::IOReadScene()
 {
@@ -4627,7 +4628,7 @@ BOOL CMainDialog::IOReadScene()
 	{
 		for ( i=0 ; i<500 ; i++ )
 		{
-			if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+			if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
 			if ( line[i] == '/' && line[i+1] == '/' )
 			{
 				line[i] = 0;
@@ -4671,7 +4672,7 @@ BOOL CMainDialog::IOReadScene()
 }
 
 
-// Retourne le nombre de chapitres accessibles.
+// Returns the number of accessible chapters.
 
 int CMainDialog::RetChapPassed()
 {
@@ -4689,7 +4690,7 @@ int CMainDialog::RetChapPassed()
 	return 9;
 }
 
-// Met à jour les listes selon le cheat code.
+// Updates the lists according to the cheat code.
 
 void CMainDialog::AllMissionUpdate()
 {
@@ -4706,7 +4707,7 @@ void CMainDialog::AllMissionUpdate()
 	}
 }
 
-// Met à jour les chapitres des exercices ou missions.
+// Updates the chapters of exercises or missions.
 
 void CMainDialog::UpdateSceneChap(int &chap)
 {
@@ -4747,7 +4748,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 		}
 		m_userTotal = j;
 
-		do  // trie tous les noms :
+		do  // sorts all names:
 		{
 			bDo = FALSE;
 			for ( i=0 ; i<m_userTotal-1 ; i++ )
@@ -4773,12 +4774,12 @@ void CMainDialog::UpdateSceneChap(int &chap)
 			}
 			else
 			{
-				BuildResumeName(name, m_sceneName, j+1);  // nom par défaut
+				BuildResumeName(name, m_sceneName, j+1);  // default name
 				while ( fgets(line, 500, file) != NULL )
 				{
 					for ( i=0 ; i<500 ; i++ )
 					{
-						if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+						if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
 						if ( line[i] == '/' && line[i+1] == '/' )
 						{
 							line[i] = 0;
@@ -4819,12 +4820,12 @@ void CMainDialog::UpdateSceneChap(int &chap)
 			file = fopen(filename, "r");
 			if ( file == NULL )  break;
 
-			BuildResumeName(name, m_sceneName, j+1);  // nom par défaut
+			BuildResumeName(name, m_sceneName, j+1);  // default name
 			while ( fgets(line, 500, file) != NULL )
 			{
 				for ( i=0 ; i<500 ; i++ )
 				{
-					if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+					if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
 					if ( line[i] == '/' && line[i+1] == '/' )
 					{
 						line[i] = 0;
@@ -4872,10 +4873,10 @@ void CMainDialog::UpdateSceneChap(int &chap)
 	if ( chap > j-1 )  chap = j-1;
 
 	pl->SetSelect(chap);
-	pl->ShowSelect(FALSE);  // montre la ligne sélectionnée
+	pl->ShowSelect(FALSE);  // shows the selected columns
 }
 
-// Met à jour la liste des exercices ou missions.
+// Updates the list of exercises or missions.
 
 void CMainDialog::UpdateSceneList(int chap, int &sel)
 {
@@ -4917,12 +4918,12 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 		file = fopen(filename, "r");
 		if ( file == NULL )  break;
 
-		BuildResumeName(name, m_sceneName, j+1);  // nom par défaut
+		BuildResumeName(name, m_sceneName, j+1);  // default name
 		while ( fgets(line, 500, file) != NULL )
 		{
 			for ( i=0 ; i<500 ; i++ )
 			{
-				if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+				if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
 				if ( line[i] == '/' && line[i+1] == '/' )
 				{
 					line[i] = 0;
@@ -4968,17 +4969,17 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 	}
 	else
 	{
-		m_maxList = j+1;  // ce n'est pas le dernier !
+		m_maxList = j+1;  // this is not the last!
 		fclose(file);
 	}
 
 	if ( sel > j-1 )  sel = j-1;
 
 	pl->SetSelect(sel);
-	pl->ShowSelect(FALSE);  // montre la ligne sélectionnée
+	pl->ShowSelect(FALSE);  // shows the selected columns
 }
 
-// Met à jour le bouton "solution" selon le cheat code.
+// Updates the button "solution" according to cheat code.
 
 void CMainDialog::ShowSoluceUpdate()
 {
@@ -5018,7 +5019,7 @@ void CMainDialog::ShowSoluceUpdate()
 	}
 }
 
-// Met à jour un résumé d'exercice ou de mission.
+// Updates a summary of exercise or mission.
 
 void CMainDialog::UpdateSceneResume(int rank)
 {
@@ -5066,7 +5067,7 @@ void CMainDialog::UpdateSceneResume(int rank)
 	{
 		for ( i=0 ; i<500 ; i++ )
 		{
-			if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+			if ( line[i] == '\t' )  line[i] = ' ';  // replaces tab by space
 			if ( line[i] == '/' && line[i+1] == '/' )
 			{
 				line[i] = 0;
@@ -5086,7 +5087,7 @@ void CMainDialog::UpdateSceneResume(int rank)
 	pe->SetText(name);
 }
 
-// Met à jour la liste des devices.
+// Updates the list of devices.
 
 void CMainDialog::UpdateDisplayDevice()
 {
@@ -5121,7 +5122,7 @@ void CMainDialog::UpdateDisplayDevice()
 	m_setupSelDevice = selectDevices;
 }
 
-// Met à jour la liste des modes.
+// Updates the list of modes.
 
 void CMainDialog::UpdateDisplayMode()
 {
@@ -5156,7 +5157,7 @@ void CMainDialog::UpdateDisplayMode()
 	m_setupSelMode = selectModes;
 }
 
-// Change le mode graphique.
+// Change the graphics mode.
 
 void CMainDialog::ChangeDisplay()
 {
@@ -5196,7 +5197,7 @@ void CMainDialog::ChangeDisplay()
 
 
 
-// Met à jour le bouton "appliquer".
+// Updates the "apply" button.
 
 void CMainDialog::UpdateApply()
 {
@@ -5236,7 +5237,7 @@ void CMainDialog::UpdateApply()
 	}
 }
 
-// Met à jour les boutons pendant la phase de setup.
+// Updates the buttons during the setup phase.
 
 void CMainDialog::UpdateSetupButtons()
 {
@@ -5451,7 +5452,7 @@ void CMainDialog::UpdateSetupButtons()
 	}
 }
 
-// Met à jour le moteur en fonction des boutons après la phase de setup.
+// Updates the engine function of the buttons after the setup phase.
 
 void CMainDialog::ChangeSetupButtons()
 {
@@ -5514,7 +5515,7 @@ void CMainDialog::ChangeSetupButtons()
 }
 
 
-// Mémorise tous les réglages.
+// Memorizes all the settings.
 
 void CMainDialog::SetupMemorize()
 {
@@ -5653,7 +5654,7 @@ void CMainDialog::SetupMemorize()
 	m_engine->WriteProfile();
 }
 
-// Rappelle tous les réglages.
+// Remember all the settings.
 
 void CMainDialog::SetupRecall()
 {
@@ -5886,7 +5887,7 @@ void CMainDialog::SetupRecall()
 }
 
 
-// Change le niveau général de qualité.
+// Changes the general level of quality.
 
 void CMainDialog::ChangeSetupQuality(int quality)
 {
@@ -5934,7 +5935,7 @@ void CMainDialog::ChangeSetupQuality(int quality)
 }
 
 
-// Touches redéfinissables :
+// Redefinable keys:
 
 static int key_table[KEY_TOTAL] =
 {
@@ -6018,7 +6019,7 @@ static EventMsg key_event[KEY_TOTAL] =
 #endif
 };
 
-// Met à jour la liste des touches.
+// Updates the list of keys.
 
 void CMainDialog::UpdateKey()
 {
@@ -6056,7 +6057,7 @@ void CMainDialog::UpdateKey()
 	}
 }
 
-// Change une touche.
+// Change a key.
 
 void CMainDialog::ChangeKey(EventMsg event)
 {
@@ -6085,7 +6086,7 @@ void CMainDialog::ChangeKey(EventMsg event)
 
 
 
-// Voulez-vous quitter la mission en cours ?
+// Do you want to quit the current mission?
 
 void CMainDialog::StartAbort()
 {
@@ -6104,12 +6105,12 @@ void CMainDialog::StartAbort()
 	pos.y = 0.60f;
 	dim.x = 0.30f;
 	dim.y = 0.30f;
-	pw->CreateGroup(pos, dim, 5, EVENT_INTERFACE_GLINTl);  // coin orange
+	pw->CreateGroup(pos, dim, 5, EVENT_INTERFACE_GLINTl);  // orange corner
 	pos.x = 0.35f;
 	pos.y = 0.10f;
 	dim.x = 0.30f;
 	dim.y = 0.30f;
-	pw->CreateGroup(pos, dim, 4, EVENT_INTERFACE_GLINTr);  // coin bleu
+	pw->CreateGroup(pos, dim, 4, EVENT_INTERFACE_GLINTr);  // blue corner
 
 	pos.x = 0.40f;
 	dim.x = 0.20f;
@@ -6126,13 +6127,13 @@ void CMainDialog::StartAbort()
 	pb->SetName(name);
 
 	if ( m_index == 2 ||  // missions ?
-		 m_index == 3 ||  // jeux libres ?
+		 m_index == 3 ||  // free games?
 		 m_index == 4 )   // user ?
 	{
 		pos.y = 0.62f;
 		pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_WRITE);
 		pb->SetState(STATE_SHADOW);
-		if ( m_main->IsBusy() )  // tâche en cours ?
+		if ( m_main->IsBusy() )  // current task?
 		{
 			pb->ClearState(STATE_ENABLE);
 		}
@@ -6140,7 +6141,7 @@ void CMainDialog::StartAbort()
 		pos.y = 0.53f;
 		pb = pw->CreateButton(pos, dim, -1, EVENT_INTERFACE_READ);
 		pb->SetState(STATE_SHADOW);
-		if ( !IsIOReadScene() )  // aucun fichier à lire ?
+		if ( !IsIOReadScene() )  // no file to read?
 		{
 			pb->ClearState(STATE_ENABLE);
 		}
@@ -6167,7 +6168,7 @@ void CMainDialog::StartAbort()
 	pb->SetName(name);
 }
 
-// Voulez-vous détruire le bâtiment ?
+// Do you want to destroy the building?
 
 void CMainDialog::StartDeleteObject()
 {
@@ -6201,7 +6202,7 @@ void CMainDialog::StartDeleteObject()
 	pb->SetName(name);
 }
 
-// Voulez-vous détruire le joueur ?
+// Do you want to delete the player?
 
 void CMainDialog::StartDeleteGame(char *gamer)
 {
@@ -6237,7 +6238,7 @@ void CMainDialog::StartDeleteGame(char *gamer)
 	pb->SetName(name);
 }
 
-// Voulez-vous quitter le jeu ?
+// Would you quit the game?
 
 void CMainDialog::StartQuit()
 {
@@ -6270,7 +6271,7 @@ void CMainDialog::StartQuit()
 	pb->SetName(name);
 }
 
-// Début de l'affichage d'un dialogue.
+// Beginning of displaying a dialog.
 
 void CMainDialog::StartDialog(FPOINT dim, BOOL bFire, BOOL bOK, BOOL bCancel)
 {
@@ -6356,7 +6357,7 @@ void CMainDialog::StartDialog(FPOINT dim, BOOL bFire, BOOL bOK, BOOL bCancel)
 	m_bDialog = TRUE;
 }
 
-// Animation d'un dialogue.
+// Animation of a dialog.
 
 void CMainDialog::FrameDialog(float rTime)
 {
@@ -6414,7 +6415,7 @@ void CMainDialog::FrameDialog(float rTime)
 
 	for ( i=0 ; i<2 ; i++ )
 	{
-		// En bas.
+		// Bottom.
 		pos.x = dpos.x + ddim.x*Rand();
 		pos.y = dpos.y;
 		pos.x += (Rand()-0.5f)*(6.0f/640.0f);
@@ -6425,7 +6426,7 @@ void CMainDialog::FrameDialog(float rTime)
 									 (ParticuleType)(PARTILENS1+rand()%3),
 									 1.0f, 0.0f, 0.0f, SH_INTERFACE);
 
-		// En haut.
+		// Top.
 		pos.x = dpos.x + ddim.x*Rand();
 		pos.y = dpos.y + ddim.y;
 		pos.x += (Rand()-0.5f)*(6.0f/640.0f);
@@ -6436,7 +6437,7 @@ void CMainDialog::FrameDialog(float rTime)
 									 (ParticuleType)(PARTILENS1+rand()%3),
 									 1.0f, 0.0f, 0.0f, SH_INTERFACE);
 
-		// A gauche.
+		// Left.
 		pos.y = dpos.y + ddim.y*Rand();
 		pos.x = dpos.x;
 		pos.x += Rand()*(16.0f/640.0f)-(10.0f/640.0f);
@@ -6447,7 +6448,7 @@ void CMainDialog::FrameDialog(float rTime)
 									 (ParticuleType)(PARTILENS1+rand()%3),
 									 1.0f, 0.0f, 0.0f, SH_INTERFACE);
 
-		// A droite.
+		// Right.
 		pos.y = dpos.y + ddim.y*Rand();
 		pos.x = dpos.x + ddim.x;
 		pos.x -= Rand()*(16.0f/640.0f)-(10.0f/640.0f);
@@ -6460,7 +6461,7 @@ void CMainDialog::FrameDialog(float rTime)
 	}
 }
 
-// Fin de l'affichage d'un dialogue.
+// End of the display of a dialogue.
 
 void CMainDialog::StopDialog()
 {
@@ -6505,7 +6506,7 @@ void CMainDialog::StopDialog()
 	m_bDialog = FALSE;
 }
 
-// Suspend la simulation pour une phase de dialogue.
+// Suspends the simulation for a dialog phase.
 
 void CMainDialog::StartSuspend()
 {
@@ -6513,35 +6514,35 @@ void CMainDialog::StartSuspend()
 	m_main->ClearInterface();
 	m_bInitPause = m_engine->RetPause();
 	m_engine->SetPause(TRUE);
-	m_engine->SetOverFront(FALSE);  // over plane derrière
+	m_engine->SetOverFront(FALSE);  // over flat behind
 	m_main->CreateShortcuts();
 	m_main->StartSuspend();
 	m_initCamera = m_camera->RetType();
 	m_camera->SetType(CAMERA_DIALOG);
 }
 
-// Reprend la simulation après une phase de dialogue.
+// Resume the simulation after a period of dialog.
 
 void CMainDialog::StopSuspend()
 {
 	m_sound->MuteAll(FALSE);
 	m_main->ClearInterface();
 	if ( !m_bInitPause )  m_engine->SetPause(FALSE);
-	m_engine->SetOverFront(TRUE);  // over plane devant
+	m_engine->SetOverFront(TRUE);  // over flat front
 	m_main->CreateShortcuts();
 	m_main->StopSuspend();
 	m_camera->SetType(m_initCamera);
 }
 
 
-// Indique s'il faut utiliser les tooltips.
+// Whether to use tooltips.
 
 BOOL CMainDialog::RetTooltip()
 {
 	return m_bTooltip;
 }
 
-// Indique si un dialogue est affiché.
+// Specifies whether a dialog is displayed.
 
 BOOL CMainDialog::IsDialog()
 {
@@ -6551,63 +6552,63 @@ BOOL CMainDialog::IsDialog()
 
 
 
-// Spécifie le nom de la scène à lire.
+// Specifies the name of the scene to read.
 
 void CMainDialog::SetSceneRead(char* name)
 {
 	strcpy(m_sceneRead, name);
 }
 
-// Retourne le nom de la scène à lire.
+// Returns the name of the scene to read.
 
 char* CMainDialog::RetSceneRead()
 {
 	return m_sceneRead;
 }
 
-// Spécifie le nom de la scène à lire.
+// Specifies the name of the scene to read.
 
 void CMainDialog::SetStackRead(char* name)
 {
 	strcpy(m_stackRead, name);
 }
 
-// Retourne le nom de la scène à lire.
+// Returns the name of the scene to read.
 
 char* CMainDialog::RetStackRead()
 {
 	return m_stackRead;
 }
 
-// Spécifie le nom de la scène choisie pour jouer.
+// Specifies the name of the chosen to play scene.
 
 void CMainDialog::SetSceneName(char* name)
 {
 	strcpy(m_sceneName, name);
 }
 
-// Retourne le nom de la scène choisie pour jouer.
+// Returns the name of the chosen to play scene.
 
 char* CMainDialog::RetSceneName()
 {
 	return m_sceneName;
 }
 
-// Spécifie le rang de la scène choisie pour jouer.
+// Specifies the rank of the chosen to play scene.
 
 void CMainDialog::SetSceneRank(int rank)
 {
 	m_sceneRank = rank;
 }
 
-// Retourne le rang de la scène choisie pour jouer.
+// Returns the rank of the chosen to play scene.
 
 int CMainDialog::RetSceneRank()
 {
 	return m_sceneRank;
 }
 
-// Retourne nom de dossier de la scène utilisateur choisie pour jouer.
+// Returns folder name of the scene that user selected to play.
 
 char* CMainDialog::RetSceneDir()
 {
@@ -6619,21 +6620,21 @@ char* CMainDialog::RetSceneDir()
 	return m_userList[i];
 }
 
-// Indique s'il faut montrer la solution.
+// Whether to show the solution.
 
 BOOL CMainDialog::RetSceneSoluce()
 {
 	return m_bSceneSoluce;
 }
 
-// Retourne le nom du dossier pour sauvegarder.
+// Returns the name of the folder to save.
 
 char* CMainDialog::RetSavegameDir()
 {
 	return m_savegameDir;
 }
 
-// Retourne le nom du dossier public.
+// Returns the name of public folder.
 
 char* CMainDialog::RetPublicDir()
 {
@@ -6641,35 +6642,35 @@ char* CMainDialog::RetPublicDir()
 }
 
 
-// Indique s'il y a des reflets sur les boutons.
+// Indicates if there are reflections on the buttons.
 
 BOOL CMainDialog::RetGlint()
 {
 	return m_bGlint;
 }
 
-// Indique s'il faut montrer les 4:solutions.
+// Whether to show 4:solutions.
 
 BOOL CMainDialog::RetSoluce4()
 {
 	return m_bSoluce4;
 }
 
-// Indique s'il faut montrer les cinématiques.
+// Whether to show the cinematics.
 
 BOOL CMainDialog::RetMovies()
 {
 	return m_bMovies;
 }
 
-// Indique s'il faut faire une animation dans CTaskReset.
+// IWhether to make an animation in CTaskReset.
 
 BOOL CMainDialog::RetNiceReset()
 {
 	return m_bNiceReset;
 }
 
-// Indique si les tirs provoquent des dommages à ses propres unités.
+// Indicates whether the fire causes damage to its own units.
 
 BOOL CMainDialog::RetHimselfDamage()
 {
@@ -6678,7 +6679,7 @@ BOOL CMainDialog::RetHimselfDamage()
 
 
 
-// Enregistre la représentation personnalisée du joueur.
+// Saves the personalized player.
 
 void CMainDialog::WriteGamerPerso(char *gamer)
 {
@@ -6703,7 +6704,7 @@ void CMainDialog::WriteGamerPerso(char *gamer)
 	fclose(file);
 }
 
-// Lit la représentation personnalisée du joueur.
+// Reads the personalized player.
 
 void CMainDialog::ReadGamerPerso(char *gamer)
 {
@@ -6752,7 +6753,7 @@ void CMainDialog::ReadGamerPerso(char *gamer)
 	fclose(file);
 }
 
-// Spécifie la représentation du joueur.
+// Specifies the face of the player.
 
 void CMainDialog::SetGamerFace(char *gamer, int face)
 {
@@ -6760,7 +6761,7 @@ void CMainDialog::SetGamerFace(char *gamer, int face)
 	WriteGamerPerso(gamer);
 }
 
-// Donne la représentation du joueur.
+// Gives the face of the player.
 
 int CMainDialog::RetGamerFace(char *gamer)
 {
@@ -6768,7 +6769,7 @@ int CMainDialog::RetGamerFace(char *gamer)
 	return m_perso.face;
 }
 
-// Donne la représentation du joueur.
+// Gives the face of the player.
 
 int CMainDialog::RetGamerFace()
 {
@@ -6806,7 +6807,7 @@ D3DCOLORVALUE CMainDialog::RetGamerColorBand()
 }
 
 
-// Lit le fichier du joueur.
+// Reads the file of the player.
 
 BOOL CMainDialog::ReadGamerInfo()
 {
@@ -6848,7 +6849,7 @@ BOOL CMainDialog::ReadGamerInfo()
 	return TRUE;
 }
 
-// Ecrit le fichier du joueur.
+// Writes the file of the player.
 
 BOOL CMainDialog::WriteGamerInfo()
 {
@@ -6918,16 +6919,16 @@ BOOL CMainDialog::RetGamerInfoPassed(int rank)
 }
 
 
-// Passe à la misison suivante, et éventuellement au chapitre suivant.
+// Passes to the next mission, and possibly in the next chapter.
 
 BOOL CMainDialog::NextMission()
 {
-	m_sel[m_index] ++;  // mission suivante
+	m_sel[m_index] ++;  // next mission
 
-	if ( m_sel[m_index] >= m_maxList )  // dernière mission du chapitre ?
+	if ( m_sel[m_index] >= m_maxList )  // last mission of the chapter?
 	{
-		m_chap[m_index] ++;  // chapitre suivant
-		m_sel[m_index] = 0;  // première mission
+		m_chap[m_index] ++;  // next chapter
+		m_sel[m_index] = 0;  // first mission
 	}
 
 	return TRUE;
