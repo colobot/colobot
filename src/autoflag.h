@@ -12,10 +12,16 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// autoflag.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// autoflag.h
 
 #ifndef _AUTOFLAG_H_
 #define	_AUTOFLAG_H_
+
+
+#include "auto.h"
+#include "misc.h"
 
 
 class CInstanceManager;
@@ -24,8 +30,6 @@ class CParticule;
 class CTerrain;
 class CCamera;
 class CObject;
-
-enum ObjectType;
 
 
 

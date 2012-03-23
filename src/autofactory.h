@@ -14,8 +14,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// autofactory.h
+
 #ifndef _AUTOFACTORY_H_
 #define	_AUTOFACTORY_H_
+
+
+#include "auto.h"
+#include "d3denum.h"
 
 
 class CInstanceManager;

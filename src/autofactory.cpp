@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "restext.h"
 #include "global.h"
 #include "event.h"
@@ -67,7 +67,7 @@ CAutoFactory::CAutoFactory(CInstanceManager* iMan, CObject* object)
 
 CAutoFactory::~CAutoFactory()
 {
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 

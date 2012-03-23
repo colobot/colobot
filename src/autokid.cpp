@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "event.h"
 #include "misc.h"
 #include "iman.h"
@@ -63,7 +63,7 @@ CAutoKid::~CAutoKid()
 		m_soundChannel = -1;
 	}
 
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 

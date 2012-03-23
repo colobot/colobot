@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "global.h"
 #include "event.h"
 #include "misc.h"
@@ -61,7 +61,7 @@ CAutoPara::CAutoPara(CInstanceManager* iMan, CObject* object)
 
 CAutoPara::~CAutoPara()
 {
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 
