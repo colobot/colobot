@@ -22,7 +22,6 @@
 
 #include "auto.h"
 #include "misc.h"
-#include "d3denum.h"
 
 
 class CInstanceManager;
