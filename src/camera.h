@@ -14,8 +14,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// camera.h
+
 #ifndef _CAMERA_H_
 #define	_CAMERA_H_
+
+
+#include "d3dengine.h"
+#include "struct.h"
 
 
 class CInstanceManager;
@@ -23,7 +29,6 @@ class CD3DEngine;
 class CTerrain;
 class CWater;
 class CObject;
-enum D3DMouse;
 
 
 enum CameraType

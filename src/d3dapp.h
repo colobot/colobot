@@ -14,7 +14,7 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// D3DApp.h
+// d3dapp.h
 
 
 #ifndef  _D3DAPP_H
@@ -23,21 +23,20 @@
 #define  D3D_OVERLOADS
 
 #include <d3d.h>
-#include "D3DFrame.h"
-#include "D3DEnum.h"
-#include "D3DUtil.h"
-#include "D3DRes.h"
 
+#include "d3dengine.h"
+#include "d3dframe.h"
+#include "d3denum.h"
+#include "d3dutil.h"
+#include "d3dres.h"
+#include "misc.h"
+#include "struct.h"
 
 
 class CInstanceManager;
 class CEvent;
-class CD3DEngine;
 class CRobotMain;
 class CSound;
-
-enum D3DMouse;
-enum Error;
 
 
 

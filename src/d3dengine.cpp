@@ -23,11 +23,11 @@
 #include <math.h>
 
 #include "struct.h"
-#include "D3DApp.h"
-#include "D3DTextr.h"
-#include "D3DUtil.h"
-#include "D3DMath.h"
-#include "D3DEngine.h"
+#include "d3dapp.h"
+#include "d3dtextr.h"
+#include "d3dutil.h"
+#include "d3dmath.h"
+#include "d3dengine.h"
 #include "language.h"
 #include "iman.h"
 #include "event.h"
@@ -2045,7 +2045,7 @@ void CD3DEngine::SetViewParams(const D3DVECTOR &vEyePt,
 	m_eyeDirH = RotateAngle(vEyePt.x-vLookatPt.x, vEyePt.z-vLookatPt.z);
 	m_eyeDirV = RotateAngle(Length2d(vEyePt, vLookatPt), vEyePt.y-vLookatPt.y);
 
-	D3DUtil_SetViewMatrix(m_matView, (D3DVECTOR)vEyePt, (D3DVECTOR)vLookatPt, (D3DVECTOR)vUpVec);
+	D3DUtil_SetViewMatrix(m_matView, (D3DVECTOR&)vEyePt, (D3DVECTOR&)vLookatPt, (D3DVECTOR&)vUpVec);
 
 	if ( m_sound == 0 )
 	{

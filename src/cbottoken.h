@@ -14,12 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// cbottoken.h
+
 #ifndef _CBOTTOKEN_H_
 #define	_CBOTTOKEN_H_
 
 
-
-enum ObjectType;
+#include "object.h"
 
 
 

@@ -14,15 +14,16 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// D3DEngine.h
+// d3dengine.h
 
 #ifndef _D3DENGINE_H_
 #define	_D3DENGINE_H_
 
-#include "D3DApp.h"
+
+#include "struct.h"
 
 
-
+class CD3DApplication;
 class CInstanceManager;
 class CObject;
 class CLight;
@@ -82,7 +83,7 @@ enum D3DMouse
 	D3DMOUSEMOVEH	= 9,		// -
 	D3DMOUSEMOVEV	= 10,		// |
 	D3DMOUSEMOVED	= 11,		// /
-	D3DMOUSEMOVEI	= 12,		// \ 
+	D3DMOUSEMOVEI	= 12,		// \ //
 	D3DMOUSESCROLLL	= 13,		// <<
 	D3DMOUSESCROLLR	= 14,		// >>
 	D3DMOUSESCROLLU	= 15,		// ^

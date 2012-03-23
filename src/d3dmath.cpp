@@ -25,7 +25,7 @@
 #define STRICT
 #include <math.h>
 #include <stdio.h>
-#include "D3DMath.h"
+#include "d3dmath.h"
 
 
 

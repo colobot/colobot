@@ -29,8 +29,8 @@
 #define STRICT
 #include <tchar.h>
 #include <stdio.h>
-#include "D3DTextr.h"
-#include "D3DUtil.h"
+#include "d3dtextr.h"
+#include "d3dutil.h"
 #include "language.h"
 #include "misc.h"
 

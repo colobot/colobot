@@ -14,8 +14,15 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// control.h
+
 #ifndef _CONTROL_H_
 #define	_CONTROL_H_
+
+
+#include "text.h"
+#include "struct.h"
+#include "event.h"
 
 
 class CInstanceManager;
@@ -24,8 +31,6 @@ class CD3DEngine;
 class CRobotMain;
 class CParticule;
 class CSound;
-
-enum FontType;
 
 
 #define STATE_ENABLE		(1<<0)	// active
