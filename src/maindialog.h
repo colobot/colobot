@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// maindialog.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// maindialog.h
 
 #ifndef _MAINDIALOG_H_
 #define	_MAINDIALOG_H_
@@ -46,11 +48,11 @@ SceneInfo;
 
 typedef struct
 {
-	int				face;			// visage
-	int				glasses;		// lunettes
-	D3DCOLORVALUE	colorHair;		// couleur cheveux
-	D3DCOLORVALUE	colorCombi;		// couleur combinaison
-	D3DCOLORVALUE	colorBand;		// couleur bandes
+	int		face;			// face
+	int		glasses;		// glasses
+	D3DCOLORVALUE	colorHair;		// hair color
+	D3DCOLORVALUE	colorCombi;		// spacesuit volor
+	D3DCOLORVALUE	colorBand;		// strips color
 }
 GamerPerso;
 
@@ -176,33 +178,33 @@ protected:
 	CCamera*		m_camera;
 	CSound*			m_sound;
 
-	Phase			m_phase;			// copie de CRobotMain
-	Phase			m_phaseSetup;		// onglet choisi
-	Phase			m_phaseTerm;		// phase trainer/scene/proto
+	Phase			m_phase;			// copy of CRobotMain
+	Phase			m_phaseSetup;			// tab selected
+	Phase			m_phaseTerm;			// phase trainer/scene/proto
 	float			m_phaseTime;
 
 	GamerPerso		m_perso;			// perso: description
-	GamerPerso		m_persoCopy;		// perso: copie pour annulation
-	int				m_persoTab;			// perso: onglet choisi
-	float			m_persoAngle;		// perso: angle de présentation
+	GamerPerso		m_persoCopy;			// perso: copy for cancellation
+	int			m_persoTab;			// perso: tab selected
+	float			m_persoAngle;			// perso: angle of presentation
 
-	char			m_sceneDir[_MAX_FNAME];		// dossier scene\ 
-	char			m_savegameDir[_MAX_FNAME];	// dossier savegame\ 
-	char			m_publicDir[_MAX_FNAME];	// dossier program\ 
-	char			m_userDir[_MAX_FNAME];		// dossier user\ 
-	char			m_filesDir[_MAX_FNAME];		// dossier files\ 
+	char			m_sceneDir[_MAX_FNAME];		// scene folder\
+	char			m_savegameDir[_MAX_FNAME];	// savegame folder\
+	char			m_publicDir[_MAX_FNAME];	// program folder\ 
+	char			m_userDir[_MAX_FNAME];		// user folder\ 
+	char			m_filesDir[_MAX_FNAME];		// case files\ 
 
-	int				m_index;			// 0..4
-	int				m_chap[10];			// chapitre choisi (0..8)
-	int				m_sel[10];			// mission choisie (0..98)
+	int				m_index;		// 0..4
+	int				m_chap[10];		// selected chapter (0..8)
+	int				m_sel[10];		// chosen mission (0..98)
 	int				m_maxList;
 	int				m_accessChap;
-	char			m_sceneRead[100];	// nom de la scène à lire
-	char			m_stackRead[100];	// nom de la scène à lire
-	char			m_sceneName[20];	// nom de la scène à jouer
-	int				m_sceneRank;		// rang de la scène à jouer
-	BOOL			m_bSceneSoluce;		// montre la solution
-	BOOL			m_bSimulSetup;		// réglages pendant le jeu
+	char			m_sceneRead[100];		// name of the scene to read
+	char			m_stackRead[100];		// name of the scene to read
+	char			m_sceneName[20];		// name of the scene to play
+	int				m_sceneRank;		// rank of the scene to play
+	BOOL			m_bSceneSoluce;			// shows the solution
+	BOOL			m_bSimulSetup;			// adjustment during the game
 	BOOL			m_accessEnable;
 	BOOL			m_accessMission;
 	BOOL			m_accessUser;
@@ -211,32 +213,32 @@ protected:
 	int				m_userTotal;
 	char			m_userList[USERLISTMAX][100];
 
-	int				m_shotDelay;		// nb de frames avant copie
-	char			m_shotName[100];	// nom du fichier à générer
+	int				m_shotDelay;		// number of frames before copy
+	char			m_shotName[100];		// generate a file name
 
 	int				m_setupSelDevice;
 	int				m_setupSelMode;
 	BOOL			m_setupFull;
 
-	BOOL			m_bTooltip;			// info-bulles à afficher ?
-	BOOL			m_bGlint;			// reflets sur boutons ?
-	BOOL			m_bRain;			// pluie dans l'interface ?
-	BOOL			m_bSoluce4;			// solutions dans programme 4 ?
-	BOOL			m_bMovies;			// cinématiques ?
-	BOOL			m_bNiceReset;		// pour CTaskReset
-	BOOL			m_bHimselfDamage;	// pour les tirs
-	BOOL			m_bCameraScroll;	// pour CCamera
-	BOOL			m_bCameraInvertX;	// pour CCamera
-	BOOL			m_bCameraInvertY;	// pour CCamera
-	BOOL			m_bEffect;			// pour CCamera
+	BOOL			m_bTooltip;			// tooltips to be displayed?
+	BOOL			m_bGlint;			// reflections on buttons?
+	BOOL			m_bRain;			// rain in the interface?
+	BOOL			m_bSoluce4;			// solutions in program 4?
+	BOOL			m_bMovies;			// cinematics?
+	BOOL			m_bNiceReset;			// for CTaskReset
+	BOOL			m_bHimselfDamage;		// for shots
+	BOOL			m_bCameraScroll;		// for CCamera
+	BOOL			m_bCameraInvertX;		// for CCamera
+	BOOL			m_bCameraInvertY;		// for CCamera
+	BOOL			m_bEffect;			// for CCamera
 
 	FPOINT			m_glintMouse;
 	float			m_glintTime;
 
 	int				m_loadingCounter;
 
-	BOOL			m_bDialog;			// dialogue présent ?
-	BOOL			m_bDialogFire;		// cadre en feu ?
+	BOOL			m_bDialog;			// this dialogue?
+	BOOL			m_bDialogFire;			// setting on fire?
 	BOOL			m_bDialogDelete;
 	FPOINT			m_dialogPos;
 	FPOINT			m_dialogDim;
