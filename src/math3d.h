@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// math3d.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// math3d.h
 
 #ifndef _MATH3D_H_
 #define	_MATH3D_H_
