@@ -31,7 +31,7 @@ class CButton : public CControl
 {
 public:
 	CButton(CInstanceManager* iMan);
-	~CButton();
+	virtual ~CButton();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

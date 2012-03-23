@@ -42,8 +42,6 @@
 
 CButton::CButton(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_bCapture = FALSE;
 	m_bImmediat = FALSE;
 	m_bRepeat = FALSE;
