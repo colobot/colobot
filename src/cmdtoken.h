@@ -14,15 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// cmdtoken.h
+
 #ifndef _CMDTOKEN_H_
 #define	_CMDTOKEN_H_
 
 
-
-enum ObjectType;
-enum WaterType;
-enum PyroType;
-enum CameraType;
+#include "d3denum.h"
+#include "d3dengine.h"
+#include "object.h"
+#include "water.h"
+#include "pyro.h"
+#include "camera.h"
 
 
 

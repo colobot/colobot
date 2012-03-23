@@ -14,8 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// brain.h
+
 #ifndef _BRAIN_H_
 #define	_BRAIN_H_
+
+
+#include "misc.h"
+#include "event.h"
+#include "object.h"
+#include "taskmanip.h"
+#include "taskflag.h"
+#include "taskshield.h"
 
 
 class CInstanceManager;
@@ -35,12 +45,6 @@ class CRobotMain;
 class CStudio;
 class CSound;
 class CParticule;
-
-enum ObjectType;
-enum TaskManipOrder;
-enum TaskManipArm;
-enum TaskFlagOrder;
-enum TaskShieldMode;
 
 
 #define BRAINMAXSCRIPT		10

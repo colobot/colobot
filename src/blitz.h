@@ -14,8 +14,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// blitz.h
+
 #ifndef _BLITZ_H_
 #define	_BLITZ_H_
+
+
+#include "misc.h"
+#include "struct.h"
 
 
 class CInstanceManager;

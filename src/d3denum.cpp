@@ -25,9 +25,9 @@
 #include <windowsx.h>
 #include <stdio.h>
 #include <tchar.h>
-#include "D3DEnum.h"
-#include "D3DUtil.h" // For DEBUG_MSG
-#include "D3DRes.h"  // For dialog controls
+#include "d3denum.h"
+#include "d3dutil.h" // For DEBUG_MSG
+#include "d3dres.h"  // For dialog controls
 
 
 
@@ -177,7 +177,7 @@ static HRESULT WINAPI DeviceEnumCallback( TCHAR* strDesc, TCHAR* strName,
         return D3DENUMRET_OK;
 
     // Find a 640x480x16 mode for the default fullscreen mode
-    for( i=0; i<pDeviceInfo->dwNumModes; i++ )
+    for( DWORD i=0; i<pDeviceInfo->dwNumModes; i++ )
     {
         if( ( pDeviceInfo->pddsdModes[i].dwWidth == 640 ) &&
             ( pDeviceInfo->pddsdModes[i].dwHeight == 480 ) &&
@@ -435,7 +435,7 @@ static VOID UpdateDialogControls( HWND hDlg, D3DEnum_DeviceInfo* pCurrentDevice,
 // Name: ChangeDeviceProc()
 // Desc: Windows message handling function for the device select dialog
 //-----------------------------------------------------------------------------
-static BOOL CALLBACK ChangeDeviceProc( HWND hDlg, UINT uiMsg, WPARAM wParam, 
+static INT_PTR CALLBACK ChangeDeviceProc( HWND hDlg, UINT uiMsg, WPARAM wParam, 
                                        LPARAM lParam )
 {
     static D3DEnum_DeviceInfo** ppDeviceArg;

@@ -22,7 +22,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "language.h"
 #include "math3d.h"
 #include "event.h"
@@ -54,7 +54,6 @@ CButton::CButton(CInstanceManager* iMan) : CControl(iMan)
 
 CButton::~CButton()
 {
-	CControl::~CControl();
 }
 
 

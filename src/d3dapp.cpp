@@ -18,7 +18,7 @@
 #define D3D_OVERLOADS
 
 #include <windows.h>
-#include <pbt.h>
+#include <winuser.h>
 #include <mmsystem.h>
 #include <stdio.h>
 #include <direct.h>
@@ -27,8 +27,8 @@
 #include <dinput.h>
 
 #include "struct.h"
-#include "D3DTextr.h"
-#include "D3DEngine.h"
+#include "d3dtextr.h"
+#include "d3dengine.h"
 #include "language.h"
 #include "event.h"
 #include "profile.h"
@@ -38,7 +38,7 @@
 #include "joystick.h"
 #include "robotmain.h"
 #include "sound.h"
-#include "D3DApp.h"
+#include "d3dapp.h"
 
 
 
