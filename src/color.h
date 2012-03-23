@@ -32,7 +32,7 @@ class CColor : public CControl
 {
 public:
 	CColor(CInstanceManager* iMan);
-	~CColor();
+	virtual ~CColor();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

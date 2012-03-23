@@ -38,7 +38,6 @@
 
 CCheck::CCheck(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
 }
 
 // Object's destructor.

@@ -42,8 +42,6 @@
 
 CColor::CColor(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_bRepeat = FALSE;
 	m_repeat = 0.0f;
 

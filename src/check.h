@@ -31,7 +31,7 @@ class CCheck : public CControl
 {
 public:
 	CCheck(CInstanceManager* iMan);
-	~CCheck();
+	virtual ~CCheck();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

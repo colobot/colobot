@@ -36,8 +36,6 @@
 
 CCompass::CCompass(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_dir = 0.0f;
 }
 

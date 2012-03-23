@@ -31,7 +31,7 @@ class CCompass : public CControl
 {
 public:
 	CCompass(CInstanceManager* iMan);
-	~CCompass();
+	virtual ~CCompass();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
