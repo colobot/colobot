@@ -20,6 +20,7 @@
 #define	_EDIT_H_
 
 
+#include "struct.h"
 #include "control.h"
 
 
@@ -91,7 +92,7 @@ class CEdit : public CControl
 {
 public:
 	CEdit(CInstanceManager* iMan);
-	~CEdit();
+	virtual ~CEdit();
 
 	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

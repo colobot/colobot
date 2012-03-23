@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -40,8 +40,6 @@
 
 CEditValue::CEditValue(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_edit       = 0;
 	m_buttonUp   = 0;
 	m_buttonDown = 0;
@@ -59,8 +57,6 @@ CEditValue::~CEditValue()
 	delete m_edit;
 	delete m_buttonUp;
 	delete m_buttonDown;
-
-	CControl::~CControl();
 }
 
 

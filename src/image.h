@@ -31,7 +31,7 @@ class CImage : public CControl
 {
 public:
 	CImage(CInstanceManager* iMan);
-	~CImage();
+	virtual ~CImage();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

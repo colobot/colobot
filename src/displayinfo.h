@@ -20,6 +20,10 @@
 #define	_DISPLAYINFO_H_
 
 
+#include "struct.h"
+#include "camera.h"
+
+
 class CInstanceManager;
 class CD3DEngine;
 class CEvent;

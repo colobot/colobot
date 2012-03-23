@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -64,8 +64,6 @@ void GetKeyName(char *name, int key)
 
 CKey::CKey(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_key[0] = 0;
 	m_key[1] = 0;
 	m_bCatch = FALSE;
@@ -75,7 +73,6 @@ CKey::CKey(CInstanceManager* iMan) : CControl(iMan)
 
 CKey::~CKey()
 {
-	CControl::~CControl();
 }
 
 

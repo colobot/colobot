@@ -31,7 +31,7 @@ class CLabel : public CControl
 {
 public:
 	CLabel(CInstanceManager* iMan);
-	~CLabel();
+	virtual ~CLabel();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

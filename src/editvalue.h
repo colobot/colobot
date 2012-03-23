@@ -41,7 +41,7 @@ class CEditValue : public CControl
 {
 public:
 	CEditValue(CInstanceManager* iMan);
-	~CEditValue();
+	virtual ~CEditValue();
 
 	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

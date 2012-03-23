@@ -31,7 +31,7 @@ class CGauge : public CControl
 {
 public:
 	CGauge(CInstanceManager* iMan);
-	~CGauge();
+	virtual ~CGauge();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
