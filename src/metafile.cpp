@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// metafile.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// metafile.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -124,7 +126,7 @@ void Codec(void* buffer, int len, int start)
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CMetaFile::CMetaFile()
 {
@@ -144,7 +146,7 @@ CMetaFile::CMetaFile()
 	m_stream = 0;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CMetaFile::~CMetaFile()
 {
@@ -152,7 +154,7 @@ CMetaFile::~CMetaFile()
 }
 
 
-// Teste si un fichier existe.
+// Test if a file exists.
 
 BOOL CMetaFile::IsExist(char *metaname, char *filename)
 {
@@ -182,14 +184,13 @@ BOOL CMetaFile::IsExist(char *metaname, char *filename)
 	}
 }
 
-// Ouvre un fichier. Si le metaname est vide, on ouvre
-// normalement un fichier.
+// Opens a file. If metaname is empty, it normally opens a file.
 
 int CMetaFile::Open(char *metaname, char *filename)
 {
 	int		index, i;
 
-	if ( m_bOpen )  // fichier déjà ouvert ?
+	if ( m_bOpen )  // file already open?
 	{
 		Close();
 	}
@@ -224,7 +225,7 @@ int CMetaFile::Open(char *metaname, char *filename)
 	}
 }
 
-// Retourne la longueur d'un fichier.
+// Returns the length of a file.
 
 int CMetaFile::RetLength()
 {
@@ -245,7 +246,7 @@ int CMetaFile::RetLength()
 	return len;
 }
 
-// Positionnement dans le fichier, relatif au début.
+// Positioning in the file, relative to the beginning.
 
 int CMetaFile::Seek(int offset)
 {
@@ -262,7 +263,7 @@ int CMetaFile::Seek(int offset)
 	}
 }
 
-// Lit n bytes.
+// Reads bytes number.
 
 int CMetaFile::Read(void *buffer, int size)
 {
@@ -283,7 +284,7 @@ int CMetaFile::Read(void *buffer, int size)
 	}
 }
 
-// Lit un byte.
+// Reads a byte.
 
 int CMetaFile::GetByte()
 {
@@ -300,7 +301,7 @@ int CMetaFile::GetByte()
 	return b;
 }
 
-// Lit 2 bytes.
+// Reads 2 bytes.
 
 int CMetaFile::GetWord()
 {
@@ -317,7 +318,7 @@ int CMetaFile::GetWord()
 	return w;
 }
 
-// Ferme le fichier.
+// Closes the file.
 
 int CMetaFile::Close()
 {
@@ -334,7 +335,7 @@ int CMetaFile::Close()
 }
 
 
-// Ouvre un metafile. Retourne l'index ou -1.
+// Opens a metafile. Returns the index or -1.
 
 int CMetaFile::MetaOpen(char *metaname)
 {
@@ -350,7 +351,7 @@ int CMetaFile::MetaOpen(char *metaname)
 			m_list[i].stream = fopen(metaname, "rb");
 			if ( m_list[i].stream == 0 )  return -1;
 
-			strcpy(m_list[i].name, metaname);  // mémorise le nom
+			strcpy(m_list[i].name, metaname);  // memorized the name
 
 			fread(&m_list[i].total, sizeof(int), 1, m_list[i].stream);
 			m_list[i].headers = (MetaHeader*)malloc(sizeof(MetaHeader)*m_list[i].total);
@@ -369,7 +370,7 @@ int CMetaFile::MetaOpen(char *metaname)
 	return -1;
 }
 
-// Cherche si le metafile est déjà ouvert. Retourne l'index ou -1.
+// Seeks if the metafile is already open. Returns the index or -1.
 
 int CMetaFile::MetaSearch(char *metaname)
 {
@@ -386,7 +387,7 @@ int CMetaFile::MetaSearch(char *metaname)
 	return -1;
 }
 
-// Ferme tous ls metafiles.
+// Closes all metafiles.
 
 int CMetaFile::MetaClose()
 {
