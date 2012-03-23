@@ -43,7 +43,7 @@ static char			g_userDir[100] = "";
 
 
 
-// Donne un ï¿½vï¿½nement utilisateur unique.
+// Gives a single user event.
 
 EventMsg GetUniqueEventMsg()
 {
@@ -56,162 +56,162 @@ EventMsg GetUniqueEventMsg()
 
 
 
-// Retourne une lettre non accentuï¿½e.
+// Returns a non-accented letter.
 
 char RetNoAccent(char letter)
 {
 	if ( letter < 0 )
 	{
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'a';
+		if ( letter == 'á' ||
+			 letter == 'à' ||
+			 letter == 'â' ||
+			 letter == 'ä' ||
+			 letter == 'ã' )  return 'a';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'e';
+		if ( letter == 'é' ||
+			 letter == 'è' ||
+			 letter == 'ê' ||
+			 letter == 'ë' )  return 'e';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'i';
+		if ( letter == 'í' ||
+			 letter == 'ì' ||
+			 letter == 'î' ||
+			 letter == 'ï' )  return 'i';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'o';
+		if ( letter == 'ó' ||
+			 letter == 'ò' ||
+			 letter == 'ô' ||
+			 letter == 'ö' ||
+			 letter == 'õ' )  return 'o';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'u';
+		if ( letter == 'ú' ||
+			 letter == 'ù' ||
+			 letter == 'û' ||
+			 letter == 'ü' )  return 'u';
 
-		if ( letter == 'ï¿½' )  return 'c';
+		if ( letter == 'ç' )  return 'c';
 
-		if ( letter == 'ï¿½' )  return 'n';
+		if ( letter == 'ñ' )  return 'n';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'A';
+		if ( letter == 'Á' ||
+			 letter == 'À' ||
+			 letter == 'Â' ||
+			 letter == 'Ä' ||
+			 letter == 'Ã' )  return 'A';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'E';
+		if ( letter == 'É' ||
+			 letter == 'È' ||
+			 letter == 'Ê' ||
+			 letter == 'Ë' )  return 'E';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'I';
+		if ( letter == 'Í' ||
+			 letter == 'Ì' ||
+			 letter == 'Î' ||
+			 letter == 'Ï' )  return 'I';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'O';
+		if ( letter == 'Ó' ||
+			 letter == 'Ò' ||
+			 letter == 'Ô' ||
+			 letter == 'Ö' ||
+			 letter == 'Õ' )  return 'O';
 
-		if ( letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' ||
-			 letter == 'ï¿½' )  return 'U';
+		if ( letter == 'Ú' ||
+			 letter == 'Ù' ||
+			 letter == 'Û' ||
+			 letter == 'Ü' )  return 'U';
 
-		if ( letter == 'ï¿½' )  return 'C';
+		if ( letter == 'Ç' )  return 'C';
 
-		if ( letter == 'ï¿½' )  return 'N';
+		if ( letter == 'Ñ' )  return 'N';
 	}
 
 	return letter;
 }
 
-// Retourne une lettre majuscule.
+// Returns an uppercase letter.
 
 char RetToUpper(char letter)
 {
 	if ( letter < 0 )
 	{
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'á' )  return 'Á';
+		if ( letter == 'à' )  return 'À';
+		if ( letter == 'â' )  return 'Â';
+		if ( letter == 'ä' )  return 'Ä';
+		if ( letter == 'ã' )  return 'Ã';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'é' )  return 'É';
+		if ( letter == 'è' )  return 'È';
+		if ( letter == 'ê' )  return 'Ê';
+		if ( letter == 'ë' )  return 'Ë';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'í' )  return 'Í';
+		if ( letter == 'ì' )  return 'Ì';
+		if ( letter == 'î' )  return 'Î';
+		if ( letter == 'ï' )  return 'Ï';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'ó' )  return 'Ó';
+		if ( letter == 'ò' )  return 'Ò';
+		if ( letter == 'ô' )  return 'Ô';
+		if ( letter == 'ö' )  return 'Ö';
+		if ( letter == 'õ' )  return 'Õ';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'ú' )  return 'Ú';
+		if ( letter == 'ù' )  return 'Ù';
+		if ( letter == 'û' )  return 'Û';
+		if ( letter == 'ü' )  return 'Ü';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'ç' )  return 'Ç';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'ñ' )  return 'Ñ';
 	}
 
 	return toupper(letter);
 }
 
-// Retourne une lettre minuscule.
+// Returns a lowercase letter.
 
 char RetToLower(char letter)
 {
 	if ( letter < 0 )
 	{
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Á' )  return 'á';
+		if ( letter == 'À' )  return 'à';
+		if ( letter == 'Â' )  return 'â';
+		if ( letter == 'Ä' )  return 'ä';
+		if ( letter == 'Ã' )  return 'ã';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'É' )  return 'é';
+		if ( letter == 'È' )  return 'è';
+		if ( letter == 'Ê' )  return 'ê';
+		if ( letter == 'Ë' )  return 'ë';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Í' )  return 'í';
+		if ( letter == 'Ì' )  return 'ì';
+		if ( letter == 'Î' )  return 'î';
+		if ( letter == 'Ï' )  return 'ï';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Ó' )  return 'ó';
+		if ( letter == 'Ò' )  return 'ò';
+		if ( letter == 'Ô' )  return 'ô';
+		if ( letter == 'Ö' )  return 'ö';
+		if ( letter == 'Õ' )  return 'õ';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Ú' )  return 'ú';
+		if ( letter == 'Ù' )  return 'ù';
+		if ( letter == 'Û' )  return 'û';
+		if ( letter == 'Ü' )  return 'ü';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Ç' )  return 'ç';
 
-		if ( letter == 'ï¿½' )  return 'ï¿½';
+		if ( letter == 'Ñ' )  return 'ñ';
 	}
 
 	return tolower(letter);
 }
 
 
-// Conversion du temps en chaï¿½ne.
+// Converting time to string.
 
 void TimeToAscii(time_t time, char *buffer)
 {
@@ -237,11 +237,11 @@ void TimeToAscii(time_t time, char *buffer)
 	int			hour;
 
 	hour = when.tm_hour;  // 0..23
-	if ( hour < 12 )  // matin ?
+	if ( hour < 12 )  // morning?
 	{
 		strcpy(format, "am");
 	}
-	else	// aprï¿½s-midi ?
+	else	// afternoon?
 	{
 		strcpy(format, "pm");
 		hour -= 12;  // 0..11
@@ -260,7 +260,7 @@ void TimeToAscii(time_t time, char *buffer)
 }
 
 
-// Effectue une copie d'un fichier.
+// Makes a copy of a file.
 
 BOOL Xfer(char* src, char* dst)
 {
@@ -296,7 +296,7 @@ BOOL Xfer(char* src, char* dst)
 	return TRUE;
 }
 
-// Copie un fichier dans le dossier temporaire.
+// Copy a file into the temporary folder.
 
 BOOL CopyFileToTemp(char* filename)
 {
@@ -318,7 +318,7 @@ BOOL CopyFileToTemp(char* filename)
 	return TRUE;
 }
 
-// Copie une liste de fichiers numï¿½rotï¿½s dans le dossier temporaire.
+// Copy a list of numbered files into the temporary folder.
 
 BOOL CopyFileListToTemp(char* filename, int* list, int total)
 {
@@ -357,16 +357,16 @@ BOOL CopyFileListToTemp(char* filename, int* list, int total)
 }
 
 
-// Ajoute une extension ï¿½ un fichier, s'il n'en a pas dï¿½jï¿½ une.
+// Adds an extension to file, if doesn't already one.
 
 void AddExt(char* filename, char* ext)
 {
-	if ( strchr(filename, '.') != 0 )  return;  // dï¿½jï¿½ une extension ?
+	if ( strchr(filename, '.') != 0 )  return;  // already an extension?
 	strcat(filename, ext);
 }
 
 
-// Spï¿½cifie le dossier utilisateur.
+// Specifies the user folder.
 
 void UserDir(BOOL bUser, char* dir)
 {
@@ -374,7 +374,7 @@ void UserDir(BOOL bUser, char* dir)
 	strcpy(g_userDir, dir);
 }
 
-// Remplace la chaï¿½ne %user% par le dossier utilisateur.
+// Replaces the string %user% by the user folder.
 // in:	dir = "%user%toto.txt"
 //		def = "abc\"
 // out:	buffer = "abc\toto.txt"
@@ -410,7 +410,7 @@ void UserDir(char* buffer, char* dir, char* def)
 			{
 				*buffer++ = *add++;
 			}
-			dir += 6;  // saute %user%
+			dir += 6;  // jumps to %user%
 			continue;
 		}
 
@@ -420,7 +420,7 @@ void UserDir(char* buffer, char* dir, char* def)
 }
 
 
-// Retourne la lettre correspondant ï¿½ la langue.
+// Returns the letter corresponding to the language.
 
 char RetLanguageLetter()
 {
