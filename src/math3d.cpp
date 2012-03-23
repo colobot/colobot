@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// math3d.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// math3d.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -29,7 +31,7 @@
 
 
 
-// Retourne TRUE si 2 nombres sont presques égaux.
+// Returns TRUE if two numbers are nearly equal.
 
 BOOL IsEqual(float a, float b)
 {
@@ -37,7 +39,7 @@ BOOL IsEqual(float a, float b)
 }
 
 
-// Retourne la valeur minimale.
+// Returns the minimum value.
 
 inline float Min(float a, float b)
 {
@@ -61,7 +63,7 @@ inline float Min(float a, float b, float c, float d, float e)
 }
 
 
-// Retourne la valeur maximale.
+// Returns the maximum value.
 
 inline float Max(float a, float b)
 {
@@ -85,7 +87,7 @@ inline float Max(float a, float b, float c, float d, float e)
 }
 
 
-// Retourne la valeur normalisée (0..1).
+// Returns the normalized value (0 .. 1).
 
 inline float Norm(float a)
 {
@@ -95,7 +97,7 @@ inline float Norm(float a)
 }
 
 
-// Retourne la valeur absolue d'un nombre.
+// Returns the absolute value of a number.
 
 inline float Abs(float a)
 {
@@ -103,7 +105,7 @@ inline float Abs(float a)
 }
 
 
-// Permute deux entiers.
+// Swaps two integers.
 
 inline void Swap(int &a, int &b)
 {
@@ -114,7 +116,7 @@ inline void Swap(int &a, int &b)
 	b = c;
 }
 
-// Permute deux réels.
+// Swaps two real numbers.
 
 inline void Swap(float &a, float &b)
 {
@@ -125,7 +127,7 @@ inline void Swap(float &a, float &b)
 	b = c;
 }
 
-// Permute deux points.
+// Permutes two points.
 
 inline void Swap(FPOINT &a, FPOINT &b)
 {
@@ -136,17 +138,16 @@ inline void Swap(FPOINT &a, FPOINT &b)
 	b = c;
 }
 
-// Retourne le modulo d'un nombre flottant.
+// Returns the modulo of a floating point number.
 //	Mod(8.1, 4) = 0.1
-//	Mod(n, 1) = partie fractionnaire de n
+//	Mod(n, 1) = fractional part of n
 
 inline float Mod(float a, float m)
 {
 	return a - ((int)(a/m))*m;
 }
 
-// Retourne un angle normalisé, c'est-à-dire compris entre
-// 0 et 2*PI.
+// Returns a normalized angle, that is in other words between 0 and 2 * PI.
 
 inline float NormAngle(float angle)
 {
@@ -161,7 +162,7 @@ inline float NormAngle(float angle)
 	}
 }
 
-// Teste si un angle est compris entre 2 bornes.
+// Test if a angle is between two terminals.
 
 BOOL TestAngle(float angle, float min, float max)
 {
@@ -180,8 +181,8 @@ BOOL TestAngle(float angle, float min, float max)
 }
 
 
-// Calcule l'angle permettant de tourner de l'angle a vers l'angle g.
-// Un angle positif est anti-horaire (CCW).
+// Calculates the angle to rotate the angle a to the angle g.
+// A positive angle is counterclockwise (CCW).
 
 float Direction(float a, float g)
 {
@@ -200,9 +201,9 @@ float Direction(float a, float g)
 }
 
 
-// Fait tourner un point autour d'un centre.
-// L'angle est exprimé en radians.
-// Un angle positif est anti-horaire (CCW).
+// Rotates a point around a center.
+// The angle is in radians.
+// A positive angle is counterclockwise (CCW).
 
 FPOINT RotatePoint(FPOINT center, float angle, FPOINT p)
 {
@@ -219,9 +220,9 @@ FPOINT RotatePoint(FPOINT center, float angle, FPOINT p)
 	return b;
 }
 
-// Fait tourner un point autour de l'origine.
-// L'angle est exprimé en radians.
-// Un angle positif est anti-horaire (CCW).
+// Rotates a point around the origin.
+// The angle is in radians.
+// A positive angle is counterclockwise (CCW).
 
 FPOINT RotatePoint(float angle, FPOINT p)
 {
@@ -233,9 +234,9 @@ FPOINT RotatePoint(float angle, FPOINT p)
 	return a;
 }
 
-// Fait tourner un vecteur (dist;0).
-// L'angle est exprimé en radians.
-// Un angle positif est anti-horaire (CCW).
+// Rotates a vector (dist, 0).
+// The angle is in radians.
+// A positive angle is counterclockwise (CCW).
 
 FPOINT RotatePoint(float angle, float dist)
 {
@@ -247,9 +248,9 @@ FPOINT RotatePoint(float angle, float dist)
 	return a;
 }
 
-// Calcule l'angle d'un triangle rectangle.
-// L'angle est anti-horaire (CCW), compris entre 0 et 2*PI.
-// Pour obtenir un angle horaire (CW), il suffit de passer -y.
+// Calculates the angle of a right triangle.
+// The angle is counterclockwise (CCW), between 0 and 2 * PI.
+// For an angle clockwise (CW), just go ahead.
 //
 //      ^
 //      |
@@ -317,9 +318,9 @@ float RotateAngle(float x, float y)
 #endif
 }
 
-// Calcule l'angle entre deux points et un centre.
-// L'angle est exprimé en radians.
-// Un angle positif est anti-horaire (CCW).
+// Calculates the angle between two points and one center.
+// The angle is in radians.
+// A positive angle is counterclockwise (CCW).
 
 float RotateAngle(FPOINT center, FPOINT p1, FPOINT p2)
 {
@@ -342,7 +343,7 @@ float RotateAngle(FPOINT center, FPOINT p1, FPOINT p2)
 	return a;
 }
 
-// Retourne py placé sur la droite ab.
+// Returns py up on the line ab.
 
 float MidPoint(FPOINT a, FPOINT b, float px)
 {
@@ -354,14 +355,14 @@ float MidPoint(FPOINT a, FPOINT b, float px)
 	return (b.y-a.y)*(px-a.x)/(b.x-a.x)+a.y;
 }
 
-// Avance de "dist" le long du segment p1-p2.
+// Advance "dist" along the segment p1-p2.
 
 D3DVECTOR SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist)
 {
 	return p1+Normalize(p2-p1)*dist;
 }
 
-// Vérifie si un point est dans un triangle.
+// Check if a point is inside a triangle.
 
 BOOL IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
 {
@@ -388,7 +389,7 @@ BOOL IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
 	return TRUE;
 }
 
-// Calcule l'intersection "i" de la droite "de" avec le plan "abc".
+// Calculates the intersection "i" right "of" the plan "abc".
 
 BOOL Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c,
 			   D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i)
@@ -411,8 +412,8 @@ BOOL Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c,
 	return TRUE;
 }
 
-// Calcule l'intersection de la droite passant par p(x,z) parallèle
-// à l'axe y, avec le plan abc. Retourne p.y.
+// Calculates the intersection of the straight line passing through p (x, z)
+// parallel to the y axis, with the plane abc. Returns p.y.
 
 BOOL IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p)
 {
@@ -443,9 +444,9 @@ BOOL IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p)
 }
 
 
-// Fait tourner un point autour d'un centre dans le plan.
-// L'angle est exprimé en radians.
-// Un angle positif est anti-horaire (CCW).
+// Rotates a point around a center in the plan.
+// The angle is in radians.
+// A positive angle is counterclockwise (CCW).
 
 void RotatePoint(float cx, float cy, float angle, float &px, float &py)
 {
@@ -461,9 +462,9 @@ void RotatePoint(float cx, float cy, float angle, float &px, float &py)
 	py = cy+ay;
 }
 
-// Fait tourner un point autour d'un centre dans l'espace.
-// L'angles sont exprimés en radians.
-// Un angle positif est anti-horaire (CCW).
+// Rotates a point around a center in space.
+// The angle is in radians.
+// A positive angle is counterclockwise (CCW).
 
 void RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p)
 {
@@ -482,9 +483,9 @@ void RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p)
 	p.z = center.z+b.z;
 }
 
-// Fait tourner un point autour d'un centre dans l'espace.
-// L'angles sont exprimés en radians.
-// Un angle positif est anti-horaire (CCW).
+// Rotates a point around a center in space.
+// The angle is in radians.
+// A positive angle is counterclockwise (CCW).
 
 void RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p)
 {
@@ -507,8 +508,8 @@ void RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p)
 	p.z = center.z+b.z;
 }
 
-// Calcul le point de vue permettant de regarder un centre selon deux
-// angles et à une certaine distance.
+// Calculation point of view to look at a center
+// two angles and a distance.
 
 D3DVECTOR RotateView(D3DVECTOR center, float angleH, float angleV, float dist)
 {
@@ -527,7 +528,7 @@ D3DVECTOR RotateView(D3DVECTOR center, float angleH, float angleV, float dist)
 	return eye+center;
 }
 
-// Calcule le point d'arrivée.
+// Calculates the end point.
 
 D3DVECTOR LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length )
 {
@@ -544,7 +545,7 @@ D3DVECTOR LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length )
 }
 
 
-// Retourne la distance entre deux points.
+// Returns the distance between two points.
 
 inline float Length(FPOINT a, FPOINT b)
 {
@@ -552,21 +553,21 @@ inline float Length(FPOINT a, FPOINT b)
 				  (a.y-b.y)*(a.y-b.y) );
 }
 
-// Retourne l'hypothénuse d'un triangle rectangle.
+// Returns the hypotenuse of a right triangle.
 
 inline float Length(float x, float y)
 {
 	return sqrtf( (x*x) + (y*y) );
 }
 
-// Retourne la longueur d'un vecteur.
+// Returns the length of a vector.
 
 inline float Length(const D3DVECTOR &u)
 {
 	return sqrtf( (u.x*u.x) + (u.y*u.y) + (u.z*u.z) );
 }
 
-// Retourne la distance entre deux points.
+// Returns the distance between two points.
 
 inline float Length(const D3DVECTOR &a, const D3DVECTOR &b)
 {
@@ -575,7 +576,7 @@ inline float Length(const D3DVECTOR &a, const D3DVECTOR &b)
 				  (a.z-b.z)*(a.z-b.z) );
 }
 
-// Retourne la distance "à plat" entre deux points.
+// Returns the distance "a flat" between two points.
 
 inline float Length2d(const D3DVECTOR &a, const D3DVECTOR &b)
 {
@@ -584,7 +585,7 @@ inline float Length2d(const D3DVECTOR &a, const D3DVECTOR &b)
 }
 
 
-// Retourne l'angle formé par deux vecteurs.
+// Returns the angle formed by two vectors.
 
 float Angle( D3DVECTOR u, D3DVECTOR v )
 {
@@ -609,7 +610,7 @@ float Angle( D3DVECTOR u, D3DVECTOR v )
 #endif
 }
 
-// Retourne le produit vectoriel de deux vecteurs.
+// Returns the product of two vectors.
 
 inline D3DVECTOR Cross( D3DVECTOR u, D3DVECTOR v )
 {
@@ -618,7 +619,7 @@ inline D3DVECTOR Cross( D3DVECTOR u, D3DVECTOR v )
 					  u.x*v.y - u.y*v.x );
 }
 
-// Retourne le vecteur normal d'une face triangulaire.
+// Returns the normal vector of a triangular face.
 
 D3DVECTOR ComputeNormal( D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3 )
 {
@@ -631,8 +632,7 @@ D3DVECTOR ComputeNormal( D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3 )
 }
 
 
-// Transforme un point selon une matrice, exactement de la
-// même façon que Direct3D.
+// Transforms a point in a matrix, in exactly the same manner as Direct3D.
 
 D3DVECTOR Transform(const D3DMATRIX &m, D3DVECTOR p)
 {
@@ -646,7 +646,7 @@ D3DVECTOR Transform(const D3DMATRIX &m, D3DVECTOR p)
 }
 
 
-// Calcule la projection d'un point P sur une droite AB.
+// Calculates the projection of a point P on a straight line AB.
 
 D3DVECTOR Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p)
 {
@@ -658,7 +658,7 @@ D3DVECTOR Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p)
 	return a + k*(b-a);
 }
 
-// Plaque la texture dans le plan xz.
+// The texture plate in the xz plane.
 
 void MappingObject(D3DVERTEX2* pVertices, int nb, float scale)
 {
@@ -671,7 +671,7 @@ void MappingObject(D3DVERTEX2* pVertices, int nb, float scale)
 	}
 }
 
-// Adoucit les normales.
+// Smooths normal.
 
 void SmoothObject(D3DVERTEX2* pVertices, int nb)
 {
@@ -726,16 +726,16 @@ void SmoothObject(D3DVERTEX2* pVertices, int nb)
 
 
 
-// Calcule les paramètres a et b du segment passant par
-// les points p1 et p2, sachant que :
+// Calculates the parameters a and b of the segment passing
+// through the points p1 and p2, knowing that:
 //		f(x) = ax+b
-// Retourne FALSE si la droite est verticale.
+// Returns FALSE if the line is vertical.
 
 BOOL LineFunction(FPOINT p1, FPOINT p2, float &a, float &b)
 {
 	if ( D3DMath_IsZero(p1.x-p2.x) )
 	{
-		a = g_HUGE;  // pente infinie !
+		a = g_HUGE;  // infinite slope!
 		b = p2.x;
 		return FALSE;
 	}
@@ -746,7 +746,7 @@ BOOL LineFunction(FPOINT p1, FPOINT p2, float &a, float &b)
 }
 
 
-// Calcule la distance entre un plan ABC et un point P.
+// Calculates the distance between a plane ABC and a point P.
 
 float DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b,
 						const D3DVECTOR &c, const D3DVECTOR &p)
@@ -764,8 +764,7 @@ float DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b,
 	return Abs(aa*p.x + bb*p.y + cc*p.z + dd);
 }
 
-// Vérifie si deux plans définis par 3 points font partie
-// du même plan.
+// Check if two planes defined by 3 points are part of the same plan.
 
 BOOL IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2)
 {
@@ -786,9 +785,8 @@ BOOL IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2)
 }
 
 
-// Calcule la matrice permettant de faire 3 rotations
-// dans l'ordre X, Z et Y.
-// >>>>>> A OPTIMISER !!!
+// Calculates the matrix to make three rotations in the X, Y and Z
+// >>>>>> OPTIMIZING!!!
 
 void MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle)
 {
@@ -801,9 +799,8 @@ void MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle)
 	D3DMath_MatrixMultiply(mat, mat, temp);  // X-Z-Y
 }
 
-// Calcule la matrice permettant de faire 3 rotations
-// dans l'ordre Z, X et Y.
-// >>>>>> A OPTIMISER !!!
+// Calculates the matrix to make three rotations in the order Z, X and Y.
+// >>>>>> OPTIMIZING!!!
 
 void MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle)
 {
@@ -817,7 +814,7 @@ void MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle)
 }
 
 
-// Retourne une valeur aléatoire comprise entre 0 et 1.
+// Returns a random value between 0 and 1.
 
 float Rand()
 {
@@ -825,7 +822,7 @@ float Rand()
 }
 
 
-// Gestion de la zone neutre d'un joystick.
+// Managing the dead zone of a joystick.
 
 //  in:   -1            0            1
 //       --|-------|----o----|-------|-->
@@ -847,8 +844,7 @@ float Neutral(float value, float dead)
 }
 
 
-// Calcule une valeur (radians) proportionnelle comprise
-// entre a et b (degrés).
+// Calculates a value (radians) proportional between a and b (degrees).
 
 inline float Prop(int a, int b, float p)
 {
@@ -860,9 +856,8 @@ inline float Prop(int a, int b, float p)
 	return aa+p*(bb-aa);
 }
 
-// Fait progresser mollement une valeur souhaitée à partir de
-// sa valeur actuelle. Plus le temps est grand et plus la
-// progression est rapide.
+// Gently advanced a desired value from its current value.
+// Over time, the greater the progression is rapid.
 
 float Smooth(float actual, float hope, float time)
 {
@@ -883,7 +878,7 @@ float Smooth(float actual, float hope, float time)
 }
 
 
-// Fait reboudir un mouvement quelconque.
+// Bounces any movement.
 
 //	out
 //	 |
@@ -911,7 +906,7 @@ float Bounce(float progress, float middle, float bounce)
 }
 
 
-// Retourne la couleur D3DCOLOR correspondante.
+// Returns the color corresponding D3DCOLOR.
 
 D3DCOLOR RetColor(float intensity)
 {
@@ -928,7 +923,7 @@ D3DCOLOR RetColor(float intensity)
 	return color;
 }
 
-// Retourne la couleur D3DCOLOR correspondante.
+// Returns the color corresponding D3DCOLOR.
 
 D3DCOLOR RetColor(D3DCOLORVALUE intensity)
 {
@@ -942,7 +937,7 @@ D3DCOLOR RetColor(D3DCOLORVALUE intensity)
 	return color;
 }
 
-// Retourne la couleur D3DCOLORVALUE correspondante.
+// Returns the color corresponding D3DCOLORVALUE.
 
 D3DCOLORVALUE RetColor(D3DCOLOR intensity)
 {
@@ -957,7 +952,7 @@ D3DCOLORVALUE RetColor(D3DCOLOR intensity)
 }
 
 
-// Conversion RGB vers HSV.
+// RGB to HSV conversion.
 
 void RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest)
 {
@@ -966,12 +961,12 @@ void RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest)
 	min = Min(src.r, src.g, src.b);
 	max = Max(src.r, src.g, src.b);
 
-	dest.v = max;  // intensité
+	dest.v = max;  // intensity
 
 	if ( max == 0.0f )
 	{
 		dest.s = 0.0f;  // saturation
-		dest.h = 0.0f;  // teinte indéfinie !
+		dest.h = 0.0f;  // undefined color!
 	}
 	else
 	{
@@ -991,13 +986,13 @@ void RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest)
 			dest.h = 4.0f+(src.r-src.g)/delta;
 		}
 
-		dest.h *= 60.0f;  // en degrés
+		dest.h *= 60.0f;  // in degrees
 		if ( dest.h < 0.0f )  dest.h += 360.0f;
 		dest.h /= 360.0f;  // 0..1
 	}
 }
 
-// Conversion HSV vers RGB.
+// HSV to RGB conversion.
 
 void HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest)
 {
@@ -1008,18 +1003,18 @@ void HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest)
 	src.s = Norm(src.s);
 	src.v = Norm(src.v);
 
-	if ( src.s == 0.0f )  // saturation nulle ?
+	if ( src.s == 0.0f )  // zero saturation?
 	{
 		dest.r = src.v;
 		dest.g = src.v;
-		dest.b = src.v;  // gris
+		dest.b = src.v;  // gray
 	}
 	else
 	{
 		if ( src.h == 360.0f )  src.h = 0.0f;
 		src.h /= 60.0f;
-		i = (int)src.h;  // partie entière (0..5)
-		f = src.h-i;     // partie fractionnaire
+		i = (int)src.h;  // integer part (0 .. 5)
+		f = src.h-i;     // fractional part
 
 		v = src.v;
 		p = src.v*(1.0f-src.s);
