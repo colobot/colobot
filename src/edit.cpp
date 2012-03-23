@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "language.h"
 #include "math3d.h"
 #include "event.h"
@@ -86,8 +86,6 @@ CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
 	FPOINT	pos;
 	int		i;
 
-	CControl::CControl(iMan);
-
 	m_maxChar = 100;
 	m_text = (char*)malloc(sizeof(char)*(m_maxChar+1));
 	m_format = 0;
@@ -134,7 +132,6 @@ CEdit::~CEdit()
 	delete m_text;
 	delete m_format;
 	delete m_scroll;
-	CControl::~CControl();
 }
 
 

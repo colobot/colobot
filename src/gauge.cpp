@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -38,8 +38,6 @@
 
 CGauge::CGauge(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_level = 0.0f;
 }
 
@@ -47,7 +45,6 @@ CGauge::CGauge(CInstanceManager* iMan) : CControl(iMan)
 
 CGauge::~CGauge()
 {
-	CControl::~CControl();
 }
 
 

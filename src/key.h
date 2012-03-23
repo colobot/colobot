@@ -31,7 +31,7 @@ class CKey : public CControl
 {
 public:
 	CKey(CInstanceManager* iMan);
-	~CKey();
+	virtual ~CKey();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -45,8 +45,6 @@
 CList::CList(CInstanceManager* iMan) : CControl(iMan)
 {
 	int		i;
-
-	CControl::CControl(iMan);
 
 	for ( i=0 ; i<LISTMAXDISPLAY ; i++ )
 	{
@@ -87,8 +85,6 @@ CList::~CList()
 		delete m_button[i];
 	}
 	delete m_scroll;
-
-	CControl::~CControl();
 }
 
 

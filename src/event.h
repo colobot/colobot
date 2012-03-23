@@ -12,10 +12,15 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// event.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// event.h
 
 #ifndef _EVENT_H_
 #define	_EVENT_H_
+
+
+#include "struct.h"
 
 
 #if !defined (WM_XBUTTONDOWN)

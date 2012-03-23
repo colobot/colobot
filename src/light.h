@@ -20,6 +20,8 @@
 #define	_LIGHT_H_
 
 
+#include "d3dengine.h"
+
 
 class CInstanceManager;
 class CD3DEngine;
@@ -62,7 +64,7 @@ class CLight
 {
 public:
 	CLight(CInstanceManager *iMan, CD3DEngine* engine);
-	~CLight();
+	virtual ~CLight();
 
 	void			SetD3DDevice(LPDIRECT3DDEVICE7 device);
 

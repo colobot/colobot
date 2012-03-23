@@ -31,7 +31,7 @@ class CGroup : public CControl
 {
 public:
 	CGroup(CInstanceManager* iMan);
-	~CGroup();
+	virtual ~CGroup();
 
 	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 

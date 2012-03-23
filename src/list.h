@@ -21,6 +21,7 @@
 
 
 #include "control.h"
+#include "event.h"
 
 
 class CD3DEngine;

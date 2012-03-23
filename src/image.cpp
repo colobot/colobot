@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -39,8 +39,6 @@
 
 CImage::CImage(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_filename[0] = 0;
 }
 
@@ -52,8 +50,6 @@ CImage::~CImage()
 	{
 		m_engine->FreeTexture(m_filename);
 	}
-
-	CControl::~CControl();
 }
 
 
