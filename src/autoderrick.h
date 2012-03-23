@@ -22,7 +22,6 @@
 
 #include "object.h"
 #include "misc.h"
-#include "d3denum.h"
 
 
 class CInstanceManager;
