@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// metafile.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// metafile.h
 
 #ifndef _METAFILE_H_
 #define	_METAFILE_H_
@@ -23,18 +25,18 @@
 
 typedef struct
 {
-	char		name[14];	// nom du fichier (8.3 max)
-	int			start;		// position depuis le début du metafile
-	int			len;		// longueur du fichier
+	char			name[14];	// file name (8.3 max)
+	int			start;		// position from the beginning of the metafile
+	int			len;		// length of the file
 }
 MetaHeader;
 
 typedef struct
 {
-	char		name[50];	// nom du metafile
-	FILE*		stream;		// canal
-	int			total;		// nb de fichiers contenus
-	MetaHeader*	headers;	// headers des fichiers contenus
+	char		name[50];	// name of the metafile
+	FILE*		stream;		// channel
+	int		total;		// number of files
+	MetaHeader*	headers;	// headers of files
 }
 MetaFile;
 
@@ -61,13 +63,13 @@ protected:
 	int		MetaSearch(char *metaname);
 
 protected:
-	MetaFile	m_list[METAMAX];	// metafile ouverts
-	BOOL		m_bOpen;			// fichier ouvert
-	BOOL		m_bMeta;			// metafile ouvert
-	FILE*		m_stream;			// canal
-	int			m_start;			// position depuis le début
-	int			m_pos;				// position courante
-	int			m_len;				// longueur du fichier
+	MetaFile	m_list[METAMAX];		// metafile open
+	BOOL		m_bOpen;			// open file
+	BOOL		m_bMeta;			// metafile open
+	FILE*		m_stream;			// channel
+	int		m_start;			// position from the beginning
+	int		m_pos;				// current position
+	int		m_len;				// length of the file
 };
 
 
