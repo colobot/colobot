@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// map.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// map.h
 
 #ifndef _MAP_H_
 #define	_MAP_H_
