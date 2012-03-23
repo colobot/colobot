@@ -12,10 +12,17 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// autoroot.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// autoroot.h
 
 #ifndef _AUTOROOT_H_
 #define	_AUTOROOT_H_
+
+
+#include "auto.h"
+#include "misc.h"
+#include "d3denum.h"
 
 
 class CInstanceManager;
@@ -24,8 +31,6 @@ class CParticule;
 class CTerrain;
 class CCamera;
 class CObject;
-
-enum ObjectType;
 
 
 

@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "global.h"
 #include "event.h"
 #include "misc.h"
@@ -76,7 +76,7 @@ CAutoSafe::CAutoSafe(CInstanceManager* iMan, CObject* object)
 
 CAutoSafe::~CAutoSafe()
 {
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 

@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "language.h"
 #include "event.h"
 #include "misc.h"
@@ -78,7 +78,7 @@ CAutoBase::CAutoBase(CInstanceManager* iMan, CObject* object)
 
 CAutoBase::~CAutoBase()
 {
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 

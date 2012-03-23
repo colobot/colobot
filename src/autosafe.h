@@ -12,10 +12,17 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// autosafe.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// autosafe.h
 
 #ifndef _AUTOSAFE_H_
 #define	_AUTOSAFE_H_
+
+
+#include "auto.h"
+#include "misc.h"
+#include "d3denum.h"
 
 
 class CInstanceManager;

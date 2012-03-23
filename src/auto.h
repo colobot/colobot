@@ -12,10 +12,15 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// auto.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// auto.h
 
 #ifndef _AUTO_H_
 #define	_AUTO_H_
+
+
+#include "object.h"
 
 
 class CInstanceManager;

@@ -14,8 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// autodestroyer.h
+
 #ifndef _AUTODESTROYER_H_
 #define	_AUTODESTROYER_H_
+
+
+#include "misc.h"
 
 
 class CInstanceManager;

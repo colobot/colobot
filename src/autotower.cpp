@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "global.h"
 #include "event.h"
 #include "misc.h"
@@ -74,7 +74,7 @@ CAutoTower::CAutoTower(CInstanceManager* iMan, CObject* object)
 
 CAutoTower::~CAutoTower()
 {
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 

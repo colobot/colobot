@@ -14,8 +14,15 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+// autoderrick.h
+
 #ifndef _AUTODERRICK_H_
 #define	_AUTODERRICK_H_
+
+
+#include "object.h"
+#include "misc.h"
+#include "d3denum.h"
 
 
 class CInstanceManager;
@@ -25,7 +32,6 @@ class CTerrain;
 class CCamera;
 class CObject;
 
-enum ObjectType;
 
 
 

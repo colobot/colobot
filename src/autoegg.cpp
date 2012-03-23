@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "event.h"
 #include "misc.h"
 #include "iman.h"
@@ -59,7 +59,7 @@ CAutoEgg::CAutoEgg(CInstanceManager* iMan, CObject* object)
 
 CAutoEgg::~CAutoEgg()
 {
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 
@@ -76,7 +76,7 @@ void CAutoEgg::DeleteObject(BOOL bAll)
 		alien = SearchAlien();
 		if ( alien != 0 )
 		{
-			if ( alien->RetZoom(0) == 1.0f )
+			if ( alien->RetZoom(0) == 1.0f ) // ? RetZoom() returns a vector
 			{
 				alien->SetLock(FALSE);
 				alien->SetActivity(TRUE);  // the insect is active

@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "event.h"
 #include "misc.h"
 #include "iman.h"
@@ -87,7 +87,7 @@ CAutoPortico::CAutoPortico(CInstanceManager* iMan, CObject* object)
 
 CAutoPortico::~CAutoPortico()
 {
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 

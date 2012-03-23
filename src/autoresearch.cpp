@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "global.h"
 #include "event.h"
 #include "misc.h"
@@ -72,7 +72,7 @@ CAutoResearch::CAutoResearch(CInstanceManager* iMan, CObject* object)
 
 CAutoResearch::~CAutoResearch()
 {
-	CAuto::~CAuto();
+	this->CAuto::~CAuto();
 }
 
 
