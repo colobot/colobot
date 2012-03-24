@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// misc.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// misc.h
 
 #ifndef _MISC_H_
 #define	_MISC_H_
@@ -25,7 +27,7 @@ extern CMetaFile	g_metafile;
 
 
 
-// Classes existantes.
+// Existing classes.
 
 enum ClassType
 {
@@ -64,139 +66,139 @@ enum ClassType
 
 enum Error
 {
-	ERR_OK				= 0,		// ok
-	ERR_GENERIC			= 1,		// erreur quelconque
-	ERR_CONTINUE		= 2,		// continue
-	ERR_STOP			= 3,		// stoppe
-	ERR_CMD				= 4,		// commande inconnue
-	ERR_INSTALL			= 20,		// programme mal installé
-	ERR_NOCD			= 21,		// CD pas trouvé
-	ERR_MANIP_VEH		= 100,		// véhicule inadapté
-	ERR_MANIP_FLY		= 101,		// impossible en vol
-	ERR_MANIP_BUSY		= 102,		// prend: porte déjà qq chose
-	ERR_MANIP_NIL		= 103,		// prend: rien à prendre
-	ERR_MANIP_MOTOR		= 105,		// dépose: impossible en mouvement
-	ERR_MANIP_OCC		= 106,		// dépose: emplacement déjà occupé
-	ERR_MANIP_FRIEND	= 107,		// pas d'autre véhicule
-	ERR_MANIP_RADIO		= 108,		// impossible car radioactif
-	ERR_MANIP_WATER		= 109,		// impossible sous l'eau
-	ERR_MANIP_EMPTY		= 110,		// rien à déposer
-	ERR_BUILD_FLY		= 120,		// impossible en vol
-	ERR_BUILD_WATER		= 121,		// impossible sous l'eau
-	ERR_BUILD_ENERGY	= 122,		// pas assez d'énergie
-	ERR_BUILD_METALAWAY	= 123,		// pas de métal (trop loin)
-	ERR_BUILD_METALNEAR	= 124,		// pas de métal (trop proche)
-	ERR_BUILD_METALINEX	= 125,		// métal inexistant
-	ERR_BUILD_FLAT		= 126,		// sol pas assez plat
-	ERR_BUILD_FLATLIT	= 127,		// sol plat pas assez grand
-	ERR_BUILD_BUSY		= 128,		// enplacement occupé
-	ERR_BUILD_BASE		= 129,		// trop proche de la fusée
-	ERR_BUILD_NARROW	= 130,		// bâtiments trop serrés
-	ERR_BUILD_MOTOR		= 131,		// construit: impossible en mouvement
-	ERR_SEARCH_FLY		= 140,		// impossible en vol
-	ERR_SEARCH_VEH		= 141,		// véhicule inadapté
-	ERR_SEARCH_MOTOR	= 142,		// impossible en mouvement
-	ERR_TERRA_VEH		= 150,		// véhicule inadapté
-	ERR_TERRA_ENERGY	= 151,		// pas assez d'énergie
-	ERR_TERRA_FLOOR		= 152,		// terrain inadapté
-	ERR_TERRA_BUILDING	= 153,		// batiment trop proche
-	ERR_TERRA_OBJECT	= 154,		// object trop proche
-	ERR_FIRE_VEH		= 160,		// véhicule inadapté
-	ERR_FIRE_ENERGY		= 161,		// pas assez d'énergie
-	ERR_FIRE_FLY		= 162,		// impossible en vol
-	ERR_RECOVER_VEH		= 170,		// véhicule inadapté
-	ERR_RECOVER_ENERGY	= 171,		// pas assez d'énergie
-	ERR_RECOVER_NULL	= 172,		// pas de ruine
-	ERR_CONVERT_EMPTY	= 180,		// pas de pierre à transformer
-	ERR_SHIELD_VEH		= 190,		// véhicule inadapté
-	ERR_SHIELD_ENERGY	= 191,		// pas assez d'énergie
+	ERR_OK			= 0,		// ok
+	ERR_GENERIC		= 1,		// any error
+	ERR_CONTINUE		= 2,		// continues
+	ERR_STOP		= 3,		// stops
+	ERR_CMD			= 4,		// unknown command
+	ERR_INSTALL		= 20,		// incorrectly installed program
+	ERR_NOCD		= 21,		// CD not found
+	ERR_MANIP_VEH		= 100,		// inappropriate vehicle
+	ERR_MANIP_FLY		= 101,		// impossible in flight
+	ERR_MANIP_BUSY		= 102,		// taking: hands already occupied
+	ERR_MANIP_NIL		= 103,		// taking: nothing has to take
+	ERR_MANIP_MOTOR		= 105,		// busy: impossible to move
+	ERR_MANIP_OCC		= 106,		// busy: location already occupied
+	ERR_MANIP_FRIEND	= 107,		// no other vehicle
+	ERR_MANIP_RADIO		= 108,		// impossible because radioactive
+	ERR_MANIP_WATER		= 109,		// not possible under water
+	ERR_MANIP_EMPTY		= 110,		// nothing to deposit
+	ERR_BUILD_FLY		= 120,		// not possible in flight
+	ERR_BUILD_WATER		= 121,		// not possible under water
+	ERR_BUILD_ENERGY	= 122,		// not enough energy
+	ERR_BUILD_METALAWAY	= 123,		// lack of metal (too far)
+	ERR_BUILD_METALNEAR	= 124,		// lack of metal (too close)
+	ERR_BUILD_METALINEX	= 125,		// lack of metal
+	ERR_BUILD_FLAT		= 126,		// not enough flat ground
+	ERR_BUILD_FLATLIT	= 127,		// not enough flat ground space
+	ERR_BUILD_BUSY		= 128,		// location occupied
+	ERR_BUILD_BASE		= 129,		// too close to the rocket
+	ERR_BUILD_NARROW	= 130,		// buildings too close
+	ERR_BUILD_MOTOR		= 131,		// built: not possible in movement
+	ERR_SEARCH_FLY		= 140,		// not possible in flight
+	ERR_SEARCH_VEH		= 141,		// inappropriate vehicle
+	ERR_SEARCH_MOTOR	= 142,		// impossible in movement
+	ERR_TERRA_VEH		= 150,		// inappropriate vehicle
+	ERR_TERRA_ENERGY	= 151,		// not enough energy
+	ERR_TERRA_FLOOR		= 152,		// inappropriate ground
+	ERR_TERRA_BUILDING	= 153,		// building too close
+	ERR_TERRA_OBJECT	= 154,		// object too close
+	ERR_FIRE_VEH		= 160,		// inappropriate vehicle
+	ERR_FIRE_ENERGY		= 161,		// not enough energy
+	ERR_FIRE_FLY		= 162,		// not possible in flight
+	ERR_RECOVER_VEH		= 170,		// inappropriate vehicle
+	ERR_RECOVER_ENERGY	= 171,		// not enough energy
+	ERR_RECOVER_NULL	= 172,		// lack of ruin
+	ERR_CONVERT_EMPTY	= 180,		// no stone was transformed
+	ERR_SHIELD_VEH		= 190,		// inappropriate vehicle
+	ERR_SHIELD_ENERGY	= 191,		// not enough energy
 	ERR_MOVE_IMPOSSIBLE	= 200,		// move impossible
 	ERR_FIND_IMPOSSIBLE	= 201,		// find impossible
 	ERR_GOTO_IMPOSSIBLE	= 210,		// goto impossible
-	ERR_GOTO_ITER		= 211,		// goto trop compliqué
-	ERR_GOTO_BUSY		= 212,		// destination goto occupée
-	ERR_DERRICK_NULL	= 300,		// pas de minerai en sous-sol
-	ERR_STATION_NULL	= 301,		// pas d'énergie en sous-sol
-	ERR_TOWER_POWER		= 310,		// pas de pile
-	ERR_TOWER_ENERGY	= 311,		// plus d'énergie
-	ERR_RESEARCH_POWER	= 320,		// pas de pile
-	ERR_RESEARCH_ENERGY	= 321,		// plus d'énergie
-	ERR_RESEARCH_TYPE	= 322,		// pas le bon type de pile
-	ERR_RESEARCH_ALREADY= 323,		// recherche déjà faîte
-	ERR_ENERGY_NULL		= 330,		// pas d'énergie en sous-sol
-	ERR_ENERGY_LOW		= 331,		// pas encore assez d'énergie
-	ERR_ENERGY_EMPTY	= 332,		// pas de métal à transformer
-	ERR_ENERGY_BAD		= 333,		// ne transforme que le métal
-	ERR_BASE_DLOCK		= 340,		// portes bloquées
-	ERR_BASE_DHUMAN		= 341,		// vous devez embarquer
-	ERR_LABO_NULL		= 350,		// rien à analyser
-	ERR_LABO_BAD		= 351,		// pas de boulet à analyser
-	ERR_LABO_ALREADY	= 352,		// analyse déjà faîte
-	ERR_NUCLEAR_NULL	= 360,		// pas d'énergie en sous-sol
-	ERR_NUCLEAR_LOW		= 361,		// pas encore assez d'énergie
-	ERR_NUCLEAR_EMPTY	= 362,		// pas d'uranium à transformer
-	ERR_NUCLEAR_BAD		= 363,		// ne transforme que l'uranium
-	ERR_FACTORY_NULL	= 370,		// pas de métal
-	ERR_FACTORY_NEAR	= 371,		// véhicule trop proche
-	ERR_RESET_NEAR		= 380,		// véhicule trop proche
-	ERR_INFO_NULL		= 390,		// pas de borne d'information
-	ERR_VEH_VIRUS		= 400,		// véhicule infecté par un virus
-	ERR_BAT_VIRUS		= 401,		// bâtiment infecté par un virus
-	ERR_VEH_POWER		= 500,		// pas de pile
-	ERR_VEH_ENERGY		= 501,		// plus d'énergie
-	ERR_FLAG_FLY		= 510,		// impossible en vol
-	ERR_FLAG_WATER		= 511,		// impossible en nageant
-	ERR_FLAG_MOTOR		= 512,		// impossible en mouvement
-	ERR_FLAG_BUSY		= 513,		// prend: porte déjà qq chose
-	ERR_FLAG_CREATE		= 514,		// trop d'indicateurs
-	ERR_FLAG_PROXY		= 515,		// trop proche
-	ERR_FLAG_DELETE		= 516,		// rien à supprimer
-	ERR_MISSION_NOTERM	= 600,		// mission pas terminée
-	ERR_DELETEMOBILE	= 700,		// véhicule détruit
-	ERR_DELETEBUILDING	= 701,		// bâtiment détruit
-	ERR_TOOMANY			= 702,		// trop d'objets
-	ERR_OBLIGATORYTOKEN	= 800,		// instruction obligatoire manquante
-	ERR_PROHIBITEDTOKEN	= 801,		// instruction interdite
+	ERR_GOTO_ITER		= 211,		// goto too complicated
+	ERR_GOTO_BUSY		= 212,		// goto destination occupied
+	ERR_DERRICK_NULL	= 300,		// no ore underground
+	ERR_STATION_NULL	= 301,		// no energy underground
+	ERR_TOWER_POWER		= 310,		// no battery
+	ERR_TOWER_ENERGY	= 311,		// more energy
+	ERR_RESEARCH_POWER	= 320,		// no battery
+	ERR_RESEARCH_ENERGY	= 321,		// more energy
+	ERR_RESEARCH_TYPE	= 322,		// the wrong type of battery
+	ERR_RESEARCH_ALREADY	= 323,		// research already done
+	ERR_ENERGY_NULL		= 330,		// no energy underground
+	ERR_ENERGY_LOW		= 331,		// not enough energy
+	ERR_ENERGY_EMPTY	= 332,		// lack of metal
+	ERR_ENERGY_BAD		= 333,		// transforms only the metal
+	ERR_BASE_DLOCK		= 340,		// doors locked
+	ERR_BASE_DHUMAN		= 341,		// you must be on spaceship
+	ERR_LABO_NULL		= 350,		// nothing to analyze
+	ERR_LABO_BAD		= 351,		// analyzes only organic ball
+	ERR_LABO_ALREADY	= 352,		// analysis already made
+	ERR_NUCLEAR_NULL	= 360,		// no energy underground
+	ERR_NUCLEAR_LOW		= 361,		// not enough energy
+	ERR_NUCLEAR_EMPTY	= 362,		// lack of uranium
+	ERR_NUCLEAR_BAD		= 363,		// transforms only uranium
+	ERR_FACTORY_NULL	= 370,		// no metal
+	ERR_FACTORY_NEAR	= 371,		// vehicle too close
+	ERR_RESET_NEAR		= 380,		// vehicle too close
+	ERR_INFO_NULL		= 390,		// no information terminal
+	ERR_VEH_VIRUS		= 400,		// vehicle infected by a virus
+	ERR_BAT_VIRUS		= 401,		// building infected by a virus
+	ERR_VEH_POWER		= 500,		// no battery
+	ERR_VEH_ENERGY		= 501,		// more energy
+	ERR_FLAG_FLY		= 510,		// impossible in flight
+	ERR_FLAG_WATER		= 511,		// impossible during swimming
+	ERR_FLAG_MOTOR		= 512,		// impossible in movement
+	ERR_FLAG_BUSY		= 513,		// taking: already creating flag
+	ERR_FLAG_CREATE		= 514,		// too many flags
+	ERR_FLAG_PROXY		= 515,		// too close
+	ERR_FLAG_DELETE		= 516,		// nothing to remove
+	ERR_MISSION_NOTERM	= 600,		// Mission not completed
+	ERR_DELETEMOBILE	= 700,		// vehicle destroyed
+	ERR_DELETEBUILDING	= 701,		// building destroyed
+	ERR_TOOMANY		= 702,		// too many objects
+	ERR_OBLIGATORYTOKEN	= 800,		// compulsory instruction missing
+	ERR_PROHIBITEDTOKEN	= 801,		// instruction prohibited
 
-	INFO_FIRST			= 10000,	// première information
-	INFO_BUILD			= 10001,	// construction terminée
-	INFO_CONVERT		= 10002,	// métal disponible
-	INFO_RESEARCH		= 10003,	// recherche terminée
-	INFO_FACTORY		= 10004,	// véhicule fabriqué
-	INFO_LABO			= 10005,	// analyse terminée
-	INFO_ENERGY			= 10006,	// pile disponible
-	INFO_NUCLEAR		= 10007,	// pile nucléaire disponible
-	INFO_FINDING		= 10008,	// pile nucléaire disponible
-	INFO_MARKPOWER		= 10020,	// emplacement pour station trouvé
-	INFO_MARKURANIUM	= 10021,	// emplacement pour derrick trouvé
-	INFO_MARKSTONE		= 10022,	// emplacement pour derrick trouvé
-	INFO_MARKKEYa		= 10023,	// emplacement pour derrick trouvé
-	INFO_MARKKEYb		= 10024,	// emplacement pour derrick trouvé
-	INFO_MARKKEYc		= 10025,	// emplacement pour derrick trouvé
-	INFO_MARKKEYd		= 10026,	// emplacement pour derrick trouvé
-	INFO_RESEARCHTANK	= 10030,	// recherche terminée
-	INFO_RESEARCHFLY	= 10031,	// recherche terminée
-	INFO_RESEARCHTHUMP	= 10032,	// recherche terminée
-	INFO_RESEARCHCANON	= 10033,	// recherche terminée
-	INFO_RESEARCHTOWER	= 10034,	// recherche terminée
-	INFO_RESEARCHPHAZER	= 10035,	// recherche terminée
-	INFO_RESEARCHSHIELD	= 10036,	// recherche terminée
-	INFO_RESEARCHATOMIC	= 10037,	// recherche terminée
-	INFO_WIN			= 10040,	// gagné
-	INFO_LOST			= 10041,	// perdu
-	INFO_LOSTq			= 10042,	// perdu immédiatement
-	INFO_WRITEOK		= 10043,	// enregistrement effectué
-	INFO_DELETEPATH		= 10050,	// marque chemin supprimée
-	INFO_DELETEMOTHER	= 10100,	// insecte tué
-	INFO_DELETEANT		= 10101,	// insecte tué
-	INFO_DELETEBEE		= 10102,	// insecte tué
-	INFO_DELETEWORM		= 10103,	// insecte tué
-	INFO_DELETESPIDER	= 10104,	// insecte tué
-	INFO_BEGINSATCOM	= 10105,	// utilisez votre SatCom
+	INFO_FIRST		= 10000,	// first information
+	INFO_BUILD		= 10001,	// construction builded
+	INFO_CONVERT		= 10002,	// metal available
+	INFO_RESEARCH		= 10003,	// search ended
+	INFO_FACTORY		= 10004,	// vehicle manufactured
+	INFO_LABO		= 10005,	// analysis ended
+	INFO_ENERGY		= 10006,	// battery available
+	INFO_NUCLEAR		= 10007,	// nuclear battery available
+	INFO_FINDING		= 10008,	// nuclear battery available
+	INFO_MARKPOWER		= 10020,	// location for station found
+	INFO_MARKURANIUM	= 10021,	// location for derrick found
+	INFO_MARKSTONE		= 10022,	// location for derrick found
+	INFO_MARKKEYa		= 10023,	// location for derrick found
+	INFO_MARKKEYb		= 10024,	// location for derrick found
+	INFO_MARKKEYc		= 10025,	// location for derrick found
+	INFO_MARKKEYd		= 10026,	// location for derrick found
+	INFO_RESEARCHTANK	= 10030,	// research ended
+	INFO_RESEARCHFLY	= 10031,	// research ended
+	INFO_RESEARCHTHUMP	= 10032,	// research ended
+	INFO_RESEARCHCANON	= 10033,	// research ended
+	INFO_RESEARCHTOWER	= 10034,	// research ended
+	INFO_RESEARCHPHAZER	= 10035,	// research ended
+	INFO_RESEARCHSHIELD	= 10036,	// research ended
+	INFO_RESEARCHATOMIC	= 10037,	// research ended
+	INFO_WIN		= 10040,	// win
+	INFO_LOST		= 10041,	// lost
+	INFO_LOSTq		= 10042,	// lost immediately
+	INFO_WRITEOK		= 10043,	// record done
+	INFO_DELETEPATH		= 10050,	// way mark deleted
+	INFO_DELETEMOTHER	= 10100,	// insect killed
+	INFO_DELETEANT		= 10101,	// insect killed
+	INFO_DELETEBEE		= 10102,	// insect killed
+	INFO_DELETEWORM		= 10103,	// insect killed
+	INFO_DELETESPIDER	= 10104,	// insect killed
+	INFO_BEGINSATCOM	= 10105,	// use your SatCom
 };
 
 
-// Etat du clavier.
+// Keyboard state.
 
 #define KS_PAGEUP			(1<<4)
 #define KS_PAGEDOWN			(1<<5)
@@ -212,7 +214,7 @@ enum Error
 #define KS_NUMMINUS			(1<<15)
 
 
-// Procédures.
+// Procedures.
 
 enum EventMsg;
 
