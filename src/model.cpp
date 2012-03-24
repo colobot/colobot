@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// model.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// model.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -43,15 +45,15 @@
 
 static float table_color[MAX_COLORS*3] =
 {
-	1.0f,	1.0f,	1.0f,	// blanc
-	1.0f,	0.0f,	0.0f,	// rouge
-	0.0f,	1.0f,	0.0f,	// vert
-	0.0f,	0.6f,	1.0f,	// bleu
-	1.0f,	1.0f,	0.0f,	// jaune
+	1.0f,	1.0f,	1.0f,	// white
+	1.0f,	0.0f,	0.0f,	// red
+	0.0f,	1.0f,	0.0f,	// green
+	0.0f,	0.6f,	1.0f,	// blue
+	1.0f,	1.0f,	0.0f,	// yellow
 	0.0f,	1.0f,	1.0f,	// cyan
 	1.0f,	0.0f,	1.0f,	// magenta
-	0.3f,	0.3f,	0.3f,	// gris
-	0.0f,	0.0f,	0.0f,	// noir
+	0.3f,	0.3f,	0.3f,	// grey
+	0.0f,	0.0f,	0.0f,	// black
 };
 
 
@@ -77,7 +79,7 @@ static int table_state[MAX_STATES] =
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CModel::CModel(CInstanceManager* iMan)
 {
@@ -119,7 +121,7 @@ CModel::CModel(CInstanceManager* iMan)
 	m_max = 1000000.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CModel::~CModel()
 {
@@ -127,8 +129,7 @@ CModel::~CModel()
 }
 
 
-// Il faut appeler cette procédure avant de modifier interactivement
-// le modèle.
+// You must call this procedure before changing the model interactively.
 
 void CModel::StartUserAction()
 {
@@ -232,8 +233,7 @@ void CModel::StartUserAction()
 	UpdateInfoText();
 }
 
-// Il faut appeler cette procédure après avoir modifié interactivement
-// le modèle.
+// You must call this procedure after modifing the model interactively.
 
 void CModel::StopUserAction()
 {
@@ -262,7 +262,7 @@ void CModel::StopUserAction()
 }
 
 
-// Met à jour les valeurs éditables pour le mapping des textures.
+// Updates theâ€‹editable values for mapping textures.
 
 void CModel::PutTextureValues()
 {
@@ -303,7 +303,7 @@ void CModel::PutTextureValues()
 	}
 }
 
-// Prend les valeurs éditables pour le mapping des textures.
+// Takes the editable values for mapping textures.
 
 void CModel::GetTextureValues()
 {
@@ -345,7 +345,7 @@ void CModel::GetTextureValues()
 }
 
 
-// Donne le nom du modèle.
+// Gives the model name.
 
 void CModel::GetModelName(char *buffer)
 {
@@ -364,7 +364,7 @@ void CModel::GetModelName(char *buffer)
 	}
 }
 
-// Donne le nom du modèle.
+// Gives the model name.
 
 void CModel::GetDXFName(char *buffer)
 {
@@ -383,7 +383,7 @@ void CModel::GetDXFName(char *buffer)
 	}
 }
 
-// Donne le nom du modèle.
+// Gives the model name.
 
 void CModel::GetScriptName(char *buffer)
 {
@@ -402,7 +402,7 @@ void CModel::GetScriptName(char *buffer)
 	}
 }
 
-// Indique si l'édition du nom a le focus.
+// Indicates whether the edition name has focus.
 
 BOOL CModel::IsEditFocus()
 {
@@ -442,7 +442,7 @@ BOOL CModel::IsEditFocus()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CModel::EventProcess(const Event &event)
 {
@@ -474,12 +474,12 @@ BOOL CModel::EventProcess(const Event &event)
 				m_mode = 3;
 				UpdateInfoText();
 			}
-			if ( event.param == VK_ADD )  // plus pavé num ?
+			if ( event.param == VK_ADD )  // numpad?
 			{
 				if ( event.keyState & KS_SHIFT )  CurrentSelect(TRUE);
 				CurrentSearchNext(+1, (event.keyState & KS_CONTROL));
 			}
-			if ( event.param == VK_SUBTRACT )  // moins pavé num ?
+			if ( event.param == VK_SUBTRACT )  // least numpad?
 			{
 				if ( event.keyState & KS_SHIFT )  CurrentSelect(TRUE);
 				CurrentSearchNext(-1, (event.keyState & KS_CONTROL));
@@ -719,7 +719,7 @@ BOOL CModel::EventProcess(const Event &event)
 
 		case EVENT_BUTTON3:  // read ?
 			GetModelName(s);
-			m_modFile->ReadModel(s, TRUE, FALSE);  // lit avec frontières standard
+			m_modFile->ReadModel(s, TRUE, FALSE);  // standard read with borders
 			DeselectAll();
 			CurrentInit();
 			EventFrame(event);
@@ -729,7 +729,7 @@ BOOL CModel::EventProcess(const Event &event)
 		case EVENT_BUTTON4:  // add ?
 			GetModelName(s);
 			first = m_modFile->RetTriangleUsed();
-			m_modFile->AddModel(s, first, TRUE, FALSE);  // lit avec frontières standard
+			m_modFile->AddModel(s, first, TRUE, FALSE);  // standard read with borders
 			last = m_modFile->RetTriangleUsed();
 			SelectZone(first, last);
 			EventFrame(event);
@@ -775,7 +775,7 @@ BOOL CModel::EventProcess(const Event &event)
 }
 
 
-// Anime le modèle.
+// Drives the model.
 
 BOOL CModel::EventFrame(const Event &event)
 {
@@ -793,7 +793,7 @@ BOOL CModel::EventFrame(const Event &event)
 	ZeroMemory(&matCurrent, sizeof(D3DMATERIAL7));
 	matCurrent.diffuse.r = 1.0f;
 	matCurrent.diffuse.g = 0.0f;
-	matCurrent.diffuse.b = 0.0f;  // rouge
+	matCurrent.diffuse.b = 0.0f;  // red
 	matCurrent.ambient.r = 0.5f;
 	matCurrent.ambient.g = 0.5f;
 	matCurrent.ambient.b = 0.5f;
@@ -801,7 +801,7 @@ BOOL CModel::EventFrame(const Event &event)
 	ZeroMemory(&matCurrents, sizeof(D3DMATERIAL7));
 	matCurrents.diffuse.r = 1.0f;
 	matCurrents.diffuse.g = 1.0f;
-	matCurrents.diffuse.b = 0.0f;  // jaune
+	matCurrents.diffuse.b = 0.0f;  // yellow
 	matCurrents.ambient.r = 0.5f;
 	matCurrents.ambient.g = 0.5f;
 	matCurrents.ambient.b = 0.5f;
@@ -809,7 +809,7 @@ BOOL CModel::EventFrame(const Event &event)
 	ZeroMemory(&matCurrenti, sizeof(D3DMATERIAL7));
 	matCurrenti.diffuse.r = 0.0f;
 	matCurrenti.diffuse.g = 0.0f;
-	matCurrenti.diffuse.b = 1.0f;  // bleu
+	matCurrenti.diffuse.b = 1.0f;  // blue
 	matCurrenti.ambient.r = 0.5f;
 	matCurrenti.ambient.g = 0.5f;
 	matCurrenti.ambient.b = 0.5f;
@@ -842,7 +842,7 @@ BOOL CModel::EventFrame(const Event &event)
 			if ( m_bDisplayTransparent )
 			{
 				matTrans = m_triangleTable[i].material;
-				matTrans.diffuse.a = 0.1f;  // très transparent
+				matTrans.diffuse.a = 0.1f;  // very transparent
 				pMat = &matTrans;
 				state = D3DSTATETD;
 			}
@@ -864,7 +864,7 @@ BOOL CModel::EventFrame(const Event &event)
 								  0.0f, 1000000.0f, FALSE);
 		}
 
-		if ( m_bDisplayTransparent &&  // dessine l'intérieur ?
+		if ( m_bDisplayTransparent &&  // draws inside?
 			 i >= m_triangleSel1   &&
 			 i <= m_triangleSel2   )
 		{
@@ -883,7 +883,7 @@ BOOL CModel::EventFrame(const Event &event)
 }
 
 
-// Donne un vertex.
+// Gives a vertex.
 
 BOOL CModel::GetVertex(int rank, D3DVERTEX2 &vertex)
 {
@@ -910,7 +910,7 @@ BOOL CModel::GetVertex(int rank, D3DVERTEX2 &vertex)
 	return FALSE;
 }
 
-// Modifie un vertex.
+// Modifies a vertex.
 
 BOOL CModel::SetVertex(int rank, D3DVERTEX2 &vertex)
 {
@@ -937,7 +937,7 @@ BOOL CModel::SetVertex(int rank, D3DVERTEX2 &vertex)
 	return FALSE;
 }
 
-// Adouci les normales des triangles sélectionés.
+// Smoothed normals selected triangles.
 
 void CModel::SmoothSelect()
 {
@@ -1004,7 +1004,7 @@ void CModel::SmoothSelect()
 }
 
 
-// Durci les normales des triangles sélectionés.
+// Cast normals selected triangles.
 
 void CModel::PlaneSelect()
 {
@@ -1040,7 +1040,7 @@ void CModel::PlaneSelect()
 }
 
 
-// Change la couleur des triangles sélectionés.
+// Change the color of the selected triangles.
 
 void CModel::ColorSelect()
 {
@@ -1061,7 +1061,7 @@ void CModel::ColorSelect()
 	SelectTerm();
 }
 
-// Change l'état des triangles sélectionés.
+// Change the status of selected triangles.
 
 void CModel::StateSelect()
 {
@@ -1080,7 +1080,7 @@ void CModel::StateSelect()
 	SelectTerm();
 }
 
-// Déplace la sélection.
+// Moves the selection.
 
 void CModel::MoveSelect(D3DVECTOR move)
 {
@@ -1118,7 +1118,7 @@ void CModel::MoveSelect(D3DVECTOR move)
 	OperSelect(move, m_oper);
 }
 
-// Déplace la sélection.
+// Moves the selection.
 
 void CModel::OperSelect(D3DVECTOR move, char oper)
 {
@@ -1224,7 +1224,7 @@ void CModel::OperSelect(D3DVECTOR move, char oper)
 	SelectTerm();
 }
 
-// Effectue un script de construction.
+// Performs a build script.
 
 void CModel::ReadScript(char *filename)
 {
@@ -1243,7 +1243,7 @@ void CModel::ReadScript(char *filename)
 	{
 		for ( i=0 ; i<200 ; i++ )
 		{
-			if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+			if ( line[i] == '\t' )  line[i] = ' ';  // replace tab by space
 			if ( line[i] == '/' && line[i+1] == '/' )
 			{
 				line[i] = 0;
@@ -1275,7 +1275,7 @@ void CModel::ReadScript(char *filename)
 			OperSelect(move, 'Z');
 
 			move = OpDir(line, "rot");
-			move *= PI/180.0f;  // degrés -> radians
+			move *= PI/180.0f;  // degrees -> radians
 			OperSelect(move, 'R');
 
 			move = OpDir(line, "pos");
@@ -1288,7 +1288,7 @@ void CModel::ReadScript(char *filename)
 
 
 
-// Calcule la bbox des triangles sélectionnés.
+// Computes the bbox of selected triangles.
 
 void CModel::BBoxCompute(D3DVECTOR &min, D3DVECTOR &max)
 {
@@ -1318,7 +1318,7 @@ void CModel::BBoxCompute(D3DVECTOR &min, D3DVECTOR &max)
 	}
 }
 
-// Retourne le centre de gravité de la sélection.
+// Returns the gravity center of the selection.
 
 D3DVECTOR CModel::RetSelectCDG()
 {
@@ -1333,7 +1333,7 @@ D3DVECTOR CModel::RetSelectCDG()
 	return cdg;
 }
 
-// Retourne le vecteur normal de la sélection.
+// Returns the normal vector of the selection.
 
 D3DVECTOR CModel::RetSelectNormal()
 {
@@ -1356,7 +1356,7 @@ D3DVECTOR CModel::RetSelectNormal()
 	return n;
 }
 
-// Mappe une texture sur les triangles sélectionnés.
+// Maps a texture onto the selected triangles.
 
 BOOL CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
 {
@@ -1437,7 +1437,7 @@ BOOL CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
 	return TRUE;
 }
 
-// Mappe une texture sur les triangles sélectionnés.
+// Maps a texture onto the selected triangles.
 
 void CModel::MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 						   FPOINT ti, FPOINT ts, char *texName)
@@ -1519,7 +1519,7 @@ void CModel::MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 		Swap(ti.x, ts.x);
 	}
 
-	if ( !bMirrorY )  // test inversé !
+	if ( !bMirrorY )  // reverse test!
 	{
 		Swap(ti.y, ts.y);
 	}
@@ -1556,7 +1556,7 @@ void CModel::MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 	SelectTerm();
 }
 
-// Mappe une texture sur les triangles sélectionnés.
+// Maps a texture onto the selected triangles.
 
 void CModel::MappingSelectSpherical(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 									FPOINT ti, FPOINT ts, char *texName)
@@ -1576,7 +1576,7 @@ void CModel::MappingSelectSpherical(int mode, int rotate, BOOL bMirrorX, BOOL bM
 		Swap(ti.x, ts.x);
 	}
 
-	if ( !bMirrorY )  // test inversé !
+	if ( !bMirrorY )  // reverse test!
 	{
 		Swap(ti.y, ts.y);
 	}
@@ -1605,7 +1605,7 @@ void CModel::MappingSelectSpherical(int mode, int rotate, BOOL bMirrorX, BOOL bM
 	SelectTerm();
 }
 
-// Cherche le centre d'un groupe de points.
+// Seeking the center of a group of points.
 
 D3DVECTOR CModel::RetMappingCenter(D3DVECTOR pos, D3DVECTOR min)
 {
@@ -1647,7 +1647,7 @@ D3DVECTOR CModel::RetMappingCenter(D3DVECTOR pos, D3DVECTOR min)
 	return center;
 }
 
-// Mappe une texture sur les triangles sélectionnés.
+// Maps a texture onto the selected triangles.
 
 void CModel::MappingSelectCylindrical(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 									  FPOINT ti, FPOINT ts, char *texName)
@@ -1667,7 +1667,7 @@ void CModel::MappingSelectCylindrical(int mode, int rotate, BOOL bMirrorX, BOOL 
 		Swap(ti.x, ts.x);
 	}
 
-	if ( !bMirrorY )  // test inversé !
+	if ( !bMirrorY )  // reverse test!
 	{
 		Swap(ti.y, ts.y);
 	}
@@ -1749,7 +1749,7 @@ void CModel::MappingSelectCylindrical(int mode, int rotate, BOOL bMirrorX, BOOL 
 }
 
 
-// Mappe une texture sur les triangles sélectionnés.
+// Maps a texture onto the selected triangles.
 
 void CModel::MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 							   FPOINT ti, FPOINT ts, char *texName)
@@ -1769,7 +1769,7 @@ void CModel::MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirror
 		Swap(ti.x, ts.x);
 	}
 
-	if ( !bMirrorY )  // test inversé !
+	if ( !bMirrorY )  // reverse test!
 	{
 		Swap(ti.y, ts.y);
 	}
@@ -1821,7 +1821,7 @@ void CModel::MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirror
 }
 
 
-// Mappe une texture secondaire sur les triangles sélectionnés.
+// Maps a secondary texture on selected triangles.
 
 void CModel::MappingSelect2(int texNum2, int subdiv,
 							int offsetU, int offsetV,
@@ -1899,7 +1899,7 @@ void CModel::MappingSelect2(int texNum2, int subdiv,
 	SelectTerm();
 }
 
-// Mappe une texture secondaire à plat.
+// Maps a secondary texture on flat.
 
 void CModel::MappingSelectPlane2(int mode, BOOL bMirrorX, BOOL bMirrorY)
 {
@@ -1941,7 +1941,7 @@ void CModel::MappingSelectPlane2(int mode, BOOL bMirrorX, BOOL bMirrorY)
 		Swap(ti.x, ts.x);
 	}
 
-	if ( !bMirrorY )  // test inversé !
+	if ( !bMirrorY )  // reverse test!
 	{
 		Swap(ti.y, ts.y);
 	}
@@ -1979,7 +1979,7 @@ void CModel::MappingSelectPlane2(int mode, BOOL bMirrorX, BOOL bMirrorY)
 	SelectTerm();
 }
 
-// Mappe une texture sur les triangles sélectionnés.
+// Maps a texture onto the selected triangles.
 
 void CModel::MappingSelectSpherical2(BOOL bMirrorX, BOOL bMirrorY)
 {
@@ -2002,7 +2002,7 @@ void CModel::MappingSelectSpherical2(BOOL bMirrorX, BOOL bMirrorY)
 		Swap(ti.x, ts.x);
 	}
 
-	if ( !bMirrorY )  // test inversé !
+	if ( !bMirrorY )  // reverse test!
 	{
 		Swap(ti.y, ts.y);
 	}
@@ -2031,7 +2031,7 @@ void CModel::MappingSelectSpherical2(BOOL bMirrorX, BOOL bMirrorY)
 	SelectTerm();
 }
 
-// Mappe une texture sur les triangles sélectionnés.
+// Maps a texture onto the selected triangles.
 
 void CModel::MappingSelectMagic2(BOOL bMirrorX, BOOL bMirrorY)
 {
@@ -2050,7 +2050,7 @@ void CModel::MappingSelectMagic2(BOOL bMirrorX, BOOL bMirrorY)
 		Swap(ti.x, ts.x);
 	}
 
-	if ( !bMirrorY )  // test inversé !
+	if ( !bMirrorY )  // reverse test!
 	{
 		Swap(ti.y, ts.y);
 	}
@@ -2116,7 +2116,7 @@ void CModel::MappingSelectMagic2(BOOL bMirrorX, BOOL bMirrorY)
 }
 
 
-// Cherche le triangle suivant.
+// Seeks the next triangle.
 
 int CModel::SearchNext(int rank, int step)
 {
@@ -2138,7 +2138,7 @@ int CModel::SearchNext(int rank, int step)
 	return rank;
 }
 
-// Cherche tous les triangles faisant partie du même plan.
+// Seeks all the triangles belonging to the same plane.
 
 int CModel::SearchSamePlane(int first, int step)
 {
@@ -2170,7 +2170,7 @@ int CModel::SearchSamePlane(int first, int step)
 		vNext[2].y = m_triangleTable[first].p3.y;
 		vNext[2].z = m_triangleTable[first].p3.z;
 
-		if ( !IsSamePlane(vFirst, vNext) )  // autre plan ?
+		if ( !IsSamePlane(vFirst, vNext) )  // other plan?
 		{
 			return last;
 		}
@@ -2178,11 +2178,11 @@ int CModel::SearchSamePlane(int first, int step)
 	return first;
 }
 
-// Cherche le triangle suivant.
+// Seeks the next triangle.
 
 void CModel::CurrentSearchNext(int step, BOOL bControl)
 {
-	if ( step > 0 )  // en avant ?
+	if ( step > 0 )  // forward?
 	{
 		m_triangleSel1 = SearchNext(m_triangleSel2, step);
 		if ( bControl )
@@ -2194,7 +2194,7 @@ void CModel::CurrentSearchNext(int step, BOOL bControl)
 			m_triangleSel2 = SearchSamePlane(m_triangleSel1, step);
 		}
 	}
-	if ( step < 0 )  // en arrière ?
+	if ( step < 0 )  // back?
 	{
 		m_triangleSel2 = SearchNext(m_triangleSel1, step);
 		if ( bControl )
@@ -2234,7 +2234,7 @@ void CModel::CurrentSearchNext(int step, BOOL bControl)
 	UpdateInfoText();
 }
 
-// Initialise les triangles courants initiaux.
+// Initializes the current triangles.
 
 void CModel::CurrentInit()
 {
@@ -2245,7 +2245,7 @@ void CModel::CurrentInit()
 	UpdateInfoText();
 }
 
-// Sélectionne les triangles courants.
+// Selects the current triangles.
 
 void CModel::CurrentSelect(BOOL bSelect)
 {
@@ -2258,7 +2258,7 @@ void CModel::CurrentSelect(BOOL bSelect)
 }
 
 
-// Désélectionne tous les triangles.
+// Deselects all triangles.
 
 void CModel::DeselectAll()
 {
@@ -2271,7 +2271,7 @@ void CModel::DeselectAll()
 	}
 }
 
-// Sélectionne une zone.
+// Selects an area.
 
 void CModel::SelectZone(int first, int last)
 {
@@ -2290,7 +2290,7 @@ void CModel::SelectZone(int first, int last)
 	m_triangleSel2 = last-1;
 }
 
-// Sélectionne tous les triangles.
+// Selects all triangles.
 
 void CModel::SelectAll()
 {
@@ -2307,7 +2307,7 @@ void CModel::SelectAll()
 	}
 }
 
-// Désélectionne tous les triangles.
+// Deselects all triangles.
 
 void CModel::SelectTerm()
 {
@@ -2329,7 +2329,7 @@ void CModel::SelectTerm()
 	DeselectAll();
 }
 
-// Sélectionne les triangles courants.
+// Selects the triangles currents.
 
 void CModel::DefaultSelect()
 {
@@ -2344,7 +2344,7 @@ void CModel::DefaultSelect()
 
 
 
-// Supprime tous les triangles sélectionnés.
+// Removes all selected triangles.
 
 void CModel::SelectDelete()
 {
@@ -2370,7 +2370,7 @@ void CModel::SelectDelete()
 	UpdateInfoText();
 }
 
-// Compresse tous les triangles.
+// Compresses all triangles.
 
 void CModel::Compress()
 {
@@ -2390,7 +2390,7 @@ void CModel::Compress()
 }
 
 
-// Change le min/max de tous les triangles sélectionnés.
+// Change the min / max of all selected triangles.
 
 void CModel::MinMaxChange()
 {
@@ -2409,7 +2409,7 @@ void CModel::MinMaxChange()
 }
 
 
-// Initialise le point de vue.
+// Initializes the point of view.
 
 void CModel::InitView()
 {
@@ -2419,7 +2419,7 @@ void CModel::InitView()
 	m_viewAngleV =  0.0f;
 }
 
-// Initialise le point de vue pour voir les triangles sélectionnés.
+// Initializes the point of view to see the selected triangles.
 
 void CModel::InitViewFromSelect()
 {
@@ -2452,7 +2452,7 @@ void CModel::InitViewFromSelect()
 #endif
 }
 
-// Met à jour les paramètres pour le point de vue.
+// Updates the parameters for the point of view.
 
 void CModel::UpdateView()
 {
@@ -2467,7 +2467,7 @@ void CModel::UpdateView()
 	m_engine->SetRankView(0);
 }
 
-// Déplace le point de vue.
+// Moves the point of view.
 
 void CModel::ViewMove(const Event &event, float speed)
 {
@@ -2526,7 +2526,7 @@ void CModel::ViewMove(const Event &event, float speed)
 
 
 
-// Met à jour le texte d'informations.
+// Updates the text information.
 
 void CModel::UpdateInfoText()
 {
@@ -2579,76 +2579,76 @@ void CModel::UpdateInfoText()
 
 static int tablePartT[] =	// lemt.tga
 {
-	192,   0, 256,  32,  // profil chenille
-	  0,  64, 128, 128,  // roues pour chenille
-	  0,   0, 128,  64,  // profil
+	192,   0, 256,  32,  // track profile
+	  0,  64, 128, 128,  // wheels for track
+	  0,   0, 128,  64,  // profile
 	 90,   0, 128,  28,  // pivot trainer
-	128,   0, 192,  44,  // coffre avant
-	128,  44, 192,  58,  // callandre
-	128,  58, 192,  87,  // coffre arrière
-	128,  87, 192, 128,  // callandre arrière
-	128, 128, 192, 144,  // sous-callandre arrière
-	  0, 128,  32, 152,  // garde boue arrière
-	  0, 152,  32, 182,  // garde boue milieu
-	  0, 182,  32, 256,  // garde boue avant
-	 32, 128, 112, 176,  // aile
-	224,  48, 232,  64,  // tuyère
-	192,  32, 224,  64,  // feu sous réacteur
-	224,  32, 256,  48,  // pied
-	192,  64, 256, 128,  // capteur
-	192, 128, 224, 176,  // support pile
-	192, 216, 248, 248,  // côté canon
-	220, 216, 222, 245,  // côté canon
-	 64, 176, 128, 224,  // dessus canon
-	128, 152, 192, 160,  // extérieur canon
-	128, 144, 192, 152,  // intérieur canon
-	192, 176, 224, 192,  // petit canon
-	128, 236, 192, 256,  // canon organique
-	214, 192, 224, 216,  // réticule de visée
+	128,   0, 192,  44,  // chest front
+	128,  44, 192,  58,  // shell
+	128,  58, 192,  87,  // back chest
+	128,  87, 192, 128,  // back shell
+	128, 128, 192, 144,  // sub back shell
+	  0, 128,  32, 152,  // rear fender
+	  0, 152,  32, 182,  // fender middle
+	  0, 182,  32, 256,  // front fender
+	 32, 128, 112, 176,  // wing
+	224,  48, 232,  64,  // thrust tunnel
+	192,  32, 224,  64,  // fire under reactor
+	224,  32, 256,  48,  // foot
+	192,  64, 256, 128,  // sensor
+	192, 128, 224, 176,  // battery holder
+	192, 216, 248, 248,  // cannon board
+	220, 216, 222, 245,  // cannon board
+	 64, 176, 128, 224,  // top cannon
+	128, 152, 192, 160,  // external cannon
+	128, 144, 192, 152,  // interior cannon
+	192, 176, 224, 192,  // small cannon
+	128, 236, 192, 256,  // cannon organic
+	214, 192, 224, 216,  // crosshair
 	224, 128, 248, 152,  // articulation
-	128, 192, 192, 214,  // piston côté
-	128, 214, 192, 236,  // piston face
-	192, 192, 214, 214,  // piston tranche
-	128, 192, 161, 214,  // piston petit côté
-	 32, 176,  64, 198,  // piston pour radar
-	128, 160, 160, 192,  // roue
-	232,  48, 255,  56,  // profil pneu
-	240, 152, 248, 216,  // hachures verticales
-	248, 192, 256, 256,  // batterie
-	224, 152, 240, 168,  // roche
-	144,  80, 176, 112,  // nucléaire
-	140,  76, 180, 116,  // nucléaire grand
-	144,  80, 152,  88,  // jaune nucléaire
-	224, 168, 240, 192,  // capot résolution C
-	224, 192, 240, 210,  // arrière résolution C
-	 32, 224,  96, 235,  // bras résolution C
-	 32, 235,  96, 246,  // bras résolution C
-	161,   1, 164,   4,  // blanc
-	168,   1, 171,   4,  // gris moyen
-	154,   1, 157,   4,  // gris foncé uni
-	147,   1, 150,   4,  // bleu uni
-	114, 130, 118, 134,  // rouge uni
-	121, 130, 125, 134,  // vert uni
-	114, 137, 118, 141,  // jaune uni
-	121, 137, 125, 141,  // violet uni
+	128, 192, 192, 214,  // piston board
+	128, 214, 192, 236,  // piston front
+	192, 192, 214, 214,  // piston edge
+	128, 192, 161, 214,  // small piston board
+	 32, 176,  64, 198,  // radar piston
+	128, 160, 160, 192,  // wheel
+	232,  48, 255,  56,  // tire profile
+	240, 152, 248, 216,  // vertical hatching
+	248, 192, 256, 256,  // battery
+	224, 152, 240, 168,  // rock
+	144,  80, 176, 112,  // nuclear
+	140,  76, 180, 116,  // large nuclear
+	144,  80, 152,  88,  // yellow nuclear
+	224, 168, 240, 192,  // cap resolution C
+	224, 192, 240, 210,  // back resolution C
+	 32, 224,  96, 235,  // arm resolution C
+	 32, 235,  96, 246,  // arm resolution C
+	161,   1, 164,   4,  // blank
+	168,   1, 171,   4,  // medium gray
+	154,   1, 157,   4,  // dark gray uniform
+	147,   1, 150,   4,  // blue unifrom
+	114, 130, 118, 134,  // red unifrom
+	121, 130, 125, 134,  // green uniform
+	114, 137, 118, 141,  // yellow uniform
+	121, 137, 125, 141,  // violet uniform
 	-1
 };
 
 static int tablePartR[] =	// roller.tga
 {
 	  0,   0, 128,  52,  // roues pour chenille
-	 48, 137, 128, 201,  // côté radiateur
+	 48, 137, 128, 201,  // cï¿½tï¿½ radiateur
 	  0,  52,  32,  84,  // avant radiateur
-	 32,  52,  43,  84,  // arrière radiateur
-	  0,  84,  96, 137,  // grand côté
+	 32,  52,  43,  84,  // arriï¿½re radiateur
+	  0,  84,  96, 137,  // grand cï¿½tï¿½
 	128,   0, 192,  85,  // avant
-	128, 173, 192, 256,  // arrière
+	128, 173, 192, 256,  // arriï¿½re
 	192,   0, 256,  42,  // dessus
-	128,  85, 192, 109,  // côté pillon
+	128,  85, 192, 109,  // cï¿½tï¿½ pillon
 	128, 109, 192, 173,  // dessus pillon
-	192,  85, 240, 109,  // côté porte pillon
-	  0, 137,  24, 256,  // côté verrin
-	 24, 137,  48, 256,  // côté verrin
+	192,  85, 240, 109,  // cï¿½tï¿½ porte pillon
+	  0, 137,  24, 256,  // cï¿½tï¿½ verrin
+	 24, 137,  48, 256,  // cï¿½tï¿½ verrin
 	 48, 201, 128, 233,  // support canon
 	192, 109, 256, 173,  // fond canon
 	192, 173, 240, 205,  // canon 1
@@ -2657,8 +2657,8 @@ static int tablePartR[] =	// roller.tga
 	 48, 233, 128, 247,  // piston
 	 96, 105, 128, 137,  // avant phazer
 	 96,  97, 128, 105,  // canon phazer
-	 75,  52, 107,  84,  // échappement
-	192, 205, 243, 256,  // instruction centrale nucléaire
+	 75,  52, 107,  84,  // ï¿½chappement
+	192, 205, 243, 256,  // instruction centrale nuclï¿½aire
 	192,  42, 256,  85,  // reflet vitres
 	-1
 };
@@ -2668,32 +2668,32 @@ static int tablePartW[] =	// subm.tga
 	  0,   0, 128,  26,  // chenilles
 	  0,  26,  22, 114,  // portique 1
 	  0, 114,  22, 202,  // portique 2
-	 22,  26,  82,  56,  // côté hublot
-	 22,  56,  82,  86,  // côté ligne rouge
-	 22,  86,  82, 116,  // côté simple
-	 22, 116,  82, 146,  // avant/arrière
-	 22, 146,  82, 176,  // avant/arrière + phare
+	 22,  26,  82,  56,  // cï¿½tï¿½ hublot
+	 22,  56,  82,  86,  // cï¿½tï¿½ ligne rouge
+	 22,  86,  82, 116,  // cï¿½tï¿½ simple
+	 22, 116,  82, 146,  // avant/arriï¿½re
+	 22, 146,  82, 176,  // avant/arriï¿½re + phare
 	132,  82, 196, 166,  // capot trainer
 	132, 166, 196, 177,  // capot trainer
 	132, 177, 196, 188,  // capot trainer
-	  0, 224,  96, 256,  // côté trainer
-	 30, 224,  48, 256,  // arrière trainer
-	136, 240, 216, 256,  // barrière courte
-	 96, 240, 256, 256,  // barrière longue
+	  0, 224,  96, 256,  // cï¿½tï¿½ trainer
+	 30, 224,  48, 256,  // arriï¿½re trainer
+	136, 240, 216, 256,  // barriï¿½re courte
+	 96, 240, 256, 256,  // barriï¿½re longue
 	128,   0, 160,  32,  // black-box 1
 	160,   0, 192,  32,  // black-box 2
 	192,   0, 224,  32,  // black-box 3
 	224, 105, 256, 137,  // TNT 1
 	224, 137, 256, 169,  // TNT 2
-	 82,  32, 146,  82,  // factory résolution C
-	146,  32, 210,  82,  // factory résolution C
-	224,   0, 256, 105,  // tower résolution C
-	 82,  82, 132, 150,  // research résolution C
-	199, 169, 256, 233,  // sac résolution C
-	106, 150, 130, 214,  // clé A
-	 82, 150, 106, 214,  // clé B
-	132, 188, 196, 212,  // clé C
-	132, 212, 196, 236,  // clé D
+	 82,  32, 146,  82,  // factory rï¿½solution C
+	146,  32, 210,  82,  // factory rï¿½solution C
+	224,   0, 256, 105,  // tower rï¿½solution C
+	 82,  82, 132, 150,  // research rï¿½solution C
+	199, 169, 256, 233,  // sac rï¿½solution C
+	106, 150, 130, 214,  // clï¿½ A
+	 82, 150, 106, 214,  // clï¿½ B
+	132, 188, 196, 212,  // clï¿½ C
+	132, 212, 196, 236,  // clï¿½ D
 	210,  32, 224,  46,  // gris
 	 56, 176,  82, 224,  // sol coffre-fort
 	-1
@@ -2702,17 +2702,17 @@ static int tablePartW[] =	// subm.tga
 static int tablePartDr[] =	// drawer.tga
 {
 	128,   0, 134,   6,  // bleu
-	128,   6, 134,  12,  // gris foncé
+	128,   6, 134,  12,  // gris foncï¿½
 	128,  12, 134,  18,  // gris clair
 	  0,   0, 128,  32,  // roues chenille
 	192,   0, 256,  32,  // profil chenille
 	140,   0, 160,   8,  // profil phare
 	160,   0, 192,  32,  // face phare
 	  0,  32, 160,  48,  // hachure
-	160,  32, 192,  48,  // côté
+	160,  32, 192,  48,  // cï¿½tï¿½
 	  0,  48,  96,  96,  // tableau de bord
 	 96,  48, 192, 112,  // radiateur
-	192,  32, 256, 112,  // grille latérale
+	192,  32, 256, 112,  // grille latï¿½rale
 	192, 112, 256, 128,  // capot
 	  0,  96,   8, 160,  // chassis
 	  8,  96,  96, 104,  // axe chenilles
@@ -2781,7 +2781,7 @@ static int tablePartKi[] =	// kid.tga
 	 64,   8,  72,  16,  // arrosoir: fond
 	134, 128, 142, 256,  // arrosoir: corps
 	142, 128, 150, 256,  // arrosoir: tuyau
-	128, 225, 134, 256,  // arrosoir: intérieur
+	128, 225, 134, 256,  // arrosoir: intï¿½rieur
 	 32, 224,  64, 256,  // arrosoir: ponneau
 	 56,   8,  64,  16,  // skate: roues (31)
 	 48,   8,  56,  16,  // skate: axes
@@ -2805,48 +2805,48 @@ static int tablePartKi2[] =	// kid2.tga
 	128, 128, 256, 256,  // roue
 	192,  96, 256, 128,  // pneu
 	184,  96, 192, 128,  // jante
-	128,  96, 160, 128,  // intérieur
+	128,  96, 160, 128,  // intï¿½rieur
 	160,  96, 168, 104,  // porte bois
-	160, 104, 168, 112,  // porte métal
+	160, 104, 168, 112,  // porte mï¿½tal
 	160, 112, 184, 128,  // vitre
 	 96,   0, 128, 256,  // bouteille: corps (12)
 	 64,   0,  96,  32,  // bouteille: bouchon
 	168,  96, 176, 104,  // bouteille: vert
 	  0, 192,  96, 224,  // bois clair
-	  0, 224,  96, 256,  // bois foncé
+	  0, 224,  96, 256,  // bois foncï¿½
 	 64,  32,  96,  64,  // bateau
 	168, 104, 176, 112,  // ballon (18)
 	176, 104, 184, 112,  // ballon
-	176,  96, 184, 104,  // intérieur caisse
+	176,  96, 184, 104,  // intï¿½rieur caisse
 	-1
 };
 
 static int tablePartKi3[] =	// kid3.tga
 {
-	  0,   0,  32,  28,  // écrou: flan
-	  0,  28,  32,  44,  // écrou: profil
-	  0,  44,  32,  60,  // écrou: pas de vis
+	  0,   0,  32,  28,  // ï¿½crou: flan
+	  0,  28,  32,  44,  // ï¿½crou: profil
+	  0,  44,  32,  60,  // ï¿½crou: pas de vis
 	  0,  60,  32,  64,  // tuyau
 	  0,  64,  32,  68,  // tuyau
 	  0,  68,   8,  76,  // tuyau
 	  0,  76,  32, 108,  // plastic
 	  8,  68,  16,  76,  // saut: gris clair (7)
-	 16,  68,  24,  76,  // saut: gris foncé
+	 16,  68,  24,  76,  // saut: gris foncï¿½
 	 24,  68,  32,  76,  // saut: gris bois
 	  0, 108,  32, 140,  // saut: rotule
 	  0, 140,  32, 144,  // saut: axe
 	128,   0, 256, 128,  // saut: flan
-	  0, 144,   8, 152,  // basket: gris foncé (13)
+	  0, 144,   8, 152,  // basket: gris foncï¿½ (13)
 	  8, 144,  16, 152,  // basket: gris clair
 	 16, 144,  24, 152,  // basket: gris lacets
 	 24, 144,  32, 152,  // basket: gris semelle
-	  0, 152,   8, 181,  // basket: intérieur
-	  0, 181, 192, 256,  // basket: côté
-	192, 181, 226, 256,  // basket: arrière
+	  0, 152,   8, 181,  // basket: intï¿½rieur
+	  0, 181, 192, 256,  // basket: cï¿½tï¿½
+	192, 181, 226, 256,  // basket: arriï¿½re
 	 32, 135,  96, 181,  // basket: dessus (20)
 	 96, 168, 128, 181,  // basket: avant
 	  8, 152,  16, 160,  // chaise: plastique
-	 16, 152,  24, 160,  // chaise: métal
+	 16, 152,  24, 160,  // chaise: mï¿½tal
 	 32,   0,  64,  32,  // chaise: roue
 	  8, 177,  24, 181,  // chaise: roue
 	226, 181, 234, 256,  // chaise: piston (26)
@@ -2859,12 +2859,12 @@ static int tablePartKi3[] =	// kid3.tga
 	128, 135, 224, 181,  // panneau
 	242, 135, 256, 256,  // poteau (34)
 	 24, 152,  32, 160,  // clou
-	 16, 160,  24, 168,  // tuyau métalique
-	112, 181, 192, 185,  // tuyau intérieur
+	 16, 160,  24, 168,  // tuyau mï¿½talique
+	112, 181, 192, 185,  // tuyau intï¿½rieur
 	 32,  32,  48,  80,  // pas de vis
 	 24, 160,  32, 168,  // ventillateur: plastique (39)
-	 40,  80,  56,  96,  // ventillateur: plastique dégradé
-	  8, 168,  16, 176,  // ventillateur: métal
+	 40,  80,  56,  96,  // ventillateur: plastique dï¿½gradï¿½
+	  8, 168,  16, 176,  // ventillateur: mï¿½tal
 	 32,  80,  40, 112,  // ventillateur: socle 1
 	 64,   0,  96,  16,  // ventillateur: socle 2
 	 48,  32,  56,  80,  // ventillateur: socle 3
@@ -2883,9 +2883,9 @@ static int tablePartF[] =	// factory.tga
 	  0,   0, 152, 152,  // plancher octogonal fabrique
 	 50,  50, 102, 102,  // dessus pile
 	  0, 152, 128, 252,  // avant
-	128, 152, 256, 252,  // arrière
-	152,  28, 225, 128,  // côté
-	152,  28, 176, 128,  // côté partiel
+	128, 152, 256, 252,  // arriï¿½re
+	152,  28, 225, 128,  // cï¿½tï¿½
+	152,  28, 176, 128,  // cï¿½tï¿½ partiel
 	152,   0, 216,  16,  // hachures
 	236,   0, 256,  40,  // axe
 	152, 128, 224, 152,  // support cible
@@ -2894,8 +2894,8 @@ static int tablePartF[] =	// factory.tga
 
 static int tablePartD[] =	// derrick.tga
 {
-	  0,   0,  64,  32,  // grand côté
-	 64,   0,  96,  24,  // petit côté
+	  0,   0,  64,  32,  // grand cï¿½tï¿½
+	 64,   0,  96,  24,  // petit cï¿½tï¿½
 	 96,   0, 136,  24,  // attention
 	  0,  32,   8, 160,  // tube 1
 	  8,  32,  16,  96,  // tube 2
@@ -2904,22 +2904,22 @@ static int tablePartD[] =	// derrick.tga
 	 32,  32,  40, 160,  // tige destructeur
 	  8,  96,  16, 128,  // foret
 	136,   0, 256, 120,  // plancher octogonal station de recharge
-	 40,  32,  64,  56,  // cube métal
-	 64,  24, 128,  48,  // côté tour haut
-	 64,  48, 128, 229,  // côté tour bas
-	136, 120, 256, 240,  // intérieur usine
-	  0, 160,  64, 224,  // toît usine
+	 40,  32,  64,  56,  // cube mï¿½tal
+	 64,  24, 128,  48,  // cï¿½tï¿½ tour haut
+	 64,  48, 128, 229,  // cï¿½tï¿½ tour bas
+	136, 120, 256, 240,  // intï¿½rieur usine
+	  0, 160,  64, 224,  // toï¿½t usine
 	-1
 };
 
 static int tablePartC[] =	// convert.tga
 {
 	  0,   0, 120, 120,  // plancher octogonal convertisseur
-	  0, 120, 128, 176,  // grand côté
-	128, 120, 192, 176,  // petit côté
+	  0, 120, 128, 176,  // grand cï¿½tï¿½
+	128, 120, 192, 176,  // petit cï¿½tï¿½
 	192, 120, 256, 184,  // couvercle convertisseur
 	120,   0, 216,  64,  // face trianble
-	216,   0, 248,  64,  // côté triangle
+	216,   0, 248,  64,  // cï¿½tï¿½ triangle
 	120,  64, 160,  84,  // axe
 	  0, 141, 128, 176,  // recherche: base
 	  0, 176, 128, 214,  // recherche: haut
@@ -2927,12 +2927,12 @@ static int tablePartC[] =	// convert.tga
 	174,  64, 190, 120,  // recherche: montant
 	190,  64, 206, 120,  // recherche: montant
 	206,  64, 254,  85,  // radar
-	192, 168, 256, 232,  // hachures carrées
-	248,   0, 256,  64,  // cône fabrique de piles
-	128, 176, 192, 240,  // dessus centrale nucléaire
+	192, 168, 256, 232,  // hachures carrï¿½es
+	248,   0, 256,  64,  // cï¿½ne fabrique de piles
+	128, 176, 192, 240,  // dessus centrale nuclï¿½aire
 	120,  85, 174, 120,  // technicien, visage
 	206, 106, 256, 120,  // technicien, casquette
-	160,  64, 174,  78,  // technicien, visière
+	160,  64, 174,  78,  // technicien, visiï¿½re
 	-1
 };
 
@@ -2943,10 +2943,10 @@ static int tablePartS[] =	// search.tga
 	  0, 128, 128, 256,  // pile
 	128, 128, 228, 240,  // support pile
 	228, 128, 256, 184,  // antenne
-	128, 128, 192, 160,  // contrôle 1
-	128, 160, 192, 192,  // contrôle 2
-	128, 192, 192, 224,  // contrôle 3
-	128, 224, 192, 256,  // contrôle 4
+	128, 128, 192, 160,  // contrï¿½le 1
+	128, 160, 192, 192,  // contrï¿½le 2
+	128, 192, 192, 224,  // contrï¿½le 3
+	128, 224, 192, 256,  // contrï¿½le 4
 	-1
 };
 
@@ -2957,9 +2957,9 @@ static int tablePartP[] =	// plant.tga
 	 48, 156, 108, 256,  // feuille 3
 	 94,   0, 104, 100,  // tige 1
 	185,   0, 195, 100,  // tige 2
-	108, 100, 182, 256,  // fougère
+	108, 100, 182, 256,  // fougï¿½re
 	104,   0, 144, 100,  // courge
-	203,   0, 256,  83,  // armature derrick résolution C
+	203,   0, 256,  83,  // armature derrick rï¿½solution C
 	-1
 };
 
@@ -2992,9 +2992,9 @@ static int tablePartV[] =	// vegetal.tga
 
 static int tablePartM[] =	// mother.tga
 {
-	  0,   0, 128, 128,  // corps arrière
+	  0,   0, 128, 128,  // corps arriï¿½re
 	128,   0, 192, 128,  // corps avant
-	  0, 128,  64, 192,  // tête
+	  0, 128,  64, 192,  // tï¿½te
 	 64, 128, 192, 160,  // pince ext.
 	 64, 160, 192, 192,  // pince int.
 	  0, 192,  64, 256,  // mire
@@ -3006,31 +3006,31 @@ static int tablePartA[] =	// ant.tga
 	  0,   0,  64,  64,  // queue
 	  0,  96, 128, 160,  // queue abeille
 	 64,   0, 128,  64,  // corps
-	128,   0, 192,  64,  // tête
+	128,   0, 192,  64,  // tï¿½te
 	  0,  64,  64,  72,  // patte
 	  0,  72,  64,  80,  // antenne
 	 64,  64, 150,  96,  // queue ver
 	150,  64, 182,  96,  // corps ver
-	182,  64, 256,  96,  // tête ver
+	182,  64, 256,  96,  // tï¿½te ver
 	224,  32, 256,  64,  // articulation ver
 	128,  96, 220, 160,  // aile
 	  0,  80,  16,  96,  // oeil
 	200,   0, 208,   8,  // vert clair
-	200,   8, 208,  16,  // vert foncé
-	  0, 160,  64, 224,  // corps araignée
-	 64, 160, 128, 192,  // tête araignée
-	208,   0, 216,  64,  // patte araignée
-	216,   0, 224,  32,  // patte araignée
-	224,   0, 256,   8,  // antenne araignée
+	200,   8, 208,  16,  // vert foncï¿½
+	  0, 160,  64, 224,  // corps araignï¿½e
+	 64, 160, 128, 192,  // tï¿½te araignï¿½e
+	208,   0, 216,  64,  // patte araignï¿½e
+	216,   0, 224,  32,  // patte araignï¿½e
+	224,   0, 256,   8,  // antenne araignï¿½e
 	192,   0, 200,   8,  // brun clair
-	192,   8, 200,  16,  // brun foncé
+	192,   8, 200,  16,  // brun foncï¿½
 	128, 160, 256, 256,  // SatCom
 	-1
 };
 
 static int tablePartH[] =	// human.tga
 {
-	  0,   0,  64,  64,  // vissière
+	  0,   0,  64,  64,  // vissiï¿½re
 	 64,   0,  96,  64,  // cuisse
 	 96,   0, 128,  64,  // jambe
 	128,   0, 192,  32,  // bras
@@ -3039,12 +3039,12 @@ static int tablePartH[] =	// human.tga
 	128,  64, 256, 224,  // dos
 	 64, 224, 112, 256,  // dessus pied
 	144, 224, 168, 240,  // dessous pied
-	112, 224, 144, 240,  // côté pied
-	112, 224, 128, 240,  // côté pied
+	112, 224, 144, 240,  // cï¿½tï¿½ pied
+	112, 224, 128, 240,  // cï¿½tï¿½ pied
 	  0, 224,  64, 256,  // gant
 	168, 224, 200, 256,  // oreille
 	112, 240, 144, 256,  // ligne casque
-	200, 224, 208, 256,  // intérieur coup
+	200, 224, 208, 256,  // intï¿½rieur coup
 	240,   0, 244,  64,  // bombone orange
 	244,   0, 248,  64,  // bombone orange (reflet)
 	248,   0, 252,  64,  // bombone bleu
@@ -3058,15 +3058,15 @@ static int tablePartH[] =	// human.tga
 
 static int tablePartG[] =	// apollo.tga
 {
-	  0,   0,  64,  64,  // revètement LEM
-	 64,   0, 128,  64,  // revètement LEM
+	  0,   0,  64,  64,  // revï¿½tement LEM
+	 64,   0, 128,  64,  // revï¿½tement LEM
 	128,   8, 136, 128,  // pied
 	  0,  64,  64, 128,  // roue
 	136,  24, 152,  44,  // profil pneu
 	136,   8, 160,  24,  // garde boue
-	 64,  64, 128, 128,  // siège
-	 64, 128, 128, 192,  // siège
-	 64, 192, 128, 212,  // siège
+	 64,  64, 128, 128,  // siï¿½ge
+	 64, 128, 128, 192,  // siï¿½ge
+	 64, 192, 128, 212,  // siï¿½ge
 	128, 128, 240, 192,  // moteur
 	  0, 192,  28, 256,  // moteur
 	 32, 128,  60, 256,  // moteur
@@ -3076,7 +3076,7 @@ static int tablePartG[] =	// apollo.tga
 	 64, 212, 108, 256,  // panneau de commande
 	198,   0, 206, 128,  // mat
 	190,  64, 198, 128,  // mat
-	160,   8, 176,  24,  // caméra
+	160,   8, 176,  24,  // camï¿½ra
 	176,   8, 192,  24,  // moyeu
 	136,  64, 168,  96,  // module
 	168,  64, 190,  96,  // module
@@ -3086,24 +3086,24 @@ static int tablePartG[] =	// apollo.tga
 	128,   0, 136,   8,  // jaune
 	136,   0, 144,   8,  // beige
 	144,   0, 152,   8,  // brun
-	168,   0, 176,   8,  // gris très clair
+	168,   0, 176,   8,  // gris trï¿½s clair
 	152,   0, 160,   8,  // gris clair
-	160,   0, 168,   8,  // gris foncé
+	160,   0, 168,   8,  // gris foncï¿½
 	-1
 };
 
 static int tablePartB[] =	// base1.tga
 {
-	  0,   0,  80, 256,  // intérieur porte
+	  0,   0,  80, 256,  // intï¿½rieur porte
 	 80,   0,  88, 256,  // tranche porte
 	116,   0, 180,  64,  // coiffe 1
 	116,  64, 180, 102,  // coiffe 2
 	180,   0, 244,  37,  // base
 	180,  37, 196, 101,  // support
 	 88,   0, 116, 256,  // colonne
-	212,  37, 256, 128,  // supplément
+	212,  37, 256, 128,  // supplï¿½ment
 	128, 128, 256, 256,  // 1/4 du sol
-	196,  37, 212,  53,  // gris foncé
+	196,  37, 212,  53,  // gris foncï¿½
 	196,  53, 212,  69,  // gris clair
 	-1
 };
@@ -3153,7 +3153,7 @@ int* CModel::RetTextureTable()
 	return 0;
 }
 
-// Met à jour la partie de texture.
+// Met ï¿½ jour la partie de texture.
 
 void CModel::TexturePartUpdate()
 {
