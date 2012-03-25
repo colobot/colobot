@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motion.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motion.h
 
 #ifndef _MOTION_H_
 #define	_MOTION_H_
@@ -80,9 +82,9 @@ protected:
 	float			m_actionTime;
 	float			m_progress;
 
-	D3DVECTOR		m_linVibration;		// vibration linéaire
-	D3DVECTOR		m_cirVibration;		// vibration circulaire
-	D3DVECTOR		m_inclinaison;		// inclinaison
+	D3DVECTOR		m_linVibration;		// linear vibration
+	D3DVECTOR		m_cirVibration;		// circular vibration
+	D3DVECTOR		m_inclinaison;		// tilt
 };
 
 
