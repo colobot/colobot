@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motion.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motion.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -43,7 +45,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CMotion::CMotion(CInstanceManager* iMan, CObject* object)
 {
@@ -72,14 +74,14 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
 	m_inclinaison   = D3DVECTOR(0.0f, 0.0f, 0.0f);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CMotion::~CMotion()
 {
 	m_iMan->DeleteInstance(CLASS_MOTION, this);
 }
 
-// Supprime l'objet.
+// Deletes the object.
 
 void CMotion::DeleteObject(BOOL bAll)
 {
@@ -97,14 +99,14 @@ void CMotion::SetBrain(CBrain* brain)
 }
 
 
-// Crée.
+// Creates.
 
 BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
 {
 	return TRUE;
 }
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotion::EventProcess(const Event &event)
 {
@@ -120,9 +122,9 @@ BOOL CMotion::EventProcess(const Event &event)
 	if ( m_progress > 1.0f )  m_progress = 1.0f;  // (*)
 
 	pos = m_object->RetPosition(0);
-	if ( pos.y < m_water->RetLevel(m_object) )  // sous l'eau ?
+	if ( pos.y < m_water->RetLevel(m_object) )  // underwater?
 	{
-		time = event.rTime*3.0f;  // tout est plus lent
+		time = event.rTime*3.0f;  // everything is slower
 	}
 	else
 	{
@@ -150,11 +152,11 @@ BOOL CMotion::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// (*)	Evite le bug des fourmis retournées par le thumper et dont
-//		l'abdomen grossi à l'infini !
+// (*)	Avoids the bug of ants returned by the thumper and
+// 		whose abdomen grown to infinity!
 
 
-// Démarre une action.
+// Start an action.
 
 Error CMotion::SetAction(int action, float time)
 {
@@ -164,7 +166,7 @@ Error CMotion::SetAction(int action, float time)
 	return ERR_OK;
 }
 
-// Retourne l'action en cours.
+// Returns the current action.
 
 int CMotion::RetAction()
 {
@@ -172,7 +174,7 @@ int CMotion::RetAction()
 }
 
 
-// Spécifie un paramètre spécial.
+// Specifies a special parameter.
 
 BOOL CMotion::SetParam(int rank, float value)
 {
@@ -185,7 +187,7 @@ float CMotion::RetParam(int rank)
 }
 
 
-// Sauve tous les paramètres de l'objet.
+// Saves all parameters of the object.
 
 BOOL CMotion::Write(char *line)
 {
@@ -205,7 +207,7 @@ BOOL CMotion::Write(char *line)
 	return FALSE;
 }
 
-// Restitue tous les paramètres de l'objet.
+// Restores all parameters of the object.
 
 BOOL CMotion::Read(char *line)
 {
@@ -217,7 +219,7 @@ BOOL CMotion::Read(char *line)
 }
 
 
-// Donne la vibration linéaire.
+// Gives the linear vibration.
 
 void CMotion::SetLinVibration(D3DVECTOR dir)
 {
@@ -229,7 +231,7 @@ D3DVECTOR CMotion::RetLinVibration()
 	return m_linVibration;
 }
 
-// Donne la vibration circulaire.
+// Gives the circular vibration.
 
 void CMotion::SetCirVibration(D3DVECTOR dir)
 {
@@ -241,7 +243,7 @@ D3DVECTOR CMotion::RetCirVibration()
 	return m_cirVibration;
 }
 
-// Donne l'inclinaison.
+// Gives the tilt.
 
 void CMotion::SetInclinaison(D3DVECTOR dir)
 {
