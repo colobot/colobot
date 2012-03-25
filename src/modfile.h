@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// modfile.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// modfile.h
 
 #ifndef _MODFILE_H_
 #define	_MODFILE_H_
@@ -26,8 +28,8 @@ class CD3DEngine;
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> utilisé
-	char			bSelect;	// TRUE -> sélectionné
+	char			bUsed;		// TRUE -> using
+	char			bSelect;	// TRUE -> selected
 	D3DVERTEX		p1;
 	D3DVERTEX		p2;
 	D3DVERTEX		p3;
@@ -36,12 +38,12 @@ typedef struct
 	float			min;
 	float			max;
 }
-OldModelTriangle1;		// longueur = 196 bytes
+OldModelTriangle1;		// length = 196 bytes
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> utilisé
-	char			bSelect;	// TRUE -> sélectionné
+	char			bUsed;		// TRUE -> used
+	char			bSelect;	// TRUE -> selected
 	D3DVERTEX		p1;
 	D3DVERTEX		p2;
 	D3DVERTEX		p3;
@@ -59,8 +61,8 @@ OldModelTriangle2;
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> utilisé
-	char			bSelect;	// TRUE -> sélectionné
+	char			bUsed;		// TRUE -> used
+	char			bSelect;	// TRUE -> selected
 	D3DVERTEX2		p1;
 	D3DVERTEX2		p2;
 	D3DVERTEX2		p3;
@@ -74,7 +76,7 @@ typedef struct
 	short			reserve3;
 	short			reserve4;
 }
-ModelTriangle;		// longueur = 208 bytes
+ModelTriangle;		// length = 208 bytes
 
 
 
