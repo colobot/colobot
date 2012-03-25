@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// modfile.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// modfile.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -37,7 +39,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CModFile::CModFile(CInstanceManager* iMan)
 {
@@ -50,7 +52,7 @@ CModFile::CModFile(CInstanceManager* iMan)
 	ZeroMemory(m_triangleTable, sizeof(ModelTriangle)*MAX_VERTICES);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CModFile::~CModFile()
 {
@@ -60,7 +62,7 @@ CModFile::~CModFile()
 
 
 
-// Crée un triangle dans la structure interne.
+// Creates a triangle in the internal structure.
 
 BOOL CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 							  float min, float max)
@@ -88,7 +90,7 @@ BOOL CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 
 	m_triangleTable[i].material.diffuse.r = 1.0f;
 	m_triangleTable[i].material.diffuse.g = 1.0f;
-	m_triangleTable[i].material.diffuse.b = 1.0f;  // blanc
+	m_triangleTable[i].material.diffuse.b = 1.0f;  // white
 	m_triangleTable[i].material.ambient.r = 0.5f;
 	m_triangleTable[i].material.ambient.g = 0.5f;
 	m_triangleTable[i].material.ambient.b = 0.5f;
@@ -99,7 +101,7 @@ BOOL CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 	return TRUE;
 }
 
-// Lit un fichier DXF.
+// Reads a DXF file.
 
 BOOL CModFile::ReadDXF(char *filename, float min, float max)
 {
@@ -187,7 +189,7 @@ BOOL CModFile::ReadDXF(char *filename, float min, float max)
 			nbSommet --;
 			if ( nbSommet >= 0 )
 			{
-				D3DVECTOR p(x,z,y);  // permutation de Y et Z !
+				D3DVECTOR p(x,z,y);  // permutation of Y and Z!
 				table[rankSommet++] = p;
 				bWaitSommetX = TRUE;
 
@@ -251,7 +253,7 @@ typedef struct
 InfoMOD;
 
 
-// Change un nom.bmp en nom.tga
+// Change nom.bmp to nom.tga
 
 void ChangeBMPtoTGA(char *filename)
 {
@@ -262,7 +264,7 @@ void ChangeBMPtoTGA(char *filename)
 }
 
 
-// Lit un fichier MOD.
+// Reads a MOD file.
 
 BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 {
@@ -442,25 +444,25 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 
 	if ( !bEdit )
 	{
-		limit[0] = m_engine->RetLimitLOD(0);  // frontière AB selon config
-		limit[1] = m_engine->RetLimitLOD(1);  // frontière BC selon config
+		limit[0] = m_engine->RetLimitLOD(0);  // frontier AB as config
+		limit[1] = m_engine->RetLimitLOD(1);  // frontier BC as config
 
-		// Frontières standard -> config.
+		// Standard frontiers -> config.
 		for ( i=first ; i<m_triangleUsed ; i++ )
 		{
 			if ( m_triangleTable[i].min == 0.0f &&
-				 m_triangleTable[i].max == 100.0f )  // résolution A ?
+				 m_triangleTable[i].max == 100.0f )  // resolution A ?
 			{
 				m_triangleTable[i].max = limit[0];
 			}
 			else if ( m_triangleTable[i].min == 100.0f &&
-					  m_triangleTable[i].max == 200.0f )  // résolution B ?
+					  m_triangleTable[i].max == 200.0f )  // resolution B ?
 			{
 				m_triangleTable[i].min = limit[0];
 				m_triangleTable[i].max = limit[1];
 			}
 			else if ( m_triangleTable[i].min == 200.0f &&
-					  m_triangleTable[i].max == 1000000.0f )  // résolution C ?
+					  m_triangleTable[i].max == 1000000.0f )  // resolution C ?
 			{
 				m_triangleTable[i].min = limit[1];
 			}
@@ -478,7 +480,7 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 	return TRUE;
 }
 
-// Lit un fichier MOD.
+// Reads a MOD file.
 
 BOOL CModFile::ReadModel(char *filename, BOOL bEdit, BOOL bMeta)
 {
@@ -487,7 +489,7 @@ BOOL CModFile::ReadModel(char *filename, BOOL bEdit, BOOL bMeta)
 }
 
 
-// Ecrit un fichier MOD.
+// Writes a MOD file.
 
 BOOL CModFile::WriteModel(char *filename)
 {
@@ -512,7 +514,7 @@ BOOL CModFile::WriteModel(char *filename)
 }
 
 
-// Crée l'objet dans le moteur 3D.
+// Creates the object in the 3D engine.
 
 BOOL CModFile::CreateEngineObject(int objRank, int addState)
 {
@@ -609,7 +611,7 @@ BOOL CModFile::CreateEngineObject(int objRank, int addState)
 }
 
 
-// Effectue un miroir selon Z.
+// Performs a mirror according to Z.
 
 void CModFile::Mirror()
 {
@@ -633,7 +635,7 @@ void CModFile::Mirror()
 }
 
 
-// Retourne le pointeur à la liste de triangles.
+// Returns the pointer to the list of triangles.
 
 void CModFile::SetTriangleUsed(int total)
 {
@@ -656,7 +658,7 @@ ModelTriangle* CModFile::RetTriangleList()
 }
 
 
-// Retourne la hauteur en fonction d'une position (x;-;z);
+// Returns the height according to a position (x - z);
 
 float CModFile::RetHeight(D3DVECTOR pos)
 {
