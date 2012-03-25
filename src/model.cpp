@@ -2636,30 +2636,30 @@ static int tablePartT[] =	// lemt.tga
 
 static int tablePartR[] =	// roller.tga
 {
-	  0,   0, 128,  52,  // roues pour chenille
-	 48, 137, 128, 201,  // c�t� radiateur
-	  0,  52,  32,  84,  // avant radiateur
-	 32,  52,  43,  84,  // arri�re radiateur
-	  0,  84,  96, 137,  // grand c�t�
-	128,   0, 192,  85,  // avant
-	128, 173, 192, 256,  // arri�re
-	192,   0, 256,  42,  // dessus
-	128,  85, 192, 109,  // c�t� pillon
-	128, 109, 192, 173,  // dessus pillon
-	192,  85, 240, 109,  // c�t� porte pillon
-	  0, 137,  24, 256,  // c�t� verrin
-	 24, 137,  48, 256,  // c�t� verrin
-	 48, 201, 128, 233,  // support canon
-	192, 109, 256, 173,  // fond canon
-	192, 173, 240, 205,  // canon 1
-	192, 173, 240, 177,  // canon 2
-	 43,  52,  75,  84,  // avant canon
+	  0,   0, 128,  52,  // wheels for track
+	 48, 137, 128, 201,  // catalytic radiator
+	  0,  52,  32,  84,  // front radiator
+	 32,  52,  43,  84,  // back radiator
+	  0,  84,  96, 137,  // large catalytic
+	128,   0, 192,  85,  // front
+	128, 173, 192, 256,  // back
+	192,   0, 256,  42,  // over
+	128,  85, 192, 109,  // catalytic pillon
+	128, 109, 192, 173,  // top pillon
+	192,  85, 240, 109,  // catalytic gate pillon
+	  0, 137,  24, 256,  // catalytic verrin
+	 24, 137,  48, 256,  // catalytic verrin
+	 48, 201, 128, 233,  // medium cannon
+	192, 109, 256, 173,  // bottom cannon
+	192, 173, 240, 205,  // cannon 1
+	192, 173, 240, 177,  // cannon 2
+	 43,  52,  75,  84,  // front cannon
 	 48, 233, 128, 247,  // piston
-	 96, 105, 128, 137,  // avant phazer
-	 96,  97, 128, 105,  // canon phazer
-	 75,  52, 107,  84,  // �chappement
-	192, 205, 243, 256,  // instruction centrale nucl�aire
-	192,  42, 256,  85,  // reflet vitres
+	 96, 105, 128, 137,  // front phazer
+	 96,  97, 128, 105,  // phazer cannon
+	 75,  52, 107,  84,  // exhaust pipe
+	192, 205, 243, 256,  // nuclear power plant instruction
+	192,  42, 256,  85,  // reflection glass
 	-1
 };
 
@@ -3153,7 +3153,7 @@ int* CModel::RetTextureTable()
 	return 0;
 }
 
-// Met � jour la partie de texture.
+// Updates the part of texture.
 
 void CModel::TexturePartUpdate()
 {
@@ -3170,7 +3170,7 @@ void CModel::TexturePartUpdate()
 	PutTextureValues();
 }
 
-// Change la texture.
+// Changes the texture.
 
 void CModel::TextureRankChange(int step)
 {
@@ -3206,7 +3206,7 @@ void CModel::TextureRankChange(int step)
 	m_texturePart = 0;
 }
 
-// Change la partie de texture.
+// Changes the part of texture.
 
 void CModel::TexturePartChange(int step)
 {
