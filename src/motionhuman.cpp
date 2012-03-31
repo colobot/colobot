@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motionhuman.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motionhuman.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -43,14 +45,14 @@
 
 
 
-#define ADJUST_ANGLE	FALSE		// TRUE -> ajuste les angles des membres
-#define ADJUST_ACTION	(3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM)
+#define ADJUST_ANGLE		FALSE		// TRUE -> adjusts the angles of the members
+#define ADJUST_ACTION		(3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM)
 
-#define START_TIME		1000.0f		// début du temps relatif
+#define START_TIME		1000.0f		// beginning of the relative time
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CMotionHuman::CMotionHuman(CInstanceManager* iMan, CObject* object)
 						  : CMotion(iMan, object)
@@ -74,14 +76,14 @@ CMotionHuman::CMotionHuman(CInstanceManager* iMan, CObject* object)
 	m_bDisplayPerso = FALSE;
 }
 
-// Destructeur de l'objet.
+// Object's constructor.
 
 CMotionHuman::~CMotionHuman()
 {
 }
 
 
-// Supprime un objet.
+// Removes an object.
 
 void CMotionHuman::DeleteObject(BOOL bAll)
 {
@@ -93,7 +95,7 @@ void CMotionHuman::DeleteObject(BOOL bAll)
 }
 
 
-// Démarre une action.
+// Starts an action.
 
 Error CMotionHuman::SetAction(int action, float time)
 {
@@ -103,7 +105,7 @@ Error CMotionHuman::SetAction(int action, float time)
 }
 
 
-// Crée le cosmonaute posé sur le sol.
+// Creates cosmonaut on the ground.
 
 BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 						  float power)
@@ -122,7 +124,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	if ( m_main->RetGamerOnlyHead() )
 	{
 		rank = m_engine->CreateObject();
-		m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
+		m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
 		m_object->SetObjectRank(0, rank);
 		face = m_main->RetGamerFace();
 		sprintf(filename, "objects\\human2h%d.mod", face+1);
@@ -150,20 +152,20 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 		return TRUE;
 	}
 
-	// Crée la base principale.
+	// Creates the main base.
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
+	m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
 	m_object->SetObjectRank(0, rank);
 
-	if ( option == 0 )  // tête dans casque ?
+	if ( option == 0 )  // head in helmet?
 	{
 		pModFile->ReadModel("objects\\human1c.mod");
 	}
-	if ( option == 1 )  // tête à l'air ?
+	if ( option == 1 )  // head without helmet?
 	{
 		pModFile->ReadModel("objects\\human1h.mod");
 	}
-	if ( option == 2 )  // sans sac à dos ?
+	if ( option == 2 )  // without a backpack?
 	{
 		pModFile->ReadModel("objects\\human1v.mod");
 	}
@@ -172,12 +174,11 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Un véhicule doit avoir obligatoirement une sphère de
-	// collision avec un centre (0;y;0) (voir GetCrashSphere).
+	// A vehicle must have an obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
 	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f);
 	m_object->SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 4.0f);
 
-	// Crée la tête.
+	// Creates the head.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(1, rank);
@@ -185,14 +186,14 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_HUMAN )
 	{
-		if ( option == 0 )  // tête dans casque ?
+		if ( option == 0 )  // head in helmet?
 		{
 			face = m_main->RetGamerFace();
 			sprintf(filename, "objects\\human2c%d.mod", face+1);
 			pModFile->ReadModel(filename);
 		}
-		if ( option == 1 ||  // tête à l'air ?
-			 option == 2 )   // sans sac à dos ?
+		if ( option == 1 ||  // head without helmet?
+			 option == 2 )   // without a backpack?
 		{
 			face = m_main->RetGamerFace();
 			sprintf(filename, "objects\\human2h%d.mod", face+1);
@@ -205,13 +206,13 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	}
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(1, D3DVECTOR(0.0f, 2.7f, 0.0f));
-	if ( option == 1 ||  // tête à l'air ?
-		 option == 2 )   // sans sac à dos ?
+	if ( option == 1 ||  // head without helmet?
+		 option == 2 )   // without a backpack?
 	{
 		m_object->SetZoom(1, D3DVECTOR(1.0f, 1.05f, 1.0f));
 	}
 
-	// Crée les lunettes.
+	// Creates the glasses.
 	glasses = m_main->RetGamerGlasses();
 	if ( glasses != 0 && type == OBJECT_HUMAN )
 	{
@@ -224,7 +225,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 	}
 
-	// Crée le bras droite.
+	// Creates the right arm.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(2, rank);
@@ -234,7 +235,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(2, D3DVECTOR(0.0f, 2.3f, -1.2f));
 	m_object->SetAngle(2, D3DVECTOR(90.0f*PI/180.0f, 90.0f*PI/180.0f, -50.0f*PI/180.0f));
 
-	// Crée l'avant-bras droite.
+	// Creates the right forearm.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(3, rank);
@@ -244,7 +245,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(3, D3DVECTOR(1.3f, 0.0f, 0.0f));
 	m_object->SetAngle(3, D3DVECTOR(0.0f*PI/180.0f, -20.0f*PI/180.0f, 0.0f*PI/180.0f));
 
-	// Crée la main droite.
+	// Creates right hand.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(4, rank);
@@ -253,7 +254,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(4, D3DVECTOR(1.2f, 0.0f, 0.0f));
 
-	// Crée la cuisse droite.
+	// Creates the right thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(5, rank);
@@ -263,7 +264,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -0.7f));
 	m_object->SetAngle(5, D3DVECTOR(10.0f*PI/180.0f, 0.0f*PI/180.0f, 5.0f*PI/180.0f));
 
-	// Crée la jambe droite.
+	// Creates the right leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(6, rank);
@@ -273,7 +274,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(6, D3DVECTOR(0.0f, -1.5f, 0.0f));
 	m_object->SetAngle(6, D3DVECTOR(0.0f*PI/180.0f, 0.0f*PI/180.0f, -10.0f*PI/180.0f));
 
-	// Crée le pied droite.
+	// Creates the right foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(7, rank);
@@ -283,7 +284,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(7, D3DVECTOR(0.0f, -1.5f, 0.0f));
 	m_object->SetAngle(7, D3DVECTOR(-10.0f*PI/180.0f, 5.0f*PI/180.0f, 5.0f*PI/180.0f));
 
-	// Crée le bras gauche.
+	// Creates the left arm.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(8, rank);
@@ -294,7 +295,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(8, D3DVECTOR(0.0f, 2.3f, 1.2f));
 	m_object->SetAngle(8, D3DVECTOR(-90.0f*PI/180.0f, -90.0f*PI/180.0f, -50.0f*PI/180.0f));
 
-	// Crée l'avant-bras gauche.
+	// Creates the left forearm.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(9, rank);
@@ -305,7 +306,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(9, D3DVECTOR(1.3f, 0.0f, 0.0f));
 	m_object->SetAngle(9, D3DVECTOR(0.0f*PI/180.0f, 20.0f*PI/180.0f, 0.0f*PI/180.0f));
 
-	// Crée la main gauche.
+	// Creates left hand.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(10, rank);
@@ -315,7 +316,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(10, D3DVECTOR(1.2f, 0.0f, 0.0f));
 
-	// Crée la cuisse gauche.
+	// Creates the left thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(11, rank);
@@ -326,7 +327,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, 0.7f));
 	m_object->SetAngle(11, D3DVECTOR(-10.0f*PI/180.0f, 0.0f*PI/180.0f, 5.0f*PI/180.0f));
 
-	// Crée la jambe gauche.
+	// Creates the left leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(12, rank);
@@ -337,7 +338,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(12, D3DVECTOR(0.0f, -1.5f, 0.0f));
 	m_object->SetAngle(12, D3DVECTOR(0.0f*PI/180.0f, 0.0f*PI/180.0f, -10.0f*PI/180.0f));
 
-	// Crée le pied gauche.
+	// Creates the left foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(13, rank);
@@ -348,8 +349,8 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(13, D3DVECTOR(0.0f, -1.5f, 0.0f));
 	m_object->SetAngle(13, D3DVECTOR(10.0f*PI/180.0f, -5.0f*PI/180.0f, 5.0f*PI/180.0f));
 
-	// Crée le pistolet.
-	if ( option != 2 )  // avec sac à dos ?
+	// Creates the neutron gun.
+	if ( option != 2 )  // with backpack?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -367,7 +368,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetFloorHeight(0.0f);
 
 	pos = m_object->RetPosition(0);
-	m_object->SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	m_object->SetPosition(0, pos);  // to display the shadows immediately
 
 	m_engine->LoadAllTexture();
 
@@ -375,7 +376,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Crée la physique de l'objet.
+// Creates the physical object.
 
 void CMotionHuman::CreatePhysics(ObjectType type)
 {
@@ -384,194 +385,194 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 
 	int member_march[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// en l'air :
-		90,90,-50,	10,0,55,	0,0,0,		// t0: bras/cuisses/-
-		0,-20,0,	-5,0,-110,	0,0,0,		// t0: avant-bras/jambes/-
-		0,0,0,		-5,0,40,	0,0,0,		// t0: mains/pieds/-
-											// au sol devant :
-		125,115,-45,10,0,50,	0,0,0,		// t1: bras/cuisses/-
-		0,-20,0,	-5,0,-15,	0,0,0,		// t1: avant-bras/jambes/-
-		0,0,0,		-5,0,0,		0,0,0,		// t1: mains/pieds/-
-											// au sol derrière :
-		25,55,-40,	10,0,-15,	0,0,0,		// t2: bras/cuisses/-
-		30,-50,40,	-5,0,-55,	0,0,0,		// t2: avant-bras/jambes/-
-		0,0,0,		-5,0,25,	0,0,0,		// t2: mains/pieds/-
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// in the air:
+		90,90,-50,	10,0,55,	0,0,0,		// t0: arms/thighs/-
+		0,-20,0,	-5,0,-110,	0,0,0,		// t0: forearm/legs/-
+		0,0,0,		-5,0,40,	0,0,0,		// t0: hands/feet/-
+											// on the ground:
+		125,115,-45,	10,0,50,	0,0,0,		// t1: arms/thighs/-
+		0,-20,0,	-5,0,-15,	0,0,0,		// t1: forearm/legs/-
+		0,0,0,		-5,0,0,		0,0,0,		// t1: hands/feet/-
+											// on the ground back:
+		25,55,-40,	10,0,-15,	0,0,0,		// t2: arms/thighs/-
+		30,-50,40,	-5,0,-55,	0,0,0,		// t2: forearm/legs/-
+		0,0,0,		-5,0,25,	0,0,0,		// t2: hands/feet/-
 	};
 
 	int member_march_take[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// en l'air :
-		15,50,-50,	10,0,55,	0,0,0,		// t0: bras/cuisses/-
-		45,-70,10,	-5,0,-110,	0,0,0,		// t0: avant-bras/jambes/-
-		-10,25,0,	-5,0,40,	0,0,0,		// t0: mains/pieds/-
-											// au sol devant :
-		15,50,-55,	10,0,50,	0,0,0,		// t1: bras/cuisses/-
-		45,-70,10,	-5,0,-15,	0,0,0,		// t1: avant-bras/jambes/-
-		-10,25,0,	-5,0,0,		0,0,0,		// t1: mains/pieds/-
-											// au sol derrière :
-		15,50,-45,	10,0,-15,	0,0,0,		// t2: bras/cuisses/-
-		45,-70,10,	-5,0,-55,	0,0,0,		// t2: avant-bras/jambes/-
-		-10,25,0,	-5,0,45,	0,0,0,		// t2: mains/pieds/-
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// in the air:
+		15,50,-50,	10,0,55,	0,0,0,		// t0: arms/thighs/-
+		45,-70,10,	-5,0,-110,	0,0,0,		// t0: forearm/legs/-
+		-10,25,0,	-5,0,40,	0,0,0,		// t0: hands/feet/-
+											// on the ground:
+		15,50,-55,	10,0,50,	0,0,0,		// t1: arms/thighs/-
+		45,-70,10,	-5,0,-15,	0,0,0,		// t1: forearm/legs/-
+		-10,25,0,	-5,0,0,		0,0,0,		// t1: hands/feet/-
+											// on the ground back:
+		15,50,-45,	10,0,-15,	0,0,0,		// t2: arms/thighs/-
+		45,-70,10,	-5,0,-55,	0,0,0,		// t2: forearm/legs/-
+		-10,25,0,	-5,0,45,	0,0,0,		// t2: hands/feet/-
 	};
 
 	int member_turn[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// en l'air :
-		90,90,-50,	10,0,30,	0,0,0,		// t0: bras/cuisses/-
-		0,-20,0,	-5,0,-60,	0,0,0,		// t0: avant-bras/jambes/-
-		0,0,0,		-5,0,30,	0,0,0,		// t0: mains/pieds/-
-											// au sol devant :
-		90,110,-45,	10,0,0,		0,0,0,		// t1: bras/cuisses/-
-		0,-20,0,	-5,5,0,		0,0,0,		// t1: avant-bras/jambes/-
-		0,0,0,		-5,10,0,	0,0,0,		// t1: mains/pieds/-
-											// au sol derrière :
-		90,70,-45,	10,0,0,		0,0,0,		// t2: bras/cuisses/-
-		0,-20,10,	-5,-5,0,	0,0,0,		// t2: avant-bras/jambes/-
-		0,0,0,		-5,-10,0,	0,0,0,		// t2: mains/pieds/-
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// in the air:
+		90,90,-50,	10,0,30,	0,0,0,		// t0: arms/thighs/-
+		0,-20,0,	-5,0,-60,	0,0,0,		// t0: forearm/legs/-
+		0,0,0,		-5,0,30,	0,0,0,		// t0: hands/feet/-
+											// on the ground:
+		90,110,-45,	10,0,0,		0,0,0,		// t1: arms/thighs/-
+		0,-20,0,	-5,5,0,		0,0,0,		// t1: forearm/legs/-
+		0,0,0,		-5,10,0,	0,0,0,		// t1: hands/feet/-
+											// on the ground back:
+		90,70,-45,	10,0,0,		0,0,0,		// t2: arms/thighs/-
+		0,-20,10,	-5,-5,0,	0,0,0,		// t2: forearm/legs/-
+		0,0,0,		-5,-10,0,	0,0,0,		// t2: hands/feet/-
 	};
 
 	int member_stop[] =
 	{
 	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,
-		90,90,-50,	10,0,5,		0,0,0,		// bras/cuisses/-
-		0,-20,0,	0,0,-10,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// mains/pieds/-
+		90,90,-50,	10,0,5,		0,0,0,		// arms/thighs/-
+		0,-20,0,	0,0,-10,	0,0,0,		// forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// hands/feet/-
 											//
-		90,90,-55,	10,0,5,		0,0,0,		// bras/cuisses/-
-		0,-15,0,	0,0,-10,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// mains/pieds/-
+		90,90,-55,	10,0,5,		0,0,0,		// arms/thighs/-
+		0,-15,0,	0,0,-10,	0,0,0,		// forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// hands/feet/-
 											//
-		90,90,-60,	10,0,5,		0,0,0,		// bras/cuisses/-
-		0,-10,0,	0,0,-10,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// mains/pieds/-
+		90,90,-60,	10,0,5,		0,0,0,		// arms/thighs/-
+		0,-10,0,	0,0,-10,	0,0,0,		// forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// hands/feet/-
 	};
 
 	int member_fly[] =
 	{
 	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,
-		-5,90,-60,	20,5,-25,	0,0,0,		// bras/cuisses/-
-		85,-40,-25,	10,0,-30,	0,0,0,		// avant-bras/jambes/-
-		40,10,25,	0,15,0,		0,0,0,		// mains/pieds/-
+		-5,90,-60,	20,5,-25,	0,0,0,		// arms/thighs/-
+		85,-40,-25,	10,0,-30,	0,0,0,		// forearm/legs/-
+		40,10,25,	0,15,0,		0,0,0,		// hands/feet/-
 											//
-		-15,90,-40,	20,5,-35,	0,0,0,		// bras/cuisses/-
-		85,-40,-25,	10,0,-40,	0,0,0,		// avant-bras/jambes/-
-		45,5,20,	0,15,0,		0,0,0,		// mains/pieds/-
+		-15,90,-40,	20,5,-35,	0,0,0,		// arms/thighs/-
+		85,-40,-25,	10,0,-40,	0,0,0,		// forearm/legs/-
+		45,5,20,	0,15,0,		0,0,0,		// hands/feet/-
 											//
-		-25,90,-50,	20,5,-20,	0,0,0,		// bras/cuisses/-
-		85,-40,-25,	10,0,-10,	0,0,0,		// avant-bras/jambes/-
-		30,15,25,	0,15,0,		0,0,0,		// mains/pieds/-
+		-25,90,-50,	20,5,-20,	0,0,0,		// arms/thighs/-
+		85,-40,-25,	10,0,-10,	0,0,0,		// forearm/legs/-
+		30,15,25,	0,15,0,		0,0,0,		// hands/feet/-
 	};
 
 	int member_swim[] =
 	{
 	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,
 #if 1
-		130,-70,200,10,20,55,	0,0,0,		// bras/cuisses/-
-		115,-125,0,	-5,0,-110,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,10,-5,	0,0,0,		// mains/pieds/-
+		130,-70,200,	10,20,55,	0,0,0,		// arms/thighs/-
+		115,-125,0,	-5,0,-110,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,10,-5,	0,0,0,		// hands/feet/-
 											//
-		130,-95,115,55,5,5,		0,0,0,		// bras/cuisses/-
-		75,-50,25,	-5,0,-15,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,5,-30,	0,0,0,		// mains/pieds/-
+		130,-95,115,55,5,5,		0,0,0,		// arms/thighs/-
+		75,-50,25,	-5,0,-15,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,5,-30,	0,0,0,		// hands/feet/-
 											//
-		130,-100,220,5,0,0,		0,0,0,		// bras/cuisses/-
-		150,5,0,	-5,0,-15,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,30,-20,	0,0,0,		// mains/pieds/-
+		130,-100,220,5,0,0,		0,0,0,		// arms/thighs/-
+		150,5,0,	-5,0,-15,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,30,-20,	0,0,0,		// hands/feet/-
 #endif
 #if 0
-		130,-70,200,5,0,0,		0,0,0,		// bras/cuisses/-
-		115,-125,0,	-5,0,-15,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,30,-20,	0,0,0,		// mains/pieds/-
+		130,-70,200,5,0,0,		0,0,0,		// arms/thighs/-
+		115,-125,0,	-5,0,-15,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,30,-20,	0,0,0,		// hands/feet/-
 											//
-		130,-95,115,10,20,55,	0,0,0,		// bras/cuisses/-
-		75,-50,25,	-5,0,-110,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,10,-5,	0,0,0,		// mains/pieds/-
+		130,-95,115,	10,20,55,	0,0,0,		// arms/thighs/-
+		75,-50,25,	-5,0,-110,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,10,-5,	0,0,0,		// hands/feet/-
 											//
-		130,-100,220,55,5,5,	0,0,0,		// bras/cuisses/-
-		150,5,0,	-5,0,-15,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,5,-30,	0,0,0,		// mains/pieds/-
+		130,-100,220,	55,5,5,		0,0,0,		// arms/thighs/-
+		150,5,0,	-5,0,-15,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,5,-30,	0,0,0,		// hands/feet/-
 #endif
 #if 0
-		130,-70,200,55,5,5,		0,0,0,		// bras/cuisses/-
-		115,-125,0,	-5,0,-15,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,5,-30,	0,0,0,		// mains/pieds/-
+		130,-70,200,	55,5,5,		0,0,0,		// arms/thighs/-
+		115,-125,0,	-5,0,-15,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,5,-30,	0,0,0,		// hands/feet/-
 											//
-		130,-95,115,5,0,0,		0,0,0,		// bras/cuisses/-
-		75,-50,25,	-5,0,-15,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,30,-20,	0,0,0,		// mains/pieds/-
+		130,-95,115,	5,0,0,		0,0,0,		// arms/thighs/-
+		75,-50,25,	-5,0,-15,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,30,-20,	0,0,0,		// hands/feet/-
 											//
-		130,-100,220,10,20,55,	0,0,0,		// bras/cuisses/-
-		150,5,0,	-5,0,-110,	0,0,0,		// avant-bras/jambes/-
-		0,0,0,		-5,10,-5,	0,0,0,		// mains/pieds/-
+		130,-100,220,	10,20,55,	0,0,0,		// arms/thighs/-
+		150,5,0,	-5,0,-110,	0,0,0,		// forearm/legs/-
+		0,0,0,		-5,10,-5,	0,0,0,		// hands/feet/-
 #endif
 	};
 
 	int member_spec[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// tir :
-		65,5,-20,	10,0,40,	0,0,0,		// s0: bras/cuisses/-
-		-50,-30,50,	0,0,-70,	0,0,0,		// s0: avant-bras/jambes/-
-		0,50,0,		-10,0,35,	0,0,0,		// s0: mains/pieds/-
-											// prend arme :
-		160,135,-20,10,0,5,		0,0,0,		// s1: bras/cuisses/-
-		10,-60,40,	0,0,-10,	0,0,0,		// s1: avant-bras/jambes/-
-		0,-5,-25,	-10,5,5,	0,0,0,		// s1: mains/pieds/-
-											// porte à terre :
-		25,40,-40,	10,0,60,	0,0,0,		// s2: bras/cuisses/-
-		0,-45,0,	0,0,-120,	0,0,0,		// s2: avant-bras/jambes/-
-		0,15,5,		-10,0,70,	0,0,0,		// s2: mains/pieds/-
-											// porte devant :
-		25,20,5,	10,0,55,	0,0,0,		// s3: bras/cuisses/-
-		-15,-30,10,	0,0,-110,	0,0,0,		// s3: avant-bras/jambes/-
-		0,0,0,		-10,0,65,	0,0,0,		// s3: mains/pieds/-
-											// porte en hauteur :
-		-30,15,-5,	10,0,15,	0,0,0,		// s4: bras/cuisses/-
-		0,-15,15,	0,0,-30,	0,0,0,		// s4: avant-bras/jambes/-
-		35,0,-15,	-10,0,25,	0,0,0,		// s4: mains/pieds/-
-											// se relève :
-		15,50,-50,	10,0,5,		0,0,0,		// s5: bras/cuisses/-
-		45,-70,10,	0,0,-10,	0,0,0,		// s5: avant-bras/jambes/-
-		-10,25,0,	-10,5,5,	0,0,0,		// s5: mains/pieds/-
-											// gagné :
-		90,90,-30,	20,0,5,		0,0,0,		// s6: bras/cuisses/-
-		0,-90,0,	-10,0,-10,	0,0,0,		// s6: avant-bras/jambes/-
-		0,25,0,		-10,5,5,	0,0,0,		// s6: mains/pieds/-
-											// perdu :
-		-70,45,35,	10,0,40,	0,0,0,		// s7: bras/cuisses/-
-		15,-95,-5,	0,0,-70,	0,0,0,		// s7: avant-bras/jambes/-
-		0,0,0,		-10,0,35,	0,0,0,		// s7: mains/pieds/-
-											// mort par balle (tombe) :
-		90,90,-50,	10,0,5,		0,0,0,		// s8: bras/cuisses/-
-		0,-20,0,	0,0,-10,	0,0,0,		// s8: avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// s8: mains/pieds/-
-											// mort par balle (genoux) :
-		110,105,-5,	10,0,25,	0,0,0,		// s9: bras/cuisses/-
-		0,-40,20,	0,0,-120,	0,0,0,		// s9: avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// s9: mains/pieds/-
-											// mort par balle (genoux) :
-		110,120,-25,10,0,25,	0,0,0,		// s10: bras/cuisses/-
-		0,-40,20,	0,0,-120,	0,0,0,		// s10: avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// s10: mains/pieds/-
-											// mort par balle (plat ventre) :
-		110,100,-25,25,0,10,	0,0,0,		// s11: bras/cuisses/-
-		0,-40,20,	0,0,-25,	0,0,0,		// s11: avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// s11: mains/pieds/-
-											// mort par balle (plat ventre) :
-		110,100,-25,25,0,10,	0,0,0,		// s12: bras/cuisses/-
-		0,-40,20,	0,0,-25,	0,0,0,		// s12: avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// s12: mains/pieds/-
-											// mort noyé :
-		110,100,-25,25,0,10,	0,0,0,		// s13: bras/cuisses/-
-		0,-40,20,	0,0,-25,	0,0,0,		// s13: avant-bras/jambes/-
-		0,0,0,		-10,5,5,	0,0,0,		// s13: mains/pieds/-
-											// met/enlève drapeau :
-		85,45,-50,	10,0,60,	0,0,0,		// s14: bras/cuisses/-
-		-60,15,65,	0,0,-105,	0,0,0,		// s14: avant-bras/jambes/-
-		0,10,0,		-10,0,60,	0,0,0,		// s14: mains/pieds/-
-											// lit SatCom :
-		70,30,-20,	10,0,5,		0,0,0,		// s15: bras/cuisses/-
-		115,-65,60,	0,0,-10,	0,0,0,		// s15: avant-bras/jambes/-
-		0,20,0,		-10,5,5,	0,0,0,		// s15: mains/pieds/-
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// shooting:
+		65,5,-20,	10,0,40,	0,0,0,		// s0: arms/thighs/-
+		-50,-30,50,	0,0,-70,	0,0,0,		// s0: forearm/legs/-
+		0,50,0,		-10,0,35,	0,0,0,		// s0: hands/feet/-
+											// takes weapon:
+		160,135,-20,10,0,5,		0,0,0,		// s1: arms/thighs/-
+		10,-60,40,	0,0,-10,	0,0,0,		// s1: forearm/legs/-
+		0,-5,-25,	-10,5,5,	0,0,0,		// s1: hands/feet/-
+											// carries earth:
+		25,40,-40,	10,0,60,	0,0,0,		// s2: arms/thighs/-
+		0,-45,0,	0,0,-120,	0,0,0,		// s2: forearm/legs/-
+		0,15,5,		-10,0,70,	0,0,0,		// s2: hands/feet/-
+											// carries in front:
+		25,20,5,	10,0,55,	0,0,0,		// s3: arms/thighs/-
+		-15,-30,10,	0,0,-110,	0,0,0,		// s3: forearm/legs/-
+		0,0,0,		-10,0,65,	0,0,0,		// s3: hands/feet/-
+											// carries vertically:
+		-30,15,-5,	10,0,15,	0,0,0,		// s4: arms/thighs/-
+		0,-15,15,	0,0,-30,	0,0,0,		// s4: forearm/legs/-
+		35,0,-15,	-10,0,25,	0,0,0,		// s4: hands/feet/-
+											// rises:
+		15,50,-50,	10,0,5,		0,0,0,		// s5: arms/thighs/-
+		45,-70,10,	0,0,-10,	0,0,0,		// s5: forearm/legs/-
+		-10,25,0,	-10,5,5,	0,0,0,		// s5: hands/feet/-
+											// wins:
+		90,90,-30,	20,0,5,		0,0,0,		// s6: arms/thighs/-
+		0,-90,0,	-10,0,-10,	0,0,0,		// s6: forearm/legs/-
+		0,25,0,		-10,5,5,	0,0,0,		// s6: hands/feet/-
+											// lose:
+		-70,45,35,	10,0,40,	0,0,0,		// s7: arms/thighs/-
+		15,-95,-5,	0,0,-70,	0,0,0,		// s7: forearm/legs/-
+		0,0,0,		-10,0,35,	0,0,0,		// s7: hands/feet/-
+											// shooting death (falls):
+		90,90,-50,	10,0,5,		0,0,0,		// s8: arms/thighs/-
+		0,-20,0,	0,0,-10,	0,0,0,		// s8: forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// s8: hands/feet/-
+											// shooting death (knees):
+		110,105,-5,	10,0,25,	0,0,0,		// s9: arms/thighs/-
+		0,-40,20,	0,0,-120,	0,0,0,		// s9: forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// s9: hands/feet/-
+											// shooting death (knees):
+		110,120,-25,	10,0,25,	0,0,0,		// s10: arms/thighs/-
+		0,-40,20,	0,0,-120,	0,0,0,		// s10: forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// s10: hands/feet/-
+											// shooting death (face down):
+		110,100,-25,	25,0,10,	0,0,0,		// s11: arms/thighs/-
+		0,-40,20,	0,0,-25,	0,0,0,		// s11: forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// s11: hands/feet/-
+											// shooting death (face down):
+		110,100,-25,	25,0,10,	0,0,0,		// s12: arms/thighs/-
+		0,-40,20,	0,0,-25,	0,0,0,		// s12: forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// s12: hands/feet/-
+											// drowned:
+		110,100,-25,	25,0,10,	0,0,0,		// s13: arms/thighs/-
+		0,-40,20,	0,0,-25,	0,0,0,		// s13: forearm/legs/-
+		0,0,0,		-10,5,5,	0,0,0,		// s13: hands/feet/-
+											// puts / removes flag:
+		85,45,-50,	10,0,60,	0,0,0,		// s14: arms/thighs/-
+		-60,15,65,	0,0,-105,	0,0,0,		// s14: forearm/legs/-
+		0,10,0,		-10,0,60,	0,0,0,		// s14: hands/feet/-
+											// reads SatCom:
+		70,30,-20,	10,0,5,		0,0,0,		// s15: arms/thighs/-
+		115,-65,60,	0,0,-10,	0,0,0,		// s15: forearm/legs/-
+		0,20,0,		-10,5,5,	0,0,0,		// s15: hands/feet/-
 	};
 
 	m_physics->SetType(TYPE_FLYING);
@@ -663,7 +664,7 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionHuman::EventProcess(const Event &event)
 {
@@ -714,8 +715,7 @@ BOOL CMotionHuman::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Calcule une valeur (radians) proportionnelle comprise
-// entre a et b (degrés).
+// Calculates a value (radians) proportional between a and b (degrees).
 
 inline float Propf(float a, float b, float p)
 {
@@ -727,7 +727,7 @@ inline float Propf(float a, float b, float p)
 	return aa+p*(bb-aa);
 }
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionHuman::EventFrame(const Event &event)
 {
@@ -773,7 +773,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	}
 
 	shield = m_object->RetShield();
-	shield += event.rTime*(1.0f/120.0f);  // régénération en 120 secondes
+	shield += event.rTime*(1.0f/120.0f);  // regeneration in 120 seconds
 	if ( shield > 1.0f )  shield = 1.0f;
 	m_object->SetShield(shield);
 
@@ -783,24 +783,24 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	rot = m_physics->RetCirMotionY(MO_MOTSPEED);
 	s = m_physics->RetLinMotionX(MO_REASPEED)*2.0f;
 	a = m_physics->RetLinMotionX(MO_TERSPEED);
-	if ( a < 0.0f )  // monte ?
+	if ( a < 0.0f )  // rises?
 	{
-		if ( s > 0.0f && s <  20.0f )  s = 20.0f;  // avance lentement ?
-//?		if ( s < 0.0f && s > -10.0f )  s =  0.0f;  // recule lentement ?
+		if ( s > 0.0f && s <  20.0f )  s = 20.0f;  // moving slowly?
+//?		if ( s < 0.0f && s > -10.0f )  s =  0.0f;  // falling slowly?
 	}
-	if ( a > 0.0f && !bSwim )  // descend ?
+	if ( a > 0.0f && !bSwim )  // falls?
 	{
-		if ( s > 0.0f && s <  10.0f )  s =   0.0f;  // avance lentement ?
-//?		if ( s < 0.0f && s >  -5.0f )  s =  -5.0f;  // recule lentement ?
+		if ( s > 0.0f && s <  10.0f )  s =   0.0f;  // moving slowly?
+//?		if ( s < 0.0f && s >  -5.0f )  s =  -5.0f;  // falling slowly?
 	}
 	a = Abs(rot*12.0f);
 
-	if ( !m_physics->RetLand() && !bSwim )  // en vol ?
+	if ( !m_physics->RetLand() && !bSwim )  // in flight?
 	{
 		s = 0.0f;
 	}
 
-	if ( m_object->RetFret() != 0 )  // porte qq chose ?
+	if ( m_object->RetFret() != 0 )  // carries something?
 	{
 		s *= 1.3f;
 	}
@@ -811,15 +811,15 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 #else
 	a = m_physics->RetLinMotionX(MO_REASPEED);
 	s = m_physics->RetLinMotionX(MO_MOTSPEED)*0.2f;
-	if ( Abs(a) > Abs(s) )  s = a;  // la plus grande valeur
+	if ( Abs(a) > Abs(s) )  s = a;  // the highest value
 #endif
 	a = m_physics->RetLinMotionX(MO_TERSPEED);
-	if ( a < 0.0f )  // monte ?
+	if ( a < 0.0f )  // rises?
 	{
 		a += m_physics->RetLinMotionX(MO_TERSLIDE);
 		if ( a < 0.0f )  s -= a;
 	}
-	if ( a > 0.0f )  // descend ?
+	if ( a > 0.0f )  // falls?
 	{
 		a -= m_physics->RetLinMotionX(MO_TERSLIDE);
 		if ( a > 0.0f )  s -= a;
@@ -827,12 +827,12 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	s *= 2.0f;
 	a = Abs(rot*12.0f);
 
-	if ( !m_physics->RetLand() && !bSwim )  // en vol ?
+	if ( !m_physics->RetLand() && !bSwim )  // in flight?
 	{
 		s = 0.0f;
 	}
 
-	if ( m_object->RetFret() != 0 )  // porte qq chose ?
+	if ( m_object->RetFret() != 0 )  // carries something?
 	{
 		s *= 1.3f;
 	}
@@ -843,8 +843,8 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	m_armTimeAction += event.rTime;
 	m_armMember += s*event.rTime*0.05f;
 
-	// Gestion de la fatigue lorsqu'on court.
-	if ( m_physics->RetLand() && s != 0.0f )  // au sol ?
+	// Fatigue management when short.
+	if ( m_physics->RetLand() && s != 0.0f )  // on the ground?
 	{
 		m_tired += event.rTime*0.1f;
 		if ( m_tired > 1.0f )
@@ -859,17 +859,17 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		if ( m_tired < 0.0f )  m_tired = 0.0f;
 	}
 
-	if ( bSwim )  // nage ?
+	if ( bSwim )  // swims?
 	{
 		s += Abs(m_physics->RetLinMotionY(MO_REASPEED)*2.0f);
 		a *= 2.0f;
 		m_armTimeSwim += Min(Max(s,a,3.0f),15.0f)*event.rTime*0.05f;
 	}
 
-	bStop = ( s == 0.0f );  // à l'arrêt ?
+	bStop = ( s == 0.0f );  // stop?
 	prog = 0.0f;
 
-	if ( m_physics->RetLand() )  // au sol ?
+	if ( m_physics->RetLand() )  // on the ground?
 	{
 		if ( s == 0.0f && a == 0.0f )
 		{
@@ -897,8 +897,8 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			}
 			else
 			{
-				action = MH_MARCH;  // march
-				if ( m_object->RetFret() != 0 )  action = MH_MARCHTAKE;  // march-take
+				action = MH_MARCH;  // walking
+				if ( m_object->RetFret() != 0 )  action = MH_MARCHTAKE;  // take walking
 				rTime[0] = rTime[1] = m_armMember;
 				lTime[0] = lTime[1] = m_armMember+0.5f;
 			}
@@ -915,7 +915,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	{
 		if ( bSwim )
 		{
-			action = MH_SWIM;  // nage
+			action = MH_SWIM;  // swim
 			rTime[0] = rTime[1] = m_armTimeSwim;
 			lTime[0] = lTime[1] = m_armTimeSwim;
 		}
@@ -937,12 +937,12 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	armAction = action;
 	legAction = action;
 
-	if ( m_object->RetFret() != 0 )  // porte qq chose ?
+	if ( m_object->RetFret() != 0 )  // carries something?
 	{
-		armAction = MH_MARCHTAKE;  // march-take
+		armAction = MH_MARCHTAKE;  // take walking
 	}
 	
-	if ( m_physics->RetLand() )  // au sol ?
+	if ( m_physics->RetLand() )  // on the ground?
 	{
 		a = m_object->RetAngleY(0);
 		pos = m_object->RetPosition(0);
@@ -952,20 +952,20 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		pf.y = pos.y;
 		pf.z = pos.z-sinf(a+PI*1.5f)*0.7f;
 		m_terrain->MoveOnFloor(pf);
-		al = atanf((pf.y-pos.y)/0.7f);  // angle pour jambe gauche
+		al = atanf((pf.y-pos.y)/0.7f);  // angle for left leg
 
 		pf = pos;
 		pf.x = pos.x+cosf(a+PI*0.5f)*0.7f;
 		pf.y = pos.y;
 		pf.z = pos.z-sinf(a+PI*0.5f)*0.7f;
 		m_terrain->MoveOnFloor(pf);
-		ar = atanf((pf.y-pos.y)/0.7f);  // angle pour jambe droite
+		ar = atanf((pf.y-pos.y)/0.7f);  // angle to right leg
 
 		pf.x = pos.x+cosf(a+PI)*0.3f;
 		pf.y = pos.y;
 		pf.z = pos.z-sinf(a+PI)*0.3f;
 		m_terrain->MoveOnFloor(pf);
-		af = atanf((pf.y-pos.y)/0.3f);  // angle pour pieds
+		af = atanf((pf.y-pos.y)/0.3f);  // angle for feet
 	}
 	else
 	{
@@ -974,16 +974,16 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		af = 0.0f;
 	}
 	
-	for ( i=0 ; i<4 ; i++ )  // les 4 membres
+	for ( i=0 ; i<4 ; i++ )  // 4 members
 	{
-		if ( m_bArmStop )  // mise au point ?
+		if ( m_bArmStop )  // focus?
 		{
 			st = ADJUST_ACTION + (i%2)*3;
 			nd = st;
 			time = 100.0f;
 			m_armTimeAction = 0.0f;
 		}
-		else if ( m_actionType != -1 )  // action spéciale en cours ?
+		else if ( m_actionType != -1 )  // special action in progress?
 		{
 			st = 3*3*3*3*MH_SPEC + 3*3*3*m_actionType + (i%2)*3;
 			nd = st;
@@ -1012,18 +1012,18 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 				st = 2;  // index start
 				nd = 0;  // index end
 			}
-			if ( i%2 == 0 )  // bras ?
+			if ( i%2 == 0 )  // arm?
 			{
 				st = 3*3*3*3*armAction + st*3*3*3 + (i%2)*3;
 				nd = 3*3*3*3*armAction + nd*3*3*3 + (i%2)*3;
 			}
-			else	// jambe ?
+			else	// leg?
 			{
 				st = 3*3*3*3*legAction + st*3*3*3 + (i%2)*3;
 				nd = 3*3*3*3*legAction + nd*3*3*3 + (i%2)*3;
 			}
 
-			// De moins en moins mou ...
+			// Less soft ...
 			time = event.rTime*(5.0f+Min(m_armTimeAction*50.0f, 100.0f));
 			if ( bSwim )  time *= 0.25f;
 		}
@@ -1049,11 +1049,11 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		tNd[8] = m_armAngles[nd+20];  // z
 
 		aa = 0.5f;
-		if ( i%2 == 0 )  // bras ?
+		if ( i%2 == 0 )  // arm?
 		{
-			if ( m_object->RetFret() == 0 )   // ne porte rien ?
+			if ( m_object->RetFret() == 0 )   // does nothing?
 			{
-				aa = 2.0f;  // bouge beaucoup
+				aa = 2.0f;  // moves a lot
 			}
 			else
 			{
@@ -1061,7 +1061,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			}
 		}
 
-		if ( i < 2 )  // gauche ?
+		if ( i < 2 )  // left?
 		{
 			bb = sinf(m_time*1.1f)*aa;  tSt[0] += bb;  tNd[0] += bb;
 			bb = sinf(m_time*1.0f)*aa;  tSt[1] += bb;  tNd[1] += bb;
@@ -1073,7 +1073,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			bb = sinf(m_time*2.3f)*aa;  tSt[7] += bb;  tNd[7] += bb;
 			bb = sinf(m_time*4.0f)*aa;  tSt[8] += bb;  tNd[8] += bb;
 		}
-		else	// droite ?
+		else	// right?
 		{
 			bb = sinf(m_time*0.9f)*aa;  tSt[0] += bb;  tNd[0] += bb;
 			bb = sinf(m_time*1.2f)*aa;  tSt[1] += bb;  tNd[1] += bb;
@@ -1087,10 +1087,10 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		}
 
 #if 1
-		if ( i%2 == 1           &&  // jambe ?
-			 m_actionType == -1 )   // pas action spéciale ?
+		if ( i%2 == 1           &&  // leg?
+			 m_actionType == -1 )   // no special action?
 		{
-			if ( i == 1 )  // jambe droite ?
+			if ( i == 1 )  // right leg?
 			{
 				ii = 5;
 				a = ar*0.25f;
@@ -1105,32 +1105,32 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 			pos = m_object->RetPosition(ii+0);
 			pos.y = 0.0f+a;
-			m_object->SetPosition(ii+0, pos);  // allonge/raccourci cuisse
+			m_object->SetPosition(ii+0, pos);  // lengthens / shortcuts thigh
 
 			pos = m_object->RetPosition(ii+1);
 			pos.y = -1.5f+a;
-			m_object->SetPosition(ii+1, pos);  // allonge/raccourci jambe
+			m_object->SetPosition(ii+1, pos);  // lengthens / shortcuts leg
 
 			pos = m_object->RetPosition(ii+2);
 			pos.y = -1.5f+a;
-			m_object->SetPosition(ii+2, pos);  // allonge/raccourci pied
+			m_object->SetPosition(ii+2, pos);  // lengthens / shortcuts foot
 
-			if ( i == 1 )  // jambe droite ?
+			if ( i == 1 )  // right leg?
 			{
 				aa = (ar*180.0f/PI*0.5f);
 			}
-			else	// jambe gauche ?
+			else	// left leg?
 			{
 				aa = (al*180.0f/PI*0.5f);
 			}
 			tSt[6] += aa;
-			tNd[6] += aa;  // augmente l'angle X du pied
+			tNd[6] += aa;  // increases the angle X of the foot
 
-			if ( i == 1 )  // jambe droite ?
+			if ( i == 1 )  // right leg?
 			{
 				aa = (ar*180.0f/PI);
 			}
-			else	// jambe gauche ?
+			else	// left leg?
 			{
 				aa = (al*180.0f/PI);
 			}
@@ -1138,22 +1138,22 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			if ( aa > 30.0f )  aa = 30.0f;
 
 			tSt[2] += aa;
-			tNd[2] += aa;    // augmente l'angle Z de la cuisse
+			tNd[2] += aa;    // increases the angle Z of the thigh
 			tSt[5] -= aa*2;
-			tNd[5] -= aa*2;  // augmente l'angle Z de la jambe
+			tNd[5] -= aa*2;  // increases the angle Z of the leg
 			tSt[8] += aa;
-			tNd[8] += aa;    // augmente l'angle Z du pied
+			tNd[8] += aa;    // increases the angle Z of the foot
 
 			aa = (af*180.0f/PI)*0.7f;
 			if ( aa < -30.0f )  aa = -30.0f;
 			if ( aa >  30.0f )  aa =  30.0f;
 
 			tSt[8] -= aa;
-			tNd[8] -= aa;    // augmente l'angle Z du pied
+			tNd[8] -= aa;    // increases the angle Z of the foot
 		}
 #endif
 
-		if ( m_actionType == MHS_DEADw )   // mort noyé ?
+		if ( m_actionType == MHS_DEADw )   // drowned?
 		{
 			if ( m_progress < 0.5f )
 			{
@@ -1174,7 +1174,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			time = 100.0f;
 		}
 
-		if ( i < 2 )  // membre droite (0..1) ?
+		if ( i < 2 )  // right member (0..1) ?
 		{
 			m_object->SetAngleX(2+3*i+0, Smooth(m_object->RetAngleX(2+3*i+0), Propf(tSt[0], tNd[0], prog), time));
 			m_object->SetAngleY(2+3*i+0, Smooth(m_object->RetAngleY(2+3*i+0), Propf(tSt[1], tNd[1], prog), time));
@@ -1186,7 +1186,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			m_object->SetAngleY(2+3*i+2, Smooth(m_object->RetAngleY(2+3*i+2), Propf(tSt[7], tNd[7], prog), time));
 			m_object->SetAngleZ(2+3*i+2, Smooth(m_object->RetAngleZ(2+3*i+2), Propf(tSt[8], tNd[8], prog), time));
 		}
-		else	// membre gauche (2..3) ?
+		else	// left member (2..3) ?
 		{
 			m_object->SetAngleX(2+3*i+0, Smooth(m_object->RetAngleX(2+3*i+0), Propf(-tSt[0], -tNd[0], prog), time));
 			m_object->SetAngleY(2+3*i+0, Smooth(m_object->RetAngleY(2+3*i+0), Propf(-tSt[1], -tNd[1], prog), time));
@@ -1209,8 +1209,8 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	}
 #endif
 
-	// Calcule la hauteur de rabaissement en fonction de la
-	// position des jambes.
+	// calculates the height lowering as a function
+	// of the position of the legs.
 	hr = 1.5f*(1.0f-cosf(m_object->RetAngleZ(5))) +
 		 1.5f*(1.0f-cosf(m_object->RetAngleZ(5)+m_object->RetAngleZ(6)));
 	a = 1.0f*sinf(m_object->RetAngleZ(5)+m_object->RetAngleZ(6)+m_object->RetAngleZ(7));
@@ -1223,13 +1223,13 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 	hr = Min(hr, hl);
 
-	if ( m_actionType == MHS_FIRE )  // tir ?
+	if ( m_actionType == MHS_FIRE )  // shooting?
 	{
 		time = event.rTime*m_actionTime;
 
 		dir.x = (Rand()-0.5f)/8.0f;
 		dir.z = (Rand()-0.5f)/8.0f;
-		dir.y = -0.5f;  // légèrement plus bas
+		dir.y = -0.5f;  // slightly lower
 		actual = m_object->RetLinVibration();
 		dir.x = Smooth(actual.x, dir.x, time);
 //?		dir.y = Smooth(actual.y, dir.y, time);
@@ -1239,21 +1239,21 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 		dir.x = 0.0f;
 		dir.y = (Rand()-0.5f)/3.0f;
-		dir.z = -0.1f;  // légèrement penché en avant
+		dir.z = -0.1f;  // slightly leaning forward
 		actual = m_object->RetInclinaison();
 		dir.x = Smooth(actual.x, dir.x, time);
 		dir.y = Smooth(actual.y, dir.y, time);
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_TAKE      ||  // prend ?
-			  m_actionType == MHS_TAKEOTHER )   // drapeau ?
+	else if ( m_actionType == MHS_TAKE      ||  // carrying?
+			  m_actionType == MHS_TAKEOTHER )   // flag?
 	{
 		time = event.rTime*m_actionTime*2.0f;
 
 		dir.x = 0.0f;
 		dir.z = 0.0f;
-		dir.y = -1.5f;  // légèrement plus bas
+		dir.y = -1.5f;  // slightly lower
 		actual = m_object->RetLinVibration();
 		dir.x = Smooth(actual.x, dir.x, time);
 //?		dir.y = Smooth(actual.y, dir.y, time);
@@ -1270,11 +1270,11 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_TAKEHIGH )   // prend ?
+	else if ( m_actionType == MHS_TAKEHIGH )   // carrying?
 	{
 		time = event.rTime*m_actionTime*2.0f;
 
-		dir.x = 0.4f;  // avance légèrement
+		dir.x = 0.4f;  // slightly forward
 		dir.z = 0.0f;
 		dir.y = 0.0f;
 		actual = m_object->RetLinVibration();
@@ -1293,13 +1293,13 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_FLAG )   // drapeau ?
+	else if ( m_actionType == MHS_FLAG )   // flag?
 	{
 		time = event.rTime*m_actionTime*2.0f;
 
 		dir.x = 0.0f;
 		dir.z = 0.0f;
-		dir.y = -2.0f;  // légèrement plus bas
+		dir.y = -2.0f;  // slightly lower
 		actual = m_object->RetLinVibration();
 		dir.x = Smooth(actual.x, dir.x, time);
 //?		dir.y = Smooth(actual.y, dir.y, time);
@@ -1316,14 +1316,14 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_DEADg )   // mort par balle (tombe) ?
+	else if ( m_actionType == MHS_DEADg )   // shooting death (falls)?
 	{
-		if ( m_physics->RetLand() )  // au sol ?
+		if ( m_physics->RetLand() )  // on the ground?
 		{
-			SetAction(MHS_DEADg1, 0.5f);  // genoux
+			SetAction(MHS_DEADg1, 0.5f);  // knees
 		}
 	}
-	else if ( m_actionType == MHS_DEADg1 )   // mort par balle (genoux) ?
+	else if ( m_actionType == MHS_DEADg1 )   // shooting death (knees)?
 	{
 		prog = m_progress;
 		if ( prog >= 1.0f )
@@ -1343,7 +1343,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			}
 			m_sound->Play(SOUND_BOUMv, m_object->RetPosition(0));
 
-			SetAction(MHS_DEADg2, 1.0f);  // attente genoux
+			SetAction(MHS_DEADg2, 1.0f);  // expects knees
 		}
 
 		time = 100.0f;
@@ -1366,11 +1366,11 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_DEADg2 )   // mort par balle (genoux) ?
+	else if ( m_actionType == MHS_DEADg2 )   // shooting death (knees)?
 	{
 		if ( m_progress >= 1.0f )
 		{
-			SetAction(MHS_DEADg3, 1.0f);  // plat ventre
+			SetAction(MHS_DEADg3, 1.0f);  // face down
 		}
 
 		time = 100.0f;
@@ -1393,7 +1393,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_DEADg3 )   // mort par balle (plat ventre) ?
+	else if ( m_actionType == MHS_DEADg3 )   // shooting death (face down)?
 	{
 		prog = m_progress;
 		if ( prog >= 1.0f )
@@ -1413,7 +1413,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			}
 			m_sound->Play(SOUND_BOUMv, m_object->RetPosition(0));
 
-			SetAction(MHS_DEADg4, 3.0f);  // attente plat ventre
+			SetAction(MHS_DEADg4, 3.0f);  // expects face down
 		}
 
 		time = 100.0f;
@@ -1437,7 +1437,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_DEADg4 )   // mort par balle (plat ventre) ?
+	else if ( m_actionType == MHS_DEADg4 )   // shooting death (face down)?
 	{
 		if ( m_progress >= 1.0f )
 		{
@@ -1464,19 +1464,19 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dir.z = Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
-	else if ( m_actionType == MHS_DEADw )   // mort noyé ?
+	else if ( m_actionType == MHS_DEADw )   // drowned?
 	{
 		pos = m_object->RetPosition(0);
 		level = m_water->RetLevel()-0.5f;
 		if ( pos.y < level )
 		{
-			pos.y += 4.0f*event.rTime;  // remonte à la surface
+			pos.y += 4.0f*event.rTime;  // back to the surface
 			if ( pos.y > level )  pos.y = level;
 			m_object->SetPosition(0, pos);
 		}
 		if ( pos.y > level )
 		{
-			pos.y -= 10.0f*event.rTime;  // descend vite
+			pos.y -= 10.0f*event.rTime;  // down quickly
 			if ( pos.y < level )  pos.y = level;
 			m_object->SetPosition(0, pos);
 		}
@@ -1504,10 +1504,10 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 		m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
 	}
-	else if ( m_actionType == MHS_LOST )   // perdu ?
+	else if ( m_actionType == MHS_LOST )   // lost?
 	{
 		time = m_time;
-		if ( time < 10.0f )  time *= time/10.0f;  // démarre lentement
+		if ( time < 10.0f )  time *= time/10.0f;  // starts slowly
 
 		dir.x = time*2.0f;
 		dir.y = sinf(m_time*0.8f)*0.8f;
@@ -1516,7 +1516,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		SetInclinaison(dir);
 
 //?		dir.x = -(sinf(time*0.05f+PI*1.5f)+1.0f)*100.0f;
-		dir.x = -(powf(Min(time/30.0f), 4.0f))*1000.0f;  // part au loin
+		dir.x = -(powf(Min(time/30.0f), 4.0f))*1000.0f;  // from the distance
 		dir.y = 0.0f;
 		dir.z = 0.0f;
 		m_object->SetLinVibration(dir);
@@ -1535,7 +1535,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTILENS1, 5.0f, 0.0f, 0.0f);
 	}
-	else if ( m_actionType == MHS_SATCOM )  // regarde le SatCom ?
+	else if ( m_actionType == MHS_SATCOM )  // look at the SatCom?
 	{
 		SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
 		SetLinVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
@@ -1543,18 +1543,18 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	}
 	else
 	{
-		if ( m_physics->RetLand() )  // au sol ?
+		if ( m_physics->RetLand() )  // on the ground?
 		{
 			time = event.rTime*8.0f;
 			if ( bSwim )  time *= 0.25f;
 
-			if ( action == MH_MARCH )   // march ?
+			if ( action == MH_MARCH )   // walking?
 			{
 				dir.x = sinf(Mod(rTime[0]+0.5f, 1.0f)*PI*2.0f)*0.10f;
 				dir.y = sinf(Mod(rTime[0]+0.6f, 1.0f)*PI*2.0f)*0.20f;
 				s = m_physics->RetLinMotionX(MO_REASPEED)*0.03f;
 			}
-			else if ( action == MH_MARCHTAKE )   // march-take ?
+			else if ( action == MH_MARCHTAKE )   // takes walking?
 			{
 				dir.x = sinf(Mod(rTime[0]+0.5f, 1.0f)*PI*2.0f)*0.10f;
 				dir.y = sinf(Mod(rTime[0]+0.6f, 1.0f)*PI*2.0f)*0.15f;
@@ -1578,7 +1578,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			m_object->SetInclinaison(dir);
 			SetInclinaison(dir);
 
-			if ( action == MH_MARCH )   // march ?
+			if ( action == MH_MARCH )   // walking?
 			{
 				p2.x = 0.0f;
 				p2.y = sinf(Mod(rTime[0]+0.5f, 1.0f)*PI*2.0f)*0.5f;
@@ -1587,7 +1587,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 				dir.z = p2.y;
 				dir.y = sinf(Mod(rTime[0]*2.0f, 1.0f)*PI*2.0f)*0.3f;
 			}
-			else if ( action == MH_MARCHTAKE )   // march-take ?
+			else if ( action == MH_MARCHTAKE )   // takes walking?
 			{
 				p2.x = 0.0f;
 				p2.y = sinf(Mod(rTime[0]+0.5f, 1.0f)*PI*2.0f)*0.25f;
@@ -1605,7 +1605,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 			actual = m_object->RetLinVibration();
 			dir.x = Smooth(actual.x, dir.x, time);
-			if ( action == MH_MARCHTAKE )  // march-take ?
+			if ( action == MH_MARCHTAKE )  // takes walking?
 			{
 				dir.y = -hr;
 			}
@@ -1626,36 +1626,36 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		}
 	}
 
-	// Gestion de la tête.
-	if ( m_actionType == MHS_TAKE ||  // prend ?
-		 m_actionType == MHS_FLAG )   // prend ?
+	// Management of the head.
+	if ( m_actionType == MHS_TAKE ||  // takes?
+		 m_actionType == MHS_FLAG )   // takes?
 	{
 		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.6f, event.rTime*5.0f));
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
 		m_object->SetAngleY(1, Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
 	}
-	else if ( m_actionType == MHS_TAKEOTHER ||  // prend ?
-			  m_actionType == MHS_TAKEHIGH  )   // prend ?
+	else if ( m_actionType == MHS_TAKEOTHER ||  // takes?
+			  m_actionType == MHS_TAKEHIGH  )   // takes?
 	{
 		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.3f, event.rTime*5.0f));
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
 		m_object->SetAngleY(1, Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
 	}
-	else if ( m_actionType == MHS_WIN )   // gagné ?
+	else if ( m_actionType == MHS_WIN )   // win
 	{
 		float	factor = 0.6f+(sinf(m_armTimeAbs*0.5f)*0.40f);
 		m_object->SetAngleZ(1, sinf(m_armTimeAbs*5.0f)*0.20f*factor);
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*0.6f)*0.10f);
 		m_object->SetAngleY(1, sinf(m_armTimeAbs*1.5f)*0.15f);
 	}
-	else if ( m_actionType == MHS_LOST )   // perdu ?
+	else if ( m_actionType == MHS_LOST )   // lost?
 	{
 		float	factor = 0.6f+(sinf(m_armTimeAbs*0.5f)*0.40f);
 		m_object->SetAngleZ(1, sinf(m_armTimeAbs*0.6f)*0.10f);
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*0.7f)*0.10f);
 		m_object->SetAngleY(1, sinf(m_armTimeAbs*3.0f)*0.30f*factor);
 	}
-	else if ( m_object->RetDead() )  // mort ?
+	else if ( m_object->RetDead() )  // dead?
 	{
 	}
 	else
@@ -1672,7 +1672,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		m_object->SetAngleY(1, 0.0f);
 	}
 
-	// Bruitage des pas.
+	// Steps sound effects.
 	if ( legAction == MH_MARCH     ||
 		 legAction == MH_MARCHTAKE )
 	{
@@ -1683,13 +1683,13 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 		if ( m_object->RetFret() == 0 )
 		{
-			if ( speed > 0.0f )  synchro = 0.21f;  // synchro en avant
-			else                 synchro = 0.29f;  // synchro en arrière
+			if ( speed > 0.0f )  synchro = 0.21f;  // synchro forward
+			else                 synchro = 0.29f;  // synchro backward
 		}
 		else
 		{
-			if ( speed > 0.0f )  synchro = 0.15f;  // synchro en avant
-			else                 synchro = 0.35f;  // synchro en arrière
+			if ( speed > 0.0f )  synchro = 0.15f;  // synchro forward
+			else                 synchro = 0.35f;  // synchro backward
 		}
 		time = rTime[1]+synchro;
 
@@ -1711,7 +1711,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 			pos = m_object->RetPosition(0);
 
 			level = m_water->RetLevel();
-			if ( pos.y <= level+3.0f )  // sous l'eau ?
+			if ( pos.y <= level+3.0f )  // underwater?
 			{
 				sound[0] = SOUND_STEPw;
 			}
@@ -1773,7 +1773,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	m_lastSoundHhh -= event.rTime;
 	if ( m_lastSoundHhh <= 0.0f &&
 		 m_object->RetSelect()  &&
-		 m_object->RetOption() == 0 )  // casque ?
+		 m_object->RetOption() == 0 )  // helmet?
 	{
 		m_sound->Play(SOUND_HUMAN1, m_object->RetPosition(0), (0.5f+m_tired*0.2f));
 		m_lastSoundHhh = (4.0f-m_tired*2.5f)+(4.0f-m_tired*2.5f)*Rand();
@@ -1783,7 +1783,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 }
 
 
-// Gestion du mode d'affichage lors de la personnalisation du perso.
+// Management of the display mode when customizing the personal.
 
 void CMotionHuman::StartDisplayPerso()
 {
