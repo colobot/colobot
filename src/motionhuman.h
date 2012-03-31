@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motionhuman.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motionhuman.h
 
 #ifndef _MOTIONHUMAN_H_
 #define	_MOTIONHUMAN_H_
