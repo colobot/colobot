@@ -129,7 +129,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(2, D3DVECTOR(-1.0f, 0.0f, 0.0f));
 
-	// Creates a right-back leg.
+	// Creates a right-back thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(3, rank);
@@ -156,7 +156,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Creates two mid-leg right.
+	// Creates two middle-right thighs.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(6, rank);
@@ -174,7 +174,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(7, D3DVECTOR(0.0f, 0.0f, -1.0f));
 
-	// Cr�e le pied 2 milieu-droite.
+	// Creates two middle-right foots.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(8, rank);
@@ -183,7 +183,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(8, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Cr�e la cuisse 3 avant-droite.
+	// Creates the right front thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(9, rank);
@@ -192,7 +192,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(9, D3DVECTOR(1.4f, -0.1f, -0.6f));
 
-	// Cr�e la jambe 3 avant-droite.
+	// Creates the right front leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(10, rank);
@@ -201,7 +201,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(10, D3DVECTOR(0.0f, 0.0f, -1.0f));
 
-	// Cr�e le pied 3 avant-droite.
+	// Creates the right front foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(11, rank);
@@ -210,7 +210,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Cr�e la cuisse 1 arri�re-gauche.
+	// Creates a left-back thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(12, rank);
@@ -220,7 +220,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(12, D3DVECTOR(-0.4f, -0.1f, 0.3f));
 
-	// Cr�e la jambe 1 arri�re-gauche.
+	// Creates a left-back leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(13, rank);
@@ -230,7 +230,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(13, D3DVECTOR(0.0f, 0.0f, 1.0f));
 
-	// Cr�e le pied 1 arri�re-gauche.
+	// Creates a left-back foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(14, rank);
@@ -240,7 +240,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(14, D3DVECTOR(0.0f, 0.0f, 2.0f));
 
-	// Cr�e la cuisse 2 milieu-gauche.
+	// Creates two middle-left thighs.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(15, rank);
@@ -250,7 +250,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(15, D3DVECTOR(0.1f, -0.1f, 0.4f));
 
-	// Cr�e la jambe 2 milieu-gauche.
+	// Creates two middle-left legs.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(16, rank);
@@ -260,7 +260,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(16, D3DVECTOR(0.0f, 0.0f, 1.0f));
 
-	// Cr�e le pied 2 milieu-gauche.
+	// Creates two middle-left foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(17, rank);
@@ -270,7 +270,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(17, D3DVECTOR(0.0f, 0.0f, 2.0f));
 
-	// Cr�e la cuisse 3 avant-gauche.
+	// Creates the left front thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(18, rank);
@@ -280,7 +280,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(18, D3DVECTOR(1.4f, -0.1f, 0.6f));
 
-	// Cr�e la jambe 3 avant-gauche.
+	// Creates the left front leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(19, rank);
@@ -290,7 +290,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(19, D3DVECTOR(0.0f, 0.0f, 1.0f));
 
-	// Cr�e le pied 3 avant-gauche.
+	// Creates the left front foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(20, rank);
@@ -306,7 +306,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetFloorHeight(0.0f);
 
 	pos = m_object->RetPosition(0);
-	m_object->SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	m_object->SetPosition(0, pos);  // to display the shadows immediately
 
 	m_engine->LoadAllTexture();
 
@@ -314,7 +314,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Cr�e la physique de l'objet.
+// Creates the physics of the object.
 
 void CMotionAnt::CreatePhysics()
 {
@@ -323,70 +323,70 @@ void CMotionAnt::CreatePhysics()
 
 	int member_march[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// en l'air :
-		0,45,0,		0,45,0,		0,50,0,		// t0: cuisses 1..3
-		30,-70,0,	20,-105,20,	25,-100,0,	// t0: jambes 1..3
-		-70,75,0,	-30,80,0,	-80,80,0,	// t0: pieds 1..3
-											// au sol devant :
-		0,30,0,		0,20,0,		0,15,0,		// t1: cuisses 1..3
-		-15,-50,0,	-20,-60,0,	-10,-75,0,	// t1: jambes 1..3
-		-40,50,0,	-25,15,0,	-50,35,0,	// t1: pieds 1..3
-											// au sol derri�re :
-		0,35,0,		0,30,0,		0,20,0,		// t2: cuisses 1..3
-		-20,-15,0,	-30,-55,0,	-25,-70,15,	// t2: jambes 1..3
-		-25,25,0,	-20,60,0,	-30,95,0,	// t2: pieds 1..3
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// in the air:
+		0,45,0,		0,45,0,		0,50,0,		// t0: thighs 1..3
+		30,-70,0,	20,-105,20,	25,-100,0,	// t0: legs 1..3
+		-70,75,0,	-30,80,0,	-80,80,0,	// t0: feet 1..3
+											// on the ground:
+		0,30,0,		0,20,0,		0,15,0,		// t1: thighs 1..3
+		-15,-50,0,	-20,-60,0,	-10,-75,0,	// t1: legs 1..3
+		-40,50,0,	-25,15,0,	-50,35,0,	// t1: feet 1..3
+											// on the ground back:
+		0,35,0,		0,30,0,		0,20,0,		// t2: thighs 1..3
+		-20,-15,0,	-30,-55,0,	-25,-70,15,	// t2: legs 1..3
+		-25,25,0,	-20,60,0,	-30,95,0,	// t2: feet 1..3
 	};
 
 	int member_stop[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// en l'air :
-		0,30,0,		0,20,0,		0,15,0,		// t0: cuisses 1..3
-		-15,-35,0,	-20,-60,0,	-15,-75,0,	// t0: jambes 1..3
-		-35,35,0,	-25,40,0,	-40,65,0,	// t0: pieds 1..3
-											// au sol devant :
-		0,30,0,		0,20,0,		0,15,0,		// t1: cuisses 1..3
-		-15,-35,0,	-20,-60,0,	-15,-75,0,	// t1: jambes 1..3
-		-35,35,0,	-25,40,0,	-40,65,0,	// t1: pieds 1..3
-											// au sol derri�re :
-		0,30,0,		0,20,0,		0,15,0,		// t2: cuisses 1..3
-		-15,-35,0,	-20,-60,0,	-15,-75,0,	// t2: jambes 1..3
-		-35,35,0,	-25,40,0,	-40,65,0,	// t2: pieds 1..3
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// in the air:
+		0,30,0,		0,20,0,		0,15,0,		// t0: thighs 1..3
+		-15,-35,0,	-20,-60,0,	-15,-75,0,	// t0: legs 1..3
+		-35,35,0,	-25,40,0,	-40,65,0,	// t0: feet 1..3
+											// on the ground:
+		0,30,0,		0,20,0,		0,15,0,		// t1: thighs 1..3
+		-15,-35,0,	-20,-60,0,	-15,-75,0,	// t1: legs 1..3
+		-35,35,0,	-25,40,0,	-40,65,0,	// t1: feet 1..3
+											// on the ground back:
+		0,30,0,		0,20,0,		0,15,0,		// t2: thighs 1..3
+		-15,-35,0,	-20,-60,0,	-15,-75,0,	// t2: legs 1..3
+		-35,35,0,	-25,40,0,	-40,65,0,	// t2: feet 1..3
 	};
 
 	int member_spec[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// pr�pare le tir :
-		0,20,0,		0,10,0,		0,50,0,		// s0: cuisses 1..3
-		-50,-30,0,	-20,-15,0,	35,-65,0,	// s0: jambes 1..3
-		-5,-40,0,	20,-70,0,	-10,-40,0,	// s0: pieds 1..3
-											// tir :
-		0,20,0,		0,10,0,		0,50,0,		// s1: cuisses 1..3
-		-50,-30,0,	-20,-15,0,	35,-65,0,	// s1: jambes 1..3
-		-5,-40,0,	20,-70,0,	-10,-40,0,	// s1: pieds 1..3
-											// termine le tir :
-		0,30,0,		0,20,0,		0,15,0,		// s2: cuisses 1..3
-		-15,-50,0,	-20,-60,0,	-10,-75,0,	// s2: jambes 1..3
-		-40,50,0,	-25,15,0,	-50,35,0,	// s2: pieds 1..3
-											// br�le :
-		0,30,0,		0,20,0,		0,15,0,		// s3: cuisses 1..3
-		-15,-35,0,	-20,-60,0,	-15,-75,0,	// s3: jambes 1..3
-		-35,35,0,	-25,40,0,	-40,65,0,	// s3: pieds 1..3
-											// ruine :
-		0,30,0,		0,20,0,		0,15,0,		// s4: cuisses 1..3
-		-15,-35,0,	-20,-60,0,	-15,-75,0,	// s4: jambes 1..3
-		-35,35,0,	-25,40,0,	-40,65,0,	// s4: pieds 1..3
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// prepares the fire:
+		0,20,0,		0,10,0,		0,50,0,		// s0: thighs 1..3
+		-50,-30,0,	-20,-15,0,	35,-65,0,	// s0: legs 1..3
+		-5,-40,0,	20,-70,0,	-10,-40,0,	// s0: feet 1..3
+											// shot:
+		0,20,0,		0,10,0,		0,50,0,		// s1: thighs 1..3
+		-50,-30,0,	-20,-15,0,	35,-65,0,	// s1: legs 1..3
+		-5,-40,0,	20,-70,0,	-10,-40,0,	// s1: feet 1..3
+											// ends the fire:
+		0,30,0,		0,20,0,		0,15,0,		// s2: thighs 1..3
+		-15,-50,0,	-20,-60,0,	-10,-75,0,	// s2: legs 1..3
+		-40,50,0,	-25,15,0,	-50,35,0,	// s2: feet 1..3
+											// burning:
+		0,30,0,		0,20,0,		0,15,0,		// s3: thighs 1..3
+		-15,-35,0,	-20,-60,0,	-15,-75,0,	// s3: legs 1..3
+		-35,35,0,	-25,40,0,	-40,65,0,	// s3: feet 1..3
+											// destroyed:
+		0,30,0,		0,20,0,		0,15,0,		// s4: thighs 1..3
+		-15,-35,0,	-20,-60,0,	-15,-75,0,	// s4: legs 1..3
+		-35,35,0,	-25,40,0,	-40,65,0,	// s4: feet 1..3
 											// back1 :
-		0,30,0,		0,20,0,		0,15,0,		// s5: cuisses 1..3
-		-15,-35,0,	-20,-60,0,	-15,-75,0,	// s5: jambes 1..3
-		-35,35,0,	-25,40,0,	-40,65,0,	// s5: pieds 1..3
+		0,30,0,		0,20,0,		0,15,0,		// s5: thighs 1..3
+		-15,-35,0,	-20,-60,0,	-15,-75,0,	// s5: legs 1..3
+		-35,35,0,	-25,40,0,	-40,65,0,	// s5: feet 1..3
 											// back2 :
-		0,45,0,		0,45,0,		0,50,0,		// s6: cuisses 1..3
-		-35,-70,0,	-20,-85,-25,-25,-100,0,	// s6: jambes 1..3
-		-110,75,-15,-130,80,-25,-125,40,0,	// s6: pieds 1..3
+		0,45,0,		0,45,0,		0,50,0,		// s6: thighs 1..3
+		-35,-70,0,	-20,-85,-25,	-25,-100,0,	// s6: legs 1..3
+		-110,75,-15,	-130,80,-25,	-125,40,0,	// s6: feet 1..3
 											// back3 :
-		0,30,0,		0,20,0,		0,15,0,		// s7: cuisses 1..3
-		-15,-35,0,	-20,-60,0,	-15,-75,0,	// s7: jambes 1..3
-		-35,35,0,	-25,40,0,	-40,65,0,	// s7: pieds 1..3
+		0,30,0,		0,20,0,		0,15,0,		// s7: thighs 1..3
+		-15,-35,0,	-20,-60,0,	-15,-75,0,	// s7: legs 1..3
+		-35,35,0,	-25,40,0,	-40,65,0,	// s7: feet 1..3
 	};
 
 	m_physics->SetType(TYPE_ROLLING);
@@ -430,7 +430,7 @@ void CMotionAnt::CreatePhysics()
 }
 
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CMotionAnt::EventProcess(const Event &event)
 {
@@ -474,8 +474,7 @@ BOOL CMotionAnt::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Calcule une valeur (radians) proportionnelle comprise
-// entre a et b (degr�s).
+// Calculates a value (radians) proportional between a and b (degrees).
 
 inline float Propf(float a, float b, float p)
 {
@@ -487,7 +486,7 @@ inline float Propf(float a, float b, float p)
 	return aa+p*(bb-aa);
 }
 
-// Gestion d'un �v�nement.
+// Management of an event.
 
 BOOL CMotionAnt::EventFrame(const Event &event)
 {
@@ -510,9 +509,9 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 	m_armTimeMarch += (s)*event.rTime*0.15f;
 	m_armMember += (s+a)*event.rTime*0.15f;
 
-	bStop = ( a == 0.0f && s == 0.0f );  // a l'arr�t ?
+	bStop = ( a == 0.0f && s == 0.0f );  // stopped?
 
-	action = MA_MARCH;  // marche
+	action = MA_MARCH;  // walking
 	if ( s == 0.0f && a == 0.0f )
 	{
 		action = MA_STOP;  // stop
@@ -522,15 +521,15 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 	{
 		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
 		a = Mod(m_armMember, 1.0f);
-		a = (prog-a)*event.rTime*2.0f;  // vient gentiment � position stop
+		a = (prog-a)*event.rTime*2.0f;  // stop position is pleasantly
 		m_armMember += a;
 	}
 
-	if ( m_object->RetRuin() )  // ruine ?
+	if ( m_object->RetRuin() )  // destroyed?
 	{
 		m_actionType = MAS_RUIN;
 	}
-	if ( m_object->RetBurn() )  // br�le ?
+	if ( m_object->RetBurn() )  // burning?
 	{
 		if ( m_object->RetFixed() )
 		{
@@ -542,9 +541,9 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		}
 	}
 
-	for ( i=0 ; i<6 ; i++ )  // les 6 pattes
+	for ( i=0 ; i<6 ; i++ )  // the six legs
 	{
-		if ( m_actionType != -1 )  // action sp�ciale en cours ?
+		if ( m_actionType != -1 )  // special action in progress?
 		{
 			st = 3*3*3*3*MA_SPEC + 3*3*3*m_actionType + (i%3)*3;
 			nd = st;
@@ -580,7 +579,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 			st = 3*3*3*3*action + st*3*3*3 + (i%3)*3;
 			nd = 3*3*3*3*action + nd*3*3*3 + (i%3)*3;
 
-			// De moins en moins mou ...
+			// More and more soft ...
 			time = event.rTime*(10.0f+Min(m_armTimeAction*100.0f, 200.0f));
 		}
 
@@ -604,7 +603,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		tNd[7] = m_armAngles[nd+19];  // y
 		tNd[8] = m_armAngles[nd+20];  // z
 
-		if ( m_actionType == MAS_BACK2 )   // sur le dos ?
+		if ( m_actionType == MAS_BACK2 )   // on the back?
 		{
 			for ( ii=0 ; ii<9 ; ii++ )
 			{
@@ -615,7 +614,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 			time = event.rTime*10.0f;
 		}
 
-		if ( i < 3 )  // patte droite (1..3) ?
+		if ( i < 3 )  // right leg (1..3) ?
 		{
 			m_object->SetAngleX(3+3*i+0, Smooth(m_object->RetAngleX(3+3*i+0), Propf(tSt[0], tNd[0], prog), time));
 			m_object->SetAngleY(3+3*i+0, Smooth(m_object->RetAngleY(3+3*i+0), Propf(tSt[1], tNd[1], prog), time));
@@ -627,7 +626,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 			m_object->SetAngleY(3+3*i+2, Smooth(m_object->RetAngleY(3+3*i+2), Propf(tSt[7], tNd[7], prog), time));
 			m_object->SetAngleZ(3+3*i+2, Smooth(m_object->RetAngleZ(3+3*i+2), Propf(tSt[8], tNd[8], prog), time));
 		}
-		else	// patte gauche (4..6) ?
+		else	// left leg (4..6) ?
 		{
 			m_object->SetAngleX(3+3*i+0, Smooth(m_object->RetAngleX(3+3*i+0), Propf(-tSt[0], -tNd[0], prog), time));
 			m_object->SetAngleY(3+3*i+0, Smooth(m_object->RetAngleY(3+3*i+0), Propf(-tSt[1], -tNd[1], prog), time));
@@ -650,7 +649,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 	}
 #endif
 
-	if ( m_actionType == MAS_PREPARE )  // pr�pare le tir ?
+	if ( m_actionType == MAS_PREPARE )  // prepares the shooting?
 	{
 		prog = m_progress;
 
@@ -658,14 +657,14 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		dir.y = 0.0f;
 		dir.z = Prop(0, -50, prog);
 		SetInclinaison(dir);
-		m_object->SetAngleZ(1, Prop(0,  65, prog));  // t�te
-		m_object->SetAngleZ(2, Prop(0, -95, prog));  // queue
+		m_object->SetAngleZ(1, Prop(0,  65, prog));  // head
+		m_object->SetAngleZ(2, Prop(0, -95, prog));  // tail
 	}
-	else if ( m_actionType == MAS_FIRE )  // tir ?
+	else if ( m_actionType == MAS_FIRE )  // shooting?
 	{
 		if ( m_progress < 0.75f )  a = m_progress/0.75f;
 		else                       a = (1.0f-m_progress)/0.25f;
-		m_object->SetZoom(2, (a*0.5f)+1.0f);  // queue
+		m_object->SetZoom(2, (a*0.5f)+1.0f);  // tail
 		m_object->SetAngleX(2, (Rand()-0.5f)*0.3f*a);
 		m_object->SetAngleY(2, (Rand()-0.5f)*0.3f*a);
 
@@ -674,7 +673,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		dir.z = (Rand()-0.5f)*0.03f*a;
 		SetCirVibration(dir);
 	}
-	else if ( m_actionType == MAS_TERMINATE )  // termine le tir ?
+	else if ( m_actionType == MAS_TERMINATE )  // ends the shooting?
 	{
 		prog = 1.0f-m_progress;
 
@@ -682,10 +681,10 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		dir.y = 0.0f;
 		dir.z = Prop(0, -50, prog);
 		SetInclinaison(dir);
-		m_object->SetAngleZ(1, Prop(0,  65, prog));  // t�te
-		m_object->SetAngleZ(2, Prop(0, -95, prog));  // queue
+		m_object->SetAngleZ(1, Prop(0,  65, prog));  // head
+		m_object->SetAngleZ(2, Prop(0, -95, prog));  // tail
 	}
-	else if ( m_actionType == MAS_BURN )  // br�le ?
+	else if ( m_actionType == MAS_BURN )  // burning?
 	{
 		dir = D3DVECTOR(PI, 0.0f, 0.0f);
 		SetCirVibration(dir);
@@ -695,17 +694,17 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		SetInclinaison(dir);
 
 		time = event.rTime*1.0f;
-		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), 0.0f, time));  // t�te
-		m_object->SetAngleZ(2, Smooth(m_object->RetAngleZ(2), 0.0f, time));  // queue
+		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), 0.0f, time));  // head
+		m_object->SetAngleZ(2, Smooth(m_object->RetAngleZ(2), 0.0f, time));  // tail
 	}
-	else if ( m_actionType == MAS_RUIN )  // ruine ?
+	else if ( m_actionType == MAS_RUIN )  // destroyed?
 	{
 		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		SetLinVibration(dir);
 		SetCirVibration(dir);
 		SetInclinaison(dir);
 	}
-	else if ( m_actionType == MAS_BACK1 )  // se met sur le dos ?
+	else if ( m_actionType == MAS_BACK1 )  // starts on the back?
 	{
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
 		{
@@ -747,7 +746,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 			SetAction(MAS_BACK2, 55.0f+Rand()*10.0f);
 		}
 	}
-	else if ( m_actionType == MAS_BACK2 )  // bouge sur le dos ?
+	else if ( m_actionType == MAS_BACK2 )  // moves on the back?
 	{
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
 		{
@@ -786,17 +785,17 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
-		m_object->SetAngleY(1, sinf(m_armTimeAbs*8.0f)*0.7f);  // t�te
-		m_object->SetAngleY(2, cosf(m_armTimeAbs*8.0f)*0.7f);  // queue
-		m_object->SetAngleZ(1, 0.0f);  // t�te
-		m_object->SetAngleZ(2, 0.0f);  // queue
+		m_object->SetAngleY(1, sinf(m_armTimeAbs*8.0f)*0.7f);  // head
+		m_object->SetAngleY(2, cosf(m_armTimeAbs*8.0f)*0.7f);  // tail
+		m_object->SetAngleZ(1, 0.0f);  // head
+		m_object->SetAngleZ(2, 0.0f);  // tail
 
 		if ( m_progress >= 1.0f )
 		{
 			SetAction(MAS_BACK3, 0.4f);
 		}
 	}
-	else if ( m_actionType == MAS_BACK3 )  // se remet sur les pattes ?
+	else if ( m_actionType == MAS_BACK3 )  // goes back on the legs?
 	{
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
 		{
@@ -836,18 +835,18 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		if ( m_progress >= 1.0f )
 		{
 			SetAction(-1);
-			m_object->SetFixed(FALSE);  // bouge de nouveau
+			m_object->SetFixed(FALSE);  // moving again
 		}
 	}
 	else
 	{
-		m_object->SetZoom(2, 1.0f);  // queue
+		m_object->SetZoom(2, 1.0f);  // tail
 		m_object->SetAngleX(2, 0.0f);
 		m_object->SetAngleY(2, 0.0f);
 
 		if ( bStop )
 		{
-			m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.7f)*0.15f);  // queue
+			m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.7f)*0.15f);  // tail
 
 			dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
 			SetLinVibration(dir);
@@ -868,7 +867,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 			dir.y = 0.0f;
 			SetInclinaison(dir);
 
-			m_object->SetAngleZ(2, -sinf(a)*0.3f);  // queue
+			m_object->SetAngleZ(2, -sinf(a)*0.3f);  // tail
 
 			a = Mod(m_armMember-0.1f, 1.0f);
 			if ( a < 0.33f )
@@ -891,9 +890,9 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		SetCirVibration(dir);
 
-		m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // t�te
-		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.9f)*0.10f);  // t�te
-		m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // t�te
+		m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // head
+		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.9f)*0.10f);  // head
+		m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
 	}
 
 	return TRUE;
