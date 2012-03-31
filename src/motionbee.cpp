@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motionbee.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motionbee.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -41,12 +43,12 @@
 
 
 
-#define ADJUST_ANGLE	FALSE		// TRUE -> ajuste les angles des membres
-#define START_TIME		1000.0f		// début du temps relatif
+#define ADJUST_ANGLE		FALSE		// TRUE -> adjusts the angles of the members
+#define START_TIME		1000.0f		// beginning of the relative time
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CMotionBee::CMotionBee(CInstanceManager* iMan, CObject* object)
 					  : CMotion(iMan, object)
@@ -64,21 +66,21 @@ CMotionBee::CMotionBee(CInstanceManager* iMan, CObject* object)
 	m_bArmStop = FALSE;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CMotionBee::~CMotionBee()
 {
 }
 
 
-// Supprime un objet.
+// Removes an object.
 
 void CMotionBee::DeleteObject(BOOL bAll)
 {
 }
 
 
-// Crée un véhicule roulant quelconque posé sur le sol.
+// Creates a vehicle traveling any lands on the ground.
 
 BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 						float power)
@@ -92,9 +94,9 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	m_object->SetType(type);
 
-	// Crée la base principale.
+	// Creates main base.
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
+	m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
 	m_object->SetObjectRank(0, rank);
 
 	pModFile->ReadModel("objects\\bee1.mod");
@@ -103,12 +105,12 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Un véhicule doit avoir obligatoirement une sphère de
-	// collision avec un centre (0;y;0) (voir GetCrashSphere).
+	// A vehicle must have an obligatory collision
+	// with a sphere of center (0, y, 0) (see GetCrashSphere).
 	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
 	m_object->SetGlobalSphere(D3DVECTOR(-1.0f, 1.0f, 0.0f), 5.0f);
 
-	// Crée la tête.
+	// Creates the head.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(1, rank);
@@ -117,7 +119,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(1, D3DVECTOR(1.6f, 0.3f, 0.0f));
 
-	// Crée la queue.
+	// Creates the tail.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(2, rank);
@@ -126,7 +128,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(2, D3DVECTOR(-0.8f, 0.0f, 0.0f));
 
-	// Crée la cuisse 1 arrière-droite.
+	// Creates a right-back thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(3, rank);
@@ -135,7 +137,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(3, D3DVECTOR(-0.3f, -0.1f, -0.2f));
 
-	// Crée la jambe 1 arrière-droite.
+	// Creates a right-back leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(4, rank);
@@ -144,7 +146,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(4, D3DVECTOR(0.0f, 0.0f, -1.0f));
 
-	// Crée le pied 1 arrière-droite.
+	// Creates a right-back foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(5, rank);
@@ -153,7 +155,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Crée la cuisse 2 milieu-droite.
+	// Creates two middle-right thighs.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(6, rank);
@@ -162,7 +164,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(6, D3DVECTOR(0.3f, -0.1f, -0.4f));
 
-	// Crée la jambe 2 milieu-droite.
+	// Creates two middle-right legs.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(7, rank);
@@ -171,7 +173,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(7, D3DVECTOR(0.0f, 0.0f, -1.0f));
 
-	// Crée le pied 2 milieu-droite.
+	// Creates two middle-right feet.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(8, rank);
@@ -180,7 +182,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(8, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Crée la cuisse 3 avant-droite.
+	// Creates the right front thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(9, rank);
@@ -189,7 +191,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(9, D3DVECTOR(1.0f, -0.1f, -0.7f));
 
-	// Crée la jambe 3 avant-droite.
+	// Creates the right front leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(10, rank);
@@ -198,7 +200,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(10, D3DVECTOR(0.0f, 0.0f, -1.0f));
 
-	// Crée le pied 3 avant-droite.
+	// Creates the right front foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(11, rank);
@@ -207,7 +209,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Crée la cuisse 1 arrière-gauche.
+	// Creates a left-back thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(12, rank);
@@ -217,7 +219,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(12, D3DVECTOR(-0.3f, -0.1f, 0.2f));
 	m_object->SetAngleY(12, PI);
 
-	// Crée la jambe 1 arrière-gauche.
+	// Creates a left-back leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(13, rank);
@@ -226,7 +228,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(13, D3DVECTOR(0.0f, 0.0f, -1.0f));
 
-	// Crée le pied 1 arrière-gauche.
+	// Creates a left-back foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(14, rank);
@@ -235,7 +237,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(14, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Crée la cuisse 2 milieu-gauche.
+	// Creates two middle-left thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(15, rank);
@@ -245,7 +247,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(15, D3DVECTOR(0.3f, -0.1f, 0.4f));
 	m_object->SetAngleY(15, PI);
 
-	// Crée la jambe 2 milieu-gauche.
+	// Creates two middle-left legs.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(16, rank);
@@ -254,7 +256,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(16, D3DVECTOR(0.0f, 0.0f, -1.0f));
 
-	// Crée le pied 2 milieu-gauche.
+	// Creates two middle-left feet.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(17, rank);
@@ -263,7 +265,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(17, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Crée la cuisse 3 avant-gauche.
+	// Creates front-left thigh.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(18, rank);
@@ -273,7 +275,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(18, D3DVECTOR(1.0f, -0.1f, 0.7f));
 	m_object->SetAngleY(18, PI);
 
-	// Crée la jambe 3 avant-gauche.
+	// Creates front-left leg.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(19, rank);
@@ -282,7 +284,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(19, D3DVECTOR(0.0f, 0.0f, -1.0f));
 
-	// Crée le pied 3 avant-gauche.
+	// Creates front-left foot.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(20, rank);
@@ -291,7 +293,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(20, D3DVECTOR(0.0f, 0.0f, -2.0f));
 
-	// Crée l'aile droite.
+	// Creates the right wing.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(21, rank);
@@ -300,7 +302,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(21, D3DVECTOR(0.8f, 0.4f, -0.5f));
 
-	// Crée l'aile gauche.
+	// Creates the left wing.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(22, rank);
@@ -316,7 +318,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetFloorHeight(0.0f);
 
 	pos = m_object->RetPosition(0);
-	m_object->SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	m_object->SetPosition(0, pos);  // to display the shadows immediately
 
 	m_engine->LoadAllTexture();
 
@@ -324,7 +326,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Crée la physique de l'objet.
+// Creates the physical object.
 
 void CMotionBee::CreatePhysics()
 {
@@ -333,34 +335,34 @@ void CMotionBee::CreatePhysics()
 
 	int member_march[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// en l'air :
-		0,45,0,		0,45,0,		0,50,0,		// t0: cuisses 1..3
-		30,-70,0,	20,-105,20,	25,-100,0,	// t0: jambes 1..3
-		-70,75,0,	-30,80,0,	-80,80,0,	// t0: pieds 1..3
-											// au sol devant :
-		0,30,0,		0,20,0,		0,15,0,		// t1: cuisses 1..3
-		-15,-50,0,	-20,-60,0,	-10,-75,0,	// t1: jambes 1..3
-		-40,50,0,	-25,15,0,	-50,35,0,	// t1: pieds 1..3
-											// au sol derrière :
-		0,35,0,		0,30,0,		0,20,0,		// t2: cuisses 1..3
-		-20,-15,0,	-30,-55,0,	-25,-70,15,	// t2: jambes 1..3
-		-25,25,0,	-20,60,0,	-30,95,0,	// t2: pieds 1..3
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// in the air:
+		0,45,0,		0,45,0,		0,50,0,		// t0: thighs 1..3
+		30,-70,0,	20,-105,20,	25,-100,0,	// t0: legs 1..3
+		-70,75,0,	-30,80,0,	-80,80,0,	// t0: feet 1..3
+											// on the ground:
+		0,30,0,		0,20,0,		0,15,0,		// t1: thighs 1..3
+		-15,-50,0,	-20,-60,0,	-10,-75,0,	// t1: legs 1..3
+		-40,50,0,	-25,15,0,	-50,35,0,	// t1: feet 1..3
+											// on the ground back:
+		0,35,0,		0,30,0,		0,20,0,		// t2: thighs 1..3
+		-20,-15,0,	-30,-55,0,	-25,-70,15,	// t2: legs 1..3
+		-25,25,0,	-20,60,0,	-30,95,0,	// t2: feet 1..3
 	};
 
 	int member_spec[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// porte boulet :
-		0,45,0,		0,45,0,		0,50,0,		// s0: cuisses 1..3
-		-35,-70,0,	-20,-85,-25,-25,-100,0,	// s0: jambes 1..3
-		-110,75,-15,-130,80,-25,-125,40,0,	// s0: pieds 1..3
-											// brûle :
-		0,45,0,		0,45,0,		0,50,0,		// s1: cuisses 1..3
-		-35,-70,0,	-20,-85,-25,-25,-100,0,	// s1: jambes 1..3
-		-110,75,-15,-130,80,-25,-125,40,0,	// s1: pieds 1..3
-											// ruine :
-		0,45,0,		0,45,0,		0,50,0,		// s2: cuisses 1..3
-		-35,-70,0,	-20,-85,-25,-25,-100,0,	// s2: jambes 1..3
-		-110,75,-15,-130,80,-25,-125,40,0,	// s2: pieds 1..3
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// ball carrier:
+		0,45,0,		0,45,0,		0,50,0,		// s0: thighs 1..3
+		-35,-70,0,	-20,-85,-25,	-25,-100,0,	// s0: legs 1..3
+		-110,75,-15,	-130,80,-25,	-125,40,0,	// s0: feet 1..3
+											// burning:
+		0,45,0,		0,45,0,		0,50,0,		// s1: thighs 1..3
+		-35,-70,0,	-20,-85,-25,	-25,-100,0,	// s1: legs 1..3
+		-110,75,-15,	-130,80,-25,	-125,40,0,	// s1: feet 1..3
+											// destroyed:
+		0,45,0,		0,45,0,		0,50,0,		// s2: thighs 1..3
+		-35,-70,0,	-20,-85,-25,	-25,-100,0,	// s2: legs 1..3
+		-110,75,-15,	-130,80,-25,	-125,40,0,	// s2: feet 1..3
 	};
 
 	m_physics->SetType(TYPE_FLYING);
@@ -405,7 +407,7 @@ void CMotionBee::CreatePhysics()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionBee::EventProcess(const Event &event)
 {
@@ -449,7 +451,7 @@ BOOL CMotionBee::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionBee::EventFrame(const Event &event)
 {
@@ -470,34 +472,34 @@ BOOL CMotionBee::EventFrame(const Event &event)
 	m_armTimeMarch += (s)*event.rTime*0.15f;
 	m_armMember += (s+a)*event.rTime*0.15f;
 
-	bStop = ( a == 0.0f && s == 0.0f );  // a l'arrêt ?
+	bStop = ( a == 0.0f && s == 0.0f );  // stopped?
 	if ( !m_physics->RetLand() )  bStop = TRUE;
 
 	if ( bStop )
 	{
 		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
 		a = Mod(m_armMember, 1.0f);
-		a = (prog-a)*event.rTime*2.0f;  // vient gentiment à position stop
+		a = (prog-a)*event.rTime*2.0f;  // stop position is pleasantly
 		m_armMember += a;
 	}
 
-	action = MB_MARCH;  // marche
+	action = MB_MARCH;  // flying
 
 	m_actionType = -1;
-	if ( m_object->RetFret() != 0 )  m_actionType = MBS_HOLD;  // porte le boulet
+	if ( m_object->RetFret() != 0 )  m_actionType = MBS_HOLD;  // carries the ball
 
-	if ( m_object->RetRuin() )  // ruine ?
+	if ( m_object->RetRuin() )  // destroyed?
 	{
 		m_actionType = MBS_RUIN;
 	}
-	if ( m_object->RetBurn() )  // brûle ?
+	if ( m_object->RetBurn() )  // burning?
 	{
 		m_actionType = MBS_BURN;
 	}
 
-	for ( i=0 ; i<6 ; i++ )  // les 6 pattes
+	for ( i=0 ; i<6 ; i++ )  // the six legs
 	{
-		if ( m_actionType != -1 )  // action spéciale en cours ?
+		if ( m_actionType != -1 )  // special action in progress?
 		{
 			st = 3*3*3*3*MB_SPEC + 3*3*3*m_actionType + (i%3)*3;
 			nd = st;
@@ -532,7 +534,7 @@ BOOL CMotionBee::EventFrame(const Event &event)
 			nd = 3*3*3*3*action + nd*3*3*3 + (i%3)*3;
 		}
 
-		if ( i < 3 )  // patte droite (1..3) ?
+		if ( i < 3 )  // right leg (1..3) ?
 		{
 			m_object->SetAngleX(3+3*i+0, Prop(m_armAngles[st+ 0], m_armAngles[nd+ 0], prog));
 			m_object->SetAngleY(3+3*i+0, Prop(m_armAngles[st+ 1], m_armAngles[nd+ 1], prog));
@@ -544,7 +546,7 @@ BOOL CMotionBee::EventFrame(const Event &event)
 			m_object->SetAngleY(3+3*i+2, Prop(m_armAngles[st+19], m_armAngles[nd+19], prog));
 			m_object->SetAngleZ(3+3*i+2, Prop(m_armAngles[st+20], m_armAngles[nd+20], prog));
 		}
-		else	// patte gauche (4..6) ?
+		else	// left leg(4..6) ?
 		{
 			m_object->SetAngleX(3+3*i+0, Prop(   -m_armAngles[st+ 0],    -m_armAngles[nd+ 0], prog));
 			m_object->SetAngleY(3+3*i+0, Prop(180-m_armAngles[st+ 1], 180-m_armAngles[nd+ 1], prog));
@@ -567,14 +569,14 @@ BOOL CMotionBee::EventFrame(const Event &event)
 	}
 #endif
 
-	if ( m_physics->RetLand() )  // au sol ?
+	if ( m_physics->RetLand() )  // on the ground?
 	{
 		if ( m_object->RetRuin() )
 		{
 		}
 		else if ( bStop || m_object->RetBurn() )
 		{
-			m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.7f)*0.15f+0.35f);  // queue
+			m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.7f)*0.15f+0.35f);  // tail
 		}
 		else
 		{
@@ -591,7 +593,7 @@ BOOL CMotionBee::EventFrame(const Event &event)
 			dir.y = 0.0f;
 			m_object->SetInclinaison(dir);
 
-			m_object->SetAngleZ(2, -sinf(a)*0.3f);  // queue
+			m_object->SetAngleZ(2, -sinf(a)*0.3f);  // tail
 
 			a = Mod(m_armMember-0.1f, 1.0f);
 			if ( a < 0.33f )
@@ -624,12 +626,12 @@ BOOL CMotionBee::EventFrame(const Event &event)
 
 #if 0
 	a = Rand()*PI/2.0f*prog;
-	m_object->SetAngleX(21, a);  // aile droite
+	m_object->SetAngleX(21, a);  // right wing
 	a = -Rand()*PI/4.0f*prog;
 	m_object->SetAngleY(21, a);
 
 	a = -Rand()*PI/2.0f*prog;
-	m_object->SetAngleX(22, a);  // aile gauche
+	m_object->SetAngleX(22, a);  // left wing
 	a = Rand()*PI/4.0f*prog;
 	m_object->SetAngleY(22, a);
 #else
@@ -640,9 +642,9 @@ BOOL CMotionBee::EventFrame(const Event &event)
 	m_object->SetAngleY(22, Rand()*PI/6.0f*prog);
 #endif
 
-	m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // tête
-	m_object->SetAngleX(1, sinf(m_armTimeAbs*1.9f)*0.10f);  // tête
-	m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // tête
+	m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // head
+	m_object->SetAngleX(1, sinf(m_armTimeAbs*1.9f)*0.10f);  // head
+	m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
 
 #if 0
 	h = m_terrain->RetFloorHeight(RetPosition(0));
