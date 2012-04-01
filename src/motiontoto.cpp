@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motiontoto.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motiontoto.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -42,11 +44,11 @@
 
 
 
-#define START_TIME		1000.0f		// début du temps relatif
+#define START_TIME		1000.0f		// beginning of the relative time
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CMotionToto::CMotionToto(CInstanceManager* iMan, CObject* object)
 						 : CMotion(iMan, object)
@@ -69,14 +71,14 @@ CMotionToto::CMotionToto(CInstanceManager* iMan, CObject* object)
 	m_mousePos = FPOINT(0.0f, 0.0f);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CMotionToto::~CMotionToto()
 {
 }
 
 
-// Supprime un objet.
+// Removes an object.
 
 void CMotionToto::DeleteObject(BOOL bAll)
 {
@@ -88,7 +90,7 @@ void CMotionToto::DeleteObject(BOOL bAll)
 }
 
 
-// Crée un véhicule roulant quelconque posé sur le sol.
+// Creates a vehicle traveling any lands on the ground.
 
 BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 						 float power)
@@ -102,16 +104,16 @@ BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	m_object->SetType(type);
 
-	// Crée la tête.
+	// Creates the head.
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
+	m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
 	m_object->SetObjectRank(0, rank);
 	pModFile->ReadModel("objects\\toto1.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Crée la bouche.
+	// Creates mouth.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(1, rank);
@@ -120,7 +122,7 @@ BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(1, D3DVECTOR(1.00f, 0.17f, 0.00f));
 
-	// Crée l'oeil gauche.
+	// Creates the left eye.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(2, rank);
@@ -131,7 +133,7 @@ BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(2, D3DVECTOR(0.85f, 1.04f, 0.25f));
 	m_object->SetAngleY(2, -20.0f*PI/180.0f);
 
-	// Crée l'oeil droite.
+	// Creates the right eye.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(3, rank);
@@ -141,7 +143,7 @@ BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(3, D3DVECTOR(0.85f, 1.04f, -0.25f));
 	m_object->SetAngleY(3, 20.0f*PI/180.0f);
 
-	// Crée l'antenne gauche.
+	// Creates left antenna.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(4, rank);
@@ -169,7 +171,7 @@ BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(6, D3DVECTOR(0.0f, 0.70f, 0.0f));
 	m_object->SetAngleX(6, 30.0f*PI/180.0f);
 
-	// Crée l'antenne droite.
+	// Creates right antenna.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(7, rank);
@@ -197,11 +199,11 @@ BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(9, D3DVECTOR(0.0f, 0.70f, 0.0f));
 	m_object->SetAngleX(9, -30.0f*PI/180.0f);
 
-	m_object->SetZoom(0, 0.5f);  // c'est p'tit
+	m_object->SetZoom(0, 0.5f);  // is little
 	m_object->SetFloorHeight(0.0f);
 
 	pos = m_object->RetPosition(0);
-	m_object->SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	m_object->SetPosition(0, pos);  // to display the shadows immediately
 
 	m_engine->LoadAllTexture();
 
@@ -210,7 +212,7 @@ BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 }
 
 
-// Début de l'affichage des informations, avec toto dans la marge gauche.
+// Beginning of the display of informations, with foo in the left margin.
 
 void CMotionToto::StartDisplayInfo()
 {
@@ -226,7 +228,7 @@ return;
 	m_mousePos = FPOINT(0.5f, 0.5f);
 }
 
-// Fin de l'affichage des informartions.
+// End of the display of informations.
 
 void CMotionToto::StopDisplayInfo()
 {
@@ -234,7 +236,7 @@ void CMotionToto::StopDisplayInfo()
 	m_bQuickPos = TRUE;
 }
 
-// Donne la position de la souris.
+// Gives the position of the mouse.
 
 void CMotionToto::SetMousePos(FPOINT pos)
 {
@@ -242,7 +244,7 @@ void CMotionToto::SetMousePos(FPOINT pos)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionToto::EventProcess(const Event &event)
 {
@@ -256,7 +258,7 @@ BOOL CMotionToto::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionToto::EventFrame(const Event &event)
 {
@@ -274,7 +276,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	if ( m_engine->RetPause() &&
 		 !m_main->RetInfoLock() )  return TRUE;
 
-	if ( m_bDisplayInfo )  // "regarde" la souris ?
+	if ( m_bDisplayInfo )  // "looks" mouse?
 	{
 		bHidden = FALSE;
 	}
@@ -282,13 +284,13 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	{
 		bHidden = FALSE;
 
-		if ( m_main->RetMovieLock() )  // film en cours ?
+		if ( m_main->RetMovieLock() )  // current movie?
 		{
 			bHidden = TRUE;
 		}
 		if ( !m_engine->RetTotoMode() )
 		{
-			if ( !m_main->RetEditLock() )  // édition en cours ?
+			if ( !m_main->RetEditLock() )  // current edition?
 			{
 				bHidden = TRUE;
 			}
@@ -299,7 +301,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	{
 		nPos = m_object->RetPosition(0);
 		m_terrain->MoveOnFloor(nPos, TRUE);
-		nPos.y -= 100.0f;  // cache sous le sol !
+		nPos.y -= 100.0f;  // hidden under the ground!
 		m_object->SetPosition(0, nPos);
 		return TRUE;
 	}
@@ -308,7 +310,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	m_blinkTime -= event.rTime;
 
 	progress = 0.0f;
-	if ( m_actionType != -1 )  // action en cours ?
+	if ( m_actionType != -1 )  // current action?
 	{
 		if ( m_progress < 0.15f )
 		{
@@ -326,7 +328,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 
 	if ( m_progress >= 1.0f )
 	{
-		m_actionType = -1;  // action terminée
+		m_actionType = -1;  // action ended
 		m_actionTime = 0.0f;
 		m_progress   = 0.0f;
 
@@ -343,26 +345,26 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	aAntenna = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	aAntenna.x += 30.0f*PI/180.0f;
 
-	// Calcule la nouvelle position.
+	// Calculates the new position.
 	if ( m_bDisplayInfo )
 	{
 		wDim = m_engine->RetDim();
 		nPos.x = -4.0f*((float)wDim.x/(float)wDim.y)/(640.0f/480.0f);
 		nPos.y = -0.5f;
-		nPos.z =  7.0f;  // dans la marge gauche
+		nPos.z =  7.0f;  // in the left margin
 
 		linSpeed = 0.0f;
 	}
 	else
 	{
 #if 0
-		distance = 30.0f-progress*24.5f;  // éloignement
-		shift    = 18.0f-progress*15.4f;  // décalage à gauche
-		verti    = 10.0f-progress* 9.6f;  // décalage en haut
+		distance = 30.0f-progress*24.5f;  // remoteness
+		shift    = 18.0f-progress*15.4f;  // shift is left
+		verti    = 10.0f-progress* 9.6f;  // shift at the top
 #else
-		distance = 30.0f-progress*18.0f;  // éloignement
-		shift    = 18.0f-progress*11.0f;  // décalage à gauche
-		verti    = 10.0f-progress* 8.0f;  // décalage en haut
+		distance = 30.0f-progress*18.0f;  // remoteness
+		shift    = 18.0f-progress*11.0f;  // shift is left
+		verti    = 10.0f-progress* 8.0f;  // shift at the top
 #endif
 
 		if ( m_actionType == -1 &&
@@ -393,7 +395,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 			  m_type == OBJECT_MOBILEtt ||
 			  m_type == OBJECT_MOBILEft ||
 			  m_type == OBJECT_MOBILEit ||
-			  m_type == OBJECT_MOBILEdr ) )  // véhicule ?
+			  m_type == OBJECT_MOBILEdr ) )  // vehicle?
 		{
 			m_clownTime += event.rTime;
 			if ( m_clownTime >= m_clownDelay )
@@ -410,7 +412,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 					m_clownDelay  = 2.0f+Rand()*2.0f;
 				}
 				pos = m_object->RetPosition(0);
-				if ( pos.y < m_water->RetLevel() )  // sous l'eau ?
+				if ( pos.y < m_water->RetLevel() )  // underwater?
 				{
 					m_clownRadius /= 1.5f;
 					m_clownDelay  *= 2.0f;
@@ -440,7 +442,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 
 		nPos.y += verti;
 
-		if ( m_bQuickPos )  // tout de suite en place ?
+		if ( m_bQuickPos )  // immediately in place?
 		{
 			m_bQuickPos = FALSE;
 			linSpeed = 0.0f;
@@ -467,11 +469,11 @@ BOOL CMotionToto::EventFrame(const Event &event)
 
 			linSpeed = Length2d(nPos, aPos)/event.rTime;
 			dirSpeed = (nPos-aPos)/event.rTime;
-			nPos.y -= linSpeed*0.015f*(1.0f-progress);  // au raz du sol si avance vite
+			nPos.y -= linSpeed*0.015f*(1.0f-progress);  // at ground level if moving fast
 		}
 	}
 
-	// Calcule le nouvel angle.
+	// Calculate the new angle.
 	nAngle = NormAngle(RotateAngle(eye.x-lookat.x, lookat.z-eye.z)-0.9f);
 	if ( linSpeed == 0.0f || m_actionType != -1 )
 	{
@@ -495,21 +497,21 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	}
 	nAngle = aAngle + (nAngle-aAngle)*event.rTime*4.0f;
 
-	// Penche de côté si tourne.
+	// Leans quotes if running.
 	cirSpeed = (aAngle-nAngle)/event.rTime;
 	angle = cirSpeed*0.3f*(1.0f-progress);
 	if ( angle >  0.7f )  angle =  0.7f;
 	if ( angle < -0.7f )  angle = -0.7f;
 	vibCir.x += angle*1.5f;
-	aAntenna.x += Abs(angle)*0.8f;  // écarte
+	aAntenna.x += Abs(angle)*0.8f;  // deviates
 
-	// Penche en avant si avance vite.
+	// Leans forward so quickly advance.
 	angle = linSpeed*0.10f*(1.0f-progress);
 	if ( angle > 1.0f )  angle = 1.0f;
-	vibCir.z -= angle/2.0f;  // penche en avant
-	aAntenna.z -= angle;  // penche en avant
+	vibCir.z -= angle/2.0f;  // leans forward
+	aAntenna.z -= angle;  // leans forward
 
-	// Calcule le mouvement résiduel.
+	// Calculates the residual motion.
 #if 1
 	vibLin.y += (sinf(m_time*2.00f)*0.5f+
 				 sinf(m_time*2.11f)*0.2f)*(1.0f-progress);
@@ -527,43 +529,43 @@ BOOL CMotionToto::EventFrame(const Event &event)
 				 sinf(m_time*PI* 1.57f)*(PI/ 31.0f))*(1.0f-progress);
 #endif
 
-	// Calcule les animations lors d'une action.
-	if ( m_actionType == MT_ERROR )  // non-non ?
+	// Calculates the animations in action.
+	if ( m_actionType == MT_ERROR )  // no-no?
 	{
 		vibCir.y += progress*sinf(m_progress*PI*11.0f)*1.0f;
-		vibCir.z -= progress*0.5f;  // penche en avant
+		vibCir.z -= progress*0.5f;  // leans forward
 
-		aAntenna.x -= progress*0.4f;  // resserre
-		aAntenna.z += progress*1.0f;  // penche en arrière
+		aAntenna.x -= progress*0.4f;  // narrows
+		aAntenna.z += progress*1.0f;  // leaning back
 	}
 
-	if ( m_actionType == MT_WARNING )  // avertissement ?
+	if ( m_actionType == MT_WARNING )  // warning?
 	{
 		vibCir.x += progress*sinf(m_progress*PI*17.0f)*0.5f;
 
-		aAntenna.x += progress*sinf(m_progress*PI*17.0f)*0.5f;  // écarte
-		aAntenna.z += progress*cosf(m_progress*PI*17.0f)*0.5f;  // tourne
+		aAntenna.x += progress*sinf(m_progress*PI*17.0f)*0.5f;  // deviates
+		aAntenna.z += progress*cosf(m_progress*PI*17.0f)*0.5f;  // turns
 	}
 
-	if ( m_actionType == MT_INFO )  // oui-oui ?
+	if ( m_actionType == MT_INFO )  // yes-yes?
 	{
 		vibCir.z += progress*sinf(m_progress*PI*19.0f)*0.7f;
 
-		aAntenna.x -= progress*0.2f;  // resserre
-		aAntenna.z -= progress*cosf(m_progress*PI*19.0f)*0.9f;  // tourne
+		aAntenna.x -= progress*0.2f;  // narrows
+		aAntenna.z -= progress*cosf(m_progress*PI*19.0f)*0.9f;  // turns
 	}
 
-	if ( m_actionType == MT_MESSAGE )  // message ?
+	if ( m_actionType == MT_MESSAGE )  // message?
 	{
 		vibCir.x += progress*sinf(m_progress*PI*15.0f)*0.3f;
 		vibCir.z += progress*cosf(m_progress*PI*15.0f)*0.3f;
 
-		aAntenna.x -= progress*0.4f;  // resserre
+		aAntenna.x -= progress*0.4f;  // narrows
 		aAntenna.z -= progress*cosf(m_progress*PI*19.0f)*0.8f;
 	}
 
-	// Initialise l'objet.
-	if ( m_bDisplayInfo )  // "regarde" la souris ?
+	// Initialize the object.
+	if ( m_bDisplayInfo )  // "looks" mouse?
 	{
 		if ( m_mousePos.x < 0.15f )
 		{
@@ -597,7 +599,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 		level = m_terrain->RetFloorLevel(nPos);
 		if ( nPos.y < level+2.0f )
 		{
-			nPos.y = level+2.0f;  // juste au-dessus du sol
+			nPos.y = level+2.0f;  // just above the ground
 		}
 		nPos.y -= vibLin.y;
 	}
@@ -607,7 +609,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	SetLinVibration(vibLin);
 	SetCirVibration(vibCir);
 
-	// Calcule le mouvement résiduel des antennes.
+	// Calculates the residual movement of the antennas.
 	pos = aAntenna*0.40f;
 	pos.x += sinf(m_time*PI*2.07f)*(PI/50.0f)+
 			 sinf(m_time*PI*2.59f)*(PI/70.0f)+
@@ -621,9 +623,9 @@ BOOL CMotionToto::EventFrame(const Event &event)
 			 sinf(m_time*PI*2.83f)*(PI/70.0f)+
 			 sinf(m_time*PI*3.09f)*(PI/90.0f);
 	
-	m_object->SetAngle(4, pos);  // antenne gauche
-	m_object->SetAngle(5, pos);  // antenne gauche
-	m_object->SetAngle(6, pos);  // antenne gauche
+	m_object->SetAngle(4, pos);  // left antenna
+	m_object->SetAngle(5, pos);  // left antenna
+	m_object->SetAngle(6, pos);  // left antenna
 
 	pos = aAntenna*0.40f;
 	pos.x = -pos.x;
@@ -639,33 +641,33 @@ BOOL CMotionToto::EventFrame(const Event &event)
 			 sinf(m_time*PI*2.38f)*(PI/70.0f)+
 			 sinf(m_time*PI*2.79f)*(PI/90.0f);
 	
-	m_object->SetAngle(7, pos);  // antenne droite
-	m_object->SetAngle(8, pos);  // antenne droite
-	m_object->SetAngle(9, pos);  // antenne droite
+	m_object->SetAngle(7, pos);  // right antenna
+	m_object->SetAngle(8, pos);  // right antenna
+	m_object->SetAngle(9, pos);  // right antenna
 
-	// Mouvement de la bouche.
-	if ( m_actionType == MT_ERROR )  // non-non ?
+	// Movement of the mouth.
+	if ( m_actionType == MT_ERROR )  // no-no?
 	{
 		m_object->SetAngleX(1, 0.0f);
 		m_object->SetAngleZ(1, 0.2f+sinf(m_time*10.0f)*0.2f);
 		m_object->SetZoomY(1, 2.0f+sinf(m_time*10.0f));
 		m_object->SetZoomZ(1, 1.0f);
 	}
-	else if ( m_actionType == MT_WARNING )  // avertissement ?
+	else if ( m_actionType == MT_WARNING )  // warning?
 	{
 		m_object->SetAngleX(1, 15.0f*PI/180.0f);
 		m_object->SetAngleZ(1, 0.0f);
 		m_object->SetZoomY(1, 1.0f);
 		m_object->SetZoomZ(1, 1.0f);
 	}
-	else if ( m_actionType == MT_INFO )  // oui-oui ?
+	else if ( m_actionType == MT_INFO )  // yes-yes?
 	{
 		m_object->SetAngleX(1, 0.0f);
 		m_object->SetAngleZ(1, 0.0f);
 		m_object->SetZoomY(1, 1.0f);
 		m_object->SetZoomZ(1, 0.7f+sinf(m_time*10.0f)*0.3f);
 	}
-	else if ( m_actionType == MT_MESSAGE )  // message ?
+	else if ( m_actionType == MT_MESSAGE )  // message?
 	{
 		m_object->SetAngleX(1, 0.0f);
 		m_object->SetAngleZ(1, 0.0f);
@@ -680,7 +682,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 		m_object->SetZoomZ(1, 1.0f);
 	}
 
-	// Gestion du clignement des yeux.
+	// Eye blinking management.
 	if ( m_blinkTime <= 0.0f && m_blinkProgress == -1.0f )
 	{
 		m_blinkProgress = 0.0f;
@@ -706,22 +708,22 @@ BOOL CMotionToto::EventFrame(const Event &event)
 		}
 	}
 
-	if ( m_actionType == MT_ERROR )  // non-non ?
+	if ( m_actionType == MT_ERROR )  // no-no?
 	{
 		m_object->SetAngleX(2, -30.0f*PI/180.0f);
 		m_object->SetAngleX(3,  30.0f*PI/180.0f);
 	}
-	else if ( m_actionType == MT_WARNING )  // avertissement ?
+	else if ( m_actionType == MT_WARNING )  // warning?
 	{
 		m_object->SetAngleX(2, -15.0f*PI/180.0f);
 		m_object->SetAngleX(3,  15.0f*PI/180.0f);
 	}
-	else if ( m_actionType == MT_INFO )  // oui-oui ?
+	else if ( m_actionType == MT_INFO )  // yes-yes?
 	{
 		m_object->SetAngleX(2,  40.0f*PI/180.0f);
 		m_object->SetAngleX(3, -40.0f*PI/180.0f);
 	}
-	else if ( m_actionType == MT_MESSAGE )  // message ?
+	else if ( m_actionType == MT_MESSAGE )  // message?
 	{
 		m_object->SetAngleX(2,  20.0f*PI/180.0f);
 		m_object->SetAngleX(3, -20.0f*PI/180.0f);
@@ -732,9 +734,9 @@ BOOL CMotionToto::EventFrame(const Event &event)
 		m_object->SetAngleX(3, 0.0f);
 	}
 	
-	mat = m_object->RetWorldMatrix(0);  // doit être fait chaque fois !
+	mat = m_object->RetWorldMatrix(0);  // must be done every time!
 
-	// Génère les particules.
+	// Generates particles.
 	if ( m_time-m_lastMotorParticule >= m_engine->ParticuleAdapt(0.05f) )
 	{
 		m_lastMotorParticule = m_time;
@@ -744,10 +746,10 @@ BOOL CMotionToto::EventFrame(const Event &event)
 
 		pos = m_object->RetPosition(0);
 		if ( !m_bDisplayInfo             &&
-			 pos.y < m_water->RetLevel() )  // sous l'eau ?
+			 pos.y < m_water->RetLevel() )  // underwater?
 		{
 			float t = Mod(m_time, 3.5f);
-			if ( t >= 2.2f || ( t >= 1.2f && t <= 1.4f ) )  // respire ?
+			if ( t >= 2.2f || ( t >= 1.2f && t <= 1.4f ) )  // breathe?
 			{
 				pos = D3DVECTOR(1.0f, 0.2f, 0.0f);
 				pos.z += (Rand()-0.5f)*0.5f;
@@ -765,7 +767,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 				m_particule->CreateParticule(pos, speed, dim, PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
 			}
 		}
-		else	// hors de l'eau ?
+		else	// out of water?
 		{
 			pos = D3DVECTOR(0.0f, -0.5f, 0.0f);
 			pos.z += (Rand()-0.5f)*0.5f;
@@ -784,7 +786,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 			m_particule->CreateParticule(pos, speed, dim, PARTITOTO, 1.0f+Rand()*1.0f, 0.0f, 1.0f, sheet);
 		}
 
-		if ( m_actionType != -1  &&  // action en cours ?
+		if ( m_actionType != -1  &&  // current action?
 			 m_progress <= 0.85f )
 		{
 			pos.x = (Rand()-0.5f)*1.0f;
@@ -826,10 +828,10 @@ BOOL CMotionToto::EventFrame(const Event &event)
 				pos.y = 0.47f+(Rand()-0.5f)*0.90f;
 				pos.z = 0.00f;
 				r = rand()%4;
-					 if ( r == 0 )  pos.x = 0.21f;  // sur le bord gauche
-				else if ( r == 1 )  pos.x = 0.98f;  // sur le bord droite
-				else if ( r == 2 )  pos.y = 0.02f;  // sur le bord inférieur
-				else                pos.y = 0.92f;  // sur le bord supérieur
+					 if ( r == 0 )  pos.x = 0.21f;  // the left edge
+				else if ( r == 1 )  pos.x = 0.98f;  // the right edge
+				else if ( r == 2 )  pos.y = 0.02f;  // on the lower edge
+				else                pos.y = 0.92f;  // on the upper edge
 				dim.x = (Rand()*0.02f+0.02f);
 				dim.y = dim.x/0.75f;
 				m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 0.5f+Rand()*0.5f, 0.0f, 1.0f, SH_INTERFACE);
@@ -837,7 +839,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 		}
 	}
 
-	// Bouge le son.
+	// Move the sound.
 	if ( m_soundChannel != -1 )
 	{
 		if ( !m_sound->Position(m_soundChannel, m_object->RetPosition(0)) )
@@ -850,7 +852,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 }
 
 
-// Démarre une action.
+// Starts an action.
 
 Error CMotionToto::SetAction(int action, float time)
 {
@@ -874,7 +876,7 @@ Error CMotionToto::SetAction(int action, float time)
 	return ERR_OK;
 }
 
-// Spécifie le type de l'objet rattaché à toto.
+// Specifies the type of the object is attached to toto.
 
 void CMotionToto::SetLinkType(ObjectType type)
 {
