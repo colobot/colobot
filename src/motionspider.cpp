@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motionspider.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motionspider.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -41,12 +43,12 @@
 
 
 
-#define ADJUST_ANGLE	FALSE		// TRUE -> ajuste les angles des membres
-#define START_TIME		1000.0f		// début du temps relatif
+#define ADJUST_ANGLE		FALSE		// TRUE -> adjusts the angles of the members
+#define START_TIME		1000.0f		// beginning of the relative time
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CMotionSpider::CMotionSpider(CInstanceManager* iMan, CObject* object)
 							: CMotion(iMan, object)
@@ -65,21 +67,21 @@ CMotionSpider::CMotionSpider(CInstanceManager* iMan, CObject* object)
 	m_lastParticule = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CMotionSpider::~CMotionSpider()
 {
 }
 
 
-// Supprime un objet.
+// Removes an object.
 
 void CMotionSpider::DeleteObject(BOOL bAll)
 {
 }
 
 
-// Crée un véhicule roulant quelconque posé sur le sol.
+// Creates a vehicle traveling any lands on the ground.
 
 BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 						   float power)
@@ -91,22 +93,22 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	float			table[] =
 	{
 	//	  x		  y		  z
-		 0.6f,	 0.0f,	 0.0f,	// patte arrière
+		 0.6f,	 0.0f,	 0.0f,	// back leg
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 
-		 0.8f,	 0.0f,	-0.2f,	// patte arrière-milieu
+		 0.8f,	 0.0f,	-0.2f,	// middle-back leg
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 
-		 1.0f,	 0.0f,	-0.2f,	// patte avant-milieu
+		 1.0f,	 0.0f,	-0.2f,	// middle-front leg
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 
-		 1.2f,	 0.0f,	 0.0f,	// patte avant
+		 1.2f,	 0.0f,	 0.0f,	// front leg
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
 		 0.0f,	 0.0f,	-2.0f,
@@ -118,21 +120,21 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	m_object->SetType(type);
 
-	// Crée la base principale.
+	// Creates the main base.
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
+	m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
 	m_object->SetObjectRank(0, rank);
-	pModFile->ReadModel("objects\\spider0.mod");  // n'existe pas
+	pModFile->ReadModel("objects\\spider0.mod");  // doesn't exist
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Un véhicule doit avoir obligatoirement une sphère de
-	// collision avec un centre (0;y;0) (voir GetCrashSphere).
+	// A vehicle must have a obligatory collision
+	// with a sphere of center (0, y, 0) (see GetCrashSphere).
 	m_object->CreateCrashSphere(D3DVECTOR(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
 	m_object->SetGlobalSphere(D3DVECTOR(-0.5f, 1.0f, 0.0f), 4.0f);
 
-	// Crée l'abdomen.
+	// Creates the abdomen.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(1, rank);
@@ -141,7 +143,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(1, D3DVECTOR(1.0f, 0.0f, 0.0f));
 
-	// Crée la tête.
+	// Creates the head.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(2, rank);
@@ -150,14 +152,14 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(2, D3DVECTOR(1.0f, 0.0f, 0.0f));
 
-	// Crée les pattes.
+	// Creates legs.
 	for ( i=0 ; i<4 ; i++ )
 	{
 		for ( j=0 ; j<4 ; j++ )
 		{
 			sprintf(name, "objects\\spider%d.mod", j+3);  // 3..6
 
-			// Crée la patte droite.
+			// Creates the right leg.
 			rank = m_engine->CreateObject();
 			m_engine->SetObjectType(rank, TYPEDESCENDANT);
 			m_object->SetObjectRank(3+i*4+j, rank);
@@ -171,7 +173,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 			pos.z = table[i*12+j*3+2];
 			m_object->SetPosition(3+i*4+j, pos);
 
-			// Crée la patte gauche.
+			// Creates the left leg.
 			rank = m_engine->CreateObject();
 			m_engine->SetObjectType(rank, TYPEDESCENDANT);
 			m_object->SetObjectRank(19+i*4+j, rank);
@@ -188,7 +190,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 		}
 	}
 
-	// Crée la mandibule droite.
+	// Creates the right mandible.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(35, rank);
@@ -197,7 +199,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(35, D3DVECTOR(0.0f, 0.0f, -0.3f));
 
-	// Crée la mandibule gauche.
+	// Creates the left mandible.
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
 	m_object->SetObjectRank(36, rank);
@@ -213,7 +215,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetFloorHeight(0.0f);
 
 	pos = m_object->RetPosition(0);
-	m_object->SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	m_object->SetPosition(0, pos);  // to display the shadows immediately
 
 	m_engine->LoadAllTexture();
 
@@ -221,7 +223,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Crée la physique de l'objet.
+// Creates the physics of the object.
 
 void CMotionSpider::CreatePhysics()
 {
@@ -230,74 +232,74 @@ void CMotionSpider::CreatePhysics()
 
 	int member_march[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	x4,y4,z4,	// en l'air :
-		60,25,0,	60,0,0,		60,-25,0,	60,-50,0,	// t0: cuisses 1..4
-		-35,40,0,	-35,0,0,	-35,0,0,	-35,-40,0,	// t0: jambes 1..4
-		-65,0,-30,	-65,0,0,	-65,0,0,	-65,0,30,	// t0: pieds 1..4
-		25,0,0,		25,0,0,		25,0,0,		25,0,0,		// t0: doigt 1..4
-														// au sol devant :
-		30,15,0,	30,-10,0,	30,-35,0,	30,-60,0,	// t1: cuisses 1..4
-		-10,40,0,	-45,0,0,	-45,0,0,	-45,-40,0,	// t1: jambes 1..4
-		-90,0,0,	-20,0,0,	-20,0,0,	-20,0,0,	// t1: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t1: doigt 1..4
-														// au sol derrière :
-		35,35,0,	40,10,0,	40,-15,0,	40,-40,0,	// t2: cuisses 1..4
-		-35,40,0,	-35,0,0,	-35,0,0,	-25,-40,0,	// t2: jambes 1..4
-		-50,-25,-30,-65,0,0,	-65,0,0,	-90,0,30,	// t2: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t2: doigt 1..4
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	x4,y4,z4,	// in the air:
+		60,25,0,	60,0,0,		60,-25,0,	60,-50,0,	// t0: thighs 1..4
+		-35,40,0,	-35,0,0,	-35,0,0,	-35,-40,0,	// t0: legs 1..4
+		-65,0,-30,	-65,0,0,	-65,0,0,	-65,0,30,	// t0: feet 1..4
+		25,0,0,		25,0,0,		25,0,0,		25,0,0,		// t0: fingers 1..4
+														// on the ground:
+		30,15,0,	30,-10,0,	30,-35,0,	30,-60,0,	// t1: thighs 1..4
+		-10,40,0,	-45,0,0,	-45,0,0,	-45,-40,0,	// t1: legs 1..4
+		-90,0,0,	-20,0,0,	-20,0,0,	-20,0,0,	// t1: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t1: fingers 1..4
+														// on the ground back:
+		35,35,0,	40,10,0,	40,-15,0,	40,-40,0,	// t2: thighs 1..4
+		-35,40,0,	-35,0,0,	-35,0,0,	-25,-40,0,	// t2: legs 1..4
+		-50,-25,-30,	-65,0,0,	-65,0,0,	-90,0,30,	// t2: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t2: fingers 1..4
 	};
 
 	int member_stop[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	x4,y4,z4,	// en l'air :
-		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// t0: cuisses 1..4
-		-35,40,0,	-45,0,0,	-45,0,0,	-45,-40,0,	// t0: jambes 1..4
-		-50,-25,-30,-20,0,0,	-20,0,0,	-20,0,30,	// t0: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t0: doigt 1..4
-														// au sol devant :
-		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// t1: cuisses 1..4
-		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// t1: jambes 1..4
-		-55,-25,-30,-25,0,0,	-25,0,0,	-25,0,0,	// t1: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t1: doigt 1..4
-														// au sol derrière :
-		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// t2: cuisses 1..4
-		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// t2: jambes 1..4
-		-50,-25,-30,-20,0,0,	-20,0,0,	-20,0,30,	// t2: pieds 1..4
-		-10,0,0,	-10,0,0,	-10,0,0,	-10,0,0,	// t2: doigt 1..4
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	x4,y4,z4,	// in the air:
+		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// t0: thighs 1..4
+		-35,40,0,	-45,0,0,	-45,0,0,	-45,-40,0,	// t0: legs 1..4
+		-50,-25,-30,	-20,0,0,	-20,0,0,	-20,0,30,	// t0: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t0: fingers 1..4
+														//  on the ground:
+		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// t1: thighs 1..4
+		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// t1: legs 1..4
+		-55,-25,-30,	-25,0,0,	-25,0,0,	-25,0,0,	// t1: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// t1: fingers 1..4
+														// on the ground back:
+		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// t2: thighs 1..4
+		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// t2: legs 1..4
+		-50,-25,-30,	-20,0,0,	-20,0,0,	-20,0,30,	// t2: feet 1..4
+		-10,0,0,	-10,0,0,	-10,0,0,	-10,0,0,	// t2: fingers 1..4
 	};
 
 	int member_spec[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	x4,y4,z4,	// brûle :
-		30,25,0,	30,0,0,		30,-25,0,	30,-50,0,	// s0: cuisses 1..4
-		-45,0,0,	-45,0,0,	-45,0,0,	-45,0,0,	// s0: jambes 1..4
-		-20,0,0,	-20,0,0,	-20,0,0,	-20,0,0,	// s0: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s0: doigt 1..4
-														// ruine :
-		30,25,0,	30,0,0,		30,-25,0,	30,-50,0,	// s1: cuisses 1..4
-		-45,0,0,	-45,0,0,	-45,0,0,	-45,0,0,	// s1: jambes 1..4
-		-20,0,0,	-20,0,0,	-20,0,0,	-20,0,0,	// s1: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s1: doigt 1..4
-														// explose :
-		40,25,0,	40,0,0,		40,-25,0,	40,-50,0,	// s2: cuisses 1..4
-		-55,0,0,	-55,0,0,	-55,0,0,	-55,0,0,	// s2: jambes 1..4
-		-30,0,0,	-30,0,0,	-30,0,0,	-30,0,0,	// s2: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s2: doigt 1..4
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	x4,y4,z4,	// burning:
+		30,25,0,	30,0,0,		30,-25,0,	30,-50,0,	// s0: thighs 1..4
+		-45,0,0,	-45,0,0,	-45,0,0,	-45,0,0,	// s0: legs 1..4
+		-20,0,0,	-20,0,0,	-20,0,0,	-20,0,0,	// s0: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s0: fingers 1..4
+														// destroyed:
+		30,25,0,	30,0,0,		30,-25,0,	30,-50,0,	// s1: thighs 1..4
+		-45,0,0,	-45,0,0,	-45,0,0,	-45,0,0,	// s1: legs 1..4
+		-20,0,0,	-20,0,0,	-20,0,0,	-20,0,0,	// s1: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s1: fingers 1..4
+														// explodes:
+		40,25,0,	40,0,0,		40,-25,0,	40,-50,0,	// s2: thighs 1..4
+		-55,0,0,	-55,0,0,	-55,0,0,	-55,0,0,	// s2: legs 1..4
+		-30,0,0,	-30,0,0,	-30,0,0,	-30,0,0,	// s2: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s2: fingers 1..4
 														// back1 :
-		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// s3: cuisses 1..4
-		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// s3: jambes 1..4
-		-55,-25,-30,-25,0,0,	-25,0,0,	-25,0,0,	// s3: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s3: doigt 1..4
+		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// s3: thighs 1..4
+		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// s3: legs 1..4
+		-55,-25,-30,	-25,0,0,	-25,0,0,	-25,0,0,	// s3: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s3: fingers 1..4
 														// back2 :
-		15,35,0,	15,0,0,		15,-25,0,	15,-50,0,	// s4: cuisses 1..4
-		-60,40,0,	-60,0,0,	-60,0,0,	-60,-40,0,	// s4: jambes 1..4
-		-65,-25,-30,-65,0,0,	-65,0,0,	-65,0,0,	// s4: pieds 1..4
-		-15,0,0,	-15,0,0,	-15,0,0,	-15,0,0,	// s4: doigt 1..4
+		15,35,0,	15,0,0,		15,-25,0,	15,-50,0,	// s4: thighs 1..4
+		-60,40,0,	-60,0,0,	-60,0,0,	-60,-40,0,	// s4: legs 1..4
+		-65,-25,-30,	-65,0,0,	-65,0,0,	-65,0,0,	// s4: feet 1..4
+		-15,0,0,	-15,0,0,	-15,0,0,	-15,0,0,	// s4: fingers 1..4
 														// back3 :
-		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// s5: cuisses 1..4
-		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// s5: jambes 1..4
-		-55,-25,-30,-25,0,0,	-25,0,0,	-25,0,0,	// s5: pieds 1..4
-		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s5: doigt 1..4
+		35,35,0,	30,0,0,		30,-25,0,	30,-50,0,	// s5: thighs 1..4
+		-30,40,0,	-40,0,0,	-40,0,0,	-40,-40,0,	// s5: legs 1..4
+		-55,-25,-30,	-25,0,0,	-25,0,0,	-25,0,0,	// s5: feet 1..4
+		-5,0,0,		-5,0,0,		-5,0,0,		-5,0,0,		// s5: fingers 1..4
 	};
 
 	m_physics->SetType(TYPE_ROLLING);
@@ -341,7 +343,7 @@ void CMotionSpider::CreatePhysics()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionSpider::EventProcess(const Event &event)
 {
@@ -386,8 +388,7 @@ BOOL CMotionSpider::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Calcule une valeur (radians) proportionnelle comprise
-// entre a et b (degrés).
+// Calculates a value (radians) proportional between a and b (degrees).
 
 inline float Propf(float a, float b, float p)
 {
@@ -399,7 +400,7 @@ inline float Propf(float a, float b, float p)
 	return aa+p*(bb-aa);
 }
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionSpider::EventFrame(const Event &event)
 {
@@ -423,9 +424,9 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 	m_armTimeMarch += (s)*event.rTime*0.15f;
 	m_armMember += (s+a)*event.rTime*0.15f;
 
-	bStop = ( a == 0.0f && s == 0.0f );  // a l'arrêt ?
+	bStop = ( a == 0.0f && s == 0.0f );  // stop?
 
-	action = MS_MARCH;  // marche
+	action = MS_MARCH;  // waslking
 	if ( s == 0.0f && a == 0.0f )
 	{
 		action = MS_STOP;  // stop
@@ -435,15 +436,15 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 	{
 		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
 		a = Mod(m_armMember, 1.0f);
-		a = (prog-a)*event.rTime*2.0f;  // vient gentiment à position stop
+		a = (prog-a)*event.rTime*2.0f;  // stop position just pleasantly
 		m_armMember += a;
 	}
 
-	if ( m_object->RetRuin() )  // ruine ?
+	if ( m_object->RetRuin() )  // destroyed?
 	{
 		m_actionType = MSS_RUIN;
 	}
-	if ( m_object->RetBurn() )  // brûle ?
+	if ( m_object->RetBurn() )  // burning?
 	{
 		if ( m_object->RetFixed() )
 		{
@@ -455,9 +456,9 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		}
 	}
 
-	for ( i=0 ; i<8 ; i++ )  // les 8 pattes
+	for ( i=0 ; i<8 ; i++ )  // the 8 legs
 	{
-		if ( m_actionType != -1 )  // action spéciale en cours ?
+		if ( m_actionType != -1 )  // special action in progress?
 		{
 			st = 3*4*4*3*MS_SPEC + 3*4*4*m_actionType + (i%4)*3;
 			nd = st;
@@ -496,7 +497,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 			st = 3*4*4*3*action + st*3*4*4 + (i%4)*3;
 			nd = 3*4*4*3*action + nd*3*4*4 + (i%4)*3;
 
-			// De moins en moins mou ...
+			// Less and less soft ...
 //?			time = event.rTime*(2.0f+Min(m_armTimeAction*20.0f, 40.0f));
 			time = event.rTime*10.0f;
 		}
@@ -527,7 +528,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		tNd[10] = m_armAngles[nd+37];  // z
 		tNd[11] = m_armAngles[nd+38];  // z
 
-		if ( m_actionType == MSS_BACK2 )   // sur le dos ?
+		if ( m_actionType == MSS_BACK2 )   // on the back?
 		{
 			for ( ii=0 ; ii<12 ; ii++ )
 			{
@@ -538,7 +539,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 			time = event.rTime*10.0f;
 		}
 
-		if ( i < 4 )  // patte droite (1..4) ?
+		if ( i < 4 )  // right leg (1..4) ?
 		{
 			m_object->SetAngleX(3+4*i+0, Smooth(m_object->RetAngleX(3+4*i+0), Propf(tSt[ 0], tNd[ 0], prog), time));
 			m_object->SetAngleY(3+4*i+0, Smooth(m_object->RetAngleY(3+4*i+0), Propf(tSt[ 1], tNd[ 1], prog), time));
@@ -553,7 +554,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 			m_object->SetAngleY(3+4*i+3, Smooth(m_object->RetAngleY(3+4*i+3), Propf(tSt[10], tNd[10], prog), time));
 			m_object->SetAngleZ(3+4*i+3, Smooth(m_object->RetAngleZ(3+4*i+3), Propf(tSt[11], tNd[11], prog), time));
 		}
-		else	// patte gauche (5..8) ?
+		else	// left leg (5..8) ?
 		{
 			m_object->SetAngleX(3+4*i+0, Smooth(m_object->RetAngleX(3+4*i+0), Propf(-tSt[ 0], -tNd[ 0], prog), time));
 			m_object->SetAngleY(3+4*i+0, Smooth(m_object->RetAngleY(3+4*i+0), Propf(-tSt[ 1], -tNd[ 1], prog), time));
@@ -579,7 +580,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 	}
 #endif
 
-	if ( m_actionType == MSS_BURN )  // brûle ?
+	if ( m_actionType == MSS_BURN )  // burning?
 	{
 		dir = D3DVECTOR(PI, 0.0f, 0.0f);
 		SetCirVibration(dir);
@@ -588,16 +589,16 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		SetInclinaison(dir);
 
 		time = event.rTime*1.0f;
-		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), 0.0f, time));  // tête
+		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), 0.0f, time));  // head
 	}
-	else if ( m_actionType == MSS_RUIN )  // ruine ?
+	else if ( m_actionType == MSS_RUIN )  // destroyed?
 	{
 		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		SetLinVibration(dir);
 		SetCirVibration(dir);
 		SetInclinaison(dir);
 	}
-	else if ( m_actionType == MSS_EXPLO )  // explose ?
+	else if ( m_actionType == MSS_EXPLO )  // exploded?
 	{
 		m_object->SetZoomY(1, 1.0f+m_progress);
 		m_object->SetZoomZ(1, 1.0f+m_progress);
@@ -608,7 +609,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		dir.z = (Rand()-0.5f)*0.1f*m_progress;
 		m_object->SetCirVibration(dir);
 	}
-	else if ( m_actionType == MSS_BACK1 )  // se met sur le dos ?
+	else if ( m_actionType == MSS_BACK1 )  // turns on the back?
 	{
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
 		{
@@ -650,7 +651,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 			SetAction(MSS_BACK2, 55.0f+Rand()*10.0f);
 		}
 	}
-	else if ( m_actionType == MSS_BACK2 )  // bouge sur le dos ?
+	else if ( m_actionType == MSS_BACK2 )  // moves on the back?
 	{
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
 		{
@@ -689,17 +690,17 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
-		m_object->SetAngleY(1, sinf(m_armTimeAbs*5.0f)*0.05f);  // queue
-		m_object->SetAngleY(2, cosf(m_armTimeAbs*5.0f)*0.20f);  // tête
-		m_object->SetAngleZ(1, 0.4f);  // queue
-		m_object->SetAngleZ(2, 0.0f);  // tête
+		m_object->SetAngleY(1, sinf(m_armTimeAbs*5.0f)*0.05f);  // tail
+		m_object->SetAngleY(2, cosf(m_armTimeAbs*5.0f)*0.20f);  // head
+		m_object->SetAngleZ(1, 0.4f);  // tail
+		m_object->SetAngleZ(2, 0.0f);  // head
 
 		if ( m_progress >= 1.0f )
 		{
 			SetAction(MSS_BACK3, 0.4f);
 		}
 	}
-	else if ( m_actionType == MSS_BACK3 )  // se remet sur les pattes ?
+	else if ( m_actionType == MSS_BACK3 )  // recovers on the legs?
 	{
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
 		{
@@ -739,7 +740,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		if ( m_progress >= 1.0f )
 		{
 			SetAction(-1);
-			m_object->SetFixed(FALSE);  // bouge de nouveau
+			m_object->SetFixed(FALSE);  // moving again
 		}
 	}
 	else
@@ -769,17 +770,17 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		SetLinVibration(dir);
 		SetCirVibration(dir);
 
-		m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.7f)*0.02f);  // queue
+		m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.7f)*0.02f);  // tail
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.3f)*0.05f);
 		m_object->SetAngleY(1, sinf(m_armTimeAbs*2.4f)*0.10f);
 		m_object->SetZoom(1, 1.0f+sinf(m_armTimeAbs*3.3f)*0.05f);
 
-		m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.4f)*0.20f);  // tête
+		m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.4f)*0.20f);  // head
 		m_object->SetAngleX(2, sinf(m_armTimeAbs*1.9f)*0.10f);
 		m_object->SetAngleY(2, sinf(m_armTimeAbs*2.1f)*0.10f);
 
-		m_object->SetAngleY(35,  sinf(m_armTimeAbs*3.1f)*0.20f);  // mandibule
-		m_object->SetAngleY(36, -sinf(m_armTimeAbs*3.1f)*0.20f);  // mandibule
+		m_object->SetAngleY(35,  sinf(m_armTimeAbs*3.1f)*0.20f);  // mandible
+		m_object->SetAngleY(36, -sinf(m_armTimeAbs*3.1f)*0.20f);  // mandible
 	}
 
 	return TRUE;
