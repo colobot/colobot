@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motionworm.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motionworm.h
 
 #ifndef _MOTIONWORM_H_
 #define	_MOTIONWORM_H_
