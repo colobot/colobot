@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// motionvehicle.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// motionvehicle.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -47,7 +49,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CMotionVehicle::CMotionVehicle(CInstanceManager* iMan, CObject* object)
 							  : CMotion(iMan, object)
@@ -81,14 +83,14 @@ CMotionVehicle::CMotionVehicle(CInstanceManager* iMan, CObject* object)
 	m_traceWidth = 0.5f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CMotionVehicle::~CMotionVehicle()
 {
 }
 
 
-// Supprime un objet.
+// Removes an object.
 
 void CMotionVehicle::DeleteObject(BOOL bAll)
 {
@@ -100,7 +102,7 @@ void CMotionVehicle::DeleteObject(BOOL bAll)
 }
 
 
-// Crée un véhicule roulant quelconque posé sur le sol.
+// Creates a vehicle traveling any lands on the ground.
 
 BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 							float power)
@@ -117,9 +119,9 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	m_object->SetType(type);
 
-	// Crée la base principale.
+	// Creates the main base.
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEVEHICULE);  // c'est un objet mobile
+	m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
 	m_object->SetObjectRank(0, rank);
 
 	if ( type == OBJECT_MOBILEfa ||
@@ -201,8 +203,8 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetPosition(0, pos);
 	m_object->SetAngleY(0, angle);
 
-	// Un véhicule doit avoir obligatoirement une sphère de
-	// collision avec un centre (0;y;0) (voir GetCrashSphere).
+	// A vehicle must have a obligatory collision
+	// with a sphere of center (0, y, 0) (see GetCrashSphere).
 	if ( type == OBJECT_MOBILErt ||
 		 type == OBJECT_MOBILErc ||
 		 type == OBJECT_MOBILErr ||
@@ -236,7 +238,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		 type == OBJECT_MOBILEwa ||
 		 type == OBJECT_MOBILEia )
 	{
-		// Crée le bras.
+		// Creates the arm.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -246,7 +248,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(1, D3DVECTOR(0.0f, 5.3f, 0.0f));
 		m_object->SetAngleZ(1, ARM_NEUTRAL_ANGLE1);
 
-		// Crée l'avant-bras.
+		// Creates the forearm.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(2, rank);
@@ -256,7 +258,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(2, D3DVECTOR(5.0f, 0.0f, 0.0f));
 		m_object->SetAngleZ(2, ARM_NEUTRAL_ANGLE2);
 
-		// Crée la main.
+		// Creates the hand.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(3, rank);
@@ -267,7 +269,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetAngleZ(3, ARM_NEUTRAL_ANGLE3);
 		m_object->SetAngleX(3, PI/2.0f);
 
-		// Crée la pince proche.
+		// Creates the close clamp.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(4, rank);
@@ -277,7 +279,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(4, D3DVECTOR(1.5f, 0.0f, 0.0f));
 		m_object->SetAngleZ(4, -PI*0.10f);
 
-		// Crée la pince éloignée.
+		// Creates the remote clamp.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(5, rank);
@@ -293,7 +295,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		 type == OBJECT_MOBILEws ||
 		 type == OBJECT_MOBILEis )
 	{
-		// Crée le bras.
+		// Creates the arm.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -303,7 +305,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(1, D3DVECTOR(0.0f, 5.3f, 0.0f));
 		m_object->SetAngleZ(1, 110.0f*PI/180.0f);
 
-		// Crée l'avant-bras.
+		// Creates the forearm.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(2, rank);
@@ -313,7 +315,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(2, D3DVECTOR(5.0f, 0.0f, 0.0f));
 		m_object->SetAngleZ(2, -110.0f*PI/180.0f);
 
-		// Crée le capteur.
+		// Creates the sensor.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(3, rank);
@@ -329,7 +331,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		 type == OBJECT_MOBILEwc ||
 		 type == OBJECT_MOBILEic )
 	{
-		// Crée le canon.
+		// Creates the cannon.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -346,7 +348,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		 type == OBJECT_MOBILEwi ||
 		 type == OBJECT_MOBILEii )
 	{
-		// Crée le canon insecte.
+		// Creates the insect cannon.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -372,7 +374,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		 type == OBJECT_MOBILEwi ||
 		 type == OBJECT_MOBILEwt )
 	{
-		// Crée la roue arrière-droite.
+		// Creates the right-back wheel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(6, rank);
@@ -381,7 +383,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(6, D3DVECTOR(-3.0f, 1.0f, -3.0f));
 
-		// Crée la roue arrière-gauche.
+		// Creates the left-back wheel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(7, rank);
@@ -391,7 +393,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(7, D3DVECTOR(-3.0f, 1.0f, 3.0f));
 		m_object->SetAngleY(7, PI);
 
-		// Crée la roue avant-droite.
+		// Creates the right-front wheel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(8, rank);
@@ -400,7 +402,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(8, D3DVECTOR(2.0f, 1.0f, -3.0f));
 
-		// Crée la roue avant-gauche.
+		// Creates the left-front wheel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(9, rank);
@@ -413,7 +415,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_MOBILEtg )
 	{
-		// Crée la roue arrière-droite.
+		// Creates the right-back wheel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(6, rank);
@@ -422,7 +424,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(6, D3DVECTOR(-2.0f, 1.0f, -3.0f));
 
-		// Crée la roue arrière-gauche.
+		// Creates the left-back wheel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(7, rank);
@@ -432,7 +434,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(7, D3DVECTOR(-2.0f, 1.0f, 3.0f));
 		m_object->SetAngleY(7, PI);
 
-		// Crée la roue avant-droite.
+		// Creates the right-front wheel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(8, rank);
@@ -441,7 +443,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(8, D3DVECTOR(3.0f, 1.0f, -3.0f));
 
-		// Crée la roue avant-gauche.
+		// Creates the left-front wheel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(9, rank);
@@ -455,9 +457,9 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	if ( type == OBJECT_MOBILEta ||
 		 type == OBJECT_MOBILEtc ||
 		 type == OBJECT_MOBILEti ||
-		 type == OBJECT_MOBILEts )  // chenilles ?
+		 type == OBJECT_MOBILEts )  // caterpillars?
 	{
-		// Crée la chenille droite.
+		// Creates the right caterpillar.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(6, rank);
@@ -466,7 +468,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(6, D3DVECTOR(0.0f, 2.0f, -3.0f));
 
-		// Crée la chenille gauche.
+		// Creates the left caterpillar.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(7, rank);
@@ -479,9 +481,9 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	if ( type == OBJECT_MOBILErt ||
 		 type == OBJECT_MOBILErc ||
 		 type == OBJECT_MOBILErr ||
-		 type == OBJECT_MOBILErs )  // grosses chenilles ?
+		 type == OBJECT_MOBILErs )  // large caterpillars?
 	{
-		// Crée la chenille droite.
+		// Creates the right caterpillar.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(6, rank);
@@ -490,7 +492,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(6, D3DVECTOR(0.0f, 2.0f, -3.0f));
 
-		// Crée la chenille gauche.
+		// Creates the left caterpillar.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(7, rank);
@@ -500,9 +502,9 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(7, D3DVECTOR(0.0f, 2.0f, 3.0f));
 	}
 
-	if ( type == OBJECT_MOBILEsa )  // chenilles sous-marin ?
+	if ( type == OBJECT_MOBILEsa )  // underwater caterpillars?
 	{
-		// Crée la chenille droite.
+		// Creates the right caterpillar.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(6, rank);
@@ -511,7 +513,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(6, D3DVECTOR(0.0f, 1.0f, -3.0f));
 
-		// Crée la chenille gauche.
+		// Creates the left caterpillar.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(7, rank);
@@ -521,9 +523,9 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(7, D3DVECTOR(0.0f, 1.0f, 3.0f));
 	}
 
-	if ( type == OBJECT_MOBILEdr )  // chenilles ?
+	if ( type == OBJECT_MOBILEdr )  // caterpillars?
 	{
-		// Crée la chenille droite.
+		// Creates the right caterpillar.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(6, rank);
@@ -532,7 +534,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(6, D3DVECTOR(0.0f, 1.0f, -3.0f));
 
-		// Crée la chenille gauche.
+		// Creates the left caterpillar.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(7, rank);
@@ -546,9 +548,9 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		 type == OBJECT_MOBILEfc ||
 		 type == OBJECT_MOBILEfs ||
 		 type == OBJECT_MOBILEfi ||
-		 type == OBJECT_MOBILEft )  // volant ?
+		 type == OBJECT_MOBILEft )  // flying?
 	{
-		// Crée le pied avant.
+		// Creates the front foot.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(6, rank);
@@ -557,7 +559,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(6, D3DVECTOR(1.7f, 3.0f, 0.0f));
 
-		// Crée le pied arrière droite.
+		// Creates the right-back foot.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(7, rank);
@@ -567,7 +569,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(7, D3DVECTOR(-1.8f, 3.0f, -1.5f));
 		m_object->SetAngleY(7, 120.0f*PI/180.0f);
 
-		// Crée le pied arrière gauche.
+		// Creates the left-back foot.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(8, rank);
@@ -581,20 +583,20 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	if ( type == OBJECT_MOBILEia ||
 		 type == OBJECT_MOBILEic ||
 		 type == OBJECT_MOBILEis ||
-		 type == OBJECT_MOBILEii )  // pattes d'insecte ?
+		 type == OBJECT_MOBILEii )  // insect legs?
 	{
 		float		table[] =
 		{
 		//	  x		  y		  z
-			-1.5f,	 1.2f,	-0.7f,	// patte arrière
+			-1.5f,	 1.2f,	-0.7f,	// back leg
 			 0.0f,	 0.0f,	-1.0f,
 			 0.0f,	 0.0f,	-2.0f,
 
-			 0.0f,	 1.2f,	-0.9f,	// patte milieu
+			 0.0f,	 1.2f,	-0.9f,	// middle leg
 			 0.0f,	 0.0f,	-1.0f,
 			 0.0f,	 0.0f,	-2.0f,
 
-			 1.5f,	 1.2f,	-0.7f,	// patte avant
+			 1.5f,	 1.2f,	-0.7f,	// front leg
 			 0.0f,	 0.0f,	-1.0f,
 			 0.0f,	 0.0f,	-2.0f,
 		};
@@ -605,7 +607,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 			{
 				sprintf(name, "objects\\ant%d.mod", j+4);  // 4..6
 
-				// Crée la patte droite.
+				// Creates the right leg.
 				rank = m_engine->CreateObject();
 				m_engine->SetObjectType(rank, TYPEDESCENDANT);
 				m_object->SetObjectRank(6+i*3+j, rank);
@@ -619,7 +621,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 				pos.z = table[i*9+j*3+2];
 				m_object->SetPosition(6+i*3+j, pos);
 
-				// Crée la patte gauche.
+				// Creates the left leg.
 				rank = m_engine->CreateObject();
 				m_engine->SetObjectType(rank, TYPEDESCENDANT);
 				m_object->SetObjectRank(15+i*3+j, rank);
@@ -639,7 +641,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_MOBILErt )
 	{
-		// Crée le support.
+		// Creates the holder.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -649,7 +651,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(1, D3DVECTOR(0.0f, 0.0f, 0.0f));
 		m_object->SetAngleZ(1, 0.0f);
 
-		// Crée le pilon.
+		// Creates the pestle.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(2, rank);
@@ -662,7 +664,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_MOBILErc )
 	{
-		// Crée le support.
+		// Creates the holder.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -672,7 +674,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(1, D3DVECTOR(3.0f, 4.6f, 0.0f));
 		m_object->SetAngleZ(1, PI/8.0f);
 
-		// Crée le canon.
+		// Creates the cannon.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(2, rank);
@@ -685,7 +687,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_MOBILErr )
 	{
-		// Crée le support.
+		// Creates the holder.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -694,7 +696,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(1, D3DVECTOR(2.0f, 5.0f, 0.0f));
 
-		// Crée le bras droite.
+		// Creates the right arm.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(2, rank);
@@ -704,7 +706,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(2, D3DVECTOR(0.1f, 0.0f, -5.0f));
 		m_object->SetAngleZ(2, 126.0f*PI/180.0f);
 
-		// Crée l'avant-bras droite.
+		// Creates the right forearm.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(3, rank);
@@ -714,7 +716,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(3, D3DVECTOR(5.0f, 0.0f, -0.5f));
 		m_object->SetAngleZ(3, -144.0f*PI/180.0f);
 
-		// Crée le bras gauche.
+		// Creates the left arm.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(4, rank);
@@ -725,7 +727,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(4, D3DVECTOR(0.1f, 0.0f, 5.0f));
 		m_object->SetAngleZ(4, 126.0f*PI/180.0f);
 
-		// Crée l'avant-bras gauche.
+		// Creates the left forearm.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(5, rank);
@@ -739,7 +741,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_MOBILErs )
 	{
-		// Crée le support.
+		// Creates the holder.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -749,7 +751,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(1, D3DVECTOR(0.0f, 0.0f, 0.0f));
 		m_object->SetAngleZ(1, 0.0f);
 
-		// Crée le piston intermédiaire.
+		// Creates the intermediate piston.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(2, rank);
@@ -759,7 +761,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetPosition(2, D3DVECTOR(7.0f, 4.5f, 0.0f));
 		m_object->SetAngleZ(2, 0.0f);
 
-		// Crée le piston avec la sphère.
+		// Creates the piston with the sphere.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(3, rank);
@@ -772,7 +774,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_MOBILEsa )
 	{
-		// Crée le support.
+		// Creates the holder.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -781,7 +783,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(1, D3DVECTOR(4.2f, 3.0f, 0.0f));
 
-		// Crée la pince droite.
+		// Creates the right tong.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(2, rank);
@@ -790,7 +792,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(2, D3DVECTOR(0.5f, 0.0f, -1.5f));
 
-		// Crée la pince gauche.
+		// Creates the left tong.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(3, rank);
@@ -803,7 +805,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_MOBILEdr )
 	{
-		// Crée le carousel.
+		// Creates the carousel.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
@@ -812,7 +814,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(1, D3DVECTOR(-3.0f, 3.0f, 0.0f));
 
-		// Crée la clé.
+		// Creates the key.
 		if ( m_object->RetToy() )
 		{
 			rank = m_engine->CreateObject();
@@ -826,7 +828,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 			m_object->SetAngleY(2, 90.0f*PI/180.0f);
 		}
 
-		// Crée les crayons.
+		// Creates pencils.
 		for ( i=0 ; i<8 ; i++ )
 		{
 			rank = m_engine->CreateObject();
@@ -843,7 +845,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_MOBILEwt )
 	{
-		// Crée la clé.
+		// Creates the key.
 		if ( m_object->RetToy() )
 		{
 			rank = m_engine->CreateObject();
@@ -860,12 +862,12 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type == OBJECT_APOLLO2 )
 	{
-		// Crée les accessoirs.
+		// Creates the accessories.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(1, rank);
 		m_object->SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\apolloj2.mod");  // antenne
+		pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(1, D3DVECTOR(5.5f, 8.8f, 2.0f));
 		m_object->SetAngleY(1, -120.0f*PI/180.0f);
@@ -875,17 +877,17 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(2, rank);
 		m_object->SetObjectParent(2, 0);
-		pModFile->ReadModel("objects\\apolloj3.mod");  // caméra
+		pModFile->ReadModel("objects\\apolloj3.mod");  // camera
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(2, D3DVECTOR(5.5f, 2.8f, -2.0f));
 		m_object->SetAngleY(2, 30.0f*PI/180.0f);
 
-		// Crée les roues.
+		// Creates the wheels.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(6, rank);
 		m_object->SetObjectParent(6, 0);
-		pModFile->ReadModel("objects\\apolloj4.mod");  // roue
+		pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(6, D3DVECTOR(-5.75f, 1.65f, -5.0f));
 
@@ -893,7 +895,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(7, rank);
 		m_object->SetObjectParent(7, 0);
-		pModFile->ReadModel("objects\\apolloj4.mod");  // roue
+		pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(7, D3DVECTOR(-5.75f, 1.65f, 5.0f));
 
@@ -901,7 +903,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(8, rank);
 		m_object->SetObjectParent(8, 0);
-		pModFile->ReadModel("objects\\apolloj4.mod");  // roue
+		pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(8, D3DVECTOR(5.75f, 1.65f, -5.0f));
 
@@ -909,16 +911,16 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(9, rank);
 		m_object->SetObjectParent(9, 0);
-		pModFile->ReadModel("objects\\apolloj4.mod");  // roue
+		pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(9, D3DVECTOR(5.75f, 1.65f, 5.00f));
 
-		// Crée les gardes boues.
+		// Creates mud guards.
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(10, rank);
 		m_object->SetObjectParent(10, 0);
-		pModFile->ReadModel("objects\\apolloj6.mod");  // roue
+		pModFile->ReadModel("objects\\apolloj6.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(10, D3DVECTOR(-5.75f, 1.65f, -5.0f));
 
@@ -926,7 +928,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(11, rank);
 		m_object->SetObjectParent(11, 0);
-		pModFile->ReadModel("objects\\apolloj6.mod");  // roue
+		pModFile->ReadModel("objects\\apolloj6.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(11, D3DVECTOR(-5.75f, 1.65f, 5.0f));
 
@@ -934,7 +936,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(12, rank);
 		m_object->SetObjectParent(12, 0);
-		pModFile->ReadModel("objects\\apolloj5.mod");  // roue
+		pModFile->ReadModel("objects\\apolloj5.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(12, D3DVECTOR(5.75f, 1.65f, -5.0f));
 
@@ -942,7 +944,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		m_object->SetObjectRank(13, rank);
 		m_object->SetObjectParent(13, 0);
-		pModFile->ReadModel("objects\\apolloj5.mod");  // roue
+		pModFile->ReadModel("objects\\apolloj5.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(13, D3DVECTOR(5.75f, 1.65f, 5.00f));
 	}
@@ -1018,17 +1020,17 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 		 type == OBJECT_MOBILEfc ||
 		 type == OBJECT_MOBILEfi ||
 		 type == OBJECT_MOBILEfs ||
-		 type == OBJECT_MOBILEft )  // volant ?
+		 type == OBJECT_MOBILEft )  // flying?
 	{
 //?		color.r = 0.5f-1.0f;
 //?		color.g = 0.2f-1.0f;
 //?		color.b = 0.0f-1.0f;  // orange
 //?		color.r = 0.8f;
 //?		color.g = 0.6f;
-//?		color.b = 0.0f;  // jaune-orange
+//?		color.b = 0.0f;  // yellow-orange
 		color.r = 0.0f;
 		color.g = 0.4f;
-		color.b = 0.8f;  // bleu
+		color.b = 0.8f;  // blue
 		color.a = 0.0f;
 		m_object->CreateShadowLight(50.0f, color);
 	}
@@ -1042,11 +1044,11 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	{
 		color.r = 1.0f;
 		color.g = 1.0f;
-		color.b = 0.0f;  // jaune
+		color.b = 0.0f;  // yellow
 		color.a = 0.0f;
 		m_object->CreateEffectLight(20.0f, color);
 
-		// Crée la pile.
+		// Creates the battery.
 		pPower = new CObject(m_iMan);
 		pPower->SetType(power<=1.0f?OBJECT_POWER:OBJECT_ATOMIC);
 
@@ -1070,7 +1072,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	}
 
 	pos = m_object->RetPosition(0);
-	m_object->SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	m_object->SetPosition(0, pos);  //to display the shadows immediately
 
 	m_engine->LoadAllTexture();
 
@@ -1078,7 +1080,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	return TRUE;
 }
 
-// Crée la physique de l'objet.
+// Creates the physics of the object.
 
 void CMotionVehicle::CreatePhysics(ObjectType type)
 {
@@ -1090,7 +1092,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 		 type == OBJECT_MOBILEwc ||
 		 type == OBJECT_MOBILEwi ||
 		 type == OBJECT_MOBILEws ||
-		 type == OBJECT_MOBILEwt )  // roues ?
+		 type == OBJECT_MOBILEwt )  // wheels?
 	{
 		m_physics->SetType(TYPE_ROLLING);
 
@@ -1149,7 +1151,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 	if ( type == OBJECT_MOBILEta ||
 		 type == OBJECT_MOBILEtc ||
 		 type == OBJECT_MOBILEti ||
-		 type == OBJECT_MOBILEts )  // chenilles ?
+		 type == OBJECT_MOBILEts )  // caterpillars?
 	{
 		m_physics->SetType(TYPE_ROLLING);
 
@@ -1180,7 +1182,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 	if ( type == OBJECT_MOBILEia ||
 		 type == OBJECT_MOBILEic ||
 		 type == OBJECT_MOBILEii ||
-		 type == OBJECT_MOBILEis )  // pattes ?
+		 type == OBJECT_MOBILEis )  // legs?
 	{
 		m_physics->SetType(TYPE_ROLLING);
 
@@ -1213,7 +1215,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 		 type == OBJECT_MOBILEfc ||
 		 type == OBJECT_MOBILEfi ||
 		 type == OBJECT_MOBILEfs ||
-		 type == OBJECT_MOBILEft )  // volant ?
+		 type == OBJECT_MOBILEft )  // flying?
 	{
 		m_physics->SetType(TYPE_FLYING);
 
@@ -1249,7 +1251,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 	if ( type == OBJECT_MOBILErt ||
 		 type == OBJECT_MOBILErc ||
 		 type == OBJECT_MOBILErr ||
-		 type == OBJECT_MOBILErs )  // grosses chenilles ?
+		 type == OBJECT_MOBILErs )  // large caterpillars?
 	{
 		m_physics->SetType(TYPE_ROLLING);
 
@@ -1333,7 +1335,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 		m_physics->SetCirMotionY(MO_STOACCEL, 10.0f);
 	}
 
-	if ( type == OBJECT_APOLLO2 )  // jeep ?
+	if ( type == OBJECT_APOLLO2 )  // jeep?
 	{
 		m_physics->SetType(TYPE_ROLLING);
 
@@ -1362,7 +1364,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionVehicle::EventProcess(const Event &event)
 {
@@ -1380,7 +1382,7 @@ BOOL CMotionVehicle::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CMotionVehicle::EventFrame(const Event &event)
 {
@@ -1402,7 +1404,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 		 type == OBJECT_MOBILEws ||
 		 type == OBJECT_MOBILEwt ||
 		 type == OBJECT_MOBILEtg ||
-		 type == OBJECT_APOLLO2  )  // roues ?
+		 type == OBJECT_APOLLO2  )  // wheels?
 	{
 		s = m_physics->RetLinMotionX(MO_MOTSPEED)*1.0f;
 		a = m_physics->RetCirMotionY(MO_MOTSPEED)*3.0f;
@@ -1414,7 +1416,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 		speedFR = -s+a;
 		speedFL =  s+a;
 
-		m_object->SetAngleZ(6, m_object->RetAngleZ(6)+event.rTime*speedBR);  // tourne les roues
+		m_object->SetAngleZ(6, m_object->RetAngleZ(6)+event.rTime*speedBR);  // turning the wheels
 		m_object->SetAngleZ(7, m_object->RetAngleZ(7)+event.rTime*speedBL);
 		m_object->SetAngleZ(8, m_object->RetAngleZ(8)+event.rTime*speedFR);
 		m_object->SetAngleZ(9, m_object->RetAngleZ(9)+event.rTime*speedFL);
@@ -1467,23 +1469,23 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 
 			if ( type == OBJECT_MOBILEtg )
 			{
-				back   = -2.0f;  // position roues arrières
+				back   = -2.0f;  // position roues arriï¿½res
 				front  =  3.0f;  // position roues avants
-				dist   =  3.0f;  // éloignement roues Z
+				dist   =  3.0f;  // ï¿½loignement roues Z
 				radius =  1.0f;
 			}
 			else if ( type == OBJECT_APOLLO2 )
 			{
-				back   = -5.75f;  // position roues arrières
+				back   = -5.75f;  // position roues arriï¿½res
 				front  =  5.75f;  // position roues avants
-				dist   =  5.00f;  // éloignement roues Z
+				dist   =  5.00f;  // ï¿½loignement roues Z
 				radius =  1.65f;
 			}
 			else
 			{
-				back   = -3.0f;  // position roues arrières
+				back   = -3.0f;  // position roues arriï¿½res
 				front  =  2.0f;  // position roues avants
-				dist   =  3.0f;  // éloignement roues Z
+				dist   =  3.0f;  // ï¿½loignement roues Z
 				radius =  1.0f;
 			}
 
@@ -1492,7 +1494,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				character = m_object->RetCharacter();
 				mat = m_object->RetWorldMatrix(0);
 
-				pos.x = -character->wheelBack;  // roue arrière droite
+				pos.x = -character->wheelBack;  // roue arriï¿½re droite
 				pos.z = -character->wheelRight;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1505,7 +1507,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				m_object->SetPosition(6, pos);
 				if ( type == OBJECT_APOLLO2 )  m_object->SetPosition(10, pos);
 
-				pos.x = -character->wheelBack;  // roue arrière gauche
+				pos.x = -character->wheelBack;  // roue arriï¿½re gauche
 				pos.z =  character->wheelLeft;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1628,7 +1630,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				pos = Transform(*mat, pos);
 				a1 = atanf(m_terrain->RetFloorHeight(pos)/character->wheelFront);
 
-				pos.x = -character->wheelBack;  // roue arrière droite
+				pos.x = -character->wheelBack;  // roue arriï¿½re droite
 				pos.z = -character->wheelRight;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1645,7 +1647,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				pos = Transform(*mat, pos);
 				a1 = atanf(m_terrain->RetFloorHeight(pos)/character->wheelFront);
 
-				pos.x = -character->wheelBack;  // roue arrière gauche
+				pos.x = -character->wheelBack;  // roue arriï¿½re gauche
 				pos.z =  character->wheelLeft;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1665,7 +1667,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 	}
 
 	if ( type == OBJECT_MOBILEwt ||
-		 type == OBJECT_MOBILEdr )  // jouet à clé ?
+		 type == OBJECT_MOBILEdr )  // jouet ï¿½ clï¿½ ?
 	{
 		pos = m_posKey;
 		if ( m_object->RetSelect() &&
@@ -1677,7 +1679,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 
 		s  = -Abs(m_physics->RetLinMotionX(MO_MOTSPEED)*0.1f);
 		s += -Abs(m_physics->RetCirMotionY(MO_MOTSPEED)*1.5f);
-		m_object->SetAngleY(2, m_object->RetAngleY(2)+event.rTime*s);  // tourne la clé
+		m_object->SetAngleY(2, m_object->RetAngleY(2)+event.rTime*s);  // tourne la clï¿½
 	}
 
 	if ( type == OBJECT_MOBILEfa ||
@@ -1708,7 +1710,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un événement pour un robot volant.
+// Gestion d'un ï¿½vï¿½nement pour un robot volant.
 
 BOOL CMotionVehicle::EventFrameFly(const Event &event)
 {
@@ -1734,8 +1736,8 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 	{
 		mat = m_object->RetWorldMatrix(0);
 		paw[0] = Transform(*mat, D3DVECTOR( 4.2f, 0.0f,  0.0f));  // avant
-		paw[1] = Transform(*mat, D3DVECTOR(-3.0f, 0.0f, -3.7f));  // arrière droite
-		paw[2] = Transform(*mat, D3DVECTOR(-3.0f, 0.0f,  3.7f));  // arrière gauche
+		paw[1] = Transform(*mat, D3DVECTOR(-3.0f, 0.0f, -3.7f));  // arriï¿½re droite
+		paw[2] = Transform(*mat, D3DVECTOR(-3.0f, 0.0f,  3.7f));  // arriï¿½re gauche
 
 		for ( i=0 ; i<3 ; i++ )
 		{
@@ -1749,8 +1751,8 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 	else	// en vol ?
 	{
 		hope[0] = 0.0f;  // avant
-		hope[1] = 0.0f;  // arrière droite
-		hope[2] = 0.0f;  // arrière gauche
+		hope[1] = 0.0f;  // arriï¿½re droite
+		hope[2] = 0.0f;  // arriï¿½re gauche
 	}
 
 	m_bFlyFix = TRUE;
@@ -1760,7 +1762,7 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 		final = Smooth(actual, hope[i], event.rTime*5.0f);
 		if ( final != actual )
 		{
-			m_bFlyFix = FALSE;  // ça a bougé
+			m_bFlyFix = FALSE;  // ï¿½a a bougï¿½
 			m_object->SetAngleZ(6+i, final);
 		}
 	}
@@ -1768,7 +1770,7 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un événement pour un insecte à pattes.
+// Gestion d'un ï¿½vï¿½nement pour un insecte ï¿½ pattes.
 
 BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 {
@@ -1787,7 +1789,7 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 		30,10,0,	30,-15,0,	30,-40,0,	// t1: cuisses 1..4
 		-45,0,0,	-45,0,0,	-45,0,0,	// t1: jambes 1..4
 		-20,0,0,	-20,0,0,	-20,0,0,	// t1: pieds 1..4
-											// au sol derrière :
+											// au sol derriï¿½re :
 		35,40,0,	40,15,0,	40,-10,0,	// t2: cuisses 1..4
 		-35,0,0,	-35,0,0,	-35,0,0,	// t2: jambes 1..4
 		-50,0,0,	-65,0,0,	-65,0,0,	// t2: pieds 1..4
@@ -1812,7 +1814,7 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 	m_armTimeAbs += event.rTime;
 	m_armMember += (s+a)*event.rTime*0.15f;
 
-	bStop = ( a == 0.0f && s == 0.0f );  // à l'arrêt ?
+	bStop = ( a == 0.0f && s == 0.0f );  // ï¿½ l'arrï¿½t ?
 
 	action = 0;  // marche
 	if ( s == 0.0f && a == 0.0f )
@@ -1824,18 +1826,18 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 	{
 		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
 		a = Mod(m_armMember, 1.0f);
-		a = (prog-a)*event.rTime*2.0f;  // vient gentiment à position stop
+		a = (prog-a)*event.rTime*2.0f;  // vient gentiment ï¿½ position stop
 		m_armMember += a;
 	}
 
-	if ( m_object->RetRuin() )  // brûle ou explose ?
+	if ( m_object->RetRuin() )  // brï¿½le ou explose ?
 	{
 		action = 3;
 	}
 
 	for ( i=0 ; i<6 ; i++ )  // les 6 pattes
 	{
-		if ( action != 0 )  // action spéciale en cours ?
+		if ( action != 0 )  // action spï¿½ciale en cours ?
 		{
 			st = 3*3*3*action + (i%3)*3;
 			nd = st;
@@ -1920,7 +1922,7 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un événement pour un canon-insecte.
+// Gestion d'un ï¿½vï¿½nement pour un canon-insecte.
 
 BOOL CMotionVehicle::EventFrameCanoni(const Event &event)
 {
@@ -1996,7 +1998,7 @@ BOOL CMotionVehicle::EventFrameCanoni(const Event &event)
 }
 
 
-// Met à jour le mapping de la texture des chenilles.
+// Met ï¿½ jour le mapping de la texture des chenilles.
 
 void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type)
 {
@@ -2054,7 +2056,7 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 
 
 
-// Gestion de l'état du crayon du robot dessinateur.
+// Gestion de l'ï¿½tat du crayon du robot dessinateur.
 
 BOOL CMotionVehicle::RetTraceDown()
 {
