@@ -1469,32 +1469,32 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 
 			if ( type == OBJECT_MOBILEtg )
 			{
-				back   = -2.0f;  // position roues arri�res
-				front  =  3.0f;  // position roues avants
-				dist   =  3.0f;  // �loignement roues Z
+				back   = -2.0f;  // back wheels position
+				front  =  3.0f;  // front wheels position
+				dist   =  3.0f;  // distancing wheels Z
 				radius =  1.0f;
 			}
 			else if ( type == OBJECT_APOLLO2 )
 			{
-				back   = -5.75f;  // position roues arri�res
-				front  =  5.75f;  // position roues avants
-				dist   =  5.00f;  // �loignement roues Z
+				back   = -5.75f;  // back wheels position
+				front  =  5.75f;  // front wheels position
+				dist   =  5.00f;  // distancing wheels Z
 				radius =  1.65f;
 			}
 			else
 			{
-				back   = -3.0f;  // position roues arri�res
-				front  =  2.0f;  // position roues avants
-				dist   =  3.0f;  // �loignement roues Z
+				back   = -3.0f;  // back wheels position
+				front  =  2.0f;  // front wheels position
+				dist   =  3.0f;  // distancing wheels Z
 				radius =  1.0f;
 			}
 
-			if ( Length(pos, m_engine->RetEyePt()) < 50.0f )  // suspension ?
+			if ( Length(pos, m_engine->RetEyePt()) < 50.0f )  // suspension?
 			{
 				character = m_object->RetCharacter();
 				mat = m_object->RetWorldMatrix(0);
 
-				pos.x = -character->wheelBack;  // roue arri�re droite
+				pos.x = -character->wheelBack;  // right back wheel
 				pos.z = -character->wheelRight;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1507,7 +1507,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				m_object->SetPosition(6, pos);
 				if ( type == OBJECT_APOLLO2 )  m_object->SetPosition(10, pos);
 
-				pos.x = -character->wheelBack;  // roue arri�re gauche
+				pos.x = -character->wheelBack;  // left back wheel
 				pos.z =  character->wheelLeft;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1520,7 +1520,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				m_object->SetPosition(7, pos);
 				if ( type == OBJECT_APOLLO2 )  m_object->SetPosition(11, pos);
 
-				pos.x =  character->wheelFront;  // roue avant droite
+				pos.x =  character->wheelFront;  // right front wheel
 				pos.z = -character->wheelRight;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1533,7 +1533,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				m_object->SetPosition(8, pos);
 				if ( type == OBJECT_APOLLO2 )  m_object->SetPosition(12, pos);
 
-				pos.x =  character->wheelFront;  // roue avant gauche
+				pos.x =  character->wheelFront;  // left front wheel
 				pos.z =  character->wheelLeft;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1573,7 +1573,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 		 type == OBJECT_MOBILErr ||
 		 type == OBJECT_MOBILErs ||
 		 type == OBJECT_MOBILEsa ||
-		 type == OBJECT_MOBILEdr )  // chenilles ?
+		 type == OBJECT_MOBILEdr )  // caterpillars?
 	{
 		s = m_physics->RetLinMotionX(MO_MOTSPEED)*0.7f;
 		a = m_physics->RetCirMotionY(MO_MOTSPEED)*2.5f;
@@ -1619,18 +1619,18 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				limit[1] = -10.0f*PI/180.0f;
 			}
 
-			if ( Length(pos, m_engine->RetEyePt()) < 50.0f )  // suspension ?
+			if ( Length(pos, m_engine->RetEyePt()) < 50.0f )  // suspension?
 			{
 				character = m_object->RetCharacter();
 				mat = m_object->RetWorldMatrix(0);
 
-				pos.x =  character->wheelFront;  // roue avant droite
+				pos.x =  character->wheelFront;  // right front wheel
 				pos.z = -character->wheelRight;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
 				a1 = atanf(m_terrain->RetFloorHeight(pos)/character->wheelFront);
 
-				pos.x = -character->wheelBack;  // roue arri�re droite
+				pos.x = -character->wheelBack;  // right back wheel
 				pos.z = -character->wheelRight;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1641,13 +1641,13 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 				if ( a < limit[1] )  a = limit[1];
 				m_object->SetAngleZ(6, a);
 
-				pos.x =  character->wheelFront;  // roue avant gauche
+				pos.x =  character->wheelFront;  // left front wheel
 				pos.z =  character->wheelLeft;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
 				a1 = atanf(m_terrain->RetFloorHeight(pos)/character->wheelFront);
 
-				pos.x = -character->wheelBack;  // roue arri�re gauche
+				pos.x = -character->wheelBack;  // left back wheel
 				pos.z =  character->wheelLeft;
 				pos.y =  0.0f;
 				pos = Transform(*mat, pos);
@@ -1667,26 +1667,26 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 	}
 
 	if ( type == OBJECT_MOBILEwt ||
-		 type == OBJECT_MOBILEdr )  // jouet � cl� ?
+		 type == OBJECT_MOBILEdr )  // toy is key?
 	{
 		pos = m_posKey;
 		if ( m_object->RetSelect() &&
 			 m_camera->RetType() == CAMERA_ONBOARD )
 		{
-			pos.y += 10.0f;  // hors du champ de vision !
+			pos.y += 10.0f;  // out of sight!
 		}
 		m_object->SetPosition(2, pos);
 
 		s  = -Abs(m_physics->RetLinMotionX(MO_MOTSPEED)*0.1f);
 		s += -Abs(m_physics->RetCirMotionY(MO_MOTSPEED)*1.5f);
-		m_object->SetAngleY(2, m_object->RetAngleY(2)+event.rTime*s);  // tourne la cl�
+		m_object->SetAngleY(2, m_object->RetAngleY(2)+event.rTime*s);  // turns the key
 	}
 
 	if ( type == OBJECT_MOBILEfa ||
 		 type == OBJECT_MOBILEfc ||
 		 type == OBJECT_MOBILEfi ||
 		 type == OBJECT_MOBILEfs ||
-		 type == OBJECT_MOBILEft )  // volant ?
+		 type == OBJECT_MOBILEft )  // flying?
 	{
 		EventFrameFly(event);
 	}
@@ -1694,7 +1694,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 	if ( type == OBJECT_MOBILEia ||
 		 type == OBJECT_MOBILEic ||
 		 type == OBJECT_MOBILEii ||
-		 type == OBJECT_MOBILEis )  // pattes ?
+		 type == OBJECT_MOBILEis )  // legs?
 	{
 		EventFrameInsect(event);
 	}
@@ -1702,7 +1702,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 	if ( type == OBJECT_MOBILEwi ||
 		 type == OBJECT_MOBILEti ||
 		 type == OBJECT_MOBILEfi ||
-		 type == OBJECT_MOBILEii )  // canon-insecte ?
+		 type == OBJECT_MOBILEii )  // insect cannon?
 	{
 		EventFrameCanoni(event);
 	}
@@ -1710,7 +1710,7 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un �v�nement pour un robot volant.
+// Managing an event for a flying robot.
 
 BOOL CMotionVehicle::EventFrameFly(const Event &event)
 {
@@ -1732,12 +1732,12 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 	m_wheelLastPos = pos;
 	m_wheelLastAngle = angle;
 
-	if ( m_physics->RetLand() )  // au sol ?
+	if ( m_physics->RetLand() )  // on the ground?
 	{
 		mat = m_object->RetWorldMatrix(0);
-		paw[0] = Transform(*mat, D3DVECTOR( 4.2f, 0.0f,  0.0f));  // avant
-		paw[1] = Transform(*mat, D3DVECTOR(-3.0f, 0.0f, -3.7f));  // arri�re droite
-		paw[2] = Transform(*mat, D3DVECTOR(-3.0f, 0.0f,  3.7f));  // arri�re gauche
+		paw[0] = Transform(*mat, D3DVECTOR( 4.2f, 0.0f,  0.0f));  // front
+		paw[1] = Transform(*mat, D3DVECTOR(-3.0f, 0.0f, -3.7f));  // right back
+		paw[2] = Transform(*mat, D3DVECTOR(-3.0f, 0.0f,  3.7f));  // left back
 
 		for ( i=0 ; i<3 ; i++ )
 		{
@@ -1748,11 +1748,11 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 			hope[i] = a;
 		}
 	}
-	else	// en vol ?
+	else	// in flight?
 	{
-		hope[0] = 0.0f;  // avant
-		hope[1] = 0.0f;  // arri�re droite
-		hope[2] = 0.0f;  // arri�re gauche
+		hope[0] = 0.0f;  // front
+		hope[1] = 0.0f;  // right back
+		hope[2] = 0.0f;  // left back
 	}
 
 	m_bFlyFix = TRUE;
@@ -1762,7 +1762,7 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 		final = Smooth(actual, hope[i], event.rTime*5.0f);
 		if ( final != actual )
 		{
-			m_bFlyFix = FALSE;  // �a a boug�
+			m_bFlyFix = FALSE;  // it is moving
 			m_object->SetAngleZ(6+i, final);
 		}
 	}
@@ -1770,7 +1770,7 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un �v�nement pour un insecte � pattes.
+// Event management for insect legs.
 
 BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 {
@@ -1781,22 +1781,22 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 
 	static int table[] =
 	{
-	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// en l'air :
-		60,25,0,	60,0,0,		60,-25,0,	// t0: cuisses 1..4
-		-35,0,0,	-35,0,0,	-35,0,0,	// t0: jambes 1..4
-		-65,0,0,	-65,0,0,	-65,0,0,	// t0: pieds 1..4
-											// au sol devant :
-		30,10,0,	30,-15,0,	30,-40,0,	// t1: cuisses 1..4
-		-45,0,0,	-45,0,0,	-45,0,0,	// t1: jambes 1..4
-		-20,0,0,	-20,0,0,	-20,0,0,	// t1: pieds 1..4
-											// au sol derri�re :
-		35,40,0,	40,15,0,	40,-10,0,	// t2: cuisses 1..4
-		-35,0,0,	-35,0,0,	-35,0,0,	// t2: jambes 1..4
-		-50,0,0,	-65,0,0,	-65,0,0,	// t2: pieds 1..4
-											// stoppe :
-		35,35,0,	40,10,0,	40,-15,0,	// s0: cuisses 1..4
-		-35,0,0,	-35,0,0,	-35,0,0,	// s0: jambes 1..4
-		-50,0,0,	-65,0,0,	-65,0,0,	// s0: pieds 1..4
+	//	x1,y1,z1,	x2,y2,z2,	x3,y3,z3,	// in the air:
+		60,25,0,	60,0,0,		60,-25,0,	// t0: thighs 1..4
+		-35,0,0,	-35,0,0,	-35,0,0,	// t0: legs 1..4
+		-65,0,0,	-65,0,0,	-65,0,0,	// t0: feet 1..4
+											// on the ground:
+		30,10,0,	30,-15,0,	30,-40,0,	// t1: thighs 1..4
+		-45,0,0,	-45,0,0,	-45,0,0,	// t1: legs 1..4
+		-20,0,0,	-20,0,0,	-20,0,0,	// t1: feet 1..4
+											// on the ground back:
+		35,40,0,	40,15,0,	40,-10,0,	// t2: thighs 1..4
+		-35,0,0,	-35,0,0,	-35,0,0,	// t2: legs 1..4
+		-50,0,0,	-65,0,0,	-65,0,0,	// t2: feet 1..4
+											// stop:
+		35,35,0,	40,10,0,	40,-15,0,	// s0: thighs 1..4
+		-35,0,0,	-35,0,0,	-35,0,0,	// s0: legs 1..4
+		-50,0,0,	-65,0,0,	-65,0,0,	// s0: feet 1..4
 	};
 
 	bOnBoard = FALSE;
@@ -1814,9 +1814,9 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 	m_armTimeAbs += event.rTime;
 	m_armMember += (s+a)*event.rTime*0.15f;
 
-	bStop = ( a == 0.0f && s == 0.0f );  // � l'arr�t ?
+	bStop = ( a == 0.0f && s == 0.0f );  // stop?
 
-	action = 0;  // marche
+	action = 0;  // walking
 	if ( s == 0.0f && a == 0.0f )
 	{
 		action = 3;  // stop
@@ -1826,18 +1826,18 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 	{
 		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
 		a = Mod(m_armMember, 1.0f);
-		a = (prog-a)*event.rTime*2.0f;  // vient gentiment � position stop
+		a = (prog-a)*event.rTime*2.0f;  // stop position is pleasantly
 		m_armMember += a;
 	}
 
-	if ( m_object->RetRuin() )  // br�le ou explose ?
+	if ( m_object->RetRuin() )  // burn or explode?
 	{
 		action = 3;
 	}
 
-	for ( i=0 ; i<6 ; i++ )  // les 6 pattes
+	for ( i=0 ; i<6 ; i++ )  // the six legs
 	{
-		if ( action != 0 )  // action sp�ciale en cours ?
+		if ( action != 0 )  // special action in progress?
 		{
 			st = 3*3*3*action + (i%3)*3;
 			nd = st;
@@ -1868,11 +1868,11 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 			st = 3*3*3*action + st*3*3*3 + (i%3)*3;
 			nd = 3*3*3*action + nd*3*3*3 + (i%3)*3;
 
-			// De moins en moins mou ...
+			// Less and less soft ...
 			time = event.rTime*20.0f;
 		}
 
-		if ( i < 3 )  // patte droite (1..3) ?
+		if ( i < 3 )  // right leg (1..3) ?
 		{
 			m_object->SetAngleX(6+3*i+0, Smooth(m_object->RetAngleX(6+3*i+0), Prop(table[st+ 0], table[nd+ 0], prog), time));
 			m_object->SetAngleY(6+3*i+0, Smooth(m_object->RetAngleY(6+3*i+0), Prop(table[st+ 1], table[nd+ 1], prog), time));
@@ -1884,7 +1884,7 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 			m_object->SetAngleY(6+3*i+2, Smooth(m_object->RetAngleY(6+3*i+2), Prop(table[st+19], table[nd+19], prog), time));
 			m_object->SetAngleZ(6+3*i+2, Smooth(m_object->RetAngleZ(6+3*i+2), Prop(table[st+20], table[nd+20], prog), time));
 		}
-		else	// patte gauche (4..6) ?
+		else	// left leg (4..6) ?
 		{
 			m_object->SetAngleX(6+3*i+0, Smooth(m_object->RetAngleX(6+3*i+0), Prop(-table[st+ 0], -table[nd+ 0], prog), time));
 			m_object->SetAngleY(6+3*i+0, Smooth(m_object->RetAngleY(6+3*i+0), Prop(-table[st+ 1], -table[nd+ 1], prog), time));
@@ -1922,7 +1922,7 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 	return TRUE;
 }
 
-// Gestion d'un �v�nement pour un canon-insecte.
+// Event management for a insect cannon.
 
 BOOL CMotionVehicle::EventFrameCanoni(const Event &event)
 {
@@ -1998,7 +1998,7 @@ BOOL CMotionVehicle::EventFrameCanoni(const Event &event)
 }
 
 
-// Met � jour le mapping de la texture des chenilles.
+// Updates the mapping of the texture of the caterpillars.
 
 void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type)
 {
@@ -2009,7 +2009,7 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 	ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
 	mat.diffuse.r = 1.0f;
 	mat.diffuse.g = 1.0f;
-	mat.diffuse.b = 1.0f;  // blanc
+	mat.diffuse.b = 1.0f;  // white
 	mat.ambient.r = 0.5f;
 	mat.ambient.g = 0.5f;
 	mat.ambient.b = 0.5f;
@@ -2056,7 +2056,7 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 
 
 
-// Gestion de l'�tat du crayon du robot dessinateur.
+// State management of the pencil drawing robot.
 
 BOOL CMotionVehicle::RetTraceDown()
 {
