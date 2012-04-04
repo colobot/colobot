@@ -2281,14 +2281,14 @@ BOOL CObject::CreateShadowLight(float height, D3DCOLORVALUE color)
 	return TRUE;
 }
 
-// Retourne le num�ro de la lumi�re d'ombre n�gative.
+// Returns the number of negative light shade.
 
 int CObject::RetShadowLight()
 {
 	return m_shadowLight;
 }
 
-// Cr�e la lumi�re pour les effects d'un v�hicule.
+// Creates light for the effects of a vehicle.
 
 BOOL CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
 {
@@ -2307,7 +2307,7 @@ BOOL CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
 	light.dvPosition.y  =  0.0f+height;
 	light.dvPosition.z  =  0.0f;
 	light.dvDirection.x =  0.0f;
-	light.dvDirection.y = -1.0f;  // contre en bas
+	light.dvDirection.y = -1.0f;  // against the bottom
 	light.dvDirection.z =  0.0f;
 	light.dvRange = D3DLIGHT_RANGE_MAX;
 	light.dvFalloff = 1.0f;
@@ -2326,14 +2326,14 @@ BOOL CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
 	return TRUE;
 }
 
-// Retourne le num�ro de la lumi�re des effets.
+// Returns the number of light effects.
 
 int CObject::RetEffectLight()
 {
 	return m_effectLight;
 }
 
-// Cr�e l'ombre circulaire sous un v�hicule.
+// Creates the circular shadow underneath a vehicle.
 
 BOOL CObject::CreateShadowCircle(float radius, float intensity,
 								 D3DShadowType type)
@@ -2355,7 +2355,7 @@ BOOL CObject::CreateShadowCircle(float radius, float intensity,
 	return TRUE;
 }
 
-// Cr�e un batiment quelconque pos� sur le sol.
+// Creates a building laying on the ground.
 
 BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 							 ObjectType type, float power)
@@ -2371,7 +2371,7 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 	SetType(type);
 
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+	m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
 	SetObjectRank(0, rank);
 
 	if ( m_type == OBJECT_PORTICO )
@@ -2539,7 +2539,7 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(9, rank);
 		SetObjectParent(9, 0);
-		pModFile->ReadModel("objects\\base3.mod");  // pilier central
+		pModFile->ReadModel("objects\\base3.mod");  // central pillar
 		pModFile->CreateEngineObject(rank);
 
 		CreateCrashSphere(D3DVECTOR(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
@@ -2726,7 +2726,7 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetGlobalSphere(D3DVECTOR(-7.0f, 5.0f, 0.0f), 5.0f);
 
 		m_character.posPower = D3DVECTOR(0.0f, 3.0f, 0.0f);
-		m_energy = power;  // initialise le niveau d'�nergie
+		m_energy = power;  // initializes the energy level
 
 		CreateShadowCircle(6.0f, 0.5f);
 	}
@@ -3214,7 +3214,7 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 	}
 
 #if 0
-	if ( power > 0.0f )  // cr�e une pile ?
+	if ( power > 0.0f )  // creates a battery?
 	{
 		CObject*	pPower;
 
@@ -3243,7 +3243,7 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 
 	pos = RetPosition(0);
 	pos.y += height;
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	CreateOtherObject(type);
 	m_engine->LoadAllTexture();
@@ -3252,7 +3252,7 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 	return TRUE;
 }
 
-// Cr�e une petite ressource pos�e sur le sol.
+// Creates a small resource set on the ground.
 
 BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 							 float power)
@@ -3272,7 +3272,7 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 	SetType(type);
 
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+	m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
 	SetObjectRank(0, rank);
 	SetEnergy(power);
 
@@ -3314,7 +3314,7 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 	SetPosition(0, pos);
 	SetAngleY(0, angle);
 
-	if ( type == OBJECT_SHOW )  // reste en l'air ?
+	if ( type == OBJECT_SHOW )  // remains in the air?
 	{
 		delete pModFile;
 		return TRUE;
@@ -3367,13 +3367,13 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 
 	pos = RetPosition(0);
 	pos.y += height;
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	delete pModFile;
 	return TRUE;
 }
 
-// Cr�e un drapeau pos� sur le sol.
+// Creates a flag placed on the ground.
 
 BOOL CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
 {
@@ -3395,7 +3395,7 @@ BOOL CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
 	if ( type == OBJECT_FLAGv )  strcpy(name, "objects\\flag1v.mod");
 
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+	m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
 	SetObjectRank(0, rank);
 	pModFile->ReadModel(name);
 	pModFile->CreateEngineObject(rank);
@@ -3430,13 +3430,13 @@ BOOL CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
 	FloorAdjust();
 
 	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	delete pModFile;
 	return TRUE;
 }
 
-// Cr�e une barri�re pos�e sur le sol.
+// Creates a barrier placed on the ground.
 
 BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 							ObjectType type)
@@ -3486,7 +3486,7 @@ BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 		CreateShadowCircle(12.0f, 0.5f, D3DSHADOWWORM);
 	}
 
-	if ( type == OBJECT_BARRIER2 )  // en carton ?
+	if ( type == OBJECT_BARRIER2 )  // cardboard?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3505,7 +3505,7 @@ BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 		CreateShadowCircle(12.0f, 0.8f, D3DSHADOWWORM);
 	}
 
-	if ( type == OBJECT_BARRIER3 )  // allumettes + paille ?
+	if ( type == OBJECT_BARRIER3 )  // match + straw?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3525,7 +3525,7 @@ BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 	}
 
 	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	SetFloorHeight(0.0f);
 	CreateOtherObject(type);
@@ -3539,7 +3539,7 @@ BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 	return TRUE;
 }
 
-// Cr�e une plante pos�e sur le sol.
+// Creates a plant placed on the ground.
 
 BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 						  ObjectType type)
@@ -3557,7 +3557,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		 type == OBJECT_PLANT1 ||
 		 type == OBJECT_PLANT2 ||
 		 type == OBJECT_PLANT3 ||
-		 type == OBJECT_PLANT4 )  // standard ?
+		 type == OBJECT_PLANT4 )  // standard?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3582,7 +3582,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 
 	if ( type == OBJECT_PLANT5 ||
 		 type == OBJECT_PLANT6 ||
-		 type == OBJECT_PLANT7 )  // tr�fle ?
+		 type == OBJECT_PLANT7 )  // clover?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3601,7 +3601,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 	}
 
 	if ( type == OBJECT_PLANT8 ||
-		 type == OBJECT_PLANT9 )  // courgette ?
+		 type == OBJECT_PLANT9 )  // squash?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3622,7 +3622,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		 type == OBJECT_PLANT11 ||
 		 type == OBJECT_PLANT12 ||
 		 type == OBJECT_PLANT13 ||
-		 type == OBJECT_PLANT14 )  // plante grasse ?
+		 type == OBJECT_PLANT14 )  // succulent?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3647,7 +3647,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		 type == OBJECT_PLANT16 ||
 		 type == OBJECT_PLANT17 ||
 		 type == OBJECT_PLANT18 ||
-		 type == OBJECT_PLANT19 )  // foug�re ?
+		 type == OBJECT_PLANT19 )  // fern?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3762,7 +3762,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		CreateShadowCircle(8.0f, 0.5f);
 	}
 
-	if ( type == OBJECT_TREE5 )  // arbre g�ant (pour monde "teen")
+	if ( type == OBJECT_TREE5 )  // giant tree (for the world "teen")
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3780,7 +3780,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 	}
 
 	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	SetFloorHeight(0.0f);
 	CreateOtherObject(type);
@@ -3793,7 +3793,7 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 	return TRUE;
 }
 
-// Cr�e un champignon pos� sur le sol.
+// Creates a mushroom placed on the ground.
 
 BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 							 ObjectType type)
@@ -3842,7 +3842,7 @@ BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 	}
 
 	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	SetFloorHeight(0.0f);
 	CreateOtherObject(type);
@@ -3855,7 +3855,7 @@ BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 	return TRUE;
 }
 
-// Cr�e un jouet pos� sur le sol.
+// Creates a toy placed on the ground.
 
 BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 						 ObjectType type)
@@ -3875,7 +3875,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 
 	fShadow = Norm(1.0f-height/10.0f);
 
-	if ( type == OBJECT_TEEN0 )  // crayon orange lg=10
+	if ( type == OBJECT_TEEN0 )  // orange pencil lg=10
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3895,7 +3895,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(5.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
 
-	if ( type == OBJECT_TEEN1 )  // crayon bleu lg=14
+	if ( type == OBJECT_TEEN1 )  // blue pencil lg=14
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3917,7 +3917,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(6.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
 
-	if ( type == OBJECT_TEEN2 )  // crayon rouge lg=16
+	if ( type == OBJECT_TEEN2 )  // red pencil lg=16
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3939,7 +3939,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(6.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
 
-	if ( type == OBJECT_TEEN3 )  // bocal avec crayon
+	if ( type == OBJECT_TEEN3 )  // jar with pencils
 	{
 		rank = m_engine->CreateObject();
 //?		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3956,7 +3956,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(6.0f, 0.5f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN4 )  // ciseaux
+	if ( type == OBJECT_TEEN4 )  // scissors
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -3995,7 +3995,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(8.0f, 0.2f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN6 )  // livre 1
+	if ( type == OBJECT_TEEN6 )  // book 1
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4016,7 +4016,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN7 )  // livre 2
+	if ( type == OBJECT_TEEN7 )  // book 2
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4037,7 +4037,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN8 )  // pile de livres 1
+	if ( type == OBJECT_TEEN8 )  // a stack of books 1
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4059,7 +4059,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN9 )  // pile de livres 2
+	if ( type == OBJECT_TEEN9 )  // a stack of books 2
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4081,7 +4081,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN10 )  // biblioth�que
+	if ( type == OBJECT_TEEN10 )  // bookcase
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4107,7 +4107,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(40.0f, 0.2f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN11 )  // lampe
+	if ( type == OBJECT_TEEN11 )  // lamp
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4126,12 +4126,12 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		pos = Transform(*mat, D3DVECTOR(-65.0f, 40.0f, 0.0f));
 		color.r = 4.0f;
 		color.g = 2.0f;
-		color.b = 0.0f;  // jaune-orange
+		color.b = 0.0f;  // yellow-orange
 		color.a = 0.0f;
 		m_main->CreateSpot(pos, color);
 	}
 
-	if ( type == OBJECT_TEEN12 )  // coca
+	if ( type == OBJECT_TEEN12 )  // coke
 	{
 		rank = m_engine->CreateObject();
 //?		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4148,7 +4148,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(4.5f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN13 )  // carton ferm�
+	if ( type == OBJECT_TEEN13 )  // cardboard farm
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4173,7 +4173,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN14 )  // carton ouvert
+	if ( type == OBJECT_TEEN14 )  // open box
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4198,7 +4198,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN15 )  // pile de cartons
+	if ( type == OBJECT_TEEN15 )  // stack of cartons
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4223,7 +4223,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN16 )  // arrosoir
+	if ( type == OBJECT_TEEN16 )  // watering can
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4241,7 +4241,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(18.0f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN17 )  // roue |
+	if ( type == OBJECT_TEEN17 )  // wheel |
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4257,7 +4257,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(24.0f, 0.5f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN18 )  // roue /
+	if ( type == OBJECT_TEEN18 )  // wheel /
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4273,7 +4273,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(24.0f, 0.5f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN19 )  // roue =
+	if ( type == OBJECT_TEEN19 )  // wheel =
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4289,7 +4289,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(33.0f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN20 )  // mur avec �tag�re
+	if ( type == OBJECT_TEEN20 )  // wall with shelf
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4310,7 +4310,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateCrashSphere(D3DVECTOR(  83.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
 	}
 
-	if ( type == OBJECT_TEEN21 )  // mur avec fen�tre
+	if ( type == OBJECT_TEEN21 )  // wall with window
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4322,7 +4322,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetZoom(0, zoom);
 	}
 
-	if ( type == OBJECT_TEEN22 )  // mur avec porte et �tag�re
+	if ( type == OBJECT_TEEN22 )  // wall with door and shelf
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4339,7 +4339,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateCrashSphere(D3DVECTOR( -15.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
 	}
 
-	if ( type == OBJECT_TEEN23 )  // skate sur ses roues
+	if ( type == OBJECT_TEEN23 )  // skateboard on wheels
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4350,7 +4350,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		if ( m_option == 1 )  // passage sous le skate interdit ?
+		if ( m_option == 1 )  // passage under the prohibited skateboard?
 		{
 			CreateCrashSphere(D3DVECTOR(-10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
 			CreateCrashSphere(D3DVECTOR( 10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
@@ -4398,7 +4398,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN26 )  // lampe au plafond
+	if ( type == OBJECT_TEEN26 )  // ceiling lamp
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4417,12 +4417,12 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		pos = Transform(*mat, D3DVECTOR(0.0f, 50.0f, 0.0f));
 		color.r = 4.0f;
 		color.g = 2.0f;
-		color.b = 0.0f;  // jaune-orange
+		color.b = 0.0f;  // yellow-orange
 		color.a = 0.0f;
 		m_main->CreateSpot(pos, color);
 	}
 
-	if ( type == OBJECT_TEEN27 )  // grande plante ?
+	if ( type == OBJECT_TEEN27 )  // large plant?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4437,7 +4437,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(40.0f, 0.5f);
 	}
 
-	if ( type == OBJECT_TEEN28 )  // bouteille ?
+	if ( type == OBJECT_TEEN28 )  // bottle?
 	{
 		rank = m_engine->CreateObject();
 //?		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4453,7 +4453,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(7.0f, 0.6f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN29 )  // pont ?
+	if ( type == OBJECT_TEEN29 )  // bridge?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4466,7 +4466,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		bFloorAdjust = FALSE;
 	}
 
-	if ( type == OBJECT_TEEN30 )  // saut ?
+	if ( type == OBJECT_TEEN30 )  // jump?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4482,7 +4482,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(20.0f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN31 )  // basket ?
+	if ( type == OBJECT_TEEN31 )  // basket?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4501,7 +4501,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(16.0f, 0.6f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN32 )  // chaise ?
+	if ( type == OBJECT_TEEN32 )  // chair?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4520,7 +4520,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(35.0f, 0.3f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN33 )  // panneau ?
+	if ( type == OBJECT_TEEN33 )  // panel?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4535,7 +4535,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(10.0f, 0.3f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN34 )  // caillou ?
+	if ( type == OBJECT_TEEN34 )  // stone?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4550,7 +4550,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(3.0f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN35 )  // tuyau ?
+	if ( type == OBJECT_TEEN35 )  // pipe?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4569,7 +4569,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(40.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
 
-	if ( type == OBJECT_TEEN36 )  // tronc ?
+	if ( type == OBJECT_TEEN36 )  // trunk?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4582,7 +4582,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		bFloorAdjust = FALSE;
 	}
 
-	if ( type == OBJECT_TEEN37 )  // bateau ?
+	if ( type == OBJECT_TEEN37 )  // boat?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4595,7 +4595,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		bFloorAdjust = FALSE;
 	}
 
-	if ( type == OBJECT_TEEN38 )  // ventillateur ?
+	if ( type == OBJECT_TEEN38 )  // fan?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4610,7 +4610,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(1, rank);
 		SetObjectParent(1, 0);
-		pModFile->ReadModel("objects\\teen38b.mod");  // moteur
+		pModFile->ReadModel("objects\\teen38b.mod");  // engine
 		pModFile->CreateEngineObject(rank);
 		SetPosition(1, D3DVECTOR(0.0f, 30.0f, 0.0f));
 
@@ -4618,7 +4618,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
 		SetObjectRank(2, rank);
 		SetObjectParent(2, 1);
-		pModFile->ReadModel("objects\\teen38c.mod");  // h�lice
+		pModFile->ReadModel("objects\\teen38c.mod");  // propeller
 		pModFile->CreateEngineObject(rank);
 		SetPosition(2, D3DVECTOR(0.0f, 0.0f, 0.0f));
 
@@ -4627,7 +4627,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(15.0f, 0.5f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN39 )  // plante en pot ?
+	if ( type == OBJECT_TEEN39 )  // potted plant?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4643,7 +4643,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(10.0f, 1.0f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN40 )  // ballon ?
+	if ( type == OBJECT_TEEN40 )  // balloon?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4659,7 +4659,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(15.0f, 0.7f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN41 )  // cl�ture ?
+	if ( type == OBJECT_TEEN41 )  // fence?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4671,7 +4671,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetZoom(0, zoom);
 	}
 
-	if ( type == OBJECT_TEEN42 )  // tr�fle ?
+	if ( type == OBJECT_TEEN42 )  // clover?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4686,7 +4686,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(15.0f, 0.4f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN43 )  // tr�fle ?
+	if ( type == OBJECT_TEEN43 )  // clover?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4701,7 +4701,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		CreateShadowCircle(15.0f, 0.4f*fShadow);
 	}
 
-	if ( type == OBJECT_TEEN44 )  // caisse ?
+	if ( type == OBJECT_TEEN44 )  // car?
 	{
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEFIX);
@@ -4718,7 +4718,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 	}
 
 	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	if ( bFloorAdjust )
 	{
@@ -4736,7 +4736,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 	return TRUE;
 }
 
-// Cr�e un quartz pos� sur le sol.
+// Creates a crystal placed on the ground.
 
 BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 						   ObjectType type)
@@ -4813,7 +4813,7 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 	}
 
 	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	SetFloorHeight(0.0f);
 	CreateOtherObject(type);
@@ -4849,7 +4849,7 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 	return TRUE;
 }
 
-// Cr�e une racine pos�e sur le sol.
+// Creates a root placed on the ground.
 
 BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 						 ObjectType type)
@@ -5013,7 +5013,7 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 	}
 
 	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	SetFloorHeight(0.0f);
 	CreateOtherObject(type);
@@ -5026,7 +5026,7 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 	return TRUE;
 }
 
-// Cr�e une petite maison.
+// Creates a small home.
 
 BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float height,
 						 ObjectType type)
@@ -5057,7 +5057,7 @@ BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float height,
 	}
 
 	pos = RetPosition(0);
-	SetPosition(0, pos);  // pour afficher les ombres tout de suite
+	SetPosition(0, pos);  // to display the shadows immediately
 
 	SetFloorHeight(0.0f);
 	CreateOtherObject(type);
@@ -5070,7 +5070,7 @@ BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float height,
 	return TRUE;
 }
 
-// Cr�e une ruine pos�e sur le sol.
+// Creates ruin placed on the ground.
 
 BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 						 ObjectType type)
@@ -5086,7 +5086,7 @@ BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 	SetType(type);
 
 	rank = m_engine->CreateObject();
-	m_engine->SetObjectType(rank, TYPEFIX);  // c'est un objet fixe
+	m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
 	SetObjectRank(0, rank);
 
 	name[0] = 0;
@@ -5110,7 +5110,7 @@ BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 	SetPosition(0, pos);
 	SetAngleY(0, angle);
 
-	if ( type == OBJECT_RUINmobilew1 )  // v�hicule � roues ?
+	if ( type == OBJECT_RUINmobilew1 )  // vehicle had wheels?
 	{
 		// Cr�e la roue arri�re-droite.
 		rank = m_engine->CreateObject();
