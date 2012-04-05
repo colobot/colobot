@@ -31,76 +31,76 @@
 
 
 
-extern BOOL			IsEqual(float a, float b);
+BOOL			IsEqual(float a, float b);
 
-extern float		Min(float a, float b);
-extern float		Min(float a, float b, float c);
-extern float		Min(float a, float b, float c, float d);
-extern float		Min(float a, float b, float c, float d, float e);
+float		Min(float a, float b);
+float		Min(float a, float b, float c);
+float		Min(float a, float b, float c, float d);
+float		Min(float a, float b, float c, float d, float e);
 
-extern float		Max(float a, float b);
-extern float		Max(float a, float b, float c);
-extern float		Max(float a, float b, float c, float d);
-extern float		Max(float a, float b, float c, float d, float e);
+float		Max(float a, float b);
+float		Max(float a, float b, float c);
+float		Max(float a, float b, float c, float d);
+float		Max(float a, float b, float c, float d, float e);
 
-extern float		Norm(float a);
-extern float		Abs(float a);
+float		Norm(float a);
+float		Abs(float a);
 	
-extern void			Swap(int &a, int &b);
-extern void			Swap(float &a, float &b);
-extern void			Swap(FPOINT &a, FPOINT &b);
+void			Swap(int &a, int &b);
+void			Swap(float &a, float &b);
+void			Swap(FPOINT &a, FPOINT &b);
 
-extern float		Mod(float a, float m);
-extern float		NormAngle(float angle);
-extern BOOL			TestAngle(float angle, float min, float max);
+float		Mod(float a, float m);
+float		NormAngle(float angle);
+BOOL			TestAngle(float angle, float min, float max);
 
-extern float		Direction(float a, float g);
-extern FPOINT		RotatePoint(FPOINT center, float angle, FPOINT p);
-extern FPOINT		RotatePoint(float angle, FPOINT p);
-extern FPOINT		RotatePoint(float angle, float dist);
-extern float		RotateAngle(float x, float y);
-extern float		RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
-extern float		MidPoint(FPOINT a, FPOINT b, float px);
-extern D3DVECTOR	SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
-extern BOOL			IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
-extern BOOL			Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
-extern BOOL			IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
-extern void			RotatePoint(float cx, float cy, float angle, float &px, float &py);
-extern void			RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
-extern void			RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
-extern D3DVECTOR	RotateView(D3DVECTOR center, float angleH, float angleV, float dist);
-extern D3DVECTOR	LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
-extern float		Length(FPOINT a, FPOINT b);
-extern float		Length(float x, float y);
-extern float		Length(const D3DVECTOR &u);
-extern float		Length(const D3DVECTOR &a, const D3DVECTOR &b);
-extern float		Length2d(const D3DVECTOR &a, const D3DVECTOR &b);
-extern float		Angle( D3DVECTOR u, D3DVECTOR v );
-extern D3DVECTOR	Cross( D3DVECTOR u, D3DVECTOR v );
-extern D3DVECTOR	ComputeNormal( D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3 );
-extern D3DVECTOR	Transform(const D3DMATRIX &m, D3DVECTOR p);
-extern D3DVECTOR	Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p);
+float		Direction(float a, float g);
+FPOINT		RotatePoint(FPOINT center, float angle, FPOINT p);
+FPOINT		RotatePoint(float angle, FPOINT p);
+FPOINT		RotatePoint(float angle, float dist);
+float		RotateAngle(float x, float y);
+float		RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
+float		MidPoint(FPOINT a, FPOINT b, float px);
+D3DVECTOR	SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
+BOOL			IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
+BOOL			Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
+BOOL			IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
+void			RotatePoint(float cx, float cy, float angle, float &px, float &py);
+void			RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+void			RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+D3DVECTOR	RotateView(D3DVECTOR center, float angleH, float angleV, float dist);
+D3DVECTOR	LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
+float		Length(FPOINT a, FPOINT b);
+float		Length(float x, float y);
+float		Length(const D3DVECTOR &u);
+float		Length(const D3DVECTOR &a, const D3DVECTOR &b);
+float		Length2d(const D3DVECTOR &a, const D3DVECTOR &b);
+float		Angle( D3DVECTOR u, D3DVECTOR v );
+D3DVECTOR	Cross( D3DVECTOR u, D3DVECTOR v );
+D3DVECTOR	ComputeNormal( D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3 );
+D3DVECTOR	Transform(const D3DMATRIX &m, D3DVECTOR p);
+D3DVECTOR	Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p);
 
-extern void			MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
-extern void			SmoothObject( D3DVERTEX2* pVertices, int nb );
-extern BOOL			LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
-extern float		DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &c, const D3DVECTOR &p);
-extern BOOL			IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
-extern void			MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle);
-extern void			MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle);
+void			MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
+void			SmoothObject( D3DVERTEX2* pVertices, int nb );
+BOOL			LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
+float		DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &c, const D3DVECTOR &p);
+BOOL			IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
+void			MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle);
+void			MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle);
 
-extern float		Rand();
-extern float		Neutral(float value, float dead);
+float		Rand();
+float		Neutral(float value, float dead);
 
-extern float		Prop(int a, int b, float p);
-extern float		Smooth(float actual, float hope, float time);
-extern float		Bounce(float progress, float middle=0.3f, float bounce=0.4f);
+float		Prop(int a, int b, float p);
+float		Smooth(float actual, float hope, float time);
+float		Bounce(float progress, float middle=0.3f, float bounce=0.4f);
 
-extern D3DCOLOR		RetColor(float intensity);
-extern D3DCOLOR		RetColor(D3DCOLORVALUE intensity);
-extern D3DCOLORVALUE RetColor(D3DCOLOR intensity);
+D3DCOLOR		RetColor(float intensity);
+D3DCOLOR		RetColor(D3DCOLORVALUE intensity);
+D3DCOLORVALUE RetColor(D3DCOLOR intensity);
 
-extern void			RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest);
-extern void			HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest);
+void			RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest);
+void			HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest);
 
 #endif //_MATH3D_H_

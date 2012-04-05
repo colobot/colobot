@@ -24,9 +24,9 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
-#include "D3DUtil.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
+#include "d3dutil.h"
 #include "math3d.h"
 
 
@@ -41,23 +41,23 @@ BOOL IsEqual(float a, float b)
 
 // Returns the minimum value.
 
-inline float Min(float a, float b)
+float Min(float a, float b)
 {
 	if ( a <= b )  return a;
 	else           return b;
 }
 
-inline float Min(float a, float b, float c)
+float Min(float a, float b, float c)
 {
 	return Min( Min(a,b), c );
 }
 
-inline float Min(float a, float b, float c, float d)
+float Min(float a, float b, float c, float d)
 {
 	return Min( Min(a,b), Min(c,d) );
 }
 
-inline float Min(float a, float b, float c, float d, float e)
+float Min(float a, float b, float c, float d, float e)
 {
 	return Min( Min(a,b), Min(c,d), e );
 }
@@ -65,23 +65,23 @@ inline float Min(float a, float b, float c, float d, float e)
 
 // Returns the maximum value.
 
-inline float Max(float a, float b)
+float Max(float a, float b)
 {
 	if ( a >= b )  return a;
 	else           return b;
 }
 
-inline float Max(float a, float b, float c)
+float Max(float a, float b, float c)
 {
 	return Max( Max(a,b), c );
 }
 
-inline float Max(float a, float b, float c, float d)
+float Max(float a, float b, float c, float d)
 {
 	return Max( Max(a,b), Max(c,d) );
 }
 
-inline float Max(float a, float b, float c, float d, float e)
+float Max(float a, float b, float c, float d, float e)
 {
 	return Max( Max(a,b), Max(c,d), e );
 }
@@ -89,7 +89,7 @@ inline float Max(float a, float b, float c, float d, float e)
 
 // Returns the normalized value (0 .. 1).
 
-inline float Norm(float a)
+float Norm(float a)
 {
 	if ( a < 0.0f )  return 0.0f;
 	if ( a > 1.0f )  return 1.0f;
@@ -99,7 +99,7 @@ inline float Norm(float a)
 
 // Returns the absolute value of a number.
 
-inline float Abs(float a)
+float Abs(float a)
 {
 	return (float)fabs(a);
 }
@@ -107,7 +107,7 @@ inline float Abs(float a)
 
 // Swaps two integers.
 
-inline void Swap(int &a, int &b)
+void Swap(int &a, int &b)
 {
 	int		c;
 
@@ -118,7 +118,7 @@ inline void Swap(int &a, int &b)
 
 // Swaps two real numbers.
 
-inline void Swap(float &a, float &b)
+void Swap(float &a, float &b)
 {
 	float	c;
 
@@ -129,7 +129,7 @@ inline void Swap(float &a, float &b)
 
 // Permutes two points.
 
-inline void Swap(FPOINT &a, FPOINT &b)
+void Swap(FPOINT &a, FPOINT &b)
 {
 	FPOINT	c;
 
@@ -142,14 +142,14 @@ inline void Swap(FPOINT &a, FPOINT &b)
 //	Mod(8.1, 4) = 0.1
 //	Mod(n, 1) = fractional part of n
 
-inline float Mod(float a, float m)
+float Mod(float a, float m)
 {
 	return a - ((int)(a/m))*m;
 }
 
 // Returns a normalized angle, that is in other words between 0 and 2 * PI.
 
-inline float NormAngle(float angle)
+float NormAngle(float angle)
 {
 	angle = Mod(angle, PI*2.0f);
 	if ( angle < 0.0f )
@@ -547,7 +547,7 @@ D3DVECTOR LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length )
 
 // Returns the distance between two points.
 
-inline float Length(FPOINT a, FPOINT b)
+float Length(FPOINT a, FPOINT b)
 {
 	return sqrtf( (a.x-b.x)*(a.x-b.x) +
 				  (a.y-b.y)*(a.y-b.y) );
@@ -555,21 +555,21 @@ inline float Length(FPOINT a, FPOINT b)
 
 // Returns the hypotenuse of a right triangle.
 
-inline float Length(float x, float y)
+float Length(float x, float y)
 {
 	return sqrtf( (x*x) + (y*y) );
 }
 
 // Returns the length of a vector.
 
-inline float Length(const D3DVECTOR &u)
+float Length(const D3DVECTOR &u)
 {
 	return sqrtf( (u.x*u.x) + (u.y*u.y) + (u.z*u.z) );
 }
 
 // Returns the distance between two points.
 
-inline float Length(const D3DVECTOR &a, const D3DVECTOR &b)
+float Length(const D3DVECTOR &a, const D3DVECTOR &b)
 {
 	return sqrtf( (a.x-b.x)*(a.x-b.x) +
 				  (a.y-b.y)*(a.y-b.y) +
@@ -578,7 +578,7 @@ inline float Length(const D3DVECTOR &a, const D3DVECTOR &b)
 
 // Returns the distance "a flat" between two points.
 
-inline float Length2d(const D3DVECTOR &a, const D3DVECTOR &b)
+float Length2d(const D3DVECTOR &a, const D3DVECTOR &b)
 {
 	return sqrtf( (a.x-b.x)*(a.x-b.x) +
 				  (a.z-b.z)*(a.z-b.z) );
@@ -612,7 +612,7 @@ float Angle( D3DVECTOR u, D3DVECTOR v )
 
 // Returns the product of two vectors.
 
-inline D3DVECTOR Cross( D3DVECTOR u, D3DVECTOR v )
+D3DVECTOR Cross( D3DVECTOR u, D3DVECTOR v )
 {
 	return D3DVECTOR( u.y*v.z - u.z*v.y,
 					  u.z*v.x - u.x*v.z,
@@ -846,7 +846,7 @@ float Neutral(float value, float dead)
 
 // Calculates a value (radians) proportional between a and b (degrees).
 
-inline float Prop(int a, int b, float p)
+float Prop(int a, int b, float p)
 {
 	float	aa, bb;
 
