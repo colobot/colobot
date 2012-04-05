@@ -20,7 +20,10 @@
 #define	_MISC_H_
 
 #include <time.h>
+
+
 #include "metafile.h"
+#include "event.h"
 
 
 extern CMetaFile	g_metafile;
@@ -215,8 +218,6 @@ enum Error
 
 
 // Procedures.
-
-enum EventMsg;
 
 extern EventMsg	GetUniqueEventMsg();
 

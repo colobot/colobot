@@ -20,6 +20,8 @@
 #define	_METAFILE_H_
 
 
+#include <stdio.h>
+
 
 #define METAMAX		5
 

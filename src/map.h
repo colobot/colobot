@@ -21,15 +21,14 @@
 
 
 #include "control.h"
+#include "struct.h"
+#include "object.h"
 
 
 class CD3DEngine;
 class CTerrain;
 class CWater;
-class CObject;
 class CRobotMain;
-
-enum ObjectType;
 
 
 

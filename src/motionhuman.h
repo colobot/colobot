@@ -20,6 +20,10 @@
 #define	_MOTIONHUMAN_H_
 
 
+#include "motion.h"
+#include "misc.h"
+
+
 class CInstanceManager;
 class CEngine;
 class CLight;
