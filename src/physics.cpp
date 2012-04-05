@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// physics.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// physics.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -54,7 +56,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
 {
@@ -73,13 +75,13 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
 	m_motion    = 0;
 
 	m_type = TYPE_ROLLING;
-	m_gravity = 9.81f;  // gravité terrestre par défaut
+	m_gravity = 9.81f;  // default gravity
 	m_time = 0.0f;
 	m_timeUnderWater = 0.0f;
 	m_motorSpeed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_bMotor = FALSE;
-	m_bLand = TRUE;  // au sol
-	m_bSwim = FALSE;  // dans l'air
+	m_bLand = TRUE;  // ground
+	m_bSwim = FALSE;  // in air
 	m_bCollision = FALSE;
 	m_bObstacle = FALSE;
 	m_repeatCollision = 0;
@@ -117,7 +119,7 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
 	ZeroMemory(&m_cirMotion, sizeof(Motion));
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CPhysics::~CPhysics()
 {
@@ -125,7 +127,7 @@ CPhysics::~CPhysics()
 }
 
 
-// Détruit l'objet.
+// Destroys the object.
 
 void CPhysics::DeleteObject(BOOL bAll)
 {
@@ -155,7 +157,7 @@ void CPhysics::SetMotion(CMotion* motion)
 	m_motion = motion;
 }
 
-// Gestion du type.
+// Management of the type.
 
 void CPhysics::SetType(PhysicsType type)
 {
@@ -169,7 +171,7 @@ PhysicsType CPhysics::RetType()
 
 
 
-// Sauve tous les paramètres de l'objet.
+// Saves all parameters of the object.
 
 BOOL CPhysics::Write(char *line)
 {
@@ -190,7 +192,7 @@ BOOL CPhysics::Write(char *line)
 	return TRUE;
 }
 
-// Restitue tous les paramètres de l'objet.
+// Restores all parameters of the object.
 
 BOOL CPhysics::Read(char *line)
 {
@@ -207,7 +209,7 @@ BOOL CPhysics::Read(char *line)
 
 
 
-// Gestion de la force de gravité.
+// Management of the force of gravity.
 
 void CPhysics::SetGravity(float value)
 {
@@ -220,7 +222,7 @@ float CPhysics::RetGravity()
 }
 
 
-// Retourne la hauteur au-dessus du sol.
+// Returns the height above the ground.
 
 float CPhysics::RetFloorHeight()
 {
@@ -228,7 +230,7 @@ float CPhysics::RetFloorHeight()
 }
 
 
-// Gestion de l'état du moteur.
+// Managing the state of the engine.
 
 void CPhysics::SetMotor(BOOL bState)
 {
@@ -250,12 +252,12 @@ BOOL CPhysics::RetMotor()
 }
 
 
-// Gestion de l'état en vol/au sol.
+// Management of the state in flight/ground.
 
 void CPhysics::SetLand(BOOL bState)
 {
 	m_bLand = bState;
-	SetMotor(!bState);  // allume le réacteur si on part en vol
+	SetMotor(!bState);  // lights if you leave the reactor in flight
 }
 
 BOOL CPhysics::RetLand()
@@ -264,11 +266,11 @@ BOOL CPhysics::RetLand()
 }
 
 
-// Gestion de l'état dans l'air/l'eau.
+// Management of the state in air/water.
 
 void CPhysics::SetSwim(BOOL bState)
 {
-	if ( !m_bSwim && bState )  // entre dans l'eau ?
+	if ( !m_bSwim && bState )  // enters the water?
 	{
 		m_timeUnderWater = 0.0f;
 	}
@@ -281,7 +283,7 @@ BOOL CPhysics::RetSwim()
 }
 
 
-// Indique s une collision a eu lieu.
+// Indicates whether a collision occurred.
 
 void CPhysics::SetCollision(BOOL bCollision)
 {
@@ -294,7 +296,7 @@ BOOL CPhysics::RetCollision()
 }
 
 
-// Indique si l'influence du sol est activée ou non.
+// Indicates whether the influence of soil is activated or not.
 
 void CPhysics::SetFreeze(BOOL bFreeze)
 {
@@ -307,7 +309,7 @@ BOOL CPhysics::RetFreeze()
 }
 
 
-// Retourne le niveau d'automie du réacteur.
+// Returns the range of the reactor.
 
 void CPhysics::SetReactorRange(float range)
 {
@@ -320,37 +322,37 @@ float CPhysics::RetReactorRange()
 }
 
 
-// Spécifie la vitesse du moteur.
-// x = avancer/reculer
-// y = monter/descendre
-// z = tourner
+// Specifies the engine speed.
+// x = forward/backward
+// y = up/down
+// z = turn
 
 void CPhysics::SetMotorSpeed(D3DVECTOR speed)
 {
 	m_motorSpeed = speed;
 }
 
-// Spécifie la vitesse du moteur pour avancer/reculer.
-// +1 = avancer
-// -1 = reculer
+// Specifies the engine speed for forward/backward.
+// +1 = forward
+// -1 = backward
 
 void CPhysics::SetMotorSpeedX(float speed)
 {
 	m_motorSpeed.x = speed;
 }
 
-// Spécifie la vitesse du moteur pour monter/descendre.
-// +1 = monter
-// -1 = descendre
+// Specifies the motor speed for up/down.
+// +1 = up
+// -1 = down
 
 void CPhysics::SetMotorSpeedY(float speed)
 {
 	m_motorSpeed.y = speed;
 }
 
-// Spécifie la vitesse du moteur pour tourner.
-// +1 = tourner à droite (CW)
-// -1 = tourner à gauche (CCW)
+// Specifies the speed of the motor to turn.
+// +1 = turn right(CW)
+// -1 = turn left(CCW)
 
 void CPhysics::SetMotorSpeedZ(float speed)
 {
@@ -378,8 +380,8 @@ float CPhysics::RetMotorSpeedZ()
 }
 
 
-// Gestion des vitesses linéaires et angulaires.
-// Spécifie la vitesse parallèle au sens de marche.
+// Management of linear and angular velocities.
+// Specifies the speed parallel to the direction of travel.
 
 void CPhysics::SetLinMotion(PhysicsMode mode, D3DVECTOR value)
 {
@@ -447,7 +449,7 @@ float CPhysics::RetLinMotionX(PhysicsMode mode)
 	return 0.0f;
 }
 
-// Spécifie la vitesse d'élévation.
+// Specifies the speed of elevation.
 
 void CPhysics::SetLinMotionY(PhysicsMode mode, float value)
 {
@@ -482,7 +484,7 @@ float CPhysics::RetLinMotionY(PhysicsMode mode)
 	return 0.0f;
 }
 
-// Spécifie la vitesse perpendiculaire au sens de marche.
+// Specifies the velocity perpendicular to the direction of travel.
 
 void CPhysics::SetLinMotionZ(PhysicsMode mode, float value)
 {
@@ -517,7 +519,7 @@ float CPhysics::RetLinMotionZ(PhysicsMode mode)
 	return 0.0f;
 }
 
-// Spécifie la rotation autour de l'axe de marche.
+// Specifies the rotation around the axis of walk.
 
 void CPhysics::SetCirMotion(PhysicsMode mode, D3DVECTOR value)
 {
@@ -585,7 +587,7 @@ float CPhysics::RetCirMotionX(PhysicsMode mode)
 	return 0.0f;
 }
 
-// Spécifie la rotation de direction.
+// Specifies the rotation direction.
 
 void CPhysics::SetCirMotionY(PhysicsMode mode, float value)
 {
@@ -620,7 +622,7 @@ float CPhysics::RetCirMotionY(PhysicsMode mode)
 	return 0.0f;
 }
 
-// Spécifie la rotation de montée/descente.
+// Specifies the rotation up/down.
 
 void CPhysics::SetCirMotionZ(PhysicsMode mode, float value)
 {
@@ -656,9 +658,9 @@ float CPhysics::RetCirMotionZ(PhysicsMode mode)
 }
 
 
-// Retourne la distance linéaire de freinage.
+// Returns the linear distance braking.
 //
-//       v*v
+//           v*v
 //	d = -----
 //	     2a
 
@@ -669,7 +671,7 @@ float CPhysics::RetLinStopLength(PhysicsMode sMode, PhysicsMode aMode)
 	speed = RetLinMotionX(sMode);  // MO_ADVSPEED/MO_RECSPEED
 	accel = RetLinMotionX(aMode);  // MO_ADVACCEL/MO_RECACCEL/MO_STOACCEL
 
-	if ( m_type == TYPE_FLYING && m_bLand )  // volant au sol ?
+	if ( m_type == TYPE_FLYING && m_bLand )  // flying on the ground?
 	{
 		speed /= LANDING_SPEED;
 		accel *= LANDING_ACCEL;
@@ -678,7 +680,7 @@ float CPhysics::RetLinStopLength(PhysicsMode sMode, PhysicsMode aMode)
 	return (speed*speed) / (accel*2.0f);
 }
 
-// Retourne l'angle circulaire de freinage.
+// Returns the angle of circular braking.
 
 float CPhysics::RetCirStopLength()
 {
@@ -686,7 +688,7 @@ float CPhysics::RetCirStopLength()
 		   m_cirMotion.stopAccel.y / 2.0f;
 }
 
-// Retourne la longueur avancée en une seconde, au sol, à vitesse maximale.
+// Returns the length advanced into a second, on the ground, maximum speed.
 
 float CPhysics::RetLinMaxLength(float dir)
 {
@@ -703,7 +705,7 @@ float CPhysics::RetLinMaxLength(float dir)
 	return dist;
 }
 
-// Retourne le temps nécessaire pour parcourir une certaine distance.
+// Returns the time needed to travel some distance.
 
 float CPhysics::RetLinTimeLength(float dist, float dir)
 {
@@ -725,8 +727,7 @@ float CPhysics::RetLinTimeLength(float dist, float dir)
 	return (dist+accel+decel)/dps;
 }
 
-// Retourne la longueur à avancer pour parcourir une certaine
-// distance, en tenant compte des accélérations/décélérations.
+// Returns the length for a forward travel some distance, taking into account the accelerations / decelerations.
 
 float CPhysics::RetLinLength(float dist)
 {
@@ -762,8 +763,8 @@ float CPhysics::RetLinLength(float dist)
 }
 
 
-// Gestion d'un événement.
-// Retourne FALSE si l'objet est détruit.
+// Management of an event.
+// Returns FALSE if the object is destroyed.
 
 BOOL CPhysics::EventProcess(const Event &event)
 {
@@ -782,7 +783,7 @@ BOOL CPhysics::EventProcess(const Event &event)
 }
 
 
-// Met à jour les consignes de vitesse du moteur.
+// Updates instructions for the motor speed.
 
 void CPhysics::MotorUpdate(float aTime, float rTime)
 {
@@ -809,31 +810,31 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 			  type == OBJECT_TECH  )
 	{
 		power = 0;
-		if ( m_object->RetFret() != 0 &&  // porte qq chose ?
+		if ( m_object->RetFret() != 0 &&  // carries something?
 			 !m_object->RetCargo() )
 		{
-			motorSpeed.x *= 0.7f;  // avance plus lentement
+			motorSpeed.x *= 0.7f;  // forward more slowly
 			motorSpeed.z *= 0.5f;
-			motorSpeed.y = -1.0f;  // tombe
+			motorSpeed.y = -1.0f;  // grave
 		}
 		if ( m_bSwim )
 		{
-			if ( m_bLand )  // au fond de l'eau ?
+			if ( m_bLand )  // deep in the water?
 			{
-				motorSpeed.x *= 0.4f;  // avance plus lentement
+				motorSpeed.x *= 0.4f;  // forward more slowly
 				motorSpeed.z *= 0.5f;
 				motorSpeed.y *= 0.5f;
 
-				if ( m_object->RetFret() != 0 )  // porte qq chose ?
+				if ( m_object->RetFret() != 0 )  // carries something?
 				{
 					motorSpeed.x *= 0.2f;
 					motorSpeed.z *= 0.9f;
 					motorSpeed.y *= 0.2f;
 				}
 			}
-			else	// nage ?
+			else	// swimming?
 			{
-				motorSpeed.x *= 0.2f;  // avance plus lentement
+				motorSpeed.x *= 0.2f;  // forward more slowly
 				motorSpeed.z *= 0.5f;
 				motorSpeed.y *= 0.2f;
 			}
@@ -841,8 +842,8 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 	}
 	else
 	{
-		power = m_object->RetPower();  // cherche l'objet pile utilisé
-		if ( power == 0 || power->RetEnergy() == 0.0f )  // pas de pile ou plate ?
+		power = m_object->RetPower();  // searches for the object battery uses
+		if ( power == 0 || power->RetEnergy() == 0.0f )  // no battery or flat?
 		{
 			motorSpeed.x =  0.0f;
 			motorSpeed.z =  0.0f;
@@ -852,23 +853,23 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 			}
 			else
 			{
-				motorSpeed.y = -1.0f;  // tombe
+				motorSpeed.y = -1.0f;  // grave
 			}
 			SetMotor(FALSE);
 		}
 	}
 
-	if ( m_object->RetDead() )  // homme mort ?
+	if ( m_object->RetDead() )  // dead man?
 	{
 		motorSpeed.x = 0.0f;
 		motorSpeed.z = 0.0f;
-		if ( m_motion->RetAction() == MHS_DEADw )  // mort noyé ?
+		if ( m_motion->RetAction() == MHS_DEADw )  // drowned?
 		{
-			motorSpeed.y = 0.0f;  // c'est MHS_DEADw qui remonte
+			motorSpeed.y = 0.0f;  // this is MHS_DEADw going back
 		}
 		else
 		{
-			motorSpeed.y = -1.0f;  // tombe
+			motorSpeed.y = -1.0f;  // grave
 		}
 		SetMotor(FALSE);
 	}
@@ -878,28 +879,28 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		pos = m_object->RetPosition(0);
 		h = m_terrain->RetFlyingLimit(pos, type==OBJECT_BEE);
 		h += m_object->RetCharacter()->height;
-		if ( pos.y > h-40.0f )  // presque tout en haut ?
+		if ( pos.y > h-40.0f )  // almost at the top?
 		{
 			factor = 1.0f-(pos.y-(h-40.0f))/40.0f;
 			if ( factor < -1.0f )  factor = -1.0f;
 			if ( factor >  1.0f )  factor =  1.0f;
-			motorSpeed.y *= factor;  // limite la vitesse de montée
+			motorSpeed.y *= factor;  // limit the rate of rise
 		}
 	}
 
 	if ( type != OBJECT_BEE &&
-		 m_object->RetRange() > 0.0f )  // autonomie de vol limitée ?
+		 m_object->RetRange() > 0.0f )  // limited flight range?
 	{
-		if ( m_bLand || m_bSwim || m_bObstacle )  // au sol ou dans l'eau ?
+		if ( m_bLand || m_bSwim || m_bObstacle )  // on the ground or in the water?
 		{
 			factor = 1.0f;
-			if ( m_bObstacle )  factor = 3.0f;  // pour pouvoir repartir !
-			if ( m_bSwim )  factor = 3.0f;  // refroidit plus vite dans l'eau
+			if ( m_bObstacle )  factor = 3.0f;  // in order to leave!
+			if ( m_bSwim )  factor = 3.0f;  // cools faster in water
 			m_reactorRange += rTime*(1.0f/5.0f)*factor;
 			if ( m_reactorRange > 1.0f )
 			{
 				m_reactorRange = 1.0f;
-				if ( m_bLowLevel && m_object->RetSelect() )  // bip froid ?
+				if ( m_bLowLevel && m_object->RetSelect() )  // beep cool?
 				{
 					m_sound->Play(SOUND_INFO, m_object->RetPosition(0), 1.0f, 2.0f);
 					m_bLowLevel = FALSE;
@@ -907,22 +908,22 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 			}
 			m_bObstacle = FALSE;
 		}
-		else	// en vol ?
+		else	// in flight?
 		{
 			m_reactorRange -= rTime*(1.0f/m_object->RetRange());
 			if ( m_reactorRange < 0.0f )  m_reactorRange = 0.0f;
 			if ( m_reactorRange < 0.5f )  m_bLowLevel = TRUE;
 		}
 
-		if ( m_reactorRange == 0.0f )  // réacteur tilté ?
+		if ( m_reactorRange == 0.0f )  // reactor tilt?
 		{
-			motorSpeed.y = -1.0f;  // tombe ...
+			motorSpeed.y = -1.0f;  // grave
 		}
 	}
 
 //?	MotorParticule(aTime);
 
-	// Avancer/reculer.
+	// Forward/backward.
 	if ( motorSpeed.x > 0.0f )
 	{
 		m_linMotion.motorAccel.x = m_linMotion.advanceAccel.x;
@@ -939,7 +940,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		m_linMotion.motorSpeed.x = 0.0f;
 	}
 
-	// Monter/descendre.
+	// Up/down.
 	if ( motorSpeed.y > 0.0f )
 	{
 		m_linMotion.motorAccel.y = m_linMotion.advanceAccel.y;
@@ -956,9 +957,9 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		m_linMotion.motorSpeed.y = 0.0f;
 	}
 
-	// Tourner à gauche/droite.
+	// Turn left/right.
 	speed = motorSpeed.z;
-//?	if ( motorSpeed.x < 0.0f )  speed = -speed;  // inverse tourne si recule
+//?	if ( motorSpeed.x < 0.0f )  speed = -speed;  // reverse if running back
 
 	if ( motorSpeed.z > 0.0f )
 	{
@@ -976,7 +977,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		m_cirMotion.motorSpeed.y = 0.0f;
 	}
 
-	if ( m_type == TYPE_FLYING && m_bLand )  // volant au sol ?
+	if ( m_type == TYPE_FLYING && m_bLand )  // flying on the ground?
 	{
 		if ( type == OBJECT_HUMAN ||
 			 type == OBJECT_TECH  )
@@ -995,9 +996,9 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		h += m_object->RetCharacter()->height;
 		if ( motorSpeed.y > 0.0f && m_reactorRange > 0.1f && pos.y < h )
 		{
-			m_bLand = FALSE;  // décolle
+			m_bLand = FALSE;  // take off
 			SetMotor(TRUE);
-			pos.y += 0.05f;  // petite hauteur initiale (startup)
+			pos.y += 0.05f;  // small initial height (startup)
 			m_object->SetPosition(0, pos);
 		}
 	}
@@ -1015,7 +1016,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		}
 	}
 
-	if ( power != 0 )  // pile transportée ?
+	if ( power != 0 )  // battery transported?
 	{
 		factor = 1.0f;
 		if ( type == OBJECT_MOBILEia ||
@@ -1039,7 +1040,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 }
 
 
-// Met à jour les effets de vibration et d'inclinaison.
+// Updates the effects of vibration and tilt.
 
 void CPhysics::EffectUpdate(float aTime, float rTime)
 {
@@ -1065,10 +1066,10 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 	vibCir = m_motion->RetCirVibration();
 	incl   = m_motion->RetInclinaison();
 
-	if ( type == OBJECT_HUMAN ||  // homme ?
+	if ( type == OBJECT_HUMAN ||  // human?
 		 type == OBJECT_TECH  )
 	{
-		if ( !m_bLand && !m_bSwim )  // en vol ?
+		if ( !m_bLand && !m_bSwim )  // in flight?
 		{
 			vibLin.y = sinf(aTime*2.00f)*0.5f+
 					   sinf(aTime*2.11f)*0.3f;
@@ -1083,7 +1084,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
 			speedLin = m_linMotion.realSpeed.x / m_linMotion.advanceSpeed.x;
 			speedCir = m_cirMotion.realSpeed.y / m_cirMotion.advanceSpeed.y;
-			incl.x = -speedLin*speedCir*0.5f;  // penche si virage
+			incl.x = -speedLin*speedCir*0.5f;  // looks if turn
 
 //?			speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x*1.5f;
 			speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x*1.2f;
@@ -1114,7 +1115,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 			m_motion->SetCirVibration(vibCir);
 			m_motion->SetInclinaison(incl);
 		}
-		else if ( m_bSwim )  // nage ?
+		else if ( m_bSwim )  // swimming?
 		{
 			vibLin.y = sinf(aTime*2.00f)*0.5f+
 					   sinf(aTime*2.11f)*0.3f;
@@ -1130,7 +1131,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
 			speedLin = m_linMotion.realSpeed.x / m_linMotion.advanceSpeed.x;
 			speedCir = m_cirMotion.realSpeed.y / m_cirMotion.advanceSpeed.y;
-			incl.x = -speedLin*speedCir*5.0f;  // penche si virage
+			incl.x = -speedLin*speedCir*5.0f;  // looks if turn
 
 //?			speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x*1.5f;
 			speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x*1.2f;
@@ -1153,11 +1154,11 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 				}
 			}
 
-			if ( m_linMotion.realSpeed.y > 0.0f )  // monte ?
+			if ( m_linMotion.realSpeed.y > 0.0f )  // up?
 			{
 				vibCir.z += m_linMotion.realSpeed.y*0.05f;
 			}
-			else	// descend ?
+			else	// down?
 			{
 				vibCir.z += m_linMotion.realSpeed.y*0.12f;
 			}
@@ -1185,11 +1186,11 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 		 type == OBJECT_MOBILEws ||
 		 type == OBJECT_MOBILEwt ||
 		 type == OBJECT_MOBILEtg ||
-		 type == OBJECT_APOLLO2  )  // roues ?
+		 type == OBJECT_APOLLO2  )  // wheels?
 	{
 		speedLin = m_linMotion.realSpeed.x / m_linMotion.advanceSpeed.x;
 		speedCir = m_cirMotion.realSpeed.y / m_cirMotion.advanceSpeed.y;
-		incl.x = speedLin*speedCir*0.20f;  // penche si virage
+		incl.x = speedLin*speedCir*0.20f;  // looks if turn
 		if ( type == OBJECT_APOLLO2 )  incl.x *= 0.25f;
 
 		speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x;
@@ -1228,15 +1229,15 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 		 type == OBJECT_MOBILEfc ||
 		 type == OBJECT_MOBILEfi ||
 		 type == OBJECT_MOBILEfs ||
-		 type == OBJECT_MOBILEft )  // volant ?
+		 type == OBJECT_MOBILEft )  // fliyng?
 	{
-		if ( m_bLand )  // au sol ?
+		if ( m_bLand )  // on the ground?
 		{
 			m_motion->SetLinVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
 			m_motion->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
 			m_motion->SetInclinaison(D3DVECTOR(0.0f, 0.0f, 0.0f));
 		}
-		else	// en vol ?
+		else	// in flight?
 		{
 			vibLin.y = sinf(aTime*2.00f)*0.5f+
 					   sinf(aTime*2.11f)*0.3f;
@@ -1253,7 +1254,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
 			speedLin = m_linMotion.realSpeed.x / m_linMotion.advanceSpeed.x;
 			speedCir = m_cirMotion.realSpeed.y / m_cirMotion.advanceSpeed.y;
-			incl.x = -speedLin*speedCir*0.5f;  // penche si virage
+			incl.x = -speedLin*speedCir*0.5f;  // looks if turn
 
 //?			speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x*1.5f;
 			speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x*1.2f;
@@ -1287,9 +1288,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 		}
 	}
 
-	if ( type == OBJECT_BEE )  // abeille ?
+	if ( type == OBJECT_BEE )  // bee?
 	{
-		if ( !m_bLand )  // en vol ?
+		if ( !m_bLand )  // in flight?
 		{
 			vibLin.y = sinf(aTime*2.00f)*0.5f+
 					   sinf(aTime*2.11f)*0.3f;
@@ -1306,7 +1307,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 
 			speedLin = m_linMotion.realSpeed.x / m_linMotion.advanceSpeed.x;
 			speedCir = m_cirMotion.realSpeed.y / m_cirMotion.advanceSpeed.y;
-			incl.x = -speedLin*speedCir*1.5f;  // penche si virage
+			incl.x = -speedLin*speedCir*1.5f;  // looks if turn
 
 //?			speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x*1.5f;
 			speedLin  = m_linMotion.currentSpeed.x - m_linMotion.motorSpeed.x*1.2f;
@@ -1341,29 +1342,29 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 }
 
 
-// Met à jour une structure Motion.
+// Updates structure Motion.
 
 void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 {
 	float	speed, motor;
 
-	// Gestion de la coordonnée x.
+	// Management for the coordinate x.
 	speed = motion.currentSpeed.x;
 	motor = motion.motorSpeed.x * m_inclinaisonFactor;
 	if ( speed < motor )
 	{
-		speed += rTime*motion.motorAccel.x;  // accélère
+		speed += rTime*motion.motorAccel.x;  // accelerates
 		if ( speed > motor )
 		{
-			speed = motor;  // ne dépasse pas la vitesse
+			speed = motor;  // does not exceed the speed
 		}
 	}
 	if ( speed > motor )
 	{
-		speed -= rTime*motion.motorAccel.x;  // déccélère
+		speed -= rTime*motion.motorAccel.x;  // decelerates
 		if ( speed < motor )
 		{
-			speed = motor;  // ne dépasse pas la vitesse
+			speed = motor;  // does not exceed the speed
 		}
 	}
 	motion.currentSpeed.x = speed;
@@ -1382,23 +1383,23 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 		motion.realSpeed.x += speed;
 	}
 
-	// Gestion de la coordonnée y.
+	// Management for the coordinate y.
 	speed = motion.currentSpeed.y;
-	motor = motion.motorSpeed.y;  // vitesse non limitée !
+	motor = motion.motorSpeed.y;  // unlimited speed!
 	if ( speed < motor )
 	{
-		speed += rTime*motion.motorAccel.y;  // accélère
+		speed += rTime*motion.motorAccel.y;  // accelerates
 		if ( speed > motor )
 		{
-			speed = motor;  // ne dépasse pas la vitesse
+			speed = motor;  // does not exceed the speed
 		}
 	}
 	if ( speed > motor )
 	{
-		speed -= rTime*motion.motorAccel.y;  // déccélère
+		speed -= rTime*motion.motorAccel.y;  // decelerates
 		if ( speed < motor )
 		{
-			speed = motor;  // ne dépasse pas la vitesse
+			speed = motor;  // does not exceed the speed
 		}
 	}
 	motion.currentSpeed.y = speed;
@@ -1417,23 +1418,23 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 		motion.realSpeed.y += speed;
 	}
 
-	// Gestion de la coordonnée z.
+	// Management for the coordinate z.
 	speed = motion.currentSpeed.z;
 	motor = motion.motorSpeed.z * m_inclinaisonFactor;
 	if ( speed < motor )
 	{
-		speed += rTime*motion.motorAccel.z;  // accélère
+		speed += rTime*motion.motorAccel.z;  // accelerates
 		if ( speed > motor )
 		{
-			speed = motor;  // ne dépasse pas la vitesse
+			speed = motor;  // does not exceed the speed
 		}
 	}
 	if ( speed > motor )
 	{
-		speed -= rTime*motion.motorAccel.z;  // déccélère
+		speed -= rTime*motion.motorAccel.z;  // decelerates
 		if ( speed < motor )
 		{
-			speed = motor;  // ne dépasse pas la vitesse
+			speed = motor;  // does not exceed the speed
 		}
 	}
 	motion.currentSpeed.z = speed;
@@ -1454,14 +1455,14 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 }
 
 
-// Fait évoluer la physique selon le temps écoulé.
-// Retourne FALSE si l'objet est détruit.
+// Makes physics evolve as time elapsed.
+// Returns FALSE if the object is destroyed.
 //
-//	a:  accélération
-//	v1: vitesse au temps t1
-//	v2: vitesse au temps t2
-//	dt: temps écoulé depuis t1, donc: dt=t2-t1
-//	dd: différence de distance (avance)
+//	a:  acceleration
+//	v1: velocity at time t1
+//	v2: velocity at time t2
+//	dt: time elapsed since t1, then: dt = t2-t1
+//	dd: difference in distance (advance)
 //
 //	v2 = v1 + a*dt
 //	dd = v2*dt
@@ -1490,7 +1491,7 @@ BOOL CPhysics::EventFrame(const Event &event)
 	iPos   = pos   = m_object->RetPosition(0);
 	iAngle = angle = m_object->RetAngle(0);
 
-	// Accélère à la descente, freine à la montée.
+	// Accelerate is the descent, brake is the ascent.
 	if ( m_bFreeze || m_object->RetDead() )
 	{
 		m_linMotion.terrainSpeed.x = 0.0f;
@@ -1506,12 +1507,12 @@ BOOL CPhysics::EventFrame(const Event &event)
 		{
 			if ( m_linMotion.currentSpeed.x == 0.0f )
 			{
-				h *= 0.5f;  // homme immobile -> glisse moins
+				h *= 0.5f;  // immobile man -> slippage
 			}
-			FloorAngle(pos, tAngle);  // calcule l'angle avec le terrain
+			FloorAngle(pos, tAngle);  // calculates the angle with the ground
 		}
 #if 1
-		if ( pos.y < m_water->RetLevel(m_object) )  // sous l'eau ?
+		if ( pos.y < m_water->RetLevel(m_object) )  // underwater?
 		{
 			h *= 0.5f;
 		}
@@ -1524,7 +1525,7 @@ BOOL CPhysics::EventFrame(const Event &event)
 		m_linMotion.terrainSpeed.z =  tanf(tAngle.x)*0.9f*m_linMotion.terrainForce.z*h;
 		m_linMotion.terrainSpeed.y = 0.0f;
 
-		// Si le terrain est très pentu, n'exagère pas !
+		// If the terrain is very steep, do not exaggerate!
 		if ( m_linMotion.terrainSpeed.x >  50.0f )  m_linMotion.terrainSpeed.x =  20.0f;
 		if ( m_linMotion.terrainSpeed.x < -50.0f )  m_linMotion.terrainSpeed.x = -20.0f;
 		if ( m_linMotion.terrainSpeed.z >  50.0f )  m_linMotion.terrainSpeed.z =  20.0f;
@@ -1533,17 +1534,16 @@ BOOL CPhysics::EventFrame(const Event &event)
 
 	if ( type == OBJECT_BEE && !m_bLand )
 	{
-		h = m_floorLevel;  // niveau du sol
+		h = m_floorLevel;  // ground level
 		w = m_water->RetLevel(m_object);
 		if ( h < w )  h = w;
-		h = pos.y-h-10.0f;  // hauteur maximale (*)
+		h = pos.y-h-10.0f;  // maximum height (*)
 		if ( h < 0.0f )  h = 0.0f;
-		m_linMotion.terrainSpeed.y = -h*2.5f;  // ne va pas plus haut
+		m_linMotion.terrainSpeed.y = -h*2.5f;  // is not above
 	}
 
-	// (*)	Assez haut pour passer par-dessus la tour de défence
-	//		(OBJECT_TOWER), mais pas trop pour passer sous la coiffe
-	//		du vaisseau (OBJECT_BASE) !
+	// (*)	High enough to pass over the tower defense (OBJECT_TOWER),
+	//      but not too much to pass under the cover of the ship (OBJECT_BASE)!
 
 	UpdateMotionStruct(event.rTime, m_linMotion);
 	UpdateMotionStruct(event.rTime, m_cirMotion);
@@ -1580,13 +1580,13 @@ BOOL CPhysics::EventFrame(const Event &event)
 		 newpos.z != pos.z )
 	{
 		i = ObjectAdapt(newpos, newangle);
-		if ( i == 2 )  // objet détruit ?
+		if ( i == 2 )  // object destroyed?
 		{
 			return FALSE;
 		}
-		if ( i == 1 )  // objet immobile ?
+		if ( i == 1 )  // immobile object?
 		{
-			newpos = iPos;  // garde la position initiale, mais accepte la rotation
+			newpos = iPos;  // keeps the initial position, but accepts the rotation
 		}
 	}
 
@@ -1612,7 +1612,7 @@ BOOL CPhysics::EventFrame(const Event &event)
 	return TRUE;
 }
 
-// Démarre ou stoppe les bruits de moteur.
+// Starts or stops the engine sounds.
 
 void CPhysics::SoundMotor(float rTime)
 {
@@ -1714,13 +1714,13 @@ void CPhysics::SoundMotor(float rTime)
 			}
 		}
 	}
-	else	// véhicule ?
+	else	// vehicle?
 	{
 		if ( m_type == TYPE_ROLLING )
 		{
 			if ( m_bMotor && m_object->RetActif() )
 			{
-				SoundMotorFull(rTime, type);  // plein régime
+				SoundMotorFull(rTime, type);  // full diet
 			}
 			else
 			{
@@ -1734,11 +1734,11 @@ void CPhysics::SoundMotor(float rTime)
 				if ( m_object->RetSelect() &&
 					 energy != 0.0f        )
 				{
-					SoundMotorSlow(rTime, type);  // au ralenti
+					SoundMotorSlow(rTime, type);  // in slow motion
 				}
 				else
 				{
-					SoundMotorStop(rTime, type);  // à l'arrêt
+					SoundMotorStop(rTime, type);  // to the stop
 				}
 			}
 		}
@@ -1748,17 +1748,17 @@ void CPhysics::SoundMotor(float rTime)
 			if ( m_bMotor && !m_bSwim &&
 				 m_object->RetActif() && !m_object->RetDead() )
 			{
-				SoundReactorFull(rTime, type);  // plein régime
+				SoundReactorFull(rTime, type);  // full diet
 			}
 			else
 			{
-				SoundReactorStop(rTime, type);  // à l'arrêt
+				SoundReactorStop(rTime, type);  // to the stop
 			}
 		}
 	}
 }
 
-// Fait exploser l'objet s'il est sous l'eau.
+// Detonates the object if it is underwater.
 
 void CPhysics::WaterFrame(float aTime, float rTime)
 {
@@ -1768,10 +1768,10 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 	float		level;
 
 	level = m_water->RetLevel();
-	if ( level == 0.0f )  return;  // pas d'eau ?
-	if ( m_object->RetTruck() != 0 )  return;  // objet transporté ?
+	if ( level == 0.0f )  return;  // no water?
+	if ( m_object->RetTruck() != 0 )  return;  // object transported?
 
-	// Gestion des flammes dans la lave.
+	// Management of flames into the lava.
 	pos = m_object->RetPosition(0);
 	if ( m_water->RetLava() &&
 		 pos.y-m_object->RetCharacter()->height <= level )
@@ -1804,18 +1804,18 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 	}
 	
 	pos = m_object->RetPosition(0);
-	if ( pos.y >= m_water->RetLevel(m_object) )  return;  // hors de l'eau ?
+	if ( pos.y >= m_water->RetLevel(m_object) )  return;  // out of water?
 
 	type = m_object->RetType();
 	if ( type == OBJECT_TOTO )  return;
 	if ( type == OBJECT_NULL )  return;
 
 	if ( !m_object->RetActif() )  return;
-	if ( m_object->RetResetBusy() )  return;  // reset en cours ?
+	if ( m_object->RetResetBusy() )  return;  // reset in progress?
 
 	if ( m_water->RetLava()      ||
 		 (type == OBJECT_HUMAN   &&
-		  m_object->RetOption() != 0 ) ||  // homme sans casque ?
+		  m_object->RetOption() != 0 ) ||  // human without a helmet?
 		 type == OBJECT_MOBILEfa ||
 		 type == OBJECT_MOBILEta ||
 		 type == OBJECT_MOBILEwa ||
@@ -1841,13 +1841,13 @@ void CPhysics::WaterFrame(float aTime, float rTime)
 		 type == OBJECT_MOBILEwt ||
 		 type == OBJECT_MOBILEit ||
 		 type == OBJECT_MOBILEdr ||
-		 type == OBJECT_APOLLO2  )  // véhicule non sous-marin ?
+		 type == OBJECT_APOLLO2  )  // vehicle not underwater?
 	{
-		m_object->ExploObject(EXPLO_WATER, 1.0f);  // démarre explosion
+		m_object->ExploObject(EXPLO_WATER, 1.0f);  // starts explosion
 	}
 }
 
-// Fait entendre le moteur à plein régime.
+// Sounds the engine at full power.
 
 void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 {
@@ -1942,7 +1942,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 	{
 		m_sound->Position(m_soundChannel, m_object->RetPosition(0));
 
-		if ( m_bSoundSlow )  // au ralenti ?
+		if ( m_bSoundSlow )  // in slow motion?
 		{
 			m_sound->FlushEnvelope(m_soundChannel);
 			m_sound->AddEnvelope(m_soundChannel, amplitude, freq, time, SOPER_CONTINUE);
@@ -1958,7 +1958,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 	m_soundTimePshhh -= rTime*2.0f;
 }
 
-// Fait entendre le moteur au ralenti.
+// Sounds the engine idling.
 
 void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 {
@@ -1974,7 +1974,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 		 type == OBJECT_MOBILEii ||
 		 type == OBJECT_MOBILEis )
 	{
-		if ( m_soundChannel != -1 )  // moteur tourne ?
+		if ( m_soundChannel != -1 )  // engine is running?
 		{
 			m_sound->FlushEnvelope(m_soundChannel);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.0f, 0.3f, SOPER_STOP);
@@ -2006,7 +2006,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 	}
 	else if ( type == OBJECT_APOLLO2 )
 	{
-		if ( m_soundChannel != -1 )  // moteur tourne ?
+		if ( m_soundChannel != -1 )  // engine is running?
 		{
 			m_sound->FlushEnvelope(m_soundChannel);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.3f, SOPER_STOP);
@@ -2036,7 +2036,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 	{
 		m_sound->Position(m_soundChannel, m_object->RetPosition(0));
 
-		if ( !m_bSoundSlow )  // plein régime ?
+		if ( !m_bSoundSlow )  // full power?
 		{
 			m_sound->FlushEnvelope(m_soundChannel);
 			m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 0.3f, SOPER_CONTINUE);
@@ -2086,7 +2086,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 	}
 }
 
-// Fait entendre le moteur à l'arrêt.
+// Sounds the engine not running.
 
 void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 {
@@ -2095,7 +2095,7 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 		 type == OBJECT_MOBILEii ||
 		 type == OBJECT_MOBILEis )
 	{
-		if ( m_soundChannel != -1 )  // moteur tourne ?
+		if ( m_soundChannel != -1 )  // engine is running?
 		{
 			m_sound->FlushEnvelope(m_soundChannel);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.0f, 0.3f, SOPER_STOP);
@@ -2104,7 +2104,7 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 		return;
 	}
 
-	if ( m_soundChannel != -1 )  // moteur tourne ?
+	if ( m_soundChannel != -1 )  // engine is running?
 	{
 		m_sound->FlushEnvelope(m_soundChannel);
 		m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.3f, SOPER_STOP);
@@ -2114,7 +2114,7 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 	m_soundTimePshhh -= rTime*2.0f;
 }
 
-// Fait entendre le réacteur à plein régime.
+// Sounds the reactor at full power.
 
 void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 {
@@ -2125,7 +2125,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 	float		freq;
 	int			i;
 
-	if ( m_soundChannelSlide != -1 )  // glisse ?
+	if ( m_soundChannelSlide != -1 )  // slides?
 	{
 		m_sound->FlushEnvelope(m_soundChannelSlide);
 		m_sound->AddEnvelope(m_soundChannelSlide, 0.0f, 1.0f, 0.3f, SOPER_STOP);
@@ -2161,7 +2161,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 	}
 	else
 	{
-		if ( m_soundChannel != -1 )  // moteur tourne ?
+		if ( m_soundChannel != -1 )  // engine is running?
 		{
 			m_sound->FlushEnvelope(m_soundChannel);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.0f, 1.0f, SOPER_STOP);
@@ -2225,7 +2225,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 
 }
 
-// Fait entendre le réacteur à l'arrêt.
+// Sounds the reactor stopped.
 
 void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 {
@@ -2239,7 +2239,7 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 		energy = power->RetEnergy();
 	}
 
-	if ( m_soundChannel != -1 )  // moteur tourne ?
+	if ( m_soundChannel != -1 )  // engine is running?
 	{
 		m_sound->FlushEnvelope(m_soundChannel);
 		m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.0f, 1.0f, SOPER_STOP);
@@ -2249,7 +2249,7 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 	if ( type == OBJECT_HUMAN ||
 		 type == OBJECT_TECH  )
 	{
-		if ( m_soundChannelSlide != -1 )  // glisse ?
+		if ( m_soundChannelSlide != -1 )  // slides?
 		{
 			m_sound->FlushEnvelope(m_soundChannelSlide);
 			m_sound->AddEnvelope(m_soundChannelSlide, 0.0f, 1.0f, 0.3f, SOPER_STOP);
@@ -2259,7 +2259,7 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 	else
 	{
 		if ( energy != 0.0f &&
-			 (m_motorSpeed.x != 0.0f ||  // glisse avec petits réacteurs dans patins ?
+			 (m_motorSpeed.x != 0.0f ||  // slides with small reactors in skates?
 			  m_cirMotion.realSpeed.y != 0.0f) )
 		{
 			if ( m_soundChannelSlide == -1 )
@@ -2272,7 +2272,7 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 		}
 		else
 		{
-			if ( m_soundChannelSlide != -1 )  // glisse ?
+			if ( m_soundChannelSlide != -1 )  // slides?
 			{
 				m_sound->FlushEnvelope(m_soundChannelSlide);
 				m_sound->AddEnvelope(m_soundChannelSlide, 0.0f, 1.0f, 0.3f, SOPER_STOP);
@@ -2283,7 +2283,7 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 }
 
 
-// Adapte la physique de l'objet en fonction du terrain.
+// Adapts the physics of the object based on the ground.
 
 void CPhysics::FloorAdapt(float aTime, float rTime,
 						  D3DVECTOR &pos, D3DVECTOR &angle)
@@ -2302,7 +2302,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 	bOldSwim = m_bSwim;
 	SetSwim( pos.y < level );
 
-	m_floorLevel = m_terrain->RetFloorLevel(pos);  // hauteur au-dessus du sol
+	m_floorLevel = m_terrain->RetFloorLevel(pos);  // height above the ground
 	h = pos.y-m_floorLevel;
 	h -= character->height;
 	m_floorHeight = h;
@@ -2313,24 +2313,24 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
 	if ( m_type == TYPE_ROLLING )
 	{
-		pos.y -= h;  // plaque immédiatement au sol
+		pos.y -= h;  // plate to the ground immediately
 		pos.y += character->height;
 		m_floorHeight = 0.0f;
 	}
 
 	if ( m_type == TYPE_FLYING )
 	{
-		bSlopingTerrain = FALSE;  // terrain possible pour atterrir
+		bSlopingTerrain = FALSE;  // ground as possible to land
 
-		if ( !m_bLand )  // en vol ?
+		if ( !m_bLand )  // in flight?
 		{
 			m_terrain->GetNormal(norm, pos);
 			a1 = Abs(RotateAngle(Length(norm.x, norm.z), norm.y));
-			if ( a1 < (90.0f-55.0f)*PI/180.0f )  // pente dépasse 55 degrés ?
+			if ( a1 < (90.0f-55.0f)*PI/180.0f )  // slope exceeds 55 degrees?
 			{
-				bSlopingTerrain = TRUE;  // terrain très pentu
+				bSlopingTerrain = TRUE;  // very sloped ground
 
-				if ( h < 4.0f )  // choc avec le terrain ?
+				if ( h < 4.0f )  // collision with the ground?
 				{
 					force = 5.0f+Abs(m_linMotion.realSpeed.x*0.3f)+
 								 Abs(m_linMotion.realSpeed.y*0.3f);
@@ -2348,23 +2348,23 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 						m_soundTimeBoum = aTime;
 					}
 
-//?					pos = m_object->RetPosition(0);  // remet pos avant collision
+//?					pos = m_object->RetPosition(0);  // gives position before collision
 				}
 			}
 		}
 
-		if ( (h <= 0.0f || m_bLand) && !bSlopingTerrain )  // au sol ?
+		if ( (h <= 0.0f || m_bLand) && !bSlopingTerrain )  // on the ground?
 		{
-			if ( !m_bLand )  // en vol ?
+			if ( !m_bLand )  // in flight?
 			{
 				volume = Abs(m_linMotion.realSpeed.y*0.02f);
 				freq = 0.5f+m_terrain->RetHardness(pos)*2.5f;
 				m_sound->Play(SOUND_BOUM, pos, volume, freq);
 			}
 
-			m_bLand = TRUE;  // au sol
+			m_bLand = TRUE;  // on the ground?
 			SetMotor(FALSE);
-			pos.y -= h;  // plaque immédiatement au sol
+			pos.y -= h;  // plate to the ground immediately
 			m_floorHeight = 0.0f;
 
 			if ( h < 0.0f )
@@ -2373,29 +2373,29 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 				CrashParticule(f);
 			}
 			m_linMotion.currentSpeed.y = 0.0f;
-			m_inclinaisonFactor  = 1.0f/LANDING_SPEED;  // glisse un peu au sol
+			m_inclinaisonFactor  = 1.0f/LANDING_SPEED;  // slips a little to the ground
 			m_linVibrationFactor = 0.0f;
 			m_cirVibrationFactor = 0.0f;
 
 			if ( type == OBJECT_HUMAN ||
-				 type == OBJECT_TECH  )  return;  // toujours droit
+				 type == OBJECT_TECH  )  return;  // always right
 		}
 
-		if ( h > 4.0f || bSlopingTerrain )  // très au-dessus du sol ?
+		if ( h > 4.0f || bSlopingTerrain )  // meters above the ground?
 		{
 			if ( m_bSwim )
 			{
-				m_linVibrationFactor = 1.0f;  // vibre un max
+				m_linVibrationFactor = 1.0f;  // vibrates a max
 				m_cirVibrationFactor = 1.0f;
 			}
 			else
 			{
-				m_linVibrationFactor = 2.0f;  // vibre un gros max
+				m_linVibrationFactor = 2.0f;  // vibrates a large max
 				m_cirVibrationFactor = 2.0f;
 			}
 			m_inclinaisonFactor = 1.0f;
 
-			// Remet gentiment à l'horizontale.
+			// Gives gently the horizontal.
 			if ( angle.x > 0.0f )
 			{
 				angle.x -= rTime*0.5f;
@@ -2420,7 +2420,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 		}
 	}
 
-	if ( m_floorHeight == 0.0f )  // plaqué au sol ?
+	if ( m_floorHeight == 0.0f )  // ground plate?
 	{
 		if ( m_object->RetTraceDown() )
 		{
@@ -2434,11 +2434,11 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
 	if ( type == OBJECT_HUMAN ||
 		 type == OBJECT_TECH  ||
-		 type == OBJECT_WORM  )  return;  // toujours droit
+		 type == OBJECT_WORM  )  return;  // always right
 
-	FloorAngle(pos, angle);  // adapte l'angle au terrain
+	FloorAngle(pos, angle);  // adjusts the angle at the ground
 
-	if ( m_type == TYPE_FLYING && !m_bLand )  // volant en l'air ?
+	if ( m_type == TYPE_FLYING && !m_bLand )  // flying in the air?
 	{
 		f = h/1.0f;
 		if ( f < 0.0f )  f = 0.0f;
@@ -2455,7 +2455,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 	}
 }
 
-// Calcule l'angle d'un objet avec le terrain.
+// Calculates the angle of an object with the field.
 
 void CPhysics::FloorAngle(const D3DVECTOR &pos, D3DVECTOR &angle)
 {
@@ -2491,10 +2491,10 @@ void CPhysics::FloorAngle(const D3DVECTOR &pos, D3DVECTOR &angle)
 }
 
 
-// Adapte la physique de l'objet en fonction des autres objets.
-// Retourne 0 -> objet mobile
-// Retourne 1 -> objet immobile (à cause collision)
-// Retourne 2 -> objet détruit
+// Adapts the physics of the object in relation to other objects.
+// Returns 0 -> mobile object
+// Returns 1 -> immobile object (because collision)
+// Returns 2 -> destroyed object
 
 int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 {
@@ -2508,11 +2508,11 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 	int			i, j, colType;
 	ObjectType	iType, oType;
 
-	if ( m_object->RetRuin() )  return 0;  // brûle ou explose ?
+	if ( m_object->RetRuin() )  return 0;  // is burning or exploding?
 	if ( !m_object->RetClip() )  return 0;
 
-	// iiPos = centre sphère à l'ancienne position.
-	// iPos  = centre sphère à la nouvelle position.
+	// iiPos = sphere center is the old position.
+	// iPos  = sphere center has the new position.
 	m_object->GetCrashSphere(0, iiPos, iRad);
 	iPos = iiPos + (pos - m_object->RetPosition(0));
 	iType = m_object->RetType();
@@ -2522,11 +2522,11 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( pObj == m_object )  continue;  // soi-même ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
-		if ( !pObj->RetEnable() )  continue;  // inactif ?
-		if ( pObj->RetRuin() )  continue;  // brûle ou explose ?
-		if ( pObj->RetDead() )  continue;  // homme mort ?
+		if ( pObj == m_object )  continue;  // yourself?
+		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
+		if ( !pObj->RetEnable() )  continue;  // inactive?
+		if ( pObj->RetRuin() )  continue;  // is burning or exploding?
+		if ( pObj->RetDead() )  continue;  // dead man?
 
 		oType = pObj->RetType();
 		if ( oType == OBJECT_NULL                             )  continue;
@@ -2551,7 +2551,7 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 			 iType == OBJECT_ANT    ||
 			 iType == OBJECT_SPIDER ||
 			 iType == OBJECT_WORM   ||
-			 iType == OBJECT_BEE    )  // insecte ?
+			 iType == OBJECT_BEE    )  // insect?
 		{
 			if ( oType == OBJECT_STONE   ||
 				 oType == OBJECT_URANIUM ||
@@ -2572,12 +2572,12 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 #if _TEEN
 		if ( oType == OBJECT_WAYPOINT &&
 			 pObj->RetEnable()        &&
-			!m_object->RetResetBusy() )  // véhicule d'entraînement ?
+			!m_object->RetResetBusy() )  // driving vehicle?
 #else
 		if ( oType == OBJECT_WAYPOINT &&
 			 pObj->RetEnable()        &&
 			!m_object->RetResetBusy() &&
-			 m_object->RetTrainer()   )  // véhicule d'entraînement ?
+			 m_object->RetTrainer()   )  // driving vehicle?
 #endif
 		{
 			oPos = pObj->RetPosition(0);
@@ -2612,10 +2612,10 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 			if ( iType == OBJECT_WORM   && oRad <= 1.2f )  continue;
 
 			distance = Length(oPos, iPos);
-			if ( distance < iRad+oRad )  // collision ?
+			if ( distance < iRad+oRad )  // collision?
 			{
 				distance = Length(oPos, iiPos);
-				if ( distance >= iRad+oRad )  // voir (*)
+				if ( distance >= iRad+oRad )  // view (*)
 				{
 					m_bCollision = TRUE;
 					m_bObstacle = TRUE;
@@ -2627,8 +2627,8 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 						force *= pObj->RetCrashSphereHardness(j-1)*2.0f;
 						if ( ExploOther(iType, pObj, oType, force) )  continue;
 						colType = ExploHimself(iType, oType, force);
-						if ( colType == 2 )  return 2;  // détruit ?
-						if ( colType == 0 )  continue;  // passe outre ?
+						if ( colType == 2 )  return 2;  // destroyed?
+						if ( colType == 0 )  continue;  // ignores?
 					}
 
 					force = Length(m_linMotion.realSpeed);
@@ -2689,14 +2689,12 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 	return 0;
 }
 
-// (*)	En cas de collision à la position initiale (iiPos) et à la
-//		nouvelle position (iPos), l'obstacle est ignoré. On peut
-//		donc passer à travers. Ceci est nécessaire lorsqu'un obstacle
-//		se retrouve "dans" un véhicule, pour ne pas le bloquer
-//		définitivement !
+// (*)	Collision has the initial position (iiPos) and the new position (iPos),
+//	the obstacle is not known. We can therefore pass through. 
+//	This is necessary when barriers found "in" a vehicle, not to block it definitely!
 
 
-// Bouscule un objet.
+// Shakes an object.
 
 BOOL CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
 							D3DVECTOR oPos, float oRad)
@@ -2708,7 +2706,7 @@ BOOL CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
 	if ( distance >= iRad+oRad )  return FALSE;
 
 	d = (iRad+oRad)/2.0f;
-	f = (distance-d)/d;  // 0=loin, 1=proche
+	f = (distance-d)/d;  // 0 = off, 1 = near
 	if ( f < 0.0f )  f = 0.0f;
 	if ( f > 1.0f )  f = 1.0f;
 
@@ -2726,7 +2724,7 @@ BOOL CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
 	return pObj->JostleObject(force);
 }
 
-// Bouscule forcément un objet.
+// Shakes forcing an object.
 
 BOOL CPhysics::JostleObject(CObject* pObj, float force)
 {
@@ -2745,8 +2743,8 @@ BOOL CPhysics::JostleObject(CObject* pObj, float force)
 	return pObj->JostleObject(force);
 }
 
-// Action de l'explosion sur l'objet tamponné.
-// Retourne TRUE s'il faut ignorer cet obstacle.
+// Effects of the explosion on the object buffers.
+// Returns TRUE if we ignore this obstacle.
 
 BOOL CPhysics::ExploOther(ObjectType iType,
 						  CObject *pObj, ObjectType oType, float force)
@@ -2755,14 +2753,14 @@ BOOL CPhysics::ExploOther(ObjectType iType,
 
 	if ( !pObj->RetEnable() )  return TRUE;
 
-	JostleObject(pObj, 1.0f);  // bouscule l'objet
+	JostleObject(pObj, 1.0f);  // shakes the object
 
 	if ( force > 50.0f &&
 		 (oType == OBJECT_FRET  ||
 		  oType == OBJECT_METAL ) )
 	{
 		pyro = new CPyro(m_iMan);
-		pyro->Create(PT_EXPLOT, pObj);  // destruction totale
+		pyro->Create(PT_EXPLOT, pObj);  // total destruction
 	}
 
 	if ( force > 50.0f &&
@@ -2770,7 +2768,7 @@ BOOL CPhysics::ExploOther(ObjectType iType,
 		  oType == OBJECT_ATOMIC  ) )
 	{
 		pyro = new CPyro(m_iMan);
-		pyro->Create(PT_FRAGT, pObj);  // destruction totale
+		pyro->Create(PT_FRAGT, pObj);  // total destruction
 	}
 
 	if ( force > 25.0f &&
@@ -2778,7 +2776,7 @@ BOOL CPhysics::ExploOther(ObjectType iType,
 		  oType == OBJECT_URANIUM ) )
 	{
 		pyro = new CPyro(m_iMan);
-		pyro->Create(PT_FRAGT, pObj);  // destruction totale
+		pyro->Create(PT_FRAGT, pObj);  // total destruction
 	}
 
 	if ( force > 25.0f &&
@@ -2797,7 +2795,7 @@ BOOL CPhysics::ExploOther(ObjectType iType,
 		  oType == OBJECT_NUCLEAR  ||
 		  oType == OBJECT_PARA     ||
 		  oType == OBJECT_SAFE     ||
-		  oType == OBJECT_HUSTON   ) )  // bâtiment ?
+		  oType == OBJECT_HUSTON   ) )  // building?
 	{
 		pObj->ExploObject(EXPLO_BOUM, force/400.0f);
 	}
@@ -2829,7 +2827,7 @@ BOOL CPhysics::ExploOther(ObjectType iType,
 		  oType == OBJECT_MOBILEft ||
 		  oType == OBJECT_MOBILEit ||
 		  oType == OBJECT_MOBILEdr ||
-		  oType == OBJECT_APOLLO2  ) )  // véhicule ?
+		  oType == OBJECT_APOLLO2  ) )  // vehicle?
 	{
 		pObj->ExploObject(EXPLO_BOUM, force/200.0f);
 	}
@@ -2839,23 +2837,23 @@ BOOL CPhysics::ExploOther(ObjectType iType,
 		  oType == OBJECT_TNT      ) )
 	{
 		pyro = new CPyro(m_iMan);
-		pyro->Create(PT_FRAGT, pObj);  // destruction totale
+		pyro->Create(PT_FRAGT, pObj);  // total destruction
 	}
 
 	if ( force > 0.0f &&
 		 oType == OBJECT_BOMB )
 	{
 		pyro = new CPyro(m_iMan);
-		pyro->Create(PT_FRAGT, pObj);  // destruction totale
+		pyro->Create(PT_FRAGT, pObj);  // total destruction
 	}
 
 	return FALSE;
 }
 
-// Action de l'explosion sur l'objet lui-même.
-// Retourne 0 -> objet mobile
-// Retourne 1 -> objet immobile
-// Retourne 2 -> objet détruit
+// Effects of the explosion on the object itself.
+// Returns 0 -> mobile object
+// Returns 1 -> immobile object
+// Returns 2 -> object destroyed
 
 int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 {
@@ -2869,7 +2867,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 		if ( iType == OBJECT_HUMAN )  type = PT_DEADG;
 		else                          type = PT_EXPLOT;
 		pyro = new CPyro(m_iMan);
-		pyro->Create(type, m_object);  // destruction totale
+		pyro->Create(type, m_object);  // total destruction
 		return 2;
 	}
 
@@ -2891,7 +2889,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 			type = PT_EXPLOT;
 		}
 		pyro = new CPyro(m_iMan);
-		pyro->Create(type, m_object);  // destruction totale
+		pyro->Create(type, m_object);  // total destruction
 		return 2;
 	}
 
@@ -2923,7 +2921,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 		  iType == OBJECT_MOBILEft ||
 		  iType == OBJECT_MOBILEit ||
 		  iType == OBJECT_MOBILEdr ||
-		  iType == OBJECT_APOLLO2  ) )  // véhicule ?
+		  iType == OBJECT_APOLLO2  ) )  // vehicle?
 	{
 		if ( oType == OBJECT_DERRICK  ||
 			 oType == OBJECT_FACTORY  ||
@@ -2940,7 +2938,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 			 oType == OBJECT_NUCLEAR  ||
 			 oType == OBJECT_PARA     ||
 			 oType == OBJECT_SAFE     ||
-			 oType == OBJECT_HUSTON   )  // bâtiment ?
+			 oType == OBJECT_HUSTON   )  // building?
 		{
 			force /= 200.0f;
 		}
@@ -2949,7 +2947,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 			 oType == OBJECT_ANT    ||
 			 oType == OBJECT_SPIDER ||
 			 oType == OBJECT_BEE    ||
-			 oType == OBJECT_WORM   )  // insecte ?
+			 oType == OBJECT_WORM   )  // insect?
 		{
 			force /= 400.0f;
 		}
@@ -2980,7 +2978,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 
 
 
-// Fait évoluer les particules.
+// Makes the particles evolve.
 
 void CPhysics::FrameParticule(float aTime, float rTime)
 {
@@ -3003,7 +3001,7 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 		energy = power->RetEnergy();
 	}
 
-	if ( energy != m_lastEnergy )  // changement du niveau d'énergie ?
+	if ( energy != m_lastEnergy )  // changement du niveau d'ï¿½nergie ?
 	{
 		if ( energy > m_lastEnergy )  // recharge ?
 		{
@@ -3042,7 +3040,7 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 	}
 }
 
-// Génère qq particules suite à une recharge.
+// Gï¿½nï¿½re qq particules suite ï¿½ une recharge.
 
 void CPhysics::PowerParticule(float factor, BOOL bBreak)
 {
@@ -3084,7 +3082,7 @@ void CPhysics::PowerParticule(float factor, BOOL bBreak)
 
 	if ( bCarryPower )  // porte une batterie ?
 	{
-		pos = D3DVECTOR(3.0f, 5.6f, 0.0f);  // position batterie portée
+		pos = D3DVECTOR(3.0f, 5.6f, 0.0f);  // position batterie portï¿½e
 		pos = Transform(*mat, pos);
 
 		speed.x = (Rand()-0.5f)*12.0f;
@@ -3102,7 +3100,7 @@ void CPhysics::PowerParticule(float factor, BOOL bBreak)
 	}
 }
 
-// Génère qq particules suite à une chute.
+// Gï¿½nï¿½re qq particules suite ï¿½ une chute.
 // crash: 0=super soft, 1=big crash
 
 void CPhysics::CrashParticule(float crash)
@@ -3136,7 +3134,7 @@ void CPhysics::CrashParticule(float crash)
 	}
 }
 
-// Génère qq particules de gaz d'échappement.
+// Gï¿½nï¿½re qq particules de gaz d'ï¿½chappement.
 
 void CPhysics::MotorParticule(float aTime, float rTime)
 {
@@ -3199,7 +3197,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 	}
 	else	// hors de l'eau ?
 	{
-		m_absorbWater -= rTime*(1.0f/3.0f);  // se sèche
+		m_absorbWater -= rTime*(1.0f/3.0f);  // se sï¿½che
 		if ( m_absorbWater < 0.0f )  m_absorbWater = 0.0f;
 	}
 
@@ -3238,7 +3236,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			h = Max(Abs(m_linMotion.terrainSpeed.x),
 					Abs(m_linMotion.terrainSpeed.z));
 			if ( h > m_linMotion.terrainSlide.x+0.5f &&
-				 m_linMotion.motorSpeed.x == 0.0f )  // glisse à l'arrêt ?
+				 m_linMotion.motorSpeed.x == 0.0f )  // glisse ï¿½ l'arrï¿½t ?
 			{
 				m_lastSlideParticule = aTime;
 
@@ -3317,7 +3315,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 		{
 			if ( m_reactorTemperature > 0.0f )
 			{
-				m_reactorTemperature -= rTime*(1.0f/10.0f);  // ça refroidi
+				m_reactorTemperature -= rTime*(1.0f/10.0f);  // ï¿½a refroidi
 				if ( m_reactorTemperature < 0.0f )
 				{
 					m_reactorTemperature = 0.0f;
@@ -3347,7 +3345,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 			if ( m_reactorTemperature < 1.0f )  // pas trop chaud ?
 			{
-				m_reactorTemperature += rTime*(1.0f/4.0f);  // ça chauffe
+				m_reactorTemperature += rTime*(1.0f/4.0f);  // ï¿½a chauffe
 				if ( m_reactorTemperature > 1.0f )
 				{
 					m_reactorTemperature = 1.0f;  // mais pas trop
@@ -3415,7 +3413,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 	if ( (type == OBJECT_HUMAN || type == OBJECT_TECH) && m_bSwim )
 	{
-		m_reactorTemperature = 0.0f;  // réacteur froid
+		m_reactorTemperature = 0.0f;  // rï¿½acteur froid
 	}
 
 	if ( m_type == TYPE_FLYING &&
@@ -3425,7 +3423,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 	{
 		if ( m_bLand )  // au sol ?
 		{
-			if ( m_motorSpeed.x == 0.0f &&  // glisse à cause pente terrain ?
+			if ( m_motorSpeed.x == 0.0f &&  // glisse ï¿½ cause pente terrain ?
 				 m_cirMotion.realSpeed.y == 0.0f )
 			{
 				h = Max(Abs(m_linMotion.realSpeed.x),
@@ -3450,7 +3448,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 			}
-			else	// glisse avec petits réacteurs dans patins ?
+			else	// glisse avec petits rï¿½acteurs dans patins ?
 			{
 				if ( m_linMotion.realSpeed.x == 0.0f &&
 					 m_cirMotion.realSpeed.y == 0.0f )  return;
@@ -3593,7 +3591,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 	if ( m_type == TYPE_ROLLING )
 	{
-		if ( type == OBJECT_APOLLO2 )  return;  // moteurs électriques !
+		if ( type == OBJECT_APOLLO2 )  return;  // moteurs ï¿½lectriques !
 
 		if ( type == OBJECT_MOBILErt ||
 			 type == OBJECT_MOBILErc ||
@@ -3657,7 +3655,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 	}
 }
 
-// Génère qq particules suite à une chute dans l'eau.
+// Gï¿½nï¿½re qq particules suite ï¿½ une chute dans l'eau.
 
 void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 							  float floor, float advance, float turn)
@@ -3705,7 +3703,7 @@ void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 		pos = m_object->RetPosition(0);
 		pos.y = m_water->RetLevel()-1.0f;
 		dim.x = 2.0f*force;  // hauteur
-		dim.y = diam;  // diamètre
+		dim.y = diam;  // diamï¿½tre
 		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f, 0.0f);
 
 		force = (0.5f+force*0.5f);
@@ -3773,7 +3771,7 @@ void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 	m_particule->CreateParticule(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
 }
 
-// Crée la trace sous le robot.
+// Crï¿½e la trace sous le robot.
 
 void CPhysics::WheelParticule(int color, float width)
 {
@@ -3791,7 +3789,7 @@ void CPhysics::WheelParticule(int color, float width)
 	{
 		parti = (ParticuleType)(PARTITRACE0+color);
 		step = 2.0f;
-		if ( color >= 16 )  step = 4.0f;  // flèche ?
+		if ( color >= 16 )  step = 4.0f;  // flï¿½che ?
 		step /= m_engine->RetTracePrecision();
 
 		goal1.x = step/2.0f;
@@ -3838,7 +3836,7 @@ void CPhysics::WheelParticule(int color, float width)
 }
 
 
-// Crée l'interface.
+// Crï¿½e l'interface.
 
 void CPhysics::CreateInterface(BOOL bSelect)
 {
@@ -3849,7 +3847,7 @@ void CPhysics::CreateInterface(BOOL bSelect)
 }
 
 
-// Retourne une erreur liée à l'état général.
+// Retourne une erreur liï¿½e ï¿½ l'ï¿½tat gï¿½nï¿½ral.
 
 Error CPhysics::RetError()
 {
@@ -3872,7 +3870,7 @@ Error CPhysics::RetError()
 		return ERR_VEH_VIRUS;
 	}
 
-	power = m_object->RetPower();  // cherche l'objet pile utilisé
+	power = m_object->RetPower();  // cherche l'objet pile utilisï¿½
 	if ( power == 0 )
 	{
 		return ERR_VEH_POWER;
