@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// particule.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// particule.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -46,7 +48,7 @@
 
 
 
-// Vérifie si un objet est destructible, mais pas un ennemi.
+// Check if an object can be destroyed, but is not an enemy.
 
 BOOL IsSoft(ObjectType type)
 {
@@ -76,10 +78,10 @@ BOOL IsSoft(ObjectType type)
 			 type == OBJECT_MOBILEtt ||
 			 type == OBJECT_MOBILEwt ||
 			 type == OBJECT_MOBILEit ||
-			 type == OBJECT_MOBILEdr ||  // robot ?
+			 type == OBJECT_MOBILEdr ||  // robot?
 			 type == OBJECT_METAL    ||
 			 type == OBJECT_POWER    ||
-			 type == OBJECT_ATOMIC   ||  // fret ?
+			 type == OBJECT_ATOMIC   ||  // cargo?
 			 type == OBJECT_DERRICK  ||
 			 type == OBJECT_STATION  ||
 			 type == OBJECT_FACTORY  ||
@@ -93,10 +95,10 @@ BOOL IsSoft(ObjectType type)
 			 type == OBJECT_ENERGY   ||
 			 type == OBJECT_LABO     ||
 			 type == OBJECT_NUCLEAR  ||
-			 type == OBJECT_PARA     );  // bâtiment ?
+			 type == OBJECT_PARA     );  // building?
 }
 
-// Vérifie si un objet est un ennemi destructible.
+// Check if an object is a destroyable enemy.
 
 BOOL IsAlien(ObjectType type)
 {
@@ -113,7 +115,7 @@ BOOL IsAlien(ObjectType type)
 			 type == OBJECT_TEEN31   );
 }
 
-// Retourne le facteur d'aténumation pour les tirs amis.
+// Returns the damping factor for friendly fire.
 
 float RetDecay(ObjectType type)
 {
@@ -158,7 +160,7 @@ void CParticule::SetD3DDevice(LPDIRECT3DDEVICE7 device)
 }
 
 
-// Supprime toutes les particules.
+// Removes all particles.
 
 void CParticule::FlushParticule()
 {
@@ -194,7 +196,7 @@ void CParticule::FlushParticule()
 	m_exploGunCounter = 0;
 }
 
-// Supprime toutes les particules d'une feuille.
+// Removes all particles of a sheet.
 
 void CParticule::FlushParticule(int sheet)
 {
@@ -226,8 +228,8 @@ void CParticule::FlushParticule(int sheet)
 }
 
 
-// Construit le nom de fichier de l'effet.
-//	effectNN.tga, avec NN = numéro
+// Builds file name of the effect.
+//	effectNN.tga, with NN = number
 
 void NameParticule(char *buffer, int num)
 {
@@ -243,8 +245,8 @@ void NameParticule(char *buffer, int num)
 }
 
 
-// Créé une nouvelle particule.
-// Retourne le canal de la particule crée ou -1 en cas d'erreur.
+// Creates a new particle.
+// Returns the channel of the particle created or -1 on error.
 
 int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 								ParticuleType type,
@@ -431,7 +433,7 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 			if ( type == PARTIGUN1 ||
 				 type == PARTIGUN4 )
 			{
-				m_particule[i].testTime = 1.0f;  // impact tout de suite
+				m_particule[i].testTime = 1.0f;  // impact immediately
 			}
 
 			if ( type >= PARTIFOG0 &&
@@ -448,8 +450,8 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 	return -1;
 }
 
-// Créé une nouvelle particule triangulaire (débris).
-// Retourne le canal de la particule crée ou -1 en cas d'erreur.
+// Creates a new triangular particle (debris).
+// Returns the channel of the particle created or -1 on error.
 
 int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 						   D3DTriangle *triangle,
@@ -556,8 +558,8 @@ int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 	return -1;
 }
 
-// Créé une nouvelle particule étant une partie d'objet.
-// Retourne le canal de la particule crée ou -1 en cas d'erreur.
+// Creates a new particle being a part of object.
+// Returns the channel of the particle created or -1 on error.
 
 int CParticule::CreatePart(D3DVECTOR pos, D3DVECTOR speed,
 						   ParticuleType type,
@@ -608,8 +610,8 @@ int CParticule::CreatePart(D3DVECTOR pos, D3DVECTOR speed,
 	return -1;
 }
 
-// Créé une nouvelle particule linéaire (rayon).
-// Retourne le canal de la particule crée ou -1 en cas d'erreur.
+// Creates a new linear particle (radius).
+// Returns the channel of the particle created or -1 on error.
 
 int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
 						  ParticuleType type, FPOINT dim,
@@ -671,8 +673,8 @@ int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
 	return -1;
 }
 
-// Crée une particule avec une traînée.
-// "length" est la durée de la queue de la traînée (en secondes) !
+// Creates a particle with a trail.
+// "length" is the length of the tail of drag (in seconds)!
 
 int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 							ParticuleType type, float duration, float mass,
@@ -680,14 +682,14 @@ int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 {
 	int		channel, rank, i;
 
-	// Crée la particule normale.
+	// Creates the normal particle.
 	channel = CreateParticule(pos, speed, dim, type, duration, mass, 0.0f, 0);
 	if ( channel == -1 )  return -1;
 
-	// Cherche une traînée libre.
+	// Seeks a streak free.
 	for ( i=0 ; i<MAXTRACK ; i++ )
 	{
-		if ( !m_track[i].bUsed )  // libre ?
+		if ( !m_track[i].bUsed )  // free?
 		{
 			rank = channel;
 			if ( !CheckChannel(rank) )  return -1;
@@ -708,7 +710,7 @@ int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 	return channel;
 }
 
-// Crée une trace de pneu.
+// Creates a tire mark.
 
 void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 								  const D3DVECTOR &p3, const D3DVECTOR &p4,
@@ -734,16 +736,16 @@ void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 	}
 
 	m_terrain->MoveOnFloor(m_wheelTrace[i].pos[0]);
-	m_wheelTrace[i].pos[0].y += 0.2f;  // juste en dessus du sol
+	m_wheelTrace[i].pos[0].y += 0.2f;  // just above the ground
 
 	m_terrain->MoveOnFloor(m_wheelTrace[i].pos[1]);
-	m_wheelTrace[i].pos[1].y += 0.2f;  // juste en dessus du sol
+	m_wheelTrace[i].pos[1].y += 0.2f;  // just above the ground
 
 	m_terrain->MoveOnFloor(m_wheelTrace[i].pos[2]);
-	m_wheelTrace[i].pos[2].y += 0.2f;  // juste en dessus du sol
+	m_wheelTrace[i].pos[2].y += 0.2f;  // just above the ground
 
 	m_terrain->MoveOnFloor(m_wheelTrace[i].pos[3]);
-	m_wheelTrace[i].pos[3].y += 0.2f;  // juste en dessus du sol
+	m_wheelTrace[i].pos[3].y += 0.2f;  // just above the ground
 
 	if ( m_wheelTraceTotal < max )
 	{
@@ -756,9 +758,8 @@ void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 }
 
 
-// Check un numéro de canal.
-// Adapte le canal pour qu'il puisse être utilisé comme offset
-// dans m_particule.
+// Check a channel number.
+// Adapts the channel so it can be used as an offset in m_particule.
 
 BOOL CParticule::CheckChannel(int &channel)
 {
@@ -790,7 +791,7 @@ BOOL CParticule::CheckChannel(int &channel)
 	return TRUE;
 }
 
-// Supprime une particule d'après son rang.
+// Removes a particle after his rank.
 
 void CParticule::DeleteRank(int rank)
 {
@@ -802,15 +803,15 @@ void CParticule::DeleteRank(int rank)
 	}
 
 	i = m_particule[rank].trackRank;
-	if ( i != -1 )  // traînée associée ?
+	if ( i != -1 )  // drag associated?
 	{
-		m_track[i].bUsed = FALSE;  // libère la traînée
+		m_track[i].bUsed = FALSE;  // frees the drag
 	}
 
 	m_particule[rank].bUsed = FALSE;
 }
 
-// Supprime toutes les particules d'un type donné.
+// Removes all particles of a given type.
 
 void CParticule::DeleteParticule(ParticuleType type)
 {
@@ -825,7 +826,7 @@ void CParticule::DeleteParticule(ParticuleType type)
 	}
 }
 
-// Supprime une particule d'après son canal.
+// Removes all particles of a given channel.
 
 void CParticule::DeleteParticule(int channel)
 {
@@ -839,16 +840,16 @@ void CParticule::DeleteParticule(int channel)
 	}
 
 	i = m_particule[channel].trackRank;
-	if ( i != -1 )  // traînée associée ?
+	if ( i != -1 )  // drag associated?
 	{
-		m_track[i].bUsed = FALSE;  // libère la traînée
+		m_track[i].bUsed = FALSE;  // frees the drag
 	}
 
 	m_particule[channel].bUsed = FALSE;
 }
 
 
-// Spécifie l'objet auquel la particule est liée.
+// Specifies the object to which the particle is bound.
 
 void CParticule::SetObjectLink(int channel, CObject *object)
 {
@@ -856,7 +857,7 @@ void CParticule::SetObjectLink(int channel, CObject *object)
 	m_particule[channel].objLink = object;
 }
 
-// Spécifie l'objet père qui a créé la particule.
+// Specifies the parent object that created the particle.
 
 void CParticule::SetObjectFather(int channel, CObject *object)
 {
@@ -913,7 +914,7 @@ void CParticule::SetPhase(int channel, ParticulePhase phase, float duration)
 	m_particule[channel].phaseTime = m_particule[channel].time;
 }
 
-// Retourne la position de la particule.
+// Returns the position of the particle.
 
 BOOL CParticule::GetPosition(int channel, D3DVECTOR &pos)
 {
@@ -923,14 +924,14 @@ BOOL CParticule::GetPosition(int channel, D3DVECTOR &pos)
 }
 
 
-// Indique si une feuille évolue ou non.
+// Indicates whether a sheet evolves or not.
 
 void CParticule::SetFrameUpdate(int sheet, BOOL bUpdate)
 {
 	m_bFrameUpdate[sheet] = bUpdate;
 }
 
-// Fait évoluer toutes les particules.
+// Makes evolve all the particles.
 
 void CParticule::FrameParticule(float rTime)
 {
@@ -989,7 +990,7 @@ void CParticule::FrameParticule(float rTime)
 
 		progress = (m_particule[i].time-m_particule[i].phaseTime)/m_particule[i].duration;
 
-		// Gère les particules avec masse qui rebondissent.
+		// Manages the particles with mass that bounce.
 		if ( m_particule[i].mass != 0.0f        &&
 			 m_particule[i].type != PARTIQUARTZ )
 		{
@@ -1004,10 +1005,10 @@ void CParticule::FrameParticule(float rTime)
 				h = m_terrain->RetFloorLevel(m_particule[i].pos, TRUE);
 			}
 			h += m_particule[i].dim.y*0.75f;
-			if ( m_particule[i].pos.y < h )  // choc avec le sol ?
+			if ( m_particule[i].pos.y < h )  // impact with the ground?
 			{
 				if ( m_particule[i].type == PARTIPART &&
-					 m_particule[i].weight > 3.0f &&  // assez lourd ?
+					 m_particule[i].weight > 3.0f &&  // heavy enough?
 					 m_particule[i].bounce < 3 )
 				{
 					amplitude = m_particule[i].weight*0.1f;
@@ -1025,9 +1026,9 @@ void CParticule::FrameParticule(float rTime)
 					m_particule[i].speed.y *= -0.4f;
 					m_particule[i].speed.x *=  0.4f;
 					m_particule[i].speed.z *=  0.4f;
-					m_particule[i].bounce ++;  // un choc de plus
+					m_particule[i].bounce ++;  // more impact
 				}
-				else	// disparaît après 3 rebonds ?
+				else	// disappears after 3 bounces?
 				{
 					if ( m_particule[i].pos.y < h-10.0f ||
 						 m_particule[i].time >= 20.0f   )
@@ -1039,9 +1040,9 @@ void CParticule::FrameParticule(float rTime)
 			}
 		}
 
-		// Gère la traînée associée.
+		// Manages drag associated.
 		r = m_particule[i].trackRank;
-		if ( r != -1 )  // traînée existe ?
+		if ( r != -1 )  // drag exists?
 		{
 			if ( TrackMove(r, m_particule[i].pos, progress) )
 			{
@@ -1052,7 +1053,7 @@ void CParticule::FrameParticule(float rTime)
 			m_track[r].bDrawParticule = (progress < 1.0f);
 		}
 
-		if ( m_particule[i].type == PARTITRACK1 )  // explosion technique ?
+		if ( m_particule[i].type == PARTITRACK1 )  // explosion technique?
 		{
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
@@ -1062,7 +1063,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK2 )  // jet bleu ?
+		if ( m_particule[i].type == PARTITRACK2 )  // spray blue?
 		{
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
@@ -1072,7 +1073,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK3 )  // araignée ?
+		if ( m_particule[i].type == PARTITRACK3 )  // spider?
 		{
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
@@ -1082,7 +1083,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK4 )  // explosion insecte ?
+		if ( m_particule[i].type == PARTITRACK4 )  // insect explosion?
 		{
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
@@ -1092,7 +1093,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK5 )  // derrick ?
+		if ( m_particule[i].type == PARTITRACK5 )  // derrick?
 		{
 			m_particule[i].zoom = 1.0f-(m_particule[i].time-m_particule[i].duration);
 
@@ -1102,7 +1103,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK6 )  // reset in/out ?
+		if ( m_particule[i].type == PARTITRACK6 )  // reset in/out?
 		{
 			ts.x = 0.0f;
 			ts.y = 0.0f;
@@ -1123,7 +1124,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.25f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK11 )  // tir phazer ?
+		if ( m_particule[i].type == PARTITRACK11 )  // phazer shot?
 		{
 			object = SearchObjectGun(m_particule[i].goal, m_particule[i].pos, m_particule[i].type, m_particule[i].objFather);
 			m_particule[i].goal = m_particule[i].pos;
@@ -1147,7 +1148,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTITRACK12 )  // traînée réacteur ?
+		if ( m_particule[i].type == PARTITRACK12 )  // drag reactor?
 		{
 			m_particule[i].zoom = 1.0f;
 
@@ -1291,7 +1292,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTIGUN1 )  // tir fireball ?
+		if ( m_particule[i].type == PARTIGUN1 )  // fireball shot?
 		{
 			if ( progress >= 1.0f )
 			{
@@ -1398,7 +1399,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.25f;
 		}
 
-		if ( m_particule[i].type == PARTIGUN2 )  // tir fourmi ?
+		if ( m_particule[i].type == PARTIGUN2 )  // ant shot?
 		{
 			if ( progress >= 1.0f )
 			{
@@ -1413,7 +1414,7 @@ void CParticule::FrameParticule(float rTime)
 				m_particule[i].goal = m_particule[i].pos;
 				if ( object != 0 )
 				{
-					if ( object->RetShieldRadius() > 0.0f )  // protégé par bouclier ?
+					if ( object->RetShieldRadius() > 0.0f )  // protected by shield?
 					{
 						CreateParticule(m_particule[i].pos, D3DVECTOR(0.0f, 0.0f, 0.0f), FPOINT(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
 						if ( m_lastTimeGunDel > 0.2f )
@@ -1430,7 +1431,7 @@ void CParticule::FrameParticule(float rTime)
 						{
 							Play(SOUND_TOUCH, m_particule[i].pos, 1.0f);
 						}
-						object->ExploObject(EXPLO_BOUM, 0.0f);  // démarre explosion
+						object->ExploObject(EXPLO_BOUM, 0.0f);  // starts explosion
 					}
 				}
 			}
@@ -1444,7 +1445,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTIGUN3 )  // suicide araignée ?
+		if ( m_particule[i].type == PARTIGUN3 )  // spider suicides?
 		{
 			if ( progress >= 1.0f )
 			{
@@ -1472,7 +1473,7 @@ void CParticule::FrameParticule(float rTime)
 					}
 					else
 					{
-						object->ExploObject(EXPLO_BURN, 1.0f);  // démarre explosion
+						object->ExploObject(EXPLO_BURN, 1.0f);  // starts explosion
 					}
 				}
 			}
@@ -1485,7 +1486,7 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.125f;
 		}
 
-		if ( m_particule[i].type == PARTIGUN4 )  // tir orgaball ?
+		if ( m_particule[i].type == PARTIGUN4 )  // orgaball shot?
 		{
 			if ( progress >= 1.0f )
 			{
@@ -1776,8 +1777,8 @@ void CParticule::FrameParticule(float rTime)
 			ti.y = ts.y+0.25f;
 		}
 
-		// Diminue l'intensité si la caméra est presque à la même
-		// hauteur (nappe de brouillard à hauteur des yeux).
+		// Decreases the intensity if the camera
+		// is almost at the same height (fog was eye level).
 		if ( m_particule[i].type >= PARTIFOG0 &&
 			 m_particule[i].type <= PARTIFOG9 )
 		{
@@ -2743,8 +2744,8 @@ void CParticule::FrameParticule(float rTime)
 }
 
 
-// Déplace une traînée.
-// Retourne TRUE lorsque la traînée est terminée.
+// Moves a drag.
+// Returns true if the drag is finished.
 
 BOOL CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 {
@@ -2754,7 +2755,7 @@ BOOL CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 	if ( i < 0 || i >= MAXTRACK )  return TRUE;
 	if ( m_track[i].bUsed == FALSE )  return TRUE;
 
-	if ( progress < 1.0f )  // particule existe ?
+	if ( progress < 1.0f )  // particle exists?
 	{
 		h = m_track[i].head;
 
@@ -2781,7 +2782,7 @@ BOOL CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 //?		m_track[i].intensity = 1.0f;
 		m_track[i].intensity = 1.0f-progress;
 	}
-	else	// mort lente de la traînée ?
+	else	// mort lente de la traï¿½nï¿½e ?
 	{
 //?		m_track[i].intensity = 1.0f-(progress-1.0f)/(m_track[i].step*MAXTRACKLEN);
 		m_track[i].intensity = 0.0f;
@@ -2790,7 +2791,7 @@ BOOL CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 	return (m_track[i].intensity <= 0.0f);
 }
 
-// Dessine une traînée.
+// Draws a drag.
 
 void CParticule::TrackDraw(int i, ParticuleType type)
 {
@@ -2801,7 +2802,7 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 	float		lTotal, f1, f2, a;
 	int			counter, h;
 
-	// Calcule la longueur totale mémorisée.
+	// Calculates the total length memorized.
 	lTotal = 0.0f;
 	h = m_track[i].head;
 	for ( counter=0 ; counter<m_track[i].used-1 ; counter++ )
@@ -2813,84 +2814,84 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 	D3DUtil_SetIdentityMatrix(matrix);
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
 
-	if ( type == PARTITRACK1 )  // explosion technique ?
+	if ( type == PARTITRACK1 )  // explosion technique?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 21.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
 		texSup.y = 22.0f/256.0f;  // orange
 	}
-	if ( type == PARTITRACK2 )  // jet bleu ?
+	if ( type == PARTITRACK2 )  // blue spray?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 13.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 14.0f/256.0f;  // bleu
+		texSup.y = 14.0f/256.0f;  // blue
 	}
-	if ( type == PARTITRACK3 )  // araignée ?
+	if ( type == PARTITRACK3 )  // spider?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y =  5.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y =  6.0f/256.0f;  // brun
+		texSup.y =  6.0f/256.0f;  // brown
 	}
-	if ( type == PARTITRACK4 )  // explosion insecte ?
+	if ( type == PARTITRACK4 )  // insect explosion?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y =  9.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 10.0f/256.0f;  // vert foncé
+		texSup.y = 10.0f/256.0f;  // dark green
 	}
-	if ( type == PARTITRACK5 )  // derrick ?
+	if ( type == PARTITRACK5 )  // derrick?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 29.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 30.0f/256.0f;  // brun foncé
+		texSup.y = 30.0f/256.0f;  // dark brown
 	}
-	if ( type == PARTITRACK6 )  // reset in/out ?
+	if ( type == PARTITRACK6 )  // reset in/out?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 17.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
 		texSup.y = 18.0f/256.0f;  // cyan
 	}
-	if ( type == PARTITRACK7 )  // win-1 ?
+	if ( type == PARTITRACK7 )  // win-1?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 41.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
 		texSup.y = 42.0f/256.0f;  // orange
 	}
-	if ( type == PARTITRACK8 )  // win-2 ?
+	if ( type == PARTITRACK8 )  // win-2?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 45.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 46.0f/256.0f;  // jaune
+		texSup.y = 46.0f/256.0f;  // yellow
 	}
-	if ( type == PARTITRACK9 )  // win-3 ?
+	if ( type == PARTITRACK9 )  // win-3?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 49.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
-		texSup.y = 50.0f/256.0f;  // rouge
+		texSup.y = 50.0f/256.0f;  // red
 	}
-	if ( type == PARTITRACK10 )  // win-4 ?
+	if ( type == PARTITRACK10 )  // win-4?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 53.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
 		texSup.y = 54.0f/256.0f;  // violet
 	}
-	if ( type == PARTITRACK11 )  // tir phazer ?
+	if ( type == PARTITRACK11 )  // phazer shot?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 21.0f/256.0f;
 		texSup.x = 95.5f/256.0f;
 		texSup.y = 22.0f/256.0f;  // orange
 	}
-	if ( type == PARTITRACK12 )  // traînée réacteur ?
+	if ( type == PARTITRACK12 )  // drag reactor?
 	{
 		texInf.x = 64.5f/256.0f;
 		texInf.y = 21.0f/256.0f;
@@ -2960,7 +2961,7 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 	}
 }
 
-// Dessine une particule triangulaire.
+// Draws a triangular particle.
 
 void CParticule::DrawParticuleTriangle(int i)
 {
@@ -2994,7 +2995,7 @@ void CParticule::DrawParticuleTriangle(int i)
 	m_engine->AddStatisticTriangle(1);
 }
 
-// Dessine une particule normale.
+// Draw a normal particle.
 
 void CParticule::DrawParticuleNorm(int i)
 {
@@ -3099,7 +3100,7 @@ void CParticule::DrawParticuleNorm(int i)
 	}
 }
 
-// Dessine une particule plate (horizontale).
+// Draw a particle flat (horizontal).
 
 void CParticule::DrawParticuleFlat(int i)
 {
@@ -3125,19 +3126,19 @@ void CParticule::DrawParticuleFlat(int i)
 	angle.z = m_particule[i].angle;
 
 #if 0
-	if ( m_engine->RetRankView() == 1 )  // sous l'eau ?
+	if ( m_engine->RetRankView() == 1 )  // underwater?
 	{
 		angle.x = -PI/2.0f;
 		pos.y -= 1.0f;
 	}
 #else
-	if ( m_engine->RetRankView() == 1 )  // sous l'eau ?
+	if ( m_engine->RetRankView() == 1 )  // underwater?
 	{
 		pos.y -= 1.0f;
 	}
 
 	eye = m_engine->RetEyePt();
-	if ( pos.y > eye.y )  // vu par en-dessous ?
+	if ( pos.y > eye.y )  // seen from below?
 	{
 		angle.x = -PI/2.0f;
 	}
@@ -3179,7 +3180,7 @@ void CParticule::DrawParticuleFlat(int i)
 	m_engine->AddStatisticTriangle(2);
 }
 
-// Dessine une particule plate pour faire une nappe de brouillard.
+// Draw a particle to a flat sheet of fog.
 
 void CParticule::DrawParticuleFog(int i)
 {
@@ -3231,13 +3232,13 @@ void CParticule::DrawParticuleFog(int i)
 	angle.y = 0.0f;
 	angle.z = m_particule[i].angle;
 
-	if ( m_engine->RetRankView() == 1 )  // sous l'eau ?
+	if ( m_engine->RetRankView() == 1 )  // underwater?
 	{
 		pos.y -= 1.0f;
 	}
 
 	eye = m_engine->RetEyePt();
-	if ( pos.y > eye.y )  // vu par en-dessous ?
+	if ( pos.y > eye.y )  // seen from below?
 	{
 		angle.x = -PI/2.0f;
 	}
@@ -3275,7 +3276,7 @@ void CParticule::DrawParticuleFog(int i)
 	m_engine->AddStatisticTriangle(2);
 }
 
-// Dessine une particule sous forme de rayon.
+// Draw a particle in the form of radius.
 
 void CParticule::DrawParticuleRay(int i)
 {
@@ -3442,7 +3443,7 @@ void CParticule::DrawParticuleRay(int i)
 	}
 }
 
-// Dessine une particule sphérique.
+// Draws a spherical particle.
 
 void CParticule::DrawParticuleSphere(int i)
 {
@@ -3545,7 +3546,7 @@ void CParticule::DrawParticuleSphere(int i)
 	m_engine->SetState(D3DSTATETTb, RetColor(m_particule[i].intensity));
 }
 
-// Retourne la hauteur en fonction de la progression.
+// Returns the height depending on the progress.
 
 float ProgressCylinder(float progress)
 {
@@ -3559,7 +3560,7 @@ float ProgressCylinder(float progress)
 	}
 }
 
-// Dessine une particule cylindrique.
+// Draws a cylindrical particle.
 
 void CParticule::DrawParticuleCylinder(int i)
 {
@@ -3602,18 +3603,18 @@ void CParticule::DrawParticuleCylinder(int i)
 #if 0
 		if ( progress <= 0.5f )
 		{
-			p1 = progress/0.5f;  // avant
-			p2 = 0.0f;  // arrière
+			p1 = progress/0.5f;  // front
+			p2 = 0.0f;  // back
 		}
 		else
 		{
-			p1 = 1.0f;  // avant
-			p2 = (progress-0.5f)/0.5f;  // arrière
+			p1 = 1.0f;  // front
+			p2 = (progress-0.5f)/0.5f;  // back
 			ts.y += (ti.y-ts.y)*p2;
 		}
 #else
-		p1 = progress;  // avant
-		p2 = powf(progress, 5.0f);  // arrière
+		p1 = progress;  // front
+		p2 = powf(progress, 5.0f);  // back
 #endif
 
 		for ( ring=0 ; ring<=numRings ; ring++ )
@@ -3627,10 +3628,10 @@ void CParticule::DrawParticuleCylinder(int i)
 	j = 0;
 	for ( ring=0 ; ring<numRings ; ring++ )
 	{
-		r0   = 1.0f*d[ring+0];  // rayon à la base
-		r1   = 1.0f*d[ring+1];  // rayon en haut
-		v0.y = 1.0f*h[ring+0];  // bas
-		v1.y = 1.0f*h[ring+1];  // haut
+		r0   = 1.0f*d[ring+0];  // radius at the base
+		r1   = 1.0f*d[ring+1];  // radius at the top
+		v0.y = 1.0f*h[ring+0];  // bottom
+		v1.y = 1.0f*h[ring+1];  // top
 
 		tv0 = 1.0f-(ring+0)*(1.0f/numRings);
 		tv1 = 1.0f-(ring+1)*(1.0f/numRings);
@@ -3660,7 +3661,7 @@ void CParticule::DrawParticuleCylinder(int i)
 	m_engine->SetState(D3DSTATETTb, RetColor(m_particule[i].intensity));
 }
 
-// Dessine une trace de pneu.
+// Draws a tire mark.
 
 void CParticule::DrawParticuleWheel(int i)
 {
@@ -3678,92 +3679,92 @@ void CParticule::DrawParticuleWheel(int i)
 	pos[2] = m_wheelTrace[i].pos[2];
 	pos[3] = m_wheelTrace[i].pos[3];
 
-	if ( m_wheelTrace[i].type == PARTITRACE0 )  // trace au sol blanche ?
+	if ( m_wheelTrace[i].type == PARTITRACE0 )  // white ground track?
 	{
 		ts.x =   8.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE1 )  // trace au sol noire ?
+	else if ( m_wheelTrace[i].type == PARTITRACE1 )  // black ground track?
 	{
 		ts.x =   0.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE2 )  // trace au sol grise ?
+	else if ( m_wheelTrace[i].type == PARTITRACE2 )  // gray ground track?
 	{
 		ts.x =   0.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE3 )  // trace au sol gris clair ?
+	else if ( m_wheelTrace[i].type == PARTITRACE3 )  // light gray ground track?
 	{
 		ts.x =   8.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE4 )  // trace au sol rouge ?
+	else if ( m_wheelTrace[i].type == PARTITRACE4 )  // red ground track?
 	{
 		ts.x =  32.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE5 )  // trace au sol rose ?
+	else if ( m_wheelTrace[i].type == PARTITRACE5 )  // pink ground track?
 	{
 		ts.x =  40.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE6 )  // trace au sol violette ?
+	else if ( m_wheelTrace[i].type == PARTITRACE6 )  // violet ground track?
 	{
 		ts.x =  32.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE7 )  // trace au sol orange ?
+	else if ( m_wheelTrace[i].type == PARTITRACE7 )  // orange ground track?
 	{
 		ts.x =  40.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE8 )  // trace au sol jaune ?
+	else if ( m_wheelTrace[i].type == PARTITRACE8 )  // yellow ground track?
 	{
 		ts.x =  16.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE9 )  // trace au sol beige ?
+	else if ( m_wheelTrace[i].type == PARTITRACE9 )  // beige ground track?
 	{
 		ts.x =  24.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE10 )  // trace au sol brun ?
+	else if ( m_wheelTrace[i].type == PARTITRACE10 )  // brown ground track?
 	{
 		ts.x =  16.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE11 )  // trace au sol peau ?
+	else if ( m_wheelTrace[i].type == PARTITRACE11 )  // skin ground track?
 	{
 		ts.x =  24.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE12 )  // trace au sol vert ?
+	else if ( m_wheelTrace[i].type == PARTITRACE12 )  // green ground track?
 	{
 		ts.x =  48.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE13 )  // trace au sol vert clair ?
+	else if ( m_wheelTrace[i].type == PARTITRACE13 )  // light green ground track?
 	{
 		ts.x =  56.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE14 )  // trace au sol bleu ?
+	else if ( m_wheelTrace[i].type == PARTITRACE14 )  // blue ground track?
 	{
 		ts.x =  48.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE15 )  // trace au sol bleu clair ?
+	else if ( m_wheelTrace[i].type == PARTITRACE15 )  // light blue ground track?
 	{
 		ts.x =  56.0f/256.0f;
 		ts.y = 232.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE16 )  // trace au sol flèche noire ?
+	else if ( m_wheelTrace[i].type == PARTITRACE16 )  // black arrow ground track?
 	{
 		ts.x = 160.0f/256.0f;
 		ts.y = 224.0f/256.0f;
 	}
-	else if ( m_wheelTrace[i].type == PARTITRACE17 )  // trace au sol flèche rouge ?
+	else if ( m_wheelTrace[i].type == PARTITRACE17 )  // red arrow ground track?
 	{
 		ts.x = 176.0f/256.0f;
 		ts.y = 224.0f/256.0f;
@@ -3802,7 +3803,7 @@ void CParticule::DrawParticuleWheel(int i)
 	m_engine->AddStatisticTriangle(2);
 }
 
-// Dessine toutes les particules.
+// Draws all the particles.
 
 void CParticule::DrawParticule(int sheet)
 {
@@ -3817,7 +3818,7 @@ void CParticule::DrawParticule(int sheet)
 //?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
 
-	// Dessine les particules à base de triangles.
+	// Draw the basic particles of triangles.
 	if ( m_totalInterface[0][sheet] > 0 )
 	{
 		for ( i=0 ; i<MAXPARTICULE ; i++ )
@@ -3833,19 +3834,19 @@ void CParticule::DrawParticule(int sheet)
 		}
 	}
 
-	// Dessines les particules à base de carrés calculés.
+	// Draw the particles was calculated based on edge.
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
 
 	ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
 	mat.diffuse.r = 1.0f;
 	mat.diffuse.g = 1.0f;
-	mat.diffuse.b = 1.0f;  // blanc
+	mat.diffuse.b = 1.0f;  // white
 	mat.ambient.r = 0.5f;
 	mat.ambient.g = 0.5f;
 	mat.ambient.b = 0.5f;
 	m_engine->SetMaterial(mat);
 
-	// Dessine les traces de pneu.
+	// Draw tire marks.
 	if ( m_wheelTraceTotal > 0 && sheet == SH_WORLD )
 	{
 #if _POLISH
@@ -3864,7 +3865,7 @@ void CParticule::DrawParticule(int sheet)
 	}
 
 //?	for ( t=1 ; t<MAXPARTITYPE ; t++ )
-	for ( t=MAXPARTITYPE-1 ; t>=1 ; t-- )  // noir derrière !
+	for ( t=MAXPARTITYPE-1 ; t>=1 ; t-- )  // black behind!
 	{
 		if ( m_totalInterface[t][sheet] == 0 )  continue;
 
@@ -3891,17 +3892,17 @@ void CParticule::DrawParticule(int sheet)
 			if ( r != -1 )
 			{
 				m_engine->SetState(state);
-				TrackDraw(r, m_particule[i].type);  // dessine la traînée
+				TrackDraw(r, m_particule[i].type);  // draws the drag
 				if ( !m_track[r].bDrawParticule )  continue;
 			}
 
 			m_engine->SetState(state, RetColor(m_particule[i].intensity));
 
-			if ( m_particule[i].bRay )  // rayon ?
+			if ( m_particule[i].bRay )  // ray?
 			{
 				DrawParticuleRay(i);
 			}
-			else if ( m_particule[i].type == PARTIFLIC  ||  // rond dans l'eau ?
+			else if ( m_particule[i].type == PARTIFLIC  ||  // circle in the water?
 					  m_particule[i].type == PARTISHOW  ||
 					  m_particule[i].type == PARTICHOC  ||
 					  m_particule[i].type == PARTIGFLAT )
@@ -3914,16 +3915,16 @@ void CParticule::DrawParticule(int sheet)
 				DrawParticuleFog(i);
 			}
 			else if ( m_particule[i].type >= PARTISPHERE0 &&
-					  m_particule[i].type <= PARTISPHERE9 )  // sphère ?
+					  m_particule[i].type <= PARTISPHERE9 )  // sphere?
 			{
 				DrawParticuleSphere(i);
 			}
 			else if ( m_particule[i].type >= PARTIPLOUF0 &&
-					  m_particule[i].type <= PARTIPLOUF4 )  // cylindre ?
+					  m_particule[i].type <= PARTIPLOUF4 )  // cylinder?
 			{
 				DrawParticuleCylinder(i);
 			}
-			else	// normal ?
+			else	// normal?
 			{
 				DrawParticuleNorm(i);
 			}
@@ -3935,7 +3936,7 @@ void CParticule::DrawParticule(int sheet)
 }
 
 
-// Cherche si un objet fait collision avec une balle.
+// Seeks if an object collided with a bullet.
 
 CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 									 ParticuleType type, CObject *father)
@@ -3948,13 +3949,13 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 	int			i, j;
 	BOOL		bHimself;
 
-	if ( m_main->RetMovieLock() )  return 0;  // film en cours ?
+	if ( m_main->RetMovieLock() )  return 0;  // current movie?
 
 	bHimself = m_main->RetHimselfDamage();
 
 	min = 5.0f;
-	if ( type == PARTIGUN2 ) min = 2.0f;  // tir insecte ?
-	if ( type == PARTIGUN3 ) min = 3.0f;  // suicide araignée ?
+	if ( type == PARTIGUN2 ) min = 2.0f;  // shooting insect?
+	if ( type == PARTIGUN3 ) min = 3.0f;  // suiciding spider?
 
 	box1 = old;
 	box2 = pos;
@@ -3975,55 +3976,55 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( !pObj->RetActif() )  continue;  // inactif ?
+		if ( !pObj->RetActif() )  continue;  // inactive?
 		if ( pObj == father )  continue;
 
 		oType = pObj->RetType();
 
 		if ( oType == OBJECT_TOTO )  continue;
 
-		if ( type == PARTIGUN1 )  // tir fireball ?
+		if ( type == PARTIGUN1 )  // fireball shooting?
 		{
 			if ( oType == OBJECT_MOTHER )  continue;
-			if ( bHimself )  // dégâts à soi-même ?
+			if ( bHimself )  // damage is oneself?
 			{
 				if ( !IsAlien(oType) &&
 					 !IsSoft(oType)  )  continue;
 			}
-			else	// dégats seulement aux ennemis ?
+			else	// damage only to enemies?
 			{
 				if ( !IsAlien(oType) )  continue;
 			}
 		}
-		else if ( type == PARTIGUN2 )  // tir insecte ?
+		else if ( type == PARTIGUN2 )  // shooting insect?
 		{
 			if ( !IsSoft(oType) )  continue;
 		}
-		else if ( type == PARTIGUN3 )  // suicide araignée ?
+		else if ( type == PARTIGUN3 )  // suiciding spider?
 		{
 			if ( !IsSoft(oType) )  continue;
 		}
-		else if ( type == PARTIGUN4 )  // tir orgaball ?
+		else if ( type == PARTIGUN4 )  // orgaball shooting?
 		{
 			if ( oType == OBJECT_MOTHER )  continue;
-			if ( bHimself )  // dégâts à soi-même ?
+			if ( bHimself )  // damage is oneself?
 			{
 				if ( !IsAlien(oType) &&
 					 !IsSoft(oType)  )  continue;
 			}
-			else	// dégats seulement aux ennemis ?
+			else	// damage only to enemies?
 			{
 				if ( !IsAlien(oType) )  continue;
 			}
 		}
-		else if ( type == PARTITRACK11 )  // tir phazer ?
+		else if ( type == PARTITRACK11 )  // phazer shooting?
 		{
-			if ( bHimself )  // dégâts à soi-même ?
+			if ( bHimself )  // damage is oneself?
 			{
 				if ( !IsAlien(oType) &&
 					 !IsSoft(oType)  )  continue;
 			}
-			else	// dégats seulement aux ennemis ?
+			else	// damage only to enemies?
 			{
 				if ( !IsAlien(oType) )  continue;
 			}
@@ -4035,10 +4036,10 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 
 		oPos = pObj->RetPosition(0);
 
-		if ( type == PARTIGUN2 ||  // tir insecte ?
-			 type == PARTIGUN3 )   // suicide araignée ?
+		if ( type == PARTIGUN2 ||  // shooting insect?
+			 type == PARTIGUN3 )   // suiciding spider?
 		{
-			// Test si la balle est entrée dans la sphère d'un bouclier.
+			// Test if the ball is entered into the sphere of a shield.
 			shieldRadius = pObj->RetShieldRadius();
 			if ( shieldRadius > 0.0f )
 			{
@@ -4052,19 +4053,19 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 		}
 		if ( bShield )  continue;
 
-		// Test au centre de l'objet, ce qui est nécessaire pour
-		// les objets qui n'ont pas de sphère au centre (station).
+		// Test the center of the object, which is necessary for objects
+		// that have no sphere in the center (station).
 		dist = Length(oPos, pos)-4.0f;
 		if ( dist < min )
 		{
 			pBest = pObj;
 		}
 
-		// Test avec toutes les sphères de l'objet.
+		// Test with all spheres of the object.
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
-			if ( oPos.x+oRadius < box1.x || oPos.x-oRadius > box2.x ||  // hors de la boîte ?
+			if ( oPos.x+oRadius < box1.x || oPos.x-oRadius > box2.x ||  // outside the box?
 				 oPos.y+oRadius < box1.y || oPos.y-oRadius > box2.y ||
 				 oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )  continue;
 
@@ -4080,7 +4081,7 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 	return pBest;
 }
 
-// Cherche si un objet fait collision avec un rayon.
+// Seeks if an object collided with a ray.
 
 CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
 									 ParticuleType type, CObject *father)
@@ -4091,7 +4092,7 @@ CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
 	float		min, dist;
 	int			i;
 
-	if ( m_main->RetMovieLock() )  return 0;  // film en cours ?
+	if ( m_main->RetMovieLock() )  return 0;  // current movie?
 
 	min = 10.0f;
 
@@ -4112,7 +4113,7 @@ CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( !pObj->RetActif() )  continue;  // inactif ?
+		if ( !pObj->RetActif() )  continue;  // inactive?
 		if ( pObj == father )  continue;
 
 		oType = pObj->RetType();
@@ -4132,7 +4133,7 @@ CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
 
 		oPos = pObj->RetPosition(0);
 
-		if ( oPos.x < box1.x || oPos.x > box2.x ||  // hors de la boîte ?
+		if ( oPos.x < box1.x || oPos.x > box2.x ||  // outside the box?
 			 oPos.y < box1.y || oPos.y > box2.y ||
 			 oPos.z < box1.z || oPos.z > box2.z )  continue;
 
@@ -4145,7 +4146,7 @@ CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
 }
 
 
-// Fait entendre un son.
+// Sounded one.
 
 void CParticule::Play(Sound sound, D3DVECTOR pos, float amplitude)
 {
@@ -4159,8 +4160,8 @@ void CParticule::Play(Sound sound, D3DVECTOR pos, float amplitude)
 
 
 
-// Cherche la couleur si on est dans le brouillard.
-// Retourne noir si on est pas dans le brouillard.
+// Seeks the color if you're in the fog.
+// Returns black if you're not in the fog.
 
 D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
 {
@@ -4175,7 +4176,7 @@ D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
 
 	for ( fog=0 ; fog<m_fogTotal ; fog++ )
 	{
-		i = m_fog[fog];  // i = rang de la particule
+		i = m_fog[fog];  // i = rank of the particle
 
 		if ( pos.y >= m_particule[i].pos.y+FOG_HSUP )  continue;
 		if ( pos.y <= m_particule[i].pos.y-FOG_HINF )  continue;
@@ -4183,10 +4184,10 @@ D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
 		dist = Length2d(pos, m_particule[i].pos);
 		if ( dist >= m_particule[i].dim.x*1.5f )  continue;
 
-		// Calcule le facteur horizontal.
+		// Calculates the horizontal distance.
 		factor = 1.0f-powf(dist/(m_particule[i].dim.x*1.5f), 4.0f);
 
-		// Calcule le facteur vertical.
+		// Calculates the vertical distance.
 		if ( pos.y > m_particule[i].pos.y )
 		{
 			factor *= 1.0f-(pos.y-m_particule[i].pos.y)/FOG_HSUP;
@@ -4199,28 +4200,28 @@ D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
 		factor *= 0.3f;
 
 		if ( m_particule[i].type == PARTIFOG0 ||
-			 m_particule[i].type == PARTIFOG1 )  // bleu ?
+			 m_particule[i].type == PARTIFOG1 )  // blue?
 		{
 			color.r = 0.0f;
 			color.g = 0.5f;
 			color.b = 1.0f;
 		}
 		else if ( m_particule[i].type == PARTIFOG2 ||
-				  m_particule[i].type == PARTIFOG3 )  // rouge ?
+				  m_particule[i].type == PARTIFOG3 )  // red?
 		{
 			color.r = 2.0f;
 			color.g = 1.0f;
 			color.b = 0.0f;
 		}
 		else if ( m_particule[i].type == PARTIFOG4 ||
-				  m_particule[i].type == PARTIFOG5 )  // blanc ?
+				  m_particule[i].type == PARTIFOG5 )  // white?
 		{
 			color.r = 1.0f;
 			color.g = 1.0f;
 			color.b = 1.0f;
 		}
 		else if ( m_particule[i].type == PARTIFOG6 ||
-				  m_particule[i].type == PARTIFOG7 )  // jaune ?
+				  m_particule[i].type == PARTIFOG7 )  // yellow?
 		{
 			color.r = 0.8f;
 			color.g = 1.0f;
@@ -4246,7 +4247,7 @@ D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
 }
 
 
-// Ecrit un fichier .BMP contenant toutes les traces de pneu.
+// Writes a file. BMP containing all the tire tracks.
 
 BOOL CParticule::WriteWheelTrace(char *filename, int width, int height,
 								 D3DVECTOR dl, D3DVECTOR ur)
@@ -4294,31 +4295,31 @@ BOOL CParticule::WriteWheelTrace(char *filename, int width, int height,
 
 	for ( i=0 ; i<m_wheelTraceTotal ; i++ )
 	{
-		if ( m_wheelTrace[i].type == PARTITRACE0 )  // trace au sol noire ?
+		if ( m_wheelTrace[i].type == PARTITRACE0 )  // black ground track?
 		{
 			color = RGB(0,0,0);
 		}
-		else if ( m_wheelTrace[i].type == PARTITRACE1 )  // trace au sol rouge ?
+		else if ( m_wheelTrace[i].type == PARTITRACE1 )  // red ground track?
 		{
 			color = RGB(255,0,0);
 		}
-		else if ( m_wheelTrace[i].type == PARTITRACE2 )  // trace au sol verte ?
+		else if ( m_wheelTrace[i].type == PARTITRACE2 )  // green ground track?
 		{
 			color = RGB(0,255,0);
 		}
-		else if ( m_wheelTrace[i].type == PARTITRACE3 )  // trace au sol bleue ?
+		else if ( m_wheelTrace[i].type == PARTITRACE3 )  // blue ground track?
 		{
 			color = RGB(0,0,255);
 		}
-		else if ( m_wheelTrace[i].type == PARTITRACE4 )  // trace au sol cyan ?
+		else if ( m_wheelTrace[i].type == PARTITRACE4 )  // cyan ground track?
 		{
 			color = RGB(0,255,255);
 		}
-		else if ( m_wheelTrace[i].type == PARTITRACE5 )  // trace au sol magenta ?
+		else if ( m_wheelTrace[i].type == PARTITRACE5 )  // magenta ground track?
 		{
 			color = RGB(255,0,255);
 		}
-		else if ( m_wheelTrace[i].type == PARTITRACE6 )  // trace au sol jaune ?
+		else if ( m_wheelTrace[i].type == PARTITRACE6 )  // yellow ground track?
 		{
 			color = RGB(255,255,0);
 		}
