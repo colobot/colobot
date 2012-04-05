@@ -20,6 +20,11 @@
 #define	_MOTIONTOTO_H_
 
 
+#include "struct.h"
+#include "object.h"
+#include "motion.h"
+
+
 class CInstanceManager;
 class CEngine;
 class CLight;
@@ -28,7 +33,6 @@ class CTerrain;
 class CCamera;
 class CBrain;
 class CPhysics;
-class CObject;
 
 
 #define MT_ERROR		0

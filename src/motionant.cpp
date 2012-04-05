@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"

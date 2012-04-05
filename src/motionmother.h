@@ -20,6 +20,9 @@
 #define	_MOTIONMOTHER_H_
 
 
+#include "motion.h"
+
+
 class CInstanceManager;
 class CEngine;
 class CLight;

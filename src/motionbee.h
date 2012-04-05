@@ -20,6 +20,9 @@
 #define	_MOTIONBEE_H_
 
 
+#include "motion.h"
+
+
 class CInstanceManager;
 class CEngine;
 class CLight;

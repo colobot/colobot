@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "event.h"
 #include "math3d.h"
 #include "terrain.h"
@@ -79,7 +79,6 @@ CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
 
 CMap::~CMap()
 {
-	CControl::~CControl();
 }
 
 

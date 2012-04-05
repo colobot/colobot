@@ -19,21 +19,19 @@
 #ifndef _MAINDIALOG_H_
 #define	_MAINDIALOG_H_
 
+#include "struct.h"
+#include "camera.h"
+#include "robotmain.h"
 
 
 class CInstanceManager;
-class CRobotMain;
 class CEvent;
 class CD3DEngine;
 class CInterface;
 class CWindow;
 class CControl;
 class CParticule;
-class CCamera;
 class CSound;
-
-enum Phase;
-enum CameraType;
 
 
 #define USERLISTMAX	100
@@ -188,11 +186,11 @@ protected:
 	int			m_persoTab;			// perso: tab selected
 	float			m_persoAngle;			// perso: angle of presentation
 
-	char			m_sceneDir[_MAX_FNAME];		// scene folder\
-	char			m_savegameDir[_MAX_FNAME];	// savegame folder\
-	char			m_publicDir[_MAX_FNAME];	// program folder\ 
-	char			m_userDir[_MAX_FNAME];		// user folder\ 
-	char			m_filesDir[_MAX_FNAME];		// case files\ 
+	char			m_sceneDir[_MAX_FNAME];		// scene folder
+	char			m_savegameDir[_MAX_FNAME];	// savegame folder
+	char			m_publicDir[_MAX_FNAME];	// program folder 
+	char			m_userDir[_MAX_FNAME];		// user folder
+	char			m_filesDir[_MAX_FNAME];		// case files 
 
 	int				m_index;		// 0..4
 	int				m_chap[10];		// selected chapter (0..8)

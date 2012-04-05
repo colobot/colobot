@@ -20,8 +20,10 @@
 #define	_MODFILE_H_
 
 
+#include "d3dengine.h"
+
+
 class CInstanceManager;
-class CD3DEngine;
 
 
 

@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -1516,7 +1516,8 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		SetInclinaison(dir);
 
 //?		dir.x = -(sinf(time*0.05f+PI*1.5f)+1.0f)*100.0f;
-		dir.x = -(powf(Min(time/30.0f), 4.0f))*1000.0f;  // from the distance
+		// original code: Min(time/30.0f) (?) changed to time/30.0f
+		dir.x = -(powf(time/30.0f, 4.0f))*1000.0f;  // from the distance
 		dir.y = 0.0f;
 		dir.z = 0.0f;
 		m_object->SetLinVibration(dir);

@@ -20,6 +20,9 @@
 #define	_MODEL_H_
 
 
+#include "struct.h"
+
+
 class CInstanceManager;
 class CD3DEngine;
 class CModFile;

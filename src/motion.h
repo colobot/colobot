@@ -20,6 +20,9 @@
 #define	_MOTION_H_
 
 
+#include "d3dengine.h"
+
+
 class CInstanceManager;
 class CEngine;
 class CLight;
