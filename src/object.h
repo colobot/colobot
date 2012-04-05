@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// object.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// object.h
 
 #ifndef _OBJECT_H_
 #define	_OBJECT_H_
@@ -40,8 +42,7 @@ enum D3DShadowType;
 
 
 
-// Le père de toutes les parties doit toujours être la partie
-// numéro zéro !
+// The father of all parts must always be the part number zero!
 
 #define OBJECTMAXPART		40
 #define MAXCRASHSPHERE		40
@@ -51,265 +52,265 @@ enum D3DShadowType;
 
 enum ObjectType
 {
-	OBJECT_NULL		    = 0,	// objet détruit
-	OBJECT_FIX		    = 1,	// décor fixe
-	OBJECT_PORTICO	    = 2,	// portique
-	OBJECT_BASE		    = 3,	// grande base principale
-	OBJECT_DERRICK	    = 4,	// derrick fixe
-	OBJECT_FACTORY	    = 5,	// usine fixe
-	OBJECT_STATION	    = 6,	// station de recharge
-	OBJECT_CONVERT	    = 7,	// station de transformation
-	OBJECT_REPAIR	    = 8,	// réparation
-	OBJECT_TOWER	    = 9,	// tour de défense
-	OBJECT_NEST		    = 10,	// nid
-	OBJECT_RESEARCH     = 11,	// centre de recherches
-	OBJECT_RADAR	    = 12,	// radar
-	OBJECT_ENERGY	    = 13,	// centrale d'énergie
-	OBJECT_LABO		    = 14,	// laboratoire d'analyse pour insectes
-	OBJECT_NUCLEAR		= 15,	// centrale nucléaire
-	OBJECT_START		= 16,	// départ
-	OBJECT_END			= 17,	// arrivée
-	OBJECT_INFO		    = 18,	// borne d'information
-	OBJECT_PARA			= 19,	// paratonnerre
-	OBJECT_TARGET1		= 20,	// portique cible
-	OBJECT_TARGET2		= 21,	// centre cible
-	OBJECT_SAFE			= 22,	// coffre fort
-	OBJECT_HUSTON		= 23,	// centre de contrôle
-	OBJECT_DESTROYER	= 24,	// destructeur
-	OBJECT_FRET		    = 30,	// transportable
-	OBJECT_STONE	    = 31,	// pierre
-	OBJECT_URANIUM	    = 32,	// uranium
-	OBJECT_METAL	    = 33,	// métal
-	OBJECT_POWER	    = 34,	// pile normale
-	OBJECT_ATOMIC	    = 35,	// pile atomique
-	OBJECT_BULLET	    = 36,	// boulet
-	OBJECT_BBOX		    = 37,	// black-box
-	OBJECT_TNT			= 38,	// caisse de TNT
-	OBJECT_SCRAP1		= 40,	// déchet métallique
-	OBJECT_SCRAP2		= 41,	// déchet métallique
-	OBJECT_SCRAP3		= 42,	// déchet métallique
-	OBJECT_SCRAP4		= 43,	// déchet plastique
-	OBJECT_SCRAP5		= 44,	// déchet plastique
-	OBJECT_MARKPOWER	= 50,	// marque pile en sous-sol
-	OBJECT_MARKSTONE	= 51,	// marque minerai en sous-sol
-	OBJECT_MARKURANIUM  = 52,	// marque uranium en sous-sol
-	OBJECT_MARKKEYa		= 53,	// marque clé en sous-sol
-	OBJECT_MARKKEYb		= 54,	// marque clé en sous-sol
-	OBJECT_MARKKEYc		= 55,	// marque clé en sous-sol
-	OBJECT_MARKKEYd		= 56,	// marque clé en sous-sol
-	OBJECT_BOMB			= 60,	// bombe
-	OBJECT_WINFIRE		= 61,	// feu d'artifice
-	OBJECT_SHOW			= 62,	// montre un lieu
-	OBJECT_BAG			= 63,	// sac de survie
-	OBJECT_PLANT0		= 70,	// plante 0
-	OBJECT_PLANT1		= 71,	// plante 1
-	OBJECT_PLANT2		= 72,	// plante 2
-	OBJECT_PLANT3		= 73,	// plante 3
-	OBJECT_PLANT4		= 74,	// plante 4
-	OBJECT_PLANT5		= 75,	// plante 5
-	OBJECT_PLANT6		= 76,	// plante 6
-	OBJECT_PLANT7		= 77,	// plante 7
-	OBJECT_PLANT8		= 78,	// plante 8
-	OBJECT_PLANT9		= 79,	// plante 9
-	OBJECT_PLANT10		= 80,	// plante 10
-	OBJECT_PLANT11		= 81,	// plante 11
-	OBJECT_PLANT12		= 82,	// plante 12
-	OBJECT_PLANT13		= 83,	// plante 13
-	OBJECT_PLANT14		= 84,	// plante 14
-	OBJECT_PLANT15		= 85,	// plante 15
-	OBJECT_PLANT16		= 86,	// plante 16
-	OBJECT_PLANT17		= 87,	// plante 17
-	OBJECT_PLANT18		= 88,	// plante 18
-	OBJECT_PLANT19		= 89,	// plante 19
-	OBJECT_TREE0		= 90,	// arbre 0
-	OBJECT_TREE1		= 91,	// arbre 1
-	OBJECT_TREE2		= 92,	// arbre 2
-	OBJECT_TREE3		= 93,	// arbre 3
-	OBJECT_TREE4		= 94,	// arbre 4
-	OBJECT_TREE5		= 95,	// arbre 5
-	OBJECT_TREE6		= 96,	// arbre 6
-	OBJECT_TREE7		= 97,	// arbre 7
-	OBJECT_TREE8		= 98,	// arbre 8
-	OBJECT_TREE9		= 99,	// arbre 9
-	OBJECT_MOBILEwt	    = 100,	// wheel-trainer
-	OBJECT_MOBILEtt	    = 101,	// track-trainer
-	OBJECT_MOBILEft	    = 102,	// fly-trainer
-	OBJECT_MOBILEit	    = 103,	// insect-trainer
-	OBJECT_MOBILEwa	    = 110,	// wheel-arm
-	OBJECT_MOBILEta	    = 111,	// track-arm
-	OBJECT_MOBILEfa	    = 112,	// fly-arm
-	OBJECT_MOBILEia	    = 113,	// insect-arm
-	OBJECT_MOBILEwc	    = 120,	// wheel-cannon
-	OBJECT_MOBILEtc	    = 121,	// track-cannon
-	OBJECT_MOBILEfc	    = 122,	// fly-cannon
-	OBJECT_MOBILEic	    = 123,	// insect-cannon
-	OBJECT_MOBILEwi	    = 130,	// wheel-insect-cannon
-	OBJECT_MOBILEti	    = 131,	// track-insect-cannon
-	OBJECT_MOBILEfi	    = 132,	// fly-insect-cannon
-	OBJECT_MOBILEii	    = 133,	// insect-insect-cannon
-	OBJECT_MOBILEws	    = 140,	// wheel-search
-	OBJECT_MOBILEts	    = 141,	// track-search
-	OBJECT_MOBILEfs	    = 142,	// fly-search
-	OBJECT_MOBILEis	    = 143,	// insect-search
-	OBJECT_MOBILErt	    = 200,	// roller-terraform
-	OBJECT_MOBILErc	    = 201,	// roller-canon
-	OBJECT_MOBILErr	    = 202,	// roller-recover
-	OBJECT_MOBILErs	    = 203,	// roller-shield
-	OBJECT_MOBILEsa	    = 210,	// sous-marin
-	OBJECT_MOBILEtg	    = 211,	// cible d'exercice
-	OBJECT_MOBILEdr	    = 212,	// robot de dessin
-	OBJECT_WAYPOINT 	= 250,	// chemin
-	OBJECT_FLAGb		= 260,	// drapeau bleu
-	OBJECT_FLAGr		= 261,	// drapeau rouge
-	OBJECT_FLAGg		= 262,	// drapeau vert
-	OBJECT_FLAGy		= 263,	// drapeau jaune
-	OBJECT_FLAGv		= 264,	// drapeau violet
-	OBJECT_KEYa			= 270,	// clé a
-	OBJECT_KEYb			= 271,	// clé b
-	OBJECT_KEYc			= 272,	// clé c
-	OBJECT_KEYd			= 273,	// clé d
-	OBJECT_HUMAN	    = 300,	// homme
-	OBJECT_TOTO		    = 301,	// toto
-	OBJECT_TECH		    = 302,	// technicien
-	OBJECT_BARRIER0		= 400,	// barrière
-	OBJECT_BARRIER1		= 401,	// barrière
-	OBJECT_BARRIER2		= 402,	// barrière
-	OBJECT_BARRIER3		= 403,	// barrière
-	OBJECT_BARRIER4		= 404,	// barrière
-	OBJECT_MOTHER	    = 500,	// mère pondeuse
-	OBJECT_EGG		    = 501,	// oeuf
-	OBJECT_ANT		    = 502,	// fourmi
-	OBJECT_SPIDER	    = 503,	// araignée
-	OBJECT_BEE		    = 504,	// abeille
-	OBJECT_WORM		    = 505,	// ver
-	OBJECT_RUINmobilew1 = 600,	// ruine 1
-	OBJECT_RUINmobilew2 = 601,	// ruine 1
-	OBJECT_RUINmobilet1 = 602,	// ruine 2
-	OBJECT_RUINmobilet2 = 603,	// ruine 2
-	OBJECT_RUINmobiler1 = 604,	// ruine 3
-	OBJECT_RUINmobiler2 = 605,	// ruine 3
-	OBJECT_RUINfactory  = 606,	// ruine 4
-	OBJECT_RUINdoor     = 607,	// ruine 5
-	OBJECT_RUINsupport  = 608,	// ruine 6
-	OBJECT_RUINradar    = 609,	// ruine 7
-	OBJECT_RUINconvert  = 610,	// ruine 8
-	OBJECT_RUINbase	    = 611,	// ruine 9
-	OBJECT_RUINhead	    = 612,	// ruine 10
-	OBJECT_TEEN0		= 620,	// jouet
-	OBJECT_TEEN1		= 621,	// jouet
-	OBJECT_TEEN2		= 622,	// jouet
-	OBJECT_TEEN3		= 623,	// jouet
-	OBJECT_TEEN4		= 624,	// jouet
-	OBJECT_TEEN5		= 625,	// jouet
-	OBJECT_TEEN6		= 626,	// jouet
-	OBJECT_TEEN7		= 627,	// jouet
-	OBJECT_TEEN8		= 628,	// jouet
-	OBJECT_TEEN9		= 629,	// jouet
-	OBJECT_TEEN10	    = 630,	// jouet
-	OBJECT_TEEN11	    = 631,	// jouet
-	OBJECT_TEEN12	    = 632,	// jouet
-	OBJECT_TEEN13	    = 633,	// jouet
-	OBJECT_TEEN14	    = 634,	// jouet
-	OBJECT_TEEN15	    = 635,	// jouet
-	OBJECT_TEEN16	    = 636,	// jouet
-	OBJECT_TEEN17	    = 637,	// jouet
-	OBJECT_TEEN18	    = 638,	// jouet
-	OBJECT_TEEN19	    = 639,	// jouet
-	OBJECT_TEEN20	    = 640,	// jouet
-	OBJECT_TEEN21	    = 641,	// jouet
-	OBJECT_TEEN22	    = 642,	// jouet
-	OBJECT_TEEN23	    = 643,	// jouet
-	OBJECT_TEEN24	    = 644,	// jouet
-	OBJECT_TEEN25	    = 645,	// jouet
-	OBJECT_TEEN26	    = 646,	// jouet
-	OBJECT_TEEN27	    = 647,	// jouet
-	OBJECT_TEEN28	    = 648,	// jouet
-	OBJECT_TEEN29	    = 649,	// jouet
-	OBJECT_TEEN30	    = 650,	// jouet
-	OBJECT_TEEN31	    = 651,	// jouet
-	OBJECT_TEEN32	    = 652,	// jouet
-	OBJECT_TEEN33	    = 653,	// jouet
-	OBJECT_TEEN34	    = 654,	// jouet
-	OBJECT_TEEN35	    = 655,	// jouet
-	OBJECT_TEEN36	    = 656,	// jouet
-	OBJECT_TEEN37	    = 657,	// jouet
-	OBJECT_TEEN38	    = 658,	// jouet
-	OBJECT_TEEN39	    = 659,	// jouet
-	OBJECT_TEEN40	    = 660,	// jouet
-	OBJECT_TEEN41	    = 661,	// jouet
-	OBJECT_TEEN42	    = 662,	// jouet
-	OBJECT_TEEN43	    = 663,	// jouet
-	OBJECT_TEEN44	    = 664,	// jouet
-	OBJECT_TEEN45	    = 665,	// jouet
-	OBJECT_TEEN46	    = 666,	// jouet
-	OBJECT_TEEN47	    = 667,	// jouet
-	OBJECT_TEEN48	    = 668,	// jouet
-	OBJECT_TEEN49	    = 669,	// jouet
-	OBJECT_QUARTZ0		= 700,	// quartz 0
-	OBJECT_QUARTZ1		= 701,	// quartz 1
-	OBJECT_QUARTZ2		= 702,	// quartz 2
-	OBJECT_QUARTZ3		= 703,	// quartz 3
-	OBJECT_QUARTZ4		= 704,	// quartz 4
-	OBJECT_QUARTZ5		= 705,	// quartz 5
-	OBJECT_QUARTZ6		= 706,	// quartz 6
-	OBJECT_QUARTZ7		= 707,	// quartz 7
-	OBJECT_QUARTZ8		= 708,	// quartz 8
-	OBJECT_QUARTZ9		= 709,	// quartz 9
-	OBJECT_ROOT0		= 710,	// racine 0
-	OBJECT_ROOT1		= 711,	// racine 1
-	OBJECT_ROOT2		= 712,	// racine 2
-	OBJECT_ROOT3		= 713,	// racine 3
-	OBJECT_ROOT4		= 714,	// racine 4
-	OBJECT_ROOT5		= 715,	// racine 5
-	OBJECT_ROOT6		= 716,	// racine 6
-	OBJECT_ROOT7		= 717,	// racine 7
-	OBJECT_ROOT8		= 718,	// racine 8
-	OBJECT_ROOT9		= 719,	// racine 9
-	OBJECT_SEAWEED0		= 720,	// algue 0
-	OBJECT_SEAWEED1		= 721,	// algue 1
-	OBJECT_SEAWEED2		= 722,	// algue 2
-	OBJECT_SEAWEED3		= 723,	// algue 3
-	OBJECT_SEAWEED4		= 724,	// algue 4
-	OBJECT_SEAWEED5		= 725,	// algue 5
-	OBJECT_SEAWEED6		= 726,	// algue 6
-	OBJECT_SEAWEED7		= 727,	// algue 7
-	OBJECT_SEAWEED8		= 728,	// algue 8
-	OBJECT_SEAWEED9		= 729,	// algue 9
-	OBJECT_MUSHROOM0	= 730,	// champignon 0
-	OBJECT_MUSHROOM1	= 731,	// champignon 1
-	OBJECT_MUSHROOM2	= 732,	// champignon 2
-	OBJECT_MUSHROOM3	= 733,	// champignon 3
-	OBJECT_MUSHROOM4	= 734,	// champignon 4
-	OBJECT_MUSHROOM5	= 735,	// champignon 5
-	OBJECT_MUSHROOM6	= 736,	// champignon 6
-	OBJECT_MUSHROOM7	= 737,	// champignon 7
-	OBJECT_MUSHROOM8	= 738,	// champignon 8
-	OBJECT_MUSHROOM9	= 739,	// champignon 9
+	OBJECT_NULL		= 0,	// object destroyed
+	OBJECT_FIX		= 1,	// stationary scenery
+	OBJECT_PORTICO	    	= 2,	// gantry
+	OBJECT_BASE		= 3,	// great main base
+	OBJECT_DERRICK	    	= 4,	// derrick set
+	OBJECT_FACTORY	    	= 5,	// factory set
+	OBJECT_STATION	   	= 6,	// recharging station
+	OBJECT_CONVERT	   	= 7,	// converter station
+	OBJECT_REPAIR	   	= 8,	// reparation
+	OBJECT_TOWER	    	= 9,	// defense tower
+	OBJECT_NEST		= 10,	// nest
+	OBJECT_RESEARCH     	= 11,	// research center
+	OBJECT_RADAR	    	= 12,	// radar
+	OBJECT_ENERGY	    	= 13,	// energy factory
+	OBJECT_LABO		= 14,	// analytical laboratory for insect
+	OBJECT_NUCLEAR		= 15,	// nuclear power plant
+	OBJECT_START		= 16,	// starting
+	OBJECT_END		= 17,	// finish
+	OBJECT_INFO		= 18,	// information terminal
+	OBJECT_PARA		= 19,	// lightning conductor
+	OBJECT_TARGET1		= 20,	// gate target
+	OBJECT_TARGET2		= 21,	// center target
+	OBJECT_SAFE		= 22,	// safe
+	OBJECT_HUSTON		= 23,	// control centre
+	OBJECT_DESTROYER	= 24,	// destroyer
+	OBJECT_FRET		= 30,	// transportable
+	OBJECT_STONE	   	= 31,	// stone
+	OBJECT_URANIUM	   	= 32,	// uranium
+	OBJECT_METAL	   	= 33,	// metal
+	OBJECT_POWER	   	= 34,	// normal battery
+	OBJECT_ATOMIC	    	= 35,	// atomic battery
+	OBJECT_BULLET	    	= 36,	// bullet
+	OBJECT_BBOX		= 37,	// black-box
+	OBJECT_TNT		= 38,	// box of TNT
+	OBJECT_SCRAP1		= 40,	// metal waste
+	OBJECT_SCRAP2		= 41,	// metal waste
+	OBJECT_SCRAP3		= 42,	// metal waste
+	OBJECT_SCRAP4		= 43,	// plastic waste
+	OBJECT_SCRAP5		= 44,	// plastic waste
+	OBJECT_MARKPOWER	= 50,	// mark underground energy source
+	OBJECT_MARKSTONE	= 51,	// mark underground ore
+	OBJECT_MARKURANIUM  	= 52,	// mark underground uranium
+	OBJECT_MARKKEYa		= 53,	// mark underground key
+	OBJECT_MARKKEYb		= 54,	// mark underground key
+	OBJECT_MARKKEYc		= 55,	// mark underground key
+	OBJECT_MARKKEYd		= 56,	// mark underground key
+	OBJECT_BOMB		= 60,	// bomb
+	OBJECT_WINFIRE		= 61,	// fireworks
+	OBJECT_SHOW		= 62,	// shows a place
+	OBJECT_BAG		= 63,	// survival bag
+	OBJECT_PLANT0		= 70,	// plant 0
+	OBJECT_PLANT1		= 71,	// plant 1
+	OBJECT_PLANT2		= 72,	// plant 2
+	OBJECT_PLANT3		= 73,	// plant 3
+	OBJECT_PLANT4		= 74,	// plant 4
+	OBJECT_PLANT5		= 75,	// plant 5
+	OBJECT_PLANT6		= 76,	// plant 6
+	OBJECT_PLANT7		= 77,	// plant 7
+	OBJECT_PLANT8		= 78,	// plant 8
+	OBJECT_PLANT9		= 79,	// plant 9
+	OBJECT_PLANT10		= 80,	// plant 10
+	OBJECT_PLANT11		= 81,	// plant 11
+	OBJECT_PLANT12		= 82,	// plant 12
+	OBJECT_PLANT13		= 83,	// plant 13
+	OBJECT_PLANT14		= 84,	// plant 14
+	OBJECT_PLANT15		= 85,	// plant 15
+	OBJECT_PLANT16		= 86,	// plant 16
+	OBJECT_PLANT17		= 87,	// plant 17
+	OBJECT_PLANT18		= 88,	// plant 18
+	OBJECT_PLANT19		= 89,	// plant 19
+	OBJECT_TREE0		= 90,	// tree 0
+	OBJECT_TREE1		= 91,	// tree 1
+	OBJECT_TREE2		= 92,	// tree 2
+	OBJECT_TREE3		= 93,	// tree 3
+	OBJECT_TREE4		= 94,	// tree 4
+	OBJECT_TREE5		= 95,	// tree 5
+	OBJECT_TREE6		= 96,	// tree 6
+	OBJECT_TREE7		= 97,	// tree 7
+	OBJECT_TREE8		= 98,	// tree 8
+	OBJECT_TREE9		= 99,	// tree 9
+	OBJECT_MOBILEwt	   	= 100,	// wheel-trainer
+	OBJECT_MOBILEtt	    	= 101,	// track-trainer
+	OBJECT_MOBILEft	    	= 102,	// fly-trainer
+	OBJECT_MOBILEit	    	= 103,	// insect-trainer
+	OBJECT_MOBILEwa	    	= 110,	// wheel-arm
+	OBJECT_MOBILEta	    	= 111,	// track-arm
+	OBJECT_MOBILEfa	    	= 112,	// fly-arm
+	OBJECT_MOBILEia	    	= 113,	// insect-arm
+	OBJECT_MOBILEwc	    	= 120,	// wheel-cannon
+	OBJECT_MOBILEtc	    	= 121,	// track-cannon
+	OBJECT_MOBILEfc	    	= 122,	// fly-cannon
+	OBJECT_MOBILEic	    	= 123,	// insect-cannon
+	OBJECT_MOBILEwi	    	= 130,	// wheel-insect-cannon
+	OBJECT_MOBILEti	    	= 131,	// track-insect-cannon
+	OBJECT_MOBILEfi	    	= 132,	// fly-insect-cannon
+	OBJECT_MOBILEii	    	= 133,	// insect-insect-cannon
+	OBJECT_MOBILEws	    	= 140,	// wheel-search
+	OBJECT_MOBILEts	    	= 141,	// track-search
+	OBJECT_MOBILEfs	    	= 142,	// fly-search
+	OBJECT_MOBILEis	    	= 143,	// insect-search
+	OBJECT_MOBILErt	    	= 200,	// roller-terraform
+	OBJECT_MOBILErc	    	= 201,	// roller-canon
+	OBJECT_MOBILErr	    	= 202,	// roller-recover
+	OBJECT_MOBILErs	    	= 203,	// roller-shield
+	OBJECT_MOBILEsa	    	= 210,	// submarine
+	OBJECT_MOBILEtg	    	= 211,	// training target
+	OBJECT_MOBILEdr	    	= 212,	// robot drawing
+	OBJECT_WAYPOINT 	= 250,	// waypoint
+	OBJECT_FLAGb		= 260,	// blue flag
+	OBJECT_FLAGr		= 261,	// red flag
+	OBJECT_FLAGg		= 262,	// green flag
+	OBJECT_FLAGy		= 263,	// yellow flag
+	OBJECT_FLAGv		= 264,	// violet flag
+	OBJECT_KEYa		= 270,	// key a
+	OBJECT_KEYb		= 271,	// key b
+	OBJECT_KEYc		= 272,	// key c
+	OBJECT_KEYd		= 273,	// key d
+	OBJECT_HUMAN	    	= 300,	// human
+	OBJECT_TOTO		= 301,	// toto
+	OBJECT_TECH		= 302,	// technician
+	OBJECT_BARRIER0		= 400,	// barrier
+	OBJECT_BARRIER1		= 401,	// barrier
+	OBJECT_BARRIER2		= 402,	// barrier
+	OBJECT_BARRIER3		= 403,	// barrier
+	OBJECT_BARRIER4		= 404,	// barrier
+	OBJECT_MOTHER	    	= 500,	// insect queen
+	OBJECT_EGG		= 501,	// egg
+	OBJECT_ANT		= 502,	// ant
+	OBJECT_SPIDER	    	= 503,	// spider
+	OBJECT_BEE		= 504,	// bee
+	OBJECT_WORM		= 505,	// worm
+	OBJECT_RUINmobilew1 	= 600,	// ruin 1
+	OBJECT_RUINmobilew2 	= 601,	// ruin 1
+	OBJECT_RUINmobilet1 	= 602,	// ruin 2
+	OBJECT_RUINmobilet2 	= 603,	// ruin 2
+	OBJECT_RUINmobiler1 	= 604,	// ruin 3
+	OBJECT_RUINmobiler2 	= 605,	// ruin 3
+	OBJECT_RUINfactory  	= 606,	// ruin 4
+	OBJECT_RUINdoor     	= 607,	// ruin 5
+	OBJECT_RUINsupport  	= 608,	// ruin 6
+	OBJECT_RUINradar    	= 609,	// ruin 7
+	OBJECT_RUINconvert  	= 610,	// ruin 8
+	OBJECT_RUINbase	    	= 611,	// ruin 9
+	OBJECT_RUINhead	    	= 612,	// ruin 10
+	OBJECT_TEEN0		= 620,	// toy
+	OBJECT_TEEN1		= 621,	// toy
+	OBJECT_TEEN2		= 622,	// toy
+	OBJECT_TEEN3		= 623,	// toy
+	OBJECT_TEEN4		= 624,	// toy
+	OBJECT_TEEN5		= 625,	// toy
+	OBJECT_TEEN6		= 626,	// toy
+	OBJECT_TEEN7		= 627,	// toy
+	OBJECT_TEEN8		= 628,	// toy
+	OBJECT_TEEN9		= 629,	// toy
+	OBJECT_TEEN10	    	= 630,	// toy
+	OBJECT_TEEN11	    	= 631,	// toy
+	OBJECT_TEEN12	    	= 632,	// toy
+	OBJECT_TEEN13	    	= 633,	// toy
+	OBJECT_TEEN14	    	= 634,	// toy
+	OBJECT_TEEN15	    	= 635,	// toy
+	OBJECT_TEEN16	    	= 636,	// toy
+	OBJECT_TEEN17	    	= 637,	// toy
+	OBJECT_TEEN18	    	= 638,	// toy
+	OBJECT_TEEN19	    	= 639,	// toy
+	OBJECT_TEEN20	    	= 640,	// toy
+	OBJECT_TEEN21	    	= 641,	// toy
+	OBJECT_TEEN22	    	= 642,	// toy
+	OBJECT_TEEN23	    	= 643,	// toy
+	OBJECT_TEEN24	    	= 644,	// toy
+	OBJECT_TEEN25	    	= 645,	// toy
+	OBJECT_TEEN26	    	= 646,	// toy
+	OBJECT_TEEN27	    	= 647,	// toy
+	OBJECT_TEEN28	    	= 648,	// toy
+	OBJECT_TEEN29	    	= 649,	// toy
+	OBJECT_TEEN30	    	= 650,	// toy
+	OBJECT_TEEN31	    	= 651,	// toy
+	OBJECT_TEEN32	    	= 652,	// toy
+	OBJECT_TEEN33	    	= 653,	// toy
+	OBJECT_TEEN34	    	= 654,	// toy
+	OBJECT_TEEN35	    	= 655,	// toy
+	OBJECT_TEEN36	    	= 656,	// toy
+	OBJECT_TEEN37	    	= 657,	// toy
+	OBJECT_TEEN38	    	= 658,	// toy
+	OBJECT_TEEN39	    	= 659,	// toy
+	OBJECT_TEEN40	    	= 660,	// toy
+	OBJECT_TEEN41	    	= 661,	// toy
+	OBJECT_TEEN42	    	= 662,	// toy
+	OBJECT_TEEN43	   	= 663,	// toy
+	OBJECT_TEEN44	    	= 664,	// toy
+	OBJECT_TEEN45	    	= 665,	// toy
+	OBJECT_TEEN46	    	= 666,	// toy
+	OBJECT_TEEN47	    	= 667,	// toy
+	OBJECT_TEEN48	    	= 668,	// toy
+	OBJECT_TEEN49	    	= 669,	// toy
+	OBJECT_QUARTZ0		= 700,	// crystal 0
+	OBJECT_QUARTZ1		= 701,	// crystal 1
+	OBJECT_QUARTZ2		= 702,	// crystal 2
+	OBJECT_QUARTZ3		= 703,	// crystal 3
+	OBJECT_QUARTZ4		= 704,	// crystal 4
+	OBJECT_QUARTZ5		= 705,	// crystal 5
+	OBJECT_QUARTZ6		= 706,	// crystal 6
+	OBJECT_QUARTZ7		= 707,	// crystal 7
+	OBJECT_QUARTZ8		= 708,	// crystal 8
+	OBJECT_QUARTZ9		= 709,	// crystal 9
+	OBJECT_ROOT0		= 710,	// root 0
+	OBJECT_ROOT1		= 711,	// root 1
+	OBJECT_ROOT2		= 712,	// root 2
+	OBJECT_ROOT3		= 713,	// root 3
+	OBJECT_ROOT4		= 714,	// root 4
+	OBJECT_ROOT5		= 715,	// root 5
+	OBJECT_ROOT6		= 716,	// root 6
+	OBJECT_ROOT7		= 717,	// root 7
+	OBJECT_ROOT8		= 718,	// root 8
+	OBJECT_ROOT9		= 719,	// root 9
+	OBJECT_SEAWEED0		= 720,	// seaweed 0
+	OBJECT_SEAWEED1		= 721,	// seaweed 1
+	OBJECT_SEAWEED2		= 722,	// seaweed 2
+	OBJECT_SEAWEED3		= 723,	// seaweed 3
+	OBJECT_SEAWEED4		= 724,	// seaweed 4
+	OBJECT_SEAWEED5		= 725,	// seaweed 5
+	OBJECT_SEAWEED6		= 726,	// seaweed 6
+	OBJECT_SEAWEED7		= 727,	// seaweed 7
+	OBJECT_SEAWEED8		= 728,	// seaweed 8
+	OBJECT_SEAWEED9		= 729,	// seaweed 9
+	OBJECT_MUSHROOM0	= 730,	// mushroom 0
+	OBJECT_MUSHROOM1	= 731,	// mushroom 1
+	OBJECT_MUSHROOM2	= 732,	// mushroom 2
+	OBJECT_MUSHROOM3	= 733,	// mushroom 3
+	OBJECT_MUSHROOM4	= 734,	// mushroom 4
+	OBJECT_MUSHROOM5	= 735,	// mushroom 5
+	OBJECT_MUSHROOM6	= 736,	// mushroom 6
+	OBJECT_MUSHROOM7	= 737,	// mushroom 7
+	OBJECT_MUSHROOM8	= 738,	// mushroom 8
+	OBJECT_MUSHROOM9	= 739,	// mushroom 9
 	OBJECT_APOLLO1		= 900,	// apollo lem
 	OBJECT_APOLLO2		= 901,	// apollo jeep
 	OBJECT_APOLLO3		= 902,	// apollo flag
 	OBJECT_APOLLO4		= 903,	// apollo module
 	OBJECT_APOLLO5		= 904,	// apollo antenna
-	OBJECT_HOME1		= 910,	// maison 1
-	OBJECT_MAX			= 1000,
+	OBJECT_HOME1		= 910,	// home 1
+	OBJECT_MAX		= 1000,
 };
 
 enum ObjectMaterial
 {
-	OM_METAL			= 0,	// métal
-	OM_PLASTIC			= 1,	// plastique
-	OM_HUMAN			= 2,	// cosmonaute
-	OM_ANIMAL			= 3,	// insecte
-	OM_VEGETAL			= 4,	// plante
-	OM_MINERAL			= 5,	// pierre
+	OM_METAL		= 0,	// metal
+	OM_PLASTIC		= 1,	// plastic
+	OM_HUMAN		= 2,	// cosmonaut
+	OM_ANIMAL		= 3,	// insect
+	OM_VEGETAL		= 4,	// plant
+	OM_MINERAL		= 5,	// stone
 };
 
 typedef struct
 {
 	char		bUsed;
-	int			object;			// numéro de l'objet dans CD3DEngine
-	int			parentPart;		// numéro de la partie père
-	int			masterParti;	// canal de la particule maître
+	int		object;			// number of the object in CD3DEngine
+	int		parentPart;		// number of father part
+	int		masterParti;		// master canal of the particle
 	D3DVECTOR	position;
 	D3DVECTOR	angle;
 	D3DVECTOR	zoom;
@@ -325,19 +326,19 @@ ObjectPart;
 
 typedef struct
 {
-	float		wheelFront;		// position X des roues avant
-	float		wheelBack;		// position X des roues arrières
-	float		wheelLeft;		// position Z des roues gauches
-	float		wheelRight;		// position Z des roues droites
-	float		height;			// hauteur normale au-dessus du sol
-	D3DVECTOR	posPower;		// position de la pile
+	float		wheelFront;		// position X of the front wheels
+	float		wheelBack;		// position X of the back wheels
+	float		wheelLeft;		// position Z of the left wheels
+	float		wheelRight;		// position Z of the right wheels
+	float		height;			// normal height on top of ground
+	D3DVECTOR	posPower;		// position of the battery
 }
 Character;
 
 typedef struct
 {
-	char		name[20];		// nom de l'information
-	float		value;			// valeur de l'information
+	char		name[20];		// name of the information
+	float		value;			// value of the information
 }
 Info;
 
@@ -684,52 +685,52 @@ protected:
 	CScript*		m_runScript;
 
 	ObjectType	m_type;				// OBJECT_*
-	int			m_id;				// identificateur unique
-	char		m_name[50];			// nom de l'objet
-	Character	m_character;		// caractéristiques
-	int			m_option;			// option
-	int			m_partiReactor;		// numéro de la particule du réacteur
-	int			m_shadowLight;		// numéro de la lumière de l'ombre
-	float		m_shadowHeight;		// hauteur de la lumière de l'ombre
-	int			m_effectLight;		// numéro de la lumière des effets
-	float		m_effectHeight;		// hauteur de la lumière des effets
-	D3DVECTOR	m_linVibration;		// vibration linéaire
-	D3DVECTOR	m_cirVibration;		// vibration circulaire
-	D3DVECTOR	m_inclinaison;		// inclinaison
-	CObject*	m_power;			// pile utilisée par le véhicule
-	CObject*	m_fret;				// objet transporté
-	CObject*	m_truck;			// objet portant celui-ci
-	int			m_truckLink;		// partie
-	float		m_energy;			// énergie contenue (si pile)
+	int		m_id;				// unique identifier
+	char		m_name[50];			// name of the object
+	Character	m_character;			// characteristic
+	int		m_option;			// option
+	int		m_partiReactor;			// number of the particle of the reactor
+	int		m_shadowLight;			// number of light from the shadows
+	float		m_shadowHeight;			// height of light from the shadows
+	int		m_effectLight;			// number of light effects
+	float		m_effectHeight;			// height of light effects
+	D3DVECTOR	m_linVibration;			// linear vibration
+	D3DVECTOR	m_cirVibration;			// circular vibration
+	D3DVECTOR	m_inclinaison;			// tilt
+	CObject*	m_power;			// battery used by the vehicle
+	CObject*	m_fret;				// object transported
+	CObject*	m_truck;			// object with the latter
+	int		m_truckLink;			// part
+	float		m_energy;			// energy contained (if battery)
 	float		m_lastEnergy;
-	float		m_capacity;			// capacité (si pile)
-	float		m_shield;			// bouclier
-	float		m_range;			// autonomie de vol
-	float		m_transparency;		// transparence (0..1)
-	int			m_material;			// matière (0..n)
+	float		m_capacity;			// capacity (if battery)
+	float		m_shield;			// shield
+	float		m_range;			// flight range
+	float		m_transparency;			// transparency (0..1)
+	int		m_material;			// matter(0..n)
 	float		m_aTime;
-	float		m_shotTime;			// temps depuis dernier coup
-	BOOL		m_bVirusMode;		// virus enclanché/déclanché
-	float		m_virusTime;		// temps de vie du virus
+	float		m_shotTime;			// time since last shot
+	BOOL		m_bVirusMode;			// virus activated/triggered
+	float		m_virusTime;			// lifetime of the virus
 	float		m_lastVirusParticule;
 	float		m_lastParticule;
 	BOOL		m_bHilite;
-	BOOL		m_bSelect;			// objet sélectionné
-	BOOL		m_bSelectable;		// objet sélectionnable
-	BOOL		m_bCheckToken;		// objet avec tokens vérifiés
-	BOOL		m_bVisible;			// objet actif mais indétectable
-	BOOL		m_bEnable;			// objet mort
-	BOOL		m_bProxyActivate;	// objet activé si proche
-	BOOL		m_bGadget;			// objet non indispensable
+	BOOL		m_bSelect;			// object selected
+	BOOL		m_bSelectable;			// selectable object
+	BOOL		m_bCheckToken;			// object with audited tokens
+	BOOL		m_bVisible;			// object active but undetectable
+	BOOL		m_bEnable;			// dead object
+	BOOL		m_bProxyActivate;		// active object so close
+	BOOL		m_bGadget;			// object nonessential
 	BOOL		m_bLock;
 	BOOL		m_bExplo;
 	BOOL		m_bCargo;
 	BOOL		m_bBurn;
 	BOOL		m_bDead;
 	BOOL		m_bFlat;
-	BOOL		m_bTrainer;			// véhicule d'entraînement (sans télécommande)
-	BOOL		m_bToy;				// jouet à clé
-	BOOL		m_bManual;			// commandes manuelles (Scribbler)
+	BOOL		m_bTrainer;			// drive vehicle (without remote)
+	BOOL		m_bToy;				// toy key
+	BOOL		m_bManual;			// manual control (Scribbler)
 	BOOL		m_bFixed;
 	BOOL		m_bClip;
 	BOOL		m_bShowLimit;
@@ -744,7 +745,7 @@ protected:
 	float		m_proxyDistance;
 	float		m_param;
 
-	int			m_crashSphereUsed;	// nb de sphères utilisées
+	int			m_crashSphereUsed;	// number of spheres used
 	D3DVECTOR	m_crashSpherePos[MAXCRASHSPHERE];
 	float		m_crashSphereRadius[MAXCRASHSPHERE];
 	float		m_crashSphereHardness[MAXCRASHSPHERE];
