@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// physics.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// physics.h
 
 #ifndef _PHYSICS_H_
 #define	_PHYSICS_H_
@@ -56,23 +58,23 @@ enum PhysicsMode
 
 typedef struct
 {
-	D3DVECTOR	advanceAccel;	// accélération de départ (+)
-	D3DVECTOR	recedeAccel;	// accélération de départ (+)
-	D3DVECTOR	stopAccel;		// accélération d'arrêt (+)
-	D3DVECTOR	motorAccel;		// accélération actuelle (+/-)
+	D3DVECTOR	advanceAccel;	// acceleration starting (+)
+	D3DVECTOR	recedeAccel;	// acceleration starting (+)
+	D3DVECTOR	stopAccel;	// acceleration stoping (+)
+	D3DVECTOR	motorAccel;	// current acceleration (+/-)
 
-	D3DVECTOR	advanceSpeed;	// vitesse en marche avant (+)
-	D3DVECTOR	recedeSpeed;	// vitesse en marche arrière (+)
-	D3DVECTOR	motorSpeed;		// vitesse souhaitée (+/-)
-	D3DVECTOR	currentSpeed;	// vitesse actuelle (+/-)
+	D3DVECTOR	advanceSpeed;	// forward speed (+)
+	D3DVECTOR	recedeSpeed;	// reversing speed (+)
+	D3DVECTOR	motorSpeed;	// desired speed (+/-)
+	D3DVECTOR	currentSpeed;	// current speed (+/-)
 
-	D3DVECTOR	terrainForce;	// force de résistance du terrain (+)
-	D3DVECTOR	terrainSpeed;	// vitesse du terrain (+/-)
-	D3DVECTOR	terrainSlide;	// limite vitesse de glissement (+)
+	D3DVECTOR	terrainForce;	// power of resistance of the ground (+)
+	D3DVECTOR	terrainSpeed;	// speed of the ground (+/-)
+	D3DVECTOR	terrainSlide;	// limit sliding speed (+)
 
-	D3DVECTOR	realSpeed;		// vitesse réelle (+/-)
+	D3DVECTOR	realSpeed;	// real speed(+/-)
 
-	D3DVECTOR	finalInclin;	// inclinaison finale
+	D3DVECTOR	finalInclin;	// final inclination
 }
 Motion;
 
@@ -193,11 +195,11 @@ protected:
 	CSound*		m_sound;
 
 	PhysicsType	m_type;			// TYPE_*
-	float		m_gravity;		// force de gravitation
-	float		m_time;			// temps absolu
-	D3DVECTOR	m_motorSpeed;	// vitesse du moteur (-1..1)
-	Motion		m_linMotion;	// mouvement linéaire
-	Motion		m_cirMotion;	// mouvement circulaire
+	float		m_gravity;		// force of gravity
+	float		m_time;			// absolute time
+	D3DVECTOR	m_motorSpeed;		// motor speed (-1..1)
+	Motion		m_linMotion;		// linear motion
+	Motion		m_cirMotion;		// circular motion
 	BOOL		m_bMotor;
 	BOOL		m_bLand;
 	BOOL		m_bSwim;
@@ -226,10 +228,10 @@ protected:
 	float		m_lastSoundWater;
 	float		m_lastSoundInsect;
 	float		m_restBreakParticule;
-	float		m_floorLevel;	// niveau du sol
-	float		m_floorHeight;	// hauteur au-dessus du sol
-	int			m_soundChannel;
-	int			m_soundChannelSlide;
+	float		m_floorLevel;		// ground level
+	float		m_floorHeight;		// height above the ground
+	int		m_soundChannel;
+	int		m_soundChannelSlide;
 	float		m_soundTimePshhh;
 	float		m_soundTimeJostle;
 	float		m_soundTimeBoum;
