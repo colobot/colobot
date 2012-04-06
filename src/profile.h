@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// profile.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// profile.h
 
 #ifndef _PROFILE_H_
 #define	_PROFILE_H_
