@@ -3001,9 +3001,9 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 		energy = power->RetEnergy();
 	}
 
-	if ( energy != m_lastEnergy )  // changement du niveau d'�nergie ?
+	if ( energy != m_lastEnergy )  // change the energy level?
 	{
-		if ( energy > m_lastEnergy )  // recharge ?
+		if ( energy > m_lastEnergy )  // recharge?
 		{
 			PowerParticule(1.0f, FALSE);
 			bFlash = TRUE;
@@ -3011,7 +3011,7 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 
 		if ( energy == 0.0f || m_lastEnergy == 0.0f )
 		{
-			m_restBreakParticule = 2.5f;  // particules pendant 2.5s
+			m_restBreakParticule = 2.5f;  // particles for 2.5s
 		}
 
 		m_lastEnergy = energy;
@@ -3040,7 +3040,7 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 	}
 }
 
-// G�n�re qq particules suite � une recharge.
+// Generates some particles after a recharge.
 
 void CPhysics::PowerParticule(float factor, BOOL bBreak)
 {
@@ -3056,7 +3056,7 @@ void CPhysics::PowerParticule(float factor, BOOL bBreak)
 	if ( fret != 0 && fret->RetType() == OBJECT_POWER &&
 		 m_object->RetAngleZ(1) == ARM_STOCK_ANGLE1 )
 	{
-		bCarryPower = TRUE;  // porte une batterie
+		bCarryPower = TRUE;  // carries a battery
 	}
 
 	mat = m_object->RetWorldMatrix(0);
@@ -3064,7 +3064,7 @@ void CPhysics::PowerParticule(float factor, BOOL bBreak)
 
 	pos = character->posPower;
 	pos.x -= 0.3f;
-	pos.y += 1.0f;  // position centre batterie
+	pos.y += 1.0f;  // battery center position
 	pos = Transform(*mat, pos);
 
 	speed.x = (Rand()-0.5f)*12.0f;
@@ -3080,9 +3080,9 @@ void CPhysics::PowerParticule(float factor, BOOL bBreak)
 
 	m_particule->CreateParticule(ppos, speed, dim, PARTIBLITZ, 0.5f, 0.0f, 0.0f);
 
-	if ( bCarryPower )  // porte une batterie ?
+	if ( bCarryPower )  // carry a battery?
 	{
-		pos = D3DVECTOR(3.0f, 5.6f, 0.0f);  // position batterie port�e
+		pos = D3DVECTOR(3.0f, 5.6f, 0.0f);  // position of battery holder
 		pos = Transform(*mat, pos);
 
 		speed.x = (Rand()-0.5f)*12.0f;
@@ -3100,7 +3100,7 @@ void CPhysics::PowerParticule(float factor, BOOL bBreak)
 	}
 }
 
-// G�n�re qq particules suite � une chute.
+// Generates some particles after a fall.
 // crash: 0=super soft, 1=big crash
 
 void CPhysics::CrashParticule(float crash)
@@ -3134,7 +3134,7 @@ void CPhysics::CrashParticule(float crash)
 	}
 }
 
-// G�n�re qq particules de gaz d'�chappement.
+// Generates some exhaust gas particle.
 
 void CPhysics::MotorParticule(float aTime, float rTime)
 {
@@ -3153,7 +3153,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 	if ( type == OBJECT_MOBILEia ||
 		 type == OBJECT_MOBILEic ||
 		 type == OBJECT_MOBILEii ||
-		 type == OBJECT_MOBILEis ||  // pattes ?
+		 type == OBJECT_MOBILEis ||  // legs?
 		 type == OBJECT_MOBILEdr ||
 		 type == OBJECT_MOTHER   ||
 		 type == OBJECT_ANT      ||
@@ -3164,7 +3164,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 	if ( type == OBJECT_HUMAN )  delay = 3.0f;
 	else                         delay = 8.0f;
-	if ( m_bSwim && m_timeUnderWater < delay )  // bulles en entrant dans l'eau ?
+	if ( m_bSwim && m_timeUnderWater < delay )  // bubbles when entering water?
 	{
 		if ( aTime-m_lastUnderParticule >= m_engine->ParticuleAdapt(0.05f) )
 		{
@@ -3190,20 +3190,20 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 	level = m_water->RetLevel();
 	pos = m_object->RetPosition(0);
 	if ( type == OBJECT_HUMAN )  pos.y -= 2.0f;
-	if ( pos.y < level )  // sous l'eau ?
+	if ( pos.y < level )  // underwater?
 	{
-		m_absorbWater += rTime*(1.0f/2.0f);  // se mouille
+		m_absorbWater += rTime*(1.0f/2.0f);  // gets wet
 		if ( m_absorbWater > 1.0f )  m_absorbWater = 1.0f;
 	}
-	else	// hors de l'eau ?
+	else	// out of water?
 	{
-		m_absorbWater -= rTime*(1.0f/3.0f);  // se s�che
+		m_absorbWater -= rTime*(1.0f/3.0f);  // to dry
 		if ( m_absorbWater < 0.0f )  m_absorbWater = 0.0f;
 	}
 
 	if ( pos.y >= level       &&
 		 m_absorbWater > 0.0f &&
-		 !m_water->RetLava()  )  // gouttes en sortant de l'eau ?
+		 !m_water->RetLava()  )  // drops on leaving the water?
 	{
 		if ( aTime-m_lastUnderParticule >= m_engine->ParticuleAdapt(0.05f) )
 		{
@@ -3227,7 +3227,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 		}
 	}
 
-	if ( type == OBJECT_HUMAN ||  // homme ?
+	if ( type == OBJECT_HUMAN ||  // human?
 		 type == OBJECT_TECH  )
 	{
 		if ( m_bLand &&
@@ -3236,7 +3236,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			h = Max(Abs(m_linMotion.terrainSpeed.x),
 					Abs(m_linMotion.terrainSpeed.z));
 			if ( h > m_linMotion.terrainSlide.x+0.5f &&
-				 m_linMotion.motorSpeed.x == 0.0f )  // glisse � l'arr�t ?
+				 m_linMotion.motorSpeed.x == 0.0f )  // slides a stop?
 			{
 				m_lastSlideParticule = aTime;
 
@@ -3258,7 +3258,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 	if ( type == OBJECT_MOBILEta ||
 		 type == OBJECT_MOBILEtc ||
 		 type == OBJECT_MOBILEti ||
-		 type == OBJECT_MOBILEts )  // chenilles ?
+		 type == OBJECT_MOBILEts )  // caterpillars?
 	{
 		if ( aTime-m_lastSlideParticule >= m_engine->ParticuleAdapt(0.05f) )
 		{
@@ -3285,7 +3285,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 	if ( type == OBJECT_MOBILErt ||
 		 type == OBJECT_MOBILErc ||
 		 type == OBJECT_MOBILErr ||
-		 type == OBJECT_MOBILErs )  // grosses chenilles ?
+		 type == OBJECT_MOBILErs )  // large caterpillars?
 	{
 		if ( aTime-m_lastSlideParticule >= m_engine->ParticuleAdapt(0.05f) )
 		{
@@ -3311,11 +3311,11 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 	if ( (type == OBJECT_HUMAN || type == OBJECT_TECH) && !m_bSwim )
 	{
-		if ( m_bLand )  // au sol ?
+		if ( m_bLand )  // on the ground?
 		{
 			if ( m_reactorTemperature > 0.0f )
 			{
-				m_reactorTemperature -= rTime*(1.0f/10.0f);  // �a refroidi
+				m_reactorTemperature -= rTime*(1.0f/10.0f);  // cooling
 				if ( m_reactorTemperature < 0.0f )
 				{
 					m_reactorTemperature = 0.0f;
@@ -3339,16 +3339,16 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 3.0f, 0.0f, 0.1f);
 		}
-		else	// en vol ?
+		else	// in flight?
 		{
 			if ( !m_bMotor || m_reactorRange == 0.0f )  return;
 
-			if ( m_reactorTemperature < 1.0f )  // pas trop chaud ?
+			if ( m_reactorTemperature < 1.0f )  // not too hot?
 			{
-				m_reactorTemperature += rTime*(1.0f/4.0f);  // �a chauffe
+				m_reactorTemperature += rTime*(1.0f/4.0f);  // heating
 				if ( m_reactorTemperature > 1.0f )
 				{
-					m_reactorTemperature = 1.0f;  // mais pas trop
+					m_reactorTemperature = 1.0f;  // but not too much
 				}
 			}
 
@@ -3363,13 +3363,13 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			pos = Transform(*mat, pos);
 
 			h = m_floorHeight;
-			if ( h > 10.0f )  // assez haut ?
+			if ( h > 10.0f )  // high enough?
 			{
-				speed = D3DVECTOR(0.0f, -10.0f, 0.0f);  // contre le bas
+				speed = D3DVECTOR(0.0f, -10.0f, 0.0f);  // against the bottom
 			}
 			else
 			{
-				speed.y = 10.0f-2.0f*h - Rand()*(10.0f-h);  // contre le haut
+				speed.y = 10.0f-2.0f*h - Rand()*(10.0f-h);  //against the top
 				speed.x = (Rand()-0.5f)*(5.0f-h)*1.0f;  // horizontal (xz)
 				speed.z = (Rand()-0.5f)*(5.0f-h)*1.0f;
 			}
@@ -3413,7 +3413,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 	if ( (type == OBJECT_HUMAN || type == OBJECT_TECH) && m_bSwim )
 	{
-		m_reactorTemperature = 0.0f;  // r�acteur froid
+		m_reactorTemperature = 0.0f;  // reactor cold
 	}
 
 	if ( m_type == TYPE_FLYING &&
@@ -3421,9 +3421,9 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 		 type != OBJECT_TECH  &&
 		 !m_bSwim )
 	{
-		if ( m_bLand )  // au sol ?
+		if ( m_bLand )  // on the ground?
 		{
-			if ( m_motorSpeed.x == 0.0f &&  // glisse � cause pente terrain ?
+			if ( m_motorSpeed.x == 0.0f &&  // glide slope due to ground?
 				 m_cirMotion.realSpeed.y == 0.0f )
 			{
 				h = Max(Abs(m_linMotion.realSpeed.x),
@@ -3448,7 +3448,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 			}
-			else	// glisse avec petits r�acteurs dans patins ?
+			else	// glide with small reactors in skates?
 			{
 				if ( m_linMotion.realSpeed.x == 0.0f &&
 					 m_cirMotion.realSpeed.y == 0.0f )  return;
@@ -3471,7 +3471,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				m_particule->CreateParticule(pos, speed, dim, PARTIEJECT);
 			}
 		}
-		else	// en vol ?
+		else	// in flight?
 		{
 			if ( !m_bMotor || m_reactorRange == 0.0f )  return;
 
@@ -3486,13 +3486,13 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			pos = Transform(*mat, pos);
 
 			h = m_floorHeight;
-			if ( h > 10.0f )  // assez haut ?
+			if ( h > 10.0f )  // high enough?
 			{
-				speed = D3DVECTOR(0.0f, -10.0f, 0.0f);  // contre le bas
+				speed = D3DVECTOR(0.0f, -10.0f, 0.0f);  // against the bottom
 			}
 			else
 			{
-				speed.y = 10.0f-2.0f*h - Rand()*(10.0f-h);  // contre le haut
+				speed.y = 10.0f-2.0f*h - Rand()*(10.0f-h);  // against the top
 				speed.x = (Rand()-0.5f)*(10.0f-h)*2.0f;  // horizontal (xz)
 				speed.z = (Rand()-0.5f)*(10.0f-h)*2.0f;
 			}
@@ -3591,7 +3591,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 	if ( m_type == TYPE_ROLLING )
 	{
-		if ( type == OBJECT_APOLLO2 )  return;  // moteurs �lectriques !
+		if ( type == OBJECT_APOLLO2 )  return;  // electric motors!
 
 		if ( type == OBJECT_MOBILErt ||
 			 type == OBJECT_MOBILErc ||
@@ -3655,7 +3655,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 	}
 }
 
-// G�n�re qq particules suite � une chute dans l'eau.
+// Generates some particles after falling into the water.
 
 void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 							  float floor, float advance, float turn)
@@ -3682,13 +3682,13 @@ void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 
 	if ( pos.y+max < level || pos.y-min > level )  return;
 
-	// Gestion de la particule "plouf".
+	// Management of the particle "splash".
 	if ( m_linMotion.realSpeed.y < -10.0f   &&
 		 aTime-m_lastPloufParticule >= 1.0f )
 	{
 		m_lastPloufParticule = aTime;
 
-		force = -m_linMotion.realSpeed.y/20.0f;  // force selon vitesse chute
+		force = -m_linMotion.realSpeed.y/20.0f;  // power according to speed drops
 		if ( type == OBJECT_HUMAN ||
 			 type == OBJECT_TECH  )
 		{
@@ -3697,13 +3697,13 @@ void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 		else
 		{
 			diam = 5.0f;
-			force *= 1.3f;  // un robot est plus lourd
+			force *= 1.3f;  // a robot is heavier
 		}
 
 		pos = m_object->RetPosition(0);
 		pos.y = m_water->RetLevel()-1.0f;
-		dim.x = 2.0f*force;  // hauteur
-		dim.y = diam;  // diam�tre
+		dim.x = 2.0f*force;  // height
+		dim.y = diam;  // diameter
 		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f, 0.0f);
 
 		force = (0.5f+force*0.5f);
@@ -3727,7 +3727,7 @@ void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 		m_sound->Play(SOUND_PLOUF, pos, volume);
 	}
 
-	// Gestion des particules "flic".
+	// Management particles "cop".
 	if ( m_water->RetLava() )  return;
 
 	if ( advance == 0.0f && turn == 0.0f )
@@ -3771,7 +3771,7 @@ void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 	m_particule->CreateParticule(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
 }
 
-// Cr�e la trace sous le robot.
+// Creates the trace under the robot.
 
 void CPhysics::WheelParticule(int color, float width)
 {
@@ -3784,12 +3784,12 @@ void CPhysics::WheelParticule(int color, float width)
 	character = m_object->RetCharacter();
 	mat = m_object->RetWorldMatrix(0);
 
-	// Dessine une trace sur le sol.
+	Draw a trace on the ground.
 	if ( color >= 0 && color <= 17 )
 	{
 		parti = (ParticuleType)(PARTITRACE0+color);
 		step = 2.0f;
-		if ( color >= 16 )  step = 4.0f;  // fl�che ?
+		if ( color >= 16 )  step = 4.0f;  // arrow?
 		step /= m_engine->RetTracePrecision();
 
 		goal1.x = step/2.0f;
@@ -3836,7 +3836,7 @@ void CPhysics::WheelParticule(int color, float width)
 }
 
 
-// Cr�e l'interface.
+// Creates the interface.
 
 void CPhysics::CreateInterface(BOOL bSelect)
 {
@@ -3847,7 +3847,7 @@ void CPhysics::CreateInterface(BOOL bSelect)
 }
 
 
-// Retourne une erreur li�e � l'�tat g�n�ral.
+// Returns an error related to the general state.
 
 Error CPhysics::RetError()
 {
@@ -3870,7 +3870,7 @@ Error CPhysics::RetError()
 		return ERR_VEH_VIRUS;
 	}
 
-	power = m_object->RetPower();  // cherche l'objet pile utilis�
+	power = m_object->RetPower();  // searches for the object battery used
 	if ( power == 0 )
 	{
 		return ERR_VEH_POWER;
