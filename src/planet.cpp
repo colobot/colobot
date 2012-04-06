@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// planet.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// planet.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -33,7 +35,7 @@
 
 
 
-// Constructeur du terrain.
+// Constructor of the terrain.
 
 CPlanet::CPlanet(CInstanceManager* iMan, CD3DEngine* engine)
 {
@@ -45,14 +47,14 @@ CPlanet::CPlanet(CInstanceManager* iMan, CD3DEngine* engine)
 
 }
 
-// Destructeur du terrain.
+// Destructor of the terrain.
 
 CPlanet::~CPlanet()
 {
 }
 
 
-// Supprime toutes les planètes.
+// Removes all the planets.
 
 void CPlanet::Flush()
 {
@@ -72,7 +74,7 @@ void CPlanet::Flush()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CPlanet::EventProcess(const Event &event)
 {
@@ -83,7 +85,7 @@ BOOL CPlanet::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait évoluer les planètes.
+// Makes the planets evolve.
 
 BOOL CPlanet::EventFrame(const Event &event)
 {
@@ -111,7 +113,7 @@ BOOL CPlanet::EventFrame(const Event &event)
 }
 
 
-// Charge toutes les textures pour les planètes.
+// Load all the textures for the planets.
 
 void CPlanet::LoadTexture()
 {
@@ -128,7 +130,7 @@ void CPlanet::LoadTexture()
 	}
 }
 
-// Dessine toutes les planètes.
+// Draws all the planets.
 
 void CPlanet::Draw()
 {
@@ -143,7 +145,7 @@ void CPlanet::Draw()
 	eyeDirH = m_engine->RetEyeDirH();
 	eyeDirV = m_engine->RetEyeDirV();
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 	dp = 0.5f/256.0f;
 
 	for ( i=0 ; i<MAXPLANET ; i++ )
@@ -188,7 +190,7 @@ void CPlanet::Draw()
 }
 
 
-// Crée une nouvelle planète.
+// Creates a new planet.
 
 BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 					 float dir, char *name, FPOINT uv1, FPOINT uv2)
@@ -222,7 +224,7 @@ BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 	return FALSE;
 }
 
-// Indique s'il existe au moins une planète.
+// Indicates if there is at least one planet.
 
 BOOL CPlanet::PlanetExist()
 {
@@ -230,7 +232,7 @@ BOOL CPlanet::PlanetExist()
 }
 
 
-// Choix du mode.
+// Choice of mode.
 
 void CPlanet::SetMode(int mode)
 {
