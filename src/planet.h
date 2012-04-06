@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// planet.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// planet.h
 
 #ifndef _PLANET_H_
 #define	_PLANET_H_
@@ -27,14 +29,14 @@ class CD3DEngine;
 
 typedef struct
 {
-	char		bUsed;		// TRUE -> planète existe
-	FPOINT		start;		// position initiale en degrés
-	FPOINT		angle;		// position actuelle en degrés
+	char		bUsed;		// TRUE -> planet exists
+	FPOINT		start;		// initial position in degrees
+	FPOINT		angle;		// current position in degrees
 	float		dim;		// dimensions (0..1)
-	float		speed;		// vitesse
-	float		dir;		// direction dans le ciel
-	char		name[20];	// nom de la texture
-	FPOINT		uv1, uv2;	// mapping de la texture
+	float		speed;		// speed
+	float		dir;		// direction in the sky
+	char		name[20];	// name of the texture
+	FPOINT		uv1, uv2;	// texture mapping
 	char		bTGA;		// texture .TGA
 }
 Planet;
