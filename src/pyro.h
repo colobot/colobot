@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// pyro.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// pyro.h
 
 #ifndef _PYRO_H_
 #define	_PYRO_H_
@@ -34,30 +36,30 @@ class CSound;
 enum PyroType
 {
 	PT_NULL		= 0,
-	PT_FRAGT	= 1,		// fragmentation objet technique
-	PT_FRAGO	= 2,		// fragmentation objet organique
-	PT_FRAGW	= 4,		// fragmentation objet sous l'eau
-	PT_EXPLOT	= 5,		// explosion objet technique
-	PT_EXPLOO	= 6,		// explosion objet organique
-	PT_EXPLOW	= 8,		// explosion objet sous l'eau
-	PT_SHOTT	= 9,		// coup objet technique
-	PT_SHOTH	= 10,		// coup homme
-	PT_SHOTM	= 11,		// coup pondeuse
-	PT_SHOTW	= 12,		// coup sous l'eau
-	PT_EGG		= 13,		// casse l'oeuf
-	PT_BURNT	= 14,		// brûle objet technique
-	PT_BURNO	= 15,		// brûle objet organique
-	PT_SPIDER	= 16,		// explosion araignée
-	PT_FALL		= 17,		// fret qui tombe
-	PT_WPCHECK	= 18,		// indicateur atteint
-	PT_FLCREATE	= 19,		// drapeau créé
-	PT_FLDELETE	= 20,		// drapeau détruit
-	PT_RESET	= 21,		// reset position de l'objet
-	PT_WIN		= 22,		// feu d'artifice
-	PT_LOST		= 23,		// fumée noire
-	PT_DEADG	= 24,		// mort par balle
-	PT_DEADW	= 25,		// mort noyé
-	PT_FINDING	= 26,		// objet découvert
+	PT_FRAGT	= 1,		// fragmentation of technical object
+	PT_FRAGO	= 2,		// fragmentation of organic object
+	PT_FRAGW	= 4,		// fragmentation of object under water
+	PT_EXPLOT	= 5,		// explosion of technical object
+	PT_EXPLOO	= 6,		// explosion of organic object
+	PT_EXPLOW	= 8,		// explosion of object under water
+	PT_SHOTT	= 9,		// hit technical object
+	PT_SHOTH	= 10,		// hit human
+	PT_SHOTM	= 11,		// hit queen
+	PT_SHOTW	= 12,		// hit under water
+	PT_EGG		= 13,		// break the egg
+	PT_BURNT	= 14,		// burning of technical object
+	PT_BURNO	= 15,		// burning of organic object
+	PT_SPIDER	= 16,		// spider explosion
+	PT_FALL		= 17,		// cargo falling
+	PT_WPCHECK	= 18,		// indicator reaches
+	PT_FLCREATE	= 19,		// flag create
+	PT_FLDELETE	= 20,		// flag destroy
+	PT_RESET	= 21,		// reset position of the object
+	PT_WIN		= 22,		// fireworks
+	PT_LOST		= 23,		// black smoke
+	PT_DEADG	= 24,		// shooting death
+	PT_DEADW	= 25,		// drowning death
+	PT_FINDING	= 26,		// object discovered
 };
 
 
@@ -134,9 +136,9 @@ protected:
 	CRobotMain*		m_main;
 	CSound*			m_sound;
 
-	D3DVECTOR		m_pos;			// centre de l'effet
-	D3DVECTOR		m_posPower;		// centre de la pile
-	BOOL			m_bPower;		// pile existe ?
+	D3DVECTOR		m_pos;			// center of the effect
+	D3DVECTOR		m_posPower;		// center of the battery
+	BOOL			m_bPower;		// battery exists?
 	PyroType		m_type;
 	float			m_force;
 	float			m_size;
@@ -163,7 +165,7 @@ protected:
 	float			m_fallBulletTime;
 	BOOL			m_bFallEnding;
 
-	int				m_crashSphereUsed;	// nb de sphères utilisées
+	int				m_crashSphereUsed;	// number of spheres used
 	D3DVECTOR		m_crashSpherePos[50];
 	float			m_crashSphereRadius[50];
 };
