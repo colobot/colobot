@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// restext.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// restext.h
 
 #ifndef _RESTEXT_H_
 #define	_RESTEXT_H_
@@ -26,7 +28,7 @@
 enum KeyRank;
 
 
-// Types possibles pour les ressources texte.
+// Possible types of the text resources.
 
 enum ResType
 {
@@ -34,12 +36,12 @@ enum ResType
 	RES_EVENT		= 1,	// EVENT_*  (EventMsg)
 	RES_OBJECT		= 2,	// OBJECT_* (ObjectType)
 	RES_ERR			= 3,	// ERR_*    (Error)
-	RES_KEY			= 4,	// VK_*		(touches)
+	RES_KEY			= 4,	// VK_*		(keys)
 	RES_CBOT		= 5,	// TX_*		(cbot.dll)
 };
 
 
-// Ressources de type RES_TEXT.
+// Resources of type RES_TEXT.
 
 #define RT_VERSION_ID		1
 #define RT_DISINFO_TITLE	2
