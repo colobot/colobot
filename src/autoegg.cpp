@@ -76,9 +76,9 @@ void CAutoEgg::DeleteObject(BOOL bAll)
 		alien = SearchAlien();
 		if ( alien != 0 )
 		{
-			// Temporary fix - I'm not sure if this is the intended meaning
+			// Probably the intended action
 			// Original code: ( alien->RetZoom(0) == 1.0f )
-			if ( ( alien->RetZoom(0).x == 1.0f ) && ( alien->RetZoom(0).y == 0.0f ) && ( alien->RetZoom(0).z == 0.0f ) )
+			if ( alien->RetZoomY(0) == 1.0f )
 			{
 				alien->SetLock(FALSE);
 				alien->SetActivity(TRUE);  // the insect is active
