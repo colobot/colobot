@@ -3101,8 +3101,8 @@ BOOL CRobotMain::EventFrame(const Event &event)
 		}
 	}
 
-	// Fait bouger la cam�ra apr�s les objets, car sa position peut
-	// d�pendre de l'objet s�lectionn� (CAMERA_ONBOARD ou CAMERA_BACK).
+	// The camera follows the object, because its position
+	// may depend on the selected object (CAMERA_ONBOARD or CAMERA_BACK).
 	if ( m_phase == PHASE_SIMUL && !m_bEditFull )
 	{
 		m_camera->EventProcess(event);
@@ -3119,14 +3119,13 @@ BOOL CRobotMain::EventFrame(const Event &event)
 		m_camera->EventProcess(event);
 	}
 
-	// Fait progresser toto apr�s la cam�ra, car sa position d�pend
-	// de la cam�ra.
+	// Advances toto following the camera, because its position depends on the camera.
 	if ( toto != 0 )
 	{
 		toto->EventProcess(event);
 	}
 
-	// Fait progresser le mod�le.
+	// Advances model.
 	if ( m_phase == PHASE_MODEL )
 	{
 		m_model->ViewMove(event, 2.0f);
@@ -3136,8 +3135,8 @@ BOOL CRobotMain::EventFrame(const Event &event)
 
 	HiliteFrame(event.rTime);
 
-	// Fait bouger l'indicateur de film.
-	if ( m_bMovieLock && !m_bEditLock )  // film en cours ?
+	// Moves the film indicator.
+	if ( m_bMovieLock && !m_bEditLock )  // movie in progress?
 	{
 		CControl*	pc;
 		FPOINT		pos, dim;
@@ -3162,8 +3161,8 @@ BOOL CRobotMain::EventFrame(const Event &event)
 		}
 	}
 
-	// Fait bouger l'indicateur d'�dition.
-	if ( m_bEditLock || m_bPause )  // �dition en cours ?
+	// Moves edition indicator.
+	if ( m_bEditLock || m_bPause )  // edition in progress?
 	{
 		CControl*	pc;
 		FPOINT		pos, dim;
@@ -3177,7 +3176,7 @@ BOOL CRobotMain::EventFrame(const Event &event)
 				dim.x = 10.0f/640.0f;
 				dim.y = 10.0f/480.0f;
 				pos.x = -20.0f/640.0f;
-				pos.y = -20.0f/480.0f;  // invisible !
+				pos.y = -20.0f/480.0f;  // invisible!
 			}
 			else
 			{
@@ -3197,13 +3196,13 @@ BOOL CRobotMain::EventFrame(const Event &event)
 		}
 	}
 
-	// Fait bouger la fl�che de visite.
+	// Will move the arrow to visit.
 	if ( m_camera->RetType() == CAMERA_VISIT )
 	{
 		FrameVisit(event.rTime);
 	}
 
-	// Fait bouger les limites.
+	// Moves the boundaries.
 	FrameShowLimit(event.rTime);
 
 	if ( m_phase == PHASE_SIMUL )
@@ -3263,7 +3262,7 @@ BOOL CRobotMain::EventFrame(const Event &event)
 	return S_OK;
 }
 
-// Donne l'�v�nement � tous les robots.
+// Makes the event for all robots.
 
 BOOL CRobotMain::EventObject(const Event &event)
 {
@@ -3291,7 +3290,7 @@ BOOL CRobotMain::EventObject(const Event &event)
 }
 
 
-// Calcule le point d'arriv�e de la cam�ra.
+// Calculates the point of arrival of the camera.
 
 D3DVECTOR CRobotMain::LookatPoint(D3DVECTOR eye, float angleH, float angleV,
 								  float length)
@@ -3316,7 +3315,7 @@ char* SkipNum(char *p)
 	return p;
 }
 
-// Conversion des unit�s.
+// Conversion of units.
 
 void CRobotMain::Convert()
 {
@@ -3513,15 +3512,15 @@ void CRobotMain::Convert()
 	fclose(file);
 }
 
-// Charge la sc�ne pour le personnage.
+// Load the scene for the character.
 
 void CRobotMain::ScenePerso()
 {
 	CObject*	pObj;
 
-	DeleteAllObjects();  // supprime toute la sc�ne 3D actuelle
+	DeleteAllObjects();  // removes all the current 3D Scene
 	m_engine->FlushObject();
-	m_terrain->FlushRelief();  // tout plat
+	m_terrain->FlushRelief();  // all flat
 	m_terrain->FlushBuildingLevel();
 	m_terrain->FlushFlyingLimit();
 	m_light->FlushLight();
@@ -3533,16 +3532,16 @@ void CRobotMain::ScenePerso()
 
 	m_dialog->SetSceneName("perso");
 	m_dialog->SetSceneRank(0);
-	CreateScene(FALSE, TRUE, FALSE);  // sc�ne fixe
+	CreateScene(FALSE, TRUE, FALSE);  // sets scene
 
-	m_engine->SetDrawWorld(FALSE);  // ne dessine rien sous l'interface
-	m_engine->SetDrawFront(TRUE);  // dessine human sur l'interface
+	m_engine->SetDrawWorld(FALSE);  // does not draw anything on the interface
+	m_engine->SetDrawFront(TRUE);  // draws on the human interface
 	pObj = SearchHuman();
 	if ( pObj != 0 )
 	{
 		CMotionHuman*	mh;
 
-		pObj->SetDrawFront(TRUE);  // dessine sur l'interface
+		pObj->SetDrawFront(TRUE);  // draws the interface
 
 		mh = (CMotionHuman*)pObj->RetMotion();
 		if ( mh != 0 )
@@ -3552,7 +3551,7 @@ void CRobotMain::ScenePerso()
 	}
 }
 
-// Cr�e toute la sc�ne.
+// Creates the whole stage.
 
 void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 {
@@ -3587,7 +3586,7 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 	if ( !bResetObject )
 	{
 		g_build = 0;
-		g_researchDone = 0;  // aucune recherche effectu�e
+		g_researchDone = 0;  // no research done
 		g_researchEnable = 0;
 
 		FlushDisplayInfo();
@@ -3611,19 +3610,19 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 
 		m_colorRefBot.r =  10.0f/256.0f;
 		m_colorRefBot.g = 166.0f/256.0f;
-		m_colorRefBot.b = 254.0f/256.0f;  // bleu
+		m_colorRefBot.b = 254.0f/256.0f;  // blue
 		m_colorRefBot.a = 0.0f;
 		m_colorNewBot = m_colorRefBot;
 
 		m_colorRefAlien.r = 135.0f/256.0f;
 		m_colorRefAlien.g = 170.0f/256.0f;
-		m_colorRefAlien.b =  13.0f/256.0f;  // vert
+		m_colorRefAlien.b =  13.0f/256.0f;  // green
 		m_colorRefAlien.a = 0.0f;
 		m_colorNewAlien = m_colorRefAlien;
 
 		m_colorRefGreen.r = 135.0f/256.0f;
 		m_colorRefGreen.g = 170.0f/256.0f;
-		m_colorRefGreen.b =  13.0f/256.0f;  // vert
+		m_colorRefGreen.b =  13.0f/256.0f;  // green
 		m_colorRefGreen.a = 0.0f;
 		m_colorNewGreen = m_colorRefGreen;
 
@@ -3651,7 +3650,7 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 	{
 		for ( i=0 ; i<500 ; i++ )
 		{
-			if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+			if ( line[i] == '\t' )  line[i] = ' ';  // replace tab by space
 			if ( line[i] == '/' && line[i+1] == '/' )
 			{
 				line[i] = 0;
@@ -4023,22 +4022,22 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 					 (type >= OBJECT_QUARTZ0 &&
 					  type <= OBJECT_QUARTZ9 ) ||
 					 (type >= OBJECT_ROOT0   &&
-					  type <= OBJECT_ROOT4   ) )  // pas ROOT5 !
+					  type <= OBJECT_ROOT4   ) )  // not ROOT5!
 				{
-					if ( type != OBJECT_TEEN11 &&  // lampe ?
-						 type != OBJECT_TEEN12 &&  // coke ?
-						 type != OBJECT_TEEN20 &&  // mur ?
-						 type != OBJECT_TEEN21 &&  // mur ?
-						 type != OBJECT_TEEN22 &&  // mur ?
-						 type != OBJECT_TEEN26 &&  // lampe ?
-						 type != OBJECT_TEEN28 &&  // bouteille ?
-						 type != OBJECT_TEEN34 )   // pierre ?
+					if ( type != OBJECT_TEEN11 &&  // lamp?
+						 type != OBJECT_TEEN12 &&  // coke?
+						 type != OBJECT_TEEN20 &&  // wall?
+						 type != OBJECT_TEEN21 &&  // wall?
+						 type != OBJECT_TEEN22 &&  // wall?
+						 type != OBJECT_TEEN26 &&  // lamp?
+						 type != OBJECT_TEEN28 &&  // bottle?
+						 type != OBJECT_TEEN34 )   // stone?
 					{
 						gadget = 1;
 					}
 				}
 			}
-			if ( gadget != 0 )  // est-ce un gadget ?
+			if ( gadget != 0 )  // is this a gadget?
 			{
 				if ( !TestGadgetQuantity(rankGadget++) )  continue;
 			}
@@ -4075,7 +4074,7 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 					pyro->Create(pType, pObj);
 				}
 
-				// Met les infos dans borne (OBJECT_INFO).
+				// Puts information in terminal (OBJECT_INFO).
 				for ( i=0 ; i<OBJECTMAXINFO ; i++ )
 				{
 					sprintf(op, "info%d", i+1);
@@ -4089,7 +4088,7 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 					pObj->SetInfo(i, info);
 				}
 
-				// Met les param�tres de la ligne de commande.
+				// Sets the parameters of the command line.
 				p = SearchOp(line, "cmdline");
 				for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
 				{
@@ -4170,7 +4169,7 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 					{
 						if ( i != PARAM_FIXSCENE &&
 							 !m_dialog->RetMovies() )  i = 0;
-						pAuto->Start(i);  // d�marre le film
+						pAuto->Start(i);  // starts the film
 					}
 				}
 
@@ -4399,7 +4398,7 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 		{
 			g_researchEnable |= OpResearch(line, "type");
 		}
-		if ( Cmd(line, "DoneResearch") && read[0] == 0 && !bResetObject )  // pas loading file ?
+		if ( Cmd(line, "DoneResearch") && read[0] == 0 && !bResetObject )  // not loading file?
 		{
 			g_researchDone |= OpResearch(line, "type");
 		}
@@ -4415,14 +4414,14 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 
 	if ( read[0] == 0 )
 	{
-		CompileScript(bSoluce);  // compile tous les scripts
+		CompileScript(bSoluce);  // compiles all scripts
 	}
 
-	if ( strcmp(base, "scene") == 0 && !bResetObject )  // mission ?
+	if ( strcmp(base, "scene") == 0 && !bResetObject )  // mission?
 	{
 		WriteFreeParam();
 	}
-	if ( strcmp(base, "free") == 0 && !bResetObject )  // jeu libre ?
+	if ( strcmp(base, "free") == 0 && !bResetObject )  // free play?
 	{
 		g_researchDone = m_freeResearch;
 
@@ -4436,8 +4435,8 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 
 	if ( !bResetObject )
 	{
-		ChangeColor();  // change les couleurs des textures
-		m_short->SetMode(FALSE);  // v�hicules
+		ChangeColor();  // changes the colors of texture
+		m_short->SetMode(FALSE);  // vehicles?
 	}
 
 	CreateShortcuts();
@@ -4451,8 +4450,8 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 
 	m_selectObject = pSel;
 
-	if ( !m_bBase     &&  // pas de base principale ?
-		 !m_bFixScene )   // sc�ne interractive ?
+	if ( !m_bBase     &&  // no main base?
+		 !m_bFixScene )   // interractive scene?
 	{
 		if ( pSel == 0 )
 		{
@@ -4475,7 +4474,7 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 		m_camera->SetType(CAMERA_SCRIPT);
 	}
 
-	if ( read[0] != 0 && pSel != 0 )  // loading file ?
+	if ( read[0] != 0 && pSel != 0 )  // loading file?
 	{
 		pos = pSel->RetPosition(0);
 		m_camera->Init(pos, pos, 0.0f);
@@ -4484,13 +4483,13 @@ void CRobotMain::CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject)
 		SelectObject(pSel);
 		m_camera->SetObject(pSel);
 
-		m_bBeginSatCom = TRUE;  // message d�j� affich�
+		m_bBeginSatCom = TRUE;  // message already displayed
 	}
 	m_dialog->SetSceneRead("");
 	m_dialog->SetStackRead("");
 }
 
-// Cr�e un objet du d�cor mobile ou fixe.
+// Creates an object of decoration mobile or stationary.
 
 CObject* CRobotMain::CreateObject(D3DVECTOR pos, float angle, float zoom, float height,
 								  ObjectType type, float power,
@@ -4505,7 +4504,7 @@ CObject* CRobotMain::CreateObject(D3DVECTOR pos, float angle, float zoom, float 
 	if ( type == OBJECT_HUMAN ||
 		 type == OBJECT_TECH  )
 	{
-		bTrainer = FALSE;  // forc�ment
+		bTrainer = FALSE;  // necessarily
 	}
 
 	if ( type == OBJECT_PORTICO  ||
@@ -4774,7 +4773,7 @@ CObject* CRobotMain::CreateObject(D3DVECTOR pos, float angle, float zoom, float 
 		 type == OBJECT_WORM   )
 	{
 		pObject = new CObject(m_iMan);
-		pObject->CreateInsect(pos, angle, type);  // sans oeuf
+		pObject->CreateInsect(pos, angle, type);  // no eggs
 	}
 	else
 	if ( type == OBJECT_HUMAN    ||
@@ -4827,14 +4826,14 @@ CObject* CRobotMain::CreateObject(D3DVECTOR pos, float angle, float zoom, float 
 }
 
 
-// Cr�e le mod�le �ditable.
+// Creates the editable model.
 
 void CRobotMain::CreateModel()
 {
 	D3DVECTOR		direction;
 	D3DCOLORVALUE	color;
 
-	m_engine->SetAmbiantColor(0xC0C0C0C0);  // gris
+	m_engine->SetAmbiantColor(0xC0C0C0C0);  // gray
 	m_engine->SetBackground("", 0x80808080, 0x80808080, 0x80808080, 0x80808080);
 	m_engine->SetFogColor(0x80808080);
 	m_engine->SetDeepView(500.0f, 0);
@@ -4846,31 +4845,31 @@ void CRobotMain::CreateModel()
 	direction = D3DVECTOR(1.0f, -1.0f, 1.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
-	color.b = 0.7f;  // blanc
+	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
 	direction = D3DVECTOR(-1.0f, -1.0f, 1.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
-	color.b = 0.7f;  // blanc
+	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
 	direction = D3DVECTOR(1.0f, -1.0f, -1.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
-	color.b = 0.7f;  // blanc
+	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
 	direction = D3DVECTOR(-1.0f, -1.0f, -1.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
-	color.b = 0.7f;  // blanc
+	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
 	direction = D3DVECTOR(0.0f, 1.0f, 0.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
-	color.b = 0.7f;  // blanc
+	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
 	InitEye();
@@ -4882,7 +4881,7 @@ void CRobotMain::CreateModel()
 }
 
 
-// Cr�e une lumi�re directionnelle.
+// Creates a directional light.
 
 int CRobotMain::CreateLight(D3DVECTOR direction, D3DCOLORVALUE color)
 {
@@ -4908,7 +4907,7 @@ int CRobotMain::CreateLight(D3DVECTOR direction, D3DCOLORVALUE color)
 	return obj;
 }
 
-// Cr�e une lumi�re spot.
+// Creates a light spot.
 
 int CRobotMain::CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color)
 {
@@ -4940,7 +4939,7 @@ int CRobotMain::CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color)
 }
 
 
-// Change les couleurs des textures.
+// Change the colors and textures.
 
 void CRobotMain::ChangeColor()
 {
@@ -4952,54 +4951,54 @@ void CRobotMain::ChangeColor()
 	float			tolerance;
 
 	ts = FPOINT(0.0f, 0.0f);
-	ti = FPOINT(1.0f, 1.0f);  // toute l'image
+	ti = FPOINT(1.0f, 1.0f);  // the entire image
 
 	colorRef1.a = 0.0f;
 	colorRef2.a = 0.0f;
 
 	colorRef1.r = 206.0f/256.0f;
 	colorRef1.g = 206.0f/256.0f;
-	colorRef1.b = 204.0f/256.0f;  // ~blanc
+	colorRef1.b = 204.0f/256.0f;  // ~white
 	colorNew1 = m_dialog->RetGamerColorCombi();
 	colorRef2.r = 255.0f/256.0f;
 	colorRef2.g = 132.0f/256.0f;
 	colorRef2.b =   1.0f/256.0f;  // orange
 	colorNew2 = m_dialog->RetGamerColorBand();
 	exclu[0] = FPOINT(192.0f/256.0f,   0.0f/256.0f);
-	exclu[1] = FPOINT(256.0f/256.0f,  64.0f/256.0f);  // crystaux + bombonnes
+	exclu[1] = FPOINT(256.0f/256.0f,  64.0f/256.0f);  // crystals + cylinders
 	exclu[2] = FPOINT(208.0f/256.0f, 224.0f/256.0f);
-	exclu[3] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // �cran SatCom
+	exclu[3] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // SatCom screen
 	exclu[4] = FPOINT(0.0f, 0.0f);
-	exclu[5] = FPOINT(0.0f, 0.0f);  // terminateur
+	exclu[5] = FPOINT(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor("human.tga", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
 
 	face = RetGamerFace();
-	if ( face == 0 )  // normal ?
+	if ( face == 0 )  // normal?
 	{
 		colorRef1.r =  90.0f/256.0f;
 		colorRef1.g =  95.0f/256.0f;
-		colorRef1.b =  85.0f/256.0f;  // noir
+		colorRef1.b =  85.0f/256.0f;  // black
 		tolerance = 0.15f;
 	}
-	if ( face == 1 )  // chauve ?
+	if ( face == 1 )  // bald?
 	{
 		colorRef1.r =  74.0f/256.0f;
 		colorRef1.g =  58.0f/256.0f;
-		colorRef1.b =  46.0f/256.0f;  // brun
+		colorRef1.b =  46.0f/256.0f;  // brown
 		tolerance = 0.20f;
 	}
-	if ( face == 2 )  // carlos ?
+	if ( face == 2 )  // carlos?
 	{
 		colorRef1.r =  70.0f/256.0f;
 		colorRef1.g =  40.0f/256.0f;
-		colorRef1.b =   8.0f/256.0f;  // brun
+		colorRef1.b =   8.0f/256.0f;  // brown
 		tolerance = 0.30f;
 	}
-	if ( face == 3 )  // blond ?
+	if ( face == 3 )  // blonde?
 	{
 		colorRef1.r =  74.0f/256.0f;
 		colorRef1.g =  16.0f/256.0f;
-		colorRef1.b =   0.0f/256.0f;  // jaune
+		colorRef1.b =   0.0f/256.0f;  // yellow
 		tolerance = 0.20f;
 	}
 	colorNew1 = m_dialog->RetGamerColorHair();
@@ -5011,9 +5010,9 @@ void CRobotMain::ChangeColor()
 	colorNew2.b = 0.0f;
 	sprintf(name, "face%.2d.tga", face+1);
 	exclu[0] = FPOINT(105.0f/256.0f, 47.0f/166.0f);
-	exclu[1] = FPOINT(153.0f/256.0f, 79.0f/166.0f);  // bombonne bleu
+	exclu[1] = FPOINT(153.0f/256.0f, 79.0f/166.0f);  // blue canister
 	exclu[2] = FPOINT(0.0f, 0.0f);
-	exclu[3] = FPOINT(0.0f, 0.0f);  // terminateur
+	exclu[3] = FPOINT(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor(name, colorRef1, colorNew1, colorRef2, colorNew2, tolerance, 0.00f, ts, ti, exclu);
 
 	colorRef2.r = 0.0f;
@@ -5032,29 +5031,29 @@ void CRobotMain::ChangeColor()
 	m_engine->ChangeColor("search.tga",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, TRUE);
 
 	exclu[0] = FPOINT(  0.0f/256.0f, 160.0f/256.0f);
-	exclu[1] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // crayons
+	exclu[1] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // pencils
 	exclu[2] = FPOINT(0.0f, 0.0f);
-	exclu[3] = FPOINT(0.0f, 0.0f);  // terminateur
+	exclu[3] = FPOINT(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor("drawer.tga",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, TRUE);
 
 	exclu[0] = FPOINT(237.0f/256.0f, 176.0f/256.0f);
-	exclu[1] = FPOINT(256.0f/256.0f, 220.0f/256.0f);  // bombonne bleu
+	exclu[1] = FPOINT(256.0f/256.0f, 220.0f/256.0f);  // blue canister
 	exclu[2] = FPOINT(106.0f/256.0f, 150.0f/256.0f);
-	exclu[3] = FPOINT(130.0f/256.0f, 214.0f/256.0f);  // emplacement safe
+	exclu[3] = FPOINT(130.0f/256.0f, 214.0f/256.0f);  // safe location
 	exclu[4] = FPOINT(0.0f, 0.0f);
-	exclu[5] = FPOINT(0.0f, 0.0f);  // terminateur
+	exclu[5] = FPOINT(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor("subm.tga",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, TRUE);
 
 	exclu[0] = FPOINT(128.0f/256.0f, 160.0f/256.0f);
 	exclu[1] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // SatCom
 	exclu[2] = FPOINT(0.0f, 0.0f);
-	exclu[3] = FPOINT(0.0f, 0.0f);  // terminateur
+	exclu[3] = FPOINT(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor("ant.tga",     m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
 	m_engine->ChangeColor("mother.tga",  m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
 	m_engine->ChangeColor("plant.tga",   m_colorRefGreen, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
-	// PARTIPLOUF0 et PARTIDROP :
+	// PARTIPLOUF0 and PARTIDROP :
 	ts = FPOINT(0.500f, 0.500f);
 	ti = FPOINT(0.875f, 0.750f);
 	m_engine->ChangeColor("effect00.tga", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, TRUE);
@@ -5065,7 +5064,7 @@ void CRobotMain::ChangeColor()
 	m_engine->ChangeColor("effect02.tga", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, TRUE);
 }
 
-// Met � jour le nombre d'objets non indispansables.
+// Updates the number of unnecessary objects.
 
 BOOL CRobotMain::TestGadgetQuantity(int rank)
 {
@@ -5101,7 +5100,7 @@ BOOL CRobotMain::TestGadgetQuantity(int rank)
 
 
 
-// Calcule la distance jusqu'� l'objet le plus proche.
+// Calculates the distance to the nearest object.
 
 float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 {
@@ -5117,8 +5116,8 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( !pObj->RetActif() )  continue;  // inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet port� ?
+		if ( !pObj->RetActif() )  continue;  // inactive?
+		if ( pObj->RetTruck() != 0 )  continue;  // object carries?
 		if ( pObj == exclu )  continue;
 
 		type = pObj->RetType();
@@ -5157,7 +5156,7 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 	return min;
 }
 
-// Calcule un emplacement libre.
+// Calculates a free space.
 
 BOOL CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
 						   float space, CObject *exclu)
@@ -5166,7 +5165,7 @@ BOOL CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
 	FPOINT		p;
 	float		radius, ia, angle, dist, flat;
 
-	if ( minRadius < maxRadius )  // de l'int�rieur vers l'ext�rieur ?
+	if ( minRadius < maxRadius )  // from internal to external?
 	{
 		for ( radius=minRadius ; radius<=maxRadius ; radius+=space )
 		{
@@ -5193,7 +5192,7 @@ BOOL CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
 			}
 		}
 	}
-	else	// de l'ext�rieur vers l'int�rieur ?
+	else	// from external to internal?
 	{
 		for ( radius=maxRadius ; radius>=minRadius ; radius-=space )
 		{
@@ -5223,7 +5222,7 @@ BOOL CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
 	return FALSE;
 }
 
-// Calcule le rayon maximal d'un emplacement libre.
+// Calculates the maximum radius of a free space.
 
 float CRobotMain::RetFlatZoneRadius(D3DVECTOR center, float maxRadius,
 									CObject *exclu)
@@ -5240,7 +5239,7 @@ float CRobotMain::RetFlatZoneRadius(D3DVECTOR center, float maxRadius,
 }
 
 
-// Cache la zone constructible lorsqu'un cube de m�tal est repris.
+// Hides buildable area when a cube of metal is taken up.
 
 void CRobotMain::HideDropZone(CObject* metal)
 {
@@ -5257,7 +5256,7 @@ void CRobotMain::HideDropZone(CObject* metal)
 	}
 }
 
-// Montre la zone constructible lorsqu'un cube de m�tal est d�pos�.
+// Shows the buildable area when a cube of metal is deposited.
 
 void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 {
@@ -5271,15 +5270,15 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 
 	center = metal->RetPosition(0);
 
-	// Calcule le rayon maximal possible en fonction des autres objets.
-	oMax = 30.0f;  // rayon permettant de construire le plus grand b�timent
+	// Calculates the maximum radius possible depending on other items.
+	oMax = 30.0f;  // radius to build the biggest building
 	for ( i=0 ; i<1000000 ; i++ )
 	{
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( !pObj->RetActif() )  continue;  // inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet port� ?
+		if ( !pObj->RetActif() )  continue;  // inactive?
+		if ( pObj->RetTruck() != 0 )  continue;  // object carried?
 		if ( pObj == metal )  continue;
 		if ( pObj == truck )  continue;
 
@@ -5317,7 +5316,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 			 type == OBJECT_INFO     ||
 			 type == OBJECT_PARA     ||
 			 type == OBJECT_SAFE     ||
-			 type == OBJECT_HUSTON   )  // b�timent ?
+			 type == OBJECT_HUSTON   )  // building?
 		{
 			j = 0;
 			while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
@@ -5328,7 +5327,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 		}
 	}
 
-	// Calcule le rayon maximal possible en fonction du terrain.
+	// Calculates the maximum possible radius depending on terrain.
 	if ( oMax >= 2.0f )
 	{
 		tMax = m_terrain->RetFlatZoneRadius(center, 30.0f);
@@ -5345,7 +5344,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 	}
 }
 
-// Efface les limites montr�es.
+// Erases the boundaries shown.
 
 void CRobotMain::FlushShowLimit(int i)
 {
@@ -5369,7 +5368,7 @@ void CRobotMain::FlushShowLimit(int i)
 	m_showLimit[i].bUsed = FALSE;
 }
 
-// Sp�cifie les limites � montrer.
+// Specifies the boundaries to show.
 
 void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 							  D3DVECTOR pos, float radius, float duration)
@@ -5378,7 +5377,7 @@ void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 	float	dist;
 	int		j;
 
-	FlushShowLimit(i);  // efface les limites actuelles
+	FlushShowLimit(i);  // erases the current boundaries
 
 	if ( radius <= 0.0f )  return;
 
@@ -5408,14 +5407,14 @@ void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 	}
 }
 
-// Ajuste les limites � montrer.
+// Adjusts the boundaries to show.
 
 void CRobotMain::AdjustShowLimit(int i, D3DVECTOR pos)
 {
 	m_showLimit[i].pos = pos;
 }
 
-// Monter les limites de l'objet s�lectionn�.
+// Mount the boundaries of the selected object.
 
 void CRobotMain::StartShowLimit()
 {
@@ -5427,7 +5426,7 @@ void CRobotMain::StartShowLimit()
 	pObj->StartShowLimit();
 }
 
-// Fait avancer les limites montr�es.
+// Advances the boundaries shown.
 
 void CRobotMain::FrameShowLimit(float rTime)
 {
@@ -5493,14 +5492,14 @@ void CRobotMain::FrameShowLimit(float rTime)
 
 
 
-// Retourne un pointeur sur le dernier backslash d'un nom de fichier.
+// Returns a pointer to the last backslash in a filename.
 
 char* SearchLastDir(char *filename)
 {
 	char*	p = filename;
 
 	while ( *p++ != 0 );
-	p --;  // ^sur le z�ro terminateur
+	p --;  // ^on the zero terminator
 
 	while ( p != filename )
 	{
@@ -5510,7 +5509,7 @@ char* SearchLastDir(char *filename)
 }
 
 
-// Compile tous les scripts des robots.
+// Compiles all scripts of robots.
 
 void CRobotMain::CompileScript(BOOL bSoluce)
 {
@@ -5550,7 +5549,7 @@ void CRobotMain::CompileScript(BOOL bSoluce)
 	}
 	while ( nbError > 0 && nbError != lastError );
 
-	// Charge toutes les solutions.
+	// Load all solutions.
 	if ( bSoluce )
 	{
 		for ( i=0 ; i<1000000 ; i++ )
@@ -5565,12 +5564,12 @@ void CRobotMain::CompileScript(BOOL bSoluce)
 			name = brain->RetSoluceName();
 			if ( name[0] != 0 )
 			{
-				brain->ReadSoluce(name);  // charge solution
+				brain->ReadSoluce(name);  // load solution
 			}
 		}
 	}
 
-	// D�marre tous les programmes selon la commande "run".
+	// Start all programs according to the command "run".
 	for ( i=0 ; i<1000000 ; i++ )
 	{
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
@@ -5583,12 +5582,12 @@ void CRobotMain::CompileScript(BOOL bSoluce)
 		run = brain->RetScriptRun();
 		if ( run != -1 )
 		{
-			brain->RunProgram(run);  // d�marre le programme
+			brain->RunProgram(run);  // starts the program
 		}
 	}
 }
 
-// Charge tous les programmes d'un robot.
+// Load all programs of the robot.
 
 void CRobotMain::LoadOneScript(CObject *pObj, int &nbError)
 {
@@ -5624,7 +5623,7 @@ void CRobotMain::LoadOneScript(CObject *pObj, int &nbError)
 	}
 }
 
-// Charge tous les programmes d'un robot.
+// Load all programs of the robot.
 
 void CRobotMain::LoadFileScript(CObject *pObj, char* filename, int objRank,
 								int &nbError)
@@ -5662,7 +5661,7 @@ void CRobotMain::LoadFileScript(CObject *pObj, char* filename, int objRank,
 	}
 }
 
-// Sauve tous les programmes de tous les robots.
+// Saves all programs of all the robots.
 
 void CRobotMain::SaveAllScript()
 {
@@ -5678,8 +5677,8 @@ void CRobotMain::SaveAllScript()
 	}
 }
 
-// Sauve tous les programmes d'un robot.
-// Si un programme n'existe pas, le fichier correspondant est d�truit.
+// Saves all programs of the robot.
+// If a program does not exist, the corresponding file is destroyed.
 
 void CRobotMain::SaveOneScript(CObject *pObj)
 {
@@ -5711,8 +5710,8 @@ void CRobotMain::SaveOneScript(CObject *pObj)
 	}
 }
 
-// Sauve tous les programmes d'un robot.
-// Si un programme n'existe pas, le fichier correspondant est d�truit.
+// Saves all programs of the robot.
+// If a program does not exist, the corresponding file is destroyed.
 
 void CRobotMain::SaveFileScript(CObject *pObj, char* filename, int objRank)
 {
@@ -5745,7 +5744,7 @@ void CRobotMain::SaveFileScript(CObject *pObj, char* filename, int objRank)
 	}
 }
 
-// Sauve le stack du programme en ex�cution d'un robot.
+// Saves the stack of the program in execution of a robot.
 
 BOOL CRobotMain::SaveFileStack(CObject *pObj, FILE *file, int objRank)
 {
@@ -5763,7 +5762,7 @@ BOOL CRobotMain::SaveFileStack(CObject *pObj, FILE *file, int objRank)
 	return brain->WriteStack(file);
 }
 
-// Reprend le stack du programme en ex�cution d'un robot.
+// Resumes the execution stack of the program in a robot.
 
 BOOL CRobotMain::ReadFileStack(CObject *pObj, FILE *file, int objRank)
 {
@@ -5782,7 +5781,7 @@ BOOL CRobotMain::ReadFileStack(CObject *pObj, FILE *file, int objRank)
 }
 
 
-// Vide la liste.
+// Empty the list.
 
 BOOL CRobotMain::FlushNewScriptName()
 {
@@ -5795,7 +5794,7 @@ BOOL CRobotMain::FlushNewScriptName()
 	return TRUE;
 }
 
-// Ajoute un nom de script.
+// Adds a script name.
 
 BOOL CRobotMain::AddNewScriptName(ObjectType type, char *name)
 {
@@ -5814,7 +5813,7 @@ BOOL CRobotMain::AddNewScriptName(ObjectType type, char *name)
 	return FALSE;
 }
 
-// Cherche un nom de script pour un type donn�.
+// Seeks a script name for a given type.
 
 char*  CRobotMain::RetNewScriptName(ObjectType type, int rank)
 {
@@ -5835,8 +5834,7 @@ char*  CRobotMain::RetNewScriptName(ObjectType type, int rank)
 }
 
 
-// Cherche si un objet est occup� dans une t�che, pour interdire
-// une sauvegarde de la partie.
+// Seeks if an object occupies in a spot, to prevent a backup of the game.
 
 BOOL CRobotMain::IsBusy()
 {
@@ -5867,7 +5865,7 @@ BOOL CRobotMain::IsBusy()
 	return FALSE;
 }
 
-// Ecrit un objet dans le fichier de sauvegarde.
+// Writes an object into the backup file.
 
 void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
 {
@@ -5933,7 +5931,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
 	sprintf(name, " option=%d", pObj->RetOption());
 	strcat(line, name);
 
-	if ( pObj == m_infoObject )  // objet s�lectionn� ?
+	if ( pObj == m_infoObject )  // selects object?
 	{
 		sprintf(name, " select=1");
 		strcat(line, name);
@@ -5943,7 +5941,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
 
 	if ( pObj->RetType() == OBJECT_BASE )
 	{
-		sprintf(name, " run=3");  // stopp� et ouvert (PARAM_FIXSCENE)
+		sprintf(name, " run=3");  // stops and open (PARAM_FIXSCENE)
 		strcat(line, name);
 	}
 
@@ -5962,7 +5960,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
 	fputs(line, file);
 }
 
-// Enregistre la partie en cours.
+// Saves the current game.
 
 BOOL CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
 {
@@ -6022,12 +6020,12 @@ BOOL CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
 		pPower = pObj->RetPower();
 		pFret  = pObj->RetFret();
 
-		if ( pFret != 0 )  // objet transport� ?
+		if ( pFret != 0 )  // object transported?
 		{
 			IOWriteObject(file, pFret, "CreateFret");
 		}
 
-		if ( pPower != 0 )  // pile transport�e ?
+		if ( pPower != 0 )  // battery transported?
 		{
 			IOWriteObject(file, pPower, "CreatePower");
 		}
@@ -6039,14 +6037,14 @@ BOOL CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
 	fclose(file);
 
 #if CBOT_STACK
-	// Ecrit le fichier des stacks d'ex�cution.
+	// Writes the file of stacks of execution.
 	file = fOpen(filecbot, "wb");
 	if ( file == NULL )  return FALSE;
 
 	version = 1;
-	fWrite(&version, sizeof(long), 1, file);  // version de COLOBOT
+	fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
 	version = CBotProgram::GivVersion();
-	fWrite(&version, sizeof(long), 1, file);  // version de CBOT
+	fWrite(&version, sizeof(long), 1, file);  // version of CBOT
 
 	objRank = 0;
 	for ( i=0 ; i<1000000 ; i++ )
@@ -6066,11 +6064,11 @@ BOOL CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
 	fClose(file);
 #endif
 
-	m_delayWriteMessage = 4;  // affiche message dans 3 frames
+	m_delayWriteMessage = 4;  // displays message in 3 frames
 	return TRUE;
 }
 
-// Reprend un objet enregistr�.
+// Resumes the game.
 
 CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 {
@@ -6146,21 +6144,21 @@ CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 		pBrain = pObj->RetBrain();
 		if ( pBrain != 0 )
 		{
-			pBrain->RunProgram(run-1);  // d�marre le programme
+			pBrain->RunProgram(run-1);  // starts the program
 		}
 #endif
 
 		pAuto = pObj->RetAuto();
 		if ( pAuto != 0 )
 		{
-			pAuto->Start(run);  // d�marre le film
+			pAuto->Start(run);  // starts the film
 		}
 	}
 
 	return pObj;
 }
 
-// Reprend une partie enregistr�e.
+// Resumes some part of the game.
 
 CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
 {
@@ -6184,7 +6182,7 @@ CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
 	{
 		for ( i=0 ; i<3000 ; i++ )
 		{
-			if ( line[i] == '\t' )  line[i] = ' ';  // remplace tab par space
+			if ( line[i] == '\t' )  line[i] = ' ';  // replace tab by space
 			if ( line[i] == '/' && line[i+1] == '/' )
 			{
 				line[i] = 0;
@@ -6236,7 +6234,7 @@ CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
 
 				pObj->SetFret(pFret);
 				task = new CTaskManip(m_iMan, pObj);
-				task->Start(TMO_AUTO, TMA_GRAB);  // tient l'objet !
+				task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
 				delete task;
 			}
 
@@ -6253,7 +6251,7 @@ CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
 	fclose(file);
 
 #if CBOT_STACK
-	// Compile les scripts.
+	// Compiles scripts.
 	nbError = 0;
 	do
 	{
@@ -6273,14 +6271,14 @@ CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
 	}
 	while ( nbError > 0 && nbError != lastError );
 
-	// Lit le fichier des stacks d'ex�cution.
+	// Reads the file of stacks of execution.
 	file = fOpen(filecbot, "rb");
 	if ( file != NULL )
 	{
-		fRead(&version, sizeof(long), 1, file);  // version de COLOBOT
+		fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
 		if ( version == 1 )
 		{
-			fRead(&version, sizeof(long), 1, file);  // version de CBOT
+			fRead(&version, sizeof(long), 1, file);  // version of CBOT
 			if ( version == CBotProgram::GivVersion() )
 			{
 				objRank = 0;
@@ -6308,7 +6306,7 @@ CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
 }
 
 
-// Ecrit les param�tres globaux pour le jeu libre.
+// Writes the global parameters for free play.
 
 void CRobotMain::WriteFreeParam()
 {
@@ -6330,7 +6328,7 @@ void CRobotMain::WriteFreeParam()
 	fclose(file);
 }
 
-// Lit les param�tres globaux pour le jeu libre.
+// Reads the global parameters for free play.
 
 void CRobotMain::ReadFreeParam()
 {
@@ -6356,7 +6354,7 @@ void CRobotMain::ReadFreeParam()
 }
 
 
-// Remet tous les objets � leur place initiale.
+// Resets all objects to their original position.
 
 void CRobotMain::ResetObject()
 {
@@ -6370,7 +6368,7 @@ void CRobotMain::ResetObject()
 	D3DVECTOR	pos, angle;
 	int			i;
 
-	// Supprime tous les effets pyrotechniques en cours.
+	// Removes all pyrotechnic effects in progress.
 	while ( TRUE )
 	{
 		pyro = (CPyro*)m_iMan->SearchInstance(CLASS_PYRO, 0);
@@ -6380,7 +6378,7 @@ void CRobotMain::ResetObject()
 		delete pyro;
 	}
 
-	// Supprime toutes les balles en cours.
+	// Removes all bullets in progress.
 	m_particule->DeleteParticule(PARTIGUN1);
 	m_particule->DeleteParticule(PARTIGUN2);
 	m_particule->DeleteParticule(PARTIGUN3);
@@ -6414,7 +6412,7 @@ void CRobotMain::ResetObject()
 			pAuto->Abort();
 		}
 
-		if ( pObj->RetEnable() )  // objet toujours actif ?
+		if ( pObj->RetEnable() )  // object still active?
 		{
 			brain = pObj->RetBrain();
 			if ( brain != 0 )
@@ -6429,7 +6427,7 @@ void CRobotMain::ResetObject()
 			}
 		}
 
-		pObj->SetEnable(TRUE);  // de nouveau actif
+		pObj->SetEnable(TRUE);  // active again
 
 		pos   = pObj->RetResetPosition();
 		angle = pObj->RetResetAngle();
@@ -6451,7 +6449,7 @@ void CRobotMain::ResetObject()
 #endif
 }
 
-// Remet tous les objets � leur place initiale.
+// Resets all objects to their original position.
 
 void CRobotMain::ResetCreate()
 {
@@ -6462,14 +6460,14 @@ void CRobotMain::ResetCreate()
 
 	SaveAllScript();
 
-	// Supprime toutes les balles en cours.
+	// Removes all bullets in progress.
 	m_particule->DeleteParticule(PARTIGUN1);
 	m_particule->DeleteParticule(PARTIGUN2);
 	m_particule->DeleteParticule(PARTIGUN3);
 	m_particule->DeleteParticule(PARTIGUN4);
 
-	DeselectAll();  // enl�ve les boutons de commande
-	DeleteAllObjects();  // supprime toute la sc�ne 3D actuelle
+	DeselectAll();  // removes the control buttons
+	DeleteAllObjects();  // removes all the current 3D Scene
 
 	m_particule->FlushParticule();
 	m_terrain->FlushBuildingLevel();
@@ -6496,7 +6494,7 @@ void CRobotMain::ResetCreate()
 	}
 }
 
-// V�rifie si la mission est termin�e.
+// Checks if the mission is over.
 
 Error CRobotMain::CheckEndMission(BOOL bFrame)
 {
@@ -6518,8 +6516,8 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
 			pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 			if ( pObj == 0 )  break;
 
-			// Ne pas utiliser RetActif(), car un ver invisible (sous terre)
-			// doit �tre consid�r� comme existant ici !
+			// Do not use RetActif () because an invisible worm (underground)
+			// should be regarded as existing here!
 			if ( pObj->RetLock() )  continue;
 			if ( pObj->RetRuin() )  continue;
 			if ( !pObj->RetEnable() )  continue;
@@ -6528,7 +6526,7 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
 			if ( type == OBJECT_SCRAP2 ||
 				 type == OBJECT_SCRAP3 ||
 				 type == OBJECT_SCRAP4 ||
-				 type == OBJECT_SCRAP5 )  // d�chet ?
+				 type == OBJECT_SCRAP5 )  // wastes?
 			{
 				type = OBJECT_SCRAP1;
 			}
@@ -6555,7 +6553,7 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
 			{
 				if ( m_lostDelay == 0.0f )
 				{
-					m_lostDelay = 0.1f;  // perdu imm�diatement
+					m_lostDelay = 0.1f;  // lost immediately
 					m_winDelay  = 0.0f;
 				}
 				m_displayText->SetEnable(FALSE);
@@ -6566,7 +6564,7 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
 				if ( m_lostDelay == 0.0f )
 				{
 					m_displayText->DisplayError(INFO_LOST, D3DVECTOR(0.0f,0.0f,0.0f));
-					m_lostDelay = m_endTakeLostDelay;  // perdu dans 6 secondes
+					m_lostDelay = m_endTakeLostDelay;  // lost in 6 seconds
 					m_winDelay  = 0.0f;
 				}
 				m_displayText->SetEnable(FALSE);
@@ -6583,11 +6581,11 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
 		{
 			if ( m_winDelay == 0.0f )
 			{
-				m_winDelay  = m_endTakeWinDelay;  // gagn� dans x seconde
+				m_winDelay  = m_endTakeWinDelay;  // wins in x seconds
 				m_lostDelay = 0.0f;
 			}
 			m_displayText->SetEnable(FALSE);
-			return ERR_OK;  // mission termin�e
+			return ERR_OK;  // mission ended
 		}
 	}
 
@@ -6602,10 +6600,10 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
 
 	if ( m_endTakeWinDelay == -1.0f )
 	{
-		m_winDelay  = 1.0f;  // gagn� dans 1 seconde
+		m_winDelay  = 1.0f;  // wins in one second
 		m_lostDelay = 0.0f;
 		m_displayText->SetEnable(FALSE);
-		return ERR_OK;  // mission termin�e
+		return ERR_OK;  // mission ended
 	}
 
 	if ( bFrame && m_bBase )  return ERR_MISSION_NOTERM;
@@ -6613,14 +6611,14 @@ Error CRobotMain::CheckEndMission(BOOL bFrame)
 	if ( m_winDelay == 0.0f )
 	{
 		m_displayText->DisplayError(INFO_WIN, D3DVECTOR(0.0f,0.0f,0.0f));
-		m_winDelay  = m_endTakeWinDelay;  // gagn� dans 2 secondes
+		m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
 		m_lostDelay = 0.0f;
 	}
 	m_displayText->SetEnable(FALSE);
-	return ERR_OK;  // mission termin�e
+	return ERR_OK;  // mission ended
 }
 
-// V�rifie si la mission est termin�e suite � l'affichage d'un message.
+// Checks if the mission is finished after displaying a message.
 
 void CRobotMain::CheckEndMessage(char *message)
 {
@@ -6633,28 +6631,28 @@ void CRobotMain::CheckEndMessage(char *message)
 		if ( strcmp(m_endTake[t].message, message) == 0 )
 		{
 			m_displayText->DisplayError(INFO_WIN, D3DVECTOR(0.0f,0.0f,0.0f));
-			m_winDelay  = m_endTakeWinDelay;  // gagn� dans 2 secondes
+			m_winDelay  = m_endTakeWinDelay;  // wins in 2 seconds
 			m_lostDelay = 0.0f;
 		}
 	}
 }
 
 
-// Retourne le nombre d'instructions obligatoires.
+// Returns the number of instructions required.
 
 int CRobotMain::RetObligatoryToken()
 {
 	return m_obligatoryTotal;
 }
 
-// Retourne le nom d'une instruction obligatoire.
+// Returns the name of a required instruction.
 
 char* CRobotMain::RetObligatoryToken(int i)
 {
 	return m_obligatoryToken[i];
 }
 
-// V�rifie si une instruction fait partie de la liste obligatoire.
+// Checks if an instruction is part of the obligatory list.
 
 int CRobotMain::IsObligatoryToken(char *token)
 {
@@ -6670,7 +6668,7 @@ int CRobotMain::IsObligatoryToken(char *token)
 	return -1;
 }
 
-// V�rifie si une instruction ne fait pas partie de la liste interdite.
+// Checks if an instruction is not part of the banned list.
 
 BOOL CRobotMain::IsProhibitedToken(char *token)
 {
@@ -6687,14 +6685,14 @@ BOOL CRobotMain::IsProhibitedToken(char *token)
 }
 
 
-// Indique s'il est possible de t�l�commander un robot d'entra�nement.
+// Indicates whether it is possible to control a driving robot.
 
 BOOL CRobotMain::RetTrainerPilot()
 {
 	return m_bTrainerPilot;
 }
 
-// Indique si la sc�ne est fixe, sans interraction.
+// Indicates whether the scene is fixed, without interaction.
 
 BOOL CRobotMain::RetFixScene()
 {
@@ -6785,7 +6783,7 @@ char* CRobotMain::RetFilesDir()
 }
 
 
-// Change le nom du joueur.
+// Change the player's name.
 
 void CRobotMain::SetGamerName(char *name)
 {
@@ -6794,7 +6792,7 @@ void CRobotMain::SetGamerName(char *name)
 	ReadFreeParam();
 }
 
-// Donne le nom du joueur.
+// Gives the player's name.
 
 char* CRobotMain::RetGamerName()
 {
@@ -6802,28 +6800,28 @@ char* CRobotMain::RetGamerName()
 }
 
 
-// Retourne la repr�sentation � utiliser pour le joueur.
+// Returns the representation to use for the player.
 
 int CRobotMain::RetGamerFace()
 {
 	return m_dialog->RetGamerFace();
 }
 
-// Retourne la repr�sentation � utiliser pour le joueur.
+// Returns the representation to use for the player.
 
 int CRobotMain::RetGamerGlasses()
 {
 	return m_dialog->RetGamerGlasses();
 }
 
-// Retourne le mode avec seulement la t�te.
+// Returns the mode with just the head.
 
 BOOL CRobotMain::RetGamerOnlyHead()
 {
 	return m_dialog->RetGamerOnlyHead();
 }
 
-// Retourne l'angle de pr�sentation.
+// Returns the angle of presentation.
 
 float CRobotMain::RetPersoAngle()
 {
@@ -6831,7 +6829,7 @@ float CRobotMain::RetPersoAngle()
 }
 
 
-// Change le mode de pause.
+// Changes on the pause mode.
 
 void CRobotMain::ChangePause(BOOL bPause)
 {
@@ -6844,7 +6842,7 @@ void CRobotMain::ChangePause(BOOL bPause)
 }
 
 
-// Change la vitesse du jeu.
+// Changes game speed
 
 void CRobotMain::SetSpeed(float speed)
 {
@@ -6875,7 +6873,7 @@ float CRobotMain::RetSpeed()
 }
 
 
-// Cr�e l'interface des raccourcis aux unit�s.
+// Creates interface shortcuts to the units.
 
 BOOL CRobotMain::CreateShortcuts()
 {
@@ -6884,14 +6882,14 @@ BOOL CRobotMain::CreateShortcuts()
 	return m_short->CreateShortcuts();
 }
 
-// Met � jour la carte.
+// Updates the map.
 
 void CRobotMain::UpdateMap()
 {
 	m_map->UpdateMap();
 }
 
-// Indique si la mini-carte est visible.
+// Indicates whether the mini-map is visible.
 
 BOOL CRobotMain::RetShowMap()
 {
@@ -6899,7 +6897,7 @@ BOOL CRobotMain::RetShowMap()
 }
 
 
-// Gestion du mode de blocage pendant les films.
+// Management of the lock mode for movies.
 
 void CRobotMain::SetMovieLock(BOOL bLock)
 {
@@ -6919,10 +6917,10 @@ BOOL CRobotMain::RetMovieLock()
 
 BOOL CRobotMain::RetInfoLock()
 {
-	return ( m_displayInfo != 0 );  // info en cours ?
+	return ( m_displayInfo != 0 );  // info in progress?
 }
 
-// Gestion du blocage de l'appel du SatCom.
+// Management of the blocking of the call of SatCom.
 
 void CRobotMain::SetSatComLock(BOOL bLock)
 {
@@ -6934,7 +6932,7 @@ BOOL CRobotMain::RetSatComLock()
 	return m_bSatComLock;
 }
 
-// Gestion du mode de blocage pendant l'�dition.
+// Management of the lock mode for the edition.
 
 void CRobotMain::SetEditLock(BOOL bLock, BOOL bEdit)
 {
@@ -6942,7 +6940,7 @@ void CRobotMain::SetEditLock(BOOL bLock, BOOL bEdit)
 
 	CreateShortcuts();
 
-	// N'enl�ve pas la carte si elle contient une image fixe.
+	// Do not remove the card if it contains a still image.
 	if ( !bLock || !m_map->RetFixImage() )
 	{
 		m_map->ShowMap(!m_bEditLock && m_bMapShow);
@@ -6966,7 +6964,7 @@ BOOL CRobotMain::RetEditLock()
 	return m_bEditLock;
 }
 
-// Gestion du mode plein �cran pendant l'�dition.
+// Management of the fullscreen mode during editing.
 
 void CRobotMain::SetEditFull(BOOL bFull)
 {
@@ -6985,8 +6983,7 @@ BOOL CRobotMain::RetFreePhoto()
 }
 
 
-// Indique si la souris vise un objet ami, sur lequel il ne faut
-// pas tirer.
+// Indicates whether mouse is on an friend object, on which we should not shoot.
 
 void CRobotMain::SetFriendAim(BOOL bFriend)
 {
@@ -6999,7 +6996,7 @@ BOOL CRobotMain::RetFriendAim()
 }
 
 
-// Gestion de la pr�cision du dessin au sol.
+// Management of the precision of drawing the ground.
 
 void CRobotMain::SetTracePrecision(float factor)
 {
@@ -7012,7 +7009,7 @@ float CRobotMain::RetTracePrecision()
 }
 
 
-// D�bute la musique d'une mission.
+// Starts music with a mission.
 
 void CRobotMain::StartMusic()
 {
@@ -7023,12 +7020,12 @@ void CRobotMain::StartMusic()
 	}
 }
 
-// Enl�ve hilite et tooltip.
+// Removes hilite and tooltip.
 
 void CRobotMain::ClearInterface()
 {
-	HiliteClear();  // enl�ve la mise en �vidence
-	m_tooltipName[0] = 0;  // enl�ve vraiment le tooltip
+	HiliteClear();  // removes setting evidence
+	m_tooltipName[0] = 0;  // really removes the tooltip
 }
 
 
