@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// robotmain.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// robotmain.h
 
 #ifndef _ROBOTMAIN_H_
 #define	_ROBOTMAIN_H_
@@ -93,9 +95,9 @@ typedef struct
 	D3DVECTOR	pos;
 	float		dist;
 	ObjectType	type;
-	int			min;		// gagné si >
-	int			max;		// gagné si <
-	int			lost;		// perdu si <=
+	int			min;		// wins if>
+	int			max;		// wins if <
+	int			lost;		// lost if <=
 	BOOL		bImmediat;
 	char		message[100];
 }
@@ -354,8 +356,8 @@ protected:
 	float			m_checkEndTime;
 	float			m_winDelay;
 	float			m_lostDelay;
-	BOOL			m_bFixScene;	// scène fixe, sans interraction
-	BOOL			m_bBase;		// OBJECT_BASE existe dans mission
+	BOOL			m_bFixScene;		// scene fixed, no interraction
+	BOOL			m_bBase;		// OBJECT_BASE exists in mission
 	FPOINT			m_lastMousePos;
 	CObject*		m_selectObject;
 
@@ -375,15 +377,15 @@ protected:
 	int				m_delayWriteMessage;
 	int				m_movieInfoIndex;
 
-	BOOL			m_bImmediatSatCom;	// SatCom tout de suite ?
-	BOOL			m_bBeginSatCom;		// message SatCom affiché ?
-	BOOL			m_bMovieLock;		// film en cours ?
-	BOOL			m_bSatComLock;		// appel du SatCom possible ?
-	BOOL			m_bEditLock;		// édition en cours ?
-	BOOL			m_bEditFull;		// édition en plein écran ?
-	BOOL			m_bPause;			// simulation en pause
+	BOOL			m_bImmediatSatCom;	// SatCom immediately?
+	BOOL			m_bBeginSatCom;		// messages SatCom poster?
+	BOOL			m_bMovieLock;		// movie in progress?
+	BOOL			m_bSatComLock;		// call of SatCom is possible?
+	BOOL			m_bEditLock;		// edition in progress?
+	BOOL			m_bEditFull;		// edition in full screen?
+	BOOL			m_bPause;		// simulation paused
 	BOOL			m_bHilite;
-	BOOL			m_bTrainerPilot;	// télécommande trainer ?
+	BOOL			m_bTrainerPilot;	// remote trainer?
 	BOOL			m_bSuspend;
 	BOOL			m_bFriendAim;
 	BOOL			m_bResetCreate;
@@ -395,7 +397,7 @@ protected:
 	char			m_tooltipName[100];
 	float			m_tooltipTime;
 
-	char			m_infoFilename[SATCOM_MAX][100]; // noms des fichiers texte
+	char			m_infoFilename[SATCOM_MAX][100]; // names of text files
 	CObject*		m_infoObject;
 	int				m_infoIndex;
 	int				m_infoPos[SATCOM_MAX];
@@ -443,8 +445,8 @@ protected:
 
 	char			m_gamerName[100];
 
-	long			m_freeBuild;		// bâtiments constructibles
-	long			m_freeResearch;		// recherches effectuées
+	long			m_freeBuild;		// constructible buildings
+	long			m_freeResearch;		// researches possible
 
 	ShowLimit		m_showLimit[MAXSHOWLIMIT];
 
