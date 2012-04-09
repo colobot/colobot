@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// sound.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// sound.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -46,9 +48,9 @@ struct WaveHeader
 	WORD		wOne_0; 		// 1
 	WORD		wChnls; 		// number of Channels
 	DWORD		dwSRate;		// sample Rate
-	DWORD		BytesPerSec;	// sample Rate
+	DWORD		BytesPerSec;		// sample Rate
 	WORD		wBlkAlign;		// 1
-	WORD		BitsPerSample;	// sample size
+	WORD		BitsPerSample;		// sample size
 	BYTE		DATA[4];		// "DATA"
 	DWORD		dwDSize;		// number of Samples
 };
@@ -56,7 +58,7 @@ struct WaveHeader
 
 
 
-// Affiche une erreur DirectSound.
+// Displays an error DirectSound.
 
 void DisplayError(char *name, Sound sound, HRESULT err)
 {
@@ -85,7 +87,7 @@ void DisplayError(char *name, Sound sound, HRESULT err)
 	if ( err == DSERR_ACCESSDENIED )  OutputDebugString("DSERR_ACCESSDENIED\n");
 }
 
-// Retourne le nom de dossier en cours.
+// Returns the name of the current folder.
 
 void GetCurrentDir(char *pName, int lg)
 {
@@ -114,12 +116,12 @@ void GetCurrentDir(char *pName, int lg)
 
 	if ( lg > 6 && strcmp(pName+lg-6, "\\debug\\") == 0 )
 	{
-		pName[lg-5] = 0;  // ignore le dossier \debug !
+		pName[lg-5] = 0;  // ignores the folder \debug!
 	}
 
 	if ( lg > 6 && strcmp(pName+lg-6, "\\release\\") == 0 )
 	{
-		pName[lg-7] = 0;  // ignore le dossier \release !
+		pName[lg-7] = 0;  // ignores the folder \release !
 	}
 }
 
@@ -129,12 +131,12 @@ void GetCurrentDir(char *pName, int lg)
 /////////////////////////////////////////////////////////////////////////////
 
 
-// Modifie le volume midi.
-// Le volume est compris entre 0 et 20 !
+// Changes the volume of midi.
+// The volume is between 0 and 20!
 
 void InitMidiVolume(int volume)
 {
-	int				nb, i, n;
+	int			nb, i, n;
 	MMRESULT		result;
 	HMIDIOUT		hmo = 0;
 
@@ -185,10 +187,10 @@ void InitMidiVolume(int volume)
 	}
 }
 
-// Modifie le volume CD audio.
-// Le volume est compris entre 0 et 20 !
-// Plantait sous Vista. Le bricolage actuel (si _SOUNDTRACKS = TRUE) ne plante
-// plus, mais ce n'est pas le bon volume qui est modifié !
+// Changes the volume of audio CD.
+// The volume is between 0 and 20!
+// Crashing in Vista. The current craft (if _SOUNDTRACKS = TRUE) no longer crashes,
+// but this is not the correct volume which is modified!
 
 BOOL InitAudioTrackVolume(int volume)
 {
@@ -284,7 +286,7 @@ BOOL InitAudioTrackVolume(int volume)
 /////////////////////////////////////////////////////////////////////////////
 
 
-// Constructeur.
+// Constructor.
 
 CSound::CSound(CInstanceManager* iMan)
 {
@@ -325,7 +327,7 @@ CSound::CSound(CInstanceManager* iMan)
 	}
 }
 
-// Destructeur.
+// Destructor.
 
 CSound::~CSound()
 {
@@ -333,8 +335,8 @@ CSound::~CSound()
 
 	if ( m_bEnable )
 	{
-		InitMidiVolume(15);  // remet un volume moyen !
-		InitAudioTrackVolume(15);  // remet un volume moyen !
+		InitMidiVolume(15);  // gives an average volume!
+		InitAudioTrackVolume(15);  // gives an average volume!
 	}
 
 	for ( i=0 ; i<MAXSOUND ; i++ )
@@ -362,7 +364,7 @@ CSound::~CSound()
 }
 
 
-// Spécifie si on est en mode debug.
+// Specifies whether you are in debug mode.
 
 void CSound::SetDebugMode(BOOL bMode)
 {
@@ -370,7 +372,7 @@ void CSound::SetDebugMode(BOOL bMode)
 }
 
 
-// Initialisation de DirectSound.
+// Initializes DirectSound.
 
 BOOL CSound::Create(HWND hWnd, BOOL b3D)
 {
@@ -473,7 +475,7 @@ BOOL CSound::Create(HWND hWnd, BOOL b3D)
 }
 
 
-// Indique s'il faut jouer les sons en 3D ou pas.
+// Indicates whether to play sounds in 3D or not.
 
 void CSound::SetSound3D(BOOL bMode)
 {
@@ -499,7 +501,7 @@ BOOL CSound::RetSound3D()
 	return m_ctrl3D;
 }
 
-// Indique s'il est possible de jouer les sons en 3D.
+// Indicates whether it is possible to play sounds in 3D.
 
 BOOL CSound::RetSound3DCap()
 {
@@ -516,7 +518,7 @@ BOOL CSound::RetSound3DCap()
 
 
 
-// Retourne l'état de DirectSound.
+// Returns the state of DirectSound.
 
 BOOL CSound::RetEnable()
 {
@@ -524,21 +526,21 @@ BOOL CSound::RetEnable()
 }
 
 
-// Enclenche ou déclenche le son.
+// Switches on or off the sound.
 
 void CSound::SetState(BOOL bState)
 {
 	m_bState = bState;
 }
 
-// Spécifie le chamin d'accès au CD.
+// Specifies the pathname to the CD.
 
 void CSound::SetCDpath(char *path)
 {
 	strcpy(m_CDpath, path);
 }
 
-// Enclenche ou déclenche les musiques CD-audio.
+// Switches on or off the CD-audio music.
 
 void CSound::SetAudioTrack(BOOL bAudio)
 {
@@ -546,7 +548,7 @@ void CSound::SetAudioTrack(BOOL bAudio)
 }
 
 
-// Gestion des volumes audio (.wav) et midi (.mid).
+// Manages volumes of audio (. Wav) and midi (. Mid).
 
 void CSound::SetAudioVolume(int volume)
 {
@@ -576,7 +578,7 @@ int CSound::RetMidiVolume()
 }
 
 
-// Lit un fichier.
+// Reads a file.
 
 BOOL CSound::ReadFile(Sound sound, char *metaname, char *filename)
 {
@@ -608,7 +610,7 @@ BOOL CSound::ReadFile(Sound sound, char *metaname, char *filename)
 	return TRUE;
 }
 
-// Cache tous les ficheirs son (.wav).
+// Hides all sound files (. Wav).
 
 void CSound::CacheAll()
 {
@@ -646,8 +648,8 @@ void CSound::CacheAll()
 }
 
 
-// Retourne la priorité d'un son.
-// Plus la valeur est grande et plus le son est important.
+// Return the priority of a sound.
+// The higher the value, the greater the sound is important.
 
 int CSound::RetPriority(Sound sound)
 {
@@ -697,7 +699,7 @@ int CSound::RetPriority(Sound sound)
 	return 10;
 }
 
-// Cherche un buffer libre.
+// Seeks a free buffer.
 
 BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 {
@@ -707,7 +709,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 	priority = RetPriority(sound);
 
 #if 1
-	// Cherche un canal utilisé dont le son est stoppé.
+	// Seeks a channel used which sound is stopped.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )  continue;
@@ -725,7 +727,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 	}
 #endif
 
-	// Cherche un canal complètement libre.
+	// Seeks a channel completely free.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )
@@ -738,7 +740,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 		}
 	}
 
-	// Cherche un canal utilisé dont le son est stoppé.
+	// Seeks a channel used which sound is stopped.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )  continue;
@@ -757,7 +759,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 		}
 	}
 
-	// Cherche un canal utilisé moins prioritaire.
+	// Seeks a lower priority channel used.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )  continue;
@@ -774,7 +776,7 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 		return TRUE;
 	}
 
-	// Cherche un canal utilisé moins prioritaire ou identique.
+	// Seeks a channel used the same or lower priority.
 	for ( i=0 ; i<m_maxSound ; i++ )
 	{
 		if ( !m_channel[i].bUsed )  continue;
@@ -924,7 +926,7 @@ BOOL CSound::CreateBuffer(int channel, Sound sound)
 	return TRUE;
 }
 
-// Calcule le volume et le panoramique d'un son, en mode non 3D.
+// Calculates the volume and pan of a sound, non-3D mode.
 
 void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 {
@@ -934,38 +936,38 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 		 pos.y == m_eye.y &&
 		 pos.z == m_eye.z )
 	{
-		m_channel[channel].volume = 1.0f;  // volume maximal
-		m_channel[channel].pan    = 0.0f;  // au centre
+		m_channel[channel].volume = 1.0f;  // maximum volume
+		m_channel[channel].pan    = 0.0f;  // at the center
 		return;
 	}
 
 #if _TEEN
 	dist = Length(pos, m_eye);
-	if ( dist >= 210.0f )  // très loin ?
+	if ( dist >= 210.0f )  // very far?
 	{
 		m_channel[channel].volume = 0.0f;  // silence
-		m_channel[channel].pan    = 0.0f;  // au centre
+		m_channel[channel].pan    = 0.0f;  // at the center
 		return;
 	}
-	if ( dist <= 10.0f )  // très proche ?
+	if ( dist <= 10.0f )  // very close?
 	{
-		m_channel[channel].volume = 1.0f;  // volume maximal
-		m_channel[channel].pan    = 0.0f;  // au centre
+		m_channel[channel].volume = 1.0f;  // maximum volume
+		m_channel[channel].pan    = 0.0f;  // at the center
 		return;
 	}
 	m_channel[channel].volume = 1.0f-((dist-10.0f)/200.0f);
 #else
 	dist = Length(pos, m_eye);
-	if ( dist >= 110.0f )  // très loin ?
+	if ( dist >= 110.0f )  // very far?
 	{
 		m_channel[channel].volume = 0.0f;  // silence
-		m_channel[channel].pan    = 0.0f;  // au centre
+		m_channel[channel].pan    = 0.0f;  // at the center
 		return;
 	}
-	if ( dist <= 10.0f )  // très proche ?
+	if ( dist <= 10.0f )  // very close?
 	{
-		m_channel[channel].volume = 1.0f;  // volume maximal
-		m_channel[channel].pan    = 0.0f;  // au centre
+		m_channel[channel].volume = 1.0f;  // maximum volume
+		m_channel[channel].pan    = 0.0f;  // at the center
 		return;
 	}
 	m_channel[channel].volume = 1.0f-((dist-10.0f)/100.0f);
@@ -976,16 +978,16 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 	m_channel[channel].pan = sinf(Direction(a, g));
 }
 
-// Fait entendre un son au milieu.
-// Retourne le canal associé ou -1.
+// Sounds in the middle.
+// Returns the associated channel or -1.
 
 int CSound::Play(Sound sound, float amplitude, float frequency, BOOL bLoop)
 {
 	return Play(sound, m_lookat, amplitude, frequency, bLoop);
 }
 
-// Fait entendre un son à une position donnée.
-// Retourne le canal associé ou -1.
+// Sounds at a given position.
+// Returns the associated channel or -1.
 
 int CSound::Play(Sound sound, D3DVECTOR pos,
 				 float amplitude, float frequency, BOOL bLoop)
@@ -1111,9 +1113,8 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 	return channel | ((uniqueStamp&0xffff)<<16);
 }
 
-// Check un numéro de canal.
-// Adapte le canal pour qu'il puisse être utilisé comme offset
-// dans m_channel.
+// Check a channel number.
+// Adapts the channel, so it can be used as an offset in m_channel.
 
 BOOL CSound::CheckChannel(int &channel)
 {
@@ -1133,7 +1134,7 @@ BOOL CSound::CheckChannel(int &channel)
 	return TRUE;
 }
 
-// Supprime toutes les enveloppes.
+// Removes all envelopes.
 
 BOOL CSound::FlushEnvelope(int channel)
 {
@@ -1143,7 +1144,7 @@ BOOL CSound::FlushEnvelope(int channel)
 	return TRUE;
 }
 
-// Ajoute une opération d'enveloppe.
+// Adds an operation envelope.
 
 BOOL CSound::AddEnvelope(int channel, float amplitude, float frequency,
 						 float time, SoundNext oper)
@@ -1172,7 +1173,7 @@ BOOL CSound::AddEnvelope(int channel, float amplitude, float frequency,
 	return FALSE;
 }
 
-// Modifie la posiion d'un son.
+// Changes the position of a sound.
 
 BOOL CSound::Position(int channel, D3DVECTOR pos)
 {
@@ -1211,8 +1212,8 @@ BOOL CSound::Position(int channel, D3DVECTOR pos)
 	return TRUE;
 }
 
-// Modifie la fréquence d'un son.
-// 0.5 descend d'une octave et 2.0 monte d'une octave.
+// Changes the frequency of a sound.
+// 0.5 down of an octave and 2.0 up of an octave.
 
 BOOL CSound::Frequency(int channel, float frequency)
 {
@@ -1233,7 +1234,7 @@ BOOL CSound::Frequency(int channel, float frequency)
 	return TRUE;
 }
 
-// Stoppe un son.
+// Stops sound.
 
 BOOL CSound::Stop(int channel)
 {
@@ -1284,7 +1285,7 @@ BOOL CSound::MuteAll(BOOL bMute)
 }
 
 
-// Passe à l'opération suivante pour un canal.
+// Passes the following operation for a channel.
 
 void CSound::OperNext(int channel)
 {
@@ -1303,7 +1304,7 @@ void CSound::OperNext(int channel)
 	m_channel[channel].oper[i].bUsed = FALSE;
 }
 
-// Met à jour les buffers des sons.
+// Updates the sound buffers.
 
 void CSound::FrameMove(float rTime)
 {
@@ -1376,8 +1377,8 @@ void CSound::FrameMove(float rTime)
 	}
 }
 
-// Spécifie la position de l'auditeur.
-// Doit être appelé chaque fois que la caméra se déplace.
+// Specifies the position of the listener.
+// Must be called whenever the camera moves.
 
 void CSound::SetListener(D3DVECTOR eye, D3DVECTOR lookat)
 {
@@ -1626,14 +1627,14 @@ void CSound::StopMusic()
 	m_MIDIMusic = 0;
 }
 
-// Retourne TRUE si une musique est en cours.
+// Returns TRUE if the music is in progress.
 
 BOOL CSound::IsPlayingMusic()
 {
 	return (m_MIDIMusic != 0);
 }
 
-// Adapte le volume de la musique en cours, si nécessaire.
+// Adjusts the volume of currently music, if necessary.
 
 void CSound::AdaptVolumeMusic()
 {
