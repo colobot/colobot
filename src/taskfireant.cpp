@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskfireant.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskfireant.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -40,7 +42,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskFireAnt::CTaskFireAnt(CInstanceManager* iMan, CObject* object)
 						   : CTask(iMan, object)
@@ -50,14 +52,14 @@ CTaskFireAnt::CTaskFireAnt(CInstanceManager* iMan, CObject* object)
 	m_phase = TFA_NULL;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskFireAnt::~CTaskFireAnt()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskFireAnt::EventProcess(const Event &event)
 {
@@ -68,7 +70,7 @@ BOOL CTaskFireAnt::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	if ( m_object->RetFixed() )  // insecte sur le dos ?
+	if ( m_object->RetFixed() )  // insect on its back?
 	{
 		m_bError = TRUE;
 		return FALSE;
@@ -77,7 +79,7 @@ BOOL CTaskFireAnt::EventProcess(const Event &event)
 	m_time += event.rTime;
 	m_progress += event.rTime*m_speed;
 
-	if ( m_phase == TFA_TURN )  // rotation préliminaire ?
+	if ( m_phase == TFA_TURN )  // preliminary rotation?
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
@@ -85,14 +87,14 @@ BOOL CTaskFireAnt::EventProcess(const Event &event)
 		if ( cirSpeed >  2.0f )  cirSpeed =  2.0f;
 		if ( cirSpeed < -2.0f )  cirSpeed = -2.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left/right
 	}
 
 	return TRUE;
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskFireAnt::Start(D3DVECTOR impact)
 {
@@ -101,13 +103,13 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 
 	m_impact = impact;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // operation impossible
 	if ( !m_physics->RetLand() )  return ERR_FIRE_VEH;
 
 	type = m_object->RetType();
 	if ( type != OBJECT_ANT )  return ERR_FIRE_VEH;
 
-	// Insecte sur le dos ?
+	// Insect on its back?
 	if ( m_object->RetFixed() )  return ERR_FIRE_VEH;
 
 	m_physics->SetMotorSpeed(D3DVECTOR(0.0f, 0.0f, 0.0f));
@@ -121,12 +123,12 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 	m_time = 0.0f;
 	m_lastParticule = 0.0f;
 	m_bError = FALSE;  // ok
-	m_bFire = FALSE;  // un seul coup !
+	m_bFire = FALSE;  // once!
 
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskFireAnt::IsEnded()
 {
@@ -138,7 +140,7 @@ Error CTaskFireAnt::IsEnded()
 
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
 	if ( m_bError )  return ERR_STOP;
-	if ( m_object->RetFixed() )  return ERR_STOP;  // insecte sur le dos ?
+	if ( m_object->RetFixed() )  return ERR_STOP;  // insect on its back?
 
 	if ( m_phase == TFA_TURN )  // rotation ?
 	{
@@ -146,7 +148,7 @@ Error CTaskFireAnt::IsEnded()
 		angle = NormAngle(angle);  // 0..2*PI
 		if ( !TestAngle(angle, m_angle-PI*0.05f, m_angle+PI*0.05f) )  return ERR_CONTINUE;
 
-		m_physics->SetMotorSpeedZ(0.0f);  // rotation terminée
+		m_physics->SetMotorSpeedZ(0.0f);  // rotation ended
 
 		m_phase = TFA_PREPARE;
 //?		m_speed = 1.0f/1.5f;
@@ -156,7 +158,7 @@ Error CTaskFireAnt::IsEnded()
 		m_motion->SetAction(MAS_PREPARE, 0.4f);
 	}
 
-	if ( m_phase == TFA_PREPARE )  // préparation ?
+	if ( m_phase == TFA_PREPARE )  // preparation?
 	{
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -168,11 +170,11 @@ Error CTaskFireAnt::IsEnded()
 		m_motion->SetAction(MAS_FIRE, 0.5f);
 	}
 
-	if ( m_phase == TFA_FIRE )  // tir ?
+	if ( m_phase == TFA_FIRE )  // shooting?
 	{
 		if ( m_progress > 0.75f && !m_bFire )
 		{
-			m_bFire = TRUE;  // un seul coup
+			m_bFire = TRUE;  // once
 
 			for ( i=0 ; i<20 ; i++ )
 			{
@@ -201,7 +203,7 @@ Error CTaskFireAnt::IsEnded()
 		m_motion->SetAction(MAS_TERMINATE, 0.4f);
 	}
 
-	if ( m_phase == TFA_TERMINATE )  // termine ?
+	if ( m_phase == TFA_TERMINATE )  // ends?
 	{
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -215,7 +217,7 @@ Error CTaskFireAnt::IsEnded()
 }
 
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskFireAnt::Abort()
 {
