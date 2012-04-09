@@ -12,7 +12,8 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskflag.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+// taskflag.h
 
 #ifndef _TASKFLAG_H_
 #define	_TASKFLAG_H_
@@ -28,8 +29,8 @@ class CObject;
 
 enum TaskFlagOrder
 {
-	TFL_CREATE	= 0,	// met
-	TFL_DELETE	= 1,	// enlève
+	TFL_CREATE	= 0,	// sets
+	TFL_DELETE	= 1,	// removes
 };
 
 
