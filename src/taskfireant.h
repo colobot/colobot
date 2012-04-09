@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskfireant.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskfireant.h
 
 #ifndef _TASKFIREANT_H_
 #define	_TASKTIREANT_H_
@@ -28,11 +30,11 @@ class CObject;
 
 enum TaskFireAnt
 {
-	TFA_NULL		= 0,	// rien à faire
-	TFA_TURN		= 1,	// tourne
-	TFA_PREPARE		= 2,	// prépare position de tir
-	TFA_FIRE		= 3,	// tir
-	TFA_TERMINATE	= 4,	// termine position de tir
+	TFA_NULL		= 0,	// nothing to do
+	TFA_TURN		= 1,	// turns
+	TFA_PREPARE		= 2,	// prepares shooting position
+	TFA_FIRE		= 3,	// shooting
+	TFA_TERMINATE		= 4,	// ends shooting position
 };
 
 
