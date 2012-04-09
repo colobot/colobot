@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// script.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// script.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -53,13 +55,13 @@
 
 #define CBOT_IPF	100		// CBOT: number of instructions / frame
 
-#define ERM_CONT	0		// si erreur -> continue
-#define ERM_STOP	1		// si erreur -> stoppe
+#define ERM_CONT	0		// if error -> continue
+#define ERM_STOP	1		// if error -> stop
 
 
 
 
-// Compilation d'une procédure sans ancun paramètre.
+// Compiling a procedure without any parameters.
 
 CBotTypResult cNull(CBotVar* &var, void* user)
 {
@@ -67,7 +69,7 @@ CBotTypResult cNull(CBotVar* &var, void* user)
 	return CBotTypResult(CBotTypFloat);
 }
 
-// Compilation d'une procédure avec un seul nombre réel.
+// Compiling a procedure with a single real number.
 
 CBotTypResult cOneFloat(CBotVar* &var, void* user)
 {
@@ -78,7 +80,7 @@ CBotTypResult cOneFloat(CBotVar* &var, void* user)
 	return CBotTypResult(CBotTypFloat);
 }
 
-// Compilation d'une procédure avec deux nombres réels.
+// Compiling a procedure with two real numbers.
 
 CBotTypResult cTwoFloat(CBotVar* &var, void* user)
 {
@@ -94,7 +96,7 @@ CBotTypResult cTwoFloat(CBotVar* &var, void* user)
 	return CBotTypResult(CBotTypFloat);
 }
 
-// Compilation d'une procédure avec un "point".
+// Compiling a procedure with a "dot".
 
 CBotTypResult cPoint(CBotVar* &var, void* user)
 {
@@ -122,7 +124,7 @@ CBotTypResult cPoint(CBotVar* &var, void* user)
 	return CBotTypResult(CBotErrBadParam);
 }
 
-// Compilation d'une procédure avec un seul "point".
+// Compiling a procedure with a single "point".
 
 CBotTypResult cOnePoint(CBotVar* &var, void* user)
 {
@@ -135,7 +137,7 @@ CBotTypResult cOnePoint(CBotVar* &var, void* user)
 	return CBotTypResult(CBotTypFloat);
 }
 
-// Compilation d'une procédure avec une seule chaîne.
+// Compiling a procedure with a single string.
 
 CBotTypResult cString(CBotVar* &var, void* user)
 {
@@ -148,7 +150,7 @@ CBotTypResult cString(CBotVar* &var, void* user)
 }
 
 
-// Cherche une valeur dans un tableau d'entiers.
+// Seeking value in an array of integers.
 
 BOOL FindList(CBotVar* array, int type)
 {
@@ -161,7 +163,7 @@ BOOL FindList(CBotVar* array, int type)
 }
 
 
-// Donne un paramètre de type "point".
+// Gives a parameter of type "point".
 
 BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
 {
@@ -206,7 +208,7 @@ BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
 }
 
 
-// Instruction "sin(degrés)".
+// Instruction "sin(degrees)".
 
 BOOL rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -217,7 +219,7 @@ BOOL rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Instruction "cos(degrés)".
+// Instruction "cos(degrees)".
 
 BOOL rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -228,7 +230,7 @@ BOOL rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Instruction "tan(degrés)".
+// Instruction "tan(degrees)".
 
 BOOL rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -239,7 +241,7 @@ BOOL rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Instruction "asin(valeur)".
+// Instruction "asin(degrees)".
 
 BOOL raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -250,7 +252,7 @@ BOOL raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Instruction "acos(valeur)".
+// Instruction "acos(degrees)".
 
 BOOL raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -261,7 +263,7 @@ BOOL raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Instruction "atan(valeur)".
+// Instruction "atan(degrees)".
 
 BOOL raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -272,7 +274,7 @@ BOOL raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Instruction "sqrt(valeur)".
+// Instruction "sqrt(value)".
 
 BOOL rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
@@ -316,7 +318,7 @@ BOOL rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
 }
 
 
-// Compilation de l'instruction "retobject(rank)".
+// Compilation of the instruction "retobject(rank)".
 
 CBotTypResult cRetObject(CBotVar* &var, void* user)
 {
@@ -351,7 +353,7 @@ BOOL rRetObject(CBotVar* var, CBotVar* result, int& exception, void* user)
 }
 
 
-// Compilation de l'instruction "search(type, pos)".
+// Compilation of the instruction "search(type, pos)".
 
 CBotTypResult cSearch(CBotVar* &var, void* user)
 {
@@ -414,7 +416,7 @@ BOOL rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 		pObj = (CObject*)script->m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 		if ( !pObj->RetActif() )  continue;
 
 		oType = pObj->RetType();
@@ -426,21 +428,21 @@ BOOL rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 			 oType == OBJECT_RUINmobiler1 ||
 			 oType == OBJECT_RUINmobiler2 )
 		{
-			oType = OBJECT_RUINmobilew1;  // n'importe quelle ruine
+			oType = OBJECT_RUINmobilew1;  // any ruin
 		}
 
 		if ( oType == OBJECT_SCRAP2 ||
 			 oType == OBJECT_SCRAP3 ||
 			 oType == OBJECT_SCRAP4 ||
-			 oType == OBJECT_SCRAP5 )  // déchet ?
+			 oType == OBJECT_SCRAP5 )  // wastes?
 		{
-			oType = OBJECT_SCRAP1;  // n'importe quel déchet
+			oType = OBJECT_SCRAP1;  // any waste
 		}
 
 		if ( oType == OBJECT_BARRIER2 ||
-			 oType == OBJECT_BARRIER3 )  // barrière ?
+			 oType == OBJECT_BARRIER3 )  // barriers?
 		{
-			oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+			oType = OBJECT_BARRIER1;  // any barrier
 		}
 
 		if ( bArray )
@@ -481,7 +483,7 @@ BOOL rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 }
 
 
-// Compilation de l'instruction "radar(type, angle, focus, min, max, sens)".
+// Compilation of instruction "radar(type, angle, focus, min, max, sens)".
 
 CBotTypResult cRadar(CBotVar* &var, void* user)
 {
@@ -509,10 +511,10 @@ CBotTypResult cRadar(CBotVar* &var, void* user)
 	if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // max
 	var = var->GivNext();
 	if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
-	if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // sens
+	if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // sense
 	var = var->GivNext();
 	if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
-	if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // filtre
+	if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);  // filter
 	var = var->GivNext();
 	if ( var == 0 )  return CBotTypResult(CBotTypPointer, "object");
 	return CBotTypResult(CBotErrOverParam);
@@ -604,7 +606,7 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 		if ( pObj == 0 )  break;
 		if ( pObj == pThis )  continue;
 
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 		if ( !pObj->RetActif() )  continue;
 		if ( pObj->RetProxyActivate() )  continue;
 
@@ -617,21 +619,21 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 			 oType == OBJECT_RUINmobiler1 ||
 			 oType == OBJECT_RUINmobiler2 )
 		{
-			oType = OBJECT_RUINmobilew1;  // n'importe quelle ruine
+			oType = OBJECT_RUINmobilew1;  // any ruin
 		}
 
 		if ( oType == OBJECT_SCRAP2 ||
 			 oType == OBJECT_SCRAP3 ||
 			 oType == OBJECT_SCRAP4 ||
-			 oType == OBJECT_SCRAP5 )  // déchet ?
+			 oType == OBJECT_SCRAP5 )  // wastes?
 		{
-			oType = OBJECT_SCRAP1;  // n'importe quel déchet
+			oType = OBJECT_SCRAP1;  // any waste
 		}
 
 		if ( oType == OBJECT_BARRIER2 ||
-			 oType == OBJECT_BARRIER3 )  // barrière ?
+			 oType == OBJECT_BARRIER3 )  // barriers?
 		{
-			oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+			oType = OBJECT_BARRIER1;  // any barrier
 		}
 
 		if ( filter == FILTER_ONLYLANDING )
@@ -656,7 +658,7 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 		oPos = pObj->RetPosition(0);
 		d = Length2d(iPos, oPos);
-		if ( d < minDist || d > maxDist )  continue;  // trop proche ou trop loin ?
+		if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 
 		if ( focus >= PI*2.0f )
 		{
@@ -693,14 +695,14 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 }
 
 
-// Suivi d'une tâche.
+// Monitoring a task.
 
 BOOL Process(CScript* script, CBotVar* result, int &exception)
 {
 	Error		err;
 
 	err = script->m_primaryTask->IsEnded();
-	if ( err != ERR_CONTINUE )  // tâche terminée ?
+	if ( err != ERR_CONTINUE )  // task terminated?
 	{
 		delete script->m_primaryTask;
 		script->m_primaryTask = 0;
@@ -708,22 +710,22 @@ BOOL Process(CScript* script, CBotVar* result, int &exception)
 		script->m_bContinue = FALSE;
 
 		if ( err == ERR_STOP )  err = ERR_OK;
-		result->SetValInt(err);  // indique l'erreur ou ok
+		result->SetValInt(err);  // indicates the error or ok
 		if ( err != ERR_OK && script->m_errMode == ERM_STOP )
 		{
 			exception = err;
 			return FALSE;
 		}
-		return TRUE;  // c'est fini
+		return TRUE;  // it's all over
 	}
 
 	script->m_primaryTask->EventProcess(script->m_event);
 	script->m_bContinue = TRUE;
-	return FALSE;  // pas fini
+	return FALSE;  // not done
 }
 
 
-// Compilation de l'instruction "detect(type)".
+// Compilation of the instruction "detect(type)".
 
 CBotTypResult cDetect(CBotVar* &var, void* user)
 {
@@ -752,7 +754,7 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		type    = OBJECT_NULL;
 		angle   = 0.0f;
@@ -791,7 +793,7 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( pObj == 0 )  break;
 			if ( pObj == pThis )  continue;
 
-			if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+			if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 			if ( !pObj->RetActif() )  continue;
 			if ( pObj->RetProxyActivate() )  continue;
 
@@ -804,21 +806,21 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 				 oType == OBJECT_RUINmobiler1 ||
 				 oType == OBJECT_RUINmobiler2 )
 			{
-				oType = OBJECT_RUINmobilew1;  // n'importe quelle ruine
+				oType = OBJECT_RUINmobilew1;  // any ruin
 			}
 
 			if ( oType == OBJECT_SCRAP2 ||
 				 oType == OBJECT_SCRAP3 ||
 				 oType == OBJECT_SCRAP4 ||
-				 oType == OBJECT_SCRAP5 )  // déchet ?
+				 oType == OBJECT_SCRAP5 )  // wastes?
 			{
-				oType = OBJECT_SCRAP1;  // n'importe quel déchet
+				oType = OBJECT_SCRAP1;  // any waste
 			}
 
 			if ( oType == OBJECT_BARRIER2 ||
-				 oType == OBJECT_BARRIER3 )  // barrière ?
+				 oType == OBJECT_BARRIER3 )  // barriers?
 			{
-				oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+				oType = OBJECT_BARRIER1;  // any barrier
 			}
 
 			if ( filter == FILTER_ONLYLANDING )
@@ -852,7 +854,7 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 				pGoal = pObj;
 			}
 
-			if ( d < minDist || d > maxDist )  continue;  // trop proche ou trop loin ?
+			if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 
 			if ( focus >= PI*2.0f )
 			{
@@ -893,7 +895,7 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -902,13 +904,13 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 			return TRUE;
 		}
 	}
-	if ( !Process(script, result, exception) )  return FALSE;  // pas terminé
+	if ( !Process(script, result, exception) )  return FALSE;  // not finished
 	result->SetValFloat(script->m_returnValue);
 	return TRUE;
 }
 
 
-// Compilation de l'instruction "direction(pos)".
+// Compilation of the instruction "direction(pos)".
 
 CBotTypResult cDirection(CBotVar* &var, void* user)
 {
@@ -943,7 +945,7 @@ BOOL rDirection(CBotVar* var, CBotVar* result, int& exception, void* user)
 }
 
 
-// Compilation de l'instruction "produce(pos, angle, type, scriptName)".
+// Compilation of the instruction "produce(pos, angle, type, scriptName)".
 
 CBotTypResult cProduce(CBotVar* &var, void* user)
 {
@@ -1020,7 +1022,7 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 		if ( !object->CreateResource(pos, angle, type) )
 		{
 			delete object;
-			result->SetValInt(1);  // erreur
+			result->SetValInt(1);  // error
 			return TRUE;
 		}
 	}
@@ -1037,7 +1039,7 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 		if ( !object->CreateInsect(pos, angle, type) )
 		{
 			delete object;
-			result->SetValInt(1);  // erreur
+			result->SetValInt(1);  // error
 			return TRUE;
 		}
 
@@ -1056,12 +1058,12 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 	object->ReadProgram(0, (char*)name);
 	object->RunProgram(0);
 	
-	result->SetValInt(0);  // pas d'erreur
+	result->SetValInt(0);  // no error
 	return TRUE;
 }
 
 
-// Compilation de l'instruction "distance(p1, p2)".
+// Compilation of the instruction "distance(p1, p2)".
 
 CBotTypResult cDistance(CBotVar* &var, void* user)
 {
@@ -1111,7 +1113,7 @@ BOOL rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user)
 }
 
 
-// Compilation de l'instruction "space(center, rMin, rMax, dist)".
+// Compilation of the instruction "space(center, rMin, rMax, dist)".
 
 CBotTypResult cSpace(CBotVar* &var, void* user)
 {
@@ -1195,7 +1197,7 @@ BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 }
 
 
-// Compilation de l'instruction "flatground(center, rMax)".
+// Compilation of the instruction "flatground(center, rMax)".
 
 CBotTypResult cFlatGround(CBotVar* &var, void* user)
 {
@@ -1244,7 +1246,7 @@ BOOL rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		value = var->GivValFloat();
@@ -1253,7 +1255,7 @@ BOOL rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1275,7 +1277,7 @@ BOOL rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		value = var->GivValFloat();
@@ -1284,7 +1286,7 @@ BOOL rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1306,7 +1308,7 @@ BOOL rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		value = var->GivValFloat();
@@ -1315,7 +1317,7 @@ BOOL rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1327,7 +1329,7 @@ BOOL rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return Process(script, result, exception);
 }
 
-// Compilation de l'instruction "goto(pos, altitude, crash, goal)".
+// Compilation of the instruction "goto(pos, altitude, crash, goal)".
 
 CBotTypResult cGoto(CBotVar* &var, void* user)
 {
@@ -1366,7 +1368,7 @@ BOOL rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		if ( !GetPoint(var, exception, pos) )  return TRUE;
@@ -1397,7 +1399,7 @@ BOOL rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1429,7 +1431,7 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		type    = OBJECT_NULL;
 		angle   = 0.0f;
@@ -1457,7 +1459,7 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( pObj == 0 )  break;
 			if ( pObj == pThis )  continue;
 
-			if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+			if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 			if ( !pObj->RetActif() )  continue;
 			if ( pObj->RetProxyActivate() )  continue;
 
@@ -1470,21 +1472,21 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 				 oType == OBJECT_RUINmobiler1 ||
 				 oType == OBJECT_RUINmobiler2 )
 			{
-				oType = OBJECT_RUINmobilew1;  // n'importe quelle ruine
+				oType = OBJECT_RUINmobilew1;  // any ruin
 			}
 
 			if ( oType == OBJECT_SCRAP2 ||
 				 oType == OBJECT_SCRAP3 ||
 				 oType == OBJECT_SCRAP4 ||
-				 oType == OBJECT_SCRAP5 )  // déchet ?
+				 oType == OBJECT_SCRAP5 )  // wastes?
 			{
-				oType = OBJECT_SCRAP1;  // n'importe quel déchet
+				oType = OBJECT_SCRAP1;  // any waste
 			}
 
 			if ( oType == OBJECT_BARRIER2 ||
-				 oType == OBJECT_BARRIER3 )  // barrière ?
+				 oType == OBJECT_BARRIER3 )  // barriers?
 			{
-				oType = OBJECT_BARRIER1;  // n'importe quelle barrière
+				oType = OBJECT_BARRIER1;  // any barrier
 			}
 
 			if ( bArray )
@@ -1498,7 +1500,7 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 			oPos = pObj->RetPosition(0);
 			d = Length2d(iPos, oPos);
-			if ( d < minDist || d > maxDist )  continue;  // trop proche ou trop loin ?
+			if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 
 			if ( focus >= PI*2.0f )
 			{
@@ -1538,7 +1540,7 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1573,7 +1575,7 @@ BOOL rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		if ( var == 0 )  type = TMA_FFRONT;
@@ -1594,7 +1596,7 @@ BOOL rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1618,7 +1620,7 @@ BOOL rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		if ( var == 0 )  type = TMA_FFRONT;
@@ -1639,7 +1641,7 @@ BOOL rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1660,7 +1662,7 @@ BOOL rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		err = script->m_primaryTask->StartTaskSearch();
@@ -1668,7 +1670,7 @@ BOOL rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1680,7 +1682,7 @@ BOOL rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return Process(script, result, exception);
 }
 
-// Compilation de l'instruction "receive(nom, power)".
+// Compilation of the instruction "receive(nom, power)".
 
 CBotTypResult cReceive(CBotVar* &var, void* user)
 {
@@ -1709,7 +1711,7 @@ BOOL rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 
@@ -1733,7 +1735,7 @@ BOOL rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 			return TRUE;
 		}
 	}
-	if ( !Process(script, result, exception) )  return FALSE;  // pas terminé
+	if ( !Process(script, result, exception) )  return FALSE;  // not finished
 
 	value = pThis->RetInfoReturn();
 	if ( value == NAN )
@@ -1747,7 +1749,7 @@ BOOL rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Compilation de l'instruction "send(nom, value, power)".
+// Compilation of the instruction "send(nom, value, power)".
 
 CBotTypResult cSend(CBotVar* &var, void* user)
 {
@@ -1780,7 +1782,7 @@ BOOL rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 
@@ -1803,7 +1805,7 @@ BOOL rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -1815,7 +1817,7 @@ BOOL rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return Process(script, result, exception);
 }
 
-// Cherche la borne d'information la plus proche.
+// Seeks the nearest information terminal.
 
 CObject* SearchInfo(CScript* script, CObject* object, float power)
 {
@@ -1841,7 +1843,7 @@ CObject* SearchInfo(CScript* script, CObject* object, float power)
 
 		oPos = pObj->RetPosition(0);
 		dist = Length(oPos, iPos);
-		if ( dist > power )  continue;  // trop loin ?
+		if ( dist > power )  continue;  // too far?
 		if ( dist < min )
 		{
 			min = dist;
@@ -1852,7 +1854,7 @@ CObject* SearchInfo(CScript* script, CObject* object, float power)
 	return pBest;
 }
 
-// Compilation de l'instruction "deleteinfo(nom, power)".
+// Compilation of the instruction "deleteinfo(nom, power)".
 
 CBotTypResult cDeleteInfo(CBotVar* &var, void* user)
 {
@@ -1916,7 +1918,7 @@ BOOL rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Compilation de l'instruction "testinfo(nom, power)".
+// Compilation of the instruction "testinfo(nom, power)".
 
 CBotTypResult cTestInfo(CBotVar* &var, void* user)
 {
@@ -1988,7 +1990,7 @@ BOOL rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		err = script->m_primaryTask->StartTaskTerraform();
@@ -1996,7 +1998,7 @@ BOOL rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -2017,7 +2019,7 @@ BOOL rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		err = script->m_primaryTask->StartTaskRecover();
@@ -2025,7 +2027,7 @@ BOOL rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
@@ -2071,11 +2073,11 @@ BOOL rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
 	if ( radius > 25.0f )  radius = 25.0f;
 	radius = (radius-10.0f)/15.0f;
 
-	if ( *script->m_secondaryTask == 0 )  // bouclier replié ?
+	if ( *script->m_secondaryTask == 0 )  // shield folds?
 	{
-		if ( oper == 0.0f )  // down ?
+		if ( oper == 0.0f )  // down?
 		{
-			result->SetValInt(1);  // indique une erreur
+			result->SetValInt(1);  // shows the error
 		}
 		else	// up ?
 		{
@@ -2087,19 +2089,19 @@ BOOL rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
 			{
 				delete *script->m_secondaryTask;
 				*script->m_secondaryTask = 0;
-				result->SetValInt(err);  // indique l'erreur
+				result->SetValInt(err);  // shows the error
 			}
 		}
 	}
-	else	// bouclier deployé ?
+	else	// shield deployed?
 	{
-		if ( oper == 0.0f )  // down ?
+		if ( oper == 0.0f )  // down?
 		{
 			(*script->m_secondaryTask)->StartTaskShield(TSM_DOWN, 0.0f);
 		}
-		else	// up ?
+		else	// up?
 		{
-//?			result->SetValInt(1);  // indique une erreur
+//?			result->SetValInt(1);  // shows the error
 			pThis->SetParam(radius);
 			(*script->m_secondaryTask)->StartTaskShield(TSM_UPDATE, 0.0f);
 		}
@@ -2152,7 +2154,7 @@ BOOL rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 
@@ -2179,7 +2181,7 @@ BOOL rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			return TRUE;
 		}
 	}
@@ -2196,7 +2198,7 @@ BOOL rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		value = var->GivValFloat();
@@ -2205,14 +2207,14 @@ BOOL rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
-			result->SetValInt(err);  // indique l'erreur
+			result->SetValInt(err);  // shows the error
 			return TRUE;
 		}
 	}
 	return Process(script, result, exception);
 }
 
-// Compilation de l'instruction "motor(left, right)".
+// Compilation of the instruction "motor(left, right)".
 
 CBotTypResult cMotor(CBotVar* &var, void* user)
 {
@@ -2249,14 +2251,14 @@ BOOL rMotor(CBotVar* var, CBotVar* result, int& exception, void* user)
 	if ( turn < -1.0f )  turn = -1.0f;
 	if ( turn >  1.0f )  turn =  1.0f;
 	
-	if ( pThis->RetFixed() )  // fourmi sur le dos ?
+	if ( pThis->RetFixed() )  // ant on the back?
 	{
 		speed = 0.0f;
 		turn  = 0.0f;
 	}
 
-	physics->SetMotorSpeedX(speed);  // avance/recule
-	physics->SetMotorSpeedZ(turn);  // tourne
+	physics->SetMotorSpeedX(speed);  // forward/backward
+	physics->SetMotorSpeedZ(turn);  // turns
 
 	return TRUE;
 }
@@ -2274,7 +2276,7 @@ BOOL rJet(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Compilation de l'instruction "topo(pos)".
+// Compilation of the instruction "topo(pos)".
 
 CBotTypResult cTopo(CBotVar* &var, void* user)
 {
@@ -2306,7 +2308,7 @@ BOOL rTopo(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Compilation de l'instruction "message(string, type)".
+// Compilation of the instruction "message(string, type)".
 
 CBotTypResult cMessage(CBotVar* &var, void* user)
 {
@@ -2420,7 +2422,7 @@ BOOL rAbsTime(CBotVar* var, CBotVar* result, int& exception, void* user)
 }
 
 
-// Prépare un nom de fichier.
+// Prepares a file name.
 
 void PrepareFilename(CBotString &filename, char *dir)
 {
@@ -2429,19 +2431,19 @@ void PrepareFilename(CBotString &filename, char *dir)
 	pos = filename.ReverseFind('\\');
 	if ( pos > 0 )
 	{
-		filename = filename.Mid(pos+1);  // enlève les dossiers
+		filename = filename.Mid(pos+1);  // removes folders
 	}
 
 	pos = filename.ReverseFind('/');
 	if ( pos > 0 )
 	{
-		filename = filename.Mid(pos+1);  // aussi ceux avec /
+		filename = filename.Mid(pos+1);  // also those with /
 	}
 
 	pos = filename.ReverseFind(':');
 	if ( pos > 0 )
 	{
-		filename = filename.Mid(pos+1);  // enlève aussi la lettre d'unité C:
+		filename = filename.Mid(pos+1);  // also removes the drive letter C:
 	}
 
 	filename = CBotString(dir) + CBotString("\\") + filename;
@@ -2465,7 +2467,7 @@ BOOL rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
 	return TRUE;
 }
 
-// Compilation de l'instruction "pendown(color, width)".
+// Compilation of the instruction "pendown(color, width)".
 
 CBotTypResult cPenDown(CBotVar* &var, void* user)
 {
@@ -2495,7 +2497,7 @@ BOOL rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		exception = 0;
 
-		if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+		if ( script->m_primaryTask == 0 )  // no task in progress?
 		{
 			if ( var != 0 )
 			{
@@ -2521,7 +2523,7 @@ BOOL rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
 			{
 				delete script->m_primaryTask;
 				script->m_primaryTask = 0;
-				result->SetValInt(err);  // indique l'erreur
+				result->SetValInt(err);  // shows the error
 				if ( script->m_errMode == ERM_STOP )
 				{
 					exception = err;
@@ -2568,7 +2570,7 @@ BOOL rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		exception = 0;
 
-		if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+		if ( script->m_primaryTask == 0 )  // no task in progress?
 		{
 			pThis->SetTraceDown(FALSE);
 
@@ -2578,7 +2580,7 @@ BOOL rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
 			{
 				delete script->m_primaryTask;
 				script->m_primaryTask = 0;
-				result->SetValInt(err);  // indique l'erreur
+				result->SetValInt(err);  // shows the error
 				if ( script->m_errMode == ERM_STOP )
 				{
 					exception = err;
@@ -2610,7 +2612,7 @@ BOOL rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		exception = 0;
 
-		if ( script->m_primaryTask == 0 )  // pas de tâche en cours ?
+		if ( script->m_primaryTask == 0 )  // no task in progress?
 		{
 			color = var->GivValInt();
 			if ( color <  0 )  color =  0;
@@ -2623,7 +2625,7 @@ BOOL rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
 			{
 				delete script->m_primaryTask;
 				script->m_primaryTask = 0;
-				result->SetValInt(err);  // indique l'erreur
+				result->SetValInt(err);  // shows the error
 				if ( script->m_errMode == ERM_STOP )
 				{
 					exception = err;
@@ -2661,7 +2663,7 @@ BOOL rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** secondaryTask)
 {
@@ -2692,7 +2694,7 @@ CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** seconda
 	m_filename[0] = 0;
 }
 
-// Initialise toutes les fonctions pour le module CBOT.
+// Initializes all functions for module CBOT.
 
 void CScript::InitFonctions()
 {
@@ -2750,7 +2752,7 @@ void CScript::InitFonctions()
 	CBotProgram::AddFunction("penwidth",  rPenWidth,  cOneFloat);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CScript::~CScript()
 {
@@ -2764,7 +2766,7 @@ CScript::~CScript()
 }
 
 
-// Donne le script éditable à un pavé de texte.
+// Gives the script editable block of text.
 
 void CScript::PutScript(CEdit* edit, char* name)
 {
@@ -2781,7 +2783,7 @@ void CScript::PutScript(CEdit* edit, char* name)
 	edit->SetFocus(TRUE);
 }
 
-// Reprend le script d'un pavé de texte.
+// The script takes a paved text.
 
 BOOL CScript::GetScript(CEdit* edit)
 {
@@ -2816,14 +2818,14 @@ BOOL CScript::GetScript(CEdit* edit)
 	return TRUE;
 }
 
-// Indique si un programme est correctement compilé.
+// Indicates whether a program is compiled correctly.
 
 BOOL CScript::RetCompile()
 {
 	return m_bCompile;
 }
 
-// Indique si le programme est vide.
+// Indicates whether the program is empty.
 
 BOOL CScript::IsEmpty()
 {
@@ -2837,9 +2839,8 @@ BOOL CScript::IsEmpty()
 	return TRUE;
 }
 
-// Vérifie si un programme ne contient pas les instructions interdites
-// et s'il contient bien au moins une fois toutes les instructions
-// obligatoires.
+// Checks if a program does not contain the prohibited instructions
+// and if it contains well at least once every mandatory instructions.
 
 BOOL CScript::CheckToken()
 {
@@ -2858,7 +2859,7 @@ BOOL CScript::CheckToken()
 
 	for ( i=0 ; i<m_main->RetObligatoryToken() ; i++ )
 	{
-		used[i] = 0;  // token pas utilisé
+		used[i] = 0;  // token not used
 	}
 
 	bt = CBotToken::CompileTokens(m_script, error);
@@ -2874,7 +2875,7 @@ BOOL CScript::CheckToken()
 		i = m_main->IsObligatoryToken((char*)token);
 		if ( i != -1 )
 		{
-			used[i] = 1;  // token utilisé
+			used[i] = 1;  // token used
 		}
 
 		if ( !m_main->IsProhibitedToken((char*)token) )
@@ -2890,10 +2891,10 @@ BOOL CScript::CheckToken()
 		bt = bt->GivNext();
 	}
 
-	// Au moins une fois chaque instruction obligatoire ?
+	// At least once every obligatory instruction?
 	for ( i=0 ; i<m_main->RetObligatoryToken() ; i++ )
 	{
-		if ( used[i] == 0 )  // token pas utilisé ?
+		if ( used[i] == 0 )  // token not used?
 		{
 			strcpy(m_token, m_main->RetObligatoryToken(i));
 			m_error = ERR_OBLIGATORYTOKEN;
@@ -2907,7 +2908,7 @@ BOOL CScript::CheckToken()
 	return TRUE;
 }
 
-// Compile le script d'un pavé de texte.
+// Compile the script of a paved text.
 
 BOOL CScript::Compile()
 {
@@ -2921,7 +2922,7 @@ BOOL CScript::Compile()
 	m_title[0] = 0;
 	m_bCompile = FALSE;
 
-	if ( IsEmpty() )  // programme inexistant ?
+	if ( IsEmpty() )  // program exist?
 	{
 		delete m_botProg;
 		m_botProg = 0;
@@ -2980,7 +2981,7 @@ BOOL CScript::Compile()
 }
 
 
-// Retourne le titre du script.
+// Returns the title of the script.
 
 void CScript::GetTitle(char* buffer)
 {
@@ -2988,7 +2989,7 @@ void CScript::GetTitle(char* buffer)
 }
 
 
-// Choix du mode d'exécution.
+// Choice of mode of execution.
 
 void CScript::SetStepMode(BOOL bStep)
 {
@@ -2996,7 +2997,7 @@ void CScript::SetStepMode(BOOL bStep)
 }
 
 
-// Lance le programme depuis le début.
+// Runs the program from the beginning.
 
 BOOL CScript::Run()
 {
@@ -3011,7 +3012,7 @@ BOOL CScript::Run()
 	m_ipf = CBOT_IPF;
 	m_errMode = ERM_STOP;
 
-	if ( m_bStepMode )  // mode step by step ?
+	if ( m_bStepMode )  // step by step mode?
 	{
 		Event	newEvent;
 		ZeroMemory(&newEvent, sizeof(Event));
@@ -3021,8 +3022,8 @@ BOOL CScript::Run()
 	return TRUE;
 }
 
-// Continue le programme en cours d'exécution.
-// Retourne TRUE lorsque l'exécution est terminée.
+// Continues the execution of current program.
+// Returns TRUE when execution is finished.
 
 BOOL CScript::Continue(const Event &event)
 {
@@ -3031,7 +3032,7 @@ BOOL CScript::Continue(const Event &event)
 
 	m_event = event;
 
-	if ( m_bStepMode )  // mode step by step ?
+	if ( m_bStepMode )  // step by step mode?
 	{
 		if ( m_bContinue )  // instuction "move", "goto", etc. ?
 		{
@@ -3056,12 +3057,12 @@ BOOL CScript::Continue(const Event &event)
 					GetError(s);
 					m_displayText->DisplayText(s, m_object, 10.0f, TT_ERROR);
 				}
-				m_engine->SetPause(TRUE);  // remet la pause
+				m_engine->SetPause(TRUE);  // gives pause
 				return TRUE;
 			}
 			if ( !m_bContinue )
 			{
-				m_engine->SetPause(TRUE);  // remet la pause
+				m_engine->SetPause(TRUE);  // gives pause
 			}
 		}
 
@@ -3095,8 +3096,8 @@ BOOL CScript::Continue(const Event &event)
 	return FALSE;
 }
 
-// Continue le programme en cours d'exécution.
-// Retourne TRUE lorsque l'exécution est terminée.
+// Continues the execution of current program.
+// Returns TRUE when execution is finished.
 
 BOOL CScript::Step(const Event &event)
 {
@@ -3105,12 +3106,12 @@ BOOL CScript::Step(const Event &event)
 	if ( !m_bStepMode )  return FALSE;
 
 	m_engine->SetPause(FALSE);
-	m_engine->StepSimul(0.01f);  // avance de 10ms
+	m_engine->StepSimul(0.01f);  // advance of 10ms
 	m_engine->SetPause(TRUE);
 
 	m_event = event;
 
-	if ( m_botProg->Run(m_object, 0) )  // en mode step
+	if ( m_botProg->Run(m_object, 0) )  // step mode
 	{
 		m_botProg->GetError(m_error, m_cursor1, m_cursor2);
 		if ( m_cursor1 < 0 || m_cursor1 > m_len ||
@@ -3136,12 +3137,12 @@ BOOL CScript::Step(const Event &event)
 
 	if ( m_bContinue )  // instuction "move", "goto", etc. ?
 	{
-		m_engine->SetPause(FALSE);  // enlève la pause
+		m_engine->SetPause(FALSE);  // removes the pause
 	}
 	return FALSE;
 }
 
-// Stoppe le programme.
+// Stops the program.
 
 void CScript::Stop()
 {
@@ -3162,14 +3163,14 @@ void CScript::Stop()
 	m_bRun = FALSE;
 }
 
-// Indique si le programme tourne.
+// Indicates whether the program runs.
 
 BOOL CScript::IsRunning()
 {
 	return m_bRun;
 }
 
-// Indique si le programme continue un step.
+// Indicates whether the program continues a step.
 
 BOOL CScript::IsContinue()
 {
@@ -3177,7 +3178,7 @@ BOOL CScript::IsContinue()
 }
 
 
-// Donne la position des curseurs pendant l'exécution.
+// Gives the position of the cursor during the execution.
 
 BOOL CScript::GetCursor(int &cursor1, int &cursor2)
 {
@@ -3199,7 +3200,7 @@ BOOL CScript::GetCursor(int &cursor1, int &cursor2)
 }
 
 
-// Met des variables dans une liste.
+// Put of the variables in a list.
 
 void PutList(char *baseName, BOOL bArray, CBotVar *var, CList *list, int &rankList)
 {
@@ -3221,9 +3222,9 @@ void PutList(char *baseName, BOOL bArray, CBotVar *var, CList *list, int &rankLi
 	while ( var != 0 )
 	{
 		var->Maj(NULL, FALSE);
-		pStatic = var->GivStaticVar();  // retrouve l'élément static
+		pStatic = var->GivStaticVar();  // finds the static element
 
-		bs = pStatic->GivName();  // nom de la variable
+		bs = pStatic->GivName();  // variable name
 		p = bs;
 //?		if ( strcmp(p, "this") == 0 )
 //?		{
@@ -3287,7 +3288,7 @@ void PutList(char *baseName, BOOL bArray, CBotVar *var, CList *list, int &rankLi
 	}
 }
 
-// Rempli une liste avec les variables.
+// Fills a list with variables.
 
 void CScript::UpdateList(CList* list)
 {
@@ -3300,7 +3301,7 @@ void CScript::UpdateList(CList* list)
 	total  = list->RetTotal();
 	select = list->RetSelect();
 
-	list->Flush();  // vide la liste
+	list->Flush();  // empty list
 	m_botProg->GetRunPos(progName, cursor1, cursor2);
 	if ( progName == 0 )  return;
 
@@ -3314,7 +3315,7 @@ void CScript::UpdateList(CList* list)
 		PutList("", FALSE, var, list, rank);
 	}
 
-	if ( total == list->RetTotal() )  // même total ?
+	if ( total == list->RetTotal() )  // same total?
 	{
 		list->SetSelect(select);
 	}
@@ -3324,7 +3325,7 @@ void CScript::UpdateList(CList* list)
 }
 
 
-// Colorise le texte selon la syntaxe.
+// Colorize the text according to syntax.
 
 void CScript::ColorizeScript(CEdit* edit)
 {
@@ -3386,8 +3387,8 @@ void CScript::ColorizeScript(CEdit* edit)
 }
 
 
-// Cherche un token au hazard dans un script.
-// Retourne l'index du début du token trouvé, ou -1.
+// Seeks a token at random in a script.
+// Returns the index of the start of the token found, or -1.
 
 int SearchToken(char* script, char* token)
 {
@@ -3412,7 +3413,7 @@ int SearchToken(char* script, char* token)
 	return found[rand()%iFound];
 }
 
-// Supprime un token dans un script.
+// Removes a token in a script.
 
 void DeleteToken(char* script, int pos, int len)
 {
@@ -3423,7 +3424,7 @@ void DeleteToken(char* script, int pos, int len)
 	}
 }
 
-// Insère un token dans un script.
+// Inserts a token in a script.
 
 void InsertToken(char* script, int pos, char* token)
 {
@@ -3438,7 +3439,7 @@ void InsertToken(char* script, int pos, char* token)
 	memcpy(script+pos, token, lToken);
 }
 
-// Introduit un virus dans un programme.
+// Introduces a virus into a program.
 
 BOOL CScript::IntroduceVirus()
 {
@@ -3485,20 +3486,20 @@ BOOL CScript::IntroduceVirus()
 	DeleteToken(m_script, start, strlen(names[i]));
 	InsertToken(m_script, start, names[i+1]);
 	m_len = strlen(m_script);
-	Compile();  // recompile avec le virus
+	Compile();  // recompile with the virus
 
 	return TRUE;
 }
 
 
-// Retourne le numéro de l'erreur.
+// Returns the number of the error.
 
 int CScript::RetError()
 {
 	return m_error;
 }
 
-// Retourne le texte de l'erreur.
+// Returns the text of the error.
 
 void CScript::GetError(char* buffer)
 {
@@ -3526,7 +3527,7 @@ void CScript::GetError(char* buffer)
 }
 
 
-// Nouveau programme.
+// New program.
 
 void CScript::New(CEdit* edit, char* name)
 {
@@ -3549,19 +3550,19 @@ void CScript::New(CEdit* edit, char* name)
 	if ( strcmp(text, res) == 0 )
 	{
 		cursor1 = 20;
-		cursor2 = 20+strlen(text);  // màj "Nouveau"
+		cursor2 = 20+strlen(text);  // update "New"
 	}
 	else
 	{
 		if ( edit->RetAutoIndent() )
 		{
 			cursor1 = 20+strlen(text)+6;
-			cursor2 = cursor1;  // curseur dans { }
+			cursor2 = cursor1;  // cursor in { }
 		}
 		else
 		{
 			cursor1 = 20+strlen(text)+8;
-			cursor2 = cursor1;  // curseur dans { }
+			cursor2 = cursor1;  // cursor in { }
 		}
 	}
 
@@ -3570,7 +3571,7 @@ void CScript::New(CEdit* edit, char* name)
 	edit->SetFocus(TRUE);
 	
 	sf = m_main->RetScriptFile();
-	if ( sf[0] != 0 )  // charge un programme vide spécifique ?
+	if ( sf[0] != 0 )  // Load an empty program specific?
 	{
 		strcpy(filename, "script\\");
 		strcat(filename, sf);
@@ -3637,7 +3638,7 @@ void CScript::New(CEdit* edit, char* name)
 }
 
 
-// Fourni un script de toutes pièces.
+// Provided a script for all parts.
 
 BOOL CScript::SendScript(char* text)
 {
@@ -3650,7 +3651,7 @@ BOOL CScript::SendScript(char* text)
 	return TRUE;
 }
 
-// Lit un script sous la forme d'un fichier texte.
+// Reads a script as a text file.
 
 BOOL CScript::ReadScript(char* filename)
 {
@@ -3685,7 +3686,7 @@ BOOL CScript::ReadScript(char* filename)
 	return TRUE;
 }
 
-// Ecrit un script sous la forme d'un fichier texte.
+// Writes a script as a text file.
 
 BOOL CScript::WriteScript(char* filename)
 {
@@ -3718,7 +3719,7 @@ BOOL CScript::WriteScript(char* filename)
 }
 
 
-// Lit un stack de script en exécution sous la forme d'un fichier.
+// Reads a stack of script by execution as a file.
 
 BOOL CScript::ReadStack(FILE *file)
 {
@@ -3737,7 +3738,7 @@ BOOL CScript::ReadStack(FILE *file)
 	return TRUE;
 }
 
-// Ecrit un stack de script en exécution sous la forme d'un fichier.
+// Writes a stack of script by execution as a file.
 
 BOOL CScript::WriteStack(FILE *file)
 {
@@ -3752,7 +3753,7 @@ BOOL CScript::WriteStack(FILE *file)
 }
 
 
-// Compare deux scripts.
+// Compares two scripts.
 
 BOOL CScript::Compare(CScript* other)
 {
@@ -3762,7 +3763,7 @@ BOOL CScript::Compare(CScript* other)
 }
 
 
-// Gestion du nom de fichier lorsque le script est sauvegardé.
+// Management of the file name when the script is saved.
 
 void CScript::SetFilename(char *filename)
 {
