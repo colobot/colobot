@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// task.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// task.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -44,7 +46,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTask::CTask(CInstanceManager* iMan, CObject* object)
 {
@@ -66,14 +68,14 @@ CTask::CTask(CInstanceManager* iMan, CObject* object)
 	m_motion      = m_object->RetMotion();
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTask::~CTask()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTask::EventProcess(const Event &event)
 {
@@ -81,7 +83,7 @@ BOOL CTask::EventProcess(const Event &event)
 }
 
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTask::IsEnded()
 {
@@ -89,7 +91,7 @@ Error CTask::IsEnded()
 }
 
 
-// Indique si l'action est en cours.
+// Indicates whether the action is pending.
 
 BOOL CTask::IsBusy()
 {
@@ -97,7 +99,7 @@ BOOL CTask::IsBusy()
 }
 
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTask::Abort()
 {
