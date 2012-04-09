@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// scroll.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// scroll.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -33,7 +35,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CScroll::CScroll(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -52,7 +54,7 @@ CScroll::CScroll(CInstanceManager* iMan) : CControl(iMan)
 	m_bCapture = FALSE;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CScroll::~CScroll()
 {
@@ -63,7 +65,7 @@ CScroll::~CScroll()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CScroll::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -87,14 +89,14 @@ void CScroll::SetDim(FPOINT dim)
 	MoveAdjust();
 }
 
-// Ajuste les deux boutons.
+// Adjust both buttons.
 
 void CScroll::MoveAdjust()
 {
 	CButton*	pc;
 	FPOINT		pos, dim;
 
-	if ( m_dim.y < m_dim.x*2.0f )  // ascenseur très court ?
+	if ( m_dim.y < m_dim.x*2.0f )  // very short lift?
 	{
 		delete m_buttonUp;
 		m_buttonUp = 0;
@@ -146,7 +148,7 @@ void CScroll::MoveAdjust()
 	AdjustGlint();
 }
 
-// Ajuste la position du reflet.
+// Adjusts the position of reflection.
 
 void CScroll::AdjustGlint()
 {
@@ -199,7 +201,7 @@ BOOL CScroll::ClearState(int state)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CScroll::EventProcess(const Event &event)
 {
@@ -252,7 +254,7 @@ BOOL CScroll::EventProcess(const Event &event)
 			pos.y += dim.y*(1.0f-m_visibleRatio)*(1.0f-m_visibleValue);
 			dim.y *= m_visibleRatio;
 			if ( event.pos.y < pos.y       ||
-				 event.pos.y > pos.y+dim.y )  // clic hors cabine ?
+				 event.pos.y > pos.y+dim.y )  // click outside cabin?
 			{
 				h = (m_dim.y-hButton*2.0f)*(1.0f-m_visibleRatio);
 				value = 1.0f-(event.pos.y-(m_pos.y+hButton+dim.y*0.5f))/h;
@@ -320,7 +322,7 @@ BOOL CScroll::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draws the button.
 
 void CScroll::Draw()
 {
@@ -330,7 +332,7 @@ void CScroll::Draw()
 
 	hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
 
-	// Dessine le fond.
+	// Draws the bottom.
 	pos.x = m_pos.x;
 	pos.y = m_pos.y+hButton;
 	dim.x = m_dim.x;
@@ -339,10 +341,10 @@ void CScroll::Draw()
 	else                           icon = 1;
 	DrawVertex(pos, dim, icon);
 
-	// Dessine la cabine.
+	// Draws the cabin.
 	if ( m_visibleRatio < 1.0f && (m_state & STATE_ENABLE) )
 	{
-		pos.x += 0.003f;  // ch'tite marge
+		pos.x += 0.003f;  // ch'tite(?) margin
 		pos.y += 0.003f;
 		dim.x -= 0.006f;
 		dim.y -= 0.006f;
@@ -360,7 +362,7 @@ void CScroll::Draw()
 		ddim.y = 0.008f;
 		for ( i=0 ; i<n ; i++ )
 		{
-			DrawVertex(ppos, ddim, 3);  // barre horizontale
+			DrawVertex(ppos, ddim, 3);  // horizontal bar
 			ppos.y += 0.012f;
 		}
 	}
@@ -375,7 +377,7 @@ void CScroll::Draw()
 	}
 }
 
-// Dessine un rectangle.
+// Draws a rectangle.
 
 void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 {
@@ -386,7 +388,7 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =   0.0f/256.0f;  // rectangle jaune
+		uv1.x =   0.0f/256.0f;  // yellow rectangle
 		uv1.y =  32.0f/256.0f;
 		uv2.x =  32.0f/256.0f;
 		uv2.y =  64.0f/256.0f;
@@ -396,7 +398,7 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 128.0f/256.0f;  // rectangle gris
+		uv1.x = 128.0f/256.0f;  // gray rectangle
 		uv1.y =  32.0f/256.0f;
 		uv2.x = 160.0f/256.0f;
 		uv2.y =  64.0f/256.0f;
@@ -406,7 +408,7 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button1.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =  64.0f/256.0f;  // rectangle bleu
+		uv1.x =  64.0f/256.0f;  // blue rectangle
 		uv1.y =   0.0f/256.0f;
 		uv2.x =  96.0f/256.0f;
 		uv2.y =  32.0f/256.0f;
@@ -416,7 +418,7 @@ void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 104.0f/256.0f;  // ligne bleu -
+		uv1.x = 104.0f/256.0f;  // blue line -
 		uv1.y =  32.0f/256.0f;
 		uv2.x = 128.0f/256.0f;
 		uv2.y =  40.0f/256.0f;
