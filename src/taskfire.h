@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskfire.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskfire.h
 
 #ifndef _TASKFIRE_H_
 #define	_TASKTIRE_H_
@@ -49,7 +51,7 @@ protected:
 	float		m_speed;
 	float		m_lastParticule;
 	float		m_lastSound;
-	int			m_soundChannel;
+	int		m_soundChannel;
 };
 
 
