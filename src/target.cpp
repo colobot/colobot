@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// target.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// target.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -35,14 +37,14 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTarget::CTarget(CInstanceManager* iMan) : CControl(iMan)
 {
 	CControl::CControl(iMan);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTarget::~CTarget()
 {
@@ -50,7 +52,7 @@ CTarget::~CTarget()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CTarget::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -62,7 +64,7 @@ BOOL CTarget::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTarget::EventProcess(const Event &event)
 {
@@ -151,23 +153,23 @@ BOOL CTarget::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draws button.
 
 void CTarget::Draw()
 {
-	// C'est totalement invisible !
+	// It is completely invisible!
 }
 
 
-// Retourne le tooltip.
+// Returns the tooltip.
 
 BOOL CTarget::GetTooltip(FPOINT pos, char* name)
 {
 #if 0
-	if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // dans la fenêtre ?
+	if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
 	{
 		strcpy(name, m_tooltip);
-		return TRUE;  // ne détecte pas les objets dessous !
+		return TRUE;  // does not detect objects below!
 	}
 
 	return FALSE;
@@ -176,14 +178,14 @@ BOOL CTarget::GetTooltip(FPOINT pos, char* name)
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return FALSE;
 
-	if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // dans la fenêtre ?
+	if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
 	{
 //?		pObj = DetectFriendObject(pos);
 //?		if ( pObj == 0 )
 		if ( !m_main->RetFriendAim() )
 		{
 			strcpy(name, m_tooltip);
-			return TRUE;  // ne détecte pas les objets dessous !
+			return TRUE;  // does not detect objects below!
 		}
 	}
 
@@ -192,7 +194,7 @@ BOOL CTarget::GetTooltip(FPOINT pos, char* name)
 }
 
 
-// Détecte l'objet visé par la souris.
+// Detects the object aimed by the mouse.
 
 CObject* CTarget::DetectFriendObject(FPOINT pos)
 {
@@ -263,7 +265,7 @@ CObject* CTarget::DetectFriendObject(FPOINT pos)
 		}
 		else if ( (type == OBJECT_POWER  ||
 				  type == OBJECT_ATOMIC ) &&
-			 pObj->RetTruck() != 0 )  // pile utilisée ?
+			 pObj->RetTruck() != 0 )  // battery used?
 		{
 			pTarget = pObj->RetTruck();
 			if ( pTarget->RetType() == OBJECT_MOBILEtg )
