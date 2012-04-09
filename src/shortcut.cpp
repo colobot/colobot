@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// shortcut.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// shortcut.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -32,7 +34,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CShortcut::CShortcut(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -40,7 +42,7 @@ CShortcut::CShortcut(CInstanceManager* iMan) : CControl(iMan)
 	m_time = 0.0f;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CShortcut::~CShortcut()
 {
@@ -48,7 +50,7 @@ CShortcut::~CShortcut()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CShortcut::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -59,7 +61,7 @@ BOOL CShortcut::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CShortcut::EventProcess(const Event &event)
 {
@@ -85,7 +87,7 @@ BOOL CShortcut::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draws the button.
 
 void CShortcut::Draw()
 {
@@ -113,9 +115,9 @@ void CShortcut::Draw()
 		zoom = 1.0f;
 		mode = D3DSTATENORMAL;
 	}
-	if ( m_icon == 6 || m_icon == 7 )  // pause ou film ?
+	if ( m_icon == 6 || m_icon == 7 )  // pause or film?
 	{
-		icon = -1;  // pas de fond
+		icon = -1;  // no bottom
 		zoom = 1.0f;
 	}
 
@@ -146,7 +148,7 @@ void CShortcut::Draw()
 		p2.y = m_pos.y + m_dim.y;
 
 		c.x = (p1.x+p2.x)/2.0f;
-		c.y = (p1.y+p2.y)/2.0f;  // centre
+		c.y = (p1.y+p2.y)/2.0f;  // center
 
 		p1.x = (p1.x-c.x)*zoom + c.x;
 		p1.y = (p1.y-c.y)*zoom + c.y;
@@ -193,7 +195,7 @@ void CShortcut::Draw()
 	}
 }
 
-// Dessine le tableau des vertex.
+// Draw the vertex array.
 
 void CShortcut::DrawVertex(int icon, float zoom)
 {
@@ -211,7 +213,7 @@ void CShortcut::DrawVertex(int icon, float zoom)
 	p2.y = m_pos.y + m_dim.y;
 
 	c.x = (p1.x+p2.x)/2.0f;
-	c.y = (p1.y+p2.y)/2.0f;  // centre
+	c.y = (p1.y+p2.y)/2.0f;  // center
 
 	p1.x = (p1.x-c.x)*zoom + c.x;
 	p1.y = (p1.y-c.y)*zoom + c.y;
@@ -230,7 +232,7 @@ void CShortcut::DrawVertex(int icon, float zoom)
 	u2 -= dp;
 	v2 -= dp;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
