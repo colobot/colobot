@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// task.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// task.h
 
 #ifndef _TASK_H_
 #define	_TASK_H_
@@ -35,8 +37,8 @@ class CDisplayText;
 class CSound;
 
 
-#define TAKE_DIST		6.0f		// distance d'un objet pour le prendre
-#define TAKE_DIST_OTHER	1.5f		// distance supplémentaire si sur ami
+#define TAKE_DIST		6.0f		// distance to an object to pick it
+#define TAKE_DIST_OTHER		1.5f		// additional distance if on friend
 
 //?#define ARM_NEUTRAL_ANGLE1	 155.0f*PI/180.0f
 //?#define ARM_NEUTRAL_ANGLE2	-125.0f*PI/180.0f
