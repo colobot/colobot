@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskadvance.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskadvance.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -37,7 +39,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskAdvance::CTaskAdvance(CInstanceManager* iMan, CObject* object)
 						   : CTask(iMan, object)
@@ -45,14 +47,14 @@ CTaskAdvance::CTaskAdvance(CInstanceManager* iMan, CObject* object)
 	CTask::CTask(iMan, object);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskAdvance::~CTaskAdvance()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskAdvance::EventProcess(const Event &event)
 {
@@ -61,11 +63,11 @@ BOOL CTaskAdvance::EventProcess(const Event &event)
 
 	m_fixTime += event.rTime;
 
-	// Objet momentanément immobile (fourmi sur le dos) ?
+	// Momentarily stationary object (ant on the back)?
 	if ( m_object->RetFixed() )
 	{
-		m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-		m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
+		m_physics->SetMotorSpeedX(0.0f);  // stops the advance
+		m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
 		m_bError = TRUE;
 		return TRUE;
 	}
@@ -75,7 +77,7 @@ BOOL CTaskAdvance::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskAdvance::Start(float length)
 {
@@ -89,7 +91,7 @@ Error CTaskAdvance::Start(float length)
 	m_timeLimit = m_physics->RetLinTimeLength(m_totalLength, m_direction)*3.0f;
 	if ( m_timeLimit < 2.0f )  m_timeLimit = 2.0f;
 
-	m_physics->SetMotorSpeedX(m_direction*1.0f);  // avance/recule
+	m_physics->SetMotorSpeedX(m_direction*1.0f);  // forward/backward
 	m_physics->SetMotorSpeedY(0.0f);
 	m_physics->SetMotorSpeedZ(0.0f);
 
@@ -97,7 +99,7 @@ Error CTaskAdvance::Start(float length)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskAdvance::IsEnded()
 {
@@ -120,13 +122,13 @@ Error CTaskAdvance::IsEnded()
 	pos = m_object->RetPosition(0);
 	length = Length2d(pos, m_startPos);
 
-	if ( length > m_lastDist )  // avance ?
+	if ( length > m_lastDist )  // forward?
 	{
 		m_fixTime = 0.0f;
 	}
-	else	// n'avance plus ?
+	else	// still stands?
 	{
-		if ( m_fixTime > 1.0f )  // depuis plus d'une seconde ?
+		if ( m_fixTime > 1.0f )  // for more than a second?
 		{
 			m_physics->SetMotorSpeedX(0.0f);
 			return ERR_MOVE_IMPOSSIBLE;
