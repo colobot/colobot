@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// slider.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// slider.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -39,7 +41,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CSlider::CSlider(CInstanceManager* iMan) : CControl(iMan)
 {
@@ -62,7 +64,7 @@ CSlider::CSlider(CInstanceManager* iMan) : CControl(iMan)
 	m_bCapture = FALSE;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CSlider::~CSlider()
 {
@@ -73,7 +75,7 @@ CSlider::~CSlider()
 }
 
 
-// Crée un nouveau bouton.
+// Creates a new button.
 
 BOOL CSlider::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
@@ -104,7 +106,7 @@ void CSlider::MoveAdjust()
 	m_bHoriz = ( m_dim.x > m_dim.y );
 
 	if ( ( m_bHoriz && m_dim.x < m_dim.y*4.0f) ||
-		 (!m_bHoriz && m_dim.y < m_dim.x*4.0f) )  // slider très court ?
+		 (!m_bHoriz && m_dim.y < m_dim.x*4.0f) )  // very short slider?
 	{
 		delete m_buttonLeft;
 		m_buttonLeft = 0;
@@ -182,7 +184,7 @@ void CSlider::MoveAdjust()
 	AdjustGlint();
 }
 
-// Ajuste la position du reflet.
+// Adjusts the position of reflection.
 
 void CSlider::AdjustGlint()
 {
@@ -245,7 +247,7 @@ BOOL CSlider::ClearState(int state)
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CSlider::EventProcess(const Event &event)
 {
@@ -382,7 +384,7 @@ BOOL CSlider::EventProcess(const Event &event)
 }
 
 
-// Dessine le bouton.
+// Draws button.
 
 void CSlider::Draw()
 {
@@ -413,7 +415,7 @@ void CSlider::Draw()
 		dim.y = m_dim.y-m_marginButton*2.0f;
 	}
 
-	// Dessine le fond.
+	// Draws the bottom.
 	if ( m_bHoriz )
 	{
 		ppos.x = pos.x + CURSOR_WIDTH/2.0f;
@@ -441,7 +443,7 @@ void CSlider::Draw()
 	else                           icon = 1;
 	DrawVertex(ppos, ddim, icon);
 
-	// Dessine la cabine.
+	// Draws the cabin.
 	if ( m_state & STATE_ENABLE )
 	{
 		if ( m_bHoriz )
@@ -491,7 +493,7 @@ void CSlider::Draw()
 	}
 }
 
-// Dessine un rectangle.
+// Draws a rectangle.
 
 void CSlider::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 {
@@ -502,7 +504,7 @@ void CSlider::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x =   0.0f/256.0f;  // rectangle jaune
+		uv1.x =   0.0f/256.0f;  // yellow rectangle
 		uv1.y =  32.0f/256.0f;
 		uv2.x =  32.0f/256.0f;
 		uv2.y =  64.0f/256.0f;
@@ -514,7 +516,7 @@ void CSlider::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 128.0f/256.0f;  // rectangle gris
+		uv1.x = 128.0f/256.0f;  // gray rectangle
 		uv1.y =  32.0f/256.0f;
 		uv2.x = 160.0f/256.0f;
 		uv2.y =  64.0f/256.0f;
@@ -526,7 +528,7 @@ void CSlider::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 	{
 		m_engine->SetTexture("button2.tga");
 		m_engine->SetState(D3DSTATENORMAL);
-		uv1.x = 224.0f/256.0f;  // curseur
+		uv1.x = 224.0f/256.0f;  // cursor
 		uv1.y =  32.0f/256.0f;
 		uv2.x = 256.0f/256.0f;
 		uv2.y =  64.0f/256.0f;
