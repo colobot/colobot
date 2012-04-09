@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// sound.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// sound.h
 
 
 #include <dsound.h>
@@ -34,82 +36,82 @@ enum Sound
 	SOUND_FLYh		= 3,	// human
 	SOUND_FLY		= 4,
 	SOUND_STEPs		= 5,	// smooth
-	SOUND_MOTORw	= 6,	// wheel
-	SOUND_MOTORt	= 7,	// tank
-	SOUND_MOTORr	= 8,	// roller
+	SOUND_MOTORw		= 6,	// wheel
+	SOUND_MOTORt		= 7,	// tank
+	SOUND_MOTORr		= 8,	// roller
 	SOUND_ERROR		= 9,
-	SOUND_CONVERT	= 10,
-	SOUND_ENERGY	= 11,
+	SOUND_CONVERT		= 10,
+	SOUND_ENERGY		= 11,
 	SOUND_PLOUF		= 12,
 	SOUND_BLUP		= 13,
-	SOUND_WARNING	= 14,
-	SOUND_DERRICK	= 15,
+	SOUND_WARNING		= 14,
+	SOUND_DERRICK		= 15,
 	SOUND_LABO		= 16,
-	SOUND_STATION	= 17,
-	SOUND_REPAIR	= 18,
-	SOUND_RESEARCH	= 19,
-	SOUND_INSECTs	= 20,	// spider
+	SOUND_STATION		= 17,
+	SOUND_REPAIR		= 18,
+	SOUND_RESEARCH		= 19,
+	SOUND_INSECTs		= 20,	// spider
 	SOUND_BURN		= 21,
-	SOUND_TZOING	= 22,
+	SOUND_TZOING		= 22,
 	SOUND_GGG		= 23,
 	SOUND_MANIP		= 24,
-	SOUND_FIRE		= 25,	// tir avec fireball
-	SOUND_HUMAN1	= 26,	// respiration
+	SOUND_FIRE		= 25,	// shooting with fireball
+	SOUND_HUMAN1		= 26,	// breathing
 	SOUND_STEPw		= 27,	// water
 	SOUND_SWIM		= 28,
 	SOUND_RADAR		= 29,
 	SOUND_BUILD		= 30,
-	SOUND_ALARM		= 31,	// alarme énergie
+	SOUND_ALARM		= 31,	// energy alarm
 	SOUND_SLIDE		= 32,
-	SOUND_EXPLOi	= 33,	// insect
-	SOUND_INSECTa	= 34,	// ant
-	SOUND_INSECTb	= 35,	// bee
-	SOUND_INSECTw	= 36,	// worm
-	SOUND_INSECTm	= 37,	// mother
-	SOUND_TREMBLE	= 38,
+	SOUND_EXPLOi		= 33,	// insect
+	SOUND_INSECTa		= 34,	// ant
+	SOUND_INSECTb		= 35,	// bee
+	SOUND_INSECTw		= 36,	// worm
+	SOUND_INSECTm		= 37,	// mother
+	SOUND_TREMBLE		= 38,
 	SOUND_PSHHH		= 39,
-	SOUND_NUCLEAR	= 40,
+	SOUND_NUCLEAR		= 40,
 	SOUND_INFO		= 41,
 	SOUND_OPEN		= 42,
 	SOUND_CLOSE		= 43,
-	SOUND_FACTORY	= 44,
+	SOUND_FACTORY		= 44,
 	SOUND_EGG		= 45,
-	SOUND_MOTORs	= 46,	// submarine
-	SOUND_MOTORi	= 47,	// insect (pattes)
-	SOUND_SHIELD	= 48,
-	SOUND_FIREi		= 49,	// tir avec orgaball (insect)
-	SOUND_GUNDEL	= 50,
-	SOUND_PSHHH2	= 51,	// shield
-	SOUND_MESSAGE	= 52,
+	SOUND_MOTORs		= 46,	// submarine
+	SOUND_MOTORi		= 47,	// insect (legs)
+	SOUND_SHIELD		= 48,
+	SOUND_FIREi		= 49,	// shooting with orgaball (insect)
+	SOUND_GUNDEL		= 50,
+	SOUND_PSHHH2		= 51,	// shield
+	SOUND_MESSAGE		= 52,
 	SOUND_BOUMm		= 53,	// metal
-	SOUND_BOUMv		= 54,	// vegetal
+	SOUND_BOUMv		= 54,	// plant
 	SOUND_BOUMs		= 55,	// smooth
-	SOUND_EXPLOl	= 56,	// little
-	SOUND_EXPLOlp	= 57,	// little power
-	SOUND_EXPLOp	= 58,	// power
+	SOUND_EXPLOl		= 56,	// little
+	SOUND_EXPLOlp		= 57,	// little power
+	SOUND_EXPLOp		= 58,	// power
 	SOUND_STEPh		= 59,	// hard
 	SOUND_STEPm		= 60,	// metal
-	SOUND_POWERON	= 61,
-	SOUND_POWEROFF	= 62,
+	SOUND_POWERON		= 61,
+	SOUND_POWEROFF		= 62,
 	SOUND_AIE		= 63,
-	SOUND_WAYPOINT	= 64,
-	SOUND_RECOVER	= 65,
+	SOUND_WAYPOINT		= 64,
+	SOUND_RECOVER		= 65,
 	SOUND_DEADi		= 66,
-	SOUND_JOSTLE	= 67,
+	SOUND_JOSTLE		= 67,
 	SOUND_GFLAT		= 68,
-	SOUND_DEADg		= 69,	// mort par balle
-	SOUND_DEADw		= 70,	// mort noyé
+	SOUND_DEADg		= 69,	// shooting death
+	SOUND_DEADw		= 70,	// drowning
 	SOUND_FLYf		= 71,	// reactor fail
-	SOUND_ALARMt	= 72,	// alarme température
-	SOUND_FINDING	= 73,	// trouvé un objet caché
+	SOUND_ALARMt		= 72,	// temperature alarm
+	SOUND_FINDING		= 73,	// finds a cache object
 	SOUND_THUMP		= 74,
 	SOUND_TOUCH		= 75,
 	SOUND_BLITZ		= 76,
-	SOUND_MUSHROOM	= 77,
-	SOUND_FIREp		= 78,	// tir avec phazer
-	SOUND_EXPLOg1	= 79,	// impact gun 1
-	SOUND_EXPLOg2	= 80,	// impact gun 2
-	SOUND_MOTORd	= 81,	// moteur à friction
+	SOUND_MUSHROOM		= 77,
+	SOUND_FIREp		= 78,	// shooting with phazer
+	SOUND_EXPLOg1		= 79,	// impact gun 1
+	SOUND_EXPLOg2		= 80,	// impact gun 2
+	SOUND_MOTORd		= 81,	// engine friction
 };
 
 enum SoundNext
@@ -132,20 +134,20 @@ SoundOper;
 
 typedef struct
 {
-	char					bUsed;			// buffer utilisé ?
-	char					bMute;			// silence ?
+	char					bUsed;			// buffer used?
+	char					bMute;			// silence?
 	Sound					type;			// SOUND_*
-	int						priority;		// si grand -> important
-	D3DVECTOR				pos;			// position dans l'espace
-	unsigned short			uniqueStamp;	// marqueur unique
-	LPDIRECTSOUNDBUFFER		soundBuffer;
-	LPDIRECTSOUND3DBUFFER	soundBuffer3D;
+	int					priority;		// so great -> important
+	D3DVECTOR				pos;			// position in space
+	unsigned short				uniqueStamp;		// unique marker
+	LPDIRECTSOUNDBUFFER			soundBuffer;
+	LPDIRECTSOUND3DBUFFER			soundBuffer3D;
 	float					startAmplitude;
 	float					startFrequency;
 	float					changeFrequency;
-	int						initFrequency;
-	float					volume;			// 2D: volume 1..0 selon position
-	float					pan;			// 2D: pan -1..+1 selon position
+	int					initFrequency;
+	float					volume;			// 2D: volume 1..0 depending on position
+	float					pan;			// 2D: pan -1..+1 depending on position
 	SoundOper				oper[MAXOPER];
 }
 SoundChannel;
