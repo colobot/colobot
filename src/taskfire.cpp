@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskfire.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskfire.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,12 +40,12 @@
 
 
 
-#define ENERGY_FIRE		(0.25f/2.5f)	// énergie consommée /s de tir
-#define ENERGY_FIREr	(0.25f/1.5f)	// énergie consommée /s de rayon
-#define ENERGY_FIREi	(0.10f/2.5f)	// énergie consommée /s d'organique
+#define ENERGY_FIRE	(0.25f/2.5f)	// energy consumed/shot
+#define ENERGY_FIREr	(0.25f/1.5f)	// energy consumed/ray
+#define ENERGY_FIREi	(0.10f/2.5f)	// energy consumed/organic
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskFire::CTaskFire(CInstanceManager* iMan, CObject* object)
 					 : CTask(iMan, object)
@@ -52,7 +54,7 @@ CTaskFire::CTaskFire(CInstanceManager* iMan, CObject* object)
 	m_soundChannel = -1;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskFire::~CTaskFire()
 {
@@ -65,7 +67,7 @@ CTaskFire::~CTaskFire()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskFire::EventProcess(const Event &event)
 {
@@ -103,7 +105,7 @@ BOOL CTaskFire::EventProcess(const Event &event)
 
 		if ( m_bOrganic )
 		{
-			mat = m_object->RetWorldMatrix(1);  // canon-insecte
+			mat = m_object->RetWorldMatrix(1);  // insect-cannon
 
 			for ( i=0 ; i<6 ; i++ )
 			{
@@ -133,7 +135,7 @@ BOOL CTaskFire::EventProcess(const Event &event)
 		}
 		else if ( m_bRay )
 		{
-			mat = m_object->RetWorldMatrix(2);  // canon
+			mat = m_object->RetWorldMatrix(2);  // cannon
 
 			for ( i=0 ; i<4 ; i++ )
 			{
@@ -174,11 +176,11 @@ BOOL CTaskFire::EventProcess(const Event &event)
 
 			if ( type == OBJECT_MOBILErc )
 			{
-				mat = m_object->RetWorldMatrix(2);  // canon
+				mat = m_object->RetWorldMatrix(2);  // cannon
 			}
 			else
 			{
-				mat = m_object->RetWorldMatrix(1);  // canon
+				mat = m_object->RetWorldMatrix(1);  // cannon
 			}
 
 			for ( i=0 ; i<3 ; i++ )
@@ -275,7 +277,7 @@ BOOL CTaskFire::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskFire::Start(float delay)
 {
@@ -284,7 +286,7 @@ Error CTaskFire::Start(float delay)
 	float		energy, fire;
 	ObjectType	type;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // operation impossible
 
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILEfc &&
@@ -363,7 +365,7 @@ Error CTaskFire::Start(float delay)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskFire::IsEnded()
 {
@@ -375,7 +377,7 @@ Error CTaskFire::IsEnded()
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskFire::Abort()
 {
