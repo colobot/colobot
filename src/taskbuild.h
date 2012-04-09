@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskbuild.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskbuild.h
 
 #ifndef _TASKBUILD_H_
 #define	_TASKBUILD_H_
@@ -32,13 +34,13 @@ class CObject;
 
 enum TaskBuildPhase
 {
-	TBP_TURN	= 1,	// tourne
-	TBP_MOVE	= 2,	// avance/recule
-	TBP_TAKE	= 3,	// prend arme
-	TBP_PREP	= 4,	// prépare
-	TBP_BUILD	= 5,	// construit
-	TBP_TERM	= 6,	// termine
-	TBP_RECEDE	= 7,	// recule terminal
+	TBP_TURN	= 1,	// turns
+	TBP_MOVE	= 2,	// forward/backward
+	TBP_TAKE	= 3,	// takes gun
+	TBP_PREP	= 4,	// prepares
+	TBP_BUILD	= 5,	// builds
+	TBP_TERM	= 6,	// ends
+	TBP_RECEDE	= 7,	// back terminal
 };
 
 
@@ -64,24 +66,24 @@ protected:
 	void		DeleteMark(D3DVECTOR pos, float radius);
 
 protected:
-	ObjectType		m_type;			// type de construction
-	CObject*		m_metal;		// objet metal transformé
-	CObject*		m_power;		// pile du véhicule
-	CObject*		m_building;		// batiment construit
-	TaskBuildPhase	m_phase;		// phase de l'opération
-	BOOL			m_bError;		// TRUE -> opération impossible
-	BOOL			m_bBuild;		// TRUE -> batiment construit
-	BOOL			m_bBlack;		// TRUE -> lumières noir -> blanc
-	float			m_time;			// temps absolu
-	float			m_lastParticule;// temps génération dernière particule
+	ObjectType		m_type;			// type of construction
+	CObject*		m_metal;		// transforms metal object
+	CObject*		m_power;		// the vehicle battery
+	CObject*		m_building;		// building built
+	TaskBuildPhase		m_phase;		// phase of the operation
+	BOOL			m_bError;		// TRUE -> operation impossible
+	BOOL			m_bBuild;		// TRUE -> building built
+	BOOL			m_bBlack;		// TRUE -> lights black -> white
+	float			m_time;			// absolute time
+	float			m_lastParticule;	// time of generation last particle
 	float			m_progress;		// progression (0..1)
-	float			m_speed;		// vitesse de la progression
-	float			m_angleY;		// angle de rotation du véhicule
-	float			m_angleZ;		// angle de rotation du canon
-	D3DVECTOR		m_buildingPos;	// position initiale du batiment
-	float			m_buildingHeight;// hauteur du building
-	int				m_lightRank[TBMAXLIGHT];// lumières pour les effets
-	int				m_soundChannel;
+	float			m_speed;		// speed of progression
+	float			m_angleY;		// rotation angle of the vehicle
+	float			m_angleZ;		// angle of rotation of the gun
+	D3DVECTOR		m_buildingPos;		// initial position of the building
+	float			m_buildingHeight;	// height of the building
+	int			m_lightRank[TBMAXLIGHT];// lights for the effects
+	int			m_soundChannel;
 };
 
 
