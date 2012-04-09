@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskflag.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskflag.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -45,7 +47,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskFlag::CTaskFlag(CInstanceManager* iMan, CObject* object)
 					   : CTask(iMan, object)
@@ -53,14 +55,14 @@ CTaskFlag::CTaskFlag(CInstanceManager* iMan, CObject* object)
 	CTask::CTask(iMan, object);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskFlag::~CTaskFlag()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskFlag::EventProcess(const Event &event)
 {
@@ -75,7 +77,7 @@ BOOL CTaskFlag::EventProcess(const Event &event)
 
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 {
@@ -85,7 +87,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 	m_order = order;
 	m_time = 0.0f;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // operation impossible
 	if ( !m_physics->RetLand() )
 	{
 		pos = m_object->RetPosition(0);
@@ -113,13 +115,13 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 
 	m_bError = FALSE;
 
-	m_motion->SetAction(MHS_FLAG);  // met/enlève drapeau
+	m_motion->SetAction(MHS_FLAG);  // sets/removes flag
 	m_camera->StartCentering(m_object, PI*0.3f, 99.9f, 0.0f, 0.5f);
 
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskFlag::IsEnded()
 {
@@ -132,7 +134,7 @@ Error CTaskFlag::IsEnded()
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskFlag::Abort()
 {
@@ -143,7 +145,7 @@ BOOL CTaskFlag::Abort()
 
 
 
-// Retourne l'objet le plus proche d'une position donnée.
+// Returns the closest object to a given position.
 
 CObject* CTaskFlag::SearchNearest(D3DVECTOR pos, ObjectType type)
 {
@@ -187,7 +189,7 @@ CObject* CTaskFlag::SearchNearest(D3DVECTOR pos, ObjectType type)
 	return pBest;
 }
 
-// Compte le nombre d'objets existants.
+// Counts the number of existing objects.
 
 int CTaskFlag::CountObject(ObjectType type)
 {
@@ -223,7 +225,7 @@ int CTaskFlag::CountObject(ObjectType type)
 	return count;
 }
 
-// Crée un indicateur de couleur.
+// Creates a color indicator.
 
 Error CTaskFlag::CreateFlag(int rank)
 {
@@ -278,7 +280,7 @@ Error CTaskFlag::CreateFlag(int rank)
 	return ERR_OK;
 }
 
-// Supprime un indicateur de couleur.
+// Deletes a color indicator.
 
 Error CTaskFlag::DeleteFlag()
 {
