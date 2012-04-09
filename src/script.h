@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// script.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// script.h
 
 #ifndef _SCRIPT_H_
 #define	_SCRIPT_H_
@@ -91,20 +93,20 @@ public:
 	CTaskManager**	m_secondaryTask;
 	CObject*		m_object;
 
-	int				m_ipf;			// nb d'instructions / seconde
-	int				m_errMode;		// que faire en cas d'erreur
-	int				m_len;			// longueur du script (sans le <0>)
-	char*			m_script;		// script terminé par <0>
-	BOOL			m_bRun;			// programme en cours d'exécution ?
-	BOOL			m_bStepMode;	// step by step
-	BOOL			m_bContinue;	// fonction externe à continuer
-	BOOL			m_bCompile;		// compilation ok ?
-	char			m_title[50];	// titre du script
-	char			m_filename[50];	// nom du fichier
-	char			m_token[50];	// instruction manquante
-	int				m_error;		// erreur (0=ok)
-	int				m_cursor1;
-	int				m_cursor2;
+	int			m_ipf;			// number of instructions/second
+	int			m_errMode;		// what to do in case of error
+	int			m_len;			// length of the script (without <0>)
+	char*			m_script;		// script ends with <0>
+	BOOL			m_bRun;			// program during execution?
+	BOOL			m_bStepMode;		// step by step
+	BOOL			m_bContinue;		// external function to continue
+	BOOL			m_bCompile;		// compilation ok?
+	char			m_title[50];		// script title
+	char			m_filename[50];		// file name
+	char			m_token[50];		// missing instruction
+	int			m_error;		// error (0=ok)
+	int			m_cursor1;
+	int			m_cursor2;
 	Event			m_event;
 	float			m_returnValue;
 };
