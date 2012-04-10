@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskpen.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskpen.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -41,7 +43,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskPen::CTaskPen(CInstanceManager* iMan, CObject* object)
 							   : CTask(iMan, object)
@@ -49,14 +51,14 @@ CTaskPen::CTaskPen(CInstanceManager* iMan, CObject* object)
 	CTask::CTask(iMan, object);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskPen::~CTaskPen()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskPen::EventProcess(const Event &event)
 {
@@ -74,13 +76,13 @@ BOOL CTaskPen::EventProcess(const Event &event)
 	}
 	else
 	{
-		m_progress += event.rTime*(1.0f/m_delay);  // ça avance
+		m_progress += event.rTime*(1.0f/m_delay);  // others advance
 		if ( m_progress > 1.0f )  m_progress = 1.0f;
 	}
 
 	m_time += event.rTime;
 
-	if ( m_phase == TPP_UP )  // remonte le crayon ?
+	if ( m_phase == TPP_UP )  // back the pencil
 	{
 		i = AngleToRank(m_object->RetAngleY(1));
 		pos = m_object->RetPosition(10+i);
@@ -88,7 +90,7 @@ BOOL CTaskPen::EventProcess(const Event &event)
 		m_object->SetPosition(10+i, pos);
 	}
 
-	if ( m_phase == TPP_TURN )  // tourne le carrousel ?
+	if ( m_phase == TPP_TURN )  // turns the carousel?
 	{
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
 		{
@@ -108,7 +110,7 @@ BOOL CTaskPen::EventProcess(const Event &event)
 		m_object->SetAngleY(1, m_oldAngle+(m_newAngle-m_oldAngle)*m_progress);
 	}
 
-	if ( m_phase == TPP_DOWN )  // descend le crayon ?
+	if ( m_phase == TPP_DOWN )  // down the pencil?
 	{
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
 		{
@@ -142,7 +144,7 @@ BOOL CTaskPen::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal has achieved.
 
 Error CTaskPen::Start(BOOL bDown, int color)
 {
@@ -151,7 +153,7 @@ Error CTaskPen::Start(BOOL bDown, int color)
 	ObjectType	type;
 	int			i;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // operation impossible
 
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILEdr )  return ERR_FIRE_VEH;
@@ -164,16 +166,16 @@ Error CTaskPen::Start(BOOL bDown, int color)
 	i = AngleToRank(m_oldAngle);
 	pos = m_object->RetPosition(10+i);
 
-	if ( pos.y == 0.0f )  // crayon en haut ?
+	if ( pos.y == 0.0f )  // pencil at the top?
 	{
 		m_timeUp = 0.0f;
 	}
-	else	// crayon en bas ?
+	else	// pencil on the bottom?
 	{
-		m_timeUp = 1.0f;  // faut le remonter
+		m_timeUp = 1.0f;  // must rise up
 	}
 
-	if ( bDown )  // faudra-t-il le descendre en dernier ?
+	if ( bDown )  // must go down ?
 	{
 		m_timeDown = 0.7f;
 	}
@@ -184,7 +186,7 @@ Error CTaskPen::Start(BOOL bDown, int color)
 
 	mat = m_object->RetWorldMatrix(0);
 	pos = D3DVECTOR(-3.0f, 7.0f, 0.0f);
-	pos = Transform(*mat, pos);  // position carrousel
+	pos = Transform(*mat, pos);  // position of carousel
 	m_supportPos = pos;
 
 	m_phase    = TPP_UP;
@@ -204,7 +206,7 @@ Error CTaskPen::Start(BOOL bDown, int color)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskPen::IsEnded()
 {
@@ -243,7 +245,7 @@ Error CTaskPen::IsEnded()
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskPen::Abort()
 {
@@ -252,7 +254,7 @@ BOOL CTaskPen::Abort()
 }
 
 
-// Fait entendre le son du bras manipulateur.
+// Plays the sound of the manipulator arm.
 
 void CTaskPen::SoundManip(float time, float amplitude, float frequency)
 {
@@ -265,7 +267,7 @@ void CTaskPen::SoundManip(float time, float amplitude, float frequency)
 }
 
 
-// Conversion d'un angle en numéro de crayon.
+// Converting a angle to number of pencil.
 
 int CTaskPen::AngleToRank(float angle)
 {
@@ -275,14 +277,14 @@ int CTaskPen::AngleToRank(float angle)
 	return (int)(angle/(45.0f*PI/180.0f));
 }
 
-// Conversion d'une couleur en angle pour le carrousel de crayons.
+// Converting a color to the angle of carousel of pencils.
 
 float CTaskPen::ColorToAngle(int color)
 {
 	return -45.0f*PI/180.0f*ColorToRank(color);
 }
 
-// Conversion d'une couleur en numéro de crayon (0..7).
+// Converting a color number to the pencil (0 .. 7).
 
 int CTaskPen::ColorToRank(int color)
 {
