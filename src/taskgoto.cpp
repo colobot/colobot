@@ -1789,10 +1789,10 @@ Error CTaskGoto::BeamSearch(const D3DVECTOR &start, const D3DVECTOR &goal,
 // curPos:  current position
 // goalPos: position that seeks to achieve
 // angle:   angle to the goal we explores
-// nbDiv:   nombre du sous-divisions qu'on fait avec angle
-// step     longuer d'un pas
-// i        nombre de r�cursions effectu�es
-// nbIter   nombre max. d'iterations qu'on a le droit de faire avant d'interrompre provisoirement
+// nbDiv:   number of subdivisions being done with angle
+// step     length of a step
+// i        number of recursions made
+// nbIter   maximum number of iterations you have the right to make before temporarily interrupt
 
 Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
 							 const D3DVECTOR &goalPos, float goalRadius,
@@ -1804,7 +1804,7 @@ Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
 	int			iDiv, iClear, iLar;
 	
 	iLar = 0;
-	if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // trop de r�cursion
+	if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // too many recursions
 	
 	if ( m_bmIter[i] == -1 )
 	{
@@ -1882,8 +1882,8 @@ Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
 	return ERR_GOTO_IMPOSSIBLE;
 }
 
-// Soit une droite "start-goal". Calcule le point situ� � la distance
-// "step" du point "start" et faisant un angle "angle" avec la droite.
+// Is a right "start-goal". Calculates the point located at the distance "step"
+// from the point "start" and an angle "angle" with the right.
 
 D3DVECTOR CTaskGoto::BeamPoint(const D3DVECTOR &startPoint,
 							   const D3DVECTOR &goalPoint,
@@ -1901,7 +1901,7 @@ D3DVECTOR CTaskGoto::BeamPoint(const D3DVECTOR &startPoint,
 	return resPoint;
 }
 
-// Affiche une partion de bitmap.
+// Displays a bitmap part.
 
 void CTaskGoto::BitmapDebug(const D3DVECTOR &min, const D3DVECTOR &max,
 							const D3DVECTOR &start, const D3DVECTOR &goal)
@@ -1979,7 +1979,7 @@ void CTaskGoto::BitmapDebug(const D3DVECTOR &min, const D3DVECTOR &max,
 	}
 }
 
-// Teste si un chemin le long d'une droite est possible.
+// Tests if a path along a straight line is possible.
 
 BOOL CTaskGoto::BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal,
 							   float stepAngle, BOOL bSecond)
@@ -2004,7 +2004,7 @@ BOOL CTaskGoto::BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal,
 	{
 		x = (int)((pos.x+1600.0f)/BM_DIM_STEP);
 		y = (int)((pos.z+1600.0f)/BM_DIM_STEP);
-		BitmapSetDot(1, x, y);  // met le flag du point de d�part
+		BitmapSetDot(1, x, y);  // puts the flag as the starting point
 	}
 
 	max = (int)(dist/step);
@@ -2014,7 +2014,7 @@ BOOL CTaskGoto::BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal,
 	{
 		if ( i == max-1 )
 		{
-			pos = goal;  // teste le point d'arriv�e
+			pos = goal;  // tests the point of arrival
 		}
 		else
 		{
@@ -2040,7 +2040,7 @@ BOOL CTaskGoto::BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal,
 	return TRUE;
 }
 
-// Ajoute les objets dans le bitmap.
+// Adds the objects in the bitmap.
 
 void CTaskGoto::BitmapObject()
 {
@@ -2072,12 +2072,12 @@ void CTaskGoto::BitmapObject()
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
-			if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )  // volant ?
+			if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )  // flying?
 			{
 				if ( oPos.y-oRadius > h+8.0f ||
 					 oPos.y+oRadius < h-8.0f )  continue;
 			}
-			else	// rampant ?
+			else	// crawling?
 			{
 				if ( oPos.y-oRadius > h+8.0f )  continue;
 			}
@@ -2088,7 +2088,7 @@ void CTaskGoto::BitmapObject()
 	}
 }
 
-// Ajoute une portion de terrain dans le bitmap.
+// Adds a section of land in the bitmap.
 
 void CTaskGoto::BitmapTerrain(const D3DVECTOR &min, const D3DVECTOR &max)
 {
@@ -2102,7 +2102,7 @@ void CTaskGoto::BitmapTerrain(const D3DVECTOR &min, const D3DVECTOR &max)
 	BitmapTerrain(minx, miny, maxx, maxy);
 }
 
-// Ajoute une portion de terrain dans le bitmap.
+// Adds a section of land in the bitmap.
 
 void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 {
@@ -2139,7 +2139,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 		 type == OBJECT_MOBILEws ||
 		 type == OBJECT_MOBILEwi ||
 		 type == OBJECT_MOBILEwt ||
-		 type == OBJECT_MOBILEtg )  // roues ?
+		 type == OBJECT_MOBILEtg )  // wheels?
 	{
 		aLimit = 20.0f*PI/180.0f;
 	}
@@ -2147,7 +2147,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 	if ( type == OBJECT_MOBILEta ||
 		 type == OBJECT_MOBILEtc ||
 		 type == OBJECT_MOBILEti ||
-		 type == OBJECT_MOBILEts )  // chenilles ?
+		 type == OBJECT_MOBILEts )  // caterpillars?
 	{
 		aLimit = 35.0f*PI/180.0f;
 	}
@@ -2155,18 +2155,18 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 	if ( type == OBJECT_MOBILErt ||
 		 type == OBJECT_MOBILErc ||
 		 type == OBJECT_MOBILErr ||
-		 type == OBJECT_MOBILErs )  // grosses chenilles ?
+		 type == OBJECT_MOBILErs )  // large caterpillars?
 	{
 		aLimit = 35.0f*PI/180.0f;
 	}
 
-	if ( type == OBJECT_MOBILEsa )  // chenilles sous-marin ?
+	if ( type == OBJECT_MOBILEsa )  // submarine caterpillars?
 	{
 		aLimit = 35.0f*PI/180.0f;
 		bAcceptWater = TRUE;
 	}
 
-	if ( type == OBJECT_MOBILEdr )  // chenilles dessinateur ?
+	if ( type == OBJECT_MOBILEdr )  // designer caterpillars?
 	{
 		aLimit = 35.0f*PI/180.0f;
 	}
@@ -2175,7 +2175,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 		 type == OBJECT_MOBILEfc ||
 		 type == OBJECT_MOBILEfs ||
 		 type == OBJECT_MOBILEfi ||
-		 type == OBJECT_MOBILEft )  // volant ?
+		 type == OBJECT_MOBILEft )  // flying?
 	{
 		aLimit = 15.0f*PI/180.0f;
 		bFly = TRUE;
@@ -2184,7 +2184,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 	if ( type == OBJECT_MOBILEia ||
 		 type == OBJECT_MOBILEic ||
 		 type == OBJECT_MOBILEis ||
-		 type == OBJECT_MOBILEii )  // pattes d'insecte ?
+		 type == OBJECT_MOBILEii )  // insect legs?
 	{
 		aLimit = 60.0f*PI/180.0f;
 	}
@@ -2199,7 +2199,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 			p.x = x*BM_DIM_STEP-1600.0f;
 			p.z = y*BM_DIM_STEP-1600.0f;
 
-			if ( bFly )  // robot volant ?
+			if ( bFly )  // flying robot?
 			{
 				h = m_terrain->RetFloorLevel(p, TRUE);
 				if ( h >= m_terrain->RetFlyingMaxHeight()-5.0f )
@@ -2209,10 +2209,10 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 				continue;
 			}
 
-			if ( !bAcceptWater )  // ne va pas sous l'eau ?
+			if ( !bAcceptWater )  // not going underwater?
 			{
 				h = m_terrain->RetFloorLevel(p, TRUE);
-				if ( h < m_water->RetLevel()-2.0f )  // sous l'eau (*) ?
+				if ( h < m_water->RetLevel()-2.0f )  // under water (*)?
 				{
 //?					BitmapSetDot(0, x, y);
 					BitmapSetCircle(p, BM_DIM_STEP*1.0f);
@@ -2231,13 +2231,12 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 	m_bmMinX = minx;
 	m_bmMinY = miny;
 	m_bmMaxX = maxx;
-	m_bmMaxY = maxy;  // agrandi la zone rectangulaire
+	m_bmMaxY = maxy;  // expanded rectangular area
 }
 
-// (*)	Accepte qu'un robot soit 50cm sous l'eau, par exemple
-//		sur Tropica 3 !
+// (*)	Accepts that a robot is 50cm under water, for example Tropica 3!
 
-// Ouvre un bitmap vide.
+// Opens an empty bitmap.
 
 BOOL CTaskGoto::BitmapOpen()
 {
@@ -2250,7 +2249,7 @@ BOOL CTaskGoto::BitmapOpen()
 	m_bmOffset = m_bmSize/2;
 	m_bmLine = m_bmSize/8;
 
-	m_bmMinX = m_bmSize;  // zone rectangulaire inexistante
+	m_bmMinX = m_bmSize;  // non-existent rectangular area
 	m_bmMinY = m_bmSize;
 	m_bmMaxX = 0;
 	m_bmMaxY = 0;
@@ -2258,7 +2257,7 @@ BOOL CTaskGoto::BitmapOpen()
 	return TRUE;
 }
 
-// Ferme le bitmap.
+// Closes the bitmap.
 
 BOOL CTaskGoto::BitmapClose()
 {
@@ -2267,7 +2266,7 @@ BOOL CTaskGoto::BitmapClose()
 	return TRUE;
 }
 
-// Met un cercle dans le bitmap.
+// Puts a circle in the bitmap.
 
 void CTaskGoto::BitmapSetCircle(const D3DVECTOR &pos, float radius)
 {
@@ -2289,7 +2288,7 @@ void CTaskGoto::BitmapSetCircle(const D3DVECTOR &pos, float radius)
 	}
 }
 
-// Enl�ve un cercle dans le bitmap.
+// Removes a circle in the bitmap.
 
 void CTaskGoto::BitmapClearCircle(const D3DVECTOR &pos, float radius)
 {
@@ -2311,7 +2310,7 @@ void CTaskGoto::BitmapClearCircle(const D3DVECTOR &pos, float radius)
 	}
 }
 
-// Met un point dans le bitmap.
+// Makes a point in the bitmap.
 // x:y: 0..m_bmSize-1
 
 void CTaskGoto::BitmapSetDot(int rank, int x, int y)
@@ -2322,7 +2321,7 @@ void CTaskGoto::BitmapSetDot(int rank, int x, int y)
 	m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] |= (1<<x%8);
 }
 
-// Enl�ve un point dans le bitmap.
+// Removes a point in the bitmap.
 // x:y: 0..m_bmSize-1
 
 void CTaskGoto::BitmapClearDot(int rank, int x, int y)
@@ -2333,7 +2332,7 @@ void CTaskGoto::BitmapClearDot(int rank, int x, int y)
 	m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] &= ~(1<<x%8);
 }
 
-// Teste un point dans le bitmap.
+// Tests a point in the bitmap.
 // x:y: 0..m_bmSize-1
 
 BOOL CTaskGoto::BitmapTestDot(int rank, int x, int y)
@@ -2344,7 +2343,7 @@ BOOL CTaskGoto::BitmapTestDot(int rank, int x, int y)
 	if ( x < m_bmMinX || x > m_bmMaxX ||
 		 y < m_bmMinY || y > m_bmMaxY )
 	{
-		BitmapTerrain(x-10,y-10, x+10,y+10);  // refait une couche
+		BitmapTerrain(x-10,y-10, x+10,y+10);  // remade a layer
 	}
 
 	return m_bmArray[rank*m_bmLine*m_bmSize + m_bmLine*y + x/8] & (1<<x%8);
