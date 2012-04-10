@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskterraform.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskterraform.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -42,12 +44,12 @@
 #include "taskterraform.h"
 
 
-#define ENERGY_TERRA	0.40f		// énergie consommée par coup
+#define ENERGY_TERRA	0.40f		// energy consumed by blow
 #define ACTION_RADIUS	400.0f
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskTerraform::CTaskTerraform(CInstanceManager* iMan, CObject* object)
 							   : CTask(iMan, object)
@@ -57,14 +59,14 @@ CTaskTerraform::CTaskTerraform(CInstanceManager* iMan, CObject* object)
 	m_soundChannel = -1;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskTerraform::~CTaskTerraform()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskTerraform::EventProcess(const Event &event)
 {
@@ -78,7 +80,7 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ça avance
+	m_progress += event.rTime*m_speed;  // others advance
 	m_time += event.rTime;
 
 	if ( m_phase == TTP_CHARGE )
@@ -157,7 +159,7 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 
 		if ( m_phase == TTP_CHARGE )
 		{
-			// Pile.
+			// Battery.
 			pos = D3DVECTOR(-6.0f, 5.5f+2.0f*m_progress, 0.0f);
 			pos.x += (Rand()-0.5f)*1.0f;
 			pos.z += (Rand()-0.5f)*1.0f;
@@ -172,7 +174,7 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 
 		if ( m_phase != TTP_CHARGE )
 		{
-			// Grille gauche.
+			// Left grid.
 			pos = D3DVECTOR(-1.0f, 5.8f, 3.5f);
 			pos.x += (Rand()-0.5f)*1.0f;
 			pos.z += (Rand()-0.5f)*1.0f;
@@ -186,7 +188,7 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 3.0f);
 
-			// Grille droite.
+			// Right grid.
 			pos = D3DVECTOR(-1.0f, 5.8f, -3.5f);
 			pos.x += (Rand()-0.5f)*1.0f;
 			pos.z += (Rand()-0.5f)*1.0f;
@@ -206,7 +208,7 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskTerraform::Start()
 {
@@ -217,7 +219,7 @@ Error CTaskTerraform::Start()
 
 	ObjectType	type;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // operation impossible
 	if ( !m_physics->RetLand() )  return ERR_TERRA_VEH;
 
 	type = m_object->RetType();
@@ -234,7 +236,7 @@ Error CTaskTerraform::Start()
 
 	mat = m_object->RetWorldMatrix(0);
 	pos = D3DVECTOR(9.0f, 0.0f, 0.0f);
-	pos = Transform(*mat, pos);  // position pillon
+	pos = Transform(*mat, pos);  // battery position
 	m_terraPos = pos;
 
 	m_phase    = TTP_CHARGE;
@@ -252,7 +254,7 @@ Error CTaskTerraform::Start()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskTerraform::IsEnded()
 {
@@ -271,7 +273,7 @@ Error CTaskTerraform::IsEnded()
 	if ( m_phase == TTP_CHARGE )
 	{
 #if _TEEN
-		Terraform();  // modifie le terrain.
+		Terraform();  // changes the terrain.
 #endif
 
 		m_phase = TTP_DOWN;
@@ -282,7 +284,7 @@ Error CTaskTerraform::IsEnded()
 	if ( m_phase == TTP_DOWN )
 	{
 #if !_TEEN
-		Terraform();  // modifie le terrain.
+		Terraform();  // changes the terrain.
 #endif
 
 		m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
@@ -336,7 +338,7 @@ Error CTaskTerraform::IsEnded()
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskTerraform::Abort()
 {
@@ -365,7 +367,7 @@ BOOL CTaskTerraform::Abort()
 }
 
 
-// Retourne toutes les fourmis et les araignées proches.
+// Returns all the close ants and spiders.
 
 BOOL CTaskTerraform::Terraform()
 {
@@ -389,7 +391,7 @@ BOOL CTaskTerraform::Terraform()
 		type = pObj->RetType();
 		if ( type == OBJECT_NULL )  continue;
 
-		if ( type == OBJECT_TEEN34 )  // caillou ?
+		if ( type == OBJECT_TEEN34 )  // stone?
 		{
 			dist = Length(m_terraPos, pObj->RetPosition(0));
 			if ( dist > 20.0f )  continue;
@@ -410,14 +412,14 @@ BOOL CTaskTerraform::Terraform()
 				brain = pObj->RetBrain();
 				if ( brain != 0 )  brain->StopTask();
 				motion->SetAction(MAS_BACK1, 0.8f+Rand()*0.3f);
-				pObj->SetFixed(TRUE);  // ne bouge plus
+				pObj->SetFixed(TRUE);  // not moving
 			}
 			if ( type == OBJECT_SPIDER )
 			{
 				brain = pObj->RetBrain();
 				if ( brain != 0 )  brain->StopTask();
 				motion->SetAction(MSS_BACK1, 0.8f+Rand()*0.3f);
-				pObj->SetFixed(TRUE);  // ne bouge plus
+				pObj->SetFixed(TRUE);  // not moving
 			}
 		}
 	}
