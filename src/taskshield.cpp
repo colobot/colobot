@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskshield.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskshield.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,11 +40,11 @@
 #include "taskshield.h"
 
 
-#define ENERGY_TIME		20.0f		// durée maximale si pile pleine
+#define ENERGY_TIME		20.0f		// maximum duration if full battery
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskShield::CTaskShield(CInstanceManager* iMan, CObject* object)
 							   : CTask(iMan, object)
@@ -54,7 +56,7 @@ CTaskShield::CTaskShield(CInstanceManager* iMan, CObject* object)
 	m_effectLight = -1;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskShield::~CTaskShield()
 {
@@ -62,7 +64,7 @@ CTaskShield::~CTaskShield()
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskShield::EventProcess(const Event &event)
 {
@@ -78,13 +80,13 @@ BOOL CTaskShield::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ça avance
+	m_progress += event.rTime*m_speed;  // others advance
 	m_time += event.rTime;
 	m_delay -= event.rTime;
 
 	mat = m_object->RetWorldMatrix(0);
 	pos = D3DVECTOR(7.0f, 15.0f, 0.0f);
-	pos = Transform(*mat, pos);  // position sphère
+	pos = Transform(*mat, pos);  // sphere position
 	m_shieldPos = pos;
 
 	if ( m_rankSphere != -1 )
@@ -233,8 +235,8 @@ BOOL CTaskShield::EventProcess(const Event &event)
 }
 
 
-// Déploie le bouclier.
-// Le délai n'est utile qu'avec TSM_UP !
+// Deploys the shield.
+// The period is only useful with TSM_UP!
 
 Error CTaskShield::Start(TaskShieldMode mode, float delay)
 {
@@ -261,7 +263,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILErs )  return ERR_SHIELD_VEH;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // operation impossible
 	if ( !m_physics->RetLand() )  return ERR_SHIELD_VEH;
 
 	power = m_object->RetPower();
@@ -271,7 +273,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	
 	mat = m_object->RetWorldMatrix(0);
 	pos = D3DVECTOR(7.0f, 15.0f, 0.0f);
-	pos = Transform(*mat, pos);  // position sphère
+	pos = Transform(*mat, pos);  // sphere position
 	m_shieldPos = pos;
 
 	m_sound->Play(SOUND_PSHHH2, m_shieldPos, 1.0f, 0.7f);
@@ -296,7 +298,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	return ERR_OK;
 }
 
-// Rentre le bouclier.
+// Returns the shield.
 
 Error CTaskShield::Stop()
 {
@@ -337,7 +339,7 @@ Error CTaskShield::Stop()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskShield::IsEnded()
 {
@@ -434,7 +436,7 @@ Error CTaskShield::IsEnded()
 	return ERR_STOP;
 }
 
-// Indique si l'action est en cours.
+// Indicates whether the action is pending.
 
 BOOL CTaskShield::IsBusy()
 {
@@ -446,7 +448,7 @@ BOOL CTaskShield::IsBusy()
 	return TRUE;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskShield::Abort()
 {
@@ -488,7 +490,7 @@ BOOL CTaskShield::Abort()
 }
 
 
-// Crée la lumière pour accompagner un effet pyrotechnique.
+// Creates the light to accompany a pyrotechnic effect.
 
 BOOL CTaskShield::CreateLight(D3DVECTOR pos)
 {
@@ -505,7 +507,7 @@ BOOL CTaskShield::CreateLight(D3DVECTOR pos)
 	light.dvPosition.y  = pos.y;
 	light.dvPosition.z  = pos.z;
 	light.dvDirection.x =  0.0f;
-	light.dvDirection.y = -1.0f;  // contre en bas
+	light.dvDirection.y = -1.0f;  // against the bottom
 	light.dvDirection.z =  0.0f;
 	light.dvRange = D3DLIGHT_RANGE_MAX;
 	light.dvFalloff = 1.0f;
@@ -525,7 +527,7 @@ BOOL CTaskShield::CreateLight(D3DVECTOR pos)
 }
 
 
-// Répare le bouclier des objets dans la sphère du bouclier.
+// Repaired the shielded objects within the sphere of the shield.
 
 void CTaskShield::IncreaseShield()
 {
@@ -560,7 +562,7 @@ void CTaskShield::IncreaseShield()
 }
 
 
-// Retourne le rayon du bouclier.
+// Returns the radius of the shield.
 
 float CTaskShield::RetRadius()
 {
