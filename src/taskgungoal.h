@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskgungoal.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskgungoal.h
 
 #ifndef _TASKGUNGOAL_H_
 #define	_TASKGUNGOAL_H_
@@ -42,10 +44,10 @@ protected:
 protected:
 	float		m_progress;
 	float		m_speed;
-	float		m_initialDirV;	// direction initiale
-	float		m_finalDirV;	// direction à atteindre
-	float		m_initialDirH;	// direction initiale
-	float		m_finalDirH;	// direction à atteindre
+	float		m_initialDirV;	// initial direction
+	float		m_finalDirV;	// direction to reach
+	float		m_initialDirH;	// initial direction
+	float		m_finalDirH;	// direction to reach
 };
 
 
