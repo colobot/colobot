@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskrecover.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskrecover.h
 
 #ifndef _TASKSRECOVER_H_
 #define	_TASKSRECOVER_H_
@@ -28,11 +30,11 @@ class CObject;
 
 enum TaskRecoverPhase
 {
-	TRP_TURN	= 1,	// tourne
-	TRP_MOVE	= 2,	// avance
-	TRP_DOWN	= 3,	// descend
-	TRP_OPER	= 4,	// opère
-	TRP_UP		= 5,	// remonte
+	TRP_TURN	= 1,	// turns
+	TRP_MOVE	= 2,	// advance
+	TRP_DOWN	= 3,	// descends
+	TRP_OPER	= 4,	// operates
+	TRP_UP		= 5,	// back
 };
 
 
