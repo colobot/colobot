@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskterraform.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskterraform.h
 
 #ifndef _TASKSTERRAFORM_H_
 #define	_TASKSTERRAFORM_H_
@@ -28,10 +30,10 @@ class CObject;
 
 enum TaskTerraPhase
 {
-	TTP_CHARGE	= 1,	// charge d'énergie
-	TTP_DOWN	= 2,	// descend
-	TTP_TERRA	= 3,	// frappe
-	TTP_UP		= 4,	// remonte
+	TTP_CHARGE	= 1,	// charge of energy
+	TTP_DOWN	= 2,	// down
+	TTP_TERRA	= 3,	// strike
+	TTP_UP		= 4,	// up
 };
 
 
