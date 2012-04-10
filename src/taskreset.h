@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskreset.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskreset.h
 
 #ifndef _TASKRESET_H_
 #define	_TASKRESET_H_
@@ -28,9 +30,9 @@ class CObject;
 
 enum TaskResetPhase
 {
-	TRSP_ZOUT	= 1,	// disparaît
-	TRSP_MOVE	= 2,	// déplace
-	TRSP_ZIN	= 3,	// réapparaît
+	TRSP_ZOUT	= 1,	// disappears
+	TRSP_MOVE	= 2,	// moves
+	TRSP_ZIN	= 3,	// reappears
 };
 
 
@@ -59,7 +61,7 @@ protected:
 	float			m_time;
 	float			m_speed;
 	float			m_progress;
-	float			m_lastParticule;  // temps génération dernière particule
+	float			m_lastParticule;  // time of generation last particle
 	float			m_iAngle;
 };
 
