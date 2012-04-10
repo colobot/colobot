@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskmanip.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskmanip.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -52,7 +54,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskManip::CTaskManip(CInstanceManager* iMan, CObject* object)
 					   : CTask(iMan, object)
@@ -63,14 +65,14 @@ CTaskManip::CTaskManip(CInstanceManager* iMan, CObject* object)
 	m_hand = TMH_OPEN;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskManip::~CTaskManip()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskManip::EventProcess(const Event &event)
 {
@@ -82,49 +84,49 @@ BOOL CTaskManip::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	if ( m_bBee )  // abeille ?
+	if ( m_bBee )  // bee?
 	{
 		return TRUE;
 	}
 
-	if ( m_bTurn )  // rotation préliminaire ?
+	if ( m_bTurn )  // preliminary rotation?
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
 		cirSpeed = Direction(a, g)*1.0f;
-		if ( m_physics->RetType() == TYPE_FLYING )  // volant au sol ?
+		if ( m_physics->RetType() == TYPE_FLYING )  // flying on the ground?
 		{
-			cirSpeed *= 4.0f;  // plus de pèche
+			cirSpeed *= 4.0f;  // more fishing
 		}
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
 		return TRUE;
 	}
 
-	if ( m_move != 0 )  // avance préliminaire ?
+	if ( m_move != 0 )  // preliminary advance?
 	{
 		m_timeLimit -= event.rTime;
-		m_physics->SetMotorSpeedX(m_move);  // avance/recule
+		m_physics->SetMotorSpeedX(m_move);  // forward/backward
 		return TRUE;
 	}
 
-	m_progress += event.rTime*m_speed;  // ça avance
+	m_progress += event.rTime*m_speed;  // others advance
 	progress = m_progress;
 	if ( progress > 1.0f )  progress = 1.0f;
 
-	if ( m_bSubm )  // sous-marin ?
+	if ( m_bSubm )  // submarine?
 	{
 		if ( m_order == TMO_GRAB )
 		{
-			if ( m_step == 0 )  // descend ?
+			if ( m_step == 0 )  // fall?
 			{
 				pos = m_object->RetPosition(1);
 				pos.y = 3.0f-progress*2.0f;
 				m_object->SetPosition(1, pos);
 			}
-			if ( m_step == 1 )  // ferme ?
+			if ( m_step == 1 )  // farm?
 			{
 				pos = m_object->RetPosition(2);
 				pos.z = -1.5f+progress*0.5f;
@@ -134,7 +136,7 @@ BOOL CTaskManip::EventProcess(const Event &event)
 				pos.z = 1.5f-progress*0.5f;
 				m_object->SetPosition(3, pos);
 			}
-			if ( m_step == 2 )  // monte ?
+			if ( m_step == 2 )  // up?
 			{
 				pos = m_object->RetPosition(1);
 				pos.y = 3.0f-(1.0f-progress)*2.0f;
@@ -143,13 +145,13 @@ BOOL CTaskManip::EventProcess(const Event &event)
 		}
 		else
 		{
-			if ( m_step == 0 )  // descend ?
+			if ( m_step == 0 )  // fall?
 			{
 				pos = m_object->RetPosition(1);
 				pos.y = 3.0f-progress*2.0f;
 				m_object->SetPosition(1, pos);
 			}
-			if ( m_step == 1 )  // ferme ?
+			if ( m_step == 1 )  // farm?
 			{
 				pos = m_object->RetPosition(2);
 				pos.z = -1.5f+(1.0f-progress)*0.5f;
@@ -159,7 +161,7 @@ BOOL CTaskManip::EventProcess(const Event &event)
 				pos.z = 1.5f-(1.0f-progress)*0.5f;
 				m_object->SetPosition(3, pos);
 			}
-			if ( m_step == 2 )  // monte ?
+			if ( m_step == 2 )  // up?
 			{
 				pos = m_object->RetPosition(1);
 				pos.y = 3.0f-(1.0f-progress)*2.0f;
@@ -181,7 +183,7 @@ BOOL CTaskManip::EventProcess(const Event &event)
 }
 
 
-// Initialise les angles finaux et initiaux.
+// Initializes the initial and final angles.
 
 void CTaskManip::InitAngle()
 {
@@ -194,59 +196,59 @@ void CTaskManip::InitAngle()
 	if ( m_arm == TMA_NEUTRAL ||
 		 m_arm == TMA_GRAB    )
 	{
-		m_finalAngle[0] = ARM_NEUTRAL_ANGLE1;  // bras
-		m_finalAngle[1] = ARM_NEUTRAL_ANGLE2;  // avant-bras
-		m_finalAngle[2] = ARM_NEUTRAL_ANGLE3;  // main
+		m_finalAngle[0] = ARM_NEUTRAL_ANGLE1;  // arm
+		m_finalAngle[1] = ARM_NEUTRAL_ANGLE2;  // forearm
+		m_finalAngle[2] = ARM_NEUTRAL_ANGLE3;  // hand
 	}
 	if ( m_arm == TMA_STOCK )
 	{
-		m_finalAngle[0] = ARM_STOCK_ANGLE1;  // bras
-		m_finalAngle[1] = ARM_STOCK_ANGLE2;  // avant-bras
-		m_finalAngle[2] = ARM_STOCK_ANGLE3;  // main
+		m_finalAngle[0] = ARM_STOCK_ANGLE1;  // arm
+		m_finalAngle[1] = ARM_STOCK_ANGLE2;  // forearm
+		m_finalAngle[2] = ARM_STOCK_ANGLE3;  // hand
 	}
 	if ( m_arm == TMA_FFRONT )
 	{
-		m_finalAngle[0] =   35.0f*PI/180.0f;  // bras
-		m_finalAngle[1] =  -95.0f*PI/180.0f;  // avant-bras
-		m_finalAngle[2] =  -27.0f*PI/180.0f;  // main
+		m_finalAngle[0] =   35.0f*PI/180.0f;  // arm
+		m_finalAngle[1] =  -95.0f*PI/180.0f;  // forearm
+		m_finalAngle[2] =  -27.0f*PI/180.0f;  // hand
 	}
 	if ( m_arm == TMA_FBACK )
 	{
-		m_finalAngle[0] =  145.0f*PI/180.0f;  // bras
-		m_finalAngle[1] =   95.0f*PI/180.0f;  // avant-bras
-		m_finalAngle[2] =   27.0f*PI/180.0f;  // main
+		m_finalAngle[0] =  145.0f*PI/180.0f;  // arm
+		m_finalAngle[1] =   95.0f*PI/180.0f;  // forearm
+		m_finalAngle[2] =   27.0f*PI/180.0f;  // hand
 	}
 	if ( m_arm == TMA_POWER )
 	{
-		m_finalAngle[0] =   95.0f*PI/180.0f;  // bras
-		m_finalAngle[1] =  125.0f*PI/180.0f;  // avant-bras
-		m_finalAngle[2] =   50.0f*PI/180.0f;  // main
+		m_finalAngle[0] =   95.0f*PI/180.0f;  // arm
+		m_finalAngle[1] =  125.0f*PI/180.0f;  // forearm
+		m_finalAngle[2] =   50.0f*PI/180.0f;  // hand
 	}
 	if ( m_arm == TMA_OTHER )
 	{
 		if ( m_height <= 3.0f )
 		{
-			m_finalAngle[0] =  55.0f*PI/180.0f;  // bras
-			m_finalAngle[1] = -90.0f*PI/180.0f;  // avant-bras
-			m_finalAngle[2] = -35.0f*PI/180.0f;  // main
+			m_finalAngle[0] =  55.0f*PI/180.0f;  // arm
+			m_finalAngle[1] = -90.0f*PI/180.0f;  // forearm
+			m_finalAngle[2] = -35.0f*PI/180.0f;  // hand
 		}
 		else
 		{
-			m_finalAngle[0] =  70.0f*PI/180.0f;  // bras
-			m_finalAngle[1] = -90.0f*PI/180.0f;  // avant-bras
-			m_finalAngle[2] = -50.0f*PI/180.0f;  // main
+			m_finalAngle[0] =  70.0f*PI/180.0f;  // arm
+			m_finalAngle[1] = -90.0f*PI/180.0f;  // forearm
+			m_finalAngle[2] = -50.0f*PI/180.0f;  // hand
 		}
 	}
 
-	if ( m_hand == TMH_OPEN )  // pince ouverte ?
+	if ( m_hand == TMH_OPEN )  // open clamp?
 	{
-		m_finalAngle[3] = -PI*0.10f;  // pince proche
-		m_finalAngle[4] =  PI*0.10f;  // pince éloignée
+		m_finalAngle[3] = -PI*0.10f;  // clamp close
+		m_finalAngle[4] =  PI*0.10f;  // clamp remote
 	}
-	if ( m_hand == TMH_CLOSE )  // pince fermée ?
+	if ( m_hand == TMH_CLOSE )  // clamp closed?
 	{
-		m_finalAngle[3] =  PI*0.05f;  // pince proche
-		m_finalAngle[4] = -PI*0.05f;  // pince éloignée
+		m_finalAngle[3] =  PI*0.05f;  // clamp close
+		m_finalAngle[4] = -PI*0.05f;  // clamp remote
 	}
 
 	for ( i=0 ; i<5 ; i++ )
@@ -260,7 +262,7 @@ void CTaskManip::InitAngle()
 		max = Max(max, Abs(m_initialAngle[i] - m_finalAngle[i]));
 	}
 	m_speed = (PI*1.0f)/max;
-	if ( m_speed > 3.0f )  m_speed = 3.0f;  // piano, ma non troppo
+	if ( m_speed > 3.0f )  m_speed = 3.0f;  // piano, ma non troppo (?)
 
 	energy = 0.0f;
 	power = m_object->RetPower();
@@ -271,12 +273,12 @@ void CTaskManip::InitAngle()
 
 	if ( energy == 0.0f )
 	{
-		m_speed *= 0.7f;  // plus lent si plus d'énergie !
+		m_speed *= 0.7f;  // slower if more energy!
 	}
 }
 
 
-// Teste si un objet est compatible avec l'opération TMA_OTHER.
+// Tests whether an object is compatible with the operation TMA_OTHER.
 
 BOOL TestFriend(ObjectType oType, ObjectType fType)
 {
@@ -297,7 +299,7 @@ BOOL TestFriend(ObjectType oType, ObjectType fType)
 			 fType == OBJECT_ATOMIC );
 }
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 {
@@ -318,7 +320,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	iAngle = NormAngle(iAngle);  // 0..2*PI
 	oAngle = iAngle;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // operation impossible
 
 	if ( m_arm != TMA_FFRONT &&
 		 m_arm != TMA_FBACK  &&
@@ -328,7 +330,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	m_physics->SetMotorSpeed(D3DVECTOR(0.0f, 0.0f, 0.0f));
 
 	type = m_object->RetType();
-	if ( type == OBJECT_BEE )  // abeille ?
+	if ( type == OBJECT_BEE )  // bee?
 	{
 		if ( m_object->RetFret() == 0 )
 		{
@@ -336,15 +338,15 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
 			other = SearchTakeUnderObject(m_targetPos, MARGIN_BEE);
 			if ( other == 0 )  return ERR_MANIP_NIL;
-			m_object->SetFret(other);  // prend le boulet
+			m_object->SetFret(other);  // takes the ball
 			other->SetTruck(m_object);
-			other->SetTruckPart(0);  // prend avec la base
+			other->SetTruckPart(0);  // taken with the base
 			other->SetPosition(0, D3DVECTOR(0.0f, -3.0f, 0.0f));
 		}
 		else
 		{
-			other = m_object->RetFret();  // other = boulet
-			m_object->SetFret(0);  // lâche le boulet
+			other = m_object->RetFret();  // other = ball
+			m_object->SetFret(0);  // lick the ball
 			other->SetTruck(0);
 			pos = m_object->RetPosition(0);
 			pos.y -= 3.0f;
@@ -352,10 +354,10 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
 			pos = m_object->RetPosition(0);
 			pos.y += 2.0f;
-			m_object->SetPosition(0, pos);  // bond contre le haut
+			m_object->SetPosition(0, pos);  // against the top of jump
 
 			pyro = new CPyro(m_iMan);
-			pyro->Create(PT_FALL, other);  // le boulet tombe
+			pyro->Create(PT_FALL, other);  // the ball falls
 		}
 
 		m_bBee = TRUE;
@@ -364,9 +366,9 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	}
 	m_bBee = FALSE;
 
-	m_bSubm = ( type == OBJECT_MOBILEsa );  // sous-marin ?
+	m_bSubm = ( type == OBJECT_MOBILEsa );  // submarine?
 
-	if ( m_arm == TMA_GRAB )  // prend immédiatement ?
+	if ( m_arm == TMA_GRAB )  // takes immediately?
 	{
 		TruckTakeObject();
 		Abort();
@@ -388,12 +390,12 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 		 type != OBJECT_MOBILEia &&
 		 type != OBJECT_MOBILEsa )  return ERR_MANIP_VEH;
 
-	if ( m_bSubm )  // sous-marin ?
+	if ( m_bSubm )  // submarine?
 	{
-		m_arm = TMA_FFRONT;  // possible seulement devant !
+		m_arm = TMA_FFRONT;  // only possible in front!
 	}
 
-	m_move = 0.0f;  // avance pas nécessaire
+	m_move = 0.0f;  // advance not necessary
 	m_angle = iAngle;
 
 	if ( order == TMO_AUTO )
@@ -436,7 +438,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 			{
 				m_targetPos = fPos;
 				m_angle = fAngle;
-				m_move = 1.0f;  // avance nécessaire
+				m_move = 1.0f;  // advance required
 			}
 			else if ( other != 0 && oDist < fDist )
 			{
@@ -444,14 +446,14 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 				m_targetPos = oPos;
 				m_angle = oAngle;
 				m_height = oHeight;
-				m_move = 1.0f;  // avance nécessaire
+				m_move = 1.0f;  // advance required
 				m_arm = TMA_OTHER;
 			}
 			else
 			{
 				return ERR_MANIP_NIL;
 			}
-			m_main->HideDropZone(front);  // cache zone constructible
+			m_main->HideDropZone(front);  // hides buildable area
 		}
 		if ( m_arm == TMA_FBACK )
 		{
@@ -460,7 +462,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 				return ERR_MANIP_NIL;
 			}
 			m_angle += PI;
-			m_move = -1.0f;  // recule nécessaire
+			m_move = -1.0f;  // back necessary
 		}
 		if ( m_arm == TMA_POWER )
 		{
@@ -478,7 +480,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 				m_targetPos = oPos;
 				m_angle = oAngle;
 				m_height = oHeight;
-				m_move = 1.0f;  // avance nécessaire
+				m_move = 1.0f;  // advance required
 				m_arm = TMA_OTHER;
 			}
 			else
@@ -502,35 +504,35 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	if ( len < 0.0f )  len = 0.0f;
 	if ( m_arm == TMA_FBACK ) len = -len;
 	m_advanceLength = dist-m_physics->RetLinLength(len);
-	if ( dist <= m_advanceLength+0.2f )  m_move = 0.0f;  // pas nécessaire d'avancer
+	if ( dist <= m_advanceLength+0.2f )  m_move = 0.0f;  // not necessary to advance
 
 	if ( m_energy == 0.0f )  m_move = 0.0f;
 
-	if ( m_move != 0.0f )  // avance ou recule ?
+	if ( m_move != 0.0f )  // forward or backward?
 	{
 		m_timeLimit = m_physics->RetLinTimeLength(Abs(len))*1.5f;
 		if ( m_timeLimit < 0.5f )  m_timeLimit = 0.5f;
 	}
 
-	if ( m_object->RetFret() == 0 )  // ne transporte rien ?
+	if ( m_object->RetFret() == 0 )  // not carrying anything?
 	{
-		m_hand = TMH_OPEN;  // pince ouverte
+		m_hand = TMH_OPEN;  // open clamp
 	}
 	else
 	{
-		m_hand = TMH_CLOSE;  // pince fermée
+		m_hand = TMH_CLOSE;  // closed clamp
 	}
 
 	InitAngle();
 
 	if ( iAngle == m_angle || m_energy == 0.0f )
 	{
-		m_bTurn = FALSE;  // rotation préliminaire inutile
+		m_bTurn = FALSE;  // preliminary rotation unnecessary
 		SoundManip(1.0f/m_speed);
 	}
 	else
 	{
-		m_bTurn = TRUE;  // rotation préliminaire nécessaire
+		m_bTurn = TRUE;  // preliminary rotation necessary
 	}
 
 	if ( m_bSubm )
@@ -538,13 +540,13 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 		m_camera->StartCentering(m_object, PI*0.8f, 99.9f, 0.0f, 0.5f);
 	}
 
-	m_physics->SetFreeze(TRUE);  // on ne bouge plus
+	m_physics->SetFreeze(TRUE);  // it does not move
 
 	m_bError = FALSE;  // ok
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is complete.
 
 Error CTaskManip::IsEnded()
 {
@@ -556,19 +558,19 @@ Error CTaskManip::IsEnded()
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
 	if ( m_bError )  return ERR_STOP;
 
-	if ( m_bBee )  // abeille ?
+	if ( m_bBee )  // bee?
 	{
 		return ERR_STOP;
 	}
 
-	if ( m_bTurn )  // rotation préliminaire ?
+	if ( m_bTurn )  // preliminary rotation?
 	{
 		angle = m_object->RetAngleY(0);
 		angle = NormAngle(angle);  // 0..2*PI
 
 		if ( TestAngle(angle, m_angle-PI*0.01f, m_angle+PI*0.01f) )
 		{
-			m_bTurn = FALSE;  // rotation terminée
+			m_bTurn = FALSE;  // rotation ended
 			m_physics->SetMotorSpeedZ(0.0f);
 			if ( m_move == 0.0f )
 			{
@@ -578,7 +580,7 @@ Error CTaskManip::IsEnded()
 		return ERR_CONTINUE;
 	}
 
-	if ( m_move != 0.0f )  // avance préliminaire ?
+	if ( m_move != 0.0f )  // preliminary advance?
 	{
 		if ( m_timeLimit <= 0.0f )
 		{
@@ -586,7 +588,7 @@ Error CTaskManip::IsEnded()
 			dist = Length(m_object->RetPosition(0), m_targetPos);
 			if ( dist <= m_advanceLength + 2.0f )
 			{
-				m_move = 0.0f;  // avance terminée
+				m_move = 0.0f;  // advance ended
 				m_physics->SetMotorSpeedX(0.0f);
 				SoundManip(1.0f/m_speed);
 				return ERR_CONTINUE;
@@ -594,8 +596,8 @@ Error CTaskManip::IsEnded()
 			else
 			{
 //EOK 1.9
-				m_move = 0.0f;  // avance terminée
-				m_physics->SetMotorSpeedX(0.0f);  // stoppe
+				m_move = 0.0f;  // advance ended
+				m_physics->SetMotorSpeedX(0.0f);  // stops
 				Abort();
 				return ERR_STOP;
 			}
@@ -604,7 +606,7 @@ Error CTaskManip::IsEnded()
 		dist = Length(m_object->RetPosition(0), m_targetPos);
 		if ( dist <= m_advanceLength )
 		{
-			m_move = 0.0f;  // avance terminée
+			m_move = 0.0f;  // advance ended
 			m_physics->SetMotorSpeedX(0.0f);
 			SoundManip(1.0f/m_speed);
 		}
@@ -628,7 +630,7 @@ Error CTaskManip::IsEnded()
 		if ( m_step == 1 )
 		{
 			if ( m_bSubm )  m_speed = 1.0f/0.7f;
-			m_hand = TMH_CLOSE;  // ferme la pince pour prendre
+			m_hand = TMH_CLOSE;  // closes the clamp to take
 			InitAngle();
 			SoundManip(1.0f/m_speed, 0.8f, 1.5f);
 			return ERR_CONTINUE;
@@ -639,7 +641,7 @@ Error CTaskManip::IsEnded()
 			if ( !TruckTakeObject() &&
 				 m_object->RetFret() == 0 )
 			{
-				m_hand = TMH_OPEN;  // réouvre la pince
+				m_hand = TMH_OPEN;  // reopens the clamp
 				m_arm = TMA_NEUTRAL;
 				InitAngle();
 				SoundManip(1.0f/m_speed, 0.8f, 1.5f);
@@ -678,9 +680,9 @@ Error CTaskManip::IsEnded()
 				}
 				if ( fret != 0 && m_fretType == OBJECT_METAL && m_arm == TMA_FFRONT )
 				{
-					m_main->ShowDropZone(fret, m_object);  // montre zone constructible
+					m_main->ShowDropZone(fret, m_object);  // shows buildable area
 				}
-				m_hand = TMH_OPEN;  // ouvre la pince pour déposer
+				m_hand = TMH_OPEN;  // opens the clamp to deposit
 				SoundManip(1.0f/m_speed, 0.8f, 1.5f);
 			}
 			InitAngle();
@@ -700,20 +702,20 @@ Error CTaskManip::IsEnded()
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskManip::Abort()
 {
 	int		i;
 
-	if ( m_object->RetFret() == 0 )  // ne transporte rien ?
+	if ( m_object->RetFret() == 0 )  // not carrying anything?
 	{
-		m_hand = TMH_OPEN;  // pince ouverte
+		m_hand = TMH_OPEN;  // open clamp
 		m_arm = TMA_NEUTRAL;
 	}
 	else
 	{
-		m_hand = TMH_CLOSE;  // pince fermée
+		m_hand = TMH_CLOSE;  // closed clamp
 		m_arm = TMA_STOCK;
 	}
 	InitAngle();
@@ -727,12 +729,12 @@ BOOL CTaskManip::Abort()
 	}
 
 	m_camera->StopCentering(m_object, 2.0f);
-	m_physics->SetFreeze(FALSE);  // on bouge de nouveau
+	m_physics->SetFreeze(FALSE);  // is moving again
 	return TRUE;
 }
 
 
-// Cherche l'objet à prendre dessous (pour l'abeille).
+// Seeks the object below to take (for bees).
 
 CObject* CTaskManip::SearchTakeUnderObject(D3DVECTOR &pos, float dLimit)
 {
@@ -767,7 +769,7 @@ CObject* CTaskManip::SearchTakeUnderObject(D3DVECTOR &pos, float dLimit)
 			 type != OBJECT_KEYd    &&
 			 type != OBJECT_TNT     )  continue;
 
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 		if ( pObj->RetLock() )  continue;
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
@@ -787,7 +789,7 @@ CObject* CTaskManip::SearchTakeUnderObject(D3DVECTOR &pos, float dLimit)
 	return pBest;
 }
 
-// Cherche l'objet à prendre devant.
+// Seeks the object in front to take.
 
 CObject* CTaskManip::SearchTakeFrontObject(BOOL bAdvance, D3DVECTOR &pos,
 										   float &distance, float &angle)
@@ -843,7 +845,7 @@ CObject* CTaskManip::SearchTakeFrontObject(BOOL bAdvance, D3DVECTOR &pos,
 			 type != OBJECT_SCRAP4  &&
 			 type != OBJECT_SCRAP5  )  continue;
 
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 		if ( pObj->RetLock() )  continue;
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
@@ -879,7 +881,7 @@ CObject* CTaskManip::SearchTakeFrontObject(BOOL bAdvance, D3DVECTOR &pos,
 	return pBest;
 }
 
-// Cherche l'objet à prendre derrière.
+// Seeks the object back to take.
 
 CObject* CTaskManip::SearchTakeBackObject(BOOL bAdvance, D3DVECTOR &pos,
 										  float &distance, float &angle)
@@ -934,7 +936,7 @@ CObject* CTaskManip::SearchTakeBackObject(BOOL bAdvance, D3DVECTOR &pos,
 			 type != OBJECT_SCRAP4  &&
 			 type != OBJECT_SCRAP5  )  continue;
 
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 		if ( pObj->RetLock() )  continue;
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
@@ -970,8 +972,7 @@ CObject* CTaskManip::SearchTakeBackObject(BOOL bAdvance, D3DVECTOR &pos,
 	return pBest;
 }
 
-// Cherche le robot ou le bâtiment sur lequel on veut prendre ou poser
-// une pile ou un autre objet.
+// Seeks the robot or building on which it wants to put a battery or or other object.
 
 CObject* CTaskManip::SearchOtherObject(BOOL bAdvance, D3DVECTOR &pos,
 									   float &distance, float &angle,
@@ -989,7 +990,7 @@ CObject* CTaskManip::SearchOtherObject(BOOL bAdvance, D3DVECTOR &pos,
 	distance = 1000000.0f;
 	angle = 0.0f;
 
-	if ( m_bSubm )  return 0;  // impossible avec le sous-marin
+	if ( m_bSubm )  return 0;  // impossible with the submarine
 
 	if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
 	iAngle = m_object->RetAngleY(0);
@@ -1011,7 +1012,7 @@ CObject* CTaskManip::SearchOtherObject(BOOL bAdvance, D3DVECTOR &pos,
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		if ( pObj == m_object )  continue;  // soi-même ?
+		if ( pObj == m_object )  continue;  // yourself?
 
 		type = pObj->RetType();
 		if ( type != OBJECT_MOBILEfa &&
@@ -1082,7 +1083,7 @@ CObject* CTaskManip::SearchOtherObject(BOOL bAdvance, D3DVECTOR &pos,
 		else
 		{
 			oLimit = 45.0f*PI/180.0f;
-			oAngle += PI;  // c'est derrière
+			oAngle += PI;  // is behind
 		}
 		oAngle = NormAngle(oAngle);  // 0..2*PI
 		angle = RotateAngle(iPos.x-oPos.x, oPos.z-iPos.z);  // CW !
@@ -1107,7 +1108,7 @@ CObject* CTaskManip::SearchOtherObject(BOOL bAdvance, D3DVECTOR &pos,
 	return 0;
 }
 
-// Prend l'objet placé devant.
+// Takes the object placed in front.
 
 BOOL CTaskManip::TruckTakeObject()
 {
@@ -1117,17 +1118,17 @@ BOOL CTaskManip::TruckTakeObject()
 	D3DVECTOR	pos;
 	float		angle, dist;
 
-	if ( m_arm == TMA_GRAB )  // prend immédiatement ?
+	if ( m_arm == TMA_GRAB )  // takes immediately?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // rien à prendre ?
+		if ( fret == 0 )  return FALSE;  // nothing to take?
 		m_fretType = fret->RetType();
 
 		if ( m_object->RetType() == OBJECT_HUMAN ||
 			 m_object->RetType() == OBJECT_TECH  )
 		{
 			fret->SetTruck(m_object);
-			fret->SetTruckPart(4);  // prend avec la main
+			fret->SetTruckPart(4);  // takes with the hand
 
 			fret->SetPosition(0, D3DVECTOR(1.7f, -0.5f, 1.1f));
 			fret->SetAngleY(0, 0.1f);
@@ -1137,9 +1138,9 @@ BOOL CTaskManip::TruckTakeObject()
 		else if ( m_bSubm )
 		{
 			fret->SetTruck(m_object);
-			fret->SetTruckPart(2);  // prend avec la pince droite
+			fret->SetTruckPart(2);  // takes with the right claw
 
-			pos = D3DVECTOR(1.1f, -1.0f, 1.0f);  // relatif
+			pos = D3DVECTOR(1.1f, -1.0f, 1.0f);  // relative
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleY(0, 0.0f);
@@ -1148,30 +1149,30 @@ BOOL CTaskManip::TruckTakeObject()
 		else
 		{
 			fret->SetTruck(m_object);
-			fret->SetTruckPart(3);  // prend avec la main
+			fret->SetTruckPart(3);  // takes with the hand
 
-			pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relatif à la main (lem4)
+			pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleZ(0, PI/2.0f);
 			fret->SetAngleY(0, 0.0f);
 		}
 
-		m_object->SetFret(fret);  // prend
+		m_object->SetFret(fret);  // takes
 	}
 
-	if ( m_arm == TMA_FFRONT )  // prend au sol devant ?
+	if ( m_arm == TMA_FFRONT )  // takes on the ground in front?
 	{
 		fret = SearchTakeFrontObject(FALSE, pos, dist, angle);
-		if ( fret == 0 )  return FALSE;  // rien à prendre ?
+		if ( fret == 0 )  return FALSE;  // nothing to take?
 		m_fretType = fret->RetType();
 
 		if ( m_bSubm )
 		{
 			fret->SetTruck(m_object);
-			fret->SetTruckPart(2);  // prend avec la pince droite
+			fret->SetTruckPart(2);  // takes with the right claw
 
-			pos = D3DVECTOR(1.1f, -1.0f, 1.0f);  // relatif
+			pos = D3DVECTOR(1.1f, -1.0f, 1.0f);  // relative
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleY(0, 0.0f);
@@ -1180,79 +1181,79 @@ BOOL CTaskManip::TruckTakeObject()
 		else
 		{
 			fret->SetTruck(m_object);
-			fret->SetTruckPart(3);  // prend avec la main
+			fret->SetTruckPart(3);  // takes with the hand
 
-			pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relatif à la main (lem4)
+			pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleZ(0, PI/2.0f);
 			fret->SetAngleY(0, 0.0f);
 		}
 
-		m_object->SetFret(fret);  // prend
+		m_object->SetFret(fret);  // takes
 	}
 
-	if ( m_arm == TMA_FBACK )  // prend au sol derrière ?
+	if ( m_arm == TMA_FBACK )  // takes on the ground behind?
 	{
 		fret = SearchTakeBackObject(FALSE, pos, dist, angle);
-		if ( fret == 0 )  return FALSE;  // rien à prendre ?
+		if ( fret == 0 )  return FALSE;  // nothing to take?
 		m_fretType = fret->RetType();
 
 		fret->SetTruck(m_object);
-		fret->SetTruckPart(3);  // prend avec la main
+		fret->SetTruckPart(3);  // takes with the hand
 
-		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relatif à la main (lem4)
+		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, PI/2.0f);
 		fret->SetAngleY(0, 0.0f);
 
-		m_object->SetFret(fret);  // prend
+		m_object->SetFret(fret);  // takes
 	}
 
-	if ( m_arm == TMA_POWER )  // prend pile à l'arrière ?
+	if ( m_arm == TMA_POWER )  // takes battery in the back?
 	{
 		fret = m_object->RetPower();
-		if ( fret == 0 )  return FALSE;  // pas de pile ?
+		if ( fret == 0 )  return FALSE;  // no battery?
 		m_fretType = fret->RetType();
 
-		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relatif à la main (lem4)
+		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, PI/2.0f);
 		fret->SetAngleY(0, 0.0f);
-		fret->SetTruckPart(3);  // prend avec la main
+		fret->SetTruckPart(3);  // takes with the hand
 
 		m_object->SetPower(0);
-		m_object->SetFret(fret);  // prend
+		m_object->SetFret(fret);  // takes
 	}
 
-	if ( m_arm == TMA_OTHER )  // prend pile sur amis ?
+	if ( m_arm == TMA_OTHER )  // battery takes from friend?
 	{
 		other = SearchOtherObject(FALSE, pos, dist, angle, m_height);
 		if ( other == 0 )  return FALSE;
 
 		fret = other->RetPower();
-		if ( fret == 0 )  return FALSE;  // l'autre n'a pas de pile ?
+		if ( fret == 0 )  return FALSE;  // the other does not have a battery?
 		m_fretType = fret->RetType();
 
 		other->SetPower(0);
 		fret->SetTruck(m_object);
-		fret->SetTruckPart(3);  // prend avec la main
+		fret->SetTruckPart(3);  // takes with the hand
 
-		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relatif à la main (lem4)
+		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, PI/2.0f);
 		fret->SetAngleY(0, 0.0f);
 
-		m_object->SetFret(fret);  // prend
+		m_object->SetFret(fret);  // takes
 	}
 
 	return TRUE;
 }
 
-// Dépose l'objet pris.
+// Deposes the object taken.
 
 BOOL CTaskManip::TruckDeposeObject()
 {
@@ -1263,10 +1264,10 @@ BOOL CTaskManip::TruckDeposeObject()
 	D3DVECTOR	pos;
 	float		angle, dist;
 
-	if ( m_arm == TMA_FFRONT )  // dépose au sol devant ?
+	if ( m_arm == TMA_FFRONT )  // deposits on the ground in front?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // ne porte rien ?
+		if ( fret == 0 )  return FALSE;  // nothing transported?
 		m_fretType = fret->RetType();
 
 		mat = fret->RetWorldMatrix(0);
@@ -1276,16 +1277,16 @@ BOOL CTaskManip::TruckDeposeObject()
 		fret->SetAngleY(0, m_object->RetAngleY(0)+PI/2.0f);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, 0.0f);
-		fret->FloorAdjust();  // plaque bien au sol
+		fret->FloorAdjust();  // plate well on the ground
 
 		fret->SetTruck(0);
-		m_object->SetFret(0);  // dépose
+		m_object->SetFret(0);  // deposit
 	}
 
-	if ( m_arm == TMA_FBACK )  // dépose au sol derrière ?
+	if ( m_arm == TMA_FBACK )  // deposited on the ground behind?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // ne porte rien ?
+		if ( fret == 0 )  return FALSE;  // nothing transported?
 		m_fretType = fret->RetType();
 
 		mat = fret->RetWorldMatrix(0);
@@ -1297,19 +1298,19 @@ BOOL CTaskManip::TruckDeposeObject()
 		fret->SetAngleZ(0, 0.0f);
 
 		fret->SetTruck(0);
-		m_object->SetFret(0);  // dépose
+		m_object->SetFret(0);  // deposit
 	}
 
-	if ( m_arm == TMA_POWER )  // dépose pile à l'arrière ?
+	if ( m_arm == TMA_POWER )  // deposits battery in the back?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // ne porte rien ?
+		if ( fret == 0 )  return FALSE;  // nothing transported?
 		m_fretType = fret->RetType();
 
 		if ( m_object->RetPower() != 0 )  return FALSE;
 
 		fret->SetTruck(m_object);
-		fret->SetTruckPart(0);  // porté par la base
+		fret->SetTruckPart(0);  // carried by the base
 
 		character = m_object->RetCharacter();
 		fret->SetPosition(0, character->posPower);
@@ -1317,17 +1318,17 @@ BOOL CTaskManip::TruckDeposeObject()
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, 0.0f);
 
-		m_object->SetPower(fret);  // utilise
+		m_object->SetPower(fret);  // uses
 		m_object->SetFret(0);
 	}
 
-	if ( m_arm == TMA_OTHER )  // dépose pile sur amis ?
+	if ( m_arm == TMA_OTHER )  // deposits battery on friend?
 	{
 		other = SearchOtherObject(FALSE, pos, dist, angle, m_height);
 		if ( other == 0 )  return FALSE;
 
 		fret = other->RetPower();
-		if ( fret != 0 )  return FALSE;  // l'autre a déjà une pile ?
+		if ( fret != 0 )  return FALSE;  // the other already has a battery?
 
 		fret = m_object->RetFret();
 		if ( fret == 0 )  return FALSE;
@@ -1341,15 +1342,15 @@ BOOL CTaskManip::TruckDeposeObject()
 		fret->SetAngleY(0, 0.0f);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, 0.0f);
-		fret->SetTruckPart(0);  // porté par la base
+		fret->SetTruckPart(0);  // carried by the base
 
-		m_object->SetFret(0);  // dépose
+		m_object->SetFret(0);  // deposit
 	}
 
 	return TRUE;
 }
 
-// Cherche si un emplacement permet de déposer un objet.
+// Seeks if a location allows to deposit an object.
 
 BOOL CTaskManip::IsFreeDeposeObject(D3DVECTOR pos)
 {
@@ -1368,22 +1369,22 @@ BOOL CTaskManip::IsFreeDeposeObject(D3DVECTOR pos)
 		if ( pObj == 0 )  break;
 
 		if ( pObj == m_object )  continue;
-		if ( !pObj->RetActif() )  continue;  // inactif ?
-		if ( pObj->RetTruck() != 0 )  continue;  // objet transporté ?
+		if ( !pObj->RetActif() )  continue;  // inactive?
+		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
 			if ( Length(iPos, oPos)-(oRadius+1.0f) < 2.0f )
 			{
-				return FALSE;  // emplacement occupé
+				return FALSE;  // location occupied
 			}
 		}
 	}
-	return TRUE;  // emplacement libre
+	return TRUE;  // location free
 }
 
-// Fait entendre le son du bras manipulateur.
+// Plays the sound of the manipulator arm.
 
 void CTaskManip::SoundManip(float time, float amplitude, float frequency)
 {
