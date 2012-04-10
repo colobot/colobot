@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskmanager.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskmanager.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -52,7 +54,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskManager::CTaskManager(CInstanceManager* iMan, CObject* object)
 {
@@ -64,7 +66,7 @@ CTaskManager::CTaskManager(CInstanceManager* iMan, CObject* object)
 	m_bPilot = FALSE;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskManager::~CTaskManager()
 {
@@ -73,7 +75,7 @@ CTaskManager::~CTaskManager()
 
 
 
-// Attend un certain temps.
+// Waits for a while.
 
 Error CTaskManager::StartTaskWait(float time)
 {
@@ -81,7 +83,7 @@ Error CTaskManager::StartTaskWait(float time)
 	return ((CTaskWait*)m_task)->Start(time);
 }
 
-// Avance droit devant d'une certaine distance.
+// Advance straight ahead a certain distance.
 
 Error CTaskManager::StartTaskAdvance(float length)
 {
@@ -89,7 +91,7 @@ Error CTaskManager::StartTaskAdvance(float length)
 	return ((CTaskAdvance*)m_task)->Start(length);
 }
 
-// Tourne d'un certain angle.
+// Turns through an certain angle.
 
 Error CTaskManager::StartTaskTurn(float angle)
 {
@@ -97,7 +99,7 @@ Error CTaskManager::StartTaskTurn(float angle)
 	return ((CTaskTurn*)m_task)->Start(angle);
 }
 
-// Atteint une position donnée.
+// Reaches a given position.
 
 Error CTaskManager::StartTaskGoto(D3DVECTOR pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
@@ -105,7 +107,7 @@ Error CTaskManager::StartTaskGoto(D3DVECTOR pos, float altitude, TaskGotoGoal go
 	return ((CTaskGoto*)m_task)->Start(pos, altitude, goalMode, crashMode);
 }
 
-// Bouge le bras manipulateur.
+// Move the manipulator arm.
 
 Error CTaskManager::StartTaskTake()
 {
@@ -113,7 +115,7 @@ Error CTaskManager::StartTaskTake()
 	return ((CTaskTake*)m_task)->Start();
 }
 
-// Bouge le bras manipulateur.
+// Move the manipulator arm.
 
 Error CTaskManager::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 {
@@ -121,7 +123,7 @@ Error CTaskManager::StartTaskManip(TaskManipOrder order, TaskManipArm arm)
 	return ((CTaskManip*)m_task)->Start(order, arm);
 }
 
-// Met ou enlève un drapeau.
+// Puts or removes a flag.
 
 Error CTaskManager::StartTaskFlag(TaskFlagOrder order, int rank)
 {
@@ -129,7 +131,7 @@ Error CTaskManager::StartTaskFlag(TaskFlagOrder order, int rank)
 	return ((CTaskFlag*)m_task)->Start(order, rank);
 }
 
-// Construit un batiment.
+// Builds a building.
 
 Error CTaskManager::StartTaskBuild(ObjectType type)
 {
@@ -137,7 +139,7 @@ Error CTaskManager::StartTaskBuild(ObjectType type)
 	return ((CTaskBuild*)m_task)->Start(type);
 }
 
-// Sonde le sol.
+// Probe the ground.
 
 Error CTaskManager::StartTaskSearch()
 {
@@ -145,7 +147,7 @@ Error CTaskManager::StartTaskSearch()
 	return ((CTaskSearch*)m_task)->Start();
 }
 
-// Lit une borne d'information.
+// Reads an information terminal.
 
 Error CTaskManager::StartTaskInfo(char *name, float value, float power, BOOL bSend)
 {
@@ -153,7 +155,7 @@ Error CTaskManager::StartTaskInfo(char *name, float value, float power, BOOL bSe
 	return ((CTaskInfo*)m_task)->Start(name, value, power, bSend);
 }
 
-// Terraforme le sol.
+// Terraforms the ground.
 
 Error CTaskManager::StartTaskTerraform()
 {
@@ -161,7 +163,7 @@ Error CTaskManager::StartTaskTerraform()
 	return ((CTaskTerraform*)m_task)->Start();
 }
 
-// Change de crayon.
+// Changes the pencil.
 
 Error CTaskManager::StartTaskPen(BOOL bDown, int color)
 {
@@ -169,7 +171,7 @@ Error CTaskManager::StartTaskPen(BOOL bDown, int color)
 	return ((CTaskPen*)m_task)->Start(bDown, color);
 }
 
-// Récupère une ruine.
+// Recovers a ruin.
 
 Error CTaskManager::StartTaskRecover()
 {
@@ -177,7 +179,7 @@ Error CTaskManager::StartTaskRecover()
 	return ((CTaskRecover*)m_task)->Start();
 }
 
-// Déploie le bouclier.
+// Deploys the shield.
 
 Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 {
@@ -197,7 +199,7 @@ Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 	return ERR_GENERIC;
 }
 
-// Tire.
+// Shoots.
 
 Error CTaskManager::StartTaskFire(float delay)
 {
@@ -206,7 +208,7 @@ Error CTaskManager::StartTaskFire(float delay)
 	return ((CTaskFire*)m_task)->Start(delay);
 }
 
-// Tire avec la fourmi.
+// Shoots with the ant.
 
 Error CTaskManager::StartTaskFireAnt(D3DVECTOR impact)
 {
@@ -214,7 +216,7 @@ Error CTaskManager::StartTaskFireAnt(D3DVECTOR impact)
 	return ((CTaskFireAnt*)m_task)->Start(impact);
 }
 
-// Ajuste la hausse.
+// Adjusts higher.
 
 Error CTaskManager::StartTaskGunGoal(float dirV, float dirH)
 {
@@ -222,7 +224,7 @@ Error CTaskManager::StartTaskGunGoal(float dirV, float dirH)
 	return ((CTaskGunGoal*)m_task)->Start(dirV, dirH);
 }
 
-// Suicide de l'araignée.
+// Suicide of the spider.
 
 Error CTaskManager::StartTaskSpiderExplo()
 {
@@ -242,7 +244,7 @@ Error CTaskManager::StartTaskReset(D3DVECTOR goal, D3DVECTOR angle)
 
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskManager::EventProcess(const Event &event)
 {
@@ -251,7 +253,7 @@ BOOL CTaskManager::EventProcess(const Event &event)
 }
 
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskManager::IsEnded()
 {
@@ -260,7 +262,7 @@ Error CTaskManager::IsEnded()
 }
 
 
-// Indique si l'action est en cours.
+// Indicates whether the action is pending.
 
 BOOL CTaskManager::IsBusy()
 {
@@ -269,8 +271,8 @@ BOOL CTaskManager::IsBusy()
 }
 
 
-// Indique s'il est possible de piloter le robot pendant l'exécution
-// de la tâche en cours.
+// Indicates whether it is possible to control the robot
+// during the execution of the current task.
 
 BOOL CTaskManager::IsPilot()
 {
@@ -278,7 +280,7 @@ BOOL CTaskManager::IsPilot()
 }
 
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskManager::Abort()
 {
