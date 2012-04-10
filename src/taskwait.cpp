@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskwait.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskwait.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -37,7 +39,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskWait::CTaskWait(CInstanceManager* iMan, CObject* object)
 					 : CTask(iMan, object)
@@ -45,14 +47,14 @@ CTaskWait::CTaskWait(CInstanceManager* iMan, CObject* object)
 	CTask::CTask(iMan, object);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskWait::~CTaskWait()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskWait::EventProcess(const Event &event)
 {
@@ -65,17 +67,17 @@ BOOL CTaskWait::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskWait::Start(float time)
 {
-	m_waitTime = time;  // durée à attendre
-	m_passTime = 0.0f;  // durée écoulée
+	m_waitTime = time;  // duration to wait
+	m_passTime = 0.0f;  // time elapsed
 	m_bEnded = FALSE;
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskWait::IsEnded()
 {
