@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// tasktake.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// tasktake.h
 
 #ifndef _TASKTAKE_H_
 #define	_TASKTAKE_H_
@@ -28,15 +30,15 @@ class CObject;
 
 enum TaskTakeOrder
 {
-	TTO_TAKE	= 1,	// prend un objet
-	TTO_DEPOSE	= 2,	// dépose l'objet
+	TTO_TAKE	= 1,	// takes an object
+	TTO_DEPOSE	= 2,	// deposes the object
 };
 
 enum TaskTakeArm
 {
-	TTA_NEUTRAL	= 1,	// bras vide au repos
-	TTA_FFRONT	= 2,	// bras au sol
-	TTA_FRIEND	= 3,	// bras derrière un robot amis
+	TTA_NEUTRAL	= 1,	// empty arm at rest
+	TTA_FFRONT	= 2,	// arm on the ground
+	TTA_FRIEND	= 3,	// arm behind a friend robot
 };
 
 
