@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskpen.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskpen.h
 
 #ifndef _TASKSPEN_H_
 #define	_TASKSPEN_H_
@@ -28,9 +30,9 @@ class CObject;
 
 enum TaskPenPhase
 {
-	TPP_UP		= 1,	// monte le crayon
-	TPP_TURN	= 2,	// tourne le carrousel
-	TPP_DOWN	= 3,	// descend le crayon
+	TPP_UP		= 1,	// rises the pencil
+	TPP_TURN	= 2,	// turns the carousel
+	TPP_DOWN	= 3,	// descends the pencil
 };
 
 
