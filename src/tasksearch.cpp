@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// tasksearch.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// tasksearch.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -40,7 +42,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskSearch::CTaskSearch(CInstanceManager* iMan, CObject* object)
 						 : CTask(iMan, object)
@@ -50,14 +52,14 @@ CTaskSearch::CTaskSearch(CInstanceManager* iMan, CObject* object)
 	m_hand = TSH_UP;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskSearch::~CTaskSearch()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskSearch::EventProcess(const Event &event)
 {
@@ -71,7 +73,7 @@ BOOL CTaskSearch::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ça avance
+	m_progress += event.rTime*m_speed;  // others advance
 	m_time += event.rTime;
 
 	if ( m_phase == TSP_DOWN ||
@@ -92,7 +94,7 @@ BOOL CTaskSearch::EventProcess(const Event &event)
 
 		mat = m_object->RetWorldMatrix(0);
 		pos = D3DVECTOR(6.5f, 0.2f, 0.0f);
-		pos = Transform(*mat, pos);  // position capteur
+		pos = Transform(*mat, pos);  // sensor position
 
 		speed.x = (Rand()-0.5f)*20.0f;
 		speed.z = (Rand()-0.5f)*20.0f;
@@ -106,7 +108,7 @@ BOOL CTaskSearch::EventProcess(const Event &event)
 }
 
 
-// Initialise les angles finaux et initiaux.
+// Initializes the initial and final angles.
 
 void CTaskSearch::InitAngle()
 {
@@ -114,15 +116,15 @@ void CTaskSearch::InitAngle()
 
 	if ( m_hand == TSH_UP )
 	{
-		m_finalAngle[0] =  110.0f*PI/180.0f;  // bras
-		m_finalAngle[1] = -110.0f*PI/180.0f;  // avant-bras
-		m_finalAngle[2] =  -65.0f*PI/180.0f;  // capteur
+		m_finalAngle[0] =  110.0f*PI/180.0f;  // arm
+		m_finalAngle[1] = -110.0f*PI/180.0f;  // forearm
+		m_finalAngle[2] =  -65.0f*PI/180.0f;  // sensor
 	}
 	if ( m_hand == TSH_DOWN )
 	{
-		m_finalAngle[0] =   25.0f*PI/180.0f;  // bras
-		m_finalAngle[1] =  -70.0f*PI/180.0f;  // avant-bras
-		m_finalAngle[2] =  -45.0f*PI/180.0f;  // capteur
+		m_finalAngle[0] =   25.0f*PI/180.0f;  // arm
+		m_finalAngle[1] =  -70.0f*PI/180.0f;  // forearm
+		m_finalAngle[2] =  -45.0f*PI/180.0f;  // sensor
 	}
 
 	for ( i=0 ; i<3 ; i++ )
@@ -132,7 +134,7 @@ void CTaskSearch::InitAngle()
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskSearch::Start()
 {
@@ -170,12 +172,12 @@ Error CTaskSearch::Start()
 	m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.9f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_STOP);
 
-	m_physics->SetFreeze(TRUE);  // on ne bouge plus
+	m_physics->SetFreeze(TRUE);  // it does not move
 
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskSearch::IsEnded()
 {
@@ -226,17 +228,17 @@ Error CTaskSearch::IsEnded()
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskSearch::Abort()
 {
 	m_camera->StopCentering(m_object, 2.0f);
-	m_physics->SetFreeze(FALSE);  // on bouge de nouveau
+	m_physics->SetFreeze(FALSE);  // is moving again
 	return TRUE;
 }
 
 
-// Crée une marque si c'est possible.
+// Creates a mark if possible.
 
 BOOL CTaskSearch::CreateMark()
 {
@@ -249,7 +251,7 @@ BOOL CTaskSearch::CreateMark()
 
 	mat = m_object->RetWorldMatrix(0);
 	pos = D3DVECTOR(7.5f, 0.0f, 0.0f);
-	pos = Transform(*mat, pos);  // position capteur
+	pos = Transform(*mat, pos);  // sensor position
 
 	res = m_terrain->RetResource(pos);
 	if ( res == TR_NULL )  return FALSE;
@@ -302,12 +304,12 @@ BOOL CTaskSearch::CreateMark()
 		return FALSE;
 	}
 
-	m_displayText->DisplayError(info, pos, 5.0f, 50.0f);  // affiche le message
+	m_displayText->DisplayError(info, pos, 5.0f, 50.0f);  // displays the message
 
 	return TRUE;
 }
 
-// Détruit les marques d'un type donné..
+// Destroys the marks of a given type.
 
 void CTaskSearch::DeleteMark(ObjectType type)
 {
@@ -322,7 +324,7 @@ void CTaskSearch::DeleteMark(ObjectType type)
 
 		if ( type == pObj->RetType() )
 		{
-			pObj->DeleteObject();  // supprime la marque
+			pObj->DeleteObject();  // removes the mark
 			delete pObj;
 			break;
 		}
