@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskreset.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskreset.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -45,7 +47,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskReset::CTaskReset(CInstanceManager* iMan, CObject* object)
 					 : CTask(iMan, object)
@@ -53,14 +55,14 @@ CTaskReset::CTaskReset(CInstanceManager* iMan, CObject* object)
 	CTask::CTask(iMan, object);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskReset::~CTaskReset()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskReset::EventProcess(const Event &event)
 {
@@ -78,7 +80,7 @@ BOOL CTaskReset::EventProcess(const Event &event)
 	if ( m_phase == TRSP_ZOUT )
 	{
 		angle = m_iAngle;
-		angle += powf(m_progress*5.0f, 2.0f);  // accélère
+		angle += powf(m_progress*5.0f, 2.0f);  // accelerates
 		m_object->SetAngleY(0, angle);
 		m_object->SetZoom(0, 1.0f-m_progress);
 
@@ -136,7 +138,7 @@ BOOL CTaskReset::EventProcess(const Event &event)
 	if ( m_phase == TRSP_ZIN )
 	{
 		angle = m_angle.y;
-		angle += -powf((1.0f-m_progress)*5.0f, 2.0f);  // freine
+		angle += -powf((1.0f-m_progress)*5.0f, 2.0f);  // slows
 		m_object->SetAngleY(0, angle);
 		m_object->SetZoom(0, m_progress);
 
@@ -173,8 +175,8 @@ BOOL CTaskReset::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
-// Un angle positif effectue un virage à droite.
+// Assigns the goal was achieved.
+// A positive angle makes a turn right.
 
 Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 {
@@ -185,10 +187,10 @@ Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 	if ( fret != 0 && fret->RetResetCap() == RESET_MOVE )
 	{
 		fret->SetTruck(0);
-		m_object->SetFret(0);  // ne porte plus rien
+		m_object->SetFret(0);  // does nothing
 	}
 
-	if ( !m_main->RetNiceReset() )  // retour rapide ?
+	if ( !m_main->RetNiceReset() )  // quick return?
 	{
 		m_object->SetPosition(0, goal);
 		m_object->SetAngle(0, angle);
@@ -202,7 +204,7 @@ Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 	m_goal = goal;
 	m_angle = angle;
 
-	if ( SearchVehicle() )  // emplacement de départ occupé ?
+	if ( SearchVehicle() )  // starting location occupied?
 	{
 		m_bError = TRUE;
 		return ERR_RESET_NEAR;
@@ -224,7 +226,7 @@ Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskReset::IsEnded()
 {
@@ -232,7 +234,7 @@ Error CTaskReset::IsEnded()
 	float		dist;
 	int			i;
 
-	if ( !m_main->RetNiceReset() )  // retour rapide ?
+	if ( !m_main->RetNiceReset() )  // quick return?
 	{
 		return ERR_STOP;
 	}
@@ -270,7 +272,7 @@ Error CTaskReset::IsEnded()
 	power = m_object->RetPower();
 	if ( power != 0 )
 	{
-		power->SetEnergy(power->RetCapacity());  // refait le plein
+		power->SetEnergy(power->RetCapacity());  // refueling
 	}
 
 	m_brain->RunProgram(m_object->RetResetRun());
@@ -279,7 +281,7 @@ Error CTaskReset::IsEnded()
 }
 
 
-// Cherche si un véhicule est trop proche.
+// Seeks if a vehicle is too close.
 
 BOOL CTaskReset::SearchVehicle()
 {
