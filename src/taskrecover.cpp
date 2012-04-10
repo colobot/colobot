@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskrecover.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskrecover.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,12 +40,12 @@
 #include "taskrecover.h"
 
 
-#define ENERGY_RECOVER	0.25f		// énergie consommée par récupération
+#define ENERGY_RECOVER	0.25f		// energy consumed by recovery
 #define RECOVER_DIST	11.8f
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskRecover::CTaskRecover(CInstanceManager* iMan, CObject* object)
 							   : CTask(iMan, object)
@@ -54,14 +56,14 @@ CTaskRecover::CTaskRecover(CInstanceManager* iMan, CObject* object)
 	m_soundChannel = -1;
 }
 
-// Destructeur de l'objet.
+// Object's constructor.
 
 CTaskRecover::~CTaskRecover()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskRecover::EventProcess(const Event &event)
 {
@@ -74,7 +76,7 @@ BOOL CTaskRecover::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	if ( m_phase == TRP_TURN )  // rotation préliminaire ?
+	if ( m_phase == TRP_TURN )  // preliminary rotation?
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
@@ -82,11 +84,11 @@ BOOL CTaskRecover::EventProcess(const Event &event)
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // tourne à gauche/droite
+		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
 		return TRUE;
 	}
 
-	m_progress += event.rTime*m_speed;  // ça avance
+	m_progress += event.rTime*m_speed;  // others advance
 	m_time += event.rTime;
 
 	if ( m_phase == TRP_DOWN )
@@ -100,13 +102,13 @@ BOOL CTaskRecover::EventProcess(const Event &event)
 		m_object->SetAngleZ(5, angle);
 	}
 
-	if ( m_phase == TRP_MOVE )  // avance/recule préliminaire ?
+	if ( m_phase == TRP_MOVE )  // preliminary forward/backward?
 	{
 		dist = Length(m_object->RetPosition(0), m_ruin->RetPosition(0));
 		linSpeed = 0.0f;
 		if ( dist > RECOVER_DIST )  linSpeed =  1.0f;
 		if ( dist < RECOVER_DIST )  linSpeed = -1.0f;
-		m_physics->SetMotorSpeedX(linSpeed);  // avance/recule
+		m_physics->SetMotorSpeedX(linSpeed);  // forward/backward
 		return TRUE;
 	}
 
@@ -180,7 +182,7 @@ BOOL CTaskRecover::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskRecover::Start()
 {
@@ -191,7 +193,7 @@ Error CTaskRecover::Start()
 
 	ObjectType	type;
 
-	m_bError = TRUE;  // opération impossible
+	m_bError = TRUE;  // operation impossible
 	if ( !m_physics->RetLand() )  return ERR_RECOVER_VEH;
 
 	type = m_object->RetType();
@@ -204,12 +206,12 @@ Error CTaskRecover::Start()
 	
 	mat = m_object->RetWorldMatrix(0);
 	pos = D3DVECTOR(RECOVER_DIST, 3.3f, 0.0f);
-	pos = Transform(*mat, pos);  // position devant
+	pos = Transform(*mat, pos);  // position in front
 	m_recoverPos = pos;
 
 	m_ruin = SearchRuin();
 	if ( m_ruin == 0 )  return ERR_RECOVER_NULL;
-	m_ruin->SetLock(TRUE);  // ruine plus utilisable
+	m_ruin->SetLock(TRUE);  // ruin no longer usable
 
 	iPos = m_object->RetPosition(0);
 	oPos = m_ruin->RetPosition(0);
@@ -229,7 +231,7 @@ Error CTaskRecover::Start()
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskRecover::IsEnded()
 {
@@ -242,7 +244,7 @@ Error CTaskRecover::IsEnded()
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
 	if ( m_bError )  return ERR_STOP;
 
-	if ( m_phase == TRP_TURN )  // rotation préliminaire ?
+	if ( m_phase == TRP_TURN )  // preliminary rotation?
 	{
 		angle = m_object->RetAngleY(0);
 		angle = NormAngle(angle);  // 0..2*PI
@@ -268,7 +270,7 @@ Error CTaskRecover::IsEnded()
 		return ERR_CONTINUE;
 	}
 
-	if ( m_phase == TRP_MOVE )  // avance préliminaire ?
+	if ( m_phase == TRP_MOVE )  // preliminary advance?
 	{
 		dist = Length(m_object->RetPosition(0), m_ruin->RetPosition(0));
 
@@ -279,7 +281,7 @@ Error CTaskRecover::IsEnded()
 
 			mat = m_object->RetWorldMatrix(0);
 			pos = D3DVECTOR(RECOVER_DIST, 3.3f, 0.0f);
-			pos = Transform(*mat, pos);  // position devant
+			pos = Transform(*mat, pos);  // position in front
 			m_recoverPos = pos;
 
 			i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.9f, TRUE);
@@ -294,9 +296,9 @@ Error CTaskRecover::IsEnded()
 		}
 		else
 		{
-			if ( m_progress > 1.0f )  // timeout ?
+			if ( m_progress > 1.0f )  // timeout?
 			{
-				m_ruin->SetLock(FALSE);  // de nouveau utilisable
+				m_ruin->SetLock(FALSE);  // usable again
 				m_camera->StopCentering(m_object, 2.0f);
 				return ERR_RECOVER_NULL;
 			}
@@ -319,7 +321,7 @@ Error CTaskRecover::IsEnded()
 			m_displayText->DisplayError(ERR_TOOMANY, m_object);
 			return ERR_STOP;
 		}
-		m_metal->SetLock(TRUE);  // métal pas encore utilisable
+		m_metal->SetLock(TRUE);  // metal not yet usable
 		m_metal->SetZoom(0, 0.0f);
 
 		mat = m_object->RetWorldMatrix(0);
@@ -344,7 +346,7 @@ Error CTaskRecover::IsEnded()
 	{
 		m_metal->SetZoom(0, 1.0f);
 
-		m_ruin->DeleteObject();  // détruit la ruine
+		m_ruin->DeleteObject();  // destroys the ruin
 		delete m_ruin;
 		m_ruin = 0;
 
@@ -360,20 +362,20 @@ Error CTaskRecover::IsEnded()
 		return ERR_CONTINUE;
 	}
 
-	m_metal->SetLock(FALSE);  // métal utilisable
+	m_metal->SetLock(FALSE);  // metal usable
 
 	Abort();
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskRecover::Abort()
 {
 	m_object->SetAngleZ(2,  126.0f*PI/180.0f);
 	m_object->SetAngleZ(4,  126.0f*PI/180.0f);
 	m_object->SetAngleZ(3, -144.0f*PI/180.0f);
-	m_object->SetAngleZ(5, -144.0f*PI/180.0f);  // repos
+	m_object->SetAngleZ(5, -144.0f*PI/180.0f);  // rest
 
 	if ( m_soundChannel != -1 )
 	{
@@ -387,7 +389,7 @@ BOOL CTaskRecover::Abort()
 }
 
 
-// Cherche si un ruine est devant le véhicule.
+// Seeks if a ruin is in front of the vehicle.
 
 CObject* CTaskRecover::SearchRuin()
 {
@@ -410,7 +412,7 @@ CObject* CTaskRecover::SearchRuin()
 			 type == OBJECT_RUINmobilet1 ||
 			 type == OBJECT_RUINmobilet2 ||
 			 type == OBJECT_RUINmobiler1 ||
-			 type == OBJECT_RUINmobiler2 )  // véhicule en ruine ?
+			 type == OBJECT_RUINmobiler2 )  // vehicle in ruin?
 		{
 			oPos = pObj->RetPosition(0);
 			dist = Length(oPos, m_recoverPos);
