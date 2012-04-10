@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskmanip.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskmanip.h
 
 #ifndef _TASKMANIP_H_
 #define	_TASKMANIP_H_
@@ -28,26 +30,26 @@ class CObject;
 
 enum TaskManipOrder
 {
-	TMO_AUTO	= 0,	// prend ou dépose automatique
-	TMO_GRAB	= 1,	// prend un objet
-	TMO_DROP	= 2,	// dépose l'objet
+	TMO_AUTO	= 0,	// deposits or takes automatically
+	TMO_GRAB	= 1,	// takes an object
+	TMO_DROP	= 2,	// deposits the object
 };
 
 enum TaskManipArm
 {
-	TMA_NEUTRAL	= 1,	// bras vide au repos
-	TMA_STOCK	= 2,	// bras plein au repos
-	TMA_FFRONT	= 3,	// bras au sol
-	TMA_FBACK	= 4,	// bras derrière le robot
-	TMA_POWER	= 5,	// bras derrière le robot
-	TMA_OTHER	= 6,	// bras derrière un robot amis
-	TMA_GRAB	= 7,	// prend immédiatement
+	TMA_NEUTRAL	= 1,	// empty arm at rest
+	TMA_STOCK	= 2,	// right arm resting
+	TMA_FFRONT	= 3,	// arm on the ground
+	TMA_FBACK	= 4,	// arm behind the robot
+	TMA_POWER	= 5,	// arm behind the robot
+	TMA_OTHER	= 6,	// arm behind a friend robot
+	TMA_GRAB	= 7,	// takes immediately
 };
 
 enum TaskManipHand
 {
-	TMH_OPEN	= 1,	// pince ouverte
-	TMH_CLOSE	= 2,	// pince fermée
+	TMH_OPEN	= 1,	// open clamp
+	TMH_CLOSE	= 2,	// closed clamp
 };
 
 
