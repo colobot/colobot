@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// tasksearch.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// tasksearch.h
 
 #ifndef _TASKSEARCH_H_
 #define	_TASKSEARCH_H_
@@ -28,15 +30,15 @@ class CObject;
 
 enum TaskSearchHand
 {
-	TSH_UP		= 1,	// capteur en haut
-	TSH_DOWN	= 2,	// capteur en bas
+	TSH_UP		= 1,	// sensor at the top
+	TSH_DOWN	= 2,	// sensor at the bottom
 };
 
 enum TaskSearchPhase
 {
-	TSP_DOWN	= 1,	// descend
-	TSP_SEARCH	= 2,	// cherche
-	TSP_UP		= 3,	// remonte
+	TSP_DOWN	= 1,	// descends
+	TSP_SEARCH	= 2,	// seeks
+	TSP_UP		= 3,	// rises
 };
 
 
