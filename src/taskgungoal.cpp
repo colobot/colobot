@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskgungoal.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskgungoal.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -35,7 +37,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskGunGoal::CTaskGunGoal(CInstanceManager* iMan, CObject* object)
 						  : CTask(iMan, object)
@@ -43,14 +45,14 @@ CTaskGunGoal::CTaskGunGoal(CInstanceManager* iMan, CObject* object)
 	CTask::CTask(iMan, object);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskGunGoal::~CTaskGunGoal()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskGunGoal::EventProcess(const Event &event)
 {
@@ -85,7 +87,7 @@ BOOL CTaskGunGoal::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskGunGoal::Start(float dirV, float dirH)
 {
@@ -94,8 +96,8 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
 
 	m_initialDirV = m_object->RetGunGoalV();
 	m_object->SetGunGoalV(dirV);
-	m_finalDirV = m_object->RetGunGoalV();  // direction possible
-	m_object->SetGunGoalV(m_initialDirV);  // remet direction initiale
+	m_finalDirV = m_object->RetGunGoalV();  // possible direction
+	m_object->SetGunGoalV(m_initialDirV);  // gives initial direction
 
 	if ( m_finalDirV == m_initialDirV )
 	{
@@ -108,8 +110,8 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
 
 	m_initialDirH = m_object->RetGunGoalH();
 	m_object->SetGunGoalH(dirH);
-	m_finalDirH = m_object->RetGunGoalH();  // direction possible
-	m_object->SetGunGoalH(m_initialDirH);  // remet direction initiale
+	m_finalDirH = m_object->RetGunGoalH();  // possible direction
+	m_object->SetGunGoalH(m_initialDirH);  // gives initial direction
 
 	if ( m_finalDirH == m_initialDirH )
 	{
@@ -134,7 +136,7 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskGunGoal::IsEnded()
 {
@@ -150,7 +152,7 @@ Error CTaskGunGoal::IsEnded()
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskGunGoal::Abort()
 {
