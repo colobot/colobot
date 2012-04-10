@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskinfo.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskinfo.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -40,7 +42,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskInfo::CTaskInfo(CInstanceManager* iMan, CObject* object)
 						 : CTask(iMan, object)
@@ -48,14 +50,14 @@ CTaskInfo::CTaskInfo(CInstanceManager* iMan, CObject* object)
 	CTask::CTask(iMan, object);
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskInfo::~CTaskInfo()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskInfo::EventProcess(const Event &event)
 {
@@ -63,14 +65,14 @@ BOOL CTaskInfo::EventProcess(const Event &event)
 	if ( event.event != EVENT_FRAME )  return TRUE;
 	if ( m_bError )  return FALSE;
 
-	m_progress += event.rTime*m_speed;  // ça avance
+	m_progress += event.rTime*m_speed;  // other advance
 	m_time += event.rTime;
 
 	return TRUE;
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 {
@@ -83,7 +85,7 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 	m_bError = TRUE;
 	m_object->SetInfoReturn(NAN);
 
-	pInfo = SearchInfo(power);  // cherche borne
+	pInfo = SearchInfo(power);  // seeks terminal
 	if ( pInfo == 0 )
 	{
 		return ERR_INFO_NULL;
@@ -95,8 +97,8 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 		return ERR_INFO_NULL;
 	}
 
-	op = 1;  // émission impossible
-	if ( bSend )  // send ?
+	op = 1;  // transmission impossible
+	if ( bSend )  // send?
 	{
 		total = pInfo->RetInfoTotal();
 		for ( i=0 ; i<total ; i++ )
@@ -116,15 +118,15 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 				strcpy(info.name, name);
 				info.value = value;
 				pInfo->SetInfo(total, info);
-				op = 2;  // début de réception (pour la borne)
+				op = 2;  // start of reception (for terminal)
 			}
 		}
 		else
 		{
-			op = 2;  // début de réception (pour la borne)
+			op = 2;  // start of reception (for terminal)
 		}
 	}
-	else	// receive ?
+	else	// receive?
 	{
 		total = pInfo->RetInfoTotal();
 		for ( i=0 ; i<total ; i++ )
@@ -138,13 +140,13 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 		}
 		if ( i < total )
 		{
-			op = 0;  // début d'émission (pour la borne)
+			op = 0;  // beginning of transmission (for terminal)
 		}
 	}
 
 	pAuto->Start(op);
 
-	if ( op == 0 )  // émission ?
+	if ( op == 0 )  // transmission?
 	{
 		pos = pInfo->RetPosition(0);
 		pos.y += 9.5f;
@@ -152,7 +154,7 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 		goal.y += 4.0f;
 		m_particule->CreateRay(pos, goal, PARTIRAY3, FPOINT(2.0f, 2.0f), 1.0f);
 	}
-	if ( op == 2 )  // réception ?
+	if ( op == 2 )  // reception?
 	{
 		goal = pInfo->RetPosition(0);
 		goal.y += 9.5f;
@@ -170,7 +172,7 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskInfo::IsEnded()
 {
@@ -184,7 +186,7 @@ Error CTaskInfo::IsEnded()
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskInfo::Abort()
 {
@@ -192,7 +194,7 @@ BOOL CTaskInfo::Abort()
 }
 
 
-// Cherche la borne d'information la plus proche.
+// Seeks the nearest information terminal.
 
 CObject* CTaskInfo::SearchInfo(float power)
 {
@@ -218,7 +220,7 @@ CObject* CTaskInfo::SearchInfo(float power)
 
 		oPos = pObj->RetPosition(0);
 		dist = Length(oPos, iPos);
-		if ( dist > power )  continue;  // trop loin ?
+		if ( dist > power )  continue;  // too far?
 		if ( dist < min )
 		{
 			min = dist;
