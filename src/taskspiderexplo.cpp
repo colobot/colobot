@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// taskspiderexplo.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// taskspiderexplo.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -38,7 +40,7 @@
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CTaskSpiderExplo::CTaskSpiderExplo(CInstanceManager* iMan, CObject* object)
 						  : CTask(iMan, object)
@@ -49,21 +51,21 @@ CTaskSpiderExplo::CTaskSpiderExplo(CInstanceManager* iMan, CObject* object)
 	m_bError = FALSE;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CTaskSpiderExplo::~CTaskSpiderExplo()
 {
 }
 
 
-// Gestion d'un événement.
+// Management of an event.
 
 BOOL CTaskSpiderExplo::EventProcess(const Event &event)
 {
 	if ( m_engine->RetPause() )  return TRUE;
 	if ( event.event != EVENT_FRAME )  return TRUE;
 
-	// Objet momentanément immobile (fourmi sur le dos) ?
+	// Momentarily stationary object (ant on the back)?
 	if ( m_object->RetFixed() )
 	{
 		m_bError = TRUE;
@@ -76,21 +78,21 @@ BOOL CTaskSpiderExplo::EventProcess(const Event &event)
 }
 
 
-// Assigne le but à atteindre.
+// Assigns the goal was achieved.
 
 Error CTaskSpiderExplo::Start()
 {
-	m_motion->SetAction(MSS_EXPLO, 1.0f);  // l'abdomen gonfle
+	m_motion->SetAction(MSS_EXPLO, 1.0f);  // swells abdominal
 	m_time = 0.0f;
 
-	m_physics->SetMotorSpeedX(0.0f);  // stoppe l'avance
-	m_physics->SetMotorSpeedZ(0.0f);  // stoppe la rotation
+	m_physics->SetMotorSpeedX(0.0f);  // stops the advance
+	m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
 
 	m_bError = FALSE;
 	return ERR_OK;
 }
 
-// Indique si l'action est terminée.
+// Indicates whether the action is finished.
 
 Error CTaskSpiderExplo::IsEnded()
 {
@@ -107,13 +109,13 @@ Error CTaskSpiderExplo::IsEnded()
 	if ( m_time < 1.0f )  return ERR_CONTINUE;
 
 	pyro = new CPyro(m_iMan);
-	pyro->Create(PT_SPIDER, m_object);  // l'araignée explose (suicide)
+	pyro->Create(PT_SPIDER, m_object);  // the spider explodes (suicide)
 
 	Abort();
 	return ERR_STOP;
 }
 
-// Termine brutalement l'action en cours.
+// Suddenly ends the current action.
 
 BOOL CTaskSpiderExplo::Abort()
 {
