@@ -12,8 +12,11 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// MetaFile
-// décembre 2000, Daniel Roux
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// MetaFile
+// december 2000, Daniel Roux
+// april 2012, Programerus (translation)
 
 #include <windows.h>
 #include <stdlib.h>
@@ -179,7 +182,7 @@ int RetLength(char *filename)
 
 
 
-// Programme principal.
+// Main program.
 
 int main(int argc, char** argv)
 {
@@ -190,26 +193,27 @@ int main(int argc, char** argv)
 	char*	buffer;
 	int		total, j, start, offset, len;
 
-	printf("MetaFile, pour appondre plusieurs fichiers en un seul.\n");
+	printf("MetaFile, for stitch multiple files into one.\n");
 	printf("(c) 2000, EPSITEC SA & Daniel Roux\n");
+	printf("(2012, Translation by Programerus\n");
 	printf("\n");
 
 	if ( argc < 3 )
 	{
-		printf("Pas assez d'arguments (metafile liste.txt, destination)\n");
+		printf("Not enough arguments (metafile list.txt, destination)\n");
 		return 1;
 	}
 
 	if ( !ReadList(argv[1]) )
 	{
-		printf("Impossible d'ouvrir la liste.\n");
+		printf("Failed to open the list.\n");
 		return 1;
 	}
 
 	dest = fopen(argv[2], "wb");
 	if ( dest == 0 )
 	{
-		printf("Impossible d'ouvrir la destination.\n");
+		printf("Failed to open the destination.\n");
 		return 1;
 	}
 
@@ -279,11 +283,11 @@ int main(int argc, char** argv)
 
 		buffer = (char*)malloc(header.len);
 
-		printf("Fichier = %s\n", header.name);
+		printf("File = %s\n", header.name);
 		src = fopen(header.name, "rb");
 		if ( src == 0 )
 		{
-			printf("Impossible d'ouvrir %s\n", header.name);
+			printf("Failed to open %s\n", header.name);
 			fclose(dest);
 			return 1;
 		}
@@ -299,7 +303,7 @@ int main(int argc, char** argv)
 
 	fclose(dest);
 
-	printf("Terminé correctement.\n");
+	printf("Completed successfully.\n");
 	return 0;
 }
 
