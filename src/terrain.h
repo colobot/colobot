@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// terrain.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// terrain.h
 
 #ifndef _TERRAIN_H_
 #define	_TERRAIN_H_
@@ -170,19 +172,19 @@ protected:
 	CD3DEngine*		m_engine;
 	CWater*			m_water;
 
-	int				m_mosaic;		// nb de mosaïque
-	int				m_brick;		// nb de briques par mosaïque
-	float			m_size;			// taille d'un élément dans une brique
-	float			m_vision;		// vision avant un changement de résolution
-	float*			m_relief;		// table du relief
-	int*			m_texture;		// table des textures
-	int*			m_objRank;		// table des rangs des objets
+	int			m_mosaic;		// number of mosaics
+	int			m_brick;		// number of bricks per mosaics
+	float			m_size;			// size of an item in an brick
+	float			m_vision;		// vision before a change of resolution
+	float*			m_relief;		// table of the relief
+	int*			m_texture;		// table of textures
+	int*			m_objRank;		// table of rows of objects
 	BOOL			m_bMultiText;
 	BOOL			m_bLevelText;
-	float			m_scaleMapping;	// échelle du mapping
+	float			m_scaleMapping;		// scale of the mapping
 	float			m_scaleRelief;
-	int				m_subdivMapping;
-	int				m_depth;		// nb de résolutions différentes (1,2,3,4)
+	int			m_subdivMapping;
+	int			m_depth;		// number of different resolutions (1,2,3,4)
 	char			m_texBaseName[20];
 	char			m_texBaseExt[10];
 	float			m_defHardness;
@@ -198,7 +200,7 @@ protected:
 	BuildingLevel	m_buildingTable[MAXBUILDINGLEVEL];
 
 	unsigned char*	m_resources;
-	D3DVECTOR		m_wind;			// vitesse du vent
+	D3DVECTOR		m_wind;			// wind speed
 
 	float			m_flyingMaxHeight;
 	int				m_flyingLimitTotal;
