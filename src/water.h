@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// water.h
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// water.h
 
 #ifndef _WATER_H_
 #define	_WATER_H_
@@ -32,8 +34,8 @@ enum ParticuleType;
 
 typedef struct
 {
-	short		x, y;		// début
-	short		len;		// longueur en x
+	short		x, y;		// beginning
+	short		len;		// length by x
 	float		px1, px2, pz;
 }
 WaterLine;
@@ -55,11 +57,11 @@ WaterVapor;
 
 enum WaterType
 {
-	WATER_NULL		= 0,	// pas d'eau
-	WATER_TT		= 1,	// texture transparente
-	WATER_TO		= 2,	// texture opaque
-	WATER_CT		= 3,	// couleur transparente
-	WATER_CO		= 4,	// couleur opaque
+	WATER_NULL		= 0,	// no water
+	WATER_TT		= 1,	// transparent texture
+	WATER_TO		= 2,	// opaque texture
+	WATER_CT		= 3,	// transparent color
+	WATER_CO		= 4,	// opaque color
 };
 
 
@@ -106,19 +108,19 @@ protected:
 
 	WaterType		m_type[2];
 	char			m_filename[100];
-	float			m_level;		// niveau global
-	float			m_glint;		// amplitude des reflets
-	D3DVECTOR		m_eddy;			// amplitude des remous
-	D3DCOLORVALUE	m_diffuse;		// couleur diffuse
-	D3DCOLORVALUE	m_ambient;		// couleur ambiante
+	float			m_level;		// overall level
+	float			m_glint;		// amplitude of reflections
+	D3DVECTOR		m_eddy;			// amplitude of swirls
+	D3DCOLORVALUE		m_diffuse;		// diffuse color
+	D3DCOLORVALUE		m_ambient;		// ambient color
 	float			m_time;
 	float			m_lastLava;
-	int				m_subdiv;
+	int			m_subdiv;
 
-	int				m_brick;		// nb de briques*mosaïque
-	float			m_size;			// taille d'un élément dans une brique
+	int			m_brick;		// number of brick*mosaics
+	float			m_size;			// size of a item in an brick
 
-	int				m_lineUsed;
+	int			m_lineUsed;
 	WaterLine		m_line[MAXWATERLINE];
 
 	WaterVapor		m_vapor[MAXWATVAPOR];
