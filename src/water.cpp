@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// water.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// water.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -37,7 +39,7 @@
 
 
 
-// Constructeur du terrain.
+// Constructor of the terrain.
 
 CWater::CWater(CInstanceManager* iMan, CD3DEngine* engine)
 {
@@ -59,7 +61,7 @@ CWater::CWater(CInstanceManager* iMan, CD3DEngine* engine)
 	m_filename[0] = 0;
 }
 
-// Destructeur du terrain.
+// Destructor of the terrain.
 
 CWater::~CWater()
 {
@@ -148,7 +150,7 @@ BOOL CWater::EventProcess(const Event &event)
 	return TRUE;
 }
 
-// Fait évoluer l'eau.
+// Makes water evolve.
 
 BOOL CWater::EventFrame(const Event &event)
 {
@@ -165,7 +167,7 @@ BOOL CWater::EventFrame(const Event &event)
 	return TRUE;
 }
 
-// Fait évoluer les jets de vapeur sur la lave.
+// Makes evolve the steam jets on the lava.
 
 void CWater::LavaFrame(float rTime)
 {
@@ -230,7 +232,7 @@ void CWater::LavaFrame(float rTime)
 	}
 }
 
-// Supprime tous les jets de vapeur.
+// Removes all the steam jets.
 
 void CWater::VaporFlush()
 {
@@ -242,7 +244,7 @@ void CWater::VaporFlush()
 	}
 }
 
-// Crée un nouveau jet de vapeur.
+// Creates a new steam.
 
 BOOL CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 {
@@ -278,7 +280,7 @@ BOOL CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 	return FALSE;
 }
 
-// Fait évoluer un jet de vapeur,
+// Makes evolve a steam jet,
 
 void CWater::VaporFrame(int i, float rTime)
 {
@@ -350,8 +352,7 @@ void CWater::VaporFrame(int i, float rTime)
 }
 
 
-// Ajuste la position et la normale, pour imiter des reflets
-// sur une étendue d'eau au repos.
+// Adjusts the position to normal, to imitate reflections on an expanse of water at rest.
 
 void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
 						 FPOINT &uv1, FPOINT &uv2)
@@ -396,8 +397,8 @@ void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
 #endif
 }
 
-// Dessine la surface arrière de l'eau.
-// Cette surface empèche de voir le ciel (background) sous l'eau !
+// Draw the back surface of the water.
+// This surface prevents to see the sky (background) underwater!
 
 void CWater::DrawBack()
 {
@@ -432,7 +433,7 @@ void CWater::DrawBack()
 	deep = m_engine->RetDeepView(0);
 	m_engine->SetDeepView(deep*2.0f, 0);
 	m_engine->SetFocus(m_engine->RetFocus());
-	m_engine->UpdateMatProj();  // double la profondeur de vue
+	m_engine->UpdateMatProj();  // twice the depth of view
 
 	D3DUtil_SetIdentityMatrix(matrix);
 	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
@@ -468,14 +469,14 @@ void CWater::DrawBack()
 
 	m_engine->SetDeepView(deep, 0);
 	m_engine->SetFocus(m_engine->RetFocus());
-	m_engine->UpdateMatProj();  // remet profondeur de vue initiale
+	m_engine->UpdateMatProj();  // gives the initial depth of view
 
 	device->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
 	device->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
 	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
 }
 
-// Dessine la surface plane de l'eau.
+// Draws the flat surface of the water.
 
 void CWater::DrawSurf()
 {
@@ -541,7 +542,7 @@ void CWater::DrawSurf()
 	if ( bUnder )  sizez = -size;
 	else           sizez =  size;
 
-	// Dessine toutes les lignes.
+	// Draws all the lines.
 	deep = m_engine->RetDeepView(0)*1.5f;
 
 	for ( i=0 ; i<m_lineUsed ; i++ )
@@ -550,7 +551,7 @@ void CWater::DrawSurf()
 		pos.z = m_line[i].pz;
 		pos.x = m_line[i].px1;
 
-		// Ligne visible ?
+		// Visible line?
 		p = pos;
 		p.x += size*(m_line[i].len-1);
 		radius = sqrtf(powf(size, 2.0f)+powf(size*m_line[i].len, 2.0f));
@@ -600,7 +601,7 @@ void CWater::DrawSurf()
 }
 
 
-// Indique s'il y a de l'eau à une position donnée.
+// Indicates if there is water in a given position.
 
 BOOL CWater::RetWater(int x, int y)
 {
@@ -628,7 +629,7 @@ BOOL CWater::RetWater(int x, int y)
 	return FALSE;
 }
 
-// Met à jour les positions par-rapport au terrain.
+// Updates the positions, relative to the ground.
 
 BOOL CWater::CreateLine(int x, int y, int len)
 {
@@ -649,7 +650,7 @@ BOOL CWater::CreateLine(int x, int y, int len)
 	return ( m_lineUsed < MAXWATERLINE );
 }
 
-// Crée toutes les étendues d'eau.
+// Creates all expanses of water.
 
 BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 					D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,
@@ -694,7 +695,7 @@ BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 		len = 0;
 		for ( x=0 ; x<m_brick ; x++ )
 		{
-			if ( RetWater(x,y) )  // eau ici ?
+			if ( RetWater(x,y) )  // water here?
 			{
 				len ++;
 				if ( len >= 5 )
@@ -703,7 +704,7 @@ BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 					len = 0;
 				}
 			}
-			else	// sec ?
+			else	// dry?
 			{
 				if ( len != 0 )
 				{
@@ -720,7 +721,7 @@ BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 	return TRUE;
 }
 
-// Supprime toute l'eau.
+// Removes all the water.
 
 void CWater::Flush()
 {
@@ -731,7 +732,7 @@ void CWater::Flush()
 }
 
 
-// Modifie le niveau de l'eau.
+// Changes the level of the water.
 
 BOOL CWater::SetLevel(float level)
 {
@@ -741,14 +742,14 @@ BOOL CWater::SetLevel(float level)
 				  m_level, m_glint, m_eddy);
 }
 
-// Retourne le niveau actuel de l'eau.
+// Returns the current level of water.
 
 float CWater::RetLevel()
 {
 	return m_level;
 }
 
-// Retourne le niveau actuel de l'eau pour un objet donné.
+// Returns the current level of water for a given object.
 
 float CWater::RetLevel(CObject* object)
 {
@@ -797,7 +798,7 @@ float CWater::RetLevel(CObject* object)
 }
 
 
-// Gestion du mode lave/eau.
+// Management of the mode of lava/water.
 
 void CWater::SetLava(BOOL bLava)
 {
@@ -810,7 +811,7 @@ BOOL CWater::RetLava()
 }
 
 
-// Ajuste l'oeil de la caméra, pour ne pas être entre deux eaux.
+// Adjusts the eye of the camera, not to be in the water.
 
 void CWater::AdjustEye(D3DVECTOR &eye)
 {
@@ -818,15 +819,15 @@ void CWater::AdjustEye(D3DVECTOR &eye)
 	{
 		if ( eye.y < m_level+2.0f )
 		{
-			eye.y = m_level+2.0f;  // jamais sous la lave
+			eye.y = m_level+2.0f;  // never under the lava
 		}
 	}
 	else
 	{
 		if ( eye.y >= m_level-2.0f &&
-			 eye.y <= m_level+2.0f )  // proche de la surface ?
+			 eye.y <= m_level+2.0f )  // close to the surface?
 		{
-			eye.y = m_level+2.0f;  // paf, bien dessus
+			eye.y = m_level+2.0f;  // bam, well above
 		}
 	}
 }
