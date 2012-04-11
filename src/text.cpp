@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// text.cpp
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// text.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -37,7 +39,7 @@ static short table_text_colobot[] =
 //	x1,	y1,	x2,	y2
 	219,34,	225,50,		// 0
 	 1,188, 9,203,		// .
-	51,188,59,203,		// carré
+	51,188,59,203,		// square
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -203,12 +205,12 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 
 	219,34,	225,50,		// 160
-	219,34,	225,50,		// 161 A1 ! inversé
+	219,34,	225,50,		// 161 A1 ! reverse
 	219,34,	225,50,
-	219,34,	225,50,		// 163 A3 £
+	219,34,	225,50,		// 163 A3 Å
 	219,34,	225,50,
 	219,34,	225,50,
-	0,	0,	4,	16,		// 166 A6 ¦ (cadratin)
+	0,	0,	4,	16,		// 166 A6 Â¦ (space)
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -234,72 +236,72 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
-	219,34,	225,50,		// 191 BF ? inversé
+	219,34,	225,50,		// 191 BF ? reverse
 
-	12,	51,	24,	67,		// 192 C0 à maj
-	0,	51,	12,	67,		// 193 C1 á maj
-	24,	51,	36,	67,		// 194 C2 â maj
-	48,	51,	60,	67,		// 195 C3 ã maj
-	36,	51,	48,	67,		// 196 C4 ä maj
+	12,	51,	24,	67,		// 192 C0 Å• big
+	0,	51,	12,	67,		// 193 C1 Ã¡ big
+	24,	51,	36,	67,		// 194 C2 Ã¢ big
+	48,	51,	60,	67,		// 195 C3 Äƒ big
+	36,	51,	48,	67,		// 196 C4 Ã¤ big
 	219,34,	225,50,
 	219,34,	225,50,
-	60,	51,	69,	67,		// 199 C7 ç maj
-	77,	51,	84,	67,		// 200 C8 è maj
-	70,	51,	77,	67,		// 201 C9 é maj
-	85,	51,	92,	67,		// 202 CA ê maj
-	93,	51,	100,67,		// 203 CB ë maj
+	60,	51,	69,	67,		// 199 C7 Ã§ big
+	77,	51,	84,	67,		// 200 C8 Ä big
+	70,	51,	77,	67,		// 201 C9 Ã© big
+	85,	51,	92,	67,		// 202 CA Ä™ big
+	93,	51,	100,67,		// 203 CB Ã« big
 	219,34,	225,50,
-	100,51,	104,67,		// 205 CD í maj
-	108,51,	113,67,		// 206 CE î maj
-	113,51,	117,67,		// 207 CF ï maj
+	100,51,	104,67,		// 205 CD Ã­ big
+	108,51,	113,67,		// 206 CE Ã® big
+	113,51,	117,67,		// 207 CF Ä big
 
 	219,34,	225,50,		// 208
-	117,51,	126,67,		// 209 D1 ñ maj
+	117,51,	126,67,		// 209 D1 Å„ big
 	219,34,	225,50,
-	126,51,	138,67,		// 211 D3 ó maj
-	150,51,	162,67,		// 212 D4 ô maj
+	126,51,	138,67,		// 211 D3 Ã³ big
+	150,51,	162,67,		// 212 D4 Ã´ big
 	219,34,	225,50,
-	162,51,	174,67,		// 214 D6 ö maj
-	219,34,	225,50,
-	219,34,	225,50,
-	194,51,	202,67,		// 217 D9 ù maj
-	186,51,	194,67,		// 218 DA ú maj
-	202,51,	210,67,		// 219 DB û maj
-	210,51,	218,67,		// 220 DC ü maj
+	162,51,	174,67,		// 214 D6 Ã¶ big
 	219,34,	225,50,
 	219,34,	225,50,
-	218,51,	227,67,		// 223 DF ss allemand
+	194,51,	202,67,		// 217 D9 Å¯ big
+	186,51,	194,67,		// 218 DA Ãº big
+	202,51,	210,67,		// 219 DB Å± big
+	210,51,	218,67,		// 220 DC Ã¼ big
+	219,34,	225,50,
+	219,34,	225,50,
+	218,51,	227,67,		// 223 DF German SS
 
-	7,	68,	14,	84,		// 224 E0 à min
-	0,	68,	7,	84,		// 225 E1 á min
-	14,	68,	21,	84,		// 226 E2 â min
-	28,	68,	35,	84,		// 227 E3 ã min
-	21,	68,	28,	84,		// 228 E4 ä min
+	7,	68,	14,	84,		// 224 E0 Å• small
+	0,	68,	7,	84,		// 225 E1 Ã¡ small
+	14,	68,	21,	84,		// 226 E2 Ã¢ small
+	28,	68,	35,	84,		// 227 E3 Äƒ small
+	21,	68,	28,	84,		// 228 E4 Ã¤ small
 	219,34,	225,50,
 	219,34,	225,50,
-	35,	68,	43,	84,		// 231 E7 ç min
-	51,	68,	59,	84,		// 232 E8 è min
-	43,	68,	51,	84,		// 233 E9 é min
-	59,	68,	67,	84,		// 234 EA ê min
-	67,	68,	75,	84,		// 235 EB ë min
+	35,	68,	43,	84,		// 231 E7 Ã§ small
+	51,	68,	59,	84,		// 232 E8 Ä small
+	43,	68,	51,	84,		// 233 E9 Ã© small
+	59,	68,	67,	84,		// 234 EA Ä™ small
+	67,	68,	75,	84,		// 235 EB Ã« small
 	219,34,	225,50,
-	75,	68,	79,	84,		// 237 ED í min
-	83,	68,	88,	84,		// 238 EE î min
-	88,	68,	92,	84,		// 239 EF ï min
+	75,	68,	79,	84,		// 237 ED Ã­ small
+	83,	68,	88,	84,		// 238 EE Ã® small
+	88,	68,	92,	84,		// 239 EF Ä small
 
 	219,34,	225,50,		// 240
-	92,	68,	99,	84,		// 241 F1 ñ min
+	92,	68,	99,	84,		// 241 F1 Å„ small
 	219,34,	225,50,
-	99,	68,	108,84,		// 243 F3 ó min
-	117,68,	126,84,		// 244 F4 ô min
+	99,	68,	108,84,		// 243 F3 Ã³ small
+	117,68,	126,84,		// 244 F4 Ã´ small
 	219,34,	225,50,
-	126,68,	135,84,		// 246 F6 ö min
+	126,68,	135,84,		// 246 F6 Ã¶ small
 	219,34,	225,50,
 	219,34,	225,50,
-	151,68,	158,84,		// 249 F9 ù min
-	144,68,	151,84,		// 250 FA ú min
-	158,68,	165,84,		// 251 FB û min
-	165,68,	172,84,		// 252 FC ü min
+	151,68,	158,84,		// 249 F9 Å¯ small
+	144,68,	151,84,		// 250 FA Ãº small
+	158,68,	165,84,		// 251 FB Å± small
+	165,68,	172,84,		// 252 FC Ã¼ small
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -418,10 +420,10 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
-	0,	51,	8,	67,		// 140 S´
+	0,	51,	8,	67,		// 140 SÂ´
 	219,34,	225,50,
 	219,34,	225,50,
-	9,	51,	17,	67,		// 143 Z´
+	9,	51,	17,	67,		// 143 ZÂ´
 
 	219,34,	225,50,		// 144
 	219,34,	225,50,
@@ -435,10 +437,10 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
-	0,	68,	7,	84,		// 156 s´
+	0,	68,	7,	84,		// 156 sÂ´
 	219,34,	225,50,
 	219,34,	225,50,
-	8,	68,	14,	84,		// 159 z´
+	8,	68,	14,	84,		// 159 zÂ´
 
 	219,34,	225,50,		// 160
 	219,34,	225,50,
@@ -446,7 +448,7 @@ static short table_text_colobot[] =
 	18,	51,	27,	67,		// 163 L/
 	219,34,	225,50,
 	28,	51,	39,	67,		// 165 A,
-	0,	0,	4,	16,		// 166 A6 ¦ (cadratin)
+	0,	0,	4,	16,		// 166 A6 Â¦ (space)
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -480,7 +482,7 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
-	49,	51,	58,	67,		// 198 C´
+	49,	51,	58,	67,		// 198 CÂ´
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -492,10 +494,10 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 
 	219,34,	225,50,		// 208
-	67,	51,	75,	67,		// 209 N´
+	67,	51,	75,	67,		// 209 NÂ´
 	219,34,	225,50,
-//?	76,	51,	85,	67,		// 211 O´
-	86,	51,	97,	67,		// 211 O´
+//?	76,	51,	85,	67,		// 211 OÂ´
+	86,	51,	97,	67,		// 211 OÂ´
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -515,7 +517,7 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
-	39,	68,	46,	84,		// 230 c´
+	39,	68,	46,	84,		// 230 cÂ´
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -527,10 +529,10 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 
 	219,34,	225,50,		// 240
-	55,	68,	62,	84,		// 241 n´
+	55,	68,	62,	84,		// 241 nÂ´
 	219,34,	225,50,
-//?	63,	68,	70,	84,		// 243 o´
-	71,	68,	79,	84,		// 243 o´
+//?	63,	68,	70,	84,		// 243 oÂ´
+	71,	68,	79,	84,		// 243 oÂ´
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -579,12 +581,12 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 
 	219,34,	225,50,		// 160
-	219,34,	225,50,		// 161 A1 ! inversé
+	219,34,	225,50,		// 161 A1 ! reverse
 	219,34,	225,50,
-	219,34,	225,50,		// 163 A3 £
+	219,34,	225,50,		// 163 A3 Å
 	219,34,	225,50,
 	219,34,	225,50,
-	0,	0,	4,	16,		// 166 A6 ¦ (cadratin)
+	0,	0,	4,	16,		// 166 A6 Â¦ (space)
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -610,72 +612,72 @@ static short table_text_colobot[] =
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
-	219,34,	225,50,		// 191 BF ? inversé
+	219,34,	225,50,		// 191 BF ? reverse
 
-	10,	51,	20,	67,		// 192 C0 à maj
-	0,	51,	10,	67,		// 193 C1 á maj
-	20,	51,	30,	67,		// 194 C2 â maj
-	40,	51,	50,	67,		// 195 C3 ã maj
-	30,	51,	40,	67,		// 196 C4 ä maj
+	10,	51,	20,	67,		// 192 C0 Å• big
+	0,	51,	10,	67,		// 193 C1 Ã¡ big
+	20,	51,	30,	67,		// 194 C2 Ã¢ big
+	40,	51,	50,	67,		// 195 C3 Äƒ big
+	30,	51,	40,	67,		// 196 C4 Ã¤ big
 	219,34,	225,50,
 	219,34,	225,50,
-	50,	51,	59,	67,		// 199 C7 ç maj
-	67,	51,	74,	67,		// 200 C8 è maj
-	59,	51,	66,	67,		// 201 C9 é maj
-	75,	51,	82,	67,		// 202 CA ê maj
-	83,	51,	90,	67,		// 203 CB ë maj
+	50,	51,	59,	67,		// 199 C7 Ã§ big
+	67,	51,	74,	67,		// 200 C8 Ä big
+	59,	51,	66,	67,		// 201 C9 Ã© big
+	75,	51,	82,	67,		// 202 CA Ä™ big
+	83,	51,	90,	67,		// 203 CB Ã« big
 	219,34,	225,50,
-	91,	51,	95,	67,		// 205 CD í maj
-	100,51,	103,67,		// 206 CE î maj
-	104,51,	109,67,		// 207 CF ï maj
+	91,	51,	95,	67,		// 205 CD Ã­ big
+	100,51,	103,67,		// 206 CE Ã® big
+	104,51,	109,67,		// 207 CF Ä big
 
 	219,34,	225,50,		// 208
-	109,51,	117,67,		// 209 D1 ñ maj
+	109,51,	117,67,		// 209 D1 Å„ big
 	219,34,	225,50,
-	118,51,	127,67,		// 211 D3 ó maj
-	138,51,	147,67,		// 212 D4 ô maj
+	118,51,	127,67,		// 211 D3 Ã³ big
+	138,51,	147,67,		// 212 D4 Ã´ big
 	219,34,	225,50,
-	148,51,	157,67,		// 214 D6 ö maj
-	219,34,	225,50,
-	219,34,	225,50,
-	177,51,	185,67,		// 217 D9 ù maj
-	168,51,	176,67,		// 218 DA ú maj
-	186,51,	194,67,		// 219 DB û maj
-	195,51,	203,67,		// 220 DC ü maj
+	148,51,	157,67,		// 214 D6 Ã¶ big
 	219,34,	225,50,
 	219,34,	225,50,
-	211,51,	220,67,		// 223 DF ss allemand
+	177,51,	185,67,		// 217 D9 Å¯ big
+	168,51,	176,67,		// 218 DA Ãº big
+	186,51,	194,67,		// 219 DB Å± big
+	195,51,	203,67,		// 220 DC Ã¼ big
+	219,34,	225,50,
+	219,34,	225,50,
+	211,51,	220,67,		// 223 DF German SS
 
-	8,	68,	15,	84,		// 224 E0 à min
-	0,	68,	7,	84,		// 225 E1 á min
-	16,	68,	23,	84,		// 226 E2 â min
-	32,	68,	39,	84,		// 227 E3 ã min
-	24,	68,	31,	84,		// 228 E4 ä min
+	8,	68,	15,	84,		// 224 E0 Å• small
+	0,	68,	7,	84,		// 225 E1 Ã¡ small
+	16,	68,	23,	84,		// 226 E2 Ã¢ small
+	32,	68,	39,	84,		// 227 E3 Äƒ small
+	24,	68,	31,	84,		// 228 E4 Ã¤ small
 	219,34,	225,50,
 	219,34,	225,50,
-	40,	68,	47,	84,		// 231 E7 ç min
-	55,	68,	62,	84,		// 232 E8 è min
-	47,	68,	54,	84,		// 233 E9 é min
-	63,	68,	70,	84,		// 234 EA ê min
-	71,	68,	78,	84,		// 235 EB ë min
+	40,	68,	47,	84,		// 231 E7 Ã§ small
+	55,	68,	62,	84,		// 232 E8 Ä small
+	47,	68,	54,	84,		// 233 E9 Ã© small
+	63,	68,	70,	84,		// 234 EA Ä™ small
+	71,	68,	78,	84,		// 235 EB Ã« small
 	219,34,	225,50,
-	79,	68,	83,	84,		// 237 ED í min
-	88,	68,	92,	84,		// 238 EE î min
-	92,	68,	97,	84,		// 239 EF ï min
+	79,	68,	83,	84,		// 237 ED Ã­ small
+	88,	68,	92,	84,		// 238 EE Ã® small
+	92,	68,	97,	84,		// 239 EF Ä small
 
 	219,34,	225,50,		// 240
-	97,	68,	104,84,		// 241 F1 ñ min
+	97,	68,	104,84,		// 241 F1 Å„ small
 	219,34,	225,50,
-	105,68,	112,84,		// 243 F3 ó min
-	121,68,	128,84,		// 244 F4 ô min
+	105,68,	112,84,		// 243 F3 Ã³ small
+	121,68,	128,84,		// 244 F4 Ã´ small
 	219,34,	225,50,
-	129,68,	136,84,		// 246 F6 ö min
+	129,68,	136,84,		// 246 F6 Ã¶ small
 	219,34,	225,50,
 	219,34,	225,50,
-	153,68,	160,84,		// 249 F9 ù min
-	145,68,	152,84,		// 250 FA ú min
-	161,68,	168,84,		// 251 FB û min
-	169,68,	176,84,		// 252 FC ü min
+	153,68,	160,84,		// 249 F9 Å¯ small
+	145,68,	152,84,		// 250 FA Ãº small
+	161,68,	168,84,		// 251 FB Å± small
+	169,68,	176,84,		// 252 FC Ã¼ small
 	219,34,	225,50,
 	219,34,	225,50,
 	219,34,	225,50,
@@ -689,7 +691,7 @@ static short table_text_courier[] =
 //	 x1, y1, x2, y2
 	231,137,239,153, 	// 0
 	 1,188, 9,204,		// .
-	51,188,59,204,		// carré
+	51,188,59,204,		// square
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
@@ -832,10 +834,10 @@ static short table_text_courier[] =
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
-	  1,154,  9,170,	// 140 S´
+	  1,154,  9,170,	// 140 SÂ´
 	231,137,239,153,
 	231,137,239,153,
-	 11,154, 19,170,	// 143 Z´
+	 11,154, 19,170,	// 143 ZÂ´
 
 	231,137,239,153,	// 144
 	231,137,239,153,
@@ -849,10 +851,10 @@ static short table_text_courier[] =
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
-	  1,171,  9,187,	// 156 s´
+	  1,171,  9,187,	// 156 sÂ´
 	231,137,239,153,
 	231,137,239,153,
-	 11,171, 19,187,	// 159 z´
+	 11,171, 19,187,	// 159 zÂ´
 
 	231,137,239,153,	// 160
 	231,137,239,153,
@@ -860,7 +862,7 @@ static short table_text_courier[] =
 	 21,154, 29,170,	// 163 L/
 	231,137,239,153,
 	 31,154, 39,170,	// 165 A,
-	  1, 86,  9,102,	// 166 A6 ¦ (cadratin)
+	  1, 86,  9,102,	// 166 A6 Â¦ (space)
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
@@ -894,7 +896,7 @@ static short table_text_courier[] =
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
-	 51,154, 59,170,	// 198 C´
+	 51,154, 59,170,	// 198 CÂ´
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
@@ -906,9 +908,9 @@ static short table_text_courier[] =
 	231,137,239,153,
 
 	231,137,239,153,	// 208
-	 71,154, 79,170,	// 209 N´
+	 71,154, 79,170,	// 209 NÂ´
 	231,137,239,153,
-	 81,171, 89,187,	// 211 O´
+	 81,171, 89,187,	// 211 OÂ´
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
@@ -928,7 +930,7 @@ static short table_text_courier[] =
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
-	 51,171, 59,187,	// 230 c´
+	 51,171, 59,187,	// 230 cÂ´
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
@@ -940,9 +942,9 @@ static short table_text_courier[] =
 	231,137,239,153,
 
 	231,137,239,153,	// 240
-	 71,171, 79,187,	// 241 n´
+	 71,171, 79,187,	// 241 nÂ´
 	231,137,239,153,
-	 81,171, 89,187,	// 243 ó min
+	 81,171, 89,187,	// 243 Ã³ small
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
@@ -991,12 +993,12 @@ static short table_text_courier[] =
 	231,137,239,153,
 
 	231,137,239,153,	// 160
-	231,137,239,153,	// 161 A1 ! inversé
+	231,137,239,153,	// 161 A1 ! reverse
 	231,137,239,153,
-	231,137,239,153,	// 163 A3 £
+	231,137,239,153,	// 163 A3 Å
 	231,137,239,153,
 	231,137,239,153,
-	  1, 86,  9,102,	// 166 A6 ¦ (cadratin)
+	  1, 86,  9,102,	// 166 A6 Â¦ (space)
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
@@ -1022,70 +1024,70 @@ static short table_text_courier[] =
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
-	231,137,239,153,	// 191 BF ? inversé
+	231,137,239,153,	// 191 BF ? reverse
 
-	 11,154, 19,170,	// à maj
-	  1,154,  9,170,	// á maj
-	 21,154, 29,170,	// â maj
-	 41,154, 49,170,	// ã maj
-	 31,154, 39,170,	// ä maj
+	 11,154, 19,170,	// Å• big
+	  1,154,  9,170,	// Ã¡ big
+	 21,154, 29,170,	// Ã¢ big
+	 41,154, 49,170,	// Äƒ big
+	 31,154, 39,170,	// Ã¤ big
 	231,137,239,153,
 	231,137,239,153,
-	 51,154, 59,170,	// ç maj
-	 71,154, 79,170,	// è maj
-	 61,154, 69,170,	// é maj
-	 81,154, 89,170,	// ê maj
-	 91,154, 99,170,	// ë maj
+	 51,154, 59,170,	// Ã§ big
+	 71,154, 79,170,	// Ä big
+	 61,154, 69,170,	// Ã© big
+	 81,154, 89,170,	// Ä™ big
+	 91,154, 99,170,	// Ã« big
 	231,137,239,153,
-	101,154,109,170,	// í maj
-	121,154,129,170,	// î maj
-	131,154,139,170,	// ï maj
+	101,154,109,170,	// Ã­ big
+	121,154,129,170,	// Ã® big
+	131,154,139,170,	// Ä big
 	231,137,239,153,
-	141,154,149,170,	// ñ maj
+	141,154,149,170,	// Å„ big
 	231,137,239,153,
-	151,154,159,170,	// ó maj
-	171,154,179,170,	// ô maj
+	151,154,159,170,	// Ã³ big
+	171,154,179,170,	// Ã´ big
 	231,137,239,153,
-	181,154,189,170,	// ö maj
-	231,137,239,153,
-	231,137,239,153,
-	211,154,219,170,	// ù maj
-	201,154,209,170,	// ú maj
-	221,154,229,170,	// û maj
-	231,154,239,170,	// ü maj
+	181,154,189,170,	// Ã¶ big
 	231,137,239,153,
 	231,137,239,153,
-	241,154,249,170,	// 223 DF ss allemand
+	211,154,219,170,	// Å¯ big
+	201,154,209,170,	// Ãº big
+	221,154,229,170,	// Å± big
+	231,154,239,170,	// Ã¼ big
+	231,137,239,153,
+	231,137,239,153,
+	241,154,249,170,	// 223 DF German SS
 
-	 11,171, 19,187,	// à min
-	  1,171,  9,187,	// á min
-	 21,171, 29,187,	// â min
-	 41,171, 49,187,	// ã min
-	 31,171, 39,187,	// ä min
+	 11,171, 19,187,	// Å• small
+	  1,171,  9,187,	// Ã¡ small
+	 21,171, 29,187,	// Ã¢ small
+	 41,171, 49,187,	// Äƒ small
+	 31,171, 39,187,	// Ã¤ small
 	231,137,239,153,
 	231,137,239,153,
-	 51,171, 59,187,	// ç min
-	 71,171, 79,187,	// è min
-	 61,171, 69,187,	// é min
-	 81,171, 89,187,	// ê min
-	 91,171, 99,187,	// ë min
+	 51,171, 59,187,	// Ã§ small
+	 71,171, 79,187,	// Ä small
+	 61,171, 69,187,	// Ã© small
+	 81,171, 89,187,	// Ä™ small
+	 91,171, 99,187,	// Ã« small
 	231,137,239,153,
-	111,171,119,187,	// ì min
-	121,171,129,187,	// î min
-	131,171,139,187,	// ï min
+	111,171,119,187,	// Ä› small
+	121,171,129,187,	// Ã® small
+	131,171,139,187,	// Ä small
 	231,137,239,153,
-	141,171,149,187,	// ñ min
+	141,171,149,187,	// Å„ small
 	231,137,239,153,
-	151,171,159,187,	// ó min
-	171,171,179,187,	// ô min
+	151,171,159,187,	// Ã³ small
+	171,171,179,187,	// Ã´ small
 	231,137,239,153,
-	181,171,189,187,	// ö min
+	181,171,189,187,	// Ã¶ small
 	231,137,239,153,
 	231,137,239,153,
-	211,171,219,187,	// ù min
-	201,171,209,187,	// ú min
-	221,171,229,187,	// û min
-	231,171,239,187,	// ü min
+	211,171,219,187,	// Å¯ small
+	201,171,209,187,	// Ãº small
+	221,171,229,187,	// Å± small
+	231,171,239,187,	// Ã¼ small
 	231,137,239,153,
 	231,137,239,153,
 	231,137,239,153,
@@ -1093,7 +1095,7 @@ static short table_text_courier[] =
 };
 
 
-// Retourne le pointeur à la table selon la fonte.
+// Returns the pointer to the table by the font.
 
 short* RetTable(FontType font)
 {
@@ -1103,7 +1105,7 @@ short* RetTable(FontType font)
 
 
 
-// Constructeur de l'objet.
+// Object's constructor.
 
 CText::CText(CInstanceManager* iMan, CD3DEngine* engine)
 {
@@ -1114,7 +1116,7 @@ CText::CText(CInstanceManager* iMan, CD3DEngine* engine)
 	m_engine = engine;
 }
 
-// Destructeur de l'objet.
+// Object's destructor.
 
 CText::~CText()
 {
@@ -1128,8 +1130,8 @@ void CText::SetD3DDevice(LPDIRECT3DDEVICE7 device)
 }
 
 
-// Affiche un texte multi-fonte.
-// La position verticale est en bas de la boîte du caractère.
+// Displays multi-font text.
+// The vertical position is at the bottom of the box of the character.
 
 void CText::DrawText(char *string, char *format, int len, FPOINT pos,
 					 float width, int justif, float size, float stretch,
@@ -1137,13 +1139,13 @@ void CText::DrawText(char *string, char *format, int len, FPOINT pos,
 {
 	float	sw;
 
-	if ( justif == 0 )  // centré ?
+	if ( justif == 0 )  // center?
 	{
 		sw = RetStringWidth(string, format, len, size, stretch);
 		if ( sw > width )  sw = width;
 		pos.x -= sw/2.0f;
 	}
-	if ( justif < 0 )  // drapeau à gauche ?
+	if ( justif < 0 )  // flag was left?
 	{
 		sw = RetStringWidth(string, format, len, size, stretch);
 		if ( sw > width )  sw = width;
@@ -1152,8 +1154,8 @@ void CText::DrawText(char *string, char *format, int len, FPOINT pos,
 	DrawString(string, format, len, pos, width, size, stretch, eol);
 }
 
-// Affiche un texte multi-fonte.
-// La position verticale est en bas de la boîte du caractère.
+// Displays multi-font text.
+// The vertical position is at the bottom of the box of the character.
 
 void CText::DrawText(char *string, char *format, FPOINT pos, float width,
 					 int justif, float size, float stretch,
@@ -1162,8 +1164,8 @@ void CText::DrawText(char *string, char *format, FPOINT pos, float width,
 	DrawText(string, format, strlen(string), pos, width, justif, size, stretch, eol);
 }
 
-// Affiche un texte.
-// La position verticale est en bas de la boîte du caractère.
+// Displays text.
+// The vertical position is at the bottom of the box of the character.
 
 void CText::DrawText(char *string, int len, FPOINT pos, float width,
 					 int justif, float size, float stretch, FontType font,
@@ -1171,13 +1173,13 @@ void CText::DrawText(char *string, int len, FPOINT pos, float width,
 {
 	float	sw;
 
-	if ( justif == 0 )  // centré ?
+	if ( justif == 0 )  // center?
 	{
 		sw = RetStringWidth(string, len, size, stretch, font);
 		if ( sw > width )  sw = width;
 		pos.x -= sw/2.0f;
 	}
-	if ( justif < 0 )  // drapeau à gauche ?
+	if ( justif < 0 )  // flag was left?
 	{
 		sw = RetStringWidth(string, len, size, stretch, font);
 		if ( sw > width )  sw = width;
@@ -1186,8 +1188,8 @@ void CText::DrawText(char *string, int len, FPOINT pos, float width,
 	DrawString(string, len, pos, width, size, stretch, font, eol);
 }
 
-// Affiche un texte.
-// La position verticale est en bas de la boîte du caractère.
+// Displays text.
+// The vertical position is at the bottom of the box of the character.
 
 void CText::DrawText(char *string, FPOINT pos, float width,
 					 int justif, float size, float stretch, FontType font,
@@ -1197,7 +1199,7 @@ void CText::DrawText(char *string, FPOINT pos, float width,
 }
 
 
-// Retourne les dimensions d'un texte multi-fonte.
+// Returns the size of a multi-font text.
 
 void CText::DimText(char *string, char *format, int len, FPOINT pos,
 					int justif, float size, float stretch,
@@ -1209,12 +1211,12 @@ void CText::DimText(char *string, char *format, int len, FPOINT pos,
 
 	sw = RetStringWidth(string, format, len, size, stretch);
 	end.x += sw;
-	if ( justif == 0 )  // centré ?
+	if ( justif == 0 )  // center?
 	{
 		start.x -= sw/2.0f;
 		end.x   -= sw/2.0f;
 	}
-	if ( justif < 0 )  // drapeau à gauche ?
+	if ( justif < 0 )  // flag was left?
 	{
 		start.x -= sw;
 		end.x   -= sw;
@@ -1224,7 +1226,7 @@ void CText::DimText(char *string, char *format, int len, FPOINT pos,
 	end.y   += RetAscent(size, FONT_COLOBOT);
 }
 	
-// Retourne les dimensions d'un texte multi-fonte.
+// Returns the size of a multi-font text.
 
 void CText::DimText(char *string, char *format, FPOINT pos, int justif,
 					float size, float stretch,
@@ -1233,7 +1235,7 @@ void CText::DimText(char *string, char *format, FPOINT pos, int justif,
 	DimText(string, format, strlen(string), pos, justif, size, stretch, start, end);
 }
 
-// Retourne les dimensions d'un texte.
+// Returns the size of a text.
 
 void CText::DimText(char *string, int len, FPOINT pos, int justif,
 					float size, float stretch, FontType font,
@@ -1245,12 +1247,12 @@ void CText::DimText(char *string, int len, FPOINT pos, int justif,
 
 	sw = RetStringWidth(string, len, size, stretch, font);
 	end.x += sw;
-	if ( justif == 0 )  // centré ?
+	if ( justif == 0 )  // center?
 	{
 		start.x -= sw/2.0f;
 		end.x   -= sw/2.0f;
 	}
-	if ( justif < 0 )  // drapeau à gauche ?
+	if ( justif < 0 )  // flag was left?
 	{
 		start.x -= sw;
 		end.x   -= sw;
@@ -1260,7 +1262,7 @@ void CText::DimText(char *string, int len, FPOINT pos, int justif,
 	end.y   += RetAscent(size, font);
 }
 	
-// Retourne les dimensions d'un texte.
+// Returns the size of a text.
 
 void CText::DimText(char *string, FPOINT pos, int justif,
 					float size, float stretch, FontType font,
@@ -1270,21 +1272,21 @@ void CText::DimText(char *string, FPOINT pos, int justif,
 }
 
 
-// Retourne la hauteur au-dessus de la ligne de base.
+// Returns the height above the baseline.
 
 float CText::RetAscent(float size, FontType font)
 {
 	return (13.0f/256.0f)*(size/20.0f);
 }
 
-// Retourne la hauteur au-dessous de la ligne de base.
+// Returns the height below the baseline.
 
 float CText::RetDescent(float size, FontType font)
 {
 	return (3.0f/256.0f)*(size/20.0f);
 }
 
-// Retourne la hauteur totale du caractère.
+// Returns the total height of the character.
 
 float CText::RetHeight(float size, FontType font)
 {
@@ -1292,7 +1294,7 @@ float CText::RetHeight(float size, FontType font)
 }
 
 	
-// Retourne la largeur d'une chaîne de caractères multi-fonte.
+// Returns the width of a string of multi-font characters.
 
 float CText::RetStringWidth(char *string, char *format, int len,
 							float size, float stretch)
@@ -1336,7 +1338,7 @@ float CText::RetStringWidth(char *string, char *format, int len,
 	return width;
 }
 
-// Retourne la largeur d'une chaîne de caractères.
+// Returns the width of a string of characters.
 
 float CText::RetStringWidth(char *string, int len,
 							float size, float stretch, FontType font)
@@ -1371,8 +1373,8 @@ float CText::RetStringWidth(char *string, int len,
 	return width;
 }
 
-// Retourne la largeur d'un caractère.
-// 'offset' est la position actuelle dans la ligne.
+// Returns the width of a character.
+// 'offset' is the current position in the line.
 
 float CText::RetCharWidth(int character, float offset,
 						  float size, float stretch, FontType font)
@@ -1402,7 +1404,7 @@ float CText::RetCharWidth(int character, float offset,
 }
 
 
-// Justifie une ligne de texte multi-fonte. Retourne l'offset de la coupure.
+// Justifies a line of multi-font text. Returns the offset of the cut.
 
 int CText::Justif(char *string, char *format, int len, float width,
 				  float size, float stretch)
@@ -1444,7 +1446,7 @@ int CText::Justif(char *string, char *format, int len, float width,
 	return i;
 }
 
-// Justifie une ligne de texte. Retourne l'offset de la coupure.
+// Justify a line of text. Returns the offset of the cut.
 
 int CText::Justif(char *string, int len, float width,
 				  float size, float stretch, FontType font)
@@ -1481,7 +1483,7 @@ int CText::Justif(char *string, int len, float width,
 	return i;
 }
 
-// Retourne la position convenant le mieux à une offset donnée (multi-fonte).
+// Returns the most suitable position to a given offset (multi-font).
 
 int CText::Detect(char *string, char *format, int len, float offset,
 				  float size, float stretch)
@@ -1519,7 +1521,7 @@ int CText::Detect(char *string, char *format, int len, float offset,
 	return i;
 }
 
-// Retourne la position convenant le mieux à une offset donnée.
+// Returns the most suitable position to a given offset (multi-font).
 
 int CText::Detect(char *string, int len, float offset,
 				  float size, float stretch, FontType font)
@@ -1550,7 +1552,7 @@ int CText::Detect(char *string, int len, float offset,
 }
 
 
-// Affiche un texte multi-fonte.
+// Displays multi-font text.
 
 void CText::DrawString(char *string, char *format, int len, FPOINT pos,
 					   float width, float size, float stretch, int eol)
@@ -1576,7 +1578,7 @@ void CText::DrawString(char *string, char *format, int len, FPOINT pos,
 		c = (unsigned char)string[i];
 		cw = RetCharWidth(c, offset, size, stretch, font);
 
-		if ( offset+cw > width )  // dépasse la largeur maximale ?
+		if ( offset+cw > width )  // exceeds the maximum width?
 		{
 			cw = RetCharWidth(16, offset, size, stretch, font);
 			pos.x = start+width-cw;
@@ -1599,7 +1601,7 @@ void CText::DrawString(char *string, char *format, int len, FPOINT pos,
 	}
 }
 
-// Affiche un texte.
+// Displays text.
 
 void CText::DrawString(char *string, int len, FPOINT pos, float width,
 					   float size, float stretch, FontType font,
@@ -1622,7 +1624,7 @@ void CText::DrawString(char *string, int len, FPOINT pos, float width,
 		c = (unsigned char)string[i];
 		cw = RetCharWidth(c, offset, size, stretch, font);
 
-		if ( offset+cw > width )  // dépasse la largeur maximale ?
+		if ( offset+cw > width )  // exceeds the maximum width?
 		{
 			cw = RetCharWidth(16, offset, size, stretch, font);
 			pos.x = start+width-cw;
@@ -1641,7 +1643,7 @@ void CText::DrawString(char *string, int len, FPOINT pos, float width,
 	}
 }
 
-// Affiche le lien d'un caractère.
+// Displays the link to a character.
 
 void CText::DrawColor(FPOINT pos, float size, float width, int color)
 {
@@ -1653,12 +1655,12 @@ void CText::DrawColor(FPOINT pos, float size, float width, int color)
 	int			icon;
 
 	icon = -1;
-	if ( color == COLOR_LINK  )  icon =  9;  // bleu
+	if ( color == COLOR_LINK  )  icon =  9;  // blue
 	if ( color == COLOR_TOKEN )  icon =  4;  // orange
-	if ( color == COLOR_TYPE  )  icon =  5;  // vert
-	if ( color == COLOR_CONST )  icon =  8;  // rouge
+	if ( color == COLOR_TYPE  )  icon =  5;  // green
+	if ( color == COLOR_CONST )  icon =  8;  // red
 	if ( color == COLOR_REM   )  icon =  6;  // magenta
-	if ( color == COLOR_KEY   )  icon = 10;  // gris
+	if ( color == COLOR_KEY   )  icon = 10;  // gray
 	if ( icon == -1 )  return;
 
 	if ( color == COLOR_LINK )
@@ -1667,11 +1669,11 @@ void CText::DrawColor(FPOINT pos, float size, float width, int color)
 	}
 
 	dim = m_engine->RetDim();
-	if ( dim.y <= 768.0f )  // 1024x768 ou moins ?
+	if ( dim.y <= 768.0f )  // 1024x768 or less?
 	{
 		h = 1.01f/dim.y;  // 1 pixel
 	}
-	else	// plus que 1024x768 ?
+	else	// more than 1024x768?
 	{
 		h = 2.0f/dim.y;  // 2 pixels
 	}
@@ -1682,14 +1684,14 @@ void CText::DrawColor(FPOINT pos, float size, float width, int color)
 	if ( color == COLOR_LINK )
 	{
 		p1.y = pos.y;
-		p2.y = pos.y + h;  // juste souligné
+		p2.y = pos.y + h;  // just emphasized
 	}
 	else
 	{
 #if 1
 		p1.y = pos.y;
 		p2.y = pos.y + (16.0f/256.0f)*(size/20.0f);
-//?		p2.y = pos.y + h*4.0f;  // juste souligné épais
+//?		p2.y = pos.y + h*4.0f;  // just emphasized thick
 #else
 		p1.y = pos.y;
 		p2.y = pos.y + (16.0f/256.0f)*(size/20.0f)/4.0f;
@@ -1707,7 +1709,7 @@ void CText::DrawColor(FPOINT pos, float size, float width, int color)
 	u2 -= dp;
 	v2 -= dp;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
 	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
 	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
@@ -1723,7 +1725,7 @@ void CText::DrawColor(FPOINT pos, float size, float width, int color)
 	}
 }
 
-// Affiche un caractère.
+// Displays a character.
 
 void CText::DrawChar(int character, FPOINT pos, float size,
 					 float stretch, FontType font)
@@ -1735,7 +1737,7 @@ void CText::DrawChar(int character, FPOINT pos, float size,
 	short*		pt;
 
 	dp = 0.5f/256.0f;
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normale
+	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
 
 	if ( font == FONT_BUTTON )
 	{
@@ -1822,7 +1824,7 @@ void CText::DrawChar(int character, FPOINT pos, float size,
 
 	if ( character > 255 )  return;
 
-//?	if ( character == '\t' )  character = ' ';  // si tab, n'affiche pas ->
+//?	if ( character == '\t' )  character = ' ';  // if tab, does not display ->
 
 #if !_NEWLOOK
 	if ( font == FONT_COLOBOT && (character == 'O' || character == 'o') )
