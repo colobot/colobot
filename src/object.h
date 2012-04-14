@@ -20,12 +20,15 @@
 #define	_OBJECT_H_
 
 
+#include "d3dengine.h"
+#include "camera.h"
+#include "sound.h"
+
+
 class CInstanceManager;
-class CD3DEngine;
 class CLight;
 class CTerrain;
 class CWater;
-class CCamera;
 class CParticule;
 class CPhysics;
 class CBrain;
@@ -35,10 +38,6 @@ class CDisplayText;
 class CRobotMain;
 class CBotVar;
 class CScript;
-
-enum CameraType;
-enum Sound;
-enum D3DShadowType;
 
 
 

@@ -20,6 +20,10 @@
 #define	_TASKADVANCE_H_
 
 
+#include "misc.h"
+#include "d3dengine.h"
+
+
 class CInstanceManager;
 class CTerrain;
 class CBrain;

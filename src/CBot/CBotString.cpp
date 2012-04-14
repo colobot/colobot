@@ -92,7 +92,8 @@ CBotString CBotString::Right(int nCount) const
 	int		i = m_lg - nCount;
 	if ( i < 0 ) i = 0;
 
-	for ( int j = 0; i < m_lg && i < 1999; i++)
+	int j;
+	for ( j = 0 ; i < m_lg && i < 1999; i++)
 	{
 		chaine[j++] = m_ptr[i];
 	}
@@ -410,7 +411,7 @@ BOOL CBotString::operator<=(const char* p)
 	return Compare(p) <= 0;
 }
 
-BOOL CBotString::IsEmpty()
+BOOL CBotString::IsEmpty() const
 {
 	return (m_lg == 0);
 }

@@ -24,8 +24,10 @@
 #define D3D_OVERLOADS
 
 
+#include "d3dengine.h"
+#include "event.h"
 
-enum KeyRank;
+
 
 
 // Possible types of the text resources.

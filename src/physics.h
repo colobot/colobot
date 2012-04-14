@@ -20,6 +20,10 @@
 #define	_PHYSICS_H_
 
 
+#include "d3dengine.h"
+#include "misc.h"
+
+
 class CInstanceManager;
 class CD3DEngine;
 class CLight;

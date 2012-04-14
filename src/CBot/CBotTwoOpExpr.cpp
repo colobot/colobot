@@ -464,7 +464,7 @@ BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 		if ( !IsNan(left, right, &err) )	result->SL(left , right);
 		break;
 	default:
-		__asm int 3;
+		ASM_TRAP();
 	}
 	delete temp;
 

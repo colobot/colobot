@@ -65,7 +65,7 @@ CBotToken::CBotToken(const CBotToken* pSrc)
 	}
 }
 
-CBotToken::CBotToken(CBotString& mot, CBotString& sep, int start, int end)
+CBotToken::CBotToken(const CBotString& mot, const CBotString& sep, int start, int end)
 {
 	m_Text	= mot;					// mot trouvé comme token
 	m_Sep	= sep;					// séparateurs qui suivent

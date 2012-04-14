@@ -20,13 +20,13 @@
 #define	_WATER_H_
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CTerrain;
-class CParticule;
-class CSound;
+#include "d3dengine.h"
+#include "particule.h"
 
-enum ParticuleType;
+
+class CInstanceManager;
+class CTerrain;
+class CSound;
 
 
 

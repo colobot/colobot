@@ -40,7 +40,12 @@
 #include "sound.h"
 #include "d3dapp.h"
 
-
+// fix for "MSH_MOUSEWHEEL undefined" error
+#ifdef UNICODE
+#define MSH_MOUSEWHEEL L"MSWHEEL_ROLLMSG"
+#else
+#define MSH_MOUSEWHEEL "MSWHEEL_ROLLMSG"
+#endif
 
 
 #define AUDIO_TRACK		13		// total number of audio tracks on the CD

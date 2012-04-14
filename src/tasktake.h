@@ -20,6 +20,10 @@
 #define	_TASKTAKE_H_
 
 
+#include "misc.h"
+#include "object.h"
+
+
 class CInstanceManager;
 class CTerrain;
 class CBrain;

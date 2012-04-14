@@ -20,6 +20,13 @@
 #define	_ROBOTMAIN_H_
 
 
+#include "d3dengine.h"
+#include "struct.h"
+#include "object.h"
+#include "mainmovie.h"
+#include "camera.h"
+#include "particule.h"
+
 
 enum Phase
 {
@@ -61,33 +68,24 @@ enum Phase
 
 
 class CInstanceManager;
-class CMainMovie;
 class CMainDialog;
 class CMainShort;
 class CMainMap;
 class CEvent;
 class CD3DEngine;
 class CLight;
-class CParticule;
 class CWater;
 class CCloud;
 class CBlitz;
 class CPlanet;
 class CTerrain;
-class CObject;
 class CModel;
-class CCamera;
 class CInterface;
 class CWindow;
 class CControl;
 class CDisplayText;
 class CDisplayInfo;
 class CSound;
-
-enum ObjectType;
-enum CameraType;
-enum MainMovieType;
-enum ParticuleType;
 
 
 typedef struct

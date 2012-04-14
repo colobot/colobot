@@ -79,6 +79,7 @@ BOOL CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
     if( FAILED( g_pJoystick->SetProperty( DIPROP_RANGE, &diprg.diph ) ) )
         return DIENUM_STOP;
 
+#ifndef __MINGW32__ // FIXME Doesn't work under MinGW
     // Set the UI to reflect what axes the joystick supports
     switch( pdidoi->dwOfs )
     {
@@ -107,6 +108,7 @@ BOOL CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
 			OutputDebugString("EnumAxesCallback -s1\n");
             break;
     }
+#endif
 
     return DIENUM_CONTINUE;
 }
@@ -120,8 +122,12 @@ BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd)
 
     // Register with the DirectInput subsystem and get a pointer
     // to a IDirectInput interface we can use.
+#ifndef __MINGW32__ // FIXME Doesn't work under MinGW
     hr = DirectInputCreateEx( hInst, DIRECTINPUT_VERSION,IID_IDirectInput7, (LPVOID*)&g_pDI, NULL );
-    if( FAILED(hr) )  return FALSE;;
+    if( FAILED(hr) )  return FALSE;
+#else
+	return FALSE;
+#endif
 
     // Look for a simple joystick we can use for this sample program.
     hr = g_pDI->EnumDevices( DIDEVTYPE_JOYSTICK, EnumJoysticksCallback,

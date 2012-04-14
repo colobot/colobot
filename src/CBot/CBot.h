@@ -30,6 +30,14 @@
 
 #define	EOX			(CBotStack*)-1	// marqueur condition spéciale
 
+
+// fix for MSVC instruction __asm int 3 (setting a trap)
+#ifdef __MINGW32__
+#define ASM_TRAP()	asm("int $3");
+#else
+#define ASM_TRAP()	__asm int 3;
+#endif
+
 /////////////////////////////////////////////////////////////////////
 // résumé des classes utilisées, définies ci-après
 
@@ -372,7 +380,7 @@ public:
 	static
 	void		DecLvl();
 	static
-	BOOL		ChkLvl(CBotString& label, int type);
+	BOOL		ChkLvl(const CBotString& label, int type);
 
 	BOOL		IsOfClass(CBotString name);
 };
@@ -1194,7 +1202,7 @@ public:
 };
 
 // classe pour la gestion des nombres réels (float)
-class CBotVarFloat : CBotVar
+class CBotVarFloat : public CBotVar
 {
 private:
 	float		m_val;		// la valeur
@@ -1235,7 +1243,7 @@ public:
 
 
 // classe pour la gestion des chaînes (String)
-class CBotVarString : CBotVar
+class CBotVarString : public CBotVar
 {
 private:
 	CBotString	m_val;		// la valeur
@@ -1262,7 +1270,7 @@ public:
 };
 
 // classe pour la gestion des boolean
-class CBotVarBoolean : CBotVar
+class CBotVarBoolean : public CBotVar
 {
 private:
 	BOOL		m_val;		// la valeur
@@ -1310,7 +1318,7 @@ private:
 	BOOL			m_bConstructor;	// set si un constructeur a été appelé
 
 public:
-				CBotVarClass( const CBotToken* name, CBotTypResult& type );
+				CBotVarClass( const CBotToken* name, const CBotTypResult& type );
 //				CBotVarClass( const CBotToken* name, CBotTypResult& type, int &nIdent );
 				~CBotVarClass();
 //	void		InitCBotVarClass( const CBotToken* name, CBotTypResult& type, int &nIdent );
@@ -1424,7 +1432,7 @@ public:
 extern CBotInstr* CompileParams(CBotToken* &p, CBotCStack* pStack, CBotVar** ppVars);
 
 extern BOOL TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op = 0 );
-extern BOOL TypesCompatibles( CBotTypResult& type1, CBotTypResult& type2 );
+extern BOOL TypesCompatibles( const CBotTypResult& type1, const CBotTypResult& type2 );
 
 extern BOOL WriteWord(FILE* pf, WORD w);
 extern BOOL ReadWord(FILE* pf, WORD& w);
@@ -1439,7 +1447,7 @@ extern BOOL ReadType(FILE* pf, CBotTypResult& type);
 
 extern float GivNumFloat( const char* p );
 
-#ifdef	_DEBUG
+#if	FALSE
 extern void DEBUG( const char* text, int val, CBotStack* pile );
 #endif
 

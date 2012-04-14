@@ -19,16 +19,18 @@
 #define STRICT
 #define D3D_OVERLOADS
 
-#include <windows.h>
+#include <stdlib.h>
 #include <stdio.h>
+#include <ctype.h>
+#include <windows.h>
 #include <direct.h>
 #include <io.h>
 #include <time.h>
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "language.h"
 #include "event.h"
 #include "misc.h"

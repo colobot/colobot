@@ -19,6 +19,9 @@
 #define STRICT
 #define D3D_OVERLOADS
 
+#include <stdlib.h>
+#include <ctype.h>
+#include <d3dtypes.h>
 #include <dsound.h>
 #include <stdio.h>
 #include "language.h"

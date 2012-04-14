@@ -20,6 +20,9 @@
 #define	_TASKINFO_H_
 
 
+#include "misc.h"
+
+
 class CInstanceManager;
 class CTerrain;
 class CBrain;

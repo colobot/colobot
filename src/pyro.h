@@ -20,6 +20,11 @@
 #define	_PYRO_H_
 
 
+#include "d3dengine.h"
+#include "object.h"
+#include "misc.h"
+
+
 class CInstanceManager;
 class CD3DEngine;
 class CTerrain;
@@ -61,10 +66,6 @@ enum PyroType
 	PT_DEADW	= 25,		// drowning death
 	PT_FINDING	= 26,		// object discovered
 };
-
-
-enum ObjectType;
-enum Error;
 
 
 typedef struct

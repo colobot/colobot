@@ -40,6 +40,7 @@ class CBotVarPointer;	// pointeur à une instance de classe
 class CBotCall;			// les fonctions
 class CBotCallMethode;	// les méthodes
 class CBotDefParam;		// liste de paramètres
+class CBotCStack;
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -106,7 +107,7 @@ public:
 				// pour les tableaux de variables
 
 	DllExport
-				CBotTypResult(CBotTypResult& typ);
+				CBotTypResult(const CBotTypResult& typ);
 				// pour les assignations
 	DllExport
 				CBotTypResult();
@@ -115,18 +116,18 @@ public:
 				~CBotTypResult();
 
 	DllExport
-	int			GivType(int mode = 0);
+	int			GivType(int mode = 0) const;
 				// rend le type CBotTyp* du résultat
 
 	void		SetType(int n);
 				// modifie le type
 
 	DllExport
-	CBotClass*	GivClass();
+	CBotClass*	GivClass() const;
 				// rend le pointeur à la classe (pour les CBotTypClass, CBotTypPointer)
 
 	DllExport
-	int			GivLimite();
+	int			GivLimite() const;
 				// rend la taille limite du tableau (CBotTypArray)
 
 	DllExport
@@ -137,14 +138,14 @@ public:
 				// idem avec une liste de dimension (tableaux de tableaux)
 
 	DllExport
-	CBotTypResult& GivTypElem();
+	CBotTypResult& GivTypElem() const;
 				// rend le type des éléments du tableau (CBotTypArray)
 
 	DllExport
-	BOOL		Compare(CBotTypResult& typ);
+	BOOL		Compare(const CBotTypResult& typ) const;
 				// compare si les types sont compatibles
 	DllExport
-	BOOL		Eq(int type);
+	BOOL		Eq(int type) const;
 				// compare le type
 
 	DllExport
@@ -274,7 +275,7 @@ public:
 	DllExport
 	void			Empty();
 	DllExport
-	BOOL			IsEmpty();
+	BOOL			IsEmpty() const;
 	DllExport
 	int				GivLength();
 	DllExport
@@ -1048,7 +1049,7 @@ private:
 public:
 					CBotToken();
 					CBotToken(const CBotToken* pSrc);
-					CBotToken(CBotString& mot, CBotString& sep, int start=0, int end=0);
+					CBotToken(const CBotString& mot, const CBotString& sep, int start=0, int end=0);
 					CBotToken(const char* mot, const char* sep = NULL);
 												// constructeur
 					~CBotToken();				// destructeur
