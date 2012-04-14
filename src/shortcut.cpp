@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -38,7 +38,6 @@
 
 CShortcut::CShortcut(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
 	m_time = 0.0f;
 }
 
@@ -46,7 +45,6 @@ CShortcut::CShortcut(CInstanceManager* iMan) : CControl(iMan)
 
 CShortcut::~CShortcut()
 {
-	CControl::~CControl();
 }
 
 

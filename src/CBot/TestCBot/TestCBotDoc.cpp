@@ -643,7 +643,7 @@ if ( mode == 2 ) if (!m_pProg->Compile(m_DocText, m_Liste, (void*) 44))
 			while ( pVar != NULL )
 			{
 				info += sep;
-				info += pVar->GivName() + " = " + pVar->GivValString();
+				info += pVar->GivName() + CBotString(" = ") + pVar->GivValString();
 				sep = ", ";
 				pVar = pVar->GivNext();
 			}

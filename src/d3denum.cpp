@@ -107,6 +107,8 @@ static HRESULT WINAPI DeviceEnumCallback( TCHAR* strDesc, TCHAR* strName,
                                           D3DDEVICEDESC7* pDesc,
                                           VOID* pParentInfo )
 {
+    DWORD i;
+
     // Keep track of # of devices that were enumerated
     g_dwNumDevicesEnumerated++;
 
@@ -152,7 +154,7 @@ static HRESULT WINAPI DeviceEnumCallback( TCHAR* strDesc, TCHAR* strName,
             return D3DENUMRET_OK;
 
     // Build list of supported modes for the device
-    for( DWORD i=0; i<pDriverInfo->dwNumModes; i++ )
+    for( i=0; i<pDriverInfo->dwNumModes; i++ )
     {
         DDSURFACEDESC2 ddsdMode = pDriverInfo->pddsdModes[i];
         DWORD dwRenderDepths    = pDeviceInfo->ddDeviceDesc.dwDeviceRenderBitDepth;
@@ -177,7 +179,7 @@ static HRESULT WINAPI DeviceEnumCallback( TCHAR* strDesc, TCHAR* strName,
         return D3DENUMRET_OK;
 
     // Find a 640x480x16 mode for the default fullscreen mode
-    for( DWORD i=0; i<pDeviceInfo->dwNumModes; i++ )
+    for( i=0; i<pDeviceInfo->dwNumModes; i++ )
     {
         if( ( pDeviceInfo->pddsdModes[i].dwWidth == 640 ) &&
             ( pDeviceInfo->pddsdModes[i].dwHeight == 480 ) &&

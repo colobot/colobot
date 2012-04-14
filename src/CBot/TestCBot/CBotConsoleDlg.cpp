@@ -12,7 +12,9 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// CBotConsoleDlg.cpp : implementation file
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// CBotConsoleDlg.cpp : implementation file
 //
 
 #include "stdafx.h"
@@ -208,7 +210,7 @@ BOOL CBotConsoleDlg::OnInitDialog()
 	m_Edit1.ReplaceSel("Les fonctions suivantes sont disponibles:\r\n");
 	for ( int i = 0; i < m_pListe->GivSize(); i++ )
 	{
-		CBotString x = (*m_pListe)[i] + "\r\n";
+		CBotString x = (*m_pListe)[i] + CBotString("\r\n");
 		m_Edit1.ReplaceSel(x);
 	}
 	m_Edit1.ReplaceSel("Entrez une commande ci-dessous.\r\n\r\n");

@@ -24,7 +24,7 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
+#include "d3dengine.h"
 #include "math3d.h"
 #include "event.h"
 #include "misc.h"
@@ -45,8 +45,6 @@
 
 CSlider::CSlider(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_buttonLeft  = 0;
 	m_buttonRight = 0;
 
@@ -70,8 +68,6 @@ CSlider::~CSlider()
 {
 	delete m_buttonLeft;
 	delete m_buttonRight;
-
-	CControl::~CControl();
 }
 
 

@@ -20,18 +20,15 @@
 #define	_PARTICULE_H_
 
 
-#include "D3DEngine.h"
+#include "d3dengine.h"
+#include "sound.h"
 
 
 class CInstanceManager;
-class CD3DEngine;
 class CRobotMain;
 class CTerrain;
 class CWater;
 class CObject;
-class CSound;
-
-enum Sound;
 
 
 #define MAXPARTICULE	500

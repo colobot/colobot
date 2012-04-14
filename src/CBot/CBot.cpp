@@ -29,6 +29,9 @@
 
 #include "CBot.h"
 
+
+
+
 // les divers constructeurs / destructeurs
 // pour libérer tout selon l'arbre établi
 CBotInstr::CBotInstr()
@@ -80,7 +83,7 @@ void CBotInstr::DecLvl()
 }
 
 // controle la validité d'un break ou continu
-BOOL CBotInstr::ChkLvl(CBotString& label, int type)
+BOOL CBotInstr::ChkLvl(const CBotString& label, int type)
 {
 	int	i = m_LoopLvl;
 	while (--i>=0)
@@ -291,7 +294,7 @@ CBotInstr* CBotInstr::Compile(CBotToken* &p, CBotCStack* pStack)
 BOOL CBotInstr::Execute(CBotStack* &pj)
 {
 	CBotString	ClassManquante = name;
-	__asm int 3;			// ne doit jamais passer par cette routine
+	ASM_TRAP();			// ne doit jamais passer par cette routine
 							// mais utiliser les routines des classes filles
 	return FALSE;
 }
@@ -306,26 +309,26 @@ BOOL CBotInstr::Execute(CBotStack* &pj, CBotVar* pVar)
 void CBotInstr::RestoreState(CBotStack* &pj, BOOL bMain)
 {
 	CBotString	ClassManquante = name;
-	__asm int 3;			// ne doit jamais passer par cette routine
+	ASM_TRAP();			// ne doit jamais passer par cette routine
 							// mais utiliser les routines des classes filles
 }
 
 
 BOOL CBotInstr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
-	__asm int 3;			// papa sait pas faire, voir les filles
+	ASM_TRAP();			// papa sait pas faire, voir les filles
 	return FALSE;
 }
 
 BOOL CBotInstr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevToken, BOOL bStep, BOOL bExtend)
 {
-	__asm int 3;			// papa sait pas faire, voir les filles
+	ASM_TRAP();			// papa sait pas faire, voir les filles
 	return FALSE;
 }
 
 void CBotInstr::RestoreStateVar(CBotStack* &pile, BOOL bMain)
 {
-	__asm int 3;			// papa sait pas faire, voir les filles
+	ASM_TRAP();			// papa sait pas faire, voir les filles
 }
 
 // cette routine n'est définie que pour la classe fille CBotCase
@@ -538,7 +541,7 @@ void CBotLeftExprVar::RestoreState(CBotStack* &pj, BOOL bMain)
 	CBotVar*	 var1;
 
 	var1 = pj->FindVar(m_token.GivString());
-	if ( var1 == NULL ) __asm int 3;
+	if ( var1 == NULL ) ASM_TRAP();
 
 	var1->SetUniqNum(m_nIdent);					// avec cet identificateur unique
 }
@@ -1777,7 +1780,7 @@ BOOL CBotExpression::Execute(CBotStack* &pj)
 			pile2->SetVar(result);									// re-place le résultat
 			break;
 		default:
-			__asm int 3;
+			ASM_TRAP();
 		}
 		if (!IsInit)
 			pile2->SetError(TX_NOTINIT, m_leftop->GivToken());
@@ -2298,7 +2301,7 @@ CBotIndexExpr::~CBotIndexExpr()
 BOOL CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
 	if ( pVar->GivType(1) != CBotTypArrayPointer )
-		__asm int 3;
+		ASM_TRAP();
 
 	pVar = ((CBotVarArray*)pVar)->GivItem(0, FALSE);			// à la compilation rend l'élément [0]
 	if ( pVar == NULL )
@@ -2320,7 +2323,7 @@ BOOL CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 //	DEBUG( "CBotIndexExpr::ExecuteVar", -1 , pj);
 
 	if ( pVar->GivType(1) != CBotTypArrayPointer )
-		__asm int 3;
+		ASM_TRAP();
 
 	pile = pile->AddStack();
 //	if ( pile == EOX ) return TRUE;
@@ -2406,7 +2409,7 @@ void CBotFieldExpr::SetUniqNum(int num)
 BOOL CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
 {
 	if ( pVar->GivType(1) != CBotTypPointer )
-		__asm int 3;
+		ASM_TRAP();
 
 //	pVar = pVar->GivItem(m_token.GivString());
 	pVar = pVar->GivItemRef(m_nIdent);
@@ -2433,7 +2436,7 @@ BOOL CBotFieldExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 //	DEBUG( "CBotFieldExpre::ExecuteVar "+m_token.GivString(), 0, pj );
 
 	if ( pVar->GivType(1) != CBotTypPointer )
-		__asm int 3;
+		ASM_TRAP();
 
 	CBotVarClass* pItem = pVar->GivPointer();
 	if ( pItem == NULL )
@@ -2693,7 +2696,7 @@ BOOL CBotLeftExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prevT
 	if ( pVar == NULL )
 	{
 #ifdef	_DEBUG
-		__asm int 3;
+		ASM_TRAP();
 #endif
 		pile->SetError(2, &m_token);
 		return FALSE;
@@ -3346,7 +3349,7 @@ BOOL CBotExprVar::ExecuteVar(CBotVar* &pVar, CBotStack* &pj, CBotToken* prevToke
 	if ( pVar == NULL )
 	{
 #ifdef	_DEBUG
-		__asm int 3;
+		ASM_TRAP();
 #endif
 		pj->SetError(1, &m_token);
 		return FALSE;
@@ -3969,7 +3972,7 @@ BOOL TypeCompatible( CBotTypResult& type1, CBotTypResult& type2, int op )
 
 // regarde si deux variables sont compatible pour un passage de paramètre
 
-BOOL TypesCompatibles( CBotTypResult& type1, CBotTypResult& type2 )
+BOOL TypesCompatibles( const CBotTypResult& type1, const CBotTypResult& type2 )
 {
 	int	t1 = type1.GivType();
 	int	t2 = type2.GivType();

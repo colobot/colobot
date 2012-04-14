@@ -24,8 +24,8 @@
 #include <d3d.h>
 
 #include "struct.h"
-#include "D3DEngine.h"
-#include "D3DMath.h"
+#include "d3dengine.h"
+#include "d3dmath.h"
 #include "language.h"
 #include "global.h"
 #include "event.h"
@@ -3784,7 +3784,7 @@ void CPhysics::WheelParticule(int color, float width)
 	character = m_object->RetCharacter();
 	mat = m_object->RetWorldMatrix(0);
 
-	Draw a trace on the ground.
+	// Draw a trace on the ground.
 	if ( color >= 0 && color <= 17 )
 	{
 		parti = (ParticuleType)(PARTITRACE0+color);

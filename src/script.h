@@ -20,6 +20,9 @@
 #define	_SCRIPT_H_
 
 
+#include "event.h"
+
+
 class CInstanceManager;
 class CD3DEngine;
 class CInterface;

@@ -1042,7 +1042,7 @@ BOOL CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
 				}
 				break;
 			default:
-				__asm int 3;
+				ASM_TRAP();
 			}
 		}
 		newvar->SetUniqNum(p->m_nIdent);

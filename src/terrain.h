@@ -20,6 +20,9 @@
 #define	_TERRAIN_H_
 
 
+#include "d3dengine.h"
+
+
 class CInstanceManager;
 class CD3DEngine;
 class CWater;

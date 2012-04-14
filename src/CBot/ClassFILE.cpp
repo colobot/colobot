@@ -292,7 +292,7 @@ BOOL rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 
 	FILE* pFile= (FILE*)pVar->GivValInt();
 	
-	int res = fputs(param+"\n", pFile);
+	int res = fputs(param+CBotString("\n"), pFile);
 
 	// en cas d'erreur génère une exception
 	if ( res < 0 ) { Exception = CBotErrWrite; return FALSE; }
