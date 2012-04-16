@@ -23,13 +23,16 @@ Lista modułów <b>.cpp</b>:
  - <b>autobase.cpp</b> - Klasa odpowiadająca za obsługę statku kosmicznego.
  - <b>autoconverter.cpp</b> - Klasa odpowiadająca za obsługę huty tytanu.
  - <b>autoderrick.cpp</b> - Klasa odpowiadająca za obsługę kopalni.
- - <b>autodestroyer.cpp autoegg.cpp</b> - Klasa odpowiadająca za obsługę jaj obcych.
+ - <b>autodestroyer.cpp</b> - ?
+ - <b>autoegg.cpp</b> - Klasa odpowiadająca za obsługę jaj obcych.
  - <b>autoenergy.cpp</b> - Klasa odpowiadająca za obsługę fabryki ogniw elektrycznych.
  - <b>autofactory.cpp</b> - Klasa odpowiadająca za obsługę fabryki robotów.
  - <b>autoflag.cpp</b> - Klasa odpowiadająca za obsługę flagi.
  - <b>autohuston.cpp</b> - Klasa odpowiadająca za obsługę Centrum Kontroli Misji w Houston.
  - <b>autoinfo.cpp</b> - Klasa odpowiadająca za obsługę stacji przekaźnikowej.
- - <b>autojostle.cpp autokid.cpp autolabo.cpp</b> - Klasa odpowiadająca za obsługę laboratorium.
+ - <b>autojostle.cpp</b> - ?
+ - <b>autokid.cpp</b> - ?
+ - <b>autolabo.cpp</b> - Klasa odpowiadająca za obsługę laboratorium.
  - <b>automush.cpp</b> - Klasa odpowiadająca za obsługę grzybów.
  - <b>autonest.cpp</b> - Klasa odpowiadająca za obsługę gniazda obcych.
  - <b>autonuclear.cpp</b> - Klasa odpowiadająca za obsługę reaktora jądrowego.
@@ -125,11 +128,13 @@ Lista modułów <b>.cpp</b>:
  - <b>taskfireant.cpp</b> - Klasa odpowiadająca za obsługę strzelania przez mrówkę.
  - <b>taskflag.cpp</b> - Klasa odpowiadająca za obsługę flagi.
  - <b>taskgoto.cpp</b> - Klasa odpowiadająca za obsługę polecenia „goto()”.
- - <b>taskgungoal.cpp taskinfo.cpp</b> - Klasa odpowiadająca za obsługę stacji przekaźnikowej.
+ - <b>taskgungoal.cpp</b> - ?
+ - <b>taskinfo.cpp</b> - Klasa odpowiadająca za obsługę stacji przekaźnikowej.
  - <b>taskmanip.cpp</b> - Klasa odpowiadająca za obsługę ramienia robota.
  - <b>taskpen.cpp</b> - Klasa odpowiadająca za obsługę kredek.
  - <b>taskrecover.cpp</b> - Klasa odpowiadająca za obsługę odzyskiwania tytanu.
- - <b>taskreset.cpp tasksearch.cpp</b> - Klasa odpowiadająca za obsługę przeszukiwania podłoża.
+ - <b>taskreset.cpp</b> - ?
+ - <b>tasksearch.cpp</b> - Klasa odpowiadająca za obsługę przeszukiwania podłoża.
  - <b>taskshield.cpp</b> - Klasa odpowiadająca za obsługę pola ochronnego.
  - <b>taskspiderexplo.cpp</b> - Klasa odpowiadająca za obsługę wybuchu pająka.
  - <b>tasktake.cpp</b> - Klasa odpowiadająca za obsługę chwytaka.
