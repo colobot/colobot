@@ -25,11 +25,11 @@
 #define _NET			FALSE
 #define _DEMO			FALSE		// DEMO only CoLoBoT (with _Full = FALSE)!
 
-#define _FRENCH			TRUE
+#define _FRENCH			FALSE
 #define _ENGLISH		FALSE
 #define _GERMAN			FALSE
 #define _WG				FALSE
-#define _POLISH			FALSE
+#define _POLISH			TRUE
 
 #define _NEWLOOK		FALSE		// FALSE for CoLoBoT, TRUE for all CeeBot
 #define _SOUNDTRACKS	FALSE		// always FALSE since InitAudioTrackVolume crop in Vista
