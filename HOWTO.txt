@@ -1,0 +1,71 @@
+How to...
+
+1. Compile the game with MinGW.
+
+  1. Download and install DirectX 8.1 SDK. It can be difficult to find it now as it is old SDK, but here is a working dowload link:
+     http://dl.dropbox.com/u/32866936/dx81sdk_full.exe
+  2. Download and install MinGW and MSYS:
+      http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20111118/
+  3. When installing, select all available components.
+  4. In the file src/CMakeLists.txt, change "set(DXSDK_DIR "c:/dxsdk") to the directory, where you have DirectX SDK
+     (the slashes must be in this form: /, not \).
+  5. Run MinGW console from the shortcut in menu start.
+  6. Change to the directory where you have the Colobot sources by typing "cd /c/where/the/sources/are"
+  7. Type "cmake -G 'MSYS Makefiles' ."
+  8. Type "make"
+  9. Everything should compile without errors.
+
+2. Run the compiled game.
+
+  1. Download and unpack the package with the game data files.
+  2. Copy the compiled files from bin/colobot.exe, bin/CBot/libCBot.dll
+     and from the directory, where MinGW is installed bin/libgcc_s_dw2-1.dll and bin/libstdc++-6.dll
+     to the directory with game data (there should be several files named colobot*.dat).
+  3. Create a shortcut to the colobot.exe executable and add to the executed command " -nocd" option.
+  4. Run the shortcut and enjoy the game.
+
+3. But it's in French! How to change the language?
+
+  1. In the source code, find language.h file and change the line #define FRENCH TRUE to #define FRENCH FALSE and do the reverse
+     on on the language of your choice (English, German or Polish).
+  2. Recompile the game and copy bin/colobot.exe.
+  3. In the directory with game data switch the directories scene, script and help with those from the directory of given language
+    (e.g. english/).
+  4. Run the game.
+
+
+PL
+
+Jak...
+
+1. Skompilować projekt pod MinGW.
+
+  1. Ściągamy i instalujemy DirectX SDK w wersji 8.1. Może być problem ze znalezieniem linka bo to już stary SDK, ale można ściągnąć stąd:
+     http://dl.dropbox.com/u/32866936/dx81sdk_full.exe
+  2. Ściągamy i instalujemy MinGW i MSYS:
+     http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20111118/
+  3. Przy instalacji zaznaczamy wszystkie komponenty do instalacji.
+  4. W pliku src/CMakeLists.txt zmieniamy set(DXSDK_DIR "c:/dxsdk") na katalog, gdzie jest zainstalowany DirectX SDK (w wersji 8.1)
+     (slashe mają być właśnie w takiej postaci: / a nie \).
+  5. Uruchamiamy MinGW console ze skrótu w menu start.
+  6. Przechodzimy do katalogu, gdzie są źródła wpisując "cd /c/tam/gdzie/sa/zrodla"
+  7. Wpisujemy "cmake -G 'MSYS Makefiles' ."
+  8. Wpisujemy "make"
+  9. Wszystko powinno się skomplikować bez błędów.
+
+2. Uruchomić skompilowaną grę.
+
+  1. Ściągamy paczkę z plikami danych gry.
+  2. Kopiujemy skompilowane pliki bin/colobot.exe, bin/CBot/libCBot.dll
+     i z katalogu, gdzie jest zainstalowany MinGW bin/libgcc_s_dw2-1.dll i bin/libstdc++-6.dll
+     do katalogu z plikami danych (powinno być tam kilka plików colobot*.dat).
+  3. Tworzymy skrót do colobot.exe, przy czym w wywoływanej komendzie dopisujemy na końcu opcję " -nocd".
+  4. Odpalamy skrót i cieszymy się grą.
+
+3. Ale gra jest po francusku! Jak zmienić język?
+
+  1. W kodzie źródłowym znajdujemy plik language.h i zmieniamy  #define FRENCH TRUE na #define FRENCH FALSE i robimy odwrotnie
+     dla wybranego języka (angielski, niemiecki lub polski).
+  2. Kompilujemy od nowa grę i kopiujemy bin/colobot.exe.
+  3. W katalogu z plikami danych podmieniamy katalogi scene, script i help z tymi z katalogu danego języka (np. english/).
+  4. Odpalamy grę.
