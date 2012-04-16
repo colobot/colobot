@@ -337,10 +337,10 @@ void CD3DEngine::SetD3DDevice(LPDIRECT3DDEVICE7 device)
 
 //?	if ( !m_bStateColor )  m_whiteDestBlend[1] = D3DBLEND_INVSRCALPHA;  // = 6
 
-	if ( m_blackSrcBlend[0]    )  m_blackSrcBlend[1]    = m_blackSrcBlend[0];
-	if ( m_blackDestBlend[0]   )  m_blackDestBlend[1]   = m_blackDestBlend[0];
-	if ( m_whiteSrcBlend[0]    )  m_whiteSrcBlend[1]    = m_whiteSrcBlend[0];
-	if ( m_whiteDestBlend[0]   )  m_whiteDestBlend[1]   = m_whiteDestBlend[0];
+//	if ( m_blackSrcBlend[0]    )  m_blackSrcBlend[1]    = m_blackSrcBlend[0];
+//	if ( m_blackDestBlend[0]   )  m_blackDestBlend[1]   = m_blackDestBlend[0];
+//	if ( m_whiteSrcBlend[0]    )  m_whiteSrcBlend[1]    = m_whiteSrcBlend[0];
+//	if ( m_whiteDestBlend[0]   )  m_whiteDestBlend[1]   = m_whiteDestBlend[0];
 	if ( m_diffuseSrcBlend[0]  )  m_diffuseSrcBlend[1]  = m_diffuseSrcBlend[0];
 	if ( m_diffuseDestBlend[0] )  m_diffuseDestBlend[1] = m_diffuseDestBlend[0];
 	if ( m_alphaSrcBlend[0]    )  m_alphaSrcBlend[1]    = m_alphaSrcBlend[0];

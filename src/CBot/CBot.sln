@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual C++ Express 2010
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CBot", "CBot.vcxproj", "{56C2422A-37E8-4A67-9847-9DD28B69C97D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestCBot", "TestCBot\TestCBot.vcxproj", "{ABC99C18-F3E4-4486-A965-C6F15C8B9E33}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{56C2422A-37E8-4A67-9847-9DD28B69C97D}.Debug|Win32.ActiveCfg = Debug|Win32
+		{56C2422A-37E8-4A67-9847-9DD28B69C97D}.Debug|Win32.Build.0 = Debug|Win32
+		{56C2422A-37E8-4A67-9847-9DD28B69C97D}.Release|Win32.ActiveCfg = Release|Win32
+		{56C2422A-37E8-4A67-9847-9DD28B69C97D}.Release|Win32.Build.0 = Release|Win32
+		{ABC99C18-F3E4-4486-A965-C6F15C8B9E33}.Debug|Win32.ActiveCfg = Debug|Win32
+		{ABC99C18-F3E4-4486-A965-C6F15C8B9E33}.Debug|Win32.Build.0 = Debug|Win32
+		{ABC99C18-F3E4-4486-A965-C6F15C8B9E33}.Release|Win32.ActiveCfg = Release|Win32
+		{ABC99C18-F3E4-4486-A965-C6F15C8B9E33}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
