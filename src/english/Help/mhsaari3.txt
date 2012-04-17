@@ -1,9 +1,0 @@
-\b;From Mission Control
-Your satellite has located the remains of the previous expedition. You should come across a \l;black box\u object\bbox; not too far from there. It will give you the coordinates of your next destination.
-
-Exterminate the few remaining ants. We've been notified that your neutron gun is currently out of order so you will not be able to build new bots. We're convinced that you're resourceful enough at this point to come up with a solution.
-
-\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
-
-\t;See also
-\l;Controls\u command; and \l;CBOT Language\u cbot;

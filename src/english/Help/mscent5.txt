@@ -1,8 +1,0 @@
-\b;Walkthrough
-1) Thump the deck of the \l;spaceship\u object\base;. You don't need to move the \l;thumper\u object\bottump; anywhere.
-2) Locate the \l;orga shooter\u object\botoj; approximately 70 meters to the east.
-3) Terminate the \l;ants\u object\ant; while they are still on their backs.
-4) Take off.
-
-\t;See also
-\l;Controls\u command;

@@ -1,9 +1,0 @@
-\b;Paj¹k
-\image spider 8 8;
-Paj¹ki dzia³aj¹ jak oddzia³y samobójcze: gdy zbli¿y siê on do celu, wybucha i rozpada siê na wiele ma³ych fragmentów. Powoduj¹ one zap³on przedmiotów, z którym siê zetkn¹. Na szczêœcie paj¹k równie¿ tego nie prze¿ywa.
-
-\t;\l;Kategoria\u cbot\category; obiektu
-\c;AlienSpider\n;
-
-\t;Zobacz równie¿
-\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

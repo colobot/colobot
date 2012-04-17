@@ -1,5 +1,0 @@
-\b;Extension Dany02
-Blabla, blabla, etc.
-
-\t;Voir aussi
-\l;Commandes\u command;.

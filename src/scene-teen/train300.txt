@@ -1,2 +1,0 @@
-Title.F text="Dessin répétitif" resume="Dessin répétitif"
-Title.E text="Drawing" resume="Drawing"

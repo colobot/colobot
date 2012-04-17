@@ -1,2 +1,0 @@
-Title.F text="Labytinthe" resume="Labytinthe"
-Title.E text="Labytinthe" resume="Labytinthe"

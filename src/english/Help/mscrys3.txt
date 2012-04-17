@@ -1,7 +1,0 @@
-\b;Walkthrough
-If you lose the bot, it will drop the black box somewhere southwest of your spaceship on a region surrounded by crystals.
-
-In case your power runs out before you can bring the black box back, use the second grabber left on the spaceship.
-
-\t;See also
-\l;Controls\u command;

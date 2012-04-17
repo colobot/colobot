@@ -1,8 +1,0 @@
-\b;Alien Egg
-The alien eggs are laid by the \l;Alien Queen\u object\mother;. After a short time, they will hatch and an \l;ant\u object\ant;, a \l;wasp\u object\wasp;, a \l;spider\u object\spider; or a \l;worm\u object\worm; will come out.
-
-\t;Object \l;Category\u cbot\category;
-\c;AlienEgg\n;
-
-\t;See also
-\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

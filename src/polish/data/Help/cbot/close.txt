@@ -1,8 +1,0 @@
-\b;Instrukcja \c;close\n;
-Zamyka plik otwarty wczeœniej przy u¿yciu instrukcji \c;\l;open\u cbot\open;\n;. Jest to metoda klasy \c;\l;file\u cbot\file;\n;, wobec czego nie mo¿na napisaæ \c;close()\n;, lecz jedynie \c;handle.close()\n;¦:
-\c;
-\s;	handle.close();
-\n;
-\t;Zobacz równie¿
-\c;\l;file\u cbot\file;\n;, \c;\l;open\u cbot\open;\n;, \c;\l;readln\u cbot\readln;\n;, \c;\l;writeln\u cbot\writeln;\n; i \c;\l;eof\u cbot\eof;\n;.
-\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

@@ -1,9 +1,0 @@
-\b;An urgent notification from Mission Control
-As you were about to take off, we received from the satellite the following piece of information: a bot of a type yet unknown has been spotted on Volcano. Try to bring it back onto your spaceship for further study.
-
-Our engineers on Earth have very recently come up with a formula that should allow reactors to function properly, at least for a short while, despite the high temperatures. The data have been transmitted to you.
-
-\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
-
-\t;See also
-\l;Controls\u command; and \l;CBOT Language\u cbot;

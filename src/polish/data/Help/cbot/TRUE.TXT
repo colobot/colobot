@@ -1,5 +1,0 @@
-\b;Typ \c;true\n;
-Wartoœæ ta oznacza, ¿e warunek jest prawdziwy; jest to jedna z dwóch wartoœci \l;zmiennej\u cbot\var; typu \l;boolean\u cbot\bool;.
-
-\t;Zobacz równie¿
-\l;Programowanie\u cbot;, \l;typy\u cbot\type; i \l;kategorie\u cbot\category;.

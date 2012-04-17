@@ -1,7 +1,0 @@
-\b;Exercise
-Instruct your \l;bot\u object\bottr; to find all the \l;blue crosses\u object\waypoint; on the ground, but do not get too close to the \l;mines\u object\mine;.
-
-If a bot gets within less than 2m of the center of a mine (which is the position returned by the radar instruction), il will blow up. However, you must take into account the inertia of the bot. Probably a safety distance of 3 to 3.5m would be more appropriate.
-
-\t;See also
-\l;Programming\u cbot;, \l;types\u cbot\type; and \l;categories\u cbot\category;.

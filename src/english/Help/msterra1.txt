@@ -1,6 +1,0 @@
-\b;Walkthrough
-Unfortunately no walkthrough has been provided for this mission.
-You are on your own...
-
-\t;See also
-\l;Controls\u command;

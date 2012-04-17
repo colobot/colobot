@@ -1,7 +1,0 @@
-\b;Walkthrough
-Somewhere northeast in the valley itself you should come across a fully functional \l;power station\u object\station;. Northwest you will find several \l;power cells\u object\power;.
-
-A few shooters in working condition have been abandoned in and around the same area in the valley; use them to shoot all the ants. With the \l;winged grabber\u object\botgj;, you can then retrieve the \l;black box\u object\bbox; that is located behind the derelict spaceship and take off.
-
-\t;See also
-\l;Controls\u command;

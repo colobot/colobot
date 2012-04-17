@@ -1,8 +1,0 @@
-\b;Platforma startowa
-Jest to platforma u¿ywana w niektórych æwiczeniach. 
-
-\t;\l;Kategoria\u cbot\category; obiektu
-\c;StartArea\n;
-
-\t;Zobacz równie¿
-\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

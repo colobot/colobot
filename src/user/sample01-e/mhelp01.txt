@@ -1,8 +1,0 @@
-\b;From Mission Control
-Your base is under attack. Defend it quickly¦!
-As soon as all enemies are eliminated, find your \l;spaceship\u object\base; and take off.
-
-\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
-
-\t;See also
-\l;Controls\u command; and \l;CBOT Language\u cbot;

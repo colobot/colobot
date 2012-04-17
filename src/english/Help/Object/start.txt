@@ -1,8 +1,0 @@
-\b;Starting Pad
-The starting pad is a platform used in some exercises. 
-
-\t;Object \l;Category\u cbot\category;
-\c;StartArea\n;
-
-\t;See also
-\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

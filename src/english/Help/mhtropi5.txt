@@ -1,9 +1,0 @@
-\b;From Mission Control
-Locate and retrieve another \l;black box\u object\bbox; from the previous expedition.
-
-The observation satellite seems to have spotted it underwater. Water is harmless to you as long as you wear your helmet but keep in mind that you can't carry objects underwater. A \l;subber\u object\botsub; may come in handy.
-
-\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
-
-\t;See also
-\l;Controls\u command; and \l;CBOT Language\u cbot;

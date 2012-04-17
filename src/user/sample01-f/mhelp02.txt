@@ -1,7 +1,0 @@
-\b;Instructions de Houston
-Débrouillez-vous pour ramener une \l;pile atomique\u object\atomic; sur le \l;vaisseau\u object\base;. Peu importe le moyen pour y parvenir, mais il nous faut cette pile au plus vite¦...
-
-\key;\key help;\norm; permet de revoir ces instructions sur votre SatCom.
-
-\t;Voir aussi
-\l;Commandes\u command;.

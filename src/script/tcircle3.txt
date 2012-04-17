@@ -1,6 +1,0 @@
-extern void object::Solution( )
-{
-	pendown(Black);
-	motor(0.84, 1.0);
-	wait(20);
-}

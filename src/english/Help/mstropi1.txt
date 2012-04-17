@@ -1,5 +1,0 @@
-\b;Walkthrough
-Follow the path shown on your mini map. The explosive device lies at the bottom of a small valley populated by giant ants. They will probably attack you and you will probably lose consciousness. There is nothing you can really do about this.
-
-\t;See also
-\l;Controls\u command;

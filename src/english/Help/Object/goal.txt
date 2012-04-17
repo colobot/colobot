@@ -1,8 +1,0 @@
-\b;Finishing Pad
-The finishing pad is an objective to be reached in some exercises.
-
-\t;Object \l;Category\u cbot\category;
-\c;GoalArea\n;
-
-\t;See also
-\l;CBOT Language\u cbot;, \l;Variables\u cbot\type; and \l;Categories\u cbot\category;.

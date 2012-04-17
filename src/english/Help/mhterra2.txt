@@ -1,9 +1,0 @@
-\b;From Mission Control
-Retrieve the second \l;key\u object\key; (B). It should be located near your current position.
-
-When your mission is completed and before taking off, bring both \l;shielder\u object\botshld; and \l;subber\u object\botsub; aboard your spaceship.
-
-\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
-
-\t;See also
-\l;Controls\u command; and \l;CBOT Language\u cbot;

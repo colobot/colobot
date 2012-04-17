@@ -1,9 +1,0 @@
-\b;Walkthrough
-Execute immediately the program \c;KillAnt1\n; on the \l;wheeled shooter\u object\botfr;; it will take care of the first wave of attack coming from west.
-
-Then build two \l;defense towers\u object\tower; one in the north of the \l;spaceship\u object\base;, the other one in the south (you have to do this VERY quickly). While \l;you\u object\human; are building, use the \l;grabber\u object\botgr; to get a \l;power cell\u object\power;.
-
-As soon as the successive waves of attack, made up of about fifteen \l;ants\u object\ant;, are gone, you have time to take care of the ants that did not attack. Build a \l;radar\u object\radar; in order to spot them, and a \l;converter\u object\convert;, a \l;bot factory\u object\factory;, a \l;power station\u object\station; and a \l;winged shooter\u object\botfj; in order to get rid of them...
-
-\t;See also
-\l;Controls\u command;

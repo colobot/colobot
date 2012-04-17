@@ -1,2 +1,0 @@
-Title.F text="Mouvements" resume="Mouvements"
-Title.E text="Movements" resume="Movements"

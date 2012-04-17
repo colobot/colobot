@@ -1,3 +1,0 @@
-Title.E text="On Tropica" resume="Tropica"
-Title.F text="Sur Tropica" resume="Tropica"
-Title.P text="Na Toropice" resume="Tropika"

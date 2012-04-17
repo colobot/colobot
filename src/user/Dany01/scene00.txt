@@ -1,2 +1,0 @@
-Title.F text="Extention Terranova" resume="Terranova"
-Title.E text="Terranova extension" resume="Terranova"

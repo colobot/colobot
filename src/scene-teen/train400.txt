@@ -1,2 +1,0 @@
-Title.F text="Destruction" resume="Destruction"
-Title.E text="Drawing" resume="Drawing"

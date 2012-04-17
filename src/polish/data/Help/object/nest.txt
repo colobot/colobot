@@ -1,8 +1,0 @@
-\b;Gniazdo
-Gniazdo obcych jest niespotykan¹ wczeœniej konstrukcj¹, z której regularnie wydobywa siê \l;materia organiczna\u object\bullet;. Jest ono czêsto odwiedzane przez \l;osy\u object\wasp;, które uzupe³niaj¹ tu amunicjê u¿ywan¹ do bombardowania robotów, budynków i astronauty.
-
-\t;\l;Kategoria\u cbot\category; obiektu
-\c;AlienNest\n;
-
-\t;Zobacz równie¿
-\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

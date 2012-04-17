@@ -1,2 +1,0 @@
-Title.F text="Sur Centaury" resume="Centaury"
-Title.E text="On Centaury" resume="Centaury"

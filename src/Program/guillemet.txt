@@ -1,4 +1,0 @@
-extern void object::New()
-{
-	message("C'est \"très\" important");
-}

@@ -1,8 +1,0 @@
-\b;Platforma koñcowa
-Platforma koñcowa jest celem, do którego trzeba dotrzeæ w niektórych æwiczeniach.
-
-\t;\l;Kategoria\u cbot\category; obiektu
-\c;GoalArea\n;
-
-\t;Zobacz równie¿
-\l;Jêzyk CBOT\u cbot;, \l;zmienne\u cbot\type; i \l;kategorie\u cbot\category;.

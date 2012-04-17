@@ -1,2 +1,0 @@
-Title.F text="Combats" resume="Combat contre des cibles mouvantes"
-Title.E text="Engagements" resume="Fight against moving targets"

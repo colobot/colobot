@@ -1,5 +1,0 @@
-extern void object::%s( )
-{
-	#
-	message(h);
-}

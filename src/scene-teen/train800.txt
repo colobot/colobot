@@ -1,2 +1,0 @@
-Title.F text="Variables 2" resume="Variables 2"
-Title.E text="Variables 2" resume="Variables 2"

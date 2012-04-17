@@ -1,7 +1,0 @@
-\b;From Mission Control
-It is time for \l;you\u object\human; to improve your shooting skills again. In the following drill, hit all the \l;explosive devices\u object\tnt; but watch out: your \l;orga shooter\u object\botoj; has very little power left in it, barely enough to complete the drill.
-
-\key;\key help;\norm; allows you to review these instructions at all times on your personal SatCom \button 63;.
-
-\t;See also
-\l;Controls\u command; and \l;CBOT Language\u cbot;

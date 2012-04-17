@@ -1,7 +1,0 @@
-\b;Walkthrough
-If your bot suddenly explodes, this means that you have hit the steel structures too often. Drive more slowly, so your bot will not be damaged even if you bump into an obstacle.
-
-If you can not take off after you completed the training, this means that you have not hit all the targets. Go round one more time, and check if any of the explosive devices or crosses in the center of the steel structures are left.
-
-\t;See also
-\l;Controls\u command;

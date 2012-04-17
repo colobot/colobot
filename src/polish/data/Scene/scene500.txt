@@ -1,3 +1,0 @@
-Title.E text="On Saari" resume="Saari"
-Title.F text="Sur Saari" resume="Saari"
-Title.P text="Na Saari" resume="Saari"

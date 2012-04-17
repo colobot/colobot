@@ -1,2 +1,0 @@
-Title.F text="Base" resume="Base"
-Title.E text="Base" resume="Base"
