@@ -6,7 +6,10 @@ How to...
      http://dl.dropbox.com/u/32866936/dx81sdk_full.exe
   2. Download and install MinGW and MSYS:
       http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20111118/
-  3. When installing, select all available components.
+     When installing, select all available components.
+  3. Download and install CMake:
+      http://www.cmake.org/cmake/resources/software.html (the Windows zip file)
+     Unpack the contents of the archive to where MinGW is installed (files from bin/ should go into bin/, etc.)
   4. In the file src/CMakeLists.txt, change "set(DXSDK_DIR "c:/dxsdk") to the directory, where you have DirectX SDK
      (the slashes must be in this form: /, not \).
   5. Run MinGW console from the shortcut in menu start.
@@ -44,7 +47,10 @@ Jak...
      http://dl.dropbox.com/u/32866936/dx81sdk_full.exe
   2. Ściągamy i instalujemy MinGW i MSYS:
      http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20111118/
-  3. Przy instalacji zaznaczamy wszystkie komponenty do instalacji.
+     Przy instalacji zaznaczamy wszystkie komponenty do instalacji.
+  3. Ściągamy i instalujemy CMake:
+     http://www.cmake.org/cmake/resources/software.html (plik zip dla Windowsa)
+     Zip rozpakowujemy do katalogu, gdzie zainstalowany jest MinGW (pliki z bin/ mają trafić do bin/ itd.).
   4. W pliku src/CMakeLists.txt zmieniamy set(DXSDK_DIR "c:/dxsdk") na katalog, gdzie jest zainstalowany DirectX SDK (w wersji 8.1)
      (slashe mają być właśnie w takiej postaci: / a nie \).
   5. Uruchamiamy MinGW console ze skrótu w menu start.
