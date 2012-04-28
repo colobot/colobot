@@ -1,0 +1,152 @@
+/**
+
+\mainpage
+
+Doxygen documentation of Colobot project
+
+\section Intro Introduction
+
+The source code released by Epitec was sparsely documented. This documentation, written from scratch,
+will aim to describe the various components of the code.
+
+Currently, it contains only the automatically generated content from Doxygen
+and the following brief description of source code files.
+
+\section Files Short description of source files
+
+List of <b>.cpp</b> modules:
+- <b>auto.cpp</b> - Main class responsible for actions of stationary elements. It has the following derived classed:
+ - <b>autobase.cpp</b> - Class responsible for the space ship.
+ - <b>autoconverter.cpp</b> - Class responsible for a titanium converter.
+ - <b>autoderrick.cpp</b> - Class responsible for a derrick.
+ - <b>autodestroyer.cpp</b> - ?
+ - <b>autoegg.cpp</b> - Class responsible for alien eggs.
+ - <b>autoenergy.cpp</b> - Class responsible for a power cell factory.
+ - <b>autofactory.cpp</b> - Class responsible for a robot factory.
+ - <b>autoflag.cpp</b> - Class responsible for a flag.
+ - <b>autohuston.cpp</b> - Class responsible for the Houston Misson Control.
+ - <b>autoinfo.cpp</b> - Class responsible for an information exchange post.
+ - <b>autojostle.cpp</b> - ?
+ - <b>autokid.cpp</b> - ?
+ - <b>autolabo.cpp</b> - Class responsible for a laboratory.
+ - <b>automush.cpp</b> - Class responsible for a mushroom.
+ - <b>autonest.cpp</b> - Class responsible for an alien nest.
+ - <b>autonuclear.cpp</b> - Class responsible for a nuclear power station.
+ - <b>autopara.cpp</b> - Class responsible for a lightning conductor.
+ - <b>autoportico.cpp</b> - Class responsible for the doors of space ship.
+ - <b>autoradar.cpp</b> - Class responsible for a radar station.
+ - <b>autorepair.cpp</b> - Class responsible for a repair center.
+ - <b>autoresearch.cpp</b> - Class responsible for a research center.
+ - <b>autoroot.cpp</b> - Class responsible for roots.
+ - <b>autosafe.cpp</b> - Class responsible for a vault.
+ - <b>autostation.cpp</b> - Class responsible for a power plant.
+ - <b>autotower.cpp</b> - Class responsible for a defense tower.
+
+- <b>blitz.cpp</b> - Class responsible for lightning strikes.
+- <b>brain.cpp</b> - Class responsible for programs and instructions for robots and buildings.
+- <b>camera.cpp</b> - Class responsible for the camera.
+- <b>cbottoken.cpp</b> - Class responsible for returning references to "Programming Manual".
+- <b>ClassFILE.cpp</b> - Functions responsible for file handling in CBOT.
+- <b>cloud.cpp</b> - Class responsible for clouds.
+- <b>cmdtoken.cpp</b> - Functions responsible for handling types in CBOT.
+
+- <b>control.cpp</b> - Main class responsible for controls in user interface. It has the following derived classes:
+ - <b>button.cpp</b> - Class responsible for a button.
+ - <b>check.cpp</b> - Class responsible for a check box.
+ - <b>color.cpp</b> - Class responsible for one-color elements.
+ - <b>compass.cpp</b> - Class responsible for the compass.
+ - <b>edit.cpp</b> - Class responsible for the program editor.
+ - <b>editvalue.cpp</b> - Class responsible for an edit box for selecting values.
+ - <b>gauge.cpp</b> - Class responsible for a gauge for selecting values.
+ - <b>group.cpp</b> - Class responsible for Klasa odpowiadająca za obsługę tła ikon.
+ - <b>image.cpp</b> - Class responsible for displaying images.
+ - <b>key.cpp</b> - Class responsible for configuring keys.
+ - <b>label.cpp</b> - Class responsible for a text label.
+ - <b>list.cpp</b> - Class responsible for a list of items.
+ - <b>map.cpp</b> - Class responsible for displaying the map.
+ - <b>scroll.cpp</b> - Class responsible for scroll buttons.
+ - <b>shortcut.cpp</b> - Class responsible for shortcuts.
+ - <b>slider.cpp</b> - Class responsible for a slider bar.
+ - <b>target.cpp</b> - Class responsible for target markers.
+ - <b>window.cpp</b> - Class responsible for a window.
+
+- <b>d3dapp.cpp</b> - Class responsible for running the application. Contains the WinMain() function.
+- <b>d3dengine.cpp</b> - Class containing the game engine.
+- <b>d3denum.cpp</b> - Functions for handling D3D enumerations.
+- <b>d3dframe.cpp</b> - Class implementing the D3D structures.
+- <b>d3dmath.cpp</b> - D3D math functions.
+- <b>d3dtextr.cpp</b> - Functions responsible for managing textures.
+- <b>d3dutil.cpp</b> - Functions responsible for using DirectX objects.
+- <b>dd.cpp</b> - Functions compiling CBOT's function "space()".
+- <b>displayinfo.cpp</b> - Class responsible for displaying informations in SatCom.
+- <b>displaytext.cpp</b> - Class responsible for displaying information.
+- <b>event.cpp</b> - Class responsible for handling events.
+- <b>iman.cpp</b> - Instance manager.
+- <b>interface.cpp</b> - Class responsible for creating UI controls.
+- <b>joystick.cpp</b> - DirectInput handling.
+- <b>light.cpp</b> - Class responsible for handling lighting.
+- <b>maindialog.cpp</b> - Class responsible for the main menu.
+- <b>mainmap.cpp</b> - Class responsible for the mini map.
+- <b>mainmovie.cpp</b> - Class responsible for displaying movies.
+- <b>mainshort.cpp</b> - Class responsible for shortcuts.
+- <b>math3d.cpp</b> - Mathematical functions.
+- <b>metafile.cpp</b> - Class responsible for handling ".dat" files.
+- <b>misc.cpp</b> - Functions for converting characters.
+- <b>model.cpp</b> - Klasa odpowiadająca za obsługę modeli.
+- <b>modfile.cpp</b> - Class responsible for handling model files.
+
+- <b>motion.cpp</b> - Main class responsible for animated models. It has the following derived classes:
+ - <b>motionant.cpp</b> - Class responsible for movement of an ant.
+ - <b>motionbee.cpp</b> - Class responsible for movement of a wasp.
+ - <b>motionhuman.cpp</b> - Class responsible for movement of the human.
+ - <b>motionmother.cpp</b> - Class responsible for movement of the Alien Queen.
+ - <b>motionspider.cpp</b> - Class responsible for movement of a spider.
+ - <b>motiontoto.cpp</b> - Class responsible for movement of "toto".
+ - <b>motionvehicle.cpp</b> - Class responsible for movement of robots.
+ - <b>motionworm.cpp</b> - Class responsible for movement of a worm.
+
+- <b>object.cpp</b> - Class responsible for (all) objects.
+- <b>particule.cpp</b> - Class responsible for particles.
+- <b>physics.cpp</b> - Class responsible for physics of objects.
+- <b>planet.cpp</b> - Class responsible for the planet.
+- <b>profile.cpp</b> - Functions handling user profiles.
+- <b>pyro.cpp</b> - Class responsible for pyrotechnical effects.
+- <b>restext.cpp</b> - Text resources and translations.
+- <b>robotmain.cpp</b> - Clas responsible for robots.
+- <b>script.cpp</b> - Class responsible for CBOT functions.
+- <b>sound.cpp</b> - Class responsible for sounds.
+- <b>studio.cpp</b> - Class responsible for the CBOT editor.
+
+- <b>task.cpp</b> - Main class responsible for tasks for robots and buildings. It has the following derived classes:
+ - <b>taskadvance.cpp</b> - Class responsible for moving forwards/backwards.
+ - <b>taskbuild.cpp</b> - Class responsible for constructing buildings.
+ - <b>taskfire.cpp</b> - Class responsbile for shooting.
+ - <b>taskfireant.cpp</b> - Class responsible for shooting by an ant.
+ - <b>taskflag.cpp</b> - Class responsible for flags.
+ - <b>taskgoto.cpp</b> - Class responsible for "goto()" instruction.
+ - <b>taskgungoal.cpp</b> - ?
+ - <b>taskinfo.cpp</b> - Class responsible for an information relay station.
+ - <b>taskmanip.cpp</b> - Class responsible for robot manipulator.
+ - <b>taskpen.cpp</b> - Class responsible for crayons.
+ - <b>taskrecover.cpp</b> - Class responsible for recovering titanium.
+ - <b>taskreset.cpp</b> - ?
+ - <b>tasksearch.cpp</b> - Class responsible for searching the underground.
+ - <b>taskshield.cpp</b> - Class responsible for force shield.
+ - <b>taskspiderexplo.cpp</b> - Class responsible for a spider explosion.
+ - <b>tasktake.cpp</b> - Class responsible for robot grabber.
+ - <b>taskterraform.cpp</b> - Class responsible for a thumper robot.
+ - <b>taskturn.cpp</b> - Class responsible for turning.
+ - <b>taskwait.cpp</b> - Class responsible for waiting.
+
+- <b>taskmanager.cpp</b> - Class responsible for handling tasks for robots and buildings.
+- <b>terrain.cpp</b> - Class responsible for applying textures to the map.
+- <b>text.cpp</b> - Class responsible for displaying text.
+- <b>water.cpp</b> - Class responsible for displaying water.
+
+Important <b>.h</b> files:
+- <b>event.h</b> - enumeration type EventMsg.
+- <b>global.h</b> - constants for buildings and research items.
+- <b>language.h</b> - selecting compile options.
+- <b>misc.h</b> - enumeration types ClassType and Error, key constants.
+
+*/
