@@ -1,3 +1,19 @@
+// * This file is part of the COLOBOT source code
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
+// *
+// * This program is free software: you can redistribute it and/or modify
+// * it under the terms of the GNU General Public License as published by
+// * the Free Software Foundation, either version 3 of the License, or
+// * (at your option) any later version.
+// *
+// * This program is distributed in the hope that it will be useful,
+// * but WITHOUT ANY WARRANTY; without even the implied warranty of
+// * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// * GNU General Public License for more details.
+// *
+// * You should have received a copy of the GNU General Public License
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
 // math/matrix.h
 
 /* Matrix struct and functions */
@@ -7,13 +23,6 @@
 #include "const.h"
 
 #include <cmath>
-
-/* TODO
-
- void      MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle);
- void      MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle);
-
-*/
 
 // Math module namespace
 namespace Math
@@ -56,7 +65,7 @@ struct Matrix
   inline void LoadIdentity()
   {
     LoadZero();
-    m[0] = m[1][1] = m[2][2] = m[3][3] = 1.0f;
+    m[0] = m[5] = m[10] = m[15] = 1.0f;
   }
 
   //! Calculates the determinant of the matrix
@@ -79,7 +88,7 @@ struct Matrix
     {
       for (int c = 0; c < 4; ++c)
       {
-        m[r][c] = temp.m[c][r];
+        m[4*r+c] = temp.m[4*c+r];
       }
     }
   }
@@ -102,7 +111,7 @@ struct Matrix
       for (int c = 0; c < 4; ++c)
       {
         if (c == j) continue;
-        tab[tabR][tabC] = m[r][c];
+        tab[tabR][tabC] = m[4*r + c];
         ++tabC;
       }
       ++tabR;
@@ -149,10 +158,73 @@ struct Matrix
         m[r][c] = 0.0;
         for (int i = 0; i < 4; ++i)
         {
-          m[r][c] += left.m[r][i] * right.m[i][c];
+          m[4*r+c] += left.m[4*r+i] * right.m[4*i+c];
         }
       }
     }
+  }
+
+  inline void LoadViewMatrix(const Vector &from, const Vector &at, const Vector &up)
+  {
+    // TODO
+  }
+
+  inline void LoadProjectionMatrix(float fov = 1.570795f, float aspect = 1.0f,
+                           float nearPlane = 1.0f, float farPlane = 1000.0f)
+  {
+    // TODO
+  }
+
+  inline void LoadTranslateMatrix(const Vector &trans)
+  {
+    // TODO
+  }
+
+  inline void LoadScaleMatrix(const Vector &scale)
+  {
+    // TODO
+  }
+
+  inline void LoadRotateXMatrix(float angle)
+  {
+    // TODO
+  }
+
+  inline void LoadRotateYMatrix(float angle)
+  {
+    // TODO
+  }
+
+  inline void LoadRotateZMatrix(float angle)
+  {
+    // TODO
+  }
+
+  inline void LoadRotationMatrix(const Vector &dir, float angle)
+  {
+    // TODO
+  }
+
+  //! Calculates the matrix to make three rotations in the order X, Z and Y
+  inline void RotateXZY(const Vector &angle)
+  {
+    Matrix temp;
+    temp.SetRotateXMatrix(angle.x);
+    this->SetRotateZMatrix(angle.z);
+    this->Multiply(temp);
+    temp.SetRotateYMatrix(angle.y);
+    this->Multiply(temp);
+  }
+
+  //! Calculates the matrix to make three rotations in the order Z, X and Y
+  inline void MatRotateZXY(const Vector &angle)
+  {
+    Matrix temp;
+    temp.SetRotateZMatrix(angle.z);
+    this->SetRotateXMatrix(angle.x);
+    this->Multiply(temp);
+    temp.SetRotateYMatrix(angle.y);
+    this->Multiply(temp);
   }
 };
 
