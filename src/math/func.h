@@ -89,7 +89,7 @@ inline float Norm(float a)
 //! Returns the absolute value
 inline float Abs(float a)
 {
-  return (float)fabs(a);
+  return (float)std::fabs(a);
 }
 
 //! Swaps two integers

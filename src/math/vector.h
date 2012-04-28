@@ -59,6 +59,8 @@ namespace Math
 
   All methods are made inline to maximize optimization.
 
+  TODO test
+
  */
 struct Vector
 {
@@ -149,5 +151,19 @@ struct Vector
     z = tz / tw;
   }
 };
+
+//! Convenience function for calculating dot product
+float DotProduct(const Vector &left, const Vector &right)
+{
+  return left.DotProduct(right);
+}
+
+//! Convenience function for calculating cross product
+Vector CrossProduct(const Vector &left, const Vector &right)
+{
+  Vector result = left;
+  result.CrossProduct(right);
+  return result;
+}
 
 }; // namespace Math
