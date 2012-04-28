@@ -20,6 +20,49 @@
 
 #pragma once
 
+#include <cmath>
+
+namespace Math
+{
+
+/** 2D Point
+
+  Represents a 2D point (x, y).
+  Contains the required methods for operating on points.
+
+  All methods are made inline to maximize optimization.
+
+  TODO test
+
+ */
+struct Point
+{
+  //! X coord
+  float x;
+  //! Y coord
+  float y;
+
+  inline Point()
+  {
+    LoadZero();
+  }
+
+  inline Point(float x, float y)
+  {
+    this->x = x;
+    this->y = y;
+  }
+
+  inline void LoadZero()
+  {
+    x = y = 0.0f;
+  }
+
+  inline float Length()
+  {
+    return std::sqrt(x*x + y*y);
+  }
+};
 /* TODO
 FPOINT    RotatePoint(FPOINT center, float angle, FPOINT p);
 FPOINT    RotatePoint(float angle, FPOINT p);
@@ -37,3 +80,5 @@ BOOL      IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
 BOOL      LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
 
 */
+
+};

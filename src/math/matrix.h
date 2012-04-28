@@ -35,6 +35,8 @@ namespace Math
 
   All methods are made inline to maximize optimization.
 
+  TODO test
+
  **/
 struct Matrix
 {
@@ -164,43 +166,97 @@ struct Matrix
     }
   }
 
-  inline void LoadViewMatrix(const Vector &from, const Vector &at, const Vector &up)
+  //! Loads view matrix from the given vectors
+  /** \a from origin
+      \a at direction
+      \a up up vector */
+  inline void LoadView(const Vector &from, const Vector &at, const Vector &up)
+  {
+    // Get the z basis vector, which points straight ahead. This is the
+    // difference from the eyepoint to the lookat point.
+    Vector view = at - from;
+
+    FLOAT length = view.Length();
+    if( IsZero(length) )
+        return;
+
+    // Normalize the z basis vector
+    view /= length;
+
+    // Get the dot product, and calculate the projection of the z basis
+    // vector onto the up vector. The projection is the y basis vector.
+    float dotProduct = DotProduct(worldUp, view);
+
+    Vector up = worldUp - dotProduct * view;
+
+    // If this vector has near-zero length because the input specified a
+    // bogus up vector, let's try a default up vector
+    if ( IsZero(length = up.Length()) )
+    {
+      up = Vector(0.0f, 1.0f, 0.0f) - view.y * view;
+
+      // If we still have near-zero length, resort to a different axis.
+      if ( IsZero(length = up.Length()) )
+      {
+        up = Vector(0.0f, 0.0f, 1.0f) - view.z * view;
+
+        if ( IsZero(up.Length()) )
+           return;
+      }
+    }
+
+    // Normalize the y basis vector
+    up /= length;
+
+    // The x basis vector is found simply with the cross product of the y
+    // and z basis vectors
+    Vector right = CrossProduct(up, view);
+
+    // Start building the matrix. The first three rows contains the basis
+    // vectors used to rotate the view to point at the lookat point
+    LoadIdentity();
+    m[0 ] = right.x;   m[1 ] = up.x;   m[2 ] = view.x;
+    m[4 ] = right.y;   m[5 ] = up.y;   m[6 ] = view.y;
+    m[8 ] = right.z;   m[9 ] = up.z;   m[10] = view.z;
+
+    // Do the translation values (rotations are still about the eyepoint)
+    m[3 ] = - DotProduct(from, right);
+    m[7 ] = - DotProduct(from, up);
+    m[11] = - DotProduct(from, view);
+  }
+
+  inline void LoadProjection(float fov = 1.570795f, float aspect = 1.0f,
+                             float nearPlane = 1.0f, float farPlane = 1000.0f)
   {
     // TODO
   }
 
-  inline void LoadProjectionMatrix(float fov = 1.570795f, float aspect = 1.0f,
-                           float nearPlane = 1.0f, float farPlane = 1000.0f)
+  inline void LoadTranslation(const Vector &trans)
   {
     // TODO
   }
 
-  inline void LoadTranslateMatrix(const Vector &trans)
+  inline void LoadScale(const Vector &scale)
   {
     // TODO
   }
 
-  inline void LoadScaleMatrix(const Vector &scale)
+  inline void LoadRotationX(float angle)
   {
     // TODO
   }
 
-  inline void LoadRotateXMatrix(float angle)
+  inline void LoadRotationY(float angle)
   {
     // TODO
   }
 
-  inline void LoadRotateYMatrix(float angle)
+  inline void LoadRotationZ(float angle)
   {
     // TODO
   }
 
-  inline void LoadRotateZMatrix(float angle)
-  {
-    // TODO
-  }
-
-  inline void LoadRotationMatrix(const Vector &dir, float angle)
+  inline void LoadRotation(const Vector &dir, float angle)
   {
     // TODO
   }
@@ -217,7 +273,7 @@ struct Matrix
   }
 
   //! Calculates the matrix to make three rotations in the order Z, X and Y
-  inline void MatRotateZXY(const Vector &angle)
+  inline void RotateZXY(const Vector &angle)
   {
     Matrix temp;
     temp.SetRotateZMatrix(angle.z);
