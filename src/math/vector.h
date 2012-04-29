@@ -21,6 +21,7 @@
 #pragma once
 
 #include "const.h"
+#include "func.h"
 
 #include <cmath>
 
@@ -85,16 +86,16 @@ struct Vector
     this->z = z;
   }
 
-  //! Loads the zero vector (0, 0, 0, 0)
+  //! Loads the zero vector (0, 0, 0)
   inline void LoadZero()
   {
-    x = y = z = w = 0.0f;
+    x = y = z = 0.0f;
   }
 
   //! Returns the vector length
   inline float Length() const
   {
-    return sqrt(x*x + y*y + z*z + w*w);
+    return sqrt(x*x + y*y + z*z);
   }
 
   //! Normalizes the vector
@@ -104,12 +105,11 @@ struct Vector
     x /= l;
     y /= l;
     z /= l;
-    w /= l;
   }
 
   //! Calculates the cross product with another vector
   /** \a right right-hand side vector */
-  inline void Cross(const Vector &right)
+  inline void CrossMultiply(const Vector &right)
   {
     Vector left = *this;
     x = left.y * right.z - left.z * right.y;
@@ -118,7 +118,7 @@ struct Vector
   }
 
   //! Calculates the dot product with another vector
-  inline float Dot(const Vector &right) const
+  inline float DotMultiply(const Vector &right) const
   {
     return x * right.x + y * right.y + z * right.z;
   }
@@ -126,7 +126,7 @@ struct Vector
   //! Returns the cosine of angle between this and another vector
   inline float CosAngle(const Vector &right) const
   {
-    return Dot(right) / (Length() * right.Length());
+    return DotMultiply(right) / (Length() * right.Length());
   }
 
   //! Returns angle (in radians) between this and another vector
@@ -135,34 +135,90 @@ struct Vector
     return acos(CosAngle(right));
   }
 
-  //! Calculates the result of multiplying m * this vector
-  inline MatrixMultiply(const Matrix &m)
+  //! Returns the inverted vector
+  inline Vector operator-() const
   {
-    float tx = x * m.m[0 ] + y * m.m[4 ] + z * m.m[8 ] + m.m[12];
-    float ty = x * m.m[1 ] + y * m.m[5 ] + z * m.m[9 ] + m.m[13];
-    float tz = x * m.m[2 ] + y * m.m[6 ] + z * m.m[10] + m.m[14];
-    float tw = x * m.m[4 ] + y * m.m[7 ] + z * m.m[11] + m.m[15];
+    return Vector(-x, -y, -z);
+  }
 
-    if (IsZero(tw))
-      return;
+  //! Adds the given vector
+  inline const Vector& operator+=(const Vector &right)
+  {
+    x += right.x;
+    y += right.y;
+    z += right.z;
+    return *this;
+  }
 
-    x = tx / tw;
-    y = ty / tw;
-    z = tz / tw;
+  //! Adds two vectors
+  inline friend const Vector operator+(const Vector &left, const Vector &right)
+  {
+    return Vector(left.x + right.x, left.y + right.y, left.z + right.z);
+  }
+
+  //! Subtracts the given vector
+  inline const Vector& operator-=(const Vector &right)
+  {
+    x -= right.x;
+    y -= right.y;
+    z -= right.z;
+    return *this;
+  }
+
+  //! Subtracts two vectors
+  inline friend const Vector operator-(const Vector &left, const Vector &right)
+  {
+    return Vector(left.x - right.x, left.y - right.y, left.z - right.z);
+  }
+
+  //! Multiplies by given scalar
+  inline const Vector& operator*=(const float &right)
+  {
+    x *= right;
+    y *= right;
+    z *= right;
+    return *this;
+  }
+
+  //! Multiplies vector by scalar
+  inline friend const Vector operator*(const float &left, const Vector &right)
+  {
+    return Vector(left * right.x, left * right.y, left * right.z);
+  }
+
+  //! Multiplies vector by scalar
+  inline friend const Vector operator*(const Vector &left, const float &right)
+  {
+    return Vector(left.x * right, left.y * right, left.z * right);
+  }
+
+  //! Divides by given scalar
+  inline const Vector& operator/=(const float &right)
+  {
+    x /= right;
+    y /= right;
+    z /= right;
+    return *this;
+  }
+
+  //! Divides vector by scalar
+  inline friend const Vector operator/(const Vector &left, const float &right)
+  {
+    return Vector(left.x / right, left.y / right, left.z / right);
   }
 };
 
 //! Convenience function for calculating dot product
-float DotProduct(const Vector &left, const Vector &right)
+inline float DotProduct(const Vector &left, const Vector &right)
 {
-  return left.DotProduct(right);
+  return left.DotMultiply(right);
 }
 
 //! Convenience function for calculating cross product
-Vector CrossProduct(const Vector &left, const Vector &right)
+inline Vector CrossProduct(const Vector &left, const Vector &right)
 {
   Vector result = left;
-  result.CrossProduct(right);
+  result.CrossMultiply(right);
   return result;
 }
 
