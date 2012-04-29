@@ -40,5 +40,5 @@ namespace Math
   //! Degrees to radians multiplier
   const float DEG_TO_RAD =  0.01745329251994329547f;
   //! Radians to degrees multiplier
-  const FLOAT RAD_TO_DEG = 57.29577951308232286465f;
+  const float RAD_TO_DEG = 57.29577951308232286465f;
 };

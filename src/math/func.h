@@ -21,6 +21,7 @@
 #pragma once
 
 #include "const.h"
+#include "point.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -28,10 +29,16 @@
 namespace Math
 {
 
-//! Compares a and b within TOLERANCE
-bool IsEqual(float a, float b)
+//! Compares \a a and \a b within \a tolerance
+inline bool IsEqual(float a, float b, float tolerance = Math::TOLERANCE)
 {
-  return Abs(a - b) < TOLERANCE;
+  return fabs(a - b) < tolerance;
+}
+
+//! Compares \a a to zero within \a tolerance
+inline bool IsZero(float a, float tolerance = Math::TOLERANCE)
+{
+  return IsEqual(a, 0.0f, tolerance);
 }
 
 //! Minimum
@@ -84,12 +91,6 @@ inline float Norm(float a)
   if ( a < 0.0f ) return 0.0f;
   if ( a > 1.0f ) return 1.0f;
   return a;
-}
-
-//! Returns the absolute value
-inline float Abs(float a)
-{
-  return (float)std::fabs(a);
 }
 
 //! Swaps two integers
@@ -188,7 +189,7 @@ inline float Rand()
     out:  -1       0         0       1 */
 float Neutral(float value, float dead)
 {
-  if ( Abs(value) <= dead )
+  if ( fabs(value) <= dead )
   {
     return 0.0f;
   }
@@ -252,3 +253,6 @@ inline float Bounce(float progress, float middle, float bounce)
     return (1.0f-bounce/2.0f)+sinf((0.5f+progress*2.0f)*PI)*(bounce/2.0f);
   }
 }
+
+}; // namespace Math
+
