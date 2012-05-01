@@ -14,9 +14,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// math/vector.h
-
-/* Vector struct and functions */
+/** @defgroup MathVectorModule math/vector.h
+   Contains the Vector struct and related functions.
+ */
 
 #pragma once
 
@@ -24,6 +24,7 @@
 #include "func.h"
 
 #include <cmath>
+
 
 /*
  TODO
@@ -53,14 +54,17 @@ BOOL      IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
 namespace Math
 {
 
-/** 3x1 Vector
+/* @{ */ // start of group
 
-  Represents an universal 3x1 vector that can be used in OpenGL and DirectX engines.
+/** \struct Vector math/vector.h
+    \brief 3D (3x1) vector
+
+  Represents a universal 3x1 vector that can be used in OpenGL and DirectX engines.
   Contains the required methods for operating on vectors.
 
   All methods are made inline to maximize optimization.
 
-  TODO test
+  Unit tests for the structure and related functions are in module: math/test/vector_test.cpp.
 
  */
 struct Vector
@@ -102,22 +106,28 @@ struct Vector
   inline void Normalize()
   {
     float l = Length();
+    if (Math::IsZero(l))
+      return;
+
     x /= l;
     y /= l;
     z /= l;
   }
 
   //! Calculates the cross product with another vector
-  /** \a right right-hand side vector */
-  inline void CrossMultiply(const Vector &right)
+  /** \a right right-hand side vector
+      \returns the cross product*/
+  inline Vector CrossMultiply(const Vector &right) const
   {
-    Vector left = *this;
-    x = left.y * right.z - left.z * right.y;
-    y = left.z * right.x - left.x * right.z;
-    z = left.x * right.y - left.y * right.x;
+    float px = y * right.z - z * right.y;
+    float py = z * right.x - x * right.z;
+    float pz = x * right.y - y * right.x;
+    return Vector(px, py, pz);
   }
 
   //! Calculates the dot product with another vector
+  /** \a right right-hand side vector
+      \returns the dot product */
   inline float DotMultiply(const Vector &right) const
   {
     return x * right.x + y * right.y + z * right.z;
@@ -208,6 +218,14 @@ struct Vector
   }
 };
 
+//! Convenience function for getting normalized vector
+inline Vector Normalize(const Vector &v)
+{
+  Vector result = v;
+  result.Normalize();
+  return result;
+}
+
 //! Convenience function for calculating dot product
 inline float DotProduct(const Vector &left, const Vector &right)
 {
@@ -217,9 +235,17 @@ inline float DotProduct(const Vector &left, const Vector &right)
 //! Convenience function for calculating cross product
 inline Vector CrossProduct(const Vector &left, const Vector &right)
 {
-  Vector result = left;
-  result.CrossMultiply(right);
-  return result;
+  return left.CrossMultiply(right);
 }
+
+//! Checks if two vectors are equal within given \a tolerance
+inline bool VectorsEqual(const Vector &a, const Vector &b, float tolerance = Math::TOLERANCE)
+{
+  return Math::IsEqual(a.x, b.x, tolerance)
+      && Math::IsEqual(a.y, b.y, tolerance)
+      && Math::IsEqual(a.z, b.z, tolerance);
+}
+
+/* @} */ // end of group
 
 }; // namespace Math

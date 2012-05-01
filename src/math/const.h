@@ -14,15 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// math/const.h
-
-/* Math constants */
+/** @defgroup MathConstModule math/const.h
+   Contains the math constants used in math functions.
+ */
 
 #pragma once
+
 
 // Math module namespace
 namespace Math
 {
+  /* @{ */ // start of group
+
   //! Tolerance level -- minimum accepted float value
   const float TOLERANCE = 1e-6f;
 
@@ -41,4 +44,6 @@ namespace Math
   const float DEG_TO_RAD =  0.01745329251994329547f;
   //! Radians to degrees multiplier
   const float RAD_TO_DEG = 57.29577951308232286465f;
-};
+
+  /* @} */ // end of group
+}; // namespace Math

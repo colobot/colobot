@@ -14,9 +14,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// math/matrix.h
-
-/* Matrix struct and functions */
+/** @defgroup MathMatrixModule math/matrix.h
+   Contains the Matrix struct and related functions.
+ */
 
 #pragma once
 
@@ -27,35 +27,39 @@
 #include <cmath>
 #include <cassert>
 
+
 // Math module namespace
 namespace Math
 {
 
-/** 4x4 matrix
+/* @{ */ // start of group
+
+/** \struct Matrix math/matrix.h
+    \brief 4x4 matrix
 
   Represents an universal 4x4 matrix that can be used in OpenGL and DirectX engines.
   Contains the required methods for operating on matrices (inverting, multiplying, etc.).
 
   The internal representation is a 16-value table in column-major order, thus:
 
-   m[0 ] m[4 ] m[8 ] m[12]
-   m[1 ] m[5 ] m[9 ] m[13]
-   m[2 ] m[6 ] m[10] m[14]
-   m[3 ] m[7 ] m[11] m[15]
+  \verbatim m[0 ] m[4 ] m[8 ] m[12]
+m[1 ] m[5 ] m[9 ] m[13]
+m[2 ] m[6 ] m[10] m[14]
+m[3 ] m[7 ] m[11] m[15] \endverbatim
 
   This representation is native to OpenGL; DirectX requires transposing the matrix.
 
   The order of multiplication of matrix and vector is also OpenGL-native
-  (see the method Vector::MultiplyMatrix).
+  (see the function MatrixVectorMultiply).
 
   All methods are made inline to maximize optimization.
 
-  TODO test
+  Unit tests for the structure and related functions are in module: math/test/matrix_test.cpp.
 
  **/
 struct Matrix
 {
-  //! Matrix values in column-major format
+  //! Matrix values in column-major order
   float m[16];
 
   //! Creates the indentity matrix
@@ -64,12 +68,26 @@ struct Matrix
     LoadIdentity();
   }
 
-  //! Creates the matrix from given values
-  /** \a m  values in column-major format */
+  //! Creates the matrix from 1D array
+  /** \a m matrix values in column-major order */
   inline Matrix(const float (&m)[16])
   {
     for (int i = 0; i < 16; ++i)
       this->m[i] = m[i];
+  }
+
+  //! Creates the matrix from 2D array
+  /** The array's first index is row, second is column.
+      \a m array with values */
+  inline Matrix(const float (&m)[4][4])
+  {
+    for (int c = 0; c < 4; ++c)
+    {
+      for (int r = 0; r < 4; ++r)
+      {
+        this->m[4*c+r] = m[r][c];
+      }
+    }
   }
 
   //! Loads the zero matrix
@@ -83,7 +101,10 @@ struct Matrix
   inline void LoadIdentity()
   {
     LoadZero();
-    m[0] = m[5] = m[10] = m[15] = 1.0f;
+    /* (1,1) */ m[0 ] = 1.0f;
+    /* (2,2) */ m[5 ] = 1.0f;
+    /* (3,3) */ m[10] = 1.0f;
+    /* (4,4) */ m[15] = 1.0f;
   }
 
   //! Transposes the matrix
@@ -114,7 +135,7 @@ struct Matrix
   //! Calculates the cofactor of the matrix
   /** \a r row (0 to 3)
       \a c column (0 to 3)
-      \returns the cofactor or 0.0f if invalid r, c given*/
+      \returns the cofactor */
   inline float Cofactor(int r, int c) const
   {
     assert(r >= 0 && r <= 3);
@@ -293,38 +314,48 @@ struct Matrix
     return result;
   }
 
-  //! Inverts the matrix
-  inline void Invert()
+  //! Calculates the inverse matrix
+  /** The determinant of the matrix must not be zero.
+      \returns the inverted matrix */
+  inline Matrix Inverse() const
   {
     float d = Det();
     assert(! IsZero(d));
 
-    Matrix temp = *this;
+    float result[16] = { 0.0f };
+
     for (int r = 0; r < 4; ++r)
     {
       for (int c = 0; c < 4; ++c)
       {
-        m[4*r+c] = (1.0f / d) * temp.Cofactor(r, c);
+        // Already transposed!
+        result[4*r+c] = (1.0f / d) * Cofactor(r, c);
       }
     }
+
+    return Matrix(result);
   }
 
-  //! Multiplies the matrix with the given matrix
-  /** \a right right-hand matrix */
-  inline void Multiply(const Matrix &right)
+  //! Calculates the multiplication of this matrix * given matrix
+  /** \a right right-hand matrix
+      \returns multiplication result */
+  inline Matrix Multiply(const Matrix &right) const
   {
-    Matrix left = *this;
+    float result[16] = { 0.0f };
+
     for (int c = 0; c < 4; ++c)
     {
       for (int r = 0; r < 4; ++r)
       {
-        m[4*c+r] = 0.0f;
+        result[4*c+r] = 0.0f;
         for (int i = 0; i < 4; ++i)
         {
-          m[4*c+r] += left.m[4*i+r] * right.m[4*c+i];
+          result[4*c+r] += m[4*i+r] * right.m[4*c+i];
         }
       }
     }
+
+    return Matrix(result);
   }
 
   //! Loads view matrix from the given vectors
@@ -374,56 +405,122 @@ struct Matrix
     // Start building the matrix. The first three rows contains the basis
     // vectors used to rotate the view to point at the lookat point
     LoadIdentity();
-    m[0 ] = right.x;   m[1 ] = up.x;   m[2 ] = view.x;
-    m[4 ] = right.y;   m[5 ] = up.y;   m[6 ] = view.y;
-    m[8 ] = right.z;   m[9 ] = up.z;   m[10] = view.z;
+
+    /* (1,1) */ m[0 ] = right.x;
+    /* (2,1) */ m[1 ] = up.x;
+    /* (3,1) */ m[2 ] = view.x;
+    /* (1,2) */ m[4 ] = right.y;
+    /* (2,2) */ m[5 ] = up.y;
+    /* (3,2) */ m[6 ] = view.y;
+    /* (1,3) */ m[8 ] = right.z;
+    /* (2,3) */ m[9 ] = up.z;
+    /* (3,3) */ m[10] = view.z;
 
     // Do the translation values (rotations are still about the eyepoint)
-    m[12] = - DotProduct(from, right);
-    m[13] = - DotProduct(from, up);
-    m[14] = - DotProduct(from, view);
+    /* (1,4) */ m[12] = -DotProduct(from, right);
+    /* (2,4) */ m[13] = -DotProduct(from, up);
+    /* (3,4) */ m[14] = -DotProduct(from, view);
   }
 
+  //! Loads a perspective projection matrix
+  /** \a fov field of view in radians
+      \a aspect aspect ratio (width / height)
+      \a nearPlane distance to near cut plane
+      \a farPlane distance to far cut plane */
   inline void LoadProjection(float fov = 1.570795f, float aspect = 1.0f,
                              float nearPlane = 1.0f, float farPlane = 1000.0f)
   {
-    // TODO
+    assert(fabs(farPlane - nearPlane) >= 0.01f);
+    assert(fabs(sin(fov / 2)) >= 0.01f);
+
+    float w = aspect * (cosf(fov / 2) / sinf(fov / 2));
+    float h = 1.0f   * (cosf(fov / 2) / sinf(fov / 2));
+    float q = farPlane / (farPlane - nearPlane);
+
+    LoadZero();
+
+    /* (1,1) */ m[0 ] = w;
+    /* (2,2) */ m[5 ] = h;
+    /* (3,3) */ m[10] = q;
+    /* (3,4) */ m[14] = 1.0f;
+    /* (4,3) */ m[11] = -q * nearPlane;
   }
 
+  //! Loads a translation matrix from given vector
+  /** \a trans vector of translation*/
   inline void LoadTranslation(const Vector &trans)
   {
     LoadIdentity();
-    m[12] = trans.x;
-    m[13] = trans.y;
-    m[14] = trans.z;
+    /* (1,4) */ m[12] = trans.x;
+    /* (2,4) */ m[13] = trans.y;
+    /* (3,4) */ m[14] = trans.z;
   }
 
+  //! Loads a scaling matrix fom given vector
+  /** \a scale vector with scaling factors for X, Y, Z */
   inline void LoadScale(const Vector &scale)
   {
     LoadIdentity();
-    m[0] = scale.x;
-    m[5] = scale.y;
-    m[10] = scale.z;
+    /* (1,1) */ m[0 ] = scale.x;
+    /* (2,2) */ m[5 ] = scale.y;
+    /* (3,3) */ m[10] = scale.z;
   }
 
+  //! Loads a rotation matrix along the X axis
+  /** \a angle angle in radians */
   inline void LoadRotationX(float angle)
   {
-    // TODO
+    LoadIdentity();
+    /* (2,2) */ m[5 ] =  cosf(angle);
+    /* (3,2) */ m[6 ] =  sinf(angle);
+    /* (2,3) */ m[9 ] = -sinf(angle);
+    /* (3,3) */ m[10] =  cosf(angle);
   }
 
+  //! Loads a rotation matrix along the Y axis
+  /** \a angle angle in radians */
   inline void LoadRotationY(float angle)
   {
-    // TODO
+    LoadIdentity();
+    /* (1,1) */ m[0 ] =  cosf(angle);
+    /* (3,1) */ m[2 ] = -sinf(angle);
+    /* (1,3) */ m[8 ] =  sinf(angle);
+    /* (3,3) */ m[10] =  cosf(angle);
   }
 
+  //! Loads a rotation matrix along the Z axis
+  /** \a angle angle in radians */
   inline void LoadRotationZ(float angle)
   {
-    // TODO
+    LoadIdentity();
+    /* (1,1) */ m[0 ] =  cosf(angle);
+    /* (2,1) */ m[1 ] =  sinf(angle);
+    /* (1,2) */ m[4 ] = -sinf(angle);
+    /* (2,2) */ m[5 ] =  cosf(angle);
   }
 
+  //! Loads a rotation matrix along the given axis
+  /** \a dir axis of rotation
+      \a angle angle in radians */
   inline void LoadRotation(const Vector &dir, float angle)
   {
-    // TODO
+    float cos = cosf(angle);
+    float sin = sinf(angle);
+    Vector v = Math::Normalize(dir);
+
+    LoadIdentity();
+
+    /* (1,1) */ m[0 ] = (v.x * v.x) * (1.0f - cos) + cos;
+    /* (2,1) */ m[1 ] = (v.x * v.y) * (1.0f - cos) - (v.z * sin);
+    /* (3,1) */ m[2 ] = (v.x * v.z) * (1.0f - cos) + (v.y * sin);
+
+    /* (1,2) */ m[4 ] = (v.y * v.x) * (1.0f - cos) + (v.z * sin);
+    /* (2,2) */ m[5 ] = (v.y * v.y) * (1.0f - cos) + cos ;
+    /* (3,2) */ m[6 ] = (v.y * v.z) * (1.0f - cos) - (v.x * sin);
+
+    /* (1,3) */ m[8 ] = (v.z * v.x) * (1.0f - cos) - (v.y * sin);
+    /* (2,3) */ m[9 ] = (v.z * v.y) * (1.0f - cos) + (v.x * sin);
+    /* (3,3) */ m[10] = (v.z * v.z) * (1.0f - cos) + cos;
   }
 
   //! Calculates the matrix to make three rotations in the order X, Z and Y
@@ -453,32 +550,38 @@ struct Matrix
   }
 };
 
-//! Convenience function for inverting a matrix
-/** \a m input matrix
-    \a result result -- inverted matrix */
-inline void InvertMatrix(const Matrix &m, Matrix &result)
+//! Convenience function for getting transposed matrix
+inline Matrix Transpose(const Matrix &m)
 {
-  result = m;
-  result.Invert();
+  Matrix result = m;
+  result.Transpose();
+  return result;
 }
 
 //! Convenience function for multiplying a matrix
 /** \a left left-hand matrix
     \a right right-hand matrix
-    \a result result -- multiplied matrices */
-inline void MultiplyMatrices(const Matrix &left, const Matrix &right, Matrix &result)
+    \returns multiplied matrices */
+inline Matrix MultiplyMatrices(const Matrix &left, const Matrix &right)
 {
-  result = left;
-  result.Multiply(right);
+  return left.Multiply(right);
 }
 
 //! Calculates the result of multiplying m * v
+/** The multiplication is performed thus:
+\verbatim [  m.m[0 ] m.m[4 ] m.m[8 ] m.m[12]  ]   [ v.x ]
+[  m.m[1 ] m.m[5 ] m.m[9 ] m.m[13]  ]   [ v.y ]
+[  m.m[2 ] m.m[6 ] m.m[10] m.m[14]  ] * [ v.z ]
+[  m.m[3 ] m.m[7 ] m.m[11] m.m[15]  ]   [  1  ] \endverbatim
+
+    The result, a 4x1 vector is then converted to 3x1 by dividing
+    x,y,z coords by the fourth coord (w). */
 inline Vector MatrixVectorMultiply(const Matrix &m, const Vector &v)
 {
   float x = v.x * m.m[0 ] + v.y * m.m[4 ] + v.z * m.m[8 ] + m.m[12];
   float y = v.x * m.m[1 ] + v.y * m.m[5 ] + v.z * m.m[9 ] + m.m[13];
   float z = v.x * m.m[2 ] + v.y * m.m[6 ] + v.z * m.m[10] + m.m[14];
-  float w  = v.x * m.m[4 ] + v.y * m.m[7 ] + v.z * m.m[11] + m.m[15];
+  float w = v.x * m.m[4 ] + v.y * m.m[7 ] + v.z * m.m[11] + m.m[15];
 
   if (IsZero(w))
     return Vector(x, y, z);
@@ -502,5 +605,7 @@ inline bool MatricesEqual(const Math::Matrix &m1, const Math::Matrix &m2,
 
   return true;
 }
+
+/* @} */ // end of group
 
 }; // namespace Math
