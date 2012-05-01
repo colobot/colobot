@@ -14,25 +14,48 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// math/point.h
-
-/* Point struct and functions */
+/** @defgroup MathPointModule math/point.h
+   Contains the Point struct and related functions.
+ */
 
 #pragma once
 
 #include <cmath>
 
+
+/* TODO
+
+ FPOINT    RotatePoint(FPOINT center, float angle, FPOINT p);
+ FPOINT    RotatePoint(float angle, FPOINT p);
+ FPOINT    RotatePoint(float angle, float dist);
+ void      RotatePoint(float cx, float cy, float angle, float &px, float &py);
+ void      RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+ void      RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+
+ float   RotateAngle(float x, float y);
+ float   RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
+ float   MidPoint(FPOINT a, FPOINT b, float px);
+ BOOL      IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
+
+ BOOL      LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
+
+ float IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c);
+
+ */
+
+// Math module namespace
 namespace Math
 {
 
-/** 2D Point
+/* @{ */ // start of group
+
+/** \struct Point math/point.h
+    \brief 2D point
 
   Represents a 2D point (x, y).
   Contains the required methods for operating on points.
 
   All methods are made inline to maximize optimization.
-
-  TODO test
 
  */
 struct Point
@@ -42,43 +65,38 @@ struct Point
   //! Y coord
   float y;
 
+  //! Constructs a zero point: (0,0)
   inline Point()
   {
     LoadZero();
   }
 
+  //! Constructs a point from given coords: (x,y)
   inline Point(float x, float y)
   {
     this->x = x;
     this->y = y;
   }
 
+  //! Sets the zero point: (0,0)
   inline void LoadZero()
   {
     x = y = 0.0f;
   }
 
+  //! Returns the distance from (0,0) to the point (x,y)
   inline float Length()
   {
     return std::sqrt(x*x + y*y);
   }
 };
-/* TODO
-FPOINT    RotatePoint(FPOINT center, float angle, FPOINT p);
-FPOINT    RotatePoint(float angle, FPOINT p);
-FPOINT    RotatePoint(float angle, float dist);
-void      RotatePoint(float cx, float cy, float angle, float &px, float &py);
-void      RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
-void      RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
-float   Length(FPOINT a, FPOINT b);
 
-float   RotateAngle(float x, float y);
-float   RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
-float   MidPoint(FPOINT a, FPOINT b, float px);
-BOOL      IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
+//! Returns the distance between two points
+inline float Distance(const Point &a, const Point &b)
+{
+  return sqrt((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
+}
 
-BOOL      LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
+/* @} */ // end of group
 
-*/
-
-};
+}; // namespace Math

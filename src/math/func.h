@@ -14,9 +14,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// math/func.h
-
-/* Common math functions */
+/** @defgroup MathFuncModule math/func.h
+   Contains common math functions.
+ */
 
 #pragma once
 
@@ -26,8 +26,12 @@
 #include <cmath>
 #include <cstdlib>
 
+
+// Math module namespace
 namespace Math
 {
+
+/* @{ */ // start of group
 
 //! Compares \a a and \a b within \a tolerance
 inline bool IsEqual(float a, float b, float tolerance = Math::TOLERANCE)
@@ -254,5 +258,6 @@ inline float Bounce(float progress, float middle, float bounce)
   }
 }
 
-}; // namespace Math
+/* @} */ // end of group
 
+}; // namespace Math
