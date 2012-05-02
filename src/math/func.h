@@ -21,7 +21,6 @@
 #pragma once
 
 #include "const.h"
-#include "point.h"
 
 #include <cmath>
 #include <cstdlib>
@@ -34,13 +33,13 @@ namespace Math
 /* @{ */ // start of group
 
 //! Compares \a a and \a b within \a tolerance
-inline bool IsEqual(float a, float b, float tolerance = Math::TOLERANCE)
+inline bool IsEqual(float a, float b, float tolerance = TOLERANCE)
 {
   return fabs(a - b) < tolerance;
 }
 
 //! Compares \a a to zero within \a tolerance
-inline bool IsZero(float a, float tolerance = Math::TOLERANCE)
+inline bool IsZero(float a, float tolerance = TOLERANCE)
 {
   return IsEqual(a, 0.0f, tolerance);
 }
@@ -117,16 +116,6 @@ inline void Swap(float &a, float &b)
   b = c;
 }
 
-//! Permutes two points
-inline void Swap(Point &a, Point &b)
-{
-  Point  c;
-
-  c = a;
-  a = b;
-  b = c;
-}
-
 //! Returns the modulo of a floating point number
 /** Mod(8.1, 4) = 0.1
     Mod(n, 1) = fractional part of n */
@@ -175,6 +164,16 @@ inline float Direction(float a, float g)
   }
 
   return g-a;
+}
+
+//! Returns the angle between point (x,y) and (0,0)
+float RotateAngle(float x, float y)
+{
+  float result = std::atan2(x, y);
+  if (result < 0)
+    result = PI_MUL_2 + result;
+
+  return result;
 }
 
 //! Returns a random value between 0 and 1.

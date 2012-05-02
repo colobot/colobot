@@ -29,8 +29,11 @@ namespace Math
   //! Tolerance level -- minimum accepted float value
   const float TOLERANCE = 1e-6f;
 
+  //! Huge number
+  const float HUGE = 1.0e+38f;
+
   //! PI
-  const float PI = 3.14159265358979323846f;
+  const float PI       = 3.14159265358979323846f;
   //! 2 * PI
   const float PI_MUL_2 = 6.28318530717958623200f;
   //! PI / 2

@@ -28,26 +28,16 @@
 
 /*
  TODO
-
-float   Length(const D3DVECTOR &a, const D3DVECTOR &b);
-float   Length2d(const D3DVECTOR &a, const D3DVECTOR &b);
-D3DVECTOR Transform(const D3DMATRIX &m, D3DVECTOR p);
-D3DVECTOR Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p);
-
-D3DVECTOR SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
+ 
+void      RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+void      RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
 
 BOOL      Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
 BOOL      IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
 
-
 D3DVECTOR RotateView(D3DVECTOR center, float angleH, float angleV, float dist);
 D3DVECTOR LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
 
-void      MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
-void      SmoothObject( D3DVERTEX2* pVertices, int nb );
-
-float   DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &c, const D3DVECTOR &p);
-BOOL      IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
  */
 
 // Math module namespace
@@ -106,7 +96,7 @@ struct Vector
   inline void Normalize()
   {
     float l = Length();
-    if (Math::IsZero(l))
+    if (IsZero(l))
       return;
 
     x /= l;
@@ -238,12 +228,93 @@ inline Vector CrossProduct(const Vector &left, const Vector &right)
   return left.CrossMultiply(right);
 }
 
-//! Checks if two vectors are equal within given \a tolerance
-inline bool VectorsEqual(const Vector &a, const Vector &b, float tolerance = Math::TOLERANCE)
+//! Convenience function for calculating angle (in radians) between two vectors
+inline float Angle(const Vector &a, const Vector &b)
 {
-  return Math::IsEqual(a.x, b.x, tolerance)
-      && Math::IsEqual(a.y, b.y, tolerance)
-      && Math::IsEqual(a.z, b.z, tolerance);
+  return a.Angle(b);
+}
+
+//! Checks if two vectors are equal within given \a tolerance
+inline bool VectorsEqual(const Vector &a, const Vector &b, float tolerance = TOLERANCE)
+{
+  return IsEqual(a.x, b.x, tolerance)
+      && IsEqual(a.y, b.y, tolerance)
+      && IsEqual(a.z, b.z, tolerance);
+}
+
+//! Returns the distance between two points
+inline float Distance(const Vector &a, const Vector &b)
+{
+  return std::sqrt( (a.x-b.x)*(a.x-b.x) +
+                    (a.y-b.y)*(a.y-b.y) +
+                    (a.z-b.z)*(a.z-b.z) );
+}
+
+//! Returns the distance between projections on XZ plane of two vectors
+inline float DistanceProjected(const Vector &a, const Vector &b)
+{
+  return std::sqrt( (a.x-b.x)*(a.x-b.x) +
+                    (a.z-b.z)*(a.z-b.z) );
+}
+
+//! Returns the normal vector to a plane
+/** \param p1,p2,p3 points defining the plane */
+inline Vector NormalToPlane(const Vector &p1, const Vector &p2, const Vector &p3)
+{
+  Vector u = p3 - p1;
+  Vector v = p2 - p1;
+
+  return Normalize(CrossProduct(u, v));
+}
+
+//! Returns the distance between given point and a plane
+/** \param p the point
+    \param a,b,c points defining the plane */
+inline float DistanceToPlane(const Vector &a, const Vector &b, const Vector &c, const Vector &p)
+{
+  Vector n = NormalToPlane(a, b, c);
+  float d = -(n.x*a.x + n.y*a.y + n.z*a.z);
+
+  return std::fabs(n.x*p.x + n.y*p.y + n.z*p.z + d);
+}
+
+//! Checks if two planes defined by three points are the same
+/** \a plane1 array of three vectors defining the first plane
+    \a plane2 array of three vectors defining the second plane */
+inline bool IsSamePlane(const Vector (&plane1)[3], const Vector (&plane2)[3])
+{
+  Vector n1 = NormalToPlane(plane1[0], plane1[1], plane1[2]);
+  Vector n2 = NormalToPlane(plane2[0], plane2[1], plane2[2]);
+
+  if ( std::fabs(n1.x-n2.x) > 0.1f ||
+       std::fabs(n1.y-n2.y) > 0.1f ||
+       std::fabs(n1.z-n2.z) > 0.1f )
+    return false;
+
+  float dist = DistanceToPlane(plane1[0], plane1[1], plane1[2], plane2[0]);
+  if ( dist > 0.1f )
+    return false;
+
+  return true;
+}
+
+//! Calculates the projection of the point \a p on a straight line \a a to \a b.
+/** \a p point to project
+    \a a,b two ends of the line */
+inline Vector Projection(const Vector &a, const Vector &b, const Vector &p)
+{
+  float k = DotProduct(b - a, p - a);
+  k /= DotProduct(b - a, b - a);
+
+  return a + k*(b-a);
+}
+
+//! Returns a point on the line \a p1 - \a p2, in \a dist distance from \a p1
+/** \a p1,p2 line start and end
+    \a dist scaling factor from \a p1, relative to distance between \a p1 and \a p2 */
+inline Vector SegmentPoint(const Vector &p1, const Vector &p2, float dist)
+{
+  return p1 + (p2 - p1) * dist;
 }
 
 /* @} */ // end of group
