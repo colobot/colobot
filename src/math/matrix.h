@@ -42,7 +42,8 @@ namespace Math
 
   The internal representation is a 16-value table in column-major order, thus:
 
-  \verbatim m[0 ] m[4 ] m[8 ] m[12]
+  \verbatim
+m[0 ] m[4 ] m[8 ] m[12]
 m[1 ] m[5 ] m[9 ] m[13]
 m[2 ] m[6 ] m[10] m[14]
 m[3 ] m[7 ] m[11] m[15] \endverbatim
@@ -110,14 +111,12 @@ struct Matrix
   //! Transposes the matrix
   inline void Transpose()
   {
-    Matrix temp = *this;
-    for (int r = 0; r < 4; ++r)
-    {
-      for (int c = 0; c < 4; ++c)
-      {
-        m[4*r+c] = temp.m[4*c+r];
-      }
-    }
+    /* (2,1) <-> (1,2) */ Swap(m[1 ], m[4 ]);
+    /* (3,1) <-> (1,3) */ Swap(m[2 ], m[8 ]);
+    /* (4,1) <-> (1,4) */ Swap(m[3 ], m[12]);
+    /* (3,2) <-> (2,3) */ Swap(m[6 ], m[9 ]);
+    /* (4,2) <-> (2,4) */ Swap(m[7 ], m[13]);
+    /* (4,3) <-> (3,4) */ Swap(m[11], m[14]);
   }
 
   //! Calculates the determinant of the matrix
@@ -369,7 +368,7 @@ struct Matrix
     Vector view = at - from;
 
     float length = view.Length();
-    assert(! Math::IsZero(length) );
+    assert(! IsZero(length) );
 
     // Normalize the z basis vector
     view /= length;
@@ -506,7 +505,7 @@ struct Matrix
   {
     float cos = cosf(angle);
     float sin = sinf(angle);
-    Vector v = Math::Normalize(dir);
+    Vector v = Normalize(dir);
 
     LoadIdentity();
 
@@ -581,7 +580,7 @@ inline Vector MatrixVectorMultiply(const Matrix &m, const Vector &v)
   float x = v.x * m.m[0 ] + v.y * m.m[4 ] + v.z * m.m[8 ] + m.m[12];
   float y = v.x * m.m[1 ] + v.y * m.m[5 ] + v.z * m.m[9 ] + m.m[13];
   float z = v.x * m.m[2 ] + v.y * m.m[6 ] + v.z * m.m[10] + m.m[14];
-  float w = v.x * m.m[4 ] + v.y * m.m[7 ] + v.z * m.m[11] + m.m[15];
+  float w = v.x * m.m[3 ] + v.y * m.m[7 ] + v.z * m.m[11] + m.m[15];
 
   if (IsZero(w))
     return Vector(x, y, z);
@@ -594,8 +593,8 @@ inline Vector MatrixVectorMultiply(const Matrix &m, const Vector &v)
 }
 
 //! Checks if two matrices are equal within given \a tolerance
-inline bool MatricesEqual(const Math::Matrix &m1, const Math::Matrix &m2,
-                          float tolerance = Math::TOLERANCE)
+inline bool MatricesEqual(const Matrix &m1, const Matrix &m2,
+                          float tolerance = TOLERANCE)
 {
   for (int i = 0; i < 16; ++i)
   {

@@ -32,6 +32,39 @@ using namespace std;
 
 const float TEST_TOLERANCE = 1e-6;
 
+int TestTranspose()
+{
+  const Math::Matrix mat(
+    (float[4][4])
+    {
+      { -0.07011674491203920,  1.26145596067429810,  2.09476603598066902,  0.35560176915570696 },
+      { -1.34075615966224704,  1.17988499016709314,  0.00601713429241016, -0.75213676977972566 },
+      {  0.59186722295223981,  0.88089224074765293,  0.70994467464257294,  0.36730385425340212 },
+      { -0.95649396555068111,  0.75912182022565566,  1.34883305778387186, -1.34957997578168754 }
+    }
+  );
+
+  const Math::Matrix expectedTranspose(
+    (float[4][4])
+    {
+      { -0.07011674491203920, -1.34075615966224704,  0.59186722295223981, -0.95649396555068111 },
+      {  1.26145596067429810,  1.17988499016709314,  0.88089224074765293,  0.75912182022565566 },
+      {  2.09476603598066902,  0.00601713429241016,  0.70994467464257294,  1.34883305778387186 },
+      {  0.35560176915570696, -0.75213676977972566,  0.36730385425340212, -1.34957997578168754 }
+    }
+  );
+
+  Math::Matrix transpose = Math::Transpose(mat);
+
+  if (! Math::MatricesEqual(transpose, expectedTranspose, TEST_TOLERANCE))
+  {
+    fprintf(stderr, "Transpose mismatch!\n");
+    return __LINE__;
+  }
+
+  return 0;
+}
+
 int TestCofactor()
 {
   const Math::Matrix mat1(
@@ -293,15 +326,64 @@ int TestMultiply()
   return 0;
 }
 
+int TestMultiplyVector()
+{
+  const Math::Matrix mat1(
+    (float[4][4])
+    {
+      {  0.0536517635602049,  0.1350203249258820, -1.4709867280474975,  1.4199163191255975 },
+      {  0.4308040094214364,  0.6860887768493787,  0.0555235810428098,  0.0245232625281863 },
+      { -0.9570012049134703,  1.4008557175488343,  1.0277555933198543,  1.2311131809078903 },
+      {  1.5609168701538376, -0.4917648784647429,  1.3748498152379420,  0.2479075063284996 }
+    }
+  );
+
+  const Math::Vector vec1(0.587443623396385, 0.653347527302101, -0.434049355720428);
+
+  const Math::Vector expectedMultiply1(8.82505163446795, 2.84325886975415, 4.61111014687784);
+
+  Math::Vector multiply1 = Math::MatrixVectorMultiply(mat1, vec1);
+  if (! Math::VectorsEqual(multiply1, expectedMultiply1, TEST_TOLERANCE ) )
+  {
+    fprintf(stderr, "Multiply vector 1 mismath!\n");
+    return __LINE__;
+  }
+
+  const Math::Matrix mat2(
+    (float[4][4])
+    {
+      {  1.2078126667092564,  0.5230257362392928, -0.7623036312496848, -1.4192273892400153 },
+      {  0.7165407622837081,  1.3746282484390115, -0.8382279333943382,  0.8248340530209490 },
+      { -0.9595506321366957, -0.0169226311095793, -0.7271125620609374, -1.5540250647342428 },
+      {  1.2788946935793131,  0.1516426145850322,  1.2115324484930112, -0.1584402989052367 }
+    }
+  );
+
+  const Math::Vector vec2(-0.7159607709627414, -0.3163937238507886, 0.0290730716146861);
+
+  const Math::Vector expectedMultiply2(2.274144199387390, 0.135691892790685, 0.812276027335184);
+
+  Math::Vector multiply2 = Math::MatrixVectorMultiply(mat2, vec2);
+  if (! Math::VectorsEqual(multiply2, expectedMultiply2, TEST_TOLERANCE ) )
+  {
+    fprintf(stderr, "Multiply vector 2 mismath!\n");
+    return __LINE__;
+  }
+
+  return 0;
+}
+
 int main()
 {
   // Functions to test
   int (*TESTS[])() =
   {
+    TestTranspose,
     TestCofactor,
     TestDet,
     TestInverse,
-    TestMultiply
+    TestMultiply,
+    TestMultiplyVector
   };
   const int TESTS_SIZE = sizeof(TESTS) / sizeof(*TESTS);
 
@@ -317,3 +399,4 @@ int main()
 
   return 0;
 }
+
