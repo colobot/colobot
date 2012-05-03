@@ -26,20 +26,6 @@
 #include <cmath>
 
 
-/*
- TODO
- 
-void      RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
-void      RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
-
-BOOL      Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
-BOOL      IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
-
-D3DVECTOR RotateView(D3DVECTOR center, float angleH, float angleV, float dist);
-D3DVECTOR LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
-
- */
-
 // Math module namespace
 namespace Math
 {
@@ -73,7 +59,7 @@ struct Vector
   }
 
   //! Creates a vector from given values
-  inline Vector(float x, float y, float z)
+  inline explicit Vector(float x, float y, float z)
   {
     this->x = x;
     this->y = y;
@@ -134,6 +120,9 @@ struct Vector
   {
     return acos(CosAngle(right));
   }
+
+
+  /* Operators */
 
   //! Returns the inverted vector
   inline Vector operator-() const
@@ -206,7 +195,16 @@ struct Vector
   {
     return Vector(left.x / right, left.y / right, left.z / right);
   }
-};
+
+}; // struct Point
+
+//! Checks if two vectors are equal within given \a tolerance
+inline bool VectorsEqual(const Vector &a, const Vector &b, float tolerance = TOLERANCE)
+{
+  return IsEqual(a.x, b.x, tolerance)
+      && IsEqual(a.y, b.y, tolerance)
+      && IsEqual(a.z, b.z, tolerance);
+}
 
 //! Convenience function for getting normalized vector
 inline Vector Normalize(const Vector &v)
@@ -234,27 +232,19 @@ inline float Angle(const Vector &a, const Vector &b)
   return a.Angle(b);
 }
 
-//! Checks if two vectors are equal within given \a tolerance
-inline bool VectorsEqual(const Vector &a, const Vector &b, float tolerance = TOLERANCE)
-{
-  return IsEqual(a.x, b.x, tolerance)
-      && IsEqual(a.y, b.y, tolerance)
-      && IsEqual(a.z, b.z, tolerance);
-}
-
 //! Returns the distance between two points
 inline float Distance(const Vector &a, const Vector &b)
 {
-  return std::sqrt( (a.x-b.x)*(a.x-b.x) +
-                    (a.y-b.y)*(a.y-b.y) +
-                    (a.z-b.z)*(a.z-b.z) );
+  return sqrt( (a.x-b.x)*(a.x-b.x) +
+               (a.y-b.y)*(a.y-b.y) +
+               (a.z-b.z)*(a.z-b.z) );
 }
 
 //! Returns the distance between projections on XZ plane of two vectors
 inline float DistanceProjected(const Vector &a, const Vector &b)
 {
-  return std::sqrt( (a.x-b.x)*(a.x-b.x) +
-                    (a.z-b.z)*(a.z-b.z) );
+  return sqrt( (a.x-b.x)*(a.x-b.x) +
+               (a.z-b.z)*(a.z-b.z) );
 }
 
 //! Returns the normal vector to a plane
@@ -275,7 +265,7 @@ inline float DistanceToPlane(const Vector &a, const Vector &b, const Vector &c, 
   Vector n = NormalToPlane(a, b, c);
   float d = -(n.x*a.x + n.y*a.y + n.z*a.z);
 
-  return std::fabs(n.x*p.x + n.y*p.y + n.z*p.z + d);
+  return fabs(n.x*p.x + n.y*p.y + n.z*p.z + d);
 }
 
 //! Checks if two planes defined by three points are the same
@@ -286,9 +276,9 @@ inline bool IsSamePlane(const Vector (&plane1)[3], const Vector (&plane2)[3])
   Vector n1 = NormalToPlane(plane1[0], plane1[1], plane1[2]);
   Vector n2 = NormalToPlane(plane2[0], plane2[1], plane2[2]);
 
-  if ( std::fabs(n1.x-n2.x) > 0.1f ||
-       std::fabs(n1.y-n2.y) > 0.1f ||
-       std::fabs(n1.z-n2.z) > 0.1f )
+  if ( fabs(n1.x-n2.x) > 0.1f ||
+       fabs(n1.y-n2.y) > 0.1f ||
+       fabs(n1.z-n2.z) > 0.1f )
     return false;
 
   float dist = DistanceToPlane(plane1[0], plane1[1], plane1[2], plane2[0]);
@@ -315,6 +305,107 @@ inline Vector Projection(const Vector &a, const Vector &b, const Vector &p)
 inline Vector SegmentPoint(const Vector &p1, const Vector &p2, float dist)
 {
   return p1 + (p2 - p1) * dist;
+}
+
+//! Rotates a point around a center in space.
+/** \a center center of rotation
+    \a angleH,angleV rotation angles in radians (positive is counterclockwise (CCW) ) )
+    \a p the point
+    \returns the rotated point */
+inline Vector RotatePoint(const Vector &center, float angleH, float angleV, Vector p)
+{
+  Vector a, b;
+
+  p.x -= center.x;
+  p.y -= center.y;
+  p.z -= center.z;
+
+  b.x = p.x*cosf(angleH) - p.z*sinf(angleH);
+  b.y = p.z*sinf(angleV) + p.y*cosf(angleV);
+  b.z = p.x*sinf(angleH) + p.z*cosf(angleH);
+
+  float x = center.x+b.x;
+  float y = center.y+b.y;
+  float z = center.z+b.z;
+
+  return Vector(x, y, z);
+}
+
+//! Rotates a point around a center in space.
+/** \a center center of rotation
+    \a angleH,angleV rotation angles in radians (positive is counterclockwise (CCW) ) )
+    \a p the point
+    \returns the rotated point */
+inline Vector RotatePoint2(const Vector center, float angleH, float angleV, Vector p)
+{
+  Vector a, b;
+
+  p.x -= center.x;
+  p.y -= center.y;
+  p.z -= center.z;
+
+  a.x = p.x*cosf(angleH) - p.z*sinf(angleH);
+  a.y = p.y;
+  a.z = p.x*sinf(angleH) + p.z*cosf(angleH);
+
+  b.x = a.x;
+  b.y = a.z*sinf(angleV) + a.y*cosf(angleV);
+  b.z = a.z*cosf(angleV) - a.y*sinf(angleV);
+
+  float x = center.x+b.x;
+  float y = center.y+b.y;
+  float z = center.z+b.z;
+
+  return Vector(x, y, z);
+}
+
+//! Calculates the intersection "i" right "of" the plane "abc".
+inline bool Intersect(const Vector &a, const Vector &b, const Vector &c, const Vector &d, const Vector &e, Vector &i)
+{
+  float d1 = (d.x-a.x)*((b.y-a.y)*(c.z-a.z)-(c.y-a.y)*(b.z-a.z)) -
+     (d.y-a.y)*((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z)) +
+     (d.z-a.z)*((b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y));
+
+  float d2 = (d.x-e.x)*((b.y-a.y)*(c.z-a.z)-(c.y-a.y)*(b.z-a.z)) -
+     (d.y-e.y)*((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z)) +
+     (d.z-e.z)*((b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y));
+
+  if (d2 == 0)
+    return false;
+
+  i.x = d.x + d1/d2*(e.x-d.x);
+  i.y = d.y + d1/d2*(e.y-d.y);
+  i.z = d.z + d1/d2*(e.z-d.z);
+
+  return true;
+}
+
+//! Calculates the intersection of the straight line passing through p (x, z)
+/** Line is parallel to the y axis, with the plane abc. Returns p.y. */
+inline bool IntersectY(const Vector &a, const Vector &b, const Vector &c, Vector &p)
+{
+  float d  = (b.x-a.x)*(c.z-a.z) - (c.x-a.x)*(b.z-a.z);
+  float d1 = (p.x-a.x)*(c.z-a.z) - (c.x-a.x)*(p.z-a.z);
+  float d2 = (b.x-a.x)*(p.z-a.z) - (p.x-a.x)*(b.z-a.z);
+
+  if (d == 0.0f)
+    return false;
+
+  p.y = a.y + d1/d*(b.y-a.y) + d2/d*(c.y-a.y);
+
+  return true;
+}
+
+//! Calculates the end point
+inline Vector LookatPoint(const Vector &eye, float angleH, float angleV, float length)
+{
+
+  Vector lookat = eye;
+  lookat.z += length;
+
+  RotatePoint(eye, angleH, angleV, lookat);
+
+  return lookat;
 }
 
 /* @} */ // end of group
