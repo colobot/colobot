@@ -71,7 +71,7 @@ struct Matrix
 
   //! Creates the matrix from 1D array
   /** \a m matrix values in column-major order */
-  inline Matrix(const float (&m)[16])
+  inline explicit Matrix(const float (&m)[16])
   {
     for (int i = 0; i < 16; ++i)
       this->m[i] = m[i];
@@ -80,7 +80,7 @@ struct Matrix
   //! Creates the matrix from 2D array
   /** The array's first index is row, second is column.
       \a m array with values */
-  inline Matrix(const float (&m)[4][4])
+  inline explicit Matrix(const float (&m)[4][4])
   {
     for (int c = 0; c < 4; ++c)
     {
@@ -547,7 +547,21 @@ struct Matrix
     temp.LoadRotationY(angle.y);
     this->Multiply(temp);
   }
-};
+
+}; // struct Matrix
+
+//! Checks if two matrices are equal within given \a tolerance
+inline bool MatricesEqual(const Matrix &m1, const Matrix &m2,
+                                  float tolerance = TOLERANCE)
+{
+  for (int i = 0; i < 16; ++i)
+  {
+    if (! IsEqual(m1.m[i], m2.m[i], tolerance))
+      return false;
+  }
+
+  return true;
+}
 
 //! Convenience function for getting transposed matrix
 inline Matrix Transpose(const Matrix &m)
@@ -592,17 +606,22 @@ inline Vector MatrixVectorMultiply(const Matrix &m, const Vector &v)
   return Vector(x, y, z);
 }
 
-//! Checks if two matrices are equal within given \a tolerance
-inline bool MatricesEqual(const Matrix &m1, const Matrix &m2,
-                          float tolerance = TOLERANCE)
+//! Calculation point of view to look at a center two angles and a distance
+inline Vector RotateView(const Vector &center, float angleH, float angleV, float dist)
 {
-  for (int i = 0; i < 16; ++i)
-  {
-    if (! IsEqual(m1.m[i], m2.m[i], tolerance))
-      return false;
-  }
+  Matrix mat1, mat2, mat;
 
-  return true;
+  mat1.LoadRotationZ(-angleV);
+  mat2.LoadRotationY(-angleH);
+  mat = MultiplyMatrices(mat1, mat2);
+
+  Vector eye;
+  eye.x = 0.0f+dist;
+  eye.y = 0.0f;
+  eye.z = 0.0f;
+  eye = MatrixVectorMultiply(mat, eye);
+
+  return eye + center;
 }
 
 /* @} */ // end of group

@@ -26,17 +26,6 @@
 #include <cmath>
 
 
-/* TODO
-
- FPOINT    RotatePoint(FPOINT center, float angle, FPOINT p);
- FPOINT    RotatePoint(float angle, FPOINT p);
- FPOINT    RotatePoint(float angle, float dist);
- void      RotatePoint(float cx, float cy, float angle, float &px, float &py);
-
- float   RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
- 
- */
-
 // Math module namespace
 namespace Math
 {
@@ -66,7 +55,7 @@ struct Point
   }
 
   //! Constructs a point from given coords: (x,y)
-  inline Point(float x, float y)
+  inline explicit Point(float x, float y)
   {
     this->x = x;
     this->y = y;
@@ -81,9 +70,85 @@ struct Point
   //! Returns the distance from (0,0) to the point (x,y)
   inline float Length()
   {
-    return std::sqrt(x*x + y*y);
+    return sqrt(x*x + y*y);
   }
-};
+
+    //! Returns the inverted point
+  inline Point operator-() const
+  {
+    return Point(-x, -y);
+  }
+
+  //! Adds the given point
+  inline const Point& operator+=(const Point &right)
+  {
+    x += right.x;
+    y += right.y;
+    return *this;
+  }
+
+  //! Adds two points
+  inline friend const Point operator+(const Point &left, const Point &right)
+  {
+    return Point(left.x + right.x, left.y + right.y);
+  }
+
+  //! Subtracts the given vector
+  inline const Point& operator-=(const Point &right)
+  {
+    x -= right.x;
+    y -= right.y;
+    return *this;
+  }
+
+  //! Subtracts two points
+  inline friend const Point operator-(const Point &left, const Point &right)
+  {
+    return Point(left.x - right.x, left.y - right.y);
+  }
+
+  //! Multiplies by given scalar
+  inline const Point& operator*=(const float &right)
+  {
+    x *= right;
+    y *= right;
+    return *this;
+  }
+
+  //! Multiplies point by scalar
+  inline friend const Point operator*(const float &left, const Point &right)
+  {
+    return Point(left * right.x, left * right.y);
+  }
+
+  //! Multiplies point by scalar
+  inline friend const Point operator*(const Point &left, const float &right)
+  {
+    return Point(left.x * right, left.y * right);
+  }
+
+  //! Divides by given scalar
+  inline const Point& operator/=(const float &right)
+  {
+    x /= right;
+    y /= right;
+    return *this;
+  }
+
+  //! Divides point by scalar
+  inline friend const Point operator/(const Point &left, const float &right)
+  {
+    return Point(left.x / right, left.y / right);
+  }
+
+}; // struct Point
+
+
+//! Checks if two vectors are equal within given \a tolerance
+inline bool PointsEqual(const Point &a, const Point &b, float tolerance = TOLERANCE)
+{
+  return IsEqual(a.x, b.x, tolerance) && IsEqual(a.y, b.y, tolerance);
+}
 
 //! Permutes two points
 inline void Swap(Point &a, Point &b)
@@ -159,6 +224,73 @@ inline bool IsInsideTriangle(Point a, Point b, Point c, const Point &p)
     return false;
 
   return true;
+}
+
+//! Rotates a point around a center
+/** \a center center of rotation
+    \a angle angle is in radians (positive is counterclockwise (CCW) )
+    \a p the point */
+inline Point RotatePoint(const Point &center, float angle, const Point &p)
+{
+  Point a;
+  a.x = p.x-center.x;
+  a.y = p.y-center.y;
+
+  Point b;
+  b.x = a.x*cosf(angle) - a.y*sinf(angle);
+  b.y = a.x*sinf(angle) + a.y*cosf(angle);
+
+  b.x += center.x;
+  b.y += center.y;
+
+  return b;
+}
+
+//! Rotates a point around the origin (0,0)
+/** \a angle angle in radians (positive is counterclockwise (CCW) )
+    \a p the point */
+inline Point RotatePoint(float angle, const Point &p)
+{
+  float x = p.x*cosf(angle) - p.y*sinf(angle);
+  float y = p.x*sinf(angle) + p.y*cosf(angle);
+
+  return Point(x, y);
+}
+
+//! Rotates a vector (dist, 0).
+/** \a angle angle is in radians (positive is counterclockwise (CCW) )
+    \a dist distance to origin */
+inline Point RotatePoint(float angle, float dist)
+{
+  float x = dist*cosf(angle);
+  float y = dist*sinf(angle);
+
+  return Point(x, y);
+}
+
+//! Calculates the angle between two points and one center
+/** \a center the center point
+    \a p1,p2 the two points
+    \returns The angle in radians  (positive is counterclockwise (CCW) ) */
+inline float RotateAngle(const Point &center, const Point &p1, const Point &p2)
+{
+  if (PointsEqual(p1, center))
+    return 0;
+
+  if (PointsEqual(p2, center))
+    return 0;
+
+  float a1 = asinf((p1.y - center.y) / Distance(p1, center));
+  float a2 = asinf((p2.y - center.y) / Distance(p2, center));
+
+  if (p1.x < center.x) a1 = PI - a1;
+  if (p2.x < center.x) a2 = PI - a2;
+
+  float a = a2 - a1;
+  if (a < 0)
+    a += PI_MUL_2;
+
+  return a;
 }
 
 /* @} */ // end of group
