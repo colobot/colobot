@@ -106,6 +106,7 @@ int main()
   // Functions to test
   int (*TESTS[])() =
   {
+    TestLength,
     TestNormalize,
     TestDot,
     TestCross

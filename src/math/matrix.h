@@ -356,198 +356,6 @@ struct Matrix
 
     return Matrix(result);
   }
-
-  //! Loads view matrix from the given vectors
-  /** \a from origin
-      \a at view direction
-      \a worldUp up vector */
-  inline void LoadView(const Vector &from, const Vector &at, const Vector &worldUp)
-  {
-    // Get the z basis vector, which points straight ahead. This is the
-    // difference from the eyepoint to the lookat point.
-    Vector view = at - from;
-
-    float length = view.Length();
-    assert(! IsZero(length) );
-
-    // Normalize the z basis vector
-    view /= length;
-
-    // Get the dot product, and calculate the projection of the z basis
-    // vector onto the up vector. The projection is the y basis vector.
-    float dotProduct = DotProduct(worldUp, view);
-
-    Vector up = worldUp - dotProduct * view;
-
-    // If this vector has near-zero length because the input specified a
-    // bogus up vector, let's try a default up vector
-    if ( IsZero(length = up.Length()) )
-    {
-      up = Vector(0.0f, 1.0f, 0.0f) - view.y * view;
-
-      // If we still have near-zero length, resort to a different axis.
-      if ( IsZero(length = up.Length()) )
-      {
-        up = Vector(0.0f, 0.0f, 1.0f) - view.z * view;
-
-        assert(! IsZero(up.Length()) );
-      }
-    }
-
-    // Normalize the y basis vector
-    up /= length;
-
-    // The x basis vector is found simply with the cross product of the y
-    // and z basis vectors
-    Vector right = CrossProduct(up, view);
-
-    // Start building the matrix. The first three rows contains the basis
-    // vectors used to rotate the view to point at the lookat point
-    LoadIdentity();
-
-    /* (1,1) */ m[0 ] = right.x;
-    /* (2,1) */ m[1 ] = up.x;
-    /* (3,1) */ m[2 ] = view.x;
-    /* (1,2) */ m[4 ] = right.y;
-    /* (2,2) */ m[5 ] = up.y;
-    /* (3,2) */ m[6 ] = view.y;
-    /* (1,3) */ m[8 ] = right.z;
-    /* (2,3) */ m[9 ] = up.z;
-    /* (3,3) */ m[10] = view.z;
-
-    // Do the translation values (rotations are still about the eyepoint)
-    /* (1,4) */ m[12] = -DotProduct(from, right);
-    /* (2,4) */ m[13] = -DotProduct(from, up);
-    /* (3,4) */ m[14] = -DotProduct(from, view);
-  }
-
-  //! Loads a perspective projection matrix
-  /** \a fov field of view in radians
-      \a aspect aspect ratio (width / height)
-      \a nearPlane distance to near cut plane
-      \a farPlane distance to far cut plane */
-  inline void LoadProjection(float fov = 1.570795f, float aspect = 1.0f,
-                             float nearPlane = 1.0f, float farPlane = 1000.0f)
-  {
-    assert(fabs(farPlane - nearPlane) >= 0.01f);
-    assert(fabs(sin(fov / 2)) >= 0.01f);
-
-    float w = aspect * (cosf(fov / 2) / sinf(fov / 2));
-    float h = 1.0f   * (cosf(fov / 2) / sinf(fov / 2));
-    float q = farPlane / (farPlane - nearPlane);
-
-    LoadZero();
-
-    /* (1,1) */ m[0 ] = w;
-    /* (2,2) */ m[5 ] = h;
-    /* (3,3) */ m[10] = q;
-    /* (3,4) */ m[14] = 1.0f;
-    /* (4,3) */ m[11] = -q * nearPlane;
-  }
-
-  //! Loads a translation matrix from given vector
-  /** \a trans vector of translation*/
-  inline void LoadTranslation(const Vector &trans)
-  {
-    LoadIdentity();
-    /* (1,4) */ m[12] = trans.x;
-    /* (2,4) */ m[13] = trans.y;
-    /* (3,4) */ m[14] = trans.z;
-  }
-
-  //! Loads a scaling matrix fom given vector
-  /** \a scale vector with scaling factors for X, Y, Z */
-  inline void LoadScale(const Vector &scale)
-  {
-    LoadIdentity();
-    /* (1,1) */ m[0 ] = scale.x;
-    /* (2,2) */ m[5 ] = scale.y;
-    /* (3,3) */ m[10] = scale.z;
-  }
-
-  //! Loads a rotation matrix along the X axis
-  /** \a angle angle in radians */
-  inline void LoadRotationX(float angle)
-  {
-    LoadIdentity();
-    /* (2,2) */ m[5 ] =  cosf(angle);
-    /* (3,2) */ m[6 ] =  sinf(angle);
-    /* (2,3) */ m[9 ] = -sinf(angle);
-    /* (3,3) */ m[10] =  cosf(angle);
-  }
-
-  //! Loads a rotation matrix along the Y axis
-  /** \a angle angle in radians */
-  inline void LoadRotationY(float angle)
-  {
-    LoadIdentity();
-    /* (1,1) */ m[0 ] =  cosf(angle);
-    /* (3,1) */ m[2 ] = -sinf(angle);
-    /* (1,3) */ m[8 ] =  sinf(angle);
-    /* (3,3) */ m[10] =  cosf(angle);
-  }
-
-  //! Loads a rotation matrix along the Z axis
-  /** \a angle angle in radians */
-  inline void LoadRotationZ(float angle)
-  {
-    LoadIdentity();
-    /* (1,1) */ m[0 ] =  cosf(angle);
-    /* (2,1) */ m[1 ] =  sinf(angle);
-    /* (1,2) */ m[4 ] = -sinf(angle);
-    /* (2,2) */ m[5 ] =  cosf(angle);
-  }
-
-  //! Loads a rotation matrix along the given axis
-  /** \a dir axis of rotation
-      \a angle angle in radians */
-  inline void LoadRotation(const Vector &dir, float angle)
-  {
-    float cos = cosf(angle);
-    float sin = sinf(angle);
-    Vector v = Normalize(dir);
-
-    LoadIdentity();
-
-    /* (1,1) */ m[0 ] = (v.x * v.x) * (1.0f - cos) + cos;
-    /* (2,1) */ m[1 ] = (v.x * v.y) * (1.0f - cos) - (v.z * sin);
-    /* (3,1) */ m[2 ] = (v.x * v.z) * (1.0f - cos) + (v.y * sin);
-
-    /* (1,2) */ m[4 ] = (v.y * v.x) * (1.0f - cos) + (v.z * sin);
-    /* (2,2) */ m[5 ] = (v.y * v.y) * (1.0f - cos) + cos ;
-    /* (3,2) */ m[6 ] = (v.y * v.z) * (1.0f - cos) - (v.x * sin);
-
-    /* (1,3) */ m[8 ] = (v.z * v.x) * (1.0f - cos) - (v.y * sin);
-    /* (2,3) */ m[9 ] = (v.z * v.y) * (1.0f - cos) + (v.x * sin);
-    /* (3,3) */ m[10] = (v.z * v.z) * (1.0f - cos) + cos;
-  }
-
-  //! Calculates the matrix to make three rotations in the order X, Z and Y
-  inline void RotateXZY(const Vector &angle)
-  {
-    this->LoadRotationX(angle.x);
-
-    Matrix temp;
-    temp.LoadRotationZ(angle.z);
-    this->Multiply(temp);
-
-    temp.LoadRotationY(angle.y);
-    this->Multiply(temp);
-  }
-
-  //! Calculates the matrix to make three rotations in the order Z, X and Y
-  inline void RotateZXY(const Vector &angle)
-  {
-    this->LoadRotationZ(angle.z);
-
-    Matrix temp;
-    temp.LoadRotationX(angle.x);
-    this->Multiply(temp);
-
-    temp.LoadRotationY(angle.y);
-    this->Multiply(temp);
-  }
-
 }; // struct Matrix
 
 //! Checks if two matrices are equal within given \a tolerance
@@ -589,11 +397,15 @@ inline Matrix MultiplyMatrices(const Matrix &left, const Matrix &right)
 
     The result, a 4x1 vector is then converted to 3x1 by dividing
     x,y,z coords by the fourth coord (w). */
-inline Vector MatrixVectorMultiply(const Matrix &m, const Vector &v)
+inline Vector MatrixVectorMultiply(const Matrix &m, const Vector &v, bool wDivide = false)
 {
   float x = v.x * m.m[0 ] + v.y * m.m[4 ] + v.z * m.m[8 ] + m.m[12];
   float y = v.x * m.m[1 ] + v.y * m.m[5 ] + v.z * m.m[9 ] + m.m[13];
   float z = v.x * m.m[2 ] + v.y * m.m[6 ] + v.z * m.m[10] + m.m[14];
+
+  if (!wDivide)
+    return Vector(x, y, z);
+
   float w = v.x * m.m[3 ] + v.y * m.m[7 ] + v.z * m.m[11] + m.m[15];
 
   if (IsZero(w))
@@ -604,24 +416,6 @@ inline Vector MatrixVectorMultiply(const Matrix &m, const Vector &v)
   z /= w;
 
   return Vector(x, y, z);
-}
-
-//! Calculation point of view to look at a center two angles and a distance
-inline Vector RotateView(const Vector &center, float angleH, float angleV, float dist)
-{
-  Matrix mat1, mat2, mat;
-
-  mat1.LoadRotationZ(-angleV);
-  mat2.LoadRotationY(-angleH);
-  mat = MultiplyMatrices(mat1, mat2);
-
-  Vector eye;
-  eye.x = 0.0f+dist;
-  eye.y = 0.0f;
-  eye.z = 0.0f;
-  eye = MatrixVectorMultiply(mat, eye);
-
-  return eye + center;
 }
 
 /* @} */ // end of group
