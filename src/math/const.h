@@ -29,7 +29,12 @@ namespace Math
   //! Tolerance level -- minimum accepted float value
   const float TOLERANCE = 1e-6f;
 
-  //! Huge number
+  //! Very small number (used in testing/returning some values)
+  const float VERY_SMALL = 1e-6f;
+  //! Very big number (used in testing/returning some values)
+  const float VERY_BIG = 1e6f;
+
+   //! Huge number
   const float HUGE = 1.0e+38f;
 
   //! PI
@@ -50,3 +55,4 @@ namespace Math
 
   /* @} */ // end of group
 }; // namespace Math
+

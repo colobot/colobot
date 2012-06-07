@@ -1,4 +1,5 @@
 // * This file is part of the COLOBOT source code
+// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -164,16 +165,6 @@ inline float Direction(float a, float g)
   }
 
   return g-a;
-}
-
-//! Returns the angle between point (x,y) and (0,0)
-float RotateAngle(float x, float y)
-{
-  float result = std::atan2(x, y);
-  if (result < 0)
-    result = PI_MUL_2 + result;
-
-  return result;
 }
 
 //! Returns a random value between 0 and 1.

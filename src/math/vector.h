@@ -75,7 +75,7 @@ struct Vector
   //! Returns the vector length
   inline float Length() const
   {
-    return sqrt(x*x + y*y + z*z);
+    return sqrtf(x*x + y*y + z*z);
   }
 
   //! Normalizes the vector
@@ -232,180 +232,12 @@ inline float Angle(const Vector &a, const Vector &b)
   return a.Angle(b);
 }
 
-//! Returns the distance between two points
+//! Returns the distance between the ends of two vectors
 inline float Distance(const Vector &a, const Vector &b)
 {
-  return sqrt( (a.x-b.x)*(a.x-b.x) +
-               (a.y-b.y)*(a.y-b.y) +
-               (a.z-b.z)*(a.z-b.z) );
-}
-
-//! Returns the distance between projections on XZ plane of two vectors
-inline float DistanceProjected(const Vector &a, const Vector &b)
-{
-  return sqrt( (a.x-b.x)*(a.x-b.x) +
-               (a.z-b.z)*(a.z-b.z) );
-}
-
-//! Returns the normal vector to a plane
-/** \param p1,p2,p3 points defining the plane */
-inline Vector NormalToPlane(const Vector &p1, const Vector &p2, const Vector &p3)
-{
-  Vector u = p3 - p1;
-  Vector v = p2 - p1;
-
-  return Normalize(CrossProduct(u, v));
-}
-
-//! Returns the distance between given point and a plane
-/** \param p the point
-    \param a,b,c points defining the plane */
-inline float DistanceToPlane(const Vector &a, const Vector &b, const Vector &c, const Vector &p)
-{
-  Vector n = NormalToPlane(a, b, c);
-  float d = -(n.x*a.x + n.y*a.y + n.z*a.z);
-
-  return fabs(n.x*p.x + n.y*p.y + n.z*p.z + d);
-}
-
-//! Checks if two planes defined by three points are the same
-/** \a plane1 array of three vectors defining the first plane
-    \a plane2 array of three vectors defining the second plane */
-inline bool IsSamePlane(const Vector (&plane1)[3], const Vector (&plane2)[3])
-{
-  Vector n1 = NormalToPlane(plane1[0], plane1[1], plane1[2]);
-  Vector n2 = NormalToPlane(plane2[0], plane2[1], plane2[2]);
-
-  if ( fabs(n1.x-n2.x) > 0.1f ||
-       fabs(n1.y-n2.y) > 0.1f ||
-       fabs(n1.z-n2.z) > 0.1f )
-    return false;
-
-  float dist = DistanceToPlane(plane1[0], plane1[1], plane1[2], plane2[0]);
-  if ( dist > 0.1f )
-    return false;
-
-  return true;
-}
-
-//! Calculates the projection of the point \a p on a straight line \a a to \a b.
-/** \a p point to project
-    \a a,b two ends of the line */
-inline Vector Projection(const Vector &a, const Vector &b, const Vector &p)
-{
-  float k = DotProduct(b - a, p - a);
-  k /= DotProduct(b - a, b - a);
-
-  return a + k*(b-a);
-}
-
-//! Returns a point on the line \a p1 - \a p2, in \a dist distance from \a p1
-/** \a p1,p2 line start and end
-    \a dist scaling factor from \a p1, relative to distance between \a p1 and \a p2 */
-inline Vector SegmentPoint(const Vector &p1, const Vector &p2, float dist)
-{
-  return p1 + (p2 - p1) * dist;
-}
-
-//! Rotates a point around a center in space.
-/** \a center center of rotation
-    \a angleH,angleV rotation angles in radians (positive is counterclockwise (CCW) ) )
-    \a p the point
-    \returns the rotated point */
-inline Vector RotatePoint(const Vector &center, float angleH, float angleV, Vector p)
-{
-  Vector a, b;
-
-  p.x -= center.x;
-  p.y -= center.y;
-  p.z -= center.z;
-
-  b.x = p.x*cosf(angleH) - p.z*sinf(angleH);
-  b.y = p.z*sinf(angleV) + p.y*cosf(angleV);
-  b.z = p.x*sinf(angleH) + p.z*cosf(angleH);
-
-  float x = center.x+b.x;
-  float y = center.y+b.y;
-  float z = center.z+b.z;
-
-  return Vector(x, y, z);
-}
-
-//! Rotates a point around a center in space.
-/** \a center center of rotation
-    \a angleH,angleV rotation angles in radians (positive is counterclockwise (CCW) ) )
-    \a p the point
-    \returns the rotated point */
-inline Vector RotatePoint2(const Vector center, float angleH, float angleV, Vector p)
-{
-  Vector a, b;
-
-  p.x -= center.x;
-  p.y -= center.y;
-  p.z -= center.z;
-
-  a.x = p.x*cosf(angleH) - p.z*sinf(angleH);
-  a.y = p.y;
-  a.z = p.x*sinf(angleH) + p.z*cosf(angleH);
-
-  b.x = a.x;
-  b.y = a.z*sinf(angleV) + a.y*cosf(angleV);
-  b.z = a.z*cosf(angleV) - a.y*sinf(angleV);
-
-  float x = center.x+b.x;
-  float y = center.y+b.y;
-  float z = center.z+b.z;
-
-  return Vector(x, y, z);
-}
-
-//! Calculates the intersection "i" right "of" the plane "abc".
-inline bool Intersect(const Vector &a, const Vector &b, const Vector &c, const Vector &d, const Vector &e, Vector &i)
-{
-  float d1 = (d.x-a.x)*((b.y-a.y)*(c.z-a.z)-(c.y-a.y)*(b.z-a.z)) -
-     (d.y-a.y)*((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z)) +
-     (d.z-a.z)*((b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y));
-
-  float d2 = (d.x-e.x)*((b.y-a.y)*(c.z-a.z)-(c.y-a.y)*(b.z-a.z)) -
-     (d.y-e.y)*((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z)) +
-     (d.z-e.z)*((b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y));
-
-  if (d2 == 0)
-    return false;
-
-  i.x = d.x + d1/d2*(e.x-d.x);
-  i.y = d.y + d1/d2*(e.y-d.y);
-  i.z = d.z + d1/d2*(e.z-d.z);
-
-  return true;
-}
-
-//! Calculates the intersection of the straight line passing through p (x, z)
-/** Line is parallel to the y axis, with the plane abc. Returns p.y. */
-inline bool IntersectY(const Vector &a, const Vector &b, const Vector &c, Vector &p)
-{
-  float d  = (b.x-a.x)*(c.z-a.z) - (c.x-a.x)*(b.z-a.z);
-  float d1 = (p.x-a.x)*(c.z-a.z) - (c.x-a.x)*(p.z-a.z);
-  float d2 = (b.x-a.x)*(p.z-a.z) - (p.x-a.x)*(b.z-a.z);
-
-  if (d == 0.0f)
-    return false;
-
-  p.y = a.y + d1/d*(b.y-a.y) + d2/d*(c.y-a.y);
-
-  return true;
-}
-
-//! Calculates the end point
-inline Vector LookatPoint(const Vector &eye, float angleH, float angleV, float length)
-{
-
-  Vector lookat = eye;
-  lookat.z += length;
-
-  RotatePoint(eye, angleH, angleV, lookat);
-
-  return lookat;
+  return sqrtf( (a.x-b.x)*(a.x-b.x) +
+                (a.y-b.y)*(a.y-b.y) +
+                (a.z-b.z)*(a.z-b.z) );
 }
 
 /* @} */ // end of group
