@@ -214,7 +214,7 @@ float CMainMap::RetZoomMap()
 	CMap*		pm;
 	CSlider*	ps;
 
-	pw = (CWindow*)pw->SearchControl(EVENT_WINDOW1);
+	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
 	if ( pw == 0 )  return ZOOM_MIN;
 
 	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
