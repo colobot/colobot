@@ -51,8 +51,6 @@
 CAutoRepair::CAutoRepair(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 	m_phase = ARP_WAIT;  // paused until the first Init ()
 }

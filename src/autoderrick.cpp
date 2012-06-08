@@ -54,8 +54,6 @@
 CAutoDerrick::CAutoDerrick(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 	m_phase = ADP_WAIT;  // paused until the first Init ()
 	m_soundChannel = -1;

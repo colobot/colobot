@@ -43,8 +43,6 @@
 
 CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_main    = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
 	m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 	m_water   = (CWater*)m_iMan->SearchInstance(CLASS_WATER);

@@ -53,8 +53,6 @@
 CMotionMother::CMotionMother(CInstanceManager* iMan, CObject* object)
 							: CMotion(iMan, object)
 {
-	CMotion::CMotion(iMan, object);
-
 	m_armMember      = START_TIME;
 	m_armTimeAbs     = START_TIME;
 	m_armTimeMarch   = START_TIME;

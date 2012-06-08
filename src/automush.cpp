@@ -45,8 +45,6 @@
 CAutoMush::CAutoMush(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 }
 
