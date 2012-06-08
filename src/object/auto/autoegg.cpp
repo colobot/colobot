@@ -44,8 +44,6 @@
 CAutoEgg::CAutoEgg(CInstanceManager* iMan, CObject* object)
 				   : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	m_type = OBJECT_NULL;
 	m_value = 0.0f;
 	m_string[0] = 0;

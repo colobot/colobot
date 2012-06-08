@@ -49,8 +49,6 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 	D3DVECTOR	pos;
 	int			i;
 
-	CAuto::CAuto(iMan, object);
-
 	for ( i=0 ; i<HUSTONMAXLENS ; i++ )
 	{
 		m_lens[i].parti = -1;

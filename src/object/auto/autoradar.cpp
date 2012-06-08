@@ -48,8 +48,6 @@
 CAutoRadar::CAutoRadar(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 	m_phase = ARAP_WAIT;
 	m_totalDetect = 0;

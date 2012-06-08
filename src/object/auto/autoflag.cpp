@@ -52,8 +52,6 @@ static float g_flag3 = 2.00f;
 CAutoFlag::CAutoFlag(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 }
 

@@ -65,8 +65,6 @@
 CAutoBase::CAutoBase(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	m_fogStart = m_engine->RetFogStart();
 	m_deepView = m_engine->RetDeepView();
 	Init();

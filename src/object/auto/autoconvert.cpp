@@ -50,8 +50,6 @@
 CAutoConvert::CAutoConvert(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 	m_phase = ACP_STOP;
 	m_bResetDelete = FALSE;

@@ -76,8 +76,6 @@ float Progress(float a, float b, float progress)
 CAutoPortico::CAutoPortico(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 	m_phase = APOP_WAIT;
 	m_soundChannel = -1;

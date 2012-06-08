@@ -57,8 +57,6 @@
 CMotionHuman::CMotionHuman(CInstanceManager* iMan, CObject* object)
 						  : CMotion(iMan, object)
 {
-	CMotion::CMotion(iMan, object);
-
 	m_partiReactor   = -1;
 	m_armMember      = START_TIME;
 	m_armTimeAbs     = START_TIME;
