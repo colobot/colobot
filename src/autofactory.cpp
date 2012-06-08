@@ -55,8 +55,6 @@
 CAutoFactory::CAutoFactory(CInstanceManager* iMan, CObject* object)
 						   : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 	m_type  = OBJECT_MOBILEws;
 	m_phase = AFP_WAIT;  // paused until the first Init ()

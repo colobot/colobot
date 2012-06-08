@@ -57,8 +57,6 @@ CAutoResearch::CAutoResearch(CInstanceManager* iMan, CObject* object)
 {
 	int		i;
 
-	CAuto::CAuto(iMan, object);
-
 	for ( i=0 ; i<6 ; i++ )
 	{
 		m_partiStop[i] = -1;

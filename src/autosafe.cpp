@@ -58,8 +58,6 @@ CAutoSafe::CAutoSafe(CInstanceManager* iMan, CObject* object)
 {
 	int		i;
 
-	CAuto::CAuto(iMan, object);
-
 	for ( i=0 ; i<4 ; i++ )
 	{
 		m_bKey[i] = FALSE;
