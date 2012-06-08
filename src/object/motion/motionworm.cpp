@@ -55,8 +55,6 @@
 CMotionWorm::CMotionWorm(CInstanceManager* iMan, CObject* object)
 						: CMotion(iMan, object)
 {
-	CMotion::CMotion(iMan, object);
-
 	m_timeUp         = 18.0f;
 	m_timeDown       = 18.0f;
 	m_armMember      = START_TIME;

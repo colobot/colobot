@@ -56,8 +56,6 @@
 CAutoEnergy::CAutoEnergy(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	m_partiSphere = -1;
 	Init();
 }

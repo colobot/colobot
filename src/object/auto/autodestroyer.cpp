@@ -52,8 +52,6 @@
 CAutoDestroyer::CAutoDestroyer(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	Init();
 	m_phase = ADEP_WAIT;  // paused until the first Init ()
 }

@@ -46,8 +46,6 @@
 CAutoKid::CAutoKid(CInstanceManager* iMan, CObject* object)
 					 : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	m_soundChannel = -1;
 	Init();
 }

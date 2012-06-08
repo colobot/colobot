@@ -58,8 +58,6 @@ CAutoLabo::CAutoLabo(CInstanceManager* iMan, CObject* object)
 {
 	int		i;
 
-	CAuto::CAuto(iMan, object);
-
 	for ( i=0 ; i<3 ; i++ )
 	{
 		m_partiRank[i] = -1;

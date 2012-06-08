@@ -51,8 +51,6 @@
 CAutoPara::CAutoPara(CInstanceManager* iMan, CObject* object)
 						  : CAuto(iMan, object)
 {
-	CAuto::CAuto(iMan, object);
-
 	m_channelSound = -1;
 	Init();
 }

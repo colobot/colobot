@@ -56,8 +56,6 @@ CMotionVehicle::CMotionVehicle(CInstanceManager* iMan, CObject* object)
 {
 	int		i;
 
-	CMotion::CMotion(iMan, object);
-
 	for ( i=0 ; i<4 ; i++ )
 	{
 		m_wheelTurn[i] = 0.0f;

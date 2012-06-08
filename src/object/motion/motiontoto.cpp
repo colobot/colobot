@@ -53,8 +53,6 @@
 CMotionToto::CMotionToto(CInstanceManager* iMan, CObject* object)
 						 : CMotion(iMan, object)
 {
-	CMotion::CMotion(iMan, object);
-
 	m_time = 0.0f;
 	m_bDisplayInfo = FALSE;
 	m_bQuickPos = FALSE;
