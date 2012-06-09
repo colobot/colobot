@@ -16,11 +16,10 @@
 
 // button.h
 
-#ifndef _BUTTON_H_
-#define	_BUTTON_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -55,4 +54,3 @@ protected:
 };
 
 
-#endif //_BUTTON_H_

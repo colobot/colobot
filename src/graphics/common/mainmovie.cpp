@@ -23,20 +23,20 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "global.h"
-#include "event.h"
-#include "iman.h"
-#include "math3d.h"
-#include "camera.h"
-#include "object.h"
-#include "motion.h"
-#include "motionhuman.h"
-#include "interface.h"
-#include "robotmain.h"
-#include "sound.h"
-#include "mainmovie.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/global.h"
+#include "common/event.h"
+#include "common/iman.h"
+#include "math/old/math3d.h"
+#include "graphics/common/camera.h"
+#include "object/object.h"
+#include "object/motion/motion.h"
+#include "object/motion/motionhuman.h"
+#include "ui/interface.h"
+#include "object/robotmain.h"
+#include "sound/sound.h"
+#include "graphics/common/mainmovie.h"
 
 
 

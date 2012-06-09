@@ -16,12 +16,11 @@
 
 // camera.h
 
-#ifndef _CAMERA_H_
-#define	_CAMERA_H_
+#pragma once
 
 
-#include "d3dengine.h"
-#include "struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/struct.h"
 
 
 class CInstanceManager;
@@ -267,5 +266,3 @@ protected:
 	BOOL		m_bCameraInvertY;	// Y inversion in the edges?
 };
 
-
-#endif //_CAMERA_H_

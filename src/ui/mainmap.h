@@ -16,8 +16,7 @@
 
 // mainmap.h
 
-#ifndef _MAINMAP_H_
-#define	_MAINMAP_H_
+#pragma once
 
 
 class CInstanceManager;
@@ -65,4 +64,3 @@ protected:
 };
 
 
-#endif //_MAINMAP_H_

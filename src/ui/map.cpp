@@ -23,18 +23,18 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "event.h"
-#include "math3d.h"
-#include "terrain.h"
-#include "water.h"
-#include "object.h"
-#include "event.h"
-#include "misc.h"
-#include "robotmain.h"
-#include "iman.h"
-#include "map.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/event.h"
+#include "math/old/math3d.h"
+#include "graphics/common/terrain.h"
+#include "graphics/common/water.h"
+#include "object/object.h"
+#include "common/event.h"
+#include "common/misc.h"
+#include "object/robotmain.h"
+#include "common/iman.h"
+#include "ui/map.h"
 
 
 

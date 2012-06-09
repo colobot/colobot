@@ -16,12 +16,11 @@
 
 // color.h
 
-#ifndef _COLOR_H_
-#define	_COLOR_H_
+#pragma once
 
 
-#include "control.h"
-#include "d3dengine.h"
+#include "ui/control.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CD3DEngine;
@@ -55,4 +54,3 @@ protected:
 };
 
 
-#endif //_COLOR_H_

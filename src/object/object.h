@@ -16,13 +16,12 @@
 
 // object.h
 
-#ifndef _OBJECT_H_
-#define	_OBJECT_H_
+#pragma once
 
 
-#include "d3dengine.h"
-#include "camera.h"
-#include "sound.h"
+#include "graphics/d3d/d3dengine.h"
+#include "graphics/common/camera.h"
+#include "sound/sound.h"
 
 
 class CInstanceManager;
@@ -777,5 +776,3 @@ protected:
 	float		m_cmdLine[OBJECTMAXCMDLINE];
 };
 
-
-#endif //_OBJECT_H_

@@ -16,11 +16,10 @@
 
 // auto.h
 
-#ifndef _AUTO_H_
-#define	_AUTO_H_
+#pragma once
 
 
-#include "object.h"
+#include "object/object.h"
 
 
 class CInstanceManager;
@@ -110,5 +109,3 @@ protected:
 	float		m_progressTotal;
 };
 
-
-#endif //_AUTO_H_

@@ -16,12 +16,11 @@
 
 // autoinfo.h
 
-#ifndef _AUTOINFO_H_
-#define	_AUTOINFO_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -76,5 +75,3 @@ protected:
 	BOOL			m_bLastVirus;
 };
 
-
-#endif //_AUTOINFO_H_

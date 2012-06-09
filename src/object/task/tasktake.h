@@ -16,12 +16,11 @@
 
 // tasktake.h
 
-#ifndef _TASKTAKE_H_
-#define	_TASKTAKE_H_
+#pragma once
 
 
-#include "misc.h"
-#include "object.h"
+#include "common/misc.h"
+#include "object/object.h"
 
 
 class CInstanceManager;
@@ -81,5 +80,3 @@ protected:
 	ObjectType		m_fretType;
 };
 
-
-#endif //_TASKTAKE_H_

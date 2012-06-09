@@ -16,8 +16,6 @@
 
 // global.h
 
-#ifndef _GLOBAL_H_
-#define	_GLOBAL_H_
 
 
 #define BUILD_FACTORY		(1<<0)		// factory
@@ -60,5 +58,3 @@ extern long		g_researchEnable;		// research available
 extern float	g_unit;					// conversion factor
 
 
-
-#endif //_GLOBAL_H_

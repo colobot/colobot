@@ -16,15 +16,15 @@
 
 // taskmanager.h
 
-#ifndef _TASKMANAGER_H_
-#define	_TASKMANAGER_H_
+#pragma once
 
-#include "misc.h"
-#include "object.h"
-#include "taskmanip.h"
-#include "taskgoto.h"
-#include "taskshield.h"
-#include "taskflag.h"
+
+#include "common/misc.h"
+#include "object/object.h"
+#include "object/task/taskmanip.h"
+#include "object/task/taskgoto.h"
+#include "object/task/taskshield.h"
+#include "object/task/taskflag.h"
 
 
 class CInstanceManager;
@@ -73,5 +73,3 @@ protected:
 	BOOL			m_bPilot;
 };
 
-
-#endif //_TASKMANAGER_H_

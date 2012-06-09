@@ -16,12 +16,11 @@
 
 // autojostle.h
 
-#ifndef _AUTOJOSTLE_H_
-#define	_AUTOJOSTLE_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -56,5 +55,3 @@ protected:
 	Error			m_error;
 };
 
-
-#endif //_AUTOJOSTLE_H_

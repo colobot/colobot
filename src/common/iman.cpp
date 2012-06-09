@@ -22,8 +22,8 @@
 #include <windows.h>
 #include <stdio.h>
 
-#include "struct.h"
-#include "iman.h"
+#include "common/struct.h"
+#include "common/iman.h"
 
 
 

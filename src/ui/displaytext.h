@@ -16,11 +16,10 @@
 
 // displaytext.h
 
-#ifndef _DISPLAYTEXT_H_
-#define	_DISPLAYTEXT_H_
+#pragma once
 
 
-#include "d3dengine.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -93,4 +92,3 @@ protected:
 };
 
 
-#endif //_DISPLAYTEXT_H_

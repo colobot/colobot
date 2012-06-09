@@ -16,12 +16,11 @@
 
 // physics.h
 
-#ifndef _PHYSICS_H_
-#define	_PHYSICS_H_
+#pragma once
 
 
-#include "d3dengine.h"
-#include "misc.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -245,4 +244,3 @@ protected:
 };
 
 
-#endif //_PHYSICS_H_

@@ -16,13 +16,12 @@
 
 // pyro.h
 
-#ifndef _PYRO_H_
-#define	_PYRO_H_
+#pragma once
 
 
-#include "d3dengine.h"
-#include "object.h"
-#include "misc.h"
+#include "graphics/d3d/d3dengine.h"
+#include "object/object.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -171,5 +170,3 @@ protected:
 	float			m_crashSphereRadius[50];
 };
 
-
-#endif //_PYRO_H_

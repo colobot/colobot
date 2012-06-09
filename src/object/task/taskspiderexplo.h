@@ -16,11 +16,10 @@
 
 // taskspiderexplo.h
 
-#ifndef _TASKSPIDEREXPLO_H_
-#define	_TASKSPIDEREXPLO_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -49,5 +48,3 @@ protected:
 	BOOL		m_bError;
 };
 
-
-#endif //_TASKSPIDEREXPLO_H_

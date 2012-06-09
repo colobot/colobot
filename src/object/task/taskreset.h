@@ -16,12 +16,11 @@
 
 // taskreset.h
 
-#ifndef _TASKRESET_H_
-#define	_TASKRESET_H_
+#pragma once
 
 
-#include "misc.h"
-#include "d3dengine.h"
+#include "common/misc.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -69,5 +68,3 @@ protected:
 	float			m_iAngle;
 };
 
-
-#endif //_TASKRESET_H_

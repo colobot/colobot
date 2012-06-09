@@ -16,8 +16,7 @@
 
 // mainmovie.h
 
-#ifndef _MAINMOVIE_H_
-#define	_MAINMOVIE_H_
+#pragma once
 
 
 class CInstanceManager;
@@ -76,5 +75,3 @@ protected:
 	D3DVECTOR		m_finalLookat[2];
 };
 
-
-#endif //_MAINMOVIE_H_

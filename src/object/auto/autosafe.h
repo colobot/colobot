@@ -16,12 +16,11 @@
 
 // autosafe.h
 
-#ifndef _AUTOSAFE_H_
-#define	_AUTOSAFE_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -82,5 +81,3 @@ protected:
 	int				m_keyParti[4];
 };
 
-
-#endif //_AUTOSAFE_H_

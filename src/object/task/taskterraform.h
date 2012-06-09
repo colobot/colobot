@@ -16,12 +16,11 @@
 
 // taskterraform.h
 
-#ifndef _TASKSTERRAFORM_H_
-#define	_TASKSTERRAFORM_H_
+#pragma once
 
 
-#include "misc.h"
-#include "d3dengine.h"
+#include "common/misc.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -68,5 +67,3 @@ protected:
 	D3DVECTOR		m_terraPos;
 };
 
-
-#endif //_TASKSTERRAFORM_H_

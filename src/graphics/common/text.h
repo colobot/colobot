@@ -16,11 +16,10 @@
 
 // text.h
 
-#ifndef _TEXT_H_
-#define	_TEXT_H_
+#pragma once
 
 
-#include "d3dengine.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -109,5 +108,3 @@ protected:
 
 };
 
-
-#endif //_TEXT_H_

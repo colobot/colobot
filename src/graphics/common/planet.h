@@ -16,11 +16,10 @@
 
 // planet.h
 
-#ifndef _PLANET_H_
-#define	_PLANET_H_
+#pragma once
 
 
-#include "struct.h"
+#include "common/struct.h"
 
 
 class CInstanceManager;
@@ -75,5 +74,3 @@ protected:
 	BOOL			m_bPlanetExist;
 };
 
-
-#endif //_PLANET_H_

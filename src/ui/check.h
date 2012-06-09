@@ -16,11 +16,10 @@
 
 // check.h
 
-#ifndef _CHECK_H_
-#define	_CHECK_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -45,4 +44,3 @@ protected:
 };
 
 
-#endif //_CHECK_H_

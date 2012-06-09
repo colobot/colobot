@@ -16,12 +16,11 @@
 
 // autolabo.h
 
-#ifndef _AUTOLABO_H_
-#define	_AUTOLABO_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -83,5 +82,3 @@ protected:
 	int					m_soundChannel;
 };
 
-
-#endif //_AUTOLABO_H_

@@ -29,10 +29,10 @@
 #define STRICT
 #include <tchar.h>
 #include <stdio.h>
-#include "d3dtextr.h"
-#include "d3dutil.h"
-#include "language.h"
-#include "misc.h"
+#include "graphics/d3d/d3dtextr.h"
+#include "graphics/d3d/d3dutil.h"
+#include "common/language.h"
+#include "common/misc.h"
 
 
 

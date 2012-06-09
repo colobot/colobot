@@ -21,21 +21,21 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "d3dmath.h"
-#include "d3dutil.h"
-#include "event.h"
-#include "misc.h"
-#include "iman.h"
-#include "terrain.h"
-#include "math3d.h"
-#include "object.h"
-#include "camera.h"
-#include "auto.h"
-#include "autopara.h"
-#include "sound.h"
-#include "blitz.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "math/old/d3dmath.h"
+#include "graphics/d3d/d3dutil.h"
+#include "common/event.h"
+#include "common/misc.h"
+#include "common/iman.h"
+#include "graphics/common/terrain.h"
+#include "math/old/math3d.h"
+#include "object/object.h"
+#include "graphics/common/camera.h"
+#include "object/auto/auto.h"
+#include "object/auto/autopara.h"
+#include "sound/sound.h"
+#include "graphics/common/blitz.h"
 
 
 

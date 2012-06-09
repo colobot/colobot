@@ -21,14 +21,14 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "d3dmath.h"
-#include "language.h"
-#include "global.h"
-#include "event.h"
-#include "object.h"
-#include "cbottoken.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "math/old/d3dmath.h"
+#include "common/language.h"
+#include "common/global.h"
+#include "common/event.h"
+#include "object/object.h"
+#include "script/cbottoken.h"
 
 
 

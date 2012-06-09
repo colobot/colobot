@@ -16,12 +16,11 @@
 
 // autokid.h
 
-#ifndef _AUTOKID_H_
-#define	_AUTOKID_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -55,5 +54,3 @@ protected:
 	BOOL		m_bSilent;
 };
 
-
-#endif //_AUTOKID_H_

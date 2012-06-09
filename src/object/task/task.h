@@ -16,11 +16,10 @@
 
 // task.h
 
-#ifndef _TASK_H_
-#define	_TASK_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -85,5 +84,3 @@ protected:
 	CSound*			m_sound;
 };
 
-
-#endif //_TASK_H_

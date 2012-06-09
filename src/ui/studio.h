@@ -16,12 +16,11 @@
 
 // studio.h
 
-#ifndef _STUDIO_H_
-#define	_STUDIO_H_
+#pragma once
 
 
-#include "object.h"
-#include "script.h"
+#include "object/object.h"
+#include "script/script.h"
 
 
 class CInstanceManager;
@@ -114,4 +113,3 @@ protected:
 };
 
 
-#endif //_STUDIO_H_

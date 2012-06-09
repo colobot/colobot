@@ -16,12 +16,11 @@
 
 // autohuston.h
 
-#ifndef _AUTOHUSTON_H_
-#define	_AUTOHUSTON_H_
+#pragma once
 
 
-#include "auto.h"
-#include "particule.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -73,5 +72,3 @@ protected:
 	int			m_lensTotal;
 };
 
-
-#endif //_AUTOHUSTON_H_

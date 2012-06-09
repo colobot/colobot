@@ -16,11 +16,10 @@
 
 // cloud.h
 
-#ifndef _CLOUD_H_
-#define	_CLOUD_H_
+#pragma once
 
 
-#include "struct.h"
+#include "common/struct.h"
 
 
 class CInstanceManager;
@@ -86,5 +85,3 @@ protected:
 	BOOL			m_bEnable;
 };
 
-
-#endif //_CLOUD_H_

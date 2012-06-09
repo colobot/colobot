@@ -16,12 +16,11 @@
 
 // autoresearch.h
 
-#ifndef _AUTORESEARCH_H_
-#define	_AUTORESEARCH_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -78,5 +77,3 @@ protected:
 	int					m_channelSound;
 };
 
-
-#endif //_AUTORESEARCH_H_

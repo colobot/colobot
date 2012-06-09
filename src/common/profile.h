@@ -16,8 +16,7 @@
 
 // profile.h
 
-#ifndef _PROFILE_H_
-#define	_PROFILE_H_
+#pragma once
 
 
 #define STRICT
@@ -33,4 +32,3 @@ extern BOOL	SetProfileFloat(char* section, char* key, float value);
 extern BOOL	GetProfileFloat(char* section, char* key, float &value);
 
 
-#endif //_PROFILE_H_

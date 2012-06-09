@@ -16,12 +16,11 @@
 
 // blitz.h
 
-#ifndef _BLITZ_H_
-#define	_BLITZ_H_
+#pragma once
 
 
-#include "misc.h"
-#include "struct.h"
+#include "common/misc.h"
+#include "common/struct.h"
 
 
 class CInstanceManager;
@@ -80,5 +79,3 @@ protected:
 	float		m_width[BLITZMAX];
 };
 
-
-#endif //_BLITZ_H_

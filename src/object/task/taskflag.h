@@ -15,11 +15,10 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 // taskflag.h
 
-#ifndef _TASKFLAG_H_
-#define	_TASKFLAG_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -62,5 +61,3 @@ protected:
 	BOOL			m_bError;
 };
 
-
-#endif //_TASKFLAG_H_

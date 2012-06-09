@@ -16,11 +16,10 @@
 
 // motionvehicle.h
 
-#ifndef _MOTIONVEHICLE_H_
-#define	_MOTIONVEHICLE_H_
+#pragma once
 
 
-#include "motion.h"
+#include "object/motion/motion.h"
 
 
 class CInstanceManager;
@@ -78,5 +77,3 @@ protected:
 	float		m_traceWidth;
 };
 
-
-#endif //_MOTIONVEHICLE_H_

@@ -16,11 +16,10 @@
 
 // terrain.h
 
-#ifndef _TERRAIN_H_
-#define	_TERRAIN_H_
+#pragma once
 
 
-#include "d3dengine.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -210,5 +209,3 @@ protected:
 	FlyingLimit		m_flyingLimit[MAXFLYINGLIMIT];
 };
 
-
-#endif //_TERRAIN_H_

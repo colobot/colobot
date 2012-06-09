@@ -16,11 +16,10 @@
 
 // shortcut.h
 
-#ifndef _SHORTCUT_H_
-#define	_SHORTCUT_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -47,4 +46,3 @@ protected:
 };
 
 
-#endif //_SHORTCUT_H_

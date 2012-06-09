@@ -16,12 +16,11 @@
 
 // autostation.h
 
-#ifndef _AUTOSTATION_H_
-#define	_AUTOSTATION_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -64,5 +63,3 @@ protected:
 	float			m_energyVirus;
 };
 
-
-#endif //_AUTOSTATION_H_

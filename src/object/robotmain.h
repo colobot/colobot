@@ -16,16 +16,15 @@
 
 // robotmain.h
 
-#ifndef _ROBOTMAIN_H_
-#define	_ROBOTMAIN_H_
+#pragma once
 
 
-#include "d3dengine.h"
-#include "struct.h"
-#include "object.h"
-#include "mainmovie.h"
-#include "camera.h"
-#include "particule.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/struct.h"
+#include "object/object.h"
+#include "graphics/common/mainmovie.h"
+#include "graphics/common/camera.h"
+#include "graphics/common/particule.h"
 
 
 enum Phase
@@ -459,5 +458,3 @@ protected:
 	float			m_colorShiftWater;
 };
 
-
-#endif //_ROBOTMAIN_H_

@@ -16,11 +16,10 @@
 
 // cbottoken.h
 
-#ifndef _CBOTTOKEN_H_
-#define	_CBOTTOKEN_H_
+#pragma once
 
 
-#include "object.h"
+#include "object/object.h"
 
 
 
@@ -35,5 +34,3 @@ extern BOOL IsFunction(const char *token);
 extern char* RetHelpText(const char *token);
 
 
-
-#endif //_CBOTTOKEN_H_

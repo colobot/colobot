@@ -16,11 +16,10 @@
 
 // motionbee.h
 
-#ifndef _MOTIONBEE_H_
-#define	_MOTIONBEE_H_
+#pragma once
 
 
-#include "motion.h"
+#include "object/motion/motion.h"
 
 
 class CInstanceManager;
@@ -69,5 +68,3 @@ protected:
 	BOOL		m_bArmStop;
 };
 
-
-#endif //_MOTIONBEE_H_

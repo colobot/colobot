@@ -16,12 +16,11 @@
 
 // taskadvance.h
 
-#ifndef _TASKADVANCE_H_
-#define	_TASKADVANCE_H_
+#pragma once
 
 
-#include "misc.h"
-#include "d3dengine.h"
+#include "common/misc.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -55,5 +54,3 @@ protected:
 	BOOL		m_bError;
 };
 
-
-#endif //_TASKADVANCE_H_

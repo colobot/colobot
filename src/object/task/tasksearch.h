@@ -16,11 +16,10 @@
 
 // tasksearch.h
 
-#ifndef _TASKSEARCH_H_
-#define	_TASKSEARCH_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -75,5 +74,3 @@ protected:
 	BOOL			m_bError;
 };
 
-
-#endif //_TASKSEARCH_H_

@@ -34,8 +34,9 @@
 //
 // Copyright (c) 1997-1999 Microsoft Corporation. All rights reserved
 //-----------------------------------------------------------------------------
-#ifndef D3DFRAME_H
-#define D3DFRAME_H
+
+#pragma once
+
 #include <ddraw.h>
 #include <d3d.h>
 
@@ -136,7 +137,5 @@ public:
 #define D3DFWERR_INVALIDMODE          0x8200000e
 #define D3DFWERR_NOTINITIALIZED       0x8200000f
 
-
-#endif // D3DFRAME_H
 
 

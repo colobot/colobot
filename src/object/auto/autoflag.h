@@ -16,12 +16,11 @@
 
 // autoflag.h
 
-#ifndef _AUTOFLAG_H_
-#define	_AUTOFLAG_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -54,5 +53,3 @@ protected:
 	float		m_progress;
 };
 
-
-#endif //_AUTOFLAG_H_

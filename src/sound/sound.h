@@ -16,8 +16,7 @@
 
 // sound.h
 
-#ifndef SOUND_H
-#define SOUND_H
+#pragma once
 
 
 #include <dsound.h>
@@ -242,4 +241,4 @@ protected:
 	char					m_CDpath[100];
 };
 
-#endif // SOUND_H
+

@@ -23,17 +23,17 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "global.h"
-#include "event.h"
-#include "iman.h"
-#include "object.h"
-#include "interface.h"
-#include "map.h"
-#include "button.h"
-#include "robotmain.h"
-#include "mainshort.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/global.h"
+#include "common/event.h"
+#include "common/iman.h"
+#include "object/object.h"
+#include "ui/interface.h"
+#include "ui/map.h"
+#include "ui/button.h"
+#include "object/robotmain.h"
+#include "ui/mainshort.h"
 
 
 

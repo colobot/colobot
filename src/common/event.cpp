@@ -22,9 +22,9 @@
 #include <windows.h>
 #include <stdio.h>
 
-#include "struct.h"
-#include "iman.h"
-#include "event.h"
+#include "common/struct.h"
+#include "common/iman.h"
+#include "common/event.h"
 
 
 

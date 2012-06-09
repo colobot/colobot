@@ -16,11 +16,10 @@
 
 // label.h
 
-#ifndef _LABEL_H_
-#define	_LABEL_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -45,4 +44,3 @@ protected:
 };
 
 
-#endif //_LABEL_H_

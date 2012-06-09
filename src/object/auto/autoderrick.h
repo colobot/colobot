@@ -16,12 +16,11 @@
 
 // autoderrick.h
 
-#ifndef _AUTODERRICK_H_
-#define	_AUTODERRICK_H_
+#pragma once
 
 
-#include "object.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -80,5 +79,3 @@ protected:
 	BOOL				m_bSoundFall;
 };
 
-
-#endif //_AUTODERRICK_H_

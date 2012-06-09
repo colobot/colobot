@@ -23,9 +23,9 @@
 #include <d3d.h>
 #include <stdlib.h>
 
-#include "language.h"
-#include "struct.h"
-#include "profile.h"
+#include "common/language.h"
+#include "common/struct.h"
+#include "common/profile.h"
 
 
 

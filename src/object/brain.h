@@ -16,16 +16,15 @@
 
 // brain.h
 
-#ifndef _BRAIN_H_
-#define	_BRAIN_H_
+#pragma once
 
 
-#include "misc.h"
-#include "event.h"
-#include "object.h"
-#include "taskmanip.h"
-#include "taskflag.h"
-#include "taskshield.h"
+#include "common/misc.h"
+#include "common/event.h"
+#include "object/object.h"
+#include "object/task/taskmanip.h"
+#include "object/task/taskflag.h"
+#include "object/task/taskshield.h"
 
 
 class CInstanceManager;
@@ -216,5 +215,3 @@ protected:
 	TraceRecord* m_traceRecordBuffer;
 };
 
-
-#endif //_BRAIN_H_

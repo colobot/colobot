@@ -16,13 +16,12 @@
 
 // taskmanip.h
 
-#ifndef _TASKMANIP_H_
-#define	_TASKMANIP_H_
+#pragma once
 
 
-#include "task.h"
-#include "misc.h"
-#include "d3dengine.h"
+#include "object/task/task.h"
+#include "common/misc.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -105,5 +104,3 @@ protected:
 	ObjectType		m_fretType;
 };
 
-
-#endif //_TASKMANIP_H_

@@ -16,8 +16,7 @@
 
 // mainshort.h
 
-#ifndef _MAINSHORT_H_
-#define	_MAINSHORT_H_
+#pragma once
 
 
 class CInstanceManager;
@@ -58,4 +57,3 @@ protected:
 };
 
 
-#endif //_MAINSHORT_H_

@@ -16,11 +16,10 @@
 
 // motionant.h
 
-#ifndef _MOTIONANT_H_
-#define	_MOTIONANT_H_
+#pragma once
 
 
-#include "motion.h"
+#include "object/motion/motion.h"
 
 
 class CInstanceManager;
@@ -76,5 +75,3 @@ protected:
 	float		m_lastParticule;
 };
 
-
-#endif //_MOTIONANT_H_

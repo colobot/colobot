@@ -16,7 +16,7 @@
 
 // color.cpp
 
-#include "color.h"
+#include "graphics/common/color.h"
 
 // TODO
 
