@@ -16,12 +16,11 @@
 
 // slider.h
 
-#ifndef _SLIDER_H_
-#define	_SLIDER_H_
+#pragma once
 
 
-#include "control.h"
-#include "struct.h"
+#include "ui/control.h"
+#include "common/struct.h"
 
 
 class CD3DEngine;
@@ -81,4 +80,3 @@ protected:
 };
 
 
-#endif //_SLIDER_H_

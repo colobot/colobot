@@ -16,12 +16,12 @@
 
 // maindialog.h
 
-#ifndef _MAINDIALOG_H_
-#define	_MAINDIALOG_H_
+#pragma once
 
-#include "struct.h"
-#include "camera.h"
-#include "robotmain.h"
+
+#include "common/struct.h"
+#include "graphics/common/camera.h"
+#include "object/robotmain.h"
 
 
 class CInstanceManager;
@@ -253,4 +253,3 @@ protected:
 };
 
 
-#endif //_MAINDIALOG_H_

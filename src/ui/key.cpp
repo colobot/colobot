@@ -23,16 +23,16 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "math3d.h"
-#include "event.h"
-#include "misc.h"
-#include "iman.h"
-#include "restext.h"
-#include "sound.h"
-#include "text.h"
-#include "key.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "math/old/math3d.h"
+#include "common/event.h"
+#include "common/misc.h"
+#include "common/iman.h"
+#include "common/restext.h"
+#include "sound/sound.h"
+#include "graphics/common/text.h"
+#include "ui/key.h"
 
 
 

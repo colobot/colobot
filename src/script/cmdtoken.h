@@ -16,16 +16,15 @@
 
 // cmdtoken.h
 
-#ifndef _CMDTOKEN_H_
-#define	_CMDTOKEN_H_
+#pragma once
 
 
-#include "d3denum.h"
-#include "d3dengine.h"
-#include "object.h"
-#include "water.h"
-#include "pyro.h"
-#include "camera.h"
+#include "graphics/d3d/d3denum.h"
+#include "graphics/d3d/d3dengine.h"
+#include "object/object.h"
+#include "graphics/common/water.h"
+#include "graphics/common/pyro.h"
+#include "graphics/common/camera.h"
 
 
 
@@ -63,5 +62,3 @@ extern D3DCOLOR OpColor(char *line, char *op, D3DCOLOR def);
 extern D3DCOLORVALUE OpColorValue(char *line, char *op, D3DCOLORVALUE def);
 
 
-
-#endif //_CMDTOKEN_H_

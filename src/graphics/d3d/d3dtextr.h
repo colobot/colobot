@@ -26,8 +26,9 @@
 //
 // Copyright (c) 1997-1999 Microsoft Corporation. All rights reserved
 //-----------------------------------------------------------------------------
-#ifndef D3DTEXTR_H
-#define D3DTEXTR_H
+
+#pragma once
+
 #include <ddraw.h>
 #include <d3d.h>
 
@@ -76,5 +77,3 @@ VOID    D3DTextr_SetTexturePath( TCHAR* strTexturePath );
 void	D3DTextr_SetDebugMode(BOOL bDebug);
 
 
-
-#endif // D3DTEXTR_H

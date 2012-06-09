@@ -16,12 +16,11 @@
 
 // list.h
 
-#ifndef _LIST_H_
-#define	_LIST_H_
+#pragma once
 
 
-#include "control.h"
-#include "event.h"
+#include "ui/control.h"
+#include "common/event.h"
 
 
 class CD3DEngine;
@@ -114,4 +113,3 @@ protected:
 };
 
 
-#endif //_LIST_H_

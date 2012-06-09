@@ -24,11 +24,12 @@
 #include <d3dtypes.h>
 #include <dsound.h>
 #include <stdio.h>
-#include "language.h"
-#include "struct.h"
-#include "iman.h"
-#include "math3d.h"
-#include "sound.h"
+
+#include "common/language.h"
+#include "common/struct.h"
+#include "common/iman.h"
+#include "math/old/math3d.h"
+#include "sound/sound.h"
 
 
 /////////////////////////////////////////////////////////////////////////////

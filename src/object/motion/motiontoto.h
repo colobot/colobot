@@ -16,13 +16,12 @@
 
 // motiontoto.h
 
-#ifndef _MOTIONTOTO_H_
-#define	_MOTIONTOTO_H_
+#pragma once
 
 
-#include "struct.h"
-#include "object.h"
-#include "motion.h"
+#include "common/struct.h"
+#include "object/object.h"
+#include "object/motion/motion.h"
 
 
 class CInstanceManager;
@@ -77,5 +76,3 @@ protected:
 	FPOINT		m_mousePos;
 };
 
-
-#endif //_MOTIONTOTO_H_

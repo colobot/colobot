@@ -16,12 +16,11 @@
 
 // taskshield.h
 
-#ifndef _TASKSHIELD_H_
-#define	_TASKSHIELD_H_
+#pragma once
 
 
-#include "misc.h"
-#include "d3dengine.h"
+#include "common/misc.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -90,5 +89,3 @@ protected:
 	int				m_effectLight;
 };
 
-
-#endif //_TASKSHIELD_H_

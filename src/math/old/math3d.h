@@ -16,8 +16,7 @@
 
 // math3d.h
 
-#ifndef _MATH3D_H_
-#define	_MATH3D_H_
+#pragma once
 
 
 #define STRICT
@@ -103,4 +102,4 @@ D3DCOLORVALUE RetColor(D3DCOLOR intensity);
 void			RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest);
 void			HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest);
 
-#endif //_MATH3D_H_
+

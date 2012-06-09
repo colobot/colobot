@@ -16,11 +16,10 @@
 
 // taskgungoal.h
 
-#ifndef _TASKGUNGOAL_H_
-#define	_TASKGUNGOAL_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -53,5 +52,3 @@ protected:
 	float		m_finalDirH;	// direction to reach
 };
 
-
-#endif //_TASKGUNGOAL_H_

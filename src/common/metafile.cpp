@@ -22,8 +22,8 @@
 #include <windows.h>
 #include <stdio.h>
 
-#include "language.h"
-#include "metafile.h"
+#include "common/language.h"
+#include "common/metafile.h"
 
 
 

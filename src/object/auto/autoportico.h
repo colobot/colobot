@@ -16,12 +16,11 @@
 
 // autoportico.h
 
-#ifndef _AUTOPORTICO_H_
-#define	_AUTOPORTICO_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -77,5 +76,3 @@ protected:
 	int				m_soundChannel;
 };
 
-
-#endif //_AUTOPORTICO_H_

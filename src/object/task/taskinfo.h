@@ -16,11 +16,10 @@
 
 // taskinfo.h
 
-#ifndef _TASKINFO_H_
-#define	_TASKINFO_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -53,5 +52,3 @@ protected:
 	BOOL			m_bError;
 };
 
-
-#endif //_TASKINFO_H_

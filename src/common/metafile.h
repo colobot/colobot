@@ -16,8 +16,7 @@
 
 // metafile.h
 
-#ifndef _METAFILE_H_
-#define	_METAFILE_H_
+#pragma once
 
 
 #include <stdio.h>
@@ -75,4 +74,3 @@ protected:
 };
 
 
-#endif //_METAFILE_H_

@@ -23,13 +23,14 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "event.h"
-#include "misc.h"
-#include "iman.h"
-#include "math3d.h"
-#include "light.h"
+#include "math/const.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/event.h"
+#include "common/misc.h"
+#include "common/iman.h"
+#include "math/old/math3d.h"
+#include "graphics/common/light.h"
 
 
 

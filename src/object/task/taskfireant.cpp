@@ -23,21 +23,21 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "math3d.h"
-#include "event.h"
-#include "misc.h"
-#include "iman.h"
-#include "particule.h"
-#include "terrain.h"
-#include "object.h"
-#include "physics.h"
-#include "brain.h"
-#include "camera.h"
-#include "motion.h"
-#include "motionant.h"
-#include "task.h"
-#include "taskfireant.h"
+#include "common/struct.h"
+#include "math/old/math3d.h"
+#include "common/event.h"
+#include "common/misc.h"
+#include "common/iman.h"
+#include "graphics/common/particule.h"
+#include "graphics/common/terrain.h"
+#include "object/object.h"
+#include "physics/physics.h"
+#include "object/brain.h"
+#include "graphics/common/camera.h"
+#include "object/motion/motion.h"
+#include "object/motion/motionant.h"
+#include "object/task/task.h"
+#include "object/task/taskfireant.h"
 
 
 

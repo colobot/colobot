@@ -16,12 +16,11 @@
 
 // edit.h
 
-#ifndef _EDIT_H_
-#define	_EDIT_H_
+#pragma once
 
 
-#include "struct.h"
-#include "control.h"
+#include "common/struct.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -252,4 +251,3 @@ protected:
 };
 
 
-#endif //_EDIT_H_

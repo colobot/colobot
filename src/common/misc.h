@@ -16,14 +16,14 @@
 
 // misc.h
 
-#ifndef _MISC_H_
-#define	_MISC_H_
+#pragma once
+
 
 #include <time.h>
 
 
-#include "metafile.h"
-#include "event.h"
+#include "common/metafile.h"
+#include "common/event.h"
 
 
 extern CMetaFile	g_metafile;
@@ -236,5 +236,3 @@ extern void UserDir(char* buffer, char* dir, char* def);
 extern char RetLanguageLetter();
 
 
-
-#endif //_MISC_H_

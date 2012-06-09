@@ -16,12 +16,11 @@
 
 // taskgoto.h
 
-#ifndef _TASKGOTO_H_
-#define	_TASKGOTO_H_
+#pragma once
 
 
-#include "misc.h"
-#include "d3dengine.h"
+#include "common/misc.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -163,5 +162,3 @@ protected:
 	BOOL			m_bLeakRecede;
 };
 
-
-#endif //_TASKGOTO_H_

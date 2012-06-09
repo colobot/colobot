@@ -16,13 +16,12 @@
 
 // map.h
 
-#ifndef _MAP_H_
-#define	_MAP_H_
+#pragma once
 
 
-#include "control.h"
-#include "struct.h"
-#include "object.h"
+#include "ui/control.h"
+#include "common/struct.h"
+#include "object/object.h"
 
 
 class CD3DEngine;
@@ -138,4 +137,3 @@ protected:
 };
 
 
-#endif //_MAP_H_

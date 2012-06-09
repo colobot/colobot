@@ -16,13 +16,12 @@
 
 // control.h
 
-#ifndef _CONTROL_H_
-#define	_CONTROL_H_
+#pragma once
 
 
-#include "text.h"
-#include "struct.h"
-#include "event.h"
+#include "graphics/common/text.h"
+#include "common/struct.h"
+#include "common/event.h"
 
 
 class CInstanceManager;
@@ -134,4 +133,3 @@ protected:
 };
 
 
-#endif //_CONTROL_H_

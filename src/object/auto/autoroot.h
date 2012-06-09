@@ -16,12 +16,11 @@
 
 // autoroot.h
 
-#ifndef _AUTOROOT_H_
-#define	_AUTOROOT_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -52,5 +51,3 @@ protected:
 	D3DVECTOR		m_center;
 };
 
-
-#endif //_AUTOROOT_H_

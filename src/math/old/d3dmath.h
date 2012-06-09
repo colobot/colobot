@@ -21,8 +21,9 @@
 //
 // Copyright (c) 1997-1999 Microsoft Corporation. All rights reserved
 //-----------------------------------------------------------------------------
-#ifndef D3DMATH_H
-#define D3DMATH_H
+
+#pragma once
+
 #include <ddraw.h>
 #include <d3d.h>
 
@@ -94,4 +95,3 @@ VOID D3DMath_QuaternionSlerp( FLOAT& Qx, FLOAT& Qy, FLOAT& Qz, FLOAT& Qw,
                               FLOAT fAlpha );
 
 
-#endif // D3DMATH_H

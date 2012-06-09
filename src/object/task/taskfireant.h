@@ -16,11 +16,10 @@
 
 // taskfireant.h
 
-#ifndef _TASKFIREANT_H_
-#define	_TASKTIREANT_H_
+#pragma once
 
 
-#include "d3dengine.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -68,5 +67,3 @@ protected:
 	float		m_lastParticule;
 };
 
-
-#endif //_TASKFIREANT_H_

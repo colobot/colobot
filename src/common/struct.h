@@ -16,8 +16,8 @@
 
 // struct.h
 
-#ifndef _STRUCT_H_
-#define	_STRUCT_H_
+#pragma once
+
 
 #include <d3d.h>
 
@@ -70,4 +70,3 @@ struct ColorHSV
 };
 
 
-#endif //_STRUCT_H_

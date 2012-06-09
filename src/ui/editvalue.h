@@ -16,11 +16,10 @@
 
 // editvalue.h
 
-#ifndef _EDITVALUE_H_
-#define	_EDITVALUE_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 enum EditValueType
@@ -82,4 +81,3 @@ protected:
 };
 
 
-#endif //_EDITVALUE_H_

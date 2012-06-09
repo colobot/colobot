@@ -21,8 +21,9 @@
 //
 // Copyright (c) 1997-1999 Microsoft Corporation. All rights reserved
 //-----------------------------------------------------------------------------
-#ifndef D3DENUM_H
-#define D3DENUM_H
+
+#pragma once
+
 #include <d3d.h>
 
 
@@ -127,10 +128,6 @@ HRESULT D3DEnum_SelectDefaultDevice( D3DEnum_DeviceInfo** pDevice,
 //-----------------------------------------------------------------------------
 HRESULT D3DEnum_UserChangeDevice( D3DEnum_DeviceInfo** ppDevice );
 
-
-
-
-#endif // D3DENUM_H
 
 
 

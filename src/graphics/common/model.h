@@ -16,11 +16,10 @@
 
 // model.h
 
-#ifndef _MODEL_H_
-#define	_MODEL_H_
+#pragma once
 
 
-#include "struct.h"
+#include "common/struct.h"
 
 
 class CInstanceManager;
@@ -133,5 +132,3 @@ protected:
 	float			m_max;
 };
 
-
-#endif //_MODEL_H_

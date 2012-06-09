@@ -16,11 +16,10 @@
 
 // d3dengine.h
 
-#ifndef _D3DENGINE_H_
-#define	_D3DENGINE_H_
+#pragma once
 
 
-#include "struct.h"
+#include "common/struct.h"
 
 
 class CD3DApplication;
@@ -683,4 +682,3 @@ protected:
 };
 
 
-#endif //_D3DENGINE_H_

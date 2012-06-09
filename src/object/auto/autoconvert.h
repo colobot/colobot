@@ -16,12 +16,11 @@
 
 // autoconvert.h
 
-#ifndef _AUTOCONVERT_H_
-#define	_AUTOCONVERT_H_
+#pragma once_
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -78,5 +77,3 @@ protected:
 	int					m_soundChannel;
 };
 
-
-#endif //_AUTOCONVERT_H_

@@ -16,11 +16,10 @@
 
 // motionspider.h
 
-#ifndef _MOTIONSPIDER_H_
-#define	_MOTIONSPIDER_H_
+#pragma once
 
 
-#include "motion.h"
+#include "object/motion/motion.h"
 
 
 class CInstanceManager;
@@ -74,5 +73,3 @@ protected:
 	float		m_lastParticule;
 };
 
-
-#endif //_MOTIONSPIDER_H_

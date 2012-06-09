@@ -16,11 +16,10 @@
 
 // taskwait.h
 
-#ifndef _TASKWAIT_H_
-#define	_TASKWAIT_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -49,5 +48,3 @@ protected:
 	BOOL		m_bEnded;
 };
 
-
-#endif //_TASKWAIT_H_

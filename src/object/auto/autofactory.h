@@ -16,11 +16,10 @@
 
 // autofactory.h
 
-#ifndef _AUTOFACTORY_H_
-#define	_AUTOFACTORY_H_
+#pragma once
 
 
-#include "auto.h"
+#include "object/auto/auto.h"
 
 
 class CInstanceManager;
@@ -81,5 +80,3 @@ protected:
 	int					m_channelSound;
 };
 
-
-#endif //_AUTOFACTORY_H_

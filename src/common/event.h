@@ -16,11 +16,10 @@
 
 // event.h
 
-#ifndef _EVENT_H_
-#define	_EVENT_H_
+#pragma once
 
 
-#include "struct.h"
+#include "common/struct.h"
 
 
 #if !defined (WM_XBUTTONDOWN)
@@ -633,4 +632,3 @@ protected:
 };
 
 
-#endif //_EVENT_H_

@@ -16,11 +16,10 @@
 
 // key.h
 
-#ifndef _KEY_H_
-#define	_KEY_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -51,4 +50,3 @@ protected:
 };
 
 
-#endif //_KEY_H_

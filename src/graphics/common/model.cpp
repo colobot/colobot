@@ -23,21 +23,21 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "d3dmath.h"
-#include "event.h"
-#include "misc.h"
-#include "iman.h"
-#include "math3d.h"
-#include "water.h"
-#include "robotmain.h"
-#include "interface.h"
-#include "edit.h"
-#include "button.h"
-#include "cmdtoken.h"
-#include "modfile.h"
-#include "model.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "math/old/d3dmath.h"
+#include "common/event.h"
+#include "common/misc.h"
+#include "common/iman.h"
+#include "math/old/math3d.h"
+#include "graphics/common/water.h"
+#include "object/robotmain.h"
+#include "ui/interface.h"
+#include "ui/edit.h"
+#include "ui/button.h"
+#include "script/cmdtoken.h"
+#include "common/modfile.h"
+#include "graphics/common/model.h"
 
 
 

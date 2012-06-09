@@ -16,21 +16,20 @@
 
 // d3dapp.h
 
+#pragma once
 
-#ifndef  _D3DAPP_H
-#define  _D3DAPP_H
 
 #define  D3D_OVERLOADS
 
 #include <d3d.h>
 
-#include "d3dengine.h"
-#include "d3dframe.h"
-#include "d3denum.h"
-#include "d3dutil.h"
-#include "d3dres.h"
-#include "misc.h"
-#include "struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "graphics/d3d/d3dframe.h"
+#include "graphics/d3d/d3denum.h"
+#include "graphics/d3d/d3dutil.h"
+#include "old/d3dres.h"
+#include "common/misc.h"
+#include "common/struct.h"
 
 
 class CInstanceManager;
@@ -165,4 +164,3 @@ public:
 };
 
 
-#endif // _D3DAPP_H

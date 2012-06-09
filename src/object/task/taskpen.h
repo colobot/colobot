@@ -16,11 +16,10 @@
 
 // taskpen.h
 
-#ifndef _TASKSPEN_H_
-#define	_TASKSPEN_H_
+#pragma once
 
 
-#include "d3dengine.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -73,5 +72,3 @@ protected:
 	float			m_timeDown;
 };
 
-
-#endif //_TASKSPEN_H_

@@ -16,12 +16,13 @@
 
 // color.h
 
+#pragma once
+
+
 // TODO
 struct Color
 {
 };
-
-#pragma once
 
 D3DCOLOR    RetColor(float intensity);
 D3DCOLOR    RetColor(D3DCOLORVALUE intensity);
@@ -29,3 +30,4 @@ D3DCOLORVALUE RetColor(D3DCOLOR intensity);
 
 void      RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest);
 void      HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest);
+

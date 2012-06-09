@@ -16,11 +16,10 @@
 
 // gauge.h
 
-#ifndef _GAUGE_H_
-#define	_GAUGE_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -49,4 +48,3 @@ protected:
 };
 
 
-#endif //_GAUGE_H_

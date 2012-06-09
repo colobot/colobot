@@ -16,12 +16,11 @@
 
 // autonuclear.h
 
-#ifndef _AUTONUCLEAR_H_
-#define	_AUTONUCLEAR_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -76,5 +75,3 @@ protected:
 	int					m_channelSound;
 };
 
-
-#endif //_AUTONUCLEAR_H_

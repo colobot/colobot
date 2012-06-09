@@ -16,12 +16,11 @@
 
 // autoenergy.h
 
-#ifndef _AUTOENERGY_H_
-#define	_AUTOENERGY_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -79,5 +78,3 @@ protected:
 	int					m_partiSphere;
 };
 
-
-#endif //_AUTOENERGY_H_

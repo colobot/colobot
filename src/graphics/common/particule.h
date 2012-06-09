@@ -16,12 +16,11 @@
 
 // particule.h
 
-#ifndef _PARTICULE_H_
-#define	_PARTICULE_H_
+#pragma once
 
 
-#include "d3dengine.h"
-#include "sound.h"
+#include "graphics/d3d/d3dengine.h"
+#include "sound/sound.h"
 
 
 class CInstanceManager;
@@ -335,5 +334,3 @@ protected:
 	float		m_absTime;
 };
 
-
-#endif //_PARTICULE_H_

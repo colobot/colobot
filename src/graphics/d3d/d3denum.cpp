@@ -25,9 +25,9 @@
 #include <windowsx.h>
 #include <stdio.h>
 #include <tchar.h>
-#include "d3denum.h"
-#include "d3dutil.h" // For DEBUG_MSG
-#include "d3dres.h"  // For dialog controls
+#include "graphics/d3d/d3denum.h"
+#include "graphics/d3d/d3dutil.h" // For DEBUG_MSG
+#include "old/d3dres.h"  // For dialog controls
 
 
 

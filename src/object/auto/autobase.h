@@ -16,12 +16,11 @@
 
 // autobase.h
 
-#ifndef _AUTOBASE_H_
-#define	_AUTOBASE_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -118,5 +117,3 @@ protected:
 	D3DCOLOR		m_bgCloudDown;
 };
 
-
-#endif //_AUTOBASE_H_

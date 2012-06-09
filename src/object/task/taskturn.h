@@ -16,11 +16,10 @@
 
 // taskturn.h
 
-#ifndef _TASKTURN_H_
-#define	_TASKTURN_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -51,5 +50,3 @@ protected:
 	BOOL		m_bError;
 };
 
-
-#endif //_TASKTURN_H_

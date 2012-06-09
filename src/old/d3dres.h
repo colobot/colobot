@@ -23,9 +23,8 @@
 //
 // Copyright (c) 1999 Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
-#ifndef D3DRES_H
-#define D3DRES_H
 
+#pragma once
 
 #define IDI_MAIN_ICON          101 // Application icon
 #define IDR_MAIN_ACCEL         113 // Keyboard accelerator
@@ -54,6 +53,3 @@
 #define IDM_EXIT             40006 // Command to exit the application
 
 
-
-
-#endif // D3DRES_H

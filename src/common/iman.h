@@ -16,11 +16,10 @@
 
 // iman.h
 
-#ifndef _IMAN_H_
-#define	_IMAN_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 
@@ -55,4 +54,3 @@ protected:
 };
 
 
-#endif //_IMAN_H_

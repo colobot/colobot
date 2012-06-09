@@ -16,6 +16,9 @@
 
 // language.h
 
+#pragma once
+
+
 #define _FULL			TRUE		// CoLoBoT
 #define _SCHOOL			FALSE		// CeeBot-A or Teen
   #define _TEEN			FALSE		// FALSE for CeeBot-A, TRUE for CeeBot-Teen

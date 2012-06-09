@@ -16,11 +16,10 @@
 
 // image.h
 
-#ifndef _IMAGE_H_
-#define	_IMAGE_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -49,4 +48,3 @@ protected:
 };
 
 
-#endif //_IMAGE_H_

@@ -16,12 +16,11 @@
 
 // motionhuman.h
 
-#ifndef _MOTIONHUMAN_H_
-#define	_MOTIONHUMAN_H_
+#pragma once
 
 
-#include "motion.h"
-#include "misc.h"
+#include "common/misc.h"
+#include "object/motion/motion.h"
 
 
 class CInstanceManager;
@@ -98,5 +97,3 @@ protected:
 	BOOL		m_bDisplayPerso;
 };
 
-
-#endif //_MOTIONHUMAN_H_

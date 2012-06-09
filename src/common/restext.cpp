@@ -18,14 +18,14 @@
 #define D3D_OVERLOADS
 
 #include <stdio.h>
-#include "struct.h"
-#include "d3dengine.h"
-#include "language.h"
-#include "misc.h"
-#include "event.h"
-#include "object.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/language.h"
+#include "common/misc.h"
+#include "common/event.h"
+#include "object/object.h"
 #include "CBot/resource.h"
-#include "restext.h"
+#include "common/restext.h"
 
 
 

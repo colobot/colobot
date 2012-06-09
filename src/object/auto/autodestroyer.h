@@ -16,11 +16,10 @@
 
 // autodestroyer.h
 
-#ifndef _AUTODESTROYER_H_
-#define	_AUTODESTROYER_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -72,5 +71,3 @@ protected:
 	BOOL			m_bExplo;
 };
 
-
-#endif //_AUTODESTROYER_H_

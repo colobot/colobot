@@ -16,12 +16,11 @@
 
 // autonest.h
 
-#ifndef _AUTONEST_H_
-#define	_AUTONEST_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -69,5 +68,3 @@ protected:
 	D3DVECTOR		m_fretPos;
 };
 
-
-#endif //_AUTONEST_H_

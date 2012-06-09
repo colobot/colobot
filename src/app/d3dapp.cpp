@@ -26,19 +26,19 @@
 #include <zmouse.h>
 #include <dinput.h>
 
-#include "struct.h"
-#include "d3dtextr.h"
-#include "d3dengine.h"
-#include "language.h"
-#include "event.h"
-#include "profile.h"
-#include "iman.h"
-#include "restext.h"
-#include "math3d.h"
-#include "joystick.h"
-#include "robotmain.h"
-#include "sound.h"
-#include "d3dapp.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dtextr.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/language.h"
+#include "common/event.h"
+#include "common/profile.h"
+#include "common/iman.h"
+#include "common/restext.h"
+#include "math/old/math3d.h"
+#include "app/joystick.h"
+#include "object/robotmain.h"
+#include "sound/sound.h"
+#include "app/d3dapp.h"
 
 // fix for "MSH_MOUSEWHEEL undefined" error
 #ifdef UNICODE

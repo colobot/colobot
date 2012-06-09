@@ -16,12 +16,11 @@
 
 // displayinfo.h
 
-#ifndef _DISPLAYINFO_H_
-#define	_DISPLAYINFO_H_
+#pragma once
 
 
-#include "struct.h"
-#include "camera.h"
+#include "common/struct.h"
+#include "graphics/common/camera.h"
 
 
 class CInstanceManager;
@@ -89,4 +88,3 @@ protected:
 };
 
 
-#endif //_DISPLAYINFO_H_

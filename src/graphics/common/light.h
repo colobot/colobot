@@ -16,11 +16,10 @@
 
 // light.h
 
-#ifndef _LIGHT_H_
-#define	_LIGHT_H_
+#pragma once
 
 
-#include "d3dengine.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -109,5 +108,3 @@ protected:
 	Light*			m_lightTable;
 };
 
-
-#endif //_LIGHT_H_

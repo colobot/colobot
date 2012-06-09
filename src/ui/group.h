@@ -16,11 +16,10 @@
 
 // group.h
 
-#ifndef _GROUP_H_
-#define	_GROUP_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -45,4 +44,3 @@ protected:
 };
 
 
-#endif //_GROUP_H_

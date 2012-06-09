@@ -14,7 +14,7 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// D3DEngine.cpp
+// d3dengine.cpp
 
 #define STRICT
 #define D3D_OVERLOADS
@@ -22,28 +22,28 @@
 #include <stdio.h>
 #include <math.h>
 
-#include "struct.h"
-#include "d3dapp.h"
-#include "d3dtextr.h"
-#include "d3dutil.h"
-#include "d3dmath.h"
-#include "d3dengine.h"
-#include "language.h"
-#include "iman.h"
-#include "event.h"
-#include "profile.h"
-#include "math3d.h"
-#include "object.h"
-#include "interface.h"
-#include "light.h"
-#include "text.h"
-#include "particule.h"
-#include "terrain.h"
-#include "water.h"
-#include "cloud.h"
-#include "blitz.h"
-#include "planet.h"
-#include "sound.h"
+#include "common/struct.h"
+#include "app/d3dapp.h"
+#include "graphics/d3d/d3dtextr.h"
+#include "graphics/d3d/d3dutil.h"
+#include "math/old/d3dmath.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/language.h"
+#include "common/iman.h"
+#include "common/event.h"
+#include "common/profile.h"
+#include "math/old/math3d.h"
+#include "object/object.h"
+#include "ui/interface.h"
+#include "graphics/common/light.h"
+#include "graphics/common/text.h"
+#include "graphics/common/particule.h"
+#include "graphics/common/terrain.h"
+#include "graphics/common/water.h"
+#include "graphics/common/cloud.h"
+#include "graphics/common/blitz.h"
+#include "graphics/common/planet.h"
+#include "sound/sound.h"
 
 
 

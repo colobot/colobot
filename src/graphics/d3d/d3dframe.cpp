@@ -25,8 +25,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <tchar.h>
-#include "d3dframe.h"
-#include "d3dutil.h"
+#include "graphics/d3d/d3dframe.h"
+#include "graphics/d3d/d3dutil.h"
 
 
 

@@ -16,11 +16,10 @@
 
 // taskrecover.h
 
-#ifndef _TASKSRECOVER_H_
-#define	_TASKSRECOVER_H_
+#pragma once
 
 
-#include "d3dengine.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -71,5 +70,3 @@ protected:
 	int				m_soundChannel;
 };
 
-
-#endif //_TASKSRECOVER_H_

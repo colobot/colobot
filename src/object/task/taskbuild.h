@@ -16,12 +16,11 @@
 
 // taskbuild.h
 
-#ifndef _TASKBUILD_H_
-#define	_TASKBUILD_H_
+#pragma once
 
 
-#include "misc.h"
-#include "object.h"
+#include "common/misc.h"
+#include "object/object.h"
 
 
 class CInstanceManager;
@@ -89,5 +88,3 @@ protected:
 	int			m_soundChannel;
 };
 
-
-#endif //_TASKBUILD_H_

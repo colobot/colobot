@@ -16,11 +16,10 @@
 
 // taskfire.h
 
-#ifndef _TASKFIRE_H_
-#define	_TASKTIRE_H_
+#pragma once
 
 
-#include "misc.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -57,5 +56,3 @@ protected:
 	int		m_soundChannel;
 };
 
-
-#endif //_TASKFIRE_H_

@@ -16,11 +16,10 @@
 
 // script.h
 
-#ifndef _SCRIPT_H_
-#define	_SCRIPT_H_
+#pragma once
 
 
-#include "event.h"
+#include "common/event.h"
 
 
 class CInstanceManager;
@@ -115,4 +114,3 @@ public:
 };
 
 
-#endif //_SCRIPT_H_

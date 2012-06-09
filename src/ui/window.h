@@ -16,11 +16,10 @@
 
 // window.h
 
-#ifndef _WINDOW_H_
-#define	_WINDOW_H_
+#pragma once
 
 
-#include "control.h"
+#include "ui/control.h"
 
 
 class CD3DEngine;
@@ -145,4 +144,3 @@ protected:
 };
 
 
-#endif //_WINDOW_H_

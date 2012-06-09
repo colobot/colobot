@@ -16,12 +16,11 @@
 
 // autotower.h
 
-#ifndef _AUTOTOWER_H_
-#define	_AUTOTOWER_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -82,5 +81,3 @@ protected:
 	int				m_partiStop[4];
 };
 
-
-#endif //_AUTOTOWER_H_

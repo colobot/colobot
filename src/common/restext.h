@@ -16,16 +16,15 @@
 
 // restext.h
 
-#ifndef _RESTEXT_H_
-#define	_RESTEXT_H_
+#pragma once
 
 
 #define STRICT
 #define D3D_OVERLOADS
 
 
-#include "d3dengine.h"
-#include "event.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/event.h"
 
 
 
@@ -156,4 +155,3 @@ extern BOOL		GetResource(ResType type, int num, char* text);
 extern BOOL		GetResourceBase(ResType type, int num, char* text);
 
 
-#endif //_RESTEXT_H_

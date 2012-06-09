@@ -16,12 +16,11 @@
 
 // water.h
 
-#ifndef _WATER_H_
-#define	_WATER_H_
+#pragma once
 
 
-#include "d3dengine.h"
-#include "particule.h"
+#include "graphics/d3d/d3dengine.h"
+#include "graphics/common/particule.h"
 
 
 class CInstanceManager;
@@ -130,5 +129,3 @@ protected:
 	D3DCOLOR		m_color;
 };
 
-
-#endif //_WATER_H_

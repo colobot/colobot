@@ -16,13 +16,12 @@
 
 // autoegg.h
 
-#ifndef _AUTOEGG_H_
-#define	_AUTOEGG_H_
+#pragma once
 
 
-#include "object.h"
-#include "auto.h"
-#include "misc.h"
+#include "object/object.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -79,5 +78,3 @@ protected:
 	float			m_speed;
 };
 
-
-#endif //_AUTOEGG_H_

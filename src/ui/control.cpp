@@ -21,20 +21,20 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "language.h"
-#include "restext.h"
-#include "math3d.h"
-#include "event.h"
-#include "misc.h"
-#include "robotmain.h"
-#include "particule.h"
-#include "misc.h"
-#include "iman.h"
-#include "text.h"
-#include "sound.h"
-#include "control.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "common/language.h"
+#include "common/restext.h"
+#include "math/old/math3d.h"
+#include "common/event.h"
+#include "common/misc.h"
+#include "object/robotmain.h"
+#include "graphics/common/particule.h"
+#include "common/misc.h"
+#include "common/iman.h"
+#include "graphics/common/text.h"
+#include "sound/sound.h"
+#include "ui/control.h"
 
 
 

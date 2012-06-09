@@ -16,11 +16,10 @@
 
 // motion.h
 
-#ifndef _MOTION_H_
-#define	_MOTION_H_
+#pragma once
 
 
-#include "d3dengine.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -90,5 +89,3 @@ protected:
 	D3DVECTOR		m_inclinaison;		// tilt
 };
 
-
-#endif //_MOTION_H_

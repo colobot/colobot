@@ -23,20 +23,20 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "struct.h"
-#include "d3dengine.h"
-#include "d3dmath.h"
-#include "global.h"
-#include "event.h"
-#include "iman.h"
-#include "interface.h"
-#include "map.h"
-#include "image.h"
-#include "group.h"
-#include "slider.h"
-#include "scroll.h"
-#include "window.h"
-#include "mainmap.h"
+#include "common/struct.h"
+#include "graphics/d3d/d3dengine.h"
+#include "math/old/d3dmath.h"
+#include "common/global.h"
+#include "common/event.h"
+#include "common/iman.h"
+#include "ui/interface.h"
+#include "ui/map.h"
+#include "ui/image.h"
+#include "ui/group.h"
+#include "ui/slider.h"
+#include "ui/scroll.h"
+#include "ui/window.h"
+#include "ui/mainmap.h"
 
 
 

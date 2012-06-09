@@ -23,7 +23,7 @@
 #include <dinput.h>
 #include <stdio.h>
 
-#include "joystick.h"
+#include "app/joystick.h"
 
 
 

@@ -16,11 +16,10 @@
 
 // motionmother.h
 
-#ifndef _MOTIONMOTHER_H_
-#define	_MOTIONMOTHER_H_
+#pragma once
 
 
-#include "motion.h"
+#include "object/motion/motion.h"
 
 
 class CInstanceManager;
@@ -63,5 +62,3 @@ protected:
 	BOOL		m_bArmStop;
 };
 
-
-#endif //_MOTIONMOTHER_H_

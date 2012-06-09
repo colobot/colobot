@@ -16,12 +16,11 @@
 
 // automush.h
 
-#ifndef _AUTOMUSH_H_
-#define	_AUTOMUSH_H_
+#pragma once
 
 
-#include "auto.h"
-#include "misc.h"
+#include "object/auto/auto.h"
+#include "common/misc.h"
 
 
 class CInstanceManager;
@@ -69,5 +68,3 @@ protected:
 	float			m_lastParticule;
 };
 
-
-#endif //_AUTOMUSH_H_
