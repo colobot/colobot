@@ -33,14 +33,14 @@ public:
 	CColor(CInstanceManager* iMan);
 	virtual ~CColor();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	void	Draw();
 
-	void	SetRepeat(BOOL bRepeat);
-	BOOL	RetRepeat();
+	void	SetRepeat(bool bRepeat);
+	bool	RetRepeat();
 
 	void	SetColor(D3DCOLORVALUE color);
 	D3DCOLORVALUE RetColor();
@@ -48,7 +48,7 @@ public:
 protected:
 
 protected:
-	BOOL			m_bRepeat;
+	bool			m_bRepeat;
 	float			m_repeat;
 	D3DCOLORVALUE	m_color;
 };

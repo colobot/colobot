@@ -60,13 +60,12 @@ CAutoDestroyer::CAutoDestroyer(CInstanceManager* iMan, CObject* object)
 
 CAutoDestroyer::~CAutoDestroyer()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoDestroyer::DeleteObject(BOOL bAll)
+void CAutoDestroyer::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -90,7 +89,7 @@ void CAutoDestroyer::Init()
 
 // Management of an event.
 
-BOOL CAutoDestroyer::EventProcess(const Event &event)
+bool CAutoDestroyer::EventProcess(const Event &event)
 {
 	CObject*	scrap;
 	CPyro*		pyro;
@@ -99,8 +98,8 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -111,7 +110,7 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 		{
 			m_timeVirus = 0.1f+Rand()*0.3f;
 		}
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == ADEP_WAIT )
@@ -127,7 +126,7 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 			}
 			else
 			{
-				scrap->SetLock(TRUE);  // usable waste
+				scrap->SetLock(true);  // usable waste
 //?				scrap->SetTruck(m_object);  // usable waste
 
 				if ( SearchVehicle() )
@@ -143,7 +142,7 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 					m_phase    = ADEP_DOWN;
 					m_progress = 0.0f;
 					m_speed    = 1.0f/1.0f;
-					m_bExplo   = FALSE;
+					m_bExplo   = false;
 				}
 			}
 		}
@@ -159,7 +158,7 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 				pyro = new CPyro(m_iMan);
 				pyro->Create(PT_FRAGT, scrap);
 			}
-			m_bExplo = TRUE;
+			m_bExplo = true;
 		}
 
 		if ( m_progress < 1.0f )
@@ -212,13 +211,13 @@ BOOL CAutoDestroyer::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoDestroyer::CreateInterface(BOOL bSelect)
+bool CAutoDestroyer::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -226,10 +225,10 @@ BOOL CAutoDestroyer::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -242,7 +241,7 @@ BOOL CAutoDestroyer::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 106, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -277,7 +276,7 @@ CObject* CAutoDestroyer::SearchPlastic()
 
 // Seeks if one vehicle is too close.
 
-BOOL CAutoDestroyer::SearchVehicle()
+bool CAutoDestroyer::SearchVehicle()
 {
 	CObject*	pObj;
 	D3DVECTOR	cPos, oPos;
@@ -330,10 +329,10 @@ BOOL CAutoDestroyer::SearchVehicle()
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
 		dist = Length(oPos, cPos)-oRadius;
 
-		if ( dist < 20.0f )  return TRUE;
+		if ( dist < 20.0f )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 
@@ -352,11 +351,11 @@ Error CAutoDestroyer::RetError()
 
 // Saves all parameters of the controller.
 
-BOOL CAutoDestroyer::Write(char *line)
+bool CAutoDestroyer::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == ADEP_WAIT )  return FALSE;
+	if ( m_phase == ADEP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -372,14 +371,14 @@ BOOL CAutoDestroyer::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoDestroyer::Read(char *line)
+bool CAutoDestroyer::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -389,7 +388,7 @@ BOOL CAutoDestroyer::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

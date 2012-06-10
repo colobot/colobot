@@ -123,8 +123,8 @@ void CLight::FlushLight()
 
 	for ( i=0 ; i<D3DMAXLIGHT ; i++ )
 	{
-		m_lightTable[i].bUsed = FALSE;
-		m_pD3DDevice->LightEnable(i, FALSE);
+		m_lightTable[i].bUsed = false;
+		m_pD3DDevice->LightEnable(i, false);
 	}
 	m_lightUsed = 0;
 }
@@ -138,11 +138,11 @@ int CLight::CreateLight()
 
 	for ( i=0 ; i<D3DMAXLIGHT ; i++ )
 	{
-		if ( m_lightTable[i].bUsed == FALSE )
+		if ( m_lightTable[i].bUsed == false )
 		{
 			ZeroMemory(&m_lightTable[i], sizeof(Light));
-			m_lightTable[i].bUsed   = TRUE;
-			m_lightTable[i].bEnable = TRUE;
+			m_lightTable[i].bUsed   = true;
+			m_lightTable[i].bEnable = true;
 
 			m_lightTable[i].incluType = TYPENULL;
 			m_lightTable[i].excluType = TYPENULL;
@@ -175,33 +175,33 @@ int CLight::CreateLight()
 
 // Deletes a light.
 
-BOOL CLight::DeleteLight(int lightRank)
+bool CLight::DeleteLight(int lightRank)
 {
 	int		i;
 
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
-	m_lightTable[lightRank].bUsed = FALSE;
-	m_pD3DDevice->LightEnable(lightRank, FALSE);
+	m_lightTable[lightRank].bUsed = false;
+	m_pD3DDevice->LightEnable(lightRank, false);
 
 	m_lightUsed = 0;
 	for ( i=0 ; i<D3DMAXLIGHT ; i++ )
 	{
-		if ( m_lightTable[i].bUsed == TRUE )
+		if ( m_lightTable[i].bUsed == true )
 		{
 			m_lightUsed = i+1;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Specifies a light.
 
-BOOL CLight::SetLight(int lightRank, const D3DLIGHT7 &light)
+bool CLight::SetLight(int lightRank, const D3DLIGHT7 &light)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	m_lightTable[lightRank].light = light;
 
@@ -209,62 +209,62 @@ BOOL CLight::SetLight(int lightRank, const D3DLIGHT7 &light)
 	ProgInit(m_lightTable[lightRank].colorGreen, m_lightTable[lightRank].light.dcvDiffuse.g);
 	ProgInit(m_lightTable[lightRank].colorBlue,  m_lightTable[lightRank].light.dcvDiffuse.b);
 
-	return TRUE;
+	return true;
 }
 
 // Gives the specifications of a light.
 
-BOOL CLight::GetLight(int lightRank, D3DLIGHT7 &light)
+bool CLight::GetLight(int lightRank, D3DLIGHT7 &light)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	light = m_lightTable[lightRank].light;
-	return TRUE;
+	return true;
 }
 
 
 // Lights up or put out a light.
 
-BOOL CLight::LightEnable(int lightRank, BOOL bEnable)
+bool CLight::LightEnable(int lightRank, bool bEnable)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	m_lightTable[lightRank].bEnable = bEnable;
-	return TRUE;
+	return true;
 }
 
 
 // Specifies the type (TYPE *) items included in this light.
 // This light does not light up so that this type of objects.
 
-BOOL CLight::SetLightIncluType(int lightRank, D3DTypeObj type)
+bool CLight::SetLightIncluType(int lightRank, D3DTypeObj type)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	m_lightTable[lightRank].incluType = type;
-	return TRUE;
+	return true;
 }
 
 // Specifies the type (TYPE *) items excluded by this light.
 // This light does not illuminate then ever these objects.
 
-BOOL CLight::SetLightExcluType(int lightRank, D3DTypeObj type)
+bool CLight::SetLightExcluType(int lightRank, D3DTypeObj type)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	m_lightTable[lightRank].excluType = type;
-	return TRUE;
+	return true;
 }
 
 
 // Management of the position of the light.
 
-BOOL CLight::SetLightPos(int lightRank, D3DVECTOR pos)
+bool CLight::SetLightPos(int lightRank, D3DVECTOR pos)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	m_lightTable[lightRank].light.dvPosition = pos;
-	return TRUE;
+	return true;
 }
 
 D3DVECTOR CLight::RetLightPos(int lightRank)
@@ -277,12 +277,12 @@ D3DVECTOR CLight::RetLightPos(int lightRank)
 
 // Management direction of the light.
 
-BOOL CLight::SetLightDir(int lightRank, D3DVECTOR dir)
+bool CLight::SetLightDir(int lightRank, D3DVECTOR dir)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	m_lightTable[lightRank].light.dvDirection = dir;
-	return TRUE;
+	return true;
 }
 
 D3DVECTOR CLight::RetLightDir(int lightRank)
@@ -295,22 +295,22 @@ D3DVECTOR CLight::RetLightDir(int lightRank)
 
 // Specifies the rate of change.
 
-BOOL CLight::SetLightIntensitySpeed(int lightRank, float speed)
+bool CLight::SetLightIntensitySpeed(int lightRank, float speed)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	m_lightTable[lightRank].intensity.speed = speed;
-	return TRUE;
+	return true;
 }
 
 // Management of the intensity of light.
 
-BOOL CLight::SetLightIntensity(int lightRank, float value)
+bool CLight::SetLightIntensity(int lightRank, float value)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	ProgSet(m_lightTable[lightRank].intensity, value);
-	return TRUE;
+	return true;
 }
 
 float CLight::RetLightIntensity(int lightRank)
@@ -323,26 +323,26 @@ float CLight::RetLightIntensity(int lightRank)
 
 // Specifies the rate of change.
 
-BOOL CLight::SetLightColorSpeed(int lightRank, float speed)
+bool CLight::SetLightColorSpeed(int lightRank, float speed)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	m_lightTable[lightRank].colorRed.speed   = speed;
 	m_lightTable[lightRank].colorGreen.speed = speed;
 	m_lightTable[lightRank].colorBlue.speed  = speed;
-	return TRUE;
+	return true;
 }
 
 // Color management for light.
 
-BOOL CLight::SetLightColor(int lightRank, D3DCOLORVALUE color)
+bool CLight::SetLightColor(int lightRank, D3DCOLORVALUE color)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return FALSE;
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
 	ProgSet(m_lightTable[lightRank].colorRed,   color.r);
 	ProgSet(m_lightTable[lightRank].colorGreen, color.g);
 	ProgSet(m_lightTable[lightRank].colorBlue,  color.b);
-	return TRUE;
+	return true;
 }
 
 D3DCOLORVALUE CLight::RetLightColor(int lightRank)
@@ -374,7 +374,7 @@ void CLight::AdaptLightColor(D3DCOLORVALUE color, float factor)
 
 	for ( i=0 ; i<m_lightUsed ; i++ )
 	{
-		if ( m_lightTable[i].bUsed == FALSE )  continue;
+		if ( m_lightTable[i].bUsed == false )  continue;
 
 		value.r = m_lightTable[i].colorRed.current;
 		value.g = m_lightTable[i].colorGreen.current;
@@ -408,7 +408,7 @@ void CLight::FrameLight(float rTime)
 
 	for ( i=0 ; i<m_lightUsed ; i++ )
 	{
-		if ( m_lightTable[i].bUsed == FALSE )  continue;
+		if ( m_lightTable[i].bUsed == false )  continue;
 
 		ProgFrame(m_lightTable[i].intensity,  rTime);
 		ProgFrame(m_lightTable[i].colorRed,   rTime);
@@ -438,16 +438,16 @@ void CLight::FrameLight(float rTime)
 
 void CLight::LightUpdate()
 {
-	BOOL	bEnable;
+	bool	bEnable;
 	float	value;
 	int		i;
 
 	for ( i=0 ; i<m_lightUsed ; i++ )
 	{
-		if ( m_lightTable[i].bUsed == FALSE )  continue;
+		if ( m_lightTable[i].bUsed == false )  continue;
 
 		bEnable = m_lightTable[i].bEnable;
-		if ( m_lightTable[i].intensity.current == 0.0f )  bEnable = FALSE;
+		if ( m_lightTable[i].intensity.current == 0.0f )  bEnable = false;
 
 		if ( bEnable )
 		{
@@ -478,13 +478,13 @@ void CLight::LightUpdate()
 
 void CLight::LightUpdate(D3DTypeObj type)
 {
-	BOOL	bEnable;
+	bool	bEnable;
 	int		i;
 
 	for ( i=0 ; i<m_lightUsed ; i++ )
 	{
-		if ( m_lightTable[i].bUsed == FALSE )  continue;
-		if ( m_lightTable[i].bEnable == FALSE )  continue;
+		if ( m_lightTable[i].bUsed == false )  continue;
+		if ( m_lightTable[i].bEnable == false )  continue;
 		if ( m_lightTable[i].intensity.current == 0.0f )  continue;
 
 		if ( m_lightTable[i].incluType != TYPENULL )

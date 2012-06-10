@@ -38,8 +38,8 @@
 CD3DFramework7::CD3DFramework7()
 {
      m_hWnd           = NULL;
-     m_bIsFullscreen  = FALSE;
-     m_bIsStereo      = FALSE;
+     m_bIsFullscreen  = false;
+     m_bIsStereo      = false;
      m_dwRenderWidth  = 0L;
      m_dwRenderHeight = 0L;
      
@@ -131,13 +131,13 @@ HRESULT CD3DFramework7::Initialize( HWND hWnd, GUID* pDriverGUID,
 
     // Setup state for windowed/fullscreen mode
     m_hWnd          = hWnd;
-	m_bIsStereo     = FALSE;
-    m_bIsFullscreen = ( dwFlags & D3DFW_FULLSCREEN ) ? TRUE : FALSE;
+	m_bIsStereo     = false;
+    m_bIsFullscreen = ( dwFlags & D3DFW_FULLSCREEN ) ? true : false;
 
     // Support stereoscopic viewing for fullscreen modes which support it
 	if( ( dwFlags & D3DFW_STEREO ) && ( dwFlags & D3DFW_FULLSCREEN ) )
 		if( pMode->ddsCaps.dwCaps2 & DDSCAPS2_STEREOSURFACELEFT )
-			m_bIsStereo = TRUE;
+			m_bIsStereo = true;
 
     // Create the D3D rendering environment (surfaces, device, viewport, etc.)
     if( FAILED( hr = CreateEnvironment( pDriverGUID, pDeviceGUID, pMode,
@@ -561,7 +561,7 @@ HRESULT CD3DFramework7::RestoreSurfaces()
 //-----------------------------------------------------------------------------
 VOID CD3DFramework7::Move( INT x, INT y )
 {
-    if( TRUE == m_bIsFullscreen )
+    if( true == m_bIsFullscreen )
         return;
 
     SetRect( &m_rcScreenRect, x, y, x + m_dwRenderWidth, y + m_dwRenderHeight );
@@ -575,7 +575,7 @@ VOID CD3DFramework7::Move( INT x, INT y )
 // Desc: Puts the GDI surface in front of the primary, so that dialog
 //       boxes and other windows drawing funcs may happen.
 //-----------------------------------------------------------------------------
-HRESULT CD3DFramework7::FlipToGDISurface( BOOL bDrawFrame )
+HRESULT CD3DFramework7::FlipToGDISurface( bool bDrawFrame )
 {
     if( m_pDD && m_bIsFullscreen )
     {

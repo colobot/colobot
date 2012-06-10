@@ -138,8 +138,8 @@ CMetaFile::CMetaFile()
 		m_list[i].headers = 0;
 	}
 
-	m_bMeta  = FALSE;
-	m_bOpen  = FALSE;
+	m_bMeta  = false;
+	m_bOpen  = false;
 	m_start  = 0;
 	m_pos    = 0;
 	m_len    = 0;
@@ -156,7 +156,7 @@ CMetaFile::~CMetaFile()
 
 // Test if a file exists.
 
-BOOL CMetaFile::IsExist(char *metaname, char *filename)
+bool CMetaFile::IsExist(char *metaname, char *filename)
 {
 	FILE*	file;
 	int		index, i;
@@ -164,9 +164,9 @@ BOOL CMetaFile::IsExist(char *metaname, char *filename)
 	if ( metaname[0] == 0 )
 	{
 		file = fopen(filename, "rb");
-		if ( file == NULL )  return FALSE;
+		if ( file == NULL )  return false;
 		fclose(file);
-		return TRUE;
+		return true;
 	}
 	else
 	{
@@ -177,10 +177,10 @@ BOOL CMetaFile::IsExist(char *metaname, char *filename)
 		{
 			if ( strcmp(m_list[index].headers[i].name, filename) == 0 )
 			{
-				return TRUE;
+				return true;
 			}
 		}
-		return FALSE;
+		return false;
 	}
 }
 
@@ -199,8 +199,8 @@ int CMetaFile::Open(char *metaname, char *filename)
 	{
 		m_stream = fopen(filename, "rb");
 		if ( m_stream == 0 )  return 1;
-		m_bOpen = TRUE;
-		m_bMeta = FALSE;
+		m_bOpen = true;
+		m_bMeta = false;
 		return 0;
 	}
 	else
@@ -215,8 +215,8 @@ int CMetaFile::Open(char *metaname, char *filename)
 				m_stream = m_list[index].stream;
 				m_start  = m_list[index].headers[i].start;
 				m_len    = m_list[index].headers[i].len;
-				m_bOpen = TRUE;
-				m_bMeta = TRUE;
+				m_bOpen = true;
+				m_bMeta = true;
 				Seek(0);
 				return 0;
 			}
@@ -328,7 +328,7 @@ int CMetaFile::Close()
 	{
 		fclose(m_stream);
 	}
-	m_bOpen = FALSE;
+	m_bOpen = false;
 	m_stream = 0;
 
 	return 0;

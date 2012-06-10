@@ -55,7 +55,7 @@ CImage::~CImage()
 
 // Creates a new button.
 
-BOOL CImage::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CImage::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -72,7 +72,7 @@ BOOL CImage::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 		SetName(name);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -96,9 +96,9 @@ char* CImage::RetFilenameImage()
 
 // Management of an event.
 
-BOOL CImage::EventProcess(const Event &event)
+bool CImage::EventProcess(const Event &event)
 {
-	return TRUE;
+	return true;
 }
 
 

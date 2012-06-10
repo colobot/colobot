@@ -66,7 +66,7 @@ CKey::CKey(CInstanceManager* iMan) : CControl(iMan)
 {
 	m_key[0] = 0;
 	m_key[1] = 0;
-	m_bCatch = FALSE;
+	m_bCatch = false;
 }
 
 // Object's destructor.
@@ -78,7 +78,7 @@ CKey::~CKey()
 
 // Creates a new button.
 
-BOOL CKey::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CKey::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	char	name[100];
 	char*	p;
@@ -92,15 +92,15 @@ BOOL CKey::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	if ( p != 0 )  *p = 0;
 	SetName(name);
 
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CKey::EventProcess(const Event &event)
+bool CKey::EventProcess(const Event &event)
 {
-	if ( m_state & STATE_DEAD )  return TRUE;
+	if ( m_state & STATE_DEAD )  return true;
 
 	CControl::EventProcess(event);
 
@@ -108,17 +108,17 @@ BOOL CKey::EventProcess(const Event &event)
 	{
 		if ( Detect(event.pos) )
 		{
-			m_bCatch = TRUE;
+			m_bCatch = true;
 		}
 		else
 		{
-			m_bCatch = FALSE;
+			m_bCatch = false;
 		}
 	}
 
 	if ( event.event == EVENT_KEYDOWN && m_bCatch )
 	{
-		m_bCatch = FALSE;
+		m_bCatch = false;
 
 		if ( TestKey(event.param) )  // impossible ?
 		{
@@ -143,21 +143,21 @@ BOOL CKey::EventProcess(const Event &event)
 			newEvent.event = m_eventMsg;
 			m_event->AddEvent(newEvent);
 		}
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Seeks when a key is already used.
 
-BOOL CKey::TestKey(int key)
+bool CKey::TestKey(int key)
 {
 	int		i, j;
 
 	if ( key == VK_PAUSE    ||
-		 key == VK_SNAPSHOT )  return TRUE;  // blocked key
+		 key == VK_SNAPSHOT )  return true;  // blocked key
 
 	for ( i=0 ; i<20 ; i++ )
 	{
@@ -176,7 +176,7 @@ BOOL CKey::TestKey(int key)
 		}
 	}
 
-	return FALSE;  // not used
+	return false;  // not used
 }
 
 

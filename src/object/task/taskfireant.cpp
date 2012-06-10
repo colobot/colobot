@@ -47,8 +47,6 @@
 CTaskFireAnt::CTaskFireAnt(CInstanceManager* iMan, CObject* object)
 						   : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
-
 	m_phase = TFA_NULL;
 }
 
@@ -61,19 +59,19 @@ CTaskFireAnt::~CTaskFireAnt()
 
 // Management of an event.
 
-BOOL CTaskFireAnt::EventProcess(const Event &event)
+bool CTaskFireAnt::EventProcess(const Event &event)
 {
 	D3DVECTOR	dir, vib;
 	float		a, g, cirSpeed;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	if ( m_object->RetFixed() )  // insect on its back?
 	{
-		m_bError = TRUE;
-		return FALSE;
+		m_bError = true;
+		return false;
 	}
 
 	m_time += event.rTime;
@@ -90,7 +88,7 @@ BOOL CTaskFireAnt::EventProcess(const Event &event)
 		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left/right
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -103,7 +101,7 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 
 	m_impact = impact;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 	if ( !m_physics->RetLand() )  return ERR_FIRE_VEH;
 
 	type = m_object->RetType();
@@ -122,8 +120,8 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 	m_progress = 0.0f;
 	m_time = 0.0f;
 	m_lastParticule = 0.0f;
-	m_bError = FALSE;  // ok
-	m_bFire = FALSE;  // once!
+	m_bError = false;  // ok
+	m_bFire = false;  // once!
 
 	return ERR_OK;
 }
@@ -174,7 +172,7 @@ Error CTaskFireAnt::IsEnded()
 	{
 		if ( m_progress > 0.75f && !m_bFire )
 		{
-			m_bFire = TRUE;  // once
+			m_bFire = true;  // once
 
 			for ( i=0 ; i<20 ; i++ )
 			{
@@ -219,9 +217,9 @@ Error CTaskFireAnt::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskFireAnt::Abort()
+bool CTaskFireAnt::Abort()
 {
 	m_motion->SetAction(-1);
-	return TRUE;
+	return true;
 }
 

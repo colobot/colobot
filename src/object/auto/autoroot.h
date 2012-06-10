@@ -38,10 +38,10 @@ public:
 	CAutoRoot(CInstanceManager* iMan, CObject* object);
 	~CAutoRoot();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 
 protected:

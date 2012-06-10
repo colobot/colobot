@@ -48,18 +48,18 @@ CCompass::~CCompass()
 
 // Creates a new button.
 
-BOOL CCompass::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CCompass::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
 	CControl::Create(pos, dim, icon, eventMsg);
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CCompass::EventProcess(const Event &event)
+bool CCompass::EventProcess(const Event &event)
 {
 	CControl::EventProcess(event);
 
@@ -70,11 +70,11 @@ BOOL CCompass::EventProcess(const Event &event)
 			Event newEvent = event;
 			newEvent.event = m_eventMsg;
 			m_event->AddEvent(newEvent);
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 

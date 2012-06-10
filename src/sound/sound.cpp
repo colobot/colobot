@@ -193,10 +193,10 @@ void InitMidiVolume(int volume)
 
 // Changes the volume of audio CD.
 // The volume is between 0 and 20!
-// Crashing in Vista. The current craft (if _SOUNDTRACKS = TRUE) no longer crashes,
+// Crashing in Vista. The current craft (if _SOUNDTRACKS = true) no longer crashes,
 // but this is not the correct volume which is modified!
 
-BOOL InitAudioTrackVolume(int volume)
+bool InitAudioTrackVolume(int volume)
 {
 #if _SOUNDTRACKS
 	MMRESULT rc;			  // Return code.
@@ -215,7 +215,7 @@ BOOL InitAudioTrackVolume(int volume)
 	rc = mixerOpen(&hMixer, 0,0,0,0);
 	if ( rc != MMSYSERR_NOERROR )
 	{
-		return FALSE;  // Couldn't open the mixer.
+		return false;  // Couldn't open the mixer.
 	}
 
 	// Initialize MIXERLINE structure.
@@ -231,7 +231,7 @@ BOOL InitAudioTrackVolume(int volume)
 						   MIXER_GETLINEINFOF_COMPONENTTYPE);
 	if ( rc != MMSYSERR_NOERROR )
 	{
-		return FALSE;  // Couldn't get the mixer line.
+		return false;  // Couldn't get the mixer line.
 	}
 
 	// Get the control.
@@ -251,7 +251,7 @@ BOOL InitAudioTrackVolume(int volume)
 //?							   MIXER_GETLINECONTROLSF_ALL);
 	if ( rc != MMSYSERR_NOERROR )
 	{
-		return FALSE;  // Couldn't get the control.
+		return false;  // Couldn't get the control.
 	}
 
 	// After successfully getting the peakmeter control, the volume range
@@ -279,11 +279,11 @@ BOOL InitAudioTrackVolume(int volume)
 								 MIXER_SETCONTROLDETAILSF_VALUE);
 	if ( rc != MMSYSERR_NOERROR )
 	{
-		return FALSE;  // Couldn't get the current volume.
+		return false;  // Couldn't get the current volume.
 	}
 #endif
 
-	return TRUE;
+	return true;
 }
 
 
@@ -299,11 +299,11 @@ CSound::CSound(CInstanceManager* iMan)
 	m_iMan = iMan;
 	m_iMan->AddInstance(CLASS_SOUND, this);
 
-	m_bEnable        = FALSE;
-	m_bState         = FALSE;
-	m_bAudioTrack    = TRUE;
-	m_ctrl3D         = TRUE;
-	m_bDebugMode     = FALSE;
+	m_bEnable        = false;
+	m_bState         = false;
+	m_bAudioTrack    = true;
+	m_ctrl3D         = true;
+	m_bDebugMode     = false;
 	m_MidiDeviceID   = 0;
 	m_MIDIMusic      = 0;
 	m_audioVolume    = 20;
@@ -322,7 +322,7 @@ CSound::CSound(CInstanceManager* iMan)
 	ZeroMemory(m_channel, sizeof(SoundChannel)*MAXSOUND);
 	for ( i=0 ; i<MAXSOUND ; i++ )
 	{
-		m_channel[i].bUsed = FALSE;
+		m_channel[i].bUsed = false;
 	}
 
 	for ( i=0 ; i<MAXFILES ; i++ )
@@ -350,7 +350,7 @@ CSound::~CSound()
 			m_channel[i].soundBuffer->Stop();
 			m_channel[i].soundBuffer->Release();
 			m_channel[i].soundBuffer = 0;
-			m_channel[i].bUsed = FALSE;
+			m_channel[i].bUsed = false;
 		}
 	}
 
@@ -370,7 +370,7 @@ CSound::~CSound()
 
 // Specifies whether you are in debug mode.
 
-void CSound::SetDebugMode(BOOL bMode)
+void CSound::SetDebugMode(bool bMode)
 {
 	m_bDebugMode = bMode;
 }
@@ -378,7 +378,7 @@ void CSound::SetDebugMode(BOOL bMode)
 
 // Initializes DirectSound.
 
-BOOL CSound::Create(HWND hWnd, BOOL b3D)
+bool CSound::Create(HWND hWnd, bool b3D)
 {
 	LPDIRECTSOUNDBUFFER primary;
 	DSBUFFERDESC		dsbdesc;
@@ -389,16 +389,16 @@ BOOL CSound::Create(HWND hWnd, BOOL b3D)
 	if ( !DirectSoundCreate(NULL, &m_lpDS, NULL) == DS_OK )
 	{
 		OutputDebugString("Fatal error: DirectSoundCreate\n");
-		m_bEnable = FALSE;
-		return FALSE;
+		m_bEnable = false;
+		return false;
 	}
 
 //?	m_lpDS->SetCooperativeLevel(hWnd, DSSCL_NORMAL);
 	m_lpDS->SetCooperativeLevel(hWnd, DSSCL_PRIORITY);
 
-	if ( !RetSound3DCap() )  b3D = FALSE;
+	if ( !RetSound3DCap() )  b3D = false;
 
-	m_ctrl3D = FALSE;
+	m_ctrl3D = false;
 	if ( b3D )
 	{
 		// Obtain primary buffer, asking it for 3D control.
@@ -408,7 +408,7 @@ BOOL CSound::Create(HWND hWnd, BOOL b3D)
 		hr = m_lpDS->CreateSoundBuffer( &dsbdesc, &primary, NULL );
 		if ( hr == S_OK )
 		{
-			m_ctrl3D = TRUE;
+			m_ctrl3D = true;
 		}
 	}
 
@@ -421,9 +421,9 @@ BOOL CSound::Create(HWND hWnd, BOOL b3D)
 		hr = m_lpDS->CreateSoundBuffer( &dsbdesc, &primary, NULL );
 		if ( hr != S_OK )
 		{
-			return FALSE;
+			return false;
 		}
-		m_ctrl3D = FALSE;
+		m_ctrl3D = false;
 	}
 
 	if ( m_ctrl3D )
@@ -433,7 +433,7 @@ BOOL CSound::Create(HWND hWnd, BOOL b3D)
 		if ( hr != S_OK )
 		{
 			primary->Release();
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -473,15 +473,15 @@ BOOL CSound::Create(HWND hWnd, BOOL b3D)
 		}
 	}
 
-	m_bEnable = TRUE;
+	m_bEnable = true;
 	m_hWnd    = hWnd;
-	return TRUE;
+	return true;
 }
 
 
 // Indicates whether to play sounds in 3D or not.
 
-void CSound::SetSound3D(BOOL bMode)
+void CSound::SetSound3D(bool bMode)
 {
 	StopAll();
 
@@ -500,14 +500,14 @@ void CSound::SetSound3D(BOOL bMode)
 	Create(m_hWnd, bMode);
 }
 
-BOOL CSound::RetSound3D()
+bool CSound::RetSound3D()
 {
 	return m_ctrl3D;
 }
 
 // Indicates whether it is possible to play sounds in 3D.
 
-BOOL CSound::RetSound3DCap()
+bool CSound::RetSound3DCap()
 {
 	DSCAPS		dscaps;
 	HRESULT 	hr;
@@ -515,7 +515,7 @@ BOOL CSound::RetSound3DCap()
 	ZeroMemory( &dscaps, sizeof(DSCAPS) );
 	dscaps.dwSize = sizeof(DSCAPS);
 	hr = m_lpDS->GetCaps(&dscaps);
-	if ( hr != DS_OK )  return FALSE;
+	if ( hr != DS_OK )  return false;
 
 	return ( dscaps.dwMaxHw3DAllBuffers > 0 );
 }
@@ -524,7 +524,7 @@ BOOL CSound::RetSound3DCap()
 
 // Returns the state of DirectSound.
 
-BOOL CSound::RetEnable()
+bool CSound::RetEnable()
 {
 	return m_bEnable;
 }
@@ -532,7 +532,7 @@ BOOL CSound::RetEnable()
 
 // Switches on or off the sound.
 
-void CSound::SetState(BOOL bState)
+void CSound::SetState(bool bState)
 {
 	m_bState = bState;
 }
@@ -546,7 +546,7 @@ void CSound::SetCDpath(char *path)
 
 // Switches on or off the CD-audio music.
 
-void CSound::SetAudioTrack(BOOL bAudio)
+void CSound::SetAudioTrack(bool bAudio)
 {
 	m_bAudioTrack = bAudio;
 }
@@ -584,7 +584,7 @@ int CSound::RetMidiVolume()
 
 // Reads a file.
 
-BOOL CSound::ReadFile(Sound sound, char *metaname, char *filename)
+bool CSound::ReadFile(Sound sound, char *metaname, char *filename)
 {
 	WaveHeader	wavHdr;
 	DWORD		size;
@@ -592,7 +592,7 @@ BOOL CSound::ReadFile(Sound sound, char *metaname, char *filename)
 
 	// Open the wave file.
 	err = g_metafile.Open(metaname, filename);
-	if ( err != 0 ) return FALSE;
+	if ( err != 0 ) return false;
 
 	// Read in the wave header.
 	g_metafile.Read(&wavHdr, sizeof(wavHdr));
@@ -611,7 +611,7 @@ BOOL CSound::ReadFile(Sound sound, char *metaname, char *filename)
 
 	// Close out the wave file.
 	g_metafile.Close();
-	return TRUE;
+	return true;
 }
 
 // Hides all sound files (. Wav).
@@ -705,7 +705,7 @@ int CSound::RetPriority(Sound sound)
 
 // Seeks a free buffer.
 
-BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
+bool CSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
 {
 	DWORD	status;
 	int		i, priority;
@@ -725,8 +725,8 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 			m_channel[i].priority = priority;
 			m_channel[i].uniqueStamp = m_uniqueStamp++;
 			channel = i;
-			bAlreadyLoaded = TRUE;
-			return TRUE;
+			bAlreadyLoaded = true;
+			return true;
 		}
 	}
 #endif
@@ -739,8 +739,8 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 			m_channel[i].priority = priority;
 			m_channel[i].uniqueStamp = m_uniqueStamp++;
 			channel = i;
-			bAlreadyLoaded = FALSE;
-			return TRUE;
+			bAlreadyLoaded = false;
+			return true;
 		}
 	}
 
@@ -758,8 +758,8 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 			m_channel[i].uniqueStamp = m_uniqueStamp++;
 
 			channel = i;
-			bAlreadyLoaded = FALSE;
-			return TRUE;
+			bAlreadyLoaded = false;
+			return true;
 		}
 	}
 
@@ -776,8 +776,8 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 		m_channel[i].uniqueStamp = m_uniqueStamp++;
 
 		channel = i;
-		bAlreadyLoaded = FALSE;
-		return TRUE;
+		bAlreadyLoaded = false;
+		return true;
 	}
 
 	// Seeks a channel used the same or lower priority.
@@ -793,20 +793,20 @@ BOOL CSound::SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded)
 		m_channel[i].uniqueStamp = m_uniqueStamp++;
 
 		channel = i;
-		bAlreadyLoaded = FALSE;
-		return TRUE;
+		bAlreadyLoaded = false;
+		return true;
 	}
 
 	char s[100];
 	sprintf(s, "Sound %d forget (priority=%d)\n", sound, priority);
 	OutputDebugString(s);
 
-	return FALSE;
+	return false;
 }
 
 // Reads in data from a wave file.
 
-BOOL CSound::ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size) 
+bool CSound::ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size) 
 {
 	LPVOID	pData1;
 	DWORD	dwData1Size;
@@ -818,7 +818,7 @@ BOOL CSound::ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size)
 	hr = lpDSB->Lock(0, size, &pData1, &dwData1Size, &pData2, &dwData2Size, DSBLOCK_FROMWRITECURSOR);
 	if ( hr != DS_OK )
 	{
-		return FALSE;
+		return false;
 	}
 
 	// Read in first chunk of data.
@@ -837,17 +837,17 @@ BOOL CSound::ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size)
 	hr = lpDSB->Unlock(pData1, dwData1Size, pData2, dwData2Size);
 	if ( hr != DS_OK )
 	{
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Creates a DirectSound buffer.
 
-BOOL CSound::CreateSoundBuffer(int channel, DWORD size, DWORD freq,
+bool CSound::CreateSoundBuffer(int channel, DWORD size, DWORD freq,
 							   DWORD bitsPerSample, DWORD blkAlign,
-							   BOOL bStereo)
+							   bool bStereo)
 {
 	PCMWAVEFORMAT	pcmwf;
 	DSBUFFERDESC	dsbdesc;
@@ -880,7 +880,7 @@ BOOL CSound::CreateSoundBuffer(int channel, DWORD size, DWORD freq,
 	dsbdesc.lpwfxFormat   = (LPWAVEFORMATEX)&pcmwf;
 
 	hr = m_lpDS->CreateSoundBuffer(&dsbdesc, &m_channel[channel].soundBuffer, NULL);
-	if ( hr != DS_OK )  return FALSE;
+	if ( hr != DS_OK )  return false;
 
 	if ( m_ctrl3D )
 	{
@@ -889,45 +889,45 @@ BOOL CSound::CreateSoundBuffer(int channel, DWORD size, DWORD freq,
 								IID_IDirectSound3DBuffer, 
 								(VOID**)&m_channel[channel].soundBuffer3D
 							);
-		if ( hr != DS_OK )  return FALSE;
+		if ( hr != DS_OK )  return false;
 	}
 	
-	m_channel[channel].bUsed = TRUE;
-	m_channel[channel].bMute = FALSE;
-	return TRUE;
+	m_channel[channel].bUsed = true;
+	m_channel[channel].bMute = false;
+	return true;
 }
 
 // Creates a DirectSound buffer from a wave file.
 
-BOOL CSound::CreateBuffer(int channel, Sound sound)
+bool CSound::CreateBuffer(int channel, Sound sound)
 {
 	WaveHeader* wavHdr;
 	DWORD		size;
-	BOOL		bStereo;
+	bool		bStereo;
 
-	if ( m_files[sound] == 0 )  return FALSE;
+	if ( m_files[sound] == 0 )  return false;
 
 	wavHdr = (WaveHeader*)m_files[sound];
 	size = wavHdr->dwDSize;
-	bStereo = wavHdr->wChnls > 1 ? TRUE : FALSE;
+	bStereo = wavHdr->wChnls > 1 ? true : false;
 
 	// Create the sound buffer for the wave file.
 	if ( !CreateSoundBuffer(channel, size, wavHdr->dwSRate,
 							wavHdr->BitsPerSample, wavHdr->wBlkAlign, bStereo) )
 	{
-		return FALSE;
+		return false;
 	}
 
 	// Read the data for the wave file into the sound buffer.
 	if ( !ReadData(m_channel[channel].soundBuffer, sound, size) )
 	{
-		return FALSE;
+		return false;
 	}
 
 	m_channel[channel].type = sound;
 
 	// Close out the wave file.
-	return TRUE;
+	return true;
 }
 
 // Calculates the volume and pan of a sound, non-3D mode.
@@ -985,7 +985,7 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 // Sounds in the middle.
 // Returns the associated channel or -1.
 
-int CSound::Play(Sound sound, float amplitude, float frequency, BOOL bLoop)
+int CSound::Play(Sound sound, float amplitude, float frequency, bool bLoop)
 {
 	return Play(sound, m_lookat, amplitude, frequency, bLoop);
 }
@@ -994,11 +994,11 @@ int CSound::Play(Sound sound, float amplitude, float frequency, BOOL bLoop)
 // Returns the associated channel or -1.
 
 int CSound::Play(Sound sound, D3DVECTOR pos,
-				 float amplitude, float frequency, BOOL bLoop)
+				 float amplitude, float frequency, bool bLoop)
 {
 	DS3DBUFFER	sb;
 	int			channel, iVolume, iPan, iFreq, uniqueStamp;
-	BOOL		bAlreadyLoaded;
+	bool		bAlreadyLoaded;
 	DWORD		flag, freq;
 	HRESULT		err;
 
@@ -1019,7 +1019,7 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 				m_channel[channel].soundBuffer->Release();
 				m_channel[channel].soundBuffer = 0;
 			}
-			m_channel[channel].bUsed = FALSE;
+			m_channel[channel].bUsed = false;
 			return -1;
 		}
 	}
@@ -1044,7 +1044,7 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 	OutputDebugString(s);
 #endif
 
-	m_channel[channel].oper[0].bUsed = FALSE;
+	m_channel[channel].oper[0].bUsed = false;
 	m_channel[channel].startAmplitude = amplitude;
 	m_channel[channel].startFrequency = frequency;
 	m_channel[channel].changeFrequency = 1.0f;
@@ -1120,48 +1120,48 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 // Check a channel number.
 // Adapts the channel, so it can be used as an offset in m_channel.
 
-BOOL CSound::CheckChannel(int &channel)
+bool CSound::CheckChannel(int &channel)
 {
 	int		uniqueStamp;
 
 	uniqueStamp = (channel>>16)&0xffff;
 	channel &= 0xffff;
 
-	if ( !m_bEnable )  return FALSE;
-	if ( !m_bState || m_audioVolume == 0 )  return FALSE;
+	if ( !m_bEnable )  return false;
+	if ( !m_bState || m_audioVolume == 0 )  return false;
 
-	if ( channel < 0 || channel >= m_maxSound )  return FALSE;
-	if ( !m_channel[channel].bUsed )  return FALSE;
+	if ( channel < 0 || channel >= m_maxSound )  return false;
+	if ( !m_channel[channel].bUsed )  return false;
 
-	if ( m_channel[channel].uniqueStamp != uniqueStamp )  return FALSE;
+	if ( m_channel[channel].uniqueStamp != uniqueStamp )  return false;
 
-	return TRUE;
+	return true;
 }
 
 // Removes all envelopes.
 
-BOOL CSound::FlushEnvelope(int channel)
+bool CSound::FlushEnvelope(int channel)
 {
-	if ( !CheckChannel(channel) )  return FALSE;
+	if ( !CheckChannel(channel) )  return false;
 
-	m_channel[channel].oper[0].bUsed = FALSE;
-	return TRUE;
+	m_channel[channel].oper[0].bUsed = false;
+	return true;
 }
 
 // Adds an operation envelope.
 
-BOOL CSound::AddEnvelope(int channel, float amplitude, float frequency,
+bool CSound::AddEnvelope(int channel, float amplitude, float frequency,
 						 float time, SoundNext oper)
 {
 	int		i;
 
-	if ( !CheckChannel(channel) )  return FALSE;
+	if ( !CheckChannel(channel) )  return false;
 
 	for ( i=0 ; i<MAXOPER ; i++ )
 	{
 		if ( m_channel[channel].oper[i].bUsed )  continue;
 
-		m_channel[channel].oper[i].bUsed = TRUE;
+		m_channel[channel].oper[i].bUsed = true;
 		m_channel[channel].oper[i].finalAmplitude = amplitude;
 		m_channel[channel].oper[i].finalFrequency = frequency;
 		m_channel[channel].oper[i].totalTime = time;
@@ -1170,22 +1170,22 @@ BOOL CSound::AddEnvelope(int channel, float amplitude, float frequency,
 
 		if ( i < MAXOPER-1 )
 		{
-			m_channel[channel].oper[i+1].bUsed = FALSE;
+			m_channel[channel].oper[i+1].bUsed = false;
 		}
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 // Changes the position of a sound.
 
-BOOL CSound::Position(int channel, D3DVECTOR pos)
+bool CSound::Position(int channel, D3DVECTOR pos)
 {
 	float		amplitude, pan;
 	int			iVolume, iPan;
 	HRESULT		err;
 
-	if ( !CheckChannel(channel) )  return FALSE;
+	if ( !CheckChannel(channel) )  return false;
 
 	m_channel[channel].pos = pos;
 
@@ -1213,18 +1213,18 @@ BOOL CSound::Position(int channel, D3DVECTOR pos)
 		err = m_channel[channel].soundBuffer->SetPan(iPan);
 		DisplayError("SetPan", m_channel[channel].type, err);
 	}
-	return TRUE;
+	return true;
 }
 
 // Changes the frequency of a sound.
 // 0.5 down of an octave and 2.0 up of an octave.
 
-BOOL CSound::Frequency(int channel, float frequency)
+bool CSound::Frequency(int channel, float frequency)
 {
 	HRESULT	err;
 	int		iFreq;
 
-	if ( !CheckChannel(channel) )  return FALSE;
+	if ( !CheckChannel(channel) )  return false;
 
 	m_channel[channel].changeFrequency = frequency;
 
@@ -1235,22 +1235,22 @@ BOOL CSound::Frequency(int channel, float frequency)
 		DisplayError("Frequency", m_channel[channel].type, err);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Stops sound.
 
-BOOL CSound::Stop(int channel)
+bool CSound::Stop(int channel)
 {
-	if ( !CheckChannel(channel) )  return FALSE;
+	if ( !CheckChannel(channel) )  return false;
 
 	m_channel[channel].soundBuffer->Stop();
-	return TRUE;
+	return true;
 }
 
 // Stops all sounds.
 
-BOOL CSound::StopAll()
+bool CSound::StopAll()
 {
 	DWORD	status;
 	int 	i;
@@ -1268,14 +1268,14 @@ BOOL CSound::StopAll()
 		m_channel[i].soundBuffer->Release();
 		m_channel[i].soundBuffer = 0;
 
-		m_channel[i].bUsed = FALSE;
+		m_channel[i].bUsed = false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Silent all sounds.
 
-BOOL CSound::MuteAll(BOOL bMute)
+bool CSound::MuteAll(bool bMute)
 {
 	int 	i;
 
@@ -1285,7 +1285,7 @@ BOOL CSound::MuteAll(BOOL bMute)
 
 		m_channel[i].bMute = bMute;
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -1305,7 +1305,7 @@ void CSound::OperNext(int channel)
 		m_channel[channel].oper[i] = m_channel[channel].oper[i+1];
 	}
 
-	m_channel[channel].oper[i].bUsed = FALSE;
+	m_channel[channel].oper[i].bUsed = false;
 }
 
 // Updates the sound buffers.
@@ -1442,7 +1442,7 @@ void CSound::SetListener(D3DVECTOR eye, D3DVECTOR lookat)
 // Uses MCI to play a MIDI file. The window procedure
 // is notified when playback is complete.
 
-BOOL CSound::PlayMusic(int rank, BOOL bRepeat)
+bool CSound::PlayMusic(int rank, bool bRepeat)
 {
 	MCI_OPEN_PARMS	mciOpenParms;
 	MCI_PLAY_PARMS	mciPlayParms;
@@ -1452,14 +1452,14 @@ BOOL CSound::PlayMusic(int rank, BOOL bRepeat)
 	m_bRepeatMusic = bRepeat;
 	m_playTime = 0.0f;
 
-	if ( m_midiVolume == 0 )  return TRUE;
+	if ( m_midiVolume == 0 )  return true;
 
 	if ( m_bAudioTrack )
 	{
 		return PlayAudioTrack(rank);
 	}
 
-	if ( !m_bEnable )  return TRUE;
+	if ( !m_bEnable )  return true;
 	InitMidiVolume(m_midiVolume);
 	m_lastMidiVolume = m_midiVolume;
 
@@ -1478,7 +1478,7 @@ BOOL CSound::PlayMusic(int rank, BOOL bRepeat)
 	{
 		mciGetErrorString(dwReturn, filename, 128);
 		// Failed to open device. Don't close it; just return error.
-		return FALSE;
+		return false;
 	}
 
 	// The device opened successfully; get the device ID.
@@ -1494,11 +1494,11 @@ BOOL CSound::PlayMusic(int rank, BOOL bRepeat)
 	{
 		mciGetErrorString(dwReturn, filename, 128);
 		StopMusic();
-		return FALSE;
+		return false;
 	}
 
 	m_MIDIMusic = rank;
-	return TRUE;
+	return true;
 }
 
 // Uses MCI to play a CD-audio track. The window procedure
@@ -1506,7 +1506,7 @@ BOOL CSound::PlayMusic(int rank, BOOL bRepeat)
 // The rank parameter is in space [1..n] !
 // For CD mix (data/audio), it will be [2..n] !
 
-BOOL CSound::PlayAudioTrack(int rank)
+bool CSound::PlayAudioTrack(int rank)
 {
 #if _SOUNDTRACKS
 	MCI_OPEN_PARMS	mciOpenParms;
@@ -1516,8 +1516,8 @@ BOOL CSound::PlayAudioTrack(int rank)
 	char			filename[MAX_PATH];
 	char			device[10];
 
-	if ( !m_bEnable )  return TRUE;
-//?	if ( m_midiVolume == 0 )  return TRUE;
+	if ( !m_bEnable )  return true;
+//?	if ( m_midiVolume == 0 )  return true;
 	InitAudioTrackVolume(m_midiVolume);
 	m_lastMidiVolume = m_midiVolume;
 
@@ -1552,7 +1552,7 @@ BOOL CSound::PlayAudioTrack(int rank)
 	{
 		mciGetErrorString(dwReturn, filename, 128);
 		// Failed to open device. Don't close it; just return error.
-		return FALSE;
+		return false;
 	}
 
 	// The device opened successfully; get the device ID.
@@ -1569,7 +1569,7 @@ BOOL CSound::PlayAudioTrack(int rank)
 	{
 		mciGetErrorString(dwReturn, filename, 128);
 		StopMusic();
-		return FALSE;
+		return false;
 	}  
 
 	// Begin playback.
@@ -1585,27 +1585,27 @@ BOOL CSound::PlayAudioTrack(int rank)
 	{
 		mciGetErrorString(dwReturn, filename, 128);
 		StopMusic();
-		return FALSE;
+		return false;
 	}
 
 	m_MIDIMusic = rank;
 #endif
-	return TRUE;
+	return true;
 }
 
 // Restart the MIDI player.
 
-BOOL CSound::RestartMusic()
+bool CSound::RestartMusic()
 {
-	if ( !m_bRepeatMusic )  return FALSE;
+	if ( !m_bRepeatMusic )  return false;
 
 	OutputDebugString("RestartMusic\n");
-	if ( !m_bEnable )  return TRUE;
-//?	if ( m_midiVolume == 0 )  return TRUE;
-	if ( m_MIDIMusic == 0 )  return FALSE;
-	if ( m_playTime < 5.0f )  return FALSE;
+	if ( !m_bEnable )  return true;
+//?	if ( m_midiVolume == 0 )  return true;
+	if ( m_MIDIMusic == 0 )  return false;
+	if ( m_playTime < 5.0f )  return false;
 
-	return PlayMusic(m_MIDIMusic, TRUE);
+	return PlayMusic(m_MIDIMusic, true);
 }
 
 // Shuts down the MIDI player.
@@ -1631,9 +1631,9 @@ void CSound::StopMusic()
 	m_MIDIMusic = 0;
 }
 
-// Returns TRUE if the music is in progress.
+// Returns true if the music is in progress.
 
-BOOL CSound::IsPlayingMusic()
+bool CSound::IsPlayingMusic()
 {
 	return (m_MIDIMusic != 0);
 }

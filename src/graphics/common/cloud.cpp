@@ -53,7 +53,7 @@ CCloud::CCloud(CInstanceManager* iMan, CD3DEngine* engine)
 	m_wind  = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_subdiv = 8;
 	m_filename[0] = 0;
-	m_bEnable = TRUE;
+	m_bEnable = true;
 }
 
 // Destructor of clouds.
@@ -63,30 +63,30 @@ CCloud::~CCloud()
 }
 
 
-BOOL CCloud::EventProcess(const Event &event)
+bool CCloud::EventProcess(const Event &event)
 {
 	if ( event.event == EVENT_FRAME )
 	{
 		return EventFrame(event);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Makes the clouds evolve.
 
-BOOL CCloud::EventFrame(const Event &event)
+bool CCloud::EventFrame(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	m_time += event.rTime;
 
-	if ( m_level == 0.0f )  return TRUE;
+	if ( m_level == 0.0f )  return true;
 
-	if ( m_time-m_lastTest < 0.2f )  return TRUE;
+	if ( m_time-m_lastTest < 0.2f )  return true;
 	m_lastTest = m_time;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -149,10 +149,10 @@ void CCloud::Draw()
 
 	device = m_engine->RetD3DDevice();
 	device->SetRenderState(D3DRENDERSTATE_AMBIENT, 0x00000000);
-	device->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-	device->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
-//?	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-	device->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+	device->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
+	device->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+//?	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
+	device->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 	device->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(fogStart));
 	device->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(fogEnd));
 
@@ -229,7 +229,7 @@ void CCloud::Draw()
 
 // Updates the positions, relative to the ground.
 
-BOOL CCloud::CreateLine(int x, int y, int len)
+bool CCloud::CreateLine(int x, int y, int len)
 {
 	float	offset;
 
@@ -250,7 +250,7 @@ BOOL CCloud::CreateLine(int x, int y, int len)
 
 // Creates all areas of cloud.
 
-BOOL CCloud::Create(const char *filename,
+bool CCloud::Create(const char *filename,
 					D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,
 					float level)
 {
@@ -282,14 +282,14 @@ BOOL CCloud::Create(const char *filename,
 	m_brick /= m_subdiv*DIMEXPAND;
 	m_size  *= m_subdiv*DIMEXPAND;
 
-	if ( m_level == 0.0f )  return TRUE;
+	if ( m_level == 0.0f )  return true;
 
 	m_lineUsed = 0;
 	for ( y=0 ; y<m_brick ; y++ )
 	{
 		CreateLine(0, y, m_brick);
 	}
-	return TRUE;
+	return true;
 }
 
 // Removes all the clouds.
@@ -302,7 +302,7 @@ void CCloud::Flush()
 
 // Modifies the cloud level.
 
-BOOL CCloud::SetLevel(float level)
+bool CCloud::SetLevel(float level)
 {
 	m_level = level;
 
@@ -320,12 +320,12 @@ float CCloud::RetLevel()
 
 // Activate management of clouds.
 
-void CCloud::SetEnable(BOOL bEnable)
+void CCloud::SetEnable(bool bEnable)
 {
 	m_bEnable = bEnable;
 }
 
-BOOL CCloud::RetEnable()
+bool CCloud::RetEnable()
 {
 	return m_bEnable;
 }

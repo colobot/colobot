@@ -51,15 +51,15 @@ public:
 	CTaskSearch(CInstanceManager* iMan, CObject* object);
 	~CTaskSearch();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start();
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 	void	InitAngle();
-	BOOL	CreateMark();
+	bool	CreateMark();
 	void	DeleteMark(ObjectType type);
 
 protected:
@@ -71,6 +71,6 @@ protected:
 	float			m_lastParticule;
 	float			m_initialAngle[3];
 	float			m_finalAngle[3];
-	BOOL			m_bError;
+	bool			m_bError;
 };
 

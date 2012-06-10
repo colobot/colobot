@@ -37,18 +37,18 @@ public:
 	void		CreateMap();
 	void		SetFixImage(char *filename);
 	void		FloorColorMap(D3DCOLORVALUE floor, D3DCOLORVALUE water);
-	void		ShowMap(BOOL bShow);
+	void		ShowMap(bool bShow);
 	void		DimMap();
 	float		RetZoomMap();
 	void		ZoomMap(float zoom);
 	void		ZoomMap();
-	void		MapEnable(BOOL bEnable);
-	BOOL		RetShowMap();
-	BOOL		RetFixImage();
-	CObject*	DetectMap(FPOINT pos, BOOL &bInMap);
+	void		MapEnable(bool bEnable);
+	bool		RetShowMap();
+	bool		RetFixImage();
+	CObject*	DetectMap(FPOINT pos, bool &bInMap);
 	void		SetHilite(CObject* pObj);
-	void		SetToy(BOOL bToy);
-	void		SetFixParam(float zoom, float ox, float oy, float angle, int mode, BOOL bDebug);
+	void		SetToy(bool bToy);
+	void		SetFixParam(float zoom, float ox, float oy, float angle, int mode, bool bDebug);
 
 protected:
 	void		CenterMap();
@@ -60,7 +60,7 @@ protected:
 	CInterface*		m_interface;
 
 	int				m_mapMode;
-	BOOL			m_bFixImage;
+	bool			m_bFixImage;
 };
 
 

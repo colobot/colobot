@@ -52,7 +52,6 @@
 CTaskReset::CTaskReset(CInstanceManager* iMan, CObject* object)
 					 : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -64,15 +63,15 @@ CTaskReset::~CTaskReset()
 
 // Management of an event.
 
-BOOL CTaskReset::EventProcess(const Event &event)
+bool CTaskReset::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
 	float		angle, duration;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	m_time += event.rTime;
 	m_progress += event.rTime*m_speed;
@@ -171,7 +170,7 @@ BOOL CTaskReset::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -196,7 +195,7 @@ Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 		m_object->SetAngle(0, angle);
 		m_brain->RunProgram(m_object->RetResetRun());
 
-		m_bError = FALSE;
+		m_bError = false;
 		return ERR_OK;
 	}
 
@@ -206,7 +205,7 @@ Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 
 	if ( SearchVehicle() )  // starting location occupied?
 	{
-		m_bError = TRUE;
+		m_bError = true;
 		return ERR_RESET_NEAR;
 	}
 
@@ -217,12 +216,12 @@ Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
 	m_progress = 0.0f;
 	m_lastParticule = 0.0f;
 
-	m_object->SetResetBusy(TRUE);
+	m_object->SetResetBusy(true);
 
-	i = m_sound->Play(SOUND_GGG, m_begin, 1.0f, 2.0f, TRUE);
+	i = m_sound->Play(SOUND_GGG, m_begin, 1.0f, 2.0f, true);
 	m_sound->AddEnvelope(i, 0.0f, 0.5f, RESET_DELAY_ZOOM, SOPER_STOP);
 
-	m_bError = FALSE;
+	m_bError = false;
 	return ERR_OK;
 }
 
@@ -257,7 +256,7 @@ Error CTaskReset::IsEnded()
 		m_object->SetPosition(0, m_goal);
 		m_object->SetAngle(0, m_angle);
 
-		i = m_sound->Play(SOUND_GGG, m_goal, 1.0f, 0.5f, TRUE);
+		i = m_sound->Play(SOUND_GGG, m_goal, 1.0f, 0.5f, true);
 		m_sound->AddEnvelope(i, 0.0f, 2.0f, RESET_DELAY_ZOOM, SOPER_STOP);
 
 		m_phase = TRSP_ZIN;
@@ -276,14 +275,14 @@ Error CTaskReset::IsEnded()
 	}
 
 	m_brain->RunProgram(m_object->RetResetRun());
-	m_object->SetResetBusy(FALSE);
+	m_object->SetResetBusy(false);
 	return ERR_STOP;
 }
 
 
 // Seeks if a vehicle is too close.
 
-BOOL CTaskReset::SearchVehicle()
+bool CTaskReset::SearchVehicle()
 {
 	CObject*	pObj;
 	D3DVECTOR	oPos;
@@ -337,9 +336,9 @@ BOOL CTaskReset::SearchVehicle()
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
 		dist = Length(oPos, m_goal)-oRadius;
 
-		if ( dist < 5.0f )  return TRUE;
+		if ( dist < 5.0f )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 

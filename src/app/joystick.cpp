@@ -41,7 +41,7 @@ DIDEVCAPS				g_diDevCaps;
 // Called once for each enumerated joystick. If we find one, create a
 // device interface on it so we can play with it.
 
-BOOL CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance,
+bool CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance,
                                      VOID* pContext )
 {
     HRESULT hr;
@@ -64,7 +64,7 @@ BOOL CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance,
 
 // Callback function for enumerating the axes on a joystick.
 
-BOOL CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
+bool CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
                                 VOID* pContext )
 {
     DIPROPRANGE diprg; 
@@ -116,7 +116,7 @@ BOOL CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
 
 // Initialize the DirectInput variables.
 
-BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd)
+bool InitDirectInput(HINSTANCE hInst, HWND hWnd)
 {
     HRESULT hr;
 
@@ -124,22 +124,22 @@ BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd)
     // to a IDirectInput interface we can use.
 #ifndef __MINGW32__ // FIXME Doesn't work under MinGW
     hr = DirectInputCreateEx( hInst, DIRECTINPUT_VERSION,IID_IDirectInput7, (LPVOID*)&g_pDI, NULL );
-    if( FAILED(hr) )  return FALSE;
+    if( FAILED(hr) )  return false;
 #else
-	return FALSE;
+	return false;
 #endif
 
     // Look for a simple joystick we can use for this sample program.
     hr = g_pDI->EnumDevices( DIDEVTYPE_JOYSTICK, EnumJoysticksCallback,
                              NULL, DIEDFL_ATTACHEDONLY );
-    if( FAILED(hr) )  return FALSE;
+    if( FAILED(hr) )  return false;
 
     // Make sure we got a joystick
     if( NULL == g_pJoystick )
     {
 //?        MessageBox( NULL, "Joystick not found", "DInput Sample", 
 //?                    MB_ICONERROR | MB_OK );
-        return FALSE;
+        return false;
     }
 
     // Set the data format to "simple joystick" - a predefined data format 
@@ -148,18 +148,18 @@ BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd)
     // and how they should be reported. This tells DInput that we will be
     // passing a DIJOYSTATE structure to IDirectInputDevice::GetDeviceState().
     hr = g_pJoystick->SetDataFormat( &c_dfDIJoystick );
-    if( FAILED(hr) )  return FALSE;
+    if( FAILED(hr) )  return false;
 
     // Set the cooperative level to let DInput know how this device should
     // interact with the system and with other DInput applications.
     hr = g_pJoystick->SetCooperativeLevel( hWnd, DISCL_EXCLUSIVE|DISCL_FOREGROUND );
-    if( FAILED(hr) )  return FALSE;
+    if( FAILED(hr) )  return false;
 
     // Determine how many axis the joystick has (so we don't error out setting
     // properties for unavailable axis)
     g_diDevCaps.dwSize = sizeof(DIDEVCAPS);
     hr = g_pJoystick->GetCapabilities(&g_diDevCaps);
-    if( FAILED(hr) )  return FALSE;
+    if( FAILED(hr) )  return false;
 
 
     // Enumerate the axes of the joyctick and set the range of each axis. Note:
@@ -167,26 +167,26 @@ BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd)
     // of enumerating device objects (axes, buttons, etc.).
     g_pJoystick->EnumObjects( EnumAxesCallback, (VOID*)g_pJoystick, DIDFT_AXIS );
 
-    return TRUE;
+    return true;
 }
 
 // Acquire or unacquire the keyboard, depending on if the app is active
 // Input device must be acquired before the GetDeviceState is called.
 
-BOOL SetAcquire(BOOL bActive)
+bool SetAcquire(bool bActive)
 {
     if ( g_pJoystick )
     {
         if( bActive )  g_pJoystick->Acquire();
         else           g_pJoystick->Unacquire();
     }
-    return TRUE;
+    return true;
 }
 
 
 // Get the input device's state and display it.
 
-BOOL UpdateInputState( DIJOYSTATE &js )
+bool UpdateInputState( DIJOYSTATE &js )
 {
     HRESULT     hr;
 
@@ -196,7 +196,7 @@ BOOL UpdateInputState( DIJOYSTATE &js )
         {
             // Poll the device to read the current state
             hr = g_pJoystick->Poll();
-            if ( FAILED(hr) )  return FALSE;
+            if ( FAILED(hr) )  return false;
 
             // Get the input's device state
             hr = g_pJoystick->GetDeviceState( sizeof(DIJOYSTATE), &js );
@@ -208,19 +208,19 @@ BOOL UpdateInputState( DIJOYSTATE &js )
                 // we don't have any special reset that needs to be done. We
                 // just re-acquire and try again.
                 hr = g_pJoystick->Acquire();
-                if ( FAILED(hr) )  return FALSE;
+                if ( FAILED(hr) )  return false;
             }
         }
         while ( DIERR_INPUTLOST == hr );
-        if ( FAILED(hr) )  return FALSE;
+        if ( FAILED(hr) )  return false;
     } 
-    return TRUE;
+    return true;
 }
 
 
 // Initialize the DirectInput variables.
 
-BOOL FreeDirectInput()
+bool FreeDirectInput()
 {
     // Unacquire and release any DirectInputDevice objects.
     if( NULL != g_pJoystick ) 
@@ -240,6 +240,6 @@ BOOL FreeDirectInput()
         g_pDI = NULL;
     }
 
-    return TRUE;
+    return true;
 }
 

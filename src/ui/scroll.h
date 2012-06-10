@@ -37,16 +37,16 @@ public:
 	CScroll(CInstanceManager* iMan);
 	~CScroll();
 
-	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
 	void		SetPos(FPOINT pos);
 	void		SetDim(FPOINT dim);
 
-	BOOL		SetState(int state, BOOL bState);
-	BOOL		SetState(int state);
-	BOOL		ClearState(int state);
+	bool		SetState(int state, bool bState);
+	bool		SetState(int state);
+	bool		ClearState(int state);
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	void		Draw();
 
 	void		SetVisibleValue(float value);
@@ -71,7 +71,7 @@ protected:
 	float		m_visibleRatio;
 	float		m_step;
 
-	BOOL		m_bCapture;
+	bool		m_bCapture;
 	FPOINT		m_pressPos;
 	float		m_pressValue;
 

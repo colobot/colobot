@@ -617,8 +617,8 @@ public:
 
 	void	Flush();
 	void	MakeEvent(Event &event, EventMsg msg);
-	BOOL	AddEvent(const Event &event);
-	BOOL	GetEvent(Event &event);
+	bool	AddEvent(const Event &event);
+	bool	GetEvent(Event &event);
 
 protected:
 

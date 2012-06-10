@@ -46,13 +46,13 @@ public:
 	CTaskReset(CInstanceManager* iMan, CObject* object);
 	~CTaskReset();
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	Error	Start(D3DVECTOR goal, D3DVECTOR angle);
 	Error	IsEnded();
 
 protected:
-	BOOL	SearchVehicle();
+	bool	SearchVehicle();
 
 protected:
 	D3DVECTOR		m_begin;
@@ -60,7 +60,7 @@ protected:
 	D3DVECTOR		m_angle;
 
 	TaskResetPhase	m_phase;
-	BOOL			m_bError;
+	bool			m_bError;
 	float			m_time;
 	float			m_speed;
 	float			m_progress;

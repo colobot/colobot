@@ -66,9 +66,9 @@ public:
 	CMotionHuman(CInstanceManager* iMan, CObject* object);
 	~CMotionHuman();
 
-	void	DeleteObject(BOOL bAll=FALSE);
-	BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
-	BOOL	EventProcess(const Event &event);
+	void	DeleteObject(bool bAll=false);
+	bool	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	bool	EventProcess(const Event &event);
 	Error	SetAction(int action, float time=0.2f);
 
 	void	StartDisplayPerso();
@@ -76,7 +76,7 @@ public:
 
 protected:
 	void	CreatePhysics(ObjectType type);
-	BOOL	EventFrame(const Event &event);
+	bool	EventFrame(const Event &event);
 
 protected:
 	int			m_partiReactor;
@@ -89,11 +89,11 @@ protected:
 	int			m_armPartIndex;
 	int			m_armMemberIndex;
 	int			m_armLastAction;
-	BOOL		m_bArmStop;
+	bool		m_bArmStop;
 	float		m_lastSoundMarch;
 	float		m_lastSoundHhh;
 	float		m_time;
 	float		m_tired;
-	BOOL		m_bDisplayPerso;
+	bool		m_bDisplayPerso;
 };
 

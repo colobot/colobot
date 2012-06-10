@@ -56,8 +56,6 @@ CTaskBuild::CTaskBuild(CInstanceManager* iMan, CObject* object)
 {
 	int		i;
 
-	CTask::CTask(iMan, object);
-
 	m_type = OBJECT_DERRICK;
 	m_time = 0.0f;
 	m_soundChannel = -1;
@@ -91,17 +89,17 @@ CTaskBuild::~CTaskBuild()
 
 // Creates a building.
 
-BOOL CTaskBuild::CreateBuilding(D3DVECTOR pos, float angle)
+bool CTaskBuild::CreateBuilding(D3DVECTOR pos, float angle)
 {
 	m_building = new CObject(m_iMan);
 	if ( !m_building->CreateBuilding(pos, angle, 0.0f, m_type, 0.0f) )
 	{
 		delete m_building;
 		m_building = 0;
-		return FALSE;
+		return false;
 	}
 	m_building->UpdateMapping();
-	m_building->SetLock(TRUE);  // not yet usable
+	m_building->SetLock(true);  // not yet usable
 
 	if ( m_type == OBJECT_DERRICK  )  m_buildingHeight = 35.0f;
 	if ( m_type == OBJECT_FACTORY  )  m_buildingHeight = 28.0f;
@@ -121,7 +119,7 @@ BOOL CTaskBuild::CreateBuilding(D3DVECTOR pos, float angle)
 	m_buildingPos = m_building->RetPosition(0);
 	m_buildingPos.y -= m_buildingHeight;
 	m_building->SetPosition(0, m_buildingPos);
-	return TRUE;
+	return true;
 }
 
 // Creates lights for the effects.
@@ -185,7 +183,7 @@ void CTaskBuild::CreateLight()
 		angle += (PI*2.0f)/TBMAXLIGHT;
 	}
 
-	m_bBlack = FALSE;
+	m_bBlack = false;
 }
 
 // Switches the lights from black to white.
@@ -207,21 +205,21 @@ void CTaskBuild::BlackLight()
 		m_light->SetLightColorSpeed(m_lightRank[i], 1.0f/((1.0f/m_speed)*0.75f));
 	}
 
-	m_bBlack = TRUE;
+	m_bBlack = true;
 }
 
 // Management of an event.
 
-BOOL CTaskBuild::EventProcess(const Event &event)
+bool CTaskBuild::EventProcess(const Event &event)
 {
 	D3DMATRIX*		mat;
 	D3DVECTOR		pos, dir, speed;
 	FPOINT			dim;
 	float			a, g, cirSpeed, dist, linSpeed;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	m_time += event.rTime;
 
@@ -236,7 +234,7 @@ BOOL CTaskBuild::EventProcess(const Event &event)
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
 		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left/right
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
@@ -246,48 +244,48 @@ BOOL CTaskBuild::EventProcess(const Event &event)
 		if ( dist > 30.0f )  linSpeed =  1.0f;
 		if ( dist < 30.0f )  linSpeed = -1.0f;
 		m_physics->SetMotorSpeedX(linSpeed);  // forward/backward
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == TBP_RECEDE )  // terminal back?
 	{
 		m_physics->SetMotorSpeedX(-1.0f);  // back
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == TBP_TAKE )  // takes gun?
 	{
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == TBP_PREP )  // prepares?
 	{
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == TBP_TERM )  // ends?
 	{
-		return TRUE;
+		return true;
 	}
 
 	if ( !m_bBuild )  // building to build?
 	{
-		m_bBuild = TRUE;
+		m_bBuild = true;
 
 		pos = m_metal->RetPosition(0);
 		a   = m_object->RetAngleY(0);
 		if ( !CreateBuilding(pos, a+PI) )
 		{
-			m_metal->SetLock(FALSE);  // usable again
+			m_metal->SetLock(false);  // usable again
 			m_motion->SetAction(-1);
 			m_object->SetObjectParent(14, 0);
 			m_object->SetPosition(14, D3DVECTOR(-1.5f, 0.3f, -1.35f));
 			m_object->SetAngleZ(14, PI);
 			m_camera->FlushEffect();
 			Abort();
-			m_bError = TRUE;
+			m_bError = true;
 			m_displayText->DisplayError(ERR_TOOMANY, m_object->RetPosition(0));
-			return FALSE;
+			return false;
 		}
 		CreateLight();
 	}
@@ -340,7 +338,7 @@ BOOL CTaskBuild::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -360,7 +358,7 @@ Error CTaskBuild::Start(ObjectType type)
 	iAngle = NormAngle(iAngle);  // 0..2*PI
 	oAngle = iAngle;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 
 	pos = m_object->RetPosition(0);
 	if ( pos.y < m_water->RetLevel() )  return ERR_BUILD_WATER;
@@ -385,7 +383,7 @@ Error CTaskBuild::Start(ObjectType type)
 	err = FlatFloor();
 	if ( err != ERR_OK )  return err;
 
-	m_metal->SetLock(TRUE);  // not usable
+	m_metal->SetLock(true);  // not usable
 	m_camera->StartCentering(m_object, PI*0.15f, 99.9f, 0.0f, 1.0f);
 		
 	m_phase = TBP_TURN;  // rotation necessary preliminary
@@ -396,10 +394,10 @@ Error CTaskBuild::Start(ObjectType type)
 	pm = m_metal->RetPosition(0);
 	m_angleZ = RotateAngle(Length2d(pv, pm), Abs(pv.y-pm.y));
 
-	m_physics->SetFreeze(TRUE);  // it does not move
+	m_physics->SetFreeze(true);  // it does not move
 
-	m_bBuild = FALSE;  // not yet built
-	m_bError = FALSE;  // ok
+	m_bBuild = false;  // not yet built
+	m_bError = false;  // ok
 	return ERR_OK;
 }
 
@@ -456,7 +454,7 @@ Error CTaskBuild::IsEnded()
 		{
 			if ( m_progress > 1.0f )  // timeout?
 			{
-				m_metal->SetLock(FALSE);  // usable again
+				m_metal->SetLock(false);  // usable again
 				if ( dist < 30.0f )  return ERR_BUILD_METALNEAR;
 				else                 return ERR_BUILD_METALAWAY;
 			}
@@ -482,7 +480,7 @@ Error CTaskBuild::IsEnded()
 	{
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-		m_soundChannel = m_sound->Play(SOUND_TREMBLE, m_object->RetPosition(0), 0.0f, 1.0f, TRUE);
+		m_soundChannel = m_sound->Play(SOUND_TREMBLE, m_object->RetPosition(0), 0.0f, 1.0f, true);
 		m_sound->AddEnvelope(m_soundChannel, 0.7f, 1.0f, 1.0f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_soundChannel, 0.7f, 1.5f, 7.0f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 2.0f, SOPER_STOP);
@@ -506,7 +504,7 @@ Error CTaskBuild::IsEnded()
 
 		m_building->SetZoom(0, 1.0f);
 		m_building->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-		m_building->SetLock(FALSE);  // building usable
+		m_building->SetLock(false);  // building usable
 		m_main->CreateShortcuts();
 		m_displayText->DisplayError(INFO_BUILD, m_buildingPos, 10.0f, 50.0f);
 
@@ -555,7 +553,7 @@ Error CTaskBuild::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskBuild::Abort()
+bool CTaskBuild::Abort()
 {
 	if ( m_soundChannel != -1 )
 	{
@@ -565,8 +563,8 @@ BOOL CTaskBuild::Abort()
 	}
 
 	m_camera->StopCentering(m_object, 2.0f);
-	m_physics->SetFreeze(FALSE);  // is moving again
-	return TRUE;
+	m_physics->SetFreeze(false);  // is moving again
+	return true;
 }
 
 
@@ -581,7 +579,7 @@ Error CTaskBuild::FlatFloor()
 	FPOINT		c, p;
 	float		radius, max, oRadius, bRadius, angle, dist;
 	int			i, j;
-	BOOL		bLittleFlat, bBase;
+	bool		bLittleFlat, bBase;
 
 	radius = 0.0f;
 	if ( m_type == OBJECT_DERRICK  )  radius =  5.0f;
@@ -614,7 +612,7 @@ Error CTaskBuild::FlatFloor()
 	}
 
 	max = 100000.0f;
-	bBase = FALSE;
+	bBase = false;
 	for ( i=0 ; i<1000000 ; i++ )
 	{
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
@@ -635,7 +633,7 @@ Error CTaskBuild::FlatFloor()
 				max = dist;
 				bPos = oPos;
 				bRadius = oRadius;
-				bBase = TRUE;
+				bBase = true;
 			}
 		}
 		else
@@ -649,7 +647,7 @@ Error CTaskBuild::FlatFloor()
 					max = dist;
 					bPos = oPos;
 					bRadius = oRadius;
-					bBase = FALSE;
+					bBase = false;
 				}
 			}
 		}
@@ -725,7 +723,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 	ObjectType	type;
 	float		min, iAngle, a, aa, aBest, distance, magic;
 	int			i;
-	BOOL		bMetal;
+	bool		bMetal;
 
 	iPos   = m_object->RetPosition(0);
 	iAngle = m_object->RetAngleY(0);
@@ -733,7 +731,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 
 	min = 1000000.0f;
 	pBest = 0;
-	bMetal = FALSE;
+	bMetal = false;
 	for ( i=0 ; i<1000000 ; i++ )
 	{
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
@@ -745,7 +743,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 		type = pObj->RetType();
 		if ( type != OBJECT_METAL )  continue;
 
-		bMetal = TRUE;  // metal exists
+		bMetal = true;  // metal exists
 
 		oPos = pObj->RetPosition(0);
 		distance = Length(oPos, iPos);

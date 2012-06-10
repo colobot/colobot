@@ -84,7 +84,7 @@ CMotion::~CMotion()
 
 // Deletes the object.
 
-void CMotion::DeleteObject(BOOL bAll)
+void CMotion::DeleteObject(bool bAll)
 {
 }
 
@@ -102,22 +102,22 @@ void CMotion::SetBrain(CBrain* brain)
 
 // Creates.
 
-BOOL CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
+bool CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
 {
-	return TRUE;
+	return true;
 }
 
 // Management of an event.
 
-BOOL CMotion::EventProcess(const Event &event)
+bool CMotion::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, dir;
 	float		time;
 
 	if ( m_object->RetType() != OBJECT_TOTO &&
-		 m_engine->RetPause() )  return TRUE;
+		 m_engine->RetPause() )  return true;
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
 	
 	m_progress += event.rTime*m_actionTime;
 	if ( m_progress > 1.0f )  m_progress = 1.0f;  // (*)
@@ -150,7 +150,7 @@ BOOL CMotion::EventProcess(const Event &event)
 	dir.z = Smooth(dir.z, m_inclinaison.z, time);
 	m_object->SetInclinaison(dir);
 
-	return TRUE;
+	return true;
 }
 
 // (*)	Avoids the bug of ants returned by the thumper and
@@ -177,9 +177,9 @@ int CMotion::RetAction()
 
 // Specifies a special parameter.
 
-BOOL CMotion::SetParam(int rank, float value)
+bool CMotion::SetParam(int rank, float value)
 {
-	return FALSE;
+	return false;
 }
 
 float CMotion::RetParam(int rank)
@@ -190,11 +190,11 @@ float CMotion::RetParam(int rank)
 
 // Saves all parameters of the object.
 
-BOOL CMotion::Write(char *line)
+bool CMotion::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_actionType == -1 )  return FALSE;
+	if ( m_actionType == -1 )  return false;
 
 	sprintf(name, " mType=%d", m_actionType);
 	strcat(line, name);
@@ -205,18 +205,18 @@ BOOL CMotion::Write(char *line)
 	sprintf(name, " mProgress=%.2f", m_progress);
 	strcat(line, name);
 
-	return FALSE;
+	return false;
 }
 
 // Restores all parameters of the object.
 
-BOOL CMotion::Read(char *line)
+bool CMotion::Read(char *line)
 {
 	m_actionType = OpInt(line, "mType", -1);
 	m_actionTime = OpFloat(line, "mTime", 0.0f);
 	m_progress = OpFloat(line, "mProgress", 0.0f);
 
-	return FALSE;
+	return false;
 }
 
 

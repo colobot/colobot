@@ -66,13 +66,12 @@ CAutoFactory::CAutoFactory(CInstanceManager* iMan, CObject* object)
 
 CAutoFactory::~CAutoFactory()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoFactory::DeleteObject(BOOL bAll)
+void CAutoFactory::DeleteObject(bool bAll)
 {
 	CObject*	fret;
 	CObject*	vehicle;
@@ -124,7 +123,7 @@ void CAutoFactory::Init()
 
 // Management of an event.
 
-BOOL CAutoFactory::EventProcess(const Event &event)
+bool CAutoFactory::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	CObject*	vehicle;
@@ -138,13 +137,13 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	if ( m_object->RetSelect() )  // factory selected?
 	{
 		if ( event.event == EVENT_UPDINTERFACE )
 		{
-			CreateInterface(TRUE);
+			CreateInterface(true);
 		}
 
 		type = OBJECT_NULL;
@@ -176,36 +175,36 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 
 			if ( m_phase != AFP_WAIT )
 			{
-				return FALSE;
+				return false;
 			}
 
 			fret = SearchFret();  // transform metal?
 			if ( fret == 0 )
 			{
 				m_displayText->DisplayError(ERR_FACTORY_NULL, m_object);
-				return FALSE;
+				return false;
 			}
 			if ( NearestVehicle() )
 			{
 				m_displayText->DisplayError(ERR_FACTORY_NEAR, m_object);
-				return FALSE;
+				return false;
 			}
 
-			SetBusy(TRUE);
+			SetBusy(true);
 			InitProgressTotal(3.0f+2.0f+15.0f+2.0f+3.0f);
 			UpdateInterface();
 
-			fret->SetLock(TRUE);  // usable metal
+			fret->SetLock(true);  // usable metal
 			SoundManip(3.0f, 1.0f, 0.5f);
 
 			m_phase    = AFP_CLOSE_S;
 			m_progress = 0.0f;
 			m_speed    = 1.0f/3.0f;
-			return TRUE;
+			return true;
 		}
 	}
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	EventProgress(event.rTime);
@@ -268,7 +267,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				m_object->SetAngleZ(10+i, 0.0f);
 			}
 
-			m_channelSound = m_sound->Play(SOUND_FACTORY, m_object->RetPosition(0), 0.0f, 1.0f, TRUE);
+			m_channelSound = m_sound->Play(SOUND_FACTORY, m_object->RetPosition(0), 0.0f, 1.0f, true);
 			m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,  2.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, 11.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,  2.0f, SOPER_STOP);
@@ -288,7 +287,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				fret = SearchFret();  // transform metal?
 				if ( fret != 0 )
 				{
-					fret->SetLock(FALSE);  // metal usable again
+					fret->SetLock(false);  // metal usable again
 				}
 
 				if ( m_channelSound != -1 )
@@ -301,7 +300,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				m_phase    = AFP_OPEN_T;
 				m_progress = 0.0f;
 				m_speed    = 1.0f/2.0f;
-				return TRUE;
+				return true;
 			}
 		}
 
@@ -383,10 +382,10 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				physics = vehicle->RetPhysics();
 				if ( physics != 0 )
 				{
-					physics->SetFreeze(FALSE);  // can move
+					physics->SetFreeze(false);  // can move
 				}
 
-				vehicle->SetLock(FALSE);  // vehicle useable
+				vehicle->SetLock(false);  // vehicle useable
 //?				vehicle->RetPhysics()->RetBrain()->StartTaskAdvance(16.0f);
 				vehicle->SetAngleY(0, m_object->RetAngleY(0)+PI);
 				vehicle->SetZoom(0, 1.0f);
@@ -476,7 +475,7 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 				m_object->SetZoomZ(10+i, 0.30f);
 			}
 
-			SetBusy(FALSE);
+			SetBusy(false);
 			UpdateInterface();
 
 			m_phase    = AFP_WAIT;
@@ -485,17 +484,17 @@ BOOL CAutoFactory::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Saves all parameters of the controller.
 
-BOOL CAutoFactory::Write(char *line)
+bool CAutoFactory::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == AFP_WAIT )  return FALSE;
+	if ( m_phase == AFP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -511,14 +510,14 @@ BOOL CAutoFactory::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller
 
-BOOL CAutoFactory::Read(char *line)
+bool CAutoFactory::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -529,7 +528,7 @@ BOOL CAutoFactory::Read(char *line)
 	m_lastParticule = 0.0f;
 	m_fretPos = m_object->RetPosition(0);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -563,7 +562,7 @@ CObject* CAutoFactory::SearchFret()
 
 // Search if a vehicle is too close.
 
-BOOL CAutoFactory::NearestVehicle()
+bool CAutoFactory::NearestVehicle()
 {
 	CObject*	pObj;
 	D3DVECTOR	cPos, oPos;
@@ -616,16 +615,16 @@ BOOL CAutoFactory::NearestVehicle()
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
 		dist = Length(oPos, cPos)-oRadius;
 
-		if ( dist < 10.0f )  return TRUE;
+		if ( dist < 10.0f )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 
 // Creates a vehicle.
 
-BOOL CAutoFactory::CreateVehicle()
+bool CAutoFactory::CreateVehicle()
 {
 	CObject*	vehicle;
 	D3DMATRIX*	mat;
@@ -652,20 +651,20 @@ BOOL CAutoFactory::CreateVehicle()
 	pos = Transform(*mat, pos);
 
 	vehicle = new CObject(m_iMan);
-	if ( !vehicle->CreateVehicle(pos, angle, m_type, -1.0f, FALSE, FALSE) )
+	if ( !vehicle->CreateVehicle(pos, angle, m_type, -1.0f, false, false) )
 	{
 		delete vehicle;
 		m_displayText->DisplayError(ERR_TOOMANY, m_object);
-		return FALSE;
+		return false;
 	}
 	vehicle->UpdateMapping();
-	vehicle->SetLock(TRUE);  // not usable
+	vehicle->SetLock(true);  // not usable
 	vehicle->SetRange(30.0f);
 
 	physics = vehicle->RetPhysics();
 	if ( physics != 0 )
 	{
-		physics->SetFreeze(TRUE);  // it doesn't move
+		physics->SetFreeze(true);  // it doesn't move
 	}
 
 	for ( i=0 ; i<10 ; i++ )
@@ -675,7 +674,7 @@ BOOL CAutoFactory::CreateVehicle()
 		vehicle->ReadProgram(i, name);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Seeking the vehicle during manufacture.
@@ -711,7 +710,7 @@ CObject* CAutoFactory::SearchVehicle()
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoFactory::CreateInterface(BOOL bSelect)
+bool CAutoFactory::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, dim, ddim;
@@ -719,10 +718,10 @@ BOOL CAutoFactory::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	dim.x = 33.0f/640.0f;
 	dim.y = 33.0f/480.0f;
@@ -798,7 +797,7 @@ BOOL CAutoFactory::CreateInterface(BOOL bSelect)
 	pw->CreateGroup(pos, ddim, 101, EVENT_OBJECT_TYPE);
 
 	UpdateInterface();
-	return TRUE;
+	return true;
 }
 
 // Updates the status of all interface buttons.
@@ -838,9 +837,9 @@ void CAutoFactory::UpdateInterface()
 
 // Updates the status of one interface button.
 
-void CAutoFactory::UpdateButton(CWindow *pw, EventMsg event, BOOL bBusy)
+void CAutoFactory::UpdateButton(CWindow *pw, EventMsg event, bool bBusy)
 {
-	BOOL		bEnable = TRUE;
+	bool		bEnable = true;
 
 	EnableInterface(pw, event, !bBusy);
 
@@ -952,7 +951,7 @@ void CAutoFactory::SoundManip(float time, float amplitude, float frequency)
 {
 	int		i;
 
-	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, TRUE);
+	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, true);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);

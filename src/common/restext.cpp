@@ -84,7 +84,7 @@ static KeyDesc keyTable[22] =
 
 // Seeks a key.
 
-BOOL SearchKey(char *cmd, KeyRank &key)
+bool SearchKey(char *cmd, KeyRank &key)
 {
 	int		i;
 
@@ -93,10 +93,10 @@ BOOL SearchKey(char *cmd, KeyRank &key)
 		if ( strstr(cmd, keyTable[i].name) == cmd )
 		{
 			key = keyTable[i].key;
-			return TRUE;
+			return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Replaces the commands "\key name;" in a text.
@@ -143,24 +143,24 @@ void PutKeyName(char* dst, char* src)
 
 // Returns the text of a resource.
 
-BOOL GetResource(ResType type, int num, char* text)
+bool GetResource(ResType type, int num, char* text)
 {
 	char	buffer[100];
 
 	if ( !GetResourceBase(type, num, buffer) )
 	{
 		text[0] = 0;
-		return FALSE;
+		return false;
 	}
 
 	PutKeyName(text, buffer);
-	return TRUE;
+	return true;
 }
 
 
 // Returns the text of a resource.
 
-BOOL GetResourceBase(ResType type, int num, char* text)
+bool GetResourceBase(ResType type, int num, char* text)
 {
 	text[0] = 0;
 

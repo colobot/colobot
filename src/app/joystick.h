@@ -19,9 +19,9 @@
 #pragma once
 
 
-extern BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd);
-extern BOOL SetAcquire(BOOL bActive);
-extern BOOL UpdateInputState(DIJOYSTATE &js);
-extern BOOL FreeDirectInput();
+extern bool InitDirectInput(HINSTANCE hInst, HWND hWnd);
+extern bool SetAcquire(bool bActive);
+extern bool UpdateInputState(DIJOYSTATE &js);
+extern bool FreeDirectInput();
 
 

@@ -53,15 +53,15 @@ public:
 	CTaskBuild(CInstanceManager* iMan, CObject* object);
 	~CTaskBuild();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start(ObjectType type);
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 	Error		FlatFloor();
-	BOOL		CreateBuilding(D3DVECTOR pos, float angle);
+	bool		CreateBuilding(D3DVECTOR pos, float angle);
 	void		CreateLight();
 	void		BlackLight();
 	CObject*	SearchMetalObject(float &angle, float dMin, float dMax, float aLimit, Error &err);
@@ -73,9 +73,9 @@ protected:
 	CObject*		m_power;		// the vehicle battery
 	CObject*		m_building;		// building built
 	TaskBuildPhase		m_phase;		// phase of the operation
-	BOOL			m_bError;		// TRUE -> operation impossible
-	BOOL			m_bBuild;		// TRUE -> building built
-	BOOL			m_bBlack;		// TRUE -> lights black -> white
+	bool			m_bError;		// true -> operation impossible
+	bool			m_bBuild;		// true -> building built
+	bool			m_bBlack;		// true -> lights black -> white
 	float			m_time;			// absolute time
 	float			m_lastParticule;	// time of generation last particle
 	float			m_progress;		// progression (0..1)

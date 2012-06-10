@@ -50,23 +50,23 @@ public:
 	CAutoFactory(CInstanceManager* iMan, CObject* object);
 	~CAutoFactory();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	void		UpdateInterface();
-	void		UpdateButton(CWindow *pw, EventMsg event, BOOL bBusy);
+	void		UpdateButton(CWindow *pw, EventMsg event, bool bBusy);
 
 	CObject*	SearchFret();
-	BOOL		NearestVehicle();
-	BOOL		CreateVehicle();
+	bool		NearestVehicle();
+	bool		CreateVehicle();
 	CObject*	SearchVehicle();
 
 	void		SoundManip(float time, float amplitude, float frequency);

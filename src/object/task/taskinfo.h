@@ -36,11 +36,11 @@ public:
 	CTaskInfo(CInstanceManager* iMan, CObject* object);
 	~CTaskInfo();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
-	Error		Start(char *name, float value, float power, BOOL bSend);
+	Error		Start(char *name, float value, float power, bool bSend);
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 	CObject*	SearchInfo(float power);
@@ -49,6 +49,6 @@ protected:
 	float			m_progress;
 	float			m_speed;
 	float			m_time;
-	BOOL			m_bError;
+	bool			m_bError;
 };
 

@@ -52,8 +52,8 @@ class CD3DFramework7
 {
     // Internal variables for the framework class
     HWND                 m_hWnd;               // The window object
-    BOOL                 m_bIsFullscreen;      // Fullscreen vs. windowed
-    BOOL                 m_bIsStereo;          // Stereo view mode
+    bool                 m_bIsFullscreen;      // Fullscreen vs. windowed
+    bool                 m_bIsStereo;          // Stereo view mode
     DWORD                m_dwRenderWidth;      // Dimensions of the render target
     DWORD                m_dwRenderHeight;
     RECT                 m_rcScreenRect;       // Screen rect for window
@@ -87,11 +87,11 @@ public:
     // Functions to aid rendering
     HRESULT RestoreSurfaces();
     HRESULT ShowFrame();
-    HRESULT FlipToGDISurface( BOOL bDrawFrame = FALSE );
+    HRESULT FlipToGDISurface( bool bDrawFrame = false );
 
     // Functions for managing screen and viewport bounds
-    BOOL    IsFullscreen()                  { return m_bIsFullscreen; }
-    BOOL    IsStereo()                      { return m_bIsStereo; }
+    bool    IsFullscreen()                  { return m_bIsFullscreen; }
+    bool    IsStereo()                      { return m_bIsStereo; }
     VOID    Move( INT x, INT y );
 
     // Creates the Framework

@@ -54,7 +54,6 @@
 CTaskTerraform::CTaskTerraform(CInstanceManager* iMan, CObject* object)
 							   : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 	m_lastParticule = 0.0f;
 	m_soundChannel = -1;
 }
@@ -68,7 +67,7 @@ CTaskTerraform::~CTaskTerraform()
 
 // Management of an event.
 
-BOOL CTaskTerraform::EventProcess(const Event &event)
+bool CTaskTerraform::EventProcess(const Event &event)
 {
 	CObject*	power;
 	D3DMATRIX*	mat;
@@ -76,9 +75,9 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 	FPOINT		dim;
 	float		energy;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	m_progress += event.rTime*m_speed;  // others advance
 	m_time += event.rTime;
@@ -88,11 +87,11 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 		if ( m_soundChannel == -1 )
 		{
 #if _TEEN
-			m_soundChannel = m_sound->Play(SOUND_GGG, m_object->RetPosition(0), 1.0f, 0.5f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_GGG, m_object->RetPosition(0), 1.0f, 0.5f, true);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 2.0f, 1.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.5f, SOPER_STOP);
 #else
-			m_soundChannel = m_sound->Play(SOUND_GGG, m_object->RetPosition(0), 1.0f, 0.5f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_GGG, m_object->RetPosition(0), 1.0f, 0.5f, true);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 2.0f, 4.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.5f, SOPER_STOP);
 #endif
@@ -204,7 +203,7 @@ BOOL CTaskTerraform::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -219,7 +218,7 @@ Error CTaskTerraform::Start()
 
 	ObjectType	type;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 	if ( !m_physics->RetLand() )  return ERR_TERRA_VEH;
 
 	type = m_object->RetType();
@@ -248,7 +247,7 @@ Error CTaskTerraform::Start()
 #endif
 	m_time     = 0.0f;
 
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 
 	m_camera->StartCentering(m_object, PI*0.35f, 99.9f, 20.0f, 2.0f);
 	return ERR_OK;
@@ -340,7 +339,7 @@ Error CTaskTerraform::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskTerraform::Abort()
+bool CTaskTerraform::Abort()
 {
 	CObject*	power;
 
@@ -363,13 +362,13 @@ BOOL CTaskTerraform::Abort()
 	}
 
 	m_camera->StopCentering(m_object, 2.0f);
-	return TRUE;
+	return true;
 }
 
 
 // Returns all the close ants and spiders.
 
-BOOL CTaskTerraform::Terraform()
+bool CTaskTerraform::Terraform()
 {
 	CObject*	pObj;
 	CBrain*		brain;
@@ -412,18 +411,18 @@ BOOL CTaskTerraform::Terraform()
 				brain = pObj->RetBrain();
 				if ( brain != 0 )  brain->StopTask();
 				motion->SetAction(MAS_BACK1, 0.8f+Rand()*0.3f);
-				pObj->SetFixed(TRUE);  // not moving
+				pObj->SetFixed(true);  // not moving
 			}
 			if ( type == OBJECT_SPIDER )
 			{
 				brain = pObj->RetBrain();
 				if ( brain != 0 )  brain->StopTask();
 				motion->SetAction(MSS_BACK1, 0.8f+Rand()*0.3f);
-				pObj->SetFixed(TRUE);  // not moving
+				pObj->SetFixed(true);  // not moving
 			}
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 

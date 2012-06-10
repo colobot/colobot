@@ -62,7 +62,7 @@ public:
 	CMainDialog(CInstanceManager* iMan);
 	~CMainDialog();
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 	void	ChangePhase(Phase phase);
 
 	void	SetSceneRead(char* name);
@@ -74,16 +74,16 @@ public:
 	char*	RetSceneName();
 	int		RetSceneRank();
 	char*	RetSceneDir();
-	BOOL	RetSceneSoluce();
+	bool	RetSceneSoluce();
 	char*	RetSavegameDir();
 	char*	RetPublicDir();
 
-	BOOL	RetTooltip();
-	BOOL	RetGlint();
-	BOOL	RetSoluce4();
-	BOOL	RetMovies();
-	BOOL	RetNiceReset();
-	BOOL	RetHimselfDamage();
+	bool	RetTooltip();
+	bool	RetGlint();
+	bool	RetSoluce4();
+	bool	RetMovies();
+	bool	RetNiceReset();
+	bool	RetHimselfDamage();
 
 	void	SetUserDir(char *base, int rank);
 	void	BuildSceneName(char *filename, char *base, int rank);
@@ -94,10 +94,10 @@ public:
 	void	StartDeleteObject();
 	void	StartDeleteGame(char *gamer);
 	void	StartQuit();
-	void	StartDialog(FPOINT dim, BOOL bFire, BOOL bOK, BOOL bCancel);
+	void	StartDialog(FPOINT dim, bool bFire, bool bOK, bool bCancel);
 	void	FrameDialog(float rTime);
 	void	StopDialog();
-	BOOL	IsDialog();
+	bool	IsDialog();
 
 	void	StartSuspend();
 	void	StopSuspend();
@@ -105,13 +105,13 @@ public:
 	void	SetupMemorize();
 	void	SetupRecall();
 
-	BOOL	ReadGamerInfo();
-	BOOL	WriteGamerInfo();
+	bool	ReadGamerInfo();
+	bool	WriteGamerInfo();
 	void	SetGamerInfoTry(int rank, int numTry);
 	int		RetGamerInfoTry(int rank);
-	void	SetGamerInfoPassed(int rank, BOOL bPassed);
-	BOOL	RetGamerInfoPassed(int rank);
-	BOOL	NextMission();
+	void	SetGamerInfoPassed(int rank, bool bPassed);
+	bool	RetGamerInfoPassed(int rank);
+	bool	NextMission();
 
 	void	WriteGamerPerso(char *gamer);
 	void	ReadGamerPerso(char *gamer);
@@ -119,7 +119,7 @@ public:
 	int		RetGamerFace(char *gamer);
 	int		RetGamerFace();
 	int		RetGamerGlasses();
-	BOOL	RetGamerOnlyHead();
+	bool	RetGamerOnlyHead();
 	float	RetPersoAngle();
 	D3DCOLORVALUE RetGamerColorHair();
 	D3DCOLORVALUE RetGamerColorCombi();
@@ -131,7 +131,7 @@ public:
 protected:
 	void	GlintMove();
 	void	FrameParticule(float rTime);
-	void	NiceParticule(FPOINT mouse, BOOL bPress);
+	void	NiceParticule(FPOINT mouse, bool bPress);
 	void	ReadNameList();
 	void	UpdateNameList();
 	void	UpdateNameEdit();
@@ -145,13 +145,13 @@ protected:
 	void	FixPerso(int rank, int index);
 	void	ColorPerso();
 	void	DefPerso();
-	BOOL	IsIOReadScene();
+	bool	IsIOReadScene();
 	void	IOReadName();
 	void	IOReadList();
 	void	IOUpdateList();
 	void	IODeleteScene();
-	BOOL	IOWriteScene();
-	BOOL	IOReadScene();
+	bool	IOWriteScene();
+	bool	IOReadScene();
 	int		RetChapPassed();
 	void	UpdateSceneChap(int &chap);
 	void	UpdateSceneList(int chap, int &sel);
@@ -201,12 +201,12 @@ protected:
 	char			m_stackRead[100];		// name of the scene to read
 	char			m_sceneName[20];		// name of the scene to play
 	int				m_sceneRank;		// rank of the scene to play
-	BOOL			m_bSceneSoluce;			// shows the solution
-	BOOL			m_bSimulSetup;			// adjustment during the game
-	BOOL			m_accessEnable;
-	BOOL			m_accessMission;
-	BOOL			m_accessUser;
-	BOOL			m_bDeleteGamer;
+	bool			m_bSceneSoluce;			// shows the solution
+	bool			m_bSimulSetup;			// adjustment during the game
+	bool			m_accessEnable;
+	bool			m_accessMission;
+	bool			m_accessUser;
+	bool			m_bDeleteGamer;
 
 	int				m_userTotal;
 	char			m_userList[USERLISTMAX][100];
@@ -216,33 +216,33 @@ protected:
 
 	int				m_setupSelDevice;
 	int				m_setupSelMode;
-	BOOL			m_setupFull;
+	bool			m_setupFull;
 
-	BOOL			m_bTooltip;			// tooltips to be displayed?
-	BOOL			m_bGlint;			// reflections on buttons?
-	BOOL			m_bRain;			// rain in the interface?
-	BOOL			m_bSoluce4;			// solutions in program 4?
-	BOOL			m_bMovies;			// cinematics?
-	BOOL			m_bNiceReset;			// for CTaskReset
-	BOOL			m_bHimselfDamage;		// for shots
-	BOOL			m_bCameraScroll;		// for CCamera
-	BOOL			m_bCameraInvertX;		// for CCamera
-	BOOL			m_bCameraInvertY;		// for CCamera
-	BOOL			m_bEffect;			// for CCamera
+	bool			m_bTooltip;			// tooltips to be displayed?
+	bool			m_bGlint;			// reflections on buttons?
+	bool			m_bRain;			// rain in the interface?
+	bool			m_bSoluce4;			// solutions in program 4?
+	bool			m_bMovies;			// cinematics?
+	bool			m_bNiceReset;			// for CTaskReset
+	bool			m_bHimselfDamage;		// for shots
+	bool			m_bCameraScroll;		// for CCamera
+	bool			m_bCameraInvertX;		// for CCamera
+	bool			m_bCameraInvertY;		// for CCamera
+	bool			m_bEffect;			// for CCamera
 
 	FPOINT			m_glintMouse;
 	float			m_glintTime;
 
 	int				m_loadingCounter;
 
-	BOOL			m_bDialog;			// this dialogue?
-	BOOL			m_bDialogFire;			// setting on fire?
-	BOOL			m_bDialogDelete;
+	bool			m_bDialog;			// this dialogue?
+	bool			m_bDialogFire;			// setting on fire?
+	bool			m_bDialogDelete;
 	FPOINT			m_dialogPos;
 	FPOINT			m_dialogDim;
 	float			m_dialogParti;
 	float			m_dialogTime;
-	BOOL			m_bInitPause;
+	bool			m_bInitPause;
 	CameraType		m_initCamera;
 
 	int				m_partiPhase[10];

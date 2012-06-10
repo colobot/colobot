@@ -65,13 +65,12 @@ CAutoEnergy::CAutoEnergy(CInstanceManager* iMan, CObject* object)
 
 CAutoEnergy::~CAutoEnergy()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoEnergy::DeleteObject(BOOL bAll)
+void CAutoEnergy::DeleteObject(bool bAll)
 {
 	CObject*	fret;
 
@@ -121,19 +120,19 @@ void CAutoEnergy::Init()
 
 // Management of an event.
 
-BOOL CAutoEnergy::EventProcess(const Event &event)
+bool CAutoEnergy::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	D3DVECTOR	pos, ppos, speed;
 	FPOINT		dim, c, p;
 	TerrainRes	res;
 	float		big;
-	BOOL		bGO;
+	bool		bGO;
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -157,7 +156,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 				m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
 			}
 		}
-		return TRUE;
+		return true;
 	}
 	
 	UpdateInterface(event.rTime);
@@ -175,17 +174,17 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			bGO = FALSE;
+			bGO = false;
 			fret = SearchMetal();  // transform metal?
 			if ( fret != 0 )
 			{
 				if ( fret->RetType() == OBJECT_METAL )
 				{
-					if ( big > ENERGY_POWER )  bGO = TRUE;
+					if ( big > ENERGY_POWER )  bGO = true;
 				}
 				else
 				{
-					if ( !SearchVehicle() )  bGO = TRUE;
+					if ( !SearchVehicle() )  bGO = true;
 				}
 			}
 
@@ -193,11 +192,11 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 			{
 				if ( fret->RetType() == OBJECT_METAL )
 				{
-					fret->SetLock(TRUE);  // usable metal
+					fret->SetLock(true);  // usable metal
 					CreatePower();  // creates the battery
 				}
 
-				SetBusy(TRUE);
+				SetBusy(true);
 				InitProgressTotal(ENERGY_DELAY);
 				CAuto::UpdateInterface();
 
@@ -333,7 +332,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 			if ( fret != 0 )
 			{
 				fret->SetZoom(0, 1.0f);
-				fret->SetLock(FALSE);  // usable battery
+				fret->SetLock(false);  // usable battery
 				fret->SetTruck(m_object);
 				fret->SetPosition(0, D3DVECTOR(0.0f, 3.0f, 0.0f));
 				m_object->SetPower(fret);
@@ -341,7 +340,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 				m_displayText->DisplayError(INFO_ENERGY, m_object);
 			}
 
-			SetBusy(FALSE);
+			SetBusy(false);
 			CAuto::UpdateInterface();
 
 			m_phase    = AENP_SMOKE;
@@ -382,7 +381,7 @@ BOOL CAutoEnergy::EventProcess(const Event &event)
 	if ( big > 1.0f )  big = 1.0f;
 	m_object->SetEnergy(big);  // shift the big pile
 
-	return TRUE;
+	return true;
 }
 
 
@@ -407,7 +406,7 @@ CObject* CAutoEnergy::SearchMetal()
 
 // Search if a vehicle is too close.
 
-BOOL CAutoEnergy::SearchVehicle()
+bool CAutoEnergy::SearchVehicle()
 {
 	CObject*	pObj;
 	D3DVECTOR	cPos, oPos;
@@ -460,10 +459,10 @@ BOOL CAutoEnergy::SearchVehicle()
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
 		dist = Length(oPos, cPos)-oRadius;
 
-		if ( dist < 10.0f )  return TRUE;
+		if ( dist < 10.0f )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 // Create a cell.
@@ -484,7 +483,7 @@ void CAutoEnergy::CreatePower()
 		m_displayText->DisplayError(ERR_TOOMANY, m_object);
 		return;
 	}
-	power->SetLock(TRUE);  // battery not yet usable
+	power->SetLock(true);  // battery not yet usable
 
 	pos = power->RetPosition(0);
 	pos.y += 3.0f;
@@ -560,7 +559,7 @@ Error CAutoEnergy::RetError()
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoEnergy::CreateInterface(BOOL bSelect)
+bool CAutoEnergy::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -568,10 +567,10 @@ BOOL CAutoEnergy::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -590,7 +589,7 @@ BOOL CAutoEnergy::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 108, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 // Updates the state of all buttons on the interface,
@@ -621,12 +620,12 @@ void CAutoEnergy::UpdateInterface(float rTime)
 
 // Saves all parameters of the controller.
 
-BOOL CAutoEnergy::Write(char *line)
+bool CAutoEnergy::Write(char *line)
 {
 	char	name[100];
 
 	if ( m_phase == AENP_STOP ||
-		 m_phase == AENP_WAIT )  return FALSE;
+		 m_phase == AENP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -642,14 +641,14 @@ BOOL CAutoEnergy::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoEnergy::Read(char *line)
+bool CAutoEnergy::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -660,5 +659,5 @@ BOOL CAutoEnergy::Read(char *line)
 	m_lastUpdateTime = 0.0f;
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }

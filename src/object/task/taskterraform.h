@@ -47,14 +47,14 @@ public:
 	CTaskTerraform(CInstanceManager* iMan, CObject* object);
 	~CTaskTerraform();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start();
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
-	BOOL		Terraform();
+	bool		Terraform();
 
 protected:
 	TaskTerraPhase	m_phase;
@@ -63,7 +63,7 @@ protected:
 	float			m_time;
 	float			m_lastParticule;
 	int				m_soundChannel;
-	BOOL			m_bError;
+	bool			m_bError;
 	D3DVECTOR		m_terraPos;
 };
 

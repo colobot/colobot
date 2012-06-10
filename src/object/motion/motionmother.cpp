@@ -43,7 +43,7 @@
 
 
 
-#define ADJUST_ANGLE		FALSE		// TRUE -> adjusts the angles of the members
+#define ADJUST_ANGLE		false		// true -> adjusts the angles of the members
 #define START_TIME		1000.0f		// beginning of the relative time
 
 
@@ -62,7 +62,7 @@ CMotionMother::CMotionMother(CInstanceManager* iMan, CObject* object)
 	m_armMemberIndex = 0;
 	m_armLastAction  = -1;
 	m_specAction     = -1;
-	m_bArmStop = FALSE;
+	m_bArmStop = false;
 }
 
 // Object's destructor.
@@ -74,20 +74,20 @@ CMotionMother::~CMotionMother()
 
 // Removes an object.
 
-void CMotionMother::DeleteObject(BOOL bAll)
+void CMotionMother::DeleteObject(bool bAll)
 {
 }
 
 
 // Creates a vehicle traveling any lands on the ground.
 
-BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 						  float power)
 {
 	CModFile*	pModFile;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 2+12+6 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 2+12+6 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -295,7 +295,7 @@ BOOL CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates the physics of the object.
@@ -356,7 +356,7 @@ void CMotionMother::CreatePhysics()
 
 // Management of an event.
 
-BOOL CMotionMother::EventProcess(const Event &event)
+bool CMotionMother::EventProcess(const Event &event)
 {
 	CMotion::EventProcess(event);
 
@@ -395,20 +395,20 @@ BOOL CMotionMother::EventProcess(const Event &event)
 #endif
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Management of an event.
 
-BOOL CMotionMother::EventFrame(const Event &event)
+bool CMotionMother::EventFrame(const Event &event)
 {
 	D3DVECTOR	dir;
 	float		s, a, prog;
 	int			i, st, nd;
-	BOOL		bStop;
+	bool		bStop;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
 
 	s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
 	a = Abs(m_physics->RetCirMotionY(MO_MOTSPEED)*26.0f);
@@ -535,7 +535,7 @@ BOOL CMotionMother::EventFrame(const Event &event)
 	m_object->SetAngleY(19, sinf(m_armTimeAbs*0.9f)*0.20f);  // left claw
 	m_object->SetAngleZ(19, -0.20f);
 
-	return TRUE;
+	return true;
 }
 
 

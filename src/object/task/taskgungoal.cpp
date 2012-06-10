@@ -42,7 +42,6 @@
 CTaskGunGoal::CTaskGunGoal(CInstanceManager* iMan, CObject* object)
 						  : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -54,12 +53,12 @@ CTaskGunGoal::~CTaskGunGoal()
 
 // Management of an event.
 
-BOOL CTaskGunGoal::EventProcess(const Event &event)
+bool CTaskGunGoal::EventProcess(const Event &event)
 {
 	float		dir;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 
@@ -83,7 +82,7 @@ BOOL CTaskGunGoal::EventProcess(const Event &event)
 	}
 	m_object->SetGunGoalH(dir);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -127,7 +126,7 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
 	if ( m_finalDirV != m_initialDirV ||
 		 m_finalDirH != m_initialDirH )
 	{
-		i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.3f, 1.5f, TRUE);
+		i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.3f, 1.5f, true);
 		m_sound->AddEnvelope(i, 0.3f, 1.5f, 1.0f/m_speed, SOPER_STOP);
 	}
 
@@ -154,8 +153,8 @@ Error CTaskGunGoal::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskGunGoal::Abort()
+bool CTaskGunGoal::Abort()
 {
-	return TRUE;
+	return true;
 }
 

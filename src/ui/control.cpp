@@ -58,10 +58,10 @@ CControl::CControl(CInstanceManager* iMan)
 	m_justif      = 0;
 	m_name[0]     = 0;
 	m_tooltip[0]  = 0;
-	m_bFocus      = FALSE;
-	m_bCapture    = FALSE;
+	m_bFocus      = false;
+	m_bCapture    = false;
 
-	m_bGlint        = FALSE;
+	m_bGlint        = false;
 	m_glintCorner1  = FPOINT(0.0f, 0.0f);
 	m_glintCorner2  = FPOINT(0.0f, 0.0f);
 	m_glintProgress = 999.0f;
@@ -78,7 +78,7 @@ CControl::~CControl()
 // Creates a new button.
 //	pos: [0..1]
 
-BOOL CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	char	text[100];
 	char*	p;
@@ -108,7 +108,7 @@ BOOL CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 		strcpy(m_tooltip, p+1);  // text after "\\"
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -145,34 +145,34 @@ FPOINT CControl::RetDim()
 
 // Modify an attribute of state.
 
-BOOL CControl::SetState(int state, BOOL bState)
+bool CControl::SetState(int state, bool bState)
 {
 	if ( bState )  m_state |= state;
 	else           m_state &= ~state;
-	return TRUE;
+	return true;
 }
 
 // Sets an attribute of state.
 
-BOOL CControl::SetState(int state)
+bool CControl::SetState(int state)
 {
 	m_state |= state;
-	return TRUE;
+	return true;
 }
 
 // Removes an attribute of state.
 
-BOOL CControl::ClearState(int state)
+bool CControl::ClearState(int state)
 {
 	m_state &= ~state;
-	return TRUE;
+	return true;
 }
 
 // Tests an attribute of state.
 
-BOOL CControl::TestState(int state)
+bool CControl::TestState(int state)
 {
-	return (m_state & state) ? TRUE:FALSE;
+	return (m_state & state) ? true:false;
 }
 
 // Returns all attributes of state.
@@ -198,7 +198,7 @@ int CControl::RetIcon()
 
 // Management of the button name.
 
-void CControl::SetName(char* name, BOOL bTooltip)
+void CControl::SetName(char* name, bool bTooltip)
 {
 	char*	p;
 
@@ -292,33 +292,33 @@ FontType CControl::RetFontType()
 
 // Specifies the tooltip.
 
-BOOL CControl::SetTooltip(char* name)
+bool CControl::SetTooltip(char* name)
 {
 	strcpy(m_tooltip, name);
-	return TRUE;
+	return true;
 }
 
-BOOL CControl::GetTooltip(FPOINT pos, char* name)
+bool CControl::GetTooltip(FPOINT pos, char* name)
 {
-	if ( m_tooltip[0] == 0 )  return FALSE;
-	if ( (m_state & STATE_VISIBLE) == 0 )  return FALSE;
-	if ( (m_state & STATE_ENABLE) == 0 )  return FALSE;
-	if ( m_state & STATE_DEAD )  return FALSE;
-	if ( !Detect(pos) )  return FALSE;
+	if ( m_tooltip[0] == 0 )  return false;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return false;
+	if ( (m_state & STATE_ENABLE) == 0 )  return false;
+	if ( m_state & STATE_DEAD )  return false;
+	if ( !Detect(pos) )  return false;
 
 	strcpy(name, m_tooltip);
-	return TRUE;
+	return true;
 }
 
 
 // Management of the focus.
 
-void CControl::SetFocus(BOOL bFocus)
+void CControl::SetFocus(bool bFocus)
 {
 	m_bFocus = bFocus;
 }
 
-BOOL CControl::RetFocus()
+bool CControl::RetFocus()
 {
 	return m_bFocus;
 }
@@ -334,9 +334,9 @@ EventMsg CControl::RetEventMsg()
 
 // Management of an event.
 
-BOOL CControl::EventProcess(const Event &event)
+bool CControl::EventProcess(const Event &event)
 {
-	if ( m_state & STATE_DEAD )  return TRUE;
+	if ( m_state & STATE_DEAD )  return true;
 
 	if ( event.event == EVENT_FRAME && m_bGlint )
 	{
@@ -366,7 +366,7 @@ BOOL CControl::EventProcess(const Event &event)
 	{
 		if ( Detect(event.pos) )
 		{
-			m_bCapture = TRUE;
+			m_bCapture = true;
 			SetState(STATE_PRESS);
 		}
 	}
@@ -385,11 +385,11 @@ BOOL CControl::EventProcess(const Event &event)
 
 	if ( event.event == EVENT_LBUTTONUP && m_bCapture )
 	{
-		m_bCapture = FALSE;
+		m_bCapture = false;
 		ClearState(STATE_PRESS);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -397,12 +397,12 @@ BOOL CControl::EventProcess(const Event &event)
 
 void CControl::GlintDelete()
 {
-	m_bGlint = FALSE;
+	m_bGlint = false;
 }
 
 // Creates a reflection for that button.
 
-void CControl::GlintCreate(FPOINT ref, BOOL bLeft, BOOL bUp)
+void CControl::GlintCreate(FPOINT ref, bool bLeft, bool bUp)
 {
 	float	offset;
 
@@ -434,7 +434,7 @@ void CControl::GlintCreate(FPOINT ref, BOOL bLeft, BOOL bUp)
 		m_glintCorner2.y = ref.y+offset;
 	}
 
-	m_bGlint = TRUE;
+	m_bGlint = true;
 }
 
 // Management of reflection.
@@ -865,7 +865,7 @@ void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
 
 // Detects whether a position is in the button.
 
-BOOL CControl::Detect(FPOINT pos)
+bool CControl::Detect(FPOINT pos)
 {
 	return ( pos.x >= m_pos.x         &&
 			 pos.x <= m_pos.x+m_dim.x &&

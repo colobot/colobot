@@ -43,7 +43,7 @@
 
 
 
-#define ADJUST_ANGLE		FALSE		// TRUE -> adjusts the angles of the members
+#define ADJUST_ANGLE		false		// true -> adjusts the angles of the members
 #define START_TIME		1000.0f		// beginning of the relative time
 
 
@@ -61,7 +61,7 @@ CMotionAnt::CMotionAnt(CInstanceManager* iMan, CObject* object)
 	m_armPartIndex   = 0;
 	m_armMemberIndex = 0;
 	m_armLastAction  = -1;
-	m_bArmStop = FALSE;
+	m_bArmStop = false;
 	m_lastParticule = 0.0f;
 }
 
@@ -74,20 +74,20 @@ CMotionAnt::~CMotionAnt()
 
 // Removes an object.
 
-void CMotionAnt::DeleteObject(BOOL bAll)
+void CMotionAnt::DeleteObject(bool bAll)
 {
 }
 
 
 // Creates a vehicle poses some rolling on the floor.
 
-BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 						float power)
 {
 	CModFile*	pModFile;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 3+18 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 3+18 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -309,7 +309,7 @@ BOOL CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates the physics of the object.
@@ -430,7 +430,7 @@ void CMotionAnt::CreatePhysics()
 
 // Management of an event.
 
-BOOL CMotionAnt::EventProcess(const Event &event)
+bool CMotionAnt::EventProcess(const Event &event)
 {
 	CMotion::EventProcess(event);
 
@@ -469,7 +469,7 @@ BOOL CMotionAnt::EventProcess(const Event &event)
 #endif
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Calculates a value (radians) proportional between a and b (degrees).
@@ -486,17 +486,17 @@ inline float Propf(float a, float b, float p)
 
 // Management of an event.
 
-BOOL CMotionAnt::EventFrame(const Event &event)
+bool CMotionAnt::EventFrame(const Event &event)
 {
 	D3DVECTOR	dir, pos, speed;
 	FPOINT		dim;
 	float		s, a, prog, time;
 	float		tSt[9], tNd[9];
 	int			i, ii, st, nd, action;
-	BOOL		bStop;
+	bool		bStop;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
 
 	s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
 	a = Abs(m_physics->RetCirMotionY(MO_MOTSPEED)*2.0f);
@@ -833,7 +833,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		if ( m_progress >= 1.0f )
 		{
 			SetAction(-1);
-			m_object->SetFixed(FALSE);  // moving again
+			m_object->SetFixed(false);  // moving again
 		}
 	}
 	else
@@ -893,7 +893,7 @@ BOOL CMotionAnt::EventFrame(const Event &event)
 		m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
 	}
 
-	return TRUE;
+	return true;
 }
 
 

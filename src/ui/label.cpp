@@ -50,21 +50,21 @@ CLabel::~CLabel()
 
 // Creates a new button.
 
-BOOL CLabel::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CLabel::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
 	CControl::Create(pos, dim, icon, eventMsg);
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CLabel::EventProcess(const Event &event)
+bool CLabel::EventProcess(const Event &event)
 {
 //?	CControl::EventProcess(event);
-	return TRUE;
+	return true;
 }
 
 

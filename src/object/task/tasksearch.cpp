@@ -47,8 +47,6 @@
 CTaskSearch::CTaskSearch(CInstanceManager* iMan, CObject* object)
 						 : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
-
 	m_hand = TSH_UP;
 }
 
@@ -61,7 +59,7 @@ CTaskSearch::~CTaskSearch()
 
 // Management of an event.
 
-BOOL CTaskSearch::EventProcess(const Event &event)
+bool CTaskSearch::EventProcess(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed;
@@ -69,9 +67,9 @@ BOOL CTaskSearch::EventProcess(const Event &event)
 	float		angle;
 	int			i;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	m_progress += event.rTime*m_speed;  // others advance
 	m_time += event.rTime;
@@ -104,7 +102,7 @@ BOOL CTaskSearch::EventProcess(const Event &event)
 		m_particule->CreateParticule(pos, speed, dim, PARTIGAS);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -142,7 +140,7 @@ Error CTaskSearch::Start()
 	D3DVECTOR	speed;
 	int			i;
 
-	m_bError = TRUE;
+	m_bError = true;
 	if ( !m_physics->RetLand() )  return ERR_SEARCH_FLY;
 
 	speed = m_physics->RetMotorSpeed();
@@ -163,16 +161,16 @@ Error CTaskSearch::Start()
 	m_lastParticule = 0.0f;
 
 	InitAngle();
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 
 	m_camera->StartCentering(m_object, PI*0.50f, 99.9f, 0.0f, 1.0f);
 
-	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, TRUE);
+	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, true);
 	m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.9f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_STOP);
 
-	m_physics->SetFreeze(TRUE);  // it does not move
+	m_physics->SetFreeze(true);  // it does not move
 
 	return ERR_OK;
 }
@@ -214,7 +212,7 @@ Error CTaskSearch::IsEnded()
 		m_hand  = TSH_UP;
 		InitAngle();
 
-		i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, TRUE);
+		i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, true);
 		m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.9f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_STOP);
@@ -230,17 +228,17 @@ Error CTaskSearch::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskSearch::Abort()
+bool CTaskSearch::Abort()
 {
 	m_camera->StopCentering(m_object, 2.0f);
-	m_physics->SetFreeze(FALSE);  // is moving again
-	return TRUE;
+	m_physics->SetFreeze(false);  // is moving again
+	return true;
 }
 
 
 // Creates a mark if possible.
 
-BOOL CTaskSearch::CreateMark()
+bool CTaskSearch::CreateMark()
 {
 	CObject*	fret;
 	ObjectType	type;
@@ -254,7 +252,7 @@ BOOL CTaskSearch::CreateMark()
 	pos = Transform(*mat, pos);  // sensor position
 
 	res = m_terrain->RetResource(pos);
-	if ( res == TR_NULL )  return FALSE;
+	if ( res == TR_NULL )  return false;
 
 	type = OBJECT_NULL;
 	if ( res == TR_STONE )
@@ -292,7 +290,7 @@ BOOL CTaskSearch::CreateMark()
 		type = OBJECT_MARKKEYd;
 		info = INFO_MARKKEYd;
 	}
-	if ( type == OBJECT_NULL )  return FALSE;
+	if ( type == OBJECT_NULL )  return false;
 
 //?	DeleteMark(type);
 
@@ -301,12 +299,12 @@ BOOL CTaskSearch::CreateMark()
 	{
 		delete fret;
 		m_displayText->DisplayError(ERR_TOOMANY, m_object);
-		return FALSE;
+		return false;
 	}
 
 	m_displayText->DisplayError(info, pos, 5.0f, 50.0f);  // displays the message
 
-	return TRUE;
+	return true;
 }
 
 // Destroys the marks of a given type.

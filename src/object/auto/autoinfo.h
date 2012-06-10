@@ -48,17 +48,17 @@ public:
 	CAutoInfo(CInstanceManager* iMan, CObject* object);
 	~CAutoInfo();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
 	void		Start(int param);
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	void		UpdateInterface(float rTime);
@@ -72,6 +72,6 @@ protected:
 	float			m_timeVirus;
 	float			m_lastParticule;
 	D3DVECTOR		m_goal;
-	BOOL			m_bLastVirus;
+	bool			m_bLastVirus;
 };
 

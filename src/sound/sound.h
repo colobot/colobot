@@ -162,19 +162,19 @@ public:
 	CSound(CInstanceManager* iMan);
 	~CSound();
 
-	void	SetDebugMode(BOOL bMode);
-	BOOL	Create(HWND hWnd, BOOL b3D);
+	void	SetDebugMode(bool bMode);
+	bool	Create(HWND hWnd, bool b3D);
 	void	CacheAll();
 
-	void	SetState(BOOL bState);
-	BOOL	RetEnable();
+	void	SetState(bool bState);
+	bool	RetEnable();
 
 	void	SetCDpath(char *path);
-	void	SetAudioTrack(BOOL bAudio);
+	void	SetAudioTrack(bool bAudio);
 
-	void	SetSound3D(BOOL bMode);
-	BOOL	RetSound3D();
-	BOOL	RetSound3DCap();
+	void	SetSound3D(bool bMode);
+	bool	RetSound3D();
+	bool	RetSound3DCap();
 
 	void	SetAudioVolume(int volume);
 	int		RetAudioVolume();
@@ -184,51 +184,51 @@ public:
 	void	SetListener(D3DVECTOR eye, D3DVECTOR lookat);
 	void	FrameMove(float rTime);
 
-	int		Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, BOOL bLoop=FALSE);
-	int		Play(Sound sound, D3DVECTOR pos, float amplitude=1.0f, float frequency=1.0f, BOOL bLoop=FALSE);
-	BOOL	FlushEnvelope(int channel);
-	BOOL	AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper);
-	BOOL	Position(int channel, D3DVECTOR pos);
-	BOOL	Frequency(int channel, float frequency);
-	BOOL	Stop(int channel);
-	BOOL	StopAll();
-	BOOL	MuteAll(BOOL bMute);
+	int		Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop=false);
+	int		Play(Sound sound, D3DVECTOR pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop=false);
+	bool	FlushEnvelope(int channel);
+	bool	AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper);
+	bool	Position(int channel, D3DVECTOR pos);
+	bool	Frequency(int channel, float frequency);
+	bool	Stop(int channel);
+	bool	StopAll();
+	bool	MuteAll(bool bMute);
 
-	BOOL	PlayMusic(int rank, BOOL bRepeat);
-	BOOL	RestartMusic();
+	bool	PlayMusic(int rank, bool bRepeat);
+	bool	RestartMusic();
 	void	SuspendMusic();
 	void	StopMusic();
-	BOOL	IsPlayingMusic();
+	bool	IsPlayingMusic();
 	void	AdaptVolumeMusic();
 
 protected:
-	BOOL	CheckChannel(int &channel);
-	BOOL	CreateSoundBuffer(int channel, DWORD size, DWORD freq, DWORD bitsPerSample, DWORD blkAlign, BOOL bStereo);
-	BOOL	ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size);
-	BOOL	CreateBuffer(int channel, Sound sound);
+	bool	CheckChannel(int &channel);
+	bool	CreateSoundBuffer(int channel, DWORD size, DWORD freq, DWORD bitsPerSample, DWORD blkAlign, bool bStereo);
+	bool	ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size);
+	bool	CreateBuffer(int channel, Sound sound);
 	void	ComputeVolumePan2D(int channel, const D3DVECTOR &pos);
-	BOOL	ReadFile(Sound sound, char *metaname, char *filename);
+	bool	ReadFile(Sound sound, char *metaname, char *filename);
 	int		RetPriority(Sound sound);
-	BOOL	SearchFreeBuffer(Sound sound, int &channel, BOOL &bAlreadyLoaded);
+	bool	SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded);
 	void	OperNext(int channel);
-	BOOL	PlayAudioTrack(int rank);
+	bool	PlayAudioTrack(int rank);
 
 protected:
 	CInstanceManager*		m_iMan;
 
 	HWND					m_hWnd;
-	BOOL					m_bEnable;
-	BOOL					m_bState;
-	BOOL					m_bAudioTrack;
-	BOOL					m_ctrl3D;
-	BOOL					m_bDebugMode;
+	bool					m_bEnable;
+	bool					m_bState;
+	bool					m_bAudioTrack;
+	bool					m_ctrl3D;
+	bool					m_bDebugMode;
 	LPDIRECTSOUND			m_lpDS;
 	LPDIRECTSOUND3DLISTENER	m_listener;
 	SoundChannel			m_channel[MAXSOUND];
 	char*					m_files[MAXFILES];
 	UINT					m_MidiDeviceID;
 	int						m_MIDIMusic;
-	BOOL					m_bRepeatMusic;
+	bool					m_bRepeatMusic;
 	int						m_audioVolume;
 	int						m_midiVolume;
 	int						m_lastMidiVolume;

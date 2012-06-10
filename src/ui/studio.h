@@ -53,17 +53,17 @@ public:
 	CStudio(CInstanceManager* iMan);
 	~CStudio();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	void		StartEditScript(CScript *script, char* name, int rank);
-	BOOL		StopEditScript(BOOL bCancel);
+	bool		StopEditScript(bool bCancel);
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 	void		SearchToken(CEdit* edit);
 	void		ColorizeScript(CEdit* edit);
 	void		AdjustEditScript();
-	void		SetInfoText(char *text, BOOL bClickable);
+	void		SetInfoText(char *text, bool bClickable);
 	void		ViewEditScript();
 	void		UpdateFlux();
 	void		UpdateButtons();
@@ -71,15 +71,15 @@ protected:
 	void		StartDialog(StudioDialog type);
 	void		StopDialog();
 	void		AdjustDialog();
-	BOOL		EventDialog(const Event &event);
+	bool		EventDialog(const Event &event);
 	void		UpdateChangeList();
 	void		UpdateChangeEdit();
 	void		UpdateDialogAction();
 	void		UpdateDialogPublic();
 	void		UpdateDialogList();
-	void		SearchDirectory(char *dir, BOOL bCreate);
-	BOOL		ReadProgram();
-	BOOL		WriteProgram();
+	void		SearchDirectory(char *dir, bool bCreate);
+	bool		ReadProgram();
+	bool		WriteProgram();
 
 protected:
 	CInstanceManager* m_iMan;
@@ -93,8 +93,8 @@ protected:
 	int			m_rank;
 	CScript*	m_script;
 
-	BOOL		m_bEditMaximized;
-	BOOL		m_bEditMinimized;
+	bool		m_bEditMaximized;
+	bool		m_bEditMinimized;
 
 	CameraType	m_editCamera;
 	FPOINT		m_editActualPos;
@@ -104,9 +104,9 @@ protected:
 
 	float		m_time;
 	float		m_fixInfoTextTime;
-	BOOL		m_bRunning;
-	BOOL		m_bRealTime;
-	BOOL		m_bInitPause;
+	bool		m_bRunning;
+	bool		m_bRealTime;
+	bool		m_bInitPause;
 	char		m_helpFilename[100];
 
 	StudioDialog m_dialog;

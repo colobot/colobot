@@ -48,7 +48,6 @@
 CTaskPen::CTaskPen(CInstanceManager* iMan, CObject* object)
 							   : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -60,15 +59,15 @@ CTaskPen::~CTaskPen()
 
 // Management of an event.
 
-BOOL CTaskPen::EventProcess(const Event &event)
+bool CTaskPen::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
 	int			i;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	if ( m_delay == 0.0f )
 	{
@@ -140,25 +139,25 @@ BOOL CTaskPen::EventProcess(const Event &event)
 		m_object->SetPosition(10+i, pos);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Assigns the goal has achieved.
 
-Error CTaskPen::Start(BOOL bDown, int color)
+Error CTaskPen::Start(bool bDown, int color)
 {
 	D3DVECTOR	pos;
 	D3DMATRIX*	mat;
 	ObjectType	type;
 	int			i;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILEdr )  return ERR_FIRE_VEH;
 
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 
 	m_oldAngle = m_object->RetAngleY(1);
 	m_newAngle = ColorToAngle(color);
@@ -247,10 +246,10 @@ Error CTaskPen::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskPen::Abort()
+bool CTaskPen::Abort()
 {
 //?	m_camera->StopCentering(m_object, 0.5f);
-	return TRUE;
+	return true;
 }
 
 
@@ -260,7 +259,7 @@ void CTaskPen::SoundManip(float time, float amplitude, float frequency)
 {
 	int		i;
 
-	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, TRUE);
+	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, true);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);

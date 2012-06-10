@@ -74,31 +74,31 @@ public:
 	CBrain(CInstanceManager* iMan, CObject* object);
 	~CBrain();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		SetPhysics(CPhysics* physics);
 	void		SetMotion(CMotion* motion);
 
-	BOOL		EventProcess(const Event &event);
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		EventProcess(const Event &event);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
-	BOOL		IsBusy();
-	void		SetActivity(BOOL bMode);
-	BOOL		RetActivity();
-	BOOL		IsProgram();
-	BOOL		ProgramExist(int rank);
+	bool		IsBusy();
+	void		SetActivity(bool bMode);
+	bool		RetActivity();
+	bool		IsProgram();
+	bool		ProgramExist(int rank);
 	void		RunProgram(int rank);
 	int			FreeProgram();
 	int			RetProgram();
 	void		StopProgram();
 	void		StopTask();
 
-	BOOL		IntroduceVirus();
-	void		SetActiveVirus(BOOL bActive);
-	BOOL		RetActiveVirus();
+	bool		IntroduceVirus();
+	void		SetActiveVirus(bool bActive);
+	bool		RetActiveVirus();
 
 	void		SetScriptRun(int rank);
 	int			RetScriptRun();
@@ -107,12 +107,12 @@ public:
 	void		SetSoluceName(char *name);
 	char*		RetSoluceName();
 
-	BOOL		ReadSoluce(char* filename);
-	BOOL		ReadProgram(int rank, char* filename);
-	BOOL		RetCompile(int rank);
-	BOOL		WriteProgram(int rank, char* filename);
-	BOOL		ReadStack(FILE *file);
-	BOOL		WriteStack(FILE *file);
+	bool		ReadSoluce(char* filename);
+	bool		ReadProgram(int rank, char* filename);
+	bool		RetCompile(int rank);
+	bool		WriteProgram(int rank, char* filename);
+	bool		ReadStack(FILE *file);
+	bool		WriteStack(FILE *file);
 
 	Error		StartTaskTake();
 	Error		StartTaskManip(TaskManipOrder order, TaskManipArm arm);
@@ -120,7 +120,7 @@ public:
 	Error		StartTaskBuild(ObjectType type);
 	Error		StartTaskSearch();
 	Error		StartTaskTerraform();
-	Error		StartTaskPen(BOOL bDown, int color);
+	Error		StartTaskPen(bool bDown, int color);
 	Error		StartTaskRecover();
 	Error		StartTaskShield(TaskShieldMode mode);
 	Error		StartTaskFire(float delay);
@@ -132,10 +132,10 @@ public:
 	void		UpdateInterface();
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 
 	void		StartEditScript(int rank, char* name);
-	void		StopEditScript(BOOL bCancel);
+	void		StopEditScript(bool bCancel);
 
 	Error		EndedTask();
 
@@ -144,18 +144,18 @@ protected:
 
 	void		UpdateScript(CWindow *pw);
 	int			RetSelScript();
-	void		BlinkScript(BOOL bEnable);
+	void		BlinkScript(bool bEnable);
 
-	void		CheckInterface(CWindow *pw, EventMsg event, BOOL bState);
-	void		EnableInterface(CWindow *pw, EventMsg event, BOOL bState);
-	void		DeadInterface(CWindow *pw, EventMsg event, BOOL bState);
-	void		DefaultEnter(CWindow *pw, EventMsg event, BOOL bState=TRUE);
+	void		CheckInterface(CWindow *pw, EventMsg event, bool bState);
+	void		EnableInterface(CWindow *pw, EventMsg event, bool bState);
+	void		DeadInterface(CWindow *pw, EventMsg event, bool bState);
+	void		DefaultEnter(CWindow *pw, EventMsg event, bool bState=true);
 
 	void		TraceRecordStart();
 	void		TraceRecordFrame();
 	void		TraceRecordStop();
-	BOOL		TraceRecordOper(TraceOper oper, float param);
-	BOOL		TraceRecordPut(char *buffer, int max, TraceOper oper, float param);
+	bool		TraceRecordOper(TraceOper oper, float param);
+	bool		TraceRecordPut(char *buffer, int max, TraceOper oper, float param);
 
 protected:
 	CInstanceManager* m_iMan;
@@ -178,9 +178,9 @@ protected:
 	CScript*	m_script[BRAINMAXSCRIPT];
 	int			m_selScript;		// rank of the selected script
 	int			m_program;		// rank of the executed program / ​​-1
-	BOOL		m_bActivity;
-	BOOL		m_bBurn;
-	BOOL		m_bActiveVirus;
+	bool		m_bActivity;
+	bool		m_bBurn;
+	bool		m_bActiveVirus;
 
 	int			m_scriptRun;
 	char		m_scriptName[BRAINMAXSCRIPT][50];
@@ -206,7 +206,7 @@ protected:
 	int			m_soundChannelAlarm;
 	int			m_flagColor;
 
-	BOOL		m_bTraceRecord;
+	bool		m_bTraceRecord;
 	TraceOper	m_traceOper;
 	D3DVECTOR	m_tracePos;
 	float		m_traceAngle;

@@ -50,7 +50,6 @@
 CTaskFire::CTaskFire(CInstanceManager* iMan, CObject* object)
 					 : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 	m_soundChannel = -1;
 }
 
@@ -69,7 +68,7 @@ CTaskFire::~CTaskFire()
 
 // Management of an event.
 
-BOOL CTaskFire::EventProcess(const Event &event)
+bool CTaskFire::EventProcess(const Event &event)
 {
 	CObject*	power;
 	CPhysics*	physics;
@@ -80,9 +79,9 @@ BOOL CTaskFire::EventProcess(const Event &event)
 	float		energy, fire;
 	int			i, channel;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	m_time += event.rTime;
 	m_lastSound -= event.rTime;
@@ -273,7 +272,7 @@ BOOL CTaskFire::EventProcess(const Event &event)
 		m_sound->Play(SOUND_FIREp, m_object->RetPosition(0));
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -286,7 +285,7 @@ Error CTaskFire::Start(float delay)
 	float		energy, fire;
 	ObjectType	type;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILEfc &&
@@ -307,13 +306,13 @@ Error CTaskFire::Start(float delay)
 
 	m_bRay = (type == OBJECT_MOBILErc);
 
-	m_bOrganic = FALSE;
+	m_bOrganic = false;
 	if ( type == OBJECT_MOBILEfi ||
 		 type == OBJECT_MOBILEti ||
 		 type == OBJECT_MOBILEwi ||
 		 type == OBJECT_MOBILEii )
 	{
-		m_bOrganic = TRUE;
+		m_bOrganic = true;
 	}
 
 	if ( delay == 0.0f )
@@ -336,13 +335,13 @@ Error CTaskFire::Start(float delay)
 	m_time = 0.0f;
 	m_lastParticule = 0.0f;
 	m_lastSound = 0.0f;
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 
 //?	m_camera->StartCentering(m_object, PI*0.15f, 99.9f, 0.0f, 1.0f);
 
 	if ( m_bOrganic )
 	{
-		m_soundChannel = m_sound->Play(SOUND_FIREi, m_object->RetPosition(0), 1.0f, 1.0f, TRUE);
+		m_soundChannel = m_sound->Play(SOUND_FIREi, m_object->RetPosition(0), 1.0f, 1.0f, true);
 		if ( m_soundChannel != -1 )
 		{
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, m_delay, SOPER_CONTINUE);
@@ -354,7 +353,7 @@ Error CTaskFire::Start(float delay)
 	}
 	else
 	{
-		m_soundChannel = m_sound->Play(SOUND_FIRE, m_object->RetPosition(0), 1.0f, 1.0f, TRUE);
+		m_soundChannel = m_sound->Play(SOUND_FIRE, m_object->RetPosition(0), 1.0f, 1.0f, true);
 		if ( m_soundChannel != -1 )
 		{
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, m_delay, SOPER_CONTINUE);
@@ -379,7 +378,7 @@ Error CTaskFire::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskFire::Abort()
+bool CTaskFire::Abort()
 {
 	m_object->SetInclinaison(D3DVECTOR(0.0f, 0.0f, 0.0f));
 	m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
@@ -393,6 +392,6 @@ BOOL CTaskFire::Abort()
 	}
 
 //?	m_camera->StopCentering(m_object, 1.0f);
-	return TRUE;
+	return true;
 }
 

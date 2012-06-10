@@ -29,8 +29,8 @@ class CInstanceManager;
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> using
-	char			bSelect;	// TRUE -> selected
+	char			bUsed;		// true -> using
+	char			bSelect;	// true -> selected
 	D3DVERTEX		p1;
 	D3DVERTEX		p2;
 	D3DVERTEX		p3;
@@ -43,8 +43,8 @@ OldModelTriangle1;		// length = 196 bytes
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> used
-	char			bSelect;	// TRUE -> selected
+	char			bUsed;		// true -> used
+	char			bSelect;	// true -> selected
 	D3DVERTEX		p1;
 	D3DVERTEX		p2;
 	D3DVERTEX		p3;
@@ -62,8 +62,8 @@ OldModelTriangle2;
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> used
-	char			bSelect;	// TRUE -> selected
+	char			bUsed;		// true -> used
+	char			bSelect;	// true -> selected
 	D3DVERTEX2		p1;
 	D3DVERTEX2		p2;
 	D3DVERTEX2		p3;
@@ -88,12 +88,12 @@ public:
 	CModFile(CInstanceManager* iMan);
 	~CModFile();
 
-	BOOL			ReadDXF(char *filename, float min, float max);
-	BOOL			AddModel(char *filename, int first, BOOL bEdit=FALSE, BOOL bMeta=TRUE);
-	BOOL			ReadModel(char *filename, BOOL bEdit=FALSE, BOOL bMeta=TRUE);
-	BOOL			WriteModel(char *filename);
+	bool			ReadDXF(char *filename, float min, float max);
+	bool			AddModel(char *filename, int first, bool bEdit=false, bool bMeta=true);
+	bool			ReadModel(char *filename, bool bEdit=false, bool bMeta=true);
+	bool			WriteModel(char *filename);
 
-	BOOL			CreateEngineObject(int objRank, int addState=0);
+	bool			CreateEngineObject(int objRank, int addState=0);
 	void			Mirror();
 
 	void			SetTriangleUsed(int total);
@@ -104,7 +104,7 @@ public:
 	float			RetHeight(D3DVECTOR pos);
 
 protected:
-	BOOL			CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3, float min, float max);
+	bool			CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3, float min, float max);
 
 protected:
 	CInstanceManager* m_iMan;

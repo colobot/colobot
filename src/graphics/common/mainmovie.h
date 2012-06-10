@@ -47,10 +47,10 @@ public:
 	~CMainMovie();
 
 	void			Flush();
-	BOOL			Start(MainMovieType type, float time);
-	BOOL			Stop();
-	BOOL			IsExist();
-	BOOL			EventProcess(const Event &event);
+	bool			Start(MainMovieType type, float time);
+	bool			Stop();
+	bool			IsExist();
+	bool			EventProcess(const Event &event);
 	MainMovieType	RetType();
 	MainMovieType	RetStopType();
 

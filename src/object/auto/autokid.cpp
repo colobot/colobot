@@ -60,14 +60,12 @@ CAutoKid::~CAutoKid()
 		m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.0f, 1.0f, SOPER_STOP);
 		m_soundChannel = -1;
 	}
-
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoKid::DeleteObject(BOOL bAll)
+void CAutoKid::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -101,8 +99,8 @@ void CAutoKid::Init()
 	{
 		if ( m_soundChannel == -1 )
 		{
-//?			m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.5f, TRUE);
-			m_bSilent = FALSE;
+//?			m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.5f, true);
+			m_bSilent = false;
 		}
 	}
 }
@@ -110,7 +108,7 @@ void CAutoKid::Init()
 
 // Management of an event.
 
-BOOL CAutoKid::EventProcess(const Event &event)
+bool CAutoKid::EventProcess(const Event &event)
 {
 	D3DVECTOR	vib, pos, speed;
 	FPOINT		dim;
@@ -124,7 +122,7 @@ BOOL CAutoKid::EventProcess(const Event &event)
 			if ( !m_bSilent )
 			{
 				m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.1f, SOPER_CONTINUE);
-				m_bSilent = TRUE;
+				m_bSilent = true;
 			}
 		}
 		else
@@ -132,13 +130,13 @@ BOOL CAutoKid::EventProcess(const Event &event)
 			if ( m_bSilent )
 			{
 				m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 0.1f, SOPER_CONTINUE);
-				m_bSilent = FALSE;
+				m_bSilent = false;
 			}
 		}
 	}
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 
@@ -206,7 +204,7 @@ BOOL CAutoKid::EventProcess(const Event &event)
 		m_object->SetAngleX(2, m_progress*5.0f);
 	}
 
-	return TRUE;
+	return true;
 }
 
 

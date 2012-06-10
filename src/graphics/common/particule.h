@@ -200,8 +200,8 @@ enum ParticulePhase
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> particle used
-	char			bRay;		// TRUE -> ray with goal
+	char			bUsed;		// true -> particle used
+	char			bRay;		// true -> ray with goal
 	unsigned short		uniqueStamp;	// unique mark
 	short			sheet;		// sheet (0..n)
 	ParticuleType		type;		// type PARTI*
@@ -232,7 +232,7 @@ Particule;
 
 typedef struct
 {
-	char			bUsed;		// TRUE -> drag used
+	char			bUsed;		// true -> drag used
 	char			bDrawParticule;
 	float			step;		// duration of not
 	float			last;		// increase last not memorized
@@ -282,19 +282,19 @@ public:
 	void		SetIntensity(int channel, float intensity);
 	void		SetParam(int channel, D3DVECTOR pos, FPOINT dim, float zoom, float angle, float intensity);
 	void		SetPhase(int channel, ParticulePhase phase, float duration);
-	BOOL		GetPosition(int channel, D3DVECTOR &pos);
+	bool		GetPosition(int channel, D3DVECTOR &pos);
 
 	D3DCOLORVALUE RetFogColor(D3DVECTOR pos);
 
-	void		SetFrameUpdate(int sheet, BOOL bUpdate);
+	void		SetFrameUpdate(int sheet, bool bUpdate);
 	void		FrameParticule(float rTime);
 	void		DrawParticule(int sheet);
 
-	BOOL		WriteWheelTrace(char *filename, int width, int height, D3DVECTOR dl, D3DVECTOR ur);
+	bool		WriteWheelTrace(char *filename, int width, int height, D3DVECTOR dl, D3DVECTOR ur);
 
 protected:
 	void		DeleteRank(int rank);
-	BOOL		CheckChannel(int &channel);
+	bool		CheckChannel(int &channel);
 	void		DrawParticuleTriangle(int i);
 	void		DrawParticuleNorm(int i);
 	void		DrawParticuleFlat(int i);
@@ -306,7 +306,7 @@ protected:
 	CObject*	SearchObjectGun(D3DVECTOR old, D3DVECTOR pos, ParticuleType type, CObject *father);
 	CObject*	SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal, ParticuleType type, CObject *father);
 	void		Play(Sound sound, D3DVECTOR pos, float amplitude);
-	BOOL		TrackMove(int i, D3DVECTOR pos, float progress);
+	bool		TrackMove(int i, D3DVECTOR pos, float progress);
 	void		TrackDraw(int i, ParticuleType type);
 
 protected:
@@ -325,7 +325,7 @@ protected:
 	int			m_wheelTraceIndex;
 	WheelTrace	m_wheelTrace[MAXWHEELTRACE];
 	int			m_totalInterface[MAXPARTITYPE][SH_MAX];
-	BOOL		m_bFrameUpdate[SH_MAX];
+	bool		m_bFrameUpdate[SH_MAX];
 	int			m_fogTotal;
 	int			m_fog[MAXPARTIFOG];
 	int			m_uniqueStamp;

@@ -39,12 +39,12 @@ public:
 	CMotionVehicle(CInstanceManager* iMan, CObject* object);
 	~CMotionVehicle();
 
-	void		DeleteObject(BOOL bAll=FALSE);
-	BOOL		Create(D3DVECTOR pos, float angle, ObjectType type, float power);
-	BOOL		EventProcess(const Event &event);
+	void		DeleteObject(bool bAll=false);
+	bool		Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	bool		EventProcess(const Event &event);
 
-	BOOL		RetTraceDown();
-	void		SetTraceDown(BOOL bDown);
+	bool		RetTraceDown();
+	void		SetTraceDown(bool bDown);
 	int			RetTraceColor();
 	void		SetTraceColor(int color);
 	float		RetTraceWidth();
@@ -52,10 +52,10 @@ public:
 
 protected:
 	void		CreatePhysics(ObjectType type);
-	BOOL		EventFrame(const Event &event);
-	BOOL		EventFrameFly(const Event &event);
-	BOOL		EventFrameInsect(const Event &event);
-	BOOL		EventFrameCanoni(const Event &event);
+	bool		EventFrame(const Event &event);
+	bool		EventFrameFly(const Event &event);
+	bool		EventFrameInsect(const Event &event);
+	bool		EventFrameCanoni(const Event &event);
 	void		UpdateTrackMapping(float left, float right, ObjectType type);
 
 protected:
@@ -71,8 +71,8 @@ protected:
 	D3DVECTOR	m_wheelLastPos;
 	D3DVECTOR	m_wheelLastAngle;
 	D3DVECTOR	m_posKey;
-	BOOL		m_bFlyFix;
-	BOOL		m_bTraceDown;
+	bool		m_bFlyFix;
+	bool		m_bTraceDown;
 	int			m_traceColor;
 	float		m_traceWidth;
 };

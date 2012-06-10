@@ -149,9 +149,9 @@ static char			g_gamerName[100];
 
 extern void		SetEngine(CD3DEngine *engine);
 extern void		SetGlobalGamerName(char *name);
-extern BOOL		SearchKey(char *cmd, KeyRank &key);
+extern bool		SearchKey(char *cmd, KeyRank &key);
 extern void		PutKeyName(char* dst, char* src);
-extern BOOL		GetResource(ResType type, int num, char* text);
-extern BOOL		GetResourceBase(ResType type, int num, char* text);
+extern bool		GetResource(ResType type, int num, char* text);
+extern bool		GetResourceBase(ResType type, int num, char* text);
 
 

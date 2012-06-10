@@ -50,7 +50,7 @@ CGroup::~CGroup()
 
 // Creates a new button.
 
-BOOL CGroup::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CGroup::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -67,15 +67,15 @@ BOOL CGroup::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 		SetName(name);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CGroup::EventProcess(const Event &event)
+bool CGroup::EventProcess(const Event &event)
 {
-	return TRUE;
+	return true;
 }
 
 

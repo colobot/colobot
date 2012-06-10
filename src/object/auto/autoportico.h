@@ -51,12 +51,12 @@ public:
 	CAutoPortico(CInstanceManager* iMan, CObject* object);
 	~CAutoPortico();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
 	void		Start(int param);
-	BOOL		EventProcess(const Event &event);
-	BOOL		Abort();
+	bool		EventProcess(const Event &event);
+	bool		Abort();
 	Error		RetError();
 
 protected:

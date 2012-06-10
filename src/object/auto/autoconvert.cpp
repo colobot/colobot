@@ -52,7 +52,7 @@ CAutoConvert::CAutoConvert(CInstanceManager* iMan, CObject* object)
 {
 	Init();
 	m_phase = ACP_STOP;
-	m_bResetDelete = FALSE;
+	m_bResetDelete = false;
 	m_soundChannel = -1;
 }
 
@@ -60,13 +60,12 @@ CAutoConvert::CAutoConvert(CInstanceManager* iMan, CObject* object)
 
 CAutoConvert::~CAutoConvert()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoConvert::DeleteObject(BOOL bAll)
+void CAutoConvert::DeleteObject(bool bAll)
 {
 	CObject*	fret;
 
@@ -108,7 +107,7 @@ void CAutoConvert::Init()
 
 // Management of an event.
 
-BOOL CAutoConvert::EventProcess(const Event &event)
+bool CAutoConvert::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	D3DVECTOR	pos, speed;
@@ -117,8 +116,8 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -137,12 +136,12 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 			m_object->SetAngleX(2, -PI*0.35f*(0.8f+Rand()*0.2f));
 			m_object->SetAngleX(3, -PI*0.35f*(0.8f+Rand()*0.2f));
 		}
-		return TRUE;
+		return true;
 	}
 
 	EventProgress(event.rTime);
 
-	if ( m_phase == ACP_STOP )  return TRUE;
+	if ( m_phase == ACP_STOP )  return true;
 
 	if ( m_phase == ACP_WAIT )
 	{
@@ -157,14 +156,14 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 			}
 			else
 			{
-				fret->SetLock(TRUE);  // stone usable
+				fret->SetLock(true);  // stone usable
 
-				SetBusy(TRUE);
+				SetBusy(true);
 				InitProgressTotal(3.0f+10.0f+1.5f);
 				UpdateInterface();
 
 				m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 1.0f);
-				m_bSoundClose = FALSE;
+				m_bSoundClose = false;
 
 				m_phase    = ACP_CLOSE;
 				m_progress = 0.0f;
@@ -179,7 +178,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 		{
 			if ( m_progress >= 0.8f && !m_bSoundClose )
 			{
-				m_bSoundClose = TRUE;
+				m_bSoundClose = true;
 				m_sound->Play(SOUND_CLOSE, m_object->RetPosition(0), 1.0f, 0.8f);
 			}
 			angle = -PI*0.35f*(1.0f-Bounce(m_progress, 0.85f, 0.05f));
@@ -191,7 +190,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 			m_object->SetAngleX(2, 0.0f);
 			m_object->SetAngleX(3, 0.0f);
 
-			m_soundChannel = m_sound->Play(SOUND_CONVERT, m_object->RetPosition(0), 0.0f, 0.25f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_CONVERT, m_object->RetPosition(0), 0.0f, 0.25f, true);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.25f, 0.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.00f, 4.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.25f, 4.5f, SOPER_CONTINUE);
@@ -290,7 +289,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 			m_object->SetAngleX(2, -PI*0.35f);
 			m_object->SetAngleX(3, -PI*0.35f);
 
-			SetBusy(FALSE);
+			SetBusy(false);
 			UpdateInterface();
 
 			m_phase    = ACP_WAIT;
@@ -299,7 +298,7 @@ BOOL CAutoConvert::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Returns an error due the state of the automation.
@@ -317,7 +316,7 @@ Error CAutoConvert::RetError()
 
 // Cancels the current transformation.
 
-BOOL CAutoConvert::Abort()
+bool CAutoConvert::Abort()
 {
 	if ( m_soundChannel != -1 )
 	{
@@ -336,16 +335,16 @@ BOOL CAutoConvert::Abort()
 	m_progress = 0.0f;
 	m_speed    = 1.0f/2.0f;
 
-	SetBusy(FALSE);
+	SetBusy(false);
 	UpdateInterface();
 
-	return TRUE;
+	return true;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoConvert::CreateInterface(BOOL bSelect)
+bool CAutoConvert::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -353,10 +352,10 @@ BOOL CAutoConvert::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -369,18 +368,18 @@ BOOL CAutoConvert::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 103, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 
 // Saves all parameters of the controller.
 
-BOOL CAutoConvert::Write(char *line)
+bool CAutoConvert::Write(char *line)
 {
 	char	name[100];
 
 	if ( m_phase == ACP_STOP ||
-		 m_phase == ACP_WAIT )  return FALSE;
+		 m_phase == ACP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -396,14 +395,14 @@ BOOL CAutoConvert::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoConvert::Read(char *line)
+bool CAutoConvert::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -413,7 +412,7 @@ BOOL CAutoConvert::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -449,7 +448,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
 
 // Search if a vehicle is too close.
 
-BOOL CAutoConvert::SearchVehicle()
+bool CAutoConvert::SearchVehicle()
 {
 	CObject*	pObj;
 	D3DVECTOR	cPos, oPos;
@@ -509,10 +508,10 @@ BOOL CAutoConvert::SearchVehicle()
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
 		dist = Length(oPos, cPos)-oRadius;
 
-		if ( dist < 8.0f )  return TRUE;
+		if ( dist < 8.0f )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 // Creates an object metal.

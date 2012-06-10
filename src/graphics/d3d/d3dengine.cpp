@@ -135,13 +135,13 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_waterAddColor.g = 0.0f;
 	m_waterAddColor.b = 0.0f;
 	m_waterAddColor.a = 0.0f;
-	m_bPause          = FALSE;
-	m_bRender         = TRUE;
-	m_bMovieLock      = FALSE;
-	m_bShadow         = TRUE;
-	m_bGroundSpot     = TRUE;
-	m_bDirty          = TRUE;
-	m_bFog            = TRUE;
+	m_bPause          = false;
+	m_bRender         = true;
+	m_bMovieLock      = false;
+	m_bShadow         = true;
+	m_bGroundSpot     = true;
+	m_bDirty          = true;
+	m_bFog            = true;
 	m_speed           = 1.0f;
 	m_secondTexNum    = 0;
 	m_eyeDirH         = 0.0f;
@@ -151,22 +151,22 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_backgroundColorDown = 0;
 	m_backgroundCloudUp   = 0;
 	m_backgroundCloudDown = 0;
-	m_bBackgroundFull = FALSE;
-	m_bBackgroundQuarter = FALSE;
-	m_bOverFront = TRUE;
+	m_bBackgroundFull = false;
+	m_bBackgroundQuarter = false;
+	m_bOverFront = true;
 	m_overColor = 0;
 	m_overMode  = D3DSTATETCb;
 	m_frontsizeName[0] = 0;  // no front image
 	m_hiliteRank[0] = -1;  // empty list
 	m_mousePos = FPOINT(0.5f, 0.5f);
 	m_mouseType = D3DMOUSENORM;
-	m_bMouseHide = FALSE;
+	m_bMouseHide = false;
 	m_imageSurface = 0;
 	m_imageCopy = 0;
 	m_eyePt    = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_lookatPt = D3DVECTOR(0.0f, 0.0f, 1.0f);
-	m_bDrawWorld = TRUE;
-	m_bDrawFront = FALSE;
+	m_bDrawWorld = true;
+	m_bDrawFront = false;
 	m_limitLOD[0] = 100.0f;
 	m_limitLOD[1] = 200.0f;
 	m_particuleDensity = 1.0f;
@@ -177,14 +177,14 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_terrainVision = 1000.0f;
 	m_gadgetQuantity = 1.0f;
 	m_textureQuality = 1;
-	m_bTotoMode = TRUE;
-	m_bLensMode = TRUE;
-	m_bWaterMode = TRUE;
-	m_bSkyMode = TRUE;
-	m_bBackForce = TRUE;
-	m_bPlanetMode = TRUE;
-	m_bLightMode = TRUE;
-	m_bEditIndentMode = TRUE;
+	m_bTotoMode = true;
+	m_bLensMode = true;
+	m_bWaterMode = true;
+	m_bSkyMode = true;
+	m_bBackForce = true;
+	m_bPlanetMode = true;
+	m_bLightMode = true;
+	m_bEditIndentMode = true;
 	m_editIndentValue = 4;
 	m_tracePrecision = 1.0f;
 
@@ -196,13 +196,13 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 
 	if ( GetProfileInt("Engine", "StateColor", i) && i != -1 )
 	{
-		m_bForceStateColor = TRUE;
+		m_bForceStateColor = true;
 		m_bStateColor = i;
 	}
 	else
 	{
-		m_bForceStateColor = FALSE;
-		m_bStateColor = FALSE;
+		m_bForceStateColor = false;
+		m_bStateColor = false;
 	}
 	
 	m_blackSrcBlend[0]    = 0;
@@ -223,7 +223,7 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	if ( GetProfileInt("Engine", "AlphaSrcBlend",    i) )  m_alphaSrcBlend[0]    = i;
 	if ( GetProfileInt("Engine", "AlphaDestBlend",   i) )  m_alphaDestBlend[0]   = i;
 
-	m_bUpdateGeometry = FALSE;
+	m_bUpdateGeometry = false;
 
 	for ( i=0 ; i<10 ; i++ )
 	{
@@ -318,11 +318,11 @@ void CD3DEngine::SetD3DDevice(LPDIRECT3DDEVICE7 device)
 		m_pD3DDevice->GetCaps(&ddDesc);
 		if( ddDesc.dpcTriCaps.dwTextureBlendCaps & D3DPTBLENDCAPS_ADD )
 		{
-			m_bStateColor = TRUE;
+			m_bStateColor = true;
 		}
 		else
 		{
-			m_bStateColor = FALSE;
+			m_bStateColor = false;
 		}
 	}
 
@@ -373,7 +373,7 @@ void CD3DEngine::SetTerrain(CTerrain* terrain)
 
 // Saving the state of the graphics engine in COLOBOT.INI.
 
-BOOL CD3DEngine::WriteProfile()
+bool CD3DEngine::WriteProfile()
 {
 	SetProfileInt("Engine", "AlphaMode", m_alphaMode);
 
@@ -395,7 +395,7 @@ BOOL CD3DEngine::WriteProfile()
 	SetProfileInt("Engine", "AlphaSrcBlend",    m_alphaSrcBlend[0]);
 	SetProfileInt("Engine", "AlphaDestBlend",   m_alphaDestBlend[0]);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -431,40 +431,40 @@ float CD3DEngine::TimeGet()
 }
 
 
-void CD3DEngine::SetPause(BOOL bPause)
+void CD3DEngine::SetPause(bool bPause)
 {
 	m_bPause = bPause;
 }
 
-BOOL CD3DEngine::RetPause()
+bool CD3DEngine::RetPause()
 {
 	return m_bPause;
 }
 
 
-void CD3DEngine::SetMovieLock(BOOL bLock)
+void CD3DEngine::SetMovieLock(bool bLock)
 {
 	m_bMovieLock = bLock;
 }
 
-BOOL CD3DEngine::RetMovieLock()
+bool CD3DEngine::RetMovieLock()
 {
 	return m_bMovieLock;
 }
 
 
-void CD3DEngine::SetShowStat(BOOL bShow)
+void CD3DEngine::SetShowStat(bool bShow)
 {
 	m_app->SetShowStat(bShow);
 }
 
-BOOL CD3DEngine::RetShowStat()
+bool CD3DEngine::RetShowStat()
 {
 	return m_app->RetShowStat();
 }
 
 
-void CD3DEngine::SetRenderEnable(BOOL bEnable)
+void CD3DEngine::SetRenderEnable(bool bEnable)
 {
 	m_bRender = bEnable;
 }
@@ -673,15 +673,15 @@ int CD3DEngine::CreateObject()
 
 	for ( i=0 ; i<D3DMAXOBJECT ; i++ )
 	{
-		if ( m_objectParam[i].bUsed == FALSE )
+		if ( m_objectParam[i].bUsed == false )
 		{
 			ZeroMemory(&m_objectParam[i], sizeof(D3DObject));
-			m_objectParam[i].bUsed = TRUE;
+			m_objectParam[i].bUsed = true;
 
 			D3DUtil_SetIdentityMatrix(mat);
 			SetObjectTransform(i, mat);
 
-			m_objectParam[i].bDrawWorld = TRUE;
+			m_objectParam[i].bDrawWorld = true;
 			m_objectParam[i].distance = 0.0f;
 			m_objectParam[i].bboxMin = D3DVECTOR(0.0f, 0.0f, 0.0f);
 			m_objectParam[i].bboxMax = D3DVECTOR(0.0f, 0.0f, 0.0f);
@@ -747,7 +747,7 @@ void CD3DEngine::FlushObject()
 
 	for ( i=0 ; i<D3DMAXOBJECT ; i++ )
 	{
-		m_objectParam[i].bUsed = FALSE;
+		m_objectParam[i].bUsed = false;
 	}
 	m_objectParamTotal = 0;
 
@@ -759,7 +759,7 @@ void CD3DEngine::FlushObject()
 
 // Destroys an existing object.
 
-BOOL CD3DEngine::DeleteObject(int objRank)
+bool CD3DEngine::DeleteObject(int objRank)
 {
 	D3DObjLevel1*	p1;
 	D3DObjLevel2*	p2;
@@ -804,7 +804,7 @@ BOOL CD3DEngine::DeleteObject(int objRank)
 
 	ShadowDelete(objRank);  // removes the shadow
 
-	m_objectParam[objRank].bUsed = FALSE;
+	m_objectParam[objRank].bUsed = false;
 
 	m_objectParamTotal = 0;
 	for ( i=0 ; i<D3DMAXOBJECT ; i++ )
@@ -815,28 +815,28 @@ BOOL CD3DEngine::DeleteObject(int objRank)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Indicates whether an object should be drawn underneath the interface.
 
-BOOL CD3DEngine::SetDrawWorld(int objRank, BOOL bDraw)
+bool CD3DEngine::SetDrawWorld(int objRank, bool bDraw)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	m_objectParam[objRank].bDrawWorld = bDraw;
-	return TRUE;
+	return true;
 }
 
 // Indicates whether an object should be drawn over the interface.
 
-BOOL CD3DEngine::SetDrawFront(int objRank, BOOL bDraw)
+bool CD3DEngine::SetDrawFront(int objRank, bool bDraw)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	m_objectParam[objRank].bDrawFront = bDraw;
-	return TRUE;
+	return true;
 }
 
 
@@ -990,10 +990,10 @@ D3DObjLevel6* CD3DEngine::AddLevel5(D3DObjLevel5 *&p5, D3DTypeTri type,
 // Adds one or more triangles to an existing object.
 // The number must be divisible by 3.
 
-BOOL CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
+bool CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 							 const D3DMATERIAL7 &mat, int state,
 							 char* texName1, char* texName2,
-							 float min, float max, BOOL bGlobalUpdate)
+							 float min, float max, bool bGlobalUpdate)
 {
 	D3DObjLevel2*	p2;
 	D3DObjLevel3*	p3;
@@ -1017,7 +1017,7 @@ BOOL CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 
 	if ( bGlobalUpdate )
 	{
-		m_bUpdateGeometry = TRUE;
+		m_bUpdateGeometry = true;
 	}
 	else
 	{
@@ -1036,15 +1036,15 @@ BOOL CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 	}
 	m_objectParam[objRank].totalTriangle += nb/3;
 
-	return TRUE;
+	return true;
 }
 
 // Adds a surface consisting of triangles joined.
 
-BOOL CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
+bool CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 							const D3DMATERIAL7 &mat, int state,
 							char* texName1, char* texName2,
-							float min, float max, BOOL bGlobalUpdate)
+							float min, float max, bool bGlobalUpdate)
 {
 	D3DObjLevel2*	p2;
 	D3DObjLevel3*	p3;
@@ -1064,7 +1064,7 @@ BOOL CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 
 	if ( bGlobalUpdate )
 	{
-		m_bUpdateGeometry = TRUE;
+		m_bUpdateGeometry = true;
 	}
 	else
 	{
@@ -1083,15 +1083,15 @@ BOOL CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 	}
 	m_objectParam[objRank].totalTriangle += nb-2;
 
-	return TRUE;
+	return true;
 }
 
 // Adds a surface consisting of triangles joined.
 // The buffer is not copied.
 
-BOOL CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
+bool CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 						  char* texName1, char* texName2,
-						  float min, float max, BOOL bGlobalUpdate)
+						  float min, float max, bool bGlobalUpdate)
 {
 	D3DObjLevel2*	p2;
 	D3DObjLevel3*	p3;
@@ -1110,7 +1110,7 @@ BOOL CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 
 	if ( bGlobalUpdate )
 	{
-		m_bUpdateGeometry = TRUE;
+		m_bUpdateGeometry = true;
 	}
 	else
 	{
@@ -1129,7 +1129,7 @@ BOOL CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 	}
 	m_objectParam[objRank].totalTriangle += buffer->totalUsed-2;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1145,11 +1145,11 @@ void CD3DEngine::ChangeLOD()
 	float			oldLimit[2], newLimit[2];
 	float			oldTerrain, newTerrain;
 
-	oldLimit[0] = RetLimitLOD(0, TRUE);
-	oldLimit[1] = RetLimitLOD(1, TRUE);
+	oldLimit[0] = RetLimitLOD(0, true);
+	oldLimit[1] = RetLimitLOD(1, true);
 
-	newLimit[0] = RetLimitLOD(0, FALSE);
-	newLimit[1] = RetLimitLOD(1, FALSE);
+	newLimit[0] = RetLimitLOD(0, false);
+	newLimit[1] = RetLimitLOD(1, false);
 
 	oldTerrain = m_terrainVision*m_lastClippingDistance;
 	newTerrain = m_terrainVision*m_clippingDistance;
@@ -1254,7 +1254,7 @@ D3DObjLevel6* CD3DEngine::SearchTriangle(int objRank,
 
 // Secondary changes the texture of an object.
 
-BOOL CD3DEngine::ChangeSecondTexture(int objRank, char* texName2)
+bool CD3DEngine::ChangeSecondTexture(int objRank, char* texName2)
 {
 	D3DObjLevel2*	newp2;
 	D3DObjLevel1*	p1;
@@ -1282,7 +1282,7 @@ BOOL CD3DEngine::ChangeSecondTexture(int objRank, char* texName2)
 			p2->table[l2] = 0;
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -1388,17 +1388,17 @@ int CD3DEngine::GetTriangles(int objRank, float min, float max,
 
 // Give the box of an object.
 
-BOOL CD3DEngine::GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max)
+bool CD3DEngine::GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max)
 {
 	min = m_objectParam[objRank].bboxMin;
 	max = m_objectParam[objRank].bboxMax;
-	return TRUE;
+	return true;
 }
 
 
 // Change the texture mapping for a list of triangles.
 
-BOOL CD3DEngine::ChangeTextureMapping(int objRank,
+bool CD3DEngine::ChangeTextureMapping(int objRank,
 									  const D3DMATERIAL7 &mat, int state,
 									  char* texName1, char* texName2,
 									  float min, float max,
@@ -1411,7 +1411,7 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 	int				l6, nb;
 
 	p6 = SearchTriangle(objRank, mat, state, texName1, texName2, min, max);
-	if ( p6 == 0 )  return FALSE;
+	if ( p6 == 0 )  return false;
 
 	pv = &p6->vertex[0];
 	nb = p6->totalUsed;
@@ -1473,7 +1473,7 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Change the texture mapping for a list of triangles
@@ -1521,7 +1521,7 @@ BOOL CD3DEngine::ChangeTextureMapping(int objRank,
 //   <-----> tt      |
 //   <--------------->
 
-BOOL CD3DEngine::TrackTextureMapping(int objRank,
+bool CD3DEngine::TrackTextureMapping(int objRank,
 									 const D3DMATERIAL7 &mat, int state,
 									 char* texName1, char* texName2,
 									 float min, float max,
@@ -1536,12 +1536,12 @@ BOOL CD3DEngine::TrackTextureMapping(int objRank,
 	int				is[6], ie[6];
 
 	p6 = SearchTriangle(objRank, mat, state, texName1, texName2, min, max);
-	if ( p6 == 0 )  return FALSE;
+	if ( p6 == 0 )  return false;
 
 	pv = &p6->vertex[0];
 	nb = p6->totalUsed;
 
-	if ( nb < 12 || nb%6 != 0 )  return FALSE;
+	if ( nb < 12 || nb%6 != 0 )  return false;
 
 	while ( pos < 0.0f )
 	{
@@ -1611,7 +1611,7 @@ BOOL CD3DEngine::TrackTextureMapping(int objRank,
 		pv += 6;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1681,14 +1681,14 @@ void CD3DEngine::UpdateGeometry()
 		}
 	}
 
-	m_bUpdateGeometry = FALSE;
+	m_bUpdateGeometry = false;
 }
 
 
 // Determines whether an object is visible, even partially.
 // Transformation of "world" must be done​​!
 
-BOOL CD3DEngine::IsVisible(int objRank)
+bool CD3DEngine::IsVisible(int objRank)
 {
 	D3DVECTOR	center;
 	DWORD		flags;
@@ -1700,11 +1700,11 @@ BOOL CD3DEngine::IsVisible(int objRank)
 
 	if ( flags & D3DSTATUS_CLIPINTERSECTIONALL )
 	{
-		m_objectParam[objRank].bVisible = FALSE;
-		return FALSE;
+		m_objectParam[objRank].bVisible = false;
+		return false;
 	}
-	m_objectParam[objRank].bVisible = TRUE;
-	return TRUE;
+	m_objectParam[objRank].bVisible = true;
+	return true;
 }
 
 
@@ -1790,7 +1790,7 @@ int CD3DEngine::DetectObject(FPOINT mouse)
 
 // Detects whether the mouse is in a triangle.
 
-BOOL CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
+bool CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
 								int objRank, float &dist)
 {
 	D3DVECTOR	p2D[3], p3D;
@@ -1802,21 +1802,21 @@ BOOL CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
 		p3D.x = triangle[i].x;
 		p3D.y = triangle[i].y;
 		p3D.z = triangle[i].z;
-		if ( !TransformPoint(p2D[i], objRank, p3D) )  return FALSE;
+		if ( !TransformPoint(p2D[i], objRank, p3D) )  return false;
 	}
 
 	if ( mouse.x < p2D[0].x &&
 		 mouse.x < p2D[1].x &&
-		 mouse.x < p2D[2].x )  return FALSE;
+		 mouse.x < p2D[2].x )  return false;
 	if ( mouse.x > p2D[0].x &&
 		 mouse.x > p2D[1].x &&
-		 mouse.x > p2D[2].x )  return FALSE;
+		 mouse.x > p2D[2].x )  return false;
 	if ( mouse.y < p2D[0].y &&
 		 mouse.y < p2D[1].y &&
-		 mouse.y < p2D[2].y )  return FALSE;
+		 mouse.y < p2D[2].y )  return false;
 	if ( mouse.y > p2D[0].y &&
 		 mouse.y > p2D[1].y &&
-		 mouse.y > p2D[2].y )  return FALSE;
+		 mouse.y > p2D[2].y )  return false;
 
 	a.x = p2D[0].x;
 	a.y = p2D[0].y;
@@ -1824,15 +1824,15 @@ BOOL CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
 	b.y = p2D[1].y;
 	c.x = p2D[2].x;
 	c.y = p2D[2].y;
-	if ( !IsInsideTriangle(a, b, c, mouse) )  return FALSE;
+	if ( !IsInsideTriangle(a, b, c, mouse) )  return false;
 
 	dist = (p2D[0].z+p2D[1].z+p2D[2].z)/3.0f;
-	return TRUE;
+	return true;
 }
 
 // Detects whether an object is affected by the mouse.
 
-BOOL CD3DEngine::DetectBBox(int objRank, FPOINT mouse)
+bool CD3DEngine::DetectBBox(int objRank, FPOINT mouse)
 {
 	D3DVECTOR	p, pp;
 	FPOINT		min, max;
@@ -1869,12 +1869,12 @@ BOOL CD3DEngine::DetectBBox(int objRank, FPOINT mouse)
 // Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window.
 // The coordinated p2D.z gives the distance.
 
-BOOL CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
+bool CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
 {
 	p3D = Transform(m_objectParam[objRank].transform, p3D);
 	p3D = Transform(m_matView, p3D);
 
-	if ( p3D.z < 2.0f )  return FALSE;  // behind?
+	if ( p3D.z < 2.0f )  return false;  // behind?
 
 	p2D.x = (p3D.x/p3D.z)*m_matProj._11;
 	p2D.y = (p3D.y/p3D.z)*m_matProj._22;
@@ -1883,7 +1883,7 @@ BOOL CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
 	p2D.x = (p2D.x+1.0f)/2.0f;  // [-1..1] -> [0..1]
 	p2D.y = (p2D.y+1.0f)/2.0f;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1900,7 +1900,7 @@ void CD3DEngine::ComputeDistance()
 	{
 		for ( i=0 ; i<m_objectParamTotal ; i++ )
 		{
-			if ( m_objectParam[i].bUsed == FALSE )  continue;
+			if ( m_objectParam[i].bUsed == false )  continue;
 
 			v.x = m_eyePt.x - m_objectParam[i].transform._41;
 			v.y = m_eyePt.y - m_objectParam[i].transform._42;
@@ -1925,7 +1925,7 @@ void CD3DEngine::ComputeDistance()
 
 		for ( i=0 ; i<m_objectParamTotal ; i++ )
 		{
-			if ( m_objectParam[i].bUsed == FALSE )  continue;
+			if ( m_objectParam[i].bUsed == false )  continue;
 
 			if ( m_objectParam[i].type == TYPETERRAIN )
 			{
@@ -1945,12 +1945,12 @@ void CD3DEngine::ComputeDistance()
 
 // Adjusts settings when first run.
 
-void CD3DEngine::FirstExecuteAdapt(BOOL bFirst)
+void CD3DEngine::FirstExecuteAdapt(bool bFirst)
 {
 	if ( m_app->IsVideo8MB() )
 	{
-		SetGroundSpot(FALSE);
-		SetSkyMode(FALSE);
+		SetGroundSpot(false);
+		SetSkyMode(false);
 	}
 
 	if ( m_app->IsVideo32MB() && bFirst )
@@ -1966,12 +1966,12 @@ int CD3DEngine::GetVidMemTotal()
 	return m_app->GetVidMemTotal();
 }
 
-BOOL CD3DEngine::IsVideo8MB()
+bool CD3DEngine::IsVideo8MB()
 {
 	return m_app->IsVideo8MB();
 }
 
-BOOL CD3DEngine::IsVideo32MB()
+bool CD3DEngine::IsVideo32MB()
 {
 	return m_app->IsVideo32MB();
 }
@@ -1979,7 +1979,7 @@ BOOL CD3DEngine::IsVideo32MB()
 
 // Perform the list of all graphics devices available.
 
-BOOL CD3DEngine::EnumDevices(char *bufDevices, int lenDevices,
+bool CD3DEngine::EnumDevices(char *bufDevices, int lenDevices,
 							 char *bufModes, int lenModes,
 							 int &totalDevices, int &selectDevices,
 							 int &totalModes, int &selectModes)
@@ -1990,12 +1990,12 @@ BOOL CD3DEngine::EnumDevices(char *bufDevices, int lenDevices,
 							  totalModes, selectModes);
 }
 
-BOOL CD3DEngine::RetFullScreen()
+bool CD3DEngine::RetFullScreen()
 {
 	return m_app->RetFullScreen();
 }
 
-BOOL CD3DEngine::ChangeDevice(char *device, char *mode, BOOL bFull)
+bool CD3DEngine::ChangeDevice(char *device, char *mode, bool bFull)
 {
 	return m_app->ChangeDevice(device, mode, bFull);
 }
@@ -2060,32 +2060,32 @@ void CD3DEngine::SetViewParams(const D3DVECTOR &vEyePt,
 
 // Specifies the transformation matrix of an object.
 
-BOOL CD3DEngine::SetObjectTransform(int objRank, const D3DMATRIX &transform)
+bool CD3DEngine::SetObjectTransform(int objRank, const D3DMATRIX &transform)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	m_objectParam[objRank].transform = transform;
-	return TRUE;
+	return true;
 }
 
 // Gives the transformation matrix of an object.
 
-BOOL CD3DEngine::GetObjectTransform(int objRank, D3DMATRIX &transform)
+bool CD3DEngine::GetObjectTransform(int objRank, D3DMATRIX &transform)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	transform = m_objectParam[objRank].transform;
-	return TRUE;
+	return true;
 }
 
 // Specifies the type of an object.
 
-BOOL CD3DEngine::SetObjectType(int objRank, D3DTypeObj type)
+bool CD3DEngine::SetObjectType(int objRank, D3DTypeObj type)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	m_objectParam[objRank].type = type;
-	return TRUE;
+	return true;
 }
 
 // Returns the type of an object.
@@ -2097,31 +2097,31 @@ D3DTypeObj CD3DEngine::RetObjectType(int objRank)
 
 // Specifies the transparency of an object.
 
-BOOL CD3DEngine::SetObjectTransparency(int objRank, float value)
+bool CD3DEngine::SetObjectTransparency(int objRank, float value)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	m_objectParam[objRank].transparency = value;
-	return TRUE;
+	return true;
 }
 
 
 // Allocates a table for shade, if necessary.
 
-BOOL CD3DEngine::ShadowCreate(int objRank)
+bool CD3DEngine::ShadowCreate(int objRank)
 {
 	int		i;
 
 	// Already allocated?
-	if ( m_objectParam[objRank].shadowRank != -1 )  return TRUE;
+	if ( m_objectParam[objRank].shadowRank != -1 )  return true;
 
 	for ( i=0 ; i<D3DMAXSHADOW ; i++ )
 	{
-		if ( m_shadow[i].bUsed == FALSE )  // Free?
+		if ( m_shadow[i].bUsed == false )  // Free?
 		{
 			ZeroMemory(&m_shadow[i], sizeof(D3DShadow));
 
-			m_shadow[i].bUsed = TRUE;
+			m_shadow[i].bUsed = true;
 			m_shadow[i].objRank = objRank;
 			m_shadow[i].height = 0.0f;
 
@@ -2131,10 +2131,10 @@ BOOL CD3DEngine::ShadowCreate(int objRank)
 			{
 				m_shadowTotal = i+1;
 			}
-			return TRUE;
+			return true;
 		}
 	}
-	return FALSE;  // not found
+	return false;  // not found
 }
 
 // Removes the shadow associated with an object.
@@ -2148,7 +2148,7 @@ void CD3DEngine::ShadowDelete(int objRank)
 	i = m_objectParam[objRank].shadowRank;
 	if ( i == -1 )  return;
 
-	m_shadow[i].bUsed = FALSE;
+	m_shadow[i].bUsed = false;
 	m_shadow[i].objRank = -1;
 	m_shadow[i].pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_shadow[i].type = D3DSHADOWNORM;
@@ -2165,80 +2165,80 @@ void CD3DEngine::ShadowDelete(int objRank)
 // Specifies if the shadow is visible. 
 // For example, when an object is carried, he has no shadow.
 
-BOOL CD3DEngine::SetObjectShadowHide(int objRank, BOOL bHide)
+bool CD3DEngine::SetObjectShadowHide(int objRank, bool bHide)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	m_shadow[i].bHide = bHide;
-	return TRUE;
+	return true;
 }
 
 // Specifies the type of the shadow of the object.
 
-BOOL CD3DEngine::SetObjectShadowType(int objRank, D3DShadowType type)
+bool CD3DEngine::SetObjectShadowType(int objRank, D3DShadowType type)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	m_shadow[i].type = type;
-	return TRUE;
+	return true;
 }
 
 // Specifies the position of the shadow of the object.
 
-BOOL CD3DEngine::SetObjectShadowPos(int objRank, const D3DVECTOR &pos)
+bool CD3DEngine::SetObjectShadowPos(int objRank, const D3DVECTOR &pos)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	m_shadow[i].pos = pos;
-	return TRUE;
+	return true;
 }
 
 // Specifies the normal shadow to the field of the object.
 
-BOOL CD3DEngine::SetObjectShadowNormal(int objRank, const D3DVECTOR &n)
+bool CD3DEngine::SetObjectShadowNormal(int objRank, const D3DVECTOR &n)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	m_shadow[i].normal = n;
-	return TRUE;
+	return true;
 }
 
 // Specifies the angle of the shadow of the object.
 
-BOOL CD3DEngine::SetObjectShadowAngle(int objRank, float angle)
+bool CD3DEngine::SetObjectShadowAngle(int objRank, float angle)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	m_shadow[i].angle = angle;
-	return TRUE;
+	return true;
 }
 
 // Specifies the radius of the shadow of the object.
 
-BOOL CD3DEngine::SetObjectShadowRadius(int objRank, float radius)
+bool CD3DEngine::SetObjectShadowRadius(int objRank, float radius)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	m_shadow[i].radius = radius;
-	return TRUE;
+	return true;
 }
 
 // Returns the radius of the shadow of the object.
@@ -2248,35 +2248,35 @@ float CD3DEngine::RetObjectShadowRadius(int objRank)
 	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return 0.0f;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	return m_shadow[i].radius;
 }
 
 // Specifies the intensity of the shadow of the object.
 
-BOOL CD3DEngine::SetObjectShadowIntensity(int objRank, float intensity)
+bool CD3DEngine::SetObjectShadowIntensity(int objRank, float intensity)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	m_shadow[i].intensity = intensity;
-	return TRUE;
+	return true;
 }
 
 // Specifies the height of the shadow of the object.
 
-BOOL CD3DEngine::SetObjectShadowHeight(int objRank, float h)
+bool CD3DEngine::SetObjectShadowHeight(int objRank, float h)
 {
-	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return FALSE;
+	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
 	int i = m_objectParam[objRank].shadowRank;
-	if ( i == -1 )  return FALSE;
+	if ( i == -1 )  return false;
 
 	m_shadow[i].height = h;
-	return TRUE;
+	return true;
 }
 
 
@@ -2291,7 +2291,7 @@ void CD3DEngine::GroundSpotFlush()
 	int						s, y;
 
 	ZeroMemory(m_groundSpot, sizeof(D3DGroundSpot)*D3DMAXGROUNDSPOT);
-	m_bFirstGroundSpot = TRUE;  // drawing power first
+	m_bFirstGroundSpot = true;  // drawing power first
 
 	for ( s=0 ; s<16 ; s++ )
 	{
@@ -2324,10 +2324,10 @@ int CD3DEngine::GroundSpotCreate()
 
 	for ( i=0 ; i<D3DMAXGROUNDSPOT ; i++ )
 	{
-		if ( m_groundSpot[i].bUsed == FALSE )  // free?
+		if ( m_groundSpot[i].bUsed == false )  // free?
 		{
 			ZeroMemory(&m_groundSpot[i], sizeof(D3DGroundSpot));
-			m_groundSpot[i].bUsed = TRUE;
+			m_groundSpot[i].bUsed = true;
 			m_groundSpot[i].smooth = 1.0f;
 			return i;
 		}
@@ -2339,49 +2339,49 @@ int CD3DEngine::GroundSpotCreate()
 
 void CD3DEngine::GroundSpotDelete(int rank)
 {
-	m_groundSpot[rank].bUsed = FALSE;
+	m_groundSpot[rank].bUsed = false;
 	m_groundSpot[rank].pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
 }
 
 // Specifies the position of surface marking of the object.
 
-BOOL CD3DEngine::SetObjectGroundSpotPos(int rank, const D3DVECTOR &pos)
+bool CD3DEngine::SetObjectGroundSpotPos(int rank, const D3DVECTOR &pos)
 {
 	m_groundSpot[rank].pos = pos;
-	return TRUE;
+	return true;
 }
 
 // Specifies the radius of surface marking of the object.
 
-BOOL CD3DEngine::SetObjectGroundSpotRadius(int rank, float radius)
+bool CD3DEngine::SetObjectGroundSpotRadius(int rank, float radius)
 {
 	m_groundSpot[rank].radius = radius;
-	return TRUE;
+	return true;
 }
 
 // Specifies the color of a mark on the ground.
 
-BOOL CD3DEngine::SetObjectGroundSpotColor(int rank, D3DCOLORVALUE color)
+bool CD3DEngine::SetObjectGroundSpotColor(int rank, D3DCOLORVALUE color)
 {
 	m_groundSpot[rank].color = color;
-	return TRUE;
+	return true;
 }
 
 // Specifies the height min / max.
 
-BOOL CD3DEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
+bool CD3DEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
 {
 	m_groundSpot[rank].min = min;
 	m_groundSpot[rank].max = max;
-	return TRUE;
+	return true;
 }
 
 // Specifies the transition factor.
 
-BOOL CD3DEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
+bool CD3DEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
 {
 	m_groundSpot[rank].smooth = smooth;
-	return TRUE;
+	return true;
 }
 
 
@@ -2392,7 +2392,7 @@ int CD3DEngine::GroundMarkCreate(D3DVECTOR pos, float radius,
 								 int dx, int dy, char* table)
 {
 	ZeroMemory(&m_groundMark, sizeof(D3DGroundMark));
-	m_groundMark.bUsed     = TRUE;
+	m_groundMark.bUsed     = true;
 	m_groundMark.phase     = 1;
 	m_groundMark.delay[0]  = delay1;
 	m_groundMark.delay[1]  = delay2;
@@ -2408,10 +2408,10 @@ int CD3DEngine::GroundMarkCreate(D3DVECTOR pos, float radius,
 
 // Clears the ground.
 
-BOOL CD3DEngine::GroundMarkDelete(int rank)
+bool CD3DEngine::GroundMarkDelete(int rank)
 {
 	ZeroMemory(&m_groundMark, sizeof(D3DGroundMark));
-	return TRUE;
+	return true;
 }
 
 
@@ -2423,7 +2423,7 @@ void CD3DEngine::SetLimitLOD(int rank, float limit)
 	m_limitLOD[rank] = limit;
 }
 
-float CD3DEngine::RetLimitLOD(int rank, BOOL bLast)
+float CD3DEngine::RetLimitLOD(int rank, bool bLast)
 {
 	float	limit;
 
@@ -2457,12 +2457,12 @@ void CD3DEngine::SetTerrainVision(float vision)
 
 // Management of the global mode of shading.
 
-void CD3DEngine::SetShadow(BOOL bMode)
+void CD3DEngine::SetShadow(bool bMode)
 {
 	m_bShadow = bMode;
 }
 
-BOOL CD3DEngine::RetShadow()
+bool CD3DEngine::RetShadow()
 {
 	return m_bShadow;
 }
@@ -2470,12 +2470,12 @@ BOOL CD3DEngine::RetShadow()
 
 // Management of the global mode of marking.
 
-void CD3DEngine::SetGroundSpot(BOOL bMode)
+void CD3DEngine::SetGroundSpot(bool bMode)
 {
 	m_bGroundSpot = bMode;
 }
 
-BOOL CD3DEngine::RetGroundSpot()
+bool CD3DEngine::RetGroundSpot()
 {
 	return m_bGroundSpot;
 }
@@ -2483,12 +2483,12 @@ BOOL CD3DEngine::RetGroundSpot()
 
 // Management of the global mode of contamination.
 
-void CD3DEngine::SetDirty(BOOL bMode)
+void CD3DEngine::SetDirty(bool bMode)
 {
 	m_bDirty = bMode;
 }
 
-BOOL CD3DEngine::RetDirty()
+bool CD3DEngine::RetDirty()
 {
 	return m_bDirty;
 }
@@ -2496,12 +2496,12 @@ BOOL CD3DEngine::RetDirty()
 
 // Management of the global mode of horizontal fog patches.
 
-void CD3DEngine::SetFog(BOOL bMode)
+void CD3DEngine::SetFog(bool bMode)
 {
 	m_bFog = bMode;
 }
 
-BOOL CD3DEngine::RetFog()
+bool CD3DEngine::RetFog()
 {
 	return m_bFog;
 }
@@ -2509,7 +2509,7 @@ BOOL CD3DEngine::RetFog()
 
 // ndicates whether it is possible to give a color SetState.
 
-BOOL CD3DEngine::RetStateColor()
+bool CD3DEngine::RetStateColor()
 {
 	return m_bStateColor;
 }
@@ -2555,14 +2555,14 @@ int CD3DEngine::RetRankView()
 
 // Whether to draw the world from the interface.
 
-void CD3DEngine::SetDrawWorld(BOOL bDraw)
+void CD3DEngine::SetDrawWorld(bool bDraw)
 {
 	m_bDrawWorld = bDraw;
 }
 
 // Whether to draw the world on the interface.
 
-void CD3DEngine::SetDrawFront(BOOL bDraw)
+void CD3DEngine::SetDrawFront(bool bDraw)
 {
 	m_bDrawFront = bDraw;
 }
@@ -2614,7 +2614,7 @@ D3DCOLOR CD3DEngine::RetFogColor(int rank)
 // Beyond this distance, nothing is visible.
 // Shortly (according SetFogStart), one enters the fog.
 
-void CD3DEngine::SetDeepView(float length, int rank, BOOL bRef)
+void CD3DEngine::SetDeepView(float length, int rank, bool bRef)
 {
 	if ( bRef )
 	{
@@ -2649,7 +2649,7 @@ float CD3DEngine::RetFogStart(int rank)
 
 void CD3DEngine::SetBackground(char *name, D3DCOLOR up, D3DCOLOR down,
 							   D3DCOLOR cloudUp, D3DCOLOR cloudDown,
-							   BOOL bFull, BOOL bQuarter)
+							   bool bFull, bool bQuarter)
 {
 	strcpy(m_backgroundName, name);
 	m_backgroundColorUp   = up;
@@ -2664,7 +2664,7 @@ void CD3DEngine::SetBackground(char *name, D3DCOLOR up, D3DCOLOR down,
 
 void CD3DEngine::RetBackground(char *name, D3DCOLOR &up, D3DCOLOR &down,
 							   D3DCOLOR &cloudUp, D3DCOLOR &cloudDown,
-							   BOOL &bFull, BOOL &bQuarter)
+							   bool &bFull, bool &bQuarter)
 {
 	strcpy(name, m_backgroundName);
 	up        = m_backgroundColorUp;
@@ -2689,7 +2689,7 @@ void CD3DEngine::SetFrontsizeName(char *name)
 
 // Specifies whether to draw the foreground.
 
-void CD3DEngine::SetOverFront(BOOL bFront)
+void CD3DEngine::SetOverFront(bool bFront)
 {
 	m_bOverFront = bFront;
 }
@@ -2792,12 +2792,12 @@ int CD3DEngine::RetTextureQuality()
 
 // Management mode of toto.
 
-void CD3DEngine::SetTotoMode(BOOL bPresent)
+void CD3DEngine::SetTotoMode(bool bPresent)
 {
 	m_bTotoMode = bPresent;
 }
 
-BOOL CD3DEngine::RetTotoMode()
+bool CD3DEngine::RetTotoMode()
 {
 	return m_bTotoMode;
 }
@@ -2805,12 +2805,12 @@ BOOL CD3DEngine::RetTotoMode()
 
 // Managing the mode of foreground.
 
-void CD3DEngine::SetLensMode(BOOL bPresent)
+void CD3DEngine::SetLensMode(bool bPresent)
 {
 	m_bLensMode = bPresent;
 }
 
-BOOL CD3DEngine::RetLensMode()
+bool CD3DEngine::RetLensMode()
 {
 	return m_bLensMode;
 }
@@ -2818,12 +2818,12 @@ BOOL CD3DEngine::RetLensMode()
 
 // Managing the mode of water.
 
-void CD3DEngine::SetWaterMode(BOOL bPresent)
+void CD3DEngine::SetWaterMode(bool bPresent)
 {
 	m_bWaterMode = bPresent;
 }
 
-BOOL CD3DEngine::RetWaterMode()
+bool CD3DEngine::RetWaterMode()
 {
 	return m_bWaterMode;
 }
@@ -2831,12 +2831,12 @@ BOOL CD3DEngine::RetWaterMode()
 
 // Managing the mode of sky.
 
-void CD3DEngine::SetSkyMode(BOOL bPresent)
+void CD3DEngine::SetSkyMode(bool bPresent)
 {
 	m_bSkyMode = bPresent;
 }
 
-BOOL CD3DEngine::RetSkyMode()
+bool CD3DEngine::RetSkyMode()
 {
 	return m_bSkyMode;
 }
@@ -2844,12 +2844,12 @@ BOOL CD3DEngine::RetSkyMode()
 
 // Managing the mode of background.
 
-void CD3DEngine::SetBackForce(BOOL bPresent)
+void CD3DEngine::SetBackForce(bool bPresent)
 {
 	m_bBackForce = bPresent;
 }
 
-BOOL CD3DEngine::RetBackForce()
+bool CD3DEngine::RetBackForce()
 {
 	return m_bBackForce;
 }
@@ -2857,12 +2857,12 @@ BOOL CD3DEngine::RetBackForce()
 
 // Managing the mode of planets.
 
-void CD3DEngine::SetPlanetMode(BOOL bPresent)
+void CD3DEngine::SetPlanetMode(bool bPresent)
 {
 	m_bPlanetMode = bPresent;
 }
 
-BOOL CD3DEngine::RetPlanetMode()
+bool CD3DEngine::RetPlanetMode()
 {
 	return m_bPlanetMode;
 }
@@ -2870,12 +2870,12 @@ BOOL CD3DEngine::RetPlanetMode()
 
 // Managing the mode of dymanic lights.
 
-void CD3DEngine::SetLightMode(BOOL bPresent)
+void CD3DEngine::SetLightMode(bool bPresent)
 {
 	m_bLightMode = bPresent;
 }
 
-BOOL CD3DEngine::RetLightMode()
+bool CD3DEngine::RetLightMode()
 {
 	return m_bLightMode;
 }
@@ -2883,12 +2883,12 @@ BOOL CD3DEngine::RetLightMode()
 
 // Management of the indentation mode while editing (CEdit).
 
-void CD3DEngine::SetEditIndentMode(BOOL bAuto)
+void CD3DEngine::SetEditIndentMode(bool bAuto)
 {
 	m_bEditIndentMode = bAuto;
 }
 
-BOOL CD3DEngine::RetEditIndentMode()
+bool CD3DEngine::RetEditIndentMode()
 {
 	return m_bEditIndentMode;
 }
@@ -2990,24 +2990,24 @@ void QuarterName(char *buffer, char *name, int quarter)
 
 // Frees texture.
 
-BOOL CD3DEngine::FreeTexture(char* name)
+bool CD3DEngine::FreeTexture(char* name)
 {
-	if ( name[0] == 0 )  return TRUE;
+	if ( name[0] == 0 )  return true;
 
 	if ( D3DTextr_DestroyTexture(name) != S_OK )
 	{
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Load a texture.
 
-BOOL CD3DEngine::LoadTexture(char* name, int stage)
+bool CD3DEngine::LoadTexture(char* name, int stage)
 {
 	DWORD	mode;
 
-	if ( name[0] == 0 )  return TRUE;
+	if ( name[0] == 0 )  return true;
 
 	if ( D3DTextr_GetSurface(name) == NULL )
 	{
@@ -3022,26 +3022,26 @@ BOOL CD3DEngine::LoadTexture(char* name, int stage)
 
 		if ( D3DTextr_CreateTextureFromFile(name, stage, mode) != S_OK )
 		{
-			return FALSE;
+			return false;
 		}
 
 		if ( D3DTextr_Restore(name, m_pD3DDevice) != S_OK )
 		{
-			return FALSE;
+			return false;
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 // Load all the textures of the scene.
 
-BOOL CD3DEngine::LoadAllTexture()
+bool CD3DEngine::LoadAllTexture()
 {
 	D3DObjLevel1*	p1;
 	D3DObjLevel2*	p2;
 	int				l1, i;
 	char			name[50];
-	BOOL			bOK = TRUE;
+	bool			bOK = true;
 
 #if _POLISH
 	LoadTexture("textp.tga");
@@ -3086,12 +3086,12 @@ BOOL CD3DEngine::LoadAllTexture()
 
 		if ( p2 == 0 || p2->texName1[0] != 0 )
 		{
-			if ( !LoadTexture(p2->texName1, 0) )  bOK = FALSE;
+			if ( !LoadTexture(p2->texName1, 0) )  bOK = false;
 		}
 
 		if ( p2 == 0 || p2->texName2[0] != 0 )
 		{
-			if ( !LoadTexture(p2->texName2, 1) )  bOK = FALSE;
+			if ( !LoadTexture(p2->texName2, 1) )  bOK = false;
 		}
 	}
 	return bOK;
@@ -3152,7 +3152,7 @@ HRESULT CD3DEngine::FrameMove(float rTime)
 			{
 				m_groundMark.intensity = 0.0f;
 				m_groundMark.phase     = 0;
-				m_groundMark.bUsed     = FALSE;
+				m_groundMark.bUsed     = false;
 			}
 		}
 	}
@@ -3180,7 +3180,7 @@ void CD3DEngine::StepSimul(float rTime)
 
 void CD3DEngine::SetState(int state, D3DCOLOR color)
 {
-	BOOL	bSecond;
+	bool	bSecond;
 
 	if ( state == m_lastState &&
 		 color == m_lastColor )  return;
@@ -3199,10 +3199,10 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 
 	if ( state & D3DSTATETTb )  // The transparent black texture?
 	{
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_blackSrcBlend[1]);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_blackDestBlend[1]);
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  table_blend[debug_blend1]);
@@ -3217,10 +3217,10 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 	}
 	else if ( state & D3DSTATETTw )  // The transparent white texture?
 	{
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_whiteSrcBlend[1]);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_whiteDestBlend[1]);
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  table_blend[debug_blend3]);
@@ -3235,10 +3235,10 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 	}
 	else if ( state & D3DSTATETCb )  // The transparent black color?
 	{
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_blackSrcBlend[1]);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_blackDestBlend[1]);
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  table_blend[debug_blend1]);
@@ -3250,10 +3250,10 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 	}
 	else if ( state & D3DSTATETCw )  // The transparent white color?
 	{
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_whiteSrcBlend[1]);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_whiteDestBlend[1]);
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  table_blend[debug_blend3]);
@@ -3265,10 +3265,10 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 	}
 	else if ( state & D3DSTATETD )  // diffuse color as transparent?
 	{
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_diffuseSrcBlend[1]);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_diffuseDestBlend[1]);
 
@@ -3278,10 +3278,10 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 	}
 	else if ( state & D3DSTATEALPHA )  // image with alpha channel?
 	{
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, true);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATER);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHAREF,  (DWORD)(128));
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_alphaSrcBlend[1]);
@@ -3296,10 +3296,10 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 	}
 	else	// normal ?
 	{
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
 
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
 		m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -3309,12 +3309,12 @@ void CD3DEngine::SetState(int state, D3DCOLOR color)
 
 	if ( state & D3DSTATEFOG )
 	{
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 	}
 
 	bSecond = m_bGroundSpot|m_bDirty;
-	if ( !m_bGroundSpot && (state & D3DSTATESECOND) != 0 )  bSecond = FALSE;
-	if ( !m_bDirty      && (state & D3DSTATESECOND) == 0 )  bSecond = FALSE;
+	if ( !m_bGroundSpot && (state & D3DSTATESECOND) != 0 )  bSecond = false;
+	if ( !m_bDirty      && (state & D3DSTATESECOND) == 0 )  bSecond = false;
 
 	if ( (state & D3DSTATEDUALb) && bSecond )
 	{
@@ -3644,7 +3644,7 @@ void CD3DEngine::RenderGroundSpot()
 	float					tu, tv, cx, cy, px, py, ppx, ppy;
 	float					intensity, level;
 	char					texName[20];
-	BOOL					bClear, bSet;
+	bool					bClear, bSet;
 
 	if ( !m_bFirstGroundSpot                                  &&
 		 m_groundMark.drawPos.x     == m_groundMark.pos.x     &&
@@ -3659,8 +3659,8 @@ void CD3DEngine::RenderGroundSpot()
 		max.x = min.x+254.0f+2.0f;
 		max.y = min.y+254.0f+2.0f;
 
-		bClear = FALSE;
-		bSet   = FALSE;
+		bClear = false;
+		bSet   = false;
 
 		// Calculate the area to be erased.
 		dot = (int)(m_groundMark.drawRadius/2.0f);
@@ -3685,7 +3685,7 @@ void CD3DEngine::RenderGroundSpot()
 			   px+dot >= min.x && py+dot >= min.y &&
 			   px-dot <= max.x && py-dot <= max.y ) )
 		{
-			bClear = TRUE;
+			bClear = true;
 		}
 
 		// Calculate the area to draw.
@@ -3710,7 +3710,7 @@ void CD3DEngine::RenderGroundSpot()
 			 px+dot >= min.x && py+dot >= min.y &&
 			 px-dot <= max.x && py-dot <= max.y )
 		{
-			bSet = TRUE;
+			bSet = true;
 		}
 		
 		if ( bClear || bSet )
@@ -3738,7 +3738,7 @@ void CD3DEngine::RenderGroundSpot()
 			// Draw the new shadows.
 			for ( i=0 ; i<D3DMAXGROUNDSPOT ; i++ )
 			{
-				if ( m_groundSpot[i].bUsed == FALSE ||
+				if ( m_groundSpot[i].bUsed == false ||
 					 m_groundSpot[i].radius == 0.0f )  continue;
 
 				if ( m_groundSpot[i].min == 0.0f &&
@@ -3803,7 +3803,7 @@ void CD3DEngine::RenderGroundSpot()
 							pos.x = (256.0f*(s%4)+ix)*3200.0f/1024.0f - 1600.0f;
 							pos.z = (256.0f*(s/4)+iy)*3200.0f/1024.0f - 1600.0f;
 							pos.y = 0.0f;
-							level = m_terrain->RetFloorLevel(pos, TRUE);
+							level = m_terrain->RetFloorLevel(pos, true);
 							if ( level < m_groundSpot[i].min ||
 								 level > m_groundSpot[i].max )  continue;
 
@@ -3888,7 +3888,7 @@ void CD3DEngine::RenderGroundSpot()
 
 	for ( i=0 ; i<D3DMAXGROUNDSPOT ; i++ )
 	{
-		if ( m_groundSpot[i].bUsed == FALSE ||
+		if ( m_groundSpot[i].bUsed == false ||
 			 m_groundSpot[i].radius == 0.0f )
 		{
 			m_groundSpot[i].drawRadius = 0.0f;
@@ -3904,7 +3904,7 @@ void CD3DEngine::RenderGroundSpot()
 	m_groundMark.drawRadius    = m_groundMark.radius;
 	m_groundMark.drawIntensity = m_groundMark.intensity;
 
-	m_bFirstGroundSpot = FALSE;
+	m_bFirstGroundSpot = false;
 }
 
 // Draw all the shadows.
@@ -3921,8 +3921,8 @@ void CD3DEngine::DrawShadow()
 	float			dp, h, d, D;
 	int				i;
 
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
 
 	D3DUtil_SetIdentityMatrix(matrix);
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
@@ -4108,8 +4108,8 @@ void CD3DEngine::DrawShadow()
 		AddStatisticTriangle(2);
 	}
 
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
 }
 
 
@@ -4128,7 +4128,7 @@ HRESULT CD3DEngine::Render()
 	D3DVERTEX2*		pv;
 	int				l1, l2, l3, l4, l5, objRank, tState;
 	CInterface*		pInterface;
-	BOOL			bTransparent;
+	bool			bTransparent;
 	D3DCOLOR		color, tColor;
 
 	if ( !m_bRender )  return S_OK;
@@ -4169,13 +4169,13 @@ HRESULT CD3DEngine::Render()
 		if ( m_bSkyMode )  m_cloud->Draw();  // draws the clouds
 
 		// Display the objects
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, F2DW(16));
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProj);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
 
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, m_fogColor[m_rankView]);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(m_deepView[m_rankView]*m_fogStart[m_rankView]));
@@ -4250,7 +4250,7 @@ HRESULT CD3DEngine::Render()
 		}
 
 		// Draw objects.
-		bTransparent = FALSE;
+		bTransparent = false;
 		p1 = m_objectPointer;
 		for ( l1=0 ; l1<p1->totalUsed ; l1++ )
 		{
@@ -4286,7 +4286,7 @@ HRESULT CD3DEngine::Render()
 							SetMaterial(p6->material);
 							if ( m_objectParam[objRank].transparency != 0.0f )  // transparent ?
 							{
-								bTransparent = TRUE;
+								bTransparent = true;
 								continue;
 							}
 							SetState(p6->state);
@@ -4399,10 +4399,10 @@ HRESULT CD3DEngine::Render()
 	}
 
 	// Draw the user interface over the scene.
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
@@ -4418,14 +4418,14 @@ HRESULT CD3DEngine::Render()
 	if ( m_bDrawFront )
 	{
 		// Display the objects
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, F2DW(16));
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
 		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProj);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, m_ambiantColor[m_rankView]);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
 
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGCOLOR, m_fogColor[m_rankView]);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGVERTEXMODE, D3DFOG_LINEAR);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(m_deepView[m_rankView]*m_fogStart[m_rankView]));
@@ -4492,10 +4492,10 @@ HRESULT CD3DEngine::Render()
 
 		m_particule->DrawParticule(SH_FRONT);  // draws the particles of the 3D world
 
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
+		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
 		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
@@ -4559,11 +4559,11 @@ void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
 	color[1] = down;
 	color[2] = 0x00000000;
 
-//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	SetTexture("xxx.tga");  // no texture
 	SetState(D3DSTATENORMAL);
@@ -4623,11 +4623,11 @@ void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
 		v2 = v1+h;
 	}
 
-//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	SetTexture(name);
 	SetState(D3DSTATEWRAP);
@@ -4698,11 +4698,11 @@ void CD3DEngine::DrawPlanet()
 {
 	if ( !m_planet->PlanetExist() )  return;
 
-//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
 	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
@@ -4746,11 +4746,11 @@ void CD3DEngine::DrawFrontsize()
 	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
 	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
 
-//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	SetTexture(m_frontsizeName);
 	SetState(D3DSTATECLAMP|D3DSTATETTb);
@@ -4784,11 +4784,11 @@ void CD3DEngine::DrawOverColor()
 	color[1] = m_overColor;
 	color[2] = 0x00000000;
 
-//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE );
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false );
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
 	SetTexture("xxx.tga");  // no texture
 	SetState(m_overMode);
@@ -4823,7 +4823,7 @@ void CD3DEngine::SetHiliteRank(int *rankList)
 
 // Give the box in the 2D screen of any object.
 
-BOOL CD3DEngine::GetBBox2D(int objRank, FPOINT &min, FPOINT &max)
+bool CD3DEngine::GetBBox2D(int objRank, FPOINT &min, FPOINT &max)
 {
 	D3DVECTOR	p, pp;
 	int			i;
@@ -4853,9 +4853,9 @@ BOOL CD3DEngine::GetBBox2D(int objRank, FPOINT &min, FPOINT &max)
 	if ( min.x ==  1000000.0f ||
 		 min.y ==  1000000.0f ||
 		 max.x == -1000000.0f ||
-		 max.y == -1000000.0f )  return FALSE;
+		 max.y == -1000000.0f )  return false;
 
-	return TRUE;
+	return true;
 }
 
 // Determines the rectangle of the object highlighted, which will be designed by CD3DApplication.
@@ -4887,19 +4887,19 @@ void CD3DEngine::DrawHilite()
 		 max.x == -1000000.0f ||
 		 max.y == -1000000.0f )
 	{
-		m_bHilite = FALSE;  // not highlighted
+		m_bHilite = false;  // not highlighted
 	}
 	else
 	{
 		m_hiliteP1 = min;
 		m_hiliteP2 = max;
-		m_bHilite = TRUE;
+		m_bHilite = true;
 	}
 }
 
 // Give the rectangle highlighted by drawing CD3DApplication.
 
-BOOL CD3DEngine::GetHilite(FPOINT &p1, FPOINT &p2)
+bool CD3DEngine::GetHilite(FPOINT &p1, FPOINT &p2)
 {
 	p1 = m_hiliteP1;
 	p2 = m_hiliteP2;
@@ -4921,15 +4921,15 @@ int CD3DEngine::RetStatisticTriangle()
 	return m_statisticTriangle;
 }
 
-BOOL CD3DEngine::GetSpriteCoord(int &x, int &y)
+bool CD3DEngine::GetSpriteCoord(int &x, int &y)
 {
 	D3DVIEWPORT7	vp;
 	D3DVECTOR		v, vv;
 
-	return FALSE;
+	return false;
 	//?
 	vv = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	if ( !TransformPoint(v, 20*20+1, vv) )  return FALSE;
+	if ( !TransformPoint(v, 20*20+1, vv) )  return false;
 
 	m_pD3DDevice->GetViewport(&vp);
 	v.x *= vp.dwWidth/2;
@@ -4939,13 +4939,13 @@ BOOL CD3DEngine::GetSpriteCoord(int &x, int &y)
 	
 	x = (int)v.x;
 	y = (int)v.y;
-	return TRUE;
+	return true;
 }
 
 
 // Tests whether to exclude a point.
 
-BOOL IsExcludeColor(FPOINT *pExclu, int x, int y)
+bool IsExcludeColor(FPOINT *pExclu, int x, int y)
 {
 	int		i;
 
@@ -4956,22 +4956,22 @@ BOOL IsExcludeColor(FPOINT *pExclu, int x, int y)
 		if ( x >= (int)(pExclu[i+0].x*256.0f) &&
 			 x <  (int)(pExclu[i+1].x*256.0f) &&
 			 y >= (int)(pExclu[i+0].y*256.0f) &&
-			 y <  (int)(pExclu[i+1].y*256.0f) )  return TRUE;  // exclude
+			 y <  (int)(pExclu[i+1].y*256.0f) )  return true;  // exclude
 
 		i += 2;
 	}
 
-	return FALSE;  // point to include
+	return false;  // point to include
 }
 
 // Change the color of a texture.
 
-BOOL CD3DEngine::ChangeColor(char *name,
+bool CD3DEngine::ChangeColor(char *name,
 							 D3DCOLORVALUE colorRef1, D3DCOLORVALUE colorNew1,
 							 D3DCOLORVALUE colorRef2, D3DCOLORVALUE colorNew2,
 							 float tolerance1, float tolerance2,
 							 FPOINT ts, FPOINT ti,
-							 FPOINT *pExclu, float shift, BOOL bHSV)
+							 FPOINT *pExclu, float shift, bool bHSV)
 {
 	LPDIRECTDRAWSURFACE7	surface;
 	DDSURFACEDESC2			ddsd;
@@ -4987,14 +4987,14 @@ BOOL CD3DEngine::ChangeColor(char *name,
 		 colorRef1.b == colorNew1.b &&
 		 colorRef2.r == colorNew2.r &&
 		 colorRef2.g == colorNew2.g &&
-		 colorRef2.b == colorNew2.b )  return TRUE;
+		 colorRef2.b == colorNew2.b )  return true;
 
 	surface = D3DTextr_GetSurface(name);
-	if ( surface == 0 )  return FALSE;
+	if ( surface == 0 )  return false;
 
 	ZeroMemory(&ddsd, sizeof(DDSURFACEDESC2));
 	ddsd.dwSize = sizeof(DDSURFACEDESC2);
-	if ( surface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL) != DD_OK )  return FALSE;
+	if ( surface->Lock(NULL, &ddsd, DDLOCK_WAIT, NULL) != DD_OK )  return false;
 
 	dx = ddsd.dwWidth;
 	dy = ddsd.dwHeight;
@@ -5076,42 +5076,42 @@ BOOL CD3DEngine::ChangeColor(char *name,
 	}
 
 	surface->Unlock(NULL);
-	return TRUE;
+	return true;
 }
 
 
 // Open an image to work directly in it.
 
-BOOL CD3DEngine::OpenImage(char *name)
+bool CD3DEngine::OpenImage(char *name)
 {
 //?	D3DTextr_Invalidate(name);
 //?	LoadTexture(name);
 
 	m_imageSurface = D3DTextr_GetSurface(name);
-	if ( m_imageSurface == 0 )  return FALSE;
+	if ( m_imageSurface == 0 )  return false;
 
 	ZeroMemory(&m_imageDDSD, sizeof(DDSURFACEDESC2));
 	m_imageDDSD.dwSize = sizeof(DDSURFACEDESC2);
 	if ( m_imageSurface->Lock(NULL, &m_imageDDSD, DDLOCK_WAIT, NULL) != DD_OK )
 	{
-		return FALSE;
+		return false;
 	}
 
 	if ( m_imageDDSD.ddpfPixelFormat.dwRGBBitCount != 16 )
 	{
 		m_imageSurface->Unlock(NULL);
-		return FALSE;
+		return false;
 	}
 
 	m_imageDX = m_imageDDSD.dwWidth;
 	m_imageDY = m_imageDDSD.dwHeight;
 
-	return TRUE;
+	return true;
 }
 
 // Copy the working image.
 
-BOOL CD3DEngine::CopyImage()
+bool CD3DEngine::CopyImage()
 {
 	WORD*		pbSurf;
 	int			y;
@@ -5127,17 +5127,17 @@ BOOL CD3DEngine::CopyImage()
 		pbSurf += m_imageDDSD.lPitch*y/2;
 		memcpy(m_imageCopy+y*m_imageDX, pbSurf, m_imageDX*sizeof(WORD));
 	}
-	return TRUE;
+	return true;
 }
 
 // Restores the image work.
 
-BOOL CD3DEngine::LoadImage()
+bool CD3DEngine::LoadImage()
 {
 	WORD*		pbSurf;
 	int			y;
 
-	if ( m_imageCopy == 0 )  return FALSE;
+	if ( m_imageCopy == 0 )  return false;
 
 	for ( y=0 ; y<m_imageDY ; y++ )
 	{
@@ -5145,12 +5145,12 @@ BOOL CD3DEngine::LoadImage()
 		pbSurf += m_imageDDSD.lPitch*y/2;
 		memcpy(pbSurf, m_imageCopy+y*m_imageDX, m_imageDX*sizeof(WORD));
 	}
-	return TRUE;
+	return true;
 }
 
 // Scroll the copy of the working image.
 
-BOOL CD3DEngine::ScrollImage(int dx, int dy)
+bool CD3DEngine::ScrollImage(int dx, int dy)
 {
 	int		x, y;
 
@@ -5192,18 +5192,18 @@ BOOL CD3DEngine::ScrollImage(int dx, int dy)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Draws a point in the image work.
 
-BOOL CD3DEngine::SetDot(int x, int y, D3DCOLORVALUE color)
+bool CD3DEngine::SetDot(int x, int y, D3DCOLORVALUE color)
 {
 	WORD*		pbSurf;
 	WORD		r,g,b, w;
 
 	if ( x < 0 || x >= m_imageDX ||
-		 y < 0 || y >= m_imageDY )  return FALSE;
+		 y < 0 || y >= m_imageDY )  return false;
 
 #if 1
 	if ( color.r < 0.0f )  color.r = 0.0f;
@@ -5244,35 +5244,35 @@ BOOL CD3DEngine::SetDot(int x, int y, D3DCOLORVALUE color)
 	pbSurf += x;
 
 	*pbSurf = w;
-	return TRUE;
+	return true;
 }
 
 // Closes the working image.
 
-BOOL CD3DEngine::CloseImage()
+bool CD3DEngine::CloseImage()
 {
 	m_imageSurface->Unlock(NULL);
-	return TRUE;
+	return true;
 }
 
 
 // Writes a .BMP screenshot.
 
-BOOL CD3DEngine::WriteScreenShot(char *filename, int width, int height)
+bool CD3DEngine::WriteScreenShot(char *filename, int width, int height)
 {
 	return m_app->WriteScreenShot(filename, width, height);
 }
 
 // Initializes an hDC on the rendering surface.
 
-BOOL CD3DEngine::GetRenderDC(HDC &hDC)
+bool CD3DEngine::GetRenderDC(HDC &hDC)
 {
 	return m_app->GetRenderDC(hDC);
 }
 
 // Frees the hDC of the rendering surface.
 
-BOOL CD3DEngine::ReleaseRenderDC(HDC &hDC)
+bool CD3DEngine::ReleaseRenderDC(HDC &hDC)
 {
 	return m_app->ReleaseRenderDC(hDC);
 }
@@ -5282,7 +5282,7 @@ PBITMAPINFO	CD3DEngine::CreateBitmapInfoStruct(HBITMAP hBmp)
 	return m_app->CreateBitmapInfoStruct(hBmp);
 }
 
-BOOL CD3DEngine::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
+bool CD3DEngine::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
 {
 	return m_app->CreateBMPFile(pszFile, pbi, hBMP, hDC);
 }
@@ -5377,28 +5377,28 @@ int CD3DEngine::RetKey(int keyRank, int option)
 
 // Use the joystick or keyboard.
 
-void CD3DEngine::SetJoystick(BOOL bEnable)
+void CD3DEngine::SetJoystick(bool bEnable)
 {
 	m_app->SetJoystick(bEnable);
 }
 
-BOOL CD3DEngine::RetJoystick()
+bool CD3DEngine::RetJoystick()
 {
 	return m_app->RetJoystick();
 }
 
 
-void CD3DEngine::SetDebugMode(BOOL bMode)
+void CD3DEngine::SetDebugMode(bool bMode)
 {
 	m_app->SetDebugMode(bMode);
 }
 
-BOOL CD3DEngine::RetDebugMode()
+bool CD3DEngine::RetDebugMode()
 {
 	return m_app->RetDebugMode();
 }
 
-BOOL CD3DEngine::RetSetupMode()
+bool CD3DEngine::RetSetupMode()
 {
 	return m_app->RetSetupMode();
 }
@@ -5406,7 +5406,7 @@ BOOL CD3DEngine::RetSetupMode()
 
 // Indicates whether a point is visible.
 
-BOOL CD3DEngine::IsVisiblePoint(const D3DVECTOR &pos)
+bool CD3DEngine::IsVisiblePoint(const D3DVECTOR &pos)
 {
 	return ( Length(m_eyePt, pos) <= m_deepView[0] );
 }
@@ -5417,8 +5417,8 @@ BOOL CD3DEngine::IsVisiblePoint(const D3DVECTOR &pos)
 HRESULT CD3DEngine::InitDeviceObjects()
 {
 	// Set miscellaneous render states.
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE,   TRUE);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, TRUE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DITHERENABLE,   true);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SPECULARENABLE, true);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SHADEMODE, D3DSHADE_GOURAUD);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FILLMODE, D3DFILL_SOLID);
 
@@ -5565,7 +5565,7 @@ D3DMouse CD3DEngine::RetMouseType()
 	return m_mouseType;
 }
 
-void CD3DEngine::SetMouseHide(BOOL bHide)
+void CD3DEngine::SetMouseHide(bool bHide)
 {
 	if ( m_bMouseHide == bHide )  return;
 
@@ -5574,36 +5574,36 @@ void CD3DEngine::SetMouseHide(BOOL bHide)
 		m_bNiceMouse = m_app->RetNiceMouse();
 		if ( !m_bNiceMouse )
 		{
-			m_app->SetNiceMouse(TRUE);
+			m_app->SetNiceMouse(true);
 		}
-		m_bMouseHide = TRUE;
+		m_bMouseHide = true;
 	}
 	else	// shows the mouse?
 	{
 		if ( !m_bNiceMouse )
 		{
-			m_app->SetNiceMouse(FALSE);
+			m_app->SetNiceMouse(false);
 		}
-		m_bMouseHide = FALSE;
+		m_bMouseHide = false;
 	}
 }
 
-BOOL CD3DEngine::RetMouseHide()
+bool CD3DEngine::RetMouseHide()
 {
 	return m_bMouseHide;
 }
 
-void CD3DEngine::SetNiceMouse(BOOL bNice)
+void CD3DEngine::SetNiceMouse(bool bNice)
 {
 	m_app->SetNiceMouse(bNice);
 }
 
-BOOL CD3DEngine::RetNiceMouse()
+bool CD3DEngine::RetNiceMouse()
 {
 	return m_app->RetNiceMouse();
 }
 
-BOOL CD3DEngine::RetNiceMouseCap()
+bool CD3DEngine::RetNiceMouseCap()
 {
 	return m_app->RetNiceMouseCap();
 }

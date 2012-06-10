@@ -45,17 +45,17 @@ public:
 	void	SetPhysics(CPhysics* physics);
 	void	SetBrain(CBrain* brain);
 
-	virtual void	DeleteObject(BOOL bAll=FALSE);
-	virtual BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
-	virtual BOOL	EventProcess(const Event &event);
+	virtual void	DeleteObject(bool bAll=false);
+	virtual bool	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	virtual bool	EventProcess(const Event &event);
 	virtual	Error	SetAction(int action, float time=0.2f);
 	virtual int		RetAction();
 
-	virtual BOOL	SetParam(int rank, float value);
+	virtual bool	SetParam(int rank, float value);
 	virtual float	RetParam(int rank);
 
-	virtual BOOL	Write(char *line);
-	virtual BOOL	Read(char *line);
+	virtual bool	Write(char *line);
+	virtual bool	Read(char *line);
 
 	virtual void		SetLinVibration(D3DVECTOR dir);
 	virtual D3DVECTOR	RetLinVibration();

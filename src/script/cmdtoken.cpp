@@ -50,7 +50,7 @@ char* SkipSpace(char *line)
 
 // Checks if a line contains a command.
 
-BOOL Cmd(char *line, char *token)
+bool Cmd(char *line, char *token)
 {
 	char*	p;
 
@@ -87,7 +87,7 @@ char* SearchArg(char *line, int rank)
 
 	for ( i=0 ; i<rank ; i++ )
 	{
-		while ( TRUE )
+		while ( true )
 		{
 			c = *line++;
 			if ( c == ';' )  break;
@@ -114,7 +114,7 @@ int GetInt(char *line, int rank, int def)
 		 p[1] == 'x' )  // begins with "0x" (hexadecimal)?
 	{
 		p += 2;
-		while ( TRUE )
+		while ( true )
 		{
 			if ( *p >= '0' && *p <= '9' )
 			{

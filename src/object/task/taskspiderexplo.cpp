@@ -45,10 +45,8 @@
 CTaskSpiderExplo::CTaskSpiderExplo(CInstanceManager* iMan, CObject* object)
 						  : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
-
 	m_time = 0.0f;
-	m_bError = FALSE;
+	m_bError = false;
 }
 
 // Object's destructor.
@@ -60,21 +58,21 @@ CTaskSpiderExplo::~CTaskSpiderExplo()
 
 // Management of an event.
 
-BOOL CTaskSpiderExplo::EventProcess(const Event &event)
+bool CTaskSpiderExplo::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	// Momentarily stationary object (ant on the back)?
 	if ( m_object->RetFixed() )
 	{
-		m_bError = TRUE;
-		return TRUE;
+		m_bError = true;
+		return true;
 	}
 
 	m_time += event.rTime;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -88,7 +86,7 @@ Error CTaskSpiderExplo::Start()
 	m_physics->SetMotorSpeedX(0.0f);  // stops the advance
 	m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
 
-	m_bError = FALSE;
+	m_bError = false;
 	return ERR_OK;
 }
 
@@ -117,8 +115,8 @@ Error CTaskSpiderExplo::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskSpiderExplo::Abort()
+bool CTaskSpiderExplo::Abort()
 {
-	return TRUE;
+	return true;
 }
 

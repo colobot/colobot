@@ -51,7 +51,7 @@
 
 // Indicates whether a character is a space.
 
-BOOL IsSpace(int character)
+bool IsSpace(int character)
 {
 	return ( character == ' '  ||
 			 character == '\t' ||
@@ -60,7 +60,7 @@ BOOL IsSpace(int character)
 
 // Indicates whether a character is part of a word.
 
-BOOL IsWord(int character)
+bool IsWord(int character)
 {
 	char	c;
 
@@ -73,9 +73,9 @@ BOOL IsWord(int character)
 
 // Indicates whether a character is a word separator.
 
-BOOL IsSep(int character)
+bool IsSep(int character)
 {
-	if ( IsSpace(character) )  return FALSE;
+	if ( IsSpace(character) )  return false;
 	return !IsWord(character);
 }
 
@@ -95,14 +95,14 @@ CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
 
 	m_fontType = FONT_COURIER;
 	m_scroll        = 0;
-	m_bEdit         = TRUE;
-	m_bHilite       = TRUE;
-	m_bInsideScroll = TRUE;
-	m_bCapture      = FALSE;
-	m_bDisplaySpec  = FALSE;
-	m_bSoluce       = FALSE;
-	m_bGeneric      = FALSE;
-	m_bAutoIndent   = FALSE;
+	m_bEdit         = true;
+	m_bHilite       = true;
+	m_bInsideScroll = true;
+	m_bCapture      = false;
+	m_bDisplaySpec  = false;
+	m_bSoluce       = false;
+	m_bGeneric      = false;
+	m_bAutoIndent   = false;
 	m_cursor1       = 0;
 	m_cursor2       = 0;
 	m_column        = 0;
@@ -114,7 +114,7 @@ CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
 	{
 		m_undo[i].text = 0;
 	}
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 	m_undoOper = OPERUNDO_SPEC;
 }
 
@@ -139,7 +139,7 @@ CEdit::~CEdit()
 
 // Creates a new editable line.
 
-BOOL CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	CScroll*	pc;
 	FPOINT		start, end;
@@ -154,15 +154,15 @@ BOOL CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	m_timeLastClick = 0.0f;
 	m_timeLastScroll = 0.0f;
 
-	m_bMulti = FALSE;
+	m_bMulti = false;
 	MoveAdjust();
 	if ( m_lineVisible <= 1 )
 	{
-		m_bMulti = FALSE;
+		m_bMulti = false;
 	}
 	else
 	{
-		m_bMulti = TRUE;
+		m_bMulti = true;
 		MoveAdjust();  // readjusts multi-line mode
 		m_scroll = new CScroll(m_iMan);
 		pc = (CScroll*)m_scroll;
@@ -170,7 +170,7 @@ BOOL CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 		MoveAdjust();
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -228,31 +228,31 @@ void CEdit::MoveAdjust()
 
 	pos.x = m_pos.x+m_dim.x-(m_bMulti?SCROLL_WIDTH:0.0f);
 	pos.y = m_pos.y;
-	GlintCreate(pos, FALSE, FALSE);
+	GlintCreate(pos, false, false);
 }
 
 
 // Management of an event.
 
-BOOL CEdit::EventProcess(const Event &event)
+bool CEdit::EventProcess(const Event &event)
 {
-	BOOL	bShift, bControl;
+	bool	bShift, bControl;
 
-	if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
 
 	if ( event.event == EVENT_KEYDOWN &&
 		 event.param == VK_WHEELUP    &&
 		 Detect(event.pos)            )
 	{
-		Scroll(m_lineFirst-3, TRUE);
-		return TRUE;
+		Scroll(m_lineFirst-3, true);
+		return true;
 	}
 	if ( event.event == EVENT_KEYDOWN &&
 		 event.param == VK_WHEELDOWN  &&
 		 Detect(event.pos)            )
 	{
-		Scroll(m_lineFirst+3, TRUE);
-		return TRUE;
+		Scroll(m_lineFirst+3, true);
+		return true;
 	}
 
 	CControl::EventProcess(event);
@@ -293,7 +293,7 @@ BOOL CEdit::EventProcess(const Event &event)
 		if ( event.event == m_scroll->RetEventMsg() )
 		{
 			Scroll();
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -306,25 +306,25 @@ BOOL CEdit::EventProcess(const Event &event)
 			 (event.param == VK_DELETE &&  bShift && !bControl) )
 		{
 			Cut();
-			return TRUE;
+			return true;
 		}
 		if ( (event.param == 'C'       && !bShift &&  bControl) ||
 			 (event.param == VK_INSERT && !bShift &&  bControl) )
 		{
 			Copy();
-			return TRUE;
+			return true;
 		}
 		if ( (event.param == 'V'       && !bShift &&  bControl) ||
 			 (event.param == VK_INSERT &&  bShift && !bControl) )
 		{
 			Paste();
-			return TRUE;
+			return true;
 		}
 
 		if ( event.param == 'A' && !bShift && bControl )
 		{
 			SetCursor(999999, 0);
-			return TRUE;
+			return true;
 		}
 
 		if ( event.param == 'O' && !bShift && bControl )
@@ -343,25 +343,25 @@ BOOL CEdit::EventProcess(const Event &event)
 		if ( event.param == 'Z' && !bShift && bControl )
 		{
 			Undo();
-			return TRUE;
+			return true;
 		}
 
 		if ( event.param == 'U' && !bShift && bControl )
 		{
-			if ( MinMaj(FALSE) )  return TRUE;
+			if ( MinMaj(false) )  return true;
 		}
 		if ( event.param == 'U' && bShift && bControl )
 		{
-			if ( MinMaj(TRUE) )  return TRUE;
+			if ( MinMaj(true) )  return true;
 		}
 
 		if ( event.param == VK_TAB && !bShift && !bControl && !m_bAutoIndent )
 		{
-			if ( Shift(FALSE) )  return TRUE;
+			if ( Shift(false) )  return true;
 		}
 		if ( event.param == VK_TAB && bShift && !bControl && !m_bAutoIndent )
 		{
-			if ( Shift(TRUE) )  return TRUE;
+			if ( Shift(true) )  return true;
 		}
 
 		if ( m_bEdit )
@@ -369,33 +369,33 @@ BOOL CEdit::EventProcess(const Event &event)
 			if ( event.param == VK_LEFT )
 			{
 				MoveChar(-1, bControl, bShift);
-				return TRUE;
+				return true;
 			}
 			if ( event.param == VK_RIGHT )
 			{
 				MoveChar(1, bControl, bShift);
-				return TRUE;
+				return true;
 			}
 			if ( event.param == VK_UP )
 			{
 				MoveLine(-1, bControl, bShift);
-				return TRUE;
+				return true;
 			}
 			if ( event.param == VK_DOWN )
 			{
 				MoveLine(1, bControl, bShift);
-				return TRUE;
+				return true;
 			}
 
 			if ( event.param == VK_PRIOR )  // PageUp ?
 			{
 				MoveLine(-(m_lineVisible-1), bControl, bShift);
-				return TRUE;
+				return true;
 			}
 			if ( event.param == VK_NEXT )  // PageDown ?
 			{
 				MoveLine(m_lineVisible-1, bControl, bShift);
-				return TRUE;
+				return true;
 			}
 		}
 		else
@@ -403,63 +403,63 @@ BOOL CEdit::EventProcess(const Event &event)
 			if ( event.param == VK_LEFT ||
 				 event.param == VK_UP   )
 			{
-				Scroll(m_lineFirst-1, TRUE);
-				return TRUE;
+				Scroll(m_lineFirst-1, true);
+				return true;
 			}
 			if ( event.param == VK_RIGHT ||
 				 event.param == VK_DOWN  )
 			{
-				Scroll(m_lineFirst+1, TRUE);
-				return TRUE;
+				Scroll(m_lineFirst+1, true);
+				return true;
 			}
 
 			if ( event.param == VK_PRIOR )  // PageUp ?
 			{
-				Scroll(m_lineFirst-(m_lineVisible-1), TRUE);
-				return TRUE;
+				Scroll(m_lineFirst-(m_lineVisible-1), true);
+				return true;
 			}
 			if ( event.param == VK_NEXT )  // PageDown ?
 			{
-				Scroll(m_lineFirst+(m_lineVisible-1), TRUE);
-				return TRUE;
+				Scroll(m_lineFirst+(m_lineVisible-1), true);
+				return true;
 			}
 		}
 
 		if ( event.param == VK_HOME )
 		{
 			MoveHome(bControl, bShift);
-			return TRUE;
+			return true;
 		}
 		if ( event.param == VK_END )
 		{
 			MoveEnd(bControl, bShift);
-			return TRUE;
+			return true;
 		}
 
 		if ( event.param == VK_BACK )  // backspace ( <- ) ?
 		{
 			Delete(-1);
 			SendModifEvent();
-			return TRUE;
+			return true;
 		}
 		if ( event.param == VK_DELETE )
 		{
 			Delete(1);
 			SendModifEvent();
-			return TRUE;
+			return true;
 		}
 
 		if ( event.param == VK_RETURN )
 		{
 			Insert('\n');
 			SendModifEvent();
-			return TRUE;
+			return true;
 		}
 		if ( event.param == VK_TAB )
 		{
 			Insert('\t');
 			SendModifEvent();
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -469,7 +469,7 @@ BOOL CEdit::EventProcess(const Event &event)
 		{
 			Insert((char)event.param);
 			SendModifEvent();
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -477,11 +477,11 @@ BOOL CEdit::EventProcess(const Event &event)
 	{
 		if ( event.param == m_eventMsg )
 		{
-			m_bFocus = TRUE;
+			m_bFocus = true;
 		}
 		else
 		{
-			m_bFocus = FALSE;
+			m_bFocus = false;
 		}
 	}
 
@@ -494,13 +494,13 @@ BOOL CEdit::EventProcess(const Event &event)
 			if ( event.pos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
 			{
 				MouseClick(event.pos);
-				if ( m_bEdit || m_bHilite )  m_bCapture = TRUE;
+				if ( m_bEdit || m_bHilite )  m_bCapture = true;
 			}
-			m_bFocus = TRUE;
+			m_bFocus = true;
 		}
 		else
 		{
-			m_bFocus = FALSE;
+			m_bFocus = false;
 		}
 	}
 
@@ -531,11 +531,11 @@ BOOL CEdit::EventProcess(const Event &event)
 				MouseDoubleClick(event.pos);
 			}
 			m_timeLastClick = m_time;
-			m_bCapture = FALSE;
+			m_bCapture = false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -552,18 +552,18 @@ void CEdit::SendModifEvent()
 
 // Detects whether the mouse is over a hyperlink character.
 
-BOOL CEdit::IsLinkPos(FPOINT pos)
+bool CEdit::IsLinkPos(FPOINT pos)
 {
 	int		i;
 
-	if ( m_format == 0 )  return FALSE;
+	if ( m_format == 0 )  return false;
 
 	i = MouseDetect(pos);
-	if ( i == -1 )  return FALSE;
-	if ( i >= m_len )  return FALSE;
+	if ( i == -1 )  return false;
+	if ( i >= m_len )  return false;
 
-	if ( (m_format[i]&COLOR_MASK) == COLOR_LINK )  return TRUE;
-	return FALSE;
+	if ( (m_format[i]&COLOR_MASK) == COLOR_LINK )  return true;
+	return false;
 }
 
 
@@ -600,7 +600,7 @@ void CEdit::MouseDoubleClick(FPOINT mouse)
 		m_cursor1 = m_len;  // selects all
 	}
 
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 
 	Justif();
 	ColumnFix();
@@ -619,7 +619,7 @@ void CEdit::MouseClick(FPOINT mouse)
 	{
 		m_cursor1 = i;
 		m_cursor2 = i;
-		m_bUndoForce = TRUE;
+		m_bUndoForce = true;
 		m_timeBlink = 0.0f;  // lights the cursor immediately
 		ColumnFix();
 	}
@@ -664,12 +664,12 @@ void CEdit::MouseMove(FPOINT mouse)
 	{
 		if ( mouse.y > m_pos.y+m_dim.y )  // above?
 		{
-			Scroll(m_lineFirst-1, FALSE);
+			Scroll(m_lineFirst-1, false);
 			mouse.y = m_pos.y+m_dim.y-MARGY-m_lineHeight/2.0f;
 		}
 		if ( mouse.y < m_pos.y )  // lower?
 		{
-			Scroll(m_lineFirst+1, FALSE);
+			Scroll(m_lineFirst+1, false);
 			mouse.y = m_pos.y+m_dim.y-MARGY-m_lineVisible*m_lineHeight+m_lineHeight/2.0f;
 		}
 		m_timeLastScroll = m_time;
@@ -679,7 +679,7 @@ void CEdit::MouseMove(FPOINT mouse)
 	if ( i != -1 )
 	{
 		m_cursor1 = i;
-		m_bUndoForce = TRUE;
+		m_bUndoForce = true;
 		m_timeBlink = 0.0f;  // lights the cursor immediately
 		ColumnFix();
 	}
@@ -692,7 +692,7 @@ int CEdit::MouseDetect(FPOINT mouse)
 	FPOINT	pos;
 	float	indentLength, offset, size;
 	int		i, len, c;
-	BOOL	bTitle;
+	bool	bTitle;
 
 	if ( m_bAutoIndent )
 	{
@@ -815,21 +815,21 @@ void CEdit::HyperJump(char *name, char *marker)
 
 // Adds text to the history of visited.
 
-BOOL CEdit::HyperAdd(char *filename, int firstLine)
+bool CEdit::HyperAdd(char *filename, int firstLine)
 {
-	if ( m_historyCurrent >= EDITHISTORYMAX-1 )  return FALSE;
+	if ( m_historyCurrent >= EDITHISTORYMAX-1 )  return false;
 
 	m_historyCurrent ++;
 	strcpy(m_history[m_historyCurrent].filename, filename);
 	m_history[m_historyCurrent].firstLine = firstLine;
 
 	m_historyTotal = m_historyCurrent+1;
-	return TRUE;
+	return true;
 }
 
 // Indicates whether a button EVENT_HYPER_ * is active or not.
 
-BOOL CEdit::HyperTest(EventMsg event)
+bool CEdit::HyperTest(EventMsg event)
 {
 	if ( event == EVENT_HYPER_HOME )
 	{
@@ -846,14 +846,14 @@ BOOL CEdit::HyperTest(EventMsg event)
 		return ( m_historyCurrent < m_historyTotal-1 );
 	}
 
-	return FALSE;
+	return false;
 }
 
 // Performs the action corresponding to a button EVENT_HYPER_ *.
 
-BOOL CEdit::HyperGo(EventMsg event)
+bool CEdit::HyperGo(EventMsg event)
 {
-	if ( !HyperTest(event) )  return FALSE;
+	if ( !HyperTest(event) )  return false;
 
 	m_history[m_historyCurrent].firstLine = m_lineFirst;
 
@@ -875,7 +875,7 @@ BOOL CEdit::HyperGo(EventMsg event)
 	ReadText(m_history[m_historyCurrent].filename);
 	Justif();
 	SetFirstLine(m_history[m_historyCurrent].firstLine);
-	return TRUE;
+	return true;
 }
 
 
@@ -1233,10 +1233,10 @@ void CEdit::DrawPart(FPOINT pos, FPOINT dim, int icon)
 
 // Give the text to edit.
 
-void CEdit::SetText(char *text, BOOL bNew)
+void CEdit::SetText(char *text, bool bNew)
 {
 	int		i, j, font;
-	BOOL	bBOL;
+	bool	bBOL;
 
 	if ( !bNew )  UndoMemorize(OPERUNDO_SPEC);
 
@@ -1248,7 +1248,7 @@ void CEdit::SetText(char *text, BOOL bNew)
 		if ( m_bAutoIndent )
 		{
 			j = 0;
-			bBOL = TRUE;
+			bBOL = true;
 			for ( i=0 ; i<m_len ; i++ )
 			{
 				if ( text[i] == '\t' )
@@ -1271,7 +1271,7 @@ void CEdit::SetText(char *text, BOOL bNew)
 	{
 		font = m_fontType;
 		j = 0;
-		bBOL = TRUE;
+		bBOL = true;
 		for ( i=0 ; i<m_len ; i++ )
 		{
 			if ( m_bAutoIndent )
@@ -1443,7 +1443,7 @@ void CEdit::LoadImage(char *name)
 
 // Read from a text file.
 
-BOOL CEdit::ReadText(char *filename, int addSize)
+bool CEdit::ReadText(char *filename, int addSize)
 {
 	FILE		*file = NULL;
 	char		*buffer;
@@ -1452,11 +1452,11 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 	char		text[50];
 	float		iWidth;
 	KeyRank		key;
-	BOOL		bInSoluce, bBOL;
+	bool		bInSoluce, bBOL;
 
-	if ( filename[0] == 0 )  return FALSE;
+	if ( filename[0] == 0 )  return false;
 	file = fopen(filename, "rb");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	fseek(file, 0, SEEK_END);
 	len = ftell(file);
@@ -1481,14 +1481,14 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 
 	fclose(file);
 
-	bInSoluce = FALSE;
+	bInSoluce = false;
 	font = m_fontType;
 	iIndex = 0;
 	iLink = 0;
 	m_imageTotal = 0;
 	m_markerTotal = 0;
 	i = j = 0;
-	bBOL = TRUE;
+	bBOL = true;
 	while ( i < m_len )
 	{
 		if ( m_bAutoIndent )
@@ -1754,7 +1754,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 				  buffer[i+2] == 's'  &&
 				  buffer[i+3] == ';'  )
 		{
-			bInSoluce = TRUE;
+			bInSoluce = true;
 			i += 4;
 		}
 		else if ( m_format != 0       &&
@@ -1763,7 +1763,7 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 				  buffer[i+2] == 's'  &&
 				  buffer[i+3] == ';'  )
 		{
-			bInSoluce = FALSE;
+			bInSoluce = false;
 			i += 4;
 		}
 		else if ( m_format != 0       &&
@@ -1857,21 +1857,21 @@ BOOL CEdit::ReadText(char *filename, int addSize)
 
 	Justif();
 	ColumnFix();
-	return TRUE;
+	return true;
 }
 
 // Writes all the text in a file.
 
-BOOL CEdit::WriteText(char *filename)
+bool CEdit::WriteText(char *filename)
 {
 	FILE*		file;
 	char		buffer[1000+20];
 	int			i, j, k, n;
 	float		iDim;
 
-	if ( filename[0] == 0 )  return FALSE;
+	if ( filename[0] == 0 )  return false;
 	file = fopen(filename, "wb");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	if ( m_bAutoIndent )
 	{
@@ -1921,7 +1921,7 @@ BOOL CEdit::WriteText(char *filename)
 		Justif();
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1955,60 +1955,60 @@ int CEdit::RetMaxChar()
 
 // Mode management "editable".
 
-void CEdit::SetEditCap(BOOL bMode)
+void CEdit::SetEditCap(bool bMode)
 {
 	m_bEdit = bMode;
 }
 
-BOOL CEdit::RetEditCap()
+bool CEdit::RetEditCap()
 {
 	return m_bEdit;
 }
 
 // Mode management "hilitable" (that's the franch).
 
-void CEdit::SetHiliteCap(BOOL bEnable)
+void CEdit::SetHiliteCap(bool bEnable)
 {
 	m_bHilite = bEnable;
 }
 
-BOOL CEdit::RetHiliteCap()
+bool CEdit::RetHiliteCap()
 {
 	return m_bHilite;
 }
 
 // Lift in / out connection.
 
-void CEdit::SetInsideScroll(BOOL bInside)
+void CEdit::SetInsideScroll(bool bInside)
 {
 	m_bInsideScroll = bInside;
 }
 
-BOOL CEdit::RetInsideScroll()
+bool CEdit::RetInsideScroll()
 {
 	return m_bInsideScroll;
 }
 
 // Specifies whether to display the links showing the solution.
 
-void CEdit::SetSoluceMode(BOOL bSoluce)
+void CEdit::SetSoluceMode(bool bSoluce)
 {
 	m_bSoluce = bSoluce;
 }
 
-BOOL CEdit::RetSoluceMode()
+bool CEdit::RetSoluceMode()
 {
 	return m_bSoluce;
 }
 
 // Indicates whether the text is a defile that generic.
 
-void CEdit::SetGenericMode(BOOL bGeneric)
+void CEdit::SetGenericMode(bool bGeneric)
 {
 	m_bGeneric = bGeneric;
 }
 
-BOOL CEdit::RetGenericMode()
+bool CEdit::RetGenericMode()
 {
 	return m_bGeneric;
 }
@@ -2016,12 +2016,12 @@ BOOL CEdit::RetGenericMode()
 
 // Management of automatic indentation mode with {}.
 
-void CEdit::SetAutoIndent(BOOL bMode)
+void CEdit::SetAutoIndent(bool bMode)
 {
 	m_bAutoIndent = bMode;
 }
 
-BOOL CEdit::RetAutoIndent()
+bool CEdit::RetAutoIndent()
 {
 	return m_bAutoIndent;
 }
@@ -2037,7 +2037,7 @@ void CEdit::SetCursor(int cursor1, int cursor2)
 
 	m_cursor1 = cursor1;
 	m_cursor2 = cursor2;
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 	ColumnFix();
 }
 
@@ -2054,7 +2054,7 @@ void CEdit::GetCursor(int &cursor1, int &cursor2)
 
 void CEdit::SetFirstLine(int rank)
 {
-	Scroll(rank, TRUE);
+	Scroll(rank, true);
 }
 
 // Returns the first displayed line.
@@ -2098,25 +2098,25 @@ void CEdit::ShowSelect()
 	{
 		line -= m_lineVisible-1;
 		if ( line < 0 )  line = 0;
-		Scroll(line, FALSE);
+		Scroll(line, false);
 	}
 
 	line = RetCursorLine(cursor1);
 	if ( line < m_lineFirst )
 	{
-		Scroll(line, FALSE);
+		Scroll(line, false);
 	}
 }
 
 
 // Management of the display mode of special characters.
 
-void CEdit::SetDisplaySpec(BOOL bDisplay)
+void CEdit::SetDisplaySpec(bool bDisplay)
 {
 	m_bDisplaySpec = bDisplay;
 }
 
-BOOL CEdit::RetDisplaySpec()
+bool CEdit::RetDisplaySpec()
 {
 	return m_bDisplaySpec;
 }
@@ -2124,7 +2124,7 @@ BOOL CEdit::RetDisplaySpec()
 
 // Multi-fonts mode management.
 
-void CEdit::SetMultiFont(BOOL bMulti)
+void CEdit::SetMultiFont(bool bMulti)
 {
 	if ( bMulti )
 	{
@@ -2139,7 +2139,7 @@ void CEdit::SetMultiFont(BOOL bMulti)
 	}
 }
 
-BOOL CEdit::RetMultiFont()
+bool CEdit::RetMultiFont()
 {
 	return ( m_format != 0 );
 }
@@ -2165,13 +2165,13 @@ void CEdit::Scroll()
 	{
 		value = m_scroll->RetVisibleValue();
 		value *= m_lineTotal-m_lineVisible;
-		Scroll((int)(value+0.5f), TRUE);
+		Scroll((int)(value+0.5f), true);
 	}
 }
 
 // Moves according to the visible lift.
 
-void CEdit::Scroll(int pos, BOOL bAdjustCursor)
+void CEdit::Scroll(int pos, bool bAdjustCursor)
 {
 	int		max, line;
 
@@ -2190,14 +2190,14 @@ void CEdit::Scroll(int pos, BOOL bAdjustCursor)
 		// Cursor too high?
 		if ( line < m_lineFirst )
 		{
-			MoveLine(m_lineFirst-line, FALSE, FALSE);
+			MoveLine(m_lineFirst-line, false, false);
 			return;
 		}
 
 		// Cursor too low?
 		if ( line >= m_lineFirst+m_lineVisible )
 		{
-			MoveLine(m_lineFirst+m_lineVisible-line-1, FALSE, FALSE);
+			MoveLine(m_lineFirst+m_lineVisible-line-1, false, false);
 			return;
 		}
 	}
@@ -2207,7 +2207,7 @@ void CEdit::Scroll(int pos, BOOL bAdjustCursor)
 
 // Moves the cursor to the beginning of the line.
 
-void CEdit::MoveHome(BOOL bWord, BOOL bSelect)
+void CEdit::MoveHome(bool bWord, bool bSelect)
 {
 	int		begin, tab;
 
@@ -2240,14 +2240,14 @@ void CEdit::MoveHome(BOOL bWord, BOOL bSelect)
 	}
 	if ( !bSelect )  m_cursor2 = m_cursor1;
 
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 	Justif();
 	ColumnFix();
 }
 
 // Moves the cursor to the end of the line.
 
-void CEdit::MoveEnd(BOOL bWord, BOOL bSelect)
+void CEdit::MoveEnd(bool bWord, bool bSelect)
 {
 	if ( bWord )
 	{
@@ -2262,14 +2262,14 @@ void CEdit::MoveEnd(BOOL bWord, BOOL bSelect)
 	}
 	if ( !bSelect )  m_cursor2 = m_cursor1;
 
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 	Justif();
 	ColumnFix();
 }
 
 // Moves the cursor through characters.
 
-void CEdit::MoveChar(int move, BOOL bWord, BOOL bSelect)
+void CEdit::MoveChar(int move, bool bWord, bool bSelect)
 {
 	int		character;
 
@@ -2375,14 +2375,14 @@ void CEdit::MoveChar(int move, BOOL bWord, BOOL bSelect)
 
 	if ( !bSelect )  m_cursor2 = m_cursor1;
 
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 	Justif();
 	ColumnFix();
 }
 
 // Moves the cursor lines.
 
-void CEdit::MoveLine(int move, BOOL bWord, BOOL bSelect)
+void CEdit::MoveLine(int move, bool bWord, bool bSelect)
 {
 	float	column, indentLength;
 	int		i, line, c;
@@ -2448,7 +2448,7 @@ void CEdit::MoveLine(int move, BOOL bWord, BOOL bSelect)
 	m_cursor1 = m_lineOffset[line]+c;
 	if ( !bSelect )  m_cursor2 = m_cursor1;
 
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 	Justif();
 }
 
@@ -2492,14 +2492,14 @@ void CEdit::ColumnFix()
 
 // Cut the selected characters or entire line.
 
-BOOL CEdit::Cut()
+bool CEdit::Cut()
 {
 	HGLOBAL	hg;
 	char*	text;
 	char	c;
 	int		c1, c2, start, len, i, j;
 
-	if ( !m_bEdit )  return FALSE;
+	if ( !m_bEdit )  return false;
 
 	c1 = m_cursor1;
 	c2 = m_cursor2;
@@ -2519,19 +2519,19 @@ BOOL CEdit::Cut()
 		}
 	}
 
-	if ( c1 == c2 )  return FALSE;
+	if ( c1 == c2 )  return false;
 
 	start = c1;
 	len   = c2-c1;
 
 	if ( !(hg = GlobalAlloc(GMEM_DDESHARE, len*2+1)) )
 	{
-		return FALSE;
+		return false;
 	}
 	if ( !(text = (char*)GlobalLock(hg)) )
 	{
 		GlobalFree(hg);
-		return FALSE;
+		return false;
 	}
 
 	j = 0;
@@ -2547,17 +2547,17 @@ BOOL CEdit::Cut()
 	if ( !OpenClipboard(NULL) )
 	{
 		GlobalFree(hg);
-		return FALSE;
+		return false;
 	}
 	if ( !EmptyClipboard() )
 	{
 		GlobalFree(hg);
-		return FALSE;
+		return false;
 	}
 	if ( !SetClipboardData(CF_TEXT, hg) )
 	{
 		GlobalFree(hg);
-		return FALSE;
+		return false;
 	}
 	CloseClipboard();
 
@@ -2568,12 +2568,12 @@ BOOL CEdit::Cut()
 	Justif();
 	ColumnFix();
 	SendModifEvent();
-	return TRUE;
+	return true;
 }
 
 // Copy the selected characters or entire line.
 
-BOOL CEdit::Copy()
+bool CEdit::Copy()
 {
 	HGLOBAL	hg;
 	char*	text;
@@ -2598,19 +2598,19 @@ BOOL CEdit::Copy()
 		}
 	}
 
-	if ( c1 == c2 )  return FALSE;
+	if ( c1 == c2 )  return false;
 
 	start = c1;
 	len   = c2-c1;
 
 	if ( !(hg = GlobalAlloc(GMEM_DDESHARE, len*2+1)) )
 	{
-		return FALSE;
+		return false;
 	}
 	if ( !(text = (char*)GlobalLock(hg)) )
 	{
 		GlobalFree(hg);
-		return FALSE;
+		return false;
 	}
 
 	j = 0;
@@ -2626,48 +2626,48 @@ BOOL CEdit::Copy()
 	if ( !OpenClipboard(NULL) )
 	{
 		GlobalFree(hg);
-		return FALSE;
+		return false;
 	}
 	if ( !EmptyClipboard() )
 	{
 		GlobalFree(hg);
-		return FALSE;
+		return false;
 	}
 	if ( !SetClipboardData(CF_TEXT, hg) )
 	{
 		GlobalFree(hg);
-		return FALSE;
+		return false;
 	}
 	CloseClipboard();
 
-	return TRUE;
+	return true;
 }
 
 // Paste the contents of the notebook.
 
-BOOL CEdit::Paste()
+bool CEdit::Paste()
 {
 	HANDLE	h;
 	char	c;
 	char*	p;
 
-	if ( !m_bEdit )  return FALSE;
+	if ( !m_bEdit )  return false;
 
 	if ( !OpenClipboard(NULL) )
 	{
-		return FALSE;
+		return false;
 	}
 
 	if ( !(h = GetClipboardData(CF_TEXT)) )
 	{
 		CloseClipboard();
-		return FALSE;
+		return false;
 	}
 
 	if ( !(p = (char*)GlobalLock(h)) )
 	{
 		CloseClipboard();
-		return FALSE;
+		return false;
 	}
 
 	UndoMemorize(OPERUNDO_SPEC);
@@ -2686,15 +2686,15 @@ BOOL CEdit::Paste()
 	Justif();
 	ColumnFix();
 	SendModifEvent();
-	return TRUE;
+	return true;
 }
 
 
 // Cancels the last action.
 
-BOOL CEdit::Undo()
+bool CEdit::Undo()
 {
-	if ( !m_bEdit )  return FALSE;
+	if ( !m_bEdit )  return false;
 
 	return UndoRecall();
 }
@@ -2760,21 +2760,21 @@ void CEdit::Insert(char character)
 			InsertOne('\n');
 			InsertOne('\n');
 			InsertOne('}');
-			MoveChar(-1, FALSE, FALSE);
-			MoveChar(-1, FALSE, FALSE);
+			MoveChar(-1, false, false);
+			MoveChar(-1, false, false);
 		}
 #if 0
 		else if ( character == '(' )
 		{
 			InsertOne(character);
 			InsertOne(')');
-			MoveChar(-1, FALSE, FALSE);
+			MoveChar(-1, false, false);
 		}
 		else if ( character == '[' )
 		{
 			InsertOne(character);
 			InsertOne(']');
-			MoveChar(-1, FALSE, FALSE);
+			MoveChar(-1, false, false);
 		}
 #endif
 		else if ( character == '\t' )
@@ -2947,12 +2947,12 @@ void CEdit::IndentTabAdjust(int number)
 
 // Indent the left or right the entire selection.
 
-BOOL CEdit::Shift(BOOL bLeft)
+bool CEdit::Shift(bool bLeft)
 {
-	BOOL	bInvert = FALSE;
+	bool	bInvert = false;
 	int		c1, c2, i;
 
-	if ( m_cursor1 == m_cursor2 )  return FALSE;
+	if ( m_cursor1 == m_cursor2 )  return false;
 
 	UndoMemorize(OPERUNDO_SPEC);
 
@@ -2961,16 +2961,16 @@ BOOL CEdit::Shift(BOOL bLeft)
 	if ( c1 > c2 )
 	{
 		Swap(c1, c2);  // always c1 <= c2
-		bInvert = TRUE;
+		bInvert = true;
 	}
 
 	if ( c1 > 0 )
 	{
-		if ( m_text[c1-1] != '\n' )  return FALSE;
+		if ( m_text[c1-1] != '\n' )  return false;
 	}
 	if ( c2 < m_len )
 	{
-		if ( m_text[c2-1] != '\n' )  return FALSE;
+		if ( m_text[c2-1] != '\n' )  return false;
 	}
 
 	if ( bLeft )  // shifts left?
@@ -3007,16 +3007,16 @@ BOOL CEdit::Shift(BOOL bLeft)
 	Justif();
 	ColumnFix();
 	SendModifEvent();
-	return TRUE;
+	return true;
 }
 
 // Min conversion <-> shift the selection.
 
-BOOL CEdit::MinMaj(BOOL bMaj)
+bool CEdit::MinMaj(bool bMaj)
 {
 	int		c1, c2, i, character;
 
-	if ( m_cursor1 == m_cursor2 )  return FALSE;
+	if ( m_cursor1 == m_cursor2 )  return false;
 
 	UndoMemorize(OPERUNDO_SPEC);
 
@@ -3035,7 +3035,7 @@ BOOL CEdit::MinMaj(BOOL bMaj)
 	Justif();
 	ColumnFix();
 	SendModifEvent();
-	return TRUE;
+	return true;
 }
 
 
@@ -3045,7 +3045,7 @@ void CEdit::Justif()
 {
 	float	width, value, size, indentLength;
 	int		i, j, line, indent;
-	BOOL	bDual, bString, bRem;
+	bool	bDual, bString, bRem;
 
 	indent = 0;
 	m_lineTotal = 0;
@@ -3059,11 +3059,11 @@ void CEdit::Justif()
 						* m_engine->RetEditIndentValue();
 	}
 
-	bString = bRem = FALSE;
+	bString = bRem = false;
 	i = 0;
-	while ( TRUE )
+	while ( true )
 	{
-		bDual = FALSE;
+		bDual = false;
 
 		width = m_dim.x-(10.0f/640.0f)*2.0f-(m_bMulti?MARGX*2.0f+SCROLL_WIDTH:0.0f);
 		if ( m_bAutoIndent )
@@ -3084,7 +3084,7 @@ void CEdit::Justif()
 			if ( (m_format[i]&TITLE_MASK) == TITLE_BIG )  // headline?
 			{
 				size *= BIG_FONT;
-				bDual = TRUE;
+				bDual = true;
 			}
 
 			if ( (m_format[i]&IMAGE_MASK) != 0 )  // image part?
@@ -3108,8 +3108,8 @@ void CEdit::Justif()
 				if ( !bRem && m_text[j] == '\"' )  bString = !bString;
 				if ( !bString &&
 					 m_text[j] == '/' &&
-					 m_text[j+1] == '/' )  bRem = TRUE;
-				if ( m_text[j] == '\n' )  bString = bRem = FALSE;
+					 m_text[j+1] == '/' )  bRem = true;
+				if ( m_text[j] == '\n' )  bString = bRem = false;
 				if ( m_text[j] == '{' && !bString && !bRem )  indent ++;
 				if ( m_text[j] == '}' && !bString && !bRem )  indent --;
 			}
@@ -3221,7 +3221,7 @@ void CEdit::UndoFlush()
 		m_undo[i].text = 0;
 	}
 
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 	m_undoOper = OPERUNDO_SPEC;
 }
 
@@ -3236,7 +3236,7 @@ void CEdit::UndoMemorize(OperUndo oper)
 		 m_undoOper != OPERUNDO_SPEC &&
 		 oper == m_undoOper          )  return;
 
-	m_bUndoForce = FALSE;
+	m_bUndoForce = false;
 	m_undoOper = oper;
 
 	delete m_undo[EDITUNDOMAX-1].text;
@@ -3259,11 +3259,11 @@ void CEdit::UndoMemorize(OperUndo oper)
 
 // Back to previous state.
 
-BOOL CEdit::UndoRecall()
+bool CEdit::UndoRecall()
 {
 	int		i;
 
-	if ( m_undo[0].text == 0 )  return FALSE;
+	if ( m_undo[0].text == 0 )  return false;
 
 	m_len = m_undo[0].len;
 	memcpy(m_text, m_undo[0].text, m_len);
@@ -3278,41 +3278,41 @@ BOOL CEdit::UndoRecall()
 	}
 	m_undo[EDITUNDOMAX-1].text = 0;
 
-	m_bUndoForce = TRUE;
+	m_bUndoForce = true;
 	Justif();
 	ColumnFix();
 	SendModifEvent();
-	return TRUE;
+	return true;
 }
 
 
 // Clears the format of all characters.
 
-BOOL CEdit::ClearFormat()
+bool CEdit::ClearFormat()
 {
 	if ( m_format == 0 )
 	{
-		SetMultiFont(TRUE);
+		SetMultiFont(true);
 	}
 	memset(m_format, m_fontType, m_len);
 
-	return TRUE;
+	return true;
 }
 
 // Changes the format of a sequence of characters.
 
-BOOL CEdit::SetFormat(int cursor1, int cursor2, int format)
+bool CEdit::SetFormat(int cursor1, int cursor2, int format)
 {
 	int		i;
 
-	if ( m_format == 0 )  return FALSE;
+	if ( m_format == 0 )  return false;
 
 	for ( i=cursor1 ; i<cursor2 ; i++ )
 	{
 		m_format[i] |= format;
 	}
 
-	return TRUE;
+	return true;
 }
 
 

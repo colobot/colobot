@@ -52,7 +52,7 @@ public:
 	~CWindow();
 
 	void		Flush();
-	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CButton*	CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CColor*		CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CCheck*		CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
@@ -70,7 +70,7 @@ public:
 	CGauge*		CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CCompass*	CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CTarget*	CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	BOOL		DeleteControl(EventMsg eventMsg);
+	bool		DeleteControl(EventMsg eventMsg);
 	CControl*	SearchControl(EventMsg eventMsg);
 
 	EventMsg	RetEventMsgReduce();
@@ -79,8 +79,8 @@ public:
 
 	void		SetName(char* name);
 
-	void		SetTrashEvent(BOOL bTrash);
-	BOOL		RetTrashEvent();
+	void		SetTrashEvent(bool bTrash);
+	bool		RetTrashEvent();
 
 	void		SetPos(FPOINT pos);
 	void		SetDim(FPOINT dim);
@@ -90,25 +90,25 @@ public:
 	FPOINT		RetMinDim();
 	FPOINT		RetMaxDim();
 
-	void		SetMovable(BOOL bMode);
-	BOOL		RetMovable();
+	void		SetMovable(bool bMode);
+	bool		RetMovable();
 
-	void		SetRedim(BOOL bMode);
-	BOOL		RetRedim();
+	void		SetRedim(bool bMode);
+	bool		RetRedim();
 
-	void		SetClosable(BOOL bMode);
-	BOOL		RetClosable();
+	void		SetClosable(bool bMode);
+	bool		RetClosable();
 
-	void		SetMaximized(BOOL bMaxi);
-	BOOL		RetMaximized();
-	void		SetMinimized(BOOL bMini);
-	BOOL		RetMinimized();
-	void		SetFixed(BOOL bFix);
-	BOOL		RetFixed();
+	void		SetMaximized(bool bMaxi);
+	bool		RetMaximized();
+	void		SetMinimized(bool bMini);
+	bool		RetMinimized();
+	void		SetFixed(bool bFix);
+	bool		RetFixed();
 
-	BOOL		GetTooltip(FPOINT pos, char* name);
+	bool		GetTooltip(FPOINT pos, char* name);
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	void		Draw();
 
@@ -122,10 +122,10 @@ protected:
 protected:
 	CControl*	m_table[MAXWINDOW];
 
-	BOOL		m_bTrashEvent;
-	BOOL		m_bMaximized;
-	BOOL		m_bMinimized;
-	BOOL		m_bFixed;
+	bool		m_bTrashEvent;
+	bool		m_bMaximized;
+	bool		m_bMinimized;
+	bool		m_bFixed;
 
 	FPOINT		m_minDim;
 	FPOINT		m_maxDim;
@@ -134,10 +134,10 @@ protected:
 	CButton*	m_buttonFull;
 	CButton*	m_buttonClose;
 
-	BOOL		m_bMovable;
-	BOOL		m_bRedim;
-	BOOL		m_bClosable;
-	BOOL		m_bCapture;
+	bool		m_bMovable;
+	bool		m_bRedim;
+	bool		m_bClosable;
+	bool		m_bCapture;
 	FPOINT		m_pressPos;
 	int			m_pressFlags;
 	D3DMouse	m_pressMouse;

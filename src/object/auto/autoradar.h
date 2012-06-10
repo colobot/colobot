@@ -48,16 +48,16 @@ public:
 	CAutoRadar(CInstanceManager* iMan, CObject* object);
 	~CAutoRadar();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		EventProcess(const Event &event);
+	bool		CreateInterface(bool bSelect);
 	Error		RetError();
 
 protected:
 	void		UpdateInterface();
-	BOOL		SearchEnemy(D3DVECTOR &pos);
+	bool		SearchEnemy(D3DVECTOR &pos);
 
 protected:
 	AutoRadarPhase	m_phase;

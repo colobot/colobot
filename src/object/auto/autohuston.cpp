@@ -187,13 +187,12 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 
 CAutoHuston::~CAutoHuston()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoHuston::DeleteObject(BOOL bAll)
+void CAutoHuston::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -219,7 +218,7 @@ void CAutoHuston::Start(int param)
 
 // Management of an event.
 
-BOOL CAutoHuston::EventProcess(const Event &event)
+bool CAutoHuston::EventProcess(const Event &event)
 {
 	D3DVECTOR	speed;
 	FPOINT		dim;
@@ -228,14 +227,14 @@ BOOL CAutoHuston::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	angle = -m_time*1.0f;
 	m_object->SetAngleY(1, angle);  // rotates the radar
 	angle = sinf(m_time*4.0f)*0.3f;
 	m_object->SetAngleX(2, angle);
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 
@@ -263,20 +262,20 @@ BOOL CAutoHuston::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Stops the controller.
 
-BOOL CAutoHuston::Abort()
+bool CAutoHuston::Abort()
 {
-	return TRUE;
+	return true;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoHuston::CreateInterface(BOOL bSelect)
+bool CAutoHuston::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -284,10 +283,10 @@ BOOL CAutoHuston::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -300,7 +299,7 @@ BOOL CAutoHuston::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 115, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 

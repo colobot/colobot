@@ -42,18 +42,18 @@ public:
 	CEditValue(CInstanceManager* iMan);
 	virtual ~CEditValue();
 
-	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
 	void		SetPos(FPOINT pos);
 	void		SetDim(FPOINT dim);
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	void		Draw();
 
 	void		SetType(EditValueType type);
 	EditValueType RetType();
 
-	void		SetValue(float value, BOOL bSendMessage=FALSE);
+	void		SetValue(float value, bool bSendMessage=false);
 	float		RetValue();
 
 	void		SetStepValue(float value);

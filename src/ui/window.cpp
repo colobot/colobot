@@ -65,10 +65,10 @@ CWindow::CWindow(CInstanceManager* iMan) : CControl(iMan)
 		m_table[i] = 0;
 	}
 
-	m_bTrashEvent = TRUE;
-	m_bMaximized  = FALSE;
-	m_bMinimized  = FALSE;
-	m_bFixed      = FALSE;
+	m_bTrashEvent = true;
+	m_bMaximized  = false;
+	m_bMinimized  = false;
+	m_bFixed      = false;
 
 	m_minDim = FPOINT(0.0f, 0.0f);
 	m_maxDim = FPOINT(1.0f, 1.0f);
@@ -77,10 +77,10 @@ CWindow::CWindow(CInstanceManager* iMan) : CControl(iMan)
 	m_buttonFull   = 0;
 	m_buttonClose  = 0;
 
-	m_bMovable  = FALSE;
-	m_bRedim    = FALSE;
-	m_bClosable = FALSE;
-	m_bCapture  = FALSE;
+	m_bMovable  = false;
+	m_bRedim    = false;
+	m_bClosable = false;
+	m_bCapture  = false;
 
 	m_fontStretch = NORMSTRETCH*1.2f;
 }
@@ -130,12 +130,12 @@ void CWindow::Flush()
 
 // Creates a new window.
 
-BOOL CWindow::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CWindow::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
 	CControl::Create(pos, dim, icon, eventMsg);
-	return TRUE;
+	return true;
 }
 
 
@@ -535,7 +535,7 @@ CTarget* CWindow::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventM
 
 // Removes a control.
 
-BOOL CWindow::DeleteControl(EventMsg eventMsg)
+bool CWindow::DeleteControl(EventMsg eventMsg)
 {
 	int		i;
 
@@ -547,11 +547,11 @@ BOOL CWindow::DeleteControl(EventMsg eventMsg)
 			{
 				delete m_table[i];
 				m_table[i] = 0;
-				return TRUE;
+				return true;
 			}
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Gives a control.
@@ -576,7 +576,7 @@ CControl* CWindow::SearchControl(EventMsg eventMsg)
 
 // Makes the tooltip binds to the window.
 
-BOOL CWindow::GetTooltip(FPOINT pos, char* name)
+bool CWindow::GetTooltip(FPOINT pos, char* name)
 {
 	int		i;
 
@@ -586,7 +586,7 @@ BOOL CWindow::GetTooltip(FPOINT pos, char* name)
 		{
 			if ( m_table[i]->GetTooltip(pos, name) )
 			{
-				return TRUE;
+				return true;
 			}
 		}
 	}
@@ -594,26 +594,26 @@ BOOL CWindow::GetTooltip(FPOINT pos, char* name)
 	if ( m_buttonClose != 0 &&
 		 m_buttonClose->GetTooltip(pos, name) )
 	{
-		return TRUE;
+		return true;
 	}
 	if ( m_buttonFull != 0 &&
 		 m_buttonFull->GetTooltip(pos, name) )
 	{
-		return TRUE;
+		return true;
 	}
 	if ( m_buttonReduce != 0 &&
 		 m_buttonReduce->GetTooltip(pos, name) )
 	{
-		return TRUE;
+		return true;
 	}
 
 	if ( Detect(pos) )  // in the window?
 	{
 		strcpy(name, m_tooltip);
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 
@@ -622,7 +622,7 @@ BOOL CWindow::GetTooltip(FPOINT pos, char* name)
 void CWindow::SetName(char* name)
 {
 	CButton*	pc;
-	BOOL		bAdjust;
+	bool		bAdjust;
 
 	CControl::SetName(name);
 
@@ -644,7 +644,7 @@ void CWindow::SetName(char* name)
 		m_buttonClose = 0;
 	}
 
-	bAdjust = FALSE;
+	bAdjust = false;
 
 	if ( m_name[0] != 0 && m_bRedim )  // title bar exists?
 	{
@@ -656,7 +656,7 @@ void CWindow::SetName(char* name)
 		pc = (CButton*)m_buttonFull;
 		pc->Create(m_pos, m_dim, 0, EVENT_NULL);
 
-		bAdjust = TRUE;
+		bAdjust = true;
 	}
 
 	if ( m_name[0] != 0 && m_bClosable )  // title bar exists?
@@ -665,7 +665,7 @@ void CWindow::SetName(char* name)
 		pc = (CButton*)m_buttonClose;
 		pc->Create(m_pos, m_dim, 0, EVENT_NULL);
 
-		bAdjust = TRUE;
+		bAdjust = true;
 	}
 
 	if ( bAdjust )
@@ -757,12 +757,12 @@ FPOINT CWindow::RetMaxDim()
 
 // Indicates whether the window is moved.
 
-void CWindow::SetMovable(BOOL bMode)
+void CWindow::SetMovable(bool bMode)
 {
 	m_bMovable = bMode;
 }
 
-BOOL CWindow::RetMovable()
+bool CWindow::RetMovable()
 {
 	return m_bMovable;
 }
@@ -770,12 +770,12 @@ BOOL CWindow::RetMovable()
 
 // Management of the presence of minimize/maximize buttons.
 
-void CWindow::SetRedim(BOOL bMode)
+void CWindow::SetRedim(bool bMode)
 {
 	m_bRedim = bMode;
 }
 
-BOOL CWindow::RetRedim()
+bool CWindow::RetRedim()
 {
 	return m_bRedim;
 }
@@ -783,45 +783,45 @@ BOOL CWindow::RetRedim()
 
 // Management of the presence of the close button.
 
-void CWindow::SetClosable(BOOL bMode)
+void CWindow::SetClosable(bool bMode)
 {
 	m_bClosable = bMode;
 }
 
-BOOL CWindow::RetClosable()
+bool CWindow::RetClosable()
 {
 	return m_bClosable;
 }
 
 
-void CWindow::SetMaximized(BOOL bMaxi)
+void CWindow::SetMaximized(bool bMaxi)
 {
 	m_bMaximized = bMaxi;
 	AdjustButtons();
 }
 
-BOOL CWindow::RetMaximized()
+bool CWindow::RetMaximized()
 {
 	return m_bMaximized;
 }
 
-void CWindow::SetMinimized(BOOL bMini)
+void CWindow::SetMinimized(bool bMini)
 {
 	m_bMinimized = bMini;
 	AdjustButtons();
 }
 
-BOOL CWindow::RetMinimized()
+bool CWindow::RetMinimized()
 {
 	return m_bMinimized;
 }
 
-void CWindow::SetFixed(BOOL bFix)
+void CWindow::SetFixed(bool bFix)
 {
 	m_bFixed = bFix;
 }
 
-BOOL CWindow::RetFixed()
+bool CWindow::RetFixed()
 {
 	return m_bFixed;
 }
@@ -874,12 +874,12 @@ void CWindow::AdjustButtons()
 }
 
 
-void CWindow::SetTrashEvent(BOOL bTrash)
+void CWindow::SetTrashEvent(bool bTrash)
 {
 	m_bTrashEvent = bTrash;
 }
 
-BOOL CWindow::RetTrashEvent()
+bool CWindow::RetTrashEvent()
 {
 	return m_bTrashEvent;
 }
@@ -964,7 +964,7 @@ int CWindow::BorderDetect(FPOINT pos)
 
 // Management of an event.
 
-BOOL CWindow::EventProcess(const Event &event)
+bool CWindow::EventProcess(const Event &event)
 {
 	FPOINT		pos;
 	int			i, flags;
@@ -1022,7 +1022,7 @@ BOOL CWindow::EventProcess(const Event &event)
 			{
 				if ( !m_table[i]->EventProcess(event) )
 				{
-					return FALSE;
+					return false;
 				}
 			}
 		}
@@ -1050,11 +1050,11 @@ BOOL CWindow::EventProcess(const Event &event)
 				m_pressFlags = BorderDetect(event.pos);
 				if ( m_pressFlags != 0 )
 				{
-					m_bCapture = TRUE;
+					m_bCapture = true;
 					m_pressPos = event.pos;
 				}
 			}
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -1113,10 +1113,10 @@ BOOL CWindow::EventProcess(const Event &event)
 
 	if ( event.event == EVENT_LBUTTONUP && m_bCapture )
 	{
-		m_bCapture = FALSE;
+		m_bCapture = false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1582,7 +1582,7 @@ void CWindow::DrawHach(FPOINT pos, FPOINT dim)
 #else
 	FPOINT		ppos, ddim, uv1, uv2;
 	float		dp, max, ndim;
-	BOOL		bStop;
+	bool		bStop;
 
 	dp = 0.5f/256.0f;
 
@@ -1601,7 +1601,7 @@ void CWindow::DrawHach(FPOINT pos, FPOINT dim)
 
 	ppos = pos;
 	ddim = dim;
-	bStop = FALSE;
+	bStop = false;
 	do
 	{
 		ddim.x = max;
@@ -1610,7 +1610,7 @@ void CWindow::DrawHach(FPOINT pos, FPOINT dim)
 			ndim = pos.x+dim.x-ppos.x;
 			uv2.x = uv1.x+(uv2.x-uv1.x)*(ndim/ddim.x);
 			ddim.x = ndim;
-			bStop = TRUE;
+			bStop = true;
 		}
 		DrawIcon(ppos, ddim, uv1, uv2);
 

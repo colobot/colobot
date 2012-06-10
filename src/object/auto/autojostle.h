@@ -38,11 +38,11 @@ public:
 	CAutoJostle(CInstanceManager* iMan, CObject* object);
 	~CAutoJostle();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
 	void		Start(int param, float force);
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		IsEnded();
 
 protected:

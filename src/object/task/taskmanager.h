@@ -47,9 +47,9 @@ public:
 	Error	StartTaskFlag(TaskFlagOrder order, int rank);
 	Error	StartTaskBuild(ObjectType type);
 	Error	StartTaskSearch();
-	Error	StartTaskInfo(char *name, float value, float power, BOOL bSend);
+	Error	StartTaskInfo(char *name, float value, float power, bool bSend);
 	Error	StartTaskTerraform();
-	Error	StartTaskPen(BOOL bDown, int color);
+	Error	StartTaskPen(bool bDown, int color);
 	Error	StartTaskRecover();
 	Error	StartTaskShield(TaskShieldMode mode, float delay);
 	Error	StartTaskFire(float delay);
@@ -58,11 +58,11 @@ public:
 	Error	StartTaskSpiderExplo();
 	Error	StartTaskReset(D3DVECTOR goal, D3DVECTOR angle);
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 	Error	IsEnded();
-	BOOL	IsBusy();
-	BOOL	IsPilot();
-	BOOL	Abort();
+	bool	IsBusy();
+	bool	IsPilot();
+	bool	Abort();
 
 protected:
 
@@ -70,6 +70,6 @@ protected:
 	CInstanceManager* m_iMan;
 	CTask*			m_task;
 	CObject*		m_object;
-	BOOL			m_bPilot;
+	bool			m_bPilot;
 };
 

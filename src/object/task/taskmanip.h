@@ -64,21 +64,21 @@ public:
 	CTaskManip(CInstanceManager* iMan, CObject* object);
 	~CTaskManip();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start(TaskManipOrder order, TaskManipArm arm);
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 	void		InitAngle();
 	CObject*	SearchTakeUnderObject(D3DVECTOR &pos, float dLimit);
-	CObject*	SearchTakeFrontObject(BOOL bAdvance, D3DVECTOR &pos, float &distance, float &angle);
-	CObject*	SearchTakeBackObject(BOOL bAdvance, D3DVECTOR &pos, float &distance, float &angle);
-	CObject*	SearchOtherObject(BOOL bAdvance, D3DVECTOR &pos, float &distance, float &angle, float &height);
-	BOOL		TruckTakeObject();
-	BOOL		TruckDeposeObject();
-	BOOL		IsFreeDeposeObject(D3DVECTOR pos);
+	CObject*	SearchTakeFrontObject(bool bAdvance, D3DVECTOR &pos, float &distance, float &angle);
+	CObject*	SearchTakeBackObject(bool bAdvance, D3DVECTOR &pos, float &distance, float &angle);
+	CObject*	SearchOtherObject(bool bAdvance, D3DVECTOR &pos, float &distance, float &angle, float &height);
+	bool		TruckTakeObject();
+	bool		TruckDeposeObject();
+	bool		IsFreeDeposeObject(D3DVECTOR pos);
 	void		SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
 
 protected:
@@ -93,10 +93,10 @@ protected:
 	float			m_height;
 	float			m_advanceLength;
 	float			m_energy;
-	BOOL			m_bError;
-	BOOL			m_bTurn;
-	BOOL			m_bSubm;
-	BOOL			m_bBee;
+	bool			m_bError;
+	bool			m_bTurn;
+	bool			m_bSubm;
+	bool			m_bBee;
 	float			m_angle;
 	float			m_move;
 	D3DVECTOR		m_targetPos;

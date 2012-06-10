@@ -39,16 +39,16 @@ public:
 	CList(CInstanceManager* iMan);
 	~CList();
 
-	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand);
+	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand);
 
 	void		SetPos(FPOINT pos);
 	void		SetDim(FPOINT dim);
 
-	BOOL		SetState(int state, BOOL bState);
-	BOOL		SetState(int state);
-	BOOL		ClearState(int state);
+	bool		SetState(int state, bool bState);
+	bool		SetState(int state);
+	bool		ClearState(int state);
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	void		Draw();
 
 	void		Flush();
@@ -59,31 +59,31 @@ public:
 	void		SetSelect(int i);
 	int			RetSelect();
 
-	void		SetSelectCap(BOOL bEnable);
-	BOOL		RetSelectCap();
+	void		SetSelectCap(bool bEnable);
+	bool		RetSelectCap();
 
-	void		SetBlink(BOOL bEnable);
-	BOOL		RetBlink();
+	void		SetBlink(bool bEnable);
+	bool		RetBlink();
 
 	void		SetName(int i, char* name);
 	char*		RetName(int i);
 
-	void		SetCheck(int i, BOOL bMode);
-	BOOL		RetCheck(int i);
+	void		SetCheck(int i, bool bMode);
+	bool		RetCheck(int i);
 
-	void		SetEnable(int i, BOOL bEnable);
-	BOOL		RetEnable(int i);
+	void		SetEnable(int i, bool bEnable);
+	bool		RetEnable(int i);
 
 	void		SetTabs(int i, float pos, int justif=1);
 	float		RetTabs(int i);
 
-	void		ShowSelect(BOOL bFixed);
+	void		ShowSelect(bool bFixed);
 
 	EventMsg	RetEventMsgButton(int i);
 	EventMsg	RetEventMsgScroll();
 
 protected:
-	BOOL		MoveAdjust();
+	bool		MoveAdjust();
 	void		UpdateButton();
 	void		UpdateScroll();
 	void		MoveScroll();
@@ -101,8 +101,8 @@ protected:
 	int			m_displayLine;	// number of visible lines
 	int			m_selectLine;	// selected line
 	int			m_firstLine;	// first visible line
-	BOOL		m_bBlink;
-	BOOL		m_bSelectCap;
+	bool		m_bBlink;
+	bool		m_bSelectCap;
 	float		m_blinkTime;
 	float		m_tabs[10];
 	int			m_justifs[10];

@@ -88,11 +88,11 @@ void CInstanceManager::Flush(ClassType classType)
 
 // Adds a new instance of a class.
 
-BOOL CInstanceManager::AddInstance(ClassType classType, void* pointer, int max)
+bool CInstanceManager::AddInstance(ClassType classType, void* pointer, int max)
 {
 	int		i;
 
-	if ( classType < 0 || classType >= CLASS_MAX )  return FALSE;
+	if ( classType < 0 || classType >= CLASS_MAX )  return false;
 
 	if ( m_table[classType].classPointer == 0 )
 	{
@@ -101,20 +101,20 @@ BOOL CInstanceManager::AddInstance(ClassType classType, void* pointer, int max)
 		m_table[classType].totalUsed     = 0;
 	}
 
-	if ( m_table[classType].totalUsed >= m_table[classType].totalPossible )  return FALSE;
+	if ( m_table[classType].totalUsed >= m_table[classType].totalPossible )  return false;
 
 	i = m_table[classType].totalUsed++;
 	m_table[classType].classPointer[i] = pointer;
-	return TRUE;
+	return true;
 }
 
 // Deletes an instance of a class.
 
-BOOL CInstanceManager::DeleteInstance(ClassType classType, void* pointer)
+bool CInstanceManager::DeleteInstance(ClassType classType, void* pointer)
 {
 	int		i;
 
-	if ( classType < 0 || classType >= CLASS_MAX )  return FALSE;
+	if ( classType < 0 || classType >= CLASS_MAX )  return false;
 
 	for ( i=0 ; i<m_table[classType].totalUsed ; i++ )
 	{
@@ -125,7 +125,7 @@ BOOL CInstanceManager::DeleteInstance(ClassType classType, void* pointer)
 	}
 
 	Compress(classType);
-	return TRUE;
+	return true;
 }
 
 // Seeking an existing instance. Returns 0 if it does not exist.

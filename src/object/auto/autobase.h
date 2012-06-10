@@ -74,19 +74,19 @@ public:
 	CAutoBase(CInstanceManager* iMan, CObject* object);
 	~CAutoBase();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
 	void		Start(int param);
-	BOOL		EventProcess(const Event &event);
-	BOOL		Abort();
+	bool		EventProcess(const Event &event);
+	bool		Abort();
 	Error		RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
 protected:
 	void		UpdateInterface();
-	void		FreezeCargo(BOOL bFreeze);
+	void		FreezeCargo(bool bFreeze);
 	void		MoveCargo();
 	Error		CheckCloseDoor();
 	void		BeginTransit();
@@ -94,7 +94,7 @@ protected:
 
 protected:
 	AutoBasePhase	m_phase;
-	BOOL			m_bOpen;
+	bool			m_bOpen;
 	float			m_progress;
 	float			m_speed;
 	float			m_lastParticule;

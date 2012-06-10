@@ -54,7 +54,7 @@
 #define WINDOW_DX		(640+6)		// dimensions in windowed mode
 #define WINDOW_DY		(480+25)
 
-#define USE_THREAD		FALSE		// TRUE does not work!
+#define USE_THREAD		false		// true does not work!
 #define TIME_THREAD		0.02f
 
 
@@ -141,15 +141,15 @@ CD3DApplication::CD3DApplication()
 	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
 
 	m_vidMemTotal  = 0;
-	m_bActive      = FALSE;
-	m_bActivateApp = FALSE;
-	m_bReady       = FALSE;
-	m_bJoystick    = FALSE;
+	m_bActive      = false;
+	m_bActivateApp = false;
+	m_bReady       = false;
+	m_bJoystick    = false;
 	m_aTime        = 0.0f;
 
 	for ( i=0 ; i<32 ; i++ )
 	{
-		m_bJoyButton[i] = FALSE;
+		m_bJoyButton[i] = false;
 	}
 
 #if _NEWLOOK
@@ -157,14 +157,14 @@ CD3DApplication::CD3DApplication()
 #else
 	m_strWindowTitle  = _T("COLOBOT");
 #endif
-	m_bAppUseZBuffer  = TRUE;
-	m_bAppUseStereo   = TRUE;
-	m_bShowStats      = FALSE;
-	m_bDebugMode      = FALSE;
-	m_bAudioState     = TRUE;
-	m_bAudioTrack     = TRUE;
-	m_bNiceMouse      = FALSE;
-	m_bSetupMode      = TRUE;
+	m_bAppUseZBuffer  = true;
+	m_bAppUseStereo   = true;
+	m_bShowStats      = false;
+	m_bDebugMode      = false;
+	m_bAudioState     = true;
+	m_bAudioTrack     = true;
+	m_bNiceMouse      = false;
+	m_bSetupMode      = true;
 	m_fnConfirmDevice = 0;
 
 	ResetKey();
@@ -304,18 +304,18 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
 {
 	if ( strstr(strCmdLine, "-debug") != 0 )
 	{
-		m_bShowStats = TRUE;
-		SetDebugMode(TRUE);
+		m_bShowStats = true;
+		SetDebugMode(true);
 	}
 
 	if ( strstr(strCmdLine, "-audiostate") != 0 )
 	{
-		m_bAudioState = FALSE;
+		m_bAudioState = false;
 	}
 
 	if ( strstr(strCmdLine, "-audiotrack") != 0 )
 	{
-		m_bAudioTrack = FALSE;
+		m_bAudioTrack = false;
 	}
 
 	m_CDpath[0] = 0;
@@ -334,23 +334,23 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
 #if _SCHOOL & _EDU
 	if ( strstr(strCmdLine, "-nosetup") != 0 )
 	{
-		m_bSetupMode = FALSE;
+		m_bSetupMode = false;
 	}
-	m_bAudioTrack = FALSE;
+	m_bAudioTrack = false;
 #endif
 #if _SCHOOL & _PERSO
 	Error err = RegQuery();
 	if ( err != ERR_OK )  return err;
-	m_bAudioTrack = FALSE;
+	m_bAudioTrack = false;
 #endif
 #if _SCHOOL & _CEEBOTDEMO
-	m_bAudioTrack = FALSE;
+	m_bAudioTrack = false;
 #endif
 #if _NET
-	m_bAudioTrack = FALSE;
+	m_bAudioTrack = false;
 #endif
 #if _DEMO
-	m_bAudioTrack = FALSE;
+	m_bAudioTrack = false;
 #endif
 
 	return ERR_OK;
@@ -364,42 +364,42 @@ int CD3DApplication::GetVidMemTotal()
 	return m_vidMemTotal;
 }
 
-BOOL CD3DApplication::IsVideo8MB()
+bool CD3DApplication::IsVideo8MB()
 {
-	if ( m_vidMemTotal == 0 )  return FALSE;
+	if ( m_vidMemTotal == 0 )  return false;
 	return (m_vidMemTotal <= 8388608L);  // 8 Mb or less (2 ^ 23)?
 }
 
-BOOL CD3DApplication::IsVideo32MB()
+bool CD3DApplication::IsVideo32MB()
 {
-	if ( m_vidMemTotal == 0 )  return FALSE;
+	if ( m_vidMemTotal == 0 )  return false;
 	return (m_vidMemTotal > 16777216L);  // more than 16 Mb (2 ^ 24)?
 }
 
 
-void CD3DApplication::SetShowStat(BOOL bShow)
+void CD3DApplication::SetShowStat(bool bShow)
 {
 	m_bShowStats = bShow;
 }
 
-BOOL CD3DApplication::RetShowStat()
+bool CD3DApplication::RetShowStat()
 {
 	return m_bShowStats;
 }
 
 
-void CD3DApplication::SetDebugMode(BOOL bMode)
+void CD3DApplication::SetDebugMode(bool bMode)
 {
 	m_bDebugMode = bMode;
 	D3DTextr_SetDebugMode(m_bDebugMode);
 }
 
-BOOL CD3DApplication::RetDebugMode()
+bool CD3DApplication::RetDebugMode()
 {
 	return m_bDebugMode;
 }
 
-BOOL CD3DApplication::RetSetupMode()
+bool CD3DApplication::RetSetupMode()
 {
 	return m_bSetupMode;
 }
@@ -417,7 +417,7 @@ DWORD WINAPI ThreadRoutine(LPVOID)
 
 	ms = (int)(TIME_THREAD*1000.0f);
 	time = 0.0f;
-	while ( TRUE )
+	while ( true )
 	{
 		start = timeGetTime();
 
@@ -470,7 +470,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 	char	modeName[100];
 	int		iValue;
 	DWORD	style;
-	BOOL	bFull, b3D;
+	bool	bFull, b3D;
 
 	m_instance = hInst;
 
@@ -492,7 +492,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 
 	if ( !m_bDebugMode )
 	{
-		m_pDeviceInfo->bWindowed = FALSE;  // full screen
+		m_pDeviceInfo->bWindowed = false;  // full screen
 	}
 	if ( GetProfileInt("Device", "FullScreen", bFull) )
 	{
@@ -558,7 +558,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 
 	if ( !GetProfileInt("Setup", "Sound3D", b3D) )
 	{
-		b3D = TRUE;
+		b3D = true;
 	}
 	m_pSound->SetDebugMode(m_bDebugMode);
 	m_pSound->Create(m_hWnd, b3D);
@@ -587,7 +587,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 	// First execution?
 	if ( !GetProfileInt("Setup", "ObjectDirty", iValue) )
 	{
-		m_pD3DEngine->FirstExecuteAdapt(TRUE);
+		m_pD3DEngine->FirstExecuteAdapt(true);
 	}
 
 	// Creates the file colobot.ini at the first execution.
@@ -624,7 +624,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 #endif
 
 	// The app is ready to go
-	m_bReady = TRUE;
+	m_bReady = true;
 
 	return S_OK;
 }
@@ -638,7 +638,7 @@ INT CD3DApplication::Run()
 	HACCEL hAccel = LoadAccelerators( NULL, MAKEINTRESOURCE(IDR_MAIN_ACCEL) );
 
 	// Now we're ready to recieve and process Windows messages.
-	BOOL bGotMsg;
+	bool bGotMsg;
 	MSG  msg;
 	PeekMessage( &msg, NULL, 0U, 0U, PM_NOREMOVE );
 
@@ -822,41 +822,41 @@ void CD3DApplication::SetMouseType(D3DMouse type)
 
 // Choice of mode for the mouse.
 
-void CD3DApplication::SetNiceMouse(BOOL bNice)
+void CD3DApplication::SetNiceMouse(bool bNice)
 {
 	if ( bNice == m_bNiceMouse )  return;
 	m_bNiceMouse = bNice;
 
 	if ( m_bNiceMouse )
 	{
-		ShowCursor(FALSE);  // hides the ugly windows mouse
+		ShowCursor(false);  // hides the ugly windows mouse
 		SetCursor(NULL);
 	}
 	else
 	{
-		ShowCursor(TRUE);  // shows the ugly windows mouse
+		ShowCursor(true);  // shows the ugly windows mouse
 		SetCursor(LoadCursor(NULL, IDC_ARROW));
 	}
 }
 
 // Whether to use the mouse pretty shaded.
 
-BOOL CD3DApplication::RetNiceMouse()
+bool CD3DApplication::RetNiceMouse()
 {
-	if (  m_pDeviceInfo->bWindowed )  return FALSE;
-	if ( !m_pDeviceInfo->bHardware )  return FALSE;
+	if (  m_pDeviceInfo->bWindowed )  return false;
+	if ( !m_pDeviceInfo->bHardware )  return false;
 
 	return m_bNiceMouse;
 }
 
 // Indicates whether it is possible to use the mouse pretty shaded.
 
-BOOL CD3DApplication::RetNiceMouseCap()
+bool CD3DApplication::RetNiceMouseCap()
 {
-	if (  m_pDeviceInfo->bWindowed )  return FALSE;
-	if ( !m_pDeviceInfo->bHardware )  return FALSE;
+	if (  m_pDeviceInfo->bWindowed )  return false;
+	if ( !m_pDeviceInfo->bHardware )  return false;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1056,7 +1056,7 @@ int CD3DApplication::RetKey(int keyRank, int option)
 
 // Use the joystick or keyboard.
 
-void CD3DApplication::SetJoystick(BOOL bEnable)
+void CD3DApplication::SetJoystick(bool bEnable)
 {
 	m_bJoystick = bEnable;
 
@@ -1064,23 +1064,23 @@ void CD3DApplication::SetJoystick(BOOL bEnable)
 	{
 		if ( !InitDirectInput(m_instance, m_hWnd) )  // initialise joystick
 		{
-			m_bJoystick = FALSE;
+			m_bJoystick = false;
 		}
 		else
 		{
-			SetAcquire(TRUE);
+			SetAcquire(true);
 			SetTimer(m_hWnd, 0, 1000/30, NULL);
 		}
 	}
 	else	// keyboard?
 	{
         KillTimer(m_hWnd, 0);
-		SetAcquire(FALSE);
+		SetAcquire(false);
 		FreeDirectInput();
 	}
 }
 
-BOOL CD3DApplication::RetJoystick()
+bool CD3DApplication::RetJoystick()
 {
 	return m_bJoystick;
 }
@@ -1212,7 +1212,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
                 if( m_pDeviceInfo->bWindowed )
                     m_pFramework->ShowFrame();
                 else
-                    m_pFramework->FlipToGDISurface( TRUE );
+                    m_pFramework->FlipToGDISurface( true );
             }
             break;
 
@@ -1226,11 +1226,11 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
             // Check to see if we are losing our window...
             if( SIZE_MAXHIDE==wParam || SIZE_MINIMIZED==wParam )
 			{
-                m_bActive = FALSE;
+                m_bActive = false;
 			}
             else
 			{
-                m_bActive = TRUE;
+                m_bActive = true;
 			}
 //?			char s[100];
 //?			sprintf(s, "WM_SIZE %d %d %d\n", m_bActive, m_bReady, m_pDeviceInfo->bWindowed);
@@ -1240,13 +1240,13 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
             // size, so the 3D structures must be changed accordingly.
             if( m_bActive && m_bReady && m_pDeviceInfo->bWindowed )
             {
-                m_bReady = FALSE;
+                m_bReady = false;
 
 //?				OutputDebugString("WM_SIZE Change3DEnvironment\n");
                 if( FAILED( hr = Change3DEnvironment() ) )
                     return 0;
 
-                m_bReady = TRUE;
+                m_bReady = true;
             }
             break;
 
@@ -1271,12 +1271,12 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					{
 						if ( js.rgbButtons[i] != 0 && !m_bJoyButton[i] )
 						{
-							m_bJoyButton[i] = TRUE;
+							m_bJoyButton[i] = true;
 							PostMessage(m_hWnd, WM_KEYDOWN, VK_BUTTON1+i, 0);
 						}
 						if ( js.rgbButtons[i] == 0 && m_bJoyButton[i] )
 						{
-							m_bJoyButton[i] = FALSE;
+							m_bJoyButton[i] = false;
 							PostMessage(m_hWnd, WM_KEYUP, VK_BUTTON1+i, 0);
 						}
 					}
@@ -1291,16 +1291,16 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
         case WM_ACTIVATE:
             if( LOWORD(wParam) == WA_INACTIVE )
 			{
-				m_bActivateApp = FALSE;
+				m_bActivateApp = false;
 			}
             else
 			{
-				m_bActivateApp = TRUE;
+				m_bActivateApp = true;
 			}
 
 			if ( m_bActivateApp && m_bJoystick )
 			{
-				SetAcquire(TRUE);  // re-enables the joystick
+				SetAcquire(true);  // re-enables the joystick
 			}
 			break;
 
@@ -1324,10 +1324,10 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
         case WM_ENTERMENULOOP:
             // Pause the app when menus are displayed
-            Pause(TRUE);
+            Pause(true);
             break;
         case WM_EXITMENULOOP:
-            Pause(FALSE);
+            Pause(false);
             break;
 
         case WM_ENTERSIZEMOVE:
@@ -1370,7 +1370,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
                 case SC_SIZE:
                 case SC_MAXIMIZE:
                 case SC_MONITORPOWER:
-                    if( FALSE == m_pDeviceInfo->bWindowed )
+                    if( false == m_pDeviceInfo->bWindowed )
                         return 1;
                     break;
             }
@@ -1383,23 +1383,23 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
                     // Display the device-selection dialog box.
                     if( m_bActive && m_bReady )
                     {
-                        Pause(TRUE);
+                        Pause(true);
 
                         if( SUCCEEDED( D3DEnum_UserChangeDevice( &m_pDeviceInfo ) ) )
                         {
                             if( FAILED( hr = Change3DEnvironment() ) )
                                 return 0;
                         }
-                        Pause(FALSE);
+                        Pause(false);
                     }
                     return 0;
 
                 case IDM_ABOUT:
                     // Display the About box
-                    Pause(TRUE);
+                    Pause(true);
                     DialogBox( (HINSTANCE)GetWindowLong( hWnd, GWL_HINSTANCE ),
                                MAKEINTRESOURCE(IDD_ABOUT), hWnd, AboutProc );
-                    Pause(FALSE);
+                    Pause(false);
                     return 0;
 
                 case IDM_EXIT:
@@ -1589,7 +1589,7 @@ HRESULT CD3DApplication::Change3DEnvironment()
 {
 #if 0
 	HRESULT hr;
-	static BOOL  bOldWindowedState = TRUE;
+	static bool  bOldWindowedState = true;
 	static DWORD dwSavedStyle;
 	static RECT  rcSaved;
 
@@ -1668,7 +1668,7 @@ HRESULT CD3DApplication::Change3DEnvironment()
 
 	if( m_pDeviceInfo->bWindowed )
 	{
-		SetNiceMouse(FALSE);  // hides the ugly windows mouse
+		SetNiceMouse(false);  // hides the ugly windows mouse
 	}
 
 	return S_OK;
@@ -1769,8 +1769,8 @@ HRESULT CD3DApplication::Render3DEnvironment()
 
 VOID CD3DApplication::Cleanup3DEnvironment()
 {
-    m_bActive = FALSE;
-    m_bReady  = FALSE;
+    m_bActive = false;
+    m_bReady  = false;
 
     if( m_pFramework )
     {
@@ -1802,19 +1802,19 @@ VOID CD3DApplication::DeleteDeviceObjects()
 // brings the GDI surface to the front of the display, so drawing
 // output like message boxes and menus may be displayed.
 
-VOID CD3DApplication::Pause( BOOL bPause )
+VOID CD3DApplication::Pause( bool bPause )
 {
     static DWORD dwAppPausedCount = 0L;
 
     dwAppPausedCount += ( bPause ? +1 : -1 );
-    m_bReady          = ( dwAppPausedCount ? FALSE : TRUE );
+    m_bReady          = ( dwAppPausedCount ? false : true );
 
     // Handle the first pause request (of many, nestable pause requests)
     if( bPause && ( 1 == dwAppPausedCount ) )
     {
         // Get a surface for the GDI
         if( m_pFramework )
-            m_pFramework->FlipToGDISurface( TRUE );
+            m_pFramework->FlipToGDISurface( true );
 
         // Stop the scene from animating
 		m_pD3DEngine->TimeEnterGel();
@@ -1836,8 +1836,8 @@ VOID CD3DApplication::Pause( BOOL bPause )
 LRESULT CD3DApplication::OnQuerySuspend( DWORD dwFlags )
 {
 	OutputDebugString("OnQuerySuspend\n");
-    Pause(TRUE);
-    return TRUE;
+    Pause(true);
+    return true;
 }
 
 
@@ -1849,8 +1849,8 @@ LRESULT CD3DApplication::OnQuerySuspend( DWORD dwFlags )
 LRESULT CD3DApplication::OnResumeSuspend( DWORD dwData )
 {
 	OutputDebugString("OnResumeSuspend\n");
-    Pause(FALSE);
-    return TRUE;
+    Pause(false);
+    return true;
 }
 
 
@@ -2082,7 +2082,7 @@ PBITMAPINFO CD3DApplication::CreateBitmapInfoStruct(HBITMAP hBmp)
 // retrieves the array of palette indices, opens the file, copies
 // the data, and closes the file. 
 
-BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
+bool CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
 { 
 	FILE*				file;		// file handle
 	BITMAPFILEHEADER	hdr;		// bitmap file-header
@@ -2092,17 +2092,17 @@ BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBM
  
 	pbih = (PBITMAPINFOHEADER)pbi;
 	lpBits = (LPBYTE)GlobalAlloc(GMEM_FIXED, pbih->biSizeImage);
-	if ( !lpBits )  return FALSE;
+	if ( !lpBits )  return false;
  
 	// Retrieve the color table (RGBQUAD array) and the bits
 	// (array of palette indices) from the DIB.
 	if ( !GetDIBits(hDC, hBMP, 0, (WORD)pbih->biHeight,
 					lpBits, pbi, DIB_RGB_COLORS) )
-		return FALSE;
+		return false;
  
 	// Create the .BMP file.
 	file = fopen(pszFile, "wb");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
  
 	hdr.bfType = 0x4d42; // 0x42 = "B" 0x4d = "M"
  
@@ -2134,12 +2134,12 @@ BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBM
  
 	// Free memory.
 	GlobalFree((HGLOBAL)lpBits);
-	return TRUE;
+	return true;
 }
 
 // Write a file. BMP screenshot.
 
-BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
+bool CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 {
 	D3DVIEWPORT7	vp;
 	HDC				hDC;
@@ -2152,13 +2152,13 @@ BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 	dx = vp.dwWidth;
 	dy = vp.dwHeight;
 
-	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return FALSE;
+	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return false;
 
 	hDCImage = CreateCompatibleDC(hDC);
 	if ( hDCImage == 0 )
 	{
 		m_pddsRenderTarget->ReleaseDC(hDC);
-		return FALSE;
+		return false;
 	}
 
 	hb = CreateCompatibleBitmap(hDC, width, height);
@@ -2166,7 +2166,7 @@ BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 	{
 		DeleteDC(hDCImage);
 		m_pddsRenderTarget->ReleaseDC(hDC);
-		return FALSE;
+		return false;
 	}
 
 	SelectObject(hDCImage, hb);
@@ -2178,7 +2178,7 @@ BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 		DeleteObject(hb);
 		DeleteDC(hDCImage);
 		m_pddsRenderTarget->ReleaseDC(hDC);
-		return FALSE;
+		return false;
 	}
 
 	CreateBMPFile(filename, info, hb, hDCImage);
@@ -2186,24 +2186,24 @@ BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 	DeleteObject(hb);
     DeleteDC(hDCImage);
 	m_pddsRenderTarget->ReleaseDC(hDC);
-	return TRUE;
+	return true;
 }
 
 
 // Initializes an hDC on the rendering surface.
 
-BOOL CD3DApplication::GetRenderDC(HDC &hDC)
+bool CD3DApplication::GetRenderDC(HDC &hDC)
 {
-	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return FALSE;
-	return TRUE;
+	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return false;
+	return true;
 }
 
 // Frees the hDC of the rendering surface.
 
-BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
+bool CD3DApplication::ReleaseRenderDC(HDC &hDC)
 {
 	m_pddsRenderTarget->ReleaseDC(hDC);
-	return TRUE;
+	return true;
 }
 
 
@@ -2214,7 +2214,7 @@ BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
 // possible.
 // buf* --> nom1<0> nom2<0> <0>
 
-BOOL CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
+bool CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
 								  char *bufModes,    int lenModes,
 								  int &totalDevices, int &selectDevices,
 								  int &totalModes,   int &selectModes)
@@ -2272,20 +2272,20 @@ BOOL CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
 	bufDevices[0] = 0;
 	totalDevices = numDevices;
 
-	return TRUE;
+	return true;
 }
 
 // Indicates whether it is in full screen mode.
 
-BOOL CD3DApplication::RetFullScreen()
+bool CD3DApplication::RetFullScreen()
 {
 	return !m_pDeviceInfo->bWindowed;
 }
 
 // Change the graphics mode.
 
-BOOL CD3DApplication::ChangeDevice(char *deviceName, char *modeName,
-								   BOOL bFull)
+bool CD3DApplication::ChangeDevice(char *deviceName, char *modeName,
+								   bool bFull)
 {
 	D3DEnum_DeviceInfo*	pDeviceList;
 	D3DEnum_DeviceInfo*	pDevice;
@@ -2318,24 +2318,24 @@ BOOL CD3DApplication::ChangeDevice(char *deviceName, char *modeName,
 					pDevice->dwCurrentMode      = mode;
 					pDevice->ddsdFullscreenMode = pDevice->pddsdModes[mode];
 
-					m_bReady = FALSE;
+					m_bReady = false;
 
 					if ( FAILED( hr = Change3DEnvironment() ) )
 					{
-						return FALSE;
+						return false;
 					}
 
 					SetProfileString("Device", "Name", deviceName);
 					SetProfileString("Device", "Mode", modeName);
 					SetProfileInt("Device", "FullScreen", bFull);
-					m_bReady = TRUE;
-					return TRUE;
+					m_bReady = true;
+					return true;
 				}
 			}
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 

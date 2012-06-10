@@ -63,13 +63,12 @@ CAutoDerrick::CAutoDerrick(CInstanceManager* iMan, CObject* object)
 
 CAutoDerrick::~CAutoDerrick()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoDerrick::DeleteObject(BOOL bAll)
+void CAutoDerrick::DeleteObject(bool bAll)
 {
 	CObject*	fret;
 
@@ -146,7 +145,7 @@ void CAutoDerrick::Init()
 
 // Management of an event.
 
-BOOL CAutoDerrick::EventProcess(const Event &event)
+bool CAutoDerrick::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	D3DVECTOR	pos, speed;
@@ -155,9 +154,9 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_phase == ADP_WAIT )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_phase == ADP_WAIT )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -175,7 +174,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 
 			m_object->SetAngleY(1, Rand()*0.5f);  // rotates the drill
 		}
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == ADP_EXCAVATE )
@@ -190,7 +189,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 			{
 				factor = 1.0f;
 			}
-			m_soundChannel = m_sound->Play(SOUND_DERRICK, m_object->RetPosition(0), 1.0f, 0.5f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_DERRICK, m_object->RetPosition(0), 1.0f, 0.5f, true);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 4.0f*factor, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.3f, 6.0f*factor, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 1.0f, SOPER_CONTINUE);
@@ -296,7 +295,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 		else
 		{
 			m_soundChannel = -1;
-			m_bSoundFall = FALSE;
+			m_bSoundFall = false;
 
 			m_phase    = ADP_EXPORT;
 			m_progress = 0.0f;
@@ -308,7 +307,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			m_bSoundFall = FALSE;
+			m_bSoundFall = false;
 
 			m_phase    = ADP_EXPORT;
 			m_progress = 0.0f;
@@ -330,7 +329,7 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 				m_phase    = ADP_ISFREE;
 				m_progress = 0.0f;
 				m_speed    = 1.0f/2.0f;
-				return TRUE;
+				return true;
 			}
 		}
 
@@ -375,12 +374,12 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 				if ( !m_bSoundFall && pos.y < m_fretPos.y )
 				{
 					m_sound->Play(SOUND_BOUM, m_fretPos);
-					m_bSoundFall = TRUE;
+					m_bSoundFall = true;
 				}
 				if ( pos.y < m_fretPos.y )
 				{
 					pos.y = m_fretPos.y;
-					fret->SetLock(FALSE);  // object usable
+					fret->SetLock(false);  // object usable
 				}
 				fret->SetPosition(0, pos);
 			}
@@ -402,13 +401,13 @@ BOOL CAutoDerrick::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoDerrick::CreateInterface(BOOL bSelect)
+bool CAutoDerrick::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -416,10 +415,10 @@ BOOL CAutoDerrick::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -432,17 +431,17 @@ BOOL CAutoDerrick::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 109, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 
 // Saves all parameters of the controller.
 
-BOOL CAutoDerrick::Write(char *line)
+bool CAutoDerrick::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == ADP_WAIT )  return FALSE;
+	if ( m_phase == ADP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -458,14 +457,14 @@ BOOL CAutoDerrick::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoDerrick::Read(char *line)
+bool CAutoDerrick::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -475,7 +474,7 @@ BOOL CAutoDerrick::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -507,7 +506,7 @@ CObject* CAutoDerrick::SearchFret()
 
 // Seeks if a site is free.
 
-BOOL CAutoDerrick::SearchFree(D3DVECTOR pos)
+bool CAutoDerrick::SearchFree(D3DVECTOR pos)
 {
 	CObject*	pObj;
 	D3DVECTOR	sPos;
@@ -528,11 +527,11 @@ BOOL CAutoDerrick::SearchFree(D3DVECTOR pos)
 		{
 			distance = Length(sPos, pos);
 			distance -= sRadius;
-			if ( distance < 2.0f )  return FALSE;  // location occupied
+			if ( distance < 2.0f )  return false;  // location occupied
 		}
 	}
 
-	return TRUE;  // location free
+	return true;  // location free
 }
 
 // Create a transportable object.
@@ -549,7 +548,7 @@ void CAutoDerrick::CreateFret(D3DVECTOR pos, float angle, ObjectType type,
 		m_displayText->DisplayError(ERR_TOOMANY, m_object);
 		return;
 	}
-	fret->SetLock(TRUE);  // object not yet usable
+	fret->SetLock(true);  // object not yet usable
 
 	if ( m_object->RetResetCap() == RESET_MOVE )
 	{
@@ -563,7 +562,7 @@ void CAutoDerrick::CreateFret(D3DVECTOR pos, float angle, ObjectType type,
 
 // Look if there is already a key.
 
-BOOL CAutoDerrick::ExistKey()
+bool CAutoDerrick::ExistKey()
 {
 	CObject*	pObj;
 	ObjectType	type;
@@ -572,7 +571,7 @@ BOOL CAutoDerrick::ExistKey()
 	if ( m_type != OBJECT_KEYa &&
 		 m_type != OBJECT_KEYb &&
 		 m_type != OBJECT_KEYc &&
-		 m_type != OBJECT_KEYd )  return FALSE;
+		 m_type != OBJECT_KEYd )  return false;
 
 	for ( i=0 ; i<1000000 ; i++ )
 	{
@@ -580,10 +579,10 @@ BOOL CAutoDerrick::ExistKey()
 		if ( pObj == 0 )  break;
 
 		type = pObj->RetType();
-		if ( type == m_type )  return TRUE;
+		if ( type == m_type )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 

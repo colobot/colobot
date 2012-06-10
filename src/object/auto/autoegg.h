@@ -50,20 +50,20 @@ public:
 	CAutoEgg(CInstanceManager* iMan, CObject* object);
 	~CAutoEgg();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
 	void		Start(int param);
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		IsEnded();
 	Error		RetError();
 
-	BOOL		SetType(ObjectType type);
-	BOOL		SetValue(int rank, float value);
-	BOOL		SetString(char *string);
+	bool		SetType(ObjectType type);
+	bool		SetValue(int rank, float value);
+	bool		SetString(char *string);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	CObject*	SearchAlien();

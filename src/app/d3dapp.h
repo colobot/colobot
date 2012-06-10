@@ -54,46 +54,46 @@ public:
 	Error		AudioQuery();
 	Error		CheckMistery(char *strCmdLine);
 	int			GetVidMemTotal();
-	BOOL		IsVideo8MB();
-	BOOL		IsVideo32MB();
+	bool		IsVideo8MB();
+	bool		IsVideo32MB();
 	HRESULT		Create( HINSTANCE, TCHAR* );
 	INT			Run();
 	LRESULT		MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-	VOID		Pause( BOOL bPause );
+	VOID		Pause( bool bPause );
 	FPOINT		ConvPosToInterface(HWND hWnd, LPARAM lParam);
 	void		SetMousePos(FPOINT pos);
 	void		StepSimul(float rTime);
 	char*		RetCDpath();
 
-	void		SetShowStat(BOOL bShow);
-	BOOL		RetShowStat();
-	void		SetDebugMode(BOOL bMode);
-	BOOL		RetDebugMode();
-	BOOL		RetSetupMode();
+	void		SetShowStat(bool bShow);
+	bool		RetShowStat();
+	void		SetDebugMode(bool bMode);
+	bool		RetDebugMode();
+	bool		RetSetupMode();
 
-	BOOL		EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
-	BOOL		RetFullScreen();
-	BOOL		ChangeDevice(char *device, char *mode, BOOL bFull);
+	bool		EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
+	bool		RetFullScreen();
+	bool		ChangeDevice(char *device, char *mode, bool bFull);
 
 	void		FlushPressKey();
 	void		ResetKey();
 	void		SetKey(int keyRank, int option, int key);
 	int			RetKey(int keyRank, int option);
 
-	void		SetJoystick(BOOL bEnable);
-	BOOL		RetJoystick();
+	void		SetJoystick(bool bEnable);
+	bool		RetJoystick();
 
 	void		SetMouseType(D3DMouse type);
-	void		SetNiceMouse(BOOL bNice);
-	BOOL		RetNiceMouse();
-	BOOL		RetNiceMouseCap();
+	void		SetNiceMouse(bool bNice);
+	bool		RetNiceMouse();
+	bool		RetNiceMouseCap();
 
-	BOOL		WriteScreenShot(char *filename, int width, int height);
+	bool		WriteScreenShot(char *filename, int width, int height);
 
-	BOOL		GetRenderDC(HDC &hDC);
-	BOOL		ReleaseRenderDC(HDC &hDC);
+	bool		GetRenderDC(HDC &hDC);
+	bool		ReleaseRenderDC(HDC &hDC);
 	PBITMAPINFO	CreateBitmapInfoStruct(HBITMAP hBmp);
-	BOOL		CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
+	bool		CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
 
 protected:
 	HRESULT		ConfirmDevice( DDCAPS* pddDriverCaps, D3DDEVICEDESC7* pd3dDeviceDesc );
@@ -130,21 +130,21 @@ protected:
 	char			m_CDpath[100];
 
 	CD3DFramework7*	m_pFramework;
-	BOOL			m_bActive;
-	BOOL			m_bActivateApp;
-	BOOL			m_bReady;
-	BOOL			m_bJoystick;
+	bool			m_bActive;
+	bool			m_bActivateApp;
+	bool			m_bReady;
+	bool			m_bJoystick;
 
 	DWORD			m_vidMemTotal;
 	TCHAR*			m_strWindowTitle;
-	BOOL			m_bAppUseZBuffer;
-	BOOL			m_bAppUseStereo;
-	BOOL			m_bShowStats;
-	BOOL			m_bDebugMode;
-	BOOL			m_bAudioState;
-	BOOL			m_bAudioTrack;
-	BOOL			m_bNiceMouse;
-	BOOL			m_bSetupMode;
+	bool			m_bAppUseZBuffer;
+	bool			m_bAppUseStereo;
+	bool			m_bShowStats;
+	bool			m_bDebugMode;
+	bool			m_bAudioState;
+	bool			m_bAudioTrack;
+	bool			m_bNiceMouse;
+	bool			m_bSetupMode;
 	HRESULT			(*m_fnConfirmDevice)(DDCAPS*, D3DDEVICEDESC7*);
 
 public:
@@ -155,7 +155,7 @@ public:
 	int				m_keyState;
 	D3DVECTOR		m_axeKey;
 	D3DVECTOR		m_axeJoy;
-	BOOL			m_bJoyButton[32];
+	bool			m_bJoyButton[32];
 	FPOINT			m_mousePos;
 	DWORD			m_mshMouseWheel;
 

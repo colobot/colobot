@@ -227,10 +227,10 @@ extern char RetToLower(char letter);
 
 extern void TimeToAscii(time_t time, char *buffer);
 
-extern BOOL CopyFileToTemp(char* filename);
-extern BOOL CopyFileListToTemp(char* filename, int* list, int total);
+extern bool CopyFileToTemp(char* filename);
+extern bool CopyFileListToTemp(char* filename, int* list, int total);
 extern void AddExt(char* filename, char* ext);
-extern void UserDir(BOOL bUser, char* dir);
+extern void UserDir(bool bUser, char* dir);
 extern void UserDir(char* buffer, char* dir, char* def);
 
 extern char RetLanguageLetter();

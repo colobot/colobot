@@ -35,7 +35,7 @@ public:
 	CTaskTurn(CInstanceManager* iMan, CObject* object);
 	~CTaskTurn();
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	Error	Start(float angle);
 	Error	IsEnded();
@@ -46,7 +46,7 @@ protected:
 	float		m_angle;
 	float		m_startAngle;
 	float		m_finalAngle;
-	BOOL		m_bLeft;
-	BOOL		m_bError;
+	bool		m_bLeft;
+	bool		m_bError;
 };
 

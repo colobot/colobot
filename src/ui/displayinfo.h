@@ -40,16 +40,16 @@ public:
 	CDisplayInfo(CInstanceManager* iMan);
 	~CDisplayInfo();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
-	void		StartDisplayInfo(char *filename, int index, BOOL bSoluce);
+	void		StartDisplayInfo(char *filename, int index, bool bSoluce);
 	void		StopDisplayInfo();
 
 	void		SetPosition(int pos);
 	int			RetPosition();
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 	void		HyperUpdate();
 	void		AdjustDisplayInfo(FPOINT wpos, FPOINT wdim);
 	void		ChangeIndexButton(int index);
@@ -69,8 +69,8 @@ protected:
 	CParticule*	m_particule;
 	CLight*		m_light;
 
-	BOOL		m_bInfoMaximized;
-	BOOL		m_bInfoMinimized;
+	bool		m_bInfoMaximized;
+	bool		m_bInfoMinimized;
 
 	int			m_index;
 	CameraType	m_infoCamera;
@@ -81,9 +81,9 @@ protected:
 	FPOINT		m_infoFinalPos;
 	FPOINT		m_infoFinalDim;
 	int			m_lightSuppl;
-	BOOL		m_bEditLock;
-	BOOL		m_bInitPause;
-	BOOL		m_bSoluce;
+	bool		m_bEditLock;
+	bool		m_bInitPause;
+	bool		m_bSoluce;
 	CObject*	m_toto;
 };
 

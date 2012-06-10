@@ -152,20 +152,20 @@ CBotTypResult cString(CBotVar* &var, void* user)
 
 // Seeking value in an array of integers.
 
-BOOL FindList(CBotVar* array, int type)
+bool FindList(CBotVar* array, int type)
 {
 	while ( array != 0 )
 	{
-		if ( type == array->GivValInt() )  return TRUE;
+		if ( type == array->GivValInt() )  return true;
 		array = array->GivNext();
 	}
-	return FALSE;
+	return false;
 }
 
 
 // Gives a parameter of type "point".
 
-BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
+bool GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
 {
 	CBotVar		*pX, *pY, *pZ;
 
@@ -184,110 +184,110 @@ BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
 		pX = var->GivItem("x");
 		if ( pX == NULL )
 		{
-			exception = CBotErrUndefItem;  return TRUE;
+			exception = CBotErrUndefItem;  return true;
 		}
 		pos.x = pX->GivValFloat()*g_unit;
 
 		pY = var->GivItem("y");
 		if ( pY == NULL )
 		{
-			exception = CBotErrUndefItem;  return TRUE;
+			exception = CBotErrUndefItem;  return true;
 		}
 		pos.z = pY->GivValFloat()*g_unit;  // attention y -> z !
 
 		pZ = var->GivItem("z");
 		if ( pZ == NULL )
 		{
-			exception = CBotErrUndefItem;  return TRUE;
+			exception = CBotErrUndefItem;  return true;
 		}
 		pos.y = pZ->GivValFloat()*g_unit;  // attention z -> y !
 
 		var = var->GivNext();
 	}
-	return TRUE;
+	return true;
 }
 
 
 // Instruction "sin(degrees)".
 
-BOOL rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	value;
 
 	value = var->GivValFloat();
 	result->SetValFloat(sinf(value*PI/180.0f));
-	return TRUE;
+	return true;
 }
 
 // Instruction "cos(degrees)".
 
-BOOL rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	value;
 
 	value = var->GivValFloat();
 	result->SetValFloat(cosf(value*PI/180.0f));
-	return TRUE;
+	return true;
 }
 
 // Instruction "tan(degrees)".
 
-BOOL rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	value;
 
 	value = var->GivValFloat();
 	result->SetValFloat(tanf(value*PI/180.0f));
-	return TRUE;
+	return true;
 }
 
 // Instruction "asin(degrees)".
 
-BOOL raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	value;
 
 	value = var->GivValFloat();
 	result->SetValFloat(asinf(value)*180.0f/PI);
-	return TRUE;
+	return true;
 }
 
 // Instruction "acos(degrees)".
 
-BOOL raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	value;
 
 	value = var->GivValFloat();
 	result->SetValFloat(acosf(value)*180.0f/PI);
-	return TRUE;
+	return true;
 }
 
 // Instruction "atan(degrees)".
 
-BOOL raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	value;
 
 	value = var->GivValFloat();
 	result->SetValFloat(atanf(value)*180.0f/PI);
-	return TRUE;
+	return true;
 }
 
 // Instruction "sqrt(value)".
 
-BOOL rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	value;
 
 	value = var->GivValFloat();
 	result->SetValFloat(sqrtf(value));
-	return TRUE;
+	return true;
 }
 
 // Instruction "pow(x, y)".
 
-BOOL rPow(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rPow(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	x, y;
 
@@ -295,26 +295,26 @@ BOOL rPow(CBotVar* var, CBotVar* result, int& exception, void* user)
 	var = var->GivNext();
 	y = var->GivValFloat();
 	result->SetValFloat(powf(x, y));
-	return TRUE;
+	return true;
 }
 
 // Instruction "rand()".
 
-BOOL rRand(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	result->SetValFloat(Rand());
-	return TRUE;
+	return true;
 }
 
 // Instruction "abs()".
 
-BOOL rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	float	value;
 
 	value = var->GivValFloat();
 	result->SetValFloat(Abs(value));
-	return TRUE;
+	return true;
 }
 
 
@@ -332,7 +332,7 @@ CBotTypResult cRetObject(CBotVar* &var, void* user)
 
 // Instruction "retobject(rank)".
 
-BOOL rRetObject(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rRetObject(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pObj;
@@ -349,7 +349,7 @@ BOOL rRetObject(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		result->SetPointer(pObj->RetBotVar());
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -381,32 +381,32 @@ CBotTypResult cSearch(CBotVar* &var, void* user)
 
 // Instruction "search(type, pos)".
 
-BOOL rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject		*pObj, *pBest;
 	CBotVar*	array;
 	D3DVECTOR	pos, oPos;
-	BOOL		bNearest = FALSE;
-	BOOL		bArray;
+	bool		bNearest = false;
+	bool		bArray;
 	float		min, dist;
 	int			type, oType, i;
 
 	if ( var->GivType() == CBotTypArrayPointer )
 	{
 		array = var->GivItemList();
-		bArray = TRUE;
+		bArray = true;
 	}
 	else
 	{
 		type = var->GivValInt();
-		bArray = FALSE;
+		bArray = false;
 	}
 	var = var->GivNext();
 	if ( var != 0 )
 	{
-		if ( !GetPoint(var, exception, pos) )  return TRUE;
-		bNearest = TRUE;
+		if ( !GetPoint(var, exception, pos) )  return true;
+		bNearest = true;
 	}
 
 	min = 100000.0f;
@@ -479,7 +479,7 @@ BOOL rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		result->SetPointer(pBest->RetBotVar());
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -522,7 +522,7 @@ CBotTypResult cRadar(CBotVar* &var, void* user)
 
 // Instruction "radar(type, angle, focus, min, max, sens, filter)".
 
-BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -533,7 +533,7 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 	RadarFilter	filter;
 	float		best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
 	int			type, oType, i;
-	BOOL		bArray;
+	bool		bArray;
 
 	type    = OBJECT_NULL;
 	angle   = 0.0f;
@@ -548,12 +548,12 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 		if ( var->GivType() == CBotTypArrayPointer )
 		{
 			array = var->GivItemList();
-			bArray = TRUE;
+			bArray = true;
 		}
 		else
 		{
 			type = var->GivValInt();
-			bArray = FALSE;
+			bArray = false;
 		}
 
 		var = var->GivNext();
@@ -691,13 +691,13 @@ BOOL rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		result->SetPointer(pBest->RetBotVar());
 	}
-	return TRUE;
+	return true;
 }
 
 
 // Monitoring a task.
 
-BOOL Process(CScript* script, CBotVar* result, int &exception)
+bool Process(CScript* script, CBotVar* result, int &exception)
 {
 	Error		err;
 
@@ -707,21 +707,21 @@ BOOL Process(CScript* script, CBotVar* result, int &exception)
 		delete script->m_primaryTask;
 		script->m_primaryTask = 0;
 
-		script->m_bContinue = FALSE;
+		script->m_bContinue = false;
 
 		if ( err == ERR_STOP )  err = ERR_OK;
 		result->SetValInt(err);  // indicates the error or ok
 		if ( err != ERR_OK && script->m_errMode == ERM_STOP )
 		{
 			exception = err;
-			return FALSE;
+			return false;
 		}
-		return TRUE;  // it's all over
+		return true;  // it's all over
 	}
 
 	script->m_primaryTask->EventProcess(script->m_event);
-	script->m_bContinue = TRUE;
-	return FALSE;  // not done
+	script->m_bContinue = true;
+	return false;  // not done
 }
 
 
@@ -738,7 +738,7 @@ CBotTypResult cDetect(CBotVar* &var, void* user)
 
 // Instruction "detect(type)".
 
-BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -749,7 +749,7 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 	RadarFilter	filter;
 	float		bGoal, best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
 	int			type, oType, i;
-	BOOL		bArray;
+	bool		bArray;
 	Error		err;
 
 	exception = 0;
@@ -769,12 +769,12 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( var->GivType() == CBotTypArrayPointer )
 			{
 				array = var->GivItemList();
-				bArray = TRUE;
+				bArray = true;
 			}
 			else
 			{
 				type = var->GivValInt();
-				bArray = FALSE;
+				bArray = false;
 			}
 		}
 
@@ -899,14 +899,14 @@ BOOL rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
-	if ( !Process(script, result, exception) )  return FALSE;  // not finished
+	if ( !Process(script, result, exception) )  return false;  // not finished
 	result->SetValFloat(script->m_returnValue);
-	return TRUE;
+	return true;
 }
 
 
@@ -926,14 +926,14 @@ CBotTypResult cDirection(CBotVar* &var, void* user)
 
 // Instruction "direction(pos)".
 
-BOOL rDirection(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
 	D3DVECTOR	iPos, oPos;
 	float		a, g;
 
-	if ( !GetPoint(var, exception, oPos) )  return TRUE;
+	if ( !GetPoint(var, exception, oPos) )  return true;
 
 	iPos = pThis->RetPosition(0);
 
@@ -941,7 +941,7 @@ BOOL rDirection(CBotVar* var, CBotVar* result, int& exception, void* user)
 	g = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
 	result->SetValFloat(-Direction(a, g)*180.0f/PI);
-	return TRUE;
+	return true;
 }
 
 
@@ -974,7 +974,7 @@ CBotTypResult cProduce(CBotVar* &var, void* user)
 
 // Instruction "produce(pos, angle, type, scriptName)".
 
-BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	object;
@@ -984,7 +984,7 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 	float		angle;
 	ObjectType	type;
 
-	if ( !GetPoint(var, exception, pos) )  return TRUE;
+	if ( !GetPoint(var, exception, pos) )  return true;
 
 	angle = var->GivValFloat()*PI/180.0f;
 	var = var->GivNext();
@@ -1023,7 +1023,7 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete object;
 			result->SetValInt(1);  // error
-			return TRUE;
+			return true;
 		}
 	}
 	else
@@ -1040,7 +1040,7 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			delete object;
 			result->SetValInt(1);  // error
-			return TRUE;
+			return true;
 		}
 
 		egg = new CObject(script->m_iMan);
@@ -1052,14 +1052,14 @@ BOOL rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 	else
 	{
 		result->SetValInt(1);  // impossible
-		return TRUE;
+		return true;
 	}
-	object->SetActivity(FALSE);
+	object->SetActivity(false);
 	object->ReadProgram(0, (char*)name);
 	object->RunProgram(0);
 	
 	result->SetValInt(0);  // no error
-	return TRUE;
+	return true;
 }
 
 
@@ -1084,32 +1084,32 @@ CBotTypResult cDistance(CBotVar* &var, void* user)
 
 // Instruction "distance(p1, p2)".
 
-BOOL rDistance(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rDistance(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	D3DVECTOR	p1, p2;
 	float		value;
 
-	if ( !GetPoint(var, exception, p1) )  return TRUE;
-	if ( !GetPoint(var, exception, p2) )  return TRUE;
+	if ( !GetPoint(var, exception, p1) )  return true;
+	if ( !GetPoint(var, exception, p2) )  return true;
 
 	value = Length(p1, p2);
 	result->SetValFloat(value/g_unit);
-	return TRUE;
+	return true;
 }
 
 // Instruction "distance2d(p1, p2)".
 
-BOOL rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	D3DVECTOR	p1, p2;
 	float		value;
 
-	if ( !GetPoint(var, exception, p1) )  return TRUE;
-	if ( !GetPoint(var, exception, p2) )  return TRUE;
+	if ( !GetPoint(var, exception, p1) )  return true;
+	if ( !GetPoint(var, exception, p2) )  return true;
 
 	value = Length2d(p1, p2);
 	result->SetValFloat(value/g_unit);
-	return TRUE;
+	return true;
 }
 
 
@@ -1141,7 +1141,7 @@ CBotTypResult cSpace(CBotVar* &var, void* user)
 
 // Instruction "space(center, rMin, rMax, dist)".
 
-BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -1159,7 +1159,7 @@ BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 	}
 	else
 	{
-		if ( !GetPoint(var, exception, center) )  return TRUE;
+		if ( !GetPoint(var, exception, center) )  return true;
 
 		if ( var != 0 )
 		{
@@ -1193,7 +1193,7 @@ BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 			pSub->SetValFloat(center.y/g_unit);
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -1218,27 +1218,27 @@ CBotTypResult cFlatGround(CBotVar* &var, void* user)
 
 // Instruction "flatground(center, rMax)".
 
-BOOL rFlatGround(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rFlatGround(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
 	D3DVECTOR	center;
 	float		rMax, dist;
 
-	if ( !GetPoint(var, exception, center) )  return TRUE;
+	if ( !GetPoint(var, exception, center) )  return true;
 	rMax = var->GivValFloat()*g_unit;
 	var = var->GivNext();
 
 	dist = script->m_main->RetFlatZoneRadius(center, rMax, pThis);
 	result->SetValFloat(dist/g_unit);
 
-	return TRUE;
+	return true;
 }
 
 
 // Instruction "wait(t)".
 
-BOOL rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	float		value;
@@ -1259,9 +1259,9 @@ BOOL rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1269,7 +1269,7 @@ BOOL rWait(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 // Instruction "move(dist)".
 
-BOOL rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	float		value;
@@ -1290,9 +1290,9 @@ BOOL rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1300,7 +1300,7 @@ BOOL rMove(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 // Instruction "turn(angle)".
 
-BOOL rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	float		value;
@@ -1321,9 +1321,9 @@ BOOL rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1357,7 +1357,7 @@ CBotTypResult cGoto(CBotVar* &var, void* user)
 
 // Instruction "goto(pos, altitude, mode)".
 
-BOOL rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*		script = ((CObject*)user)->RetRunScript();
 	D3DVECTOR		pos;
@@ -1371,7 +1371,7 @@ BOOL rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 	if ( script->m_primaryTask == 0 )  // no task in progress?
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
-		if ( !GetPoint(var, exception, pos) )  return TRUE;
+		if ( !GetPoint(var, exception, pos) )  return true;
 
 		goal  = TGG_DEFAULT;
 		crash = TGC_DEFAULT;
@@ -1403,9 +1403,9 @@ BOOL rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1413,7 +1413,7 @@ BOOL rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 // Instruction "find(type)".
 
-BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*		script = ((CObject*)user)->RetRunScript();
 	D3DVECTOR		pos;
@@ -1427,7 +1427,7 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 	D3DVECTOR		iPos, oPos;
 	float			best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
 	int				type, oType, i;
-	BOOL			bArray;
+	bool			bArray;
 
 	exception = 0;
 
@@ -1443,12 +1443,12 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 		if ( var->GivType() == CBotTypArrayPointer )
 		{
 			array = var->GivItemList();
-			bArray = TRUE;
+			bArray = true;
 		}
 		else
 		{
 			type = var->GivValInt();
-			bArray = FALSE;
+			bArray = false;
 		}
 
 		best = 100000.0f;
@@ -1526,7 +1526,7 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 		if ( pBest == 0 )
 		{
 			exception = ERR_FIND_IMPOSSIBLE;
-			return FALSE;
+			return false;
 		}
 
 		pos = pBest->RetPosition(0);
@@ -1544,9 +1544,9 @@ BOOL rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1565,7 +1565,7 @@ CBotTypResult cGrabDrop(CBotVar* &var, void* user)
 
 // Instruction "grab(oper)".
 
-BOOL rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -1600,9 +1600,9 @@ BOOL rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1610,7 +1610,7 @@ BOOL rGrab(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 // Instruction "drop(oper)".
 
-BOOL rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -1645,9 +1645,9 @@ BOOL rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1655,7 +1655,7 @@ BOOL rDrop(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 // Instruction "sniff()".
 
-BOOL rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	Error		err;
@@ -1674,9 +1674,9 @@ BOOL rSniff(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1700,7 +1700,7 @@ CBotTypResult cReceive(CBotVar* &var, void* user)
 
 // Instruction "receive(nom, power)".
 
-BOOL rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -1726,16 +1726,16 @@ BOOL rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 			var = var->GivNext();
 		}
 
-		err = script->m_primaryTask->StartTaskInfo((char*)p, 0.0f, power, FALSE);
+		err = script->m_primaryTask->StartTaskInfo((char*)p, 0.0f, power, false);
 		if ( err != ERR_OK )
 		{
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
 			result->SetInit(IS_NAN);
-			return TRUE;
+			return true;
 		}
 	}
-	if ( !Process(script, result, exception) )  return FALSE;  // not finished
+	if ( !Process(script, result, exception) )  return false;  // not finished
 
 	value = pThis->RetInfoReturn();
 	if ( value == NAN )
@@ -1746,7 +1746,7 @@ BOOL rReceive(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		result->SetValFloat(value);
 	}
-	return TRUE;
+	return true;
 }
 
 // Compilation of the instruction "send(nom, value, power)".
@@ -1771,7 +1771,7 @@ CBotTypResult cSend(CBotVar* &var, void* user)
 
 // Instruction "send(nom, value, power)".
 
-BOOL rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -1800,7 +1800,7 @@ BOOL rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 			var = var->GivNext();
 		}
 
-		err = script->m_primaryTask->StartTaskInfo((char*)p, value, power, TRUE);
+		err = script->m_primaryTask->StartTaskInfo((char*)p, value, power, true);
 		if ( err != ERR_OK )
 		{
 			delete script->m_primaryTask;
@@ -1809,9 +1809,9 @@ BOOL rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -1872,7 +1872,7 @@ CBotTypResult cDeleteInfo(CBotVar* &var, void* user)
 
 // Instruction "deleteinfo(nom, power)".
 
-BOOL rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -1900,7 +1900,7 @@ BOOL rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 	if ( pInfo == 0 )
 	{
 		result->SetValFloat(0.0f);  // false
-		return TRUE;
+		return true;
 	}
 
 	total = pInfo->RetInfoTotal();
@@ -1911,11 +1911,11 @@ BOOL rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 		{
 			pInfo->DeleteInfo(i);
 			result->SetValFloat(1.0f);  // true
-			return TRUE;
+			return true;
 		}
 	}
 	result->SetValFloat(0.0f);  // false
-	return TRUE;
+	return true;
 }
 
 // Compilation of the instruction "testinfo(nom, power)".
@@ -1936,7 +1936,7 @@ CBotTypResult cTestInfo(CBotVar* &var, void* user)
 
 // Instruction "testinfo(nom, power)".
 
-BOOL rTestInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rTestInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -1963,8 +1963,8 @@ BOOL rTestInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 	pInfo = SearchInfo(script, pThis, power);
 	if ( pInfo == 0 )
 	{
-		result->SetValInt(FALSE);
-		return TRUE;
+		result->SetValInt(false);
+		return true;
 	}
 
 	total = pInfo->RetInfoTotal();
@@ -1973,17 +1973,17 @@ BOOL rTestInfo(CBotVar* var, CBotVar* result, int& exception, void* user)
 		info = pInfo->RetInfo(i);
 		if ( strcmp(info.name, p) == 0 )
 		{
-			result->SetValInt(TRUE);
-			return TRUE;
+			result->SetValInt(true);
+			return true;
 		}
 	}
-	result->SetValInt(FALSE);
-	return TRUE;
+	result->SetValInt(false);
+	return true;
 }
 
 // Instruction "thump()".
 
-BOOL rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	Error		err;
@@ -2002,9 +2002,9 @@ BOOL rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -2012,7 +2012,7 @@ BOOL rThump(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 // Instruction "recycle()".
 
-BOOL rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	Error		err;
@@ -2031,9 +2031,9 @@ BOOL rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user)
 			if ( script->m_errMode == ERM_STOP )
 			{
 				exception = err;
-				return FALSE;
+				return false;
 			}
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -2058,7 +2058,7 @@ CBotTypResult cShield(CBotVar* &var, void* user)
 
 // Instruction "shield(oper, radius)".
 
-BOOL rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -2107,7 +2107,7 @@ BOOL rShield(CBotVar* var, CBotVar* result, int& exception, void* user)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Compilation "fire(delay)".
@@ -2143,7 +2143,7 @@ CBotTypResult cFire(CBotVar* &var, void* user)
 
 // Instruction "fire(delay)".
 
-BOOL rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -2162,7 +2162,7 @@ BOOL rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 		if ( type == OBJECT_ANT )
 		{
-			if ( !GetPoint(var, exception, impact) )  return TRUE;
+			if ( !GetPoint(var, exception, impact) )  return true;
 			impact.y += pThis->RetWaterLevel();
 			err = script->m_primaryTask->StartTaskFireAnt(impact);
 		}
@@ -2182,7 +2182,7 @@ BOOL rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
 			result->SetValInt(err);  // shows the error
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -2190,7 +2190,7 @@ BOOL rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 // Instruction "aim(dir)".
 
-BOOL rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	float		value;
@@ -2208,7 +2208,7 @@ BOOL rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 			delete script->m_primaryTask;
 			script->m_primaryTask = 0;
 			result->SetValInt(err);  // shows the error
-			return TRUE;
+			return true;
 		}
 	}
 	return Process(script, result, exception);
@@ -2233,7 +2233,7 @@ CBotTypResult cMotor(CBotVar* &var, void* user)
 
 // Instruction "motor(left, right)".
 
-BOOL rMotor(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rMotor(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CObject*	pThis = (CObject*)user;
 	CPhysics*	physics = ((CObject*)user)->RetPhysics();
@@ -2260,12 +2260,12 @@ BOOL rMotor(CBotVar* var, CBotVar* result, int& exception, void* user)
 	physics->SetMotorSpeedX(speed);  // forward/backward
 	physics->SetMotorSpeedZ(turn);  // turns
 
-	return TRUE;
+	return true;
 }
 
 // Instruction "jet(power)".
 
-BOOL rJet(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rJet(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CPhysics*	physics = ((CObject*)user)->RetPhysics();
 	float		value;
@@ -2273,7 +2273,7 @@ BOOL rJet(CBotVar* var, CBotVar* result, int& exception, void* user)
 	value = var->GivValFloat();
 	physics->SetMotorSpeedY(value);
 
-	return TRUE;
+	return true;
 }
 
 // Compilation of the instruction "topo(pos)".
@@ -2292,7 +2292,7 @@ CBotTypResult cTopo(CBotVar* &var, void* user)
 
 // Instruction "topo(pos)".
 
-BOOL rTopo(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rTopo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	D3DVECTOR	pos;
@@ -2300,12 +2300,12 @@ BOOL rTopo(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	exception = 0;
 
-	if ( !GetPoint(var, exception, pos) )  return TRUE;
+	if ( !GetPoint(var, exception, pos) )  return true;
 
 	level = script->m_terrain->RetFloorLevel(pos);
 	level -= script->m_water->RetLevel();
 	result->SetValFloat(level/g_unit);
-	return TRUE;
+	return true;
 }
 
 // Compilation of the instruction "message(string, type)".
@@ -2327,7 +2327,7 @@ CBotTypResult cMessage(CBotVar* &var, void* user)
 
 // Instruction "message(string, type)".
 
-BOOL rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CBotString	cbs;
@@ -2347,12 +2347,12 @@ BOOL rMessage(CBotVar* var, CBotVar* result, int& exception, void* user)
 	script->m_displayText->DisplayText((char*)p, script->m_object, 10.0f, type);
 	script->m_main->CheckEndMessage((char*)p);
 
-	return TRUE;
+	return true;
 }
 
 // Instruction "cmdline(rank)".
 
-BOOL rCmdline(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rCmdline(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -2363,12 +2363,12 @@ BOOL rCmdline(CBotVar* var, CBotVar* result, int& exception, void* user)
 	value = pThis->RetCmdLine(rank);
 	result->SetValFloat(value);
 
-	return TRUE;
+	return true;
 }
 
 // Instruction "ismovie()".
 
-BOOL rIsMovie(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rIsMovie(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	float		value;
@@ -2376,12 +2376,12 @@ BOOL rIsMovie(CBotVar* var, CBotVar* result, int& exception, void* user)
 	value = script->m_main->RetMovieLock()?1.0f:0.0f;
 	result->SetValFloat(value);
 
-	return TRUE;
+	return true;
 }
 
 // Instruction "errmode(mode)".
 
-BOOL rErrMode(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rErrMode(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	int			value;
@@ -2391,12 +2391,12 @@ BOOL rErrMode(CBotVar* var, CBotVar* result, int& exception, void* user)
 	if ( value > 1 )  value = 1;
 	script->m_errMode = value;
 
-	return TRUE;
+	return true;
 }
 
 // Instruction "ipf(num)".
 
-BOOL rIPF(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rIPF(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	int			value;
@@ -2406,19 +2406,19 @@ BOOL rIPF(CBotVar* var, CBotVar* result, int& exception, void* user)
 	if ( value > 10000 )  value = 10000;
 	script->m_ipf = value;
 
-	return TRUE;
+	return true;
 }
 
 // Instruction "abstime()".
 
-BOOL rAbsTime(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rAbsTime(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	float		value;
 
 	value = script->m_main->RetGameTime();
 	result->SetValFloat(value);
-	return TRUE;
+	return true;
 }
 
 
@@ -2451,7 +2451,7 @@ void PrepareFilename(CBotString &filename, char *dir)
 
 // Instruction "deletefile(filename)".
 
-BOOL rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CBotString	cbs;
@@ -2464,7 +2464,7 @@ BOOL rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user)
 	p = cbs;
 	DeleteFile(p);
 
-	return TRUE;
+	return true;
 }
 
 // Compilation of the instruction "pendown(color, width)".
@@ -2485,7 +2485,7 @@ CBotTypResult cPenDown(CBotVar* &var, void* user)
 
 // Instruction "pendown(color, width)".
 
-BOOL rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -2515,7 +2515,7 @@ BOOL rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
 					pThis->SetTraceWidth(width);
 				}
 			}
-			pThis->SetTraceDown(TRUE);
+			pThis->SetTraceDown(true);
 
 			script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 			err = script->m_primaryTask->StartTaskPen(pThis->RetTraceDown(), pThis->RetTraceColor());
@@ -2527,9 +2527,9 @@ BOOL rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
 				if ( script->m_errMode == ERM_STOP )
 				{
 					exception = err;
-					return FALSE;
+					return false;
 				}
-				return TRUE;
+				return true;
 			}
 		}
 		return Process(script, result, exception);
@@ -2552,15 +2552,15 @@ BOOL rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user)
 				pThis->SetTraceWidth(width);
 			}
 		}
-		pThis->SetTraceDown(TRUE);
+		pThis->SetTraceDown(true);
 
-		return TRUE;
+		return true;
 	}
 }
 
 // Instruction "penup()".
 
-BOOL rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -2572,7 +2572,7 @@ BOOL rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 		if ( script->m_primaryTask == 0 )  // no task in progress?
 		{
-			pThis->SetTraceDown(FALSE);
+			pThis->SetTraceDown(false);
 
 			script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 			err = script->m_primaryTask->StartTaskPen(pThis->RetTraceDown(), pThis->RetTraceColor());
@@ -2584,23 +2584,23 @@ BOOL rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user)
 				if ( script->m_errMode == ERM_STOP )
 				{
 					exception = err;
-					return FALSE;
+					return false;
 				}
-				return TRUE;
+				return true;
 			}
 		}
 		return Process(script, result, exception);
 	}
 	else
 	{
-		pThis->SetTraceDown(FALSE);
-		return TRUE;
+		pThis->SetTraceDown(false);
+		return true;
 	}
 }
 
 // Instruction "pencolor()".
 
-BOOL rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CPhysics*	physics = ((CObject*)user)->RetPhysics();
@@ -2629,9 +2629,9 @@ BOOL rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
 				if ( script->m_errMode == ERM_STOP )
 				{
 					exception = err;
-					return FALSE;
+					return false;
 				}
-				return TRUE;
+				return true;
 			}
 		}
 		return Process(script, result, exception);
@@ -2643,13 +2643,13 @@ BOOL rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user)
 		if ( color > 17 )  color = 17;
 		pThis->SetTraceColor(color);
 
-		return TRUE;
+		return true;
 	}
 }
 
 // Instruction "penwidth()".
 
-BOOL rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CObject*	pThis = (CObject*)user;
 	float		width;
@@ -2658,7 +2658,7 @@ BOOL rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user)
 	if ( width < 0.1f )  width = 0.1f;
 	if ( width > 1.0f )  width = 1.0f;
 	pThis->SetTraceWidth(width);
-	return TRUE;
+	return true;
 }
 
 
@@ -2685,9 +2685,9 @@ CScript::CScript(CInstanceManager* iMan, CObject* object, CTaskManager** seconda
 	m_errMode = ERM_STOP;
 	m_len = 0;
 	m_script = 0;
-	m_bRun = FALSE;
-	m_bStepMode = FALSE;
-	m_bCompile = FALSE;
+	m_bRun = false;
+	m_bStepMode = false;
+	m_bCompile = false;
 	m_title[0] = 0;
 	m_cursor1 = 0;
 	m_cursor2 = 0;
@@ -2780,12 +2780,12 @@ void CScript::PutScript(CEdit* edit, char* name)
 		edit->SetCursor(m_cursor2, m_cursor1);
 		edit->ShowSelect();
 	}
-	edit->SetFocus(TRUE);
+	edit->SetFocus(true);
 }
 
 // The script takes a paved text.
 
-BOOL CScript::GetScript(CEdit* edit)
+bool CScript::GetScript(CEdit* edit)
 {
 	int		len;
 
@@ -2803,46 +2803,46 @@ BOOL CScript::GetScript(CEdit* edit)
 	{
 		edit->SetCursor(m_cursor2, m_cursor1);
 		edit->ShowSelect();
-		edit->SetFocus(TRUE);
-		return FALSE;
+		edit->SetFocus(true);
+		return false;
 	}
 
 	if ( !Compile() )
 	{
 		edit->SetCursor(m_cursor2, m_cursor1);
 		edit->ShowSelect();
-		edit->SetFocus(TRUE);
-		return FALSE;
+		edit->SetFocus(true);
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Indicates whether a program is compiled correctly.
 
-BOOL CScript::RetCompile()
+bool CScript::RetCompile()
 {
 	return m_bCompile;
 }
 
 // Indicates whether the program is empty.
 
-BOOL CScript::IsEmpty()
+bool CScript::IsEmpty()
 {
 	int		i;
 
 	for ( i=0 ; i<m_len ; i++ )
 	{
 		if ( m_script[i] != ' '  &&
-			 m_script[i] != '\n' )  return FALSE;
+			 m_script[i] != '\n' )  return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Checks if a program does not contain the prohibited instructions
 // and if it contains well at least once every mandatory instructions.
 
-BOOL CScript::CheckToken()
+bool CScript::CheckToken()
 {
 	CBotToken*	bt;
 	CBotString	bs;
@@ -2850,12 +2850,12 @@ BOOL CScript::CheckToken()
 	int			error, type, cursor1, cursor2, i;
 	char		used[100];
 
-	if ( !m_object->RetCheckToken() )  return TRUE;
+	if ( !m_object->RetCheckToken() )  return true;
 
 	m_error = 0;
 	m_title[0] = 0;
 	m_token[0] = 0;
-	m_bCompile = FALSE;
+	m_bCompile = false;
 
 	for ( i=0 ; i<m_main->RetObligatoryToken() ; i++ )
 	{
@@ -2885,7 +2885,7 @@ BOOL CScript::CheckToken()
 			m_cursor2 = cursor2;
 			strcpy(m_title, "<erreur>");
 			CBotToken::Delete(bt);
-			return FALSE;
+			return false;
 		}
 
 		bt = bt->GivNext();
@@ -2900,17 +2900,17 @@ BOOL CScript::CheckToken()
 			m_error = ERR_OBLIGATORYTOKEN;
 			strcpy(m_title, "<erreur>");
 			CBotToken::Delete(bt);
-			return FALSE;
+			return false;
 		}
 	}
 
 	CBotToken::Delete(bt);
-	return TRUE;
+	return true;
 }
 
 // Compile the script of a paved text.
 
-BOOL CScript::Compile()
+bool CScript::Compile()
 {
 	CBotStringArray	liste;
 	int				i;
@@ -2920,13 +2920,13 @@ BOOL CScript::Compile()
 	m_cursor1 = 0;
 	m_cursor2 = 0;
 	m_title[0] = 0;
-	m_bCompile = FALSE;
+	m_bCompile = false;
 
 	if ( IsEmpty() )  // program exist?
 	{
 		delete m_botProg;
 		m_botProg = 0;
-		return TRUE;
+		return true;
 	}
 
 	if ( m_botProg == 0 )
@@ -2944,7 +2944,7 @@ BOOL CScript::Compile()
 		{
 			p = liste[0];
 			i = 0;
-			while ( TRUE )
+			while ( true )
 			{
 				if ( p[i] == 0 || p[i] == '(' )  break;
 				if ( i >= 20 )
@@ -2959,8 +2959,8 @@ BOOL CScript::Compile()
 			}
 			m_title[i] = 0;
 		}
-		m_bCompile = TRUE;
-		return TRUE;
+		m_bCompile = true;
+		return true;
 	}
 	else
 	{
@@ -2976,7 +2976,7 @@ BOOL CScript::Compile()
 			m_cursor1 = m_cursor2 = 0;
 		}
 		strcpy(m_title, "<erreur>");
-		return FALSE;
+		return false;
 	}
 }
 
@@ -2991,7 +2991,7 @@ void CScript::GetTitle(char* buffer)
 
 // Choice of mode of execution.
 
-void CScript::SetStepMode(BOOL bStep)
+void CScript::SetStepMode(bool bStep)
 {
 	m_bStepMode = bStep;
 }
@@ -2999,16 +2999,16 @@ void CScript::SetStepMode(BOOL bStep)
 
 // Runs the program from the beginning.
 
-BOOL CScript::Run()
+bool CScript::Run()
 {
-	if( m_botProg == 0 )  return FALSE;
-	if ( m_script == 0 || m_len == 0 )  return FALSE;
+	if( m_botProg == 0 )  return false;
+	if ( m_script == 0 || m_len == 0 )  return false;
 
-	if ( !m_botProg->Start(m_title) )  return FALSE;
+	if ( !m_botProg->Start(m_title) )  return false;
 
 	m_object->SetRunScript(this);
-	m_bRun = TRUE;
-	m_bContinue = FALSE;
+	m_bRun = true;
+	m_bContinue = false;
 	m_ipf = CBOT_IPF;
 	m_errMode = ERM_STOP;
 
@@ -3019,16 +3019,16 @@ BOOL CScript::Run()
 		Step(newEvent);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Continues the execution of current program.
-// Returns TRUE when execution is finished.
+// Returns true when execution is finished.
 
-BOOL CScript::Continue(const Event &event)
+bool CScript::Continue(const Event &event)
 {
-	if( m_botProg == 0 )  return TRUE;
-	if ( !m_bRun )  return TRUE;
+	if( m_botProg == 0 )  return true;
+	if ( !m_bRun )  return true;
 
 	m_event = event;
 
@@ -3049,7 +3049,7 @@ BOOL CScript::Continue(const Event &event)
 				{
 					m_cursor1 = m_cursor2 = 0;
 				}
-				m_bRun = FALSE;
+				m_bRun = false;
 
 				if ( m_error != 0 && m_errMode == ERM_STOP )
 				{
@@ -3057,16 +3057,16 @@ BOOL CScript::Continue(const Event &event)
 					GetError(s);
 					m_displayText->DisplayText(s, m_object, 10.0f, TT_ERROR);
 				}
-				m_engine->SetPause(TRUE);  // gives pause
-				return TRUE;
+				m_engine->SetPause(true);  // gives pause
+				return true;
 			}
 			if ( !m_bContinue )
 			{
-				m_engine->SetPause(TRUE);  // gives pause
+				m_engine->SetPause(true);  // gives pause
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	if ( m_botProg->Run(m_object, m_ipf) )
@@ -3082,7 +3082,7 @@ BOOL CScript::Continue(const Event &event)
 		{
 			m_cursor1 = m_cursor2 = 0;
 		}
-		m_bRun = FALSE;
+		m_bRun = false;
 
 		if ( m_error != 0 && m_errMode == ERM_STOP )
 		{
@@ -3090,24 +3090,24 @@ BOOL CScript::Continue(const Event &event)
 			GetError(s);
 			m_displayText->DisplayText(s, m_object, 10.0f, TT_ERROR);
 		}
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 // Continues the execution of current program.
-// Returns TRUE when execution is finished.
+// Returns true when execution is finished.
 
-BOOL CScript::Step(const Event &event)
+bool CScript::Step(const Event &event)
 {
-	if( m_botProg == 0 )  return TRUE;
-	if ( !m_bRun )  return TRUE;
-	if ( !m_bStepMode )  return FALSE;
+	if( m_botProg == 0 )  return true;
+	if ( !m_bRun )  return true;
+	if ( !m_bStepMode )  return false;
 
-	m_engine->SetPause(FALSE);
+	m_engine->SetPause(false);
 	m_engine->StepSimul(0.01f);  // advance of 10ms
-	m_engine->SetPause(TRUE);
+	m_engine->SetPause(true);
 
 	m_event = event;
 
@@ -3124,7 +3124,7 @@ BOOL CScript::Step(const Event &event)
 		{
 			m_cursor1 = m_cursor2 = 0;
 		}
-		m_bRun = FALSE;
+		m_bRun = false;
 
 		if ( m_error != 0 && m_errMode == ERM_STOP )
 		{
@@ -3132,14 +3132,14 @@ BOOL CScript::Step(const Event &event)
 			GetError(s);
 			m_displayText->DisplayText(s, m_object, 10.0f, TT_ERROR);
 		}
-		return TRUE;
+		return true;
 	}
 
 	if ( m_bContinue )  // instuction "move", "goto", etc. ?
 	{
-		m_engine->SetPause(FALSE);  // removes the pause
+		m_engine->SetPause(false);  // removes the pause
 	}
-	return FALSE;
+	return false;
 }
 
 // Stops the program.
@@ -3160,19 +3160,19 @@ void CScript::Stop()
 		m_primaryTask = 0;
 	}
 
-	m_bRun = FALSE;
+	m_bRun = false;
 }
 
 // Indicates whether the program runs.
 
-BOOL CScript::IsRunning()
+bool CScript::IsRunning()
 {
 	return m_bRun;
 }
 
 // Indicates whether the program continues a step.
 
-BOOL CScript::IsContinue()
+bool CScript::IsContinue()
 {
 	return m_bContinue;
 }
@@ -3180,14 +3180,14 @@ BOOL CScript::IsContinue()
 
 // Gives the position of the cursor during the execution.
 
-BOOL CScript::GetCursor(int &cursor1, int &cursor2)
+bool CScript::GetCursor(int &cursor1, int &cursor2)
 {
 	const char*	funcName;
 
 	cursor1 = cursor2 = 0;
 
-	if( m_botProg == 0 )  return FALSE;
-	if ( !m_bRun )  return FALSE;
+	if( m_botProg == 0 )  return false;
+	if ( !m_bRun )  return false;
 
 	m_botProg->GetRunPos(funcName, cursor1, cursor2);
 	if ( cursor1 < 0 || cursor1 > m_len ||
@@ -3196,13 +3196,13 @@ BOOL CScript::GetCursor(int &cursor1, int &cursor2)
 		cursor1 = 0;
 		cursor2 = 0;
 	}
-	return TRUE;
+	return true;
 }
 
 
 // Put of the variables in a list.
 
-void PutList(char *baseName, BOOL bArray, CBotVar *var, CList *list, int &rankList)
+void PutList(char *baseName, bool bArray, CBotVar *var, CList *list, int &rankList)
 {
 	CBotString	bs;
 	CBotVar		*svar, *pStatic;
@@ -3221,7 +3221,7 @@ void PutList(char *baseName, BOOL bArray, CBotVar *var, CList *list, int &rankLi
 	index = 0;
 	while ( var != 0 )
 	{
-		var->Maj(NULL, FALSE);
+		var->Maj(NULL, false);
 		pStatic = var->GivStaticVar();  // finds the static element
 
 		bs = pStatic->GivName();  // variable name
@@ -3269,13 +3269,13 @@ void PutList(char *baseName, BOOL bArray, CBotVar *var, CList *list, int &rankLi
 		else if ( type == CBotTypArrayPointer )
 		{
 			svar = pStatic->GivItemList();
-			PutList(varName, TRUE, svar, list, rankList);
+			PutList(varName, true, svar, list, rankList);
 		}
 		else if ( type == CBotTypClass   ||
 				  type == CBotTypPointer )
 		{
 			svar = pStatic->GivItemList();
-			PutList(varName, FALSE, svar, list, rankList);
+			PutList(varName, false, svar, list, rankList);
 		}
 		else
 		{
@@ -3307,12 +3307,12 @@ void CScript::UpdateList(CList* list)
 
 	level = 0;
 	rank  = 0;
-	while ( TRUE )
+	while ( true )
 	{
 		var = m_botProg->GivStackVars(funcName, level--);
 		if ( funcName != progName )  break;
 
-		PutList("", FALSE, var, list, rank);
+		PutList("", false, var, list, rank);
 	}
 
 	if ( total == list->RetTotal() )  // same total?
@@ -3417,7 +3417,7 @@ int SearchToken(char* script, char* token)
 
 void DeleteToken(char* script, int pos, int len)
 {
-	while ( TRUE )
+	while ( true )
 	{
 		script[pos] = script[pos+len];
 		if ( script[pos++] == 0 )  break;
@@ -3441,7 +3441,7 @@ void InsertToken(char* script, int pos, char* token)
 
 // Introduces a virus into a program.
 
-BOOL CScript::IntroduceVirus()
+bool CScript::IntroduceVirus()
 {
 	int		i, start, iFound;
 	int		found[11*2];
@@ -3472,7 +3472,7 @@ BOOL CScript::IntroduceVirus()
 			found[iFound++] = start;
 		}
 	}
-	if ( iFound == 0 )  return FALSE;
+	if ( iFound == 0 )  return false;
 
 	i = (rand()%(iFound/2))*2;
 	start = found[i+1];
@@ -3488,7 +3488,7 @@ BOOL CScript::IntroduceVirus()
 	m_len = strlen(m_script);
 	Compile();  // recompile with the virus
 
-	return TRUE;
+	return true;
 }
 
 
@@ -3545,7 +3545,7 @@ void CScript::New(CEdit* edit, char* name)
 	else                 strcpy(text, name);
 
 	sprintf(script, "extern void object::%s()\n{\n\t\n\t\n\t\n}\n", text);
-	edit->SetText(script, FALSE);
+	edit->SetText(script, false);
 
 	if ( strcmp(text, res) == 0 )
 	{
@@ -3568,7 +3568,7 @@ void CScript::New(CEdit* edit, char* name)
 
 	edit->SetCursor(cursor2, cursor1);
 	edit->ShowSelect();
-	edit->SetFocus(TRUE);
+	edit->SetFocus(true);
 	
 	sf = m_main->RetScriptFile();
 	if ( sf[0] != 0 )  // Load an empty program specific?
@@ -3590,7 +3590,7 @@ void CScript::New(CEdit* edit, char* name)
 			cursor1 = 0;
 			i = 0;
 			j = 0;
-			while ( TRUE )
+			while ( true )
 			{
 				if ( buffer[i] == 0 )  break;
 
@@ -3625,12 +3625,12 @@ void CScript::New(CEdit* edit, char* name)
 				script[j++] = buffer[i++];
 			}
 			script[j] = 0;
-			edit->SetText(script, FALSE);
+			edit->SetText(script, false);
 
 			cursor2 = cursor1;
 			edit->SetCursor(cursor2, cursor1);
 			edit->ShowSelect();
-			edit->SetFocus(TRUE);
+			edit->SetFocus(true);
 		}
 	}
 
@@ -3640,20 +3640,20 @@ void CScript::New(CEdit* edit, char* name)
 
 // Provided a script for all parts.
 
-BOOL CScript::SendScript(char* text)
+bool CScript::SendScript(char* text)
 {
 	m_len = strlen(text);
 	m_script = (char*)malloc(sizeof(char)*(m_len+1));
 	strcpy(m_script, text);
-	if ( !CheckToken() )  return FALSE;
-	if ( !Compile() )  return FALSE;
+	if ( !CheckToken() )  return false;
+	if ( !Compile() )  return false;
 
-	return TRUE;
+	return true;
 }
 
 // Reads a script as a text file.
 
-BOOL CScript::ReadScript(char* filename)
+bool CScript::ReadScript(char* filename)
 {
 	FILE*		file;
 	CEdit*		edit;
@@ -3671,7 +3671,7 @@ BOOL CScript::ReadScript(char* filename)
 	}
 
 	file = fopen(name, "rb");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 	fclose(file);
 
 	delete m_script;
@@ -3683,12 +3683,12 @@ BOOL CScript::ReadScript(char* filename)
 	edit->ReadText(name);
 	GetScript(edit);
 	m_interface->DeleteControl(EVENT_EDIT9);
-	return TRUE;
+	return true;
 }
 
 // Writes a script as a text file.
 
-BOOL CScript::WriteScript(char* filename)
+bool CScript::WriteScript(char* filename)
 {
 	CEdit*		edit;
 	char		name[100];
@@ -3706,7 +3706,7 @@ BOOL CScript::WriteScript(char* filename)
 	if ( m_script == 0 )
 	{
 		remove(filename);
-		return FALSE;
+		return false;
 	}
 
 	edit = m_interface->CreateEdit(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), 0, EVENT_EDIT9);
@@ -3715,13 +3715,13 @@ BOOL CScript::WriteScript(char* filename)
 	edit->SetText(m_script);
 	edit->WriteText(name);
 	m_interface->DeleteControl(EVENT_EDIT9);
-	return TRUE;
+	return true;
 }
 
 
 // Reads a stack of script by execution as a file.
 
-BOOL CScript::ReadStack(FILE *file)
+bool CScript::ReadStack(FILE *file)
 {
 	int		nb;
 
@@ -3729,18 +3729,18 @@ BOOL CScript::ReadStack(FILE *file)
 	fRead(&m_ipf, sizeof(int), 1, file);
 	fRead(&m_errMode, sizeof(int), 1, file);
 
-	if ( m_botProg == 0 )  return FALSE;
-	if ( !m_botProg->RestoreState(file) )  return FALSE;
+	if ( m_botProg == 0 )  return false;
+	if ( !m_botProg->RestoreState(file) )  return false;
 	
 	m_object->SetRunScript(this);
-	m_bRun = TRUE;
-	m_bContinue = FALSE;
-	return TRUE;
+	m_bRun = true;
+	m_bContinue = false;
+	return true;
 }
 
 // Writes a stack of script by execution as a file.
 
-BOOL CScript::WriteStack(FILE *file)
+bool CScript::WriteStack(FILE *file)
 {
 	int		nb;
 
@@ -3755,9 +3755,9 @@ BOOL CScript::WriteStack(FILE *file)
 
 // Compares two scripts.
 
-BOOL CScript::Compare(CScript* other)
+bool CScript::Compare(CScript* other)
 {
-	if ( m_len != other->m_len )  return FALSE;
+	if ( m_len != other->m_len )  return false;
 
 	return ( strcmp(m_script, other->m_script) == 0 );
 }

@@ -52,7 +52,6 @@
 CTaskFlag::CTaskFlag(CInstanceManager* iMan, CObject* object)
 					   : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -64,15 +63,15 @@ CTaskFlag::~CTaskFlag()
 
 // Management of an event.
 
-BOOL CTaskFlag::EventProcess(const Event &event)
+bool CTaskFlag::EventProcess(const Event &event)
 {
-	if ( m_bError )  return TRUE;
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_bError )  return true;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_time += event.rTime;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -87,7 +86,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 	m_order = order;
 	m_time = 0.0f;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 	if ( !m_physics->RetLand() )
 	{
 		pos = m_object->RetPosition(0);
@@ -113,7 +112,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 		if ( err != ERR_OK )  return err;
 	}
 
-	m_bError = FALSE;
+	m_bError = false;
 
 	m_motion->SetAction(MHS_FLAG);  // sets/removes flag
 	m_camera->StartCentering(m_object, PI*0.3f, 99.9f, 0.0f, 0.5f);
@@ -136,11 +135,11 @@ Error CTaskFlag::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskFlag::Abort()
+bool CTaskFlag::Abort()
 {
 	m_motion->SetAction(-1);
 	m_camera->StopCentering(m_object, 2.0f);
-	return TRUE;
+	return true;
 }
 
 

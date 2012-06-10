@@ -54,12 +54,12 @@ CSlider::CSlider(CInstanceManager* iMan) : CControl(iMan)
 	m_step         = 0.0f;
 
 	m_marginButton = 0.0f;
-	m_bHoriz       = FALSE;
+	m_bHoriz       = false;
 
 	m_eventUp   = EVENT_NULL;
 	m_eventDown = EVENT_NULL;
 
-	m_bCapture = FALSE;
+	m_bCapture = false;
 }
 
 // Object's destructor.
@@ -73,13 +73,13 @@ CSlider::~CSlider()
 
 // Creates a new button.
 
-BOOL CSlider::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CSlider::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 	CControl::Create(pos, dim, icon, eventMsg);
 
 	MoveAdjust();
-	return TRUE;
+	return true;
 }
 
 
@@ -119,7 +119,7 @@ void CSlider::MoveAdjust()
 		{
 			m_buttonLeft = new CButton(m_iMan);
 			m_buttonLeft->Create(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), m_bHoriz?55:49, EVENT_NULL);  // </^
-			m_buttonLeft->SetRepeat(TRUE);
+			m_buttonLeft->SetRepeat(true);
 			if ( m_state & STATE_SHADOW )  m_buttonLeft->SetState(STATE_SHADOW);
 			m_eventUp = m_buttonLeft->RetEventMsg();
 		}
@@ -128,7 +128,7 @@ void CSlider::MoveAdjust()
 		{
 			m_buttonRight = new CButton(m_iMan);
 			m_buttonRight->Create(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), m_bHoriz?48:50, EVENT_NULL);  // >/v
-			m_buttonRight->SetRepeat(TRUE);
+			m_buttonRight->SetRepeat(true);
 			if ( m_state & STATE_SHADOW )  m_buttonRight->SetState(STATE_SHADOW);
 			m_eventDown = m_buttonRight->RetEventMsg();
 		}
@@ -206,7 +206,7 @@ void CSlider::AdjustGlint()
 }
 
 
-BOOL CSlider::SetState(int state, BOOL bState)
+bool CSlider::SetState(int state, bool bState)
 {
 	if ( (state & STATE_ENABLE) ||
 		 (state & STATE_SHADOW) )
@@ -218,7 +218,7 @@ BOOL CSlider::SetState(int state, BOOL bState)
 	return CControl::SetState(state, bState);
 }
 
-BOOL CSlider::SetState(int state)
+bool CSlider::SetState(int state)
 {
 	if ( (state & STATE_ENABLE) ||
 		 (state & STATE_SHADOW) )
@@ -230,7 +230,7 @@ BOOL CSlider::SetState(int state)
 	return CControl::SetState(state);
 }
 
-BOOL CSlider::ClearState(int state)
+bool CSlider::ClearState(int state)
 {
 	if ( (state & STATE_ENABLE) ||
 		 (state & STATE_SHADOW) )
@@ -245,22 +245,22 @@ BOOL CSlider::ClearState(int state)
 
 // Management of an event.
 
-BOOL CSlider::EventProcess(const Event &event)
+bool CSlider::EventProcess(const Event &event)
 {
 	FPOINT	pos, dim;
 	float	value;
 
-	if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
 
 	CControl::EventProcess(event);
 
 	if ( m_buttonLeft != 0 && !m_bCapture )
 	{
-		if ( !m_buttonLeft->EventProcess(event) )  return FALSE;
+		if ( !m_buttonLeft->EventProcess(event) )  return false;
 	}
 	if ( m_buttonRight != 0 && !m_bCapture )
 	{
-		if ( !m_buttonRight->EventProcess(event) )  return FALSE;
+		if ( !m_buttonRight->EventProcess(event) )  return false;
 	}
 
 	if ( event.event == m_eventUp && m_step > 0.0f )
@@ -316,7 +316,7 @@ BOOL CSlider::EventProcess(const Event &event)
 			newEvent.event = m_eventMsg;
 			m_event->AddEvent(newEvent);
 
-			m_bCapture = TRUE;
+			m_bCapture = true;
 			m_pressPos = event.pos;
 			m_pressValue = m_visibleValue;
 		}
@@ -354,7 +354,7 @@ BOOL CSlider::EventProcess(const Event &event)
 
 	if ( event.event == EVENT_LBUTTONUP && m_bCapture )
 	{
-		m_bCapture = FALSE;
+		m_bCapture = false;
 	}
 
 	if ( event.event == EVENT_KEYDOWN &&
@@ -376,7 +376,7 @@ BOOL CSlider::EventProcess(const Event &event)
 		m_event->AddEvent(newEvent);
 	}
 
-	return TRUE;
+	return true;
 }
 
 

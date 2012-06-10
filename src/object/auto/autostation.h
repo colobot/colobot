@@ -38,13 +38,13 @@ public:
 	CAutoStation(CInstanceManager* iMan, CObject* object);
 	~CAutoStation();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
 protected:
 	void		UpdateInterface(float rTime);
@@ -59,7 +59,7 @@ protected:
 	float			m_lastParticule;
 	int				m_soundChannel;
 	D3DVECTOR		m_fretPos;
-	BOOL			m_bLastVirus;
+	bool			m_bLastVirus;
 	float			m_energyVirus;
 };
 

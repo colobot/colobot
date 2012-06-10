@@ -63,13 +63,12 @@ CAutoNuclear::CAutoNuclear(CInstanceManager* iMan, CObject* object)
 
 CAutoNuclear::~CAutoNuclear()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoNuclear::DeleteObject(BOOL bAll)
+void CAutoNuclear::DeleteObject(bool bAll)
 {
 	CObject*	fret;
 
@@ -117,7 +116,7 @@ void CAutoNuclear::Init()
 
 // Management of an event.
 
-BOOL CAutoNuclear::EventProcess(const Event &event)
+bool CAutoNuclear::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	D3DMATRIX*	mat;
@@ -128,8 +127,8 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -140,7 +139,7 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 		{
 			m_timeVirus = 0.1f+Rand()*0.3f;
 		}
-		return TRUE;
+		return true;
 	}
 
 	EventProgress(event.rTime);
@@ -158,9 +157,9 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 			}
 			else
 			{
-				fret->SetLock(TRUE);  // usable uranium
+				fret->SetLock(true);  // usable uranium
 
-				SetBusy(TRUE);
+				SetBusy(true);
 				InitProgressTotal(1.5f+NUCLEAR_DELAY+1.5f);
 				UpdateInterface();
 
@@ -202,7 +201,7 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 
 			m_sound->Play(SOUND_CLOSE, m_object->RetPosition(0), 1.0f, 1.0f);
 
-			m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_object->RetPosition(0), 1.0f, 0.1f, TRUE);
+			m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_object->RetPosition(0), 1.0f, 0.1f, true);
 			m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, NUCLEAR_DELAY-1.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f, 2.0f, SOPER_STOP);
 
@@ -286,7 +285,7 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 		{
 			m_object->SetAngleZ(1, 135.0f*PI/180.0f);
 
-			SetBusy(FALSE);
+			SetBusy(false);
 			UpdateInterface();
 
 			m_displayText->DisplayError(INFO_NUCLEAR, m_object);
@@ -297,13 +296,13 @@ BOOL CAutoNuclear::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoNuclear::CreateInterface(BOOL bSelect)
+bool CAutoNuclear::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -311,10 +310,10 @@ BOOL CAutoNuclear::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -327,7 +326,7 @@ BOOL CAutoNuclear::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 110, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -345,7 +344,7 @@ CObject* CAutoNuclear::SearchUranium()
 
 // Seeks if a vehicle is too close.
 
-BOOL CAutoNuclear::SearchVehicle()
+bool CAutoNuclear::SearchVehicle()
 {
 	CObject*	pObj;
 	D3DVECTOR	oPos;
@@ -396,10 +395,10 @@ BOOL CAutoNuclear::SearchVehicle()
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
 		dist = Length(oPos, m_pos)-oRadius;
 
-		if ( dist < 10.0f )  return TRUE;
+		if ( dist < 10.0f )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 // Creates an object stack.
@@ -458,12 +457,12 @@ Error CAutoNuclear::RetError()
 
 // Saves all parameters of the controller.
 
-BOOL CAutoNuclear::Write(char *line)
+bool CAutoNuclear::Write(char *line)
 {
 	char	name[100];
 
 	if ( m_phase == ANUP_STOP ||
-		 m_phase == ANUP_WAIT )  return FALSE;
+		 m_phase == ANUP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -479,14 +478,14 @@ BOOL CAutoNuclear::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoNuclear::Read(char *line)
+bool CAutoNuclear::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -496,7 +495,7 @@ BOOL CAutoNuclear::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

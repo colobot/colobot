@@ -72,12 +72,12 @@ CStudio::CStudio(CInstanceManager* iMan)
 	m_camera    = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
 	m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 
-	m_bEditMaximized = FALSE;
-	m_bEditMinimized = FALSE;
+	m_bEditMaximized = false;
+	m_bEditMinimized = false;
 
 	m_time      = 0.0f;
-	m_bRealTime = TRUE;
-	m_bRunning  = FALSE;
+	m_bRealTime = true;
+	m_bRunning  = false;
 	m_fixInfoTextTime = 0.0f;
 	m_helpFilename[0] = 0;
 	m_dialog = SD_NULL;
@@ -93,7 +93,7 @@ CStudio::~CStudio()
 
 // Management of an event.
 
-BOOL CStudio::EventProcess(const Event &event)
+bool CStudio::EventProcess(const Event &event)
 {
 	CWindow*	pw;
 	CEdit*		edit;
@@ -111,10 +111,10 @@ BOOL CStudio::EventProcess(const Event &event)
 	}
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	edit = (CEdit*)pw->SearchControl(EVENT_STUDIO_EDIT);
-	if ( edit == 0 )  return FALSE;
+	if ( edit == 0 )  return false;
 
 	if ( event.event == pw->RetEventMsgClose() )
 	{
@@ -167,7 +167,7 @@ BOOL CStudio::EventProcess(const Event &event)
 	if ( event.event == EVENT_STUDIO_SIZE )  // size?
 	{
 		slider = (CSlider*)pw->SearchControl(EVENT_STUDIO_SIZE);
-		if ( slider == 0 )  return FALSE;
+		if ( slider == 0 )  return false;
 		m_main->SetFontSize(9.0f+slider->RetVisibleValue()*6.0f);
 		ViewEditScript();
 	}
@@ -175,12 +175,12 @@ BOOL CStudio::EventProcess(const Event &event)
 	if ( event.event == EVENT_STUDIO_TOOL &&  // instructions?
 		 m_dialog == SD_NULL )
 	{
-		m_main->StartDisplayInfo(SATCOM_HUSTON, FALSE);
+		m_main->StartDisplayInfo(SATCOM_HUSTON, false);
 	}
 	if ( event.event == EVENT_STUDIO_HELP &&  // help?
 		 m_dialog == SD_NULL )
 	{
-		m_main->StartDisplayInfo(SATCOM_PROG, FALSE);
+		m_main->StartDisplayInfo(SATCOM_PROG, false);
 	}
 
 	if ( event.event == EVENT_STUDIO_COMPILE )  // compile?
@@ -190,12 +190,12 @@ BOOL CStudio::EventProcess(const Event &event)
 		if ( m_script->GetScript(edit) )  // compile
 		{
 			GetResource(RES_TEXT, RT_STUDIO_COMPOK, res);
-			SetInfoText(res, FALSE);
+			SetInfoText(res, false);
 		}
 		else
 		{
 			m_script->GetError(buffer);
-			SetInfoText(buffer, FALSE);
+			SetInfoText(buffer, false);
 		}
 	}
 
@@ -211,7 +211,7 @@ BOOL CStudio::EventProcess(const Event &event)
 		{
 			if ( m_script->GetScript(edit) )  // compile
 			{
-				SetInfoText("", FALSE);
+				SetInfoText("", false);
 
 				Event newEvent = event;
 				newEvent.event = EVENT_OBJECT_PROGSTART;
@@ -221,7 +221,7 @@ BOOL CStudio::EventProcess(const Event &event)
 			{
 				char	buffer[100];
 				m_script->GetError(buffer);
-				SetInfoText(buffer, FALSE);
+				SetInfoText(buffer, false);
 			}
 		}
 	}
@@ -265,8 +265,8 @@ BOOL CStudio::EventProcess(const Event &event)
 		{
 			m_editFinalPos = m_main->RetWindowPos();
 			m_editFinalDim = m_main->RetWindowDim();
-			m_bEditMinimized = FALSE;
-			m_bEditMaximized = FALSE;
+			m_bEditMinimized = false;
+			m_bEditMaximized = false;
 		}
 		else
 		{
@@ -274,8 +274,8 @@ BOOL CStudio::EventProcess(const Event &event)
 			m_editFinalPos.y = -0.44f;
 			m_editFinalDim.x =  1.00f;
 			m_editFinalDim.y =  0.50f;
-			m_bEditMinimized = TRUE;
-			m_bEditMaximized = FALSE;
+			m_bEditMinimized = true;
+			m_bEditMaximized = false;
 		}
 		m_main->SetEditFull(m_bEditMaximized);
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
@@ -291,8 +291,8 @@ BOOL CStudio::EventProcess(const Event &event)
 		{
 			m_editFinalPos = m_main->RetWindowPos();
 			m_editFinalDim = m_main->RetWindowDim();
-			m_bEditMinimized = FALSE;
-			m_bEditMaximized = FALSE;
+			m_bEditMinimized = false;
+			m_bEditMaximized = false;
 		}
 		else
 		{
@@ -300,8 +300,8 @@ BOOL CStudio::EventProcess(const Event &event)
 			m_editFinalPos.y = 0.00f;
 			m_editFinalDim.x = 1.00f;
 			m_editFinalDim.y = 1.00f;
-			m_bEditMinimized = FALSE;
-			m_bEditMaximized = TRUE;
+			m_bEditMinimized = false;
+			m_bEditMaximized = true;
 		}
 		m_main->SetEditFull(m_bEditMaximized);
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
@@ -312,7 +312,7 @@ BOOL CStudio::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -338,7 +338,7 @@ float Evolution(float final, float actual, float time)
 
 // Makes the studio evolve as time elapsed.
 
-BOOL CStudio::EventFrame(const Event &event)
+bool CStudio::EventFrame(const Event &event)
 {
 	CWindow*	pw;
 	CEdit*		edit;
@@ -351,21 +351,21 @@ BOOL CStudio::EventFrame(const Event &event)
 	m_fixInfoTextTime -= event.rTime;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	edit = (CEdit*)pw->SearchControl(EVENT_STUDIO_EDIT);
-	if ( edit == 0 )  return FALSE;
+	if ( edit == 0 )  return false;
 
 	list = (CList*)pw->SearchControl(EVENT_STUDIO_LIST);
-	if ( list == 0 )  return FALSE;
+	if ( list == 0 )  return false;
 
 	if ( !m_script->IsRunning() && m_bRunning )  // stop?
 	{
-		m_bRunning = FALSE;
+		m_bRunning = false;
 		UpdateFlux();  // stop
 		AdjustEditScript();
 		GetResource(RES_TEXT, RT_STUDIO_PROGSTOP, res);
-		SetInfoText(res, FALSE);
+		SetInfoText(res, false);
 
 		Event newEvent = event;
 		newEvent.event = EVENT_OBJECT_PROGSTOP;
@@ -374,7 +374,7 @@ BOOL CStudio::EventFrame(const Event &event)
 
 	if ( m_script->IsRunning() && !m_bRunning )  // starting?
 	{
-		m_bRunning = TRUE;
+		m_bRunning = true;
 		UpdateFlux();  // run
 		AdjustEditScript();
 	}
@@ -411,13 +411,13 @@ BOOL CStudio::EventFrame(const Event &event)
 		AdjustEditScript();
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Indicates whether a character is part of a word.
 
-BOOL IsToken(int character)
+bool IsToken(int character)
 {
 	char	c;
 
@@ -465,7 +465,7 @@ void CStudio::SearchToken(CEdit* edit)
 			if ( level > 0 )
 			{
 				m_helpFilename[0] = 0;
-				SetInfoText("", TRUE);
+				SetInfoText("", true);
 				return;
 			}
 			while ( i > 0 )
@@ -513,7 +513,7 @@ void CStudio::SearchToken(CEdit* edit)
 				if ( strcmp(token, text) == 0 )
 				{
 					strcpy(m_helpFilename, RetHelpFilename(type));
-					SetInfoText(token, TRUE);
+					SetInfoText(token, true);
 					return;
 				}
 			}
@@ -523,7 +523,7 @@ void CStudio::SearchToken(CEdit* edit)
 				if ( strcmp(token, text) == 0 )
 				{
 					strcpy(m_helpFilename, RetHelpFilename(type));
-					SetInfoText(token, TRUE);
+					SetInfoText(token, true);
 					return;
 				}
 			}
@@ -533,11 +533,11 @@ void CStudio::SearchToken(CEdit* edit)
 	text = RetHelpText(token);
 	if ( text[0] == 0 && m_helpFilename[0] != 0 )
 	{
-		SetInfoText(token, TRUE);
+		SetInfoText(token, true);
 	}
 	else
 	{
-		SetInfoText(text, TRUE);
+		SetInfoText(text, true);
 	}
 }
 
@@ -564,8 +564,8 @@ void CStudio::StartEditScript(CScript *script, char* name, int rank)
 	m_script = script;
 	m_rank   = rank;
 
-	m_main->SetEditLock(TRUE, TRUE);
-	m_main->SetEditFull(FALSE);
+	m_main->SetEditLock(true, true);
+	m_main->SetEditFull(false);
 	m_bInitPause = m_engine->RetPause();
 	m_main->SetSpeed(1.0f);
 	m_editCamera = m_camera->RetType();
@@ -586,9 +586,9 @@ void CStudio::StartEditScript(CScript *script, char* name, int rank)
 	pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW3);
 	if ( pw == 0 )  return;
 	pw->SetState(STATE_SHADOW);
-	pw->SetRedim(TRUE);  // before SetName!
-	pw->SetMovable(TRUE);
-	pw->SetClosable(TRUE);
+	pw->SetRedim(true);  // before SetName!
+	pw->SetMovable(true);
+	pw->SetClosable(true);
 	GetResource(RES_TEXT, RT_STUDIO_TITLE, res);
 	pw->SetName(res);
 	pw->SetMinDim(FPOINT(0.49f, 0.50f));
@@ -599,12 +599,12 @@ void CStudio::StartEditScript(CScript *script, char* name, int rank)
 	edit = pw->CreateEdit(pos, dim, 0, EVENT_STUDIO_EDIT);
 	if ( edit == 0 )  return;
 	edit->SetState(STATE_SHADOW);
-	edit->SetInsideScroll(FALSE);
-//?	if ( m_bRunning )  edit->SetEdit(FALSE);
+	edit->SetInsideScroll(false);
+//?	if ( m_bRunning )  edit->SetEdit(false);
 	edit->SetMaxChar(EDITSTUDIOMAX);
 	edit->SetFontType(FONT_COURIER);
 	edit->SetFontStretch(0.7f);
-	edit->SetDisplaySpec(TRUE);
+	edit->SetDisplaySpec(true);
 	edit->SetAutoIndent(m_engine->RetEditIndentMode());
 	m_script->PutScript(edit, name);
 	ColorizeScript(edit);
@@ -614,7 +614,7 @@ void CStudio::StartEditScript(CScript *script, char* name, int rank)
 	list = pw->CreateList(pos, dim, 1, EVENT_STUDIO_LIST, 1.2f);
 	list->SetState(STATE_SHADOW);
 	list->SetFontType(FONT_COURIER);
-	list->SetSelectCap(FALSE);
+	list->SetSelectCap(false);
 	list->SetFontSize(SMALLFONT*0.85f);
 //?	list->SetFontStretch(1.0f);
 
@@ -846,7 +846,7 @@ void CStudio::AdjustEditScript()
 
 // Ends edition of a program.
 
-BOOL CStudio::StopEditScript(BOOL bCancel)
+bool CStudio::StopEditScript(bool bCancel)
 {
 	CWindow*	pw;
 	CEdit*		edit;
@@ -854,7 +854,7 @@ BOOL CStudio::StopEditScript(BOOL bCancel)
 	char		buffer[100];
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	if ( !bCancel && !m_script->IsRunning() )
 	{
@@ -864,12 +864,12 @@ BOOL CStudio::StopEditScript(BOOL bCancel)
 			if ( !m_script->GetScript(edit) )  // compile
 			{
 				m_script->GetError(buffer);
-				SetInfoText(buffer, FALSE);
-				return FALSE;
+				SetInfoText(buffer, false);
+				return false;
 			}
 		}
 	}
-	m_script->SetStepMode(FALSE);
+	m_script->SetStepMode(false);
 
 	m_interface->DeleteControl(EVENT_WINDOW3);
 
@@ -879,18 +879,18 @@ BOOL CStudio::StopEditScript(BOOL bCancel)
 		button->SetState(STATE_VISIBLE);
 	}
 
-	if ( !m_bInitPause )  m_engine->SetPause(FALSE);
-	m_sound->MuteAll(FALSE);
-	m_main->SetEditLock(FALSE, TRUE);
+	if ( !m_bInitPause )  m_engine->SetPause(false);
+	m_sound->MuteAll(false);
+	m_main->SetEditLock(false, true);
 	m_camera->SetType(m_editCamera);
-	return TRUE;
+	return true;
 }
 
 // Specifies the message to display.
 // The messages are not clickable 8 seconds,
 // even if a message was clickable poster before.
 
-void CStudio::SetInfoText(char *text, BOOL bClickable)
+void CStudio::SetInfoText(char *text, bool bClickable)
 {
 	CWindow*	pw;
 	CList*		list;
@@ -908,7 +908,7 @@ void CStudio::SetInfoText(char *text, BOOL bClickable)
 	list->Flush();  // just text
 	list->SetName(0, text);
 
-	if ( text[0] == 0 )  bClickable = FALSE;
+	if ( text[0] == 0 )  bClickable = false;
 	list->SetSelectCap(bClickable);
 
 	if ( bClickable )
@@ -954,23 +954,23 @@ void CStudio::UpdateFlux()
 #if 1
 		if ( m_bRealTime )  // run?
 		{
-			m_engine->SetPause(FALSE);
-			m_sound->MuteAll(FALSE);
+			m_engine->SetPause(false);
+			m_sound->MuteAll(false);
 		}
 		else	// step by step?
 		{
-			m_engine->SetPause(TRUE);
-			m_sound->MuteAll(TRUE);
+			m_engine->SetPause(true);
+			m_sound->MuteAll(true);
 		}
 #else
-		m_engine->SetPause(FALSE);
-		m_sound->MuteAll(FALSE);
+		m_engine->SetPause(false);
+		m_sound->MuteAll(false);
 #endif
 	}
 	else	// stop?
 	{
-		m_engine->SetPause(TRUE);
-		m_sound->MuteAll(TRUE);
+		m_engine->SetPause(true);
+		m_sound->MuteAll(true);
 	}
 }
 
@@ -991,14 +991,14 @@ void CStudio::UpdateButtons()
 	if ( m_bRunning )
 	{
 		edit->SetIcon(1);  // red background
-		edit->SetEditCap(FALSE);  // just to see
-		edit->SetHiliteCap(TRUE);
+		edit->SetEditCap(false);  // just to see
+		edit->SetHiliteCap(true);
 	}
 	else
 	{
 		edit->SetIcon(0);  // standard background
-		edit->SetEditCap(TRUE);
-		edit->SetHiliteCap(TRUE);
+		edit->SetEditCap(true);
+		edit->SetHiliteCap(true);
 	}
 
 	button = (CButton*)pw->SearchControl(EVENT_STUDIO_COMPILE);
@@ -1071,8 +1071,8 @@ void CStudio::StartDialog(StudioDialog type)
 //?	pw = m_interface->CreateWindows(pos, dim, 8, EVENT_WINDOW9);
 	pw = m_interface->CreateWindows(pos, dim, m_dialog==SD_OPEN?14:13, EVENT_WINDOW9);
 	pw->SetState(STATE_SHADOW);
-	pw->SetMovable(TRUE);
-	pw->SetClosable(TRUE);
+	pw->SetMovable(true);
+	pw->SetClosable(true);
 	pw->SetMinDim(FPOINT(320.0f/640.0f, (121.0f+18.0f*4)/480.0f));
 	if ( m_dialog == SD_OPEN )  GetResource(RES_TEXT, RT_IO_OPEN, name);
 	if ( m_dialog == SD_SAVE )  GetResource(RES_TEXT, RT_IO_SAVE, name);
@@ -1139,10 +1139,10 @@ void CStudio::StartDialog(StudioDialog type)
 		UpdateDialogAction();
 
 		pe->SetCursor(999, 0);  // selects all
-		pe->SetFocus(TRUE);
+		pe->SetFocus(true);
 	}
 
-	m_main->SetSatComLock(TRUE);  // impossible to use the SatCom
+	m_main->SetSatComLock(true);  // impossible to use the SatCom
 }
 
 // End of the display of a dialogue.
@@ -1182,7 +1182,7 @@ void CStudio::StopDialog()
 	if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
 	m_interface->DeleteControl(EVENT_WINDOW9);
-	m_main->SetSatComLock(FALSE);  // possible to use the SatCom
+	m_main->SetSatComLock(false);  // possible to use the SatCom
 }
 
 // Adjust all controls of dialogue after a change in geometry.
@@ -1312,13 +1312,13 @@ void CStudio::AdjustDialog()
 
 // Management of the event of a dialogue.
 
-BOOL CStudio::EventDialog(const Event &event)
+bool CStudio::EventDialog(const Event &event)
 {
 	CWindow*	pw;
 	FPOINT		wpos, wdim;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	if ( event.event == EVENT_WINDOW9 )  // window is moved?
 	{
@@ -1343,13 +1343,13 @@ BOOL CStudio::EventDialog(const Event &event)
 
 		if ( event.event == EVENT_DIALOG_CHECK1 )  // private?
 		{
-			m_main->SetIOPublic(FALSE);
+			m_main->SetIOPublic(false);
 			UpdateDialogPublic();
 			UpdateDialogList();
 		}
 		if ( event.event == EVENT_DIALOG_CHECK2 )  // public?
 		{
-			m_main->SetIOPublic(TRUE);
+			m_main->SetIOPublic(true);
 			UpdateDialogPublic();
 			UpdateDialogList();
 		}
@@ -1360,15 +1360,15 @@ BOOL CStudio::EventDialog(const Event &event)
 	{
 		if ( m_dialog == SD_OPEN )
 		{
-			if ( !ReadProgram() )  return TRUE;
+			if ( !ReadProgram() )  return true;
 		}
 		if ( m_dialog == SD_SAVE )
 		{
-			if ( !WriteProgram() )  return TRUE;
+			if ( !WriteProgram() )  return true;
 		}
 
 		StopDialog();
-		return TRUE;
+		return true;
 	}
 
 	if ( event.event == EVENT_DIALOG_CANCEL ||
@@ -1376,10 +1376,10 @@ BOOL CStudio::EventDialog(const Event &event)
 		 event.event == pw->RetEventMsgClose() )
 	{
 		StopDialog();
-		return TRUE;
+		return true;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Updates the name after a click in the list.
@@ -1405,7 +1405,7 @@ void CStudio::UpdateChangeList()
 	if ( p != 0 )  *p = 0;
 	pe->SetText(name);
 	pe->SetCursor(999, 0);  // selects all
-	pe->SetFocus(TRUE);
+	pe->SetFocus(true);
 
 	UpdateDialogAction();
 }
@@ -1436,7 +1436,7 @@ void CStudio::UpdateDialogAction()
 	CButton*	pb;
 	char		name[100];
 	int			len, i;
-	BOOL		bError;
+	bool		bError;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
 	if ( pw == 0 )  return;
@@ -1449,11 +1449,11 @@ void CStudio::UpdateDialogAction()
 	len = strlen(name);
 	if ( len == 0 )
 	{
-		bError = TRUE;
+		bError = true;
 	}
 	else
 	{
-		bError = FALSE;
+		bError = false;
 		for ( i=0 ; i<len ; i++ )
 		{
 			if ( name[i] == '*'  ||
@@ -1464,7 +1464,7 @@ void CStudio::UpdateDialogAction()
 				 name[i] == '"'  ||
 				 name[i] == '|'  ||
 				 name[i] == '/'  ||
-				 name[i] == '\\' )  bError = TRUE;
+				 name[i] == '\\' )  bError = true;
 		}
 	}
 
@@ -1501,9 +1501,9 @@ void CStudio::UpdateDialogPublic()
 	if ( pl != 0 )
 	{
 		GetResource(RES_TEXT, RT_IO_LIST, name);
-		SearchDirectory(dir, FALSE);
+		SearchDirectory(dir, false);
 		sprintf(text, name, dir);
-		pl->SetName(text, FALSE);
+		pl->SetName(text, false);
 	}
 }	
 
@@ -1516,7 +1516,7 @@ void CStudio::UpdateDialogList()
 	long				hFile;
 	struct _finddata_t	fileBuffer;
 	struct _finddata_t*	listBuffer;
-	BOOL				bDo;
+	bool				bDo;
 	char				dir[_MAX_FNAME];
 	char				temp[_MAX_FNAME];
 	int					nbFilenames, i;
@@ -1530,7 +1530,7 @@ void CStudio::UpdateDialogList()
 	nbFilenames = 0;
 	listBuffer = (_finddata_t*)malloc(sizeof(_finddata_t)*1000);
 
-	SearchDirectory(dir, FALSE);
+	SearchDirectory(dir, false);
 	strcat(dir, "*");  // list all
 	hFile = _findfirst(dir, &fileBuffer);
 	if ( hFile != -1 )
@@ -1546,7 +1546,7 @@ void CStudio::UpdateDialogList()
 	}
 	do  // sorts all names:
 	{
-		bDo = FALSE;
+		bDo = false;
 		for ( i=0 ; i<nbFilenames-1 ; i++ )
 		{
 			if ( strcmp(listBuffer[i].name, listBuffer[i+1].name) > 0 )
@@ -1554,7 +1554,7 @@ void CStudio::UpdateDialogList()
 				fileBuffer = listBuffer[i];  // exchange i and i +1
 				listBuffer[i] = listBuffer[i+1];
 				listBuffer[i+1] = fileBuffer;
-				bDo = TRUE;
+				bDo = true;
 			}
 		}
 	}
@@ -1573,7 +1573,7 @@ void CStudio::UpdateDialogList()
 // Constructs the name of the folder or open/save.
 // If the folder does not exist, it will be created.
 
-void CStudio::SearchDirectory(char *dir, BOOL bCreate)
+void CStudio::SearchDirectory(char *dir, bool bCreate)
 {
 	if ( m_main->RetIOPublic() )
 	{
@@ -1592,7 +1592,7 @@ void CStudio::SearchDirectory(char *dir, BOOL bCreate)
 
 // Reads a new program.
 
-BOOL CStudio::ReadProgram()
+bool CStudio::ReadProgram()
 {
 	CWindow*	pw;
 	CEdit*		pe;
@@ -1601,36 +1601,36 @@ BOOL CStudio::ReadProgram()
 	char*		p;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	pe = (CEdit*)pw->SearchControl(EVENT_DIALOG_EDIT);
-	if ( pe == 0 )  return FALSE;
+	if ( pe == 0 )  return false;
 	pe->GetText(filename, 100);
-	if ( filename[0] == 0 )  return FALSE;
+	if ( filename[0] == 0 )  return false;
 
 	p = strstr(filename, ".txt");
 	if ( p == 0 || p != filename+strlen(filename)-4 )
 	{
 		strcat(filename, ".txt");
 	}
-	SearchDirectory(dir, TRUE);
+	SearchDirectory(dir, true);
 	strcat(dir, filename);
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 	pe = (CEdit*)pw->SearchControl(EVENT_STUDIO_EDIT);
-	if ( pe == 0 )  return FALSE;
+	if ( pe == 0 )  return false;
 
-	if ( !pe->ReadText(dir) )  return FALSE;
+	if ( !pe->ReadText(dir) )  return false;
 
 	m_script->SetFilename(filename);
 	ColorizeScript(pe);
-	return TRUE;
+	return true;
 }
 
 // Writes the current program.
 
-BOOL CStudio::WriteProgram()
+bool CStudio::WriteProgram()
 {
 	CWindow*	pw;
 	CEdit*		pe;
@@ -1639,29 +1639,29 @@ BOOL CStudio::WriteProgram()
 	char*		p;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	pe = (CEdit*)pw->SearchControl(EVENT_DIALOG_EDIT);
-	if ( pe == 0 )  return FALSE;
+	if ( pe == 0 )  return false;
 	pe->GetText(filename, 100);
-	if ( filename[0] == 0 )  return FALSE;
+	if ( filename[0] == 0 )  return false;
 
 	p = strstr(filename, ".txt");
 	if ( p == 0 || p != filename+strlen(filename)-4 )
 	{
 		strcat(filename, ".txt");
 	}
-	SearchDirectory(dir, TRUE);
+	SearchDirectory(dir, true);
 	strcat(dir, filename);
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 	pe = (CEdit*)pw->SearchControl(EVENT_STUDIO_EDIT);
-	if ( pe == 0 )  return FALSE;
+	if ( pe == 0 )  return false;
 
-	if ( !pe->WriteText(dir) )  return FALSE;
+	if ( !pe->WriteText(dir) )  return false;
 
 	m_script->SetFilename(filename);
-	return TRUE;
+	return true;
 }
 

@@ -50,8 +50,6 @@
 CTaskShield::CTaskShield(CInstanceManager* iMan, CObject* object)
 							   : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
-
 	m_rankSphere = -1;
 	m_soundChannel = -1;
 	m_effectLight = -1;
@@ -67,7 +65,7 @@ CTaskShield::~CTaskShield()
 
 // Management of an event.
 
-BOOL CTaskShield::EventProcess(const Event &event)
+bool CTaskShield::EventProcess(const Event &event)
 {
 	CObject*		power;
 	D3DMATRIX*		mat;
@@ -77,9 +75,9 @@ BOOL CTaskShield::EventProcess(const Event &event)
 	FPOINT			dim;
 	float			energy;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	m_progress += event.rTime*m_speed;  // others advance
 	m_time += event.rTime;
@@ -127,7 +125,7 @@ BOOL CTaskShield::EventProcess(const Event &event)
 
 		if ( m_soundChannel == -1 )
 		{
-			m_soundChannel = m_sound->Play(SOUND_SHIELD, m_shieldPos, 0.5f, 0.5f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_SHIELD, m_shieldPos, 0.5f, 0.5f, true);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 2.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
 		}
@@ -232,7 +230,7 @@ BOOL CTaskShield::EventProcess(const Event &event)
 		m_object->SetPosition(2, pos);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -264,7 +262,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	type = m_object->RetType();
 	if ( type != OBJECT_MOBILErs )  return ERR_SHIELD_VEH;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 	if ( !m_physics->RetLand() )  return ERR_SHIELD_VEH;
 
 	power = m_object->RetPower();
@@ -289,7 +287,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	m_lastIncrease = 0.0f;
 	m_energyUsed = 0.0f;
 
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 
 	if ( m_object->RetSelect() )
 	{
@@ -439,19 +437,19 @@ Error CTaskShield::IsEnded()
 
 // Indicates whether the action is pending.
 
-BOOL CTaskShield::IsBusy()
+bool CTaskShield::IsBusy()
 {
 	if ( m_phase == TS_SHIELD )
 	{
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Suddenly ends the current action.
 
-BOOL CTaskShield::Abort()
+bool CTaskShield::Abort()
 {
 	D3DVECTOR	pos;
 
@@ -487,17 +485,17 @@ BOOL CTaskShield::Abort()
 	}
 
 	m_camera->StopCentering(m_object, 2.0f);
-	return TRUE;
+	return true;
 }
 
 
 // Creates the light to accompany a pyrotechnic effect.
 
-BOOL CTaskShield::CreateLight(D3DVECTOR pos)
+bool CTaskShield::CreateLight(D3DVECTOR pos)
 {
 	D3DLIGHT7	light;
 
-	if ( !m_engine->RetLightMode() )  return TRUE;
+	if ( !m_engine->RetLightMode() )  return true;
 
     ZeroMemory( &light, sizeof(light) );
 	light.dltType       = D3DLIGHT_SPOT;
@@ -519,12 +517,12 @@ BOOL CTaskShield::CreateLight(D3DVECTOR pos)
 	light.dvPhi = PI/4.0f;
 
 	m_effectLight = m_light->CreateLight();
-	if ( m_effectLight == -1 )  return FALSE;
+	if ( m_effectLight == -1 )  return false;
 
 	m_light->SetLight(m_effectLight, light);
 	m_light->SetLightIntensity(m_effectLight, 1.0f);
 
-	return TRUE;
+	return true;
 }
 
 

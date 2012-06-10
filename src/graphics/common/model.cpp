@@ -97,13 +97,13 @@ CModel::CModel(CInstanceManager* iMan)
 	m_state = 0;
 	m_textureMode = 0;
 	m_textureRotate = 0;
-	m_bTextureMirrorX = FALSE;
-	m_bTextureMirrorY = FALSE;
+	m_bTextureMirrorX = false;
+	m_bTextureMirrorY = false;
 	m_texturePart = 0;
 	TexturePartUpdate();
 
-	m_bDisplayTransparent = FALSE;
-	m_bDisplayOnlySelection = FALSE;
+	m_bDisplayTransparent = false;
+	m_bDisplayOnlySelection = false;
 	InitView();
 
 	m_triangleSel1 = 0;
@@ -404,47 +404,47 @@ void CModel::GetScriptName(char *buffer)
 
 // Indicates whether the edition name has focus.
 
-BOOL CModel::IsEditFocus()
+bool CModel::IsEditFocus()
 {
 	CEdit*	pe;
 
 	pe = (CEdit*)m_interface->SearchControl(EVENT_EDIT1);
 	if ( pe != 0 )
 	{
-		if ( pe->RetFocus() )  return TRUE;
+		if ( pe->RetFocus() )  return true;
 	}
 
 	pe = (CEdit*)m_interface->SearchControl(EVENT_EDIT2);
 	if ( pe != 0 )
 	{
-		if ( pe->RetFocus() )  return TRUE;
+		if ( pe->RetFocus() )  return true;
 	}
 
 	pe = (CEdit*)m_interface->SearchControl(EVENT_EDIT3);
 	if ( pe != 0 )
 	{
-		if ( pe->RetFocus() )  return TRUE;
+		if ( pe->RetFocus() )  return true;
 	}
 
 	pe = (CEdit*)m_interface->SearchControl(EVENT_EDIT4);
 	if ( pe != 0 )
 	{
-		if ( pe->RetFocus() )  return TRUE;
+		if ( pe->RetFocus() )  return true;
 	}
 
 	pe = (CEdit*)m_interface->SearchControl(EVENT_EDIT5);
 	if ( pe != 0 )
 	{
-		if ( pe->RetFocus() )  return TRUE;
+		if ( pe->RetFocus() )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 
 // Management of an event.
 
-BOOL CModel::EventProcess(const Event &event)
+bool CModel::EventProcess(const Event &event)
 {
 	char	s[100];
 	int		first, last;
@@ -476,21 +476,21 @@ BOOL CModel::EventProcess(const Event &event)
 			}
 			if ( event.param == VK_ADD )  // numpad?
 			{
-				if ( event.keyState & KS_SHIFT )  CurrentSelect(TRUE);
+				if ( event.keyState & KS_SHIFT )  CurrentSelect(true);
 				CurrentSearchNext(+1, (event.keyState & KS_CONTROL));
 			}
 			if ( event.param == VK_SUBTRACT )  // least numpad?
 			{
-				if ( event.keyState & KS_SHIFT )  CurrentSelect(TRUE);
+				if ( event.keyState & KS_SHIFT )  CurrentSelect(true);
 				CurrentSearchNext(-1, (event.keyState & KS_CONTROL));
 			}
 			if ( event.param == VK_NUMPAD0 )
 			{
-				CurrentSelect(FALSE);
+				CurrentSelect(false);
 			}
 			if ( event.param == VK_DECIMAL )
 			{
-				CurrentSelect(TRUE);
+				CurrentSelect(true);
 			}
 			if ( event.param == VK_END )
 			{
@@ -507,12 +507,12 @@ BOOL CModel::EventProcess(const Event &event)
 			if ( event.param == VK_SPACE )
 			{
 				m_bDisplayTransparent = !m_bDisplayTransparent;
-				m_bDisplayOnlySelection = FALSE;
+				m_bDisplayOnlySelection = false;
 			}
 			if ( event.param == 'H' )
 			{
 				m_bDisplayOnlySelection = !m_bDisplayOnlySelection;
-				m_bDisplayTransparent = FALSE;
+				m_bDisplayTransparent = false;
 			}
 			if ( m_mode == 1 )
 			{
@@ -719,7 +719,7 @@ BOOL CModel::EventProcess(const Event &event)
 
 		case EVENT_BUTTON3:  // read ?
 			GetModelName(s);
-			m_modFile->ReadModel(s, TRUE, FALSE);  // standard read with borders
+			m_modFile->ReadModel(s, true, false);  // standard read with borders
 			DeselectAll();
 			CurrentInit();
 			EventFrame(event);
@@ -729,7 +729,7 @@ BOOL CModel::EventProcess(const Event &event)
 		case EVENT_BUTTON4:  // add ?
 			GetModelName(s);
 			first = m_modFile->RetTriangleUsed();
-			m_modFile->AddModel(s, first, TRUE, FALSE);  // standard read with borders
+			m_modFile->AddModel(s, first, true, false);  // standard read with borders
 			last = m_modFile->RetTriangleUsed();
 			SelectZone(first, last);
 			EventFrame(event);
@@ -777,7 +777,7 @@ BOOL CModel::EventProcess(const Event &event)
 
 // Drives the model.
 
-BOOL CModel::EventFrame(const Event &event)
+bool CModel::EventFrame(const Event &event)
 {
 	D3DMATERIAL7	matCurrent, matCurrenti, matCurrents, matTrans;
 	D3DMATERIAL7*	pMat;
@@ -853,7 +853,7 @@ BOOL CModel::EventFrame(const Event &event)
 			m_engine->AddTriangle(objRank, &m_triangleTable[i].p1, 3,
 								  *pMat, state,
 								  m_triangleTable[i].texName, "",
-								  0.0f, 1000000.0f, FALSE);
+								  0.0f, 1000000.0f, false);
 		}
 		else
 		{
@@ -861,7 +861,7 @@ BOOL CModel::EventFrame(const Event &event)
 			m_engine->AddTriangle(objRank, &m_triangleTable[i].p1, 3,
 								  *pMat, state|D3DSTATEDUALb,
 								  m_triangleTable[i].texName, texName2,
-								  0.0f, 1000000.0f, FALSE);
+								  0.0f, 1000000.0f, false);
 		}
 
 		if ( m_bDisplayTransparent &&  // draws inside?
@@ -875,66 +875,66 @@ BOOL CModel::EventFrame(const Event &event)
 			m_engine->AddTriangle(objRank, vertex, 3,
 								  matCurrenti, D3DSTATENORMAL,
 								  m_triangleTable[i].texName, "",
-								  0.0f, 1000000.0f, FALSE);
+								  0.0f, 1000000.0f, false);
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Gives a vertex.
 
-BOOL CModel::GetVertex(int rank, D3DVERTEX2 &vertex)
+bool CModel::GetVertex(int rank, D3DVERTEX2 &vertex)
 {
-	if ( rank < 0 || rank/3 >= m_modFile->RetTriangleUsed() )  return FALSE;
-	if ( !m_triangleTable[rank/3].bUsed )  return FALSE;
+	if ( rank < 0 || rank/3 >= m_modFile->RetTriangleUsed() )  return false;
+	if ( !m_triangleTable[rank/3].bUsed )  return false;
 
-	if ( !m_triangleTable[rank/3].bSelect )  return FALSE;
+	if ( !m_triangleTable[rank/3].bSelect )  return false;
 
 	if ( rank%3 == 0 )
 	{
 		vertex = m_triangleTable[rank/3].p1;
-		return TRUE;
+		return true;
 	}
 	if ( rank%3 == 1 )
 	{
 		vertex = m_triangleTable[rank/3].p2;
-		return TRUE;
+		return true;
 	}
 	if ( rank%3 == 2 )
 	{
 		vertex = m_triangleTable[rank/3].p3;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 // Modifies a vertex.
 
-BOOL CModel::SetVertex(int rank, D3DVERTEX2 &vertex)
+bool CModel::SetVertex(int rank, D3DVERTEX2 &vertex)
 {
-	if ( rank < 0 || rank/3 >= m_modFile->RetTriangleUsed() )  return FALSE;
-	if ( !m_triangleTable[rank/3].bUsed )  return FALSE;
+	if ( rank < 0 || rank/3 >= m_modFile->RetTriangleUsed() )  return false;
+	if ( !m_triangleTable[rank/3].bUsed )  return false;
 
-	if ( !m_triangleTable[rank/3].bSelect )  return FALSE;
+	if ( !m_triangleTable[rank/3].bSelect )  return false;
 
 	if ( rank%3 == 0 )
 	{
 		m_triangleTable[rank/3].p1 = vertex;
-		return TRUE;
+		return true;
 	}
 	if ( rank%3 == 1 )
 	{
 		m_triangleTable[rank/3].p2 = vertex;
-		return TRUE;
+		return true;
 	}
 	if ( rank%3 == 2 )
 	{
 		m_triangleTable[rank/3].p3 = vertex;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 // Smoothed normals selected triangles.
@@ -952,12 +952,12 @@ void CModel::SmoothSelect()
 	bDone = (char*)malloc(used*3*sizeof(char));
 	for ( i=0 ; i<used*3 ; i++ )
 	{
-		bDone[i] = FALSE;
+		bDone[i] = false;
 	}
 
 	for ( i=0 ; i<used*3 ; i++ )
 	{
-		bDone[i] = TRUE;
+		bDone[i] = true;
 		rank = 0;
 		index[rank++] = i;
 		if ( !GetVertex(i, vi) )  continue;
@@ -970,7 +970,7 @@ void CModel::SmoothSelect()
 				 vj.y == vi.y &&
 				 vj.z == vi.z )
 			{
-				bDone[j] = TRUE;
+				bDone[j] = true;
 				index[rank++] = j;
 				if ( rank >= 100 )  break;
 			}
@@ -1234,7 +1234,7 @@ void CModel::ReadScript(char *filename)
 	char		buffer[200];
 	int			i, first, last;
 	D3DVECTOR	move;
-	BOOL		bFirst = TRUE;
+	bool		bFirst = true;
 
 	file = fopen(filename, "r");
 	if ( file == NULL )  return;
@@ -1258,18 +1258,18 @@ void CModel::ReadScript(char *filename)
 
 			if ( bFirst )
 			{
-				m_modFile->ReadModel(buffer, TRUE, TRUE);
+				m_modFile->ReadModel(buffer, true, true);
 				last = m_modFile->RetTriangleUsed();
 				SelectZone(0, last);
 			}
 			else
 			{
 				first = m_modFile->RetTriangleUsed();
-				m_modFile->AddModel(buffer, first, TRUE, FALSE);
+				m_modFile->AddModel(buffer, first, true, false);
 				last = m_modFile->RetTriangleUsed();
 				SelectZone(first, last);
 			}
-			bFirst = FALSE;
+			bFirst = false;
 
 			move = OpDir(line, "zoom");
 			OperSelect(move, 'Z');
@@ -1358,7 +1358,7 @@ D3DVECTOR CModel::RetSelectNormal()
 
 // Maps a texture onto the selected triangles.
 
-BOOL CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
+bool CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
 {
 	D3DVERTEX2	vertex[3];
 	D3DVECTOR	min, max;
@@ -1428,18 +1428,18 @@ BOOL CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
 		}
 
 		if ( vertex[0].tu == vertex[1].tu &&
-			 vertex[0].tu == vertex[2].tu )  return FALSE;
+			 vertex[0].tu == vertex[2].tu )  return false;
 
 		if ( vertex[0].tv == vertex[1].tv &&
-			 vertex[0].tv == vertex[2].tv )  return FALSE;
+			 vertex[0].tv == vertex[2].tv )  return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Maps a texture onto the selected triangles.
 
-void CModel::MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
+void CModel::MappingSelect(int mode, int rotate, bool bMirrorX, bool bMirrorY,
 						   FPOINT ti, FPOINT ts, char *texName)
 {
 	D3DVERTEX2	vertex;
@@ -1448,7 +1448,7 @@ void CModel::MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 	D3DMaping	D3Dmode;
 	float		au, bu, av, bv;
 	int			used, i;
-	BOOL		bPlausible[3];
+	bool		bPlausible[3];
 
 	DefaultSelect();
 
@@ -1558,7 +1558,7 @@ void CModel::MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
 
 // Maps a texture onto the selected triangles.
 
-void CModel::MappingSelectSpherical(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
+void CModel::MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bMirrorY,
 									FPOINT ti, FPOINT ts, char *texName)
 {
 	D3DVERTEX2	vertex;
@@ -1649,7 +1649,7 @@ D3DVECTOR CModel::RetMappingCenter(D3DVECTOR pos, D3DVECTOR min)
 
 // Maps a texture onto the selected triangles.
 
-void CModel::MappingSelectCylindrical(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
+void CModel::MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool bMirrorY,
 									  FPOINT ti, FPOINT ts, char *texName)
 {
 	D3DVERTEX2	vertex;
@@ -1751,7 +1751,7 @@ void CModel::MappingSelectCylindrical(int mode, int rotate, BOOL bMirrorX, BOOL 
 
 // Maps a texture onto the selected triangles.
 
-void CModel::MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY,
+void CModel::MappingSelectFace(int mode, int rotate, bool bMirrorX, bool bMirrorY,
 							   FPOINT ti, FPOINT ts, char *texName)
 {
 	D3DVERTEX2	vertex[3];
@@ -1825,7 +1825,7 @@ void CModel::MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirror
 
 void CModel::MappingSelect2(int texNum2, int subdiv,
 							int offsetU, int offsetV,
-							BOOL bMirrorX, BOOL bMirrorY)
+							bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max, center, p;
@@ -1901,7 +1901,7 @@ void CModel::MappingSelect2(int texNum2, int subdiv,
 
 // Maps a secondary texture on flat.
 
-void CModel::MappingSelectPlane2(int mode, BOOL bMirrorX, BOOL bMirrorY)
+void CModel::MappingSelectPlane2(int mode, bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max;
@@ -1981,7 +1981,7 @@ void CModel::MappingSelectPlane2(int mode, BOOL bMirrorX, BOOL bMirrorY)
 
 // Maps a texture onto the selected triangles.
 
-void CModel::MappingSelectSpherical2(BOOL bMirrorX, BOOL bMirrorY)
+void CModel::MappingSelectSpherical2(bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max, center, dim, p;
@@ -2033,7 +2033,7 @@ void CModel::MappingSelectSpherical2(BOOL bMirrorX, BOOL bMirrorY)
 
 // Maps a texture onto the selected triangles.
 
-void CModel::MappingSelectMagic2(BOOL bMirrorX, BOOL bMirrorY)
+void CModel::MappingSelectMagic2(bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex, v[3];
 	D3DVECTOR	min, max, au, bu, av, bv, n;
@@ -2180,7 +2180,7 @@ int CModel::SearchSamePlane(int first, int step)
 
 // Seeks the next triangle.
 
-void CModel::CurrentSearchNext(int step, BOOL bControl)
+void CModel::CurrentSearchNext(int step, bool bControl)
 {
 	if ( step > 0 )  // forward?
 	{
@@ -2247,7 +2247,7 @@ void CModel::CurrentInit()
 
 // Selects the current triangles.
 
-void CModel::CurrentSelect(BOOL bSelect)
+void CModel::CurrentSelect(bool bSelect)
 {
 	int		i;
 
@@ -2267,7 +2267,7 @@ void CModel::DeselectAll()
 	used = m_modFile->RetTriangleUsed();
 	for ( i=0 ; i<used ; i++ )
 	{
-		m_triangleTable[i].bSelect = FALSE;
+		m_triangleTable[i].bSelect = false;
 	}
 }
 
@@ -2280,10 +2280,10 @@ void CModel::SelectZone(int first, int last)
 	used = m_modFile->RetTriangleUsed();
 	for ( i=0 ; i<used ; i++ )
 	{
-		m_triangleTable[i].bSelect = FALSE;
+		m_triangleTable[i].bSelect = false;
 		if ( i >= first && i < last )
 		{
-			m_triangleTable[i].bSelect = TRUE;
+			m_triangleTable[i].bSelect = true;
 		}
 	}
 	m_triangleSel1 = first;
@@ -2302,7 +2302,7 @@ void CModel::SelectAll()
 		if ( m_triangleTable[i].min == m_min &&
 			 m_triangleTable[i].max == m_max )
 		{
-			m_triangleTable[i].bSelect = TRUE;
+			m_triangleTable[i].bSelect = true;
 		}
 	}
 }
@@ -2338,7 +2338,7 @@ void CModel::DefaultSelect()
 	used = m_modFile->RetTriangleUsed();
 	for ( i=m_triangleSel1 ; i<=m_triangleSel2 ; i++ )
 	{
-		m_triangleTable[i].bSelect = TRUE;
+		m_triangleTable[i].bSelect = true;
 	}
 }
 
@@ -2357,7 +2357,7 @@ void CModel::SelectDelete()
 	{
 		if ( m_triangleTable[i].bSelect )
 		{
-			m_triangleTable[i].bUsed = FALSE;
+			m_triangleTable[i].bUsed = false;
 		}
 	}
 

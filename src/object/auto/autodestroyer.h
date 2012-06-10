@@ -47,20 +47,20 @@ public:
 	CAutoDestroyer(CInstanceManager* iMan, CObject* object);
 	~CAutoDestroyer();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	CObject*	SearchPlastic();
-	BOOL		SearchVehicle();
+	bool		SearchVehicle();
 
 protected:
 	AutoDestroyerPhase	m_phase;
@@ -68,6 +68,6 @@ protected:
 	float			m_speed;
 	float			m_timeVirus;
 	float			m_lastParticule;
-	BOOL			m_bExplo;
+	bool			m_bExplo;
 };
 

@@ -60,10 +60,10 @@ public:
 	CTask(CInstanceManager* iMan, CObject* object);
 	virtual ~CTask();
 
-	virtual BOOL	EventProcess(const Event &event);
+	virtual bool	EventProcess(const Event &event);
 	virtual	Error	IsEnded();
-	virtual BOOL	IsBusy();
-	virtual BOOL	Abort();
+	virtual bool	IsBusy();
+	virtual bool	Abort();
 
 protected:
 

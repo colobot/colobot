@@ -50,13 +50,12 @@ CAutoRoot::CAutoRoot(CInstanceManager* iMan, CObject* object)
 
 CAutoRoot::~CAutoRoot()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoRoot::DeleteObject(BOOL bAll)
+void CAutoRoot::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -89,15 +88,15 @@ void CAutoRoot::Init()
 
 // Management of an event.
 
-BOOL CAutoRoot::EventProcess(const Event &event)
+bool CAutoRoot::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_object->SetZoomX(1, 1.0f+sinf(m_time*2.0f)*0.2f);
 	m_object->SetZoomY(1, 1.0f+sinf(m_time*2.3f)*0.2f);
@@ -119,7 +118,7 @@ BOOL CAutoRoot::EventProcess(const Event &event)
 		m_particule->CreateParticule(pos, speed, dim, PARTIROOT, 1.0f, 0.0f, 0.0f);
 	}
 
-	return TRUE;
+	return true;
 }
 
 

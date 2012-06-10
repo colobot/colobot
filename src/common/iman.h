@@ -41,8 +41,8 @@ public:
 
 	void	Flush();
 	void	Flush(ClassType classType);
-	BOOL	AddInstance(ClassType classType, void* pointer, int max=1);
-	BOOL	DeleteInstance(ClassType classType, void* pointer);
+	bool	AddInstance(ClassType classType, void* pointer, int max=1);
+	bool	DeleteInstance(ClassType classType, void* pointer);
 	void*	SearchInstance(ClassType classType, int rank=0);
 
 

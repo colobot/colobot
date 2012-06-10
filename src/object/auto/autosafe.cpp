@@ -60,11 +60,11 @@ CAutoSafe::CAutoSafe(CInstanceManager* iMan, CObject* object)
 
 	for ( i=0 ; i<4 ; i++ )
 	{
-		m_bKey[i] = FALSE;
+		m_bKey[i] = false;
 		m_keyParti[i] = -1;
 	}
 
-	m_bLock = FALSE;
+	m_bLock = false;
 	m_lastParticule = 0.0f;
 	m_channelSound = -1;
 	Init();
@@ -74,13 +74,12 @@ CAutoSafe::CAutoSafe(CInstanceManager* iMan, CObject* object)
 
 CAutoSafe::~CAutoSafe()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoSafe::DeleteObject(BOOL bAll)
+void CAutoSafe::DeleteObject(bool bAll)
 {
 	CObject*	pObj;
 
@@ -124,7 +123,7 @@ void CAutoSafe::Init()
 
 // Management of an event.
 
-BOOL CAutoSafe::EventProcess(const Event &event)
+bool CAutoSafe::EventProcess(const Event &event)
 {
 	CObject*	pObj;
 	D3DVECTOR	pos, speed;
@@ -133,8 +132,8 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -145,7 +144,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 		{
 			m_timeVirus = 0.1f+Rand()*0.3f;
 		}
-		return TRUE;
+		return true;
 	}
 
 	EventProgress(event.rTime);
@@ -155,9 +154,9 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 		pObj = SearchVehicle();
 		if ( pObj != 0 )
 		{
-			pObj->SetLock(TRUE);  // object not yet usable
+			pObj->SetLock(true);  // object not yet usable
 			m_main->CreateShortcuts();
-			m_bLock = TRUE;
+			m_bLock = true;
 		}
 	}
 
@@ -180,17 +179,17 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 				{
 					LockKeys();
 
-					m_channelSound = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.25f, TRUE);
+					m_channelSound = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.25f, true);
 					m_sound->AddEnvelope(m_channelSound, 1.0f, 2.00f, OPEN_DELAY, SOPER_STOP);
 
 					m_phase    = ASAP_OPEN;
 					m_progress = 0.0f;
 					m_speed    = 1.0f/OPEN_DELAY;
-					return TRUE;
+					return true;
 				}
 				else
 				{
-					m_channelSound = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.25f, TRUE);
+					m_channelSound = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.25f, true);
 					m_sound->AddEnvelope(m_channelSound, 1.0f, 0.35f, 0.5f, SOPER_STOP);
 				}
 			}
@@ -253,7 +252,7 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 			pObj = SearchVehicle();
 			if ( pObj != 0 )
 			{
-				pObj->SetLock(FALSE);  // object usable
+				pObj->SetLock(false);  // object usable
 				m_main->CreateShortcuts();
 			}
 
@@ -320,13 +319,13 @@ BOOL CAutoSafe::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoSafe::CreateInterface(BOOL bSelect)
+bool CAutoSafe::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -334,10 +333,10 @@ BOOL CAutoSafe::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -350,7 +349,7 @@ BOOL CAutoSafe::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 114, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -368,11 +367,11 @@ Error CAutoSafe::RetError()
 
 // Saves all parameters of the controller.
 
-BOOL CAutoSafe::Write(char *line)
+bool CAutoSafe::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == ASAP_WAIT )  return FALSE;
+	if ( m_phase == ASAP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -388,14 +387,14 @@ BOOL CAutoSafe::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoSafe::Read(char *line)
+bool CAutoSafe::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -405,7 +404,7 @@ BOOL CAutoSafe::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -425,7 +424,7 @@ int CAutoSafe::CountKeys()
 
 	for ( index=0 ; index<4 ; index++ )
 	{
-		m_bKey[index] = FALSE;
+		m_bKey[index] = false;
 		m_keyPos[index] = cPos;
 	}
 
@@ -483,7 +482,7 @@ int CAutoSafe::CountKeys()
 		pObj->SetAngleY(0, oAngle+cAngle);
 		m_keyPos[index] = oPos;
 
-		m_bKey[index] = TRUE;
+		m_bKey[index] = true;
 	}
 
 	i = 0;
@@ -523,7 +522,7 @@ void CAutoSafe::LockKeys()
 		dist = Length2d(oPos, cPos);
 		if ( dist > 20.0f )  continue;
 
-		pObj->SetLock(TRUE);
+		pObj->SetLock(true);
 	}
 }
 
@@ -570,13 +569,13 @@ void CAutoSafe::DeleteKeys()
 	ObjectType	oType;
 	float		dist;
 	int			i;
-	BOOL		bDelete;
+	bool		bDelete;
 
 	cPos = m_object->RetPosition(0);
 
 	do
 	{
-		bDelete = FALSE;
+		bDelete = false;
 		for ( i=0 ; i<1000000 ; i++ )
 		{
 			pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
@@ -596,7 +595,7 @@ void CAutoSafe::DeleteKeys()
 
 			pObj->DeleteObject();
 			delete pObj;
-			bDelete = TRUE;
+			bDelete = true;
 		}
 	}
 	while ( bDelete );

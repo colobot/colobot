@@ -77,9 +77,9 @@ CTask::~CTask()
 
 // Management of an event.
 
-BOOL CTask::EventProcess(const Event &event)
+bool CTask::EventProcess(const Event &event)
 {
-	return TRUE;
+	return true;
 }
 
 
@@ -93,17 +93,17 @@ Error CTask::IsEnded()
 
 // Indicates whether the action is pending.
 
-BOOL CTask::IsBusy()
+bool CTask::IsBusy()
 {
-	return TRUE;
+	return true;
 }
 
 
 // Suddenly ends the current action.
 
-BOOL CTask::Abort()
+bool CTask::Abort()
 {
-	return TRUE;
+	return true;
 }
 
 

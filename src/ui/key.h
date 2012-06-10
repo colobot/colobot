@@ -32,9 +32,9 @@ public:
 	CKey(CInstanceManager* iMan);
 	virtual ~CKey();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	void	Draw();
 
@@ -42,11 +42,11 @@ public:
 	int		RetKey(int option);
 
 protected:
-	BOOL	TestKey(int key);
+	bool	TestKey(int key);
 
 protected:
 	int		m_key[2];
-	BOOL	m_bCatch;
+	bool	m_bCatch;
 };
 
 

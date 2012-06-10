@@ -50,22 +50,22 @@ public:
 	CAutoDerrick(CInstanceManager* iMan, CObject* object);
 	~CAutoDerrick();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	CObject*	SearchFret();
-	BOOL		SearchFree(D3DVECTOR pos);
+	bool		SearchFree(D3DVECTOR pos);
 	void		CreateFret(D3DVECTOR pos, float angle, ObjectType type, float height);
-	BOOL		ExistKey();
+	bool		ExistKey();
 
 protected:
 	AutoDerrickPhase	m_phase;
@@ -76,6 +76,6 @@ protected:
 	float				m_lastTrack;
 	D3DVECTOR			m_fretPos;
 	int					m_soundChannel;
-	BOOL				m_bSoundFall;
+	bool				m_bSoundFall;
 };
 

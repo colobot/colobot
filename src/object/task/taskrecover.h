@@ -47,11 +47,11 @@ public:
 	CTaskRecover(CInstanceManager* iMan, CObject* object);
 	~CTaskRecover();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start();
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 	CObject*	SearchRuin();
@@ -63,7 +63,7 @@ protected:
 	float			m_time;
 	float			m_angle;
 	float			m_lastParticule;
-	BOOL			m_bError;
+	bool			m_bError;
 	CObject*		m_ruin;
 	CObject*		m_metal;
 	D3DVECTOR		m_recoverPos;

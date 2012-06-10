@@ -48,17 +48,17 @@ public:
 
 	void		DeleteObject();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	void		DisplayError(Error err, CObject* pObj, float time=10.0f);
 	void		DisplayError(Error err, D3DVECTOR goal, float height=15.0f, float dist=60.0f, float time=10.0f);
 	void		DisplayText(char *text, CObject* pObj, float time=10.0f, TextType type=TT_INFO);
 	void		DisplayText(char *text, D3DVECTOR goal, float height=15.0f, float dist=60.0f, float time=10.0f, TextType type=TT_INFO);
-	void		HideText(BOOL bHide);
+	void		HideText(bool bHide);
 	void		ClearText();
-	BOOL		ClearLastText();
+	bool		ClearLastText();
 	void		SetDelay(float factor);
-	void		SetEnable(BOOL bEnable);
+	void		SetEnable(bool bEnable);
 
 	D3DVECTOR	RetVisitGoal(EventMsg event);
 	float		RetVisitDist(EventMsg event);
@@ -69,7 +69,7 @@ public:
 
 	void		ClearVisit();
 	void		SetVisit(EventMsg event);
-	BOOL		IsVisit(EventMsg event);
+	bool		IsVisit(EventMsg event);
 
 protected:
 	CObject*	SearchToto();
@@ -80,14 +80,14 @@ protected:
 	CInterface*		m_interface;
 	CSound*			m_sound;
 
-	BOOL			m_bExist[MAXDTLINE];
+	bool			m_bExist[MAXDTLINE];
 	float			m_time[MAXDTLINE];
 	D3DVECTOR		m_visitGoal[MAXDTLINE];
 	float			m_visitDist[MAXDTLINE];
 	float			m_visitHeight[MAXDTLINE];
 
-	BOOL			m_bHide;
-	BOOL			m_bEnable;
+	bool			m_bHide;
+	bool			m_bEnable;
 	float			m_delayFactor;
 };
 

@@ -55,8 +55,8 @@ CList::CList(CInstanceManager* iMan) : CControl(iMan)
 	for ( i=0 ; i<LISTMAXTOTAL ; i++ )
 	{
 		m_text[i][0] = 0;
-		m_check[i] = FALSE;
-		m_enable[i] = TRUE;
+		m_check[i] = false;
+		m_enable[i] = true;
 	}
 
 	for ( i=0 ; i<10 ; i++ )
@@ -69,8 +69,8 @@ CList::CList(CInstanceManager* iMan) : CControl(iMan)
 	m_displayLine = 0;
 	m_selectLine = -1;
 	m_firstLine = 0;
-	m_bBlink = FALSE;
-	m_bSelectCap = TRUE;
+	m_bBlink = false;
+	m_bSelectCap = true;
 	m_blinkTime = 0.0f;
 }
 
@@ -90,7 +90,7 @@ CList::~CList()
 
 // Creates a new list.
 
-BOOL CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
+bool CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 				   float expand)
 {
 	m_expand = expand;
@@ -107,7 +107,7 @@ BOOL CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 
 // Adjusted after a change of dimensions.
 
-BOOL CList::MoveAdjust()
+bool CList::MoveAdjust()
 {
 	FPOINT		ipos, idim, ppos, ddim;
 	float		marging, h;
@@ -130,7 +130,7 @@ BOOL CList::MoveAdjust()
 	h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType)*m_expand;
 
 	m_displayLine = (int)(idim.y/h);
-	if ( m_displayLine == 0 )  return FALSE;
+	if ( m_displayLine == 0 )  return false;
 	if ( m_displayLine > LISTMAXDISPLAY )  m_displayLine = LISTMAXDISPLAY;
 	idim.y = h*m_displayLine;
 	m_dim.y = idim.y+marging*2.0f/480.f;
@@ -164,7 +164,7 @@ BOOL CList::MoveAdjust()
 
 	UpdateScroll();
 	UpdateButton();
-	return TRUE;
+	return true;
 }
 
 
@@ -199,7 +199,7 @@ void CList::SetDim(FPOINT dim)
 }
 
 
-BOOL CList::SetState(int state, BOOL bState)
+bool CList::SetState(int state, bool bState)
 {
 	int		i;
 
@@ -215,7 +215,7 @@ BOOL CList::SetState(int state, BOOL bState)
 	return CControl::SetState(state, bState);
 }
 
-BOOL CList::SetState(int state)
+bool CList::SetState(int state)
 {
 	int		i;
 
@@ -231,7 +231,7 @@ BOOL CList::SetState(int state)
 	return CControl::SetState(state);
 }
 
-BOOL CList::ClearState(int state)
+bool CList::ClearState(int state)
 {
 	int		i;
 
@@ -250,7 +250,7 @@ BOOL CList::ClearState(int state)
 
 // Management of an event.
 
-BOOL CList::EventProcess(const Event &event)
+bool CList::EventProcess(const Event &event)
 {
 	int		i;
 
@@ -276,8 +276,8 @@ BOOL CList::EventProcess(const Event &event)
 		}
 	}
 
-	if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
-	if ( (m_state & STATE_ENABLE) == 0 )  return TRUE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
+	if ( (m_state & STATE_ENABLE) == 0 )  return true;
 
 	if ( event.event == EVENT_KEYDOWN &&
 		 event.param == VK_WHEELUP    &&
@@ -286,7 +286,7 @@ BOOL CList::EventProcess(const Event &event)
 		if ( m_firstLine > 0 )  m_firstLine --;
 		UpdateScroll();
 		UpdateButton();
-		return TRUE;
+		return true;
 	}
 	if ( event.event == EVENT_KEYDOWN &&
 		 event.param == VK_WHEELDOWN  &&
@@ -295,7 +295,7 @@ BOOL CList::EventProcess(const Event &event)
 		if ( m_firstLine < m_totalLine-m_displayLine )  m_firstLine ++;
 		UpdateScroll();
 		UpdateButton();
-		return TRUE;
+		return true;
 	}
 
 	CControl::EventProcess(event);
@@ -320,7 +320,7 @@ BOOL CList::EventProcess(const Event &event)
 			if ( i+m_firstLine >= m_totalLine )  break;
 			if ( m_button[i] != 0 )
 			{
-				if ( !m_button[i]->EventProcess(event) )  return FALSE;
+				if ( !m_button[i]->EventProcess(event) )  return false;
 
 				if ( event.event == m_eventButton[i] )
 				{
@@ -336,7 +336,7 @@ BOOL CList::EventProcess(const Event &event)
 
 	if ( m_scroll != 0 )
 	{
-		if ( !m_scroll->EventProcess(event) )  return FALSE;
+		if ( !m_scroll->EventProcess(event) )  return false;
 
 		if ( event.event == m_eventScroll )
 		{
@@ -345,7 +345,7 @@ BOOL CList::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -635,12 +635,12 @@ int CList::RetSelect()
 
 // Management of capability has a select box.
 
-void CList::SetSelectCap(BOOL bEnable)
+void CList::SetSelectCap(bool bEnable)
 {
 	m_bSelectCap = bEnable;
 }
 
-BOOL CList::RetSelectCap()
+bool CList::RetSelectCap()
 {
 	return m_bSelectCap;
 }
@@ -648,7 +648,7 @@ BOOL CList::RetSelectCap()
 
 // Blink a line.
 
-void CList::SetBlink(BOOL bEnable)
+void CList::SetBlink(bool bEnable)
 {
 	int		i;
 
@@ -668,7 +668,7 @@ void CList::SetBlink(BOOL bEnable)
 	}
 }
 
-BOOL CList::RetBlink()
+bool CList::RetBlink()
 {
 	return m_bBlink;
 }
@@ -709,7 +709,7 @@ char* CList::RetName(int i)
 
 // Specifies the bit "check" for a box.
 
-void CList::SetCheck(int i, BOOL bMode)
+void CList::SetCheck(int i, bool bMode)
 {
 	if ( i < 0 || i >= m_totalLine )  return;
 
@@ -718,9 +718,9 @@ void CList::SetCheck(int i, BOOL bMode)
 
 // Returns the bit "check" for a box.
 
-BOOL CList::RetCheck(int i)
+bool CList::RetCheck(int i)
 {
-	if ( i < 0 || i >= m_totalLine )  return FALSE;
+	if ( i < 0 || i >= m_totalLine )  return false;
 
 	return m_check[i];
 }
@@ -728,7 +728,7 @@ BOOL CList::RetCheck(int i)
 
 // Specifies the bit "enable" for a box.
 
-void CList::SetEnable(int i, BOOL bMode)
+void CList::SetEnable(int i, bool bMode)
 {
 	if ( i < 0 || i >= m_totalLine )  return;
 
@@ -737,9 +737,9 @@ void CList::SetEnable(int i, BOOL bMode)
 
 // Returns the bit "enable" for a box.
 
-BOOL CList::RetEnable(int i)
+bool CList::RetEnable(int i)
 {
-	if ( i < 0 || i >= m_totalLine )  return FALSE;
+	if ( i < 0 || i >= m_totalLine )  return false;
 
 	return m_enable[i];
 }
@@ -763,7 +763,7 @@ float  CList::RetTabs(int i)
 
 // Moves the lift to see the list of the selected line.
 
-void CList::ShowSelect(BOOL bFixed)
+void CList::ShowSelect(bool bFixed)
 {
 	int		sel;
 

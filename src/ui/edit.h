@@ -93,42 +93,42 @@ public:
 	CEdit(CInstanceManager* iMan);
 	virtual ~CEdit();
 
-	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
 	void		SetPos(FPOINT pos);
 	void		SetDim(FPOINT dim);
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	void		Draw();
 
-	void		SetText(char *text, BOOL bNew=TRUE);
+	void		SetText(char *text, bool bNew=true);
 	void		GetText(char *buffer, int max);
 	char*		RetText();
 	int			RetTextLength();
 
-	BOOL		ReadText(char *filename, int addSize=0);
-	BOOL		WriteText(char *filename);
+	bool		ReadText(char *filename, int addSize=0);
+	bool		WriteText(char *filename);
 
 	void		SetMaxChar(int max);
 	int			RetMaxChar();
 
-	void		SetEditCap(BOOL bMode);
-	BOOL		RetEditCap();
+	void		SetEditCap(bool bMode);
+	bool		RetEditCap();
 
-	void		SetHiliteCap(BOOL bEnable);
-	BOOL		RetHiliteCap();
+	void		SetHiliteCap(bool bEnable);
+	bool		RetHiliteCap();
 
-	void		SetInsideScroll(BOOL bInside);
-	BOOL		RetInsideScroll();
+	void		SetInsideScroll(bool bInside);
+	bool		RetInsideScroll();
 
-	void		SetSoluceMode(BOOL bSoluce);
-	BOOL		RetSoluceMode();
+	void		SetSoluceMode(bool bSoluce);
+	bool		RetSoluceMode();
 
-	void		SetGenericMode(BOOL bGeneric);
-	BOOL		RetGenericMode();
+	void		SetGenericMode(bool bGeneric);
+	bool		RetGenericMode();
 
-	void		SetAutoIndent(BOOL bMode);
-	BOOL		RetAutoIndent();
+	void		SetAutoIndent(bool bMode);
+	bool		RetAutoIndent();
 
 	void		SetCursor(int cursor1, int cursor2);
 	void		GetCursor(int &cursor1, int &cursor2);
@@ -137,30 +137,30 @@ public:
 	int			RetFirstLine();
 	void		ShowSelect();
 
-	void		SetDisplaySpec(BOOL bDisplay);
-	BOOL		RetDisplaySpec();
+	void		SetDisplaySpec(bool bDisplay);
+	bool		RetDisplaySpec();
 
-	void		SetMultiFont(BOOL bMulti);
-	BOOL		RetMultiFont();
+	void		SetMultiFont(bool bMulti);
+	bool		RetMultiFont();
 
-	BOOL		Cut();
-	BOOL		Copy();
-	BOOL		Paste();
-	BOOL		Undo();
+	bool		Cut();
+	bool		Copy();
+	bool		Paste();
+	bool		Undo();
 
 	void		HyperFlush();
 	void		HyperHome(char *filename);
-	BOOL		HyperTest(EventMsg event);
-	BOOL		HyperGo(EventMsg event);
+	bool		HyperTest(EventMsg event);
+	bool		HyperGo(EventMsg event);
 
 	void		SetFontSize(float size);
 
-	BOOL		ClearFormat();
-	BOOL		SetFormat(int cursor1, int cursor2, int format);
+	bool		ClearFormat();
+	bool		SetFormat(int cursor1, int cursor2, int format);
 
 protected:
 	void		SendModifEvent();
-	BOOL		IsLinkPos(FPOINT pos);
+	bool		IsLinkPos(FPOINT pos);
 	void		MouseDoubleClick(FPOINT mouse);
 	void		MouseClick(FPOINT mouse);
 	void		MouseMove(FPOINT mouse);
@@ -169,7 +169,7 @@ protected:
 	void		MoveAdjust();
 
 	void		HyperJump(char *name, char *marker);
-	BOOL		HyperAdd(char *filename, int firstLine);
+	bool		HyperAdd(char *filename, int firstLine);
 
 	void		DrawImage(FPOINT pos, char *name, float width, float offset, float height, int nbLine);
 	void		DrawBack(FPOINT pos, FPOINT dim);
@@ -177,12 +177,12 @@ protected:
 
 	void		FreeImage();
 	void		LoadImage(char *name);
-	void		Scroll(int pos, BOOL bAdjustCursor);
+	void		Scroll(int pos, bool bAdjustCursor);
 	void		Scroll();
-	void		MoveChar(int move, BOOL bWord, BOOL bSelect);
-	void		MoveLine(int move, BOOL bWord, BOOL bSelect);
-	void		MoveHome(BOOL bWord, BOOL bSelect);
-	void		MoveEnd(BOOL bWord, BOOL bSelect);
+	void		MoveChar(int move, bool bWord, bool bSelect);
+	void		MoveLine(int move, bool bWord, bool bSelect);
+	void		MoveHome(bool bWord, bool bSelect);
+	void		MoveEnd(bool bWord, bool bSelect);
 	void		ColumnFix();
 	void		Insert(char character);
 	void		InsertOne(char character);
@@ -191,14 +191,14 @@ protected:
 	int			IndentCompute();
 	int			IndentTabCount();
 	void		IndentTabAdjust(int number);
-	BOOL		Shift(BOOL bLeft);
-	BOOL		MinMaj(BOOL bMaj);
+	bool		Shift(bool bLeft);
+	bool		MinMaj(bool bMaj);
 	void		Justif();
 	int			RetCursorLine(int cursor);
 
 	void		UndoFlush();
 	void		UndoMemorize(OperUndo oper);
-	BOOL		UndoRecall();
+	bool		UndoRecall();
 
 protected:
 	CScroll*	m_scroll;			// vertical scrollbar on the right
@@ -210,15 +210,15 @@ protected:
 	int		m_cursor1;			// offset cursor
 	int		m_cursor2;			// offset cursor
 
-	BOOL		m_bMulti;			// TRUE -> multi-line
-	BOOL		m_bEdit;			// TRUE -> editable
-	BOOL		m_bHilite;			// TRUE -> hilitable
-	BOOL		m_bInsideScroll;		// TRUE -> lift as part
-	BOOL		m_bDisplaySpec;			// TRUE -> displays the special characters
-	BOOL		m_bMultiFont;			// TRUE -> more fonts possible
-	BOOL		m_bSoluce;			// TRUE -> shows the links-solution
-	BOOL		m_bGeneric;			// TRUE -> generic that defile
-	BOOL		m_bAutoIndent;			// TRUE -> automatic indentation
+	bool		m_bMulti;			// true -> multi-line
+	bool		m_bEdit;			// true -> editable
+	bool		m_bHilite;			// true -> hilitable
+	bool		m_bInsideScroll;		// true -> lift as part
+	bool		m_bDisplaySpec;			// true -> displays the special characters
+	bool		m_bMultiFont;			// true -> more fonts possible
+	bool		m_bSoluce;			// true -> shows the links-solution
+	bool		m_bGeneric;			// true -> generic that defile
+	bool		m_bAutoIndent;			// true -> automatic indentation
 	float		m_lineHeight;			// height of a row
 	float		m_lineAscent;			// height above the baseline
 	float		m_lineDescent;			// height below the baseline
@@ -243,9 +243,9 @@ protected:
 	FPOINT		m_mouseLastPos;
 	float		m_column;
 
-	BOOL		m_bCapture;
+	bool		m_bCapture;
 
-	BOOL		m_bUndoForce;
+	bool		m_bUndoForce;
 	OperUndo	m_undoOper;
 	EditUndo	m_undo[EDITUNDOMAX];
 };

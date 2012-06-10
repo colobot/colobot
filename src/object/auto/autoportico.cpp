@@ -86,13 +86,12 @@ CAutoPortico::CAutoPortico(CInstanceManager* iMan, CObject* object)
 
 CAutoPortico::~CAutoPortico()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoPortico::DeleteObject(BOOL bAll)
+void CAutoPortico::DeleteObject(bool bAll)
 {
 	if ( m_soundChannel != -1 )
 	{
@@ -152,7 +151,7 @@ void CAutoPortico::Start(int param)
 
 // Management of an event.
 
-BOOL CAutoPortico::EventProcess(const Event &event)
+bool CAutoPortico::EventProcess(const Event &event)
 {
 	CObject*	pObj;
 	D3DVECTOR	pos;
@@ -160,7 +159,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	if ( m_phase == APOP_START )
 	{
@@ -168,7 +167,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 		{
 			m_startPos = m_object->RetPosition(0);
 
-			m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->RetPosition(0), 0.0f, 0.3f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->RetPosition(0), 0.0f, 0.3f, true);
 			m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, 0.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, PORTICO_TIME_MOVE-0.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 0.5f, SOPER_STOP);
@@ -177,7 +176,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 			m_progress = 0.0f;
 			m_speed    = 1.0f/PORTICO_TIME_MOVE;
 
-			m_main->SetMovieLock(TRUE);  // blocks everything until the end of the landing
+			m_main->SetMovieLock(true);  // blocks everything until the end of the landing
 
 			m_camera->SetType(CAMERA_SCRIPT);
 
@@ -207,8 +206,8 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 	angle = sinf(m_time*4.0f)*0.3f;
 	m_object->SetAngleX(11, angle);
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_phase == APOP_WAIT )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_phase == APOP_WAIT )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_cameraProgress += event.rTime*m_cameraSpeed;
@@ -236,7 +235,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, true);
 			m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.5f, 1.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.6f, PORTICO_TIME_DOWN-1.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 1.0f, SOPER_STOP);
@@ -273,12 +272,12 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.5f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.5f, true);
 			m_sound->AddEnvelope(m_soundChannel, 0.5f, 1.0f, 0.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.5f, 1.0f, PORTICO_TIME_OPEN/2.0f-0.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.5f, SOPER_STOP);
 
-			m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->RetPosition(0), 0.0f, 0.3f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->RetPosition(0), 0.0f, 0.3f, true);
 			m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, 0.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, PORTICO_TIME_OPEN-0.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 0.5f, SOPER_STOP);
@@ -324,7 +323,7 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 		}
 		else
 		{
-			m_main->SetMovieLock(FALSE);  // you can play!
+			m_main->SetMovieLock(false);  // you can play!
 
 			pObj = m_main->SearchHuman();
 			m_main->SelectObject(pObj);
@@ -365,12 +364,12 @@ BOOL CAutoPortico::EventProcess(const Event &event)
 		m_camera->SetScriptLookat(pos);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Stops the controller.
 
-BOOL CAutoPortico::Abort()
+bool CAutoPortico::Abort()
 {
 	CObject*	pObj;
 
@@ -383,7 +382,7 @@ BOOL CAutoPortico::Abort()
 	m_object->SetAngleY(6, -PORTICO_ANGLE2b);
 	m_object->SetAngleY(7, -PORTICO_ANGLE3b);
 
-	m_main->SetMovieLock(FALSE);  // you can play!
+	m_main->SetMovieLock(false);  // you can play!
 
 	pObj = m_main->SearchHuman();
 	m_main->SelectObject(pObj);
@@ -401,7 +400,7 @@ BOOL CAutoPortico::Abort()
 	m_progress = 0.0f;
 	m_speed    = 1.0f/2.0f;
 
-	return TRUE;
+	return true;
 }
 
 

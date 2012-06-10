@@ -52,18 +52,18 @@ public:
 	CTaskTake(CInstanceManager* iMan, CObject* object);
 	~CTaskTake();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start();
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 	CObject*	SearchTakeObject(float &angle, float dLimit, float aLimit);
 	CObject*	SearchFriendObject(float &angle, float dLimit, float aLimit);
-	BOOL		TruckTakeObject();
-	BOOL		TruckDeposeObject();
-	BOOL		IsFreeDeposeObject(D3DVECTOR pos);
+	bool		TruckTakeObject();
+	bool		TruckDeposeObject();
+	bool		IsFreeDeposeObject(D3DVECTOR pos);
 
 protected:
 	CTerrain*		m_terrain;
@@ -74,8 +74,8 @@ protected:
 	float			m_speed;
 	float			m_progress;
 	float			m_height;
-	BOOL			m_bError;
-	BOOL			m_bTurn;
+	bool			m_bError;
+	bool			m_bTurn;
 	float			m_angle;
 	ObjectType		m_fretType;
 };

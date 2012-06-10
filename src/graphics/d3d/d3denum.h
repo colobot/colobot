@@ -53,7 +53,7 @@ struct D3DEnum_DeviceInfo
     TCHAR          strDesc[40];
     GUID*          pDeviceGUID;
     D3DDEVICEDESC7 ddDeviceDesc;
-    BOOL           bHardware;
+    bool           bHardware;
 
     // DDraw Driver info
     GUID*          pDriverGUID;
@@ -62,8 +62,8 @@ struct D3DEnum_DeviceInfo
 
     // DDraw Mode Info
     DDSURFACEDESC2 ddsdFullscreenMode;
-    BOOL           bWindowed;
-    BOOL           bStereo;
+    bool           bWindowed;
+    bool           bStereo;
 
     // For internal use (apps should not need to use these)
     GUID            guidDevice;
@@ -71,8 +71,8 @@ struct D3DEnum_DeviceInfo
     DDSURFACEDESC2* pddsdModes;
     DWORD           dwNumModes;
     DWORD           dwCurrentMode;
-    BOOL            bDesktopCompatible;
-    BOOL            bStereoCompatible;
+    bool            bDesktopCompatible;
+    bool            bStereoCompatible;
 };
 
 

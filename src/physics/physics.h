@@ -90,9 +90,9 @@ public:
 	CPhysics(CInstanceManager* iMan, CObject* object);
 	~CPhysics();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	void		SetBrain(CBrain* brain);
 	void		SetMotion(CMotion* motion);
@@ -100,8 +100,8 @@ public:
 	void		SetType(PhysicsType type);
 	PhysicsType	RetType();
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 	void		SetGravity(float value);
 	float		RetGravity();
@@ -132,16 +132,16 @@ public:
 	float		RetLinTimeLength(float dist, float dir=1.0f);
 	float		RetLinLength(float dist);
 
-	void		SetMotor(BOOL bState);
-	BOOL		RetMotor();
-	void		SetLand(BOOL bState);
-	BOOL		RetLand();
-	void		SetSwim(BOOL bState);
-	BOOL		RetSwim();
-	void		SetCollision(BOOL bCollision);
-	BOOL		RetCollision();
-	void		SetFreeze(BOOL bFreeze);
-	BOOL		RetFreeze();
+	void		SetMotor(bool bState);
+	bool		RetMotor();
+	void		SetLand(bool bState);
+	bool		RetLand();
+	void		SetSwim(bool bState);
+	bool		RetSwim();
+	void		SetCollision(bool bCollision);
+	bool		RetCollision();
+	void		SetFreeze(bool bFreeze);
+	bool		RetFreeze();
 	void		SetReactorRange(float range);
 	float		RetReactorRange();
 
@@ -154,11 +154,11 @@ public:
 	float		RetMotorSpeedY();
 	float		RetMotorSpeedZ();
 
-	void		CreateInterface(BOOL bSelect);
+	void		CreateInterface(bool bSelect);
 	Error		RetError();
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 	void		WaterFrame(float aTime, float rTime);
 	void		SoundMotor(float rTime);
 	void		SoundMotorFull(float rTime, ObjectType type);
@@ -173,12 +173,12 @@ protected:
 	void		FloorAdapt(float aTime, float rTime, D3DVECTOR &pos, D3DVECTOR &angle);
 	void		FloorAngle(const D3DVECTOR &pos, D3DVECTOR &angle);
 	int			ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle);
-	BOOL		JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad, D3DVECTOR oPos, float oRad);
-	BOOL		JostleObject(CObject* pObj, float force);
-	BOOL		ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
+	bool		JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad, D3DVECTOR oPos, float oRad);
+	bool		JostleObject(CObject* pObj, float force);
+	bool		ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
 	int			ExploHimself(ObjectType iType, ObjectType oType, float force);
 
-	void		PowerParticule(float factor, BOOL bBreak);
+	void		PowerParticule(float factor, bool bBreak);
 	void		CrashParticule(float crash);
 	void		MotorParticule(float aTime, float rTime);
 	void		WaterParticule(float aTime, D3DVECTOR pos, ObjectType type, float floor, float advance, float turn);
@@ -203,12 +203,12 @@ protected:
 	D3DVECTOR	m_motorSpeed;		// motor speed (-1..1)
 	Motion		m_linMotion;		// linear motion
 	Motion		m_cirMotion;		// circular motion
-	BOOL		m_bMotor;
-	BOOL		m_bLand;
-	BOOL		m_bSwim;
-	BOOL		m_bCollision;
-	BOOL		m_bObstacle;
-	BOOL		m_bFreeze;
+	bool		m_bMotor;
+	bool		m_bLand;
+	bool		m_bSwim;
+	bool		m_bCollision;
+	bool		m_bObstacle;
+	bool		m_bFreeze;
 	int			m_repeatCollision;
 	float		m_linVibrationFactor;
 	float		m_cirVibrationFactor;
@@ -220,7 +220,7 @@ protected:
 	float		m_lastUnderParticule;
 	float		m_lastPloufParticule;
 	float		m_lastFlameParticule;
-	BOOL		m_bWheelParticuleBrake;
+	bool		m_bWheelParticuleBrake;
 	D3DVECTOR	m_wheelParticulePos[2];
 	float		m_absorbWater;
 	float		m_reactorTemperature;
@@ -238,9 +238,9 @@ protected:
 	float		m_soundTimePshhh;
 	float		m_soundTimeJostle;
 	float		m_soundTimeBoum;
-	BOOL		m_bSoundSlow;
-	BOOL		m_bForceUpdate;
-	BOOL		m_bLowLevel;
+	bool		m_bSoundSlow;
+	bool		m_bForceUpdate;
+	bool		m_bLowLevel;
 };
 
 

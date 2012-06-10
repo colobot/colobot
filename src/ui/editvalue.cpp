@@ -62,7 +62,7 @@ CEditValue::~CEditValue()
 
 // Creates a new button.
 
-BOOL CEditValue::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CEditValue::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	CEdit*		pe;
 	CButton*	pc;
@@ -80,15 +80,15 @@ BOOL CEditValue::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	m_buttonUp = new CButton(m_iMan);
 	pc = (CButton*)m_buttonUp;
 	pc->Create(pos, dim, 49, EVENT_NULL);  // ^
-	pc->SetRepeat(TRUE);
+	pc->SetRepeat(true);
 
 	m_buttonDown = new CButton(m_iMan);
 	pc = (CButton*)m_buttonDown;
 	pc->Create(pos, dim, 50, EVENT_NULL);  // v
-	pc->SetRepeat(TRUE);
+	pc->SetRepeat(true);
 
 	MoveAdjust();
-	return TRUE;
+	return true;
 }
 
 
@@ -142,14 +142,14 @@ void CEditValue::MoveAdjust()
 
 // Management of an event.
 
-BOOL CEditValue::EventProcess(const Event &event)
+bool CEditValue::EventProcess(const Event &event)
 {
 	float	value;
 
 	CControl::EventProcess(event);
 
-	if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
-	if ( (m_state & STATE_ENABLE) == 0 )  return TRUE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
+	if ( (m_state & STATE_ENABLE) == 0 )  return true;
 
 	if ( m_edit != 0 )
 	{
@@ -160,10 +160,10 @@ BOOL CEditValue::EventProcess(const Event &event)
 			value = RetValue();
 			if ( value > m_maxValue )  value = m_maxValue;
 			if ( value < m_minValue )  value = m_minValue;
-			SetValue(value, TRUE);
+			SetValue(value, true);
 			HiliteValue(event);
 		}
-		if ( !m_edit->EventProcess(event) )  return FALSE;
+		if ( !m_edit->EventProcess(event) )  return false;
 
 		if ( event.event == m_edit->RetEventMsg() )
 		{
@@ -179,10 +179,10 @@ BOOL CEditValue::EventProcess(const Event &event)
 		{
 			value = RetValue()+m_stepValue;
 			if ( value > m_maxValue )  value = m_maxValue;
-			SetValue(value, TRUE);
+			SetValue(value, true);
 			HiliteValue(event);
 		}
-		if ( !m_buttonUp->EventProcess(event) )  return FALSE;
+		if ( !m_buttonUp->EventProcess(event) )  return false;
 	}
 
 	if ( m_buttonDown != 0 )
@@ -191,10 +191,10 @@ BOOL CEditValue::EventProcess(const Event &event)
 		{
 			value = RetValue()-m_stepValue;
 			if ( value < m_minValue )  value = m_minValue;
-			SetValue(value, TRUE);
+			SetValue(value, true);
 			HiliteValue(event);
 		}
-		if ( !m_buttonDown->EventProcess(event) )  return FALSE;
+		if ( !m_buttonDown->EventProcess(event) )  return false;
 	}
 
 	if ( event.event == EVENT_KEYDOWN &&
@@ -203,7 +203,7 @@ BOOL CEditValue::EventProcess(const Event &event)
 	{
 		value = RetValue()+m_stepValue;
 		if ( value > m_maxValue )  value = m_maxValue;
-		SetValue(value, TRUE);
+		SetValue(value, true);
 		HiliteValue(event);
 	}
 	if ( event.event == EVENT_KEYDOWN &&
@@ -212,11 +212,11 @@ BOOL CEditValue::EventProcess(const Event &event)
 	{
 		value = RetValue()-m_stepValue;
 		if ( value < m_minValue )  value = m_minValue;
-		SetValue(value, TRUE);
+		SetValue(value, true);
 		HiliteValue(event);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -235,7 +235,7 @@ void CEditValue::HiliteValue(const Event &event)
 	}
 
 	m_edit->SetCursor(pos, 0);
-	m_edit->SetFocus(TRUE);
+	m_edit->SetFocus(true);
 
 	Event newEvent = event;
 	newEvent.event = EVENT_FOCUS;
@@ -285,7 +285,7 @@ EditValueType CEditValue::RetType()
 
 // Changes the value.
 
-void CEditValue::SetValue(float value, BOOL bSendMessage)
+void CEditValue::SetValue(float value, bool bSendMessage)
 {
 	char	text[100];
 

@@ -37,7 +37,7 @@
 
 
 
-#define ADJUST_ANGLE	FALSE		// TRUE -> adjusts the angles of the members
+#define ADJUST_ANGLE	false		// true -> adjusts the angles of the members
 
 
 #if ADJUST_ANGLE
@@ -59,13 +59,12 @@ CAutoFlag::CAutoFlag(CInstanceManager* iMan, CObject* object)
 
 CAutoFlag::~CAutoFlag()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoFlag::DeleteObject(BOOL bAll)
+void CAutoFlag::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -104,7 +103,7 @@ void CAutoFlag::Start(int param)
 
 // Management of an event.
 
-BOOL CAutoFlag::EventProcess(const Event &event)
+bool CAutoFlag::EventProcess(const Event &event)
 {
 	float	angle;
 	int		i;
@@ -123,8 +122,8 @@ BOOL CAutoFlag::EventProcess(const Event &event)
 	}
 #endif
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	if ( m_param == 1 )  // shakes?
 	{
@@ -145,7 +144,7 @@ BOOL CAutoFlag::EventProcess(const Event &event)
 		}
 	}
 
-	if ( m_strong == 0.0f )  return TRUE;  // no wind?
+	if ( m_strong == 0.0f )  return true;  // no wind?
 
 	for ( i=0 ; i<4 ; i++ )
 	{
@@ -162,7 +161,7 @@ BOOL CAutoFlag::EventProcess(const Event &event)
 	sprintf(s, "a=%.2f b=%.2f c=%.2f", g_flag1, g_flag2, g_flag3);
 	m_engine->SetInfoText(4, s);
 #endif
-	return TRUE;
+	return true;
 }
 
 

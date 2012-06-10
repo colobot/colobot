@@ -46,39 +46,39 @@ class CAuto
 {
 public:
 	CAuto(CInstanceManager* iMan, CObject* object);
-	~CAuto();
+	virtual ~CAuto();
 
-	virtual void	DeleteObject(BOOL bAll=FALSE);
+	virtual void	DeleteObject(bool bAll=false);
 
 	virtual void	Init();
 	virtual void	Start(int param);
-	virtual BOOL	EventProcess(const Event &event);
+	virtual bool	EventProcess(const Event &event);
 	virtual Error	IsEnded();
-	virtual BOOL	Abort();
+	virtual bool	Abort();
 
-	virtual BOOL	SetType(ObjectType type);
-	virtual BOOL	SetValue(int rank, float value);
-	virtual BOOL	SetString(char *string);
+	virtual bool	SetType(ObjectType type);
+	virtual bool	SetValue(int rank, float value);
+	virtual bool	SetString(char *string);
 
-	virtual BOOL	CreateInterface(BOOL bSelect);
+	virtual bool	CreateInterface(bool bSelect);
 	virtual Error	RetError();
 
-	virtual BOOL	RetBusy();
-	virtual void	SetBusy(BOOL bBuse);
+	virtual bool	RetBusy();
+	virtual void	SetBusy(bool bBuse);
 	virtual void	InitProgressTotal(float total);
 	virtual void	EventProgress(float rTime);
 
-	virtual BOOL	RetMotor();
-	virtual void	SetMotor(BOOL bMotor);
+	virtual bool	RetMotor();
+	virtual void	SetMotor(bool bMotor);
 
-	virtual BOOL	Write(char *line);
-	virtual BOOL	Read(char *line);
+	virtual bool	Write(char *line);
+	virtual bool	Read(char *line);
 
 protected:
-	void		CheckInterface(CWindow *pw, EventMsg event, BOOL bState);
-	void		EnableInterface(CWindow *pw, EventMsg event, BOOL bState);
-	void		VisibleInterface(CWindow *pw, EventMsg event, BOOL bState);
-	void		DeadInterface(CWindow *pw, EventMsg event, BOOL bState);
+	void		CheckInterface(CWindow *pw, EventMsg event, bool bState);
+	void		EnableInterface(CWindow *pw, EventMsg event, bool bState);
+	void		VisibleInterface(CWindow *pw, EventMsg event, bool bState);
+	void		DeadInterface(CWindow *pw, EventMsg event, bool bState);
 	void		UpdateInterface();
 	void		UpdateInterface(float rTime);
 
@@ -101,8 +101,8 @@ protected:
 	CSound*			m_sound;
 
 	ObjectType	m_type;
-	BOOL		m_bBusy;
-	BOOL		m_bMotor;
+	bool		m_bBusy;
+	bool		m_bMotor;
 	float		m_time;
 	float		m_lastUpdateTime;
 	float		m_progressTime;

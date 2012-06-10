@@ -61,7 +61,7 @@ CMainShort::~CMainShort()
 
 
 
-void CMainShort::SetMode(BOOL bBuilding)
+void CMainShort::SetMode(bool bBuilding)
 {
 	m_bBuilding = bBuilding;
 }
@@ -106,7 +106,7 @@ static EventMsg table_sc_em[20] =
 
 // Interface creates shortcuts to the units.
 
-BOOL CMainShort::CreateShortcuts()
+bool CMainShort::CreateShortcuts()
 {
 	CObject*	pObj;
 	CControl*	pc;
@@ -115,7 +115,7 @@ BOOL CMainShort::CreateShortcuts()
 	int			i, rank, icon;
 	char		name[100];
 
-	if ( m_main->RetFixScene() )  return FALSE;
+	if ( m_main->RetFixScene() )  return false;
 
 	m_interface->DeleteControl(EVENT_OBJECT_MOVIELOCK);
 	m_interface->DeleteControl(EVENT_OBJECT_EDITLOCK);
@@ -136,14 +136,14 @@ BOOL CMainShort::CreateShortcuts()
 		!m_main->RetEditLock()  )  // hangs during film?
 	{
 		m_interface->CreateShortcut(pos, dim, 7, EVENT_OBJECT_MOVIELOCK);
-		return TRUE;
+		return true;
 	}
 	if ( !m_main->RetFreePhoto() &&
 		 (m_main->RetEditLock() ||
 		  m_engine->RetPause()) )  // hangs during edition?
 	{
 		m_interface->CreateShortcut(pos, dim, 6, EVENT_OBJECT_EDITLOCK);
-		return TRUE;
+		return true;
 	}
 
 	rank = 0;
@@ -233,12 +233,12 @@ BOOL CMainShort::CreateShortcuts()
 	}
 
 	UpdateShortcuts();
-	return TRUE;
+	return true;
 }
 
 // Updates the interface shortcuts to the units.
 
-BOOL CMainShort::UpdateShortcuts()
+bool CMainShort::UpdateShortcuts()
 {
 	CControl*	pc;
 	int			i;
@@ -254,7 +254,7 @@ BOOL CMainShort::UpdateShortcuts()
 			pc->SetState(STATE_RUN, m_shortcuts[i]->IsProgram());
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 // Selects an object through a shortcut.

@@ -67,7 +67,7 @@ void CBlitz::Flush()
 {
 	int		i;
 
-	m_bBlitzExist = FALSE;
+	m_bBlitzExist = false;
 	m_time = 0.0f;
 	m_phase = BPH_WAIT;
 	m_speed = 0.0f;
@@ -83,18 +83,18 @@ void CBlitz::Flush()
 
 // Management of an event
 
-BOOL CBlitz::EventProcess(const Event &event)
+bool CBlitz::EventProcess(const Event &event)
 {
 	if ( event.event == EVENT_FRAME )
 	{
 		return EventFrame(event);
 	}
-	return TRUE;
+	return true;
 }
 
 // Evolved lightning.
 
-BOOL CBlitz::EventFrame(const Event &event)
+bool CBlitz::EventFrame(const Event &event)
 {
 	CObject*	pObj;
 	CAutoPara*	automat;
@@ -103,8 +103,8 @@ BOOL CBlitz::EventFrame(const Event &event)
 	float		dist, deep, max;
 	int			i;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( m_engine->RetMovieLock() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( m_engine->RetMovieLock() )  return true;
 
 	m_time += event.rTime;
 	m_progress += event.rTime*m_speed;
@@ -125,12 +125,12 @@ BOOL CBlitz::EventFrame(const Event &event)
 			pObj = SearchObject(m_pos);
 			if ( pObj == 0 )
 			{
-				m_terrain->MoveOnFloor(m_pos, TRUE);
+				m_terrain->MoveOnFloor(m_pos, true);
 			}
 			else
 			{
 				m_pos = pObj->RetPosition(0);
-				m_terrain->MoveOnFloor(m_pos, TRUE);
+				m_terrain->MoveOnFloor(m_pos, true);
 
 				type = pObj->RetType();
 				if ( type == OBJECT_BASE )
@@ -203,7 +203,7 @@ BOOL CBlitz::EventFrame(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -223,7 +223,7 @@ void CBlitz::Draw()
 	if ( m_phase != BPH_BLITZ )  return;
 
 	device = m_engine->RetD3DDevice();
-	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 
 	D3DUtil_SetIdentityMatrix(matrix);
 	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
@@ -288,15 +288,15 @@ void CBlitz::Draw()
 		p1 = p2;
 	}
 
-	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
+	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
 }
 
 
 // Triggers lightning.
 
-BOOL CBlitz::Create(float sleep, float delay, float magnetic)
+bool CBlitz::Create(float sleep, float delay, float magnetic)
 {
-	m_bBlitzExist = TRUE;
+	m_bBlitzExist = true;
 	if ( sleep < 1.0f )  sleep = 1.0f;
 	m_sleep = sleep;
 	m_delay = delay;
@@ -321,29 +321,29 @@ BOOL CBlitz::Create(float sleep, float delay, float magnetic)
 		m_sound = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 	}
 
-	return FALSE;
+	return false;
 }
 
 
 // Gives the status of lightning.
 
-BOOL CBlitz::GetStatus(float &sleep, float &delay, float &magnetic, float &progress)
+bool CBlitz::GetStatus(float &sleep, float &delay, float &magnetic, float &progress)
 {
-	if ( !m_bBlitzExist )  return FALSE;
+	if ( !m_bBlitzExist )  return false;
 
 	sleep = m_sleep;
 	delay = m_delay;
 	magnetic = m_magnetic;
 	progress = m_progress;
 
-	return TRUE;
+	return true;
 }
 
 // Specifies the status of lightning.
 
-BOOL CBlitz::SetStatus(float sleep, float delay, float magnetic, float progress)
+bool CBlitz::SetStatus(float sleep, float delay, float magnetic, float progress)
 {
-	m_bBlitzExist = TRUE;
+	m_bBlitzExist = true;
 
 	m_sleep = sleep;
 	m_delay = delay;
@@ -352,7 +352,7 @@ BOOL CBlitz::SetStatus(float sleep, float delay, float magnetic, float progress)
 	m_phase = BPH_WAIT;
 	m_speed = 1.0f/m_sleep;
 
-	return TRUE;
+	return true;
 }
 
 

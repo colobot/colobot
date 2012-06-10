@@ -59,8 +59,6 @@
 CTaskManip::CTaskManip(CInstanceManager* iMan, CObject* object)
 					   : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
-
 	m_arm  = TMA_NEUTRAL;
 	m_hand = TMH_OPEN;
 }
@@ -74,19 +72,19 @@ CTaskManip::~CTaskManip()
 
 // Management of an event.
 
-BOOL CTaskManip::EventProcess(const Event &event)
+bool CTaskManip::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos;
 	float		angle, a, g, cirSpeed, progress;
 	int			i;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	if ( m_bBee )  // bee?
 	{
-		return TRUE;
+		return true;
 	}
 
 	if ( m_bTurn )  // preliminary rotation?
@@ -102,14 +100,14 @@ BOOL CTaskManip::EventProcess(const Event &event)
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
 		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
-		return TRUE;
+		return true;
 	}
 
 	if ( m_move != 0 )  // preliminary advance?
 	{
 		m_timeLimit -= event.rTime;
 		m_physics->SetMotorSpeedX(m_move);  // forward/backward
-		return TRUE;
+		return true;
 	}
 
 	m_progress += event.rTime*m_speed;  // others advance
@@ -179,7 +177,7 @@ BOOL CTaskManip::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -280,7 +278,7 @@ void CTaskManip::InitAngle()
 
 // Tests whether an object is compatible with the operation TMA_OTHER.
 
-BOOL TestFriend(ObjectType oType, ObjectType fType)
+bool TestFriend(ObjectType oType, ObjectType fType)
 {
 	if ( oType == OBJECT_ENERGY )
 	{
@@ -320,7 +318,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	iAngle = NormAngle(iAngle);  // 0..2*PI
 	oAngle = iAngle;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 
 	if ( m_arm != TMA_FFRONT &&
 		 m_arm != TMA_FBACK  &&
@@ -360,11 +358,11 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 			pyro->Create(PT_FALL, other);  // the ball falls
 		}
 
-		m_bBee = TRUE;
-		m_bError = FALSE;  // ok
+		m_bBee = true;
+		m_bError = false;  // ok
 		return ERR_OK;
 	}
-	m_bBee = FALSE;
+	m_bBee = false;
 
 	m_bSubm = ( type == OBJECT_MOBILEsa );  // submarine?
 
@@ -431,8 +429,8 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	{
 		if ( m_arm == TMA_FFRONT )
 		{
-			front = SearchTakeFrontObject(TRUE, fPos, fDist, fAngle);
-			other = SearchOtherObject(TRUE, oPos, oDist, oAngle, oHeight);
+			front = SearchTakeFrontObject(true, fPos, fDist, fAngle);
+			other = SearchOtherObject(true, oPos, oDist, oAngle, oHeight);
 
 			if ( front != 0 && fDist < oDist )
 			{
@@ -457,7 +455,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 		}
 		if ( m_arm == TMA_FBACK )
 		{
-			if ( SearchTakeBackObject(TRUE, m_targetPos, fDist, m_angle) == 0 )
+			if ( SearchTakeBackObject(true, m_targetPos, fDist, m_angle) == 0 )
 			{
 				return ERR_MANIP_NIL;
 			}
@@ -474,7 +472,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	{
 		if ( m_arm == TMA_FFRONT )
 		{
-			other = SearchOtherObject(TRUE, oPos, oDist, oAngle, oHeight);
+			other = SearchOtherObject(true, oPos, oDist, oAngle, oHeight);
 			if ( other != 0 && other->RetPower() == 0 )
 			{
 				m_targetPos = oPos;
@@ -527,12 +525,12 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
 	if ( iAngle == m_angle || m_energy == 0.0f )
 	{
-		m_bTurn = FALSE;  // preliminary rotation unnecessary
+		m_bTurn = false;  // preliminary rotation unnecessary
 		SoundManip(1.0f/m_speed);
 	}
 	else
 	{
-		m_bTurn = TRUE;  // preliminary rotation necessary
+		m_bTurn = true;  // preliminary rotation necessary
 	}
 
 	if ( m_bSubm )
@@ -540,9 +538,9 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 		m_camera->StartCentering(m_object, PI*0.8f, 99.9f, 0.0f, 0.5f);
 	}
 
-	m_physics->SetFreeze(TRUE);  // it does not move
+	m_physics->SetFreeze(true);  // it does not move
 
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 	return ERR_OK;
 }
 
@@ -570,7 +568,7 @@ Error CTaskManip::IsEnded()
 
 		if ( TestAngle(angle, m_angle-PI*0.01f, m_angle+PI*0.01f) )
 		{
-			m_bTurn = FALSE;  // rotation ended
+			m_bTurn = false;  // rotation ended
 			m_physics->SetMotorSpeedZ(0.0f);
 			if ( m_move == 0.0f )
 			{
@@ -704,7 +702,7 @@ Error CTaskManip::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskManip::Abort()
+bool CTaskManip::Abort()
 {
 	int		i;
 
@@ -729,8 +727,8 @@ BOOL CTaskManip::Abort()
 	}
 
 	m_camera->StopCentering(m_object, 2.0f);
-	m_physics->SetFreeze(FALSE);  // is moving again
-	return TRUE;
+	m_physics->SetFreeze(false);  // is moving again
+	return true;
 }
 
 
@@ -791,7 +789,7 @@ CObject* CTaskManip::SearchTakeUnderObject(D3DVECTOR &pos, float dLimit)
 
 // Seeks the object in front to take.
 
-CObject* CTaskManip::SearchTakeFrontObject(BOOL bAdvance, D3DVECTOR &pos,
+CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, D3DVECTOR &pos,
 										   float &distance, float &angle)
 {
 	CObject		*pObj, *pBest;
@@ -883,7 +881,7 @@ CObject* CTaskManip::SearchTakeFrontObject(BOOL bAdvance, D3DVECTOR &pos,
 
 // Seeks the object back to take.
 
-CObject* CTaskManip::SearchTakeBackObject(BOOL bAdvance, D3DVECTOR &pos,
+CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, D3DVECTOR &pos,
 										  float &distance, float &angle)
 {
 	CObject		*pObj, *pBest;
@@ -974,7 +972,7 @@ CObject* CTaskManip::SearchTakeBackObject(BOOL bAdvance, D3DVECTOR &pos,
 
 // Seeks the robot or building on which it wants to put a battery or or other object.
 
-CObject* CTaskManip::SearchOtherObject(BOOL bAdvance, D3DVECTOR &pos,
+CObject* CTaskManip::SearchOtherObject(bool bAdvance, D3DVECTOR &pos,
 									   float &distance, float &angle,
 									   float &height)
 {
@@ -1110,7 +1108,7 @@ CObject* CTaskManip::SearchOtherObject(BOOL bAdvance, D3DVECTOR &pos,
 
 // Takes the object placed in front.
 
-BOOL CTaskManip::TruckTakeObject()
+bool CTaskManip::TruckTakeObject()
 {
 	CObject*	fret;
 	CObject*	other;
@@ -1121,7 +1119,7 @@ BOOL CTaskManip::TruckTakeObject()
 	if ( m_arm == TMA_GRAB )  // takes immediately?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // nothing to take?
+		if ( fret == 0 )  return false;  // nothing to take?
 		m_fretType = fret->RetType();
 
 		if ( m_object->RetType() == OBJECT_HUMAN ||
@@ -1163,8 +1161,8 @@ BOOL CTaskManip::TruckTakeObject()
 
 	if ( m_arm == TMA_FFRONT )  // takes on the ground in front?
 	{
-		fret = SearchTakeFrontObject(FALSE, pos, dist, angle);
-		if ( fret == 0 )  return FALSE;  // nothing to take?
+		fret = SearchTakeFrontObject(false, pos, dist, angle);
+		if ( fret == 0 )  return false;  // nothing to take?
 		m_fretType = fret->RetType();
 
 		if ( m_bSubm )
@@ -1195,8 +1193,8 @@ BOOL CTaskManip::TruckTakeObject()
 
 	if ( m_arm == TMA_FBACK )  // takes on the ground behind?
 	{
-		fret = SearchTakeBackObject(FALSE, pos, dist, angle);
-		if ( fret == 0 )  return FALSE;  // nothing to take?
+		fret = SearchTakeBackObject(false, pos, dist, angle);
+		if ( fret == 0 )  return false;  // nothing to take?
 		m_fretType = fret->RetType();
 
 		fret->SetTruck(m_object);
@@ -1214,7 +1212,7 @@ BOOL CTaskManip::TruckTakeObject()
 	if ( m_arm == TMA_POWER )  // takes battery in the back?
 	{
 		fret = m_object->RetPower();
-		if ( fret == 0 )  return FALSE;  // no battery?
+		if ( fret == 0 )  return false;  // no battery?
 		m_fretType = fret->RetType();
 
 		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
@@ -1230,11 +1228,11 @@ BOOL CTaskManip::TruckTakeObject()
 
 	if ( m_arm == TMA_OTHER )  // battery takes from friend?
 	{
-		other = SearchOtherObject(FALSE, pos, dist, angle, m_height);
-		if ( other == 0 )  return FALSE;
+		other = SearchOtherObject(false, pos, dist, angle, m_height);
+		if ( other == 0 )  return false;
 
 		fret = other->RetPower();
-		if ( fret == 0 )  return FALSE;  // the other does not have a battery?
+		if ( fret == 0 )  return false;  // the other does not have a battery?
 		m_fretType = fret->RetType();
 
 		other->SetPower(0);
@@ -1250,12 +1248,12 @@ BOOL CTaskManip::TruckTakeObject()
 		m_object->SetFret(fret);  // takes
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Deposes the object taken.
 
-BOOL CTaskManip::TruckDeposeObject()
+bool CTaskManip::TruckDeposeObject()
 {
 	Character*	character;
 	CObject*	fret;
@@ -1267,7 +1265,7 @@ BOOL CTaskManip::TruckDeposeObject()
 	if ( m_arm == TMA_FFRONT )  // deposits on the ground in front?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // nothing transported?
+		if ( fret == 0 )  return false;  // nothing transported?
 		m_fretType = fret->RetType();
 
 		mat = fret->RetWorldMatrix(0);
@@ -1286,7 +1284,7 @@ BOOL CTaskManip::TruckDeposeObject()
 	if ( m_arm == TMA_FBACK )  // deposited on the ground behind?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // nothing transported?
+		if ( fret == 0 )  return false;  // nothing transported?
 		m_fretType = fret->RetType();
 
 		mat = fret->RetWorldMatrix(0);
@@ -1304,10 +1302,10 @@ BOOL CTaskManip::TruckDeposeObject()
 	if ( m_arm == TMA_POWER )  // deposits battery in the back?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // nothing transported?
+		if ( fret == 0 )  return false;  // nothing transported?
 		m_fretType = fret->RetType();
 
-		if ( m_object->RetPower() != 0 )  return FALSE;
+		if ( m_object->RetPower() != 0 )  return false;
 
 		fret->SetTruck(m_object);
 		fret->SetTruckPart(0);  // carried by the base
@@ -1324,14 +1322,14 @@ BOOL CTaskManip::TruckDeposeObject()
 
 	if ( m_arm == TMA_OTHER )  // deposits battery on friend?
 	{
-		other = SearchOtherObject(FALSE, pos, dist, angle, m_height);
-		if ( other == 0 )  return FALSE;
+		other = SearchOtherObject(false, pos, dist, angle, m_height);
+		if ( other == 0 )  return false;
 
 		fret = other->RetPower();
-		if ( fret != 0 )  return FALSE;  // the other already has a battery?
+		if ( fret != 0 )  return false;  // the other already has a battery?
 
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;
+		if ( fret == 0 )  return false;
 		m_fretType = fret->RetType();
 
 		other->SetPower(fret);
@@ -1347,12 +1345,12 @@ BOOL CTaskManip::TruckDeposeObject()
 		m_object->SetFret(0);  // deposit
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Seeks if a location allows to deposit an object.
 
-BOOL CTaskManip::IsFreeDeposeObject(D3DVECTOR pos)
+bool CTaskManip::IsFreeDeposeObject(D3DVECTOR pos)
 {
 	CObject*	pObj;
 	D3DMATRIX*	mat;
@@ -1377,11 +1375,11 @@ BOOL CTaskManip::IsFreeDeposeObject(D3DVECTOR pos)
 		{
 			if ( Length(iPos, oPos)-(oRadius+1.0f) < 2.0f )
 			{
-				return FALSE;  // location occupied
+				return false;  // location occupied
 			}
 		}
 	}
-	return TRUE;  // location free
+	return true;  // location free
 }
 
 // Plays the sound of the manipulator arm.
@@ -1390,7 +1388,7 @@ void CTaskManip::SoundManip(float time, float amplitude, float frequency)
 {
 	int		i;
 
-	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, TRUE);
+	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, true);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);

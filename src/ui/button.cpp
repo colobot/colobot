@@ -42,9 +42,9 @@
 
 CButton::CButton(CInstanceManager* iMan) : CControl(iMan)
 {
-	m_bCapture = FALSE;
-	m_bImmediat = FALSE;
-	m_bRepeat = FALSE;
+	m_bCapture = false;
+	m_bImmediat = false;
+	m_bRepeat = false;
 	m_repeat = 0.0f;
 }
 
@@ -57,7 +57,7 @@ CButton::~CButton()
 
 // Creates a new button.
 
-BOOL CButton::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CButton::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -74,16 +74,16 @@ BOOL CButton::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 		SetName(name);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CButton::EventProcess(const Event &event)
+bool CButton::EventProcess(const Event &event)
 {
-	if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
-	if ( m_state & STATE_DEAD )  return TRUE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
+	if ( m_state & STATE_DEAD )  return true;
 
 	CControl::EventProcess(event);
 
@@ -99,7 +99,7 @@ BOOL CButton::EventProcess(const Event &event)
 				Event newEvent = event;
 				newEvent.event = m_eventMsg;
 				m_event->AddEvent(newEvent);
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -110,7 +110,7 @@ BOOL CButton::EventProcess(const Event &event)
 	{
 		if ( CControl::Detect(event.pos) )
 		{
-			m_bCapture = TRUE;
+			m_bCapture = true;
 			m_repeat = DELAY1;
 
 			if ( m_bImmediat || m_bRepeat )
@@ -119,7 +119,7 @@ BOOL CButton::EventProcess(const Event &event)
 				newEvent.event = m_eventMsg;
 				m_event->AddEvent(newEvent);
 			}
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -139,11 +139,11 @@ BOOL CButton::EventProcess(const Event &event)
 			}
 		}
 
-		m_bCapture = FALSE;
+		m_bCapture = false;
 		m_repeat = 0.0f;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -222,12 +222,12 @@ void CButton::Draw()
 // Management of immediate mode, which sends the event "press"
 // before the mouse button is released.
 
-void CButton::SetImmediat(BOOL bImmediat)
+void CButton::SetImmediat(bool bImmediat)
 {
 	m_bImmediat = bImmediat;
 }
 
-BOOL CButton::RetImmediat()
+bool CButton::RetImmediat()
 {
 	return m_bImmediat;
 }
@@ -236,12 +236,12 @@ BOOL CButton::RetImmediat()
 // Mode management "autorepeat", when the button
 // mouse is held down.
 
-void CButton::SetRepeat(BOOL bRepeat)
+void CButton::SetRepeat(bool bRepeat)
 {
 	m_bRepeat = bRepeat;
 }
 
-BOOL CButton::RetRepeat()
+bool CButton::RetRepeat()
 {
 	return m_bRepeat;
 }

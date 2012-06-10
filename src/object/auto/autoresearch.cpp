@@ -71,13 +71,12 @@ CAutoResearch::CAutoResearch(CInstanceManager* iMan, CObject* object)
 
 CAutoResearch::~CAutoResearch()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoResearch::DeleteObject(BOOL bAll)
+void CAutoResearch::DeleteObject(bool bAll)
 {
 	if ( m_channelSound != -1 )
 	{
@@ -86,7 +85,7 @@ void CAutoResearch::DeleteObject(BOOL bAll)
 		m_channelSound = -1;
 	}
 
-	FireStopUpdate(0.0f, FALSE);
+	FireStopUpdate(0.0f, false);
 	CAuto::DeleteObject(bAll);
 }
 
@@ -108,7 +107,7 @@ void CAutoResearch::Init()
 
 // Management of an event.
 
-BOOL CAutoResearch::EventProcess(const Event &event)
+bool CAutoResearch::EventProcess(const Event &event)
 {
 	CObject*	power;
 	D3DVECTOR	pos, speed;
@@ -118,11 +117,11 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	if ( event.event == EVENT_UPDINTERFACE )
 	{
-		if ( m_object->RetSelect() )  CreateInterface(TRUE);
+		if ( m_object->RetSelect() )  CreateInterface(true);
 	}
 
 	if ( m_object->RetSelect() &&  // center selected?
@@ -137,7 +136,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 	{
 		if ( m_phase != ALP_WAIT )
 		{
-			return FALSE;
+			return false;
 		}
 
 		m_research = event.event;
@@ -145,24 +144,24 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		if ( TestResearch(m_research) )
 		{
 			m_displayText->DisplayError(ERR_RESEARCH_ALREADY, m_object);
-			return FALSE;
+			return false;
 		}
 
 		power = m_object->RetPower();
 		if ( power == 0 )
 		{
 			m_displayText->DisplayError(ERR_RESEARCH_POWER, m_object);
-			return FALSE;
+			return false;
 		}
 		if ( power->RetCapacity() > 1.0f )
 		{
 			m_displayText->DisplayError(ERR_RESEARCH_TYPE, m_object);
-			return FALSE;
+			return false;
 		}
 		if ( power->RetEnergy() < 1.0f )
 		{
 			m_displayText->DisplayError(ERR_RESEARCH_ENERGY, m_object);
-			return FALSE;
+			return false;
 		}
 
 		time = SEARCH_TIME;
@@ -170,11 +169,11 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		if ( event.event == EVENT_OBJECT_RFLY    )  time *= 0.3f;
 		if ( event.event == EVENT_OBJECT_RATOMIC )  time *= 2.0f;
 
-		SetBusy(TRUE);
+		SetBusy(true);
 		InitProgressTotal(time);
 		UpdateInterface();
 
-		m_channelSound = m_sound->Play(SOUND_RESEARCH, m_object->RetPosition(0), 0.0f, 1.0f, TRUE);
+		m_channelSound = m_sound->Play(SOUND_RESEARCH, m_object->RetPosition(0), 0.0f, 1.0f, true);
 		m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,      2.0f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, time-4.0f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,      2.0f, SOPER_STOP);
@@ -182,10 +181,10 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		m_phase    = ALP_SEARCH;
 		m_progress = 0.0f;
 		m_speed    = 1.0f/time;
-		return TRUE;
+		return true;
 	}
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -196,7 +195,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		{
 			m_timeVirus = 0.1f+Rand()*0.3f;
 		}
-		return TRUE;
+		return true;
 	}
 
 	UpdateInterface(event.rTime);
@@ -210,25 +209,25 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 
 	if ( m_phase == ALP_WAIT )
 	{
-		FireStopUpdate(m_progress, FALSE);  // extinguished
-		return TRUE;
+		FireStopUpdate(m_progress, false);  // extinguished
+		return true;
 	}
 
 	if ( m_phase == ALP_SEARCH )
 	{
-		FireStopUpdate(m_progress, TRUE);  // flashes
+		FireStopUpdate(m_progress, true);  // flashes
 		if ( m_progress < 1.0f )
 		{
 			power = m_object->RetPower();
 			if ( power == 0 )  // more battery?
 			{
-				SetBusy(FALSE);
+				SetBusy(false);
 				UpdateInterface();
 
 				m_phase    = ALP_WAIT;
 				m_progress = 0.0f;
 				m_speed    = 1.0f/1.0f;
-				return TRUE;
+				return true;
 			}
 			power->SetEnergy(1.0f-m_progress);
 
@@ -267,7 +266,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 				m_displayText->DisplayError(message, m_object);
 			}
 
-			SetBusy(FALSE);
+			SetBusy(false);
 			UpdateInterface();
 
 			m_phase    = ALP_WAIT;
@@ -276,7 +275,7 @@ BOOL CAutoResearch::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -316,7 +315,7 @@ Error CAutoResearch::RetError()
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoResearch::CreateInterface(BOOL bSelect)
+bool CAutoResearch::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, dim, ddim;
@@ -324,10 +323,10 @@ BOOL CAutoResearch::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	dim.x = 33.0f/640.0f;
 	dim.y = 33.0f/480.0f;
@@ -382,7 +381,7 @@ BOOL CAutoResearch::CreateInterface(BOOL bSelect)
 
 	UpdateInterface();
 
-	return TRUE;
+	return true;
 }
 
 // Updates the status of all interface buttons.
@@ -474,7 +473,7 @@ void CAutoResearch::OkayButton(CWindow *pw, EventMsg event)
 
 // Test whether a search has already been done.
 
-BOOL CAutoResearch::TestResearch(EventMsg event)
+bool CAutoResearch::TestResearch(EventMsg event)
 {
 	if ( event == EVENT_OBJECT_RTANK   )  return (g_researchDone & RESEARCH_TANK  );
 	if ( event == EVENT_OBJECT_RFLY    )  return (g_researchDone & RESEARCH_FLY   );
@@ -485,7 +484,7 @@ BOOL CAutoResearch::TestResearch(EventMsg event)
 	if ( event == EVENT_OBJECT_RSHIELD )  return (g_researchDone & RESEARCH_SHIELD);
 	if ( event == EVENT_OBJECT_RATOMIC )  return (g_researchDone & RESEARCH_ATOMIC);
 
-	return FALSE;
+	return false;
 }
 
 // Indicates a search as made.
@@ -513,7 +512,7 @@ void CAutoResearch::SetResearch(EventMsg event)
 
 // Updates the stop lights.
 
-void CAutoResearch::FireStopUpdate(float progress, BOOL bLightOn)
+void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed;
@@ -578,11 +577,11 @@ void CAutoResearch::FireStopUpdate(float progress, BOOL bLightOn)
 
 // Saves all parameters of the controller.
 
-BOOL CAutoResearch::Write(char *line)
+bool CAutoResearch::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == ALP_WAIT )  return FALSE;
+	if ( m_phase == ALP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -601,14 +600,14 @@ BOOL CAutoResearch::Write(char *line)
 	sprintf(name, " aResearch=%d", m_research);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoResearch::Read(char *line)
+bool CAutoResearch::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -620,7 +619,7 @@ BOOL CAutoResearch::Read(char *line)
 	m_lastUpdateTime = 0.0f;
 	m_lastParticule = 0.0f;
 	
-	return TRUE;
+	return true;
 }
 
 

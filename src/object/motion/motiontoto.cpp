@@ -54,9 +54,9 @@ CMotionToto::CMotionToto(CInstanceManager* iMan, CObject* object)
 						 : CMotion(iMan, object)
 {
 	m_time = 0.0f;
-	m_bDisplayInfo = FALSE;
-	m_bQuickPos = FALSE;
-	m_bStartAction = FALSE;
+	m_bDisplayInfo = false;
+	m_bQuickPos = false;
+	m_bStartAction = false;
 	m_speedAction = 20.0f;
 	m_soundChannel = -1;
 	m_clownRadius = 0.0f;
@@ -78,7 +78,7 @@ CMotionToto::~CMotionToto()
 
 // Removes an object.
 
-void CMotionToto::DeleteObject(BOOL bAll)
+void CMotionToto::DeleteObject(bool bAll)
 {
 	if ( m_soundChannel != -1 )
 	{
@@ -90,13 +90,13 @@ void CMotionToto::DeleteObject(BOOL bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 						 float power)
 {
 	CModFile*		pModFile;
 	int				rank;
 
-	if ( m_engine->RetRestCreate() < 10 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 10 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -206,7 +206,7 @@ BOOL CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 
@@ -216,7 +216,7 @@ void CMotionToto::StartDisplayInfo()
 {
 return;
 //?
-	m_bDisplayInfo = TRUE;
+	m_bDisplayInfo = true;
 
 	m_actionType = -1;
 	m_actionTime = 0.0f;
@@ -230,8 +230,8 @@ return;
 
 void CMotionToto::StopDisplayInfo()
 {
-	m_bDisplayInfo = FALSE;
-	m_bQuickPos = TRUE;
+	m_bDisplayInfo = false;
+	m_bQuickPos = true;
 }
 
 // Gives the position of the mouse.
@@ -244,7 +244,7 @@ void CMotionToto::SetMousePos(FPOINT pos)
 
 // Management of an event.
 
-BOOL CMotionToto::EventProcess(const Event &event)
+bool CMotionToto::EventProcess(const Event &event)
 {
 	CMotion::EventProcess(event);
 
@@ -253,12 +253,12 @@ BOOL CMotionToto::EventProcess(const Event &event)
 		return EventFrame(event);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Management of an event.
 
-BOOL CMotionToto::EventFrame(const Event &event)
+bool CMotionToto::EventFrame(const Event &event)
 {
 	D3DMATRIX*		mat;
 	D3DVECTOR		eye, lookat, dir, perp, nPos, aPos, pos, speed;
@@ -269,28 +269,28 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	float			progress, focus, distance, shift, verti, level, zoom;
 	float			aAngle, nAngle, mAngle, angle, linSpeed, cirSpeed;
 	int				sheet, i, r;
-	BOOL			bHidden;
+	bool			bHidden;
 
 	if ( m_engine->RetPause() &&
-		 !m_main->RetInfoLock() )  return TRUE;
+		 !m_main->RetInfoLock() )  return true;
 
 	if ( m_bDisplayInfo )  // "looks" mouse?
 	{
-		bHidden = FALSE;
+		bHidden = false;
 	}
 	else
 	{
-		bHidden = FALSE;
+		bHidden = false;
 
 		if ( m_main->RetMovieLock() )  // current movie?
 		{
-			bHidden = TRUE;
+			bHidden = true;
 		}
 		if ( !m_engine->RetTotoMode() )
 		{
 			if ( !m_main->RetEditLock() )  // current edition?
 			{
-				bHidden = TRUE;
+				bHidden = true;
 			}
 		}
 	}
@@ -298,10 +298,10 @@ BOOL CMotionToto::EventFrame(const Event &event)
 	if ( bHidden )
 	{
 		nPos = m_object->RetPosition(0);
-		m_terrain->MoveOnFloor(nPos, TRUE);
+		m_terrain->MoveOnFloor(nPos, true);
 		nPos.y -= 100.0f;  // hidden under the ground!
 		m_object->SetPosition(0, nPos);
-		return TRUE;
+		return true;
 	}
 
 	m_time += event.rTime;
@@ -442,7 +442,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 
 		if ( m_bQuickPos )  // immediately in place?
 		{
-			m_bQuickPos = FALSE;
+			m_bQuickPos = false;
 			linSpeed = 0.0f;
 		}
 		else
@@ -456,7 +456,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 			{
 				if ( m_bStartAction )
 				{
-					m_bStartAction = FALSE;
+					m_bStartAction = false;
 					m_speedAction = Length(nPos, aPos)/15.0f;
 					if ( m_speedAction < 20.0f )  m_speedAction = 20.0f;
 				}
@@ -809,7 +809,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 		}
 
 //?		if ( m_bDisplayInfo && m_main->RetGlint() )
-		if ( FALSE )
+		if ( false )
 		{
 			pos.x = (Rand()-0.5f)*1.4f;
 			pos.y = (Rand()-0.5f)*1.4f+3.5f;
@@ -846,7 +846,7 @@ BOOL CMotionToto::EventFrame(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -858,7 +858,7 @@ Error CMotionToto::SetAction(int action, float time)
 
 	CMotion::SetAction(action, time);
 
-	m_bStartAction = TRUE;
+	m_bStartAction = true;
 
 	sound = SOUND_CLICK;
 	if ( action == MT_ERROR   )  sound = SOUND_ERROR;

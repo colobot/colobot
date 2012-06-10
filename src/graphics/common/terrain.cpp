@@ -64,8 +64,8 @@ CTerrain::CTerrain(CInstanceManager* iMan)
 	m_depth         = 2;
 	m_texBaseName[0]= 0;
 	m_texBaseExt[0] = 0;
-	m_bMultiText    = TRUE;
-	m_bLevelText    = FALSE;
+	m_bMultiText    = true;
+	m_bLevelText    = false;
 	m_resources     = 0;
 	m_levelMatTotal = 0;
 	m_levelMatMax   = 0;
@@ -114,7 +114,7 @@ CTerrain::~CTerrain()
 //	+---+---+---+---+
 //      <--------------->  mosaic*brick*size
 
-BOOL CTerrain::Generate(int mosaic, int brickP2, float size, float vision,
+bool CTerrain::Generate(int mosaic, int brickP2, float size, float vision,
 						int depth, float hardness)
 {
 	int		dim;
@@ -128,8 +128,8 @@ BOOL CTerrain::Generate(int mosaic, int brickP2, float size, float vision,
 
 	m_engine->SetTerrainVision(vision);
 
-	m_bMultiText    = TRUE;
-	m_bLevelText    = FALSE;
+	m_bMultiText    = true;
+	m_bLevelText    = false;
 	m_scaleMapping  = 1.0f/(m_brick*m_size);
 	m_subdivMapping = 1;
 
@@ -145,7 +145,7 @@ BOOL CTerrain::Generate(int mosaic, int brickP2, float size, float vision,
 	m_objRank = (int*)malloc(sizeof(int)*dim);
 	ZeroMemory(m_objRank, sizeof(int)*dim);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -172,12 +172,12 @@ float CTerrain::RetScaleRelief()
 
 // Initializes the names of textures to use for the land.
 
-BOOL CTerrain::InitTextures(char* baseName, int* table, int dx, int dy)
+bool CTerrain::InitTextures(char* baseName, int* table, int dx, int dy)
 {
 	int		x, y;
 	char*	p;
 
-	m_bLevelText = FALSE;
+	m_bLevelText = false;
 
 	strcpy(m_texBaseName, baseName);
 	p = strchr(m_texBaseName, '.');  // p <- ^beginning of the extension
@@ -198,7 +198,7 @@ BOOL CTerrain::InitTextures(char* baseName, int* table, int dx, int dy)
 			m_texture[x+y*m_mosaic] = table[(x%dx)+(y%dy)*dx];
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -214,14 +214,14 @@ void CTerrain::LevelFlush()
 
 // Initializes the names of textures to use for the land.
 
-BOOL CTerrain::LevelMaterial(int id, char* baseName, float u, float v,
+bool CTerrain::LevelMaterial(int id, char* baseName, float u, float v,
 							 int up, int right, int down, int left,
 							 float hardness)
 {
 	int		i;
 
 	i = m_levelMatTotal;
-	if ( i >= MAXMATTERRAIN-1 )  return FALSE;
+	if ( i >= MAXMATTERRAIN-1 )  return false;
 
 	LevelOpenTable();
 
@@ -245,11 +245,11 @@ BOOL CTerrain::LevelMaterial(int id, char* baseName, float u, float v,
 	if ( m_levelMatMax < down+1  )  m_levelMatMax = down+1;
 	if ( m_levelMatMax < left+1  )  m_levelMatMax = left+1;
 
-	m_bLevelText = TRUE;
+	m_bLevelText = true;
 	m_subdivMapping = 4;
 
 	m_levelMatTotal ++;
-	return TRUE;
+	return true;
 }
 
 
@@ -265,13 +265,13 @@ BOOL CTerrain::LevelMaterial(int id, char* baseName, float u, float v,
 //	Ix = (400+Wx)/5
 //	Iy = (400-Wz)/5
 
-BOOL CTerrain::ResFromBMP(const char* filename)
+bool CTerrain::ResFromBMP(const char* filename)
 {
 	FILE*			file;
 	int				size, sizem;
 
 	file = fopen(filename, "rb");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	size  = (m_mosaic*m_brick)+1;
 	sizem = ((size+4-1)/4)*4;  // upper size multiple of 4
@@ -290,11 +290,11 @@ BOOL CTerrain::ResFromBMP(const char* filename)
 		free(m_resources);
 		m_resources = 0;
 		fclose(file);
-		return FALSE;
+		return false;
 	}
 
 	fclose(file);
-	return TRUE;
+	return true;
 }
 
 // Returns the resource type available underground.
@@ -349,8 +349,8 @@ void CTerrain::FlushRelief()
 //	Ix = (400+Wx)/5
 //	Iy = (400-Wz)/5
 
-BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
-							 BOOL adjustBorder)
+bool CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
+							 bool adjustBorder)
 {
 	FILE*			file;
 	unsigned char*	buffer;
@@ -360,7 +360,7 @@ BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
 	m_scaleRelief = scaleRelief;
 
 	file = fopen(filename, "rb");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	size  = (m_mosaic*m_brick)+1;
 	sizem = ((size+4-1)/4)*4;  // upper size multiple of 4
@@ -373,7 +373,7 @@ BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
 	{
 		free(buffer);
 		fclose(file);
-		return FALSE;
+		return false;
 	}
 
 	limit = 0.9f;
@@ -400,12 +400,12 @@ BOOL CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
 
 	free(buffer);
 	fclose(file);
-	return TRUE;
+	return true;
 }
 
 // Adds a point of elevation in the buffer of relief.
 
-BOOL CTerrain::ReliefAddDot(D3DVECTOR pos, float scaleRelief)
+bool CTerrain::ReliefAddDot(D3DVECTOR pos, float scaleRelief)
 {
 	float	dim;
 	int		size, x, y;
@@ -420,51 +420,51 @@ BOOL CTerrain::ReliefAddDot(D3DVECTOR pos, float scaleRelief)
 	y = (int)pos.z;
 
 	if ( x < 0 || x >= size ||
-		 y < 0 || y >= size )  return FALSE;
+		 y < 0 || y >= size )  return false;
 
 	if ( m_relief[x+y*size] < pos.y*scaleRelief )
 	{
 		m_relief[x+y*size] = pos.y*scaleRelief;
 	}
-	return TRUE;
+	return true;
 }
 
 // Load relief from a DXF file.
 
-BOOL CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
+bool CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 {
 	FILE*		file = NULL;
 	char		line[100];
 	int			command, rankSommet, nbSommet, nbFace, size;
 	D3DVECTOR*	table;
-	BOOL		bWaitNbSommet;
-	BOOL		bWaitNbFace;
-	BOOL		bWaitSommetX;
-	BOOL		bWaitSommetY;
-	BOOL		bWaitSommetZ;
-	BOOL		bWaitFaceX;
-	BOOL		bWaitFaceY;
-	BOOL		bWaitFaceZ;
+	bool		bWaitNbSommet;
+	bool		bWaitNbFace;
+	bool		bWaitSommetX;
+	bool		bWaitSommetY;
+	bool		bWaitSommetZ;
+	bool		bWaitFaceX;
+	bool		bWaitFaceY;
+	bool		bWaitFaceZ;
 	float		x,y,z;
 	int			p1,p2,p3;
 
 	ZeroMemory(m_relief, sizeof(float)*(m_mosaic*m_brick+1)*(m_mosaic*m_brick+1));
 
 	file = fopen(filename, "r");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	size  = (m_mosaic*m_brick)+1;
 	table = (D3DVECTOR*)malloc(sizeof(D3DVECTOR)*size*size);
 
 	rankSommet = 0;
-	bWaitNbSommet = FALSE;
-	bWaitNbFace   = FALSE;
-	bWaitSommetX  = FALSE;
-	bWaitSommetY  = FALSE;
-	bWaitSommetZ  = FALSE;
-	bWaitFaceX    = FALSE;
-	bWaitFaceY    = FALSE;
-	bWaitFaceZ    = FALSE;
+	bWaitNbSommet = false;
+	bWaitNbFace   = false;
+	bWaitSommetX  = false;
+	bWaitSommetY  = false;
+	bWaitSommetZ  = false;
+	bWaitFaceX    = false;
+	bWaitFaceY    = false;
+	bWaitFaceZ    = false;
 
 	while ( fgets(line, 100, file) != NULL )
 	{
@@ -473,42 +473,42 @@ BOOL CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 
 		if ( command == 66 )
 		{
-			bWaitNbSommet = TRUE;
+			bWaitNbSommet = true;
 		}
 
 		if ( command == 71 && bWaitNbSommet )
 		{
-			bWaitNbSommet = FALSE;
+			bWaitNbSommet = false;
 			sscanf(line, "%d", &nbSommet);
 			if ( nbSommet > size*size )  nbSommet = size*size;
 			rankSommet = 0;
-			bWaitNbFace = TRUE;
+			bWaitNbFace = true;
 		}
 
 		if ( command == 72 && bWaitNbFace )
 		{
-			bWaitNbFace = FALSE;
+			bWaitNbFace = false;
 			sscanf(line, "%d", &nbFace);
-			bWaitSommetX = TRUE;
+			bWaitSommetX = true;
 		}
 
 		if ( command == 10 && bWaitSommetX )
 		{
-			bWaitSommetX = FALSE;
+			bWaitSommetX = false;
 			sscanf(line, "%f", &x);
-			bWaitSommetY = TRUE;
+			bWaitSommetY = true;
 		}
 
 		if ( command == 20 && bWaitSommetY )
 		{
-			bWaitSommetY = FALSE;
+			bWaitSommetY = false;
 			sscanf(line, "%f", &y);
-			bWaitSommetZ = TRUE;
+			bWaitSommetZ = true;
 		}
 
 		if ( command == 30 && bWaitSommetZ )
 		{
-			bWaitSommetZ = FALSE;
+			bWaitSommetZ = false;
 			sscanf(line, "%f", &z);
 
 			nbSommet --;
@@ -516,33 +516,33 @@ BOOL CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 			{
 				D3DVECTOR p(x,z,y);  // permutation of Y and Z!
 				table[rankSommet++] = p;
-				bWaitSommetX = TRUE;
+				bWaitSommetX = true;
 			}
 			else
 			{
-				bWaitFaceX = TRUE;
+				bWaitFaceX = true;
 			}
 		}
 
 		if ( command == 71 && bWaitFaceX )
 		{
-			bWaitFaceX = FALSE;
+			bWaitFaceX = false;
 			sscanf(line, "%d", &p1);
 			if ( p1 < 0 )  p1 = -p1;
-			bWaitFaceY = TRUE;
+			bWaitFaceY = true;
 		}
 
 		if ( command == 72 && bWaitFaceY )
 		{
-			bWaitFaceY = FALSE;
+			bWaitFaceY = false;
 			sscanf(line, "%d", &p2);
 			if ( p2 < 0 )  p2 = -p2;
-			bWaitFaceZ = TRUE;
+			bWaitFaceZ = true;
 		}
 
 		if ( command == 73 && bWaitFaceZ )
 		{
-			bWaitFaceZ = FALSE;
+			bWaitFaceZ = false;
 			sscanf(line, "%d", &p3);
 			if ( p3 < 0 )  p3 = -p3;
 
@@ -552,7 +552,7 @@ BOOL CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 				ReliefAddDot(table[p3-1], scaleRelief);
 				ReliefAddDot(table[p2-1], scaleRelief);
 				ReliefAddDot(table[p1-1], scaleRelief);
-				bWaitFaceX = TRUE;
+				bWaitFaceX = true;
 			}
 		}
 
@@ -560,7 +560,7 @@ BOOL CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 
 	free(table);
 	fclose(file);
-	return TRUE;
+	return true;
 }
 
 
@@ -759,7 +759,7 @@ D3DVERTEX2 CTerrain::RetVertex(int x, int y, int step)
 //	|
 //	+-------------------> x
 
-BOOL CTerrain::CreateMosaic(int ox, int oy, int step, int objRank, 
+bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank, 
 							const D3DMATERIAL7 &mat,
 							float min, float max)
 {
@@ -910,7 +910,7 @@ BOOL CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 					buffer->vertex[i++] = p1;
 					buffer->vertex[i++] = p2;
 				}
-				m_engine->AddQuick(objRank, buffer, texName1, texName2, min, max, TRUE);
+				m_engine->AddQuick(objRank, buffer, texName1, texName2, min, max, true);
 			}
 		}
 	}
@@ -920,7 +920,7 @@ BOOL CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 	transform._43 = o.z;
 	m_engine->SetObjectTransform(objRank, transform);
 
-	return TRUE;
+	return true;
 }
 
 // (*) There is 1 pixel cover around each of the 16 surfaces:
@@ -996,7 +996,7 @@ float CTerrain::LevelRetHeight(int x, int y)
 
 // Decide whether a point is using the materials.
 
-BOOL CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
+bool CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 {
 	float	hc, h[4];
 	int		i;
@@ -1008,11 +1008,11 @@ BOOL CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 	h[3] = LevelRetHeight(x-1, y+0);
 
 	if ( hc < min ||
-		 hc > max )  return FALSE;
+		 hc > max )  return false;
 
 	if ( slope == 0.0f )
 	{
-		return TRUE;
+		return true;
 	}
 
 	if ( slope > 0.0f )
@@ -1021,10 +1021,10 @@ BOOL CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 		{
 			if ( Abs(hc-h[i]) >= slope )
 			{
-				return FALSE;
+				return false;
 			}
 		}
-		return TRUE;
+		return true;
 	}
 
 	if ( slope < 0.0f )
@@ -1033,13 +1033,13 @@ BOOL CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 		{
 			if ( Abs(hc-h[i]) < -slope )
 			{
-				return FALSE;
+				return false;
 			}
 		}
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 // Seeks if material exists.
@@ -1156,7 +1156,7 @@ void CTerrain::LevelSetDot(int x, int y, int id, char *mat)
 // Tests if a material can give a place, according to its four neighbors.
 // If yes, puts the point.
 
-BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
+bool CTerrain::LevelIfDot(int x, int y, int id, char *mat)
 {
 	char			test[4];
 
@@ -1169,7 +1169,7 @@ BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
 		test[2] = m_levelDot[(x+0)+(y-1)*m_levelDotSize].mat[2];
 		test[3] = m_levelDot[(x+0)+(y-1)*m_levelDotSize].mat[3];
 
-		if ( LevelTestMat(test) == -1 )  return FALSE;
+		if ( LevelTestMat(test) == -1 )  return false;
 	}
 
 	// Compatible with left neighbor?
@@ -1181,7 +1181,7 @@ BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
 		test[2] = m_levelDot[(x-1)+(y+0)*m_levelDotSize].mat[2];
 		test[3] = m_levelDot[(x-1)+(y+0)*m_levelDotSize].mat[3];
 
-		if ( LevelTestMat(test) == -1 )  return FALSE;
+		if ( LevelTestMat(test) == -1 )  return false;
 	}
 
 	// Compatible with upper neighbor?
@@ -1193,7 +1193,7 @@ BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
 		test[2] = mat[0];
 		test[3] = m_levelDot[(x+0)+(y+1)*m_levelDotSize].mat[3];
 
-		if ( LevelTestMat(test) == -1 )  return FALSE;
+		if ( LevelTestMat(test) == -1 )  return false;
 	}
 
 	// Compatible with right neighbor?
@@ -1205,16 +1205,16 @@ BOOL CTerrain::LevelIfDot(int x, int y, int id, char *mat)
 		test[2] = m_levelDot[(x+1)+(y+0)*m_levelDotSize].mat[2];
 		test[3] = mat[1];
 
-		if ( LevelTestMat(test) == -1 )  return FALSE;
+		if ( LevelTestMat(test) == -1 )  return false;
 	}
 
 	LevelSetDot(x, y, id, mat);  // puts the point
-	return TRUE;
+	return true;
 }
 
 // Modifies the state of a point.
 
-BOOL CTerrain::LevelPutDot(int x, int y, int id)
+bool CTerrain::LevelPutDot(int x, int y, int id)
 {
 	TerrainMaterial	*tm;
 	char			mat[4];
@@ -1224,13 +1224,13 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 	y /= m_brick/m_subdivMapping;
 
 	if ( x < 0 || x >= m_levelDotSize ||
-		 y < 0 || y >= m_levelDotSize )  return FALSE;
+		 y < 0 || y >= m_levelDotSize )  return false;
 
 	tm = LevelSearchMat(id);
-	if ( tm == 0 )  return FALSE;
+	if ( tm == 0 )  return false;
 
 	// Tries without changing neighbors.
-	if ( LevelIfDot(x, y, id, tm->mat) )  return TRUE;
+	if ( LevelIfDot(x, y, id, tm->mat) )  return true;
 
 	// Tries changing a single neighbor (4x).
 	for ( up=0 ; up<m_levelMatMax ; up++ )
@@ -1240,7 +1240,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 		mat[2] = tm->mat[2];
 		mat[3] = tm->mat[3];
 
-		if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+		if ( LevelIfDot(x, y, id, mat) )  return true;
 	}
 
 	for ( right=0 ; right<m_levelMatMax ; right++ )
@@ -1250,7 +1250,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 		mat[2] = tm->mat[2];
 		mat[3] = tm->mat[3];
 
-		if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+		if ( LevelIfDot(x, y, id, mat) )  return true;
 	}
 
 	for ( down=0 ; down<m_levelMatMax ; down++ )
@@ -1260,7 +1260,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 		mat[2] = down;
 		mat[3] = tm->mat[3];
 
-		if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+		if ( LevelIfDot(x, y, id, mat) )  return true;
 	}
 
 	for ( left=0 ; left<m_levelMatMax ; left++ )
@@ -1270,7 +1270,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 		mat[2] = tm->mat[2];
 		mat[3] = left;
 
-		if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+		if ( LevelIfDot(x, y, id, mat) )  return true;
 	}
 
 	// Tries changing two neighbors (6x).
@@ -1283,7 +1283,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 			mat[2] = down;
 			mat[3] = tm->mat[3];
 
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+			if ( LevelIfDot(x, y, id, mat) )  return true;
 		}
 	}
 
@@ -1296,7 +1296,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 			mat[2] = tm->mat[2];
 			mat[3] = left;
 
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+			if ( LevelIfDot(x, y, id, mat) )  return true;
 		}
 	}
 
@@ -1309,7 +1309,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 			mat[2] = tm->mat[2];
 			mat[3] = tm->mat[3];
 
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+			if ( LevelIfDot(x, y, id, mat) )  return true;
 		}
 	}
 
@@ -1322,7 +1322,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 			mat[2] = down;
 			mat[3] = tm->mat[3];
 
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+			if ( LevelIfDot(x, y, id, mat) )  return true;
 		}
 	}
 
@@ -1335,7 +1335,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 			mat[2] = down;
 			mat[3] = left;
 
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+			if ( LevelIfDot(x, y, id, mat) )  return true;
 		}
 	}
 
@@ -1348,7 +1348,7 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 			mat[2] = tm->mat[2];
 			mat[3] = left;
 
-			if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+			if ( LevelIfDot(x, y, id, mat) )  return true;
 		}
 	}
 
@@ -1366,25 +1366,25 @@ BOOL CTerrain::LevelPutDot(int x, int y, int id)
 					mat[2] = down;
 					mat[3] = left;
 
-					if ( LevelIfDot(x, y, id, mat) )  return TRUE;
+					if ( LevelIfDot(x, y, id, mat) )  return true;
 				}
 			}
 		}
 	}
 
 	OutputDebugString("LevelPutDot error\n");
-	return FALSE;
+	return false;
 }
 
 // Initializes all the ground with a material.
 
-BOOL CTerrain::LevelInit(int id)
+bool CTerrain::LevelInit(int id)
 {
 	TerrainMaterial*	tm;
 	int					i, j;
 
 	tm = LevelSearchMat(id);
-	if ( tm == 0 )  return FALSE;
+	if ( tm == 0 )  return false;
 
 	for ( i=0 ; i<m_levelDotSize*m_levelDotSize ; i++ )
 	{
@@ -1396,12 +1396,12 @@ BOOL CTerrain::LevelInit(int id)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Generates a level in the terrain.
 
-BOOL CTerrain::LevelGenerate(int *id, float min, float max,
+bool CTerrain::LevelGenerate(int *id, float min, float max,
 							 float slope, float freq,
 							 D3DVECTOR center, float radius)
 {
@@ -1428,7 +1428,7 @@ BOOL CTerrain::LevelGenerate(int *id, float min, float max,
 	while ( id[i] != 0 )
 	{
 		tm = LevelSearchMat(id[i++]);
-		if ( tm == 0 )  return FALSE;
+		if ( tm == 0 )  return false;
 	}
 	numID = i;
 
@@ -1483,7 +1483,7 @@ BOOL CTerrain::LevelGenerate(int *id, float min, float max,
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Initializes an table with empty levels.
@@ -1519,7 +1519,7 @@ void CTerrain::LevelCloseTable()
 
 // Creates all objects in a mesh square ground.
 
-BOOL CTerrain::CreateSquare(BOOL bMultiRes, int x, int y)
+bool CTerrain::CreateSquare(bool bMultiRes, int x, int y)
 {
 	D3DMATERIAL7	mat;
 	float			min, max;
@@ -1556,12 +1556,12 @@ BOOL CTerrain::CreateSquare(BOOL bMultiRes, int x, int y)
 		CreateMosaic(x, y, 1, objRank, mat, 0.0f, g_HUGE);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Creates all objects of the terrain within the 3D engine.
 
-BOOL CTerrain::CreateObjects(BOOL bMultiRes)
+bool CTerrain::CreateObjects(bool bMultiRes)
 {
 	int		x, y;
 
@@ -1575,14 +1575,14 @@ BOOL CTerrain::CreateObjects(BOOL bMultiRes)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Modifies the terrain's relief.
 // ATTENTION: ok only with m_depth = 2!
 
-BOOL CTerrain::Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height)
+bool CTerrain::Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height)
 {
 	POINT		tp1, tp2, pp1, pp2;
 	float		dim, avg;
@@ -1665,7 +1665,7 @@ BOOL CTerrain::Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height)
 	}
 	m_engine->Update();
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1722,7 +1722,7 @@ float CTerrain::RetCoarseSlope(const D3DVECTOR &pos)
 
 // Gives the normal vector at the position p (x,-,z) of the ground.
 
-BOOL CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
+bool CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
 {
 	D3DVECTOR	p1, p2, p3, p4;
 	float		dim;
@@ -1734,7 +1734,7 @@ BOOL CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
 	y = (int)((p.z+dim)/m_size);
 
 	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return FALSE;
+		 y < 0 || y > m_mosaic*m_brick )  return false;
 
 	p1 = RetVector(x+0, y+0);
 	p2 = RetVector(x+1, y+0);
@@ -1749,12 +1749,12 @@ BOOL CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
 	{
 		n = ComputeNormal(p2,p4,p3);
 	}
-	return TRUE;
+	return true;
 }
 
 // Returns the height of the ground.
 
-float CTerrain::RetFloorLevel(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
+float CTerrain::RetFloorLevel(const D3DVECTOR &p, bool bBrut, bool bWater)
 {
 	D3DVECTOR	p1, p2, p3, p4, ps;
 	float		dim, level;
@@ -1766,7 +1766,7 @@ float CTerrain::RetFloorLevel(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 	y = (int)((p.z+dim)/m_size);
 
 	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return FALSE;
+		 y < 0 || y > m_mosaic*m_brick )  return false;
 
 	p1 = RetVector(x+0, y+0);
 	p2 = RetVector(x+1, y+0);
@@ -1797,7 +1797,7 @@ float CTerrain::RetFloorLevel(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 // Returns the height to the ground. 
 // This height is positive when you are above the ground.
 
-float CTerrain::RetFloorHeight(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
+float CTerrain::RetFloorHeight(const D3DVECTOR &p, bool bBrut, bool bWater)
 {
 	D3DVECTOR	p1, p2, p3, p4, ps;
 	float		dim, level;
@@ -1809,7 +1809,7 @@ float CTerrain::RetFloorHeight(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 	y = (int)((p.z+dim)/m_size);
 
 	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return FALSE;
+		 y < 0 || y > m_mosaic*m_brick )  return false;
 
 	p1 = RetVector(x+0, y+0);
 	p2 = RetVector(x+1, y+0);
@@ -1839,7 +1839,7 @@ float CTerrain::RetFloorHeight(const D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 
 // Modifies the coordinate "y" of point "p" to rest on the ground floor.
 
-BOOL CTerrain::MoveOnFloor(D3DVECTOR &p, BOOL bBrut, BOOL bWater)
+bool CTerrain::MoveOnFloor(D3DVECTOR &p, bool bBrut, bool bWater)
 {
 	D3DVECTOR	p1, p2, p3, p4;
 	float		dim, level;
@@ -1851,7 +1851,7 @@ BOOL CTerrain::MoveOnFloor(D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 	y = (int)((p.z+dim)/m_size);
 
 	if ( x < 0 || x > m_mosaic*m_brick ||
-		 y < 0 || y > m_mosaic*m_brick )  return FALSE;
+		 y < 0 || y > m_mosaic*m_brick )  return false;
 
 	p1 = RetVector(x+0, y+0);
 	p2 = RetVector(x+1, y+0);
@@ -1860,11 +1860,11 @@ BOOL CTerrain::MoveOnFloor(D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 
 	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
 	{
-		if ( !IntersectY(p1, p2, p3, p) )  return FALSE;
+		if ( !IntersectY(p1, p2, p3, p) )  return false;
 	}
 	else
 	{
-		if ( !IntersectY(p2, p4, p3, p) )  return FALSE;
+		if ( !IntersectY(p2, p4, p3, p) )  return false;
 	}
 
 	if ( !bBrut )  AdjustBuildingLevel(p);
@@ -1875,15 +1875,15 @@ BOOL CTerrain::MoveOnFloor(D3DVECTOR &p, BOOL bBrut, BOOL bWater)
 		if ( p.y < level )  p.y = level;  // not under water
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Modifies a coordinate so that it is on the ground.
-// Returns FALSE if the initial coordinate was too far.
+// Returns false if the initial coordinate was too far.
 
-BOOL CTerrain::ValidPosition(D3DVECTOR &p, float marging)
+bool CTerrain::ValidPosition(D3DVECTOR &p, float marging)
 {
-	BOOL	bOK = TRUE;
+	bool	bOK = true;
 	float	limit;
 
 	limit = m_mosaic*m_brick*m_size/2.0f - marging;
@@ -1891,25 +1891,25 @@ BOOL CTerrain::ValidPosition(D3DVECTOR &p, float marging)
 	if ( p.x < -limit )
 	{
 		p.x = -limit;
-		bOK = FALSE;
+		bOK = false;
 	}
 
 	if ( p.z < -limit )
 	{
 		p.z = -limit;
-		bOK = FALSE;
+		bOK = false;
 	}
 
 	if ( p.x > limit )
 	{
 		p.x = limit;
-		bOK = FALSE;
+		bOK = false;
 	}
 
 	if ( p.z > limit )
 	{
 		p.z = limit;
-		bOK = FALSE;
+		bOK = false;
 	}
 
 	return bOK;
@@ -1926,7 +1926,7 @@ void CTerrain::FlushBuildingLevel()
 
 // Adds a new elevation for a building.
 
-BOOL CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
+bool CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
 								float height, float factor)
 {
 	int		i;
@@ -1940,14 +1940,14 @@ BOOL CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
 		}
 	}
 
-	if ( m_buildingUsed >= MAXBUILDINGLEVEL )  return FALSE;
+	if ( m_buildingUsed >= MAXBUILDINGLEVEL )  return false;
 	i = m_buildingUsed++;
 
 	update:
 	m_buildingTable[i].center   = center;
 	m_buildingTable[i].min      = min;
 	m_buildingTable[i].max      = max;
-	m_buildingTable[i].level    = RetFloorLevel(center, TRUE);
+	m_buildingTable[i].level    = RetFloorLevel(center, true);
 	m_buildingTable[i].height   = height;
 	m_buildingTable[i].factor   = factor;
 	m_buildingTable[i].bboxMinX = center.x-max;
@@ -1955,12 +1955,12 @@ BOOL CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
 	m_buildingTable[i].bboxMinZ = center.z-max;
 	m_buildingTable[i].bboxMaxZ = center.z+max;
 
-	return TRUE;
+	return true;
 }
 
 // Updates the elevation for a building when it was moved up (after a terraforming).
 
-BOOL CTerrain::UpdateBuildingLevel(D3DVECTOR center)
+bool CTerrain::UpdateBuildingLevel(D3DVECTOR center)
 {
 	int		i;
 
@@ -1970,16 +1970,16 @@ BOOL CTerrain::UpdateBuildingLevel(D3DVECTOR center)
 			 center.z == m_buildingTable[i].center.z )
 		{
 			m_buildingTable[i].center = center;
-			m_buildingTable[i].level  = RetFloorLevel(center, TRUE);
-			return TRUE;
+			m_buildingTable[i].level  = RetFloorLevel(center, true);
+			return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Removes the elevation for a building when it was destroyed.
 
-BOOL CTerrain::DeleteBuildingLevel(D3DVECTOR center)
+bool CTerrain::DeleteBuildingLevel(D3DVECTOR center)
 {
 	int		i, j;
 
@@ -1993,10 +1993,10 @@ BOOL CTerrain::DeleteBuildingLevel(D3DVECTOR center)
 				m_buildingTable[j-1] = m_buildingTable[j];
 			}
 			m_buildingUsed --;
-			return TRUE;
+			return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Returns the influence factor whether a position is on a possible rise.
@@ -2054,7 +2054,7 @@ void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
 			   (m_buildingTable[i].max-m_buildingTable[i].min)*
 			   m_buildingTable[i].height;
 
-		base = RetFloorLevel(p, TRUE);
+		base = RetFloorLevel(p, true);
 		if ( p.y < base )  p.y = base;
 #else
 		border.x = ((p.x-m_buildingTable[i].center.x)*m_buildingTable[i].max)/
@@ -2062,7 +2062,7 @@ void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
 		border.z = ((p.z-m_buildingTable[i].center.z)*m_buildingTable[i].max)/
 				   dist+m_buildingTable[i].center.z;
 
-		base = RetFloorLevel(border, TRUE);
+		base = RetFloorLevel(border, true);
 
 		p.y = (m_buildingTable[i].max-dist)/
 			  (m_buildingTable[i].max-m_buildingTable[i].min)*
@@ -2164,7 +2164,7 @@ float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
 	angle = RetFineSlope(center);
 	if ( angle >= FLATLIMIT )  return 0.0f;
 
-	ref = RetFloorLevel(center, TRUE);
+	ref = RetFloorLevel(center, true);
 
 	radius = 1.0f;
 	while ( radius <= max )
@@ -2181,7 +2181,7 @@ float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
 			p = RotatePoint(c, angle, p);
 			pos.x = p.x;
 			pos.z = p.y;
-			h = RetFloorLevel(pos, TRUE);
+			h = RetFloorLevel(pos, true);
 			if ( Abs(h-ref) > 1.0f )  return radius;
 
 			angle += PI*2.0f/8.0f;
@@ -2218,13 +2218,13 @@ void CTerrain::FlushFlyingLimit()
 
 // Empty the limits table of flight.
 
-BOOL CTerrain::AddFlyingLimit(D3DVECTOR center,
+bool CTerrain::AddFlyingLimit(D3DVECTOR center,
 							  float extRadius, float intRadius,
 							  float maxHeight)
 {
 	int		i;
 
-	if ( m_flyingLimitTotal >= MAXFLYINGLIMIT )  return FALSE;
+	if ( m_flyingLimitTotal >= MAXFLYINGLIMIT )  return false;
 
 	i = m_flyingLimitTotal;
 	m_flyingLimit[i].center    = center;
@@ -2233,12 +2233,12 @@ BOOL CTerrain::AddFlyingLimit(D3DVECTOR center,
 	m_flyingLimit[i].maxHeight = maxHeight;
 	m_flyingLimitTotal = i+1;
 
-	return TRUE;
+	return true;
 }
 
 // Returns the maximum height of flight.
 
-float CTerrain::RetFlyingLimit(D3DVECTOR pos, BOOL bNoLimit)
+float CTerrain::RetFlyingLimit(D3DVECTOR pos, bool bNoLimit)
 {
 	float	dist, h;
 	int		i;

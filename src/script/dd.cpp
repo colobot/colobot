@@ -44,7 +44,7 @@ int	cPoint(CBotVar* &var, CBotString& retClass, void* user)
 
 // Gives a parameter of type "point".
 
-BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
+bool GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
 {
 	CBotVar		*pX, *pY, *pZ;
 
@@ -64,27 +64,27 @@ BOOL GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
 		pX = var->GivItem("x");
 		if ( pX == NULL )
 		{
-			exception = CBotErrUndefItem;  return TRUE;
+			exception = CBotErrUndefItem;  return true;
 		}
 		pos.x = pX->GivValFloat()*UNIT;
 
 		pY = var->GivItem("y");
 		if ( pY == NULL )
 		{
-			exception = CBotErrUndefItem;  return TRUE;
+			exception = CBotErrUndefItem;  return true;
 		}
 		pos.z = pY->GivValFloat()*UNIT;  // attention y -> z !
 
 		pZ = var->GivItem("z");
 		if ( pZ == NULL )
 		{
-			exception = CBotErrUndefItem;  return TRUE;
+			exception = CBotErrUndefItem;  return true;
 		}
 		pos.y = pZ->GivValFloat()*UNIT;  // attention z -> y !
 
 		var = var->GivNext();
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -119,7 +119,7 @@ int	cSpace(CBotVar* &var, CBotString& retClass, void* user)
 
 // Instruction "space(center, rMin, rMax, dist)".
 
-BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
+bool rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
@@ -137,7 +137,7 @@ BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 	}
 	else
 	{
-		if ( !GetPoint(var, exception, center) )  return TRUE;
+		if ( !GetPoint(var, exception, center) )  return true;
 
 		if ( var != 0 )
 		{
@@ -171,5 +171,5 @@ BOOL rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 			pSub->SetValFloat(center.y/UNIT);
 		}
 	}
-	return TRUE;
+	return true;
 }
