@@ -35,7 +35,7 @@ public:
 	CTaskWait(CInstanceManager* iMan, CObject* object);
 	~CTaskWait();
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	Error	Start(float time);
 	Error	IsEnded();
@@ -45,6 +45,6 @@ protected:
 protected:
 	float		m_waitTime;
 	float		m_passTime;
-	BOOL		m_bEnded;
+	bool		m_bEnded;
 };
 

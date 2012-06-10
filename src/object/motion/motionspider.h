@@ -51,13 +51,13 @@ public:
 	CMotionSpider(CInstanceManager* iMan, CObject* object);
 	~CMotionSpider();
 
-	void	DeleteObject(BOOL bAll=FALSE);
-	BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
-	BOOL	EventProcess(const Event &event);
+	void	DeleteObject(bool bAll=false);
+	bool	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	bool	EventProcess(const Event &event);
 
 protected:
 	void	CreatePhysics();
-	BOOL	EventFrame(const Event &event);
+	bool	EventFrame(const Event &event);
 
 protected:
 	float		m_armMember;
@@ -69,7 +69,7 @@ protected:
 	int			m_armPartIndex;
 	int			m_armMemberIndex;
 	int			m_armLastAction;
-	BOOL		m_bArmStop;
+	bool		m_bArmStop;
 	float		m_lastParticule;
 };
 

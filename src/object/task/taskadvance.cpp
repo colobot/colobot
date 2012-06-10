@@ -44,7 +44,6 @@
 CTaskAdvance::CTaskAdvance(CInstanceManager* iMan, CObject* object)
 						   : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -56,10 +55,10 @@ CTaskAdvance::~CTaskAdvance()
 
 // Management of an event.
 
-BOOL CTaskAdvance::EventProcess(const Event &event)
+bool CTaskAdvance::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_fixTime += event.rTime;
 
@@ -68,12 +67,12 @@ BOOL CTaskAdvance::EventProcess(const Event &event)
 	{
 		m_physics->SetMotorSpeedX(0.0f);  // stops the advance
 		m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-		m_bError = TRUE;
-		return TRUE;
+		m_bError = true;
+		return true;
 	}
 
 	m_timeLimit -= event.rTime;
-	return TRUE;
+	return true;
 }
 
 
@@ -95,7 +94,7 @@ Error CTaskAdvance::Start(float length)
 	m_physics->SetMotorSpeedY(0.0f);
 	m_physics->SetMotorSpeedZ(0.0f);
 
-	m_bError = FALSE;
+	m_bError = false;
 	return ERR_OK;
 }
 

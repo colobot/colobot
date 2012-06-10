@@ -101,36 +101,36 @@ public:
 	CTerrain(CInstanceManager* iMan);
 	~CTerrain();
 
-	BOOL		Generate(int mosaic, int brickP2, float size, float vision, int depth, float hardness);
-	BOOL		InitTextures(char* baseName, int* table, int dx, int dy);
+	bool		Generate(int mosaic, int brickP2, float size, float vision, int depth, float hardness);
+	bool		InitTextures(char* baseName, int* table, int dx, int dy);
 	void		LevelFlush();
-	BOOL		LevelMaterial(int id, char* baseName, float u, float v, int up, int right, int down, int left, float hardness);
-	BOOL		LevelInit(int id);
-	BOOL		LevelGenerate(int *id, float min, float max, float slope, float freq, D3DVECTOR center, float radius);
+	bool		LevelMaterial(int id, char* baseName, float u, float v, int up, int right, int down, int left, float hardness);
+	bool		LevelInit(int id);
+	bool		LevelGenerate(int *id, float min, float max, float slope, float freq, D3DVECTOR center, float radius);
 	void		FlushRelief();
-	BOOL		ReliefFromBMP(const char* filename, float scaleRelief, BOOL adjustBorder);
-	BOOL		ReliefFromDXF(const char* filename, float scaleRelief);
-	BOOL		ResFromBMP(const char* filename);
-	BOOL		CreateObjects(BOOL bMultiRes);
-	BOOL		Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height);
+	bool		ReliefFromBMP(const char* filename, float scaleRelief, bool adjustBorder);
+	bool		ReliefFromDXF(const char* filename, float scaleRelief);
+	bool		ResFromBMP(const char* filename);
+	bool		CreateObjects(bool bMultiRes);
+	bool		Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height);
 
 	void		SetWind(D3DVECTOR speed);
 	D3DVECTOR	RetWind();
 
 	float		RetFineSlope(const D3DVECTOR &pos);
 	float		RetCoarseSlope(const D3DVECTOR &pos);
-	BOOL		GetNormal(D3DVECTOR &n, const D3DVECTOR &p);
-	float		RetFloorLevel(const D3DVECTOR &p, BOOL bBrut=FALSE, BOOL bWater=FALSE);
-	float		RetFloorHeight(const D3DVECTOR &p, BOOL bBrut=FALSE, BOOL bWater=FALSE);
-	BOOL		MoveOnFloor(D3DVECTOR &p, BOOL bBrut=FALSE, BOOL bWater=FALSE);
-	BOOL		ValidPosition(D3DVECTOR &p, float marging);
+	bool		GetNormal(D3DVECTOR &n, const D3DVECTOR &p);
+	float		RetFloorLevel(const D3DVECTOR &p, bool bBrut=false, bool bWater=false);
+	float		RetFloorHeight(const D3DVECTOR &p, bool bBrut=false, bool bWater=false);
+	bool		MoveOnFloor(D3DVECTOR &p, bool bBrut=false, bool bWater=false);
+	bool		ValidPosition(D3DVECTOR &p, float marging);
 	TerrainRes	RetResource(const D3DVECTOR &p);
 	void		LimitPos(D3DVECTOR &pos);
 
 	void		FlushBuildingLevel();
-	BOOL		AddBuildingLevel(D3DVECTOR center, float min, float max, float height, float factor);
-	BOOL		UpdateBuildingLevel(D3DVECTOR center);
-	BOOL		DeleteBuildingLevel(D3DVECTOR center);
+	bool		AddBuildingLevel(D3DVECTOR center, float min, float max, float height, float factor);
+	bool		UpdateBuildingLevel(D3DVECTOR center);
+	bool		DeleteBuildingLevel(D3DVECTOR center);
 	float		RetBuildingFactor(const D3DVECTOR &p);
 	float		RetHardness(const D3DVECTOR &p);
 
@@ -145,25 +145,25 @@ public:
 	void		SetFlyingMaxHeight(float height);
 	float		RetFlyingMaxHeight();
 	void		FlushFlyingLimit();
-	BOOL		AddFlyingLimit(D3DVECTOR center, float extRadius, float intRadius, float maxHeight);
-	float		RetFlyingLimit(D3DVECTOR pos, BOOL bNoLimit);
+	bool		AddFlyingLimit(D3DVECTOR center, float extRadius, float intRadius, float maxHeight);
+	float		RetFlyingLimit(D3DVECTOR pos, bool bNoLimit);
 
 protected:
-	BOOL		ReliefAddDot(D3DVECTOR pos, float scaleRelief);
+	bool		ReliefAddDot(D3DVECTOR pos, float scaleRelief);
 	void		AdjustRelief();
 	D3DVECTOR	RetVector(int x, int y);
 	D3DVERTEX2	RetVertex(int x, int y, int step);
-	BOOL		CreateMosaic(int ox, int oy, int step, int objRank, const D3DMATERIAL7 &mat, float min, float max);
-	BOOL		CreateSquare(BOOL bMultiRes, int x, int y);
+	bool		CreateMosaic(int ox, int oy, int step, int objRank, const D3DMATERIAL7 &mat, float min, float max);
+	bool		CreateSquare(bool bMultiRes, int x, int y);
 
 	TerrainMaterial* LevelSearchMat(int id);
 	void		LevelTextureName(int x, int y, char *name, FPOINT &uv);
 	float		LevelRetHeight(int x, int y);
-	BOOL		LevelGetDot(int x, int y, float min, float max, float slope);
+	bool		LevelGetDot(int x, int y, float min, float max, float slope);
 	int			LevelTestMat(char *mat);
 	void		LevelSetDot(int x, int y, int id, char *mat);
-	BOOL		LevelIfDot(int x, int y, int id, char *mat);
-	BOOL		LevelPutDot(int x, int y, int id);
+	bool		LevelIfDot(int x, int y, int id, char *mat);
+	bool		LevelPutDot(int x, int y, int id);
 	void		LevelOpenTable();
 	void		LevelCloseTable();
 
@@ -181,8 +181,8 @@ protected:
 	float*			m_relief;		// table of the relief
 	int*			m_texture;		// table of textures
 	int*			m_objRank;		// table of rows of objects
-	BOOL			m_bMultiText;
-	BOOL			m_bLevelText;
+	bool			m_bMultiText;
+	bool			m_bLevelText;
 	float			m_scaleMapping;		// scale of the mapping
 	float			m_scaleRelief;
 	int			m_subdivMapping;

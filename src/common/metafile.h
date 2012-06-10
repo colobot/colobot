@@ -49,7 +49,7 @@ public:
 	CMetaFile();
 	~CMetaFile();
 
-	BOOL	IsExist(char *metaname, char *filename);
+	bool	IsExist(char *metaname, char *filename);
 	int		Open(char *metaname, char *filename);
 	int		RetLength();
 	int		Seek(int offset);
@@ -65,8 +65,8 @@ protected:
 
 protected:
 	MetaFile	m_list[METAMAX];		// metafile open
-	BOOL		m_bOpen;			// open file
-	BOOL		m_bMeta;			// metafile open
+	bool		m_bOpen;			// open file
+	bool		m_bMeta;			// metafile open
 	FILE*		m_stream;			// channel
 	int		m_start;			// position from the beginning
 	int		m_pos;				// current position

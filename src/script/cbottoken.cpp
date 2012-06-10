@@ -349,90 +349,90 @@ char* RetHelpFilename(const char *token)
 
 // Test if a keyword is a type of variable.
 
-BOOL IsType(const char *token)
+bool IsType(const char *token)
 {
-	if ( strcmp(token, "void"   ) == 0 )  return TRUE;
-	if ( strcmp(token, "int"    ) == 0 )  return TRUE;
-	if ( strcmp(token, "float"  ) == 0 )  return TRUE;
-	if ( strcmp(token, "bool"   ) == 0 )  return TRUE;
-	if ( strcmp(token, "string" ) == 0 )  return TRUE;
-	if ( strcmp(token, "point"  ) == 0 )  return TRUE;
-	if ( strcmp(token, "object" ) == 0 )  return TRUE;
-	if ( strcmp(token, "file"   ) == 0 )  return TRUE;
-	if ( strcmp(token, "this"   ) == 0 )  return TRUE;
-	return FALSE;
+	if ( strcmp(token, "void"   ) == 0 )  return true;
+	if ( strcmp(token, "int"    ) == 0 )  return true;
+	if ( strcmp(token, "float"  ) == 0 )  return true;
+	if ( strcmp(token, "bool"   ) == 0 )  return true;
+	if ( strcmp(token, "string" ) == 0 )  return true;
+	if ( strcmp(token, "point"  ) == 0 )  return true;
+	if ( strcmp(token, "object" ) == 0 )  return true;
+	if ( strcmp(token, "file"   ) == 0 )  return true;
+	if ( strcmp(token, "this"   ) == 0 )  return true;
+	return false;
 }
 
 // Test if a keyword is a function.
 
-BOOL IsFunction(const char *token)
+bool IsFunction(const char *token)
 {
-	if ( strcmp(token, "sin"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "cos"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "tan"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "asin"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "acos"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "atan"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "sqrt"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "pow"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "rand"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "abs"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "retobject"    ) == 0 )  return TRUE;
-	if ( strcmp(token, "search"       ) == 0 )  return TRUE;
-	if ( strcmp(token, "radar"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "detect"       ) == 0 )  return TRUE;
-	if ( strcmp(token, "direction"    ) == 0 )  return TRUE;
-	if ( strcmp(token, "distance"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "distance2d"   ) == 0 )  return TRUE;
-	if ( strcmp(token, "space"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "flatground"   ) == 0 )  return TRUE;
-	if ( strcmp(token, "wait"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "move"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "turn"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "goto"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "find"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "grab"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "drop"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "sniff"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "receive"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "send"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "deleteinfo"   ) == 0 )  return TRUE;
-	if ( strcmp(token, "testinfo"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "thump"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "recycle"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "shield"       ) == 0 )  return TRUE;
-	if ( strcmp(token, "fire"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "antfire"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "aim"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "motor"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "jet"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "topo"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "message"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "abstime"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "ismovie"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "errmode"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "ipf"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "strlen"       ) == 0 )  return TRUE;
-	if ( strcmp(token, "strleft"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "strright"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "strmid"       ) == 0 )  return TRUE;
-	if ( strcmp(token, "strval"       ) == 0 )  return TRUE;
-	if ( strcmp(token, "strfind"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "strlower"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "strupper"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "open"         ) == 0 )  return TRUE;
-	if ( strcmp(token, "close"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "writeln"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "readln"       ) == 0 )  return TRUE;
-	if ( strcmp(token, "eof"          ) == 0 )  return TRUE;
-	if ( strcmp(token, "deletefile"   ) == 0 )  return TRUE;
-	if ( strcmp(token, "openfile"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "pendown"      ) == 0 )  return TRUE;
-	if ( strcmp(token, "penup"        ) == 0 )  return TRUE;
-	if ( strcmp(token, "pencolor"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "penwidth"     ) == 0 )  return TRUE;
-	if ( strcmp(token, "sizeof"       ) == 0 )  return TRUE;
-	return FALSE;
+	if ( strcmp(token, "sin"          ) == 0 )  return true;
+	if ( strcmp(token, "cos"          ) == 0 )  return true;
+	if ( strcmp(token, "tan"          ) == 0 )  return true;
+	if ( strcmp(token, "asin"         ) == 0 )  return true;
+	if ( strcmp(token, "acos"         ) == 0 )  return true;
+	if ( strcmp(token, "atan"         ) == 0 )  return true;
+	if ( strcmp(token, "sqrt"         ) == 0 )  return true;
+	if ( strcmp(token, "pow"          ) == 0 )  return true;
+	if ( strcmp(token, "rand"         ) == 0 )  return true;
+	if ( strcmp(token, "abs"          ) == 0 )  return true;
+	if ( strcmp(token, "retobject"    ) == 0 )  return true;
+	if ( strcmp(token, "search"       ) == 0 )  return true;
+	if ( strcmp(token, "radar"        ) == 0 )  return true;
+	if ( strcmp(token, "detect"       ) == 0 )  return true;
+	if ( strcmp(token, "direction"    ) == 0 )  return true;
+	if ( strcmp(token, "distance"     ) == 0 )  return true;
+	if ( strcmp(token, "distance2d"   ) == 0 )  return true;
+	if ( strcmp(token, "space"        ) == 0 )  return true;
+	if ( strcmp(token, "flatground"   ) == 0 )  return true;
+	if ( strcmp(token, "wait"         ) == 0 )  return true;
+	if ( strcmp(token, "move"         ) == 0 )  return true;
+	if ( strcmp(token, "turn"         ) == 0 )  return true;
+	if ( strcmp(token, "goto"         ) == 0 )  return true;
+	if ( strcmp(token, "find"         ) == 0 )  return true;
+	if ( strcmp(token, "grab"         ) == 0 )  return true;
+	if ( strcmp(token, "drop"         ) == 0 )  return true;
+	if ( strcmp(token, "sniff"        ) == 0 )  return true;
+	if ( strcmp(token, "receive"      ) == 0 )  return true;
+	if ( strcmp(token, "send"         ) == 0 )  return true;
+	if ( strcmp(token, "deleteinfo"   ) == 0 )  return true;
+	if ( strcmp(token, "testinfo"     ) == 0 )  return true;
+	if ( strcmp(token, "thump"        ) == 0 )  return true;
+	if ( strcmp(token, "recycle"      ) == 0 )  return true;
+	if ( strcmp(token, "shield"       ) == 0 )  return true;
+	if ( strcmp(token, "fire"         ) == 0 )  return true;
+	if ( strcmp(token, "antfire"      ) == 0 )  return true;
+	if ( strcmp(token, "aim"          ) == 0 )  return true;
+	if ( strcmp(token, "motor"        ) == 0 )  return true;
+	if ( strcmp(token, "jet"          ) == 0 )  return true;
+	if ( strcmp(token, "topo"         ) == 0 )  return true;
+	if ( strcmp(token, "message"      ) == 0 )  return true;
+	if ( strcmp(token, "abstime"      ) == 0 )  return true;
+	if ( strcmp(token, "ismovie"      ) == 0 )  return true;
+	if ( strcmp(token, "errmode"      ) == 0 )  return true;
+	if ( strcmp(token, "ipf"          ) == 0 )  return true;
+	if ( strcmp(token, "strlen"       ) == 0 )  return true;
+	if ( strcmp(token, "strleft"      ) == 0 )  return true;
+	if ( strcmp(token, "strright"     ) == 0 )  return true;
+	if ( strcmp(token, "strmid"       ) == 0 )  return true;
+	if ( strcmp(token, "strval"       ) == 0 )  return true;
+	if ( strcmp(token, "strfind"      ) == 0 )  return true;
+	if ( strcmp(token, "strlower"     ) == 0 )  return true;
+	if ( strcmp(token, "strupper"     ) == 0 )  return true;
+	if ( strcmp(token, "open"         ) == 0 )  return true;
+	if ( strcmp(token, "close"        ) == 0 )  return true;
+	if ( strcmp(token, "writeln"      ) == 0 )  return true;
+	if ( strcmp(token, "readln"       ) == 0 )  return true;
+	if ( strcmp(token, "eof"          ) == 0 )  return true;
+	if ( strcmp(token, "deletefile"   ) == 0 )  return true;
+	if ( strcmp(token, "openfile"     ) == 0 )  return true;
+	if ( strcmp(token, "pendown"      ) == 0 )  return true;
+	if ( strcmp(token, "penup"        ) == 0 )  return true;
+	if ( strcmp(token, "pencolor"     ) == 0 )  return true;
+	if ( strcmp(token, "penwidth"     ) == 0 )  return true;
+	if ( strcmp(token, "sizeof"       ) == 0 )  return true;
+	return false;
 }
 
 

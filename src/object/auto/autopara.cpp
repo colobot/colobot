@@ -59,13 +59,12 @@ CAutoPara::CAutoPara(CInstanceManager* iMan, CObject* object)
 
 CAutoPara::~CAutoPara()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoPara::DeleteObject(BOOL bAll)
+void CAutoPara::DeleteObject(bool bAll)
 {
 	if ( m_channelSound != -1 )
 	{
@@ -111,7 +110,7 @@ void CAutoPara::StartBlitz()
 
 // Management of an event.
 
-BOOL CAutoPara::EventProcess(const Event &event)
+bool CAutoPara::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
@@ -119,8 +118,8 @@ BOOL CAutoPara::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -131,7 +130,7 @@ BOOL CAutoPara::EventProcess(const Event &event)
 		{
 			m_timeVirus = 0.1f+Rand()*0.3f;
 		}
-		return TRUE;
+		return true;
 	}
 
 	EventProgress(event.rTime);
@@ -198,13 +197,13 @@ BOOL CAutoPara::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoPara::CreateInterface(BOOL bSelect)
+bool CAutoPara::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -212,10 +211,10 @@ BOOL CAutoPara::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -234,7 +233,7 @@ BOOL CAutoPara::CreateInterface(BOOL bSelect)
 	ddim.y = 33.0f/480.0f;
 	pw->CreateButton(pos, ddim, 41, EVENT_OBJECT_LIMIT);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -302,11 +301,11 @@ void CAutoPara::ChargeObject(float rTime)
 
 // Saves all parameters of the controller.
 
-BOOL CAutoPara::Write(char *line)
+bool CAutoPara::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == APAP_WAIT )  return FALSE;
+	if ( m_phase == APAP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -322,14 +321,14 @@ BOOL CAutoPara::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoPara::Read(char *line)
+bool CAutoPara::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -339,7 +338,7 @@ BOOL CAutoPara::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

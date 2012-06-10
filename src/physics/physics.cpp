@@ -79,11 +79,11 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
 	m_time = 0.0f;
 	m_timeUnderWater = 0.0f;
 	m_motorSpeed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_bMotor = FALSE;
-	m_bLand = TRUE;  // ground
-	m_bSwim = FALSE;  // in air
-	m_bCollision = FALSE;
-	m_bObstacle = FALSE;
+	m_bMotor = false;
+	m_bLand = true;  // ground
+	m_bSwim = false;  // in air
+	m_bCollision = false;
+	m_bObstacle = false;
 	m_repeatCollision = 0;
 	m_linVibrationFactor = 1.0f;
 	m_cirVibrationFactor = 1.0f;
@@ -95,7 +95,7 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
 	m_lastUnderParticule = 0.0f;
 	m_lastPloufParticule = 0.0f;
 	m_lastFlameParticule = 0.0f;
-	m_bWheelParticuleBrake = FALSE;
+	m_bWheelParticuleBrake = false;
 	m_absorbWater        = 0.0f;
 	m_reactorTemperature = 0.0f;
 	m_reactorRange       = 1.0f;
@@ -110,10 +110,10 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
 	m_soundTimePshhh = 0.0f;
 	m_soundTimeJostle = 0.0f;
 	m_soundTimeBoum = 0.0f;
-	m_bSoundSlow = TRUE;
-	m_bFreeze = FALSE;
-	m_bForceUpdate = TRUE;
-	m_bLowLevel = FALSE;
+	m_bSoundSlow = true;
+	m_bFreeze = false;
+	m_bForceUpdate = true;
+	m_bLowLevel = false;
 
 	ZeroMemory(&m_linMotion, sizeof(Motion));
 	ZeroMemory(&m_cirMotion, sizeof(Motion));
@@ -129,7 +129,7 @@ CPhysics::~CPhysics()
 
 // Destroys the object.
 
-void CPhysics::DeleteObject(BOOL bAll)
+void CPhysics::DeleteObject(bool bAll)
 {
 	if ( m_soundChannel != -1 )
 	{
@@ -173,7 +173,7 @@ PhysicsType CPhysics::RetType()
 
 // Saves all parameters of the object.
 
-BOOL CPhysics::Write(char *line)
+bool CPhysics::Write(char *line)
 {
 	char		name[100];
 
@@ -189,12 +189,12 @@ BOOL CPhysics::Write(char *line)
 		strcat(line, name);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the object.
 
-BOOL CPhysics::Read(char *line)
+bool CPhysics::Read(char *line)
 {
 	m_motorSpeed = OpDir(line, "motor");
 
@@ -204,7 +204,7 @@ BOOL CPhysics::Read(char *line)
 		SetLand(OpInt(line, "land", 0));
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -232,7 +232,7 @@ float CPhysics::RetFloorHeight()
 
 // Managing the state of the engine.
 
-void CPhysics::SetMotor(BOOL bState)
+void CPhysics::SetMotor(bool bState)
 {
 	int			light;
 
@@ -246,7 +246,7 @@ void CPhysics::SetMotor(BOOL bState)
 	}
 }
 
-BOOL CPhysics::RetMotor()
+bool CPhysics::RetMotor()
 {
 	return m_bMotor;
 }
@@ -254,13 +254,13 @@ BOOL CPhysics::RetMotor()
 
 // Management of the state in flight/ground.
 
-void CPhysics::SetLand(BOOL bState)
+void CPhysics::SetLand(bool bState)
 {
 	m_bLand = bState;
 	SetMotor(!bState);  // lights if you leave the reactor in flight
 }
 
-BOOL CPhysics::RetLand()
+bool CPhysics::RetLand()
 {
 	return m_bLand;
 }
@@ -268,7 +268,7 @@ BOOL CPhysics::RetLand()
 
 // Management of the state in air/water.
 
-void CPhysics::SetSwim(BOOL bState)
+void CPhysics::SetSwim(bool bState)
 {
 	if ( !m_bSwim && bState )  // enters the water?
 	{
@@ -277,7 +277,7 @@ void CPhysics::SetSwim(BOOL bState)
 	m_bSwim = bState;
 }
 
-BOOL CPhysics::RetSwim()
+bool CPhysics::RetSwim()
 {
 	return m_bSwim;
 }
@@ -285,12 +285,12 @@ BOOL CPhysics::RetSwim()
 
 // Indicates whether a collision occurred.
 
-void CPhysics::SetCollision(BOOL bCollision)
+void CPhysics::SetCollision(bool bCollision)
 {
 	m_bCollision = bCollision;
 }
 
-BOOL CPhysics::RetCollision()
+bool CPhysics::RetCollision()
 {
 	return m_bCollision;
 }
@@ -298,12 +298,12 @@ BOOL CPhysics::RetCollision()
 
 // Indicates whether the influence of soil is activated or not.
 
-void CPhysics::SetFreeze(BOOL bFreeze)
+void CPhysics::SetFreeze(bool bFreeze)
 {
 	m_bFreeze = bFreeze;
 }
 
-BOOL CPhysics::RetFreeze()
+bool CPhysics::RetFreeze()
 {
 	return m_bFreeze;
 }
@@ -764,11 +764,11 @@ float CPhysics::RetLinLength(float dist)
 
 
 // Management of an event.
-// Returns FALSE if the object is destroyed.
+// Returns false if the object is destroyed.
 
-BOOL CPhysics::EventProcess(const Event &event)
+bool CPhysics::EventProcess(const Event &event)
 {
-	if ( !m_object->RetEnable() )  return TRUE;
+	if ( !m_object->RetEnable() )  return true;
 
 	if ( m_brain != 0 )
 	{
@@ -779,7 +779,7 @@ BOOL CPhysics::EventProcess(const Event &event)
 	{
 		return EventFrame(event);
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -855,7 +855,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 			{
 				motorSpeed.y = -1.0f;  // grave
 			}
-			SetMotor(FALSE);
+			SetMotor(false);
 		}
 	}
 
@@ -871,7 +871,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		{
 			motorSpeed.y = -1.0f;  // grave
 		}
-		SetMotor(FALSE);
+		SetMotor(false);
 	}
 
 	if ( m_type == TYPE_FLYING && !m_bLand && motorSpeed.y > 0.0f )
@@ -903,16 +903,16 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 				if ( m_bLowLevel && m_object->RetSelect() )  // beep cool?
 				{
 					m_sound->Play(SOUND_INFO, m_object->RetPosition(0), 1.0f, 2.0f);
-					m_bLowLevel = FALSE;
+					m_bLowLevel = false;
 				}
 			}
-			m_bObstacle = FALSE;
+			m_bObstacle = false;
 		}
 		else	// in flight?
 		{
 			m_reactorRange -= rTime*(1.0f/m_object->RetRange());
 			if ( m_reactorRange < 0.0f )  m_reactorRange = 0.0f;
-			if ( m_reactorRange < 0.5f )  m_bLowLevel = TRUE;
+			if ( m_reactorRange < 0.5f )  m_bLowLevel = true;
 		}
 
 		if ( m_reactorRange == 0.0f )  // reactor tilt?
@@ -996,8 +996,8 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		h += m_object->RetCharacter()->height;
 		if ( motorSpeed.y > 0.0f && m_reactorRange > 0.1f && pos.y < h )
 		{
-			m_bLand = FALSE;  // take off
-			SetMotor(TRUE);
+			m_bLand = false;  // take off
+			SetMotor(true);
 			pos.y += 0.05f;  // small initial height (startup)
 			m_object->SetPosition(0, pos);
 		}
@@ -1008,11 +1008,11 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 		if ( motorSpeed.x == 0.0f &&
 			 motorSpeed.z == 0.0f )
 		{
-			SetMotor(FALSE);
+			SetMotor(false);
 		}
 		else
 		{
-			SetMotor(TRUE);
+			SetMotor(true);
 		}
 	}
 
@@ -1048,18 +1048,18 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 	D3DVECTOR	vibLin, vibCir, incl;
 	float		speedLin, speedCir, accel;
 	ObjectType	type;
-	BOOL		bOnBoard;
+	bool		bOnBoard;
 
 	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return;
 
 	type = m_object->RetType();
 	character = m_object->RetCharacter();
 
-	bOnBoard = FALSE;
+	bOnBoard = false;
 	if ( m_object->RetSelect() &&
 		 m_camera->RetType() == CAMERA_ONBOARD )
 	{
-		bOnBoard = TRUE;
+		bOnBoard = true;
 	}
 
 	vibLin = m_motion->RetLinVibration();
@@ -1456,7 +1456,7 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 
 
 // Makes physics evolve as time elapsed.
-// Returns FALSE if the object is destroyed.
+// Returns false if the object is destroyed.
 //
 //	a:  acceleration
 //	v1: velocity at time t1
@@ -1467,7 +1467,7 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 //	v2 = v1 + a*dt
 //	dd = v2*dt
 
-BOOL CPhysics::EventFrame(const Event &event)
+bool CPhysics::EventFrame(const Event &event)
 {
 	ObjectType	type;
 	D3DMATRIX	objRotate, matRotate;
@@ -1475,7 +1475,7 @@ BOOL CPhysics::EventFrame(const Event &event)
 	float		h, w;
 	int			i;
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	m_time += event.rTime;
 	m_timeUnderWater += event.rTime;
@@ -1582,7 +1582,7 @@ BOOL CPhysics::EventFrame(const Event &event)
 		i = ObjectAdapt(newpos, newangle);
 		if ( i == 2 )  // object destroyed?
 		{
-			return FALSE;
+			return false;
 		}
 		if ( i == 1 )  // immobile object?
 		{
@@ -1607,9 +1607,9 @@ BOOL CPhysics::EventFrame(const Event &event)
 	MotorParticule(m_time, event.rTime);
 	SoundMotor(event.rTime);
 
-	m_bForceUpdate = FALSE;
+	m_bForceUpdate = false;
 
-	return TRUE;
+	return true;
 }
 
 // Starts or stops the engine sounds.
@@ -1861,7 +1861,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 	{
 		if ( m_soundChannel == -1 )
 		{
-			m_soundChannel = m_sound->Play(SOUND_MOTORi, m_object->RetPosition(0), 0.0f, 1.0f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_MOTORi, m_object->RetPosition(0), 0.0f, 1.0f, true);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 0.2f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
 		}
@@ -1934,7 +1934,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 
 	if ( m_soundChannel == -1 )
 	{
-		m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 0.5f, TRUE);
+		m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 0.5f, true);
 		m_sound->AddEnvelope(m_soundChannel, amplitude, freq, time, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_soundChannel, amplitude, freq, 1.0f, SOPER_LOOP);
 	}
@@ -1947,7 +1947,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 			m_sound->FlushEnvelope(m_soundChannel);
 			m_sound->AddEnvelope(m_soundChannel, amplitude, freq, time, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, amplitude, freq, 1.0f, SOPER_LOOP);
-			m_bSoundSlow = FALSE;
+			m_bSoundSlow = false;
 		}
 	}
 
@@ -2028,7 +2028,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 
 	if ( m_soundChannel == -1 )
 	{
-		m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 0.25f, TRUE);
+		m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 0.25f, true);
 		m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 0.2f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 1.0f, SOPER_LOOP);
 	}
@@ -2041,7 +2041,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 			m_sound->FlushEnvelope(m_soundChannel);
 			m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 0.3f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 1.0f, SOPER_LOOP);
-			m_bSoundSlow = TRUE;
+			m_bSoundSlow = true;
 		}
 	}
 
@@ -2146,7 +2146,7 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 				sound = SOUND_FLY;
 			}
 
-			m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 1.0f, TRUE);
+			m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 1.0f, true);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 0.6f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
 		}
@@ -2264,7 +2264,7 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 		{
 			if ( m_soundChannelSlide == -1 )
 			{
-				m_soundChannelSlide = m_sound->Play(SOUND_SLIDE, m_object->RetPosition(0), 0.0f, 1.0f, TRUE);
+				m_soundChannelSlide = m_sound->Play(SOUND_SLIDE, m_object->RetPosition(0), 0.0f, 1.0f, true);
 				m_sound->AddEnvelope(m_soundChannelSlide, 0.5f, 1.0f, 0.3f, SOPER_CONTINUE);
 				m_sound->AddEnvelope(m_soundChannelSlide, 0.5f, 1.0f, 1.0f, SOPER_LOOP);
 			}
@@ -2293,7 +2293,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 	D3DVECTOR	norm;
 	D3DMATRIX	matRotate;
 	float		level, h, f, a1, volume, freq, force;
-	BOOL		bOldSwim, bSlopingTerrain;
+	bool		bOldSwim, bSlopingTerrain;
 
 	type = m_object->RetType();
 	character = m_object->RetCharacter();
@@ -2320,7 +2320,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
 	if ( m_type == TYPE_FLYING )
 	{
-		bSlopingTerrain = FALSE;  // ground as possible to land
+		bSlopingTerrain = false;  // ground as possible to land
 
 		if ( !m_bLand )  // in flight?
 		{
@@ -2328,7 +2328,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 			a1 = Abs(RotateAngle(Length(norm.x, norm.z), norm.y));
 			if ( a1 < (90.0f-55.0f)*PI/180.0f )  // slope exceeds 55 degrees?
 			{
-				bSlopingTerrain = TRUE;  // very sloped ground
+				bSlopingTerrain = true;  // very sloped ground
 
 				if ( h < 4.0f )  // collision with the ground?
 				{
@@ -2362,8 +2362,8 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 				m_sound->Play(SOUND_BOUM, pos, volume, freq);
 			}
 
-			m_bLand = TRUE;  // on the ground?
-			SetMotor(FALSE);
+			m_bLand = true;  // on the ground?
+			SetMotor(false);
 			pos.y -= h;  // plate to the ground immediately
 			m_floorHeight = 0.0f;
 
@@ -2617,8 +2617,8 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 				distance = Length(oPos, iiPos);
 				if ( distance >= iRad+oRad )  // view (*)
 				{
-					m_bCollision = TRUE;
-					m_bObstacle = TRUE;
+					m_bCollision = true;
+					m_bObstacle = true;
 
 					sound = pObj->RetCrashSphereSound(j-1);
 					if ( sound != SOUND_CLICK )
@@ -2696,14 +2696,14 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 
 // Shakes an object.
 
-BOOL CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
+bool CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
 							D3DVECTOR oPos, float oRad)
 {
 	D3DVECTOR	speed;
 	float		distance, force, d, f;
 
 	distance = Length(oPos, iPos);
-	if ( distance >= iRad+oRad )  return FALSE;
+	if ( distance >= iRad+oRad )  return false;
 
 	d = (iRad+oRad)/2.0f;
 	f = (distance-d)/d;  // 0 = off, 1 = near
@@ -2726,13 +2726,13 @@ BOOL CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
 
 // Shakes forcing an object.
 
-BOOL CPhysics::JostleObject(CObject* pObj, float force)
+bool CPhysics::JostleObject(CObject* pObj, float force)
 {
 	D3DVECTOR	oPos;
 	float		oRad;
 
 	pObj->GetJotlerSphere(oPos, oRad);
-	if ( oRad <= 0.0f )  return FALSE;
+	if ( oRad <= 0.0f )  return false;
 
 	if ( m_soundTimeJostle >= 0.20f )
 	{
@@ -2744,14 +2744,14 @@ BOOL CPhysics::JostleObject(CObject* pObj, float force)
 }
 
 // Effects of the explosion on the object buffers.
-// Returns TRUE if we ignore this obstacle.
+// Returns true if we ignore this obstacle.
 
-BOOL CPhysics::ExploOther(ObjectType iType,
+bool CPhysics::ExploOther(ObjectType iType,
 						  CObject *pObj, ObjectType oType, float force)
 {
 	CPyro*		pyro;
 
-	if ( !pObj->RetEnable() )  return TRUE;
+	if ( !pObj->RetEnable() )  return true;
 
 	JostleObject(pObj, 1.0f);  // shakes the object
 
@@ -2847,7 +2847,7 @@ BOOL CPhysics::ExploOther(ObjectType iType,
 		pyro->Create(PT_FRAGT, pObj);  // total destruction
 	}
 
-	return FALSE;
+	return false;
 }
 
 // Effects of the explosion on the object itself.
@@ -2986,13 +2986,13 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 	CObject*	power;
 	float		energy, intensity;
 	int			effectLight;
-	BOOL		bFlash;
+	bool		bFlash;
 
 	m_restBreakParticule -= rTime;
 	if ( aTime-m_lastPowerParticule < m_engine->ParticuleAdapt(0.05f) )  return;
 	m_lastPowerParticule = aTime;
 
-	bFlash = FALSE;
+	bFlash = false;
 
 	energy = 0.0f;
 	power = m_object->RetPower();
@@ -3005,8 +3005,8 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 	{
 		if ( energy > m_lastEnergy )  // recharge?
 		{
-			PowerParticule(1.0f, FALSE);
-			bFlash = TRUE;
+			PowerParticule(1.0f, false);
+			bFlash = true;
 		}
 
 		if ( energy == 0.0f || m_lastEnergy == 0.0f )
@@ -3020,7 +3020,7 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 	if ( m_restBreakParticule > 0.0f )
 	{
 		PowerParticule(m_restBreakParticule/2.5f, (energy == 0));
-		bFlash = TRUE;
+		bFlash = true;
 	}
 
 	effectLight = m_object->RetEffectLight();
@@ -3042,21 +3042,21 @@ void CPhysics::FrameParticule(float aTime, float rTime)
 
 // Generates some particles after a recharge.
 
-void CPhysics::PowerParticule(float factor, BOOL bBreak)
+void CPhysics::PowerParticule(float factor, bool bBreak)
 {
 	Character*	character;
 	CObject*	fret;
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, ppos, eye, speed;
 	FPOINT		dim;
-	BOOL		bCarryPower;
+	bool		bCarryPower;
 
-	bCarryPower = FALSE;
+	bCarryPower = false;
 	fret = m_object->RetFret();
 	if ( fret != 0 && fret->RetType() == OBJECT_POWER &&
 		 m_object->RetAngleZ(1) == ARM_STOCK_ANGLE1 )
 	{
-		bCarryPower = TRUE;  // carries a battery
+		bCarryPower = true;  // carries a battery
 	}
 
 	mat = m_object->RetWorldMatrix(0);
@@ -3808,7 +3808,7 @@ void CPhysics::WheelParticule(int color, float width)
 			m_wheelParticulePos[1] = goal2;
 		}
 
-		while ( TRUE )
+		while ( true )
 		{
 			dist1 = Length(m_wheelParticulePos[0], goal1);
 			if ( dist1 < step )  break;
@@ -3827,18 +3827,18 @@ void CPhysics::WheelParticule(int color, float width)
 			m_wheelParticulePos[1] = wheel2;
 		}
 
-		m_bWheelParticuleBrake = TRUE;
+		m_bWheelParticuleBrake = true;
 	}
 	else
 	{
-		m_bWheelParticuleBrake = FALSE;
+		m_bWheelParticuleBrake = false;
 	}
 }
 
 
 // Creates the interface.
 
-void CPhysics::CreateInterface(BOOL bSelect)
+void CPhysics::CreateInterface(bool bSelect)
 {
 	if ( m_brain != 0 )
 	{

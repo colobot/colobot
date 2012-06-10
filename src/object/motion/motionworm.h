@@ -39,16 +39,16 @@ public:
 	CMotionWorm(CInstanceManager* iMan, CObject* object);
 	~CMotionWorm();
 
-	void	DeleteObject(BOOL bAll=FALSE);
-	BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
-	BOOL	EventProcess(const Event &event);
+	void	DeleteObject(bool bAll=false);
+	bool	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	bool	EventProcess(const Event &event);
 
-	BOOL	SetParam(int rank, float value);
+	bool	SetParam(int rank, float value);
 	float	RetParam(int rank);
 
 protected:
 	void	CreatePhysics();
-	BOOL	EventFrame(const Event &event);
+	bool	EventFrame(const Event &event);
 
 protected:
 	float		m_timeUp;
@@ -66,7 +66,7 @@ protected:
 	float		m_armCirSpeed;
 	int			m_specAction;
 	float		m_specTime;
-	BOOL		m_bArmStop;
+	bool		m_bArmStop;
 	float		m_lastParticule;
 };
 

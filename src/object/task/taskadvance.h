@@ -36,7 +36,7 @@ public:
 	CTaskAdvance(CInstanceManager* iMan, CObject* object);
 	~CTaskAdvance();
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	Error	Start(float length);
 	Error	IsEnded();
@@ -51,6 +51,6 @@ protected:
 	D3DVECTOR	m_startPos;
 	float		m_lastDist;
 	float		m_fixTime;
-	BOOL		m_bError;
+	bool		m_bError;
 };
 

@@ -43,7 +43,7 @@
 
 
 
-#define ADJUST_ANGLE		FALSE		// TRUE -> adjusts the angles of the members
+#define ADJUST_ANGLE		false		// true -> adjusts the angles of the members
 #define START_TIME		1000.0f		// beginning of the relative time
 
 
@@ -61,7 +61,7 @@ CMotionBee::CMotionBee(CInstanceManager* iMan, CObject* object)
 	m_armPartIndex   = 0;
 	m_armMemberIndex = 0;
 	m_armLastAction  = -1;
-	m_bArmStop = FALSE;
+	m_bArmStop = false;
 }
 
 // Object's destructor.
@@ -73,20 +73,20 @@ CMotionBee::~CMotionBee()
 
 // Removes an object.
 
-void CMotionBee::DeleteObject(BOOL bAll)
+void CMotionBee::DeleteObject(bool bAll)
 {
 }
 
 
 // Creates a vehicle traveling any lands on the ground.
 
-BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 						float power)
 {
 	CModFile*	pModFile;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 3+18+2 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 3+18+2 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -321,7 +321,7 @@ BOOL CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates the physical object.
@@ -407,7 +407,7 @@ void CMotionBee::CreatePhysics()
 
 // Management of an event.
 
-BOOL CMotionBee::EventProcess(const Event &event)
+bool CMotionBee::EventProcess(const Event &event)
 {
 	CMotion::EventProcess(event);
 
@@ -446,20 +446,20 @@ BOOL CMotionBee::EventProcess(const Event &event)
 #endif
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Management of an event.
 
-BOOL CMotionBee::EventFrame(const Event &event)
+bool CMotionBee::EventFrame(const Event &event)
 {
 	D3DVECTOR		dir;
 	float			s, a, prog;
 	int				action, i, st, nd;
-	BOOL			bStop;
+	bool			bStop;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
 
 	s =     m_physics->RetLinMotionX(MO_MOTSPEED)*0.30f;
 	a = Abs(m_physics->RetCirMotionY(MO_MOTSPEED)*2.00f);
@@ -471,7 +471,7 @@ BOOL CMotionBee::EventFrame(const Event &event)
 	m_armMember += (s+a)*event.rTime*0.15f;
 
 	bStop = ( a == 0.0f && s == 0.0f );  // stopped?
-	if ( !m_physics->RetLand() )  bStop = TRUE;
+	if ( !m_physics->RetLand() )  bStop = true;
 
 	if ( bStop )
 	{
@@ -655,7 +655,7 @@ BOOL CMotionBee::EventFrame(const Event &event)
 	m_engine->SetObjectShadowColor(m_objectPart[0].object, color);
 #endif
 
-	return TRUE;
+	return true;
 }
 
 

@@ -90,8 +90,8 @@
 
 
 
-#define ADJUST_ONBOARD	FALSE		// TRUE -> adjusts the camera ONBOARD
-#define ADJUST_ARM	FALSE		// TRUE -> adjusts the manipulator arm
+#define ADJUST_ONBOARD	false		// true -> adjusts the camera ONBOARD
+#define ADJUST_ARM	false		// true -> adjusts the manipulator arm
 #define VIRUS_DELAY	60.0f		// duration of virus infection
 #define LOSS_SHIELD	0.24f		// loss of the shield by shot
 #define LOSS_SHIELD_H	0.10f		// loss of the shield for humans
@@ -262,33 +262,33 @@ CObject::CObject(CInstanceManager* iMan)
 	m_range    = 0.0f;
 	m_transparency = 0.0f;
 	m_lastEnergy = 999.9f;
-	m_bHilite = FALSE;
-	m_bSelect = FALSE;
-	m_bSelectable = TRUE;
-	m_bCheckToken = TRUE;
-	m_bVisible = TRUE;
-	m_bEnable = TRUE;
-	m_bGadget = FALSE;
-	m_bProxyActivate = FALSE;
-	m_bTrainer = FALSE;
-	m_bToy = FALSE;
-	m_bManual = FALSE;
-	m_bFixed = FALSE;
-	m_bClip = TRUE;
-	m_bShowLimit = FALSE;
+	m_bHilite = false;
+	m_bSelect = false;
+	m_bSelectable = true;
+	m_bCheckToken = true;
+	m_bVisible = true;
+	m_bEnable = true;
+	m_bGadget = false;
+	m_bProxyActivate = false;
+	m_bTrainer = false;
+	m_bToy = false;
+	m_bManual = false;
+	m_bFixed = false;
+	m_bClip = true;
+	m_bShowLimit = false;
 	m_showLimitRadius = 0.0f;
 	m_aTime = 0.0f;
 	m_shotTime = 0.0f;
-	m_bVirusMode = FALSE;
+	m_bVirusMode = false;
 	m_virusTime = 0.0f;
 	m_lastVirusParticule = 0.0f;
 	m_totalDesectList = 0;
-	m_bLock  = FALSE;
-	m_bExplo = FALSE;
-	m_bCargo = FALSE;
-	m_bBurn  = FALSE;
-	m_bDead  = FALSE;
-	m_bFlat  = FALSE;
+	m_bLock  = false;
+	m_bExplo = false;
+	m_bCargo = false;
+	m_bBurn  = false;
+	m_bDead  = false;
+	m_bFlat  = false;
 	m_gunGoalV = 0.0f;
 	m_gunGoalH = 0.0f;
 	m_shieldRadius = 0.0f;
@@ -304,22 +304,22 @@ CObject::CObject(CInstanceManager* iMan)
 	m_character.wheelRight = 1.0f;
 
 	m_resetCap      = RESET_NONE;
-	m_bResetBusy    = FALSE;
+	m_bResetBusy    = false;
 	m_resetPosition = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_resetAngle    = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_resetRun      = -1;
 
 	m_cameraType = CAMERA_BACK;
 	m_cameraDist = 50.0f;
-	m_bCameraLock = FALSE;
+	m_bCameraLock = false;
 
 	m_infoTotal = 0;
 	m_infoReturn = NAN;
-	m_bInfoUpdate = FALSE;
+	m_bInfoUpdate = false;
 
 	for ( i=0 ; i<OBJECTMAXPART ; i++ )
 	{
-		m_objectPart[i].bUsed = FALSE;
+		m_objectPart[i].bUsed = false;
 	}
 	m_totalPart = 0;
 
@@ -370,10 +370,10 @@ CObject::~CObject()
 
 
 // Removes an object.
-// If bAll = TRUE, it does not help,
+// If bAll = true, it does not help,
 // because all objects in the scene are quickly destroyed!
 
-void CObject::DeleteObject(BOOL bAll)
+void CObject::DeleteObject(bool bAll)
 {
 	CObject*	pObj;
 	CPyro*		pPyro;
@@ -430,7 +430,7 @@ void CObject::DeleteObject(BOOL bAll)
 
 		if ( m_bSelect )
 		{
-			SetSelect(FALSE);
+			SetSelect(false);
 		}
 
 		if ( m_type == OBJECT_BASE     ||
@@ -501,7 +501,7 @@ void CObject::DeleteObject(BOOL bAll)
 	{
 		if ( m_objectPart[i].bUsed )
 		{
-			m_objectPart[i].bUsed = FALSE;
+			m_objectPart[i].bUsed = false;
 			m_engine->DeleteObject(m_objectPart[i].object);
 
 			if ( m_objectPart[i].masterParti != -1 )
@@ -515,7 +515,7 @@ void CObject::DeleteObject(BOOL bAll)
 	if ( m_bShowLimit )
 	{
 		m_main->FlushShowLimit(0);
-		m_bShowLimit = FALSE;
+		m_bShowLimit = false;
 	}
 
 	if ( !bAll )  m_main->CreateShortcuts();
@@ -564,10 +564,10 @@ void CObject::Simplify()
 
 
 // Detonates an object, when struck by a shot.
-// If FALSE is returned, the object is still screwed.
-// If TRUE is returned, the object is destroyed.
+// If false is returned, the object is still screwed.
+// If true is returned, the object is destroyed.
 
-BOOL CObject::ExploObject(ExploType type, float force, float decay)
+bool CObject::ExploObject(ExploType type, float force, float decay)
 {
 	PyroType	pyroType;
 	CPyro*		pyro;
@@ -597,11 +597,11 @@ BOOL CObject::ExploObject(ExploType type, float force, float decay)
 
 	if ( EXPLO_BOUM )
 	{
-		if ( m_shotTime < 0.5f )  return FALSE;
+		if ( m_shotTime < 0.5f )  return false;
 		m_shotTime = 0.0f;
 	}
 
-	if ( m_type == OBJECT_HUMAN && m_bDead )  return FALSE;
+	if ( m_type == OBJECT_HUMAN && m_bDead )  return false;
 
 	// Calculate the power lost by the explosion.
 	if ( force == 0.0f )
@@ -673,7 +673,7 @@ BOOL CObject::ExploObject(ExploType type, float force, float decay)
 				 m_type == OBJECT_BULLET )
 			{
 				pyroType = PT_BURNO;
-				SetBurn(TRUE);
+				SetBurn(true);
 			}
 			else if ( m_type == OBJECT_HUMAN )
 			{
@@ -682,9 +682,9 @@ BOOL CObject::ExploObject(ExploType type, float force, float decay)
 			else
 			{
 				pyroType = PT_BURNT;
-				SetBurn(TRUE);
+				SetBurn(true);
 			}
-			SetVirusMode(FALSE);
+			SetVirusMode(false);
 		}
 		else if ( type == EXPLO_WATER )
 		{
@@ -766,11 +766,11 @@ BOOL CObject::ExploObject(ExploType type, float force, float decay)
 		m_main->SaveOneScript(this);
 	}
 
-	if ( shield > 0.0f )  return FALSE;  // not dead yet
+	if ( shield > 0.0f )  return false;  // not dead yet
 
 	if ( RetSelect() )
 	{
-		SetSelect(FALSE);  // deselects the object
+		SetSelect(false);  // deselects the object
 		m_camera->SetType(CAMERA_EXPLO);
 		m_main->DeselectAll();
 	}
@@ -796,7 +796,7 @@ BOOL CObject::ExploObject(ExploType type, float force, float decay)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // (*)	If a robot or cosmonaut dies, the subject must continue to exist,
@@ -807,7 +807,7 @@ BOOL CObject::ExploObject(ExploType type, float force, float decay)
 
 void CObject::InitPart(int part)
 {
-	m_objectPart[part].bUsed      = TRUE;
+	m_objectPart[part].bUsed      = true;
 	m_objectPart[part].object     = -1;
 	m_objectPart[part].parentPart = -1;
 
@@ -817,9 +817,9 @@ void CObject::InitPart(int part)
 	m_objectPart[part].angle.z    = 0.0f;
 	m_objectPart[part].zoom       = D3DVECTOR(1.0f, 1.0f, 1.0f);
 
-	m_objectPart[part].bTranslate = TRUE;
-	m_objectPart[part].bRotate    = TRUE;
-	m_objectPart[part].bZoom      = FALSE;
+	m_objectPart[part].bTranslate = true;
+	m_objectPart[part].bRotate    = true;
+	m_objectPart[part].bZoom      = false;
 
 	D3DUtil_SetIdentityMatrix(m_objectPart[part].matTranslate);
 	D3DUtil_SetIdentityMatrix(m_objectPart[part].matRotate);
@@ -859,7 +859,7 @@ void CObject::DeletePart(int part)
 		m_objectPart[part].masterParti = -1;
 	}
 
-	m_objectPart[part].bUsed = FALSE;
+	m_objectPart[part].bUsed = false;
 	m_engine->DeleteObject(m_objectPart[part].object);
 	UpdateTotalPart();
 }
@@ -988,7 +988,7 @@ int CObject::RetID()
 
 // Saves all the parameters of the object.
 
-BOOL CObject::Write(char *line)
+bool CObject::Write(char *line)
 {
 	D3DVECTOR	pos;
 	Info		info;
@@ -1161,12 +1161,12 @@ BOOL CObject::Write(char *line)
 		m_auto->Write(line);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Returns all parameters of the object.
 
-BOOL CObject::Read(char *line)
+bool CObject::Read(char *line)
 {
 	D3DVECTOR	pos, dir;
 	Info		info;
@@ -1251,7 +1251,7 @@ BOOL CObject::Read(char *line)
 		m_auto->Read(line);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1309,13 +1309,13 @@ int CObject::RetCrashSphereTotal()
 // Returns a sphere for collisions.
 // The position is absolute in the world.
 
-BOOL CObject::GetCrashSphere(int rank, D3DVECTOR &pos, float &radius)
+bool CObject::GetCrashSphere(int rank, D3DVECTOR &pos, float &radius)
 {
 	if ( rank < 0 || rank >= m_crashSphereUsed )
 	{
 		pos = m_objectPart[0].position;
 		radius = 0.0f;
-		return FALSE;
+		return false;
 	}
 
 	// Returns to the sphere collisions,
@@ -1329,7 +1329,7 @@ BOOL CObject::GetCrashSphere(int rank, D3DVECTOR &pos, float &radius)
 	{
 		pos = m_objectPart[0].position + m_crashSpherePos[0];
 		radius = m_crashSphereRadius[0];
-		return TRUE;
+		return true;
 	}
 
 	if ( m_objectPart[0].bTranslate ||
@@ -1339,7 +1339,7 @@ BOOL CObject::GetCrashSphere(int rank, D3DVECTOR &pos, float &radius)
 	}
 	pos = Transform(m_objectPart[0].matWorld, m_crashSpherePos[rank]);
 	radius = m_crashSphereRadius[rank];
-	return TRUE;
+	return true;
 }
 
 // Returns the hardness of a sphere.
@@ -1440,7 +1440,7 @@ void CObject::SetFloorHeight(float height)
 	}
 
 	m_objectPart[0].position.y = pos.y+height+m_character.height;
-	m_objectPart[0].bTranslate = TRUE;  // it will recalculate the matrices
+	m_objectPart[0].bTranslate = true;  // it will recalculate the matrices
 }
 
 // Adjust the inclination of an object laying on the ground.
@@ -1477,7 +1477,7 @@ void CObject::SetLinVibration(D3DVECTOR dir)
 		 m_linVibration.z != dir.z )
 	{
 		m_linVibration = dir;
-		m_objectPart[0].bTranslate = TRUE;
+		m_objectPart[0].bTranslate = true;
 	}
 }
 
@@ -1495,7 +1495,7 @@ void CObject::SetCirVibration(D3DVECTOR dir)
 		 m_cirVibration.z != dir.z )
 	{
 		m_cirVibration = dir;
-		m_objectPart[0].bRotate = TRUE;
+		m_objectPart[0].bRotate = true;
 	}
 }
 
@@ -1513,7 +1513,7 @@ void CObject::SetInclinaison(D3DVECTOR dir)
 		 m_inclinaison.z != dir.z )
 	{
 		m_inclinaison = dir;
-		m_objectPart[0].bRotate = TRUE;
+		m_objectPart[0].bRotate = true;
 	}
 }
 
@@ -1532,14 +1532,14 @@ void CObject::SetPosition(int part, const D3DVECTOR &pos)
 	int			rank, i, j;
 
 	m_objectPart[part].position = pos;
-	m_objectPart[part].bTranslate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
 
 	if ( part == 0 && !m_bFlat )  // main part?
 	{
 		rank = m_objectPart[0].object;
 
 		shPos = pos;
-		m_terrain->MoveOnFloor(shPos, TRUE);
+		m_terrain->MoveOnFloor(shPos, true);
 		m_engine->SetObjectShadowPos(rank, shPos);
 
 		if ( m_physics != 0 && m_physics->RetType() == TYPE_FLYING )
@@ -1654,7 +1654,7 @@ D3DVECTOR CObject::RetPosition(int part)
 void CObject::SetAngle(int part, const D3DVECTOR &angle)
 {
 	m_objectPart[part].angle = angle;
-	m_objectPart[part].bRotate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bRotate = true;  // it will recalculate the matrices
 
 	if ( part == 0 && !m_bFlat )  // main part?
 	{
@@ -1672,7 +1672,7 @@ D3DVECTOR CObject::RetAngle(int part)
 void CObject::SetAngleY(int part, float angle)
 {
 	m_objectPart[part].angle.y = angle;
-	m_objectPart[part].bRotate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bRotate = true;  // it will recalculate the matrices
 
 	if ( part == 0 && !m_bFlat )  // main part?
 	{
@@ -1685,7 +1685,7 @@ void CObject::SetAngleY(int part, float angle)
 void CObject::SetAngleX(int part, float angle)
 {
 	m_objectPart[part].angle.x = angle;
-	m_objectPart[part].bRotate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bRotate = true;  // it will recalculate the matrices
 }
 
 // Gives the rotation about the axis Z.
@@ -1693,7 +1693,7 @@ void CObject::SetAngleX(int part, float angle)
 void CObject::SetAngleZ(int part, float angle)
 {
 	m_objectPart[part].angle.z = angle;
-	m_objectPart[part].bRotate = TRUE;  //it will recalculate the matrices
+	m_objectPart[part].bRotate = true;  //it will recalculate the matrices
 }
 
 float CObject::RetAngleY(int part)
@@ -1716,7 +1716,7 @@ float CObject::RetAngleZ(int part)
 
 void CObject::SetZoom(int part, float zoom)
 {
-	m_objectPart[part].bTranslate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
 	m_objectPart[part].zoom.x = zoom;
 	m_objectPart[part].zoom.y = zoom;
 	m_objectPart[part].zoom.z = zoom;
@@ -1728,7 +1728,7 @@ void CObject::SetZoom(int part, float zoom)
 
 void CObject::SetZoom(int part, D3DVECTOR zoom)
 {
-	m_objectPart[part].bTranslate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
 	m_objectPart[part].zoom = zoom;
 
 	m_objectPart[part].bZoom = ( m_objectPart[part].zoom.x != 1.0f ||
@@ -1743,7 +1743,7 @@ D3DVECTOR CObject::RetZoom(int part)
 
 void CObject::SetZoomX(int part, float zoom)
 {
-	m_objectPart[part].bTranslate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
 	m_objectPart[part].zoom.x = zoom;
 
 	m_objectPart[part].bZoom = ( m_objectPart[part].zoom.x != 1.0f ||
@@ -1753,7 +1753,7 @@ void CObject::SetZoomX(int part, float zoom)
 
 void CObject::SetZoomY(int part, float zoom)
 {
-	m_objectPart[part].bTranslate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
 	m_objectPart[part].zoom.y = zoom;
 
 	m_objectPart[part].bZoom = ( m_objectPart[part].zoom.x != 1.0f ||
@@ -1763,7 +1763,7 @@ void CObject::SetZoomY(int part, float zoom)
 
 void CObject::SetZoomZ(int part, float zoom)
 {
-	m_objectPart[part].bTranslate = TRUE;  // it will recalculate the matrices
+	m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
 	m_objectPart[part].zoom.z = zoom;
 
 	m_objectPart[part].bZoom = ( m_objectPart[part].zoom.x != 1.0f ||
@@ -1795,7 +1795,7 @@ float CObject::RetWaterLevel()
 }
 
 
-void CObject::SetTrainer(BOOL bEnable)
+void CObject::SetTrainer(bool bEnable)
 {
 	m_bTrainer = bEnable;
 
@@ -1805,27 +1805,27 @@ void CObject::SetTrainer(BOOL bEnable)
 	}
 }
 
-BOOL CObject::RetTrainer()
+bool CObject::RetTrainer()
 {
 	return m_bTrainer;
 }
 
-void CObject::SetToy(BOOL bEnable)
+void CObject::SetToy(bool bEnable)
 {
 	m_bToy = bEnable;
 }
 
-BOOL CObject::RetToy()
+bool CObject::RetToy()
 {
 	return m_bToy;
 }
 
-void CObject::SetManual(BOOL bManual)
+void CObject::SetManual(bool bManual)
 {
 	m_bManual = bManual;
 }
 
-BOOL CObject::RetManual()
+bool CObject::RetManual()
 {
 	return m_bManual;
 }
@@ -1840,12 +1840,12 @@ ResetCap CObject::RetResetCap()
 	return m_resetCap;
 }
 
-void CObject::SetResetBusy(BOOL bBusy)
+void CObject::SetResetBusy(bool bBusy)
 {
 	m_bResetBusy = bBusy;
 }
 
-BOOL CObject::RetResetBusy()
+bool CObject::RetResetBusy()
 {
 	return m_bResetBusy;
 }
@@ -1951,7 +1951,7 @@ int CObject::RetTruckPart()
 void CObject::InfoFlush()
 {
 	m_infoTotal = 0;
-	m_bInfoUpdate = TRUE;
+	m_bInfoUpdate = true;
 }
 
 void CObject::DeleteInfo(int rank)
@@ -1965,7 +1965,7 @@ void CObject::DeleteInfo(int rank)
 		m_info[i] = m_info[i+1];
 	}
 	m_infoTotal --;
-	m_bInfoUpdate = TRUE;
+	m_bInfoUpdate = true;
 }
 
 void CObject::SetInfo(int rank, Info info)
@@ -1974,7 +1974,7 @@ void CObject::SetInfo(int rank, Info info)
 	m_info[rank] = info;
 
 	if ( rank+1 > m_infoTotal )  m_infoTotal = rank+1;
-	m_bInfoUpdate = TRUE;
+	m_bInfoUpdate = true;
 }
 
 Info CObject::RetInfo(int rank)
@@ -1998,22 +1998,22 @@ float CObject::RetInfoReturn()
 	return m_infoReturn;
 }
 
-void CObject::SetInfoUpdate(BOOL bUpdate)
+void CObject::SetInfoUpdate(bool bUpdate)
 {
 	m_bInfoUpdate = bUpdate;
 }
 
-BOOL CObject::RetInfoUpdate()
+bool CObject::RetInfoUpdate()
 {
 	return m_bInfoUpdate;
 }
 
 
-BOOL CObject::SetCmdLine(int rank, float value)
+bool CObject::SetCmdLine(int rank, float value)
 {
-	if ( rank < 0 || rank >= OBJECTMAXCMDLINE )  return FALSE;
+	if ( rank < 0 || rank >= OBJECTMAXCMDLINE )  return false;
 	m_cmdLine[rank] = value;
-	return TRUE;
+	return true;
 }
 
 float CObject::RetCmdLine(int rank)
@@ -2054,7 +2054,7 @@ D3DMATRIX* CObject::RetWorldMatrix(int part)
 
 // Indicates whether the object should be drawn below the interface.
 
-void CObject::SetDrawWorld(BOOL bDraw)
+void CObject::SetDrawWorld(bool bDraw)
 {
 	int		i;
 
@@ -2069,7 +2069,7 @@ void CObject::SetDrawWorld(BOOL bDraw)
 
 // Indicates whether the object should be drawn over the interface.
 
-void CObject::SetDrawFront(BOOL bDraw)
+void CObject::SetDrawFront(bool bDraw)
 {
 	int		i;
 
@@ -2085,8 +2085,8 @@ void CObject::SetDrawFront(BOOL bDraw)
 
 // Creates a vehicle traveling any pose on the floor.
 
-BOOL CObject::CreateVehicle(D3DVECTOR pos, float angle, ObjectType type,
-							float power, BOOL bTrainer, BOOL bToy)
+bool CObject::CreateVehicle(D3DVECTOR pos, float angle, ObjectType type,
+							float power, bool bTrainer, bool bToy)
 {
 	m_type = type;
 
@@ -2094,7 +2094,7 @@ BOOL CObject::CreateVehicle(D3DVECTOR pos, float angle, ObjectType type,
 	{
 		m_motion = new CMotionToto(m_iMan, this);
 		m_motion->Create(pos, angle, type, 1.0f);
-		return TRUE;
+		return true;
 	}
 
 	SetTrainer(bTrainer);
@@ -2144,7 +2144,7 @@ BOOL CObject::CreateVehicle(D3DVECTOR pos, float angle, ObjectType type,
 	{
 		m_motion = new CMotionVehicle(m_iMan, this);
 	}
-	if ( m_motion == 0 )  return FALSE;
+	if ( m_motion == 0 )  return false;
 
 	m_physics->SetMotion(m_motion);
 	m_brain->SetMotion(m_motion);
@@ -2170,15 +2170,15 @@ BOOL CObject::CreateVehicle(D3DVECTOR pos, float angle, ObjectType type,
 			delete m_motion;
 			m_motion = 0;
 		}
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Creates an insect lands on any ground.
 
-BOOL CObject::CreateInsect(D3DVECTOR pos, float angle, ObjectType type)
+bool CObject::CreateInsect(D3DVECTOR pos, float angle, ObjectType type)
 {
 	m_type = type;
 
@@ -2208,7 +2208,7 @@ BOOL CObject::CreateInsect(D3DVECTOR pos, float angle, ObjectType type)
 	{
 		m_motion = new CMotionWorm(m_iMan, this);
 	}
-	if ( m_motion == 0 )  return FALSE;
+	if ( m_motion == 0 )  return false;
 
 	m_physics->SetMotion(m_motion);
 	m_brain->SetMotion(m_motion);
@@ -2234,20 +2234,20 @@ BOOL CObject::CreateInsect(D3DVECTOR pos, float angle, ObjectType type)
 			delete m_motion;
 			m_motion = 0;
 		}
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Creates shade under a vehicle as a negative light.
 
-BOOL CObject::CreateShadowLight(float height, D3DCOLORVALUE color)
+bool CObject::CreateShadowLight(float height, D3DCOLORVALUE color)
 {
 	D3DLIGHT7	light;
 	D3DVECTOR	pos;
 
-	if ( !m_engine->RetLightMode() )  return TRUE;
+	if ( !m_engine->RetLightMode() )  return true;
 
 	pos = RetPosition(0);
 	m_shadowHeight = height;
@@ -2272,14 +2272,14 @@ BOOL CObject::CreateShadowLight(float height, D3DCOLORVALUE color)
 	light.dvPhi = PI/4.0f;
 
 	m_shadowLight = m_light->CreateLight();
-	if ( m_shadowLight == -1 )  return FALSE;
+	if ( m_shadowLight == -1 )  return false;
 
 	m_light->SetLight(m_shadowLight, light);
 
 	// Only illuminates the objects on the ground.
 	m_light->SetLightIncluType(m_shadowLight, TYPETERRAIN);
 
-	return TRUE;
+	return true;
 }
 
 // Returns the number of negative light shade.
@@ -2291,11 +2291,11 @@ int CObject::RetShadowLight()
 
 // Creates light for the effects of a vehicle.
 
-BOOL CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
+bool CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
 {
 	D3DLIGHT7	light;
 
-	if ( !m_engine->RetLightMode() )  return TRUE;
+	if ( !m_engine->RetLightMode() )  return true;
 
 	m_effectHeight = height;
 
@@ -2319,12 +2319,12 @@ BOOL CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
 	light.dvPhi = PI/4.0f;
 
 	m_effectLight = m_light->CreateLight();
-	if ( m_effectLight == -1 )  return FALSE;
+	if ( m_effectLight == -1 )  return false;
 
 	m_light->SetLight(m_effectLight, light);
 	m_light->SetLightIntensity(m_effectLight, 0.0f);
 
-	return TRUE;
+	return true;
 }
 
 // Returns the number of light effects.
@@ -2336,12 +2336,12 @@ int CObject::RetEffectLight()
 
 // Creates the circular shadow underneath a vehicle.
 
-BOOL CObject::CreateShadowCircle(float radius, float intensity,
+bool CObject::CreateShadowCircle(float radius, float intensity,
 								 D3DShadowType type)
 {
 	float	zoom;
 
-	if ( intensity == 0.0f )  return TRUE;
+	if ( intensity == 0.0f )  return true;
 
 	zoom = RetZoomX(0);
 
@@ -2353,19 +2353,19 @@ BOOL CObject::CreateShadowCircle(float radius, float intensity,
 	m_engine->SetObjectShadowAngle(m_objectPart[0].object, m_objectPart[0].angle.y);
 	m_engine->SetObjectShadowType(m_objectPart[0].object, type);
 
-	return TRUE;
+	return true;
 }
 
 // Creates a building laying on the ground.
 
-BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 							 ObjectType type, float power)
 {
 	CModFile*	pModFile;
 	FPOINT		p;
 	int			rank, i;
 
-	if ( m_engine->RetRestCreate() < 20 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 20 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -3250,12 +3250,12 @@ BOOL CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a small resource set on the ground.
 
-BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
+bool CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 							 float power)
 {
 	CModFile*	pModFile;
@@ -3265,7 +3265,7 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 
 	if ( type != OBJECT_SHOW )
 	{
-		if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+		if ( m_engine->RetRestCreate() < 1 )  return false;
 	}
 
 	pModFile = new CModFile(m_iMan);
@@ -3318,7 +3318,7 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 	if ( type == OBJECT_SHOW )  // remains in the air?
 	{
 		delete pModFile;
-		return TRUE;
+		return true;
 	}
 
 	radius = 1.5f;
@@ -3371,18 +3371,18 @@ BOOL CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 	SetPosition(0, pos);  // to display the shadows immediately
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a flag placed on the ground.
 
-BOOL CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
+bool CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
 {
 	CModFile*	pModFile;
 	char		name[50];
 	int			rank, i;
 
-	if ( m_engine->RetRestCreate() < 1+4 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1+4 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -3434,18 +3434,18 @@ BOOL CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
 	SetPosition(0, pos);  // to display the shadows immediately
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a barrier placed on the ground.
 
-BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 							ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -3537,18 +3537,18 @@ BOOL CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 	SetPosition(0, pos);
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a plant placed on the ground.
 
-BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
+bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 						  ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -3791,18 +3791,18 @@ BOOL CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 	SetPosition(0, pos);
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a mushroom placed on the ground.
 
-BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 							 ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -3853,12 +3853,12 @@ BOOL CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 	SetPosition(0, pos);
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a toy placed on the ground.
 
-BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
+bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 						 ObjectType type)
 {
 	CModFile*		pModFile;
@@ -3866,9 +3866,9 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 	D3DCOLORVALUE	color;
 	int				rank;
 	float			fShadow;
-	BOOL			bFloorAdjust = TRUE;
+	bool			bFloorAdjust = true;
 
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -3990,7 +3990,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 		SetFloorHeight(0.0f);
-		bFloorAdjust = FALSE;
+		bFloorAdjust = false;
 
 		m_terrain->AddBuildingLevel(pos, 5.9f, 6.1f, 0.2f, 0.5f);
 		CreateShadowCircle(8.0f, 0.2f*fShadow);
@@ -4464,7 +4464,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
-		bFloorAdjust = FALSE;
+		bFloorAdjust = false;
 	}
 
 	if ( type == OBJECT_TEEN30 )  // jump?
@@ -4580,7 +4580,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
-		bFloorAdjust = FALSE;
+		bFloorAdjust = false;
 	}
 
 	if ( type == OBJECT_TEEN37 )  // boat?
@@ -4593,7 +4593,7 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
-		bFloorAdjust = FALSE;
+		bFloorAdjust = false;
 	}
 
 	if ( type == OBJECT_TEEN38 )  // fan?
@@ -4734,19 +4734,19 @@ BOOL CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 	SetPosition(0, pos);
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a crystal placed on the ground.
 
-BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 						   ObjectType type)
 {
 	CModFile*	pModFile;
 	float		radius;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -4847,18 +4847,18 @@ BOOL CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 	m_particule->CreateParticule(pos, pos, FPOINT(2.0f, 2.0f), PARTIQUARTZ, 0.7f+Rand()*0.7f, radius, 0.0f);
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a root placed on the ground.
 
-BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 						 ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -5024,18 +5024,18 @@ BOOL CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 	SetPosition(0, pos);
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a small home.
 
-BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateHome(D3DVECTOR pos, float angle, float height,
 						 ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -5068,19 +5068,19 @@ BOOL CObject::CreateHome(D3DVECTOR pos, float angle, float height,
 	SetPosition(0, pos);
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates ruin placed on the ground.
 
-BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 						 ObjectType type)
 {
 	CModFile*	pModFile;
 	char		name[50];
 	int			rank;
 
-	if ( m_engine->RetRestCreate() < 1+4 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1+4 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -5495,17 +5495,17 @@ BOOL CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 	}
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates a gadget apollo.
 
-BOOL CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
+bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank, i;
 
-	if ( m_engine->RetRestCreate() < 6 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 6 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -5690,7 +5690,7 @@ BOOL CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 	SetPosition(0, pos);  // to display the shadows immediately
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates all sub-objects for managing the object.
@@ -5804,65 +5804,65 @@ void CObject::CreateOtherObject(ObjectType type)
 
 // Reads a program.
 
-BOOL CObject::ReadProgram(int rank, char* filename)
+bool CObject::ReadProgram(int rank, char* filename)
 {
 	if ( m_brain != 0 )
 	{
 		return m_brain->ReadProgram(rank, filename);
 	}
-	return FALSE;
+	return false;
 }
 
 // Writes a program.
 
-BOOL CObject::WriteProgram(int rank, char* filename)
+bool CObject::WriteProgram(int rank, char* filename)
 {
 	if ( m_brain != 0 )
 	{
 		return m_brain->WriteProgram(rank, filename);
 	}
-	return FALSE;
+	return false;
 }
 
 // Starts a program.
 
-BOOL CObject::RunProgram(int rank)
+bool CObject::RunProgram(int rank)
 {
 	if ( m_brain != 0 )
 	{
 		m_brain->RunProgram(rank);
-		return TRUE;
+		return true;
 	}
 	if ( m_auto != 0 )
 	{
 		m_auto->Start(rank);
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 
 
 
 // Calculates the matrix for transforming the object.
-// Returns TRUE if the matrix has changed.
+// Returns true if the matrix has changed.
 // The rotations occur in the order Y, Z and X.
 
-BOOL CObject::UpdateTransformObject(int part, BOOL bForceUpdate)
+bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
 {
 	D3DVECTOR	position, angle, eye;
-	BOOL		bModif = FALSE;
+	bool		bModif = false;
 	int			parent;
 
 	if ( m_truck != 0 )  // transported by truck?
 	{
-		m_objectPart[part].bTranslate = TRUE;
-		m_objectPart[part].bRotate = TRUE;
+		m_objectPart[part].bTranslate = true;
+		m_objectPart[part].bRotate = true;
 	}
 
 	if ( !bForceUpdate                  &&
 		 !m_objectPart[part].bTranslate &&
-		 !m_objectPart[part].bRotate    )  return FALSE;
+		 !m_objectPart[part].bRotate    )  return false;
 
 	position = m_objectPart[part].position;
 	angle    = m_objectPart[part].angle;
@@ -5905,7 +5905,7 @@ BOOL CObject::UpdateTransformObject(int part, BOOL bForceUpdate)
 			m_objectPart[part].matTransform = m_objectPart[part].matRotate *
 											  m_objectPart[part].matTranslate;
 		}
-		bModif = TRUE;
+		bModif = true;
 	}
 
 	if ( bForceUpdate                  ||
@@ -5933,7 +5933,7 @@ BOOL CObject::UpdateTransformObject(int part, BOOL bForceUpdate)
 											  m_objectPart[parent].matWorld;
 			}
 		}
-		bModif = TRUE;
+		bModif = true;
 	}
 
 	if ( bModif )
@@ -5942,8 +5942,8 @@ BOOL CObject::UpdateTransformObject(int part, BOOL bForceUpdate)
 									 m_objectPart[part].matWorld);
 	}
 
-	m_objectPart[part].bTranslate = FALSE;
-	m_objectPart[part].bRotate    = FALSE;
+	m_objectPart[part].bTranslate = false;
+	m_objectPart[part].bRotate    = false;
 
 	return bModif;
 }
@@ -5952,9 +5952,9 @@ BOOL CObject::UpdateTransformObject(int part, BOOL bForceUpdate)
 // Assume a maximum of 4 degrees of freedom.
 // Appropriate, for example, to a body, an arm, forearm, hand and fingers.
 
-BOOL CObject::UpdateTransformObject()
+bool CObject::UpdateTransformObject()
 {
-	BOOL	bUpdate1, bUpdate2, bUpdate3, bUpdate4;
+	bool	bUpdate1, bUpdate2, bUpdate3, bUpdate4;
 	int		level1, level2, level3, level4, rank;
 	int		parent1, parent2, parent3, parent4;
 
@@ -5963,13 +5963,13 @@ BOOL CObject::UpdateTransformObject()
 		for ( level1=0 ; level1<m_totalPart ; level1++ )
 		{
 			if ( !m_objectPart[level1].bUsed )  continue;
-			UpdateTransformObject(level1, FALSE);
+			UpdateTransformObject(level1, false);
 		}
 	}
 	else
 	{
 		parent1 = 0;
-		bUpdate1 = UpdateTransformObject(parent1, FALSE);
+		bUpdate1 = UpdateTransformObject(parent1, false);
 
 		for ( level1=0 ; level1<m_totalPart ; level1++ )
 		{
@@ -6007,7 +6007,7 @@ BOOL CObject::UpdateTransformObject()
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -6035,7 +6035,7 @@ void CObject::FlatParent()
 		m_objectPart[i].parentPart = -1;  // more parents
 	}
 
-	m_bFlat = TRUE;
+	m_bFlat = true;
 }
 
 
@@ -6102,7 +6102,7 @@ void CObject::UpdateEnergyMapping()
 
 // Manual action.
 
-BOOL CObject::EventProcess(const Event &event)
+bool CObject::EventProcess(const Event &event)
 {
 	if ( event.event == EVENT_KEYDOWN )
 	{
@@ -6156,7 +6156,7 @@ BOOL CObject::EventProcess(const Event &event)
 				if ( !m_bDead )  m_camera->SetType(CAMERA_EXPLO);
 				m_main->DeselectAll();
 			}
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -6183,21 +6183,21 @@ BOOL CObject::EventProcess(const Event &event)
 		return EventFrame(event);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Animates the object.
 
-BOOL CObject::EventFrame(const Event &event)
+bool CObject::EventFrame(const Event &event)
 {
 	if ( m_type == OBJECT_HUMAN && m_main->RetMainMovie() == MM_SATCOMopen )
 	{
 		UpdateTransformObject();
-		return TRUE;
+		return true;
 	}
 
-	if ( m_type != OBJECT_SHOW && m_engine->RetPause() )  return TRUE;
+	if ( m_type != OBJECT_SHOW && m_engine->RetPause() )  return true;
 
 	m_aTime += event.rTime;
 	m_shotTime += event.rTime;
@@ -6219,7 +6219,7 @@ BOOL CObject::EventFrame(const Event &event)
 		dist = Length(eye, RetPosition(0));
 		if ( dist < m_proxyDistance )
 		{
-			m_bProxyActivate = FALSE;
+			m_bProxyActivate = false;
 			m_main->CreateShortcuts();
 			m_sound->Play(SOUND_FINDING);
 			pyro = new CPyro(m_iMan);
@@ -6228,7 +6228,7 @@ BOOL CObject::EventFrame(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Updates the mapping of the object.
@@ -6259,7 +6259,7 @@ void CObject::VirusFrame(float rTime)
 	m_virusTime += rTime;
 	if ( m_virusTime >= VIRUS_DELAY )
 	{
-		m_bVirusMode = FALSE;  // the virus is no longer active
+		m_bVirusMode = false;  // the virus is no longer active
 	}
 
 	if ( m_lastVirusParticule+m_engine->ParticuleAdapt(0.2f) <= m_aTime )
@@ -6638,12 +6638,12 @@ ObjectMaterial CObject::RetMaterial()
 
 // Indicates whether the gadget is a nonessential.
 
-void CObject::SetGadget(BOOL bMode)
+void CObject::SetGadget(bool bMode)
 {
 	m_bGadget = bMode;
 }
 
-BOOL CObject::RetGadget()
+bool CObject::RetGadget()
 {
 	return m_bGadget;
 }
@@ -6651,12 +6651,12 @@ BOOL CObject::RetGadget()
 
 // Indicates whether an object is stationary (ant on the back).
 
-void CObject::SetFixed(BOOL bFixed)
+void CObject::SetFixed(bool bFixed)
 {
 	m_bFixed = bFixed;
 }
 
-BOOL CObject::RetFixed()
+bool CObject::RetFixed()
 {
 	return m_bFixed;
 }
@@ -6664,12 +6664,12 @@ BOOL CObject::RetFixed()
 
 // Indicates whether an object is subjected to clipping (obstacles).
 
-void CObject::SetClip(BOOL bClip)
+void CObject::SetClip(bool bClip)
 {
 	m_bClip = bClip;
 }
 
-BOOL CObject::RetClip()
+bool CObject::RetClip()
 {
 	return m_bClip;
 }
@@ -6678,7 +6678,7 @@ BOOL CObject::RetClip()
 
 // Pushes an object.
 
-BOOL CObject::JostleObject(float force)
+bool CObject::JostleObject(float force)
 {
 	CAutoJostle*	pa;
 
@@ -6688,26 +6688,26 @@ BOOL CObject::JostleObject(float force)
 		 m_type == OBJECT_FLAGy ||
 		 m_type == OBJECT_FLAGv )  // flag?
 	{
-		if ( m_auto == 0 )  return FALSE;
+		if ( m_auto == 0 )  return false;
 
 		m_auto->Start(1);
 	}
 	else
 	{
-		if ( m_auto != 0 )  return FALSE;
+		if ( m_auto != 0 )  return false;
 
 		m_auto = new CAutoJostle(m_iMan, this);
 		pa = (CAutoJostle*)m_auto;
 		pa->Start(0, force);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Beginning of the effect when the instruction "detect" is used.
 
-void CObject::StartDetectEffect(CObject *target, BOOL bFound)
+void CObject::StartDetectEffect(CObject *target, bool bFound)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, goal;
@@ -6748,7 +6748,7 @@ void CObject::StartDetectEffect(CObject *target, BOOL bFound)
 
 // Management of time from which a virus is active.
 
-void CObject::SetVirusMode(BOOL bEnable)
+void CObject::SetVirusMode(bool bEnable)
 {
 	m_bVirusMode = bEnable;
 	m_virusTime = 0.0f;
@@ -6757,12 +6757,12 @@ void CObject::SetVirusMode(BOOL bEnable)
 	{
 		if ( !m_brain->IntroduceVirus() )  // tries to infect
 		{
-			m_bVirusMode = FALSE;  // program was not contaminated!
+			m_bVirusMode = false;  // program was not contaminated!
 		}
 	}
 }
 
-BOOL CObject::RetVirusMode()
+bool CObject::RetVirusMode()
 {
 	return m_bVirusMode;
 }
@@ -6795,12 +6795,12 @@ float CObject::RetCameraDist()
 	return m_cameraDist;
 }
 
-void CObject::SetCameraLock(BOOL bLock)
+void CObject::SetCameraLock(bool bLock)
 {
 	m_bCameraLock = bLock;
 }
 
-BOOL CObject::RetCameraLock()
+bool CObject::RetCameraLock()
 {
 	return m_bCameraLock;
 }
@@ -6809,7 +6809,7 @@ BOOL CObject::RetCameraLock()
 
 // Management of the demonstration of the object.
 
-void CObject::SetHilite(BOOL bMode)
+void CObject::SetHilite(bool bMode)
 {
 	int		list[OBJECTMAXPART+1];
 	int		i, j;
@@ -6832,7 +6832,7 @@ void CObject::SetHilite(BOOL bMode)
 	}
 }
 
-BOOL CObject::RetHilite()
+bool CObject::RetHilite()
 {
 	return m_bHilite;
 }
@@ -6840,7 +6840,7 @@ BOOL CObject::RetHilite()
 
 // Indicates whether the object is selected or not.
 
-void CObject::SetSelect(BOOL bMode, BOOL bDisplayError)
+void CObject::SetSelect(bool bMode, bool bDisplayError)
 {
 	Error		err;
 
@@ -6881,23 +6881,23 @@ void CObject::SetSelect(BOOL bMode, BOOL bDisplayError)
 
 // Indicates whether the object is selected or not.
 
-BOOL CObject::RetSelect(BOOL bReal)
+bool CObject::RetSelect(bool bReal)
 {
-	if ( !bReal && m_main->RetFixScene() )  return FALSE;
+	if ( !bReal && m_main->RetFixScene() )  return false;
 	return m_bSelect;
 }
 
 
 // Indicates whether the object is selectable or not.
 
-void CObject::SetSelectable(BOOL bMode)
+void CObject::SetSelectable(bool bMode)
 {
 	m_bSelectable = bMode;
 }
 
 // Indicates whether the object is selecionnable or not.
 
-BOOL CObject::RetSelectable()
+bool CObject::RetSelectable()
 {
 	return m_bSelectable;
 }
@@ -6905,7 +6905,7 @@ BOOL CObject::RetSelectable()
 
 // Management of the activities of an object.
 
-void CObject::SetActivity(BOOL bMode)
+void CObject::SetActivity(bool bMode)
 {
 	if ( m_brain != 0 )
 	{
@@ -6913,26 +6913,26 @@ void CObject::SetActivity(BOOL bMode)
 	}
 }
 
-BOOL CObject::RetActivity()
+bool CObject::RetActivity()
 {
 	if ( m_brain != 0 )
 	{
 		return m_brain->RetActivity();
 	}
-	return FALSE;
+	return false;
 }
 
 
 // Indicates if necessary to check the tokens of the object.
 
-void CObject::SetCheckToken(BOOL bMode)
+void CObject::SetCheckToken(bool bMode)
 {
 	m_bCheckToken = bMode;
 }
 
 // Indicates if necessary to check the tokens of the object.
 
-BOOL CObject::RetCheckToken()
+bool CObject::RetCheckToken()
 {
 	return m_bCheckToken;
 }
@@ -6942,12 +6942,12 @@ BOOL CObject::RetCheckToken()
 // The object is not hidden or visually disabled, but ignores detections!
 // For example: underground worm.
 
-void CObject::SetVisible(BOOL bVisible)
+void CObject::SetVisible(bool bVisible)
 {
 	m_bVisible = bVisible;
 }
 
-BOOL CObject::RetVisible()
+bool CObject::RetVisible()
 {
 	return m_bVisible;
 }
@@ -6958,12 +6958,12 @@ BOOL CObject::RetVisible()
 // This mode is used for objects "resetables"
 // during training to simulate destruction.
 
-void CObject::SetEnable(BOOL bEnable)
+void CObject::SetEnable(bool bEnable)
 {
 	m_bEnable = bEnable;
 }
 
-BOOL CObject::RetEnable()
+bool CObject::RetEnable()
 {
 	return m_bEnable;
 }
@@ -6971,12 +6971,12 @@ BOOL CObject::RetEnable()
 
 // Management mode or an object is only active when you're close.
 
-void CObject::SetProxyActivate(BOOL bActivate)
+void CObject::SetProxyActivate(bool bActivate)
 {
 	m_bProxyActivate = bActivate;
 }
 
-BOOL CObject::RetProxyActivate()
+bool CObject::RetProxyActivate()
 {
 	return m_bProxyActivate;
 }
@@ -7022,12 +7022,12 @@ float CObject::RetParam()
 // For example, a cube of titanium is blocked while it is used to make something,
 //or a vehicle is blocked as its construction is not finished.
 
-void CObject::SetLock(BOOL bLock)
+void CObject::SetLock(bool bLock)
 {
 	m_bLock = bLock;
 }
 
-BOOL CObject::RetLock()
+bool CObject::RetLock()
 {
 	return m_bLock;
 }
@@ -7035,12 +7035,12 @@ BOOL CObject::RetLock()
 // Management of the mode "current explosion" of an object.
 // An object in this mode is not saving.
 
-void CObject::SetExplo(BOOL bExplo)
+void CObject::SetExplo(bool bExplo)
 {
 	m_bExplo = bExplo;
 }
 
-BOOL CObject::RetExplo()
+bool CObject::RetExplo()
 {
 	return m_bExplo;
 }
@@ -7048,12 +7048,12 @@ BOOL CObject::RetExplo()
 
 // Mode management "cargo ship" during movies.
 
-void CObject::SetCargo(BOOL bCargo)
+void CObject::SetCargo(bool bCargo)
 {
 	m_bCargo = bCargo;
 }
 
-BOOL CObject::RetCargo()
+bool CObject::RetCargo()
 {
 	return m_bCargo;
 }
@@ -7061,7 +7061,7 @@ BOOL CObject::RetCargo()
 
 // Management of the HS mode of an object.
 
-void CObject::SetBurn(BOOL bBurn)
+void CObject::SetBurn(bool bBurn)
 {
 	m_bBurn = bBurn;
 
@@ -7072,12 +7072,12 @@ void CObject::SetBurn(BOOL bBurn)
 //?	}
 }
 
-BOOL CObject::RetBurn()
+bool CObject::RetBurn()
 {
 	return m_bBurn;
 }
 
-void CObject::SetDead(BOOL bDead)
+void CObject::SetDead(bool bDead)
 {
 	m_bDead = bDead;
 
@@ -7093,17 +7093,17 @@ void CObject::SetDead(BOOL bDead)
 //?	}
 }
 
-BOOL CObject::RetDead()
+bool CObject::RetDead()
 {
 	return m_bDead;
 }
 
-BOOL CObject::RetRuin()
+bool CObject::RetRuin()
 {
 	return m_bBurn|m_bFlat;
 }
 
-BOOL CObject::RetActif()
+bool CObject::RetActif()
 {
 	return !m_bLock && !m_bBurn && !m_bFlat && m_bVisible && m_bEnable;
 }
@@ -7193,27 +7193,27 @@ float CObject::RetGunGoalH()
 
 // Shows the limits of the object.
 
-BOOL CObject::StartShowLimit()
+bool CObject::StartShowLimit()
 {
-	if ( m_showLimitRadius == 0.0f )  return FALSE;
+	if ( m_showLimitRadius == 0.0f )  return false;
 
 	m_main->SetShowLimit(0, PARTILIMIT1, this, RetPosition(0), m_showLimitRadius);
-	m_bShowLimit = TRUE;
-	return TRUE;
+	m_bShowLimit = true;
+	return true;
 }
 
 void CObject::StopShowLimit()
 {
-	m_bShowLimit = FALSE;
+	m_bShowLimit = false;
 }
 
 
 
 // Indicates whether a program is under execution.
 
-BOOL CObject::IsProgram()
+bool CObject::IsProgram()
 {
-	if ( m_brain == 0 )  return FALSE;
+	if ( m_brain == 0 )  return false;
 	return m_brain->IsProgram();
 }
 
@@ -7501,7 +7501,7 @@ int  CObject::RetDefRank()
 
 // Gives the object name for the tooltip.
 
-BOOL CObject::GetTooltipName(char* name)
+bool CObject::GetTooltipName(char* name)
 {
 	GetResource(RES_OBJECT, m_type, name);
 	return ( name[0] != 0 );
@@ -7556,15 +7556,15 @@ void CObject::DeleteDeselList(CObject* pObj)
 
 // Management of the state of the pencil drawing robot.
 
-BOOL CObject::RetTraceDown()
+bool CObject::RetTraceDown()
 {
 	CMotionVehicle*	mv;
-	if ( m_motion == 0 )  return FALSE;
+	if ( m_motion == 0 )  return false;
 	mv = (CMotionVehicle*)m_motion;
 	return mv->RetTraceDown();
 }
 
-void CObject::SetTraceDown(BOOL bDown)
+void CObject::SetTraceDown(bool bDown)
 {
 	CMotionVehicle*	mv;
 	if ( m_motion == 0 )  return;

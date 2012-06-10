@@ -49,14 +49,14 @@ public:
 	~CBlitz();
 
 	void		Flush();
-	BOOL		EventProcess(const Event &event);
-	BOOL		Create(float sleep, float delay, float magnetic);
-	BOOL		GetStatus(float &sleep, float &delay, float &magnetic, float &progress);
-	BOOL		SetStatus(float sleep, float delay, float magnetic, float progress);
+	bool		EventProcess(const Event &event);
+	bool		Create(float sleep, float delay, float magnetic);
+	bool		GetStatus(float &sleep, float &delay, float &magnetic, float &progress);
+	bool		SetStatus(float sleep, float delay, float magnetic, float progress);
 	void		Draw();
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 	CObject*	SearchObject(D3DVECTOR pos);
 
 protected:
@@ -66,7 +66,7 @@ protected:
 	CCamera*			m_camera;
 	CSound*				m_sound;
 
-	BOOL		m_bBlitzExist;
+	bool		m_bBlitzExist;
 	float		m_sleep;
 	float		m_delay;
 	float		m_magnetic;

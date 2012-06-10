@@ -53,13 +53,12 @@ CAutoMush::CAutoMush(CInstanceManager* iMan, CObject* object)
 
 CAutoMush::~CAutoMush()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoMush::DeleteObject(BOOL bAll)
+void CAutoMush::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -80,7 +79,7 @@ void CAutoMush::Init()
 
 // Management of an event.
 
-BOOL CAutoMush::EventProcess(const Event &event)
+bool CAutoMush::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed, dir;
 	FPOINT		dim;
@@ -89,8 +88,8 @@ BOOL CAutoMush::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 
@@ -229,13 +228,13 @@ BOOL CAutoMush::EventProcess(const Event &event)
 		m_object->SetZoom(0, D3DVECTOR(1.0f, 1.0f, 1.0f));
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Seeking a nearby target.
 
-BOOL CAutoMush::SearchTarget()
+bool CAutoMush::SearchTarget()
 {
 	CObject*	pObj;
 	D3DVECTOR	iPos, oPos;
@@ -298,10 +297,10 @@ BOOL CAutoMush::SearchTarget()
 
 		oPos = pObj->RetPosition(0);
 		dist = Length(oPos, iPos);
-		if ( dist < 50.0f )  return TRUE;
+		if ( dist < 50.0f )  return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 
@@ -315,12 +314,12 @@ Error CAutoMush::RetError()
 
 // Saves all parameters of the controller.
 
-BOOL CAutoMush::Write(char *line)
+bool CAutoMush::Write(char *line)
 {
 	D3DVECTOR	pos;
 	char		name[100];
 
-	if ( m_phase == AMP_WAIT )  return FALSE;
+	if ( m_phase == AMP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -336,16 +335,16 @@ BOOL CAutoMush::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoMush::Read(char *line)
+bool CAutoMush::Read(char *line)
 {
 	D3DVECTOR	pos;
 
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -355,7 +354,7 @@ BOOL CAutoMush::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

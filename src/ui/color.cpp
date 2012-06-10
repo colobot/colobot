@@ -42,7 +42,7 @@
 
 CColor::CColor(CInstanceManager* iMan) : CControl(iMan)
 {
-	m_bRepeat = FALSE;
+	m_bRepeat = false;
 	m_repeat = 0.0f;
 
 	m_color.r = 0.0f;
@@ -60,7 +60,7 @@ CColor::~CColor()
 
 // Creates a new button.
 
-BOOL CColor::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CColor::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -77,15 +77,15 @@ BOOL CColor::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 		SetName(name);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CColor::EventProcess(const Event &event)
+bool CColor::EventProcess(const Event &event)
 {
-	if ( m_state & STATE_DEAD )  return TRUE;
+	if ( m_state & STATE_DEAD )  return true;
 
 	CControl::EventProcess(event);
 
@@ -101,7 +101,7 @@ BOOL CColor::EventProcess(const Event &event)
 				Event newEvent = event;
 				newEvent.event = m_eventMsg;
 				m_event->AddEvent(newEvent);
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -117,7 +117,7 @@ BOOL CColor::EventProcess(const Event &event)
 			Event newEvent = event;
 			newEvent.event = m_eventMsg;
 			m_event->AddEvent(newEvent);
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -126,7 +126,7 @@ BOOL CColor::EventProcess(const Event &event)
 		m_repeat = 0.0f;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -202,12 +202,12 @@ void CColor::Draw()
 }
 
 
-void CColor::SetRepeat(BOOL bRepeat)
+void CColor::SetRepeat(bool bRepeat)
 {
 	m_bRepeat = bRepeat;
 }
 
-BOOL CColor::RetRepeat()
+bool CColor::RetRepeat()
 {
 	return m_bRepeat;
 }

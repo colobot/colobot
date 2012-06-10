@@ -46,41 +46,41 @@ public:
 	static void	InitFonctions();
 
 	void		PutScript(CEdit* edit, char* name);
-	BOOL		GetScript(CEdit* edit);
-	BOOL		RetCompile();
+	bool		GetScript(CEdit* edit);
+	bool		RetCompile();
 
 	void		GetTitle(char* buffer);
 
-	void		SetStepMode(BOOL bStep);
-	BOOL		Run();
-	BOOL		Continue(const Event &event);
-	BOOL		Step(const Event &event);
+	void		SetStepMode(bool bStep);
+	bool		Run();
+	bool		Continue(const Event &event);
+	bool		Step(const Event &event);
 	void		Stop();
-	BOOL		IsRunning();
-	BOOL		IsContinue();
-	BOOL		GetCursor(int &cursor1, int &cursor2);
+	bool		IsRunning();
+	bool		IsContinue();
+	bool		GetCursor(int &cursor1, int &cursor2);
 	void		UpdateList(CList* list);
 	void		ColorizeScript(CEdit* edit);
-	BOOL		IntroduceVirus();
+	bool		IntroduceVirus();
 
 	int			RetError();
 	void		GetError(char* buffer);
 
 	void		New(CEdit* edit, char* name);
-	BOOL		SendScript(char* text);
-	BOOL		ReadScript(char* filename);
-	BOOL		WriteScript(char* filename);
-	BOOL		ReadStack(FILE *file);
-	BOOL		WriteStack(FILE *file);
-	BOOL		Compare(CScript* other);
+	bool		SendScript(char* text);
+	bool		ReadScript(char* filename);
+	bool		WriteScript(char* filename);
+	bool		ReadStack(FILE *file);
+	bool		WriteStack(FILE *file);
+	bool		Compare(CScript* other);
 
 	void		SetFilename(char *filename);
 	char*		RetFilename();
 
 protected:
-	BOOL		IsEmpty();
-	BOOL		CheckToken();
-	BOOL		Compile();
+	bool		IsEmpty();
+	bool		CheckToken();
+	bool		Compile();
 
 public:
 	CInstanceManager* m_iMan;
@@ -99,10 +99,10 @@ public:
 	int			m_errMode;		// what to do in case of error
 	int			m_len;			// length of the script (without <0>)
 	char*			m_script;		// script ends with <0>
-	BOOL			m_bRun;			// program during execution?
-	BOOL			m_bStepMode;		// step by step
-	BOOL			m_bContinue;		// external function to continue
-	BOOL			m_bCompile;		// compilation ok?
+	bool			m_bRun;			// program during execution?
+	bool			m_bStepMode;		// step by step
+	bool			m_bContinue;		// external function to continue
+	bool			m_bCompile;		// compilation ok?
 	char			m_title[50];		// script title
 	char			m_filename[50];		// file name
 	char			m_token[50];		// missing instruction

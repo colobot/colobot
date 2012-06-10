@@ -52,8 +52,6 @@
 CTaskTake::CTaskTake(CInstanceManager* iMan, CObject* object)
 					 : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
-
 	m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 
 	m_arm  = TTA_NEUTRAL;
@@ -68,13 +66,13 @@ CTaskTake::~CTaskTake()
 
 // Management of an event.
 
-BOOL CTaskTake::EventProcess(const Event &event)
+bool CTaskTake::EventProcess(const Event &event)
 {
 	float		a, g, cirSpeed;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	if ( m_bTurn )  // preliminary rotation?
 	{
@@ -85,14 +83,14 @@ BOOL CTaskTake::EventProcess(const Event &event)
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
 		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
-		return TRUE;
+		return true;
 	}
 
 	m_progress += event.rTime*m_speed;  // others advance
 
 	m_physics->SetMotorSpeed(D3DVECTOR(0.0f, 0.0f, 0.0f));  // immobile!
 
-	return TRUE;
+	return true;
 }
 
 
@@ -113,7 +111,7 @@ Error CTaskTake::Start()
 	iAngle = NormAngle(iAngle);  // 0..2*PI
 	oAngle = iAngle;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 	if ( !m_physics->RetLand() )
 	{
 		pos = m_object->RetPosition(0);
@@ -195,12 +193,12 @@ Error CTaskTake::Start()
 		}
 	}
 
-	m_bTurn = TRUE;  // preliminary rotation necessary
+	m_bTurn = true;  // preliminary rotation necessary
 	m_angle = oAngle;  // angle was reached
 
-	m_physics->SetFreeze(TRUE);  // it does not move
+	m_physics->SetFreeze(true);  // it does not move
 
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 	return ERR_OK;
 }
 
@@ -221,7 +219,7 @@ Error CTaskTake::IsEnded()
 
 		if ( TestAngle(angle, m_angle-PI*0.01f, m_angle+PI*0.01f) )
 		{
-			m_bTurn = FALSE;  // rotation ended
+			m_bTurn = false;  // rotation ended
 			m_physics->SetMotorSpeedZ(0.0f);
 
 			if ( m_arm == TTA_FFRONT )
@@ -301,12 +299,12 @@ Error CTaskTake::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskTake::Abort()
+bool CTaskTake::Abort()
 {
 	m_motion->SetAction(-1);
 	m_camera->StopCentering(m_object, 0.8f);
-	m_physics->SetFreeze(FALSE);  // is moving again
-	return TRUE;
+	m_physics->SetFreeze(false);  // is moving again
+	return true;
 }
 
 
@@ -467,7 +465,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 
 // Takes the object in front.
 
-BOOL CTaskTake::TruckTakeObject()
+bool CTaskTake::TruckTakeObject()
 {
 	CObject*	fret;
 	CObject*	other;
@@ -478,7 +476,7 @@ BOOL CTaskTake::TruckTakeObject()
 	{
 //?		fret = SearchTakeObject(angle, 1.5f, PI*0.04f);
 		fret = SearchTakeObject(angle, 1.5f, PI*0.15f);  //OK 1.9
-		if ( fret == 0 )  return FALSE;  // rien � prendre ?
+		if ( fret == 0 )  return false;  // rien � prendre ?
 		m_fretType = fret->RetType();
 
 		fret->SetTruck(m_object);
@@ -496,10 +494,10 @@ BOOL CTaskTake::TruckTakeObject()
 	if ( m_arm == TTA_FRIEND )  // takes friend's battery?
 	{
 		other = SearchFriendObject(angle, 1.5f, PI*0.04f);
-		if ( other == 0 )  return FALSE;
+		if ( other == 0 )  return false;
 
 		fret = other->RetPower();
-		if ( fret == 0 )  return FALSE;  // the other does not have a battery?
+		if ( fret == 0 )  return false;  // the other does not have a battery?
 		m_fretType = fret->RetType();
 
 		other->SetPower(0);
@@ -515,12 +513,12 @@ BOOL CTaskTake::TruckTakeObject()
 		m_object->SetFret(fret);  // takes
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Deposes the object taken.
 
-BOOL CTaskTake::TruckDeposeObject()
+bool CTaskTake::TruckDeposeObject()
 {
 	Character*	character;
 	CObject*	fret;
@@ -532,7 +530,7 @@ BOOL CTaskTake::TruckDeposeObject()
 	if ( m_arm == TTA_FFRONT )  // deposes on the ground in front?
 	{
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;  // does nothing?
+		if ( fret == 0 )  return false;  // does nothing?
 		m_fretType = fret->RetType();
 
 		mat = fret->RetWorldMatrix(0);
@@ -551,13 +549,13 @@ BOOL CTaskTake::TruckDeposeObject()
 	if ( m_arm == TTA_FRIEND )  // deposes battery on friends?
 	{
 		other = SearchFriendObject(angle, 1.5f, PI*0.04f);
-		if ( other == 0 )  return FALSE;
+		if ( other == 0 )  return false;
 
 		fret = other->RetPower();
-		if ( fret != 0 )  return FALSE;  // the other already has a battery?
+		if ( fret != 0 )  return false;  // the other already has a battery?
 
 		fret = m_object->RetFret();
-		if ( fret == 0 )  return FALSE;
+		if ( fret == 0 )  return false;
 		m_fretType = fret->RetType();
 
 		other->SetPower(fret);
@@ -573,12 +571,12 @@ BOOL CTaskTake::TruckDeposeObject()
 		m_object->SetFret(0);  // deposit
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Seeks if a location allows to deposit an object.
 
-BOOL CTaskTake::IsFreeDeposeObject(D3DVECTOR pos)
+bool CTaskTake::IsFreeDeposeObject(D3DVECTOR pos)
 {
 	CObject*	pObj;
 	D3DMATRIX*	mat;
@@ -603,11 +601,11 @@ BOOL CTaskTake::IsFreeDeposeObject(D3DVECTOR pos)
 		{
 			if ( Length(iPos, oPos)-(oRadius+1.0f) < 1.0f )
 			{
-				return FALSE;  // location occupied
+				return false;  // location occupied
 			}
 		}
 	}
-	return TRUE;  // location free
+	return true;  // location free
 }
 
 

@@ -43,11 +43,11 @@ public:
 	CTaskFlag(CInstanceManager* iMan, CObject* object);
 	~CTaskFlag();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start(TaskFlagOrder order, int rank);
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 	Error		CreateFlag(int rank);
@@ -58,6 +58,6 @@ protected:
 protected:
 	TaskFlagOrder	m_order;
 	float			m_time;
-	BOOL			m_bError;
+	bool			m_bError;
 };
 

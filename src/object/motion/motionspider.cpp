@@ -43,7 +43,7 @@
 
 
 
-#define ADJUST_ANGLE		FALSE		// TRUE -> adjusts the angles of the members
+#define ADJUST_ANGLE		false		// true -> adjusts the angles of the members
 #define START_TIME		1000.0f		// beginning of the relative time
 
 
@@ -61,7 +61,7 @@ CMotionSpider::CMotionSpider(CInstanceManager* iMan, CObject* object)
 	m_armPartIndex   = 0;
 	m_armMemberIndex = 0;
 	m_armLastAction  = -1;
-	m_bArmStop = FALSE;
+	m_bArmStop = false;
 	m_lastParticule = 0.0f;
 }
 
@@ -74,14 +74,14 @@ CMotionSpider::~CMotionSpider()
 
 // Removes an object.
 
-void CMotionSpider::DeleteObject(BOOL bAll)
+void CMotionSpider::DeleteObject(bool bAll)
 {
 }
 
 
 // Creates a vehicle traveling any lands on the ground.
 
-BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 						   float power)
 {
 	CModFile*	pModFile;
@@ -112,7 +112,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 		 0.0f,	 0.0f,	-2.0f,
 	};
 
-	if ( m_engine->RetRestCreate() < 3+32+2 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 3+32+2 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -218,7 +218,7 @@ BOOL CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates the physics of the object.
@@ -343,7 +343,7 @@ void CMotionSpider::CreatePhysics()
 
 // Management of an event.
 
-BOOL CMotionSpider::EventProcess(const Event &event)
+bool CMotionSpider::EventProcess(const Event &event)
 {
 	CMotion::EventProcess(event);
 
@@ -383,7 +383,7 @@ BOOL CMotionSpider::EventProcess(const Event &event)
 #endif
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Calculates a value (radians) proportional between a and b (degrees).
@@ -400,17 +400,17 @@ inline float Propf(float a, float b, float p)
 
 // Management of an event.
 
-BOOL CMotionSpider::EventFrame(const Event &event)
+bool CMotionSpider::EventFrame(const Event &event)
 {
 	D3DVECTOR	dir, pos, speed;
 	FPOINT		dim;
 	float		s, a, prog, time;
 	float		tSt[12], tNd[12];
 	int			i, ii, st, nd, action;
-	BOOL		bStop;
+	bool		bStop;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
 
 	s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
 	a = Abs(m_physics->RetCirMotionY(MO_MOTSPEED)*2.0f);
@@ -738,7 +738,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		if ( m_progress >= 1.0f )
 		{
 			SetAction(-1);
-			m_object->SetFixed(FALSE);  // moving again
+			m_object->SetFixed(false);  // moving again
 		}
 	}
 	else
@@ -781,7 +781,7 @@ BOOL CMotionSpider::EventFrame(const Event &event)
 		m_object->SetAngleY(36, -sinf(m_armTimeAbs*3.1f)*0.20f);  // mandible
 	}
 
-	return TRUE;
+	return true;
 }
 
 

@@ -67,27 +67,27 @@ public:
 	CMap(CInstanceManager* iMan);
 	~CMap();
 
-	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	BOOL		EventProcess(const Event &event);
+	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		EventProcess(const Event &event);
 	void		Draw();
 
 	void		UpdateTerrain();
 	void		UpdateTerrain(int bx, int by, int ex, int ey);
 
 	void		SetFixImage(char *filename);
-	BOOL		RetFixImage();
+	bool		RetFixImage();
 
 	void		SetOffset(float ox, float oy);
 	void		SetAngle(float angle);
 	void		SetMode(int mode);
-	void		SetToy(BOOL bToy);
-	void		SetDebug(BOOL bDebug);
+	void		SetToy(bool bToy);
+	void		SetDebug(bool bDebug);
 
 	void		SetZoom(float value);
 	float		RetZoom();
 
-	void		SetEnable(BOOL bEnable);
-	BOOL		RetEnable();
+	void		SetEnable(bool bEnable);
+	bool		RetEnable();
 
 	void		SetFloorColor(D3DCOLORVALUE color);
 	void		SetWaterColor(D3DCOLORVALUE color);
@@ -95,7 +95,7 @@ public:
 	void		FlushObject();
 	void		UpdateObject(CObject* pObj);
 
-	CObject*	DetectObject(FPOINT pos, BOOL &bInMap);
+	CObject*	DetectObject(FPOINT pos, bool &bInMap);
 	void		SetHilite(CObject* pObj);
 
 protected:
@@ -103,8 +103,8 @@ protected:
 	void		SelectObject(FPOINT pos);
 	FPOINT		MapInter(FPOINT pos, float dir);
 	void		DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color);
-	void		DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color, BOOL bSelect, BOOL bHilite);
-	void		DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color, ObjectType type, BOOL bHilite);
+	void		DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
+	void		DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color, ObjectType type, bool bHilite);
 	void		DrawHilite(FPOINT pos);
 	void		DrawTriangle(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT uv1, FPOINT uv2);
 	void		DrawPenta(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4, FPOINT p5, FPOINT uv1, FPOINT uv2);
@@ -115,7 +115,7 @@ protected:
 	CWater*			m_water;
 	CRobotMain*		m_main;
 
-	BOOL			m_bEnable;
+	bool			m_bEnable;
 	float			m_time;
 	float			m_half;
 	float			m_zoom;
@@ -129,11 +129,11 @@ protected:
 	int				m_hiliteRank;
 	FPOINT			m_mapPos;
 	FPOINT			m_mapDim;
-	BOOL			m_bRadar;
+	bool			m_bRadar;
 	char			m_fixImage[100];
 	int				m_mode;
-	BOOL			m_bToy;
-	BOOL			m_bDebug;
+	bool			m_bToy;
+	bool			m_bDebug;
 };
 
 

@@ -64,7 +64,7 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_normLookat   = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_focus        = 1.0f;
 
-	m_bRightDown     = FALSE;
+	m_bRightDown     = false;
 	m_rightPosInit   = FPOINT(0.5f, 0.5f);
 	m_rightPosCenter = FPOINT(0.5f, 0.5f);
 	m_rightPosMove   = FPOINT(0.5f, 0.5f);
@@ -80,7 +80,7 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_backMin       = 0.0f;
 	m_addDirectionH = 0.0f;
 	m_addDirectionV = 0.0f;
-	m_bTransparency = FALSE;
+	m_bTransparency = false;
 
 	m_fixDist       = 0.0f;
 	m_fixDirectionH = 0.0f;
@@ -122,10 +122,10 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_scriptEye    = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_scriptLookat = D3DVECTOR(0.0f, 0.0f, 0.0f);
 
-	m_bEffect        = TRUE;
-	m_bCameraScroll  = TRUE;
-	m_bCameraInvertX = FALSE;
-	m_bCameraInvertY = FALSE;
+	m_bEffect        = true;
+	m_bCameraScroll  = true;
+	m_bCameraInvertX = false;
+	m_bCameraInvertY = false;
 }
 
 // Object's constructor.
@@ -135,22 +135,22 @@ CCamera::~CCamera()
 }
 
 
-void CCamera::SetEffect(BOOL bEnable)
+void CCamera::SetEffect(bool bEnable)
 {
 	m_bEffect = bEnable;
 }
 
-void CCamera::SetCameraScroll(BOOL bScroll)
+void CCamera::SetCameraScroll(bool bScroll)
 {
 	m_bCameraScroll = bScroll;
 }
 
-void CCamera::SetCameraInvertX(BOOL bInvert)
+void CCamera::SetCameraInvertX(bool bInvert)
 {
 	m_bCameraInvertX = bInvert;
 }
 
-void CCamera::SetCameraInvertY(BOOL bInvert)
+void CCamera::SetCameraInvertY(bool bInvert)
 {
 	m_bCameraInvertY = bInvert;
 }
@@ -174,8 +174,8 @@ void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
 
 	m_initDelay = delay;
 
-	eye.y    += m_terrain->RetFloorLevel(eye,    TRUE);
-	lookat.y += m_terrain->RetFloorLevel(lookat, TRUE);
+	eye.y    += m_terrain->RetFloorLevel(eye,    true);
+	lookat.y += m_terrain->RetFloorLevel(lookat, true);
 
 	m_type = CAMERA_FREE;
 	m_eyePt = eye;
@@ -268,7 +268,7 @@ void CCamera::SetType(CameraType type)
 			SetTransparency(pObj, 0.0f);  // opaque object
 		}
 	}
-	m_bTransparency = FALSE;
+	m_bTransparency = false;
 
 	if ( type == CAMERA_INFO  ||
 		 type == CAMERA_VISIT )  // xx -> info ?
@@ -513,13 +513,13 @@ void CCamera::RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat)
 
 // Specifies a special movement of camera to frame action.
 
-BOOL CCamera::StartCentering(CObject *object, float angleH, float angleV,
+bool CCamera::StartCentering(CObject *object, float angleH, float angleV,
 							 float dist, float time)
 {
-	if ( m_type != CAMERA_BACK )  return FALSE;
-	if ( object != m_cameraObj )  return FALSE;
+	if ( m_type != CAMERA_BACK )  return false;
+	if ( object != m_cameraObj )  return false;
 
-	if ( m_centeringPhase != CP_NULL )  return FALSE;
+	if ( m_centeringPhase != CP_NULL )  return false;
 
 	if ( m_addDirectionH > PI )
 	{
@@ -535,18 +535,18 @@ BOOL CCamera::StartCentering(CObject *object, float angleH, float angleV,
 	m_centeringTime     = time;
 	m_centeringProgress = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 // Ends a special movement of camera to frame action.
 
-BOOL CCamera::StopCentering(CObject *object, float time)
+bool CCamera::StopCentering(CObject *object, float time)
 {
-	if ( m_type != CAMERA_BACK )  return FALSE;
-	if ( object != m_cameraObj )  return FALSE;
+	if ( m_type != CAMERA_BACK )  return false;
+	if ( object != m_cameraObj )  return false;
 
 	if ( m_centeringPhase != CP_START &&
-		 m_centeringPhase != CP_WAIT  )  return FALSE;
+		 m_centeringPhase != CP_WAIT  )  return false;
 
 	m_centeringPhase = CP_STOP;
 
@@ -562,7 +562,7 @@ BOOL CCamera::StopCentering(CObject *object, float time)
 	m_centeringTime     = time;
 	m_centeringProgress = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 // Stop framing special in the current position.
@@ -976,17 +976,17 @@ void CCamera::SetViewTime(const D3DVECTOR &vEyePt,
 
 // Avoid the obstacles.
 
-BOOL CCamera::IsCollision(D3DVECTOR &eye, D3DVECTOR lookat)
+bool CCamera::IsCollision(D3DVECTOR &eye, D3DVECTOR lookat)
 {
 	if ( m_type == CAMERA_BACK  )  return IsCollisionBack(eye, lookat);
 	if ( m_type == CAMERA_FIX   )  return IsCollisionFix(eye, lookat);
 	if ( m_type == CAMERA_PLANE )  return IsCollisionFix(eye, lookat);
-	return FALSE;
+	return false;
 }
 
 // Avoid the obstacles.
 
-BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
+bool CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 {
 #if 0
 	CObject		*pObj;
@@ -1082,16 +1082,16 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		{
 			eye = proj;
 			eye.y += len/5.0f;
-			return FALSE;
+			return false;
 		}
 		else
 		{
 			eye = (eye-lookat)*prox/del + lookat;
 			eye.y += (del-prox)/5.0f;
-			return FALSE;
+			return false;
 		}
 	}
-	return FALSE;
+	return false;
 #else
 	CObject		*pObj;
 	D3DVECTOR	oPos, min, max, proj;
@@ -1116,7 +1116,7 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 	max.y = Max(m_actualEye.y, m_actualLookat.y);
 	max.z = Max(m_actualEye.z, m_actualLookat.z);
 
-	m_bTransparency = FALSE;
+	m_bTransparency = false;
 
 	for ( i=0 ; i<1000000 ; i++ )
 	{
@@ -1188,15 +1188,15 @@ BOOL CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		if ( len > del )  continue;
 
 		SetTransparency(pObj, 1.0f);  // transparent object
-		m_bTransparency = TRUE;
+		m_bTransparency = true;
 	}
-	return FALSE;
+	return false;
 #endif
 }
 
 // Avoid the obstacles.
 
-BOOL CCamera::IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat)
+bool CCamera::IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat)
 {
 	CObject		*pObj;
 	D3DVECTOR	oPos, proj;
@@ -1239,16 +1239,16 @@ BOOL CCamera::IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat)
 			dist = Length(eye, lookat);
 			proj = Projection(eye, lookat, oPos);
 			eye = (lookat-eye)*oRadius/dist + proj;
-			return FALSE;
+			return false;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 
 // Management of an event.
 
-BOOL CCamera::EventProcess(const Event &event)
+bool CCamera::EventProcess(const Event &event)
 {
 	switch( event.event )
 	{
@@ -1258,17 +1258,17 @@ BOOL CCamera::EventProcess(const Event &event)
 
 #if 0
 		case EVENT_RBUTTONDOWN:
-			m_bRightDown = TRUE;
+			m_bRightDown = true;
 			m_rightPosInit = event.pos;
 			m_rightPosCenter = FPOINT(0.5f, 0.5f);
 			m_engine->MoveMousePos(m_rightPosCenter);
-//?			m_engine->SetMouseHide(TRUE);  // cache la souris
+//?			m_engine->SetMouseHide(true);  // cache la souris
 			break;
 
 		case EVENT_RBUTTONUP:
-			m_bRightDown = FALSE;
+			m_bRightDown = false;
 			m_engine->MoveMousePos(m_rightPosInit);
-//?			m_engine->SetMouseHide(FALSE);  // remontre la souris
+//?			m_engine->SetMouseHide(false);  // remontre la souris
 			m_addDirectionH = 0.0f;
 			m_addDirectionV = -PI*0.05f;
 			break;
@@ -1283,15 +1283,15 @@ BOOL CCamera::EventProcess(const Event &event)
 			if ( event.param == VK_WHEELDOWN )  EventMouseWheel(-1);
 			break;
 	}
-	return TRUE;
+	return true;
 }
 
 // Changed the camera according to the mouse moved.
 
-BOOL CCamera::EventMouseMove(const Event &event)
+bool CCamera::EventMouseMove(const Event &event)
 {
 	m_mousePos = event.pos;
-	return TRUE;
+	return true;
 }
 
 // Mouse wheel operated.
@@ -1344,7 +1344,7 @@ void CCamera::EventMouseWheel(int dir)
 
 // Changed the camera according to the time elapsed.
 
-BOOL CCamera::EventFrame(const Event &event)
+bool CCamera::EventFrame(const Event &event)
 {
 	EffectFrame(event);
 	OverFrame(event);
@@ -1391,7 +1391,7 @@ BOOL CCamera::EventFrame(const Event &event)
 		return EventFrameVisit(event);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1482,7 +1482,7 @@ D3DMouse CCamera::RetMouseDef(FPOINT pos)
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameFree(const Event &event)
+bool CCamera::EventFrameFree(const Event &event)
 {
 	D3DVECTOR	pos, vLookatPt;
 	float		factor;
@@ -1536,12 +1536,12 @@ BOOL CCamera::EventFrameFree(const Event &event)
 
 	m_terrain->ValidPosition(m_eyePt, 10.0f);
 	
-	if ( m_terrain->MoveOnFloor(m_eyePt, TRUE) )
+	if ( m_terrain->MoveOnFloor(m_eyePt, true) )
 	{
 		m_eyePt.y += m_heightEye;
 
 		pos = m_eyePt;
-		if ( m_terrain->MoveOnFloor(pos, TRUE) )
+		if ( m_terrain->MoveOnFloor(pos, true) )
 		{
 			pos.y -= 2.0f;
 			if ( m_eyePt.y < pos.y )
@@ -1554,19 +1554,19 @@ BOOL CCamera::EventFrameFree(const Event &event)
 
 	vLookatPt = LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
 
-	if ( m_terrain->MoveOnFloor(vLookatPt, TRUE) )
+	if ( m_terrain->MoveOnFloor(vLookatPt, true) )
 	{
 		vLookatPt.y += m_heightLookat;
 	}
 
 	SetViewTime(m_eyePt, vLookatPt, event.rTime);
 	
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameEdit(const Event &event)
+bool CCamera::EventFrameEdit(const Event &event)
 {
 	D3DVECTOR	pos, vLookatPt;
 	float		factor;
@@ -1596,12 +1596,12 @@ BOOL CCamera::EventFrameEdit(const Event &event)
 
 	m_terrain->ValidPosition(m_eyePt, 10.0f);
 	
-	if ( m_terrain->MoveOnFloor(m_eyePt, FALSE) )
+	if ( m_terrain->MoveOnFloor(m_eyePt, false) )
 	{
 		m_eyePt.y += m_editHeight;
 
 		pos = m_eyePt;
-		if ( m_terrain->MoveOnFloor(pos, FALSE) )
+		if ( m_terrain->MoveOnFloor(pos, false) )
 		{
 			pos.y += 2.0f;
 			if ( m_eyePt.y < pos.y )
@@ -1614,26 +1614,26 @@ BOOL CCamera::EventFrameEdit(const Event &event)
 
 	vLookatPt = LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
 
-	if ( m_terrain->MoveOnFloor(vLookatPt, TRUE) )
+	if ( m_terrain->MoveOnFloor(vLookatPt, true) )
 	{
 		vLookatPt.y += m_heightLookat;
 	}
 
 	SetViewTime(m_eyePt, vLookatPt, event.rTime);
 	
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameDialog(const Event &event)
+bool CCamera::EventFrameDialog(const Event &event)
 {
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameBack(const Event &event)
+bool CCamera::EventFrameBack(const Event &event)
 {
 	CPhysics*	physics;
 	ObjectType	type;
@@ -1831,12 +1831,12 @@ BOOL CCamera::EventFrameBack(const Event &event)
 		m_directionV = v;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameFix(const Event &event)
+bool CCamera::EventFrameFix(const Event &event)
 {
 	D3DVECTOR	pos, vLookatPt;
 	float		h, v, d;
@@ -1891,12 +1891,12 @@ BOOL CCamera::EventFrameFix(const Event &event)
 		m_directionV = v;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameExplo(const Event &event)
+bool CCamera::EventFrameExplo(const Event &event)
 {
 	D3DVECTOR	pos, vLookatPt;
 	float		factor;
@@ -1910,12 +1910,12 @@ BOOL CCamera::EventFrameExplo(const Event &event)
 
 	m_terrain->ValidPosition(m_eyePt, 10.0f);
 	
-	if ( m_terrain->MoveOnFloor(m_eyePt, FALSE) )
+	if ( m_terrain->MoveOnFloor(m_eyePt, false) )
 	{
 		m_eyePt.y += m_heightEye;
 
 		pos = m_eyePt;
-		if ( m_terrain->MoveOnFloor(pos, FALSE) )
+		if ( m_terrain->MoveOnFloor(pos, false) )
 		{
 			pos.y += 2.0f;
 			if ( m_eyePt.y < pos.y )
@@ -1928,19 +1928,19 @@ BOOL CCamera::EventFrameExplo(const Event &event)
 
 	vLookatPt = LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
 
-	if ( m_terrain->MoveOnFloor(vLookatPt, TRUE) )
+	if ( m_terrain->MoveOnFloor(vLookatPt, true) )
 	{
 		vLookatPt.y += m_heightLookat;
 	}
 
 	SetViewTime(m_eyePt, vLookatPt, event.rTime);
 	
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameOnBoard(const Event &event)
+bool CCamera::EventFrameOnBoard(const Event &event)
 {
 	D3DVECTOR	vLookatPt, vUpVec, eye, lookat, pos;
 
@@ -1955,22 +1955,22 @@ BOOL CCamera::EventFrameOnBoard(const Event &event)
 		m_actualEye    = eye;
 		m_actualLookat = lookat;
 	}
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameInfo(const Event &event)
+bool CCamera::EventFrameInfo(const Event &event)
 {
 	SetViewTime(D3DVECTOR(0.0f, 0.0f, 0.0f),
 				D3DVECTOR(0.0f, 0.0f, 1.0f),
 				event.rTime);
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameVisit(const Event &event)
+bool CCamera::EventFrameVisit(const Event &event)
 {
 	D3DVECTOR	eye;
 	float		angleH, angleV;
@@ -2015,16 +2015,16 @@ BOOL CCamera::EventFrameVisit(const Event &event)
 	eye = ExcludeObject(eye, m_visitGoal, angleH, angleV);
 	SetViewTime(eye, m_visitGoal, event.rTime);
 
-	return TRUE;
+	return true;
 }
 
 // Moves the point of view.
 
-BOOL CCamera::EventFrameScript(const Event &event)
+bool CCamera::EventFrameScript(const Event &event)
 {
 	SetViewTime(m_scriptEye+m_effectOffset,
 				m_scriptLookat+m_effectOffset, event.rTime);
-	return TRUE;
+	return true;
 }
 
 void CCamera::SetScriptEye(D3DVECTOR eye)
@@ -2043,12 +2043,12 @@ void CCamera::SetScriptLookat(D3DVECTOR lookat)
 void CCamera::SetViewParams(const D3DVECTOR &eye, const D3DVECTOR &lookat,
 							const D3DVECTOR &up)
 {
-	BOOL		bUnder;
+	bool		bUnder;
 
 	m_engine->SetViewParams(eye, lookat, up, m_eyeDistance);
 
 	bUnder = (eye.y < m_water->RetLevel());  // Is it underwater?
-	if ( m_type == CAMERA_INFO )  bUnder = FALSE;
+	if ( m_type == CAMERA_INFO )  bUnder = false;
 	m_engine->SetRankView(bUnder?1:0);
 }
 

@@ -34,10 +34,10 @@ public:
 	CMainShort(CInstanceManager* iMan);
 	~CMainShort();
 
-	void		SetMode(BOOL bBuilding);
+	void		SetMode(bool bBuilding);
 	void		FlushShortcuts();
-	BOOL		CreateShortcuts();
-	BOOL		UpdateShortcuts();
+	bool		CreateShortcuts();
+	bool		UpdateShortcuts();
 	void		SelectShortcut(EventMsg event);
 	void		SelectNext();
 	CObject*	DetectShort(FPOINT pos);
@@ -53,7 +53,7 @@ protected:
 	CRobotMain*		m_main;
 
 	CObject*		m_shortcuts[20];
-	BOOL			m_bBuilding;
+	bool			m_bBuilding;
 };
 
 

@@ -31,9 +31,9 @@
 
 
 
-// Returns TRUE if two numbers are nearly equal.
+// Returns true if two numbers are nearly equal.
 
-BOOL IsEqual(float a, float b)
+bool IsEqual(float a, float b)
 {
 	return Abs(a-b) < CHOUIA;
 }
@@ -164,7 +164,7 @@ float NormAngle(float angle)
 
 // Test if a angle is between two terminals.
 
-BOOL TestAngle(float angle, float min, float max)
+bool TestAngle(float angle, float min, float max)
 {
 	angle = NormAngle(angle);
 	min   = NormAngle(min);
@@ -364,14 +364,14 @@ D3DVECTOR SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist)
 
 // Check if a point is inside a triangle.
 
-BOOL IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
+bool IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
 {
 	float	n, m;
 
-	if ( p.x < a.x && p.x < b.x && p.x < c.x )  return FALSE;
-	if ( p.x > a.x && p.x > b.x && p.x > c.x )  return FALSE;
-	if ( p.y < a.y && p.y < b.y && p.y < c.y )  return FALSE;
-	if ( p.y > a.y && p.y > b.y && p.y > c.y )  return FALSE;
+	if ( p.x < a.x && p.x < b.x && p.x < c.x )  return false;
+	if ( p.x > a.x && p.x > b.x && p.x > c.x )  return false;
+	if ( p.y < a.y && p.y < b.y && p.y < c.y )  return false;
+	if ( p.y > a.y && p.y > b.y && p.y > c.y )  return false;
 
 	if ( a.x > b.x )  Swap(a,b);
 	if ( a.x > c.x )  Swap(a,c);
@@ -380,18 +380,18 @@ BOOL IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p)
 
 	n = MidPoint(a, b, p.x);
 	m = MidPoint(a, c, p.x);
-	if ( (n>p.y||p.y>m) && (n<p.y||p.y<m) )  return FALSE;
+	if ( (n>p.y||p.y>m) && (n<p.y||p.y<m) )  return false;
 
 	n = MidPoint(c, b, p.x);
 	m = MidPoint(c, a, p.x);
-	if ( (n>p.y||p.y>m) && (n<p.y||p.y<m) )  return FALSE;
+	if ( (n>p.y||p.y>m) && (n<p.y||p.y<m) )  return false;
 
-	return TRUE;
+	return true;
 }
 
 // Calculates the intersection "i" right "of" the plan "abc".
 
-BOOL Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c,
+bool Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c,
 			   D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i)
 {
 	float	d1, d2;
@@ -404,18 +404,18 @@ BOOL Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c,
 		 (d.y-e.y)*((b.x-a.x)*(c.z-a.z)-(c.x-a.x)*(b.z-a.z)) +
 		 (d.z-e.z)*((b.x-a.x)*(c.y-a.y)-(c.x-a.x)*(b.y-a.y));
 
-	if ( d2 == 0 )  return FALSE;
+	if ( d2 == 0 )  return false;
 
 	i.x = d.x + d1/d2*(e.x-d.x);
 	i.y = d.y + d1/d2*(e.y-d.y);
 	i.z = d.z + d1/d2*(e.z-d.z);
-	return TRUE;
+	return true;
 }
 
 // Calculates the intersection of the straight line passing through p (x, z)
 // parallel to the y axis, with the plane abc. Returns p.y.
 
-BOOL IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p)
+bool IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p)
 {
 #if 0
 	D3DVECTOR	d,e,i;
@@ -426,9 +426,9 @@ BOOL IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p)
 	e.x = p.x;
 	e.y = 1.0f;
 	e.z = p.z;
-	if ( !Intersect(a,b,c,d,e,i) )  return FALSE;
+	if ( !Intersect(a,b,c,d,e,i) )  return false;
 	p.y = i.y;
-	return TRUE;
+	return true;
 #else
 	float	d, d1, d2;
 
@@ -436,10 +436,10 @@ BOOL IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p)
 	d1 = (p.x-a.x)*(c.z-a.z) - (c.x-a.x)*(p.z-a.z);
 	d2 = (b.x-a.x)*(p.z-a.z) - (p.x-a.x)*(b.z-a.z);
 
-	if ( d == 0.0f )  return FALSE;
+	if ( d == 0.0f )  return false;
 
 	p.y = a.y + d1/d*(b.y-a.y) + d2/d*(c.y-a.y);
-	return TRUE;
+	return true;
 #endif
 }
 
@@ -685,7 +685,7 @@ void SmoothObject(D3DVERTEX2* pVertices, int nb)
 
 	for ( i=0 ; i<nb ; i++ )
 	{
-		bDone[i] = TRUE;
+		bDone[i] = true;
 		rank = 0;
 		index[rank++] = i;
 
@@ -696,7 +696,7 @@ void SmoothObject(D3DVERTEX2* pVertices, int nb)
 				 pVertices[j].y == pVertices[i].y &&
 				 pVertices[j].z == pVertices[i].z )
 			{
-				bDone[j] = TRUE;
+				bDone[j] = true;
 				index[rank++] = j;
 				if ( rank >= 100 )  break;
 			}
@@ -729,20 +729,20 @@ void SmoothObject(D3DVERTEX2* pVertices, int nb)
 // Calculates the parameters a and b of the segment passing
 // through the points p1 and p2, knowing that:
 //		f(x) = ax+b
-// Returns FALSE if the line is vertical.
+// Returns false if the line is vertical.
 
-BOOL LineFunction(FPOINT p1, FPOINT p2, float &a, float &b)
+bool LineFunction(FPOINT p1, FPOINT p2, float &a, float &b)
 {
 	if ( D3DMath_IsZero(p1.x-p2.x) )
 	{
 		a = g_HUGE;  // infinite slope!
 		b = p2.x;
-		return FALSE;
+		return false;
 	}
 
 	a = (p2.y-p1.y)/(p2.x-p1.x);
 	b = p2.y - p2.x*a;
-	return TRUE;
+	return true;
 }
 
 
@@ -766,7 +766,7 @@ float DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b,
 
 // Check if two planes defined by 3 points are part of the same plan.
 
-BOOL IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2)
+bool IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2)
 {
 	D3DVECTOR	n1, n2;
 	float		dist;
@@ -776,12 +776,12 @@ BOOL IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2)
 
 	if ( Abs(n1.x-n2.x) > 0.1f ||
 		 Abs(n1.y-n2.y) > 0.1f ||
-		 Abs(n1.z-n2.z) > 0.1f )  return FALSE;
+		 Abs(n1.z-n2.z) > 0.1f )  return false;
 
 	dist = DistancePlanPoint(plan1[0], plan1[1], plan1[2], plan2[0]);
-	if ( dist > 0.1f )  return FALSE;
+	if ( dist > 0.1f )  return false;
 
-	return TRUE;
+	return true;
 }
 
 

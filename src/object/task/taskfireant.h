@@ -47,11 +47,11 @@ public:
 	CTaskFireAnt(CInstanceManager* iMan, CObject* object);
 	~CTaskFireAnt();
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	Error	Start(D3DVECTOR impact);
 	Error	IsEnded();
-	BOOL	Abort();
+	bool	Abort();
 
 protected:
 
@@ -61,8 +61,8 @@ protected:
 	float		m_progress;
 	float		m_speed;
 	float		m_angle;
-	BOOL		m_bError;
-	BOOL		m_bFire;
+	bool		m_bError;
+	bool		m_bFire;
 	float		m_time;
 	float		m_lastParticule;
 };

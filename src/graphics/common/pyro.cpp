@@ -80,7 +80,7 @@ CPyro::~CPyro()
 
 // Destroys the object.
 
-void CPyro::DeleteObject(BOOL bAll)
+void CPyro::DeleteObject(bool bAll)
 {
 	if ( m_lightRank != -1 )
 	{
@@ -92,7 +92,7 @@ void CPyro::DeleteObject(BOOL bAll)
 
 // Creates pyrotechnic effect.
 
-BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
+bool CPyro::Create(PyroType type, CObject* pObj, float force)
 {
 	D3DMATRIX*		mat;
 	CObject*		power;
@@ -109,7 +109,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 
 	oType = pObj->RetType();
 	objRank = pObj->RetObjectRank(0);
-	if ( objRank == -1 )  return FALSE;
+	if ( objRank == -1 )  return false;
 	m_engine->GetBBox(objRank, min, max);
 	pos = pObj->RetPosition(0);
 
@@ -161,11 +161,11 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 	power = pObj->RetPower();
 	if ( power == 0 )
 	{
-		m_bPower = FALSE;
+		m_bPower = false;
 	}
 	else
 	{
-		m_bPower = TRUE;
+		m_bPower = true;
 		pos = power->RetPosition(0);
 		pos.y += 1.0f;
 		mat = pObj->RetWorldMatrix(0);
@@ -177,39 +177,39 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 		 oType == OBJECT_TNT     ||
 		 oType == OBJECT_BOMB    )
 	{
-		m_bPower = TRUE;
+		m_bPower = true;
 		m_posPower = m_pos;
 		m_posPower.y += 1.0f;
 		m_pos = m_posPower;
 	}
 	if ( oType == OBJECT_STATION )
 	{
-		m_bPower = TRUE;
+		m_bPower = true;
 		mat = pObj->RetWorldMatrix(0);
 		m_posPower = Transform(*mat, D3DVECTOR(-15.0f, 7.0f, 0.0f));
 		m_pos = m_posPower;
 	}
 	if ( oType == OBJECT_ENERGY )
 	{
-		m_bPower = TRUE;
+		m_bPower = true;
 		mat = pObj->RetWorldMatrix(0);
 		m_posPower = Transform(*mat, D3DVECTOR(-7.0f, 6.0f, 0.0f));
 		m_pos = m_posPower;
 	}
 	if ( oType == OBJECT_NUCLEAR )
 	{
-		m_bPower = TRUE;
+		m_bPower = true;
 		m_posPower = m_pos;
 	}
 	if ( oType == OBJECT_PARA )
 	{
-		m_bPower = TRUE;
+		m_bPower = true;
 		m_posPower = m_pos;
 	}
 	if ( oType == OBJECT_SCRAP4 ||
 		 oType == OBJECT_SCRAP5 )  // plastic material?
 	{
-		m_bPower = TRUE;
+		m_bPower = true;
 		m_posPower = m_pos;
 	}
 
@@ -258,7 +258,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 	if ( type == PT_BURNT ||
 		 type == PT_BURNO )
 	{
-		m_soundChannel = m_sound->Play(SOUND_BURN, m_pos, 1.0f, 1.0f, TRUE);
+		m_soundChannel = m_sound->Play(SOUND_BURN, m_pos, 1.0f, 1.0f, true);
 		m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 12.0f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.0f,  5.0f, SOPER_STOP);
 	}
@@ -303,7 +303,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 
 	if ( m_type == PT_DEADG )
 	{
-		m_object->SetDead(TRUE);
+		m_object->SetDead(true);
 
 		motion = m_object->RetMotion();
 		if ( motion != 0 )
@@ -313,11 +313,11 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 		m_camera->StartCentering(m_object, PI*0.5f, 99.9f, 0.0f, 1.5f);
 		m_camera->StartOver(OE_FADEOUTw, m_pos, 1.0f);
 		m_speed = 1.0f/10.0f;
-		return TRUE;
+		return true;
 	}
 	if ( m_type == PT_DEADW )
 	{
-		m_object->SetDead(TRUE);
+		m_object->SetDead(true);
 
 		motion = m_object->RetMotion();
 		if ( motion != 0 )
@@ -327,7 +327,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 		m_camera->StartCentering(m_object, PI*0.5f, 99.9f, 0.0f, 3.0f);
 		m_camera->StartOver(OE_FADEOUTb, m_pos, 1.0f);
 		m_speed = 1.0f/10.0f;
-		return TRUE;
+		return true;
 	}
 
 	if ( m_type == PT_SHOTT ||
@@ -335,7 +335,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 	{
 		m_camera->StartEffect(CE_SHOT, m_pos, force);
 		m_speed = 1.0f/1.0f;
-		return TRUE;
+		return true;
 	}
 	if ( m_type == PT_SHOTH )
 	{
@@ -344,7 +344,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 			m_camera->StartOver(OE_BLOOD, m_pos, force);
 		}
 		m_speed = 1.0f/0.2f;
-		return TRUE;
+		return true;
 	}
 
 	if ( m_type == PT_SHOTW )
@@ -360,7 +360,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 	if ( m_type == PT_WPCHECK )
 	{
 		m_speed = 1.0f/8.0f;
-		m_object->SetEnable(FALSE);  // object more functional
+		m_object->SetEnable(false);  // object more functional
 	}
 	if ( m_type == PT_FLCREATE )
 	{
@@ -369,7 +369,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 	if ( m_type == PT_FLDELETE )
 	{
 		m_speed = 1.0f/2.0f;
-		m_object->SetEnable(FALSE);  // object more functional
+		m_object->SetEnable(false);  // object more functional
 	}
 	if ( m_type == PT_RESET )
 	{
@@ -398,7 +398,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 	if ( m_type == PT_FALL )
 	{
 		FallStart();
-		return TRUE;
+		return true;
 	}
 
 	if ( m_type == PT_BURNT ||
@@ -411,7 +411,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 		LightOperAdd(0.80f, 1.0f, -0.8f, -0.8f, -0.8f);  // dark gray
 		LightOperAdd(1.00f, 0.0f, -0.8f, -0.8f, -0.8f);  // dark gray
 		CreateLight(m_pos, 40.0f);
-		return TRUE;
+		return true;
 	}
 
 	if ( m_type == PT_SPIDER )
@@ -488,7 +488,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 		}
 	}
 
-	if ( m_type == PT_SHOTW )  return TRUE;
+	if ( m_type == PT_SHOTW )  return true;
 	
 	// Generates the triangles of the explosion.
 	if ( m_type == PT_FRAGT  ||
@@ -630,7 +630,7 @@ BOOL CPyro::Create(PyroType type, CObject* pObj, float force)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Creates an explosion with triangular form of particles.
@@ -850,7 +850,7 @@ void CPyro::DisplayError(PyroType type, CObject* pObj)
 
 // Management of an event.
 
-BOOL CPyro::EventProcess(const Event &event)
+bool CPyro::EventProcess(const Event &event)
 {
 	ParticuleType	type;
 	D3DVECTOR		pos, speed, angle;
@@ -858,8 +858,8 @@ BOOL CPyro::EventProcess(const Event &event)
 	float			prog, factor, duration;
 	int				i, r;
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_engine->RetPause() )  return true;
 
 	m_time += event.rTime;
 	m_progress += event.rTime*m_speed;
@@ -1374,7 +1374,7 @@ BOOL CPyro::EventProcess(const Event &event)
 		LightOperFrame(event.rTime);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Indicates that the object binds to the effect no longer exists, without deleting it.
@@ -1401,7 +1401,7 @@ Error CPyro::IsEnded()
 		 m_type == PT_SPIDER ||
 		 m_type == PT_EGG    )
 	{
-		DeleteObject(TRUE, TRUE);
+		DeleteObject(true, true);
 	}
 
 	if ( m_type == PT_FALL )  // freight which grave?
@@ -1434,7 +1434,7 @@ Error CPyro::IsEnded()
 	if ( m_type == PT_WPCHECK  ||
 		 m_type == PT_FLDELETE )
 	{
-		DeleteObject(TRUE, TRUE);
+		DeleteObject(true, true);
 	}
 
 	if ( m_type == PT_FLCREATE )
@@ -1462,7 +1462,7 @@ Error CPyro::IsEnded()
 
 // Removes the binding to a pyrotechnic effect.
 
-void CPyro::DeleteObject(BOOL bPrimary, BOOL bSecondary)
+void CPyro::DeleteObject(bool bPrimary, bool bSecondary)
 {
 	CObject		*sub, *truck;
 	D3DVECTOR	pos;
@@ -1472,7 +1472,7 @@ void CPyro::DeleteObject(BOOL bPrimary, BOOL bSecondary)
 
 	if ( m_object->RetResetCap() == RESET_MOVE )  // resettable object?
 	{
-		m_object->SetEnable(FALSE);  // object cache and inactive
+		m_object->SetEnable(false);  // object cache and inactive
 		pos = m_object->RetPosition(0);
 		pos.y = -100.0f;
 		m_object->SetPosition(0, pos);
@@ -1581,11 +1581,11 @@ void CPyro::LightOperFrame(float rTime)
 
 // Creates light to accompany a pyrotechnic effect.
 
-BOOL CPyro::CreateLight(D3DVECTOR pos, float height)
+bool CPyro::CreateLight(D3DVECTOR pos, float height)
 {
 	D3DLIGHT7	light;
 
-	if ( !m_engine->RetLightMode() )  return TRUE;
+	if ( !m_engine->RetLightMode() )  return true;
 
 	m_lightHeight = height;
 
@@ -1606,7 +1606,7 @@ BOOL CPyro::CreateLight(D3DVECTOR pos, float height)
 	light.dvPhi = PI/4.0f;
 
 	m_lightRank = m_light->CreateLight();
-	if ( m_lightRank == -1 )  return FALSE;
+	if ( m_lightRank == -1 )  return false;
 
 	m_light->SetLight(m_lightRank, light);
 	m_light->SetLightIntensity(m_lightRank, 0.0f);
@@ -1614,7 +1614,7 @@ BOOL CPyro::CreateLight(D3DVECTOR pos, float height)
 	// Only illuminates the objects on the ground.
 	m_light->SetLightIncluType(m_lightRank, TYPETERRAIN);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1629,16 +1629,16 @@ void CPyro::ExploStart()
 	m_burnType = m_object->RetType();
 
 	pos = m_object->RetPosition(0);
-	m_burnFall = m_terrain->RetFloorHeight(pos, TRUE);
+	m_burnFall = m_terrain->RetFloorHeight(pos, true);
 
 	m_object->Simplify();
-	m_object->SetLock(TRUE);  // ruin not usable yet
-	m_object->SetExplo(TRUE);  // being destroyed
+	m_object->SetLock(true);  // ruin not usable yet
+	m_object->SetExplo(true);  // being destroyed
 	m_object->FlatParent();
 
 	if ( m_object->RetSelect() )
 	{
-		m_object->SetSelect(FALSE);  // deselects the object
+		m_object->SetSelect(false);  // deselects the object
 		m_camera->SetType(CAMERA_EXPLO);
 		m_main->DeselectAll();
 	}
@@ -1678,14 +1678,14 @@ void CPyro::ExploStart()
 	}
 	m_engine->LoadTexture("dirty04.tga", 1);
 
-	DeleteObject(FALSE, TRUE);  // destroys the object transported + the battery
+	DeleteObject(false, true);  // destroys the object transported + the battery
 }
 
 // Ends the explosion of a vehicle.
 
 void CPyro::ExploTerminate()
 {
-	DeleteObject(TRUE, FALSE);  // removes the main object
+	DeleteObject(true, false);  // removes the main object
 }
 
 
@@ -1699,14 +1699,14 @@ void CPyro::BurnStart()
 	m_burnType = m_object->RetType();
 
 	pos = m_object->RetPosition(0);
-	m_burnFall = m_terrain->RetFloorHeight(pos, TRUE);
+	m_burnFall = m_terrain->RetFloorHeight(pos, true);
 
 	m_object->Simplify();
-	m_object->SetLock(TRUE);  // ruin not usable yet
+	m_object->SetLock(true);  // ruin not usable yet
 
 	if ( m_object->RetSelect() )
 	{
-		m_object->SetSelect(FALSE);  // deselects the object
+		m_object->SetSelect(false);  // deselects the object
 		m_camera->SetType(CAMERA_EXPLO);
 		m_main->DeselectAll();
 	}
@@ -2216,16 +2216,16 @@ void CPyro::BurnProgress()
 
 // Indicates whether a part should be retained.
 
-BOOL CPyro::BurnIsKeepPart(int part)
+bool CPyro::BurnIsKeepPart(int part)
 {
 	int		i;
 
 	i = 0;
 	while ( m_burnKeepPart[i] != -1 )
 	{
-		if ( part == m_burnKeepPart[i++] )  return TRUE;  // must keep
+		if ( part == m_burnKeepPart[i++] )  return true;  // must keep
 	}
-	return FALSE;  // must destroy
+	return false;  // must destroy
 }
 
 // Ends the fire of an insect or a vehicle.
@@ -2236,7 +2236,7 @@ void CPyro::BurnTerminate()
 
 	if ( m_type == PT_BURNO )  // organic object is burning?
 	{
-		DeleteObject(TRUE, TRUE);  // removes the insect
+		DeleteObject(true, true);  // removes the insect
 		return;
 	}
 
@@ -2249,7 +2249,7 @@ void CPyro::BurnTerminate()
 		m_object->DeletePart(i);
 	}
 
-	DeleteObject(FALSE, TRUE);  // destroys the object transported + the battery
+	DeleteObject(false, true);  // destroys the object transported + the battery
 
 	if ( m_burnType == OBJECT_DERRICK  ||
 		 m_burnType == OBJECT_STATION  ||
@@ -2271,15 +2271,15 @@ void CPyro::BurnTerminate()
 		 m_burnType == OBJECT_END      )
 	{
 		m_object->SetType(OBJECT_RUINfactory);  // others become a ruin
-		m_object->SetLock(FALSE);
+		m_object->SetLock(false);
 	}
 	else
 	{
 		m_object->SetType(OBJECT_RUINmobilew1);  // others become a ruin
-		m_object->SetLock(FALSE);
+		m_object->SetLock(false);
 	}
 
-	m_object->SetBurn(FALSE);  // ruin usable (c-e-d. recoverable)
+	m_object->SetBurn(false);  // ruin usable (c-e-d. recoverable)
 }
 
 
@@ -2289,13 +2289,13 @@ void CPyro::FallStart()
 {
 	D3DVECTOR	pos;
 
-	m_object->SetBurn(TRUE);  // usable
+	m_object->SetBurn(true);  // usable
 
 	pos = m_object->RetPosition(0);
 	m_fallFloor = m_terrain->RetFloorLevel(pos);
 	m_fallSpeed = 0.0f;
 	m_fallBulletTime = 0.0f;
-	m_bFallEnding = FALSE;
+	m_bFallEnding = false;
 }
 
 // Seeking an object explode by the falling ball of bees.
@@ -2407,7 +2407,7 @@ void CPyro::FallProgress(float rTime)
 {
 	CObject*	pObj;
 	D3DVECTOR	pos;
-	BOOL		bFloor = FALSE;
+	bool		bFloor = false;
 
 	if ( m_object == 0 )  return;
 
@@ -2418,7 +2418,7 @@ void CPyro::FallProgress(float rTime)
 	if ( pos.y <= m_fallFloor )  // below the ground level?
 	{
 		pos.y = m_fallFloor;
-		bFloor = TRUE;
+		bFloor = true;
 	}
 	m_object->SetPosition(0, pos);
 
@@ -2445,13 +2445,13 @@ void CPyro::FallProgress(float rTime)
 					m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), FPOINT(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
 					m_sound->Play(SOUND_GUNDEL);
 
-					DeleteObject(TRUE, TRUE);  // removes the ball
+					DeleteObject(true, true);  // removes the ball
 				}
 				else
 				{
 					if ( pObj->ExploObject(EXPLO_BOUM, 1.0f) )  // start explosion
 					{
-						DeleteObject(TRUE, TRUE);  // removes the ball
+						DeleteObject(true, true);  // removes the ball
 					}
 					else
 					{
@@ -2462,7 +2462,7 @@ void CPyro::FallProgress(float rTime)
 
 			if ( bFloor || pObj != 0 )
 			{
-				m_bFallEnding = TRUE;
+				m_bFallEnding = true;
 			}
 		}
 	}
@@ -2480,7 +2480,7 @@ Error CPyro::FallIsEnded()
 	if ( pos.y > m_fallFloor )  return ERR_CONTINUE;
 
 	m_sound->Play(SOUND_BOUM, pos);
-	m_object->SetBurn(FALSE);  // usable again
+	m_object->SetBurn(false);  // usable again
 
 	return ERR_STOP;
 }

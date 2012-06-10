@@ -63,7 +63,7 @@ CTaskManager::CTaskManager(CInstanceManager* iMan, CObject* object)
 
 	m_task = 0;
 	m_object = object;
-	m_bPilot = FALSE;
+	m_bPilot = false;
 }
 
 // Object's destructor.
@@ -149,7 +149,7 @@ Error CTaskManager::StartTaskSearch()
 
 // Reads an information terminal.
 
-Error CTaskManager::StartTaskInfo(char *name, float value, float power, BOOL bSend)
+Error CTaskManager::StartTaskInfo(char *name, float value, float power, bool bSend)
 {
 	m_task = new CTaskInfo(m_iMan, m_object);
 	return ((CTaskInfo*)m_task)->Start(name, value, power, bSend);
@@ -165,7 +165,7 @@ Error CTaskManager::StartTaskTerraform()
 
 // Changes the pencil.
 
-Error CTaskManager::StartTaskPen(BOOL bDown, int color)
+Error CTaskManager::StartTaskPen(bool bDown, int color)
 {
 	m_task = new CTaskPen(m_iMan, m_object);
 	return ((CTaskPen*)m_task)->Start(bDown, color);
@@ -203,7 +203,7 @@ Error CTaskManager::StartTaskShield(TaskShieldMode mode, float delay)
 
 Error CTaskManager::StartTaskFire(float delay)
 {
-	m_bPilot = TRUE;
+	m_bPilot = true;
 	m_task = new CTaskFire(m_iMan, m_object);
 	return ((CTaskFire*)m_task)->Start(delay);
 }
@@ -246,9 +246,9 @@ Error CTaskManager::StartTaskReset(D3DVECTOR goal, D3DVECTOR angle)
 
 // Management of an event.
 
-BOOL CTaskManager::EventProcess(const Event &event)
+bool CTaskManager::EventProcess(const Event &event)
 {
-	if ( m_task == 0 )  return FALSE;
+	if ( m_task == 0 )  return false;
 	return m_task->EventProcess(event);
 }
 
@@ -264,9 +264,9 @@ Error CTaskManager::IsEnded()
 
 // Indicates whether the action is pending.
 
-BOOL CTaskManager::IsBusy()
+bool CTaskManager::IsBusy()
 {
-	if ( m_task == 0 )  return FALSE;
+	if ( m_task == 0 )  return false;
 	return m_task->IsBusy();
 }
 
@@ -274,7 +274,7 @@ BOOL CTaskManager::IsBusy()
 // Indicates whether it is possible to control the robot
 // during the execution of the current task.
 
-BOOL CTaskManager::IsPilot()
+bool CTaskManager::IsPilot()
 {
 	return m_bPilot;
 }
@@ -282,9 +282,9 @@ BOOL CTaskManager::IsPilot()
 
 // Suddenly ends the current action.
 
-BOOL CTaskManager::Abort()
+bool CTaskManager::Abort()
 {
-	if ( m_task == 0 )  return FALSE;
+	if ( m_task == 0 )  return false;
 	return m_task->Abort();
 }
 

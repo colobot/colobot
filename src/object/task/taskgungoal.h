@@ -35,11 +35,11 @@ public:
 	CTaskGunGoal(CInstanceManager* iMan, CObject* object);
 	~CTaskGunGoal();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start(float dirV, float dirH);
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 

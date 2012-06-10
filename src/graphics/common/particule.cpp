@@ -51,7 +51,7 @@
 
 // Check if an object can be destroyed, but is not an enemy.
 
-BOOL IsSoft(ObjectType type)
+bool IsSoft(ObjectType type)
 {
 	return ( type == OBJECT_HUMAN    ||
 			 type == OBJECT_MOBILEfa ||
@@ -101,7 +101,7 @@ BOOL IsSoft(ObjectType type)
 
 // Check if an object is a destroyable enemy.
 
-BOOL IsAlien(ObjectType type)
+bool IsAlien(ObjectType type)
 {
 	return ( type == OBJECT_ANT      ||
 			 type == OBJECT_SPIDER   ||
@@ -169,7 +169,7 @@ void CParticule::FlushParticule()
 
 	for ( i=0 ; i<MAXPARTICULE*MAXPARTITYPE ; i++ )
 	{
-		m_particule[i].bUsed = FALSE;
+		m_particule[i].bUsed = false;
 	}
 
 	for ( i=0 ; i<MAXPARTITYPE ; i++ )
@@ -182,7 +182,7 @@ void CParticule::FlushParticule()
 
 	for ( i=0 ; i<MAXTRACK ; i++ )
 	{
-		m_track[i].bUsed = FALSE;
+		m_track[i].bUsed = false;
 	}
 
 	m_wheelTraceTotal = 0;
@@ -190,7 +190,7 @@ void CParticule::FlushParticule()
 
 	for ( i=0 ; i<SH_MAX ; i++ )
 	{
-		m_bFrameUpdate[i] = TRUE;
+		m_bFrameUpdate[i] = true;
 	}
 
 	m_fogTotal = 0;
@@ -208,7 +208,7 @@ void CParticule::FlushParticule(int sheet)
 		if ( !m_particule[i].bUsed )  continue;
 		if ( m_particule[i].sheet != sheet )  continue;
 
-		m_particule[i].bUsed = FALSE;
+		m_particule[i].bUsed = false;
 	}
 
 	for ( i=0 ; i<MAXPARTITYPE ; i++ )
@@ -218,7 +218,7 @@ void CParticule::FlushParticule(int sheet)
 
 	for ( i=0 ; i<MAXTRACK ; i++ )
 	{
-		m_track[i].bUsed = FALSE;
+		m_track[i].bUsed = false;
 	}
 
 	if ( sheet == SH_WORLD )
@@ -396,8 +396,8 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 		if ( !m_particule[i].bUsed )
 		{
 			ZeroMemory(&m_particule[i], sizeof(Particule));
-			m_particule[i].bUsed     = TRUE;
-			m_particule[i].bRay      = FALSE;
+			m_particule[i].bUsed     = true;
+			m_particule[i].bRay      = false;
 			m_particule[i].uniqueStamp = m_uniqueStamp++;
 			m_particule[i].sheet     = sheet;
 			m_particule[i].mass      = mass;
@@ -472,8 +472,8 @@ int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 		if ( !m_particule[i].bUsed )
 		{
 			ZeroMemory(&m_particule[i], sizeof(Particule));
-			m_particule[i].bUsed     = TRUE;
-			m_particule[i].bRay      = FALSE;
+			m_particule[i].bUsed     = true;
+			m_particule[i].bRay      = false;
 			m_particule[i].uniqueStamp = m_uniqueStamp++;
 			m_particule[i].sheet     = sheet;
 			m_particule[i].mass      = mass;
@@ -577,8 +577,8 @@ int CParticule::CreatePart(D3DVECTOR pos, D3DVECTOR speed,
 		if ( !m_particule[i].bUsed )
 		{
 			ZeroMemory(&m_particule[i], sizeof(Particule));
-			m_particule[i].bUsed     = TRUE;
-			m_particule[i].bRay      = FALSE;
+			m_particule[i].bUsed     = true;
+			m_particule[i].bRay      = false;
 			m_particule[i].uniqueStamp = m_uniqueStamp++;
 			m_particule[i].sheet     = sheet;
 			m_particule[i].mass      = mass;
@@ -638,8 +638,8 @@ int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
 		if ( !m_particule[i].bUsed )
 		{
 			ZeroMemory(&m_particule[i], sizeof(Particule));
-			m_particule[i].bUsed     = TRUE;
-			m_particule[i].bRay      = TRUE;
+			m_particule[i].bUsed     = true;
+			m_particule[i].bRay      = true;
 			m_particule[i].uniqueStamp = m_uniqueStamp++;
 			m_particule[i].sheet     = sheet;
 			m_particule[i].mass      = 0.0f;
@@ -696,7 +696,7 @@ int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim,
 			if ( !CheckChannel(rank) )  return -1;
 			m_particule[rank].trackRank = i;
 
-			m_track[i].bUsed = TRUE;
+			m_track[i].bUsed = true;
 			m_track[i].step = (length/duration)/MAXTRACKLEN;
 			m_track[i].last = 0.0f;
 			m_track[i].intensity = 1.0f;
@@ -762,34 +762,34 @@ void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
 // Check a channel number.
 // Adapts the channel so it can be used as an offset in m_particule.
 
-BOOL CParticule::CheckChannel(int &channel)
+bool CParticule::CheckChannel(int &channel)
 {
 	int		uniqueStamp;
 
 	uniqueStamp = (channel>>16)&0xffff;
 	channel &= 0xffff;
 
-	if ( channel < 0 )  return FALSE;
-	if ( channel >= MAXPARTICULE*MAXPARTITYPE )  return FALSE;
+	if ( channel < 0 )  return false;
+	if ( channel >= MAXPARTICULE*MAXPARTITYPE )  return false;
 #if 0
-	if ( !m_particule[channel].bUsed )  return FALSE;
+	if ( !m_particule[channel].bUsed )  return false;
 
-	if ( m_particule[channel].uniqueStamp != uniqueStamp )  return FALSE;
+	if ( m_particule[channel].uniqueStamp != uniqueStamp )  return false;
 #else
 	if ( !m_particule[channel].bUsed )
 	{
-		OutputDebugString("CheckChannel bUsed=FALSE !\n");
-		return FALSE;
+		OutputDebugString("CheckChannel bUsed=false !\n");
+		return false;
 	}
 
 	if ( m_particule[channel].uniqueStamp != uniqueStamp )
 	{
 		OutputDebugString("CheckChannel uniqueStamp !\n");
-		return FALSE;
+		return false;
 	}
 #endif
 
-	return TRUE;
+	return true;
 }
 
 // Removes a particle after his rank.
@@ -806,10 +806,10 @@ void CParticule::DeleteRank(int rank)
 	i = m_particule[rank].trackRank;
 	if ( i != -1 )  // drag associated?
 	{
-		m_track[i].bUsed = FALSE;  // frees the drag
+		m_track[i].bUsed = false;  // frees the drag
 	}
 
-	m_particule[rank].bUsed = FALSE;
+	m_particule[rank].bUsed = false;
 }
 
 // Removes all particles of a given type.
@@ -843,10 +843,10 @@ void CParticule::DeleteParticule(int channel)
 	i = m_particule[channel].trackRank;
 	if ( i != -1 )  // drag associated?
 	{
-		m_track[i].bUsed = FALSE;  // frees the drag
+		m_track[i].bUsed = false;  // frees the drag
 	}
 
-	m_particule[channel].bUsed = FALSE;
+	m_particule[channel].bUsed = false;
 }
 
 
@@ -917,17 +917,17 @@ void CParticule::SetPhase(int channel, ParticulePhase phase, float duration)
 
 // Returns the position of the particle.
 
-BOOL CParticule::GetPosition(int channel, D3DVECTOR &pos)
+bool CParticule::GetPosition(int channel, D3DVECTOR &pos)
 {
-	if ( !CheckChannel(channel) )  return FALSE;
+	if ( !CheckChannel(channel) )  return false;
 	pos = m_particule[channel].pos;
-	return TRUE;
+	return true;
 }
 
 
 // Indicates whether a sheet evolves or not.
 
-void CParticule::SetFrameUpdate(int sheet, BOOL bUpdate)
+void CParticule::SetFrameUpdate(int sheet, bool bUpdate)
 {
 	m_bFrameUpdate[sheet] = bUpdate;
 }
@@ -939,7 +939,7 @@ void CParticule::FrameParticule(float rTime)
 	CObject*	object;
 	D3DVECTOR	eye, pos, speed, wind;
 	FPOINT		ts, ti, dim;
-	BOOL		bPause;
+	bool		bPause;
 	float		progress, dp, h, duration, mass, amplitude;
 	int			i, j, r, total;
 
@@ -1003,7 +1003,7 @@ void CParticule::FrameParticule(float rTime)
 			}
 			else
 			{
-				h = m_terrain->RetFloorLevel(m_particule[i].pos, TRUE);
+				h = m_terrain->RetFloorLevel(m_particule[i].pos, true);
 			}
 			h += m_particule[i].dim.y*0.75f;
 			if ( m_particule[i].pos.y < h )  // impact with the ground?
@@ -1305,14 +1305,14 @@ void CParticule::FrameParticule(float rTime)
 			{
 				m_particule[i].testTime = 0.0f;
 
-				if ( m_terrain->RetFloorHeight(m_particule[i].pos, TRUE) < -2.0f )
+				if ( m_terrain->RetFloorHeight(m_particule[i].pos, true) < -2.0f )
 				{
 					m_exploGunCounter ++;
 
 					if ( m_exploGunCounter%2 == 0 )
 					{
 						pos = m_particule[i].goal;
-						m_terrain->MoveOnFloor(pos, TRUE);
+						m_terrain->MoveOnFloor(pos, true);
 						speed.x = 0.0f;
 						speed.z = 0.0f;
 						speed.y = 0.0f;
@@ -1499,14 +1499,14 @@ void CParticule::FrameParticule(float rTime)
 			{
 				m_particule[i].testTime = 0.0f;
 
-				if ( m_terrain->RetFloorHeight(m_particule[i].pos, TRUE) < -2.0f )
+				if ( m_terrain->RetFloorHeight(m_particule[i].pos, true) < -2.0f )
 				{
 					m_exploGunCounter ++;
 
 					if ( m_exploGunCounter%2 == 0 )
 					{
 						pos = m_particule[i].goal;
-						m_terrain->MoveOnFloor(pos, TRUE);
+						m_terrain->MoveOnFloor(pos, true);
 						speed.x = 0.0f;
 						speed.z = 0.0f;
 						speed.y = 0.0f;
@@ -2748,13 +2748,13 @@ void CParticule::FrameParticule(float rTime)
 // Moves a drag.
 // Returns true if the drag is finished.
 
-BOOL CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
+bool CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 {
 	D3DVECTOR	last;
 	int			h, hh;
 
-	if ( i < 0 || i >= MAXTRACK )  return TRUE;
-	if ( m_track[i].bUsed == FALSE )  return TRUE;
+	if ( i < 0 || i >= MAXTRACK )  return true;
+	if ( m_track[i].bUsed == false )  return true;
 
 	if ( progress < 1.0f )  // particle exists?
 	{
@@ -3286,7 +3286,7 @@ void CParticule::DrawParticuleRay(int i)
 	D3DMATRIX		matrix;
 	D3DVECTOR		corner[4], eye, pos, goal, n, angle, proj;
 	FPOINT			dim, texInf, texSup;
-	BOOL			bLeft;
+	bool			bLeft;
 	float			a, len, adv, prop, vario1, vario2;
 	int				r, rank, step, first, last;
 
@@ -3810,14 +3810,14 @@ void CParticule::DrawParticule(int sheet)
 {
 	D3DMATERIAL7	mat;
 	D3DMATRIX		matrix;
-	BOOL			bLoadTexture;
+	bool			bLoadTexture;
 	char			name[20];
 	int				state, t, i, j, r;
 
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
-//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
+//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 
 	// Draw the basic particles of triangles.
 	if ( m_totalInterface[0][sheet] > 0 )
@@ -3836,7 +3836,7 @@ void CParticule::DrawParticule(int sheet)
 	}
 
 	// Draw the particles was calculated based on edge.
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
 
 	ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
 	mat.diffuse.r = 1.0f;
@@ -3870,7 +3870,7 @@ void CParticule::DrawParticule(int sheet)
 	{
 		if ( m_totalInterface[t][sheet] == 0 )  continue;
 
-		bLoadTexture = FALSE;
+		bLoadTexture = false;
 
 		if ( t == 4 )  state = D3DSTATETTw;  // text.tga
 		else           state = D3DSTATETTb;  // effect[00..02].tga
@@ -3886,7 +3886,7 @@ void CParticule::DrawParticule(int sheet)
 			{
 				NameParticule(name, t);
 				m_engine->SetTexture(name);
-				bLoadTexture = TRUE;
+				bLoadTexture = true;
 			}
 
 			r = m_particule[i].trackRank;
@@ -3932,8 +3932,8 @@ void CParticule::DrawParticule(int sheet)
 		}
 	}
 
-//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
-	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, TRUE);
+//?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
+	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
 }
 
 
@@ -3945,10 +3945,10 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 	CObject		*pObj, *pBest;
 	D3DVECTOR	box1, box2, oPos, p;
 	ObjectType	oType;
-	BOOL		bShield;
+	bool		bShield;
 	float		min, oRadius, dist, shieldRadius;
 	int			i, j;
-	BOOL		bHimself;
+	bool		bHimself;
 
 	if ( m_main->RetMovieLock() )  return 0;  // current movie?
 
@@ -3971,7 +3971,7 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 	box2.z += min;
 
 	pBest = 0;
-	bShield = FALSE;
+	bShield = false;
 	for ( i=0 ; i<1000000 ; i++ )
 	{
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
@@ -4048,7 +4048,7 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 				if ( dist <= shieldRadius )
 				{
 					pBest = pObj;
-					bShield = TRUE;
+					bShield = true;
 				}
 			}
 		}
@@ -4250,7 +4250,7 @@ D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
 
 // Writes a file. BMP containing all the tire tracks.
 
-BOOL CParticule::WriteWheelTrace(char *filename, int width, int height,
+bool CParticule::WriteWheelTrace(char *filename, int width, int height,
 								 D3DVECTOR dl, D3DVECTOR ur)
 {
 	HDC				hDC;
@@ -4266,13 +4266,13 @@ BOOL CParticule::WriteWheelTrace(char *filename, int width, int height,
 	POINT			list[4];
 	int				i;
 
-	if ( !m_engine->GetRenderDC(hDC) )  return FALSE;
+	if ( !m_engine->GetRenderDC(hDC) )  return false;
 
 	hDCImage = CreateCompatibleDC(hDC);
 	if ( hDCImage == 0 )
 	{
 		m_engine->ReleaseRenderDC(hDC);
-		return FALSE;
+		return false;
 	}
 
 	hb = CreateCompatibleBitmap(hDC, width, height);
@@ -4280,7 +4280,7 @@ BOOL CParticule::WriteWheelTrace(char *filename, int width, int height,
 	{
 		DeleteDC(hDCImage);
 		m_engine->ReleaseRenderDC(hDC);
-		return FALSE;
+		return false;
 	}
 
 	SelectObject(hDCImage, hb);
@@ -4360,7 +4360,7 @@ BOOL CParticule::WriteWheelTrace(char *filename, int width, int height,
 		DeleteObject(hb);
 		DeleteDC(hDCImage);
 		m_engine->ReleaseRenderDC(hDC);
-		return FALSE;
+		return false;
 	}
 
 	m_engine->CreateBMPFile(filename, info, hb, hDCImage);
@@ -4368,6 +4368,6 @@ BOOL CParticule::WriteWheelTrace(char *filename, int width, int height,
 	DeleteObject(hb);
     DeleteDC(hDCImage);
 	m_engine->ReleaseRenderDC(hDC);
-	return TRUE;
+	return true;
 }
 

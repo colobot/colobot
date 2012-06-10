@@ -76,13 +76,12 @@ CAutoBase::CAutoBase(CInstanceManager* iMan, CObject* object)
 
 CAutoBase::~CAutoBase()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoBase::DeleteObject(BOOL bAll)
+void CAutoBase::DeleteObject(bool bAll)
 {
 	if ( m_soundChannel != -1 )
 	{
@@ -99,7 +98,7 @@ void CAutoBase::DeleteObject(BOOL bAll)
 
 void CAutoBase::Init()
 {
-	m_bOpen    = FALSE;
+	m_bOpen    = false;
 	m_time     = 0.0f;
 	m_lastParticule = 0.0f;
 	m_lastMotorParticule = 0.0f;
@@ -127,7 +126,7 @@ void CAutoBase::Start(int param)
 
 // Management of an event.
 
-BOOL CAutoBase::EventProcess(const Event &event)
+bool CAutoBase::EventProcess(const Event &event)
 {
 	D3DMATRIX*	mat;
 	Event		newEvent;
@@ -140,7 +139,7 @@ BOOL CAutoBase::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 begin:
 	iPos = m_object->RetPosition(0);
@@ -150,7 +149,7 @@ begin:
 		if ( m_param != PARAM_STOP     &&  // not placed on the ground?
 			 m_param != PARAM_FIXSCENE )
 		{
-			FreezeCargo(TRUE);  // freeze whole cargo
+			FreezeCargo(true);  // freeze whole cargo
 		}
 
 		if ( m_param == PARAM_STOP )  // raises the ground?
@@ -206,8 +205,8 @@ begin:
 			m_progress = 0.0f;
 			m_speed    = 1.0f/BASE_LAND_TIME;
 
-			m_main->SetMovieLock(TRUE);  // blocks everything until the end of the landing
-			m_bMotor = TRUE;  // lights the jet engine
+			m_main->SetMovieLock(true);  // blocks everything until the end of the landing
+			m_bMotor = true;  // lights the jet engine
 
 			m_camera->SetType(CAMERA_SCRIPT);
 
@@ -229,7 +228,7 @@ begin:
 
 			if ( m_soundChannel == -1 )
 			{
-				m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.3f, 2.0f, TRUE);
+				m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.3f, 2.0f, true);
 				m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, BASE_LAND_TIME, SOPER_CONTINUE);
 				m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 2.0f, SOPER_STOP);
 			}
@@ -267,8 +266,8 @@ begin:
 			m_finalPos = pos;
 			m_object->SetPosition(0, pos);
 
-			m_main->SetMovieLock(TRUE);  // blocks everything until the end of the landing
-			m_bMotor = TRUE;  // lights the jet engine
+			m_main->SetMovieLock(true);  // blocks everything until the end of the landing
+			m_bMotor = true;  // lights the jet engine
 
 			m_camera->SetType(CAMERA_SCRIPT);
 			pos.x += 1000.0f;
@@ -312,7 +311,7 @@ begin:
 
 			if ( m_soundChannel == -1 )
 			{
-				m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.0f, 1.2f, TRUE);
+				m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.0f, 1.2f, true);
 				m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, BASE_TRANSIT_TIME*0.55f, SOPER_CONTINUE);
 				m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.8f, BASE_TRANSIT_TIME*0.45f, SOPER_STOP);
 			}
@@ -321,7 +320,7 @@ begin:
 
 	if ( event.event == EVENT_UPDINTERFACE )
 	{
-		if ( m_object->RetSelect() )  CreateInterface(TRUE);
+		if ( m_object->RetSelect() )  CreateInterface(true);
 	}
 
 	if ( event.event == EVENT_OBJECT_BTAKEOFF )
@@ -330,18 +329,18 @@ begin:
 		if ( err != ERR_OK )
 		{
 			m_displayText->DisplayError(err, m_object);
-			return FALSE;
+			return false;
 		}
 
-		err = m_main->CheckEndMission(FALSE);
+		err = m_main->CheckEndMission(false);
 		if ( err != ERR_OK )
 		{
 			m_displayText->DisplayError(err, m_object);
-			return FALSE;
+			return false;
 		}
 
-		FreezeCargo(TRUE);  // freeze whole cargo
-		m_main->SetMovieLock(TRUE);  // blocks everything until the end
+		FreezeCargo(true);  // freeze whole cargo
+		m_main->SetMovieLock(true);  // blocks everything until the end
 		m_main->DeselectAll();
 
 		m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
@@ -362,18 +361,18 @@ begin:
 
 		m_engine->SetFocus(1.0f);
 
-		m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, TRUE);
+		m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, true);
 		m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.5f, BASE_DOOR_TIME2, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 0.5f, SOPER_STOP);
 
 		m_phase    = ABP_CLOSE2;
 		m_progress = 0.0f;
 		m_speed    = 1.0f/BASE_DOOR_TIME2;
-		return TRUE;
+		return true;
 	}
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_phase == ABP_WAIT )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_phase == ABP_WAIT )  return true;
 
 	m_progress += event.rTime*m_speed;
 
@@ -458,7 +457,7 @@ begin:
 		}
 		else
 		{
-			m_bMotor = FALSE;  // put out the reactor
+			m_bMotor = false;  // put out the reactor
 
 			m_object->SetPosition(0, m_pos);  // setting down
 			m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
@@ -514,7 +513,7 @@ begin:
 		}
 		else
 		{
-			m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.0f, 0.3f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.0f, 0.3f, true);
 			m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.3f, 1.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.0f, BASE_DOOR_TIME-1.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 1.0f, SOPER_STOP);
@@ -574,7 +573,7 @@ begin:
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
 			}
 
-			m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, true);
 			m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.5f, BASE_DOOR_TIME2, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 1.5f, 0.5f, SOPER_STOP);
 
@@ -632,11 +631,11 @@ begin:
 	{
 		if ( m_progress >= 1.0f )
 		{
-			FreezeCargo(FALSE);  // frees all cargo
+			FreezeCargo(false);  // frees all cargo
 
 			if ( m_param != PARAM_PORTICO )
 			{
-				m_main->SetMovieLock(FALSE);  // you can play!
+				m_main->SetMovieLock(false);  // you can play!
 
 				pObj = m_main->RetSelectObject();
 				m_main->SelectObject(pObj);
@@ -656,7 +655,7 @@ begin:
 				m_engine->SetFogStart(m_fogStart);
 			}
 
-			m_bOpen    = TRUE;
+			m_bOpen    = true;
 			m_phase    = ABP_WAIT;
 			m_progress = 0.0f;
 			m_speed    = 1.0f/1.0f;
@@ -686,7 +685,7 @@ begin:
 				m_object->SetAngleX(18+i, 0.0f);
 			}
 
-			m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.0f, 0.3f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.0f, 0.3f, true);
 			m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.3f, 1.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.3f, 1.0f, BASE_DOOR_TIME-1.5f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 1.0f, SOPER_STOP);
@@ -713,7 +712,7 @@ begin:
 			{
 				m_object->SetAngleZ(1+i, PI/2.0f);
 			}
-			m_bMotor = TRUE;  // lights the jet engine
+			m_bMotor = true;  // lights the jet engine
 
 			// Shock of the closing doors.
 			max = (int)(20.0f*m_engine->RetParticuleDensity());
@@ -734,7 +733,7 @@ begin:
 			m_sound->Play(SOUND_BOUM, m_object->RetPosition(0));
 
 			m_soundChannel = -1;
-			m_bOpen    = FALSE;
+			m_bOpen    = false;
 			m_phase    = ABP_TOWAIT;
 			m_progress = 0.0f;
 			m_speed    = 1.0f/2.0f;
@@ -747,7 +746,7 @@ begin:
 		{
 			if ( m_soundChannel == -1 )
 			{
-				m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.0f, 0.5f, TRUE);
+				m_soundChannel = m_sound->Play(SOUND_FLY, m_posSound, 0.0f, 0.5f, true);
 				m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 2.0f, SOPER_CONTINUE);
 				m_sound->AddEnvelope(m_soundChannel, 0.3f, 2.0f, BASE_TAKO_TIME, SOPER_STOP);
 			}
@@ -1101,12 +1100,12 @@ begin:
 		m_sound->Position(m_soundChannel, pos);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Stops the controller.
 
-BOOL CAutoBase::Abort()
+bool CAutoBase::Abort()
 {
 	Event		newEvent;
 	CObject*	pObj;
@@ -1129,7 +1128,7 @@ BOOL CAutoBase::Abort()
 			m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.8f, 0.01f, SOPER_STOP);
 			m_soundChannel = -1;
 		}
-		return TRUE;
+		return true;
 	}
 
 	if ( m_param == PARAM_PORTICO )  // gate on the porch?
@@ -1153,8 +1152,8 @@ BOOL CAutoBase::Abort()
 			 m_phase == ABP_OPEN     ||
 			 m_phase == ABP_OPEN2    )  // Landing?
 		{
-			m_bMotor = FALSE;  // put out the jet engine
-			m_bOpen = TRUE;
+			m_bMotor = false;  // put out the jet engine
+			m_bOpen = true;
 
 			m_object->SetPosition(0, m_pos);  // setting down
 			m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
@@ -1168,7 +1167,7 @@ BOOL CAutoBase::Abort()
 				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
 			}
 
-			m_main->SetMovieLock(FALSE);  // you can play!
+			m_main->SetMovieLock(false);  // you can play!
 
 			pObj = m_main->RetSelectObject();
 			m_main->SelectObject(pObj);
@@ -1197,7 +1196,7 @@ BOOL CAutoBase::Abort()
 	}
 
 	m_object->SetAngleZ(0, 0.0f);
-	FreezeCargo(FALSE);  // frees all cargo
+	FreezeCargo(false);  // frees all cargo
 
 	if ( m_soundChannel != -1 )
 	{
@@ -1210,7 +1209,7 @@ BOOL CAutoBase::Abort()
 	m_progress = 0.0f;
 	m_speed    = 1.0f/2.0f;
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1224,7 +1223,7 @@ Error CAutoBase::RetError()
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoBase::CreateInterface(BOOL bSelect)
+bool CAutoBase::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, dim, ddim;
@@ -1233,10 +1232,10 @@ BOOL CAutoBase::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	dim.x = 33.0f/640.0f;
 	dim.y = 33.0f/480.0f;
@@ -1273,7 +1272,7 @@ BOOL CAutoBase::CreateInterface(BOOL bSelect)
 
 	UpdateInterface();
 
-	return TRUE;
+	return true;
 }
 
 // Updates the status of all interface buttons.
@@ -1292,7 +1291,7 @@ void CAutoBase::UpdateInterface()
 
 // Freeze or frees all cargo.
 
-void CAutoBase::FreezeCargo(BOOL bFreeze)
+void CAutoBase::FreezeCargo(bool bFreeze)
 {
 	CObject*	pObj;
 	CPhysics*	physics;
@@ -1305,7 +1304,7 @@ void CAutoBase::FreezeCargo(BOOL bFreeze)
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
 		if ( pObj == 0 )  break;
 
-		pObj->SetCargo(FALSE);
+		pObj->SetCargo(false);
 
 		if ( pObj == m_object )  continue;  // yourself?
 		if ( pObj->RetTruck() != 0 )  continue;  // transport object?
@@ -1316,7 +1315,7 @@ void CAutoBase::FreezeCargo(BOOL bFreeze)
 		{
 			if ( bFreeze )
 			{
-				pObj->SetCargo(TRUE);
+				pObj->SetCargo(true);
 			}
 
 			physics = pObj->RetPhysics();
@@ -1403,7 +1402,7 @@ Error CAutoBase::CheckCloseDoor()
 
 void CAutoBase::BeginTransit()
 {
-	BOOL	bFull, bQuarter;
+	bool	bFull, bQuarter;
 
 	if ( m_param == PARAM_TRANSIT2 )
 	{
@@ -1432,7 +1431,7 @@ void CAutoBase::BeginTransit()
 	m_engine->SetBackground(m_bgBack, 0x00000000, 0x00000000, 0x00000000, 0x00000000);
 	m_engine->LoadTexture(m_bgBack);
 
-	m_cloud->SetEnable(FALSE);  // cache clouds
+	m_cloud->SetEnable(false);  // cache clouds
 	m_planet->SetMode(1);
 }
 
@@ -1449,7 +1448,7 @@ void CAutoBase::EndTransit()
 	m_engine->SetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown);
 	m_engine->LoadTexture(m_bgName);
 
-	m_cloud->SetEnable(TRUE);  // gives the clouds
+	m_cloud->SetEnable(true);  // gives the clouds
 	m_planet->SetMode(0);
 
 	m_main->StartMusic();

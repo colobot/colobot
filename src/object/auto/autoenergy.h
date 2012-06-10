@@ -49,22 +49,22 @@ public:
 	CAutoEnergy(CInstanceManager* iMan, CObject* object);
 	~CAutoEnergy();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	void		UpdateInterface(float rTime);
 
 	CObject*	SearchMetal();
-	BOOL		SearchVehicle();
+	bool		SearchVehicle();
 	void		CreatePower();
 	CObject*	SearchPower();
 

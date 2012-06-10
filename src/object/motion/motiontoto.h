@@ -46,9 +46,9 @@ public:
 	CMotionToto(CInstanceManager* iMan, CObject* object);
 	~CMotionToto();
 
-	void	DeleteObject(BOOL bAll=FALSE);
-	BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
-	BOOL	EventProcess(const Event &event);
+	void	DeleteObject(bool bAll=false);
+	bool	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	bool	EventProcess(const Event &event);
 	Error	SetAction(int action, float time=0.2f);
 	void	SetLinkType(ObjectType type);
 
@@ -57,14 +57,14 @@ public:
 	void	SetMousePos(FPOINT pos);
 
 protected:
-	BOOL	EventFrame(const Event &event);
+	bool	EventFrame(const Event &event);
 
 protected:
 	float		m_time;
 	float		m_lastMotorParticule;
-	BOOL		m_bDisplayInfo;
-	BOOL		m_bQuickPos;
-	BOOL		m_bStartAction;
+	bool		m_bDisplayInfo;
+	bool		m_bQuickPos;
+	bool		m_bStartAction;
 	float		m_speedAction;
 	float		m_clownRadius;
 	float		m_clownDelay;

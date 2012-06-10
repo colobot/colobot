@@ -47,7 +47,7 @@ const FLOAT g_EPSILON  =  1.0e-5f;                 // Tolerance for FLOATs
 //-----------------------------------------------------------------------------
 // Fuzzy compares (within tolerance)
 //-----------------------------------------------------------------------------
-inline BOOL D3DMath_IsZero( FLOAT a, FLOAT fTol = g_EPSILON )
+inline bool D3DMath_IsZero( FLOAT a, FLOAT fTol = g_EPSILON )
 { return ( a <= 0.0f ) ? ( a >= -fTol ) : ( a <= fTol ); }
 
 

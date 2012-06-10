@@ -43,13 +43,11 @@
 
 CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
 {
-	CControl::CControl(iMan);
-
 	m_main    = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
 	m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 	m_water   = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
 
-	m_bEnable  = TRUE;
+	m_bEnable  = true;
 	m_time     = 0.0f;
 	m_zoom     = 2.0f;
 	m_offset.x = 0.0f;
@@ -71,8 +69,8 @@ CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
 
 	m_fixImage[0] = 0;
 	m_mode = 0;
-	m_bToy = FALSE;
-	m_bDebug = FALSE;
+	m_bToy = false;
+	m_bDebug = false;
 }
 
 // Object's destructor.
@@ -84,12 +82,12 @@ CMap::~CMap()
 
 // Creates a new button.
 
-BOOL CMap::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CMap::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
 	CControl::Create(pos, dim, icon, eventMsg);
-	return TRUE;
+	return true;
 }
 
 
@@ -118,12 +116,12 @@ void CMap::SetMode(int mode)
 
 // Specifies the type of icon for the selected object.
 
-void CMap::SetToy(BOOL bToy)
+void CMap::SetToy(bool bToy)
 {
 	m_bToy = bToy;
 }
 
-void CMap::SetDebug(BOOL bDebug)
+void CMap::SetDebug(bool bDebug)
 {
 	m_bDebug = bDebug;
 }
@@ -146,13 +144,13 @@ float CMap::RetZoom()
 
 // Enables or disables the card.
 
-void CMap::SetEnable(BOOL bEnable)
+void CMap::SetEnable(bool bEnable)
 {
 	m_bEnable = bEnable;
 	SetState(STATE_DEAD, !bEnable);
 }
 
-BOOL CMap::RetEnable()
+bool CMap::RetEnable()
 {
 	return m_bEnable;
 }
@@ -182,7 +180,7 @@ void CMap::SetFixImage(char *filename)
 
 // Whether to use a still image.
 
-BOOL CMap::RetFixImage()
+bool CMap::RetFixImage()
 {
 	return (m_fixImage[0] != 0);
 }
@@ -190,11 +188,11 @@ BOOL CMap::RetFixImage()
 
 // Management of an event.
 
-BOOL CMap::EventProcess(const Event &event)
+bool CMap::EventProcess(const Event &event)
 {
-	BOOL	bInMap;
+	bool	bInMap;
 
-	if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
 
 	CControl::EventProcess(event);
 
@@ -217,11 +215,11 @@ BOOL CMap::EventProcess(const Event &event)
 		if ( CControl::Detect(event.pos) )
 		{
 			SelectObject(event.pos);
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Adjusts the offset to not exceed the card.
@@ -263,18 +261,18 @@ void CMap::SetHilite(CObject* pObj)
 
 // Detects an object in the map.
 
-CObject* CMap::DetectObject(FPOINT pos, BOOL &bInMap)
+CObject* CMap::DetectObject(FPOINT pos, bool &bInMap)
 {
 	float		dist, min;
 	int			i, best;
 
-	bInMap = FALSE;
+	bInMap = false;
 	if ( pos.x < m_pos.x         ||
 		 pos.y < m_pos.y         ||
 		 pos.x > m_pos.x+m_dim.x ||
 		 pos.y > m_pos.y+m_dim.y )  return 0;
 
-	bInMap = TRUE;
+	bInMap = true;
 
 	pos.x = (pos.x-m_pos.x)/m_dim.x*256.0f;
 	pos.y = (pos.y-m_pos.y)/m_dim.y*256.0f;  // 0..256
@@ -306,7 +304,7 @@ CObject* CMap::DetectObject(FPOINT pos, BOOL &bInMap)
 void CMap::SelectObject(FPOINT pos)
 {
 	CObject		*pObj;
-	BOOL		bInMap;
+	bool		bInMap;
 
 	pObj = DetectObject(pos, bInMap);
 	if ( pObj != 0 )
@@ -365,25 +363,25 @@ void CMap::Draw()
 	for ( i=0 ; i<m_totalFix ; i++ )  // fixed objects:
 	{
 		if ( i == m_hiliteRank )  continue;
-		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, FALSE, FALSE);
+		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, false);
 	}
 
 	for ( i=MAPMAXOBJECT-2 ; i>m_totalMove ; i-- )  // moving objects:
 	{
 		if ( i == m_hiliteRank )  continue;
-		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, FALSE, FALSE);
+		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, false);
 	}
 
 	i = MAPMAXOBJECT-1;
 	if ( m_map[i].bUsed && i != m_hiliteRank )  // selection:
 	{
-		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, TRUE, FALSE);
+		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, true, false);
 	}
 
 	if ( m_hiliteRank != -1 && m_map[m_hiliteRank].bUsed )
 	{
 		i = m_hiliteRank;
-		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, FALSE, TRUE);
+		DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, true);
 		DrawHilite(m_map[i].pos);
 	}
 }
@@ -439,7 +437,7 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 	FPOINT	p0, p1, p2, uv1, uv2, rel;
 	float	aMin, aMax, aOct, focus, a;
 	float	limit[5];
-	BOOL	bEnding;
+	bool	bEnding;
 	int		quart;
 
 	if ( m_bToy || m_fixImage[0] != 0 )  return;  // map with still image?
@@ -489,7 +487,7 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 	m_engine->SetTexture("button2.tga");
 	m_engine->SetState(D3DSTATETTw);
 
-	bEnding = FALSE;
+	bEnding = false;
 	do
 	{
 		quart ++;
@@ -498,7 +496,7 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 		if ( aOct >= aMax-CHOUIA )
 		{
 			aOct = aMax;
-			bEnding = TRUE;
+			bEnding = true;
 		}
 
 		p0 = pos;
@@ -517,19 +515,19 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 // Draw an object.
 
 void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
-					  BOOL bSelect, BOOL bHilite)
+					  bool bSelect, bool bHilite)
 {
 	FPOINT		p1, p2, p3, p4, p5, dim, uv1, uv2;
-	BOOL		bOut, bUp, bDown, bLeft, bRight;
+	bool		bOut, bUp, bDown, bLeft, bRight;
 
 	pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
 	pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
 
-	bOut = bUp = bDown = bLeft = bRight = FALSE;
-	if ( pos.x < 0.06f )  { pos.x = 0.02f;  bOut = bLeft  = TRUE; }
-	if ( pos.y < 0.06f )  { pos.y = 0.02f;  bOut = bDown  = TRUE; }
-	if ( pos.x > 0.94f )  { pos.x = 0.98f;  bOut = bRight = TRUE; }
-	if ( pos.y > 0.94f )  { pos.y = 0.98f;  bOut = bUp    = TRUE; }
+	bOut = bUp = bDown = bLeft = bRight = false;
+	if ( pos.x < 0.06f )  { pos.x = 0.02f;  bOut = bLeft  = true; }
+	if ( pos.y < 0.06f )  { pos.y = 0.02f;  bOut = bDown  = true; }
+	if ( pos.x > 0.94f )  { pos.x = 0.98f;  bOut = bRight = true; }
+	if ( pos.y > 0.94f )  { pos.y = 0.98f;  bOut = bUp    = true; }
 
 	pos.x = m_mapPos.x+m_mapDim.x*pos.x;
 	pos.y = m_mapPos.y+m_mapDim.y*pos.y;
@@ -619,13 +617,13 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
 	{
 		dim.x *= 3.0f;
 		dim.y *= 3.0f;
-		bHilite = TRUE;
+		bHilite = true;
 	}
 	if ( type == OBJECT_TEEN34 )  // stone?
 	{
 		dim.x *= 2.0f;
 		dim.y *= 2.0f;
-		bHilite = TRUE;
+		bHilite = true;
 	}
 
 	if ( color == MAPCOLOR_MOVE && bSelect )
@@ -729,7 +727,7 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
 	{
 		if ( m_bRadar )
 		{
-			DrawObjectIcon(pos, dim, color, type, TRUE);
+			DrawObjectIcon(pos, dim, color, type, true);
 		}
 	}
 
@@ -788,7 +786,7 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
 // Draws the icon of an object.
 
 void CMap::DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color,
-						  ObjectType type, BOOL bHilite)
+						  ObjectType type, bool bHilite)
 {
 	FPOINT	ppos, ddim, uv1, uv2;
 	float	dp;
@@ -898,18 +896,18 @@ void CMap::DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color,
 void CMap::DrawHilite(FPOINT pos)
 {
 	FPOINT		dim, uv1, uv2;
-	BOOL		bOut, bUp, bDown, bLeft, bRight;
+	bool		bOut, bUp, bDown, bLeft, bRight;
 
 	if ( m_bToy || m_fixImage[0] != 0 )  return;  // map with still image?
 
 	pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
 	pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
 
-	bOut = bUp = bDown = bLeft = bRight = FALSE;
-	if ( pos.x < 0.06f )  { pos.x = 0.02f;  bOut = bLeft  = TRUE; }
-	if ( pos.y < 0.06f )  { pos.y = 0.02f;  bOut = bDown  = TRUE; }
-	if ( pos.x > 0.94f )  { pos.x = 0.98f;  bOut = bRight = TRUE; }
-	if ( pos.y > 0.94f )  { pos.y = 0.98f;  bOut = bUp    = TRUE; }
+	bOut = bUp = bDown = bLeft = bRight = false;
+	if ( pos.x < 0.06f )  { pos.x = 0.02f;  bOut = bLeft  = true; }
+	if ( pos.y < 0.06f )  { pos.y = 0.02f;  bOut = bDown  = true; }
+	if ( pos.x > 0.94f )  { pos.x = 0.98f;  bOut = bRight = true; }
+	if ( pos.y > 0.94f )  { pos.y = 0.98f;  bOut = bUp    = true; }
 
 	pos.x = m_mapPos.x+m_mapDim.x*pos.x;
 	pos.y = m_mapPos.y+m_mapDim.y*pos.y;
@@ -1047,7 +1045,7 @@ void CMap::UpdateTerrain()
 			if ( pos.x >= -m_half && pos.x <= m_half &&
 				 pos.z >= -m_half && pos.z <= m_half )
 			{
-				level = m_terrain->RetFloorLevel(pos, TRUE)/scale;
+				level = m_terrain->RetFloorLevel(pos, true)/scale;
 			}
 			else
 			{
@@ -1107,7 +1105,7 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 			if ( pos.x >= -m_half && pos.x <= m_half &&
 				 pos.z >= -m_half && pos.z <= m_half )
 			{
-				level = m_terrain->RetFloorLevel(pos, TRUE)/scale;
+				level = m_terrain->RetFloorLevel(pos, true)/scale;
 			}
 			else
 			{
@@ -1152,7 +1150,7 @@ void CMap::FlushObject()
 
 	for ( i=0 ; i<MAPMAXOBJECT ; i++ )
 	{
-		m_map[i].bUsed = FALSE;
+		m_map[i].bUsed = false;
 	}
 }
 
@@ -1188,7 +1186,7 @@ void CMap::UpdateObject(CObject* pObj)
 
 	if ( type == OBJECT_RADAR )
 	{
-		m_bRadar = TRUE;  // radar exists
+		m_bRadar = true;  // radar exists
 	}
 
 	color = MAPCOLOR_NULL;
@@ -1310,7 +1308,7 @@ void CMap::UpdateObject(CObject* pObj)
 		m_map[MAPMAXOBJECT-1].pos.x  = pos.x;
 		m_map[MAPMAXOBJECT-1].pos.y  = pos.z;
 		m_map[MAPMAXOBJECT-1].dir    = dir;
-		m_map[MAPMAXOBJECT-1].bUsed  = TRUE;
+		m_map[MAPMAXOBJECT-1].bUsed  = true;
 	}
 	else
 	{
@@ -1323,7 +1321,7 @@ void CMap::UpdateObject(CObject* pObj)
 			m_map[m_totalFix].pos.x  = pos.x;
 			m_map[m_totalFix].pos.y  = pos.z;
 			m_map[m_totalFix].dir    = dir;
-			m_map[m_totalFix].bUsed  = TRUE;
+			m_map[m_totalFix].bUsed  = true;
 			m_totalFix ++;
 		}
 		else
@@ -1334,7 +1332,7 @@ void CMap::UpdateObject(CObject* pObj)
 			m_map[m_totalMove].pos.x  = pos.x;
 			m_map[m_totalMove].pos.y  = pos.z;
 			m_map[m_totalMove].dir    = dir;
-			m_map[m_totalMove].bUsed  = TRUE;
+			m_map[m_totalMove].bUsed  = true;
 			m_totalMove --;
 		}
 	}

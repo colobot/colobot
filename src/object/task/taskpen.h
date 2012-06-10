@@ -45,11 +45,11 @@ public:
 	CTaskPen(CInstanceManager* iMan, CObject* object);
 	~CTaskPen();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
-	Error		Start(BOOL bDown, int color);
+	Error		Start(bool bDown, int color);
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 	void		SoundManip(float time, float amplitude, float frequency);
@@ -58,7 +58,7 @@ protected:
 	int			ColorToRank(int color);
 
 protected:
-	BOOL			m_bError;
+	bool			m_bError;
 	TaskPenPhase	m_phase;
 	float			m_progress;
 	float			m_delay;

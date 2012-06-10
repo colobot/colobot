@@ -47,7 +47,6 @@
 CTaskInfo::CTaskInfo(CInstanceManager* iMan, CObject* object)
 						 : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -59,22 +58,22 @@ CTaskInfo::~CTaskInfo()
 
 // Management of an event.
 
-BOOL CTaskInfo::EventProcess(const Event &event)
+bool CTaskInfo::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	m_progress += event.rTime*m_speed;  // other advance
 	m_time += event.rTime;
 
-	return TRUE;
+	return true;
 }
 
 
 // Assigns the goal was achieved.
 
-Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
+Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
 {
 	CObject*	pInfo;
 	CAutoInfo*	pAuto;
@@ -82,7 +81,7 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 	Info		info;
 	int			i, total, op;
 
-	m_bError = TRUE;
+	m_bError = true;
 	m_object->SetInfoReturn(NAN);
 
 	pInfo = SearchInfo(power);  // seeks terminal
@@ -167,7 +166,7 @@ Error CTaskInfo::Start(char *name, float value, float power, BOOL bSend)
 	m_speed    = 1.0f/1.0f;
 	m_time     = 0.0f;
 
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 
 	return ERR_OK;
 }
@@ -188,9 +187,9 @@ Error CTaskInfo::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskInfo::Abort()
+bool CTaskInfo::Abort()
 {
-	return TRUE;
+	return true;
 }
 
 

@@ -52,23 +52,23 @@ CTarget::~CTarget()
 
 // Creates a new button.
 
-BOOL CTarget::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CTarget::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
 	CControl::Create(pos, dim, icon, eventMsg);
 
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CTarget::EventProcess(const Event &event)
+bool CTarget::EventProcess(const Event &event)
 {
 #if 0
-	if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
-	if ( m_state & STATE_DEAD )  return TRUE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
+	if ( m_state & STATE_DEAD )  return true;
 
 	CControl::EventProcess(event);
 
@@ -80,7 +80,7 @@ BOOL CTarget::EventProcess(const Event &event)
 			Event newEvent = event;
 			newEvent.event = m_eventMsg;
 			m_event->AddEvent(newEvent);
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -93,22 +93,22 @@ BOOL CTarget::EventProcess(const Event &event)
 			Event newEvent = event;
 			newEvent.event = EVENT_OBJECT_FIRE;
 			m_event->AddEvent(newEvent);
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 #else
 	CObject*	pObj;
 
-	if ( (m_state & STATE_VISIBLE) == 0 )  return TRUE;
-	if ( m_state & STATE_DEAD )  return TRUE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
+	if ( m_state & STATE_DEAD )  return true;
 
 	CControl::EventProcess(event);
 
 	if ( event.event == EVENT_MOUSEMOVE )
 	{
-		m_main->SetFriendAim(FALSE);
+		m_main->SetFriendAim(false);
 
 		if ( CControl::Detect(event.pos) )
 		{
@@ -120,11 +120,11 @@ BOOL CTarget::EventProcess(const Event &event)
 				Event newEvent = event;
 				newEvent.event = m_eventMsg;
 				m_event->AddEvent(newEvent);
-				return FALSE;
+				return false;
 			}
 			else
 			{
-				m_main->SetFriendAim(TRUE);
+				m_main->SetFriendAim(true);
 				m_engine->SetMouseType(D3DMOUSENORM);
 			}
 		}
@@ -141,12 +141,12 @@ BOOL CTarget::EventProcess(const Event &event)
 				Event newEvent = event;
 				newEvent.event = EVENT_OBJECT_FIRE;
 				m_event->AddEvent(newEvent);
-				return FALSE;
+				return false;
 			}
 		}
 	}
 
-	return TRUE;
+	return true;
 #endif
 }
 
@@ -161,20 +161,20 @@ void CTarget::Draw()
 
 // Returns the tooltip.
 
-BOOL CTarget::GetTooltip(FPOINT pos, char* name)
+bool CTarget::GetTooltip(FPOINT pos, char* name)
 {
 #if 0
 	if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
 	{
 		strcpy(name, m_tooltip);
-		return TRUE;  // does not detect objects below!
+		return true;  // does not detect objects below!
 	}
 
-	return FALSE;
+	return false;
 #else
 //?	CObject*	pObj;
 
-	if ( (m_state & STATE_VISIBLE) == 0 )  return FALSE;
+	if ( (m_state & STATE_VISIBLE) == 0 )  return false;
 
 	if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
 	{
@@ -183,11 +183,11 @@ BOOL CTarget::GetTooltip(FPOINT pos, char* name)
 		if ( !m_main->RetFriendAim() )
 		{
 			strcpy(name, m_tooltip);
-			return TRUE;  // does not detect objects below!
+			return true;  // does not detect objects below!
 		}
 	}
 
-	return FALSE;
+	return false;
 #endif
 }
 

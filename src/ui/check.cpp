@@ -49,7 +49,7 @@ CCheck::~CCheck()
 
 // Creates a new button.
 
-BOOL CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	char	name[100];
 	char*	p;
@@ -63,15 +63,15 @@ BOOL CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 	if ( p != 0 )  *p = 0;
 	SetName(name);
 
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CCheck::EventProcess(const Event &event)
+bool CCheck::EventProcess(const Event &event)
 {
-	if ( m_state & STATE_DEAD )  return TRUE;
+	if ( m_state & STATE_DEAD )  return true;
 
 	CControl::EventProcess(event);
 
@@ -84,11 +84,11 @@ BOOL CCheck::EventProcess(const Event &event)
 			Event newEvent = event;
 			newEvent.event = m_eventMsg;
 			m_event->AddEvent(newEvent);
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 

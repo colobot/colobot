@@ -62,15 +62,15 @@ CDisplayText::CDisplayText(CInstanceManager* iMan)
 
 	for ( i=0 ; i<MAXDTLINE ; i++ )
 	{
-		m_bExist[i] = FALSE;
+		m_bExist[i] = false;
 		m_visitGoal[i] = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		m_visitDist[i] = 0.0f;
 		m_visitHeight[i] = 0.0f;
 		m_time[i] = 0.0f;  // nothing displayed
 	}
 
-	m_bHide = FALSE;
-	m_bEnable = TRUE;
+	m_bHide = false;
+	m_bEnable = true;
 	m_delayFactor = 1.0f;
 }
 
@@ -92,11 +92,11 @@ void CDisplayText::DeleteObject()
 
 // Management of an event.
 
-BOOL CDisplayText::EventProcess(const Event &event)
+bool CDisplayText::EventProcess(const Event &event)
 {
 	int		i;
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	if ( event.event == EVENT_FRAME )
 	{
@@ -105,7 +105,7 @@ BOOL CDisplayText::EventProcess(const Event &event)
 			if ( !m_bExist[i] )  break;
 			m_time[i] -= event.rTime;
 		}
-		while ( TRUE )
+		while ( true )
 		{
 			if ( !m_bExist[0] ||
 				 m_time[0] > 0.0f )  break;
@@ -113,7 +113,7 @@ BOOL CDisplayText::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -251,7 +251,7 @@ void CDisplayText::DisplayText(char *text, D3DVECTOR goal, float height,
 	if ( type == TT_MESSAGE )  icon = 11;  // yellow
 	pw->CreateGroup(pos, dim, icon, EventMsg(EVENT_DT_GROUP0+nLine));
 
-	pw->SetTrashEvent(FALSE);
+	pw->SetTrashEvent(false);
 
 	ppos = pos;
 	ppos.y -= hLine/2.0f;
@@ -272,7 +272,7 @@ void CDisplayText::DisplayText(char *text, D3DVECTOR goal, float height,
 		button->ClearState(STATE_ENABLE);
 	}
 
-	m_bExist[nLine] = TRUE;
+	m_bExist[nLine] = true;
 	m_visitGoal[nLine] = goal;
 	m_visitDist[nLine] = dist;
 	m_visitHeight[nLine] = height;
@@ -339,7 +339,7 @@ void CDisplayText::ClearText()
 			pw->DeleteControl(EventMsg(EVENT_DT_LABEL0+i));
 			pw->DeleteControl(EventMsg(EVENT_DT_VISIT0+i));
 		}
-		m_bExist[i] = FALSE;
+		m_bExist[i] = false;
 		m_visitGoal[i] = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		m_visitDist[i] = 0.0f;
 		m_visitHeight[i] = 0.0f;
@@ -349,7 +349,7 @@ void CDisplayText::ClearText()
 
 // Hides or shows all texts.
 
-void CDisplayText::HideText(BOOL bHide)
+void CDisplayText::HideText(bool bHide)
 {
 	CWindow*	pw;
 	CGroup*		pg;
@@ -386,7 +386,7 @@ void CDisplayText::HideText(BOOL bHide)
 
 // Removes the last text (top of the list).
 
-BOOL CDisplayText::ClearLastText()
+bool CDisplayText::ClearLastText()
 {
 	CWindow		*pw;
 	CButton		*pb1, *pb2;
@@ -395,14 +395,14 @@ BOOL CDisplayText::ClearLastText()
 	int			i;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	pb2 = (CButton*)pw->SearchControl(EVENT_DT_VISIT0);
-	if ( pb2 == 0 )  return FALSE;  // same not of first-line
+	if ( pb2 == 0 )  return false;  // same not of first-line
 	pg2 = (CGroup*)pw->SearchControl(EVENT_DT_GROUP0);
-	if ( pg2 == 0 )  return FALSE;
+	if ( pg2 == 0 )  return false;
 	pl2 = (CLabel*)pw->SearchControl(EVENT_DT_LABEL0);
-	if ( pl2 == 0 )  return FALSE;
+	if ( pl2 == 0 )  return false;
 
 	for ( i=0 ; i<MAXDTLINE-1 ; i++ )
 	{
@@ -432,8 +432,8 @@ BOOL CDisplayText::ClearLastText()
 	pw->DeleteControl(EventMsg(EVENT_DT_VISIT0+i));
 	pw->DeleteControl(EventMsg(EVENT_DT_GROUP0+i));
 	pw->DeleteControl(EventMsg(EVENT_DT_LABEL0+i));
-	m_bExist[i] = FALSE;
-	return TRUE;
+	m_bExist[i] = false;
+	return true;
 }
 
 
@@ -447,7 +447,7 @@ void CDisplayText::SetDelay(float factor)
 
 // Enables the display of text.
 
-void CDisplayText::SetEnable(BOOL bEnable)
+void CDisplayText::SetEnable(bool bEnable)
 {
 	m_bEnable = bEnable;
 }
@@ -574,19 +574,19 @@ void CDisplayText::SetVisit(EventMsg event)
 
 // Indicates whether a button is set to "visit".
 
-BOOL CDisplayText::IsVisit(EventMsg event)
+bool CDisplayText::IsVisit(EventMsg event)
 {
 	CWindow*	pw;
 	CButton*	pb;
 	int			i;
 
 	i = event-EVENT_DT_VISIT0;
-	if ( i < 0 || i >= MAXDTLINE )  return FALSE;
+	if ( i < 0 || i >= MAXDTLINE )  return false;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 	pb = (CButton*)pw->SearchControl(EventMsg(EVENT_DT_VISIT0+i));
-	if ( pb == 0 )  return FALSE;
+	if ( pb == 0 )  return false;
 	return (pb->RetIcon() == 48);  // > ?
 }
 

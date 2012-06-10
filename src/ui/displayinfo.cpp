@@ -67,8 +67,8 @@ CDisplayInfo::CDisplayInfo(CInstanceManager* iMan)
 	m_particule = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
 	m_light     = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
 
-	m_bInfoMaximized = TRUE;
-	m_bInfoMinimized = FALSE;
+	m_bInfoMaximized = true;
+	m_bInfoMinimized = false;
 
 	m_infoFinalPos = m_infoActualPos = m_infoNormalPos = FPOINT(0.00f, 0.00f);
 	m_infoFinalDim = m_infoActualPos = m_infoNormalDim = FPOINT(1.00f, 1.00f);
@@ -87,7 +87,7 @@ CDisplayInfo::~CDisplayInfo()
 
 // Management of an event.
 
-BOOL CDisplayInfo::EventProcess(const Event &event)
+bool CDisplayInfo::EventProcess(const Event &event)
 {
 	CWindow*		pw;
 	CEdit*			edit;
@@ -191,7 +191,7 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 		if ( event.event == EVENT_STUDIO_SIZE )  // size?
 		{
 			slider = (CSlider*)pw->SearchControl(EVENT_STUDIO_SIZE);
-			if ( slider == 0 )  return FALSE;
+			if ( slider == 0 )  return false;
 			m_main->SetFontSize(9.0f+slider->RetVisibleValue()*6.0f);
 			ViewDisplayInfo();
 		}
@@ -223,8 +223,8 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 			{
 				m_infoFinalPos = m_infoNormalPos;
 				m_infoFinalDim = m_infoNormalDim;
-				m_bInfoMinimized = FALSE;
-				m_bInfoMaximized = FALSE;
+				m_bInfoMinimized = false;
+				m_bInfoMaximized = false;
 			}
 			else
 			{
@@ -232,8 +232,8 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 				m_infoFinalPos.y = -0.34f;
 				m_infoFinalDim.x =  1.00f;
 				m_infoFinalDim.y =  0.40f;
-				m_bInfoMinimized = TRUE;
-				m_bInfoMaximized = FALSE;
+				m_bInfoMinimized = true;
+				m_bInfoMaximized = false;
 			}
 //?			m_main->SetEditFull(m_bInfoMaximized);
 			pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW4);
@@ -249,8 +249,8 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 			{
 				m_infoFinalPos = m_infoNormalPos;
 				m_infoFinalDim = m_infoNormalDim;
-				m_bInfoMinimized = FALSE;
-				m_bInfoMaximized = FALSE;
+				m_bInfoMinimized = false;
+				m_bInfoMaximized = false;
 			}
 			else
 			{
@@ -258,8 +258,8 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 				m_infoFinalPos.y = 0.00f;
 				m_infoFinalDim.x = 1.00f;
 				m_infoFinalDim.y = 1.00f;
-				m_bInfoMinimized = FALSE;
-				m_bInfoMaximized = TRUE;
+				m_bInfoMinimized = false;
+				m_bInfoMaximized = true;
 			}
 //?			m_main->SetEditFull(m_bInfoMaximized);
 			pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW4);
@@ -270,13 +270,13 @@ BOOL CDisplayInfo::EventProcess(const Event &event)
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 
 // The brain is changing by time.
 
-BOOL CDisplayInfo::EventFrame(const Event &event)
+bool CDisplayInfo::EventFrame(const Event &event)
 {
 	float		time;
 
@@ -293,7 +293,7 @@ BOOL CDisplayInfo::EventFrame(const Event &event)
 		AdjustDisplayInfo(m_infoActualPos, m_infoActualDim);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -304,7 +304,7 @@ void CDisplayInfo::HyperUpdate()
 	CWindow*	pw;
 	CEdit*		edit;
 	CButton*	button;
-	BOOL		bEnable;
+	bool		bEnable;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW4);
 	if ( pw == 0 )  return;
@@ -336,7 +336,7 @@ void CDisplayInfo::HyperUpdate()
 
 // Beginning of the display of information.
 
-void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
+void CDisplayInfo::StartDisplayInfo(char *filename, int index, bool bSoluce)
 {
 	D3DLIGHT7		light;
 	FPOINT			pos, dim;
@@ -361,10 +361,10 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 		}
 	}
 
-	m_main->SetEditLock(TRUE, FALSE);
-	m_main->SetEditFull(FALSE);
+	m_main->SetEditLock(true, false);
+	m_main->SetEditFull(false);
 	m_bInitPause = m_engine->RetPause();
-	m_engine->SetPause(TRUE);
+	m_engine->SetPause(true);
 	m_infoCamera = m_camera->RetType();
 	m_camera->SetType(CAMERA_INFO);
 
@@ -372,7 +372,7 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	dim = m_infoActualDim = m_infoFinalDim;
 	pw = m_interface->CreateWindows(pos, dim, 4, EVENT_WINDOW4);
 	if ( pw == 0 )  return;
-//?	pw->SetClosable(TRUE);
+//?	pw->SetClosable(true);
 //?	GetResource(RES_TEXT, RT_DISINFO_TITLE, res);
 //?	pw->SetName(res);
 //?	pw->SetMinDim(FPOINT(0.56f, 0.40f));
@@ -383,15 +383,15 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	edit = pw->CreateEdit(pos, dim, 0, EVENT_EDIT1);
 	if ( edit == 0 )  return;
 	edit->SetState(STATE_SHADOW);
-	edit->SetMultiFont(TRUE);
+	edit->SetMultiFont(true);
 	edit->SetMaxChar(10000);
 	edit->SetFontType(FONT_COLOBOT);
 	edit->SetSoluceMode(bSoluce);
 	edit->ReadText(filename);
 	edit->HyperHome(filename);
-	edit->SetEditCap(FALSE);  // just to see!
-	edit->SetHiliteCap(FALSE);
-	edit->SetFocus(TRUE);
+	edit->SetEditCap(false);  // just to see!
+	edit->SetHiliteCap(false);
+	edit->SetFocus(true);
 
 	ViewDisplayInfo();
 
@@ -447,14 +447,14 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, BOOL bSoluce)
 	AdjustDisplayInfo(m_infoActualPos, m_infoActualDim);
 	UpdateIndexButton();
 
-	m_engine->SetDrawWorld(FALSE);  // doesn't draw anything in the interface
-	m_engine->SetDrawFront(TRUE);  // toto draws on the interface
-	m_particule->SetFrameUpdate(SH_WORLD, FALSE);  // particles break into world
+	m_engine->SetDrawWorld(false);  // doesn't draw anything in the interface
+	m_engine->SetDrawFront(true);  // toto draws on the interface
+	m_particule->SetFrameUpdate(SH_WORLD, false);  // particles break into world
 
 	m_toto = SearchToto();
 	if ( m_toto != 0 )
 	{
-		m_toto->SetDrawFront(TRUE);
+		m_toto->SetDrawFront(true);
 
 		toto = (CMotionToto*)m_toto->RetMotion();
 		if ( toto != 0 )
@@ -795,7 +795,7 @@ void CDisplayInfo::UpdateIndexButton()
 	if ( edit != 0 )
 	{
 //?		edit->SetHiliteCap(m_index==SATCOM_LOADING);
-		edit->SetHiliteCap(TRUE);
+		edit->SetHiliteCap(true);
 	}
 
 	UpdateCopyButton();
@@ -848,14 +848,14 @@ void CDisplayInfo::StopDisplayInfo()
 	}
 	else
 	{
-		if ( !m_bInitPause )  m_engine->SetPause(FALSE);
-		m_main->SetEditLock(FALSE, FALSE);
+		if ( !m_bInitPause )  m_engine->SetPause(false);
+		m_main->SetEditLock(false, false);
 	}
 	m_camera->SetType(m_infoCamera);
 
-	m_engine->SetDrawWorld(TRUE);  // draws all on the interface
-	m_engine->SetDrawFront(FALSE);  // draws nothing on the interface
-	m_particule->SetFrameUpdate(SH_WORLD, TRUE);
+	m_engine->SetDrawWorld(true);  // draws all on the interface
+	m_engine->SetDrawFront(false);  // draws nothing on the interface
+	m_particule->SetFrameUpdate(SH_WORLD, true);
 	m_particule->FlushParticule(SH_FRONT);
 	m_particule->FlushParticule(SH_INTERFACE);
 
@@ -1017,13 +1017,13 @@ void CDisplayInfo::CreateObjectsFile()
 	ObjectList	list[200];
 	char		line[100];
 	int			i;
-	BOOL		bRadar, bAtLeast;
+	bool		bRadar, bAtLeast;
 
 	file = fopen("help\\objects.txt", "w");
 	if ( file == 0 )  return;
 
 	list[0].total = 0;  // empty list
-	bRadar = FALSE;
+	bRadar = false;
 	for ( i=0 ; i<1000000 ; i++ )
 	{
 		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
@@ -1039,14 +1039,14 @@ void CDisplayInfo::CreateObjectsFile()
 
 		ObjectAdd(list, type);
 
-		if ( type == OBJECT_RADAR )  bRadar = TRUE;
+		if ( type == OBJECT_RADAR )  bRadar = true;
 	}
 
 	if ( bRadar )
 	{
 		GetResource(RES_TEXT, RT_SATCOM_LIST, line);
 		fputs(line, file);
-		bAtLeast = FALSE;
+		bAtLeast = false;
 		for ( i=0 ; i<200 ; i++ )
 		{
 			if ( list[i].total == 0 )  break;  // end of the list?
@@ -1055,7 +1055,7 @@ void CDisplayInfo::CreateObjectsFile()
 				 list[i].type == OBJECT_HUMAN )
 			{
 				ObjectWrite(file, list, i);
-				bAtLeast = TRUE;
+				bAtLeast = true;
 			}
 		}
 		if ( !bAtLeast )
@@ -1068,7 +1068,7 @@ void CDisplayInfo::CreateObjectsFile()
 		fputs(line, file);
 		GetResource(RES_TEXT, RT_SATCOM_BOT, line);
 		fputs(line, file);
-		bAtLeast = FALSE;
+		bAtLeast = false;
 		for ( i=0 ; i<200 ; i++ )
 		{
 			if ( list[i].total == 0 )  break;  // end of the list?
@@ -1102,7 +1102,7 @@ void CDisplayInfo::CreateObjectsFile()
 				 list[i].type == OBJECT_MOBILEdr )
 			{
 				ObjectWrite(file, list, i);
-				bAtLeast = TRUE;
+				bAtLeast = true;
 			}
 		}
 		if ( !bAtLeast )
@@ -1115,7 +1115,7 @@ void CDisplayInfo::CreateObjectsFile()
 		fputs(line, file);
 		GetResource(RES_TEXT, RT_SATCOM_BUILDING, line);
 		fputs(line, file);
-		bAtLeast = FALSE;
+		bAtLeast = false;
 		for ( i=0 ; i<200 ; i++ )
 		{
 			if ( list[i].total == 0 )  break;  // end of the list?
@@ -1143,7 +1143,7 @@ void CDisplayInfo::CreateObjectsFile()
 				 list[i].type == OBJECT_HUSTON   )
 			{
 				ObjectWrite(file, list, i);
-				bAtLeast = TRUE;
+				bAtLeast = true;
 			}
 		}
 		if ( !bAtLeast )
@@ -1156,7 +1156,7 @@ void CDisplayInfo::CreateObjectsFile()
 		fputs(line, file);
 		GetResource(RES_TEXT, RT_SATCOM_FRET, line);
 		fputs(line, file);
-		bAtLeast = FALSE;
+		bAtLeast = false;
 		for ( i=0 ; i<200 ; i++ )
 		{
 			if ( list[i].total == 0 )  break;  // end of the list?
@@ -1171,7 +1171,7 @@ void CDisplayInfo::CreateObjectsFile()
 				 list[i].type == OBJECT_TNT     )
 			{
 				ObjectWrite(file, list, i);
-				bAtLeast = TRUE;
+				bAtLeast = true;
 			}
 		}
 		if ( !bAtLeast )
@@ -1184,7 +1184,7 @@ void CDisplayInfo::CreateObjectsFile()
 		fputs(line, file);
 		GetResource(RES_TEXT, RT_SATCOM_ALIEN, line);
 		fputs(line, file);
-		bAtLeast = FALSE;
+		bAtLeast = false;
 		for ( i=0 ; i<200 ; i++ )
 		{
 			if ( list[i].total == 0 )  break;  // end of the list?
@@ -1196,7 +1196,7 @@ void CDisplayInfo::CreateObjectsFile()
 				 list[i].type == OBJECT_SPIDER )
 			{
 				ObjectWrite(file, list, i);
-				bAtLeast = TRUE;
+				bAtLeast = true;
 			}
 		}
 		if ( !bAtLeast )

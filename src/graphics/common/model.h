@@ -38,7 +38,7 @@ public:
 	void		StartUserAction();
 	void		StopUserAction();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	void		InitView();
 	void		InitViewFromSelect();
@@ -46,9 +46,9 @@ public:
 	void		ViewMove(const Event &event, float speed);
 
 protected:
-	BOOL		EventFrame(const Event &event);
-	BOOL		GetVertex(int rank, D3DVERTEX2 &vertex);
-	BOOL		SetVertex(int rank, D3DVERTEX2 &vertex);
+	bool		EventFrame(const Event &event);
+	bool		GetVertex(int rank, D3DVERTEX2 &vertex);
+	bool		SetVertex(int rank, D3DVERTEX2 &vertex);
 	D3DVECTOR	RetSelectCDG();
 	D3DVECTOR	RetSelectNormal();
 	void		SmoothSelect();
@@ -59,21 +59,21 @@ protected:
 	void		OperSelect(D3DVECTOR move, char oper);
 	void		ReadScript(char *filename);
 	void		BBoxCompute(D3DVECTOR &min, D3DVECTOR &max);
-	BOOL		IsMappingSelectPlausible(D3DMaping D3Dmode);
-	void		MappingSelect(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
-	void		MappingSelectSpherical(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
+	bool		IsMappingSelectPlausible(D3DMaping D3Dmode);
+	void		MappingSelect(int mode, int rotate, bool bMirrorX, bool bMirrorY, FPOINT ti, FPOINT ts, char *texName);
+	void		MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bMirrorY, FPOINT ti, FPOINT ts, char *texName);
 	D3DVECTOR	RetMappingCenter(D3DVECTOR pos, D3DVECTOR min);
-	void		MappingSelectCylindrical(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
-	void		MappingSelectFace(int mode, int rotate, BOOL bMirrorX, BOOL bMirrorY, FPOINT ti, FPOINT ts, char *texName);
-	void		MappingSelect2(int texNum2, int subdiv, int offsetU, int offsetV, BOOL bMirrorX, BOOL bMirrorY);
-	void		MappingSelectPlane2(int mode, BOOL bMirrorX, BOOL bMirrorY);
-	void		MappingSelectSpherical2(BOOL bMirrorX, BOOL bMirrorY);
-	void		MappingSelectMagic2(BOOL bMirrorX, BOOL bMirrorY);
+	void		MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool bMirrorY, FPOINT ti, FPOINT ts, char *texName);
+	void		MappingSelectFace(int mode, int rotate, bool bMirrorX, bool bMirrorY, FPOINT ti, FPOINT ts, char *texName);
+	void		MappingSelect2(int texNum2, int subdiv, int offsetU, int offsetV, bool bMirrorX, bool bMirrorY);
+	void		MappingSelectPlane2(int mode, bool bMirrorX, bool bMirrorY);
+	void		MappingSelectSpherical2(bool bMirrorX, bool bMirrorY);
+	void		MappingSelectMagic2(bool bMirrorX, bool bMirrorY);
 	int			SearchNext(int rank, int step);
 	int			SearchSamePlane(int first, int step);
-	void		CurrentSearchNext(int step, BOOL bControl);
+	void		CurrentSearchNext(int step, bool bControl);
 	void		CurrentInit();
-	void		CurrentSelect(BOOL bSelect);
+	void		CurrentSelect(bool bSelect);
 	void		DeselectAll();
 	void		SelectAll();
 	void		SelectZone(int first, int last);
@@ -93,7 +93,7 @@ protected:
 	void		GetModelName(char *buffer);
 	void		GetDXFName(char *buffer);
 	void		GetScriptName(char *buffer);
-	BOOL		IsEditFocus();
+	bool		IsEditFocus();
 
 protected:
 	CInstanceManager* m_iMan;
@@ -108,15 +108,15 @@ protected:
 	int				m_mode;
 	int				m_textureMode;
 	int				m_textureRotate;
-	BOOL			m_bTextureMirrorX;
-	BOOL			m_bTextureMirrorY;
+	bool			m_bTextureMirrorX;
+	bool			m_bTextureMirrorY;
 	FPOINT			m_textureInf;
 	FPOINT			m_textureSup;
 	int				m_texturePart;
 	int				m_textureRank;
 	char			m_textureName[20];
-	BOOL			m_bDisplayTransparent;
-	BOOL			m_bDisplayOnlySelection;
+	bool			m_bDisplayTransparent;
+	bool			m_bDisplayOnlySelection;
 	float			m_viewHeight;
 	float			m_viewDist;
 	float			m_viewAngleH;

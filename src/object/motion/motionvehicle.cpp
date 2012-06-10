@@ -74,9 +74,9 @@ CMotionVehicle::CMotionVehicle(CInstanceManager* iMan, CObject* object)
 	m_wheelLastPos   = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_wheelLastAngle = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_posKey         = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_bFlyFix = FALSE;
+	m_bFlyFix = false;
 
-	m_bTraceDown = FALSE;
+	m_bTraceDown = false;
 	m_traceColor = 1;  // black
 	m_traceWidth = 0.5f;
 }
@@ -90,7 +90,7 @@ CMotionVehicle::~CMotionVehicle()
 
 // Removes an object.
 
-void CMotionVehicle::DeleteObject(BOOL bAll)
+void CMotionVehicle::DeleteObject(bool bAll)
 {
 	if ( m_partiReactor != -1 )
 	{
@@ -102,7 +102,7 @@ void CMotionVehicle::DeleteObject(BOOL bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 							float power)
 {
 	CModFile*		pModFile;
@@ -111,7 +111,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	D3DCOLORVALUE	color;
 	char			name[50];
 
-	if ( m_engine->RetRestCreate() < 1+5+18+1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 1+5+18+1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -1075,7 +1075,7 @@ BOOL CMotionVehicle::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates the physics of the object.
@@ -1364,7 +1364,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 
 // Management of an event.
 
-BOOL CMotionVehicle::EventProcess(const Event &event)
+bool CMotionVehicle::EventProcess(const Event &event)
 {
 	CMotion::EventProcess(event);
 
@@ -1377,12 +1377,12 @@ BOOL CMotionVehicle::EventProcess(const Event &event)
 	{
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Management of an event.
 
-BOOL CMotionVehicle::EventFrame(const Event &event)
+bool CMotionVehicle::EventFrame(const Event &event)
 {
 	D3DMATRIX*	mat;
 	Character*	character;
@@ -1391,8 +1391,8 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 	float		s, a, speedBL, speedBR, speedFL, speedFR, h, a1, a2;
 	float		back, front, dist, radius, limit[2];
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
 
 	type = m_object->RetType();
 
@@ -1705,12 +1705,12 @@ BOOL CMotionVehicle::EventFrame(const Event &event)
 		EventFrameCanoni(event);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Managing an event for a flying robot.
 
-BOOL CMotionVehicle::EventFrameFly(const Event &event)
+bool CMotionVehicle::EventFrameFly(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, angle, paw[3];
@@ -1725,7 +1725,7 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 		 pos.z   == m_wheelLastPos.z   &&
 		 angle.x == m_wheelLastAngle.x &&
 		 angle.y == m_wheelLastAngle.y &&
-		 angle.z == m_wheelLastAngle.z )  return TRUE;
+		 angle.z == m_wheelLastAngle.z )  return true;
 
 	m_wheelLastPos = pos;
 	m_wheelLastAngle = angle;
@@ -1753,29 +1753,29 @@ BOOL CMotionVehicle::EventFrameFly(const Event &event)
 		hope[2] = 0.0f;  // left back
 	}
 
-	m_bFlyFix = TRUE;
+	m_bFlyFix = true;
 	for ( i=0 ; i<3 ; i++ )
 	{
 		actual = m_object->RetAngleZ(6+i);
 		final = Smooth(actual, hope[i], event.rTime*5.0f);
 		if ( final != actual )
 		{
-			m_bFlyFix = FALSE;  // it is moving
+			m_bFlyFix = false;  // it is moving
 			m_object->SetAngleZ(6+i, final);
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Event management for insect legs.
 
-BOOL CMotionVehicle::EventFrameInsect(const Event &event)
+bool CMotionVehicle::EventFrameInsect(const Event &event)
 {
 	D3DVECTOR	dir;
 	float		s, a, prog, time;
 	int			i, st, nd, action;
-	BOOL		bStop, bOnBoard;
+	bool		bStop, bOnBoard;
 
 	static int table[] =
 	{
@@ -1797,11 +1797,11 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 		-50,0,0,	-65,0,0,	-65,0,0,	// s0: feet 1..4
 	};
 
-	bOnBoard = FALSE;
+	bOnBoard = false;
 	if ( m_object->RetSelect() &&
 		 m_camera->RetType() == CAMERA_ONBOARD )
 	{
-		bOnBoard = TRUE;
+		bOnBoard = true;
 	}
 
 	s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
@@ -1917,25 +1917,25 @@ BOOL CMotionVehicle::EventFrameInsect(const Event &event)
 		SetInclinaison(dir);
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Event management for a insect cannon.
 
-BOOL CMotionVehicle::EventFrameCanoni(const Event &event)
+bool CMotionVehicle::EventFrameCanoni(const Event &event)
 {
 	CObject*	power;
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
 	float		zoom, angle, energy, factor;
-	BOOL		bOnBoard = FALSE;
+	bool		bOnBoard = false;
 
 	m_canonTime += event.rTime;
 
 	if ( m_object->RetSelect() &&
 		 m_camera->RetType() == CAMERA_ONBOARD )
 	{
-		bOnBoard = TRUE;
+		bOnBoard = true;
 	}
 
 	power = m_object->RetPower();
@@ -1947,7 +1947,7 @@ BOOL CMotionVehicle::EventFrameCanoni(const Event &event)
 	{
 		energy = power->RetEnergy();
 	}
-	if ( energy == 0.0f )  return TRUE;
+	if ( energy == 0.0f )  return true;
 
 	factor = 0.5f+energy*0.5f;
 	if ( bOnBoard )  factor *= 0.8f;
@@ -1992,7 +1992,7 @@ BOOL CMotionVehicle::EventFrameCanoni(const Event &event)
 	}
 #endif
 
-	return TRUE;
+	return true;
 }
 
 
@@ -2056,12 +2056,12 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 
 // State management of the pencil drawing robot.
 
-BOOL CMotionVehicle::RetTraceDown()
+bool CMotionVehicle::RetTraceDown()
 {
 	return m_bTraceDown;
 }
 
-void CMotionVehicle::SetTraceDown(BOOL bDown)
+void CMotionVehicle::SetTraceDown(bool bDown)
 {
 	m_bTraceDown = bDown;
 }

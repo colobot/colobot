@@ -47,17 +47,17 @@ public:
 	CAutoPara(CInstanceManager* iMan, CObject* object);
 	~CAutoPara();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 	void		StartBlitz();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	void		ChargeObject(float rTime);

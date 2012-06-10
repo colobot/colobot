@@ -44,7 +44,6 @@
 CTaskTurn::CTaskTurn(CInstanceManager* iMan, CObject* object)
 					 : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -56,21 +55,21 @@ CTaskTurn::~CTaskTurn()
 
 // Management of an event.
 
-BOOL CTaskTurn::EventProcess(const Event &event)
+bool CTaskTurn::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	// Momentarily stationary object (ant on the back)?
 	if ( m_object->RetFixed() )
 	{
 		m_physics->SetMotorSpeedX(0.0f);  // stops the advance
 		m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-		m_bError = TRUE;
-		return TRUE;
+		m_bError = true;
+		return true;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -86,18 +85,18 @@ Error CTaskTurn::Start(float angle)
 	{
 		m_angle = angle+m_physics->RetCirStopLength();
 		m_physics->SetMotorSpeedZ(-1.0f);  // turns left
-		m_bLeft = TRUE;
+		m_bLeft = true;
 	}
 	else
 	{
 		m_angle = angle-m_physics->RetCirStopLength();
 		m_physics->SetMotorSpeedZ(1.0f);  // turns right
-		m_bLeft = FALSE;
+		m_bLeft = false;
 	}
 	m_physics->SetMotorSpeedX(0.0f);
 	m_physics->SetMotorSpeedY(0.0f);
 
-	m_bError = FALSE;
+	m_bError = false;
 	return ERR_OK;
 }
 

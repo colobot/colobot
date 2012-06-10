@@ -30,7 +30,7 @@
 
 // Procedures.
 
-extern BOOL Cmd(char *line, char *token);
+extern bool Cmd(char *line, char *token);
 extern char* SearchOp(char *line, char *op);
 
 extern int GetInt(char *line, int rank, int def);

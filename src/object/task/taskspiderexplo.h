@@ -35,16 +35,16 @@ public:
 	CTaskSpiderExplo(CInstanceManager* iMan, CObject* object);
 	~CTaskSpiderExplo();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start();
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 
 protected:
 	float		m_time;
-	BOOL		m_bError;
+	bool		m_bError;
 };
 

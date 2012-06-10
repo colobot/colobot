@@ -114,7 +114,7 @@ static int perso_color[3*10*3] =
 #if _NET
 // Check if the key "school" is present in the registry.
 
-BOOL SchoolCheck()
+bool SchoolCheck()
 {
 	HKEY	key;
 	char	buffer[100];
@@ -128,16 +128,16 @@ BOOL SchoolCheck()
 					 "Software\\Epsitec\\Colobot\\Setup",
 #endif
 					 0, KEY_READ, &key);
-	if ( i != ERROR_SUCCESS )  return FALSE;
+	if ( i != ERROR_SUCCESS )  return false;
 
 	type = REG_SZ;
 	len  = sizeof(buffer);
 	i = RegQueryValueEx(key, "School", NULL, &type, (LPBYTE)buffer, &len);
-	if ( i != ERROR_SUCCESS || type != REG_SZ )  return FALSE;
+	if ( i != ERROR_SUCCESS || type != REG_SZ )  return false;
 
-	if ( strcmp(buffer, "ToBoLoC") != 0 )  return FALSE;
+	if ( strcmp(buffer, "ToBoLoC") != 0 )  return false;
 
-	return TRUE;
+	return true;
 }
 #endif
 
@@ -166,18 +166,18 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
 	m_stackRead[0] = 0;
 	m_sceneName[0] = 0;
 	m_sceneRank    = 0;
-	m_bSceneSoluce = FALSE;
-	m_bSimulSetup  = FALSE;
+	m_bSceneSoluce = false;
+	m_bSimulSetup  = false;
 #if _NET
 	m_accessEnable = SchoolCheck();
-	m_accessMission= FALSE;
-	m_accessUser   = FALSE;
+	m_accessMission= false;
+	m_accessUser   = false;
 #else
-	m_accessEnable = TRUE;
-	m_accessMission= TRUE;
-	m_accessUser   = TRUE;
+	m_accessEnable = true;
+	m_accessMission= true;
+	m_accessUser   = true;
 #endif
-	m_bDeleteGamer = TRUE;
+	m_bDeleteGamer = true;
 
 	for ( i=0 ; i<10 ; i++ )
 	{
@@ -190,21 +190,21 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
 	ZeroMemory(&m_perso, sizeof(GamerPerso));
 	DefPerso();
 	
-	m_bTooltip       = TRUE;
-	m_bGlint         = TRUE;
-	m_bRain          = TRUE;
-	m_bSoluce4       = TRUE;
-	m_bMovies        = TRUE;
-	m_bNiceReset     = TRUE;
-	m_bHimselfDamage = TRUE;
+	m_bTooltip       = true;
+	m_bGlint         = true;
+	m_bRain          = true;
+	m_bSoluce4       = true;
+	m_bMovies        = true;
+	m_bNiceReset     = true;
+	m_bHimselfDamage = true;
 #if _TEEN
-	m_bCameraScroll  = FALSE;
+	m_bCameraScroll  = false;
 #else
-	m_bCameraScroll  = TRUE;
+	m_bCameraScroll  = true;
 #endif
-	m_bCameraInvertX = FALSE;
-	m_bCameraInvertY = FALSE;
-	m_bEffect        = TRUE;
+	m_bCameraInvertX = false;
+	m_bCameraInvertY = false;
+	m_bEffect        = true;
 	m_shotDelay      = 0;
 
 	m_glintMouse = FPOINT(0.0f, 0.0f);
@@ -222,7 +222,7 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
 	strcpy(m_userDir,     "user");
 	strcpy(m_filesDir,    "files");
 
-	m_bDialog = FALSE;
+	m_bDialog = false;
 }
 
 // Destructor of robot application.
@@ -255,7 +255,7 @@ void CMainDialog::ChangePhase(Phase phase)
 	int				res, i, j;
 
 	m_camera->SetType(CAMERA_DIALOG);
-	m_engine->SetOverFront(FALSE);
+	m_engine->SetOverFront(false);
 	m_engine->SetOverColor(RetColor(0.0f), D3DSTATETCb);
 
 	if ( phase == PHASE_TERM )
@@ -434,8 +434,8 @@ void CMainDialog::ChangePhase(Phase phase)
 		pl->SetFontType(FONT_COURIER);
 		pl->SetFontSize(8.0f);
 
-		m_engine->SetBackground("inter01.tga", 0,0, 0,0, TRUE, TRUE);
-		m_engine->SetBackForce(TRUE);
+		m_engine->SetBackground("inter01.tga", 0,0, 0,0, true, true);
+		m_engine->SetBackForce(true);
 	}
 
 	if ( m_phase == PHASE_NAME )
@@ -504,7 +504,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		}
 		pe->SetText(name);
 		pe->SetCursor(strlen(name), 0);
-		pe->SetFocus(TRUE);
+		pe->SetFocus(true);
 
 		pos.x = 380.0f/640.0f;
 		pos.y = 320.0f/480.0f;
@@ -551,8 +551,8 @@ void CMainDialog::ChangePhase(Phase phase)
 		UpdateNameControl();
 		UpdateNameFace();
 
-		m_engine->SetBackground("inter01.tga", 0,0, 0,0, TRUE, TRUE);
-		m_engine->SetBackForce(TRUE);
+		m_engine->SetBackground("inter01.tga", 0,0, 0,0, true, true);
+		m_engine->SetBackForce(true);
 	}
 
 	if ( m_phase == PHASE_PERSO )
@@ -747,7 +747,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.y =  20.0f/480.0f;
 		pb = pw->CreateButton(pos, ddim, 55, EVENT_INTERFACE_PLROT);  // <
 		pb->SetState(STATE_SHADOW);
-		pb->SetRepeat(TRUE);
+		pb->SetRepeat(true);
 
 		pos.x  = 290.0f/640.0f;
 		pos.y  = 113.0f/480.0f;
@@ -755,7 +755,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.y =  20.0f/480.0f;
 		pb = pw->CreateButton(pos, ddim, 48, EVENT_INTERFACE_PRROT);  // >
 		pb->SetState(STATE_SHADOW);
-		pb->SetRepeat(TRUE);
+		pb->SetRepeat(true);
 
 		pos.x  = 100.0f/640.0f;
 		pos.y  =  70.0f/480.0f;
@@ -824,7 +824,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.x = 0.80f;
 		ddim.y = 0.80f;
 		pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-		pw->SetClosable(TRUE);
+		pw->SetClosable(true);
 		if ( m_phase == PHASE_TRAINER )  res = RT_TITLE_TRAINER;
 		if ( m_phase == PHASE_DEFI    )  res = RT_TITLE_DEFI;
 		if ( m_phase == PHASE_MISSION )  res = RT_TITLE_MISSION;
@@ -935,8 +935,8 @@ void CMainDialog::ChangePhase(Phase phase)
 		pe = pw->CreateEdit(pos, ddim, 0, EVENT_INTERFACE_RESUME);
 		pe->SetState(STATE_SHADOW);
 		pe->SetMaxChar(500);
-		pe->SetEditCap(FALSE);  // just to see
-		pe->SetHiliteCap(FALSE);
+		pe->SetEditCap(false);  // just to see
+		pe->SetHiliteCap(false);
 
 		// Button displays the "soluce":
 		if ( m_phase != PHASE_TRAINER &&
@@ -951,7 +951,7 @@ void CMainDialog::ChangePhase(Phase phase)
 			pc->SetState(STATE_SHADOW);
 			pc->ClearState(STATE_CHECK);
 		}
-		m_bSceneSoluce = FALSE;
+		m_bSceneSoluce = false;
 
 		UpdateSceneResume((m_chap[m_index]+1)*100+(m_sel[m_index]+1));
 
@@ -998,8 +998,8 @@ void CMainDialog::ChangePhase(Phase phase)
 		pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_BACK);
 		pb->SetState(STATE_SHADOW);
 
-		m_engine->SetBackground("inter01.tga", 0,0, 0,0, TRUE, TRUE);
-		m_engine->SetBackForce(TRUE);
+		m_engine->SetBackground("inter01.tga", 0,0, 0,0, true, true);
+		m_engine->SetBackForce(true);
 	}
 
 	if ( m_phase == PHASE_SETUPd  ||
@@ -1016,32 +1016,32 @@ void CMainDialog::ChangePhase(Phase phase)
 		if ( m_phase == PHASE_SETUPds )
 		{
 			m_phaseSetup = PHASE_SETUPd;
-			m_bSimulSetup = TRUE;
+			m_bSimulSetup = true;
 		}
 		else if ( m_phase == PHASE_SETUPgs )
 		{
 			m_phaseSetup = PHASE_SETUPg;
-			m_bSimulSetup = TRUE;
+			m_bSimulSetup = true;
 		}
 		else if ( m_phase == PHASE_SETUPps )
 		{
 			m_phaseSetup = PHASE_SETUPp;
-			m_bSimulSetup = TRUE;
+			m_bSimulSetup = true;
 		}
 		else if ( m_phase == PHASE_SETUPcs )
 		{
 			m_phaseSetup = PHASE_SETUPc;
-			m_bSimulSetup = TRUE;
+			m_bSimulSetup = true;
 		}
 		else if ( m_phase == PHASE_SETUPss )
 		{
 			m_phaseSetup = PHASE_SETUPs;
-			m_bSimulSetup = TRUE;
+			m_bSimulSetup = true;
 		}
 		else
 		{
 			m_phaseSetup = m_phase;
-			m_bSimulSetup = FALSE;
+			m_bSimulSetup = false;
 		}
 
 		pos.x = 0.10f;
@@ -1049,7 +1049,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.x = 0.80f;
 		ddim.y = 0.80f;
 		pw = m_interface->CreateWindows(pos, ddim, 12, EVENT_WINDOW5);
-		pw->SetClosable(TRUE);
+		pw->SetClosable(true);
 		GetResource(RES_TEXT, RT_TITLE_SETUP, name);
 		pw->SetName(name);
 
@@ -1192,8 +1192,8 @@ void CMainDialog::ChangePhase(Phase phase)
 
 		if ( !m_bSimulSetup )
 		{
-			m_engine->SetBackground("inter01.tga", 0,0, 0,0, TRUE, TRUE);
-			m_engine->SetBackForce(TRUE);
+			m_engine->SetBackground("inter01.tga", 0,0, 0,0, true, true);
+			m_engine->SetBackForce(true);
 		}
 	}
 
@@ -1576,7 +1576,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.x = 0.80f;
 		ddim.y = 0.80f;
 		pw = m_interface->CreateWindows(pos, ddim, 13, EVENT_WINDOW5);
-		pw->SetClosable(TRUE);
+		pw->SetClosable(true);
 		GetResource(RES_TEXT, RT_TITLE_WRITE, name);
 		pw->SetName(name);
 
@@ -1660,7 +1660,7 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.x = 0.80f;
 		ddim.y = 0.80f;
 		pw = m_interface->CreateWindows(pos, ddim, 14, EVENT_WINDOW5);
-		pw->SetClosable(TRUE);
+		pw->SetClosable(true);
 		GetResource(RES_TEXT, RT_TITLE_READ, name);
 		pw->SetName(name);
 
@@ -1727,8 +1727,8 @@ void CMainDialog::ChangePhase(Phase phase)
 
 		if ( m_phase == PHASE_READ )
 		{
-			m_engine->SetBackground("inter01.tga", 0,0, 0,0, TRUE, TRUE);
-			m_engine->SetBackForce(TRUE);
+			m_engine->SetBackground("inter01.tga", 0,0, 0,0, true, true);
+			m_engine->SetBackForce(true);
 		}
 	}
 
@@ -1772,8 +1772,8 @@ void CMainDialog::ChangePhase(Phase phase)
 		pl->SetFontSize(12.0f);
 		pl->SetJustif(0);
 
-		m_engine->SetBackground("inter01.tga", 0,0, 0,0, TRUE, TRUE);
-		m_engine->SetBackForce(TRUE);
+		m_engine->SetBackground("inter01.tga", 0,0, 0,0, true, true);
+		m_engine->SetBackForce(true);
 
 		m_loadingCounter = 1;  // enough time to display!
 	}
@@ -1781,7 +1781,7 @@ void CMainDialog::ChangePhase(Phase phase)
 	if ( m_phase == PHASE_WELCOME1 )
 	{
 		m_sound->StopMusic();
-		m_sound->PlayMusic(11, FALSE);
+		m_sound->PlayMusic(11, false);
 
 		pos.x  = 0.0f;
 		pos.y  = 0.0f;
@@ -1790,28 +1790,28 @@ void CMainDialog::ChangePhase(Phase phase)
 		pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
 		m_engine->SetOverColor(RetColor(1.0f), D3DSTATETCb);
-		m_engine->SetOverFront(TRUE);
+		m_engine->SetOverFront(true);
 
 #if _FRENCH
-		m_engine->SetBackground("alsyd.tga", 0,0, 0,0, TRUE, FALSE);
+		m_engine->SetBackground("alsyd.tga", 0,0, 0,0, true, false);
 #endif
 #if _POLISH
-		m_engine->SetBackground("manta.tga", 0,0, 0,0, TRUE, FALSE);
+		m_engine->SetBackground("manta.tga", 0,0, 0,0, true, false);
 #endif
 #if _WG
-		m_engine->SetBackground("wg.tga", 0,0, 0,0, TRUE, FALSE);
+		m_engine->SetBackground("wg.tga", 0,0, 0,0, true, false);
 #endif
-		m_engine->SetBackForce(TRUE);
+		m_engine->SetBackForce(true);
 	}
 	if ( m_phase == PHASE_WELCOME2 )
 	{
 #if _ENGLISH
 		m_sound->StopMusic();
-		m_sound->PlayMusic(11, FALSE);
+		m_sound->PlayMusic(11, false);
 #endif
 #if _POLISH
 		m_sound->StopMusic();
-		m_sound->PlayMusic(11, FALSE);
+		m_sound->PlayMusic(11, false);
 #endif
 
 		pos.x  = 0.0f;
@@ -1821,10 +1821,10 @@ void CMainDialog::ChangePhase(Phase phase)
 		pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
 		m_engine->SetOverColor(RetColor(1.0f), D3DSTATETCb);
-		m_engine->SetOverFront(TRUE);
+		m_engine->SetOverFront(true);
 
-		m_engine->SetBackground("colobot.tga", 0,0, 0,0, TRUE, FALSE);
-		m_engine->SetBackForce(TRUE);
+		m_engine->SetBackground("colobot.tga", 0,0, 0,0, true, false);
+		m_engine->SetBackForce(true);
 	}
 	if ( m_phase == PHASE_WELCOME3 )
 	{
@@ -1835,21 +1835,21 @@ void CMainDialog::ChangePhase(Phase phase)
 		pw = m_interface->CreateWindows(pos, ddim, -1, EVENT_WINDOW5);
 
 		m_engine->SetOverColor(RetColor(0.0f), D3DSTATETCw);
-		m_engine->SetOverFront(TRUE);
+		m_engine->SetOverFront(true);
 
 #if _FRENCH
-		m_engine->SetBackground("epsitecf.tga", 0,0, 0,0, TRUE, FALSE);
+		m_engine->SetBackground("epsitecf.tga", 0,0, 0,0, true, false);
 #endif
 #if _ENGLISH
-		m_engine->SetBackground("epsitece.tga", 0,0, 0,0, TRUE, FALSE);
+		m_engine->SetBackground("epsitece.tga", 0,0, 0,0, true, false);
 #endif
 #if _GERMAN | _WG
-		m_engine->SetBackground("epsitecd.tga", 0,0, 0,0, TRUE, FALSE);
+		m_engine->SetBackground("epsitecd.tga", 0,0, 0,0, true, false);
 #endif
 #if _POLISH
-		m_engine->SetBackground("epsitecp.tga", 0,0, 0,0, TRUE, FALSE);
+		m_engine->SetBackground("epsitecp.tga", 0,0, 0,0, true, false);
 #endif
-		m_engine->SetBackForce(TRUE);
+		m_engine->SetBackForce(true);
 	}
 
 	if ( m_phase == PHASE_GENERIC )
@@ -1866,9 +1866,9 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.x = 490.0f/640.0f;
 		ddim.y = 110.0f/480.0f;
 		pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-		pe->SetGenericMode(TRUE);
-		pe->SetEditCap(FALSE);
-		pe->SetHiliteCap(FALSE);
+		pe->SetGenericMode(true);
+		pe->SetEditCap(false);
+		pe->SetHiliteCap(false);
 		pe->SetFontType(FONT_COURIER);
 		pe->SetFontSize(8.0f);
 		pe->ReadText("help\\authors.txt");
@@ -1878,9 +1878,9 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.x = 490.0f/640.0f;
 		ddim.y = 100.0f/480.0f;
 		pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
-		pe->SetGenericMode(TRUE);
-		pe->SetEditCap(FALSE);
-		pe->SetHiliteCap(FALSE);
+		pe->SetGenericMode(true);
+		pe->SetEditCap(false);
+		pe->SetHiliteCap(false);
 		pe->SetFontType(FONT_COURIER);
 		pe->SetFontSize(6.5f);
 		pe->ReadText("help\\licences.txt");
@@ -1898,9 +1898,9 @@ void CMainDialog::ChangePhase(Phase phase)
 		ddim.y = 150.0f/480.0f;
 #endif
 		pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-		pe->SetGenericMode(TRUE);
-		pe->SetEditCap(FALSE);
-		pe->SetHiliteCap(FALSE);
+		pe->SetGenericMode(true);
+		pe->SetEditCap(false);
+		pe->SetHiliteCap(false);
 		pe->SetFontType(FONT_COURIER);
 		pe->SetFontSize(8.0f);
 		pe->ReadText("help\\authors.txt");
@@ -1911,9 +1911,9 @@ void CMainDialog::ChangePhase(Phase phase)
 //?		ddim.x = 490.0f/640.0f;
 //?		ddim.y = 110.0f/480.0f;
 //?		pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT1);
-//?		pe->SetGenericMode(TRUE);
-//?		pe->SetEditCap(FALSE);
-//?		pe->SetHiliteCap(FALSE);
+//?		pe->SetGenericMode(true);
+//?		pe->SetEditCap(false);
+//?		pe->SetHiliteCap(false);
 //?		pe->SetFontType(FONT_COURIER);
 //?		pe->SetFontSize(8.0f);
 //?		pe->ReadText("help\\demo.txt");
@@ -1923,9 +1923,9 @@ void CMainDialog::ChangePhase(Phase phase)
 //?		ddim.x = 490.0f/640.0f;
 //?		ddim.y = 100.0f/480.0f;
 //?		pe = pw->CreateEdit(pos, ddim, 0, EVENT_EDIT2);
-//?		pe->SetGenericMode(TRUE);
-//?		pe->SetEditCap(FALSE);
-//?		pe->SetHiliteCap(FALSE);
+//?		pe->SetGenericMode(true);
+//?		pe->SetEditCap(false);
+//?		pe->SetHiliteCap(false);
 //?		pe->SetFontType(FONT_COURIER);
 //?		pe->SetFontSize(8.0f);
 //?		pe->ReadText("help\\authors.txt");
@@ -1982,51 +1982,51 @@ void CMainDialog::ChangePhase(Phase phase)
 #if _NEWLOOK
 #if _CEEBOTDEMO
 #if _TEEN
-		m_engine->SetBackground("genedt.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genedt.tga", 0,0, 0,0, true, true);
 #else
-		m_engine->SetBackground("geneda.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("geneda.tga", 0,0, 0,0, true, true);
 #endif
 #else
-		m_engine->SetBackground("genern.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genern.tga", 0,0, 0,0, true, true);
 #endif
 #else
 #if _FRENCH
 #if _DEMO
-		m_engine->SetBackground("genedf.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genedf.tga", 0,0, 0,0, true, true);
 #else
-		m_engine->SetBackground("generf.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("generf.tga", 0,0, 0,0, true, true);
 #endif
 #endif
 #if _ENGLISH
 #if _DEMO
-		m_engine->SetBackground("genede.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genede.tga", 0,0, 0,0, true, true);
 #else
-		m_engine->SetBackground("genere.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genere.tga", 0,0, 0,0, true, true);
 #endif
 #endif
 #if _GERMAN
 #if _DEMO
-		m_engine->SetBackground("genedd.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genedd.tga", 0,0, 0,0, true, true);
 #else
-		m_engine->SetBackground("genere.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genere.tga", 0,0, 0,0, true, true);
 #endif
 #endif
 #if _WG
 #if _DEMO
-		m_engine->SetBackground("genedd.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genedd.tga", 0,0, 0,0, true, true);
 #else
-		m_engine->SetBackground("generd.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("generd.tga", 0,0, 0,0, true, true);
 #endif
 #endif
 #if _POLISH
 #if _DEMO
-		m_engine->SetBackground("genedp.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("genedp.tga", 0,0, 0,0, true, true);
 #else
-		m_engine->SetBackground("generp.tga", 0,0, 0,0, TRUE, TRUE);
+		m_engine->SetBackground("generp.tga", 0,0, 0,0, true, true);
 #endif
 #endif
 #endif
-		m_engine->SetBackForce(TRUE);
+		m_engine->SetBackForce(true);
 	}
 
 	if ( m_phase == PHASE_INIT    ||
@@ -2075,9 +2075,9 @@ void CMainDialog::ChangePhase(Phase phase)
 
 
 // Processing an event.
-// Returns FALSE if the event has been processed completely.
+// Returns false if the event has been processed completely.
 
-BOOL CMainDialog::EventProcess(const Event &event)
+bool CMainDialog::EventProcess(const Event &event)
 {
 	CWindow*	pw;
 	CList*		pl;
@@ -2129,17 +2129,17 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		if ( m_phase == PHASE_WELCOME1 && m_phaseTime >= welcomeLength )
 		{
 			ChangePhase(PHASE_WELCOME2);
-			return TRUE;
+			return true;
 		}
 		if ( m_phase == PHASE_WELCOME2 && m_phaseTime >= welcomeLength )
 		{
 			ChangePhase(PHASE_WELCOME3);
-			return TRUE;
+			return true;
 		}
 		if ( m_phase == PHASE_WELCOME3 && m_phaseTime >= welcomeLength )
 		{
 			ChangePhase(PHASE_NAME);
-			return TRUE;
+			return true;
 		}
 
 		if ( m_shotDelay > 0 && !m_bDialog )  // screenshot done?
@@ -2159,7 +2159,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				m_main->ChangePhase(PHASE_SIMUL);
 			}
 			m_loadingCounter --;
-			return FALSE;
+			return false;
 		}
 
 		m_glintTime += event.rTime;
@@ -2172,7 +2172,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			FrameDialog(event.rTime);
 		}
 
-		return TRUE;
+		return true;
 	}
 
 	if ( event.event == EVENT_MOUSEMOVE )
@@ -2244,13 +2244,13 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			ChangePhase(PHASE_READs);
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	if ( !m_engine->RetMouseHide() &&
 		 !m_interface->EventProcess(event) )
 	{
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_INIT )
@@ -2308,7 +2308,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				m_main->ChangePhase(PHASE_NAME);
 				break;
 		}
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_NAME )
@@ -2498,14 +2498,14 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		 m_phase == PHASE_PROTO   )
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
-		if ( pw == 0 )  return FALSE;
+		if ( pw == 0 )  return false;
 
 		if ( event.event == pw->RetEventMsgClose() ||
 			 event.event == EVENT_INTERFACE_BACK   ||
 			(event.event == EVENT_KEYDOWN && event.param == VK_ESCAPE) )
 		{
 			m_main->ChangePhase(PHASE_INIT);
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -2557,7 +2557,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				m_main->ChangePhase(PHASE_READ);
 				break;
 		}
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_SETUPd ||
@@ -2567,7 +2567,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		 m_phase == PHASE_SETUPs )
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
-		if ( pw == 0 )  return FALSE;
+		if ( pw == 0 )  return false;
 
 		if ( event.event == pw->RetEventMsgClose() ||
 			 event.event == EVENT_INTERFACE_BACK   ||
@@ -2576,7 +2576,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			SetupMemorize();
 			m_engine->ApplyChange();
 			m_main->ChangePhase(PHASE_INIT);
-			return FALSE;
+			return false;
 		}
 
 		switch( event.event )
@@ -2610,7 +2610,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		 m_phase == PHASE_SETUPss )
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
-		if ( pw == 0 )  return FALSE;
+		if ( pw == 0 )  return false;
 
 		if ( event.event == pw->RetEventMsgClose() ||
 			 event.event == EVENT_INTERFACE_BACK   ||
@@ -2621,7 +2621,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			m_interface->DeleteControl(EVENT_WINDOW5);
 			ChangePhase(PHASE_SIMUL);
 			StopSuspend();
-			return FALSE;
+			return false;
 		}
 
 		switch( event.event )
@@ -2689,7 +2689,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				UpdateApply();
 				break;
 		}
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_SETUPg  ||  // setup/graphic ?
@@ -2767,7 +2767,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				UpdateSetupButtons();
 				break;
 		}
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_SETUPp  ||  // setup/game ?
@@ -2876,7 +2876,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				UpdateSetupButtons();
 				break;
 		}
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_SETUPc  ||  // setup/commands ?
@@ -2924,7 +2924,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				UpdateSetupButtons();
 				break;
 		}
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_SETUPs  ||  // setup/sound ?
@@ -2954,13 +2954,13 @@ BOOL CMainDialog::EventProcess(const Event &event)
 				UpdateSetupButtons();
 				break;
 		}
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_READ )
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
-		if ( pw == 0 )  return FALSE;
+		if ( pw == 0 )  return false;
 
 		if ( event.event == pw->RetEventMsgClose() ||
 			 event.event == EVENT_INTERFACE_BACK   ||
@@ -2986,14 +2986,14 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_WRITEs ||
 		 m_phase == PHASE_READs  )
 	{
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
-		if ( pw == 0 )  return FALSE;
+		if ( pw == 0 )  return false;
 
 		if ( event.event == pw->RetEventMsgClose() ||
 			 event.event == EVENT_INTERFACE_BACK   ||
@@ -3031,7 +3031,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			}
 		}
 
-		return FALSE;
+		return false;
 	}
 
 	if ( m_phase == PHASE_WELCOME1 )
@@ -3041,7 +3041,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			 event.event == EVENT_RBUTTONDOWN )
 		{
 			ChangePhase(PHASE_WELCOME2);
-			return TRUE;
+			return true;
 		}
 	}
 	if ( m_phase == PHASE_WELCOME2 )
@@ -3051,7 +3051,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			 event.event == EVENT_RBUTTONDOWN )
 		{
 			ChangePhase(PHASE_WELCOME3);
-			return TRUE;
+			return true;
 		}
 	}
 	if ( m_phase == PHASE_WELCOME3 )
@@ -3061,7 +3061,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 			 event.event == EVENT_RBUTTONDOWN )
 		{
 			ChangePhase(PHASE_NAME);
-			return TRUE;
+			return true;
 		}
 	}
 
@@ -3093,7 +3093,7 @@ BOOL CMainDialog::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -3570,7 +3570,7 @@ void CMainDialog::FrameParticule(float rTime)
 
 // Some nice particles following the mouse.
 
-void CMainDialog::NiceParticule(FPOINT mouse, BOOL bPress)
+void CMainDialog::NiceParticule(FPOINT mouse, bool bPress)
 {
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
@@ -3624,11 +3624,11 @@ void CMainDialog::SetUserDir(char *base, int rank)
 	if ( strcmp(base, "user") == 0 && rank >= 100 )
 	{
 		sprintf(dir, "%s\\%s", m_userDir, m_userList[rank/100-1]);
-		UserDir(TRUE, dir);
+		UserDir(true, dir);
 	}
 	else
 	{
-		UserDir(FALSE, "");
+		UserDir(false, "");
 	}
 }
 
@@ -3669,7 +3669,7 @@ void CMainDialog::ReadNameList()
 	CList*				pl;
 	long				hFile;
 	struct _finddata_t	fBuffer;
-	BOOL				bDo;
+	bool				bDo;
 	char				dir[_MAX_FNAME];
 	char				temp[_MAX_FNAME];
 	char				filenames[_MAX_FNAME][100];
@@ -3697,7 +3697,7 @@ void CMainDialog::ReadNameList()
 	}
 	do  // sorts all names:
 	{
-		bDo = FALSE;
+		bDo = false;
 		for ( i=0 ; i<nbFilenames-1 ; i++ )
 		{
 			if ( strcmp(filenames[i], filenames[i+1]) > 0 )
@@ -3705,7 +3705,7 @@ void CMainDialog::ReadNameList()
 				strcpy(temp, filenames[i]);
 				strcpy(filenames[i], filenames[i+1]);
 				strcpy(filenames[i+1], temp);
-				bDo = TRUE;
+				bDo = true;
 			}
 		}
 	}
@@ -3792,7 +3792,7 @@ void CMainDialog::UpdateNameList()
 		if ( stricmp(name, pl->RetName(i)) == 0 )
 		{
 			pl->SetSelect(i);
-			pl->ShowSelect(FALSE);
+			pl->ShowSelect(false);
 			return;
 		}
 	}
@@ -3944,7 +3944,7 @@ void CMainDialog::NameCreate()
 		m_sound->Play(SOUND_TZOING);
 		pe->SetText(name);
 		pe->SetCursor(strlen(name), 0);
-		pe->SetFocus(TRUE);
+		pe->SetFocus(true);
 		return;
 	}
 
@@ -3956,7 +3956,7 @@ void CMainDialog::NameCreate()
 
 // Deletes a folder and all its offspring.
 
-BOOL RemoveDir(char *dirname)
+bool RemoveDir(char *dirname)
 {
 	long				hFile;
 	struct _finddata_t	fBuffer;
@@ -3987,9 +3987,9 @@ BOOL RemoveDir(char *dirname)
 
 	if ( _rmdir(dirname) != 0 )
 	{
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Removes a player.
@@ -4035,7 +4035,7 @@ void CMainDialog::NameDelete()
 
 // ests whether two colors are equal or nearly are.
 
-BOOL EqColor(const D3DCOLORVALUE &c1, const D3DCOLORVALUE &c2)
+bool EqColor(const D3DCOLORVALUE &c1, const D3DCOLORVALUE &c2)
 {
 	return (Abs(c1.r-c2.r) < 0.01f &&
 			Abs(c1.g-c2.g) < 0.01f &&
@@ -4325,16 +4325,16 @@ void CMainDialog::DefPerso()
 
 // Indicates if there is at least one backup.
 
-BOOL CMainDialog::IsIOReadScene()
+bool CMainDialog::IsIOReadScene()
 {
 	FILE*	file;
 	char	filename[100];
 
 	sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], 0);
 	file = fopen(filename, "r");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 	fclose(file);
-	return TRUE;
+	return true;
 }
 
 // Builds the file name by default.
@@ -4389,7 +4389,7 @@ void CMainDialog::IOReadName()
 	sprintf(name, "%s %d - %s", resume, m_sel[m_index]+1, line);
 	pe->SetText(name);
 	pe->SetCursor(strlen(name), 0);
-	pe->SetFocus(TRUE);
+	pe->SetFocus(true);
 }
 
 // Updates the list of games recorded on disk.
@@ -4450,7 +4450,7 @@ void CMainDialog::IOReadList()
 	}
 
 	pl->SetSelect(j-1);
-	pl->ShowSelect(FALSE);  // shows the selected columns
+	pl->ShowSelect(false);  // shows the selected columns
 }
 
 // Updates the buttons according to the selected part in the list.
@@ -4560,7 +4560,7 @@ void CMainDialog::IODeleteScene()
 
 // Writes the scene.
 
-BOOL CMainDialog::IOWriteScene()
+bool CMainDialog::IOWriteScene()
 {
 	CWindow*	pw;
 	CList*		pl;
@@ -4571,14 +4571,14 @@ BOOL CMainDialog::IOWriteScene()
 	int			sel;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 	pl = (CList*)pw->SearchControl(EVENT_INTERFACE_IOLIST);
-	if ( pl == 0 )  return FALSE;
+	if ( pl == 0 )  return false;
 	pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_IONAME);
-	if ( pe == 0 )  return FALSE;
+	if ( pe == 0 )  return false;
 
 	sel = pl->RetSelect();
-	if ( sel == -1 )  return FALSE;
+	if ( sel == -1 )  return false;
 
 	_mkdir("Savegame");  // if doesn't exist yet!
 	sprintf(filename, "%s\\%s", m_savegameDir, m_main->RetGamerName());
@@ -4594,12 +4594,12 @@ BOOL CMainDialog::IOWriteScene()
 	m_shotDelay = 3;
 	sprintf(m_shotName, "%s\\%s\\save%c%.3d\\screen.bmp", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], sel);
 
-	return TRUE;
+	return true;
 }
 
 // Reads the scene.
 
-BOOL CMainDialog::IOReadScene()
+bool CMainDialog::IOReadScene()
 {
 	FILE*		file;
 	CWindow*	pw;
@@ -4611,18 +4611,18 @@ BOOL CMainDialog::IOReadScene()
 	int			sel, i;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 	pl = (CList*)pw->SearchControl(EVENT_INTERFACE_IOLIST);
-	if ( pl == 0 )  return FALSE;
+	if ( pl == 0 )  return false;
 
 	sel = pl->RetSelect();
-	if ( sel == -1 )  return FALSE;
+	if ( sel == -1 )  return false;
 
 	sprintf(filename, "%s\\%s\\save%c%.3d\\data.sav", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], sel);
 	sprintf(filecbot, "%s\\%s\\save%c%.3d\\cbot.run", m_savegameDir, m_main->RetGamerName(), m_sceneName[0], sel);
 
 	file = fopen(filename, "r");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	while ( fgets(line, 500, file) != NULL )
 	{
@@ -4656,7 +4656,7 @@ BOOL CMainDialog::IOReadScene()
 				if ( m_sceneRank/100 == 0 )
 				{
 					fclose(file);
-					return FALSE;
+					return false;
 				}
 			}
 		}
@@ -4668,7 +4668,7 @@ BOOL CMainDialog::IOReadScene()
 
 	strcpy(m_sceneRead, filename);
 	strcpy(m_stackRead, filecbot);
-	return TRUE;
+	return true;
 }
 
 
@@ -4721,7 +4721,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 	char		line[500];
 	char		name[100];
 	int			i, j;
-	BOOL		bPassed, bDo;
+	bool		bPassed, bDo;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
 	if ( pw == 0 )  return;
@@ -4750,7 +4750,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 
 		do  // sorts all names:
 		{
-			bDo = FALSE;
+			bDo = false;
 			for ( i=0 ; i<m_userTotal-1 ; i++ )
 			{
 				if ( strcmp(m_userList[i], m_userList[i+1]) > 0 )
@@ -4758,7 +4758,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 					strcpy(name, m_userList[i]);
 					strcpy(m_userList[i], m_userList[i+1]);
 					strcpy(m_userList[i+1], name);
-					bDo = TRUE;
+					bDo = true;
 				}
 			}
 		}
@@ -4798,7 +4798,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 			}
 
 			pl->SetName(j, name);
-			pl->SetEnable(j, TRUE);
+			pl->SetEnable(j, true);
 		}
 	}
 	else
@@ -4846,7 +4846,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 			sprintf(line, "%d: %s", j+1, name);
 			pl->SetName(j, line);
 			pl->SetCheck(j, bPassed);
-			pl->SetEnable(j, TRUE);
+			pl->SetEnable(j, true);
 
 			if ( m_phase == PHASE_MISSION && !m_main->RetShowAll() && !bPassed )
 			{
@@ -4873,7 +4873,7 @@ void CMainDialog::UpdateSceneChap(int &chap)
 	if ( chap > j-1 )  chap = j-1;
 
 	pl->SetSelect(chap);
-	pl->ShowSelect(FALSE);  // shows the selected columns
+	pl->ShowSelect(false);  // shows the selected columns
 }
 
 // Updates the list of exercises or missions.
@@ -4888,7 +4888,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 	char		line[500];
 	char		name[100];
 	int			i, j;
-	BOOL		bPassed;
+	bool		bPassed;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
 	if ( pw == 0 )  return;
@@ -4944,7 +4944,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 		sprintf(line, "%d: %s", j+1, name);
 		pl->SetName(j, line);
 		pl->SetCheck(j, bPassed);
-		pl->SetEnable(j, TRUE);
+		pl->SetEnable(j, true);
 
 		if ( m_phase == PHASE_MISSION && !m_main->RetShowAll() && !bPassed )
 		{
@@ -4976,7 +4976,7 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
 	if ( sel > j-1 )  sel = j-1;
 
 	pl->SetSelect(sel);
-	pl->ShowSelect(FALSE);  // shows the selected columns
+	pl->ShowSelect(false);  // shows the selected columns
 }
 
 // Updates the button "solution" according to cheat code.
@@ -4995,7 +4995,7 @@ void CMainDialog::ShowSoluceUpdate()
 		 m_phase == PHASE_USER    ||
 		 m_phase == PHASE_PROTO   )
 	{
-		m_bSceneSoluce = FALSE;
+		m_bSceneSoluce = false;
 
 		pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
 		if ( pw == 0 )  return;
@@ -5008,13 +5008,13 @@ void CMainDialog::ShowSoluceUpdate()
 		{
 			pc->SetState(STATE_VISIBLE);
 			pc->SetState(STATE_CHECK);
-			m_bSceneSoluce = TRUE;
+			m_bSceneSoluce = true;
 		}
 		else
 		{
 			pc->ClearState(STATE_VISIBLE);
 			pc->ClearState(STATE_CHECK);
-			m_bSceneSoluce = FALSE;
+			m_bSceneSoluce = false;
 		}
 	}
 }
@@ -5032,7 +5032,7 @@ void CMainDialog::UpdateSceneResume(int rank)
 	char		line[500];
 	char		name[500];
 	int			i, numTry;
-	BOOL		bPassed, bVisible;
+	bool		bPassed, bVisible;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
 	if ( pw == 0 )  return;
@@ -5042,19 +5042,19 @@ void CMainDialog::UpdateSceneResume(int rank)
 
 	if ( pc == 0 )
 	{
-		m_bSceneSoluce = FALSE;
+		m_bSceneSoluce = false;
 	}
 	else
 	{
 		numTry  = RetGamerInfoTry(rank);
 		bPassed = RetGamerInfoPassed(rank);
 		bVisible = ( numTry > 2 || bPassed || m_main->RetShowSoluce() );
-		if ( !RetSoluce4() )  bVisible = FALSE;
+		if ( !RetSoluce4() )  bVisible = false;
 		pc->SetState(STATE_VISIBLE, bVisible);
 		if ( !bVisible )
 		{
 			pc->ClearState(STATE_CHECK);
-			m_bSceneSoluce = FALSE;
+			m_bSceneSoluce = false;
 		}
 	}
 
@@ -5117,7 +5117,7 @@ void CMainDialog::UpdateDisplayDevice()
 	}
 
 	pl->SetSelect(selectDevices);
-	pl->ShowSelect(FALSE);
+	pl->ShowSelect(false);
 
 	m_setupSelDevice = selectDevices;
 }
@@ -5152,7 +5152,7 @@ void CMainDialog::UpdateDisplayMode()
 	}
 
 	pl->SetSelect(selectModes);
-	pl->ShowSelect(FALSE);
+	pl->ShowSelect(false);
 
 	m_setupSelMode = selectModes;
 }
@@ -5166,7 +5166,7 @@ void CMainDialog::ChangeDisplay()
 	CCheck*		pc;
 	char*		device;
 	char*		mode;
-	BOOL		bFull;
+	bool		bFull;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
 	if ( pw == 0 )  return;
@@ -5206,7 +5206,7 @@ void CMainDialog::UpdateApply()
 	CList*		pl;
 	CCheck*		pc;
 	int			sel1, sel2;
-	BOOL		bFull;
+	bool		bFull;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
 	if ( pw == 0 )  return;
@@ -5891,7 +5891,7 @@ void CMainDialog::SetupRecall()
 
 void CMainDialog::ChangeSetupQuality(int quality)
 {
-	BOOL	bEnable;
+	bool	bEnable;
 	float	value;
 	int		iValue;
 
@@ -5931,7 +5931,7 @@ void CMainDialog::ChangeSetupQuality(int quality)
 	if ( quality >  0 )  iValue = 2;
 	m_engine->SetTextureQuality(iValue);
 
-	m_engine->FirstExecuteAdapt(FALSE);
+	m_engine->FirstExecuteAdapt(false);
 }
 
 
@@ -6095,8 +6095,8 @@ void CMainDialog::StartAbort()
 	FPOINT		pos, dim;
 	char		name[100];
 
-	StartDialog(FPOINT(0.3f, 0.8f), TRUE, FALSE, FALSE);
-	m_bDialogDelete = FALSE;
+	StartDialog(FPOINT(0.3f, 0.8f), true, false, false);
+	m_bDialogDelete = false;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
 	if ( pw == 0 )  return;
@@ -6177,8 +6177,8 @@ void CMainDialog::StartDeleteObject()
 	FPOINT		pos, dim;
 	char		name[100];
 
-	StartDialog(FPOINT(0.7f, 0.3f), FALSE, TRUE, TRUE);
-	m_bDialogDelete = TRUE;
+	StartDialog(FPOINT(0.7f, 0.3f), false, true, true);
+	m_bDialogDelete = true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
 	if ( pw == 0 )  return;
@@ -6212,8 +6212,8 @@ void CMainDialog::StartDeleteGame(char *gamer)
 	char		name[100];
 	char		text[100];
 
-	StartDialog(FPOINT(0.7f, 0.3f), FALSE, TRUE, TRUE);
-	m_bDialogDelete = TRUE;
+	StartDialog(FPOINT(0.7f, 0.3f), false, true, true);
+	m_bDialogDelete = true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
 	if ( pw == 0 )  return;
@@ -6247,7 +6247,7 @@ void CMainDialog::StartQuit()
 	FPOINT		pos, dim;
 	char		name[100];
 
-	StartDialog(FPOINT(0.6f, 0.3f), FALSE, TRUE, TRUE);
+	StartDialog(FPOINT(0.6f, 0.3f), false, true, true);
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
 	if ( pw == 0 )  return;
@@ -6273,7 +6273,7 @@ void CMainDialog::StartQuit()
 
 // Beginning of displaying a dialog.
 
-void CMainDialog::StartDialog(FPOINT dim, BOOL bFire, BOOL bOK, BOOL bCancel)
+void CMainDialog::StartDialog(FPOINT dim, bool bFire, bool bOK, bool bCancel)
 {
 	CWindow*	pw;
 	CButton*	pb;
@@ -6354,7 +6354,7 @@ void CMainDialog::StartDialog(FPOINT dim, BOOL bFire, BOOL bOK, BOOL bCancel)
 	}
 
 	m_sound->Play(SOUND_TZOING);
-	m_bDialog = TRUE;
+	m_bDialog = true;
 }
 
 // Animation of a dialog.
@@ -6503,18 +6503,18 @@ void CMainDialog::StopDialog()
 
 	StopSuspend();
 	m_interface->DeleteControl(EVENT_WINDOW9);
-	m_bDialog = FALSE;
+	m_bDialog = false;
 }
 
 // Suspends the simulation for a dialog phase.
 
 void CMainDialog::StartSuspend()
 {
-	m_sound->MuteAll(TRUE);
+	m_sound->MuteAll(true);
 	m_main->ClearInterface();
 	m_bInitPause = m_engine->RetPause();
-	m_engine->SetPause(TRUE);
-	m_engine->SetOverFront(FALSE);  // over flat behind
+	m_engine->SetPause(true);
+	m_engine->SetOverFront(false);  // over flat behind
 	m_main->CreateShortcuts();
 	m_main->StartSuspend();
 	m_initCamera = m_camera->RetType();
@@ -6525,10 +6525,10 @@ void CMainDialog::StartSuspend()
 
 void CMainDialog::StopSuspend()
 {
-	m_sound->MuteAll(FALSE);
+	m_sound->MuteAll(false);
 	m_main->ClearInterface();
-	if ( !m_bInitPause )  m_engine->SetPause(FALSE);
-	m_engine->SetOverFront(TRUE);  // over flat front
+	if ( !m_bInitPause )  m_engine->SetPause(false);
+	m_engine->SetOverFront(true);  // over flat front
 	m_main->CreateShortcuts();
 	m_main->StopSuspend();
 	m_camera->SetType(m_initCamera);
@@ -6537,14 +6537,14 @@ void CMainDialog::StopSuspend()
 
 // Whether to use tooltips.
 
-BOOL CMainDialog::RetTooltip()
+bool CMainDialog::RetTooltip()
 {
 	return m_bTooltip;
 }
 
 // Specifies whether a dialog is displayed.
 
-BOOL CMainDialog::IsDialog()
+bool CMainDialog::IsDialog()
 {
 	return m_bDialog;
 }
@@ -6622,7 +6622,7 @@ char* CMainDialog::RetSceneDir()
 
 // Whether to show the solution.
 
-BOOL CMainDialog::RetSceneSoluce()
+bool CMainDialog::RetSceneSoluce()
 {
 	return m_bSceneSoluce;
 }
@@ -6644,35 +6644,35 @@ char* CMainDialog::RetPublicDir()
 
 // Indicates if there are reflections on the buttons.
 
-BOOL CMainDialog::RetGlint()
+bool CMainDialog::RetGlint()
 {
 	return m_bGlint;
 }
 
 // Whether to show 4:solutions.
 
-BOOL CMainDialog::RetSoluce4()
+bool CMainDialog::RetSoluce4()
 {
 	return m_bSoluce4;
 }
 
 // Whether to show the cinematics.
 
-BOOL CMainDialog::RetMovies()
+bool CMainDialog::RetMovies()
 {
 	return m_bMovies;
 }
 
 // IWhether to make an animation in CTaskReset.
 
-BOOL CMainDialog::RetNiceReset()
+bool CMainDialog::RetNiceReset()
 {
 	return m_bNiceReset;
 }
 
 // Indicates whether the fire causes damage to its own units.
 
-BOOL CMainDialog::RetHimselfDamage()
+bool CMainDialog::RetHimselfDamage()
 {
 	return m_bHimselfDamage;
 }
@@ -6781,7 +6781,7 @@ int CMainDialog::RetGamerGlasses()
 	return m_perso.glasses;
 }
 
-BOOL CMainDialog::RetGamerOnlyHead()
+bool CMainDialog::RetGamerOnlyHead()
 {
 	return (m_phase == PHASE_PERSO && m_persoTab == 0);
 }
@@ -6809,7 +6809,7 @@ D3DCOLORVALUE CMainDialog::RetGamerColorBand()
 
 // Reads the file of the player.
 
-BOOL CMainDialog::ReadGamerInfo()
+bool CMainDialog::ReadGamerInfo()
 {
 	FILE*	file;
 	char	line[100];
@@ -6818,12 +6818,12 @@ BOOL CMainDialog::ReadGamerInfo()
 	for ( i=0 ; i<MAXSCENE ; i++ )
 	{
 		m_sceneInfo[i].numTry = 0;
-		m_sceneInfo[i].bPassed = FALSE;
+		m_sceneInfo[i].bPassed = false;
 	}
 
 	sprintf(line, "%s\\%s\\%s.gam", m_savegameDir, m_main->RetGamerName(), m_sceneName);
 	file = fopen(line, "r");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	if ( fgets(line, 100, file) != NULL )
 	{
@@ -6846,12 +6846,12 @@ BOOL CMainDialog::ReadGamerInfo()
 	}
 
 	fclose(file);
-	return TRUE;
+	return true;
 }
 
 // Writes the file of the player.
 
-BOOL CMainDialog::WriteGamerInfo()
+bool CMainDialog::WriteGamerInfo()
 {
 	FILE*	file;
 	char	line[100];
@@ -6859,7 +6859,7 @@ BOOL CMainDialog::WriteGamerInfo()
 
 	sprintf(line, "%s\\%s\\%s.gam", m_savegameDir, m_main->RetGamerName(), m_sceneName);
 	file = fopen(line, "w");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	sprintf(line, "CurrentChapter=%d CurrentSel=%d\n",
 			m_chap[m_index]+1, m_sel[m_index]+1);
@@ -6875,7 +6875,7 @@ BOOL CMainDialog::WriteGamerInfo()
 	}
 
 	fclose(file);
-	return TRUE;
+	return true;
 }
 
 void CMainDialog::SetGamerInfoTry(int rank, int numTry)
@@ -6891,17 +6891,17 @@ int CMainDialog::RetGamerInfoTry(int rank)
 	return m_sceneInfo[rank].numTry;
 }
 
-void CMainDialog::SetGamerInfoPassed(int rank, BOOL bPassed)
+void CMainDialog::SetGamerInfoPassed(int rank, bool bPassed)
 {
 	int		chap, i;
-	BOOL	bAll;
+	bool	bAll;
 
 	if ( rank < 0 || rank >= MAXSCENE )  return;
 	m_sceneInfo[rank].bPassed = bPassed;
 
 	if ( bPassed )
 	{
-		bAll = TRUE;
+		bAll = true;
 		chap = rank/100;
 		for ( i=0 ; i<m_maxList ; i++ )
 		{
@@ -6912,16 +6912,16 @@ void CMainDialog::SetGamerInfoPassed(int rank, BOOL bPassed)
 	}
 }
 
-BOOL CMainDialog::RetGamerInfoPassed(int rank)
+bool CMainDialog::RetGamerInfoPassed(int rank)
 {
-	if ( rank < 0 || rank >= MAXSCENE )  return FALSE;
+	if ( rank < 0 || rank >= MAXSCENE )  return false;
 	return m_sceneInfo[rank].bPassed;
 }
 
 
 // Passes to the next mission, and possibly in the next chapter.
 
-BOOL CMainDialog::NextMission()
+bool CMainDialog::NextMission()
 {
 	m_sel[m_index] ++;  // next mission
 
@@ -6931,7 +6931,7 @@ BOOL CMainDialog::NextMission()
 		m_sel[m_index] = 0;  // first mission
 	}
 
-	return TRUE;
+	return true;
 }
 
 

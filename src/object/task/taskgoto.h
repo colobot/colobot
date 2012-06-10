@@ -82,7 +82,7 @@ public:
 	CTaskGoto(CInstanceManager* iMan, CObject* object);
 	~CTaskGoto();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start(D3DVECTOR goal, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode);
 	Error		IsEnded();
@@ -91,10 +91,10 @@ protected:
 	CObject*	WormSearch(D3DVECTOR &impact);
 	void		WormFrame(float rTime);
 	CObject*	SearchTarget(D3DVECTOR pos, float margin);
-	BOOL		AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance);
-	BOOL		AdjustBuilding(D3DVECTOR &pos, float margin, float &distance);
-	BOOL		GetHotPoint(CObject *pObj, D3DVECTOR &pos, BOOL bTake, float distance, float &suppl);
-	BOOL		LeakSearch(D3DVECTOR &pos, float &delay);
+	bool		AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance);
+	bool		AdjustBuilding(D3DVECTOR &pos, float margin, float &distance);
+	bool		GetHotPoint(CObject *pObj, D3DVECTOR &pos, bool bTake, float distance, float &suppl);
+	bool		LeakSearch(D3DVECTOR &pos, float &delay);
 	void		ComputeRepulse(FPOINT &dir);
 	void		ComputeFlyingRepulse(float &dir);
 
@@ -106,17 +106,17 @@ protected:
 	D3DVECTOR	BeamPoint(const D3DVECTOR &startPoint, const D3DVECTOR &goalPoint, float angle, float step);
 
 	void		BitmapDebug(const D3DVECTOR &min, const D3DVECTOR &max, const D3DVECTOR &start, const D3DVECTOR &goal);
-	BOOL		BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal, float stepAngle, BOOL bSecond);
+	bool		BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal, float stepAngle, bool bSecond);
 	void		BitmapObject();
 	void		BitmapTerrain(const D3DVECTOR &min, const D3DVECTOR &max);
 	void		BitmapTerrain(int minx, int miny, int maxx, int maxy);
-	BOOL		BitmapOpen();
-	BOOL		BitmapClose();
+	bool		BitmapOpen();
+	bool		BitmapClose();
 	void		BitmapSetCircle(const D3DVECTOR &pos, float radius);
 	void		BitmapClearCircle(const D3DVECTOR &pos, float radius);
 	void		BitmapSetDot(int rank, int x, int y);
 	void		BitmapClearDot(int rank, int x, int y);
-	BOOL		BitmapTestDot(int rank, int x, int y);
+	bool		BitmapTestDot(int rank, int x, int y);
 
 protected:
 	D3DVECTOR		m_goal;
@@ -128,12 +128,12 @@ protected:
 	TaskGotoPhase	m_phase;
 	int				m_try;
 	Error			m_error;
-	BOOL			m_bTake;
+	bool			m_bTake;
 	float			m_stopLength;	// braking distance
 	float			m_time;
 	D3DVECTOR		m_pos;
-	BOOL			m_bWorm;
-	BOOL			m_bApprox;
+	bool			m_bWorm;
+	bool			m_bApprox;
 	float			m_wormLastTime;
 	float			m_lastDistance;
 
@@ -159,6 +159,6 @@ protected:
 	D3DVECTOR		m_leakPos;		// initial position leak
 	float			m_leakDelay;
 	float			m_leakTime;
-	BOOL			m_bLeakRecede;
+	bool			m_bLeakRecede;
 };
 

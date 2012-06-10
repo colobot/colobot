@@ -91,7 +91,7 @@ public:
 	CCamera(CInstanceManager* iMan);
 	~CCamera();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	void		Init(D3DVECTOR eye, D3DVECTOR lookat, float delay);
 
@@ -121,8 +121,8 @@ public:
 
 	void		RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat);
 
-	BOOL		StartCentering(CObject *object, float angleH, float angleV, float dist, float time);
-	BOOL		StopCentering(CObject *object, float time);
+	bool		StartCentering(CObject *object, float angleH, float angleV, float dist, float time);
+	bool		StopCentering(CObject *object, float time);
 	void		AbortCentering();
 
 	void		FlushEffect();
@@ -136,33 +136,33 @@ public:
 	void		SetScriptEye(D3DVECTOR eye);
 	void		SetScriptLookat(D3DVECTOR lookat);
 
-	void		SetEffect(BOOL bEnable);
-	void		SetCameraScroll(BOOL bScroll);
-	void		SetCameraInvertX(BOOL bInvert);
-	void		SetCameraInvertY(BOOL bInvert);
+	void		SetEffect(bool bEnable);
+	void		SetCameraScroll(bool bScroll);
+	void		SetCameraInvertX(bool bInvert);
+	void		SetCameraInvertY(bool bInvert);
 
 	float		RetMotorTurn();
 	D3DMouse	RetMouseDef(FPOINT pos);
 
 protected:
-	BOOL		EventMouseMove(const Event &event);
+	bool		EventMouseMove(const Event &event);
 	void		EventMouseWheel(int dir);
-	BOOL		EventFrame(const Event &event);
-	BOOL		EventFrameFree(const Event &event);
-	BOOL		EventFrameEdit(const Event &event);
-	BOOL		EventFrameDialog(const Event &event);
-	BOOL		EventFrameBack(const Event &event);
-	BOOL		EventFrameFix(const Event &event);
-	BOOL		EventFrameExplo(const Event &event);
-	BOOL		EventFrameOnBoard(const Event &event);
-	BOOL		EventFrameInfo(const Event &event);
-	BOOL		EventFrameVisit(const Event &event);
-	BOOL		EventFrameScript(const Event &event);
+	bool		EventFrame(const Event &event);
+	bool		EventFrameFree(const Event &event);
+	bool		EventFrameEdit(const Event &event);
+	bool		EventFrameDialog(const Event &event);
+	bool		EventFrameBack(const Event &event);
+	bool		EventFrameFix(const Event &event);
+	bool		EventFrameExplo(const Event &event);
+	bool		EventFrameOnBoard(const Event &event);
+	bool		EventFrameInfo(const Event &event);
+	bool		EventFrameVisit(const Event &event);
+	bool		EventFrameScript(const Event &event);
 
 	void		SetViewTime(const D3DVECTOR &vEyePt, const D3DVECTOR &vLookatPt, float rTime);
-	BOOL		IsCollision(D3DVECTOR &eye, D3DVECTOR lookat);
-	BOOL		IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat);
-	BOOL		IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat);
+	bool		IsCollision(D3DVECTOR &eye, D3DVECTOR lookat);
+	bool		IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat);
+	bool		IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat);
 
 	D3DVECTOR	ExcludeTerrain(D3DVECTOR eye, D3DVECTOR lookat, float &angleH, float &angleV);
 	D3DVECTOR	ExcludeObject(D3DVECTOR eye, D3DVECTOR lookat, float &angleH, float &angleV);
@@ -192,7 +192,7 @@ protected:
 	D3DVECTOR	m_normLookat;		// aim normal
 	float		m_focus;
 
-	BOOL		m_bRightDown;
+	bool		m_bRightDown;
 	FPOINT		m_rightPosInit;
 	FPOINT		m_rightPosCenter;
 	FPOINT		m_rightPosMove;
@@ -208,7 +208,7 @@ protected:
 	float		m_backMin;		// CAMERA_BACK: distance minimal
 	float		m_addDirectionH;	// CAMERA_BACK: additional direction
 	float		m_addDirectionV;	// CAMERA_BACK: additional direction
-	BOOL		m_bTransparency;
+	bool		m_bTransparency;
 
 	float		m_fixDist;		// CAMERA_FIX: distance
 	float		m_fixDirectionH;	// CAMERA_FIX: direction
@@ -260,9 +260,9 @@ protected:
 	D3DVECTOR	m_scriptEye;
 	D3DVECTOR	m_scriptLookat;
 
-	BOOL		m_bEffect;		// shocks if explosion?
-	BOOL		m_bCameraScroll;	// scroll in the edges?
-	BOOL		m_bCameraInvertX;	// X inversion in the edges?
-	BOOL		m_bCameraInvertY;	// Y inversion in the edges?
+	bool		m_bEffect;		// shocks if explosion?
+	bool		m_bCameraScroll;	// scroll in the edges?
+	bool		m_bCameraInvertX;	// X inversion in the edges?
+	bool		m_bCameraInvertY;	// Y inversion in the edges?
 };
 

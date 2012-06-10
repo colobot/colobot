@@ -44,7 +44,7 @@ WaterLine;
 
 typedef struct
 {
-	BOOL			bUsed;
+	bool			bUsed;
 	ParticuleType	type;
 	D3DVECTOR		pos;
 	float			delay;
@@ -71,30 +71,30 @@ public:
 	~CWater();
 
 	void		SetD3DDevice(LPDIRECT3DDEVICE7 device);
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	void		Flush();
-	BOOL		Create(WaterType type1, WaterType type2, const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level, float glint, D3DVECTOR eddy);
+	bool		Create(WaterType type1, WaterType type2, const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level, float glint, D3DVECTOR eddy);
 	void		DrawBack();
 	void		DrawSurf();
 
-	BOOL		SetLevel(float level);
+	bool		SetLevel(float level);
 	float		RetLevel();
 	float		RetLevel(CObject* object);
 
-	void		SetLava(BOOL bLava);
-	BOOL		RetLava();
+	void		SetLava(bool bLava);
+	bool		RetLava();
 
 	void		AdjustEye(D3DVECTOR &eye);
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 	void		LavaFrame(float rTime);
 	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm, FPOINT &uv1, FPOINT &uv2);
-	BOOL		RetWater(int x, int y);
-	BOOL		CreateLine(int x, int y, int len);
+	bool		RetWater(int x, int y);
+	bool		CreateLine(int x, int y, int len);
 
 	void		VaporFlush();
-	BOOL		VaporCreate(ParticuleType type, D3DVECTOR pos, float delay);
+	bool		VaporCreate(ParticuleType type, D3DVECTOR pos, float delay);
 	void		VaporFrame(int i, float rTime);
 
 protected:
@@ -124,8 +124,8 @@ protected:
 
 	WaterVapor		m_vapor[MAXWATVAPOR];
 
-	BOOL			m_bDraw;
-	BOOL			m_bLava;
+	bool			m_bDraw;
+	bool			m_bLava;
 	D3DCOLOR		m_color;
 };
 

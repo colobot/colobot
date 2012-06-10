@@ -57,13 +57,12 @@ CAutoJostle::CAutoJostle(CInstanceManager* iMan, CObject* object)
 
 CAutoJostle::~CAutoJostle()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoJostle::DeleteObject(BOOL bAll)
+void CAutoJostle::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -106,15 +105,15 @@ void CAutoJostle::Start(int param, float force)
 
 // Management of an event.
 
-BOOL CAutoJostle::EventProcess(const Event &event)
+bool CAutoJostle::EventProcess(const Event &event)
 {
 	D3DVECTOR	dir;
 	float		factor, angle, zoom;
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	if ( m_progress < 1.0f )
 	{
@@ -152,7 +151,7 @@ BOOL CAutoJostle::EventProcess(const Event &event)
 		m_error = ERR_STOP;
 	}
 
-	return TRUE;
+	return true;
 }
 
 

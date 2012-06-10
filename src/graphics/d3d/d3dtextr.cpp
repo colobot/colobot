@@ -41,11 +41,11 @@
 // Macros, function prototypes and static variable
 //-----------------------------------------------------------------------------
 static TCHAR	g_strTexturePath[512] = _T(""); // Path for files
-static BOOL		g_bDebugMode = FALSE;
+static bool		g_bDebugMode = false;
 
 
 
-void D3DTextr_SetDebugMode(BOOL bDebug)
+void D3DTextr_SetDebugMode(bool bDebug)
 {
 	g_bDebugMode = bDebug;
 }
@@ -66,7 +66,7 @@ struct TextureContainer
     DWORD   m_dwStage;         // Texture stage (for multitexture devices)
     DWORD   m_dwBPP;
     DWORD   m_dwFlags;
-    BOOL    m_bHasAlpha;
+    bool    m_bHasAlpha;
 
     LPDIRECTDRAWSURFACE7 m_pddsSurface; // Surface of the texture
     HBITMAP m_hbmBitmap;       // Bitmap containing texture image
@@ -115,9 +115,9 @@ CD3DTextureManager g_StaticTextureEngine;
 struct TEXTURESEARCHINFO
 {
     DWORD dwDesiredBPP;   // Input for texture format search
-    BOOL  bUseAlpha;
-    BOOL  bUsePalette;
-    BOOL  bFoundGoodFormat;
+    bool  bUseAlpha;
+    bool  bUsePalette;
+    bool  bFoundGoodFormat;
 
     DDPIXELFORMAT* pddpf; // Output of texture format search
 };
@@ -152,7 +152,7 @@ static HRESULT CALLBACK TextureSearchCallback( DDPIXELFORMAT* pddpf,
 
         // Accept the first 8-bit palettized format we get
         memcpy( ptsi->pddpf, pddpf, sizeof(DDPIXELFORMAT) );
-        ptsi->bFoundGoodFormat = TRUE;
+        ptsi->bFoundGoodFormat = true;
         return DDENUMRET_CANCEL;
     }
 
@@ -170,16 +170,16 @@ static HRESULT CALLBACK TextureSearchCallback( DDPIXELFORMAT* pddpf,
         return DDENUMRET_OK;
 
     // Make sure current alpha format agrees with requested format type
-    if( (ptsi->bUseAlpha==TRUE) && !(pddpf->dwFlags&DDPF_ALPHAPIXELS) )
+    if( (ptsi->bUseAlpha==true) && !(pddpf->dwFlags&DDPF_ALPHAPIXELS) )
         return DDENUMRET_OK;
-    if( (ptsi->bUseAlpha==FALSE) && (pddpf->dwFlags&DDPF_ALPHAPIXELS) )
+    if( (ptsi->bUseAlpha==false) && (pddpf->dwFlags&DDPF_ALPHAPIXELS) )
         return DDENUMRET_OK;
 
     // Check if we found a good match
     if( pddpf->dwRGBBitCount == ptsi->dwDesiredBPP )
     {
         memcpy( ptsi->pddpf, pddpf, sizeof(DDPIXELFORMAT) );
-        ptsi->bFoundGoodFormat = TRUE;
+        ptsi->bFoundGoodFormat = true;
         return DDENUMRET_CANCEL;
     }
 
@@ -473,7 +473,7 @@ HRESULT TextureContainer::LoadTargaFile( TCHAR* strMetaname, TCHAR* strFilename 
 //? 	if( m_pRGBAData[i] & 0x000000ff != 0xff )
 		if( (m_pRGBAData[i] & 0x000000ff) != 0xff )  // erreur corrig�e !
 		{
-			m_bHasAlpha = TRUE;
+			m_bHasAlpha = true;
 			break;
 		}
 	}
@@ -542,7 +542,7 @@ HRESULT TextureContainer::Restore( LPDIRECT3DDEVICE7 pd3dDevice )
 
     // Setup the structure to be used for texture enumration.
     TEXTURESEARCHINFO tsi;
-    tsi.bFoundGoodFormat = FALSE;
+    tsi.bFoundGoodFormat = false;
     tsi.pddpf            = &ddsd.ddpfPixelFormat;
     tsi.dwDesiredBPP     = m_dwBPP;
     tsi.bUsePalette      = ( m_dwBPP <= 8 );
@@ -558,13 +558,13 @@ HRESULT TextureContainer::Restore( LPDIRECT3DDEVICE7 pd3dDevice )
         {
             if( ddDesc.dpcTriCaps.dwTextureCaps & D3DPTEXTURECAPS_ALPHAPALETTE )
             {
-                tsi.bUseAlpha   = TRUE;
-                tsi.bUsePalette = TRUE;
+                tsi.bUseAlpha   = true;
+                tsi.bUsePalette = true;
             }
             else
             {
-                tsi.bUseAlpha   = TRUE;
-                tsi.bUsePalette = FALSE;
+                tsi.bUseAlpha   = true;
+                tsi.bUsePalette = false;
             }
         }
     }
@@ -574,14 +574,14 @@ HRESULT TextureContainer::Restore( LPDIRECT3DDEVICE7 pd3dDevice )
     pd3dDevice->EnumTextureFormats( TextureSearchCallback, &tsi );
 
     // If we couldn't find a format, let's try a default format
-    if( FALSE == tsi.bFoundGoodFormat )
+    if( false == tsi.bFoundGoodFormat )
     {
-        tsi.bUsePalette  = FALSE;
+        tsi.bUsePalette  = false;
         tsi.dwDesiredBPP = 16;
         pd3dDevice->EnumTextureFormats( TextureSearchCallback, &tsi );
 
         // If we still fail, we cannot create this texture
-        if( FALSE == tsi.bFoundGoodFormat )
+        if( false == tsi.bFoundGoodFormat )
             return E_FAIL;
     }
 
@@ -960,7 +960,7 @@ HRESULT D3DTextr_CreateEmptyTexture( TCHAR* strName, DWORD dwWidth,
 
     // Save alpha usage flag
     if( dwFlags & D3DTEXTR_CREATEWITHALPHA )
-        ptcTexture->m_bHasAlpha = TRUE;
+        ptcTexture->m_bHasAlpha = true;
 
     return S_OK;
 }

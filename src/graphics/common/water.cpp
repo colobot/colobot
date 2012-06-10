@@ -55,8 +55,8 @@ CWater::CWater(CInstanceManager* iMan, CD3DEngine* engine)
 	m_type[0] = WATER_NULL;
 	m_type[1] = WATER_NULL;
 	m_level = 0.0f;
-	m_bDraw = TRUE;
-	m_bLava = FALSE;
+	m_bDraw = true;
+	m_bLava = false;
 	m_color = 0xffffffff;
 	m_subdiv = 4;
 	m_filename[0] = 0;
@@ -69,7 +69,7 @@ CWater::~CWater()
 }
 
 
-BOOL CWater::EventProcess(const Event &event)
+bool CWater::EventProcess(const Event &event)
 {
 	if ( event.event == EVENT_FRAME )
 	{
@@ -148,24 +148,24 @@ BOOL CWater::EventProcess(const Event &event)
 		}
 #endif
 	}
-	return TRUE;
+	return true;
 }
 
 // Makes water evolve.
 
-BOOL CWater::EventFrame(const Event &event)
+bool CWater::EventFrame(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	m_time += event.rTime;
 
-	if ( m_type[0] == WATER_NULL )  return TRUE;
+	if ( m_type[0] == WATER_NULL )  return true;
 
 	if ( m_bLava )
 	{
 		LavaFrame(event.rTime);
 	}
-	return TRUE;
+	return true;
 }
 
 // Makes evolve the steam jets on the lava.
@@ -202,7 +202,7 @@ void CWater::LavaFrame(float rTime)
 		perp.z =  dir.x;
 		pos = pos + perp*shift;
 
-		level = m_terrain->RetFloorLevel(pos, TRUE);
+		level = m_terrain->RetFloorLevel(pos, true);
 		if ( level < m_level )
 		{
 			pos.y = m_level;
@@ -241,13 +241,13 @@ void CWater::VaporFlush()
 
 	for ( i=0 ; i<MAXWATVAPOR ; i++ )
 	{
-		m_vapor[i].bUsed = FALSE;
+		m_vapor[i].bUsed = false;
 	}
 }
 
 // Creates a new steam.
 
-BOOL CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
+bool CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 {
 	int		i;
 
@@ -255,7 +255,7 @@ BOOL CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 	{
 		if ( !m_vapor[i].bUsed )
 		{
-			m_vapor[i].bUsed = TRUE;
+			m_vapor[i].bUsed = true;
 			m_vapor[i].type  = type;
 			m_vapor[i].pos   = pos;
 			m_vapor[i].delay = delay;
@@ -275,10 +275,10 @@ BOOL CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 				m_sound->Play(SOUND_PSHHH, pos, 0.3f, 2.0f);
 			}
 
-			return TRUE;
+			return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Makes evolve a steam jet,
@@ -348,7 +348,7 @@ void CWater::VaporFrame(int i, float rTime)
 	}
 	else
 	{
-		m_vapor[i].bUsed = FALSE;
+		m_vapor[i].bUsed = false;
 	}
 }
 
@@ -426,9 +426,9 @@ void CWater::DrawBack()
 	m_engine->SetTexture("", 0);
 
 	device = m_engine->RetD3DDevice();
-	device->SetRenderState(D3DRENDERSTATE_LIGHTING, FALSE);
-	device->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
-	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+	device->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
+	device->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 	m_engine->SetState(D3DSTATENORMAL);
 
 	deep = m_engine->RetDeepView(0);
@@ -472,9 +472,9 @@ void CWater::DrawBack()
 	m_engine->SetFocus(m_engine->RetFocus());
 	m_engine->UpdateMatProj();  // gives the initial depth of view
 
-	device->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
-	device->SetRenderState(D3DRENDERSTATE_ZENABLE, TRUE);
-	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+	device->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
+	device->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
+	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 }
 
 // Draws the flat surface of the water.
@@ -487,7 +487,7 @@ void CWater::DrawSurf()
 	D3DMATRIX		matrix;
 	D3DVECTOR		eye, lookat, n, pos, p;
 	FPOINT			uv1, uv2;
-	BOOL			bUnder;
+	bool			bUnder;
 	DWORD			flags;
 	float			deep, size, sizez, radius;
 	int				rankview, i, j, u;
@@ -506,9 +506,9 @@ void CWater::DrawSurf()
 
 	device = m_engine->RetD3DDevice();
 //?	device->SetRenderState(D3DRENDERSTATE_AMBIENT, 0xffffffff);
-//?	device->SetRenderState(D3DRENDERSTATE_LIGHTING, TRUE);
-//?	device->SetRenderState(D3DRENDERSTATE_ZENABLE, FALSE);
-	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, FALSE);
+//?	device->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
+//?	device->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
+	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 
 	D3DUtil_SetIdentityMatrix(matrix);
 	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
@@ -537,7 +537,7 @@ void CWater::DrawSurf()
 	{
 		m_engine->SetState(D3DSTATENORMAL);
 	}
-	device->SetRenderState(D3DRENDERSTATE_FOGENABLE, TRUE);
+	device->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
 
 	size = m_size/2.0f;
 	if ( bUnder )  sizez = -size;
@@ -604,7 +604,7 @@ void CWater::DrawSurf()
 
 // Indicates if there is water in a given position.
 
-BOOL CWater::RetWater(int x, int y)
+bool CWater::RetWater(int x, int y)
 {
 	D3DVECTOR	pos;
 	float		size, offset, level;
@@ -623,16 +623,16 @@ BOOL CWater::RetWater(int x, int y)
 			pos.x = (x+dx)*size - offset;
 			pos.z = (y+dy)*size - offset;
 			pos.y = 0.0f;
-			level = m_terrain->RetFloorLevel(pos, TRUE);
-			if ( level < m_level+m_eddy.y )  return TRUE;
+			level = m_terrain->RetFloorLevel(pos, true);
+			if ( level < m_level+m_eddy.y )  return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Updates the positions, relative to the ground.
 
-BOOL CWater::CreateLine(int x, int y, int len)
+bool CWater::CreateLine(int x, int y, int len)
 {
 	float	offset;
 
@@ -653,7 +653,7 @@ BOOL CWater::CreateLine(int x, int y, int len)
 
 // Creates all expanses of water.
 
-BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
+bool CWater::Create(WaterType type1, WaterType type2, const char *filename,
 					D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,
 					float level, float glint, D3DVECTOR eddy)
 {
@@ -688,7 +688,7 @@ BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 	m_brick /= m_subdiv;
 	m_size  *= m_subdiv;
 
-	if ( m_type[0] == WATER_NULL )  return TRUE;
+	if ( m_type[0] == WATER_NULL )  return true;
 
 	m_lineUsed = 0;
 	for ( y=0 ; y<m_brick ; y++ )
@@ -701,7 +701,7 @@ BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 				len ++;
 				if ( len >= 5 )
 				{
-					if ( !CreateLine(x-len+1, y, len) )  return FALSE;
+					if ( !CreateLine(x-len+1, y, len) )  return false;
 					len = 0;
 				}
 			}
@@ -709,17 +709,17 @@ BOOL CWater::Create(WaterType type1, WaterType type2, const char *filename,
 			{
 				if ( len != 0 )
 				{
-					if ( !CreateLine(x-len, y, len) )  return FALSE;
+					if ( !CreateLine(x-len, y, len) )  return false;
 					len = 0;
 				}
 			}
 		}
 		if ( len != 0 )
 		{
-			if ( !CreateLine(x-len, y, len) )  return FALSE;
+			if ( !CreateLine(x-len, y, len) )  return false;
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 // Removes all the water.
@@ -729,13 +729,13 @@ void CWater::Flush()
 	m_type[0] = WATER_NULL;
 	m_type[1] = WATER_NULL;
 	m_level = 0.0f;
-	m_bLava = FALSE;
+	m_bLava = false;
 }
 
 
 // Changes the level of the water.
 
-BOOL CWater::SetLevel(float level)
+bool CWater::SetLevel(float level)
 {
 	m_level = level;
 
@@ -801,12 +801,12 @@ float CWater::RetLevel(CObject* object)
 
 // Management of the mode of lava/water.
 
-void CWater::SetLava(BOOL bLava)
+void CWater::SetLava(bool bLava)
 {
 	m_bLava = bLava;
 }
 
-BOOL CWater::RetLava()
+bool CWater::RetLava()
 {
 	return m_bLava;
 }

@@ -23,12 +23,12 @@
 #define D3D_OVERLOADS
 
 
-extern BOOL	InitCurrentDirectory();
-extern BOOL	SetProfileString(char* section, char* key, char* string);
-extern BOOL	GetProfileString(char* section, char* key, char* buffer, int max);
-extern BOOL	SetProfileInt(char* section, char* key, int value);
-extern BOOL	GetProfileInt(char* section, char* key, int &value);
-extern BOOL	SetProfileFloat(char* section, char* key, float value);
-extern BOOL	GetProfileFloat(char* section, char* key, float &value);
+extern bool	InitCurrentDirectory();
+extern bool	SetProfileString(char* section, char* key, char* string);
+extern bool	GetProfileString(char* section, char* key, char* buffer, int max);
+extern bool	SetProfileInt(char* section, char* key, int value);
+extern bool	GetProfileInt(char* section, char* key, int &value);
+extern bool	SetProfileFloat(char* section, char* key, float value);
+extern bool	GetProfileFloat(char* section, char* key, float &value);
 
 

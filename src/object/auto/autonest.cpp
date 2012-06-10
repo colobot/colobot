@@ -51,13 +51,12 @@ CAutoNest::CAutoNest(CInstanceManager* iMan, CObject* object)
 
 CAutoNest::~CAutoNest()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoNest::DeleteObject(BOOL bAll)
+void CAutoNest::DeleteObject(bool bAll)
 {
 	CObject*	fret;
 
@@ -96,14 +95,14 @@ void CAutoNest::Init()
 
 // Management of an event.
 
-BOOL CAutoNest::EventProcess(const Event &event)
+bool CAutoNest::EventProcess(const Event &event)
 {
 	CObject*	fret;
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 
@@ -143,7 +142,7 @@ BOOL CAutoNest::EventProcess(const Event &event)
 			if ( fret != 0 )
 			{
 				fret->SetZoom(0, 1.0f);
-				fret->SetLock(FALSE);
+				fret->SetLock(false);
 			}
 
 			m_phase    = ANP_WAIT;
@@ -152,13 +151,13 @@ BOOL CAutoNest::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Seeks if a site is free.
 
-BOOL CAutoNest::SearchFree(D3DVECTOR pos)
+bool CAutoNest::SearchFree(D3DVECTOR pos)
 {
 	CObject*	pObj;
 	D3DVECTOR	sPos;
@@ -179,11 +178,11 @@ BOOL CAutoNest::SearchFree(D3DVECTOR pos)
 		{
 			distance = Length(sPos, pos);
 			distance -= sRadius;
-			if ( distance < 2.0f )  return FALSE;  // location occupied
+			if ( distance < 2.0f )  return false;  // location occupied
 		}
 	}
 
-	return TRUE;  // free location
+	return true;  // free location
 }
 
 // Create a transportable object.
@@ -198,7 +197,7 @@ void CAutoNest::CreateFret(D3DVECTOR pos, float angle, ObjectType type)
 		delete fret;
 		return;
 	}
-	fret->SetLock(TRUE);  // not usable
+	fret->SetLock(true);  // not usable
 	fret->SetZoom(0, 0.0f);
 }
 
@@ -243,12 +242,12 @@ Error CAutoNest::RetError()
 
 // Saves all parameters of the controller.
 
-BOOL CAutoNest::Write(char *line)
+bool CAutoNest::Write(char *line)
 {
 	D3DVECTOR	pos;
 	char		name[100];
 
-	if ( m_phase == ANP_WAIT )  return FALSE;
+	if ( m_phase == ANP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -264,16 +263,16 @@ BOOL CAutoNest::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoNest::Read(char *line)
+bool CAutoNest::Read(char *line)
 {
 	D3DVECTOR	pos;
 
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -283,7 +282,7 @@ BOOL CAutoNest::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

@@ -59,16 +59,16 @@ public:
 	CTaskShield(CInstanceManager* iMan, CObject* object);
 	~CTaskShield();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start(TaskShieldMode mode, float delay);
 	Error		IsEnded();
-	BOOL		IsBusy();
-	BOOL		Abort();
+	bool		IsBusy();
+	bool		Abort();
 
 protected:
 	Error		Stop();
-	BOOL		CreateLight(D3DVECTOR pos);
+	bool		CreateLight(D3DVECTOR pos);
 	void		IncreaseShield();
 	float		RetRadius();
 
@@ -82,7 +82,7 @@ protected:
 	float			m_lastRay;
 	float			m_lastIncrease;
 	float			m_energyUsed;
-	BOOL			m_bError;
+	bool			m_bError;
 	D3DVECTOR		m_shieldPos;
 	int				m_rankSphere;
 	int				m_soundChannel;

@@ -73,13 +73,12 @@ CAutoLabo::CAutoLabo(CInstanceManager* iMan, CObject* object)
 
 CAutoLabo::~CAutoLabo()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoLabo::DeleteObject(BOOL bAll)
+void CAutoLabo::DeleteObject(bool bAll)
 {
 	int		i;
 
@@ -127,7 +126,7 @@ void CAutoLabo::Init()
 
 // Management of an event.
 
-BOOL CAutoLabo::EventProcess(const Event &event)
+bool CAutoLabo::EventProcess(const Event &event)
 {
 	CObject*	power;
 	D3DVECTOR	pos, goal, speed;
@@ -137,11 +136,11 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	if ( event.event == EVENT_UPDINTERFACE )
 	{
-		if ( m_object->RetSelect() )  CreateInterface(TRUE);
+		if ( m_object->RetSelect() )  CreateInterface(true);
 	}
 
 	if ( m_object->RetSelect() &&  // center selected?
@@ -150,7 +149,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 	{
 		if ( m_phase != ALAP_WAIT )
 		{
-			return FALSE;
+			return false;
 		}
 
 		m_research = event.event;
@@ -158,35 +157,35 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 		if ( TestResearch(m_research) )
 		{
 			m_displayText->DisplayError(ERR_LABO_ALREADY, m_object);
-			return FALSE;
+			return false;
 		}
 
 		power = m_object->RetPower();
 		if ( power == 0 )
 		{
 			m_displayText->DisplayError(ERR_LABO_NULL, m_object);
-			return FALSE;
+			return false;
 		}
 		if ( power->RetType() != OBJECT_BULLET )
 		{
 			m_displayText->DisplayError(ERR_LABO_BAD, m_object);
-			return FALSE;
+			return false;
 		}
 
-		SetBusy(TRUE);
+		SetBusy(true);
 		InitProgressTotal(1.0f+1.5f+1.5f+LABO_DELAY+1.5f+1.5f+1.0f);
 		UpdateInterface();
 
-		power->SetLock(TRUE);  // ball longer usable
+		power->SetLock(true);  // ball longer usable
 
 		SoundManip(1.0f, 1.0f, 1.0f);
 		m_phase    = ALAP_OPEN1;
 		m_progress = 0.0f;
 		m_speed    = 1.0f/1.0f;
-		return TRUE;
+		return true;
 	}
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -197,7 +196,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 		{
 			m_timeVirus = 0.1f+Rand()*0.3f;
 		}
-		return TRUE;
+		return true;
 	}
 
 	EventProgress(event.rTime);
@@ -278,7 +277,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 													    LABO_DELAY);
 			}
 
-			m_soundChannel = m_sound->Play(SOUND_LABO, m_object->RetPosition(0), 0.0f, 0.25f, TRUE);
+			m_soundChannel = m_sound->Play(SOUND_LABO, m_object->RetPosition(0), 0.0f, 0.25f, true);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.60f, 2.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 2.00f, 8.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.60f, 8.0f, SOPER_CONTINUE);
@@ -426,7 +425,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 			m_object->SetAngleZ(4, 80.0f*PI/180.0f);
 			m_object->SetAngleZ(5, 80.0f*PI/180.0f);
 
-			SetBusy(FALSE);
+			SetBusy(false);
 			UpdateInterface();
 
 			m_phase    = ALAP_WAIT;
@@ -435,7 +434,7 @@ BOOL CAutoLabo::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -462,7 +461,7 @@ Error CAutoLabo::RetError()
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoLabo::CreateInterface(BOOL bSelect)
+bool CAutoLabo::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, dim, ddim;
@@ -470,10 +469,10 @@ BOOL CAutoLabo::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	dim.x = 33.0f/640.0f;
 	dim.y = 33.0f/480.0f;
@@ -498,7 +497,7 @@ BOOL CAutoLabo::CreateInterface(BOOL bSelect)
 
 	UpdateInterface();
 
-	return TRUE;
+	return true;
 }
 
 // Updates the status of all interface buttons.
@@ -539,12 +538,12 @@ void CAutoLabo::OkayButton(CWindow *pw, EventMsg event)
 
 // Test whether a search has already been done.
 
-BOOL CAutoLabo::TestResearch(EventMsg event)
+bool CAutoLabo::TestResearch(EventMsg event)
 {
 	if ( event == EVENT_OBJECT_RiPAW )  return (g_researchDone & RESEARCH_iPAW);
 	if ( event == EVENT_OBJECT_RiGUN )  return (g_researchDone & RESEARCH_iGUN);
 
-	return FALSE;
+	return false;
 }
 
 // Indicates a search as made.
@@ -569,7 +568,7 @@ void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 {
 	int		i;
 
-	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, TRUE);
+	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, true);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
 	m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
@@ -578,12 +577,12 @@ void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 
 // Saves all parameters of the controller.
 
-BOOL CAutoLabo::Write(char *line)
+bool CAutoLabo::Write(char *line)
 {
 	D3DVECTOR	pos;
 	char		name[100];
 
-	if ( m_phase == ALAP_WAIT )  return FALSE;
+	if ( m_phase == ALAP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -602,16 +601,16 @@ BOOL CAutoLabo::Write(char *line)
 	sprintf(name, " aResearch=%d", m_research);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoLabo::Read(char *line)
+bool CAutoLabo::Read(char *line)
 {
 	D3DVECTOR	pos;
 
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -622,7 +621,7 @@ BOOL CAutoLabo::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

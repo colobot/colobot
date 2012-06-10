@@ -60,13 +60,12 @@ CAutoRepair::CAutoRepair(CInstanceManager* iMan, CObject* object)
 
 CAutoRepair::~CAutoRepair()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoRepair::DeleteObject(BOOL bAll)
+void CAutoRepair::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -90,7 +89,7 @@ void CAutoRepair::Init()
 
 // Management of an event.
 
-BOOL CAutoRepair::EventProcess(const Event &event)
+bool CAutoRepair::EventProcess(const Event &event)
 {
 	CObject*	vehicule;
 	D3DVECTOR	pos, speed;
@@ -99,8 +98,8 @@ BOOL CAutoRepair::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_timeVirus -= event.rTime;
@@ -111,7 +110,7 @@ BOOL CAutoRepair::EventProcess(const Event &event)
 		{
 			m_timeVirus = 0.1f+Rand()*0.3f;
 		}
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == ARP_WAIT )
@@ -210,13 +209,13 @@ BOOL CAutoRepair::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoRepair::CreateInterface(BOOL bSelect)
+bool CAutoRepair::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -224,10 +223,10 @@ BOOL CAutoRepair::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -240,7 +239,7 @@ BOOL CAutoRepair::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 106, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -318,11 +317,11 @@ Error CAutoRepair::RetError()
 
 // Saves all parameters of the controller.
 
-BOOL CAutoRepair::Write(char *line)
+bool CAutoRepair::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == ARP_WAIT )  return FALSE;
+	if ( m_phase == ARP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -338,14 +337,14 @@ BOOL CAutoRepair::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoRepair::Read(char *line)
+bool CAutoRepair::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -355,7 +354,7 @@ BOOL CAutoRepair::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

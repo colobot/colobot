@@ -370,11 +370,11 @@ public:
 	CObject(CInstanceManager* iMan);
 	~CObject();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 	void		Simplify();
-	BOOL		ExploObject(ExploType type, float force, float decay=1.0f);
+	bool		ExploObject(ExploType type, float force, float decay=1.0f);
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	void		UpdateMapping();
 
 	int			CreatePart();
@@ -391,30 +391,30 @@ public:
 	void		SetID(int id);
 	int			RetID();
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
-	void		SetDrawWorld(BOOL bDraw);
-	void		SetDrawFront(BOOL bDraw);
+	void		SetDrawWorld(bool bDraw);
+	void		SetDrawFront(bool bDraw);
 
-	BOOL		CreateVehicle(D3DVECTOR pos, float angle, ObjectType type, float power, BOOL bTrainer, BOOL bToy);
-	BOOL		CreateInsect(D3DVECTOR pos, float angle, ObjectType type);
-	BOOL		CreateBuilding(D3DVECTOR pos, float angle, float height, ObjectType type, float power=1.0f);
-	BOOL		CreateResource(D3DVECTOR pos, float angle, ObjectType type, float power=1.0f);
-	BOOL		CreateFlag(D3DVECTOR pos, float angle, ObjectType type);
-	BOOL		CreateBarrier(D3DVECTOR pos, float angle, float height, ObjectType type);
-	BOOL		CreatePlant(D3DVECTOR pos, float angle, float height, ObjectType type);
-	BOOL		CreateMushroom(D3DVECTOR pos, float angle, float height, ObjectType type);
-	BOOL		CreateTeen(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
-	BOOL		CreateQuartz(D3DVECTOR pos, float angle, float height, ObjectType type);
-	BOOL		CreateRoot(D3DVECTOR pos, float angle, float height, ObjectType type);
-	BOOL		CreateHome(D3DVECTOR pos, float angle, float height, ObjectType type);
-	BOOL		CreateRuin(D3DVECTOR pos, float angle, float height, ObjectType type);
-	BOOL		CreateApollo(D3DVECTOR pos, float angle, ObjectType type);
+	bool		CreateVehicle(D3DVECTOR pos, float angle, ObjectType type, float power, bool bTrainer, bool bToy);
+	bool		CreateInsect(D3DVECTOR pos, float angle, ObjectType type);
+	bool		CreateBuilding(D3DVECTOR pos, float angle, float height, ObjectType type, float power=1.0f);
+	bool		CreateResource(D3DVECTOR pos, float angle, ObjectType type, float power=1.0f);
+	bool		CreateFlag(D3DVECTOR pos, float angle, ObjectType type);
+	bool		CreateBarrier(D3DVECTOR pos, float angle, float height, ObjectType type);
+	bool		CreatePlant(D3DVECTOR pos, float angle, float height, ObjectType type);
+	bool		CreateMushroom(D3DVECTOR pos, float angle, float height, ObjectType type);
+	bool		CreateTeen(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
+	bool		CreateQuartz(D3DVECTOR pos, float angle, float height, ObjectType type);
+	bool		CreateRoot(D3DVECTOR pos, float angle, float height, ObjectType type);
+	bool		CreateHome(D3DVECTOR pos, float angle, float height, ObjectType type);
+	bool		CreateRuin(D3DVECTOR pos, float angle, float height, ObjectType type);
+	bool		CreateApollo(D3DVECTOR pos, float angle, ObjectType type);
 
-	BOOL		ReadProgram(int rank, char* filename);
-	BOOL		WriteProgram(int rank, char* filename);
-	BOOL		RunProgram(int rank);
+	bool		ReadProgram(int rank, char* filename);
+	bool		WriteProgram(int rank, char* filename);
+	bool		RunProgram(int rank);
 
 	int			RetShadowLight();
 	int			RetEffectLight();
@@ -422,7 +422,7 @@ public:
 	void		FlushCrashShere();
 	int			CreateCrashSphere(D3DVECTOR pos, float radius, Sound sound, float hardness=0.45f);
 	int			RetCrashSphereTotal();
-	BOOL		GetCrashSphere(int rank, D3DVECTOR &pos, float &radius);
+	bool		GetCrashSphere(int rank, D3DVECTOR &pos, float &radius);
 	float		RetCrashSphereHardness(int rank);
 	Sound		RetCrashSphereSound(int rank);
 	void		DeleteCrashSphere(int rank);
@@ -465,19 +465,19 @@ public:
 
 	float		RetWaterLevel();
 
-	void		SetTrainer(BOOL bEnable);
-	BOOL		RetTrainer();
+	void		SetTrainer(bool bEnable);
+	bool		RetTrainer();
 
-	void		SetToy(BOOL bEnable);
-	BOOL		RetToy();
+	void		SetToy(bool bEnable);
+	bool		RetToy();
 
-	void		SetManual(BOOL bManual);
-	BOOL		RetManual();
+	void		SetManual(bool bManual);
+	bool		RetManual();
 
 	void		SetResetCap(ResetCap cap);
 	ResetCap	RetResetCap();
-	void		SetResetBusy(BOOL bBusy);
-	BOOL		RetResetBusy();
+	void		SetResetBusy(bool bBusy);
+	bool		RetResetBusy();
 	void		SetResetPosition(const D3DVECTOR &pos);
 	D3DVECTOR	RetResetPosition();
 	void		SetResetAngle(const D3DVECTOR &angle);
@@ -504,10 +504,10 @@ public:
 	int			RetInfoTotal();
 	void		SetInfoReturn(float value);
 	float		RetInfoReturn();
-	void		SetInfoUpdate(BOOL bUpdate);
-	BOOL		RetInfoUpdate();
+	void		SetInfoUpdate(bool bUpdate);
+	bool		RetInfoUpdate();
 
-	BOOL		SetCmdLine(int rank, float value);
+	bool		SetCmdLine(int rank, float value);
 	float		RetCmdLine(int rank);
 
 	D3DMATRIX*	RetRotateMatrix(int part);
@@ -540,53 +540,53 @@ public:
 
 	ObjectMaterial RetMaterial();
 
-	void		SetGadget(BOOL bMode);
-	BOOL		RetGadget();
+	void		SetGadget(bool bMode);
+	bool		RetGadget();
 
-	void		SetFixed(BOOL bFixed);
-	BOOL		RetFixed();
+	void		SetFixed(bool bFixed);
+	bool		RetFixed();
 
-	void		SetClip(BOOL bClip);
-	BOOL		RetClip();
+	void		SetClip(bool bClip);
+	bool		RetClip();
 
-	BOOL		JostleObject(float force);
+	bool		JostleObject(float force);
 
-	void		StartDetectEffect(CObject *target, BOOL bFound);
+	void		StartDetectEffect(CObject *target, bool bFound);
 
-	void		SetVirusMode(BOOL bEnable);
-	BOOL		RetVirusMode();
+	void		SetVirusMode(bool bEnable);
+	bool		RetVirusMode();
 	float		RetVirusTime();
 
 	void		SetCameraType(CameraType type);
 	CameraType	RetCameraType();
 	void		SetCameraDist(float dist);
 	float		RetCameraDist();
-	void		SetCameraLock(BOOL bLock);
-	BOOL		RetCameraLock();
+	void		SetCameraLock(bool bLock);
+	bool		RetCameraLock();
 
-	void		SetHilite(BOOL bMode);
-	BOOL		RetHilite();
+	void		SetHilite(bool bMode);
+	bool		RetHilite();
 
-	void		SetSelect(BOOL bMode, BOOL bDisplayError=TRUE);
-	BOOL		RetSelect(BOOL bReal=FALSE);
+	void		SetSelect(bool bMode, bool bDisplayError=true);
+	bool		RetSelect(bool bReal=false);
 
-	void		SetSelectable(BOOL bMode);
-	BOOL		RetSelectable();
+	void		SetSelectable(bool bMode);
+	bool		RetSelectable();
 
-	void		SetActivity(BOOL bMode);
-	BOOL		RetActivity();
+	void		SetActivity(bool bMode);
+	bool		RetActivity();
 
-	void		SetVisible(BOOL bVisible);
-	BOOL		RetVisible();
+	void		SetVisible(bool bVisible);
+	bool		RetVisible();
 
-	void		SetEnable(BOOL bEnable);
-	BOOL		RetEnable();
+	void		SetEnable(bool bEnable);
+	bool		RetEnable();
 
-	void		SetCheckToken(BOOL bMode);
-	BOOL		RetCheckToken();
+	void		SetCheckToken(bool bMode);
+	bool		RetCheckToken();
 
-	void		SetProxyActivate(BOOL bActivate);
-	BOOL		RetProxyActivate();
+	void		SetProxyActivate(bool bActivate);
+	bool		RetProxyActivate();
 	void		SetProxyDistance(float distance);
 	float		RetProxyDistance();
 
@@ -596,28 +596,28 @@ public:
 	void		SetParam(float value);
 	float		RetParam();
 
-	void		SetExplo(BOOL bExplo);
-	BOOL		RetExplo();
-	void		SetLock(BOOL bLock);
-	BOOL		RetLock();
-	void		SetCargo(BOOL bCargo);
-	BOOL		RetCargo();
-	void		SetBurn(BOOL bBurn);
-	BOOL		RetBurn();
-	void		SetDead(BOOL bDead);
-	BOOL		RetDead();
-	BOOL		RetRuin();
-	BOOL		RetActif();
+	void		SetExplo(bool bExplo);
+	bool		RetExplo();
+	void		SetLock(bool bLock);
+	bool		RetLock();
+	void		SetCargo(bool bCargo);
+	bool		RetCargo();
+	void		SetBurn(bool bBurn);
+	bool		RetBurn();
+	void		SetDead(bool bDead);
+	bool		RetDead();
+	bool		RetRuin();
+	bool		RetActif();
 
 	void		SetGunGoalV(float gunGoal);
 	void		SetGunGoalH(float gunGoal);
 	float		RetGunGoalV();
 	float		RetGunGoalH();
 
-	BOOL		StartShowLimit();
+	bool		StartShowLimit();
 	void		StopShowLimit();
 
-	BOOL		IsProgram();
+	bool		IsProgram();
 	void		CreateSelectParticule();
 
 	void		SetRunScript(CScript* script);
@@ -632,27 +632,27 @@ public:
 	void		SetDefRank(int rank);
 	int			RetDefRank();
 
-	BOOL		GetTooltipName(char* name);
+	bool		GetTooltipName(char* name);
 
 	void		AddDeselList(CObject* pObj);
 	CObject*	SubDeselList();
 	void		DeleteDeselList(CObject* pObj);
 
-	BOOL		CreateShadowCircle(float radius, float intensity, D3DShadowType type=D3DSHADOWNORM);
-	BOOL		CreateShadowLight(float height, D3DCOLORVALUE color);
-	BOOL		CreateEffectLight(float height, D3DCOLORVALUE color);
+	bool		CreateShadowCircle(float radius, float intensity, D3DShadowType type=D3DSHADOWNORM);
+	bool		CreateShadowLight(float height, D3DCOLORVALUE color);
+	bool		CreateEffectLight(float height, D3DCOLORVALUE color);
 
 	void		FlatParent();
 
-	BOOL		RetTraceDown();
-	void		SetTraceDown(BOOL bDown);
+	bool		RetTraceDown();
+	void		SetTraceDown(bool bDown);
 	int			RetTraceColor();
 	void		SetTraceColor(int color);
 	float		RetTraceWidth();
 	void		SetTraceWidth(float width);
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 	void		VirusFrame(float rTime);
 	void		PartiFrame(float rTime);
 	void		CreateOtherObject(ObjectType type);
@@ -660,8 +660,8 @@ protected:
 	void		UpdateTotalPart();
 	int			SearchDescendant(int parent, int n);
 	void		UpdateEnergyMapping();
-	BOOL		UpdateTransformObject(int part, BOOL bForceUpdate);
-	BOOL		UpdateTransformObject();
+	bool		UpdateTransformObject(int part, bool bForceUpdate);
+	bool		UpdateTransformObject();
 	void		UpdateSelectParticule();
 
 protected:
@@ -708,36 +708,36 @@ protected:
 	int		m_material;			// matter(0..n)
 	float		m_aTime;
 	float		m_shotTime;			// time since last shot
-	BOOL		m_bVirusMode;			// virus activated/triggered
+	bool		m_bVirusMode;			// virus activated/triggered
 	float		m_virusTime;			// lifetime of the virus
 	float		m_lastVirusParticule;
 	float		m_lastParticule;
-	BOOL		m_bHilite;
-	BOOL		m_bSelect;			// object selected
-	BOOL		m_bSelectable;			// selectable object
-	BOOL		m_bCheckToken;			// object with audited tokens
-	BOOL		m_bVisible;			// object active but undetectable
-	BOOL		m_bEnable;			// dead object
-	BOOL		m_bProxyActivate;		// active object so close
-	BOOL		m_bGadget;			// object nonessential
-	BOOL		m_bLock;
-	BOOL		m_bExplo;
-	BOOL		m_bCargo;
-	BOOL		m_bBurn;
-	BOOL		m_bDead;
-	BOOL		m_bFlat;
-	BOOL		m_bTrainer;			// drive vehicle (without remote)
-	BOOL		m_bToy;				// toy key
-	BOOL		m_bManual;			// manual control (Scribbler)
-	BOOL		m_bFixed;
-	BOOL		m_bClip;
-	BOOL		m_bShowLimit;
+	bool		m_bHilite;
+	bool		m_bSelect;			// object selected
+	bool		m_bSelectable;			// selectable object
+	bool		m_bCheckToken;			// object with audited tokens
+	bool		m_bVisible;			// object active but undetectable
+	bool		m_bEnable;			// dead object
+	bool		m_bProxyActivate;		// active object so close
+	bool		m_bGadget;			// object nonessential
+	bool		m_bLock;
+	bool		m_bExplo;
+	bool		m_bCargo;
+	bool		m_bBurn;
+	bool		m_bDead;
+	bool		m_bFlat;
+	bool		m_bTrainer;			// drive vehicle (without remote)
+	bool		m_bToy;				// toy key
+	bool		m_bManual;			// manual control (Scribbler)
+	bool		m_bFixed;
+	bool		m_bClip;
+	bool		m_bShowLimit;
 	float		m_showLimitRadius;
 	float		m_gunGoalV;
 	float		m_gunGoalH;
 	CameraType	m_cameraType;
 	float		m_cameraDist;
-	BOOL		m_bCameraLock;
+	bool		m_bCameraLock;
 	int			m_defRank;
 	float		m_magnifyDamage;
 	float		m_proxyDistance;
@@ -763,7 +763,7 @@ protected:
 	int			m_partiSel[4];
 
 	ResetCap	m_resetCap;
-	BOOL		m_bResetBusy;
+	bool		m_bResetBusy;
 	D3DVECTOR	m_resetPosition;
 	D3DVECTOR	m_resetAngle;
 	int			m_resetRun;
@@ -771,7 +771,7 @@ protected:
 	int			m_infoTotal;
 	Info		m_info[OBJECTMAXINFO];
 	float		m_infoReturn;
-	BOOL		m_bInfoUpdate;
+	bool		m_bInfoUpdate;
 
 	float		m_cmdLine[OBJECTMAXCMDLINE];
 };

@@ -38,10 +38,10 @@ public:
 	CAutoKid(CInstanceManager* iMan, CObject* object);
 	~CAutoKid();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 
 protected:
@@ -51,6 +51,6 @@ protected:
 	float		m_progress;
 	float		m_lastParticule;
 	int			m_soundChannel;
-	BOOL		m_bSilent;
+	bool		m_bSilent;
 };
 

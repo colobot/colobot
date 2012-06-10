@@ -45,21 +45,21 @@ public:
 	CCloud(CInstanceManager* iMan, CD3DEngine* engine);
 	~CCloud();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	void		Flush();
-	BOOL		Create(const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level);
+	bool		Create(const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level);
 	void		Draw();
 
-	BOOL		SetLevel(float level);
+	bool		SetLevel(float level);
 	float		RetLevel();
 
-	void		SetEnable(BOOL bEnable);
-	BOOL		RetEnable();
+	void		SetEnable(bool bEnable);
+	bool		RetEnable();
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep, FPOINT &uv1, FPOINT &uv2);
-	BOOL		CreateLine(int x, int y, int len);
+	bool		CreateLine(int x, int y, int len);
 
 protected:
 	CInstanceManager*	m_iMan;
@@ -82,6 +82,6 @@ protected:
 	int			m_lineUsed;
 	CloudLine		m_line[MAXCLOUDLINE];
 
-	BOOL			m_bEnable;
+	bool			m_bEnable;
 };
 

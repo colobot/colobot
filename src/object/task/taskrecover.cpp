@@ -50,8 +50,6 @@
 CTaskRecover::CTaskRecover(CInstanceManager* iMan, CObject* object)
 							   : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
-
 	m_ruin = 0;
 	m_soundChannel = -1;
 }
@@ -65,16 +63,16 @@ CTaskRecover::~CTaskRecover()
 
 // Management of an event.
 
-BOOL CTaskRecover::EventProcess(const Event &event)
+bool CTaskRecover::EventProcess(const Event &event)
 {
 	CObject*	power;
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
 	float		a, g, cirSpeed, angle, energy, dist, linSpeed;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_bError )  return FALSE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_bError )  return false;
 
 	if ( m_phase == TRP_TURN )  // preliminary rotation?
 	{
@@ -85,7 +83,7 @@ BOOL CTaskRecover::EventProcess(const Event &event)
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
 		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
-		return TRUE;
+		return true;
 	}
 
 	m_progress += event.rTime*m_speed;  // others advance
@@ -109,7 +107,7 @@ BOOL CTaskRecover::EventProcess(const Event &event)
 		if ( dist > RECOVER_DIST )  linSpeed =  1.0f;
 		if ( dist < RECOVER_DIST )  linSpeed = -1.0f;
 		m_physics->SetMotorSpeedX(linSpeed);  // forward/backward
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == TRP_OPER )
@@ -178,7 +176,7 @@ BOOL CTaskRecover::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -193,7 +191,7 @@ Error CTaskRecover::Start()
 
 	ObjectType	type;
 
-	m_bError = TRUE;  // operation impossible
+	m_bError = true;  // operation impossible
 	if ( !m_physics->RetLand() )  return ERR_RECOVER_VEH;
 
 	type = m_object->RetType();
@@ -211,7 +209,7 @@ Error CTaskRecover::Start()
 
 	m_ruin = SearchRuin();
 	if ( m_ruin == 0 )  return ERR_RECOVER_NULL;
-	m_ruin->SetLock(TRUE);  // ruin no longer usable
+	m_ruin->SetLock(true);  // ruin no longer usable
 
 	iPos = m_object->RetPosition(0);
 	oPos = m_ruin->RetPosition(0);
@@ -225,7 +223,7 @@ Error CTaskRecover::Start()
 	m_time     = 0.0f;
 	m_lastParticule = 0.0f;
 
-	m_bError = FALSE;  // ok
+	m_bError = false;  // ok
 
 	m_camera->StartCentering(m_object, PI*0.85f, 99.9f, 10.0f, 3.0f);
 	return ERR_OK;
@@ -284,7 +282,7 @@ Error CTaskRecover::IsEnded()
 			pos = Transform(*mat, pos);  // position in front
 			m_recoverPos = pos;
 
-			i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.9f, TRUE);
+			i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.9f, true);
 			m_sound->AddEnvelope(i, 1.0f, 1.5f, 0.3f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(i, 1.0f, 1.5f, 1.0f, SOPER_CONTINUE);
 			m_sound->AddEnvelope(i, 0.0f, 0.9f, 0.3f, SOPER_STOP);
@@ -298,7 +296,7 @@ Error CTaskRecover::IsEnded()
 		{
 			if ( m_progress > 1.0f )  // timeout?
 			{
-				m_ruin->SetLock(FALSE);  // usable again
+				m_ruin->SetLock(false);  // usable again
 				m_camera->StopCentering(m_object, 2.0f);
 				return ERR_RECOVER_NULL;
 			}
@@ -317,11 +315,11 @@ Error CTaskRecover::IsEnded()
 			delete m_metal;
 			m_metal = 0;
 			Abort();
-			m_bError = TRUE;
+			m_bError = true;
 			m_displayText->DisplayError(ERR_TOOMANY, m_object);
 			return ERR_STOP;
 		}
-		m_metal->SetLock(TRUE);  // metal not yet usable
+		m_metal->SetLock(true);  // metal not yet usable
 		m_metal->SetZoom(0, 0.0f);
 
 		mat = m_object->RetWorldMatrix(0);
@@ -332,7 +330,7 @@ Error CTaskRecover::IsEnded()
 		m_particule->CreateRay(pos, goal, PARTIRAY2,
 							   FPOINT(2.0f, 2.0f), 8.0f);
 
-		m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->RetPosition(0), 0.0f, 1.0f, TRUE);
+		m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->RetPosition(0), 0.0f, 1.0f, true);
 		m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 2.0f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 4.0f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.7f, 2.0f, SOPER_STOP);
@@ -352,7 +350,7 @@ Error CTaskRecover::IsEnded()
 
 		m_soundChannel = -1;
 
-		i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.9f, TRUE);
+		i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.9f, true);
 		m_sound->AddEnvelope(i, 1.0f, 1.5f, 0.3f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(i, 1.0f, 1.5f, 1.0f, SOPER_CONTINUE);
 		m_sound->AddEnvelope(i, 0.0f, 0.9f, 0.3f, SOPER_STOP);
@@ -362,7 +360,7 @@ Error CTaskRecover::IsEnded()
 		return ERR_CONTINUE;
 	}
 
-	m_metal->SetLock(FALSE);  // metal usable
+	m_metal->SetLock(false);  // metal usable
 
 	Abort();
 	return ERR_STOP;
@@ -370,7 +368,7 @@ Error CTaskRecover::IsEnded()
 
 // Suddenly ends the current action.
 
-BOOL CTaskRecover::Abort()
+bool CTaskRecover::Abort()
 {
 	m_object->SetAngleZ(2,  126.0f*PI/180.0f);
 	m_object->SetAngleZ(4,  126.0f*PI/180.0f);
@@ -385,7 +383,7 @@ BOOL CTaskRecover::Abort()
 	}
 
 	m_camera->StopCentering(m_object, 2.0f);
-	return TRUE;
+	return true;
 }
 
 

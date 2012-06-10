@@ -49,21 +49,21 @@ public:
 	CAutoConvert(CInstanceManager* iMan, CObject* object);
 	~CAutoConvert();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
-	BOOL		Abort();
+	bool		Abort();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	CObject*	SearchStone(ObjectType type);
-	BOOL		SearchVehicle();
+	bool		SearchVehicle();
 	void		CreateMetal();
 
 protected:
@@ -72,8 +72,8 @@ protected:
 	float				m_speed;
 	float				m_timeVirus;
 	float				m_lastParticule;
-	BOOL				m_bResetDelete;
-	BOOL				m_bSoundClose;
+	bool				m_bResetDelete;
+	bool				m_bSoundClose;
 	int					m_soundChannel;
 };
 

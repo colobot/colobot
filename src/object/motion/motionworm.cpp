@@ -69,7 +69,7 @@ CMotionWorm::CMotionWorm(CInstanceManager* iMan, CObject* object)
 	m_armLastAction  = -1;
 	m_specAction     = -1;
 	m_lastParticule  = 0.0f;
-	m_bArmStop = FALSE;
+	m_bArmStop = false;
 }
 
 // Object's destructor.
@@ -81,21 +81,21 @@ CMotionWorm::~CMotionWorm()
 
 // Removes an object.
 
-void CMotionWorm::DeleteObject(BOOL bAll)
+void CMotionWorm::DeleteObject(bool bAll)
 {
 }
 
 
 // Creates a vehicle traveling any lands on the ground.
 
-BOOL CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 						 float power)
 {
 	CModFile*	pModFile;
 	int			rank, i;
 	float		px;
 
-	if ( m_engine->RetRestCreate() < 2+WORM_PART+1 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 2+WORM_PART+1 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -159,7 +159,7 @@ BOOL CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates the physics of the object.
@@ -199,21 +199,21 @@ void CMotionWorm::CreatePhysics()
 
 // Specifies a special parameter.
 
-BOOL CMotionWorm::SetParam(int rank, float value)
+bool CMotionWorm::SetParam(int rank, float value)
 {
 	if ( rank == 0 )
 	{
 		m_timeDown = value;
-		return TRUE;
+		return true;
 	}
 
 	if ( rank == 1 )
 	{
 		m_timeUp = value;
-		return TRUE;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 float CMotionWorm::RetParam(int rank)
@@ -227,7 +227,7 @@ float CMotionWorm::RetParam(int rank)
 
 // Management of an event.
 
-BOOL CMotionWorm::EventProcess(const Event &event)
+bool CMotionWorm::EventProcess(const Event &event)
 {
 	CMotion::EventProcess(event);
 
@@ -240,12 +240,12 @@ BOOL CMotionWorm::EventProcess(const Event &event)
 	{
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Management of an event.
 
-BOOL CMotionWorm::EventFrame(const Event &event)
+bool CMotionWorm::EventFrame(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, p, angle, speed;
@@ -254,7 +254,7 @@ BOOL CMotionWorm::EventFrame(const Event &event)
 	float		floor, a, s, px, curve, phase, h, zoom, radius;
 	int			i, under;
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	s = m_physics->RetLinMotionX(MO_MOTSPEED)/m_physics->RetLinMotionX(MO_ADVSPEED);
 	a = m_physics->RetCirMotionY(MO_MOTSPEED)/m_physics->RetCirMotionY(MO_ADVSPEED);
@@ -297,10 +297,10 @@ BOOL CMotionWorm::EventFrame(const Event &event)
 	}
 	m_object->SetVisible(under!=WORM_PART+2);
 
-	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return TRUE;
+	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
 
 	pos = m_object->RetPosition(0);
-	floor = m_terrain->RetFloorLevel(pos, TRUE);
+	floor = m_terrain->RetFloorLevel(pos, true);
 
 	mat = m_object->RetWorldMatrix(0);
 
@@ -328,7 +328,7 @@ BOOL CMotionWorm::EventFrame(const Event &event)
 		pos.z = pp.y;
 
 		p = Transform(*mat, pos);
-		pos.y += m_terrain->RetFloorLevel(p, TRUE)-floor;
+		pos.y += m_terrain->RetFloorLevel(p, true)-floor;
 		m_object->SetPosition(i+1, pos);
 
 		zoom = Mod(m_armTimeAbs*0.5f+100.0f-i*0.1f, 2.0f);
@@ -372,7 +372,7 @@ BOOL CMotionWorm::EventFrame(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 

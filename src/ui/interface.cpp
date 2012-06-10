@@ -489,7 +489,7 @@ CMap* CInterface::CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 
 // Removes a control.
 
-BOOL CInterface::DeleteControl(EventMsg eventMsg)
+bool CInterface::DeleteControl(EventMsg eventMsg)
 {
 	int		i;
 
@@ -501,11 +501,11 @@ BOOL CInterface::DeleteControl(EventMsg eventMsg)
 			{
 				delete m_table[i];
 				m_table[i] = 0;
-				return TRUE;
+				return true;
 			}
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Gives a control.
@@ -529,7 +529,7 @@ CControl* CInterface::SearchControl(EventMsg eventMsg)
 
 // Management of an event.
 
-BOOL CInterface::EventProcess(const Event &event)
+bool CInterface::EventProcess(const Event &event)
 {
 	int		i;
 
@@ -549,18 +549,18 @@ BOOL CInterface::EventProcess(const Event &event)
 		{
 			if ( !m_table[i]->EventProcess(event) )
 			{
-				return FALSE;
+				return false;
 			}
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // Gives the tooltip binding to the window.
 
-BOOL CInterface::GetTooltip(FPOINT pos, char* name)
+bool CInterface::GetTooltip(FPOINT pos, char* name)
 {
 	int		i;
 
@@ -570,11 +570,11 @@ BOOL CInterface::GetTooltip(FPOINT pos, char* name)
 		{
 			if ( m_table[i]->GetTooltip(pos, name) )
 			{
-				return TRUE;
+				return true;
 			}
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 

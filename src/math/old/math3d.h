@@ -30,7 +30,7 @@
 
 
 
-BOOL			IsEqual(float a, float b);
+bool			IsEqual(float a, float b);
 
 float		Min(float a, float b);
 float		Min(float a, float b, float c);
@@ -51,7 +51,7 @@ void			Swap(FPOINT &a, FPOINT &b);
 
 float		Mod(float a, float m);
 float		NormAngle(float angle);
-BOOL			TestAngle(float angle, float min, float max);
+bool			TestAngle(float angle, float min, float max);
 
 float		Direction(float a, float g);
 FPOINT		RotatePoint(FPOINT center, float angle, FPOINT p);
@@ -61,9 +61,9 @@ float		RotateAngle(float x, float y);
 float		RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
 float		MidPoint(FPOINT a, FPOINT b, float px);
 D3DVECTOR	SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
-BOOL			IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
-BOOL			Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
-BOOL			IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
+bool			IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
+bool			Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
+bool			IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
 void			RotatePoint(float cx, float cy, float angle, float &px, float &py);
 void			RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
 void			RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
@@ -82,9 +82,9 @@ D3DVECTOR	Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p)
 
 void			MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
 void			SmoothObject( D3DVERTEX2* pVertices, int nb );
-BOOL			LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
+bool			LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
 float		DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &c, const D3DVECTOR &p);
-BOOL			IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
+bool			IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
 void			MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle);
 void			MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle);
 

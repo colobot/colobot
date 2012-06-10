@@ -188,10 +188,10 @@ D3DObjLevel1;
 
 typedef struct
 {
-	char		bUsed;			// TRUE -> object exists
-	char		bVisible;		// TRUE -> visible object
-	char		bDrawWorld;		// TRUE -> shape behind the interface
-	char		bDrawFront;		// TRUE -> shape before the interface
+	char		bUsed;			// true -> object exists
+	char		bVisible;		// true -> visible object
+	char		bDrawWorld;		// true -> shape behind the interface
+	char		bDrawFront;		// true -> shape before the interface
 	int		totalTriangle;		// number of triangles used
 	D3DTypeObj	type;			// type of the object (TYPE*)
 	D3DMATRIX	transform;		// transformation matrix
@@ -206,8 +206,8 @@ D3DObject;
 
 typedef struct
 {
-	char		bUsed;			// TRUE -> object exists
-	char		bHide;			// TRUE -> invisible shadow (object carried by ex.)
+	char		bUsed;			// true -> object exists
+	char		bHide;			// true -> invisible shadow (object carried by ex.)
 	int		objRank;		// rank of the object
 	D3DShadowType 	type;			// type of shadow
 	D3DVECTOR	pos;			// position for the shadow
@@ -221,7 +221,7 @@ D3DShadow;
 
 typedef struct
 {
-	char		bUsed;			// TRUE -> object exists
+	char		bUsed;			// true -> object exists
 	D3DCOLORVALUE	color;			// color of the shadow
 	float		min, max;		// altitudes min / max
 	float		smooth;			// transition area
@@ -234,8 +234,8 @@ D3DGroundSpot;
 
 typedef struct
 {
-	char		bUsed;			// TRUE -> object exists
-	char		bDraw;			// TRUE -> drawn mark
+	char		bUsed;			// true -> object exists
+	char		bDraw;			// true -> drawn mark
 	int		phase;			// 1 = increase, 2 = fixed, 3 = decrease
 	float		delay[3];		// time for 3 phases
 	float		fix;			// fixed time
@@ -263,18 +263,18 @@ public:
 
 	void		SetTerrain(CTerrain* terrain);
 
-	BOOL		WriteProfile();
+	bool		WriteProfile();
 
-	void		SetPause(BOOL bPause);
-	BOOL		RetPause();
+	void		SetPause(bool bPause);
+	bool		RetPause();
 
-	void		SetMovieLock(BOOL bLock);
-	BOOL		RetMovieLock();
+	void		SetMovieLock(bool bLock);
+	bool		RetMovieLock();
 
-	void		SetShowStat(BOOL bShow);
-	BOOL		RetShowStat();
+	void		SetShowStat(bool bShow);
+	bool		RetShowStat();
 
-	void		SetRenderEnable(BOOL bEnable);
+	void		SetRenderEnable(bool bEnable);
 
 	HRESULT		OneTimeSceneInit();
 	HRESULT		InitDeviceObjects();
@@ -287,19 +287,19 @@ public:
 	void		AddStatisticTriangle(int nb);
 	int			RetStatisticTriangle();
 	void		SetHiliteRank(int *rankList);
-	BOOL		GetHilite(FPOINT &p1, FPOINT &p2);
-	BOOL		GetSpriteCoord(int &x, int &y);
+	bool		GetHilite(FPOINT &p1, FPOINT &p2);
+	bool		GetSpriteCoord(int &x, int &y);
 	void		SetInfoText(int line, char* text);
 	char*		RetInfoText(int line);
 	LRESULT		MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	void		FirstExecuteAdapt(BOOL bFirst);
+	void		FirstExecuteAdapt(bool bFirst);
 	int			GetVidMemTotal();
-	BOOL		IsVideo8MB();
-	BOOL		IsVideo32MB();
+	bool		IsVideo8MB();
+	bool		IsVideo32MB();
 
-	BOOL		EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
-	BOOL		RetFullScreen();
-	BOOL		ChangeDevice(char *device, char *mode, BOOL bFull);
+	bool		EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
+	bool		RetFullScreen();
+	bool		ChangeDevice(char *device, char *mode, bool bFull);
 
 	D3DMATRIX*	RetMatView();
 	D3DMATRIX*	RetMatLeftView();
@@ -313,72 +313,72 @@ public:
 	int			RetRestCreate();
 	int			CreateObject();
 	void		FlushObject();
-	BOOL		DeleteObject(int objRank);
-	BOOL		SetDrawWorld(int objRank, BOOL bDraw);
-	BOOL		SetDrawFront(int objRank, BOOL bDraw);
-	BOOL		AddTriangle(int objRank, D3DVERTEX2* vertex, int nb, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, BOOL bGlobalUpdate);
-	BOOL		AddSurface(int objRank, D3DVERTEX2* vertex, int nb, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, BOOL bGlobalUpdate);
-	BOOL		AddQuick(int objRank, D3DObjLevel6* buffer, char* texName1, char* texName2, float min, float max, BOOL bGlobalUpdate);
+	bool		DeleteObject(int objRank);
+	bool		SetDrawWorld(int objRank, bool bDraw);
+	bool		SetDrawFront(int objRank, bool bDraw);
+	bool		AddTriangle(int objRank, D3DVERTEX2* vertex, int nb, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, bool bGlobalUpdate);
+	bool		AddSurface(int objRank, D3DVERTEX2* vertex, int nb, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, bool bGlobalUpdate);
+	bool		AddQuick(int objRank, D3DObjLevel6* buffer, char* texName1, char* texName2, float min, float max, bool bGlobalUpdate);
 	D3DObjLevel6* SearchTriangle(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max);
 	void		ChangeLOD();
-	BOOL		ChangeSecondTexture(int objRank, char* texName2);
+	bool		ChangeSecondTexture(int objRank, char* texName2);
 	int			RetTotalTriangles(int objRank);
 	int			GetTriangles(int objRank, float min, float max, D3DTriangle* buffer, int size, float percent);
-	BOOL		GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max);
-	BOOL		ChangeTextureMapping(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, D3DMaping mode, float au, float bu, float av, float bv);
-	BOOL		TrackTextureMapping(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, D3DMaping mode, float pos, float factor, float tl, float ts, float tt);
-	BOOL		SetObjectTransform(int objRank, const D3DMATRIX &transform);
-	BOOL		GetObjectTransform(int objRank, D3DMATRIX &transform);
-	BOOL		SetObjectType(int objRank, D3DTypeObj type);
+	bool		GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max);
+	bool		ChangeTextureMapping(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, D3DMaping mode, float au, float bu, float av, float bv);
+	bool		TrackTextureMapping(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, D3DMaping mode, float pos, float factor, float tl, float ts, float tt);
+	bool		SetObjectTransform(int objRank, const D3DMATRIX &transform);
+	bool		GetObjectTransform(int objRank, D3DMATRIX &transform);
+	bool		SetObjectType(int objRank, D3DTypeObj type);
 	D3DTypeObj	RetObjectType(int objRank);
-	BOOL		SetObjectTransparency(int objRank, float value);
+	bool		SetObjectTransparency(int objRank, float value);
 
-	BOOL		ShadowCreate(int objRank);
+	bool		ShadowCreate(int objRank);
 	void		ShadowDelete(int objRank);
-	BOOL		SetObjectShadowHide(int objRank, BOOL bHide);
-	BOOL		SetObjectShadowType(int objRank, D3DShadowType type);
-	BOOL		SetObjectShadowPos(int objRank, const D3DVECTOR &pos);
-	BOOL		SetObjectShadowNormal(int objRank, const D3DVECTOR &n);
-	BOOL		SetObjectShadowAngle(int objRank, float angle);
-	BOOL		SetObjectShadowRadius(int objRank, float radius);
-	BOOL		SetObjectShadowIntensity(int objRank, float intensity);
-	BOOL		SetObjectShadowHeight(int objRank, float h);
+	bool		SetObjectShadowHide(int objRank, bool bHide);
+	bool		SetObjectShadowType(int objRank, D3DShadowType type);
+	bool		SetObjectShadowPos(int objRank, const D3DVECTOR &pos);
+	bool		SetObjectShadowNormal(int objRank, const D3DVECTOR &n);
+	bool		SetObjectShadowAngle(int objRank, float angle);
+	bool		SetObjectShadowRadius(int objRank, float radius);
+	bool		SetObjectShadowIntensity(int objRank, float intensity);
+	bool		SetObjectShadowHeight(int objRank, float h);
 	float		RetObjectShadowRadius(int objRank);
 
 	void		GroundSpotFlush();
 	int			GroundSpotCreate();
 	void		GroundSpotDelete(int rank);
-	BOOL		SetObjectGroundSpotPos(int rank, const D3DVECTOR &pos);
-	BOOL		SetObjectGroundSpotRadius(int rank, float radius);
-	BOOL		SetObjectGroundSpotColor(int rank, D3DCOLORVALUE color);
-	BOOL		SetObjectGroundSpotMinMax(int rank, float min, float max);
-	BOOL		SetObjectGroundSpotSmooth(int rank, float smooth);
+	bool		SetObjectGroundSpotPos(int rank, const D3DVECTOR &pos);
+	bool		SetObjectGroundSpotRadius(int rank, float radius);
+	bool		SetObjectGroundSpotColor(int rank, D3DCOLORVALUE color);
+	bool		SetObjectGroundSpotMinMax(int rank, float min, float max);
+	bool		SetObjectGroundSpotSmooth(int rank, float smooth);
 
 	int			GroundMarkCreate(D3DVECTOR pos, float radius, float delay1, float delay2, float delay3, int dx, int dy, char* table);
-	BOOL		GroundMarkDelete(int rank);
+	bool		GroundMarkDelete(int rank);
 
 	void		Update();
 	
 	void		SetViewParams(const D3DVECTOR &vEyePt, const D3DVECTOR &vLookatPt, const D3DVECTOR &vUpVec, FLOAT fEyeDistance);
 
-	BOOL		FreeTexture(char* name);
-	BOOL		LoadTexture(char* name, int stage=0);
-	BOOL		LoadAllTexture();
+	bool		FreeTexture(char* name);
+	bool		LoadTexture(char* name, int stage=0);
+	bool		LoadAllTexture();
 
 	void		SetLimitLOD(int rank, float limit);
-	float		RetLimitLOD(int rank, BOOL bLast=FALSE);
+	float		RetLimitLOD(int rank, bool bLast=false);
 
 	void		SetTerrainVision(float vision);
 
-	void		SetGroundSpot(BOOL bMode);
-	BOOL		RetGroundSpot();
-	void		SetShadow(BOOL bMode);
-	BOOL		RetShadow();
-	void		SetDirty(BOOL bMode);
-	BOOL		RetDirty();
-	void		SetFog(BOOL bMode);
-	BOOL		RetFog();
-	BOOL		RetStateColor();
+	void		SetGroundSpot(bool bMode);
+	bool		RetGroundSpot();
+	void		SetShadow(bool bMode);
+	bool		RetShadow();
+	void		SetDirty(bool bMode);
+	bool		RetDirty();
+	void		SetFog(bool bMode);
+	bool		RetFog();
+	bool		RetStateColor();
 
 	void		SetSecondTexture(int texNum);
 	int			RetSecondTexture();
@@ -386,8 +386,8 @@ public:
 	void		SetRankView(int rank);
 	int			RetRankView();
 
-	void		SetDrawWorld(BOOL bDraw);
-	void		SetDrawFront(BOOL bDraw);
+	void		SetDrawWorld(bool bDraw);
+	void		SetDrawFront(bool bDraw);
 
 	void		SetAmbiantColor(D3DCOLOR color, int rank=0);
 	D3DCOLOR	RetAmbiantColor(int rank=0);
@@ -398,16 +398,16 @@ public:
 	void		SetFogColor(D3DCOLOR color, int rank=0);
 	D3DCOLOR	RetFogColor(int rank=0);
 
-	void		SetDeepView(float length, int rank=0, BOOL bRef=FALSE);
+	void		SetDeepView(float length, int rank=0, bool bRef=false);
 	float		RetDeepView(int rank=0);
 
 	void		SetFogStart(float start, int rank=0);
 	float		RetFogStart(int rank=0);
 
-	void		SetBackground(char *name, D3DCOLOR up=0, D3DCOLOR down=0, D3DCOLOR cloudUp=0, D3DCOLOR cloudDown=0, BOOL bFull=FALSE, BOOL bQuarter=FALSE);
-	void		RetBackground(char *name, D3DCOLOR &up, D3DCOLOR &down, D3DCOLOR &cloudUp, D3DCOLOR &cloudDown, BOOL &bFull, BOOL &bQuarter);
+	void		SetBackground(char *name, D3DCOLOR up=0, D3DCOLOR down=0, D3DCOLOR cloudUp=0, D3DCOLOR cloudDown=0, bool bFull=false, bool bQuarter=false);
+	void		RetBackground(char *name, D3DCOLOR &up, D3DCOLOR &down, D3DCOLOR &cloudUp, D3DCOLOR &cloudDown, bool &bFull, bool &bQuarter);
 	void		SetFrontsizeName(char *name);
-	void		SetOverFront(BOOL bFront);
+	void		SetOverFront(bool bFront);
 	void		SetOverColor(D3DCOLOR color=0, int mode=D3DSTATETCb);
 
 	void		SetParticuleDensity(float value);
@@ -426,32 +426,32 @@ public:
 	void		SetTextureQuality(int value);
 	int			RetTextureQuality();
 
-	void		SetTotoMode(BOOL bPresent);
-	BOOL		RetTotoMode();
+	void		SetTotoMode(bool bPresent);
+	bool		RetTotoMode();
 
-	void		SetLensMode(BOOL bPresent);
-	BOOL		RetLensMode();
+	void		SetLensMode(bool bPresent);
+	bool		RetLensMode();
 
-	void		SetWaterMode(BOOL bPresent);
-	BOOL		RetWaterMode();
+	void		SetWaterMode(bool bPresent);
+	bool		RetWaterMode();
 
-	void		SetBlitzMode(BOOL bPresent);
-	BOOL		RetBlitzMode();
+	void		SetBlitzMode(bool bPresent);
+	bool		RetBlitzMode();
 
-	void		SetSkyMode(BOOL bPresent);
-	BOOL		RetSkyMode();
+	void		SetSkyMode(bool bPresent);
+	bool		RetSkyMode();
 
-	void		SetBackForce(BOOL bPresent);
-	BOOL		RetBackForce();
+	void		SetBackForce(bool bPresent);
+	bool		RetBackForce();
 
-	void		SetPlanetMode(BOOL bPresent);
-	BOOL		RetPlanetMode();
+	void		SetPlanetMode(bool bPresent);
+	bool		RetPlanetMode();
 
-	void		SetLightMode(BOOL bPresent);
-	BOOL		RetLightMode();
+	void		SetLightMode(bool bPresent);
+	bool		RetLightMode();
 
-	void		SetEditIndentMode(BOOL bAuto);
-	BOOL		RetEditIndentMode();
+	void		SetEditIndentMode(bool bAuto);
+	bool		RetEditIndentMode();
 
 	void		SetEditIndentValue(int value);
 	int			RetEditIndentValue();
@@ -478,14 +478,14 @@ public:
 	void		SetKey(int keyRank, int option, int key);
 	int			RetKey(int keyRank, int option);
 
-	void		SetJoystick(BOOL bEnable);
-	BOOL		RetJoystick();
+	void		SetJoystick(bool bEnable);
+	bool		RetJoystick();
 
-	void		SetDebugMode(BOOL bMode);
-	BOOL		RetDebugMode();
-	BOOL		RetSetupMode();
+	void		SetDebugMode(bool bMode);
+	bool		RetDebugMode();
+	bool		RetSetupMode();
 
-	BOOL		IsVisiblePoint(const D3DVECTOR &pos);
+	bool		IsVisiblePoint(const D3DVECTOR &pos);
 
 	int			DetectObject(FPOINT mouse);
 	void		SetState(int state, D3DCOLOR color=0xffffffff);
@@ -497,26 +497,26 @@ public:
 	FPOINT		RetMousePos();
 	void		SetMouseType(D3DMouse type);
 	D3DMouse	RetMouseType();
-	void		SetMouseHide(BOOL bHide);
-	BOOL		RetMouseHide();
-	void		SetNiceMouse(BOOL bNice);
-	BOOL		RetNiceMouse();
-	BOOL		RetNiceMouseCap();
+	void		SetMouseHide(bool bHide);
+	bool		RetMouseHide();
+	void		SetNiceMouse(bool bNice);
+	bool		RetNiceMouse();
+	bool		RetNiceMouseCap();
 
 	CText*		RetText();
 
-	BOOL		ChangeColor(char *name, D3DCOLORVALUE colorRef1, D3DCOLORVALUE colorNew1, D3DCOLORVALUE colorRef2, D3DCOLORVALUE colorNew2, float tolerance1, float tolerance2, FPOINT ts, FPOINT ti, FPOINT *pExclu=0, float shift=0.0f, BOOL bHSV=FALSE);
-	BOOL		OpenImage(char *name);
-	BOOL		CopyImage();
-	BOOL		LoadImage();
-	BOOL		ScrollImage(int dx, int dy);
-	BOOL		SetDot(int x, int y, D3DCOLORVALUE color);
-	BOOL		CloseImage();
-	BOOL		WriteScreenShot(char *filename, int width, int height);
-	BOOL		GetRenderDC(HDC &hDC);
-	BOOL		ReleaseRenderDC(HDC &hDC);
+	bool		ChangeColor(char *name, D3DCOLORVALUE colorRef1, D3DCOLORVALUE colorNew1, D3DCOLORVALUE colorRef2, D3DCOLORVALUE colorNew2, float tolerance1, float tolerance2, FPOINT ts, FPOINT ti, FPOINT *pExclu=0, float shift=0.0f, bool bHSV=false);
+	bool		OpenImage(char *name);
+	bool		CopyImage();
+	bool		LoadImage();
+	bool		ScrollImage(int dx, int dy);
+	bool		SetDot(int x, int y, D3DCOLORVALUE color);
+	bool		CloseImage();
+	bool		WriteScreenShot(char *filename, int width, int height);
+	bool		GetRenderDC(HDC &hDC);
+	bool		ReleaseRenderDC(HDC &hDC);
 	PBITMAPINFO	CreateBitmapInfoStruct(HBITMAP hBmp);
-	BOOL		CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
+	bool		CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
 
 protected:
 	void		MemSpace1(D3DObjLevel1 *&p, int nb);
@@ -532,10 +532,10 @@ protected:
 	D3DObjLevel5* AddLevel4(D3DObjLevel4 *&p4, int reserve);
 	D3DObjLevel6* AddLevel5(D3DObjLevel5 *&p5, D3DTypeTri type, const D3DMATERIAL7 &mat, int state, int nb);
 
-	BOOL		IsVisible(int objRank);
-	BOOL		DetectBBox(int objRank, FPOINT mouse);
-	BOOL		DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle, int objRank, float &dist);
-	BOOL		TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D);
+	bool		IsVisible(int objRank);
+	bool		DetectBBox(int objRank, FPOINT mouse);
+	bool		DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle, int objRank, float &dist);
+	bool		TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D);
 	void		ComputeDistance();
 	void		UpdateGeometry();
 	void		RenderGroundSpot();
@@ -547,7 +547,7 @@ protected:
 	void		DrawPlanet();
 	void		DrawFrontsize();
 	void		DrawOverColor();
-	BOOL		GetBBox2D(int objRank, FPOINT &min, FPOINT &max);
+	bool		GetBBox2D(int objRank, FPOINT &min, FPOINT &max);
 	void		DrawHilite();
 	void		DrawMouse();
 	void		DrawSprite(FPOINT pos, FPOINT dim, int icon);
@@ -590,9 +590,9 @@ protected:
 	float			m_absTime;
 	float			m_lastTime;
 	float			m_speed;
-	BOOL			m_bPause;
-	BOOL			m_bRender;
-	BOOL			m_bMovieLock;
+	bool			m_bPause;
+	bool			m_bRender;
+	bool			m_bMovieLock;
 
 	POINT			m_dim;
 	POINT			m_lastDim;
@@ -615,30 +615,30 @@ protected:
 	float			m_fogStart[2];
 	D3DCOLORVALUE	m_waterAddColor;
 	int				m_statisticTriangle;
-	BOOL			m_bUpdateGeometry;
+	bool			m_bUpdateGeometry;
 	char			m_infoText[10][200];
 	int				m_alphaMode;
-	BOOL			m_bStateColor;
-	BOOL			m_bForceStateColor;
-	BOOL			m_bGroundSpot;
-	BOOL			m_bShadow;
-	BOOL			m_bDirty;
-	BOOL			m_bFog;
-	BOOL			m_bFirstGroundSpot;
+	bool			m_bStateColor;
+	bool			m_bForceStateColor;
+	bool			m_bGroundSpot;
+	bool			m_bShadow;
+	bool			m_bDirty;
+	bool			m_bFog;
+	bool			m_bFirstGroundSpot;
 	int				m_secondTexNum;
 	char			m_backgroundName[50];
 	D3DCOLOR		m_backgroundColorUp;
 	D3DCOLOR		m_backgroundColorDown;
 	D3DCOLOR		m_backgroundCloudUp;
 	D3DCOLOR		m_backgroundCloudDown;
-	BOOL			m_bBackgroundFull;
-	BOOL			m_bBackgroundQuarter;
-	BOOL			m_bOverFront;
+	bool			m_bBackgroundFull;
+	bool			m_bBackgroundQuarter;
+	bool			m_bOverFront;
 	D3DCOLOR		m_overColor;
 	int				m_overMode;
 	char			m_frontsizeName[50];
-	BOOL			m_bDrawWorld;
-	BOOL			m_bDrawFront;
+	bool			m_bDrawWorld;
+	bool			m_bDrawFront;
 	float			m_limitLOD[2];
 	float			m_particuleDensity;
 	float			m_clippingDistance;
@@ -648,19 +648,19 @@ protected:
 	float			m_terrainVision;
 	float			m_gadgetQuantity;
 	int				m_textureQuality;
-	BOOL			m_bTotoMode;
-	BOOL			m_bLensMode;
-	BOOL			m_bWaterMode;
-	BOOL			m_bSkyMode;
-	BOOL			m_bBackForce;
-	BOOL			m_bPlanetMode;
-	BOOL			m_bLightMode;
-	BOOL			m_bEditIndentMode;
+	bool			m_bTotoMode;
+	bool			m_bLensMode;
+	bool			m_bWaterMode;
+	bool			m_bSkyMode;
+	bool			m_bBackForce;
+	bool			m_bPlanetMode;
+	bool			m_bLightMode;
+	bool			m_bEditIndentMode;
 	int				m_editIndentValue;
 	float			m_tracePrecision;
 
 	int				m_hiliteRank[100];
-	BOOL			m_bHilite;
+	bool			m_bHilite;
 	FPOINT			m_hiliteP1;
 	FPOINT			m_hiliteP2;
 
@@ -671,8 +671,8 @@ protected:
 
 	FPOINT			m_mousePos;
 	D3DMouse		m_mouseType;
-	BOOL			m_bMouseHide;
-	BOOL			m_bNiceMouse;
+	bool			m_bMouseHide;
+	bool			m_bNiceMouse;
 
 	LPDIRECTDRAWSURFACE7 m_imageSurface;
 	DDSURFACEDESC2	m_imageDDSD;

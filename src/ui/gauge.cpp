@@ -50,18 +50,18 @@ CGauge::~CGauge()
 
 // Creates a new button.
 
-BOOL CGauge::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CGauge::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
 	CControl::Create(pos, dim, icon, eventMsg);
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CGauge::EventProcess(const Event &event)
+bool CGauge::EventProcess(const Event &event)
 {
 	CControl::EventProcess(event);
 
@@ -72,11 +72,11 @@ BOOL CGauge::EventProcess(const Event &event)
 			Event newEvent = event;
 			newEvent.event = m_eventMsg;
 			m_event->AddEvent(newEvent);
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 

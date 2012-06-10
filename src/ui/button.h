@@ -32,24 +32,24 @@ public:
 	CButton(CInstanceManager* iMan);
 	virtual ~CButton();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	void	Draw();
 
-	void	SetImmediat(BOOL bRepeat);
-	BOOL	RetImmediat();
+	void	SetImmediat(bool bRepeat);
+	bool	RetImmediat();
 
-	void	SetRepeat(BOOL bRepeat);
-	BOOL	RetRepeat();
-
-protected:
+	void	SetRepeat(bool bRepeat);
+	bool	RetRepeat();
 
 protected:
-	BOOL	m_bCapture;
-	BOOL	m_bImmediat;
-	BOOL	m_bRepeat;
+
+protected:
+	bool	m_bCapture;
+	bool	m_bImmediat;
+	bool	m_bRepeat;
 	float	m_repeat;
 };
 

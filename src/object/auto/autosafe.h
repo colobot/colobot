@@ -47,16 +47,16 @@ public:
 	CAutoSafe(CInstanceManager* iMan, CObject* object);
 	~CAutoSafe();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 
 	void		Init();
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 	Error		RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+	bool		CreateInterface(bool bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
+	bool		Write(char *line);
+	bool		Read(char *line);
 
 protected:
 	int			CountKeys();
@@ -72,11 +72,11 @@ protected:
 	float			m_timeVirus;
 	float			m_lastParticule;
 	int				m_channelSound;
-	BOOL			m_bLock;
+	bool			m_bLock;
 	int				m_countKeys;
 	float			m_actualAngle;
 	float			m_finalAngle;
-	BOOL			m_bKey[4];
+	bool			m_bKey[4];
 	D3DVECTOR		m_keyPos[4];
 	int				m_keyParti[4];
 };

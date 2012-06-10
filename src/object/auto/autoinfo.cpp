@@ -57,13 +57,12 @@ CAutoInfo::CAutoInfo(CInstanceManager* iMan, CObject* object)
 
 CAutoInfo::~CAutoInfo()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoInfo::DeleteObject(BOOL bAll)
+void CAutoInfo::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -76,7 +75,7 @@ void CAutoInfo::Init()
 	m_phase = AIP_WAIT;
 	m_time = 0.0f;
 	m_timeVirus = 0.0f;
-	m_bLastVirus = FALSE;
+	m_bLastVirus = false;
 
 	CAuto::Init();
 }
@@ -142,7 +141,7 @@ void CAutoInfo::Start(int param)
 
 // Management of an event.
 
-BOOL CAutoInfo::EventProcess(const Event &event)
+bool CAutoInfo::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
 	FPOINT		dim;
@@ -151,8 +150,8 @@ BOOL CAutoInfo::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_timeVirus -= event.rTime;
 
@@ -176,14 +175,14 @@ BOOL CAutoInfo::EventProcess(const Event &event)
 
 			UpdateListVirus();
 		}
-		m_bLastVirus = TRUE;
-		return TRUE;
+		m_bLastVirus = true;
+		return true;
 	}
 	else
 	{
 		if ( m_bLastVirus )
 		{
-			m_bLastVirus = FALSE;
+			m_bLastVirus = false;
 			UpdateList();  // normally returns the list
 		}
 		else
@@ -353,7 +352,7 @@ BOOL CAutoInfo::EventProcess(const Event &event)
 	m_object->SetAngleX(5, sinf(m_time*6.0f+PI*2.0f/3.0f)*0.3f);
 	m_object->SetAngleX(7, sinf(m_time*6.0f+PI*4.0f/3.0f)*0.3f);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -372,7 +371,7 @@ Error CAutoInfo::RetError()
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoInfo::CreateInterface(BOOL bSelect)
+bool CAutoInfo::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	CList*		pl;
@@ -381,10 +380,10 @@ BOOL CAutoInfo::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -396,7 +395,7 @@ BOOL CAutoInfo::CreateInterface(BOOL bSelect)
 	ddim.x = 160.0f/640.0f;
 	ddim.y =  66.0f/480.0f;
 	pl = pw->CreateList(pos, ddim, 1, EVENT_OBJECT_GINFO, 1.10f);
-	pl->SetSelectCap(FALSE);
+	pl->SetSelectCap(false);
 
 	pos.x = ox+sx*0.0f;
 	pos.y = oy+sy*0;
@@ -405,7 +404,7 @@ BOOL CAutoInfo::CreateInterface(BOOL bSelect)
 	pw->CreateGroup(pos, ddim, 112, EVENT_OBJECT_TYPE);
 
 	UpdateList();
-	return TRUE;
+	return true;
 }
 
 // Updates the state of all buttons on the interface,
@@ -451,7 +450,7 @@ void CAutoInfo::UpdateList()
 		}
 	}
 
-	m_object->SetInfoUpdate(FALSE);
+	m_object->SetInfoUpdate(false);
 }
 
 // Updates the content of contaminating the list.
@@ -492,11 +491,11 @@ void CAutoInfo::UpdateListVirus()
 
 // Saves all parameters of the controller.
 
-BOOL CAutoInfo::Write(char *line)
+bool CAutoInfo::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == AIP_WAIT )  return FALSE;
+	if ( m_phase == AIP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -512,14 +511,14 @@ BOOL CAutoInfo::Write(char *line)
 	sprintf(name, " aSpeed=%.2f", m_speed);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoInfo::Read(char *line)
+bool CAutoInfo::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -529,7 +528,7 @@ BOOL CAutoInfo::Read(char *line)
 
 	m_lastParticule = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

@@ -79,7 +79,7 @@ CAuto::CAuto(CInstanceManager* iMan, CObject* object)
 	m_type = m_object->RetType();
 	m_time = 0.0f;
 	m_lastUpdateTime = 0.0f;
-	m_bMotor = FALSE;
+	m_bMotor = false;
 	m_progressTime = 0.0f;
 	m_progressTotal = 1.0f;
 
@@ -96,7 +96,7 @@ CAuto::~CAuto()
 
 // Destroys the object.
 
-void CAuto::DeleteObject(BOOL bAll)
+void CAuto::DeleteObject(bool bAll)
 {
 }
 
@@ -105,7 +105,7 @@ void CAuto::DeleteObject(BOOL bAll)
 
 void CAuto::Init()
 {
-	m_bBusy = FALSE;
+	m_bBusy = false;
 }
 
 // Starts the object.
@@ -117,29 +117,29 @@ void CAuto::Start(int param)
 
 // Give a type.
 
-BOOL CAuto::SetType(ObjectType type)
+bool CAuto::SetType(ObjectType type)
 {
-	return FALSE;
+	return false;
 }
 
 // Gives a value.
 
-BOOL CAuto::SetValue(int rank, float value)
+bool CAuto::SetValue(int rank, float value)
 {
-	return FALSE;
+	return false;
 }
 
 // Gives the string.
 
-BOOL CAuto::SetString(char *string)
+bool CAuto::SetString(char *string)
 {
-	return FALSE;
+	return false;
 }
 
 
 // Management of an event.
 
-BOOL CAuto::EventProcess(const Event &event)
+bool CAuto::EventProcess(const Event &event)
 {
 	if ( event.event == EVENT_FRAME &&
 		 !m_engine->RetPause() )
@@ -150,10 +150,10 @@ BOOL CAuto::EventProcess(const Event &event)
 
 	if ( !m_object->RetSelect() )  // robot not selected?
 	{
-		return TRUE;
+		return true;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Indicates whether the controller has finished its activity.
@@ -165,15 +165,15 @@ Error CAuto::IsEnded()
 
 // Stops the controller
 
-BOOL CAuto::Abort()
+bool CAuto::Abort()
 {
-	return FALSE;
+	return false;
 }
 
 
 // Creates all the interface when the object is selected.
 
-BOOL CAuto::CreateInterface(BOOL bSelect)
+bool CAuto::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, dim, ddim;
@@ -187,7 +187,7 @@ BOOL CAuto::CreateInterface(BOOL bSelect)
 		m_interface->DeleteControl(EVENT_WINDOW0);  // destroys the window
 	}
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pos.x = 0.0f;
 	pos.y = 0.0f;
@@ -196,7 +196,7 @@ BOOL CAuto::CreateInterface(BOOL bSelect)
 	dim.y = 86.0f/480.0f;
 	m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	m_object->GetTooltipName(name);
 	pos.x = 0.0f;
@@ -282,12 +282,12 @@ BOOL CAuto::CreateInterface(BOOL bSelect)
 	m_lastUpdateTime = 0.0f;
 	UpdateInterface(0.0f);
 
-	return TRUE;
+	return true;
 }
 
 // Change the state of a button interface.
 
-void CAuto::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
+void CAuto::CheckInterface(CWindow *pw, EventMsg event, bool bState)
 {
 	CControl*	control;
 
@@ -299,7 +299,7 @@ void CAuto::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 
 // Change the state of a button interface.
 
-void CAuto::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
+void CAuto::EnableInterface(CWindow *pw, EventMsg event, bool bState)
 {
 	CControl*	control;
 		
@@ -311,7 +311,7 @@ void CAuto::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 
 // Change the state of a button interface.
 
-void CAuto::VisibleInterface(CWindow *pw, EventMsg event, BOOL bState)
+void CAuto::VisibleInterface(CWindow *pw, EventMsg event, bool bState)
 {
 	CControl*	control;
 		
@@ -323,7 +323,7 @@ void CAuto::VisibleInterface(CWindow *pw, EventMsg event, BOOL bState)
 
 // Change the state of a button interface.
 
-void CAuto::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
+void CAuto::DeadInterface(CWindow *pw, EventMsg event, bool bState)
 {
 	CControl*	control;
 		
@@ -387,12 +387,12 @@ Error CAuto::RetError()
 
 // Management of the occupation.
 
-BOOL CAuto::RetBusy()
+bool CAuto::RetBusy()
 {
 	return m_bBusy;
 }
 
-void CAuto::SetBusy(BOOL bBusy)
+void CAuto::SetBusy(bool bBusy)
 {
 	m_bBusy = bBusy;
 }
@@ -411,12 +411,12 @@ void CAuto::EventProgress(float rTime)
 
 // Engine management.
 
-BOOL CAuto::RetMotor()
+bool CAuto::RetMotor()
 {
 	return m_bMotor;
 }
 
-void CAuto::SetMotor(BOOL bMotor)
+void CAuto::SetMotor(bool bMotor)
 {
 	m_bMotor = bMotor;
 }
@@ -424,7 +424,7 @@ void CAuto::SetMotor(BOOL bMotor)
 
 // Saves all parameters of the controller.
 
-BOOL CAuto::Write(char *line)
+bool CAuto::Write(char *line)
 {
 	char	name[100];
 
@@ -443,12 +443,12 @@ BOOL CAuto::Write(char *line)
 	sprintf(name, " aProgressTotal=%.2f", m_progressTotal);
 	strcat(line, name);
 
-	return FALSE;
+	return false;
 }
 
 // Return all settings to the controller.
 
-BOOL CAuto::Read(char *line)
+bool CAuto::Read(char *line)
 {
 	m_type = (ObjectType)OpInt(line, "aType", OBJECT_NULL);
 	m_bBusy = OpInt(line, "aBusy", 0);
@@ -456,6 +456,6 @@ BOOL CAuto::Read(char *line)
 	m_progressTime = OpFloat(line, "aProgressTime", 0.0f);
 	m_progressTotal = OpFloat(line, "aProgressTotal", 0.0f);
 
-	return FALSE;
+	return false;
 }
 

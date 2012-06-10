@@ -56,13 +56,12 @@ CAutoStation::CAutoStation(CInstanceManager* iMan, CObject* object)
 
 CAutoStation::~CAutoStation()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoStation::DeleteObject(BOOL bAll)
+void CAutoStation::DeleteObject(bool bAll)
 {
 	if ( m_soundChannel != -1 )
 	{
@@ -83,7 +82,7 @@ void CAutoStation::Init()
 	m_lastUpdateTime = 0.0f;
 	m_lastParticule = 0.0f;
 	m_soundChannel = -1;
-	m_bLastVirus = FALSE;
+	m_bLastVirus = false;
 
 	CAuto::Init();
 }
@@ -91,7 +90,7 @@ void CAutoStation::Init()
 
 // Management of an event.
 
-BOOL CAutoStation::EventProcess(const Event &event)
+bool CAutoStation::EventProcess(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, ppos, speed;
@@ -103,8 +102,8 @@ BOOL CAutoStation::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_timeVirus -= event.rTime;
 
@@ -112,7 +111,7 @@ BOOL CAutoStation::EventProcess(const Event &event)
 	{
 		if ( !m_bLastVirus )
 		{
-			m_bLastVirus = TRUE;
+			m_bLastVirus = true;
 			m_energyVirus = m_object->RetEnergy();
 		}
 
@@ -122,13 +121,13 @@ BOOL CAutoStation::EventProcess(const Event &event)
 
 			m_object->SetEnergy(Rand());
 		}
-		return TRUE;
+		return true;
 	}
 	else
 	{
 		if ( m_bLastVirus )
 		{
-			m_bLastVirus = FALSE;
+			m_bLastVirus = false;
 			m_object->SetEnergy(m_energyVirus);
 		}
 	}
@@ -185,7 +184,7 @@ BOOL CAutoStation::EventProcess(const Event &event)
 		if ( m_soundChannel == -1 )
 		{
 			m_soundChannel = m_sound->Play(SOUND_STATION, m_object->RetPosition(0),
-										   0.3f, freq, TRUE);
+										   0.3f, freq, true);
 		}
 		m_sound->Frequency(m_soundChannel, freq);
 	}
@@ -245,7 +244,7 @@ BOOL CAutoStation::EventProcess(const Event &event)
 	if ( big > 1.0f )  big = 1.0f;
 	m_object->SetEnergy(big);  // Shift the large battery
 
-	return TRUE;
+	return true;
 }
 
 
@@ -324,7 +323,7 @@ Error CAutoStation::RetError()
 
 // Crée toute l'interface lorsque l'objet est sélectionné .
 
-BOOL CAutoStation::CreateInterface(BOOL bSelect)
+bool CAutoStation::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -332,10 +331,10 @@ BOOL CAutoStation::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -354,7 +353,7 @@ BOOL CAutoStation::CreateInterface(BOOL bSelect)
 	ddim.y = 66.0f/480.0f;
 	pw->CreateGroup(pos, ddim, 104, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+	return true;
 }
 
 // Updates the state of all buttons on the interface,

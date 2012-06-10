@@ -64,7 +64,7 @@ CModFile::~CModFile()
 
 // Creates a triangle in the internal structure.
 
-BOOL CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
+bool CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 							  float min, float max)
 {
 	D3DVECTOR	n;
@@ -73,15 +73,15 @@ BOOL CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 	if ( m_triangleUsed >= MAX_VERTICES )
 	{
 		OutputDebugString("ERROR: CreateTriangle::Too many triangles\n");
-		return FALSE;
+		return false;
 	}
 
 	i = m_triangleUsed++;
 
 	ZeroMemory(&m_triangleTable[i], sizeof(ModelTriangle));
 
-	m_triangleTable[i].bUsed = TRUE;
-	m_triangleTable[i].bSelect = FALSE;
+	m_triangleTable[i].bUsed = true;
+	m_triangleTable[i].bSelect = false;
 
 	n = ComputeNormal(p3, p2, p1);
 	m_triangleTable[i].p1 = D3DVERTEX2( p1, n);
@@ -98,42 +98,42 @@ BOOL CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 	m_triangleTable[i].min = min;
 	m_triangleTable[i].max = max;
 
-	return TRUE;
+	return true;
 }
 
 // Reads a DXF file.
 
-BOOL CModFile::ReadDXF(char *filename, float min, float max)
+bool CModFile::ReadDXF(char *filename, float min, float max)
 {
 	FILE*		file = NULL;
 	char		line[100];
 	int			command, rankSommet, nbSommet, nbFace;
 	D3DVECTOR	table[MAX_VERTICES];
-	BOOL		bWaitNbSommet;
-	BOOL		bWaitNbFace;
-	BOOL		bWaitSommetX;
-	BOOL		bWaitSommetY;
-	BOOL		bWaitSommetZ;
-	BOOL		bWaitFaceX;
-	BOOL		bWaitFaceY;
-	BOOL		bWaitFaceZ;
+	bool		bWaitNbSommet;
+	bool		bWaitNbFace;
+	bool		bWaitSommetX;
+	bool		bWaitSommetY;
+	bool		bWaitSommetZ;
+	bool		bWaitFaceX;
+	bool		bWaitFaceY;
+	bool		bWaitFaceZ;
 	float		x,y,z;
 	int			p1,p2,p3;
 
 	file = fopen(filename, "r");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	m_triangleUsed = 0;
 
 	rankSommet = 0;
-	bWaitNbSommet = FALSE;
-	bWaitNbFace   = FALSE;
-	bWaitSommetX  = FALSE;
-	bWaitSommetY  = FALSE;
-	bWaitSommetZ  = FALSE;
-	bWaitFaceX    = FALSE;
-	bWaitFaceY    = FALSE;
-	bWaitFaceZ    = FALSE;
+	bWaitNbSommet = false;
+	bWaitNbFace   = false;
+	bWaitSommetX  = false;
+	bWaitSommetY  = false;
+	bWaitSommetZ  = false;
+	bWaitFaceX    = false;
+	bWaitFaceY    = false;
+	bWaitFaceZ    = false;
 
 	while ( fgets(line, 100, file) != NULL )
 	{
@@ -142,16 +142,16 @@ BOOL CModFile::ReadDXF(char *filename, float min, float max)
 
 		if ( command == 66 )
 		{
-			bWaitNbSommet = TRUE;
+			bWaitNbSommet = true;
 		}
 
 		if ( command == 71 && bWaitNbSommet )
 		{
-			bWaitNbSommet = FALSE;
+			bWaitNbSommet = false;
 			sscanf(line, "%d", &nbSommet);
 			if ( nbSommet > MAX_VERTICES )  nbSommet = MAX_VERTICES;
 			rankSommet = 0;
-			bWaitNbFace = TRUE;
+			bWaitNbFace = true;
 
 //?			sprintf(s, "Waiting for %d sommets\n", nbSommet);
 //?			OutputDebugString(s);
@@ -159,9 +159,9 @@ BOOL CModFile::ReadDXF(char *filename, float min, float max)
 
 		if ( command == 72 && bWaitNbFace )
 		{
-			bWaitNbFace = FALSE;
+			bWaitNbFace = false;
 			sscanf(line, "%d", &nbFace);
-			bWaitSommetX = TRUE;
+			bWaitSommetX = true;
 
 //?			sprintf(s, "Waiting for %d faces\n", nbFace);
 //?			OutputDebugString(s);
@@ -169,21 +169,21 @@ BOOL CModFile::ReadDXF(char *filename, float min, float max)
 
 		if ( command == 10 && bWaitSommetX )
 		{
-			bWaitSommetX = FALSE;
+			bWaitSommetX = false;
 			sscanf(line, "%f", &x);
-			bWaitSommetY = TRUE;
+			bWaitSommetY = true;
 		}
 
 		if ( command == 20 && bWaitSommetY )
 		{
-			bWaitSommetY = FALSE;
+			bWaitSommetY = false;
 			sscanf(line, "%f", &y);
-			bWaitSommetZ = TRUE;
+			bWaitSommetZ = true;
 		}
 
 		if ( command == 30 && bWaitSommetZ )
 		{
-			bWaitSommetZ = FALSE;
+			bWaitSommetZ = false;
 			sscanf(line, "%f", &z);
 
 			nbSommet --;
@@ -191,36 +191,36 @@ BOOL CModFile::ReadDXF(char *filename, float min, float max)
 			{
 				D3DVECTOR p(x,z,y);  // permutation of Y and Z!
 				table[rankSommet++] = p;
-				bWaitSommetX = TRUE;
+				bWaitSommetX = true;
 
 //?				sprintf(s, "Sommet[%d]=%f;%f;%f\n", rankSommet, p.x,p.y,p.z);
 //?				OutputDebugString(s);
 			}
 			else
 			{
-				bWaitFaceX = TRUE;
+				bWaitFaceX = true;
 			}
 		}
 
 		if ( command == 71 && bWaitFaceX )
 		{
-			bWaitFaceX = FALSE;
+			bWaitFaceX = false;
 			sscanf(line, "%d", &p1);
 			if ( p1 < 0 )  p1 = -p1;
-			bWaitFaceY = TRUE;
+			bWaitFaceY = true;
 		}
 
 		if ( command == 72 && bWaitFaceY )
 		{
-			bWaitFaceY = FALSE;
+			bWaitFaceY = false;
 			sscanf(line, "%d", &p2);
 			if ( p2 < 0 )  p2 = -p2;
-			bWaitFaceZ = TRUE;
+			bWaitFaceZ = true;
 		}
 
 		if ( command == 73 && bWaitFaceZ )
 		{
-			bWaitFaceZ = FALSE;
+			bWaitFaceZ = false;
 			sscanf(line, "%d", &p3);
 			if ( p3 < 0 )  p3 = -p3;
 
@@ -228,7 +228,7 @@ BOOL CModFile::ReadDXF(char *filename, float min, float max)
 			if ( nbFace >= 0 )
 			{
 				CreateTriangle( table[p3-1], table[p2-1], table[p1-1], min,max );
-				bWaitFaceX = TRUE;
+				bWaitFaceX = true;
 
 //?				sprintf(s, "Face=%d;%d;%d\n", p1,p2,p3);
 //?				OutputDebugString(s);
@@ -238,7 +238,7 @@ BOOL CModFile::ReadDXF(char *filename, float min, float max)
 	}
 
 	fclose(file);
-	return TRUE;
+	return true;
 }
 
 
@@ -266,7 +266,7 @@ void ChangeBMPtoTGA(char *filename)
 
 // Reads a MOD file.
 
-BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
+bool CModFile::AddModel(char *filename, int first, bool bEdit, bool bMeta)
 {
 	FILE*		file;
 	InfoMOD		info;
@@ -276,7 +276,7 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 
 	if ( m_engine->RetDebugMode() )
 	{
-		bMeta = FALSE;
+		bMeta = false;
 	}
 
 	if ( bMeta )
@@ -298,12 +298,12 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 			err = g_metafile.Open("colobot2.dat", p+1);
 #endif
 		}
-		if ( err != 0 )  bMeta = FALSE;
+		if ( err != 0 )  bMeta = false;
 	}
 	if ( !bMeta )
 	{
 		file = fopen(filename, "rb");
-		if ( file == NULL )  return FALSE;
+		if ( file == NULL )  return false;
 	}
 
 	if ( bMeta )
@@ -477,12 +477,12 @@ BOOL CModFile::AddModel(char *filename, int first, BOOL bEdit, BOOL bMeta)
 	{
 		fclose(file);
 	}
-	return TRUE;
+	return true;
 }
 
 // Reads a MOD file.
 
-BOOL CModFile::ReadModel(char *filename, BOOL bEdit, BOOL bMeta)
+bool CModFile::ReadModel(char *filename, bool bEdit, bool bMeta)
 {
 	m_triangleUsed = 0;
 	return AddModel(filename, 0, bEdit, bMeta);
@@ -491,15 +491,15 @@ BOOL CModFile::ReadModel(char *filename, BOOL bEdit, BOOL bMeta)
 
 // Writes a MOD file.
 
-BOOL CModFile::WriteModel(char *filename)
+bool CModFile::WriteModel(char *filename)
 {
 	FILE*		file;
 	InfoMOD		info;
 
-	if ( m_triangleUsed == 0 )  return FALSE;
+	if ( m_triangleUsed == 0 )  return false;
 
 	file = fopen(filename, "wb");
-	if ( file == NULL )  return FALSE;
+	if ( file == NULL )  return false;
 
 	ZeroMemory(&info, sizeof(InfoMOD));
 	info.rev   = 1;
@@ -510,13 +510,13 @@ BOOL CModFile::WriteModel(char *filename)
 	fwrite(m_triangleTable, sizeof(ModelTriangle), m_triangleUsed, file);
 
 	fclose(file);
-	return TRUE;
+	return true;
 }
 
 
 // Creates the object in the 3D engine.
 
-BOOL CModFile::CreateEngineObject(int objRank, int addState)
+bool CModFile::CreateEngineObject(int objRank, int addState)
 {
 #if 0
 	char	texName2[20];
@@ -556,9 +556,9 @@ BOOL CModFile::CreateEngineObject(int objRank, int addState)
 							  state+addState,
 							  m_triangleTable[i].texName, texName2,
 							  m_triangleTable[i].min,
-							  m_triangleTable[i].max, FALSE);
+							  m_triangleTable[i].max, false);
 	}
-	return TRUE;
+	return true;
 #else
 	char	texName1[20];
 	char	texName2[20];
@@ -604,9 +604,9 @@ BOOL CModFile::CreateEngineObject(int objRank, int addState)
 							  state+addState,
 							  texName1, texName2,
 							  m_triangleTable[i].min,
-							  m_triangleTable[i].max, FALSE);
+							  m_triangleTable[i].max, false);
 	}
-	return TRUE;
+	return true;
 #endif
 }
 

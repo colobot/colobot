@@ -45,7 +45,7 @@
 
 
 
-#define ADJUST_ANGLE		FALSE		// TRUE -> adjusts the angles of the members
+#define ADJUST_ANGLE		false		// true -> adjusts the angles of the members
 #define ADJUST_ACTION		(3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM)
 
 #define START_TIME		1000.0f		// beginning of the relative time
@@ -66,12 +66,12 @@ CMotionHuman::CMotionHuman(CInstanceManager* iMan, CObject* object)
 	m_armPartIndex   = 0;
 	m_armMemberIndex = 0;
 	m_armLastAction  = -1;
-	m_bArmStop = FALSE;
+	m_bArmStop = false;
 	m_lastSoundMarch = 0.0f;
 	m_lastSoundHhh = 0.0f;
 	m_time = 0.0f;
 	m_tired = 0.0f;
-	m_bDisplayPerso = FALSE;
+	m_bDisplayPerso = false;
 }
 
 // Object's constructor.
@@ -83,7 +83,7 @@ CMotionHuman::~CMotionHuman()
 
 // Removes an object.
 
-void CMotionHuman::DeleteObject(BOOL bAll)
+void CMotionHuman::DeleteObject(bool bAll)
 {
 	if ( m_partiReactor != -1 )
 	{
@@ -105,14 +105,14 @@ Error CMotionHuman::SetAction(int action, float time)
 
 // Creates cosmonaut on the ground.
 
-BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 						  float power)
 {
 	CModFile*	pModFile;
 	char		filename[100];
 	int			rank, option, face, glasses;
 
-	if ( m_engine->RetRestCreate() < 16 )  return FALSE;
+	if ( m_engine->RetRestCreate() < 16 )  return false;
 
 	pModFile = new CModFile(m_iMan);
 
@@ -147,7 +147,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_engine->LoadAllTexture();
 
 		delete pModFile;
-		return TRUE;
+		return true;
 	}
 
 	// Creates the main base.
@@ -371,7 +371,7 @@ BOOL CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_engine->LoadAllTexture();
 
 	delete pModFile;
-	return TRUE;
+	return true;
 }
 
 // Creates the physical object.
@@ -664,7 +664,7 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 
 // Management of an event.
 
-BOOL CMotionHuman::EventProcess(const Event &event)
+bool CMotionHuman::EventProcess(const Event &event)
 {
 	CMotion::EventProcess(event);
 
@@ -710,7 +710,7 @@ BOOL CMotionHuman::EventProcess(const Event &event)
 #endif
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Calculates a value (radians) proportional between a and b (degrees).
@@ -727,7 +727,7 @@ inline float Propf(float a, float b, float p)
 
 // Management of an event.
 
-BOOL CMotionHuman::EventFrame(const Event &event)
+bool CMotionHuman::EventFrame(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	dir, actual, pos, speed, pf;
@@ -737,7 +737,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	float		tSt[9], tNd[9];
 	float		aa, bb, shield, deadFactor, level;
 	int			i, ii, st, nd, action, legAction, armAction;
-	BOOL		bOnBoard, bSwim, bStop;
+	bool		bOnBoard, bSwim, bStop;
 
 	if ( m_engine->RetPause() )
 	{
@@ -747,15 +747,15 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		}
 		else
 		{
-			return TRUE;
+			return true;
 		}
 	}
 
-	bOnBoard = FALSE;
+	bOnBoard = false;
 	if ( m_object->RetSelect() &&
 		 m_camera->RetType() == CAMERA_ONBOARD )
 	{
-		bOnBoard = TRUE;
+		bOnBoard = true;
 	}
 
 	if ( m_bDisplayPerso && m_main->RetGamerOnlyHead() )
@@ -763,7 +763,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		m_time += event.rTime;
 		m_object->SetLinVibration(D3DVECTOR(0.0f, -0.55f, 0.0f));
 		m_object->SetCirVibration(D3DVECTOR(0.0f, m_main->RetPersoAngle(), 0.0f));
-		return TRUE;
+		return true;
 	}
 	if ( m_bDisplayPerso )
 	{
@@ -1439,7 +1439,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 	{
 		if ( m_progress >= 1.0f )
 		{
-			m_object->SetEnable(FALSE);
+			m_object->SetEnable(false);
 		}
 
 		time = 100.0f;
@@ -1483,7 +1483,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		if ( prog >= 1.0f )
 		{
 			prog = 1.0f;
-			if ( pos.y >= level )  m_object->SetEnable(FALSE);
+			if ( pos.y >= level )  m_object->SetEnable(false);
 		}
 
 		prog *= 2.0f;
@@ -1778,7 +1778,7 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 		m_lastSoundHhh = (4.0f-m_tired*2.5f)+(4.0f-m_tired*2.5f)*Rand();
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -1786,12 +1786,12 @@ BOOL CMotionHuman::EventFrame(const Event &event)
 
 void CMotionHuman::StartDisplayPerso()
 {
-	m_bDisplayPerso = TRUE;
+	m_bDisplayPerso = true;
 }
 
 void CMotionHuman::StopDisplayPerso()
 {
-	m_bDisplayPerso = FALSE;
+	m_bDisplayPerso = false;
 }
 
 

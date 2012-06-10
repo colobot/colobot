@@ -57,13 +57,12 @@ CAutoEgg::CAutoEgg(CInstanceManager* iMan, CObject* object)
 
 CAutoEgg::~CAutoEgg()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoEgg::DeleteObject(BOOL bAll)
+void CAutoEgg::DeleteObject(bool bAll)
 {
 	CObject*	alien;
 
@@ -78,8 +77,8 @@ void CAutoEgg::DeleteObject(BOOL bAll)
 			// Original code: ( alien->RetZoom(0) == 1.0f )
 			if ( alien->RetZoomY(0) == 1.0f )
 			{
-				alien->SetLock(FALSE);
-				alien->SetActivity(TRUE);  // the insect is active
+				alien->SetLock(false);
+				alien->SetActivity(true);  // the insect is active
 			}
 			else
 			{
@@ -124,34 +123,34 @@ void CAutoEgg::Init()
 	{
 		alien->SetZoom(0, 0.01f);  // invisible !
 	}
-	alien->SetLock(TRUE);
-	alien->SetActivity(FALSE);
+	alien->SetLock(true);
+	alien->SetActivity(false);
 }
 
 
 // Gives a value.
 
-BOOL CAutoEgg::SetType(ObjectType type)
+bool CAutoEgg::SetType(ObjectType type)
 {
 	m_type = type;
-	return TRUE;
+	return true;
 }
 
 // Gives a value.
 
-BOOL CAutoEgg::SetValue(int rank, float value)
+bool CAutoEgg::SetValue(int rank, float value)
 {
-	if ( rank != 0 )  return FALSE;
+	if ( rank != 0 )  return false;
 	m_value = value;
-	return TRUE;
+	return true;
 }
 
 // Gives the string.
 
-BOOL CAutoEgg::SetString(char *string)
+bool CAutoEgg::SetString(char *string)
 {
 	strcpy(m_string, string);
-	return TRUE;
+	return true;
 }
 
 
@@ -172,21 +171,21 @@ void CAutoEgg::Start(int param)
 
 // Management of an event.
 
-BOOL CAutoEgg::EventProcess(const Event &event)
+bool CAutoEgg::EventProcess(const Event &event)
 {
 	CObject*	alien;
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_phase == AEP_NULL )  return TRUE;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_phase == AEP_NULL )  return true;
 
 	if ( m_phase == AEP_DELAY )
 	{
 		m_progress += event.rTime*m_speed;
-		if ( m_progress < 1.0f )  return TRUE;
+		if ( m_progress < 1.0f )  return true;
 
 		alien = new CObject(m_iMan);
 		if ( !alien->CreateInsect(m_object->RetPosition(0), m_object->RetAngleY(0), m_type) )
@@ -195,17 +194,17 @@ BOOL CAutoEgg::EventProcess(const Event &event)
 			m_phase    = AEP_DELAY;
 			m_progress = 0.0f;
 			m_speed    = 1.0f/2.0f;
-			return TRUE;
+			return true;
 		}
-		alien->SetActivity(FALSE);
+		alien->SetActivity(false);
 		alien->ReadProgram(0, m_string);
 		alien->RunProgram(0);
 		Init();
 	}
 
 	alien = SearchAlien();
-	if ( alien == 0 )  return TRUE;
-	alien->SetActivity(FALSE);
+	if ( alien == 0 )  return true;
+	alien->SetActivity(false);
 
 	m_progress += event.rTime*m_speed;
 
@@ -219,7 +218,7 @@ BOOL CAutoEgg::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Indicates whether the controller has completed its activity.
@@ -264,8 +263,8 @@ Error CAutoEgg::IsEnded()
 	{
 		if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-		alien->SetLock(FALSE);
-		alien->SetActivity(TRUE);  // the insect is active
+		alien->SetLock(false);
+		alien->SetActivity(true);  // the insect is active
 	}
 
 	return ERR_STOP;
@@ -321,11 +320,11 @@ CObject* CAutoEgg::SearchAlien()
 
 // Saves all parameters of the controller.
 
-BOOL CAutoEgg::Write(char *line)
+bool CAutoEgg::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == AEP_NULL )  return FALSE;
+	if ( m_phase == AEP_NULL )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -350,14 +349,14 @@ BOOL CAutoEgg::Write(char *line)
 	sprintf(name, " aParamString=\"%s\"", m_string);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoEgg::Read(char *line)
+bool CAutoEgg::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -368,6 +367,6 @@ BOOL CAutoEgg::Read(char *line)
 	m_value = OpFloat(line, "aParamValue1", 0.0f);
 	OpString(line, "aParamString", m_string);
 
-	return TRUE;
+	return true;
 }
 

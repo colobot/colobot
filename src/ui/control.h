@@ -58,22 +58,22 @@ public:
 	CControl(CInstanceManager* iMan);
 	virtual ~CControl();
 
-	virtual BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	virtual bool	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	virtual BOOL	EventProcess(const Event &event);
+	virtual bool	EventProcess(const Event &event);
 
 	virtual void	SetPos(FPOINT pos);
 	virtual FPOINT	RetPos();
 	virtual void	SetDim(FPOINT dim);
 	virtual FPOINT	RetDim();
-	virtual BOOL	SetState(int state, BOOL bState);
-	virtual BOOL	SetState(int state);
-	virtual BOOL	ClearState(int state);
-	virtual BOOL	TestState(int state);
+	virtual bool	SetState(int state, bool bState);
+	virtual bool	SetState(int state);
+	virtual bool	ClearState(int state);
+	virtual bool	TestState(int state);
 	virtual	int		RetState();
 	virtual void	SetIcon(int icon);
 	virtual int		RetIcon();
-	virtual void	SetName(char* name, BOOL bTooltip=TRUE);
+	virtual void	SetName(char* name, bool bTooltip=true);
 	virtual char*	RetName();
 	virtual void	SetJustif(int mode);
 	virtual int		RetJustif();
@@ -83,10 +83,10 @@ public:
 	virtual	float	RetFontStretch();
 	virtual void	SetFontType(FontType font);
 	virtual FontType RetFontType();
-	virtual BOOL	SetTooltip(char* name);
-	virtual BOOL	GetTooltip(FPOINT pos, char* name);
-	virtual void	SetFocus(BOOL bFocus);
-	virtual BOOL	RetFocus();
+	virtual bool	SetTooltip(char* name);
+	virtual bool	GetTooltip(FPOINT pos, char* name);
+	virtual void	SetFocus(bool bFocus);
+	virtual bool	RetFocus();
 
 	virtual EventMsg RetEventMsg();
 
@@ -94,14 +94,14 @@ public:
 
 protected:
 			void	GlintDelete();
-			void	GlintCreate(FPOINT ref, BOOL bLeft=TRUE, BOOL bUp=TRUE);
+			void	GlintCreate(FPOINT ref, bool bLeft=true, bool bUp=true);
 			void	GlintFrame(const Event &event);
 			void	DrawPart(int icon, float zoom, float ex);
 			void	DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2, float ex=0.0f);
 			void	DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2, FPOINT corner, float ex);
 			void	DrawWarning(FPOINT pos, FPOINT dim);
 			void	DrawShadow(FPOINT pos, FPOINT dim, float deep=1.0f);
-	virtual	BOOL	Detect(FPOINT pos);
+	virtual	bool	Detect(FPOINT pos);
 
 protected:
 	CInstanceManager* m_iMan;
@@ -122,10 +122,10 @@ protected:
 	int		m_justif;		// type of justification (-1,0,1)
 	char		m_name[100];		// name of the button
 	char		m_tooltip[100];		// name of tooltip
-	BOOL		m_bFocus;
-	BOOL		m_bCapture;
+	bool		m_bFocus;
+	bool		m_bCapture;
 
-	BOOL		m_bGlint;
+	bool		m_bGlint;
 	FPOINT		m_glintCorner1;
 	FPOINT		m_glintCorner2;
 	float		m_glintProgress;

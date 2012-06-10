@@ -93,16 +93,16 @@ public:
 	CPyro(CInstanceManager* iMan);
 	~CPyro();
 
-	void		DeleteObject(BOOL bAll=FALSE);
-	BOOL		Create(PyroType type, CObject* pObj, float force=1.0f);
-	BOOL		EventProcess(const Event &event);
+	void		DeleteObject(bool bAll=false);
+	bool		Create(PyroType type, CObject* pObj, float force=1.0f);
+	bool		EventProcess(const Event &event);
 	Error		IsEnded();
 	void		CutObjectLink(CObject* pObj);
 
 protected:
 	void		DisplayError(PyroType type, CObject* pObj);
-	BOOL		CreateLight(D3DVECTOR pos, float height);
-	void		DeleteObject(BOOL bPrimary, BOOL bSecondary);
+	bool		CreateLight(D3DVECTOR pos, float height);
+	void		DeleteObject(bool bPrimary, bool bSecondary);
 
 	void		CreateTriangle(CObject* pObj, ObjectType oType, int part);
 
@@ -112,7 +112,7 @@ protected:
 	void		BurnStart();
 	void		BurnAddPart(int part, D3DVECTOR pos, D3DVECTOR angle);
 	void		BurnProgress();
-	BOOL		BurnIsKeepPart(int part);
+	bool		BurnIsKeepPart(int part);
 	void		BurnTerminate();
 
 	void		FallStart();
@@ -138,7 +138,7 @@ protected:
 
 	D3DVECTOR		m_pos;			// center of the effect
 	D3DVECTOR		m_posPower;		// center of the battery
-	BOOL			m_bPower;		// battery exists?
+	bool			m_bPower;		// battery exists?
 	PyroType		m_type;
 	float			m_force;
 	float			m_size;
@@ -163,7 +163,7 @@ protected:
 	float			m_fallFloor;
 	float			m_fallSpeed;
 	float			m_fallBulletTime;
-	BOOL			m_bFallEnding;
+	bool			m_bFallEnding;
 
 	int				m_crashSphereUsed;	// number of spheres used
 	D3DVECTOR		m_crashSpherePos[50];

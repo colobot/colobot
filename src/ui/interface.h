@@ -52,8 +52,8 @@ public:
 	CInterface(CInstanceManager* iMan);
 	~CInterface();
 
-	BOOL		EventProcess(const Event &event);
-	BOOL		GetTooltip(FPOINT pos, char* name);
+	bool		EventProcess(const Event &event);
+	bool		GetTooltip(FPOINT pos, char* name);
 
 	void		Flush();
 	CWindow*	CreateWindows(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
@@ -73,7 +73,7 @@ public:
 	CCompass*	CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CTarget*	CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 	CMap*		CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	BOOL		DeleteControl(EventMsg eventMsg);
+	bool		DeleteControl(EventMsg eventMsg);
 	CControl*	SearchControl(EventMsg eventMsg);
 
 	void		Draw();

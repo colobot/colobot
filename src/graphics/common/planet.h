@@ -31,7 +31,7 @@ class CD3DEngine;
 
 typedef struct
 {
-	char		bUsed;		// TRUE -> planet exists
+	char		bUsed;		// true -> planet exists
 	FPOINT		start;		// initial position in degrees
 	FPOINT		angle;		// current position in degrees
 	float		dim;		// dimensions (0..1)
@@ -53,16 +53,16 @@ public:
 	~CPlanet();
 
 	void		Flush();
-	BOOL		EventProcess(const Event &event);
-	BOOL		Create(int mode, FPOINT start, float dim, float speed, float dir, char *name, FPOINT uv1, FPOINT uv2);
-	BOOL		PlanetExist();
+	bool		EventProcess(const Event &event);
+	bool		Create(int mode, FPOINT start, float dim, float speed, float dir, char *name, FPOINT uv1, FPOINT uv2);
+	bool		PlanetExist();
 	void		LoadTexture();
 	void		Draw();
 	void		SetMode(int mode);
 	int			RetMode();
 
 protected:
-	BOOL		EventFrame(const Event &event);
+	bool		EventFrame(const Event &event);
 
 protected:
 	CInstanceManager*	m_iMan;
@@ -71,6 +71,6 @@ protected:
 	float			m_time;
 	int				m_mode;
 	Planet			m_planet[2][MAXPLANET];
-	BOOL			m_bPlanetExist;
+	bool			m_bPlanetExist;
 };
 

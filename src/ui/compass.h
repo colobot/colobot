@@ -32,9 +32,9 @@ public:
 	CCompass(CInstanceManager* iMan);
 	virtual ~CCompass();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+	bool	EventProcess(const Event &event);
 
 	void	Draw();
 

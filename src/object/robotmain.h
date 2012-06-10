@@ -95,7 +95,7 @@ typedef struct
 	int			min;		// wins if>
 	int			max;		// wins if <
 	int			lost;		// lost if <=
-	BOOL		bImmediat;
+	bool		bImmediat;
 	char		message[100];
 }
 EndTake;
@@ -105,7 +105,7 @@ EndTake;
 
 typedef struct
 {
-	BOOL		bUsed;
+	bool		bUsed;
 	ObjectType	type;
 	char		name[40];
 }
@@ -118,7 +118,7 @@ NewScriptName;
 
 typedef struct
 {
-	BOOL			bUsed;
+	bool			bUsed;
 	D3DVECTOR		pos;
 	float			radius;
 	int				total;
@@ -149,28 +149,28 @@ public:
 	void		CreateIni();
 
 	void		ChangePhase(Phase phase);
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
-	BOOL		CreateShortcuts();
+	bool		CreateShortcuts();
 	void		ScenePerso();
 
-	void		SetMovieLock(BOOL bLock);
-	BOOL		RetMovieLock();
-	BOOL		RetInfoLock();
-	void		SetSatComLock(BOOL bLock);
-	BOOL		RetSatComLock();
-	void		SetEditLock(BOOL bLock, BOOL bEdit);
-	BOOL		RetEditLock();
-	void		SetEditFull(BOOL bFull);
-	BOOL		RetEditFull();
-	BOOL		RetFreePhoto();
-	void		SetFriendAim(BOOL bFriend);
-	BOOL		RetFriendAim();
+	void		SetMovieLock(bool bLock);
+	bool		RetMovieLock();
+	bool		RetInfoLock();
+	void		SetSatComLock(bool bLock);
+	bool		RetSatComLock();
+	void		SetEditLock(bool bLock, bool bEdit);
+	bool		RetEditLock();
+	void		SetEditFull(bool bFull);
+	bool		RetEditFull();
+	bool		RetFreePhoto();
+	void		SetFriendAim(bool bFriend);
+	bool		RetFriendAim();
 
 	void		SetTracePrecision(float factor);
 	float		RetTracePrecision();
 
-	void		ChangePause(BOOL bPause);
+	void		ChangePause(bool bPause);
 
 	void		SetSpeed(float speed);
 	float		RetSpeed();
@@ -180,26 +180,26 @@ public:
 	CObject*	SearchHuman();
 	CObject*	SearchToto();
 	CObject*	SearchNearest(D3DVECTOR pos, CObject* pExclu);
-	BOOL		SelectObject(CObject* pObj, BOOL bDisplayError=TRUE);
+	bool		SelectObject(CObject* pObj, bool bDisplayError=true);
 	CObject*	RetSelectObject();
 	CObject*	DeselectAll();
-	BOOL		DeleteObject();
+	bool		DeleteObject();
 
 	void		ResetObject();
 	void		ResetCreate();
-	Error		CheckEndMission(BOOL bFrame);
+	Error		CheckEndMission(bool bFrame);
 	void		CheckEndMessage(char *message);
 	int			RetObligatoryToken();
 	char*		RetObligatoryToken(int i);
 	int			IsObligatoryToken(char *token);
-	BOOL		IsProhibitedToken(char *token);
+	bool		IsProhibitedToken(char *token);
 	void		UpdateMap();
-	BOOL		RetShowMap();
+	bool		RetShowMap();
 
 	MainMovieType RetMainMovie();
 
 	void		FlushDisplayInfo();
-	void		StartDisplayInfo(int index, BOOL bMovie);
+	void		StartDisplayInfo(int index, bool bMovie);
 	void		StartDisplayInfo(char *filename, int index);
 	void		StopDisplayInfo();
 	char*		RetDisplayInfoName(int index);
@@ -218,8 +218,8 @@ public:
 	void		SetWindowDim(FPOINT dim);
 	FPOINT		RetWindowDim();
 
-	void		SetIOPublic(BOOL bMode);
-	BOOL		RetIOPublic();
+	void		SetIOPublic(bool bMode);
+	bool		RetIOPublic();
 	void		SetIOPos(FPOINT pos);
 	FPOINT		RetIOPos();
 	void		SetIODim(FPOINT dim);
@@ -229,17 +229,17 @@ public:
 	char*		RetResume();
 	char*		RetScriptName();
 	char*		RetScriptFile();
-	BOOL		RetTrainerPilot();
-	BOOL		RetFixScene();
-	BOOL		RetGlint();
-	BOOL		RetSoluce4();
-	BOOL		RetMovies();
-	BOOL		RetNiceReset();
-	BOOL		RetHimselfDamage();
-	BOOL		RetShowSoluce();
-	BOOL		RetSceneSoluce();
-	BOOL		RetShowAll();
-	BOOL		RetCheatRadar();
+	bool		RetTrainerPilot();
+	bool		RetFixScene();
+	bool		RetGlint();
+	bool		RetSoluce4();
+	bool		RetMovies();
+	bool		RetNiceReset();
+	bool		RetHimselfDamage();
+	bool		RetShowSoluce();
+	bool		RetSceneSoluce();
+	bool		RetShowAll();
+	bool		RetCheatRadar();
 	char*		RetSavegameDir();
 	char*		RetPublicDir();
 	char*		RetFilesDir();
@@ -248,7 +248,7 @@ public:
 	char*		RetGamerName();
 	int			RetGamerFace();
 	int			RetGamerGlasses();
-	BOOL		RetGamerOnlyHead();
+	bool		RetGamerOnlyHead();
 	float		RetPersoAngle();
 
 	void		StartMusic();
@@ -256,7 +256,7 @@ public:
 	void		ChangeColor();
 
 	float		SearchNearestObject(D3DVECTOR center, CObject *exclu);
-	BOOL		FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius, float space, CObject *exclu);
+	bool		FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius, float space, CObject *exclu);
 	float		RetFlatZoneRadius(D3DVECTOR center, float maxRadius, CObject *exclu);
 	void		HideDropZone(CObject* metal);
 	void		ShowDropZone(CObject* metal, CObject* truck);
@@ -266,24 +266,24 @@ public:
 	void		StartShowLimit();
 	void		FrameShowLimit(float rTime);
 
-	void		CompileScript(BOOL bSoluce);
+	void		CompileScript(bool bSoluce);
 	void		LoadOneScript(CObject *pObj, int &nbError);
 	void		LoadFileScript(CObject *pObj, char* filename, int objRank, int &nbError);
 	void		SaveAllScript();
 	void		SaveOneScript(CObject *pObj);
 	void		SaveFileScript(CObject *pObj, char* filename, int objRank);
-	BOOL		SaveFileStack(CObject *pObj, FILE *file, int objRank);
-	BOOL		ReadFileStack(CObject *pObj, FILE *file, int objRank);
+	bool		SaveFileStack(CObject *pObj, FILE *file, int objRank);
+	bool		ReadFileStack(CObject *pObj, FILE *file, int objRank);
 
-	BOOL		FlushNewScriptName();
-	BOOL		AddNewScriptName(ObjectType type, char *name);
+	bool		FlushNewScriptName();
+	bool		AddNewScriptName(ObjectType type, char *name);
 	char*		RetNewScriptName(ObjectType type, int rank);
 
 	void		WriteFreeParam();
 	void		ReadFreeParam();
 
-	BOOL		IsBusy();
-	BOOL		IOWriteScene(char *filename, char *filecbot, char *info);
+	bool		IsBusy();
+	bool		IOWriteScene(char *filename, char *filecbot, char *info);
 	CObject*	IOReadScene(char *filename, char *filecbot);
 	void		IOWriteObject(FILE *file, CObject* pObj, char *cmd);
 	CObject*	IOReadObject(char *line, char* filename, int objRank);
@@ -291,16 +291,16 @@ public:
 	int			CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color);
 
 protected:
-	BOOL		EventFrame(const Event &event);
-	BOOL		EventObject(const Event &event);
+	bool		EventFrame(const Event &event);
+	bool		EventObject(const Event &event);
 	void		InitEye();
 
 	void		Convert();
-	void		CreateScene(BOOL bSoluce, BOOL bFixScene, BOOL bResetObject);
+	void		CreateScene(bool bSoluce, bool bFixScene, bool bResetObject);
 
 	void		CreateModel();
 	D3DVECTOR	LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
-	CObject*	CreateObject(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, BOOL bTrainer=FALSE, BOOL bToy=FALSE, int option=0);
+	CObject*	CreateObject(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, bool bTrainer=false, bool bToy=false, int option=0);
 	int			CreateLight(D3DVECTOR direction, D3DCOLORVALUE color);
 	void		HiliteClear();
 	void		HiliteObject(FPOINT pos);
@@ -312,10 +312,10 @@ protected:
 	void		RemoteCamera(float pan, float zoom, float rTime);
 	void		KeyCamera(EventMsg event, long param);
 	void		AbortMovie();
-	BOOL		IsSelectable(CObject* pObj);
-	void		SelectOneObject(CObject* pObj, BOOL bDisplayError=TRUE);
+	bool		IsSelectable(CObject* pObj);
+	void		SelectOneObject(CObject* pObj, bool bDisplayError=true);
 	void		HelpObject();
-	BOOL		DeselectObject();
+	bool		DeselectObject();
 	void		DeleteAllObjects();
 	void		UpdateInfoText();
 	CObject*	SearchObject(ObjectType type);
@@ -324,7 +324,7 @@ protected:
 	void		FrameVisit(float rTime);
 	void		StopDisplayVisit();
 	void		ExecuteCmd(char *cmd);
-	BOOL		TestGadgetQuantity(int rank);
+	bool		TestGadgetQuantity(int rank);
 
 protected:
 	CInstanceManager* m_iMan;
@@ -353,41 +353,41 @@ protected:
 	float			m_checkEndTime;
 	float			m_winDelay;
 	float			m_lostDelay;
-	BOOL			m_bFixScene;		// scene fixed, no interraction
-	BOOL			m_bBase;		// OBJECT_BASE exists in mission
+	bool			m_bFixScene;		// scene fixed, no interraction
+	bool			m_bBase;		// OBJECT_BASE exists in mission
 	FPOINT			m_lastMousePos;
 	CObject*		m_selectObject;
 
 	Phase			m_phase;
 	int				m_cameraRank;
 	D3DCOLORVALUE	m_color;
-	BOOL			m_bFreePhoto;
-	BOOL			m_bCmdEdit;
-	BOOL			m_bShowPos;
-	BOOL			m_bSelectInsect;
-	BOOL			m_bShowSoluce;
-	BOOL			m_bShowAll;
-	BOOL			m_bCheatRadar;
-	BOOL			m_bAudioRepeat;
-	BOOL			m_bShortCut;
+	bool			m_bFreePhoto;
+	bool			m_bCmdEdit;
+	bool			m_bShowPos;
+	bool			m_bSelectInsect;
+	bool			m_bShowSoluce;
+	bool			m_bShowAll;
+	bool			m_bCheatRadar;
+	bool			m_bAudioRepeat;
+	bool			m_bShortCut;
 	int				m_audioTrack;
 	int				m_delayWriteMessage;
 	int				m_movieInfoIndex;
 
-	BOOL			m_bImmediatSatCom;	// SatCom immediately?
-	BOOL			m_bBeginSatCom;		// messages SatCom poster?
-	BOOL			m_bMovieLock;		// movie in progress?
-	BOOL			m_bSatComLock;		// call of SatCom is possible?
-	BOOL			m_bEditLock;		// edition in progress?
-	BOOL			m_bEditFull;		// edition in full screen?
-	BOOL			m_bPause;		// simulation paused
-	BOOL			m_bHilite;
-	BOOL			m_bTrainerPilot;	// remote trainer?
-	BOOL			m_bSuspend;
-	BOOL			m_bFriendAim;
-	BOOL			m_bResetCreate;
-	BOOL			m_bMapShow;
-	BOOL			m_bMapImage;
+	bool			m_bImmediatSatCom;	// SatCom immediately?
+	bool			m_bBeginSatCom;		// messages SatCom poster?
+	bool			m_bMovieLock;		// movie in progress?
+	bool			m_bSatComLock;		// call of SatCom is possible?
+	bool			m_bEditLock;		// edition in progress?
+	bool			m_bEditFull;		// edition in full screen?
+	bool			m_bPause;		// simulation paused
+	bool			m_bHilite;
+	bool			m_bTrainerPilot;	// remote trainer?
+	bool			m_bSuspend;
+	bool			m_bFriendAim;
+	bool			m_bResetCreate;
+	bool			m_bMapShow;
+	bool			m_bMapImage;
 	char			m_mapFilename[100];
 
 	FPOINT			m_tooltipPos;
@@ -406,13 +406,13 @@ protected:
 	char			m_scriptFile[100];
 	int				m_endingWinRank;
 	int				m_endingLostRank;
-	BOOL			m_bWinTerminate;
+	bool			m_bWinTerminate;
 
 	float			m_fontSize;
 	FPOINT			m_windowPos;
 	FPOINT			m_windowDim;
 
-	BOOL			m_IOPublic;
+	bool			m_IOPublic;
 	FPOINT			m_IOPos;
 	FPOINT			m_IODim;
 

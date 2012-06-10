@@ -99,9 +99,9 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
 	m_studio      = 0;
 
 	m_program = -1;
-	m_bActivity = TRUE;
-	m_bBurn = FALSE;
-	m_bActiveVirus = FALSE;
+	m_bActivity = true;
+	m_bBurn = false;
+	m_bActiveVirus = false;
 	m_time = 0.0f;
 	m_burnTime = 0.0f;
 	m_lastUpdateTime = 0.0f;
@@ -126,7 +126,7 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
 	m_soluceName[0] = 0;
 	m_selScript = 0;
 
-	m_bTraceRecord = FALSE;
+	m_bTraceRecord = false;
 	m_traceRecordBuffer = 0;
 }
 
@@ -151,7 +151,7 @@ CBrain::~CBrain()
 
 // Destroys the object.
 
-void CBrain::DeleteObject(BOOL bAll)
+void CBrain::DeleteObject(bool bAll)
 {
 	if ( m_soundChannelAlarm != -1 )
 	{
@@ -172,7 +172,7 @@ void CBrain::DeleteObject(BOOL bAll)
 
 	if ( m_studio != 0 )  // current edition?
 	{
-		StopEditScript(TRUE);
+		StopEditScript(true);
 	}
 }
 
@@ -190,29 +190,29 @@ void CBrain::SetMotion(CMotion* motion)
 
 // Saves all parameters of the object.
 
-BOOL CBrain::Write(char *line)
+bool CBrain::Write(char *line)
 {
 	char		name[100];
 
 	sprintf(name, " bVirusActive=%d", m_bActiveVirus);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the object.
 
-BOOL CBrain::Read(char *line)
+bool CBrain::Read(char *line)
 {
 	m_bActiveVirus = OpInt(line, "bVirusActive", 0);
 
-	return TRUE;
+	return true;
 }
 
 
 // Management of an event.
 
-BOOL CBrain::EventProcess(const Event &event)
+bool CBrain::EventProcess(const Event &event)
 {
 	CWindow*	pw;
 	CControl*	pc;
@@ -259,11 +259,11 @@ BOOL CBrain::EventProcess(const Event &event)
 		action = event.event;
 	}
 
-	if ( action == EVENT_NULL )  return TRUE;
+	if ( action == EVENT_NULL )  return true;
 
 	if ( action == EVENT_UPDINTERFACE )
 	{
-		if ( m_object->RetSelect() )  CreateInterface(TRUE);
+		if ( m_object->RetSelect() )  CreateInterface(true);
 	}
 
 	if ( action == EVENT_FRAME )
@@ -298,15 +298,15 @@ BOOL CBrain::EventProcess(const Event &event)
 		}
 		if ( action == EVENT_STUDIO_OK )
 		{
-			StopEditScript(FALSE);
+			StopEditScript(false);
 			m_main->SaveOneScript(m_object);
 		}
 		if ( action == EVENT_STUDIO_CANCEL )
 		{
-			StopEditScript(TRUE);
+			StopEditScript(true);
 			m_main->SaveOneScript(m_object);
 		}
-		return TRUE;
+		return true;
 	}
 
 	if ( !m_object->RetSelect() &&  // robot pas sélectionné  ?
@@ -320,7 +320,7 @@ BOOL CBrain::EventProcess(const Event &event)
 		{
 			if ( !m_bBurn )  // beginning?
 			{
-				m_bBurn = TRUE;
+				m_bBurn = true;
 				m_burnTime = 0.0f;
 			}
 
@@ -345,19 +345,19 @@ BOOL CBrain::EventProcess(const Event &event)
 		m_physics->SetMotorSpeedX(axeY);  // move forward/move back
 		m_physics->SetMotorSpeedY(axeZ);  // up / down
 		m_physics->SetMotorSpeedZ(axeX);  // rotate
-		return TRUE;
+		return true;
 	}
 
 	if ( m_program != -1     &&
 		 m_object->RetRuin() )
 	{
 		StopProgram();
-		return TRUE;
+		return true;
 	}
 
 	if ( !m_object->RetSelect() )  // robot not selected?
 	{
-		return TRUE;
+		return true;
 	}
 
 	if ( m_secondaryTask != 0 )  // current task?
@@ -378,7 +378,7 @@ BOOL CBrain::EventProcess(const Event &event)
 		{
 			StartEditScript(m_selScript, m_main->RetScriptName());
 		}
-		if ( m_primaryTask == 0 || !m_primaryTask->IsPilot() )  return TRUE;
+		if ( m_primaryTask == 0 || !m_primaryTask->IsPilot() )  return true;
 	}
 
 	if ( action == EVENT_OBJECT_LEFT    ||
@@ -623,55 +623,55 @@ BOOL CBrain::EventProcess(const Event &event)
 
 		if ( action == EVENT_OBJECT_PEN0 )  // up
 		{
-			err = StartTaskPen(FALSE, m_object->RetTraceColor());
-			m_object->SetTraceDown(FALSE);
+			err = StartTaskPen(false, m_object->RetTraceColor());
+			m_object->SetTraceDown(false);
 		}
 		if ( action == EVENT_OBJECT_PEN1 )  // black
 		{
-			err = StartTaskPen(TRUE, 1);
-			m_object->SetTraceDown(TRUE);
+			err = StartTaskPen(true, 1);
+			m_object->SetTraceDown(true);
 			m_object->SetTraceColor(1);
 		}
 		if ( action == EVENT_OBJECT_PEN2 )  // yellow
 		{
-			err = StartTaskPen(TRUE, 8);
-			m_object->SetTraceDown(TRUE);
+			err = StartTaskPen(true, 8);
+			m_object->SetTraceDown(true);
 			m_object->SetTraceColor(8);
 		}
 		if ( action == EVENT_OBJECT_PEN3 )  // orange
 		{
-			err = StartTaskPen(TRUE, 7);
-			m_object->SetTraceDown(TRUE);
+			err = StartTaskPen(true, 7);
+			m_object->SetTraceDown(true);
 			m_object->SetTraceColor(7);
 		}
 		if ( action == EVENT_OBJECT_PEN4 )  // red
 		{
-			err = StartTaskPen(TRUE, 4);
-			m_object->SetTraceDown(TRUE);
+			err = StartTaskPen(true, 4);
+			m_object->SetTraceDown(true);
 			m_object->SetTraceColor(4);
 		}
 		if ( action == EVENT_OBJECT_PEN5 )  // violet
 		{
-			err = StartTaskPen(TRUE, 6);
-			m_object->SetTraceDown(TRUE);
+			err = StartTaskPen(true, 6);
+			m_object->SetTraceDown(true);
 			m_object->SetTraceColor(6);
 		}
 		if ( action == EVENT_OBJECT_PEN6 )  // blue
 		{
-			err = StartTaskPen(TRUE, 14);
-			m_object->SetTraceDown(TRUE);
+			err = StartTaskPen(true, 14);
+			m_object->SetTraceDown(true);
 			m_object->SetTraceColor(14);
 		}
 		if ( action == EVENT_OBJECT_PEN7 )  // green
 		{
-			err = StartTaskPen(TRUE, 12);
-			m_object->SetTraceDown(TRUE);
+			err = StartTaskPen(true, 12);
+			m_object->SetTraceDown(true);
 			m_object->SetTraceColor(12);
 		}
 		if ( action == EVENT_OBJECT_PEN8 )  // brown
 		{
-			err = StartTaskPen(TRUE, 10);
-			m_object->SetTraceDown(TRUE);
+			err = StartTaskPen(true, 10);
+			m_object->SetTraceDown(true);
 			m_object->SetTraceColor(10);
 		}
 
@@ -679,12 +679,12 @@ BOOL CBrain::EventProcess(const Event &event)
 		{
 			if ( m_bTraceRecord )
 			{
-				m_bTraceRecord = FALSE;
+				m_bTraceRecord = false;
 				TraceRecordStop();
 			}
 			else
 			{
-				m_bTraceRecord = TRUE;
+				m_bTraceRecord = true;
 				TraceRecordStart();
 			}
 			UpdateInterface();
@@ -698,7 +698,7 @@ BOOL CBrain::EventProcess(const Event &event)
 		{
 			if ( m_bTraceRecord )
 			{
-				m_bTraceRecord = FALSE;
+				m_bTraceRecord = false;
 				TraceRecordStop();
 			}
 			UpdateInterface();
@@ -750,13 +750,13 @@ BOOL CBrain::EventProcess(const Event &event)
 		m_displayText->DisplayError(err, m_object);
 	}
 
-	return TRUE;
+	return true;
 }
 
 
 // The brain is changing by time.
 
-BOOL CBrain::EventFrame(const Event &event)
+bool CBrain::EventFrame(const Event &event)
 {
 	m_time += event.rTime;
 	if ( m_bBurn )  m_burnTime += event.rTime;
@@ -773,9 +773,9 @@ BOOL CBrain::EventFrame(const Event &event)
 
 	UpdateInterface(event.rTime);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( !m_bActivity )  return TRUE;  // expected if idle
-	if ( EndedTask() == ERR_CONTINUE )  return TRUE;  // expected if not finished ...
+	if ( m_engine->RetPause() )  return true;
+	if ( !m_bActivity )  return true;  // expected if idle
+	if ( EndedTask() == ERR_CONTINUE )  return true;  // expected if not finished ...
 
 	if ( m_program != -1 )  // current program?
 	{
@@ -790,7 +790,7 @@ BOOL CBrain::EventFrame(const Event &event)
 		TraceRecordFrame();
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -809,7 +809,7 @@ void CBrain::StopProgram()
 		m_script[m_program]->Stop();
 	}
 
-	BlinkScript(FALSE);  // stops flashing
+	BlinkScript(false);  // stops flashing
 
 	m_program = -1;
 
@@ -838,9 +838,9 @@ void CBrain::StopTask()
 
 
 // Introduces a virus into a program.
-// Returns TRUE if it was inserted.
+// Returns true if it was inserted.
 
-BOOL CBrain::IntroduceVirus()
+bool CBrain::IntroduceVirus()
 {
 	int		i, j;
 
@@ -851,12 +851,12 @@ BOOL CBrain::IntroduceVirus()
 		{
 			if ( m_script[j]->IntroduceVirus() )  // tries to introduce
 			{
-				m_bActiveVirus = TRUE;  // active virus
-				return TRUE;
+				m_bActiveVirus = true;  // active virus
+				return true;
 			}
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Active Virus indicates that the object is contaminated. Unlike ch'tites (??? - Programerus)
@@ -865,17 +865,17 @@ BOOL CBrain::IntroduceVirus()
 // (Even if the virus is not fixed).
 
 
-void CBrain::SetActiveVirus(BOOL bActive)
+void CBrain::SetActiveVirus(bool bActive)
 {
 	m_bActiveVirus = bActive;
 
 	if ( !m_bActiveVirus )  // virus disabled?
 	{
-		m_object->SetVirusMode(FALSE);  // chtites (??? - Programerus) letters also
+		m_object->SetVirusMode(false);  // chtites (??? - Programerus) letters also
 	}
 }
 
-BOOL CBrain::RetActiveVirus()
+bool CBrain::RetActiveVirus()
 {
 	return m_bActiveVirus;
 }
@@ -885,7 +885,7 @@ BOOL CBrain::RetActiveVirus()
 
 void CBrain::StartEditScript(int rank, char* name)
 {
-	CreateInterface(FALSE);  // removes the control buttons
+	CreateInterface(false);  // removes the control buttons
 
 	if ( m_script[rank] == 0 )
 	{
@@ -898,16 +898,16 @@ void CBrain::StartEditScript(int rank, char* name)
 
 // End of editing a program.
 
-void CBrain::StopEditScript(BOOL bCancel)
+void CBrain::StopEditScript(bool bCancel)
 {
-	if ( !bCancel )  SetActiveVirus(FALSE);
+	if ( !bCancel )  SetActiveVirus(false);
 
 	if ( !m_studio->StopEditScript(bCancel) )  return;
 
 	delete m_studio;
 	m_studio = 0;
 
-	CreateInterface(TRUE);  // puts the control buttons
+	CreateInterface(true);  // puts the control buttons
 }
 
 
@@ -1022,7 +1022,7 @@ Error CBrain::StartTaskTerraform()
 
 // Change pencil.
 
-Error CBrain::StartTaskPen(BOOL bDown, int color)
+Error CBrain::StartTaskPen(bool bDown, int color)
 {
 	Error	err;
 
@@ -1225,7 +1225,7 @@ void CBrain::ColorFlag(int color)
 
 // Creates all the interface when the object is selected.
 
-BOOL CBrain::CreateInterface(BOOL bSelect)
+bool CBrain::CreateInterface(bool bSelect)
 {
 	ObjectType	type;
 	CWindow*	pw;
@@ -1246,7 +1246,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 	}
 	m_defaultEnter = EVENT_NULL;
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pos.x = 0.0f;
 	pos.y = 0.0f;
@@ -1255,7 +1255,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 	dim.y =  86.0f/480.0f;
 	m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	m_object->GetTooltipName(name);
 	pos.x = 0.0f;
@@ -1332,12 +1332,12 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		pos.x = ox+sx*6.4f;
 		pos.y = oy+sy*0;
 		pb = pw->CreateButton(pos, dim, 29, EVENT_OBJECT_GASDOWN);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 
 		pos.x = ox+sx*6.4f;
 		pos.y = oy+sy*1;
 		pb = pw->CreateButton(pos, dim, 28, EVENT_OBJECT_GASUP);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 
 		if ( type != OBJECT_HUMAN       ||
 			 m_object->RetOption() != 2 )
@@ -1475,7 +1475,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		pos.x = ox+sx*5.4f;
 		pos.y = oy+sy*0.1f;
 		pw->CreateButton(pos, ddim, 128+56, EVENT_OBJECT_BXXXX);
-		DeadInterface(pw, EVENT_OBJECT_BXXXX, FALSE);
+		DeadInterface(pw, EVENT_OBJECT_BXXXX, false);
 
 		if ( g_build&BUILD_GFLAT )
 		{
@@ -1589,7 +1589,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		pos.x = ox+sx*7.7f;
 		pos.y = oy+sy*0.5f;
 		pb = pw->CreateButton(pos, dim, 42, EVENT_OBJECT_FIRE);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 		DefaultEnter(pw, EVENT_OBJECT_FIRE);
 
 //?		pos.x = ox+sx*10.2f;
@@ -1709,7 +1709,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		 !m_object->RetCameraLock() )
 	{
 //?		if ( m_main->RetShowMap() )
-		if ( TRUE )
+		if ( true )
 		{
 			pos.x = ox+sx*13.4f;
 			pos.y = oy+sy*1;
@@ -1733,36 +1733,36 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 		pos.x = ox+sx*10.0f;
 		pos.y = oy+sy*0.66f;
 		pb = pw->CreateButton(pos, ddim, 55, EVENT_OBJECT_CAMERAleft);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 		pos.x = ox+sx*(10.0f+0.66f*2.0f);
 		pos.y = oy+sy*0.66f;
 		pb = pw->CreateButton(pos, ddim, 48, EVENT_OBJECT_CAMERAright);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 		pos.x = ox+sx*(10.0f+0.66f);
 		pos.y = oy+sy*(0.66f*2.0f);
 		pb = pw->CreateButton(pos, ddim, 49, EVENT_OBJECT_CAMERAnear);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 		pos.x = ox+sx*(10.0f+0.66f);
 		pos.y = oy+sy*0.0f;
 		pb = pw->CreateButton(pos, ddim, 50, EVENT_OBJECT_CAMERAaway);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 #else
 		pos.x = ox+sx*9.0f;
 		pos.y = oy+sy*0;
 		pb = pw->CreateButton(pos, dim, 55, EVENT_OBJECT_CAMERAleft);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 		pos.x = ox+sx*11.0f;
 		pos.y = oy+sy*0;
 		pb = pw->CreateButton(pos, dim, 48, EVENT_OBJECT_CAMERAright);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 		pos.x = ox+sx*10.0f;
 		pos.y = oy+sy*1;
 		pb = pw->CreateButton(pos, dim, 49, EVENT_OBJECT_CAMERAnear);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 		pos.x = ox+sx*10.0f;
 		pos.y = oy+sy*0;
 		pb = pw->CreateButton(pos, dim, 50, EVENT_OBJECT_CAMERAaway);
-		pb->SetImmediat(TRUE);
+		pb->SetImmediat(true);
 #endif
 	}
 
@@ -1851,7 +1851,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 	}
 
 #if 0
-	if ( FALSE )
+	if ( false )
 	{
 		pos.x = 505.0f/640.0f;
 		pos.y =   3.0f/480.0f;
@@ -1919,7 +1919,7 @@ BOOL CBrain::CreateInterface(BOOL bSelect)
 	m_lastUpdateTime = 0.0f;
 	UpdateInterface(0.0f);
 
-	return TRUE;
+	return true;
 }
 
 // Updates the state of all buttons on the interface,
@@ -1940,7 +1940,7 @@ void CBrain::UpdateInterface(float rTime)
 	FPOINT		ppos;
 	float		energy, limit, angle, range;
 	int			icon;
-	BOOL		bOnBoard;
+	bool		bOnBoard;
 
 	m_lastAlarmTime += rTime;
 	if ( m_time < m_lastUpdateTime+0.1f )  return;
@@ -2013,7 +2013,7 @@ void CBrain::UpdateInterface(float rTime)
 			}
 			if ( m_soundChannelAlarm == -1 )
 			{
-				m_soundChannelAlarm = m_sound->Play(SOUND_ALARMt, m_object->RetPosition(0), 0.0f, 0.1f, TRUE);
+				m_soundChannelAlarm = m_sound->Play(SOUND_ALARMt, m_object->RetPosition(0), 0.0f, 0.1f, true);
 				m_sound->AddEnvelope(m_soundChannelAlarm, 1.0f, 1.0f, 1.0f, SOPER_CONTINUE);
 				m_sound->AddEnvelope(m_soundChannelAlarm, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
 			}
@@ -2138,7 +2138,7 @@ void CBrain::UpdateInterface()
 	CColor*		pc;
 	int			color;
 #endif
-	BOOL		bEnable, bFly, bRun;
+	bool		bEnable, bFly, bRun;
 	char		title[100];
 
 	if ( !m_object->RetSelect() )  return;
@@ -2230,10 +2230,10 @@ void CBrain::UpdateInterface()
 		}
 		else
 		{
-			EnableInterface(pw, EVENT_OBJECT_BEGSHIELD, FALSE);
-			EnableInterface(pw, EVENT_OBJECT_ENDSHIELD, FALSE);
-			DefaultEnter   (pw, EVENT_OBJECT_BEGSHIELD, FALSE);
-			DefaultEnter   (pw, EVENT_OBJECT_ENDSHIELD, FALSE);
+			EnableInterface(pw, EVENT_OBJECT_BEGSHIELD, false);
+			EnableInterface(pw, EVENT_OBJECT_ENDSHIELD, false);
+			DefaultEnter   (pw, EVENT_OBJECT_BEGSHIELD, false);
+			DefaultEnter   (pw, EVENT_OBJECT_ENDSHIELD, false);
 		}
 
 		ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_DIMSHIELD);
@@ -2246,14 +2246,14 @@ void CBrain::UpdateInterface()
 	bFly = bEnable;
 	if ( bFly && (type == OBJECT_HUMAN || type == OBJECT_TECH) )
 	{
-		if ( m_object->RetFret() != 0 )  bFly = FALSE;  // if holder -> not fly
+		if ( m_object->RetFret() != 0 )  bFly = false;  // if holder -> not fly
 	}
 	EnableInterface(pw, EVENT_OBJECT_GASUP,   bFly);
 	EnableInterface(pw, EVENT_OBJECT_GASDOWN, bFly);
 	if ( m_object->RetTrainer() )  // Training?
 	{
-		DeadInterface(pw, EVENT_OBJECT_GASUP,   FALSE);
-		DeadInterface(pw, EVENT_OBJECT_GASDOWN, FALSE);
+		DeadInterface(pw, EVENT_OBJECT_GASUP,   false);
+		DeadInterface(pw, EVENT_OBJECT_GASDOWN, false);
 	}
 	else
 	{
@@ -2296,17 +2296,17 @@ void CBrain::UpdateInterface()
 		 type == OBJECT_BEE      ||
 		 type == OBJECT_WORM     )  // vehicle?
 	{
-		bRun = FALSE;
+		bRun = false;
 		if ( m_script[m_selScript] != 0 )
 		{
 			m_script[m_selScript]->GetTitle(title);
 			if ( title[0] != 0 )
 			{
-				bRun = TRUE;
+				bRun = true;
 			}
 		}
-		if ( !bEnable && m_program == -1 )  bRun = FALSE;
-		if ( m_bTraceRecord )  bRun = FALSE;
+		if ( !bEnable && m_program == -1 )  bRun = false;
+		if ( m_bTraceRecord )  bRun = false;
 		EnableInterface(pw, EVENT_OBJECT_PROGRUN, bRun);
 
 		pb = (CButton*)pw->SearchControl(EVENT_OBJECT_PROGRUN);
@@ -2445,7 +2445,7 @@ void CBrain::UpdateScript(CWindow *pw)
 	char		name[100];
 	char		title[100];
 	int			i;
-	BOOL		bSoluce;
+	bool		bSoluce;
 
 	pl = (CList*)pw->SearchControl(EVENT_OBJECT_PROGLIST);
 	if ( pl == 0 )  return;
@@ -2453,7 +2453,7 @@ void CBrain::UpdateScript(CWindow *pw)
 #if _SCHOOL
 	bSoluce = m_main->RetSoluce4();
 #else
-	bSoluce = TRUE;
+	bSoluce = true;
 #endif
 
 	for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
@@ -2478,11 +2478,11 @@ void CBrain::UpdateScript(CWindow *pw)
 
 	if ( !bSoluce )
 	{
-		pl->SetEnable(3, FALSE);
+		pl->SetEnable(3, false);
 	}
 
 	pl->SetSelect(m_selScript);
-	pl->ShowSelect(TRUE);
+	pl->ShowSelect(true);
 }
 
 // Returns the rank of selected script.
@@ -2503,7 +2503,7 @@ int CBrain::RetSelScript()
 
 // Blinks the running program.
 
-void CBrain::BlinkScript(BOOL bEnable)
+void CBrain::BlinkScript(bool bEnable)
 {
 	CWindow*	pw;
 	CList*		pl;
@@ -2521,7 +2521,7 @@ void CBrain::BlinkScript(BOOL bEnable)
 
 // Check the status of a button interface.
 
-void CBrain::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
+void CBrain::CheckInterface(CWindow *pw, EventMsg event, bool bState)
 {
 	CControl*	control;
 
@@ -2533,7 +2533,7 @@ void CBrain::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 
 // Changes the state of a button interface.
 
-void CBrain::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
+void CBrain::EnableInterface(CWindow *pw, EventMsg event, bool bState)
 {
 	CControl*	control;
 		
@@ -2545,7 +2545,7 @@ void CBrain::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 
 // Changes the state of a button on the interface.
 
-void CBrain::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
+void CBrain::DeadInterface(CWindow *pw, EventMsg event, bool bState)
 {
 	CControl*	control;
 		
@@ -2557,7 +2557,7 @@ void CBrain::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
 
 // Change the default input state of a button interface.
 
-void CBrain::DefaultEnter(CWindow *pw, EventMsg event, BOOL bState)
+void CBrain::DefaultEnter(CWindow *pw, EventMsg event, bool bState)
 {
 	CControl*	control;
 		
@@ -2578,33 +2578,33 @@ void CBrain::DefaultEnter(CWindow *pw, EventMsg event, BOOL bState)
 
 // Indicates whether the object is busy with a task.
 
-BOOL CBrain::IsBusy()
+bool CBrain::IsBusy()
 {
 	return (m_primaryTask != 0);
 }
 
 // Management of the activity of an object.
 
-void CBrain::SetActivity(BOOL bMode)
+void CBrain::SetActivity(bool bMode)
 {
 	m_bActivity = bMode;
 }
 
-BOOL CBrain::RetActivity()
+bool CBrain::RetActivity()
 {
 	return m_bActivity;
 }
 
 // Indicates whether a program is running.
 
-BOOL CBrain::IsProgram()
+bool CBrain::IsProgram()
 {
 	return ( m_program != -1 );
 }
 
 // Indicates whether a program exists.
 
-BOOL CBrain::ProgramExist(int rank)
+bool CBrain::ProgramExist(int rank)
 {
 	return ( m_script[rank] != 0 );
 }
@@ -2619,7 +2619,7 @@ void CBrain::RunProgram(int rank)
 		 m_script[rank]->Run() )
 	{
 		m_program = rank;  // start new program
-		BlinkScript(TRUE);  // blink
+		BlinkScript(true);  // blink
 		m_object->CreateSelectParticule();
 		m_main->UpdateShortcuts();
 	}
@@ -2683,14 +2683,14 @@ char* CBrain::RetSoluceName()
 // Load a script solution, in the first free script.
 // If there is already an identical script, nothing is loaded.
 
-BOOL CBrain::ReadSoluce(char* filename)
+bool CBrain::ReadSoluce(char* filename)
 {
 	int		rank, i;
 
 	rank = FreeProgram();
-	if ( rank == -1 )  return FALSE;
+	if ( rank == -1 )  return false;
 
-	if ( !ReadProgram(rank, filename) )  return FALSE;  // load solution
+	if ( !ReadProgram(rank, filename) )  return false;  // load solution
 
 	for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
 	{
@@ -2700,59 +2700,59 @@ BOOL CBrain::ReadSoluce(char* filename)
 		{
 			delete m_script[rank];
 			m_script[rank] = 0;
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Load a script with a text file.
 
-BOOL CBrain::ReadProgram(int rank, char* filename)
+bool CBrain::ReadProgram(int rank, char* filename)
 {
 	if ( m_script[rank] == 0 )
 	{
 		m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
 	}
 
-	if ( m_script[rank]->ReadScript(filename) )  return TRUE;
+	if ( m_script[rank]->ReadScript(filename) )  return true;
 
 	delete m_script[rank];
 	m_script[rank] = 0;
 
-	return FALSE;
+	return false;
 }
 
 // Indicates whether a program is compiled correctly.
 
-BOOL CBrain::RetCompile(int rank)
+bool CBrain::RetCompile(int rank)
 {
-	if ( m_script[rank] == 0 )  return FALSE;
+	if ( m_script[rank] == 0 )  return false;
 	return m_script[rank]->RetCompile();
 }
 
 // Saves a script in a text file.
 
-BOOL CBrain::WriteProgram(int rank, char* filename)
+bool CBrain::WriteProgram(int rank, char* filename)
 {
 	if ( m_script[rank] == 0 )
 	{
 		m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
 	}
 
-	if ( m_script[rank]->WriteScript(filename) )  return TRUE;
+	if ( m_script[rank]->WriteScript(filename) )  return true;
 
 	delete m_script[rank];
 	m_script[rank] = 0;
 
-	return FALSE;
+	return false;
 }
 
 
 // Load a stack of script implementation from a file.
 
-BOOL CBrain::ReadStack(FILE *file)
+bool CBrain::ReadStack(FILE *file)
 {
 	short		op;
 
@@ -2764,22 +2764,22 @@ BOOL CBrain::ReadStack(FILE *file)
 		{
 			m_program = op;  // program restarts
 			m_selScript = op;
-			BlinkScript(TRUE);  // blink
+			BlinkScript(true);  // blink
 
 			if ( m_script[op] == 0 )
 			{
 				m_script[op] = new CScript(m_iMan, m_object, &m_secondaryTask);
 			}
-			if ( !m_script[op]->ReadStack(file) )  return FALSE;
+			if ( !m_script[op]->ReadStack(file) )  return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 // ave the script implementation stack of a file.
 
-BOOL CBrain::WriteStack(FILE *file)
+bool CBrain::WriteStack(FILE *file)
 {
 	short		op;
 
@@ -2797,7 +2797,7 @@ BOOL CBrain::WriteStack(FILE *file)
 
 	op = 0;  // stop
 	fWrite(&op, sizeof(short), 1, file);
-	return TRUE;
+	return true;
 }
 
 
@@ -2938,23 +2938,23 @@ void CBrain::TraceRecordStop()
 
 // Saves an instruction CBOT.
 
-BOOL CBrain::TraceRecordOper(TraceOper oper, float param)
+bool CBrain::TraceRecordOper(TraceOper oper, float param)
 {
 	int		i;
 
 	i = m_traceRecordIndex;
-	if ( i >= MAXTRACERECORD )  return FALSE;
+	if ( i >= MAXTRACERECORD )  return false;
 
 	m_traceRecordBuffer[i].oper = oper;
 	m_traceRecordBuffer[i].param = param;
 
 	m_traceRecordIndex = i+1;
-	return TRUE;
+	return true;
 }
 
 // Generates an instruction CBOT.
 
-BOOL CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
+bool CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
 {
 	char	line[100];
 	int		color;
@@ -2995,6 +2995,6 @@ BOOL CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
 		if ( color == 10 )  strncat(buffer, "\tpendown(Brown);\n",  max-1);
 	}
 
-	return TRUE;
+	return true;
 }
 

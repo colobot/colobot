@@ -64,11 +64,11 @@ void CPlanet::Flush()
 	{
 		for ( i=0 ; i<MAXPLANET ; i++ )
 		{
-			m_planet[j][i].bUsed = FALSE;
+			m_planet[j][i].bUsed = false;
 		}
 	}
 
-	m_bPlanetExist = FALSE;
+	m_bPlanetExist = false;
 	m_mode = 0;
 	m_time = 0.0f;
 }
@@ -76,23 +76,23 @@ void CPlanet::Flush()
 
 // Management of an event.
 
-BOOL CPlanet::EventProcess(const Event &event)
+bool CPlanet::EventProcess(const Event &event)
 {
 	if ( event.event == EVENT_FRAME )
 	{
 		return EventFrame(event);
 	}
-	return TRUE;
+	return true;
 }
 
 // Makes the planets evolve.
 
-BOOL CPlanet::EventFrame(const Event &event)
+bool CPlanet::EventFrame(const Event &event)
 {
 	float		a;
 	int			i;
 
-	if ( m_engine->RetPause() )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
 
 	m_time += event.rTime;
 
@@ -109,7 +109,7 @@ BOOL CPlanet::EventFrame(const Event &event)
 		m_planet[m_mode][i].angle.y = sinf(a)*sinf(m_planet[m_mode][i].dir)+m_planet[m_mode][i].start.y;
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -192,7 +192,7 @@ void CPlanet::Draw()
 
 // Creates a new planet.
 
-BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
+bool CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 					 float dir, char *name, FPOINT uv1, FPOINT uv2)
 {
 	int		i;
@@ -204,7 +204,7 @@ BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 	{
 		if ( m_planet[mode][i].bUsed )  continue;
 
-		m_planet[mode][i].bUsed = TRUE;
+		m_planet[mode][i].bUsed = true;
 		m_planet[mode][i].start = start;
 		m_planet[mode][i].angle = start;
 		m_planet[mode][i].dim   = dim;
@@ -217,16 +217,16 @@ BOOL CPlanet::Create(int mode, FPOINT start, float dim, float speed,
 
 		m_planet[mode][i].bTGA = ( strstr(m_planet[mode][i].name, "planet") != 0 );
 
-		m_bPlanetExist = TRUE;
-		return TRUE;
+		m_bPlanetExist = true;
+		return true;
 	}
 
-	return FALSE;
+	return false;
 }
 
 // Indicates if there is at least one planet.
 
-BOOL CPlanet::PlanetExist()
+bool CPlanet::PlanetExist()
 {
 	return m_bPlanetExist;
 }

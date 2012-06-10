@@ -75,7 +75,7 @@ void CMainMovie::Flush()
 
 // Start of a film.
 
-BOOL CMainMovie::Start(MainMovieType type, float time)
+bool CMainMovie::Start(MainMovieType type, float time)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos;
@@ -92,7 +92,7 @@ BOOL CMainMovie::Start(MainMovieType type, float time)
 		if ( pObj == 0 )
 		{
 			m_type = MM_NONE;  // it's over!
-			return TRUE;
+			return true;
 		}
 
 		motion = pObj->RetMotion();
@@ -131,12 +131,12 @@ BOOL CMainMovie::Start(MainMovieType type, float time)
 		m_type = MM_NONE;  // it's already over!
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Stop a current movie.
 
-BOOL CMainMovie::Stop()
+bool CMainMovie::Stop()
 {
 	CObject*	pObj;
 	CMotion*	motion;
@@ -155,12 +155,12 @@ BOOL CMainMovie::Stop()
 	}
 
 	m_type = MM_NONE;
-	return TRUE;
+	return true;
 }
 
 // Indicates whether a film is in progress.
 
-BOOL CMainMovie::IsExist()
+bool CMainMovie::IsExist()
 {
 	return (m_type != MM_NONE);
 }
@@ -168,12 +168,12 @@ BOOL CMainMovie::IsExist()
 
 // Processing an event.
 
-BOOL CMainMovie::EventProcess(const Event &event)
+bool CMainMovie::EventProcess(const Event &event)
 {
 	D3DVECTOR	initialEye, initialLookat, finalEye, finalLookat, eye, lookat;
 	float		progress;
 
-	if ( m_type == MM_NONE )  return TRUE;
+	if ( m_type == MM_NONE )  return true;
 
 	m_progress += event.rTime*m_speed;
 
@@ -211,7 +211,7 @@ BOOL CMainMovie::EventProcess(const Event &event)
 		{
 			m_stopType = m_type;
 			Flush();
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -224,11 +224,11 @@ BOOL CMainMovie::EventProcess(const Event &event)
 		{
 			m_stopType = m_type;
 			Flush();
-			return FALSE;
+			return false;
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 

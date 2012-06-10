@@ -57,7 +57,7 @@ CMainMap::CMainMap(CInstanceManager* iMan)
 	m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
 
 	m_mapMode = 1;
-	m_bFixImage = FALSE;
+	m_bFixImage = false;
 }
 
 // Destructor of the application card.
@@ -108,7 +108,7 @@ void CMainMap::SetFixImage(char *filename)
 	if ( pm == 0 )  return;
 
 	pw->DeleteControl(EVENT_OBJECT_MAPZOOM);
-	m_bFixImage = TRUE;
+	m_bFixImage = true;
 
 	pm->SetFixImage(filename);
 }
@@ -133,7 +133,7 @@ void CMainMap::FloorColorMap(D3DCOLORVALUE floor, D3DCOLORVALUE water)
 
 // Shows or hides the minimap.
 
-void CMainMap::ShowMap(BOOL bShow)
+void CMainMap::ShowMap(bool bShow)
 {
 	CWindow*	pw;
 	CMap*		pm;
@@ -276,7 +276,7 @@ void CMainMap::ZoomMap()
 
 // Enables or disables the card.
 
-void CMainMap::MapEnable(BOOL bEnable)
+void CMainMap::MapEnable(bool bEnable)
 {
 	CWindow*	pw;
 	CMap*		pm;
@@ -300,7 +300,7 @@ void CMainMap::MapEnable(BOOL bEnable)
 
 // Specifies the type of icon for the selected object.
 
-void CMainMap::SetToy(BOOL bToy)
+void CMainMap::SetToy(bool bToy)
 {
 	CWindow*	pw;
 	CMap*		pm;
@@ -317,7 +317,7 @@ void CMainMap::SetToy(BOOL bToy)
 // Specifies the parameters when using a still image.
 
 void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
-						   int mode, BOOL bDebug)
+						   int mode, bool bDebug)
 {
 	CWindow*	pw;
 	CMap*		pm;
@@ -354,14 +354,14 @@ void CMainMap::UpdateMap()
 
 // Indicates if the mini-map is visible.
 
-BOOL CMainMap::RetShowMap()
+bool CMainMap::RetShowMap()
 {
 	return ( m_mapMode != 0 );
 }
 
 // Indicates whether the mini-map displays a still image.
 
-BOOL CMainMap::RetFixImage()
+bool CMainMap::RetFixImage()
 {
 	return m_bFixImage;
 }
@@ -369,7 +369,7 @@ BOOL CMainMap::RetFixImage()
 
 // The object is detected in the mini-map.
 
-CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
+CObject* CMainMap::DetectMap(FPOINT pos, bool &bInMap)
 {
 	CWindow*	pw;
 	CMap*		pm;
@@ -377,7 +377,7 @@ CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
 	if ( pw == 0 )  return 0;
 
-	bInMap = FALSE;
+	bInMap = false;
 	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
 	if ( pm == 0 )  return 0;
 	return pm->DetectObject(pos, bInMap);

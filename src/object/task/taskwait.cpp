@@ -44,7 +44,6 @@
 CTaskWait::CTaskWait(CInstanceManager* iMan, CObject* object)
 					 : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -56,14 +55,14 @@ CTaskWait::~CTaskWait()
 
 // Management of an event.
 
-BOOL CTaskWait::EventProcess(const Event &event)
+bool CTaskWait::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_passTime += event.rTime;
 	m_bEnded = (m_passTime >= m_waitTime);
-	return TRUE;
+	return true;
 }
 
 
@@ -73,7 +72,7 @@ Error CTaskWait::Start(float time)
 {
 	m_waitTime = time;  // duration to wait
 	m_passTime = 0.0f;  // time elapsed
-	m_bEnded = FALSE;
+	m_bEnded = false;
 	return ERR_OK;
 }
 

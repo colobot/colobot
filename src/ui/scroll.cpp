@@ -49,7 +49,7 @@ CScroll::CScroll(CInstanceManager* iMan) : CControl(iMan)
 	m_eventUp   = EVENT_NULL;
 	m_eventDown = EVENT_NULL;
 
-	m_bCapture = FALSE;
+	m_bCapture = false;
 }
 
 // Object's destructor.
@@ -63,13 +63,13 @@ CScroll::~CScroll()
 
 // Creates a new button.
 
-BOOL CScroll::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CScroll::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 	CControl::Create(pos, dim, icon, eventMsg);
 
 	MoveAdjust();
-	return TRUE;
+	return true;
 }
 
 
@@ -107,7 +107,7 @@ void CScroll::MoveAdjust()
 			m_buttonUp = new CButton(m_iMan);
 			pc = (CButton*)m_buttonUp;
 			pc->Create(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), 49, EVENT_NULL);
-			pc->SetRepeat(TRUE);
+			pc->SetRepeat(true);
 			m_eventUp = pc->RetEventMsg();
 		}
 
@@ -116,7 +116,7 @@ void CScroll::MoveAdjust()
 			m_buttonDown = new CButton(m_iMan);
 			pc = (CButton*)m_buttonDown;
 			pc->Create(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), 50, EVENT_NULL);
-			pc->SetRepeat(TRUE);
+			pc->SetRepeat(true);
 			m_eventDown = pc->RetEventMsg();
 		}
 	}
@@ -163,7 +163,7 @@ void CScroll::AdjustGlint()
 
 
 
-BOOL CScroll::SetState(int state, BOOL bState)
+bool CScroll::SetState(int state, bool bState)
 {
 	if ( state & STATE_ENABLE )
 	{
@@ -174,7 +174,7 @@ BOOL CScroll::SetState(int state, BOOL bState)
 	return CControl::SetState(state, bState);
 }
 
-BOOL CScroll::SetState(int state)
+bool CScroll::SetState(int state)
 {
 	if ( state & STATE_ENABLE )
 	{
@@ -185,7 +185,7 @@ BOOL CScroll::SetState(int state)
 	return CControl::SetState(state);
 }
 
-BOOL CScroll::ClearState(int state)
+bool CScroll::ClearState(int state)
 {
 	if ( state & STATE_ENABLE )
 	{
@@ -199,7 +199,7 @@ BOOL CScroll::ClearState(int state)
 
 // Management of an event.
 
-BOOL CScroll::EventProcess(const Event &event)
+bool CScroll::EventProcess(const Event &event)
 {
 	FPOINT	pos, dim;
 	float	hButton, h, value;
@@ -208,11 +208,11 @@ BOOL CScroll::EventProcess(const Event &event)
 
 	if ( m_buttonUp != 0 && !m_bCapture )
 	{
-		if ( !m_buttonUp->EventProcess(event) )  return FALSE;
+		if ( !m_buttonUp->EventProcess(event) )  return false;
 	}
 	if ( m_buttonDown != 0 && !m_bCapture )
 	{
-		if ( !m_buttonDown->EventProcess(event) )  return FALSE;
+		if ( !m_buttonDown->EventProcess(event) )  return false;
 	}
 
 	if ( event.event == m_eventUp && m_step > 0.0f )
@@ -263,7 +263,7 @@ BOOL CScroll::EventProcess(const Event &event)
 				newEvent.event = m_eventMsg;
 				m_event->AddEvent(newEvent);
 			}
-			m_bCapture = TRUE;
+			m_bCapture = true;
 			m_pressPos = event.pos;
 			m_pressValue = m_visibleValue;
 		}
@@ -292,7 +292,7 @@ BOOL CScroll::EventProcess(const Event &event)
 
 	if ( event.event == EVENT_LBUTTONUP && m_bCapture )
 	{
-		m_bCapture = FALSE;
+		m_bCapture = false;
 	}
 
 	if ( event.event == EVENT_KEYDOWN &&
@@ -314,7 +314,7 @@ BOOL CScroll::EventProcess(const Event &event)
 		m_event->AddEvent(newEvent);
 	}
 
-	return TRUE;
+	return true;
 }
 
 

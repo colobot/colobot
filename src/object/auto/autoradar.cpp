@@ -57,13 +57,12 @@ CAutoRadar::CAutoRadar(CInstanceManager* iMan, CObject* object)
 
 CAutoRadar::~CAutoRadar()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoRadar::DeleteObject(BOOL bAll)
+void CAutoRadar::DeleteObject(bool bAll)
 {
 	CAuto::DeleteObject(bAll);
 }
@@ -85,16 +84,16 @@ void CAutoRadar::Init()
 
 // Management of an event.
 
-BOOL CAutoRadar::EventProcess(const Event &event)
+bool CAutoRadar::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, ePos;
 	float		speed, angle, prog, freq, ampl;
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
-	if ( m_phase == ARAP_WAIT )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
+	if ( m_phase == ARAP_WAIT )  return true;
 
 	m_progress += event.rTime*m_speed;
 	m_aTime += event.rTime;
@@ -119,7 +118,7 @@ BOOL CAutoRadar::EventProcess(const Event &event)
 			m_totalDetect = (int)(Rand()*10.0f);
 			UpdateInterface();
 		}
-		return TRUE;
+		return true;
 	}
 
 	if ( m_phase == ARAP_SEARCH )
@@ -196,7 +195,7 @@ BOOL CAutoRadar::EventProcess(const Event &event)
 	angle = sinf(m_aTime*4.0f)*0.3f;
 	m_object->SetAngleX(3, angle);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -215,7 +214,7 @@ Error CAutoRadar::RetError()
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoRadar::CreateInterface(BOOL bSelect)
+bool CAutoRadar::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, dim, ddim;
@@ -223,10 +222,10 @@ BOOL CAutoRadar::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -246,7 +245,7 @@ BOOL CAutoRadar::CreateInterface(BOOL bSelect)
 	pw->CreateGroup(pos, ddim, 105, EVENT_OBJECT_TYPE);
 
 	UpdateInterface();
-	return TRUE;
+	return true;
 }
 
 // Updates the status of all interface buttons.
@@ -276,7 +275,7 @@ void CAutoRadar::UpdateInterface()
 
 // Seeking the position of an enemy.
 
-BOOL CAutoRadar::SearchEnemy(D3DVECTOR &pos)
+bool CAutoRadar::SearchEnemy(D3DVECTOR &pos)
 {
 	CObject*	pObj;
 	CObject*	pBest = 0;
@@ -316,9 +315,9 @@ BOOL CAutoRadar::SearchEnemy(D3DVECTOR &pos)
 
 	UpdateInterface();
 
-	if ( pBest == 0 )  return FALSE;
+	if ( pBest == 0 )  return false;
 	pos = pBest->RetPosition(0);
-	return TRUE;
+	return true;
 }
 
 

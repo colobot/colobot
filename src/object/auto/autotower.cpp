@@ -73,15 +73,14 @@ CAutoTower::CAutoTower(CInstanceManager* iMan, CObject* object)
 
 CAutoTower::~CAutoTower()
 {
-	this->CAuto::~CAuto();
 }
 
 
 // Destroys the object.
 
-void CAutoTower::DeleteObject(BOOL bAll)
+void CAutoTower::DeleteObject(bool bAll)
 {
-	FireStopUpdate(0.0f, FALSE);
+	FireStopUpdate(0.0f, false);
 	CAuto::DeleteObject(bAll);
 }
 
@@ -103,7 +102,7 @@ void CAutoTower::Init()
 
 // Management of an event.
 
-BOOL CAutoTower::EventProcess(const Event &event)
+bool CAutoTower::EventProcess(const Event &event)
 {
 	CObject*	power;
 	CObject*	target;
@@ -112,8 +111,8 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 	CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+	if ( m_engine->RetPause() )  return true;
+	if ( event.event != EVENT_FRAME )  return true;
 
 	m_timeVirus -= event.rTime;
 
@@ -129,18 +128,18 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 			m_object->SetAngleZ(2, Rand()*0.5f);
 		}
-		return TRUE;
+		return true;
 	}
 
 	UpdateInterface(event.rTime);
 
-	if ( m_phase == ATP_WAIT )  return TRUE;
+	if ( m_phase == ATP_WAIT )  return true;
 
 	m_progress += event.rTime*m_speed;
 
 	if ( m_phase == ATP_ZERO )
 	{
-		FireStopUpdate(m_progress, TRUE);  // blinks
+		FireStopUpdate(m_progress, true);  // blinks
 		if ( m_progress < 1.0f )
 		{
 			energy = 0.0f;
@@ -166,7 +165,7 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 	if ( m_phase == ATP_SEARCH )
 	{
-		FireStopUpdate(m_progress, FALSE);  // extinguished
+		FireStopUpdate(m_progress, false);  // extinguished
 		if ( m_progress < 1.0f )
 		{
 			quick = 1.0f;
@@ -270,7 +269,7 @@ BOOL CAutoTower::EventProcess(const Event &event)
 		}
 	}
 
-	return TRUE;
+	return true;
 }
 
 
@@ -304,7 +303,7 @@ CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 		if ( !pObj->RetActif() )  continue;  // inactive?
 
 //?		if ( g_researchDone & RESEARCH_QUICK )
-		if ( FALSE )
+		if ( false )
 		{
 			physics = pObj->RetPhysics();
 			if ( physics != 0 )
@@ -359,7 +358,7 @@ Error CAutoTower::RetError()
 
 // Updates the stop lights.
 
-void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
+void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed;
@@ -422,7 +421,7 @@ void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 
 // Creates all the interface when the object is selected.
 
-BOOL CAutoTower::CreateInterface(BOOL bSelect)
+bool CAutoTower::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	FPOINT		pos, ddim;
@@ -430,10 +429,10 @@ BOOL CAutoTower::CreateInterface(BOOL bSelect)
 
 	CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+	if ( !bSelect )  return true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+	if ( pw == 0 )  return false;
 
 	ox = 3.0f/640.0f;
 	oy = 3.0f/480.0f;
@@ -458,7 +457,7 @@ BOOL CAutoTower::CreateInterface(BOOL bSelect)
 	ddim.y = 33.0f/480.0f;
 	pw->CreateButton(pos, ddim, 41, EVENT_OBJECT_LIMIT);
 
-	return TRUE;
+	return true;
 }
 
 // Updates the state of all buttons on the interface,
@@ -497,11 +496,11 @@ void CAutoTower::UpdateInterface(float rTime)
 
 // Saves all parameters of the controller.
 
-BOOL CAutoTower::Write(char *line)
+bool CAutoTower::Write(char *line)
 {
 	char	name[100];
 
-	if ( m_phase == ATP_WAIT )  return FALSE;
+	if ( m_phase == ATP_WAIT )  return false;
 
 	sprintf(name, " aExist=%d", 1);
 	strcat(line, name);
@@ -532,14 +531,14 @@ BOOL CAutoTower::Write(char *line)
 	sprintf(name, " aAngleZfinal=%.2f", m_angleZfinal);
 	strcat(line, name);
 
-	return TRUE;
+	return true;
 }
 
 // Restores all parameters of the controller.
 
-BOOL CAutoTower::Read(char *line)
+bool CAutoTower::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
 	CAuto::Read(line);
 
@@ -554,7 +553,7 @@ BOOL CAutoTower::Read(char *line)
 
 	m_lastUpdateTime = 0.0f;
 
-	return TRUE;
+	return true;
 }
 
 

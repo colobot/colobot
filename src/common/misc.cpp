@@ -40,7 +40,7 @@
 CMetaFile	g_metafile;
 
 static EventMsg		g_uniqueEventMsg = EVENT_USER;
-static BOOL			g_bUserDir = FALSE;
+static bool			g_bUserDir = false;
 static char			g_userDir[100] = "";
 
 
@@ -264,7 +264,7 @@ void TimeToAscii(time_t time, char *buffer)
 
 // Makes a copy of a file.
 
-BOOL Xfer(char* src, char* dst)
+bool Xfer(char* src, char* dst)
 {
 	FILE	*fs, *fd;
 	char	*buffer;
@@ -273,19 +273,19 @@ BOOL Xfer(char* src, char* dst)
 	fs = fopen(src, "rb");
 	if ( fs == 0 )
 	{
-		return FALSE;
+		return false;
 	}
 
 	fd = fopen(dst, "wb");
 	if ( fd == 0 )
 	{
 		fclose(fs);
-		return FALSE;
+		return false;
 	}
 
 	buffer = (char*)malloc(10000);
 
-	while ( TRUE )
+	while ( true )
 	{
 		len = fread(buffer, 1, 10000, fs);
 		if ( len == 0 )  break;
@@ -295,12 +295,12 @@ BOOL Xfer(char* src, char* dst)
 	free(buffer);
 	fclose(fs);
 	fclose(fd);
-	return TRUE;
+	return true;
 }
 
 // Copy a file into the temporary folder.
 
-BOOL CopyFileToTemp(char* filename)
+bool CopyFileToTemp(char* filename)
 {
 	char	src[100];
 	char	dst[100];
@@ -314,15 +314,15 @@ BOOL CopyFileToTemp(char* filename)
 	strcpy(g_userDir, save);
 
 	_mkdir("temp");
-	if ( !Xfer(src, dst) )  return FALSE;
+	if ( !Xfer(src, dst) )  return false;
 
 	strcpy(filename, dst);
-	return TRUE;
+	return true;
 }
 
 // Copy a list of numbered files into the temporary folder.
 
-BOOL CopyFileListToTemp(char* filename, int* list, int total)
+bool CopyFileListToTemp(char* filename, int* list, int total)
 {
 	char	name[100];
 	char	ext[10];
@@ -355,7 +355,7 @@ BOOL CopyFileListToTemp(char* filename, int* list, int total)
 	strcpy(filename, file);
 	strcpy(g_userDir, save);
 
-	return TRUE;
+	return true;
 }
 
 
@@ -370,7 +370,7 @@ void AddExt(char* filename, char* ext)
 
 // Specifies the user folder.
 
-void UserDir(BOOL bUser, char* dir)
+void UserDir(bool bUser, char* dir)
 {
 	g_bUserDir = bUser;
 	strcpy(g_userDir, dir);

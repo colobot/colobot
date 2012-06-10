@@ -35,20 +35,20 @@ public:
 	CTaskFire(CInstanceManager* iMan, CObject* object);
 	~CTaskFire();
 
-	BOOL		EventProcess(const Event &event);
+	bool		EventProcess(const Event &event);
 
 	Error		Start(float delay);
 	Error		IsEnded();
-	BOOL		Abort();
+	bool		Abort();
 
 protected:
 
 protected:
 	float		m_delay;
 	float		m_progress;
-	BOOL		m_bError;
-	BOOL		m_bRay;
-	BOOL		m_bOrganic;
+	bool		m_bError;
+	bool		m_bRay;
+	bool		m_bOrganic;
 	float		m_time;
 	float		m_speed;
 	float		m_lastParticule;
