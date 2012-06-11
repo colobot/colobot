@@ -44,20 +44,20 @@
 
 
 
-#define PARAM_DEPOSE		2		// run=2 -> deposits the spaceship
+const int PARAM_DEPOSE = 2;		// run=2 -> deposits the spaceship
 
-#define PORTICO_POSa		75.0f
-#define PORTICO_POSb		65.0f
-#define PORTICO_ANGLE1a		( 25.0f*PI/180.0f)
-#define PORTICO_ANGLE1b		( 70.0f*PI/180.0f)
-#define PORTICO_ANGLE2a		(-37.5f*PI/180.0f)
-#define PORTICO_ANGLE2b		(-62.5f*PI/180.0f)
-#define PORTICO_ANGLE3a		(-77.5f*PI/180.0f)
-#define PORTICO_ANGLE3b		(-30.0f*PI/180.0f)
+const float PORTICO_POSa		= 75.0f;
+const float PORTICO_POSb		= 65.0f;
+const float PORTICO_ANGLE1a		= ( 25.0f*PI/180.0f);
+const float PORTICO_ANGLE1b		= ( 70.0f*PI/180.0f);
+const float PORTICO_ANGLE2a		= (-37.5f*PI/180.0f);
+const float PORTICO_ANGLE2b		= (-62.5f*PI/180.0f);
+const float PORTICO_ANGLE3a		= (-77.5f*PI/180.0f);
+const float PORTICO_ANGLE3b		= (-30.0f*PI/180.0f);
 
-#define PORTICO_TIME_MOVE	16.0f
-#define PORTICO_TIME_DOWN	 4.0f
-#define PORTICO_TIME_OPEN	12.0f
+const float PORTICO_TIME_MOVE	= 16.0f;
+const float PORTICO_TIME_DOWN	= 4.0f;
+const float PORTICO_TIME_OPEN	= 12.0f;
 
 
 

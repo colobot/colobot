@@ -32,23 +32,26 @@ class CParticule;
 class CSound;
 
 
-#define STATE_ENABLE		(1<<0)	// active
-#define STATE_CHECK		(1<<1)	// pressed
-#define STATE_HILIGHT		(1<<2)	// overflown by mouse
-#define STATE_PRESS		(1<<3)	// pressed by mouse
-#define STATE_VISIBLE		(1<<4)	// visible
-#define STATE_DEAD		(1<<5)	// inaccessible (x)
-#define STATE_DEFAULT		(1<<6)	// actuated by RETURN
-#define STATE_OKAY		(1<<7)	// green point at the bottom right
-#define STATE_SHADOW		(1<<8)	// shadow
-#define STATE_GLINT		(1<<9)	// dynamic reflection
-#define STATE_CARD		(1<<10)	// tab
-#define STATE_EXTEND		(1<<11)	// extended mode
-#define STATE_SIMPLY		(1<<12)	// undecorated
-#define STATE_FRAME		(1<<13)	// framework highlighting
-#define STATE_WARNING		(1<<14)	// framework hatched yellow / black
-#define STATE_VALUE		(1<<15)	// displays the value
-#define STATE_RUN		(1<<16)	// running program
+enum ControlState
+{
+	STATE_ENABLE	= (1<<0),	// active
+	STATE_CHECK		= (1<<1),	// pressed
+	STATE_HILIGHT	= (1<<2),	// overflown by mouse
+	STATE_PRESS		= (1<<3),	// pressed by mouse
+	STATE_VISIBLE	= (1<<4),	// visible
+	STATE_DEAD		= (1<<5),	// inaccessible (x)
+	STATE_DEFAULT	= (1<<6),	// actuated by RETURN
+	STATE_OKAY		= (1<<7),	// green point at the bottom right
+	STATE_SHADOW	= (1<<8),	// shadow
+	STATE_GLINT		= (1<<9),	// dynamic reflection
+	STATE_CARD		= (1<<10),	// tab
+	STATE_EXTEND	= (1<<11),	// extended mode
+	STATE_SIMPLY	= (1<<12),	// undecorated
+	STATE_FRAME		= (1<<13),	// framework highlighting
+	STATE_WARNING	= (1<<14),	// framework hatched yellow / black
+	STATE_VALUE		= (1<<15),	// displays the value
+	STATE_RUN		= (1<<16)	// running program
+};
 
 
 

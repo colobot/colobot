@@ -20,6 +20,7 @@
 
 
 #include "common/misc.h"
+#include "math/old/math3d.h"
 
 
 class CInstanceManager;
@@ -39,19 +40,19 @@ class CDisplayText;
 class CSound;
 
 
-#define TAKE_DIST		6.0f		// distance to an object to pick it
-#define TAKE_DIST_OTHER		1.5f		// additional distance if on friend
+const float TAKE_DIST		= 6.0f;	// distance to an object to pick it
+const float TAKE_DIST_OTHER	= 1.5f;	// additional distance if on friend
 
-//?#define ARM_NEUTRAL_ANGLE1	 155.0f*PI/180.0f
-//?#define ARM_NEUTRAL_ANGLE2	-125.0f*PI/180.0f
-//?#define ARM_NEUTRAL_ANGLE3	 -45.0f*PI/180.0f
-#define ARM_NEUTRAL_ANGLE1	 110.0f*PI/180.0f
-#define ARM_NEUTRAL_ANGLE2	-130.0f*PI/180.0f
-#define ARM_NEUTRAL_ANGLE3	 -50.0f*PI/180.0f
+//?const float ARM_NEUTRAL_ANGLE1 = 155.0f*PI/180.0f;
+//?const float ARM_NEUTRAL_ANGLE2 = -125.0f*PI/180.0f;
+//?const float ARM_NEUTRAL_ANGLE3 = -45.0f*PI/180.0f;
+const float ARM_NEUTRAL_ANGLE1 = 110.0f*PI/180.0f;
+const float ARM_NEUTRAL_ANGLE2 = -130.0f*PI/180.0f;
+const float ARM_NEUTRAL_ANGLE3 = -50.0f*PI/180.0f;
 
-#define ARM_STOCK_ANGLE1	 110.0f*PI/180.0f
-#define ARM_STOCK_ANGLE2	-100.0f*PI/180.0f
-#define ARM_STOCK_ANGLE3	 -70.0f*PI/180.0f
+const float ARM_STOCK_ANGLE1 = 110.0f*PI/180.0f;
+const float ARM_STOCK_ANGLE2 = -100.0f*PI/180.0f;
+const float ARM_STOCK_ANGLE3 = -70.0f*PI/180.0f;
 
 
 class CTask

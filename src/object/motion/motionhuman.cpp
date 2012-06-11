@@ -46,9 +46,9 @@
 
 
 #define ADJUST_ANGLE		false		// true -> adjusts the angles of the members
-#define ADJUST_ACTION		(3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM)
+const int ADJUST_ACTION = (3*3*3*3*MH_SPEC+3*3*3*MHS_SATCOM);
 
-#define START_TIME		1000.0f		// beginning of the relative time
+const float START_TIME = 1000.0f;		// beginning of the relative time
 
 
 

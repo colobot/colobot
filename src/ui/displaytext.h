@@ -37,7 +37,7 @@ enum TextType
 	TT_MESSAGE	= 4,
 };
 
-#define MAXDTLINE	4
+const int MAXDTLINE = 4;
 
 
 class CDisplayText

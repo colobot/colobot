@@ -63,7 +63,7 @@ enum ClassType
 	CLASS_BLITZ			= 27,
 };
 
-#define CLASS_MAX		30
+const int CLASS_MAX = 30;
 
 
 
@@ -203,18 +203,18 @@ enum Error
 
 // Keyboard state.
 
-#define KS_PAGEUP			(1<<4)
-#define KS_PAGEDOWN			(1<<5)
-#define KS_SHIFT			(1<<6)
-#define KS_CONTROL			(1<<7)
-#define KS_MLEFT			(1<<8)
-#define KS_MRIGHT			(1<<9)
-#define KS_NUMUP			(1<<10)
-#define KS_NUMDOWN			(1<<11)
-#define KS_NUMLEFT			(1<<12)
-#define KS_NUMRIGHT			(1<<13)
-#define KS_NUMPLUS			(1<<14)
-#define KS_NUMMINUS			(1<<15)
+const int KS_PAGEUP			= (1<<4);
+const int KS_PAGEDOWN		= (1<<5);
+const int KS_SHIFT			= (1<<6);
+const int KS_CONTROL		= (1<<7);
+const int KS_MLEFT			= (1<<8);
+const int KS_MRIGHT			= (1<<9);
+const int KS_NUMUP			= (1<<10);
+const int KS_NUMDOWN		= (1<<11);
+const int KS_NUMLEFT		= (1<<12);
+const int KS_NUMRIGHT		= (1<<13);
+const int KS_NUMPLUS		= (1<<14);
+const int KS_NUMMINUS		= (1<<15);
 
 
 // Procedures.

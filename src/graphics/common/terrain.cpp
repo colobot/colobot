@@ -37,7 +37,7 @@
 #include "graphics/common/terrain.h"
 
 
-#define BMPHEAD	1078
+const int BMPHEAD = 1078;
 
 
 

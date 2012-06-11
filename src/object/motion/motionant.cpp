@@ -44,7 +44,7 @@
 
 
 #define ADJUST_ANGLE		false		// true -> adjusts the angles of the members
-#define START_TIME		1000.0f		// beginning of the relative time
+const float START_TIME = 1000.0f;		// beginning of the relative time
 
 
 

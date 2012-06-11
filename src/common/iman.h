@@ -23,13 +23,12 @@
 
 
 
-typedef struct
+struct BaseClass
 {
 	int		totalPossible;
 	int		totalUsed;
 	void**	classPointer;
-}
-BaseClass;
+};
 
 
 

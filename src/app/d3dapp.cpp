@@ -48,14 +48,14 @@
 #endif
 
 
-#define AUDIO_TRACK		13		// total number of audio tracks on the CD
-#define MAX_STEP		0.2f		// maximum time for a step
+const int AUDIO_TRACK = 13;		// total number of audio tracks on the CD
+const float MAX_STEP = 0.2f;		// maximum time for a step
 
-#define WINDOW_DX		(640+6)		// dimensions in windowed mode
-#define WINDOW_DY		(480+25)
+const int WINDOW_DX = (640+6);		// dimensions in windowed mode
+const int WINDOW_DY = (480+25);
 
 #define USE_THREAD		false		// true does not work!
-#define TIME_THREAD		0.02f
+const float TIME_THREAD = 0.02f;
 
 
 

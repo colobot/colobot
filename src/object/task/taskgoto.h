@@ -31,7 +31,7 @@ class CObject;
 
 
 
-#define MAXPOINTS	500
+const int MAXPOINTS = 500;
 
 
 

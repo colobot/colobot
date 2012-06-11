@@ -32,19 +32,24 @@ class CBrain;
 class CPhysics;
 class CObject;
 
+enum MotionAntAction
+{
+	MA_MARCH	= 0,
+	MA_STOP		= 1,
+	MA_SPEC		= 2
+};
 
-#define MA_MARCH		0
-#define MA_STOP			1
-#define MA_SPEC			2
-
-#define MAS_PREPARE		0
-#define MAS_FIRE		1
-#define MAS_TERMINATE	2
-#define MAS_BURN		3
-#define MAS_RUIN		4
-#define MAS_BACK1		5
-#define MAS_BACK2		6
-#define MAS_BACK3		7
+enum MotionAntSpecialAction
+{
+	MAS_PREPARE		= 0,
+	MAS_FIRE		= 1,
+	MAS_TERMINATE	= 2,
+	MAS_BURN		= 3,
+	MAS_RUIN		= 4,
+	MAS_BACK1		= 5,
+	MAS_BACK2		= 6,
+	MAS_BACK3		= 7
+};
 
 
 class CMotionAnt : public CMotion

@@ -59,7 +59,7 @@ enum PhysicsMode
 };
 
 
-typedef struct
+struct Motion
 {
 	D3DVECTOR	advanceAccel;	// acceleration starting (+)
 	D3DVECTOR	recedeAccel;	// acceleration starting (+)
@@ -78,8 +78,7 @@ typedef struct
 	D3DVECTOR	realSpeed;	// real speed(+/-)
 
 	D3DVECTOR	finalInclin;	// final inclination
-}
-Motion;
+};
 
 
 

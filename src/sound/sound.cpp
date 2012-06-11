@@ -35,8 +35,8 @@
 /////////////////////////////////////////////////////////////////////////////
 
 
-#define LXIMAGE		640
-#define LYIMAGE		480
+const int LXIMAGE = 640;
+const int LYIMAGE = 480;
 
 
 

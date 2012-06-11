@@ -42,14 +42,14 @@
 #include "object/task/taskmanip.h"
 
 
-//?#define MARGIN_FRONT	2.0f
-//?#define MARGIN_BACK		2.0f
-//?#define MARGIN_FRIEND	2.0f
-//?#define MARGIN_BEE		5.0f
-#define MARGIN_FRONT	4.0f  //OK 1.9
-#define MARGIN_BACK		4.0f  //OK 1.9
-#define MARGIN_FRIEND	4.0f  //OK 1.9
-#define MARGIN_BEE		5.0f  //OK 1.9
+//?const float MARGIN_FRONT		= 2.0f;
+//?const float MARGIN_BACK		= 2.0f;
+//?const float MARGIN_FRIEND	= 2.0f;
+//?const float MARGIN_BEE		= 5.0f;
+const float MARGIN_FRONT	= 4.0f;  //OK 1.9
+const float MARGIN_BACK		= 4.0f;  //OK 1.9
+const float MARGIN_FRIEND	= 4.0f;  //OK 1.9
+const float MARGIN_BEE		= 5.0f;  //OK 1.9
 
 
 

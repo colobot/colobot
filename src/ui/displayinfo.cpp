@@ -950,12 +950,11 @@ CObject* CDisplayInfo::SearchToto()
 
 // Creating the list of objects.
 
-typedef struct
+struct ObjectList
 {
 	int			total;
 	ObjectType	type;
-}
-ObjectList;
+};
 
 void ObjectAdd(ObjectList list[], ObjectType type)
 {

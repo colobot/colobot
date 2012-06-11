@@ -61,15 +61,15 @@
 
 
 
-#define KEY_VISIBLE		6		// number of visible keys redefinable
+const int KEY_VISIBLE = 6;		// number of visible keys redefinable
 
 #if _SCHOOL & _TEEN
-#define KEY_TOTAL		13		// total number of keys redefinable
+const int KEY_TOTAL = 13;		// total number of keys redefinable
 #else
-#define KEY_TOTAL		21		// total number of keys redefinable
+const int KEY_TOTAL = 21;		// total number of keys redefinable
 #endif
 
-#define WELCOME_LENGTH	6.0f
+const int WELCOME_LENGTH = 6.0f;
 
 
 

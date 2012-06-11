@@ -43,8 +43,8 @@
 
 
 
-#define DERRICK_DELAY		10.0f		// duration of the extraction
-#define DERRICK_DELAYu		30.0f		// same, but for uranium
+const float DERRICK_DELAY	= 10.0f;	// duration of the extraction
+const float DERRICK_DELAYu	= 30.0f;	// same, but for uranium
 
 
 

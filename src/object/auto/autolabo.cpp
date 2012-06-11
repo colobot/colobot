@@ -47,7 +47,7 @@
 
 
 
-#define LABO_DELAY		20.0f		// duration of the analysis
+const float LABO_DELAY = 20.0f;	// duration of the analysis
 
 
 

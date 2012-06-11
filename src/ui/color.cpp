@@ -33,8 +33,8 @@
 
 
 
-#define DELAY1		0.4f
-#define DELAY2		0.1f
+const float DELAY1 = 0.4f;
+const float DELAY2 = 0.1f;
 
 
 

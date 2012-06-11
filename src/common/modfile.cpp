@@ -35,7 +35,7 @@
 
 
 
-#define MAX_VERTICES	2000
+const int MAX_VERTICES = 2000;
 
 
 
@@ -243,14 +243,13 @@ bool CModFile::ReadDXF(char *filename, float min, float max)
 
 
 
-typedef struct
+struct InfoMOD
 {
 	int		rev;
 	int		vers;
 	int		total;
 	int		reserve[10];
-}
-InfoMOD;
+};
 
 
 // Change nom.bmp to nom.tga

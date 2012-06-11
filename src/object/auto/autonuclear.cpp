@@ -45,7 +45,7 @@
 
 
 
-#define NUCLEAR_DELAY		30.0f		// duration of the generation
+const float NUCLEAR_DELAY = 30.0f;	// duration of the generation
 
 
 

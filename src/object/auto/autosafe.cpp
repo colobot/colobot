@@ -46,7 +46,7 @@
 
 
 
-#define OPEN_DELAY		8.0f		// duration of opening
+const float OPEN_DELAY	= 8.0f;	// duration of opening
 
 
 

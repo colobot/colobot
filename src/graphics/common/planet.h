@@ -27,9 +27,9 @@ class CD3DEngine;
 
 
 
-#define MAXPLANET	10
+const int MAXPLANET = 10;
 
-typedef struct
+struct Planet
 {
 	char		bUsed;		// true -> planet exists
 	FPOINT		start;		// initial position in degrees
@@ -40,8 +40,7 @@ typedef struct
 	char		name[20];	// name of the texture
 	FPOINT		uv1, uv2;	// texture mapping
 	char		bTGA;		// texture .TGA
-}
-Planet;
+};
 
 
 

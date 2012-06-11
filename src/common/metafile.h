@@ -22,24 +22,22 @@
 #include <stdio.h>
 
 
-#define METAMAX		5
+const int METAMAX = 5;
 
-typedef struct
+struct MetaHeader
 {
 	char			name[14];	// file name (8.3 max)
 	int			start;		// position from the beginning of the metafile
 	int			len;		// length of the file
-}
-MetaHeader;
+};
 
-typedef struct
+struct MetaFile
 {
 	char		name[50];	// name of the metafile
 	FILE*		stream;		// channel
 	int		total;		// number of files
 	MetaHeader*	headers;	// headers of files
-}
-MetaFile;
+};
 
 
 

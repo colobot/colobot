@@ -36,7 +36,7 @@
 
 
 
-#define MARGING		4.0f
+const float MARGING = 4.0f;
 
 
 

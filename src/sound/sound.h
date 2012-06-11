@@ -22,10 +22,10 @@
 #include <dsound.h>
 
 
-#define MAXFILES	200
-#define MAXSOUND	32
-#define MAXVOLUME	20
-#define MAXOPER		4
+const int MAXFILES	= 200;
+const int MAXSOUND	= 32;
+const int MAXVOLUME	= 20;
+const int MAXOPER	= 4;
 
 class CInstanceManager;
 
@@ -123,7 +123,7 @@ enum SoundNext
 	SOPER_LOOP		= 3,
 };
 
-typedef struct
+struct SoundOper
 {
 	char		bUsed;
 	float		finalAmplitude;
@@ -131,10 +131,9 @@ typedef struct
 	float		totalTime;
 	float		currentTime;
 	SoundNext	nextOper;
-}
-SoundOper;
+};
 
-typedef struct
+struct SoundChannel
 {
 	char					bUsed;			// buffer used?
 	char					bMute;			// silence?
@@ -151,8 +150,7 @@ typedef struct
 	float					volume;			// 2D: volume 1..0 depending on position
 	float					pan;			// 2D: pan -1..+1 depending on position
 	SoundOper				oper[MAXOPER];
-}
-SoundChannel;
+};
 
 
 

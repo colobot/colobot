@@ -27,7 +27,7 @@ class CD3DEngine;
 class CButton;
 
 
-#define SCROLL_WIDTH	(15.0f/640.0f)
+const float SCROLL_WIDTH = (15.0f/640.0f);
 
 
 

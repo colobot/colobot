@@ -43,8 +43,8 @@
 
 
 
-#define FOG_HSUP	10.0f
-#define FOG_HINF	100.0f
+const float FOG_HSUP	= 10.0f;
+const float FOG_HINF	= 100.0f;
 
 
 

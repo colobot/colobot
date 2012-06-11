@@ -40,8 +40,8 @@
 #include "object/task/taskrecover.h"
 
 
-#define ENERGY_RECOVER	0.25f		// energy consumed by recovery
-#define RECOVER_DIST	11.8f
+const float ENERGY_RECOVER	= 0.25f;		// energy consumed by recovery
+const float RECOVER_DIST	= 11.8f;
 
 
 

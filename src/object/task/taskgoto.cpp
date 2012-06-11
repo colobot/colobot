@@ -39,9 +39,9 @@
 
 
 
-#define FLY_DIST_GROUND	80.0f		// minimum distance to remain on the ground
-#define FLY_DEF_HEIGHT	50.0f		// default flying height
-#define BM_DIM_STEP		5.0f
+const float FLY_DIST_GROUND	= 80.0f;	// minimum distance to remain on the ground
+const float FLY_DEF_HEIGHT	= 50.0f;	// default flying height
+const float BM_DIM_STEP		= 5.0f;
 
 
 

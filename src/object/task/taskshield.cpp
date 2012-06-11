@@ -41,7 +41,7 @@
 #include "object/task/taskshield.h"
 
 
-#define ENERGY_TIME		20.0f		// maximum duration if full battery
+const float ENERGY_TIME = 20.0f;		// maximum duration if full battery
 
 
 

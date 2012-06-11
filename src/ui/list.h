@@ -28,8 +28,8 @@ class CButton;
 class CScroll;
 
 
-#define LISTMAXDISPLAY	20		// maximum number of visible lines
-#define LISTMAXTOTAL	100		// maximum total number of lines
+const int LISTMAXDISPLAY = 20;	// maximum number of visible lines
+const int LISTMAXTOTAL   = 100;	// maximum total number of lines
 
 
 

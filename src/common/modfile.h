@@ -27,7 +27,7 @@ class CInstanceManager;
 
 
 
-typedef struct
+struct OldModelTriangle1
 {
 	char			bUsed;		// true -> using
 	char			bSelect;	// true -> selected
@@ -38,10 +38,9 @@ typedef struct
 	char			texName[20];
 	float			min;
 	float			max;
-}
-OldModelTriangle1;		// length = 196 bytes
+};		// length = 196 bytes
 
-typedef struct
+struct OldModelTriangle2
 {
 	char			bUsed;		// true -> used
 	char			bSelect;	// true -> selected
@@ -57,10 +56,9 @@ typedef struct
 	short			reserve2;
 	short			reserve3;
 	short			reserve4;
-}
-OldModelTriangle2;
+};
 
-typedef struct
+struct ModelTriangle
 {
 	char			bUsed;		// true -> used
 	char			bSelect;	// true -> selected
@@ -76,8 +74,7 @@ typedef struct
 	short			reserve2;
 	short			reserve3;
 	short			reserve4;
-}
-ModelTriangle;		// length = 208 bytes
+};		// length = 208 bytes
 
 
 

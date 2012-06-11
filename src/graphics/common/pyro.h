@@ -67,23 +67,21 @@ enum PyroType
 };
 
 
-typedef struct
+struct PyroBurnPart
 {
 	int				part;
 	D3DVECTOR		initialPos;
 	D3DVECTOR		finalPos;
 	D3DVECTOR		initialAngle;
 	D3DVECTOR		finalAngle;
-}
-PyroBurnPart;
+};
 
-typedef struct
+struct PyroLightOper
 {
 	float			progress;
 	float			intensity;
 	D3DCOLORVALUE	color;
-}
-PyroLightOper;
+};
 
 
 

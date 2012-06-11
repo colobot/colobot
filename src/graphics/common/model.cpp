@@ -41,7 +41,7 @@
 
 
 
-#define MAX_COLORS		9
+const int MAX_COLORS = 9;
 
 static float table_color[MAX_COLORS*3] =
 {
@@ -57,7 +57,7 @@ static float table_color[MAX_COLORS*3] =
 };
 
 
-#define MAX_STATES		10
+const int MAX_STATES = 10;
 
 static int table_state[MAX_STATES] =
 {
@@ -74,7 +74,7 @@ static int table_state[MAX_STATES] =
 };
 
 
-#define MAX_NAMES		23
+const int MAX_NAMES = 23;
 
 
 

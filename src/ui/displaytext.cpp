@@ -43,7 +43,7 @@
 
 
 
-#define FONTSIZE	12.0f
+const float FONTSIZE = 12.0f;
 
 
 

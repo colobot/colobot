@@ -49,12 +49,11 @@ void SetGlobalGamerName(char *name)
 
 
 
-typedef struct
+struct KeyDesc
 {
 	KeyRank		key;
 	char		name[20];
-}
-KeyDesc;
+};
 
 static KeyDesc keyTable[22] =
 {

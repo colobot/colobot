@@ -43,10 +43,10 @@
 
 
 
-#define START_TIME		1000.0f		// beginning of the relative time
-#define TIME_UPDOWN		2.0f		// time for up / down
-#define DOWN_ALTITUDE		3.0f		// underground distance
-#define WORM_PART		7		// number of parts of a worm
+const float START_TIME		= 1000.0f;	// beginning of the relative time
+const float TIME_UPDOWN		= 2.0f;		// time for up / down
+const float DOWN_ALTITUDE	= 3.0f;		// underground distance
+const int WORM_PART = 7;		// number of parts of a worm
 
 
 

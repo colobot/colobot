@@ -28,15 +28,14 @@ class CTerrain;
 
 
 
-#define MAXCLOUDLINE	100
+const int MAXCLOUDLINE = 100;
 
-typedef struct
+struct CloudLine
 {
 	short		x, y;		// beginning
 	short		len;		// in length x
 	float		px1, px2, pz;
-}
-CloudLine;
+};
 
 
 class CCloud

@@ -81,7 +81,7 @@
 
 
 #define CBOT_STACK	true	// saves the stack of programs CBOT
-#define UNIT		4.0f
+const float UNIT = 4.0f;
 
 
 

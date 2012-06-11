@@ -42,11 +42,11 @@ class CScript;
 
 // The father of all parts must always be the part number zero!
 
-#define OBJECTMAXPART		40
-#define MAXCRASHSPHERE		40
-#define OBJECTMAXDESELLIST	10
-#define OBJECTMAXINFO		10
-#define OBJECTMAXCMDLINE	20
+const int OBJECTMAXPART			= 40;
+const int MAXCRASHSPHERE		= 40;
+const int OBJECTMAXDESELLIST	= 10;
+const int OBJECTMAXINFO			= 10;
+const int OBJECTMAXCMDLINE		= 20;
 
 enum ObjectType
 {
@@ -303,7 +303,7 @@ enum ObjectMaterial
 	OM_MINERAL		= 5,	// stone
 };
 
-typedef struct
+struct ObjectPart
 {
 	char		bUsed;
 	int		object;			// number of the object in CD3DEngine
@@ -319,10 +319,9 @@ typedef struct
 	D3DMATRIX	matRotate;
 	D3DMATRIX	matTransform;
 	D3DMATRIX	matWorld;
-}
-ObjectPart;
+};
 
-typedef struct
+struct Character
 {
 	float		wheelFront;		// position X of the front wheels
 	float		wheelBack;		// position X of the back wheels
@@ -330,15 +329,13 @@ typedef struct
 	float		wheelRight;		// position Z of the right wheels
 	float		height;			// normal height on top of ground
 	D3DVECTOR	posPower;		// position of the battery
-}
-Character;
+};
 
-typedef struct
+struct Info
 {
 	char		name[20];		// name of the information
 	float		value;			// value of the information
-}
-Info;
+};
 
 enum ExploType
 {

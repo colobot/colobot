@@ -42,7 +42,7 @@ class CCompass;
 class CTarget;
 
 
-#define MAXWINDOW	100
+const int MAXWINDOW = 100;
 
 
 class CWindow : public CControl

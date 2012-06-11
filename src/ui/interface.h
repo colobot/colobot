@@ -43,7 +43,7 @@ class CTarget;
 class CCamera;
 
 
-#define MAXCONTROL	100
+const int MAXCONTROL = 100;
 
 
 class CInterface

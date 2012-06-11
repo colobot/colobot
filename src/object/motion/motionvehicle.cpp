@@ -43,10 +43,6 @@
 
 
 
-#define ARM_NEUTRAL_ANGLE1	 110.0f*PI/180.0f
-#define ARM_NEUTRAL_ANGLE2	-130.0f*PI/180.0f
-#define ARM_NEUTRAL_ANGLE3	 -50.0f*PI/180.0f
-
 
 
 // Object's constructor.

@@ -49,9 +49,9 @@
 
 
 
-#define LANDING_SPEED	3.0f
-#define LANDING_ACCEL	5.0f
-#define LANDING_ACCELh	1.5f
+const float LANDING_SPEED	= 3.0f;
+const float LANDING_ACCEL	= 5.0f;
+const float LANDING_ACCELh	= 1.5f;
 
 
 

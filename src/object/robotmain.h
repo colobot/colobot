@@ -87,7 +87,7 @@ class CDisplayInfo;
 class CSound;
 
 
-typedef struct
+struct EndTake
 {
 	D3DVECTOR	pos;
 	float		dist;
@@ -97,26 +97,24 @@ typedef struct
 	int			lost;		// lost if <=
 	bool		bImmediat;
 	char		message[100];
-}
-EndTake;
+};
 
 
-#define MAXNEWSCRIPTNAME	20
+const int MAXNEWSCRIPTNAME = 20;
 
-typedef struct
+struct NewScriptName
 {
 	bool		bUsed;
 	ObjectType	type;
 	char		name[40];
-}
-NewScriptName;
+};
 
 
-#define MAXSHOWLIMIT	5
-#define MAXSHOWPARTI	200
-#define SHOWLIMITTIME	20.0f
+const int MAXSHOWLIMIT		= 5;
+const int MAXSHOWPARTI		= 200;
+const float SHOWLIMITTIME	= 20.0f;
 
-typedef struct
+struct ShowLimit
 {
 	bool			bUsed;
 	D3DVECTOR		pos;
@@ -126,17 +124,16 @@ typedef struct
 	CObject*		link;
 	float			duration;
 	float			time;
-}
-ShowLimit;
+};
 
 
-#define SATCOM_HUSTON	0
-#define SATCOM_SAT		1
-#define SATCOM_OBJECT	2
-#define SATCOM_LOADING	3
-#define SATCOM_PROG		4
-#define SATCOM_SOLUCE	5
-#define SATCOM_MAX		6
+const int SATCOM_HUSTON		= 0;
+const int SATCOM_SAT		= 1;
+const int SATCOM_OBJECT		= 2;
+const int SATCOM_LOADING	= 3;
+const int SATCOM_PROG		= 4;
+const int SATCOM_SOLUCE		= 5;
+const int SATCOM_MAX		= 6;
 
 
 
