@@ -69,7 +69,7 @@
 
 
 
-#define MAXTRACERECORD	1000
+const int MAXTRACERECORD = 1000;
 
 
 

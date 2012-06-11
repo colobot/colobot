@@ -26,10 +26,10 @@ class CInstanceManager;
 
 
 
-#define SMALLFONT	10.0f
-#define BIGFONT		15.0f
+const float SMALLFONT 	= 10.0f;
+const float BIGFONT		= 15.0f;
 
-#define NORMSTRETCH	0.8f
+const float NORMSTRETCH	= 0.8f;
 
 
 
@@ -58,10 +58,10 @@ enum FontColor
 	COLOR_TABLE		= 0x70,
 };
 
-#define FONT_MASK	0x03
-#define TITLE_MASK	0x0c
-#define COLOR_MASK	0x70
-#define IMAGE_MASK	0x80
+const int FONT_MASK		= 0x03;
+const int TITLE_MASK	= 0x0c;
+const int COLOR_MASK	= 0x70;
+const int IMAGE_MASK	= 0x80;
 
 
 

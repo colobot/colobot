@@ -53,10 +53,10 @@
 
 
 
-#define CBOT_IPF	100		// CBOT: number of instructions / frame
+const int CBOT_IPF = 100;		// CBOT: number of instructions / frame
 
-#define ERM_CONT	0		// if error -> continue
-#define ERM_STOP	1		// if error -> stop
+const int ERM_CONT = 0;		// if error -> continue
+const int ERM_STOP = 1;		// if error -> stop
 
 
 

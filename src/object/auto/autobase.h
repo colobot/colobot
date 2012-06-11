@@ -31,15 +31,16 @@ class CCamera;
 class CObject;
 
 
-
-#define PARAM_STOP			0		// run=0 -> stops and open
-#define PARAM_LANDING			1		// run=1 -> landing
-#define PARAM_PORTICO			2		// run=2 -> gate on the ground
-#define PARAM_FIXSCENE			3		// run=3 -> open and stops to win / lost
-#define PARAM_TRANSIT1			11		// run=11 -> transit in space
-#define PARAM_TRANSIT2			12		// run=12 -> transit in space
-#define PARAM_TRANSIT3			13		// run=13 -> transit in space
-
+enum AutoBaseParam
+{
+	PARAM_STOP		= 0,		// run=0 -> stops and open
+	PARAM_LANDING	= 1,		// run=1 -> landing
+	PARAM_PORTICO	= 2,		// run=2 -> gate on the ground
+	PARAM_FIXSCENE	= 3,		// run=3 -> open and stops to win / lost
+	PARAM_TRANSIT1	= 11,		// run=11 -> transit in space
+	PARAM_TRANSIT2	= 12,		// run=12 -> transit in space
+	PARAM_TRANSIT3	= 13		// run=13 -> transit in space
+};
 
 enum AutoBasePhase
 {

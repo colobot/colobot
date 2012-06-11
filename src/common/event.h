@@ -34,7 +34,7 @@
 class CInstanceManager;
 
 
-#define MAXEVENT	100
+const int MAXEVENT = 100;
 
 // Events.
 
@@ -528,7 +528,7 @@ enum EventMsg
 	EVENT_FORCE_DWORD		= 0x7fffffff
 };
 
-typedef struct
+struct Event
 {
 	EventMsg	event;		// event (EVENT *)
 	long		param;		// parameter
@@ -538,45 +538,44 @@ typedef struct
 	float		axeZ;		// control the Z axis (-1 .. 1)
 	short		keyState;	// state of the keyboard (KS_ *)
 	float		rTime;		// relative time
-}
-Event;
+};
 
 
-#define VK_BUTTON1		(0x100+1)	// joystick button 1
-#define VK_BUTTON2		(0x100+2)	// joystick button 2
-#define VK_BUTTON3		(0x100+3)	// joystick button 3
-#define VK_BUTTON4		(0x100+4)	// joystick button 4
-#define VK_BUTTON5		(0x100+5)	// joystick button 5
-#define VK_BUTTON6		(0x100+6)	// joystick button 6
-#define VK_BUTTON7		(0x100+7)	// joystick button 7
-#define VK_BUTTON8		(0x100+8)	// joystick button 8
-#define VK_BUTTON9		(0x100+9)	// joystick button 9
-#define VK_BUTTON10		(0x100+10)	// joystick button 10
-#define VK_BUTTON11		(0x100+11)	// joystick button 11
-#define VK_BUTTON12		(0x100+12)	// joystick button 12
-#define VK_BUTTON13		(0x100+13)	// joystick button 13
-#define VK_BUTTON14		(0x100+14)	// joystick button 14
-#define VK_BUTTON15		(0x100+15)	// joystick button 15
-#define VK_BUTTON16		(0x100+16)	// joystick button 16
-#define VK_BUTTON17		(0x100+17)	// joystick button 17
-#define VK_BUTTON18		(0x100+18)	// joystick button 18
-#define VK_BUTTON19		(0x100+19)	// joystick button 19
-#define VK_BUTTON20		(0x100+20)	// joystick button 20
-#define VK_BUTTON21		(0x100+21)	// joystick button 21
-#define VK_BUTTON22		(0x100+22)	// joystick button 22
-#define VK_BUTTON23		(0x100+23)	// joystick button 23
-#define VK_BUTTON24		(0x100+24)	// joystick button 24
-#define VK_BUTTON25		(0x100+25)	// joystick button 25
-#define VK_BUTTON26		(0x100+26)	// joystick button 26
-#define VK_BUTTON27		(0x100+27)	// joystick button 27
-#define VK_BUTTON28		(0x100+28)	// joystick button 28
-#define VK_BUTTON29		(0x100+29)	// joystick button 29
-#define VK_BUTTON30		(0x100+30)	// joystick button 30
-#define VK_BUTTON31		(0x100+31)	// joystick button 31
-#define VK_BUTTON32		(0x100+32)	// joystick button 32
+const int VK_BUTTON1		= (0x100+1);	// joystick button 1
+const int VK_BUTTON2		= (0x100+2);	// joystick button 2
+const int VK_BUTTON3		= (0x100+3);	// joystick button 3
+const int VK_BUTTON4		= (0x100+4);	// joystick button 4
+const int VK_BUTTON5		= (0x100+5);	// joystick button 5
+const int VK_BUTTON6		= (0x100+6);	// joystick button 6
+const int VK_BUTTON7		= (0x100+7);	// joystick button 7
+const int VK_BUTTON8		= (0x100+8);	// joystick button 8
+const int VK_BUTTON9		= (0x100+9);	// joystick button 9
+const int VK_BUTTON10		= (0x100+10);	// joystick button 10
+const int VK_BUTTON11		= (0x100+11);	// joystick button 11
+const int VK_BUTTON12		= (0x100+12);	// joystick button 12
+const int VK_BUTTON13		= (0x100+13);	// joystick button 13
+const int VK_BUTTON14		= (0x100+14);	// joystick button 14
+const int VK_BUTTON15		= (0x100+15);	// joystick button 15
+const int VK_BUTTON16		= (0x100+16);	// joystick button 16
+const int VK_BUTTON17		= (0x100+17);	// joystick button 17
+const int VK_BUTTON18		= (0x100+18);	// joystick button 18
+const int VK_BUTTON19		= (0x100+19);	// joystick button 19
+const int VK_BUTTON20		= (0x100+20);	// joystick button 20
+const int VK_BUTTON21		= (0x100+21);	// joystick button 21
+const int VK_BUTTON22		= (0x100+22);	// joystick button 22
+const int VK_BUTTON23		= (0x100+23);	// joystick button 23
+const int VK_BUTTON24		= (0x100+24);	// joystick button 24
+const int VK_BUTTON25		= (0x100+25);	// joystick button 25
+const int VK_BUTTON26		= (0x100+26);	// joystick button 26
+const int VK_BUTTON27		= (0x100+27);	// joystick button 27
+const int VK_BUTTON28		= (0x100+28);	// joystick button 28
+const int VK_BUTTON29		= (0x100+29);	// joystick button 29
+const int VK_BUTTON30		= (0x100+30);	// joystick button 30
+const int VK_BUTTON31		= (0x100+31);	// joystick button 31
+const int VK_BUTTON32		= (0x100+32);	// joystick button 32
 
-#define VK_WHEELUP		(0x200+1)	// Mousewheel up
-#define VK_WHEELDOWN	(0x200+2)	// Mousewheel down
+const int VK_WHEELUP		= (0x200+1);	// Mousewheel up
+const int VK_WHEELDOWN		= (0x200+2);	// Mousewheel down
 
 
 enum KeyRank

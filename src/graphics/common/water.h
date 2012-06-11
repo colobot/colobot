@@ -29,20 +29,19 @@ class CSound;
 
 
 
-#define MAXWATERLINE	500
+const int MAXWATERLINE = 500;
 
-typedef struct
+struct WaterLine
 {
 	short		x, y;		// beginning
 	short		len;		// length by x
 	float		px1, px2, pz;
-}
-WaterLine;
+};
 
 
-#define MAXWATVAPOR		10
+const int MAXWATVAPOR = 10;
 
-typedef struct
+struct WaterVapor
 {
 	bool			bUsed;
 	ParticuleType	type;
@@ -50,8 +49,7 @@ typedef struct
 	float			delay;
 	float			time;
 	float			last;
-}
-WaterVapor;
+};
 
 
 enum WaterType

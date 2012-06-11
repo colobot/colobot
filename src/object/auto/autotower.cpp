@@ -47,8 +47,8 @@
 
 
 
-#define TOWER_SCOPE		200.0f		// range of beam
-#define ENERGY_FIRE		0.125f		// energy consumed by fire
+const float TOWER_SCOPE		= 200.0f;	// range of beam
+const float ENERGY_FIRE		= 0.125f;	// energy consumed by fire
 
 
 // Object's constructor.

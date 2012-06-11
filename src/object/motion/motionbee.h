@@ -33,12 +33,18 @@ class CPhysics;
 class CObject;
 
 
-#define MB_MARCH		0
-#define MB_SPEC			1
+enum MotionBeeAction
+{
+	MB_MARCH		= 0,
+	MB_SPEC			= 1
+};
 
-#define MBS_HOLD		0
-#define MBS_BURN		1
-#define MBS_RUIN		2
+enum MotionBeeSpecialAction
+{
+	MBS_HOLD		= 0,
+	MBS_BURN		= 1,
+	MBS_RUIN		= 2
+};
 
 
 class CMotionBee : public CMotion

@@ -46,8 +46,8 @@
 
 
 
-#define ENERGY_POWER	 0.4f		// Necessary energy for a battery
-#define ENERGY_DELAY	12.0f		// processing time
+const float ENERGY_POWER	=  0.4f;	// Necessary energy for a battery
+const float ENERGY_DELAY	= 12.0f;	// processing time
 
 
 

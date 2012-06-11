@@ -31,8 +31,8 @@ class CSound;
 
 
 
-#define BLITZPARA	200.0f		// radius of lightning protection
-#define BLITZMAX	50
+const float BLITZPARA	= 200.0f;		// radius of lightning protection
+const int BLITZMAX		= 50;
 
 enum BlitzPhase
 {

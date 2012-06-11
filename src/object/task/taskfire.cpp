@@ -40,9 +40,9 @@
 
 
 
-#define ENERGY_FIRE	(0.25f/2.5f)	// energy consumed/shot
-#define ENERGY_FIREr	(0.25f/1.5f)	// energy consumed/ray
-#define ENERGY_FIREi	(0.10f/2.5f)	// energy consumed/organic
+const float ENERGY_FIRE 	= (0.25f/2.5f);	// energy consumed/shot
+const float ENERGY_FIREr	= (0.25f/1.5f);	// energy consumed/ray
+const float ENERGY_FIREi	= (0.10f/2.5f);	// energy consumed/organic
 
 
 // Object's constructor.

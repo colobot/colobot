@@ -34,30 +34,36 @@ class CPhysics;
 class CObject;
 
 
-#define MH_MARCH		0
-#define MH_MARCHTAKE	1
-#define MH_TURN			2
-#define MH_STOP			3
-#define MH_FLY			4
-#define MH_SWIM			5
-#define MH_SPEC			6
+enum MotionHumanAction
+{
+	MH_MARCH		= 0,
+	MH_MARCHTAKE	= 1,
+	MH_TURN			= 2,
+	MH_STOP			= 3,
+	MH_FLY			= 4,
+	MH_SWIM			= 5,
+	MH_SPEC			= 6
+};
 
-#define MHS_FIRE		0
-#define MHS_GUN			1
-#define MHS_TAKE		2
-#define MHS_TAKEOTHER	3
-#define MHS_TAKEHIGH	4
-#define MHS_UPRIGHT		5
-#define MHS_WIN			6
-#define MHS_LOST		7
-#define MHS_DEADg		8
-#define MHS_DEADg1		9
-#define MHS_DEADg2		10
-#define MHS_DEADg3		11
-#define MHS_DEADg4		12
-#define MHS_DEADw		13
-#define MHS_FLAG		14
-#define MHS_SATCOM		15
+enum MotionHumanSpecialAction
+{
+	MHS_FIRE		= 0,
+	MHS_GUN			= 1,
+	MHS_TAKE		= 2,
+	MHS_TAKEOTHER	= 3,
+	MHS_TAKEHIGH	= 4,
+	MHS_UPRIGHT		= 5,
+	MHS_WIN			= 6,
+	MHS_LOST		= 7,
+	MHS_DEADg		= 8,
+	MHS_DEADg1		= 9,
+	MHS_DEADg2		= 10,
+	MHS_DEADg3		= 11,
+	MHS_DEADg4		= 12,
+	MHS_DEADw		= 13,
+	MHS_FLAG		= 14,
+	MHS_SATCOM		= 15
+};
 
 
 class CMotionHuman : public CMotion

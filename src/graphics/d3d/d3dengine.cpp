@@ -47,12 +47,12 @@
 
 
 
-#define SIZEBLOC_TEXTURE	50
-#define SIZEBLOC_TRANSFORM	100
-#define SIZEBLOC_MINMAX		5
-#define SIZEBLOC_LIGHT		10
-#define SIZEBLOC_MATERIAL	100
-#define SIZEBLOC_TRIANGLE	200
+const int SIZEBLOC_TEXTURE		= 50;
+const int SIZEBLOC_TRANSFORM	= 100;
+const int SIZEBLOC_MINMAX		= 5;
+const int SIZEBLOC_LIGHT		= 10;
+const int SIZEBLOC_MATERIAL		= 100;
+const int SIZEBLOC_TRIANGLE		= 200;
 
 
 
@@ -5616,14 +5616,13 @@ void CD3DEngine::DrawMouse()
 	FPOINT			pos, ppos, dim;
 	int				i;
 
-	typedef struct
+	struct Mouse
 	{
 		D3DMouse	type;
 		int			icon1, icon2, iconShadow;
 		int			mode1, mode2;
 		float		hotx, hoty;
-	}
-	Mouse;
+	};
 
 	static Mouse table[] =
 	{

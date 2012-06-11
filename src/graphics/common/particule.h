@@ -30,17 +30,20 @@ class CWater;
 class CObject;
 
 
-#define MAXPARTICULE	500
-#define MAXPARTITYPE	5
-#define MAXTRACK		100
-#define MAXTRACKLEN		10
-#define MAXPARTIFOG		100
-#define MAXWHEELTRACE	1000
+const int MAXPARTICULE	= 500;
+const int MAXPARTITYPE	= 5;
+const int MAXTRACK		= 100;
+const int MAXTRACKLEN	= 10;
+const int MAXPARTIFOG	= 100;
+const int MAXWHEELTRACE	= 1000;
 
-#define SH_WORLD		0		// particle in the world in the interface
-#define SH_FRONT		1		// particle in the world on the interface
-#define SH_INTERFACE		2		// particle in the interface
-#define SH_MAX			3
+enum ParticulePlace
+{
+	SH_WORLD		= 0,	// particle in the world in the interface
+	SH_FRONT		= 1,	// particle in the world on the interface
+	SH_INTERFACE	= 2,	// particle in the interface
+	SH_MAX			= 3
+};
 
 // type == 0	->	triangles
 // type == 1	->	effect00 (black background)
@@ -198,7 +201,7 @@ enum ParticulePhase
 	PARPHEND		= 1,
 };
 
-typedef struct
+struct Particule
 {
 	char			bUsed;		// true -> particle used
 	char			bRay;		// true -> ray with goal
@@ -227,10 +230,9 @@ typedef struct
 	CObject*		objFather;	// father object (for example reactor)
 	short			objRank;	// rank of the object, or -1
 	short			trackRank;	// rank of the drag
-}
-Particule;
+};
 
-typedef struct
+struct Track
 {
 	char			bUsed;		// true -> drag used
 	char			bDrawParticule;
@@ -242,16 +244,14 @@ typedef struct
 	int			head;		// head to write index
 	D3DVECTOR		pos[MAXTRACKLEN];
 	float			len[MAXTRACKLEN];
-}
-Track;
+};
 
-typedef struct
+struct WheelTrace
 {
 	ParticuleType		type;		// type PARTI*
 	D3DVECTOR		pos[4];		// rectangle positions
 	float			startTime;	// beginning of life
-}
-WheelTrace;
+};
 
 
 

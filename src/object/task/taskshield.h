@@ -30,8 +30,8 @@ class CPhysics;
 class CObject;
 
 
-#define RADIUS_SHIELD_MIN	 40.0f		// minimal radius of the protected zone
-#define RADIUS_SHIELD_MAX	100.0f		// maximal radius of the protected zone
+const float RADIUS_SHIELD_MIN = 40.0f;		// minimum radius of the protected zone
+const float RADIUS_SHIELD_MAX = 100.0f;		// maximum radius of the protected zone
 
 
 enum TaskShieldPhase

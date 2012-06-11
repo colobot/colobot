@@ -28,15 +28,15 @@ class CScroll;
 
 
 
-#define EDITSTUDIOMAX	20000		// maximum number of characters in CBOT edit
-#define EDITLINEMAX	1000		// maximum total number of lines
-#define EDITIMAGEMAX	50		// maximum total number of lines with images
-#define EDITLINKMAX	100		// maximum number of links
-#define EDITHISTORYMAX	50		// max number of levels preserves
+const int EDITSTUDIOMAX		= 20000;	// maximum number of characters in CBOT edit
+const int EDITLINEMAX		= 1000;		// maximum total number of lines
+const int EDITIMAGEMAX		= 50;		// maximum total number of lines with images
+const int EDITLINKMAX		= 100;		// maximum number of links
+const int EDITHISTORYMAX	= 50;		// max number of levels preserves
 
-#define EDITUNDOMAX	20		// max number of successive undo
+const int EDITUNDOMAX = 20;	// max number of successive undo
 
-typedef struct
+struct EditUndo
 {
 	char*		text;			// original text
 	int		len;			// length of the text
@@ -44,8 +44,7 @@ typedef struct
 	int		cursor2;		// offset cursor
 	int		lineFirst;		// the first line displayed.
 
-}
-EditUndo;
+};
 
 enum OperUndo
 {
@@ -54,35 +53,31 @@ enum OperUndo
 	OPERUNDO_DELETE	= 2,	// deleting characters
 };
 
-typedef struct
+struct ImageLine
 {
 	char	name[40];		// name of the image (without diagram \)
 	float	offset;			// vertical offset (v texture)
 	float	height;			// height of the part (dv texture)
 	float	width;			// width
-}
-ImageLine;
+};
 
-typedef struct
+struct HyperLink
 {
 	char	name[40];		// text file name (without help \)
 	char	marker[20];		// name of the marker
-}
-HyperLink;
+};
 
-typedef struct
+struct HyperMarker
 {
 	char	name[20];		// name of the marker
 	int	pos;			// position in the text
-}
-HyperMarker;
+};
 
-typedef struct
+struct HyperHistory
 {
 	char	filename[50];		// full file name text
 	int	firstLine;		// rank of the first displayed line
-}
-HyperHistory;
+};
 
 
 

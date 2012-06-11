@@ -35,7 +35,7 @@
 
 
 
-#define DIMEXPAND	4		// extension of the dimensions
+const int DIMEXPAND = 4;	// extension of the dimensions
 
 
 

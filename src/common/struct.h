@@ -22,8 +22,6 @@
 #include <d3d.h>
 
 
-#define NAN		999999
-
 #define D3DFVF_VERTEX2	(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2)
 
 struct D3DVERTEX2

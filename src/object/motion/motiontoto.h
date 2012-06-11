@@ -34,10 +34,13 @@ class CBrain;
 class CPhysics;
 
 
-#define MT_ERROR		0
-#define MT_WARNING		1
-#define MT_INFO			2
-#define MT_MESSAGE		3
+enum MotionTotoAction
+{
+	MT_ERROR	= 0,
+	MT_WARNING	= 1,
+	MT_INFO		= 2,
+	MT_MESSAGE	= 3
+};
 
 
 class CMotionToto : public CMotion

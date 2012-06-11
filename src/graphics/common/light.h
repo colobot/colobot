@@ -26,21 +26,20 @@ class CInstanceManager;
 class CD3DEngine;
 
 
-#define D3DMAXLIGHT		100
+const int D3DMAXLIGHT = 100;
 
 
-typedef struct
+struct LightProg
 {
 	float	starting;
 	float	ending;
 	float	current;
 	float	progress;
 	float	speed;
-}
-LightProg;
+};
 
 
-typedef struct
+struct Light
 {
 	char			bUsed;			// true -> light exists
 	char			bEnable;		// true -> light turned on
@@ -54,8 +53,7 @@ typedef struct
 	LightProg		colorRed;
 	LightProg		colorGreen;
 	LightProg		colorBlue;
-}
-Light;
+};
 
 
 

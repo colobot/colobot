@@ -19,10 +19,6 @@
 #pragma once
 
 
-#define STRICT
-#define D3D_OVERLOADS
-
-
 extern bool	InitCurrentDirectory();
 extern bool	SetProfileString(char* section, char* key, char* string);
 extern bool	GetProfileString(char* section, char* key, char* buffer, int max);

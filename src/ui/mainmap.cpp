@@ -40,8 +40,8 @@
 
 
 
-#define ZOOM_MIN	1.0f
-#define ZOOM_MAX	16.0f
+const float ZOOM_MIN = 1.0f;
+const float ZOOM_MAX = 16.0f;
 
 
 

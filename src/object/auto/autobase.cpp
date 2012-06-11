@@ -48,14 +48,14 @@
 
 
 
-#define BASE_LAND_TIME			 7.5f	// hard landing
-#define BASE_TAKO_TIME			10.0f	// hard landing
-#define BASE_DOOR_TIME			 6.0f	// time opening / closing
-#define BASE_DOOR_TIME2			 2.0f	// time opening / closing suppl.
-#define BASE_PORTICO_TIME_MOVE	16.0f	// gate advance time
-#define BASE_PORTICO_TIME_DOWN	 4.0f	// gate length down
-#define BASE_PORTICO_TIME_OPEN	 4.0f	// gate opening duration
-#define BASE_TRANSIT_TIME		15.0f	// transit duration
+const float BASE_LAND_TIME			= 7.5f;		// hard landing
+const float BASE_TAKO_TIME			= 10.0f;	// hard landing
+const float BASE_DOOR_TIME			= 6.0f;		// time opening / closing
+const float BASE_DOOR_TIME2			= 2.0f;		// time opening / closing suppl.
+const float BASE_PORTICO_TIME_MOVE	= 16.0f;	// gate advance time
+const float BASE_PORTICO_TIME_DOWN	= 4.0f;		// gate length down
+const float BASE_PORTICO_TIME_OPEN	= 4.0f;		// gate opening duration
+const float BASE_TRANSIT_TIME		= 15.0f;	// transit duration
 
 
 

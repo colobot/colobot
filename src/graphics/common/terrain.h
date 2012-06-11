@@ -19,6 +19,7 @@
 #pragma once
 
 
+#include "math/old/math3d.h"
 #include "graphics/d3d/d3dengine.h"
 
 
@@ -28,7 +29,7 @@ class CWater;
 
 
 
-#define FLATLIMIT	(5.0f*PI/180.0f)
+const float FLATLIMIT = (5.0f*PI/180.0f);
 
 
 enum TerrainRes
@@ -44,9 +45,9 @@ enum TerrainRes
 };
 
 
-#define MAXBUILDINGLEVEL	100
+const int MAXBUILDINGLEVEL = 100;
 
-typedef struct
+struct BuildingLevel
 {
 	D3DVECTOR	center;
 	float		factor;
@@ -58,40 +59,36 @@ typedef struct
 	float		bboxMaxX;
 	float		bboxMinZ;
 	float		bboxMaxZ;
-}
-BuildingLevel;
+};
 
 
-#define MAXMATTERRAIN		100
+const int MAXMATTERRAIN = 100;
 
-typedef struct
+struct TerrainMaterial
 {
 	short		id;
 	char		texName[20];
 	float		u,v;
 	float		hardness;
 	char		mat[4];		// up, right, down, left
-}
-TerrainMaterial;
+};
 
-typedef struct
+struct DotLevel
 {
 	short		id;
 	char		mat[4];		// up, right, down, left
-}
-DotLevel;
+};
 
 
-#define MAXFLYINGLIMIT	10
+const int MAXFLYINGLIMIT = 10;
 
-typedef struct
+struct FlyingLimit
 {
 	D3DVECTOR	center;
 	float		extRadius;
 	float		intRadius;
 	float		maxHeight;
-}
-FlyingLimit;
+};
 
 
 

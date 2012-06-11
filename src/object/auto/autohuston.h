@@ -32,7 +32,7 @@ class CObject;
 
 
 
-typedef struct
+struct HustonLens
 {
 	int				parti;
 	ParticuleType	type;
@@ -40,11 +40,10 @@ typedef struct
 	float			dim;
 	float			total;
 	float			off;
-}
-HustonLens;
+};
 
 
-#define HUSTONMAXLENS	20
+const int HUSTONMAXLENS = 20;
 
 
 class CAutoHuston : public CAuto

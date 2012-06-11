@@ -31,7 +31,7 @@ class CRobotMain;
 
 
 
-#define MAPMAXOBJECT	100
+const int MAPMAXOBJECT = 100;
 
 enum MapColor
 {
@@ -48,7 +48,7 @@ enum MapColor
 	MAPCOLOR_BBOX,
 };
 
-typedef struct
+struct MapObject
 {
 	char		bUsed;
 	CObject*	object;
@@ -56,8 +56,7 @@ typedef struct
 	ObjectType	type;
 	FPOINT		pos;
 	float		dir;
-}
-MapObject;
+};
 
 
 

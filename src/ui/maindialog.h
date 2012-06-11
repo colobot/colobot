@@ -34,25 +34,23 @@ class CParticule;
 class CSound;
 
 
-#define USERLISTMAX	100
-#define MAXSCENE	1000
+const int USERLISTMAX = 100;
+const int MAXSCENE = 1000;
 
-typedef struct
+struct SceneInfo
 {
 	char	numTry;
 	char	bPassed;
-}
-SceneInfo;
+};
 
-typedef struct
+struct GamerPerso
 {
 	int		face;			// face
 	int		glasses;		// glasses
 	D3DCOLORVALUE	colorHair;		// hair color
 	D3DCOLORVALUE	colorCombi;		// spacesuit volor
 	D3DCOLORVALUE	colorBand;		// strips color
-}
-GamerPerso;
+};
 
 
 

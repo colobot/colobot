@@ -36,9 +36,9 @@ class CSound;
 class CTerrain;
 
 
-#define D3DMAXOBJECT		1200
-#define D3DMAXSHADOW		500
-#define D3DMAXGROUNDSPOT	100
+const int D3DMAXOBJECT		= 1200;
+const int D3DMAXSHADOW		= 500;
+const int D3DMAXGROUNDSPOT	= 100;
 
 
 enum D3DTypeObj
@@ -97,39 +97,38 @@ enum D3DShadowType
 };
 
 
-#define D3DSTATENORMAL	0	// normal opaque materials
-#define D3DSTATETTb	(1<<0)	// the transparent texture (black = no)
-#define D3DSTATETTw	(1<<1)	// the transparent texture (white = no)
-#define D3DSTATETD	(1<<2)	// the transparent diffuse color
-#define D3DSTATEWRAP	(1<<3)	// texture wrappe
-#define D3DSTATECLAMP	(1<<4)	// texture borders with solid color
-#define D3DSTATELIGHT	(1<<5)	// light texture (ambient max)
-#define D3DSTATEDUALb	(1<<6)	// double black texturing
-#define D3DSTATEDUALw	(1<<7)	// double white texturing
-#define D3DSTATEPART1	(1<<8)	// part 1 (no change in. MOD!)
-#define D3DSTATEPART2	(1<<9)	// part 2
-#define D3DSTATEPART3	(1<<10)	// part 3
-#define D3DSTATEPART4	(1<<11)	// part 4
-#define D3DSTATE2FACE	(1<<12)	// double-sided face
-#define D3DSTATEALPHA	(1<<13)	// image using alpha channel
-#define D3DSTATESECOND	(1<<14)	// always use 2nd floor texturing
-#define D3DSTATEFOG	(1<<15)	// causes the fog
-#define D3DSTATETCb	(1<<16)	// the transparent color (black = no)
-#define D3DSTATETCw	(1<<17)	// the transparent color (white = no)
+const int D3DSTATENORMAL	= 0;		// normal opaque materials
+const int D3DSTATETTb		= (1<<0);	// the transparent texture (black = no)
+const int D3DSTATETTw		= (1<<1);	// the transparent texture (white = no)
+const int D3DSTATETD		= (1<<2);	// the transparent diffuse color
+const int D3DSTATEWRAP		= (1<<3);	// texture wrappe
+const int D3DSTATECLAMP		= (1<<4);	// texture borders with solid color
+const int D3DSTATELIGHT		= (1<<5);	// light texture (ambient max)
+const int D3DSTATEDUALb		= (1<<6);	// double black texturing
+const int D3DSTATEDUALw		= (1<<7);	// double white texturing
+const int D3DSTATEPART1		= (1<<8);	// part 1 (no change in. MOD!)
+const int D3DSTATEPART2		= (1<<9);	// part 2
+const int D3DSTATEPART3		= (1<<10);	// part 3
+const int D3DSTATEPART4		= (1<<11);	// part 4
+const int D3DSTATE2FACE		= (1<<12);	// double-sided face
+const int D3DSTATEALPHA		= (1<<13);	// image using alpha channel
+const int D3DSTATESECOND	= (1<<14);	// always use 2nd floor texturing
+const int D3DSTATEFOG		= (1<<15);	// causes the fog
+const int D3DSTATETCb		= (1<<16);	// the transparent color (black = no)
+const int D3DSTATETCw		= (1<<17);	// the transparent color (white = no)
 
 
-typedef struct
+struct D3DTriangle
 {
 	D3DVERTEX2		triangle[3];
 	D3DMATERIAL7	material;
 	int				state;
 	char			texName1[20];
 	char			texName2[20];
-}
-D3DTriangle;
+};
 
 
-typedef struct
+struct D3DObjLevel6
 {
 	int				totalPossible;
 	int				totalUsed;
@@ -137,56 +136,50 @@ typedef struct
 	int				state;
 	D3DTypeTri		type;		// D3DTYPE6x
 	D3DVERTEX2		vertex[1];
-}
-D3DObjLevel6;
+};
 
-typedef struct
+struct D3DObjLevel5
 {
 	int				totalPossible;
 	int				totalUsed;
 	int				reserve;
 	D3DObjLevel6*	table[1];
-}
-D3DObjLevel5;
+};
 
-typedef struct
+struct D3DObjLevel4
 {
 	int				totalPossible;
 	int				totalUsed;
 	float			min, max;
 	D3DObjLevel5*	table[1];
-}
-D3DObjLevel4;
+};
 
-typedef struct
+struct D3DObjLevel3
 {
 	int				totalPossible;
 	int				totalUsed;
 	int				objRank;
 	D3DObjLevel4*	table[1];
-}
-D3DObjLevel3;
+};
 
-typedef struct
+struct D3DObjLevel2
 {
 	int				totalPossible;
 	int				totalUsed;
 	char			texName1[20];
 	char			texName2[20];
 	D3DObjLevel3*	table[1];
-}
-D3DObjLevel2;
+};
 
-typedef struct
+struct D3DObjLevel1
 {
 	int				totalPossible;
 	int				totalUsed;
 	D3DObjLevel2*	table[1];
-}
-D3DObjLevel1;
+};
 
 
-typedef struct
+struct D3DObject
 {
 	char		bUsed;			// true -> object exists
 	char		bVisible;		// true -> visible object
@@ -201,10 +194,9 @@ typedef struct
 	float		radius;			// radius of the sphere at the origin
 	int		shadowRank;		// rank of the associated shadow
 	float		transparency;		// transparency of the object (0 .. 1)
-}
-D3DObject;
+};
 
-typedef struct
+struct D3DShadow
 {
 	char		bUsed;			// true -> object exists
 	char		bHide;			// true -> invisible shadow (object carried by ex.)
@@ -216,10 +208,9 @@ typedef struct
 	float		radius;			// radius of the shadow
 	float		intensity;		// intensity of the shadow
 	float		height;			// height from the ground
-}
-D3DShadow;
+};
 
-typedef struct
+struct D3DGroundSpot
 {
 	char		bUsed;			// true -> object exists
 	D3DCOLORVALUE	color;			// color of the shadow
@@ -229,10 +220,9 @@ typedef struct
 	float		radius;			// radius of the shadow
 	D3DVECTOR	drawPos;		// drawn to position the shade
 	float		drawRadius;		// radius of the shadow drawn
-}
-D3DGroundSpot;
+};
 
-typedef struct
+struct D3DGroundMark
 {
 	char		bUsed;			// true -> object exists
 	char		bDraw;			// true -> drawn mark
@@ -247,8 +237,7 @@ typedef struct
 	float		drawIntensity;		// current drawn
 	int		dx, dy;			// dimensions table
 	char*		table;			// pointer to the table
-}
-D3DGroundMark;
+};
 
 
 

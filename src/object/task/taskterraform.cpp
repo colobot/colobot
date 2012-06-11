@@ -44,8 +44,8 @@
 #include "object/task/taskterraform.h"
 
 
-#define ENERGY_TERRA	0.40f		// energy consumed by blow
-#define ACTION_RADIUS	400.0f
+const float ENERGY_TERRA	= 0.40f;		// energy consumed by blow
+const float ACTION_RADIUS	= 400.0f;
 
 
 

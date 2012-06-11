@@ -30,8 +30,8 @@ class CPhysics;
 
 
 
-#define BUILDMARGIN		16.0f
-#define TBMAXLIGHT		4
+const float BUILDMARGIN	= 16.0f;
+const int TBMAXLIGHT 	= 4;
 
 
 enum TaskBuildPhase

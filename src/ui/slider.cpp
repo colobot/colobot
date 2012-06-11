@@ -35,8 +35,8 @@
 
 
 
-#define CURSOR_WIDTH	(10.0f/640.0f)
-#define HOLE_WIDTH		(5.0f/480.0f)
+const float CURSOR_WIDTH	= (10.0f/640.0f);
+const float HOLE_WIDTH		= (5.0f/480.0f);
 
 
 

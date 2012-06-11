@@ -46,7 +46,7 @@ class CSound;
 class CParticule;
 
 
-#define BRAINMAXSCRIPT		10
+const int BRAINMAXSCRIPT = 10;
 
 
 
@@ -59,12 +59,11 @@ enum TraceOper
 	TO_PEN			= 4,	// color change
 };
 
-typedef struct
+struct TraceRecord
 {
 	TraceOper	oper;
 	float		param;
-}
-TraceRecord;
+};
 
 
 

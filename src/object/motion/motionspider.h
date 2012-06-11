@@ -33,16 +33,22 @@ class CPhysics;
 class CObject;
 
 
-#define MS_MARCH		0
-#define MS_STOP			1
-#define MS_SPEC			2
+enum MotionSpiderAction
+{
+	MS_MARCH		= 0,
+	MS_STOP			= 1,
+	MS_SPEC			= 2
+};
 
-#define MSS_BURN		0
-#define MSS_RUIN		1
-#define MSS_EXPLO		2
-#define MSS_BACK1		3
-#define MSS_BACK2		4
-#define MSS_BACK3		5
+enum MotionSpiderSpecialAction
+{
+	MSS_BURN		= 0,
+	MSS_RUIN		= 1,
+	MSS_EXPLO		= 2,
+	MSS_BACK1		= 3,
+	MSS_BACK2		= 4,
+	MSS_BACK3		= 5
+};
 
 
 class CMotionSpider : public CMotion

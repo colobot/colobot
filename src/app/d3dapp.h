@@ -20,7 +20,6 @@
 
 
 #define  D3D_OVERLOADS
-
 #include <d3d.h>
 
 #include "graphics/d3d/d3dengine.h"

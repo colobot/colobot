@@ -38,13 +38,13 @@
 #include "ui/edit.h"
 
 
-#define MARGX			(5.0f/640.0f)
-#define MARGY			(5.0f/480.0f)
-#define MARGYS			(4.0f/480.0f)
-#define MARGY1			(1.0f/480.0f)
-#define DELAY_DBCLICK	0.3f			// time limit for double-click
-#define DELAY_SCROLL	0.1f			// time limit for scroll
-#define BIG_FONT	1.6f			// expansion for \b;
+const float MARGX			= (5.0f/640.0f);
+const float MARGY			= (5.0f/480.0f);
+const float MARGYS			= (4.0f/480.0f);
+const float MARGY1			= (1.0f/480.0f);
+const float DELAY_DBCLICK	= 0.3f;			// time limit for double-click
+const float DELAY_SCROLL	= 0.1f;			// time limit for scroll
+const float BIG_FONT		= 1.6f;			// expansion for \b;
 
 
 
