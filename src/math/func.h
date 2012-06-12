@@ -100,9 +100,7 @@ inline float Norm(float a)
 //! Swaps two integers
 inline void Swap(int &a, int &b)
 {
-  int   c;
-
-  c = a;
+  int c = a;
   a = b;
   b = c;
 }
@@ -110,9 +108,7 @@ inline void Swap(int &a, int &b)
 //! Swaps two real numbers
 inline void Swap(float &a, float &b)
 {
-  float c;
-
-  c = a;
+  float c = a;
   a = b;
   b = c;
 }
@@ -125,12 +121,18 @@ inline float Mod(float a, float m)
   return a - ((int)(a/m))*m;
 }
 
+//! Returns a random value between 0 and 1.
+inline float Rand()
+{
+  return (float)rand()/RAND_MAX;
+}
+
 //! Returns a normalized angle, that is in other words between 0 and 2 * PI
 inline float NormAngle(float angle)
 {
-  angle = Mod(angle, PI_MUL_2);
+  angle = Mod(angle, PI*2.0f);
   if ( angle < 0.0f )
-    return PI_MUL_2 + angle;
+    return PI*2.0f + angle;
 
   return angle;
 }
@@ -146,6 +148,15 @@ inline bool TestAngle(float angle, float min, float max)
     return ( angle <= max || angle >= min );
 
   return ( angle >= min && angle <= max );
+}
+
+//! Calculates a value (radians) proportional between a and b (degrees)
+float PropAngle(int a, int b, float p)
+{
+  float aa = (float)a * DEG_TO_RAD;
+  float bb = (float)b * DEG_TO_RAD;
+
+  return aa+p*(bb-aa);
 }
 
 //! Calculates the angle to rotate the angle \a a to the angle \a g
@@ -167,20 +178,13 @@ inline float Direction(float a, float g)
   return g-a;
 }
 
-//! Returns a random value between 0 and 1.
-inline float Rand()
-{
-  return (float)rand()/RAND_MAX;
-}
-
-
 //! Managing the dead zone of a joystick.
 /**
-    in:   -1            0            1
-         --|-------|----o----|-------|-->
-                      <---->
-                       dead
-    out:  -1       0         0       1 */
+\verbatimin:   -1            0            1
+--|-------|----o----|-------|-->
+             <---->
+              dead
+out:  -1       0         0       1\endverbatim */
 float Neutral(float value, float dead)
 {
   if ( fabs(value) <= dead )
@@ -192,16 +196,6 @@ float Neutral(float value, float dead)
     if ( value > 0.0f )  return (value-dead)/(1.0f-dead);
     else                 return (value+dead)/(1.0f-dead);
   }
-}
-
-
-//! Calculates a value (radians) proportional between a and b (degrees)
-float Prop(int a, int b, float p)
-{
-  float aa = (float)a * DEG_TO_RAD;
-  float bb = (float)b * DEG_TO_RAD;
-
-  return aa+p*(bb-aa);
 }
 
 //! Gently advances a desired value from its current value
@@ -222,19 +216,19 @@ float Smooth(float actual, float hope, float time)
   return future;
 }
 
-
 //! Bounces any movement
-/**  out
-     |
-    1+------o-------o---
-     |    o | o   o |  | bounce
-     |   o  |   o---|---
-     |  o   |       |
-     | o    |       |
-    -o------|-------+----> progress
-    0|      |       1
-     |<---->|middle */
-inline float Bounce(float progress, float middle, float bounce)
+/**
+\verbatimout
+ |
+1+------o-------o---
+ |    o | o   o |  | bounce
+ |   o  |   o---|---
+ |  o   |       |
+ | o    |       |
+-o------|-------+----> progress
+0|      |       1
+ |<---->|middle\endverbatim */
+inline float Bounce(float progress, float middle = 0.3f, float bounce = 0.4f)
 {
   if ( progress < middle )
   {

@@ -39,14 +39,6 @@ namespace Math
 
   //! PI
   const float PI       = 3.14159265358979323846f;
-  //! 2 * PI
-  const float PI_MUL_2 = 6.28318530717958623200f;
-  //! PI / 2
-  const float PI_DIV_2 = 1.57079632679489655800f;
-  //! PI / 4
-  const float PI_DIV_4 = 0.78539816339744827900f;
-  //! 1 / PI
-  const float INV_PI   = 0.31830988618379069122f;
 
   //! Degrees to radians multiplier
   const float DEG_TO_RAD =  0.01745329251994329547f;

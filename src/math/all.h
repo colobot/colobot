@@ -29,4 +29,6 @@
 #include "matrix.h"
 #include "geometry.h"
 
+#include "conv.h"
+
 /* @} */ // end of group
