@@ -47,6 +47,7 @@ const FLOAT g_EPSILON  =  1.0e-5f;                 // Tolerance for FLOATs
 //-----------------------------------------------------------------------------
 // Fuzzy compares (within tolerance)
 //-----------------------------------------------------------------------------
+//>>> func.h IsZero()
 inline bool D3DMath_IsZero( FLOAT a, FLOAT fTol = g_EPSILON )
 { return ( a <= 0.0f ) ? ( a >= -fTol ) : ( a <= fTol ); }
 
@@ -56,7 +57,9 @@ inline bool D3DMath_IsZero( FLOAT a, FLOAT fTol = g_EPSILON )
 //-----------------------------------------------------------------------------
 // Matrix functions
 //-----------------------------------------------------------------------------
+//>>> matrix.h MultiplyMatrices()
 VOID    D3DMath_MatrixMultiply( D3DMATRIX& q, D3DMATRIX& a, D3DMATRIX& b );
+//>>> matrix.h Matrix::Invert()
 HRESULT D3DMath_MatrixInvert( D3DMATRIX& q, D3DMATRIX& a );
 
 
@@ -65,8 +68,11 @@ HRESULT D3DMath_MatrixInvert( D3DMATRIX& q, D3DMATRIX& a );
 //-----------------------------------------------------------------------------
 // Vector functions
 //-----------------------------------------------------------------------------
+
+//>>> matrix.h MatrixVectorMultiply()
 HRESULT D3DMath_VectorMatrixMultiply( D3DVECTOR& vDest, D3DVECTOR& vSrc,
                                       D3DMATRIX& mat);
+// TODO
 HRESULT D3DMath_VertexMatrixMultiply( D3DVERTEX& vDest, D3DVERTEX& vSrc,
                                       D3DMATRIX& mat );
 
@@ -76,6 +82,10 @@ HRESULT D3DMath_VertexMatrixMultiply( D3DVERTEX& vDest, D3DVERTEX& vSrc,
 //-----------------------------------------------------------------------------
 // Quaternion functions
 //-----------------------------------------------------------------------------
+
+// UNUSED
+
+
 VOID D3DMath_QuaternionFromRotation( FLOAT& x, FLOAT& y, FLOAT& z, FLOAT& w,
                                      D3DVECTOR& v, FLOAT fTheta );
 VOID D3DMath_RotationFromQuaternion( D3DVECTOR& v, FLOAT& fTheta,

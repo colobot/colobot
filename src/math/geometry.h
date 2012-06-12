@@ -200,44 +200,16 @@ inline Vector RotatePoint2(const Vector center, float angleH, float angleV, Vect
 //! Returns the angle between point (x,y) and (0,0)
 float RotateAngle(float x, float y)
 {
-  float result = std::atan2(x, y);
-  if (result < 0)
-    result = PI_MUL_2 + result;
+  if ( (x == 0.0f) && (y == 0.0f) )
+    return 0.0f;
 
-  return result;
-}
+  float atan = atan2(x, y);
 
-/*inline float RotateAngle(float x, float y)
-{
-  if ( x == 0.0f && y == 0.0f )  return 0.0f;
-
-  if ( x >= 0.0f )
-  {
-    if ( y >= 0.0f )
-    {
-      if ( x > y )  return atanf(y/x);
-      else          return Math::PI*0.5f - atanf(x/y);
-    }
-    else
-    {
-      if ( x > -y )  return Math::PI*2.0f + atanf(y/x);
-      else           return Math::PI*1.5f - atanf(x/y);
-    }
-  }
+  if ((y < 0.0f) && (x >= 0.0f))
+    return -atan + 2.5f*PI;
   else
-  {
-    if ( y >= 0.0f )
-    {
-      if ( -x > y )  return Math::PI*1.0f + atanf(y/x);
-      else           return Math::PI*0.5f - atanf(x/y);
-    }
-    else
-    {
-      if ( -x > -y )  return Math::PI*1.0f + atanf(y/x);
-      else            return Math::PI*1.5f - atanf(x/y);
-    }
-  }
-}*/
+    return -atan + 0.5f*PI;
+}
 
 //! Calculates the angle between two points and one center
 /** \a center the center point
@@ -259,7 +231,7 @@ inline float RotateAngle(const Point &center, const Point &p1, const Point &p2)
 
   float a = a2 - a1;
   if (a < 0)
-    a += PI_MUL_2;
+    a += 2.0f*PI;
 
   return a;
 }
@@ -275,7 +247,7 @@ inline void LoadViewMatrix(Matrix &mat, const Vector &from, const Vector &at, co
   Vector view = at - from;
 
   float length = view.Length();
-  assert(! Math::IsZero(length) );
+  assert(! IsZero(length) );
 
   // Normalize the z basis vector
   view /= length;
@@ -412,7 +384,7 @@ inline void LoadRotationMatrix(Matrix &mat, const Vector &dir, float angle)
 {
   float cos = cosf(angle);
   float sin = sinf(angle);
-  Vector v = Math::Normalize(dir);
+  Vector v = Normalize(dir);
 
   mat.LoadIdentity();
 
@@ -551,7 +523,6 @@ inline bool IntersectY(const Vector &a, const Vector &b, const Vector &c, Vector
 //! Calculates the end point
 inline Vector LookatPoint(const Vector &eye, float angleH, float angleV, float length)
 {
-
   Vector lookat = eye;
   lookat.z += length;
 
