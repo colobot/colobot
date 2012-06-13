@@ -16,15 +16,14 @@
 
 // light.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
-#include "math/const.h"
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "common/event.h"
 #include "common/misc.h"
@@ -417,16 +416,16 @@ void CLight::FrameLight(float rTime)
 
 		if ( m_lightTable[i].incluType == TYPEQUARTZ )
 		{
-			m_lightTable[i].light.dvDirection.x = sinf((m_time+i*PI*0.5f)*1.0f);
-			m_lightTable[i].light.dvDirection.z = cosf((m_time+i*PI*0.5f)*1.1f);
-			m_lightTable[i].light.dvDirection.y = -1.0f+cosf((m_time+i*PI*0.5f)*2.7f)*0.5f;
+			m_lightTable[i].light.dvDirection.x = sinf((m_time+i*Math::PI*0.5f)*1.0f);
+			m_lightTable[i].light.dvDirection.z = cosf((m_time+i*Math::PI*0.5f)*1.1f);
+			m_lightTable[i].light.dvDirection.y = -1.0f+cosf((m_time+i*Math::PI*0.5f)*2.7f)*0.5f;
 		}
 
 		if ( m_lightTable[i].incluType == TYPEMETAL )
 		{
 			dir = m_engine->RetEyePt()-m_engine->RetLookatPt();
-			angle = RotateAngle(dir.x, dir.z);
-			angle += PI*0.5f*i;
+			angle = Math::RotateAngle(dir.x, dir.z);
+			angle += Math::PI*0.5f*i;
 			m_lightTable[i].light.dvDirection.x = sinf(angle*2.0f);
 			m_lightTable[i].light.dvDirection.z = cosf(angle*2.0f);
 		}

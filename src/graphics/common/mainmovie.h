@@ -19,6 +19,9 @@
 #pragma once
 
 
+#include "common/event.h"
+#include "graphics/d3d/d3dengine.h"
+
 class CInstanceManager;
 class CEvent;
 class CD3DEngine;

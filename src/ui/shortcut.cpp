@@ -16,8 +16,6 @@
 
 // shortcut.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -50,7 +48,7 @@ CShortcut::~CShortcut()
 
 // Creates a new button.
 
-bool CShortcut::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CShortcut::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -132,7 +130,7 @@ void CShortcut::Draw()
 
 	if ( m_state & STATE_FRAME )
 	{
-		FPOINT	p1, p2, c, uv1, uv2;
+		Math::Point	p1, p2, c, uv1, uv2;
 		float	zoom, dp;
 
 		m_engine->SetTexture("button2.tga");
@@ -170,9 +168,9 @@ void CShortcut::Draw()
 		DrawIcon(p1, p2, uv1, uv2);
 	}
 
-	if ( (m_state & STATE_RUN) && Mod(m_time, 0.7f) >= 0.3f )
+	if ( (m_state & STATE_RUN) && Math::Mod(m_time, 0.7f) >= 0.3f )
 	{
-		FPOINT	uv1, uv2;
+		Math::Point	uv1, uv2;
 		float	dp;
 
 		m_engine->SetTexture("button3.tga");
@@ -199,7 +197,7 @@ void CShortcut::DrawVertex(int icon, float zoom)
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	FPOINT		p1, p2, c;
+	Math::Point		p1, p2, c;
 	D3DVECTOR	n;
 	float		u1, u2, v1, v2, dp;
 

@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -111,7 +110,7 @@ bool CAutoConvert::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim, c, p;
+	Math::Point		dim, c, p;
 	float		angle;
 
 	CAuto::EventProcess(event);
@@ -126,15 +125,15 @@ bool CAutoConvert::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
-			angle = (Rand()-0.5f)*0.3f;
+			angle = (Math::Rand()-0.5f)*0.3f;
 			m_object->SetAngleY(1, angle);
 			m_object->SetAngleY(2, angle);
-			m_object->SetAngleY(3, angle+PI);
+			m_object->SetAngleY(3, angle+Math::PI);
 
-			m_object->SetAngleX(2, -PI*0.35f*(0.8f+Rand()*0.2f));
-			m_object->SetAngleX(3, -PI*0.35f*(0.8f+Rand()*0.2f));
+			m_object->SetAngleX(2, -Math::PI*0.35f*(0.8f+Math::Rand()*0.2f));
+			m_object->SetAngleX(3, -Math::PI*0.35f*(0.8f+Math::Rand()*0.2f));
 		}
 		return true;
 	}
@@ -181,7 +180,7 @@ bool CAutoConvert::EventProcess(const Event &event)
 				m_bSoundClose = true;
 				m_sound->Play(SOUND_CLOSE, m_object->RetPosition(0), 1.0f, 0.8f);
 			}
-			angle = -PI*0.35f*(1.0f-Bounce(m_progress, 0.85f, 0.05f));
+			angle = -Math::PI*0.35f*(1.0f-Math::Bounce(m_progress, 0.85f, 0.05f));
 			m_object->SetAngleX(2, angle);
 			m_object->SetAngleX(3, angle);
 		}
@@ -216,7 +215,7 @@ bool CAutoConvert::EventProcess(const Event &event)
 			}
 			m_object->SetAngleY(1, angle);
 			m_object->SetAngleY(2, angle);
-			m_object->SetAngleY(3, angle+PI);
+			m_object->SetAngleY(3, angle+Math::PI);
 
 			if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
 			{
@@ -227,12 +226,12 @@ bool CAutoConvert::EventProcess(const Event &event)
 				c.y = pos.z;
 				p.x = c.x;
 				p.y = c.y+6.0f;
-				p = RotatePoint(c, Rand()*PI*2.0f, p);
+				p = Math::RotatePoint(c, Math::Rand()*Math::PI*2.0f, p);
 				pos.x = p.x;
 				pos.z = p.y;
 				pos.y += 1.0f;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = Rand()*2.0f+1.0f;
+				dim.x = Math::Rand()*2.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
 			}
@@ -241,7 +240,7 @@ bool CAutoConvert::EventProcess(const Event &event)
 		{
 			m_object->SetAngleY(1, 0.0f);
 			m_object->SetAngleY(2, 0.0f);
-			m_object->SetAngleY(3, PI);
+			m_object->SetAngleY(3, Math::PI);
 
 			fret = SearchStone(OBJECT_STONE);
 			if ( fret != 0 )
@@ -264,7 +263,7 @@ bool CAutoConvert::EventProcess(const Event &event)
 	{
 		if ( m_progress < 1.0f )
 		{
-			angle = -PI*0.35f*Bounce(m_progress, 0.7f, 0.2f);
+			angle = -Math::PI*0.35f*Math::Bounce(m_progress, 0.7f, 0.2f);
 			m_object->SetAngleX(2, angle);
 			m_object->SetAngleX(3, angle);
 
@@ -274,11 +273,11 @@ bool CAutoConvert::EventProcess(const Event &event)
 				m_lastParticule = m_time;
 
 				pos = m_object->RetPosition(0);
-				pos.x += (Rand()-0.5f)*6.0f;
-				pos.z += (Rand()-0.5f)*6.0f;
-				pos.y += Rand()*4.0f;
+				pos.x += (Math::Rand()-0.5f)*6.0f;
+				pos.z += (Math::Rand()-0.5f)*6.0f;
+				pos.y += Math::Rand()*4.0f;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = Rand()*4.0f+3.0f;
+				dim.x = Math::Rand()*4.0f+3.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 			}
@@ -286,8 +285,8 @@ bool CAutoConvert::EventProcess(const Event &event)
 		else
 		{
 			m_soundChannel = -1;
-			m_object->SetAngleX(2, -PI*0.35f);
-			m_object->SetAngleX(3, -PI*0.35f);
+			m_object->SetAngleX(2, -Math::PI*0.35f);
+			m_object->SetAngleX(3, -Math::PI*0.35f);
 
 			SetBusy(false);
 			UpdateInterface();
@@ -327,9 +326,9 @@ bool CAutoConvert::Abort()
 
 	m_object->SetAngleY(1, 0.0f);
 	m_object->SetAngleY(2, 0.0f);
-	m_object->SetAngleY(3, PI);
-	m_object->SetAngleX(2, -PI*0.35f);
-	m_object->SetAngleX(3, -PI*0.35f);
+	m_object->SetAngleY(3, Math::PI);
+	m_object->SetAngleX(2, -Math::PI*0.35f);
+	m_object->SetAngleX(3, -Math::PI*0.35f);
 
 	m_phase    = ACP_WAIT;
 	m_progress = 0.0f;
@@ -347,7 +346,7 @@ bool CAutoConvert::Abort()
 bool CAutoConvert::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

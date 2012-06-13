@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -129,8 +127,8 @@ bool CAutoJostle::EventProcess(const Event &event)
 		}
 		factor *= m_force;
 
-		dir.x = sinf(m_progress*PI*4.0f);
-		dir.z = cosf(m_progress*PI*4.0f);
+		dir.x = sinf(m_progress*Math::PI*4.0f);
+		dir.z = cosf(m_progress*Math::PI*4.0f);
 
 		angle = sinf(m_time*10.0f)*factor*0.04f;
 		m_object->SetAngleX(0, angle*dir.z);

@@ -19,6 +19,7 @@
 #pragma once
 
 
+#include "math/point.h"
 #include "common/struct.h"
 
 
@@ -276,7 +277,7 @@ public:
 	void		AddStatisticTriangle(int nb);
 	int			RetStatisticTriangle();
 	void		SetHiliteRank(int *rankList);
-	bool		GetHilite(FPOINT &p1, FPOINT &p2);
+	bool		GetHilite(Math::Point &p1, Math::Point &p2);
 	bool		GetSpriteCoord(int &x, int &y);
 	void		SetInfoText(int line, char* text);
 	char*		RetInfoText(int line);
@@ -476,14 +477,14 @@ public:
 
 	bool		IsVisiblePoint(const D3DVECTOR &pos);
 
-	int			DetectObject(FPOINT mouse);
+	int			DetectObject(Math::Point mouse);
 	void		SetState(int state, D3DCOLOR color=0xffffffff);
 	void		SetTexture(char *name, int stage=0);
 	void		SetMaterial(const D3DMATERIAL7 &mat);
 
-	void		MoveMousePos(FPOINT pos);
-	void		SetMousePos(FPOINT pos);
-	FPOINT		RetMousePos();
+	void		MoveMousePos(Math::Point pos);
+	void		SetMousePos(Math::Point pos);
+	Math::Point		RetMousePos();
 	void		SetMouseType(D3DMouse type);
 	D3DMouse	RetMouseType();
 	void		SetMouseHide(bool bHide);
@@ -494,7 +495,7 @@ public:
 
 	CText*		RetText();
 
-	bool		ChangeColor(char *name, D3DCOLORVALUE colorRef1, D3DCOLORVALUE colorNew1, D3DCOLORVALUE colorRef2, D3DCOLORVALUE colorNew2, float tolerance1, float tolerance2, FPOINT ts, FPOINT ti, FPOINT *pExclu=0, float shift=0.0f, bool bHSV=false);
+	bool		ChangeColor(char *name, D3DCOLORVALUE colorRef1, D3DCOLORVALUE colorNew1, D3DCOLORVALUE colorRef2, D3DCOLORVALUE colorNew2, float tolerance1, float tolerance2, Math::Point ts, Math::Point ti, Math::Point *pExclu=0, float shift=0.0f, bool bHSV=false);
 	bool		OpenImage(char *name);
 	bool		CopyImage();
 	bool		LoadImage();
@@ -522,8 +523,8 @@ protected:
 	D3DObjLevel6* AddLevel5(D3DObjLevel5 *&p5, D3DTypeTri type, const D3DMATERIAL7 &mat, int state, int nb);
 
 	bool		IsVisible(int objRank);
-	bool		DetectBBox(int objRank, FPOINT mouse);
-	bool		DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle, int objRank, float &dist);
+	bool		DetectBBox(int objRank, Math::Point mouse);
+	bool		DetectTriangle(Math::Point mouse, D3DVERTEX2 *triangle, int objRank, float &dist);
 	bool		TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D);
 	void		ComputeDistance();
 	void		UpdateGeometry();
@@ -531,15 +532,15 @@ protected:
 	void		DrawShadow();
 	void		DrawBackground();
 	void		DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down);
-	void		DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name);
+	void		DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, char *name);
 	void		DrawBackgroundImage();
 	void		DrawPlanet();
 	void		DrawFrontsize();
 	void		DrawOverColor();
-	bool		GetBBox2D(int objRank, FPOINT &min, FPOINT &max);
+	bool		GetBBox2D(int objRank, Math::Point &min, Math::Point &max);
 	void		DrawHilite();
 	void		DrawMouse();
-	void		DrawSprite(FPOINT pos, FPOINT dim, int icon);
+	void		DrawSprite(Math::Point pos, Math::Point dim, int icon);
 
 protected:
 	CInstanceManager* m_iMan;
@@ -650,15 +651,15 @@ protected:
 
 	int				m_hiliteRank[100];
 	bool			m_bHilite;
-	FPOINT			m_hiliteP1;
-	FPOINT			m_hiliteP2;
+	Math::Point			m_hiliteP1;
+	Math::Point			m_hiliteP2;
 
 	int				m_lastState;
 	D3DCOLOR		m_lastColor;
 	char			m_lastTexture[2][50];
 	D3DMATERIAL7	m_lastMaterial;
 
-	FPOINT			m_mousePos;
+	Math::Point			m_mousePos;
 	D3DMouse		m_mouseType;
 	bool			m_bMouseHide;
 	bool			m_bNiceMouse;

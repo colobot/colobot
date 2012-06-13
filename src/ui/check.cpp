@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -49,7 +47,7 @@ CCheck::~CCheck()
 
 // Creates a new button.
 
-bool CCheck::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CCheck::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	char	name[100];
 	char*	p;
@@ -96,7 +94,7 @@ bool CCheck::EventProcess(const Event &event)
 
 void CCheck::Draw()
 {
-	FPOINT		iDim, pos;
+	Math::Point		iDim, pos;
 	float		zoomExt, zoomInt;
 	int			icon;
 

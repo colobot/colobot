@@ -16,8 +16,6 @@
 
 // displaytext.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -205,7 +203,7 @@ void CDisplayText::DisplayText(char *text, D3DVECTOR goal, float height,
 	CButton*	button;
 	CGroup*		group;
 	CLabel*		label;
-	FPOINT		pos, ppos, dim;
+	Math::Point		pos, ppos, dim;
 	Sound		sound;
 	float		hLine, hBox;
 	int			nLine, icon, i;

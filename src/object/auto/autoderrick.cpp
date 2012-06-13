@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -149,7 +147,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		angle, duration, factor;
 
 	CAuto::EventProcess(event);
@@ -165,14 +163,14 @@ bool CAutoDerrick::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
 			pos.x = 0.0f;
 			pos.z = 0.0f;
-			pos.y = -2.0f*Rand();
+			pos.y = -2.0f*Math::Rand();
 			m_object->SetPosition(1, pos);  // up / down the drill
 
-			m_object->SetAngleY(1, Rand()*0.5f);  // rotates the drill
+			m_object->SetAngleY(1, Math::Rand()*0.5f);  // rotates the drill
 		}
 		return true;
 	}
@@ -202,10 +200,10 @@ bool CAutoDerrick::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_object->RetPosition(0);
-			speed.x = (Rand()-0.5f)*10.0f;
-			speed.z = (Rand()-0.5f)*10.0f;
-			speed.y = Rand()*5.0f;
-			dim.x = Rand()*3.0f+2.0f;
+			speed.x = (Math::Rand()-0.5f)*10.0f;
+			speed.z = (Math::Rand()-0.5f)*10.0f;
+			speed.y = Math::Rand()*5.0f;
+			dim.x = Math::Rand()*3.0f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 		}
@@ -216,15 +214,15 @@ bool CAutoDerrick::EventProcess(const Event &event)
 			m_lastTrack = m_time;
 
 			pos = m_object->RetPosition(0);
-			speed.x = (Rand()-0.5f)*12.0f;
-			speed.z = (Rand()-0.5f)*12.0f;
-			speed.y = Rand()*10.0f+10.0f;
+			speed.x = (Math::Rand()-0.5f)*12.0f;
+			speed.z = (Math::Rand()-0.5f)*12.0f;
+			speed.y = Math::Rand()*10.0f+10.0f;
 			dim.x = 0.6f;
 			dim.y = dim.x;
 			pos.y += dim.y;
-			duration = Rand()*2.0f+2.0f;
+			duration = Math::Rand()*2.0f+2.0f;
 			m_particule->CreateTrack(pos, speed, dim, PARTITRACK5,
-									 duration, Rand()*10.0f+15.0f,
+									 duration, Math::Rand()*10.0f+15.0f,
 									 duration*0.2f, 1.0f);
 		}
 
@@ -255,10 +253,10 @@ bool CAutoDerrick::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_object->RetPosition(0);
-			speed.x = (Rand()-0.5f)*10.0f;
-			speed.z = (Rand()-0.5f)*10.0f;
-			speed.y = Rand()*5.0f;
-			dim.x = Rand()*3.0f+2.0f;
+			speed.x = (Math::Rand()-0.5f)*10.0f;
+			speed.z = (Math::Rand()-0.5f)*10.0f;
+			speed.y = Math::Rand()*5.0f;
+			dim.x = Math::Rand()*3.0f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 		}
@@ -269,15 +267,15 @@ bool CAutoDerrick::EventProcess(const Event &event)
 			m_lastTrack = m_time;
 
 			pos = m_object->RetPosition(0);
-			speed.x = (Rand()-0.5f)*12.0f;
-			speed.z = (Rand()-0.5f)*12.0f;
-			speed.y = Rand()*10.0f+10.0f;
+			speed.x = (Math::Rand()-0.5f)*12.0f;
+			speed.z = (Math::Rand()-0.5f)*12.0f;
+			speed.y = Math::Rand()*10.0f+10.0f;
 			dim.x = 0.6f;
 			dim.y = dim.x;
 			pos.y += dim.y;
-			duration = Rand()*2.0f+2.0f;
+			duration = Math::Rand()*2.0f+2.0f;
 			m_particule->CreateTrack(pos, speed, dim, PARTITRACK5,
-									 duration, Rand()*10.0f+15.0f,
+									 duration, Math::Rand()*10.0f+15.0f,
 									 duration*0.2f, 1.0f);
 		}
 
@@ -344,9 +342,9 @@ bool CAutoDerrick::EventProcess(const Event &event)
 			if ( m_progress < 0.3f )
 			{
 				pos = fret->RetPosition(0);
-				pos.x += (Rand()-0.5f)*5.0f;
-				pos.z += (Rand()-0.5f)*5.0f;
-				pos.y += (Rand()-0.5f)*5.0f;
+				pos.x += (Math::Rand()-0.5f)*5.0f;
+				pos.z += (Math::Rand()-0.5f)*5.0f;
+				pos.y += (Math::Rand()-0.5f)*5.0f;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 				dim.x = 3.0f;
 				dim.y = dim.x;
@@ -355,9 +353,9 @@ bool CAutoDerrick::EventProcess(const Event &event)
 			else
 			{
 				pos = fret->RetPosition(0);
-				pos.x += (Rand()-0.5f)*5.0f;
-				pos.z += (Rand()-0.5f)*5.0f;
-				pos.y += Rand()*2.5f;
+				pos.x += (Math::Rand()-0.5f)*5.0f;
+				pos.z += (Math::Rand()-0.5f)*5.0f;
+				pos.y += Math::Rand()*2.5f;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 				dim.x = 1.0f;
 				dim.y = dim.x;
@@ -410,7 +408,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 bool CAutoDerrick::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

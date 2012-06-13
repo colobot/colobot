@@ -16,14 +16,13 @@
 
 // taskflag.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "math/old/math3d.h"
@@ -115,7 +114,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 	m_bError = false;
 
 	m_motion->SetAction(MHS_FLAG);  // sets/removes flag
-	m_camera->StartCentering(m_object, PI*0.3f, 99.9f, 0.0f, 0.5f);
+	m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.5f);
 
 	return ERR_OK;
 }
@@ -290,7 +289,7 @@ Error CTaskFlag::DeleteFlag()
 
 	iPos = m_object->RetPosition(0);
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 	pObj = SearchNearest(iPos, OBJECT_NULL);
 	if ( pObj == 0 )
@@ -304,9 +303,9 @@ Error CTaskFlag::DeleteFlag()
 	}
 
 	oPos = pObj->RetPosition(0);
-	angle = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-	aLimit = 45.0f*PI/180.0f;
-	if ( !TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
+	angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+	aLimit = 45.0f*Math::PI/180.0f;
+	if ( !Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
 	{
 		return ERR_FLAG_DELETE;
 	}

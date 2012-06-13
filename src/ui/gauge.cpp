@@ -16,8 +16,6 @@
 
 // gauge.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -50,7 +48,7 @@ CGauge::~CGauge()
 
 // Creates a new button.
 
-bool CGauge::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CGauge::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -84,7 +82,7 @@ bool CGauge::EventProcess(const Event &event)
 
 void CGauge::Draw()
 {
-	FPOINT		pos, dim, ddim, uv1, uv2, corner;
+	Math::Point		pos, dim, ddim, uv1, uv2, corner;
 	float		dp;
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;

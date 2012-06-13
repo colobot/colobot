@@ -16,8 +16,6 @@
 
 // taskshield.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -72,7 +70,7 @@ bool CTaskShield::EventProcess(const Event &event)
 	D3DMATRIX		matrix;
 	D3DVECTOR		pos, speed, goal, angle;
 	D3DCOLORVALUE	color;
-	FPOINT			dim;
+	Math::Point			dim;
 	float			energy;
 
 	if ( m_engine->RetPause() )  return true;
@@ -99,7 +97,7 @@ bool CTaskShield::EventProcess(const Event &event)
 	if ( m_phase == TS_UP1 )
 	{
 		pos.x = 7.0f;
-		pos.y = 4.5f+Bounce(m_progress)*3.0f;
+		pos.y = 4.5f+Math::Bounce(m_progress)*3.0f;
 		pos.z = 0.0f;
 		m_object->SetPosition(2, pos);
 	}
@@ -107,7 +105,7 @@ bool CTaskShield::EventProcess(const Event &event)
 	if ( m_phase == TS_UP2 )
 	{
 		pos.x = 0.0f;
-		pos.y = 1.0f+Bounce(m_progress)*3.0f;
+		pos.y = 1.0f+Math::Bounce(m_progress)*3.0f;
 		pos.z = 0.0f;
 		m_object->SetPosition(3, pos);
 	}
@@ -156,12 +154,12 @@ bool CTaskShield::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_shieldPos;
-			pos.x += (Rand()-0.5f)*5.0f;
-			pos.z += (Rand()-0.5f)*5.0f;
-			speed.x = (Rand()-0.5f)*0.0f;
-			speed.z = (Rand()-0.5f)*0.0f;
-			speed.y = Rand()*15.0f;
-			dim.x = Rand()*6.0f+4.0f;
+			pos.x += (Math::Rand()-0.5f)*5.0f;
+			pos.z += (Math::Rand()-0.5f)*5.0f;
+			speed.x = (Math::Rand()-0.5f)*0.0f;
+			speed.z = (Math::Rand()-0.5f)*0.0f;
+			speed.y = Math::Rand()*15.0f;
+			dim.x = Math::Rand()*6.0f+4.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 		}
@@ -173,9 +171,9 @@ bool CTaskShield::EventProcess(const Event &event)
 			pos = m_shieldPos;
 			dim.x = RetRadius()/20.0f;
 			dim.y = dim.x;
-			angle.x = (Rand()-0.5f)*PI*1.2f;
+			angle.x = (Math::Rand()-0.5f)*Math::PI*1.2f;
 			angle.y = 0.0f;
-			angle.z = (Rand()-0.5f)*PI*1.2f;
+			angle.z = (Math::Rand()-0.5f)*Math::PI*1.2f;
 			MatRotateXZY(matrix, angle);
 			goal = Transform(matrix, D3DVECTOR(0.0f, RetRadius()-dim.x, 0.0f));
 			goal += pos;
@@ -203,12 +201,12 @@ bool CTaskShield::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_shieldPos;
-			pos.x += (Rand()-0.5f)*5.0f;
-			pos.z += (Rand()-0.5f)*5.0f;
-			speed.x = (Rand()-0.5f)*3.0f;
-			speed.z = (Rand()-0.5f)*3.0f;
-			speed.y = (Rand()-0.5f)*3.0f;
-			dim.x = Rand()*1.5f+2.0f;
+			pos.x += (Math::Rand()-0.5f)*5.0f;
+			pos.z += (Math::Rand()-0.5f)*5.0f;
+			speed.x = (Math::Rand()-0.5f)*3.0f;
+			speed.z = (Math::Rand()-0.5f)*3.0f;
+			speed.y = (Math::Rand()-0.5f)*3.0f;
+			dim.x = Math::Rand()*1.5f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
 		}
@@ -217,7 +215,7 @@ bool CTaskShield::EventProcess(const Event &event)
 	if ( m_phase == TS_DOWN1 )
 	{
 		pos.x = 0.0f;
-		pos.y = 1.0f+(1.0f-Bounce(m_progress))*3.0f;
+		pos.y = 1.0f+(1.0f-Math::Bounce(m_progress))*3.0f;
 		pos.z = 0.0f;
 		m_object->SetPosition(3, pos);
 	}
@@ -225,7 +223,7 @@ bool CTaskShield::EventProcess(const Event &event)
 	if ( m_phase == TS_DOWN2 )
 	{
 		pos.x = 7.0f;
-		pos.y = 4.5f+(1.0f-Bounce(m_progress))*3.0f;
+		pos.y = 4.5f+(1.0f-Math::Bounce(m_progress))*3.0f;
 		pos.z = 0.0f;
 		m_object->SetPosition(2, pos);
 	}
@@ -293,7 +291,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	{
 		m_brain->UpdateInterface();
 	}
-//?	m_camera->StartCentering(m_object, PI*0.85f, -PI*0.15f, RetRadius()+40.0f, 3.0f);
+//?	m_camera->StartCentering(m_object, Math::PI*0.85f, -Math::PI*0.15f, RetRadius()+40.0f, 3.0f);
 	return ERR_OK;
 }
 
@@ -344,7 +342,7 @@ Error CTaskShield::IsEnded()
 {
 	CObject*	power;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		energy;
 
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
@@ -514,7 +512,7 @@ bool CTaskShield::CreateLight(D3DVECTOR pos)
 	light.dvAttenuation1 = 0.0f;
 	light.dvAttenuation2 = 0.0f;
 	light.dvTheta = 0.0f;
-	light.dvPhi = PI/4.0f;
+	light.dvPhi = Math::PI/4.0f;
 
 	m_effectLight = m_light->CreateLight();
 	if ( m_effectLight == -1 )  return false;

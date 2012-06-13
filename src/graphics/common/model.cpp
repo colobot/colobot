@@ -16,14 +16,14 @@
 
 // model.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -134,7 +134,7 @@ CModel::~CModel()
 void CModel::StartUserAction()
 {
 	Event		event;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	CButton*	pb;
 
 	dim.x = 105.0f/640.0f;
@@ -607,7 +607,7 @@ bool CModel::EventProcess(const Event &event)
 				}
 				if ( event.param == 'E' )
 				{
-					FPOINT	ti, ts;
+					Math::Point	ti, ts;
 					ti.x =  0.00f;
 					ti.y =  0.00f;
 					ts.x =  0.00f;
@@ -1099,19 +1099,19 @@ void CModel::MoveSelect(D3DVECTOR move)
 	if ( m_oper == 'R' )
 	{
 #if 0
-		     if ( move.x == +1 )  move.x =  5.0f*PI/180.0f;
-		else if ( move.x == -1 )  move.x = -5.0f*PI/180.0f;
-		     if ( move.y == +1 )  move.y =  5.0f*PI/180.0f;
-		else if ( move.y == -1 )  move.y = -5.0f*PI/180.0f;
-		     if ( move.z == +1 )  move.z =  5.0f*PI/180.0f;
-		else if ( move.z == -1 )  move.z = -5.0f*PI/180.0f;
+		     if ( move.x == +1 )  move.x =  5.0f*Math::PI/180.0f;
+		else if ( move.x == -1 )  move.x = -5.0f*Math::PI/180.0f;
+		     if ( move.y == +1 )  move.y =  5.0f*Math::PI/180.0f;
+		else if ( move.y == -1 )  move.y = -5.0f*Math::PI/180.0f;
+		     if ( move.z == +1 )  move.z =  5.0f*Math::PI/180.0f;
+		else if ( move.z == -1 )  move.z = -5.0f*Math::PI/180.0f;
 #else
-		     if ( move.x == +1 )  move.x =  45.0f*PI/180.0f;
-		else if ( move.x == -1 )  move.x = -45.0f*PI/180.0f;
-		     if ( move.y == +1 )  move.y =  45.0f*PI/180.0f;
-		else if ( move.y == -1 )  move.y = -45.0f*PI/180.0f;
-		     if ( move.z == +1 )  move.z =  45.0f*PI/180.0f;
-		else if ( move.z == -1 )  move.z = -45.0f*PI/180.0f;
+		     if ( move.x == +1 )  move.x =  45.0f*Math::PI/180.0f;
+		else if ( move.x == -1 )  move.x = -45.0f*Math::PI/180.0f;
+		     if ( move.y == +1 )  move.y =  45.0f*Math::PI/180.0f;
+		else if ( move.y == -1 )  move.y = -45.0f*Math::PI/180.0f;
+		     if ( move.z == +1 )  move.z =  45.0f*Math::PI/180.0f;
+		else if ( move.z == -1 )  move.z = -45.0f*Math::PI/180.0f;
 #endif
 	}
 
@@ -1122,7 +1122,7 @@ void CModel::MoveSelect(D3DVECTOR move)
 
 void CModel::OperSelect(D3DVECTOR move, char oper)
 {
-	FPOINT		rot;
+	Math::Point		rot;
 	int			used, i;
 
 	DefaultSelect();
@@ -1162,19 +1162,19 @@ void CModel::OperSelect(D3DVECTOR move, char oper)
 				{
 					rot.x = m_triangleTable[i].p1.z;
 					rot.y = m_triangleTable[i].p1.y;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.x, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.x, rot);
 					m_triangleTable[i].p1.z = rot.x;
 					m_triangleTable[i].p1.y = rot.y;
 
 					rot.x = m_triangleTable[i].p2.z;
 					rot.y = m_triangleTable[i].p2.y;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.x, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.x, rot);
 					m_triangleTable[i].p2.z = rot.x;
 					m_triangleTable[i].p2.y = rot.y;
 
 					rot.x = m_triangleTable[i].p3.z;
 					rot.y = m_triangleTable[i].p3.y;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.x, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.x, rot);
 					m_triangleTable[i].p3.z = rot.x;
 					m_triangleTable[i].p3.y = rot.y;
 				}
@@ -1182,19 +1182,19 @@ void CModel::OperSelect(D3DVECTOR move, char oper)
 				{
 					rot.x = m_triangleTable[i].p1.x;
 					rot.y = m_triangleTable[i].p1.z;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.y, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.y, rot);
 					m_triangleTable[i].p1.x = rot.x;
 					m_triangleTable[i].p1.z = rot.y;
 
 					rot.x = m_triangleTable[i].p2.x;
 					rot.y = m_triangleTable[i].p2.z;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.y, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.y, rot);
 					m_triangleTable[i].p2.x = rot.x;
 					m_triangleTable[i].p2.z = rot.y;
 
 					rot.x = m_triangleTable[i].p3.x;
 					rot.y = m_triangleTable[i].p3.z;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.y, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.y, rot);
 					m_triangleTable[i].p3.x = rot.x;
 					m_triangleTable[i].p3.z = rot.y;
 				}
@@ -1202,19 +1202,19 @@ void CModel::OperSelect(D3DVECTOR move, char oper)
 				{
 					rot.x = m_triangleTable[i].p1.x;
 					rot.y = m_triangleTable[i].p1.y;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.z, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.z, rot);
 					m_triangleTable[i].p1.x = rot.x;
 					m_triangleTable[i].p1.y = rot.y;
 
 					rot.x = m_triangleTable[i].p2.x;
 					rot.y = m_triangleTable[i].p2.y;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.z, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.z, rot);
 					m_triangleTable[i].p2.x = rot.x;
 					m_triangleTable[i].p2.y = rot.y;
 
 					rot.x = m_triangleTable[i].p3.x;
 					rot.y = m_triangleTable[i].p3.y;
-					rot = RotatePoint(FPOINT(0.0f, 0.0f), move.z, rot);
+					rot = Math::RotatePoint(Math::Point(0.0f, 0.0f), move.z, rot);
 					m_triangleTable[i].p3.x = rot.x;
 					m_triangleTable[i].p3.y = rot.y;
 				}
@@ -1275,7 +1275,7 @@ void CModel::ReadScript(char *filename)
 			OperSelect(move, 'Z');
 
 			move = OpDir(line, "rot");
-			move *= PI/180.0f;  // degrees -> radians
+			move *= Math::PI/180.0f;  // degrees -> radians
 			OperSelect(move, 'R');
 
 			move = OpDir(line, "pos");
@@ -1362,7 +1362,7 @@ bool CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
 {
 	D3DVERTEX2	vertex[3];
 	D3DVECTOR	min, max;
-	FPOINT		a, b, ti, ts;
+	Math::Point		a, b, ti, ts;
 	float		au, bu, av, bv;
 	int			used, i, j;
 
@@ -1440,11 +1440,11 @@ bool CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
 // Maps a texture onto the selected triangles.
 
 void CModel::MappingSelect(int mode, int rotate, bool bMirrorX, bool bMirrorY,
-						   FPOINT ti, FPOINT ts, char *texName)
+						   Math::Point ti, Math::Point ts, char *texName)
 {
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max;
-	FPOINT		a, b;
+	Math::Point		a, b;
 	D3DMaping	D3Dmode;
 	float		au, bu, av, bv;
 	int			used, i;
@@ -1516,12 +1516,12 @@ void CModel::MappingSelect(int mode, int rotate, bool bMirrorX, bool bMirrorY,
 
 	if ( bMirrorX )
 	{
-		Swap(ti.x, ts.x);
+		Math::Swap(ti.x, ts.x);
 	}
 
 	if ( !bMirrorY )  // reverse test!
 	{
-		Swap(ti.y, ts.y);
+		Math::Swap(ti.y, ts.y);
 	}
 
 	au = (ts.x-ti.x)/(b.x-a.x);
@@ -1559,7 +1559,7 @@ void CModel::MappingSelect(int mode, int rotate, bool bMirrorX, bool bMirrorY,
 // Maps a texture onto the selected triangles.
 
 void CModel::MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bMirrorY,
-									FPOINT ti, FPOINT ts, char *texName)
+									Math::Point ti, Math::Point ts, char *texName)
 {
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max, center, dim, p;
@@ -1569,16 +1569,16 @@ void CModel::MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bM
 	BBoxCompute(min, max);
 	center = (min+max)/2.0f;
 	dim    = (max-min)/2.0f;
-	radius = Min(dim.x, dim.y, dim.z);
+	radius = Math::Min(dim.x, dim.y, dim.z);
 
 	if ( bMirrorX )
 	{
-		Swap(ti.x, ts.x);
+		Math::Swap(ti.x, ts.x);
 	}
 
 	if ( !bMirrorY )  // reverse test!
 	{
-		Swap(ti.y, ts.y);
+		Math::Swap(ti.y, ts.y);
 	}
 
 	used = m_modFile->RetTriangleUsed();
@@ -1627,9 +1627,9 @@ D3DVECTOR CModel::RetMappingCenter(D3DVECTOR pos, D3DVECTOR min)
 		p.y = vertex.y;
 		p.z = vertex.z;
 
-		if ( Abs(p.x-pos.x) <= min.x &&
-			 Abs(p.y-pos.y) <= min.y &&
-			 Abs(p.z-pos.z) <= min.z )
+		if ( fabs(p.x-pos.x) <= min.x &&
+			 fabs(p.y-pos.y) <= min.y &&
+			 fabs(p.z-pos.z) <= min.z )
 		{
 			center.x += p.x;
 			center.y += p.y;
@@ -1650,7 +1650,7 @@ D3DVECTOR CModel::RetMappingCenter(D3DVECTOR pos, D3DVECTOR min)
 // Maps a texture onto the selected triangles.
 
 void CModel::MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool bMirrorY,
-									  FPOINT ti, FPOINT ts, char *texName)
+									  Math::Point ti, Math::Point ts, char *texName)
 {
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max, center, local, dim, p, pp, box;
@@ -1660,16 +1660,16 @@ void CModel::MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool 
 	BBoxCompute(min, max);
 	center = (min+max)/2.0f;
 	dim    = (max-min)/2.0f;
-	radius = Min(dim.x, dim.y, dim.z);
+	radius = Math::Min(dim.x, dim.y, dim.z);
 
 	if ( bMirrorX )
 	{
-		Swap(ti.x, ts.x);
+		Math::Swap(ti.x, ts.x);
 	}
 
 	if ( !bMirrorY )  // reverse test!
 	{
-		Swap(ti.y, ts.y);
+		Math::Swap(ti.y, ts.y);
 	}
 
 	if ( rotate == 0 )
@@ -1721,23 +1721,23 @@ void CModel::MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool 
 
 		if ( rotate == 0 )
 		{
-			u = RotateAngle(pp.y, pp.z);
+			u = Math::RotateAngle(pp.y, pp.z);
 			v = p.x/dim.x/2.0f + 0.5f;
 		}
 		if ( rotate == 1 )
 		{
-			u = RotateAngle(pp.x, pp.z);
+			u = Math::RotateAngle(pp.x, pp.z);
 			v = p.y/dim.y/2.0f + 0.5f;
 		}
 		if ( rotate == 2 )
 		{
-			u = RotateAngle(pp.x, pp.y);
+			u = Math::RotateAngle(pp.x, pp.y);
 			v = p.z/dim.z/2.0f + 0.5f;
 		}
 
-//?		if ( u < PI )  u = u/PI;
-//?		else           u = 2.0f-u/PI;
-		u = u/(PI*2.0f);
+//?		if ( u < Math::PI )  u = u/Math::PI;
+//?		else           u = 2.0f-u/Math::PI;
+		u = u/(Math::PI*2.0f);
 
 		vertex.tu = ti.x+(ts.x-ti.x)*u;
 		vertex.tv = ti.y+(ts.y-ti.y)*v;
@@ -1752,7 +1752,7 @@ void CModel::MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool 
 // Maps a texture onto the selected triangles.
 
 void CModel::MappingSelectFace(int mode, int rotate, bool bMirrorX, bool bMirrorY,
-							   FPOINT ti, FPOINT ts, char *texName)
+							   Math::Point ti, Math::Point ts, char *texName)
 {
 	D3DVERTEX2	vertex[3];
 	D3DVECTOR	min, max, center, local, dim, p;
@@ -1762,16 +1762,16 @@ void CModel::MappingSelectFace(int mode, int rotate, bool bMirrorX, bool bMirror
 	BBoxCompute(min, max);
 	center = (min+max)/2.0f;
 	dim    = (max-min)/2.0f;
-	radius = Min(dim.x, dim.y, dim.z);
+	radius = Math::Min(dim.x, dim.y, dim.z);
 
 	if ( bMirrorX )
 	{
-		Swap(ti.x, ts.x);
+		Math::Swap(ti.x, ts.x);
 	}
 
 	if ( !bMirrorY )  // reverse test!
 	{
-		Swap(ti.y, ts.y);
+		Math::Swap(ti.y, ts.y);
 	}
 
 	used = m_modFile->RetTriangleUsed();
@@ -1786,10 +1786,10 @@ void CModel::MappingSelectFace(int mode, int rotate, bool bMirrorX, bool bMirror
 			p.z = vertex[j].z - center.z;
 
 #if 0
-			u[j] = RotateAngle(p.x, p.z)/(PI*2.0f)+0.5f;
+			u[j] = Math::RotateAngle(p.x, p.z)/(Math::PI*2.0f)+0.5f;
 			if ( u[j] > 1.0f ) u[j] -= 1.0f;
 #else
-			u[j] = RotateAngle(p.x, p.z)/PI;
+			u[j] = Math::RotateAngle(p.x, p.z)/Math::PI;
 //?			if ( u[j] > 1.0f )  u[j] = 2.0f-u[j];
 			if ( u[j] > 1.0f )  u[j] -= 1.0f;
 #endif
@@ -1870,24 +1870,24 @@ void CModel::MappingSelect2(int texNum2, int subdiv,
 		p.y = vertex.y-center.y;
 		p.z = vertex.z-center.z;
 
-		u = RotateAngle(p.x, p.z);
-		v = RotateAngle(Length(p.x, p.z), p.y);
-		if ( p.x < 0.0f )  v += PI;
+		u = Math::RotateAngle(p.x, p.z);
+		v = Math::RotateAngle(Length(p.x, p.z), p.y);
+		if ( p.x < 0.0f )  v += Math::PI;
 
-		u = NormAngle(u+(float)offsetU*PI/180.0f);
-		v = NormAngle(v+(float)offsetV*PI/180.0f);
+		u = Math::NormAngle(u+(float)offsetU*Math::PI/180.0f);
+		v = Math::NormAngle(v+(float)offsetV*Math::PI/180.0f);
 
 		if ( subdiv == 1 )
 		{
-			u = u/(PI*2.0f);
-			v = v/(PI*2.0f);
+			u = u/(Math::PI*2.0f);
+			v = v/(Math::PI*2.0f);
 		}
 		if ( subdiv == 2 )
 		{
-			if ( u < PI )  u = u/PI;
-			else           u = (PI*2.0f-u)/PI;
-			if ( v < PI )  v = v/PI;
-			else           v = (PI*2.0f-v)/PI;
+			if ( u < Math::PI )  u = u/Math::PI;
+			else           u = (Math::PI*2.0f-u)/Math::PI;
+			if ( v < Math::PI )  v = v/Math::PI;
+			else           v = (Math::PI*2.0f-v)/Math::PI;
 		}
 
 		vertex.tu2 = u;
@@ -1905,12 +1905,12 @@ void CModel::MappingSelectPlane2(int mode, bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max;
-	FPOINT		ti, ts, a, b;
+	Math::Point		ti, ts, a, b;
 	float		au, bu, av, bv;
 	int			used, i;
 
-	ti = FPOINT(0.0f, 0.0f);
-	ts = FPOINT(1.0f, 1.0f);
+	ti = Math::Point(0.0f, 0.0f);
+	ts = Math::Point(1.0f, 1.0f);
 
 	BBoxCompute(min, max);
 
@@ -1938,12 +1938,12 @@ void CModel::MappingSelectPlane2(int mode, bool bMirrorX, bool bMirrorY)
 
 	if ( bMirrorX )
 	{
-		Swap(ti.x, ts.x);
+		Math::Swap(ti.x, ts.x);
 	}
 
 	if ( !bMirrorY )  // reverse test!
 	{
-		Swap(ti.y, ts.y);
+		Math::Swap(ti.y, ts.y);
 	}
 
 	au = (ts.x-ti.x)/(b.x-a.x);
@@ -1985,26 +1985,26 @@ void CModel::MappingSelectSpherical2(bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex;
 	D3DVECTOR	min, max, center, dim, p;
-	FPOINT		ti, ts;
+	Math::Point		ti, ts;
 	float		radius, k, u, v;
 	int			used, i;
 
 	BBoxCompute(min, max);
 	center = (min+max)/2.0f;
 	dim    = (max-min)/2.0f;
-	radius = Min(dim.x, dim.y, dim.z);
+	radius = Math::Min(dim.x, dim.y, dim.z);
 
-	ti = FPOINT(0.0f, 0.0f);
-	ts = FPOINT(1.0f, 1.0f);
+	ti = Math::Point(0.0f, 0.0f);
+	ts = Math::Point(1.0f, 1.0f);
 
 	if ( bMirrorX )
 	{
-		Swap(ti.x, ts.x);
+		Math::Swap(ti.x, ts.x);
 	}
 
 	if ( !bMirrorY )  // reverse test!
 	{
-		Swap(ti.y, ts.y);
+		Math::Swap(ti.y, ts.y);
 	}
 
 	used = m_modFile->RetTriangleUsed();
@@ -2037,22 +2037,22 @@ void CModel::MappingSelectMagic2(bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex, v[3];
 	D3DVECTOR	min, max, au, bu, av, bv, n;
-	FPOINT		ti, ts;
+	Math::Point		ti, ts;
 	int			used, i, mode;
 
-	ti = FPOINT(0.0f, 0.0f);
-	ts = FPOINT(1.0f, 1.0f);
+	ti = Math::Point(0.0f, 0.0f);
+	ts = Math::Point(1.0f, 1.0f);
 
 	BBoxCompute(min, max);
 
 	if ( bMirrorX )
 	{
-		Swap(ti.x, ts.x);
+		Math::Swap(ti.x, ts.x);
 	}
 
 	if ( !bMirrorY )  // reverse test!
 	{
-		Swap(ti.y, ts.y);
+		Math::Swap(ti.y, ts.y);
 	}
 
 	au.x = (ts.x-ti.x)/(max.x-min.x);
@@ -2082,13 +2082,13 @@ void CModel::MappingSelectMagic2(bool bMirrorX, bool bMirrorY)
 							  D3DVECTOR(v[1].x, v[1].y, v[1].z),
 							  D3DVECTOR(v[2].x, v[2].y, v[2].z));
 
-			n.x = Abs(n.x);
-			n.y = Abs(n.y);
-			n.z = Abs(n.z);
+			n.x = fabs(n.x);
+			n.y = fabs(n.y);
+			n.z = fabs(n.z);
 
-			if ( n.x >= Max(n.y, n.z) )  mode = 0;
-			if ( n.y >= Max(n.x, n.z) )  mode = 1;
-			if ( n.z >= Max(n.x, n.y) )  mode = 2;
+			if ( n.x >= Math::Max(n.y, n.z) )  mode = 0;
+			if ( n.y >= Math::Max(n.x, n.z) )  mode = 1;
+			if ( n.z >= Math::Max(n.x, n.y) )  mode = 2;
 		}
 
 		if ( !GetVertex(i, vertex) )  continue;
@@ -2429,20 +2429,20 @@ void CModel::InitViewFromSelect()
 
 	n = RetSelectNormal();
 
-	m_viewAngleH = RotateAngle(n.x, n.z)+PI;
-	m_viewAngleV = RotateAngle(sqrtf(n.x*n.x+n.z*n.z), n.y)+PI;
+	m_viewAngleH = Math::RotateAngle(n.x, n.z)+Math::PI;
+	m_viewAngleV = Math::RotateAngle(sqrtf(n.x*n.x+n.z*n.z), n.y)+Math::PI;
 	h = m_viewAngleH;
 	v = m_viewAngleV;
 
-	while ( m_viewAngleV <= -PI )
+	while ( m_viewAngleV <= -Math::PI )
 	{
-		m_viewAngleV += PI;
-		m_viewAngleH += PI;
+		m_viewAngleV += Math::PI;
+		m_viewAngleH += Math::PI;
 	}
-	while ( m_viewAngleV >=  PI )
+	while ( m_viewAngleV >=  Math::PI )
 	{
-		m_viewAngleV -= PI;
-		m_viewAngleH -= PI;
+		m_viewAngleV -= Math::PI;
+		m_viewAngleH -= Math::PI;
 	}
 	m_viewAngleV *= 0.75f;
 
@@ -2484,7 +2484,7 @@ void CModel::ViewMove(const Event &event, float speed)
 		else
 		{
 			m_viewAngleV -= event.rTime*1.0f*speed;
-			if ( m_viewAngleV < -PI*0.49f )  m_viewAngleV = -PI*0.49f;
+			if ( m_viewAngleV < -Math::PI*0.49f )  m_viewAngleV = -Math::PI*0.49f;
 		}
 	}
 	if ( event.axeY < -0.5f )
@@ -2497,7 +2497,7 @@ void CModel::ViewMove(const Event &event, float speed)
 		else
 		{
 			m_viewAngleV += event.rTime*1.0f*speed;
-			if ( m_viewAngleV > PI*0.49f )  m_viewAngleV = PI*0.49f;
+			if ( m_viewAngleV > Math::PI*0.49f )  m_viewAngleV = Math::PI*0.49f;
 		}
 	}
 
@@ -2564,7 +2564,7 @@ void CModel::UpdateInfoText()
 
 	if ( m_mode == 3 )
 	{
-		sprintf(info, "[3]  LOD Min/max=%d..%d  Sel=%d..%d (T=%d)",
+		sprintf(info, "[3]  LOD Math::Min/max=%d..%d  Sel=%d..%d (T=%d)",
 				(int)m_min, (int)m_max,
 				m_triangleSel1, m_triangleSel2,
 				m_triangleSel2-m_triangleSel1+1);

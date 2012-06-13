@@ -14,15 +14,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
-#include "math/const.h"
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/global.h"
@@ -120,13 +119,13 @@ bool CAutoTower::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
 			angle = m_object->RetAngleY(1);
-			angle += Rand()*0.5f;
+			angle += Math::Rand()*0.5f;
 			m_object->SetAngleY(1, angle);
 
-			m_object->SetAngleZ(2, Rand()*0.5f);
+			m_object->SetAngleZ(2, Math::Rand()*0.5f);
 		}
 		return true;
 	}
@@ -204,13 +203,13 @@ bool CAutoTower::EventProcess(const Event &event)
 			{
 				pos = m_object->RetPosition(0);
 				pos.y += 24.5f;
-				m_angleYfinal = RotateAngle(m_targetPos.x-pos.x, pos.z-m_targetPos.z);  // CW !
-				m_angleYfinal += PI*2.0f;
+				m_angleYfinal = Math::RotateAngle(m_targetPos.x-pos.x, pos.z-m_targetPos.z);  // CW !
+				m_angleYfinal += Math::PI*2.0f;
 				m_angleYfinal -= m_object->RetAngleY(0);
-				m_angleYactual = NormAngle(m_object->RetAngleY(1));
+				m_angleYactual = Math::NormAngle(m_object->RetAngleY(1));
 
-				m_angleZfinal = -PI/2.0f;
-				m_angleZfinal -= RotateAngle(Length2d(m_targetPos, pos), pos.y-m_targetPos.y);  // CW !
+				m_angleZfinal = -Math::PI/2.0f;
+				m_angleZfinal -= Math::RotateAngle(Length2d(m_targetPos, pos), pos.y-m_targetPos.y);  // CW !
 				m_angleZactual = m_object->RetAngleZ(2);
 
 				m_phase    = ATP_TURN;
@@ -259,7 +258,7 @@ bool CAutoTower::EventProcess(const Event &event)
 			pos = m_object->RetPosition(0);
 			pos.y += 24.5f;
 			m_particule->CreateRay(pos, m_targetPos, PARTIRAY1,
-								   FPOINT(5.0f, 5.0f), 1.5f);
+								   Math::Point(5.0f, 5.0f), 1.5f);
 		}
 		if ( m_progress >= 1.0f )
 		{
@@ -308,7 +307,7 @@ CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 			physics = pObj->RetPhysics();
 			if ( physics != 0 )
 			{
-				speed = Abs(physics->RetLinMotionX(MO_REASPEED));
+				speed = fabs(physics->RetLinMotionX(MO_REASPEED));
 				if ( speed > 20.0f )  continue;  // moving too fast?
 			}
 		}
@@ -362,7 +361,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	int			i;
 
 	static float listpos[8] =
@@ -394,7 +393,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 
 	for ( i=0 ; i<4 ; i++ )
 	{
-		if ( Mod(progress+i*0.125f, 0.5f) < 0.2f )
+		if ( Math::Mod(progress+i*0.125f, 0.5f) < 0.2f )
 		{
 			if ( m_partiStop[i] != -1 )
 			{
@@ -424,7 +423,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 bool CAutoTower::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

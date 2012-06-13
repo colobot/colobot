@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -82,7 +80,7 @@ void CAutoMush::Init()
 bool CAutoMush::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed, dir;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		factor, zoom, size, angle;
 	int			i, channel;
 
@@ -104,7 +102,7 @@ bool CAutoMush::EventProcess(const Event &event)
 			{
 				m_phase    = AMP_WAIT;
 				m_progress = 0.0f;
-				m_speed    = 1.0f/(2.0f+Rand()*2.0f);
+				m_speed    = 1.0f/(2.0f+Math::Rand()*2.0f);
 			}
 			else
 			{
@@ -161,9 +159,9 @@ bool CAutoMush::EventProcess(const Event &event)
 				{
 					pos = m_object->RetPosition(0);
 					pos.y += 5.0f;
-					speed.x = (Rand()-0.5f)*200.0f;
-					speed.z = (Rand()-0.5f)*200.0f;
-					speed.y = -(20.0f+Rand()*20.0f);
+					speed.x = (Math::Rand()-0.5f)*200.0f;
+					speed.z = (Math::Rand()-0.5f)*200.0f;
+					speed.y = -(20.0f+Math::Rand()*20.0f);
 					dim.x = 1.0f;
 					dim.y = dim.x;
 					channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN2, 2.0f, 100.0f, 0.0f);
@@ -189,10 +187,10 @@ bool CAutoMush::EventProcess(const Event &event)
 
 				pos = m_object->RetPosition(0);
 				pos.y += 5.0f;
-				speed.x = (Rand()-0.5f)*4.0f;
-				speed.z = (Rand()-0.5f)*4.0f;
-				speed.y = -(0.5f+Rand()*0.5f);
-				dim.x = Rand()*2.5f+2.0f;
+				speed.x = (Math::Rand()-0.5f)*4.0f;
+				speed.z = (Math::Rand()-0.5f)*4.0f;
+				speed.y = -(0.5f+Math::Rand()*0.5f);
+				dim.x = Math::Rand()*2.5f+2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 0.0f);
 			}
@@ -201,14 +199,14 @@ bool CAutoMush::EventProcess(const Event &event)
 		{
 			m_phase    = AMP_WAIT;
 			m_progress = 0.0f;
-			m_speed    = 1.0f/(2.0f+Rand()*2.0f);
+			m_speed    = 1.0f/(2.0f+Math::Rand()*2.0f);
 		}
 	}
 
 	if ( factor != 0.0f || size != 1.0f )
 	{
-		dir.x = sinf(m_time*PI*4.0f);
-		dir.z = cosf(m_time*PI*4.0f);
+		dir.x = sinf(m_time*Math::PI*4.0f);
+		dir.z = cosf(m_time*Math::PI*4.0f);
 
 		angle = sinf(m_time*10.0f)*factor*0.04f;
 		m_object->SetAngleX(0, angle*dir.z);

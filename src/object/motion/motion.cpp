@@ -16,15 +16,14 @@
 
 // motion.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
-#include "math/all.h"
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -133,21 +132,21 @@ bool CMotion::EventProcess(const Event &event)
 	}
 
 	dir = m_object->RetLinVibration();
-	dir.x = Smooth(dir.x, m_linVibration.x, time);
-	dir.y = Smooth(dir.y, m_linVibration.y, time);
-	dir.z = Smooth(dir.z, m_linVibration.z, time);
+	dir.x = Math::Smooth(dir.x, m_linVibration.x, time);
+	dir.y = Math::Smooth(dir.y, m_linVibration.y, time);
+	dir.z = Math::Smooth(dir.z, m_linVibration.z, time);
 	m_object->SetLinVibration(dir);
 
 	dir = m_object->RetCirVibration();
-	dir.x = Smooth(dir.x, m_cirVibration.x, time);
-	dir.y = Smooth(dir.y, m_cirVibration.y, time);
-	dir.z = Smooth(dir.z, m_cirVibration.z, time);
+	dir.x = Math::Smooth(dir.x, m_cirVibration.x, time);
+	dir.y = Math::Smooth(dir.y, m_cirVibration.y, time);
+	dir.z = Math::Smooth(dir.z, m_cirVibration.z, time);
 	m_object->SetCirVibration(dir);
 
 	dir = m_object->RetInclinaison();
-	dir.x = Smooth(dir.x, m_inclinaison.x, time);
-	dir.y = Smooth(dir.y, m_inclinaison.y, time);
-	dir.z = Smooth(dir.z, m_inclinaison.z, time);
+	dir.x = Math::Smooth(dir.x, m_inclinaison.x, time);
+	dir.y = Math::Smooth(dir.y, m_inclinaison.y, time);
+	dir.z = Math::Smooth(dir.z, m_inclinaison.z, time);
 	m_object->SetInclinaison(dir);
 
 	return true;

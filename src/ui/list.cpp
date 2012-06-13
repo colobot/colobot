@@ -16,8 +16,6 @@
 
 // list.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -90,7 +88,7 @@ CList::~CList()
 
 // Creates a new list.
 
-bool CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
+bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg,
 				   float expand)
 {
 	m_expand = expand;
@@ -109,7 +107,7 @@ bool CList::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 
 bool CList::MoveAdjust()
 {
-	FPOINT		ipos, idim, ppos, ddim;
+	Math::Point		ipos, idim, ppos, ddim;
 	float		marging, h;
 	int			i;
 
@@ -186,12 +184,12 @@ EventMsg CList::RetEventMsgScroll()
 }
 
 
-void CList::SetPos(FPOINT pos)
+void CList::SetPos(Math::Point pos)
 {
 	CControl::SetPos(pos);
 }
 
-void CList::SetDim(FPOINT dim)
+void CList::SetDim(Math::Point dim)
 {
 	m_dim = dim;
 	MoveAdjust();
@@ -263,7 +261,7 @@ bool CList::EventProcess(const Event &event)
 			 m_button[i] != 0 )
 		{
 			m_blinkTime += event.rTime;
-			if ( Mod(m_blinkTime, 0.7f) < 0.3f )
+			if ( Math::Mod(m_blinkTime, 0.7f) < 0.3f )
 			{
 				m_button[i]->ClearState(STATE_ENABLE);
 				m_button[i]->ClearState(STATE_CHECK);
@@ -353,7 +351,7 @@ bool CList::EventProcess(const Event &event)
 
 void CList::Draw()
 {
-	FPOINT	uv1, uv2, corner, pos, dim, ppos, ddim;
+	Math::Point	uv1, uv2, corner, pos, dim, ppos, ddim;
 	float	dp;
 	int		i, j;
 	char	text[100];
@@ -555,7 +553,7 @@ void CList::Draw()
 
 // Displays text in a box.
 
-void CList::DrawCase(char *text, FPOINT pos, float width, int justif)
+void CList::DrawCase(char *text, Math::Point pos, float width, int justif)
 {
 	if ( justif == 1 )
 	{

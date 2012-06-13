@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/global.h"
@@ -127,7 +126,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 {
 	CObject*	pObj;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	int			i, count;
 
 	CAuto::EventProcess(event);
@@ -142,7 +141,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 		}
 		return true;
 	}
@@ -169,11 +168,11 @@ bool CAutoSafe::EventProcess(const Event &event)
 			{
 				m_countKeys = count;
 
-				if ( count == 0 )  m_finalAngle =   0.0f*PI/180.0f;
-				if ( count == 1 )  m_finalAngle =   5.0f*PI/180.0f;
-				if ( count == 2 )  m_finalAngle =  10.0f*PI/180.0f;
-				if ( count == 3 )  m_finalAngle =  15.0f*PI/180.0f;
-				if ( count == 4 )  m_finalAngle = 120.0f*PI/180.0f;
+				if ( count == 0 )  m_finalAngle =   0.0f*Math::PI/180.0f;
+				if ( count == 1 )  m_finalAngle =   5.0f*Math::PI/180.0f;
+				if ( count == 2 )  m_finalAngle =  10.0f*Math::PI/180.0f;
+				if ( count == 3 )  m_finalAngle =  15.0f*Math::PI/180.0f;
+				if ( count == 4 )  m_finalAngle = 120.0f*Math::PI/180.0f;
 
 				if ( count == 4 )  // all the keys?
 				{
@@ -213,33 +212,33 @@ bool CAutoSafe::EventProcess(const Event &event)
 				for ( i=0 ; i<10 ; i++ )
 				{
 					pos = m_object->RetPosition(0);
-					pos.x += (Rand()-0.5f)*10.0f;
-					pos.z += (Rand()-0.5f)*10.0f;
-					speed.x = (Rand()-0.5f)*4.0f;
-					speed.z = (Rand()-0.5f)*4.0f;
-					speed.y = Rand()*15.0f;
-					dim.x = Rand()*6.0f+4.0f;
+					pos.x += (Math::Rand()-0.5f)*10.0f;
+					pos.z += (Math::Rand()-0.5f)*10.0f;
+					speed.x = (Math::Rand()-0.5f)*4.0f;
+					speed.z = (Math::Rand()-0.5f)*4.0f;
+					speed.y = Math::Rand()*15.0f;
+					dim.x = Math::Rand()*6.0f+4.0f;
 					dim.y = dim.x;
 					m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 				}
 
 				pos = m_object->RetPosition(0);
-				pos.x += (Rand()-0.5f)*10.0f;
-				pos.z += (Rand()-0.5f)*10.0f;
-				speed.x = (Rand()-0.5f)*4.0f;
-				speed.z = (Rand()-0.5f)*4.0f;
-				speed.y = Rand()*10.0f;
-				dim.x = Rand()*3.0f+2.0f;
+				pos.x += (Math::Rand()-0.5f)*10.0f;
+				pos.z += (Math::Rand()-0.5f)*10.0f;
+				speed.x = (Math::Rand()-0.5f)*4.0f;
+				speed.z = (Math::Rand()-0.5f)*4.0f;
+				speed.y = Math::Rand()*10.0f;
+				dim.x = Math::Rand()*3.0f+2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 1.0f, 0.0f, 0.0f);
 
 				for ( i=0 ; i<4 ; i++ )
 				{
 					pos = m_keyPos[i];
-					speed.x = (Rand()-0.5f)*2.0f;
-					speed.z = (Rand()-0.5f)*2.0f;
-					speed.y = 1.0f+Rand()*1.0f;
-					dim.x = Rand()*1.5f+1.5f;
+					speed.x = (Math::Rand()-0.5f)*2.0f;
+					speed.z = (Math::Rand()-0.5f)*2.0f;
+					speed.y = 1.0f+Math::Rand()*1.0f;
+					dim.x = Math::Rand()*1.5f+1.5f;
 					dim.y = dim.x;
 					m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 0.0f);
 				}
@@ -282,12 +281,12 @@ bool CAutoSafe::EventProcess(const Event &event)
 	{
 		if ( m_actualAngle < m_finalAngle )
 		{
-			m_actualAngle += (105.0f*PI/180.0f)*event.rTime/OPEN_DELAY;
+			m_actualAngle += (105.0f*Math::PI/180.0f)*event.rTime/OPEN_DELAY;
 			if ( m_actualAngle > m_finalAngle )  m_actualAngle = m_finalAngle;
 		}
 		else
 		{
-			m_actualAngle -= (105.0f*PI/180.0f)*event.rTime/OPEN_DELAY;
+			m_actualAngle -= (105.0f*Math::PI/180.0f)*event.rTime/OPEN_DELAY;
 			if ( m_actualAngle < m_finalAngle )  m_actualAngle = m_finalAngle;
 		}
 		m_object->SetAngleZ(1,  m_actualAngle);
@@ -300,7 +299,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 	dim.y = dim.x;
 	for ( i=0 ; i<4 ; i++ )
 	{
-		if ( m_phase != ASAP_WAIT || !m_bKey[i] || Mod(m_time, 1.0f) < 0.4f )
+		if ( m_phase != ASAP_WAIT || !m_bKey[i] || Math::Mod(m_time, 1.0f) < 0.4f )
 		{
 			if ( m_keyParti[i] != -1 )
 			{
@@ -328,7 +327,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 bool CAutoSafe::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);
@@ -414,7 +413,7 @@ int CAutoSafe::CountKeys()
 {
 	CObject*	pObj;
 	D3DVECTOR	cPos, oPos;
-	FPOINT		rot;
+	Math::Point		rot;
 	ObjectType	oType;
 	float		dist, angle, limit, cAngle, oAngle;
 	int			i, index;
@@ -447,34 +446,34 @@ int CAutoSafe::CountKeys()
 
 		if ( oType == OBJECT_KEYa )
 		{
-			limit  = PI*1.0f;
-			oAngle = PI*0.0f;
+			limit  = Math::PI*1.0f;
+			oAngle = Math::PI*0.0f;
 			index  = 0;
 		}
 		if ( oType == OBJECT_KEYb )
 		{
-			limit  = PI*0.0f;
-			oAngle = PI*1.0f;
+			limit  = Math::PI*0.0f;
+			oAngle = Math::PI*1.0f;
 			index  = 1;
 		}
 		if ( oType == OBJECT_KEYc )
 		{
-			limit  = PI*1.5f;
-			oAngle = PI*0.5f;
+			limit  = Math::PI*1.5f;
+			oAngle = Math::PI*0.5f;
 			index  = 2;
 		}
 		if ( oType == OBJECT_KEYd )
 		{
-			limit  = PI*0.5f;
-			oAngle = PI*0.0f;
+			limit  = Math::PI*0.5f;
+			oAngle = Math::PI*0.0f;
 			index  = 3;
 		}
 
-		angle = RotateAngle(oPos.x-cPos.x, oPos.z-cPos.z)+cAngle;
-		if ( !TestAngle(angle, limit-8.0f*PI/180.0f, limit+8.0f*PI/180.0f) )  continue;
+		angle = Math::RotateAngle(oPos.x-cPos.x, oPos.z-cPos.z)+cAngle;
+		if ( !Math::TestAngle(angle, limit-8.0f*Math::PI/180.0f, limit+8.0f*Math::PI/180.0f) )  continue;
 
 		// Key changes the shape of the base.
-		rot = RotatePoint(FPOINT(cPos.x, cPos.z), limit-cAngle, FPOINT(cPos.x+16.0f, cPos.z));
+		rot = Math::RotatePoint(Math::Point(cPos.x, cPos.z), limit-cAngle, Math::Point(cPos.x+16.0f, cPos.z));
 		oPos.x = rot.x;
 		oPos.z = rot.y;
 		oPos.y = cPos.y+1.0f;

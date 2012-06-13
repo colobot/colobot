@@ -39,10 +39,10 @@ public:
 	CList(CInstanceManager* iMan);
 	~CList();
 
-	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand);
+	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, float expand);
 
-	void		SetPos(FPOINT pos);
-	void		SetDim(FPOINT dim);
+	void		SetPos(Math::Point pos);
+	void		SetDim(Math::Point dim);
 
 	bool		SetState(int state, bool bState);
 	bool		SetState(int state);
@@ -87,7 +87,7 @@ protected:
 	void		UpdateButton();
 	void		UpdateScroll();
 	void		MoveScroll();
-	void		DrawCase(char *text, FPOINT pos, float width, int justif);
+	void		DrawCase(char *text, Math::Point pos, float width, int justif);
 
 protected:
 	CButton*	m_button[LISTMAXDISPLAY];

@@ -19,8 +19,10 @@
 #pragma once
 
 
+#include <stdio.h>
+
+#include "common/misc.h"
 #include "graphics/d3d/d3dengine.h"
-#include "common/struct.h"
 #include "object/object.h"
 #include "graphics/common/mainmovie.h"
 #include "graphics/common/camera.h"
@@ -210,17 +212,17 @@ public:
 
 	void		SetFontSize(float size);
 	float		RetFontSize();
-	void		SetWindowPos(FPOINT pos);
-	FPOINT		RetWindowPos();
-	void		SetWindowDim(FPOINT dim);
-	FPOINT		RetWindowDim();
+	void		SetWindowPos(Math::Point pos);
+	Math::Point		RetWindowPos();
+	void		SetWindowDim(Math::Point dim);
+	Math::Point		RetWindowDim();
 
 	void		SetIOPublic(bool bMode);
 	bool		RetIOPublic();
-	void		SetIOPos(FPOINT pos);
-	FPOINT		RetIOPos();
-	void		SetIODim(FPOINT dim);
-	FPOINT		RetIODim();
+	void		SetIOPos(Math::Point pos);
+	Math::Point		RetIOPos();
+	void		SetIODim(Math::Point dim);
+	Math::Point		RetIODim();
 
 	char*		RetTitle();
 	char*		RetResume();
@@ -300,11 +302,11 @@ protected:
 	CObject*	CreateObject(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, bool bTrainer=false, bool bToy=false, int option=0);
 	int			CreateLight(D3DVECTOR direction, D3DCOLORVALUE color);
 	void		HiliteClear();
-	void		HiliteObject(FPOINT pos);
+	void		HiliteObject(Math::Point pos);
 	void		HiliteFrame(float rTime);
-	void		CreateTooltip(FPOINT pos, char* text);
+	void		CreateTooltip(Math::Point pos, char* text);
 	void		ClearTooltip();
-	CObject*	DetectObject(FPOINT pos);
+	CObject*	DetectObject(Math::Point pos);
 	void		ChangeCamera();
 	void		RemoteCamera(float pan, float zoom, float rTime);
 	void		KeyCamera(EventMsg event, long param);
@@ -352,7 +354,7 @@ protected:
 	float			m_lostDelay;
 	bool			m_bFixScene;		// scene fixed, no interraction
 	bool			m_bBase;		// OBJECT_BASE exists in mission
-	FPOINT			m_lastMousePos;
+	Math::Point			m_lastMousePos;
 	CObject*		m_selectObject;
 
 	Phase			m_phase;
@@ -387,7 +389,7 @@ protected:
 	bool			m_bMapImage;
 	char			m_mapFilename[100];
 
-	FPOINT			m_tooltipPos;
+	Math::Point			m_tooltipPos;
 	char			m_tooltipName[100];
 	float			m_tooltipTime;
 
@@ -406,12 +408,12 @@ protected:
 	bool			m_bWinTerminate;
 
 	float			m_fontSize;
-	FPOINT			m_windowPos;
-	FPOINT			m_windowDim;
+	Math::Point			m_windowPos;
+	Math::Point			m_windowDim;
 
 	bool			m_IOPublic;
-	FPOINT			m_IOPos;
-	FPOINT			m_IODim;
+	Math::Point			m_IOPos;
+	Math::Point			m_IODim;
 
 	NewScriptName	m_newScriptName[MAXNEWSCRIPTNAME];
 

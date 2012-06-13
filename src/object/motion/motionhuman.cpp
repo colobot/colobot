@@ -16,14 +16,14 @@
 
 // motionhuman.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/func.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -231,7 +231,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human3.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(2, D3DVECTOR(0.0f, 2.3f, -1.2f));
-	m_object->SetAngle(2, D3DVECTOR(90.0f*PI/180.0f, 90.0f*PI/180.0f, -50.0f*PI/180.0f));
+	m_object->SetAngle(2, D3DVECTOR(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
 	// Creates the right forearm.
 	rank = m_engine->CreateObject();
@@ -241,7 +241,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human4r.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(3, D3DVECTOR(1.3f, 0.0f, 0.0f));
-	m_object->SetAngle(3, D3DVECTOR(0.0f*PI/180.0f, -20.0f*PI/180.0f, 0.0f*PI/180.0f));
+	m_object->SetAngle(3, D3DVECTOR(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
 	// Creates right hand.
 	rank = m_engine->CreateObject();
@@ -260,7 +260,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human6.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -0.7f));
-	m_object->SetAngle(5, D3DVECTOR(10.0f*PI/180.0f, 0.0f*PI/180.0f, 5.0f*PI/180.0f));
+	m_object->SetAngle(5, D3DVECTOR(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
 	// Creates the right leg.
 	rank = m_engine->CreateObject();
@@ -270,7 +270,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human7.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(6, D3DVECTOR(0.0f, -1.5f, 0.0f));
-	m_object->SetAngle(6, D3DVECTOR(0.0f*PI/180.0f, 0.0f*PI/180.0f, -10.0f*PI/180.0f));
+	m_object->SetAngle(6, D3DVECTOR(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
 	// Creates the right foot.
 	rank = m_engine->CreateObject();
@@ -280,7 +280,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human8.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(7, D3DVECTOR(0.0f, -1.5f, 0.0f));
-	m_object->SetAngle(7, D3DVECTOR(-10.0f*PI/180.0f, 5.0f*PI/180.0f, 5.0f*PI/180.0f));
+	m_object->SetAngle(7, D3DVECTOR(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
 	// Creates the left arm.
 	rank = m_engine->CreateObject();
@@ -291,7 +291,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(8, D3DVECTOR(0.0f, 2.3f, 1.2f));
-	m_object->SetAngle(8, D3DVECTOR(-90.0f*PI/180.0f, -90.0f*PI/180.0f, -50.0f*PI/180.0f));
+	m_object->SetAngle(8, D3DVECTOR(-90.0f*Math::PI/180.0f, -90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
 	// Creates the left forearm.
 	rank = m_engine->CreateObject();
@@ -302,7 +302,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(9, D3DVECTOR(1.3f, 0.0f, 0.0f));
-	m_object->SetAngle(9, D3DVECTOR(0.0f*PI/180.0f, 20.0f*PI/180.0f, 0.0f*PI/180.0f));
+	m_object->SetAngle(9, D3DVECTOR(0.0f*Math::PI/180.0f, 20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
 	// Creates left hand.
 	rank = m_engine->CreateObject();
@@ -323,7 +323,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, 0.7f));
-	m_object->SetAngle(11, D3DVECTOR(-10.0f*PI/180.0f, 0.0f*PI/180.0f, 5.0f*PI/180.0f));
+	m_object->SetAngle(11, D3DVECTOR(-10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
 	// Creates the left leg.
 	rank = m_engine->CreateObject();
@@ -334,7 +334,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(12, D3DVECTOR(0.0f, -1.5f, 0.0f));
-	m_object->SetAngle(12, D3DVECTOR(0.0f*PI/180.0f, 0.0f*PI/180.0f, -10.0f*PI/180.0f));
+	m_object->SetAngle(12, D3DVECTOR(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
 	// Creates the left foot.
 	rank = m_engine->CreateObject();
@@ -345,7 +345,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(13, D3DVECTOR(0.0f, -1.5f, 0.0f));
-	m_object->SetAngle(13, D3DVECTOR(10.0f*PI/180.0f, -5.0f*PI/180.0f, 5.0f*PI/180.0f));
+	m_object->SetAngle(13, D3DVECTOR(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
 	// Creates the neutron gun.
 	if ( option != 2 )  // with backpack?
@@ -357,7 +357,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->ReadModel("objects\\human9.mod");
 		pModFile->CreateEngineObject(rank);
 		m_object->SetPosition(14, D3DVECTOR(-1.5f, 0.3f, -1.35f));
-		m_object->SetAngleZ(14, PI);
+		m_object->SetAngleZ(14, Math::PI);
 	}
 
 	m_object->CreateShadowCircle(2.0f, 0.8f);
@@ -600,8 +600,8 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 		m_physics->SetLinMotionY(MO_RECACCEL, 50.0f);
 		m_physics->SetLinMotionY(MO_STOACCEL, 50.0f);
 
-		m_physics->SetCirMotionY(MO_ADVSPEED,  0.8f*PI);
-		m_physics->SetCirMotionY(MO_RECSPEED,  0.8f*PI);
+		m_physics->SetCirMotionY(MO_ADVSPEED,  0.8f*Math::PI);
+		m_physics->SetCirMotionY(MO_RECSPEED,  0.8f*Math::PI);
 		m_physics->SetCirMotionY(MO_ADVACCEL,  6.0f);
 		m_physics->SetCirMotionY(MO_RECACCEL,  6.0f);
 		m_physics->SetCirMotionY(MO_STOACCEL,  4.0f);
@@ -624,8 +624,8 @@ void CMotionHuman::CreatePhysics(ObjectType type)
 		m_physics->SetLinMotionY(MO_RECACCEL, 50.0f);
 		m_physics->SetLinMotionY(MO_STOACCEL, 50.0f);
 
-		m_physics->SetCirMotionY(MO_ADVSPEED,  0.6f*PI);
-		m_physics->SetCirMotionY(MO_RECSPEED,  0.6f*PI);
+		m_physics->SetCirMotionY(MO_ADVSPEED,  0.6f*Math::PI);
+		m_physics->SetCirMotionY(MO_RECSPEED,  0.6f*Math::PI);
 		m_physics->SetCirMotionY(MO_ADVACCEL,  4.0f);
 		m_physics->SetCirMotionY(MO_RECACCEL,  4.0f);
 		m_physics->SetCirMotionY(MO_STOACCEL,  3.0f);
@@ -713,25 +713,13 @@ bool CMotionHuman::EventProcess(const Event &event)
 	return true;
 }
 
-// Calculates a value (radians) proportional between a and b (degrees).
-
-inline float Propf(float a, float b, float p)
-{
-	float	aa, bb;
-
-	aa = a*PI/180.0f;
-	bb = b*PI/180.0f;
-
-	return aa+p*(bb-aa);
-}
-
 // Management of an event.
 
 bool CMotionHuman::EventFrame(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	dir, actual, pos, speed, pf;
-	FPOINT		center, dim, p2;
+	Math::Point		center, dim, p2;
 	float		s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
 	float		al, ar, af;
 	float		tSt[9], tNd[9];
@@ -791,7 +779,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 		if ( s > 0.0f && s <  10.0f )  s =   0.0f;  // moving slowly?
 //?		if ( s < 0.0f && s >  -5.0f )  s =  -5.0f;  // falling slowly?
 	}
-	a = Abs(rot*12.0f);
+	a = fabs(rot*12.0f);
 
 	if ( !m_physics->RetLand() && !bSwim )  // in flight?
 	{
@@ -809,7 +797,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 #else
 	a = m_physics->RetLinMotionX(MO_REASPEED);
 	s = m_physics->RetLinMotionX(MO_MOTSPEED)*0.2f;
-	if ( Abs(a) > Abs(s) )  s = a;  // the highest value
+	if ( fabs(a) > fabs(s) )  s = a;  // the highest value
 #endif
 	a = m_physics->RetLinMotionX(MO_TERSPEED);
 	if ( a < 0.0f )  // rises?
@@ -823,7 +811,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 		if ( a > 0.0f )  s -= a;
 	}
 	s *= 2.0f;
-	a = Abs(rot*12.0f);
+	a = fabs(rot*12.0f);
 
 	if ( !m_physics->RetLand() && !bSwim )  // in flight?
 	{
@@ -859,9 +847,9 @@ bool CMotionHuman::EventFrame(const Event &event)
 
 	if ( bSwim )  // swims?
 	{
-		s += Abs(m_physics->RetLinMotionY(MO_REASPEED)*2.0f);
+		s += fabs(m_physics->RetLinMotionY(MO_REASPEED)*2.0f);
 		a *= 2.0f;
-		m_armTimeSwim += Min(Max(s,a,3.0f),15.0f)*event.rTime*0.05f;
+		m_armTimeSwim += Math::Min(Math::Max(s,a,3.0f),15.0f)*event.rTime*0.05f;
 	}
 
 	bStop = ( s == 0.0f );  // stop?
@@ -946,22 +934,22 @@ bool CMotionHuman::EventFrame(const Event &event)
 		pos = m_object->RetPosition(0);
 		m_terrain->MoveOnFloor(pos);
 
-		pf.x = pos.x+cosf(a+PI*1.5f)*0.7f;
+		pf.x = pos.x+cosf(a+Math::PI*1.5f)*0.7f;
 		pf.y = pos.y;
-		pf.z = pos.z-sinf(a+PI*1.5f)*0.7f;
+		pf.z = pos.z-sinf(a+Math::PI*1.5f)*0.7f;
 		m_terrain->MoveOnFloor(pf);
 		al = atanf((pf.y-pos.y)/0.7f);  // angle for left leg
 
 		pf = pos;
-		pf.x = pos.x+cosf(a+PI*0.5f)*0.7f;
+		pf.x = pos.x+cosf(a+Math::PI*0.5f)*0.7f;
 		pf.y = pos.y;
-		pf.z = pos.z-sinf(a+PI*0.5f)*0.7f;
+		pf.z = pos.z-sinf(a+Math::PI*0.5f)*0.7f;
 		m_terrain->MoveOnFloor(pf);
 		ar = atanf((pf.y-pos.y)/0.7f);  // angle to right leg
 
-		pf.x = pos.x+cosf(a+PI)*0.3f;
+		pf.x = pos.x+cosf(a+Math::PI)*0.3f;
 		pf.y = pos.y;
-		pf.z = pos.z-sinf(a+PI)*0.3f;
+		pf.z = pos.z-sinf(a+Math::PI)*0.3f;
 		m_terrain->MoveOnFloor(pf);
 		af = atanf((pf.y-pos.y)/0.3f);  // angle for feet
 	}
@@ -990,8 +978,8 @@ bool CMotionHuman::EventFrame(const Event &event)
 		}
 		else
 		{
-			if ( i < 2 )  prog = Mod(rTime[i%2], 1.0f);
-			else          prog = Mod(lTime[i%2], 1.0f);
+			if ( i < 2 )  prog = Math::Mod(rTime[i%2], 1.0f);
+			else          prog = Math::Mod(lTime[i%2], 1.0f);
 			if ( prog < 0.25f )  // t0..t1 ?
 			{
 				prog = prog/0.25f;  // 0..1
@@ -1022,7 +1010,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 			}
 
 			// Less soft ...
-			time = event.rTime*(5.0f+Min(m_armTimeAction*50.0f, 100.0f));
+			time = event.rTime*(5.0f+Math::Min(m_armTimeAction*50.0f, 100.0f));
 			if ( bSwim )  time *= 0.25f;
 		}
 
@@ -1115,22 +1103,22 @@ bool CMotionHuman::EventFrame(const Event &event)
 
 			if ( i == 1 )  // right leg?
 			{
-				aa = (ar*180.0f/PI*0.5f);
+				aa = (ar*180.0f/Math::PI*0.5f);
 			}
 			else	// left leg?
 			{
-				aa = (al*180.0f/PI*0.5f);
+				aa = (al*180.0f/Math::PI*0.5f);
 			}
 			tSt[6] += aa;
 			tNd[6] += aa;  // increases the angle X of the foot
 
 			if ( i == 1 )  // right leg?
 			{
-				aa = (ar*180.0f/PI);
+				aa = (ar*180.0f/Math::PI);
 			}
 			else	// left leg?
 			{
-				aa = (al*180.0f/PI);
+				aa = (al*180.0f/Math::PI);
 			}
 			if ( aa <  0.0f )  aa =  0.0f;
 			if ( aa > 30.0f )  aa = 30.0f;
@@ -1142,7 +1130,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 			tSt[8] += aa;
 			tNd[8] += aa;    // increases the angle Z of the foot
 
-			aa = (af*180.0f/PI)*0.7f;
+			aa = (af*180.0f/Math::PI)*0.7f;
 			if ( aa < -30.0f )  aa = -30.0f;
 			if ( aa >  30.0f )  aa =  30.0f;
 
@@ -1166,7 +1154,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 
 			for ( ii=0 ; ii<9 ; ii++ )
 			{
-				tSt[ii] += Rand()*20.0f*deadFactor;
+				tSt[ii] += Math::Rand()*20.0f*deadFactor;
 				tNd[ii] = tSt[ii];
 			}
 			time = 100.0f;
@@ -1174,27 +1162,27 @@ bool CMotionHuman::EventFrame(const Event &event)
 
 		if ( i < 2 )  // right member (0..1) ?
 		{
-			m_object->SetAngleX(2+3*i+0, Smooth(m_object->RetAngleX(2+3*i+0), Propf(tSt[0], tNd[0], prog), time));
-			m_object->SetAngleY(2+3*i+0, Smooth(m_object->RetAngleY(2+3*i+0), Propf(tSt[1], tNd[1], prog), time));
-			m_object->SetAngleZ(2+3*i+0, Smooth(m_object->RetAngleZ(2+3*i+0), Propf(tSt[2], tNd[2], prog), time));
-			m_object->SetAngleX(2+3*i+1, Smooth(m_object->RetAngleX(2+3*i+1), Propf(tSt[3], tNd[3], prog), time));
-			m_object->SetAngleY(2+3*i+1, Smooth(m_object->RetAngleY(2+3*i+1), Propf(tSt[4], tNd[4], prog), time));
-			m_object->SetAngleZ(2+3*i+1, Smooth(m_object->RetAngleZ(2+3*i+1), Propf(tSt[5], tNd[5], prog), time));
-			m_object->SetAngleX(2+3*i+2, Smooth(m_object->RetAngleX(2+3*i+2), Propf(tSt[6], tNd[6], prog), time));
-			m_object->SetAngleY(2+3*i+2, Smooth(m_object->RetAngleY(2+3*i+2), Propf(tSt[7], tNd[7], prog), time));
-			m_object->SetAngleZ(2+3*i+2, Smooth(m_object->RetAngleZ(2+3*i+2), Propf(tSt[8], tNd[8], prog), time));
+			m_object->SetAngleX(2+3*i+0, Math::Smooth(m_object->RetAngleX(2+3*i+0), Math::PropAngle(tSt[0], tNd[0], prog), time));
+			m_object->SetAngleY(2+3*i+0, Math::Smooth(m_object->RetAngleY(2+3*i+0), Math::PropAngle(tSt[1], tNd[1], prog), time));
+			m_object->SetAngleZ(2+3*i+0, Math::Smooth(m_object->RetAngleZ(2+3*i+0), Math::PropAngle(tSt[2], tNd[2], prog), time));
+			m_object->SetAngleX(2+3*i+1, Math::Smooth(m_object->RetAngleX(2+3*i+1), Math::PropAngle(tSt[3], tNd[3], prog), time));
+			m_object->SetAngleY(2+3*i+1, Math::Smooth(m_object->RetAngleY(2+3*i+1), Math::PropAngle(tSt[4], tNd[4], prog), time));
+			m_object->SetAngleZ(2+3*i+1, Math::Smooth(m_object->RetAngleZ(2+3*i+1), Math::PropAngle(tSt[5], tNd[5], prog), time));
+			m_object->SetAngleX(2+3*i+2, Math::Smooth(m_object->RetAngleX(2+3*i+2), Math::PropAngle(tSt[6], tNd[6], prog), time));
+			m_object->SetAngleY(2+3*i+2, Math::Smooth(m_object->RetAngleY(2+3*i+2), Math::PropAngle(tSt[7], tNd[7], prog), time));
+			m_object->SetAngleZ(2+3*i+2, Math::Smooth(m_object->RetAngleZ(2+3*i+2), Math::PropAngle(tSt[8], tNd[8], prog), time));
 		}
 		else	// left member (2..3) ?
 		{
-			m_object->SetAngleX(2+3*i+0, Smooth(m_object->RetAngleX(2+3*i+0), Propf(-tSt[0], -tNd[0], prog), time));
-			m_object->SetAngleY(2+3*i+0, Smooth(m_object->RetAngleY(2+3*i+0), Propf(-tSt[1], -tNd[1], prog), time));
-			m_object->SetAngleZ(2+3*i+0, Smooth(m_object->RetAngleZ(2+3*i+0), Propf( tSt[2],  tNd[2], prog), time));
-			m_object->SetAngleX(2+3*i+1, Smooth(m_object->RetAngleX(2+3*i+1), Propf(-tSt[3], -tNd[3], prog), time));
-			m_object->SetAngleY(2+3*i+1, Smooth(m_object->RetAngleY(2+3*i+1), Propf(-tSt[4], -tNd[4], prog), time));
-			m_object->SetAngleZ(2+3*i+1, Smooth(m_object->RetAngleZ(2+3*i+1), Propf( tSt[5],  tNd[5], prog), time));
-			m_object->SetAngleX(2+3*i+2, Smooth(m_object->RetAngleX(2+3*i+2), Propf(-tSt[6], -tNd[6], prog), time));
-			m_object->SetAngleY(2+3*i+2, Smooth(m_object->RetAngleY(2+3*i+2), Propf(-tSt[7], -tNd[7], prog), time));
-			m_object->SetAngleZ(2+3*i+2, Smooth(m_object->RetAngleZ(2+3*i+2), Propf( tSt[8],  tNd[8], prog), time));
+			m_object->SetAngleX(2+3*i+0, Math::Smooth(m_object->RetAngleX(2+3*i+0), Math::PropAngle(-tSt[0], -tNd[0], prog), time));
+			m_object->SetAngleY(2+3*i+0, Math::Smooth(m_object->RetAngleY(2+3*i+0), Math::PropAngle(-tSt[1], -tNd[1], prog), time));
+			m_object->SetAngleZ(2+3*i+0, Math::Smooth(m_object->RetAngleZ(2+3*i+0), Math::PropAngle( tSt[2],  tNd[2], prog), time));
+			m_object->SetAngleX(2+3*i+1, Math::Smooth(m_object->RetAngleX(2+3*i+1), Math::PropAngle(-tSt[3], -tNd[3], prog), time));
+			m_object->SetAngleY(2+3*i+1, Math::Smooth(m_object->RetAngleY(2+3*i+1), Math::PropAngle(-tSt[4], -tNd[4], prog), time));
+			m_object->SetAngleZ(2+3*i+1, Math::Smooth(m_object->RetAngleZ(2+3*i+1), Math::PropAngle( tSt[5],  tNd[5], prog), time));
+			m_object->SetAngleX(2+3*i+2, Math::Smooth(m_object->RetAngleX(2+3*i+2), Math::PropAngle(-tSt[6], -tNd[6], prog), time));
+			m_object->SetAngleY(2+3*i+2, Math::Smooth(m_object->RetAngleY(2+3*i+2), Math::PropAngle(-tSt[7], -tNd[7], prog), time));
+			m_object->SetAngleZ(2+3*i+2, Math::Smooth(m_object->RetAngleZ(2+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
 		}
 	}
 
@@ -1219,29 +1207,29 @@ bool CMotionHuman::EventFrame(const Event &event)
 	a = 1.0f*sinf(m_object->RetAngleZ(11)+m_object->RetAngleZ(12)+m_object->RetAngleZ(13));
 	if ( a < 0.0f )  hl += a;
 
-	hr = Min(hr, hl);
+	hr = Math::Min(hr, hl);
 
 	if ( m_actionType == MHS_FIRE )  // shooting?
 	{
 		time = event.rTime*m_actionTime;
 
-		dir.x = (Rand()-0.5f)/8.0f;
-		dir.z = (Rand()-0.5f)/8.0f;
+		dir.x = (Math::Rand()-0.5f)/8.0f;
+		dir.z = (Math::Rand()-0.5f)/8.0f;
 		dir.y = -0.5f;  // slightly lower
 		actual = m_object->RetLinVibration();
-		dir.x = Smooth(actual.x, dir.x, time);
-//?		dir.y = Smooth(actual.y, dir.y, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+//?		dir.y = Math::Smooth(actual.y, dir.y, time);
 		dir.y = -hr;
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetLinVibration(dir);
 
 		dir.x = 0.0f;
-		dir.y = (Rand()-0.5f)/3.0f;
+		dir.y = (Math::Rand()-0.5f)/3.0f;
 		dir.z = -0.1f;  // slightly leaning forward
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
 	else if ( m_actionType == MHS_TAKE      ||  // carrying?
@@ -1253,19 +1241,19 @@ bool CMotionHuman::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		dir.y = -1.5f;  // slightly lower
 		actual = m_object->RetLinVibration();
-		dir.x = Smooth(actual.x, dir.x, time);
-//?		dir.y = Smooth(actual.y, dir.y, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+//?		dir.y = Math::Smooth(actual.y, dir.y, time);
 		dir.y = -hr;
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetLinVibration(dir);
 
 		dir.x = 0.0f;
 		dir.y = 0.0f;
 		dir.z = -0.2f;
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
 	else if ( m_actionType == MHS_TAKEHIGH )   // carrying?
@@ -1276,19 +1264,19 @@ bool CMotionHuman::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		dir.y = 0.0f;
 		actual = m_object->RetLinVibration();
-		dir.x = Smooth(actual.x, dir.x, time);
-//?		dir.y = Smooth(actual.y, dir.y, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+//?		dir.y = Math::Smooth(actual.y, dir.y, time);
 		dir.y = -hr;
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetLinVibration(dir);
 
 		dir.x = 0.0f;
 		dir.y = 0.0f;
 		dir.z = -0.2f;
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
 	else if ( m_actionType == MHS_FLAG )   // flag?
@@ -1299,19 +1287,19 @@ bool CMotionHuman::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		dir.y = -2.0f;  // slightly lower
 		actual = m_object->RetLinVibration();
-		dir.x = Smooth(actual.x, dir.x, time);
-//?		dir.y = Smooth(actual.y, dir.y, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+//?		dir.y = Math::Smooth(actual.y, dir.y, time);
 		dir.y = -hr;
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetLinVibration(dir);
 
 		dir.x = 0.0f;
 		dir.y = 0.0f;
 		dir.z = -0.4f;
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
 	else if ( m_actionType == MHS_DEADg )   // shooting death (falls)?
@@ -1331,11 +1319,11 @@ bool CMotionHuman::EventFrame(const Event &event)
 			for ( i=0 ; i<10 ; i++ )
 			{
 				pos = m_object->RetPosition(0);
-				pos.x += (Rand()-0.5f)*4.0f;
-				pos.z += (Rand()-0.5f)*4.0f;
+				pos.x += (Math::Rand()-0.5f)*4.0f;
+				pos.z += (Math::Rand()-0.5f)*4.0f;
 				m_terrain->MoveOnFloor(pos);
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = 1.2f+Rand()*1.2f;
+				dim.x = 1.2f+Math::Rand()*1.2f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
 			}
@@ -1350,18 +1338,18 @@ bool CMotionHuman::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		dir.y = -1.5f*prog;
 		actual = m_object->RetLinVibration();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetLinVibration(dir);
 
 		dir.x = 0.0f;
 		dir.y = 0.0f;
-		dir.z = -(20.0f*PI/180.0f)*prog;
+		dir.z = -(20.0f*Math::PI/180.0f)*prog;
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
 	else if ( m_actionType == MHS_DEADg2 )   // shooting death (knees)?
@@ -1377,18 +1365,18 @@ bool CMotionHuman::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		dir.y = -1.5f;
 		actual = m_object->RetLinVibration();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetLinVibration(dir);
 
 		dir.x = 0.0f;
 		dir.y = 0.0f;
-		dir.z = -(20.0f*PI/180.0f);
+		dir.z = -(20.0f*Math::PI/180.0f);
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
 	else if ( m_actionType == MHS_DEADg3 )   // shooting death (face down)?
@@ -1401,11 +1389,11 @@ bool CMotionHuman::EventFrame(const Event &event)
 			for ( i=0 ; i<20 ; i++ )
 			{
 				pos = m_object->RetPosition(0);
-				pos.x += (Rand()-0.5f)*8.0f;
-				pos.z += (Rand()-0.5f)*8.0f;
+				pos.x += (Math::Rand()-0.5f)*8.0f;
+				pos.z += (Math::Rand()-0.5f)*8.0f;
 				m_terrain->MoveOnFloor(pos);
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = 2.0f+Rand()*1.5f;
+				dim.x = 2.0f+Math::Rand()*1.5f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
 			}
@@ -1421,18 +1409,18 @@ bool CMotionHuman::EventFrame(const Event &event)
 		dir.x = 0.0f;
 		dir.z = 0.0f;
 		actual = m_object->RetLinVibration();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetLinVibration(dir);
 
-		dir.z = -((20.0f*PI/180.0f)+(70.0f*PI/180.0f)*prog);
+		dir.z = -((20.0f*Math::PI/180.0f)+(70.0f*Math::PI/180.0f)*prog);
 		dir.x = 0.0f;
 		dir.y = 0.0f;
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
 	else if ( m_actionType == MHS_DEADg4 )   // shooting death (face down)?
@@ -1448,18 +1436,18 @@ bool CMotionHuman::EventFrame(const Event &event)
 		dir.x = 0.0f;
 		dir.z = 0.0f;
 		actual = m_object->RetLinVibration();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetLinVibration(dir);
 
-		dir.z = -((20.0f*PI/180.0f)+(70.0f*PI/180.0f));
+		dir.z = -((20.0f*Math::PI/180.0f)+(70.0f*Math::PI/180.0f));
 		dir.x = 0.0f;
 		dir.y = 0.0f;
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 	}
 	else if ( m_actionType == MHS_DEADw )   // drowned?
@@ -1491,13 +1479,13 @@ bool CMotionHuman::EventFrame(const Event &event)
 
 		time = 100.0f;
 
-		dir.z = -(90.0f*PI/180.0f)*prog;
-		dir.x = Rand()*0.3f*deadFactor;
-		dir.y = Rand()*0.3f*deadFactor;
+		dir.z = -(90.0f*Math::PI/180.0f)*prog;
+		dir.x = Math::Rand()*0.3f*deadFactor;
+		dir.y = Math::Rand()*0.3f*deadFactor;
 		actual = m_object->RetInclinaison();
-		dir.x = Smooth(actual.x, dir.x, time);
-		dir.y = Smooth(actual.y, dir.y, time);
-		dir.z = Smooth(actual.z, dir.z, time);
+		dir.x = Math::Smooth(actual.x, dir.x, time);
+		dir.y = Math::Smooth(actual.y, dir.y, time);
+		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 
 		m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
@@ -1513,8 +1501,8 @@ bool CMotionHuman::EventFrame(const Event &event)
 		m_object->SetInclinaison(dir);
 		SetInclinaison(dir);
 
-//?		dir.x = -(sinf(time*0.05f+PI*1.5f)+1.0f)*100.0f;
-		// original code: Min(time/30.0f) (?) changed to time/30.0f
+//?		dir.x = -(sinf(time*0.05f+Math::PI*1.5f)+1.0f)*100.0f;
+		// original code: Math::Min(time/30.0f) (?) changed to time/30.0f
 		dir.x = -(powf(time/30.0f, 4.0f))*1000.0f;  // from the distance
 		dir.y = 0.0f;
 		dir.z = 0.0f;
@@ -1523,14 +1511,14 @@ bool CMotionHuman::EventFrame(const Event &event)
 
 		mat = m_object->RetWorldMatrix(0);
 		pos = D3DVECTOR(0.5f, 3.7f, 0.0f);
-		pos.x += (Rand()-0.5f)*1.0f;
-		pos.y += (Rand()-0.5f)*1.0f;
-		pos.z += (Rand()-0.5f)*1.0f;
+		pos.x += (Math::Rand()-0.5f)*1.0f;
+		pos.y += (Math::Rand()-0.5f)*1.0f;
+		pos.z += (Math::Rand()-0.5f)*1.0f;
 		pos = Transform(*mat, pos);
-		speed.x = (Rand()-0.5f)*0.5f;
-		speed.y = (Rand()-0.5f)*0.5f;
-		speed.z = (Rand()-0.5f)*0.5f;
-		dim.x = 0.5f+Rand()*0.5f;
+		speed.x = (Math::Rand()-0.5f)*0.5f;
+		speed.y = (Math::Rand()-0.5f)*0.5f;
+		speed.z = (Math::Rand()-0.5f)*0.5f;
+		dim.x = 0.5f+Math::Rand()*0.5f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTILENS1, 5.0f, 0.0f, 0.0f);
 	}
@@ -1549,14 +1537,14 @@ bool CMotionHuman::EventFrame(const Event &event)
 
 			if ( action == MH_MARCH )   // walking?
 			{
-				dir.x = sinf(Mod(rTime[0]+0.5f, 1.0f)*PI*2.0f)*0.10f;
-				dir.y = sinf(Mod(rTime[0]+0.6f, 1.0f)*PI*2.0f)*0.20f;
+				dir.x = sinf(Math::Mod(rTime[0]+0.5f, 1.0f)*Math::PI*2.0f)*0.10f;
+				dir.y = sinf(Math::Mod(rTime[0]+0.6f, 1.0f)*Math::PI*2.0f)*0.20f;
 				s = m_physics->RetLinMotionX(MO_REASPEED)*0.03f;
 			}
 			else if ( action == MH_MARCHTAKE )   // takes walking?
 			{
-				dir.x = sinf(Mod(rTime[0]+0.5f, 1.0f)*PI*2.0f)*0.10f;
-				dir.y = sinf(Mod(rTime[0]+0.6f, 1.0f)*PI*2.0f)*0.15f;
+				dir.x = sinf(Math::Mod(rTime[0]+0.5f, 1.0f)*Math::PI*2.0f)*0.10f;
+				dir.y = sinf(Math::Mod(rTime[0]+0.6f, 1.0f)*Math::PI*2.0f)*0.15f;
 				s = m_physics->RetLinMotionX(MO_REASPEED)*0.02f;
 			}
 			else
@@ -1570,9 +1558,9 @@ bool CMotionHuman::EventFrame(const Event &event)
 			dir.z = -s*0.7f;
 
 			actual = m_object->RetInclinaison();
-			dir.x = Smooth(actual.x, dir.x, time);
-			dir.y = Smooth(actual.y, dir.y, time);
-			dir.z = Smooth(actual.z, dir.z, time);
+			dir.x = Math::Smooth(actual.x, dir.x, time);
+			dir.y = Math::Smooth(actual.y, dir.y, time);
+			dir.z = Math::Smooth(actual.z, dir.z, time);
 			if ( bOnBoard )  dir *= 0.3f;
 			m_object->SetInclinaison(dir);
 			SetInclinaison(dir);
@@ -1580,20 +1568,20 @@ bool CMotionHuman::EventFrame(const Event &event)
 			if ( action == MH_MARCH )   // walking?
 			{
 				p2.x = 0.0f;
-				p2.y = sinf(Mod(rTime[0]+0.5f, 1.0f)*PI*2.0f)*0.5f;
-				p2 = RotatePoint(-m_object->RetAngleY(0), p2);
+				p2.y = sinf(Math::Mod(rTime[0]+0.5f, 1.0f)*Math::PI*2.0f)*0.5f;
+				p2 = Math::RotatePoint(-m_object->RetAngleY(0), p2);
 				dir.x = p2.x;
 				dir.z = p2.y;
-				dir.y = sinf(Mod(rTime[0]*2.0f, 1.0f)*PI*2.0f)*0.3f;
+				dir.y = sinf(Math::Mod(rTime[0]*2.0f, 1.0f)*Math::PI*2.0f)*0.3f;
 			}
 			else if ( action == MH_MARCHTAKE )   // takes walking?
 			{
 				p2.x = 0.0f;
-				p2.y = sinf(Mod(rTime[0]+0.5f, 1.0f)*PI*2.0f)*0.25f;
-				p2 = RotatePoint(-m_object->RetAngleY(0), p2);
+				p2.y = sinf(Math::Mod(rTime[0]+0.5f, 1.0f)*Math::PI*2.0f)*0.25f;
+				p2 = Math::RotatePoint(-m_object->RetAngleY(0), p2);
 				dir.x = p2.x;
 				dir.z = p2.y;
-				dir.y = sinf(Mod(rTime[0]*2.0f, 1.0f)*PI*2.0f)*0.05f-0.3f;
+				dir.y = sinf(Math::Mod(rTime[0]*2.0f, 1.0f)*Math::PI*2.0f)*0.05f-0.3f;
 			}
 			else
 			{
@@ -1603,18 +1591,18 @@ bool CMotionHuman::EventFrame(const Event &event)
 			}
 
 			actual = m_object->RetLinVibration();
-			dir.x = Smooth(actual.x, dir.x, time);
+			dir.x = Math::Smooth(actual.x, dir.x, time);
 			if ( action == MH_MARCHTAKE )  // takes walking?
 			{
 				dir.y = -hr;
 			}
 			else
 			{
-				s = Min(m_armTimeAction, 1.0f);
-				dir.y = Smooth(actual.y, dir.y, time)*s;
+				s = Math::Min(m_armTimeAction, 1.0f);
+				dir.y = Math::Smooth(actual.y, dir.y, time)*s;
 				dir.y += -hr*(1.0f-s);
 			}
-			dir.z = Smooth(actual.z, dir.z, time);
+			dir.z = Math::Smooth(actual.z, dir.z, time);
 			if ( bOnBoard )  dir *= 0.3f;
 			m_object->SetLinVibration(dir);
 
@@ -1629,16 +1617,16 @@ bool CMotionHuman::EventFrame(const Event &event)
 	if ( m_actionType == MHS_TAKE ||  // takes?
 		 m_actionType == MHS_FLAG )   // takes?
 	{
-		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.6f, event.rTime*5.0f));
+		m_object->SetAngleZ(1, Math::Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.6f, event.rTime*5.0f));
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
-		m_object->SetAngleY(1, Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
+		m_object->SetAngleY(1, Math::Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
 	}
 	else if ( m_actionType == MHS_TAKEOTHER ||  // takes?
 			  m_actionType == MHS_TAKEHIGH  )   // takes?
 	{
-		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.3f, event.rTime*5.0f));
+		m_object->SetAngleZ(1, Math::Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f-0.3f, event.rTime*5.0f));
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
-		m_object->SetAngleY(1, Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
+		m_object->SetAngleY(1, Math::Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
 	}
 	else if ( m_actionType == MHS_WIN )   // win
 	{
@@ -1659,9 +1647,9 @@ bool CMotionHuman::EventFrame(const Event &event)
 	}
 	else
 	{
-		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f, event.rTime*5.0f));
+		m_object->SetAngleZ(1, Math::Smooth(m_object->RetAngleZ(1), sinf(m_armTimeAbs*1.0f)*0.2f, event.rTime*5.0f));
 		m_object->SetAngleX(1, sinf(m_armTimeAbs*1.1f)*0.1f);
-		m_object->SetAngleY(1, Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
+		m_object->SetAngleY(1, Math::Smooth(m_object->RetAngleY(1), sinf(m_armTimeAbs*1.3f)*0.2f+rot*0.3f, event.rTime*5.0f));
 	}
 
 	if ( bOnBoard )
@@ -1692,8 +1680,8 @@ bool CMotionHuman::EventFrame(const Event &event)
 		}
 		time = rTime[1]+synchro;
 
-		if ( Abs(m_lastSoundMarch-time) > 0.4f &&
-			 Mod(time, 0.5f) < 0.1f )
+		if ( fabs(m_lastSoundMarch-time) > 0.4f &&
+			 Math::Mod(time, 0.5f) < 0.1f )
 		{
 			volume[0] = 0.5f;
 			freq[0] = 1.0f;
@@ -1761,8 +1749,8 @@ bool CMotionHuman::EventFrame(const Event &event)
 	{
 		time = rTime[0]+0.5f;
 
-		if ( Abs(m_lastSoundMarch-time) > 0.9f &&
-			 Mod(time, 1.0f) < 0.1f )
+		if ( fabs(m_lastSoundMarch-time) > 0.9f &&
+			 Math::Mod(time, 1.0f) < 0.1f )
 		{
 			m_sound->Play(SOUND_SWIM, m_object->RetPosition(0), 0.5f);
 			m_lastSoundMarch = time;
@@ -1775,7 +1763,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 		 m_object->RetOption() == 0 )  // helmet?
 	{
 		m_sound->Play(SOUND_HUMAN1, m_object->RetPosition(0), (0.5f+m_tired*0.2f));
-		m_lastSoundHhh = (4.0f-m_tired*2.5f)+(4.0f-m_tired*2.5f)*Rand();
+		m_lastSoundHhh = (4.0f-m_tired*2.5f)+(4.0f-m_tired*2.5f)*Math::Rand();
 	}
 
 	return true;

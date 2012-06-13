@@ -16,8 +16,6 @@
 
 // taskreset.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -66,7 +64,7 @@ CTaskReset::~CTaskReset()
 bool CTaskReset::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		angle, duration;
 
 	if ( m_engine->RetPause() )  return true;
@@ -88,26 +86,26 @@ bool CTaskReset::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_begin;
-			pos.x += (Rand()-0.5f)*5.0f;
-			pos.z += (Rand()-0.5f)*5.0f;
+			pos.x += (Math::Rand()-0.5f)*5.0f;
+			pos.z += (Math::Rand()-0.5f)*5.0f;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
-			speed.y = 5.0f+Rand()*5.0f;
-			dim.x = Rand()*2.0f+2.0f;
+			speed.y = 5.0f+Math::Rand()*5.0f;
+			dim.x = Math::Rand()*2.0f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIGLINTb, 2.0f);
 
 			pos = m_begin;
-			speed.x = (Rand()-0.5f)*20.0f;
-			speed.z = (Rand()-0.5f)*20.0f;
-			speed.y = Rand()*10.0f;
+			speed.x = (Math::Rand()-0.5f)*20.0f;
+			speed.z = (Math::Rand()-0.5f)*20.0f;
+			speed.y = Math::Rand()*10.0f;
 			speed *= 1.0f-m_progress*0.5f;
 			pos += speed*1.5f;
 			speed = -speed;
 			dim.x = 0.6f;
 			dim.y = dim.x;
 			pos.y += dim.y;
-			duration = Rand()*1.5f+1.5f;
+			duration = Math::Rand()*1.5f+1.5f;
 			m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
 									 duration, 0.0f,
 									 duration*0.9f, 0.7f);
@@ -123,12 +121,12 @@ bool CTaskReset::EventProcess(const Event &event)
 		{
 			m_lastParticule = m_time;
 
-			pos.x += (Rand()-0.5f)*5.0f;
-			pos.z += (Rand()-0.5f)*5.0f;
+			pos.x += (Math::Rand()-0.5f)*5.0f;
+			pos.z += (Math::Rand()-0.5f)*5.0f;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
-			speed.y = 2.0f+Rand()*2.0f;
-			dim.x = Rand()*2.0f+2.0f;
+			speed.y = 2.0f+Math::Rand()*2.0f;
+			dim.x = Math::Rand()*2.0f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIGLINTb, 2.0f);
 		}
@@ -146,24 +144,24 @@ bool CTaskReset::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_goal;
-			pos.x += (Rand()-0.5f)*5.0f;
-			pos.z += (Rand()-0.5f)*5.0f;
+			pos.x += (Math::Rand()-0.5f)*5.0f;
+			pos.z += (Math::Rand()-0.5f)*5.0f;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
-			speed.y = 5.0f+Rand()*5.0f;
-			dim.x = Rand()*2.0f+2.0f;
+			speed.y = 5.0f+Math::Rand()*5.0f;
+			dim.x = Math::Rand()*2.0f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIGLINTb, 2.0f);
 
 			pos = m_goal;
-			speed.x = (Rand()-0.5f)*20.0f;
-			speed.z = (Rand()-0.5f)*20.0f;
-			speed.y = Rand()*10.0f;
+			speed.x = (Math::Rand()-0.5f)*20.0f;
+			speed.z = (Math::Rand()-0.5f)*20.0f;
+			speed.y = Math::Rand()*10.0f;
 			speed *= 0.5f+m_progress*0.5f;
 			dim.x = 0.6f;
 			dim.y = dim.x;
 			pos.y += dim.y;
-			duration = Rand()*1.5f+1.5f;
+			duration = Math::Rand()*1.5f+1.5f;
 			m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
 									 duration, 0.0f,
 									 duration*0.9f, 0.7f);

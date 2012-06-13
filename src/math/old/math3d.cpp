@@ -30,12 +30,116 @@
 #include "math/old/math3d.h"
 
 
+// Old defines
+#define MATH3D_PI				3.14159265358979323846f
+#define MATH3D_CHOUIA			1e-6f
+#define MATH3D_BEAUCOUP		1e6f
+
+
+// Old FPOINT struct
+struct FPOINT
+{
+	float	x;
+	float	y;
+
+	FPOINT() { }
+	FPOINT(float _x, float _y)
+	{
+		x = _x;
+		y = _y;
+	}
+};
+
+
+// === Functions already replaced by new implementation ===
+
+//>>> func.h IsEqual()
+bool		IsEqual(float a, float b);
+
+//>>> func.h Min()
+float		Min(float a, float b);
+float		Min(float a, float b, float c);
+float		Min(float a, float b, float c, float d);
+float		Min(float a, float b, float c, float d, float e);
+
+//>>> func.h Max()
+float		Max(float a, float b);
+float		Max(float a, float b, float c);
+float		Max(float a, float b, float c, float d);
+float		Max(float a, float b, float c, float d, float e);
+
+//>>> func.h Norm()
+float		Norm(float a);
+//>>> fabs()
+float		Abs(float a);
+
+//>>> func.h Swap()
+void		Swap(int &a, int &b);
+//>>> func.h Swap()
+void		Swap(float &a, float &b);
+//>>> point.h Swap()
+void		Swap(FPOINT &a, FPOINT &b);
+
+//>>> func.h Mod()
+float		Mod(float a, float m);
+//>>> func.h NormAngle()
+float		NormAngle(float angle);
+//>>> func.h TestAngle()
+bool		TestAngle(float angle, float min, float max);
+
+//>>> geometry.h RotateAngle()
+float		RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
+
+//>>> func.h Direction()
+float		Direction(float a, float g);
+
+//>>> geometry.h RotatePoint()
+FPOINT		RotatePoint(FPOINT center, float angle, FPOINT p);
+//>>> geometry.h RotatePoint()
+FPOINT		RotatePoint(float angle, FPOINT p);
+//>>> geometry.h RotatePoint()
+FPOINT		RotatePoint(float angle, float dist);
+//>>> geometry.h RotateAngle()
+float		RotateAngle(float x, float y);
+//>>> geometry.h RotatePoint()
+void		RotatePoint(float cx, float cy, float angle, float &px, float &py);
+
+//>>> geometry.h IsInsideTriangle()
+bool			IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
+
+//>>> point.h Distance()
+float		Length(FPOINT a, FPOINT b);
+
+//>>> point.h Point::Length()
+float		Length(float x, float y);
+
+//>>> func.h Rand()
+float		Rand();
+//>>> func.h Neutral()
+float		Neutral(float value, float dead);
+
+//>>> func.h PropAngle()
+float		Prop(int a, int b, float p);
+//>>> func.h Smooth()
+float		Smooth(float actual, float hope, float time);
+//>>> func.h Bounce()
+float		Bounce(float progress, float middle=0.3f, float bounce=0.4f);
+
+
+// UNUSED
+float		MidPoint(FPOINT a, FPOINT b, float px);
+
+// UNUSED
+bool		LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
+
+
+
 
 // Returns true if two numbers are nearly equal.
 
 bool IsEqual(float a, float b)
 {
-	return Abs(a-b) < CHOUIA;
+	return Abs(a-b) < MATH3D_CHOUIA;
 }
 
 
@@ -147,14 +251,14 @@ float Mod(float a, float m)
 	return a - ((int)(a/m))*m;
 }
 
-// Returns a normalized angle, that is in other words between 0 and 2 * PI.
+// Returns a normalized angle, that is in other words between 0 and 2 * MATH3D_PI.
 
 float NormAngle(float angle)
 {
-	angle = Mod(angle, PI*2.0f);
+	angle = Mod(angle, MATH3D_PI*2.0f);
 	if ( angle < 0.0f )
 	{
-		return PI*2.0f + angle;
+		return MATH3D_PI*2.0f + angle;
 	}
 	else
 	{
@@ -191,11 +295,11 @@ float Direction(float a, float g)
 
 	if ( a < g )
 	{
-		if ( a+PI*2.0f-g < g-a )  a += PI*2.0f;
+		if ( a+MATH3D_PI*2.0f-g < g-a )  a += MATH3D_PI*2.0f;
 	}
 	else
 	{
-		if ( g+PI*2.0f-a < a-g )  g += PI*2.0f;
+		if ( g+MATH3D_PI*2.0f-a < a-g )  g += MATH3D_PI*2.0f;
 	}
 	return (g-a);
 }
@@ -249,7 +353,7 @@ FPOINT RotatePoint(float angle, float dist)
 }
 
 // Calculates the angle of a right triangle.
-// The angle is counterclockwise (CCW), between 0 and 2 * PI.
+// The angle is counterclockwise (CCW), between 0 and 2 * MATH3D_PI.
 // For an angle clockwise (CW), just go ahead.
 //
 //      ^
@@ -271,25 +375,25 @@ float RotateAngle(float x, float y)
 		if ( y >= 0.0f )
 		{
 			if ( x > y )  return           atanf(y/x);
-			else          return PI*0.5f - atanf(x/y);
+			else          return MATH3D_PI*0.5f - atanf(x/y);
 		}
 		else
 		{
-			if ( x > -y )  return PI*2.0f + atanf(y/x);
-			else           return PI*1.5f - atanf(x/y);
+			if ( x > -y )  return MATH3D_PI*2.0f + atanf(y/x);
+			else           return MATH3D_PI*1.5f - atanf(x/y);
 		}
 	}
 	else
 	{
 		if ( y >= 0.0f )
 		{
-			if ( -x > y )  return PI*1.0f + atanf(y/x);
-			else           return PI*0.5f - atanf(x/y);
+			if ( -x > y )  return MATH3D_PI*1.0f + atanf(y/x);
+			else           return MATH3D_PI*0.5f - atanf(x/y);
 		}
 		else
 		{
-			if ( -x > -y )  return PI*1.0f + atanf(y/x);
-			else            return PI*1.5f - atanf(x/y);
+			if ( -x > -y )  return MATH3D_PI*1.0f + atanf(y/x);
+			else            return MATH3D_PI*1.5f - atanf(x/y);
 		}
 	}
 #else
@@ -299,11 +403,11 @@ float RotateAngle(float x, float y)
 	{
 		if ( y > 0.0f )
 		{
-			return 90.0f*PI/180.0f;
+			return 90.0f*MATH3D_PI/180.0f;
 		}
 		else
 		{
-			return 270.0f*PI/180.0f;
+			return 270.0f*MATH3D_PI/180.0f;
 		}
 	}
 	else
@@ -311,7 +415,7 @@ float RotateAngle(float x, float y)
 		angle = atanf(y/x);
 		if ( x < 0.0f )
 		{
-			angle += PI;
+			angle += MATH3D_PI;
 		}
 		return angle;
 	}
@@ -335,11 +439,11 @@ float RotateAngle(FPOINT center, FPOINT p1, FPOINT p2)
 	a1 = asinf((p1.y-center.y)/Length(p1,center));
 	a2 = asinf((p2.y-center.y)/Length(p2,center));
 
-	if ( p1.x < center.x )  a1 = PI-a1;
-	if ( p2.x < center.x )  a2 = PI-a2;
+	if ( p1.x < center.x )  a1 = MATH3D_PI-a1;
+	if ( p2.x < center.x )  a2 = MATH3D_PI-a2;
 
 	a = a2-a1;
-	if ( a < 0 )  a += PI*2;
+	if ( a < 0 )  a += MATH3D_PI*2;
 	return a;
 }
 
@@ -347,10 +451,10 @@ float RotateAngle(FPOINT center, FPOINT p1, FPOINT p2)
 
 float MidPoint(FPOINT a, FPOINT b, float px)
 {
-	if ( Abs(a.x-b.x) < CHOUIA )
+	if ( Abs(a.x-b.x) < MATH3D_CHOUIA )
 	{
-		if ( a.y < b.y )  return  BEAUCOUP;
-		else              return -BEAUCOUP;
+		if ( a.y < b.y )  return  MATH3D_BEAUCOUP;
+		else              return -MATH3D_BEAUCOUP;
 	}
 	return (b.y-a.y)*(px-a.x)/(b.x-a.x)+a.y;
 }
@@ -850,8 +954,8 @@ float Prop(int a, int b, float p)
 {
 	float	aa, bb;
 
-	aa = (float)a*PI/180.0f;
-	bb = (float)b*PI/180.0f;
+	aa = (float)a*MATH3D_PI/180.0f;
+	bb = (float)b*MATH3D_PI/180.0f;
 
 	return aa+p*(bb-aa);
 }
@@ -896,12 +1000,12 @@ float Bounce(float progress, float middle, float bounce)
 	if ( progress < middle )
 	{
 		progress = progress/middle;  // 0..1
-		return 0.5f+sinf(progress*PI-PI/2.0f)/2.0f;
+		return 0.5f+sinf(progress*MATH3D_PI-MATH3D_PI/2.0f)/2.0f;
 	}
 	else
 	{
 		progress = (progress-middle)/(1.0f-middle);  // 0..1
-		return (1.0f-bounce/2.0f)+sinf((0.5f+progress*2.0f)*PI)*(bounce/2.0f);
+		return (1.0f-bounce/2.0f)+sinf((0.5f+progress*2.0f)*MATH3D_PI)*(bounce/2.0f);
 	}
 }
 

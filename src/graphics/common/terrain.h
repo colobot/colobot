@@ -19,7 +19,8 @@
 #pragma once
 
 
-#include "math/old/math3d.h"
+#include "common/struct.h"
+#include "math/point.h"
 #include "graphics/d3d/d3dengine.h"
 
 
@@ -29,7 +30,7 @@ class CWater;
 
 
 
-const float FLATLIMIT = (5.0f*PI/180.0f);
+const float FLATLIMIT = (5.0f*Math::PI/180.0f);
 
 
 enum TerrainRes
@@ -154,7 +155,7 @@ protected:
 	bool		CreateSquare(bool bMultiRes, int x, int y);
 
 	TerrainMaterial* LevelSearchMat(int id);
-	void		LevelTextureName(int x, int y, char *name, FPOINT &uv);
+	void		LevelTextureName(int x, int y, char *name, Math::Point &uv);
 	float		LevelRetHeight(int x, int y);
 	bool		LevelGetDot(int x, int y, float min, float max, float slope);
 	int			LevelTestMat(char *mat);

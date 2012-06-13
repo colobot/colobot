@@ -21,6 +21,7 @@
 
 #include "object/auto/auto.h"
 #include "common/misc.h"
+#include "graphics/common/particule.h"
 
 
 class CInstanceManager;

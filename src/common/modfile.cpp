@@ -16,8 +16,6 @@
 
 // modfile.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -671,20 +669,20 @@ float CModFile::RetHeight(D3DVECTOR pos)
 	{
 		if ( !m_triangleTable[i].bUsed )  continue;
 
-		if ( Abs(pos.x-m_triangleTable[i].p1.x) < limit &&
-			 Abs(pos.z-m_triangleTable[i].p1.z) < limit )
+		if ( fabs(pos.x-m_triangleTable[i].p1.x) < limit &&
+			 fabs(pos.z-m_triangleTable[i].p1.z) < limit )
 		{
 			return m_triangleTable[i].p1.y;
 		}
 
-		if ( Abs(pos.x-m_triangleTable[i].p2.x) < limit &&
-			 Abs(pos.z-m_triangleTable[i].p2.z) < limit )
+		if ( fabs(pos.x-m_triangleTable[i].p2.x) < limit &&
+			 fabs(pos.z-m_triangleTable[i].p2.z) < limit )
 		{
 			return m_triangleTable[i].p2.y;
 		}
 
-		if ( Abs(pos.x-m_triangleTable[i].p3.x) < limit &&
-			 Abs(pos.z-m_triangleTable[i].p3.z) < limit )
+		if ( fabs(pos.x-m_triangleTable[i].p3.x) < limit &&
+			 fabs(pos.z-m_triangleTable[i].p3.z) < limit )
 		{
 			return m_triangleTable[i].p3.y;
 		}

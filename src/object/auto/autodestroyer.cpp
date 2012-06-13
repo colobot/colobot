@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -94,7 +92,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 	CObject*	scrap;
 	CPyro*		pyro;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 
 	CAuto::EventProcess(event);
 
@@ -108,7 +106,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 		}
 		return true;
 	}
@@ -164,7 +162,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 		if ( m_progress < 1.0f )
 		{
 			pos = D3DVECTOR(0.0f, -10.0f, 0.0f);
-			pos.y = -Bounce(m_progress, 0.3f)*10.0f;
+			pos.y = -Math::Bounce(m_progress, 0.3f)*10.0f;
 			m_object->SetPosition(1, pos);
 		}
 		else
@@ -220,7 +218,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 bool CAutoDestroyer::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

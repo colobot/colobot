@@ -52,24 +52,24 @@ public:
 	~CWindow();
 
 	void		Flush();
-	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CButton*	CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CColor*		CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CCheck*		CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CKey*		CreateKey(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CGroup*		CreateGroup(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CImage*		CreateImage(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CLabel*		CreateLabel(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, char *name);
-	CEdit*		CreateEdit(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CEditValue*	CreateEditValue(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CScroll*	CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CSlider*	CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CList*		CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand=1.2f);
-	CShortcut*	CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CMap*		CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CGauge*		CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CCompass*	CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CTarget*	CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CButton*	CreateButton(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CColor*		CreateColor(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CCheck*		CreateCheck(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CKey*		CreateKey(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CGroup*		CreateGroup(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CImage*		CreateImage(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CLabel*		CreateLabel(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, char *name);
+	CEdit*		CreateEdit(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CEditValue*	CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CScroll*	CreateScroll(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CSlider*	CreateSlider(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CList*		CreateList(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, float expand=1.2f);
+	CShortcut*	CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CMap*		CreateMap(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CGauge*		CreateGauge(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CCompass*	CreateCompass(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CTarget*	CreateTarget(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 	bool		DeleteControl(EventMsg eventMsg);
 	CControl*	SearchControl(EventMsg eventMsg);
 
@@ -82,13 +82,13 @@ public:
 	void		SetTrashEvent(bool bTrash);
 	bool		RetTrashEvent();
 
-	void		SetPos(FPOINT pos);
-	void		SetDim(FPOINT dim);
+	void		SetPos(Math::Point pos);
+	void		SetDim(Math::Point dim);
 
-	void		SetMinDim(FPOINT dim);
-	void		SetMaxDim(FPOINT dim);
-	FPOINT		RetMinDim();
-	FPOINT		RetMaxDim();
+	void		SetMinDim(Math::Point dim);
+	void		SetMaxDim(Math::Point dim);
+	Math::Point		RetMinDim();
+	Math::Point		RetMaxDim();
 
 	void		SetMovable(bool bMode);
 	bool		RetMovable();
@@ -106,18 +106,18 @@ public:
 	void		SetFixed(bool bFix);
 	bool		RetFixed();
 
-	bool		GetTooltip(FPOINT pos, char* name);
+	bool		GetTooltip(Math::Point pos, char* name);
 
 	bool		EventProcess(const Event &event);
 
 	void		Draw();
 
 protected:
-	int			BorderDetect(FPOINT pos);
+	int			BorderDetect(Math::Point pos);
 	void		AdjustButtons();
 	void		MoveAdjust();
-	void		DrawVertex(FPOINT pos, FPOINT dim, int icon);
-	void		DrawHach(FPOINT pos, FPOINT dim);
+	void		DrawVertex(Math::Point pos, Math::Point dim, int icon);
+	void		DrawHach(Math::Point pos, Math::Point dim);
 
 protected:
 	CControl*	m_table[MAXWINDOW];
@@ -127,8 +127,8 @@ protected:
 	bool		m_bMinimized;
 	bool		m_bFixed;
 
-	FPOINT		m_minDim;
-	FPOINT		m_maxDim;
+	Math::Point		m_minDim;
+	Math::Point		m_maxDim;
 
 	CButton*	m_buttonReduce;
 	CButton*	m_buttonFull;
@@ -138,7 +138,7 @@ protected:
 	bool		m_bRedim;
 	bool		m_bClosable;
 	bool		m_bCapture;
-	FPOINT		m_pressPos;
+	Math::Point		m_pressPos;
 	int			m_pressFlags;
 	D3DMouse	m_pressMouse;
 };

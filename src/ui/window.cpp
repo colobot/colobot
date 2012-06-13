@@ -16,8 +16,6 @@
 
 // window.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -70,8 +68,8 @@ CWindow::CWindow(CInstanceManager* iMan) : CControl(iMan)
 	m_bMinimized  = false;
 	m_bFixed      = false;
 
-	m_minDim = FPOINT(0.0f, 0.0f);
-	m_maxDim = FPOINT(1.0f, 1.0f);
+	m_minDim = Math::Point(0.0f, 0.0f);
+	m_maxDim = Math::Point(1.0f, 1.0f);
 
 	m_buttonReduce = 0;
 	m_buttonFull   = 0;
@@ -130,7 +128,7 @@ void CWindow::Flush()
 
 // Creates a new window.
 
-bool CWindow::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CWindow::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -141,7 +139,7 @@ bool CWindow::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 
 // Creates a new button.
 
-CButton* CWindow::CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CButton* CWindow::CreateButton(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CButton*	pc;
 	int			i;
@@ -163,7 +161,7 @@ CButton* CWindow::CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eventM
 
 // Creates a new button.
 
-CColor* CWindow::CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CColor* CWindow::CreateColor(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CColor*		pc;
 	int			i;
@@ -185,7 +183,7 @@ CColor* CWindow::CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
 
 // Creates a new button.
 
-CCheck* CWindow::CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CCheck* CWindow::CreateCheck(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CCheck*		pc;
 	int			i;
@@ -207,7 +205,7 @@ CCheck* CWindow::CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
 
 // Creates a new button.
 
-CKey* CWindow::CreateKey(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CKey* CWindow::CreateKey(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CKey*		pc;
 	int			i;
@@ -229,7 +227,7 @@ CKey* CWindow::CreateKey(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 
 // Creates a new button.
 
-CGroup* CWindow::CreateGroup(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CGroup* CWindow::CreateGroup(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CGroup*		pc;
 	int			i;
@@ -251,7 +249,7 @@ CGroup* CWindow::CreateGroup(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
 
 // Creates a new button.
 
-CImage* CWindow::CreateImage(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CImage* CWindow::CreateImage(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CImage*		pc;
 	int			i;
@@ -273,7 +271,7 @@ CImage* CWindow::CreateImage(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
 
 // Creates a new label.
 
-CLabel* CWindow::CreateLabel(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
+CLabel* CWindow::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg,
 						  char *name)
 {
 	CLabel*		pc;
@@ -314,7 +312,7 @@ CLabel* CWindow::CreateLabel(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
 
 // Creates a new editable pave.
 
-CEdit* CWindow::CreateEdit(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CEdit* CWindow::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CEdit*		pc;
 	int			i;
@@ -336,7 +334,7 @@ CEdit* CWindow::CreateEdit(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 
 // Creates a new editable pave.
 
-CEditValue* CWindow::CreateEditValue(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CEditValue* CWindow::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CEditValue*	pc;
 	int			i;
@@ -358,7 +356,7 @@ CEditValue* CWindow::CreateEditValue(FPOINT pos, FPOINT dim, int icon, EventMsg 
 
 // Creates a new elevator.
 
-CScroll* CWindow::CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CScroll* CWindow::CreateScroll(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CScroll*	pc;
 	int			i;
@@ -380,7 +378,7 @@ CScroll* CWindow::CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eventM
 
 // Creates a new cursor.
 
-CSlider* CWindow::CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CSlider* CWindow::CreateSlider(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CSlider*	pc;
 	int			i;
@@ -402,7 +400,7 @@ CSlider* CWindow::CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eventM
 
 // Creates a new list.
 
-CList* CWindow::CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
+CList* CWindow::CreateList(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg,
 						 float expand)
 {
 	CList*		pc;
@@ -425,7 +423,7 @@ CList* CWindow::CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
 
 // Creates a new shortcut.
 
-CShortcut* CWindow::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CShortcut* CWindow::CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CShortcut*	ps;
 	int			i;
@@ -447,7 +445,7 @@ CShortcut* CWindow::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg ev
 
 // Creates a new card.
 
-CMap* CWindow::CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CMap* CWindow::CreateMap(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CMap*		pm;
 	int			i;
@@ -469,7 +467,7 @@ CMap* CWindow::CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 
 // Creates a new gauge.
 
-CGauge* CWindow::CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CGauge* CWindow::CreateGauge(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CGauge*		pc;
 	int			i;
@@ -491,7 +489,7 @@ CGauge* CWindow::CreateGauge(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg
 
 // Creates a new compass.
 
-CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CCompass* CWindow::CreateCompass(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CCompass*	pc;
 	int			i;
@@ -513,7 +511,7 @@ CCompass* CWindow::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg even
 
 // Creates a new target.
 
-CTarget* CWindow::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CTarget* CWindow::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CTarget*	pc;
 	int			i;
@@ -576,7 +574,7 @@ CControl* CWindow::SearchControl(EventMsg eventMsg)
 
 // Makes the tooltip binds to the window.
 
-bool CWindow::GetTooltip(FPOINT pos, char* name)
+bool CWindow::GetTooltip(Math::Point pos, char* name)
 {
 	int		i;
 
@@ -677,13 +675,13 @@ void CWindow::SetName(char* name)
 }
 
 
-void CWindow::SetPos(FPOINT pos)
+void CWindow::SetPos(Math::Point pos)
 {
 	CControl::SetPos(pos);
 	MoveAdjust();
 }
 
-void CWindow::SetDim(FPOINT dim)
+void CWindow::SetDim(Math::Point dim)
 {
 	if ( dim.x < m_minDim.x )  dim.x = m_minDim.x;
 	if ( dim.x > m_maxDim.x )  dim.x = m_maxDim.x;
@@ -696,7 +694,7 @@ void CWindow::SetDim(FPOINT dim)
 
 void CWindow::MoveAdjust()
 {
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	float		h, offset;
 
 	h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType);
@@ -734,22 +732,22 @@ void CWindow::MoveAdjust()
 }
 
 
-void CWindow::SetMinDim(FPOINT dim)
+void CWindow::SetMinDim(Math::Point dim)
 {
 	m_minDim = dim;
 }
 
-void CWindow::SetMaxDim(FPOINT dim)
+void CWindow::SetMaxDim(Math::Point dim)
 {
 	m_maxDim = dim;
 }
 
-FPOINT CWindow::RetMinDim()
+Math::Point CWindow::RetMinDim()
 {
 	return m_minDim;
 }
 
-FPOINT CWindow::RetMaxDim()
+Math::Point CWindow::RetMaxDim()
 {
 	return m_maxDim;
 }
@@ -913,9 +911,9 @@ EventMsg CWindow::RetEventMsgClose()
 // Detects whether the mouse is in an edge of the window, to resize it.
 // Bit returns: 0 = left, 1 = down, 2 = right, 3 = up, 1 = all.
 
-int CWindow::BorderDetect(FPOINT pos)
+int CWindow::BorderDetect(Math::Point pos)
 {
-	FPOINT	dim;
+	Math::Point	dim;
 	float	h;
 	int		flags;
 
@@ -966,7 +964,7 @@ int CWindow::BorderDetect(FPOINT pos)
 
 bool CWindow::EventProcess(const Event &event)
 {
-	FPOINT		pos;
+	Math::Point		pos;
 	int			i, flags;
 
 	if ( event.event == EVENT_MOUSEMOVE )
@@ -1124,7 +1122,7 @@ bool CWindow::EventProcess(const Event &event)
 
 void CWindow::Draw()
 {
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	float		width, h, sw;
 	int			i;
 
@@ -1143,7 +1141,7 @@ void CWindow::Draw()
 
 		// Draws the shadow under the title bar.
 		{
-			FPOINT	sPos, sDim;
+			Math::Point	sPos, sDim;
 
 			pos.x = m_pos.x+0.01f;
 			dim.x = m_dim.x-0.02f;
@@ -1206,9 +1204,9 @@ void CWindow::Draw()
 
 // Draws a rectangle.
 
-void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+void CWindow::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 {
-	FPOINT		p1, p2, uv1, uv2, corner;
+	Math::Point		p1, p2, uv1, uv2, corner;
 	float		dp;
 	int			i;
 
@@ -1576,11 +1574,11 @@ void CWindow::DrawVertex(FPOINT pos, FPOINT dim, int icon)
 
 // Draws hatching.
 
-void CWindow::DrawHach(FPOINT pos, FPOINT dim)
+void CWindow::DrawHach(Math::Point pos, Math::Point dim)
 {
 #if _NEWLOOK
 #else
-	FPOINT		ppos, ddim, uv1, uv2;
+	Math::Point		ppos, ddim, uv1, uv2;
 	float		dp, max, ndim;
 	bool		bStop;
 

@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -121,7 +119,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
 	CObject*	fret;
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, goal, speed;
-	FPOINT		dim, rot;
+	Math::Point		dim, rot;
 	float		angle;
 	int			i, max;
 
@@ -137,7 +135,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 		}
 		return true;
 	}
@@ -176,7 +174,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
 	{
 		if ( m_progress < 1.0f )
 		{
-			angle = (1.0f-m_progress)*(135.0f*PI/180.0f);
+			angle = (1.0f-m_progress)*(135.0f*Math::PI/180.0f);
 			m_object->SetAngleZ(1, angle);
 		}
 		else
@@ -189,12 +187,12 @@ bool CAutoNuclear::EventProcess(const Event &event)
 			{
 				pos.x = 27.0f;
 				pos.y =  0.0f;
-				pos.z = (Rand()-0.5f)*8.0f;
+				pos.z = (Math::Rand()-0.5f)*8.0f;
 				pos = Transform(*mat, pos);
 				speed.y = 0.0f;
 				speed.x = 0.0f;
 				speed.z = 0.0f;
-				dim.x = Rand()*1.0f+1.0f;
+				dim.x = Math::Rand()*1.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH);
 			}
@@ -221,19 +219,19 @@ bool CAutoNuclear::EventProcess(const Event &event)
 
 				pos = m_object->RetPosition(0);
 				pos.y += 30.0f;
-				pos.x += (Rand()-0.5f)*6.0f;
-				pos.z += (Rand()-0.5f)*6.0f;
-				speed.y = Rand()*15.0f+15.0f;
+				pos.x += (Math::Rand()-0.5f)*6.0f;
+				pos.z += (Math::Rand()-0.5f)*6.0f;
+				speed.y = Math::Rand()*15.0f+15.0f;
 				speed.x = 0.0f;
 				speed.z = 0.0f;
-				dim.x = Rand()*8.0f+8.0f;
+				dim.x = Math::Rand()*8.0f+8.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH);
 
 				pos = m_pos;
-				speed.x = (Rand()-0.5f)*20.0f;
-				speed.y = (Rand()-0.5f)*20.0f;
-				speed.z = (Rand()-0.5f)*20.0f;
+				speed.x = (Math::Rand()-0.5f)*20.0f;
+				speed.y = (Math::Rand()-0.5f)*20.0f;
+				speed.z = (Math::Rand()-0.5f)*20.0f;
 				dim.x = 2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
@@ -255,15 +253,15 @@ bool CAutoNuclear::EventProcess(const Event &event)
 			for ( i=0 ; i<max ; i++ )
 			{
 				pos = m_pos;
-				pos.x += (Rand()-0.5f)*3.0f;
-				pos.y += (Rand()-0.5f)*3.0f;
-				pos.z += (Rand()-0.5f)*3.0f;
+				pos.x += (Math::Rand()-0.5f)*3.0f;
+				pos.y += (Math::Rand()-0.5f)*3.0f;
+				pos.z += (Math::Rand()-0.5f)*3.0f;
 				speed.y = 0.0f;
 				speed.x = 0.0f;
 				speed.z = 0.0f;
-				dim.x = Rand()*2.0f+2.0f;
+				dim.x = Math::Rand()*2.0f+2.0f;
 				dim.y = dim.x;
-				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, Rand()*5.0f+5.0f, 0.0f, 0.0f);
+				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, Math::Rand()*5.0f+5.0f, 0.0f, 0.0f);
 			}
 
 			m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 1.4f);
@@ -278,12 +276,12 @@ bool CAutoNuclear::EventProcess(const Event &event)
 	{
 		if ( m_progress < 1.0f )
 		{
-			angle = m_progress*(135.0f*PI/180.0f);
+			angle = m_progress*(135.0f*Math::PI/180.0f);
 			m_object->SetAngleZ(1, angle);
 		}
 		else
 		{
-			m_object->SetAngleZ(1, 135.0f*PI/180.0f);
+			m_object->SetAngleZ(1, 135.0f*Math::PI/180.0f);
 
 			SetBusy(false);
 			UpdateInterface();
@@ -305,7 +303,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
 bool CAutoNuclear::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

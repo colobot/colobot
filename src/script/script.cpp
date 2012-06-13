@@ -16,8 +16,6 @@
 
 // script.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -25,6 +23,7 @@
 
 #include "CBot/CBotDll.h"
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/global.h"
@@ -215,7 +214,7 @@ bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 	float	value;
 
 	value = var->GivValFloat();
-	result->SetValFloat(sinf(value*PI/180.0f));
+	result->SetValFloat(sinf(value*Math::PI/180.0f));
 	return true;
 }
 
@@ -226,7 +225,7 @@ bool rCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 	float	value;
 
 	value = var->GivValFloat();
-	result->SetValFloat(cosf(value*PI/180.0f));
+	result->SetValFloat(cosf(value*Math::PI/180.0f));
 	return true;
 }
 
@@ -237,7 +236,7 @@ bool rTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 	float	value;
 
 	value = var->GivValFloat();
-	result->SetValFloat(tanf(value*PI/180.0f));
+	result->SetValFloat(tanf(value*Math::PI/180.0f));
 	return true;
 }
 
@@ -248,7 +247,7 @@ bool raSin(CBotVar* var, CBotVar* result, int& exception, void* user)
 	float	value;
 
 	value = var->GivValFloat();
-	result->SetValFloat(asinf(value)*180.0f/PI);
+	result->SetValFloat(asinf(value)*180.0f/Math::PI);
 	return true;
 }
 
@@ -259,7 +258,7 @@ bool raCos(CBotVar* var, CBotVar* result, int& exception, void* user)
 	float	value;
 
 	value = var->GivValFloat();
-	result->SetValFloat(acosf(value)*180.0f/PI);
+	result->SetValFloat(acosf(value)*180.0f/Math::PI);
 	return true;
 }
 
@@ -270,7 +269,7 @@ bool raTan(CBotVar* var, CBotVar* result, int& exception, void* user)
 	float	value;
 
 	value = var->GivValFloat();
-	result->SetValFloat(atanf(value)*180.0f/PI);
+	result->SetValFloat(atanf(value)*180.0f/Math::PI);
 	return true;
 }
 
@@ -302,7 +301,7 @@ bool rPow(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-	result->SetValFloat(Rand());
+	result->SetValFloat(Math::Rand());
 	return true;
 }
 
@@ -313,7 +312,7 @@ bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user)
 	float	value;
 
 	value = var->GivValFloat();
-	result->SetValFloat(Abs(value));
+	result->SetValFloat(fabs(value));
 	return true;
 }
 
@@ -537,7 +536,7 @@ bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	type    = OBJECT_NULL;
 	angle   = 0.0f;
-	focus   = PI*2.0f;
+	focus   = Math::PI*2.0f;
 	minDist = 0.0f*g_unit;
 	maxDist = 1000.0f*g_unit;
 	sens    = 1.0f;
@@ -559,12 +558,12 @@ bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 		var = var->GivNext();
 		if ( var != 0 )
 		{
-			angle = -var->GivValFloat()*PI/180.0f;
+			angle = -var->GivValFloat()*Math::PI/180.0f;
 
 			var = var->GivNext();
 			if ( var != 0 )
 			{
-				focus = var->GivValFloat()*PI/180.0f;
+				focus = var->GivValFloat()*Math::PI/180.0f;
 
 				var = var->GivNext();
 				if ( var != 0 )
@@ -595,7 +594,7 @@ bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	iPos   = pThis->RetPosition(0);
 	iAngle = pThis->RetAngleY(0)+angle;
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 	if ( sens >= 0.0f )  best = 100000.0f;
 	else                 best = 0.0f;
@@ -660,7 +659,7 @@ bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 		d = Length2d(iPos, oPos);
 		if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 
-		if ( focus >= PI*2.0f )
+		if ( focus >= Math::PI*2.0f )
 		{
 			if ( (sens >= 0.0f && d < best) ||
 				 (sens <  0.0f && d > best) )
@@ -671,8 +670,8 @@ bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 			continue;
 		}
 
-		a = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-		if ( TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
+		a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+		if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
 		{
 			if ( (sens >= 0.0f && d < best) ||
 				 (sens <  0.0f && d > best) )
@@ -758,7 +757,7 @@ bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		type    = OBJECT_NULL;
 		angle   = 0.0f;
-		focus   = 45.0f*PI/180.0f;
+		focus   = 45.0f*Math::PI/180.0f;
 		minDist = 0.0f*g_unit;
 		maxDist = 20.0f*g_unit;
 		sens    = 1.0f;
@@ -780,7 +779,7 @@ bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 		iPos   = pThis->RetPosition(0);
 		iAngle = pThis->RetAngleY(0)+angle;
-		iAngle = NormAngle(iAngle);  // 0..2*PI
+		iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 		bGoal = 100000.0f;
 		pGoal = 0;
@@ -845,10 +844,10 @@ bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 			oPos = pObj->RetPosition(0);
 			d = Length2d(iPos, oPos);
-			a = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+			a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
 			if ( d < bGoal &&
-				 TestAngle(a, iAngle-(5.0f*PI/180.0f)/2.0f, iAngle+(5.0f*PI/180.0f)/2.0f) )
+				 Math::TestAngle(a, iAngle-(5.0f*Math::PI/180.0f)/2.0f, iAngle+(5.0f*Math::PI/180.0f)/2.0f) )
 			{
 				bGoal = d;
 				pGoal = pObj;
@@ -856,7 +855,7 @@ bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 			if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 
-			if ( focus >= PI*2.0f )
+			if ( focus >= Math::PI*2.0f )
 			{
 				if ( (sens >= 0.0f && d < best) ||
 					 (sens <  0.0f && d > best) )
@@ -867,7 +866,7 @@ bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 				continue;
 			}
 
-			if ( TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
+			if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
 			{
 				if ( (sens >= 0.0f && d < best) ||
 					 (sens <  0.0f && d > best) )
@@ -938,9 +937,9 @@ bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user)
 	iPos = pThis->RetPosition(0);
 
 	a = pThis->RetAngleY(0);
-	g = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+	g = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
-	result->SetValFloat(-Direction(a, g)*180.0f/PI);
+	result->SetValFloat(-Math::Direction(a, g)*180.0f/Math::PI);
 	return true;
 }
 
@@ -986,7 +985,7 @@ bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 	if ( !GetPoint(var, exception, pos) )  return true;
 
-	angle = var->GivValFloat()*PI/180.0f;
+	angle = var->GivValFloat()*Math::PI/180.0f;
 	var = var->GivNext();
 
 	type = (ObjectType)var->GivValInt();
@@ -1312,7 +1311,7 @@ bool rTurn(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		value = var->GivValFloat();
-		err = script->m_primaryTask->StartTaskTurn(-value*PI/180.0f);
+		err = script->m_primaryTask->StartTaskTurn(-value*Math::PI/180.0f);
 		if ( err != ERR_OK )
 		{
 			delete script->m_primaryTask;
@@ -1435,7 +1434,7 @@ bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		type    = OBJECT_NULL;
 		angle   = 0.0f;
-		focus   = PI*2.0f;
+		focus   = Math::PI*2.0f;
 		minDist = 0.0f*g_unit;
 		maxDist = 1000.0f*g_unit;
 		sens    = 1.0f;
@@ -1502,7 +1501,7 @@ bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 			d = Length2d(iPos, oPos);
 			if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 
-			if ( focus >= PI*2.0f )
+			if ( focus >= Math::PI*2.0f )
 			{
 				if ( d < best )
 				{
@@ -1512,8 +1511,8 @@ bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 				continue;
 			}
 
-			a = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-			if ( TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
+			a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+			if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
 			{
 				if ( d < best )
 				{
@@ -2202,7 +2201,7 @@ bool rAim(CBotVar* var, CBotVar* result, int& exception, void* user)
 	{
 		script->m_primaryTask = new CTaskManager(script->m_iMan, script->m_object);
 		value = var->GivValFloat();
-		err = script->m_primaryTask->StartTaskGunGoal(value*PI/180.0f, 0.0f);
+		err = script->m_primaryTask->StartTaskGunGoal(value*Math::PI/180.0f, 0.0f);
 		if ( err != ERR_OK )
 		{
 			delete script->m_primaryTask;
@@ -3677,7 +3676,7 @@ bool CScript::ReadScript(char* filename)
 	delete m_script;
 	m_script = 0;
 
-	edit = m_interface->CreateEdit(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), 0, EVENT_EDIT9);
+	edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
 	edit->SetMaxChar(EDITSTUDIOMAX);
 	edit->SetAutoIndent(m_engine->RetEditIndentMode());
 	edit->ReadText(name);
@@ -3709,7 +3708,7 @@ bool CScript::WriteScript(char* filename)
 		return false;
 	}
 
-	edit = m_interface->CreateEdit(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), 0, EVENT_EDIT9);
+	edit = m_interface->CreateEdit(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 0, EVENT_EDIT9);
 	edit->SetMaxChar(EDITSTUDIOMAX);
 	edit->SetAutoIndent(m_engine->RetEditIndentMode());
 	edit->SetText(m_script);

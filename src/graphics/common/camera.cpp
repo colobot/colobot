@@ -14,14 +14,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/language.h"
@@ -65,9 +65,9 @@ CCamera::CCamera(CInstanceManager* iMan)
 	m_focus        = 1.0f;
 
 	m_bRightDown     = false;
-	m_rightPosInit   = FPOINT(0.5f, 0.5f);
-	m_rightPosCenter = FPOINT(0.5f, 0.5f);
-	m_rightPosMove   = FPOINT(0.5f, 0.5f);
+	m_rightPosInit   = Math::Point(0.5f, 0.5f);
+	m_rightPosCenter = Math::Point(0.5f, 0.5f);
+	m_rightPosMove   = Math::Point(0.5f, 0.5f);
 
 	m_eyePt        = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	m_directionH   =  0.0f;
@@ -180,18 +180,18 @@ void CCamera::Init(D3DVECTOR eye, D3DVECTOR lookat, float delay)
 	m_type = CAMERA_FREE;
 	m_eyePt = eye;
 
-	m_directionH = RotateAngle(eye.x-lookat.x, eye.z-lookat.z)+PI/2.0f;
-	m_directionV = -RotateAngle(Length2d(eye, lookat), eye.y-lookat.y);
+	m_directionH = Math::RotateAngle(eye.x-lookat.x, eye.z-lookat.z)+Math::PI/2.0f;
+	m_directionV = -Math::RotateAngle(Length2d(eye, lookat), eye.y-lookat.y);
 
 	m_eyeDistance = 10.0f;
 	m_heightLookat = 10.0f;
 	m_backDist = 30.0f;
 	m_backMin  = 10.0f;
 	m_addDirectionH = 0.0f;
-	m_addDirectionV = -PI*0.05f;
+	m_addDirectionV = -Math::PI*0.05f;
 	m_fixDist = 50.0f;
-	m_fixDirectionH = PI*0.25f;
-	m_fixDirectionV = -PI*0.10f;
+	m_fixDirectionH = Math::PI*0.25f;
+	m_fixDirectionV = -Math::PI*0.10f;
 	m_centeringPhase = CP_NULL;
 	m_actualEye = m_eyePt;
 	m_actualLookat = LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
@@ -338,7 +338,7 @@ void CCamera::SetType(CameraType type)
 	{
 		AbortCentering();  // Special stops framing
 		m_addDirectionH = 0.0f;
-		m_addDirectionV = -PI*0.05f;
+		m_addDirectionV = -Math::PI*0.05f;
 
 		if ( m_cameraObj == 0 )  oType = OBJECT_NULL;
 		else                     oType = m_cameraObj->RetType();
@@ -450,7 +450,7 @@ float CCamera::RetRemotePan()
 
 void CCamera::SetRemoteZoom(float value)
 {
-	value = Norm(value);
+	value = Math::Norm(value);
 
 	if ( m_type == CAMERA_BACK )
 	{
@@ -491,7 +491,7 @@ void CCamera::StartVisit(D3DVECTOR goal, float dist)
 	m_visitDist = dist;
 	m_visitTime = 0.0f;
 	m_visitDirectionH = 0.0f;
-	m_visitDirectionV = -PI*0.10f;
+	m_visitDirectionV = -Math::PI*0.10f;
 }
 
 // Circular end of a visit with the camera.
@@ -521,9 +521,9 @@ bool CCamera::StartCentering(CObject *object, float angleH, float angleV,
 
 	if ( m_centeringPhase != CP_NULL )  return false;
 
-	if ( m_addDirectionH > PI )
+	if ( m_addDirectionH > Math::PI )
 	{
-		angleH = PI*2.0f-angleH;
+		angleH = Math::PI*2.0f-angleH;
 	}
 
 	m_centeringPhase    = CP_START;
@@ -627,9 +627,9 @@ void CCamera::EffectFrame(const Event &event)
 	if ( m_effectType == CE_TERRAFORM )
 	{
 		m_effectProgress += event.rTime*0.7f;
-		m_effectOffset.x = (Rand()-0.5f)*10.0f;
-		m_effectOffset.y = (Rand()-0.5f)*10.0f;
-		m_effectOffset.z = (Rand()-0.5f)*10.0f;
+		m_effectOffset.x = (Math::Rand()-0.5f)*10.0f;
+		m_effectOffset.y = (Math::Rand()-0.5f)*10.0f;
+		m_effectOffset.z = (Math::Rand()-0.5f)*10.0f;
 
 		force *= 1.0f-m_effectProgress;
 	}
@@ -637,9 +637,9 @@ void CCamera::EffectFrame(const Event &event)
 	if ( m_effectType == CE_EXPLO )
 	{
 		m_effectProgress += event.rTime*1.0f;
-		m_effectOffset.x = (Rand()-0.5f)*5.0f;
-		m_effectOffset.y = (Rand()-0.5f)*5.0f;
-		m_effectOffset.z = (Rand()-0.5f)*5.0f;
+		m_effectOffset.x = (Math::Rand()-0.5f)*5.0f;
+		m_effectOffset.y = (Math::Rand()-0.5f)*5.0f;
+		m_effectOffset.z = (Math::Rand()-0.5f)*5.0f;
 
 		force *= 1.0f-m_effectProgress;
 	}
@@ -647,9 +647,9 @@ void CCamera::EffectFrame(const Event &event)
 	if ( m_effectType == CE_SHOT )
 	{
 		m_effectProgress += event.rTime*1.0f;
-		m_effectOffset.x = (Rand()-0.5f)*2.0f;
-		m_effectOffset.y = (Rand()-0.5f)*2.0f;
-		m_effectOffset.z = (Rand()-0.5f)*2.0f;
+		m_effectOffset.x = (Math::Rand()-0.5f)*2.0f;
+		m_effectOffset.y = (Math::Rand()-0.5f)*2.0f;
+		m_effectOffset.z = (Math::Rand()-0.5f)*2.0f;
 
 		force *= 1.0f-m_effectProgress;
 	}
@@ -657,29 +657,29 @@ void CCamera::EffectFrame(const Event &event)
 	if ( m_effectType == CE_CRASH )
 	{
 		m_effectProgress += event.rTime*5.0f;
-		m_effectOffset.y = sinf(m_effectProgress*PI)*1.5f;
-		m_effectOffset.x = (Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
-		m_effectOffset.z = (Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
+		m_effectOffset.y = sinf(m_effectProgress*Math::PI)*1.5f;
+		m_effectOffset.x = (Math::Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
+		m_effectOffset.z = (Math::Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
 	}
 
 	if ( m_effectType == CE_VIBRATION )
 	{
 		m_effectProgress += event.rTime*0.1f;
-		m_effectOffset.y = (Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
-		m_effectOffset.x = (Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
-		m_effectOffset.z = (Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
+		m_effectOffset.y = (Math::Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
+		m_effectOffset.x = (Math::Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
+		m_effectOffset.z = (Math::Rand()-0.5f)*1.0f*(1.0f-m_effectProgress);
 	}
 
 	if ( m_effectType == CE_PET )
 	{
 		m_effectProgress += event.rTime*5.0f;
-		m_effectOffset.x = (Rand()-0.5f)*0.2f;
-		m_effectOffset.y = (Rand()-0.5f)*2.0f;
-		m_effectOffset.z = (Rand()-0.5f)*0.2f;
+		m_effectOffset.x = (Math::Rand()-0.5f)*0.2f;
+		m_effectOffset.y = (Math::Rand()-0.5f)*2.0f;
+		m_effectOffset.z = (Math::Rand()-0.5f)*0.2f;
 	}
 
 	dist = Length(m_eyePt, m_effectPos);
-	dist = Norm((dist-100.f)/100.0f);
+	dist = Math::Norm((dist-100.f)/100.0f);
 
 	force *= 1.0f-dist;
 #if _TEEN
@@ -1004,13 +1004,13 @@ bool CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		iType = m_cameraObj->RetType();
 	}
 
-	min.x = Min(eye.x, lookat.x);
-	min.y = Min(eye.y, lookat.y);
-	min.z = Min(eye.z, lookat.z);
+	min.x = Math::Min(eye.x, lookat.x);
+	min.y = Math::Min(eye.y, lookat.y);
+	min.z = Math::Min(eye.z, lookat.z);
 
-	max.x = Max(eye.x, lookat.x);
-	max.y = Max(eye.y, lookat.y);
-	max.z = Max(eye.z, lookat.z);
+	max.x = Math::Max(eye.x, lookat.x);
+	max.y = Math::Max(eye.y, lookat.y);
+	max.z = Math::Max(eye.z, lookat.z);
 
 	prox = 8.0f;  // maximum proximity of the vehicle
 
@@ -1108,13 +1108,13 @@ bool CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 		iType = m_cameraObj->RetType();
 	}
 
-	min.x = Min(m_actualEye.x, m_actualLookat.x);
-	min.y = Min(m_actualEye.y, m_actualLookat.y);
-	min.z = Min(m_actualEye.z, m_actualLookat.z);
+	min.x = Math::Min(m_actualEye.x, m_actualLookat.x);
+	min.y = Math::Min(m_actualEye.y, m_actualLookat.y);
+	min.z = Math::Min(m_actualEye.z, m_actualLookat.z);
 
-	max.x = Max(m_actualEye.x, m_actualLookat.x);
-	max.y = Max(m_actualEye.y, m_actualLookat.y);
-	max.z = Max(m_actualEye.z, m_actualLookat.z);
+	max.x = Math::Max(m_actualEye.x, m_actualLookat.x);
+	max.y = Math::Max(m_actualEye.y, m_actualLookat.y);
+	max.z = Math::Max(m_actualEye.z, m_actualLookat.z);
 
 	m_bTransparency = false;
 
@@ -1173,9 +1173,9 @@ bool CCamera::IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat)
 
 		if ( oType == OBJECT_FACTORY )
 		{
-			angle = RotateAngle(m_actualEye.x-oPos.x, oPos.z-m_actualEye.z);  // CW !
-			angle = Direction(angle, pObj->RetAngleY(0));
-			if ( Abs(angle) < 30.0f*PI/180.0f )  continue;  // in the gate?
+			angle = Math::RotateAngle(m_actualEye.x-oPos.x, oPos.z-m_actualEye.z);  // CW !
+			angle = Math::Direction(angle, pObj->RetAngleY(0));
+			if ( fabs(angle) < 30.0f*Math::PI/180.0f )  continue;  // in the gate?
 		}
 
 		del = Length(m_actualEye, m_actualLookat);
@@ -1260,7 +1260,7 @@ bool CCamera::EventProcess(const Event &event)
 		case EVENT_RBUTTONDOWN:
 			m_bRightDown = true;
 			m_rightPosInit = event.pos;
-			m_rightPosCenter = FPOINT(0.5f, 0.5f);
+			m_rightPosCenter = Math::Point(0.5f, 0.5f);
 			m_engine->MoveMousePos(m_rightPosCenter);
 //?			m_engine->SetMouseHide(true);  // cache la souris
 			break;
@@ -1270,7 +1270,7 @@ bool CCamera::EventProcess(const Event &event)
 			m_engine->MoveMousePos(m_rightPosInit);
 //?			m_engine->SetMouseHide(false);  // remontre la souris
 			m_addDirectionH = 0.0f;
-			m_addDirectionV = -PI*0.05f;
+			m_addDirectionV = -Math::PI*0.05f;
 			break;
 #endif
 
@@ -1397,7 +1397,7 @@ bool CCamera::EventFrame(const Event &event)
 
 // Returns the default sprite to use for the mouse.
 
-D3DMouse CCamera::RetMouseDef(FPOINT pos)
+D3DMouse CCamera::RetMouseDef(Math::Point pos)
 {
 	D3DMouse	type;
 
@@ -1506,11 +1506,11 @@ bool CCamera::EventFrameFree(const Event &event)
 	{
 		if ( event.axeX < 0.0f )
 		{
-			m_eyePt = LookatPoint(m_eyePt, m_directionH+PI/2.0f, m_directionV, -event.axeX*event.rTime*factor*m_speed);
+			m_eyePt = LookatPoint(m_eyePt, m_directionH+Math::PI/2.0f, m_directionV, -event.axeX*event.rTime*factor*m_speed);
 		}
 		if ( event.axeX > 0.0f )
 		{
-			m_eyePt = LookatPoint(m_eyePt, m_directionH-PI/2.0f, m_directionV, event.axeX*event.rTime*factor*m_speed);
+			m_eyePt = LookatPoint(m_eyePt, m_directionH-Math::PI/2.0f, m_directionV, event.axeX*event.rTime*factor*m_speed);
 		}
 	}
 	else
@@ -1586,12 +1586,12 @@ bool CCamera::EventFrameEdit(const Event &event)
 	{
 	// Left/Right.
 		m_fixDirectionH += m_mouseDirH*event.rTime*1.0f*m_speed;
-		m_fixDirectionH = NormAngle(m_fixDirectionH);
+		m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
 
 		// Up/Down.
 //?		m_fixDirectionV -= m_mouseDirV*event.rTime*0.5f*m_speed;
-//?		if ( m_fixDirectionV < -PI*0.40f )  m_fixDirectionV = -PI*0.40f;
-//?		if ( m_fixDirectionV >  PI*0.20f )  m_fixDirectionV =  PI*0.20f;
+//?		if ( m_fixDirectionV < -Math::PI*0.40f )  m_fixDirectionV = -Math::PI*0.40f;
+//?		if ( m_fixDirectionV >  Math::PI*0.20f )  m_fixDirectionV =  Math::PI*0.20f;
 	}
 
 	m_terrain->ValidPosition(m_eyePt, 10.0f);
@@ -1638,7 +1638,7 @@ bool CCamera::EventFrameBack(const Event &event)
 	CPhysics*	physics;
 	ObjectType	type;
 	D3DVECTOR	pos, vLookatPt;
-	FPOINT		mouse;
+	Math::Point		mouse;
 	float		centeringH, centeringV, centeringD, h, v, d, floor;
 
 	if ( m_cameraObj == 0 )
@@ -1676,7 +1676,7 @@ bool CCamera::EventFrameBack(const Event &event)
 #if 1
 			// Left/Right.
 			m_addDirectionH += m_mouseDirH*event.rTime*1.0f*m_speed;
-			m_addDirectionH = NormAngle(m_addDirectionH);
+			m_addDirectionH = Math::NormAngle(m_addDirectionH);
 
 			// Up/Down.
 //?			m_backDist -= m_mouseDirV*event.rTime*30.0f*m_speed;
@@ -1782,18 +1782,18 @@ bool CCamera::EventFrameBack(const Event &event)
 			 type == OBJECT_START    ||
 			 type == OBJECT_END      )  // building?
 		{
-			h += PI*0.20f;  // nearly face
+			h += Math::PI*0.20f;  // nearly face
 		}
 		else	// vehicle?
 		{
-			h += PI;  // back
+			h += Math::PI;  // back
 		}
-		h = NormAngle(h)+m_remotePan;
+		h = Math::NormAngle(h)+m_remotePan;
 		v = 0.0f;  //?
 
 		h += m_centeringCurrentH;
 		h += m_addDirectionH*(1.0f-centeringH);
-		h = NormAngle(h);
+		h = Math::NormAngle(h);
 
 		if ( type == OBJECT_MOBILEdr )  // designer?
 		{
@@ -1827,7 +1827,7 @@ bool CCamera::EventFrameBack(const Event &event)
 
 		SetViewTime(m_eyePt, vLookatPt, event.rTime);
 
-		m_directionH = h+PI/2.0f;
+		m_directionH = h+Math::PI/2.0f;
 		m_directionV = v;
 	}
 
@@ -1857,7 +1857,7 @@ bool CCamera::EventFrameFix(const Event &event)
 	{
 		// Left/Right.
 		m_fixDirectionH += m_mouseDirH*event.rTime*1.0f*m_speed;
-		m_fixDirectionH = NormAngle(m_fixDirectionH);
+		m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
 
 		// Up/Down.
 //?		m_fixDist -= m_mouseDirV*event.rTime*30.0f*m_speed;
@@ -1887,7 +1887,7 @@ bool CCamera::EventFrameFix(const Event &event)
 
 		SetViewTime(m_eyePt, vLookatPt, event.rTime);
 
-		m_directionH = h+PI/2.0f;
+		m_directionH = h+Math::PI/2.0f;
 		m_directionV = v;
 	}
 
@@ -1993,7 +1993,7 @@ bool CCamera::EventFrameVisit(const Event &event)
 	if ( event.keyState & KS_PAGEUP )
 	{
 		m_visitDirectionV -= event.rTime*1.0f*m_speed;
-		if ( m_visitDirectionV < -PI*0.40f )  m_visitDirectionV = -PI*0.40f;
+		if ( m_visitDirectionV < -Math::PI*0.40f )  m_visitDirectionV = -Math::PI*0.40f;
 	}
 	if ( event.keyState & KS_PAGEDOWN )
 	{
@@ -2008,7 +2008,7 @@ bool CCamera::EventFrameVisit(const Event &event)
 		if ( m_visitDist > 200.0f )  m_visitDist = 200.0f;
 	}
 
-	angleH = (m_visitTime/10.0f)*(PI*2.0f);
+	angleH = (m_visitTime/10.0f)*(Math::PI*2.0f);
 	angleV = m_visitDirectionV;
 	eye = RotateView(m_visitGoal, angleH, angleV, m_visitDist);
 	eye = ExcludeTerrain(eye, m_visitGoal, angleH, angleV);
@@ -2068,7 +2068,7 @@ D3DVECTOR CCamera::ExcludeTerrain(D3DVECTOR eye, D3DVECTOR lookat,
 		pos.y += 2.0f+dist*0.1f;
 		if ( pos.y > eye.y )
 		{
-			angleV = -RotateAngle(dist, pos.y-lookat.y);
+			angleV = -Math::RotateAngle(dist, pos.y-lookat.y);
 			eye = RotateView(lookat, angleH, angleV, dist);
 		}
 	}

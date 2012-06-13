@@ -19,6 +19,10 @@
 #pragma once
 
 
+#include "common/struct.h"
+#include "math/point.h"
+
+
 class CInstanceManager;
 class CEvent;
 class CD3DEngine;
@@ -45,7 +49,7 @@ public:
 	void		MapEnable(bool bEnable);
 	bool		RetShowMap();
 	bool		RetFixImage();
-	CObject*	DetectMap(FPOINT pos, bool &bInMap);
+	CObject*	DetectMap(Math::Point pos, bool &bInMap);
 	void		SetHilite(CObject* pObj);
 	void		SetToy(bool bToy);
 	void		SetFixParam(float zoom, float ox, float oy, float angle, int mode, bool bDebug);

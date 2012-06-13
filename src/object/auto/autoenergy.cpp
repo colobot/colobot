@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "math/const.h"
+#include "math/geometry.h"
 #include "common/struct.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
@@ -124,7 +123,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	D3DVECTOR	pos, ppos, speed;
-	FPOINT		dim, c, p;
+	Math::Point		dim, c, p;
 	TerrainRes	res;
 	float		big;
 	bool		bGO;
@@ -141,17 +140,17 @@ bool CAutoEnergy::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
 			if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
 			{
 				m_lastParticule = m_time;
 				pos = m_object->RetPosition(0);
 				pos.y += 10.0f;
-				speed.x = (Rand()-0.5f)*10.0f;
-				speed.z = (Rand()-0.5f)*10.0f;
+				speed.x = (Math::Rand()-0.5f)*10.0f;
+				speed.z = (Math::Rand()-0.5f)*10.0f;
 				speed.y = -7.0f;
-				dim.x = Rand()*0.5f+0.5f;
+				dim.x = Math::Rand()*0.5f+0.5f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
 			}
@@ -217,7 +216,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
 				{
 					m_phase    = AENP_BLITZ;
 					m_progress = 0.0f;
-					m_speed    = 1.0f/Rand()*1.0f+1.0f;
+					m_speed    = 1.0f/Math::Rand()*1.0f+1.0f;
 				}
 				else
 				{
@@ -238,10 +237,10 @@ bool CAutoEnergy::EventProcess(const Event &event)
 				m_lastParticule = m_time;
 				pos = m_object->RetPosition(0);
 				pos.y += 10.0f;
-				speed.x = (Rand()-0.5f)*1.0f;
-				speed.z = (Rand()-0.5f)*1.0f;
+				speed.x = (Math::Rand()-0.5f)*1.0f;
+				speed.z = (Math::Rand()-0.5f)*1.0f;
 				speed.y = -7.0f;
-				dim.x = Rand()*0.5f+0.5f;
+				dim.x = Math::Rand()*0.5f+0.5f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
 			}
@@ -287,35 +286,35 @@ bool CAutoEnergy::EventProcess(const Event &event)
 				c.y = pos.z;
 				p.x = c.x;
 				p.y = c.y+2.0f;
-				p = RotatePoint(c, Rand()*PI*2.0f, p);
+				p = Math::RotatePoint(c, Math::Rand()*Math::PI*2.0f, p);
 				pos.x = p.x;
 				pos.z = p.y;
-				pos.y += 2.5f+Rand()*3.0f;
+				pos.y += 2.5f+Math::Rand()*3.0f;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = Rand()*2.0f+1.0f;
+				dim.x = Math::Rand()*2.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 1.0f, 0.0f, 0.0f);
 
 				pos = m_object->RetPosition(0);
 				pos.y += 3.0f;
-				speed.x = (Rand()-0.5f)*30.0f;
-				speed.z = (Rand()-0.5f)*30.0f;
-				speed.y = Rand()*20.0f+10.0f;
-				dim.x = Rand()*0.4f+0.4f;
+				speed.x = (Math::Rand()-0.5f)*30.0f;
+				speed.z = (Math::Rand()-0.5f)*30.0f;
+				speed.y = Math::Rand()*20.0f+10.0f;
+				dim.x = Math::Rand()*0.4f+0.4f;
 				dim.y = dim.x;
 				m_particule->CreateTrack(pos, speed, dim, PARTITRACK2, 2.0f, 50.0f, 1.2f, 1.2f);
 
 				pos = m_object->RetPosition(0);
 				pos.y += 10.0f;
-				speed.x = (Rand()-0.5f)*1.5f;
-				speed.z = (Rand()-0.5f)*1.5f;
+				speed.x = (Math::Rand()-0.5f)*1.5f;
+				speed.z = (Math::Rand()-0.5f)*1.5f;
 				speed.y = -6.0f;
-				dim.x = Rand()*1.0f+1.0f;
+				dim.x = Math::Rand()*1.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
 
 				m_sound->Play(SOUND_ENERGY, m_object->RetPosition(0),
-							  1.0f, 1.0f+Rand()*1.5f);
+							  1.0f, 1.0f+Math::Rand()*1.5f);
 			}
 		}
 		else
@@ -359,12 +358,12 @@ bool CAutoEnergy::EventProcess(const Event &event)
 
 				pos = m_object->RetPosition(0);
 				pos.y += 17.0f;
-				pos.x += (Rand()-0.5f)*3.0f;
-				pos.z += (Rand()-0.5f)*3.0f;
+				pos.x += (Math::Rand()-0.5f)*3.0f;
+				pos.z += (Math::Rand()-0.5f)*3.0f;
 				speed.x = 0.0f;
 				speed.z = 0.0f;
-				speed.y = 6.0f+Rand()*6.0f;
-				dim.x = Rand()*1.5f+1.0f;
+				speed.y = 6.0f+Math::Rand()*6.0f;
+				dim.x = Math::Rand()*1.5f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
 			}
@@ -562,7 +561,7 @@ Error CAutoEnergy::RetError()
 bool CAutoEnergy::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

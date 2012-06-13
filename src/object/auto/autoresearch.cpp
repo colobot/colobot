@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -112,7 +110,7 @@ bool CAutoResearch::EventProcess(const Event &event)
 	CObject*	power;
 	D3DVECTOR	pos, speed;
 	Error		message;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		angle, time;
 
 	CAuto::EventProcess(event);
@@ -193,7 +191,7 @@ bool CAutoResearch::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 		}
 		return true;
 	}
@@ -204,7 +202,7 @@ bool CAutoResearch::EventProcess(const Event &event)
 	angle = m_time*0.1f;
 	m_object->SetAngleY(1, angle);  // rotates the antenna
 
-	angle = (30.0f+sinf(m_time*0.3f)*20.0f)*PI/180.0f;
+	angle = (30.0f+sinf(m_time*0.3f)*20.0f)*Math::PI/180.0f;
 	m_object->SetAngleZ(2, angle);  // directs the antenna
 
 	if ( m_phase == ALP_WAIT )
@@ -236,13 +234,13 @@ bool CAutoResearch::EventProcess(const Event &event)
 				m_lastParticule = m_time;
 
 				pos = m_object->RetPosition(0);
-				pos.x += (Rand()-0.5f)*6.0f;
-				pos.z += (Rand()-0.5f)*6.0f;
+				pos.x += (Math::Rand()-0.5f)*6.0f;
+				pos.z += (Math::Rand()-0.5f)*6.0f;
 				pos.y += 11.0f;
-				speed.x = (Rand()-0.5f)*2.0f;
-				speed.z = (Rand()-0.5f)*2.0f;
-				speed.y = Rand()*20.0f;
-				dim.x = Rand()*1.0f+1.0f;
+				speed.x = (Math::Rand()-0.5f)*2.0f;
+				speed.z = (Math::Rand()-0.5f)*2.0f;
+				speed.y = Math::Rand()*20.0f;
+				dim.x = Math::Rand()*1.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR);
 			}
@@ -318,7 +316,7 @@ Error CAutoResearch::RetError()
 bool CAutoResearch::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, dim, ddim;
+	Math::Point		pos, dim, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);
@@ -516,7 +514,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	int			i;
 
 	static float listpos[12] =
@@ -550,7 +548,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 
 	for ( i=0 ; i<6 ; i++ )
 	{
-		if ( Mod(progress, 0.025f) < 0.005f )
+		if ( Math::Mod(progress, 0.025f) < 0.005f )
 		{
 			if ( m_partiStop[i] != -1 )
 			{

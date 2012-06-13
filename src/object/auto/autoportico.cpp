@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -48,12 +46,12 @@ const int PARAM_DEPOSE = 2;		// run=2 -> deposits the spaceship
 
 const float PORTICO_POSa		= 75.0f;
 const float PORTICO_POSb		= 65.0f;
-const float PORTICO_ANGLE1a		= ( 25.0f*PI/180.0f);
-const float PORTICO_ANGLE1b		= ( 70.0f*PI/180.0f);
-const float PORTICO_ANGLE2a		= (-37.5f*PI/180.0f);
-const float PORTICO_ANGLE2b		= (-62.5f*PI/180.0f);
-const float PORTICO_ANGLE3a		= (-77.5f*PI/180.0f);
-const float PORTICO_ANGLE3b		= (-30.0f*PI/180.0f);
+const float PORTICO_ANGLE1a		= ( 25.0f*Math::PI/180.0f);
+const float PORTICO_ANGLE1b		= ( 70.0f*Math::PI/180.0f);
+const float PORTICO_ANGLE2a		= (-37.5f*Math::PI/180.0f);
+const float PORTICO_ANGLE2b		= (-62.5f*Math::PI/180.0f);
+const float PORTICO_ANGLE3a		= (-77.5f*Math::PI/180.0f);
+const float PORTICO_ANGLE3b		= (-30.0f*Math::PI/180.0f);
 
 const float PORTICO_TIME_MOVE	= 16.0f;
 const float PORTICO_TIME_DOWN	= 4.0f;
@@ -201,7 +199,7 @@ bool CAutoPortico::EventProcess(const Event &event)
 	angle = sinf(m_time*4.0f)*0.3f;
 	m_object->SetAngleX(9, angle);
 
-	angle = -m_time*1.0f+PI/2.3f;
+	angle = -m_time*1.0f+Math::PI/2.3f;
 	m_object->SetAngleY(10, angle);  // turns the left side radar
 	angle = sinf(m_time*4.0f)*0.3f;
 	m_object->SetAngleX(11, angle);

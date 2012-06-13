@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -113,7 +111,7 @@ void CAutoPara::StartBlitz()
 bool CAutoPara::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	int			i;
 
 	CAuto::EventProcess(event);
@@ -128,7 +126,7 @@ bool CAutoPara::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 		}
 		return true;
 	}
@@ -146,12 +144,12 @@ bool CAutoPara::EventProcess(const Event &event)
 				for ( i=0 ; i<10 ; i++ )
 				{
 					pos = m_object->RetPosition(0);
-					pos.x += (Rand()-0.5f)*m_progress*40.0f;
-					pos.z += (Rand()-0.5f)*m_progress*40.0f;
+					pos.x += (Math::Rand()-0.5f)*m_progress*40.0f;
+					pos.z += (Math::Rand()-0.5f)*m_progress*40.0f;
 					pos.y += 50.0f-m_progress*50.0f;
-					speed.x = (Rand()-0.5f)*20.0f;
-					speed.z = (Rand()-0.5f)*20.0f;
-					speed.y = 5.0f+Rand()*5.0f;
+					speed.x = (Math::Rand()-0.5f)*20.0f;
+					speed.z = (Math::Rand()-0.5f)*20.0f;
+					speed.y = 5.0f+Math::Rand()*5.0f;
 					dim.x = 2.0f;
 					dim.y = dim.x;
 					m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 20.0f, 0.5f);
@@ -178,9 +176,9 @@ bool CAutoPara::EventProcess(const Event &event)
 				{
 					pos = m_object->RetPosition(0);
 					pos.y += 16.0f;
-					speed.x = (Rand()-0.5f)*10.0f;
-					speed.z = (Rand()-0.5f)*10.0f;
-					speed.y = -Rand()*30.0f;
+					speed.x = (Math::Rand()-0.5f)*10.0f;
+					speed.z = (Math::Rand()-0.5f)*10.0f;
+					speed.y = -Math::Rand()*30.0f;
 					dim.x = 1.0f;
 					dim.y = dim.x;
 					m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
@@ -206,7 +204,7 @@ bool CAutoPara::EventProcess(const Event &event)
 bool CAutoPara::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

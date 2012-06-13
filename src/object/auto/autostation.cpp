@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -94,7 +92,7 @@ bool CAutoStation::EventProcess(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, ppos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	CObject*	vehicule;
 	CObject*	power;
 	TerrainRes	res;
@@ -117,9 +115,9 @@ bool CAutoStation::EventProcess(const Event &event)
 
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
-			m_object->SetEnergy(Rand());
+			m_object->SetEnergy(Math::Rand());
 		}
 		return true;
 	}
@@ -205,11 +203,11 @@ bool CAutoStation::EventProcess(const Event &event)
 		mat = m_object->RetWorldMatrix(0);
 		pos = D3DVECTOR(-15.0f, 7.0f, 0.0f);  // battery position
 		pos = Transform(*mat, pos);
-		speed.x = (Rand()-0.5f)*20.0f;
-		speed.y = (Rand()-0.5f)*20.0f;
-		speed.z = (Rand()-0.5f)*20.0f;
+		speed.x = (Math::Rand()-0.5f)*20.0f;
+		speed.y = (Math::Rand()-0.5f)*20.0f;
+		speed.z = (Math::Rand()-0.5f)*20.0f;
 		ppos.x = pos.x;
-		ppos.y = pos.y+(Rand()-0.5f)*4.0f;
+		ppos.y = pos.y+(Math::Rand()-0.5f)*4.0f;
 		ppos.z = pos.z;
 		dim.x = 1.5f;
 		dim.y = 1.5f;
@@ -218,23 +216,23 @@ bool CAutoStation::EventProcess(const Event &event)
 #if 0
 		ppos = pos;
 		ppos.y += 1.0f;
-		ppos.x += (Rand()-0.5f)*3.0f;
-		ppos.z += (Rand()-0.5f)*3.0f;
+		ppos.x += (Math::Rand()-0.5f)*3.0f;
+		ppos.z += (Math::Rand()-0.5f)*3.0f;
 		speed.x = 0.0f;
 		speed.z = 0.0f;
-		speed.y = 2.5f+Rand()*6.0f;
-		dim.x = Rand()*1.5f+1.0f;
+		speed.y = 2.5f+Math::Rand()*6.0f;
+		dim.x = Math::Rand()*1.5f+1.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(ppos, speed, dim, PARTISMOKE3, 4.0f);
 #else
 		ppos = pos;
 		ppos.y += 1.0f;
-		ppos.x += (Rand()-0.5f)*3.0f;
-		ppos.z += (Rand()-0.5f)*3.0f;
+		ppos.x += (Math::Rand()-0.5f)*3.0f;
+		ppos.z += (Math::Rand()-0.5f)*3.0f;
 		speed.x = 0.0f;
 		speed.z = 0.0f;
-		speed.y = 2.5f+Rand()*5.0f;
-		dim.x = Rand()*1.0f+0.6f;
+		speed.y = 2.5f+Math::Rand()*5.0f;
+		dim.x = Math::Rand()*1.0f+0.6f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(ppos, speed, dim, PARTIVAPOR, 3.0f);
 #endif
@@ -326,7 +324,7 @@ Error CAutoStation::RetError()
 bool CAutoStation::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

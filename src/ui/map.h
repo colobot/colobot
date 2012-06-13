@@ -20,7 +20,6 @@
 
 
 #include "ui/control.h"
-#include "common/struct.h"
 #include "object/object.h"
 
 
@@ -54,7 +53,7 @@ struct MapObject
 	CObject*	object;
 	MapColor	color;
 	ObjectType	type;
-	FPOINT		pos;
+	Math::Point		pos;
 	float		dir;
 };
 
@@ -66,7 +65,7 @@ public:
 	CMap(CInstanceManager* iMan);
 	~CMap();
 
-	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 	bool		EventProcess(const Event &event);
 	void		Draw();
 
@@ -94,20 +93,20 @@ public:
 	void		FlushObject();
 	void		UpdateObject(CObject* pObj);
 
-	CObject*	DetectObject(FPOINT pos, bool &bInMap);
+	CObject*	DetectObject(Math::Point pos, bool &bInMap);
 	void		SetHilite(CObject* pObj);
 
 protected:
-	FPOINT		AdjustOffset(FPOINT offset);
-	void		SelectObject(FPOINT pos);
-	FPOINT		MapInter(FPOINT pos, float dir);
-	void		DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color);
-	void		DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
-	void		DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color, ObjectType type, bool bHilite);
-	void		DrawHilite(FPOINT pos);
-	void		DrawTriangle(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT uv1, FPOINT uv2);
-	void		DrawPenta(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4, FPOINT p5, FPOINT uv1, FPOINT uv2);
-	void		DrawVertex(FPOINT uv1, FPOINT uv2, float zoom);
+	Math::Point		AdjustOffset(Math::Point offset);
+	void		SelectObject(Math::Point pos);
+	Math::Point		MapInter(Math::Point pos, float dir);
+	void		DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color);
+	void		DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
+	void		DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color, ObjectType type, bool bHilite);
+	void		DrawHilite(Math::Point pos);
+	void		DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2);
+	void		DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2);
+	void		DrawVertex(Math::Point uv1, Math::Point uv2, float zoom);
 
 protected:
 	CTerrain*		m_terrain;
@@ -118,7 +117,7 @@ protected:
 	float			m_time;
 	float			m_half;
 	float			m_zoom;
-	FPOINT			m_offset;
+	Math::Point			m_offset;
 	float			m_angle;
 	D3DCOLORVALUE	m_floorColor;
 	D3DCOLORVALUE	m_waterColor;
@@ -126,8 +125,8 @@ protected:
 	int				m_totalFix;
 	int				m_totalMove;
 	int				m_hiliteRank;
-	FPOINT			m_mapPos;
-	FPOINT			m_mapDim;
+	Math::Point			m_mapPos;
+	Math::Point			m_mapDim;
 	bool			m_bRadar;
 	char			m_fixImage[100];
 	int				m_mode;

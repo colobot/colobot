@@ -19,7 +19,7 @@
 #pragma once
 
 
-#include "common/misc.h"
+#include "object/task/task.h"
 #include "object/object.h"
 #include "object/task/taskmanip.h"
 #include "object/task/taskgoto.h"

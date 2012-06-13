@@ -16,8 +16,6 @@
 
 // taskterraform.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -72,7 +70,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
 	CObject*	power;
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, dir, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		energy;
 
 	if ( m_engine->RetPause() )  return true;
@@ -98,7 +96,7 @@ bool CTaskTerraform::EventProcess(const Event &event)
 		}
 
 		dir.x = 0.0f;
-		dir.y = (Rand()-0.5f)*0.2f*m_progress;
+		dir.y = (Math::Rand()-0.5f)*0.2f*m_progress;
 		dir.z = 0.0f;
 		m_object->SetCirVibration(dir);
 
@@ -160,12 +158,12 @@ bool CTaskTerraform::EventProcess(const Event &event)
 		{
 			// Battery.
 			pos = D3DVECTOR(-6.0f, 5.5f+2.0f*m_progress, 0.0f);
-			pos.x += (Rand()-0.5f)*1.0f;
-			pos.z += (Rand()-0.5f)*1.0f;
+			pos.x += (Math::Rand()-0.5f)*1.0f;
+			pos.z += (Math::Rand()-0.5f)*1.0f;
 			pos   = Transform(*mat, pos);
-			speed.x = (Rand()-0.5f)*6.0f*(1.0f+m_progress*4.0f);
-			speed.z = (Rand()-0.5f)*6.0f*(1.0f+m_progress*4.0f);
-			speed.y = 6.0f+Rand()*4.0f*(1.0f+m_progress*2.0f);
+			speed.x = (Math::Rand()-0.5f)*6.0f*(1.0f+m_progress*4.0f);
+			speed.z = (Math::Rand()-0.5f)*6.0f*(1.0f+m_progress*4.0f);
+			speed.y = 6.0f+Math::Rand()*4.0f*(1.0f+m_progress*2.0f);
 			dim.x = 0.5f+1.5f*m_progress;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 2.0f, 20.0f);
@@ -175,29 +173,29 @@ bool CTaskTerraform::EventProcess(const Event &event)
 		{
 			// Left grid.
 			pos = D3DVECTOR(-1.0f, 5.8f, 3.5f);
-			pos.x += (Rand()-0.5f)*1.0f;
-			pos.z += (Rand()-0.5f)*1.0f;
+			pos.x += (Math::Rand()-0.5f)*1.0f;
+			pos.z += (Math::Rand()-0.5f)*1.0f;
 			pos   = Transform(*mat, pos);
-			speed.x = Rand()*4.0f;
-			speed.z = Rand()*2.0f;
-			speed.y = 2.5f+Rand()*1.0f;
+			speed.x = Math::Rand()*4.0f;
+			speed.z = Math::Rand()*2.0f;
+			speed.y = 2.5f+Math::Rand()*1.0f;
 			speed = Transform(*mat, speed);
 			speed -= m_object->RetPosition(0);
-			dim.x = Rand()*1.0f+1.0f;
+			dim.x = Math::Rand()*1.0f+1.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 3.0f);
 
 			// Right grid.
 			pos = D3DVECTOR(-1.0f, 5.8f, -3.5f);
-			pos.x += (Rand()-0.5f)*1.0f;
-			pos.z += (Rand()-0.5f)*1.0f;
+			pos.x += (Math::Rand()-0.5f)*1.0f;
+			pos.z += (Math::Rand()-0.5f)*1.0f;
 			pos   = Transform(*mat, pos);
-			speed.x =  Rand()*4.0f;
-			speed.z = -Rand()*2.0f;
-			speed.y = 2.5f+Rand()*1.0f;
+			speed.x =  Math::Rand()*4.0f;
+			speed.z = -Math::Rand()*2.0f;
+			speed.y = 2.5f+Math::Rand()*1.0f;
 			speed = Transform(*mat, speed);
 			speed -= m_object->RetPosition(0);
-			dim.x = Rand()*1.0f+1.0f;
+			dim.x = Math::Rand()*1.0f+1.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 3.0f);
 		}
@@ -249,7 +247,7 @@ Error CTaskTerraform::Start()
 
 	m_bError = false;  // ok
 
-	m_camera->StartCentering(m_object, PI*0.35f, 99.9f, 20.0f, 2.0f);
+	m_camera->StartCentering(m_object, Math::PI*0.35f, 99.9f, 20.0f, 2.0f);
 	return ERR_OK;
 }
 
@@ -259,7 +257,7 @@ Error CTaskTerraform::IsEnded()
 {
 	CObject*	power;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		dist, duration;
 	int			i, max;
 
@@ -298,26 +296,26 @@ Error CTaskTerraform::IsEnded()
 		max= (int)(50.0f*m_engine->RetParticuleDensity());
 		for ( i=0 ; i<max ; i++ )
 		{
-			pos.x = m_terraPos.x+(Rand()-0.5f)*80.0f;
-			pos.z = m_terraPos.z+(Rand()-0.5f)*80.0f;
+			pos.x = m_terraPos.x+(Math::Rand()-0.5f)*80.0f;
+			pos.z = m_terraPos.z+(Math::Rand()-0.5f)*80.0f;
 			pos.y = m_terraPos.y;
 			m_terrain->MoveOnFloor(pos);
 			dist = Length(pos, m_terraPos);
 			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-			dim.x = 2.0f+(40.0f-dist)/(1.0f+Rand()*4.0f);
+			dim.x = 2.0f+(40.0f-dist)/(1.0f+Math::Rand()*4.0f);
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 
 			pos = m_terraPos;
-			speed.x = (Rand()-0.5f)*40.0f;
-			speed.z = (Rand()-0.5f)*40.0f;
-			speed.y = Rand()*15.0f+15.0f;
+			speed.x = (Math::Rand()-0.5f)*40.0f;
+			speed.z = (Math::Rand()-0.5f)*40.0f;
+			speed.y = Math::Rand()*15.0f+15.0f;
 			dim.x = 0.6f;
 			dim.y = dim.x;
 			pos.y += dim.y;
-			duration = Rand()*3.0f+3.0f;
+			duration = Math::Rand()*3.0f+3.0f;
 			m_particule->CreateTrack(pos, speed, dim, PARTITRACK5,
-									 duration, Rand()*10.0f+15.0f,
+									 duration, Math::Rand()*10.0f+15.0f,
 									 duration*0.2f, 1.0f);
 		}
 
@@ -410,14 +408,14 @@ bool CTaskTerraform::Terraform()
 			{
 				brain = pObj->RetBrain();
 				if ( brain != 0 )  brain->StopTask();
-				motion->SetAction(MAS_BACK1, 0.8f+Rand()*0.3f);
+				motion->SetAction(MAS_BACK1, 0.8f+Math::Rand()*0.3f);
 				pObj->SetFixed(true);  // not moving
 			}
 			if ( type == OBJECT_SPIDER )
 			{
 				brain = pObj->RetBrain();
 				if ( brain != 0 )  brain->StopTask();
-				motion->SetAction(MSS_BACK1, 0.8f+Rand()*0.3f);
+				motion->SetAction(MSS_BACK1, 0.8f+Math::Rand()*0.3f);
 				pObj->SetFixed(true);  // not moving
 			}
 		}

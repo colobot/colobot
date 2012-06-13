@@ -20,9 +20,11 @@
 
 
 #include "common/misc.h"
-#include "common/struct.h"
+#include "math/point.h"
+#include "graphics/d3d/d3dengine.h"
 
 
+class CObject;
 class CInstanceManager;
 class CD3DEngine;
 class CTerrain;
@@ -75,7 +77,7 @@ protected:
 	float		m_speed;
 	float		m_progress;
 	D3DVECTOR	m_pos;
-	FPOINT		m_shift[BLITZMAX];
+	Math::Point		m_shift[BLITZMAX];
 	float		m_width[BLITZMAX];
 };
 

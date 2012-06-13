@@ -16,8 +16,6 @@
 
 // text.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -1133,7 +1131,7 @@ void CText::SetD3DDevice(LPDIRECT3DDEVICE7 device)
 // Displays multi-font text.
 // The vertical position is at the bottom of the box of the character.
 
-void CText::DrawText(char *string, char *format, int len, FPOINT pos,
+void CText::DrawText(char *string, char *format, int len, Math::Point pos,
 					 float width, int justif, float size, float stretch,
 					 int eol)
 {
@@ -1157,7 +1155,7 @@ void CText::DrawText(char *string, char *format, int len, FPOINT pos,
 // Displays multi-font text.
 // The vertical position is at the bottom of the box of the character.
 
-void CText::DrawText(char *string, char *format, FPOINT pos, float width,
+void CText::DrawText(char *string, char *format, Math::Point pos, float width,
 					 int justif, float size, float stretch,
 					 int eol)
 {
@@ -1167,7 +1165,7 @@ void CText::DrawText(char *string, char *format, FPOINT pos, float width,
 // Displays text.
 // The vertical position is at the bottom of the box of the character.
 
-void CText::DrawText(char *string, int len, FPOINT pos, float width,
+void CText::DrawText(char *string, int len, Math::Point pos, float width,
 					 int justif, float size, float stretch, FontType font,
 					 int eol)
 {
@@ -1191,7 +1189,7 @@ void CText::DrawText(char *string, int len, FPOINT pos, float width,
 // Displays text.
 // The vertical position is at the bottom of the box of the character.
 
-void CText::DrawText(char *string, FPOINT pos, float width,
+void CText::DrawText(char *string, Math::Point pos, float width,
 					 int justif, float size, float stretch, FontType font,
 					 int eol)
 {
@@ -1201,9 +1199,9 @@ void CText::DrawText(char *string, FPOINT pos, float width,
 
 // Returns the size of a multi-font text.
 
-void CText::DimText(char *string, char *format, int len, FPOINT pos,
+void CText::DimText(char *string, char *format, int len, Math::Point pos,
 					int justif, float size, float stretch,
-					FPOINT &start, FPOINT &end)
+					Math::Point &start, Math::Point &end)
 {
 	float	sw;
 
@@ -1228,18 +1226,18 @@ void CText::DimText(char *string, char *format, int len, FPOINT pos,
 	
 // Returns the size of a multi-font text.
 
-void CText::DimText(char *string, char *format, FPOINT pos, int justif,
+void CText::DimText(char *string, char *format, Math::Point pos, int justif,
 					float size, float stretch,
-					FPOINT &start, FPOINT &end)
+					Math::Point &start, Math::Point &end)
 {
 	DimText(string, format, strlen(string), pos, justif, size, stretch, start, end);
 }
 
 // Returns the size of a text.
 
-void CText::DimText(char *string, int len, FPOINT pos, int justif,
+void CText::DimText(char *string, int len, Math::Point pos, int justif,
 					float size, float stretch, FontType font,
-					FPOINT &start, FPOINT &end)
+					Math::Point &start, Math::Point &end)
 {
 	float	sw;
 
@@ -1264,9 +1262,9 @@ void CText::DimText(char *string, int len, FPOINT pos, int justif,
 	
 // Returns the size of a text.
 
-void CText::DimText(char *string, FPOINT pos, int justif,
+void CText::DimText(char *string, Math::Point pos, int justif,
 					float size, float stretch, FontType font,
-					FPOINT &start, FPOINT &end)
+					Math::Point &start, Math::Point &end)
 {
 	DimText(string, strlen(string), pos, justif, size, stretch, font, start, end);
 }
@@ -1320,7 +1318,7 @@ float CText::RetStringWidth(char *string, char *format, int len,
 			{
 				pt = table+' '*4;
 				tab = (float)(pt[2]-pt[0])/256.0f*(size/20.0f)*stretch*m_engine->RetEditIndentValue();
-				w = tab-Mod(width, tab);
+				w = tab-Math::Mod(width, tab);
 				if ( w < tab*0.1f )  w += tab;
 				width += w;
 				continue;
@@ -1356,7 +1354,7 @@ float CText::RetStringWidth(char *string, int len,
 		{
 			pt = table+' '*4;
 			tab = (float)(pt[2]-pt[0])/256.0f*(size/20.0f)*stretch*m_engine->RetEditIndentValue();
-			w = tab-Mod(width, tab);
+			w = tab-Math::Mod(width, tab);
 			if ( w < tab*0.1f )  w += tab;
 			width += w;
 			continue;
@@ -1388,7 +1386,7 @@ float CText::RetCharWidth(int character, float offset,
 	{
 		pt = RetTable(font)+' '*4;
 		tab = (float)(pt[2]-pt[0])/256.0f*(size/20.0f)*stretch*m_engine->RetEditIndentValue();
-		w = tab-Mod(offset, tab);
+		w = tab-Math::Mod(offset, tab);
 		if ( w < tab*0.1f )  w += tab;
 		return w;
 	}
@@ -1554,7 +1552,7 @@ int CText::Detect(char *string, int len, float offset,
 
 // Displays multi-font text.
 
-void CText::DrawString(char *string, char *format, int len, FPOINT pos,
+void CText::DrawString(char *string, char *format, int len, Math::Point pos,
 					   float width, float size, float stretch, int eol)
 {
 	FontType	font;
@@ -1603,7 +1601,7 @@ void CText::DrawString(char *string, char *format, int len, FPOINT pos,
 
 // Displays text.
 
-void CText::DrawString(char *string, int len, FPOINT pos, float width,
+void CText::DrawString(char *string, int len, Math::Point pos, float width,
 					   float size, float stretch, FontType font,
 					   int eol)
 {
@@ -1645,10 +1643,10 @@ void CText::DrawString(char *string, int len, FPOINT pos, float width,
 
 // Displays the link to a character.
 
-void CText::DrawColor(FPOINT pos, float size, float width, int color)
+void CText::DrawColor(Math::Point pos, float size, float width, int color)
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 	POINT		dim;
 	D3DVECTOR	n;
 	float		h, u1, u2, v1, v2, dp;
@@ -1727,11 +1725,11 @@ void CText::DrawColor(FPOINT pos, float size, float width, int color)
 
 // Displays a character.
 
-void CText::DrawChar(int character, FPOINT pos, float size,
+void CText::DrawChar(int character, Math::Point pos, float size,
 					 float stretch, FontType font)
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 	D3DVECTOR	n;
 	float		width, height, u1, u2, v1, v2, dp;
 	short*		pt;

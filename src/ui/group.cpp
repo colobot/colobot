@@ -16,8 +16,6 @@
 
 // group.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -50,7 +48,7 @@ CGroup::~CGroup()
 
 // Creates a new button.
 
-bool CGroup::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CGroup::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -83,7 +81,7 @@ bool CGroup::EventProcess(const Event &event)
 
 void CGroup::Draw()
 {
-	FPOINT		uv1,uv2, corner, pos, dim;
+	Math::Point		uv1,uv2, corner, pos, dim;
 	float		dp;
 	int			icon;
 
@@ -283,13 +281,13 @@ void CGroup::Draw()
 		uv2.y = 255.5f/256.0f;
 		DrawIcon(pos, dim, uv1, uv2);  // ul
 		pos.x += dim.x;
-		Swap(uv1.x, uv2.x);
+		Math::Swap(uv1.x, uv2.x);
 		DrawIcon(pos, dim, uv1, uv2);  // ur
 		pos.y -= dim.y;
-		Swap(uv1.y, uv2.y);
+		Math::Swap(uv1.y, uv2.y);
 		DrawIcon(pos, dim, uv1, uv2);  // dr
 		pos.x -= dim.x;
-		Swap(uv1.x, uv2.x);
+		Math::Swap(uv1.x, uv2.x);
 		DrawIcon(pos, dim, uv1, uv2);  // dl
 
 		m_engine->SetState(D3DSTATETTw);
@@ -301,13 +299,13 @@ void CGroup::Draw()
 		uv2.y = 255.5f/256.0f;
 		DrawIcon(pos, dim, uv1, uv2);  // ul
 		pos.x += dim.x;
-		Swap(uv1.x, uv2.x);
+		Math::Swap(uv1.x, uv2.x);
 		DrawIcon(pos, dim, uv1, uv2);  // ur
 		pos.y -= dim.y;
-		Swap(uv1.y, uv2.y);
+		Math::Swap(uv1.y, uv2.y);
 		DrawIcon(pos, dim, uv1, uv2);  // dr
 		pos.x -= dim.x;
-		Swap(uv1.x, uv2.x);
+		Math::Swap(uv1.x, uv2.x);
 		DrawIcon(pos, dim, uv1, uv2);  // dl
 	}
 	if ( m_icon == 13 )  // corner upper / left?

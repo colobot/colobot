@@ -16,13 +16,13 @@
 
 // d3dengine.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <stdio.h>
 #include <math.h>
 
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "app/d3dapp.h"
 #include "graphics/d3d/d3dtextr.h"
 #include "graphics/d3d/d3dutil.h"
@@ -158,7 +158,7 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_overMode  = D3DSTATETCb;
 	m_frontsizeName[0] = 0;  // no front image
 	m_hiliteRank[0] = -1;  // empty list
-	m_mousePos = FPOINT(0.5f, 0.5f);
+	m_mousePos = Math::Point(0.5f, 0.5f);
 	m_mouseType = D3DMOUSENORM;
 	m_bMouseHide = false;
 	m_imageSurface = 0;
@@ -1023,15 +1023,15 @@ bool CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 	{
 		for ( i=0 ; i<nb ; i++ )
 		{
-			m_objectParam[objRank].bboxMin.x = Min(vertex[i].x, m_objectParam[objRank].bboxMin.x);
-			m_objectParam[objRank].bboxMin.y = Min(vertex[i].y, m_objectParam[objRank].bboxMin.y);
-			m_objectParam[objRank].bboxMin.z = Min(vertex[i].z, m_objectParam[objRank].bboxMin.z);
-			m_objectParam[objRank].bboxMax.x = Max(vertex[i].x, m_objectParam[objRank].bboxMax.x);
-			m_objectParam[objRank].bboxMax.y = Max(vertex[i].y, m_objectParam[objRank].bboxMax.y);
-			m_objectParam[objRank].bboxMax.z = Max(vertex[i].z, m_objectParam[objRank].bboxMax.z);
+			m_objectParam[objRank].bboxMin.x = Math::Min(vertex[i].x, m_objectParam[objRank].bboxMin.x);
+			m_objectParam[objRank].bboxMin.y = Math::Min(vertex[i].y, m_objectParam[objRank].bboxMin.y);
+			m_objectParam[objRank].bboxMin.z = Math::Min(vertex[i].z, m_objectParam[objRank].bboxMin.z);
+			m_objectParam[objRank].bboxMax.x = Math::Max(vertex[i].x, m_objectParam[objRank].bboxMax.x);
+			m_objectParam[objRank].bboxMax.y = Math::Max(vertex[i].y, m_objectParam[objRank].bboxMax.y);
+			m_objectParam[objRank].bboxMax.z = Math::Max(vertex[i].z, m_objectParam[objRank].bboxMax.z);
 		}
 
-		m_objectParam[objRank].radius = Max(Length(m_objectParam[objRank].bboxMin),
+		m_objectParam[objRank].radius = Math::Max(Length(m_objectParam[objRank].bboxMin),
 											Length(m_objectParam[objRank].bboxMax));
 	}
 	m_objectParam[objRank].totalTriangle += nb/3;
@@ -1070,15 +1070,15 @@ bool CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 	{
 		for ( i=0 ; i<nb ; i++ )
 		{
-			m_objectParam[objRank].bboxMin.x = Min(vertex[i].x, m_objectParam[objRank].bboxMin.x);
-			m_objectParam[objRank].bboxMin.y = Min(vertex[i].y, m_objectParam[objRank].bboxMin.y);
-			m_objectParam[objRank].bboxMin.z = Min(vertex[i].z, m_objectParam[objRank].bboxMin.z);
-			m_objectParam[objRank].bboxMax.x = Max(vertex[i].x, m_objectParam[objRank].bboxMax.x);
-			m_objectParam[objRank].bboxMax.y = Max(vertex[i].y, m_objectParam[objRank].bboxMax.y);
-			m_objectParam[objRank].bboxMax.z = Max(vertex[i].z, m_objectParam[objRank].bboxMax.z);
+			m_objectParam[objRank].bboxMin.x = Math::Min(vertex[i].x, m_objectParam[objRank].bboxMin.x);
+			m_objectParam[objRank].bboxMin.y = Math::Min(vertex[i].y, m_objectParam[objRank].bboxMin.y);
+			m_objectParam[objRank].bboxMin.z = Math::Min(vertex[i].z, m_objectParam[objRank].bboxMin.z);
+			m_objectParam[objRank].bboxMax.x = Math::Max(vertex[i].x, m_objectParam[objRank].bboxMax.x);
+			m_objectParam[objRank].bboxMax.y = Math::Max(vertex[i].y, m_objectParam[objRank].bboxMax.y);
+			m_objectParam[objRank].bboxMax.z = Math::Max(vertex[i].z, m_objectParam[objRank].bboxMax.z);
 		}
 
-		m_objectParam[objRank].radius = Max(Length(m_objectParam[objRank].bboxMin),
+		m_objectParam[objRank].radius = Math::Max(Length(m_objectParam[objRank].bboxMin),
 											Length(m_objectParam[objRank].bboxMax));
 	}
 	m_objectParam[objRank].totalTriangle += nb-2;
@@ -1116,15 +1116,15 @@ bool CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 	{
 		for ( i=0 ; i<buffer->totalUsed ; i++ )
 		{
-			m_objectParam[objRank].bboxMin.x = Min(buffer->vertex[i].x, m_objectParam[objRank].bboxMin.x);
-			m_objectParam[objRank].bboxMin.y = Min(buffer->vertex[i].y, m_objectParam[objRank].bboxMin.y);
-			m_objectParam[objRank].bboxMin.z = Min(buffer->vertex[i].z, m_objectParam[objRank].bboxMin.z);
-			m_objectParam[objRank].bboxMax.x = Max(buffer->vertex[i].x, m_objectParam[objRank].bboxMax.x);
-			m_objectParam[objRank].bboxMax.y = Max(buffer->vertex[i].y, m_objectParam[objRank].bboxMax.y);
-			m_objectParam[objRank].bboxMax.z = Max(buffer->vertex[i].z, m_objectParam[objRank].bboxMax.z);
+			m_objectParam[objRank].bboxMin.x = Math::Min(buffer->vertex[i].x, m_objectParam[objRank].bboxMin.x);
+			m_objectParam[objRank].bboxMin.y = Math::Min(buffer->vertex[i].y, m_objectParam[objRank].bboxMin.y);
+			m_objectParam[objRank].bboxMin.z = Math::Min(buffer->vertex[i].z, m_objectParam[objRank].bboxMin.z);
+			m_objectParam[objRank].bboxMax.x = Math::Max(buffer->vertex[i].x, m_objectParam[objRank].bboxMax.x);
+			m_objectParam[objRank].bboxMax.y = Math::Max(buffer->vertex[i].y, m_objectParam[objRank].bboxMax.y);
+			m_objectParam[objRank].bboxMax.z = Math::Max(buffer->vertex[i].z, m_objectParam[objRank].bboxMax.z);
 		}
 
-		m_objectParam[objRank].radius = Max(Length(m_objectParam[objRank].bboxMin),
+		m_objectParam[objRank].radius = Math::Max(Length(m_objectParam[objRank].bboxMin),
 											Length(m_objectParam[objRank].bboxMax));
 	}
 	m_objectParam[objRank].totalTriangle += buffer->totalUsed-2;
@@ -1168,24 +1168,24 @@ void CD3DEngine::ChangeLOD()
 				p4 = p3->table[l3];
 				if ( p4 == 0 )  continue;
 
-				if ( IsEqual(p4->min, 0.0f       ) &&
-					 IsEqual(p4->max, oldLimit[0]) )
+				if ( Math::IsEqual(p4->min, 0.0f       ) &&
+					 Math::IsEqual(p4->max, oldLimit[0]) )
 				{
 					p4->max = newLimit[0];
 				}
-				else if ( IsEqual(p4->min, oldLimit[0]) &&
-						  IsEqual(p4->max, oldLimit[1]) )
+				else if ( Math::IsEqual(p4->min, oldLimit[0]) &&
+						  Math::IsEqual(p4->max, oldLimit[1]) )
 				{
 					p4->min = newLimit[0];
 					p4->max = newLimit[1];
 				}
-				else if ( IsEqual(p4->min, oldLimit[1]) &&
-						  IsEqual(p4->max, 1000000.0f ) )
+				else if ( Math::IsEqual(p4->min, oldLimit[1]) &&
+						  Math::IsEqual(p4->max, 1000000.0f ) )
 				{
 					p4->min = newLimit[1];
 				}
-				else if ( IsEqual(p4->min, 0.0f      ) &&
-						  IsEqual(p4->max, oldTerrain) )
+				else if ( Math::IsEqual(p4->min, 0.0f      ) &&
+						  Math::IsEqual(p4->max, oldTerrain) )
 				{
 					p4->max = newTerrain;
 				}
@@ -1568,8 +1568,8 @@ bool CD3DEngine::TrackTextureMapping(int objRank,
 		s = e = 0;
 		for ( i=0 ; i<6 ; i++ )
 		{
-			if ( Abs(pv[i].x-current.x) < 0.0001f &&
-				 Abs(pv[i].y-current.y) < 0.0001f )
+			if ( fabs(pv[i].x-current.x) < 0.0001f &&
+				 fabs(pv[i].y-current.y) < 0.0001f )
 			{
 				ie[e++] = i;
 			}
@@ -1599,8 +1599,8 @@ bool CD3DEngine::TrackTextureMapping(int objRank,
 		if ( l6 >= (nb/6)-1 )  break;
 		for ( i=0 ; i<6 ; i++ )
 		{
-			if ( Abs(pv[i+6].x-current.x) > 0.0001f ||
-				 Abs(pv[i+6].y-current.y) > 0.0001f )
+			if ( fabs(pv[i+6].x-current.x) > 0.0001f ||
+				 fabs(pv[i+6].y-current.y) > 0.0001f )
 			{
 				current.x = pv[i+6].x;  // end next link
 				current.y = pv[i+6].y;
@@ -1665,15 +1665,15 @@ void CD3DEngine::UpdateGeometry()
 
 						for ( i=0 ; i<p6->totalUsed ; i++ )
 						{
-							m_objectParam[objRank].bboxMin.x = Min(p6->vertex[i].x, m_objectParam[objRank].bboxMin.x);
-							m_objectParam[objRank].bboxMin.y = Min(p6->vertex[i].y, m_objectParam[objRank].bboxMin.y);
-							m_objectParam[objRank].bboxMin.z = Min(p6->vertex[i].z, m_objectParam[objRank].bboxMin.z);
-							m_objectParam[objRank].bboxMax.x = Max(p6->vertex[i].x, m_objectParam[objRank].bboxMax.x);
-							m_objectParam[objRank].bboxMax.y = Max(p6->vertex[i].y, m_objectParam[objRank].bboxMax.y);
-							m_objectParam[objRank].bboxMax.z = Max(p6->vertex[i].z, m_objectParam[objRank].bboxMax.z);
+							m_objectParam[objRank].bboxMin.x = Math::Min(p6->vertex[i].x, m_objectParam[objRank].bboxMin.x);
+							m_objectParam[objRank].bboxMin.y = Math::Min(p6->vertex[i].y, m_objectParam[objRank].bboxMin.y);
+							m_objectParam[objRank].bboxMin.z = Math::Min(p6->vertex[i].z, m_objectParam[objRank].bboxMin.z);
+							m_objectParam[objRank].bboxMax.x = Math::Max(p6->vertex[i].x, m_objectParam[objRank].bboxMax.x);
+							m_objectParam[objRank].bboxMax.y = Math::Max(p6->vertex[i].y, m_objectParam[objRank].bboxMax.y);
+							m_objectParam[objRank].bboxMax.z = Math::Max(p6->vertex[i].z, m_objectParam[objRank].bboxMax.z);
 						}
 
-						m_objectParam[objRank].radius = Max(Length(m_objectParam[objRank].bboxMin),
+						m_objectParam[objRank].radius = Math::Max(Length(m_objectParam[objRank].bboxMin),
 															Length(m_objectParam[objRank].bboxMax));
 					}
 				}
@@ -1711,7 +1711,7 @@ bool CD3DEngine::IsVisible(int objRank)
 // Detects the target object with the mouse.
 // Returns the rank of the object or -1.
 
-int CD3DEngine::DetectObject(FPOINT mouse)
+int CD3DEngine::DetectObject(Math::Point mouse)
 {
 	D3DObjLevel1*	p1;
 	D3DObjLevel2*	p2;
@@ -1790,11 +1790,11 @@ int CD3DEngine::DetectObject(FPOINT mouse)
 
 // Detects whether the mouse is in a triangle.
 
-bool CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
+bool CD3DEngine::DetectTriangle(Math::Point mouse, D3DVERTEX2 *triangle,
 								int objRank, float &dist)
 {
 	D3DVECTOR	p2D[3], p3D;
-	FPOINT		a, b, c;
+	Math::Point		a, b, c;
 	int			i;
 
 	for ( i=0 ; i<3 ; i++ )
@@ -1824,7 +1824,7 @@ bool CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
 	b.y = p2D[1].y;
 	c.x = p2D[2].x;
 	c.y = p2D[2].y;
-	if ( !IsInsideTriangle(a, b, c, mouse) )  return false;
+	if ( !Math::IsInsideTriangle(a, b, c, mouse) )  return false;
 
 	dist = (p2D[0].z+p2D[1].z+p2D[2].z)/3.0f;
 	return true;
@@ -1832,10 +1832,10 @@ bool CD3DEngine::DetectTriangle(FPOINT mouse, D3DVERTEX2 *triangle,
 
 // Detects whether an object is affected by the mouse.
 
-bool CD3DEngine::DetectBBox(int objRank, FPOINT mouse)
+bool CD3DEngine::DetectBBox(int objRank, Math::Point mouse)
 {
 	D3DVECTOR	p, pp;
-	FPOINT		min, max;
+	Math::Point		min, max;
 	int			i;
 
 	min.x =  1000000.0f;
@@ -2044,8 +2044,8 @@ void CD3DEngine::SetViewParams(const D3DVECTOR &vEyePt,
 #else
 	m_eyePt = vEyePt;
 	m_lookatPt = vLookatPt;
-	m_eyeDirH = RotateAngle(vEyePt.x-vLookatPt.x, vEyePt.z-vLookatPt.z);
-	m_eyeDirV = RotateAngle(Length2d(vEyePt, vLookatPt), vEyePt.y-vLookatPt.y);
+	m_eyeDirH = Math::RotateAngle(vEyePt.x-vLookatPt.x, vEyePt.z-vLookatPt.z);
+	m_eyeDirV = Math::RotateAngle(Length2d(vEyePt, vLookatPt), vEyePt.y-vLookatPt.y);
 
 	D3DUtil_SetViewMatrix(m_matView, (D3DVECTOR&)vEyePt, (D3DVECTOR&)vLookatPt, (D3DVECTOR&)vUpVec);
 
@@ -3639,7 +3639,7 @@ void CD3DEngine::RenderGroundSpot()
 	WORD*					pbSurf;
 	D3DCOLORVALUE			color;
 	D3DVECTOR				pos;
-	FPOINT					min, max;
+	Math::Point					min, max;
 	int						s, i, j, dot, ix, iy, y;
 	float					tu, tv, cx, cy, px, py, ppx, ppy;
 	float					intensity, level;
@@ -3677,8 +3677,8 @@ void CD3DEngine::RenderGroundSpot()
 			cy += 0.5f;
 		}
 
-		px = cx-Mod(cx, 1.0f);
-		py = cy-Mod(cy, 1.0f);  // multiple of 1
+		px = cx-Math::Mod(cx, 1.0f);
+		py = cy-Math::Mod(cy, 1.0f);  // multiple of 1
 
 		if ( m_bFirstGroundSpot ||
 			 ( m_groundMark.drawRadius != 0.0f    &&
@@ -3703,8 +3703,8 @@ void CD3DEngine::RenderGroundSpot()
 			cy += 0.5f;
 		}
 
-		px = cx-Mod(cx, 1.0f);
-		py = cy-Mod(cy, 1.0f);  // multiple of 1
+		px = cx-Math::Mod(cx, 1.0f);
+		py = cy-Math::Mod(cy, 1.0f);  // multiple of 1
 
 		if ( m_groundMark.bUsed                 &&
 			 px+dot >= min.x && py+dot >= min.y &&
@@ -3758,8 +3758,8 @@ void CD3DEngine::RenderGroundSpot()
 						cy += 0.5f;
 					}
 
-					px = cx-Mod(cx, 1.0f);
-					py = cy-Mod(cy, 1.0f);  // multiple of 1
+					px = cx-Math::Mod(cx, 1.0f);
+					py = cy-Math::Mod(cy, 1.0f);  // multiple of 1
 
 					if ( px+dot < min.x || py+dot < min.y ||
 						 px-dot > max.x || py-dot > max.y )  continue;
@@ -3843,8 +3843,8 @@ void CD3DEngine::RenderGroundSpot()
 					cy += 0.5f;
 				}
 
-				px = cx-Mod(cx, 1.0f);
-				py = cy-Mod(cy, 1.0f);  // multiple of 1
+				px = cx-Math::Mod(cx, 1.0f);
+				py = cy-Math::Mod(cy, 1.0f);  // multiple of 1
 
 				for ( iy=-dot ; iy<=dot ; iy++ )
 				{
@@ -3915,7 +3915,7 @@ void CD3DEngine::DrawShadow()
 	D3DVECTOR		corner[4], n, pos;
 	D3DMATERIAL7	material;
 	D3DMATRIX		matrix;
-	FPOINT			ts, ti, rot;
+	Math::Point			ts, ti, rot;
 	float			startDeepView, endDeepView;
 	float			intensity, lastIntensity, hFactor, radius, max, height;
 	float			dp, h, d, D;
@@ -4033,22 +4033,22 @@ void CD3DEngine::DrawShadow()
 		}
 		else
 		{
-			rot = RotatePoint(-m_shadow[i].angle, FPOINT(radius, radius));
+			rot = Math::RotatePoint(-m_shadow[i].angle, Math::Point(radius, radius));
 			corner[0].x = rot.x;
 			corner[0].z = rot.y;
 			corner[0].y = 0.0f;
 
-			rot = RotatePoint(-m_shadow[i].angle, FPOINT(-radius, radius));
+			rot = Math::RotatePoint(-m_shadow[i].angle, Math::Point(-radius, radius));
 			corner[1].x = rot.x;
 			corner[1].z = rot.y;
 			corner[1].y = 0.0f;
 
-			rot = RotatePoint(-m_shadow[i].angle, FPOINT(radius, -radius));
+			rot = Math::RotatePoint(-m_shadow[i].angle, Math::Point(radius, -radius));
 			corner[2].x = rot.x;
 			corner[2].z = rot.y;
 			corner[2].y = 0.0f;
 
-			rot = RotatePoint(-m_shadow[i].angle, FPOINT(-radius, -radius));
+			rot = Math::RotatePoint(-m_shadow[i].angle, Math::Point(-radius, -radius));
 			corner[3].x = rot.x;
 			corner[3].z = rot.y;
 			corner[3].y = 0.0f;
@@ -4548,7 +4548,7 @@ void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
 {
 	D3DLVERTEX	vertex[4];	// 2 triangles
 	D3DCOLOR	color[3];
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 
 	p1.x = 0.0f;
 	p1.y = 0.5f;
@@ -4583,7 +4583,7 @@ void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
 	
 // Draws a portion of the image background.
 
-void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
+void CD3DEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, char *name)
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	D3DVECTOR	n;
@@ -4609,17 +4609,17 @@ void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
 	else
 	{
 		h = 0.5f;  // visible area vertically (1=all)
-		a = m_eyeDirV-PI*0.15f;
-		if ( a >  PI      )  a -= PI*2.0f;  // a = -PI..PI
-		if ( a >  PI/4.0f )  a =  PI/4.0f;
-		if ( a < -PI/4.0f )  a = -PI/4.0f;
+		a = m_eyeDirV-Math::PI*0.15f;
+		if ( a >  Math::PI      )  a -= Math::PI*2.0f;  // a = -Math::PI..Math::PI
+		if ( a >  Math::PI/4.0f )  a =  Math::PI/4.0f;
+		if ( a < -Math::PI/4.0f )  a = -Math::PI/4.0f;
 
-		u1 = -m_eyeDirH/PI;
-		u2 = u1+1.0f/PI;
-//?		u1 = -m_eyeDirH/(PI*2.0f);
-//?		u2 = u1+1.0f/(PI*2.0f);
+		u1 = -m_eyeDirH/Math::PI;
+		u2 = u1+1.0f/Math::PI;
+//?		u1 = -m_eyeDirH/(Math::PI*2.0f);
+//?		u2 = u1+1.0f/(Math::PI*2.0f);
 
-		v1 = (1.0f-h)*(0.5f+a/(2.0f*PI/4.0f))+0.1f;
+		v1 = (1.0f-h)*(0.5f+a/(2.0f*Math::PI/4.0f))+0.1f;
 		v2 = v1+h;
 	}
 
@@ -4649,7 +4649,7 @@ void CD3DEngine::DrawBackgroundImageQuarter(FPOINT p1, FPOINT p2, char *name)
 
 void CD3DEngine::DrawBackgroundImage()
 {
-	FPOINT	p1, p2;
+	Math::Point	p1, p2;
 	char	name[50];
 
 	if ( m_bBackgroundQuarter )
@@ -4717,7 +4717,7 @@ void CD3DEngine::DrawFrontsize()
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	D3DVECTOR	n;
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 	float		u1, u2, v1, v2;
 
 	if ( m_frontsizeName[0] == 0 )  return;
@@ -4729,7 +4729,7 @@ void CD3DEngine::DrawFrontsize()
 	p2.x = 1.0f;
 	p2.y = 1.0f;
 
-	u1 = -m_eyeDirH/(PI*0.6f)+PI*0.5f;
+	u1 = -m_eyeDirH/(Math::PI*0.6f)+Math::PI*0.5f;
 	u2 = u1+0.50f;
 
 	v1 = 0.2f;
@@ -4769,7 +4769,7 @@ void CD3DEngine::DrawOverColor()
 {
 	D3DLVERTEX	vertex[4];	// 2 triangles
 	D3DCOLOR	color[3];
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 
 	if ( !m_bStateColor )  return;
 	if ( (m_overColor == 0x00000000 && m_overMode == D3DSTATETCb) ||
@@ -4823,7 +4823,7 @@ void CD3DEngine::SetHiliteRank(int *rankList)
 
 // Give the box in the 2D screen of any object.
 
-bool CD3DEngine::GetBBox2D(int objRank, FPOINT &min, FPOINT &max)
+bool CD3DEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
 {
 	D3DVECTOR	p, pp;
 	int			i;
@@ -4862,7 +4862,7 @@ bool CD3DEngine::GetBBox2D(int objRank, FPOINT &min, FPOINT &max)
 
 void CD3DEngine::DrawHilite()
 {
-	FPOINT	min, max, omin, omax;
+	Math::Point	min, max, omin, omax;
 	int		i;
 
 	min.x =  1000000.0f;
@@ -4875,10 +4875,10 @@ void CD3DEngine::DrawHilite()
 	{
 		if ( GetBBox2D(m_hiliteRank[i++], omin, omax) )
 		{
-			min.x = Min(min.x, omin.x);
-			min.y = Min(min.y, omin.y);
-			max.x = Max(max.x, omax.x);
-			max.y = Max(max.y, omax.y);
+			min.x = Math::Min(min.x, omin.x);
+			min.y = Math::Min(min.y, omin.y);
+			max.x = Math::Max(max.x, omax.x);
+			max.y = Math::Max(max.y, omax.y);
 		}
 	}
 
@@ -4899,7 +4899,7 @@ void CD3DEngine::DrawHilite()
 
 // Give the rectangle highlighted by drawing CD3DApplication.
 
-bool CD3DEngine::GetHilite(FPOINT &p1, FPOINT &p2)
+bool CD3DEngine::GetHilite(Math::Point &p1, Math::Point &p2)
 {
 	p1 = m_hiliteP1;
 	p2 = m_hiliteP2;
@@ -4945,7 +4945,7 @@ bool CD3DEngine::GetSpriteCoord(int &x, int &y)
 
 // Tests whether to exclude a point.
 
-bool IsExcludeColor(FPOINT *pExclu, int x, int y)
+bool IsExcludeColor(Math::Point *pExclu, int x, int y)
 {
 	int		i;
 
@@ -4970,8 +4970,8 @@ bool CD3DEngine::ChangeColor(char *name,
 							 D3DCOLORVALUE colorRef1, D3DCOLORVALUE colorNew1,
 							 D3DCOLORVALUE colorRef2, D3DCOLORVALUE colorNew2,
 							 float tolerance1, float tolerance2,
-							 FPOINT ts, FPOINT ti,
-							 FPOINT *pExclu, float shift, bool bHSV)
+							 Math::Point ts, Math::Point ti,
+							 Math::Point *pExclu, float shift, bool bHSV)
 {
 	LPDIRECTDRAWSURFACE7	surface;
 	DDSURFACEDESC2			ddsd;
@@ -5020,7 +5020,7 @@ bool CD3DEngine::ChangeColor(char *name,
 			if ( bHSV )
 			{
 				RGB2HSV(color, c);
-				if ( c.s > 0.01f && Abs(c.h-cr1.h) < tolerance1 )
+				if ( c.s > 0.01f && fabs(c.h-cr1.h) < tolerance1 )
 				{
 					c.h += cn1.h-cr1.h;
 					c.s += cn1.s-cr1.s;
@@ -5035,7 +5035,7 @@ bool CD3DEngine::ChangeColor(char *name,
 				}
 				else
 				if ( tolerance2 != -1.0f &&
-					 c.s > 0.01f && Abs(c.h-cr2.h) < tolerance2 )
+					 c.s > 0.01f && fabs(c.h-cr2.h) < tolerance2 )
 				{
 					c.h += cn2.h-cr2.h;
 					c.s += cn2.s-cr2.s;
@@ -5051,9 +5051,9 @@ bool CD3DEngine::ChangeColor(char *name,
 			}
 			else
 			{
-				if ( Abs(color.r-colorRef1.r)+
-					 Abs(color.g-colorRef1.g)+
-					 Abs(color.b-colorRef1.b) < tolerance1*3.0f )
+				if ( fabs(color.r-colorRef1.r)+
+					 fabs(color.g-colorRef1.g)+
+					 fabs(color.b-colorRef1.b) < tolerance1*3.0f )
 				{
 					color.r = colorNew1.r+color.r-colorRef1.r+shift;
 					color.g = colorNew1.g+color.g-colorRef1.g+shift;
@@ -5062,9 +5062,9 @@ bool CD3DEngine::ChangeColor(char *name,
 				}
 				else
 				if ( tolerance2 != -1 &&
-					 Abs(color.r-colorRef2.r)+
-					 Abs(color.g-colorRef2.g)+
-					 Abs(color.b-colorRef2.b) < tolerance2*3.0f )
+					 fabs(color.r-colorRef2.r)+
+					 fabs(color.g-colorRef2.g)+
+					 fabs(color.b-colorRef2.b) < tolerance2*3.0f )
 				{
 					color.r = colorNew2.r+color.r-colorRef2.r+shift;
 					color.g = colorNew2.g+color.g-colorRef2.g+shift;
@@ -5539,18 +5539,18 @@ LRESULT CD3DEngine::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam 
 
 // Mouse control.
 
-void CD3DEngine::MoveMousePos(FPOINT pos)
+void CD3DEngine::MoveMousePos(Math::Point pos)
 {
 	m_mousePos = pos;
 	m_app->SetMousePos(pos);
 }
 
-void CD3DEngine::SetMousePos(FPOINT pos)
+void CD3DEngine::SetMousePos(Math::Point pos)
 {
 	m_mousePos = pos;
 }
 
-FPOINT CD3DEngine::RetMousePos()
+Math::Point CD3DEngine::RetMousePos()
 {
 	return m_mousePos;
 }
@@ -5613,7 +5613,7 @@ bool CD3DEngine::RetNiceMouseCap()
 void CD3DEngine::DrawMouse()
 {
 	D3DMATERIAL7	material;
-	FPOINT			pos, ppos, dim;
+	Math::Point			pos, ppos, dim;
 	int				i;
 
 	struct Mouse
@@ -5688,10 +5688,10 @@ void CD3DEngine::DrawMouse()
 
 // Draws the sprite of the mouse.
 
-void CD3DEngine::DrawSprite(FPOINT pos, FPOINT dim, int icon)
+void CD3DEngine::DrawSprite(Math::Point pos, Math::Point dim, int icon)
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 	D3DVECTOR	n;
 	float		u1, u2, v1, v2, dp;
 

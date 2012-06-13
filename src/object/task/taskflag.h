@@ -18,14 +18,15 @@
 #pragma once
 
 
-#include "common/misc.h"
+#include "object/task/task.h"
+#include "graphics/d3d/d3dengine.h"
+#include "object/object.h"
 
 
 class CInstanceManager;
 class CTerrain;
 class CBrain;
 class CPhysics;
-class CObject;
 
 
 

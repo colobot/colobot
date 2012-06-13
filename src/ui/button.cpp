@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -57,7 +55,7 @@ CButton::~CButton()
 
 // Creates a new button.
 
-bool CButton::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CButton::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -151,7 +149,7 @@ bool CButton::EventProcess(const Event &event)
 
 void CButton::Draw()
 {
-	FPOINT	pos, dim, uv1, uv2;
+	Math::Point	pos, dim, uv1, uv2;
 #if !_NEWLOOK
 	float	dp;
 #endif

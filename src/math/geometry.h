@@ -52,25 +52,6 @@ inline float MidPoint(const Point &a, const Point &b, float px)
   return (b.y-a.y) * (px-a.x) / (b.x-a.x)  + a.y;
 }
 
-//! Calculates the parameters a and b of the linear function passing through \a p1 and \a p2
-/** Returns \c false if the line is vertical.
-  \param p1,p2 points
-  \param a,b linear function parameters */
-inline bool LinearFunction(const Point &p1, const Point &p2, float &a, float &b)
-{
-  if ( IsZero(p1.x-p2.x) )
-  {
-    a = HUGE;
-    b = p2.x;
-    return false;
-  }
-
-  a = (p2.y-p1.y) / (p2.x-p1.x);
-  b = p2.y - p2.x*a;
-
-  return true;
-}
-
 //! Tests whether the point \a p is inside the triangle (\a a,\a b,\a c)
 inline bool IsInsideTriangle(Point a, Point b, Point c, Point p)
 {
@@ -198,7 +179,7 @@ inline Vector RotatePoint2(const Vector center, float angleH, float angleV, Vect
 }
 
 //! Returns the angle between point (x,y) and (0,0)
-float RotateAngle(float x, float y)
+inline float RotateAngle(float x, float y)
 {
   if ( (x == 0.0f) && (y == 0.0f) )
     return 0.0f;

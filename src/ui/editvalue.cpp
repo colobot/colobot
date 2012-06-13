@@ -16,8 +16,6 @@
 
 // editvalue.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -62,7 +60,7 @@ CEditValue::~CEditValue()
 
 // Creates a new button.
 
-bool CEditValue::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CEditValue::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CEdit*		pe;
 	CButton*	pc;
@@ -92,13 +90,13 @@ bool CEditValue::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-void CEditValue::SetPos(FPOINT pos)
+void CEditValue::SetPos(Math::Point pos)
 {
 	CControl::SetPos(pos);
 	MoveAdjust();
 }
 
-void CEditValue::SetDim(FPOINT dim)
+void CEditValue::SetDim(Math::Point dim)
 {
 	CControl::SetDim(dim);
 	MoveAdjust();
@@ -106,7 +104,7 @@ void CEditValue::SetDim(FPOINT dim)
 
 void CEditValue::MoveAdjust()
 {
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 
 	if ( m_edit != 0 )
 	{

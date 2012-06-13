@@ -16,8 +16,6 @@
 
 // target.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -52,7 +50,7 @@ CTarget::~CTarget()
 
 // Creates a new button.
 
-bool CTarget::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CTarget::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -161,7 +159,7 @@ void CTarget::Draw()
 
 // Returns the tooltip.
 
-bool CTarget::GetTooltip(FPOINT pos, char* name)
+bool CTarget::GetTooltip(Math::Point pos, char* name)
 {
 #if 0
 	if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
@@ -194,7 +192,7 @@ bool CTarget::GetTooltip(FPOINT pos, char* name)
 
 // Detects the object aimed by the mouse.
 
-CObject* CTarget::DetectFriendObject(FPOINT pos)
+CObject* CTarget::DetectFriendObject(Math::Point pos)
 {
 	ObjectType	type;
 	CObject		*pObj, *pTarget;

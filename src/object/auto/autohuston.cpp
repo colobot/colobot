@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -221,7 +219,7 @@ void CAutoHuston::Start(int param)
 bool CAutoHuston::EventProcess(const Event &event)
 {
 	D3DVECTOR	speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		angle;
 	int			i;
 
@@ -243,7 +241,7 @@ bool CAutoHuston::EventProcess(const Event &event)
 	for ( i=0 ; i<m_lensTotal ; i++ )
 	{
 		if ( m_lens[i].total != 0.0f &&
-			 Mod(m_time, m_lens[i].total) < m_lens[i].off )
+			 Math::Mod(m_time, m_lens[i].total) < m_lens[i].off )
 		{
 			if ( m_lens[i].parti != -1 )
 			{
@@ -278,7 +276,7 @@ bool CAutoHuston::Abort()
 bool CAutoHuston::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

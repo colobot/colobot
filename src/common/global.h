@@ -16,6 +16,8 @@
 
 // global.h
 
+#pragma once
+
 
 enum BuildType
 {

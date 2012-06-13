@@ -16,15 +16,13 @@
 
 // pyro.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
-#include "math/const.h"
 #include "common/struct.h"
+#include "math/const.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -98,7 +96,7 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 	CObject*		power;
 	CMotion*		motion;
 	D3DVECTOR		min, max, pos, speed;
-	FPOINT			dim;
+	Math::Point			dim;
 	ObjectType		oType;
 	Sound			sound;
 	float			duration, mass, h, limit;
@@ -310,7 +308,7 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 		{
 			motion->SetAction(MHS_DEADg, 1.0f);
 		}
-		m_camera->StartCentering(m_object, PI*0.5f, 99.9f, 0.0f, 1.5f);
+		m_camera->StartCentering(m_object, Math::PI*0.5f, 99.9f, 0.0f, 1.5f);
 		m_camera->StartOver(OE_FADEOUTw, m_pos, 1.0f);
 		m_speed = 1.0f/10.0f;
 		return true;
@@ -324,7 +322,7 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 		{
 			motion->SetAction(MHS_DEADw, 4.0f);
 		}
-		m_camera->StartCentering(m_object, PI*0.5f, 99.9f, 0.0f, 3.0f);
+		m_camera->StartCentering(m_object, Math::PI*0.5f, 99.9f, 0.0f, 3.0f);
 		m_camera->StartOver(OE_FADEOUTb, m_pos, 1.0f);
 		m_speed = 1.0f/10.0f;
 		return true;
@@ -517,15 +515,15 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 			for ( i=0 ; i<total ; i++ )
 			{
 				pos = m_posPower;
-				speed.x = (Rand()-0.5f)*30.0f;
-				speed.z = (Rand()-0.5f)*30.0f;
-				speed.y = Rand()*30.0f;
+				speed.x = (Math::Rand()-0.5f)*30.0f;
+				speed.z = (Math::Rand()-0.5f)*30.0f;
+				speed.y = Math::Rand()*30.0f;
 				dim.x = 1.0f;
 				dim.y = dim.x;
-				duration = Rand()*3.0f+2.0f;
-				mass = Rand()*10.0f+15.0f;
+				duration = Math::Rand()*3.0f+2.0f;
+				mass = Math::Rand()*10.0f+15.0f;
 				m_particule->CreateTrack(pos, speed, dim, PARTITRACK1,
-										 duration, mass, Rand()+0.7f, 1.0f);
+										 duration, mass, Math::Rand()+0.7f, 1.0f);
 			}
 		}
 
@@ -554,13 +552,13 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 		for ( i=0 ; i<total ; i++ )
 		{
 			pos = m_pos;
-			speed.x = (Rand()-0.5f)*30.0f;
-			speed.z = (Rand()-0.5f)*30.0f;
-			speed.y = Rand()*50.0f;
+			speed.x = (Math::Rand()-0.5f)*30.0f;
+			speed.z = (Math::Rand()-0.5f)*30.0f;
+			speed.y = Math::Rand()*50.0f;
 			dim.x = 1.0f;
 			dim.y = dim.x;
-			duration = Rand()*1.0f+0.8f;
-			mass = Rand()*10.0f+15.0f;
+			duration = Math::Rand()*1.0f+0.8f;
+			mass = Math::Rand()*10.0f+15.0f;
 			m_particule->CreateParticule(pos, speed, dim, PARTIORGANIC1,
 										 duration, mass);
 		}
@@ -568,13 +566,13 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 		for ( i=0 ; i<total ; i++ )
 		{
 			pos = m_pos;
-			speed.x = (Rand()-0.5f)*30.0f;
-			speed.z = (Rand()-0.5f)*30.0f;
-			speed.y = Rand()*50.0f;
+			speed.x = (Math::Rand()-0.5f)*30.0f;
+			speed.z = (Math::Rand()-0.5f)*30.0f;
+			speed.y = Math::Rand()*50.0f;
 			dim.x = 1.0f;
 			dim.y = dim.x;
-			duration = Rand()*2.0f+1.4f;
-			mass = Rand()*10.0f+15.0f;
+			duration = Math::Rand()*2.0f+1.4f;
+			mass = Math::Rand()*10.0f+15.0f;
 			m_particule->CreateTrack(pos, speed, dim, PARTITRACK4,
 									 duration, mass, duration*0.5f, dim.x*2.0f);
 		}
@@ -585,31 +583,31 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 		for ( i=0 ; i<50 ; i++ )
 		{
 			pos = m_pos;
-			pos.x += (Rand()-0.5f)*3.0f;
-			pos.z += (Rand()-0.5f)*3.0f;
-			pos.y += (Rand()-0.5f)*2.0f;
-			speed.x = (Rand()-0.5f)*24.0f;
-			speed.z = (Rand()-0.5f)*24.0f;
-			speed.y = 10.0f+Rand()*10.0f;
+			pos.x += (Math::Rand()-0.5f)*3.0f;
+			pos.z += (Math::Rand()-0.5f)*3.0f;
+			pos.y += (Math::Rand()-0.5f)*2.0f;
+			speed.x = (Math::Rand()-0.5f)*24.0f;
+			speed.z = (Math::Rand()-0.5f)*24.0f;
+			speed.y = 10.0f+Math::Rand()*10.0f;
 			dim.x = 1.0f;
 			dim.y = dim.x;
-			channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN3, 2.0f+Rand()*2.0f, 10.0f);
+			channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN3, 2.0f+Math::Rand()*2.0f, 10.0f);
 			m_particule->SetObjectFather(channel, pObj);
 		}
 		total = (int)(10.0f*m_engine->RetParticuleDensity());
 		for ( i=0 ; i<total ; i++ )
 		{
 			pos = m_pos;
-			pos.x += (Rand()-0.5f)*3.0f;
-			pos.z += (Rand()-0.5f)*3.0f;
-			pos.y += (Rand()-0.5f)*2.0f;
-			speed.x = (Rand()-0.5f)*24.0f;
-			speed.z = (Rand()-0.5f)*24.0f;
-			speed.y = 7.0f+Rand()*7.0f;
+			pos.x += (Math::Rand()-0.5f)*3.0f;
+			pos.z += (Math::Rand()-0.5f)*3.0f;
+			pos.y += (Math::Rand()-0.5f)*2.0f;
+			speed.x = (Math::Rand()-0.5f)*24.0f;
+			speed.z = (Math::Rand()-0.5f)*24.0f;
+			speed.y = 7.0f+Math::Rand()*7.0f;
 			dim.x = 1.0f;
 			dim.y = dim.x;
 			m_particule->CreateTrack(pos, speed, dim, PARTITRACK3,
-									 2.0f+Rand()*2.0f, 10.0f, 2.0f, 0.6f);
+									 2.0f+Math::Rand()*2.0f, 10.0f, 2.0f, 0.6f);
 		}
 	}
 
@@ -733,28 +731,28 @@ void CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
 		pos = Transform(*mat, offset);
 		if ( m_type == PT_EGG )
 		{
-			speed.x = (Rand()-0.5f)*10.0f;
-			speed.z = (Rand()-0.5f)*10.0f;
-			speed.y = Rand()*15.0f;
-			mass = Rand()*20.0f+20.0f;
+			speed.x = (Math::Rand()-0.5f)*10.0f;
+			speed.z = (Math::Rand()-0.5f)*10.0f;
+			speed.y = Math::Rand()*15.0f;
+			mass = Math::Rand()*20.0f+20.0f;
 		}
 		else if ( m_type == PT_SPIDER )
 		{
-			speed.x = (Rand()-0.5f)*10.0f;
-			speed.z = (Rand()-0.5f)*10.0f;
-			speed.y = Rand()*20.0f;
-			mass = Rand()*10.0f+15.0f;
+			speed.x = (Math::Rand()-0.5f)*10.0f;
+			speed.z = (Math::Rand()-0.5f)*10.0f;
+			speed.y = Math::Rand()*20.0f;
+			mass = Math::Rand()*10.0f+15.0f;
 		}
 		else
 		{
-			speed.x = (Rand()-0.5f)*30.0f;
-			speed.z = (Rand()-0.5f)*30.0f;
-			speed.y = Rand()*30.0f;
-			mass = Rand()*10.0f+15.0f;
+			speed.x = (Math::Rand()-0.5f)*30.0f;
+			speed.z = (Math::Rand()-0.5f)*30.0f;
+			speed.y = Math::Rand()*30.0f;
+			mass = Math::Rand()*10.0f+15.0f;
 		}
 		if ( oType == OBJECT_STONE   )  speed *= 0.5f;
 		if ( oType == OBJECT_URANIUM )  speed *= 0.4f;
-		duration = Rand()*3.0f+3.0f;
+		duration = Math::Rand()*3.0f+3.0f;
 		m_particule->CreateFrag(pos, speed, &buffer[i], PARTIFRAG,
 								duration, mass, 0.5f);
 	}
@@ -854,7 +852,7 @@ bool CPyro::EventProcess(const Event &event)
 {
 	ParticuleType	type;
 	D3DVECTOR		pos, speed, angle;
-	FPOINT			dim;
+	Math::Point			dim;
 	float			prog, factor, duration;
 	int				i, r;
 
@@ -885,24 +883,24 @@ bool CPyro::EventProcess(const Event &event)
 		{
 			i = rand()%m_crashSphereUsed;
 			pos = m_crashSpherePos[i];
-			pos.x += (Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
-			pos.z += (Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
-			speed.x = (Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
-			speed.z = (Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
-			speed.y = Rand()*m_crashSphereRadius[i]*1.0f;
-			dim.x = Rand()*m_crashSphereRadius[i]*0.5f+m_crashSphereRadius[i]*0.75f*m_force;
+			pos.x += (Math::Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
+			pos.z += (Math::Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
+			speed.x = (Math::Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
+			speed.z = (Math::Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
+			speed.y = Math::Rand()*m_crashSphereRadius[i]*1.0f;
+			dim.x = Math::Rand()*m_crashSphereRadius[i]*0.5f+m_crashSphereRadius[i]*0.75f*m_force;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 3.0f);
 		}
 		else
 		{
 			pos = m_pos;
-			pos.x += (Rand()-0.5f)*m_size*0.3f;
-			pos.z += (Rand()-0.5f)*m_size*0.3f;
-			speed.x = (Rand()-0.5f)*m_size*0.1f;
-			speed.z = (Rand()-0.5f)*m_size*0.1f;
-			speed.y = Rand()*m_size*0.2f;
-			dim.x = Rand()*m_size/10.0f+m_size/10.0f*m_force;
+			pos.x += (Math::Rand()-0.5f)*m_size*0.3f;
+			pos.z += (Math::Rand()-0.5f)*m_size*0.3f;
+			speed.x = (Math::Rand()-0.5f)*m_size*0.1f;
+			speed.z = (Math::Rand()-0.5f)*m_size*0.1f;
+			speed.y = Math::Rand()*m_size*0.2f;
+			dim.x = Math::Rand()*m_size/10.0f+m_size/10.0f*m_force;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 3.0f);
 		}
@@ -916,15 +914,15 @@ bool CPyro::EventProcess(const Event &event)
 		for ( i=0 ; i<10 ; i++ )
 		{
 			pos = m_pos;
-			pos.x += (Rand()-0.5f)*m_size*0.2f;
-			pos.z += (Rand()-0.5f)*m_size*0.2f;
-			pos.y += (Rand()-0.5f)*m_size*0.5f;
-			speed.x = (Rand()-0.5f)*5.0f;
-			speed.z = (Rand()-0.5f)*5.0f;
-			speed.y = Rand()*1.0f;
+			pos.x += (Math::Rand()-0.5f)*m_size*0.2f;
+			pos.z += (Math::Rand()-0.5f)*m_size*0.2f;
+			pos.y += (Math::Rand()-0.5f)*m_size*0.5f;
+			speed.x = (Math::Rand()-0.5f)*5.0f;
+			speed.z = (Math::Rand()-0.5f)*5.0f;
+			speed.y = Math::Rand()*1.0f;
 			dim.x = 1.0f;
 			dim.y = dim.x;
-			m_particule->CreateParticule(pos, speed, dim, PARTIBLOOD, Rand()*3.0f+3.0f, Rand()*10.0f+15.0f, 0.5f);
+			m_particule->CreateParticule(pos, speed, dim, PARTIBLOOD, Math::Rand()*3.0f+3.0f, Math::Rand()*10.0f+15.0f, 0.5f);
 		}
 	}
 
@@ -937,13 +935,13 @@ bool CPyro::EventProcess(const Event &event)
 		for ( i=0 ; i<r ; i++ )
 		{
 			pos = m_pos;
-			pos.x += (Rand()-0.5f)*20.0f;
-			pos.z += (Rand()-0.5f)*20.0f;
+			pos.x += (Math::Rand()-0.5f)*20.0f;
+			pos.z += (Math::Rand()-0.5f)*20.0f;
 			pos.y += 8.0f;
-			speed.x = (Rand()-0.5f)*40.0f;
-			speed.z = (Rand()-0.5f)*40.0f;
-			speed.y = Rand()*40.0f;
-			dim.x = Rand()*8.0f+8.0f*m_force;
+			speed.x = (Math::Rand()-0.5f)*40.0f;
+			speed.z = (Math::Rand()-0.5f)*40.0f;
+			speed.y = Math::Rand()*40.0f;
+			dim.x = Math::Rand()*8.0f+8.0f*m_force;
 			dim.y = dim.x;
 
 			m_particule->CreateParticule(pos, speed, dim, PARTIBLOODM, 2.0f, 50.0f, 0.0f);
@@ -959,11 +957,11 @@ bool CPyro::EventProcess(const Event &event)
 		{
 			i = rand()%m_crashSphereUsed;
 			pos = m_crashSpherePos[i];
-			pos.x += (Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
-			pos.z += (Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
-			speed.x = (Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
-			speed.z = (Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
-			speed.y = Rand()*m_crashSphereRadius[i]*1.0f;
+			pos.x += (Math::Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
+			pos.z += (Math::Rand()-0.5f)*m_crashSphereRadius[i]*2.0f;
+			speed.x = (Math::Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
+			speed.z = (Math::Rand()-0.5f)*m_crashSphereRadius[i]*0.5f;
+			speed.y = Math::Rand()*m_crashSphereRadius[i]*1.0f;
 			dim.x = 1.0f*m_force;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 0.5f, 0.0f, 0.0f);
@@ -971,11 +969,11 @@ bool CPyro::EventProcess(const Event &event)
 		else
 		{
 			pos = m_pos;
-			pos.x += (Rand()-0.5f)*m_size*0.3f;
-			pos.z += (Rand()-0.5f)*m_size*0.3f;
-			speed.x = (Rand()-0.5f)*m_size*0.1f;
-			speed.z = (Rand()-0.5f)*m_size*0.1f;
-			speed.y = Rand()*m_size*0.2f;
+			pos.x += (Math::Rand()-0.5f)*m_size*0.3f;
+			pos.z += (Math::Rand()-0.5f)*m_size*0.3f;
+			speed.x = (Math::Rand()-0.5f)*m_size*0.1f;
+			speed.z = (Math::Rand()-0.5f)*m_size*0.1f;
+			speed.y = Math::Rand()*m_size*0.2f;
 			dim.x = 1.0f*m_force;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 0.5f, 0.0f, 0.0f);
@@ -989,12 +987,12 @@ bool CPyro::EventProcess(const Event &event)
 
 		pos = m_pos;
 		pos.y -= 2.0f;
-		pos.x += (Rand()-0.5f)*4.0f;
-		pos.z += (Rand()-0.5f)*4.0f;
+		pos.x += (Math::Rand()-0.5f)*4.0f;
+		pos.z += (Math::Rand()-0.5f)*4.0f;
 		speed.x = 0.0f;
 		speed.z = 0.0f;
-		speed.y = 10.0f+Rand()*10.0f;
-		dim.x = Rand()*2.5f+2.0f*m_force;
+		speed.y = 10.0f+Math::Rand()*10.0f;
+		dim.x = Math::Rand()*2.5f+2.0f*m_force;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 4.0f);
 	}
@@ -1006,10 +1004,10 @@ bool CPyro::EventProcess(const Event &event)
 		m_lastParticule = m_time;
 
 		pos = m_pos;
-		speed.x = (Rand()-0.5f)*m_size*1.0f;
-		speed.z = (Rand()-0.5f)*m_size*1.0f;
-		speed.y = Rand()*m_size*0.50f;
-		dim.x = Rand()*m_size/5.0f+m_size/5.0f;
+		speed.x = (Math::Rand()-0.5f)*m_size*1.0f;
+		speed.z = (Math::Rand()-0.5f)*m_size*1.0f;
+		speed.y = Math::Rand()*m_size*0.50f;
+		dim.x = Math::Rand()*m_size/5.0f+m_size/5.0f;
 		dim.y = dim.x;
 
 		m_particule->CreateParticule(pos, speed, dim, PARTIEXPLOT);
@@ -1021,11 +1019,11 @@ bool CPyro::EventProcess(const Event &event)
 	{
 		m_lastParticuleSmoke = m_time;
 
-		dim.x = Rand()*m_size/3.0f+m_size/3.0f;
+		dim.x = Math::Rand()*m_size/3.0f+m_size/3.0f;
 		dim.y = dim.x;
 		pos = m_pos;
-		pos.x += (Rand()-0.5f)*m_size*0.5f;
-		pos.z += (Rand()-0.5f)*m_size*0.5f;
+		pos.x += (Math::Rand()-0.5f)*m_size*0.5f;
+		pos.z += (Math::Rand()-0.5f)*m_size*0.5f;
 		m_terrain->MoveOnFloor(pos);
 		speed.x = 0.0f;
 		speed.z = 0.0f;
@@ -1045,10 +1043,10 @@ bool CPyro::EventProcess(const Event &event)
 		m_lastParticule = m_time;
 
 		pos = m_pos;
-		speed.x = (Rand()-0.5f)*m_size*2.0f;
-		speed.z = (Rand()-0.5f)*m_size*2.0f;
-		speed.y = Rand()*m_size*1.0f;
-		dim.x = Rand()*m_size/2.0f+m_size/2.0f;
+		speed.x = (Math::Rand()-0.5f)*m_size*2.0f;
+		speed.z = (Math::Rand()-0.5f)*m_size*2.0f;
+		speed.y = Math::Rand()*m_size*1.0f;
+		dim.x = Math::Rand()*m_size/2.0f+m_size/2.0f;
 		dim.y = dim.x;
 
 		m_particule->CreateParticule(pos, speed, dim, PARTIEXPLOO);
@@ -1061,9 +1059,9 @@ bool CPyro::EventProcess(const Event &event)
 		m_lastParticule = m_time;
 
 		pos = m_pos;
-		speed.x = (Rand()-0.5f)*m_size*1.0f;
-		speed.z = (Rand()-0.5f)*m_size*1.0f;
-		speed.y = Rand()*m_size*0.50f;
+		speed.x = (Math::Rand()-0.5f)*m_size*1.0f;
+		speed.z = (Math::Rand()-0.5f)*m_size*1.0f;
+		speed.y = Math::Rand()*m_size*0.50f;
 		dim.x = 1.0f;
 		dim.y = dim.x;
 
@@ -1078,12 +1076,12 @@ bool CPyro::EventProcess(const Event &event)
 
 		pos = m_pos;
 		pos.y -= 2.0f;
-		pos.x += (Rand()-0.5f)*4.0f;
-		pos.z += (Rand()-0.5f)*4.0f;
+		pos.x += (Math::Rand()-0.5f)*4.0f;
+		pos.z += (Math::Rand()-0.5f)*4.0f;
 		speed.x = 0.0f;
 		speed.z = 0.0f;
-		speed.y = 4.0f+Rand()*4.0f;
-		dim.x = Rand()*2.5f+2.0f;
+		speed.y = 4.0f+Math::Rand()*4.0f;
+		dim.x = Math::Rand()*2.5f+2.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 4.0f);
 	}
@@ -1106,12 +1104,12 @@ bool CPyro::EventProcess(const Event &event)
 
 			pos = m_pos;
 			pos.y += factor;
-			pos.x += (Rand()-0.5f)*3.0f;
-			pos.z += (Rand()-0.5f)*3.0f;
+			pos.x += (Math::Rand()-0.5f)*3.0f;
+			pos.z += (Math::Rand()-0.5f)*3.0f;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
-			speed.y = 5.0f+Rand()*5.0f;
-			dim.x = Rand()*1.5f+1.5f;
+			speed.y = 5.0f+Math::Rand()*5.0f;
+			dim.x = Math::Rand()*1.5f+1.5f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f);
 //?			m_particule->CreateParticule(pos, speed, dim, (ParticuleType)(PARTILENS1+rand()%4), 2.0f);
@@ -1141,12 +1139,12 @@ bool CPyro::EventProcess(const Event &event)
 
 			pos = m_pos;
 			m_terrain->MoveOnFloor(pos);
-			pos.x += (Rand()-0.5f)*1.0f;
-			pos.z += (Rand()-0.5f)*1.0f;
-			speed.x = (Rand()-0.5f)*2.0f;
-			speed.z = (Rand()-0.5f)*2.0f;
-			speed.y = 2.0f+Rand()*2.0f;
-			dim.x = (Rand()*1.0f+1.0f)*(0.2f+m_progress*0.8f);
+			pos.x += (Math::Rand()-0.5f)*1.0f;
+			pos.z += (Math::Rand()-0.5f)*1.0f;
+			speed.x = (Math::Rand()-0.5f)*2.0f;
+			speed.z = (Math::Rand()-0.5f)*2.0f;
+			speed.y = 2.0f+Math::Rand()*2.0f;
+			dim.x = (Math::Rand()*1.0f+1.0f)*(0.2f+m_progress*0.8f);
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
 		}
@@ -1168,12 +1166,12 @@ bool CPyro::EventProcess(const Event &event)
 
 			pos = m_pos;
 			m_terrain->MoveOnFloor(pos);
-			pos.x += (Rand()-0.5f)*1.0f;
-			pos.z += (Rand()-0.5f)*1.0f;
-			speed.x = (Rand()-0.5f)*2.0f;
-			speed.z = (Rand()-0.5f)*2.0f;
-			speed.y = 2.0f+Rand()*2.0f;
-			dim.x = (Rand()*1.0f+1.0f)*(0.2f+m_progress*0.8f);
+			pos.x += (Math::Rand()-0.5f)*1.0f;
+			pos.z += (Math::Rand()-0.5f)*1.0f;
+			speed.x = (Math::Rand()-0.5f)*2.0f;
+			speed.z = (Math::Rand()-0.5f)*2.0f;
+			speed.y = 2.0f+Math::Rand()*2.0f;
+			dim.x = (Math::Rand()*1.0f+1.0f)*(0.2f+m_progress*0.8f);
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.5f);
 		}
@@ -1195,16 +1193,16 @@ bool CPyro::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_pos;
-			speed.x = (Rand()-0.5f)*6.0f;
-			speed.z = (Rand()-0.5f)*6.0f;
-			speed.y = Rand()*12.0f;
-			dim.x = (Rand()*2.5f+2.5f)*(1.0f-m_progress*0.9f);
+			speed.x = (Math::Rand()-0.5f)*6.0f;
+			speed.z = (Math::Rand()-0.5f)*6.0f;
+			speed.y = Math::Rand()*12.0f;
+			dim.x = (Math::Rand()*2.5f+2.5f)*(1.0f-m_progress*0.9f);
 			dim.y = dim.x;
 			pos.y += dim.y;
 			m_particule->CreateParticule(pos, speed, dim, 
 										 (ParticuleType)(PARTILENS1+rand()%4),
-										 Rand()*2.5f+2.5f,
-										 Rand()*5.0f+5.0f, 0.0f);
+										 Math::Rand()*2.5f+2.5f,
+										 Math::Rand()*5.0f+5.0f, 0.0f);
 		}
 #else
 		if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
@@ -1212,24 +1210,24 @@ bool CPyro::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_pos;
-			pos.x += (Rand()-0.5f)*5.0f;
-			pos.z += (Rand()-0.5f)*5.0f;
+			pos.x += (Math::Rand()-0.5f)*5.0f;
+			pos.z += (Math::Rand()-0.5f)*5.0f;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
-			speed.y = 5.0f+Rand()*5.0f;
-			dim.x = Rand()*2.0f+2.0f;
+			speed.y = 5.0f+Math::Rand()*5.0f;
+			dim.x = Math::Rand()*2.0f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIGLINTb, 2.0f);
 
 			pos = m_pos;
-			speed.x = (Rand()-0.5f)*20.0f;
-			speed.z = (Rand()-0.5f)*20.0f;
-			speed.y = Rand()*10.0f;
+			speed.x = (Math::Rand()-0.5f)*20.0f;
+			speed.z = (Math::Rand()-0.5f)*20.0f;
+			speed.y = Math::Rand()*10.0f;
 			speed *= 0.5f+m_progress*0.5f;
 			dim.x = 0.6f;
 			dim.y = dim.x;
 			pos.y += dim.y;
-			duration = Rand()*1.5f+1.5f;
+			duration = Math::Rand()*1.5f+1.5f;
 			m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
 									 duration, 0.0f,
 									 duration*0.9f, 0.7f);
@@ -1253,12 +1251,12 @@ bool CPyro::EventProcess(const Event &event)
 			if ( factor > 40.0f )  factor = 40.0f;
 			pos = m_pos;
 			m_terrain->MoveOnFloor(pos);
-			pos.x += (Rand()-0.5f)*factor;
-			pos.z += (Rand()-0.5f)*factor;
-			speed.x = (Rand()-0.5f)*2.0f;
-			speed.z = (Rand()-0.5f)*2.0f;
-			speed.y = 4.0f+Rand()*4.0f;
-			dim.x = (Rand()*3.0f+3.0f)*(1.0f-m_progress*0.9f);
+			pos.x += (Math::Rand()-0.5f)*factor;
+			pos.z += (Math::Rand()-0.5f)*factor;
+			speed.x = (Math::Rand()-0.5f)*2.0f;
+			speed.z = (Math::Rand()-0.5f)*2.0f;
+			speed.y = 4.0f+Math::Rand()*4.0f;
+			dim.x = (Math::Rand()*3.0f+3.0f)*(1.0f-m_progress*0.9f);
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.5f);
 		}
@@ -1275,34 +1273,34 @@ bool CPyro::EventProcess(const Event &event)
 
 			pos = m_object->RetPosition(0);
 			pos.y -= m_object->RetCharacter()->height;
-			pos.x += (Rand()-0.5f)*(4.0f+8.0f*m_progress)*factor;
-			pos.z += (Rand()-0.5f)*(4.0f+8.0f*m_progress)*factor;
+			pos.x += (Math::Rand()-0.5f)*(4.0f+8.0f*m_progress)*factor;
+			pos.z += (Math::Rand()-0.5f)*(4.0f+8.0f*m_progress)*factor;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
 			speed.y = 0.0f;
-			dim.x = (Rand()*2.5f+1.0f)*factor;
+			dim.x = (Math::Rand()*2.5f+1.0f)*factor;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIFLAME, 2.0f, 0.0f, 0.2f);
 
 			pos = m_object->RetPosition(0);
 			pos.y -= m_object->RetCharacter()->height;
-			pos.x += (Rand()-0.5f)*(2.0f+4.0f*m_progress)*factor;
-			pos.z += (Rand()-0.5f)*(2.0f+4.0f*m_progress)*factor;
+			pos.x += (Math::Rand()-0.5f)*(2.0f+4.0f*m_progress)*factor;
+			pos.z += (Math::Rand()-0.5f)*(2.0f+4.0f*m_progress)*factor;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
-			speed.y = (Rand()*5.0f*m_progress+3.0f)*factor;
-			dim.x = (Rand()*2.0f+1.0f)*factor;
+			speed.y = (Math::Rand()*5.0f*m_progress+3.0f)*factor;
+			dim.x = (Math::Rand()*2.0f+1.0f)*factor;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIFLAME, 2.0f, 0.0f, 0.2f);
 
 			pos = m_object->RetPosition(0);
 			pos.y -= 2.0f;
-			pos.x += (Rand()-0.5f)*5.0f*factor;
-			pos.z += (Rand()-0.5f)*5.0f*factor;
+			pos.x += (Math::Rand()-0.5f)*5.0f*factor;
+			pos.z += (Math::Rand()-0.5f)*5.0f*factor;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
-			speed.y = (6.0f+Rand()*6.0f+m_progress*6.0f)*factor;
-			dim.x = (Rand()*1.5f+1.0f+m_progress*3.0f)*factor;
+			speed.y = (6.0f+Math::Rand()*6.0f+m_progress*6.0f)*factor;
+			dim.x = (Math::Rand()*1.5f+1.0f+m_progress*3.0f)*factor;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
 		}
@@ -1314,8 +1312,8 @@ bool CPyro::EventProcess(const Event &event)
 		else
 		{
 			speed.y = 0.0f;
-			speed.x = (Rand()-0.5f)*m_progress*1.0f;
-			speed.z = (Rand()-0.5f)*m_progress*1.0f;
+			speed.x = (Math::Rand()-0.5f)*m_progress*1.0f;
+			speed.z = (Math::Rand()-0.5f)*m_progress*1.0f;
 			if ( m_progress > 0.8f )
 			{
 				prog = (m_progress-0.8f)/0.2f;  // 0..1
@@ -1334,10 +1332,10 @@ bool CPyro::EventProcess(const Event &event)
 
 			pos = m_object->RetPosition(0);
 			pos.y += 1.5f;
-			speed.x = (Rand()-0.5f)*10.0f;
-			speed.z = (Rand()-0.5f)*10.0f;
-			speed.y = 8.0f+Rand()*8.0f;
-			dim.x = Rand()*0.2f+0.2f;
+			speed.x = (Math::Rand()-0.5f)*10.0f;
+			speed.z = (Math::Rand()-0.5f)*10.0f;
+			speed.y = 8.0f+Math::Rand()*8.0f;
+			dim.x = Math::Rand()*0.2f+0.2f;
 			dim.y = dim.x;
 			m_particule->CreateTrack(pos, speed, dim,
 									 (ParticuleType)(PARTITRACK7+rand()%4),
@@ -1353,12 +1351,12 @@ bool CPyro::EventProcess(const Event &event)
 
 			pos = m_object->RetPosition(0);
 			pos.y -= 2.0f;
-			pos.x += (Rand()-0.5f)*10.0f;
-			pos.z += (Rand()-0.5f)*10.0f;
+			pos.x += (Math::Rand()-0.5f)*10.0f;
+			pos.z += (Math::Rand()-0.5f)*10.0f;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
-			speed.y = 1.0f+Rand()*1.0f;
-			dim.x = Rand()*1.0f+1.0f;
+			speed.y = 1.0f+Math::Rand()*1.0f;
+			dim.x = Math::Rand()*1.0f+1.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 8.0f, 0.0f, 0.0f);
 		}
@@ -1603,7 +1601,7 @@ bool CPyro::CreateLight(D3DVECTOR pos, float height)
 	light.dvAttenuation1 = 0.0f;
 	light.dvAttenuation2 = 0.0f;
 	light.dvTheta = 0.0f;
-	light.dvPhi = PI/4.0f;
+	light.dvPhi = Math::PI/4.0f;
 
 	m_lightRank = m_light->CreateLight();
 	if ( m_lightRank == -1 )  return false;
@@ -1665,9 +1663,9 @@ void CPyro::ExploStart()
 			m_engine->GetBBox(objRank, min, max);
 			weight = Length(min, max);  // weight according to size!
 
-			speed.y = 10.0f+Rand()*20.0f;
-			speed.x = (Rand()-0.5f)*20.0f;
-			speed.z = (Rand()-0.5f)*20.0f;
+			speed.y = 10.0f+Math::Rand()*20.0f;
+			speed.x = (Math::Rand()-0.5f)*20.0f;
+			speed.z = (Math::Rand()-0.5f)*20.0f;
 		}
 
 		channel = m_particule->CreatePart(pos, speed, PARTIPART, 10.0f, 20.0f, weight, 0.5f);
@@ -1733,58 +1731,58 @@ void CPyro::BurnStart()
 		 m_burnType == OBJECT_LABO     )
 	{
 		pos.x =   0.0f;
-		pos.y = -(4.0f+Rand()*4.0f);
+		pos.y = -(4.0f+Math::Rand()*4.0f);
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.4f;
+		angle.x = (Math::Rand()-0.5f)*0.4f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.4f;
+		angle.z = (Math::Rand()-0.5f)*0.4f;
 	}
 	else if ( m_burnType == OBJECT_STATION ||
 			  m_burnType == OBJECT_RADAR   ||
 			  m_burnType == OBJECT_INFO    )
 	{
 		pos.x =   0.0f;
-		pos.y = -(1.0f+Rand()*1.0f);
+		pos.y = -(1.0f+Math::Rand()*1.0f);
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.2f;
+		angle.x = (Math::Rand()-0.5f)*0.2f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.2f;
+		angle.z = (Math::Rand()-0.5f)*0.2f;
 	}
 	else if ( m_burnType == OBJECT_NUCLEAR )
 	{
 		pos.x =   0.0f;
-		pos.y = -(10.0f+Rand()*10.0f);
+		pos.y = -(10.0f+Math::Rand()*10.0f);
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.4f;
+		angle.x = (Math::Rand()-0.5f)*0.4f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.4f;
+		angle.z = (Math::Rand()-0.5f)*0.4f;
 	}
 	else if ( m_burnType == OBJECT_PARA )
 	{
 		pos.x =   0.0f;
-		pos.y = -(10.0f+Rand()*10.0f);
+		pos.y = -(10.0f+Math::Rand()*10.0f);
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.4f;
+		angle.x = (Math::Rand()-0.5f)*0.4f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.4f;
+		angle.z = (Math::Rand()-0.5f)*0.4f;
 	}
 	else if ( m_burnType == OBJECT_SAFE )
 	{
 		pos.x =   0.0f;
-		pos.y = -(10.0f+Rand()*10.0f);
+		pos.y = -(10.0f+Math::Rand()*10.0f);
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.4f;
+		angle.x = (Math::Rand()-0.5f)*0.4f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.4f;
+		angle.z = (Math::Rand()-0.5f)*0.4f;
 	}
 	else if ( m_burnType == OBJECT_HUSTON )
 	{
 		pos.x =   0.0f;
-		pos.y = -(10.0f+Rand()*10.0f);
+		pos.y = -(10.0f+Math::Rand()*10.0f);
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.4f;
+		angle.x = (Math::Rand()-0.5f)*0.4f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.4f;
+		angle.z = (Math::Rand()-0.5f)*0.4f;
 	}
 	else if ( m_burnType == OBJECT_MOBILEwa ||
 			  m_burnType == OBJECT_MOBILEwc ||
@@ -1793,29 +1791,29 @@ void CPyro::BurnStart()
 			  m_burnType == OBJECT_MOBILEwt )
 	{
 		pos.x =   0.0f;
-		pos.y = -(0.5f+Rand()*1.0f);
+		pos.y = -(0.5f+Math::Rand()*1.0f);
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.8f;
+		angle.x = (Math::Rand()-0.5f)*0.8f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.4f;
+		angle.z = (Math::Rand()-0.5f)*0.4f;
 	}
 	else if ( m_burnType == OBJECT_TEEN31 )  // basket?
 	{
 		pos.x =   0.0f;
 		pos.y =   0.0f;
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.8f;
+		angle.x = (Math::Rand()-0.5f)*0.8f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.2f;
+		angle.z = (Math::Rand()-0.5f)*0.2f;
 	}
 	else
 	{
 		pos.x =   0.0f;
-		pos.y = -(2.0f+Rand()*2.0f);
+		pos.y = -(2.0f+Math::Rand()*2.0f);
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.8f;
+		angle.x = (Math::Rand()-0.5f)*0.8f;
 		angle.y = 0.0f;
-		angle.z = (Rand()-0.5f)*0.8f;
+		angle.z = (Math::Rand()-0.5f)*0.8f;
 	}
 	BurnAddPart(0, pos, angle);  // movement of the main part
 
@@ -1837,9 +1835,9 @@ void CPyro::BurnStart()
 		pos.x =   0.0f;
 		pos.y = -12.0f;
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.2f;
-		angle.y = (Rand()-0.5f)*0.2f;
-		angle.z = -90.0f*PI/180.0f;
+		angle.x = (Math::Rand()-0.5f)*0.2f;
+		angle.y = (Math::Rand()-0.5f)*0.2f;
+		angle.z = -90.0f*Math::PI/180.0f;
 		BurnAddPart(1, pos, angle);  // down the sensor
 	}
 
@@ -1848,9 +1846,9 @@ void CPyro::BurnStart()
 		pos.x =   0.0f;
 		pos.y = -12.0f;
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.2f;
-		angle.y = (Rand()-0.5f)*0.2f;
-		angle.z = -90.0f*PI/180.0f;
+		angle.x = (Math::Rand()-0.5f)*0.2f;
+		angle.y = (Math::Rand()-0.5f)*0.2f;
+		angle.z = -90.0f*Math::PI/180.0f;
 		BurnAddPart(1, pos, angle);  // down the sensor
 	}
 
@@ -1859,8 +1857,8 @@ void CPyro::BurnStart()
 		pos.x =    0.0f;
 		pos.y = -200.0f;
 		pos.z =    0.0f;
-		angle.x = (Rand()-0.5f)*0.5f;
-		angle.y = (Rand()-0.5f)*0.5f;
+		angle.x = (Math::Rand()-0.5f)*0.5f;
+		angle.y = (Math::Rand()-0.5f)*0.5f;
 		angle.z = 0.0f;
 		BurnAddPart(1, pos, angle);  // down the cover
 		BurnAddPart(2, pos, angle);
@@ -1872,8 +1870,8 @@ void CPyro::BurnStart()
 		pos.x =  0.0f;
 		pos.y = -7.0f;
 		pos.z =  0.0f;
-		angle.x = (Rand()-0.5f)*0.4f;
-		angle.y = (Rand()-0.5f)*0.4f;
+		angle.x = (Math::Rand()-0.5f)*0.4f;
+		angle.y = (Math::Rand()-0.5f)*0.4f;
 		angle.z = 0.0f;
 		BurnAddPart(1, pos, angle);  // down the cannon
 	}
@@ -1883,8 +1881,8 @@ void CPyro::BurnStart()
 		pos.x =  0.0f;
 		pos.y = -7.0f;
 		pos.z =  0.0f;
-		angle.x = (Rand()-0.5f)*0.2f;
-		angle.y = (Rand()-0.5f)*0.2f;
+		angle.x = (Math::Rand()-0.5f)*0.2f;
+		angle.y = (Math::Rand()-0.5f)*0.2f;
 		angle.z = 0.0f;
 		BurnAddPart(1, pos, angle);  // down the anemometer
 	}
@@ -1894,8 +1892,8 @@ void CPyro::BurnStart()
 		pos.x =   0.0f;
 		pos.y = -14.0f;
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.4f;
-		angle.y = (Rand()-0.5f)*0.4f;
+		angle.x = (Math::Rand()-0.5f)*0.4f;
+		angle.y = (Math::Rand()-0.5f)*0.4f;
 		angle.z = 0.0f;
 		BurnAddPart(1, pos, angle);  // down the radar
 		BurnAddPart(2, pos, angle);
@@ -1906,8 +1904,8 @@ void CPyro::BurnStart()
 		pos.x =   0.0f;
 		pos.y = -14.0f;
 		pos.z =   0.0f;
-		angle.x = (Rand()-0.5f)*0.4f;
-		angle.y = (Rand()-0.5f)*0.4f;
+		angle.x = (Math::Rand()-0.5f)*0.4f;
+		angle.y = (Math::Rand()-0.5f)*0.4f;
 		angle.z = 0.0f;
 		BurnAddPart(1, pos, angle);  // down the information terminal
 		BurnAddPart(2, pos, angle);
@@ -1931,7 +1929,7 @@ void CPyro::BurnStart()
 		pos.z = 0.0f;
 		angle.x = 0.0f;
 		angle.y = 0.0f;
-		angle.z = -135.0f*PI/180.0f;
+		angle.z = -135.0f*Math::PI/180.0f;
 		BurnAddPart(1, pos, angle);  // down the cover
 	}
 
@@ -1943,9 +1941,9 @@ void CPyro::BurnStart()
 		pos.x =  2.0f;
 		pos.y = -5.0f;
 		pos.z =  0.0f;
-		angle.x = (Rand()-0.5f)*0.2f;
-		angle.y = (Rand()-0.5f)*0.2f;
-		angle.z = 40.0f*PI/180.0f;
+		angle.x = (Math::Rand()-0.5f)*0.2f;
+		angle.y = (Math::Rand()-0.5f)*0.2f;
+		angle.z = 40.0f*Math::PI/180.0f;
 		BurnAddPart(1, pos, angle);  // down the arm
 	}
 
@@ -1957,9 +1955,9 @@ void CPyro::BurnStart()
 		pos.x =  0.0f;
 		pos.y = -7.0f;
 		pos.z =  0.0f;
-		angle.x = (Rand()-0.5f)*0.2f;
-		angle.y = (Rand()-0.5f)*0.2f;
-		angle.z = 50.0f*PI/180.0f;
+		angle.x = (Math::Rand()-0.5f)*0.2f;
+		angle.y = (Math::Rand()-0.5f)*0.2f;
+		angle.z = 50.0f*Math::PI/180.0f;
 		BurnAddPart(1, pos, angle);  // down the sensor
 	}
 
@@ -1971,9 +1969,9 @@ void CPyro::BurnStart()
 		pos.x = -1.5f;
 		pos.y = -5.0f;
 		pos.z =  0.0f;
-		angle.x = (Rand()-0.5f)*0.2f;
-		angle.y = (Rand()-0.5f)*0.2f;
-		angle.z = -25.0f*PI/180.0f;
+		angle.x = (Math::Rand()-0.5f)*0.2f;
+		angle.y = (Math::Rand()-0.5f)*0.2f;
+		angle.z = -25.0f*Math::PI/180.0f;
 		BurnAddPart(1, pos, angle);  // down the cannon
 	}
 
@@ -1985,9 +1983,9 @@ void CPyro::BurnStart()
 		pos.x = -1.5f;
 		pos.y = -5.0f;
 		pos.z =  0.0f;
-		angle.x = (Rand()-0.5f)*0.2f;
-		angle.y = (Rand()-0.5f)*0.2f;
-		angle.z = -25.0f*PI/180.0f;
+		angle.x = (Math::Rand()-0.5f)*0.2f;
+		angle.y = (Math::Rand()-0.5f)*0.2f;
+		angle.z = -25.0f*Math::PI/180.0f;
 		BurnAddPart(1, pos, angle);  // down the insect-cannon
 	}
 
@@ -2026,7 +2024,7 @@ void CPyro::BurnStart()
 		pos.z =   0.0f;
 		angle.x = 0.0f;
 		angle.y = 0.0f;
-		angle.z = -PI/2.0f;
+		angle.z = -Math::PI/2.0f;
 		BurnAddPart(4, pos, angle);
 
 		pos.x =   0.0f;
@@ -2034,7 +2032,7 @@ void CPyro::BurnStart()
 		pos.z =   0.0f;
 		angle.x = 0.0f;
 		angle.y = 0.0f;
-		angle.z = PI/2.5f;
+		angle.z = Math::PI/2.5f;
 		BurnAddPart(2, pos, angle);
 	}
 
@@ -2085,10 +2083,10 @@ void CPyro::BurnStart()
 		for ( i=0 ; i<4 ; i++ )
 		{
 			pos.x = 0.0f;
-			pos.y = Rand()*0.5f;
+			pos.y = Math::Rand()*0.5f;
 			pos.z = 0.0f;
-			angle.x = (Rand()-0.5f)*PI/2.0f;
-			angle.y = (Rand()-0.5f)*PI/2.0f;
+			angle.x = (Math::Rand()-0.5f)*Math::PI/2.0f;
+			angle.y = (Math::Rand()-0.5f)*Math::PI/2.0f;
 			angle.z = 0.0f;
 			BurnAddPart(6+i, pos, angle);  // wheel
 
@@ -2111,17 +2109,17 @@ void CPyro::BurnStart()
 		pos.x =   0.0f;
 		pos.y =  -4.0f;
 		pos.z =   2.0f;
-		angle.x = (Rand()-0.5f)*20.0f*PI/180.0f;
-		angle.y = (Rand()-0.5f)*10.0f*PI/180.0f;
-		angle.z = (Rand()-0.5f)*30.0f*PI/180.0f;
+		angle.x = (Math::Rand()-0.5f)*20.0f*Math::PI/180.0f;
+		angle.y = (Math::Rand()-0.5f)*10.0f*Math::PI/180.0f;
+		angle.z = (Math::Rand()-0.5f)*30.0f*Math::PI/180.0f;
 		BurnAddPart(6, pos, angle);  // down the right caterpillar
 
 		pos.x =   0.0f;
 		pos.y =  -4.0f;
 		pos.z =  -2.0f;
-		angle.x = (Rand()-0.5f)*20.0f*PI/180.0f;
-		angle.y = (Rand()-0.5f)*10.0f*PI/180.0f;
-		angle.z = (Rand()-0.5f)*30.0f*PI/180.0f;
+		angle.x = (Math::Rand()-0.5f)*20.0f*Math::PI/180.0f;
+		angle.y = (Math::Rand()-0.5f)*10.0f*Math::PI/180.0f;
+		angle.z = (Math::Rand()-0.5f)*30.0f*Math::PI/180.0f;
 		BurnAddPart(7, pos, angle);  // down the left caterpillar
 	}
 
@@ -2138,7 +2136,7 @@ void CPyro::BurnStart()
 			pos.z =  0.0f;
 			angle.x = 0.0f;
 			angle.y = 0.0f;
-			angle.z = (Rand()-0.5f)*PI/2.0f;
+			angle.z = (Math::Rand()-0.5f)*Math::PI/2.0f;
 			BurnAddPart(6+i, pos, angle);  // foot
 		}
 		m_burnKeepPart[i] = -1;
@@ -2155,8 +2153,8 @@ void CPyro::BurnStart()
 			pos.y = -3.0f;
 			pos.z =  0.0f;
 			angle.x = 0.0f;
-			angle.y = (Rand()-0.5f)*PI/4.0f;
-			angle.z = (Rand()-0.5f)*PI/4.0f;
+			angle.y = (Math::Rand()-0.5f)*Math::PI/4.0f;
+			angle.z = (Math::Rand()-0.5f)*Math::PI/4.0f;
 			BurnAddPart(6+i, pos, angle);  // leg
 		}
 	}
@@ -2442,7 +2440,7 @@ void CPyro::FallProgress(float rTime)
 			{
 				if ( pObj->RetShieldRadius() > 0.0f )  // protected by shield?
 				{
-					m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), FPOINT(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
+					m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
 					m_sound->Play(SOUND_GUNDEL);
 
 					DeleteObject(true, true);  // removes the ball

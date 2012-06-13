@@ -16,8 +16,6 @@
 
 // profile.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <stdio.h>
 #include <d3d.h>

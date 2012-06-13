@@ -61,14 +61,14 @@ public:
 	CControl(CInstanceManager* iMan);
 	virtual ~CControl();
 
-	virtual bool	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	virtual bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
 	virtual bool	EventProcess(const Event &event);
 
-	virtual void	SetPos(FPOINT pos);
-	virtual FPOINT	RetPos();
-	virtual void	SetDim(FPOINT dim);
-	virtual FPOINT	RetDim();
+	virtual void	SetPos(Math::Point pos);
+	virtual Math::Point	RetPos();
+	virtual void	SetDim(Math::Point dim);
+	virtual Math::Point	RetDim();
 	virtual bool	SetState(int state, bool bState);
 	virtual bool	SetState(int state);
 	virtual bool	ClearState(int state);
@@ -87,7 +87,7 @@ public:
 	virtual void	SetFontType(FontType font);
 	virtual FontType RetFontType();
 	virtual bool	SetTooltip(char* name);
-	virtual bool	GetTooltip(FPOINT pos, char* name);
+	virtual bool	GetTooltip(Math::Point pos, char* name);
 	virtual void	SetFocus(bool bFocus);
 	virtual bool	RetFocus();
 
@@ -97,14 +97,14 @@ public:
 
 protected:
 			void	GlintDelete();
-			void	GlintCreate(FPOINT ref, bool bLeft=true, bool bUp=true);
+			void	GlintCreate(Math::Point ref, bool bLeft=true, bool bUp=true);
 			void	GlintFrame(const Event &event);
 			void	DrawPart(int icon, float zoom, float ex);
-			void	DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2, float ex=0.0f);
-			void	DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2, FPOINT corner, float ex);
-			void	DrawWarning(FPOINT pos, FPOINT dim);
-			void	DrawShadow(FPOINT pos, FPOINT dim, float deep=1.0f);
-	virtual	bool	Detect(FPOINT pos);
+			void	DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2, float ex=0.0f);
+			void	DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2, Math::Point corner, float ex);
+			void	DrawWarning(Math::Point pos, Math::Point dim);
+			void	DrawShadow(Math::Point pos, Math::Point dim, float deep=1.0f);
+	virtual	bool	Detect(Math::Point pos);
 
 protected:
 	CInstanceManager* m_iMan;
@@ -114,8 +114,8 @@ protected:
 	CParticule*	m_particule;
 	CSound*		m_sound;
 
-	FPOINT		m_pos;			// corner upper / left
-	FPOINT		m_dim;			// dimensions
+	Math::Point		m_pos;			// corner upper / left
+	Math::Point		m_dim;			// dimensions
 	int		m_icon;
 	EventMsg	m_eventMsg;		// message to send when clicking
 	int		m_state;		// states (STATE_ *)
@@ -129,10 +129,10 @@ protected:
 	bool		m_bCapture;
 
 	bool		m_bGlint;
-	FPOINT		m_glintCorner1;
-	FPOINT		m_glintCorner2;
+	Math::Point		m_glintCorner1;
+	Math::Point		m_glintCorner2;
 	float		m_glintProgress;
-	FPOINT		m_glintMouse;
+	Math::Point		m_glintMouse;
 };
 
 

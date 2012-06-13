@@ -151,7 +151,7 @@ inline bool TestAngle(float angle, float min, float max)
 }
 
 //! Calculates a value (radians) proportional between a and b (degrees)
-float PropAngle(int a, int b, float p)
+inline float PropAngle(int a, int b, float p)
 {
   float aa = (float)a * DEG_TO_RAD;
   float bb = (float)b * DEG_TO_RAD;
@@ -185,7 +185,7 @@ inline float Direction(float a, float g)
              <---->
               dead
 out:  -1       0         0       1\endverbatim */
-float Neutral(float value, float dead)
+inline float Neutral(float value, float dead)
 {
   if ( fabs(value) <= dead )
   {
@@ -200,7 +200,7 @@ float Neutral(float value, float dead)
 
 //! Gently advances a desired value from its current value
 /** Over time, the progression is more rapid. */
-float Smooth(float actual, float hope, float time)
+inline float Smooth(float actual, float hope, float time)
 {
   float future = actual + (hope-actual)*time;
 

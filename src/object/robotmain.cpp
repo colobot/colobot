@@ -16,8 +16,6 @@
 
 // robotmain.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -25,6 +23,8 @@
 
 #include "CBot/CBotDll.h"
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/language.h"
@@ -268,7 +268,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
 	m_movie->Flush();
 	m_movieInfoIndex = -1;
 
-	m_tooltipPos = FPOINT(0.0f, 0.0f);
+	m_tooltipPos = Math::Point(0.0f, 0.0f);
 	m_tooltipName[0] = 0;
 	m_tooltipTime = 0.0f;
 
@@ -279,8 +279,8 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
 	FlushDisplayInfo();
 
 	m_fontSize  = 9.0f;
-	m_windowPos = FPOINT(0.15f, 0.17f);
-	m_windowDim = FPOINT(0.70f, 0.66f);
+	m_windowPos = Math::Point(0.15f, 0.17f);
+	m_windowDim = Math::Point(0.70f, 0.66f);
 
 	if ( GetProfileFloat("Edit", "FontSize",    fValue) )  m_fontSize    = fValue;
 	if ( GetProfileFloat("Edit", "WindowPos.x", fValue) )  m_windowPos.x = fValue;
@@ -289,7 +289,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
 	if ( GetProfileFloat("Edit", "WindowDim.y", fValue) )  m_windowDim.y = fValue;
 	
 	m_IOPublic = false;
-	m_IODim = FPOINT(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
+	m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
 	m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
 	m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 	
@@ -443,7 +443,7 @@ void CRobotMain::ChangePhase(Phase phase)
 	CEdit*			pe;
 	CButton*		pb;
 	D3DCOLORVALUE	color;
-	FPOINT			pos, dim, ddim;
+	Math::Point			pos, dim, ddim;
 	float			ox, oy, sx, sy;
 	char*			read;
 	int				rank, numTry;
@@ -1810,26 +1810,26 @@ float CRobotMain::RetFontSize()
 
 // Managing the size of the default window.
 
-void CRobotMain::SetWindowPos(FPOINT pos)
+void CRobotMain::SetWindowPos(Math::Point pos)
 {
 	m_windowPos = pos;
 	SetProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
 	SetProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
 }
 
-FPOINT CRobotMain::RetWindowPos()
+Math::Point CRobotMain::RetWindowPos()
 {
 	return m_windowPos;
 }
 
-void CRobotMain::SetWindowDim(FPOINT dim)
+void CRobotMain::SetWindowDim(Math::Point dim)
 {
 	m_windowDim = dim;
 	SetProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
 	SetProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
 }
 
-FPOINT CRobotMain::RetWindowDim()
+Math::Point CRobotMain::RetWindowDim()
 {
 	return m_windowDim;
 }
@@ -1848,26 +1848,26 @@ bool CRobotMain::RetIOPublic()
 	return m_IOPublic;
 }
 
-void CRobotMain::SetIOPos(FPOINT pos)
+void CRobotMain::SetIOPos(Math::Point pos)
 {
 	m_IOPos = pos;
 	SetProfileFloat("Edit", "IOPos.x", m_IOPos.x);
 	SetProfileFloat("Edit", "IOPos.y", m_IOPos.y);
 }
 
-FPOINT CRobotMain::RetIOPos()
+Math::Point CRobotMain::RetIOPos()
 {
 	return m_IOPos;
 }
 
-void CRobotMain::SetIODim(FPOINT dim)
+void CRobotMain::SetIODim(Math::Point dim)
 {
 	m_IODim = dim;
 	SetProfileFloat("Edit", "IODim.x", m_IODim.x);
 	SetProfileFloat("Edit", "IODim.y", m_IODim.y);
 }
 
-FPOINT CRobotMain::RetIODim()
+Math::Point CRobotMain::RetIODim()
 {
 	return m_IODim;
 }
@@ -1882,7 +1882,7 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
 	CButton*	button;
 	CGroup*		group;
 	D3DVECTOR	goal;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	int			i, j;
 
 	if ( m_bEditLock )  return;
@@ -1979,7 +1979,7 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
 void CRobotMain::FrameVisit(float rTime)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		level;
 
 	if ( m_visitArrow == 0 )  return;
@@ -2363,7 +2363,7 @@ CObject* CRobotMain::SearchObject(ObjectType type)
 
 // Detects the object aimed by the mouse.
 
-CObject* CRobotMain::DetectObject(FPOINT pos)
+CObject* CRobotMain::DetectObject(Math::Point pos)
 {
 	ObjectType	type;
 	CObject		*pObj, *pTarget;
@@ -2641,7 +2641,7 @@ void CRobotMain::HiliteClear()
 
 // Highlights the object with the mouse hovers over.
 
-void CRobotMain::HiliteObject(FPOINT pos)
+void CRobotMain::HiliteObject(Math::Point pos)
 {
 	CObject*	pObj;
 	char		name[100];
@@ -2723,10 +2723,10 @@ void CRobotMain::HiliteFrame(float rTime)
 
 // Creates a tooltip.
 
-void CRobotMain::CreateTooltip(FPOINT pos, char* text)
+void CRobotMain::CreateTooltip(Math::Point pos, char* text)
 {
 	CWindow*	pw;
-	FPOINT		start, end, dim, offset, corner;
+	Math::Point		start, end, dim, offset, corner;
 
 	corner.x = pos.x+0.022f;
 	corner.y = pos.y-0.052f;
@@ -3139,7 +3139,7 @@ bool CRobotMain::EventFrame(const Event &event)
 	if ( m_bMovieLock && !m_bEditLock )  // movie in progress?
 	{
 		CControl*	pc;
-		FPOINT		pos, dim;
+		Math::Point		pos, dim;
 		float		zoom;
 
 		pc = m_interface->SearchControl(EVENT_OBJECT_MOVIELOCK);
@@ -3165,7 +3165,7 @@ bool CRobotMain::EventFrame(const Event &event)
 	if ( m_bEditLock || m_bPause )  // edition in progress?
 	{
 		CControl*	pc;
-		FPOINT		pos, dim;
+		Math::Point		pos, dim;
 		float		zoom;
 
 		pc = m_interface->SearchControl(EVENT_OBJECT_EDITLOCK);
@@ -3800,13 +3800,13 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 			OpString(line, "image", name);
 			UserDir(dir, name, "");
 			m_planet->Create(OpInt(line, "mode", 0),
-							 FPOINT(ppos.x, ppos.z),
+							 Math::Point(ppos.x, ppos.z),
 							 OpFloat(line, "dim", 0.2f),
 							 OpFloat(line, "speed", 0.0f),
 							 OpFloat(line, "dir", 0.0f),
 							 dir,
-							 FPOINT(uv1.x, uv1.z),
-							 FPOINT(uv2.x, uv2.z));
+							 Math::Point(uv1.x, uv1.z),
+							 Math::Point(uv2.x, uv2.z));
 		}
 
 		if ( Cmd(line, "FrontsizeName") && !bResetObject )
@@ -4043,7 +4043,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 			}
 
 			pos = OpPos(line, "pos")*g_unit;
-			dir = OpFloat(line, "dir", 0.0f)*PI;
+			dir = OpFloat(line, "dir", 0.0f)*Math::PI;
 			pObj = CreateObject(pos, dir,
 								OpFloat(line, "z", 1.0f),
 								OpFloat(line, "h", 0.0f),
@@ -4195,7 +4195,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 		if ( Cmd(line, "CreateFog") && !bResetObject )
 		{
 			ParticuleType	type;
-			FPOINT			dim;
+			Math::Point			dim;
 			float			height, ddim, delay;
 
 			type = (ParticuleType)(PARTIFOG0+OpInt(line, "type", 0));
@@ -4307,7 +4307,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 				offset = OpPos(line, "offset");
 				m_map->SetFixParam(OpFloat(line, "zoom", 1.0f),
 								   offset.x, offset.z,
-								   OpFloat(line, "angle", 0.0f)*PI/180.0f,
+								   OpFloat(line, "angle", 0.0f)*Math::PI/180.0f,
 								   OpInt(line, "mode", 0),
 								   OpInt(line, "debug", 0));
 			}
@@ -4340,7 +4340,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 			{
 				m_camera->StartOver(OE_FADEINw, D3DVECTOR(0.0f, 0.0f, 0.0f), 1.0f);
 			}
-			m_camera->SetFixDirection(OpFloat(line, "fixDirection", 0.25f)*PI);
+			m_camera->SetFixDirection(OpFloat(line, "fixDirection", 0.25f)*Math::PI);
 		}
 
 		if ( Cmd(line, "EndMissionTake") && !bResetObject )
@@ -4927,8 +4927,8 @@ int CRobotMain::CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color)
 	light.dvDirection    = D3DVECTOR(0.0f, -1.0f, 0.0f);
 	light.dvRange        = D3DLIGHT_RANGE_MAX;
 	light.dvFalloff      = 1.0f;
-	light.dvTheta        = 10.0f*PI/180.0f;
-	light.dvPhi          = 90.0f*PI/180.0f;
+	light.dvTheta        = 10.0f*Math::PI/180.0f;
+	light.dvPhi          = 90.0f*Math::PI/180.0f;
 	light.dvAttenuation0 = 2.0f;
 	light.dvAttenuation1 = 0.0f;
 	light.dvAttenuation2 = 0.0f;
@@ -4944,14 +4944,14 @@ int CRobotMain::CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color)
 void CRobotMain::ChangeColor()
 {
 	D3DCOLORVALUE	colorRef1, colorNew1, colorRef2, colorNew2;
-	FPOINT			ts, ti;
-	FPOINT			exclu[6];
+	Math::Point			ts, ti;
+	Math::Point			exclu[6];
 	char			name[100];
 	int				face;
 	float			tolerance;
 
-	ts = FPOINT(0.0f, 0.0f);
-	ti = FPOINT(1.0f, 1.0f);  // the entire image
+	ts = Math::Point(0.0f, 0.0f);
+	ti = Math::Point(1.0f, 1.0f);  // the entire image
 
 	colorRef1.a = 0.0f;
 	colorRef2.a = 0.0f;
@@ -4964,12 +4964,12 @@ void CRobotMain::ChangeColor()
 	colorRef2.g = 132.0f/256.0f;
 	colorRef2.b =   1.0f/256.0f;  // orange
 	colorNew2 = m_dialog->RetGamerColorBand();
-	exclu[0] = FPOINT(192.0f/256.0f,   0.0f/256.0f);
-	exclu[1] = FPOINT(256.0f/256.0f,  64.0f/256.0f);  // crystals + cylinders
-	exclu[2] = FPOINT(208.0f/256.0f, 224.0f/256.0f);
-	exclu[3] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // SatCom screen
-	exclu[4] = FPOINT(0.0f, 0.0f);
-	exclu[5] = FPOINT(0.0f, 0.0f);  // terminator
+	exclu[0] = Math::Point(192.0f/256.0f,   0.0f/256.0f);
+	exclu[1] = Math::Point(256.0f/256.0f,  64.0f/256.0f);  // crystals + cylinders
+	exclu[2] = Math::Point(208.0f/256.0f, 224.0f/256.0f);
+	exclu[3] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom screen
+	exclu[4] = Math::Point(0.0f, 0.0f);
+	exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor("human.tga", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
 
 	face = RetGamerFace();
@@ -5009,10 +5009,10 @@ void CRobotMain::ChangeColor()
 	colorNew2.g = 0.0f;
 	colorNew2.b = 0.0f;
 	sprintf(name, "face%.2d.tga", face+1);
-	exclu[0] = FPOINT(105.0f/256.0f, 47.0f/166.0f);
-	exclu[1] = FPOINT(153.0f/256.0f, 79.0f/166.0f);  // blue canister
-	exclu[2] = FPOINT(0.0f, 0.0f);
-	exclu[3] = FPOINT(0.0f, 0.0f);  // terminator
+	exclu[0] = Math::Point(105.0f/256.0f, 47.0f/166.0f);
+	exclu[1] = Math::Point(153.0f/256.0f, 79.0f/166.0f);  // blue canister
+	exclu[2] = Math::Point(0.0f, 0.0f);
+	exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor(name, colorRef1, colorNew1, colorRef2, colorNew2, tolerance, 0.00f, ts, ti, exclu);
 
 	colorRef2.r = 0.0f;
@@ -5030,37 +5030,37 @@ void CRobotMain::ChangeColor()
 	m_engine->ChangeColor("roller.tga",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
 	m_engine->ChangeColor("search.tga",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
 
-	exclu[0] = FPOINT(  0.0f/256.0f, 160.0f/256.0f);
-	exclu[1] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // pencils
-	exclu[2] = FPOINT(0.0f, 0.0f);
-	exclu[3] = FPOINT(0.0f, 0.0f);  // terminator
+	exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
+	exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
+	exclu[2] = Math::Point(0.0f, 0.0f);
+	exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor("drawer.tga",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
 
-	exclu[0] = FPOINT(237.0f/256.0f, 176.0f/256.0f);
-	exclu[1] = FPOINT(256.0f/256.0f, 220.0f/256.0f);  // blue canister
-	exclu[2] = FPOINT(106.0f/256.0f, 150.0f/256.0f);
-	exclu[3] = FPOINT(130.0f/256.0f, 214.0f/256.0f);  // safe location
-	exclu[4] = FPOINT(0.0f, 0.0f);
-	exclu[5] = FPOINT(0.0f, 0.0f);  // terminator
+	exclu[0] = Math::Point(237.0f/256.0f, 176.0f/256.0f);
+	exclu[1] = Math::Point(256.0f/256.0f, 220.0f/256.0f);  // blue canister
+	exclu[2] = Math::Point(106.0f/256.0f, 150.0f/256.0f);
+	exclu[3] = Math::Point(130.0f/256.0f, 214.0f/256.0f);  // safe location
+	exclu[4] = Math::Point(0.0f, 0.0f);
+	exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor("subm.tga",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
 
-	exclu[0] = FPOINT(128.0f/256.0f, 160.0f/256.0f);
-	exclu[1] = FPOINT(256.0f/256.0f, 256.0f/256.0f);  // SatCom
-	exclu[2] = FPOINT(0.0f, 0.0f);
-	exclu[3] = FPOINT(0.0f, 0.0f);  // terminator
+	exclu[0] = Math::Point(128.0f/256.0f, 160.0f/256.0f);
+	exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom
+	exclu[2] = Math::Point(0.0f, 0.0f);
+	exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
 	m_engine->ChangeColor("ant.tga",     m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
 	m_engine->ChangeColor("mother.tga",  m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
 	m_engine->ChangeColor("plant.tga",   m_colorRefGreen, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
 	// PARTIPLOUF0 and PARTIDROP :
-	ts = FPOINT(0.500f, 0.500f);
-	ti = FPOINT(0.875f, 0.750f);
+	ts = Math::Point(0.500f, 0.500f);
+	ti = Math::Point(0.875f, 0.750f);
 	m_engine->ChangeColor("effect00.tga", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 
 	// PARTIFLIC :
-	ts = FPOINT(0.00f, 0.75f);
-	ti = FPOINT(0.25f, 1.00f);
+	ts = Math::Point(0.00f, 0.75f);
+	ti = Math::Point(0.25f, 1.00f);
 	m_engine->ChangeColor("effect02.tga", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 }
 
@@ -5130,7 +5130,7 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 			{
 				dist = Length(center, oPos)-80.0f;
 				if ( dist < 0.0f )  dist = 0.0f;
-				min = Min(min, dist);
+				min = Math::Min(min, dist);
 				continue;
 			}
 		}
@@ -5142,7 +5142,7 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 			oPos = pObj->RetPosition(0);
 			dist = Length(center, oPos)-8.0f;
 			if ( dist < 0.0f )  dist = 0.0f;
-			min = Min(min, dist);
+			min = Math::Min(min, dist);
 		}
 
 		j = 0;
@@ -5150,7 +5150,7 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 		{
 			dist = Length(center, oPos)-oRadius;
 			if ( dist < 0.0f )  dist = 0.0f;
-			min = Min(min, dist);
+			min = Math::Min(min, dist);
 		}
 	}
 	return min;
@@ -5162,7 +5162,7 @@ bool CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
 						   float space, CObject *exclu)
 {
 	D3DVECTOR	pos;
-	FPOINT		p;
+	Math::Point		p;
 	float		radius, ia, angle, dist, flat;
 
 	if ( minRadius < maxRadius )  // from internal to external?
@@ -5170,11 +5170,11 @@ bool CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
 		for ( radius=minRadius ; radius<=maxRadius ; radius+=space )
 		{
 			ia = space/radius;
-			for ( angle=0.0f ; angle<PI*2.0f ; angle+=ia )
+			for ( angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
 			{
 				p.x = center.x+radius;
 				p.y = center.z;
-				p = RotatePoint(FPOINT(center.x, center.z), angle, p);
+				p = Math::RotatePoint(Math::Point(center.x, center.z), angle, p);
 				pos.x = p.x;
 				pos.z = p.y;
 				pos.y = 0.0f;
@@ -5197,11 +5197,11 @@ bool CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
 		for ( radius=maxRadius ; radius>=minRadius ; radius-=space )
 		{
 			ia = space/radius;
-			for ( angle=0.0f ; angle<PI*2.0f ; angle+=ia )
+			for ( angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
 			{
 				p.x = center.x+radius;
 				p.y = center.z;
-				p = RotatePoint(FPOINT(center.x, center.z), angle, p);
+				p = Math::RotatePoint(Math::Point(center.x, center.z), angle, p);
 				pos.x = p.x;
 				pos.z = p.y;
 				pos.y = 0.0f;
@@ -5287,7 +5287,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 		{
 			oPos = pObj->RetPosition(0);
 			dist = Length(center, oPos)-80.0f;
-			oMax = Min(oMax, dist);
+			oMax = Math::Min(oMax, dist);
 		}
 		else
 		{
@@ -5295,7 +5295,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 			while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 			{
 				dist = Length(center, oPos)-oRadius;
-				oMax = Min(oMax, dist);
+				oMax = Math::Min(oMax, dist);
 			}
 		}
 
@@ -5322,7 +5322,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 			while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 			{
 				dist = Length(center, oPos)-oRadius-BUILDMARGIN;
-				oMax = Min(oMax, dist);
+				oMax = Math::Min(oMax, dist);
 			}
 		}
 	}
@@ -5337,7 +5337,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 		tMax = 0.0f;
 	}
 
-	radius = Min(oMax, tMax);
+	radius = Math::Min(oMax, tMax);
 	if ( radius >= 2.0f )
 	{
 		SetShowLimit(1, PARTILIMIT2, metal, center, radius, 10.0f);
@@ -5373,7 +5373,7 @@ void CRobotMain::FlushShowLimit(int i)
 void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 							  D3DVECTOR pos, float radius, float duration)
 {
-	FPOINT	dim;
+	Math::Point	dim;
 	float	dist;
 	int		j;
 
@@ -5383,12 +5383,12 @@ void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 
 	if ( radius <= 50.0f )
 	{
-		dim = FPOINT(0.3f, 0.3f);
+		dim = Math::Point(0.3f, 0.3f);
 		dist = 2.5f;
 	}
 	else
 	{
-		dim = FPOINT(1.5f, 1.5f);
+		dim = Math::Point(1.5f, 1.5f);
 		dist = 10.0f;
 	}
 
@@ -5397,7 +5397,7 @@ void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 	m_showLimit[i].pos = pos;
 	m_showLimit[i].radius = radius;
 	m_showLimit[i].duration = duration;
-	m_showLimit[i].total = (int)((radius*2.0f*PI)/dist);
+	m_showLimit[i].total = (int)((radius*2.0f*Math::PI)/dist);
 	if ( m_showLimit[i].total > MAXSHOWPARTI )  m_showLimit[i].total = MAXSHOWPARTI;
 	m_showLimit[i].time = 0.0f;
 
@@ -5431,7 +5431,7 @@ void CRobotMain::StartShowLimit()
 void CRobotMain::FrameShowLimit(float rTime)
 {
 	D3DVECTOR	pos;
-	FPOINT		center, rotate;
+	Math::Point		center, rotate;
 	float		angle, factor, speed;
 	int			i, j;
 
@@ -5474,7 +5474,7 @@ void CRobotMain::FrameShowLimit(float rTime)
 			center.y = m_showLimit[i].pos.z;
 			rotate.x = center.x+m_showLimit[i].radius*factor;
 			rotate.y = center.y;
-			rotate = RotatePoint(center, angle, rotate);
+			rotate = Math::RotatePoint(center, angle, rotate);
 
 			pos.x = rotate.x;
 			pos.z = rotate.y;
@@ -5483,9 +5483,9 @@ void CRobotMain::FrameShowLimit(float rTime)
 			if ( m_showLimit[i].radius <= 50.0f )  pos.y += 0.5f;
 			else                                   pos.y += 2.0f;
 			m_particule->SetPosition(m_showLimit[i].parti[j], pos);
-//?			m_particule->SetAngle(m_showLimit[i].parti[j], angle-PI/2.0f);
+//?			m_particule->SetAngle(m_showLimit[i].parti[j], angle-Math::PI/2.0f);
 
-			angle += (2.0f*PI)/m_showLimit[i].total;
+			angle += (2.0f*Math::PI)/m_showLimit[i].total;
 		}
 	}
 }
@@ -5889,7 +5889,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
 	sprintf(name, " pos=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
 	strcat(line, name);
 
-	pos = pObj->RetAngle(0)/(PI/180.0f);
+	pos = pObj->RetAngle(0)/(Math::PI/180.0f);
 	sprintf(name, " angle=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
 	strcat(line, name);
 
@@ -5912,7 +5912,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
 		pos = pObj->RetAngle(i);
 		if ( pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f )
 		{
-			pos /= (PI/180.0f);
+			pos /= (Math::PI/180.0f);
 			sprintf(name, " a%d=%.2f;%.2f;%.2f", i, pos.x, pos.y, pos.z);
 			strcat(line, name);
 		}
@@ -6081,7 +6081,7 @@ CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 	char		op[10];
 
 	pos  = OpDir(line, "pos")*g_unit;
-	dir  = OpDir(line, "angle")*(PI/180.0f);
+	dir  = OpDir(line, "angle")*(Math::PI/180.0f);
 	zoom = OpDir(line, "zoom");
 	type = OpTypeObject(line, "type", OBJECT_NULL);
 	id = OpInt(line, "id", 0);
@@ -6116,7 +6116,7 @@ CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 		dir  = OpDir(line, op);
 		if ( dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f )
 		{
-			pObj->SetAngle(i, dir*(PI/180.0f));
+			pObj->SetAngle(i, dir*(Math::PI/180.0f));
 		}
 
 		sprintf(op, "z%d", i);

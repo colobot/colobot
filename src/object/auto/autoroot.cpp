@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -67,7 +65,7 @@ void CAutoRoot::Init()
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 
 	m_time = 0.0f;
 	m_lastParticule = 0.0f;
@@ -91,7 +89,7 @@ void CAutoRoot::Init()
 bool CAutoRoot::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 
 	CAuto::EventProcess(event);
 
@@ -107,13 +105,13 @@ bool CAutoRoot::EventProcess(const Event &event)
 		m_lastParticule = m_time;
 
 		pos = m_center;
-		pos.x += (Rand()-0.5f)*8.0f;
-		pos.z += (Rand()-0.5f)*8.0f;
+		pos.x += (Math::Rand()-0.5f)*8.0f;
+		pos.z += (Math::Rand()-0.5f)*8.0f;
 		pos.y += 0.0f;
-		speed.x = (Rand()-0.5f)*12.0f;
-		speed.z = (Rand()-0.5f)*12.0f;
-		speed.y = Rand()*12.0f;
-		dim.x = Rand()*6.0f+4.0f;
+		speed.x = (Math::Rand()-0.5f)*12.0f;
+		speed.z = (Math::Rand()-0.5f)*12.0f;
+		speed.y = Math::Rand()*12.0f;
+		dim.x = Math::Rand()*6.0f+4.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTIROOT, 1.0f, 0.0f, 0.0f);
 	}

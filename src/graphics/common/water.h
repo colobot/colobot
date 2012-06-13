@@ -19,6 +19,7 @@
 #pragma once
 
 
+#include "common/event.h"
 #include "graphics/d3d/d3dengine.h"
 #include "graphics/common/particule.h"
 
@@ -87,7 +88,7 @@ public:
 protected:
 	bool		EventFrame(const Event &event);
 	void		LavaFrame(float rTime);
-	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm, FPOINT &uv1, FPOINT &uv2);
+	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm, Math::Point &uv1, Math::Point &uv2);
 	bool		RetWater(int x, int y);
 	bool		CreateLine(int x, int y, int len);
 

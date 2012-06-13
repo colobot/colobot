@@ -21,7 +21,6 @@
 //
 // Copyright (c) 1997-1999 Microsoft Corporation. All rights reserved
 //-----------------------------------------------------------------------------
-#define STRICT
 #include <windowsx.h>
 #include <stdio.h>
 #include <tchar.h>

@@ -19,7 +19,7 @@
 #pragma once
 
 
-#include "common/struct.h"
+#include "math/point.h"
 
 
 #if !defined (WM_XBUTTONDOWN)
@@ -532,7 +532,7 @@ struct Event
 {
 	EventMsg	event;		// event (EVENT *)
 	long		param;		// parameter
-	FPOINT		pos;		// mouse position (0 .. 1)
+	Math::Point		pos;		// mouse position (0 .. 1)
 	float		axeX;		// control the X axis (-1 .. 1)
 	float		axeY;		// control of the Y axis (-1 .. 1)
 	float		axeZ;		// control the Z axis (-1 .. 1)

@@ -16,14 +16,13 @@
 
 // motiontoto.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -66,7 +65,7 @@ CMotionToto::CMotionToto(CInstanceManager* iMan, CObject* object)
 	m_blinkProgress = -1.0f;
 	m_lastMotorParticule = 0.0f;
 	m_type = OBJECT_NULL;
-	m_mousePos = FPOINT(0.0f, 0.0f);
+	m_mousePos = Math::Point(0.0f, 0.0f);
 }
 
 // Object's destructor.
@@ -129,7 +128,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(2, D3DVECTOR(0.85f, 1.04f, 0.25f));
-	m_object->SetAngleY(2, -20.0f*PI/180.0f);
+	m_object->SetAngleY(2, -20.0f*Math::PI/180.0f);
 
 	// Creates the right eye.
 	rank = m_engine->CreateObject();
@@ -139,7 +138,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\toto3.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(3, D3DVECTOR(0.85f, 1.04f, -0.25f));
-	m_object->SetAngleY(3, 20.0f*PI/180.0f);
+	m_object->SetAngleY(3, 20.0f*Math::PI/180.0f);
 
 	// Creates left antenna.
 	rank = m_engine->CreateObject();
@@ -149,7 +148,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\toto4.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(4, D3DVECTOR(0.0f, 1.9f, 0.3f));
-	m_object->SetAngleX(4, 30.0f*PI/180.0f);
+	m_object->SetAngleX(4, 30.0f*Math::PI/180.0f);
 
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -158,7 +157,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\toto4.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.67f, 0.0f));
-	m_object->SetAngleX(5, 30.0f*PI/180.0f);
+	m_object->SetAngleX(5, 30.0f*Math::PI/180.0f);
 
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -167,7 +166,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\toto5.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(6, D3DVECTOR(0.0f, 0.70f, 0.0f));
-	m_object->SetAngleX(6, 30.0f*PI/180.0f);
+	m_object->SetAngleX(6, 30.0f*Math::PI/180.0f);
 
 	// Creates right antenna.
 	rank = m_engine->CreateObject();
@@ -177,7 +176,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\toto4.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(7, D3DVECTOR(0.0f, 1.9f, -0.3f));
-	m_object->SetAngleX(7, -30.0f*PI/180.0f);
+	m_object->SetAngleX(7, -30.0f*Math::PI/180.0f);
 
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -186,7 +185,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\toto4.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(8, D3DVECTOR(0.0f, 0.67f, 0.0f));
-	m_object->SetAngleX(8, -30.0f*PI/180.0f);
+	m_object->SetAngleX(8, -30.0f*Math::PI/180.0f);
 
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -195,7 +194,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\toto5.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(9, D3DVECTOR(0.0f, 0.70f, 0.0f));
-	m_object->SetAngleX(9, -30.0f*PI/180.0f);
+	m_object->SetAngleX(9, -30.0f*Math::PI/180.0f);
 
 	m_object->SetZoom(0, 0.5f);  // is little
 	m_object->SetFloorHeight(0.0f);
@@ -223,7 +222,7 @@ return;
 	m_progress   = 0.0f;
 
 	m_object->SetAngleY(0, 0.0f);
-	m_mousePos = FPOINT(0.5f, 0.5f);
+	m_mousePos = Math::Point(0.5f, 0.5f);
 }
 
 // End of the display of informations.
@@ -236,7 +235,7 @@ void CMotionToto::StopDisplayInfo()
 
 // Gives the position of the mouse.
 
-void CMotionToto::SetMousePos(FPOINT pos)
+void CMotionToto::SetMousePos(Math::Point pos)
 {
 	m_mousePos = pos;
 }
@@ -263,7 +262,7 @@ bool CMotionToto::EventFrame(const Event &event)
 	D3DMATRIX*		mat;
 	D3DVECTOR		eye, lookat, dir, perp, nPos, aPos, pos, speed;
 	D3DVECTOR		vibLin, vibCir, dirSpeed, aAntenna;
-	FPOINT			dim;
+	Math::Point			dim;
 	POINT			wDim;
 	ParticuleType	type;
 	float			progress, focus, distance, shift, verti, level, zoom;
@@ -341,7 +340,7 @@ bool CMotionToto::EventFrame(const Event &event)
 	vibLin   = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	vibCir   = D3DVECTOR(0.0f, 0.0f, 0.0f);
 	aAntenna = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	aAntenna.x += 30.0f*PI/180.0f;
+	aAntenna.x += 30.0f*Math::PI/180.0f;
 
 	// Calculates the new position.
 	if ( m_bDisplayInfo )
@@ -400,14 +399,14 @@ bool CMotionToto::EventFrame(const Event &event)
 			{
 				if ( rand()%10 < 2 )
 				{
-					m_clownRadius = 2.0f+Rand()*10.0f;
-//?					m_clownDelay  = m_clownRadius/(2.0f+Rand()*2.0f);
-					m_clownDelay  = 1.5f+Rand()*1.0f;
+					m_clownRadius = 2.0f+Math::Rand()*10.0f;
+//?					m_clownDelay  = m_clownRadius/(2.0f+Math::Rand()*2.0f);
+					m_clownDelay  = 1.5f+Math::Rand()*1.0f;
 				}
 				else
 				{
 					m_clownRadius = 0.0f;
-					m_clownDelay  = 2.0f+Rand()*2.0f;
+					m_clownDelay  = 2.0f+Math::Rand()*2.0f;
 				}
 				pos = m_object->RetPosition(0);
 				if ( pos.y < m_water->RetLevel() )  // underwater?
@@ -419,8 +418,8 @@ bool CMotionToto::EventFrame(const Event &event)
 			}
 			else
 			{
-				distance -=               m_clownRadius*sinf(m_clownTime*PI*2.0f/m_clownDelay);
-				shift    -= m_clownRadius-m_clownRadius*cosf(m_clownTime*PI*2.0f/m_clownDelay);
+				distance -=               m_clownRadius*sinf(m_clownTime*Math::PI*2.0f/m_clownDelay);
+				shift    -= m_clownRadius-m_clownRadius*cosf(m_clownTime*Math::PI*2.0f/m_clownDelay);
 			}
 
 			verti += (18.0f-shift)*0.2f;
@@ -472,26 +471,26 @@ bool CMotionToto::EventFrame(const Event &event)
 	}
 
 	// Calculate the new angle.
-	nAngle = NormAngle(RotateAngle(eye.x-lookat.x, lookat.z-eye.z)-0.9f);
+	nAngle = Math::NormAngle(Math::RotateAngle(eye.x-lookat.x, lookat.z-eye.z)-0.9f);
 	if ( linSpeed == 0.0f || m_actionType != -1 )
 	{
 		mAngle = nAngle;
 	}
 	else
 	{
-		mAngle = NormAngle(RotateAngle(dirSpeed.x, -dirSpeed.z));
+		mAngle = Math::NormAngle(Math::RotateAngle(dirSpeed.x, -dirSpeed.z));
 	}
-	level = Min(linSpeed*0.1f, 1.0f);
+	level = Math::Min(linSpeed*0.1f, 1.0f);
 	nAngle = nAngle*(1.0f-level) + mAngle*level;
-	aAngle = NormAngle(m_object->RetAngleY(0));
+	aAngle = Math::NormAngle(m_object->RetAngleY(0));
 
 	if ( nAngle < aAngle )
 	{
-		if ( nAngle+PI*2.0f-aAngle < aAngle-nAngle )  nAngle += PI*2.0f;
+		if ( nAngle+Math::PI*2.0f-aAngle < aAngle-nAngle )  nAngle += Math::PI*2.0f;
 	}
 	else
 	{
-		if ( aAngle+PI*2.0f-nAngle < nAngle-aAngle )  aAngle += PI*2.0f;
+		if ( aAngle+Math::PI*2.0f-nAngle < nAngle-aAngle )  aAngle += Math::PI*2.0f;
 	}
 	nAngle = aAngle + (nAngle-aAngle)*event.rTime*4.0f;
 
@@ -501,7 +500,7 @@ bool CMotionToto::EventFrame(const Event &event)
 	if ( angle >  0.7f )  angle =  0.7f;
 	if ( angle < -0.7f )  angle = -0.7f;
 	vibCir.x += angle*1.5f;
-	aAntenna.x += Abs(angle)*0.8f;  // deviates
+	aAntenna.x += fabs(angle)*0.8f;  // deviates
 
 	// Leans forward so quickly advance.
 	angle = linSpeed*0.10f*(1.0f-progress);
@@ -514,23 +513,23 @@ bool CMotionToto::EventFrame(const Event &event)
 	vibLin.y += (sinf(m_time*2.00f)*0.5f+
 				 sinf(m_time*2.11f)*0.2f)*(1.0f-progress);
 
-	vibCir.z += sinf(m_time*PI* 2.01f)*(PI/ 75.0f)+
-				sinf(m_time*PI* 2.51f)*(PI/100.0f)+
-				sinf(m_time*PI*19.01f)*(PI/200.0f);
+	vibCir.z += sinf(m_time*Math::PI* 2.01f)*(Math::PI/ 75.0f)+
+				sinf(m_time*Math::PI* 2.51f)*(Math::PI/100.0f)+
+				sinf(m_time*Math::PI*19.01f)*(Math::PI/200.0f);
 
-	vibCir.x += sinf(m_time*PI* 2.03f)*(PI/ 75.0f)+
-				sinf(m_time*PI* 2.52f)*(PI/100.0f)+
-				sinf(m_time*PI*19.53f)*(PI/200.0f);
+	vibCir.x += sinf(m_time*Math::PI* 2.03f)*(Math::PI/ 75.0f)+
+				sinf(m_time*Math::PI* 2.52f)*(Math::PI/100.0f)+
+				sinf(m_time*Math::PI*19.53f)*(Math::PI/200.0f);
 
-	vibCir.y += (sinf(m_time*PI* 1.07f)*(PI/ 10.0f)+
-				 sinf(m_time*PI* 1.19f)*(PI/ 17.0f)+
-				 sinf(m_time*PI* 1.57f)*(PI/ 31.0f))*(1.0f-progress);
+	vibCir.y += (sinf(m_time*Math::PI* 1.07f)*(Math::PI/ 10.0f)+
+				 sinf(m_time*Math::PI* 1.19f)*(Math::PI/ 17.0f)+
+				 sinf(m_time*Math::PI* 1.57f)*(Math::PI/ 31.0f))*(1.0f-progress);
 #endif
 
 	// Calculates the animations in action.
 	if ( m_actionType == MT_ERROR )  // no-no?
 	{
-		vibCir.y += progress*sinf(m_progress*PI*11.0f)*1.0f;
+		vibCir.y += progress*sinf(m_progress*Math::PI*11.0f)*1.0f;
 		vibCir.z -= progress*0.5f;  // leans forward
 
 		aAntenna.x -= progress*0.4f;  // narrows
@@ -539,27 +538,27 @@ bool CMotionToto::EventFrame(const Event &event)
 
 	if ( m_actionType == MT_WARNING )  // warning?
 	{
-		vibCir.x += progress*sinf(m_progress*PI*17.0f)*0.5f;
+		vibCir.x += progress*sinf(m_progress*Math::PI*17.0f)*0.5f;
 
-		aAntenna.x += progress*sinf(m_progress*PI*17.0f)*0.5f;  // deviates
-		aAntenna.z += progress*cosf(m_progress*PI*17.0f)*0.5f;  // turns
+		aAntenna.x += progress*sinf(m_progress*Math::PI*17.0f)*0.5f;  // deviates
+		aAntenna.z += progress*cosf(m_progress*Math::PI*17.0f)*0.5f;  // turns
 	}
 
 	if ( m_actionType == MT_INFO )  // yes-yes?
 	{
-		vibCir.z += progress*sinf(m_progress*PI*19.0f)*0.7f;
+		vibCir.z += progress*sinf(m_progress*Math::PI*19.0f)*0.7f;
 
 		aAntenna.x -= progress*0.2f;  // narrows
-		aAntenna.z -= progress*cosf(m_progress*PI*19.0f)*0.9f;  // turns
+		aAntenna.z -= progress*cosf(m_progress*Math::PI*19.0f)*0.9f;  // turns
 	}
 
 	if ( m_actionType == MT_MESSAGE )  // message?
 	{
-		vibCir.x += progress*sinf(m_progress*PI*15.0f)*0.3f;
-		vibCir.z += progress*cosf(m_progress*PI*15.0f)*0.3f;
+		vibCir.x += progress*sinf(m_progress*Math::PI*15.0f)*0.3f;
+		vibCir.z += progress*cosf(m_progress*Math::PI*15.0f)*0.3f;
 
 		aAntenna.x -= progress*0.4f;  // narrows
-		aAntenna.z -= progress*cosf(m_progress*PI*19.0f)*0.8f;
+		aAntenna.z -= progress*cosf(m_progress*Math::PI*19.0f)*0.8f;
 	}
 
 	// Initialize the object.
@@ -568,26 +567,26 @@ bool CMotionToto::EventFrame(const Event &event)
 		if ( m_mousePos.x < 0.15f )
 		{
 			progress = 1.0f-m_mousePos.x/0.15f;
-			vibCir.y += progress*PI/2.0f;
+			vibCir.y += progress*Math::PI/2.0f;
 		}
 		else
 		{
 			progress = (m_mousePos.x-0.15f)/0.85f;
-			vibCir.y -= progress*PI/3.0f;
+			vibCir.y -= progress*Math::PI/3.0f;
 		}
 
-		angle = RotateAngle(m_mousePos.x-0.1f, m_mousePos.y-0.5f-vibLin.y*0.2f);
-		if ( angle < PI )
+		angle = Math::RotateAngle(m_mousePos.x-0.1f, m_mousePos.y-0.5f-vibLin.y*0.2f);
+		if ( angle < Math::PI )
 		{
-			if ( angle > PI*0.5f )  angle = PI-angle;
-			if ( angle > PI*0.3f )  angle = PI*0.3f;
+			if ( angle > Math::PI*0.5f )  angle = Math::PI-angle;
+			if ( angle > Math::PI*0.3f )  angle = Math::PI*0.3f;
 			vibCir.z += angle;
 		}
 		else
 		{
-			angle = PI*2.0f-angle;
-			if ( angle > PI*0.5f )  angle = PI-angle;
-			if ( angle > PI*0.3f )  angle = PI*0.3f;
+			angle = Math::PI*2.0f-angle;
+			if ( angle > Math::PI*0.5f )  angle = Math::PI-angle;
+			if ( angle > Math::PI*0.3f )  angle = Math::PI*0.3f;
 			vibCir.z -= angle;
 		}
 	}
@@ -609,17 +608,17 @@ bool CMotionToto::EventFrame(const Event &event)
 
 	// Calculates the residual movement of the antennas.
 	pos = aAntenna*0.40f;
-	pos.x += sinf(m_time*PI*2.07f)*(PI/50.0f)+
-			 sinf(m_time*PI*2.59f)*(PI/70.0f)+
-			 sinf(m_time*PI*2.67f)*(PI/90.0f);
+	pos.x += sinf(m_time*Math::PI*2.07f)*(Math::PI/50.0f)+
+			 sinf(m_time*Math::PI*2.59f)*(Math::PI/70.0f)+
+			 sinf(m_time*Math::PI*2.67f)*(Math::PI/90.0f);
 
-	pos.y += sinf(m_time*PI*2.22f)*(PI/50.0f)+
-			 sinf(m_time*PI*2.36f)*(PI/70.0f)+
-			 sinf(m_time*PI*3.01f)*(PI/90.0f);
+	pos.y += sinf(m_time*Math::PI*2.22f)*(Math::PI/50.0f)+
+			 sinf(m_time*Math::PI*2.36f)*(Math::PI/70.0f)+
+			 sinf(m_time*Math::PI*3.01f)*(Math::PI/90.0f);
 
-	pos.z += sinf(m_time*PI*2.11f)*(PI/50.0f)+
-			 sinf(m_time*PI*2.83f)*(PI/70.0f)+
-			 sinf(m_time*PI*3.09f)*(PI/90.0f);
+	pos.z += sinf(m_time*Math::PI*2.11f)*(Math::PI/50.0f)+
+			 sinf(m_time*Math::PI*2.83f)*(Math::PI/70.0f)+
+			 sinf(m_time*Math::PI*3.09f)*(Math::PI/90.0f);
 	
 	m_object->SetAngle(4, pos);  // left antenna
 	m_object->SetAngle(5, pos);  // left antenna
@@ -627,17 +626,17 @@ bool CMotionToto::EventFrame(const Event &event)
 
 	pos = aAntenna*0.40f;
 	pos.x = -pos.x;
-	pos.x += sinf(m_time*PI*2.33f)*(PI/50.0f)+
-			 sinf(m_time*PI*2.19f)*(PI/70.0f)+
-			 sinf(m_time*PI*2.07f)*(PI/90.0f);
+	pos.x += sinf(m_time*Math::PI*2.33f)*(Math::PI/50.0f)+
+			 sinf(m_time*Math::PI*2.19f)*(Math::PI/70.0f)+
+			 sinf(m_time*Math::PI*2.07f)*(Math::PI/90.0f);
 
-	pos.y += sinf(m_time*PI*2.44f)*(PI/50.0f)+
-			 sinf(m_time*PI*2.77f)*(PI/70.0f)+
-			 sinf(m_time*PI*3.22f)*(PI/90.0f);
+	pos.y += sinf(m_time*Math::PI*2.44f)*(Math::PI/50.0f)+
+			 sinf(m_time*Math::PI*2.77f)*(Math::PI/70.0f)+
+			 sinf(m_time*Math::PI*3.22f)*(Math::PI/90.0f);
 
-	pos.z += sinf(m_time*PI*2.05f)*(PI/50.0f)+
-			 sinf(m_time*PI*2.38f)*(PI/70.0f)+
-			 sinf(m_time*PI*2.79f)*(PI/90.0f);
+	pos.z += sinf(m_time*Math::PI*2.05f)*(Math::PI/50.0f)+
+			 sinf(m_time*Math::PI*2.38f)*(Math::PI/70.0f)+
+			 sinf(m_time*Math::PI*2.79f)*(Math::PI/90.0f);
 	
 	m_object->SetAngle(7, pos);  // right antenna
 	m_object->SetAngle(8, pos);  // right antenna
@@ -653,7 +652,7 @@ bool CMotionToto::EventFrame(const Event &event)
 	}
 	else if ( m_actionType == MT_WARNING )  // warning?
 	{
-		m_object->SetAngleX(1, 15.0f*PI/180.0f);
+		m_object->SetAngleX(1, 15.0f*Math::PI/180.0f);
 		m_object->SetAngleZ(1, 0.0f);
 		m_object->SetZoomY(1, 1.0f);
 		m_object->SetZoomZ(1, 1.0f);
@@ -700,7 +699,7 @@ bool CMotionToto::EventFrame(const Event &event)
 		else
 		{
 			m_blinkProgress = -1.0f;
-			m_blinkTime = 0.1f+Rand()*4.0f;
+			m_blinkTime = 0.1f+Math::Rand()*4.0f;
 			m_object->SetZoomY(2, 1.0f);
 			m_object->SetZoomY(3, 1.0f);
 		}
@@ -708,23 +707,23 @@ bool CMotionToto::EventFrame(const Event &event)
 
 	if ( m_actionType == MT_ERROR )  // no-no?
 	{
-		m_object->SetAngleX(2, -30.0f*PI/180.0f);
-		m_object->SetAngleX(3,  30.0f*PI/180.0f);
+		m_object->SetAngleX(2, -30.0f*Math::PI/180.0f);
+		m_object->SetAngleX(3,  30.0f*Math::PI/180.0f);
 	}
 	else if ( m_actionType == MT_WARNING )  // warning?
 	{
-		m_object->SetAngleX(2, -15.0f*PI/180.0f);
-		m_object->SetAngleX(3,  15.0f*PI/180.0f);
+		m_object->SetAngleX(2, -15.0f*Math::PI/180.0f);
+		m_object->SetAngleX(3,  15.0f*Math::PI/180.0f);
 	}
 	else if ( m_actionType == MT_INFO )  // yes-yes?
 	{
-		m_object->SetAngleX(2,  40.0f*PI/180.0f);
-		m_object->SetAngleX(3, -40.0f*PI/180.0f);
+		m_object->SetAngleX(2,  40.0f*Math::PI/180.0f);
+		m_object->SetAngleX(3, -40.0f*Math::PI/180.0f);
 	}
 	else if ( m_actionType == MT_MESSAGE )  // message?
 	{
-		m_object->SetAngleX(2,  20.0f*PI/180.0f);
-		m_object->SetAngleX(3, -20.0f*PI/180.0f);
+		m_object->SetAngleX(2,  20.0f*Math::PI/180.0f);
+		m_object->SetAngleX(3, -20.0f*Math::PI/180.0f);
 	}
 	else
 	{
@@ -746,16 +745,16 @@ bool CMotionToto::EventFrame(const Event &event)
 		if ( !m_bDisplayInfo             &&
 			 pos.y < m_water->RetLevel() )  // underwater?
 		{
-			float t = Mod(m_time, 3.5f);
+			float t = Math::Mod(m_time, 3.5f);
 			if ( t >= 2.2f || ( t >= 1.2f && t <= 1.4f ) )  // breathe?
 			{
 				pos = D3DVECTOR(1.0f, 0.2f, 0.0f);
-				pos.z += (Rand()-0.5f)*0.5f;
+				pos.z += (Math::Rand()-0.5f)*0.5f;
 
 				speed = pos;
-				speed.y += 5.0f+Rand()*5.0f;
-				speed.x += Rand()*2.0f;
-				speed.z += (Rand()-0.5f)*2.0f;
+				speed.y += 5.0f+Math::Rand()*5.0f;
+				speed.x += Math::Rand()*2.0f;
+				speed.z += (Math::Rand()-0.5f)*2.0f;
 				
 				pos   = Transform(*mat, pos);
 				speed = Transform(*mat, speed)-pos;
@@ -768,71 +767,71 @@ bool CMotionToto::EventFrame(const Event &event)
 		else	// out of water?
 		{
 			pos = D3DVECTOR(0.0f, -0.5f, 0.0f);
-			pos.z += (Rand()-0.5f)*0.5f;
+			pos.z += (Math::Rand()-0.5f)*0.5f;
 
 			speed = pos;
-			speed.y -= (1.5f+Rand()*1.5f) + vibLin.y;
-			speed.x += (Rand()-0.5f)*2.0f;
-			speed.z += (Rand()-0.5f)*2.0f;
+			speed.y -= (1.5f+Math::Rand()*1.5f) + vibLin.y;
+			speed.x += (Math::Rand()-0.5f)*2.0f;
+			speed.z += (Math::Rand()-0.5f)*2.0f;
 			
 //			mat = m_object->RetWorldMatrix(0);
 			pos   = Transform(*mat, pos);
 			speed = Transform(*mat, speed)-pos;
 
-			dim.x = (Rand()*0.4f+0.4f)*(1.0f+Min(linSpeed*0.1f, 5.0f));
+			dim.x = (Math::Rand()*0.4f+0.4f)*(1.0f+Math::Min(linSpeed*0.1f, 5.0f));
 			dim.y = dim.x;
-			m_particule->CreateParticule(pos, speed, dim, PARTITOTO, 1.0f+Rand()*1.0f, 0.0f, 1.0f, sheet);
+			m_particule->CreateParticule(pos, speed, dim, PARTITOTO, 1.0f+Math::Rand()*1.0f, 0.0f, 1.0f, sheet);
 		}
 
 		if ( m_actionType != -1  &&  // current action?
 			 m_progress <= 0.85f )
 		{
-			pos.x = (Rand()-0.5f)*1.0f;
-			pos.y = (Rand()-0.5f)*1.0f+3.5f;
-			pos.z = (Rand()-0.5f)*1.0f;
+			pos.x = (Math::Rand()-0.5f)*1.0f;
+			pos.y = (Math::Rand()-0.5f)*1.0f+3.5f;
+			pos.z = (Math::Rand()-0.5f)*1.0f;
 			pos   = Transform(*mat, pos);
 			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-			dim.x = (Rand()*0.3f+0.3f);
+			dim.x = (Math::Rand()*0.3f+0.3f);
 			dim.y = dim.x;
 			if ( m_actionType == MT_ERROR   )  type = PARTIERROR;
 			if ( m_actionType == MT_WARNING )  type = PARTIWARNING;
 			if ( m_actionType == MT_INFO    )  type = PARTIINFO;
 			if ( m_actionType == MT_MESSAGE )  type = PARTIWARNING;
-			m_particule->CreateParticule(pos, speed, dim, type, 0.5f+Rand()*0.5f, 0.0f, 1.0f, sheet);
+			m_particule->CreateParticule(pos, speed, dim, type, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, sheet);
 
-			pos.x = 0.50f+(Rand()-0.5f)*0.80f;
-			pos.y = 0.86f+(Rand()-0.5f)*0.08f;
+			pos.x = 0.50f+(Math::Rand()-0.5f)*0.80f;
+			pos.y = 0.86f+(Math::Rand()-0.5f)*0.08f;
 			pos.z = 0.00f;
-			dim.x = (Rand()*0.04f+0.04f);
+			dim.x = (Math::Rand()*0.04f+0.04f);
 			dim.y = dim.x/0.75f;
-			m_particule->CreateParticule(pos, speed, dim, type, 0.5f+Rand()*0.5f, 0.0f, 1.0f, SH_INTERFACE);
+			m_particule->CreateParticule(pos, speed, dim, type, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, SH_INTERFACE);
 		}
 
 //?		if ( m_bDisplayInfo && m_main->RetGlint() )
 		if ( false )
 		{
-			pos.x = (Rand()-0.5f)*1.4f;
-			pos.y = (Rand()-0.5f)*1.4f+3.5f;
-			pos.z = (Rand()-0.5f)*1.4f;
+			pos.x = (Math::Rand()-0.5f)*1.4f;
+			pos.y = (Math::Rand()-0.5f)*1.4f+3.5f;
+			pos.z = (Math::Rand()-0.5f)*1.4f;
 			pos   = Transform(*mat, pos);
 			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-			dim.x = (Rand()*0.5f+0.5f);
+			dim.x = (Math::Rand()*0.5f+0.5f);
 			dim.y = dim.x;
-			m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 0.5f+Rand()*0.5f, 0.0f, 1.0f, sheet);
+			m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, sheet);
 
 			for ( i=0 ; i<10 ; i++ )
 			{
-				pos.x = 0.60f+(Rand()-0.5f)*0.76f;
-				pos.y = 0.47f+(Rand()-0.5f)*0.90f;
+				pos.x = 0.60f+(Math::Rand()-0.5f)*0.76f;
+				pos.y = 0.47f+(Math::Rand()-0.5f)*0.90f;
 				pos.z = 0.00f;
 				r = rand()%4;
 					 if ( r == 0 )  pos.x = 0.21f;  // the left edge
 				else if ( r == 1 )  pos.x = 0.98f;  // the right edge
 				else if ( r == 2 )  pos.y = 0.02f;  // on the lower edge
 				else                pos.y = 0.92f;  // on the upper edge
-				dim.x = (Rand()*0.02f+0.02f);
+				dim.x = (Math::Rand()*0.02f+0.02f);
 				dim.y = dim.x/0.75f;
-				m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 0.5f+Rand()*0.5f, 0.0f, 1.0f, SH_INTERFACE);
+				m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, SH_INTERFACE);
 			}
 		}
 	}

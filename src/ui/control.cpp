@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -62,10 +60,10 @@ CControl::CControl(CInstanceManager* iMan)
 	m_bCapture    = false;
 
 	m_bGlint        = false;
-	m_glintCorner1  = FPOINT(0.0f, 0.0f);
-	m_glintCorner2  = FPOINT(0.0f, 0.0f);
+	m_glintCorner1  = Math::Point(0.0f, 0.0f);
+	m_glintCorner2  = Math::Point(0.0f, 0.0f);
 	m_glintProgress = 999.0f;
-	m_glintMouse    = FPOINT(0.0f, 0.0f);
+	m_glintMouse    = Math::Point(0.0f, 0.0f);
 }
 
 // Object's destructor.
@@ -78,7 +76,7 @@ CControl::~CControl()
 // Creates a new button.
 //	pos: [0..1]
 
-bool CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	char	text[100];
 	char*	p;
@@ -112,7 +110,7 @@ bool CControl::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-void CControl::SetPos(FPOINT pos)
+void CControl::SetPos(Math::Point pos)
 {
 	m_pos = pos;
 
@@ -121,14 +119,14 @@ void CControl::SetPos(FPOINT pos)
 	GlintCreate(pos);
 }
 
-FPOINT CControl::RetPos()
+Math::Point CControl::RetPos()
 {
 	return m_pos;
 }
 
-void CControl::SetDim(FPOINT dim)
+void CControl::SetDim(Math::Point dim)
 {
-	FPOINT	pos;
+	Math::Point	pos;
 
 	m_dim = dim;
 
@@ -137,7 +135,7 @@ void CControl::SetDim(FPOINT dim)
 	GlintCreate(pos);
 }
 
-FPOINT CControl::RetDim()
+Math::Point CControl::RetDim()
 {
 	return m_dim;
 }
@@ -298,7 +296,7 @@ bool CControl::SetTooltip(char* name)
 	return true;
 }
 
-bool CControl::GetTooltip(FPOINT pos, char* name)
+bool CControl::GetTooltip(Math::Point pos, char* name)
 {
 	if ( m_tooltip[0] == 0 )  return false;
 	if ( (m_state & STATE_VISIBLE) == 0 )  return false;
@@ -402,7 +400,7 @@ void CControl::GlintDelete()
 
 // Creates a reflection for that button.
 
-void CControl::GlintCreate(FPOINT ref, bool bLeft, bool bUp)
+void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
 {
 	float	offset;
 
@@ -442,7 +440,7 @@ void CControl::GlintCreate(FPOINT ref, bool bLeft, bool bUp)
 void CControl::GlintFrame(const Event &event)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 
 	if ( (m_state & STATE_GLINT  ) == 0 ||
 		 (m_state & STATE_ENABLE ) == 0 ||
@@ -454,11 +452,11 @@ void CControl::GlintFrame(const Event &event)
 
 	if ( m_glintProgress >= 2.0f && Detect(m_glintMouse) )
 	{
-		pos.x = m_glintCorner1.x + (m_glintCorner2.x-m_glintCorner1.x)*Rand();
-		pos.y = m_glintCorner1.y + (m_glintCorner2.y-m_glintCorner1.y)*Rand();
+		pos.x = m_glintCorner1.x + (m_glintCorner2.x-m_glintCorner1.x)*Math::Rand();
+		pos.y = m_glintCorner1.y + (m_glintCorner2.y-m_glintCorner1.y)*Math::Rand();
 		pos.z = 0.0f;
 		speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-		dim.x = ((15.0f+Rand()*15.0f)/640.0f);
+		dim.x = ((15.0f+Math::Rand()*15.0f)/640.0f);
 		dim.y = dim.x/0.75f;
 		m_particule->CreateParticule(pos, speed, dim, PARTICONTROL,
 									 1.0f, 0.0f, 0.0f, SH_INTERFACE);
@@ -472,7 +470,7 @@ void CControl::GlintFrame(const Event &event)
 
 void CControl::Draw()
 {
-	FPOINT		pos;
+	Math::Point		pos;
 	float		zoomExt, zoomInt;
 	int			icon;
 
@@ -609,7 +607,7 @@ void CControl::Draw()
 
 void CControl::DrawPart(int icon, float zoom, float ex)
 {
-	FPOINT		p1, p2, c, uv1, uv2;
+	Math::Point		p1, p2, c, uv1, uv2;
 	float		dp;
 
 	p1.x = m_pos.x;
@@ -651,12 +649,12 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 // Draws an icon made up of a rectangular (if x = 0)
 // or 3 pieces.
 
-void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
+void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2,
 						float ex)
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[8];	// 6 triangles
-	FPOINT		p1, p2, p3, p4;
+	Math::Point		p1, p2, p3, p4;
 	D3DVECTOR	n;
 
 	device = m_engine->RetD3DDevice();
@@ -719,12 +717,12 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 
 // Draws a rectangular icon made up of 9 pieces.
 
-void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
-						FPOINT corner, float ex)
+void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2,
+						Math::Point corner, float ex)
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[8];	// 6 triangles
-	FPOINT		p1, p2, p3, p4;
+	Math::Point		p1, p2, p3, p4;
 	D3DVECTOR	n;
 
 	device = m_engine->RetD3DDevice();
@@ -787,9 +785,9 @@ void CControl::DrawIcon(FPOINT pos, FPOINT dim, FPOINT uv1, FPOINT uv2,
 
 // Draw round the hatch of a button.
 
-void CControl::DrawWarning(FPOINT pos, FPOINT dim)
+void CControl::DrawWarning(Math::Point pos, Math::Point dim)
 {
-	FPOINT		uv1, uv2;
+	Math::Point		uv1, uv2;
 	float		dp;
 
 	dp = 0.5f/256.0f;
@@ -831,9 +829,9 @@ void CControl::DrawWarning(FPOINT pos, FPOINT dim)
 
 // Draw the shade under a button.
 
-void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
+void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 {
-	FPOINT		uv1, uv2, corner;
+	Math::Point		uv1, uv2, corner;
 	float		dp;
 
 	dp = 0.5f/256.0f;
@@ -865,7 +863,7 @@ void CControl::DrawShadow(FPOINT pos, FPOINT dim, float deep)
 
 // Detects whether a position is in the button.
 
-bool CControl::Detect(FPOINT pos)
+bool CControl::Detect(Math::Point pos)
 {
 	return ( pos.x >= m_pos.x         &&
 			 pos.x <= m_pos.x+m_dim.x &&

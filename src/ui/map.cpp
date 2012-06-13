@@ -16,14 +16,13 @@
 
 // map.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "common/event.h"
 #include "math/old/math3d.h"
@@ -82,7 +81,7 @@ CMap::~CMap()
 
 // Creates a new button.
 
-bool CMap::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CMap::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -224,7 +223,7 @@ bool CMap::EventProcess(const Event &event)
 
 // Adjusts the offset to not exceed the card.
 
-FPOINT CMap::AdjustOffset(FPOINT offset)
+Math::Point CMap::AdjustOffset(Math::Point offset)
 {
 	float	limit;
 
@@ -261,7 +260,7 @@ void CMap::SetHilite(CObject* pObj)
 
 // Detects an object in the map.
 
-CObject* CMap::DetectObject(FPOINT pos, bool &bInMap)
+CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
 {
 	float		dist, min;
 	int			i, best;
@@ -301,7 +300,7 @@ CObject* CMap::DetectObject(FPOINT pos, bool &bInMap)
 
 // Selects an object.
 
-void CMap::SelectObject(FPOINT pos)
+void CMap::SelectObject(Math::Point pos)
 {
 	CObject		*pObj;
 	bool		bInMap;
@@ -318,7 +317,7 @@ void CMap::SelectObject(FPOINT pos)
 
 void CMap::Draw()
 {
-	FPOINT		uv1, uv2;
+	Math::Point		uv1, uv2;
 	int			i;
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;
@@ -388,14 +387,14 @@ void CMap::Draw()
 
 // Computing a point for drawFocus.
 
-FPOINT CMap::MapInter(FPOINT pos, float dir)
+Math::Point CMap::MapInter(Math::Point pos, float dir)
 {
-	FPOINT	p1;
+	Math::Point	p1;
 	float	limit;
 
 	p1.x = pos.x+1.0f;
 	p1.y = pos.y;
-	p1 = RotatePoint(pos, dir, p1);
+	p1 = Math::RotatePoint(pos, dir, p1);
 
 	p1.x -= pos.x;
 	p1.y -= pos.y;
@@ -432,9 +431,9 @@ FPOINT CMap::MapInter(FPOINT pos, float dir)
 
 // Draw the field of vision of the selected object.
 
-void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
+void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color)
 {
-	FPOINT	p0, p1, p2, uv1, uv2, rel;
+	Math::Point	p0, p1, p2, uv1, uv2, rel;
 	float	aMin, aMax, aOct, focus, a;
 	float	limit[5];
 	bool	bEnding;
@@ -456,22 +455,22 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 	pos.y = m_mapPos.y*0.75f+m_mapDim.y*pos.y*0.75f;
 
 	focus = m_engine->RetFocus();
-	dir += PI/2.0f;
-	aMin = NormAngle(dir-PI/4.0f*focus);
-	aMax = NormAngle(dir+PI/4.0f*focus);
+	dir += Math::PI/2.0f;
+	aMin = Math::NormAngle(dir-Math::PI/4.0f*focus);
+	aMax = Math::NormAngle(dir+Math::PI/4.0f*focus);
 
 	if ( aMin > aMax )
 	{
-		aMax += PI*2.0f;  // aMax always after aMin
+		aMax += Math::PI*2.0f;  // aMax always after aMin
 	}
 
-	limit[0] = RotateAngle( 1.0f-rel.x,  1.0f-rel.y);  // upper/right
-	limit[1] = RotateAngle(-1.0f-rel.x,  1.0f-rel.y);  // upper/left
-	limit[2] = RotateAngle(-1.0f-rel.x, -1.0f-rel.y);  // lower/left
-	limit[3] = RotateAngle( 1.0f-rel.x, -1.0f-rel.y);  // lower/right
-	limit[4] = limit[0]+PI*2.0f;
+	limit[0] = Math::RotateAngle( 1.0f-rel.x,  1.0f-rel.y);  // upper/right
+	limit[1] = Math::RotateAngle(-1.0f-rel.x,  1.0f-rel.y);  // upper/left
+	limit[2] = Math::RotateAngle(-1.0f-rel.x, -1.0f-rel.y);  // lower/left
+	limit[3] = Math::RotateAngle( 1.0f-rel.x, -1.0f-rel.y);  // lower/right
+	limit[4] = limit[0]+Math::PI*2.0f;
 
-	a = NormAngle(aMin);
+	a = Math::NormAngle(aMin);
 	for ( quart=0 ; quart<4 ; quart++ )
 	{
 		if ( a >= limit[quart+0] &&
@@ -492,8 +491,8 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 	{
 		quart ++;
 		aOct = limit[quart%4];
-		if ( quart >= 4 )  aOct += PI*2.0f;
-		if ( aOct >= aMax-CHOUIA )
+		if ( quart >= 4 )  aOct += Math::PI*2.0f;
+		if ( aOct >= aMax-Math::VERY_SMALL )
 		{
 			aOct = aMax;
 			bEnding = true;
@@ -514,10 +513,10 @@ void CMap::DrawFocus(FPOINT pos, float dir, ObjectType type, MapColor color)
 
 // Draw an object.
 
-void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
+void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color,
 					  bool bSelect, bool bHilite)
 {
-	FPOINT		p1, p2, p3, p4, p5, dim, uv1, uv2;
+	Math::Point		p1, p2, p3, p4, p5, dim, uv1, uv2;
 	bool		bOut, bUp, bDown, bLeft, bRight;
 
 	pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
@@ -539,7 +538,7 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
 		if ( color == MAPCOLOR_BBOX  && !m_bRadar )  return;
 		if ( color == MAPCOLOR_ALIEN && !m_bRadar )  return;
 
-		if ( Mod(m_time+(pos.x+pos.y)*4.0f, 0.6f) > 0.2f )
+		if ( Math::Mod(m_time+(pos.x+pos.y)*4.0f, 0.6f) > 0.2f )
 		{
 			return;  // flashes
 		}
@@ -632,44 +631,44 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
 		{
 			p1.x = pos.x;
 			p1.y = pos.y+dim.y*1.4f;
-			p1 = RotatePoint(pos, dir, p1);
+			p1 = Math::RotatePoint(pos, dir, p1);
 			p1.x = pos.x+(p1.x-pos.x)*0.75f;
 
 			p2.x = pos.x+dim.x*1.2f;
 			p2.y = pos.y+dim.y*0.8f;
-			p2 = RotatePoint(pos, dir, p2);
+			p2 = Math::RotatePoint(pos, dir, p2);
 			p2.x = pos.x+(p2.x-pos.x)*0.75f;
 
 			p3.x = pos.x+dim.x*1.2f;
 			p3.y = pos.y-dim.y*1.0f;
-			p3 = RotatePoint(pos, dir, p3);
+			p3 = Math::RotatePoint(pos, dir, p3);
 			p3.x = pos.x+(p3.x-pos.x)*0.75f;
 
 			p4.x = pos.x-dim.x*1.2f;
 			p4.y = pos.y-dim.y*1.0f;
-			p4 = RotatePoint(pos, dir, p4);
+			p4 = Math::RotatePoint(pos, dir, p4);
 			p4.x = pos.x+(p4.x-pos.x)*0.75f;
 
 			p5.x = pos.x-dim.x*1.2f;
 			p5.y = pos.y+dim.y*0.8f;
-			p5 = RotatePoint(pos, dir, p5);
+			p5 = Math::RotatePoint(pos, dir, p5);
 			p5.x = pos.x+(p5.x-pos.x)*0.75f;
 		}
 		else
 		{
 			p1.x = pos.x;
 			p1.y = pos.y+dim.y*2.4f;
-			p1 = RotatePoint(pos, dir, p1);
+			p1 = Math::RotatePoint(pos, dir, p1);
 			p1.x = pos.x+(p1.x-pos.x)*0.75f;
 
 			p2.x = pos.x+dim.x*1.0f;
 			p2.y = pos.y-dim.y*1.6f;
-			p2 = RotatePoint(pos, dir, p2);
+			p2 = Math::RotatePoint(pos, dir, p2);
 			p2.x = pos.x+(p2.x-pos.x)*0.75f;
 
 			p3.x = pos.x-dim.x*1.0f;
 			p3.y = pos.y-dim.y*1.6f;
-			p3 = RotatePoint(pos, dir, p3);
+			p3 = Math::RotatePoint(pos, dir, p3);
 			p3.x = pos.x+(p3.x-pos.x)*0.75f;
 		}
 	}
@@ -785,10 +784,10 @@ void CMap::DrawObject(FPOINT pos, float dir, ObjectType type, MapColor color,
 
 // Draws the icon of an object.
 
-void CMap::DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color,
+void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
 						  ObjectType type, bool bHilite)
 {
-	FPOINT	ppos, ddim, uv1, uv2;
+	Math::Point	ppos, ddim, uv1, uv2;
 	float	dp;
 	int		icon;
 
@@ -893,9 +892,9 @@ void CMap::DrawObjectIcon(FPOINT pos, FPOINT dim, MapColor color,
 
 // Draw the object with the mouse hovers over.
 
-void CMap::DrawHilite(FPOINT pos)
+void CMap::DrawHilite(Math::Point pos)
 {
-	FPOINT		dim, uv1, uv2;
+	Math::Point		dim, uv1, uv2;
 	bool		bOut, bUp, bDown, bLeft, bRight;
 
 	if ( m_bToy || m_fixImage[0] != 0 )  return;  // map with still image?
@@ -929,7 +928,7 @@ void CMap::DrawHilite(FPOINT pos)
 
 // Draws a triangular icon.
 
-void CMap::DrawTriangle(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT uv1, FPOINT uv2)
+void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2)
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[3];	// 1 triangle
@@ -949,7 +948,7 @@ void CMap::DrawTriangle(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT uv1, FPOINT uv2)
 
 // Draw a pentagon icon (a 5 rating, what!).
 
-void CMap::DrawPenta(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4, FPOINT p5, FPOINT uv1, FPOINT uv2)
+void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2)
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[5];	// 1 pentagon
@@ -979,11 +978,11 @@ void CMap::DrawPenta(FPOINT p1, FPOINT p2, FPOINT p3, FPOINT p4, FPOINT p5, FPOI
 
 // Draw the vertex array.
 
-void CMap::DrawVertex(FPOINT uv1, FPOINT uv2, float zoom)
+void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	FPOINT		p1, p2, c;
+	Math::Point		p1, p2, c;
 	D3DVECTOR	n;
 
 	device = m_engine->RetD3DDevice();
@@ -1161,7 +1160,7 @@ void CMap::UpdateObject(CObject* pObj)
 	ObjectType		type;
 	MapColor		color;
 	D3DVECTOR		pos;
-	FPOINT			ppos;
+	Math::Point			ppos;
 	float			dir;
 
 	if ( !m_bEnable )  return;
@@ -1174,11 +1173,11 @@ void CMap::UpdateObject(CObject* pObj)
 
 	type = pObj->RetType();
 	pos  = pObj->RetPosition(0);
-	dir  = -(pObj->RetAngleY(0)+PI/2.0f);
+	dir  = -(pObj->RetAngleY(0)+Math::PI/2.0f);
 
 	if ( m_angle != 0.0f )
 	{
-		ppos = RotatePoint(m_angle, FPOINT(pos.x, pos.z));
+		ppos = RotatePoint(m_angle, Math::Point(pos.x, pos.z));
 		pos.x = ppos.x;
 		pos.z = ppos.y;
 		dir += m_angle;

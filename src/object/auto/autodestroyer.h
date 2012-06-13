@@ -20,6 +20,7 @@
 
 
 #include "common/misc.h"
+#include "object/auto/auto.h"
 
 
 class CInstanceManager;

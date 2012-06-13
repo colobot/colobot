@@ -16,8 +16,6 @@
 
 // misc.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <math.h>
 #include <stdlib.h>

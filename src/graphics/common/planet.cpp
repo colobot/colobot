@@ -16,14 +16,13 @@
 
 // planet.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/const.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -103,7 +102,7 @@ bool CPlanet::EventFrame(const Event &event)
 		a = m_time*m_planet[m_mode][i].speed;
 		if ( a < 0.0f )
 		{
-			a += PI*1000.0f;
+			a += Math::PI*1000.0f;
 		}
 		m_planet[m_mode][i].angle.x = a+m_planet[m_mode][i].start.x;
 		m_planet[m_mode][i].angle.y = sinf(a)*sinf(m_planet[m_mode][i].dir)+m_planet[m_mode][i].start.y;
@@ -137,7 +136,7 @@ void CPlanet::Draw()
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	D3DVECTOR	n;
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 	float		eyeDirH, eyeDirV, dp, u1, u2, v1, v2, a;
 	int			i;
 
@@ -164,10 +163,10 @@ void CPlanet::Draw()
 		}
 
 		a = eyeDirH + m_planet[m_mode][i].angle.x;
-		p1.x = Mod(a, PI*2.0f)-0.5f;
+		p1.x = Math::Mod(a, Math::PI*2.0f)-0.5f;
 
 		a = eyeDirV + m_planet[m_mode][i].angle.y;
-		p1.y = 0.4f+(Mod(a+PI, PI*2.0f)-PI)*(2.0f/PI);
+		p1.y = 0.4f+(Math::Mod(a+Math::PI, Math::PI*2.0f)-Math::PI)*(2.0f/Math::PI);
 
 		p1.x -= m_planet[m_mode][i].dim/2.0f*0.75f;
 		p1.y -= m_planet[m_mode][i].dim/2.0f;
@@ -192,8 +191,8 @@ void CPlanet::Draw()
 
 // Creates a new planet.
 
-bool CPlanet::Create(int mode, FPOINT start, float dim, float speed,
-					 float dir, char *name, FPOINT uv1, FPOINT uv2)
+bool CPlanet::Create(int mode, Math::Point start, float dim, float speed,
+					 float dir, char *name, Math::Point uv1, Math::Point uv2)
 {
 	int		i;
 

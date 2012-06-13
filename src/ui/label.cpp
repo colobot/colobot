@@ -16,8 +16,6 @@
 
 // label.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -50,7 +48,7 @@ CLabel::~CLabel()
 
 // Creates a new button.
 
-bool CLabel::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CLabel::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -72,7 +70,7 @@ bool CLabel::EventProcess(const Event &event)
 
 void CLabel::Draw()
 {
-	FPOINT	pos;
+	Math::Point	pos;
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;
 

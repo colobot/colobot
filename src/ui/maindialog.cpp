@@ -16,8 +16,6 @@
 
 // maindialog.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -207,7 +205,7 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
 	m_bEffect        = true;
 	m_shotDelay      = 0;
 
-	m_glintMouse = FPOINT(0.0f, 0.0f);
+	m_glintMouse = Math::Point(0.0f, 0.0f);
 	m_glintTime  = 1000.0f;
 
 	for ( i=0 ; i<10 ; i++ )
@@ -248,7 +246,7 @@ void CMainDialog::ChangePhase(Phase phase)
 	CColor*			pco;
 	CGroup*			pg;
 	CImage*			pi;
-	FPOINT			pos, dim, ddim;
+	Math::Point			pos, dim, ddim;
 	float			ox, oy, sx, sy;
 	char			name[100];
 	char*			gamer;
@@ -3103,7 +3101,7 @@ void CMainDialog::GlintMove()
 {
 	CWindow*	pw;
 	CGroup*		pg;
-	FPOINT		pos, dim, zoom;
+	Math::Point		pos, dim, zoom;
 
 	if ( m_phase == PHASE_SIMUL )  return;
 
@@ -3255,7 +3253,7 @@ void CMainDialog::GlintMove()
 
 // Returns the position for a sound.
 
-D3DVECTOR SoundPos(FPOINT pos)
+D3DVECTOR SoundPos(Math::Point pos)
 {
 	D3DVECTOR	s;
 
@@ -3272,8 +3270,8 @@ D3DVECTOR SoundRand()
 {
 	D3DVECTOR	s;
 
-	s.x = (Rand()-0.5f)*2.0f;
-	s.y = (Rand()-0.5f)*2.0f;
+	s.x = (Math::Rand()-0.5f)*2.0f;
+	s.y = (Math::Rand()-0.5f)*2.0f;
 	s.z = 0.0f;
 
 	return s;
@@ -3286,7 +3284,7 @@ void CMainDialog::FrameParticule(float rTime)
 #if _NEWLOOK
 #else
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		*pParti, *pGlint;
 	int			 nParti,  nGlint;
 	int			i, r, ii;
@@ -3409,15 +3407,15 @@ void CMainDialog::FrameParticule(float rTime)
 					ii = rand()%nParti;
 					m_partiPos[i].x = pParti[ii*5+0]/640.0f;
 					m_partiPos[i].y = (480.0f-pParti[ii*5+1])/480.0f;
-					m_partiTime[i] = pParti[ii*5+2]+Rand()*pParti[ii*5+3];
+					m_partiTime[i] = pParti[ii*5+2]+Math::Rand()*pParti[ii*5+3];
 					m_partiPhase[i] = (int)pParti[ii*5+4];
 					if ( m_partiPhase[i] == 3 )
 					{
-						m_sound->Play(SOUND_PSHHH, SoundPos(m_partiPos[i]), 0.3f+Rand()*0.3f);
+						m_sound->Play(SOUND_PSHHH, SoundPos(m_partiPos[i]), 0.3f+Math::Rand()*0.3f);
 					}
 					else
 					{
-						m_sound->Play(SOUND_GGG, SoundPos(m_partiPos[i]), 0.1f+Rand()*0.4f);
+						m_sound->Play(SOUND_GGG, SoundPos(m_partiPos[i]), 0.1f+Math::Rand()*0.4f);
 					}
 				}
 
@@ -3430,13 +3428,13 @@ void CMainDialog::FrameParticule(float rTime)
 					speed.x = 0.0f;
 					speed.y = 0.0f;
 					speed.z = 0.0f;
-					dim.x = 0.04f+Rand()*0.04f;
+					dim.x = 0.04f+Math::Rand()*0.04f;
 					dim.y = dim.x/0.75f;
 					m_particule->CreateParticule(pos, speed, dim,
 												 rand()%2?PARTIGLINT:PARTICONTROL,
-												 Rand()*0.4f+0.4f, 0.0f, 0.0f,
+												 Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
 												 SH_INTERFACE);
-					m_partiTime[i] = 0.5f+Rand()*0.5f;
+					m_partiTime[i] = 0.5f+Math::Rand()*0.5f;
 				}
 
 				if ( r == 2 )
@@ -3444,38 +3442,38 @@ void CMainDialog::FrameParticule(float rTime)
 					ii = rand()%7;
 					if ( ii == 0 )
 					{
-						m_sound->Play(SOUND_ENERGY, SoundRand(), 0.2f+Rand()*0.2f);
-						m_partiTime[i] = 1.0f+Rand()*1.0f;
+						m_sound->Play(SOUND_ENERGY, SoundRand(), 0.2f+Math::Rand()*0.2f);
+						m_partiTime[i] = 1.0f+Math::Rand()*1.0f;
 					}
 					if ( ii == 1 )
 					{
-						m_sound->Play(SOUND_STATION, SoundRand(), 0.2f+Rand()*0.2f);
-						m_partiTime[i] = 1.0f+Rand()*2.0f;
+						m_sound->Play(SOUND_STATION, SoundRand(), 0.2f+Math::Rand()*0.2f);
+						m_partiTime[i] = 1.0f+Math::Rand()*2.0f;
 					}
 					if ( ii == 2 )
 					{
-						m_sound->Play(SOUND_ALARM, SoundRand(), 0.1f+Rand()*0.1f);
-						m_partiTime[i] = 2.0f+Rand()*4.0f;
+						m_sound->Play(SOUND_ALARM, SoundRand(), 0.1f+Math::Rand()*0.1f);
+						m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
 					}
 					if ( ii == 3 )
 					{
-						m_sound->Play(SOUND_INFO, SoundRand(), 0.1f+Rand()*0.1f);
-						m_partiTime[i] = 2.0f+Rand()*4.0f;
+						m_sound->Play(SOUND_INFO, SoundRand(), 0.1f+Math::Rand()*0.1f);
+						m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
 					}
 					if ( ii == 4 )
 					{
-						m_sound->Play(SOUND_RADAR, SoundRand(), 0.2f+Rand()*0.2f);
-						m_partiTime[i] = 0.5f+Rand()*1.0f;
+						m_sound->Play(SOUND_RADAR, SoundRand(), 0.2f+Math::Rand()*0.2f);
+						m_partiTime[i] = 0.5f+Math::Rand()*1.0f;
 					}
 					if ( ii == 5 )
 					{
-						m_sound->Play(SOUND_GFLAT, SoundRand(), 0.3f+Rand()*0.3f);
-						m_partiTime[i] = 2.0f+Rand()*4.0f;
+						m_sound->Play(SOUND_GFLAT, SoundRand(), 0.3f+Math::Rand()*0.3f);
+						m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
 					}
 					if ( ii == 6 )
 					{
-						m_sound->Play(SOUND_ALARMt, SoundRand(), 0.1f+Rand()*0.1f);
-						m_partiTime[i] = 2.0f+Rand()*4.0f;
+						m_sound->Play(SOUND_ALARMt, SoundRand(), 0.1f+Math::Rand()*0.1f);
+						m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
 					}
 				}
 			}
@@ -3491,27 +3489,27 @@ void CMainDialog::FrameParticule(float rTime)
 					pos.x = m_partiPos[i].x;
 					pos.y = m_partiPos[i].y;
 					pos.z = 0.0f;
-					pos.x += (Rand()-0.5f)*0.01f;
-					pos.y += (Rand()-0.5f)*0.01f;
-					speed.x = (Rand()-0.5f)*0.2f;
-					speed.y = (Rand()-0.5f)*0.2f;
+					pos.x += (Math::Rand()-0.5f)*0.01f;
+					pos.y += (Math::Rand()-0.5f)*0.01f;
+					speed.x = (Math::Rand()-0.5f)*0.2f;
+					speed.y = (Math::Rand()-0.5f)*0.2f;
 					speed.z = 0.0f;
-					dim.x = 0.005f+Rand()*0.005f;
+					dim.x = 0.005f+Math::Rand()*0.005f;
 					dim.y = dim.x/0.75f;
 					m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ,
-												 Rand()*0.2f+0.2f, 0.0f, 0.0f,
+												 Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
 												 SH_INTERFACE);
 					pos.x = m_partiPos[i].x;
 					pos.y = m_partiPos[i].y;
 					pos.z = 0.0f;
-					speed.x = (Rand()-0.5f)*0.5f;
-					speed.y = (0.3f+Rand()*0.3f);
+					speed.x = (Math::Rand()-0.5f)*0.5f;
+					speed.y = (0.3f+Math::Rand()*0.3f);
 					speed.z = 0.0f;
-					dim.x = 0.01f+Rand()*0.01f;
+					dim.x = 0.01f+Math::Rand()*0.01f;
 					dim.y = dim.x/0.75f;
 					m_particule->CreateParticule(pos, speed, dim,
 												 (ParticuleType)(PARTILENS1+rand()%3),
-												 Rand()*0.5f+0.5f, 2.0f, 0.0f,
+												 Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
 												 SH_INTERFACE);
 				}
 				if ( m_partiPhase[i] == 2 )  // sparks?
@@ -3519,26 +3517,26 @@ void CMainDialog::FrameParticule(float rTime)
 					pos.x = m_partiPos[i].x;
 					pos.y = m_partiPos[i].y;
 					pos.z = 0.0f;
-					pos.x += (Rand()-0.5f)*0.01f;
-					pos.y += (Rand()-0.5f)*0.01f;
-					speed.x = (Rand()-0.5f)*0.2f;
-					speed.y = (Rand()-0.5f)*0.2f;
+					pos.x += (Math::Rand()-0.5f)*0.01f;
+					pos.y += (Math::Rand()-0.5f)*0.01f;
+					speed.x = (Math::Rand()-0.5f)*0.2f;
+					speed.y = (Math::Rand()-0.5f)*0.2f;
 					speed.z = 0.0f;
-					dim.x = 0.005f+Rand()*0.005f;
+					dim.x = 0.005f+Math::Rand()*0.005f;
 					dim.y = dim.x/0.75f;
 					m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ,
-												 Rand()*0.2f+0.2f, 0.0f, 0.0f,
+												 Math::Rand()*0.2f+0.2f, 0.0f, 0.0f,
 												 SH_INTERFACE);
 					pos.x = m_partiPos[i].x;
 					pos.y = m_partiPos[i].y;
 					pos.z = 0.0f;
-					speed.x = (Rand()-0.5f)*0.5f;
-					speed.y = (0.3f+Rand()*0.3f);
+					speed.x = (Math::Rand()-0.5f)*0.5f;
+					speed.y = (0.3f+Math::Rand()*0.3f);
 					speed.z = 0.0f;
-					dim.x = 0.005f+Rand()*0.005f;
+					dim.x = 0.005f+Math::Rand()*0.005f;
 					dim.y = dim.x/0.75f;
 					m_particule->CreateParticule(pos, speed, dim, PARTISCRAPS,
-												 Rand()*0.5f+0.5f, 2.0f, 0.0f,
+												 Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
 												 SH_INTERFACE);
 				}
 				if ( m_partiPhase[i] == 3 )  // smoke?
@@ -3546,22 +3544,22 @@ void CMainDialog::FrameParticule(float rTime)
 					pos.x = m_partiPos[i].x;
 					pos.y = m_partiPos[i].y;
 					pos.z = 0.0f;
-					pos.x += (Rand()-0.5f)*0.03f;
-					pos.y += (Rand()-0.5f)*0.03f;
-					speed.x = (Rand()-0.5f)*0.2f;
-					speed.y = Rand()*0.5f;
+					pos.x += (Math::Rand()-0.5f)*0.03f;
+					pos.y += (Math::Rand()-0.5f)*0.03f;
+					speed.x = (Math::Rand()-0.5f)*0.2f;
+					speed.y = Math::Rand()*0.5f;
 					speed.z = 0.0f;
-					dim.x = 0.03f+Rand()*0.07f;
+					dim.x = 0.03f+Math::Rand()*0.07f;
 					dim.y = dim.x/0.75f;
 					m_particule->CreateParticule(pos, speed, dim, PARTICRASH,
-												 Rand()*0.4f+0.4f, 0.0f, 0.0f,
+												 Math::Rand()*0.4f+0.4f, 0.0f, 0.0f,
 												 SH_INTERFACE);
 				}
 			}
 			else
 			{
 				m_partiPhase[i] = 0;
-				m_partiTime[i] = 2.0f+Rand()*4.0f;
+				m_partiTime[i] = 2.0f+Math::Rand()*4.0f;
 			}
 		}
 	}
@@ -3570,10 +3568,10 @@ void CMainDialog::FrameParticule(float rTime)
 
 // Some nice particles following the mouse.
 
-void CMainDialog::NiceParticule(FPOINT mouse, bool bPress)
+void CMainDialog::NiceParticule(Math::Point mouse, bool bPress)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 
 	if ( !m_bRain )  return;
 	if ( (m_phase == PHASE_SIMUL ||
@@ -3587,13 +3585,13 @@ void CMainDialog::NiceParticule(FPOINT mouse, bool bPress)
 		pos.x = mouse.x;
 		pos.y = mouse.y;
 		pos.z = 0.0f;
-		speed.x = (Rand()-0.5f)*0.5f;
-		speed.y = (0.3f+Rand()*0.3f);
+		speed.x = (Math::Rand()-0.5f)*0.5f;
+		speed.y = (0.3f+Math::Rand()*0.3f);
 		speed.z = 0.0f;
-		dim.x = 0.005f+Rand()*0.005f;
+		dim.x = 0.005f+Math::Rand()*0.005f;
 		dim.y = dim.x/0.75f;
 		m_particule->CreateParticule(pos, speed, dim, PARTISCRAPS,
-									 Rand()*0.5f+0.5f, 2.0f, 0.0f,
+									 Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
 									 SH_INTERFACE);
 	}
 	else
@@ -3601,14 +3599,14 @@ void CMainDialog::NiceParticule(FPOINT mouse, bool bPress)
 		pos.x = mouse.x;
 		pos.y = mouse.y;
 		pos.z = 0.0f;
-		speed.x = (Rand()-0.5f)*0.5f;
-		speed.y = (0.3f+Rand()*0.3f);
+		speed.x = (Math::Rand()-0.5f)*0.5f;
+		speed.y = (0.3f+Math::Rand()*0.3f);
 		speed.z = 0.0f;
-		dim.x = 0.01f+Rand()*0.01f;
+		dim.x = 0.01f+Math::Rand()*0.01f;
 		dim.y = dim.x/0.75f;
 		m_particule->CreateParticule(pos, speed, dim,
 									 (ParticuleType)(PARTILENS1+rand()%3),
-									 Rand()*0.5f+0.5f, 2.0f, 0.0f,
+									 Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
 									 SH_INTERFACE);
 	}
 }
@@ -4037,9 +4035,9 @@ void CMainDialog::NameDelete()
 
 bool EqColor(const D3DCOLORVALUE &c1, const D3DCOLORVALUE &c2)
 {
-	return (Abs(c1.r-c2.r) < 0.01f &&
-			Abs(c1.g-c2.g) < 0.01f &&
-			Abs(c1.b-c2.b) < 0.01f );
+	return (fabs(c1.r-c2.r) < 0.01f &&
+			fabs(c1.g-c2.g) < 0.01f &&
+			fabs(c1.b-c2.b) < 0.01f );
 }
 
 // Updates all the buttons for the character.
@@ -6026,7 +6024,7 @@ void CMainDialog::UpdateKey()
 	CWindow*	pw;
 	CScroll*	ps;
 	CKey*		pk;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	int			first, i;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
@@ -6092,10 +6090,10 @@ void CMainDialog::StartAbort()
 {
 	CWindow*	pw;
 	CButton*	pb;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	char		name[100];
 
-	StartDialog(FPOINT(0.3f, 0.8f), true, false, false);
+	StartDialog(Math::Point(0.3f, 0.8f), true, false, false);
 	m_bDialogDelete = false;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
@@ -6174,10 +6172,10 @@ void CMainDialog::StartDeleteObject()
 {
 	CWindow*	pw;
 	CButton*	pb;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	char		name[100];
 
-	StartDialog(FPOINT(0.7f, 0.3f), false, true, true);
+	StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
 	m_bDialogDelete = true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
@@ -6208,11 +6206,11 @@ void CMainDialog::StartDeleteGame(char *gamer)
 {
 	CWindow*	pw;
 	CButton*	pb;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	char		name[100];
 	char		text[100];
 
-	StartDialog(FPOINT(0.7f, 0.3f), false, true, true);
+	StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
 	m_bDialogDelete = true;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
@@ -6244,10 +6242,10 @@ void CMainDialog::StartQuit()
 {
 	CWindow*	pw;
 	CButton*	pb;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	char		name[100];
 
-	StartDialog(FPOINT(0.6f, 0.3f), false, true, true);
+	StartDialog(Math::Point(0.6f, 0.3f), false, true, true);
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
 	if ( pw == 0 )  return;
@@ -6273,11 +6271,11 @@ void CMainDialog::StartQuit()
 
 // Beginning of displaying a dialog.
 
-void CMainDialog::StartDialog(FPOINT dim, bool bFire, bool bOK, bool bCancel)
+void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCancel)
 {
 	CWindow*	pw;
 	CButton*	pb;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	char		name[100];
 
 	StartSuspend();
@@ -6363,7 +6361,7 @@ void CMainDialog::FrameDialog(float rTime)
 {
 	CWindow*	pw;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim, dpos, ddim;
+	Math::Point		dim, dpos, ddim;
 	float		zoom;
 	int			i;
 
@@ -6378,7 +6376,7 @@ void CMainDialog::FrameDialog(float rTime)
 		{
 			if ( m_dialogTime < 0.50f )
 			{
-				zoom = Bounce(m_dialogTime/0.50f);
+				zoom = Math::Bounce(m_dialogTime/0.50f);
 			}
 			else
 			{
@@ -6416,44 +6414,44 @@ void CMainDialog::FrameDialog(float rTime)
 	for ( i=0 ; i<2 ; i++ )
 	{
 		// Bottom.
-		pos.x = dpos.x + ddim.x*Rand();
+		pos.x = dpos.x + ddim.x*Math::Rand();
 		pos.y = dpos.y;
-		pos.x += (Rand()-0.5f)*(6.0f/640.0f);
-		pos.y += Rand()*(16.0f/480.0f)-(10.0f/480.0f);
-		dim.x = 0.01f+Rand()*0.01f;
+		pos.x += (Math::Rand()-0.5f)*(6.0f/640.0f);
+		pos.y += Math::Rand()*(16.0f/480.0f)-(10.0f/480.0f);
+		dim.x = 0.01f+Math::Rand()*0.01f;
 		dim.y = dim.x/0.75f;
 		m_particule->CreateParticule(pos, speed, dim,
 									 (ParticuleType)(PARTILENS1+rand()%3),
 									 1.0f, 0.0f, 0.0f, SH_INTERFACE);
 
 		// Top.
-		pos.x = dpos.x + ddim.x*Rand();
+		pos.x = dpos.x + ddim.x*Math::Rand();
 		pos.y = dpos.y + ddim.y;
-		pos.x += (Rand()-0.5f)*(6.0f/640.0f);
-		pos.y -= Rand()*(16.0f/480.0f)-(10.0f/480.0f);
-		dim.x = 0.01f+Rand()*0.01f;
+		pos.x += (Math::Rand()-0.5f)*(6.0f/640.0f);
+		pos.y -= Math::Rand()*(16.0f/480.0f)-(10.0f/480.0f);
+		dim.x = 0.01f+Math::Rand()*0.01f;
 		dim.y = dim.x/0.75f;
 		m_particule->CreateParticule(pos, speed, dim,
 									 (ParticuleType)(PARTILENS1+rand()%3),
 									 1.0f, 0.0f, 0.0f, SH_INTERFACE);
 
 		// Left.
-		pos.y = dpos.y + ddim.y*Rand();
+		pos.y = dpos.y + ddim.y*Math::Rand();
 		pos.x = dpos.x;
-		pos.x += Rand()*(16.0f/640.0f)-(10.0f/640.0f);
-		pos.y += (Rand()-0.5f)*(6.0f/480.0f);
-		dim.x = 0.01f+Rand()*0.01f;
+		pos.x += Math::Rand()*(16.0f/640.0f)-(10.0f/640.0f);
+		pos.y += (Math::Rand()-0.5f)*(6.0f/480.0f);
+		dim.x = 0.01f+Math::Rand()*0.01f;
 		dim.y = dim.x/0.75f;
 		m_particule->CreateParticule(pos, speed, dim,
 									 (ParticuleType)(PARTILENS1+rand()%3),
 									 1.0f, 0.0f, 0.0f, SH_INTERFACE);
 
 		// Right.
-		pos.y = dpos.y + ddim.y*Rand();
+		pos.y = dpos.y + ddim.y*Math::Rand();
 		pos.x = dpos.x + ddim.x;
-		pos.x -= Rand()*(16.0f/640.0f)-(10.0f/640.0f);
-		pos.y += (Rand()-0.5f)*(6.0f/480.0f);
-		dim.x = 0.01f+Rand()*0.01f;
+		pos.x -= Math::Rand()*(16.0f/640.0f)-(10.0f/640.0f);
+		pos.y += (Math::Rand()-0.5f)*(6.0f/480.0f);
+		dim.x = 0.01f+Math::Rand()*0.01f;
 		dim.y = dim.x/0.75f;
 		m_particule->CreateParticule(pos, speed, dim,
 									 (ParticuleType)(PARTILENS1+rand()%3),

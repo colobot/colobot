@@ -16,14 +16,13 @@
 
 // taskfireant.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
@@ -81,7 +80,7 @@ bool CTaskFireAnt::EventProcess(const Event &event)
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
-		cirSpeed = Direction(a, g)*2.0f;
+		cirSpeed = Math::Direction(a, g)*2.0f;
 		if ( cirSpeed >  2.0f )  cirSpeed =  2.0f;
 		if ( cirSpeed < -2.0f )  cirSpeed = -2.0f;
 
@@ -113,7 +112,7 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 	m_physics->SetMotorSpeed(D3DVECTOR(0.0f, 0.0f, 0.0f));
 
 	pos = m_object->RetPosition(0);
-	m_angle = RotateAngle(m_impact.x-pos.x, pos.z-m_impact.z);  // CW !
+	m_angle = Math::RotateAngle(m_impact.x-pos.x, pos.z-m_impact.z);  // CW !
 
 	m_phase = TFA_TURN;
 	m_speed = 1.0f/1.0f;
@@ -132,7 +131,7 @@ Error CTaskFireAnt::IsEnded()
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		angle, dist;
 	int			i, channel;
 
@@ -143,8 +142,8 @@ Error CTaskFireAnt::IsEnded()
 	if ( m_phase == TFA_TURN )  // rotation ?
 	{
 		angle = m_object->RetAngleY(0);
-		angle = NormAngle(angle);  // 0..2*PI
-		if ( !TestAngle(angle, m_angle-PI*0.05f, m_angle+PI*0.05f) )  return ERR_CONTINUE;
+		angle = Math::NormAngle(angle);  // 0..2*Math::PI
+		if ( !Math::TestAngle(angle, m_angle-Math::PI*0.05f, m_angle+Math::PI*0.05f) )  return ERR_CONTINUE;
 
 		m_physics->SetMotorSpeedZ(0.0f);  // rotation ended
 
@@ -181,9 +180,9 @@ Error CTaskFireAnt::IsEnded()
 				pos = Transform(*mat, pos);
 				dist = Length(pos, m_impact);
 				speed = m_impact-pos;
-				speed.x += (Rand()-0.5f)*dist*1.2f;
-				speed.y += (Rand()-0.5f)*dist*0.4f+50.0f;
-				speed.z += (Rand()-0.5f)*dist*1.2f;
+				speed.x += (Math::Rand()-0.5f)*dist*1.2f;
+				speed.y += (Math::Rand()-0.5f)*dist*0.4f+50.0f;
+				speed.z += (Math::Rand()-0.5f)*dist*1.2f;
 				dim.x = 1.0f;
 				dim.y = dim.x;
 				channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN2, 2.0f, 100.0f, 0.0f);

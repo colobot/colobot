@@ -33,14 +33,14 @@ public:
 	CTarget(CInstanceManager* iMan);
 	~CTarget();
 
-	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
 	bool		EventProcess(const Event &event);
 	void		Draw();
-	bool		GetTooltip(FPOINT pos, char* name);
+	bool		GetTooltip(Math::Point pos, char* name);
 
 protected:
-	CObject*	DetectFriendObject(FPOINT pos);
+	CObject*	DetectFriendObject(Math::Point pos);
 
 protected:
 };

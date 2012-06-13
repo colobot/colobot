@@ -19,6 +19,7 @@
 #pragma once
 
 
+#include "math/point.h"
 #include "graphics/d3d/d3dengine.h"
 #include "sound/sound.h"
 
@@ -217,12 +218,12 @@ struct Particule
 	D3DVECTOR		speed;		// speed of displacement
 	float			windSensitivity;
 	short			bounce;		// number of rebounds
-	FPOINT			dim;		// dimensions of the rectangle
+	Math::Point			dim;		// dimensions of the rectangle
 	float			zoom;		// zoom (0..1)
 	float			angle;		// angle of rotation
 	float			intensity;	// intensity
-	FPOINT			texSup;		// coordinated upper texture
-	FPOINT			texInf;		// coordinated lower texture
+	Math::Point			texSup;		// coordinated upper texture
+	Math::Point			texInf;		// coordinated lower texture
 	float			time;		// age of the particle (0..n)
 	float			phaseTime;	// age at the beginning of phase
 	float			testTime;	// time since last test
@@ -265,22 +266,22 @@ public:
 
 	void		FlushParticule();
 	void		FlushParticule(int sheet);
-	int			CreateParticule(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
+	int			CreateParticule(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
 	int			CreateFrag(D3DVECTOR pos, D3DVECTOR speed, D3DTriangle *triangle, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
 	int			CreatePart(D3DVECTOR pos, D3DVECTOR speed, ParticuleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, float windSensitivity=1.0f, int sheet=0);
-	int			CreateRay(D3DVECTOR pos, D3DVECTOR goal, ParticuleType type, FPOINT dim, float duration=1.0f, int sheet=0);
-	int			CreateTrack(D3DVECTOR pos, D3DVECTOR speed, FPOINT dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
+	int			CreateRay(D3DVECTOR pos, D3DVECTOR goal, ParticuleType type, Math::Point dim, float duration=1.0f, int sheet=0);
+	int			CreateTrack(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
 	void		CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2, const D3DVECTOR &p3, const D3DVECTOR &p4, ParticuleType type);
 	void		DeleteParticule(ParticuleType type);
 	void		DeleteParticule(int channel);
 	void		SetObjectLink(int channel, CObject *object);
 	void		SetObjectFather(int channel, CObject *object);
 	void		SetPosition(int channel, D3DVECTOR pos);
-	void		SetDimension(int channel, FPOINT dim);
+	void		SetDimension(int channel, Math::Point dim);
 	void		SetZoom(int channel, float zoom);
 	void		SetAngle(int channel, float angle);
 	void		SetIntensity(int channel, float intensity);
-	void		SetParam(int channel, D3DVECTOR pos, FPOINT dim, float zoom, float angle, float intensity);
+	void		SetParam(int channel, D3DVECTOR pos, Math::Point dim, float zoom, float angle, float intensity);
 	void		SetPhase(int channel, ParticulePhase phase, float duration);
 	bool		GetPosition(int channel, D3DVECTOR &pos);
 

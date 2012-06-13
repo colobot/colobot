@@ -16,14 +16,13 @@
 
 // taskmanip.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "math/old/math3d.h"
@@ -91,7 +90,7 @@ bool CTaskManip::EventProcess(const Event &event)
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
-		cirSpeed = Direction(a, g)*1.0f;
+		cirSpeed = Math::Direction(a, g)*1.0f;
 		if ( m_physics->RetType() == TYPE_FLYING )  // flying on the ground?
 		{
 			cirSpeed *= 4.0f;  // more fishing
@@ -206,47 +205,47 @@ void CTaskManip::InitAngle()
 	}
 	if ( m_arm == TMA_FFRONT )
 	{
-		m_finalAngle[0] =   35.0f*PI/180.0f;  // arm
-		m_finalAngle[1] =  -95.0f*PI/180.0f;  // forearm
-		m_finalAngle[2] =  -27.0f*PI/180.0f;  // hand
+		m_finalAngle[0] =   35.0f*Math::PI/180.0f;  // arm
+		m_finalAngle[1] =  -95.0f*Math::PI/180.0f;  // forearm
+		m_finalAngle[2] =  -27.0f*Math::PI/180.0f;  // hand
 	}
 	if ( m_arm == TMA_FBACK )
 	{
-		m_finalAngle[0] =  145.0f*PI/180.0f;  // arm
-		m_finalAngle[1] =   95.0f*PI/180.0f;  // forearm
-		m_finalAngle[2] =   27.0f*PI/180.0f;  // hand
+		m_finalAngle[0] =  145.0f*Math::PI/180.0f;  // arm
+		m_finalAngle[1] =   95.0f*Math::PI/180.0f;  // forearm
+		m_finalAngle[2] =   27.0f*Math::PI/180.0f;  // hand
 	}
 	if ( m_arm == TMA_POWER )
 	{
-		m_finalAngle[0] =   95.0f*PI/180.0f;  // arm
-		m_finalAngle[1] =  125.0f*PI/180.0f;  // forearm
-		m_finalAngle[2] =   50.0f*PI/180.0f;  // hand
+		m_finalAngle[0] =   95.0f*Math::PI/180.0f;  // arm
+		m_finalAngle[1] =  125.0f*Math::PI/180.0f;  // forearm
+		m_finalAngle[2] =   50.0f*Math::PI/180.0f;  // hand
 	}
 	if ( m_arm == TMA_OTHER )
 	{
 		if ( m_height <= 3.0f )
 		{
-			m_finalAngle[0] =  55.0f*PI/180.0f;  // arm
-			m_finalAngle[1] = -90.0f*PI/180.0f;  // forearm
-			m_finalAngle[2] = -35.0f*PI/180.0f;  // hand
+			m_finalAngle[0] =  55.0f*Math::PI/180.0f;  // arm
+			m_finalAngle[1] = -90.0f*Math::PI/180.0f;  // forearm
+			m_finalAngle[2] = -35.0f*Math::PI/180.0f;  // hand
 		}
 		else
 		{
-			m_finalAngle[0] =  70.0f*PI/180.0f;  // arm
-			m_finalAngle[1] = -90.0f*PI/180.0f;  // forearm
-			m_finalAngle[2] = -50.0f*PI/180.0f;  // hand
+			m_finalAngle[0] =  70.0f*Math::PI/180.0f;  // arm
+			m_finalAngle[1] = -90.0f*Math::PI/180.0f;  // forearm
+			m_finalAngle[2] = -50.0f*Math::PI/180.0f;  // hand
 		}
 	}
 
 	if ( m_hand == TMH_OPEN )  // open clamp?
 	{
-		m_finalAngle[3] = -PI*0.10f;  // clamp close
-		m_finalAngle[4] =  PI*0.10f;  // clamp remote
+		m_finalAngle[3] = -Math::PI*0.10f;  // clamp close
+		m_finalAngle[4] =  Math::PI*0.10f;  // clamp remote
 	}
 	if ( m_hand == TMH_CLOSE )  // clamp closed?
 	{
-		m_finalAngle[3] =  PI*0.05f;  // clamp close
-		m_finalAngle[4] = -PI*0.05f;  // clamp remote
+		m_finalAngle[3] =  Math::PI*0.05f;  // clamp close
+		m_finalAngle[4] = -Math::PI*0.05f;  // clamp remote
 	}
 
 	for ( i=0 ; i<5 ; i++ )
@@ -257,9 +256,9 @@ void CTaskManip::InitAngle()
 	max = 0.0f;
 	for ( i=0 ; i<5 ; i++ )
 	{
-		max = Max(max, Abs(m_initialAngle[i] - m_finalAngle[i]));
+		max = Math::Max(max, fabs(m_initialAngle[i] - m_finalAngle[i]));
 	}
-	m_speed = (PI*1.0f)/max;
+	m_speed = (Math::PI*1.0f)/max;
 	if ( m_speed > 3.0f )  m_speed = 3.0f;  // piano, ma non troppo (?)
 
 	energy = 0.0f;
@@ -315,7 +314,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	m_speed    = 1.0f/1.5f;
 
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 	oAngle = iAngle;
 
 	m_bError = true;  // operation impossible
@@ -459,7 +458,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 			{
 				return ERR_MANIP_NIL;
 			}
-			m_angle += PI;
+			m_angle += Math::PI;
 			m_move = -1.0f;  // back necessary
 		}
 		if ( m_arm == TMA_POWER )
@@ -508,7 +507,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
 	if ( m_move != 0.0f )  // forward or backward?
 	{
-		m_timeLimit = m_physics->RetLinTimeLength(Abs(len))*1.5f;
+		m_timeLimit = m_physics->RetLinTimeLength(fabs(len))*1.5f;
 		if ( m_timeLimit < 0.5f )  m_timeLimit = 0.5f;
 	}
 
@@ -535,7 +534,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
 	if ( m_bSubm )
 	{
-		m_camera->StartCentering(m_object, PI*0.8f, 99.9f, 0.0f, 0.5f);
+		m_camera->StartCentering(m_object, Math::PI*0.8f, 99.9f, 0.0f, 0.5f);
 	}
 
 	m_physics->SetFreeze(true);  // it does not move
@@ -564,9 +563,9 @@ Error CTaskManip::IsEnded()
 	if ( m_bTurn )  // preliminary rotation?
 	{
 		angle = m_object->RetAngleY(0);
-		angle = NormAngle(angle);  // 0..2*PI
+		angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
-		if ( TestAngle(angle, m_angle-PI*0.01f, m_angle+PI*0.01f) )
+		if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
 		{
 			m_bTurn = false;  // rotation ended
 			m_physics->SetMotorSpeedZ(0.0f);
@@ -800,17 +799,17 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, D3DVECTOR &pos,
 
 	iPos   = m_object->RetPosition(0);
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 	if ( bAdvance && m_energy > 0.0f )
 	{
-		aLimit = 60.0f*PI/180.0f;
+		aLimit = 60.0f*Math::PI/180.0f;
 		dLimit = MARGIN_FRONT+10.0f;
 	}
 	else
 	{
-//?		aLimit = 7.0f*PI/180.0f;
-		aLimit = 15.0f*PI/180.0f;  //OK 1.9
+//?		aLimit = 7.0f*Math::PI/180.0f;
+		aLimit = 15.0f*Math::PI/180.0f;  //OK 1.9
 		dLimit = MARGIN_FRONT;
 	}
 
@@ -848,12 +847,12 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, D3DVECTOR &pos,
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
 		oPos = pObj->RetPosition(0);
-		distance = Abs(Length(oPos, iPos)-TAKE_DIST);
+		distance = fabs(Length(oPos, iPos)-TAKE_DIST);
 		f = 1.0f-distance/50.0f;
 		if ( f < 0.5f )  f = 0.5f;
 
-		angle = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-		if ( !TestAngle(angle, iAngle-aLimit*f, iAngle+aLimit*f) )  continue;
+		angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+		if ( !Math::TestAngle(angle, iAngle-aLimit*f, iAngle+aLimit*f) )  continue;
 
 		if ( distance < -dLimit ||
 			 distance >  dLimit )  continue;
@@ -891,17 +890,17 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, D3DVECTOR &pos,
 	int			i;
 
 	iPos   = m_object->RetPosition(0);
-	iAngle = m_object->RetAngleY(0)+PI;
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = m_object->RetAngleY(0)+Math::PI;
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 	if ( bAdvance && m_energy > 0.0f )
 	{
-		aLimit = 60.0f*PI/180.0f;
+		aLimit = 60.0f*Math::PI/180.0f;
 		dLimit = MARGIN_BACK+5.0f;
 	}
 	else
 	{
-		aLimit = 7.0f*PI/180.0f;
+		aLimit = 7.0f*Math::PI/180.0f;
 		dLimit = MARGIN_BACK;
 	}
 
@@ -939,12 +938,12 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, D3DVECTOR &pos,
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
 		oPos = pObj->RetPosition(0);
-		distance = Abs(Length(oPos, iPos)-TAKE_DIST);
+		distance = fabs(Length(oPos, iPos)-TAKE_DIST);
 		f = 1.0f-distance/50.0f;
 		if ( f < 0.5f )  f = 0.5f;
 
-		angle = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-		if ( !TestAngle(angle, iAngle-aLimit*f, iAngle+aLimit*f) )  continue;
+		angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+		if ( !Math::TestAngle(angle, iAngle-aLimit*f, iAngle+aLimit*f) )  continue;
 
 		if ( distance < -dLimit ||
 			 distance >  dLimit )  continue;
@@ -992,16 +991,16 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, D3DVECTOR &pos,
 
 	if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 	if ( bAdvance && m_energy > 0.0f )
 	{
-		aLimit = 60.0f*PI/180.0f;
+		aLimit = 60.0f*Math::PI/180.0f;
 		dLimit = MARGIN_FRIEND+10.0f;
 	}
 	else
 	{
-		aLimit = 7.0f*PI/180.0f;
+		aLimit = 7.0f*Math::PI/180.0f;
 		dLimit = MARGIN_FRIEND;
 	}
 
@@ -1064,34 +1063,34 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, D3DVECTOR &pos,
 		if ( type == OBJECT_TOWER    ||
 			 type == OBJECT_RESEARCH )
 		{
-			oLimit = 45.0f*PI/180.0f;
+			oLimit = 45.0f*Math::PI/180.0f;
 		}
 		else if ( type == OBJECT_ENERGY )
 		{
-			oLimit = 90.0f*PI/180.0f;
+			oLimit = 90.0f*Math::PI/180.0f;
 		}
 		else if ( type == OBJECT_LABO )
 		{
-			oLimit = 120.0f*PI/180.0f;
+			oLimit = 120.0f*Math::PI/180.0f;
 		}
 		else if ( type == OBJECT_NUCLEAR )
 		{
-			oLimit = 45.0f*PI/180.0f;
+			oLimit = 45.0f*Math::PI/180.0f;
 		}
 		else
 		{
-			oLimit = 45.0f*PI/180.0f;
-			oAngle += PI;  // is behind
+			oLimit = 45.0f*Math::PI/180.0f;
+			oAngle += Math::PI;  // is behind
 		}
-		oAngle = NormAngle(oAngle);  // 0..2*PI
-		angle = RotateAngle(iPos.x-oPos.x, oPos.z-iPos.z);  // CW !
-		if ( !TestAngle(angle, oAngle-oLimit, oAngle+oLimit) )  continue;
+		oAngle = Math::NormAngle(oAngle);  // 0..2*Math::PI
+		angle = Math::RotateAngle(iPos.x-oPos.x, oPos.z-iPos.z);  // CW !
+		if ( !Math::TestAngle(angle, oAngle-oLimit, oAngle+oLimit) )  continue;
 
-		distance = Abs(Length(oPos, iPos)-TAKE_DIST);
+		distance = fabs(Length(oPos, iPos)-TAKE_DIST);
 		if ( distance <= dLimit )
 		{
-			angle = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-			if ( TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
+			angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+			if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
 			{
 				character = pObj->RetCharacter();
 				height = character->posPower.y;
@@ -1152,7 +1151,7 @@ bool CTaskManip::TruckTakeObject()
 			pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
-			fret->SetAngleZ(0, PI/2.0f);
+			fret->SetAngleZ(0, Math::PI/2.0f);
 			fret->SetAngleY(0, 0.0f);
 		}
 
@@ -1184,7 +1183,7 @@ bool CTaskManip::TruckTakeObject()
 			pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
-			fret->SetAngleZ(0, PI/2.0f);
+			fret->SetAngleZ(0, Math::PI/2.0f);
 			fret->SetAngleY(0, 0.0f);
 		}
 
@@ -1203,7 +1202,7 @@ bool CTaskManip::TruckTakeObject()
 		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
-		fret->SetAngleZ(0, PI/2.0f);
+		fret->SetAngleZ(0, Math::PI/2.0f);
 		fret->SetAngleY(0, 0.0f);
 
 		m_object->SetFret(fret);  // takes
@@ -1218,7 +1217,7 @@ bool CTaskManip::TruckTakeObject()
 		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
-		fret->SetAngleZ(0, PI/2.0f);
+		fret->SetAngleZ(0, Math::PI/2.0f);
 		fret->SetAngleY(0, 0.0f);
 		fret->SetTruckPart(3);  // takes with the hand
 
@@ -1242,7 +1241,7 @@ bool CTaskManip::TruckTakeObject()
 		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
-		fret->SetAngleZ(0, PI/2.0f);
+		fret->SetAngleZ(0, Math::PI/2.0f);
 		fret->SetAngleY(0, 0.0f);
 
 		m_object->SetFret(fret);  // takes
@@ -1272,7 +1271,7 @@ bool CTaskManip::TruckDeposeObject()
 		pos = Transform(*mat, D3DVECTOR(0.0f, 1.0f, 0.0f));
 		m_terrain->MoveOnFloor(pos);
 		fret->SetPosition(0, pos);
-		fret->SetAngleY(0, m_object->RetAngleY(0)+PI/2.0f);
+		fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, 0.0f);
 		fret->FloorAdjust();  // plate well on the ground
@@ -1291,7 +1290,7 @@ bool CTaskManip::TruckDeposeObject()
 		pos = Transform(*mat, D3DVECTOR(0.0f, 1.0f, 0.0f));
 		m_terrain->MoveOnFloor(pos);
 		fret->SetPosition(0, pos);
-		fret->SetAngleY(0, m_object->RetAngleY(0)+PI/2.0f);
+		fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, 0.0f);
 

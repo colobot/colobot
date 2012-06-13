@@ -19,7 +19,9 @@
 #pragma once
 
 
-#include "common/struct.h"
+#include "common/event.h"
+#include "common/modfile.h"
+#include "math/point.h"
 
 
 class CInstanceManager;
@@ -60,11 +62,11 @@ protected:
 	void		ReadScript(char *filename);
 	void		BBoxCompute(D3DVECTOR &min, D3DVECTOR &max);
 	bool		IsMappingSelectPlausible(D3DMaping D3Dmode);
-	void		MappingSelect(int mode, int rotate, bool bMirrorX, bool bMirrorY, FPOINT ti, FPOINT ts, char *texName);
-	void		MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bMirrorY, FPOINT ti, FPOINT ts, char *texName);
+	void		MappingSelect(int mode, int rotate, bool bMirrorX, bool bMirrorY, Math::Point ti, Math::Point ts, char *texName);
+	void		MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bMirrorY, Math::Point ti, Math::Point ts, char *texName);
 	D3DVECTOR	RetMappingCenter(D3DVECTOR pos, D3DVECTOR min);
-	void		MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool bMirrorY, FPOINT ti, FPOINT ts, char *texName);
-	void		MappingSelectFace(int mode, int rotate, bool bMirrorX, bool bMirrorY, FPOINT ti, FPOINT ts, char *texName);
+	void		MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool bMirrorY, Math::Point ti, Math::Point ts, char *texName);
+	void		MappingSelectFace(int mode, int rotate, bool bMirrorX, bool bMirrorY, Math::Point ti, Math::Point ts, char *texName);
 	void		MappingSelect2(int texNum2, int subdiv, int offsetU, int offsetV, bool bMirrorX, bool bMirrorY);
 	void		MappingSelectPlane2(int mode, bool bMirrorX, bool bMirrorY);
 	void		MappingSelectSpherical2(bool bMirrorX, bool bMirrorY);
@@ -110,8 +112,8 @@ protected:
 	int				m_textureRotate;
 	bool			m_bTextureMirrorX;
 	bool			m_bTextureMirrorY;
-	FPOINT			m_textureInf;
-	FPOINT			m_textureSup;
+	Math::Point			m_textureInf;
+	Math::Point			m_textureSup;
 	int				m_texturePart;
 	int				m_textureRank;
 	char			m_textureName[20];

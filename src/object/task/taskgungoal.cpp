@@ -16,8 +16,6 @@
 
 // taskgungoal.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -104,7 +102,7 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
 	}
 	else
 	{
-		speedV = 1.0f/(Abs(m_finalDirV-m_initialDirV)*1.0f);
+		speedV = 1.0f/(fabs(m_finalDirV-m_initialDirV)*1.0f);
 	}
 
 	m_initialDirH = m_object->RetGunGoalH();
@@ -118,10 +116,10 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
 	}
 	else
 	{
-		speedH = 1.0f/(Abs(m_finalDirH-m_initialDirH)*1.0f);
+		speedH = 1.0f/(fabs(m_finalDirH-m_initialDirH)*1.0f);
 	}
 
-	m_speed = Min(speedV, speedH);
+	m_speed = Math::Min(speedV, speedH);
 
 	if ( m_finalDirV != m_initialDirV ||
 		 m_finalDirH != m_initialDirH )

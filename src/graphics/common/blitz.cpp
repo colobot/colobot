@@ -14,14 +14,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "graphics/d3d/d3dutil.h"
@@ -75,7 +75,7 @@ void CBlitz::Flush()
 
 	for ( i=0 ; i<BLITZMAX ; i++ )
 	{
-		m_shift[i] = FPOINT(0.0f, 0.0f);
+		m_shift[i] = Math::Point(0.0f, 0.0f);
 		m_width[i] = 1.0f;
 	}
 }
@@ -114,11 +114,11 @@ bool CBlitz::EventFrame(const Event &event)
 		if ( m_progress >= 1.0f )
 		{
 #if 1
-			m_pos.x = (Rand()-0.5f)*(3200.0f-200.0f);
-			m_pos.z = (Rand()-0.5f)*(3200.0f-200.0f);
+			m_pos.x = (Math::Rand()-0.5f)*(3200.0f-200.0f);
+			m_pos.z = (Math::Rand()-0.5f)*(3200.0f-200.0f);
 #else
-			m_pos.x = (Rand()-0.5f)*(3200.0f-2800.0f);
-			m_pos.z = (Rand()-0.5f)*(3200.0f-2800.0f);
+			m_pos.x = (Math::Rand()-0.5f)*(3200.0f-2800.0f);
+			m_pos.z = (Math::Rand()-0.5f)*(3200.0f-2800.0f);
 #endif
 			m_pos.y = 0.0f;
 
@@ -179,15 +179,15 @@ bool CBlitz::EventFrame(const Event &event)
 			{
 				max += 0.4f;
 
-				m_shift[i].x += (Rand()-0.5f)*max*2.0f;
+				m_shift[i].x += (Math::Rand()-0.5f)*max*2.0f;
 				if ( m_shift[i].x < -max )  m_shift[i].x = -max;
 				if ( m_shift[i].x >  max )  m_shift[i].x =  max;
 
-				m_shift[i].y += (Rand()-0.5f)*max*2.0f;
+				m_shift[i].y += (Math::Rand()-0.5f)*max*2.0f;
 				if ( m_shift[i].y < -max )  m_shift[i].y = -max;
 				if ( m_shift[i].y >  max )  m_shift[i].y =  max;
 
-				m_width[i] += (Rand()-0.5f)*2.0f;
+				m_width[i] += (Math::Rand()-0.5f)*2.0f;
 				if ( m_width[i] < 1.0f )  m_width[i] = 1.0f;
 				if ( m_width[i] > 6.0f )  m_width[i] = 6.0f;
 			}
@@ -199,7 +199,7 @@ bool CBlitz::EventFrame(const Event &event)
 		{
 			m_phase    = BPH_WAIT;
 			m_progress = 0.0f;
-			m_speed    = 1.0f/(1.0f+Rand()*m_delay);
+			m_speed    = 1.0f/(1.0f+Math::Rand()*m_delay);
 		}
 	}
 
@@ -215,7 +215,7 @@ void CBlitz::Draw()
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	D3DVECTOR	corner[4], eye, n, p, p1, p2;
 	D3DMATRIX	matrix;
-	FPOINT		texInf, texSup, rot;
+	Math::Point		texInf, texSup, rot;
 	float		a;
 	int			i;
 
@@ -237,7 +237,7 @@ void CBlitz::Draw()
 
 	p1 = m_pos;
 	eye = m_engine->RetEyePt();
-	a = RotateAngle(eye.x-p1.x, eye.z-p1.z);
+	a = Math::RotateAngle(eye.x-p1.x, eye.z-p1.z);
 	n = Normalize(p1-eye);
 
 	for ( i=0 ; i<BLITZMAX-1 ; i++ )
@@ -247,22 +247,22 @@ void CBlitz::Draw()
 
 		p = p1;
 		p.x += m_width[i];
-		rot = RotatePoint(FPOINT(p1.x, p1.z), a+PI/2.0f, FPOINT(p.x, p.z));
+		rot = Math::RotatePoint(Math::Point(p1.x, p1.z), a+Math::PI/2.0f, Math::Point(p.x, p.z));
 		corner[0].x = rot.x+m_shift[i].x;
 		corner[0].y = p1.y;
 		corner[0].z = rot.y+m_shift[i].y;
-		rot = RotatePoint(FPOINT(p1.x, p1.z), a-PI/2.0f, FPOINT(p.x, p.z));
+		rot = Math::RotatePoint(Math::Point(p1.x, p1.z), a-Math::PI/2.0f, Math::Point(p.x, p.z));
 		corner[1].x = rot.x+m_shift[i].x;
 		corner[1].y = p1.y;
 		corner[1].z = rot.y+m_shift[i].y;
 
 		p = p2;
 		p.x += m_width[i+1];
-		rot = RotatePoint(FPOINT(p2.x, p2.z), a+PI/2.0f, FPOINT(p.x, p.z));
+		rot = Math::RotatePoint(Math::Point(p2.x, p2.z), a+Math::PI/2.0f, Math::Point(p.x, p.z));
 		corner[2].x = rot.x+m_shift[i+1].x;
 		corner[2].y = p2.y;
 		corner[2].z = rot.y+m_shift[i+1].y;
-		rot = RotatePoint(FPOINT(p2.x, p2.z), a-PI/2.0f, FPOINT(p.x, p.z));
+		rot = Math::RotatePoint(Math::Point(p2.x, p2.z), a-Math::PI/2.0f, Math::Point(p.x, p.z));
 		corner[3].x = rot.x+m_shift[i+1].x;
 		corner[3].y = p2.y;
 		corner[3].z = rot.y+m_shift[i+1].y;
