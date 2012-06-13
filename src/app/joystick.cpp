@@ -16,7 +16,6 @@
 
 // joystick.cpp
 
-#define STRICT
 #define DIRECTINPUT_VERSION 0x0700
 
 #include <windows.h>

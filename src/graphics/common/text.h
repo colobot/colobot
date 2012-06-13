@@ -19,6 +19,7 @@
 #pragma once
 
 
+#include "math/point.h"
 #include "graphics/d3d/d3dengine.h"
 
 
@@ -73,14 +74,14 @@ public:
 
 	void		SetD3DDevice(LPDIRECT3DDEVICE7 device);
 
-	void		DrawText(char *string, char *format, int len, FPOINT pos, float width, int justif, float size, float stretch, int eol);
-	void		DrawText(char *string, char *format, FPOINT pos, float width, int justif, float size, float stretch, int eol);
-	void		DrawText(char *string, int len, FPOINT pos, float width, int justif, float size, float stretch, FontType font, int eol);
-	void		DrawText(char *string, FPOINT pos, float width, int justif, float size, float stretch, FontType font, int eol);
-	void		DimText(char *string, char *format, int len, FPOINT pos, int justif, float size, float stretch, FPOINT &start, FPOINT &end);
-	void		DimText(char *string, char *format, FPOINT pos, int justif, float size, float stretch, FPOINT &start, FPOINT &end);
-	void		DimText(char *string, int len, FPOINT pos, int justif, float size, float stretch, FontType font, FPOINT &start, FPOINT &end);
-	void		DimText(char *string, FPOINT pos, int justif, float size, float stretch, FontType font, FPOINT &start, FPOINT &end);
+	void		DrawText(char *string, char *format, int len, Math::Point pos, float width, int justif, float size, float stretch, int eol);
+	void		DrawText(char *string, char *format, Math::Point pos, float width, int justif, float size, float stretch, int eol);
+	void		DrawText(char *string, int len, Math::Point pos, float width, int justif, float size, float stretch, FontType font, int eol);
+	void		DrawText(char *string, Math::Point pos, float width, int justif, float size, float stretch, FontType font, int eol);
+	void		DimText(char *string, char *format, int len, Math::Point pos, int justif, float size, float stretch, Math::Point &start, Math::Point &end);
+	void		DimText(char *string, char *format, Math::Point pos, int justif, float size, float stretch, Math::Point &start, Math::Point &end);
+	void		DimText(char *string, int len, Math::Point pos, int justif, float size, float stretch, FontType font, Math::Point &start, Math::Point &end);
+	void		DimText(char *string, Math::Point pos, int justif, float size, float stretch, FontType font, Math::Point &start, Math::Point &end);
 
 	float		RetAscent(float size, FontType font);
 	float		RetDescent(float size, FontType font);
@@ -96,10 +97,10 @@ public:
 	int			Detect(char *string, int len, float offset, float size, float stretch, FontType font);
 
 protected:
-	void		DrawString(char *string, char *format, int len, FPOINT pos, float width, float size, float stretch, int eol);
-	void		DrawString(char *string, int len, FPOINT pos, float width, float size, float stretch, FontType font, int eol);
-	void		DrawColor(FPOINT pos, float size, float width, int color);
-	void		DrawChar(int character, FPOINT pos, float size, float stretch, FontType font);
+	void		DrawString(char *string, char *format, int len, Math::Point pos, float width, float size, float stretch, int eol);
+	void		DrawString(char *string, int len, Math::Point pos, float width, float size, float stretch, FontType font, int eol);
+	void		DrawColor(Math::Point pos, float size, float width, int color);
+	void		DrawChar(int character, Math::Point pos, float size, float stretch, FontType font);
 
 protected:
 	CInstanceManager* m_iMan;

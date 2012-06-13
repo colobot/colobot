@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -130,7 +128,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 	D3DMATRIX*	mat;
 	CPhysics*	physics;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	ObjectType	type;
 	float		zoom, angle, prog;
 	int			i;
@@ -254,7 +252,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 		{
 			for ( i=0 ; i<9 ; i++ )
 			{
-				angle = -m_progress*(PI/2.0f)+PI/2.0f;
+				angle = -m_progress*(Math::PI/2.0f)+Math::PI/2.0f;
 				m_object->SetAngleZ( 1+i,  angle);
 				m_object->SetAngleZ(10+i, -angle);
 			}
@@ -323,7 +321,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 			vehicle = SearchVehicle();
 			if ( vehicle != 0 )
 			{
-				vehicle->SetAngleY(0, angle+PI);
+				vehicle->SetAngleY(0, angle+Math::PI);
 				vehicle->SetZoom(0, m_progress);
 			}
 
@@ -339,13 +337,13 @@ bool CAutoFactory::EventProcess(const Event &event)
 
 #if 0
 				pos = m_fretPos;
-				pos.x += (Rand()-0.5f)*20.0f;
-				pos.z += (Rand()-0.5f)*20.0f;
+				pos.x += (Math::Rand()-0.5f)*20.0f;
+				pos.z += (Math::Rand()-0.5f)*20.0f;
 				pos.y += 1.0f;
-				speed.x = (Rand()-0.5f)*12.0f;
-				speed.z = (Rand()-0.5f)*12.0f;
-				speed.y = Rand()*12.0f;
-				dim.x = Rand()*12.0f+10.0f;
+				speed.x = (Math::Rand()-0.5f)*12.0f;
+				speed.z = (Math::Rand()-0.5f)*12.0f;
+				speed.y = Math::Rand()*12.0f;
+				dim.x = Math::Rand()*12.0f+10.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 #else
@@ -353,12 +351,12 @@ bool CAutoFactory::EventProcess(const Event &event)
 				pos = D3DVECTOR(-12.0f, 20.0f, -4.0f);  // position of chimney
 				pos = Transform(*mat, pos);
 				pos.y += 2.0f;
-				pos.x += (Rand()-0.5f)*2.0f;
-				pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;
+				pos.z += (Math::Rand()-0.5f)*2.0f;
 				speed.x = 0.0f;
 				speed.z = 0.0f;
-				speed.y = 6.0f+Rand()*6.0f;
-				dim.x = Rand()*1.5f+1.0f;
+				speed.y = 6.0f+Math::Rand()*6.0f;
+				dim.x = Math::Rand()*1.5f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
 #endif
@@ -387,7 +385,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 
 				vehicle->SetLock(false);  // vehicle useable
 //?				vehicle->RetPhysics()->RetBrain()->StartTaskAdvance(16.0f);
-				vehicle->SetAngleY(0, m_object->RetAngleY(0)+PI);
+				vehicle->SetAngleY(0, m_object->RetAngleY(0)+Math::PI);
 				vehicle->SetZoom(0, 1.0f);
 			}
 
@@ -405,7 +403,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 		{
 			for ( i=0 ; i<9 ; i++ )
 			{
-				angle = -(1.0f-m_progress)*(PI/2.0f)+PI/2.0f;
+				angle = -(1.0f-m_progress)*(Math::PI/2.0f)+Math::PI/2.0f;
 				m_object->SetAngleZ( 1+i,  angle);
 				m_object->SetAngleZ(10+i, -angle);
 			}
@@ -415,9 +413,9 @@ bool CAutoFactory::EventProcess(const Event &event)
 				m_lastParticule = m_time;
 
 				pos = m_fretPos;
-				pos.x += (Rand()-0.5f)*10.0f;
-				pos.z += (Rand()-0.5f)*10.0f;
-				pos.y += Rand()*10.0f;
+				pos.x += (Math::Rand()-0.5f)*10.0f;
+				pos.z += (Math::Rand()-0.5f)*10.0f;
+				pos.y += Math::Rand()*10.0f;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 				dim.x = 2.0f;
 				dim.y = dim.x;
@@ -428,8 +426,8 @@ bool CAutoFactory::EventProcess(const Event &event)
 		{
 			for ( i=0 ; i<9 ; i++ )
 			{
-				m_object->SetAngleZ( 1+i,  PI/2.0f);
-				m_object->SetAngleZ(10+i, -PI/2.0f);
+				m_object->SetAngleZ( 1+i,  Math::PI/2.0f);
+				m_object->SetAngleZ(10+i, -Math::PI/2.0f);
 			}
 
 			SoundManip(3.0f, 1.0f, 0.5f);
@@ -458,9 +456,9 @@ bool CAutoFactory::EventProcess(const Event &event)
 				m_lastParticule = m_time;
 
 				pos = m_fretPos;
-				pos.x += (Rand()-0.5f)*10.0f;
-				pos.z += (Rand()-0.5f)*10.0f;
-				pos.y += Rand()*10.0f;
+				pos.x += (Math::Rand()-0.5f)*10.0f;
+				pos.z += (Math::Rand()-0.5f)*10.0f;
+				pos.y += Math::Rand()*10.0f;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
 				dim.x = 2.0f;
 				dim.y = dim.x;
@@ -713,7 +711,7 @@ CObject* CAutoFactory::SearchVehicle()
 bool CAutoFactory::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, dim, ddim;
+	Math::Point		pos, dim, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

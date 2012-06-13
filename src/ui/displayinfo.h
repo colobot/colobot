@@ -51,7 +51,7 @@ public:
 protected:
 	bool		EventFrame(const Event &event);
 	void		HyperUpdate();
-	void		AdjustDisplayInfo(FPOINT wpos, FPOINT wdim);
+	void		AdjustDisplayInfo(Math::Point wpos, Math::Point wdim);
 	void		ChangeIndexButton(int index);
 	void		UpdateIndexButton();
 	void		UpdateCopyButton();
@@ -74,12 +74,12 @@ protected:
 
 	int			m_index;
 	CameraType	m_infoCamera;
-	FPOINT		m_infoNormalPos;
-	FPOINT		m_infoNormalDim;
-	FPOINT		m_infoActualPos;
-	FPOINT		m_infoActualDim;
-	FPOINT		m_infoFinalPos;
-	FPOINT		m_infoFinalDim;
+	Math::Point		m_infoNormalPos;
+	Math::Point		m_infoNormalDim;
+	Math::Point		m_infoActualPos;
+	Math::Point		m_infoActualDim;
+	Math::Point		m_infoFinalPos;
+	Math::Point		m_infoFinalDim;
 	int			m_lightSuppl;
 	bool		m_bEditLock;
 	bool		m_bInitPause;

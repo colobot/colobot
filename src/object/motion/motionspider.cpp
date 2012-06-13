@@ -16,14 +16,13 @@
 
 // motionspider.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/func.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -320,8 +319,8 @@ void CMotionSpider::CreatePhysics()
 	m_physics->SetLinMotionZ(MO_TERFORCE,   5.0f);
 	m_physics->SetLinMotionZ(MO_MOTACCEL,  10.0f);
 
-	m_physics->SetCirMotionY(MO_ADVSPEED,   1.0f*PI);
-	m_physics->SetCirMotionY(MO_RECSPEED,   1.0f*PI);
+	m_physics->SetCirMotionY(MO_ADVSPEED,   1.0f*Math::PI);
+	m_physics->SetCirMotionY(MO_RECSPEED,   1.0f*Math::PI);
 	m_physics->SetCirMotionY(MO_ADVACCEL,  20.0f);
 	m_physics->SetCirMotionY(MO_RECACCEL,  20.0f);
 	m_physics->SetCirMotionY(MO_STOACCEL,  40.0f);
@@ -386,24 +385,12 @@ bool CMotionSpider::EventProcess(const Event &event)
 	return true;
 }
 
-// Calculates a value (radians) proportional between a and b (degrees).
-
-inline float Propf(float a, float b, float p)
-{
-	float	aa, bb;
-
-	aa = a*PI/180.0f;
-	bb = b*PI/180.0f;
-
-	return aa+p*(bb-aa);
-}
-
 // Management of an event.
 
 bool CMotionSpider::EventFrame(const Event &event)
 {
 	D3DVECTOR	dir, pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		s, a, prog, time;
 	float		tSt[12], tNd[12];
 	int			i, ii, st, nd, action;
@@ -413,7 +400,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
 
 	s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
-	a = Abs(m_physics->RetCirMotionY(MO_MOTSPEED)*2.0f);
+	a = fabs(m_physics->RetCirMotionY(MO_MOTSPEED)*2.0f);
 
 	if ( s == 0.0f && a != 0.0f )  a *= 1.5f;
 
@@ -432,8 +419,8 @@ bool CMotionSpider::EventFrame(const Event &event)
 
 	if ( bStop )
 	{
-		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
-		a = Mod(m_armMember, 1.0f);
+		prog = Math::Mod(m_armTimeAbs, 2.0f)/10.0f;
+		a = Math::Mod(m_armMember, 1.0f);
 		a = (prog-a)*event.rTime*2.0f;  // stop position just pleasantly
 		m_armMember += a;
 	}
@@ -465,10 +452,10 @@ bool CMotionSpider::EventFrame(const Event &event)
 		}
 		else
 		{
-//?			if ( i < 4 )  prog = Mod(m_armMember+(2.0f-(i%4))*0.25f+0.0f, 1.0f);
-//?			else          prog = Mod(m_armMember+(2.0f-(i%4))*0.25f+0.3f, 1.0f);
-			if ( i < 4 )  prog = Mod(m_armMember+(2.0f-(i%4))*0.25f+0.0f, 1.0f);
-			else          prog = Mod(m_armMember+(2.0f-(i%4))*0.25f+0.5f, 1.0f);
+//?			if ( i < 4 )  prog = Math::Mod(m_armMember+(2.0f-(i%4))*0.25f+0.0f, 1.0f);
+//?			else          prog = Math::Mod(m_armMember+(2.0f-(i%4))*0.25f+0.3f, 1.0f);
+			if ( i < 4 )  prog = Math::Mod(m_armMember+(2.0f-(i%4))*0.25f+0.0f, 1.0f);
+			else          prog = Math::Mod(m_armMember+(2.0f-(i%4))*0.25f+0.5f, 1.0f);
 			if ( m_bArmStop )
 			{
 				prog = (float)m_armTimeIndex/3.0f;
@@ -496,7 +483,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 			nd = 3*4*4*3*action + nd*3*4*4 + (i%4)*3;
 
 			// Less and less soft ...
-//?			time = event.rTime*(2.0f+Min(m_armTimeAction*20.0f, 40.0f));
+//?			time = event.rTime*(2.0f+Math::Min(m_armTimeAction*20.0f, 40.0f));
 			time = event.rTime*10.0f;
 		}
 
@@ -530,7 +517,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 		{
 			for ( ii=0 ; ii<12 ; ii++ )
 			{
-				tSt[ii] += Rand()*20.0f;
+				tSt[ii] += Math::Rand()*20.0f;
 				tNd[ii] = tSt[ii];
 			}
 //?			time = 100.0f;
@@ -539,33 +526,33 @@ bool CMotionSpider::EventFrame(const Event &event)
 
 		if ( i < 4 )  // right leg (1..4) ?
 		{
-			m_object->SetAngleX(3+4*i+0, Smooth(m_object->RetAngleX(3+4*i+0), Propf(tSt[ 0], tNd[ 0], prog), time));
-			m_object->SetAngleY(3+4*i+0, Smooth(m_object->RetAngleY(3+4*i+0), Propf(tSt[ 1], tNd[ 1], prog), time));
-			m_object->SetAngleZ(3+4*i+0, Smooth(m_object->RetAngleZ(3+4*i+0), Propf(tSt[ 2], tNd[ 2], prog), time));
-			m_object->SetAngleX(3+4*i+1, Smooth(m_object->RetAngleX(3+4*i+1), Propf(tSt[ 3], tNd[ 3], prog), time));
-			m_object->SetAngleY(3+4*i+1, Smooth(m_object->RetAngleY(3+4*i+1), Propf(tSt[ 4], tNd[ 4], prog), time));
-			m_object->SetAngleZ(3+4*i+1, Smooth(m_object->RetAngleZ(3+4*i+1), Propf(tSt[ 5], tNd[ 5], prog), time));
-			m_object->SetAngleX(3+4*i+2, Smooth(m_object->RetAngleX(3+4*i+2), Propf(tSt[ 6], tNd[ 6], prog), time));
-			m_object->SetAngleY(3+4*i+2, Smooth(m_object->RetAngleY(3+4*i+2), Propf(tSt[ 7], tNd[ 7], prog), time));
-			m_object->SetAngleZ(3+4*i+2, Smooth(m_object->RetAngleZ(3+4*i+2), Propf(tSt[ 8], tNd[ 8], prog), time));
-			m_object->SetAngleX(3+4*i+3, Smooth(m_object->RetAngleX(3+4*i+3), Propf(tSt[ 9], tNd[ 9], prog), time));
-			m_object->SetAngleY(3+4*i+3, Smooth(m_object->RetAngleY(3+4*i+3), Propf(tSt[10], tNd[10], prog), time));
-			m_object->SetAngleZ(3+4*i+3, Smooth(m_object->RetAngleZ(3+4*i+3), Propf(tSt[11], tNd[11], prog), time));
+			m_object->SetAngleX(3+4*i+0, Math::Smooth(m_object->RetAngleX(3+4*i+0), Math::PropAngle(tSt[ 0], tNd[ 0], prog), time));
+			m_object->SetAngleY(3+4*i+0, Math::Smooth(m_object->RetAngleY(3+4*i+0), Math::PropAngle(tSt[ 1], tNd[ 1], prog), time));
+			m_object->SetAngleZ(3+4*i+0, Math::Smooth(m_object->RetAngleZ(3+4*i+0), Math::PropAngle(tSt[ 2], tNd[ 2], prog), time));
+			m_object->SetAngleX(3+4*i+1, Math::Smooth(m_object->RetAngleX(3+4*i+1), Math::PropAngle(tSt[ 3], tNd[ 3], prog), time));
+			m_object->SetAngleY(3+4*i+1, Math::Smooth(m_object->RetAngleY(3+4*i+1), Math::PropAngle(tSt[ 4], tNd[ 4], prog), time));
+			m_object->SetAngleZ(3+4*i+1, Math::Smooth(m_object->RetAngleZ(3+4*i+1), Math::PropAngle(tSt[ 5], tNd[ 5], prog), time));
+			m_object->SetAngleX(3+4*i+2, Math::Smooth(m_object->RetAngleX(3+4*i+2), Math::PropAngle(tSt[ 6], tNd[ 6], prog), time));
+			m_object->SetAngleY(3+4*i+2, Math::Smooth(m_object->RetAngleY(3+4*i+2), Math::PropAngle(tSt[ 7], tNd[ 7], prog), time));
+			m_object->SetAngleZ(3+4*i+2, Math::Smooth(m_object->RetAngleZ(3+4*i+2), Math::PropAngle(tSt[ 8], tNd[ 8], prog), time));
+			m_object->SetAngleX(3+4*i+3, Math::Smooth(m_object->RetAngleX(3+4*i+3), Math::PropAngle(tSt[ 9], tNd[ 9], prog), time));
+			m_object->SetAngleY(3+4*i+3, Math::Smooth(m_object->RetAngleY(3+4*i+3), Math::PropAngle(tSt[10], tNd[10], prog), time));
+			m_object->SetAngleZ(3+4*i+3, Math::Smooth(m_object->RetAngleZ(3+4*i+3), Math::PropAngle(tSt[11], tNd[11], prog), time));
 		}
 		else	// left leg (5..8) ?
 		{
-			m_object->SetAngleX(3+4*i+0, Smooth(m_object->RetAngleX(3+4*i+0), Propf(-tSt[ 0], -tNd[ 0], prog), time));
-			m_object->SetAngleY(3+4*i+0, Smooth(m_object->RetAngleY(3+4*i+0), Propf(-tSt[ 1], -tNd[ 1], prog), time));
-			m_object->SetAngleZ(3+4*i+0, Smooth(m_object->RetAngleZ(3+4*i+0), Propf( tSt[ 2],  tNd[ 2], prog), time));
-			m_object->SetAngleX(3+4*i+1, Smooth(m_object->RetAngleX(3+4*i+1), Propf(-tSt[ 3], -tNd[ 3], prog), time));
-			m_object->SetAngleY(3+4*i+1, Smooth(m_object->RetAngleY(3+4*i+1), Propf(-tSt[ 4], -tNd[ 4], prog), time));
-			m_object->SetAngleZ(3+4*i+1, Smooth(m_object->RetAngleZ(3+4*i+1), Propf( tSt[ 5],  tNd[ 5], prog), time));
-			m_object->SetAngleX(3+4*i+2, Smooth(m_object->RetAngleX(3+4*i+2), Propf(-tSt[ 6], -tNd[ 6], prog), time));
-			m_object->SetAngleY(3+4*i+2, Smooth(m_object->RetAngleY(3+4*i+2), Propf(-tSt[ 7], -tNd[ 7], prog), time));
-			m_object->SetAngleZ(3+4*i+2, Smooth(m_object->RetAngleZ(3+4*i+2), Propf( tSt[ 8],  tNd[ 8], prog), time));
-			m_object->SetAngleX(3+4*i+3, Smooth(m_object->RetAngleX(3+4*i+3), Propf(-tSt[ 9], -tNd[ 9], prog), time));
-			m_object->SetAngleY(3+4*i+3, Smooth(m_object->RetAngleY(3+4*i+3), Propf(-tSt[10], -tNd[10], prog), time));
-			m_object->SetAngleZ(3+4*i+3, Smooth(m_object->RetAngleZ(3+4*i+3), Propf( tSt[11],  tNd[11], prog), time));
+			m_object->SetAngleX(3+4*i+0, Math::Smooth(m_object->RetAngleX(3+4*i+0), Math::PropAngle(-tSt[ 0], -tNd[ 0], prog), time));
+			m_object->SetAngleY(3+4*i+0, Math::Smooth(m_object->RetAngleY(3+4*i+0), Math::PropAngle(-tSt[ 1], -tNd[ 1], prog), time));
+			m_object->SetAngleZ(3+4*i+0, Math::Smooth(m_object->RetAngleZ(3+4*i+0), Math::PropAngle( tSt[ 2],  tNd[ 2], prog), time));
+			m_object->SetAngleX(3+4*i+1, Math::Smooth(m_object->RetAngleX(3+4*i+1), Math::PropAngle(-tSt[ 3], -tNd[ 3], prog), time));
+			m_object->SetAngleY(3+4*i+1, Math::Smooth(m_object->RetAngleY(3+4*i+1), Math::PropAngle(-tSt[ 4], -tNd[ 4], prog), time));
+			m_object->SetAngleZ(3+4*i+1, Math::Smooth(m_object->RetAngleZ(3+4*i+1), Math::PropAngle( tSt[ 5],  tNd[ 5], prog), time));
+			m_object->SetAngleX(3+4*i+2, Math::Smooth(m_object->RetAngleX(3+4*i+2), Math::PropAngle(-tSt[ 6], -tNd[ 6], prog), time));
+			m_object->SetAngleY(3+4*i+2, Math::Smooth(m_object->RetAngleY(3+4*i+2), Math::PropAngle(-tSt[ 7], -tNd[ 7], prog), time));
+			m_object->SetAngleZ(3+4*i+2, Math::Smooth(m_object->RetAngleZ(3+4*i+2), Math::PropAngle( tSt[ 8],  tNd[ 8], prog), time));
+			m_object->SetAngleX(3+4*i+3, Math::Smooth(m_object->RetAngleX(3+4*i+3), Math::PropAngle(-tSt[ 9], -tNd[ 9], prog), time));
+			m_object->SetAngleY(3+4*i+3, Math::Smooth(m_object->RetAngleY(3+4*i+3), Math::PropAngle(-tSt[10], -tNd[10], prog), time));
+			m_object->SetAngleZ(3+4*i+3, Math::Smooth(m_object->RetAngleZ(3+4*i+3), Math::PropAngle( tSt[11],  tNd[11], prog), time));
 		}
 	}
 
@@ -580,14 +567,14 @@ bool CMotionSpider::EventFrame(const Event &event)
 
 	if ( m_actionType == MSS_BURN )  // burning?
 	{
-		dir = D3DVECTOR(PI, 0.0f, 0.0f);
+		dir = D3DVECTOR(Math::PI, 0.0f, 0.0f);
 		SetCirVibration(dir);
 		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		SetLinVibration(dir);
 		SetInclinaison(dir);
 
 		time = event.rTime*1.0f;
-		m_object->SetAngleZ(1, Smooth(m_object->RetAngleZ(1), 0.0f, time));  // head
+		m_object->SetAngleZ(1, Math::Smooth(m_object->RetAngleZ(1), 0.0f, time));  // head
 	}
 	else if ( m_actionType == MSS_RUIN )  // destroyed?
 	{
@@ -602,9 +589,9 @@ bool CMotionSpider::EventFrame(const Event &event)
 		m_object->SetZoomZ(1, 1.0f+m_progress);
 		m_object->SetZoomX(1, 1.0f+m_progress/2.0f);
 
-		dir.x = (Rand()-0.5f)*0.1f*m_progress;
-		dir.y = (Rand()-0.5f)*0.1f*m_progress;
-		dir.z = (Rand()-0.5f)*0.1f*m_progress;
+		dir.x = (Math::Rand()-0.5f)*0.1f*m_progress;
+		dir.y = (Math::Rand()-0.5f)*0.1f*m_progress;
+		dir.z = (Math::Rand()-0.5f)*0.1f*m_progress;
 		m_object->SetCirVibration(dir);
 	}
 	else if ( m_actionType == MSS_BACK1 )  // turns on the back?
@@ -614,10 +601,10 @@ bool CMotionSpider::EventFrame(const Event &event)
 			m_lastParticule = m_armTimeAbs;
 
 			pos = m_object->RetPosition(0);
-			speed.x = (Rand()-0.5f)*10.0f;
-			speed.z = (Rand()-0.5f)*10.0f;
-			speed.y = Rand()*5.0f;
-			dim.x = Rand()*3.0f+2.0f;
+			speed.x = (Math::Rand()-0.5f)*10.0f;
+			speed.z = (Math::Rand()-0.5f)*10.0f;
+			speed.y = Math::Rand()*5.0f;
+			dim.x = Math::Rand()*3.0f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 		}
@@ -636,7 +623,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 			dir.z = 0.0f;
 			SetLinVibration(dir);
 		}
-		dir.x = m_progress*PI;
+		dir.x = m_progress*Math::PI;
 		dir.y = 0.0f;
 		dir.z = 0.0f;
 		SetCirVibration(dir);
@@ -646,7 +633,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 
 		if ( m_progress >= 1.0f )
 		{
-			SetAction(MSS_BACK2, 55.0f+Rand()*10.0f);
+			SetAction(MSS_BACK2, 55.0f+Math::Rand()*10.0f);
 		}
 	}
 	else if ( m_actionType == MSS_BACK2 )  // moves on the back?
@@ -658,13 +645,13 @@ bool CMotionSpider::EventFrame(const Event &event)
 			if ( rand()%10 == 0 )
 			{
 				pos = m_object->RetPosition(0);
-				pos.x += (Rand()-0.5f)*8.0f;
-				pos.z += (Rand()-0.5f)*8.0f;
+				pos.x += (Math::Rand()-0.5f)*8.0f;
+				pos.z += (Math::Rand()-0.5f)*8.0f;
 				pos.y -= 1.0f;
-				speed.x = (Rand()-0.5f)*2.0f;
-				speed.z = (Rand()-0.5f)*2.0f;
-				speed.y = Rand()*2.0f;
-				dim.x = Rand()*1.0f+1.0f;
+				speed.x = (Math::Rand()-0.5f)*2.0f;
+				speed.z = (Math::Rand()-0.5f)*2.0f;
+				speed.y = Math::Rand()*2.0f;
+				dim.x = Math::Rand()*1.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 			}
@@ -675,7 +662,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 		dir.x = sinf(m_armTimeAbs* 3.0f)*0.20f+
 				sinf(m_armTimeAbs* 6.0f)*0.20f+
 				sinf(m_armTimeAbs*10.0f)*0.20f+
-				sinf(m_armTimeAbs*17.0f)*0.30f+PI;
+				sinf(m_armTimeAbs*17.0f)*0.30f+Math::PI;
 		dir.y = sinf(m_armTimeAbs* 4.0f)*0.02f+
 				sinf(m_armTimeAbs* 5.0f)*0.02f+
 				sinf(m_armTimeAbs*11.0f)*0.02f+
@@ -705,10 +692,10 @@ bool CMotionSpider::EventFrame(const Event &event)
 			m_lastParticule = m_armTimeAbs;
 
 			pos = m_object->RetPosition(0);
-			speed.x = (Rand()-0.5f)*10.0f;
-			speed.z = (Rand()-0.5f)*10.0f;
-			speed.y = Rand()*5.0f;
-			dim.x = Rand()*3.0f+2.0f;
+			speed.x = (Math::Rand()-0.5f)*10.0f;
+			speed.z = (Math::Rand()-0.5f)*10.0f;
+			speed.y = Math::Rand()*5.0f;
+			dim.x = Math::Rand()*3.0f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 		}
@@ -727,7 +714,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 			dir.z = 0.0f;
 			SetLinVibration(dir);
 		}
-		dir.x = (1.0f-m_progress)*PI;
+		dir.x = (1.0f-m_progress)*Math::PI;
 		dir.y = 0.0f;
 		dir.z = 0.0f;
 		SetCirVibration(dir);
@@ -750,12 +737,12 @@ bool CMotionSpider::EventFrame(const Event &event)
 		}
 		else
 		{
-			a = Mod(m_armMember, 1.0f);
+			a = Math::Mod(m_armMember, 1.0f);
 			if ( a < 0.5f )  a = -1.0f+4.0f*a;  // -1..1
 			else             a =  3.0f-4.0f*a;  // 1..-1
 			dir.x = sinf(a)*0.05f;
 
-			s = Mod(m_armMember/2.0f, 1.0f);
+			s = Math::Mod(m_armMember/2.0f, 1.0f);
 			if ( s < 0.5f )  s = -1.0f+4.0f*s;  // -1..1
 			else             s =  3.0f-4.0f*s;  // 1..-1
 			dir.z = sinf(s)*0.1f;

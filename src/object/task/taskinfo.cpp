@@ -16,8 +16,6 @@
 
 // taskinfo.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -151,7 +149,7 @@ Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
 		pos.y += 9.5f;
 		goal = m_object->RetPosition(0);
 		goal.y += 4.0f;
-		m_particule->CreateRay(pos, goal, PARTIRAY3, FPOINT(2.0f, 2.0f), 1.0f);
+		m_particule->CreateRay(pos, goal, PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
 	}
 	if ( op == 2 )  // reception?
 	{
@@ -159,7 +157,7 @@ Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
 		goal.y += 9.5f;
 		pos = m_object->RetPosition(0);
 		pos.y += 4.0f;
-		m_particule->CreateRay(pos, goal, PARTIRAY3, FPOINT(2.0f, 2.0f), 1.0f);
+		m_particule->CreateRay(pos, goal, PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
 	}
 
 	m_progress = 0.0f;

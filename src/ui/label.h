@@ -32,7 +32,7 @@ public:
 	CLabel(CInstanceManager* iMan);
 	virtual ~CLabel();
 
-	bool	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
 	bool	EventProcess(const Event &event);
 

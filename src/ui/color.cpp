@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -60,7 +58,7 @@ CColor::~CColor()
 
 // Creates a new button.
 
-bool CColor::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CColor::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -137,7 +135,7 @@ void CColor::Draw()
 	LPDIRECT3DDEVICE7 device;
 	D3DLVERTEX	vertex[4];	// 2 triangles
 	D3DCOLOR	color;
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;
 

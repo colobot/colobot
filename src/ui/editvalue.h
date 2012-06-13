@@ -42,10 +42,10 @@ public:
 	CEditValue(CInstanceManager* iMan);
 	virtual ~CEditValue();
 
-	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	void		SetPos(FPOINT pos);
-	void		SetDim(FPOINT dim);
+	void		SetPos(Math::Point pos);
+	void		SetDim(Math::Point dim);
 
 	bool		EventProcess(const Event &event);
 	void		Draw();

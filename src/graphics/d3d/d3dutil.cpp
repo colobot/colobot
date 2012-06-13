@@ -22,8 +22,6 @@
 //
 // Copyright (c) 1997-1999 Microsoft Corporation. All rights reserved
 //-----------------------------------------------------------------------------
-#define D3D_OVERLOADS
-#define STRICT
 #include <math.h>
 #include <stdio.h>
 #include <tchar.h>

@@ -19,8 +19,9 @@
 #pragma once
 
 
+#include "common/event.h"
+#include "math/point.h"
 #include "graphics/d3d/d3dengine.h"
-#include "common/struct.h"
 
 
 class CInstanceManager;
@@ -142,7 +143,7 @@ public:
 	void		SetCameraInvertY(bool bInvert);
 
 	float		RetMotorTurn();
-	D3DMouse	RetMouseDef(FPOINT pos);
+	D3DMouse	RetMouseDef(Math::Point pos);
 
 protected:
 	bool		EventMouseMove(const Event &event);
@@ -193,9 +194,9 @@ protected:
 	float		m_focus;
 
 	bool		m_bRightDown;
-	FPOINT		m_rightPosInit;
-	FPOINT		m_rightPosCenter;
-	FPOINT		m_rightPosMove;
+	Math::Point		m_rightPosInit;
+	Math::Point		m_rightPosCenter;
+	Math::Point		m_rightPosMove;
 
 	D3DVECTOR	m_eyePt;		// CAMERA_FREE: eye
 	float		m_directionH;		// CAMERA_FREE: horizontal direction
@@ -226,7 +227,7 @@ protected:
 	float		m_remotePan;
 	float		m_remoteZoom;
 
-	FPOINT		m_mousePos;
+	Math::Point		m_mousePos;
 	float		m_mouseDirH;
 	float		m_mouseDirV;
 	float		m_mouseMarging;

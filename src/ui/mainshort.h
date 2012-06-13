@@ -19,8 +19,11 @@
 #pragma once
 
 
+#include "common/event.h"
+#include "math/point.h"
+
+
 class CInstanceManager;
-class CEvent;
 class CD3DEngine;
 class CInterface;
 class CRobotMain;
@@ -40,7 +43,7 @@ public:
 	bool		UpdateShortcuts();
 	void		SelectShortcut(EventMsg event);
 	void		SelectNext();
-	CObject*	DetectShort(FPOINT pos);
+	CObject*	DetectShort(Math::Point pos);
 	void		SetHilite(CObject* pObj);
 
 protected:

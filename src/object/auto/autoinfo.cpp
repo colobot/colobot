@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -86,7 +84,7 @@ void CAutoInfo::Init()
 void CAutoInfo::Start(int param)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 
 	if ( param == 0 )  // instruction "receive" ?
 	{
@@ -144,7 +142,7 @@ void CAutoInfo::Start(int param)
 bool CAutoInfo::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		duration, angle, rTime;
 	int			i;
 
@@ -159,19 +157,19 @@ bool CAutoInfo::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
 			angle = m_object->RetAngleY(1);
-			angle += Rand()*0.3f;
+			angle += Math::Rand()*0.3f;
 			m_object->SetAngleY(1, angle);
 
-			m_object->SetAngleX(2, (Rand()-0.5f)*0.3f);
-			m_object->SetAngleX(4, (Rand()-0.5f)*0.3f);
-			m_object->SetAngleX(6, (Rand()-0.5f)*0.3f);
+			m_object->SetAngleX(2, (Math::Rand()-0.5f)*0.3f);
+			m_object->SetAngleX(4, (Math::Rand()-0.5f)*0.3f);
+			m_object->SetAngleX(6, (Math::Rand()-0.5f)*0.3f);
 
-			m_object->SetAngleZ(2, (Rand()-0.5f)*0.3f);
-			m_object->SetAngleZ(4, (Rand()-0.5f)*0.3f);
-			m_object->SetAngleZ(6, (Rand()-0.5f)*0.3f);
+			m_object->SetAngleZ(2, (Math::Rand()-0.5f)*0.3f);
+			m_object->SetAngleZ(4, (Math::Rand()-0.5f)*0.3f);
+			m_object->SetAngleZ(6, (Math::Rand()-0.5f)*0.3f);
 
 			UpdateListVirus();
 		}
@@ -209,13 +207,13 @@ bool CAutoInfo::EventProcess(const Event &event)
 			{
 				pos = m_goal;
 				pos.y += 9.5f;
-				speed.x = (Rand()-0.5f)*50.0f;
-				speed.z = (Rand()-0.5f)*50.0f;
-				speed.y = (Rand()-0.5f)*50.0f;
+				speed.x = (Math::Rand()-0.5f)*50.0f;
+				speed.z = (Math::Rand()-0.5f)*50.0f;
+				speed.y = (Math::Rand()-0.5f)*50.0f;
 				speed *= 0.5f+m_progress*0.5f;
 				dim.x = 0.6f;
 				dim.y = dim.x;
-				duration = Rand()*0.5f+0.5f;
+				duration = Math::Rand()*0.5f+0.5f;
 				m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
 										 duration, 0.0f,
 										 duration*0.9f, 0.7f);
@@ -226,9 +224,9 @@ bool CAutoInfo::EventProcess(const Event &event)
 		{
 			m_progress += rTime*m_speed;
 
-			m_object->SetAngleZ(2, m_progress*2.0f*PI);
-			m_object->SetAngleZ(4, m_progress*2.0f*PI);
-			m_object->SetAngleZ(6, m_progress*2.0f*PI);
+			m_object->SetAngleZ(2, m_progress*2.0f*Math::PI);
+			m_object->SetAngleZ(4, m_progress*2.0f*Math::PI);
+			m_object->SetAngleZ(6, m_progress*2.0f*Math::PI);
 		}
 		else
 		{
@@ -256,14 +254,14 @@ bool CAutoInfo::EventProcess(const Event &event)
 				pos = m_goal;
 				pos.y += 9.5f;
 				speed = pos;
-				pos.x += (Rand()-0.5f)*40.0f;
-				pos.y += (Rand()-0.5f)*40.0f;
-				pos.z += (Rand()-0.5f)*40.0f;
+				pos.x += (Math::Rand()-0.5f)*40.0f;
+				pos.y += (Math::Rand()-0.5f)*40.0f;
+				pos.z += (Math::Rand()-0.5f)*40.0f;
 				speed = (speed-pos)*1.0f;
 //?				speed *= 0.5f+m_progress*0.5f;
 				dim.x = 0.6f;
 				dim.y = dim.x;
-				duration = Rand()*0.5f+0.5f;
+				duration = Math::Rand()*0.5f+0.5f;
 				m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
 										 duration, 0.0f,
 										 duration*0.9f, 0.7f);
@@ -274,9 +272,9 @@ bool CAutoInfo::EventProcess(const Event &event)
 		{
 			m_progress += rTime*m_speed;
 
-			m_object->SetAngleZ(2, m_progress*2.0f*PI);
-			m_object->SetAngleZ(4, m_progress*2.0f*PI);
-			m_object->SetAngleZ(6, m_progress*2.0f*PI);
+			m_object->SetAngleZ(2, m_progress*2.0f*Math::PI);
+			m_object->SetAngleZ(4, m_progress*2.0f*Math::PI);
+			m_object->SetAngleZ(6, m_progress*2.0f*Math::PI);
 		}
 		else
 		{
@@ -300,12 +298,12 @@ bool CAutoInfo::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_goal;
-			speed.x = (Rand()-0.5f)*5.0f;
-			speed.z = (Rand()-0.5f)*5.0f;
-			speed.y = 5.0f+Rand()*5.0f;
-			dim.x = 5.0f+Rand()*5.0f;
+			speed.x = (Math::Rand()-0.5f)*5.0f;
+			speed.z = (Math::Rand()-0.5f)*5.0f;
+			speed.y = 5.0f+Math::Rand()*5.0f;
+			dim.x = 5.0f+Math::Rand()*5.0f;
 			dim.y = dim.x;
-			duration = Rand()*0.5f+0.5f;
+			duration = Math::Rand()*0.5f+0.5f;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 4.0f);
 		}
 
@@ -326,9 +324,9 @@ bool CAutoInfo::EventProcess(const Event &event)
 			m_object->SetAngleX(4, angle*0.5f);
 			m_object->SetAngleX(6, angle*0.5f);
 
-			m_object->SetAngleZ(2, (Rand()-0.5f)*0.2f);
-			m_object->SetAngleZ(4, (Rand()-0.5f)*0.2f);
-			m_object->SetAngleZ(6, (Rand()-0.5f)*0.2f);
+			m_object->SetAngleZ(2, (Math::Rand()-0.5f)*0.2f);
+			m_object->SetAngleZ(4, (Math::Rand()-0.5f)*0.2f);
+			m_object->SetAngleZ(6, (Math::Rand()-0.5f)*0.2f);
 		}
 		else
 		{
@@ -348,9 +346,9 @@ bool CAutoInfo::EventProcess(const Event &event)
 	angle += rTime*0.5f;
 	m_object->SetAngleY(1, angle);
 
-	m_object->SetAngleX(3, sinf(m_time*6.0f+PI*0.0f/3.0f)*0.3f);
-	m_object->SetAngleX(5, sinf(m_time*6.0f+PI*2.0f/3.0f)*0.3f);
-	m_object->SetAngleX(7, sinf(m_time*6.0f+PI*4.0f/3.0f)*0.3f);
+	m_object->SetAngleX(3, sinf(m_time*6.0f+Math::PI*0.0f/3.0f)*0.3f);
+	m_object->SetAngleX(5, sinf(m_time*6.0f+Math::PI*2.0f/3.0f)*0.3f);
+	m_object->SetAngleX(7, sinf(m_time*6.0f+Math::PI*4.0f/3.0f)*0.3f);
 
 	return true;
 }
@@ -375,7 +373,7 @@ bool CAutoInfo::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
 	CList*		pl;
-	FPOINT		pos, ddim;
+	Math::Point		pos, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);
@@ -473,12 +471,12 @@ void CAutoInfo::UpdateListVirus()
 	pl->Flush();
 	for ( i=0 ; i<4 ; i++ )
 	{
-		max = (int)(2.0f+Rand()*10.0f);
+		max = (int)(2.0f+Math::Rand()*10.0f);
 		for ( j=0 ; j<max ; j++ )
 		{
 			do
 			{
-				text[j] = ' '+(int)(Rand()*94.0f);
+				text[j] = ' '+(int)(Math::Rand()*94.0f);
 			}
 			while ( text[j] == '\\' );
 		}

@@ -16,15 +16,14 @@
 
 // tasktake.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
-#include "math/const.h"
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "math/old/math3d.h"
@@ -78,7 +77,7 @@ bool CTaskTake::EventProcess(const Event &event)
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
-		cirSpeed = Direction(a, g)*2.0f;
+		cirSpeed = Math::Direction(a, g)*2.0f;
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
@@ -108,7 +107,7 @@ Error CTaskTake::Start()
 	m_progress = 0.0f;
 
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 	oAngle = iAngle;
 
 	m_bError = true;  // operation impossible
@@ -141,7 +140,7 @@ Error CTaskTake::Start()
 		h = m_water->RetLevel(m_object);
 		if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
 
-		other = SearchFriendObject(oAngle, 1.5f, PI*0.50f);
+		other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
 		if ( other != 0 && other->RetPower() != 0 )
 		{
 			type = other->RetPower()->RetType();
@@ -158,16 +157,16 @@ Error CTaskTake::Start()
 				 type != OBJECT_KEYc    &&
 				 type != OBJECT_KEYd    &&
 				 type != OBJECT_TNT     )  return ERR_MANIP_FRIEND;
-//?			m_camera->StartCentering(m_object, PI*0.3f, -PI*0.1f, 0.0f, 0.8f);
+//?			m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
 			m_arm = TTA_FRIEND;
 		}
 		else
 		{
-			other = SearchTakeObject(oAngle, 1.5f, PI*0.45f);
+			other = SearchTakeObject(oAngle, 1.5f, Math::PI*0.45f);
 			if ( other == 0 )  return ERR_MANIP_NIL;
 			type = other->RetType();
 			if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
-//?			m_camera->StartCentering(m_object, PI*0.3f, 99.9f, 0.0f, 0.8f);
+//?			m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
 			m_arm = TTA_FFRONT;
 			m_main->HideDropZone(other);  // hides buildable area
 		}
@@ -179,16 +178,16 @@ Error CTaskTake::Start()
 //?		if ( speed.x != 0.0f ||
 //?			 speed.z != 0.0f )  return ERR_MANIP_MOTOR;
 
-		other = SearchFriendObject(oAngle, 1.5f, PI*0.50f);
+		other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
 		if ( other != 0 && other->RetPower() == 0 )
 		{
-//?			m_camera->StartCentering(m_object, PI*0.3f, -PI*0.1f, 0.0f, 0.8f);
+//?			m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
 			m_arm = TTA_FRIEND;
 		}
 		else
 		{
 			if ( !IsFreeDeposeObject(D3DVECTOR(2.5f, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
-//?			m_camera->StartCentering(m_object, PI*0.3f, 99.9f, 0.0f, 0.8f);
+//?			m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
 			m_arm = TTA_FFRONT;
 		}
 	}
@@ -215,9 +214,9 @@ Error CTaskTake::IsEnded()
 	if ( m_bTurn )  // preliminary rotation?
 	{
 		angle = m_object->RetAngleY(0);
-		angle = NormAngle(angle);  // 0..2*PI
+		angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
-		if ( TestAngle(angle, m_angle-PI*0.01f, m_angle+PI*0.01f) )
+		if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
 		{
 			m_bTurn = false;  // rotation ended
 			m_physics->SetMotorSpeedZ(0.0f);
@@ -321,7 +320,7 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
 
 	iPos   = m_object->RetPosition(0);
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 	min = 1000000.0f;
 	pBest = 0;
@@ -356,11 +355,11 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
 		if ( distance >= 4.0f-dLimit &&
 			 distance <= 4.0f+dLimit )
 		{
-			angle = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-			if ( TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
+			angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+			if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
 			{
-				a = Abs(angle-iAngle);
-				if ( a > PI )  a = PI*2.0f-a;
+				a = fabs(angle-iAngle);
+				if ( a > Math::PI )  a = Math::PI*2.0f-a;
 				if ( a < min )
 				{
 					min = a;
@@ -390,7 +389,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 
 	if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 	for ( i=0 ; i<1000000 ; i++ )
 	{
@@ -447,11 +446,11 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 		character = pObj->RetCharacter();
 		oPos = Transform(*mat, character->posPower);
 
-		distance = Abs(Length(oPos, iPos) - (iRad+1.0f));
+		distance = fabs(Length(oPos, iPos) - (iRad+1.0f));
 		if ( distance <= dLimit )
 		{
-			angle = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-			if ( TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
+			angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+			if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
 			{
 				character = pObj->RetCharacter();
 				m_height = character->posPower.y;
@@ -474,8 +473,8 @@ bool CTaskTake::TruckTakeObject()
 
 	if ( m_arm == TTA_FFRONT )  // takes on the ground in front?
 	{
-//?		fret = SearchTakeObject(angle, 1.5f, PI*0.04f);
-		fret = SearchTakeObject(angle, 1.5f, PI*0.15f);  //OK 1.9
+//?		fret = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
+		fret = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
 		if ( fret == 0 )  return false;  // rien � prendre ?
 		m_fretType = fret->RetType();
 
@@ -493,7 +492,7 @@ bool CTaskTake::TruckTakeObject()
 
 	if ( m_arm == TTA_FRIEND )  // takes friend's battery?
 	{
-		other = SearchFriendObject(angle, 1.5f, PI*0.04f);
+		other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
 		if ( other == 0 )  return false;
 
 		fret = other->RetPower();
@@ -537,7 +536,7 @@ bool CTaskTake::TruckDeposeObject()
 		pos = Transform(*mat, D3DVECTOR(-0.5f, 1.0f, 0.0f));
 		m_terrain->MoveOnFloor(pos);
 		fret->SetPosition(0, pos);
-		fret->SetAngleY(0, m_object->RetAngleY(0)+PI/2.0f);
+		fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, 0.0f);
 		fret->FloorAdjust();  // plate well on the ground
@@ -548,7 +547,7 @@ bool CTaskTake::TruckDeposeObject()
 
 	if ( m_arm == TTA_FRIEND )  // deposes battery on friends?
 	{
-		other = SearchFriendObject(angle, 1.5f, PI*0.04f);
+		other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
 		if ( other == 0 )  return false;
 
 		fret = other->RetPower();

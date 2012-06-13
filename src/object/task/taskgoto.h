@@ -19,7 +19,7 @@
 #pragma once
 
 
-#include "common/misc.h"
+#include "object/task/task.h"
 #include "graphics/d3d/d3dengine.h"
 
 
@@ -95,7 +95,7 @@ protected:
 	bool		AdjustBuilding(D3DVECTOR &pos, float margin, float &distance);
 	bool		GetHotPoint(CObject *pObj, D3DVECTOR &pos, bool bTake, float distance, float &suppl);
 	bool		LeakSearch(D3DVECTOR &pos, float &delay);
-	void		ComputeRepulse(FPOINT &dir);
+	void		ComputeRepulse(Math::Point &dir);
 	void		ComputeFlyingRepulse(float &dir);
 
 	int			BeamShortcut();

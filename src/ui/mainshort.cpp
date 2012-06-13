@@ -16,8 +16,6 @@
 
 // mainshort.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -111,7 +109,7 @@ bool CMainShort::CreateShortcuts()
 	CObject*	pObj;
 	CControl*	pc;
 	ObjectType	type;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	int			i, rank, icon;
 	char		name[100];
 
@@ -319,10 +317,10 @@ void CMainShort::SelectNext()
 
 // The object detected by the mouse hovers over.
 
-CObject* CMainShort::DetectShort(FPOINT pos)
+CObject* CMainShort::DetectShort(Math::Point pos)
 {
 	CControl*	pc;
-	FPOINT		cpos, cdim;
+	Math::Point		cpos, cdim;
 	int			i;
 
 	for ( i=0 ; i<20 ; i++ )

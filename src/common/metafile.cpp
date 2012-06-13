@@ -16,8 +16,6 @@
 
 // metafile.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>

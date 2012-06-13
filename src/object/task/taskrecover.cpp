@@ -16,14 +16,14 @@
 
 // taskrecover.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/func.h"
+#include "math/geometry.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
@@ -67,7 +67,7 @@ bool CTaskRecover::EventProcess(const Event &event)
 {
 	CObject*	power;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		a, g, cirSpeed, angle, energy, dist, linSpeed;
 
 	if ( m_engine->RetPause() )  return true;
@@ -78,7 +78,7 @@ bool CTaskRecover::EventProcess(const Event &event)
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angle;
-		cirSpeed = Direction(a, g)*1.0f;
+		cirSpeed = Math::Direction(a, g)*1.0f;
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
@@ -91,11 +91,11 @@ bool CTaskRecover::EventProcess(const Event &event)
 
 	if ( m_phase == TRP_DOWN )
 	{
-		angle = Prop(126, -10, m_progress);
+		angle = Math::PropAngle(126, -10, m_progress);
 		m_object->SetAngleZ(2, angle);
 		m_object->SetAngleZ(4, angle);
 
-		angle = Prop(-144, 0, m_progress);
+		angle = Math::PropAngle(-144, 0, m_progress);
 		m_object->SetAngleZ(3, angle);
 		m_object->SetAngleZ(5, angle);
 	}
@@ -119,9 +119,9 @@ bool CTaskRecover::EventProcess(const Event &event)
 			power->SetEnergy(energy-ENERGY_RECOVER*event.rTime*m_speed);
 		}
 
-		speed.x = (Rand()-0.5f)*0.1f*m_progress;
-		speed.y = (Rand()-0.5f)*0.1f*m_progress;
-		speed.z = (Rand()-0.5f)*0.1f*m_progress;
+		speed.x = (Math::Rand()-0.5f)*0.1f*m_progress;
+		speed.y = (Math::Rand()-0.5f)*0.1f*m_progress;
+		speed.z = (Math::Rand()-0.5f)*0.1f*m_progress;
 		m_ruin->SetCirVibration(speed);
 
 		if ( m_progress >= 0.75f )
@@ -139,13 +139,13 @@ bool CTaskRecover::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_recoverPos;
-			pos.x += (Rand()-0.5f)*8.0f*(1.0f-m_progress);
-			pos.z += (Rand()-0.5f)*8.0f*(1.0f-m_progress);
+			pos.x += (Math::Rand()-0.5f)*8.0f*(1.0f-m_progress);
+			pos.z += (Math::Rand()-0.5f)*8.0f*(1.0f-m_progress);
 			pos.y -= 4.0f;
-			speed.x = (Rand()-0.5f)*0.0f;
-			speed.z = (Rand()-0.5f)*0.0f;
-			speed.y = Rand()*15.0f;
-			dim.x = Rand()*2.0f+1.5f;
+			speed.x = (Math::Rand()-0.5f)*0.0f;
+			speed.z = (Math::Rand()-0.5f)*0.0f;
+			speed.y = Math::Rand()*15.0f;
+			dim.x = Math::Rand()*2.0f+1.5f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIRECOVER, 1.0f, 0.0f, 0.0f);
 		}
@@ -153,11 +153,11 @@ bool CTaskRecover::EventProcess(const Event &event)
 
 	if ( m_phase == TRP_UP )
 	{
-		angle = Prop(-10, 126, m_progress);
+		angle = Math::PropAngle(-10, 126, m_progress);
 		m_object->SetAngleZ(2, angle);
 		m_object->SetAngleZ(4, angle);
 
-		angle = Prop(0, -144, m_progress);
+		angle = Math::PropAngle(0, -144, m_progress);
 		m_object->SetAngleZ(3, angle);
 		m_object->SetAngleZ(5, angle);
 
@@ -167,10 +167,10 @@ bool CTaskRecover::EventProcess(const Event &event)
 
 			pos = m_recoverPos;
 			pos.y -= 4.0f;
-			speed.x = (Rand()-0.5f)*0.0f;
-			speed.z = (Rand()-0.5f)*0.0f;
-			speed.y = Rand()*15.0f;
-			dim.x = Rand()*2.0f+1.5f;
+			speed.x = (Math::Rand()-0.5f)*0.0f;
+			speed.z = (Math::Rand()-0.5f)*0.0f;
+			speed.y = Math::Rand()*15.0f;
+			dim.x = Math::Rand()*2.0f+1.5f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIRECOVER, 1.0f, 0.0f, 0.0f);
 		}
@@ -213,7 +213,7 @@ Error CTaskRecover::Start()
 
 	iPos = m_object->RetPosition(0);
 	oPos = m_ruin->RetPosition(0);
-	m_angle = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+	m_angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
 	m_metal = 0;
 
@@ -225,7 +225,7 @@ Error CTaskRecover::Start()
 
 	m_bError = false;  // ok
 
-	m_camera->StartCentering(m_object, PI*0.85f, 99.9f, 10.0f, 3.0f);
+	m_camera->StartCentering(m_object, Math::PI*0.85f, 99.9f, 10.0f, 3.0f);
 	return ERR_OK;
 }
 
@@ -235,7 +235,7 @@ Error CTaskRecover::IsEnded()
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed, goal;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		angle, dist, time;
 	int			i;
 
@@ -245,9 +245,9 @@ Error CTaskRecover::IsEnded()
 	if ( m_phase == TRP_TURN )  // preliminary rotation?
 	{
 		angle = m_object->RetAngleY(0);
-		angle = NormAngle(angle);  // 0..2*PI
+		angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
-		if ( TestAngle(angle, m_angle-PI*0.01f, m_angle+PI*0.01f) )
+		if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
 		{
 			m_physics->SetMotorSpeedZ(0.0f);
 
@@ -328,7 +328,7 @@ Error CTaskRecover::IsEnded()
 		goal = D3DVECTOR(RECOVER_DIST, 3.1f, -3.9f);
 		goal = Transform(*mat, goal);
 		m_particule->CreateRay(pos, goal, PARTIRAY2,
-							   FPOINT(2.0f, 2.0f), 8.0f);
+							   Math::Point(2.0f, 2.0f), 8.0f);
 
 		m_soundChannel = m_sound->Play(SOUND_RECOVER, m_ruin->RetPosition(0), 0.0f, 1.0f, true);
 		m_sound->AddEnvelope(m_soundChannel, 0.6f, 1.0f, 2.0f, SOPER_CONTINUE);
@@ -370,10 +370,10 @@ Error CTaskRecover::IsEnded()
 
 bool CTaskRecover::Abort()
 {
-	m_object->SetAngleZ(2,  126.0f*PI/180.0f);
-	m_object->SetAngleZ(4,  126.0f*PI/180.0f);
-	m_object->SetAngleZ(3, -144.0f*PI/180.0f);
-	m_object->SetAngleZ(5, -144.0f*PI/180.0f);  // rest
+	m_object->SetAngleZ(2,  126.0f*Math::PI/180.0f);
+	m_object->SetAngleZ(4,  126.0f*Math::PI/180.0f);
+	m_object->SetAngleZ(3, -144.0f*Math::PI/180.0f);
+	m_object->SetAngleZ(5, -144.0f*Math::PI/180.0f);  // rest
 
 	if ( m_soundChannel != -1 )
 	{

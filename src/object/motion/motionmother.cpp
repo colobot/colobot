@@ -16,14 +16,13 @@
 
 // motionmother.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/func.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -180,7 +179,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(8, D3DVECTOR(-5.0f, -1.0f, 12.0f));
-	m_object->SetAngleY(8, PI);
+	m_object->SetAngleY(8, Math::PI);
 
 	// Creates a left-back foot.
 	rank = m_engine->CreateObject();
@@ -199,7 +198,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(10, D3DVECTOR(3.5f, -1.0f, 12.0f));
-	m_object->SetAngleY(10, PI);
+	m_object->SetAngleY(10, Math::PI);
 
 	// Creates a middle-left foot.
 	rank = m_engine->CreateObject();
@@ -218,7 +217,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
 	m_object->SetPosition(12, D3DVECTOR(10.0f, -1.0f, 10.0f));
-	m_object->SetAngleY(12, PI);
+	m_object->SetAngleY(12, Math::PI);
 
 	// Creates a left-front foot.
 	rank = m_engine->CreateObject();
@@ -341,8 +340,8 @@ void CMotionMother::CreatePhysics()
 	m_physics->SetLinMotionZ(MO_TERFORCE,  20.0f);
 	m_physics->SetLinMotionZ(MO_MOTACCEL,  40.0f);
 
-	m_physics->SetCirMotionY(MO_ADVSPEED,   0.1f*PI);
-	m_physics->SetCirMotionY(MO_RECSPEED,   0.1f*PI);
+	m_physics->SetCirMotionY(MO_ADVSPEED,   0.1f*Math::PI);
+	m_physics->SetCirMotionY(MO_RECSPEED,   0.1f*Math::PI);
 	m_physics->SetCirMotionY(MO_ADVACCEL,  10.0f);
 	m_physics->SetCirMotionY(MO_RECACCEL,  10.0f);
 	m_physics->SetCirMotionY(MO_STOACCEL,  20.0f);
@@ -411,7 +410,7 @@ bool CMotionMother::EventFrame(const Event &event)
 	if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
 
 	s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
-	a = Abs(m_physics->RetCirMotionY(MO_MOTSPEED)*26.0f);
+	a = fabs(m_physics->RetCirMotionY(MO_MOTSPEED)*26.0f);
 
 	if ( s == 0.0f && a != 0.0f )  a *= 1.5f;
 
@@ -423,16 +422,16 @@ bool CMotionMother::EventFrame(const Event &event)
 
 	if ( bStop )
 	{
-		prog = Mod(m_armTimeAbs, 2.0f)/10.0f;
-		a = Mod(m_armMember, 1.0f);
+		prog = Math::Mod(m_armTimeAbs, 2.0f)/10.0f;
+		a = Math::Mod(m_armMember, 1.0f);
 		a = (prog-a)*event.rTime*1.0f;  // stop position just pleasantly
 		m_armMember += a;
 	}
 
 	for ( i=0 ; i<6 ; i++ )  // the six legs
 	{
-		if ( i < 3 )  prog = Mod(m_armMember+(2.0f-(i%3))*0.33f+0.0f, 1.0f);
-		else          prog = Mod(m_armMember+(2.0f-(i%3))*0.33f+0.3f, 1.0f);
+		if ( i < 3 )  prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.0f, 1.0f);
+		else          prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.3f, 1.0f);
 		if ( m_bArmStop )
 		{
 			prog = (float)m_armTimeIndex/3.0f;
@@ -459,21 +458,21 @@ bool CMotionMother::EventFrame(const Event &event)
 		nd = nd*27+(i%3)*3;
 		if ( i < 3 )  // right leg (1..3) ?
 		{
-			m_object->SetAngleX(2+2*i+0, Prop(m_armAngles[st+ 0], m_armAngles[nd+ 0], prog));
-			m_object->SetAngleY(2+2*i+0, Prop(m_armAngles[st+ 1], m_armAngles[nd+ 1], prog));
-			m_object->SetAngleZ(2+2*i+0, Prop(m_armAngles[st+ 2], m_armAngles[nd+ 2], prog));
-			m_object->SetAngleX(2+2*i+1, Prop(m_armAngles[st+ 9], m_armAngles[nd+ 9], prog));
-			m_object->SetAngleY(2+2*i+1, Prop(m_armAngles[st+10], m_armAngles[nd+10], prog));
-			m_object->SetAngleZ(2+2*i+1, Prop(m_armAngles[st+11], m_armAngles[nd+11], prog));
+			m_object->SetAngleX(2+2*i+0, Math::PropAngle(m_armAngles[st+ 0], m_armAngles[nd+ 0], prog));
+			m_object->SetAngleY(2+2*i+0, Math::PropAngle(m_armAngles[st+ 1], m_armAngles[nd+ 1], prog));
+			m_object->SetAngleZ(2+2*i+0, Math::PropAngle(m_armAngles[st+ 2], m_armAngles[nd+ 2], prog));
+			m_object->SetAngleX(2+2*i+1, Math::PropAngle(m_armAngles[st+ 9], m_armAngles[nd+ 9], prog));
+			m_object->SetAngleY(2+2*i+1, Math::PropAngle(m_armAngles[st+10], m_armAngles[nd+10], prog));
+			m_object->SetAngleZ(2+2*i+1, Math::PropAngle(m_armAngles[st+11], m_armAngles[nd+11], prog));
 		}
 		else	// left leg (4..6) ?
 		{
-			m_object->SetAngleX(2+2*i+0, Prop(    m_armAngles[st+ 0],     m_armAngles[nd+ 0], prog));
-			m_object->SetAngleY(2+2*i+0, Prop(180-m_armAngles[st+ 1], 180-m_armAngles[nd+ 1], prog));
-			m_object->SetAngleZ(2+2*i+0, Prop(   -m_armAngles[st+ 2],    -m_armAngles[nd+ 2], prog));
-			m_object->SetAngleX(2+2*i+1, Prop(    m_armAngles[st+ 9],     m_armAngles[nd+ 9], prog));
-			m_object->SetAngleY(2+2*i+1, Prop(   -m_armAngles[st+10],    -m_armAngles[nd+10], prog));
-			m_object->SetAngleZ(2+2*i+1, Prop(   -m_armAngles[st+11],    -m_armAngles[nd+11], prog));
+			m_object->SetAngleX(2+2*i+0, Math::PropAngle(    m_armAngles[st+ 0],     m_armAngles[nd+ 0], prog));
+			m_object->SetAngleY(2+2*i+0, Math::PropAngle(180-m_armAngles[st+ 1], 180-m_armAngles[nd+ 1], prog));
+			m_object->SetAngleZ(2+2*i+0, Math::PropAngle(   -m_armAngles[st+ 2],    -m_armAngles[nd+ 2], prog));
+			m_object->SetAngleX(2+2*i+1, Math::PropAngle(    m_armAngles[st+ 9],     m_armAngles[nd+ 9], prog));
+			m_object->SetAngleY(2+2*i+1, Math::PropAngle(   -m_armAngles[st+10],    -m_armAngles[nd+10], prog));
+			m_object->SetAngleZ(2+2*i+1, Math::PropAngle(   -m_armAngles[st+11],    -m_armAngles[nd+11], prog));
 		}
 	}
 
@@ -488,12 +487,12 @@ bool CMotionMother::EventFrame(const Event &event)
 
 	if ( !bStop && !m_object->RetRuin() )
 	{
-		a = Mod(m_armTimeMarch, 1.0f);
+		a = Math::Mod(m_armTimeMarch, 1.0f);
 		if ( a < 0.5f )  a = -1.0f+4.0f*a;  // -1..1
 		else             a =  3.0f-4.0f*a;  // 1..-1
 		dir.x = sinf(a)*0.03f;
 
-		s = Mod(m_armTimeMarch/2.0f, 1.0f);
+		s = Math::Mod(m_armTimeMarch/2.0f, 1.0f);
 		if ( s < 0.5f )  s = -1.0f+4.0f*s;  // -1..1
 		else             s =  3.0f-4.0f*s;  // 1..-1
 		dir.z = sinf(s)*0.05f;
@@ -501,7 +500,7 @@ bool CMotionMother::EventFrame(const Event &event)
 		dir.y = 0.0f;
 		m_object->SetInclinaison(dir);
 
-		a = Mod(m_armMember-0.1f, 1.0f);
+		a = Math::Mod(m_armMember-0.1f, 1.0f);
 		if ( a < 0.33f )
 		{
 			dir.y = -(1.0f-(a/0.33f))*0.3f;

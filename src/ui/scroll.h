@@ -20,7 +20,6 @@
 
 
 #include "ui/control.h"
-#include "common/struct.h"
 
 
 class CD3DEngine;
@@ -37,10 +36,10 @@ public:
 	CScroll(CInstanceManager* iMan);
 	~CScroll();
 
-	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	void		SetPos(FPOINT pos);
-	void		SetDim(FPOINT dim);
+	void		SetPos(Math::Point pos);
+	void		SetDim(Math::Point dim);
 
 	bool		SetState(int state, bool bState);
 	bool		SetState(int state);
@@ -61,7 +60,7 @@ public:
 protected:
 	void		MoveAdjust();
 	void		AdjustGlint();
-	void		DrawVertex(FPOINT pos, FPOINT dim, int icon);
+	void		DrawVertex(Math::Point pos, Math::Point dim, int icon);
 
 protected:
 	CButton*	m_buttonUp;
@@ -72,7 +71,7 @@ protected:
 	float		m_step;
 
 	bool		m_bCapture;
-	FPOINT		m_pressPos;
+	Math::Point		m_pressPos;
 	float		m_pressValue;
 
 	EventMsg	m_eventUp;

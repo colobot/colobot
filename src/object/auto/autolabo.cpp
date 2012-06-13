@@ -14,15 +14,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
-#include "math/const.h"
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/global.h"
@@ -130,7 +129,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 {
 	CObject*	power;
 	D3DVECTOR	pos, goal, speed;
-	FPOINT		dim, rot;
+	Math::Point		dim, rot;
 	float		angle;
 	int			i;
 
@@ -194,7 +193,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 		}
 		return true;
 	}
@@ -216,15 +215,15 @@ bool CAutoLabo::EventProcess(const Event &event)
 		if ( m_progress < 1.0f )
 		{
 			angle = 80.0f-(35.0f*m_progress);
-			m_object->SetAngleZ(3, angle*PI/180.0f);
-			m_object->SetAngleZ(4, angle*PI/180.0f);
-			m_object->SetAngleZ(5, angle*PI/180.0f);
+			m_object->SetAngleZ(3, angle*Math::PI/180.0f);
+			m_object->SetAngleZ(4, angle*Math::PI/180.0f);
+			m_object->SetAngleZ(5, angle*Math::PI/180.0f);
 		}
 		else
 		{
-			m_object->SetAngleZ(3, 45.0f*PI/180.0f);
-			m_object->SetAngleZ(4, 45.0f*PI/180.0f);
-			m_object->SetAngleZ(5, 45.0f*PI/180.0f);
+			m_object->SetAngleZ(3, 45.0f*Math::PI/180.0f);
+			m_object->SetAngleZ(4, 45.0f*Math::PI/180.0f);
+			m_object->SetAngleZ(5, 45.0f*Math::PI/180.0f);
 
 			SoundManip(1.5f, 1.0f, 0.7f);
 			m_phase    = ALAP_OPEN2;
@@ -257,7 +256,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 	{
 		if ( m_progress < 1.0f )
 		{
-			angle = (1.0f-m_progress)*PI/2.0f;
+			angle = (1.0f-m_progress)*Math::PI/2.0f;
 			m_object->SetAngleZ(1, angle);
 		}
 		else
@@ -273,7 +272,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 			{
 				m_partiRank[i] = m_particule->CreateRay(pos, goal,
 													    PARTIRAY2,
-													    FPOINT(2.9f, 2.9f),
+													    Math::Point(2.9f, 2.9f),
 													    LABO_DELAY);
 			}
 
@@ -320,14 +319,14 @@ bool CAutoLabo::EventProcess(const Event &event)
 			angle += m_object->RetAngleY(0);
 			for ( i=0 ; i<3 ; i++ )
 			{
-				rot = RotatePoint(-angle, -4.0f);
+				rot = Math::RotatePoint(-angle, -4.0f);
 				pos = m_object->RetPosition(0);
 				pos.x += rot.x;
 				pos.z += rot.y;
 				pos.y += 3.0f+4.0f;;
 				m_particule->SetPosition(m_partiRank[i], pos);  // adjusts ray
 
-				angle += PI*2.0f/3.0f;
+				angle += Math::PI*2.0f/3.0f;
 			}
 
 			if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
@@ -339,12 +338,12 @@ bool CAutoLabo::EventProcess(const Event &event)
 				{
 					pos = m_object->RetPosition(0);
 					pos.y += 3.0f;
-					pos.x += (Rand()-0.5f)*2.0f;
-					pos.z += (Rand()-0.5f)*2.0f;
-					speed.y = Rand()*5.0f+5.0f;
-					speed.x = (Rand()-0.5f)*10.0f;
-					speed.z = (Rand()-0.5f)*10.0f;
-					dim.x = Rand()*0.4f*m_progress+1.0f;
+					pos.x += (Math::Rand()-0.5f)*2.0f;
+					pos.z += (Math::Rand()-0.5f)*2.0f;
+					speed.y = Math::Rand()*5.0f+5.0f;
+					speed.x = (Math::Rand()-0.5f)*10.0f;
+					speed.z = (Math::Rand()-0.5f)*10.0f;
+					dim.x = Math::Rand()*0.4f*m_progress+1.0f;
 					dim.y = dim.x;
 					m_particule->CreateTrack(pos, speed, dim, PARTITRACK2,
 											 2.0f+2.0f*m_progress, 10.0f, 1.5f, 1.4f);
@@ -376,12 +375,12 @@ bool CAutoLabo::EventProcess(const Event &event)
 	{
 		if ( m_progress < 1.0f )
 		{
-			angle = m_progress*PI/2.0f;
+			angle = m_progress*Math::PI/2.0f;
 			m_object->SetAngleZ(1, angle);
 		}
 		else
 		{
-			m_object->SetAngleZ(1, PI/2.0f);
+			m_object->SetAngleZ(1, Math::PI/2.0f);
 
 			SoundManip(1.5f, 1.0f, 0.7f);
 			m_phase    = ALAP_CLOSE2;
@@ -415,15 +414,15 @@ bool CAutoLabo::EventProcess(const Event &event)
 		if ( m_progress < 1.0f )
 		{
 			angle = 45.0f+(35.0f*m_progress);
-			m_object->SetAngleZ(3, angle*PI/180.0f);
-			m_object->SetAngleZ(4, angle*PI/180.0f);
-			m_object->SetAngleZ(5, angle*PI/180.0f);
+			m_object->SetAngleZ(3, angle*Math::PI/180.0f);
+			m_object->SetAngleZ(4, angle*Math::PI/180.0f);
+			m_object->SetAngleZ(5, angle*Math::PI/180.0f);
 		}
 		else
 		{
-			m_object->SetAngleZ(3, 80.0f*PI/180.0f);
-			m_object->SetAngleZ(4, 80.0f*PI/180.0f);
-			m_object->SetAngleZ(5, 80.0f*PI/180.0f);
+			m_object->SetAngleZ(3, 80.0f*Math::PI/180.0f);
+			m_object->SetAngleZ(4, 80.0f*Math::PI/180.0f);
+			m_object->SetAngleZ(5, 80.0f*Math::PI/180.0f);
 
 			SetBusy(false);
 			UpdateInterface();
@@ -464,7 +463,7 @@ Error CAutoLabo::RetError()
 bool CAutoLabo::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, dim, ddim;
+	Math::Point		pos, dim, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

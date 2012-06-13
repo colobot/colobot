@@ -21,6 +21,7 @@
 
 #include "graphics/d3d/d3dengine.h"
 #include "common/misc.h"
+#include "object/object.h"
 
 
 class CInstanceManager;

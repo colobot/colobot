@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/language.h"
@@ -132,7 +131,7 @@ bool CAutoBase::EventProcess(const Event &event)
 	Event		newEvent;
 	CObject*	pObj;
 	D3DVECTOR	pos, speed, vibCir, iPos;
-	FPOINT		dim, p;
+	Math::Point		dim, p;
 	Error		err;
 	float		angle, dist, time, h, len, vSpeed;
 	int			i, max;
@@ -160,9 +159,9 @@ begin:
 
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetAngleZ(1+i, PI/2.0f-124.0f*PI/180.0f);
-				m_object->SetAngleX(10+i, -10.0f*PI/180.0f);
-				m_object->SetAngleX(18+i,  10.0f*PI/180.0f);
+				m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
+				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
 				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
 				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
 			}
@@ -191,9 +190,9 @@ begin:
 
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetAngleZ(1+i, PI/2.0f-124.0f*PI/180.0f);
-				m_object->SetAngleX(10+i, -10.0f*PI/180.0f);
-				m_object->SetAngleX(18+i,  10.0f*PI/180.0f);
+				m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
+				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
 				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
 				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
 			}
@@ -260,7 +259,7 @@ begin:
 			m_progress = 0.0f;
 			m_speed    = 1.0f/BASE_TRANSIT_TIME;
 
-			m_object->SetAngleZ(0, -PI/2.0f);
+			m_object->SetAngleZ(0, -Math::PI/2.0f);
 			pos = m_object->RetPosition(0);
 			pos.y += 10000.0f;  // in space
 			m_finalPos = pos;
@@ -385,14 +384,14 @@ begin:
 			m_object->SetPosition(0, pos);
 			MoveCargo();  // all cargo moves
 
-			vibCir.z = sinf(m_time*PI* 2.01f)*(PI/150.0f)+
-					   sinf(m_time*PI* 2.51f)*(PI/200.0f)+
-					   sinf(m_time*PI*19.01f)*(PI/400.0f);
-			vibCir.x = sinf(m_time*PI* 2.03f)*(PI/150.0f)+
-					   sinf(m_time*PI* 2.52f)*(PI/200.0f)+
-					   sinf(m_time*PI*19.53f)*(PI/400.0f);
+			vibCir.z = sinf(m_time*Math::PI* 2.01f)*(Math::PI/150.0f)+
+					   sinf(m_time*Math::PI* 2.51f)*(Math::PI/200.0f)+
+					   sinf(m_time*Math::PI*19.01f)*(Math::PI/400.0f);
+			vibCir.x = sinf(m_time*Math::PI* 2.03f)*(Math::PI/150.0f)+
+					   sinf(m_time*Math::PI* 2.52f)*(Math::PI/200.0f)+
+					   sinf(m_time*Math::PI*19.53f)*(Math::PI/400.0f);
 			vibCir.y = 0.0f;
-			vibCir *= Min(1.0f, (1.0f-m_progress)*3.0f);
+			vibCir *= Math::Min(1.0f, (1.0f-m_progress)*3.0f);
 			m_object->SetCirVibration(vibCir);
 
 			pos = m_pos;
@@ -413,15 +412,15 @@ begin:
 
 				// Dust thrown to the ground.
 				pos = m_pos;
-				pos.x += (Rand()-0.5f)*10.0f;
-				pos.z += (Rand()-0.5f)*10.0f;
-				angle = Rand()*(PI*2.0f);
+				pos.x += (Math::Rand()-0.5f)*10.0f;
+				pos.z += (Math::Rand()-0.5f)*10.0f;
+				angle = Math::Rand()*(Math::PI*2.0f);
 				dist = m_progress*50.0f;
-				p = RotatePoint(angle, dist);
+				p = Math::RotatePoint(angle, dist);
 				speed.x = p.x;
 				speed.z = p.y;
 				speed.y = 0.0f;
-				dim.x = (Rand()*15.0f+15.0f)*m_progress;
+				dim.x = (Math::Rand()*15.0f+15.0f)*m_progress;
 				dim.y = dim.x;
 				if ( dim.x >= 1.0f )
 				{
@@ -432,10 +431,10 @@ begin:
 				pos = m_object->RetPosition(0);
 				pos.y += 6.0f;
 				h = m_terrain->RetFloorHeight(pos)/300.0f;
-				speed.x = (Rand()-0.5f)*(80.0f-50.0f*h);
-				speed.z = (Rand()-0.5f)*(80.0f-50.0f*h);
-				speed.y = -(Rand()*(h+1.0f)*40.0f+(h+1.0f)*40.0f);
-				dim.x = Rand()*2.0f+2.0f;
+				speed.x = (Math::Rand()-0.5f)*(80.0f-50.0f*h);
+				speed.z = (Math::Rand()-0.5f)*(80.0f-50.0f*h);
+				speed.y = -(Math::Rand()*(h+1.0f)*40.0f+(h+1.0f)*40.0f);
+				dim.x = Math::Rand()*2.0f+2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
 
@@ -443,13 +442,13 @@ begin:
 				if ( m_progress > 0.8f )
 				{
 					pos = m_pos;
-					pos.x += (Rand()-0.5f)*8.0f;
-					pos.z += (Rand()-0.5f)*8.0f;
+					pos.x += (Math::Rand()-0.5f)*8.0f;
+					pos.z += (Math::Rand()-0.5f)*8.0f;
 					pos.y += 3.0f;
-					speed.x = (Rand()-0.5f)*8.0f;
-					speed.z = (Rand()-0.5f)*8.0f;
+					speed.x = (Math::Rand()-0.5f)*8.0f;
+					speed.z = (Math::Rand()-0.5f)*8.0f;
 					speed.y = 0.0f;
-					dim.x = Rand()*4.0f+4.0f;
+					dim.x = Math::Rand()*4.0f+4.0f;
 					dim.y = dim.x;
 					m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 2.0f);
 				}
@@ -467,15 +466,15 @@ begin:
 			max = (int)(50.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
-				angle = Rand()*(PI*2.0f);
-				p = RotatePoint(angle, 46.0f);
+				angle = Math::Rand()*(Math::PI*2.0f);
+				p = Math::RotatePoint(angle, 46.0f);
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = Rand()*10.0f+10.0f;
+				dim.x = Math::Rand()*10.0f+10.0f;
 				dim.y = dim.x;
-				time = Rand()*2.0f+1.5f;
+				time = Math::Rand()*2.0f+1.5f;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
 			}
 
@@ -500,13 +499,13 @@ begin:
 
 				// Black smoke from the reactor.
 				pos = m_pos;
-				pos.x += (Rand()-0.5f)*8.0f;
-				pos.z += (Rand()-0.5f)*8.0f;
+				pos.x += (Math::Rand()-0.5f)*8.0f;
+				pos.z += (Math::Rand()-0.5f)*8.0f;
 				pos.y += 3.0f;
-				speed.x = (Rand()-0.5f)*8.0f;
-				speed.z = (Rand()-0.5f)*8.0f;
+				speed.x = (Math::Rand()-0.5f)*8.0f;
+				speed.z = (Math::Rand()-0.5f)*8.0f;
 				speed.y = 0.0f;
-				dim.x = Rand()*4.0f+4.0f;
+				dim.x = Math::Rand()*4.0f+4.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 2.0f);
 			}
@@ -528,16 +527,16 @@ begin:
 	{
 		if ( m_progress < 1.0f )
 		{
-			angle = -m_progress*124.0f*PI/180.0f;
+			angle = -m_progress*124.0f*Math::PI/180.0f;
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetAngleZ(1+i, PI/2.0f+angle);
+				m_object->SetAngleZ(1+i, Math::PI/2.0f+angle);
 			}
 
 			if ( m_param != PARAM_PORTICO )
 			{
-				angle = m_progress*PI*2.0f;
-				p = RotatePoint(angle, -150.0f);
+				angle = m_progress*Math::PI*2.0f;
+				p = Math::RotatePoint(angle, -150.0f);
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
@@ -553,23 +552,23 @@ begin:
 		{
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetAngleZ(1+i, PI/2.0f-124.0f*PI/180.0f);
+				m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
 			}
 
 			// Clash the doors with the ground.
 			max = (int)(20.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
-				angle = Rand()*(20.0f*PI/180.0f)-(10.0f*PI/180.0f);
-				angle += (PI/4.0f)*(rand()%8);
-				p = RotatePoint(angle, 74.0f);
+				angle = Math::Rand()*(20.0f*Math::PI/180.0f)-(10.0f*Math::PI/180.0f);
+				angle += (Math::PI/4.0f)*(rand()%8);
+				p = Math::RotatePoint(angle, 74.0f);
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = Rand()*8.0f+8.0f;
+				dim.x = Math::Rand()*8.0f+8.0f;
 				dim.y = dim.x;
-				time = Rand()*2.0f+1.5f;
+				time = Math::Rand()*2.0f+1.5f;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
 			}
 
@@ -592,14 +591,14 @@ begin:
 			{
 				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f,  len));
 				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f, -len));
-				m_object->SetAngleX(10+i, -10.0f*PI/180.0f*m_progress);
-				m_object->SetAngleX(18+i,  10.0f*PI/180.0f*m_progress);
+				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f*m_progress);
+				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f*m_progress);
 			}
 
 			if ( m_param != PARAM_PORTICO )
 			{
-				angle = m_progress*PI/2.0f;
-				p = RotatePoint(angle, -150.0f);
+				angle = m_progress*Math::PI/2.0f;
+				p = Math::RotatePoint(angle, -150.0f);
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
@@ -617,8 +616,8 @@ begin:
 			{
 				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
 				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
-				m_object->SetAngleX(10+i, -10.0f*PI/180.0f);
-				m_object->SetAngleX(18+i,  10.0f*PI/180.0f);
+				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
+				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
 			}
 
 			m_phase    = ABP_LDWAIT;
@@ -671,8 +670,8 @@ begin:
 			{
 				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f,  len));
 				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f, -len));
-				m_object->SetAngleX(10+i, -10.0f*PI/180.0f*(1.0f-m_progress));
-				m_object->SetAngleX(18+i,  10.0f*PI/180.0f*(1.0f-m_progress));
+				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f*(1.0f-m_progress));
+				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f*(1.0f-m_progress));
 			}
 		}
 		else
@@ -700,17 +699,17 @@ begin:
 	{
 		if ( m_progress < 1.0f )
 		{
-			angle = -(1.0f-m_progress)*124.0f*PI/180.0f;
+			angle = -(1.0f-m_progress)*124.0f*Math::PI/180.0f;
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetAngleZ(1+i, PI/2.0f+angle);
+				m_object->SetAngleZ(1+i, Math::PI/2.0f+angle);
 			}
 		}
 		else
 		{
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetAngleZ(1+i, PI/2.0f);
+				m_object->SetAngleZ(1+i, Math::PI/2.0f);
 			}
 			m_bMotor = true;  // lights the jet engine
 
@@ -718,16 +717,16 @@ begin:
 			max = (int)(20.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
-				angle = Rand()*PI*2.0f;
-				p = RotatePoint(angle, 32.0f);
+				angle = Math::Rand()*Math::PI*2.0f;
+				p = Math::RotatePoint(angle, 32.0f);
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
 				pos.y += 85.0f;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = Rand()*3.0f+3.0f;
+				dim.x = Math::Rand()*3.0f+3.0f;
 				dim.y = dim.x;
-				time = Rand()*1.0f+1.0f;
+				time = Math::Rand()*1.0f+1.0f;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time);
 			}
 			m_sound->Play(SOUND_BOUM, m_object->RetPosition(0));
@@ -751,8 +750,8 @@ begin:
 				m_sound->AddEnvelope(m_soundChannel, 0.3f, 2.0f, BASE_TAKO_TIME, SOPER_STOP);
 			}
 
-			vibCir.z = sinf(m_time*PI*19.01f)*(PI/400.0f);
-			vibCir.x = sinf(m_time*PI*19.53f)*(PI/400.0f);
+			vibCir.z = sinf(m_time*Math::PI*19.01f)*(Math::PI/400.0f);
+			vibCir.x = sinf(m_time*Math::PI*19.53f)*(Math::PI/400.0f);
 			vibCir.y = 0.0f;
 			vibCir *= m_progress*1.0f;
 			m_object->SetCirVibration(vibCir);
@@ -764,10 +763,10 @@ begin:
 				// Particles are ejected from the reactor.
 				pos = m_object->RetPosition(0);
 				pos.y += 6.0f;
-				speed.x = (Rand()-0.5f)*160.0f;
-				speed.z = (Rand()-0.5f)*160.0f;
-				speed.y = -(Rand()*10.0f+10.0f);
-				dim.x = Rand()*2.0f+2.0f;
+				speed.x = (Math::Rand()-0.5f)*160.0f;
+				speed.z = (Math::Rand()-0.5f)*160.0f;
+				speed.y = -(Math::Rand()*10.0f+10.0f);
+				dim.x = Math::Rand()*2.0f+2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
 			}
@@ -793,8 +792,8 @@ begin:
 			m_object->SetPosition(0, pos);
 			MoveCargo();  // all cargo moves
 
-			vibCir.z = sinf(m_time*PI*19.01f)*(PI/400.0f);
-			vibCir.x = sinf(m_time*PI*19.53f)*(PI/400.0f);
+			vibCir.z = sinf(m_time*Math::PI*19.01f)*(Math::PI/400.0f);
+			vibCir.x = sinf(m_time*Math::PI*19.53f)*(Math::PI/400.0f);
 			vibCir.y = 0.0f;
 			m_object->SetCirVibration(vibCir);
 
@@ -816,15 +815,15 @@ begin:
 
 				// Dust thrown to the ground.
 				pos = m_pos;
-				pos.x += (Rand()-0.5f)*10.0f;
-				pos.z += (Rand()-0.5f)*10.0f;
-				angle = Rand()*(PI*2.0f);
+				pos.x += (Math::Rand()-0.5f)*10.0f;
+				pos.z += (Math::Rand()-0.5f)*10.0f;
+				angle = Math::Rand()*(Math::PI*2.0f);
 				dist = (1.0f-m_progress)*50.0f;
-				p = RotatePoint(angle, dist);
+				p = Math::RotatePoint(angle, dist);
 				speed.x = p.x;
 				speed.z = p.y;
 				speed.y = 0.0f;
-				dim.x = (Rand()*10.0f+10.0f)*(1.0f-m_progress);
+				dim.x = (Math::Rand()*10.0f+10.0f)*(1.0f-m_progress);
 				dim.y = dim.x;
 				if ( dim.x >= 1.0f )
 				{
@@ -834,22 +833,22 @@ begin:
 				// Particles are ejected from the reactor.
 				pos = m_object->RetPosition(0);
 				pos.y += 6.0f;
-				speed.x = (Rand()-0.5f)*40.0f;
-				speed.z = (Rand()-0.5f)*40.0f;
+				speed.x = (Math::Rand()-0.5f)*40.0f;
+				speed.z = (Math::Rand()-0.5f)*40.0f;
 				time = 5.0f+150.0f*m_progress;
-				speed.y = -(Rand()*time+time);
+				speed.y = -(Math::Rand()*time+time);
 				time = 2.0f+m_progress*12.0f;
-				dim.x = Rand()*time+time;
+				dim.x = Math::Rand()*time+time;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
 
 				// Black smoke from the reactor.
 				pos = m_object->RetPosition(0);
 				pos.y += 3.0f;
-				speed.x = (Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
-				speed.z = (Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
+				speed.x = (Math::Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
+				speed.z = (Math::Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
 				speed.y = 0.0f;
-				dim.x = Rand()*20.0f+20.0f;
+				dim.x = Math::Rand()*20.0f+20.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 10.0f, 0.0f, 2.0f);
 			}
@@ -908,15 +907,15 @@ begin:
 			max = (int)(50.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
-				angle = Rand()*(PI*2.0f);
-				p = RotatePoint(angle, 46.0f);
+				angle = Math::Rand()*(Math::PI*2.0f);
+				p = Math::RotatePoint(angle, 46.0f);
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
 				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-				dim.x = Rand()*10.0f+10.0f;
+				dim.x = Math::Rand()*10.0f+10.0f;
 				dim.y = dim.x;
-				time = Rand()*2.0f+1.5f;
+				time = Math::Rand()*2.0f+1.5f;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
 			}
 
@@ -1007,15 +1006,15 @@ begin:
 			}
 
 			pos = D3DVECTOR(0.0f, 6.0f, 0.0f);
-			speed.x = (Rand()-0.5f)*4.0f;
-			speed.z = (Rand()-0.5f)*4.0f;
-			speed.y = vSpeed*0.8f-(8.0f+Rand()*6.0f);
+			speed.x = (Math::Rand()-0.5f)*4.0f;
+			speed.z = (Math::Rand()-0.5f)*4.0f;
+			speed.y = vSpeed*0.8f-(8.0f+Math::Rand()*6.0f);
 			speed += pos;
 			pos = Transform(*mat, pos);
 			speed = Transform(*mat, speed);
 			speed -= pos;
 
-			dim.x = 4.0f+Rand()*4.0f;
+			dim.x = 4.0f+Math::Rand()*4.0f;
 			dim.y = dim.x;
 
 			m_particule->CreateParticule(pos, speed, dim, PARTIBASE, 3.0f, 0.0f, 0.0f);
@@ -1026,7 +1025,7 @@ begin:
 				dim.x = 12.0f;
 				dim.y = dim.x;
 				pos = D3DVECTOR(0.0f, 7.0f, 0.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
 
@@ -1034,35 +1033,35 @@ begin:
 				dim.x = 4.0f;
 				dim.y = dim.x;
 				pos = D3DVECTOR(42.0f, 0.0f, 17.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 				pos = D3DVECTOR(17.0f, 0.0f, 42.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 				pos = D3DVECTOR(42.0f, 0.0f, -17.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 				pos = D3DVECTOR(17.0f, 0.0f, -42.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 				pos = D3DVECTOR(-42.0f, 0.0f, 17.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 				pos = D3DVECTOR(-17.0f, 0.0f, 42.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 				pos = D3DVECTOR(-42.0f, 0.0f, -17.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 				pos = D3DVECTOR(-17.0f, 0.0f, -42.0f);
-				pos.x += (Rand()-0.5f)*2.0f;  pos.z += (Rand()-0.5f)*2.0f;
+				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 
@@ -1138,9 +1137,9 @@ bool CAutoBase::Abort()
 
 		for ( i=0 ; i<8 ; i++ )
 		{
-			m_object->SetAngleZ(1+i, PI/2.0f-124.0f*PI/180.0f);
-			m_object->SetAngleX(10+i, -10.0f*PI/180.0f);
-			m_object->SetAngleX(18+i,  10.0f*PI/180.0f);
+			m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+			m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
+			m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
 			m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
 			m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
 		}
@@ -1160,9 +1159,9 @@ bool CAutoBase::Abort()
 			MoveCargo();  // all cargo moves
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetAngleZ(1+i, PI/2.0f-124.0f*PI/180.0f);
-				m_object->SetAngleX(10+i, -10.0f*PI/180.0f);
-				m_object->SetAngleX(18+i,  10.0f*PI/180.0f);
+				m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
+				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
+				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
 				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
 				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
 			}
@@ -1226,7 +1225,7 @@ Error CAutoBase::RetError()
 bool CAutoBase::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, dim, ddim;
+	Math::Point		pos, dim, ddim;
 	float		ox, oy, sx, sy;
 	float		sleep, delay, magnetic, progress;
 

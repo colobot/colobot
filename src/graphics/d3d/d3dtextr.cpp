@@ -26,9 +26,10 @@
 //
 // Copyright (c) 1996-1999 Microsoft Corporation. All rights reserved
 //-----------------------------------------------------------------------------
-#define STRICT
 #include <tchar.h>
 #include <stdio.h>
+#include <algorithm>
+using std::min;
 #include "graphics/d3d/d3dtextr.h"
 #include "graphics/d3d/d3dutil.h"
 #include "common/language.h"

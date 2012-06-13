@@ -16,8 +16,6 @@
 
 // edit.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -85,7 +83,7 @@ bool IsSep(int character)
 
 CEdit::CEdit(CInstanceManager* iMan) : CControl(iMan)
 {
-	FPOINT	pos;
+	Math::Point	pos;
 	int		i;
 
 	m_maxChar = 100;
@@ -139,10 +137,10 @@ CEdit::~CEdit()
 
 // Creates a new editable line.
 
-bool CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CEdit::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CScroll*	pc;
-	FPOINT		start, end;
+	Math::Point		start, end;
 
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 	CControl::Create(pos, dim, icon, eventMsg);
@@ -174,13 +172,13 @@ bool CEdit::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-void CEdit::SetPos(FPOINT pos)
+void CEdit::SetPos(Math::Point pos)
 {
 	CControl::SetPos(pos);
 	MoveAdjust();
 }
 
-void CEdit::SetDim(FPOINT dim)
+void CEdit::SetDim(Math::Point dim)
 {
 	CControl::SetDim(dim);
 	MoveAdjust();
@@ -188,7 +186,7 @@ void CEdit::SetDim(FPOINT dim)
 
 void CEdit::MoveAdjust()
 {
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	float		height;
 
 	m_lineDescent = m_engine->RetText()->RetDescent(m_fontSize, m_fontType);
@@ -552,7 +550,7 @@ void CEdit::SendModifEvent()
 
 // Detects whether the mouse is over a hyperlink character.
 
-bool CEdit::IsLinkPos(FPOINT pos)
+bool CEdit::IsLinkPos(Math::Point pos)
 {
 	int		i;
 
@@ -569,7 +567,7 @@ bool CEdit::IsLinkPos(FPOINT pos)
 
 // Positions the cursor after a double click.
 
-void CEdit::MouseDoubleClick(FPOINT mouse)
+void CEdit::MouseDoubleClick(Math::Point mouse)
 {
 	int		i, character;
 
@@ -608,7 +606,7 @@ void CEdit::MouseDoubleClick(FPOINT mouse)
 
 // Positions the cursor when clicked.
 
-void CEdit::MouseClick(FPOINT mouse)
+void CEdit::MouseClick(Math::Point mouse)
 {
 	int		i;
 
@@ -627,7 +625,7 @@ void CEdit::MouseClick(FPOINT mouse)
 
 // Positions the cursor when clicked released.
 
-void CEdit::MouseRelease(FPOINT mouse)
+void CEdit::MouseRelease(Math::Point mouse)
 {
 	int		i, j, rank;
 
@@ -655,7 +653,7 @@ void CEdit::MouseRelease(FPOINT mouse)
 
 // Positions the cursor after movement.
 
-void CEdit::MouseMove(FPOINT mouse)
+void CEdit::MouseMove(Math::Point mouse)
 {
 	int		i;
 
@@ -687,9 +685,9 @@ void CEdit::MouseMove(FPOINT mouse)
 
 // Positions the cursor when clicked.
 
-int CEdit::MouseDetect(FPOINT mouse)
+int CEdit::MouseDetect(Math::Point mouse)
 {
-	FPOINT	pos;
+	Math::Point	pos;
 	float	indentLength, offset, size;
 	int		i, len, c;
 	bool	bTitle;
@@ -883,7 +881,7 @@ bool CEdit::HyperGo(EventMsg event)
 
 void CEdit::Draw()
 {
-	FPOINT		pos, ppos, dim, start, end;
+	Math::Point		pos, ppos, dim, start, end;
 	float		size, indentLength;
 	int			i, j, beg, len, c1, c2, o1, o2, eol, iIndex, line;
 
@@ -904,7 +902,7 @@ void CEdit::Draw()
 	// Displays all lines.
 	c1 = m_cursor1;
 	c2 = m_cursor2;
-	if ( c1 > c2 )  Swap(c1, c2);  // always c1 <= c2
+	if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
 
 	if ( m_bInsideScroll )
 	{
@@ -1070,7 +1068,7 @@ void CEdit::Draw()
 	}
 
 	// Shows the cursor.
-	if ( (m_bEdit && m_bFocus && m_bHilite && Mod(m_timeBlink, 1.0f) <= 0.5f) )  // it blinks
+	if ( (m_bEdit && m_bFocus && m_bHilite && Math::Mod(m_timeBlink, 1.0f) <= 0.5f) )  // it blinks
 	{
 		pos.y = m_pos.y+m_dim.y-m_lineHeight-(m_bMulti?MARGY:MARGY1*2.0f);
 		for ( i=m_lineFirst ; i<m_lineTotal ; i++ )
@@ -1120,10 +1118,10 @@ void CEdit::Draw()
 
 // Draw an image part.
 
-void CEdit::DrawImage(FPOINT pos, char *name, float width,
+void CEdit::DrawImage(Math::Point pos, char *name, float width,
 					  float offset, float height, int nbLine)
 {
-	FPOINT		uv1, uv2, dim;
+	Math::Point		uv1, uv2, dim;
 	float		dp;
 	char		filename[100];
 
@@ -1152,9 +1150,9 @@ void CEdit::DrawImage(FPOINT pos, char *name, float width,
 
 // Draw the background.
 
-void CEdit::DrawBack(FPOINT pos, FPOINT dim)
+void CEdit::DrawBack(Math::Point pos, Math::Point dim)
 {
-	FPOINT		uv1,uv2, corner;
+	Math::Point		uv1,uv2, corner;
 	float		dp;
 
 	if ( m_bGeneric )  return;
@@ -1204,9 +1202,9 @@ void CEdit::DrawBack(FPOINT pos, FPOINT dim)
 
 // Draws an icon background.
 
-void CEdit::DrawPart(FPOINT pos, FPOINT dim, int icon)
+void CEdit::DrawPart(Math::Point pos, Math::Point dim, int icon)
 {
-	FPOINT		uv1, uv2;
+	Math::Point		uv1, uv2;
 	float		dp;
 
 #if _POLISH
@@ -2503,7 +2501,7 @@ bool CEdit::Cut()
 
 	c1 = m_cursor1;
 	c2 = m_cursor2;
-	if ( c1 > c2 )  Swap(c1, c2);  // always c1 <= c2
+	if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
 
 	if ( c1 == c2 )
 	{
@@ -2582,7 +2580,7 @@ bool CEdit::Copy()
 
 	c1 = m_cursor1;
 	c2 = m_cursor2;
-	if ( c1 > c2 )  Swap(c1, c2);  // always c1 <= c2
+	if ( c1 > c2 )  Math::Swap(c1, c2);  // always c1 <= c2
 
 	if ( c1 == c2 )
 	{
@@ -2872,7 +2870,7 @@ void CEdit::DeleteOne(int dir)
 		}
 	}
 
-	if ( m_cursor1 > m_cursor2 )  Swap(m_cursor1, m_cursor2);
+	if ( m_cursor1 > m_cursor2 )  Math::Swap(m_cursor1, m_cursor2);
 	hole = m_cursor2-m_cursor1;
 	end = m_len-hole;
 	for ( i=m_cursor1 ; i<end ; i++ )
@@ -2960,7 +2958,7 @@ bool CEdit::Shift(bool bLeft)
 	c2 = m_cursor2;
 	if ( c1 > c2 )
 	{
-		Swap(c1, c2);  // always c1 <= c2
+		Math::Swap(c1, c2);  // always c1 <= c2
 		bInvert = true;
 	}
 
@@ -3000,7 +2998,7 @@ bool CEdit::Shift(bool bLeft)
 		}
 	}
 
-	if ( bInvert )  Swap(c1, c2);
+	if ( bInvert )  Math::Swap(c1, c2);
 	m_cursor1 = c1;
 	m_cursor2 = c2;
 
@@ -3010,7 +3008,7 @@ bool CEdit::Shift(bool bLeft)
 	return true;
 }
 
-// Min conversion <-> shift the selection.
+// Math::Min conversion <-> shift the selection.
 
 bool CEdit::MinMaj(bool bMaj)
 {
@@ -3022,7 +3020,7 @@ bool CEdit::MinMaj(bool bMaj)
 
 	c1 = m_cursor1;
 	c2 = m_cursor2;
-	if ( c1 > c2 )  Swap(c1, c2);  // alwyas c1 <= c2
+	if ( c1 > c2 )  Math::Swap(c1, c2);  // alwyas c1 <= c2
 
 	for ( i=c1 ; i<c2 ; i++ )
 	{

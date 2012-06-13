@@ -16,8 +16,6 @@
 
 // taskpen.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -62,7 +60,7 @@ CTaskPen::~CTaskPen()
 bool CTaskPen::EventProcess(const Event &event)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	int			i;
 
 	if ( m_engine->RetPause() )  return true;
@@ -96,12 +94,12 @@ bool CTaskPen::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_supportPos;
-			pos.x += (Rand()-0.5f)*5.0f;
-			pos.z += (Rand()-0.5f)*5.0f;
-			speed.x = (Rand()-0.5f)*3.0f;
-			speed.z = (Rand()-0.5f)*3.0f;
-			speed.y = Rand()*2.0f;
-			dim.x = Rand()*1.5f+2.0f;
+			pos.x += (Math::Rand()-0.5f)*5.0f;
+			pos.z += (Math::Rand()-0.5f)*5.0f;
+			speed.x = (Math::Rand()-0.5f)*3.0f;
+			speed.z = (Math::Rand()-0.5f)*3.0f;
+			speed.y = Math::Rand()*2.0f;
+			dim.x = Math::Rand()*1.5f+2.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
 		}
@@ -116,12 +114,12 @@ bool CTaskPen::EventProcess(const Event &event)
 			m_lastParticule = m_time;
 
 			pos = m_supportPos;
-			pos.x += (Rand()-0.5f)*5.0f;
-			pos.z += (Rand()-0.5f)*5.0f;
-			speed.x = (Rand()-0.5f)*3.0f;
-			speed.z = (Rand()-0.5f)*3.0f;
-			speed.y = Rand()*5.0f;
-			dim.x = Rand()*1.0f+1.0f;
+			pos.x += (Math::Rand()-0.5f)*5.0f;
+			pos.z += (Math::Rand()-0.5f)*5.0f;
+			speed.x = (Math::Rand()-0.5f)*3.0f;
+			speed.z = (Math::Rand()-0.5f)*3.0f;
+			speed.y = Math::Rand()*5.0f;
+			dim.x = Math::Rand()*1.0f+1.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR, 4.0f);
 		}
@@ -134,7 +132,7 @@ bool CTaskPen::EventProcess(const Event &event)
 		}
 		else
 		{
-			pos.y = -3.2f*Bounce(Min(m_progress*1.8f, 1.0f));
+			pos.y = -3.2f*Math::Bounce(Math::Min(m_progress*1.8f, 1.0f));
 		}
 		m_object->SetPosition(10+i, pos);
 	}
@@ -200,7 +198,7 @@ Error CTaskPen::Start(bool bDown, int color)
 
 	m_lastParticule = 0.0f;
 
-//?	m_camera->StartCentering(m_object, PI*0.60f, 99.9f, 5.0f, 0.5f);
+//?	m_camera->StartCentering(m_object, Math::PI*0.60f, 99.9f, 5.0f, 0.5f);
 
 	return ERR_OK;
 }
@@ -219,7 +217,7 @@ Error CTaskPen::IsEnded()
 	{
 		m_phase    = TPP_TURN;
 		m_progress = 0.0f;
-		m_delay    = Abs(m_oldAngle-m_newAngle)/PI;
+		m_delay    = fabs(m_oldAngle-m_newAngle)/Math::PI;
 		m_time     = 0.0f;
 		m_lastParticule = 0.0f;
 		if ( m_delay > 0.0f )
@@ -270,17 +268,17 @@ void CTaskPen::SoundManip(float time, float amplitude, float frequency)
 
 int CTaskPen::AngleToRank(float angle)
 {
-//?	return (int)(angle/(-45.0f*PI/180.0f));
+//?	return (int)(angle/(-45.0f*Math::PI/180.0f));
 	angle = -angle;
-	angle += (45.0f*PI/180.0f)/2.0f;
-	return (int)(angle/(45.0f*PI/180.0f));
+	angle += (45.0f*Math::PI/180.0f)/2.0f;
+	return (int)(angle/(45.0f*Math::PI/180.0f));
 }
 
 // Converting a color to the angle of carousel of pencils.
 
 float CTaskPen::ColorToAngle(int color)
 {
-	return -45.0f*PI/180.0f*ColorToRank(color);
+	return -45.0f*Math::PI/180.0f*ColorToRank(color);
 }
 
 // Converting a color number to the pencil (0 .. 7).

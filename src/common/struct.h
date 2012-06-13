@@ -48,20 +48,6 @@ struct D3DVERTEX2
 };
 
 
-struct FPOINT
-{
-	float	x;
-	float	y;
-
-	FPOINT() { }
-	FPOINT(float _x, float _y)
-	{
-		x = _x;
-		y = _y;
-	}
-};
-
-
 struct ColorHSV
 {
 	float	h,s,v;

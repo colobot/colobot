@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -23,6 +21,7 @@
 
 #include "CBot/CBotDll.h"
 #include "common/struct.h"
+#include "math/const.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/language.h"
@@ -1188,7 +1187,7 @@ Error CBrain::EndedTask()
 void CBrain::GroundFlat()
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	Error		err;
 	float		level;
 
@@ -1234,7 +1233,7 @@ bool CBrain::CreateInterface(bool bSelect)
 	CSlider*	ps;
 	CTarget*	pt;
 	CLabel*		pl;
-	FPOINT		pos, dim, ddim;
+	Math::Point		pos, dim, ddim;
 	float		ox, oy, sx, sy;
 	char		name[100];
 
@@ -1937,7 +1936,7 @@ void CBrain::UpdateInterface(float rTime)
 	CTarget*	ptg;
 	CObject*	power;
 	D3DVECTOR	pos, hPos;
-	FPOINT		ppos;
+	Math::Point		ppos;
 	float		energy, limit, angle, range;
 	int			icon;
 	bool		bOnBoard;
@@ -2006,7 +2005,7 @@ void CBrain::UpdateInterface(float rTime)
 
 		if ( range < 0.2f && range != 0.0f && !m_physics->RetLand() )
 		{
-			if ( Mod(m_time, 0.5f) >= 0.2f )  // blinks?
+			if ( Math::Mod(m_time, 0.5f) >= 0.2f )  // blinks?
 			{
 				range = 1.0f;
 				icon = 1;  // yellow
@@ -2035,7 +2034,7 @@ void CBrain::UpdateInterface(float rTime)
 	pc = (CCompass*)pw->SearchControl(EVENT_OBJECT_COMPASS);
 	if ( pc != 0 )
 	{
-		angle = -(m_object->RetAngleY(0)+PI/2.0f);
+		angle = -(m_object->RetAngleY(0)+Math::PI/2.0f);
 		pc->SetDirection(angle);
 
 		pc->SetState(STATE_VISIBLE, m_main->RetShowMap());
@@ -2045,7 +2044,7 @@ void CBrain::UpdateInterface(float rTime)
 	pb = (CButton*)pw->SearchControl(EVENT_OBJECT_REC);
 	if ( pb != 0 )
 	{
-		if ( m_bTraceRecord && Mod(m_time, 0.4f) >= 0.2f )
+		if ( m_bTraceRecord && Math::Mod(m_time, 0.4f) >= 0.2f )
 		{
 			pb->SetState(STATE_CHECK);
 		}
@@ -2067,7 +2066,7 @@ void CBrain::UpdateInterface(float rTime)
 			angle = m_object->RetGunGoalV();
 			if ( m_object->RetType() != OBJECT_MOBILErc )
 			{
-				angle += 10.0f*PI/360.0f;
+				angle += 10.0f*Math::PI/360.0f;
 			}
 			ppos.x = 0.5f-(64.0f/640.0f)/2.0f;
 			ppos.y = 0.5f-(64.0f/480.0f)/2.0f;
@@ -2975,7 +2974,7 @@ bool CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
 
 	if ( oper == TO_TURN )
 	{
-		param = -param*180.0f/PI;
+		param = -param*180.0f/Math::PI;
 		sprintf(line, "\tturn(%d);\n", (int)param);
 //?		sprintf(line, "\tturn(%.1f);\n", param);
 		strncat(buffer, line, max-1);

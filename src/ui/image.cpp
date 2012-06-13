@@ -16,8 +16,6 @@
 
 // image.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -55,7 +53,7 @@ CImage::~CImage()
 
 // Creates a new button.
 
-bool CImage::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CImage::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -106,7 +104,7 @@ bool CImage::EventProcess(const Event &event)
 
 void CImage::Draw()
 {
-	FPOINT		uv1,uv2, corner, pos, dim;
+	Math::Point		uv1,uv2, corner, pos, dim;
 	float		dp;
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;

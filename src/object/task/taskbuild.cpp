@@ -16,14 +16,13 @@
 
 // taskbuild.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -129,7 +128,7 @@ void CTaskBuild::CreateLight()
 	D3DLIGHT7		light;
 	D3DCOLORVALUE	color;
 	D3DVECTOR		center, pos, dir;
-	FPOINT			c, p;
+	Math::Point			c, p;
 	float			angle;
 	int				i;
 
@@ -147,7 +146,7 @@ void CTaskBuild::CreateLight()
 		c.y = center.z;
 		p.x = center.x+40.0f;
 		p.y = center.z;
-		p = RotatePoint(c, angle, p);
+		p = Math::RotatePoint(c, angle, p);
 		pos.x = p.x;
 		pos.z = p.y;
 		pos.y = center.y+40.0f;
@@ -170,7 +169,7 @@ void CTaskBuild::CreateLight()
 		light.dvAttenuation1 = 0.0f;
 		light.dvAttenuation2 = 0.0f;
 		light.dvTheta = 0.0f;
-		light.dvPhi = PI/4.0f;
+		light.dvPhi = Math::PI/4.0f;
 		m_light->SetLight(m_lightRank[i], light);
 
 		color.r = -1.0f;
@@ -180,7 +179,7 @@ void CTaskBuild::CreateLight()
 		m_light->SetLightColor(m_lightRank[i], color);
 		m_light->SetLightColorSpeed(m_lightRank[i], 1.0f/((1.0f/m_speed)*0.25f));
 
-		angle += (PI*2.0f)/TBMAXLIGHT;
+		angle += (Math::PI*2.0f)/TBMAXLIGHT;
 	}
 
 	m_bBlack = false;
@@ -214,7 +213,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 {
 	D3DMATRIX*		mat;
 	D3DVECTOR		pos, dir, speed;
-	FPOINT			dim;
+	Math::Point			dim;
 	float			a, g, cirSpeed, dist, linSpeed;
 
 	if ( m_engine->RetPause() )  return true;
@@ -229,7 +228,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 	{
 		a = m_object->RetAngleY(0);
 		g = m_angleY;
-		cirSpeed = Direction(a, g)*1.0f;
+		cirSpeed = Math::Direction(a, g)*1.0f;
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
@@ -274,13 +273,13 @@ bool CTaskBuild::EventProcess(const Event &event)
 
 		pos = m_metal->RetPosition(0);
 		a   = m_object->RetAngleY(0);
-		if ( !CreateBuilding(pos, a+PI) )
+		if ( !CreateBuilding(pos, a+Math::PI) )
 		{
 			m_metal->SetLock(false);  // usable again
 			m_motion->SetAction(-1);
 			m_object->SetObjectParent(14, 0);
 			m_object->SetPosition(14, D3DVECTOR(-1.5f, 0.3f, -1.35f));
-			m_object->SetAngleZ(14, PI);
+			m_object->SetAngleZ(14, Math::PI);
 			m_camera->FlushEffect();
 			Abort();
 			m_bError = true;
@@ -299,9 +298,9 @@ bool CTaskBuild::EventProcess(const Event &event)
 
 	a = (2.0f-2.0f*m_progress);
 	if ( a > 1.0f )  a = 1.0f;
-	dir.x = (Rand()-0.5f)*a*0.1f;
-	dir.z = (Rand()-0.5f)*a*0.1f;
-	dir.y = (Rand()-0.5f)*a*0.1f;
+	dir.x = (Math::Rand()-0.5f)*a*0.1f;
+	dir.z = (Math::Rand()-0.5f)*a*0.1f;
+	dir.y = (Math::Rand()-0.5f)*a*0.1f;
 	m_building->SetCirVibration(dir);
 
 	if ( !m_bBlack && m_progress >= 0.25f )
@@ -314,10 +313,10 @@ bool CTaskBuild::EventProcess(const Event &event)
 		m_lastParticule = m_time;
 
 		pos = m_metal->RetPosition(0);
-		speed.x = (Rand()-0.5f)*20.0f;
-		speed.z = (Rand()-0.5f)*20.0f;
-		speed.y = Rand()*10.0f;
-		dim.x = Rand()*6.0f+4.0f;
+		speed.x = (Math::Rand()-0.5f)*20.0f;
+		speed.z = (Math::Rand()-0.5f)*20.0f;
+		speed.y = Math::Rand()*10.0f;
+		dim.x = Math::Rand()*6.0f+4.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTIFIRE);
 
@@ -325,16 +324,16 @@ bool CTaskBuild::EventProcess(const Event &event)
 		mat = m_object->RetWorldMatrix(14);
 		pos = Transform(*mat, pos);
 		speed = m_metal->RetPosition(0);
-		speed.x += (Rand()-0.5f)*5.0f;
-		speed.z += (Rand()-0.5f)*5.0f;
+		speed.x += (Math::Rand()-0.5f)*5.0f;
+		speed.z += (Math::Rand()-0.5f)*5.0f;
 		speed -= pos;
 		dim.x = 2.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ);
 
-		if ( Rand() < 0.3f )
+		if ( Math::Rand() < 0.3f )
 		{
-			m_sound->Play(SOUND_BUILD, m_object->RetPosition(0), 0.5f, 1.0f*Rand()*1.5f);
+			m_sound->Play(SOUND_BUILD, m_object->RetPosition(0), 0.5f, 1.0f*Math::Rand()*1.5f);
 		}
 	}
 
@@ -355,7 +354,7 @@ Error CTaskBuild::Start(ObjectType type)
 	m_progress = 0.0f;
 
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 	oAngle = iAngle;
 
 	m_bError = true;  // operation impossible
@@ -371,7 +370,7 @@ Error CTaskBuild::Start(ObjectType type)
 
 	if ( m_object->RetFret() != 0 )  return ERR_MANIP_BUSY;
 
-	m_metal = SearchMetalObject(oAngle, 2.0f, 100.0f, PI*0.25f, err);
+	m_metal = SearchMetalObject(oAngle, 2.0f, 100.0f, Math::PI*0.25f, err);
 	if ( err == ERR_BUILD_METALNEAR && m_metal != 0 )
 	{
 		err = FlatFloor();
@@ -384,7 +383,7 @@ Error CTaskBuild::Start(ObjectType type)
 	if ( err != ERR_OK )  return err;
 
 	m_metal->SetLock(true);  // not usable
-	m_camera->StartCentering(m_object, PI*0.15f, 99.9f, 0.0f, 1.0f);
+	m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
 		
 	m_phase = TBP_TURN;  // rotation necessary preliminary
 	m_angleY = oAngle;  // angle was reached
@@ -392,7 +391,7 @@ Error CTaskBuild::Start(ObjectType type)
 	pv = m_object->RetPosition(0);
 	pv.y += 8.3f;
 	pm = m_metal->RetPosition(0);
-	m_angleZ = RotateAngle(Length2d(pv, pm), Abs(pv.y-pm.y));
+	m_angleZ = Math::RotateAngle(Length2d(pv, pm), fabs(pv.y-pm.y));
 
 	m_physics->SetFreeze(true);  // it does not move
 
@@ -414,9 +413,9 @@ Error CTaskBuild::IsEnded()
 	if ( m_phase == TBP_TURN )  // preliminary rotation?
 	{
 		angle = m_object->RetAngleY(0);
-		angle = NormAngle(angle);  // 0..2*PI
+		angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
-		if ( TestAngle(angle, m_angleY-PI*0.01f, m_angleY+PI*0.01f) )
+		if ( Math::TestAngle(angle, m_angleY-Math::PI*0.01f, m_angleY+Math::PI*0.01f) )
 		{
 			m_physics->SetMotorSpeedZ(0.0f);
 
@@ -527,7 +526,7 @@ Error CTaskBuild::IsEnded()
 		m_motion->SetAction(-1);
 		m_object->SetObjectParent(14, 0);
 		m_object->SetPosition(14, D3DVECTOR(-1.5f, 0.3f, -1.35f));
-		m_object->SetAngleZ(14, PI);
+		m_object->SetAngleZ(14, Math::PI);
 
 		if ( m_type == OBJECT_FACTORY  ||
 			 m_type == OBJECT_RESEARCH ||
@@ -576,7 +575,7 @@ Error CTaskBuild::FlatFloor()
 	CObject		*pObj;
 	ObjectType	type;
 	D3DVECTOR	center, pos, oPos, bPos;
-	FPOINT		c, p;
+	Math::Point		c, p;
 	float		radius, max, oRadius, bRadius, angle, dist;
 	int			i, j;
 	bool		bLittleFlat, bBase;
@@ -727,7 +726,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 
 	iPos   = m_object->RetPosition(0);
 	iAngle = m_object->RetAngleY(0);
-	iAngle = NormAngle(iAngle);  // 0..2*PI
+	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
 	min = 1000000.0f;
 	pBest = 0;
@@ -747,10 +746,10 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 
 		oPos = pObj->RetPosition(0);
 		distance = Length(oPos, iPos);
-		a = RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW!
+		a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW!
 
 		if ( distance > dMax )  continue;
-		if ( !TestAngle(a, iAngle-aLimit, iAngle+aLimit) )  continue;
+		if ( !Math::TestAngle(a, iAngle-aLimit, iAngle+aLimit) )  continue;
 
 		if ( distance < dMin )
 		{
@@ -758,8 +757,8 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 			return pObj;
 		}
 
-		aa = Abs(a-iAngle);
-		if ( aa > PI )  aa = PI*2.0f-aa;
+		aa = fabs(a-iAngle);
+		if ( aa > Math::PI )  aa = Math::PI*2.0f-aa;
 		magic = distance*aa;
 
 		if ( magic < min )

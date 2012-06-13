@@ -19,8 +19,6 @@
 #pragma once
 
 
-#define STRICT
-#define D3D_OVERLOADS
 
 
 #include "graphics/d3d/d3dengine.h"

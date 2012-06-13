@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -82,7 +81,7 @@ void CAutoFlag::Init()
 	m_progress = 0.0f;
 
 	wind = m_terrain->RetWind();
-	angle = RotateAngle(wind.x, -wind.z);
+	angle = Math::RotateAngle(wind.x, -wind.z);
 	m_object->SetAngleY(0, angle);  // directs the flag in the wind
 
 	m_strong = Length(wind);
@@ -130,9 +129,9 @@ bool CAutoFlag::EventProcess(const Event &event)
 		m_progress += event.rTime*(1.0f/2.0f);
 		if ( m_progress < 1.0f )
 		{
-			angle = sinf(m_progress*PI*8.0f)*0.3f*(1.0f-m_progress);
+			angle = sinf(m_progress*Math::PI*8.0f)*0.3f*(1.0f-m_progress);
 			m_object->SetAngleX(0, angle);
-			angle = sinf(m_progress*PI*4.0f)*0.3f*(1.0f-m_progress);
+			angle = sinf(m_progress*Math::PI*4.0f)*0.3f*(1.0f-m_progress);
 			m_object->SetAngleZ(0, angle);
 		}
 		else

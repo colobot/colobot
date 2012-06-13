@@ -16,14 +16,13 @@
 
 // motionworm.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -188,8 +187,8 @@ void CMotionWorm::CreatePhysics()
 	m_physics->SetLinMotionZ(MO_TERFORCE,   5.0f);
 	m_physics->SetLinMotionZ(MO_MOTACCEL,  40.0f);
 
-	m_physics->SetCirMotionY(MO_ADVSPEED,   0.2f*PI);
-	m_physics->SetCirMotionY(MO_RECSPEED,   0.2f*PI);
+	m_physics->SetCirMotionY(MO_ADVSPEED,   0.2f*Math::PI);
+	m_physics->SetCirMotionY(MO_RECSPEED,   0.2f*Math::PI);
 	m_physics->SetCirMotionY(MO_ADVACCEL,  10.0f);
 	m_physics->SetCirMotionY(MO_RECACCEL,  10.0f);
 	m_physics->SetCirMotionY(MO_STOACCEL,  20.0f);
@@ -249,7 +248,7 @@ bool CMotionWorm::EventFrame(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, p, angle, speed;
-	FPOINT		center, pp, dim;
+	Math::Point		center, pp, dim;
 	float		height[WORM_PART+2];
 	float		floor, a, s, px, curve, phase, h, zoom, radius;
 	int			i, under;
@@ -270,7 +269,7 @@ bool CMotionWorm::EventFrame(const Event &event)
 	under = 0;  // no piece under the ground
 	for ( i=0 ; i<WORM_PART+2 ; i++ )
 	{
-		phase = Mod(m_armTimeMarch-START_TIME-i*0.3f, TIME_UPDOWN+m_timeDown+TIME_UPDOWN+m_timeUp);
+		phase = Math::Mod(m_armTimeMarch-START_TIME-i*0.3f, TIME_UPDOWN+m_timeDown+TIME_UPDOWN+m_timeUp);
 		if ( phase < TIME_UPDOWN )  // descends?
 		{
 			h = -(phase/TIME_UPDOWN)*DOWN_ALTITUDE;
@@ -323,7 +322,7 @@ bool CMotionWorm::EventFrame(const Event &event)
 		center.y = 0.0f;
 		pp.x = pos.x;
 		pp.y = pos.z;
-		pp = RotatePoint(center, curve, pp);
+		pp = Math::RotatePoint(center, curve, pp);
 		pos.x = pp.x;
 		pos.z = pp.y;
 
@@ -331,7 +330,7 @@ bool CMotionWorm::EventFrame(const Event &event)
 		pos.y += m_terrain->RetFloorLevel(p, true)-floor;
 		m_object->SetPosition(i+1, pos);
 
-		zoom = Mod(m_armTimeAbs*0.5f+100.0f-i*0.1f, 2.0f);
+		zoom = Math::Mod(m_armTimeAbs*0.5f+100.0f-i*0.1f, 2.0f);
 		if ( zoom > 1.0f )  zoom = 2.0f-zoom;
 		zoom *= 1.6f;
 		if ( zoom < 1.0f )  zoom = 1.0f;
@@ -345,10 +344,10 @@ bool CMotionWorm::EventFrame(const Event &event)
 
 			pos = p;
 			pos.y += -height[i];
-			pos.x += (Rand()-0.5f)*4.0f;
-			pos.z += (Rand()-0.5f)*4.0f;
+			pos.x += (Math::Rand()-0.5f)*4.0f;
+			pos.z += (Math::Rand()-0.5f)*4.0f;
 			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-			dim.x = Rand()*2.0f+1.5f;
+			dim.x = Math::Rand()*2.0f+1.5f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
 		}
@@ -361,8 +360,8 @@ bool CMotionWorm::EventFrame(const Event &event)
 		pos  = m_object->RetPosition(i+2);
 		pos -= m_object->RetPosition(i+1);
 
-		angle.z = -RotateAngle(Length(pos.x, pos.z), pos.y);
-		angle.y = PI-RotateAngle(pos.x, pos.z);
+		angle.z = -Math::RotateAngle(Length(pos.x, pos.z), pos.y);
+		angle.y = Math::PI-Math::RotateAngle(pos.x, pos.z);
 		angle.x = 0.0f;
 		m_object->SetAngle(i+1, angle);
 

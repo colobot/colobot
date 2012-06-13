@@ -59,8 +59,8 @@ public:
 	INT			Run();
 	LRESULT		MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 	VOID		Pause( bool bPause );
-	FPOINT		ConvPosToInterface(HWND hWnd, LPARAM lParam);
-	void		SetMousePos(FPOINT pos);
+	Math::Point		ConvPosToInterface(HWND hWnd, LPARAM lParam);
+	void		SetMousePos(Math::Point pos);
 	void		StepSimul(float rTime);
 	char*		RetCDpath();
 
@@ -155,7 +155,7 @@ public:
 	D3DVECTOR		m_axeKey;
 	D3DVECTOR		m_axeJoy;
 	bool			m_bJoyButton[32];
-	FPOINT			m_mousePos;
+	Math::Point			m_mousePos;
 	DWORD			m_mshMouseWheel;
 
 	float			m_aTime;

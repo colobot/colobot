@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -176,7 +174,7 @@ bool CAuto::Abort()
 bool CAuto::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, dim, ddim;
+	Math::Point		pos, dim, ddim;
 	float		ox, oy, sx, sy;
 	char		name[100];
 

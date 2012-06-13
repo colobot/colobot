@@ -122,6 +122,8 @@ ui/target.cpp
 ui/window.cpp
 )
 
+add_definitions(-DSTRICT -DD3D_OVERLOADS)
+
 # Change to DirectX SDK directory
 set(DXSDK_DIR "c:/dxsdk")
 

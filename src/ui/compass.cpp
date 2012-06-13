@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -48,7 +47,7 @@ CCompass::~CCompass()
 
 // Creates a new button.
 
-bool CCompass::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CCompass::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
@@ -84,7 +83,7 @@ void CCompass::Draw()
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2		vertex[4];	// 2 triangles
-	FPOINT			p1, p2, p3, c, uv1, uv2;
+	Math::Point			p1, p2, p3, c, uv1, uv2;
 	D3DVECTOR		n;
 	float			dp;
 
@@ -128,17 +127,17 @@ void CCompass::Draw()
 	{
 		p1.x = c.x;
 		p1.y = c.y+m_dim.x*0.40f;
-		p1 = RotatePoint(c, m_dir, p1);
+		p1 = Math::RotatePoint(c, m_dir, p1);
 		p1.x = c.x+(p1.x-c.x)*(m_dim.x/m_dim.y);
 
 		p2.x = c.x+m_dim.x*0.20f;
 		p2.y = c.y-m_dim.x*0.40f;
-		p2 = RotatePoint(c, m_dir, p2);
+		p2 = Math::RotatePoint(c, m_dir, p2);
 		p2.x = c.x+(p2.x-c.x)*(m_dim.x/m_dim.y);
 
 		p3.x = c.x-m_dim.x*0.20f;
 		p3.y = c.y-m_dim.x*0.40f;
-		p3 = RotatePoint(c, m_dir, p3);
+		p3 = Math::RotatePoint(c, m_dir, p3);
 		p3.x = c.x+(p3.x-c.x)*(m_dim.x/m_dim.y);
 
 		uv1.x =  96.0f/256.0f;

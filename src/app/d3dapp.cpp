@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <winuser.h>
@@ -700,10 +698,10 @@ INT CD3DApplication::Run()
 // x: 0=left, 1=right
 // y: 0=down, 1=up
 
-FPOINT CD3DApplication::ConvPosToInterface(HWND hWnd, LPARAM lParam)
+Math::Point CD3DApplication::ConvPosToInterface(HWND hWnd, LPARAM lParam)
 {
 	POINT	cpos;
-	FPOINT	pos;
+	Math::Point	pos;
 	float	px, py, w, h;
 
 	cpos.x = (short)LOWORD(lParam);
@@ -727,7 +725,7 @@ FPOINT CD3DApplication::ConvPosToInterface(HWND hWnd, LPARAM lParam)
 
 // Physically moves the mouse.
 
-void CD3DApplication::SetMousePos(FPOINT pos)
+void CD3DApplication::SetMousePos(Math::Point pos)
 {
 	POINT	p;
 
@@ -1259,9 +1257,9 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 					m_axeJoy.y = -js.lY/1000.0f;  // avancer
 					m_axeJoy.z = -js.rglSlider[0]/1000.0f;  // monter
 
-					m_axeJoy.x = Neutral(m_axeJoy.x, 0.2f);
-					m_axeJoy.y = Neutral(m_axeJoy.y, 0.2f);
-					m_axeJoy.z = Neutral(m_axeJoy.z, 0.2f);
+					m_axeJoy.x = Math::Neutral(m_axeJoy.x, 0.2f);
+					m_axeJoy.y = Math::Neutral(m_axeJoy.y, 0.2f);
+					m_axeJoy.z = Math::Neutral(m_axeJoy.z, 0.2f);
 
 //?					char s[100];
 //?					sprintf(s, "x=%d y=%d z=%  x=%d y=%d z=%d\n", js.lX,js.lY,js.lZ,js.lRx,js.lRy,js.lRz);
@@ -1859,12 +1857,12 @@ LRESULT CD3DApplication::OnResumeSuspend( DWORD dwData )
 void CD3DApplication::DrawSuppl()
 {
 	HDC			hDC;
-	FPOINT		p1, p2;
+	Math::Point		p1, p2;
 	POINT		list[3];
 	RECT		rect;
 	HPEN		hPen;
 	HGDIOBJ		old;
-	FPOINT		pos;
+	Math::Point		pos;
 	float		d;
 	int			nbOut;
 
@@ -1881,12 +1879,12 @@ void CD3DApplication::DrawSuppl()
 		if ( nbOut <= 2 )
 		{
 #if 0
-			time = Mod(m_aTime, 0.5f);
+			time = Math::Mod(m_aTime, 0.5f);
 			if ( time < 0.25f )  d = time*4.0f;
 			else                 d = (2.0f-time*4.0f);
 #endif
 #if 0
-			time = Mod(m_aTime, 0.5f);
+			time = Math::Mod(m_aTime, 0.5f);
 			if ( time < 0.4f )  d = time/0.4f;
 			else                d = 1.0f-(time-0.4f)/0.1f;
 #endif

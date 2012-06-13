@@ -19,7 +19,8 @@
 #pragma once
 
 
-#include "common/struct.h"
+#include "common/event.h"
+#include "math/point.h"
 
 
 class CInstanceManager;
@@ -32,13 +33,13 @@ const int MAXPLANET = 10;
 struct Planet
 {
 	char		bUsed;		// true -> planet exists
-	FPOINT		start;		// initial position in degrees
-	FPOINT		angle;		// current position in degrees
+	Math::Point		start;		// initial position in degrees
+	Math::Point		angle;		// current position in degrees
 	float		dim;		// dimensions (0..1)
 	float		speed;		// speed
 	float		dir;		// direction in the sky
 	char		name[20];	// name of the texture
-	FPOINT		uv1, uv2;	// texture mapping
+	Math::Point		uv1, uv2;	// texture mapping
 	char		bTGA;		// texture .TGA
 };
 
@@ -53,7 +54,7 @@ public:
 
 	void		Flush();
 	bool		EventProcess(const Event &event);
-	bool		Create(int mode, FPOINT start, float dim, float speed, float dir, char *name, FPOINT uv1, FPOINT uv2);
+	bool		Create(int mode, Math::Point start, float dim, float speed, float dir, char *name, Math::Point uv1, Math::Point uv2);
 	bool		PlanetExist();
 	void		LoadTexture();
 	void		Draw();

@@ -16,8 +16,6 @@
 
 // key.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -78,7 +76,7 @@ CKey::~CKey()
 
 // Creates a new button.
 
-bool CKey::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	char	name[100];
 	char*	p;
@@ -184,7 +182,7 @@ bool CKey::TestKey(int key)
 
 void CKey::Draw()
 {
-	FPOINT		iDim, pos;
+	Math::Point		iDim, pos;
 	float		zoomExt, zoomInt, h;
 	int			icon;
 	char		text[100];

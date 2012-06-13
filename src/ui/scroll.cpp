@@ -16,8 +16,6 @@
 
 // scroll.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -63,7 +61,7 @@ CScroll::~CScroll()
 
 // Creates a new button.
 
-bool CScroll::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CScroll::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 	CControl::Create(pos, dim, icon, eventMsg);
@@ -73,13 +71,13 @@ bool CScroll::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-void CScroll::SetPos(FPOINT pos)
+void CScroll::SetPos(Math::Point pos)
 {
 	CControl::SetPos(pos);
 	MoveAdjust();
 }
 
-void CScroll::SetDim(FPOINT dim)
+void CScroll::SetDim(Math::Point dim)
 {
 	CControl::SetDim(dim);
 	MoveAdjust();
@@ -90,7 +88,7 @@ void CScroll::SetDim(FPOINT dim)
 void CScroll::MoveAdjust()
 {
 	CButton*	pc;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 
 	if ( m_dim.y < m_dim.x*2.0f )  // very short lift?
 	{
@@ -106,7 +104,7 @@ void CScroll::MoveAdjust()
 		{
 			m_buttonUp = new CButton(m_iMan);
 			pc = (CButton*)m_buttonUp;
-			pc->Create(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), 49, EVENT_NULL);
+			pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 49, EVENT_NULL);
 			pc->SetRepeat(true);
 			m_eventUp = pc->RetEventMsg();
 		}
@@ -115,7 +113,7 @@ void CScroll::MoveAdjust()
 		{
 			m_buttonDown = new CButton(m_iMan);
 			pc = (CButton*)m_buttonDown;
-			pc->Create(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), 50, EVENT_NULL);
+			pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 50, EVENT_NULL);
 			pc->SetRepeat(true);
 			m_eventDown = pc->RetEventMsg();
 		}
@@ -148,7 +146,7 @@ void CScroll::MoveAdjust()
 
 void CScroll::AdjustGlint()
 {
-	FPOINT	ref;
+	Math::Point	ref;
 	float	hButton, h;
 
 	hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
@@ -201,7 +199,7 @@ bool CScroll::ClearState(int state)
 
 bool CScroll::EventProcess(const Event &event)
 {
-	FPOINT	pos, dim;
+	Math::Point	pos, dim;
 	float	hButton, h, value;
 
 	CControl::EventProcess(event);
@@ -322,7 +320,7 @@ bool CScroll::EventProcess(const Event &event)
 
 void CScroll::Draw()
 {
-	FPOINT	pos, dim, ppos, ddim;
+	Math::Point	pos, dim, ppos, ddim;
 	float	hButton;
 	int		icon, n, i;
 
@@ -375,9 +373,9 @@ void CScroll::Draw()
 
 // Draws a rectangle.
 
-void CScroll::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 {
-	FPOINT		uv1, uv2;
+	Math::Point		uv1, uv2;
 	float		ex, dp;
 
 	if ( icon == 0 )

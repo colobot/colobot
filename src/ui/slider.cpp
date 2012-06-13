@@ -16,8 +16,6 @@
 
 // slider.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -73,7 +71,7 @@ CSlider::~CSlider()
 
 // Creates a new button.
 
-bool CSlider::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+bool CSlider::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 	CControl::Create(pos, dim, icon, eventMsg);
@@ -83,13 +81,13 @@ bool CSlider::Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 }
 
 
-void CSlider::SetPos(FPOINT pos)
+void CSlider::SetPos(Math::Point pos)
 {
 	CControl::SetPos(pos);
 	MoveAdjust();
 }
 
-void CSlider::SetDim(FPOINT dim)
+void CSlider::SetDim(Math::Point dim)
 {
 	CControl::SetDim(dim);
 	MoveAdjust();
@@ -97,7 +95,7 @@ void CSlider::SetDim(FPOINT dim)
 
 void CSlider::MoveAdjust()
 {
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 
 	m_bHoriz = ( m_dim.x > m_dim.y );
 
@@ -118,7 +116,7 @@ void CSlider::MoveAdjust()
 		if ( m_buttonLeft == 0 )
 		{
 			m_buttonLeft = new CButton(m_iMan);
-			m_buttonLeft->Create(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), m_bHoriz?55:49, EVENT_NULL);  // </^
+			m_buttonLeft->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), m_bHoriz?55:49, EVENT_NULL);  // </^
 			m_buttonLeft->SetRepeat(true);
 			if ( m_state & STATE_SHADOW )  m_buttonLeft->SetState(STATE_SHADOW);
 			m_eventUp = m_buttonLeft->RetEventMsg();
@@ -127,7 +125,7 @@ void CSlider::MoveAdjust()
 		if ( m_buttonRight == 0 )
 		{
 			m_buttonRight = new CButton(m_iMan);
-			m_buttonRight->Create(FPOINT(0.0f, 0.0f), FPOINT(0.0f, 0.0f), m_bHoriz?48:50, EVENT_NULL);  // >/v
+			m_buttonRight->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), m_bHoriz?48:50, EVENT_NULL);  // >/v
 			m_buttonRight->SetRepeat(true);
 			if ( m_state & STATE_SHADOW )  m_buttonRight->SetState(STATE_SHADOW);
 			m_eventDown = m_buttonRight->RetEventMsg();
@@ -184,7 +182,7 @@ void CSlider::MoveAdjust()
 
 void CSlider::AdjustGlint()
 {
-	FPOINT	ref;
+	Math::Point	ref;
 	float	w;
 
 	if ( m_bHoriz )
@@ -247,7 +245,7 @@ bool CSlider::ClearState(int state)
 
 bool CSlider::EventProcess(const Event &event)
 {
-	FPOINT	pos, dim;
+	Math::Point	pos, dim;
 	float	value;
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return true;
@@ -384,7 +382,7 @@ bool CSlider::EventProcess(const Event &event)
 
 void CSlider::Draw()
 {
-	FPOINT	pos, dim, ppos, ddim, spos;
+	Math::Point	pos, dim, ppos, ddim, spos;
 	int		icon;
 	float	h;
 	char	text[100];
@@ -491,9 +489,9 @@ void CSlider::Draw()
 
 // Draws a rectangle.
 
-void CSlider::DrawVertex(FPOINT pos, FPOINT dim, int icon)
+void CSlider::DrawVertex(Math::Point pos, Math::Point dim, int icon)
 {
-	FPOINT		uv1, uv2, corner;
+	Math::Point		uv1, uv2, corner;
 	float		ex, dp;
 
 	if ( icon == 0 )

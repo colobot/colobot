@@ -92,7 +92,7 @@ public:
 	void	StartDeleteObject();
 	void	StartDeleteGame(char *gamer);
 	void	StartQuit();
-	void	StartDialog(FPOINT dim, bool bFire, bool bOK, bool bCancel);
+	void	StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCancel);
 	void	FrameDialog(float rTime);
 	void	StopDialog();
 	bool	IsDialog();
@@ -129,7 +129,7 @@ public:
 protected:
 	void	GlintMove();
 	void	FrameParticule(float rTime);
-	void	NiceParticule(FPOINT mouse, bool bPress);
+	void	NiceParticule(Math::Point mouse, bool bPress);
 	void	ReadNameList();
 	void	UpdateNameList();
 	void	UpdateNameEdit();
@@ -228,7 +228,7 @@ protected:
 	bool			m_bCameraInvertY;		// for CCamera
 	bool			m_bEffect;			// for CCamera
 
-	FPOINT			m_glintMouse;
+	Math::Point			m_glintMouse;
 	float			m_glintTime;
 
 	int				m_loadingCounter;
@@ -236,8 +236,8 @@ protected:
 	bool			m_bDialog;			// this dialogue?
 	bool			m_bDialogFire;			// setting on fire?
 	bool			m_bDialogDelete;
-	FPOINT			m_dialogPos;
-	FPOINT			m_dialogDim;
+	Math::Point			m_dialogPos;
+	Math::Point			m_dialogDim;
 	float			m_dialogParti;
 	float			m_dialogTime;
 	bool			m_bInitPause;
@@ -245,7 +245,7 @@ protected:
 
 	int				m_partiPhase[10];
 	float			m_partiTime[10];
-	FPOINT			m_partiPos[10];
+	Math::Point			m_partiPos[10];
 
 	SceneInfo		m_sceneInfo[MAXSCENE];
 };

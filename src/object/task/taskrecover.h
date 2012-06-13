@@ -19,6 +19,7 @@
 #pragma once
 
 
+#include "object/task/task.h"
 #include "graphics/d3d/d3dengine.h"
 
 

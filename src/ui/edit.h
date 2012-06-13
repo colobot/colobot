@@ -88,10 +88,10 @@ public:
 	CEdit(CInstanceManager* iMan);
 	virtual ~CEdit();
 
-	bool		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	void		SetPos(FPOINT pos);
-	void		SetDim(FPOINT dim);
+	void		SetPos(Math::Point pos);
+	void		SetDim(Math::Point dim);
 
 	bool		EventProcess(const Event &event);
 	void		Draw();
@@ -155,20 +155,20 @@ public:
 
 protected:
 	void		SendModifEvent();
-	bool		IsLinkPos(FPOINT pos);
-	void		MouseDoubleClick(FPOINT mouse);
-	void		MouseClick(FPOINT mouse);
-	void		MouseMove(FPOINT mouse);
-	void		MouseRelease(FPOINT mouse);
-	int			MouseDetect(FPOINT mouse);
+	bool		IsLinkPos(Math::Point pos);
+	void		MouseDoubleClick(Math::Point mouse);
+	void		MouseClick(Math::Point mouse);
+	void		MouseMove(Math::Point mouse);
+	void		MouseRelease(Math::Point mouse);
+	int			MouseDetect(Math::Point mouse);
 	void		MoveAdjust();
 
 	void		HyperJump(char *name, char *marker);
 	bool		HyperAdd(char *filename, int firstLine);
 
-	void		DrawImage(FPOINT pos, char *name, float width, float offset, float height, int nbLine);
-	void		DrawBack(FPOINT pos, FPOINT dim);
-	void		DrawPart(FPOINT pos, FPOINT dim, int icon);
+	void		DrawImage(Math::Point pos, char *name, float width, float offset, float height, int nbLine);
+	void		DrawBack(Math::Point pos, Math::Point dim);
+	void		DrawPart(Math::Point pos, Math::Point dim, int icon);
 
 	void		FreeImage();
 	void		LoadImage(char *name);
@@ -234,8 +234,8 @@ protected:
 	float		m_timeBlink;
 	float		m_timeLastClick;
 	float		m_timeLastScroll;
-	FPOINT		m_mouseFirstPos;
-	FPOINT		m_mouseLastPos;
+	Math::Point		m_mouseFirstPos;
+	Math::Point		m_mouseLastPos;
 	float		m_column;
 
 	bool		m_bCapture;

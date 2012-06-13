@@ -16,8 +16,6 @@
 
 // water.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -191,8 +189,8 @@ void CWater::LavaFrame(float rTime)
 		eye    = m_engine->RetEyePt();
 		lookat = m_engine->RetLookatPt();
 
-		distance = Rand()*200.0f;
-		shift = (Rand()-0.5f)*200.0f;
+		distance = Math::Rand()*200.0f;
+		shift = (Math::Rand()-0.5f)*200.0f;
 
 		dir = Normalize(lookat-eye);
 		pos = eye + dir*distance;
@@ -207,24 +205,24 @@ void CWater::LavaFrame(float rTime)
 		{
 			pos.y = m_level;
 
-			level = Rand();
+			level = Math::Rand();
 			if ( level < 0.8f )
 			{
-				if ( VaporCreate(PARTIFIRE, pos, 0.02f+Rand()*0.06f) )
+				if ( VaporCreate(PARTIFIRE, pos, 0.02f+Math::Rand()*0.06f) )
 				{
 					m_lastLava = m_time;
 				}
 			}
 			else if ( level < 0.9f )
 			{
-				if ( VaporCreate(PARTIFLAME, pos, 0.5f+Rand()*3.0f) )
+				if ( VaporCreate(PARTIFLAME, pos, 0.5f+Math::Rand()*3.0f) )
 				{
 					m_lastLava = m_time;
 				}
 			}
 			else
 			{
-				if ( VaporCreate(PARTIVAPOR, pos, 0.2f+Rand()*2.0f) )
+				if ( VaporCreate(PARTIVAPOR, pos, 0.2f+Math::Rand()*2.0f) )
 				{
 					m_lastLava = m_time;
 				}
@@ -264,11 +262,11 @@ bool CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 
 			if ( m_vapor[i].type == PARTIFIRE )
 			{
-				m_sound->Play(SOUND_BLUP, pos, 1.0f, 1.0f-Rand()*0.5f);
+				m_sound->Play(SOUND_BLUP, pos, 1.0f, 1.0f-Math::Rand()*0.5f);
 			}
 			if ( m_vapor[i].type == PARTIFLAME )
 			{
-//?				m_sound->Play(SOUND_SWIM, pos, 1.0f, 1.0f-Rand()*0.5f);
+//?				m_sound->Play(SOUND_SWIM, pos, 1.0f, 1.0f-Math::Rand()*0.5f);
 			}
 			if ( m_vapor[i].type == PARTIVAPOR )
 			{
@@ -286,7 +284,7 @@ bool CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 void CWater::VaporFrame(int i, float rTime)
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	int			j;
 
 	m_vapor[i].time += rTime;
@@ -307,13 +305,13 @@ void CWater::VaporFrame(int i, float rTime)
 				for ( j=0 ; j<10 ; j++ )
 				{
 					pos = m_vapor[i].pos;
-					pos.x += (Rand()-0.5f)*2.0f;
-					pos.z += (Rand()-0.5f)*2.0f;
+					pos.x += (Math::Rand()-0.5f)*2.0f;
+					pos.z += (Math::Rand()-0.5f)*2.0f;
 					pos.y -= 1.0f;
-					speed.x = (Rand()-0.5f)*6.0f;
-					speed.z = (Rand()-0.5f)*6.0f;
-					speed.y = 8.0f+Rand()*5.0f;
-					dim.x = Rand()*1.5f+1.5f;
+					speed.x = (Math::Rand()-0.5f)*6.0f;
+					speed.z = (Math::Rand()-0.5f)*6.0f;
+					speed.y = 8.0f+Math::Rand()*5.0f;
+					dim.x = Math::Rand()*1.5f+1.5f;
 					dim.y = dim.x;
 					m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 2.0f, 10.0f);
 				}
@@ -321,26 +319,26 @@ void CWater::VaporFrame(int i, float rTime)
 			else if ( m_vapor[i].type == PARTIFLAME )
 			{
 				pos = m_vapor[i].pos;
-				pos.x += (Rand()-0.5f)*8.0f;
-				pos.z += (Rand()-0.5f)*8.0f;
+				pos.x += (Math::Rand()-0.5f)*8.0f;
+				pos.z += (Math::Rand()-0.5f)*8.0f;
 				pos.y -= 2.0f;
-				speed.x = (Rand()-0.5f)*2.0f;
-				speed.z = (Rand()-0.5f)*2.0f;
-				speed.y = 4.0f+Rand()*4.0f;
-				dim.x = Rand()*2.0f+2.0f;
+				speed.x = (Math::Rand()-0.5f)*2.0f;
+				speed.z = (Math::Rand()-0.5f)*2.0f;
+				speed.y = 4.0f+Math::Rand()*4.0f;
+				dim.x = Math::Rand()*2.0f+2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIFLAME);
 			}
 			else
 			{
 				pos = m_vapor[i].pos;
-				pos.x += (Rand()-0.5f)*4.0f;
-				pos.z += (Rand()-0.5f)*4.0f;
+				pos.x += (Math::Rand()-0.5f)*4.0f;
+				pos.z += (Math::Rand()-0.5f)*4.0f;
 				pos.y -= 2.0f;
-				speed.x = (Rand()-0.5f)*2.0f;
-				speed.z = (Rand()-0.5f)*2.0f;
-				speed.y = 8.0f+Rand()*8.0f;
-				dim.x = Rand()*1.0f+1.0f;
+				speed.x = (Math::Rand()-0.5f)*2.0f;
+				speed.z = (Math::Rand()-0.5f)*2.0f;
+				speed.y = 8.0f+Math::Rand()*8.0f;
+				dim.x = Math::Rand()*1.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR);
 			}
@@ -356,7 +354,7 @@ void CWater::VaporFrame(int i, float rTime)
 // Adjusts the position to normal, to imitate reflections on an expanse of water at rest.
 
 void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
-						 FPOINT &uv1, FPOINT &uv2)
+						 Math::Point &uv1, Math::Point &uv2)
 {
 #if 0
 	float		t1, t2;
@@ -408,7 +406,7 @@ void CWater::DrawBack()
 	D3DMATERIAL7	material;
 	D3DMATRIX		matrix;
 	D3DVECTOR		eye, lookat, n, p, p1, p2;
-	FPOINT			uv1, uv2;
+	Math::Point			uv1, uv2;
 	float			deep, dist;
 
 	if ( !m_bDraw )  return;
@@ -486,7 +484,7 @@ void CWater::DrawSurf()
 	D3DMATERIAL7	material;
 	D3DMATRIX		matrix;
 	D3DVECTOR		eye, lookat, n, pos, p;
-	FPOINT			uv1, uv2;
+	Math::Point			uv1, uv2;
 	bool			bUnder;
 	DWORD			flags;
 	float			deep, size, sizez, radius;

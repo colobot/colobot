@@ -16,8 +16,6 @@
 
 // interface.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -98,7 +96,7 @@ void CInterface::Flush()
 
 // Creates a new button.
 
-CWindow* CInterface::CreateWindows(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CWindow*	pc;
 	int			i;
@@ -134,7 +132,7 @@ CWindow* CInterface::CreateWindows(FPOINT pos, FPOINT dim, int icon, EventMsg ev
 
 // Creates a new button.
 
-CButton* CInterface::CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CButton* CInterface::CreateButton(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CButton*	pc;
 	int			i;
@@ -156,7 +154,7 @@ CButton* CInterface::CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 
 // Creates a new button.
 
-CColor* CInterface::CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CColor* CInterface::CreateColor(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CColor*		pc;
 	int			i;
@@ -178,7 +176,7 @@ CColor* CInterface::CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg event
 
 // Creates a new button.
 
-CCheck* CInterface::CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CCheck* CInterface::CreateCheck(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CCheck*		pc;
 	int			i;
@@ -200,7 +198,7 @@ CCheck* CInterface::CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg event
 
 // Creates a new button.
 
-CKey* CInterface::CreateKey(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CKey* CInterface::CreateKey(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CKey*		pc;
 	int			i;
@@ -222,7 +220,7 @@ CKey* CInterface::CreateKey(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
 
 // Creates a new button.
 
-CGroup* CInterface::CreateGroup(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CGroup* CInterface::CreateGroup(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CGroup*		pc;
 	int			i;
@@ -244,7 +242,7 @@ CGroup* CInterface::CreateGroup(FPOINT pos, FPOINT dim, int icon, EventMsg event
 
 // Creates a new button.
 
-CImage* CInterface::CreateImage(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CImage* CInterface::CreateImage(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CImage*		pc;
 	int			i;
@@ -266,7 +264,7 @@ CImage* CInterface::CreateImage(FPOINT pos, FPOINT dim, int icon, EventMsg event
 
 // Creates a new label.
 
-CLabel* CInterface::CreateLabel(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
+CLabel* CInterface::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg,
 							 char *name)
 {
 	CLabel*		pc;
@@ -290,7 +288,7 @@ CLabel* CInterface::CreateLabel(FPOINT pos, FPOINT dim, int icon, EventMsg event
 
 // Creates a new pave editable.
 
-CEdit* CInterface::CreateEdit(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CEdit* CInterface::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CEdit*		pc;
 	int			i;
@@ -312,7 +310,7 @@ CEdit* CInterface::CreateEdit(FPOINT pos, FPOINT dim, int icon, EventMsg eventMs
 
 // Creates a new pave editable.
 
-CEditValue* CInterface::CreateEditValue(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CEditValue* CInterface::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CEditValue*	pc;
 	int			i;
@@ -334,7 +332,7 @@ CEditValue* CInterface::CreateEditValue(FPOINT pos, FPOINT dim, int icon, EventM
 
 // Creates a new lift.
 
-CScroll* CInterface::CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CScroll* CInterface::CreateScroll(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CScroll*	pc;
 	int			i;
@@ -356,7 +354,7 @@ CScroll* CInterface::CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 
 // Creates a new cursor.
 
-CSlider* CInterface::CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CSlider* CInterface::CreateSlider(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CSlider*	pc;
 	int			i;
@@ -378,7 +376,7 @@ CSlider* CInterface::CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 
 // Creates a new list.
 
-CList* CInterface::CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg,
+CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg,
 							float expand)
 {
 	CList*		pc;
@@ -401,7 +399,7 @@ CList* CInterface::CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMs
 
 // Creates a new shortcut.
 
-CShortcut* CInterface::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CShortcut* CInterface::CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CShortcut*	ps;
 	int			i;
@@ -423,7 +421,7 @@ CShortcut* CInterface::CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg
 
 // Creates a new compass.
 
-CCompass* CInterface::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CCompass* CInterface::CreateCompass(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CCompass*	pc;
 	int			i;
@@ -445,7 +443,7 @@ CCompass* CInterface::CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg e
 
 // Creates a new target.
 
-CTarget* CInterface::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CTarget* CInterface::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CTarget*	pc;
 	int			i;
@@ -467,7 +465,7 @@ CTarget* CInterface::CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eve
 
 // Creates a new map.
 
-CMap* CInterface::CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg)
+CMap* CInterface::CreateMap(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
 	CMap*		pm;
 	int			i;
@@ -560,7 +558,7 @@ bool CInterface::EventProcess(const Event &event)
 
 // Gives the tooltip binding to the window.
 
-bool CInterface::GetTooltip(FPOINT pos, char* name)
+bool CInterface::GetTooltip(Math::Point pos, char* name)
 {
 	int		i;
 

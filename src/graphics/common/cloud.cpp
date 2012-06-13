@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -94,7 +92,7 @@ bool CCloud::EventFrame(const Event &event)
 // at movement.
 
 void CCloud::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep,
-						 FPOINT &uv1, FPOINT &uv2)
+						 Math::Point &uv1, Math::Point &uv2)
 {
 	float		dist, factor;
 
@@ -126,7 +124,7 @@ void CCloud::Draw()
 	D3DMATERIAL7	material;
 	D3DMATRIX		matrix;
 	D3DVECTOR		n, pos, p, eye;
-	FPOINT			uv1, uv2;
+	Math::Point			uv1, uv2;
 	float			iDeep, deep, size, fogStart, fogEnd;
 	int				i, j, u;
 

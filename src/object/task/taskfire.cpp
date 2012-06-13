@@ -16,8 +16,6 @@
 
 // taskfire.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -75,7 +73,7 @@ bool CTaskFire::EventProcess(const Event &event)
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed, dir, vib;
 	ObjectType	type;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		energy, fire;
 	int			i, channel;
 
@@ -119,13 +117,13 @@ bool CTaskFire::EventProcess(const Event &event)
 					speed += physics->RetLinMotion(MO_REASPEED);
 				}
 
-				speed.x += (Rand()-0.5f)*10.0f;
-				speed.y += (Rand()-0.5f)*20.0f;
-				speed.z += (Rand()-0.5f)*30.0f;
+				speed.x += (Math::Rand()-0.5f)*10.0f;
+				speed.y += (Math::Rand()-0.5f)*20.0f;
+				speed.z += (Math::Rand()-0.5f)*30.0f;
 				speed = Transform(*mat, speed);
 				speed -= pos;
 
-				dim.x = Rand()*0.5f+0.5f;
+				dim.x = Math::Rand()*0.5f+0.5f;
 				dim.y = dim.x;
 
 				channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN4, 0.8f, 0.0f, 0.0f);
@@ -144,9 +142,9 @@ bool CTaskFire::EventProcess(const Event &event)
 				pos = Transform(*mat, pos);
 
 				speed = D3DVECTOR(200.0f, 0.0f, 0.0f);
-				speed.x += (Rand()-0.5f)*6.0f;
-				speed.y += (Rand()-0.5f)*12.0f;
-				speed.z += (Rand()-0.5f)*12.0f;
+				speed.x += (Math::Rand()-0.5f)*6.0f;
+				speed.y += (Math::Rand()-0.5f)*12.0f;
+				speed.z += (Math::Rand()-0.5f)*12.0f;
 				speed = Transform(*mat, speed);
 				speed -= pos;
 
@@ -157,9 +155,9 @@ bool CTaskFire::EventProcess(const Event &event)
 				m_particule->SetObjectFather(channel, m_object);
 
 				speed = D3DVECTOR(5.0f, 0.0f, 0.0f);
-				speed.x += (Rand()-0.5f)*1.0f;
-				speed.y += (Rand()-0.5f)*2.0f;
-				speed.z += (Rand()-0.5f)*2.0f;
+				speed.x += (Math::Rand()-0.5f)*1.0f;
+				speed.y += (Math::Rand()-0.5f)*2.0f;
+				speed.z += (Math::Rand()-0.5f)*2.0f;
 				speed = Transform(*mat, speed);
 				speed -= pos;
 				speed.y += 5.0f;
@@ -192,8 +190,8 @@ bool CTaskFire::EventProcess(const Event &event)
 				{
 					pos = D3DVECTOR(3.0f, 1.0f, 0.0f);
 				}
-				pos.y += (Rand()-0.5f)*1.0f;
-				pos.z += (Rand()-0.5f)*1.0f;
+				pos.y += (Math::Rand()-0.5f)*1.0f;
+				pos.z += (Math::Rand()-0.5f)*1.0f;
 				pos = Transform(*mat, pos);
 
 				speed = D3DVECTOR(200.0f, 0.0f, 0.0f);
@@ -204,13 +202,13 @@ bool CTaskFire::EventProcess(const Event &event)
 					speed += physics->RetLinMotion(MO_REASPEED);
 				}
 
-				speed.x += (Rand()-0.5f)*3.0f;
-				speed.y += (Rand()-0.5f)*6.0f;
-				speed.z += (Rand()-0.5f)*6.0f;
+				speed.x += (Math::Rand()-0.5f)*3.0f;
+				speed.y += (Math::Rand()-0.5f)*6.0f;
+				speed.z += (Math::Rand()-0.5f)*6.0f;
 				speed = Transform(*mat, speed);
 				speed -= pos;
 
-				dim.x = Rand()*0.7f+0.7f;
+				dim.x = Math::Rand()*0.7f+0.7f;
 				dim.y = dim.x;
 
 				channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN1, 0.8f, 0.0f, 0.0f);
@@ -221,18 +219,18 @@ bool CTaskFire::EventProcess(const Event &event)
 				 m_progress > 0.3f )
 			{
 				pos = D3DVECTOR(-1.0f, 1.0f, 0.0f);
-				pos.y += (Rand()-0.5f)*0.4f;
-				pos.z += (Rand()-0.5f)*0.4f;
+				pos.y += (Math::Rand()-0.5f)*0.4f;
+				pos.z += (Math::Rand()-0.5f)*0.4f;
 				pos = Transform(*mat, pos);
 
 				speed = D3DVECTOR(-4.0f, 0.0f, 0.0f);
-				speed.x += (Rand()-0.5f)*2.0f;
-				speed.y += (Rand()-0.2f)*4.0f;
-				speed.z += (Rand()-0.5f)*4.0f;
+				speed.x += (Math::Rand()-0.5f)*2.0f;
+				speed.y += (Math::Rand()-0.2f)*4.0f;
+				speed.z += (Math::Rand()-0.5f)*4.0f;
 				speed = Transform(*mat, speed);
 				speed -= pos;
 
-				dim.x = Rand()*1.2f+1.2f;
+				dim.x = Math::Rand()*1.2f+1.2f;
 				dim.y = dim.x;
 
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
@@ -243,32 +241,32 @@ bool CTaskFire::EventProcess(const Event &event)
 		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
 		if ( m_progress < 0.1f )
 		{
-			dir.z = (PI*0.04f)*(m_progress*10.0f);
+			dir.z = (Math::PI*0.04f)*(m_progress*10.0f);
 		}
 		else if ( m_progress < 0.9f )
 		{
-			dir.z = (PI*0.04f);
+			dir.z = (Math::PI*0.04f);
 		}
 		else
 		{
-			dir.z = (PI*0.04f)*(1.0f-(m_progress-0.9f)*10.0f);
+			dir.z = (Math::PI*0.04f)*(1.0f-(m_progress-0.9f)*10.0f);
 		}
 		m_object->SetInclinaison(dir);
 
-		vib.x = (Rand()-0.5f)*0.01f;
-		vib.y = (Rand()-0.5f)*0.02f;
-		vib.z = (Rand()-0.5f)*0.02f;
+		vib.x = (Math::Rand()-0.5f)*0.01f;
+		vib.y = (Math::Rand()-0.5f)*0.02f;
+		vib.z = (Math::Rand()-0.5f)*0.02f;
 		m_object->SetCirVibration(vib);
 
-		vib.x = (Rand()-0.5f)*0.20f;
-		vib.y = (Rand()-0.5f)*0.05f;
-		vib.z = (Rand()-0.5f)*0.20f;
+		vib.x = (Math::Rand()-0.5f)*0.20f;
+		vib.y = (Math::Rand()-0.5f)*0.05f;
+		vib.z = (Math::Rand()-0.5f)*0.20f;
 		m_object->SetLinVibration(vib);
 	}
 
 	if ( m_bRay && m_lastSound <= 0.0f )
 	{
-		m_lastSound = Rand()*0.4f+0.4f;
+		m_lastSound = Math::Rand()*0.4f+0.4f;
 		m_sound->Play(SOUND_FIREp, m_object->RetPosition(0));
 	}
 
@@ -337,7 +335,7 @@ Error CTaskFire::Start(float delay)
 	m_lastSound = 0.0f;
 	m_bError = false;  // ok
 
-//?	m_camera->StartCentering(m_object, PI*0.15f, 99.9f, 0.0f, 1.0f);
+//?	m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
 
 	if ( m_bOrganic )
 	{

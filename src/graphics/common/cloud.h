@@ -19,7 +19,9 @@
 #pragma once
 
 
-#include "common/struct.h"
+#include "common/event.h"
+#include "math/point.h"
+#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
@@ -57,7 +59,7 @@ public:
 
 protected:
 	bool		EventFrame(const Event &event);
-	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep, FPOINT &uv1, FPOINT &uv2);
+	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep, Math::Point &uv1, Math::Point &uv2);
 	bool		CreateLine(int x, int y, int len);
 
 protected:
@@ -67,7 +69,7 @@ protected:
 
 	char			m_filename[100];
 	float			m_level;		// overall level
-	FPOINT			m_speed;		// feedrate (wind)
+	Math::Point			m_speed;		// feedrate (wind)
 	D3DCOLORVALUE		m_diffuse;		// diffuse color
 	D3DCOLORVALUE		m_ambient;		// ambient color
 	float			m_time;

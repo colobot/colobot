@@ -16,14 +16,14 @@
 
 // terrain.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "graphics/d3d/d3dutil.h"
@@ -384,13 +384,13 @@ bool CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
 			level = (255-buffer[BMPHEAD+x+sizem*y])*scaleRelief;
 
 //?			dist = Length((float)(x-size/2), (float)(y-size/2));
-			dist = Max(Abs((float)(x-size/2)), Abs((float)(y-size/2)));
+			dist = Math::Max(fabs((float)(x-size/2)), fabs((float)(y-size/2)));
 			dist = dist/(float)(size/2);
 			if ( dist > limit && adjustBorder )
 			{
 				dist = (dist-limit)/(1.0f-limit);  // 0..1
 				if ( dist > 1.0f )  dist = 1.0f;
-				border = 300.0f+Rand()*20.0f;
+				border = 300.0f+Math::Rand()*20.0f;
 				level = level+dist*(border-level);
 			}
 
@@ -766,7 +766,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 	D3DMATRIX		transform;
 	D3DVERTEX2		o, p1, p2;
 	D3DObjLevel6*	buffer;
-	FPOINT			uv;
+	Math::Point			uv;
 	int				brick, total, size, mx, my, x, y, xx, yy, i;
 	char			texName1[20];
 	char			texName2[20];
@@ -955,7 +955,7 @@ TerrainMaterial* CTerrain::LevelSearchMat(int id)
 
 // Chooses texture to use for a given square.
 
-void CTerrain::LevelTextureName(int x, int y, char *name, FPOINT &uv)
+void CTerrain::LevelTextureName(int x, int y, char *name, Math::Point &uv)
 {
 	TerrainMaterial*	tm;
 
@@ -1019,7 +1019,7 @@ bool CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 	{
 		for ( i=0 ; i<4 ; i++ )
 		{
-			if ( Abs(hc-h[i]) >= slope )
+			if ( fabs(hc-h[i]) >= slope )
 			{
 				return false;
 			}
@@ -1031,7 +1031,7 @@ bool CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 	{
 		for ( i=0 ; i<4 ; i++ )
 		{
-			if ( Abs(hc-h[i]) < -slope )
+			if ( fabs(hc-h[i]) < -slope )
 			{
 				return false;
 			}
@@ -1689,7 +1689,7 @@ float CTerrain::RetFineSlope(const D3DVECTOR &pos)
 	D3DVECTOR	n;
 
 	if ( !GetNormal(n, pos) )  return 0.0f;
-	return Abs(RotateAngle(Length(n.x, n.z), n.y)-PI/2.0f);
+	return fabs(Math::RotateAngle(Length(n.x, n.z), n.y)-Math::PI/2.0f);
 }
 
 // Gives the approximate slope of the terrain of a specific location.
@@ -1714,8 +1714,8 @@ float CTerrain::RetCoarseSlope(const D3DVECTOR &pos)
 	level[2] = m_relief[(x+0)+(y+1)*(m_mosaic*m_brick+1)];
 	level[3] = m_relief[(x+1)+(y+1)*(m_mosaic*m_brick+1)];
 
-	min = Min(level[0], level[1], level[2], level[3]);
-	max = Max(level[0], level[1], level[2], level[3]);
+	min = Math::Min(level[0], level[1], level[2], level[3]);
+	max = Math::Max(level[0], level[1], level[2], level[3]);
 
 	return atanf((max-min)/m_size);
 }
@@ -1741,7 +1741,7 @@ bool CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
 	p3 = RetVector(x+0, y+1);
 	p4 = RetVector(x+1, y+1);
 
-	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
+	if ( fabs(p.z-p2.z) < fabs(p.x-p2.x) )
 	{
 		n = ComputeNormal(p1,p2,p3);
 	}
@@ -1774,7 +1774,7 @@ float CTerrain::RetFloorLevel(const D3DVECTOR &p, bool bBrut, bool bWater)
 	p4 = RetVector(x+1, y+1);
 
 	ps = p;
-	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
+	if ( fabs(p.z-p2.z) < fabs(p.x-p2.x) )
 	{
 		if ( !IntersectY(p1, p2, p3, ps) )  return 0.0f;
 	}
@@ -1817,7 +1817,7 @@ float CTerrain::RetFloorHeight(const D3DVECTOR &p, bool bBrut, bool bWater)
 	p4 = RetVector(x+1, y+1);
 
 	ps = p;
-	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
+	if ( fabs(p.z-p2.z) < fabs(p.x-p2.x) )
 	{
 		if ( !IntersectY(p1, p2, p3, ps) )  return 0.0f;
 	}
@@ -1858,7 +1858,7 @@ bool CTerrain::MoveOnFloor(D3DVECTOR &p, bool bBrut, bool bWater)
 	p3 = RetVector(x+0, y+1);
 	p4 = RetVector(x+1, y+1);
 
-	if ( Abs(p.z-p2.z) < Abs(p.x-p2.x) )
+	if ( fabs(p.z-p2.z) < fabs(p.x-p2.x) )
 	{
 		if ( !IntersectY(p1, p2, p3, p) )  return false;
 	}
@@ -2157,7 +2157,7 @@ void CTerrain::GroundFlat(D3DVECTOR pos)
 float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
 {
 	D3DVECTOR	pos;
-	FPOINT		c, p;
+	Math::Point		c, p;
 	float		ref, radius, angle, h;
 	int			i, nb;
 
@@ -2170,7 +2170,7 @@ float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
 	while ( radius <= max )
 	{
 		angle = 0.0f;
-		nb = (int)(2.0f*PI*radius);
+		nb = (int)(2.0f*Math::PI*radius);
 		if ( nb < 8 )  nb = 8;
 		for ( i=0 ; i<nb ; i++ )
 		{
@@ -2178,13 +2178,13 @@ float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
 			c.y = center.z;
 			p.x = center.x+radius;
 			p.y = center.z;
-			p = RotatePoint(c, angle, p);
+			p = Math::RotatePoint(c, angle, p);
 			pos.x = p.x;
 			pos.z = p.y;
 			h = RetFloorLevel(pos, true);
-			if ( Abs(h-ref) > 1.0f )  return radius;
+			if ( fabs(h-ref) > 1.0f )  return radius;
 
-			angle += PI*2.0f/8.0f;
+			angle += Math::PI*2.0f/8.0f;
 		}
 		radius += 1.0f;
 	}

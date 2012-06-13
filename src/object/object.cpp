@@ -16,8 +16,6 @@
 
 // object.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -25,6 +23,8 @@
 
 #include "CBot/CBotDll.h"
 #include "common/struct.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "graphics/d3d/d3dutil.h"
@@ -162,11 +162,11 @@ void uObject(CBotVar* botThis, void* user)
 	pos = object->RetAngle(0);
 	pos += object->RetInclinaison();
 	pVar = pVar->GivNext();  // "orientation"
-	pVar->SetValFloat(360.0f-Mod(pos.y*180.0f/PI, 360.0f));
+	pVar->SetValFloat(360.0f-Math::Mod(pos.y*180.0f/Math::PI, 360.0f));
 	pVar = pVar->GivNext();  // "pitch"
-	pVar->SetValFloat(pos.z*180.0f/PI);
+	pVar->SetValFloat(pos.z*180.0f/Math::PI);
 	pVar = pVar->GivNext();  // "roll"
-	pVar->SetValFloat(pos.x*180.0f/PI);
+	pVar->SetValFloat(pos.x*180.0f/Math::PI);
 
 	// Updates the energy level of the object.
 	pVar = pVar->GivNext();  // "energyLevel"
@@ -1100,7 +1100,7 @@ bool CObject::Write(char *line)
 		sprintf(name, " resetPos=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
 		strcat(line, name);
 
-		pos = RetResetAngle()/(PI/180.0f);
+		pos = RetResetAngle()/(Math::PI/180.0f);
 		sprintf(name, " resetAngle=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
 		strcat(line, name);
 
@@ -1202,7 +1202,7 @@ bool CObject::Read(char *line)
 	SetParam(OpFloat(line, "param", 0.0f));
 	SetResetCap((ResetCap)OpInt(line, "resetCap", 0));
 	SetResetPosition(OpDir(line, "resetPos")*g_unit);
-	SetResetAngle(OpDir(line, "resetAngle")*(PI/180.0f));
+	SetResetAngle(OpDir(line, "resetAngle")*(Math::PI/180.0f));
 	SetResetRun(OpInt(line, "resetRun", 0));
 	m_bBurn = OpInt(line, "burnMode", 0);
 	m_bVirusMode = OpInt(line, "virusMode", 0);
@@ -1448,7 +1448,7 @@ void CObject::SetFloorHeight(float height)
 void CObject::FloorAdjust()
 {
 	D3DVECTOR		pos, n;
-	FPOINT			nn;
+	Math::Point			nn;
 	float			a;
 
 	pos = RetPosition(0);
@@ -1460,7 +1460,7 @@ void CObject::FloorAdjust()
 		SetAngleY(0, 0.0f);
 #else
 		a = RetAngleY(0);
-		nn = RotatePoint(-a, FPOINT(n.z, n.x));
+		nn = Math::RotatePoint(-a, Math::Point(n.z, n.x));
 		SetAngleX(0,  sinf(nn.x));
 		SetAngleZ(0, -sinf(nn.y));
 #endif
@@ -2269,7 +2269,7 @@ bool CObject::CreateShadowLight(float height, D3DCOLORVALUE color)
 	light.dvAttenuation1 = 0.0f;
 	light.dvAttenuation2 = 0.0f;
 	light.dvTheta = 0.0f;
-	light.dvPhi = PI/4.0f;
+	light.dvPhi = Math::PI/4.0f;
 
 	m_shadowLight = m_light->CreateLight();
 	if ( m_shadowLight == -1 )  return false;
@@ -2316,7 +2316,7 @@ bool CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
 	light.dvAttenuation1 = 0.0f;
 	light.dvAttenuation2 = 0.0f;
 	light.dvTheta = 0.0f;
-	light.dvPhi = PI/4.0f;
+	light.dvPhi = Math::PI/4.0f;
 
 	m_effectLight = m_light->CreateLight();
 	if ( m_effectLight == -1 )  return false;
@@ -2362,7 +2362,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 							 ObjectType type, float power)
 {
 	CModFile*	pModFile;
-	FPOINT		p;
+	Math::Point		p;
 	int			rank, i;
 
 	if ( m_engine->RetRestCreate() < 20 )  return false;
@@ -2398,7 +2398,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\portico3.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(2, D3DVECTOR(0.0f, 0.0f, -33.0f));
-		SetAngleY(2, 45.0f*PI/180.0f);
+		SetAngleY(2, 45.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2407,7 +2407,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\portico4.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(3, D3DVECTOR(50.0f, 0.0f, 0.0f));
-		SetAngleY(3, -60.0f*PI/180.0f);
+		SetAngleY(3, -60.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2416,7 +2416,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\portico5.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(4, D3DVECTOR(35.0f, 0.0f, 0.0f));
-		SetAngleY(4, -55.0f*PI/180.0f);
+		SetAngleY(4, -55.0f*Math::PI/180.0f);
 		
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2425,7 +2425,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\portico3.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(5, D3DVECTOR(0.0f, 0.0f, 33.0f));
-		SetAngleY(5, -45.0f*PI/180.0f);
+		SetAngleY(5, -45.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2434,7 +2434,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\portico4.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(6, D3DVECTOR(50.0f, 0.0f, 0.0f));
-		SetAngleY(6, 60.0f*PI/180.0f);
+		SetAngleY(6, 60.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2443,7 +2443,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\portico5.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(7, D3DVECTOR(35.0f, 0.0f, 0.0f));
-		SetAngleY(7, 55.0f*PI/180.0f);
+		SetAngleY(7, 55.0f*Math::PI/180.0f);
 		
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2452,7 +2452,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\portico6.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(8, D3DVECTOR(-35.0f, 50.0f, -35.0f));
-		SetAngleY(8, -PI/2.0f);
+		SetAngleY(8, -Math::PI/2.0f);
 		SetZoom(8, 2.0f);
 
 		rank = m_engine->CreateObject();
@@ -2470,7 +2470,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\portico6.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(10, D3DVECTOR(-35.0f, 50.0f, 35.0f));
-		SetAngleY(10, -PI/2.0f);
+		SetAngleY(10, -Math::PI/2.0f);
 		SetZoom(10, 2.0f);
 
 		rank = m_engine->CreateObject();
@@ -2513,10 +2513,10 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			SetObjectParent(1+i, 0);
 			pModFile->ReadModel("objects\\base2.mod");
 			pModFile->CreateEngineObject(rank);
-			p = RotatePoint(-PI/4.0f*i, 27.8f);
+			p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
 			SetPosition(1+i, D3DVECTOR(p.x, 30.0f, p.y));
-			SetAngleY(1+i, PI/4.0f*i);
-			SetAngleZ(1+i, PI/2.0f);
+			SetAngleY(1+i, Math::PI/4.0f*i);
+			SetAngleZ(1+i, Math::PI/2.0f);
 
 			rank = m_engine->CreateObject();
 			m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2617,7 +2617,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\search3.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(2, D3DVECTOR(0.0f, 4.0f, 0.0f));
-		SetAngleZ(2, 35.0f*PI/180.0f);
+		SetAngleZ(2, 35.0f*Math::PI/180.0f);
 
 		CreateCrashSphere(D3DVECTOR(0.0f,  0.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
 		CreateCrashSphere(D3DVECTOR(0.0f,  6.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
@@ -2652,7 +2652,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\radar3.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(2, D3DVECTOR(0.0f, 11.0f, 0.0f));
-		SetAngleY(2, -PI/2.0f);
+		SetAngleY(2, -Math::PI/2.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2703,7 +2703,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			pModFile->CreateEngineObject(rank);
 			SetPosition(3+i*2, D3DVECTOR(0.0f, 0.0f, -4.0f));
 
-			SetAngleY(2+i*2, 2.0f*PI/3.0f*i);
+			SetAngleY(2+i*2, 2.0f*Math::PI/3.0f*i);
 		}
 
 		CreateCrashSphere(D3DVECTOR(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
@@ -2747,7 +2747,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\labo2.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(1, D3DVECTOR(-9.0f, 3.0f, 0.0f));
-		SetAngleZ(1, PI/2.0f);
+		SetAngleZ(1, Math::PI/2.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2764,7 +2764,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\labo4.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(3, D3DVECTOR(0.0f, 0.0f, 0.0f));
-		SetAngleZ(3, 80.0f*PI/180.0f);
+		SetAngleZ(3, 80.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2773,8 +2773,8 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\labo4.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(4, D3DVECTOR(0.0f, 0.0f, 0.0f));
-		SetAngleZ(4, 80.0f*PI/180.0f);
-		SetAngleY(4, PI*2.0f/3.0f);
+		SetAngleZ(4, 80.0f*Math::PI/180.0f);
+		SetAngleY(4, Math::PI*2.0f/3.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2783,8 +2783,8 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\labo4.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(5, D3DVECTOR(0.0f, 0.0f, 0.0f));
-		SetAngleZ(5, 80.0f*PI/180.0f);
-		SetAngleY(5, -PI*2.0f/3.0f);
+		SetAngleZ(5, 80.0f*Math::PI/180.0f);
+		SetAngleY(5, -Math::PI*2.0f/3.0f);
 
 		CreateCrashSphere(D3DVECTOR(  0.0f,  1.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
 		CreateCrashSphere(D3DVECTOR(  0.0f, 11.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
@@ -2815,7 +2815,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			pModFile->ReadModel("objects\\factory2.mod");
 			pModFile->CreateEngineObject(rank);
 			SetPosition(1+i, D3DVECTOR(10.0f, 2.0f*i, 10.0f));
-			SetAngleZ(1+i, PI/2.0f);
+			SetAngleZ(1+i, Math::PI/2.0f);
 			SetZoomZ(1+i, 0.30f);
 
 			rank = m_engine->CreateObject();
@@ -2825,8 +2825,8 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			pModFile->ReadModel("objects\\factory2.mod");
 			pModFile->CreateEngineObject(rank);
 			SetPosition(10+i, D3DVECTOR(10.0f, 2.0f*i, -10.0f));
-			SetAngleZ(10+i, -PI/2.0f);
-			SetAngleY(10+i, PI);
+			SetAngleZ(10+i, -Math::PI/2.0f);
+			SetAngleY(10+i, Math::PI);
 			SetZoomZ(10+i, 0.30f);
 		}
 
@@ -2873,7 +2873,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\repair2.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(1, D3DVECTOR(-11.0f, 13.5f, 0.0f));
-		SetAngleZ(1, PI/2.0f);
+		SetAngleZ(1, Math::PI/2.0f);
 
 		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
@@ -2950,7 +2950,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\convert3.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(2, D3DVECTOR(0.0f, 11.5f, 0.0f));
-		SetAngleX(2, -PI*0.35f);
+		SetAngleX(2, -Math::PI*0.35f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2959,8 +2959,8 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\convert3.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(3, D3DVECTOR(0.0f, 11.5f, 0.0f));
-		SetAngleY(3, PI);
-		SetAngleX(3, -PI*0.35f);
+		SetAngleY(3, Math::PI);
+		SetAngleX(3, -Math::PI*0.35f);
 
 		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
@@ -2986,7 +2986,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\roller2c.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(1, D3DVECTOR(0.0f, 20.0f, 0.0f));
-		SetAngleZ(1, PI/2.0f);
+		SetAngleZ(1, Math::PI/2.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -3024,7 +3024,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\nuclear2.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(1, D3DVECTOR(20.0f, 10.0f, 0.0f));
-		SetAngleZ(1, 135.0f*PI/180.0f);
+		SetAngleZ(1, 135.0f*Math::PI/180.0f);
 
 		CreateCrashSphere(D3DVECTOR( 0.0f,  0.0f, 0.0f), 19.0f, SOUND_BOUMm, 0.45f);
 		CreateCrashSphere(D3DVECTOR( 0.0f, 24.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f);
@@ -3109,7 +3109,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\huston2.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(1, D3DVECTOR(0.0f, 39.0f, 30.0f));
-		SetAngleY(1, -PI/2.0f);
+		SetAngleY(1, -Math::PI/2.0f);
 		SetZoom(1, 3.0f);
 
 		rank = m_engine->CreateObject();
@@ -3874,7 +3874,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 
 	SetType(type);
 
-	fShadow = Norm(1.0f-height/10.0f);
+	fShadow = Math::Norm(1.0f-height/10.0f);
 
 	if ( type == OBJECT_TEEN0 )  // orange pencil lg=10
 	{
@@ -4122,7 +4122,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 
 		mat = RetWorldMatrix(0);
 		pos = Transform(*mat, D3DVECTOR(-56.0f, 22.0f, 0.0f));
-		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), FPOINT(20.0f, 20.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
+		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), Math::Point(20.0f, 20.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
 
 		pos = Transform(*mat, D3DVECTOR(-65.0f, 40.0f, 0.0f));
 		color.r = 4.0f;
@@ -4413,7 +4413,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 
 		mat = RetWorldMatrix(0);
 		pos = Transform(*mat, D3DVECTOR(0.0f, 50.0f, 0.0f));
-		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), FPOINT(100.0f, 100.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
+		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), Math::Point(100.0f, 100.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
 
 		pos = Transform(*mat, D3DVECTOR(0.0f, 50.0f, 0.0f));
 		color.r = 4.0f;
@@ -4843,8 +4843,8 @@ bool CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 		pos.y += 16.0f;
 		radius = 8.0f;
 	}
-	m_particule->CreateParticule(pos, pos, FPOINT(2.0f, 2.0f), PARTIQUARTZ, 0.7f+Rand()*0.7f, radius, 0.0f);
-	m_particule->CreateParticule(pos, pos, FPOINT(2.0f, 2.0f), PARTIQUARTZ, 0.7f+Rand()*0.7f, radius, 0.0f);
+	m_particule->CreateParticule(pos, pos, Math::Point(2.0f, 2.0f), PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
+	m_particule->CreateParticule(pos, pos, Math::Point(2.0f, 2.0f), PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
 
 	delete pModFile;
 	return true;
@@ -4995,8 +4995,8 @@ bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\root5.mod");
 		pModFile->CreateEngineObject(rank);
 		SetPosition(1, D3DVECTOR(-5.0f, 28.0f, -4.0f));
-		SetAngleX(1, -30.0f*PI/180.0f);
-		SetAngleZ(1,  20.0f*PI/180.0f);
+		SetAngleX(1, -30.0f*Math::PI/180.0f);
+		SetAngleZ(1,  20.0f*Math::PI/180.0f);
 
 		CreateCrashSphere(D3DVECTOR( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
 		CreateCrashSphere(D3DVECTOR(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
@@ -5123,7 +5123,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->CreateEngineObject(rank);
 
 		SetPosition(6, D3DVECTOR(-3.0f, 1.8f, -4.0f));
-		SetAngleX(6, -PI/2.0f);
+		SetAngleX(6, -Math::PI/2.0f);
 
 		// Creates the left-back wheel.
 		rank = m_engine->CreateObject();
@@ -5135,7 +5135,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->CreateEngineObject(rank);
 
 		SetPosition(7, D3DVECTOR(-3.0f, 1.0f, 3.0f));
-		SetAngleY(7, PI-0.3f);
+		SetAngleY(7, Math::PI-0.3f);
 		SetAngleX(7, -0.3f);
 
 		// Creates the right-front wheel.
@@ -5160,7 +5160,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->CreateEngineObject(rank);
 
 		SetPosition(9, D3DVECTOR(2.0f, 1.0f, 3.0f));
-		SetAngleY(9, PI-0.2f);
+		SetAngleY(9, Math::PI-0.2f);
 		SetAngleX(9, 0.2f);
 
 		CreateCrashSphere(D3DVECTOR(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
@@ -5181,7 +5181,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->CreateEngineObject(rank);
 
 		SetPosition(7, D3DVECTOR(-3.0f, 1.0f, 3.0f));
-		SetAngleY(7, PI+0.3f);
+		SetAngleY(7, Math::PI+0.3f);
 		SetAngleX(7, 0.4f);
 
 		// Creates the left-front wheel.
@@ -5194,7 +5194,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->CreateEngineObject(rank);
 
 		SetPosition(9, D3DVECTOR(2.0f, 1.0f, 3.0f));
-		SetAngleY(9, PI+0.3f);
+		SetAngleY(9, Math::PI+0.3f);
 		SetAngleX(9, -0.3f);
 
 		CreateCrashSphere(D3DVECTOR(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
@@ -5215,7 +5215,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->CreateEngineObject(rank);
 
 		SetPosition(1, D3DVECTOR(3.0f, 5.0f, -2.5f));
-		SetAngleX(1, -PI*0.85f);
+		SetAngleX(1, -Math::PI*0.85f);
 		SetAngleY(1, -0.4f);
 		SetAngleZ(1, -0.1f);
 
@@ -5408,7 +5408,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pos.y += 4.0f;
 		SetPosition(0, pos);
 
-		angle = RetAngleX(0)-PI*0.6f;
+		angle = RetAngleX(0)-Math::PI*0.6f;
 		SetAngleX(0, angle);
 
 		angle = RetAngleZ(0)-0.2f;
@@ -5490,7 +5490,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pos.y += 8.0f;
 		SetPosition(0, pos);
 
-		angle = RetAngleX(0)+PI*0.4f;
+		angle = RetAngleX(0)+Math::PI*0.4f;
 		SetAngleX(0, angle);
 	}
 
@@ -5531,7 +5531,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 			SetObjectParent(i+1, 0);
 			pModFile->ReadModel("objects\\apollol2.mod");
 			pModFile->CreateEngineObject(rank);
-			SetAngleY(i+1, PI/2.0f*i);
+			SetAngleY(i+1, Math::PI/2.0f*i);
 		}
 
 		rank = m_engine->CreateObject();
@@ -5606,8 +5606,8 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
 		pModFile->CreateEngineObject(rank);
 		SetPosition(5, D3DVECTOR(5.5f, 8.8f, 2.0f));
-		SetAngleY(5, -120.0f*PI/180.0f);
-		SetAngleZ(5,   45.0f*PI/180.0f);
+		SetAngleY(5, -120.0f*Math::PI/180.0f);
+		SetAngleZ(5,   45.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -5616,7 +5616,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		pModFile->ReadModel("objects\\apolloj3.mod");  // camera
 		pModFile->CreateEngineObject(rank);
 		SetPosition(6, D3DVECTOR(5.5f, 2.8f, -2.0f));
-		SetAngleY(6, 30.0f*PI/180.0f);
+		SetAngleY(6, 30.0f*Math::PI/180.0f);
 
 		CreateCrashSphere(D3DVECTOR( 3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
 		CreateCrashSphere(D3DVECTOR(-3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
@@ -5677,8 +5677,8 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
 		pModFile->CreateEngineObject(rank);
 		SetPosition(1, D3DVECTOR(0.0f, 5.0f, 0.0f));
-		SetAngleY(1, -120.0f*PI/180.0f);
-		SetAngleZ(1,   45.0f*PI/180.0f);
+		SetAngleY(1, -120.0f*Math::PI/180.0f);
+		SetAngleZ(1,   45.0f*Math::PI/180.0f);
 
 		CreateCrashSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.35f);
 		CreateShadowCircle(3.0f, 0.7f);
@@ -6049,7 +6049,7 @@ void CObject::UpdateEnergyMapping()
 	float			limit[6];
 	int				j;
 
-	if ( Abs(m_energy-m_lastEnergy) < 0.01f )  return;
+	if ( fabs(m_energy-m_lastEnergy) < 0.01f )  return;
 	m_lastEnergy = m_energy;
 
 	ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
@@ -6120,12 +6120,12 @@ bool CObject::EventProcess(const Event &event)
 #if ADJUST_ARM
 		if ( m_bSelect )
 		{
-			if ( event.param == 'X' )  debug_arm1 += 5.0f*PI/180.0f;
-			if ( event.param == 'C' )  debug_arm1 -= 5.0f*PI/180.0f;
-			if ( event.param == 'V' )  debug_arm2 += 5.0f*PI/180.0f;
-			if ( event.param == 'B' )  debug_arm2 -= 5.0f*PI/180.0f;
-			if ( event.param == 'N' )  debug_arm3 += 5.0f*PI/180.0f;
-			if ( event.param == 'M' )  debug_arm3 -= 5.0f*PI/180.0f;
+			if ( event.param == 'X' )  debug_arm1 += 5.0f*Math::PI/180.0f;
+			if ( event.param == 'C' )  debug_arm1 -= 5.0f*Math::PI/180.0f;
+			if ( event.param == 'V' )  debug_arm2 += 5.0f*Math::PI/180.0f;
+			if ( event.param == 'B' )  debug_arm2 -= 5.0f*Math::PI/180.0f;
+			if ( event.param == 'N' )  debug_arm3 += 5.0f*Math::PI/180.0f;
+			if ( event.param == 'M' )  debug_arm3 -= 5.0f*Math::PI/180.0f;
 			if ( event.param == 'X' ||
 				 event.param == 'C' ||
 				 event.param == 'V' ||
@@ -6137,7 +6137,7 @@ bool CObject::EventProcess(const Event &event)
 				SetAngleZ(2, debug_arm2);
 				SetAngleZ(3, debug_arm3);
 				char s[100];
-				sprintf(s, "a=%.2f b=%.2f c=%.2f", debug_arm1*180.0f/PI, debug_arm2*180.0f/PI, debug_arm3*180.0f/PI);
+				sprintf(s, "a=%.2f b=%.2f c=%.2f", debug_arm1*180.0f/Math::PI, debug_arm2*180.0f/Math::PI, debug_arm3*180.0f/Math::PI);
 				m_engine->SetInfoText(5, s);
 			}
 		}
@@ -6251,7 +6251,7 @@ void CObject::VirusFrame(float rTime)
 {
 	ParticuleType	type;
 	D3DVECTOR		pos, speed;
-	FPOINT			dim;
+	Math::Point			dim;
 	int				r;
 
 	if ( !m_bVirusMode )  return;  // healthy object?
@@ -6279,12 +6279,12 @@ void CObject::VirusFrame(float rTime)
 		if ( r == 9 )  type = PARTIVIRUS10;
 
 		pos = RetPosition(0);
-		pos.x += (Rand()-0.5f)*10.0f;
-		pos.z += (Rand()-0.5f)*10.0f;
-		speed.x = (Rand()-0.5f)*2.0f;
-		speed.z = (Rand()-0.5f)*2.0f;
-		speed.y = Rand()*4.0f+4.0f;
-		dim.x = Rand()*0.3f+0.3f;
+		pos.x += (Math::Rand()-0.5f)*10.0f;
+		pos.z += (Math::Rand()-0.5f)*10.0f;
+		speed.x = (Math::Rand()-0.5f)*2.0f;
+		speed.z = (Math::Rand()-0.5f)*2.0f;
+		speed.y = Math::Rand()*4.0f+4.0f;
+		dim.x = Math::Rand()*0.3f+0.3f;
 		dim.y = dim.x;
 
 		m_particule->CreateParticule(pos, speed, dim, type, 3.0f);
@@ -6324,7 +6324,7 @@ void CObject::PartiFrame(float rTime)
 		}
 
 		angle = RetAngle(i);
-		angle += rTime*PI*factor;
+		angle += rTime*Math::PI*factor;
 		SetAngle(i, angle);
 	}
 }
@@ -6466,7 +6466,7 @@ void CObject::SetViewFromHere(D3DVECTOR &eye, float &dirH, float &dirV,
 	}
 	upVec = Transform(m_objectPart[0].matRotate, upVec);
 
-	dirH = -(m_objectPart[part].angle.y+PI/2.0f);
+	dirH = -(m_objectPart[part].angle.y+Math::PI/2.0f);
 	dirV = 0.0f;
 
 }
@@ -6711,7 +6711,7 @@ void CObject::StartDetectEffect(CObject *target, bool bFound)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, goal;
-	FPOINT		dim;
+	Math::Point		dim;
 
 	mat = RetWorldMatrix(0);
 	pos = Transform(*mat, D3DVECTOR(2.0f, 3.0f, 0.0f));
@@ -7118,8 +7118,8 @@ void CObject::SetGunGoalV(float gunGoal)
 		 m_type == OBJECT_MOBILEwc ||
 		 m_type == OBJECT_MOBILEic )  // fireball?
 	{
-		if ( gunGoal >  10.0f*PI/180.0f )  gunGoal =  10.0f*PI/180.0f;
-		if ( gunGoal < -20.0f*PI/180.0f )  gunGoal = -20.0f*PI/180.0f;
+		if ( gunGoal >  10.0f*Math::PI/180.0f )  gunGoal =  10.0f*Math::PI/180.0f;
+		if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
 		SetAngleZ(1, gunGoal);
 	}
 	else if ( m_type == OBJECT_MOBILEfi ||
@@ -7127,14 +7127,14 @@ void CObject::SetGunGoalV(float gunGoal)
 			  m_type == OBJECT_MOBILEwi ||
 			  m_type == OBJECT_MOBILEii )  // orgaball?
 	{
-		if ( gunGoal >  20.0f*PI/180.0f )  gunGoal =  20.0f*PI/180.0f;
-		if ( gunGoal < -20.0f*PI/180.0f )  gunGoal = -20.0f*PI/180.0f;
+		if ( gunGoal >  20.0f*Math::PI/180.0f )  gunGoal =  20.0f*Math::PI/180.0f;
+		if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
 		SetAngleZ(1, gunGoal);
 	}
 	else if ( m_type == OBJECT_MOBILErc )  // phazer?
 	{
-		if ( gunGoal >  45.0f*PI/180.0f )  gunGoal =  45.0f*PI/180.0f;
-		if ( gunGoal < -20.0f*PI/180.0f )  gunGoal = -20.0f*PI/180.0f;
+		if ( gunGoal >  45.0f*Math::PI/180.0f )  gunGoal =  45.0f*Math::PI/180.0f;
+		if ( gunGoal < -20.0f*Math::PI/180.0f )  gunGoal = -20.0f*Math::PI/180.0f;
 		SetAngleZ(2, gunGoal);
 	}
 	else
@@ -7152,8 +7152,8 @@ void CObject::SetGunGoalH(float gunGoal)
 		 m_type == OBJECT_MOBILEwc ||
 		 m_type == OBJECT_MOBILEic )  // fireball?
 	{
-		if ( gunGoal >  40.0f*PI/180.0f )  gunGoal =  40.0f*PI/180.0f;
-		if ( gunGoal < -40.0f*PI/180.0f )  gunGoal = -40.0f*PI/180.0f;
+		if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
+		if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
 		SetAngleY(1, gunGoal);
 	}
 	else if ( m_type == OBJECT_MOBILEfi ||
@@ -7161,14 +7161,14 @@ void CObject::SetGunGoalH(float gunGoal)
 			  m_type == OBJECT_MOBILEwi ||
 			  m_type == OBJECT_MOBILEii )  // orgaball?
 	{
-		if ( gunGoal >  40.0f*PI/180.0f )  gunGoal =  40.0f*PI/180.0f;
-		if ( gunGoal < -40.0f*PI/180.0f )  gunGoal = -40.0f*PI/180.0f;
+		if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
+		if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
 		SetAngleY(1, gunGoal);
 	}
 	else if ( m_type == OBJECT_MOBILErc )  // phazer?
 	{
-		if ( gunGoal >  40.0f*PI/180.0f )  gunGoal =  40.0f*PI/180.0f;
-		if ( gunGoal < -40.0f*PI/180.0f )  gunGoal = -40.0f*PI/180.0f;
+		if ( gunGoal >  40.0f*Math::PI/180.0f )  gunGoal =  40.0f*Math::PI/180.0f;
+		if ( gunGoal < -40.0f*Math::PI/180.0f )  gunGoal = -40.0f*Math::PI/180.0f;
 		SetAngleY(2, gunGoal);
 	}
 	else
@@ -7223,7 +7223,7 @@ bool CObject::IsProgram()
 void CObject::CreateSelectParticule()
 {
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	int			i;
 
 	// Removes particles preceding.
@@ -7285,7 +7285,7 @@ void CObject::CreateSelectParticule()
 void CObject::UpdateSelectParticule()
 {
 	D3DVECTOR	pos[4];
-	FPOINT		dim[4];
+	Math::Point		dim[4];
 	float		zoom[4];
 	float		angle;
 	int			i;
@@ -7406,7 +7406,7 @@ void CObject::UpdateSelectParticule()
 		pos[3] = D3DVECTOR(-5.3f, 2.7f, -1.8f);
 	}
 
-	angle = RetAngleY(0)/PI;
+	angle = RetAngleY(0)/Math::PI;
 
 	zoom[0] = 1.0f;
 	zoom[1] = 1.0f;
@@ -7414,7 +7414,7 @@ void CObject::UpdateSelectParticule()
 	zoom[3] = 1.0f;
 
 	if ( IsProgram() &&  // current program?
-		 Mod(m_aTime, 0.7f) < 0.3f )
+		 Math::Mod(m_aTime, 0.7f) < 0.3f )
 	{
 		zoom[0] = 0.0f;  // blinks
 		zoom[1] = 0.0f;

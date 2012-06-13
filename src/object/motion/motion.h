@@ -19,6 +19,9 @@
 #pragma once
 
 
+#include "common/event.h"
+#include "common/misc.h"
+#include "object/object.h"
 #include "graphics/d3d/d3dengine.h"
 
 

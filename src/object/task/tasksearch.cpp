@@ -16,8 +16,6 @@
 
 // tasksearch.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -63,7 +61,7 @@ bool CTaskSearch::EventProcess(const Event &event)
 {
 	D3DMATRIX*	mat;
 	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 	float		angle;
 	int			i;
 
@@ -94,10 +92,10 @@ bool CTaskSearch::EventProcess(const Event &event)
 		pos = D3DVECTOR(6.5f, 0.2f, 0.0f);
 		pos = Transform(*mat, pos);  // sensor position
 
-		speed.x = (Rand()-0.5f)*20.0f;
-		speed.z = (Rand()-0.5f)*20.0f;
+		speed.x = (Math::Rand()-0.5f)*20.0f;
+		speed.z = (Math::Rand()-0.5f)*20.0f;
 		speed.y = 0.0f;
-		dim.x = Rand()*1.0f+1.0f;
+		dim.x = Math::Rand()*1.0f+1.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTIGAS);
 	}
@@ -114,15 +112,15 @@ void CTaskSearch::InitAngle()
 
 	if ( m_hand == TSH_UP )
 	{
-		m_finalAngle[0] =  110.0f*PI/180.0f;  // arm
-		m_finalAngle[1] = -110.0f*PI/180.0f;  // forearm
-		m_finalAngle[2] =  -65.0f*PI/180.0f;  // sensor
+		m_finalAngle[0] =  110.0f*Math::PI/180.0f;  // arm
+		m_finalAngle[1] = -110.0f*Math::PI/180.0f;  // forearm
+		m_finalAngle[2] =  -65.0f*Math::PI/180.0f;  // sensor
 	}
 	if ( m_hand == TSH_DOWN )
 	{
-		m_finalAngle[0] =   25.0f*PI/180.0f;  // arm
-		m_finalAngle[1] =  -70.0f*PI/180.0f;  // forearm
-		m_finalAngle[2] =  -45.0f*PI/180.0f;  // sensor
+		m_finalAngle[0] =   25.0f*Math::PI/180.0f;  // arm
+		m_finalAngle[1] =  -70.0f*Math::PI/180.0f;  // forearm
+		m_finalAngle[2] =  -45.0f*Math::PI/180.0f;  // sensor
 	}
 
 	for ( i=0 ; i<3 ; i++ )
@@ -163,7 +161,7 @@ Error CTaskSearch::Start()
 	InitAngle();
 	m_bError = false;  // ok
 
-	m_camera->StartCentering(m_object, PI*0.50f, 99.9f, 0.0f, 1.0f);
+	m_camera->StartCentering(m_object, Math::PI*0.50f, 99.9f, 0.0f, 1.0f);
 
 	i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, true);
 	m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);

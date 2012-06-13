@@ -16,8 +16,6 @@
 
 // taskadvance.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -81,7 +79,7 @@ bool CTaskAdvance::EventProcess(const Event &event)
 Error CTaskAdvance::Start(float length)
 {
 	m_direction = (length>=0.0f)?1.0f:-1.0f;
-	m_totalLength = Abs(length);
+	m_totalLength = fabs(length);
 	m_advanceLength = m_physics->RetLinLength(length);
 	m_startPos = m_object->RetPosition(0);
 	m_lastDist = 0.0f;

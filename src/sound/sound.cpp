@@ -16,8 +16,6 @@
 
 // sound.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <stdlib.h>
 #include <ctype.h>
@@ -28,6 +26,7 @@
 #include "common/language.h"
 #include "common/struct.h"
 #include "common/iman.h"
+#include "math/geometry.h"
 #include "math/old/math3d.h"
 #include "sound/sound.h"
 
@@ -977,9 +976,9 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 	m_channel[channel].volume = 1.0f-((dist-10.0f)/100.0f);
 #endif
 
-	a = RotateAngle(m_lookat.x-m_eye.x, m_eye.z-m_lookat.z);
-	g = RotateAngle(pos.x-m_eye.x, m_eye.z-pos.z);
-	m_channel[channel].pan = sinf(Direction(a, g));
+	a = Math::RotateAngle(m_lookat.x-m_eye.x, m_eye.z-m_lookat.z);
+	g = Math::RotateAngle(pos.x-m_eye.x, m_eye.z-pos.z);
+	m_channel[channel].pan = sinf(Math::Direction(a, g));
 }
 
 // Sounds in the middle.

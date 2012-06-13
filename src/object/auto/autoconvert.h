@@ -16,7 +16,7 @@
 
 // autoconvert.h
 
-#pragma once_
+#pragma once
 
 
 #include "object/auto/auto.h"

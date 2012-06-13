@@ -14,8 +14,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -84,15 +82,15 @@ void CAutoKid::Init()
 	if ( m_type == OBJECT_TEEN36 )  // trunk ?
 	{
 		pos = m_object->RetPosition(0);
-		m_speed = 1.0f/(1.0f+(Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f));
-		m_progress = Mod(pos.x/10.0f, 1.0f);
+		m_speed = 1.0f/(1.0f+(Math::Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f));
+		m_progress = Math::Mod(pos.x/10.0f, 1.0f);
 	}
 
 	if ( m_type == OBJECT_TEEN37 )  // boat?
 	{
 		pos = m_object->RetPosition(0);
-		m_speed = 1.0f/(1.0f+(Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f))*2.5f;
-		m_progress = Mod(pos.x/10.0f, 1.0f);
+		m_speed = 1.0f/(1.0f+(Math::Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f))*2.5f;
+		m_progress = Math::Mod(pos.x/10.0f, 1.0f);
 	}
 
 	if ( m_type == OBJECT_TEEN38 )  // fan?
@@ -111,7 +109,7 @@ void CAutoKid::Init()
 bool CAutoKid::EventProcess(const Event &event)
 {
 	D3DVECTOR	vib, pos, speed;
-	FPOINT		dim;
+	Math::Point		dim;
 
 	CAuto::EventProcess(event);
 
@@ -158,8 +156,8 @@ bool CAutoKid::EventProcess(const Event &event)
 
 			pos = m_object->RetPosition(0);
 			pos.y = m_water->RetLevel()+1.0f;
-			pos.x += (Rand()-0.5f)*50.0f;
-			pos.z += (Rand()-0.5f)*50.0f;
+			pos.x += (Math::Rand()-0.5f)*50.0f;
+			pos.z += (Math::Rand()-0.5f)*50.0f;
 			speed.y = 0.0f;
 			speed.x = 0.0f;
 			speed.z = 0.0f;
@@ -187,8 +185,8 @@ bool CAutoKid::EventProcess(const Event &event)
 
 			pos = m_object->RetPosition(0);
 			pos.y = m_water->RetLevel()+1.0f;
-			pos.x += (Rand()-0.5f)*20.0f;
-			pos.z += (Rand()-0.5f)*20.0f;
+			pos.x += (Math::Rand()-0.5f)*20.0f;
+			pos.z += (Math::Rand()-0.5f)*20.0f;
 			speed.y = 0.0f;
 			speed.x = 0.0f;
 			speed.z = 0.0f;

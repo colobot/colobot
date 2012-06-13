@@ -73,8 +73,8 @@ void RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest)
 {
   float min, max, delta;
   
-  min = Min(src.r, src.g, src.b);
-  max = Max(src.r, src.g, src.b);
+  min = Math::Min(src.r, src.g, src.b);
+  max = Math::Max(src.r, src.g, src.b);
   
   dest.v = max;  // intensity
   
@@ -114,9 +114,9 @@ void HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest)
   int   i;
   float f,v,p,q,t;
   
-  src.h = Norm(src.h)*360.0f;
-  src.s = Norm(src.s);
-  src.v = Norm(src.v);
+  src.h = Math::Norm(src.h)*360.0f;
+  src.s = Math::Norm(src.s);
+  src.v = Math::Norm(src.v);
   
   if ( src.s == 0.0f )  // zero saturation?
   {

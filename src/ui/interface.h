@@ -19,6 +19,10 @@
 #pragma once
 
 
+#include "common/event.h"
+#include "math/point.h"
+
+
 class CInstanceManager;
 class CD3DEngine;
 class CControl;
@@ -53,26 +57,26 @@ public:
 	~CInterface();
 
 	bool		EventProcess(const Event &event);
-	bool		GetTooltip(FPOINT pos, char* name);
+	bool		GetTooltip(Math::Point pos, char* name);
 
 	void		Flush();
-	CWindow*	CreateWindows(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CButton*	CreateButton(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CColor*		CreateColor(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CCheck*		CreateCheck(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CKey*		CreateKey(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CGroup*		CreateGroup(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CImage*		CreateImage(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CLabel*		CreateLabel(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, char *name);
-	CEdit*		CreateEdit(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CEditValue*	CreateEditValue(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CScroll*	CreateScroll(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CSlider*	CreateSlider(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CList*		CreateList(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand=1.2f);
-	CShortcut*	CreateShortcut(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CCompass*	CreateCompass(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CTarget*	CreateTarget(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
-	CMap*		CreateMap(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+	CWindow*	CreateWindows(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CButton*	CreateButton(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CColor*		CreateColor(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CCheck*		CreateCheck(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CKey*		CreateKey(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CGroup*		CreateGroup(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CImage*		CreateImage(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CLabel*		CreateLabel(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, char *name);
+	CEdit*		CreateEdit(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CEditValue*	CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CScroll*	CreateScroll(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CSlider*	CreateSlider(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CList*		CreateList(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, float expand=1.2f);
+	CShortcut*	CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CCompass*	CreateCompass(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CTarget*	CreateTarget(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+	CMap*		CreateMap(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 	bool		DeleteControl(EventMsg eventMsg);
 	CControl*	SearchControl(EventMsg eventMsg);
 

@@ -57,7 +57,7 @@ public:
 
 	void	StartDisplayInfo();
 	void	StopDisplayInfo();
-	void	SetMousePos(FPOINT pos);
+	void	SetMousePos(Math::Point pos);
 
 protected:
 	bool	EventFrame(const Event &event);
@@ -76,6 +76,6 @@ protected:
 	float		m_blinkProgress;
 	int			m_soundChannel;
 	ObjectType	m_type;
-	FPOINT		m_mousePos;
+	Math::Point		m_mousePos;
 };
 

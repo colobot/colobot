@@ -97,10 +97,10 @@ protected:
 	bool		m_bEditMinimized;
 
 	CameraType	m_editCamera;
-	FPOINT		m_editActualPos;
-	FPOINT		m_editActualDim;
-	FPOINT		m_editFinalPos;
-	FPOINT		m_editFinalDim;
+	Math::Point		m_editActualPos;
+	Math::Point		m_editActualDim;
+	Math::Point		m_editFinalPos;
+	Math::Point		m_editFinalDim;
 
 	float		m_time;
 	float		m_fixInfoTextTime;

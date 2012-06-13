@@ -14,14 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -103,19 +102,19 @@ bool CAutoRadar::EventProcess(const Event &event)
 	{
 		if ( m_timeVirus <= 0.0f )
 		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+			m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
 			angle = m_object->RetAngleY(1);
-			angle += (Rand()-0.2f)*0.5f;
+			angle += (Math::Rand()-0.2f)*0.5f;
 			m_object->SetAngleY(1, angle);
 
 			angle = m_object->RetAngleY(2);
-			angle += (Rand()-0.8f)*1.0f;
+			angle += (Math::Rand()-0.8f)*1.0f;
 			m_object->SetAngleY(2, angle);
 
-			m_object->SetAngleX(3, (Rand()-0.5f)*0.3f);
+			m_object->SetAngleX(3, (Math::Rand()-0.5f)*0.3f);
 
-			m_totalDetect = (int)(Rand()*10.0f);
+			m_totalDetect = (int)(Math::Rand()*10.0f);
 			UpdateInterface();
 		}
 		return true;
@@ -125,7 +124,7 @@ bool CAutoRadar::EventProcess(const Event &event)
 	{
 		if ( m_progress < 1.0f )
 		{
-			speed = Min(10.0f, m_progress*50.0f);
+			speed = Math::Min(10.0f, m_progress*50.0f);
 			angle = m_object->RetAngleY(1);
 			angle += event.rTime*speed;
 			m_object->SetAngleY(1, angle);
@@ -142,13 +141,13 @@ bool CAutoRadar::EventProcess(const Event &event)
 			{
 				pos = m_object->RetPosition(0);
 				m_start = m_object->RetAngleY(1);
-				m_angle = m_start-NormAngle(m_start)+PI*2.0f;
-				m_angle += RotateAngle(pos.x-ePos.x, ePos.z-pos.z);
-				m_angle += PI-m_object->RetAngleY(0);
+				m_angle = m_start-Math::NormAngle(m_start)+Math::PI*2.0f;
+				m_angle += Math::RotateAngle(pos.x-ePos.x, ePos.z-pos.z);
+				m_angle += Math::PI-m_object->RetAngleY(0);
 
 				m_phase    = ARAP_SHOW;
 				m_progress = 0.0f;
-				m_speed    = 1.0f/(Abs(m_angle-m_start)/10.0f);
+				m_speed    = 1.0f/(fabs(m_angle-m_start)/10.0f);
 			}
 		}
 	}
@@ -175,7 +174,7 @@ bool CAutoRadar::EventProcess(const Event &event)
 	{
 		if ( m_progress < 1.0f )
 		{
-			prog = Min(1.0f, m_progress*2.0f);
+			prog = Math::Min(1.0f, m_progress*2.0f);
 			freq = 16.0f*(prog+1.0f);
 			ampl = 0.2f-prog*0.2f;
 			angle = m_angle + sinf(m_time*freq)*ampl;
@@ -217,7 +216,7 @@ Error CAutoRadar::RetError()
 bool CAutoRadar::CreateInterface(bool bSelect)
 {
 	CWindow*	pw;
-	FPOINT		pos, dim, ddim;
+	Math::Point		pos, dim, ddim;
 	float		ox, oy, sx, sy;
 
 	CAuto::CreateInterface(bSelect);

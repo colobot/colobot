@@ -16,8 +16,6 @@
 
 // mainmap.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <windows.h>
 #include <stdio.h>
@@ -72,7 +70,7 @@ CMainMap::~CMainMap()
 void CMainMap::CreateMap()
 {
 	CWindow*	pw;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
 	if ( pw == 0 )
@@ -169,7 +167,7 @@ void CMainMap::DimMap()
 	CWindow*	pw;
 	CMap*		pm;
 	CSlider*	ps;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	float		value;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
@@ -369,7 +367,7 @@ bool CMainMap::RetFixImage()
 
 // The object is detected in the mini-map.
 
-CObject* CMainMap::DetectMap(FPOINT pos, bool &bInMap)
+CObject* CMainMap::DetectMap(Math::Point pos, bool &bInMap)
 {
 	CWindow*	pw;
 	CMap*		pm;

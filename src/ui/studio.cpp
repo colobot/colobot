@@ -16,8 +16,6 @@
 
 // studio.cpp
 
-#define STRICT
-#define D3D_OVERLOADS
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -553,7 +551,7 @@ void CStudio::ColorizeScript(CEdit* edit)
 
 void CStudio::StartEditScript(CScript *script, char* name, int rank)
 {
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	CWindow*	pw;
 	CEdit*		edit;
 	CButton*	button;
@@ -591,7 +589,7 @@ void CStudio::StartEditScript(CScript *script, char* name, int rank)
 	pw->SetClosable(true);
 	GetResource(RES_TEXT, RT_STUDIO_TITLE, res);
 	pw->SetName(res);
-	pw->SetMinDim(FPOINT(0.49f, 0.50f));
+	pw->SetMinDim(Math::Point(0.49f, 0.50f));
 	pw->SetMaximized(m_bEditMaximized);
 	pw->SetMinimized(m_bEditMinimized);
 	m_main->SetEditFull(m_bEditMaximized);
@@ -669,7 +667,7 @@ void CStudio::AdjustEditScript()
 	CGroup*		group;
 	CSlider*	slider;
 	CList*		list;
-	FPOINT		wpos, wdim, pos, dim, ppos, ddim;
+	Math::Point		wpos, wdim, pos, dim, ppos, ddim;
 	float		hList;
 
 	wpos = m_editActualPos;
@@ -1030,7 +1028,7 @@ void CStudio::StartDialog(StudioDialog type)
 	CLabel*		pla;
 	CList*		pli;
 	CEdit*		pe;
-	FPOINT		pos, dim;
+	Math::Point		pos, dim;
 	char		name[100];
 
 	m_dialog = type;
@@ -1073,13 +1071,13 @@ void CStudio::StartDialog(StudioDialog type)
 	pw->SetState(STATE_SHADOW);
 	pw->SetMovable(true);
 	pw->SetClosable(true);
-	pw->SetMinDim(FPOINT(320.0f/640.0f, (121.0f+18.0f*4)/480.0f));
+	pw->SetMinDim(Math::Point(320.0f/640.0f, (121.0f+18.0f*4)/480.0f));
 	if ( m_dialog == SD_OPEN )  GetResource(RES_TEXT, RT_IO_OPEN, name);
 	if ( m_dialog == SD_SAVE )  GetResource(RES_TEXT, RT_IO_SAVE, name);
 	pw->SetName(name);
 
-	pos = FPOINT(0.0f, 0.0f);
-	dim = FPOINT(0.0f, 0.0f);
+	pos = Math::Point(0.0f, 0.0f);
+	dim = Math::Point(0.0f, 0.0f);
 
 	if ( m_dialog == SD_OPEN ||
 		 m_dialog == SD_SAVE )
@@ -1195,7 +1193,7 @@ void CStudio::AdjustDialog()
 	CLabel*		pla;
 	CList*		pli;
 	CEdit*		pe;
-	FPOINT		wpos, wdim, ppos, ddim;
+	Math::Point		wpos, wdim, ppos, ddim;
 	int			nli, nch;
 	char		name[100];
 
@@ -1315,7 +1313,7 @@ void CStudio::AdjustDialog()
 bool CStudio::EventDialog(const Event &event)
 {
 	CWindow*	pw;
-	FPOINT		wpos, wdim;
+	Math::Point		wpos, wdim;
 
 	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
 	if ( pw == 0 )  return false;
