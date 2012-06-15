@@ -140,7 +140,7 @@ inline void RotatePoint(float cx, float cy, float angle, float &px, float &py)
     \a angleH,angleV rotation angles in radians (positive is counterclockwise (CCW) ) )
     \a p the point
     \returns the rotated point */
-inline Vector RotatePoint(const Vector &center, float angleH, float angleV, Vector p)
+inline void RotatePoint(const Vector &center, float angleH, float angleV, Vector &p)
 {
   p.x -= center.x;
   p.y -= center.y;
@@ -151,7 +151,7 @@ inline Vector RotatePoint(const Vector &center, float angleH, float angleV, Vect
   b.y = p.z*sinf(angleV) + p.y*cosf(angleV);
   b.z = p.x*sinf(angleH) + p.z*cosf(angleH);
 
-  return center + b;
+  p = center + b;
 }
 
 //! Rotates a point around a center in space.
@@ -159,7 +159,7 @@ inline Vector RotatePoint(const Vector &center, float angleH, float angleV, Vect
     \a angleH,angleV rotation angles in radians (positive is counterclockwise (CCW) ) )
     \a p the point
     \returns the rotated point */
-inline Vector RotatePoint2(const Vector center, float angleH, float angleV, Vector p)
+inline void RotatePoint2(const Vector center, float angleH, float angleV, Vector &p)
 {
   p.x -= center.x;
   p.y -= center.y;
@@ -175,7 +175,7 @@ inline Vector RotatePoint2(const Vector center, float angleH, float angleV, Vect
   b.y = a.z*sinf(angleV) + a.y*cosf(angleV);
   b.z = a.z*cosf(angleV) - a.y*sinf(angleV);
 
-  return center + b;
+  p = center + b;
 }
 
 //! Returns the angle between point (x,y) and (0,0)
@@ -301,8 +301,8 @@ inline void LoadProjectionMatrix(Matrix &mat, float fov = 1.570795f, float aspec
   /* (1,1) */ mat.m[0 ] = w;
   /* (2,2) */ mat.m[5 ] = h;
   /* (3,3) */ mat.m[10] = q;
-  /* (3,4) */ mat.m[14] = 1.0f;
-  /* (4,3) */ mat.m[11] = -q * nearPlane;
+  /* (4,3) */ mat.m[11] = 1.0f;
+  /* (3,4) */ mat.m[14] = -q * nearPlane;
 }
 
 //! Loads a translation matrix from given vector
@@ -317,7 +317,7 @@ inline void LoadTranslationMatrix(Matrix &mat, const Vector &trans)
 
 //! Loads a scaling matrix fom given vector
 /** \a scale vector with scaling factors for X, Y, Z */
-inline void LoadScaleMatix(Matrix &mat, const Vector &scale)
+inline void LoadScaleMatrix(Matrix &mat, const Vector &scale)
 {
   mat.LoadIdentity();
   /* (1,1) */ mat.m[0 ] = scale.x;
@@ -385,27 +385,27 @@ inline void LoadRotationMatrix(Matrix &mat, const Vector &dir, float angle)
 //! Calculates the matrix to make three rotations in the order X, Z and Y
 inline void LoadRotationXZYMatrix(Matrix &mat, const Vector &angle)
 {
-  LoadRotationXMatrix(mat, angle.x);
-
   Matrix temp;
-  LoadRotationZMatrix(temp, angle.z);
-  mat.Multiply(temp);
+  LoadRotationXMatrix(temp, angle.x);
+
+  LoadRotationZMatrix(mat, angle.z);
+  mat = Math::MultiplyMatrices(temp, mat);
 
   LoadRotationYMatrix(temp, angle.y);
-  mat.Multiply(temp);
+  mat = Math::MultiplyMatrices(temp, mat);
 }
 
 //! Calculates the matrix to make three rotations in the order Z, X and Y
 inline void LoadRotationZXYMatrix(Matrix &mat, const Vector &angle)
 {
-  LoadRotationZMatrix(mat, angle.z);
-
   Matrix temp;
-  LoadRotationXMatrix(temp, angle.x);
-  mat.Multiply(temp);
+  LoadRotationZMatrix(temp, angle.z);
+
+  LoadRotationXMatrix(mat, angle.x);
+  mat = Math::MultiplyMatrices(temp, mat);
 
   LoadRotationYMatrix(temp, angle.y);
-  mat.Multiply(temp);
+  mat = Math::MultiplyMatrices(temp, mat);
 }
 
 //! Returns the distance between projections on XZ plane of two vectors
@@ -536,7 +536,7 @@ inline Vector RotateView(Vector center, float angleH, float angleV, float dist)
   LoadRotationZMatrix(mat1, -angleV);
   LoadRotationYMatrix(mat2, -angleH);
 
-  Matrix mat = MultiplyMatrices(mat1, mat2);
+  Matrix mat = MultiplyMatrices(mat2, mat1);
 
   Vector eye;
   eye.x = 0.0f+dist;
