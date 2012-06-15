@@ -5,13 +5,17 @@ set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -O0")
 
 add_executable(matrix_test matrix_test.cpp)
 add_executable(vector_test vector_test.cpp)
-add_executable(geometry_test geometry_test.cpp)
+add_executable(geometry_test geometry_test.cpp ../old/math3d.cpp ../old/d3dmath.cpp ../../graphics/d3d/d3dutil.cpp)
 
 enable_testing()
 
 add_test(matrix_test ./matrix_test)
 add_test(vector_test ./vector_test)
 add_test(geometry_test ./geometry_test)
+
+include_directories(c:/dxsdk/include)
+
+add_definitions(-DSTRICT -DD3D_OVERLOADS)
 
 # 'make check' will compile the required test programs
 # Note that 'make test' will still fail without compiled programs

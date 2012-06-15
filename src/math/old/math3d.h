@@ -21,6 +21,8 @@
 
 #include <math.h>
 
+#include "common/struct.h"
+
 
 //>>> geometry.h SegmentPoint()
 D3DVECTOR	SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);

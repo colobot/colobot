@@ -23,7 +23,6 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "common/struct.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "graphics/d3d/d3dutil.h"
