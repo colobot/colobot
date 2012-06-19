@@ -1648,7 +1648,7 @@ void CText::DrawColor(Math::Point pos, float size, float width, int color)
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	Math::Point		p1, p2;
 	POINT		dim;
-	D3DVECTOR	n;
+	Math::Vector	n;
 	float		h, u1, u2, v1, v2, dp;
 	int			icon;
 
@@ -1707,12 +1707,12 @@ void CText::DrawColor(Math::Point pos, float size, float width, int color)
 	u2 -= dp;
 	v2 -= dp;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	m_engine->AddStatisticTriangle(2);
@@ -1730,12 +1730,12 @@ void CText::DrawChar(int character, Math::Point pos, float size,
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	Math::Point		p1, p2;
-	D3DVECTOR	n;
+	Math::Vector	n;
 	float		width, height, u1, u2, v1, v2, dp;
 	short*		pt;
 
 	dp = 0.5f/256.0f;
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
 	if ( font == FONT_BUTTON )
 	{
@@ -1767,10 +1767,10 @@ void CText::DrawChar(int character, Math::Point pos, float size,
 		u2 -= dp;
 		v2 -= dp;
 
-		vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-		vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-		vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-		vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+		vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+		vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+		vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+		vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 		m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 		m_engine->AddStatisticTriangle(2);
@@ -1803,10 +1803,10 @@ void CText::DrawChar(int character, Math::Point pos, float size,
 		u2 -= dp;
 		v2 -= dp;
 
-		vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-		vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-		vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-		vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+		vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+		vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+		vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+		vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 		m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 		m_engine->AddStatisticTriangle(2);
@@ -1868,10 +1868,10 @@ void CText::DrawChar(int character, Math::Point pos, float size,
 	}
 
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	m_engine->AddStatisticTriangle(2);

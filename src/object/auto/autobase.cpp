@@ -127,10 +127,10 @@ void CAutoBase::Start(int param)
 
 bool CAutoBase::EventProcess(const Event &event)
 {
-	D3DMATRIX*	mat;
+	Math::Matrix*	mat;
 	Event		newEvent;
 	CObject*	pObj;
-	D3DVECTOR	pos, speed, vibCir, iPos;
+	Math::Vector	pos, speed, vibCir, iPos;
 	Math::Point		dim, p;
 	Error		err;
 	float		angle, dist, time, h, len, vSpeed;
@@ -162,8 +162,8 @@ begin:
 				m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
 				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
 				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
-				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
-				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
+				m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+				m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
 			}
 
 			pObj = m_main->RetSelectObject();
@@ -193,8 +193,8 @@ begin:
 				m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
 				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
 				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
-				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
-				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
+				m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+				m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
 			}
 		}
 
@@ -280,31 +280,31 @@ begin:
 			BeginTransit();
 
 			mat = m_object->RetWorldMatrix(0);
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			speed = Math::Vector(0.0f, 0.0f, 0.0f);
 			dim.x = 10.0f;
 			dim.y = dim.x;
-			pos = D3DVECTOR(42.0f, -2.0f, 17.0f);
+			pos = Math::Vector(42.0f, -2.0f, 17.0f);
 			pos = Transform(*mat, pos);
 			m_partiChannel[0] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-			pos = D3DVECTOR(17.0f, -2.0f, 42.0f);
+			pos = Math::Vector(17.0f, -2.0f, 42.0f);
 			pos = Transform(*mat, pos);
 			m_partiChannel[1] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-			pos = D3DVECTOR(42.0f, -2.0f, -17.0f);
+			pos = Math::Vector(42.0f, -2.0f, -17.0f);
 			pos = Transform(*mat, pos);
 			m_partiChannel[2] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-			pos = D3DVECTOR(17.0f, -2.0f, -42.0f);
+			pos = Math::Vector(17.0f, -2.0f, -42.0f);
 			pos = Transform(*mat, pos);
 			m_partiChannel[3] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-			pos = D3DVECTOR(-42.0f, -2.0f, 17.0f);
+			pos = Math::Vector(-42.0f, -2.0f, 17.0f);
 			pos = Transform(*mat, pos);
 			m_partiChannel[4] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-			pos = D3DVECTOR(-17.0f, -2.0f, 42.0f);
+			pos = Math::Vector(-17.0f, -2.0f, 42.0f);
 			pos = Transform(*mat, pos);
 			m_partiChannel[5] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-			pos = D3DVECTOR(-42.0f, -2.0f, -17.0f);
+			pos = Math::Vector(-42.0f, -2.0f, -17.0f);
 			pos = Transform(*mat, pos);
 			m_partiChannel[6] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
-			pos = D3DVECTOR(-17.0f, -2.0f, -42.0f);
+			pos = Math::Vector(-17.0f, -2.0f, -42.0f);
 			pos = Transform(*mat, pos);
 			m_partiChannel[7] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
 
@@ -459,7 +459,7 @@ begin:
 			m_bMotor = false;  // put out the reactor
 
 			m_object->SetPosition(0, m_pos);  // setting down
-			m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
+			m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 			MoveCargo();  // all cargo moves
 
 			// Impact with the ground.
@@ -471,7 +471,7 @@ begin:
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*10.0f+10.0f;
 				dim.y = dim.x;
 				time = Math::Rand()*2.0f+1.5f;
@@ -565,7 +565,7 @@ begin:
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*8.0f+8.0f;
 				dim.y = dim.x;
 				time = Math::Rand()*2.0f+1.5f;
@@ -589,8 +589,8 @@ begin:
 			len = 7.0f-m_progress*(7.0f+11.5f);
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f,  len));
-				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f, -len));
+				m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
+				m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
 				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f*m_progress);
 				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f*m_progress);
 			}
@@ -614,8 +614,8 @@ begin:
 		{
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
-				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
+				m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+				m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
 				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
 				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
 			}
@@ -668,8 +668,8 @@ begin:
 			len = 7.0f-(1.0f-m_progress)*(7.0f+11.5f);
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f,  len));
-				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f, -len));
+				m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f,  len));
+				m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f, -len));
 				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f*(1.0f-m_progress));
 				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f*(1.0f-m_progress));
 			}
@@ -678,8 +678,8 @@ begin:
 		{
 			for ( i=0 ; i<8 ; i++ )
 			{
-				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f,  7.0f));
-				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f, -7.0f));
+				m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f,  7.0f));
+				m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
 				m_object->SetAngleX(10+i, 0.0f);
 				m_object->SetAngleX(18+i, 0.0f);
 			}
@@ -723,7 +723,7 @@ begin:
 				pos.x += p.x;
 				pos.z += p.y;
 				pos.y += 85.0f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*3.0f+3.0f;
 				dim.y = dim.x;
 				time = Math::Rand()*1.0f+1.0f;
@@ -912,7 +912,7 @@ begin:
 				pos = m_pos;
 				pos.x += p.x;
 				pos.z += p.y;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*10.0f+10.0f;
 				dim.y = dim.x;
 				time = Math::Rand()*2.0f+1.5f;
@@ -1005,7 +1005,7 @@ begin:
 				if ( vSpeed < 0.0f )  vSpeed *= 1.5f;
 			}
 
-			pos = D3DVECTOR(0.0f, 6.0f, 0.0f);
+			pos = Math::Vector(0.0f, 6.0f, 0.0f);
 			speed.x = (Math::Rand()-0.5f)*4.0f;
 			speed.z = (Math::Rand()-0.5f)*4.0f;
 			speed.y = vSpeed*0.8f-(8.0f+Math::Rand()*6.0f);
@@ -1021,72 +1021,72 @@ begin:
 
 			if ( m_phase == ABP_TRANSIT_MOVE )
 			{
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 12.0f;
 				dim.y = dim.x;
-				pos = D3DVECTOR(0.0f, 7.0f, 0.0f);
+				pos = Math::Vector(0.0f, 7.0f, 0.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
 
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 4.0f;
 				dim.y = dim.x;
-				pos = D3DVECTOR(42.0f, 0.0f, 17.0f);
+				pos = Math::Vector(42.0f, 0.0f, 17.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
-				pos = D3DVECTOR(17.0f, 0.0f, 42.0f);
+				pos = Math::Vector(17.0f, 0.0f, 42.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
-				pos = D3DVECTOR(42.0f, 0.0f, -17.0f);
+				pos = Math::Vector(42.0f, 0.0f, -17.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
-				pos = D3DVECTOR(17.0f, 0.0f, -42.0f);
+				pos = Math::Vector(17.0f, 0.0f, -42.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
-				pos = D3DVECTOR(-42.0f, 0.0f, 17.0f);
+				pos = Math::Vector(-42.0f, 0.0f, 17.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
-				pos = D3DVECTOR(-17.0f, 0.0f, 42.0f);
+				pos = Math::Vector(-17.0f, 0.0f, 42.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
-				pos = D3DVECTOR(-42.0f, 0.0f, -17.0f);
+				pos = Math::Vector(-42.0f, 0.0f, -17.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
-				pos = D3DVECTOR(-17.0f, 0.0f, -42.0f);
+				pos = Math::Vector(-17.0f, 0.0f, -42.0f);
 				pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
 				pos = Transform(*mat, pos);
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 
-				pos = D3DVECTOR(42.0f, -2.0f, 17.0f);
+				pos = Math::Vector(42.0f, -2.0f, 17.0f);
 				pos = Transform(*mat, pos);
 				m_particule->SetPosition(m_partiChannel[0], pos);
-				pos = D3DVECTOR(17.0f, -2.0f, 42.0f);
+				pos = Math::Vector(17.0f, -2.0f, 42.0f);
 				pos = Transform(*mat, pos);
 				m_particule->SetPosition(m_partiChannel[1], pos);
-				pos = D3DVECTOR(42.0f, -2.0f, -17.0f);
+				pos = Math::Vector(42.0f, -2.0f, -17.0f);
 				pos = Transform(*mat, pos);
 				m_particule->SetPosition(m_partiChannel[2], pos);
-				pos = D3DVECTOR(17.0f, -2.0f, -42.0f);
+				pos = Math::Vector(17.0f, -2.0f, -42.0f);
 				pos = Transform(*mat, pos);
 				m_particule->SetPosition(m_partiChannel[3], pos);
-				pos = D3DVECTOR(-42.0f, -2.0f, 17.0f);
+				pos = Math::Vector(-42.0f, -2.0f, 17.0f);
 				pos = Transform(*mat, pos);
 				m_particule->SetPosition(m_partiChannel[4], pos);
-				pos = D3DVECTOR(-17.0f, -2.0f, 42.0f);
+				pos = Math::Vector(-17.0f, -2.0f, 42.0f);
 				pos = Transform(*mat, pos);
 				m_particule->SetPosition(m_partiChannel[5], pos);
-				pos = D3DVECTOR(-42.0f, -2.0f, -17.0f);
+				pos = Math::Vector(-42.0f, -2.0f, -17.0f);
 				pos = Transform(*mat, pos);
 				m_particule->SetPosition(m_partiChannel[6], pos);
-				pos = D3DVECTOR(-17.0f, -2.0f, -42.0f);
+				pos = Math::Vector(-17.0f, -2.0f, -42.0f);
 				pos = Transform(*mat, pos);
 				m_particule->SetPosition(m_partiChannel[7], pos);
 			}
@@ -1140,8 +1140,8 @@ bool CAutoBase::Abort()
 			m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
 			m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
 			m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
-			m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
-			m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
+			m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+			m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
 		}
 	}
 	else
@@ -1155,15 +1155,15 @@ bool CAutoBase::Abort()
 			m_bOpen = true;
 
 			m_object->SetPosition(0, m_pos);  // setting down
-			m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
+			m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 			MoveCargo();  // all cargo moves
 			for ( i=0 ; i<8 ; i++ )
 			{
 				m_object->SetAngleZ(1+i, Math::PI/2.0f-124.0f*Math::PI/180.0f);
 				m_object->SetAngleX(10+i, -10.0f*Math::PI/180.0f);
 				m_object->SetAngleX(18+i,  10.0f*Math::PI/180.0f);
-				m_object->SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, -11.5f));
-				m_object->SetPosition(18+i, D3DVECTOR(23.5f, 0.0f,  11.5f));
+				m_object->SetPosition(10+i, Math::Vector(23.5f, 0.0f, -11.5f));
+				m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
 			}
 
 			m_main->SetMovieLock(false);  // you can play!
@@ -1294,7 +1294,7 @@ void CAutoBase::FreezeCargo(bool bFreeze)
 {
 	CObject*	pObj;
 	CPhysics*	physics;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	float		dist;
 	int			i;
 
@@ -1309,7 +1309,7 @@ void CAutoBase::FreezeCargo(bool bFreeze)
 		if ( pObj->RetTruck() != 0 )  continue;  // transport object?
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(m_pos, oPos);
+		dist = Math::DistanceProjected(m_pos, oPos);
 		if ( dist < 32.0f )
 		{
 			if ( bFreeze )
@@ -1331,7 +1331,7 @@ void CAutoBase::FreezeCargo(bool bFreeze)
 void CAutoBase::MoveCargo()
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos, sPos;
+	Math::Vector	oPos, sPos;
 	int			i;
 
 	sPos = m_object->RetPosition(0);
@@ -1360,7 +1360,7 @@ void CAutoBase::MoveCargo()
 Error CAutoBase::CheckCloseDoor()
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	float		oRad, dist;
 	int			i, j;
@@ -1379,7 +1379,7 @@ Error CAutoBase::CheckCloseDoor()
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRad) )
 		{
-			dist = Length2d(m_pos, oPos);
+			dist = Math::DistanceProjected(m_pos, oPos);
 			if ( dist+oRad > 32.0f &&
 				 dist-oRad < 72.0f )
 			{

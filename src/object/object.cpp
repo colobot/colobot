@@ -34,7 +34,7 @@
 #include "common/iman.h"
 #include "common/restext.h"
 #include "math/old/math3d.h"
-#include "graphics/common/mainmovie.h"
+#include "object/mainmovie.h"
 #include "object/robotmain.h"
 #include "graphics/common/light.h"
 #include "graphics/common/terrain.h"
@@ -122,7 +122,7 @@ void uObject(CBotVar* botThis, void* user)
 	CPhysics*	physics;
 	CBotVar		*pVar, *pSub;
 	ObjectType	type;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		value;
 	int			iValue;
 
@@ -247,9 +247,9 @@ CObject::CObject(CInstanceManager* iMan)
 	m_partiReactor  = -1;
 	m_shadowLight   = -1;
 	m_effectLight   = -1;
-	m_linVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_cirVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_inclinaison   = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
+	m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
+	m_inclinaison   = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_lastParticule = 0.0f;
 
 	m_power = 0;
@@ -305,8 +305,8 @@ CObject::CObject(CInstanceManager* iMan)
 
 	m_resetCap      = RESET_NONE;
 	m_bResetBusy    = false;
-	m_resetPosition = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_resetAngle    = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_resetPosition = Math::Vector(0.0f, 0.0f, 0.0f);
+	m_resetAngle    = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_resetRun      = -1;
 
 	m_cameraType = CAMERA_BACK;
@@ -334,9 +334,9 @@ CObject::CObject(CInstanceManager* iMan)
 	}
 
 	FlushCrashShere();
-	m_globalSpherePos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_globalSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_globalSphereRadius = 0.0f;
-	m_jotlerSpherePos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_jotlerSpherePos = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_jotlerSphereRadius = 0.0f;
 
 	CBotClass* bc = CBotClass::Find("object");
@@ -811,20 +811,20 @@ void CObject::InitPart(int part)
 	m_objectPart[part].object     = -1;
 	m_objectPart[part].parentPart = -1;
 
-	m_objectPart[part].position   = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_objectPart[part].position   = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_objectPart[part].angle.y    = 0.0f;
 	m_objectPart[part].angle.x    = 0.0f;
 	m_objectPart[part].angle.z    = 0.0f;
-	m_objectPart[part].zoom       = D3DVECTOR(1.0f, 1.0f, 1.0f);
+	m_objectPart[part].zoom       = Math::Vector(1.0f, 1.0f, 1.0f);
 
 	m_objectPart[part].bTranslate = true;
 	m_objectPart[part].bRotate    = true;
 	m_objectPart[part].bZoom      = false;
 
-	D3DUtil_SetIdentityMatrix(m_objectPart[part].matTranslate);
-	D3DUtil_SetIdentityMatrix(m_objectPart[part].matRotate);
-	D3DUtil_SetIdentityMatrix(m_objectPart[part].matTransform);
-	D3DUtil_SetIdentityMatrix(m_objectPart[part].matWorld);
+	m_objectPart[part].matTranslate.LoadIdentity();
+	m_objectPart[part].matRotate.LoadIdentity();
+	m_objectPart[part].matTransform.LoadIdentity();
+	m_objectPart[part].matWorld.LoadIdentity();;
 
 	m_objectPart[part].masterParti = -1;
 }
@@ -990,7 +990,7 @@ int CObject::RetID()
 
 bool CObject::Write(char *line)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	Info		info;
 	char		name[100];
 	float		value;
@@ -1168,7 +1168,7 @@ bool CObject::Write(char *line)
 
 bool CObject::Read(char *line)
 {
-	D3DVECTOR	pos, dir;
+	Math::Vector	pos, dir;
 	Info		info;
 	CameraType	cType;
 	char		op[20];
@@ -1284,7 +1284,7 @@ void CObject::FlushCrashShere()
 
 // Adds a new sphere.
 
-int CObject::CreateCrashSphere(D3DVECTOR pos, float radius, Sound sound,
+int CObject::CreateCrashSphere(Math::Vector pos, float radius, Sound sound,
 							   float hardness)
 {
 	float	zoom;
@@ -1309,7 +1309,7 @@ int CObject::RetCrashSphereTotal()
 // Returns a sphere for collisions.
 // The position is absolute in the world.
 
-bool CObject::GetCrashSphere(int rank, D3DVECTOR &pos, float &radius)
+bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
 {
 	if ( rank < 0 || rank >= m_crashSphereUsed )
 	{
@@ -1337,7 +1337,7 @@ bool CObject::GetCrashSphere(int rank, D3DVECTOR &pos, float &radius)
 	{
 		UpdateTransformObject();
 	}
-	pos = Transform(m_objectPart[0].matWorld, m_crashSpherePos[rank]);
+	pos = Math::Transform(m_objectPart[0].matWorld, m_crashSpherePos[rank]);
 	radius = m_crashSphereRadius[rank];
 	return true;
 }
@@ -1374,7 +1374,7 @@ void CObject::DeleteCrashSphere(int rank)
 
 // Specifies the global sphere, relative to the object.
 
-void CObject::SetGlobalSphere(D3DVECTOR pos, float radius)
+void CObject::SetGlobalSphere(Math::Vector pos, float radius)
 {
 	float	zoom;
 
@@ -1385,16 +1385,16 @@ void CObject::SetGlobalSphere(D3DVECTOR pos, float radius)
 
 // Returns the global sphere, in the world.
 
-void CObject::GetGlobalSphere(D3DVECTOR &pos, float &radius)
+void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
 {
-	pos = Transform(m_objectPart[0].matWorld, m_globalSpherePos);
+	pos = Math::Transform(m_objectPart[0].matWorld, m_globalSpherePos);
 	radius = m_globalSphereRadius;
 }
 
 
 // Specifies the sphere of jostling, relative to the object.
 
-void CObject::SetJotlerSphere(D3DVECTOR pos, float radius)
+void CObject::SetJotlerSphere(Math::Vector pos, float radius)
 {
 	m_jotlerSpherePos    = pos;
 	m_jotlerSphereRadius = radius;
@@ -1402,9 +1402,9 @@ void CObject::SetJotlerSphere(D3DVECTOR pos, float radius)
 
 // Specifies the sphere of jostling, in the world.
 
-void CObject::GetJotlerSphere(D3DVECTOR &pos, float &radius)
+void CObject::GetJotlerSphere(Math::Vector &pos, float &radius)
 {
-	pos = Transform(m_objectPart[0].matWorld, m_jotlerSpherePos);
+	pos = Math::Transform(m_objectPart[0].matWorld, m_jotlerSpherePos);
 	radius = m_jotlerSphereRadius;
 }
 
@@ -1428,7 +1428,7 @@ float CObject::RetShieldRadius()
 
 void CObject::SetFloorHeight(float height)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	pos = m_objectPart[0].position;
 	m_terrain->MoveOnFloor(pos);
@@ -1447,7 +1447,7 @@ void CObject::SetFloorHeight(float height)
 
 void CObject::FloorAdjust()
 {
-	D3DVECTOR		pos, n;
+	Math::Vector		pos, n;
 	Math::Point			nn;
 	float			a;
 
@@ -1470,7 +1470,7 @@ void CObject::FloorAdjust()
 
 // Gives the linear vibration.
 
-void CObject::SetLinVibration(D3DVECTOR dir)
+void CObject::SetLinVibration(Math::Vector dir)
 {
 	if ( m_linVibration.x != dir.x ||
 		 m_linVibration.y != dir.y ||
@@ -1481,14 +1481,14 @@ void CObject::SetLinVibration(D3DVECTOR dir)
 	}
 }
 
-D3DVECTOR CObject::RetLinVibration()
+Math::Vector CObject::RetLinVibration()
 {
 	return m_linVibration;
 }
 
 // Gives the circular vibration.
 
-void CObject::SetCirVibration(D3DVECTOR dir)
+void CObject::SetCirVibration(Math::Vector dir)
 {
 	if ( m_cirVibration.x != dir.x ||
 		 m_cirVibration.y != dir.y ||
@@ -1499,14 +1499,14 @@ void CObject::SetCirVibration(D3DVECTOR dir)
 	}
 }
 
-D3DVECTOR CObject::RetCirVibration()
+Math::Vector CObject::RetCirVibration()
 {
 	return m_cirVibration;
 }
 
 // Gives the inclination.
 
-void CObject::SetInclinaison(D3DVECTOR dir)
+void CObject::SetInclinaison(Math::Vector dir)
 {
 	if ( m_inclinaison.x != dir.x ||
 		 m_inclinaison.y != dir.y ||
@@ -1517,7 +1517,7 @@ void CObject::SetInclinaison(D3DVECTOR dir)
 	}
 }
 
-D3DVECTOR CObject::RetInclinaison()
+Math::Vector CObject::RetInclinaison()
 {
 	return m_inclinaison;
 }
@@ -1525,9 +1525,9 @@ D3DVECTOR CObject::RetInclinaison()
 
 // Gives the position of center of the object.
 
-void CObject::SetPosition(int part, const D3DVECTOR &pos)
+void CObject::SetPosition(int part, const Math::Vector &pos)
 {
-	D3DVECTOR	shPos, n[20], norm;
+	Math::Vector	shPos, n[20], norm;
 	float		height, radius;
 	int			rank, i, j;
 
@@ -1614,7 +1614,7 @@ void CObject::SetPosition(int part, const D3DVECTOR &pos)
 		m_terrain->GetNormal(norm, shPos);
 		n[i++] = norm;
 
-		norm = 0.0f;
+		norm.LoadZero();
 		for ( j=0 ; j<i ; j++ )
 		{
 			norm += n[j];
@@ -1644,14 +1644,14 @@ void CObject::SetPosition(int part, const D3DVECTOR &pos)
 	}
 }
 
-D3DVECTOR CObject::RetPosition(int part)
+Math::Vector CObject::RetPosition(int part)
 {
 	return m_objectPart[part].position;
 }
 
 // Gives the rotation around three axis.
 
-void CObject::SetAngle(int part, const D3DVECTOR &angle)
+void CObject::SetAngle(int part, const Math::Vector &angle)
 {
 	m_objectPart[part].angle = angle;
 	m_objectPart[part].bRotate = true;  // it will recalculate the matrices
@@ -1662,7 +1662,7 @@ void CObject::SetAngle(int part, const D3DVECTOR &angle)
 	}
 }
 
-D3DVECTOR CObject::RetAngle(int part)
+Math::Vector CObject::RetAngle(int part)
 {
 	return m_objectPart[part].angle;
 }
@@ -1726,7 +1726,7 @@ void CObject::SetZoom(int part, float zoom)
 								 m_objectPart[part].zoom.z != 1.0f );
 }
 
-void CObject::SetZoom(int part, D3DVECTOR zoom)
+void CObject::SetZoom(int part, Math::Vector zoom)
 {
 	m_objectPart[part].bTranslate = true;  // it will recalculate the matrices
 	m_objectPart[part].zoom = zoom;
@@ -1736,7 +1736,7 @@ void CObject::SetZoom(int part, D3DVECTOR zoom)
 								 m_objectPart[part].zoom.z != 1.0f );
 }
 
-D3DVECTOR CObject::RetZoom(int part)
+Math::Vector CObject::RetZoom(int part)
 {
 	return m_objectPart[part].zoom;
 }
@@ -1850,22 +1850,22 @@ bool CObject::RetResetBusy()
 	return m_bResetBusy;
 }
 
-void CObject::SetResetPosition(const D3DVECTOR &pos)
+void CObject::SetResetPosition(const Math::Vector &pos)
 {
 	m_resetPosition = pos;
 }
 
-D3DVECTOR CObject::RetResetPosition()
+Math::Vector CObject::RetResetPosition()
 {
 	return m_resetPosition;
 }
 
-void CObject::SetResetAngle(const D3DVECTOR &angle)
+void CObject::SetResetAngle(const Math::Vector &angle)
 {
 	m_resetAngle = angle;
 }
 
-D3DVECTOR CObject::RetResetAngle()
+Math::Vector CObject::RetResetAngle()
 {
 	return m_resetAngle;
 }
@@ -2025,22 +2025,22 @@ float CObject::RetCmdLine(int rank)
 
 // Returns matrices of an object portion.
 
-D3DMATRIX* CObject::RetRotateMatrix(int part)
+Math::Matrix* CObject::RetRotateMatrix(int part)
 {
 	return &m_objectPart[part].matRotate;
 }
 
-D3DMATRIX* CObject::RetTranslateMatrix(int part)
+Math::Matrix* CObject::RetTranslateMatrix(int part)
 {
 	return &m_objectPart[part].matTranslate;
 }
 
-D3DMATRIX* CObject::RetTransformMatrix(int part)
+Math::Matrix* CObject::RetTransformMatrix(int part)
 {
 	return &m_objectPart[part].matTransform;
 }
 
-D3DMATRIX* CObject::RetWorldMatrix(int part)
+Math::Matrix* CObject::RetWorldMatrix(int part)
 {
 	if ( m_objectPart[0].bTranslate ||
 		 m_objectPart[0].bRotate    )
@@ -2085,7 +2085,7 @@ void CObject::SetDrawFront(bool bDraw)
 
 // Creates a vehicle traveling any pose on the floor.
 
-bool CObject::CreateVehicle(D3DVECTOR pos, float angle, ObjectType type,
+bool CObject::CreateVehicle(Math::Vector pos, float angle, ObjectType type,
 							float power, bool bTrainer, bool bToy)
 {
 	m_type = type;
@@ -2178,7 +2178,7 @@ bool CObject::CreateVehicle(D3DVECTOR pos, float angle, ObjectType type,
 
 // Creates an insect lands on any ground.
 
-bool CObject::CreateInsect(D3DVECTOR pos, float angle, ObjectType type)
+bool CObject::CreateInsect(Math::Vector pos, float angle, ObjectType type)
 {
 	m_type = type;
 
@@ -2245,7 +2245,7 @@ bool CObject::CreateInsect(D3DVECTOR pos, float angle, ObjectType type)
 bool CObject::CreateShadowLight(float height, D3DCOLORVALUE color)
 {
 	D3DLIGHT7	light;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	if ( !m_engine->RetLightMode() )  return true;
 
@@ -2358,7 +2358,7 @@ bool CObject::CreateShadowCircle(float radius, float intensity,
 
 // Creates a building laying on the ground.
 
-bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 							 ObjectType type, float power)
 {
 	CModFile*	pModFile;
@@ -2389,7 +2389,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\portico2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 67.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 67.0f, 0.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2397,7 +2397,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(2, 1);
 		pModFile->ReadModel("objects\\portico3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 0.0f, -33.0f));
+		SetPosition(2, Math::Vector(0.0f, 0.0f, -33.0f));
 		SetAngleY(2, 45.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
@@ -2406,7 +2406,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(3, 2);
 		pModFile->ReadModel("objects\\portico4.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(50.0f, 0.0f, 0.0f));
+		SetPosition(3, Math::Vector(50.0f, 0.0f, 0.0f));
 		SetAngleY(3, -60.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
@@ -2415,7 +2415,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(4, 3);
 		pModFile->ReadModel("objects\\portico5.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(35.0f, 0.0f, 0.0f));
+		SetPosition(4, Math::Vector(35.0f, 0.0f, 0.0f));
 		SetAngleY(4, -55.0f*Math::PI/180.0f);
 		
 		rank = m_engine->CreateObject();
@@ -2424,7 +2424,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(5, 1);
 		pModFile->ReadModel("objects\\portico3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(5, D3DVECTOR(0.0f, 0.0f, 33.0f));
+		SetPosition(5, Math::Vector(0.0f, 0.0f, 33.0f));
 		SetAngleY(5, -45.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
@@ -2433,7 +2433,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(6, 5);
 		pModFile->ReadModel("objects\\portico4.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(6, D3DVECTOR(50.0f, 0.0f, 0.0f));
+		SetPosition(6, Math::Vector(50.0f, 0.0f, 0.0f));
 		SetAngleY(6, 60.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
@@ -2442,7 +2442,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(7, 6);
 		pModFile->ReadModel("objects\\portico5.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(7, D3DVECTOR(35.0f, 0.0f, 0.0f));
+		SetPosition(7, Math::Vector(35.0f, 0.0f, 0.0f));
 		SetAngleY(7, 55.0f*Math::PI/180.0f);
 		
 		rank = m_engine->CreateObject();
@@ -2451,7 +2451,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(8, 0);
 		pModFile->ReadModel("objects\\portico6.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(8, D3DVECTOR(-35.0f, 50.0f, -35.0f));
+		SetPosition(8, Math::Vector(-35.0f, 50.0f, -35.0f));
 		SetAngleY(8, -Math::PI/2.0f);
 		SetZoom(8, 2.0f);
 
@@ -2461,7 +2461,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(9, 8);
 		pModFile->ReadModel("objects\\portico7.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(9, D3DVECTOR(0.0f, 4.5f, 1.9f));
+		SetPosition(9, Math::Vector(0.0f, 4.5f, 1.9f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2469,7 +2469,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(10, 0);
 		pModFile->ReadModel("objects\\portico6.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(10, D3DVECTOR(-35.0f, 50.0f, 35.0f));
+		SetPosition(10, Math::Vector(-35.0f, 50.0f, 35.0f));
 		SetAngleY(10, -Math::PI/2.0f);
 		SetZoom(10, 2.0f);
 
@@ -2479,20 +2479,20 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(11, 10);
 		pModFile->ReadModel("objects\\portico7.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(11, D3DVECTOR(0.0f, 4.5f, 1.9f));
+		SetPosition(11, Math::Vector(0.0f, 4.5f, 1.9f));
 
-		CreateCrashSphere(D3DVECTOR(  0.0f, 28.0f,   0.0f), 45.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 35.0f, 0.0f), 50.0f);
+		CreateCrashSphere(Math::Vector(  0.0f, 28.0f,   0.0f), 45.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-27.0f, 10.0f, -42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-27.0f, 10.0f,  42.0f), 15.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 32.0f, 45.0f, -32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 32.0f, 45.0f,  32.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 35.0f, 0.0f), 50.0f);
 
 		CreateShadowCircle(50.0f, 1.0f);
 	}
@@ -2514,7 +2514,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			pModFile->ReadModel("objects\\base2.mod");
 			pModFile->CreateEngineObject(rank);
 			p = Math::RotatePoint(-Math::PI/4.0f*i, 27.8f);
-			SetPosition(1+i, D3DVECTOR(p.x, 30.0f, p.y));
+			SetPosition(1+i, Math::Vector(p.x, 30.0f, p.y));
 			SetAngleY(1+i, Math::PI/4.0f*i);
 			SetAngleZ(1+i, Math::PI/2.0f);
 
@@ -2524,7 +2524,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			SetObjectParent(10+i, 1+i);
 			pModFile->ReadModel("objects\\base4.mod");
 			pModFile->CreateEngineObject(rank);
-			SetPosition(10+i, D3DVECTOR(23.5f, 0.0f, 7.0f));
+			SetPosition(10+i, Math::Vector(23.5f, 0.0f, 7.0f));
 
 			rank = m_engine->CreateObject();
 			m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2533,7 +2533,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			pModFile->ReadModel("objects\\base4.mod");
 			pModFile->Mirror();
 			pModFile->CreateEngineObject(rank);
-			SetPosition(18+i, D3DVECTOR(23.5f, 0.0f, -7.0f));
+			SetPosition(18+i, Math::Vector(23.5f, 0.0f, -7.0f));
 		}
 
 		rank = m_engine->CreateObject();
@@ -2543,25 +2543,25 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\base3.mod");  // central pillar
 		pModFile->CreateEngineObject(rank);
 
-		CreateCrashSphere(D3DVECTOR(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 39.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 45.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 51.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 57.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 63.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 69.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 82.0f,   0.0f),  8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 94.0f,  18.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 94.0f, -18.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f,104.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 33.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 39.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 45.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 51.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 57.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 63.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 69.0f,   0.0f),  2.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 82.0f,   0.0f),  8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-18.0f, 94.0f,   0.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 94.0f,  18.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 94.0f, -18.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-13.0f, 94.0f,  13.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-13.0f, 94.0f, -13.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f,104.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 45.0f, 0.0f), 10.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 45.0f, 0.0f), 10.0f);
 
 		CreateShadowCircle(60.0f, 1.0f);
 		m_showLimitRadius = 200.0f;
@@ -2584,12 +2584,12 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\derrick2.mod");
 		pModFile->CreateEngineObject(rank);
 
-		CreateCrashSphere(D3DVECTOR(0.0f,  0.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 17.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 26.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(7.0f, 17.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 17.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 26.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(7.0f, 17.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f);
 
 		CreateShadowCircle(10.0f, 0.4f);
 	}
@@ -2608,7 +2608,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\search2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 13.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 13.0f, 0.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2616,15 +2616,15 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(2, 1);
 		pModFile->ReadModel("objects\\search3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 4.0f, 0.0f));
+		SetPosition(2, Math::Vector(0.0f, 4.0f, 0.0f));
 		SetAngleZ(2, 35.0f*Math::PI/180.0f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f,  0.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f,  6.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 14.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 8.0f, 0.0f), 12.0f);
+		CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f,  6.0f, 0.0f), 9.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 14.0f, 0.0f), 7.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 8.0f, 0.0f), 12.0f);
 
-		m_character.posPower = D3DVECTOR(7.5f, 3.0f, 0.0f);
+		m_character.posPower = Math::Vector(7.5f, 3.0f, 0.0f);
 
 		CreateShadowCircle(12.0f, 1.0f);
 	}
@@ -2643,7 +2643,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\radar2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 5.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2651,7 +2651,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(2, 0);
 		pModFile->ReadModel("objects\\radar3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 11.0f, 0.0f));
+		SetPosition(2, Math::Vector(0.0f, 11.0f, 0.0f));
 		SetAngleY(2, -Math::PI/2.0f);
 
 		rank = m_engine->CreateObject();
@@ -2660,11 +2660,11 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(3, 2);
 		pModFile->ReadModel("objects\\radar4.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(0.0f, 4.5f, 1.9f));
+		SetPosition(3, Math::Vector(0.0f, 4.5f, 1.9f));
 
-		CreateCrashSphere(D3DVECTOR(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 7.0f, 0.0f), 7.0f);
+		CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 7.0f, 0.0f), 7.0f);
 
 		CreateShadowCircle(8.0f, 1.0f);
 	}
@@ -2683,7 +2683,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\info2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 5.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
 
 		for ( i=0 ; i<3 ; i++ )
 		{
@@ -2693,7 +2693,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			SetObjectParent(2+i*2, 1);
 			pModFile->ReadModel("objects\\info3.mod");
 			pModFile->CreateEngineObject(rank);
-			SetPosition(2+i*2, D3DVECTOR(0.0f, 4.5f, 0.0f));
+			SetPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
 
 			rank = m_engine->CreateObject();
 			m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2701,14 +2701,14 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			SetObjectParent(3+i*2, 2+i*2);
 			pModFile->ReadModel("objects\\radar4.mod");
 			pModFile->CreateEngineObject(rank);
-			SetPosition(3+i*2, D3DVECTOR(0.0f, 0.0f, -4.0f));
+			SetPosition(3+i*2, Math::Vector(0.0f, 0.0f, -4.0f));
 
 			SetAngleY(2+i*2, 2.0f*Math::PI/3.0f*i);
 		}
 
-		CreateCrashSphere(D3DVECTOR(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 6.0f);
+		CreateCrashSphere(Math::Vector(0.0f,  3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 11.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 6.0f);
 
 		CreateShadowCircle(8.0f, 1.0f);
 	}
@@ -2721,12 +2721,12 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 
-		CreateCrashSphere(D3DVECTOR(-2.0f, 13.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-7.0f,  3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f,  1.0f, 0.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(-7.0f, 5.0f, 0.0f), 5.0f);
+		CreateCrashSphere(Math::Vector(-2.0f, 13.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-7.0f,  3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f,  1.0f, 0.0f), 1.5f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(-7.0f, 5.0f, 0.0f), 5.0f);
 
-		m_character.posPower = D3DVECTOR(0.0f, 3.0f, 0.0f);
+		m_character.posPower = Math::Vector(0.0f, 3.0f, 0.0f);
 		m_energy = power;  // initializes the energy level
 
 		CreateShadowCircle(6.0f, 0.5f);
@@ -2746,7 +2746,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\labo2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-9.0f, 3.0f, 0.0f));
+		SetPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
 		SetAngleZ(1, Math::PI/2.0f);
 
 		rank = m_engine->CreateObject();
@@ -2755,7 +2755,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(2, 1);
 		pModFile->ReadModel("objects\\labo3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(9.0f, -1.0f, 0.0f));
+		SetPosition(2, Math::Vector(9.0f, -1.0f, 0.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2763,7 +2763,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(3, 2);
 		pModFile->ReadModel("objects\\labo4.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		SetPosition(3, Math::Vector(0.0f, 0.0f, 0.0f));
 		SetAngleZ(3, 80.0f*Math::PI/180.0f);
 
 		rank = m_engine->CreateObject();
@@ -2772,7 +2772,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(4, 2);
 		pModFile->ReadModel("objects\\labo4.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		SetPosition(4, Math::Vector(0.0f, 0.0f, 0.0f));
 		SetAngleZ(4, 80.0f*Math::PI/180.0f);
 		SetAngleY(4, Math::PI*2.0f/3.0f);
 
@@ -2782,18 +2782,18 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(5, 2);
 		pModFile->ReadModel("objects\\labo4.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(5, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		SetPosition(5, Math::Vector(0.0f, 0.0f, 0.0f));
 		SetAngleZ(5, 80.0f*Math::PI/180.0f);
 		SetAngleY(5, -Math::PI*2.0f/3.0f);
 
-		CreateCrashSphere(D3DVECTOR(  0.0f,  1.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 11.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 10.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-12.0f,  3.0f,  3.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-12.0f,  3.0f, -3.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(-10.0f, 5.0f, 0.0f), 7.0f);
+		CreateCrashSphere(Math::Vector(  0.0f,  1.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 11.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 10.0f,  0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f,  3.0f,  3.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f,  3.0f, -3.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(-10.0f, 5.0f, 0.0f), 7.0f);
 
-		m_character.posPower = D3DVECTOR(0.0f, 3.0f, 0.0f);
+		m_character.posPower = Math::Vector(0.0f, 3.0f, 0.0f);
 
 		CreateShadowCircle(7.0f, 0.5f);
 	}
@@ -2814,7 +2814,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			SetObjectParent(1+i, 0);
 			pModFile->ReadModel("objects\\factory2.mod");
 			pModFile->CreateEngineObject(rank);
-			SetPosition(1+i, D3DVECTOR(10.0f, 2.0f*i, 10.0f));
+			SetPosition(1+i, Math::Vector(10.0f, 2.0f*i, 10.0f));
 			SetAngleZ(1+i, Math::PI/2.0f);
 			SetZoomZ(1+i, 0.30f);
 
@@ -2824,7 +2824,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 			SetObjectParent(10+i, 0);
 			pModFile->ReadModel("objects\\factory2.mod");
 			pModFile->CreateEngineObject(rank);
-			SetPosition(10+i, D3DVECTOR(10.0f, 2.0f*i, -10.0f));
+			SetPosition(10+i, Math::Vector(10.0f, 2.0f*i, -10.0f));
 			SetAngleZ(10+i, -Math::PI/2.0f);
 			SetAngleY(10+i, Math::PI);
 			SetZoomZ(10+i, 0.30f);
@@ -2833,27 +2833,27 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		for ( i=0 ; i<2 ; i++ )
 		{
 			float s = (float)(i*2-1);
-			CreateCrashSphere(D3DVECTOR(-10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( -3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(  3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( 10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(-10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( -3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(  3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( 10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(-10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( -3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(  3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( 10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(-10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( -3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(  3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( 10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(-10.0f,  2.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR(-10.0f,  9.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(-10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( -3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(  3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( 10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(-10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( -3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(  3.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( 10.0f,  9.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(-10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( -3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(  3.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( 10.0f, 16.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(-10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( -3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(  3.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( 10.0f, 16.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(-10.0f,  9.0f,  4.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
 		}
-		CreateCrashSphere(D3DVECTOR(-10.0f, 21.0f, -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 18.0f);
+		CreateCrashSphere(Math::Vector(-10.0f, 21.0f, -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 18.0f);
 
 		CreateShadowCircle(24.0f, 0.3f);
 	}
@@ -2872,16 +2872,16 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\repair2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-11.0f, 13.5f, 0.0f));
+		SetPosition(1, Math::Vector(-11.0f, 13.5f, 0.0f));
 		SetAngleZ(1, Math::PI/2.0f);
 
 		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-		CreateCrashSphere(D3DVECTOR(-11.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  0.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f, 10.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(-11.0f, 13.0f, 0.0f), 15.0f);
+		CreateCrashSphere(Math::Vector(-11.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f,  0.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f, 10.0f,  0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(-11.0f, 13.0f, 0.0f), 15.0f);
 	}
 
 	if ( m_type == OBJECT_DESTROYER )
@@ -2898,14 +2898,14 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\destroy2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
 
 		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-		CreateCrashSphere(D3DVECTOR(-3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 3.5f, 0.0f, -13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 3.5f, 0.0f,  13.5f), 4.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(19.0f, 1.0f);
 	}
@@ -2920,9 +2920,9 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 
 		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-		CreateCrashSphere(D3DVECTOR(-15.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 6.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(-15.0f, 5.0f, 0.0f), 6.0f);
+		CreateCrashSphere(Math::Vector(-15.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-15.0f, 6.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(-15.0f, 5.0f, 0.0f), 6.0f);
 
 		m_energy = power;  // initialise le niveau d'�nergie
 	}
@@ -2941,7 +2941,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\convert2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 14.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 14.0f, 0.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -2949,7 +2949,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(2, 0);
 		pModFile->ReadModel("objects\\convert3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 11.5f, 0.0f));
+		SetPosition(2, Math::Vector(0.0f, 11.5f, 0.0f));
 		SetAngleX(2, -Math::PI*0.35f);
 
 		rank = m_engine->CreateObject();
@@ -2958,17 +2958,17 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(3, 0);
 		pModFile->ReadModel("objects\\convert3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(0.0f, 11.5f, 0.0f));
+		SetPosition(3, Math::Vector(0.0f, 11.5f, 0.0f));
 		SetAngleY(3, Math::PI);
 		SetAngleX(3, -Math::PI*0.35f);
 
 		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-		CreateCrashSphere(D3DVECTOR(-10.0f,  2.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f,  2.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f,  9.0f,  0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 14.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(-3.0f, 8.0f, 0.0f), 14.0f);
+		CreateCrashSphere(Math::Vector(-10.0f,  2.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f,  2.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f,  9.0f,  0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 14.0f,  0.0f), 1.5f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(-3.0f, 8.0f, 0.0f), 14.0f);
 	}
 
 	if ( m_type == OBJECT_TOWER )
@@ -2985,7 +2985,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\roller2c.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 20.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 20.0f, 0.0f));
 		SetAngleZ(1, Math::PI/2.0f);
 
 		rank = m_engine->CreateObject();
@@ -2994,16 +2994,16 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(2, 1);
 		pModFile->ReadModel("objects\\roller3c.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(4.5f, 0.0f, 0.0f));
+		SetPosition(2, Math::Vector(4.5f, 0.0f, 0.0f));
 		SetAngleZ(2, 0.0f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f,  0.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f,  8.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 15.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 24.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 7.0f);
+		CreateCrashSphere(Math::Vector(0.0f,  0.0f, 0.0f), 6.5f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f,  8.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 15.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 7.0f);
 
-		m_character.posPower = D3DVECTOR(5.0f, 3.0f, 0.0f);
+		m_character.posPower = Math::Vector(5.0f, 3.0f, 0.0f);
 
 		CreateShadowCircle(6.0f, 1.0f);
 		m_showLimitRadius = BLITZPARA;
@@ -3023,15 +3023,15 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\nuclear2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(20.0f, 10.0f, 0.0f));
+		SetPosition(1, Math::Vector(20.0f, 10.0f, 0.0f));
 		SetAngleZ(1, 135.0f*Math::PI/180.0f);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f,  0.0f, 0.0f), 19.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 24.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(22.0f,  1.0f, 0.0f),  1.5f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 17.0f, 0.0f), 26.0f);
+		CreateCrashSphere(Math::Vector( 0.0f,  0.0f, 0.0f), 19.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 24.0f, 0.0f), 15.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(22.0f,  1.0f, 0.0f),  1.5f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 17.0f, 0.0f), 26.0f);
 
-		m_character.posPower = D3DVECTOR(22.0f, 3.0f, 0.0f);
+		m_character.posPower = Math::Vector(22.0f, 3.0f, 0.0f);
 
 		CreateShadowCircle(21.0f, 1.0f);
 	}
@@ -3046,17 +3046,17 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 
 		m_terrain->AddBuildingLevel(pos, 16.0f, 18.0f, 1.0f, 0.5f);
 
-		CreateCrashSphere(D3DVECTOR( 13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 11.0f, 15.0f,  11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 26.0f,   0.0f),  9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 54.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 20.0f);
+		CreateCrashSphere(Math::Vector( 13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 11.0f, 15.0f,  11.0f),  2.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-13.0f,  3.0f,  13.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-13.0f,  3.0f, -13.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f, 15.0f, -11.0f),  2.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 26.0f,   0.0f),  9.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 54.0f,   0.0f), 14.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 20.0f);
 
 		CreateShadowCircle(21.0f, 1.0f);
 		m_showLimitRadius = BLITZPARA;
@@ -3088,8 +3088,8 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 
 		m_terrain->AddBuildingLevel(pos, 18.0f, 20.0f, 1.0f, 0.5f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 13.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 13.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 13.0f);
 
 		CreateShadowCircle(23.0f, 1.0f);
 	}
@@ -3108,7 +3108,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\huston2.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 39.0f, 30.0f));
+		SetPosition(1, Math::Vector(0.0f, 39.0f, 30.0f));
 		SetAngleY(1, -Math::PI/2.0f);
 		SetZoom(1, 3.0f);
 
@@ -3118,24 +3118,24 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(2, 1);
 		pModFile->ReadModel("objects\\huston3.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 4.5f, 1.9f));
+		SetPosition(2, Math::Vector(0.0f, 4.5f, 1.9f));
 
-		CreateCrashSphere(D3DVECTOR( 15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 27.0f,  30.0f), 12.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 45.0f,  30.0f), 14.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-15.0f,  6.0f, -53.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-15.0f,  6.0f, -26.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-15.0f,  6.0f,   0.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-15.0f,  6.0f,  26.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-15.0f,  6.0f,  53.0f), 16.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 27.0f,  30.0f), 12.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 45.0f,  30.0f), 14.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-26.0f,  4.0f, -61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-26.0f,  4.0f,  61.0f),  5.0f, SOUND_BOUMm, 0.45f);
 	}
 
 	if ( m_type == OBJECT_TARGET1 )
@@ -3147,23 +3147,23 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		SetZoom(0, 1.5f);
 		SetFloorHeight(0.0f);
 
-		CreateCrashSphere(D3DVECTOR(  0.0f, 50.0f+14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 50.0f-14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 50.0f+14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  7.0f, 50.0f+12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 12.0f, 50.0f+ 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 14.0f, 50.0f+ 0.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 12.0f, 50.0f- 7.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  7.0f, 50.0f-12.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 50.0f-14.0f, 0.0f),  3.0f, SOUND_BOUMm, 0.45f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 30.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 24.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 16.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(0.0f,  4.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 30.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 24.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 16.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f,  4.0f, 0.0f), 8.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(15.0f, 1.0f);
 	}
@@ -3231,8 +3231,8 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 		pModFile->CreateEngineObject(rank);
 
 		pPower->SetPosition(0, RetCharacter()->posPower);
-		pPower->CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		pPower->SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 1.5f);
+		pPower->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		pPower->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
 
 		pPower->SetTruck(this);
 		SetPower(pPower);
@@ -3255,7 +3255,7 @@ bool CObject::CreateBuilding(D3DVECTOR pos, float angle, float height,
 
 // Creates a small resource set on the ground.
 
-bool CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
+bool CObject::CreateResource(Math::Vector pos, float angle, ObjectType type,
 							 float power)
 {
 	CModFile*	pModFile;
@@ -3336,28 +3336,28 @@ bool CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 	}
 	else if ( type == OBJECT_EGG )
 	{
-		CreateCrashSphere(D3DVECTOR(-1.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(-1.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 		radius = 3.0f;
 	}
 	else if ( type == OBJECT_BOMB )
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f);
 		radius = 3.0f;
 	}
 	else if ( type == OBJECT_BAG )
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f);
 		SetZoom(0, 1.5f);
 		radius =  5.0f;
 		height = -1.4f;
 	}
 	else
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 1.5f);
+		CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
 	}
 	CreateShadowCircle(radius, 1.0f);
 
@@ -3376,7 +3376,7 @@ bool CObject::CreateResource(D3DVECTOR pos, float angle, ObjectType type,
 
 // Creates a flag placed on the ground.
 
-bool CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
+bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
 {
 	CModFile*	pModFile;
 	char		name[50];
@@ -3418,11 +3418,11 @@ bool CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
 		SetObjectParent(1+i, i);
 		pModFile->ReadModel(name);
 		pModFile->CreateEngineObject(rank);
-		if ( i == 0 )  SetPosition(1+i, D3DVECTOR(0.15f, 5.0f, 0.0f));
-		else           SetPosition(1+i, D3DVECTOR(0.79f, 0.0f, 0.0f));
+		if ( i == 0 )  SetPosition(1+i, Math::Vector(0.15f, 5.0f, 0.0f));
+		else           SetPosition(1+i, Math::Vector(0.79f, 0.0f, 0.0f));
 	}
 
-	SetJotlerSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 1.0f);
+	SetJotlerSphere(Math::Vector(0.0f, 4.0f, 0.0f), 1.0f);
 	CreateShadowCircle(2.0f, 0.3f);
 
 	SetFloorHeight(0.0f);
@@ -3439,7 +3439,7 @@ bool CObject::CreateFlag(D3DVECTOR pos, float angle, ObjectType type)
 
 // Creates a barrier placed on the ground.
 
-bool CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
 							ObjectType type)
 {
 	CModFile*	pModFile;
@@ -3461,9 +3461,9 @@ bool CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(6.0f, 0.5f, D3DSHADOWWORM);
 	}
@@ -3478,11 +3478,11 @@ bool CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(12.0f, 0.5f, D3DSHADOWWORM);
 	}
@@ -3497,11 +3497,11 @@ bool CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(12.0f, 0.8f, D3DSHADOWWORM);
 	}
@@ -3516,11 +3516,11 @@ bool CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(10.0f, 0.5f, D3DSHADOWWORM);
 	}
@@ -3542,7 +3542,7 @@ bool CObject::CreateBarrier(D3DVECTOR pos, float angle, float height,
 
 // Creates a plant placed on the ground.
 
-bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
+bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
 						  ObjectType type)
 {
 	CModFile*	pModFile;
@@ -3574,9 +3574,9 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 
 		height -= 2.0f;
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 6.0f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 8.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f);
+		SetJotlerSphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f);
 
 		CreateShadowCircle(8.0f, 0.5f);
 	}
@@ -3595,8 +3595,8 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-//?		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f);
+//?		CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
+		SetJotlerSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f);
 
 		CreateShadowCircle(5.0f, 0.3f);
 	}
@@ -3613,8 +3613,8 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f,  2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(0.0f,  2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
 
 		CreateShadowCircle(10.0f, 0.5f);
 	}
@@ -3637,9 +3637,9 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 12.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 6.0f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 8.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 12.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f);
+		SetJotlerSphere(Math::Vector(0.0f, 4.0f, 0.0f), 8.0f);
 
 		CreateShadowCircle(8.0f, 0.3f);
 	}
@@ -3664,10 +3664,10 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 
 		if ( type != OBJECT_PLANT19 )
 		{
-			CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
-			SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 6.0f);
+			CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+			SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 6.0f);
 		}
-		SetJotlerSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 8.0f);
+		SetJotlerSphere(Math::Vector(0.0f, 0.0f, 0.0f), 8.0f);
 
 		CreateShadowCircle(8.0f, 0.5f);
 	}
@@ -3682,10 +3682,10 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(-1.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 17.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 1.0f, 27.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(-1.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 0.0f, 17.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 1.0f, 27.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
 
 		CreateShadowCircle(8.0f, 0.5f);
 	}
@@ -3700,11 +3700,11 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 11.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 2.0f, 26.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 2.0f, 34.0f,-2.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 0.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(-2.0f, 11.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 2.0f, 26.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 2.0f, 34.0f,-2.0f), 2.0f, SOUND_BOUMs, 0.20f);
 
 		CreateShadowCircle(8.0f, 0.5f);
 	}
@@ -3719,11 +3719,11 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f,  3.0f, 1.0f), 3.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 2.0f, 25.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 3.0f, 32.0f,-2.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 0.0f,  3.0f, 1.0f), 3.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(-2.0f, 10.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(-2.0f, 19.0f, 2.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 2.0f, 25.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 3.0f, 32.0f,-2.0f), 2.0f, SOUND_BOUMs, 0.20f);
 
 		CreateShadowCircle(8.0f, 0.5f);
 	}
@@ -3738,10 +3738,10 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(-2.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(-3.0f,  9.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 18.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 27.0f, 7.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(-2.0f,  3.0f, 2.0f), 3.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(-3.0f,  9.0f, 1.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 0.0f, 18.0f, 0.0f), 2.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 0.0f, 27.0f, 7.0f), 2.0f, SOUND_BOUMs, 0.20f);
 
 		CreateShadowCircle(8.0f, 0.5f);
 	}
@@ -3756,9 +3756,9 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 21.0f, 0.0f),  8.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(0.0f, 32.0f, 0.0f),  7.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(0.0f, 21.0f, 0.0f),  8.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(0.0f, 32.0f, 0.0f),  7.0f, SOUND_BOUMs, 0.20f);
 
 		CreateShadowCircle(8.0f, 0.5f);
 	}
@@ -3773,9 +3773,9 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f,-10.0f), 25.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR(-65.0f, 5.0f, 65.0f), 20.0f, SOUND_BOUMs, 0.20f);
-		CreateCrashSphere(D3DVECTOR( 38.0f, 5.0f, 21.0f), 18.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(  0.0f, 5.0f,-10.0f), 25.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector(-65.0f, 5.0f, 65.0f), 20.0f, SOUND_BOUMs, 0.20f);
+		CreateCrashSphere(Math::Vector( 38.0f, 5.0f, 21.0f), 18.0f, SOUND_BOUMs, 0.20f);
 
 		CreateShadowCircle(50.0f, 0.5f);
 	}
@@ -3796,7 +3796,7 @@ bool CObject::CreatePlant(D3DVECTOR pos, float angle, float height,
 
 // Creates a mushroom placed on the ground.
 
-bool CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
 							 ObjectType type)
 {
 	CModFile*	pModFile;
@@ -3818,9 +3818,9 @@ bool CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 5.5f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 3.0f, 0.0f), 5.5f);
+		CreateCrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.5f);
+		SetJotlerSphere(Math::Vector(0.0f, 3.0f, 0.0f), 5.5f);
 
 		CreateShadowCircle(6.0f, 0.5f);
 	}
@@ -3835,9 +3835,9 @@ bool CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 5.5f);
-		SetJotlerSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 5.5f);
+		CreateCrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 3.0f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.5f);
+		SetJotlerSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.5f);
 
 		CreateShadowCircle(5.0f, 0.5f);
 	}
@@ -3858,11 +3858,11 @@ bool CObject::CreateMushroom(D3DVECTOR pos, float angle, float height,
 
 // Creates a toy placed on the ground.
 
-bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
+bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height,
 						 ObjectType type)
 {
 	CModFile*		pModFile;
-	D3DMATRIX*		mat;
+	Math::Matrix*		mat;
 	D3DCOLORVALUE	color;
 	int				rank;
 	float			fShadow;
@@ -3887,11 +3887,11 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(5.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
@@ -3907,13 +3907,13 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-2.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(6.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
@@ -3929,13 +3929,13 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-2.3f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(6.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
@@ -3952,8 +3952,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 4.0f);
+		CreateCrashSphere(Math::Vector( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 4.0f);
 		CreateShadowCircle(6.0f, 0.5f*fShadow);
 	}
 
@@ -3968,13 +3968,13 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-9.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-6.0f, 1.0f, 0.0f), 1.1f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.0f, 1.0f, 0.0f), 1.2f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 1.0f, 0.0f), 1.3f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 5.1f, 1.0f,-1.3f), 2.6f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 8.0f, 1.0f, 2.2f), 2.3f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 9.4f, 1.0f,-2.0f), 2.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-9.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.1f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-3.0f, 1.0f, 0.0f), 1.2f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 0.0f, 1.0f, 0.0f), 1.3f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 5.1f, 1.0f,-1.3f), 2.6f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 8.0f, 1.0f, 2.2f), 2.3f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 9.4f, 1.0f,-2.0f), 2.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(10.0f, 0.5f*fShadow, D3DSHADOWWORM);
 	}
@@ -4007,12 +4007,12 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
@@ -4028,12 +4028,12 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
@@ -4049,14 +4049,14 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 12.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 12.0f);
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
@@ -4071,14 +4071,14 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-5.0f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 4.5f, 3.0f,-7.5f), 5.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 12.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 12.0f);
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
@@ -4093,18 +4093,18 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-26.0f, 3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-15.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -4.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -4.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  6.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  6.0f, 3.0f, 4.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f, 3.0f,-3.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 14.0f, 3.0f, 2.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 24.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-26.0f, 3.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-15.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-15.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -4.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -4.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  6.0f, 3.0f,-4.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  6.0f, 3.0f, 4.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 14.0f, 3.0f,-3.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 14.0f, 3.0f, 2.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 24.0f, 3.0f, 5.0f), 6.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 20.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 20.0f);
 		CreateShadowCircle(40.0f, 0.2f*fShadow);
 	}
 
@@ -4121,10 +4121,10 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetZoom(0, zoom);
 
 		mat = RetWorldMatrix(0);
-		pos = Transform(*mat, D3DVECTOR(-56.0f, 22.0f, 0.0f));
-		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), Math::Point(20.0f, 20.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
+		pos = Math::Transform(*mat, Math::Vector(-56.0f, 22.0f, 0.0f));
+		m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(20.0f, 20.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
 
-		pos = Transform(*mat, D3DVECTOR(-65.0f, 40.0f, 0.0f));
+		pos = Math::Transform(*mat, Math::Vector(-65.0f, 40.0f, 0.0f));
 		color.r = 4.0f;
 		color.g = 2.0f;
 		color.b = 0.0f;  // yellow-orange
@@ -4144,8 +4144,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 9.0f, 0.0f), 5.0f);
+		CreateCrashSphere(Math::Vector( 0.0f, 4.0f, 0.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 9.0f, 0.0f), 5.0f);
 		CreateShadowCircle(4.5f, 1.0f*fShadow);
 	}
 
@@ -4160,17 +4160,17 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 15.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f);
 		CreateShadowCircle(20.0f, 1.0f*fShadow);
 	}
 
@@ -4185,17 +4185,17 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 15.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f);
 		CreateShadowCircle(20.0f, 1.0f*fShadow);
 	}
 
@@ -4210,17 +4210,17 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f,-7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 10.0f, 4.0f, 7.0f), 5.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 15.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 15.0f);
 		CreateShadowCircle(20.0f, 1.0f*fShadow);
 	}
 
@@ -4235,10 +4235,10 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 8.0f, 4.0f, 0.0f), 12.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 13.0f, 0.0f), 20.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 13.0f, 0.0f), 20.0f);
 		CreateShadowCircle(18.0f, 1.0f*fShadow);
 	}
 
@@ -4253,8 +4253,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 31.0f, 0.0f), 31.0f);
+		CreateCrashSphere(Math::Vector( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 31.0f, 0.0f), 31.0f);
 		CreateShadowCircle(24.0f, 0.5f*fShadow);
 	}
 
@@ -4269,8 +4269,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 31.0f, 0.0f), 31.0f);
+		CreateCrashSphere(Math::Vector( 0.0f, 31.0f, 0.0f), 31.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 31.0f, 0.0f), 31.0f);
 		CreateShadowCircle(24.0f, 0.5f*fShadow);
 	}
 
@@ -4285,8 +4285,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 0.0f, 10.0f, 0.0f), 32.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 32.0f);
+		CreateCrashSphere(Math::Vector( 0.0f, 10.0f, 0.0f), 32.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 32.0f);
 		CreateShadowCircle(33.0f, 1.0f*fShadow);
 	}
 
@@ -4301,14 +4301,14 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-175.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-175.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -55.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -55.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -37.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -37.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  83.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  83.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-175.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-175.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -55.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -55.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -37.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -37.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  83.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  83.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
 	}
 
 	if ( type == OBJECT_TEEN21 )  // wall with window
@@ -4334,10 +4334,10 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-135.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-135.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -15.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -15.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-135.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-135.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -15.0f, 0.0f,  -5.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -15.0f, 0.0f, -35.0f), 4.0f, SOUND_BOUMm, 0.45f);
 	}
 
 	if ( type == OBJECT_TEEN23 )  // skateboard on wheels
@@ -4353,16 +4353,16 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 
 		if ( m_option == 1 )  // passage under the prohibited skateboard?
 		{
-			CreateCrashSphere(D3DVECTOR(-10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
-			CreateCrashSphere(D3DVECTOR( 10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector(-10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
+			CreateCrashSphere(Math::Vector( 10.0f, 2.0f, 0.0f), 11.0f, SOUND_BOUMm, 0.45f);
 		}
 
-		CreateCrashSphere(D3DVECTOR(-23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 23.0f, 2.0f, 7.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f);
 
 		CreateShadowCircle(35.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
@@ -4378,8 +4378,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f);
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
@@ -4394,8 +4394,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f, 0.0f, -3.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f, 0.0f,  3.0f), 3.0f, SOUND_BOUMm, 0.45f);
 		CreateShadowCircle(20.0f, 0.2f*fShadow);
 	}
 
@@ -4412,10 +4412,10 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetFloorHeight(0.0f);
 
 		mat = RetWorldMatrix(0);
-		pos = Transform(*mat, D3DVECTOR(0.0f, 50.0f, 0.0f));
-		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), Math::Point(100.0f, 100.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
+		pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
+		m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(100.0f, 100.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
 
-		pos = Transform(*mat, D3DVECTOR(0.0f, 50.0f, 0.0f));
+		pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
 		color.r = 4.0f;
 		color.g = 2.0f;
 		color.b = 0.0f;  // yellow-orange
@@ -4434,7 +4434,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
 		CreateShadowCircle(40.0f, 0.5f);
 	}
 
@@ -4450,7 +4450,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
 		CreateShadowCircle(7.0f, 0.6f*fShadow);
 	}
 
@@ -4478,8 +4478,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 15.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 15.0f, 0.0f), 17.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 15.0f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 15.0f, 0.0f), 17.0f);
 		CreateShadowCircle(20.0f, 1.0f*fShadow);
 	}
 
@@ -4494,11 +4494,11 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-10.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 2.0f, 0.0f), 6.0f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR(  9.0f, 4.0f, 1.0f), 6.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(-10.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(  0.0f, 2.0f, 0.0f), 6.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(  9.0f, 4.0f, 1.0f), 6.0f, SOUND_BOUM, 0.10f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 10.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 10.0f);
 		CreateShadowCircle(16.0f, 0.6f*fShadow);
 	}
 
@@ -4513,11 +4513,11 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR( 17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR( 17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR(-17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR(-17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 26.0f);
+		CreateCrashSphere(Math::Vector( 17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector( 17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(-17.5f, 1.0f,  17.5f), 3.5f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(-17.5f, 1.0f, -17.5f), 3.5f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 26.0f);
 		CreateShadowCircle(35.0f, 0.3f*fShadow);
 	}
 
@@ -4532,7 +4532,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
 		CreateShadowCircle(10.0f, 0.3f*fShadow);
 	}
 
@@ -4547,7 +4547,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.10f);
 		CreateShadowCircle(3.0f, 1.0f*fShadow);
 	}
 
@@ -4562,11 +4562,11 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(-40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR(-20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR( 20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-		CreateCrashSphere(D3DVECTOR( 40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(-40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(-20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(  0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector( 20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector( 40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
 		CreateShadowCircle(40.0f, 0.8f*fShadow, D3DSHADOWWORM);
 	}
 
@@ -4613,7 +4613,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\teen38b.mod");  // engine
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 30.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 30.0f, 0.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -4621,10 +4621,10 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetObjectParent(2, 1);
 		pModFile->ReadModel("objects\\teen38c.mod");  // propeller
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(0.0f, 0.0f, 0.0f));
+		SetPosition(2, Math::Vector(0.0f, 0.0f, 0.0f));
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 2.0f, 0.0f), 10.0f);
 		CreateShadowCircle(15.0f, 0.5f*fShadow);
 	}
 
@@ -4639,8 +4639,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 8.5f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 8.5f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 8.5f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 2.0f, 0.0f), 8.5f);
 		CreateShadowCircle(10.0f, 1.0f*fShadow);
 	}
 
@@ -4655,8 +4655,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 11.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 14.0f, 0.0f), 15.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 11.0f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 14.0f, 0.0f), 15.0f);
 		CreateShadowCircle(15.0f, 0.7f*fShadow);
 	}
 
@@ -4683,7 +4683,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f);
 		CreateShadowCircle(15.0f, 0.4f*fShadow);
 	}
 
@@ -4698,7 +4698,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUM, 0.10f);
 		CreateShadowCircle(15.0f, 0.4f*fShadow);
 	}
 
@@ -4713,8 +4713,8 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, zoom);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 55.0f, SOUND_BOUM, 0.10f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 55.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 55.0f, SOUND_BOUM, 0.10f);
+		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 55.0f);
 		CreateShadowCircle(55.0f, 1.0f*fShadow);
 	}
 
@@ -4739,7 +4739,7 @@ bool CObject::CreateTeen(D3DVECTOR pos, float angle, float zoom, float height,
 
 // Creates a crystal placed on the ground.
 
-bool CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
 						   ObjectType type)
 {
 	CModFile*	pModFile;
@@ -4762,8 +4762,8 @@ bool CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 3.5f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 3.5f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 3.5f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 2.0f, 0.0f), 3.5f);
 
 		CreateShadowCircle(4.0f, 0.5f);
 	}
@@ -4777,8 +4777,8 @@ bool CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 5.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 5.0f);
 
 		CreateShadowCircle(5.0f, 0.5f);
 	}
@@ -4792,8 +4792,8 @@ bool CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 6.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 6.0f);
 
 		CreateShadowCircle(6.0f, 0.5f);
 	}
@@ -4807,8 +4807,8 @@ bool CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 		SetPosition(0, pos);
 		SetAngleY(0, angle);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 10.0f);
 
 		CreateShadowCircle(10.0f, 0.5f);
 	}
@@ -4852,7 +4852,7 @@ bool CObject::CreateQuartz(D3DVECTOR pos, float angle, float height,
 
 // Creates a root placed on the ground.
 
-bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
 						 ObjectType type)
 {
 	CModFile*	pModFile;
@@ -4875,14 +4875,14 @@ bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f);
 
-		CreateCrashSphere(D3DVECTOR(-5.0f,  1.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f,  1.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f,  1.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 2.0f,  5.0f, -1.0f), 1.5f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-4.0f,  5.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-2.0f,  8.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 10.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 11.0f);
+		CreateCrashSphere(Math::Vector(-5.0f,  1.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 4.0f,  1.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 4.0f,  1.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 2.0f,  5.0f, -1.0f), 1.5f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(-4.0f,  5.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(-2.0f,  8.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 0.0f, 10.0f, -0.5f), 1.0f, SOUND_BOUMv, 0.15f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 11.0f);
 
 		CreateShadowCircle(16.0f, 0.5f);
 	}
@@ -4897,14 +4897,14 @@ bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f);
 
-		CreateCrashSphere(D3DVECTOR(-4.0f,  1.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f,  1.0f,  2.0f), 1.5f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 3.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-2.0f,  5.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 2.0f,  5.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f,  8.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 12.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 12.0f);
+		CreateCrashSphere(Math::Vector(-4.0f,  1.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 0.0f,  1.0f,  2.0f), 1.5f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 3.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(-2.0f,  5.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 2.0f,  5.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 0.0f,  8.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 0.0f, 12.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 12.0f);
 
 		CreateShadowCircle(16.0f, 0.5f);
 	}
@@ -4919,13 +4919,13 @@ bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f);
 
-		CreateCrashSphere(D3DVECTOR(-3.0f,  1.0f,  0.5f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 3.0f,  1.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-1.0f,  4.5f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 3.0f,  7.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f,  7.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f, 11.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(-3.0f,  1.0f,  0.5f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 3.0f,  1.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(-1.0f,  4.5f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 3.0f,  7.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 0.0f,  7.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 4.0f, 11.0f,  1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 10.0f);
 
 		CreateShadowCircle(16.0f, 0.5f);
 	}
@@ -4940,15 +4940,15 @@ bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f);
 
-		CreateCrashSphere(D3DVECTOR(-4.0f,  1.0f,  1.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f,  1.0f, -3.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 6.0f,  1.0f,  4.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-2.5f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 4.0f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 3.0f,  6.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 0.0f, 12.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( 1.0f, 16.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 10.0f, 0.0f), 14.0f);
+		CreateCrashSphere(Math::Vector(-4.0f,  1.0f,  1.0f), 3.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 4.0f,  1.0f, -3.0f), 3.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 6.0f,  1.0f,  4.0f), 3.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(-2.5f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 4.0f,  7.0f,  2.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 3.0f,  6.0f, -1.0f), 1.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 0.0f, 12.0f,  0.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( 1.0f, 16.0f,  0.0f), 1.0f, SOUND_BOUMv, 0.15f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 14.0f);
 
 		CreateShadowCircle(22.0f, 0.5f);
 	}
@@ -4963,17 +4963,17 @@ bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, 2.0f);
 
-		CreateCrashSphere(D3DVECTOR( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 12.0f, 0.0f), 20.0f);
+		CreateCrashSphere(Math::Vector( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 12.0f, 0.0f), 20.0f);
 
 		CreateShadowCircle(30.0f, 0.5f);
 	}
@@ -4994,21 +4994,21 @@ bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\root5.mod");
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-5.0f, 28.0f, -4.0f));
+		SetPosition(1, Math::Vector(-5.0f, 28.0f, -4.0f));
 		SetAngleX(1, -30.0f*Math::PI/180.0f);
 		SetAngleZ(1,  20.0f*Math::PI/180.0f);
 
-		CreateCrashSphere(D3DVECTOR( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-		CreateCrashSphere(D3DVECTOR( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 12.0f, 0.0f), 20.0f);
+		CreateCrashSphere(Math::Vector( -7.0f,  2.0f,  3.0f), 4.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  5.0f,  2.0f, -6.0f), 4.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  6.0f,  2.0f,  6.0f), 3.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(-11.0f,  1.0f, -2.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  1.0f,  1.0f, -7.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( -4.0f, 10.0f,  3.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  1.0f, 11.0f,  7.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector(  3.0f, 11.0f, -3.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( -3.0f, 17.0f,  1.0f), 2.0f, SOUND_BOUMv, 0.15f);
+		CreateCrashSphere(Math::Vector( -3.0f, 23.0f, -1.0f), 2.0f, SOUND_BOUMv, 0.15f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 12.0f, 0.0f), 20.0f);
 
 		CreateShadowCircle(30.0f, 0.5f);
 	}
@@ -5029,7 +5029,7 @@ bool CObject::CreateRoot(D3DVECTOR pos, float angle, float height,
 
 // Creates a small home.
 
-bool CObject::CreateHome(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateHome(Math::Vector pos, float angle, float height,
 						 ObjectType type)
 {
 	CModFile*	pModFile;
@@ -5052,8 +5052,8 @@ bool CObject::CreateHome(D3DVECTOR pos, float angle, float height,
 		SetAngleY(0, angle);
 		SetZoom(0, 1.3f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.25f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 6.0f, 0.0f), 11.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUMs, 0.25f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 6.0f, 0.0f), 11.0f);
 		CreateShadowCircle(16.0f, 0.5f);
 	}
 
@@ -5073,7 +5073,7 @@ bool CObject::CreateHome(D3DVECTOR pos, float angle, float height,
 
 // Creates ruin placed on the ground.
 
-bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
+bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
 						 ObjectType type)
 {
 	CModFile*	pModFile;
@@ -5122,7 +5122,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\ruin1w.mod");
 		pModFile->CreateEngineObject(rank);
 
-		SetPosition(6, D3DVECTOR(-3.0f, 1.8f, -4.0f));
+		SetPosition(6, Math::Vector(-3.0f, 1.8f, -4.0f));
 		SetAngleX(6, -Math::PI/2.0f);
 
 		// Creates the left-back wheel.
@@ -5134,7 +5134,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\ruin1w.mod");
 		pModFile->CreateEngineObject(rank);
 
-		SetPosition(7, D3DVECTOR(-3.0f, 1.0f, 3.0f));
+		SetPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
 		SetAngleY(7, Math::PI-0.3f);
 		SetAngleX(7, -0.3f);
 
@@ -5147,7 +5147,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\ruin1w.mod");
 		pModFile->CreateEngineObject(rank);
 
-		SetPosition(8, D3DVECTOR(2.0f, 1.6f, -3.0f));
+		SetPosition(8, Math::Vector(2.0f, 1.6f, -3.0f));
 		SetAngleY(8, 0.3f);
 
 		// Creates the left-front wheel.
@@ -5159,12 +5159,12 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\ruin1w.mod");
 		pModFile->CreateEngineObject(rank);
 
-		SetPosition(9, D3DVECTOR(2.0f, 1.0f, 3.0f));
+		SetPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
 		SetAngleY(9, Math::PI-0.2f);
 		SetAngleX(9, 0.2f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 
 		CreateShadowCircle(4.0f, 1.0f);
 	}
@@ -5180,7 +5180,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\ruin1w.mod");
 		pModFile->CreateEngineObject(rank);
 
-		SetPosition(7, D3DVECTOR(-3.0f, 1.0f, 3.0f));
+		SetPosition(7, Math::Vector(-3.0f, 1.0f, 3.0f));
 		SetAngleY(7, Math::PI+0.3f);
 		SetAngleX(7, 0.4f);
 
@@ -5193,12 +5193,12 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\ruin1w.mod");
 		pModFile->CreateEngineObject(rank);
 
-		SetPosition(9, D3DVECTOR(2.0f, 1.0f, 3.0f));
+		SetPosition(9, Math::Vector(2.0f, 1.0f, 3.0f));
 		SetAngleY(9, Math::PI+0.3f);
 		SetAngleX(9, -0.3f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 
 		CreateShadowCircle(4.0f, 1.0f);
 	}
@@ -5214,77 +5214,77 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 		pModFile->ReadModel("objects\\ruin2c.mod");
 		pModFile->CreateEngineObject(rank);
 
-		SetPosition(1, D3DVECTOR(3.0f, 5.0f, -2.5f));
+		SetPosition(1, Math::Vector(3.0f, 5.0f, -2.5f));
 		SetAngleX(1, -Math::PI*0.85f);
 		SetAngleY(1, -0.4f);
 		SetAngleZ(1, -0.1f);
 
-		CreateCrashSphere(D3DVECTOR(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(1.0f, 5.0f, -1.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f);
+//?		SetGlobalSphere(Math::Vector(1.0f, 5.0f, -1.0f), 10.0f);
 
 		CreateShadowCircle(5.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINmobilet2 )  // vehicle have caterpillars?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.8f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.8f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 
 		CreateShadowCircle(5.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINmobiler1 )  // vehicle skating?
 	{
-		CreateCrashSphere(D3DVECTOR(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(1.0f, 5.0f, -1.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(1.0f, 2.8f, -1.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(1.0f, 5.0f, -1.0f), 10.0f);
 
 		CreateShadowCircle(5.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINmobiler2 )  // vehicle skating?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 5.0f, 0.0f), 10.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 5.0f, 0.0f), 10.0f);
 
 		CreateShadowCircle(6.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINfactory )  // factory ?
 	{
-		CreateCrashSphere(D3DVECTOR(  9.0f,  1.0f, -11.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f,  2.0f, -11.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f,  4.0f, -10.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-12.0f, 11.0f,  -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f,  4.0f,  -2.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  8.0f,   3.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  2.0f,   4.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f,  2.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -4.0f,  0.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 18.0f);
+		CreateCrashSphere(Math::Vector(  9.0f,  1.0f, -11.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f,  2.0f, -11.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f,  4.0f, -10.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-12.0f, 11.0f,  -4.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f,  4.0f,  -2.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f,  8.0f,   3.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f,  2.0f,   4.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f,  2.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -4.0f,  0.0f,  10.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 18.0f);
 
 		CreateShadowCircle(20.0f, 0.7f);
 	}
 
 	if ( type == OBJECT_RUINdoor )  // converter holder?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 6.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 6.0f);
 
 		CreateShadowCircle(6.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINsupport )  // radar holder?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f);
 
 		CreateShadowCircle(3.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINradar )  // radar base?
 	{
-		CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 6.0f);
+		CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+//?		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 6.0f);
 
 		CreateShadowCircle(6.0f, 1.0f);
 	}
@@ -5293,48 +5293,48 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 	{
 		m_terrain->AddBuildingLevel(pos, 7.0f, 9.0f, 1.0f, 0.5f);
 
-		CreateCrashSphere(D3DVECTOR(-10.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-10.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
-//?		SetGlobalSphere(D3DVECTOR(-3.0f, 0.0f, 0.0f), 14.0f);
+		CreateCrashSphere(Math::Vector(-10.0f,  0.0f,  4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-10.0f,  0.0f, -4.0f), 5.0f, SOUND_BOUMm, 0.45f);
+//?		SetGlobalSphere(Math::Vector(-3.0f, 0.0f, 0.0f), 14.0f);
 	}
 
 	if ( type == OBJECT_RUINbase )  // base?
 	{
-		CreateCrashSphere(D3DVECTOR(  0.0f, 15.0f,   0.0f),28.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-42.0f,  6.0f,  17.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-42.0f, 17.0f,  17.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-42.0f,  6.0f, -17.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-42.0f, 17.0f, -17.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-17.0f,  6.0f, -42.0f), 6.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-17.0f, 10.0f, -42.0f), 4.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 15.0f, 13.0f, -34.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 31.0f, 15.0f, -13.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 21.0f,  8.0f, -39.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 26.0f,  8.0f, -33.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 48.0f);
+		CreateCrashSphere(Math::Vector(  0.0f, 15.0f,   0.0f),28.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-17.0f,  6.0f,  42.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-17.0f, 17.0f,  42.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-42.0f,  6.0f,  17.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-42.0f, 17.0f,  17.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-42.0f,  6.0f, -17.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-42.0f, 17.0f, -17.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-17.0f,  6.0f, -42.0f), 6.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-17.0f, 10.0f, -42.0f), 4.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 15.0f, 13.0f, -34.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 31.0f, 15.0f, -13.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 21.0f,  8.0f, -39.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 26.0f,  8.0f, -33.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 48.0f);
 
 		CreateShadowCircle(40.0f, 1.0f);
 	}
 
 	if ( type == OBJECT_RUINhead )  // base cap?
 	{
-		CreateCrashSphere(D3DVECTOR(  0.0f, 13.0f,   0.0f),20.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, -8.0f,   0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f,-16.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f,-22.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( -9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f);
-		SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 35.0f);
+		CreateCrashSphere(Math::Vector(  0.0f, 13.0f,   0.0f),20.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, -8.0f,   0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f,-16.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f,-22.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 21.0f,  7.0f,   9.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  9.0f,  7.0f,  21.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( -9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 21.0f,  7.0f,  -9.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  9.0f,  7.0f, -21.0f), 8.0f, SOUND_BOUMm, 0.45f);
+		SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 35.0f);
 
 		CreateShadowCircle(30.0f, 1.0f);
 	}
@@ -5500,7 +5500,7 @@ bool CObject::CreateRuin(D3DVECTOR pos, float angle, float height,
 
 // Creates a gadget apollo.
 
-bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
+bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
 {
 	CModFile*	pModFile;
 	int			rank, i;
@@ -5543,13 +5543,13 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 
 //?		m_terrain->AddBuildingLevel(pos, 10.0f, 13.0f, 12.0f, 0.0f);
 
-		CreateCrashSphere(D3DVECTOR(  0.0f, 4.0f,   0.0f), 9.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f, -11.0f), 3.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(  0.0f, 5.0f,  11.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 4.0f,   0.0f), 9.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-11.0f, 5.0f,   0.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 5.0f, -11.0f), 3.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(  0.0f, 5.0f,  11.0f), 3.0f, SOUND_BOUMm, 0.45f);
 
-		SetGlobalSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 9.0f);
+		SetGlobalSphere(Math::Vector(0.0f, 4.0f, 0.0f), 9.0f);
 
 		CreateShadowCircle(16.0f, 0.5f);
 	}
@@ -5572,7 +5572,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(-5.75f, 1.65f, -5.0f));
+		SetPosition(1, Math::Vector(-5.75f, 1.65f, -5.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -5580,7 +5580,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetObjectParent(2, 0);
 		pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
-		SetPosition(2, D3DVECTOR(-5.75f, 1.65f, 5.0f));
+		SetPosition(2, Math::Vector(-5.75f, 1.65f, 5.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -5588,7 +5588,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetObjectParent(3, 0);
 		pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
-		SetPosition(3, D3DVECTOR(5.75f, 1.65f, -5.0f));
+		SetPosition(3, Math::Vector(5.75f, 1.65f, -5.0f));
 
 		rank = m_engine->CreateObject();
 		m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -5596,7 +5596,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetObjectParent(4, 0);
 		pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
 		pModFile->CreateEngineObject(rank);
-		SetPosition(4, D3DVECTOR(5.75f, 1.65f, 5.0f));
+		SetPosition(4, Math::Vector(5.75f, 1.65f, 5.0f));
 
 		// Accessories:
 		rank = m_engine->CreateObject();
@@ -5605,7 +5605,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetObjectParent(5, 0);
 		pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
 		pModFile->CreateEngineObject(rank);
-		SetPosition(5, D3DVECTOR(5.5f, 8.8f, 2.0f));
+		SetPosition(5, Math::Vector(5.5f, 8.8f, 2.0f));
 		SetAngleY(5, -120.0f*Math::PI/180.0f);
 		SetAngleZ(5,   45.0f*Math::PI/180.0f);
 
@@ -5615,12 +5615,12 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetObjectParent(6, 0);
 		pModFile->ReadModel("objects\\apolloj3.mod");  // camera
 		pModFile->CreateEngineObject(rank);
-		SetPosition(6, D3DVECTOR(5.5f, 2.8f, -2.0f));
+		SetPosition(6, Math::Vector(5.5f, 2.8f, -2.0f));
 		SetAngleY(6, 30.0f*Math::PI/180.0f);
 
-		CreateCrashSphere(D3DVECTOR( 3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR(-3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
-		CreateCrashSphere(D3DVECTOR( 7.0f, 9.0f, 2.0f), 2.0f, SOUND_BOUMm, 0.20f);
+		CreateCrashSphere(Math::Vector( 3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(-3.0f, 2.0f, 0.0f), 5.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector( 7.0f, 9.0f, 2.0f), 2.0f, SOUND_BOUMm, 0.20f);
 
 		CreateShadowCircle(7.0f, 0.8f);
 
@@ -5638,7 +5638,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 
-		SetJotlerSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 1.0f);
+		SetJotlerSphere(Math::Vector(0.0f, 4.0f, 0.0f), 1.0f);
 		CreateShadowCircle(2.0f, 0.3f);
 	}
 
@@ -5653,7 +5653,7 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetAngleY(0, angle);
 		SetFloorHeight(0.0f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
+		CreateCrashSphere(Math::Vector(0.0f, 2.0f, 0.0f), 2.0f, SOUND_BOUMm, 0.45f);
 		CreateShadowCircle(5.0f, 0.8f);
 
 		FloorAdjust();
@@ -5676,11 +5676,11 @@ bool CObject::CreateApollo(D3DVECTOR pos, float angle, ObjectType type)
 		SetObjectParent(1, 0);
 		pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
 		pModFile->CreateEngineObject(rank);
-		SetPosition(1, D3DVECTOR(0.0f, 5.0f, 0.0f));
+		SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
 		SetAngleY(1, -120.0f*Math::PI/180.0f);
 		SetAngleZ(1,   45.0f*Math::PI/180.0f);
 
-		CreateCrashSphere(D3DVECTOR(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.35f);
+		CreateCrashSphere(Math::Vector(0.0f, 4.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.35f);
 		CreateShadowCircle(3.0f, 0.7f);
 	}
 
@@ -5850,7 +5850,7 @@ bool CObject::RunProgram(int rank)
 
 bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
 {
-	D3DVECTOR	position, angle, eye;
+	Math::Vector	position, angle, eye;
 	bool		bModif = false;
 	int			parent;
 
@@ -5878,32 +5878,31 @@ bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
 	{
 		if ( m_objectPart[part].bTranslate )
 		{
-			D3DUtil_SetIdentityMatrix(m_objectPart[part].matTranslate);
-			m_objectPart[part].matTranslate._41 = position.x;
-			m_objectPart[part].matTranslate._42 = position.y;
-			m_objectPart[part].matTranslate._43 = position.z;
+			m_objectPart[part].matTranslate.LoadIdentity();
+			m_objectPart[part].matTranslate.Set(1, 4, position.x);
+			m_objectPart[part].matTranslate.Set(2, 4, position.y);
+			m_objectPart[part].matTranslate.Set(3, 4, position.z);
 		}
 
 		if ( m_objectPart[part].bRotate )
 		{
-			MatRotateZXY(m_objectPart[part].matRotate, angle);
+			Math::LoadRotationZXYMatrix(m_objectPart[part].matRotate, angle);
 		}
 
 		if ( m_objectPart[part].bZoom )
 		{
-			D3DMATRIX	mz;
-			D3DUtil_SetIdentityMatrix(mz);
-			mz._11 = m_objectPart[part].zoom.x;
-			mz._22 = m_objectPart[part].zoom.y;
-			mz._33 = m_objectPart[part].zoom.z;
-			m_objectPart[part].matTransform = mz *
-											  m_objectPart[part].matRotate *
-											  m_objectPart[part].matTranslate;
+			Math::Matrix	mz;
+			mz.LoadIdentity();
+			mz.Set(1, 1, m_objectPart[part].zoom.x);
+			mz.Set(2, 2, m_objectPart[part].zoom.y);
+			mz.Set(3, 3, m_objectPart[part].zoom.z);
+			m_objectPart[part].matTransform = Math::MultiplyMatrices(m_objectPart[part].matTranslate,
+												Math::MultiplyMatrices(m_objectPart[part].matRotate, mz));
 		}
 		else
 		{
-			m_objectPart[part].matTransform = m_objectPart[part].matRotate *
-											  m_objectPart[part].matTranslate;
+			m_objectPart[part].matTransform = Math::MultiplyMatrices(m_objectPart[part].matTranslate,
+																	 m_objectPart[part].matRotate);
 		}
 		bModif = true;
 	}
@@ -5916,10 +5915,10 @@ bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
 
 		if ( part == 0 && m_truck != 0 )  // transported by a truck?
 		{
-			D3DMATRIX*	matWorldTruck;
+			Math::Matrix*	matWorldTruck;
 			matWorldTruck = m_truck->RetWorldMatrix(m_truckLink);
-			m_objectPart[part].matWorld = m_objectPart[part].matTransform *
-										  *matWorldTruck;
+			m_objectPart[part].matWorld = Math::MultiplyMatrices(*matWorldTruck,
+																 m_objectPart[part].matTransform);
 		}
 		else
 		{
@@ -5929,8 +5928,8 @@ bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
 			}
 			else
 			{
-				m_objectPart[part].matWorld = m_objectPart[part].matTransform *
-											  m_objectPart[parent].matWorld;
+				m_objectPart[part].matWorld = Math::MultiplyMatrices(m_objectPart[parent].matWorld,
+																	 m_objectPart[part].matTransform);
 			}
 		}
 		bModif = true;
@@ -6020,17 +6019,17 @@ void CObject::FlatParent()
 
 	for ( i=0 ; i<m_totalPart ; i++ )
 	{
-		m_objectPart[i].position.x = m_objectPart[i].matWorld._41;
-		m_objectPart[i].position.y = m_objectPart[i].matWorld._42;
-		m_objectPart[i].position.z = m_objectPart[i].matWorld._43;
+		m_objectPart[i].position.x = m_objectPart[i].matWorld.Get(1, 4);
+		m_objectPart[i].position.y = m_objectPart[i].matWorld.Get(2, 4);
+		m_objectPart[i].position.z = m_objectPart[i].matWorld.Get(3, 4);
 
-		m_objectPart[i].matWorld._41 = 0.0f;
-		m_objectPart[i].matWorld._42 = 0.0f;
-		m_objectPart[i].matWorld._43 = 0.0f;
+		m_objectPart[i].matWorld.Set(1, 4, 0.0f);
+		m_objectPart[i].matWorld.Set(2, 4, 0.0f);
+		m_objectPart[i].matWorld.Set(3, 4, 0.0f);
 
-		m_objectPart[i].matTranslate._41 = 0.0f;
-		m_objectPart[i].matTranslate._42 = 0.0f;
-		m_objectPart[i].matTranslate._43 = 0.0f;
+		m_objectPart[i].matTranslate.Set(1, 4, 0.0f);
+		m_objectPart[i].matTranslate.Set(2, 4, 0.0f);
+		m_objectPart[i].matTranslate.Set(3, 4, 0.0f);
 
 		m_objectPart[i].parentPart = -1;  // more parents
 	}
@@ -6212,11 +6211,11 @@ bool CObject::EventFrame(const Event &event)
 	if ( m_bProxyActivate )  // active if it is near?
 	{
 		CPyro*		pyro;
-		D3DVECTOR	eye;
+		Math::Vector	eye;
 		float		dist;
 
 		eye = m_engine->RetLookatPt();
-		dist = Length(eye, RetPosition(0));
+		dist = Math::Distance(eye, RetPosition(0));
 		if ( dist < m_proxyDistance )
 		{
 			m_bProxyActivate = false;
@@ -6250,7 +6249,7 @@ void CObject::UpdateMapping()
 void CObject::VirusFrame(float rTime)
 {
 	ParticuleType	type;
-	D3DVECTOR		pos, speed;
+	Math::Vector		pos, speed;
 	Math::Point			dim;
 	int				r;
 
@@ -6295,7 +6294,7 @@ void CObject::VirusFrame(float rTime)
 
 void CObject::PartiFrame(float rTime)
 {
-	D3DVECTOR	pos, angle, factor;
+	Math::Vector	pos, angle, factor;
 	int			i, channel;
 
 	for ( i=0 ; i<OBJECTMAXPART ; i++ )
@@ -6316,11 +6315,11 @@ void CObject::PartiFrame(float rTime)
 		// Each song spins differently.
 		switch( i%5 )
 		{
-			case 0:  factor = D3DVECTOR( 0.5f, 0.3f, 0.6f); break;
-			case 1:  factor = D3DVECTOR(-0.3f, 0.4f,-0.2f); break;
-			case 2:  factor = D3DVECTOR( 0.4f,-0.6f,-0.3f); break;
-			case 3:  factor = D3DVECTOR(-0.6f,-0.2f, 0.0f); break;
-			case 4:  factor = D3DVECTOR( 0.4f, 0.1f,-0.7f); break;
+			case 0:  factor = Math::Vector( 0.5f, 0.3f, 0.6f); break;
+			case 1:  factor = Math::Vector(-0.3f, 0.4f,-0.2f); break;
+			case 2:  factor = Math::Vector( 0.4f,-0.6f,-0.3f); break;
+			case 3:  factor = Math::Vector(-0.6f,-0.2f, 0.0f); break;
+			case 4:  factor = Math::Vector( 0.4f, 0.1f,-0.7f); break;
 		}
 
 		angle = RetAngle(i);
@@ -6333,8 +6332,8 @@ void CObject::PartiFrame(float rTime)
 // Changes the perspective to view if it was like in the vehicle,
 // or behind the vehicle.
 
-void CObject::SetViewFromHere(D3DVECTOR &eye, float &dirH, float &dirV,
-							  D3DVECTOR	&lookat, D3DVECTOR &upVec,
+void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
+							  Math::Vector	&lookat, Math::Vector &upVec,
 							  CameraType type)
 {
 	float	speed;
@@ -6440,11 +6439,11 @@ void CObject::SetViewFromHere(D3DVECTOR &eye, float &dirH, float &dirV,
 	lookat.y = eye.y+0.0f;
 	lookat.z = eye.z+0.0f;
 
-	eye    = Transform(m_objectPart[part].matWorld, eye);
-	lookat = Transform(m_objectPart[part].matWorld, lookat);
+	eye    = Math::Transform(m_objectPart[part].matWorld, eye);
+	lookat = Math::Transform(m_objectPart[part].matWorld, lookat);
 
 	// Camera tilts when turning.
-	upVec = D3DVECTOR(0.0f, 1.0f, 0.0f);
+	upVec = Math::Vector(0.0f, 1.0f, 0.0f);
 	if ( m_physics != 0 )
 	{
 		if ( m_physics->RetLand() )  // on ground?
@@ -6464,7 +6463,7 @@ void CObject::SetViewFromHere(D3DVECTOR &eye, float &dirH, float &dirV,
 			upVec.z += speed*0.08f;
 		}
 	}
-	upVec = Transform(m_objectPart[0].matRotate, upVec);
+	upVec = Math::Transform(m_objectPart[0].matRotate, upVec);
 
 	dirH = -(m_objectPart[part].angle.y+Math::PI/2.0f);
 	dirV = 0.0f;
@@ -6709,22 +6708,22 @@ bool CObject::JostleObject(float force)
 
 void CObject::StartDetectEffect(CObject *target, bool bFound)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, goal;
+	Math::Matrix*	mat;
+	Math::Vector	pos, goal;
 	Math::Point		dim;
 
 	mat = RetWorldMatrix(0);
-	pos = Transform(*mat, D3DVECTOR(2.0f, 3.0f, 0.0f));
+	pos = Math::Transform(*mat, Math::Vector(2.0f, 3.0f, 0.0f));
 
 	if ( target == 0 )
 	{
-		goal = Transform(*mat, D3DVECTOR(50.0f, 3.0f, 0.0f));
+		goal = Math::Transform(*mat, Math::Vector(50.0f, 3.0f, 0.0f));
 	}
 	else
 	{
 		goal = target->RetPosition(0);
 		goal.y += 3.0f;
-		goal = SegmentDist(pos, goal, Length(pos, goal)-3.0f);
+		goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-3.0f);
 	}
 
 	dim.x = 3.0f;
@@ -6735,10 +6734,10 @@ void CObject::StartDetectEffect(CObject *target, bool bFound)
 	{
 		goal = target->RetPosition(0);
 		goal.y += 3.0f;
-		goal = SegmentDist(pos, goal, Length(pos, goal)-1.0f);
+		goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-1.0f);
 		dim.x = 6.0f;
 		dim.y = dim.x;
-		m_particule->CreateParticule(goal, D3DVECTOR(0.0f, 0.0f, 0.0f), dim,
+		m_particule->CreateParticule(goal, Math::Vector(0.0f, 0.0f, 0.0f), dim,
 									 bFound?PARTIGLINT:PARTIGLINTr, 0.5f);
 	}
 
@@ -7222,7 +7221,7 @@ bool CObject::IsProgram()
 
 void CObject::CreateSelectParticule()
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	int			i;
 
@@ -7267,8 +7266,8 @@ void CObject::CreateSelectParticule()
 			 m_type == OBJECT_MOBILEit ||
 			 m_type == OBJECT_MOBILEdr )  // vehicle?
 		{
-			pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			pos = Math::Vector(0.0f, 0.0f, 0.0f);
+			speed = Math::Vector(0.0f, 0.0f, 0.0f);
 			dim.x = 0.0f;
 			dim.y = 0.0f;
 			m_partiSel[0] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f, 0.0f);
@@ -7284,7 +7283,7 @@ void CObject::CreateSelectParticule()
 
 void CObject::UpdateSelectParticule()
 {
-	D3DVECTOR	pos[4];
+	Math::Vector	pos[4];
 	Math::Point		dim[4];
 	float		zoom[4];
 	float		angle;
@@ -7303,8 +7302,8 @@ void CObject::UpdateSelectParticule()
 		 m_type == OBJECT_MOBILErr ||
 		 m_type == OBJECT_MOBILErs )  // large caterpillars?
 	{
-		pos[0] = D3DVECTOR(4.2f, 2.8f,  1.5f);
-		pos[1] = D3DVECTOR(4.2f, 2.8f, -1.5f);
+		pos[0] = Math::Vector(4.2f, 2.8f,  1.5f);
+		pos[1] = Math::Vector(4.2f, 2.8f, -1.5f);
 		dim[0].x = 1.5f;
 		dim[1].x = 1.5f;
 	}
@@ -7313,30 +7312,30 @@ void CObject::UpdateSelectParticule()
 			  m_type == OBJECT_MOBILEft ||
 			  m_type == OBJECT_MOBILEit )  // trainer ?
 	{
-		pos[0] = D3DVECTOR(4.2f, 2.5f,  1.2f);
-		pos[1] = D3DVECTOR(4.2f, 2.5f, -1.2f);
+		pos[0] = Math::Vector(4.2f, 2.5f,  1.2f);
+		pos[1] = Math::Vector(4.2f, 2.5f, -1.2f);
 		dim[0].x = 1.5f;
 		dim[1].x = 1.5f;
 	}
 	else if ( m_type == OBJECT_MOBILEsa )  // submarine?
 	{
-		pos[0] = D3DVECTOR(3.6f, 4.0f,  2.0f);
-		pos[1] = D3DVECTOR(3.6f, 4.0f, -2.0f);
+		pos[0] = Math::Vector(3.6f, 4.0f,  2.0f);
+		pos[1] = Math::Vector(3.6f, 4.0f, -2.0f);
 	}
 	else if ( m_type == OBJECT_MOBILEtg )  // target?
 	{
-		pos[0] = D3DVECTOR(3.4f, 6.5f,  2.0f);
-		pos[1] = D3DVECTOR(3.4f, 6.5f, -2.0f);
+		pos[0] = Math::Vector(3.4f, 6.5f,  2.0f);
+		pos[1] = Math::Vector(3.4f, 6.5f, -2.0f);
 	}
 	else if ( m_type == OBJECT_MOBILEdr )  // designer?
 	{
-		pos[0] = D3DVECTOR(4.9f, 3.5f,  2.5f);
-		pos[1] = D3DVECTOR(4.9f, 3.5f, -2.5f);
+		pos[0] = Math::Vector(4.9f, 3.5f,  2.5f);
+		pos[1] = Math::Vector(4.9f, 3.5f, -2.5f);
 	}
 	else
 	{
-		pos[0] = D3DVECTOR(4.2f, 2.5f,  1.5f);
-		pos[1] = D3DVECTOR(4.2f, 2.5f, -1.5f);
+		pos[0] = Math::Vector(4.2f, 2.5f,  1.5f);
+		pos[1] = Math::Vector(4.2f, 2.5f, -1.5f);
 	}
 
 	// Red back lens
@@ -7346,8 +7345,8 @@ void CObject::UpdateSelectParticule()
 		 m_type == OBJECT_MOBILEfs ||
 		 m_type == OBJECT_MOBILEft )  // flying?
 	{
-		pos[2] = D3DVECTOR(-4.0f, 3.1f,  4.5f);
-		pos[3] = D3DVECTOR(-4.0f, 3.1f, -4.5f);
+		pos[2] = Math::Vector(-4.0f, 3.1f,  4.5f);
+		pos[3] = Math::Vector(-4.0f, 3.1f, -4.5f);
 		dim[2].x = 0.6f;
 		dim[3].x = 0.6f;
 	}
@@ -7356,13 +7355,13 @@ void CObject::UpdateSelectParticule()
 		 m_type == OBJECT_MOBILEwi ||
 		 m_type == OBJECT_MOBILEws )  // wheels?
 	{
-		pos[2] = D3DVECTOR(-4.5f, 2.7f,  2.8f);
-		pos[3] = D3DVECTOR(-4.5f, 2.7f, -2.8f);
+		pos[2] = Math::Vector(-4.5f, 2.7f,  2.8f);
+		pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
 	}
 	if ( m_type == OBJECT_MOBILEwt )  // wheels?
 	{
-		pos[2] = D3DVECTOR(-4.0f, 2.5f,  2.2f);
-		pos[3] = D3DVECTOR(-4.0f, 2.5f, -2.2f);
+		pos[2] = Math::Vector(-4.0f, 2.5f,  2.2f);
+		pos[3] = Math::Vector(-4.0f, 2.5f, -2.2f);
 	}
 	if ( m_type == OBJECT_MOBILEia ||
 		 m_type == OBJECT_MOBILEic ||
@@ -7370,8 +7369,8 @@ void CObject::UpdateSelectParticule()
 		 m_type == OBJECT_MOBILEis ||
 		 m_type == OBJECT_MOBILEit )  // legs?
 	{
-		pos[2] = D3DVECTOR(-4.5f, 2.7f,  2.8f);
-		pos[3] = D3DVECTOR(-4.5f, 2.7f, -2.8f);
+		pos[2] = Math::Vector(-4.5f, 2.7f,  2.8f);
+		pos[3] = Math::Vector(-4.5f, 2.7f, -2.8f);
 	}
 	if ( m_type == OBJECT_MOBILEta ||
 		 m_type == OBJECT_MOBILEtc ||
@@ -7379,31 +7378,31 @@ void CObject::UpdateSelectParticule()
 		 m_type == OBJECT_MOBILEts ||
 		 m_type == OBJECT_MOBILEtt )  // caterpillars?
 	{
-		pos[2] = D3DVECTOR(-3.6f, 4.2f,  3.0f);
-		pos[3] = D3DVECTOR(-3.6f, 4.2f, -3.0f);
+		pos[2] = Math::Vector(-3.6f, 4.2f,  3.0f);
+		pos[3] = Math::Vector(-3.6f, 4.2f, -3.0f);
 	}
 	if ( m_type == OBJECT_MOBILErt ||
 		 m_type == OBJECT_MOBILErc ||
 		 m_type == OBJECT_MOBILErr ||
 		 m_type == OBJECT_MOBILErs )  // large caterpillars?
 	{
-		pos[2] = D3DVECTOR(-5.0f, 5.2f,  2.5f);
-		pos[3] = D3DVECTOR(-5.0f, 5.2f, -2.5f);
+		pos[2] = Math::Vector(-5.0f, 5.2f,  2.5f);
+		pos[3] = Math::Vector(-5.0f, 5.2f, -2.5f);
 	}
 	if ( m_type == OBJECT_MOBILEsa )  // submarine?
 	{
-		pos[2] = D3DVECTOR(-3.6f, 4.0f,  2.0f);
-		pos[3] = D3DVECTOR(-3.6f, 4.0f, -2.0f);
+		pos[2] = Math::Vector(-3.6f, 4.0f,  2.0f);
+		pos[3] = Math::Vector(-3.6f, 4.0f, -2.0f);
 	}
 	if ( m_type == OBJECT_MOBILEtg )  // target?
 	{
-		pos[2] = D3DVECTOR(-2.4f, 6.5f,  2.0f);
-		pos[3] = D3DVECTOR(-2.4f, 6.5f, -2.0f);
+		pos[2] = Math::Vector(-2.4f, 6.5f,  2.0f);
+		pos[3] = Math::Vector(-2.4f, 6.5f, -2.0f);
 	}
 	if ( m_type == OBJECT_MOBILEdr )  // designer?
 	{
-		pos[2] = D3DVECTOR(-5.3f, 2.7f,  1.8f);
-		pos[3] = D3DVECTOR(-5.3f, 2.7f, -1.8f);
+		pos[2] = Math::Vector(-5.3f, 2.7f,  1.8f);
+		pos[3] = Math::Vector(-5.3f, 2.7f, -1.8f);
 	}
 
 	angle = RetAngleY(0)/Math::PI;
@@ -7425,7 +7424,7 @@ void CObject::UpdateSelectParticule()
 	// Updates lens.
 	for ( i=0 ; i<4 ; i++ )
 	{
-		pos[i] = Transform(m_objectPart[0].matWorld, pos[i]);
+		pos[i] = Math::Transform(m_objectPart[0].matWorld, pos[i]);
 		dim[i].y = dim[i].x;
 		m_particule->SetParam(m_partiSel[i], pos[i], dim[i], zoom[i], angle, 1.0f);
 	}

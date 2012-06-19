@@ -72,13 +72,13 @@ public:
 
 protected:
 	void		InitAngle();
-	CObject*	SearchTakeUnderObject(D3DVECTOR &pos, float dLimit);
-	CObject*	SearchTakeFrontObject(bool bAdvance, D3DVECTOR &pos, float &distance, float &angle);
-	CObject*	SearchTakeBackObject(bool bAdvance, D3DVECTOR &pos, float &distance, float &angle);
-	CObject*	SearchOtherObject(bool bAdvance, D3DVECTOR &pos, float &distance, float &angle, float &height);
+	CObject*	SearchTakeUnderObject(Math::Vector &pos, float dLimit);
+	CObject*	SearchTakeFrontObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
+	CObject*	SearchTakeBackObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
+	CObject*	SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height);
 	bool		TruckTakeObject();
 	bool		TruckDeposeObject();
-	bool		IsFreeDeposeObject(D3DVECTOR pos);
+	bool		IsFreeDeposeObject(Math::Vector pos);
 	void		SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
 
 protected:
@@ -99,7 +99,7 @@ protected:
 	bool			m_bBee;
 	float			m_angle;
 	float			m_move;
-	D3DVECTOR		m_targetPos;
+	Math::Vector		m_targetPos;
 	float			m_timeLimit;
 	ObjectType		m_fretType;
 };

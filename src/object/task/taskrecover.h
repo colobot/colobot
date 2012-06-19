@@ -67,7 +67,7 @@ protected:
 	bool			m_bError;
 	CObject*		m_ruin;
 	CObject*		m_metal;
-	D3DVECTOR		m_recoverPos;
+	Math::Vector		m_recoverPos;
 	int				m_soundChannel;
 };
 

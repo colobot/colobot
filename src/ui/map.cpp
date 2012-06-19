@@ -286,7 +286,7 @@ CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
 		if ( m_map[i].color == MAPCOLOR_BBOX  && !m_bRadar )  continue;
 		if ( m_map[i].color == MAPCOLOR_ALIEN && !m_bRadar )  continue;
 
-		dist = Length(m_map[i].pos.x-pos.x, m_map[i].pos.y-pos.y);
+		dist = Math::Point(m_map[i].pos.x-pos.x, m_map[i].pos.y-pos.y).Length();
 		if ( dist > m_half/m_zoom*8.0f/100.0f )  continue;  // too far?
 		if ( dist < min )
 		{
@@ -932,15 +932,15 @@ void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Po
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[3];	// 1 triangle
-	D3DVECTOR	n;
+	Math::Vector	n;
 
 	device = m_engine->RetD3DDevice();
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
+	vertex[1] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
+	vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
 
 	device->DrawPrimitive(D3DPT_TRIANGLELIST, D3DFVF_VERTEX2, vertex, 3, NULL);
 	m_engine->AddStatisticTriangle(1);
@@ -952,24 +952,24 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[5];	// 1 pentagon
-	D3DVECTOR	n;
+	Math::Vector	n;
 
 	device = m_engine->RetD3DDevice();
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
 #if 1
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p5.x, p5.y, 0.0f), n, uv2.x,uv2.y);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
-	vertex[4] = D3DVERTEX2(D3DVECTOR(p4.x, p4.y, 0.0f), n, uv2.x,uv2.y);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
+	vertex[1] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
+	vertex[2] = D3DVERTEX2(Math::Vector(p5.x, p5.y, 0.0f), n, uv2.x,uv2.y);
+	vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
+	vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p4.y, 0.0f), n, uv2.x,uv2.y);
 
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 5, NULL);
 #else
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv1.x,uv1.y);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv1.x,uv2.y);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p4.x, p4.y, 0.0f), n, uv2.x,uv2.y);
+	vertex[0] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv1.x,uv1.y);
+	vertex[1] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv1.x,uv2.y);
+	vertex[2] = D3DVERTEX2(Math::Vector(p4.x, p4.y, 0.0f), n, uv2.x,uv2.y);
 
 	device->DrawPrimitive(D3DPT_TRIANGLELIST, D3DFVF_VERTEX2, vertex, 3, NULL);
 #endif
@@ -983,7 +983,7 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	Math::Point		p1, p2, c;
-	D3DVECTOR	n;
+	Math::Vector	n;
 
 	device = m_engine->RetD3DDevice();
 
@@ -1005,12 +1005,12 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 	m_mapDim.x = p2.x-p1.x;
 	m_mapDim.y = p2.y-p1.y;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
 
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	m_engine->AddStatisticTriangle(2);
@@ -1022,7 +1022,7 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 void CMap::UpdateTerrain()
 {
 	D3DCOLORVALUE	color;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			scale, water, level, intensity;
 	int				x, y;
 
@@ -1081,7 +1081,7 @@ void CMap::UpdateTerrain()
 void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 {
 	D3DCOLORVALUE	color;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			scale, water, level, intensity;
 	int				x, y;
 
@@ -1159,7 +1159,7 @@ void CMap::UpdateObject(CObject* pObj)
 {
 	ObjectType		type;
 	MapColor		color;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	Math::Point			ppos;
 	float			dir;
 

@@ -22,6 +22,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/language.h"
@@ -62,10 +63,10 @@ CModFile::~CModFile()
 
 // Creates a triangle in the internal structure.
 
-bool CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
+bool CModFile::CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3,
 							  float min, float max)
 {
-	D3DVECTOR	n;
+	Math::Vector	n;
 	int			i;
 
 	if ( m_triangleUsed >= MAX_VERTICES )
@@ -81,7 +82,7 @@ bool CModFile::CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3,
 	m_triangleTable[i].bUsed = true;
 	m_triangleTable[i].bSelect = false;
 
-	n = ComputeNormal(p3, p2, p1);
+	n = Math::NormalToPlane(p3, p2, p1);
 	m_triangleTable[i].p1 = D3DVERTEX2( p1, n);
 	m_triangleTable[i].p2 = D3DVERTEX2( p2, n);
 	m_triangleTable[i].p3 = D3DVERTEX2( p3, n);
@@ -106,7 +107,7 @@ bool CModFile::ReadDXF(char *filename, float min, float max)
 	FILE*		file = NULL;
 	char		line[100];
 	int			command, rankSommet, nbSommet, nbFace;
-	D3DVECTOR	table[MAX_VERTICES];
+	Math::Vector	table[MAX_VERTICES];
 	bool		bWaitNbSommet;
 	bool		bWaitNbFace;
 	bool		bWaitSommetX;
@@ -187,7 +188,7 @@ bool CModFile::ReadDXF(char *filename, float min, float max)
 			nbSommet --;
 			if ( nbSommet >= 0 )
 			{
-				D3DVECTOR p(x,z,y);  // permutation of Y and Z!
+				Math::Vector p(x,z,y);  // permutation of Y and Z!
 				table[rankSommet++] = p;
 				bWaitSommetX = true;
 
@@ -657,9 +658,9 @@ ModelTriangle* CModFile::RetTriangleList()
 
 // Returns the height according to a position (x - z);
 
-float CModFile::RetHeight(D3DVECTOR pos)
+float CModFile::RetHeight(Math::Vector pos)
 {
-	D3DVECTOR	p1, p2, p3;
+	Math::Vector	p1, p2, p3;
 	float		limit;
 	int			i;
 

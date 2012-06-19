@@ -56,8 +56,8 @@ extern int OpResearch(char *line, char *op);
 extern PyroType OpPyro(char *line, char *op);
 extern CameraType OpCamera(char *line, char *op);
 extern int OpBuild(char *line, char *op);
-extern D3DVECTOR OpPos(char *line, char *op);
-extern D3DVECTOR OpDir(char *line, char *op);
+extern Math::Vector OpPos(char *line, char *op);
+extern Math::Vector OpDir(char *line, char *op);
 extern D3DCOLOR OpColor(char *line, char *op, D3DCOLOR def);
 extern D3DCOLORVALUE OpColorValue(char *line, char *op, D3DCOLORVALUE def);
 

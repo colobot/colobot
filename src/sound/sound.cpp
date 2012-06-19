@@ -27,6 +27,7 @@
 #include "common/struct.h"
 #include "common/iman.h"
 #include "math/geometry.h"
+#include "math/conv.h"
 #include "math/old/math3d.h"
 #include "sound/sound.h"
 
@@ -313,7 +314,7 @@ CSound::CSound(CInstanceManager* iMan)
 	m_playTime       = 0.0f;
 	m_uniqueStamp    = 0;
 	m_maxSound       = MAXSOUND;
-	m_eye            = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_eye            = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_hWnd           = 0;
 
 	m_lpDS = NULL;
@@ -931,7 +932,7 @@ bool CSound::CreateBuffer(int channel, Sound sound)
 
 // Calculates the volume and pan of a sound, non-3D mode.
 
-void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
+void CSound::ComputeVolumePan2D(int channel, const Math::Vector &pos)
 {
 	float	dist, a, g;
 
@@ -945,7 +946,7 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 	}
 
 #if _TEEN
-	dist = Length(pos, m_eye);
+	dist = Math::Distance(pos, m_eye);
 	if ( dist >= 210.0f )  // very far?
 	{
 		m_channel[channel].volume = 0.0f;  // silence
@@ -960,7 +961,7 @@ void CSound::ComputeVolumePan2D(int channel, const D3DVECTOR &pos)
 	}
 	m_channel[channel].volume = 1.0f-((dist-10.0f)/200.0f);
 #else
-	dist = Length(pos, m_eye);
+	dist = Math::Distance(pos, m_eye);
 	if ( dist >= 110.0f )  // very far?
 	{
 		m_channel[channel].volume = 0.0f;  // silence
@@ -992,7 +993,7 @@ int CSound::Play(Sound sound, float amplitude, float frequency, bool bLoop)
 // Sounds at a given position.
 // Returns the associated channel or -1.
 
-int CSound::Play(Sound sound, D3DVECTOR pos,
+int CSound::Play(Sound sound, Math::Vector pos,
 				 float amplitude, float frequency, bool bLoop)
 {
 	DS3DBUFFER	sb;
@@ -1004,7 +1005,7 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 	if ( !m_bEnable )  return -1;
 	if ( !m_bState || m_audioVolume == 0 )  return -1;
 
-//?	if ( Length(pos, m_eye) > 100.0f )  return -1;
+//?	if ( Math::Distance(pos, m_eye) > 100.0f )  return -1;
 
 	if ( !SearchFreeBuffer(sound, channel, bAlreadyLoaded) )  return -1;
 
@@ -1054,10 +1055,10 @@ int CSound::Play(Sound sound, D3DVECTOR pos,
 		err = m_channel[channel].soundBuffer3D->GetAllParameters(&sb);
 		DisplayError("GetAllParameters", sound, err);
 
-		sb.vPosition = pos;
+		sb.vPosition = VEC_TO_D3DVEC(pos);
 //?		sb.dwInsideConeAngle = 90;
 //?		sb.dwOutsideConeAngle = 180;
-//?		sb.vConeOrientation = D3DVECTOR(0.0f, 1.0f, 0.0f);
+//?		sb.vConeOrientation = Math::Vector(0.0f, 1.0f, 0.0f);
 		sb.lConeOutsideVolume = DSBVOLUME_MIN;
 #if _TEEN
 		sb.flMinDistance = 50.0f;
@@ -1178,7 +1179,7 @@ bool CSound::AddEnvelope(int channel, float amplitude, float frequency,
 
 // Changes the position of a sound.
 
-bool CSound::Position(int channel, D3DVECTOR pos)
+bool CSound::Position(int channel, Math::Vector pos)
 {
 	float		amplitude, pan;
 	int			iVolume, iPan;
@@ -1383,7 +1384,7 @@ void CSound::FrameMove(float rTime)
 // Specifies the position of the listener.
 // Must be called whenever the camera moves.
 
-void CSound::SetListener(D3DVECTOR eye, D3DVECTOR lookat)
+void CSound::SetListener(Math::Vector eye, Math::Vector lookat)
 {
 	DS3DLISTENER	listenerParams;
 	HRESULT			err;
@@ -1426,8 +1427,8 @@ void CSound::SetListener(D3DVECTOR eye, D3DVECTOR lookat)
 	listenerParams.dwSize = sizeof(DS3DLISTENER);
 	m_listener->GetAllParameters(&listenerParams);
 
-	listenerParams.vPosition = eye;
-	listenerParams.vOrientFront = lookat-eye;
+	listenerParams.vPosition = VEC_TO_D3DVEC(eye);
+	listenerParams.vOrientFront = VEC_TO_D3DVEC(lookat-eye);
 	listenerParams.vOrientTop = D3DVECTOR(0.0f, 1.0f, 0.0f);
 	listenerParams.flDistanceFactor = 10.0f;
 	listenerParams.flRolloffFactor = 1.0f;

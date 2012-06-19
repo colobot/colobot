@@ -59,7 +59,7 @@ public:
 
 protected:
 	bool		EventFrame(const Event &event);
-	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep, Math::Point &uv1, Math::Point &uv2);
+	void		AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep, Math::Point &uv1, Math::Point &uv2);
 	bool		CreateLine(int x, int y, int len);
 
 protected:
@@ -76,7 +76,7 @@ protected:
 	float			m_lastTest;
 	int				m_subdiv;
 
-	D3DVECTOR		m_wind;			// wind speed
+	Math::Vector		m_wind;			// wind speed
 	int			m_brick;		// brick mosaic
 	float			m_size;			// size of a brick element
 

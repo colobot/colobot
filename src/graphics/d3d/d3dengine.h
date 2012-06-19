@@ -20,6 +20,8 @@
 
 
 #include "math/point.h"
+#include "math/vector.h"
+#include "math/matrix.h"
 #include "common/struct.h"
 
 
@@ -188,10 +190,10 @@ struct D3DObject
 	char		bDrawFront;		// true -> shape before the interface
 	int		totalTriangle;		// number of triangles used
 	D3DTypeObj	type;			// type of the object (TYPE*)
-	D3DMATRIX	transform;		// transformation matrix
+	Math::Matrix	transform;		// transformation matrix
 	float		distance;		// distance point of view - original
-	D3DVECTOR	bboxMin;		// bounding box of the object
-	D3DVECTOR	bboxMax;		// (the origin 0, 0, 0 is always included)
+	Math::Vector	bboxMin;		// bounding box of the object
+	Math::Vector	bboxMax;		// (the origin 0, 0, 0 is always included)
 	float		radius;			// radius of the sphere at the origin
 	int		shadowRank;		// rank of the associated shadow
 	float		transparency;		// transparency of the object (0 .. 1)
@@ -203,8 +205,8 @@ struct D3DShadow
 	char		bHide;			// true -> invisible shadow (object carried by ex.)
 	int		objRank;		// rank of the object
 	D3DShadowType 	type;			// type of shadow
-	D3DVECTOR	pos;			// position for the shadow
-	D3DVECTOR	normal;			// normal terrain
+	Math::Vector	pos;			// position for the shadow
+	Math::Vector	normal;			// normal terrain
 	float		angle;			// angle of the shadow
 	float		radius;			// radius of the shadow
 	float		intensity;		// intensity of the shadow
@@ -217,9 +219,9 @@ struct D3DGroundSpot
 	D3DCOLORVALUE	color;			// color of the shadow
 	float		min, max;		// altitudes min / max
 	float		smooth;			// transition area
-	D3DVECTOR	pos;			// position for the shadow
+	Math::Vector	pos;			// position for the shadow
 	float		radius;			// radius of the shadow
-	D3DVECTOR	drawPos;		// drawn to position the shade
+	Math::Vector	drawPos;		// drawn to position the shade
 	float		drawRadius;		// radius of the shadow drawn
 };
 
@@ -230,10 +232,10 @@ struct D3DGroundMark
 	int		phase;			// 1 = increase, 2 = fixed, 3 = decrease
 	float		delay[3];		// time for 3 phases
 	float		fix;			// fixed time
-	D3DVECTOR	pos;			// position for marks
+	Math::Vector	pos;			// position for marks
 	float		radius;			// radius of marks
 	float		intensity;		// color intensity
-	D3DVECTOR	drawPos;		// drawn in position marks
+	Math::Vector	drawPos;		// drawn in position marks
 	float		drawRadius;		// radius marks drawn
 	float		drawIntensity;		// current drawn
 	int		dx, dy;			// dimensions table
@@ -291,9 +293,9 @@ public:
 	bool		RetFullScreen();
 	bool		ChangeDevice(char *device, char *mode, bool bFull);
 
-	D3DMATRIX*	RetMatView();
-	D3DMATRIX*	RetMatLeftView();
-	D3DMATRIX*	RetMatRightView();
+	Math::Matrix*	RetMatView();
+	Math::Matrix*	RetMatLeftView();
+	Math::Matrix*	RetMatRightView();
 
 	void		TimeInit();
 	void		TimeEnterGel();
@@ -314,11 +316,11 @@ public:
 	bool		ChangeSecondTexture(int objRank, char* texName2);
 	int			RetTotalTriangles(int objRank);
 	int			GetTriangles(int objRank, float min, float max, D3DTriangle* buffer, int size, float percent);
-	bool		GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max);
+	bool		GetBBox(int objRank, Math::Vector &min, Math::Vector &max);
 	bool		ChangeTextureMapping(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, D3DMaping mode, float au, float bu, float av, float bv);
 	bool		TrackTextureMapping(int objRank, const D3DMATERIAL7 &mat, int state, char* texName1, char* texName2, float min, float max, D3DMaping mode, float pos, float factor, float tl, float ts, float tt);
-	bool		SetObjectTransform(int objRank, const D3DMATRIX &transform);
-	bool		GetObjectTransform(int objRank, D3DMATRIX &transform);
+	bool		SetObjectTransform(int objRank, const Math::Matrix &transform);
+	bool		GetObjectTransform(int objRank, Math::Matrix &transform);
 	bool		SetObjectType(int objRank, D3DTypeObj type);
 	D3DTypeObj	RetObjectType(int objRank);
 	bool		SetObjectTransparency(int objRank, float value);
@@ -327,8 +329,8 @@ public:
 	void		ShadowDelete(int objRank);
 	bool		SetObjectShadowHide(int objRank, bool bHide);
 	bool		SetObjectShadowType(int objRank, D3DShadowType type);
-	bool		SetObjectShadowPos(int objRank, const D3DVECTOR &pos);
-	bool		SetObjectShadowNormal(int objRank, const D3DVECTOR &n);
+	bool		SetObjectShadowPos(int objRank, const Math::Vector &pos);
+	bool		SetObjectShadowNormal(int objRank, const Math::Vector &n);
 	bool		SetObjectShadowAngle(int objRank, float angle);
 	bool		SetObjectShadowRadius(int objRank, float radius);
 	bool		SetObjectShadowIntensity(int objRank, float intensity);
@@ -338,18 +340,18 @@ public:
 	void		GroundSpotFlush();
 	int			GroundSpotCreate();
 	void		GroundSpotDelete(int rank);
-	bool		SetObjectGroundSpotPos(int rank, const D3DVECTOR &pos);
+	bool		SetObjectGroundSpotPos(int rank, const Math::Vector &pos);
 	bool		SetObjectGroundSpotRadius(int rank, float radius);
 	bool		SetObjectGroundSpotColor(int rank, D3DCOLORVALUE color);
 	bool		SetObjectGroundSpotMinMax(int rank, float min, float max);
 	bool		SetObjectGroundSpotSmooth(int rank, float smooth);
 
-	int			GroundMarkCreate(D3DVECTOR pos, float radius, float delay1, float delay2, float delay3, int dx, int dy, char* table);
+	int			GroundMarkCreate(Math::Vector pos, float radius, float delay1, float delay2, float delay3, int dx, int dy, char* table);
 	bool		GroundMarkDelete(int rank);
 
 	void		Update();
 	
-	void		SetViewParams(const D3DVECTOR &vEyePt, const D3DVECTOR &vLookatPt, const D3DVECTOR &vUpVec, FLOAT fEyeDistance);
+	void		SetViewParams(const Math::Vector &vEyePt, const Math::Vector &vLookatPt, const Math::Vector &vUpVec, FLOAT fEyeDistance);
 
 	bool		FreeTexture(char* name);
 	bool		LoadTexture(char* name, int stage=0);
@@ -454,8 +456,8 @@ public:
 
 	void		SetFocus(float focus);
 	float		RetFocus();
-	D3DVECTOR	RetEyePt();
-	D3DVECTOR	RetLookatPt();
+	Math::Vector	RetEyePt();
+	Math::Vector	RetLookatPt();
 	float		RetEyeDirH();
 	float		RetEyeDirV();
 	POINT		RetDim();
@@ -475,7 +477,7 @@ public:
 	bool		RetDebugMode();
 	bool		RetSetupMode();
 
-	bool		IsVisiblePoint(const D3DVECTOR &pos);
+	bool		IsVisiblePoint(const Math::Vector &pos);
 
 	int			DetectObject(Math::Point mouse);
 	void		SetState(int state, D3DCOLOR color=0xffffffff);
@@ -525,7 +527,7 @@ protected:
 	bool		IsVisible(int objRank);
 	bool		DetectBBox(int objRank, Math::Point mouse);
 	bool		DetectTriangle(Math::Point mouse, D3DVERTEX2 *triangle, int objRank, float &dist);
-	bool		TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D);
+	bool		TransformPoint(Math::Vector &p2D, int objRank, Math::Vector p3D);
 	void		ComputeDistance();
 	void		UpdateGeometry();
 	void		RenderGroundSpot();
@@ -565,15 +567,15 @@ protected:
 	int				m_alphaSrcBlend[2];
 	int				m_alphaDestBlend[2];
 
-	D3DMATRIX		m_matProj;
-	D3DMATRIX		m_matLeftView;
-	D3DMATRIX		m_matRightView;
-	D3DMATRIX		m_matView;
+	Math::Matrix		m_matProj;
+	Math::Matrix		m_matLeftView;
+	Math::Matrix		m_matRightView;
+	Math::Matrix		m_matView;
 	float			m_focus;
 
-	D3DMATRIX		m_matWorldInterface;
-	D3DMATRIX		m_matProjInterface;
-	D3DMATRIX		m_matViewInterface;
+	Math::Matrix		m_matWorldInterface;
+	Math::Matrix		m_matProjInterface;
+	Math::Matrix		m_matViewInterface;
 
 	DWORD			m_baseTime;
 	DWORD			m_stopTime;
@@ -593,8 +595,8 @@ protected:
 	D3DShadow*		m_shadow;
 	D3DGroundSpot*	m_groundSpot;
 	D3DGroundMark	m_groundMark;
-	D3DVECTOR		m_eyePt;
-	D3DVECTOR		m_lookatPt;
+	Math::Vector		m_eyePt;
+	Math::Vector		m_lookatPt;
 	float			m_eyeDirH;
 	float			m_eyeDirV;
 	int				m_rankView;

@@ -75,11 +75,11 @@ public:
 	bool			SetLightIncluType(int lightRank, D3DTypeObj type);
 	bool			SetLightExcluType(int lightRank, D3DTypeObj type);
 
-	bool			SetLightPos(int lightRank, D3DVECTOR pos);
-	D3DVECTOR		RetLightPos(int lightRank);
+	bool			SetLightPos(int lightRank, Math::Vector pos);
+	Math::Vector		RetLightPos(int lightRank);
 
-	bool			SetLightDir(int lightRank, D3DVECTOR dir);
-	D3DVECTOR		RetLightDir(int lightRank);
+	bool			SetLightDir(int lightRank, Math::Vector dir);
+	Math::Vector		RetLightDir(int lightRank);
 
 	bool			SetLightIntensitySpeed(int lightRank, float speed);
 	bool			SetLightIntensity(int lightRank, float value);

@@ -3253,9 +3253,9 @@ void CMainDialog::GlintMove()
 
 // Returns the position for a sound.
 
-D3DVECTOR SoundPos(Math::Point pos)
+Math::Vector SoundPos(Math::Point pos)
 {
-	D3DVECTOR	s;
+	Math::Vector	s;
 
 	s.x = (pos.x-0.5f)*2.0f;
 	s.y = (pos.y-0.5f)*2.0f;
@@ -3266,9 +3266,9 @@ D3DVECTOR SoundPos(Math::Point pos)
 
 // Returns a random position for a sound.
 
-D3DVECTOR SoundRand()
+Math::Vector SoundRand()
 {
-	D3DVECTOR	s;
+	Math::Vector	s;
 
 	s.x = (Math::Rand()-0.5f)*2.0f;
 	s.y = (Math::Rand()-0.5f)*2.0f;
@@ -3283,7 +3283,7 @@ void CMainDialog::FrameParticule(float rTime)
 {
 #if _NEWLOOK
 #else
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		*pParti, *pGlint;
 	int			 nParti,  nGlint;
@@ -3570,7 +3570,7 @@ void CMainDialog::FrameParticule(float rTime)
 
 void CMainDialog::NiceParticule(Math::Point mouse, bool bPress)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 
 	if ( !m_bRain )  return;
@@ -4199,15 +4199,15 @@ void CMainDialog::CameraPerso()
 {
 	if ( m_persoTab == 0 )
 	{
-//?		m_camera->Init(D3DVECTOR(4.0f, 0.0f, 0.0f),
-//?					   D3DVECTOR(0.0f, 0.0f, 1.0f), 0.0f);
-		m_camera->Init(D3DVECTOR(6.0f, 0.0f, 0.0f),
-					   D3DVECTOR(0.0f, 0.2f, 1.5f), 0.0f);
+//?		m_camera->Init(Math::Vector(4.0f, 0.0f, 0.0f),
+//?					   Math::Vector(0.0f, 0.0f, 1.0f), 0.0f);
+		m_camera->Init(Math::Vector(6.0f, 0.0f, 0.0f),
+					   Math::Vector(0.0f, 0.2f, 1.5f), 0.0f);
 	}
 	else
 	{
-		m_camera->Init(D3DVECTOR(18.0f, 0.0f, 4.5f),
-					   D3DVECTOR(0.0f, 1.6f, 4.5f), 0.0f);
+		m_camera->Init(Math::Vector(18.0f, 0.0f, 4.5f),
+					   Math::Vector(0.0f, 1.6f, 4.5f), 0.0f);
 	}
 
 	m_camera->SetType(CAMERA_SCRIPT);
@@ -6360,7 +6360,7 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
 void CMainDialog::FrameDialog(float rTime)
 {
 	CWindow*	pw;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim, dpos, ddim;
 	float		zoom;
 	int			i;
@@ -6409,7 +6409,7 @@ void CMainDialog::FrameDialog(float rTime)
 	ddim = m_dialogDim;
 
 	pos.z = 0.0f;
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	speed = Math::Vector(0.0f, 0.0f, 0.0f);
 
 	for ( i=0 ; i<2 ; i++ )
 	{

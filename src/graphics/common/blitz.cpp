@@ -22,6 +22,7 @@
 #include "common/struct.h"
 #include "math/const.h"
 #include "math/geometry.h"
+#include "math/conv.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "graphics/d3d/d3dutil.h"
@@ -99,7 +100,7 @@ bool CBlitz::EventFrame(const Event &event)
 	CObject*	pObj;
 	CAutoPara*	automat;
 	ObjectType	type;
-	D3DVECTOR	eye, pos;
+	Math::Vector	eye, pos;
 	float		dist, deep, max;
 	int			i;
 
@@ -153,7 +154,7 @@ bool CBlitz::EventFrame(const Event &event)
 			}
 
 			eye = m_engine->RetEyePt();
-			dist = Length(m_pos, eye);
+			dist = Math::Distance(m_pos, eye);
 			deep = m_engine->RetDeepView();
 
 			if ( dist < deep )
@@ -213,8 +214,8 @@ void CBlitz::Draw()
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	D3DVECTOR	corner[4], eye, n, p, p1, p2;
-	D3DMATRIX	matrix;
+	Math::Vector	corner[4], eye, n, p, p1, p2;
+	Math::Matrix	matrix;
 	Math::Point		texInf, texSup, rot;
 	float		a;
 	int			i;
@@ -225,8 +226,11 @@ void CBlitz::Draw()
 	device = m_engine->RetD3DDevice();
 	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 
-	D3DUtil_SetIdentityMatrix(matrix);
-	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	matrix.LoadIdentity();
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  device->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	m_engine->SetTexture("effect00.tga");
 	m_engine->SetState(D3DSTATETTb);
@@ -358,10 +362,10 @@ bool CBlitz::SetStatus(float sleep, float delay, float magnetic, float progress)
 
 // Seeking the object closest to the lightning.
 
-CObject* CBlitz::SearchObject(D3DVECTOR pos)
+CObject* CBlitz::SearchObject(Math::Vector pos)
 {
 	CObject		*pObj, *pBest, *pObjPara[100];
-	D3DVECTOR	oPos, pPos[100];
+	Math::Vector	oPos, pPos[100];
 	ObjectType	type;
 	float		min, dist, detect;
 	int			i, nbPara;
@@ -446,7 +450,7 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 		if ( detect == 0.0f )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(oPos, pos);
+		dist = Math::DistanceProjected(oPos, pos);
 		if ( dist > detect )  continue;
 		if ( dist < min )
 		{
@@ -460,7 +464,7 @@ CObject* CBlitz::SearchObject(D3DVECTOR pos)
 	oPos = pBest->RetPosition(0);
 	for ( i=nbPara-1 ; i>=0 ; i-- )
 	{
-		dist = Length2d(oPos, pPos[i]);
+		dist = Math::DistanceProjected(oPos, pPos[i]);
 		if ( dist <= BLITZPARA )
 		{
 			return pObjPara[i];

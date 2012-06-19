@@ -61,7 +61,7 @@ CDisplayText::CDisplayText(CInstanceManager* iMan)
 	for ( i=0 ; i<MAXDTLINE ; i++ )
 	{
 		m_bExist[i] = false;
-		m_visitGoal[i] = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		m_visitGoal[i] = Math::Vector(0.0f, 0.0f, 0.0f);
 		m_visitDist[i] = 0.0f;
 		m_visitHeight[i] = 0.0f;
 		m_time[i] = 0.0f;  // nothing displayed
@@ -119,7 +119,7 @@ bool CDisplayText::EventProcess(const Event &event)
 
 void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		h, d;
 
 	if ( pObj == 0 )  return;
@@ -132,7 +132,7 @@ void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 
 // Displays an error.
 
-void CDisplayText::DisplayError(Error err, D3DVECTOR goal, float height,
+void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
 								float dist, float time)
 {
 	TextType	type;
@@ -181,7 +181,7 @@ void CDisplayText::DisplayError(Error err, D3DVECTOR goal, float height,
 void CDisplayText::DisplayText(char *text, CObject* pObj,
 							   float time, TextType type)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		h, d;
 
 	if ( pObj == 0 )  return;
@@ -194,7 +194,7 @@ void CDisplayText::DisplayText(char *text, CObject* pObj,
 
 // Displays text.
 
-void CDisplayText::DisplayText(char *text, D3DVECTOR goal, float height,
+void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
 							   float dist, float time, TextType type)
 {
 	CObject*	toto;
@@ -338,7 +338,7 @@ void CDisplayText::ClearText()
 			pw->DeleteControl(EventMsg(EVENT_DT_VISIT0+i));
 		}
 		m_bExist[i] = false;
-		m_visitGoal[i] = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		m_visitGoal[i] = Math::Vector(0.0f, 0.0f, 0.0f);
 		m_visitDist[i] = 0.0f;
 		m_visitHeight[i] = 0.0f;
 		m_time[i] = 0.0f;
@@ -453,12 +453,12 @@ void CDisplayText::SetEnable(bool bEnable)
 
 // Returns the goal during a visit.
 
-D3DVECTOR CDisplayText::RetVisitGoal(EventMsg event)
+Math::Vector CDisplayText::RetVisitGoal(EventMsg event)
 {
 	int		i;
 
 	i = event-EVENT_DT_VISIT0;
-	if ( i < 0 || i >= MAXDTLINE )  return D3DVECTOR(0.0f, 0.0f, 0.0f);
+	if ( i < 0 || i >= MAXDTLINE )  return Math::Vector(0.0f, 0.0f, 0.0f);
 	return m_visitGoal[i];
 }
 

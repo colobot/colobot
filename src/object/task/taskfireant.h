@@ -50,14 +50,14 @@ public:
 
 	bool	EventProcess(const Event &event);
 
-	Error	Start(D3DVECTOR impact);
+	Error	Start(Math::Vector impact);
 	Error	IsEnded();
 	bool	Abort();
 
 protected:
 
 protected:
-	D3DVECTOR	m_impact;
+	Math::Vector	m_impact;
 	TaskFireAnt	m_phase;
 	float		m_progress;
 	float		m_speed;

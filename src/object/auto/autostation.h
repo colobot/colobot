@@ -58,7 +58,7 @@ protected:
 	float			m_lastUpdateTime;
 	float			m_lastParticule;
 	int				m_soundChannel;
-	D3DVECTOR		m_fretPos;
+	Math::Vector		m_fretPos;
 	bool			m_bLastVirus;
 	float			m_energyVirus;
 };

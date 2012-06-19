@@ -122,7 +122,7 @@ void CAutoEnergy::Init()
 bool CAutoEnergy::EventProcess(const Event &event)
 {
 	CObject*	fret;
-	D3DVECTOR	pos, ppos, speed;
+	Math::Vector	pos, ppos, speed;
 	Math::Point		dim, c, p;
 	TerrainRes	res;
 	float		big;
@@ -201,7 +201,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
 
 				pos = m_object->RetPosition(0);
 				pos.y += 4.0f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 3.0f;
 				dim.y = dim.x;
 				m_partiSphere = m_particule->CreateParticule(pos, speed, dim, PARTISPHERE1, ENERGY_DELAY, 0.0f, 0.0f);
@@ -290,7 +290,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
 				pos.x = p.x;
 				pos.z = p.y;
 				pos.y += 2.5f+Math::Rand()*3.0f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*2.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 1.0f, 0.0f, 0.0f);
@@ -333,7 +333,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
 				fret->SetZoom(0, 1.0f);
 				fret->SetLock(false);  // usable battery
 				fret->SetTruck(m_object);
-				fret->SetPosition(0, D3DVECTOR(0.0f, 3.0f, 0.0f));
+				fret->SetPosition(0, Math::Vector(0.0f, 3.0f, 0.0f));
 				m_object->SetPower(fret);
 
 				m_displayText->DisplayError(INFO_ENERGY, m_object);
@@ -408,7 +408,7 @@ CObject* CAutoEnergy::SearchMetal()
 bool CAutoEnergy::SearchVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	type;
 	float		oRadius, dist;
 	int			i;
@@ -456,7 +456,7 @@ bool CAutoEnergy::SearchVehicle()
 			 type != OBJECT_WORM     )  continue;
 
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-		dist = Length(oPos, cPos)-oRadius;
+		dist = Math::Distance(oPos, cPos)-oRadius;
 
 		if ( dist < 10.0f )  return true;
 	}
@@ -469,7 +469,7 @@ bool CAutoEnergy::SearchVehicle()
 void CAutoEnergy::CreatePower()
 {
 	CObject*		power;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			angle;
 
 	pos = m_object->RetPosition(0);
@@ -494,7 +494,7 @@ void CAutoEnergy::CreatePower()
 CObject* CAutoEnergy::SearchPower()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	type;
 	int			i;
 

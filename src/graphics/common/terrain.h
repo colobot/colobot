@@ -50,7 +50,7 @@ const int MAXBUILDINGLEVEL = 100;
 
 struct BuildingLevel
 {
-	D3DVECTOR	center;
+	Math::Vector	center;
 	float		factor;
 	float		min;
 	float		max;
@@ -85,7 +85,7 @@ const int MAXFLYINGLIMIT = 10;
 
 struct FlyingLimit
 {
-	D3DVECTOR	center;
+	Math::Vector	center;
 	float		extRadius;
 	float		intRadius;
 	float		maxHeight;
@@ -104,52 +104,52 @@ public:
 	void		LevelFlush();
 	bool		LevelMaterial(int id, char* baseName, float u, float v, int up, int right, int down, int left, float hardness);
 	bool		LevelInit(int id);
-	bool		LevelGenerate(int *id, float min, float max, float slope, float freq, D3DVECTOR center, float radius);
+	bool		LevelGenerate(int *id, float min, float max, float slope, float freq, Math::Vector center, float radius);
 	void		FlushRelief();
 	bool		ReliefFromBMP(const char* filename, float scaleRelief, bool adjustBorder);
 	bool		ReliefFromDXF(const char* filename, float scaleRelief);
 	bool		ResFromBMP(const char* filename);
 	bool		CreateObjects(bool bMultiRes);
-	bool		Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height);
+	bool		Terraform(const Math::Vector &p1, const Math::Vector &p2, float height);
 
-	void		SetWind(D3DVECTOR speed);
-	D3DVECTOR	RetWind();
+	void		SetWind(Math::Vector speed);
+	Math::Vector	RetWind();
 
-	float		RetFineSlope(const D3DVECTOR &pos);
-	float		RetCoarseSlope(const D3DVECTOR &pos);
-	bool		GetNormal(D3DVECTOR &n, const D3DVECTOR &p);
-	float		RetFloorLevel(const D3DVECTOR &p, bool bBrut=false, bool bWater=false);
-	float		RetFloorHeight(const D3DVECTOR &p, bool bBrut=false, bool bWater=false);
-	bool		MoveOnFloor(D3DVECTOR &p, bool bBrut=false, bool bWater=false);
-	bool		ValidPosition(D3DVECTOR &p, float marging);
-	TerrainRes	RetResource(const D3DVECTOR &p);
-	void		LimitPos(D3DVECTOR &pos);
+	float		RetFineSlope(const Math::Vector &pos);
+	float		RetCoarseSlope(const Math::Vector &pos);
+	bool		GetNormal(Math::Vector &n, const Math::Vector &p);
+	float		RetFloorLevel(const Math::Vector &p, bool bBrut=false, bool bWater=false);
+	float		RetFloorHeight(const Math::Vector &p, bool bBrut=false, bool bWater=false);
+	bool		MoveOnFloor(Math::Vector &p, bool bBrut=false, bool bWater=false);
+	bool		ValidPosition(Math::Vector &p, float marging);
+	TerrainRes	RetResource(const Math::Vector &p);
+	void		LimitPos(Math::Vector &pos);
 
 	void		FlushBuildingLevel();
-	bool		AddBuildingLevel(D3DVECTOR center, float min, float max, float height, float factor);
-	bool		UpdateBuildingLevel(D3DVECTOR center);
-	bool		DeleteBuildingLevel(D3DVECTOR center);
-	float		RetBuildingFactor(const D3DVECTOR &p);
-	float		RetHardness(const D3DVECTOR &p);
+	bool		AddBuildingLevel(Math::Vector center, float min, float max, float height, float factor);
+	bool		UpdateBuildingLevel(Math::Vector center);
+	bool		DeleteBuildingLevel(Math::Vector center);
+	float		RetBuildingFactor(const Math::Vector &p);
+	float		RetHardness(const Math::Vector &p);
 
 	int			RetMosaic();
 	int			RetBrick();
 	float		RetSize();
 	float		RetScaleRelief();
 
-	void		GroundFlat(D3DVECTOR pos);
-	float		RetFlatZoneRadius(D3DVECTOR center, float max);
+	void		GroundFlat(Math::Vector pos);
+	float		RetFlatZoneRadius(Math::Vector center, float max);
 
 	void		SetFlyingMaxHeight(float height);
 	float		RetFlyingMaxHeight();
 	void		FlushFlyingLimit();
-	bool		AddFlyingLimit(D3DVECTOR center, float extRadius, float intRadius, float maxHeight);
-	float		RetFlyingLimit(D3DVECTOR pos, bool bNoLimit);
+	bool		AddFlyingLimit(Math::Vector center, float extRadius, float intRadius, float maxHeight);
+	float		RetFlyingLimit(Math::Vector pos, bool bNoLimit);
 
 protected:
-	bool		ReliefAddDot(D3DVECTOR pos, float scaleRelief);
+	bool		ReliefAddDot(Math::Vector pos, float scaleRelief);
 	void		AdjustRelief();
-	D3DVECTOR	RetVector(int x, int y);
+	Math::Vector	RetVector(int x, int y);
 	D3DVERTEX2	RetVertex(int x, int y, int step);
 	bool		CreateMosaic(int ox, int oy, int step, int objRank, const D3DMATERIAL7 &mat, float min, float max);
 	bool		CreateSquare(bool bMultiRes, int x, int y);
@@ -165,7 +165,7 @@ protected:
 	void		LevelOpenTable();
 	void		LevelCloseTable();
 
-	void		AdjustBuildingLevel(D3DVECTOR &p);
+	void		AdjustBuildingLevel(Math::Vector &p);
 
 protected:
 	CInstanceManager* m_iMan;
@@ -200,7 +200,7 @@ protected:
 	BuildingLevel	m_buildingTable[MAXBUILDINGLEVEL];
 
 	unsigned char*	m_resources;
-	D3DVECTOR		m_wind;			// wind speed
+	Math::Vector		m_wind;			// wind speed
 
 	float			m_flyingMaxHeight;
 	int				m_flyingLimitTotal;

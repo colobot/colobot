@@ -56,8 +56,8 @@ public:
 	bool		Read(char *line);
 
 protected:
-	bool		SearchFree(D3DVECTOR pos);
-	void		CreateFret(D3DVECTOR pos, float angle, ObjectType type);
+	bool		SearchFree(Math::Vector pos);
+	void		CreateFret(Math::Vector pos, float angle, ObjectType type);
 	CObject*	SearchFret();
 
 protected:
@@ -65,6 +65,6 @@ protected:
 	float			m_progress;
 	float			m_speed;
 	float			m_lastParticule;
-	D3DVECTOR		m_fretPos;
+	Math::Vector		m_fretPos;
 };
 

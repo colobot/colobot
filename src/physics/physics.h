@@ -62,23 +62,23 @@ enum PhysicsMode
 
 struct Motion
 {
-	D3DVECTOR	advanceAccel;	// acceleration starting (+)
-	D3DVECTOR	recedeAccel;	// acceleration starting (+)
-	D3DVECTOR	stopAccel;	// acceleration stoping (+)
-	D3DVECTOR	motorAccel;	// current acceleration (+/-)
+	Math::Vector	advanceAccel;	// acceleration starting (+)
+	Math::Vector	recedeAccel;	// acceleration starting (+)
+	Math::Vector	stopAccel;	// acceleration stoping (+)
+	Math::Vector	motorAccel;	// current acceleration (+/-)
 
-	D3DVECTOR	advanceSpeed;	// forward speed (+)
-	D3DVECTOR	recedeSpeed;	// reversing speed (+)
-	D3DVECTOR	motorSpeed;	// desired speed (+/-)
-	D3DVECTOR	currentSpeed;	// current speed (+/-)
+	Math::Vector	advanceSpeed;	// forward speed (+)
+	Math::Vector	recedeSpeed;	// reversing speed (+)
+	Math::Vector	motorSpeed;	// desired speed (+/-)
+	Math::Vector	currentSpeed;	// current speed (+/-)
 
-	D3DVECTOR	terrainForce;	// power of resistance of the ground (+)
-	D3DVECTOR	terrainSpeed;	// speed of the ground (+/-)
-	D3DVECTOR	terrainSlide;	// limit sliding speed (+)
+	Math::Vector	terrainForce;	// power of resistance of the ground (+)
+	Math::Vector	terrainSpeed;	// speed of the ground (+/-)
+	Math::Vector	terrainSlide;	// limit sliding speed (+)
 
-	D3DVECTOR	realSpeed;	// real speed(+/-)
+	Math::Vector	realSpeed;	// real speed(+/-)
 
-	D3DVECTOR	finalInclin;	// final inclination
+	Math::Vector	finalInclin;	// final inclination
 };
 
 
@@ -108,8 +108,8 @@ public:
 
 	float		RetFloorHeight();
 
-	void		SetLinMotion(PhysicsMode mode, D3DVECTOR value);
-	D3DVECTOR	RetLinMotion(PhysicsMode mode);
+	void		SetLinMotion(PhysicsMode mode, Math::Vector value);
+	Math::Vector	RetLinMotion(PhysicsMode mode);
 	void		SetLinMotionX(PhysicsMode mode, float value);
 	void		SetLinMotionY(PhysicsMode mode, float value);
 	void		SetLinMotionZ(PhysicsMode mode, float value);
@@ -117,8 +117,8 @@ public:
 	float		RetLinMotionY(PhysicsMode mode);
 	float		RetLinMotionZ(PhysicsMode mode);
 
-	void		SetCirMotion(PhysicsMode mode, D3DVECTOR value);
-	D3DVECTOR	RetCirMotion(PhysicsMode mode);
+	void		SetCirMotion(PhysicsMode mode, Math::Vector value);
+	Math::Vector	RetCirMotion(PhysicsMode mode);
 	void		SetCirMotionX(PhysicsMode mode, float value);
 	void		SetCirMotionY(PhysicsMode mode, float value);
 	void		SetCirMotionZ(PhysicsMode mode, float value);
@@ -145,11 +145,11 @@ public:
 	void		SetReactorRange(float range);
 	float		RetReactorRange();
 
-	void		SetMotorSpeed(D3DVECTOR speed);
+	void		SetMotorSpeed(Math::Vector speed);
 	void		SetMotorSpeedX(float speed);
 	void		SetMotorSpeedY(float speed);
 	void		SetMotorSpeedZ(float speed);
-	D3DVECTOR	RetMotorSpeed();
+	Math::Vector	RetMotorSpeed();
 	float		RetMotorSpeedX();
 	float		RetMotorSpeedY();
 	float		RetMotorSpeedZ();
@@ -170,10 +170,10 @@ protected:
 	void		MotorUpdate(float aTime, float rTime);
 	void		EffectUpdate(float aTime, float rTime);
 	void		UpdateMotionStruct(float rTime, Motion &motion);
-	void		FloorAdapt(float aTime, float rTime, D3DVECTOR &pos, D3DVECTOR &angle);
-	void		FloorAngle(const D3DVECTOR &pos, D3DVECTOR &angle);
-	int			ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle);
-	bool		JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad, D3DVECTOR oPos, float oRad);
+	void		FloorAdapt(float aTime, float rTime, Math::Vector &pos, Math::Vector &angle);
+	void		FloorAngle(const Math::Vector &pos, Math::Vector &angle);
+	int			ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle);
+	bool		JostleObject(CObject* pObj, Math::Vector iPos, float iRad, Math::Vector oPos, float oRad);
 	bool		JostleObject(CObject* pObj, float force);
 	bool		ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
 	int			ExploHimself(ObjectType iType, ObjectType oType, float force);
@@ -181,7 +181,7 @@ protected:
 	void		PowerParticule(float factor, bool bBreak);
 	void		CrashParticule(float crash);
 	void		MotorParticule(float aTime, float rTime);
-	void		WaterParticule(float aTime, D3DVECTOR pos, ObjectType type, float floor, float advance, float turn);
+	void		WaterParticule(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
 	void		WheelParticule(int color, float width);
 
 protected:
@@ -200,7 +200,7 @@ protected:
 	PhysicsType	m_type;			// TYPE_*
 	float		m_gravity;		// force of gravity
 	float		m_time;			// absolute time
-	D3DVECTOR	m_motorSpeed;		// motor speed (-1..1)
+	Math::Vector	m_motorSpeed;		// motor speed (-1..1)
 	Motion		m_linMotion;		// linear motion
 	Motion		m_cirMotion;		// circular motion
 	bool		m_bMotor;
@@ -221,7 +221,7 @@ protected:
 	float		m_lastPloufParticule;
 	float		m_lastFlameParticule;
 	bool		m_bWheelParticuleBrake;
-	D3DVECTOR	m_wheelParticulePos[2];
+	Math::Vector	m_wheelParticulePos[2];
 	float		m_absorbWater;
 	float		m_reactorTemperature;
 	float		m_reactorRange;

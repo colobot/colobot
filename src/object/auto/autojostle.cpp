@@ -105,7 +105,7 @@ void CAutoJostle::Start(int param, float force)
 
 bool CAutoJostle::EventProcess(const Event &event)
 {
-	D3DVECTOR	dir;
+	Math::Vector	dir;
 	float		factor, angle, zoom;
 
 	CAuto::EventProcess(event);
@@ -145,7 +145,7 @@ bool CAutoJostle::EventProcess(const Event &event)
 	{
 		m_object->SetAngleX(0, 0.0f);
 		m_object->SetAngleZ(0, 0.0f);
-		m_object->SetZoom(0, D3DVECTOR(1.0f, 1.0f, 1.0f));
+		m_object->SetZoom(0, Math::Vector(1.0f, 1.0f, 1.0f));
 		m_error = ERR_STOP;
 	}
 

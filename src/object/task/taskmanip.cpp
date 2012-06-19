@@ -73,7 +73,7 @@ CTaskManip::~CTaskManip()
 
 bool CTaskManip::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		angle, a, g, cirSpeed, progress;
 	int			i;
 
@@ -305,7 +305,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 	CPyro		*pyro;
 	float		iAngle, dist, len;
 	float		fDist, fAngle, oDist, oAngle, oHeight;
-	D3DVECTOR	pos, fPos, oPos;
+	Math::Vector	pos, fPos, oPos;
 
 	m_arm      = arm;
 	m_height   = 0.0f;
@@ -324,7 +324,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 		 m_arm != TMA_POWER  &&
 		 m_arm != TMA_GRAB   )  return ERR_MANIP_VEH;
 
-	m_physics->SetMotorSpeed(D3DVECTOR(0.0f, 0.0f, 0.0f));
+	m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
 	type = m_object->RetType();
 	if ( type == OBJECT_BEE )  // bee?
@@ -338,7 +338,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 			m_object->SetFret(other);  // takes the ball
 			other->SetTruck(m_object);
 			other->SetTruckPart(0);  // taken with the base
-			other->SetPosition(0, D3DVECTOR(0.0f, -3.0f, 0.0f));
+			other->SetPosition(0, Math::Vector(0.0f, -3.0f, 0.0f));
 		}
 		else
 		{
@@ -482,12 +482,12 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 			}
 			else
 			{
-				if ( !IsFreeDeposeObject(D3DVECTOR(TAKE_DIST, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
+				if ( !IsFreeDeposeObject(Math::Vector(TAKE_DIST, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
 			}
 		}
 		if ( m_arm == TMA_FBACK )
 		{
-			if ( !IsFreeDeposeObject(D3DVECTOR(-TAKE_DIST, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
+			if ( !IsFreeDeposeObject(Math::Vector(-TAKE_DIST, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
 		}
 		if ( m_arm == TMA_POWER )
 		{
@@ -495,7 +495,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 		}
 	}
 
-	dist = Length(m_object->RetPosition(0), m_targetPos);
+	dist = Math::Distance(m_object->RetPosition(0), m_targetPos);
 	len = dist-TAKE_DIST;
 	if ( m_arm == TMA_OTHER ) len -= TAKE_DIST_OTHER;
 	if ( len < 0.0f )  len = 0.0f;
@@ -548,7 +548,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 Error CTaskManip::IsEnded()
 {
 	CObject*	fret;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		angle, dist;
 	int			i;
 
@@ -582,7 +582,7 @@ Error CTaskManip::IsEnded()
 		if ( m_timeLimit <= 0.0f )
 		{
 //OK 1.9
-			dist = Length(m_object->RetPosition(0), m_targetPos);
+			dist = Math::Distance(m_object->RetPosition(0), m_targetPos);
 			if ( dist <= m_advanceLength + 2.0f )
 			{
 				m_move = 0.0f;  // advance ended
@@ -600,7 +600,7 @@ Error CTaskManip::IsEnded()
 			}
 		}
 
-		dist = Length(m_object->RetPosition(0), m_targetPos);
+		dist = Math::Distance(m_object->RetPosition(0), m_targetPos);
 		if ( dist <= m_advanceLength )
 		{
 			m_move = 0.0f;  // advance ended
@@ -733,10 +733,10 @@ bool CTaskManip::Abort()
 
 // Seeks the object below to take (for bees).
 
-CObject* CTaskManip::SearchTakeUnderObject(D3DVECTOR &pos, float dLimit)
+CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	type;
 	float		min, distance;
 	int			i;
@@ -771,7 +771,7 @@ CObject* CTaskManip::SearchTakeUnderObject(D3DVECTOR &pos, float dLimit)
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
 		oPos = pObj->RetPosition(0);
-		distance = Length(oPos, iPos);
+		distance = Math::Distance(oPos, iPos);
 		if ( distance <= dLimit &&
 			 distance < min     )
 		{
@@ -788,11 +788,11 @@ CObject* CTaskManip::SearchTakeUnderObject(D3DVECTOR &pos, float dLimit)
 
 // Seeks the object in front to take.
 
-CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, D3DVECTOR &pos,
+CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
 										   float &distance, float &angle)
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	type;
 	float		min, iAngle, bAngle, aLimit, dLimit, f;
 	int			i;
@@ -847,7 +847,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, D3DVECTOR &pos,
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
 		oPos = pObj->RetPosition(0);
-		distance = fabs(Length(oPos, iPos)-TAKE_DIST);
+		distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
 		f = 1.0f-distance/50.0f;
 		if ( f < 0.5f )  f = 0.5f;
 
@@ -880,11 +880,11 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, D3DVECTOR &pos,
 
 // Seeks the object back to take.
 
-CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, D3DVECTOR &pos,
+CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
 										  float &distance, float &angle)
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	type;
 	float		min, iAngle, bAngle, aLimit, dLimit, f;
 	int			i;
@@ -938,7 +938,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, D3DVECTOR &pos,
 		if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
 		oPos = pObj->RetPosition(0);
-		distance = fabs(Length(oPos, iPos)-TAKE_DIST);
+		distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
 		f = 1.0f-distance/50.0f;
 		if ( f < 0.5f )  f = 0.5f;
 
@@ -971,15 +971,15 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, D3DVECTOR &pos,
 
 // Seeks the robot or building on which it wants to put a battery or or other object.
 
-CObject* CTaskManip::SearchOtherObject(bool bAdvance, D3DVECTOR &pos,
+CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
 									   float &distance, float &angle,
 									   float &height)
 {
 	Character*	character;
 	CObject*	pObj;
 	CObject*	pPower;
-	D3DMATRIX*	mat;
-	D3DVECTOR	iPos, oPos;
+	Math::Matrix*	mat;
+	Math::Vector	iPos, oPos;
 	ObjectType	type, powerType;
 	float		iAngle, iRad, oAngle, oLimit, aLimit, dLimit;
 	int			i;
@@ -1086,7 +1086,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, D3DVECTOR &pos,
 		angle = Math::RotateAngle(iPos.x-oPos.x, oPos.z-iPos.z);  // CW !
 		if ( !Math::TestAngle(angle, oAngle-oLimit, oAngle+oLimit) )  continue;
 
-		distance = fabs(Length(oPos, iPos)-TAKE_DIST);
+		distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
 		if ( distance <= dLimit )
 		{
 			angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
@@ -1111,8 +1111,8 @@ bool CTaskManip::TruckTakeObject()
 {
 	CObject*	fret;
 	CObject*	other;
-	D3DMATRIX	matRotate;
-	D3DVECTOR	pos;
+	Math::Matrix	matRotate;
+	Math::Vector	pos;
 	float		angle, dist;
 
 	if ( m_arm == TMA_GRAB )  // takes immediately?
@@ -1127,7 +1127,7 @@ bool CTaskManip::TruckTakeObject()
 			fret->SetTruck(m_object);
 			fret->SetTruckPart(4);  // takes with the hand
 
-			fret->SetPosition(0, D3DVECTOR(1.7f, -0.5f, 1.1f));
+			fret->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
 			fret->SetAngleY(0, 0.1f);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleZ(0, 0.8f);
@@ -1137,7 +1137,7 @@ bool CTaskManip::TruckTakeObject()
 			fret->SetTruck(m_object);
 			fret->SetTruckPart(2);  // takes with the right claw
 
-			pos = D3DVECTOR(1.1f, -1.0f, 1.0f);  // relative
+			pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleY(0, 0.0f);
@@ -1148,7 +1148,7 @@ bool CTaskManip::TruckTakeObject()
 			fret->SetTruck(m_object);
 			fret->SetTruckPart(3);  // takes with the hand
 
-			pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+			pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleZ(0, Math::PI/2.0f);
@@ -1169,7 +1169,7 @@ bool CTaskManip::TruckTakeObject()
 			fret->SetTruck(m_object);
 			fret->SetTruckPart(2);  // takes with the right claw
 
-			pos = D3DVECTOR(1.1f, -1.0f, 1.0f);  // relative
+			pos = Math::Vector(1.1f, -1.0f, 1.0f);  // relative
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleY(0, 0.0f);
@@ -1180,7 +1180,7 @@ bool CTaskManip::TruckTakeObject()
 			fret->SetTruck(m_object);
 			fret->SetTruckPart(3);  // takes with the hand
 
-			pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+			pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 			fret->SetPosition(0, pos);
 			fret->SetAngleX(0, 0.0f);
 			fret->SetAngleZ(0, Math::PI/2.0f);
@@ -1199,7 +1199,7 @@ bool CTaskManip::TruckTakeObject()
 		fret->SetTruck(m_object);
 		fret->SetTruckPart(3);  // takes with the hand
 
-		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+		pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, Math::PI/2.0f);
@@ -1214,7 +1214,7 @@ bool CTaskManip::TruckTakeObject()
 		if ( fret == 0 )  return false;  // no battery?
 		m_fretType = fret->RetType();
 
-		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+		pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, Math::PI/2.0f);
@@ -1238,7 +1238,7 @@ bool CTaskManip::TruckTakeObject()
 		fret->SetTruck(m_object);
 		fret->SetTruckPart(3);  // takes with the hand
 
-		pos = D3DVECTOR(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
+		pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
 		fret->SetPosition(0, pos);
 		fret->SetAngleX(0, 0.0f);
 		fret->SetAngleZ(0, Math::PI/2.0f);
@@ -1257,8 +1257,8 @@ bool CTaskManip::TruckDeposeObject()
 	Character*	character;
 	CObject*	fret;
 	CObject*	other;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos;
+	Math::Matrix*	mat;
+	Math::Vector	pos;
 	float		angle, dist;
 
 	if ( m_arm == TMA_FFRONT )  // deposits on the ground in front?
@@ -1268,7 +1268,7 @@ bool CTaskManip::TruckDeposeObject()
 		m_fretType = fret->RetType();
 
 		mat = fret->RetWorldMatrix(0);
-		pos = Transform(*mat, D3DVECTOR(0.0f, 1.0f, 0.0f));
+		pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
 		m_terrain->MoveOnFloor(pos);
 		fret->SetPosition(0, pos);
 		fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
@@ -1287,7 +1287,7 @@ bool CTaskManip::TruckDeposeObject()
 		m_fretType = fret->RetType();
 
 		mat = fret->RetWorldMatrix(0);
-		pos = Transform(*mat, D3DVECTOR(0.0f, 1.0f, 0.0f));
+		pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
 		m_terrain->MoveOnFloor(pos);
 		fret->SetPosition(0, pos);
 		fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
@@ -1349,11 +1349,11 @@ bool CTaskManip::TruckDeposeObject()
 
 // Seeks if a location allows to deposit an object.
 
-bool CTaskManip::IsFreeDeposeObject(D3DVECTOR pos)
+bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
 {
 	CObject*	pObj;
-	D3DMATRIX*	mat;
-	D3DVECTOR	iPos, oPos;
+	Math::Matrix*	mat;
+	Math::Vector	iPos, oPos;
 	float		oRadius;
 	int			i, j;
 
@@ -1372,7 +1372,7 @@ bool CTaskManip::IsFreeDeposeObject(D3DVECTOR pos)
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
-			if ( Length(iPos, oPos)-(oRadius+1.0f) < 2.0f )
+			if ( Math::Distance(iPos, oPos)-(oRadius+1.0f) < 2.0f )
 			{
 				return false;  // location occupied
 			}

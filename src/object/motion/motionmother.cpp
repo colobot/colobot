@@ -80,7 +80,7 @@ void CMotionMother::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 						  float power)
 {
 	CModFile*	pModFile;
@@ -105,8 +105,8 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	// A vehicle must have a obligatory collision
 	//with a sphere of center (0, y, 0) (see GetCrashSphere).
-	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 20.0f, SOUND_BOUM, 0.20f);
-	m_object->SetGlobalSphere(D3DVECTOR(-2.0f, 10.0f, 0.0f), 25.0f);
+	m_object->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 20.0f, SOUND_BOUM, 0.20f);
+	m_object->SetGlobalSphere(Math::Vector(-2.0f, 10.0f, 0.0f), 25.0f);
 
 	// Creates the head.
 	rank = m_engine->CreateObject();
@@ -115,7 +115,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(1, 0);
 	pModFile->ReadModel("objects\\mother2.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(1, D3DVECTOR(16.0f, 3.0f, 0.0f));
+	m_object->SetPosition(1, Math::Vector(16.0f, 3.0f, 0.0f));
 
 	// Creates a right-back leg.
 	rank = m_engine->CreateObject();
@@ -124,7 +124,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(2, 0);
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(2, D3DVECTOR(-5.0f, -1.0f, -12.0f));
+	m_object->SetPosition(2, Math::Vector(-5.0f, -1.0f, -12.0f));
 
 	// Creates a right-back foot.
 	rank = m_engine->CreateObject();
@@ -133,7 +133,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(3, 2);
 	pModFile->ReadModel("objects\\mother4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(3, D3DVECTOR(0.0f, 0.0f, -8.5f));
+	m_object->SetPosition(3, Math::Vector(0.0f, 0.0f, -8.5f));
 
 	// Creates a middle-right leg.
 	rank = m_engine->CreateObject();
@@ -142,7 +142,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(4, 0);
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(4, D3DVECTOR(3.5f, -1.0f, -12.0f));
+	m_object->SetPosition(4, Math::Vector(3.5f, -1.0f, -12.0f));
 
 	// Creates a middle-right foot.
 	rank = m_engine->CreateObject();
@@ -151,7 +151,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(5, 4);
 	pModFile->ReadModel("objects\\mother4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -8.5f));
+	m_object->SetPosition(5, Math::Vector(0.0f, 0.0f, -8.5f));
 
 	// Creates a right-front leg.
 	rank = m_engine->CreateObject();
@@ -160,7 +160,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(6, 0);
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(6, D3DVECTOR(10.0f, -1.0f, -10.0f));
+	m_object->SetPosition(6, Math::Vector(10.0f, -1.0f, -10.0f));
 
 	// Creates a right-front foot.
 	rank = m_engine->CreateObject();
@@ -169,7 +169,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(7, 6);
 	pModFile->ReadModel("objects\\mother4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(7, D3DVECTOR(0.0f, 0.0f, -8.5f));
+	m_object->SetPosition(7, Math::Vector(0.0f, 0.0f, -8.5f));
 
 	// Creates a left-back leg.
 	rank = m_engine->CreateObject();
@@ -178,7 +178,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(8, 0);
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(8, D3DVECTOR(-5.0f, -1.0f, 12.0f));
+	m_object->SetPosition(8, Math::Vector(-5.0f, -1.0f, 12.0f));
 	m_object->SetAngleY(8, Math::PI);
 
 	// Creates a left-back foot.
@@ -188,7 +188,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(9, 8);
 	pModFile->ReadModel("objects\\mother4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(9, D3DVECTOR(0.0f, 0.0f, -8.5f));
+	m_object->SetPosition(9, Math::Vector(0.0f, 0.0f, -8.5f));
 
 	// Creates a middle-left leg.
 	rank = m_engine->CreateObject();
@@ -197,7 +197,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(10, 0);
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(10, D3DVECTOR(3.5f, -1.0f, 12.0f));
+	m_object->SetPosition(10, Math::Vector(3.5f, -1.0f, 12.0f));
 	m_object->SetAngleY(10, Math::PI);
 
 	// Creates a middle-left foot.
@@ -207,7 +207,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(11, 10);
 	pModFile->ReadModel("objects\\mother4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, -8.5f));
+	m_object->SetPosition(11, Math::Vector(0.0f, 0.0f, -8.5f));
 
 	// Creates a left-front leg.
 	rank = m_engine->CreateObject();
@@ -216,7 +216,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(12, 0);
 	pModFile->ReadModel("objects\\mother3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(12, D3DVECTOR(10.0f, -1.0f, 10.0f));
+	m_object->SetPosition(12, Math::Vector(10.0f, -1.0f, 10.0f));
 	m_object->SetAngleY(12, Math::PI);
 
 	// Creates a left-front foot.
@@ -226,7 +226,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(13, 12);
 	pModFile->ReadModel("objects\\mother4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(13, D3DVECTOR(0.0f, 0.0f, -8.5f));
+	m_object->SetPosition(13, Math::Vector(0.0f, 0.0f, -8.5f));
 
 	// Creates the right antenna.
 	rank = m_engine->CreateObject();
@@ -235,7 +235,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(14, 1);
 	pModFile->ReadModel("objects\\mother5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(14, D3DVECTOR(6.0f, 1.0f, -2.5f));
+	m_object->SetPosition(14, Math::Vector(6.0f, 1.0f, -2.5f));
 
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -243,7 +243,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(15, 14);
 	pModFile->ReadModel("objects\\mother6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(15, D3DVECTOR(8.0f, 0.0f, 0.0f));
+	m_object->SetPosition(15, Math::Vector(8.0f, 0.0f, 0.0f));
 
 	// Creates the left antenna.
 	rank = m_engine->CreateObject();
@@ -252,7 +252,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(16, 1);
 	pModFile->ReadModel("objects\\mother5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(16, D3DVECTOR(6.0f, 1.0f, 2.5f));
+	m_object->SetPosition(16, Math::Vector(6.0f, 1.0f, 2.5f));
 
 	rank = m_engine->CreateObject();
 	m_engine->SetObjectType(rank, TYPEDESCENDANT);
@@ -260,7 +260,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(17, 16);
 	pModFile->ReadModel("objects\\mother6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(17, D3DVECTOR(8.0f, 0.0f, 0.0f));
+	m_object->SetPosition(17, Math::Vector(8.0f, 0.0f, 0.0f));
 
 	// Creates the right claw.
 	rank = m_engine->CreateObject();
@@ -269,7 +269,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(18, 1);
 	pModFile->ReadModel("objects\\mother7.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(18, D3DVECTOR(-4.0f, -3.5f, -8.0f));
+	m_object->SetPosition(18, Math::Vector(-4.0f, -3.5f, -8.0f));
 	m_object->SetZoomX(18, 1.2f);
 
 	// Creates the left claw.
@@ -280,7 +280,7 @@ bool CMotionMother::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\mother7.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(19, D3DVECTOR(-4.0f, -3.5f, 8.0f));
+	m_object->SetPosition(19, Math::Vector(-4.0f, -3.5f, 8.0f));
 	m_object->SetZoomX(19, 1.2f);
 
 	m_object->CreateShadowCircle(18.0f, 0.8f);
@@ -401,7 +401,7 @@ bool CMotionMother::EventProcess(const Event &event)
 
 bool CMotionMother::EventFrame(const Event &event)
 {
-	D3DVECTOR	dir;
+	Math::Vector	dir;
 	float		s, a, prog;
 	int			i, st, nd;
 	bool		bStop;

@@ -63,7 +63,7 @@ CTaskReset::~CTaskReset()
 
 bool CTaskReset::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		angle, duration;
 
@@ -175,7 +175,7 @@ bool CTaskReset::EventProcess(const Event &event)
 // Assigns the goal was achieved.
 // A positive angle makes a turn right.
 
-Error CTaskReset::Start(D3DVECTOR goal, D3DVECTOR angle)
+Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
 {
 	CObject*	fret;
 	int		i;
@@ -242,7 +242,7 @@ Error CTaskReset::IsEnded()
 
 	if ( m_phase == TRSP_ZOUT )
 	{
-		dist = Length(m_begin, m_goal);
+		dist = Math::Distance(m_begin, m_goal);
 		m_phase = TRSP_MOVE;
 		m_speed = 1.0f/(dist*RESET_DELAY_MOVE/100.0f);
 		m_progress = 0.0f;
@@ -283,7 +283,7 @@ Error CTaskReset::IsEnded()
 bool CTaskReset::SearchVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	float		oRadius, dist;
 	int			i;
@@ -332,7 +332,7 @@ bool CTaskReset::SearchVehicle()
 			 type != OBJECT_WORM     )  continue;
 
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-		dist = Length(oPos, m_goal)-oRadius;
+		dist = Math::Distance(oPos, m_goal)-oRadius;
 
 		if ( dist < 5.0f )  return true;
 	}

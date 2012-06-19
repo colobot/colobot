@@ -20,6 +20,8 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
+#include "math/conv.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "graphics/d3d/d3dutil.h"
@@ -48,7 +50,7 @@ CCloud::CCloud(CInstanceManager* iMan, CD3DEngine* engine)
 	m_terrain = 0;
 
 	m_level = 0.0f;
-	m_wind  = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_wind  = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_subdiv = 8;
 	m_filename[0] = 0;
 	m_bEnable = true;
@@ -91,7 +93,7 @@ bool CCloud::EventFrame(const Event &event)
 // Adjusts the position to normal, to imitate the clouds
 // at movement.
 
-void CCloud::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep,
+void CCloud::AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep,
 						 Math::Point &uv1, Math::Point &uv2)
 {
 	float		dist, factor;
@@ -104,7 +106,7 @@ void CCloud::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep,
 	uv2.x = 0.0f;
 	uv2.y = 0.0f;
 
-	dist = Length2d(pos, eye);
+	dist = Math::DistanceProjected(pos, eye);
 	factor = powf(dist/deep, 2.0f);
 	pos.y -= m_level*factor*10.0f;
 }
@@ -120,10 +122,10 @@ void CCloud::Draw()
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2*		vertex;
-	D3DMATRIX*		matView;
+	Math::Matrix*		matView;
 	D3DMATERIAL7	material;
-	D3DMATRIX		matrix;
-	D3DVECTOR		n, pos, p, eye;
+	Math::Matrix		matrix;
+	Math::Vector		n, pos, p, eye;
 	Math::Point			uv1, uv2;
 	float			iDeep, deep, size, fogStart, fogEnd;
 	int				i, j, u;
@@ -155,7 +157,10 @@ void CCloud::Draw()
 	device->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(fogEnd));
 
 	matView = m_engine->RetMatView();
-	device->SetTransform(D3DTRANSFORMSTATE_VIEW, matView);
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(*matView);
+	  device->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	}
 
 	ZeroMemory( &material, sizeof(D3DMATERIAL7) );
 	material.diffuse = m_diffuse;
@@ -169,12 +174,15 @@ void CCloud::Draw()
 	m_engine->SetState(D3DSTATETTb|D3DSTATEFOG|D3DSTATEWRAP);
 //?	m_engine->SetState(D3DSTATEWRAP);
 
-	D3DUtil_SetIdentityMatrix(matrix);
-	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	matrix.LoadIdentity();
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  device->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	size = m_size/2.0f;
 	eye = m_engine->RetEyePt();
-	n = D3DVECTOR(0.0f, -1.0f, 0.0f);
+	n = Math::Vector(0.0f, -1.0f, 0.0f);
 
 	// Draws all the lines.
 	for ( i=0 ; i<m_lineUsed ; i++ )

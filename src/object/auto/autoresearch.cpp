@@ -20,6 +20,7 @@
 #include <d3d.h>
 
 #include "math/const.h"
+#include "math/geometry.h"
 #include "common/struct.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
@@ -108,7 +109,7 @@ void CAutoResearch::Init()
 bool CAutoResearch::EventProcess(const Event &event)
 {
 	CObject*	power;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Error		message;
 	Math::Point		dim;
 	float		angle, time;
@@ -512,8 +513,8 @@ void CAutoResearch::SetResearch(EventMsg event)
 
 void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	int			i;
 
@@ -542,7 +543,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 
 	mat = m_object->RetWorldMatrix(0);
 
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	speed = Math::Vector(0.0f, 0.0f, 0.0f);
 	dim.x = 2.0f;
 	dim.y = dim.x;
 
@@ -563,7 +564,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 				pos.x = listpos[i*2+0];
 				pos.y = 11.5f;
 				pos.z = listpos[i*2+1];
-				pos = Transform(*mat, pos);
+				pos = Math::Transform(*mat, pos);
 				m_partiStop[i] = m_particule->CreateParticule(pos, speed,
 															  dim, PARTISELY,
 															  1.0f, 0.0f, 0.0f);

@@ -466,7 +466,7 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, bool bSoluce)
 	light.dcvDiffuse.r = 1.0f;
 	light.dcvDiffuse.g = 1.0f;
 	light.dcvDiffuse.b = 1.0f;
-	light.dvDirection  = D3DVECTOR(1.0f, 0.0f, 1.0f);
+ 	light.dvDirection  = D3DVECTOR(1.0f, 0.0f, 1.0f);
 	m_lightSuppl = m_light->CreateLight();
 	m_light->SetLight(m_lightSuppl, light);
 	m_light->SetLightExcluType(m_lightSuppl, TYPETERRAIN);

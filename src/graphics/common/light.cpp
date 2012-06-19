@@ -24,6 +24,7 @@
 #include "common/struct.h"
 #include "math/const.h"
 #include "math/geometry.h"
+#include "math/conv.h"
 #include "graphics/d3d/d3dengine.h"
 #include "common/event.h"
 #include "common/misc.h"
@@ -258,37 +259,37 @@ bool CLight::SetLightExcluType(int lightRank, D3DTypeObj type)
 
 // Management of the position of the light.
 
-bool CLight::SetLightPos(int lightRank, D3DVECTOR pos)
+bool CLight::SetLightPos(int lightRank, Math::Vector pos)
 {
 	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
-	m_lightTable[lightRank].light.dvPosition = pos;
+	m_lightTable[lightRank].light.dvPosition = VEC_TO_D3DVEC(pos);
 	return true;
 }
 
-D3DVECTOR CLight::RetLightPos(int lightRank)
+Math::Vector CLight::RetLightPos(int lightRank)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return D3DVECTOR(0.0f, 0.0f, 0.0f);
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return Math::Vector(0.0f, 0.0f, 0.0f);
 
-	return m_lightTable[lightRank].light.dvPosition;
+	return D3DVEC_TO_VEC(m_lightTable[lightRank].light.dvPosition);
 }
 
 
 // Management direction of the light.
 
-bool CLight::SetLightDir(int lightRank, D3DVECTOR dir)
+bool CLight::SetLightDir(int lightRank, Math::Vector dir)
 {
 	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return false;
 
-	m_lightTable[lightRank].light.dvDirection = dir;
+	m_lightTable[lightRank].light.dvDirection = VEC_TO_D3DVEC(dir);
 	return true;
 }
 
-D3DVECTOR CLight::RetLightDir(int lightRank)
+Math::Vector CLight::RetLightDir(int lightRank)
 {
-	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return D3DVECTOR(0.0f, 0.0f, 0.0f);
+	if ( lightRank < 0 || lightRank >= D3DMAXLIGHT )  return Math::Vector(0.0f, 0.0f, 0.0f);
 
-	return m_lightTable[lightRank].light.dvDirection;
+	return D3DVEC_TO_VEC(m_lightTable[lightRank].light.dvDirection);
 }
 
 
@@ -397,7 +398,7 @@ void CLight::AdaptLightColor(D3DCOLORVALUE color, float factor)
 
 void CLight::FrameLight(float rTime)
 {
-	D3DVECTOR	dir;
+	Math::Vector	dir;
 	float		angle;
 	int			i;
 

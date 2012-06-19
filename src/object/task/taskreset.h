@@ -48,16 +48,16 @@ public:
 
 	bool	EventProcess(const Event &event);
 
-	Error	Start(D3DVECTOR goal, D3DVECTOR angle);
+	Error	Start(Math::Vector goal, Math::Vector angle);
 	Error	IsEnded();
 
 protected:
 	bool	SearchVehicle();
 
 protected:
-	D3DVECTOR		m_begin;
-	D3DVECTOR		m_goal;
-	D3DVECTOR		m_angle;
+	Math::Vector		m_begin;
+	Math::Vector		m_goal;
+	Math::Vector		m_angle;
 
 	TaskResetPhase	m_phase;
 	bool			m_bError;

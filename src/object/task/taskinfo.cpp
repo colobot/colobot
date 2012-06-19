@@ -75,7 +75,7 @@ Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
 {
 	CObject*	pInfo;
 	CAutoInfo*	pAuto;
-	D3DVECTOR	pos, goal;
+	Math::Vector	pos, goal;
 	Info		info;
 	int			i, total, op;
 
@@ -196,7 +196,7 @@ bool CTaskInfo::Abort()
 CObject* CTaskInfo::SearchInfo(float power)
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	type;
 	float		dist, min;
 	int			i;
@@ -216,7 +216,7 @@ CObject* CTaskInfo::SearchInfo(float power)
 		if ( !pObj->RetActif() )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, iPos);
+		dist = Math::Distance(oPos, iPos);
 		if ( dist > power )  continue;  // too far?
 		if ( dist < min )
 		{

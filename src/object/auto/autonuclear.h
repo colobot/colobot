@@ -71,7 +71,7 @@ protected:
 	float				m_speed;
 	float				m_timeVirus;
 	float				m_lastParticule;
-	D3DVECTOR			m_pos;
+	Math::Vector			m_pos;
 	int					m_channelSound;
 };
 

@@ -22,6 +22,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "common/language.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -68,8 +69,8 @@ CTaskTerraform::~CTaskTerraform()
 bool CTaskTerraform::EventProcess(const Event &event)
 {
 	CObject*	power;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, dir, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, dir, speed;
 	Math::Point		dim;
 	float		energy;
 
@@ -157,10 +158,10 @@ bool CTaskTerraform::EventProcess(const Event &event)
 		if ( m_phase == TTP_CHARGE )
 		{
 			// Battery.
-			pos = D3DVECTOR(-6.0f, 5.5f+2.0f*m_progress, 0.0f);
+			pos = Math::Vector(-6.0f, 5.5f+2.0f*m_progress, 0.0f);
 			pos.x += (Math::Rand()-0.5f)*1.0f;
 			pos.z += (Math::Rand()-0.5f)*1.0f;
-			pos   = Transform(*mat, pos);
+			pos   = Math::Transform(*mat, pos);
 			speed.x = (Math::Rand()-0.5f)*6.0f*(1.0f+m_progress*4.0f);
 			speed.z = (Math::Rand()-0.5f)*6.0f*(1.0f+m_progress*4.0f);
 			speed.y = 6.0f+Math::Rand()*4.0f*(1.0f+m_progress*2.0f);
@@ -172,28 +173,28 @@ bool CTaskTerraform::EventProcess(const Event &event)
 		if ( m_phase != TTP_CHARGE )
 		{
 			// Left grid.
-			pos = D3DVECTOR(-1.0f, 5.8f, 3.5f);
+			pos = Math::Vector(-1.0f, 5.8f, 3.5f);
 			pos.x += (Math::Rand()-0.5f)*1.0f;
 			pos.z += (Math::Rand()-0.5f)*1.0f;
-			pos   = Transform(*mat, pos);
+			pos   = Math::Transform(*mat, pos);
 			speed.x = Math::Rand()*4.0f;
 			speed.z = Math::Rand()*2.0f;
 			speed.y = 2.5f+Math::Rand()*1.0f;
-			speed = Transform(*mat, speed);
+			speed = Math::Transform(*mat, speed);
 			speed -= m_object->RetPosition(0);
 			dim.x = Math::Rand()*1.0f+1.0f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 3.0f);
 
 			// Right grid.
-			pos = D3DVECTOR(-1.0f, 5.8f, -3.5f);
+			pos = Math::Vector(-1.0f, 5.8f, -3.5f);
 			pos.x += (Math::Rand()-0.5f)*1.0f;
 			pos.z += (Math::Rand()-0.5f)*1.0f;
-			pos   = Transform(*mat, pos);
+			pos   = Math::Transform(*mat, pos);
 			speed.x =  Math::Rand()*4.0f;
 			speed.z = -Math::Rand()*2.0f;
 			speed.y = 2.5f+Math::Rand()*1.0f;
-			speed = Transform(*mat, speed);
+			speed = Math::Transform(*mat, speed);
 			speed -= m_object->RetPosition(0);
 			dim.x = Math::Rand()*1.0f+1.0f;
 			dim.y = dim.x;
@@ -210,8 +211,8 @@ bool CTaskTerraform::EventProcess(const Event &event)
 Error CTaskTerraform::Start()
 {
 	CObject*	power;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	float		energy;
 
 	ObjectType	type;
@@ -232,8 +233,8 @@ Error CTaskTerraform::Start()
 		 speed.z != 0.0f )  return ERR_MANIP_MOTOR;
 
 	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(9.0f, 0.0f, 0.0f);
-	pos = Transform(*mat, pos);  // battery position
+	pos = Math::Vector(9.0f, 0.0f, 0.0f);
+	pos = Math::Transform(*mat, pos);  // battery position
 	m_terraPos = pos;
 
 	m_phase    = TTP_CHARGE;
@@ -256,7 +257,7 @@ Error CTaskTerraform::Start()
 Error CTaskTerraform::IsEnded()
 {
 	CObject*	power;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		dist, duration;
 	int			i, max;
@@ -284,7 +285,7 @@ Error CTaskTerraform::IsEnded()
 		Terraform();  // changes the terrain.
 #endif
 
-		m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
+		m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 		m_object->SetZoom(0, 1.0f);
 
 		power = m_object->RetPower();
@@ -300,8 +301,8 @@ Error CTaskTerraform::IsEnded()
 			pos.z = m_terraPos.z+(Math::Rand()-0.5f)*80.0f;
 			pos.y = m_terraPos.y;
 			m_terrain->MoveOnFloor(pos);
-			dist = Length(pos, m_terraPos);
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			dist = Math::Distance(pos, m_terraPos);
+			speed = Math::Vector(0.0f, 0.0f, 0.0f);
 			dim.x = 2.0f+(40.0f-dist)/(1.0f+Math::Rand()*4.0f);
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
@@ -348,9 +349,9 @@ bool CTaskTerraform::Abort()
 		m_soundChannel = -1;
 	}
 
-	m_object->SetPosition(2, D3DVECTOR(9.0f, 4.0f, 0.0f));
-	m_object->SetInclinaison(D3DVECTOR(0.0f, 0.0f, 0.0f));
-	m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
+	m_object->SetPosition(2, Math::Vector(9.0f, 4.0f, 0.0f));
+	m_object->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
+	m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 	m_object->SetZoom(0, 1.0f);
 
 	power = m_object->RetPower();
@@ -390,7 +391,7 @@ bool CTaskTerraform::Terraform()
 
 		if ( type == OBJECT_TEEN34 )  // stone?
 		{
-			dist = Length(m_terraPos, pObj->RetPosition(0));
+			dist = Math::Distance(m_terraPos, pObj->RetPosition(0));
 			if ( dist > 20.0f )  continue;
 
 			pyro = new CPyro(m_iMan);
@@ -401,7 +402,7 @@ bool CTaskTerraform::Terraform()
 			motion = pObj->RetMotion();
 			if ( motion == 0 )  continue;
 
-			dist = Length(m_terraPos, pObj->RetPosition(0));
+			dist = Math::Distance(m_terraPos, pObj->RetPosition(0));
 			if ( dist > ACTION_RADIUS )  continue;
 
 			if ( type == OBJECT_ANT )

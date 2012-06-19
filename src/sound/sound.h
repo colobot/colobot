@@ -139,7 +139,7 @@ struct SoundChannel
 	char					bMute;			// silence?
 	Sound					type;			// SOUND_*
 	int					priority;		// so great -> important
-	D3DVECTOR				pos;			// position in space
+	Math::Vector				pos;			// position in space
 	unsigned short				uniqueStamp;		// unique marker
 	LPDIRECTSOUNDBUFFER			soundBuffer;
 	LPDIRECTSOUND3DBUFFER			soundBuffer3D;
@@ -179,14 +179,14 @@ public:
 	void	SetMidiVolume(int volume);
 	int		RetMidiVolume();
 
-	void	SetListener(D3DVECTOR eye, D3DVECTOR lookat);
+	void	SetListener(Math::Vector eye, Math::Vector lookat);
 	void	FrameMove(float rTime);
 
 	int		Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop=false);
-	int		Play(Sound sound, D3DVECTOR pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop=false);
+	int		Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop=false);
 	bool	FlushEnvelope(int channel);
 	bool	AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper);
-	bool	Position(int channel, D3DVECTOR pos);
+	bool	Position(int channel, Math::Vector pos);
 	bool	Frequency(int channel, float frequency);
 	bool	Stop(int channel);
 	bool	StopAll();
@@ -204,7 +204,7 @@ protected:
 	bool	CreateSoundBuffer(int channel, DWORD size, DWORD freq, DWORD bitsPerSample, DWORD blkAlign, bool bStereo);
 	bool	ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size);
 	bool	CreateBuffer(int channel, Sound sound);
-	void	ComputeVolumePan2D(int channel, const D3DVECTOR &pos);
+	void	ComputeVolumePan2D(int channel, const Math::Vector &pos);
 	bool	ReadFile(Sound sound, char *metaname, char *filename);
 	int		RetPriority(Sound sound);
 	bool	SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded);
@@ -230,8 +230,8 @@ protected:
 	int						m_audioVolume;
 	int						m_midiVolume;
 	int						m_lastMidiVolume;
-	D3DVECTOR				m_eye;
-	D3DVECTOR				m_lookat;
+	Math::Vector				m_eye;
+	Math::Vector				m_lookat;
 	float					m_lastTime;
 	float					m_playTime;
 	int						m_uniqueStamp;

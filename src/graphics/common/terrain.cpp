@@ -70,7 +70,7 @@ CTerrain::CTerrain(CInstanceManager* iMan)
 	m_levelMatTotal = 0;
 	m_levelMatMax   = 0;
 	m_levelDot      = 0;
-	m_wind          = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_wind          = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_defHardness   = 0.5f;
 
 	FlushBuildingLevel();
@@ -299,7 +299,7 @@ bool CTerrain::ResFromBMP(const char* filename)
 
 // Returns the resource type available underground.
 
-TerrainRes CTerrain::RetResource(const D3DVECTOR &p)
+TerrainRes CTerrain::RetResource(const Math::Vector &p)
 {
 	int		x, y, size, sizem, ress;
 
@@ -405,7 +405,7 @@ bool CTerrain::ReliefFromBMP(const char* filename, float scaleRelief,
 
 // Adds a point of elevation in the buffer of relief.
 
-bool CTerrain::ReliefAddDot(D3DVECTOR pos, float scaleRelief)
+bool CTerrain::ReliefAddDot(Math::Vector pos, float scaleRelief)
 {
 	float	dim;
 	int		size, x, y;
@@ -436,7 +436,7 @@ bool CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 	FILE*		file = NULL;
 	char		line[100];
 	int			command, rankSommet, nbSommet, nbFace, size;
-	D3DVECTOR*	table;
+	Math::Vector*	table;
 	bool		bWaitNbSommet;
 	bool		bWaitNbFace;
 	bool		bWaitSommetX;
@@ -454,7 +454,7 @@ bool CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 	if ( file == NULL )  return false;
 
 	size  = (m_mosaic*m_brick)+1;
-	table = (D3DVECTOR*)malloc(sizeof(D3DVECTOR)*size*size);
+	table = (Math::Vector*)malloc(sizeof(Math::Vector)*size*size);
 
 	rankSommet = 0;
 	bWaitNbSommet = false;
@@ -514,7 +514,7 @@ bool CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 			nbSommet --;
 			if ( nbSommet >= 0 )
 			{
-				D3DVECTOR p(x,z,y);  // permutation of Y and Z!
+				Math::Vector p(x,z,y);  // permutation of Y and Z!
 				table[rankSommet++] = p;
 				bWaitSommetX = true;
 			}
@@ -566,7 +566,7 @@ bool CTerrain::ReliefFromDXF(const char* filename, float scaleRelief)
 
 // Adjusts a position so that it does not exceed the boundaries.
 
-void CTerrain::LimitPos(D3DVECTOR &pos)
+void CTerrain::LimitPos(Math::Vector &pos)
 {
 	float		dim;
 
@@ -649,9 +649,9 @@ void CTerrain::AdjustRelief()
 
 // Calculates a vector of the terrain.
 
-D3DVECTOR CTerrain::RetVector(int x, int y)
+Math::Vector CTerrain::RetVector(int x, int y)
 {
-	D3DVECTOR	p;
+	Math::Vector	p;
 
 	p.x = x*m_size - (m_mosaic*m_brick*m_size)/2;
 	p.z = y*m_size - (m_mosaic*m_brick*m_size)/2;
@@ -686,7 +686,7 @@ D3DVECTOR CTerrain::RetVector(int x, int y)
 D3DVERTEX2 CTerrain::RetVertex(int x, int y, int step)
 {
 	D3DVERTEX2	v;
-	D3DVECTOR	o, oo, a,b,c,d,e,f, n, s;
+	Math::Vector	o, oo, a,b,c,d,e,f, n, s;
 	int			brick;
 
 	o = RetVector(x, y);
@@ -701,28 +701,28 @@ D3DVERTEX2 CTerrain::RetVertex(int x, int y, int step)
 	e = RetVector(x+step, y-step);
 	f = RetVector(x,      y-step);
 
-	s = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	s = Math::Vector(0.0f, 0.0f, 0.0f);
 
 	if ( x-step >= 0 && y+step <= m_mosaic*m_brick+1 )
 	{
-		s += ComputeNormal(b,a,o);
-		s += ComputeNormal(c,b,o);
+		s += Math::NormalToPlane(b,a,o);
+		s += Math::NormalToPlane(c,b,o);
 	}
 
 	if ( x+step <= m_mosaic*m_brick+1 && y+step <= m_mosaic*m_brick+1 )
 	{
-		s += ComputeNormal(d,c,o);
+		s += Math::NormalToPlane(d,c,o);
 	}
 
 	if ( x+step <= m_mosaic*m_brick+1 && y-step >= 0 )
 	{
-		s += ComputeNormal(e,d,o);
-		s += ComputeNormal(f,e,o);
+		s += Math::NormalToPlane(e,d,o);
+		s += Math::NormalToPlane(f,e,o);
 	}
 
 	if ( x-step >= 0 && y-step >= 0 )
 	{
-		s += ComputeNormal(a,f,o);
+		s += Math::NormalToPlane(a,f,o);
 	}
 
 	s = Normalize(s);
@@ -763,7 +763,7 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 							const D3DMATERIAL7 &mat,
 							float min, float max)
 {
-	D3DMATRIX		transform;
+	Math::Matrix		transform;
 	D3DVERTEX2		o, p1, p2;
 	D3DObjLevel6*	buffer;
 	Math::Point			uv;
@@ -915,9 +915,9 @@ bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 		}
 	}
 
-	D3DUtil_SetIdentityMatrix(transform);
-	transform._41 = o.x;
-	transform._43 = o.z;
+	transform.LoadIdentity();
+	transform.Set(1, 4, o.x);
+	transform.Set(3, 4, o.z);
 	m_engine->SetObjectTransform(objRank, transform);
 
 	return true;
@@ -1403,10 +1403,10 @@ bool CTerrain::LevelInit(int id)
 
 bool CTerrain::LevelGenerate(int *id, float min, float max,
 							 float slope, float freq,
-							 D3DVECTOR center, float radius)
+							 Math::Vector center, float radius)
 {
 	TerrainMaterial	*tm;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	int				i, numID, x, y, xx, yy, group, rnd;
 	float			dim;
 
@@ -1461,7 +1461,7 @@ bool CTerrain::LevelGenerate(int *id, float min, float max,
 				{
 					pos.x = ((float)x-m_levelDotSize/2.0f)*group*m_size;
 					pos.z = ((float)y-m_levelDotSize/2.0f)*group*m_size;
-					if ( Length2d(pos, center) > radius )  continue;
+					if ( Math::DistanceProjected(pos, center) > radius )  continue;
 				}
 
 				if ( freq < 100.0f )
@@ -1582,7 +1582,7 @@ bool CTerrain::CreateObjects(bool bMultiRes)
 // Modifies the terrain's relief.
 // ATTENTION: ok only with m_depth = 2!
 
-bool CTerrain::Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height)
+bool CTerrain::Terraform(const Math::Vector &p1, const Math::Vector &p2, float height)
 {
 	POINT		tp1, tp2, pp1, pp2;
 	float		dim, avg;
@@ -1671,12 +1671,12 @@ bool CTerrain::Terraform(const D3DVECTOR &p1, const D3DVECTOR &p2, float height)
 
 // Management of the wind.
 
-void CTerrain::SetWind(D3DVECTOR speed)
+void CTerrain::SetWind(Math::Vector speed)
 {
 	m_wind = speed;
 }
 
-D3DVECTOR CTerrain::RetWind()
+Math::Vector CTerrain::RetWind()
 {
 	return m_wind;
 }
@@ -1684,17 +1684,17 @@ D3DVECTOR CTerrain::RetWind()
 
 // Gives the exact slope of the terrain of a place given.
 
-float CTerrain::RetFineSlope(const D3DVECTOR &pos)
+float CTerrain::RetFineSlope(const Math::Vector &pos)
 {
-	D3DVECTOR	n;
+	Math::Vector	n;
 
 	if ( !GetNormal(n, pos) )  return 0.0f;
-	return fabs(Math::RotateAngle(Length(n.x, n.z), n.y)-Math::PI/2.0f);
+	return fabs(Math::RotateAngle(Math::Point(n.x, n.z).Length(), n.y)-Math::PI/2.0f);
 }
 
 // Gives the approximate slope of the terrain of a specific location.
 
-float CTerrain::RetCoarseSlope(const D3DVECTOR &pos)
+float CTerrain::RetCoarseSlope(const Math::Vector &pos)
 {
 	float	dim, level[4], min, max;
 	int		x, y;
@@ -1722,9 +1722,9 @@ float CTerrain::RetCoarseSlope(const D3DVECTOR &pos)
 
 // Gives the normal vector at the position p (x,-,z) of the ground.
 
-bool CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
+bool CTerrain::GetNormal(Math::Vector &n, const Math::Vector &p)
 {
-	D3DVECTOR	p1, p2, p3, p4;
+	Math::Vector	p1, p2, p3, p4;
 	float		dim;
 	int			x, y;
 
@@ -1743,20 +1743,20 @@ bool CTerrain::GetNormal(D3DVECTOR &n, const D3DVECTOR &p)
 
 	if ( fabs(p.z-p2.z) < fabs(p.x-p2.x) )
 	{
-		n = ComputeNormal(p1,p2,p3);
+		n = Math::NormalToPlane(p1,p2,p3);
 	}
 	else
 	{
-		n = ComputeNormal(p2,p4,p3);
+		n = Math::NormalToPlane(p2,p4,p3);
 	}
 	return true;
 }
 
 // Returns the height of the ground.
 
-float CTerrain::RetFloorLevel(const D3DVECTOR &p, bool bBrut, bool bWater)
+float CTerrain::RetFloorLevel(const Math::Vector &p, bool bBrut, bool bWater)
 {
-	D3DVECTOR	p1, p2, p3, p4, ps;
+	Math::Vector	p1, p2, p3, p4, ps;
 	float		dim, level;
 	int			x, y;
 
@@ -1797,9 +1797,9 @@ float CTerrain::RetFloorLevel(const D3DVECTOR &p, bool bBrut, bool bWater)
 // Returns the height to the ground. 
 // This height is positive when you are above the ground.
 
-float CTerrain::RetFloorHeight(const D3DVECTOR &p, bool bBrut, bool bWater)
+float CTerrain::RetFloorHeight(const Math::Vector &p, bool bBrut, bool bWater)
 {
-	D3DVECTOR	p1, p2, p3, p4, ps;
+	Math::Vector	p1, p2, p3, p4, ps;
 	float		dim, level;
 	int			x, y;
 
@@ -1839,9 +1839,9 @@ float CTerrain::RetFloorHeight(const D3DVECTOR &p, bool bBrut, bool bWater)
 
 // Modifies the coordinate "y" of point "p" to rest on the ground floor.
 
-bool CTerrain::MoveOnFloor(D3DVECTOR &p, bool bBrut, bool bWater)
+bool CTerrain::MoveOnFloor(Math::Vector &p, bool bBrut, bool bWater)
 {
-	D3DVECTOR	p1, p2, p3, p4;
+	Math::Vector	p1, p2, p3, p4;
 	float		dim, level;
 	int			x, y;
 
@@ -1881,7 +1881,7 @@ bool CTerrain::MoveOnFloor(D3DVECTOR &p, bool bBrut, bool bWater)
 // Modifies a coordinate so that it is on the ground.
 // Returns false if the initial coordinate was too far.
 
-bool CTerrain::ValidPosition(D3DVECTOR &p, float marging)
+bool CTerrain::ValidPosition(Math::Vector &p, float marging)
 {
 	bool	bOK = true;
 	float	limit;
@@ -1926,7 +1926,7 @@ void CTerrain::FlushBuildingLevel()
 
 // Adds a new elevation for a building.
 
-bool CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
+bool CTerrain::AddBuildingLevel(Math::Vector center, float min, float max,
 								float height, float factor)
 {
 	int		i;
@@ -1960,7 +1960,7 @@ bool CTerrain::AddBuildingLevel(D3DVECTOR center, float min, float max,
 
 // Updates the elevation for a building when it was moved up (after a terraforming).
 
-bool CTerrain::UpdateBuildingLevel(D3DVECTOR center)
+bool CTerrain::UpdateBuildingLevel(Math::Vector center)
 {
 	int		i;
 
@@ -1979,7 +1979,7 @@ bool CTerrain::UpdateBuildingLevel(D3DVECTOR center)
 
 // Removes the elevation for a building when it was destroyed.
 
-bool CTerrain::DeleteBuildingLevel(D3DVECTOR center)
+bool CTerrain::DeleteBuildingLevel(Math::Vector center)
 {
 	int		i, j;
 
@@ -2001,7 +2001,7 @@ bool CTerrain::DeleteBuildingLevel(D3DVECTOR center)
 
 // Returns the influence factor whether a position is on a possible rise.
 
-float CTerrain::RetBuildingFactor(const D3DVECTOR &p)
+float CTerrain::RetBuildingFactor(const Math::Vector &p)
 {
 	float		dist;
 	int			i;
@@ -2013,7 +2013,7 @@ float CTerrain::RetBuildingFactor(const D3DVECTOR &p)
 			 p.z < m_buildingTable[i].bboxMinZ ||
 			 p.z > m_buildingTable[i].bboxMaxZ )  continue;
 
-		dist = Length2d(p, m_buildingTable[i].center);
+		dist = Math::DistanceProjected(p, m_buildingTable[i].center);
 
 		if ( dist <= m_buildingTable[i].max )
 		{
@@ -2025,9 +2025,9 @@ float CTerrain::RetBuildingFactor(const D3DVECTOR &p)
 
 // Adjusts a position according to a possible rise.
 
-void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
+void CTerrain::AdjustBuildingLevel(Math::Vector &p)
 {
-	D3DVECTOR	border;
+	Math::Vector	border;
 	float		dist, base;
 	int			i;
 
@@ -2038,7 +2038,7 @@ void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
 			 p.z < m_buildingTable[i].bboxMinZ ||
 			 p.z > m_buildingTable[i].bboxMaxZ )  continue;
 
-		dist = Length2d(p, m_buildingTable[i].center);
+		dist = Math::DistanceProjected(p, m_buildingTable[i].center);
 
 		if ( dist > m_buildingTable[i].max )  continue;
 
@@ -2077,7 +2077,7 @@ void CTerrain::AdjustBuildingLevel(D3DVECTOR &p)
 // Returns the hardness of the ground in a given place.
 // The hardness determines the noise (SOUND_STEP and SOUND_BOUM).
 
-float CTerrain::RetHardness(const D3DVECTOR &p)
+float CTerrain::RetHardness(const Math::Vector &p)
 {
 	TerrainMaterial*	tm;
 	float				factor, dim;
@@ -2112,9 +2112,9 @@ float CTerrain::RetHardness(const D3DVECTOR &p)
 
 // Shows the flat areas on the ground.
 
-void CTerrain::GroundFlat(D3DVECTOR pos)
+void CTerrain::GroundFlat(Math::Vector pos)
 {
-	D3DVECTOR	p;
+	Math::Vector	p;
 	float		rapport, angle;
 	int			x, y, i;
 	static char table[41*41];
@@ -2132,7 +2132,7 @@ void CTerrain::GroundFlat(D3DVECTOR pos)
 			p.x = (x-20)*rapport;
 			p.z = (y-20)*rapport;
 			p.y = 0.0f;
-			if ( Length(p.x, p.y) > 20.0f*rapport )  continue;
+			if ( Math::Point(p.x, p.y).Length() > 20.0f*rapport )  continue;
 
 			angle = RetFineSlope(pos+p);
 
@@ -2154,9 +2154,9 @@ void CTerrain::GroundFlat(D3DVECTOR pos)
 // Calculates the radius of the largest flat area available.
 // This calculation is not optimized!
 
-float CTerrain::RetFlatZoneRadius(D3DVECTOR center, float max)
+float CTerrain::RetFlatZoneRadius(Math::Vector center, float max)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	Math::Point		c, p;
 	float		ref, radius, angle, h;
 	int			i, nb;
@@ -2218,7 +2218,7 @@ void CTerrain::FlushFlyingLimit()
 
 // Empty the limits table of flight.
 
-bool CTerrain::AddFlyingLimit(D3DVECTOR center,
+bool CTerrain::AddFlyingLimit(Math::Vector center,
 							  float extRadius, float intRadius,
 							  float maxHeight)
 {
@@ -2238,7 +2238,7 @@ bool CTerrain::AddFlyingLimit(D3DVECTOR center,
 
 // Returns the maximum height of flight.
 
-float CTerrain::RetFlyingLimit(D3DVECTOR pos, bool bNoLimit)
+float CTerrain::RetFlyingLimit(Math::Vector pos, bool bNoLimit)
 {
 	float	dist, h;
 	int		i;
@@ -2248,7 +2248,7 @@ float CTerrain::RetFlyingLimit(D3DVECTOR pos, bool bNoLimit)
 
 	for ( i=0 ; i<m_flyingLimitTotal ; i++ )
 	{
-		dist = Length2d(pos, m_flyingLimit[i].center);
+		dist = Math::DistanceProjected(pos, m_flyingLimit[i].center);
 
 		if ( dist >= m_flyingLimit[i].extRadius )  continue;
 

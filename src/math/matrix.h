@@ -91,6 +91,16 @@ struct Matrix
     }
   }
 
+  inline void Set(int row, int col, float value)
+  {
+    m[(col-1)*4+(row-1)] = value;
+  }
+
+  inline float Get(int row, int col)
+  {
+    return m[(col-1)*4+(row-1)];
+  }
+
   //! Loads the zero matrix
   inline void LoadZero()
   {

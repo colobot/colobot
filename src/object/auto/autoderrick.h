@@ -63,8 +63,8 @@ public:
 
 protected:
 	CObject*	SearchFret();
-	bool		SearchFree(D3DVECTOR pos);
-	void		CreateFret(D3DVECTOR pos, float angle, ObjectType type, float height);
+	bool		SearchFree(Math::Vector pos);
+	void		CreateFret(Math::Vector pos, float angle, ObjectType type, float height);
 	bool		ExistKey();
 
 protected:
@@ -74,7 +74,7 @@ protected:
 	float				m_timeVirus;
 	float				m_lastParticule;
 	float				m_lastTrack;
-	D3DVECTOR			m_fretPos;
+	Math::Vector			m_fretPos;
 	int					m_soundChannel;
 	bool				m_bSoundFall;
 };

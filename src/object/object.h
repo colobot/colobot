@@ -309,16 +309,16 @@ struct ObjectPart
 	int		object;			// number of the object in CD3DEngine
 	int		parentPart;		// number of father part
 	int		masterParti;		// master canal of the particle
-	D3DVECTOR	position;
-	D3DVECTOR	angle;
-	D3DVECTOR	zoom;
+	Math::Vector	position;
+	Math::Vector	angle;
+	Math::Vector	zoom;
 	char		bTranslate;
 	char		bRotate;
 	char		bZoom;
-	D3DMATRIX	matTranslate;
-	D3DMATRIX	matRotate;
-	D3DMATRIX	matTransform;
-	D3DMATRIX	matWorld;
+	Math::Matrix	matTranslate;
+	Math::Matrix	matRotate;
+	Math::Matrix	matTransform;
+	Math::Matrix	matWorld;
 };
 
 struct Character
@@ -328,7 +328,7 @@ struct Character
 	float		wheelLeft;		// position Z of the left wheels
 	float		wheelRight;		// position Z of the right wheels
 	float		height;			// normal height on top of ground
-	D3DVECTOR	posPower;		// position of the battery
+	Math::Vector	posPower;		// position of the battery
 };
 
 struct Info
@@ -394,20 +394,20 @@ public:
 	void		SetDrawWorld(bool bDraw);
 	void		SetDrawFront(bool bDraw);
 
-	bool		CreateVehicle(D3DVECTOR pos, float angle, ObjectType type, float power, bool bTrainer, bool bToy);
-	bool		CreateInsect(D3DVECTOR pos, float angle, ObjectType type);
-	bool		CreateBuilding(D3DVECTOR pos, float angle, float height, ObjectType type, float power=1.0f);
-	bool		CreateResource(D3DVECTOR pos, float angle, ObjectType type, float power=1.0f);
-	bool		CreateFlag(D3DVECTOR pos, float angle, ObjectType type);
-	bool		CreateBarrier(D3DVECTOR pos, float angle, float height, ObjectType type);
-	bool		CreatePlant(D3DVECTOR pos, float angle, float height, ObjectType type);
-	bool		CreateMushroom(D3DVECTOR pos, float angle, float height, ObjectType type);
-	bool		CreateTeen(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type);
-	bool		CreateQuartz(D3DVECTOR pos, float angle, float height, ObjectType type);
-	bool		CreateRoot(D3DVECTOR pos, float angle, float height, ObjectType type);
-	bool		CreateHome(D3DVECTOR pos, float angle, float height, ObjectType type);
-	bool		CreateRuin(D3DVECTOR pos, float angle, float height, ObjectType type);
-	bool		CreateApollo(D3DVECTOR pos, float angle, ObjectType type);
+	bool		CreateVehicle(Math::Vector pos, float angle, ObjectType type, float power, bool bTrainer, bool bToy);
+	bool		CreateInsect(Math::Vector pos, float angle, ObjectType type);
+	bool		CreateBuilding(Math::Vector pos, float angle, float height, ObjectType type, float power=1.0f);
+	bool		CreateResource(Math::Vector pos, float angle, ObjectType type, float power=1.0f);
+	bool		CreateFlag(Math::Vector pos, float angle, ObjectType type);
+	bool		CreateBarrier(Math::Vector pos, float angle, float height, ObjectType type);
+	bool		CreatePlant(Math::Vector pos, float angle, float height, ObjectType type);
+	bool		CreateMushroom(Math::Vector pos, float angle, float height, ObjectType type);
+	bool		CreateTeen(Math::Vector pos, float angle, float zoom, float height, ObjectType type);
+	bool		CreateQuartz(Math::Vector pos, float angle, float height, ObjectType type);
+	bool		CreateRoot(Math::Vector pos, float angle, float height, ObjectType type);
+	bool		CreateHome(Math::Vector pos, float angle, float height, ObjectType type);
+	bool		CreateRuin(Math::Vector pos, float angle, float height, ObjectType type);
+	bool		CreateApollo(Math::Vector pos, float angle, ObjectType type);
 
 	bool		ReadProgram(int rank, char* filename);
 	bool		WriteProgram(int rank, char* filename);
@@ -417,33 +417,33 @@ public:
 	int			RetEffectLight();
 
 	void		FlushCrashShere();
-	int			CreateCrashSphere(D3DVECTOR pos, float radius, Sound sound, float hardness=0.45f);
+	int			CreateCrashSphere(Math::Vector pos, float radius, Sound sound, float hardness=0.45f);
 	int			RetCrashSphereTotal();
-	bool		GetCrashSphere(int rank, D3DVECTOR &pos, float &radius);
+	bool		GetCrashSphere(int rank, Math::Vector &pos, float &radius);
 	float		RetCrashSphereHardness(int rank);
 	Sound		RetCrashSphereSound(int rank);
 	void		DeleteCrashSphere(int rank);
-	void		SetGlobalSphere(D3DVECTOR pos, float radius);
-	void		GetGlobalSphere(D3DVECTOR &pos, float &radius);
-	void		SetJotlerSphere(D3DVECTOR pos, float radius);
-	void		GetJotlerSphere(D3DVECTOR &pos, float &radius);
+	void		SetGlobalSphere(Math::Vector pos, float radius);
+	void		GetGlobalSphere(Math::Vector &pos, float &radius);
+	void		SetJotlerSphere(Math::Vector pos, float radius);
+	void		GetJotlerSphere(Math::Vector &pos, float &radius);
 	void		SetShieldRadius(float radius);
 	float		RetShieldRadius();
 
 	void		SetFloorHeight(float height);
 	void		FloorAdjust();
 
-	void		SetLinVibration(D3DVECTOR dir);
-	D3DVECTOR	RetLinVibration();
-	void		SetCirVibration(D3DVECTOR dir);
-	D3DVECTOR	RetCirVibration();
-	void		SetInclinaison(D3DVECTOR dir);
-	D3DVECTOR	RetInclinaison();
+	void		SetLinVibration(Math::Vector dir);
+	Math::Vector	RetLinVibration();
+	void		SetCirVibration(Math::Vector dir);
+	Math::Vector	RetCirVibration();
+	void		SetInclinaison(Math::Vector dir);
+	Math::Vector	RetInclinaison();
 
-	void		SetPosition(int part, const D3DVECTOR &pos);
-	D3DVECTOR	RetPosition(int part);
-	void		SetAngle(int part, const D3DVECTOR &angle);
-	D3DVECTOR	RetAngle(int part);
+	void		SetPosition(int part, const Math::Vector &pos);
+	Math::Vector	RetPosition(int part);
+	void		SetAngle(int part, const Math::Vector &angle);
+	Math::Vector	RetAngle(int part);
 	void		SetAngleY(int part, float angle);
 	void		SetAngleX(int part, float angle);
 	void		SetAngleZ(int part, float angle);
@@ -451,8 +451,8 @@ public:
 	float		RetAngleX(int part);
 	float		RetAngleZ(int part);
 	void		SetZoom(int part, float zoom);
-	void		SetZoom(int part, D3DVECTOR zoom);
-	D3DVECTOR	RetZoom(int part);
+	void		SetZoom(int part, Math::Vector zoom);
+	Math::Vector	RetZoom(int part);
 	void		SetZoomX(int part, float zoom);
 	float		RetZoomX(int part);
 	void		SetZoomY(int part, float zoom);
@@ -475,10 +475,10 @@ public:
 	ResetCap	RetResetCap();
 	void		SetResetBusy(bool bBusy);
 	bool		RetResetBusy();
-	void		SetResetPosition(const D3DVECTOR &pos);
-	D3DVECTOR	RetResetPosition();
-	void		SetResetAngle(const D3DVECTOR &angle);
-	D3DVECTOR	RetResetAngle();
+	void		SetResetPosition(const Math::Vector &pos);
+	Math::Vector	RetResetPosition();
+	void		SetResetAngle(const Math::Vector &angle);
+	Math::Vector	RetResetAngle();
 	void		SetResetRun(int run);
 	int			RetResetRun();
 
@@ -507,12 +507,12 @@ public:
 	bool		SetCmdLine(int rank, float value);
 	float		RetCmdLine(int rank);
 
-	D3DMATRIX*	RetRotateMatrix(int part);
-	D3DMATRIX*	RetTranslateMatrix(int part);
-	D3DMATRIX*	RetTransformMatrix(int part);
-	D3DMATRIX*	RetWorldMatrix(int part);
+	Math::Matrix*	RetRotateMatrix(int part);
+	Math::Matrix*	RetTranslateMatrix(int part);
+	Math::Matrix*	RetTransformMatrix(int part);
+	Math::Matrix*	RetWorldMatrix(int part);
 
-	void		SetViewFromHere(D3DVECTOR &eye, float &dirH, float &dirV, D3DVECTOR	&lookat, D3DVECTOR &upVec, CameraType type);
+	void		SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV, Math::Vector	&lookat, Math::Vector &upVec, CameraType type);
 
 	void		SetCharacter(Character* character);
 	void		GetCharacter(Character* character);
@@ -689,9 +689,9 @@ protected:
 	float		m_shadowHeight;			// height of light from the shadows
 	int		m_effectLight;			// number of light effects
 	float		m_effectHeight;			// height of light effects
-	D3DVECTOR	m_linVibration;			// linear vibration
-	D3DVECTOR	m_cirVibration;			// circular vibration
-	D3DVECTOR	m_inclinaison;			// tilt
+	Math::Vector	m_linVibration;			// linear vibration
+	Math::Vector	m_cirVibration;			// circular vibration
+	Math::Vector	m_inclinaison;			// tilt
 	CObject*	m_power;			// battery used by the vehicle
 	CObject*	m_fret;				// object transported
 	CObject*	m_truck;			// object with the latter
@@ -741,13 +741,13 @@ protected:
 	float		m_param;
 
 	int			m_crashSphereUsed;	// number of spheres used
-	D3DVECTOR	m_crashSpherePos[MAXCRASHSPHERE];
+	Math::Vector	m_crashSpherePos[MAXCRASHSPHERE];
 	float		m_crashSphereRadius[MAXCRASHSPHERE];
 	float		m_crashSphereHardness[MAXCRASHSPHERE];
 	Sound		m_crashSphereSound[MAXCRASHSPHERE];
-	D3DVECTOR	m_globalSpherePos;
+	Math::Vector	m_globalSpherePos;
 	float		m_globalSphereRadius;
-	D3DVECTOR	m_jotlerSpherePos;
+	Math::Vector	m_jotlerSpherePos;
 	float		m_jotlerSphereRadius;
 	float		m_shieldRadius;
 
@@ -761,8 +761,8 @@ protected:
 
 	ResetCap	m_resetCap;
 	bool		m_bResetBusy;
-	D3DVECTOR	m_resetPosition;
-	D3DVECTOR	m_resetAngle;
+	Math::Vector	m_resetPosition;
+	Math::Vector	m_resetAngle;
 	int			m_resetRun;
 
 	int			m_infoTotal;

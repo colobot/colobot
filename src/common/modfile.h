@@ -19,6 +19,7 @@
 #pragma once
 
 
+#include "math/vector.h"
 #include "graphics/d3d/d3dengine.h"
 
 
@@ -98,10 +99,10 @@ public:
 	int				RetTriangleMax();
 	ModelTriangle*	RetTriangleList();
 
-	float			RetHeight(D3DVECTOR pos);
+	float			RetHeight(Math::Vector pos);
 
 protected:
-	bool			CreateTriangle(D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3, float min, float max);
+	bool			CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max);
 
 protected:
 	CInstanceManager* m_iMan;

@@ -123,7 +123,7 @@ void CAutoPortico::Init()
 
 void CAutoPortico::Start(int param)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	pos = m_object->RetPosition(0);
 	m_finalPos = pos;
@@ -131,7 +131,7 @@ void CAutoPortico::Start(int param)
 	m_object->SetPosition(0, pos);
 	m_finalPos.z += PORTICO_TIME_OPEN*5.3f;
 
-	m_object->SetPosition(1, D3DVECTOR(0.0f, PORTICO_POSa, 0.0f));
+	m_object->SetPosition(1, Math::Vector(0.0f, PORTICO_POSa, 0.0f));
 	m_object->SetAngleY(2,  PORTICO_ANGLE1a);
 	m_object->SetAngleY(3,  PORTICO_ANGLE2a);
 	m_object->SetAngleY(4,  PORTICO_ANGLE3a);
@@ -152,7 +152,7 @@ void CAutoPortico::Start(int param)
 bool CAutoPortico::EventProcess(const Event &event)
 {
 	CObject*	pObj;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		angle;
 
 	CAuto::EventProcess(event);
@@ -372,7 +372,7 @@ bool CAutoPortico::Abort()
 	CObject*	pObj;
 
 	m_object->SetPosition(0, m_finalPos);
-	m_object->SetPosition(1, D3DVECTOR(0.0f, PORTICO_POSb, 0.0f));
+	m_object->SetPosition(1, Math::Vector(0.0f, PORTICO_POSb, 0.0f));
 	m_object->SetAngleY(2,  PORTICO_ANGLE1b);
 	m_object->SetAngleY(3,  PORTICO_ANGLE2b);
 	m_object->SetAngleY(4,  PORTICO_ANGLE3b);

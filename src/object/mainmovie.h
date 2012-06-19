@@ -72,9 +72,9 @@ protected:
 	MainMovieType	m_stopType;
 	float			m_speed;
 	float			m_progress;
-	D3DVECTOR		m_initialEye;
-	D3DVECTOR		m_initialLookat;
-	D3DVECTOR		m_finalEye[2];
-	D3DVECTOR		m_finalLookat[2];
+	Math::Vector		m_initialEye;
+	Math::Vector		m_initialLookat;
+	Math::Vector		m_finalEye[2];
+	Math::Vector		m_finalLookat[2];
 };
 

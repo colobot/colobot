@@ -73,7 +73,7 @@ void CAutoFlag::DeleteObject(bool bAll)
 
 void CAutoFlag::Init()
 {
-	D3DVECTOR	wind;
+	Math::Vector	wind;
 	float		angle;
 
 	m_time = 0.0f;
@@ -84,7 +84,7 @@ void CAutoFlag::Init()
 	angle = Math::RotateAngle(wind.x, -wind.z);
 	m_object->SetAngleY(0, angle);  // directs the flag in the wind
 
-	m_strong = Length(wind);
+	m_strong = wind.Length();
 }
 
 

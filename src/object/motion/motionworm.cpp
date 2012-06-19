@@ -87,7 +87,7 @@ void CMotionWorm::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
 						 float power)
 {
 	CModFile*	pModFile;
@@ -110,8 +110,8 @@ bool CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetAngleY(0, angle);
 
 	// A vehicle must have a obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
-	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
-	m_object->SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 5.0f);
+	m_object->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
+	m_object->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 5.0f);
 
 	px = 1.0f+WORM_PART/2;
 
@@ -122,7 +122,7 @@ bool CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(1, 0);
 	pModFile->ReadModel("objects\\worm1.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(1, D3DVECTOR(px, 0.0f, 0.0f));
+	m_object->SetPosition(1, Math::Vector(px, 0.0f, 0.0f));
 	px -= 1.0f;
 
 	// Creates the body.
@@ -134,7 +134,7 @@ bool CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetObjectParent(2+i, 0);
 		pModFile->ReadModel("objects\\worm2.mod");
 		pModFile->CreateEngineObject(rank);
-		m_object->SetPosition(2+i, D3DVECTOR(px, 0.0f, 0.0f));
+		m_object->SetPosition(2+i, Math::Vector(px, 0.0f, 0.0f));
 		px -= 1.0f;
 	}
 
@@ -145,7 +145,7 @@ bool CMotionWorm::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(2+WORM_PART, 0);
 	pModFile->ReadModel("objects\\worm3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(2+WORM_PART, D3DVECTOR(px, 0.0f, 0.0f));
+	m_object->SetPosition(2+WORM_PART, Math::Vector(px, 0.0f, 0.0f));
 
 	m_object->CreateShadowCircle(0.0f, 1.0f, D3DSHADOWWORM);
 
@@ -246,8 +246,8 @@ bool CMotionWorm::EventProcess(const Event &event)
 
 bool CMotionWorm::EventFrame(const Event &event)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, p, angle, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, p, angle, speed;
 	Math::Point		center, pp, dim;
 	float		height[WORM_PART+2];
 	float		floor, a, s, px, curve, phase, h, zoom, radius;
@@ -346,7 +346,7 @@ bool CMotionWorm::EventFrame(const Event &event)
 			pos.y += -height[i];
 			pos.x += (Math::Rand()-0.5f)*4.0f;
 			pos.z += (Math::Rand()-0.5f)*4.0f;
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			speed = Math::Vector(0.0f, 0.0f, 0.0f);
 			dim.x = Math::Rand()*2.0f+1.5f;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
@@ -360,7 +360,7 @@ bool CMotionWorm::EventFrame(const Event &event)
 		pos  = m_object->RetPosition(i+2);
 		pos -= m_object->RetPosition(i+1);
 
-		angle.z = -Math::RotateAngle(Length(pos.x, pos.z), pos.y);
+		angle.z = -Math::RotateAngle(Math::Point(pos.x, pos.z).Length(), pos.y);
 		angle.y = Math::PI-Math::RotateAngle(pos.x, pos.z);
 		angle.x = 0.0f;
 		m_object->SetAngle(i+1, angle);

@@ -83,7 +83,7 @@ void CAutoInfo::Init()
 
 void CAutoInfo::Start(int param)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 
 	if ( param == 0 )  // instruction "receive" ?
@@ -112,7 +112,7 @@ void CAutoInfo::Start(int param)
 	{
 		pos = m_goal;
 		pos.y += 9.5f;
-		speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		speed = Math::Vector(0.0f, 0.0f, 0.0f);
 		dim.x = 30.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTISPHERE4, 1.5f, 0.0f, 0.0f);
@@ -123,7 +123,7 @@ void CAutoInfo::Start(int param)
 	{
 		pos = m_goal;
 		pos.y += 9.5f;
-		speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		speed = Math::Vector(0.0f, 0.0f, 0.0f);
 		dim.x = 50.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTISPHERE6, 1.5f, 0.0f, 0.0f);
@@ -141,7 +141,7 @@ void CAutoInfo::Start(int param)
 
 bool CAutoInfo::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		duration, angle, rTime;
 	int			i;

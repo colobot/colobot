@@ -128,7 +128,7 @@ void CAutoLabo::Init()
 bool CAutoLabo::EventProcess(const Event &event)
 {
 	CObject*	power;
-	D3DVECTOR	pos, goal, speed;
+	Math::Vector	pos, goal, speed;
 	Math::Point		dim, rot;
 	float		angle;
 	int			i;
@@ -243,7 +243,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 		}
 		else
 		{
-			m_object->SetPosition(1, D3DVECTOR(-9.0f, 13.0f, 0.0f));
+			m_object->SetPosition(1, Math::Vector(-9.0f, 13.0f, 0.0f));
 
 			SoundManip(1.5f, 1.0f, 0.5f);
 			m_phase    = ALAP_OPEN3;
@@ -284,7 +284,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 
 			pos = m_object->RetPosition(0);
 			pos.y += 4.0f;
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			speed = Math::Vector(0.0f, 0.0f, 0.0f);
 			dim.x = 4.0f;
 			dim.y = dim.x;
 			m_partiSphere = m_particule->CreateParticule(pos, speed, dim, PARTISPHERE2, LABO_DELAY, 0.0f, 0.0f);
@@ -400,7 +400,7 @@ bool CAutoLabo::EventProcess(const Event &event)
 		}
 		else
 		{
-			m_object->SetPosition(1, D3DVECTOR(-9.0f, 3.0f, 0.0f));
+			m_object->SetPosition(1, Math::Vector(-9.0f, 3.0f, 0.0f));
 
 			SoundManip(1.0f, 1.0f, 1.0f);
 			m_phase    = ALAP_CLOSE3;
@@ -578,7 +578,7 @@ void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 
 bool CAutoLabo::Write(char *line)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	char		name[100];
 
 	if ( m_phase == ALAP_WAIT )  return false;
@@ -607,7 +607,7 @@ bool CAutoLabo::Write(char *line)
 
 bool CAutoLabo::Read(char *line)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 

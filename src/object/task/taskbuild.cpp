@@ -88,7 +88,7 @@ CTaskBuild::~CTaskBuild()
 
 // Creates a building.
 
-bool CTaskBuild::CreateBuilding(D3DVECTOR pos, float angle)
+bool CTaskBuild::CreateBuilding(Math::Vector pos, float angle)
 {
 	m_building = new CObject(m_iMan);
 	if ( !m_building->CreateBuilding(pos, angle, 0.0f, m_type, 0.0f) )
@@ -127,7 +127,7 @@ void CTaskBuild::CreateLight()
 {
 	D3DLIGHT7		light;
 	D3DCOLORVALUE	color;
-	D3DVECTOR		center, pos, dir;
+	Math::Vector		center, pos, dir;
 	Math::Point			c, p;
 	float			angle;
 	int				i;
@@ -211,8 +211,8 @@ void CTaskBuild::BlackLight()
 
 bool CTaskBuild::EventProcess(const Event &event)
 {
-	D3DMATRIX*		mat;
-	D3DVECTOR		pos, dir, speed;
+	Math::Matrix*		mat;
+	Math::Vector		pos, dir, speed;
 	Math::Point			dim;
 	float			a, g, cirSpeed, dist, linSpeed;
 
@@ -238,7 +238,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
 	if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
 	{
-		dist = Length(m_object->RetPosition(0), m_metal->RetPosition(0));
+		dist = Math::Distance(m_object->RetPosition(0), m_metal->RetPosition(0));
 		linSpeed = 0.0f;
 		if ( dist > 30.0f )  linSpeed =  1.0f;
 		if ( dist < 30.0f )  linSpeed = -1.0f;
@@ -278,7 +278,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 			m_metal->SetLock(false);  // usable again
 			m_motion->SetAction(-1);
 			m_object->SetObjectParent(14, 0);
-			m_object->SetPosition(14, D3DVECTOR(-1.5f, 0.3f, -1.35f));
+			m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
 			m_object->SetAngleZ(14, Math::PI);
 			m_camera->FlushEffect();
 			Abort();
@@ -320,7 +320,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTIFIRE);
 
-		pos = D3DVECTOR(0.0f, 0.5f, 0.0f);
+		pos = Math::Vector(0.0f, 0.5f, 0.0f);
 		mat = m_object->RetWorldMatrix(14);
 		pos = Transform(*mat, pos);
 		speed = m_metal->RetPosition(0);
@@ -345,7 +345,7 @@ bool CTaskBuild::EventProcess(const Event &event)
 
 Error CTaskBuild::Start(ObjectType type)
 {
-	D3DVECTOR	pos, speed, pv, pm;
+	Math::Vector	pos, speed, pv, pm;
 	Error		err;
 	float		iAngle, oAngle;
 
@@ -391,7 +391,7 @@ Error CTaskBuild::Start(ObjectType type)
 	pv = m_object->RetPosition(0);
 	pv.y += 8.3f;
 	pm = m_metal->RetPosition(0);
-	m_angleZ = Math::RotateAngle(Length2d(pv, pm), fabs(pv.y-pm.y));
+	m_angleZ = Math::RotateAngle(Math::DistanceProjected(pv, pm), fabs(pv.y-pm.y));
 
 	m_physics->SetFreeze(true);  // it does not move
 
@@ -419,7 +419,7 @@ Error CTaskBuild::IsEnded()
 		{
 			m_physics->SetMotorSpeedZ(0.0f);
 
-			dist = Length(m_object->RetPosition(0), m_metal->RetPosition(0));
+			dist = Math::Distance(m_object->RetPosition(0), m_metal->RetPosition(0));
 			if ( dist > 30.0f )
 			{
 				time = m_physics->RetLinTimeLength(dist-30.0f, 1.0f);
@@ -438,7 +438,7 @@ Error CTaskBuild::IsEnded()
 
 	if ( m_phase == TBP_MOVE )  // preliminary forward/backward?
 	{
-		dist = Length(m_object->RetPosition(0), m_metal->RetPosition(0));
+		dist = Math::Distance(m_object->RetPosition(0), m_metal->RetPosition(0));
 
 		if ( dist >= 25.0f && dist <= 35.0f )
 		{
@@ -467,7 +467,7 @@ Error CTaskBuild::IsEnded()
 
 		m_motion->SetAction(MHS_FIRE);  // shooting position
 		m_object->SetObjectParent(14, 4);
-		m_object->SetPosition(14, D3DVECTOR(0.6f, 0.1f, 0.3f));
+		m_object->SetPosition(14, Math::Vector(0.6f, 0.1f, 0.3f));
 		m_object->SetAngleZ(14, 0.0f);
 
 		m_phase = TBP_PREP;
@@ -502,7 +502,7 @@ Error CTaskBuild::IsEnded()
 		m_metal = 0;
 
 		m_building->SetZoom(0, 1.0f);
-		m_building->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
+		m_building->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 		m_building->SetLock(false);  // building usable
 		m_main->CreateShortcuts();
 		m_displayText->DisplayError(INFO_BUILD, m_buildingPos, 10.0f, 50.0f);
@@ -525,7 +525,7 @@ Error CTaskBuild::IsEnded()
 
 		m_motion->SetAction(-1);
 		m_object->SetObjectParent(14, 0);
-		m_object->SetPosition(14, D3DVECTOR(-1.5f, 0.3f, -1.35f));
+		m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
 		m_object->SetAngleZ(14, Math::PI);
 
 		if ( m_type == OBJECT_FACTORY  ||
@@ -574,7 +574,7 @@ Error CTaskBuild::FlatFloor()
 {
 	CObject		*pObj;
 	ObjectType	type;
-	D3DVECTOR	center, pos, oPos, bPos;
+	Math::Vector	center, pos, oPos, bPos;
 	Math::Point		c, p;
 	float		radius, max, oRadius, bRadius, angle, dist;
 	int			i, j;
@@ -626,7 +626,7 @@ Error CTaskBuild::FlatFloor()
 		if ( type == OBJECT_BASE )
 		{
 			oPos = pObj->RetPosition(0);
-			dist = Length(center, oPos)-80.0f;
+			dist = Math::Distance(center, oPos)-80.0f;
 			if ( dist < max )
 			{
 				max = dist;
@@ -640,7 +640,7 @@ Error CTaskBuild::FlatFloor()
 			j = 0;
 			while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 			{
-				dist = Length(center, oPos)-oRadius;
+				dist = Math::Distance(center, oPos)-oRadius;
 				if ( dist < max )
 				{
 					max = dist;
@@ -692,7 +692,7 @@ Error CTaskBuild::FlatFloor()
 			j = 0;
 			while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 			{
-				dist = Length(center, oPos)-oRadius;
+				dist = Math::Distance(center, oPos)-oRadius;
 				if ( dist < max )
 				{
 					max = dist;
@@ -718,7 +718,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 									   float aLimit, Error &err)
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	type;
 	float		min, iAngle, a, aa, aBest, distance, magic;
 	int			i;
@@ -745,7 +745,7 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 		bMetal = true;  // metal exists
 
 		oPos = pObj->RetPosition(0);
-		distance = Length(oPos, iPos);
+		distance = Math::Distance(oPos, iPos);
 		a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW!
 
 		if ( distance > dMax )  continue;
@@ -784,10 +784,10 @@ CObject* CTaskBuild::SearchMetalObject(float &angle, float dMin, float dMax,
 
 // Destroys all the close marks.
 
-void CTaskBuild::DeleteMark(D3DVECTOR pos, float radius)
+void CTaskBuild::DeleteMark(Math::Vector pos, float radius)
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	float		distance;
 	int			i;
@@ -807,7 +807,7 @@ void CTaskBuild::DeleteMark(D3DVECTOR pos, float radius)
 			 type != OBJECT_MARKPOWER   )  continue;
 
 		oPos = pObj->RetPosition(0);
-		distance = Length(oPos, pos);
+		distance = Math::Distance(oPos, pos);
 		if ( distance <= radius )
 		{
 			pObj->DeleteObject();  // removes the mark

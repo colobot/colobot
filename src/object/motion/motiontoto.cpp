@@ -89,7 +89,7 @@ void CMotionToto::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
 						 float power)
 {
 	CModFile*		pModFile;
@@ -117,7 +117,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(1, 0);
 	pModFile->ReadModel("objects\\toto2.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(1, D3DVECTOR(1.00f, 0.17f, 0.00f));
+	m_object->SetPosition(1, Math::Vector(1.00f, 0.17f, 0.00f));
 
 	// Creates the left eye.
 	rank = m_engine->CreateObject();
@@ -127,7 +127,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\toto3.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(2, D3DVECTOR(0.85f, 1.04f, 0.25f));
+	m_object->SetPosition(2, Math::Vector(0.85f, 1.04f, 0.25f));
 	m_object->SetAngleY(2, -20.0f*Math::PI/180.0f);
 
 	// Creates the right eye.
@@ -137,7 +137,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(3, 0);
 	pModFile->ReadModel("objects\\toto3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(3, D3DVECTOR(0.85f, 1.04f, -0.25f));
+	m_object->SetPosition(3, Math::Vector(0.85f, 1.04f, -0.25f));
 	m_object->SetAngleY(3, 20.0f*Math::PI/180.0f);
 
 	// Creates left antenna.
@@ -147,7 +147,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(4, 0);
 	pModFile->ReadModel("objects\\toto4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(4, D3DVECTOR(0.0f, 1.9f, 0.3f));
+	m_object->SetPosition(4, Math::Vector(0.0f, 1.9f, 0.3f));
 	m_object->SetAngleX(4, 30.0f*Math::PI/180.0f);
 
 	rank = m_engine->CreateObject();
@@ -156,7 +156,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(5, 4);
 	pModFile->ReadModel("objects\\toto4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.67f, 0.0f));
+	m_object->SetPosition(5, Math::Vector(0.0f, 0.67f, 0.0f));
 	m_object->SetAngleX(5, 30.0f*Math::PI/180.0f);
 
 	rank = m_engine->CreateObject();
@@ -165,7 +165,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(6, 5);
 	pModFile->ReadModel("objects\\toto5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(6, D3DVECTOR(0.0f, 0.70f, 0.0f));
+	m_object->SetPosition(6, Math::Vector(0.0f, 0.70f, 0.0f));
 	m_object->SetAngleX(6, 30.0f*Math::PI/180.0f);
 
 	// Creates right antenna.
@@ -175,7 +175,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(7, 0);
 	pModFile->ReadModel("objects\\toto4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(7, D3DVECTOR(0.0f, 1.9f, -0.3f));
+	m_object->SetPosition(7, Math::Vector(0.0f, 1.9f, -0.3f));
 	m_object->SetAngleX(7, -30.0f*Math::PI/180.0f);
 
 	rank = m_engine->CreateObject();
@@ -184,7 +184,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(8, 7);
 	pModFile->ReadModel("objects\\toto4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(8, D3DVECTOR(0.0f, 0.67f, 0.0f));
+	m_object->SetPosition(8, Math::Vector(0.0f, 0.67f, 0.0f));
 	m_object->SetAngleX(8, -30.0f*Math::PI/180.0f);
 
 	rank = m_engine->CreateObject();
@@ -193,7 +193,7 @@ bool CMotionToto::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(9, 8);
 	pModFile->ReadModel("objects\\toto5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(9, D3DVECTOR(0.0f, 0.70f, 0.0f));
+	m_object->SetPosition(9, Math::Vector(0.0f, 0.70f, 0.0f));
 	m_object->SetAngleX(9, -30.0f*Math::PI/180.0f);
 
 	m_object->SetZoom(0, 0.5f);  // is little
@@ -259,9 +259,9 @@ bool CMotionToto::EventProcess(const Event &event)
 
 bool CMotionToto::EventFrame(const Event &event)
 {
-	D3DMATRIX*		mat;
-	D3DVECTOR		eye, lookat, dir, perp, nPos, aPos, pos, speed;
-	D3DVECTOR		vibLin, vibCir, dirSpeed, aAntenna;
+	Math::Matrix*		mat;
+	Math::Vector		eye, lookat, dir, perp, nPos, aPos, pos, speed;
+	Math::Vector		vibLin, vibCir, dirSpeed, aAntenna;
 	Math::Point			dim;
 	POINT			wDim;
 	ParticuleType	type;
@@ -337,9 +337,9 @@ bool CMotionToto::EventFrame(const Event &event)
 	eye    = m_engine->RetEyePt();
 	lookat = m_engine->RetLookatPt();
 
-	vibLin   = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	vibCir   = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	aAntenna = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	vibLin   = Math::Vector(0.0f, 0.0f, 0.0f);
+	vibCir   = Math::Vector(0.0f, 0.0f, 0.0f);
+	aAntenna = Math::Vector(0.0f, 0.0f, 0.0f);
 	aAntenna.x += 30.0f*Math::PI/180.0f;
 
 	// Calculates the new position.
@@ -456,7 +456,7 @@ bool CMotionToto::EventFrame(const Event &event)
 				if ( m_bStartAction )
 				{
 					m_bStartAction = false;
-					m_speedAction = Length(nPos, aPos)/15.0f;
+					m_speedAction = Math::Distance(nPos, aPos)/15.0f;
 					if ( m_speedAction < 20.0f )  m_speedAction = 20.0f;
 				}
 				level = m_speedAction;
@@ -464,7 +464,7 @@ bool CMotionToto::EventFrame(const Event &event)
 			if ( level > 1.0f/event.rTime )  level = 1.0f/event.rTime;
 			nPos = aPos + (nPos-aPos)*event.rTime*level;  // progression aPos -> nPos
 
-			linSpeed = Length2d(nPos, aPos)/event.rTime;
+			linSpeed = Math::DistanceProjected(nPos, aPos)/event.rTime;
 			dirSpeed = (nPos-aPos)/event.rTime;
 			nPos.y -= linSpeed*0.015f*(1.0f-progress);  // at ground level if moving fast
 		}
@@ -748,7 +748,7 @@ bool CMotionToto::EventFrame(const Event &event)
 			float t = Math::Mod(m_time, 3.5f);
 			if ( t >= 2.2f || ( t >= 1.2f && t <= 1.4f ) )  // breathe?
 			{
-				pos = D3DVECTOR(1.0f, 0.2f, 0.0f);
+				pos = Math::Vector(1.0f, 0.2f, 0.0f);
 				pos.z += (Math::Rand()-0.5f)*0.5f;
 
 				speed = pos;
@@ -766,7 +766,7 @@ bool CMotionToto::EventFrame(const Event &event)
 		}
 		else	// out of water?
 		{
-			pos = D3DVECTOR(0.0f, -0.5f, 0.0f);
+			pos = Math::Vector(0.0f, -0.5f, 0.0f);
 			pos.z += (Math::Rand()-0.5f)*0.5f;
 
 			speed = pos;
@@ -790,7 +790,7 @@ bool CMotionToto::EventFrame(const Event &event)
 			pos.y = (Math::Rand()-0.5f)*1.0f+3.5f;
 			pos.z = (Math::Rand()-0.5f)*1.0f;
 			pos   = Transform(*mat, pos);
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			speed = Math::Vector(0.0f, 0.0f, 0.0f);
 			dim.x = (Math::Rand()*0.3f+0.3f);
 			dim.y = dim.x;
 			if ( m_actionType == MT_ERROR   )  type = PARTIERROR;
@@ -814,7 +814,7 @@ bool CMotionToto::EventFrame(const Event &event)
 			pos.y = (Math::Rand()-0.5f)*1.4f+3.5f;
 			pos.z = (Math::Rand()-0.5f)*1.4f;
 			pos   = Transform(*mat, pos);
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			speed = Math::Vector(0.0f, 0.0f, 0.0f);
 			dim.x = (Math::Rand()*0.5f+0.5f);
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, sheet);

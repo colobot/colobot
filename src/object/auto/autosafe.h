@@ -77,7 +77,7 @@ protected:
 	float			m_actualAngle;
 	float			m_finalAngle;
 	bool			m_bKey[4];
-	D3DVECTOR		m_keyPos[4];
+	Math::Vector		m_keyPos[4];
 	int				m_keyParti[4];
 };
 

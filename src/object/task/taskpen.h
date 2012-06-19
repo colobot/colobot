@@ -65,7 +65,7 @@ protected:
 	float			m_delay;
 	float			m_time;
 	float			m_lastParticule;
-	D3DVECTOR		m_supportPos;
+	Math::Vector		m_supportPos;
 
 	float			m_timeUp;
 	float			m_oldAngle;

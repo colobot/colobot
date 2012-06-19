@@ -21,6 +21,8 @@
 
 #include <d3d.h>
 
+#include <math/vector.h>
+
 
 #define D3DFVF_VERTEX2	(D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_TEX2)
 
@@ -32,7 +34,7 @@ struct D3DVERTEX2
 	float		tu2, tv2;
 
 	D3DVERTEX2() { }
-	D3DVERTEX2(const D3DVECTOR& _v, const D3DVECTOR& _n, float _tu=0.0f, float _tv=0.0f, float _tu2=0.0f, float _tv2=0.0f)
+	D3DVERTEX2(const Math::Vector& _v, const Math::Vector& _n, float _tu=0.0f, float _tv=0.0f, float _tu2=0.0f, float _tv2=0.0f)
 	{
 		x   = _v.x;
 		y   = _v.y;

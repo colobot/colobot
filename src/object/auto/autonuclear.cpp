@@ -20,6 +20,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/global.h"
@@ -95,14 +96,14 @@ void CAutoNuclear::DeleteObject(bool bAll)
 
 void CAutoNuclear::Init()
 {
-	D3DMATRIX*	mat;
+	Math::Matrix*	mat;
 
 	m_time = 0.0f;
 	m_timeVirus = 0.0f;
 	m_lastParticule = 0.0f;
 
 	mat = m_object->RetWorldMatrix(0);
-	m_pos = Transform(*mat, D3DVECTOR(22.0f, 4.0f, 0.0f));
+	m_pos = Math::Transform(*mat, Math::Vector(22.0f, 4.0f, 0.0f));
 
 	m_phase    = ANUP_WAIT;  // waiting ...
 	m_progress = 0.0f;
@@ -117,8 +118,8 @@ void CAutoNuclear::Init()
 bool CAutoNuclear::EventProcess(const Event &event)
 {
 	CObject*	fret;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, goal, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, goal, speed;
 	Math::Point		dim, rot;
 	float		angle;
 	int			i, max;
@@ -345,7 +346,7 @@ CObject* CAutoNuclear::SearchUranium()
 bool CAutoNuclear::SearchVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	float		oRadius, dist;
 	int			i;
@@ -391,7 +392,7 @@ bool CAutoNuclear::SearchVehicle()
 			 type != OBJECT_WORM     )  continue;
 
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-		dist = Length(oPos, m_pos)-oRadius;
+		dist = Math::Distance(oPos, m_pos)-oRadius;
 
 		if ( dist < 10.0f )  return true;
 	}
@@ -404,7 +405,7 @@ bool CAutoNuclear::SearchVehicle()
 void CAutoNuclear::CreatePower()
 {
 	CObject*		power;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			angle;
 
 	pos = m_object->RetPosition(0);
@@ -419,7 +420,7 @@ void CAutoNuclear::CreatePower()
 	}
 
 	power->SetTruck(m_object);
-	power->SetPosition(0, D3DVECTOR(22.0f, 3.0f, 0.0f));
+	power->SetPosition(0, Math::Vector(22.0f, 3.0f, 0.0f));
 	m_object->SetPower(power);
 }
 

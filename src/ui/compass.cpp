@@ -84,7 +84,7 @@ void CCompass::Draw()
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2		vertex[4];	// 2 triangles
 	Math::Point			p1, p2, p3, c, uv1, uv2;
-	D3DVECTOR		n;
+	Math::Vector		n;
 	float			dp;
 
 	if ( (m_state & STATE_VISIBLE) == 0 )  return;
@@ -113,12 +113,12 @@ void CCompass::Draw()
 	uv2.x -= dp;
 	uv2.y -= dp;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
 
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	m_engine->AddStatisticTriangle(2);
@@ -150,9 +150,9 @@ void CCompass::Draw()
 		uv2.x -= dp;
 		uv2.y -= dp;
 
-		vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
-		vertex[1] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
-		vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
+		vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
+		vertex[1] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
+		vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
 
 		device->DrawPrimitive(D3DPT_TRIANGLELIST, D3DFVF_VERTEX2, vertex, 3, NULL);
 		m_engine->AddStatisticTriangle(1);

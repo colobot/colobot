@@ -79,7 +79,7 @@ void CMotionBee::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 						float power)
 {
 	CModFile*	pModFile;
@@ -104,8 +104,8 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	// A vehicle must have an obligatory collision
 	// with a sphere of center (0, y, 0) (see GetCrashSphere).
-	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
-	m_object->SetGlobalSphere(D3DVECTOR(-1.0f, 1.0f, 0.0f), 5.0f);
+	m_object->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
+	m_object->SetGlobalSphere(Math::Vector(-1.0f, 1.0f, 0.0f), 5.0f);
 
 	// Creates the head.
 	rank = m_engine->CreateObject();
@@ -114,7 +114,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(1, 0);
 	pModFile->ReadModel("objects\\bee2.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(1, D3DVECTOR(1.6f, 0.3f, 0.0f));
+	m_object->SetPosition(1, Math::Vector(1.6f, 0.3f, 0.0f));
 
 	// Creates the tail.
 	rank = m_engine->CreateObject();
@@ -123,7 +123,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(2, 0);
 	pModFile->ReadModel("objects\\bee3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(2, D3DVECTOR(-0.8f, 0.0f, 0.0f));
+	m_object->SetPosition(2, Math::Vector(-0.8f, 0.0f, 0.0f));
 
 	// Creates a right-back thigh.
 	rank = m_engine->CreateObject();
@@ -132,7 +132,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(3, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(3, D3DVECTOR(-0.3f, -0.1f, -0.2f));
+	m_object->SetPosition(3, Math::Vector(-0.3f, -0.1f, -0.2f));
 
 	// Creates a right-back leg.
 	rank = m_engine->CreateObject();
@@ -141,7 +141,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(4, 3);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(4, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(4, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates a right-back foot.
 	rank = m_engine->CreateObject();
@@ -150,7 +150,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(5, 4);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(5, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates two middle-right thighs.
 	rank = m_engine->CreateObject();
@@ -159,7 +159,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(6, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(6, D3DVECTOR(0.3f, -0.1f, -0.4f));
+	m_object->SetPosition(6, Math::Vector(0.3f, -0.1f, -0.4f));
 
 	// Creates two middle-right legs.
 	rank = m_engine->CreateObject();
@@ -168,7 +168,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(7, 6);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(7, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(7, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates two middle-right feet.
 	rank = m_engine->CreateObject();
@@ -177,7 +177,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(8, 7);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(8, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(8, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates the right front thigh.
 	rank = m_engine->CreateObject();
@@ -186,7 +186,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(9, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(9, D3DVECTOR(1.0f, -0.1f, -0.7f));
+	m_object->SetPosition(9, Math::Vector(1.0f, -0.1f, -0.7f));
 
 	// Creates the right front leg.
 	rank = m_engine->CreateObject();
@@ -195,7 +195,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(10, 9);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(10, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(10, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates the right front foot.
 	rank = m_engine->CreateObject();
@@ -204,7 +204,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(11, 10);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(11, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates a left-back thigh.
 	rank = m_engine->CreateObject();
@@ -213,7 +213,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(12, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(12, D3DVECTOR(-0.3f, -0.1f, 0.2f));
+	m_object->SetPosition(12, Math::Vector(-0.3f, -0.1f, 0.2f));
 	m_object->SetAngleY(12, Math::PI);
 
 	// Creates a left-back leg.
@@ -223,7 +223,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(13, 12);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(13, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(13, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates a left-back foot.
 	rank = m_engine->CreateObject();
@@ -232,7 +232,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(14, 13);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(14, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(14, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates two middle-left thigh.
 	rank = m_engine->CreateObject();
@@ -241,7 +241,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(15, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(15, D3DVECTOR(0.3f, -0.1f, 0.4f));
+	m_object->SetPosition(15, Math::Vector(0.3f, -0.1f, 0.4f));
 	m_object->SetAngleY(15, Math::PI);
 
 	// Creates two middle-left legs.
@@ -251,7 +251,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(16, 15);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(16, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(16, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates two middle-left feet.
 	rank = m_engine->CreateObject();
@@ -260,7 +260,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(17, 16);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(17, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(17, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates front-left thigh.
 	rank = m_engine->CreateObject();
@@ -269,7 +269,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(18, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(18, D3DVECTOR(1.0f, -0.1f, 0.7f));
+	m_object->SetPosition(18, Math::Vector(1.0f, -0.1f, 0.7f));
 	m_object->SetAngleY(18, Math::PI);
 
 	// Creates front-left leg.
@@ -279,7 +279,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(19, 18);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(19, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(19, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates front-left foot.
 	rank = m_engine->CreateObject();
@@ -288,7 +288,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(20, 19);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(20, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(20, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates the right wing.
 	rank = m_engine->CreateObject();
@@ -297,7 +297,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(21, 0);
 	pModFile->ReadModel("objects\\bee7.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(21, D3DVECTOR(0.8f, 0.4f, -0.5f));
+	m_object->SetPosition(21, Math::Vector(0.8f, 0.4f, -0.5f));
 
 	// Creates the left wing.
 	rank = m_engine->CreateObject();
@@ -307,7 +307,7 @@ bool CMotionBee::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\bee7.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(22, D3DVECTOR(0.8f, 0.4f, 0.5f));
+	m_object->SetPosition(22, Math::Vector(0.8f, 0.4f, 0.5f));
 
 	m_object->CreateShadowCircle(6.0f, 0.5f);
 
@@ -452,7 +452,7 @@ bool CMotionBee::EventProcess(const Event &event)
 
 bool CMotionBee::EventFrame(const Event &event)
 {
-	D3DVECTOR		dir;
+	Math::Vector		dir;
 	float			s, a, prog;
 	int				action, i, st, nd;
 	bool			bStop;

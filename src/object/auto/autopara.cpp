@@ -20,6 +20,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/global.h"
@@ -79,14 +80,14 @@ void CAutoPara::DeleteObject(bool bAll)
 
 void CAutoPara::Init()
 {
-	D3DMATRIX*	mat;
+	Math::Matrix*	mat;
 
 	m_time = 0.0f;
 	m_timeVirus = 0.0f;
 	m_lastParticule = 0.0f;
 
 	mat = m_object->RetWorldMatrix(0);
-	m_pos = Transform(*mat, D3DVECTOR(22.0f, 4.0f, 0.0f));
+	m_pos = Math::Transform(*mat, Math::Vector(22.0f, 4.0f, 0.0f));
 
 	m_phase    = APAP_WAIT;  // waiting ...
 	m_progress = 0.0f;
@@ -110,7 +111,7 @@ void CAutoPara::StartBlitz()
 
 bool CAutoPara::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	int			i;
 
@@ -253,7 +254,7 @@ void CAutoPara::ChargeObject(float rTime)
 {
 	CObject*	pObj;
 	CObject*	power;
-	D3DVECTOR	sPos, oPos;
+	Math::Vector	sPos, oPos;
 	float		dist, energy;
 	int			i;
 
@@ -265,7 +266,7 @@ void CAutoPara::ChargeObject(float rTime)
 		if ( pObj == 0 )  break;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, sPos);
+		dist = Math::Distance(oPos, sPos);
 		if ( dist > 20.0f )  continue;
 
 		if ( pObj->RetTruck() == 0 && pObj->RetType() == OBJECT_POWER )

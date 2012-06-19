@@ -22,6 +22,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
@@ -70,8 +71,8 @@ bool CTaskFire::EventProcess(const Event &event)
 {
 	CObject*	power;
 	CPhysics*	physics;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed, dir, vib;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed, dir, vib;
 	ObjectType	type;
 	Math::Point		dim;
 	float		energy, fire;
@@ -106,10 +107,10 @@ bool CTaskFire::EventProcess(const Event &event)
 
 			for ( i=0 ; i<6 ; i++ )
 			{
-				pos = D3DVECTOR(0.0f, 2.5f, 0.0f);
-				pos = Transform(*mat, pos);
+				pos = Math::Vector(0.0f, 2.5f, 0.0f);
+				pos = Math::Transform(*mat, pos);
 
-				speed = D3DVECTOR(200.0f, 0.0f, 0.0f);
+				speed = Math::Vector(200.0f, 0.0f, 0.0f);
 
 				physics = m_object->RetPhysics();
 				if ( physics != 0 )
@@ -120,7 +121,7 @@ bool CTaskFire::EventProcess(const Event &event)
 				speed.x += (Math::Rand()-0.5f)*10.0f;
 				speed.y += (Math::Rand()-0.5f)*20.0f;
 				speed.z += (Math::Rand()-0.5f)*30.0f;
-				speed = Transform(*mat, speed);
+				speed = Math::Transform(*mat, speed);
 				speed -= pos;
 
 				dim.x = Math::Rand()*0.5f+0.5f;
@@ -136,16 +137,16 @@ bool CTaskFire::EventProcess(const Event &event)
 
 			for ( i=0 ; i<4 ; i++ )
 			{
-				pos = D3DVECTOR(4.0f, 0.0f, 0.0f);
+				pos = Math::Vector(4.0f, 0.0f, 0.0f);
 				pos.y += (rand()%3-1)*1.5f;
 				pos.z += (rand()%3-1)*1.5f;
-				pos = Transform(*mat, pos);
+				pos = Math::Transform(*mat, pos);
 
-				speed = D3DVECTOR(200.0f, 0.0f, 0.0f);
+				speed = Math::Vector(200.0f, 0.0f, 0.0f);
 				speed.x += (Math::Rand()-0.5f)*6.0f;
 				speed.y += (Math::Rand()-0.5f)*12.0f;
 				speed.z += (Math::Rand()-0.5f)*12.0f;
-				speed = Transform(*mat, speed);
+				speed = Math::Transform(*mat, speed);
 				speed -= pos;
 
 				dim.x = 1.0f;
@@ -154,11 +155,11 @@ bool CTaskFire::EventProcess(const Event &event)
 												   2.0f, 200.0f, 0.5f, 1.0f);
 				m_particule->SetObjectFather(channel, m_object);
 
-				speed = D3DVECTOR(5.0f, 0.0f, 0.0f);
+				speed = Math::Vector(5.0f, 0.0f, 0.0f);
 				speed.x += (Math::Rand()-0.5f)*1.0f;
 				speed.y += (Math::Rand()-0.5f)*2.0f;
 				speed.z += (Math::Rand()-0.5f)*2.0f;
-				speed = Transform(*mat, speed);
+				speed = Math::Transform(*mat, speed);
 				speed -= pos;
 				speed.y += 5.0f;
 
@@ -184,17 +185,17 @@ bool CTaskFire::EventProcess(const Event &event)
 			{
 				if ( type == OBJECT_MOBILErc )
 				{
-					pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+					pos = Math::Vector(0.0f, 0.0f, 0.0f);
 				}
 				else
 				{
-					pos = D3DVECTOR(3.0f, 1.0f, 0.0f);
+					pos = Math::Vector(3.0f, 1.0f, 0.0f);
 				}
 				pos.y += (Math::Rand()-0.5f)*1.0f;
 				pos.z += (Math::Rand()-0.5f)*1.0f;
-				pos = Transform(*mat, pos);
+				pos = Math::Transform(*mat, pos);
 
-				speed = D3DVECTOR(200.0f, 0.0f, 0.0f);
+				speed = Math::Vector(200.0f, 0.0f, 0.0f);
 
 				physics = m_object->RetPhysics();
 				if ( physics != 0 )
@@ -205,7 +206,7 @@ bool CTaskFire::EventProcess(const Event &event)
 				speed.x += (Math::Rand()-0.5f)*3.0f;
 				speed.y += (Math::Rand()-0.5f)*6.0f;
 				speed.z += (Math::Rand()-0.5f)*6.0f;
-				speed = Transform(*mat, speed);
+				speed = Math::Transform(*mat, speed);
 				speed -= pos;
 
 				dim.x = Math::Rand()*0.7f+0.7f;
@@ -218,16 +219,16 @@ bool CTaskFire::EventProcess(const Event &event)
 			if ( type != OBJECT_MOBILErc &&
 				 m_progress > 0.3f )
 			{
-				pos = D3DVECTOR(-1.0f, 1.0f, 0.0f);
+				pos = Math::Vector(-1.0f, 1.0f, 0.0f);
 				pos.y += (Math::Rand()-0.5f)*0.4f;
 				pos.z += (Math::Rand()-0.5f)*0.4f;
-				pos = Transform(*mat, pos);
+				pos = Math::Transform(*mat, pos);
 
-				speed = D3DVECTOR(-4.0f, 0.0f, 0.0f);
+				speed = Math::Vector(-4.0f, 0.0f, 0.0f);
 				speed.x += (Math::Rand()-0.5f)*2.0f;
 				speed.y += (Math::Rand()-0.2f)*4.0f;
 				speed.z += (Math::Rand()-0.5f)*4.0f;
-				speed = Transform(*mat, speed);
+				speed = Math::Transform(*mat, speed);
 				speed -= pos;
 
 				dim.x = Math::Rand()*1.2f+1.2f;
@@ -238,7 +239,7 @@ bool CTaskFire::EventProcess(const Event &event)
 			}
 		}
 
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		if ( m_progress < 0.1f )
 		{
 			dir.z = (Math::PI*0.04f)*(m_progress*10.0f);
@@ -279,7 +280,7 @@ bool CTaskFire::EventProcess(const Event &event)
 Error CTaskFire::Start(float delay)
 {
 	CObject*	power;
-	D3DVECTOR	pos, goal, speed;
+	Math::Vector	pos, goal, speed;
 	float		energy, fire;
 	ObjectType	type;
 
@@ -378,9 +379,9 @@ Error CTaskFire::IsEnded()
 
 bool CTaskFire::Abort()
 {
-	m_object->SetInclinaison(D3DVECTOR(0.0f, 0.0f, 0.0f));
-	m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-	m_object->SetLinVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
+	m_object->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
+	m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+	m_object->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 
 	if ( m_soundChannel != -1 )
 	{

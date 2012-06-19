@@ -123,9 +123,9 @@ public:
 	Error		StartTaskRecover();
 	Error		StartTaskShield(TaskShieldMode mode);
 	Error		StartTaskFire(float delay);
-	Error		StartTaskFireAnt(D3DVECTOR impact);
+	Error		StartTaskFireAnt(Math::Vector impact);
 	Error		StartTaskGunGoal(float dirV, float dirH);
-	Error		StartTaskReset(D3DVECTOR goal, D3DVECTOR angle);
+	Error		StartTaskReset(Math::Vector goal, Math::Vector angle);
 
 	void		UpdateInterface(float rTime);
 	void		UpdateInterface();
@@ -193,7 +193,7 @@ protected:
 	CObject*	m_antTarget;
 	CObject*	m_beeBullet;
 	float		m_beeBulletSpeed;
-	D3DVECTOR	m_startPos;
+	Math::Vector	m_startPos;
 	float		m_time;
 	float		m_burnTime;
 	float		m_lastUpdateTime;
@@ -207,7 +207,7 @@ protected:
 
 	bool		m_bTraceRecord;
 	TraceOper	m_traceOper;
-	D3DVECTOR	m_tracePos;
+	Math::Vector	m_tracePos;
 	float		m_traceAngle;
 	int			m_traceColor;
 	int			m_traceRecordIndex;

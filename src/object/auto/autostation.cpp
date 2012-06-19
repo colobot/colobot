@@ -20,6 +20,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -90,8 +91,8 @@ void CAutoStation::Init()
 
 bool CAutoStation::EventProcess(const Event &event)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, ppos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, ppos, speed;
 	Math::Point		dim;
 	CObject*	vehicule;
 	CObject*	power;
@@ -201,8 +202,8 @@ bool CAutoStation::EventProcess(const Event &event)
 		m_lastParticule = m_time;
 
 		mat = m_object->RetWorldMatrix(0);
-		pos = D3DVECTOR(-15.0f, 7.0f, 0.0f);  // battery position
-		pos = Transform(*mat, pos);
+		pos = Math::Vector(-15.0f, 7.0f, 0.0f);  // battery position
+		pos = Math::Transform(*mat, pos);
 		speed.x = (Math::Rand()-0.5f)*20.0f;
 		speed.y = (Math::Rand()-0.5f)*20.0f;
 		speed.z = (Math::Rand()-0.5f)*20.0f;
@@ -251,7 +252,7 @@ bool CAutoStation::EventProcess(const Event &event)
 CObject* CAutoStation::SearchVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	sPos, oPos;
+	Math::Vector	sPos, oPos;
 	ObjectType	type;
 	float		dist;
 	int			i;
@@ -293,7 +294,7 @@ CObject* CAutoStation::SearchVehicle()
 			 type != OBJECT_MOBILEdr )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, sPos);
+		dist = Math::Distance(oPos, sPos);
 		if ( dist <= 5.0f )  return pObj;
 	}
 

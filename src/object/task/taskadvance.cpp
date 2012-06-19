@@ -22,6 +22,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -100,7 +101,7 @@ Error CTaskAdvance::Start(float length)
 
 Error CTaskAdvance::IsEnded()
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		length;
 
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
@@ -117,7 +118,7 @@ Error CTaskAdvance::IsEnded()
 	}
 
 	pos = m_object->RetPosition(0);
-	length = Length2d(pos, m_startPos);
+	length = Math::DistanceProjected(pos, m_startPos);
 
 	if ( length > m_lastDist )  // forward?
 	{

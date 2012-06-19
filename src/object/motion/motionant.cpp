@@ -80,7 +80,7 @@ void CMotionAnt::DeleteObject(bool bAll)
 
 // Creates a vehicle poses some rolling on the floor.
 
-bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 						float power)
 {
 	CModFile*	pModFile;
@@ -105,8 +105,8 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	// A vehicle must have necessarily a collision
 	//with a sphere of center (0, y, 0) (see GetCrashSphere).
-	m_object->CreateCrashSphere(D3DVECTOR(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
-	m_object->SetGlobalSphere(D3DVECTOR(-0.5f, 1.0f, 0.0f), 4.0f);
+	m_object->CreateCrashSphere(Math::Vector(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
+	m_object->SetGlobalSphere(Math::Vector(-0.5f, 1.0f, 0.0f), 4.0f);
 
 	// Creates the head.
 	rank = m_engine->CreateObject();
@@ -115,7 +115,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(1, 0);
 	pModFile->ReadModel("objects\\ant2.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(1, D3DVECTOR(2.0f, 0.0f, 0.0f));
+	m_object->SetPosition(1, Math::Vector(2.0f, 0.0f, 0.0f));
 
 	// Creates the tail.
 	rank = m_engine->CreateObject();
@@ -124,7 +124,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(2, 0);
 	pModFile->ReadModel("objects\\ant3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(2, D3DVECTOR(-1.0f, 0.0f, 0.0f));
+	m_object->SetPosition(2, Math::Vector(-1.0f, 0.0f, 0.0f));
 
 	// Creates a right-back thigh.
 	rank = m_engine->CreateObject();
@@ -133,7 +133,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(3, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(3, D3DVECTOR(-0.4f, -0.1f, -0.3f));
+	m_object->SetPosition(3, Math::Vector(-0.4f, -0.1f, -0.3f));
 
 	// Creates a right-back leg.
 	rank = m_engine->CreateObject();
@@ -142,7 +142,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(4, 3);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(4, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(4, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates a right-back foot.
 	rank = m_engine->CreateObject();
@@ -151,7 +151,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(5, 4);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(5, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates two middle-right thighs.
 	rank = m_engine->CreateObject();
@@ -160,7 +160,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(6, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(6, D3DVECTOR(0.1f, -0.1f, -0.4f));
+	m_object->SetPosition(6, Math::Vector(0.1f, -0.1f, -0.4f));
 
 	// Creates two middle-right legs.
 	rank = m_engine->CreateObject();
@@ -169,7 +169,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(7, 6);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(7, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(7, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates two middle-right foots.
 	rank = m_engine->CreateObject();
@@ -178,7 +178,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(8, 7);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(8, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(8, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates the right front thigh.
 	rank = m_engine->CreateObject();
@@ -187,7 +187,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(9, 0);
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(9, D3DVECTOR(1.4f, -0.1f, -0.6f));
+	m_object->SetPosition(9, Math::Vector(1.4f, -0.1f, -0.6f));
 
 	// Creates the right front leg.
 	rank = m_engine->CreateObject();
@@ -196,7 +196,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(10, 9);
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(10, D3DVECTOR(0.0f, 0.0f, -1.0f));
+	m_object->SetPosition(10, Math::Vector(0.0f, 0.0f, -1.0f));
 
 	// Creates the right front foot.
 	rank = m_engine->CreateObject();
@@ -205,7 +205,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(11, 10);
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, -2.0f));
+	m_object->SetPosition(11, Math::Vector(0.0f, 0.0f, -2.0f));
 
 	// Creates a left-back thigh.
 	rank = m_engine->CreateObject();
@@ -215,7 +215,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(12, D3DVECTOR(-0.4f, -0.1f, 0.3f));
+	m_object->SetPosition(12, Math::Vector(-0.4f, -0.1f, 0.3f));
 
 	// Creates a left-back leg.
 	rank = m_engine->CreateObject();
@@ -225,7 +225,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(13, D3DVECTOR(0.0f, 0.0f, 1.0f));
+	m_object->SetPosition(13, Math::Vector(0.0f, 0.0f, 1.0f));
 
 	// Creates a left-back foot.
 	rank = m_engine->CreateObject();
@@ -235,7 +235,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(14, D3DVECTOR(0.0f, 0.0f, 2.0f));
+	m_object->SetPosition(14, Math::Vector(0.0f, 0.0f, 2.0f));
 
 	// Creates two middle-left thighs.
 	rank = m_engine->CreateObject();
@@ -245,7 +245,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(15, D3DVECTOR(0.1f, -0.1f, 0.4f));
+	m_object->SetPosition(15, Math::Vector(0.1f, -0.1f, 0.4f));
 
 	// Creates two middle-left legs.
 	rank = m_engine->CreateObject();
@@ -255,7 +255,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(16, D3DVECTOR(0.0f, 0.0f, 1.0f));
+	m_object->SetPosition(16, Math::Vector(0.0f, 0.0f, 1.0f));
 
 	// Creates two middle-left foot.
 	rank = m_engine->CreateObject();
@@ -265,7 +265,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(17, D3DVECTOR(0.0f, 0.0f, 2.0f));
+	m_object->SetPosition(17, Math::Vector(0.0f, 0.0f, 2.0f));
 
 	// Creates the left front thigh.
 	rank = m_engine->CreateObject();
@@ -275,7 +275,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant4.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(18, D3DVECTOR(1.4f, -0.1f, 0.6f));
+	m_object->SetPosition(18, Math::Vector(1.4f, -0.1f, 0.6f));
 
 	// Creates the left front leg.
 	rank = m_engine->CreateObject();
@@ -285,7 +285,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant5.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(19, D3DVECTOR(0.0f, 0.0f, 1.0f));
+	m_object->SetPosition(19, Math::Vector(0.0f, 0.0f, 1.0f));
 
 	// Creates the left front foot.
 	rank = m_engine->CreateObject();
@@ -295,7 +295,7 @@ bool CMotionAnt::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\ant6.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(20, D3DVECTOR(0.0f, 0.0f, 2.0f));
+	m_object->SetPosition(20, Math::Vector(0.0f, 0.0f, 2.0f));
 
 	m_object->CreateShadowCircle(4.0f, 0.5f);
 
@@ -475,7 +475,7 @@ bool CMotionAnt::EventProcess(const Event &event)
 
 bool CMotionAnt::EventFrame(const Event &event)
 {
-	D3DVECTOR	dir, pos, speed;
+	Math::Vector	dir, pos, speed;
 	Math::Point		dim;
 	float		s, a, prog, time;
 	float		tSt[9], tNd[9];
@@ -671,11 +671,11 @@ bool CMotionAnt::EventFrame(const Event &event)
 	}
 	else if ( m_actionType == MAS_BURN )  // burning?
 	{
-		dir = D3DVECTOR(Math::PI, 0.0f, 0.0f);
+		dir = Math::Vector(Math::PI, 0.0f, 0.0f);
 		SetCirVibration(dir);
-		dir = D3DVECTOR(0.0f, -1.5f, 0.0f);
+		dir = Math::Vector(0.0f, -1.5f, 0.0f);
 		SetLinVibration(dir);
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
 		time = event.rTime*1.0f;
@@ -684,7 +684,7 @@ bool CMotionAnt::EventFrame(const Event &event)
 	}
 	else if ( m_actionType == MAS_RUIN )  // destroyed?
 	{
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetLinVibration(dir);
 		SetCirVibration(dir);
 		SetInclinaison(dir);
@@ -723,7 +723,7 @@ bool CMotionAnt::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		SetCirVibration(dir);
 
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
 		if ( m_progress >= 1.0f )
@@ -752,7 +752,7 @@ bool CMotionAnt::EventFrame(const Event &event)
 			}
 		}
 
-		dir = D3DVECTOR(0.0f, -1.0f, 0.0f);
+		dir = Math::Vector(0.0f, -1.0f, 0.0f);
 		SetLinVibration(dir);
 		dir.x = sinf(m_armTimeAbs* 4.0f)*0.10f+
 				sinf(m_armTimeAbs* 7.0f)*0.20f+
@@ -767,7 +767,7 @@ bool CMotionAnt::EventFrame(const Event &event)
 				sinf(m_armTimeAbs* 9.0f)*0.04f+
 				sinf(m_armTimeAbs*23.0f)*0.03f;
 		SetCirVibration(dir);
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
 		m_object->SetAngleY(1, sinf(m_armTimeAbs*8.0f)*0.7f);  // head
@@ -814,7 +814,7 @@ bool CMotionAnt::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		SetCirVibration(dir);
 
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
 		if ( m_progress >= 1.0f )
@@ -833,7 +833,7 @@ bool CMotionAnt::EventFrame(const Event &event)
 		{
 			m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.7f)*0.15f);  // tail
 
-			dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			dir = Math::Vector(0.0f, 0.0f, 0.0f);
 			SetLinVibration(dir);
 			SetInclinaison(dir);
 		}
@@ -872,7 +872,7 @@ bool CMotionAnt::EventFrame(const Event &event)
 			SetLinVibration(dir);
 		}
 
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetCirVibration(dir);
 
 		m_object->SetAngleZ(1, sinf(m_armTimeAbs*1.4f)*0.20f);  // head
