@@ -20,6 +20,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -283,7 +284,7 @@ CObject* CAutoEgg::SearchAlien()
 {
 	CObject*	pObj;
 	CObject*	pBest;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	type;
 	float		dist, min;
 	int			i;
@@ -305,7 +306,7 @@ CObject* CAutoEgg::SearchAlien()
 			 type != OBJECT_WORM   )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(oPos, cPos);
+		dist = Math::DistanceProjected(oPos, cPos);
 		if ( dist < 8.0f && dist < min )
 		{
 			min = dist;

@@ -213,9 +213,9 @@ struct Particule
 	float			mass;		// mass of the particle (in rebounding)
 	float			weight;		// weight of the particle (for noise)
 	float			duration;	// length of life
-	D3DVECTOR		pos;		// absolute position (relative if object links)
-	D3DVECTOR		goal;		// goal position (if bRay)
-	D3DVECTOR		speed;		// speed of displacement
+	Math::Vector		pos;		// absolute position (relative if object links)
+	Math::Vector		goal;		// goal position (if bRay)
+	Math::Vector		speed;		// speed of displacement
 	float			windSensitivity;
 	short			bounce;		// number of rebounds
 	Math::Point			dim;		// dimensions of the rectangle
@@ -243,14 +243,14 @@ struct Track
 	float			width;		// tail width
 	int			used;		// number of positions in "pos"
 	int			head;		// head to write index
-	D3DVECTOR		pos[MAXTRACKLEN];
+	Math::Vector		pos[MAXTRACKLEN];
 	float			len[MAXTRACKLEN];
 };
 
 struct WheelTrace
 {
 	ParticuleType		type;		// type PARTI*
-	D3DVECTOR		pos[4];		// rectangle positions
+	Math::Vector		pos[4];		// rectangle positions
 	float			startTime;	// beginning of life
 };
 
@@ -266,32 +266,32 @@ public:
 
 	void		FlushParticule();
 	void		FlushParticule(int sheet);
-	int			CreateParticule(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
-	int			CreateFrag(D3DVECTOR pos, D3DVECTOR speed, D3DTriangle *triangle, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
-	int			CreatePart(D3DVECTOR pos, D3DVECTOR speed, ParticuleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, float windSensitivity=1.0f, int sheet=0);
-	int			CreateRay(D3DVECTOR pos, D3DVECTOR goal, ParticuleType type, Math::Point dim, float duration=1.0f, int sheet=0);
-	int			CreateTrack(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
-	void		CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2, const D3DVECTOR &p3, const D3DVECTOR &p4, ParticuleType type);
+	int			CreateParticule(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
+	int			CreateFrag(Math::Vector pos, Math::Vector speed, D3DTriangle *triangle, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
+	int			CreatePart(Math::Vector pos, Math::Vector speed, ParticuleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, float windSensitivity=1.0f, int sheet=0);
+	int			CreateRay(Math::Vector pos, Math::Vector goal, ParticuleType type, Math::Point dim, float duration=1.0f, int sheet=0);
+	int			CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
+	void		CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3, const Math::Vector &p4, ParticuleType type);
 	void		DeleteParticule(ParticuleType type);
 	void		DeleteParticule(int channel);
 	void		SetObjectLink(int channel, CObject *object);
 	void		SetObjectFather(int channel, CObject *object);
-	void		SetPosition(int channel, D3DVECTOR pos);
+	void		SetPosition(int channel, Math::Vector pos);
 	void		SetDimension(int channel, Math::Point dim);
 	void		SetZoom(int channel, float zoom);
 	void		SetAngle(int channel, float angle);
 	void		SetIntensity(int channel, float intensity);
-	void		SetParam(int channel, D3DVECTOR pos, Math::Point dim, float zoom, float angle, float intensity);
+	void		SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom, float angle, float intensity);
 	void		SetPhase(int channel, ParticulePhase phase, float duration);
-	bool		GetPosition(int channel, D3DVECTOR &pos);
+	bool		GetPosition(int channel, Math::Vector &pos);
 
-	D3DCOLORVALUE RetFogColor(D3DVECTOR pos);
+	D3DCOLORVALUE RetFogColor(Math::Vector pos);
 
 	void		SetFrameUpdate(int sheet, bool bUpdate);
 	void		FrameParticule(float rTime);
 	void		DrawParticule(int sheet);
 
-	bool		WriteWheelTrace(char *filename, int width, int height, D3DVECTOR dl, D3DVECTOR ur);
+	bool		WriteWheelTrace(char *filename, int width, int height, Math::Vector dl, Math::Vector ur);
 
 protected:
 	void		DeleteRank(int rank);
@@ -304,10 +304,10 @@ protected:
 	void		DrawParticuleSphere(int i);
 	void		DrawParticuleCylinder(int i);
 	void		DrawParticuleWheel(int i);
-	CObject*	SearchObjectGun(D3DVECTOR old, D3DVECTOR pos, ParticuleType type, CObject *father);
-	CObject*	SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal, ParticuleType type, CObject *father);
-	void		Play(Sound sound, D3DVECTOR pos, float amplitude);
-	bool		TrackMove(int i, D3DVECTOR pos, float progress);
+	CObject*	SearchObjectGun(Math::Vector old, Math::Vector pos, ParticuleType type, CObject *father);
+	CObject*	SearchObjectRay(Math::Vector pos, Math::Vector goal, ParticuleType type, CObject *father);
+	void		Play(Sound sound, Math::Vector pos, float amplitude);
+	bool		TrackMove(int i, Math::Vector pos, float progress);
 	void		TrackDraw(int i, ParticuleType type);
 
 protected:

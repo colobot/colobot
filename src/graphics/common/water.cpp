@@ -22,6 +22,8 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
+#include "math/conv.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "graphics/d3d/d3dutil.h"
@@ -170,7 +172,7 @@ bool CWater::EventFrame(const Event &event)
 
 void CWater::LavaFrame(float rTime)
 {
-	D3DVECTOR	eye, lookat, dir, perp, pos;
+	Math::Vector	eye, lookat, dir, perp, pos;
 	float		distance, shift, level;
 	int			i;
 
@@ -245,7 +247,7 @@ void CWater::VaporFlush()
 
 // Creates a new steam.
 
-bool CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
+bool CWater::VaporCreate(ParticuleType type, Math::Vector pos, float delay)
 {
 	int		i;
 
@@ -283,7 +285,7 @@ bool CWater::VaporCreate(ParticuleType type, D3DVECTOR pos, float delay)
 
 void CWater::VaporFrame(int i, float rTime)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	int			j;
 
@@ -353,7 +355,7 @@ void CWater::VaporFrame(int i, float rTime)
 
 // Adjusts the position to normal, to imitate reflections on an expanse of water at rest.
 
-void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
+void CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
 						 Math::Point &uv1, Math::Point &uv2)
 {
 #if 0
@@ -377,7 +379,7 @@ void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
 
 	t1 = m_time*0.7f + pos.x*5.5f + pos.z*5.6f;
 	t2 = m_time*0.8f + pos.x*5.7f + pos.z*5.8f;
-	norm = D3DVECTOR(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
+	norm = Math::Vector(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
 #else
 	float		t1, t2;
 
@@ -392,7 +394,7 @@ void CWater::AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm,
 
 	t1 = m_time*0.50f + pos.x*2.1f + pos.z*1.1f;
 	t2 = m_time*0.75f + pos.x*2.0f + pos.z*1.0f;
-	norm = D3DVECTOR(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
+	norm = Math::Vector(sinf(t1)*m_glint, 1.0f, sinf(t2)*m_glint);
 #endif
 }
 
@@ -404,8 +406,8 @@ void CWater::DrawBack()
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2		vertex[4];		// 2 triangles
 	D3DMATERIAL7	material;
-	D3DMATRIX		matrix;
-	D3DVECTOR		eye, lookat, n, p, p1, p2;
+	Math::Matrix		matrix;
+	Math::Vector		eye, lookat, n, p, p1, p2;
 	Math::Point			uv1, uv2;
 	float			deep, dist;
 
@@ -434,12 +436,15 @@ void CWater::DrawBack()
 	m_engine->SetFocus(m_engine->RetFocus());
 	m_engine->UpdateMatProj();  // twice the depth of view
 
-	D3DUtil_SetIdentityMatrix(matrix);
-	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	matrix.LoadIdentity();
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+		device->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	p.x = eye.x;
 	p.z = eye.z;
-	dist = Length2d(eye, lookat);
+	dist = Math::DistanceProjected(eye, lookat);
 	p.x = (lookat.x-eye.x)*deep*1.0f/dist + eye.x;
 	p.z = (lookat.z-eye.z)*deep*1.0f/dist + eye.z;
 
@@ -458,10 +463,10 @@ void CWater::DrawBack()
 	uv1.x = uv1.y = 0.0f;
 	uv2.x = uv2.y = 0.0f;
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, p1.z), n, uv1.x,uv2.y);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, p1.z), n, uv1.x,uv1.y);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, p2.z), n, uv2.x,uv2.y);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, p2.z), n, uv2.x,uv1.y);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p2.y, p1.z), n, uv1.x,uv2.y);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p1.y, p1.z), n, uv1.x,uv1.y);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p2.y, p2.z), n, uv2.x,uv2.y);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p1.y, p2.z), n, uv2.x,uv1.y);
 
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	m_engine->AddStatisticTriangle(2);
@@ -482,8 +487,8 @@ void CWater::DrawSurf()
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2*		vertex;		// triangles
 	D3DMATERIAL7	material;
-	D3DMATRIX		matrix;
-	D3DVECTOR		eye, lookat, n, pos, p;
+	Math::Matrix		matrix;
+	Math::Vector		eye, lookat, n, pos, p;
 	Math::Point			uv1, uv2;
 	bool			bUnder;
 	DWORD			flags;
@@ -508,8 +513,11 @@ void CWater::DrawSurf()
 //?	device->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 	device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 
-	D3DUtil_SetIdentityMatrix(matrix);
-	device->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	matrix.LoadIdentity();
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+		device->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	ZeroMemory( &material, sizeof(D3DMATERIAL7) );
 	material.diffuse = m_diffuse;
@@ -554,8 +562,11 @@ void CWater::DrawSurf()
 		p = pos;
 		p.x += size*(m_line[i].len-1);
 		radius = sqrtf(powf(size, 2.0f)+powf(size*m_line[i].len, 2.0f));
-		if ( Length(p, eye) > deep+radius )  continue;
-		device->ComputeSphereVisibility(&p, &radius, 1, 0, &flags);
+		if ( Math::Distance(p, eye) > deep+radius )  continue;
+
+		D3DVECTOR pD3D = VEC_TO_D3DVEC(p);
+		device->ComputeSphereVisibility(&pD3D, &radius, 1, 0, &flags);
+
 		if ( flags & D3DSTATUS_CLIPINTERSECTIONALL )  continue;
 
 		u = 0;
@@ -604,7 +615,7 @@ void CWater::DrawSurf()
 
 bool CWater::RetWater(int x, int y)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		size, offset, level;
 	int			dx, dy;
 
@@ -653,7 +664,7 @@ bool CWater::CreateLine(int x, int y, int len)
 
 bool CWater::Create(WaterType type1, WaterType type2, const char *filename,
 					D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient,
-					float level, float glint, D3DVECTOR eddy)
+					float level, float glint, Math::Vector eddy)
 {
 	int			x, y, len;
 
@@ -812,7 +823,7 @@ bool CWater::RetLava()
 
 // Adjusts the eye of the camera, not to be in the water.
 
-void CWater::AdjustEye(D3DVECTOR &eye)
+void CWater::AdjustEye(Math::Vector &eye)
 {
 	if ( m_bLava )
 	{

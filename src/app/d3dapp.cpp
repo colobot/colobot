@@ -135,8 +135,8 @@ CD3DApplication::CD3DApplication()
 	m_pddsDepthBuffer  = 0;
 
 	m_keyState = 0;
-	m_axeKey = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_axeKey = Math::Vector(0.0f, 0.0f, 0.0f);
+	m_axeJoy = Math::Vector(0.0f, 0.0f, 0.0f);
 
 	m_vidMemTotal  = 0;
 	m_bActive      = false;
@@ -496,6 +496,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 	{
 		m_pDeviceInfo->bWindowed = !bFull;
 	}
+	m_pDeviceInfo->bWindowed = true;
 
 	// Create the 3D engine.
 	if( (m_pD3DEngine = new CD3DEngine(m_iMan, this)) == NULL )
@@ -978,8 +979,8 @@ BOOL CALLBACK AboutProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM )
 void CD3DApplication::FlushPressKey()
 {
 	m_keyState = 0;
-	m_axeKey = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_axeKey = Math::Vector(0.0f, 0.0f, 0.0f);
+	m_axeJoy = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
 // Resets the default keys.

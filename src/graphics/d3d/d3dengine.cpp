@@ -23,6 +23,7 @@
 #include "common/struct.h"
 #include "math/const.h"
 #include "math/geometry.h"
+#include "math/conv.h"
 #include "app/d3dapp.h"
 #include "graphics/d3d/d3dtextr.h"
 #include "graphics/d3d/d3dutil.h"
@@ -163,8 +164,8 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
 	m_bMouseHide = false;
 	m_imageSurface = 0;
 	m_imageCopy = 0;
-	m_eyePt    = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_lookatPt = D3DVECTOR(0.0f, 0.0f, 1.0f);
+	m_eyePt    = Math::Vector(0.0f, 0.0f, 0.0f);
+	m_lookatPt = Math::Vector(0.0f, 0.0f, 1.0f);
 	m_bDrawWorld = true;
 	m_bDrawFront = false;
 	m_limitLOD[0] = 100.0f;
@@ -668,7 +669,7 @@ int CD3DEngine::RetRestCreate()
 
 int CD3DEngine::CreateObject()
 {
-	D3DMATRIX	mat;
+	Math::Matrix	mat;
 	int			i;
 
 	for ( i=0 ; i<D3DMAXOBJECT ; i++ )
@@ -678,13 +679,13 @@ int CD3DEngine::CreateObject()
 			ZeroMemory(&m_objectParam[i], sizeof(D3DObject));
 			m_objectParam[i].bUsed = true;
 
-			D3DUtil_SetIdentityMatrix(mat);
+			mat.LoadIdentity();
 			SetObjectTransform(i, mat);
 
 			m_objectParam[i].bDrawWorld = true;
 			m_objectParam[i].distance = 0.0f;
-			m_objectParam[i].bboxMin = D3DVECTOR(0.0f, 0.0f, 0.0f);
-			m_objectParam[i].bboxMax = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			m_objectParam[i].bboxMin = Math::Vector(0.0f, 0.0f, 0.0f);
+			m_objectParam[i].bboxMax = Math::Vector(0.0f, 0.0f, 0.0f);
 			m_objectParam[i].shadowRank = -1;
 
 			if ( i >= m_objectParamTotal )
@@ -1031,8 +1032,8 @@ bool CD3DEngine::AddTriangle(int objRank, D3DVERTEX2* vertex, int nb,
 			m_objectParam[objRank].bboxMax.z = Math::Max(vertex[i].z, m_objectParam[objRank].bboxMax.z);
 		}
 
-		m_objectParam[objRank].radius = Math::Max(Length(m_objectParam[objRank].bboxMin),
-											Length(m_objectParam[objRank].bboxMax));
+		m_objectParam[objRank].radius = Math::Max(m_objectParam[objRank].bboxMin.Length(),
+												  m_objectParam[objRank].bboxMax.Length());
 	}
 	m_objectParam[objRank].totalTriangle += nb/3;
 
@@ -1078,8 +1079,8 @@ bool CD3DEngine::AddSurface(int objRank, D3DVERTEX2* vertex, int nb,
 			m_objectParam[objRank].bboxMax.z = Math::Max(vertex[i].z, m_objectParam[objRank].bboxMax.z);
 		}
 
-		m_objectParam[objRank].radius = Math::Max(Length(m_objectParam[objRank].bboxMin),
-											Length(m_objectParam[objRank].bboxMax));
+		m_objectParam[objRank].radius = Math::Max(m_objectParam[objRank].bboxMin.Length(),
+												  m_objectParam[objRank].bboxMax.Length());
 	}
 	m_objectParam[objRank].totalTriangle += nb-2;
 
@@ -1124,8 +1125,8 @@ bool CD3DEngine::AddQuick(int objRank, D3DObjLevel6* buffer,
 			m_objectParam[objRank].bboxMax.z = Math::Max(buffer->vertex[i].z, m_objectParam[objRank].bboxMax.z);
 		}
 
-		m_objectParam[objRank].radius = Math::Max(Length(m_objectParam[objRank].bboxMin),
-											Length(m_objectParam[objRank].bboxMax));
+		m_objectParam[objRank].radius = Math::Max(m_objectParam[objRank].bboxMin.Length(),
+												  m_objectParam[objRank].bboxMax.Length());
 	}
 	m_objectParam[objRank].totalTriangle += buffer->totalUsed-2;
 
@@ -1388,7 +1389,7 @@ int CD3DEngine::GetTriangles(int objRank, float min, float max,
 
 // Give the box of an object.
 
-bool CD3DEngine::GetBBox(int objRank, D3DVECTOR &min, D3DVECTOR &max)
+bool CD3DEngine::GetBBox(int objRank, Math::Vector &min, Math::Vector &max)
 {
 	min = m_objectParam[objRank].bboxMin;
 	max = m_objectParam[objRank].bboxMax;
@@ -1530,7 +1531,7 @@ bool CD3DEngine::TrackTextureMapping(int objRank,
 {
 	D3DObjLevel6*	p6;
 	D3DVERTEX2*		pv;
-	D3DVECTOR		current;
+	Math::Vector		current;
 	float			ps, pe, pps, ppe, offset;
 	int				l6, nb, i, j, s, e;
 	int				is[6], ie[6];
@@ -1580,8 +1581,8 @@ bool CD3DEngine::TrackTextureMapping(int objRank,
 		}
 		if ( s == 3 && e == 3 )
 		{
-			pe = ps+Length(pv[is[0]].x-pv[ie[0]].x,
-						   pv[is[0]].y-pv[ie[0]].y)/factor;  // end position on the periphery
+			pe = ps+Math::Point(pv[is[0]].x-pv[ie[0]].x,
+								pv[is[0]].y-pv[ie[0]].y).Length() / factor;  // end position on the periphery
 
 			pps = ps+pos;
 			ppe = pe+pos;
@@ -1673,8 +1674,8 @@ void CD3DEngine::UpdateGeometry()
 							m_objectParam[objRank].bboxMax.z = Math::Max(p6->vertex[i].z, m_objectParam[objRank].bboxMax.z);
 						}
 
-						m_objectParam[objRank].radius = Math::Max(Length(m_objectParam[objRank].bboxMin),
-															Length(m_objectParam[objRank].bboxMax));
+						m_objectParam[objRank].radius = Math::Max(m_objectParam[objRank].bboxMin.Length(),
+																  m_objectParam[objRank].bboxMax.Length());
 					}
 				}
 			}
@@ -1690,13 +1691,16 @@ void CD3DEngine::UpdateGeometry()
 
 bool CD3DEngine::IsVisible(int objRank)
 {
-	D3DVECTOR	center;
+	Math::Vector	center;
 	DWORD		flags;
 	float		radius;
 
 	radius = m_objectParam[objRank].radius;
-	center = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_pD3DDevice->ComputeSphereVisibility(&center, &radius, 1, 0, &flags);
+	center = Math::Vector(0.0f, 0.0f, 0.0f);
+	{
+		D3DVECTOR centerD3D = VEC_TO_D3DVEC(center);
+		m_pD3DDevice->ComputeSphereVisibility(&centerD3D, &radius, 1, 0, &flags);
+	}
 
 	if ( flags & D3DSTATUS_CLIPINTERSECTIONALL )
 	{
@@ -1793,7 +1797,7 @@ int CD3DEngine::DetectObject(Math::Point mouse)
 bool CD3DEngine::DetectTriangle(Math::Point mouse, D3DVERTEX2 *triangle,
 								int objRank, float &dist)
 {
-	D3DVECTOR	p2D[3], p3D;
+	Math::Vector	p2D[3], p3D;
 	Math::Point		a, b, c;
 	int			i;
 
@@ -1834,7 +1838,7 @@ bool CD3DEngine::DetectTriangle(Math::Point mouse, D3DVERTEX2 *triangle,
 
 bool CD3DEngine::DetectBBox(int objRank, Math::Point mouse)
 {
-	D3DVECTOR	p, pp;
+	Math::Vector	p, pp;
 	Math::Point		min, max;
 	int			i;
 
@@ -1869,15 +1873,15 @@ bool CD3DEngine::DetectBBox(int objRank, Math::Point mouse)
 // Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window.
 // The coordinated p2D.z gives the distance.
 
-bool CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
+bool CD3DEngine::TransformPoint(Math::Vector &p2D, int objRank, Math::Vector p3D)
 {
-	p3D = Transform(m_objectParam[objRank].transform, p3D);
-	p3D = Transform(m_matView, p3D);
+	p3D = Math::Transform(m_objectParam[objRank].transform, p3D);
+	p3D = Math::Transform(m_matView, p3D);
 
 	if ( p3D.z < 2.0f )  return false;  // behind?
 
-	p2D.x = (p3D.x/p3D.z)*m_matProj._11;
-	p2D.y = (p3D.y/p3D.z)*m_matProj._22;
+	p2D.x = (p3D.x/p3D.z)*m_matProj.Get(1,1);
+	p2D.y = (p3D.y/p3D.z)*m_matProj.Get(2,2);
 	p2D.z = p3D.z;
 
 	p2D.x = (p2D.x+1.0f)/2.0f;  // [-1..1] -> [0..1]
@@ -1892,7 +1896,7 @@ bool CD3DEngine::TransformPoint(D3DVECTOR &p2D, int objRank, D3DVECTOR p3D)
 
 void CD3DEngine::ComputeDistance()
 {
-	D3DVECTOR	v;
+	Math::Vector	v;
 	int			i;
 	float		distance;
 
@@ -1902,10 +1906,10 @@ void CD3DEngine::ComputeDistance()
 		{
 			if ( m_objectParam[i].bUsed == false )  continue;
 
-			v.x = m_eyePt.x - m_objectParam[i].transform._41;
-			v.y = m_eyePt.y - m_objectParam[i].transform._42;
-			v.z = m_eyePt.z - m_objectParam[i].transform._43;
-			m_objectParam[i].distance = Length(v);
+			v.x = m_eyePt.x - m_objectParam[i].transform.Get(1,4);
+			v.y = m_eyePt.y - m_objectParam[i].transform.Get(2,4);
+			v.z = m_eyePt.z - m_objectParam[i].transform.Get(3,4);
+			m_objectParam[i].distance = v.Length();
 		}
 	}
 	else
@@ -1929,10 +1933,10 @@ void CD3DEngine::ComputeDistance()
 
 			if ( m_objectParam[i].type == TYPETERRAIN )
 			{
-				v.x = m_eyePt.x - m_objectParam[i].transform._41;
-				v.y = m_eyePt.y - m_objectParam[i].transform._42;
-				v.z = m_eyePt.z - m_objectParam[i].transform._43;
-				m_objectParam[i].distance = Length(v);
+				v.x = m_eyePt.x - m_objectParam[i].transform.Get(1,4);
+				v.y = m_eyePt.y - m_objectParam[i].transform.Get(2,4);
+				v.z = m_eyePt.z - m_objectParam[i].transform.Get(3,4);
+				m_objectParam[i].distance = v.Length();
 			}
 			else
 			{
@@ -2002,17 +2006,17 @@ bool CD3DEngine::ChangeDevice(char *device, char *mode, bool bFull)
 
 
 
-D3DMATRIX* CD3DEngine::RetMatView()
+Math::Matrix* CD3DEngine::RetMatView()
 {
 	return &m_matView;
 }
 
-D3DMATRIX* CD3DEngine::RetMatLeftView()
+Math::Matrix* CD3DEngine::RetMatLeftView()
 {
 	return &m_matLeftView;
 }
 
-D3DMATRIX* CD3DEngine::RetMatRightView()
+Math::Matrix* CD3DEngine::RetMatRightView()
 {
 	return &m_matRightView;
 }
@@ -2020,9 +2024,9 @@ D3DMATRIX* CD3DEngine::RetMatRightView()
 
 // Specifies the location and direction of view.
 
-void CD3DEngine::SetViewParams(const D3DVECTOR &vEyePt,
-							   const D3DVECTOR &vLookatPt,
-							   const D3DVECTOR &vUpVec,
+void CD3DEngine::SetViewParams(const Math::Vector &vEyePt,
+							   const Math::Vector &vLookatPt,
+							   const Math::Vector &vUpVec,
 							   FLOAT fEyeDistance)
 {
 #if 0
@@ -2030,24 +2034,24 @@ void CD3DEngine::SetViewParams(const D3DVECTOR &vEyePt,
 
 	// Adjust camera position for left or right eye along the axis
 	// perpendicular to the view direction vector and the up vector.
-	D3DVECTOR vView = (vLookatPt) - (vEyePt);
+	Math::Vector vView = (vLookatPt) - (vEyePt);
 	vView = CrossProduct( vView, (vUpVec) );
 	vView = Normalize( vView ) * fEyeDistance;
 
-	D3DVECTOR vLeftEyePt  = (vEyePt) + vView;
-	D3DVECTOR vRightEyePt = (vEyePt) - vView;
+	Math::Vector vLeftEyePt  = (vEyePt) + vView;
+	Math::Vector vRightEyePt = (vEyePt) - vView;
 
 	// Set the view matrices
-	D3DUtil_SetViewMatrix( m_matLeftView,  (D3DVECTOR)vLeftEyePt,  (D3DVECTOR)vLookatPt, (D3DVECTOR)vUpVec );
-	D3DUtil_SetViewMatrix( m_matRightView, (D3DVECTOR)vRightEyePt, (D3DVECTOR)vLookatPt, (D3DVECTOR)vUpVec );
-	D3DUtil_SetViewMatrix( m_matView,      (D3DVECTOR)vEyePt,      (D3DVECTOR)vLookatPt, (D3DVECTOR)vUpVec );
+	Math::LoadViewMatrix( m_matLeftView,  (Math::Vector)vLeftEyePt,  (Math::Vector)vLookatPt, (Math::Vector)vUpVec );
+	Math::LoadViewMatrix( m_matRightView, (Math::Vector)vRightEyePt, (Math::Vector)vLookatPt, (Math::Vector)vUpVec );
+	Math::LoadViewMatrix( m_matView,      (Math::Vector)vEyePt,      (Math::Vector)vLookatPt, (Math::Vector)vUpVec );
 #else
 	m_eyePt = vEyePt;
 	m_lookatPt = vLookatPt;
 	m_eyeDirH = Math::RotateAngle(vEyePt.x-vLookatPt.x, vEyePt.z-vLookatPt.z);
-	m_eyeDirV = Math::RotateAngle(Length2d(vEyePt, vLookatPt), vEyePt.y-vLookatPt.y);
+	m_eyeDirV = Math::RotateAngle(Math::DistanceProjected(vEyePt, vLookatPt), vEyePt.y-vLookatPt.y);
 
-	D3DUtil_SetViewMatrix(m_matView, (D3DVECTOR&)vEyePt, (D3DVECTOR&)vLookatPt, (D3DVECTOR&)vUpVec);
+	Math::LoadViewMatrix(m_matView, vEyePt, vLookatPt, vUpVec);
 
 	if ( m_sound == 0 )
 	{
@@ -2060,7 +2064,7 @@ void CD3DEngine::SetViewParams(const D3DVECTOR &vEyePt,
 
 // Specifies the transformation matrix of an object.
 
-bool CD3DEngine::SetObjectTransform(int objRank, const D3DMATRIX &transform)
+bool CD3DEngine::SetObjectTransform(int objRank, const Math::Matrix &transform)
 {
 	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
@@ -2070,7 +2074,7 @@ bool CD3DEngine::SetObjectTransform(int objRank, const D3DMATRIX &transform)
 
 // Gives the transformation matrix of an object.
 
-bool CD3DEngine::GetObjectTransform(int objRank, D3DMATRIX &transform)
+bool CD3DEngine::GetObjectTransform(int objRank, Math::Matrix &transform)
 {
 	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
@@ -2150,7 +2154,7 @@ void CD3DEngine::ShadowDelete(int objRank)
 
 	m_shadow[i].bUsed = false;
 	m_shadow[i].objRank = -1;
-	m_shadow[i].pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_shadow[i].pos = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_shadow[i].type = D3DSHADOWNORM;
 
 	m_objectParam[objRank].shadowRank = -1;
@@ -2191,7 +2195,7 @@ bool CD3DEngine::SetObjectShadowType(int objRank, D3DShadowType type)
 
 // Specifies the position of the shadow of the object.
 
-bool CD3DEngine::SetObjectShadowPos(int objRank, const D3DVECTOR &pos)
+bool CD3DEngine::SetObjectShadowPos(int objRank, const Math::Vector &pos)
 {
 	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
@@ -2204,7 +2208,7 @@ bool CD3DEngine::SetObjectShadowPos(int objRank, const D3DVECTOR &pos)
 
 // Specifies the normal shadow to the field of the object.
 
-bool CD3DEngine::SetObjectShadowNormal(int objRank, const D3DVECTOR &n)
+bool CD3DEngine::SetObjectShadowNormal(int objRank, const Math::Vector &n)
 {
 	if ( objRank < 0 || objRank >= D3DMAXOBJECT )  return false;
 
@@ -2340,12 +2344,12 @@ int CD3DEngine::GroundSpotCreate()
 void CD3DEngine::GroundSpotDelete(int rank)
 {
 	m_groundSpot[rank].bUsed = false;
-	m_groundSpot[rank].pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_groundSpot[rank].pos = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
 // Specifies the position of surface marking of the object.
 
-bool CD3DEngine::SetObjectGroundSpotPos(int rank, const D3DVECTOR &pos)
+bool CD3DEngine::SetObjectGroundSpotPos(int rank, const Math::Vector &pos)
 {
 	m_groundSpot[rank].pos = pos;
 	return true;
@@ -2387,7 +2391,7 @@ bool CD3DEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
 
 // Creates ground marks.
 
-int CD3DEngine::GroundMarkCreate(D3DVECTOR pos, float radius,
+int CD3DEngine::GroundMarkCreate(Math::Vector pos, float radius,
 								 float delay1, float delay2, float delay3,
 								 int dx, int dy, char* table)
 {
@@ -2947,12 +2951,12 @@ void CD3DEngine::ApplyChange()
 
 // Returns the point of view of the user.
 
-D3DVECTOR CD3DEngine::RetEyePt()
+Math::Vector CD3DEngine::RetEyePt()
 {
 	return m_eyePt;
 }
 
-D3DVECTOR CD3DEngine::RetLookatPt()
+Math::Vector CD3DEngine::RetLookatPt()
 {
 	return m_lookatPt;
 }
@@ -3638,7 +3642,7 @@ void CD3DEngine::RenderGroundSpot()
 	DDSURFACEDESC2			ddsd;
 	WORD*					pbSurf;
 	D3DCOLORVALUE			color;
-	D3DVECTOR				pos;
+	Math::Vector				pos;
 	Math::Point					min, max;
 	int						s, i, j, dot, ix, iy, y;
 	float					tu, tv, cx, cy, px, py, ppx, ppy;
@@ -3780,7 +3784,7 @@ void CD3DEngine::RenderGroundSpot()
 							}
 							else
 							{
-								intensity = Length(ppx-cx, ppy-cy)/dot;
+								intensity = Math::Point(ppx-cx, ppy-cy).Length()/dot;
 	//?							intensity = powf(intensity, m_groundSpot[i].smooth);
 							}
 
@@ -3859,7 +3863,7 @@ void CD3DEngine::RenderGroundSpot()
 						ppx -= min.x;  // on the texture
 						ppy -= min.y;
 
-						intensity = 1.0f-Length((float)ix, (float)iy)/dot;
+						intensity = 1.0f-Math::Point((float)ix, (float)iy).Length()/dot;
 						if ( intensity <= 0.0f )  continue;
 						intensity *= m_groundMark.intensity;
 
@@ -3912,9 +3916,9 @@ void CD3DEngine::RenderGroundSpot()
 void CD3DEngine::DrawShadow()
 {
 	D3DVERTEX2		vertex[4];	// 2 triangles
-	D3DVECTOR		corner[4], n, pos;
+	Math::Vector		corner[4], n, pos;
 	D3DMATERIAL7	material;
-	D3DMATRIX		matrix;
+	Math::Matrix		matrix;
 	Math::Point			ts, ti, rot;
 	float			startDeepView, endDeepView;
 	float			intensity, lastIntensity, hFactor, radius, max, height;
@@ -3924,8 +3928,11 @@ void CD3DEngine::DrawShadow()
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
 
-	D3DUtil_SetIdentityMatrix(matrix);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	matrix.LoadIdentity();
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	ZeroMemory( &material, sizeof(D3DMATERIAL7) );
 	material.diffuse.r = 1.0f;
@@ -3948,7 +3955,7 @@ void CD3DEngine::DrawShadow()
 	ts.y += dp;
 	ti.y -= dp;
 
-	n = D3DVECTOR(0.0f, 1.0f, 0.0f);
+	n = Math::Vector(0.0f, 1.0f, 0.0f);
 
 	startDeepView = m_deepView[m_rankView]*m_fogStart[m_rankView];
 	endDeepView = m_deepView[m_rankView];
@@ -3973,7 +3980,7 @@ void CD3DEngine::DrawShadow()
 			if ( h > max  )  h = max;
 			if ( h > 4.0f )  h = 4.0f;
 
-			D = Length(m_eyePt, pos);
+			D = Math::Distance(m_eyePt, pos);
 			if ( D >= endDeepView )  continue;
 			d = D*h/height;
 
@@ -3989,7 +3996,7 @@ void CD3DEngine::DrawShadow()
 			if ( h > max  )  h = max;
 			if ( h > 4.0f )  h = 4.0f;
 
-			D = Length(m_eyePt, pos);
+			D = Math::Distance(m_eyePt, pos);
 			if ( D >= endDeepView )  continue;
 			d = D*h/height;
 
@@ -4065,10 +4072,10 @@ void CD3DEngine::DrawShadow()
 			}
 		}
 
-		corner[0] = Cross(corner[0], m_shadow[i].normal);
-		corner[1] = Cross(corner[1], m_shadow[i].normal);
-		corner[2] = Cross(corner[2], m_shadow[i].normal);
-		corner[3] = Cross(corner[3], m_shadow[i].normal);
+		corner[0] = Math::CrossProduct(corner[0], m_shadow[i].normal);
+		corner[1] = Math::CrossProduct(corner[1], m_shadow[i].normal);
+		corner[2] = Math::CrossProduct(corner[2], m_shadow[i].normal);
+		corner[3] = Math::CrossProduct(corner[3], m_shadow[i].normal);
 
 		corner[0] += pos;
 		corner[1] += pos;
@@ -4172,7 +4179,10 @@ HRESULT CD3DEngine::Render()
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, F2DW(16));
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProj);
+		{
+			D3DMATRIX mat = MAT_TO_D3DMAT(m_matProj);
+			m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+		}
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
 
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
@@ -4181,7 +4191,10 @@ HRESULT CD3DEngine::Render()
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(m_deepView[m_rankView]*m_fogStart[m_rankView]));
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(m_deepView[m_rankView]));
 
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &m_matView);
+		{
+			D3DMATRIX mat = MAT_TO_D3DMAT(m_matView);
+			m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+		}
 
 		if ( m_bWaterMode )  m_water->DrawBack();  // draws water
 
@@ -4202,8 +4215,12 @@ HRESULT CD3DEngine::Render()
 					objRank = p3->objRank;
 					if ( m_objectParam[objRank].type != TYPETERRAIN )  continue;
 					if ( !m_objectParam[objRank].bDrawWorld )  continue;
-					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
-											   &m_objectParam[objRank].transform);
+
+					{
+						D3DMATRIX mat = MAT_TO_D3DMAT(m_objectParam[objRank].transform);
+						m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+					}
+
 					if ( !IsVisible(objRank) )  continue;
 					m_light->LightUpdate(m_objectParam[objRank].type);
 					for ( l3=0 ; l3<p3->totalUsed ; l3++ )
@@ -4265,8 +4282,12 @@ HRESULT CD3DEngine::Render()
 				objRank = p3->objRank;
 				if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
 				if ( !m_objectParam[objRank].bDrawWorld )  continue;
-				m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
-										   &m_objectParam[objRank].transform);
+
+				{
+					D3DMATRIX mat = MAT_TO_D3DMAT(m_objectParam[objRank].transform);
+					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+				}
+
 				if ( !IsVisible(objRank) )  continue;
 				m_light->LightUpdate(m_objectParam[objRank].type);
 				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
@@ -4342,8 +4363,12 @@ HRESULT CD3DEngine::Render()
 					objRank = p3->objRank;
 					if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
 					if ( !m_objectParam[objRank].bDrawWorld )  continue;
-					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
-											   &m_objectParam[objRank].transform);
+
+					{
+						D3DMATRIX mat = MAT_TO_D3DMAT(m_objectParam[objRank].transform);
+						m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+					}
+
 					if ( !IsVisible(objRank) )  continue;
 					m_light->LightUpdate(m_objectParam[objRank].type);
 					for ( l3=0 ; l3<p3->totalUsed ; l3++ )
@@ -4404,9 +4429,18 @@ HRESULT CD3DEngine::Render()
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matViewInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matProjInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matWorldInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	pInterface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
 	if ( pInterface != 0 )
@@ -4421,7 +4455,10 @@ HRESULT CD3DEngine::Render()
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZBIAS, F2DW(16));
 //?		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZFUNC, D3DCMP_LESSEQUAL);
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProj);
+		{
+			D3DMATRIX mat = MAT_TO_D3DMAT(m_matProj);
+			m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+		}
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_AMBIENT, m_ambiantColor[m_rankView]);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
 
@@ -4431,7 +4468,10 @@ HRESULT CD3DEngine::Render()
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(m_deepView[m_rankView]*m_fogStart[m_rankView]));
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(m_deepView[m_rankView]));
 
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &m_matView);
+		{
+			D3DMATRIX mat = MAT_TO_D3DMAT(m_matView);
+			m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+		}
 
 		p1 = m_objectPointer;
 		for ( l1=0 ; l1<p1->totalUsed ; l1++ )
@@ -4446,8 +4486,12 @@ HRESULT CD3DEngine::Render()
 				if ( p3 == 0 )  continue;
 				objRank = p3->objRank;
 				if ( !m_objectParam[objRank].bDrawFront )  continue;
-				m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,
-										   &m_objectParam[objRank].transform);
+
+				{
+					D3DMATRIX mat = MAT_TO_D3DMAT(m_objectParam[objRank].transform);
+					m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+				}
+
 				if ( !IsVisible(objRank) )  continue;
 				m_light->LightUpdate(m_objectParam[objRank].type);
 				for ( l3=0 ; l3<p3->totalUsed ; l3++ )
@@ -4497,9 +4541,18 @@ HRESULT CD3DEngine::Render()
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
 		m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+		{
+			D3DMATRIX mat = MAT_TO_D3DMAT(m_matViewInterface);
+			m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+		}
+		{
+			D3DMATRIX mat = MAT_TO_D3DMAT(m_matProjInterface);
+			m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+		}
+		{
+			D3DMATRIX mat = MAT_TO_D3DMAT(m_matWorldInterface);
+			m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+		}
 	}
 
 	if ( m_bOverFront )  DrawOverColor();  // draws the foreground color
@@ -4568,9 +4621,18 @@ void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
 	SetTexture("xxx.tga");  // no texture
 	SetState(D3DSTATENORMAL);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matViewInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matProjInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matWorldInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), color[1],color[2], 0.0f,0.0f);
 	vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), color[0],color[2], 0.0f,0.0f);
@@ -4586,10 +4648,10 @@ void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
 void CD3DEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, char *name)
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	D3DVECTOR	n;
+	Math::Vector	n;
 	float		u1, u2, v1, v2, h, a;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
 	if ( m_bBackgroundFull )
 	{
@@ -4632,14 +4694,23 @@ void CD3DEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, char
 	SetTexture(name);
 	SetState(D3DSTATEWRAP);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matViewInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matProjInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matWorldInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	AddStatisticTriangle(2);
@@ -4704,9 +4775,18 @@ void CD3DEngine::DrawPlanet()
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_LIGHTING, false );
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matViewInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matProjInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matWorldInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	m_planet->Draw();  // draws the planets
 }
@@ -4716,13 +4796,13 @@ void CD3DEngine::DrawPlanet()
 void CD3DEngine::DrawFrontsize()
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	D3DVECTOR	n;
+	Math::Vector	n;
 	Math::Point		p1, p2;
 	float		u1, u2, v1, v2;
 
 	if ( m_frontsizeName[0] == 0 )  return;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
 	p1.x = 0.0f;
 	p1.y = 0.0f;
@@ -4741,10 +4821,10 @@ void CD3DEngine::DrawFrontsize()
 	SetInfoText(3, s);
 #endif
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 //?	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
 	m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
@@ -4755,9 +4835,18 @@ void CD3DEngine::DrawFrontsize()
 	SetTexture(m_frontsizeName);
 	SetState(D3DSTATECLAMP|D3DSTATETTb);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matViewInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matProjInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matWorldInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	AddStatisticTriangle(2);
@@ -4793,9 +4882,18 @@ void CD3DEngine::DrawOverColor()
 	SetTexture("xxx.tga");  // no texture
 	SetState(m_overMode);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW,       &m_matViewInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProjInterface);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD,      &m_matWorldInterface);
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matViewInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matProjInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
+	}
+	{
+		D3DMATRIX mat = MAT_TO_D3DMAT(m_matWorldInterface);
+		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), color[1],color[2], 0.0f,0.0f);
 	vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), color[0],color[2], 0.0f,0.0f);
@@ -4825,7 +4923,7 @@ void CD3DEngine::SetHiliteRank(int *rankList)
 
 bool CD3DEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
 {
-	D3DVECTOR	p, pp;
+	Math::Vector	p, pp;
 	int			i;
 
 	min.x =  1000000.0f;
@@ -4924,11 +5022,11 @@ int CD3DEngine::RetStatisticTriangle()
 bool CD3DEngine::GetSpriteCoord(int &x, int &y)
 {
 	D3DVIEWPORT7	vp;
-	D3DVECTOR		v, vv;
+	Math::Vector		v, vv;
 
 	return false;
 	//?
-	vv = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	vv = Math::Vector(0.0f, 0.0f, 0.0f);
 	if ( !TransformPoint(v, 20*20+1, vv) )  return false;
 
 	m_pD3DDevice->GetViewport(&vp);
@@ -5328,8 +5426,8 @@ void CD3DEngine::SetFocus(float focus)
 	}
 
 	fAspect = ((float)m_dim.y) / m_dim.x;
-//?	D3DUtil_SetProjectionMatrix(m_matProj, m_focus, fAspect, 0.5f, m_deepView[m_rankView]);
-	D3DUtil_SetProjectionMatrix(m_matProj, m_focus, fAspect, 0.5f, m_deepView[0]);
+//?	Math::LoadProjectionMatrix(m_matProj, m_focus, fAspect, 0.5f, m_deepView[m_rankView]);
+	Math::LoadProjectionMatrix(m_matProj, m_focus, fAspect, 0.5f, m_deepView[0]);
 }
 
 float CD3DEngine::RetFocus()
@@ -5341,7 +5439,8 @@ float CD3DEngine::RetFocus()
 
 void CD3DEngine::UpdateMatProj()
 {
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &m_matProj);
+	D3DMATRIX mat = MAT_TO_D3DMAT(m_matProj);
+	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_PROJECTION, &mat);
 }
 
 
@@ -5406,9 +5505,9 @@ bool CD3DEngine::RetSetupMode()
 
 // Indicates whether a point is visible.
 
-bool CD3DEngine::IsVisiblePoint(const D3DVECTOR &pos)
+bool CD3DEngine::IsVisiblePoint(const Math::Vector &pos)
 {
-	return ( Length(m_eyePt, pos) <= m_deepView[0] );
+	return ( Math::Distance(m_eyePt, pos) <= m_deepView[0] );
 }
 
 
@@ -5432,19 +5531,19 @@ HRESULT CD3DEngine::InitDeviceObjects()
 	SetFocus(m_focus);
 
 	// Definitions of the matrices for the interface.
-	D3DUtil_SetIdentityMatrix(m_matWorldInterface);
+	m_matWorldInterface.LoadIdentity();
 
-	D3DUtil_SetIdentityMatrix(m_matViewInterface);
-	m_matViewInterface._41 = -0.5f;
-	m_matViewInterface._42 = -0.5f;
-	m_matViewInterface._43 =  1.0f;
+	m_matViewInterface.LoadIdentity();
+	m_matViewInterface.Set(1, 4, -0.5f);
+	m_matViewInterface.Set(2, 4, -0.5f);
+	m_matViewInterface.Set(3, 4,  1.0f);
 
-	D3DUtil_SetIdentityMatrix(m_matProjInterface);
-	m_matProjInterface._11 =  2.0f;
-	m_matProjInterface._22 =  2.0f;
-	m_matProjInterface._34 =  1.0f;
-	m_matProjInterface._43 = -1.0f;
-	m_matProjInterface._44 =  0.0f;
+	m_matProjInterface.LoadIdentity();
+	m_matProjInterface.Set(1, 1,  2.0f);
+	m_matProjInterface.Set(2, 2,  2.0f);
+	m_matProjInterface.Set(4, 3,  1.0f);
+	m_matProjInterface.Set(3, 4, -1.0f);
+	m_matProjInterface.Set(4, 4,  0.0f);
 	
 	return S_OK;
 }
@@ -5692,7 +5791,7 @@ void CD3DEngine::DrawSprite(Math::Point pos, Math::Point dim, int icon)
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	Math::Point		p1, p2;
-	D3DVECTOR	n;
+	Math::Vector	n;
 	float		u1, u2, v1, v2, dp;
 
 	if ( icon == -1 )  return;
@@ -5713,12 +5812,12 @@ void CD3DEngine::DrawSprite(Math::Point pos, Math::Point dim, int icon)
 	u2 -= dp;
 	v2 -= dp;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	AddStatisticTriangle(2);

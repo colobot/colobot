@@ -105,7 +105,7 @@ Error CMotionHuman::SetAction(int action, float time)
 
 // Creates cosmonaut on the ground.
 
-bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionHuman::Create(Math::Vector pos, float angle, ObjectType type,
 						  float power)
 {
 	CModFile*	pModFile;
@@ -173,8 +173,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetAngleY(0, angle);
 
 	// A vehicle must have an obligatory collision with a sphere of center (0, y, 0) (see GetCrashSphere).
-	m_object->CreateCrashSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f);
-	m_object->SetGlobalSphere(D3DVECTOR(0.0f, 1.0f, 0.0f), 4.0f);
+	m_object->CreateCrashSphere(Math::Vector(0.0f, 0.0f, 0.0f), 2.0f, SOUND_AIE, 0.20f);
+	m_object->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 4.0f);
 
 	// Creates the head.
 	rank = m_engine->CreateObject();
@@ -203,11 +203,11 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 		pModFile->ReadModel("objects\\human2t.mod");
 	}
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(1, D3DVECTOR(0.0f, 2.7f, 0.0f));
+	m_object->SetPosition(1, Math::Vector(0.0f, 2.7f, 0.0f));
 	if ( option == 1 ||  // head without helmet?
 		 option == 2 )   // without a backpack?
 	{
-		m_object->SetZoom(1, D3DVECTOR(1.0f, 1.05f, 1.0f));
+		m_object->SetZoom(1, Math::Vector(1.0f, 1.05f, 1.0f));
 	}
 
 	// Creates the glasses.
@@ -230,8 +230,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(2, 0);
 	pModFile->ReadModel("objects\\human3.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(2, D3DVECTOR(0.0f, 2.3f, -1.2f));
-	m_object->SetAngle(2, D3DVECTOR(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
+	m_object->SetPosition(2, Math::Vector(0.0f, 2.3f, -1.2f));
+	m_object->SetAngle(2, Math::Vector(90.0f*Math::PI/180.0f, 90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
 	// Creates the right forearm.
 	rank = m_engine->CreateObject();
@@ -240,8 +240,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(3, 2);
 	pModFile->ReadModel("objects\\human4r.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(3, D3DVECTOR(1.3f, 0.0f, 0.0f));
-	m_object->SetAngle(3, D3DVECTOR(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
+	m_object->SetPosition(3, Math::Vector(1.3f, 0.0f, 0.0f));
+	m_object->SetAngle(3, Math::Vector(0.0f*Math::PI/180.0f, -20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
 	// Creates right hand.
 	rank = m_engine->CreateObject();
@@ -250,7 +250,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(4, 3);
 	pModFile->ReadModel("objects\\human5.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(4, D3DVECTOR(1.2f, 0.0f, 0.0f));
+	m_object->SetPosition(4, Math::Vector(1.2f, 0.0f, 0.0f));
 
 	// Creates the right thigh.
 	rank = m_engine->CreateObject();
@@ -259,8 +259,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(5, 0);
 	pModFile->ReadModel("objects\\human6.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(5, D3DVECTOR(0.0f, 0.0f, -0.7f));
-	m_object->SetAngle(5, D3DVECTOR(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+	m_object->SetPosition(5, Math::Vector(0.0f, 0.0f, -0.7f));
+	m_object->SetAngle(5, Math::Vector(10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
 	// Creates the right leg.
 	rank = m_engine->CreateObject();
@@ -269,8 +269,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(6, 5);
 	pModFile->ReadModel("objects\\human7.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(6, D3DVECTOR(0.0f, -1.5f, 0.0f));
-	m_object->SetAngle(6, D3DVECTOR(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
+	m_object->SetPosition(6, Math::Vector(0.0f, -1.5f, 0.0f));
+	m_object->SetAngle(6, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
 	// Creates the right foot.
 	rank = m_engine->CreateObject();
@@ -279,8 +279,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(7, 6);
 	pModFile->ReadModel("objects\\human8.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(7, D3DVECTOR(0.0f, -1.5f, 0.0f));
-	m_object->SetAngle(7, D3DVECTOR(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+	m_object->SetPosition(7, Math::Vector(0.0f, -1.5f, 0.0f));
+	m_object->SetAngle(7, Math::Vector(-10.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
 	// Creates the left arm.
 	rank = m_engine->CreateObject();
@@ -290,8 +290,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human3.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(8, D3DVECTOR(0.0f, 2.3f, 1.2f));
-	m_object->SetAngle(8, D3DVECTOR(-90.0f*Math::PI/180.0f, -90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
+	m_object->SetPosition(8, Math::Vector(0.0f, 2.3f, 1.2f));
+	m_object->SetAngle(8, Math::Vector(-90.0f*Math::PI/180.0f, -90.0f*Math::PI/180.0f, -50.0f*Math::PI/180.0f));
 
 	// Creates the left forearm.
 	rank = m_engine->CreateObject();
@@ -301,8 +301,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human4l.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(9, D3DVECTOR(1.3f, 0.0f, 0.0f));
-	m_object->SetAngle(9, D3DVECTOR(0.0f*Math::PI/180.0f, 20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
+	m_object->SetPosition(9, Math::Vector(1.3f, 0.0f, 0.0f));
+	m_object->SetAngle(9, Math::Vector(0.0f*Math::PI/180.0f, 20.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f));
 
 	// Creates left hand.
 	rank = m_engine->CreateObject();
@@ -312,7 +312,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human5.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(10, D3DVECTOR(1.2f, 0.0f, 0.0f));
+	m_object->SetPosition(10, Math::Vector(1.2f, 0.0f, 0.0f));
 
 	// Creates the left thigh.
 	rank = m_engine->CreateObject();
@@ -322,8 +322,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human6.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(11, D3DVECTOR(0.0f, 0.0f, 0.7f));
-	m_object->SetAngle(11, D3DVECTOR(-10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+	m_object->SetPosition(11, Math::Vector(0.0f, 0.0f, 0.7f));
+	m_object->SetAngle(11, Math::Vector(-10.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
 	// Creates the left leg.
 	rank = m_engine->CreateObject();
@@ -333,8 +333,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human7.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(12, D3DVECTOR(0.0f, -1.5f, 0.0f));
-	m_object->SetAngle(12, D3DVECTOR(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
+	m_object->SetPosition(12, Math::Vector(0.0f, -1.5f, 0.0f));
+	m_object->SetAngle(12, Math::Vector(0.0f*Math::PI/180.0f, 0.0f*Math::PI/180.0f, -10.0f*Math::PI/180.0f));
 
 	// Creates the left foot.
 	rank = m_engine->CreateObject();
@@ -344,8 +344,8 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\human8.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(13, D3DVECTOR(0.0f, -1.5f, 0.0f));
-	m_object->SetAngle(13, D3DVECTOR(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
+	m_object->SetPosition(13, Math::Vector(0.0f, -1.5f, 0.0f));
+	m_object->SetAngle(13, Math::Vector(10.0f*Math::PI/180.0f, -5.0f*Math::PI/180.0f, 5.0f*Math::PI/180.0f));
 
 	// Creates the neutron gun.
 	if ( option != 2 )  // with backpack?
@@ -356,7 +356,7 @@ bool CMotionHuman::Create(D3DVECTOR pos, float angle, ObjectType type,
 		m_object->SetObjectParent(14, 0);
 		pModFile->ReadModel("objects\\human9.mod");
 		pModFile->CreateEngineObject(rank);
-		m_object->SetPosition(14, D3DVECTOR(-1.5f, 0.3f, -1.35f));
+		m_object->SetPosition(14, Math::Vector(-1.5f, 0.3f, -1.35f));
 		m_object->SetAngleZ(14, Math::PI);
 	}
 
@@ -717,8 +717,8 @@ bool CMotionHuman::EventProcess(const Event &event)
 
 bool CMotionHuman::EventFrame(const Event &event)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	dir, actual, pos, speed, pf;
+	Math::Matrix*	mat;
+	Math::Vector	dir, actual, pos, speed, pf;
 	Math::Point		center, dim, p2;
 	float		s, a, prog, rTime[2], lTime[2], time, rot, hr, hl;
 	float		al, ar, af;
@@ -749,13 +749,13 @@ bool CMotionHuman::EventFrame(const Event &event)
 	if ( m_bDisplayPerso && m_main->RetGamerOnlyHead() )
 	{
 		m_time += event.rTime;
-		m_object->SetLinVibration(D3DVECTOR(0.0f, -0.55f, 0.0f));
-		m_object->SetCirVibration(D3DVECTOR(0.0f, m_main->RetPersoAngle(), 0.0f));
+		m_object->SetLinVibration(Math::Vector(0.0f, -0.55f, 0.0f));
+		m_object->SetCirVibration(Math::Vector(0.0f, m_main->RetPersoAngle(), 0.0f));
 		return true;
 	}
 	if ( m_bDisplayPerso )
 	{
-		m_object->SetCirVibration(D3DVECTOR(0.0f, m_main->RetPersoAngle()+0.2f, 0.0f));
+		m_object->SetCirVibration(Math::Vector(0.0f, m_main->RetPersoAngle()+0.2f, 0.0f));
 	}
 
 	shield = m_object->RetShield();
@@ -1322,7 +1322,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 				pos.x += (Math::Rand()-0.5f)*4.0f;
 				pos.z += (Math::Rand()-0.5f)*4.0f;
 				m_terrain->MoveOnFloor(pos);
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 1.2f+Math::Rand()*1.2f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
@@ -1392,7 +1392,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 				pos.x += (Math::Rand()-0.5f)*8.0f;
 				pos.z += (Math::Rand()-0.5f)*8.0f;
 				m_terrain->MoveOnFloor(pos);
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 2.0f+Math::Rand()*1.5f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
@@ -1488,7 +1488,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 		dir.z = Math::Smooth(actual.z, dir.z, time);
 		m_object->SetInclinaison(dir);
 
-		m_object->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
+		m_object->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 	}
 	else if ( m_actionType == MHS_LOST )   // lost?
 	{
@@ -1510,7 +1510,7 @@ bool CMotionHuman::EventFrame(const Event &event)
 		SetLinVibration(dir);
 
 		mat = m_object->RetWorldMatrix(0);
-		pos = D3DVECTOR(0.5f, 3.7f, 0.0f);
+		pos = Math::Vector(0.5f, 3.7f, 0.0f);
 		pos.x += (Math::Rand()-0.5f)*1.0f;
 		pos.y += (Math::Rand()-0.5f)*1.0f;
 		pos.z += (Math::Rand()-0.5f)*1.0f;
@@ -1524,9 +1524,9 @@ bool CMotionHuman::EventFrame(const Event &event)
 	}
 	else if ( m_actionType == MHS_SATCOM )  // look at the SatCom?
 	{
-		SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-		SetLinVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-		SetInclinaison(D3DVECTOR(0.0f, 0.0f, 0.0f));
+		SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+		SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+		SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
 	}
 	else
 	{

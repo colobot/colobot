@@ -439,7 +439,7 @@ void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
 
 void CControl::GlintFrame(const Event &event)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 
 	if ( (m_state & STATE_GLINT  ) == 0 ||
@@ -455,7 +455,7 @@ void CControl::GlintFrame(const Event &event)
 		pos.x = m_glintCorner1.x + (m_glintCorner2.x-m_glintCorner1.x)*Math::Rand();
 		pos.y = m_glintCorner1.y + (m_glintCorner2.y-m_glintCorner1.y)*Math::Rand();
 		pos.z = 0.0f;
-		speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		speed = Math::Vector(0.0f, 0.0f, 0.0f);
 		dim.x = ((15.0f+Math::Rand()*15.0f)/640.0f);
 		dim.y = dim.x/0.75f;
 		m_particule->CreateParticule(pos, speed, dim, PARTICONTROL,
@@ -655,7 +655,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[8];	// 6 triangles
 	Math::Point		p1, p2, p3, p4;
-	D3DVECTOR	n;
+	Math::Vector	n;
 
 	device = m_engine->RetD3DDevice();
 
@@ -664,14 +664,14 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 	p2.x = pos.x + dim.x;
 	p2.y = pos.y + dim.y;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
 	if ( ex == 0.0f )  // one piece?
 	{
-		vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
-		vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
-		vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
-		vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
+		vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
+		vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
+		vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
+		vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
 
 		device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 		m_engine->AddStatisticTriangle(2);
@@ -683,14 +683,14 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 			p3.x = p1.x + ex*dim.y/(uv2.y-uv1.y);
 			p4.x = p2.x - ex*dim.y/(uv2.y-uv1.y);
 
-			vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,   uv2.y);
-			vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,   uv1.y);
-			vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p1.y, 0.0f), n, uv1.x+ex,uv2.y);
-			vertex[3] = D3DVERTEX2(D3DVECTOR(p3.x, p2.y, 0.0f), n, uv1.x+ex,uv1.y);
-			vertex[4] = D3DVERTEX2(D3DVECTOR(p4.x, p1.y, 0.0f), n, uv2.x-ex,uv2.y);
-			vertex[5] = D3DVERTEX2(D3DVECTOR(p4.x, p2.y, 0.0f), n, uv2.x-ex,uv1.y);
-			vertex[6] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, uv2.x,   uv2.y);
-			vertex[7] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv2.x,   uv1.y);
+			vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,   uv2.y);
+			vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,   uv1.y);
+			vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p1.y, 0.0f), n, uv1.x+ex,uv2.y);
+			vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p2.y, 0.0f), n, uv1.x+ex,uv1.y);
+			vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p1.y, 0.0f), n, uv2.x-ex,uv2.y);
+			vertex[5] = D3DVERTEX2(Math::Vector(p4.x, p2.y, 0.0f), n, uv2.x-ex,uv1.y);
+			vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,   uv2.y);
+			vertex[7] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,   uv1.y);
 
 			device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 			m_engine->AddStatisticTriangle(6);
@@ -700,14 +700,14 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 			p3.y = p1.y + ex*dim.x/(uv2.x-uv1.x);
 			p4.y = p2.y - ex*dim.x/(uv2.x-uv1.x);
 
-			vertex[0] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y   );
-			vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y   );
-			vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p3.y, 0.0f), n, uv2.x,uv2.y-ex);
-			vertex[3] = D3DVERTEX2(D3DVECTOR(p1.x, p3.y, 0.0f), n, uv1.x,uv2.y-ex);
-			vertex[4] = D3DVERTEX2(D3DVECTOR(p2.x, p4.y, 0.0f), n, uv2.x,uv1.y+ex);
-			vertex[5] = D3DVERTEX2(D3DVECTOR(p1.x, p4.y, 0.0f), n, uv1.x,uv1.y+ex);
-			vertex[6] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y   );
-			vertex[7] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y   );
+			vertex[0] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y   );
+			vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y   );
+			vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p3.y, 0.0f), n, uv2.x,uv2.y-ex);
+			vertex[3] = D3DVERTEX2(Math::Vector(p1.x, p3.y, 0.0f), n, uv1.x,uv2.y-ex);
+			vertex[4] = D3DVERTEX2(Math::Vector(p2.x, p4.y, 0.0f), n, uv2.x,uv1.y+ex);
+			vertex[5] = D3DVERTEX2(Math::Vector(p1.x, p4.y, 0.0f), n, uv1.x,uv1.y+ex);
+			vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y   );
+			vertex[7] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y   );
 
 			device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 			m_engine->AddStatisticTriangle(6);
@@ -723,7 +723,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[8];	// 6 triangles
 	Math::Point		p1, p2, p3, p4;
-	D3DVECTOR	n;
+	Math::Vector	n;
 
 	device = m_engine->RetD3DDevice();
 
@@ -732,7 +732,7 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 	p2.x = pos.x + dim.x;
 	p2.y = pos.y + dim.y;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
 	if ( corner.x > dim.x/2.0f )  corner.x = dim.x/2.0f;
 	if ( corner.y > dim.y/2.0f )  corner.y = dim.y/2.0f;
@@ -747,38 +747,38 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 	p4.y = p2.y - corner.y;
 
 	// Bottom horizontal band.
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, uv1.x,   uv2.y   );
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p1.y, 0.0f), n, uv1.x+ex,uv2.y   );
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv1.x+ex,uv2.y-ex);
-	vertex[4] = D3DVERTEX2(D3DVECTOR(p4.x, p1.y, 0.0f), n, uv2.x-ex,uv2.y   );
-	vertex[5] = D3DVERTEX2(D3DVECTOR(p4.x, p3.y, 0.0f), n, uv2.x-ex,uv2.y-ex);
-	vertex[6] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, uv2.x,   uv2.y   );
-	vertex[7] = D3DVERTEX2(D3DVECTOR(p2.x, p3.y, 0.0f), n, uv2.x,   uv2.y-ex);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,   uv2.y   );
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
+	vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p1.y, 0.0f), n, uv1.x+ex,uv2.y   );
+	vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv1.x+ex,uv2.y-ex);
+	vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p1.y, 0.0f), n, uv2.x-ex,uv2.y   );
+	vertex[5] = D3DVERTEX2(Math::Vector(p4.x, p3.y, 0.0f), n, uv2.x-ex,uv2.y-ex);
+	vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,   uv2.y   );
+	vertex[7] = D3DVERTEX2(Math::Vector(p2.x, p3.y, 0.0f), n, uv2.x,   uv2.y-ex);
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 	m_engine->AddStatisticTriangle(6);
 
 	// Central horizontal band.
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p3.y, 0.0f), n, uv1.x+ex,uv2.y-ex);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p3.x, p4.y, 0.0f), n, uv1.x+ex,uv1.y+ex);
-	vertex[4] = D3DVERTEX2(D3DVECTOR(p4.x, p3.y, 0.0f), n, uv2.x-ex,uv2.y-ex);
-	vertex[5] = D3DVERTEX2(D3DVECTOR(p4.x, p4.y, 0.0f), n, uv2.x-ex,uv1.y+ex);
-	vertex[6] = D3DVERTEX2(D3DVECTOR(p2.x, p3.y, 0.0f), n, uv2.x,   uv2.y-ex);
-	vertex[7] = D3DVERTEX2(D3DVECTOR(p2.x, p4.y, 0.0f), n, uv2.x,   uv1.y+ex);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
+	vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv1.x+ex,uv2.y-ex);
+	vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p4.y, 0.0f), n, uv1.x+ex,uv1.y+ex);
+	vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p3.y, 0.0f), n, uv2.x-ex,uv2.y-ex);
+	vertex[5] = D3DVERTEX2(Math::Vector(p4.x, p4.y, 0.0f), n, uv2.x-ex,uv1.y+ex);
+	vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p3.y, 0.0f), n, uv2.x,   uv2.y-ex);
+	vertex[7] = D3DVERTEX2(Math::Vector(p2.x, p4.y, 0.0f), n, uv2.x,   uv1.y+ex);
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 	m_engine->AddStatisticTriangle(6);
 
 	// Top horizontal band.
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, uv1.x,   uv1.y   );
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p3.x, p4.y, 0.0f), n, uv1.x+ex,uv1.y+ex);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p3.x, p2.y, 0.0f), n, uv1.x+ex,uv1.y   );
-	vertex[4] = D3DVERTEX2(D3DVECTOR(p4.x, p4.y, 0.0f), n, uv2.x-ex,uv1.y+ex);
-	vertex[5] = D3DVERTEX2(D3DVECTOR(p4.x, p2.y, 0.0f), n, uv2.x-ex,uv1.y   );
-	vertex[6] = D3DVERTEX2(D3DVECTOR(p2.x, p4.y, 0.0f), n, uv2.x,   uv1.y+ex);
-	vertex[7] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, uv2.x,   uv1.y   );
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,   uv1.y   );
+	vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p4.y, 0.0f), n, uv1.x+ex,uv1.y+ex);
+	vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p2.y, 0.0f), n, uv1.x+ex,uv1.y   );
+	vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p4.y, 0.0f), n, uv2.x-ex,uv1.y+ex);
+	vertex[5] = D3DVERTEX2(Math::Vector(p4.x, p2.y, 0.0f), n, uv2.x-ex,uv1.y   );
+	vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p4.y, 0.0f), n, uv2.x,   uv1.y+ex);
+	vertex[7] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,   uv1.y   );
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
 	m_engine->AddStatisticTriangle(6);
 }

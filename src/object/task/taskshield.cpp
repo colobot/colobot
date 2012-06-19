@@ -22,6 +22,7 @@
 #include <d3d.h>
 
 #include "math/const.h"
+#include "math/geometry.h"
 #include "common/struct.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
@@ -66,9 +67,9 @@ CTaskShield::~CTaskShield()
 bool CTaskShield::EventProcess(const Event &event)
 {
 	CObject*		power;
-	D3DMATRIX*		mat;
-	D3DMATRIX		matrix;
-	D3DVECTOR		pos, speed, goal, angle;
+	Math::Matrix*		mat;
+	Math::Matrix		matrix;
+	Math::Vector		pos, speed, goal, angle;
 	D3DCOLORVALUE	color;
 	Math::Point			dim;
 	float			energy;
@@ -82,8 +83,8 @@ bool CTaskShield::EventProcess(const Event &event)
 	m_delay -= event.rTime;
 
 	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(7.0f, 15.0f, 0.0f);
-	pos = Transform(*mat, pos);  // sphere position
+	pos = Math::Vector(7.0f, 15.0f, 0.0f);
+	pos = Math::Transform(*mat, pos);  // sphere position
 	m_shieldPos = pos;
 
 	if ( m_rankSphere != -1 )
@@ -174,8 +175,8 @@ bool CTaskShield::EventProcess(const Event &event)
 			angle.x = (Math::Rand()-0.5f)*Math::PI*1.2f;
 			angle.y = 0.0f;
 			angle.z = (Math::Rand()-0.5f)*Math::PI*1.2f;
-			MatRotateXZY(matrix, angle);
-			goal = Transform(matrix, D3DVECTOR(0.0f, RetRadius()-dim.x, 0.0f));
+			Math::LoadRotationXZYMatrix(matrix, angle);
+			goal = Math::Transform(matrix, Math::Vector(0.0f, RetRadius()-dim.x, 0.0f));
 			goal += pos;
 			m_particule->CreateRay(pos, goal, PARTIRAY2, dim, 0.3f);
 		}
@@ -238,8 +239,8 @@ bool CTaskShield::EventProcess(const Event &event)
 Error CTaskShield::Start(TaskShieldMode mode, float delay)
 {
 	CObject*	power;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, iPos, oPos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, iPos, oPos, speed;
 	ObjectType	type;
 	float		energy;
 
@@ -269,7 +270,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 	if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
 	
 	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(7.0f, 15.0f, 0.0f);
+	pos = Math::Vector(7.0f, 15.0f, 0.0f);
 	pos = Transform(*mat, pos);  // sphere position
 	m_shieldPos = pos;
 
@@ -341,7 +342,7 @@ Error CTaskShield::Stop()
 Error CTaskShield::IsEnded()
 {
 	CObject*	power;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		energy;
 
@@ -396,7 +397,7 @@ Error CTaskShield::IsEnded()
 		m_object->SetShieldRadius(RetRadius());
 
 		pos = m_shieldPos;
-		speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		speed = Math::Vector(0.0f, 0.0f, 0.0f);
 		dim.x = RetRadius();
 		dim.y = dim.x;
 		m_rankSphere = m_particule->CreateParticule(pos, speed, dim, PARTISPHERE3, 2.0f, 0.0f, 0.0f);
@@ -449,7 +450,7 @@ bool CTaskShield::IsBusy()
 
 bool CTaskShield::Abort()
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	m_object->SetShieldRadius(0.0f);
 
@@ -489,7 +490,7 @@ bool CTaskShield::Abort()
 
 // Creates the light to accompany a pyrotechnic effect.
 
-bool CTaskShield::CreateLight(D3DVECTOR pos)
+bool CTaskShield::CreateLight(Math::Vector pos)
 {
 	D3DLIGHT7	light;
 
@@ -530,7 +531,7 @@ void CTaskShield::IncreaseShield()
 {
 	ObjectType	type;
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	float		dist, shield;
 	int			i;
 
@@ -547,7 +548,7 @@ void CTaskShield::IncreaseShield()
 			 type == OBJECT_WORM   )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, m_shieldPos);
+		dist = Math::Distance(oPos, m_shieldPos);
 		if ( dist <= RetRadius()+10.0f )
 		{
 			shield = pObj->RetShield();

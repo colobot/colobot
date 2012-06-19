@@ -48,7 +48,7 @@ protected:
 	float		m_advanceLength;
 	float		m_direction;
 	float		m_timeLimit;
-	D3DVECTOR	m_startPos;
+	Math::Vector	m_startPos;
 	float		m_lastDist;
 	float		m_fixTime;
 	bool		m_bError;

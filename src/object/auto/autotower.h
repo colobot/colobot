@@ -63,7 +63,7 @@ public:
 protected:
 	void		UpdateInterface(float rTime);
 
-	CObject*	SearchTarget(D3DVECTOR &impact);
+	CObject*	SearchTarget(Math::Vector &impact);
 	void		FireStopUpdate(float progress, bool bLightOn);
 
 protected:
@@ -73,7 +73,7 @@ protected:
 	float			m_timeVirus;
 	float			m_lastUpdateTime;
 	float			m_lastParticule;
-	D3DVECTOR		m_targetPos;
+	Math::Vector		m_targetPos;
 	float			m_angleYactual;
 	float			m_angleZactual;
 	float			m_angleYfinal;

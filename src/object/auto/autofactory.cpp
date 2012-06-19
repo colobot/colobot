@@ -20,6 +20,7 @@
 #include <d3d.h>
 
 #include "math/const.h"
+#include "math/geometry.h"
 #include "common/struct.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
@@ -125,9 +126,9 @@ bool CAutoFactory::EventProcess(const Event &event)
 {
 	CObject*	fret;
 	CObject*	vehicle;
-	D3DMATRIX*	mat;
+	Math::Matrix*	mat;
 	CPhysics*	physics;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	ObjectType	type;
 	float		zoom, angle, prog;
@@ -348,8 +349,8 @@ bool CAutoFactory::EventProcess(const Event &event)
 				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 #else
 				mat = m_object->RetWorldMatrix(0);
-				pos = D3DVECTOR(-12.0f, 20.0f, -4.0f);  // position of chimney
-				pos = Transform(*mat, pos);
+				pos = Math::Vector(-12.0f, 20.0f, -4.0f);  // position of chimney
+				pos = Math::Transform(*mat, pos);
 				pos.y += 2.0f;
 				pos.x += (Math::Rand()-0.5f)*2.0f;
 				pos.z += (Math::Rand()-0.5f)*2.0f;
@@ -416,7 +417,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 				pos.x += (Math::Rand()-0.5f)*10.0f;
 				pos.z += (Math::Rand()-0.5f)*10.0f;
 				pos.y += Math::Rand()*10.0f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
@@ -459,7 +460,7 @@ bool CAutoFactory::EventProcess(const Event &event)
 				pos.x += (Math::Rand()-0.5f)*10.0f;
 				pos.z += (Math::Rand()-0.5f)*10.0f;
 				pos.y += Math::Rand()*10.0f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
@@ -535,7 +536,7 @@ bool CAutoFactory::Read(char *line)
 CObject* CAutoFactory::SearchFret()
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	float		dist;
 	int			i;
@@ -550,7 +551,7 @@ CObject* CAutoFactory::SearchFret()
 		if ( pObj->RetTruck() != 0 )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, m_fretPos);
+		dist = Math::Distance(oPos, m_fretPos);
 
 		if ( dist < 8.0f )  return pObj;
 	}
@@ -563,7 +564,7 @@ CObject* CAutoFactory::SearchFret()
 bool CAutoFactory::NearestVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	type;
 	float		oRadius, dist;
 	int			i;
@@ -611,7 +612,7 @@ bool CAutoFactory::NearestVehicle()
 			 type != OBJECT_WORM     )  continue;
 
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-		dist = Length(oPos, cPos)-oRadius;
+		dist = Math::Distance(oPos, cPos)-oRadius;
 
 		if ( dist < 10.0f )  return true;
 	}
@@ -625,9 +626,9 @@ bool CAutoFactory::NearestVehicle()
 bool CAutoFactory::CreateVehicle()
 {
 	CObject*	vehicle;
-	D3DMATRIX*	mat;
+	Math::Matrix*	mat;
 	CPhysics*	physics;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		angle;
 	char*		name;
 	int			i;
@@ -640,11 +641,11 @@ bool CAutoFactory::CreateVehicle()
 		 m_type == OBJECT_MOBILErr ||
 		 m_type == OBJECT_MOBILErs )
 	{
-		pos = D3DVECTOR(2.0f, 0.0f, 0.0f);
+		pos = Math::Vector(2.0f, 0.0f, 0.0f);
 	}
 	else
 	{
-		pos = D3DVECTOR(4.0f, 0.0f, 0.0f);
+		pos = Math::Vector(4.0f, 0.0f, 0.0f);
 	}
 	pos = Transform(*mat, pos);
 
@@ -680,7 +681,7 @@ bool CAutoFactory::CreateVehicle()
 CObject* CAutoFactory::SearchVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	float		dist;
 	int			i;
@@ -697,7 +698,7 @@ CObject* CAutoFactory::SearchVehicle()
 		if ( pObj->RetTruck() != 0 )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, m_fretPos);
+		dist = Math::Distance(oPos, m_fretPos);
 
 		if ( dist < 8.0f )  return pObj;
 	}

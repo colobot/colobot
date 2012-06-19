@@ -63,7 +63,7 @@ protected:
 	CObject*	SearchFriendObject(float &angle, float dLimit, float aLimit);
 	bool		TruckTakeObject();
 	bool		TruckDeposeObject();
-	bool		IsFreeDeposeObject(D3DVECTOR pos);
+	bool		IsFreeDeposeObject(Math::Vector pos);
 
 protected:
 	CTerrain*		m_terrain;

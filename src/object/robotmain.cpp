@@ -25,6 +25,7 @@
 #include "common/struct.h"
 #include "math/const.h"
 #include "math/geometry.h"
+#include "math/conv.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/language.h"
@@ -71,7 +72,7 @@
 #include "sound/sound.h"
 #include "script/cbottoken.h"
 #include "script/cmdtoken.h"
-#include "graphics/common/mainmovie.h"
+#include "object/mainmovie.h"
 #include "ui/maindialog.h"
 #include "ui/mainshort.h"
 #include "ui/mainmap.h"
@@ -501,7 +502,7 @@ void CRobotMain::ChangePhase(Phase phase)
 	m_engine->SetOverColor();
 	m_engine->GroundMarkDelete(0);
 	SetSpeed(1.0f);
-	m_terrain->SetWind(D3DVECTOR(0.0f, 0.0f, 0.0f));
+	m_terrain->SetWind(Math::Vector(0.0f, 0.0f, 0.0f));
 	m_terrain->FlushBuildingLevel();
 	m_terrain->FlushFlyingLimit();
 	m_light->FlushLight();
@@ -518,7 +519,7 @@ void CRobotMain::ChangePhase(Phase phase)
 	m_interface->Flush();
 	ClearInterface();
 	FlushNewScriptName();
-	m_sound->SetListener(D3DVECTOR(0.0f, 0.0f, 0.0f), D3DVECTOR(0.0f, 0.0f, 1.0f));
+	m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
 	m_camera->SetType(CAMERA_DIALOG);
 	m_movie->Flush();
 	m_movieInfoIndex = -1;
@@ -723,7 +724,7 @@ void CRobotMain::ChangePhase(Phase phase)
 			}
 			else
 			{
-				m_displayText->DisplayError(INFO_WIN, D3DVECTOR(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+				m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
 			}
 		}
 		m_sound->StopAll();
@@ -746,7 +747,7 @@ void CRobotMain::ChangePhase(Phase phase)
 			pos.x = ox+sx*1;  pos.y = oy+sy*1;
 			ddim.x = dim.x*2;  ddim.y = dim.y*2;
 			m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
-			m_displayText->DisplayError(INFO_LOST, D3DVECTOR(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
+			m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
 		}
 		m_sound->StopAll();
 		StartMusic();
@@ -915,7 +916,7 @@ bool CRobotMain::EventProcess(const Event &event)
 				HiliteClear();
 				if ( event.param == VK_F11 )
 				{
-					m_particule->WriteWheelTrace("Savegame\\t.bmp", 256, 256, D3DVECTOR(16.0f, 0.0f, -368.0f), D3DVECTOR(140.0f, 0.0f, -248.0f));
+					m_particule->WriteWheelTrace("Savegame\\t.bmp", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
 					return false;
 				}
 				if ( m_bEditLock )  // current edition?
@@ -1575,7 +1576,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
 	if ( m_phase == PHASE_SIMUL )
 	{
-		m_displayText->DisplayError(ERR_CMD, D3DVECTOR(0.0f,0.0f,0.0f));
+		m_displayText->DisplayError(ERR_CMD, Math::Vector(0.0f,0.0f,0.0f));
 	}
 }
 
@@ -1881,7 +1882,7 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
 	CWindow*	pw;
 	CButton*	button;
 	CGroup*		group;
-	D3DVECTOR	goal;
+	Math::Vector	goal;
 	Math::Point		pos, dim;
 	int			i, j;
 
@@ -1978,7 +1979,7 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
 
 void CRobotMain::FrameVisit(float rTime)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		level;
 
@@ -2001,7 +2002,7 @@ void CRobotMain::FrameVisit(float rTime)
 		pos = m_visitPos;
 		level = m_terrain->RetFloorLevel(pos)+2.0f;
 		if ( pos.y < level )  pos.y = level;  // not below the ground
-		speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		speed = Math::Vector(0.0f, 0.0f, 0.0f);
 		dim.x = 30.0f;
 		dim.y = dim.x;
 		m_particule->CreateParticule(pos, speed, dim, PARTISHOW, 2.0f);
@@ -2291,11 +2292,11 @@ CObject* CRobotMain::SearchToto()
 
 // Returns the nearest selectable object from a given position.
 
-CObject* CRobotMain::SearchNearest(D3DVECTOR pos, CObject* pExclu)
+CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* pExclu)
 {
 	ObjectType	type;
 	CObject		*pObj, *pBest;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	float		min, dist;
 	int			i;
 
@@ -2313,7 +2314,7 @@ CObject* CRobotMain::SearchNearest(D3DVECTOR pos, CObject* pExclu)
 		if ( type == OBJECT_TOTO )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(oPos, pos);
+		dist = Math::DistanceProjected(oPos, pos);
 		if ( dist < min )
 		{
 			min = dist;
@@ -2988,7 +2989,7 @@ void CRobotMain::AbortMovie()
 void CRobotMain::UpdateInfoText()
 {
 	CObject*	pObj;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	char		info[100];
 
 	if ( m_bShowPos )
@@ -3010,8 +3011,8 @@ void CRobotMain::InitEye()
 {
 	if ( m_phase == PHASE_SIMUL )
 	{
-		m_camera->Init(D3DVECTOR( 0.0f, 10.0f, 0.0f),
-					   D3DVECTOR(10.0f,  5.0f, 0.0f), 0.0f);
+		m_camera->Init(Math::Vector( 0.0f, 10.0f, 0.0f),
+					   Math::Vector(10.0f,  5.0f, 0.0f), 0.0f);
 	}
 
 	if ( m_phase == PHASE_MODEL )
@@ -3037,7 +3038,7 @@ bool CRobotMain::EventFrame(const Event &event)
 	if ( !m_bImmediatSatCom && !m_bBeginSatCom &&
 		 m_gameTime > 0.1f && m_phase == PHASE_SIMUL )
 	{
-		m_displayText->DisplayError(INFO_BEGINSATCOM, D3DVECTOR(0.0f,0.0f,0.0f));
+		m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f,0.0f,0.0f));
 		m_bBeginSatCom = true;  // message appears
 	}
 
@@ -3255,7 +3256,7 @@ bool CRobotMain::EventFrame(const Event &event)
 		m_delayWriteMessage --;
 		if ( m_delayWriteMessage == 0 )
 		{
-			m_displayText->DisplayError(INFO_WRITEOK, D3DVECTOR(0.0f,0.0f,0.0f));
+			m_displayText->DisplayError(INFO_WRITEOK, Math::Vector(0.0f,0.0f,0.0f));
 		}
 	}
 
@@ -3292,10 +3293,10 @@ bool CRobotMain::EventObject(const Event &event)
 
 // Calculates the point of arrival of the camera.
 
-D3DVECTOR CRobotMain::LookatPoint(D3DVECTOR eye, float angleH, float angleV,
+Math::Vector CRobotMain::LookatPoint(Math::Vector eye, float angleH, float angleV,
 								  float length)
 {
-	D3DVECTOR	lookat;
+	Math::Vector	lookat;
 
 	lookat = eye;
 	lookat.z += length;
@@ -3327,7 +3328,7 @@ void CRobotMain::Convert()
 	char*			base;
 	char*			p;
 	int				rank;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			value;
 
 	base = m_dialog->RetSceneName();
@@ -3567,7 +3568,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 	char*			stack;
 	char*			base;
 	D3DCOLORVALUE	color;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	int				rank, obj, i, rankObj, rankGadget;
 
 //?	Convert();
@@ -3792,7 +3793,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 
 		if ( Cmd(line, "Planet") && !bResetObject )
 		{
-			D3DVECTOR	ppos, uv1, uv2;
+			Math::Vector	ppos, uv1, uv2;
 
 			ppos  = OpPos(line, "pos");
 			uv1   = OpPos(line, "uv1");
@@ -3981,7 +3982,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 			SetMovieLock(false);
 			if ( !m_bFixScene )
 			{
-//?				CreateObject(D3DVECTOR(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, OBJECT_TOTO);
+//?				CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, OBJECT_TOTO);
 			}
 
 			if ( read[0] != 0 )  // loading file ?
@@ -4207,7 +4208,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 			pos.y += height;
 			dim.x = ddim;
 			dim.y = dim.x;
-			m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
+			m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
 		}
 
 		if ( Cmd(line, "CreateLight") && !bResetObject )
@@ -4302,7 +4303,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 			m_bMapImage = OpInt(line, "image", 0);
 			if ( m_bMapImage )
 			{
-				D3DVECTOR	offset;
+				Math::Vector	offset;
 				OpString(line, "filename", m_mapFilename);
 				offset = OpPos(line, "offset");
 				m_map->SetFixParam(OpFloat(line, "zoom", 1.0f),
@@ -4338,7 +4339,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 
 			if ( OpInt(line, "fadeIn", 0) == 1 )
 			{
-				m_camera->StartOver(OE_FADEINw, D3DVECTOR(0.0f, 0.0f, 0.0f), 1.0f);
+				m_camera->StartOver(OE_FADEINw, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
 			}
 			m_camera->SetFixDirection(OpFloat(line, "fixDirection", 0.25f)*Math::PI);
 		}
@@ -4491,7 +4492,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 
 // Creates an object of decoration mobile or stationary.
 
-CObject* CRobotMain::CreateObject(D3DVECTOR pos, float angle, float zoom, float height,
+CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, float height,
 								  ObjectType type, float power,
 								  bool bTrainer, bool bToy,
 								  int option)
@@ -4830,7 +4831,7 @@ CObject* CRobotMain::CreateObject(D3DVECTOR pos, float angle, float zoom, float 
 
 void CRobotMain::CreateModel()
 {
-	D3DVECTOR		direction;
+	Math::Vector		direction;
 	D3DCOLORVALUE	color;
 
 	m_engine->SetAmbiantColor(0xC0C0C0C0);  // gray
@@ -4842,31 +4843,31 @@ void CRobotMain::CreateModel()
 
 	m_model->StartUserAction();
 
-	direction = D3DVECTOR(1.0f, -1.0f, 1.0f);
+	direction = Math::Vector(1.0f, -1.0f, 1.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
 	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
-	direction = D3DVECTOR(-1.0f, -1.0f, 1.0f);
+	direction = Math::Vector(-1.0f, -1.0f, 1.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
 	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
-	direction = D3DVECTOR(1.0f, -1.0f, -1.0f);
+	direction = Math::Vector(1.0f, -1.0f, -1.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
 	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
-	direction = D3DVECTOR(-1.0f, -1.0f, -1.0f);
+	direction = Math::Vector(-1.0f, -1.0f, -1.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
 	color.b = 0.7f;  // white
 	CreateLight(direction, color);
 
-	direction = D3DVECTOR(0.0f, 1.0f, 0.0f);
+	direction = Math::Vector(0.0f, 1.0f, 0.0f);
 	color.r = 0.7f;
 	color.g = 0.7f;
 	color.b = 0.7f;  // white
@@ -4883,7 +4884,7 @@ void CRobotMain::CreateModel()
 
 // Creates a directional light.
 
-int CRobotMain::CreateLight(D3DVECTOR direction, D3DCOLORVALUE color)
+int CRobotMain::CreateLight(Math::Vector direction, D3DCOLORVALUE color)
 {
 	D3DLIGHT7	light;
 	int			obj;
@@ -4900,7 +4901,7 @@ int CRobotMain::CreateLight(D3DVECTOR direction, D3DCOLORVALUE color)
 	light.dcvDiffuse.r = color.r;
 	light.dcvDiffuse.g = color.g;
 	light.dcvDiffuse.b = color.b;
-	light.dvDirection  = direction;
+	light.dvDirection  = VEC_TO_D3DVEC(direction);
 	obj = m_light->CreateLight();
 	m_light->SetLight(obj, light);
 
@@ -4909,7 +4910,7 @@ int CRobotMain::CreateLight(D3DVECTOR direction, D3DCOLORVALUE color)
 
 // Creates a light spot.
 
-int CRobotMain::CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color)
+int CRobotMain::CreateSpot(Math::Vector pos, D3DCOLORVALUE color)
 {
 	D3DLIGHT7	light;
 	int			obj;
@@ -4923,7 +4924,7 @@ int CRobotMain::CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color)
 	light.dcvDiffuse.r   = color.r;
 	light.dcvDiffuse.g   = color.g;
 	light.dcvDiffuse.b   = color.b;
-	light.dvPosition     = pos;
+	light.dvPosition     = VEC_TO_D3DVEC(pos);
 	light.dvDirection    = D3DVECTOR(0.0f, -1.0f, 0.0f);
 	light.dvRange        = D3DLIGHT_RANGE_MAX;
 	light.dvFalloff      = 1.0f;
@@ -5102,11 +5103,11 @@ bool CRobotMain::TestGadgetQuantity(int rank)
 
 // Calculates the distance to the nearest object.
 
-float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
+float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
 {
 	CObject*	pObj;
 	ObjectType	type;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	float		min, dist, oRadius;
 	int			i, j;
 
@@ -5128,7 +5129,7 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 			if ( oPos.x != center.x ||
 				 oPos.z != center.z )
 			{
-				dist = Length(center, oPos)-80.0f;
+				dist = Math::Distance(center, oPos)-80.0f;
 				if ( dist < 0.0f )  dist = 0.0f;
 				min = Math::Min(min, dist);
 				continue;
@@ -5140,7 +5141,7 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 			 type == OBJECT_DESTROYER )
 		{
 			oPos = pObj->RetPosition(0);
-			dist = Length(center, oPos)-8.0f;
+			dist = Math::Distance(center, oPos)-8.0f;
 			if ( dist < 0.0f )  dist = 0.0f;
 			min = Math::Min(min, dist);
 		}
@@ -5148,7 +5149,7 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
-			dist = Length(center, oPos)-oRadius;
+			dist = Math::Distance(center, oPos)-oRadius;
 			if ( dist < 0.0f )  dist = 0.0f;
 			min = Math::Min(min, dist);
 		}
@@ -5158,10 +5159,10 @@ float CRobotMain::SearchNearestObject(D3DVECTOR center, CObject *exclu)
 
 // Calculates a free space.
 
-bool CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
+bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadius,
 						   float space, CObject *exclu)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	Math::Point		p;
 	float		radius, ia, angle, dist, flat;
 
@@ -5224,7 +5225,7 @@ bool CRobotMain::FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius,
 
 // Calculates the maximum radius of a free space.
 
-float CRobotMain::RetFlatZoneRadius(D3DVECTOR center, float maxRadius,
+float CRobotMain::RetFlatZoneRadius(Math::Vector center, float maxRadius,
 									CObject *exclu)
 {
 	float	dist;
@@ -5262,7 +5263,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 {
 	CObject*	pObj;
 	ObjectType	type;
-	D3DVECTOR	center, oPos;
+	Math::Vector	center, oPos;
 	float		oMax, tMax, dist, oRadius, radius;
 	int			i, j;
 
@@ -5286,7 +5287,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 		if ( type == OBJECT_BASE )
 		{
 			oPos = pObj->RetPosition(0);
-			dist = Length(center, oPos)-80.0f;
+			dist = Math::Distance(center, oPos)-80.0f;
 			oMax = Math::Min(oMax, dist);
 		}
 		else
@@ -5294,7 +5295,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 			j = 0;
 			while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 			{
-				dist = Length(center, oPos)-oRadius;
+				dist = Math::Distance(center, oPos)-oRadius;
 				oMax = Math::Min(oMax, dist);
 			}
 		}
@@ -5321,7 +5322,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 			j = 0;
 			while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 			{
-				dist = Length(center, oPos)-oRadius-BUILDMARGIN;
+				dist = Math::Distance(center, oPos)-oRadius-BUILDMARGIN;
 				oMax = Math::Min(oMax, dist);
 			}
 		}
@@ -5371,7 +5372,7 @@ void CRobotMain::FlushShowLimit(int i)
 // Specifies the boundaries to show.
 
 void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
-							  D3DVECTOR pos, float radius, float duration)
+							  Math::Vector pos, float radius, float duration)
 {
 	Math::Point	dim;
 	float	dist;
@@ -5403,13 +5404,13 @@ void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 
 	for ( j=0 ; j<m_showLimit[i].total ; j++ )
 	{
-		m_showLimit[i].parti[j] = m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, parti, duration);
+		m_showLimit[i].parti[j] = m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, parti, duration);
 	}
 }
 
 // Adjusts the boundaries to show.
 
-void CRobotMain::AdjustShowLimit(int i, D3DVECTOR pos)
+void CRobotMain::AdjustShowLimit(int i, Math::Vector pos)
 {
 	m_showLimit[i].pos = pos;
 }
@@ -5430,7 +5431,7 @@ void CRobotMain::StartShowLimit()
 
 void CRobotMain::FrameShowLimit(float rTime)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	Math::Point		center, rotate;
 	float		angle, factor, speed;
 	int			i, j;
@@ -5869,7 +5870,7 @@ bool CRobotMain::IsBusy()
 
 void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	CBrain*		pBrain;
 	char		line[3000];
 	char		name[100];
@@ -6075,7 +6076,7 @@ CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 	CObject*	pObj;
 //?	CBrain*		pBrain;
 	CAuto*		pAuto;
-	D3DVECTOR	pos, dir, zoom;
+	Math::Vector	pos, dir, zoom;
 	ObjectType	type;
 	int			id, run, trainer, toy, option, i;
 	char		op[10];
@@ -6365,7 +6366,7 @@ void CRobotMain::ResetObject()
 	CBrain*		brain;
 	CPyro*		pyro;
 	ResetCap	cap;
-	D3DVECTOR	pos, angle;
+	Math::Vector	pos, angle;
 	int			i;
 
 	// Removes all pyrotechnic effects in progress.
@@ -6499,7 +6500,7 @@ void CRobotMain::ResetCreate()
 Error CRobotMain::CheckEndMission(bool bFrame)
 {
 	CObject*	pObj;
-	D3DVECTOR	bPos, oPos;
+	Math::Vector	bPos, oPos;
 	ObjectType	type;
 	int			t, i, nb;
 
@@ -6541,7 +6542,7 @@ Error CRobotMain::CheckEndMission(bool bFrame)
 				oPos = pObj->RetTruck()->RetPosition(0);
 			}
 			oPos.y = 0.0f;
-			if ( Length2d(oPos, bPos) <= m_endTake[t].dist )
+			if ( Math::DistanceProjected(oPos, bPos) <= m_endTake[t].dist )
 			{
 				nb ++;
 			}
@@ -6563,7 +6564,7 @@ Error CRobotMain::CheckEndMission(bool bFrame)
 			{
 				if ( m_lostDelay == 0.0f )
 				{
-					m_displayText->DisplayError(INFO_LOST, D3DVECTOR(0.0f,0.0f,0.0f));
+					m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
 					m_lostDelay = m_endTakeLostDelay;  // lost in 6 seconds
 					m_winDelay  = 0.0f;
 				}
@@ -6610,7 +6611,7 @@ Error CRobotMain::CheckEndMission(bool bFrame)
 
 	if ( m_winDelay == 0.0f )
 	{
-		m_displayText->DisplayError(INFO_WIN, D3DVECTOR(0.0f,0.0f,0.0f));
+		m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
 		m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
 		m_lostDelay = 0.0f;
 	}
@@ -6630,7 +6631,7 @@ void CRobotMain::CheckEndMessage(char *message)
 
 		if ( strcmp(m_endTake[t].message, message) == 0 )
 		{
-			m_displayText->DisplayError(INFO_WIN, D3DVECTOR(0.0f,0.0f,0.0f));
+			m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
 			m_winDelay  = m_endTakeWinDelay;  // wins in 2 seconds
 			m_lostDelay = 0.0f;
 		}

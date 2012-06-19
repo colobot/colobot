@@ -53,7 +53,7 @@ public:
 protected:
 	Error		CreateFlag(int rank);
 	Error		DeleteFlag();
-	CObject*	SearchNearest(D3DVECTOR pos, ObjectType type);
+	CObject*	SearchNearest(Math::Vector pos, ObjectType type);
 	int			CountObject(ObjectType type);
 
 protected:

@@ -15,7 +15,6 @@ graphics/common/blitz.cpp
 graphics/common/camera.cpp
 graphics/common/cloud.cpp
 graphics/common/light.cpp
-graphics/common/mainmovie.cpp
 graphics/common/model.cpp
 graphics/common/particule.cpp
 graphics/common/planet.cpp
@@ -57,6 +56,7 @@ object/auto/autosafe.cpp
 object/auto/autostation.cpp
 object/auto/autotower.cpp
 object/brain.cpp
+object/mainmovie.cpp
 object/motion/motion.cpp
 object/motion/motionant.cpp
 object/motion/motionbee.cpp
@@ -125,7 +125,7 @@ ui/window.cpp
 add_definitions(-DSTRICT -DD3D_OVERLOADS)
 
 # Change to DirectX SDK directory
-set(DXSDK_DIR "c:/dxsdk")
+set(DXSDK_DIR "/mnt/windows/dxsdk")
 
 include_directories(${DXSDK_DIR}/include .)
 

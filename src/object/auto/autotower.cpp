@@ -105,7 +105,7 @@ bool CAutoTower::EventProcess(const Event &event)
 {
 	CObject*	power;
 	CObject*	target;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		angle, energy, quick;
 
 	CAuto::EventProcess(event);
@@ -209,7 +209,7 @@ bool CAutoTower::EventProcess(const Event &event)
 				m_angleYactual = Math::NormAngle(m_object->RetAngleY(1));
 
 				m_angleZfinal = -Math::PI/2.0f;
-				m_angleZfinal -= Math::RotateAngle(Length2d(m_targetPos, pos), pos.y-m_targetPos.y);  // CW !
+				m_angleZfinal -= Math::RotateAngle(Math::DistanceProjected(m_targetPos, pos), pos.y-m_targetPos.y);  // CW !
 				m_angleZactual = m_object->RetAngleZ(2);
 
 				m_phase    = ATP_TURN;
@@ -274,12 +274,12 @@ bool CAutoTower::EventProcess(const Event &event)
 
 // Seeks the nearest target object.
 
-CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
+CObject* CAutoTower::SearchTarget(Math::Vector &impact)
 {
 	CObject*	pObj;
 	CObject*	pBest = 0;
 	CPhysics*	physics;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	oType;
 	float		distance, min, radius, speed;
 	int			i;
@@ -313,7 +313,7 @@ CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 		}
 
 		if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
-		distance = Length(oPos, iPos);
+		distance = Math::Distance(oPos, iPos);
 		if ( distance > TOWER_SCOPE )  continue;  // too far
 		if ( distance < min )
 		{
@@ -359,8 +359,8 @@ Error CAutoTower::RetError()
 
 void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	int			i;
 
@@ -387,7 +387,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 
 	mat = m_object->RetWorldMatrix(0);
 
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	speed = Math::Vector(0.0f, 0.0f, 0.0f);
 	dim.x = 2.0f;
 	dim.y = dim.x;
 

@@ -70,10 +70,10 @@ enum PyroType
 struct PyroBurnPart
 {
 	int				part;
-	D3DVECTOR		initialPos;
-	D3DVECTOR		finalPos;
-	D3DVECTOR		initialAngle;
-	D3DVECTOR		finalAngle;
+	Math::Vector		initialPos;
+	Math::Vector		finalPos;
+	Math::Vector		initialAngle;
+	Math::Vector		finalAngle;
 };
 
 struct PyroLightOper
@@ -99,7 +99,7 @@ public:
 
 protected:
 	void		DisplayError(PyroType type, CObject* pObj);
-	bool		CreateLight(D3DVECTOR pos, float height);
+	bool		CreateLight(Math::Vector pos, float height);
 	void		DeleteObject(bool bPrimary, bool bSecondary);
 
 	void		CreateTriangle(CObject* pObj, ObjectType oType, int part);
@@ -108,7 +108,7 @@ protected:
 	void		ExploTerminate();
 
 	void		BurnStart();
-	void		BurnAddPart(int part, D3DVECTOR pos, D3DVECTOR angle);
+	void		BurnAddPart(int part, Math::Vector pos, Math::Vector angle);
 	void		BurnProgress();
 	bool		BurnIsKeepPart(int part);
 	void		BurnTerminate();
@@ -134,8 +134,8 @@ protected:
 	CRobotMain*		m_main;
 	CSound*			m_sound;
 
-	D3DVECTOR		m_pos;			// center of the effect
-	D3DVECTOR		m_posPower;		// center of the battery
+	Math::Vector		m_pos;			// center of the effect
+	Math::Vector		m_posPower;		// center of the battery
 	bool			m_bPower;		// battery exists?
 	PyroType		m_type;
 	float			m_force;
@@ -164,7 +164,7 @@ protected:
 	bool			m_bFallEnding;
 
 	int				m_crashSphereUsed;	// number of spheres used
-	D3DVECTOR		m_crashSpherePos[50];
+	Math::Vector		m_crashSpherePos[50];
 	float			m_crashSphereRadius[50];
 };
 

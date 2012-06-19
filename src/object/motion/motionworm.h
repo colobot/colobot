@@ -40,7 +40,7 @@ public:
 	~CMotionWorm();
 
 	void	DeleteObject(bool bAll=false);
-	bool	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	bool	Create(Math::Vector pos, float angle, ObjectType type, float power);
 	bool	EventProcess(const Event &event);
 
 	bool	SetParam(int rank, float value);

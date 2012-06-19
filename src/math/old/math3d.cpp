@@ -125,6 +125,65 @@ float		Smooth(float actual, float hope, float time);
 float		Bounce(float progress, float middle=0.3f, float bounce=0.4f);
 
 
+//>>> geometry.h SegmentPoint()
+D3DVECTOR	SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
+
+//>>> geometry.h Intersect()
+bool			Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
+
+//>>> geometry.h IntersectY()
+bool			IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
+
+//>>> geometry.h RotatePoint()
+void			RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+
+//>>> geometry.h RotatePoint2()
+void			RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+
+//>>> geometry.h RotateView()
+D3DVECTOR	RotateView(D3DVECTOR center, float angleH, float angleV, float dist);
+
+//>>> geometry.h LookatPoint()
+D3DVECTOR	LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
+
+//>>> vector.h Vector::Length()
+float		Length(const D3DVECTOR &u);
+
+//>>> vector.h Distance()
+float		Length(const D3DVECTOR &a, const D3DVECTOR &b);
+
+//>>> geometry.h DistanceProjected()
+float		Length2d(const D3DVECTOR &a, const D3DVECTOR &b);
+
+//>>> vector.h Angle()
+float		Angle( D3DVECTOR u, D3DVECTOR v );
+
+//>>> vector.h CrossProduct()
+D3DVECTOR	Cross( D3DVECTOR u, D3DVECTOR v );
+
+//>>> geometry.h NormalToPlane()
+D3DVECTOR	ComputeNormal( D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3 );
+
+//>>> geometry.h Transform()
+D3DVECTOR	Transform(const D3DMATRIX &m, D3DVECTOR p);
+
+//>>> geometry.h Projection()
+D3DVECTOR	Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p);
+
+//>>> geometry.h DistanceToPlane()
+float		DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &c, const D3DVECTOR &p);
+
+//>>> geometry.h IsSamePlane()
+bool			IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
+
+//>>> geometry.h LoadRotationXZYMatrix()
+void			MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle);
+
+//>>> geometry.h LoadRotationZXYMatrix()
+void			MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle);
+
+
+
 // UNUSED
 float		MidPoint(FPOINT a, FPOINT b, float px);
 

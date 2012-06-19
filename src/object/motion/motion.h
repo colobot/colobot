@@ -49,7 +49,7 @@ public:
 	void	SetBrain(CBrain* brain);
 
 	virtual void	DeleteObject(bool bAll=false);
-	virtual bool	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	virtual bool	Create(Math::Vector pos, float angle, ObjectType type, float power);
 	virtual bool	EventProcess(const Event &event);
 	virtual	Error	SetAction(int action, float time=0.2f);
 	virtual int		RetAction();
@@ -60,12 +60,12 @@ public:
 	virtual bool	Write(char *line);
 	virtual bool	Read(char *line);
 
-	virtual void		SetLinVibration(D3DVECTOR dir);
-	virtual D3DVECTOR	RetLinVibration();
-	virtual void		SetCirVibration(D3DVECTOR dir);
-	virtual D3DVECTOR	RetCirVibration();
-	virtual void		SetInclinaison(D3DVECTOR dir);
-	virtual D3DVECTOR	RetInclinaison();
+	virtual void		SetLinVibration(Math::Vector dir);
+	virtual Math::Vector	RetLinVibration();
+	virtual void		SetCirVibration(Math::Vector dir);
+	virtual Math::Vector	RetCirVibration();
+	virtual void		SetInclinaison(Math::Vector dir);
+	virtual Math::Vector	RetInclinaison();
 
 protected:
 
@@ -87,8 +87,8 @@ protected:
 	float			m_actionTime;
 	float			m_progress;
 
-	D3DVECTOR		m_linVibration;		// linear vibration
-	D3DVECTOR		m_cirVibration;		// circular vibration
-	D3DVECTOR		m_inclinaison;		// tilt
+	Math::Vector		m_linVibration;		// linear vibration
+	Math::Vector		m_cirVibration;		// circular vibration
+	Math::Vector		m_inclinaison;		// tilt
 };
 

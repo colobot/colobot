@@ -79,7 +79,7 @@ void CAutoMush::Init()
 
 bool CAutoMush::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, speed, dir;
+	Math::Vector	pos, speed, dir;
 	Math::Point		dim;
 	float		factor, zoom, size, angle;
 	int			i, channel;
@@ -223,7 +223,7 @@ bool CAutoMush::EventProcess(const Event &event)
 	{
 		m_object->SetAngleX(0, 0.0f);
 		m_object->SetAngleZ(0, 0.0f);
-		m_object->SetZoom(0, D3DVECTOR(1.0f, 1.0f, 1.0f));
+		m_object->SetZoom(0, Math::Vector(1.0f, 1.0f, 1.0f));
 	}
 
 	return true;
@@ -235,7 +235,7 @@ bool CAutoMush::EventProcess(const Event &event)
 bool CAutoMush::SearchTarget()
 {
 	CObject*	pObj;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	type;
 	float		dist;
 	int			i;
@@ -294,7 +294,7 @@ bool CAutoMush::SearchTarget()
 			 type != OBJECT_HUMAN    )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, iPos);
+		dist = Math::Distance(oPos, iPos);
 		if ( dist < 50.0f )  return true;
 	}
 
@@ -314,7 +314,7 @@ Error CAutoMush::RetError()
 
 bool CAutoMush::Write(char *line)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	char		name[100];
 
 	if ( m_phase == AMP_WAIT )  return false;
@@ -340,7 +340,7 @@ bool CAutoMush::Write(char *line)
 
 bool CAutoMush::Read(char *line)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 

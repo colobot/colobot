@@ -80,7 +80,7 @@ void CMotionSpider::DeleteObject(bool bAll)
 
 // Creates a vehicle traveling any lands on the ground.
 
-bool CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
+bool CMotionSpider::Create(Math::Vector pos, float angle, ObjectType type,
 						   float power)
 {
 	CModFile*	pModFile;
@@ -128,8 +128,8 @@ bool CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 
 	// A vehicle must have a obligatory collision
 	// with a sphere of center (0, y, 0) (see GetCrashSphere).
-	m_object->CreateCrashSphere(D3DVECTOR(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
-	m_object->SetGlobalSphere(D3DVECTOR(-0.5f, 1.0f, 0.0f), 4.0f);
+	m_object->CreateCrashSphere(Math::Vector(0.0f, -2.0f, 0.0f), 4.0f, SOUND_BOUM, 0.20f);
+	m_object->SetGlobalSphere(Math::Vector(-0.5f, 1.0f, 0.0f), 4.0f);
 
 	// Creates the abdomen.
 	rank = m_engine->CreateObject();
@@ -138,7 +138,7 @@ bool CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(1, 0);
 	pModFile->ReadModel("objects\\spider1.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(1, D3DVECTOR(1.0f, 0.0f, 0.0f));
+	m_object->SetPosition(1, Math::Vector(1.0f, 0.0f, 0.0f));
 
 	// Creates the head.
 	rank = m_engine->CreateObject();
@@ -147,7 +147,7 @@ bool CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(2, 0);
 	pModFile->ReadModel("objects\\spider2.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(2, D3DVECTOR(1.0f, 0.0f, 0.0f));
+	m_object->SetPosition(2, Math::Vector(1.0f, 0.0f, 0.0f));
 
 	// Creates legs.
 	for ( i=0 ; i<4 ; i++ )
@@ -194,7 +194,7 @@ bool CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	m_object->SetObjectParent(35, 1);
 	pModFile->ReadModel("objects\\spider7.mod");
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(35, D3DVECTOR(0.0f, 0.0f, -0.3f));
+	m_object->SetPosition(35, Math::Vector(0.0f, 0.0f, -0.3f));
 
 	// Creates the left mandible.
 	rank = m_engine->CreateObject();
@@ -204,7 +204,7 @@ bool CMotionSpider::Create(D3DVECTOR pos, float angle, ObjectType type,
 	pModFile->ReadModel("objects\\spider7.mod");
 	pModFile->Mirror();
 	pModFile->CreateEngineObject(rank);
-	m_object->SetPosition(36, D3DVECTOR(0.0f, 0.0f, 0.3f));
+	m_object->SetPosition(36, Math::Vector(0.0f, 0.0f, 0.3f));
 
 	m_object->CreateShadowCircle(4.0f, 0.5f);
 
@@ -389,7 +389,7 @@ bool CMotionSpider::EventProcess(const Event &event)
 
 bool CMotionSpider::EventFrame(const Event &event)
 {
-	D3DVECTOR	dir, pos, speed;
+	Math::Vector	dir, pos, speed;
 	Math::Point		dim;
 	float		s, a, prog, time;
 	float		tSt[12], tNd[12];
@@ -567,9 +567,9 @@ bool CMotionSpider::EventFrame(const Event &event)
 
 	if ( m_actionType == MSS_BURN )  // burning?
 	{
-		dir = D3DVECTOR(Math::PI, 0.0f, 0.0f);
+		dir = Math::Vector(Math::PI, 0.0f, 0.0f);
 		SetCirVibration(dir);
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetLinVibration(dir);
 		SetInclinaison(dir);
 
@@ -578,7 +578,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 	}
 	else if ( m_actionType == MSS_RUIN )  // destroyed?
 	{
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetLinVibration(dir);
 		SetCirVibration(dir);
 		SetInclinaison(dir);
@@ -628,7 +628,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		SetCirVibration(dir);
 
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
 		if ( m_progress >= 1.0f )
@@ -657,7 +657,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 			}
 		}
 
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetLinVibration(dir);
 		dir.x = sinf(m_armTimeAbs* 3.0f)*0.20f+
 				sinf(m_armTimeAbs* 6.0f)*0.20f+
@@ -672,7 +672,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 				sinf(m_armTimeAbs*13.0f)*0.02f+
 				sinf(m_armTimeAbs*15.0f)*0.03f;
 		SetCirVibration(dir);
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
 		m_object->SetAngleY(1, sinf(m_armTimeAbs*5.0f)*0.05f);  // tail
@@ -719,7 +719,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 		dir.z = 0.0f;
 		SetCirVibration(dir);
 
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetInclinaison(dir);
 
 		if ( m_progress >= 1.0f )
@@ -732,7 +732,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 	{
 		if ( bStop )
 		{
-			dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			dir = Math::Vector(0.0f, 0.0f, 0.0f);
 			SetInclinaison(dir);
 		}
 		else
@@ -751,7 +751,7 @@ bool CMotionSpider::EventFrame(const Event &event)
 			SetInclinaison(dir);
 		}
 
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		SetLinVibration(dir);
 		SetCirVibration(dir);
 

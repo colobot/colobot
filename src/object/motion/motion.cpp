@@ -69,9 +69,9 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
 	m_actionTime = 0.0f;
 	m_progress   = 0.0f;
 
-	m_linVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_cirVibration  = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_inclinaison   = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
+	m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
+	m_inclinaison   = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
 // Object's destructor.
@@ -101,7 +101,7 @@ void CMotion::SetBrain(CBrain* brain)
 
 // Creates.
 
-bool CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
+bool CMotion::Create(Math::Vector pos, float angle, ObjectType type, float power)
 {
 	return true;
 }
@@ -110,7 +110,7 @@ bool CMotion::Create(D3DVECTOR pos, float angle, ObjectType type, float power)
 
 bool CMotion::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, dir;
+	Math::Vector	pos, dir;
 	float		time;
 
 	if ( m_object->RetType() != OBJECT_TOTO &&
@@ -221,36 +221,36 @@ bool CMotion::Read(char *line)
 
 // Gives the linear vibration.
 
-void CMotion::SetLinVibration(D3DVECTOR dir)
+void CMotion::SetLinVibration(Math::Vector dir)
 {
 	m_linVibration = dir;
 }
 
-D3DVECTOR CMotion::RetLinVibration()
+Math::Vector CMotion::RetLinVibration()
 {
 	return m_linVibration;
 }
 
 // Gives the circular vibration.
 
-void CMotion::SetCirVibration(D3DVECTOR dir)
+void CMotion::SetCirVibration(Math::Vector dir)
 {
 	m_cirVibration = dir;
 }
 
-D3DVECTOR CMotion::RetCirVibration()
+Math::Vector CMotion::RetCirVibration()
 {
 	return m_cirVibration;
 }
 
 // Gives the tilt.
 
-void CMotion::SetInclinaison(D3DVECTOR dir)
+void CMotion::SetInclinaison(Math::Vector dir)
 {
 	m_inclinaison = dir;
 }
 
-D3DVECTOR CMotion::RetInclinaison()
+Math::Vector CMotion::RetInclinaison()
 {
 	return m_inclinaison;
 }

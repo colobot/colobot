@@ -198,7 +198,7 @@ void CShortcut::DrawVertex(int icon, float zoom)
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[4];	// 2 triangles
 	Math::Point		p1, p2, c;
-	D3DVECTOR	n;
+	Math::Vector	n;
 	float		u1, u2, v1, v2, dp;
 
 	device = m_engine->RetD3DDevice();
@@ -228,12 +228,12 @@ void CShortcut::DrawVertex(int icon, float zoom)
 	u2 -= dp;
 	v2 -= dp;
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-	vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-	vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-	vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-	vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+	vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+	vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+	vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+	vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 	device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 	m_engine->AddStatisticTriangle(2);

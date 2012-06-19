@@ -109,7 +109,7 @@ void CAutoConvert::Init()
 bool CAutoConvert::EventProcess(const Event &event)
 {
 	CObject*	fret;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim, c, p;
 	float		angle;
 
@@ -230,7 +230,7 @@ bool CAutoConvert::EventProcess(const Event &event)
 				pos.x = p.x;
 				pos.z = p.y;
 				pos.y += 1.0f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*2.0f+1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
@@ -276,7 +276,7 @@ bool CAutoConvert::EventProcess(const Event &event)
 				pos.x += (Math::Rand()-0.5f)*6.0f;
 				pos.z += (Math::Rand()-0.5f)*6.0f;
 				pos.y += Math::Rand()*4.0f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*4.0f+3.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
@@ -420,7 +420,7 @@ bool CAutoConvert::Read(char *line)
 CObject* CAutoConvert::SearchStone(ObjectType type)
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	oType;
 	float		dist;
 	int			i;
@@ -437,7 +437,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
 		if ( pObj->RetTruck() != 0 )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, cPos);
+		dist = Math::Distance(oPos, cPos);
 
 		if ( dist <= 5.0f )  return pObj;
 	}
@@ -450,7 +450,7 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
 bool CAutoConvert::SearchVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	type;
 	float		oRadius, dist;
 	int			i;
@@ -505,7 +505,7 @@ bool CAutoConvert::SearchVehicle()
 			 type != OBJECT_WORM     )  continue;
 
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-		dist = Length(oPos, cPos)-oRadius;
+		dist = Math::Distance(oPos, cPos)-oRadius;
 
 		if ( dist < 8.0f )  return true;
 	}
@@ -517,7 +517,7 @@ bool CAutoConvert::SearchVehicle()
 
 void CAutoConvert::CreateMetal()
 {
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			angle;
 	CObject*		fret;
 

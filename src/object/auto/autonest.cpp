@@ -76,7 +76,7 @@ void CAutoNest::DeleteObject(bool bAll)
 
 void CAutoNest::Init()
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	m_phase    = ANP_WAIT;
 	m_progress = 0.0f;
@@ -155,10 +155,10 @@ bool CAutoNest::EventProcess(const Event &event)
 
 // Seeks if a site is free.
 
-bool CAutoNest::SearchFree(D3DVECTOR pos)
+bool CAutoNest::SearchFree(Math::Vector pos)
 {
 	CObject*	pObj;
-	D3DVECTOR	sPos;
+	Math::Vector	sPos;
 	ObjectType	type;
 	float		sRadius, distance;
 	int			i, j;
@@ -174,7 +174,7 @@ bool CAutoNest::SearchFree(D3DVECTOR pos)
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, sPos, sRadius) )
 		{
-			distance = Length(sPos, pos);
+			distance = Math::Distance(sPos, pos);
 			distance -= sRadius;
 			if ( distance < 2.0f )  return false;  // location occupied
 		}
@@ -185,7 +185,7 @@ bool CAutoNest::SearchFree(D3DVECTOR pos)
 
 // Create a transportable object.
 
-void CAutoNest::CreateFret(D3DVECTOR pos, float angle, ObjectType type)
+void CAutoNest::CreateFret(Math::Vector pos, float angle, ObjectType type)
 {
 	CObject*	fret;
 
@@ -204,7 +204,7 @@ void CAutoNest::CreateFret(D3DVECTOR pos, float angle, ObjectType type)
 CObject* CAutoNest::SearchFret()
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	int			i;
 
@@ -242,7 +242,7 @@ Error CAutoNest::RetError()
 
 bool CAutoNest::Write(char *line)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	char		name[100];
 
 	if ( m_phase == ANP_WAIT )  return false;
@@ -268,7 +268,7 @@ bool CAutoNest::Write(char *line)
 
 bool CAutoNest::Read(char *line)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	if ( OpInt(line, "aExist", 0) == 0 )  return false;
 

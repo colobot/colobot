@@ -73,7 +73,7 @@ void CAutoKid::DeleteObject(bool bAll)
 
 void CAutoKid::Init()
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	m_speed = 1.0f/1.0f;
 	m_progress = 0.0f;
@@ -108,7 +108,7 @@ void CAutoKid::Init()
 
 bool CAutoKid::EventProcess(const Event &event)
 {
-	D3DVECTOR	vib, pos, speed;
+	Math::Vector	vib, pos, speed;
 	Math::Point		dim;
 
 	CAuto::EventProcess(event);

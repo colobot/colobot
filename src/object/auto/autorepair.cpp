@@ -90,7 +90,7 @@ void CAutoRepair::Init()
 bool CAutoRepair::EventProcess(const Event &event)
 {
 	CObject*	vehicule;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		angle, shield;
 
@@ -247,7 +247,7 @@ CObject* CAutoRepair::SearchVehicle()
 {
 	CObject*	pObj;
 	CPhysics*	physics;
-	D3DVECTOR	sPos, oPos;
+	Math::Vector	sPos, oPos;
 	ObjectType	type;
 	float		dist;
 	int			i;
@@ -292,7 +292,7 @@ CObject* CAutoRepair::SearchVehicle()
 		if ( physics != 0 && !physics->RetLand() )  continue;  // in flight?
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, sPos);
+		dist = Math::Distance(oPos, sPos);
 		if ( dist <= 5.0f )  return pObj;
 	}
 

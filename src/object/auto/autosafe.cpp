@@ -125,7 +125,7 @@ void CAutoSafe::Init()
 bool CAutoSafe::EventProcess(const Event &event)
 {
 	CObject*	pObj;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	int			i, count;
 
@@ -256,7 +256,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 			}
 
 			m_object->FlushCrashShere();
-			m_object->SetGlobalSphere(D3DVECTOR(0.0f, 0.0f, 0.0f), 0.0f);
+			m_object->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f);
 
 			m_sound->Play(SOUND_FINDING, m_object->RetPosition(0));
 
@@ -294,7 +294,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 	}
 
 	// Blinks the keys.
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	speed = Math::Vector(0.0f, 0.0f, 0.0f);
 	dim.x = 2.0f;
 	dim.y = dim.x;
 	for ( i=0 ; i<4 ; i++ )
@@ -412,7 +412,7 @@ bool CAutoSafe::Read(char *line)
 int CAutoSafe::CountKeys()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	Math::Point		rot;
 	ObjectType	oType;
 	float		dist, angle, limit, cAngle, oAngle;
@@ -441,7 +441,7 @@ int CAutoSafe::CountKeys()
 			 oType != OBJECT_KEYd )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(oPos, cPos);
+		dist = Math::DistanceProjected(oPos, cPos);
 		if ( dist > 20.0f )  continue;
 
 		if ( oType == OBJECT_KEYa )
@@ -497,7 +497,7 @@ int CAutoSafe::CountKeys()
 void CAutoSafe::LockKeys()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	oType;
 	float		dist;
 	int			i;
@@ -518,7 +518,7 @@ void CAutoSafe::LockKeys()
 			 oType != OBJECT_KEYd )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(oPos, cPos);
+		dist = Math::DistanceProjected(oPos, cPos);
 		if ( dist > 20.0f )  continue;
 
 		pObj->SetLock(true);
@@ -530,7 +530,7 @@ void CAutoSafe::LockKeys()
 void CAutoSafe::DownKeys(float progress)
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	oType;
 	float		dist;
 	int			i;
@@ -551,7 +551,7 @@ void CAutoSafe::DownKeys(float progress)
 			 oType != OBJECT_KEYd )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(oPos, cPos);
+		dist = Math::DistanceProjected(oPos, cPos);
 		if ( dist > 20.0f )  continue;
 
 		oPos.y = cPos.y+1.0f-progress*2.2f;
@@ -564,7 +564,7 @@ void CAutoSafe::DownKeys(float progress)
 void CAutoSafe::DeleteKeys()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	oType;
 	float		dist;
 	int			i;
@@ -589,7 +589,7 @@ void CAutoSafe::DeleteKeys()
 				 oType != OBJECT_KEYd )  continue;
 
 			oPos = pObj->RetPosition(0);
-			dist = Length2d(oPos, cPos);
+			dist = Math::DistanceProjected(oPos, cPos);
 			if ( dist > 20.0f )  continue;
 
 			pObj->DeleteObject();
@@ -605,7 +605,7 @@ void CAutoSafe::DeleteKeys()
 CObject* CAutoSafe::SearchVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	oType;
 	float		dist;
 	int			i;
@@ -622,7 +622,7 @@ CObject* CAutoSafe::SearchVehicle()
 		if ( pObj->RetTruck() != 0 )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(oPos, cPos);
+		dist = Math::DistanceProjected(oPos, cPos);
 		if ( dist <= 4.0f )  return pObj;
 	}
 	return 0;

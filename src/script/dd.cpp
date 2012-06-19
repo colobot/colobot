@@ -44,7 +44,7 @@ int	cPoint(CBotVar* &var, CBotString& retClass, void* user)
 
 // Gives a parameter of type "point".
 
-bool GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
+bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
 {
 	CBotVar		*pX, *pY, *pZ;
 
@@ -124,7 +124,7 @@ bool rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
 	CBotVar*	pSub;
-	D3DVECTOR	center;
+	Math::Vector	center;
 	float		rMin, rMax, dist;
 
 	rMin =  5.0f*UNIT;

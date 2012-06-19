@@ -71,7 +71,7 @@ protected:
 	float			m_speed;
 	float			m_timeVirus;
 	float			m_lastParticule;
-	D3DVECTOR		m_goal;
+	Math::Vector		m_goal;
 	bool			m_bLastVirus;
 };
 

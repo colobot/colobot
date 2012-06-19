@@ -76,7 +76,7 @@ protected:
 	float				m_progress;
 	float				m_speed;
 	float				m_lastParticule;
-	D3DVECTOR			m_fretPos;
+	Math::Vector			m_fretPos;
 	int					m_channelSound;
 };
 

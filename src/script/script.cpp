@@ -164,7 +164,7 @@ bool FindList(CBotVar* array, int type)
 
 // Gives a parameter of type "point".
 
-bool GetPoint(CBotVar* &var, int& exception, D3DVECTOR& pos)
+bool GetPoint(CBotVar* &var, int& exception, Math::Vector& pos)
 {
 	CBotVar		*pX, *pY, *pZ;
 
@@ -385,7 +385,7 @@ bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject		*pObj, *pBest;
 	CBotVar*	array;
-	D3DVECTOR	pos, oPos;
+	Math::Vector	pos, oPos;
 	bool		bNearest = false;
 	bool		bArray;
 	float		min, dist;
@@ -456,7 +456,7 @@ bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user)
 		if ( bNearest )
 		{
 			oPos = pObj->RetPosition(0);
-			dist = Length2d(pos, oPos);
+			dist = Math::DistanceProjected(pos, oPos);
 			if ( dist < min )
 			{
 				min = dist;
@@ -528,7 +528,7 @@ bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 	CObject		*pObj, *pBest;
 	CPhysics*	physics;
 	CBotVar*	array;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	RadarFilter	filter;
 	float		best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
 	int			type, oType, i;
@@ -656,7 +656,7 @@ bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
 		}
 
 		oPos = pObj->RetPosition(0);
-		d = Length2d(iPos, oPos);
+		d = Math::DistanceProjected(iPos, oPos);
 		if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 
 		if ( focus >= Math::PI*2.0f )
@@ -744,7 +744,7 @@ bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 	CObject		*pObj, *pGoal, *pBest;
 	CPhysics*	physics;
 	CBotVar*	array;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	RadarFilter	filter;
 	float		bGoal, best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
 	int			type, oType, i;
@@ -843,7 +843,7 @@ bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user)
 			}
 
 			oPos = pObj->RetPosition(0);
-			d = Length2d(iPos, oPos);
+			d = Math::DistanceProjected(iPos, oPos);
 			a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
 
 			if ( d < bGoal &&
@@ -929,7 +929,7 @@ bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	float		a, g;
 
 	if ( !GetPoint(var, exception, oPos) )  return true;
@@ -979,7 +979,7 @@ bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
 	CObject*	object;
 	CBotString	cbs;
 	const char*	name;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		angle;
 	ObjectType	type;
 
@@ -1085,13 +1085,13 @@ CBotTypResult cDistance(CBotVar* &var, void* user)
 
 bool rDistance(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-	D3DVECTOR	p1, p2;
+	Math::Vector	p1, p2;
 	float		value;
 
 	if ( !GetPoint(var, exception, p1) )  return true;
 	if ( !GetPoint(var, exception, p2) )  return true;
 
-	value = Length(p1, p2);
+	value = Math::Distance(p1, p2);
 	result->SetValFloat(value/g_unit);
 	return true;
 }
@@ -1100,13 +1100,13 @@ bool rDistance(CBotVar* var, CBotVar* result, int& exception, void* user)
 
 bool rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
-	D3DVECTOR	p1, p2;
+	Math::Vector	p1, p2;
 	float		value;
 
 	if ( !GetPoint(var, exception, p1) )  return true;
 	if ( !GetPoint(var, exception, p2) )  return true;
 
-	value = Length2d(p1, p2);
+	value = Math::DistanceProjected(p1, p2);
 	result->SetValFloat(value/g_unit);
 	return true;
 }
@@ -1145,7 +1145,7 @@ bool rSpace(CBotVar* var, CBotVar* result, int& exception, void* user)
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
 	CBotVar*	pSub;
-	D3DVECTOR	center;
+	Math::Vector	center;
 	float		rMin, rMax, dist;
 
 	rMin = 10.0f*g_unit;
@@ -1221,7 +1221,7 @@ bool rFlatGround(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
-	D3DVECTOR	center;
+	Math::Vector	center;
 	float		rMax, dist;
 
 	if ( !GetPoint(var, exception, center) )  return true;
@@ -1359,7 +1359,7 @@ CBotTypResult cGoto(CBotVar* &var, void* user)
 bool rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*		script = ((CObject*)user)->RetRunScript();
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	TaskGotoGoal	goal;
 	TaskGotoCrash	crash;
 	float			altitude;
@@ -1415,7 +1415,7 @@ bool rGoto(CBotVar* var, CBotVar* result, int& exception, void* user)
 bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*		script = ((CObject*)user)->RetRunScript();
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	TaskGotoGoal	goal;
 	TaskGotoCrash	crash;
 	float			altitude;
@@ -1423,7 +1423,7 @@ bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 	CObject*		pThis = (CObject*)user;
 	CObject			*pObj, *pBest;
 	CBotVar*		array;
-	D3DVECTOR		iPos, oPos;
+	Math::Vector		iPos, oPos;
 	float			best, minDist, maxDist, sens, iAngle, angle, focus, d, a;
 	int				type, oType, i;
 	bool			bArray;
@@ -1498,7 +1498,7 @@ bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user)
 			}
 
 			oPos = pObj->RetPosition(0);
-			d = Length2d(iPos, oPos);
+			d = Math::DistanceProjected(iPos, oPos);
 			if ( d < minDist || d > maxDist )  continue;  // too close or too far?
 
 			if ( focus >= Math::PI*2.0f )
@@ -1821,7 +1821,7 @@ bool rSend(CBotVar* var, CBotVar* result, int& exception, void* user)
 CObject* SearchInfo(CScript* script, CObject* object, float power)
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	type;
 	float		dist, min;
 	int			i;
@@ -1841,7 +1841,7 @@ CObject* SearchInfo(CScript* script, CObject* object, float power)
 		if ( !pObj->RetActif() )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, iPos);
+		dist = Math::Distance(oPos, iPos);
 		if ( dist > power )  continue;  // too far?
 		if ( dist < min )
 		{
@@ -2147,7 +2147,7 @@ bool rFire(CBotVar* var, CBotVar* result, int& exception, void* user)
 	CScript*	script = ((CObject*)user)->RetRunScript();
 	CObject*	pThis = (CObject*)user;
 	float		delay;
-	D3DVECTOR	impact;
+	Math::Vector	impact;
 	Error		err;
 	ObjectType	type;
 
@@ -2294,7 +2294,7 @@ CBotTypResult cTopo(CBotVar* &var, void* user)
 bool rTopo(CBotVar* var, CBotVar* result, int& exception, void* user)
 {
 	CScript*	script = ((CObject*)user)->RetRunScript();
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		level;
 
 	exception = 0;

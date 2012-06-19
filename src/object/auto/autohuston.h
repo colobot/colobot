@@ -37,7 +37,7 @@ struct HustonLens
 {
 	int				parti;
 	ParticuleType	type;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			dim;
 	float			total;
 	float			off;

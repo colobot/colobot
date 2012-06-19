@@ -20,6 +20,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -63,19 +64,19 @@ void CAutoRoot::DeleteObject(bool bAll)
 
 void CAutoRoot::Init()
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 
 	m_time = 0.0f;
 	m_lastParticule = 0.0f;
 
 	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(-5.0f, 28.0f, -4.0f);  // peak position
-	pos = Transform(*mat, pos);
+	pos = Math::Vector(-5.0f, 28.0f, -4.0f);  // peak position
+	pos = Math::Transform(*mat, pos);
 	m_center = pos;
 
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	speed = Math::Vector(0.0f, 0.0f, 0.0f);
 	dim.x = 100.0f;
 	dim.y = dim.x;
 	m_particule->CreateParticule(m_center, speed, dim, PARTISPHERE5, 0.5f, 0.0f, 0.0f);
@@ -88,7 +89,7 @@ void CAutoRoot::Init()
 
 bool CAutoRoot::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 
 	CAuto::EventProcess(event);

@@ -78,7 +78,7 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
 	m_gravity = 9.81f;  // default gravity
 	m_time = 0.0f;
 	m_timeUnderWater = 0.0f;
-	m_motorSpeed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	m_motorSpeed = Math::Vector(0.0f, 0.0f, 0.0f);
 	m_bMotor = false;
 	m_bLand = true;  // ground
 	m_bSwim = false;  // in air
@@ -327,7 +327,7 @@ float CPhysics::RetReactorRange()
 // y = up/down
 // z = turn
 
-void CPhysics::SetMotorSpeed(D3DVECTOR speed)
+void CPhysics::SetMotorSpeed(Math::Vector speed)
 {
 	m_motorSpeed = speed;
 }
@@ -359,7 +359,7 @@ void CPhysics::SetMotorSpeedZ(float speed)
 	m_motorSpeed.z = speed;
 }
 
-D3DVECTOR CPhysics::RetMotorSpeed()
+Math::Vector CPhysics::RetMotorSpeed()
 {
 	return m_motorSpeed;
 }
@@ -383,7 +383,7 @@ float CPhysics::RetMotorSpeedZ()
 // Management of linear and angular velocities.
 // Specifies the speed parallel to the direction of travel.
 
-void CPhysics::SetLinMotion(PhysicsMode mode, D3DVECTOR value)
+void CPhysics::SetLinMotion(PhysicsMode mode, Math::Vector value)
 {
 	if ( mode == MO_ADVACCEL )  m_linMotion.advanceAccel  = value;
 	if ( mode == MO_RECACCEL )  m_linMotion.recedeAccel   = value;
@@ -399,7 +399,7 @@ void CPhysics::SetLinMotion(PhysicsMode mode, D3DVECTOR value)
 	if ( mode == MO_REASPEED )  m_linMotion.realSpeed     = value;
 }
 
-D3DVECTOR CPhysics::RetLinMotion(PhysicsMode mode)
+Math::Vector CPhysics::RetLinMotion(PhysicsMode mode)
 {
 	if ( mode == MO_ADVACCEL )  return m_linMotion.advanceAccel;
 	if ( mode == MO_RECACCEL )  return m_linMotion.recedeAccel;
@@ -413,7 +413,7 @@ D3DVECTOR CPhysics::RetLinMotion(PhysicsMode mode)
 	if ( mode == MO_MOTSPEED )  return m_linMotion.motorSpeed;
 	if ( mode == MO_CURSPEED )  return m_linMotion.currentSpeed;
 	if ( mode == MO_REASPEED )  return m_linMotion.realSpeed;
-	return D3DVECTOR(0.0f, 0.0f, 0.0f);
+	return Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
 void CPhysics::SetLinMotionX(PhysicsMode mode, float value)
@@ -521,7 +521,7 @@ float CPhysics::RetLinMotionZ(PhysicsMode mode)
 
 // Specifies the rotation around the axis of walk.
 
-void CPhysics::SetCirMotion(PhysicsMode mode, D3DVECTOR value)
+void CPhysics::SetCirMotion(PhysicsMode mode, Math::Vector value)
 {
 	if ( mode == MO_ADVACCEL )  m_cirMotion.advanceAccel  = value;
 	if ( mode == MO_RECACCEL )  m_cirMotion.recedeAccel   = value;
@@ -537,7 +537,7 @@ void CPhysics::SetCirMotion(PhysicsMode mode, D3DVECTOR value)
 	if ( mode == MO_REASPEED )  m_cirMotion.realSpeed     = value;
 }
 
-D3DVECTOR CPhysics::RetCirMotion(PhysicsMode mode)
+Math::Vector CPhysics::RetCirMotion(PhysicsMode mode)
 {
 	if ( mode == MO_ADVACCEL )  return m_cirMotion.advanceAccel;
 	if ( mode == MO_RECACCEL )  return m_cirMotion.recedeAccel;
@@ -551,7 +551,7 @@ D3DVECTOR CPhysics::RetCirMotion(PhysicsMode mode)
 	if ( mode == MO_MOTSPEED )  return m_cirMotion.motorSpeed;
 	if ( mode == MO_CURSPEED )  return m_cirMotion.currentSpeed;
 	if ( mode == MO_REASPEED )  return m_cirMotion.realSpeed;
-	return D3DVECTOR(0.0f, 0.0f, 0.0f);
+	return Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
 void CPhysics::SetCirMotionX(PhysicsMode mode, float value)
@@ -789,7 +789,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 {
 	ObjectType	type;
 	CObject*	power;
-	D3DVECTOR	pos, motorSpeed;
+	Math::Vector	pos, motorSpeed;
 	float		energy, speed, factor, h;
 
 	type = m_object->RetType();
@@ -1045,7 +1045,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 void CPhysics::EffectUpdate(float aTime, float rTime)
 {
 	Character*	character;
-	D3DVECTOR	vibLin, vibCir, incl;
+	Math::Vector	vibLin, vibCir, incl;
 	float		speedLin, speedCir, accel;
 	ObjectType	type;
 	bool		bOnBoard;
@@ -1174,9 +1174,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 		}
 		else
 		{
-			m_motion->SetLinVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-//?			m_motion->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-//?			m_motion->SetInclinaison(D3DVECTOR(0.0f, 0.0f, 0.0f));
+			m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+//?			m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+//?			m_motion->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
 		}
 	}
 
@@ -1233,9 +1233,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
 	{
 		if ( m_bLand )  // on the ground?
 		{
-			m_motion->SetLinVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-			m_motion->SetCirVibration(D3DVECTOR(0.0f, 0.0f, 0.0f));
-			m_motion->SetInclinaison(D3DVECTOR(0.0f, 0.0f, 0.0f));
+			m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+			m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+			m_motion->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
 		}
 		else	// in flight?
 		{
@@ -1470,8 +1470,8 @@ void CPhysics::UpdateMotionStruct(float rTime, Motion &motion)
 bool CPhysics::EventFrame(const Event &event)
 {
 	ObjectType	type;
-	D3DMATRIX	objRotate, matRotate;
-	D3DVECTOR	iPos, iAngle, tAngle, pos, newpos, angle, newangle, n;
+	Math::Matrix	objRotate, matRotate;
+	Math::Vector	iPos, iAngle, tAngle, pos, newpos, angle, newangle, n;
 	float		h, w;
 	int			i;
 
@@ -1549,7 +1549,7 @@ bool CPhysics::EventFrame(const Event &event)
 	UpdateMotionStruct(event.rTime, m_cirMotion);
 
 	newangle = angle + event.rTime*m_cirMotion.realSpeed;
-	MatRotateZXY(matRotate, newangle);
+	Math::LoadRotationZXYMatrix(matRotate, newangle);
 	newpos = event.rTime*m_linMotion.realSpeed;
 	newpos = Transform(matRotate, newpos);
 	newpos += pos;
@@ -1763,7 +1763,7 @@ void CPhysics::SoundMotor(float rTime)
 void CPhysics::WaterFrame(float aTime, float rTime)
 {
 	ObjectType	type;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		level;
 
@@ -1962,8 +1962,8 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 
 void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	Sound		sound;
 	float		amplitude;
@@ -2064,7 +2064,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 			max = (int)(10.0f*m_engine->RetParticuleDensity());
 			for ( i=0 ; i<max ; i++ )
 			{
-				pos = D3DVECTOR(-5.0f, 2.0f, 0.0f);
+				pos = Math::Vector(-5.0f, 2.0f, 0.0f);
 				pos.x += Math::Rand()*4.0f;
 				pos.z += (Math::Rand()-0.5f)*2.0f;
 
@@ -2119,8 +2119,8 @@ void CPhysics::SoundMotorStop(float rTime, ObjectType type)
 void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 {
 	Sound		sound;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		freq;
 	int			i;
@@ -2179,11 +2179,11 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 				if ( m_object->RetType() == OBJECT_HUMAN ||
 					 m_object->RetType() == OBJECT_TECH  )
 				{
-					pos = D3DVECTOR(-1.6f, -0.5f, 0.0f);
+					pos = Math::Vector(-1.6f, -0.5f, 0.0f);
 				}
 				else
 				{
-					pos = D3DVECTOR(0.0f, -1.0f, 0.0f);
+					pos = Math::Vector(0.0f, -1.0f, 0.0f);
 				}
 				pos.x += (Math::Rand()-0.5f)*2.0f;
 				pos.z += (Math::Rand()-0.5f)*2.0f;
@@ -2204,11 +2204,11 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
 			if ( m_object->RetType() == OBJECT_HUMAN ||
 				 m_object->RetType() == OBJECT_TECH  )
 			{
-				pos = D3DVECTOR(-1.6f, -0.5f, 0.0f);
+				pos = Math::Vector(-1.6f, -0.5f, 0.0f);
 			}
 			else
 			{
-				pos = D3DVECTOR(0.0f, -1.0f, 0.0f);
+				pos = Math::Vector(0.0f, -1.0f, 0.0f);
 			}
 			pos.x += (Math::Rand()-0.5f)*1.0f;
 			pos.z += (Math::Rand()-0.5f)*1.0f;
@@ -2286,12 +2286,12 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
 // Adapts the physics of the object based on the ground.
 
 void CPhysics::FloorAdapt(float aTime, float rTime,
-						  D3DVECTOR &pos, D3DVECTOR &angle)
+						  Math::Vector &pos, Math::Vector &angle)
 {
 	Character*	character;
 	ObjectType	type;
-	D3DVECTOR	norm;
-	D3DMATRIX	matRotate;
+	Math::Vector	norm;
+	Math::Matrix	matRotate;
 	float		level, h, f, a1, volume, freq, force;
 	bool		bOldSwim, bSlopingTerrain;
 
@@ -2325,7 +2325,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 		if ( !m_bLand )  // in flight?
 		{
 			m_terrain->GetNormal(norm, pos);
-			a1 = fabs(Math::RotateAngle(Length(norm.x, norm.z), norm.y));
+			a1 = fabs(Math::RotateAngle(Math::Point(norm.x, norm.z).Length(), norm.y));
 			if ( a1 < (90.0f-55.0f)*Math::PI/180.0f )  // slope exceeds 55 degrees?
 			{
 				bSlopingTerrain = true;  // very sloped ground
@@ -2335,7 +2335,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 					force = 5.0f+fabs(m_linMotion.realSpeed.x*0.3f)+
 								 fabs(m_linMotion.realSpeed.y*0.3f);
 					m_linMotion.currentSpeed = norm*force;
-					MatRotateXZY(matRotate, -angle);
+					Math::LoadRotationXZYMatrix(matRotate, -angle);
 					m_linMotion.currentSpeed = Transform(matRotate, m_linMotion.currentSpeed);
 
 					if ( aTime-m_soundTimeBoum > 0.5f )
@@ -2457,10 +2457,10 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
 // Calculates the angle of an object with the field.
 
-void CPhysics::FloorAngle(const D3DVECTOR &pos, D3DVECTOR &angle)
+void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
 {
 	Character*	character;
-	D3DVECTOR	pw, norm;
+	Math::Vector	pw, norm;
 	float		a1, a2;
 
 	character = m_object->RetCharacter();
@@ -2496,13 +2496,13 @@ void CPhysics::FloorAngle(const D3DVECTOR &pos, D3DVECTOR &angle)
 // Returns 1 -> immobile object (because collision)
 // Returns 2 -> destroyed object
 
-int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
+int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 {
 	CObject*	pObj;
 	CPyro*		pyro;
 	CPhysics*	ph;
-	D3DMATRIX	matRotate;
-	D3DVECTOR	iPos, oPos, iiPos, oAngle, oSpeed;
+	Math::Matrix	matRotate;
+	Math::Vector	iPos, oPos, iiPos, oAngle, oSpeed;
 	Sound		sound;
 	float		iRad, oRad, distance, force, volume;
 	int			i, j, colType;
@@ -2581,7 +2581,7 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 #endif
 		{
 			oPos = pObj->RetPosition(0);
-			distance = Length2d(oPos, iPos);
+			distance = Math::DistanceProjected(oPos, iPos);
 			if ( distance < 4.0f )
 			{
 				m_sound->Play(SOUND_WAYPOINT, m_object->RetPosition(0));
@@ -2593,7 +2593,7 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 		if ( oType == OBJECT_TARGET2 )
 		{
 			oPos = pObj->RetPosition(0);
-			distance = Length(oPos, iPos);
+			distance = Math::Distance(oPos, iPos);
 			if ( distance < 10.0f*1.5f )
 			{
 				m_sound->Play(SOUND_WAYPOINT, m_object->RetPosition(0));
@@ -2611,10 +2611,10 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 			if ( iType == OBJECT_BEE    && oRad <= 1.2f )  continue;
 			if ( iType == OBJECT_WORM   && oRad <= 1.2f )  continue;
 
-			distance = Length(oPos, iPos);
+			distance = Math::Distance(oPos, iPos);
 			if ( distance < iRad+oRad )  // collision?
 			{
-				distance = Length(oPos, iiPos);
+				distance = Math::Distance(oPos, iiPos);
 				if ( distance >= iRad+oRad )  // view (*)
 				{
 					m_bCollision = true;
@@ -2631,7 +2631,7 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 						if ( colType == 0 )  continue;  // ignores?
 					}
 
-					force = Length(m_linMotion.realSpeed);
+					force = m_linMotion.realSpeed.Length();
 					force *= pObj->RetCrashSphereHardness(j-1);
 					volume = fabs(force*0.05f);
 					if ( volume > 1.0f )  volume = 1.0f;
@@ -2656,7 +2656,7 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 					}
 
 					m_linMotion.currentSpeed = Normalize(iPos-oPos)*force;
-					MatRotateXZY(matRotate, -angle);
+					Math::LoadRotationXZYMatrix(matRotate, -angle);
 					m_linMotion.currentSpeed = Transform(matRotate, m_linMotion.currentSpeed);
 					if ( m_type == TYPE_ROLLING )
 					{
@@ -2668,7 +2668,7 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 					{
 						oAngle = pObj->RetAngle(0);
 						oSpeed = Normalize(oPos-iPos)*force;
-						MatRotateXZY(matRotate, -oAngle);
+						Math::LoadRotationXZYMatrix(matRotate, -oAngle);
 						oSpeed = Transform(matRotate, oSpeed);
 						if ( ph->RetType() == TYPE_ROLLING )
 						{
@@ -2696,13 +2696,13 @@ int CPhysics::ObjectAdapt(const D3DVECTOR &pos, const D3DVECTOR &angle)
 
 // Shakes an object.
 
-bool CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
-							D3DVECTOR oPos, float oRad)
+bool CPhysics::JostleObject(CObject* pObj, Math::Vector iPos, float iRad,
+							Math::Vector oPos, float oRad)
 {
-	D3DVECTOR	speed;
+	Math::Vector	speed;
 	float		distance, force, d, f;
 
-	distance = Length(oPos, iPos);
+	distance = Math::Distance(oPos, iPos);
 	if ( distance >= iRad+oRad )  return false;
 
 	d = (iRad+oRad)/2.0f;
@@ -2712,7 +2712,7 @@ bool CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
 
 	speed = m_linMotion.realSpeed;
 	speed.y = 0.0f;
-	force = Length(speed)*f*0.05f;
+	force = speed.Length()*f*0.05f;
 	if ( force > 1.0f )  force = 1.0f;
 
 	if ( m_soundTimeJostle >= 0.20f )
@@ -2728,7 +2728,7 @@ bool CPhysics::JostleObject(CObject* pObj, D3DVECTOR iPos, float iRad,
 
 bool CPhysics::JostleObject(CObject* pObj, float force)
 {
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	float		oRad;
 
 	pObj->GetJotlerSphere(oPos, oRad);
@@ -2982,7 +2982,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 
 void CPhysics::FrameParticule(float aTime, float rTime)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	CObject*	power;
 	float		energy, intensity;
 	int			effectLight;
@@ -3046,8 +3046,8 @@ void CPhysics::PowerParticule(float factor, bool bBreak)
 {
 	Character*	character;
 	CObject*	fret;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, ppos, eye, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, ppos, eye, speed;
 	Math::Point		dim;
 	bool		bCarryPower;
 
@@ -3082,7 +3082,7 @@ void CPhysics::PowerParticule(float factor, bool bBreak)
 
 	if ( bCarryPower )  // carry a battery?
 	{
-		pos = D3DVECTOR(3.0f, 5.6f, 0.0f);  // position of battery holder
+		pos = Math::Vector(3.0f, 5.6f, 0.0f);  // position of battery holder
 		pos = Transform(*mat, pos);
 
 		speed.x = (Math::Rand()-0.5f)*12.0f;
@@ -3105,7 +3105,7 @@ void CPhysics::PowerParticule(float factor, bool bBreak)
 
 void CPhysics::CrashParticule(float crash)
 {
-	D3DVECTOR	pos, ppos, speed;
+	Math::Vector	pos, ppos, speed;
 	Math::Point		dim;
 	float		len;
 	int			i, max;
@@ -3123,7 +3123,7 @@ void CPhysics::CrashParticule(float crash)
 		ppos.x = pos.x + (Math::Rand()-0.5f)*15.0f*crash;
 		ppos.z = pos.z + (Math::Rand()-0.5f)*15.0f*crash;
 		ppos.y = pos.y + Math::Rand()*4.0f;
-		len = 1.0f-(Length(ppos, pos)/(15.0f+5.0f));
+		len = 1.0f-(Math::Distance(ppos, pos)/(15.0f+5.0f));
 		if ( len <= 0.0f )  continue;
 		speed.x = (ppos.x-pos.x)*0.1f;
 		speed.z = (ppos.z-pos.z)*0.1f;
@@ -3138,8 +3138,8 @@ void CPhysics::CrashParticule(float crash)
 
 void CPhysics::MotorParticule(float aTime, float rTime)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	ObjectType	type;
 	Math::Point		c, p;
@@ -3246,7 +3246,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				pos.z = Math::Rand()*0.4f+1.0f;
 				if ( rand()%2 == 0 )  pos.z = -pos.z;
 				pos = Transform(*mat, pos);
-				speed = D3DVECTOR(0.0f, 1.0f, 0.0f);
+				speed = Math::Vector(0.0f, 1.0f, 0.0f);
 				dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
 				if ( dim.x > 2.5f )  dim.x = 2.5f;
 				dim.y = dim.x;
@@ -3273,7 +3273,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				pos.z = Math::Rand()*2.0f+3.0f;
 				if ( rand()%2 == 0 )  pos.z = -pos.z;
 				pos = Transform(*mat, pos);
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
 				if ( dim.x > 3.0f )  dim.x = 3.0f;
 				dim.y = dim.x;
@@ -3300,7 +3300,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				pos.z = Math::Rand()*3.0f+3.0f;
 				if ( rand()%2 == 0 )  pos.z = -pos.z;
 				pos = Transform(*mat, pos);
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
 				if ( dim.x > 3.0f )  dim.x = 3.0f;
 				dim.y = dim.x;
@@ -3326,7 +3326,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				 aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.05f) )  return;
 			m_lastMotorParticule = aTime;
 
-			pos = D3DVECTOR(-1.6f, -0.5f, 0.0f);
+			pos = Math::Vector(-1.6f, -0.5f, 0.0f);
 			mat = m_object->RetWorldMatrix(0);
 			pos = Transform(*mat, pos);
 
@@ -3355,7 +3355,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.02f) )  return;
 			m_lastMotorParticule = aTime;
 
-			pos = D3DVECTOR(-1.6f, -1.0f, 0.0f);
+			pos = Math::Vector(-1.6f, -1.0f, 0.0f);
 			pos.x += (Math::Rand()-0.5f)*3.0f;
 			pos.y += (Math::Rand()-0.5f)*1.5f;
 			pos.z += (Math::Rand()-0.5f)*3.0f;
@@ -3365,7 +3365,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			h = m_floorHeight;
 			if ( h > 10.0f )  // high enough?
 			{
-				speed = D3DVECTOR(0.0f, -10.0f, 0.0f);  // against the bottom
+				speed = Math::Vector(0.0f, -10.0f, 0.0f);  // against the bottom
 			}
 			else
 			{
@@ -3380,7 +3380,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			m_particule->CreateParticule(pos, speed, dim, PARTISCRAPS, 2.0f, 10.0f);
 
 #if 1
-			pos = D3DVECTOR(-1.6f, -0.5f, 0.0f);
+			pos = Math::Vector(-1.6f, -0.5f, 0.0f);
 			pos = Transform(*mat, pos);
 
 			speed.x = (Math::Rand()-0.5f)*1.0f;
@@ -3435,15 +3435,15 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				m_lastMotorParticule = aTime;
 
 				r = rand()%3;
-				if ( r == 0 )  pos = D3DVECTOR(-3.0f, 0.0f, -4.0f);
-				if ( r == 1 )  pos = D3DVECTOR(-3.0f, 0.0f,  4.0f);
-				if ( r == 2 )  pos = D3DVECTOR( 4.0f, 0.0f,  0.0f);
+				if ( r == 0 )  pos = Math::Vector(-3.0f, 0.0f, -4.0f);
+				if ( r == 1 )  pos = Math::Vector(-3.0f, 0.0f,  4.0f);
+				if ( r == 2 )  pos = Math::Vector( 4.0f, 0.0f,  0.0f);
 
 				pos.x += (Math::Rand()-0.5f)*2.0f;
 				pos.z += (Math::Rand()-0.5f)*2.0f;
 				mat = m_object->RetWorldMatrix(0);
 				pos = Transform(*mat, pos);
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = Math::Rand()*h/5.0f+2.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
@@ -3457,15 +3457,15 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 				m_lastMotorParticule = aTime;
 
 				r = rand()%3;
-				if ( r == 0 )  pos = D3DVECTOR(-3.0f, 0.0f, -4.0f);
-				if ( r == 1 )  pos = D3DVECTOR(-3.0f, 0.0f,  4.0f);
-				if ( r == 2 )  pos = D3DVECTOR( 4.0f, 0.0f,  0.0f);
+				if ( r == 0 )  pos = Math::Vector(-3.0f, 0.0f, -4.0f);
+				if ( r == 1 )  pos = Math::Vector(-3.0f, 0.0f,  4.0f);
+				if ( r == 2 )  pos = Math::Vector( 4.0f, 0.0f,  0.0f);
 
 				pos.x += (Math::Rand()-0.5f)*1.0f;
 				pos.z += (Math::Rand()-0.5f)*1.0f;
 				mat = m_object->RetWorldMatrix(0);
 				pos = Transform(*mat, pos);
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIEJECT);
@@ -3478,7 +3478,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.02f) )  return;
 			m_lastMotorParticule = aTime;
 
-			pos = D3DVECTOR(0.0f, -1.0f, 0.0f);
+			pos = Math::Vector(0.0f, -1.0f, 0.0f);
 			pos.x += (Math::Rand()-0.5f)*6.0f;
 			pos.y += (Math::Rand()-0.5f)*3.0f;
 			pos.z += (Math::Rand()-0.5f)*6.0f;
@@ -3488,7 +3488,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			h = m_floorHeight;
 			if ( h > 10.0f )  // high enough?
 			{
-				speed = D3DVECTOR(0.0f, -10.0f, 0.0f);  // against the bottom
+				speed = Math::Vector(0.0f, -10.0f, 0.0f);  // against the bottom
 			}
 			else
 			{
@@ -3503,7 +3503,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			m_particule->CreateParticule(pos, speed, dim, PARTISCRAPS, 2.0f, 10.0f);
 
 #if 1
-			pos = D3DVECTOR(0.0f, 1.0f, 0.0f);
+			pos = Math::Vector(0.0f, 1.0f, 0.0f);
 			pos = Transform(*mat, pos);
 
 			speed.x = (Math::Rand()-0.5f)*1.0f;
@@ -3544,7 +3544,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 		if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.06f) )  return;
 		m_lastMotorParticule = aTime;
 
-		pos = D3DVECTOR(0.0f, 3.0f, 0.0f);
+		pos = Math::Vector(0.0f, 3.0f, 0.0f);
 		mat = m_object->RetWorldMatrix(0);
 		pos = Transform(*mat, pos);
 		pos.x += (Math::Rand()-0.5f)*1.0f;
@@ -3570,7 +3570,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 		if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.06f) )  return;
 		m_lastMotorParticule = aTime;
 
-		pos = D3DVECTOR(0.0f, 3.0f, 0.0f);
+		pos = Math::Vector(0.0f, 3.0f, 0.0f);
 		mat = m_object->RetWorldMatrix(0);
 		pos = Transform(*mat, pos);
 		pos.x += (Math::Rand()-0.5f)*1.0f;
@@ -3603,7 +3603,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.1f) )  return;
 			m_lastMotorParticule = aTime;
 
-			pos = D3DVECTOR(-2.5f, 10.3f, -1.3f);
+			pos = Math::Vector(-2.5f, 10.3f, -1.3f);
 			pos.x += (Math::Rand()-0.5f)*1.0f;
 			pos.z += (Math::Rand()-0.5f)*1.0f;
 			mat = m_object->RetWorldMatrix(0);
@@ -3625,7 +3625,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 			if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.05f) )  return;
 			m_lastMotorParticule = aTime;
 
-			pos = D3DVECTOR(-3.4f, 1.8f, 0.5f);
+			pos = Math::Vector(-3.4f, 1.8f, 0.5f);
 
 			speed = pos;
 			if ( m_linMotion.currentSpeed.x < 0.0f )
@@ -3657,10 +3657,10 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
 // Generates some particles after falling into the water.
 
-void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
+void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
 							  float floor, float advance, float turn)
 {
-	D3DVECTOR	ppos, speed;
+	Math::Vector	ppos, speed;
 	Math::Point		dim;
 	float		delay, level, min, max, force, volume, diam;
 	int			i, nb;
@@ -3704,7 +3704,7 @@ void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 		pos.y = m_water->RetLevel()-1.0f;
 		dim.x = 2.0f*force;  // height
 		dim.y = diam;  // diameter
-		m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f, 0.0f);
+		m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f, 0.0f);
 
 		force = (0.5f+force*0.5f);
 		nb = (int)(force*50.0f*m_engine->RetParticuleDensity());
@@ -3776,8 +3776,8 @@ void CPhysics::WaterParticule(float aTime, D3DVECTOR pos, ObjectType type,
 void CPhysics::WheelParticule(int color, float width)
 {
 	Character*		character;
-	D3DMATRIX*		mat;
-	D3DVECTOR		goal1, goal2, wheel1, wheel2;
+	Math::Matrix*		mat;
+	Math::Vector		goal1, goal2, wheel1, wheel2;
 	ParticuleType	parti;
 	float			dist1, dist2, step;
 
@@ -3810,11 +3810,11 @@ void CPhysics::WheelParticule(int color, float width)
 
 		while ( true )
 		{
-			dist1 = Length(m_wheelParticulePos[0], goal1);
+			dist1 = Math::Distance(m_wheelParticulePos[0], goal1);
 			if ( dist1 < step )  break;
-			dist2 = Length(m_wheelParticulePos[1], goal2);
-			wheel1 = SegmentDist(m_wheelParticulePos[0], goal1, step);
-			wheel2 = SegmentDist(m_wheelParticulePos[1], goal2, step*dist2/dist1);
+			dist2 = Math::Distance(m_wheelParticulePos[1], goal2);
+			wheel1 = Math::SegmentPoint(m_wheelParticulePos[0], goal1, step);
+			wheel2 = Math::SegmentPoint(m_wheelParticulePos[1], goal2, step*dist2/dist1);
 			if ( m_linMotion.realSpeed.x >= 0.0f )
 			{
 				m_particule->CreateWheelTrace(m_wheelParticulePos[0], m_wheelParticulePos[1], wheel1, wheel2, parti);

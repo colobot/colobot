@@ -22,6 +22,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "common/global.h"
 #include "common/event.h"
@@ -34,7 +35,7 @@
 #include "ui/interface.h"
 #include "object/robotmain.h"
 #include "sound/sound.h"
-#include "graphics/common/mainmovie.h"
+#include "object/mainmovie.h"
 
 
 
@@ -75,8 +76,8 @@ void CMainMovie::Flush()
 
 bool CMainMovie::Start(MainMovieType type, float time)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos;
+	Math::Matrix*	mat;
+	Math::Vector	pos;
 	CObject*	pObj;
 	CMotion*	motion;
 
@@ -107,10 +108,10 @@ bool CMainMovie::Start(MainMovieType type, float time)
 		m_camera->FixCamera();
 
 		mat = pObj->RetWorldMatrix(0);
-		m_finalLookat[0] = Transform(*mat, D3DVECTOR( 1.6f, 1.0f, 1.2f));
-		m_finalEye[0]    = Transform(*mat, D3DVECTOR(-1.5f, 5.0f, 3.0f));
-		m_finalLookat[1] = Transform(*mat, D3DVECTOR( 1.6f, 1.0f, 1.2f));
-		m_finalEye[1]    = Transform(*mat, D3DVECTOR( 0.8f, 3.0f, 0.8f));
+		m_finalLookat[0] = Math::Transform(*mat, Math::Vector( 1.6f, 1.0f, 1.2f));
+		m_finalEye[0]    = Math::Transform(*mat, Math::Vector(-1.5f, 5.0f, 3.0f));
+		m_finalLookat[1] = Math::Transform(*mat, Math::Vector( 1.6f, 1.0f, 1.2f));
+		m_finalEye[1]    = Math::Transform(*mat, Math::Vector( 0.8f, 3.0f, 0.8f));
 	}
 
 	if ( m_type == MM_SATCOMclose )
@@ -168,7 +169,7 @@ bool CMainMovie::IsExist()
 
 bool CMainMovie::EventProcess(const Event &event)
 {
-	D3DVECTOR	initialEye, initialLookat, finalEye, finalLookat, eye, lookat;
+	Math::Vector	initialEye, initialLookat, finalEye, finalLookat, eye, lookat;
 	float		progress;
 
 	if ( m_type == MM_NONE )  return true;

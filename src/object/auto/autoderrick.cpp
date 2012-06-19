@@ -20,6 +20,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -95,8 +96,8 @@ void CAutoDerrick::DeleteObject(bool bAll)
 
 void CAutoDerrick::Init()
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos;
+	Math::Matrix*	mat;
+	Math::Vector	pos;
 	TerrainRes	res;
 
 	pos = m_object->RetPosition(0);
@@ -133,9 +134,9 @@ void CAutoDerrick::Init()
 	m_lastParticule = 0.0f;
 	m_lastTrack = 0.0f;
 
-	pos = D3DVECTOR(7.0f, 0.0f, 0.0f);
+	pos = Math::Vector(7.0f, 0.0f, 0.0f);
 	mat = m_object->RetWorldMatrix(0);
-	pos = Transform(*mat, pos);
+	pos = Math::Transform(*mat, pos);
 	m_terrain->MoveOnFloor(pos);
 	m_fretPos = pos;
 }
@@ -146,7 +147,7 @@ void CAutoDerrick::Init()
 bool CAutoDerrick::EventProcess(const Event &event)
 {
 	CObject*	fret;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		angle, duration, factor;
 
@@ -345,7 +346,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 				pos.x += (Math::Rand()-0.5f)*5.0f;
 				pos.z += (Math::Rand()-0.5f)*5.0f;
 				pos.y += (Math::Rand()-0.5f)*5.0f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 3.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIFIRE, 1.0f, 0.0f, 0.0f);
@@ -356,7 +357,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 				pos.x += (Math::Rand()-0.5f)*5.0f;
 				pos.z += (Math::Rand()-0.5f)*5.0f;
 				pos.y += Math::Rand()*2.5f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 1.0f;
 				dim.y = dim.x;
 				m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
@@ -481,7 +482,7 @@ bool CAutoDerrick::Read(char *line)
 CObject* CAutoDerrick::SearchFret()
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	int			i;
 
@@ -504,10 +505,10 @@ CObject* CAutoDerrick::SearchFret()
 
 // Seeks if a site is free.
 
-bool CAutoDerrick::SearchFree(D3DVECTOR pos)
+bool CAutoDerrick::SearchFree(Math::Vector pos)
 {
 	CObject*	pObj;
-	D3DVECTOR	sPos;
+	Math::Vector	sPos;
 	ObjectType	type;
 	float		sRadius, distance;
 	int			i, j;
@@ -523,7 +524,7 @@ bool CAutoDerrick::SearchFree(D3DVECTOR pos)
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, sPos, sRadius) )
 		{
-			distance = Length(sPos, pos);
+			distance = Math::Distance(sPos, pos);
 			distance -= sRadius;
 			if ( distance < 2.0f )  return false;  // location occupied
 		}
@@ -534,7 +535,7 @@ bool CAutoDerrick::SearchFree(D3DVECTOR pos)
 
 // Create a transportable object.
 
-void CAutoDerrick::CreateFret(D3DVECTOR pos, float angle, ObjectType type,
+void CAutoDerrick::CreateFret(Math::Vector pos, float angle, ObjectType type,
 							  float height)
 {
 	CObject*		fret;

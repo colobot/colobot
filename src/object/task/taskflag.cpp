@@ -79,7 +79,7 @@ bool CTaskFlag::EventProcess(const Event &event)
 
 Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Error		err;
 
 	m_order = order;
@@ -145,11 +145,11 @@ bool CTaskFlag::Abort()
 
 // Returns the closest object to a given position.
 
-CObject* CTaskFlag::SearchNearest(D3DVECTOR pos, ObjectType type)
+CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
 {
 	ObjectType	oType;
 	CObject		*pObj, *pBest;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	float		min, dist;
 	int			i;
 
@@ -177,7 +177,7 @@ CObject* CTaskFlag::SearchNearest(D3DVECTOR pos, ObjectType type)
 		}
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(oPos, pos);
+		dist = Math::DistanceProjected(oPos, pos);
 		if ( dist < min )
 		{
 			min = dist;
@@ -193,7 +193,7 @@ int CTaskFlag::CountObject(ObjectType type)
 {
 	ObjectType	oType;
 	CObject		*pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	int			i, count;
 
 	count = 0;
@@ -230,8 +230,8 @@ Error CTaskFlag::CreateFlag(int rank)
 	CObject*	pObj;
 	CObject*	pNew;
 	CPyro*		pyro;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos;
+	Math::Matrix*	mat;
+	Math::Vector	pos;
 	float		dist;
 	int			i;
 
@@ -245,12 +245,12 @@ Error CTaskFlag::CreateFlag(int rank)
 	};
 
 	mat = m_object->RetWorldMatrix(0);
-	pos = Transform(*mat, D3DVECTOR(4.0f, 0.0f, 0.0f));
+	pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
 
 	pObj = SearchNearest(pos, OBJECT_NULL);
 	if ( pObj != 0 )
 	{
-		dist = Length(pos, pObj->RetPosition(0));
+		dist = Math::Distance(pos, pObj->RetPosition(0));
 		if ( dist < 10.0f )
 		{
 			return ERR_FLAG_PROXY;
@@ -284,7 +284,7 @@ Error CTaskFlag::DeleteFlag()
 {
 	CObject*	pObj;
 	CPyro*		pyro;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	float		iAngle, angle, aLimit, dist;
 
 	iPos = m_object->RetPosition(0);
@@ -296,7 +296,7 @@ Error CTaskFlag::DeleteFlag()
 	{
 		return ERR_FLAG_DELETE;
 	}
-	dist = Length(iPos, pObj->RetPosition(0));
+	dist = Math::Distance(iPos, pObj->RetPosition(0));
 	if ( dist > 10.0f )
 	{
 		return ERR_FLAG_DELETE;

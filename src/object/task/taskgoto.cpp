@@ -65,7 +65,7 @@ CTaskGoto::~CTaskGoto()
 
 bool CTaskGoto::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, goal;
+	Math::Vector	pos, goal;
 	Math::Point		rot, repulse;
 	float		a, g, dist, linSpeed, cirSpeed, h, hh, factor, dir;
 	Error		ret;
@@ -96,7 +96,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
 		rot.x = m_leakPos.x-pos.x;
 		rot.y = m_leakPos.z-pos.z;
-		dist = Length(rot.x, rot.y);
+		dist = Math::Point(rot.x, rot.y).Length();
 		rot.x /= dist;
 		rot.y /= dist;
 
@@ -155,7 +155,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 		if ( ret == ERR_OK )
 		{
 #if 0
-			D3DVECTOR	min, max;
+			Math::Vector	min, max;
 			min = pos;
 			max = m_goal;
 			if ( min.x > max.x )  Math::Swap(min.x, max.x);
@@ -175,7 +175,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 		if ( ret == ERR_GOTO_IMPOSSIBLE || ret == ERR_GOTO_ITER )
 		{
 #if 0
-			D3DVECTOR	min, max;
+			Math::Vector	min, max;
 			min = pos;
 			max = m_goal;
 			if ( min.x > max.x )  Math::Swap(min.x, max.x);
@@ -229,7 +229,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 			goal = m_bmPoints[m_bmIndex];
 			goal.y = pos.y;
 			h = m_terrain->RetFloorHeight(goal, true, true);
-			dist = Length2d(pos, goal);
+			dist = Math::DistanceProjected(pos, goal);
 			if ( dist != 0.0f )  // anticipates?
 			{
 				linSpeed = m_physics->RetLinMotionX(MO_REASPEED);
@@ -255,7 +255,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
 		rot.x = m_bmPoints[m_bmIndex].x-pos.x;
 		rot.y = m_bmPoints[m_bmIndex].z-pos.z;
-		dist = Length(rot.x, rot.y);
+		dist = Math::Point(rot.x, rot.y).Length();
 		rot.x /= dist;
 		rot.y /= dist;
 
@@ -284,7 +284,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 			linSpeed = 0.0f;  // turns first, then advance
 		}
 
-		dist = Length2d(pos, m_bmWatchDogPos);
+		dist = Math::DistanceProjected(pos, m_bmWatchDogPos);
 		if ( dist < 1.0f && linSpeed != 0.0f )
 		{
 			m_bmWatchDogTime += event.rTime;
@@ -367,7 +367,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 		 m_altitude > 0.0f                   )
 	{
 		pos = m_object->RetPosition(0);
-		dist = Length2d(m_goal, pos);
+		dist = Math::DistanceProjected(m_goal, pos);
 		factor = (dist-20.0f)/20.0f;
 		if ( factor < 0.0f )  factor = 0.0f;
 		if ( factor > 1.0f )  factor = 1.0f;
@@ -406,7 +406,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		dist = Length2d(m_goal, pos);
+		dist = Math::DistanceProjected(m_goal, pos);
 		linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
 		if ( linSpeed >  1.0f )  linSpeed =  1.0f;
 
@@ -419,7 +419,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
 		rot.x = m_goal.x-pos.x;
 		rot.y = m_goal.z-pos.z;
-		dist = Length(rot.x, rot.y);
+		dist = Math::Point(rot.x, rot.y).Length();
 		rot.x /= dist;
 		rot.y /= dist;
 
@@ -438,7 +438,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
 		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		dist = Length2d(m_goal, pos);
+		dist = Math::DistanceProjected(m_goal, pos);
 		linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
 //?		if ( m_physics->RetType() == TYPE_FLYING &&
 //?			 m_physics->RetLand()                )  // flying on the ground?
@@ -516,11 +516,11 @@ bool CTaskGoto::EventProcess(const Event &event)
 
 // Sought a target for the worm.
 
-CObject* CTaskGoto::WormSearch(D3DVECTOR &impact)
+CObject* CTaskGoto::WormSearch(Math::Vector &impact)
 {
 	CObject*	pObj;
 	CObject*	pBest = 0;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	oType;
 	float		distance, min, radius;
 	int			i;
@@ -581,7 +581,7 @@ CObject* CTaskGoto::WormSearch(D3DVECTOR &impact)
 		if ( pObj->RetVirusMode() )  continue;  // object infected?
 
 		if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
-		distance = Length2d(oPos, iPos);
+		distance = Math::DistanceProjected(oPos, iPos);
 		if ( distance < min )
 		{
 			min = distance;
@@ -599,7 +599,7 @@ CObject* CTaskGoto::WormSearch(D3DVECTOR &impact)
 void CTaskGoto::WormFrame(float rTime)
 {
 	CObject*	pObj;
-	D3DVECTOR	impact, pos;
+	Math::Vector	impact, pos;
 	float		dist;
 
 	m_wormLastTime += rTime;
@@ -612,7 +612,7 @@ void CTaskGoto::WormFrame(float rTime)
 		if ( pObj != 0 )
 		{
 			pos = m_object->RetPosition(0);
-			dist = Length(pos, impact);
+			dist = Math::Distance(pos, impact);
 			if ( dist <= 15.0f )
 			{
 				pObj->SetVirusMode(true);  // bam, infected!
@@ -626,10 +626,10 @@ void CTaskGoto::WormFrame(float rTime)
 // Assigns the goal was achieved.
 // "dist" is the distance that needs to go far to make a deposit or object.
 
-Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
+Error CTaskGoto::Start(Math::Vector goal, float altitude,
 					   TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	CObject*	target;
 	ObjectType	type;
 	float		dist;
@@ -677,7 +677,7 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 	m_bmFinalMove = 0.0f;
 
 	pos = m_object->RetPosition(0);
-	dist = Length2d(pos, m_goal);
+	dist = Math::DistanceProjected(pos, m_goal);
 	if ( dist < 10.0f && m_crashMode == TGC_BEAM )
 	{
 		m_crashMode = TGC_RIGHTLEFT;
@@ -754,7 +754,7 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 		if ( m_physics->RetType() == TYPE_FLYING && m_altitude == 0.0f )
 		{
 			pos = m_object->RetPosition(0);
-			dist = Length2d(pos, m_goal);
+			dist = Math::DistanceProjected(pos, m_goal);
 			if ( dist > FLY_DIST_GROUND )  // over 20 meters?
 			{
 				m_altitude = FLY_DEF_HEIGHT;  // default altitude
@@ -770,7 +770,7 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 			if ( BitmapTestDot(0, x, y) )  // arrival occupied?
 			{
 #if 0
-				D3DVECTOR	min, max;
+				Math::Vector	min, max;
 				min = m_object->RetPosition(0);
 				max = m_goal;
 				if ( min.x > max.x )  Math::Swap(min.x, max.x);
@@ -794,7 +794,7 @@ Error CTaskGoto::Start(D3DVECTOR goal, float altitude,
 
 Error CTaskGoto::IsEnded()
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		limit, angle, dist, h, level;
 
 	if ( m_engine->RetPause() )  return ERR_CONTINUE;
@@ -907,7 +907,7 @@ Error CTaskGoto::IsEnded()
 
 	if ( m_goalMode == TGG_EXPRESS )
 	{
-		dist = Length2d(m_goal, pos);
+		dist = Math::DistanceProjected(m_goal, pos);
 		if ( dist < 10.0f && dist > m_lastDistance )
 		{
 			return ERR_STOP;
@@ -1001,7 +1001,7 @@ Error CTaskGoto::IsEnded()
 
 	if ( m_phase == TGP_CRADVANCE )  // advance after collision?
 	{
-		if ( Length(pos, m_pos) >= 5.0f )
+		if ( Math::Distance(pos, m_pos) >= 5.0f )
 		{
 			m_phase = TGP_ADVANCE;
 		}
@@ -1034,7 +1034,7 @@ Error CTaskGoto::IsEnded()
 
 	if ( m_phase == TGP_CLADVANCE )  // advance after collision?
 	{
-		if ( Length(pos, m_pos) >= 10.0f )
+		if ( Math::Distance(pos, m_pos) >= 10.0f )
 		{
 			m_phase = TGP_ADVANCE;
 			m_try ++;
@@ -1050,7 +1050,7 @@ Error CTaskGoto::IsEnded()
 			return ERR_STOP;
 		}
 
-		dist = Length(m_bmFinalPos, m_object->RetPosition(0));
+		dist = Math::Distance(m_bmFinalPos, m_object->RetPosition(0));
 		if ( dist < m_bmFinalDist )  return ERR_CONTINUE;
 		m_physics->SetMotorSpeedX(0.0f);  // stops the advance
 		return ERR_STOP;
@@ -1062,10 +1062,10 @@ Error CTaskGoto::IsEnded()
 
 // Tries the object is the target position.
 
-CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
+CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	float		dist, min;
 	int			i;
 
@@ -1080,7 +1080,7 @@ CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
 		if ( pObj->RetTruck() != 0 )  continue;  // object transtorted?
 
 		oPos = pObj->RetPosition(0);
-		dist = Length2d(pos, oPos);
+		dist = Math::DistanceProjected(pos, oPos);
 
 		if ( dist <= margin && dist <= min )
 		{
@@ -1095,12 +1095,12 @@ CObject* CTaskGoto::SearchTarget(D3DVECTOR pos, float margin)
 // Adjusts the target as a function of the object.
 // Returns true if it is cargo laying on the ground, which can be approached from any site.
 
-bool CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
+bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
 {
 	ObjectType	type;
 	Character*	character;
-	D3DMATRIX*	mat;
-	D3DVECTOR	goal;
+	Math::Matrix*	mat;
+	Math::Vector	goal;
 	float		dist, suppl;
 
 	type = m_object->RetType();
@@ -1141,7 +1141,7 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
 	{
 		pos = m_object->RetPosition(0);
 		goal = pObj->RetPosition(0);
-		dist = Length(goal, pos);
+		dist = Math::Distance(goal, pos);
 		pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
 		return true;  // approach from all sites
 	}
@@ -1150,7 +1150,7 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
 	{
 		pos = m_object->RetPosition(0);
 		goal = pObj->RetPosition(0);
-		dist = Length(goal, pos);
+		dist = Math::Distance(goal, pos);
 		pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
 		return true;  // approach from all sites
 	}
@@ -1206,10 +1206,10 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, D3DVECTOR &pos, float &distance)
 // If you are on an object produced by a building (ore produced by derrick),
 // changes the position by report the building.
 
-bool CTaskGoto::AdjustBuilding(D3DVECTOR &pos, float margin, float &distance)
+bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	float		dist, suppl;
 	int			i;
 
@@ -1222,7 +1222,7 @@ bool CTaskGoto::AdjustBuilding(D3DVECTOR &pos, float margin, float &distance)
 		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 
 		if ( !GetHotPoint(pObj, oPos, false, 0.0f, suppl) )  continue;
-		dist = Length2d(pos, oPos);
+		dist = Math::DistanceProjected(pos, oPos);
 		if ( dist <= margin )
 		{
 			GetHotPoint(pObj, pos, true, distance, suppl);
@@ -1235,13 +1235,13 @@ bool CTaskGoto::AdjustBuilding(D3DVECTOR &pos, float margin, float &distance)
 
 // Returns the item or product or pose is something on a building.
 
-bool CTaskGoto::GetHotPoint(CObject *pObj, D3DVECTOR &pos,
+bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 							bool bTake, float distance, float &suppl)
 {
 	ObjectType	type;
-	D3DMATRIX*	mat;
+	Math::Matrix*	mat;
 
-	pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	pos = Math::Vector(0.0f, 0.0f, 0.0f);
 	suppl = 0.0f;
 	type = pObj->RetType();
 
@@ -1371,10 +1371,10 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, D3DVECTOR &pos,
 
 // Seeks an object too close that he must flee.
 
-bool CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
+bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 {
 	CObject		*pObj, *pObstacle;
-	D3DVECTOR	iPos, oPos, bPos;
+	Math::Vector	iPos, oPos, bPos;
 	float		iRadius, oRadius, bRadius, dist, min, dir;
 	int			i, j;
 
@@ -1396,7 +1396,7 @@ bool CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
-			dist = Length2d(oPos, iPos);
+			dist = Math::DistanceProjected(oPos, iPos);
 			if ( dist < min )
 			{
 				min = dist;
@@ -1431,7 +1431,7 @@ bool CTaskGoto::LeakSearch(D3DVECTOR &pos, float &delay)
 void CTaskGoto::ComputeRepulse(Math::Point &dir)
 {
 #if 0
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	Math::Point		repulse;
 	CObject		*pObj;
 	float		dist, iRadius, oRadius;
@@ -1451,12 +1451,12 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 		if ( pObj->RetTruck() != 0 )  continue;
 		
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, m_goalObject);
+		dist = Math::Distance(oPos, m_goalObject);
 		if ( dist <= 1.0f )  continue;
 
 		pObj->GetGlobalSphere(oPos, oRadius);
 		oRadius += iRadius+m_physics->RetLinStopLength()*1.1f;
-		dist = Length2d(oPos, iPos);
+		dist = Math::DistanceProjected(oPos, iPos);
 		if ( dist <= oRadius )
 		{
 			repulse.x = iPos.x-oPos.x;
@@ -1476,7 +1476,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 	}
 #else
 	ObjectType	iType, oType;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	Math::Point		repulse;
 	CObject		*pObj;
 	float		gDist, add, addi, fac, dist, iRadius, oRadius;
@@ -1491,7 +1491,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 	if ( iType == OBJECT_WORM )  return;
 
 	m_object->GetCrashSphere(0, iPos, iRadius);
-	gDist = Length(iPos, m_goal);
+	gDist = Math::Distance(iPos, m_goal);
 
 	add = m_physics->RetLinStopLength()*1.1f;  // braking distance
 	fac = 2.0f;
@@ -1616,11 +1616,11 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 			if ( oPos.y-oRadius > iPos.y+iRadius )  continue;
 			if ( oPos.y+oRadius < iPos.y-iRadius )  continue;
 
-			dist = Length(oPos, m_goal);
+			dist = Math::Distance(oPos, m_goal);
 			if ( dist <= 1.0f )  continue;  // on purpose?
 
 			oRadius += iRadius+addi;
-			dist = Length2d(oPos, iPos);
+			dist = Math::DistanceProjected(oPos, iPos);
 			if ( dist > gDist )  continue;  // beyond the goal?
 			if ( dist <= oRadius )
 			{
@@ -1646,7 +1646,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 void CTaskGoto::ComputeFlyingRepulse(float &dir)
 {
 	ObjectType	oType;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	CObject		*pObj;
 	float		add, fac, dist, iRadius, oRadius, repulse;
 	int			i, j;
@@ -1673,7 +1673,7 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
 			oRadius += iRadius+add;
-			dist = Length2d(oPos, iPos);
+			dist = Math::DistanceProjected(oPos, iPos);
 			if ( dist <= oRadius )
 			{
 				repulse = iPos.y-oPos.y;
@@ -1715,7 +1715,7 @@ int CTaskGoto::BeamShortcut()
 
 void CTaskGoto::BeamStart()
 {
-	D3DVECTOR	min, max;
+	Math::Vector	min, max;
 
 	BitmapOpen();
 	BitmapObject();
@@ -1765,7 +1765,7 @@ void CTaskGoto::BeamInit()
 // ERR_CONTINUE if not done yet
 // goalRadius: distance at which we must approach the goal
 
-Error CTaskGoto::BeamSearch(const D3DVECTOR &start, const D3DVECTOR &goal,
+Error CTaskGoto::BeamSearch(const Math::Vector &start, const Math::Vector &goal,
 							float goalRadius)
 {
 	float     step, len;
@@ -1773,7 +1773,7 @@ Error CTaskGoto::BeamSearch(const D3DVECTOR &start, const D3DVECTOR &goal,
 
 	m_bmStep ++;
 
-	len = Length2d(start, goal);
+	len = Math::DistanceProjected(start, goal);
 	step = len/5.0f;
 	if ( step < BM_DIM_STEP*2.1f )  step = BM_DIM_STEP*2.1f;
 	if ( step > 20.0f            )  step = 20.0f;
@@ -1791,12 +1791,12 @@ Error CTaskGoto::BeamSearch(const D3DVECTOR &start, const D3DVECTOR &goal,
 // i        number of recursions made
 // nbIter   maximum number of iterations you have the right to make before temporarily interrupt
 
-Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
-							 const D3DVECTOR &goalPos, float goalRadius,
+Error CTaskGoto::BeamExplore(const Math::Vector &prevPos, const Math::Vector &curPos,
+							 const Math::Vector &goalPos, float goalRadius,
 							 float angle, int nbDiv, float step,
 							 int i, int nbIter)
 {
-	D3DVECTOR	newPos;
+	Math::Vector	newPos;
 	Error		ret;
 	int			iDiv, iClear, iLar;
 	
@@ -1817,7 +1817,7 @@ Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
 
 			m_bmPoints[i] = curPos;
 
-			if ( Length2d(curPos, goalPos)-goalRadius <= step )
+			if ( Math::DistanceProjected(curPos, goalPos)-goalRadius <= step )
 			{
 				if ( goalRadius == 0.0f )
 				{
@@ -1825,7 +1825,7 @@ Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
 				}
 				else
 				{
-					newPos = BeamPoint(curPos, goalPos, 0, Length2d(curPos, goalPos)-goalRadius);
+					newPos = BeamPoint(curPos, goalPos, 0, Math::DistanceProjected(curPos, goalPos)-goalRadius);
 				}
 				if ( BitmapTestLine(curPos, newPos, angle/nbDiv, false) )
 				{
@@ -1882,11 +1882,11 @@ Error CTaskGoto::BeamExplore(const D3DVECTOR &prevPos, const D3DVECTOR &curPos,
 // Is a right "start-goal". Calculates the point located at the distance "step"
 // from the point "start" and an angle "angle" with the right.
 
-D3DVECTOR CTaskGoto::BeamPoint(const D3DVECTOR &startPoint,
-							   const D3DVECTOR &goalPoint,
+Math::Vector CTaskGoto::BeamPoint(const Math::Vector &startPoint,
+							   const Math::Vector &goalPoint,
 							   float angle, float step)
 {
-	D3DVECTOR	resPoint;
+	Math::Vector	resPoint;
 	float		goalAngle;
 
 	goalAngle = Math::RotateAngle(goalPoint.x-startPoint.x, goalPoint.z-startPoint.z);
@@ -1900,8 +1900,8 @@ D3DVECTOR CTaskGoto::BeamPoint(const D3DVECTOR &startPoint,
 
 // Displays a bitmap part.
 
-void CTaskGoto::BitmapDebug(const D3DVECTOR &min, const D3DVECTOR &max,
-							const D3DVECTOR &start, const D3DVECTOR &goal)
+void CTaskGoto::BitmapDebug(const Math::Vector &min, const Math::Vector &max,
+							const Math::Vector &start, const Math::Vector &goal)
 {
 	int		minx, miny, maxx, maxy, x, y, i ,n;
 	char	s[2000];
@@ -1978,17 +1978,17 @@ void CTaskGoto::BitmapDebug(const D3DVECTOR &min, const D3DVECTOR &max,
 
 // Tests if a path along a straight line is possible.
 
-bool CTaskGoto::BitmapTestLine(const D3DVECTOR &start, const D3DVECTOR &goal,
+bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &goal,
 							   float stepAngle, bool bSecond)
 {
-	D3DVECTOR	pos, inc;
+	Math::Vector	pos, inc;
 	float		dist, step;
 	float		distNoB2;
 	int			i, max, x, y;
 
 	if ( m_bmArray == 0 )  return true;
 
-	dist = Length2d(start, goal);
+	dist = Math::DistanceProjected(start, goal);
 	if ( dist == 0.0f )  return true;
 	step = BM_DIM_STEP*0.5f;
 
@@ -2043,7 +2043,7 @@ void CTaskGoto::BitmapObject()
 {
 	CObject		*pObj;
 	ObjectType	type;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	float		iRadius, oRadius, h;
 	int			i, j;
 
@@ -2087,7 +2087,7 @@ void CTaskGoto::BitmapObject()
 
 // Adds a section of land in the bitmap.
 
-void CTaskGoto::BitmapTerrain(const D3DVECTOR &min, const D3DVECTOR &max)
+void CTaskGoto::BitmapTerrain(const Math::Vector &min, const Math::Vector &max)
 {
 	int		minx, miny, maxx, maxy;
 
@@ -2104,7 +2104,7 @@ void CTaskGoto::BitmapTerrain(const D3DVECTOR &min, const D3DVECTOR &max)
 void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 {
 	ObjectType	type;
-	D3DVECTOR	p;
+	Math::Vector	p;
 	float		aLimit, angle, h;
 	int			x, y;
 	bool		bAcceptWater, bFly;
@@ -2265,7 +2265,7 @@ bool CTaskGoto::BitmapClose()
 
 // Puts a circle in the bitmap.
 
-void CTaskGoto::BitmapSetCircle(const D3DVECTOR &pos, float radius)
+void CTaskGoto::BitmapSetCircle(const Math::Vector &pos, float radius)
 {
 	float	d, r;
 	int		cx, cy, ix, iy;
@@ -2278,7 +2278,7 @@ void CTaskGoto::BitmapSetCircle(const D3DVECTOR &pos, float radius)
 	{
 		for ( ix=cx-(int)r ; ix<=cx+(int)r ; ix++ )
 		{
-			d = Length((float)(ix-cx), (float)(iy-cy));
+			d = Math::Point((float)(ix-cx), (float)(iy-cy)).Length();
 			if ( d > r )  continue;
 			BitmapSetDot(0, ix, iy);
 		}
@@ -2287,7 +2287,7 @@ void CTaskGoto::BitmapSetCircle(const D3DVECTOR &pos, float radius)
 
 // Removes a circle in the bitmap.
 
-void CTaskGoto::BitmapClearCircle(const D3DVECTOR &pos, float radius)
+void CTaskGoto::BitmapClearCircle(const Math::Vector &pos, float radius)
 {
 	float	d, r;
 	int		cx, cy, ix, iy;
@@ -2300,7 +2300,7 @@ void CTaskGoto::BitmapClearCircle(const D3DVECTOR &pos, float radius)
 	{
 		for ( ix=cx-(int)r ; ix<=cx+(int)r ; ix++ )
 		{
-			d = Length((float)(ix-cx), (float)(iy-cy));
+			d = Math::Point((float)(ix-cx), (float)(iy-cy)).Length();
 			if ( d > r )  continue;
 			BitmapClearDot(0, ix, iy);
 		}

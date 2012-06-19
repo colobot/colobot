@@ -66,7 +66,7 @@ CTaskRecover::~CTaskRecover()
 bool CTaskRecover::EventProcess(const Event &event)
 {
 	CObject*	power;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		a, g, cirSpeed, angle, energy, dist, linSpeed;
 
@@ -102,7 +102,7 @@ bool CTaskRecover::EventProcess(const Event &event)
 
 	if ( m_phase == TRP_MOVE )  // preliminary forward/backward?
 	{
-		dist = Length(m_object->RetPosition(0), m_ruin->RetPosition(0));
+		dist = Math::Distance(m_object->RetPosition(0), m_ruin->RetPosition(0));
 		linSpeed = 0.0f;
 		if ( dist > RECOVER_DIST )  linSpeed =  1.0f;
 		if ( dist < RECOVER_DIST )  linSpeed = -1.0f;
@@ -185,8 +185,8 @@ bool CTaskRecover::EventProcess(const Event &event)
 Error CTaskRecover::Start()
 {
 	CObject*	power;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, iPos, oPos;
+	Math::Matrix*	mat;
+	Math::Vector	pos, iPos, oPos;
 	float		energy;
 
 	ObjectType	type;
@@ -203,7 +203,7 @@ Error CTaskRecover::Start()
 	if ( energy < ENERGY_RECOVER/power->RetCapacity()+0.05f )  return ERR_RECOVER_ENERGY;
 	
 	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(RECOVER_DIST, 3.3f, 0.0f);
+	pos = Math::Vector(RECOVER_DIST, 3.3f, 0.0f);
 	pos = Transform(*mat, pos);  // position in front
 	m_recoverPos = pos;
 
@@ -233,8 +233,8 @@ Error CTaskRecover::Start()
 
 Error CTaskRecover::IsEnded()
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed, goal;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed, goal;
 	Math::Point		dim;
 	float		angle, dist, time;
 	int			i;
@@ -251,7 +251,7 @@ Error CTaskRecover::IsEnded()
 		{
 			m_physics->SetMotorSpeedZ(0.0f);
 
-			dist = Length(m_object->RetPosition(0), m_ruin->RetPosition(0));
+			dist = Math::Distance(m_object->RetPosition(0), m_ruin->RetPosition(0));
 			if ( dist > RECOVER_DIST )
 			{
 				time = m_physics->RetLinTimeLength(dist-RECOVER_DIST, 1.0f);
@@ -270,7 +270,7 @@ Error CTaskRecover::IsEnded()
 
 	if ( m_phase == TRP_MOVE )  // preliminary advance?
 	{
-		dist = Length(m_object->RetPosition(0), m_ruin->RetPosition(0));
+		dist = Math::Distance(m_object->RetPosition(0), m_ruin->RetPosition(0));
 
 		if ( dist >= RECOVER_DIST-1.0f &&
 			 dist <= RECOVER_DIST+1.0f )
@@ -278,7 +278,7 @@ Error CTaskRecover::IsEnded()
 			m_physics->SetMotorSpeedX(0.0f);
 
 			mat = m_object->RetWorldMatrix(0);
-			pos = D3DVECTOR(RECOVER_DIST, 3.3f, 0.0f);
+			pos = Math::Vector(RECOVER_DIST, 3.3f, 0.0f);
 			pos = Transform(*mat, pos);  // position in front
 			m_recoverPos = pos;
 
@@ -323,9 +323,9 @@ Error CTaskRecover::IsEnded()
 		m_metal->SetZoom(0, 0.0f);
 
 		mat = m_object->RetWorldMatrix(0);
-		pos = D3DVECTOR(RECOVER_DIST, 3.1f, 3.9f);
+		pos = Math::Vector(RECOVER_DIST, 3.1f, 3.9f);
 		pos = Transform(*mat, pos);
-		goal = D3DVECTOR(RECOVER_DIST, 3.1f, -3.9f);
+		goal = Math::Vector(RECOVER_DIST, 3.1f, -3.9f);
 		goal = Transform(*mat, goal);
 		m_particule->CreateRay(pos, goal, PARTIRAY2,
 							   Math::Point(2.0f, 2.0f), 8.0f);
@@ -392,7 +392,7 @@ bool CTaskRecover::Abort()
 CObject* CTaskRecover::SearchRuin()
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	ObjectType	type;
 	float		dist, min;
 	int			i;
@@ -413,7 +413,7 @@ CObject* CTaskRecover::SearchRuin()
 			 type == OBJECT_RUINmobiler2 )  // vehicle in ruin?
 		{
 			oPos = pObj->RetPosition(0);
-			dist = Length(oPos, m_recoverPos);
+			dist = Math::Distance(oPos, m_recoverPos);
 			if ( dist > 40.0f )  continue;
 
 			if ( dist < min )

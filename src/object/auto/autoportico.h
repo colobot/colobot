@@ -69,8 +69,8 @@ protected:
 	float			m_cameraProgress;
 	float			m_cameraSpeed;
 	float			m_lastParticule;
-	D3DVECTOR		m_finalPos;
-	D3DVECTOR		m_startPos;
+	Math::Vector		m_finalPos;
+	Math::Vector		m_startPos;
 	float			m_posTrack;
 	int				m_param;
 	int				m_soundChannel;

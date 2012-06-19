@@ -46,7 +46,7 @@ struct WaterVapor
 {
 	bool			bUsed;
 	ParticuleType	type;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			delay;
 	float			time;
 	float			last;
@@ -72,7 +72,7 @@ public:
 	void		SetD3DDevice(LPDIRECT3DDEVICE7 device);
 	bool		EventProcess(const Event &event);
 	void		Flush();
-	bool		Create(WaterType type1, WaterType type2, const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level, float glint, D3DVECTOR eddy);
+	bool		Create(WaterType type1, WaterType type2, const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level, float glint, Math::Vector eddy);
 	void		DrawBack();
 	void		DrawSurf();
 
@@ -83,17 +83,17 @@ public:
 	void		SetLava(bool bLava);
 	bool		RetLava();
 
-	void		AdjustEye(D3DVECTOR &eye);
+	void		AdjustEye(Math::Vector &eye);
 
 protected:
 	bool		EventFrame(const Event &event);
 	void		LavaFrame(float rTime);
-	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &norm, Math::Point &uv1, Math::Point &uv2);
+	void		AdjustLevel(Math::Vector &pos, Math::Vector &norm, Math::Point &uv1, Math::Point &uv2);
 	bool		RetWater(int x, int y);
 	bool		CreateLine(int x, int y, int len);
 
 	void		VaporFlush();
-	bool		VaporCreate(ParticuleType type, D3DVECTOR pos, float delay);
+	bool		VaporCreate(ParticuleType type, Math::Vector pos, float delay);
 	void		VaporFrame(int i, float rTime);
 
 protected:
@@ -108,7 +108,7 @@ protected:
 	char			m_filename[100];
 	float			m_level;		// overall level
 	float			m_glint;		// amplitude of reflections
-	D3DVECTOR		m_eddy;			// amplitude of swirls
+	Math::Vector		m_eddy;			// amplitude of swirls
 	D3DCOLORVALUE		m_diffuse;		// diffuse color
 	D3DCOLORVALUE		m_ambient;		// ambient color
 	float			m_time;

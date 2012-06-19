@@ -57,7 +57,7 @@ public:
 
 protected:
 	void		UpdateInterface();
-	bool		SearchEnemy(D3DVECTOR &pos);
+	bool		SearchEnemy(Math::Vector &pos);
 
 protected:
 	AutoRadarPhase	m_phase;

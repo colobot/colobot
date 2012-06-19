@@ -64,6 +64,6 @@ protected:
 	float			m_lastParticule;
 	int				m_soundChannel;
 	bool			m_bError;
-	D3DVECTOR		m_terraPos;
+	Math::Vector		m_terraPos;
 };
 

@@ -60,7 +60,7 @@ CTaskFireAnt::~CTaskFireAnt()
 
 bool CTaskFireAnt::EventProcess(const Event &event)
 {
-	D3DVECTOR	dir, vib;
+	Math::Vector	dir, vib;
 	float		a, g, cirSpeed;
 
 	if ( m_engine->RetPause() )  return true;
@@ -93,9 +93,9 @@ bool CTaskFireAnt::EventProcess(const Event &event)
 
 // Assigns the goal was achieved.
 
-Error CTaskFireAnt::Start(D3DVECTOR impact)
+Error CTaskFireAnt::Start(Math::Vector impact)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	ObjectType	type;
 
 	m_impact = impact;
@@ -109,7 +109,7 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 	// Insect on its back?
 	if ( m_object->RetFixed() )  return ERR_FIRE_VEH;
 
-	m_physics->SetMotorSpeed(D3DVECTOR(0.0f, 0.0f, 0.0f));
+	m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
 	pos = m_object->RetPosition(0);
 	m_angle = Math::RotateAngle(m_impact.x-pos.x, pos.z-m_impact.z);  // CW !
@@ -129,8 +129,8 @@ Error CTaskFireAnt::Start(D3DVECTOR impact)
 
 Error CTaskFireAnt::IsEnded()
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		angle, dist;
 	int			i, channel;
@@ -175,10 +175,10 @@ Error CTaskFireAnt::IsEnded()
 
 			for ( i=0 ; i<20 ; i++ )
 			{
-				pos = D3DVECTOR(-2.5f, -0.7f, 0.0f);
+				pos = Math::Vector(-2.5f, -0.7f, 0.0f);
 				mat = m_object->RetWorldMatrix(2);
-				pos = Transform(*mat, pos);
-				dist = Length(pos, m_impact);
+				pos = Math::Transform(*mat, pos);
+				dist = Math::Distance(pos, m_impact);
 				speed = m_impact-pos;
 				speed.x += (Math::Rand()-0.5f)*dist*1.2f;
 				speed.y += (Math::Rand()-0.5f)*dist*0.4f+50.0f;

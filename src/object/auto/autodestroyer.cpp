@@ -91,7 +91,7 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 {
 	CObject*	scrap;
 	CPyro*		pyro;
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 
 	CAuto::EventProcess(event);
@@ -161,13 +161,13 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 
 		if ( m_progress < 1.0f )
 		{
-			pos = D3DVECTOR(0.0f, -10.0f, 0.0f);
+			pos = Math::Vector(0.0f, -10.0f, 0.0f);
 			pos.y = -Math::Bounce(m_progress, 0.3f)*10.0f;
 			m_object->SetPosition(1, pos);
 		}
 		else
 		{
-			m_object->SetPosition(1, D3DVECTOR(0.0f, -10.0f, 0.0f));
+			m_object->SetPosition(1, Math::Vector(0.0f, -10.0f, 0.0f));
 			m_sound->Play(SOUND_REPAIR, m_object->RetPosition(0));
 
 			m_phase    = ADEP_REPAIR;
@@ -195,13 +195,13 @@ bool CAutoDestroyer::EventProcess(const Event &event)
 	{
 		if ( m_progress < 1.0f )
 		{
-			pos = D3DVECTOR(0.0f, -10.0f, 0.0f);
+			pos = Math::Vector(0.0f, -10.0f, 0.0f);
 			pos.y = -(1.0f-m_progress)*10.0f;
 			m_object->SetPosition(1, pos);
 		}
 		else
 		{
-			m_object->SetPosition(1, D3DVECTOR(0.0f, 0.0f, 0.0f));
+			m_object->SetPosition(1, Math::Vector(0.0f, 0.0f, 0.0f));
 
 			m_phase    = ADEP_WAIT;
 			m_progress = 0.0f;
@@ -248,7 +248,7 @@ bool CAutoDestroyer::CreateInterface(bool bSelect)
 CObject* CAutoDestroyer::SearchPlastic()
 {
 	CObject*	pObj;
-	D3DVECTOR	sPos, oPos;
+	Math::Vector	sPos, oPos;
 	ObjectType	type;
 	float		dist;
 	int			i;
@@ -265,7 +265,7 @@ CObject* CAutoDestroyer::SearchPlastic()
 			 type != OBJECT_SCRAP5 )  continue;
 
 		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, sPos);
+		dist = Math::Distance(oPos, sPos);
 		if ( dist <= 5.0f )  return pObj;
 	}
 
@@ -277,7 +277,7 @@ CObject* CAutoDestroyer::SearchPlastic()
 bool CAutoDestroyer::SearchVehicle()
 {
 	CObject*	pObj;
-	D3DVECTOR	cPos, oPos;
+	Math::Vector	cPos, oPos;
 	ObjectType	type;
 	float		oRadius, dist;
 	int			i;
@@ -325,7 +325,7 @@ bool CAutoDestroyer::SearchVehicle()
 			 type != OBJECT_WORM     )  continue;
 
 		if ( !pObj->GetCrashSphere(0, oPos, oRadius) )  continue;
-		dist = Length(oPos, cPos)-oRadius;
+		dist = Math::Distance(oPos, cPos)-oRadius;
 
 		if ( dist < 20.0f )  return true;
 	}

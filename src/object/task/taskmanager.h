@@ -41,7 +41,7 @@ public:
 	Error	StartTaskWait(float time);
 	Error	StartTaskAdvance(float length);
 	Error	StartTaskTurn(float angle);
-	Error	StartTaskGoto(D3DVECTOR pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode);
+	Error	StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode);
 	Error	StartTaskTake();
 	Error	StartTaskManip(TaskManipOrder order, TaskManipArm arm);
 	Error	StartTaskFlag(TaskFlagOrder order, int rank);
@@ -53,10 +53,10 @@ public:
 	Error	StartTaskRecover();
 	Error	StartTaskShield(TaskShieldMode mode, float delay);
 	Error	StartTaskFire(float delay);
-	Error	StartTaskFireAnt(D3DVECTOR impact);
+	Error	StartTaskFireAnt(Math::Vector impact);
 	Error	StartTaskGunGoal(float dirV, float dirH);
 	Error	StartTaskSpiderExplo();
-	Error	StartTaskReset(D3DVECTOR goal, D3DVECTOR angle);
+	Error	StartTaskReset(Math::Vector goal, Math::Vector angle);
 
 	bool	EventProcess(const Event &event);
 	Error	IsEnded();

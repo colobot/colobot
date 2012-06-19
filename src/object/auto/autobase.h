@@ -102,10 +102,10 @@ protected:
 	float			m_lastMotorParticule;
 	float			m_fogStart;
 	float			m_deepView;
-	D3DVECTOR		m_pos;
-	D3DVECTOR		m_posSound;
-	D3DVECTOR		m_finalPos;
-	D3DVECTOR		m_lastPos;
+	Math::Vector		m_pos;
+	Math::Vector		m_posSound;
+	Math::Vector		m_finalPos;
+	Math::Vector		m_lastPos;
 	int				m_param;
 	int				m_soundChannel;
 	int				m_partiChannel[8];

@@ -59,7 +59,7 @@ public:
 
 protected:
 	bool		EventFrame(const Event &event);
-	CObject*	SearchObject(D3DVECTOR pos);
+	CObject*	SearchObject(Math::Vector pos);
 
 protected:
 	CInstanceManager*	m_iMan;
@@ -76,7 +76,7 @@ protected:
 	float		m_time;
 	float		m_speed;
 	float		m_progress;
-	D3DVECTOR	m_pos;
+	Math::Vector	m_pos;
 	Math::Point		m_shift[BLITZMAX];
 	float		m_width[BLITZMAX];
 };

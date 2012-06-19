@@ -21,6 +21,7 @@
 
 #include "CBot/CBotDll.h"
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "math/const.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
@@ -717,7 +718,7 @@ bool CBrain::EventProcess(const Event &event)
 #if 0
 		if ( event.param == 'T' )
 		{
-			D3DVECTOR	p1, p2;
+			Math::Vector	p1, p2;
 			float		h;
 			p1 = m_object->RetPosition(0);
 			h = m_terrain->RetFloorLevel(p1);
@@ -730,7 +731,7 @@ bool CBrain::EventProcess(const Event &event)
 		}
 		if ( event.param == 'R' )
 		{
-			D3DVECTOR	p1, p2;
+			Math::Vector	p1, p2;
 			float		h;
 			p1 = m_object->RetPosition(0);
 			h = m_terrain->RetFloorLevel(p1);
@@ -1097,7 +1098,7 @@ Error CBrain::StartTaskFire(float delay)
 
 // Shoots to the ant.
 
-Error CBrain::StartTaskFireAnt(D3DVECTOR impact)
+Error CBrain::StartTaskFireAnt(Math::Vector impact)
 {
 	Error	err;
 
@@ -1133,7 +1134,7 @@ Error CBrain::StartTaskGunGoal(float dirV, float dirH)
 
 // Reset.
 
-Error CBrain::StartTaskReset(D3DVECTOR goal, D3DVECTOR angle)
+Error CBrain::StartTaskReset(Math::Vector goal, Math::Vector angle)
 {
 	Error	err;
 
@@ -1186,7 +1187,7 @@ Error CBrain::EndedTask()
 
 void CBrain::GroundFlat()
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	Error		err;
 	float		level;
@@ -1206,7 +1207,7 @@ void CBrain::GroundFlat()
 
 	level = m_terrain->RetFloorLevel(pos)+2.0f;
 	if ( pos.y < level )  pos.y = level;  // not below the soil
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	speed = Math::Vector(0.0f, 0.0f, 0.0f);
 	dim.x = 40.0f;
 	dim.y = dim.x;
 	m_particule->CreateParticule(pos, speed, dim, PARTIGFLAT, 1.0f);
@@ -1935,7 +1936,7 @@ void CBrain::UpdateInterface(float rTime)
 	CGroup*		pgr;
 	CTarget*	ptg;
 	CObject*	power;
-	D3DVECTOR	pos, hPos;
+	Math::Vector	pos, hPos;
 	Math::Point		ppos;
 	float		energy, limit, angle, range;
 	int			icon;
@@ -2829,7 +2830,7 @@ void CBrain::TraceRecordStart()
 void CBrain::TraceRecordFrame()
 {
 	TraceOper	oper = TO_STOP;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		angle, len, speed;
 	int			color;
 
@@ -2856,7 +2857,7 @@ void CBrain::TraceRecordFrame()
 			 m_traceOper == TO_RECEDE  )
 		{
 			pos = m_object->RetPosition(0);
-			len = Length2d(pos, m_tracePos);
+			len = Math::DistanceProjected(pos, m_tracePos);
 			TraceRecordOper(m_traceOper, len);
 		}
 		if ( m_traceOper == TO_TURN )

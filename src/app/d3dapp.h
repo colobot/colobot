@@ -22,6 +22,7 @@
 #define  D3D_OVERLOADS
 #include <d3d.h>
 
+#include "math/vector.h"
 #include "graphics/d3d/d3dengine.h"
 #include "graphics/d3d/d3dframe.h"
 #include "graphics/d3d/d3denum.h"
@@ -152,8 +153,8 @@ public:
 	CSound*			m_pSound;
 
 	int				m_keyState;
-	D3DVECTOR		m_axeKey;
-	D3DVECTOR		m_axeJoy;
+	Math::Vector		m_axeKey;
+	Math::Vector		m_axeJoy;
 	bool			m_bJoyButton[32];
 	Math::Point			m_mousePos;
 	DWORD			m_mshMouseWheel;

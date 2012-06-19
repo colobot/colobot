@@ -23,6 +23,7 @@
 
 #include "common/struct.h"
 #include "math/const.h"
+#include "math/geometry.h"
 #include "graphics/d3d/d3dengine.h"
 #include "math/old/d3dmath.h"
 #include "common/event.h"
@@ -92,10 +93,10 @@ void CPyro::DeleteObject(bool bAll)
 
 bool CPyro::Create(PyroType type, CObject* pObj, float force)
 {
-	D3DMATRIX*		mat;
+	Math::Matrix*		mat;
 	CObject*		power;
 	CMotion*		motion;
-	D3DVECTOR		min, max, pos, speed;
+	Math::Vector		min, max, pos, speed;
 	Math::Point			dim;
 	ObjectType		oType;
 	Sound			sound;
@@ -130,7 +131,7 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 	}
 	else
 	{
-		m_size = Length(min, max)*2.0f;
+		m_size = Math::Distance(min, max)*2.0f;
 		if ( m_size <  4.0f )  m_size =  4.0f;
 		if ( m_size > 80.0f )  m_size = 80.0f;
 	}
@@ -167,7 +168,7 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 		pos = power->RetPosition(0);
 		pos.y += 1.0f;
 		mat = pObj->RetWorldMatrix(0);
-		m_posPower = Transform(*mat, pos);
+		m_posPower = Math::Transform(*mat, pos);
 	}
 	if ( oType == OBJECT_POWER   ||
 		 oType == OBJECT_ATOMIC  ||
@@ -184,14 +185,14 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 	{
 		m_bPower = true;
 		mat = pObj->RetWorldMatrix(0);
-		m_posPower = Transform(*mat, D3DVECTOR(-15.0f, 7.0f, 0.0f));
+		m_posPower = Math::Transform(*mat, Math::Vector(-15.0f, 7.0f, 0.0f));
 		m_pos = m_posPower;
 	}
 	if ( oType == OBJECT_ENERGY )
 	{
 		m_bPower = true;
 		mat = pObj->RetWorldMatrix(0);
-		m_posPower = Transform(*mat, D3DVECTOR(-7.0f, 6.0f, 0.0f));
+		m_posPower = Math::Transform(*mat, Math::Vector(-7.0f, 6.0f, 0.0f));
 		m_pos = m_posPower;
 	}
 	if ( oType == OBJECT_NUCLEAR )
@@ -416,9 +417,9 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 	{
 		m_speed = 1.0f/15.0f;
 
-		pos = D3DVECTOR(-3.0f, 2.0f, 0.0f);
+		pos = Math::Vector(-3.0f, 2.0f, 0.0f);
 		mat = pObj->RetWorldMatrix(0);
-		m_pos = Transform(*mat, pos);
+		m_pos = Math::Transform(*mat, pos);
 
 		m_engine->ShadowDelete(m_object->RetObjectRank(0));
 	}
@@ -541,7 +542,7 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 			}
 			dim.x = m_size*0.4f;
 			dim.y = dim.x;
-			m_particule->CreateParticule(pos, D3DVECTOR(0.0f,0.0f,0.0f), dim, PARTISPHERE0, 2.0f, 0.0f, 0.0f);
+			m_particule->CreateParticule(pos, Math::Vector(0.0f,0.0f,0.0f), dim, PARTISPHERE0, 2.0f, 0.0f, 0.0f);
 		}
 	}
 
@@ -621,7 +622,7 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 			pos = m_pos;
 //?			m_terrain->MoveOnFloor(pos);
 //?			pos.y += 2.0f;
-			speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			speed = Math::Vector(0.0f, 0.0f, 0.0f);
 			dim.x = m_size;
 			dim.y = dim.x;
 			m_particule->CreateParticule(pos, speed, dim, PARTICHOC, 2.0f);
@@ -636,8 +637,8 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
 void CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
 {
 	D3DTriangle		buffer[100];
-	D3DMATRIX*		mat;
-	D3DVECTOR		offset, pos, speed;
+	Math::Matrix*		mat;
+	Math::Vector		offset, pos, speed;
 	float			percent, min, max, h, duration, mass;
 	int				objRank, total, i;
 
@@ -665,7 +666,7 @@ void CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
 
 	for ( i=0 ; i<total ; i++ )
 	{
-		D3DVECTOR	p1, p2, p3;
+		Math::Vector	p1, p2, p3;
 
 		p1.x = buffer[i].triangle[0].x;
 		p1.y = buffer[i].triangle[0].y;
@@ -677,7 +678,7 @@ void CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
 		p3.y = buffer[i].triangle[2].y;
 		p3.z = buffer[i].triangle[2].z;
 
-		h = Length(p1, p2);
+		h = Math::Distance(p1, p2);
 		if ( h > 5.0f )
 		{
 			p2.x = p1.x+((p2.x-p1.x)*5.0f/h);
@@ -685,7 +686,7 @@ void CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
 			p2.z = p1.z+((p2.z-p1.z)*5.0f/h);
 		}
 
-		h = Length(p2, p3);
+		h = Math::Distance(p2, p3);
 		if ( h > 5.0f )
 		{
 			p3.x = p2.x+((p3.x-p2.x)*5.0f/h);
@@ -693,7 +694,7 @@ void CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
 			p3.z = p2.z+((p3.z-p2.z)*5.0f/h);
 		}
 
-		h = Length(p3, p1);
+		h = Math::Distance(p3, p1);
 		if ( h > 5.0f )
 		{
 			p1.x = p3.x+((p1.x-p3.x)*5.0f/h);
@@ -728,7 +729,7 @@ void CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
 		buffer[i].triangle[2].z -= offset.z;
 
 		mat = pObj->RetWorldMatrix(part);
-		pos = Transform(*mat, offset);
+		pos = Math::Transform(*mat, offset);
 		if ( m_type == PT_EGG )
 		{
 			speed.x = (Math::Rand()-0.5f)*10.0f;
@@ -851,7 +852,7 @@ void CPyro::DisplayError(PyroType type, CObject* pObj)
 bool CPyro::EventProcess(const Event &event)
 {
 	ParticuleType	type;
-	D3DVECTOR		pos, speed, angle;
+	Math::Vector		pos, speed, angle;
 	Math::Point			dim;
 	float			prog, factor, duration;
 	int				i, r;
@@ -1463,7 +1464,7 @@ Error CPyro::IsEnded()
 void CPyro::DeleteObject(bool bPrimary, bool bSecondary)
 {
 	CObject		*sub, *truck;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	ObjectType	type;
 
 	if ( m_object == 0 )  return;
@@ -1579,7 +1580,7 @@ void CPyro::LightOperFrame(float rTime)
 
 // Creates light to accompany a pyrotechnic effect.
 
-bool CPyro::CreateLight(D3DVECTOR pos, float height)
+bool CPyro::CreateLight(Math::Vector pos, float height)
 {
 	D3DLIGHT7	light;
 
@@ -1620,7 +1621,7 @@ bool CPyro::CreateLight(D3DVECTOR pos, float height)
 
 void CPyro::ExploStart()
 {
-	D3DVECTOR	pos, angle, speed, min, max;
+	Math::Vector	pos, angle, speed, min, max;
 	float		weight;
 	int			i, objRank, channel;
 
@@ -1661,7 +1662,7 @@ void CPyro::ExploStart()
 		else
 		{
 			m_engine->GetBBox(objRank, min, max);
-			weight = Length(min, max);  // weight according to size!
+			weight = Math::Distance(min, max);  // weight according to size!
 
 			speed.y = 10.0f+Math::Rand()*20.0f;
 			speed.x = (Math::Rand()-0.5f)*20.0f;
@@ -1691,7 +1692,7 @@ void CPyro::ExploTerminate()
 
 void CPyro::BurnStart()
 {
-	D3DVECTOR	pos, angle;
+	Math::Vector	pos, angle;
 	int			i, objRank;
 
 	m_burnType = m_object->RetType();
@@ -2162,7 +2163,7 @@ void CPyro::BurnStart()
 
 // Adds a part move.
 
-void CPyro::BurnAddPart(int part, D3DVECTOR pos, D3DVECTOR angle)
+void CPyro::BurnAddPart(int part, Math::Vector pos, Math::Vector angle)
 {
 	int		i;
 
@@ -2181,7 +2182,7 @@ void CPyro::BurnAddPart(int part, D3DVECTOR pos, D3DVECTOR angle)
 void CPyro::BurnProgress()
 {
 	CObject*	sub;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		h;
 	int			i;
 
@@ -2285,7 +2286,7 @@ void CPyro::BurnTerminate()
 
 void CPyro::FallStart()
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	m_object->SetBurn(true);  // usable
 
@@ -2301,7 +2302,7 @@ void CPyro::FallStart()
 CObject* CPyro::FallSearchBeeExplo()
 {
 	CObject*	pObj;
-	D3DVECTOR	iPos, oPos;
+	Math::Vector	iPos, oPos;
 	ObjectType	oType;
 	float		iRadius, oRadius, distance, shieldRadius;
 	int			i, j;
@@ -2370,26 +2371,26 @@ CObject* CPyro::FallSearchBeeExplo()
 		shieldRadius = pObj->RetShieldRadius();
 		if ( shieldRadius > 0.0f )
 		{
-			distance = Length(oPos, iPos);
+			distance = Math::Distance(oPos, iPos);
 			if ( distance <= shieldRadius )  return pObj;
 		}
 
 		if ( oType == OBJECT_BASE )
 		{
-			distance = Length(oPos, iPos);
+			distance = Math::Distance(oPos, iPos);
 			if ( distance < 25.0f )  return pObj;
 		}
 
 		// Test the center of the object, which is necessary for objects
 		// that have no sphere in the center (station).
-		distance = Length(oPos, iPos)-4.0f;
+		distance = Math::Distance(oPos, iPos)-4.0f;
 		if ( distance < 5.0f )  return pObj;
 
 		// Test with all spheres of the object.
 		j = 0;
 		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
 		{
-			distance = Length(oPos, iPos);
+			distance = Math::Distance(oPos, iPos);
 			if ( distance <= iRadius+oRadius )
 			{
 				return pObj;
@@ -2404,7 +2405,7 @@ CObject* CPyro::FallSearchBeeExplo()
 void CPyro::FallProgress(float rTime)
 {
 	CObject*	pObj;
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	bool		bFloor = false;
 
 	if ( m_object == 0 )  return;
@@ -2440,7 +2441,7 @@ void CPyro::FallProgress(float rTime)
 			{
 				if ( pObj->RetShieldRadius() > 0.0f )  // protected by shield?
 				{
-					m_particule->CreateParticule(pos, D3DVECTOR(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
+					m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f, 0.0f, 0.0f);
 					m_sound->Play(SOUND_GUNDEL);
 
 					DeleteObject(true, true);  // removes the ball
@@ -2470,7 +2471,7 @@ void CPyro::FallProgress(float rTime)
 
 Error CPyro::FallIsEnded()
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	if ( m_bFallEnding || m_object == 0 )  return ERR_STOP;
 

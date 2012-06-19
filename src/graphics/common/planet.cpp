@@ -135,7 +135,7 @@ void CPlanet::Draw()
 {
 	LPDIRECT3DDEVICE7 device;
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	D3DVECTOR	n;
+	Math::Vector	n;
 	Math::Point		p1, p2;
 	float		eyeDirH, eyeDirV, dp, u1, u2, v1, v2, a;
 	int			i;
@@ -144,7 +144,7 @@ void CPlanet::Draw()
 	eyeDirH = m_engine->RetEyeDirH();
 	eyeDirV = m_engine->RetEyeDirV();
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);  // normal
+	n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 	dp = 0.5f/256.0f;
 
 	for ( i=0 ; i<MAXPLANET ; i++ )
@@ -178,10 +178,10 @@ void CPlanet::Draw()
 		u2 = m_planet[m_mode][i].uv2.x - dp;
 		v2 = m_planet[m_mode][i].uv2.y - dp;
 
-		vertex[0] = D3DVERTEX2(D3DVECTOR(p1.x, p1.y, 0.0f), n, u1,v2);
-		vertex[1] = D3DVERTEX2(D3DVECTOR(p1.x, p2.y, 0.0f), n, u1,v1);
-		vertex[2] = D3DVERTEX2(D3DVECTOR(p2.x, p1.y, 0.0f), n, u2,v2);
-		vertex[3] = D3DVERTEX2(D3DVECTOR(p2.x, p2.y, 0.0f), n, u2,v1);
+		vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
+		vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
+		vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
+		vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
 
 		device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
 		m_engine->AddStatisticTriangle(2);

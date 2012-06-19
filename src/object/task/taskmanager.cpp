@@ -99,7 +99,7 @@ Error CTaskManager::StartTaskTurn(float angle)
 
 // Reaches a given position.
 
-Error CTaskManager::StartTaskGoto(D3DVECTOR pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
+Error CTaskManager::StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode)
 {
 	m_task = new CTaskGoto(m_iMan, m_object);
 	return ((CTaskGoto*)m_task)->Start(pos, altitude, goalMode, crashMode);
@@ -208,7 +208,7 @@ Error CTaskManager::StartTaskFire(float delay)
 
 // Shoots with the ant.
 
-Error CTaskManager::StartTaskFireAnt(D3DVECTOR impact)
+Error CTaskManager::StartTaskFireAnt(Math::Vector impact)
 {
 	m_task = new CTaskFireAnt(m_iMan, m_object);
 	return ((CTaskFireAnt*)m_task)->Start(impact);
@@ -232,7 +232,7 @@ Error CTaskManager::StartTaskSpiderExplo()
 
 // Reset.
 
-Error CTaskManager::StartTaskReset(D3DVECTOR goal, D3DVECTOR angle)
+Error CTaskManager::StartTaskReset(Math::Vector goal, Math::Vector angle)
 {
 	m_task = new CTaskReset(m_iMan, m_object);
 	return ((CTaskReset*)m_task)->Start(goal, angle);

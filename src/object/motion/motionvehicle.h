@@ -40,7 +40,7 @@ public:
 	~CMotionVehicle();
 
 	void		DeleteObject(bool bAll=false);
-	bool		Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+	bool		Create(Math::Vector pos, float angle, ObjectType type, float power);
 	bool		EventProcess(const Event &event);
 
 	bool		RetTraceDown();
@@ -68,9 +68,9 @@ protected:
 	float		m_armMember;
 	float		m_canonTime;
 	float		m_lastTimeCanon;
-	D3DVECTOR	m_wheelLastPos;
-	D3DVECTOR	m_wheelLastAngle;
-	D3DVECTOR	m_posKey;
+	Math::Vector	m_wheelLastPos;
+	Math::Vector	m_wheelLastAngle;
+	Math::Vector	m_posKey;
 	bool		m_bFlyFix;
 	bool		m_bTraceDown;
 	int			m_traceColor;

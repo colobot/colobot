@@ -22,6 +22,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
@@ -59,7 +60,7 @@ CTaskPen::~CTaskPen()
 
 bool CTaskPen::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, speed;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	int			i;
 
@@ -145,8 +146,8 @@ bool CTaskPen::EventProcess(const Event &event)
 
 Error CTaskPen::Start(bool bDown, int color)
 {
-	D3DVECTOR	pos;
-	D3DMATRIX*	mat;
+	Math::Vector	pos;
+	Math::Matrix*	mat;
 	ObjectType	type;
 	int			i;
 
@@ -182,8 +183,8 @@ Error CTaskPen::Start(bool bDown, int color)
 	}
 
 	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(-3.0f, 7.0f, 0.0f);
-	pos = Transform(*mat, pos);  // position of carousel
+	pos = Math::Vector(-3.0f, 7.0f, 0.0f);
+	pos = Math::Transform(*mat, pos);  // position of carousel
 	m_supportPos = pos;
 
 	m_phase    = TPP_UP;

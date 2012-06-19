@@ -752,22 +752,22 @@ bool CModel::EventProcess(const Event &event)
 			break;
 
 		case EVENT_BUTTON13:  // +X ?
-			MoveSelect(D3DVECTOR(1.0f, 0.0f, 0.0f));
+			MoveSelect(Math::Vector(1.0f, 0.0f, 0.0f));
 			break;
 		case EVENT_BUTTON16:  // -X ?
-			MoveSelect(D3DVECTOR(-1.0f, 0.0f, 0.0f));
+			MoveSelect(Math::Vector(-1.0f, 0.0f, 0.0f));
 			break;
 		case EVENT_BUTTON14:  // +Y ?
-			MoveSelect(D3DVECTOR(0.0f, 1.0f, 0.0f));
+			MoveSelect(Math::Vector(0.0f, 1.0f, 0.0f));
 			break;
 		case EVENT_BUTTON17:  // -Y ?
-			MoveSelect(D3DVECTOR(0.0f, -1.0f, 0.0f));
+			MoveSelect(Math::Vector(0.0f, -1.0f, 0.0f));
 			break;
 		case EVENT_BUTTON15:  // +Z ?
-			MoveSelect(D3DVECTOR(0.0f, 0.0f, 1.0f));
+			MoveSelect(Math::Vector(0.0f, 0.0f, 1.0f));
 			break;
 		case EVENT_BUTTON18:  // -Z ?
-			MoveSelect(D3DVECTOR(0.0f, 0.0f, -1.0f));
+			MoveSelect(Math::Vector(0.0f, 0.0f, -1.0f));
 			break;
 	}
 
@@ -945,7 +945,7 @@ void CModel::SmoothSelect()
 	int			index[100];
 	int			used, i, j, rank;
 	D3DVERTEX2	vi, vj;
-	D3DVECTOR	sum;
+	Math::Vector	sum;
 
 	used = m_modFile->RetTriangleUsed();
 
@@ -1008,7 +1008,7 @@ void CModel::SmoothSelect()
 
 void CModel::PlaneSelect()
 {
-	D3DVECTOR	p1, p2, p3, n;
+	Math::Vector	p1, p2, p3, n;
 	int			used, i;
 
 	used = m_modFile->RetTriangleUsed();
@@ -1029,7 +1029,7 @@ void CModel::PlaneSelect()
 			p3.y = m_triangleTable[i].p3.y;
 			p3.z = m_triangleTable[i].p3.z;
 
-			n = ComputeNormal(p3, p2, p1);
+			n = Math::NormalToPlane(p3, p2, p1);
 
 			m_triangleTable[i].p3.nx = n.x;
 			m_triangleTable[i].p3.ny = n.y;
@@ -1082,7 +1082,7 @@ void CModel::StateSelect()
 
 // Moves the selection.
 
-void CModel::MoveSelect(D3DVECTOR move)
+void CModel::MoveSelect(Math::Vector move)
 {
 	if ( m_oper == 'Z' )
 	{
@@ -1120,7 +1120,7 @@ void CModel::MoveSelect(D3DVECTOR move)
 
 // Moves the selection.
 
-void CModel::OperSelect(D3DVECTOR move, char oper)
+void CModel::OperSelect(Math::Vector move, char oper)
 {
 	Math::Point		rot;
 	int			used, i;
@@ -1233,7 +1233,7 @@ void CModel::ReadScript(char *filename)
 	char		name[200];
 	char		buffer[200];
 	int			i, first, last;
-	D3DVECTOR	move;
+	Math::Vector	move;
 	bool		bFirst = true;
 
 	file = fopen(filename, "r");
@@ -1290,7 +1290,7 @@ void CModel::ReadScript(char *filename)
 
 // Computes the bbox of selected triangles.
 
-void CModel::BBoxCompute(D3DVECTOR &min, D3DVECTOR &max)
+void CModel::BBoxCompute(Math::Vector &min, Math::Vector &max)
 {
 	D3DVERTEX2	vertex;
 	int			used, i;
@@ -1320,9 +1320,9 @@ void CModel::BBoxCompute(D3DVECTOR &min, D3DVECTOR &max)
 
 // Returns the gravity center of the selection.
 
-D3DVECTOR CModel::RetSelectCDG()
+Math::Vector CModel::RetSelectCDG()
 {
-	D3DVECTOR	min, max, cdg;
+	Math::Vector	min, max, cdg;
 
 	BBoxCompute(min, max);
 
@@ -1335,9 +1335,9 @@ D3DVECTOR CModel::RetSelectCDG()
 
 // Returns the normal vector of the selection.
 
-D3DVECTOR CModel::RetSelectNormal()
+Math::Vector CModel::RetSelectNormal()
 {
-	D3DVECTOR	p1, p2, p3, n;
+	Math::Vector	p1, p2, p3, n;
 
 	p1.x = m_triangleTable[m_triangleSel1].p1.nx;
 	p1.y = m_triangleTable[m_triangleSel1].p1.ny;
@@ -1361,7 +1361,7 @@ D3DVECTOR CModel::RetSelectNormal()
 bool CModel::IsMappingSelectPlausible(D3DMaping D3Dmode)
 {
 	D3DVERTEX2	vertex[3];
-	D3DVECTOR	min, max;
+	Math::Vector	min, max;
 	Math::Point		a, b, ti, ts;
 	float		au, bu, av, bv;
 	int			used, i, j;
@@ -1443,7 +1443,7 @@ void CModel::MappingSelect(int mode, int rotate, bool bMirrorX, bool bMirrorY,
 						   Math::Point ti, Math::Point ts, char *texName)
 {
 	D3DVERTEX2	vertex;
-	D3DVECTOR	min, max;
+	Math::Vector	min, max;
 	Math::Point		a, b;
 	D3DMaping	D3Dmode;
 	float		au, bu, av, bv;
@@ -1562,7 +1562,7 @@ void CModel::MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bM
 									Math::Point ti, Math::Point ts, char *texName)
 {
 	D3DVERTEX2	vertex;
-	D3DVECTOR	min, max, center, dim, p;
+	Math::Vector	min, max, center, dim, p;
 	float		radius, k, u, v;
 	int			used, i;
 
@@ -1590,7 +1590,7 @@ void CModel::MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bM
 		p.y = vertex.y-center.y;
 		p.z = vertex.z-center.z;
 
-		k = radius/Length(p);
+		k = radius/p.Length();
 		u = k*p.x;
 		v = k*p.z;
 		u = (u/dim.x*2.0f+1.0f)/2.0f;  // 0..1
@@ -1607,10 +1607,10 @@ void CModel::MappingSelectSpherical(int mode, int rotate, bool bMirrorX, bool bM
 
 // Seeking the center of a group of points.
 
-D3DVECTOR CModel::RetMappingCenter(D3DVECTOR pos, D3DVECTOR min)
+Math::Vector CModel::RetMappingCenter(Math::Vector pos, Math::Vector min)
 {
 	D3DVERTEX2	vertex;
-	D3DVECTOR	center, p;
+	Math::Vector	center, p;
 	int			used, i, nb;
 
 	center.x = 0.0f;
@@ -1653,7 +1653,7 @@ void CModel::MappingSelectCylindrical(int mode, int rotate, bool bMirrorX, bool 
 									  Math::Point ti, Math::Point ts, char *texName)
 {
 	D3DVERTEX2	vertex;
-	D3DVECTOR	min, max, center, local, dim, p, pp, box;
+	Math::Vector	min, max, center, local, dim, p, pp, box;
 	float		radius, u, v;
 	int			used, i;
 
@@ -1755,7 +1755,7 @@ void CModel::MappingSelectFace(int mode, int rotate, bool bMirrorX, bool bMirror
 							   Math::Point ti, Math::Point ts, char *texName)
 {
 	D3DVERTEX2	vertex[3];
-	D3DVECTOR	min, max, center, local, dim, p;
+	Math::Vector	min, max, center, local, dim, p;
 	float		radius, u[3], v[3], m[3], avg;
 	int			used, i, j;
 
@@ -1828,7 +1828,7 @@ void CModel::MappingSelect2(int texNum2, int subdiv,
 							bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex;
-	D3DVECTOR	min, max, center, p;
+	Math::Vector	min, max, center, p;
 	float		u ,v;
 	int			used, i;
 
@@ -1871,7 +1871,7 @@ void CModel::MappingSelect2(int texNum2, int subdiv,
 		p.z = vertex.z-center.z;
 
 		u = Math::RotateAngle(p.x, p.z);
-		v = Math::RotateAngle(Length(p.x, p.z), p.y);
+		v = Math::RotateAngle(Math::Point(p.x, p.z).Length(), p.y);
 		if ( p.x < 0.0f )  v += Math::PI;
 
 		u = Math::NormAngle(u+(float)offsetU*Math::PI/180.0f);
@@ -1904,7 +1904,7 @@ void CModel::MappingSelect2(int texNum2, int subdiv,
 void CModel::MappingSelectPlane2(int mode, bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex;
-	D3DVECTOR	min, max;
+	Math::Vector	min, max;
 	Math::Point		ti, ts, a, b;
 	float		au, bu, av, bv;
 	int			used, i;
@@ -1984,7 +1984,7 @@ void CModel::MappingSelectPlane2(int mode, bool bMirrorX, bool bMirrorY)
 void CModel::MappingSelectSpherical2(bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex;
-	D3DVECTOR	min, max, center, dim, p;
+	Math::Vector	min, max, center, dim, p;
 	Math::Point		ti, ts;
 	float		radius, k, u, v;
 	int			used, i;
@@ -2016,7 +2016,7 @@ void CModel::MappingSelectSpherical2(bool bMirrorX, bool bMirrorY)
 		p.y = vertex.y-center.y;
 		p.z = vertex.z-center.z;
 
-		k = radius/Length(p);
+		k = radius/p.Length();
 		u = k*p.x;
 		v = k*p.z;
 		u = (u/dim.x*2.0f+1.0f)/2.0f;  // 0..1
@@ -2036,7 +2036,7 @@ void CModel::MappingSelectSpherical2(bool bMirrorX, bool bMirrorY)
 void CModel::MappingSelectMagic2(bool bMirrorX, bool bMirrorY)
 {
 	D3DVERTEX2	vertex, v[3];
-	D3DVECTOR	min, max, au, bu, av, bv, n;
+	Math::Vector	min, max, au, bu, av, bv, n;
 	Math::Point		ti, ts;
 	int			used, i, mode;
 
@@ -2078,9 +2078,9 @@ void CModel::MappingSelectMagic2(bool bMirrorX, bool bMirrorY)
 			if ( !GetVertex(i+1, v[1]) )  continue;
 			if ( !GetVertex(i+2, v[2]) )  continue;
 
-			n = ComputeNormal(D3DVECTOR(v[0].x, v[0].y, v[0].z),
-							  D3DVECTOR(v[1].x, v[1].y, v[1].z),
-							  D3DVECTOR(v[2].x, v[2].y, v[2].z));
+			n = Math::NormalToPlane(Math::Vector(v[0].x, v[0].y, v[0].z),
+									Math::Vector(v[1].x, v[1].y, v[1].z),
+									Math::Vector(v[2].x, v[2].y, v[2].z));
 
 			n.x = fabs(n.x);
 			n.y = fabs(n.y);
@@ -2142,7 +2142,7 @@ int CModel::SearchNext(int rank, int step)
 
 int CModel::SearchSamePlane(int first, int step)
 {
-	D3DVECTOR	vFirst[3], vNext[3];
+	Math::Vector	vFirst[3], vNext[3];
 	int			last, i;
 
 	vFirst[0].x = m_triangleTable[first].p1.x;
@@ -2424,7 +2424,7 @@ void CModel::InitView()
 void CModel::InitViewFromSelect()
 {
 #if 0
-	D3DVECTOR	n;
+	Math::Vector	n;
 	float		h,v;
 
 	n = RetSelectNormal();
@@ -2456,13 +2456,13 @@ void CModel::InitViewFromSelect()
 
 void CModel::UpdateView()
 {
-	D3DVECTOR	eye, lookat, vUpVec;
+	Math::Vector	eye, lookat, vUpVec;
 
 //?	lookat = RetSelectCDG();
-	lookat = D3DVECTOR(0.0f, m_viewHeight, 0.0f);
+	lookat = Math::Vector(0.0f, m_viewHeight, 0.0f);
 	eye = RotateView(lookat, m_viewAngleH, m_viewAngleV, m_viewDist);
 
-	vUpVec = D3DVECTOR(0.0f, 1.0f, 0.0f);
+	vUpVec = Math::Vector(0.0f, 1.0f, 0.0f);
 	m_engine->SetViewParams(eye, lookat, vUpVec, 10.0f);
 	m_engine->SetRankView(0);
 }

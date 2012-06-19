@@ -94,7 +94,7 @@ public:
 
 	bool		EventProcess(const Event &event);
 
-	void		Init(D3DVECTOR eye, D3DVECTOR lookat, float delay);
+	void		Init(Math::Vector eye, Math::Vector lookat, float delay);
 
 	void		SetObject(CObject* object);
 	CObject*	RetObject();
@@ -117,25 +117,25 @@ public:
 	void		SetRemoteZoom(float value);
 	float		RetRemoteZoom();
 
-	void		StartVisit(D3DVECTOR goal, float dist);
+	void		StartVisit(Math::Vector goal, float dist);
 	void		StopVisit();
 
-	void		RetCamera(D3DVECTOR &eye, D3DVECTOR &lookat);
+	void		RetCamera(Math::Vector &eye, Math::Vector &lookat);
 
 	bool		StartCentering(CObject *object, float angleH, float angleV, float dist, float time);
 	bool		StopCentering(CObject *object, float time);
 	void		AbortCentering();
 
 	void		FlushEffect();
-	void		StartEffect(CameraEffect effect, D3DVECTOR pos, float force);
+	void		StartEffect(CameraEffect effect, Math::Vector pos, float force);
 
 	void		FlushOver();
 	void		SetOverBaseColor(D3DCOLORVALUE color);
-	void		StartOver(OverEffect effect, D3DVECTOR pos, float force);
+	void		StartOver(OverEffect effect, Math::Vector pos, float force);
 
 	void		FixCamera();
-	void		SetScriptEye(D3DVECTOR eye);
-	void		SetScriptLookat(D3DVECTOR lookat);
+	void		SetScriptEye(Math::Vector eye);
+	void		SetScriptLookat(Math::Vector lookat);
 
 	void		SetEffect(bool bEnable);
 	void		SetCameraScroll(bool bScroll);
@@ -160,15 +160,15 @@ protected:
 	bool		EventFrameVisit(const Event &event);
 	bool		EventFrameScript(const Event &event);
 
-	void		SetViewTime(const D3DVECTOR &vEyePt, const D3DVECTOR &vLookatPt, float rTime);
-	bool		IsCollision(D3DVECTOR &eye, D3DVECTOR lookat);
-	bool		IsCollisionBack(D3DVECTOR &eye, D3DVECTOR lookat);
-	bool		IsCollisionFix(D3DVECTOR &eye, D3DVECTOR lookat);
+	void		SetViewTime(const Math::Vector &vEyePt, const Math::Vector &vLookatPt, float rTime);
+	bool		IsCollision(Math::Vector &eye, Math::Vector lookat);
+	bool		IsCollisionBack(Math::Vector &eye, Math::Vector lookat);
+	bool		IsCollisionFix(Math::Vector &eye, Math::Vector lookat);
 
-	D3DVECTOR	ExcludeTerrain(D3DVECTOR eye, D3DVECTOR lookat, float &angleH, float &angleV);
-	D3DVECTOR	ExcludeObject(D3DVECTOR eye, D3DVECTOR lookat, float &angleH, float &angleV);
+	Math::Vector	ExcludeTerrain(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
+	Math::Vector	ExcludeObject(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
 
-	void		SetViewParams(const D3DVECTOR &eye, const D3DVECTOR &lookat, const D3DVECTOR &up);
+	void		SetViewParams(const Math::Vector &eye, const Math::Vector &lookat, const Math::Vector &up);
 	void		EffectFrame(const Event &event);
 	void		OverFrame(const Event &event);
 
@@ -185,12 +185,12 @@ protected:
 	float		m_eyeDistance;		// distance between the eyes
 	float		m_initDelay;		// time of initial centering
 
-	D3DVECTOR	m_actualEye;		// current eye
-	D3DVECTOR	m_actualLookat;		// aim current
-	D3DVECTOR	m_finalEye;		// final eye
-	D3DVECTOR	m_finalLookat;		// aim final
-	D3DVECTOR	m_normEye;		// normal eye
-	D3DVECTOR	m_normLookat;		// aim normal
+	Math::Vector	m_actualEye;		// current eye
+	Math::Vector	m_actualLookat;		// aim current
+	Math::Vector	m_finalEye;		// final eye
+	Math::Vector	m_finalLookat;		// aim final
+	Math::Vector	m_normEye;		// normal eye
+	Math::Vector	m_normLookat;		// aim normal
 	float		m_focus;
 
 	bool		m_bRightDown;
@@ -198,7 +198,7 @@ protected:
 	Math::Point		m_rightPosCenter;
 	Math::Point		m_rightPosMove;
 
-	D3DVECTOR	m_eyePt;		// CAMERA_FREE: eye
+	Math::Vector	m_eyePt;		// CAMERA_FREE: eye
 	float		m_directionH;		// CAMERA_FREE: horizontal direction
 	float		m_directionV;		// CAMERA_FREE: vertical direction
 	float		m_heightEye;		// CAMERA_FREE: height above the ground
@@ -215,7 +215,7 @@ protected:
 	float		m_fixDirectionH;	// CAMERA_FIX: direction
 	float		m_fixDirectionV;	// CAMERA_FIX: direction
 
-	D3DVECTOR	m_visitGoal;		// CAMERA_VISIT: target position
+	Math::Vector	m_visitGoal;		// CAMERA_VISIT: target position
 	float		m_visitDist;		// CAMERA_VISIT: distance
 	float		m_visitTime;		// CAMERA_VISIT: relative time
 	CameraType	m_visitType;		// CAMERA_VISIT: initial type
@@ -244,10 +244,10 @@ protected:
 	float		m_centeringProgress;
 
 	CameraEffect m_effectType;
-	D3DVECTOR	m_effectPos;
+	Math::Vector	m_effectPos;
 	float		m_effectForce;
 	float		m_effectProgress;
-	D3DVECTOR	m_effectOffset;
+	Math::Vector	m_effectOffset;
 
 	OverEffect	m_overType;
 	float		m_overForce;
@@ -258,8 +258,8 @@ protected:
 	float		m_overFadeIn;
 	float		m_overFadeOut;
 
-	D3DVECTOR	m_scriptEye;
-	D3DVECTOR	m_scriptLookat;
+	Math::Vector	m_scriptEye;
+	Math::Vector	m_scriptLookat;
 
 	bool		m_bEffect;		// shocks if explosion?
 	bool		m_bCameraScroll;	// scroll in the edges?

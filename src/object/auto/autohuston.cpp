@@ -44,7 +44,7 @@
 CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 						 : CAuto(iMan, object)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	int			i;
 
 	for ( i=0 ; i<HUSTONMAXLENS ; i++ )
@@ -57,10 +57,10 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 	m_lens[1].type = PARTISELR;
 	m_lens[2].type = PARTISELR;
 	m_lens[3].type = PARTISELR;
-	m_lens[0].pos = pos+D3DVECTOR(0.0f+13.0f, 34.0f, 30.0f      );
-	m_lens[1].pos = pos+D3DVECTOR(0.0f-13.0f, 34.0f, 30.0f      );
-	m_lens[2].pos = pos+D3DVECTOR(0.0f      , 34.0f, 30.0f+13.0f);
-	m_lens[3].pos = pos+D3DVECTOR(0.0f      , 34.0f, 30.0f-13.0f);
+	m_lens[0].pos = pos+Math::Vector(0.0f+13.0f, 34.0f, 30.0f      );
+	m_lens[1].pos = pos+Math::Vector(0.0f-13.0f, 34.0f, 30.0f      );
+	m_lens[2].pos = pos+Math::Vector(0.0f      , 34.0f, 30.0f+13.0f);
+	m_lens[3].pos = pos+Math::Vector(0.0f      , 34.0f, 30.0f-13.0f);
 	m_lens[0].dim = 4.0f;
 	m_lens[1].dim = 4.0f;
 	m_lens[2].dim = 4.0f;
@@ -77,46 +77,46 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 	// Part under the radar.
 	i = 4;
 	m_lens[i].type = PARTISELR;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 9.9f, 40.1f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 9.9f, 40.1f);
 	m_lens[i].dim = 1.8f;
 	m_lens[i].total = 0.4f;
 	m_lens[i].off = 0.2f;
 	i ++;
 
 	m_lens[i].type = PARTISELY;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 7.2f, 34.8f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 7.2f, 34.8f);
 	m_lens[i].dim = 0.4f;
 	m_lens[i].total = 0.7f;
 	m_lens[i].off = 0.3f;
 	i ++;
 	m_lens[i].type = PARTISELY;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 6.5f, 34.3f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 34.3f);
 	m_lens[i].dim = 0.4f;
 	m_lens[i].total = 0.7f;
 	m_lens[i].off = 0.3f;
 	i ++;
 	m_lens[i].type = PARTISELR;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 6.5f, 33.4f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 33.4f);
 	m_lens[i].dim = 0.4f;
 	m_lens[i].total = 0.0f;
 	m_lens[i].off = 0.0f;
 	i ++;
 	m_lens[i].type = PARTISELR;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 6.5f, 33.0f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 33.0f);
 	m_lens[i].dim = 0.4f;
 	m_lens[i].total = 1.0f;
 	m_lens[i].off = 0.5f;
 	i ++;
 
 	m_lens[i].type = PARTISELY;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 8.5f, 14.0f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 8.5f, 14.0f);
 	m_lens[i].dim = 1.2f;
 	m_lens[i].total = 0.8f;
 	m_lens[i].off = 0.2f;
 	i ++;
 
 	m_lens[i].type = PARTISELR;
-	m_lens[i].pos = pos+D3DVECTOR(4.0f, 6.0f, 8.6f);
+	m_lens[i].pos = pos+Math::Vector(4.0f, 6.0f, 8.6f);
 	m_lens[i].dim = 1.0f;
 	m_lens[i].total = 0.9f;
 	m_lens[i].off = 0.7f;
@@ -124,53 +124,53 @@ CAutoHuston::CAutoHuston(CInstanceManager* iMan, CObject* object)
 
 	// Part with three windows.
 	m_lens[i].type = PARTISELR;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 9.9f, -19.9f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 9.9f, -19.9f);
 	m_lens[i].dim = 1.0f;
 	m_lens[i].total = 0.6f;
 	m_lens[i].off = 0.3f;
 	i ++;
 
 	m_lens[i].type = PARTISELY;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 7.2f, 34.8f-60.0f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 7.2f, 34.8f-60.0f);
 	m_lens[i].dim = 0.4f;
 	m_lens[i].total = 0.7f;
 	m_lens[i].off = 0.3f;
 	i ++;
 	m_lens[i].type = PARTISELY;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 6.5f, 34.3f-60.0f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 34.3f-60.0f);
 	m_lens[i].dim = 0.4f;
 	m_lens[i].total = 0.0f;
 	m_lens[i].off = 0.0f;
 	i ++;
 	m_lens[i].type = PARTISELR;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 6.5f, 33.4f-60.0f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 33.4f-60.0f);
 	m_lens[i].dim = 0.4f;
 	m_lens[i].total = 0.6f;
 	m_lens[i].off = 0.4f;
 	i ++;
 	m_lens[i].type = PARTISELR;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 6.5f, 33.0f-60.0f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 6.5f, 33.0f-60.0f);
 	m_lens[i].dim = 0.4f;
 	m_lens[i].total = 0.8f;
 	m_lens[i].off = 0.2f;
 	i ++;
 
 	m_lens[i].type = PARTISELY;
-	m_lens[i].pos = pos+D3DVECTOR(-6.5f, 13.5f, -37.0f);
+	m_lens[i].pos = pos+Math::Vector(-6.5f, 13.5f, -37.0f);
 	m_lens[i].dim = 1.0f;
 	m_lens[i].total = 0.0f;
 	m_lens[i].off = 0.0f;
 	i ++;
 
 	m_lens[i].type = PARTISELY;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 12.2f, -39.8f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 12.2f, -39.8f);
 	m_lens[i].dim = 1.8f;
 	m_lens[i].total = 1.5f;
 	m_lens[i].off = 0.5f;
 	i ++;
 
 	m_lens[i].type = PARTISELY;
-	m_lens[i].pos = pos+D3DVECTOR(-7.0f, 8.5f, -47.0f);
+	m_lens[i].pos = pos+Math::Vector(-7.0f, 8.5f, -47.0f);
 	m_lens[i].dim = 0.6f;
 	m_lens[i].total = 0.7f;
 	m_lens[i].off = 0.5f;
@@ -218,7 +218,7 @@ void CAutoHuston::Start(int param)
 
 bool CAutoHuston::EventProcess(const Event &event)
 {
-	D3DVECTOR	speed;
+	Math::Vector	speed;
 	Math::Point		dim;
 	float		angle;
 	int			i;
@@ -237,7 +237,7 @@ bool CAutoHuston::EventProcess(const Event &event)
 	m_progress += event.rTime*m_speed;
 
 	// Flashes the keys.
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+	speed = Math::Vector(0.0f, 0.0f, 0.0f);
 	for ( i=0 ; i<m_lensTotal ; i++ )
 	{
 		if ( m_lens[i].total != 0.0f &&

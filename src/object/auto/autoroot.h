@@ -48,6 +48,6 @@ protected:
 
 protected:
 	float			m_lastParticule;
-	D3DVECTOR		m_center;
+	Math::Vector		m_center;
 };
 

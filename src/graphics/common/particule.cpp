@@ -24,6 +24,7 @@
 #include "common/struct.h"
 #include "math/const.h"
 #include "math/geometry.h"
+#include "math/conv.h"
 #include "math/old/d3dmath.h"
 #include "graphics/d3d/d3dtextr.h"
 #include "graphics/d3d/d3dengine.h"
@@ -249,7 +250,7 @@ void NameParticule(char *buffer, int num)
 // Creates a new particle.
 // Returns the channel of the particle created or -1 on error.
 
-int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim,
+int CParticule::CreateParticule(Math::Vector pos, Math::Vector speed, Math::Point dim,
 								ParticuleType type,
 								float duration, float mass,
 								float windSensitivity, int sheet)
@@ -273,7 +274,7 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim,
 		 type != PARTIQUARTZ     &&
 		 !m_main->RetMovieLock() )
 	{
-		dist = Length(pos, m_engine->RetEyePt());
+		dist = Math::Distance(pos, m_engine->RetEyePt());
 		if ( dist > 300.0f )  return -1;
 	}
 #endif
@@ -454,13 +455,13 @@ int CParticule::CreateParticule(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim,
 // Creates a new triangular particle (debris).
 // Returns the channel of the particle created or -1 on error.
 
-int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
+int CParticule::CreateFrag(Math::Vector pos, Math::Vector speed,
 						   D3DTriangle *triangle,
 						   ParticuleType type,
 						   float duration, float mass,
 						   float windSensitivity, int sheet)
 {
-	D3DVECTOR	p1, p2, p3, n;
+	Math::Vector	p1, p2, p3, n;
 	float		l1, l2, l3, dx, dy;
 	int			i, j, t;
 
@@ -513,14 +514,14 @@ int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 			p3.y = m_triangle[i].triangle[2].y;
 			p3.z = m_triangle[i].triangle[2].z;
 
-			l1 = Length(p1, p2);
-			l2 = Length(p2, p3);
-			l3 = Length(p3, p1);
+			l1 = Math::Distance(p1, p2);
+			l2 = Math::Distance(p2, p3);
+			l3 = Math::Distance(p3, p1);
 			dx = fabs(Math::Min(l1, l2, l3))*0.5f;
 			dy = fabs(Math::Max(l1, l2, l3))*0.5f;
-			p1 = D3DVECTOR(-dx,  dy, 0.0f);
-			p2 = D3DVECTOR( dx,  dy, 0.0f);
-			p3 = D3DVECTOR(-dx, -dy, 0.0f);
+			p1 = Math::Vector(-dx,  dy, 0.0f);
+			p2 = Math::Vector( dx,  dy, 0.0f);
+			p3 = Math::Vector(-dx, -dy, 0.0f);
 
 			m_triangle[i].triangle[0].x = p1.x;
 			m_triangle[i].triangle[0].y = p1.y;
@@ -534,7 +535,7 @@ int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 			m_triangle[i].triangle[2].y = p3.y;
 			m_triangle[i].triangle[2].z = p3.z;
 
-			n = D3DVECTOR(0.0f, 0.0f, -1.0f);
+			n = Math::Vector(0.0f, 0.0f, -1.0f);
 
 			m_triangle[i].triangle[0].nx = n.x;
 			m_triangle[i].triangle[0].ny = n.y;
@@ -562,7 +563,7 @@ int CParticule::CreateFrag(D3DVECTOR pos, D3DVECTOR speed,
 // Creates a new particle being a part of object.
 // Returns the channel of the particle created or -1 on error.
 
-int CParticule::CreatePart(D3DVECTOR pos, D3DVECTOR speed,
+int CParticule::CreatePart(Math::Vector pos, Math::Vector speed,
 						   ParticuleType type,
 						   float duration, float mass, float weight,
 						   float windSensitivity, int sheet)
@@ -614,7 +615,7 @@ int CParticule::CreatePart(D3DVECTOR pos, D3DVECTOR speed,
 // Creates a new linear particle (radius).
 // Returns the channel of the particle created or -1 on error.
 
-int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
+int CParticule::CreateRay(Math::Vector pos, Math::Vector goal,
 						  ParticuleType type, Math::Point dim,
 						  float duration, int sheet)
 {
@@ -646,7 +647,7 @@ int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
 			m_particule[i].duration  = duration;
 			m_particule[i].pos       = pos;
 			m_particule[i].goal      = goal;
-			m_particule[i].speed     = D3DVECTOR(0.0f, 0.0f, 0.0f);
+			m_particule[i].speed     = Math::Vector(0.0f, 0.0f, 0.0f);
 			m_particule[i].windSensitivity = 0.0f;
 			m_particule[i].dim       = dim;
 			m_particule[i].zoom      = 1.0f;
@@ -677,7 +678,7 @@ int CParticule::CreateRay(D3DVECTOR pos, D3DVECTOR goal,
 // Creates a particle with a trail.
 // "length" is the length of the tail of drag (in seconds)!
 
-int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim,
+int CParticule::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim,
 							ParticuleType type, float duration, float mass,
 							float length, float width)
 {
@@ -713,8 +714,8 @@ int CParticule::CreateTrack(D3DVECTOR pos, D3DVECTOR speed, Math::Point dim,
 
 // Creates a tire mark.
 
-void CParticule::CreateWheelTrace(const D3DVECTOR &p1, const D3DVECTOR &p2,
-								  const D3DVECTOR &p3, const D3DVECTOR &p4,
+void CParticule::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2,
+								  const Math::Vector &p3, const Math::Vector &p4,
 								  ParticuleType type)
 {
 	int		i, max;
@@ -866,7 +867,7 @@ void CParticule::SetObjectFather(int channel, CObject *object)
 	m_particule[channel].objFather = object;
 }
 
-void CParticule::SetPosition(int channel, D3DVECTOR pos)
+void CParticule::SetPosition(int channel, Math::Vector pos)
 {
 	if ( !CheckChannel(channel) )  return;
 	m_particule[channel].pos = pos;
@@ -896,7 +897,7 @@ void CParticule::SetIntensity(int channel, float intensity)
 	m_particule[channel].intensity = intensity;
 }
 
-void CParticule::SetParam(int channel, D3DVECTOR pos, Math::Point dim, float zoom,
+void CParticule::SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom,
 						  float angle, float intensity)
 {
 	if ( !CheckChannel(channel) )  return;
@@ -917,7 +918,7 @@ void CParticule::SetPhase(int channel, ParticulePhase phase, float duration)
 
 // Returns the position of the particle.
 
-bool CParticule::GetPosition(int channel, D3DVECTOR &pos)
+bool CParticule::GetPosition(int channel, Math::Vector &pos)
 {
 	if ( !CheckChannel(channel) )  return false;
 	pos = m_particule[channel].pos;
@@ -937,7 +938,7 @@ void CParticule::SetFrameUpdate(int sheet, bool bUpdate)
 void CParticule::FrameParticule(float rTime)
 {
 	CObject*	object;
-	D3DVECTOR	eye, pos, speed, wind;
+	Math::Vector	eye, pos, speed, wind;
 	Math::Point		ts, ti, dim;
 	bool		bPause;
 	float		progress, dp, h, duration, mass, amplitude;
@@ -1417,7 +1418,7 @@ void CParticule::FrameParticule(float rTime)
 				{
 					if ( object->RetShieldRadius() > 0.0f )  // protected by shield?
 					{
-						CreateParticule(m_particule[i].pos, D3DVECTOR(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
+						CreateParticule(m_particule[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
 						if ( m_lastTimeGunDel > 0.2f )
 						{
 							m_lastTimeGunDel = 0.0f;
@@ -1463,7 +1464,7 @@ void CParticule::FrameParticule(float rTime)
 				{
 					if ( object->RetShieldRadius() > 0.0f )
 					{
-						CreateParticule(m_particule[i].pos, D3DVECTOR(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
+						CreateParticule(m_particule[i].pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(6.0f, 6.0f), PARTIGUNDEL, 2.0f);
 						if ( m_lastTimeGunDel > 0.2f )
 						{
 							m_lastTimeGunDel = 0.0f;
@@ -2144,12 +2145,12 @@ void CParticule::FrameParticule(float rTime)
 			{
 				m_particule[i].testTime = 0.0f;
 
-				D3DVECTOR	pos, speed;
+				Math::Vector	pos, speed;
 				Math::Point		dim;
 
 				pos = m_particule[i].pos;
 //?				speed = -m_particule[i].speed*0.5f;
-				speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+				speed = Math::Vector(0.0f, 0.0f, 0.0f);
 				dim.x = 1.0f*(Math::Rand()*0.8f+0.6f);
 				dim.y = dim.x;
 				CreateParticule(pos, speed, dim, PARTIGAS, 0.5f);
@@ -2748,9 +2749,9 @@ void CParticule::FrameParticule(float rTime)
 // Moves a drag.
 // Returns true if the drag is finished.
 
-bool CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
+bool CParticule::TrackMove(int i, Math::Vector pos, float progress)
 {
-	D3DVECTOR	last;
+	Math::Vector	last;
 	int			h, hh;
 
 	if ( i < 0 || i >= MAXTRACK )  return true;
@@ -2776,7 +2777,7 @@ bool CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 			last = m_track[i].pos[hh];
 		}
 		m_track[i].pos[h] = pos;
-		m_track[i].len[h] = Length(pos, last);
+		m_track[i].len[h] = Math::Distance(pos, last);
 
 		m_track[i].head = h;
 
@@ -2797,8 +2798,8 @@ bool CParticule::TrackMove(int i, D3DVECTOR pos, float progress)
 void CParticule::TrackDraw(int i, ParticuleType type)
 {
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	D3DVECTOR	corner[4], p1, p2, p, n, eye;
-	D3DMATRIX	matrix;
+	Math::Vector	corner[4], p1, p2, p, n, eye;
+	Math::Matrix	matrix;
 	Math::Point		texInf, texSup, rot;
 	float		lTotal, f1, f2, a;
 	int			counter, h;
@@ -2812,8 +2813,11 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 		h --;  if ( h < 0 )  h = MAXTRACKLEN-1;
 	}
 
-	D3DUtil_SetIdentityMatrix(matrix);
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	matrix.LoadIdentity();
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	if ( type == PARTITRACK1 )  // explosion technique?
 	{
@@ -2967,8 +2971,8 @@ void CParticule::TrackDraw(int i, ParticuleType type)
 void CParticule::DrawParticuleTriangle(int i)
 {
 	CObject*		object;
-	D3DMATRIX		matrix;
-	D3DVECTOR		eye, pos, angle;
+	Math::Matrix		matrix;
+	Math::Vector		eye, pos, angle;
 
 	if ( m_particule[i].zoom == 0.0f )  return;
 
@@ -2981,15 +2985,18 @@ void CParticule::DrawParticuleTriangle(int i)
 		pos += object->RetPosition(0);
 	}
 
-	angle.x = -Math::RotateAngle(Length2d(pos, eye), pos.y-eye.y);
+	angle.x = -Math::RotateAngle(Math::DistanceProjected(pos, eye), pos.y-eye.y);
 	angle.y = Math::RotateAngle(pos.z-eye.z, pos.x-eye.x);
 	angle.z = m_particule[i].angle;
 
-	MatRotateXZY(matrix, angle);
-	matrix._41 = pos.x;
-	matrix._42 = pos.y;
-	matrix._43 = pos.z;
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	Math::LoadRotationXZYMatrix(matrix, angle);
+	matrix.Set(1, 4, pos.x);
+	matrix.Set(2, 4, pos.y);
+	matrix.Set(3, 4, pos.z);
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, D3DFVF_VERTEX2,
 								m_triangle[i].triangle, 3, NULL);
@@ -3002,8 +3009,8 @@ void CParticule::DrawParticuleNorm(int i)
 {
 	CObject*		object;
 	D3DVERTEX2		vertex[4];	// 2 triangles
-	D3DMATRIX		matrix;
-	D3DVECTOR		corner[4], eye, pos, n, angle;
+	Math::Matrix		matrix;
+	Math::Vector		corner[4], eye, pos, n, angle;
 	Math::Point			dim;
 	float			zoom;
 
@@ -3020,7 +3027,7 @@ void CParticule::DrawParticuleNorm(int i)
 	{
 		pos = m_particule[i].pos;
 
-		n = D3DVECTOR(0.0f, 0.0f, -1.0f);
+		n = Math::Vector(0.0f, 0.0f, -1.0f);
 
 		dim.x = m_particule[i].dim.x * zoom;
 		dim.y = m_particule[i].dim.y * zoom;
@@ -3060,17 +3067,20 @@ void CParticule::DrawParticuleNorm(int i)
 			pos += object->RetPosition(0);
 		}
 
-		angle.x = -Math::RotateAngle(Length2d(pos, eye), pos.y-eye.y);
+		angle.x = -Math::RotateAngle(Math::DistanceProjected(pos, eye), pos.y-eye.y);
 		angle.y = Math::RotateAngle(pos.z-eye.z, pos.x-eye.x);
 		angle.z = m_particule[i].angle;
 
-		MatRotateXZY(matrix, angle);
-		matrix._41 = pos.x;
-		matrix._42 = pos.y;
-		matrix._43 = pos.z;
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+		Math::LoadRotationXZYMatrix(matrix, angle);
+		matrix.Set(1, 4, pos.x);
+		matrix.Set(2, 4, pos.y);
+		matrix.Set(3, 4, pos.z);
+		{
+		  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+		  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+		}
 
-		n = D3DVECTOR(0.0f, 0.0f, -1.0f);
+		n = Math::Vector(0.0f, 0.0f, -1.0f);
 
 		dim.x = m_particule[i].dim.x * zoom;
 		dim.y = m_particule[i].dim.y * zoom;
@@ -3107,8 +3117,8 @@ void CParticule::DrawParticuleFlat(int i)
 {
 	CObject*		object;
 	D3DVERTEX2		vertex[4];	// 2 triangles
-	D3DMATRIX		matrix;
-	D3DVECTOR		corner[4], pos, n, angle, eye;
+	Math::Matrix		matrix;
+	Math::Vector		corner[4], pos, n, angle, eye;
 	Math::Point			dim;
 
 	if ( m_particule[i].zoom == 0.0f )  return;
@@ -3145,13 +3155,16 @@ void CParticule::DrawParticuleFlat(int i)
 	}
 #endif
 
-	MatRotateXZY(matrix, angle);
-	matrix._41 = pos.x;
-	matrix._42 = pos.y;
-	matrix._43 = pos.z;
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	Math::LoadRotationXZYMatrix(matrix, angle);
+	matrix.Set(1, 4, pos.x);
+	matrix.Set(2, 4, pos.y);
+	matrix.Set(3, 4, pos.z);
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);
+	n = Math::Vector(0.0f, 0.0f, -1.0f);
 
 	dim.x = m_particule[i].dim.x * m_particule[i].zoom;
 	dim.y = m_particule[i].dim.y * m_particule[i].zoom;
@@ -3187,8 +3200,8 @@ void CParticule::DrawParticuleFog(int i)
 {
 	CObject*		object;
 	D3DVERTEX2		vertex[4];	// 2 triangles
-	D3DMATRIX		matrix;
-	D3DVECTOR		corner[4], pos, n, angle, eye;
+	Math::Matrix		matrix;
+	Math::Vector		corner[4], pos, n, angle, eye;
 	Math::Point			dim, zoom;
 
 	if ( !m_engine->RetFog() )  return;
@@ -3244,13 +3257,16 @@ void CParticule::DrawParticuleFog(int i)
 		angle.x = -Math::PI/2.0f;
 	}
 
-	MatRotateXZY(matrix, angle);
-	matrix._41 = pos.x;
-	matrix._42 = pos.y;
-	matrix._43 = pos.z;
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	Math::LoadRotationXZYMatrix(matrix, angle);
+	matrix.Set(1, 4, pos.x);
+	matrix.Set(2, 4, pos.y);
+	matrix.Set(3, 4, pos.z);
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
-	n = D3DVECTOR(0.0f, 0.0f, -1.0f);
+	n = Math::Vector(0.0f, 0.0f, -1.0f);
 
 	corner[0].x =  dim.x;
 	corner[0].y =  dim.y;
@@ -3283,8 +3299,8 @@ void CParticule::DrawParticuleRay(int i)
 {
 	CObject*		object;
 	D3DVERTEX2		vertex[4];	// 2 triangles
-	D3DMATRIX		matrix;
-	D3DVECTOR		corner[4], eye, pos, goal, n, angle, proj;
+	Math::Matrix		matrix;
+	Math::Vector		corner[4], eye, pos, goal, n, angle, proj;
 	Math::Point			dim, texInf, texSup;
 	bool			bLeft;
 	float			a, len, adv, prop, vario1, vario2;
@@ -3306,26 +3322,29 @@ void CParticule::DrawParticuleRay(int i)
 	a = Math::RotateAngle(Math::Point(pos.x,pos.z), Math::Point(goal.x,goal.z), Math::Point(eye.x,eye.z));
 	bLeft = (a < Math::PI);
 
-	proj = Projection(pos, goal, eye);
-	angle.x = -Math::RotateAngle(Length2d(proj, eye), proj.y-eye.y);
+	proj = Math::Projection(pos, goal, eye);
+	angle.x = -Math::RotateAngle(Math::DistanceProjected(proj, eye), proj.y-eye.y);
 	angle.y = Math::RotateAngle(pos.z-goal.z, pos.x-goal.x)+Math::PI/2.0f;
-	angle.z = -Math::RotateAngle(Length2d(pos, goal), pos.y-goal.y);
+	angle.z = -Math::RotateAngle(Math::DistanceProjected(pos, goal), pos.y-goal.y);
 	if ( bLeft )  angle.x = -angle.x;
 
-	MatRotateZXY(matrix, angle);
-	matrix._41 = pos.x;
-	matrix._42 = pos.y;
-	matrix._43 = pos.z;
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	Math::LoadRotationZXYMatrix(matrix, angle);
+	matrix.Set(1, 4, pos.x);
+	matrix.Set(2, 4, pos.y);
+	matrix.Set(3, 4, pos.z);
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
-	n = D3DVECTOR(0.0f, 0.0f, bLeft?1.0f:-1.0f);
+	n = Math::Vector(0.0f, 0.0f, bLeft?1.0f:-1.0f);
 
 	dim.x = m_particule[i].dim.x * m_particule[i].zoom;
 	dim.y = m_particule[i].dim.y * m_particule[i].zoom;
 
 	if ( bLeft )  dim.y = -dim.y;
 
-	len = Length(pos, goal);
+	len = Math::Distance(pos, goal);
 	adv = 0.0f;
 
 	step = (int)(len/(dim.x*2.0f))+1;
@@ -3449,8 +3468,8 @@ void CParticule::DrawParticuleRay(int i)
 void CParticule::DrawParticuleSphere(int i)
 {
 	D3DVERTEX2		vertex[2*16*(16+1)];  // triangles
-	D3DMATRIX		matrix, rot;
-	D3DVECTOR		angle, v0, v1;
+	Math::Matrix		matrix, rot;
+	Math::Vector		angle, v0, v1;
 	Math::Point			ts, ti;
 	float			zoom, deltaRingAngle, deltaSegAngle;
 	float			r0,r1, tu0,tv0, tu1,tv1;
@@ -3468,24 +3487,27 @@ void CParticule::DrawParticuleSphere(int i)
 
 	m_engine->SetState(D3DSTATETTb|D3DSTATE2FACE|D3DSTATEWRAP, RetColor(m_particule[i].intensity));
 
-	D3DUtil_SetIdentityMatrix(matrix);
-	matrix._11 = zoom;
-	matrix._22 = zoom;
-	matrix._33 = zoom;
-	matrix._41 = m_particule[i].pos.x;
-	matrix._42 = m_particule[i].pos.y;
-	matrix._43 = m_particule[i].pos.z;
+	matrix.LoadIdentity();
+	matrix.Set(1, 1, zoom);
+	matrix.Set(2, 2, zoom);
+	matrix.Set(3, 3, zoom);
+	matrix.Set(1, 4, m_particule[i].pos.x);
+	matrix.Set(2, 4, m_particule[i].pos.y);
+	matrix.Set(3, 4, m_particule[i].pos.z);
 
 	if ( m_particule[i].angle != 0.0f )
 	{
 		angle.x = m_particule[i].angle*0.4f;
 		angle.y = m_particule[i].angle*1.0f;
 		angle.z = m_particule[i].angle*0.7f;
-		MatRotateZXY(rot, angle);
-		matrix = rot*matrix;
+		Math::LoadRotationZXYMatrix(rot, angle);
+		matrix = Math::MultiplyMatrices(rot, matrix);
 	}
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	ts.x = m_particule[i].texSup.x;
 	ts.y = m_particule[i].texSup.y;
@@ -3566,8 +3588,8 @@ float ProgressCylinder(float progress)
 void CParticule::DrawParticuleCylinder(int i)
 {
 	D3DVERTEX2		vertex[2*5*(10+1)];  // triangles
-	D3DMATRIX		matrix, rot;
-	D3DVECTOR		angle, v0, v1;
+	Math::Matrix		matrix, rot;
+	Math::Vector		angle, v0, v1;
 	Math::Point			ts, ti;
 	float			progress, zoom, diam, deltaSegAngle, h[6], d[6];
 	float			r0,r1, tu0,tv0, tu1,tv1, p1, p2, pp;
@@ -3580,15 +3602,18 @@ void CParticule::DrawParticuleCylinder(int i)
 
 	m_engine->SetState(D3DSTATETTb|D3DSTATE2FACE|D3DSTATEWRAP, RetColor(m_particule[i].intensity));
 
-	D3DUtil_SetIdentityMatrix(matrix);
-	matrix._11 = zoom;
-	matrix._22 = zoom;
-	matrix._33 = zoom;
-	matrix._41 = m_particule[i].pos.x;
-	matrix._42 = m_particule[i].pos.y;
-	matrix._43 = m_particule[i].pos.z;
+	matrix.LoadIdentity();
+	matrix.Set(1, 1, zoom);
+	matrix.Set(2, 2, zoom);
+	matrix.Set(3, 3, zoom);
+	matrix.Set(1, 4, m_particule[i].pos.x);
+	matrix.Set(2, 4, m_particule[i].pos.y);
+	matrix.Set(3, 4, m_particule[i].pos.z);
 
-	m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+	{
+	  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+	  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+	}
 
 	ts.x = m_particule[i].texSup.x;
 	ts.y = m_particule[i].texSup.y;
@@ -3666,13 +3691,13 @@ void CParticule::DrawParticuleCylinder(int i)
 
 void CParticule::DrawParticuleWheel(int i)
 {
-	D3DVECTOR	pos[4], center;
+	Math::Vector	pos[4], center;
 	D3DVERTEX2	vertex[4];	// 2 triangles
-	D3DVECTOR	n;
+	Math::Vector	n;
 	Math::Point		ts, ti;
 	float		dist, dp;
 
-	dist = Length2d(m_engine->RetEyePt(), m_wheelTrace[i].pos[0]);
+	dist = Math::DistanceProjected(m_engine->RetEyePt(), m_wheelTrace[i].pos[0]);
 	if ( dist > 300.0f )  return;
 
 	pos[0] = m_wheelTrace[i].pos[0];
@@ -3793,7 +3818,7 @@ void CParticule::DrawParticuleWheel(int i)
 	ti.x = ti.x-dp;
 	ti.y = ti.y-dp;
 
-	n = D3DVECTOR(0.0f, 1.0f, 0.0f);
+	n = Math::Vector(0.0f, 1.0f, 0.0f);
 
 	vertex[0] = D3DVERTEX2(pos[0], n, ts.x, ts.y);
 	vertex[1] = D3DVERTEX2(pos[1], n, ti.x, ts.y);
@@ -3809,7 +3834,7 @@ void CParticule::DrawParticuleWheel(int i)
 void CParticule::DrawParticule(int sheet)
 {
 	D3DMATERIAL7	mat;
-	D3DMATRIX		matrix;
+	Math::Matrix		matrix;
 	bool			bLoadTexture;
 	char			name[20];
 	int				state, t, i, j, r;
@@ -3857,8 +3882,11 @@ void CParticule::DrawParticule(int sheet)
 #endif
 		m_engine->SetState(D3DSTATETTw);
 //?		m_engine->SetState(D3DSTATENORMAL);
-		D3DUtil_SetIdentityMatrix(matrix);
-		m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &matrix);
+		matrix.LoadIdentity();
+		{
+		  D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
+		  m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
+		}
 		for ( i=0 ; i<m_wheelTraceTotal ; i++ )
 		{
 			DrawParticuleWheel(i);
@@ -3939,11 +3967,11 @@ void CParticule::DrawParticule(int sheet)
 
 // Seeks if an object collided with a bullet.
 
-CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
+CObject* CParticule::SearchObjectGun(Math::Vector old, Math::Vector pos,
 									 ParticuleType type, CObject *father)
 {
 	CObject		*pObj, *pBest;
-	D3DVECTOR	box1, box2, oPos, p;
+	Math::Vector	box1, box2, oPos, p;
 	ObjectType	oType;
 	bool		bShield;
 	float		min, oRadius, dist, shieldRadius;
@@ -4044,7 +4072,7 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 			shieldRadius = pObj->RetShieldRadius();
 			if ( shieldRadius > 0.0f )
 			{
-				dist = Length(oPos, pos);
+				dist = Math::Distance(oPos, pos);
 				if ( dist <= shieldRadius )
 				{
 					pBest = pObj;
@@ -4056,7 +4084,7 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 
 		// Test the center of the object, which is necessary for objects
 		// that have no sphere in the center (station).
-		dist = Length(oPos, pos)-4.0f;
+		dist = Math::Distance(oPos, pos)-4.0f;
 		if ( dist < min )
 		{
 			pBest = pObj;
@@ -4070,8 +4098,8 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 				 oPos.y+oRadius < box1.y || oPos.y-oRadius > box2.y ||
 				 oPos.z+oRadius < box1.z || oPos.z-oRadius > box2.z )  continue;
 
-			p = Projection(old, pos, oPos);
-			dist = Length(p, oPos)-oRadius;
+			p = Math::Projection(old, pos, oPos);
+			dist = Math::Distance(p, oPos)-oRadius;
 			if ( dist < min )
 			{
 				pBest = pObj;
@@ -4084,11 +4112,11 @@ CObject* CParticule::SearchObjectGun(D3DVECTOR old, D3DVECTOR pos,
 
 // Seeks if an object collided with a ray.
 
-CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
+CObject* CParticule::SearchObjectRay(Math::Vector pos, Math::Vector goal,
 									 ParticuleType type, CObject *father)
 {
 	CObject*	pObj;
-	D3DVECTOR	box1, box2, oPos, p;
+	Math::Vector	box1, box2, oPos, p;
 	ObjectType	oType;
 	float		min, dist;
 	int			i;
@@ -4138,8 +4166,8 @@ CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
 			 oPos.y < box1.y || oPos.y > box2.y ||
 			 oPos.z < box1.z || oPos.z > box2.z )  continue;
 
-		p = Projection(pos, goal, oPos);
-		dist = Length(p, oPos);
+		p = Math::Projection(pos, goal, oPos);
+		dist = Math::Distance(p, oPos);
 		if ( dist < min )  return pObj;
 	}
 
@@ -4149,7 +4177,7 @@ CObject* CParticule::SearchObjectRay(D3DVECTOR pos, D3DVECTOR goal,
 
 // Sounded one.
 
-void CParticule::Play(Sound sound, D3DVECTOR pos, float amplitude)
+void CParticule::Play(Sound sound, Math::Vector pos, float amplitude)
 {
 	if ( m_sound == 0 )
 	{
@@ -4164,7 +4192,7 @@ void CParticule::Play(Sound sound, D3DVECTOR pos, float amplitude)
 // Seeks the color if you're in the fog.
 // Returns black if you're not in the fog.
 
-D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
+D3DCOLORVALUE CParticule::RetFogColor(Math::Vector pos)
 {
 	D3DCOLORVALUE	result, color;
 	float			dist, factor;
@@ -4182,7 +4210,7 @@ D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
 		if ( pos.y >= m_particule[i].pos.y+FOG_HSUP )  continue;
 		if ( pos.y <= m_particule[i].pos.y-FOG_HINF )  continue;
 
-		dist = Length2d(pos, m_particule[i].pos);
+		dist = Math::DistanceProjected(pos, m_particule[i].pos);
 		if ( dist >= m_particule[i].dim.x*1.5f )  continue;
 
 		// Calculates the horizontal distance.
@@ -4251,7 +4279,7 @@ D3DCOLORVALUE CParticule::RetFogColor(D3DVECTOR pos)
 // Writes a file. BMP containing all the tire tracks.
 
 bool CParticule::WriteWheelTrace(char *filename, int width, int height,
-								 D3DVECTOR dl, D3DVECTOR ur)
+								 Math::Vector dl, Math::Vector ur)
 {
 	HDC				hDC;
 	HDC				hDCImage;

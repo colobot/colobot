@@ -906,14 +906,14 @@ int OpBuild(char *line, char *op)
 
 // Returns a position in the XZ plane (top view).
 
-D3DVECTOR OpPos(char *line, char *op)
+Math::Vector OpPos(char *line, char *op)
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 
 	line = SearchOp(line, op);
 	if ( *line == 0 )
 	{
-		pos = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		pos = Math::Vector(0.0f, 0.0f, 0.0f);
 		return pos;
 	}
 	pos.x = GetFloat(line, 0, 0.0f);
@@ -924,14 +924,14 @@ D3DVECTOR OpPos(char *line, char *op)
 
 // Returns a direction.
 
-D3DVECTOR OpDir(char *line, char *op)
+Math::Vector OpDir(char *line, char *op)
 {
-	D3DVECTOR	dir;
+	Math::Vector	dir;
 
 	line = SearchOp(line, op);
 	if ( *line == 0 )
 	{
-		dir = D3DVECTOR(0.0f, 0.0f, 0.0f);
+		dir = Math::Vector(0.0f, 0.0f, 0.0f);
 		return dir;
 	}
 	dir.x = GetFloat(line, 0, 0.0f);

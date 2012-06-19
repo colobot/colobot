@@ -68,7 +68,7 @@ public:
 
 protected:
 	Error		Stop();
-	bool		CreateLight(D3DVECTOR pos);
+	bool		CreateLight(Math::Vector pos);
 	void		IncreaseShield();
 	float		RetRadius();
 
@@ -83,7 +83,7 @@ protected:
 	float			m_lastIncrease;
 	float			m_energyUsed;
 	bool			m_bError;
-	D3DVECTOR		m_shieldPos;
+	Math::Vector		m_shieldPos;
 	int				m_rankSphere;
 	int				m_soundChannel;
 	int				m_effectLight;

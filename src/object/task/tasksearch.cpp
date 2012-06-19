@@ -22,6 +22,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
+#include "math/geometry.h"
 #include "math/old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
@@ -59,8 +60,8 @@ CTaskSearch::~CTaskSearch()
 
 bool CTaskSearch::EventProcess(const Event &event)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
+	Math::Matrix*	mat;
+	Math::Vector	pos, speed;
 	Math::Point		dim;
 	float		angle;
 	int			i;
@@ -89,8 +90,8 @@ bool CTaskSearch::EventProcess(const Event &event)
 		m_lastParticule = m_time;
 
 		mat = m_object->RetWorldMatrix(0);
-		pos = D3DVECTOR(6.5f, 0.2f, 0.0f);
-		pos = Transform(*mat, pos);  // sensor position
+		pos = Math::Vector(6.5f, 0.2f, 0.0f);
+		pos = Math::Transform(*mat, pos);  // sensor position
 
 		speed.x = (Math::Rand()-0.5f)*20.0f;
 		speed.z = (Math::Rand()-0.5f)*20.0f;
@@ -135,7 +136,7 @@ void CTaskSearch::InitAngle()
 Error CTaskSearch::Start()
 {
 	ObjectType	type;
-	D3DVECTOR	speed;
+	Math::Vector	speed;
 	int			i;
 
 	m_bError = true;
@@ -240,14 +241,14 @@ bool CTaskSearch::CreateMark()
 {
 	CObject*	fret;
 	ObjectType	type;
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos;
+	Math::Matrix*	mat;
+	Math::Vector	pos;
 	TerrainRes	res;
 	Error		info;
 
 	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(7.5f, 0.0f, 0.0f);
-	pos = Transform(*mat, pos);  // sensor position
+	pos = Math::Vector(7.5f, 0.0f, 0.0f);
+	pos = Math::Transform(*mat, pos);  // sensor position
 
 	res = m_terrain->RetResource(pos);
 	if ( res == TR_NULL )  return false;
@@ -310,7 +311,7 @@ bool CTaskSearch::CreateMark()
 void CTaskSearch::DeleteMark(ObjectType type)
 {
 	CObject*	pObj;
-	D3DVECTOR	oPos;
+	Math::Vector	oPos;
 	int			i;
 
 	for ( i=0 ; i<1000000 ; i++ )

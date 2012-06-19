@@ -24,7 +24,7 @@
 #include "common/misc.h"
 #include "graphics/d3d/d3dengine.h"
 #include "object/object.h"
-#include "graphics/common/mainmovie.h"
+#include "object/mainmovie.h"
 #include "graphics/common/camera.h"
 #include "graphics/common/particule.h"
 
@@ -91,7 +91,7 @@ class CSound;
 
 struct EndTake
 {
-	D3DVECTOR	pos;
+	Math::Vector	pos;
 	float		dist;
 	ObjectType	type;
 	int			min;		// wins if>
@@ -119,7 +119,7 @@ const float SHOWLIMITTIME	= 20.0f;
 struct ShowLimit
 {
 	bool			bUsed;
-	D3DVECTOR		pos;
+	Math::Vector		pos;
 	float			radius;
 	int				total;
 	int				parti[MAXSHOWPARTI];
@@ -178,7 +178,7 @@ public:
 	void		SelectHuman();
 	CObject*	SearchHuman();
 	CObject*	SearchToto();
-	CObject*	SearchNearest(D3DVECTOR pos, CObject* pExclu);
+	CObject*	SearchNearest(Math::Vector pos, CObject* pExclu);
 	bool		SelectObject(CObject* pObj, bool bDisplayError=true);
 	CObject*	RetSelectObject();
 	CObject*	DeselectAll();
@@ -254,14 +254,14 @@ public:
 	void		ClearInterface();
 	void		ChangeColor();
 
-	float		SearchNearestObject(D3DVECTOR center, CObject *exclu);
-	bool		FreeSpace(D3DVECTOR &center, float minRadius, float maxRadius, float space, CObject *exclu);
-	float		RetFlatZoneRadius(D3DVECTOR center, float maxRadius, CObject *exclu);
+	float		SearchNearestObject(Math::Vector center, CObject *exclu);
+	bool		FreeSpace(Math::Vector &center, float minRadius, float maxRadius, float space, CObject *exclu);
+	float		RetFlatZoneRadius(Math::Vector center, float maxRadius, CObject *exclu);
 	void		HideDropZone(CObject* metal);
 	void		ShowDropZone(CObject* metal, CObject* truck);
 	void		FlushShowLimit(int i);
-	void		SetShowLimit(int i, ParticuleType parti, CObject *pObj, D3DVECTOR pos, float radius, float duration=SHOWLIMITTIME);
-	void		AdjustShowLimit(int i, D3DVECTOR pos);
+	void		SetShowLimit(int i, ParticuleType parti, CObject *pObj, Math::Vector pos, float radius, float duration=SHOWLIMITTIME);
+	void		AdjustShowLimit(int i, Math::Vector pos);
 	void		StartShowLimit();
 	void		FrameShowLimit(float rTime);
 
@@ -287,7 +287,7 @@ public:
 	void		IOWriteObject(FILE *file, CObject* pObj, char *cmd);
 	CObject*	IOReadObject(char *line, char* filename, int objRank);
 
-	int			CreateSpot(D3DVECTOR pos, D3DCOLORVALUE color);
+	int			CreateSpot(Math::Vector pos, D3DCOLORVALUE color);
 
 protected:
 	bool		EventFrame(const Event &event);
@@ -298,9 +298,9 @@ protected:
 	void		CreateScene(bool bSoluce, bool bFixScene, bool bResetObject);
 
 	void		CreateModel();
-	D3DVECTOR	LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
-	CObject*	CreateObject(D3DVECTOR pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, bool bTrainer=false, bool bToy=false, int option=0);
-	int			CreateLight(D3DVECTOR direction, D3DCOLORVALUE color);
+	Math::Vector	LookatPoint( Math::Vector eye, float angleH, float angleV, float length );
+	CObject*	CreateObject(Math::Vector pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, bool bTrainer=false, bool bToy=false, int option=0);
+	int			CreateLight(Math::Vector direction, D3DCOLORVALUE color);
 	void		HiliteClear();
 	void		HiliteObject(Math::Point pos);
 	void		HiliteFrame(float rTime);
@@ -425,8 +425,8 @@ protected:
 	CObject*		m_visitArrow;
 	float			m_visitTime;
 	float			m_visitParticule;
-	D3DVECTOR		m_visitPos;
-	D3DVECTOR		m_visitPosArrow;
+	Math::Vector		m_visitPos;
+	Math::Vector		m_visitPosArrow;
 
 	int				m_endTakeTotal;
 	EndTake			m_endTake[10];
