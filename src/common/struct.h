@@ -50,3 +50,7 @@ struct D3DVERTEX2
 };
 
 
+struct ColorHSV
+{
+    float	h,s,v;
+};
