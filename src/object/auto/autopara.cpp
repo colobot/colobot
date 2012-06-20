@@ -15,32 +15,16 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "math/geometry.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
-#include "common/global.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "math/old/math3d.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/light.h"
-#include "graphics/common/terrain.h"
-#include "graphics/common/camera.h"
-#include "object/object.h"
-#include "ui/interface.h"
-#include "ui/button.h"
-#include "ui/window.h"
-#include "sound/sound.h"
-#include "ui/displaytext.h"
-#include "script/cmdtoken.h"
-#include "object/auto/auto.h"
 #include "object/auto/autopara.h"
+
+
+#include "common/iman.h"
+#include "math/geometry.h"
+#include "script/cmdtoken.h"
+#include "ui/interface.h"
+#include "ui/window.h"
 
 
 

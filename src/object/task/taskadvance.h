@@ -20,14 +20,8 @@
 
 
 #include "object/task/task.h"
-#include "graphics/d3d/d3dengine.h"
+#include "math/vector.h"
 
-
-class CInstanceManager;
-class CTerrain;
-class CBrain;
-class CPhysics;
-class CObject;
 
 
 class CTaskAdvance : public CTask

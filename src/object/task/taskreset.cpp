@@ -17,30 +17,18 @@
 // taskreset.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
-#include "object/object.h"
-#include "physics/physics.h"
-#include "object/brain.h"
-#include "sound/sound.h"
-#include "object/robotmain.h"
-#include "object/task/task.h"
 #include "object/task/taskreset.h"
 
+#include "common/iman.h"
+#include "object/brain.h"
+#include "object/robotmain.h"
 
 
-#define RESET_DELAY_ZOOM	0.7f
-#define RESET_DELAY_MOVE	0.7f
+
+const float RESET_DELAY_ZOOM = 0.7f;
+const float RESET_DELAY_MOVE = 0.7f;
 
 
 

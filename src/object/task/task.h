@@ -25,7 +25,6 @@
 
 class CInstanceManager;
 class CD3DEngine;
-class CEngine;
 class CLight;
 class CParticule;
 class CTerrain;

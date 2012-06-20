@@ -22,14 +22,6 @@
 #include "object/auto/auto.h"
 
 
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
-class CTerrain;
-class CCamera;
-class CObject;
-
-
 
 enum AutoFactoryPhase
 {

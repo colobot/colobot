@@ -17,28 +17,16 @@
 // taskmanip.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "math/geometry.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
-#include "math/old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
+#include "object/task/taskmanip.h"
+
 #include "common/iman.h"
 #include "graphics/common/terrain.h"
-#include "object/object.h"
 #include "graphics/common/pyro.h"
-#include "physics/physics.h"
-#include "object/brain.h"
-#include "graphics/common/camera.h"
-#include "sound/sound.h"
+#include "math/geometry.h"
 #include "object/robotmain.h"
-#include "object/task/task.h"
-#include "object/task/taskmanip.h"
+#include "physics/physics.h"
 
 
 //?const float MARGIN_FRONT		= 2.0f;

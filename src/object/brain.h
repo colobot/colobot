@@ -19,6 +19,8 @@
 #pragma once
 
 
+#include <stdio.h>
+
 #include "common/misc.h"
 #include "common/event.h"
 #include "object/object.h"

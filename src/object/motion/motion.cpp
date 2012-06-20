@@ -17,30 +17,12 @@
 // motion.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "math/const.h"
-#include "math/geometry.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "graphics/common/light.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
-#include "graphics/common/water.h"
-#include "object/object.h"
-#include "physics/physics.h"
-#include "object/brain.h"
-#include "graphics/common/camera.h"
-#include "object/robotmain.h"
-#include "sound/sound.h"
-#include "script/cmdtoken.h"
 #include "object/motion/motion.h"
+
+#include "common/iman.h"
+#include "script/cmdtoken.h"
 
 
 

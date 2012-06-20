@@ -19,14 +19,8 @@
 
 
 #include "object/task/task.h"
-#include "graphics/d3d/d3dengine.h"
 #include "object/object.h"
-
-
-class CInstanceManager;
-class CTerrain;
-class CBrain;
-class CPhysics;
+#include "math/vector.h"
 
 
 

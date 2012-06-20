@@ -22,11 +22,10 @@
 #include "common/event.h"
 #include "common/misc.h"
 #include "object/object.h"
-#include "graphics/d3d/d3dengine.h"
 
 
 class CInstanceManager;
-class CEngine;
+class CD3DEngine;
 class CLight;
 class CParticule;
 class CTerrain;
