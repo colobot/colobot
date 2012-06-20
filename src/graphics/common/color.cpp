@@ -21,7 +21,7 @@
 
 // Returns the color corresponding long.
 
-long RetColor(float intensity)
+long Gfx::RetColor(float intensity)
 {
   long  color;
   
@@ -38,7 +38,7 @@ long RetColor(float intensity)
 
 // Returns the color corresponding long.
 
-long RetColor(Color intensity)
+long Gfx::RetColor(Color intensity)
 {
   long  color;
   
@@ -52,7 +52,7 @@ long RetColor(Color intensity)
 
 // Returns the color corresponding Color.
 
-Color RetColor(long intensity)
+Color Gfx::RetColor(long intensity)
 {
   Color color;
   
@@ -67,7 +67,7 @@ Color RetColor(long intensity)
 
 // RGB to HSV conversion.
 
-void RGB2HSV(Color src, ColorHSV &dest)
+void Gfx::RGB2HSV(Color src, ColorHSV &dest)
 {
   float min, max, delta;
   
@@ -107,7 +107,7 @@ void RGB2HSV(Color src, ColorHSV &dest)
 
 // HSV to RGB conversion.
 
-void HSV2RGB(ColorHSV src, Color &dest)
+void Gfx::HSV2RGB(ColorHSV src, Color &dest)
 {
   int   i;
   float f,v,p,q,t;
