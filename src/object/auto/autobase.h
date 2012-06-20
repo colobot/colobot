@@ -20,15 +20,7 @@
 
 
 #include "object/auto/auto.h"
-#include "common/misc.h"
 
-
-class CInstanceManager;
-class CD3DEngine;
-class CParticule;
-class CTerrain;
-class CCamera;
-class CObject;
 
 
 enum AutoBaseParam

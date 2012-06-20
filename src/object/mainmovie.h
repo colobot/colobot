@@ -20,7 +20,8 @@
 
 
 #include "common/event.h"
-#include "graphics/d3d/d3dengine.h"
+#include "math/vector.h"
+
 
 class CInstanceManager;
 class CEvent;
@@ -29,7 +30,6 @@ class CInterface;
 class CRobotMain;
 class CCamera;
 class CSound;
-class CObject;
 
 
 

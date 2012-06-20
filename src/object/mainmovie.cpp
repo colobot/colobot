@@ -17,25 +17,15 @@
 // mainmovie.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "math/geometry.h"
-#include "graphics/d3d/d3dengine.h"
-#include "common/global.h"
-#include "common/event.h"
-#include "common/iman.h"
-#include "math/old/math3d.h"
-#include "graphics/common/camera.h"
-#include "object/object.h"
-#include "object/motion/motion.h"
-#include "object/motion/motionhuman.h"
-#include "ui/interface.h"
-#include "object/robotmain.h"
-#include "sound/sound.h"
+
 #include "object/mainmovie.h"
+
+#include "math/geometry.h"
+#include "common/iman.h"
+#include "object/motion/motionhuman.h"
+#include "object/robotmain.h"
 
 
 

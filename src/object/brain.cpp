@@ -15,9 +15,9 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
+
+#include "object/brain.h"
 
 #include "CBot/CBotDll.h"
 #include "common/struct.h"
@@ -65,7 +65,6 @@
 #include "sound/sound.h"
 #include "graphics/common/particule.h"
 #include "script/cmdtoken.h"
-#include "object/brain.h"
 
 
 

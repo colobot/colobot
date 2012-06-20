@@ -22,12 +22,6 @@
 #include "object/task/task.h"
 
 
-class CInstanceManager;
-class CTerrain;
-class CBrain;
-class CPhysics;
-class CObject;
-
 
 class CTaskTurn : public CTask
 {

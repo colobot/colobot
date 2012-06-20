@@ -15,38 +15,22 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "math/const.h"
-#include "math/geometry.h"
-#include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
+#include "object/auto/autoresearch.h"
+
 #include "common/global.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "math/old/math3d.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
-#include "graphics/common/camera.h"
-#include "object/object.h"
+#include "math/geometry.h"
+#include "object/robotmain.h"
+#include "script/cmdtoken.h"
 #include "ui/interface.h"
-#include "ui/button.h"
 #include "ui/gauge.h"
 #include "ui/window.h"
 #include "ui/displaytext.h"
-#include "sound/sound.h"
-#include "object/robotmain.h"
-#include "script/cmdtoken.h"
-#include "object/auto/auto.h"
-#include "object/auto/autoresearch.h"
 
 
 
-#define SEARCH_TIME		30.0f		// duration of a research
+const float SEARCH_TIME = 30.0f;		// duration of a research
 
 
 

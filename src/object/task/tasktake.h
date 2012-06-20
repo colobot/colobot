@@ -23,13 +23,6 @@
 #include "object/object.h"
 
 
-class CInstanceManager;
-class CTerrain;
-class CBrain;
-class CPhysics;
-class CObject;
-
-
 
 enum TaskTakeOrder
 {

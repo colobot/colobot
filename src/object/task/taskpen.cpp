@@ -17,28 +17,13 @@
 // taskpen.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "math/geometry.h"
-#include "math/old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
-#include "object/object.h"
-#include "physics/physics.h"
-#include "object/brain.h"
-#include "graphics/common/camera.h"
-#include "sound/sound.h"
-#include "object/motion/motion.h"
-#include "object/motion/motionant.h"
-#include "object/motion/motionspider.h"
-#include "object/task/task.h"
 #include "object/task/taskpen.h"
+
+#include "graphics/common/particule.h"
+#include "math/geometry.h"
+#include "object/object.h"
 
 
 

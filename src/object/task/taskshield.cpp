@@ -17,27 +17,16 @@
 // taskshield.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "math/const.h"
-#include "math/geometry.h"
-#include "common/struct.h"
-#include "math/old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
-#include "object/object.h"
-#include "physics/physics.h"
-#include "object/brain.h"
-#include "graphics/common/camera.h"
-#include "graphics/common/light.h"
-#include "sound/sound.h"
-#include "object/task/task.h"
 #include "object/task/taskshield.h"
+
+#include "common/iman.h"
+#include "graphics/common/light.h"
+#include "graphics/common/particule.h"
+#include "math/geometry.h"
+#include "object/brain.h"
+#include "physics/physics.h"
 
 
 const float ENERGY_TIME = 20.0f;		// maximum duration if full battery

@@ -17,37 +17,26 @@
 // taskmanager.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
-#include "common/misc.h"
+#include "object/task/taskmanager.h"
+
 #include "common/iman.h"
-#include "common/event.h"
-#include "object/object.h"
-#include "object/task/task.h"
 #include "object/task/taskwait.h"
 #include "object/task/taskadvance.h"
 #include "object/task/taskturn.h"
-#include "object/task/taskgoto.h"
 #include "object/task/tasktake.h"
-#include "object/task/taskmanip.h"
-#include "object/task/taskflag.h"
 #include "object/task/taskbuild.h"
 #include "object/task/tasksearch.h"
 #include "object/task/taskterraform.h"
 #include "object/task/taskpen.h"
 #include "object/task/taskrecover.h"
-#include "object/task/taskshield.h"
 #include "object/task/taskinfo.h"
 #include "object/task/taskfire.h"
 #include "object/task/taskfireant.h"
 #include "object/task/taskgungoal.h"
 #include "object/task/taskspiderexplo.h"
 #include "object/task/taskreset.h"
-#include "object/task/taskmanager.h"
 
 
 

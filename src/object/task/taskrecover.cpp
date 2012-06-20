@@ -17,27 +17,15 @@
 // taskrecover.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "math/func.h"
+#include "object/task/taskrecover.h"
+
 #include "math/geometry.h"
-#include "math/old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
 #include "common/iman.h"
 #include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
-#include "object/object.h"
 #include "physics/physics.h"
-#include "object/brain.h"
-#include "graphics/common/camera.h"
-#include "sound/sound.h"
 #include "ui/displaytext.h"
-#include "object/task/task.h"
-#include "object/task/taskrecover.h"
 
 
 const float ENERGY_RECOVER	= 0.25f;		// energy consumed by recovery

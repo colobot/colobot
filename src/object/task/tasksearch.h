@@ -20,13 +20,7 @@
 
 
 #include "object/task/task.h"
-
-
-class CInstanceManager;
-class CTerrain;
-class CBrain;
-class CPhysics;
-class CObject;
+#include "object/object.h"
 
 
 

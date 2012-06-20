@@ -27,10 +27,6 @@
 #include "object/task/taskflag.h"
 
 
-class CInstanceManager;
-class CTask;
-
-
 
 class CTaskManager
 {

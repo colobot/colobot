@@ -22,16 +22,6 @@
 #include "object/motion/motion.h"
 
 
-class CInstanceManager;
-class CEngine;
-class CLight;
-class CParticule;
-class CTerrain;
-class CCamera;
-class CBrain;
-class CPhysics;
-class CObject;
-
 
 class CMotionWorm : public CMotion
 {

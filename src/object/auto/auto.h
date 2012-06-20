@@ -33,7 +33,6 @@ class CCloud;
 class CPlanet;
 class CBlitz;
 class CCamera;
-class CObject;
 class CInterface;
 class CRobotMain;
 class CDisplayText;

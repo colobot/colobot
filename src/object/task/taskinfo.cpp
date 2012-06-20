@@ -17,25 +17,14 @@
 // taskinfo.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "math/old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
+#include "object/task/taskinfo.h"
+
 #include "common/iman.h"
 #include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
-#include "object/object.h"
-#include "physics/physics.h"
-#include "object/brain.h"
-#include "sound/sound.h"
-#include "object/auto/auto.h"
 #include "object/auto/autoinfo.h"
-#include "object/task/task.h"
-#include "object/task/taskinfo.h"
+
 
 
 
