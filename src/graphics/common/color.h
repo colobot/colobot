@@ -20,6 +20,8 @@
 
 
 // TODO
+namespace Gfx {
+
 struct Color
 {
     
@@ -27,10 +29,19 @@ struct Color
     
 };
 
+
+struct ColorHSV
+{
+    float	h,s,v;
+};
+
+
 long  RetColor(float intensity);
 long  RetColor(Color intensity);
 Color RetColor(long intensity);
 
 void      RGB2HSV(Color src, ColorHSV &dest);
 void      HSV2RGB(ColorHSV src, Color &dest);
+
+};
 
