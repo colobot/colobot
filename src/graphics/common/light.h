@@ -20,6 +20,7 @@
 
 
 #include "graphics/d3d/d3dengine.h"
+#include "graphics/common/color.h"
 
 
 class CInstanceManager;
@@ -54,6 +55,93 @@ struct Light
 	LightProg		colorGreen;
 	LightProg		colorBlue;
 };
+
+
+// temporary!
+namespace Gfx {
+
+/** \enum LightType Type of light */
+enum LightType
+{
+	LT_Point,
+	LT_Spot,
+	LT_Directional
+};
+
+/**
+ * \struct Light Light
+ *
+ * This structure was created as analog to DirectX's D3DLIGHT.
+ *
+ * It contains analogous fields as the D3DLIGHT struct.
+ */
+struct Light
+{
+	//! Type of light source
+	Gfx::LightType		type;
+	//! Color of light
+	Gfx::Color			color;
+	//! Position in world space
+	Math::Vector	position;
+	//! Direction in world space
+	Math::Vector	direction;
+	//! Cutoff range
+	float			range;
+	//! Falloff
+	float			falloff;
+	//! Constant attenuation
+	float			attenuation0;
+	//! Linear attenuation
+	float			attenuation1;
+	//! Quadratic attenuation
+	float			attenuation2;
+	//! Inner angle of spotlight cone
+	float			theta;
+	//! Outer angle of spotlight cone
+	float			phi;
+
+	Light() : type(LT_Point), range(0.0f), falloff(0.0f),
+			  attenuation0(0.0f), attenuation1(0.0f), attenuation2(0.0f),
+			  theta(0.0f), phi(0.0f) {}
+};
+
+struct LightProg
+{
+	float	starting;
+	float	ending;
+	float	current;
+	float	progress;
+	float	speed;
+};
+
+/**
+ * \struct SceneLight Dynamic light in 3D scene
+ *
+ * TODO documentation
+ */
+struct SceneLight
+{
+	//! true -> light exists
+	bool			used;
+	//! true -> light turned on
+	bool			enable;
+
+	//! Type of all objects included
+	D3DTypeObj		incluType;
+	//! Type of all objects excluded
+	D3DTypeObj		excluType;
+
+	//! Configuration of the light
+	Gfx::Light		light;
+
+	//! intensity (0 .. 1)
+	Gfx::LightProg		intensity;
+	Gfx::LightProg		colorRed;
+	Gfx::LightProg		colorGreen;
+	Gfx::LightProg		colorBlue;
+};
+
+}; // namespace Gfx
 
 
 
