@@ -18,14 +18,12 @@
 
 #include "graphics/common/color.h"
 
-// TODO
 
+// Returns the color corresponding long.
 
-// Returns the color corresponding D3DCOLOR.
-
-D3DCOLOR RetColor(float intensity)
+long RetColor(float intensity)
 {
-  D3DCOLOR  color;
+  long  color;
   
   if ( intensity <= 0.0f )  return 0x00000000;
   if ( intensity >= 1.0f )  return 0xffffffff;
@@ -38,11 +36,11 @@ D3DCOLOR RetColor(float intensity)
   return color;
 }
 
-// Returns the color corresponding D3DCOLOR.
+// Returns the color corresponding long.
 
-D3DCOLOR RetColor(D3DCOLORVALUE intensity)
+long RetColor(Color intensity)
 {
-  D3DCOLOR  color;
+  long  color;
   
   color  = (int)(intensity.a*255.0f)<<24;
   color |= (int)(intensity.r*255.0f)<<16;
@@ -52,11 +50,11 @@ D3DCOLOR RetColor(D3DCOLORVALUE intensity)
   return color;
 }
 
-// Returns the color corresponding D3DCOLORVALUE.
+// Returns the color corresponding Color.
 
-D3DCOLORVALUE RetColor(D3DCOLOR intensity)
+Color RetColor(long intensity)
 {
-  D3DCOLORVALUE color;
+  Color color;
   
   color.r = (float)((intensity>>16)&0xff)/256.0f;
   color.g = (float)((intensity>>8 )&0xff)/256.0f;
@@ -69,7 +67,7 @@ D3DCOLORVALUE RetColor(D3DCOLOR intensity)
 
 // RGB to HSV conversion.
 
-void RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest)
+void RGB2HSV(Color src, ColorHSV &dest)
 {
   float min, max, delta;
   
@@ -109,7 +107,7 @@ void RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest)
 
 // HSV to RGB conversion.
 
-void HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest)
+void HSV2RGB(ColorHSV src, Color &dest)
 {
   int   i;
   float f,v,p,q,t;
