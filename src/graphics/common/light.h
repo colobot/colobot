@@ -20,6 +20,10 @@
 #pragma once
 
 
+#include "graphics/common/color.h"
+#include "math/vector.h"
+
+
 namespace Gfx {
 
 /** \enum LightType Type of light */
@@ -89,9 +93,9 @@ struct SceneLight
 	bool			enable;
 
 	//! Type of all objects included
-	D3DTypeObj		incluType;
+	//D3DTypeObj		incluType;
 	//! Type of all objects excluded
-	D3DTypeObj		excluType;
+	//D3DTypeObj		excluType;
 
 	//! Configuration of the light
 	Gfx::Light		light;
