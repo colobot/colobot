@@ -19,8 +19,8 @@
 #pragma once
 
 
-#include "graphics/d3d/d3dengine.h"
-#include "graphics/common/camera.h"
+#include "old/d3dengine.h"
+#include "old/camera.h"
 #include "sound/sound.h"
 
 

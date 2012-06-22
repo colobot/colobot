@@ -21,7 +21,7 @@
 
 #include "common/event.h"
 #include "common/misc.h"
-#include "graphics/d3d/d3dengine.h"
+#include "old/d3dengine.h"
 
 
 class CInstanceManager;

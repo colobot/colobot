@@ -21,8 +21,8 @@
 
 #include "common/struct.h"
 #include "math/geometry.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/math3d.h"
+#include "old/d3dengine.h"
+#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"

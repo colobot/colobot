@@ -23,7 +23,7 @@
 
 #include "math/geometry.h"
 #include "common/iman.h"
-#include "graphics/common/particule.h"
+#include "old/particule.h"
 #include "physics/physics.h"
 #include "ui/displaytext.h"
 

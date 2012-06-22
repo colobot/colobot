@@ -22,11 +22,11 @@
 #include <stdio.h>
 
 #include "common/misc.h"
-#include "graphics/d3d/d3dengine.h"
+#include "old/d3dengine.h"
 #include "object/object.h"
 #include "object/mainmovie.h"
-#include "graphics/common/camera.h"
-#include "graphics/common/particule.h"
+#include "old/camera.h"
+#include "old/particule.h"
 
 
 enum Phase

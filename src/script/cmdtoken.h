@@ -19,12 +19,12 @@
 #pragma once
 
 
-#include "graphics/d3d/d3denum.h"
-#include "graphics/d3d/d3dengine.h"
+#include "old/d3denum.h"
+#include "old/d3dengine.h"
 #include "object/object.h"
-#include "graphics/common/water.h"
-#include "graphics/common/pyro.h"
-#include "graphics/common/camera.h"
+#include "old/water.h"
+#include "old/pyro.h"
+#include "old/camera.h"
 
 
 

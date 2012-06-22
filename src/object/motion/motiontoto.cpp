@@ -22,8 +22,8 @@
 #include "object/motion/motiontoto.h"
 
 #include "math/geometry.h"
-#include "graphics/common/terrain.h"
-#include "graphics/common/water.h"
+#include "old/terrain.h"
+#include "old/water.h"
 #include "common/modfile.h"
 #include "object/robotmain.h"
 

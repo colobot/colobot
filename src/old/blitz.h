@@ -21,7 +21,7 @@
 
 #include "common/misc.h"
 #include "math/point.h"
-#include "graphics/d3d/d3dengine.h"
+#include "old/d3dengine.h"
 
 
 class CObject;

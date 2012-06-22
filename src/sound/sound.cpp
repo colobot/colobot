@@ -28,7 +28,7 @@
 #include "common/iman.h"
 #include "math/geometry.h"
 #include "math/conv.h"
-#include "math/old/math3d.h"
+#include "old/math3d.h"
 #include "sound/sound.h"
 
 

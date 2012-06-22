@@ -20,8 +20,8 @@
 #include "object/auto/autostation.h"
 
 #include "common/iman.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
+#include "old/particule.h"
+#include "old/terrain.h"
 #include "math/geometry.h"
 #include "ui/interface.h"
 #include "ui/gauge.h"

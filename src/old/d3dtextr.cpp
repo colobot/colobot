@@ -30,8 +30,8 @@
 #include <stdio.h>
 #include <algorithm>
 using std::min;
-#include "graphics/d3d/d3dtextr.h"
-#include "graphics/d3d/d3dutil.h"
+#include "old/d3dtextr.h"
+#include "old/d3dutil.h"
 #include "common/language.h"
 #include "common/misc.h"
 

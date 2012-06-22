@@ -20,8 +20,8 @@
 
 
 #include "common/event.h"
-#include "graphics/d3d/d3dengine.h"
-#include "graphics/common/particule.h"
+#include "old/d3dengine.h"
+#include "old/particule.h"
 
 
 class CInstanceManager;

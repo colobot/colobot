@@ -21,7 +21,7 @@
 
 #include "object/task/taskpen.h"
 
-#include "graphics/common/particule.h"
+#include "old/particule.h"
 #include "math/geometry.h"
 #include "object/object.h"
 

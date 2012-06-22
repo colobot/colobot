@@ -23,8 +23,8 @@
 
 #include "math/geometry.h"
 #include "common/iman.h"
-#include "graphics/common/water.h"
-#include "graphics/common/pyro.h"
+#include "old/water.h"
+#include "old/pyro.h"
 #include "physics/physics.h"
 #include "object/motion/motionhuman.h"
 

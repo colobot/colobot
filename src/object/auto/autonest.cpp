@@ -20,7 +20,7 @@
 #include "object/auto/autonest.h"
 
 #include "common/iman.h"
-#include "graphics/common/terrain.h"
+#include "old/terrain.h"
 #include "script/cmdtoken.h"
 
 

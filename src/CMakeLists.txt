@@ -2,8 +2,27 @@
 add_subdirectory(CBot)
 
 set(SOURCES
-app/d3dapp.cpp
-app/joystick.cpp
+old/d3dapp.cpp
+old/joystick.cpp
+old/blitz.cpp
+old/camera.cpp
+old/cloud.cpp
+old/light.cpp
+old/model.cpp
+old/particule.cpp
+old/planet.cpp
+old/pyro.cpp
+old/terrain.cpp
+old/text.cpp
+old/water.cpp
+old/d3dengine.cpp
+old/d3denum.cpp
+old/d3dframe.cpp
+old/d3dtextr.cpp
+old/d3dutil.cpp
+old/d3dmath.cpp
+old/math3d.cpp
+app/app.cpp
 common/event.cpp
 common/iman.cpp
 common/metafile.cpp
@@ -11,24 +30,19 @@ common/misc.cpp
 common/modfile.cpp
 common/profile.cpp
 common/restext.cpp
-graphics/common/blitz.cpp
 graphics/common/camera.cpp
 graphics/common/cloud.cpp
+graphics/common/color.cpp
+graphics/common/engine.cpp
 graphics/common/light.cpp
+graphics/common/lightning.cpp
 graphics/common/model.cpp
-graphics/common/particule.cpp
+graphics/common/particle.cpp
 graphics/common/planet.cpp
 graphics/common/pyro.cpp
 graphics/common/terrain.cpp
 graphics/common/text.cpp
 graphics/common/water.cpp
-graphics/d3d/d3dengine.cpp
-graphics/d3d/d3denum.cpp
-graphics/d3d/d3dframe.cpp
-graphics/d3d/d3dtextr.cpp
-graphics/d3d/d3dutil.cpp
-math/old/d3dmath.cpp
-math/old/math3d.cpp
 object/auto/auto.cpp
 object/auto/autobase.cpp
 object/auto/autoconvert.cpp
@@ -125,7 +139,7 @@ ui/window.cpp
 add_definitions(-DSTRICT -DD3D_OVERLOADS)
 
 # Change to DirectX SDK directory
-set(DXSDK_DIR "/mnt/windows/dxsdk")
+set(DXSDK_DIR "c:/dxsdk")
 
 include_directories(${DXSDK_DIR}/include .)
 

@@ -24,17 +24,17 @@
 #include "common/struct.h"
 #include "math/const.h"
 #include "math/geometry.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
-#include "graphics/d3d/d3dutil.h"
+#include "old/d3dengine.h"
+#include "old/d3dmath.h"
+#include "old/d3dutil.h"
 #include "common/language.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
-#include "math/old/math3d.h"
+#include "old/math3d.h"
 #include "common/modfile.h"
-#include "graphics/common/water.h"
-#include "graphics/common/terrain.h"
+#include "old/water.h"
+#include "old/terrain.h"
 
 
 const int BMPHEAD = 1078;

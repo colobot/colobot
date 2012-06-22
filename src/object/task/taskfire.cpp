@@ -21,7 +21,7 @@
 
 #include "object/task/taskfire.h"
 
-#include "graphics/common/particule.h"
+#include "old/particule.h"
 #include "math/geometry.h"
 #include "physics/physics.h"
 

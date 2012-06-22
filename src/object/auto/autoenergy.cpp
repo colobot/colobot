@@ -20,7 +20,7 @@
 #include "object/auto/autoenergy.h"
 
 #include "common/iman.h"
-#include "graphics/common/terrain.h"
+#include "old/terrain.h"
 #include "math/geometry.h"
 #include "script/cmdtoken.h"
 #include "ui/interface.h"

@@ -21,8 +21,8 @@
 #include "../func.h"
 #include "../geometry.h"
 #include "../conv.h"
-#include "../old/math3d.h"
-#include "../../graphics/d3d/d3dutil.h"
+#include "../../old/math3d.h"
+#include "../../old/d3dutil.h"
 
 #include <d3d.h>
 #include <cstdio>

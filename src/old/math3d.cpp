@@ -23,10 +23,10 @@
 #include <stdio.h>
 #include <d3d.h>
 
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
-#include "graphics/d3d/d3dutil.h"
-#include "math/old/math3d.h"
+#include "old/d3dengine.h"
+#include "old/d3dmath.h"
+#include "old/d3dutil.h"
+#include "old/math3d.h"
 
 
 // Old defines

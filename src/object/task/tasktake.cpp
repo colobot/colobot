@@ -22,8 +22,8 @@
 #include "object/task/tasktake.h"
 
 #include "common/iman.h"
-#include "graphics/common/terrain.h"
-#include "graphics/common/water.h"
+#include "old/terrain.h"
+#include "old/water.h"
 #include "math/geometry.h"
 #include "object/motion/motionhuman.h"
 #include "object/robotmain.h"

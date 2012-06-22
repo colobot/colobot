@@ -22,8 +22,8 @@
 #include "object/motion/motionworm.h"
 
 #include "common/modfile.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
+#include "old/particule.h"
+#include "old/terrain.h"
 #include "math/geometry.h"
 #include "physics/physics.h"
 
