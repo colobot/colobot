@@ -19,8 +19,8 @@
 
 #include "object/auto/autokid.h"
 
-#include "graphics/common/particule.h"
-#include "graphics/common/water.h"
+#include "old/particule.h"
+#include "old/water.h"
 
 
 

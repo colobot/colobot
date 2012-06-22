@@ -26,9 +26,9 @@
 #include <d3d.h>
 
 #include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
-#include "graphics/d3d/d3dutil.h"
+#include "old/d3dengine.h"
+#include "old/d3dmath.h"
+#include "old/d3dutil.h"
 #include "common/language.h"
 #include "common/event.h"
 #include "common/misc.h"

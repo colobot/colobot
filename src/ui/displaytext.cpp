@@ -22,7 +22,7 @@
 #include <d3d.h>
 
 #include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
+#include "old/d3dengine.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/restext.h"
@@ -35,7 +35,7 @@
 #include "ui/label.h"
 #include "ui/window.h"
 #include "ui/group.h"
-#include "graphics/common/text.h"
+#include "old/text.h"
 #include "sound/sound.h"
 #include "ui/displaytext.h"
 

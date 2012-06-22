@@ -21,7 +21,7 @@
 
 #include "object/task/taskspiderexplo.h"
 
-#include "graphics/common/pyro.h"
+#include "old/pyro.h"
 #include "object/motion/motionspider.h"
 #include "physics/physics.h"
 

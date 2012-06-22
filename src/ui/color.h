@@ -20,7 +20,7 @@
 
 
 #include "ui/control.h"
-#include "graphics/d3d/d3dengine.h"
+#include "old/d3dengine.h"
 
 
 class CD3DEngine;

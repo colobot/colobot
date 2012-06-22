@@ -20,7 +20,7 @@
 #include "object/auto/autoflag.h"
 
 #include "math/geometry.h"
-#include "graphics/common/terrain.h"
+#include "old/terrain.h"
 
 
 

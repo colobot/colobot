@@ -20,14 +20,14 @@
 #include <d3d.h>
 
 #include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
+#include "old/d3dengine.h"
+#include "old/d3dmath.h"
 #include "common/language.h"
 #include "common/global.h"
 #include "common/event.h"
-#include "graphics/common/water.h"
-#include "graphics/common/pyro.h"
-#include "graphics/common/camera.h"
+#include "old/water.h"
+#include "old/pyro.h"
+#include "old/camera.h"
 #include "object/object.h"
 #include "script/cmdtoken.h"
 

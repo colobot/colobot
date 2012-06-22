@@ -22,16 +22,16 @@
 #include "common/struct.h"
 #include "math/geometry.h"
 #include "math/conv.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
-#include "graphics/d3d/d3dutil.h"
+#include "old/d3dengine.h"
+#include "old/d3dmath.h"
+#include "old/d3dutil.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
-#include "math/old/math3d.h"
-#include "graphics/common/terrain.h"
+#include "old/math3d.h"
+#include "old/terrain.h"
 #include "object/object.h"
-#include "graphics/common/cloud.h"
+#include "old/cloud.h"
 
 
 

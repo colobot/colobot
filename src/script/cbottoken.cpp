@@ -20,8 +20,8 @@
 #include <d3d.h>
 
 #include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/d3dmath.h"
+#include "old/d3dengine.h"
+#include "old/d3dmath.h"
 #include "common/language.h"
 #include "common/global.h"
 #include "common/event.h"

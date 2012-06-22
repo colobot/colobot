@@ -22,8 +22,8 @@
 #include "object/task/taskmanip.h"
 
 #include "common/iman.h"
-#include "graphics/common/terrain.h"
-#include "graphics/common/pyro.h"
+#include "old/terrain.h"
+#include "old/pyro.h"
 #include "math/geometry.h"
 #include "object/robotmain.h"
 #include "physics/physics.h"

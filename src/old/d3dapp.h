@@ -23,10 +23,10 @@
 #include <d3d.h>
 
 #include "math/vector.h"
-#include "graphics/d3d/d3dengine.h"
-#include "graphics/d3d/d3dframe.h"
-#include "graphics/d3d/d3denum.h"
-#include "graphics/d3d/d3dutil.h"
+#include "old/d3dengine.h"
+#include "old/d3dframe.h"
+#include "old/d3denum.h"
+#include "old/d3dutil.h"
 #include "old/d3dres.h"
 #include "common/misc.h"
 #include "common/struct.h"

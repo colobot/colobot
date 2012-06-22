@@ -22,7 +22,7 @@
 #include "object/motion/motionspider.h"
 
 #include "common/modfile.h"
-#include "graphics/common/particule.h"
+#include "old/particule.h"
 #include "physics/physics.h"
 
 

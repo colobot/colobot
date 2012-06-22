@@ -22,7 +22,7 @@
 #include "object/task/taskinfo.h"
 
 #include "common/iman.h"
-#include "graphics/common/particule.h"
+#include "old/particule.h"
 #include "object/auto/autoinfo.h"
 
 

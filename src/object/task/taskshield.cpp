@@ -22,8 +22,8 @@
 #include "object/task/taskshield.h"
 
 #include "common/iman.h"
-#include "graphics/common/light.h"
-#include "graphics/common/particule.h"
+#include "old/light.h"
+#include "old/particule.h"
 #include "math/geometry.h"
 #include "object/brain.h"
 #include "physics/physics.h"

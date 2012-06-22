@@ -23,10 +23,10 @@
 
 #include "math/geometry.h"
 #include "common/iman.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
+#include "old/particule.h"
+#include "old/terrain.h"
 #include "physics/physics.h"
-#include "graphics/common/pyro.h"
+#include "old/pyro.h"
 #include "object/brain.h"
 #include "object/motion/motionant.h"
 #include "object/motion/motionspider.h"

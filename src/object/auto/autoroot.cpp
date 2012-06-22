@@ -19,8 +19,8 @@
 
 #include "object/auto/autoroot.h"
 
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
+#include "old/particule.h"
+#include "old/terrain.h"
 #include "math/geometry.h"
 
 

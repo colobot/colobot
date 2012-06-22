@@ -22,8 +22,8 @@
 #include <d3d.h>
 
 #include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/math3d.h"
+#include "old/d3dengine.h"
+#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -45,7 +45,7 @@
 #include "ui/target.h"
 #include "ui/map.h"
 #include "ui/window.h"
-#include "graphics/common/camera.h"
+#include "old/camera.h"
 #include "ui/interface.h"
 
 

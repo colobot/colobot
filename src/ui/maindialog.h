@@ -20,7 +20,7 @@
 
 
 #include "common/struct.h"
-#include "graphics/common/camera.h"
+#include "old/camera.h"
 #include "object/robotmain.h"
 
 

@@ -17,7 +17,7 @@
 
 #include <stdio.h>
 #include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
+#include "old/d3dengine.h"
 #include "common/language.h"
 #include "common/misc.h"
 #include "common/event.h"

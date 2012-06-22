@@ -21,7 +21,7 @@
 
 #include "object/task/taskturn.h"
 
-#include "graphics/common/terrain.h"
+#include "old/terrain.h"
 #include "physics/physics.h"
 
 

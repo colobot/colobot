@@ -23,8 +23,8 @@
 
 #include "math/geometry.h"
 #include "common/iman.h"
-#include "graphics/common/particule.h"
-#include "graphics/common/terrain.h"
+#include "old/particule.h"
+#include "old/terrain.h"
 #include "physics/physics.h"
 #include "ui/displaytext.h"
 

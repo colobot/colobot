@@ -22,14 +22,14 @@
 #include <d3d.h>
 
 #include "common/struct.h"
-#include "graphics/d3d/d3dengine.h"
-#include "math/old/math3d.h"
+#include "old/d3dengine.h"
+#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
 #include "common/restext.h"
 #include "sound/sound.h"
-#include "graphics/common/text.h"
+#include "old/text.h"
 #include "ui/key.h"
 
 

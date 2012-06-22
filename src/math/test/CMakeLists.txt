@@ -13,7 +13,8 @@ add_test(matrix_test ./matrix_test)
 add_test(vector_test ./vector_test)
 add_test(geometry_test ./geometry_test)
 
-include_directories(c:/dxsdk/include)
+# Change to DirectX SDK directory
+include_directories("c:/dxsdk/include")
 
 add_definitions(-DSTRICT -DD3D_OVERLOADS)
 

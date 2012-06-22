@@ -24,8 +24,8 @@
 #include <windows.h>
 #include <stdio.h>
 #include <tchar.h>
-#include "graphics/d3d/d3dframe.h"
-#include "graphics/d3d/d3dutil.h"
+#include "old/d3dframe.h"
+#include "old/d3dutil.h"
 
 
 

@@ -25,18 +25,18 @@
 #include <dinput.h>
 
 #include "common/struct.h"
-#include "graphics/d3d/d3dtextr.h"
-#include "graphics/d3d/d3dengine.h"
+#include "old/d3dtextr.h"
+#include "old/d3dengine.h"
 #include "common/language.h"
 #include "common/event.h"
 #include "common/profile.h"
 #include "common/iman.h"
 #include "common/restext.h"
-#include "math/old/math3d.h"
-#include "app/joystick.h"
+#include "old/math3d.h"
+#include "old/joystick.h"
 #include "object/robotmain.h"
 #include "sound/sound.h"
-#include "app/d3dapp.h"
+#include "old/d3dapp.h"
 
 // fix for "MSH_MOUSEWHEEL undefined" error
 #ifdef UNICODE

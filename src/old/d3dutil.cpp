@@ -25,7 +25,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <tchar.h>
-#include "graphics/d3d/d3dutil.h"
+#include "old/d3dutil.h"
 
 
 

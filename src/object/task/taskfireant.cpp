@@ -21,7 +21,7 @@
 
 #include "object/task/taskfireant.h"
 
-#include "graphics/common/particule.h"
+#include "old/particule.h"
 #include "math/geometry.h"
 #include "object/motion/motionant.h"
 #include "physics/physics.h"

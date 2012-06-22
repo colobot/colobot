@@ -18,64 +18,66 @@
 
 #include "graphics/common/color.h"
 
+#include "math/func.h"
+
 
 // Returns the color corresponding long.
 
 long Gfx::RetColor(float intensity)
 {
   long  color;
-  
+
   if ( intensity <= 0.0f )  return 0x00000000;
   if ( intensity >= 1.0f )  return 0xffffffff;
-  
+
   color  = (int)(intensity*255.0f)<<24;
   color |= (int)(intensity*255.0f)<<16;
   color |= (int)(intensity*255.0f)<<8;
   color |= (int)(intensity*255.0f);
-  
+
   return color;
 }
 
 // Returns the color corresponding long.
 
-long Gfx::RetColor(Color intensity)
+long Gfx::RetColor(Gfx::Color intensity)
 {
   long  color;
-  
+
   color  = (int)(intensity.a*255.0f)<<24;
   color |= (int)(intensity.r*255.0f)<<16;
   color |= (int)(intensity.g*255.0f)<<8;
   color |= (int)(intensity.b*255.0f);
-  
+
   return color;
 }
 
 // Returns the color corresponding Color.
 
-Color Gfx::RetColor(long intensity)
+Gfx::Color Gfx::RetColor(long intensity)
 {
-  Color color;
-  
+  Gfx::Color color;
+
   color.r = (float)((intensity>>16)&0xff)/256.0f;
   color.g = (float)((intensity>>8 )&0xff)/256.0f;
   color.b = (float)((intensity>>0 )&0xff)/256.0f;
   color.a = (float)((intensity>>24)&0xff)/256.0f;
-  
+
   return color;
 }
 
 
 // RGB to HSV conversion.
 
-void Gfx::RGB2HSV(Color src, ColorHSV &dest)
+void Gfx::RGB2HSV(Gfx::Color src, Gfx::ColorHSV &dest)
 {
   float min, max, delta;
-  
+
   min = Math::Min(src.r, src.g, src.b);
   max = Math::Max(src.r, src.g, src.b);
-  
+
   dest.v = max;  // intensity
-  
+
   if ( max == 0.0f )
   {
     dest.s = 0.0f;  // saturation
@@ -85,7 +87,7 @@ void Gfx::RGB2HSV(Color src, ColorHSV &dest)
   {
     delta = max-min;
     dest.s = delta/max;  // saturation
-    
+
     if ( src.r == max )  // between yellow & magenta
     {
       dest.h = (src.g-src.b)/delta;
@@ -98,7 +100,7 @@ void Gfx::RGB2HSV(Color src, ColorHSV &dest)
     {
       dest.h = 4.0f+(src.r-src.g)/delta;
     }
-    
+
     dest.h *= 60.0f;  // in degrees
     if ( dest.h < 0.0f )  dest.h += 360.0f;
     dest.h /= 360.0f;  // 0..1
@@ -107,15 +109,15 @@ void Gfx::RGB2HSV(Color src, ColorHSV &dest)
 
 // HSV to RGB conversion.
 
-void Gfx::HSV2RGB(ColorHSV src, Color &dest)
+void Gfx::HSV2RGB(Gfx::ColorHSV src, Gfx::Color &dest)
 {
   int   i;
   float f,v,p,q,t;
-  
+
   src.h = Math::Norm(src.h)*360.0f;
   src.s = Math::Norm(src.s);
   src.v = Math::Norm(src.v);
-  
+
   if ( src.s == 0.0f )  // zero saturation?
   {
     dest.r = src.v;
@@ -128,12 +130,12 @@ void Gfx::HSV2RGB(ColorHSV src, Color &dest)
     src.h /= 60.0f;
     i = (int)src.h;  // integer part (0 .. 5)
     f = src.h-i;     // fractional part
-    
+
     v = src.v;
     p = src.v*(1.0f-src.s);
     q = src.v*(1.0f-(src.s*f));
     t = src.v*(1.0f-(src.s*(1.0f-f)));
-    
+
     switch (i)
     {
       case 0:  dest.r=v; dest.g=t; dest.b=p;  break;

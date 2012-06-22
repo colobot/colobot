@@ -22,9 +22,9 @@
 #include "object/task/taskbuild.h"
 
 #include "common/iman.h"
-#include "graphics/common/light.h"
-#include "graphics/common/terrain.h"
-#include "graphics/common/water.h"
+#include "old/light.h"
+#include "old/terrain.h"
+#include "old/water.h"
 #include "math/geometry.h"
 #include "object/auto/auto.h"
 #include "object/motion/motionhuman.h"

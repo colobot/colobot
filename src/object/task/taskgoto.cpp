@@ -23,8 +23,8 @@
 
 #include "common/event.h"
 #include "common/iman.h"
-#include "graphics/common/terrain.h"
-#include "graphics/common/water.h"
+#include "old/terrain.h"
+#include "old/water.h"
 #include "math/geometry.h"
 #include "physics/physics.h"
 
