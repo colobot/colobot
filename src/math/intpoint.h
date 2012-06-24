@@ -14,30 +14,31 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// material.h
+/** @defgroup MathIntPointModule math/intpoint.h
+   Contains the IntPoint struct.
+ */
 
 #pragma once
 
+namespace Math {
 
-namespace Gfx {
+/* @{ */ // start of group
 
 /**
- * \struct Material Material of a surface
+ * \struct IntPoint 2D Point with integer coords
  *
- * This structure was created as analog to DirectX's D3DMATERIAL.
- *
- * It contains values of 3 material colors: diffuse, ambient and specular.
- * In D3DMATERIAL there are other fields, but they are not used
- * by the graphics engine.
+ * Analog of WinAPI's POINT struct.
  */
-struct Material
+struct IntPoint
 {
-	//! Diffuse color
-	Gfx::Color diffuse;
-	//! Ambient color
-	Gfx::Color ambient;
-	//! Specular color
-	Gfx::Color specular;
+  //! X coord
+  long x;
+  //! Y coord
+  long y;
+
+  IntPoint(long aX = 0, long aY = 0) : x(aX), y(aY) {}
 };
 
-}; // namespace Gfx
+/* @} */ // end of group
+
+}; // namespace Math

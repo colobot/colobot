@@ -20,28 +20,31 @@
 #pragma once
 
 
+#include "graphics/common/color.h"
+#include "graphics/common/material.h"
+#include "graphics/common/vertex.h"
+#include "math/intpoint.h"
+#include "math/matrix.h"
 #include "math/point.h"
 #include "math/vector.h"
-#include "math/matrix.h"
 
-
-namespace Gfx {
-
-/*
-
-TODO
 
 class CApplication;
 class CInstanceManager;
 class CObject;
+class CSound;
+
+
+namespace Gfx {
+
+class CDevice;
 class CLight;
 class CText;
-class CParticule;
+class CParticle;
 class CWater;
 class CCloud;
-class CBlitz;
+class CLightning;
 class CPlanet;
-class CSound;
 class CTerrain;
 
 
@@ -174,7 +177,7 @@ struct ObjLevel6
 	Gfx::Material		material;
 	int					state;
 	Gfx::TriangleType	type;
-	Math::VertexTex2	vertex[1];
+	Gfx::VertexTex2	vertex[1];
 };
 
 struct ObjLevel5
@@ -280,29 +283,29 @@ struct GroundMark
 
 
 
-class CGfxEngine
+class CEngine
 {
 public:
-	CGfxEngine(CInstanceManager *iMan, CApplication *app);
-	~CGfxEngine();
+	CEngine(CInstanceManager *iMan, CApplication *app);
+	~CEngine();
 
-	void			SetDevice(Gfx::Device *device);
-	Gfx::Device*	RetDevice();
+	void			SetDevice(Gfx::CDevice *device);
+	Gfx::CDevice*	RetDevice();
 
 	void			SetTerrain(Gfx::CTerrain* terrain);
 
 	bool			WriteProfile();
 
-	void			SetPause(bool bPause);
+	void			SetPause(bool pause);
 	bool			RetPause();
 
-	void			SetMovieLock(bool bLock);
+	void			SetMovieLock(bool lock);
 	bool			RetMovieLock();
 
-	void			SetShowStat(bool bShow);
+	void			SetShowStat(bool show);
 	bool			RetShowStat();
 
-	void			SetRenderEnable(bool bEnable);
+	void			SetRenderEnable(bool enable);
 
 	int				OneTimeSceneInit();
 	int				InitDeviceObjects();
@@ -320,14 +323,14 @@ public:
 	void			SetInfoText(int line, char* text);
 	char	*		RetInfoText(int line);
 	//LRESULT		MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-	void			FirstExecuteAdapt(bool bFirst);
+	void			FirstExecuteAdapt(bool first);
 	//int				GetVidMemTotal();
 	//bool			IsVideo8MB();
 	//bool			IsVideo32MB();
 
 	bool			EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
 	bool			RetFullScreen();
-	bool			ChangeDevice(char *device, char *mode, bool bFull);
+	bool			ChangeDevice(char *device, char *mode, bool full);
 
 	Math::Matrix*	RetMatView();
 	Math::Matrix*	RetMatLeftView();
@@ -342,19 +345,19 @@ public:
 	int				CreateObject();
 	void			FlushObject();
 	bool			DeleteObject(int objRank);
-	bool			SetDrawWorld(int objRank, bool bDraw);
-	bool			SetDrawFront(int objRank, bool bDraw);
-	bool			AddTriangle(int objRank, Math::VertexTex2* vertex, int nb, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, bool bGlobalUpdate);
-	bool			AddSurface(int objRank, Math::VertexTex2* vertex, int nb, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, bool bGlobalUpdate);
-	bool			AddQuick(int objRank, Gfx::ObjLevel6* buffer, char* texName1, char* texName2, float min, float max, bool bGlobalUpdate);
+	bool			SetDrawWorld(int objRank, bool draw);
+	bool			SetDrawFront(int objRank, bool draw);
+	bool			AddTriangle(int objRank, Gfx::VertexTex2* vertex, int nb, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, bool globalUpdate);
+	bool			AddSurface(int objRank, Gfx::VertexTex2* vertex, int nb, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, bool globalUpdate);
+	bool			AddQuick(int objRank, Gfx::ObjLevel6* buffer, char* texName1, char* texName2, float min, float max, bool globalUpdate);
 	Gfx::ObjLevel6* SearchTriangle(int objRank, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max);
 	void			ChangeLOD();
 	bool			ChangeSecondTexture(int objRank, char* texName2);
 	int				RetTotalTriangles(int objRank);
 	int				GetTriangles(int objRank, float min, float max, Gfx::Triangle* buffer, int size, float percent);
 	bool			GetBBox(int objRank, Math::Vector &min, Math::Vector &max);
-	bool			ChangeTextureMapping(int objRank, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, Gfx::Maping mode, float au, float bu, float av, float bv);
-	bool			TrackTextureMapping(int objRank, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, Gfx::Maping mode, float pos, float factor, float tl, float ts, float tt);
+	bool			ChangeTextureMapping(int objRank, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, Gfx::Mapping mode, float au, float bu, float av, float bv);
+	bool			TrackTextureMapping(int objRank, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, Gfx::Mapping mode, float pos, float factor, float tl, float ts, float tt);
 	bool			SetObjectTransform(int objRank, const Math::Matrix &transform);
 	bool			GetObjectTransform(int objRank, Math::Matrix &transform);
 	bool			SetObjectType(int objRank, Gfx::ObjectType type);
@@ -363,7 +366,7 @@ public:
 
 	bool			ShadowCreate(int objRank);
 	void			ShadowDelete(int objRank);
-	bool			SetObjectShadowHide(int objRank, bool bHide);
+	bool			SetObjectShadowHide(int objRank, bool hide);
 	bool			SetObjectShadowType(int objRank, Gfx::ShadowType type);
 	bool			SetObjectShadowPos(int objRank, const Math::Vector &pos);
 	bool			SetObjectShadowNormal(int objRank, const Math::Vector &n);
@@ -394,17 +397,17 @@ public:
 	bool			LoadAllTexture();
 
 	void			SetLimitLOD(int rank, float limit);
-	float			RetLimitLOD(int rank, bool bLast=false);
+	float			RetLimitLOD(int rank, bool last=false);
 
 	void			SetTerrainVision(float vision);
 
-	void			SetGroundSpot(bool bMode);
+	void			SetGroundSpot(bool mode);
 	bool			RetGroundSpot();
-	void			SetShadow(bool bMode);
+	void			SetShadow(bool mode);
 	bool			RetShadow();
-	void			SetDirty(bool bMode);
+	void			SetDirty(bool mode);
 	bool			RetDirty();
-	void			SetFog(bool bMode);
+	void			SetFog(bool mode);
 	bool			RetFog();
 	bool			RetStateColor();
 
@@ -414,8 +417,8 @@ public:
 	void			SetRankView(int rank);
 	int				RetRankView();
 
-	void			SetDrawWorld(bool bDraw);
-	void			SetDrawFront(bool bDraw);
+	void			SetDrawWorld(bool draw);
+	void			SetDrawFront(bool draw);
 
 	void			SetAmbiantColor(const Gfx::Color &color, int rank=0);
 	Gfx::Color		RetAmbiantColor(int rank=0);
@@ -426,17 +429,17 @@ public:
 	void			SetFogColor(const Gfx::Color &color, int rank=0);
 	Gfx::Color		RetFogColor(int rank=0);
 
-	void			SetDeepView(float length, int rank=0, bool bRef=false);
+	void			SetDeepView(float length, int rank=0, bool ref=false);
 	float			RetDeepView(int rank=0);
 
 	void			SetFogStart(float start, int rank=0);
 	float			RetFogStart(int rank=0);
 
-	void			SetBackground(char *name, Gfx::Color up=0, Gfx::Color down=0, Gfx::Color cloudUp=0, Gfx::Color cloudDown=0, bool bFull=false, bool bQuarter=false);
-	void			RetBackground(char *name, Gfx::Color &up, Gfx::Color &down, Gfx::Color &cloudUp, Gfx::Color &cloudDown, bool &bFull, bool &bQuarter);
+	void			SetBackground(char *name, Gfx::Color up=Gfx::Color(), Gfx::Color down=Gfx::Color(), Gfx::Color cloudUp=Gfx::Color(), Gfx::Color cloudDown=Gfx::Color(), bool full=false, bool quarter=false);
+	void			RetBackground(char *name, Gfx::Color &up, Gfx::Color &down, Gfx::Color &cloudUp, Gfx::Color &cloudDown, bool &full, bool &quarter);
 	void			SetFrontsizeName(char *name);
-	void			SetOverFront(bool bFront);
-	void			SetOverColor(const Gfx::Color &color=0, int mode=RSTATE_TCOLOR_BLACK);
+	void			SetOverFront(bool front);
+	void			SetOverColor(const Gfx::Color &color=Gfx::Color(), int mode=RSTATE_TCOLOR_BLACK);
 
 	void			SetParticuleDensity(float value);
 	float			RetParticuleDensity();
@@ -454,31 +457,31 @@ public:
 	void			SetTextureQuality(int value);
 	int				RetTextureQuality();
 
-	void			SetTotoMode(bool bPresent);
+	void			SetTotoMode(bool present);
 	bool			RetTotoMode();
 
-	void			SetLensMode(bool bPresent);
+	void			SetLensMode(bool present);
 	bool			RetLensMode();
 
-	void			SetWaterMode(bool bPresent);
+	void			SetWaterMode(bool present);
 	bool			RetWaterMode();
 
-	void			SetBlitzMode(bool bPresent);
+	void			SetBlitzMode(bool present);
 	bool			RetBlitzMode();
 
-	void			SetSkyMode(bool bPresent);
+	void			SetSkyMode(bool present);
 	bool			RetSkyMode();
 
-	void			SetBackForce(bool bPresent);
+	void			SetBackForce(bool present);
 	bool			RetBackForce();
 
-	void			SetPlanetMode(bool bPresent);
+	void			SetPlanetMode(bool present);
 	bool			RetPlanetMode();
 
-	void			SetLightMode(bool bPresent);
+	void			SetLightMode(bool present);
 	bool			RetLightMode();
 
-	void			SetEditIndentMode(bool bAuto);
+	void			SetEditIndentMode(bool auto);
 	bool			RetEditIndentMode();
 
 	void			SetEditIndentValue(int value);
@@ -506,17 +509,17 @@ public:
 	void			SetKey(int keyRank, int option, int key);
 	int				RetKey(int keyRank, int option);
 
-	void			SetJoystick(bool bEnable);
+	void			SetJoystick(bool enable);
 	bool			RetJoystick();
 
-	void			SetDebugMode(bool bMode);
+	void			SetDebugMode(bool mode);
 	bool			RetDebugMode();
 	bool			RetSetupMode();
 
 	bool			IsVisiblePoint(const Math::Vector &pos);
 
 	int				DetectObject(Math::Point mouse);
-	void			SetState(int state, Gfx::Color color=0xffffffff);
+	void			SetState(int state, Gfx::Color color=Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f));
 	void			SetTexture(char *name, int stage=0);
 	void			SetMaterial(const Gfx::Material &mat);
 
@@ -525,15 +528,15 @@ public:
 	Math::Point		RetMousePos();
 	void			SetMouseType(Gfx::MouseType type);
 	Gfx::MouseType	RetMouseType();
-	void			SetMouseHide(bool bHide);
+	void			SetMouseHide(bool hide);
 	bool			RetMouseHide();
-	void			SetNiceMouse(bool bNice);
+	void			SetNiceMouse(bool nice);
 	bool			RetNiceMouse();
 	bool			RetNiceMouseCap();
 
 	CText*			RetText();
 
-	bool			ChangeColor(char *name, Gfx::Color colorRef1, Gfx::Color colorNew1, Gfx::Color colorRef2, Gfx::Color colorNew2, float tolerance1, float tolerance2, Math::Point ts, Math::Point ti, Math::Point *pExclu=0, float shift=0.0f, bool bHSV=false);
+	bool			ChangeColor(char *name, Gfx::Color colorRef1, Gfx::Color colorNew1, Gfx::Color colorRef2, Gfx::Color colorNew2, float tolerance1, float tolerance2, Math::Point ts, Math::Point ti, Math::Point *pExclu=0, float shift=0.0f, bool hSV=false);
 	bool			OpenImage(char *name);
 	bool			CopyImage();
 	bool			LoadImage();
@@ -562,7 +565,7 @@ protected:
 
 	bool		IsVisible(int objRank);
 	bool		DetectBBox(int objRank, Math::Point mouse);
-	bool		DetectTriangle(Math::Point mouse, Math::VertexTex2 *triangle, int objRank, float &dist);
+	bool		DetectTriangle(Math::Point mouse, Gfx::VertexTex2 *triangle, int objRank, float &dist);
 	bool		TransformPoint(Math::Vector &p2D, int objRank, Math::Vector p3D);
 	void		ComputeDistance();
 	void		UpdateGeometry();
@@ -583,16 +586,16 @@ protected:
 protected:
 	CInstanceManager*	m_iMan;
 	CApplication*	m_app;
-	Gfx::Device*	m_device;
-	CText*			m_text;
-	CLight*			m_light;
-	CParticule*		m_particule;
-	CWater*			m_water;
-	CCloud*			m_cloud;
-	CBlitz*			m_blitz;
-	CPlanet*		m_planet;
+	Gfx::CDevice*	m_device;
+	Gfx::CText*			m_text;
+	Gfx::CLight*			m_light;
+	Gfx::CParticle*		m_particule;
+	Gfx::CWater*			m_water;
+	Gfx::CCloud*			m_cloud;
+	Gfx::CLightning*			m_blitz;
+	Gfx::CPlanet*		m_planet;
+	Gfx::CTerrain*		m_terrain;
 	CSound*			m_sound;
-	CTerrain*		m_terrain;
 
 	int				m_blackSrcBlend[2];
 	int				m_blackDestBlend[2];
@@ -618,12 +621,12 @@ protected:
 	float			m_absTime;
 	float			m_lastTime;
 	float			m_speed;
-	bool			m_bPause;
-	bool			m_bRender;
-	bool			m_bMovieLock;
+	bool			m_pause;
+	bool			m_render;
+	bool			m_movieLock;
 
-	POINT				m_dim;
-	POINT				m_lastDim;
+	Math::IntPoint		m_dim;
+	Math::IntPoint		m_lastDim;
 	Gfx::ObjLevel1*		m_objectPointer;
 	int					m_objectParamTotal;
 	Gfx::Object*		m_objectParam;
@@ -643,30 +646,30 @@ protected:
 	float			m_fogStart[2];
 	Gfx::Color		m_waterAddColor;
 	int				m_statisticTriangle;
-	bool			m_bUpdateGeometry;
+	bool			m_updateGeometry;
 	char			m_infoText[10][200];
 	int				m_alphaMode;
-	bool			m_bStateColor;
-	bool			m_bForceStateColor;
-	bool			m_bGroundSpot;
-	bool			m_bShadow;
-	bool			m_bDirty;
-	bool			m_bFog;
-	bool			m_bFirstGroundSpot;
+	bool			m_stateColor;
+	bool			m_forceStateColor;
+	bool			m_groundSpotVisible;
+	bool			m_shadowVisible;
+	bool			m_dirty;
+	bool			m_fog;
+	bool			m_firstGroundSpot;
 	int				m_secondTexNum;
 	char			m_backgroundName[50];
 	Gfx::Color		m_backgroundColorUp;
 	Gfx::Color		m_backgroundColorDown;
 	Gfx::Color		m_backgroundCloudUp;
 	Gfx::Color		m_backgroundCloudDown;
-	bool			m_bBackgroundFull;
-	bool			m_bBackgroundQuarter;
-	bool			m_bOverFront;
+	bool			m_backgroundFull;
+	bool			m_backgroundQuarter;
+	bool			m_overFront;
 	Gfx::Color		m_overColor;
 	int				m_overMode;
 	char			m_frontsizeName[50];
-	bool			m_bDrawWorld;
-	bool			m_bDrawFront;
+	bool			m_drawWorld;
+	bool			m_drawFront;
 	float			m_limitLOD[2];
 	float			m_particuleDensity;
 	float			m_clippingDistance;
@@ -676,19 +679,19 @@ protected:
 	float			m_terrainVision;
 	float			m_gadgetQuantity;
 	int				m_textureQuality;
-	bool			m_bTotoMode;
-	bool			m_bLensMode;
-	bool			m_bWaterMode;
-	bool			m_bSkyMode;
-	bool			m_bBackForce;
-	bool			m_bPlanetMode;
-	bool			m_bLightMode;
-	bool			m_bEditIndentMode;
+	bool			m_totoMode;
+	bool			m_lensMode;
+	bool			m_waterMode;
+	bool			m_skyMode;
+	bool			m_backForce;
+	bool			m_planetMode;
+	bool			m_lightMode;
+	bool			m_editIndentMode;
 	int				m_editIndentValue;
 	float			m_tracePrecision;
 
 	int				m_hiliteRank[100];
-	bool			m_bHilite;
+	bool			m_hilite;
 	Math::Point		m_hiliteP1;
 	Math::Point		m_hiliteP2;
 
@@ -699,14 +702,14 @@ protected:
 
 	Math::Point		m_mousePos;
 	Gfx::MouseType	m_mouseType;
-	bool			m_bMouseHide;
-	bool			m_bNiceMouse;
+	bool			m_mouseHide;
+	bool			m_niceMouse;
 
 	//LPDIRECTDRAWSURFACE7 m_imageSurface;
 	//DDSURFACEDESC2		m_imageDDSD;
 	//WORD*				m_imageCopy;
 	//int					m_imageDX;
 	//int					m_imageDY;
-};*/
+};
 
 }; // namespace Gfx

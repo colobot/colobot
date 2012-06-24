@@ -43,6 +43,8 @@ graphics/common/pyro.cpp
 graphics/common/terrain.cpp
 graphics/common/text.cpp
 graphics/common/water.cpp
+graphics/opengl/gldevice.cpp
+graphics/opengl/glengine.cpp
 object/auto/auto.cpp
 object/auto/autobase.cpp
 object/auto/autoconvert.cpp
