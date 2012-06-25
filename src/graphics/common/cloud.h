@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include "common/struct.h"
 #include "common/event.h"
 #include "graphics/common/color.h"
 #include "math/point.h"
+#include "math/vector.h"
 
 
 

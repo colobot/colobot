@@ -85,7 +85,7 @@
 #include "ui/displaytext.h"
 #include "script/cmdtoken.h"
 #include "script/cbottoken.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "object/object.h"
 
 

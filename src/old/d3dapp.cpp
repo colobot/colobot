@@ -35,7 +35,7 @@
 #include "old/math3d.h"
 #include "old/joystick.h"
 #include "object/robotmain.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "old/d3dapp.h"
 
 // fix for "MSH_MOUSEWHEEL undefined" error

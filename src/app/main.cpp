@@ -15,38 +15,27 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// device.h
+// main.cpp
 
-#pragma once
+#include "app/app.h"
+#include "app/system.h"
+#include "common/misc.h"
+#include "common/restext.h"
 
 
-namespace Gfx {
-
-struct DeviceConfig
+//! Entry point to the program
+int main(int argc, char *argv[])
 {
-	//! Screen width
-	int width;
-	//! Screen height
-	int height;
-	//! Bits per pixel
-	int bpp;
-	//! Full screen
-	bool fullScreen;
-	//! Resizeable window
-	bool resizeable;
-	//! Hardware acceleration
-	bool hardwareAccel;
-	//! Double buffering
-	bool doubleBuf;
-	//! No window frame (also set with full screen)
-	bool noFrame;
+	CApplication app; // single instance of the application
 
-	DeviceConfig();
-};
+	Error err = app.ParseArguments(argc, argv);
+	if (err != ERR_OK)
+	{
+		SystemDialog(SDT_ERROR, "COLOBOT", "Invalid commandline arguments!\n");
+	}
 
-class CDevice
-{
-  // TODO
-};
+	if (! app.Create())
+		return 0;
 
-}; // namespace Gfx
+	return app.Run();
+}

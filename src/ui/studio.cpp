@@ -38,7 +38,7 @@
 #include "object/robotmain.h"
 #include "object/object.h"
 #include "old/camera.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "script/script.h"
 #include "ui/interface.h"
 #include "ui/button.h"

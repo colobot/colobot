@@ -36,7 +36,7 @@
 #include "ui/window.h"
 #include "ui/group.h"
 #include "old/text.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "ui/displaytext.h"
 
 

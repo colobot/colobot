@@ -17,7 +17,6 @@
 // iman.cpp
 
 
-#include <windows.h>
 #include <stdio.h>
 
 #include "common/struct.h"

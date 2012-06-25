@@ -21,7 +21,7 @@
 
 #include "old/d3dengine.h"
 #include "old/camera.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 
 
 class CInstanceManager;

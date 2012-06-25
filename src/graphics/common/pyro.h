@@ -19,9 +19,11 @@
 
 #pragma once
 
-#include "graphics/common/engine.h"
-#include "object/object.h"
 #include "common/misc.h"
+#include "graphics/common/engine.h"
+//#include "object/object.h"
+// TEMPORARILY!
+enum ObjectType {};
 
 
 class CInstanceManager;
@@ -93,7 +95,7 @@ public:
 	CPyro(CInstanceManager* iMan);
 	~CPyro();
 
-	void		DeleteObject(bool bAll=FALSE);
+	void		DeleteObject(bool bAll=false);
 	bool		Create(PyroType type, CObject* pObj, float force=1.0f);
 	bool		EventProcess(const Event &event);
 	Error		IsEnded();

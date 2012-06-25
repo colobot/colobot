@@ -19,10 +19,10 @@
 #pragma once
 
 
-
-
-#include "old/d3dengine.h"
 #include "common/event.h"
+
+
+class CD3DEngine;
 
 
 

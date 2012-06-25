@@ -62,7 +62,7 @@
 #include "ui/window.h"
 #include "ui/displaytext.h"
 #include "old/text.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "old/particule.h"
 #include "script/cmdtoken.h"
 

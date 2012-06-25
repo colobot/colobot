@@ -19,7 +19,6 @@
 
 #pragma once
 
-#include "common/struct.h"
 #include "common/event.h"
 #include "math/point.h"
 

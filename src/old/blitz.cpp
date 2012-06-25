@@ -35,7 +35,7 @@
 #include "old/camera.h"
 #include "object/auto/auto.h"
 #include "object/auto/autopara.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "old/blitz.h"
 
 

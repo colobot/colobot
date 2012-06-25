@@ -21,7 +21,10 @@
 
 
 #include "common/misc.h"
+#include "graphics/common/device.h"
 #include "graphics/common/engine.h"
+
+#include <string>
 
 
 class CInstanceManager;
@@ -29,32 +32,48 @@ class CEvent;
 class CRobotMain;
 class CSound;
 
+struct ApplicationPrivate;
 
+
+/**
+ * \class CApplication Main application
+ *
+ * This class is responsible for creating and handling main application window,
+ * receiving events, etc.
+ *
+ * ...
+ */
 class CApplication
 {
 public:
+	//! Constructor (can only be called once!)
 	CApplication();
+	//! Destructor
 	~CApplication();
 
+public:
+	//! Parses commandline arguments
+	Error		ParseArguments(int argc, char *argv[]);
+	//! Initializes the application
+	bool		Create();
+	//! Main event loop
+	int			Run();
+
 protected:
-	//LRESULT		OnQuerySuspend( DWORD dwFlags );
-	//LRESULT		OnResumeSuspend( DWORD dwData );
+	//! Cleans up before exit
+	void		Destroy();
+	//! Processes an SDL event to Event struct
+	void		ParseEvent();
+	//! Handles some incoming events
+	void		ProcessEvent(Event event);
+	//! Renders the image in window
+	bool		Render();
 
 public:
-	Error		RegQuery();
-	Error		AudioQuery();
-	Error		CheckMistery(char *strCmdLine);
-	int			GetVidMemTotal();
-	bool		IsVideo8MB();
-	bool		IsVideo32MB();
-	//HRESULT		Create( HINSTANCE, TCHAR* );
-	int			Run();
-	//LRESULT		MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
 	void		Pause(bool pause);
-	//Math::Point		ConvPosToInterface(HWND hWnd, LPARAM lParam);
+	void		StepSimulation(float rTime);
+
 	void		SetMousePos(Math::Point pos);
-	void		StepSimul(float rTime);
-	char*		RetCDpath();
 
 	void		SetShowStat(bool show);
 	bool		RetShowStat();
@@ -62,29 +81,20 @@ public:
 	bool		RetDebugMode();
 	bool		RetSetupMode();
 
-	bool		EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
-	bool		RetFullScreen();
-	bool		ChangeDevice(char *device, char *mode, bool bFull);
-
 	void		FlushPressKey();
 	void		ResetKey();
 	void		SetKey(int keyRank, int option, int key);
 	int			RetKey(int keyRank, int option);
 
-	void		SetJoystick(bool bEnable);
+	void		SetJoystick(bool enable);
 	bool		RetJoystick();
 
 	void		SetMouseType(Gfx::MouseType type);
-	void		SetNiceMouse(bool bNice);
+	void		SetNiceMouse(bool nice);
 	bool		RetNiceMouse();
 	bool		RetNiceMouseCap();
 
 	bool		WriteScreenShot(char *filename, int width, int height);
-
-	//bool		GetRenderDC(HDC &hDC);
-	//bool		ReleaseRenderDC(HDC &hDC);
-	//PBITMAPINFO	CreateBitmapInfoStruct(HBITMAP hBmp);
-	//bool		CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
 
 protected:
 	//HRESULT		ConfirmDevice( DDCAPS* pddDriverCaps, D3DDEVICEDESC7* pd3dDeviceDesc );
@@ -102,55 +112,42 @@ protected:
 	void		OutputText(long x, long y, char* str);
 
 protected:
+	//! Private (SDL-dependent data)
+	ApplicationPrivate*		m_private;
 	CInstanceManager*		m_iMan;
+	Gfx::DeviceConfig		m_deviceConfig;
+	Gfx::CEngine*			m_engine;
 	CEvent*					m_event;
+	CRobotMain*				m_robotMain;
+	CSound*					m_sound;
 
-	//HINSTANCE				m_instance;
-	//HWND					m_hWnd;
-	//D3DEnum_DeviceInfo*		m_pDeviceInfo;
-	//LPDIRECTDRAW7			m_pDD;
-	//LPDIRECT3D7				m_pD3D;
-	//LPDIRECT3DDEVICE7		m_pD3DDevice;
-	//LPDIRECTDRAWSURFACE7	m_pddsRenderTarget;
-	//DDSURFACEDESC2			m_ddsdRenderTarget;
-	//LPDIRECTDRAWSURFACE7	m_pddsDepthBuffer;
+	//! Code to return at exit
+	int 			m_exitCode;
 
-	//HANDLE			m_thread;
-	//DWORD			m_threadId;
-
-	char			m_CDpath[100];
-
-	//CD3DFramework7*	m_pFramework;
 	bool			m_active;
 	bool			m_activateApp;
 	bool			m_ready;
 	bool			m_joystick;
 
+	std::string		m_windowTitle;
 	long			m_vidMemTotal;
-	char*			m_strWindowTitle;
-	bool			m_bAppUseZBuffer;
-	bool			m_bAppUseStereo;
-	bool			m_bShowStats;
-	bool			m_bDebugMode;
-	bool			m_bAudioState;
-	bool			m_bAudioTrack;
-	bool			m_bNiceMouse;
-	bool			m_bSetupMode;
-	//HRESULT			(*m_fnConfirmDevice)(DDCAPS*, D3DDEVICEDESC7*);
-
-public:
-	Gfx::CEngine*	m_pD3DEngine;
-	CRobotMain*		m_pRobotMain;
-	CSound*			m_pSound;
+	bool			m_appUseZBuffer;
+	bool			m_appUseStereo;
+	bool			m_showStats;
+	bool			m_debugMode;
+	bool			m_audioState;
+	bool			m_audioTrack;
+	bool			m_niceMouse;
+	bool			m_setupMode;
 
 	int				m_keyState;
 	Math::Vector	m_axeKey;
 	Math::Vector	m_axeJoy;
 	bool			m_joyButton[32];
 	Math::Point		m_mousePos;
-	long			m_mshMouseWheel;
+	long			m_mouseWheel;
 
-	float			m_aTime;
+	float			m_time;
 	long			m_key[50][2];
 };
 

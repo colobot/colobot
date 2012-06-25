@@ -19,5 +19,55 @@
 
 #include "graphics/common/engine.h"
 
+#include <GL/gl.h>
+#include <GL/glu.h>
+
 
 // TODO implementation
+
+Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
+{
+	// TODO
+}
+
+Gfx::CEngine::~CEngine()
+{
+	// TODO
+}
+
+int Gfx::CEngine::Render()
+{
+	/* Just a hello world for now */
+
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glShadeModel(GL_SMOOTH);
+	glDisable(GL_DEPTH_TEST);
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D(-10.0f, 10.0f, -10.0f, 10.0f);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	//glTranslatef(0.0f, 0.0f, -6.0f);
+
+	glBegin(GL_TRIANGLES);
+	{
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex2f(-2.0f, -1.0f);
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex2f(2.0f, -1.0f);
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex2f(0.0f, 1.5f);
+	}
+	glEnd();
+
+	glFlush();
+
+	return 1;
+}

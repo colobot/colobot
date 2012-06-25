@@ -20,7 +20,6 @@
 #pragma once
 
 #include "engine.h"
-#include "common/struct.h"
 #include "common/event.h"
 
 
