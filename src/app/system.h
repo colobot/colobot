@@ -15,38 +15,43 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// device.h
+// system.h
 
 #pragma once
 
 
-namespace Gfx {
+#include <string>
 
-struct DeviceConfig
+
+/**
+ * \enum SysDialogType Type of system dialog
+ */
+enum SystemDialogType
 {
-	//! Screen width
-	int width;
-	//! Screen height
-	int height;
-	//! Bits per pixel
-	int bpp;
-	//! Full screen
-	bool fullScreen;
-	//! Resizeable window
-	bool resizeable;
-	//! Hardware acceleration
-	bool hardwareAccel;
-	//! Double buffering
-	bool doubleBuf;
-	//! No window frame (also set with full screen)
-	bool noFrame;
-
-	DeviceConfig();
+	//! Information message
+	SDT_INFO,
+	//! Warning message
+	SDT_WARNING,
+	//! Error message
+	SDT_ERROR,
+	//! Yes/No question
+	SDT_YES_NO,
+	//! Ok/Cancel question
+	SDT_OK_CANCEL
 };
 
-class CDevice
+/**
+ * \enum SysDialogResult Result of system dialog
+ *
+ * Means which button was pressed.
+ */
+enum SystemDialogResult
 {
-  // TODO
+	SDR_OK,
+	SDR_CANCEL,
+	SDR_YES,
+	SDR_NO
 };
 
-}; // namespace Gfx
+//! Displays a system dialog
+SystemDialogResult SystemDialog(SystemDialogType, const std::string &title, const std::string &message);

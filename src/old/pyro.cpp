@@ -39,7 +39,7 @@
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
 #include "ui/displaytext.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "old/pyro.h"
 
 

@@ -20,11 +20,11 @@
 #pragma once
 
 #include "common/misc.h"
-#include "common/struct.h"
-#include "object/object.h"
+#include "math/vector.h"
 
 
 class CInstanceManager;
+class CObject;
 class CSound;
 
 

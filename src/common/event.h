@@ -538,6 +538,8 @@ struct Event
 	float		axeZ;		// control the Z axis (-1 .. 1)
 	short		keyState;	// state of the keyboard (KS_ *)
 	float		rTime;		// relative time
+
+	Event();
 };
 
 
@@ -618,8 +620,6 @@ public:
 	void	MakeEvent(Event &event, EventMsg msg);
 	bool	AddEvent(const Event &event);
 	bool	GetEvent(Event &event);
-
-protected:
 
 protected:
 	CInstanceManager* m_iMan;

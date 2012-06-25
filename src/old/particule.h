@@ -21,7 +21,7 @@
 
 #include "math/point.h"
 #include "old/d3dengine.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 
 
 class CInstanceManager;

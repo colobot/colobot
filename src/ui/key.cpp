@@ -28,7 +28,7 @@
 #include "common/misc.h"
 #include "common/iman.h"
 #include "common/restext.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "old/text.h"
 #include "ui/key.h"
 

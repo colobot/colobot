@@ -44,7 +44,7 @@
 #include "old/cloud.h"
 #include "old/blitz.h"
 #include "old/planet.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 
 
 

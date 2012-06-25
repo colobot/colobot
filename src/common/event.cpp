@@ -16,15 +16,22 @@
 
 // event.cpp
 
-
-#include <windows.h>
-#include <stdio.h>
-
-#include "common/struct.h"
 #include "common/iman.h"
 #include "common/event.h"
 
+#include <string.h>
 
+
+Event::Event()
+{
+	event = EVENT_NULL;
+	param = 0;
+	axeX = 0.0f;
+	axeY = 0.0f;
+	axeZ = 0.0f;
+	keyState = 0;
+	rTime = 0.0f;
+}
 
 
 // Object's constructor.
@@ -57,7 +64,7 @@ void CEvent::Flush()
 
 void CEvent::MakeEvent(Event &event, EventMsg msg)
 {
-	ZeroMemory(&event, sizeof(Event));
+	memset(&event, 0, sizeof(Event));
 	event.event = msg;
 }
 

@@ -34,7 +34,7 @@
 #include "old/particule.h"
 #include "old/terrain.h"
 #include "object/object.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "old/water.h"
 
 

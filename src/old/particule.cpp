@@ -38,7 +38,7 @@
 #include "object/auto/auto.h"
 #include "object/robotmain.h"
 #include "old/terrain.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "old/water.h"
 #include "old/particule.h"
 

@@ -31,7 +31,7 @@
 #include "common/misc.h"
 #include "common/iman.h"
 #include "old/text.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "ui/control.h"
 
 

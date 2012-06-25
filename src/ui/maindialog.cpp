@@ -52,7 +52,7 @@
 #include "ui/editvalue.h"
 #include "old/text.h"
 #include "old/camera.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "script/cmdtoken.h"
 #include "object/robotmain.h"
 #include "ui/maindialog.h"

@@ -69,7 +69,7 @@
 #include "ui/edit.h"
 #include "ui/displaytext.h"
 #include "old/text.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "script/cbottoken.h"
 #include "script/cmdtoken.h"
 #include "object/mainmovie.h"

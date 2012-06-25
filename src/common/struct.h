@@ -19,8 +19,6 @@
 #pragma once
 
 
-#include <d3d.h>
-
 #include <math/vector.h>
 
 

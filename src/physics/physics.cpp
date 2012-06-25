@@ -42,7 +42,7 @@
 #include "object/brain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
-#include "sound/sound.h"
+#include "old/sound.h"
 #include "object/task/task.h"
 #include "script/cmdtoken.h"
 #include "physics/physics.h"
