@@ -21,7 +21,7 @@
 
 #include "object/motion/motionvehicle.h"
 
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "old/particule.h"
 #include "old/terrain.h"
 #include "math/geometry.h"

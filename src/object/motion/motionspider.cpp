@@ -21,7 +21,7 @@
 
 #include "object/motion/motionspider.h"
 
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "old/particule.h"
 #include "physics/physics.h"
 

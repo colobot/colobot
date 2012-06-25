@@ -21,7 +21,7 @@
 
 #include "object/motion/motionmother.h"
 
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "physics/physics.h"
 
 

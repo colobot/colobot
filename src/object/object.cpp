@@ -53,7 +53,7 @@
 #include "object/motion/motionspider.h"
 #include "object/motion/motionbee.h"
 #include "object/motion/motionworm.h"
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
 #include "object/auto/autoportico.h"

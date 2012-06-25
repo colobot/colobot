@@ -50,7 +50,7 @@
 #include "physics/physics.h"
 #include "object/brain.h"
 #include "old/pyro.h"
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "old/model.h"
 #include "old/camera.h"
 #include "object/task/task.h"

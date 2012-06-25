@@ -36,7 +36,7 @@
 #include "ui/edit.h"
 #include "ui/button.h"
 #include "script/cmdtoken.h"
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "old/model.h"
 
 

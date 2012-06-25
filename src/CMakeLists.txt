@@ -22,12 +22,12 @@ old/d3dtextr.cpp
 old/d3dutil.cpp
 old/d3dmath.cpp
 old/math3d.cpp
+old/modfile.cpp
 app/app.cpp
 common/event.cpp
 common/iman.cpp
 common/metafile.cpp
 common/misc.cpp
-common/modfile.cpp
 common/profile.cpp
 common/restext.cpp
 graphics/common/camera.cpp
@@ -37,6 +37,7 @@ graphics/common/engine.cpp
 graphics/common/light.cpp
 graphics/common/lightning.cpp
 graphics/common/model.cpp
+graphics/common/modfile.cpp
 graphics/common/particle.cpp
 graphics/common/planet.cpp
 graphics/common/pyro.cpp
