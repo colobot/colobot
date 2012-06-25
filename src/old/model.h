@@ -20,7 +20,7 @@
 
 
 #include "common/event.h"
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "math/point.h"
 
 

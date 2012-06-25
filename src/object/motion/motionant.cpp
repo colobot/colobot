@@ -21,7 +21,7 @@
 
 #include "object/motion/motionant.h"
 
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "old/particule.h"
 #include "physics/physics.h"
 

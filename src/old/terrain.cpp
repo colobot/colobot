@@ -32,7 +32,7 @@
 #include "common/misc.h"
 #include "common/iman.h"
 #include "old/math3d.h"
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "old/water.h"
 #include "old/terrain.h"
 

@@ -24,7 +24,7 @@
 #include "math/geometry.h"
 #include "old/terrain.h"
 #include "old/water.h"
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "object/robotmain.h"
 
 

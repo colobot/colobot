@@ -21,7 +21,7 @@
 
 #include "object/motion/motionhuman.h"
 
-#include "common/modfile.h"
+#include "old/modfile.h"
 #include "old/terrain.h"
 #include "old/water.h"
 #include "math/geometry.h"
