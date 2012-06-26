@@ -4,9 +4,9 @@ This file outlines the most important things for developers.
 
 1. Goal.
 
-  This branch is the main development branch into which features from other development branches will be pulled in after completing their goals. Currently these branches include:
-   * opengl-dev  branch - branch dedicated to rewriting the graphics engine using SDL and OpenGL
-   * ...
+  This branch is dedicated to rewriting the graphics engine as well as window & event handling, sound and all other parts of the project dependent on WinAPI or DirectX, to new platform-independent libraries: SDL, OpenGL and fmod (for sound).
+  The general rule is to rewrite the code so that it resembles the old one as closely as possible so that later on, it can be joined easily with the other modules, which will not be touched yet. Of course, it doesn't mean to sacrifice the usability or flexibility of new interfaces, so some cleaning-up is welcome.
+
 
 2. Build system and organisation of directories.
 
@@ -36,5 +36,51 @@ This file outlines the most important things for developers.
 
   There is also a generated header common/config.h with #defines set by CMake.
 
-3. For other things, refer to README files in respective feature development branches.
 
+3. Plan of work.
+
+  What is done so far:
+   - changes in the build system
+   - rewriting of math module and reaching independence from old FPOINT, D3DVECTOR and D3DMATRIX structs
+   - first draft of class and struct templates in src/graphics/common
+
+  What remains to be done:
+   - in CBot library - remove dependencies to WinAPI and translate the comments from French to English
+   - write CApplication class, including handling of SDL events, mouse, joystick, etc.
+   - (connected with the above) remove dependencies from src/common
+   - complete the CDevice and CEngine interfaces and write the concrete implementations of CGLDevice and CGLEngine
+   - write the implementation of other classes in graphics engine, matching the old implementation but using only the new interface
+   - write the implementation of new sound module
+   - rewrite the old UI classes to use new graphics interface
+   - rewrite the old src/object classes to use new graphics interface
+
+  Certain tasks regarding the work should be assigned to each developer using Issues on github, so that the division is clear.
+
+
+3. Rewriting modules.
+
+  The rewriting rule is the following: every old module/header that needs to be replaced will be moved to src/old and all references to it in the rest of the code shall be changed to src/old as well. In place of the old module, a new one will be created with the new declarations, preferrably enclosing everything in a separate namespace. This way, the new code will be separated from the old one, for the time being, thus making it possible to work on new code and not break anything else. Once the functionality of new code matches the old one, it can be replaced in old code with ease.
+
+
+4. Documentation.
+
+  All new code should be documented in Doxygen. Also, don't hesitate to add comments in the old code, where you deciphered some use or detail that you want to share.
+
+
+5. Tests.
+
+  Whenever possible, please write unit tests for your code. Tests should go into test subdirectory in each of the code directories and for now, should be independent of main build system (later on, we will combine them, but for now it will be easier this way).
+
+
+6. Commiting code.
+
+  Code commited to the repository should not break compilation nor tests. Breaking the compilation of old code can be tolerated but the new one - no! If you are uncertain, or want to make partial commit or something like that, commit to your own fork, or if you must, commit but comment out the code that breaks the build.
+
+
+7. Whitespace rules.
+
+  Please indent with spaces, 1 indentation level = 4 spaces. Unix line endings. And don't leave whitespace at the end of lines. Thank you :)
+
+
+
+I will probably think of something more in the future, but that's it for now. Thanks for reading and good luck :)
