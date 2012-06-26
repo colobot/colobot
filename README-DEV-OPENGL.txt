@@ -31,8 +31,8 @@ This file outlines the most important things for developers.
 
   The build system is as follows:
    /CMakeLists.txt - definition of project, build type setup, general compiler options and reference to src subdirectory
-   /src/CMakeLists.txt - currently defines two targets: colobot_old - the original game comprised of old sources, compiles and runs only on Windows; colobot_new - new implementation in SDL, compiles and runs on Windows and Linux, for now only "hello world"-like; colobot_old target references also CBot library
-   /src/CBot/CMakeLists.txt - defines the CBot library target
+   /src/CMakeLists.txt - defines the colobot target - new implementation in SDL, compiles and runs on Windows and Linux, for now only "hello world"-like
+   /src/CBot/CMakeLists.txt - defines the CBot library target, currently not referenced by colobot target because it is still WinAPI-dependent
 
   There is also a generated header common/config.h with #defines set by CMake.
 
@@ -59,7 +59,7 @@ This file outlines the most important things for developers.
 
 3. Rewriting modules.
 
-  The rewriting rule is the following: every old module/header that needs to be replaced will be moved to src/old and all references to it in the rest of the code shall be changed to src/old as well. In place of the old module, a new one will be created with the new declarations, preferrably enclosing everything in a separate namespace. This way, the new code will be separated from the old one, for the time being, thus making it possible to work on new code and not break anything else. Once the functionality of new code matches the old one, it can be replaced in old code with ease.
+  The rewriting rule is the following: every old module/header that needs to be replaced by a new one with all declarations either changed to other names or, preferrably, enclosed in a separate namespace. This way, the new code will be separated from the old one, for the time being, thus making it possible to work on new code and not break anything else. Once the functionality of new code matches the old one, it can be replaced in old code with ease.
 
 
 4. Documentation.
