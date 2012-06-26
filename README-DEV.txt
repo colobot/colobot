@@ -27,7 +27,7 @@ This file outlines the most important things for developers.
 
   Other directories, not very important right now, include:
    src/doc               contains the Doxygen mainpage text; it will probably be removed to app/main.cpp or some other place soon
-   src/metafile          a separate program - metafile editor? not sure about that
+   src/metafile          a separate program for packing data files to .dat format
 
   The build system is as follows:
    /CMakeLists.txt - definition of project, build type setup, general compiler options and reference to src subdirectory
