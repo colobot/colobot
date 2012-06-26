@@ -36,7 +36,8 @@ struct ApplicationPrivate;
 
 
 /**
- * \class CApplication Main application
+ * \class CApplication
+ * \brief Main application
  *
  * This class is responsible for creating and handling main application window,
  * receiving events, etc.

@@ -26,7 +26,8 @@
 
 namespace Gfx {
 
-/** \enum LightType Type of light */
+/** \enum LightType
+ *  \brief Type of light */
 enum LightType
 {
     LT_Point,
@@ -35,7 +36,8 @@ enum LightType
 };
 
 /**
- * \struct Light Light
+ * \struct Light
+ * \brief Light
  *
  * This structure was created as analog to DirectX's D3DLIGHT.
  *
@@ -81,7 +83,8 @@ struct LightProg
 };
 
 /**
- * \struct SceneLight Dynamic light in 3D scene
+ * \struct SceneLight
+ * \brief Dynamic light in 3D scene
  *
  * TODO documentation
  */
