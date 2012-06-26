@@ -25,13 +25,13 @@
 
 enum AutoFactoryPhase
 {
-	AFP_WAIT		= 1,	// expected metal
-	AFP_CLOSE_S		= 2,	// closes doors (shift)
-	AFP_CLOSE_T		= 3,	// closes doors (turn)
-	AFP_BUILD		= 4,	// building the vehicle
-	AFP_OPEN_T		= 5,	// opens the doors (turn)
-	AFP_OPEN_S		= 6,	// opens the doors (shift)
-	AFP_ADVANCE		= 7,	// advance at the door
+    AFP_WAIT        = 1,    // expected metal
+    AFP_CLOSE_S     = 2,    // closes doors (shift)
+    AFP_CLOSE_T     = 3,    // closes doors (turn)
+    AFP_BUILD       = 4,    // building the vehicle
+    AFP_OPEN_T      = 5,    // opens the doors (turn)
+    AFP_OPEN_S      = 6,    // opens the doors (shift)
+    AFP_ADVANCE     = 7,    // advance at the door
 };
 
 
@@ -39,36 +39,36 @@ enum AutoFactoryPhase
 class CAutoFactory : public CAuto
 {
 public:
-	CAutoFactory(CInstanceManager* iMan, CObject* object);
-	~CAutoFactory();
+    CAutoFactory(CInstanceManager* iMan, CObject* object);
+    ~CAutoFactory();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
+    void        Init();
+    bool        EventProcess(const Event &event);
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	void		UpdateInterface();
-	void		UpdateButton(CWindow *pw, EventMsg event, bool bBusy);
-
-	CObject*	SearchFret();
-	bool		NearestVehicle();
-	bool		CreateVehicle();
-	CObject*	SearchVehicle();
-
-	void		SoundManip(float time, float amplitude, float frequency);
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoFactoryPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_lastParticule;
-	Math::Vector			m_fretPos;
-	int					m_channelSound;
+    void        UpdateInterface();
+    void        UpdateButton(CWindow *pw, EventMsg event, bool bBusy);
+
+    CObject*    SearchFret();
+    bool        NearestVehicle();
+    bool        CreateVehicle();
+    CObject*    SearchVehicle();
+
+    void        SoundManip(float time, float amplitude, float frequency);
+
+protected:
+    AutoFactoryPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_lastParticule;
+    Math::Vector            m_fretPos;
+    int                 m_channelSound;
 };
 

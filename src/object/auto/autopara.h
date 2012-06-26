@@ -25,9 +25,9 @@
 
 enum AutoParaPhase
 {
-	APAP_WAIT		= 1,
-	APAP_BLITZ		= 2,
-	APAP_CHARGE		= 3,
+    APAP_WAIT       = 1,
+    APAP_BLITZ      = 2,
+    APAP_CHARGE     = 3,
 };
 
 
@@ -35,31 +35,31 @@ enum AutoParaPhase
 class CAutoPara : public CAuto
 {
 public:
-	CAutoPara(CInstanceManager* iMan, CObject* object);
-	~CAutoPara();
+    CAutoPara(CInstanceManager* iMan, CObject* object);
+    ~CAutoPara();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
-	void		StartBlitz();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
+    void        StartBlitz();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	void		ChargeObject(float rTime);
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoParaPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	Math::Vector		m_pos;
-	int				m_channelSound;
+    void        ChargeObject(float rTime);
+
+protected:
+    AutoParaPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    Math::Vector        m_pos;
+    int             m_channelSound;
 };
 

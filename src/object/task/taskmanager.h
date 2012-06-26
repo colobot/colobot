@@ -31,41 +31,41 @@
 class CTaskManager
 {
 public:
-	CTaskManager(CInstanceManager* iMan, CObject* object);
-	~CTaskManager();
+    CTaskManager(CInstanceManager* iMan, CObject* object);
+    ~CTaskManager();
 
-	Error	StartTaskWait(float time);
-	Error	StartTaskAdvance(float length);
-	Error	StartTaskTurn(float angle);
-	Error	StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode);
-	Error	StartTaskTake();
-	Error	StartTaskManip(TaskManipOrder order, TaskManipArm arm);
-	Error	StartTaskFlag(TaskFlagOrder order, int rank);
-	Error	StartTaskBuild(ObjectType type);
-	Error	StartTaskSearch();
-	Error	StartTaskInfo(char *name, float value, float power, bool bSend);
-	Error	StartTaskTerraform();
-	Error	StartTaskPen(bool bDown, int color);
-	Error	StartTaskRecover();
-	Error	StartTaskShield(TaskShieldMode mode, float delay);
-	Error	StartTaskFire(float delay);
-	Error	StartTaskFireAnt(Math::Vector impact);
-	Error	StartTaskGunGoal(float dirV, float dirH);
-	Error	StartTaskSpiderExplo();
-	Error	StartTaskReset(Math::Vector goal, Math::Vector angle);
+    Error   StartTaskWait(float time);
+    Error   StartTaskAdvance(float length);
+    Error   StartTaskTurn(float angle);
+    Error   StartTaskGoto(Math::Vector pos, float altitude, TaskGotoGoal goalMode, TaskGotoCrash crashMode);
+    Error   StartTaskTake();
+    Error   StartTaskManip(TaskManipOrder order, TaskManipArm arm);
+    Error   StartTaskFlag(TaskFlagOrder order, int rank);
+    Error   StartTaskBuild(ObjectType type);
+    Error   StartTaskSearch();
+    Error   StartTaskInfo(char *name, float value, float power, bool bSend);
+    Error   StartTaskTerraform();
+    Error   StartTaskPen(bool bDown, int color);
+    Error   StartTaskRecover();
+    Error   StartTaskShield(TaskShieldMode mode, float delay);
+    Error   StartTaskFire(float delay);
+    Error   StartTaskFireAnt(Math::Vector impact);
+    Error   StartTaskGunGoal(float dirV, float dirH);
+    Error   StartTaskSpiderExplo();
+    Error   StartTaskReset(Math::Vector goal, Math::Vector angle);
 
-	bool	EventProcess(const Event &event);
-	Error	IsEnded();
-	bool	IsBusy();
-	bool	IsPilot();
-	bool	Abort();
-
-protected:
+    bool    EventProcess(const Event &event);
+    Error   IsEnded();
+    bool    IsBusy();
+    bool    IsPilot();
+    bool    Abort();
 
 protected:
-	CInstanceManager* m_iMan;
-	CTask*			m_task;
-	CObject*		m_object;
-	bool			m_bPilot;
+
+protected:
+    CInstanceManager* m_iMan;
+    CTask*          m_task;
+    CObject*        m_object;
+    bool            m_bPilot;
 };
 

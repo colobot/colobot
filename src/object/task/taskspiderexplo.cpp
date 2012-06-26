@@ -31,10 +31,10 @@
 // Object's constructor.
 
 CTaskSpiderExplo::CTaskSpiderExplo(CInstanceManager* iMan, CObject* object)
-						  : CTask(iMan, object)
+                          : CTask(iMan, object)
 {
-	m_time = 0.0f;
-	m_bError = false;
+    m_time = 0.0f;
+    m_bError = false;
 }
 
 // Object's destructor.
@@ -48,19 +48,19 @@ CTaskSpiderExplo::~CTaskSpiderExplo()
 
 bool CTaskSpiderExplo::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return true;
-	if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->RetPause() )  return true;
+    if ( event.event != EVENT_FRAME )  return true;
 
-	// Momentarily stationary object (ant on the back)?
-	if ( m_object->RetFixed() )
-	{
-		m_bError = true;
-		return true;
-	}
+    // Momentarily stationary object (ant on the back)?
+    if ( m_object->RetFixed() )
+    {
+        m_bError = true;
+        return true;
+    }
 
-	m_time += event.rTime;
+    m_time += event.rTime;
 
-	return true;
+    return true;
 }
 
 
@@ -68,43 +68,43 @@ bool CTaskSpiderExplo::EventProcess(const Event &event)
 
 Error CTaskSpiderExplo::Start()
 {
-	m_motion->SetAction(MSS_EXPLO, 1.0f);  // swells abdominal
-	m_time = 0.0f;
+    m_motion->SetAction(MSS_EXPLO, 1.0f);  // swells abdominal
+    m_time = 0.0f;
 
-	m_physics->SetMotorSpeedX(0.0f);  // stops the advance
-	m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
+    m_physics->SetMotorSpeedX(0.0f);  // stops the advance
+    m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
 
-	m_bError = false;
-	return ERR_OK;
+    m_bError = false;
+    return ERR_OK;
 }
 
 // Indicates whether the action is finished.
 
 Error CTaskSpiderExplo::IsEnded()
 {
-	CPyro*		pyro;
+    CPyro*      pyro;
 
-	if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->RetPause() )  return ERR_CONTINUE;
 
-	if ( m_bError )
-	{
-		Abort();
-		return ERR_STOP;
-	}
+    if ( m_bError )
+    {
+        Abort();
+        return ERR_STOP;
+    }
 
-	if ( m_time < 1.0f )  return ERR_CONTINUE;
+    if ( m_time < 1.0f )  return ERR_CONTINUE;
 
-	pyro = new CPyro(m_iMan);
-	pyro->Create(PT_SPIDER, m_object);  // the spider explodes (suicide)
+    pyro = new CPyro(m_iMan);
+    pyro->Create(PT_SPIDER, m_object);  // the spider explodes (suicide)
 
-	Abort();
-	return ERR_STOP;
+    Abort();
+    return ERR_STOP;
 }
 
 // Suddenly ends the current action.
 
 bool CTaskSpiderExplo::Abort()
 {
-	return true;
+    return true;
 }
 

@@ -24,9 +24,9 @@
 
 enum EditValueType
 {
-	EVT_INT		= 1,	// integer
-	EVT_FLOAT	= 2,	// float value
-	EVT_100		= 3,	// percent (0 .. 1)
+    EVT_INT     = 1,    // integer
+    EVT_FLOAT   = 2,    // float value
+    EVT_100     = 3,    // percent (0 .. 1)
 };
 
 
@@ -39,45 +39,45 @@ class CButton;
 class CEditValue : public CControl
 {
 public:
-	CEditValue(CInstanceManager* iMan);
-	virtual ~CEditValue();
+    CEditValue(CInstanceManager* iMan);
+    virtual ~CEditValue();
 
-	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	void		SetPos(Math::Point pos);
-	void		SetDim(Math::Point dim);
+    void        SetPos(Math::Point pos);
+    void        SetDim(Math::Point dim);
 
-	bool		EventProcess(const Event &event);
-	void		Draw();
+    bool        EventProcess(const Event &event);
+    void        Draw();
 
-	void		SetType(EditValueType type);
-	EditValueType RetType();
+    void        SetType(EditValueType type);
+    EditValueType RetType();
 
-	void		SetValue(float value, bool bSendMessage=false);
-	float		RetValue();
+    void        SetValue(float value, bool bSendMessage=false);
+    float       RetValue();
 
-	void		SetStepValue(float value);
-	float		RetStepValue();
+    void        SetStepValue(float value);
+    float       RetStepValue();
 
-	void		SetMinValue(float value);
-	float		RetMinValue();
+    void        SetMinValue(float value);
+    float       RetMinValue();
 
-	void		SetMaxValue(float value);
-	float		RetMaxValue();
-
-protected:
-	void		MoveAdjust();
-	void		HiliteValue(const Event &event);
+    void        SetMaxValue(float value);
+    float       RetMaxValue();
 
 protected:
-	CEdit*		m_edit;
-	CButton*	m_buttonUp;
-	CButton*	m_buttonDown;
+    void        MoveAdjust();
+    void        HiliteValue(const Event &event);
 
-	EditValueType m_type;
-	float		m_stepValue;
-	float		m_minValue;
-	float		m_maxValue;
+protected:
+    CEdit*      m_edit;
+    CButton*    m_buttonUp;
+    CButton*    m_buttonDown;
+
+    EditValueType m_type;
+    float       m_stepValue;
+    float       m_minValue;
+    float       m_maxValue;
 };
 
 

@@ -25,11 +25,11 @@
 
 enum AutoConvertPhase
 {
-	ACP_STOP		= 1,
-	ACP_WAIT		= 2,
-	ACP_CLOSE		= 3,	// close the cover
-	ACP_ROTATE		= 4,	// turn the cover
-	ACP_OPEN		= 5,	// opens the cover
+    ACP_STOP        = 1,
+    ACP_WAIT        = 2,
+    ACP_CLOSE       = 3,    // close the cover
+    ACP_ROTATE      = 4,    // turn the cover
+    ACP_OPEN        = 5,    // opens the cover
 };
 
 
@@ -37,34 +37,34 @@ enum AutoConvertPhase
 class CAutoConvert : public CAuto
 {
 public:
-	CAutoConvert(CInstanceManager* iMan, CObject* object);
-	~CAutoConvert();
+    CAutoConvert(CInstanceManager* iMan, CObject* object);
+    ~CAutoConvert();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
-	bool		Abort();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
+    bool        Abort();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	CObject*	SearchStone(ObjectType type);
-	bool		SearchVehicle();
-	void		CreateMetal();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoConvertPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastParticule;
-	bool				m_bResetDelete;
-	bool				m_bSoundClose;
-	int					m_soundChannel;
+    CObject*    SearchStone(ObjectType type);
+    bool        SearchVehicle();
+    void        CreateMetal();
+
+protected:
+    AutoConvertPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastParticule;
+    bool                m_bResetDelete;
+    bool                m_bSoundClose;
+    int                 m_soundChannel;
 };
 

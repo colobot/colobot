@@ -54,17 +54,17 @@ const int BRAINMAXSCRIPT = 10;
 
 enum TraceOper
 {
-	TO_STOP			= 0,	// stop
-	TO_ADVANCE		= 1,	// advance
-	TO_RECEDE		= 2,	// back
-	TO_TURN			= 3,	// rotate
-	TO_PEN			= 4,	// color change
+    TO_STOP         = 0,    // stop
+    TO_ADVANCE      = 1,    // advance
+    TO_RECEDE       = 2,    // back
+    TO_TURN         = 3,    // rotate
+    TO_PEN          = 4,    // color change
 };
 
 struct TraceRecord
 {
-	TraceOper	oper;
-	float		param;
+    TraceOper   oper;
+    float       param;
 };
 
 
@@ -72,147 +72,147 @@ struct TraceRecord
 class CBrain
 {
 public:
-	CBrain(CInstanceManager* iMan, CObject* object);
-	~CBrain();
+    CBrain(CInstanceManager* iMan, CObject* object);
+    ~CBrain();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		SetPhysics(CPhysics* physics);
-	void		SetMotion(CMotion* motion);
+    void        SetPhysics(CPhysics* physics);
+    void        SetMotion(CMotion* motion);
 
-	bool		EventProcess(const Event &event);
-	bool		CreateInterface(bool bSelect);
+    bool        EventProcess(const Event &event);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
+    bool        Write(char *line);
+    bool        Read(char *line);
 
-	bool		IsBusy();
-	void		SetActivity(bool bMode);
-	bool		RetActivity();
-	bool		IsProgram();
-	bool		ProgramExist(int rank);
-	void		RunProgram(int rank);
-	int			FreeProgram();
-	int			RetProgram();
-	void		StopProgram();
-	void		StopTask();
+    bool        IsBusy();
+    void        SetActivity(bool bMode);
+    bool        RetActivity();
+    bool        IsProgram();
+    bool        ProgramExist(int rank);
+    void        RunProgram(int rank);
+    int         FreeProgram();
+    int         RetProgram();
+    void        StopProgram();
+    void        StopTask();
 
-	bool		IntroduceVirus();
-	void		SetActiveVirus(bool bActive);
-	bool		RetActiveVirus();
+    bool        IntroduceVirus();
+    void        SetActiveVirus(bool bActive);
+    bool        RetActiveVirus();
 
-	void		SetScriptRun(int rank);
-	int			RetScriptRun();
-	void		SetScriptName(int rank, char *name);
-	char*		RetScriptName(int rank);
-	void		SetSoluceName(char *name);
-	char*		RetSoluceName();
+    void        SetScriptRun(int rank);
+    int         RetScriptRun();
+    void        SetScriptName(int rank, char *name);
+    char*       RetScriptName(int rank);
+    void        SetSoluceName(char *name);
+    char*       RetSoluceName();
 
-	bool		ReadSoluce(char* filename);
-	bool		ReadProgram(int rank, char* filename);
-	bool		RetCompile(int rank);
-	bool		WriteProgram(int rank, char* filename);
-	bool		ReadStack(FILE *file);
-	bool		WriteStack(FILE *file);
+    bool        ReadSoluce(char* filename);
+    bool        ReadProgram(int rank, char* filename);
+    bool        RetCompile(int rank);
+    bool        WriteProgram(int rank, char* filename);
+    bool        ReadStack(FILE *file);
+    bool        WriteStack(FILE *file);
 
-	Error		StartTaskTake();
-	Error		StartTaskManip(TaskManipOrder order, TaskManipArm arm);
-	Error		StartTaskFlag(TaskFlagOrder order, int rank);
-	Error		StartTaskBuild(ObjectType type);
-	Error		StartTaskSearch();
-	Error		StartTaskTerraform();
-	Error		StartTaskPen(bool bDown, int color);
-	Error		StartTaskRecover();
-	Error		StartTaskShield(TaskShieldMode mode);
-	Error		StartTaskFire(float delay);
-	Error		StartTaskFireAnt(Math::Vector impact);
-	Error		StartTaskGunGoal(float dirV, float dirH);
-	Error		StartTaskReset(Math::Vector goal, Math::Vector angle);
+    Error       StartTaskTake();
+    Error       StartTaskManip(TaskManipOrder order, TaskManipArm arm);
+    Error       StartTaskFlag(TaskFlagOrder order, int rank);
+    Error       StartTaskBuild(ObjectType type);
+    Error       StartTaskSearch();
+    Error       StartTaskTerraform();
+    Error       StartTaskPen(bool bDown, int color);
+    Error       StartTaskRecover();
+    Error       StartTaskShield(TaskShieldMode mode);
+    Error       StartTaskFire(float delay);
+    Error       StartTaskFireAnt(Math::Vector impact);
+    Error       StartTaskGunGoal(float dirV, float dirH);
+    Error       StartTaskReset(Math::Vector goal, Math::Vector angle);
 
-	void		UpdateInterface(float rTime);
-	void		UpdateInterface();
-
-protected:
-	bool		EventFrame(const Event &event);
-
-	void		StartEditScript(int rank, char* name);
-	void		StopEditScript(bool bCancel);
-
-	Error		EndedTask();
-
-	void		GroundFlat();
-	void		ColorFlag(int color);
-
-	void		UpdateScript(CWindow *pw);
-	int			RetSelScript();
-	void		BlinkScript(bool bEnable);
-
-	void		CheckInterface(CWindow *pw, EventMsg event, bool bState);
-	void		EnableInterface(CWindow *pw, EventMsg event, bool bState);
-	void		DeadInterface(CWindow *pw, EventMsg event, bool bState);
-	void		DefaultEnter(CWindow *pw, EventMsg event, bool bState=true);
-
-	void		TraceRecordStart();
-	void		TraceRecordFrame();
-	void		TraceRecordStop();
-	bool		TraceRecordOper(TraceOper oper, float param);
-	bool		TraceRecordPut(char *buffer, int max, TraceOper oper, float param);
+    void        UpdateInterface(float rTime);
+    void        UpdateInterface();
 
 protected:
-	CInstanceManager* m_iMan;
-	CD3DEngine*		m_engine;
-	CTerrain*		m_terrain;
-	CWater*			m_water;
-	CCamera*		m_camera;
-	CObject*		m_object;
-	CPhysics*		m_physics;
-	CMotion*		m_motion;
-	CInterface*		m_interface;
-	CDisplayText*	m_displayText;
-	CRobotMain*		m_main;
-	CStudio*		m_studio;
-	CSound*			m_sound;
-	CParticule*		m_particule;
-	CTaskManager*	m_primaryTask;
-	CTaskManager*	m_secondaryTask;
+    bool        EventFrame(const Event &event);
 
-	CScript*	m_script[BRAINMAXSCRIPT];
-	int			m_selScript;		// rank of the selected script
-	int			m_program;		// rank of the executed program / ​​-1
-	bool		m_bActivity;
-	bool		m_bBurn;
-	bool		m_bActiveVirus;
+    void        StartEditScript(int rank, char* name);
+    void        StopEditScript(bool bCancel);
 
-	int			m_scriptRun;
-	char		m_scriptName[BRAINMAXSCRIPT][50];
-	char		m_soluceName[50];
+    Error       EndedTask();
 
-	EventMsg	m_buttonAxe;
-	EventMsg	m_manipStyle;
-	EventMsg	m_defaultEnter;
-	EventMsg	m_interfaceEvent[100];
+    void        GroundFlat();
+    void        ColorFlag(int color);
 
-	CObject*	m_antTarget;
-	CObject*	m_beeBullet;
-	float		m_beeBulletSpeed;
-	Math::Vector	m_startPos;
-	float		m_time;
-	float		m_burnTime;
-	float		m_lastUpdateTime;
-	float		m_lastHumanTime;
-	float		m_lastSpiderTime;
-	float		m_lastWormTime;
-	float		m_lastBulletTime;
-	float		m_lastAlarmTime;
-	int			m_soundChannelAlarm;
-	int			m_flagColor;
+    void        UpdateScript(CWindow *pw);
+    int         RetSelScript();
+    void        BlinkScript(bool bEnable);
 
-	bool		m_bTraceRecord;
-	TraceOper	m_traceOper;
-	Math::Vector	m_tracePos;
-	float		m_traceAngle;
-	int			m_traceColor;
-	int			m_traceRecordIndex;
-	TraceRecord* m_traceRecordBuffer;
+    void        CheckInterface(CWindow *pw, EventMsg event, bool bState);
+    void        EnableInterface(CWindow *pw, EventMsg event, bool bState);
+    void        DeadInterface(CWindow *pw, EventMsg event, bool bState);
+    void        DefaultEnter(CWindow *pw, EventMsg event, bool bState=true);
+
+    void        TraceRecordStart();
+    void        TraceRecordFrame();
+    void        TraceRecordStop();
+    bool        TraceRecordOper(TraceOper oper, float param);
+    bool        TraceRecordPut(char *buffer, int max, TraceOper oper, float param);
+
+protected:
+    CInstanceManager* m_iMan;
+    CD3DEngine*     m_engine;
+    CTerrain*       m_terrain;
+    CWater*         m_water;
+    CCamera*        m_camera;
+    CObject*        m_object;
+    CPhysics*       m_physics;
+    CMotion*        m_motion;
+    CInterface*     m_interface;
+    CDisplayText*   m_displayText;
+    CRobotMain*     m_main;
+    CStudio*        m_studio;
+    CSound*         m_sound;
+    CParticule*     m_particule;
+    CTaskManager*   m_primaryTask;
+    CTaskManager*   m_secondaryTask;
+
+    CScript*    m_script[BRAINMAXSCRIPT];
+    int         m_selScript;        // rank of the selected script
+    int         m_program;      // rank of the executed program / ​​-1
+    bool        m_bActivity;
+    bool        m_bBurn;
+    bool        m_bActiveVirus;
+
+    int         m_scriptRun;
+    char        m_scriptName[BRAINMAXSCRIPT][50];
+    char        m_soluceName[50];
+
+    EventMsg    m_buttonAxe;
+    EventMsg    m_manipStyle;
+    EventMsg    m_defaultEnter;
+    EventMsg    m_interfaceEvent[100];
+
+    CObject*    m_antTarget;
+    CObject*    m_beeBullet;
+    float       m_beeBulletSpeed;
+    Math::Vector    m_startPos;
+    float       m_time;
+    float       m_burnTime;
+    float       m_lastUpdateTime;
+    float       m_lastHumanTime;
+    float       m_lastSpiderTime;
+    float       m_lastWormTime;
+    float       m_lastBulletTime;
+    float       m_lastAlarmTime;
+    int         m_soundChannelAlarm;
+    int         m_flagColor;
+
+    bool        m_bTraceRecord;
+    TraceOper   m_traceOper;
+    Math::Vector    m_tracePos;
+    float       m_traceAngle;
+    int         m_traceColor;
+    int         m_traceRecordIndex;
+    TraceRecord* m_traceRecordBuffer;
 };
 

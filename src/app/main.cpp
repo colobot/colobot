@@ -26,16 +26,16 @@
 //! Entry point to the program
 int main(int argc, char *argv[])
 {
-	CApplication app; // single instance of the application
+    CApplication app; // single instance of the application
 
-	Error err = app.ParseArguments(argc, argv);
-	if (err != ERR_OK)
-	{
-		SystemDialog(SDT_ERROR, "COLOBOT", "Invalid commandline arguments!\n");
-	}
+    Error err = app.ParseArguments(argc, argv);
+    if (err != ERR_OK)
+    {
+        SystemDialog(SDT_ERROR, "COLOBOT", "Invalid commandline arguments!\n");
+    }
 
-	if (! app.Create())
-		return 0;
+    if (! app.Create())
+        return 0;
 
-	return app.Run();
+    return app.Run();
 }

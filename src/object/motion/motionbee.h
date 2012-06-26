@@ -25,42 +25,42 @@
 
 enum MotionBeeAction
 {
-	MB_MARCH		= 0,
-	MB_SPEC			= 1
+    MB_MARCH        = 0,
+    MB_SPEC         = 1
 };
 
 enum MotionBeeSpecialAction
 {
-	MBS_HOLD		= 0,
-	MBS_BURN		= 1,
-	MBS_RUIN		= 2
+    MBS_HOLD        = 0,
+    MBS_BURN        = 1,
+    MBS_RUIN        = 2
 };
 
 
 class CMotionBee : public CMotion
 {
 public:
-	CMotionBee(CInstanceManager* iMan, CObject* object);
-	~CMotionBee();
+    CMotionBee(CInstanceManager* iMan, CObject* object);
+    ~CMotionBee();
 
-	void	DeleteObject(bool bAll=false);
-	bool	Create(Math::Vector pos, float angle, ObjectType type, float power);
-	bool	EventProcess(const Event &event);
-
-protected:
-	void	CreatePhysics();
-	bool	EventFrame(const Event &event);
+    void    DeleteObject(bool bAll=false);
+    bool    Create(Math::Vector pos, float angle, ObjectType type, float power);
+    bool    EventProcess(const Event &event);
 
 protected:
-	float		m_armMember;
-	float		m_armTimeAbs;
-	float		m_armTimeMarch;
-	float		m_armTimeAction;
-	short		m_armAngles[3*3*3*3*2];
-	int			m_armTimeIndex;
-	int			m_armPartIndex;
-	int			m_armMemberIndex;
-	int			m_armLastAction;
-	bool		m_bArmStop;
+    void    CreatePhysics();
+    bool    EventFrame(const Event &event);
+
+protected:
+    float       m_armMember;
+    float       m_armTimeAbs;
+    float       m_armTimeMarch;
+    float       m_armTimeAction;
+    short       m_armAngles[3*3*3*3*2];
+    int         m_armTimeIndex;
+    int         m_armPartIndex;
+    int         m_armMemberIndex;
+    int         m_armLastAction;
+    bool        m_bArmStop;
 };
 

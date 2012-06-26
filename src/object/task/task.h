@@ -39,8 +39,8 @@ class CDisplayText;
 class CSound;
 
 
-const float TAKE_DIST		= 6.0f;	// distance to an object to pick it
-const float TAKE_DIST_OTHER	= 1.5f;	// additional distance if on friend
+const float TAKE_DIST       = 6.0f; // distance to an object to pick it
+const float TAKE_DIST_OTHER = 1.5f; // additional distance if on friend
 
 //?const float ARM_NEUTRAL_ANGLE1 = 155.0f*Math::PI/180.0f;
 //?const float ARM_NEUTRAL_ANGLE2 = -125.0f*Math::PI/180.0f;
@@ -57,30 +57,30 @@ const float ARM_STOCK_ANGLE3 = -70.0f*Math::PI/180.0f;
 class CTask
 {
 public:
-	CTask(CInstanceManager* iMan, CObject* object);
-	virtual ~CTask();
+    CTask(CInstanceManager* iMan, CObject* object);
+    virtual ~CTask();
 
-	virtual bool	EventProcess(const Event &event);
-	virtual	Error	IsEnded();
-	virtual bool	IsBusy();
-	virtual bool	Abort();
-
-protected:
+    virtual bool    EventProcess(const Event &event);
+    virtual Error   IsEnded();
+    virtual bool    IsBusy();
+    virtual bool    Abort();
 
 protected:
-	CInstanceManager* m_iMan;
-	CD3DEngine*		m_engine;
-	CLight*			m_light;
-	CParticule*		m_particule;
-	CTerrain*		m_terrain;
-	CWater*			m_water;
-	CCamera*		m_camera;
-	CMotion*		m_motion;
-	CBrain*			m_brain;
-	CPhysics*		m_physics;
-	CObject*		m_object;
-	CRobotMain*		m_main;
-	CDisplayText*	m_displayText;
-	CSound*			m_sound;
+
+protected:
+    CInstanceManager* m_iMan;
+    CD3DEngine*     m_engine;
+    CLight*         m_light;
+    CParticule*     m_particule;
+    CTerrain*       m_terrain;
+    CWater*         m_water;
+    CCamera*        m_camera;
+    CMotion*        m_motion;
+    CBrain*         m_brain;
+    CPhysics*       m_physics;
+    CObject*        m_object;
+    CRobotMain*     m_main;
+    CDisplayText*   m_displayText;
+    CSound*         m_sound;
 };
 

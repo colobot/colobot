@@ -50,10 +50,10 @@ CLabel::~CLabel()
 
 bool CLabel::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 {
-	if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
 
-	CControl::Create(pos, dim, icon, eventMsg);
-	return true;
+    CControl::Create(pos, dim, icon, eventMsg);
+    return true;
 }
 
 
@@ -61,8 +61,8 @@ bool CLabel::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMs
 
 bool CLabel::EventProcess(const Event &event)
 {
-//?	CControl::EventProcess(event);
-	return true;
+//? CControl::EventProcess(event);
+    return true;
 }
 
 
@@ -70,24 +70,24 @@ bool CLabel::EventProcess(const Event &event)
 
 void CLabel::Draw()
 {
-	Math::Point	pos;
+    Math::Point pos;
 
-	if ( (m_state & STATE_VISIBLE) == 0 )  return;
+    if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-	pos.y = m_pos.y+m_dim.y/2.0f;
+    pos.y = m_pos.y+m_dim.y/2.0f;
 
-	if ( m_justif > 0 )
-	{
-		pos.x = m_pos.x;
-	}
-	if ( m_justif == 0 )
-	{
-		pos.x = m_pos.x+m_dim.x/2.0f;
-	}
-	if ( m_justif < 0 )
-	{
-		pos.x = m_pos.x+m_dim.x;
-	}
-	m_engine->RetText()->DrawText(m_name, pos, m_dim.x, m_justif, m_fontSize, m_fontStretch, m_fontType, 0);
+    if ( m_justif > 0 )
+    {
+        pos.x = m_pos.x;
+    }
+    if ( m_justif == 0 )
+    {
+        pos.x = m_pos.x+m_dim.x/2.0f;
+    }
+    if ( m_justif < 0 )
+    {
+        pos.x = m_pos.x+m_dim.x;
+    }
+    m_engine->RetText()->DrawText(m_name, pos, m_dim.x, m_justif, m_fontSize, m_fontStretch, m_fontType, 0);
 }
 

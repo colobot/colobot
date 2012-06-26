@@ -25,14 +25,14 @@
 
 enum AutoLaboPhase
 {
-	ALAP_WAIT		= 1,
-	ALAP_OPEN1		= 2,
-	ALAP_OPEN2		= 3,
-	ALAP_OPEN3		= 4,
-	ALAP_ANALYSE	= 5,
-	ALAP_CLOSE1		= 6,
-	ALAP_CLOSE2		= 7,
-	ALAP_CLOSE3		= 8,
+    ALAP_WAIT       = 1,
+    ALAP_OPEN1      = 2,
+    ALAP_OPEN2      = 3,
+    ALAP_OPEN3      = 4,
+    ALAP_ANALYSE    = 5,
+    ALAP_CLOSE1     = 6,
+    ALAP_CLOSE2     = 7,
+    ALAP_CLOSE3     = 8,
 };
 
 
@@ -40,36 +40,36 @@ enum AutoLaboPhase
 class CAutoLabo : public CAuto
 {
 public:
-	CAutoLabo(CInstanceManager* iMan, CObject* object);
-	~CAutoLabo();
+    CAutoLabo(CInstanceManager* iMan, CObject* object);
+    ~CAutoLabo();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	void		UpdateInterface();
-	void		OkayButton(CWindow *pw, EventMsg event);
-	bool		TestResearch(EventMsg event);
-	void		SetResearch(EventMsg event);
-	void		SoundManip(float time, float amplitude, float frequency);
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoLaboPhase		m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastParticule;
-	EventMsg			m_research;
-	int					m_partiRank[3];
-	int					m_partiSphere;
-	int					m_soundChannel;
+    void        UpdateInterface();
+    void        OkayButton(CWindow *pw, EventMsg event);
+    bool        TestResearch(EventMsg event);
+    void        SetResearch(EventMsg event);
+    void        SoundManip(float time, float amplitude, float frequency);
+
+protected:
+    AutoLaboPhase       m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastParticule;
+    EventMsg            m_research;
+    int                 m_partiRank[3];
+    int                 m_partiSphere;
+    int                 m_soundChannel;
 };
 

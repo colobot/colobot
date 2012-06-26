@@ -53,43 +53,43 @@ const int MAXCONTROL = 100;
 class CInterface
 {
 public:
-	CInterface(CInstanceManager* iMan);
-	~CInterface();
+    CInterface(CInstanceManager* iMan);
+    ~CInterface();
 
-	bool		EventProcess(const Event &event);
-	bool		GetTooltip(Math::Point pos, char* name);
+    bool        EventProcess(const Event &event);
+    bool        GetTooltip(Math::Point pos, char* name);
 
-	void		Flush();
-	CWindow*	CreateWindows(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CButton*	CreateButton(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CColor*		CreateColor(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CCheck*		CreateCheck(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CKey*		CreateKey(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CGroup*		CreateGroup(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CImage*		CreateImage(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CLabel*		CreateLabel(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, char *name);
-	CEdit*		CreateEdit(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CEditValue*	CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CScroll*	CreateScroll(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CSlider*	CreateSlider(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CList*		CreateList(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, float expand=1.2f);
-	CShortcut*	CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CCompass*	CreateCompass(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CTarget*	CreateTarget(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	CMap*		CreateMap(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	bool		DeleteControl(EventMsg eventMsg);
-	CControl*	SearchControl(EventMsg eventMsg);
+    void        Flush();
+    CWindow*    CreateWindows(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CColor*     CreateColor(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CCheck*     CreateCheck(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CKey*       CreateKey(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CGroup*     CreateGroup(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CImage*     CreateImage(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, char *name);
+    CEdit*      CreateEdit(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, float expand=1.2f);
+    CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CCompass*   CreateCompass(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    CMap*       CreateMap(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        DeleteControl(EventMsg eventMsg);
+    CControl*   SearchControl(EventMsg eventMsg);
 
-	void		Draw();
-
-protected:
+    void        Draw();
 
 protected:
-	CInstanceManager* m_iMan;
-	CD3DEngine*		m_engine;
-	CCamera*		m_camera;
 
-	CControl*		m_table[MAXCONTROL];
+protected:
+    CInstanceManager* m_iMan;
+    CD3DEngine*     m_engine;
+    CCamera*        m_camera;
+
+    CControl*       m_table[MAXCONTROL];
 };
 
 

@@ -26,19 +26,19 @@
 class CTaskSpiderExplo : public CTask
 {
 public:
-	CTaskSpiderExplo(CInstanceManager* iMan, CObject* object);
-	~CTaskSpiderExplo();
+    CTaskSpiderExplo(CInstanceManager* iMan, CObject* object);
+    ~CTaskSpiderExplo();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start();
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
+    Error       Start();
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	float		m_time;
-	bool		m_bError;
+
+protected:
+    float       m_time;
+    bool        m_bError;
 };
 

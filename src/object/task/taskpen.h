@@ -26,9 +26,9 @@
 
 enum TaskPenPhase
 {
-	TPP_UP		= 1,	// rises the pencil
-	TPP_TURN	= 2,	// turns the carousel
-	TPP_DOWN	= 3,	// descends the pencil
+    TPP_UP      = 1,    // rises the pencil
+    TPP_TURN    = 2,    // turns the carousel
+    TPP_DOWN    = 3,    // descends the pencil
 };
 
 
@@ -36,33 +36,33 @@ enum TaskPenPhase
 class CTaskPen : public CTask
 {
 public:
-	CTaskPen(CInstanceManager* iMan, CObject* object);
-	~CTaskPen();
+    CTaskPen(CInstanceManager* iMan, CObject* object);
+    ~CTaskPen();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start(bool bDown, int color);
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
-	void		SoundManip(float time, float amplitude, float frequency);
-	int			AngleToRank(float angle);
-	float		ColorToAngle(int color);
-	int			ColorToRank(int color);
+    Error       Start(bool bDown, int color);
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	bool			m_bError;
-	TaskPenPhase	m_phase;
-	float			m_progress;
-	float			m_delay;
-	float			m_time;
-	float			m_lastParticule;
-	Math::Vector		m_supportPos;
+    void        SoundManip(float time, float amplitude, float frequency);
+    int         AngleToRank(float angle);
+    float       ColorToAngle(int color);
+    int         ColorToRank(int color);
 
-	float			m_timeUp;
-	float			m_oldAngle;
-	float			m_newAngle;
-	float			m_timeDown;
+protected:
+    bool            m_bError;
+    TaskPenPhase    m_phase;
+    float           m_progress;
+    float           m_delay;
+    float           m_time;
+    float           m_lastParticule;
+    Math::Vector        m_supportPos;
+
+    float           m_timeUp;
+    float           m_oldAngle;
+    float           m_newAngle;
+    float           m_timeDown;
 };
 

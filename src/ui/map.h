@@ -34,27 +34,27 @@ const int MAPMAXOBJECT = 100;
 
 enum MapColor
 {
-	MAPCOLOR_NULL,
-	MAPCOLOR_BASE,
-	MAPCOLOR_FIX,
-	MAPCOLOR_MOVE,
-	MAPCOLOR_ALIEN,
-	MAPCOLOR_WAYPOINTb,
-	MAPCOLOR_WAYPOINTr,
-	MAPCOLOR_WAYPOINTg,
-	MAPCOLOR_WAYPOINTy,
-	MAPCOLOR_WAYPOINTv,
-	MAPCOLOR_BBOX,
+    MAPCOLOR_NULL,
+    MAPCOLOR_BASE,
+    MAPCOLOR_FIX,
+    MAPCOLOR_MOVE,
+    MAPCOLOR_ALIEN,
+    MAPCOLOR_WAYPOINTb,
+    MAPCOLOR_WAYPOINTr,
+    MAPCOLOR_WAYPOINTg,
+    MAPCOLOR_WAYPOINTy,
+    MAPCOLOR_WAYPOINTv,
+    MAPCOLOR_BBOX,
 };
 
 struct MapObject
 {
-	char		bUsed;
-	CObject*	object;
-	MapColor	color;
-	ObjectType	type;
-	Math::Point		pos;
-	float		dir;
+    char        bUsed;
+    CObject*    object;
+    MapColor    color;
+    ObjectType  type;
+    Math::Point     pos;
+    float       dir;
 };
 
 
@@ -62,76 +62,76 @@ struct MapObject
 class CMap : public CControl
 {
 public:
-	CMap(CInstanceManager* iMan);
-	~CMap();
+    CMap(CInstanceManager* iMan);
+    ~CMap();
 
-	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-	bool		EventProcess(const Event &event);
-	void		Draw();
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        EventProcess(const Event &event);
+    void        Draw();
 
-	void		UpdateTerrain();
-	void		UpdateTerrain(int bx, int by, int ex, int ey);
+    void        UpdateTerrain();
+    void        UpdateTerrain(int bx, int by, int ex, int ey);
 
-	void		SetFixImage(char *filename);
-	bool		RetFixImage();
+    void        SetFixImage(char *filename);
+    bool        RetFixImage();
 
-	void		SetOffset(float ox, float oy);
-	void		SetAngle(float angle);
-	void		SetMode(int mode);
-	void		SetToy(bool bToy);
-	void		SetDebug(bool bDebug);
+    void        SetOffset(float ox, float oy);
+    void        SetAngle(float angle);
+    void        SetMode(int mode);
+    void        SetToy(bool bToy);
+    void        SetDebug(bool bDebug);
 
-	void		SetZoom(float value);
-	float		RetZoom();
+    void        SetZoom(float value);
+    float       RetZoom();
 
-	void		SetEnable(bool bEnable);
-	bool		RetEnable();
+    void        SetEnable(bool bEnable);
+    bool        RetEnable();
 
-	void		SetFloorColor(D3DCOLORVALUE color);
-	void		SetWaterColor(D3DCOLORVALUE color);
+    void        SetFloorColor(D3DCOLORVALUE color);
+    void        SetWaterColor(D3DCOLORVALUE color);
 
-	void		FlushObject();
-	void		UpdateObject(CObject* pObj);
+    void        FlushObject();
+    void        UpdateObject(CObject* pObj);
 
-	CObject*	DetectObject(Math::Point pos, bool &bInMap);
-	void		SetHilite(CObject* pObj);
-
-protected:
-	Math::Point		AdjustOffset(Math::Point offset);
-	void		SelectObject(Math::Point pos);
-	Math::Point		MapInter(Math::Point pos, float dir);
-	void		DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color);
-	void		DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
-	void		DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color, ObjectType type, bool bHilite);
-	void		DrawHilite(Math::Point pos);
-	void		DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2);
-	void		DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2);
-	void		DrawVertex(Math::Point uv1, Math::Point uv2, float zoom);
+    CObject*    DetectObject(Math::Point pos, bool &bInMap);
+    void        SetHilite(CObject* pObj);
 
 protected:
-	CTerrain*		m_terrain;
-	CWater*			m_water;
-	CRobotMain*		m_main;
+    Math::Point     AdjustOffset(Math::Point offset);
+    void        SelectObject(Math::Point pos);
+    Math::Point     MapInter(Math::Point pos, float dir);
+    void        DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color);
+    void        DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
+    void        DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color, ObjectType type, bool bHilite);
+    void        DrawHilite(Math::Point pos);
+    void        DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2);
+    void        DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2);
+    void        DrawVertex(Math::Point uv1, Math::Point uv2, float zoom);
 
-	bool			m_bEnable;
-	float			m_time;
-	float			m_half;
-	float			m_zoom;
-	Math::Point			m_offset;
-	float			m_angle;
-	D3DCOLORVALUE	m_floorColor;
-	D3DCOLORVALUE	m_waterColor;
-	MapObject		m_map[MAPMAXOBJECT];
-	int				m_totalFix;
-	int				m_totalMove;
-	int				m_hiliteRank;
-	Math::Point			m_mapPos;
-	Math::Point			m_mapDim;
-	bool			m_bRadar;
-	char			m_fixImage[100];
-	int				m_mode;
-	bool			m_bToy;
-	bool			m_bDebug;
+protected:
+    CTerrain*       m_terrain;
+    CWater*         m_water;
+    CRobotMain*     m_main;
+
+    bool            m_bEnable;
+    float           m_time;
+    float           m_half;
+    float           m_zoom;
+    Math::Point         m_offset;
+    float           m_angle;
+    D3DCOLORVALUE   m_floorColor;
+    D3DCOLORVALUE   m_waterColor;
+    MapObject       m_map[MAPMAXOBJECT];
+    int             m_totalFix;
+    int             m_totalMove;
+    int             m_hiliteRank;
+    Math::Point         m_mapPos;
+    Math::Point         m_mapDim;
+    bool            m_bRadar;
+    char            m_fixImage[100];
+    int             m_mode;
+    bool            m_bToy;
+    bool            m_bDebug;
 };
 
 

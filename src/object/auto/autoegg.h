@@ -24,11 +24,11 @@
 
 enum AutoEggPhase
 {
-	AEP_NULL	= 0,
-	AEP_DELAY	= 1,
-	AEP_INCUB	= 3,
-	AEP_ZOOM	= 4,
-	AEP_WAIT	= 5,
+    AEP_NULL    = 0,
+    AEP_DELAY   = 1,
+    AEP_INCUB   = 3,
+    AEP_ZOOM    = 4,
+    AEP_WAIT    = 5,
 };
 
 
@@ -36,34 +36,34 @@ enum AutoEggPhase
 class CAutoEgg : public CAuto
 {
 public:
-	CAutoEgg(CInstanceManager* iMan, CObject* object);
-	~CAutoEgg();
+    CAutoEgg(CInstanceManager* iMan, CObject* object);
+    ~CAutoEgg();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	void		Start(int param);
-	bool		EventProcess(const Event &event);
-	Error		IsEnded();
-	Error		RetError();
+    void        Init();
+    void        Start(int param);
+    bool        EventProcess(const Event &event);
+    Error       IsEnded();
+    Error       RetError();
 
-	bool		SetType(ObjectType type);
-	bool		SetValue(int rank, float value);
-	bool		SetString(char *string);
+    bool        SetType(ObjectType type);
+    bool        SetValue(int rank, float value);
+    bool        SetString(char *string);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	CObject*	SearchAlien();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	ObjectType		m_type;
-	float			m_value;
-	char			m_string[100];
-	int				m_param;
-	AutoEggPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
+    CObject*    SearchAlien();
+
+protected:
+    ObjectType      m_type;
+    float           m_value;
+    char            m_string[100];
+    int             m_param;
+    AutoEggPhase    m_phase;
+    float           m_progress;
+    float           m_speed;
 };
 

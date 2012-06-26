@@ -27,47 +27,47 @@
 
 Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 {
-	// TODO
+    // TODO
 }
 
 Gfx::CEngine::~CEngine()
 {
-	// TODO
+    // TODO
 }
 
 int Gfx::CEngine::Render()
 {
-	/* Just a hello world for now */
+    /* Just a hello world for now */
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glShadeModel(GL_SMOOTH);
-	glDisable(GL_DEPTH_TEST);
-	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glShadeModel(GL_SMOOTH);
+    glDisable(GL_DEPTH_TEST);
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluOrtho2D(-10.0f, 10.0f, -10.0f, 10.0f);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluOrtho2D(-10.0f, 10.0f, -10.0f, 10.0f);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//glTranslatef(0.0f, 0.0f, -6.0f);
+    //glTranslatef(0.0f, 0.0f, -6.0f);
 
-	glBegin(GL_TRIANGLES);
-	{
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex2f(-2.0f, -1.0f);
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex2f(2.0f, -1.0f);
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex2f(0.0f, 1.5f);
-	}
-	glEnd();
+    glBegin(GL_TRIANGLES);
+    {
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex2f(-2.0f, -1.0f);
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex2f(2.0f, -1.0f);
+        glColor3f(0.0f, 0.0f, 1.0f);
+        glVertex2f(0.0f, 1.5f);
+    }
+    glEnd();
 
-	glFlush();
+    glFlush();
 
-	return 1;
+    return 1;
 }

@@ -26,15 +26,15 @@
 
 enum TaskTakeOrder
 {
-	TTO_TAKE	= 1,	// takes an object
-	TTO_DEPOSE	= 2,	// deposes the object
+    TTO_TAKE    = 1,    // takes an object
+    TTO_DEPOSE  = 2,    // deposes the object
 };
 
 enum TaskTakeArm
 {
-	TTA_NEUTRAL	= 1,	// empty arm at rest
-	TTA_FFRONT	= 2,	// arm on the ground
-	TTA_FRIEND	= 3,	// arm behind a friend robot
+    TTA_NEUTRAL = 1,    // empty arm at rest
+    TTA_FFRONT  = 2,    // arm on the ground
+    TTA_FRIEND  = 3,    // arm behind a friend robot
 };
 
 
@@ -42,34 +42,34 @@ enum TaskTakeArm
 class CTaskTake : public CTask
 {
 public:
-	CTaskTake(CInstanceManager* iMan, CObject* object);
-	~CTaskTake();
+    CTaskTake(CInstanceManager* iMan, CObject* object);
+    ~CTaskTake();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start();
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
-	CObject*	SearchTakeObject(float &angle, float dLimit, float aLimit);
-	CObject*	SearchFriendObject(float &angle, float dLimit, float aLimit);
-	bool		TruckTakeObject();
-	bool		TruckDeposeObject();
-	bool		IsFreeDeposeObject(Math::Vector pos);
+    Error       Start();
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	CTerrain*		m_terrain;
+    CObject*    SearchTakeObject(float &angle, float dLimit, float aLimit);
+    CObject*    SearchFriendObject(float &angle, float dLimit, float aLimit);
+    bool        TruckTakeObject();
+    bool        TruckDeposeObject();
+    bool        IsFreeDeposeObject(Math::Vector pos);
 
-	TaskTakeOrder	m_order;
-	TaskTakeArm		m_arm;
-	int				m_step;
-	float			m_speed;
-	float			m_progress;
-	float			m_height;
-	bool			m_bError;
-	bool			m_bTurn;
-	float			m_angle;
-	ObjectType		m_fretType;
+protected:
+    CTerrain*       m_terrain;
+
+    TaskTakeOrder   m_order;
+    TaskTakeArm     m_arm;
+    int             m_step;
+    float           m_speed;
+    float           m_progress;
+    float           m_height;
+    bool            m_bError;
+    bool            m_bTurn;
+    float           m_angle;
+    ObjectType      m_fretType;
 };
 

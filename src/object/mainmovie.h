@@ -36,9 +36,9 @@ class CSound;
 
 enum MainMovieType
 {
-	MM_NONE,
-	MM_SATCOMopen,
-	MM_SATCOMclose,
+    MM_NONE,
+    MM_SATCOMopen,
+    MM_SATCOMclose,
 };
 
 
@@ -46,35 +46,35 @@ enum MainMovieType
 class CMainMovie
 {
 public:
-	CMainMovie(CInstanceManager* iMan);
-	~CMainMovie();
+    CMainMovie(CInstanceManager* iMan);
+    ~CMainMovie();
 
-	void			Flush();
-	bool			Start(MainMovieType type, float time);
-	bool			Stop();
-	bool			IsExist();
-	bool			EventProcess(const Event &event);
-	MainMovieType	RetType();
-	MainMovieType	RetStopType();
-
-protected:
+    void            Flush();
+    bool            Start(MainMovieType type, float time);
+    bool            Stop();
+    bool            IsExist();
+    bool            EventProcess(const Event &event);
+    MainMovieType   RetType();
+    MainMovieType   RetStopType();
 
 protected:
-	CInstanceManager* m_iMan;
-	CEvent*			m_event;
-	CD3DEngine*		m_engine;
-	CInterface*		m_interface;
-	CRobotMain*		m_main;
-	CCamera*		m_camera;
-	CSound*			m_sound;
 
-	MainMovieType	m_type;
-	MainMovieType	m_stopType;
-	float			m_speed;
-	float			m_progress;
-	Math::Vector		m_initialEye;
-	Math::Vector		m_initialLookat;
-	Math::Vector		m_finalEye[2];
-	Math::Vector		m_finalLookat[2];
+protected:
+    CInstanceManager* m_iMan;
+    CEvent*         m_event;
+    CD3DEngine*     m_engine;
+    CInterface*     m_interface;
+    CRobotMain*     m_main;
+    CCamera*        m_camera;
+    CSound*         m_sound;
+
+    MainMovieType   m_type;
+    MainMovieType   m_stopType;
+    float           m_speed;
+    float           m_progress;
+    Math::Vector        m_initialEye;
+    Math::Vector        m_initialLookat;
+    Math::Vector        m_finalEye[2];
+    Math::Vector        m_finalLookat[2];
 };
 

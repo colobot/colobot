@@ -29,20 +29,20 @@ class CD3DEngine;
 class CShortcut : public CControl
 {
 public:
-	CShortcut(CInstanceManager* iMan);
-	~CShortcut();
+    CShortcut(CInstanceManager* iMan);
+    ~CShortcut();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
-
-protected:
-	void	DrawVertex(int icon, float zoom);
+    void    Draw();
 
 protected:
-	float	m_time;
+    void    DrawVertex(int icon, float zoom);
+
+protected:
+    float   m_time;
 };
 
 

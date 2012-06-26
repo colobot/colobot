@@ -28,16 +28,16 @@
  */
 enum SystemDialogType
 {
-	//! Information message
-	SDT_INFO,
-	//! Warning message
-	SDT_WARNING,
-	//! Error message
-	SDT_ERROR,
-	//! Yes/No question
-	SDT_YES_NO,
-	//! Ok/Cancel question
-	SDT_OK_CANCEL
+    //! Information message
+    SDT_INFO,
+    //! Warning message
+    SDT_WARNING,
+    //! Error message
+    SDT_ERROR,
+    //! Yes/No question
+    SDT_YES_NO,
+    //! Ok/Cancel question
+    SDT_OK_CANCEL
 };
 
 /**
@@ -47,10 +47,10 @@ enum SystemDialogType
  */
 enum SystemDialogResult
 {
-	SDR_OK,
-	SDR_CANCEL,
-	SDR_YES,
-	SDR_NO
+    SDR_OK,
+    SDR_CANCEL,
+    SDR_YES,
+    SDR_NO
 };
 
 //! Displays a system dialog

@@ -29,14 +29,14 @@ class CD3DEngine;
 class CGroup : public CControl
 {
 public:
-	CGroup(CInstanceManager* iMan);
-	virtual ~CGroup();
+    CGroup(CInstanceManager* iMan);
+    virtual ~CGroup();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
 protected:
 

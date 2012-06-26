@@ -35,11 +35,11 @@
 // Object's constructor.
 
 CTaskTake::CTaskTake(CInstanceManager* iMan, CObject* object)
-					 : CTask(iMan, object)
+                     : CTask(iMan, object)
 {
-	m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
+    m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 
-	m_arm  = TTA_NEUTRAL;
+    m_arm  = TTA_NEUTRAL;
 }
 
 // Object's destructor.
@@ -53,29 +53,29 @@ CTaskTake::~CTaskTake()
 
 bool CTaskTake::EventProcess(const Event &event)
 {
-	float		a, g, cirSpeed;
+    float       a, g, cirSpeed;
 
-	if ( m_engine->RetPause() )  return true;
-	if ( event.event != EVENT_FRAME )  return true;
-	if ( m_bError )  return false;
+    if ( m_engine->RetPause() )  return true;
+    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_bError )  return false;
 
-	if ( m_bTurn )  // preliminary rotation?
-	{
-		a = m_object->RetAngleY(0);
-		g = m_angle;
-		cirSpeed = Math::Direction(a, g)*2.0f;
-		if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
-		if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
+    if ( m_bTurn )  // preliminary rotation?
+    {
+        a = m_object->RetAngleY(0);
+        g = m_angle;
+        cirSpeed = Math::Direction(a, g)*2.0f;
+        if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
+        if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
-		m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
-		return true;
-	}
+        m_physics->SetMotorSpeedZ(cirSpeed);  // turns left / right
+        return true;
+    }
 
-	m_progress += event.rTime*m_speed;  // others advance
+    m_progress += event.rTime*m_speed;  // others advance
 
-	m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));  // immobile!
+    m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));  // immobile!
 
-	return true;
+    return true;
 }
 
 
@@ -83,514 +83,514 @@ bool CTaskTake::EventProcess(const Event &event)
 
 Error CTaskTake::Start()
 {
-	ObjectType	type;
-	CObject*	other;
-	float		iAngle, oAngle, h;
-	Math::Vector	pos;
+    ObjectType  type;
+    CObject*    other;
+    float       iAngle, oAngle, h;
+    Math::Vector    pos;
 
-	m_height   = 0.0f;
-	m_step     = 0;
-	m_progress = 0.0f;
+    m_height   = 0.0f;
+    m_step     = 0;
+    m_progress = 0.0f;
 
-	iAngle = m_object->RetAngleY(0);
-	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
-	oAngle = iAngle;
+    iAngle = m_object->RetAngleY(0);
+    iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
+    oAngle = iAngle;
 
-	m_bError = true;  // operation impossible
-	if ( !m_physics->RetLand() )
-	{
-		pos = m_object->RetPosition(0);
-		h = m_water->RetLevel(m_object);
-		if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
-		return ERR_MANIP_FLY;
-	}
+    m_bError = true;  // operation impossible
+    if ( !m_physics->RetLand() )
+    {
+        pos = m_object->RetPosition(0);
+        h = m_water->RetLevel(m_object);
+        if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
+        return ERR_MANIP_FLY;
+    }
 
-	type = m_object->RetType();
-	if ( type != OBJECT_HUMAN &&
-		 type != OBJECT_TECH  )  return ERR_MANIP_VEH;
+    type = m_object->RetType();
+    if ( type != OBJECT_HUMAN &&
+         type != OBJECT_TECH  )  return ERR_MANIP_VEH;
 
-	m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
+    m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
-	if ( m_object->RetFret() == 0 )
-	{
-		m_order = TTO_TAKE;
-	}
-	else
-	{
-		m_order = TTO_DEPOSE;
-	}
+    if ( m_object->RetFret() == 0 )
+    {
+        m_order = TTO_TAKE;
+    }
+    else
+    {
+        m_order = TTO_DEPOSE;
+    }
 
-	if ( m_order == TTO_TAKE )
-	{
-		pos = m_object->RetPosition(0);
-		h = m_water->RetLevel(m_object);
-		if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
+    if ( m_order == TTO_TAKE )
+    {
+        pos = m_object->RetPosition(0);
+        h = m_water->RetLevel(m_object);
+        if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
 
-		other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
-		if ( other != 0 && other->RetPower() != 0 )
-		{
-			type = other->RetPower()->RetType();
-			if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
-			if ( type != OBJECT_FRET    &&
-				 type != OBJECT_STONE   &&
-				 type != OBJECT_BULLET  &&
-				 type != OBJECT_METAL   &&
-				 type != OBJECT_POWER   &&
-				 type != OBJECT_ATOMIC  &&
-				 type != OBJECT_BBOX    &&
-				 type != OBJECT_KEYa    &&
-				 type != OBJECT_KEYb    &&
-				 type != OBJECT_KEYc    &&
-				 type != OBJECT_KEYd    &&
-				 type != OBJECT_TNT     )  return ERR_MANIP_FRIEND;
-//?			m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
-			m_arm = TTA_FRIEND;
-		}
-		else
-		{
-			other = SearchTakeObject(oAngle, 1.5f, Math::PI*0.45f);
-			if ( other == 0 )  return ERR_MANIP_NIL;
-			type = other->RetType();
-			if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
-//?			m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
-			m_arm = TTA_FFRONT;
-			m_main->HideDropZone(other);  // hides buildable area
-		}
-	}
+        other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
+        if ( other != 0 && other->RetPower() != 0 )
+        {
+            type = other->RetPower()->RetType();
+            if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
+            if ( type != OBJECT_FRET    &&
+                 type != OBJECT_STONE   &&
+                 type != OBJECT_BULLET  &&
+                 type != OBJECT_METAL   &&
+                 type != OBJECT_POWER   &&
+                 type != OBJECT_ATOMIC  &&
+                 type != OBJECT_BBOX    &&
+                 type != OBJECT_KEYa    &&
+                 type != OBJECT_KEYb    &&
+                 type != OBJECT_KEYc    &&
+                 type != OBJECT_KEYd    &&
+                 type != OBJECT_TNT     )  return ERR_MANIP_FRIEND;
+//?         m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
+            m_arm = TTA_FRIEND;
+        }
+        else
+        {
+            other = SearchTakeObject(oAngle, 1.5f, Math::PI*0.45f);
+            if ( other == 0 )  return ERR_MANIP_NIL;
+            type = other->RetType();
+            if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
+//?         m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
+            m_arm = TTA_FFRONT;
+            m_main->HideDropZone(other);  // hides buildable area
+        }
+    }
 
-	if ( m_order == TTO_DEPOSE )
-	{
-//?		speed = m_physics->RetMotorSpeed();
-//?		if ( speed.x != 0.0f ||
-//?			 speed.z != 0.0f )  return ERR_MANIP_MOTOR;
+    if ( m_order == TTO_DEPOSE )
+    {
+//?     speed = m_physics->RetMotorSpeed();
+//?     if ( speed.x != 0.0f ||
+//?          speed.z != 0.0f )  return ERR_MANIP_MOTOR;
 
-		other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
-		if ( other != 0 && other->RetPower() == 0 )
-		{
-//?			m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
-			m_arm = TTA_FRIEND;
-		}
-		else
-		{
-			if ( !IsFreeDeposeObject(Math::Vector(2.5f, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
-//?			m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
-			m_arm = TTA_FFRONT;
-		}
-	}
+        other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
+        if ( other != 0 && other->RetPower() == 0 )
+        {
+//?         m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
+            m_arm = TTA_FRIEND;
+        }
+        else
+        {
+            if ( !IsFreeDeposeObject(Math::Vector(2.5f, 0.0f, 0.0f)) )  return ERR_MANIP_OCC;
+//?         m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
+            m_arm = TTA_FFRONT;
+        }
+    }
 
-	m_bTurn = true;  // preliminary rotation necessary
-	m_angle = oAngle;  // angle was reached
+    m_bTurn = true;  // preliminary rotation necessary
+    m_angle = oAngle;  // angle was reached
 
-	m_physics->SetFreeze(true);  // it does not move
+    m_physics->SetFreeze(true);  // it does not move
 
-	m_bError = false;  // ok
-	return ERR_OK;
+    m_bError = false;  // ok
+    return ERR_OK;
 }
 
 // Indicates whether the action is finished.
 
 Error CTaskTake::IsEnded()
 {
-	CObject*	fret;
-	float		angle;
+    CObject*    fret;
+    float       angle;
 
-	if ( m_engine->RetPause() )  return ERR_CONTINUE;
-	if ( m_bError )  return ERR_STOP;
+    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_bError )  return ERR_STOP;
 
-	if ( m_bTurn )  // preliminary rotation?
-	{
-		angle = m_object->RetAngleY(0);
-		angle = Math::NormAngle(angle);  // 0..2*Math::PI
+    if ( m_bTurn )  // preliminary rotation?
+    {
+        angle = m_object->RetAngleY(0);
+        angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
-		if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
-		{
-			m_bTurn = false;  // rotation ended
-			m_physics->SetMotorSpeedZ(0.0f);
+        if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
+        {
+            m_bTurn = false;  // rotation ended
+            m_physics->SetMotorSpeedZ(0.0f);
 
-			if ( m_arm == TTA_FFRONT )
-			{
-				m_motion->SetAction(MHS_TAKE, 0.2f);  // will decrease
-			}
-			if ( m_arm == TTA_FRIEND )
-			{
-				if ( m_height <= 3.0f )
-				{
-					m_motion->SetAction(MHS_TAKEOTHER, 0.2f);  // will decrease
-				}
-				else
-				{
-					m_motion->SetAction(MHS_TAKEHIGH, 0.2f);  // will decrease
-				}
-			}
-			m_progress = 0.0f;
-			m_speed = 1.0f/0.6f;
-		}
-		return ERR_CONTINUE;
-	}
+            if ( m_arm == TTA_FFRONT )
+            {
+                m_motion->SetAction(MHS_TAKE, 0.2f);  // will decrease
+            }
+            if ( m_arm == TTA_FRIEND )
+            {
+                if ( m_height <= 3.0f )
+                {
+                    m_motion->SetAction(MHS_TAKEOTHER, 0.2f);  // will decrease
+                }
+                else
+                {
+                    m_motion->SetAction(MHS_TAKEHIGH, 0.2f);  // will decrease
+                }
+            }
+            m_progress = 0.0f;
+            m_speed = 1.0f/0.6f;
+        }
+        return ERR_CONTINUE;
+    }
 
-	if ( m_progress < 1.0f )  return ERR_CONTINUE;
-	m_progress = 0.0f;
+    if ( m_progress < 1.0f )  return ERR_CONTINUE;
+    m_progress = 0.0f;
 
-	m_step ++;
+    m_step ++;
 
-	if ( m_order == TTO_TAKE )
-	{
-		if ( m_step == 1 )
-		{
-			if ( TruckTakeObject() )
-			{
-				if ( m_arm == TTA_FRIEND &&
-					 (m_fretType == OBJECT_POWER  ||
-					  m_fretType == OBJECT_ATOMIC ) )
-				{
-					m_sound->Play(SOUND_POWEROFF, m_object->RetPosition(0));
-				}
-			}
-			m_motion->SetAction(MHS_UPRIGHT, 0.4f);  // gets up
-			m_progress = 0.0f;
-			m_speed = 1.0f/0.8f;
-			m_camera->StopCentering(m_object, 0.8f);
-			return ERR_CONTINUE;
-		}
-	}
+    if ( m_order == TTO_TAKE )
+    {
+        if ( m_step == 1 )
+        {
+            if ( TruckTakeObject() )
+            {
+                if ( m_arm == TTA_FRIEND &&
+                     (m_fretType == OBJECT_POWER  ||
+                      m_fretType == OBJECT_ATOMIC ) )
+                {
+                    m_sound->Play(SOUND_POWEROFF, m_object->RetPosition(0));
+                }
+            }
+            m_motion->SetAction(MHS_UPRIGHT, 0.4f);  // gets up
+            m_progress = 0.0f;
+            m_speed = 1.0f/0.8f;
+            m_camera->StopCentering(m_object, 0.8f);
+            return ERR_CONTINUE;
+        }
+    }
 
-	if ( m_order == TTO_DEPOSE )
-	{
-		if ( m_step == 1 )
-		{
-			fret = m_object->RetFret();
-			TruckDeposeObject();
-			if ( m_arm == TTA_FRIEND &&
-				 (m_fretType == OBJECT_POWER  ||
-				  m_fretType == OBJECT_ATOMIC ) )
-			{
-				m_sound->Play(SOUND_POWERON, m_object->RetPosition(0));
-			}
-			if ( fret != 0 && m_fretType == OBJECT_METAL && m_arm == TTA_FFRONT )
-			{
-				m_main->ShowDropZone(fret, m_object);  // shows buildable area
-			}
-			m_motion->SetAction(-1);  // gets up
-			m_progress = 0.0f;
-			m_speed = 1.0f/0.4f;
-			m_camera->StopCentering(m_object, 0.8f);
-			return ERR_CONTINUE;
-		}
-	}
+    if ( m_order == TTO_DEPOSE )
+    {
+        if ( m_step == 1 )
+        {
+            fret = m_object->RetFret();
+            TruckDeposeObject();
+            if ( m_arm == TTA_FRIEND &&
+                 (m_fretType == OBJECT_POWER  ||
+                  m_fretType == OBJECT_ATOMIC ) )
+            {
+                m_sound->Play(SOUND_POWERON, m_object->RetPosition(0));
+            }
+            if ( fret != 0 && m_fretType == OBJECT_METAL && m_arm == TTA_FFRONT )
+            {
+                m_main->ShowDropZone(fret, m_object);  // shows buildable area
+            }
+            m_motion->SetAction(-1);  // gets up
+            m_progress = 0.0f;
+            m_speed = 1.0f/0.4f;
+            m_camera->StopCentering(m_object, 0.8f);
+            return ERR_CONTINUE;
+        }
+    }
 
-	Abort();
-	return ERR_STOP;
+    Abort();
+    return ERR_STOP;
 }
 
 // Suddenly ends the current action.
 
 bool CTaskTake::Abort()
 {
-	m_motion->SetAction(-1);
-	m_camera->StopCentering(m_object, 0.8f);
-	m_physics->SetFreeze(false);  // is moving again
-	return true;
+    m_motion->SetAction(-1);
+    m_camera->StopCentering(m_object, 0.8f);
+    m_physics->SetFreeze(false);  // is moving again
+    return true;
 }
 
 
 // Seeks the object to take in front.
 
 CObject* CTaskTake::SearchTakeObject(float &angle,
-									 float dLimit, float aLimit)
+                                     float dLimit, float aLimit)
 {
-	CObject		*pObj, *pBest;
-	Math::Vector	iPos, oPos;
-	ObjectType	type;
-	float		min, iAngle, bAngle, a, distance;
-	int			i;
+    CObject     *pObj, *pBest;
+    Math::Vector    iPos, oPos;
+    ObjectType  type;
+    float       min, iAngle, bAngle, a, distance;
+    int         i;
 
-	iPos   = m_object->RetPosition(0);
-	iAngle = m_object->RetAngleY(0);
-	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
+    iPos   = m_object->RetPosition(0);
+    iAngle = m_object->RetAngleY(0);
+    iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
-	min = 1000000.0f;
-	pBest = 0;
-	bAngle = 0.0f;
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+    min = 1000000.0f;
+    pBest = 0;
+    bAngle = 0.0f;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        if ( pObj == 0 )  break;
 
-		type = pObj->RetType();
+        type = pObj->RetType();
 
-		if ( type != OBJECT_FRET    &&
-			 type != OBJECT_STONE   &&
-			 type != OBJECT_URANIUM &&
-			 type != OBJECT_BULLET  &&
-			 type != OBJECT_METAL   &&
-			 type != OBJECT_POWER   &&
-			 type != OBJECT_ATOMIC  &&
-			 type != OBJECT_BBOX    &&
-			 type != OBJECT_KEYa    &&
-			 type != OBJECT_KEYb    &&
-			 type != OBJECT_KEYc    &&
-			 type != OBJECT_KEYd    &&
-			 type != OBJECT_TNT     )  continue;
+        if ( type != OBJECT_FRET    &&
+             type != OBJECT_STONE   &&
+             type != OBJECT_URANIUM &&
+             type != OBJECT_BULLET  &&
+             type != OBJECT_METAL   &&
+             type != OBJECT_POWER   &&
+             type != OBJECT_ATOMIC  &&
+             type != OBJECT_BBOX    &&
+             type != OBJECT_KEYa    &&
+             type != OBJECT_KEYb    &&
+             type != OBJECT_KEYc    &&
+             type != OBJECT_KEYd    &&
+             type != OBJECT_TNT     )  continue;
 
-		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
-		if ( pObj->RetLock() )  continue;
-		if ( pObj->RetZoomY(0) != 1.0f )  continue;
+        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->RetLock() )  continue;
+        if ( pObj->RetZoomY(0) != 1.0f )  continue;
 
-		oPos = pObj->RetPosition(0);
-		distance = Math::Distance(oPos, iPos);
-		if ( distance >= 4.0f-dLimit &&
-			 distance <= 4.0f+dLimit )
-		{
-			angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-			if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
-			{
-				a = fabs(angle-iAngle);
-				if ( a > Math::PI )  a = Math::PI*2.0f-a;
-				if ( a < min )
-				{
-					min = a;
-					pBest = pObj;
-					bAngle = angle;
-				}
-			}
-		}
-	}
-	angle = bAngle;
-	return pBest;
+        oPos = pObj->RetPosition(0);
+        distance = Math::Distance(oPos, iPos);
+        if ( distance >= 4.0f-dLimit &&
+             distance <= 4.0f+dLimit )
+        {
+            angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+            if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
+            {
+                a = fabs(angle-iAngle);
+                if ( a > Math::PI )  a = Math::PI*2.0f-a;
+                if ( a < min )
+                {
+                    min = a;
+                    pBest = pObj;
+                    bAngle = angle;
+                }
+            }
+        }
+    }
+    angle = bAngle;
+    return pBest;
 }
 
 // Seeks the robot on which you want take or put a battery.
 
 CObject* CTaskTake::SearchFriendObject(float &angle,
-									   float dLimit, float aLimit)
+                                       float dLimit, float aLimit)
 {
-	Character*	character;
-	CObject*	pObj;
-	CObject*	pPower;
-	Math::Matrix*	mat;
-	Math::Vector	iPos, oPos;
-	ObjectType	type, powerType;
-	float		iAngle, iRad, distance;
-	int			i;
+    Character*  character;
+    CObject*    pObj;
+    CObject*    pPower;
+    Math::Matrix*   mat;
+    Math::Vector    iPos, oPos;
+    ObjectType  type, powerType;
+    float       iAngle, iRad, distance;
+    int         i;
 
-	if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
-	iAngle = m_object->RetAngleY(0);
-	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
+    if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
+    iAngle = m_object->RetAngleY(0);
+    iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        if ( pObj == 0 )  break;
 
-		if ( pObj == m_object )  continue;  // yourself?
+        if ( pObj == m_object )  continue;  // yourself?
 
-		type = pObj->RetType();
-		if ( type != OBJECT_MOBILEfa &&
-			 type != OBJECT_MOBILEta &&
-			 type != OBJECT_MOBILEwa &&
-			 type != OBJECT_MOBILEia &&
-			 type != OBJECT_MOBILEfc &&
-			 type != OBJECT_MOBILEtc &&
-			 type != OBJECT_MOBILEwc &&
-			 type != OBJECT_MOBILEic &&
-			 type != OBJECT_MOBILEfi &&
-			 type != OBJECT_MOBILEti &&
-			 type != OBJECT_MOBILEwi &&
-			 type != OBJECT_MOBILEii &&
-			 type != OBJECT_MOBILEfs &&
-			 type != OBJECT_MOBILEts &&
-			 type != OBJECT_MOBILEws &&
-			 type != OBJECT_MOBILEis &&
-			 type != OBJECT_MOBILErt &&
-			 type != OBJECT_MOBILErc &&
-			 type != OBJECT_MOBILErr &&
-			 type != OBJECT_MOBILErs &&
-			 type != OBJECT_MOBILEsa &&
-			 type != OBJECT_MOBILEtg &&
-			 type != OBJECT_MOBILEft &&
-			 type != OBJECT_MOBILEtt &&
-			 type != OBJECT_MOBILEwt &&
-			 type != OBJECT_MOBILEit &&
-			 type != OBJECT_TOWER    &&
-			 type != OBJECT_RESEARCH &&
-			 type != OBJECT_ENERGY   &&
-			 type != OBJECT_LABO     &&
-			 type != OBJECT_NUCLEAR  )  continue;
+        type = pObj->RetType();
+        if ( type != OBJECT_MOBILEfa &&
+             type != OBJECT_MOBILEta &&
+             type != OBJECT_MOBILEwa &&
+             type != OBJECT_MOBILEia &&
+             type != OBJECT_MOBILEfc &&
+             type != OBJECT_MOBILEtc &&
+             type != OBJECT_MOBILEwc &&
+             type != OBJECT_MOBILEic &&
+             type != OBJECT_MOBILEfi &&
+             type != OBJECT_MOBILEti &&
+             type != OBJECT_MOBILEwi &&
+             type != OBJECT_MOBILEii &&
+             type != OBJECT_MOBILEfs &&
+             type != OBJECT_MOBILEts &&
+             type != OBJECT_MOBILEws &&
+             type != OBJECT_MOBILEis &&
+             type != OBJECT_MOBILErt &&
+             type != OBJECT_MOBILErc &&
+             type != OBJECT_MOBILErr &&
+             type != OBJECT_MOBILErs &&
+             type != OBJECT_MOBILEsa &&
+             type != OBJECT_MOBILEtg &&
+             type != OBJECT_MOBILEft &&
+             type != OBJECT_MOBILEtt &&
+             type != OBJECT_MOBILEwt &&
+             type != OBJECT_MOBILEit &&
+             type != OBJECT_TOWER    &&
+             type != OBJECT_RESEARCH &&
+             type != OBJECT_ENERGY   &&
+             type != OBJECT_LABO     &&
+             type != OBJECT_NUCLEAR  )  continue;
 
-		pPower = pObj->RetPower();
-		if ( pPower != 0 )
-		{
-			if ( pPower->RetLock() )  continue;
-			if ( pPower->RetZoomY(0) != 1.0f )  continue;
+        pPower = pObj->RetPower();
+        if ( pPower != 0 )
+        {
+            if ( pPower->RetLock() )  continue;
+            if ( pPower->RetZoomY(0) != 1.0f )  continue;
 
-			powerType = pPower->RetType();
-			if ( powerType == OBJECT_NULL ||
-				 powerType == OBJECT_FIX  )  continue;
-		}
+            powerType = pPower->RetType();
+            if ( powerType == OBJECT_NULL ||
+                 powerType == OBJECT_FIX  )  continue;
+        }
 
-		mat = pObj->RetWorldMatrix(0);
-		character = pObj->RetCharacter();
-		oPos = Transform(*mat, character->posPower);
+        mat = pObj->RetWorldMatrix(0);
+        character = pObj->RetCharacter();
+        oPos = Transform(*mat, character->posPower);
 
-		distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
-		if ( distance <= dLimit )
-		{
-			angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-			if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
-			{
-				character = pObj->RetCharacter();
-				m_height = character->posPower.y;
-				return pObj;
-			}
-		}
-	}
+        distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
+        if ( distance <= dLimit )
+        {
+            angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+            if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
+            {
+                character = pObj->RetCharacter();
+                m_height = character->posPower.y;
+                return pObj;
+            }
+        }
+    }
 
-	return 0;
+    return 0;
 }
 
 // Takes the object in front.
 
 bool CTaskTake::TruckTakeObject()
 {
-	CObject*	fret;
-	CObject*	other;
-	Math::Matrix	matRotate;
-	float		angle;
+    CObject*    fret;
+    CObject*    other;
+    Math::Matrix    matRotate;
+    float       angle;
 
-	if ( m_arm == TTA_FFRONT )  // takes on the ground in front?
-	{
-//?		fret = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
-		fret = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
-		if ( fret == 0 )  return false;  // rien � prendre ?
-		m_fretType = fret->RetType();
+    if ( m_arm == TTA_FFRONT )  // takes on the ground in front?
+    {
+//?     fret = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
+        fret = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
+        if ( fret == 0 )  return false;  // rien � prendre ?
+        m_fretType = fret->RetType();
 
-		fret->SetTruck(m_object);
-		fret->SetTruckPart(4);  // takes with the hand
+        fret->SetTruck(m_object);
+        fret->SetTruckPart(4);  // takes with the hand
 
-//?		fret->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
-		fret->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
-		fret->SetAngleY(0, 0.1f);
-		fret->SetAngleX(0, 0.0f);
-		fret->SetAngleZ(0, 0.8f);
+//?     fret->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
+        fret->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
+        fret->SetAngleY(0, 0.1f);
+        fret->SetAngleX(0, 0.0f);
+        fret->SetAngleZ(0, 0.8f);
 
-		m_object->SetFret(fret);  // takes
-	}
+        m_object->SetFret(fret);  // takes
+    }
 
-	if ( m_arm == TTA_FRIEND )  // takes friend's battery?
-	{
-		other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
-		if ( other == 0 )  return false;
+    if ( m_arm == TTA_FRIEND )  // takes friend's battery?
+    {
+        other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
+        if ( other == 0 )  return false;
 
-		fret = other->RetPower();
-		if ( fret == 0 )  return false;  // the other does not have a battery?
-		m_fretType = fret->RetType();
+        fret = other->RetPower();
+        if ( fret == 0 )  return false;  // the other does not have a battery?
+        m_fretType = fret->RetType();
 
-		other->SetPower(0);
-		fret->SetTruck(m_object);
-		fret->SetTruckPart(4);  // takes with the hand
+        other->SetPower(0);
+        fret->SetTruck(m_object);
+        fret->SetTruckPart(4);  // takes with the hand
 
-//?		fret->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
-		fret->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
-		fret->SetAngleY(0, 0.1f);
-		fret->SetAngleX(0, 0.0f);
-		fret->SetAngleZ(0, 0.8f);
+//?     fret->SetPosition(0, Math::Vector(2.2f, -1.0f, 1.1f));
+        fret->SetPosition(0, Math::Vector(1.7f, -0.5f, 1.1f));
+        fret->SetAngleY(0, 0.1f);
+        fret->SetAngleX(0, 0.0f);
+        fret->SetAngleZ(0, 0.8f);
 
-		m_object->SetFret(fret);  // takes
-	}
+        m_object->SetFret(fret);  // takes
+    }
 
-	return true;
+    return true;
 }
 
 // Deposes the object taken.
 
 bool CTaskTake::TruckDeposeObject()
 {
-	Character*	character;
-	CObject*	fret;
-	CObject*	other;
-	Math::Matrix*	mat;
-	Math::Vector	pos;
-	float		angle;
+    Character*  character;
+    CObject*    fret;
+    CObject*    other;
+    Math::Matrix*   mat;
+    Math::Vector    pos;
+    float       angle;
 
-	if ( m_arm == TTA_FFRONT )  // deposes on the ground in front?
-	{
-		fret = m_object->RetFret();
-		if ( fret == 0 )  return false;  // does nothing?
-		m_fretType = fret->RetType();
+    if ( m_arm == TTA_FFRONT )  // deposes on the ground in front?
+    {
+        fret = m_object->RetFret();
+        if ( fret == 0 )  return false;  // does nothing?
+        m_fretType = fret->RetType();
 
-		mat = fret->RetWorldMatrix(0);
-		pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
-		m_terrain->MoveOnFloor(pos);
-		fret->SetPosition(0, pos);
-		fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
-		fret->SetAngleX(0, 0.0f);
-		fret->SetAngleZ(0, 0.0f);
-		fret->FloorAdjust();  // plate well on the ground
+        mat = fret->RetWorldMatrix(0);
+        pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
+        m_terrain->MoveOnFloor(pos);
+        fret->SetPosition(0, pos);
+        fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
+        fret->SetAngleX(0, 0.0f);
+        fret->SetAngleZ(0, 0.0f);
+        fret->FloorAdjust();  // plate well on the ground
 
-		fret->SetTruck(0);
-		m_object->SetFret(0);  // deposit
-	}
+        fret->SetTruck(0);
+        m_object->SetFret(0);  // deposit
+    }
 
-	if ( m_arm == TTA_FRIEND )  // deposes battery on friends?
-	{
-		other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
-		if ( other == 0 )  return false;
+    if ( m_arm == TTA_FRIEND )  // deposes battery on friends?
+    {
+        other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
+        if ( other == 0 )  return false;
 
-		fret = other->RetPower();
-		if ( fret != 0 )  return false;  // the other already has a battery?
+        fret = other->RetPower();
+        if ( fret != 0 )  return false;  // the other already has a battery?
 
-		fret = m_object->RetFret();
-		if ( fret == 0 )  return false;
-		m_fretType = fret->RetType();
+        fret = m_object->RetFret();
+        if ( fret == 0 )  return false;
+        m_fretType = fret->RetType();
 
-		other->SetPower(fret);
-		fret->SetTruck(other);
+        other->SetPower(fret);
+        fret->SetTruck(other);
 
-		character = other->RetCharacter();
-		fret->SetPosition(0, character->posPower);
-		fret->SetAngleY(0, 0.0f);
-		fret->SetAngleX(0, 0.0f);
-		fret->SetAngleZ(0, 0.0f);
-		fret->SetTruckPart(0);  // carried by the base
+        character = other->RetCharacter();
+        fret->SetPosition(0, character->posPower);
+        fret->SetAngleY(0, 0.0f);
+        fret->SetAngleX(0, 0.0f);
+        fret->SetAngleZ(0, 0.0f);
+        fret->SetTruckPart(0);  // carried by the base
 
-		m_object->SetFret(0);  // deposit
-	}
+        m_object->SetFret(0);  // deposit
+    }
 
-	return true;
+    return true;
 }
 
 // Seeks if a location allows to deposit an object.
 
 bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
 {
-	CObject*	pObj;
-	Math::Matrix*	mat;
-	Math::Vector	iPos, oPos;
-	float		oRadius;
-	int			i, j;
+    CObject*    pObj;
+    Math::Matrix*   mat;
+    Math::Vector    iPos, oPos;
+    float       oRadius;
+    int         i, j;
 
-	mat = m_object->RetWorldMatrix(0);
-	iPos = Transform(*mat, pos);
+    mat = m_object->RetWorldMatrix(0);
+    iPos = Transform(*mat, pos);
 
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        if ( pObj == 0 )  break;
 
-		if ( pObj == m_object )  continue;
-		if ( !pObj->RetActif() )  continue;  // inactive?
-		if ( pObj->RetTruck() != 0 )  continue;  // object transported?
+        if ( pObj == m_object )  continue;
+        if ( !pObj->RetActif() )  continue;  // inactive?
+        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
 
-		j = 0;
-		while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
-		{
-			if ( Math::Distance(iPos, oPos)-(oRadius+1.0f) < 1.0f )
-			{
-				return false;  // location occupied
-			}
-		}
-	}
-	return true;  // location free
+        j = 0;
+        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        {
+            if ( Math::Distance(iPos, oPos)-(oRadius+1.0f) < 1.0f )
+            {
+                return false;  // location occupied
+            }
+        }
+    }
+    return true;  // location free
 }
 
 

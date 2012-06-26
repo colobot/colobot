@@ -26,8 +26,8 @@
 
 enum TaskFlagOrder
 {
-	TFL_CREATE	= 0,	// sets
-	TFL_DELETE	= 1,	// removes
+    TFL_CREATE  = 0,    // sets
+    TFL_DELETE  = 1,    // removes
 };
 
 
@@ -35,24 +35,24 @@ enum TaskFlagOrder
 class CTaskFlag : public CTask
 {
 public:
-	CTaskFlag(CInstanceManager* iMan, CObject* object);
-	~CTaskFlag();
+    CTaskFlag(CInstanceManager* iMan, CObject* object);
+    ~CTaskFlag();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start(TaskFlagOrder order, int rank);
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
-	Error		CreateFlag(int rank);
-	Error		DeleteFlag();
-	CObject*	SearchNearest(Math::Vector pos, ObjectType type);
-	int			CountObject(ObjectType type);
+    Error       Start(TaskFlagOrder order, int rank);
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	TaskFlagOrder	m_order;
-	float			m_time;
-	bool			m_bError;
+    Error       CreateFlag(int rank);
+    Error       DeleteFlag();
+    CObject*    SearchNearest(Math::Vector pos, ObjectType type);
+    int         CountObject(ObjectType type);
+
+protected:
+    TaskFlagOrder   m_order;
+    float           m_time;
+    bool            m_bError;
 };
 

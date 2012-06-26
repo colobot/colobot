@@ -42,125 +42,125 @@ class CSound;
 class CD3DApplication
 {
 public:
-	CD3DApplication();
-	~CD3DApplication();
+    CD3DApplication();
+    ~CD3DApplication();
 
 protected:
-	LRESULT		OnQuerySuspend( DWORD dwFlags );
-	LRESULT		OnResumeSuspend( DWORD dwData );
+    LRESULT     OnQuerySuspend( DWORD dwFlags );
+    LRESULT     OnResumeSuspend( DWORD dwData );
 
 public:
-	Error		RegQuery();
-	Error		AudioQuery();
-	Error		CheckMistery(char *strCmdLine);
-	int			GetVidMemTotal();
-	bool		IsVideo8MB();
-	bool		IsVideo32MB();
-	HRESULT		Create( HINSTANCE, TCHAR* );
-	INT			Run();
-	LRESULT		MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
-	VOID		Pause( bool bPause );
-	Math::Point		ConvPosToInterface(HWND hWnd, LPARAM lParam);
-	void		SetMousePos(Math::Point pos);
-	void		StepSimul(float rTime);
-	char*		RetCDpath();
+    Error       RegQuery();
+    Error       AudioQuery();
+    Error       CheckMistery(char *strCmdLine);
+    int         GetVidMemTotal();
+    bool        IsVideo8MB();
+    bool        IsVideo32MB();
+    HRESULT     Create( HINSTANCE, TCHAR* );
+    INT         Run();
+    LRESULT     MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+    VOID        Pause( bool bPause );
+    Math::Point     ConvPosToInterface(HWND hWnd, LPARAM lParam);
+    void        SetMousePos(Math::Point pos);
+    void        StepSimul(float rTime);
+    char*       RetCDpath();
 
-	void		SetShowStat(bool bShow);
-	bool		RetShowStat();
-	void		SetDebugMode(bool bMode);
-	bool		RetDebugMode();
-	bool		RetSetupMode();
+    void        SetShowStat(bool bShow);
+    bool        RetShowStat();
+    void        SetDebugMode(bool bMode);
+    bool        RetDebugMode();
+    bool        RetSetupMode();
 
-	bool		EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
-	bool		RetFullScreen();
-	bool		ChangeDevice(char *device, char *mode, bool bFull);
+    bool        EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
+    bool        RetFullScreen();
+    bool        ChangeDevice(char *device, char *mode, bool bFull);
 
-	void		FlushPressKey();
-	void		ResetKey();
-	void		SetKey(int keyRank, int option, int key);
-	int			RetKey(int keyRank, int option);
+    void        FlushPressKey();
+    void        ResetKey();
+    void        SetKey(int keyRank, int option, int key);
+    int         RetKey(int keyRank, int option);
 
-	void		SetJoystick(bool bEnable);
-	bool		RetJoystick();
+    void        SetJoystick(bool bEnable);
+    bool        RetJoystick();
 
-	void		SetMouseType(D3DMouse type);
-	void		SetNiceMouse(bool bNice);
-	bool		RetNiceMouse();
-	bool		RetNiceMouseCap();
+    void        SetMouseType(D3DMouse type);
+    void        SetNiceMouse(bool bNice);
+    bool        RetNiceMouse();
+    bool        RetNiceMouseCap();
 
-	bool		WriteScreenShot(char *filename, int width, int height);
+    bool        WriteScreenShot(char *filename, int width, int height);
 
-	bool		GetRenderDC(HDC &hDC);
-	bool		ReleaseRenderDC(HDC &hDC);
-	PBITMAPINFO	CreateBitmapInfoStruct(HBITMAP hBmp);
-	bool		CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
-
-protected:
-	HRESULT		ConfirmDevice( DDCAPS* pddDriverCaps, D3DDEVICEDESC7* pd3dDeviceDesc );
-	HRESULT		Initialize3DEnvironment();
-	HRESULT		Change3DEnvironment();
-	HRESULT		CreateZBuffer(GUID* pDeviceGUID);
-	HRESULT		Render3DEnvironment();
-	VOID		Cleanup3DEnvironment();
-	VOID		DeleteDeviceObjects();
-	VOID		DisplayFrameworkError( HRESULT, DWORD );
-
-	void		InitText();
-	void		DrawSuppl();
-	VOID		ShowStats();
-	VOID		OutputText( DWORD x, DWORD y, TCHAR* str );
+    bool        GetRenderDC(HDC &hDC);
+    bool        ReleaseRenderDC(HDC &hDC);
+    PBITMAPINFO CreateBitmapInfoStruct(HBITMAP hBmp);
+    bool        CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
 
 protected:
-	CInstanceManager*		m_iMan;
-	CEvent*					m_event;
+    HRESULT     ConfirmDevice( DDCAPS* pddDriverCaps, D3DDEVICEDESC7* pd3dDeviceDesc );
+    HRESULT     Initialize3DEnvironment();
+    HRESULT     Change3DEnvironment();
+    HRESULT     CreateZBuffer(GUID* pDeviceGUID);
+    HRESULT     Render3DEnvironment();
+    VOID        Cleanup3DEnvironment();
+    VOID        DeleteDeviceObjects();
+    VOID        DisplayFrameworkError( HRESULT, DWORD );
 
-	HINSTANCE				m_instance;
-	HWND					m_hWnd;
-	D3DEnum_DeviceInfo*		m_pDeviceInfo;
-	LPDIRECTDRAW7			m_pDD;
-	LPDIRECT3D7				m_pD3D;
-	LPDIRECT3DDEVICE7		m_pD3DDevice;
-	LPDIRECTDRAWSURFACE7	m_pddsRenderTarget;
-	DDSURFACEDESC2			m_ddsdRenderTarget;
-	LPDIRECTDRAWSURFACE7	m_pddsDepthBuffer;
+    void        InitText();
+    void        DrawSuppl();
+    VOID        ShowStats();
+    VOID        OutputText( DWORD x, DWORD y, TCHAR* str );
 
-	HANDLE			m_thread;
-	DWORD			m_threadId;
+protected:
+    CInstanceManager*       m_iMan;
+    CEvent*                 m_event;
 
-	char			m_CDpath[100];
+    HINSTANCE               m_instance;
+    HWND                    m_hWnd;
+    D3DEnum_DeviceInfo*     m_pDeviceInfo;
+    LPDIRECTDRAW7           m_pDD;
+    LPDIRECT3D7             m_pD3D;
+    LPDIRECT3DDEVICE7       m_pD3DDevice;
+    LPDIRECTDRAWSURFACE7    m_pddsRenderTarget;
+    DDSURFACEDESC2          m_ddsdRenderTarget;
+    LPDIRECTDRAWSURFACE7    m_pddsDepthBuffer;
 
-	CD3DFramework7*	m_pFramework;
-	bool			m_bActive;
-	bool			m_bActivateApp;
-	bool			m_bReady;
-	bool			m_bJoystick;
+    HANDLE          m_thread;
+    DWORD           m_threadId;
 
-	DWORD			m_vidMemTotal;
-	TCHAR*			m_strWindowTitle;
-	bool			m_bAppUseZBuffer;
-	bool			m_bAppUseStereo;
-	bool			m_bShowStats;
-	bool			m_bDebugMode;
-	bool			m_bAudioState;
-	bool			m_bAudioTrack;
-	bool			m_bNiceMouse;
-	bool			m_bSetupMode;
-	HRESULT			(*m_fnConfirmDevice)(DDCAPS*, D3DDEVICEDESC7*);
+    char            m_CDpath[100];
+
+    CD3DFramework7* m_pFramework;
+    bool            m_bActive;
+    bool            m_bActivateApp;
+    bool            m_bReady;
+    bool            m_bJoystick;
+
+    DWORD           m_vidMemTotal;
+    TCHAR*          m_strWindowTitle;
+    bool            m_bAppUseZBuffer;
+    bool            m_bAppUseStereo;
+    bool            m_bShowStats;
+    bool            m_bDebugMode;
+    bool            m_bAudioState;
+    bool            m_bAudioTrack;
+    bool            m_bNiceMouse;
+    bool            m_bSetupMode;
+    HRESULT         (*m_fnConfirmDevice)(DDCAPS*, D3DDEVICEDESC7*);
 
 public:
-	CD3DEngine*		m_pD3DEngine;
-	CRobotMain*		m_pRobotMain;
-	CSound*			m_pSound;
+    CD3DEngine*     m_pD3DEngine;
+    CRobotMain*     m_pRobotMain;
+    CSound*         m_pSound;
 
-	int				m_keyState;
-	Math::Vector		m_axeKey;
-	Math::Vector		m_axeJoy;
-	bool			m_bJoyButton[32];
-	Math::Point			m_mousePos;
-	DWORD			m_mshMouseWheel;
+    int             m_keyState;
+    Math::Vector        m_axeKey;
+    Math::Vector        m_axeJoy;
+    bool            m_bJoyButton[32];
+    Math::Point         m_mousePos;
+    DWORD           m_mshMouseWheel;
 
-	float			m_aTime;
-	DWORD			m_key[50][2];
+    float           m_aTime;
+    DWORD           m_key[50][2];
 };
 
 

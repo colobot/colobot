@@ -34,81 +34,81 @@ static char g_filename[100];
 bool InitCurrentDirectory()
 {
 #if _SCHOOL
-	_fullpath(g_filename, "ceebot.ini", 100);
+    _fullpath(g_filename, "ceebot.ini", 100);
 #else
-	_fullpath(g_filename, "colobot.ini", 100);
+    _fullpath(g_filename, "colobot.ini", 100);
 #endif
-	return true;
+    return true;
 }
 
 
 bool SetProfileString(char* section, char* key, char* string)
 {
-	WritePrivateProfileString(section, key, string, g_filename);
-	return true;
+    WritePrivateProfileString(section, key, string, g_filename);
+    return true;
 }
 
 bool GetProfileString(char* section, char* key, char* buffer, int max)
 {
-	int		nb;
+    int     nb;
 
-	nb = GetPrivateProfileString(section, key, "", buffer, max, g_filename);
-	if ( nb == 0 )
-	{
-		buffer[0] = 0;
-		return false;
-	}
-	return true;
+    nb = GetPrivateProfileString(section, key, "", buffer, max, g_filename);
+    if ( nb == 0 )
+    {
+        buffer[0] = 0;
+        return false;
+    }
+    return true;
 }
 
 
 bool SetProfileInt(char* section, char* key, int value)
 {
-	char	s[20];
+    char    s[20];
 
-	sprintf(s, "%d", value);
-	WritePrivateProfileString(section, key, s, g_filename);
-	return true;
+    sprintf(s, "%d", value);
+    WritePrivateProfileString(section, key, s, g_filename);
+    return true;
 }
 
 bool GetProfileInt(char* section, char* key, int &value)
 {
-	char	s[20];
-	int		nb;
+    char    s[20];
+    int     nb;
 
-	nb = GetPrivateProfileString(section, key, "", s, 20, g_filename);
-	if ( nb == 0 )
-	{
-		value = 0;
-		return false;
-	}
-	sscanf(s, "%d", &value);
-	return true;
+    nb = GetPrivateProfileString(section, key, "", s, 20, g_filename);
+    if ( nb == 0 )
+    {
+        value = 0;
+        return false;
+    }
+    sscanf(s, "%d", &value);
+    return true;
 }
 
 
 bool SetProfileFloat(char* section, char* key, float value)
 {
-	char	s[20];
+    char    s[20];
 
-	sprintf(s, "%.2f", value);
-	WritePrivateProfileString(section, key, s, g_filename);
-	return true;
+    sprintf(s, "%.2f", value);
+    WritePrivateProfileString(section, key, s, g_filename);
+    return true;
 }
 
 bool GetProfileFloat(char* section, char* key, float &value)
 {
-	char	s[20];
-	int		nb;
+    char    s[20];
+    int     nb;
 
-	nb = GetPrivateProfileString(section, key, "", s, 20, g_filename);
-	if ( nb == 0 )
-	{
-		value = 0.0f;
-		return false;
-	}
-	sscanf(s, "%f", &value);
-	return true;
+    nb = GetPrivateProfileString(section, key, "", s, 20, g_filename);
+    if ( nb == 0 )
+    {
+        value = 0.0f;
+        return false;
+    }
+    sscanf(s, "%f", &value);
+    return true;
 }
 
 

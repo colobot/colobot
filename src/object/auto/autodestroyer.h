@@ -25,10 +25,10 @@
 
 enum AutoDestroyerPhase
 {
-	ADEP_WAIT		= 1,	// expected metal
-	ADEP_DOWN		= 2,	// down the cover
-	ADEP_REPAIR		= 3,	// built the vehicle
-	ADEP_UP			= 4,	// up the cover
+    ADEP_WAIT       = 1,    // expected metal
+    ADEP_DOWN       = 2,    // down the cover
+    ADEP_REPAIR     = 3,    // built the vehicle
+    ADEP_UP         = 4,    // up the cover
 };
 
 
@@ -36,30 +36,30 @@ enum AutoDestroyerPhase
 class CAutoDestroyer : public CAuto
 {
 public:
-	CAutoDestroyer(CInstanceManager* iMan, CObject* object);
-	~CAutoDestroyer();
+    CAutoDestroyer(CInstanceManager* iMan, CObject* object);
+    ~CAutoDestroyer();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	CObject*	SearchPlastic();
-	bool		SearchVehicle();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoDestroyerPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	bool			m_bExplo;
+    CObject*    SearchPlastic();
+    bool        SearchVehicle();
+
+protected:
+    AutoDestroyerPhase  m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    bool            m_bExplo;
 };
 

@@ -24,27 +24,27 @@
 // Math module namespace
 namespace Math
 {
-  /* @{ */ // start of group
+/* @{ */ // start of group
 
-  //! Tolerance level -- minimum accepted float value
-  const float TOLERANCE = 1e-6f;
+//! Tolerance level -- minimum accepted float value
+const float TOLERANCE = 1e-6f;
 
-  //! Very small number (used in testing/returning some values)
-  const float VERY_SMALL = 1e-6f;
-  //! Very big number (used in testing/returning some values)
-  const float VERY_BIG = 1e6f;
+//! Very small number (used in testing/returning some values)
+const float VERY_SMALL = 1e-6f;
+//! Very big number (used in testing/returning some values)
+const float VERY_BIG = 1e6f;
 
-   //! Huge number
-  const float HUGE = 1.0e+38f;
+//! Huge number
+const float HUGE = 1.0e+38f;
 
-  //! PI
-  const float PI       = 3.14159265358979323846f;
+//! PI
+const float PI       = 3.14159265358979323846f;
 
-  //! Degrees to radians multiplier
-  const float DEG_TO_RAD =  0.01745329251994329547f;
-  //! Radians to degrees multiplier
-  const float RAD_TO_DEG = 57.29577951308232286465f;
+//! Degrees to radians multiplier
+const float DEG_TO_RAD =  0.01745329251994329547f;
+//! Radians to degrees multiplier
+const float RAD_TO_DEG = 57.29577951308232286465f;
 
-  /* @} */ // end of group
+/* @} */ // end of group
 }; // namespace Math
 

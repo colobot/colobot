@@ -35,7 +35,7 @@
 // Object's constructor.
 
 CTaskFlag::CTaskFlag(CInstanceManager* iMan, CObject* object)
-					   : CTask(iMan, object)
+                       : CTask(iMan, object)
 {
 }
 
@@ -50,13 +50,13 @@ CTaskFlag::~CTaskFlag()
 
 bool CTaskFlag::EventProcess(const Event &event)
 {
-	if ( m_bError )  return true;
-	if ( m_engine->RetPause() )  return true;
-	if ( event.event != EVENT_FRAME )  return true;
+    if ( m_bError )  return true;
+    if ( m_engine->RetPause() )  return true;
+    if ( event.event != EVENT_FRAME )  return true;
 
-	m_time += event.rTime;
+    m_time += event.rTime;
 
-	return true;
+    return true;
 }
 
 
@@ -65,66 +65,66 @@ bool CTaskFlag::EventProcess(const Event &event)
 
 Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 {
-	Math::Vector	pos, speed;
-	Error		err;
+    Math::Vector    pos, speed;
+    Error       err;
 
-	m_order = order;
-	m_time = 0.0f;
+    m_order = order;
+    m_time = 0.0f;
 
-	m_bError = true;  // operation impossible
-	if ( !m_physics->RetLand() )
-	{
-		pos = m_object->RetPosition(0);
-		if ( pos.y < m_water->RetLevel() )  return ERR_FLAG_WATER;
-		return ERR_FLAG_FLY;
-	}
+    m_bError = true;  // operation impossible
+    if ( !m_physics->RetLand() )
+    {
+        pos = m_object->RetPosition(0);
+        if ( pos.y < m_water->RetLevel() )  return ERR_FLAG_WATER;
+        return ERR_FLAG_FLY;
+    }
 
-	speed = m_physics->RetMotorSpeed();
-	if ( speed.x != 0.0f ||
-		 speed.z != 0.0f )  return ERR_FLAG_MOTOR;
+    speed = m_physics->RetMotorSpeed();
+    if ( speed.x != 0.0f ||
+         speed.z != 0.0f )  return ERR_FLAG_MOTOR;
 
-	if ( m_object->RetFret() != 0 )  return ERR_FLAG_BUSY;
+    if ( m_object->RetFret() != 0 )  return ERR_FLAG_BUSY;
 
-	if ( order == TFL_CREATE )
-	{
-		err = CreateFlag(rank);
-		if ( err != ERR_OK )  return err;
-	}
+    if ( order == TFL_CREATE )
+    {
+        err = CreateFlag(rank);
+        if ( err != ERR_OK )  return err;
+    }
 
-	if ( order == TFL_DELETE )
-	{
-		err = DeleteFlag();
-		if ( err != ERR_OK )  return err;
-	}
+    if ( order == TFL_DELETE )
+    {
+        err = DeleteFlag();
+        if ( err != ERR_OK )  return err;
+    }
 
-	m_bError = false;
+    m_bError = false;
 
-	m_motion->SetAction(MHS_FLAG);  // sets/removes flag
-	m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.5f);
+    m_motion->SetAction(MHS_FLAG);  // sets/removes flag
+    m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.5f);
 
-	return ERR_OK;
+    return ERR_OK;
 }
 
 // Indicates whether the action is finished.
 
 Error CTaskFlag::IsEnded()
 {
-	if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->RetPause() )  return ERR_CONTINUE;
 
-	if ( m_bError )  return ERR_STOP;
-	if ( m_time < 2.0f )  return ERR_CONTINUE;
+    if ( m_bError )  return ERR_STOP;
+    if ( m_time < 2.0f )  return ERR_CONTINUE;
 
-	Abort();
-	return ERR_STOP;
+    Abort();
+    return ERR_STOP;
 }
 
 // Suddenly ends the current action.
 
 bool CTaskFlag::Abort()
 {
-	m_motion->SetAction(-1);
-	m_camera->StopCentering(m_object, 2.0f);
-	return true;
+    m_motion->SetAction(-1);
+    m_camera->StopCentering(m_object, 2.0f);
+    return true;
 }
 
 
@@ -133,173 +133,173 @@ bool CTaskFlag::Abort()
 
 CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
 {
-	ObjectType	oType;
-	CObject		*pObj, *pBest;
-	Math::Vector	oPos;
-	float		min, dist;
-	int			i;
+    ObjectType  oType;
+    CObject     *pObj, *pBest;
+    Math::Vector    oPos;
+    float       min, dist;
+    int         i;
 
-	min = 100000.0f;
-	pBest = 0;
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+    min = 100000.0f;
+    pBest = 0;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        if ( pObj == 0 )  break;
 
-		if ( !pObj->RetEnable() )  continue;
+        if ( !pObj->RetEnable() )  continue;
 
-		oType = pObj->RetType();
-		if ( type == OBJECT_NULL )
-		{
-			if ( oType != OBJECT_FLAGb &&
-				 oType != OBJECT_FLAGr &&
-				 oType != OBJECT_FLAGg &&
-				 oType != OBJECT_FLAGy &&
-				 oType != OBJECT_FLAGv )  continue;
-		}
-		else
-		{
-			if ( oType != type )  continue;
-		}
+        oType = pObj->RetType();
+        if ( type == OBJECT_NULL )
+        {
+            if ( oType != OBJECT_FLAGb &&
+                 oType != OBJECT_FLAGr &&
+                 oType != OBJECT_FLAGg &&
+                 oType != OBJECT_FLAGy &&
+                 oType != OBJECT_FLAGv )  continue;
+        }
+        else
+        {
+            if ( oType != type )  continue;
+        }
 
-		oPos = pObj->RetPosition(0);
-		dist = Math::DistanceProjected(oPos, pos);
-		if ( dist < min )
-		{
-			min = dist;
-			pBest = pObj;
-		}
-	}
-	return pBest;
+        oPos = pObj->RetPosition(0);
+        dist = Math::DistanceProjected(oPos, pos);
+        if ( dist < min )
+        {
+            min = dist;
+            pBest = pObj;
+        }
+    }
+    return pBest;
 }
 
 // Counts the number of existing objects.
 
 int CTaskFlag::CountObject(ObjectType type)
 {
-	ObjectType	oType;
-	CObject		*pObj;
-	Math::Vector	oPos;
-	int			i, count;
+    ObjectType  oType;
+    CObject     *pObj;
+    Math::Vector    oPos;
+    int         i, count;
 
-	count = 0;
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+    count = 0;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        if ( pObj == 0 )  break;
 
-		if ( !pObj->RetEnable() )  continue;
+        if ( !pObj->RetEnable() )  continue;
 
-		oType = pObj->RetType();
-		if ( type == OBJECT_NULL )
-		{
-			if ( oType != OBJECT_FLAGb &&
-				 oType != OBJECT_FLAGr &&
-				 oType != OBJECT_FLAGg &&
-				 oType != OBJECT_FLAGy &&
-				 oType != OBJECT_FLAGv )  continue;
-		}
-		else
-		{
-			if ( oType != type )  continue;
-		}
+        oType = pObj->RetType();
+        if ( type == OBJECT_NULL )
+        {
+            if ( oType != OBJECT_FLAGb &&
+                 oType != OBJECT_FLAGr &&
+                 oType != OBJECT_FLAGg &&
+                 oType != OBJECT_FLAGy &&
+                 oType != OBJECT_FLAGv )  continue;
+        }
+        else
+        {
+            if ( oType != type )  continue;
+        }
 
-		count ++;
-	}
-	return count;
+        count ++;
+    }
+    return count;
 }
 
 // Creates a color indicator.
 
 Error CTaskFlag::CreateFlag(int rank)
 {
-	CObject*	pObj;
-	CObject*	pNew;
-	CPyro*		pyro;
-	Math::Matrix*	mat;
-	Math::Vector	pos;
-	float		dist;
-	int			i;
+    CObject*    pObj;
+    CObject*    pNew;
+    CPyro*      pyro;
+    Math::Matrix*   mat;
+    Math::Vector    pos;
+    float       dist;
+    int         i;
 
-	ObjectType	table[5] =
-	{
-		OBJECT_FLAGb,
-		OBJECT_FLAGr,
-		OBJECT_FLAGg,
-		OBJECT_FLAGy,
-		OBJECT_FLAGv,
-	};
+    ObjectType  table[5] =
+    {
+        OBJECT_FLAGb,
+        OBJECT_FLAGr,
+        OBJECT_FLAGg,
+        OBJECT_FLAGy,
+        OBJECT_FLAGv,
+    };
 
-	mat = m_object->RetWorldMatrix(0);
-	pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
+    mat = m_object->RetWorldMatrix(0);
+    pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
 
-	pObj = SearchNearest(pos, OBJECT_NULL);
-	if ( pObj != 0 )
-	{
-		dist = Math::Distance(pos, pObj->RetPosition(0));
-		if ( dist < 10.0f )
-		{
-			return ERR_FLAG_PROXY;
-		}
-	}
+    pObj = SearchNearest(pos, OBJECT_NULL);
+    if ( pObj != 0 )
+    {
+        dist = Math::Distance(pos, pObj->RetPosition(0));
+        if ( dist < 10.0f )
+        {
+            return ERR_FLAG_PROXY;
+        }
+    }
 
-	i = rank;
-	if ( CountObject(table[i]) >= 5 )
-	{
-		return ERR_FLAG_CREATE;
-	}
+    i = rank;
+    if ( CountObject(table[i]) >= 5 )
+    {
+        return ERR_FLAG_CREATE;
+    }
 
-	pNew = new CObject(m_iMan);
-	if ( !pNew->CreateFlag(pos, 0.0f, table[i]) )
-	{
-		delete pNew;
-		return ERR_TOOMANY;
-	}
-	pNew->SetZoom(0, 0.0f);
+    pNew = new CObject(m_iMan);
+    if ( !pNew->CreateFlag(pos, 0.0f, table[i]) )
+    {
+        delete pNew;
+        return ERR_TOOMANY;
+    }
+    pNew->SetZoom(0, 0.0f);
 
-	m_sound->Play(SOUND_WAYPOINT, pos);
-	pyro = new CPyro(m_iMan);
-	pyro->Create(PT_FLCREATE, pNew);
+    m_sound->Play(SOUND_WAYPOINT, pos);
+    pyro = new CPyro(m_iMan);
+    pyro->Create(PT_FLCREATE, pNew);
 
-	return ERR_OK;
+    return ERR_OK;
 }
 
 // Deletes a color indicator.
 
 Error CTaskFlag::DeleteFlag()
 {
-	CObject*	pObj;
-	CPyro*		pyro;
-	Math::Vector	iPos, oPos;
-	float		iAngle, angle, aLimit, dist;
+    CObject*    pObj;
+    CPyro*      pyro;
+    Math::Vector    iPos, oPos;
+    float       iAngle, angle, aLimit, dist;
 
-	iPos = m_object->RetPosition(0);
-	iAngle = m_object->RetAngleY(0);
-	iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
+    iPos = m_object->RetPosition(0);
+    iAngle = m_object->RetAngleY(0);
+    iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
-	pObj = SearchNearest(iPos, OBJECT_NULL);
-	if ( pObj == 0 )
-	{
-		return ERR_FLAG_DELETE;
-	}
-	dist = Math::Distance(iPos, pObj->RetPosition(0));
-	if ( dist > 10.0f )
-	{
-		return ERR_FLAG_DELETE;
-	}
+    pObj = SearchNearest(iPos, OBJECT_NULL);
+    if ( pObj == 0 )
+    {
+        return ERR_FLAG_DELETE;
+    }
+    dist = Math::Distance(iPos, pObj->RetPosition(0));
+    if ( dist > 10.0f )
+    {
+        return ERR_FLAG_DELETE;
+    }
 
-	oPos = pObj->RetPosition(0);
-	angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
-	aLimit = 45.0f*Math::PI/180.0f;
-	if ( !Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
-	{
-		return ERR_FLAG_DELETE;
-	}
+    oPos = pObj->RetPosition(0);
+    angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+    aLimit = 45.0f*Math::PI/180.0f;
+    if ( !Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
+    {
+        return ERR_FLAG_DELETE;
+    }
 
-	m_sound->Play(SOUND_WAYPOINT, iPos);
-	pyro = new CPyro(m_iMan);
-	pyro->Create(PT_FLDELETE, pObj);
+    m_sound->Play(SOUND_WAYPOINT, iPos);
+    pyro = new CPyro(m_iMan);
+    pyro->Create(PT_FLDELETE, pObj);
 
-	return ERR_OK;
+    return ERR_OK;
 }
 

@@ -26,10 +26,10 @@
 
 enum TaskTerraPhase
 {
-	TTP_CHARGE	= 1,	// charge of energy
-	TTP_DOWN	= 2,	// down
-	TTP_TERRA	= 3,	// strike
-	TTP_UP		= 4,	// up
+    TTP_CHARGE  = 1,    // charge of energy
+    TTP_DOWN    = 2,    // down
+    TTP_TERRA   = 3,    // strike
+    TTP_UP      = 4,    // up
 };
 
 
@@ -37,26 +37,26 @@ enum TaskTerraPhase
 class CTaskTerraform : public CTask
 {
 public:
-	CTaskTerraform(CInstanceManager* iMan, CObject* object);
-	~CTaskTerraform();
+    CTaskTerraform(CInstanceManager* iMan, CObject* object);
+    ~CTaskTerraform();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start();
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
-	bool		Terraform();
+    Error       Start();
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	TaskTerraPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_time;
-	float			m_lastParticule;
-	int				m_soundChannel;
-	bool			m_bError;
-	Math::Vector		m_terraPos;
+    bool        Terraform();
+
+protected:
+    TaskTerraPhase  m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_time;
+    float           m_lastParticule;
+    int             m_soundChannel;
+    bool            m_bError;
+    Math::Vector        m_terraPos;
 };
 
