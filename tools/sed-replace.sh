@@ -8,15 +8,19 @@
 
 # List of sed commands (replacements)
 replacements=( \
-'s/\bD3DVECTOR\b/Math::Vector/g' \
-'s/\bD3DMATRIX\b/Math::Matrix/g' \
+'s/\bSetProfileString\b/SetLocalProfileString/g' \
+'s/\bGetProfileString\b/GetLocalProfileString/g' \
+'s/\bSetProfileInt\b/SetLocalProfileInt/g' \
+'s/\bGetProfileInt\b/GetLocalProfileInt/g' \
+'s/\bSetProfileFloat\b/SetLocalProfileFloat/g' \
+'s/\bGetProfileFloat\b/GetLocalProfileFloat/g' \
 )
 
 # Loop over arguments
-for file in "$@"; do
-	# Loop over replacements
-	for what in "${replacements[@]}"; do
-		sed -i "$what" "$file"
-	done
-	echo "$file"
+find -type f \( -name '*.cpp' -o -name '*.h' \) -print0 | while read -d $'\0' file; do
+        echo "Processing file '$file'..."
+        # Loop over replacements
+        for what in "${replacements[@]}"; do
+            sed -i "$what" "$file"
+        done
 done

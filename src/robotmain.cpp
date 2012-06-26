@@ -282,22 +282,22 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     m_windowPos = FPOINT(0.15f, 0.17f);
     m_windowDim = FPOINT(0.70f, 0.66f);
 
-    if ( GetProfileFloat("Edit", "FontSize",    fValue) )  m_fontSize    = fValue;
-    if ( GetProfileFloat("Edit", "WindowPos.x", fValue) )  m_windowPos.x = fValue;
-    if ( GetProfileFloat("Edit", "WindowPos.y", fValue) )  m_windowPos.y = fValue;
-    if ( GetProfileFloat("Edit", "WindowDim.x", fValue) )  m_windowDim.x = fValue;
-    if ( GetProfileFloat("Edit", "WindowDim.y", fValue) )  m_windowDim.y = fValue;
+    if ( GetLocalProfileFloat("Edit", "FontSize",    fValue) )  m_fontSize    = fValue;
+    if ( GetLocalProfileFloat("Edit", "WindowPos.x", fValue) )  m_windowPos.x = fValue;
+    if ( GetLocalProfileFloat("Edit", "WindowPos.y", fValue) )  m_windowPos.y = fValue;
+    if ( GetLocalProfileFloat("Edit", "WindowDim.x", fValue) )  m_windowDim.x = fValue;
+    if ( GetLocalProfileFloat("Edit", "WindowDim.y", fValue) )  m_windowDim.y = fValue;
 
     m_IOPublic = FALSE;
     m_IODim = FPOINT(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 
-    if ( GetProfileInt  ("Edit", "IOPublic", iValue) )  m_IOPublic    = iValue;
-    if ( GetProfileFloat("Edit", "IOPos.x",  fValue) )  m_IOPos.x = fValue;
-    if ( GetProfileFloat("Edit", "IOPos.y",  fValue) )  m_IOPos.y = fValue;
-    if ( GetProfileFloat("Edit", "IODim.x",  fValue) )  m_IODim.x = fValue;
-    if ( GetProfileFloat("Edit", "IODim.y",  fValue) )  m_IODim.y = fValue;
+    if ( GetLocalProfileInt  ("Edit", "IOPublic", iValue) )  m_IOPublic    = iValue;
+    if ( GetLocalProfileFloat("Edit", "IOPos.x",  fValue) )  m_IOPos.x = fValue;
+    if ( GetLocalProfileFloat("Edit", "IOPos.y",  fValue) )  m_IOPos.y = fValue;
+    if ( GetLocalProfileFloat("Edit", "IODim.x",  fValue) )  m_IODim.x = fValue;
+    if ( GetLocalProfileFloat("Edit", "IODim.y",  fValue) )  m_IODim.y = fValue;
 
     m_short->FlushShortcuts();
     InitEye();
@@ -314,7 +314,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     g_unit = 4.0f;
 
     m_gamerName[0] = 0;
-    GetProfileString("Gamer", "LastName", m_gamerName, 100);
+    GetLocalProfileString("Gamer", "LastName", m_gamerName, 100);
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
     m_dialog->SetupRecall();
@@ -429,7 +429,7 @@ void CRobotMain::CreateIni()
     int     iValue;
 
     // colobot.ini don't exist?
-    if ( !GetProfileInt("Setup", "TotoMode", iValue) )
+    if ( !GetLocalProfileInt("Setup", "TotoMode", iValue) )
     {
         m_dialog->SetupMemorize();
     }
@@ -1800,7 +1800,7 @@ float CRobotMain::RetGameTime()
 void CRobotMain::SetFontSize(float size)
 {
     m_fontSize = size;
-    SetProfileFloat("Edit", "FontSize", m_fontSize);
+    SetLocalProfileFloat("Edit", "FontSize", m_fontSize);
 }
 
 float CRobotMain::RetFontSize()
@@ -1813,8 +1813,8 @@ float CRobotMain::RetFontSize()
 void CRobotMain::SetWindowPos(FPOINT pos)
 {
     m_windowPos = pos;
-    SetProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
-    SetProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
+    SetLocalProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
+    SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
 }
 
 FPOINT CRobotMain::RetWindowPos()
@@ -1825,8 +1825,8 @@ FPOINT CRobotMain::RetWindowPos()
 void CRobotMain::SetWindowDim(FPOINT dim)
 {
     m_windowDim = dim;
-    SetProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
-    SetProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
+    SetLocalProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
+    SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
 }
 
 FPOINT CRobotMain::RetWindowDim()
@@ -1840,7 +1840,7 @@ FPOINT CRobotMain::RetWindowDim()
 void CRobotMain::SetIOPublic(BOOL bMode)
 {
     m_IOPublic = bMode;
-    SetProfileInt("Edit", "IOPublic", m_IOPublic);
+    SetLocalProfileInt("Edit", "IOPublic", m_IOPublic);
 }
 
 BOOL CRobotMain::RetIOPublic()
@@ -1851,8 +1851,8 @@ BOOL CRobotMain::RetIOPublic()
 void CRobotMain::SetIOPos(FPOINT pos)
 {
     m_IOPos = pos;
-    SetProfileFloat("Edit", "IOPos.x", m_IOPos.x);
-    SetProfileFloat("Edit", "IOPos.y", m_IOPos.y);
+    SetLocalProfileFloat("Edit", "IOPos.x", m_IOPos.x);
+    SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y);
 }
 
 FPOINT CRobotMain::RetIOPos()
@@ -1863,8 +1863,8 @@ FPOINT CRobotMain::RetIOPos()
 void CRobotMain::SetIODim(FPOINT dim)
 {
     m_IODim = dim;
-    SetProfileFloat("Edit", "IODim.x", m_IODim.x);
-    SetProfileFloat("Edit", "IODim.y", m_IODim.y);
+    SetLocalProfileFloat("Edit", "IODim.x", m_IODim.x);
+    SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y);
 }
 
 FPOINT CRobotMain::RetIODim()

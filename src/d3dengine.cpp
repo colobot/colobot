@@ -189,12 +189,12 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
     m_tracePrecision = 1.0f;
 
     m_alphaMode = 1;
-    if ( GetProfileInt("Engine", "AlphaMode", i) )
+    if ( GetLocalProfileInt("Engine", "AlphaMode", i) )
     {
         m_alphaMode = i;
     }
 
-    if ( GetProfileInt("Engine", "StateColor", i) && i != -1 )
+    if ( GetLocalProfileInt("Engine", "StateColor", i) && i != -1 )
     {
         m_bForceStateColor = TRUE;
         m_bStateColor = i;
@@ -214,14 +214,14 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
     m_alphaSrcBlend[0]    = 0;
     m_alphaDestBlend[0]   = 0;
 
-    if ( GetProfileInt("Engine", "BlackSrcBlend",    i) )  m_blackSrcBlend[0]    = i;
-    if ( GetProfileInt("Engine", "BlackDestBlend",   i) )  m_blackDestBlend[0]   = i;
-    if ( GetProfileInt("Engine", "WhiteSrcBlend",    i) )  m_whiteSrcBlend[0]    = i;
-    if ( GetProfileInt("Engine", "WhiteDestBlend",   i) )  m_whiteDestBlend[0]   = i;
-    if ( GetProfileInt("Engine", "DiffuseSrcBlend",  i) )  m_diffuseSrcBlend[0]  = i;
-    if ( GetProfileInt("Engine", "DiffuseDestBlend", i) )  m_diffuseDestBlend[0] = i;
-    if ( GetProfileInt("Engine", "AlphaSrcBlend",    i) )  m_alphaSrcBlend[0]    = i;
-    if ( GetProfileInt("Engine", "AlphaDestBlend",   i) )  m_alphaDestBlend[0]   = i;
+    if ( GetLocalProfileInt("Engine", "BlackSrcBlend",    i) )  m_blackSrcBlend[0]    = i;
+    if ( GetLocalProfileInt("Engine", "BlackDestBlend",   i) )  m_blackDestBlend[0]   = i;
+    if ( GetLocalProfileInt("Engine", "WhiteSrcBlend",    i) )  m_whiteSrcBlend[0]    = i;
+    if ( GetLocalProfileInt("Engine", "WhiteDestBlend",   i) )  m_whiteDestBlend[0]   = i;
+    if ( GetLocalProfileInt("Engine", "DiffuseSrcBlend",  i) )  m_diffuseSrcBlend[0]  = i;
+    if ( GetLocalProfileInt("Engine", "DiffuseDestBlend", i) )  m_diffuseDestBlend[0] = i;
+    if ( GetLocalProfileInt("Engine", "AlphaSrcBlend",    i) )  m_alphaSrcBlend[0]    = i;
+    if ( GetLocalProfileInt("Engine", "AlphaDestBlend",   i) )  m_alphaDestBlend[0]   = i;
 
     m_bUpdateGeometry = FALSE;
 
@@ -375,25 +375,25 @@ void CD3DEngine::SetTerrain(CTerrain* terrain)
 
 BOOL CD3DEngine::WriteProfile()
 {
-    SetProfileInt("Engine", "AlphaMode", m_alphaMode);
+    SetLocalProfileInt("Engine", "AlphaMode", m_alphaMode);
 
     if ( m_bForceStateColor )
     {
-        SetProfileInt("Engine", "StateColor", m_bStateColor);
+        SetLocalProfileInt("Engine", "StateColor", m_bStateColor);
     }
     else
     {
-        SetProfileInt("Engine", "StateColor", -1);
+        SetLocalProfileInt("Engine", "StateColor", -1);
     }
 
-    SetProfileInt("Engine", "BlackSrcBlend",    m_blackSrcBlend[0]);
-    SetProfileInt("Engine", "BlackDestBlend",   m_blackDestBlend[0]);
-    SetProfileInt("Engine", "WhiteSrcBlend",    m_whiteSrcBlend[0]);
-    SetProfileInt("Engine", "WhiteDestBlend",   m_whiteDestBlend[0]);
-    SetProfileInt("Engine", "DiffuseSrcBlend",  m_diffuseSrcBlend[0]);
-    SetProfileInt("Engine", "DiffuseDestBlend", m_diffuseDestBlend[0]);
-    SetProfileInt("Engine", "AlphaSrcBlend",    m_alphaSrcBlend[0]);
-    SetProfileInt("Engine", "AlphaDestBlend",   m_alphaDestBlend[0]);
+    SetLocalProfileInt("Engine", "BlackSrcBlend",    m_blackSrcBlend[0]);
+    SetLocalProfileInt("Engine", "BlackDestBlend",   m_blackDestBlend[0]);
+    SetLocalProfileInt("Engine", "WhiteSrcBlend",    m_whiteSrcBlend[0]);
+    SetLocalProfileInt("Engine", "WhiteDestBlend",   m_whiteDestBlend[0]);
+    SetLocalProfileInt("Engine", "DiffuseSrcBlend",  m_diffuseSrcBlend[0]);
+    SetLocalProfileInt("Engine", "DiffuseDestBlend", m_diffuseDestBlend[0]);
+    SetLocalProfileInt("Engine", "AlphaSrcBlend",    m_alphaSrcBlend[0]);
+    SetLocalProfileInt("Engine", "AlphaDestBlend",   m_alphaDestBlend[0]);
 
     return TRUE;
 }

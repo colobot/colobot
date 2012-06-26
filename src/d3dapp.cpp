@@ -494,7 +494,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
     {
         m_pDeviceInfo->bWindowed = FALSE;  // full screen
     }
-    if ( GetProfileInt("Device", "FullScreen", bFull) )
+    if ( GetLocalProfileInt("Device", "FullScreen", bFull) )
     {
         m_pDeviceInfo->bWindowed = !bFull;
     }
@@ -556,7 +556,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
                            hInst, 0L );
     UpdateWindow( m_hWnd );
 
-    if ( !GetProfileInt("Setup", "Sound3D", b3D) )
+    if ( !GetLocalProfileInt("Setup", "Sound3D", b3D) )
     {
         b3D = TRUE;
     }
@@ -576,16 +576,16 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
     }
 
     // Change the display device driver.
-    GetProfileString("Device", "Name", deviceName, 100);
-    GetProfileString("Device", "Mode", modeName, 100);
-    GetProfileInt("Device", "FullScreen", bFull);
+    GetLocalProfileString("Device", "Name", deviceName, 100);
+    GetLocalProfileString("Device", "Mode", modeName, 100);
+    GetLocalProfileInt("Device", "FullScreen", bFull);
     if ( deviceName[0] != 0 && modeName[0] != 0 && bFull )
     {
         ChangeDevice(deviceName, modeName, bFull);
     }
 
     // First execution?
-    if ( !GetProfileInt("Setup", "ObjectDirty", iValue) )
+    if ( !GetLocalProfileInt("Setup", "ObjectDirty", iValue) )
     {
         m_pD3DEngine->FirstExecuteAdapt(TRUE);
     }
@@ -2325,9 +2325,9 @@ BOOL CD3DApplication::ChangeDevice(char *deviceName, char *modeName,
                         return FALSE;
                     }
 
-                    SetProfileString("Device", "Name", deviceName);
-                    SetProfileString("Device", "Mode", modeName);
-                    SetProfileInt("Device", "FullScreen", bFull);
+                    SetLocalProfileString("Device", "Name", deviceName);
+                    SetLocalProfileString("Device", "Mode", modeName);
+                    SetLocalProfileInt("Device", "FullScreen", bFull);
                     m_bReady = TRUE;
                     return TRUE;
                 }

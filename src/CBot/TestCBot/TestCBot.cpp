@@ -186,7 +186,7 @@ BOOL CTestCBotApp::InitInstance()
 
     if (m_lpCmdLine[0] == 0)
     {
-        CString Filename = GetProfileString(szSection, szFilename);
+        CString Filename = GetLocalProfileString(szSection, szFilename);
         if (Filename.IsEmpty()) Filename = "TstCbot.txt";
         else OpenDocumentFile(Filename);
     }

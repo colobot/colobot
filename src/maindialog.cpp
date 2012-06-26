@@ -3886,7 +3886,7 @@ void CMainDialog::NameSelect()
 
     RetGamerFace(m_main->RetGamerName());
 
-    SetProfileString("Gamer", "LastName", m_main->RetGamerName());
+    SetLocalProfileString("Gamer", "LastName", m_main->RetGamerName());
 }
 
 // Creates a new player.
@@ -5524,104 +5524,104 @@ void CMainDialog::SetupMemorize()
     char    key[500];
     char    num[10];
 
-    SetProfileString("Directory", "scene",    m_sceneDir);
-    SetProfileString("Directory", "savegame", m_savegameDir);
-    SetProfileString("Directory", "public",   m_publicDir);
-    SetProfileString("Directory", "user",     m_userDir);
-    SetProfileString("Directory", "files",    m_filesDir);
+    SetLocalProfileString("Directory", "scene",    m_sceneDir);
+    SetLocalProfileString("Directory", "savegame", m_savegameDir);
+    SetLocalProfileString("Directory", "public",   m_publicDir);
+    SetLocalProfileString("Directory", "user",     m_userDir);
+    SetLocalProfileString("Directory", "files",    m_filesDir);
 
     iValue = m_engine->RetTotoMode();
-    SetProfileInt("Setup", "TotoMode", iValue);
+    SetLocalProfileInt("Setup", "TotoMode", iValue);
 
     iValue = m_bTooltip;
-    SetProfileInt("Setup", "Tooltips", iValue);
+    SetLocalProfileInt("Setup", "Tooltips", iValue);
 
     iValue = m_bGlint;
-    SetProfileInt("Setup", "InterfaceGlint", iValue);
+    SetLocalProfileInt("Setup", "InterfaceGlint", iValue);
 
     iValue = m_bRain;
-    SetProfileInt("Setup", "InterfaceGlint", iValue);
+    SetLocalProfileInt("Setup", "InterfaceGlint", iValue);
 
     iValue = m_engine->RetNiceMouse();
-    SetProfileInt("Setup", "NiceMouse", iValue);
+    SetLocalProfileInt("Setup", "NiceMouse", iValue);
 
     iValue = m_bSoluce4;
-    SetProfileInt("Setup", "Soluce4", iValue);
+    SetLocalProfileInt("Setup", "Soluce4", iValue);
 
     iValue = m_bMovies;
-    SetProfileInt("Setup", "Movies", iValue);
+    SetLocalProfileInt("Setup", "Movies", iValue);
 
     iValue = m_bNiceReset;
-    SetProfileInt("Setup", "NiceReset", iValue);
+    SetLocalProfileInt("Setup", "NiceReset", iValue);
 
     iValue = m_bHimselfDamage;
-    SetProfileInt("Setup", "HimselfDamage", iValue);
+    SetLocalProfileInt("Setup", "HimselfDamage", iValue);
 
     iValue = m_bCameraScroll;
-    SetProfileInt("Setup", "CameraScroll", iValue);
+    SetLocalProfileInt("Setup", "CameraScroll", iValue);
 
     iValue = m_bCameraInvertX;
-    SetProfileInt("Setup", "CameraInvertX", iValue);
+    SetLocalProfileInt("Setup", "CameraInvertX", iValue);
 
     iValue = m_bEffect;
-    SetProfileInt("Setup", "InterfaceEffect", iValue);
+    SetLocalProfileInt("Setup", "InterfaceEffect", iValue);
 
     iValue = m_engine->RetShadow();
-    SetProfileInt("Setup", "GroundShadow", iValue);
+    SetLocalProfileInt("Setup", "GroundShadow", iValue);
 
     iValue = m_engine->RetGroundSpot();
-    SetProfileInt("Setup", "GroundSpot", iValue);
+    SetLocalProfileInt("Setup", "GroundSpot", iValue);
 
     iValue = m_engine->RetDirty();
-    SetProfileInt("Setup", "ObjectDirty", iValue);
+    SetLocalProfileInt("Setup", "ObjectDirty", iValue);
 
     iValue = m_engine->RetFog();
-    SetProfileInt("Setup", "FogMode", iValue);
+    SetLocalProfileInt("Setup", "FogMode", iValue);
 
     iValue = m_engine->RetLensMode();
-    SetProfileInt("Setup", "LensMode", iValue);
+    SetLocalProfileInt("Setup", "LensMode", iValue);
 
     iValue = m_engine->RetSkyMode();
-    SetProfileInt("Setup", "SkyMode", iValue);
+    SetLocalProfileInt("Setup", "SkyMode", iValue);
 
     iValue = m_engine->RetPlanetMode();
-    SetProfileInt("Setup", "PlanetMode", iValue);
+    SetLocalProfileInt("Setup", "PlanetMode", iValue);
 
     iValue = m_engine->RetLightMode();
-    SetProfileInt("Setup", "LightMode", iValue);
+    SetLocalProfileInt("Setup", "LightMode", iValue);
 
     iValue = m_engine->RetJoystick();
-    SetProfileInt("Setup", "UseJoystick", iValue);
+    SetLocalProfileInt("Setup", "UseJoystick", iValue);
 
     fValue = m_engine->RetParticuleDensity();
-    SetProfileFloat("Setup", "ParticuleDensity", fValue);
+    SetLocalProfileFloat("Setup", "ParticuleDensity", fValue);
 
     fValue = m_engine->RetClippingDistance();
-    SetProfileFloat("Setup", "ClippingDistance", fValue);
+    SetLocalProfileFloat("Setup", "ClippingDistance", fValue);
 
     fValue = m_engine->RetObjectDetail();
-    SetProfileFloat("Setup", "ObjectDetail", fValue);
+    SetLocalProfileFloat("Setup", "ObjectDetail", fValue);
 
     fValue = m_engine->RetGadgetQuantity();
-    SetProfileFloat("Setup", "GadgetQuantity", fValue);
+    SetLocalProfileFloat("Setup", "GadgetQuantity", fValue);
 
     iValue = m_engine->RetTextureQuality();
-    SetProfileInt("Setup", "TextureQuality", iValue);
+    SetLocalProfileInt("Setup", "TextureQuality", iValue);
 
     iValue = m_sound->RetAudioVolume();
-    SetProfileInt("Setup", "AudioVolume", iValue);
+    SetLocalProfileInt("Setup", "AudioVolume", iValue);
 
     iValue = m_sound->RetMidiVolume();
-    SetProfileInt("Setup", "MidiVolume", iValue);
+    SetLocalProfileInt("Setup", "MidiVolume", iValue);
 
     iValue = m_sound->RetSound3D();
-    SetProfileInt("Setup", "Sound3D", iValue);
+    SetLocalProfileInt("Setup", "Sound3D", iValue);
 
     iValue = m_engine->RetEditIndentMode();
-    SetProfileInt("Setup", "EditIndentMode", iValue);
+    SetLocalProfileInt("Setup", "EditIndentMode", iValue);
 
     iValue = m_engine->RetEditIndentValue();
-    SetProfileInt("Setup", "EditIndentValue", iValue);
+    SetLocalProfileInt("Setup", "EditIndentValue", iValue);
 
     key[0] = 0;
     for ( i=0 ; i<100 ; i++ )
@@ -5635,21 +5635,21 @@ void CMainDialog::SetupMemorize()
             strcat(key, num);
         }
     }
-    SetProfileString("Setup", "KeyMap", key);
+    SetLocalProfileString("Setup", "KeyMap", key);
 
 #if _NET
     if ( m_accessEnable )
     {
         iValue = m_accessMission;
-        SetProfileInt("Setup", "AccessMission", iValue);
+        SetLocalProfileInt("Setup", "AccessMission", iValue);
 
         iValue = m_accessUser;
-        SetProfileInt("Setup", "AccessUser", iValue);
+        SetLocalProfileInt("Setup", "AccessUser", iValue);
     }
 #endif
 
     iValue = m_bDeleteGamer;
-    SetProfileInt("Setup", "DeleteGamer", iValue);
+    SetLocalProfileInt("Setup", "DeleteGamer", iValue);
 
     m_engine->WriteProfile();
 }
@@ -5663,192 +5663,192 @@ void CMainDialog::SetupRecall()
     char    key[500];
     char*   p;
 
-    if ( GetProfileString("Directory", "scene", key, _MAX_FNAME) )
+    if ( GetLocalProfileString("Directory", "scene", key, _MAX_FNAME) )
     {
         strcpy(m_sceneDir, key);
     }
 
-    if ( GetProfileString("Directory", "savegame", key, _MAX_FNAME) )
+    if ( GetLocalProfileString("Directory", "savegame", key, _MAX_FNAME) )
     {
         strcpy(m_savegameDir, key);
     }
 
-    if ( GetProfileString("Directory", "public", key, _MAX_FNAME) )
+    if ( GetLocalProfileString("Directory", "public", key, _MAX_FNAME) )
     {
         strcpy(m_publicDir, key);
     }
 
-    if ( GetProfileString("Directory", "user", key, _MAX_FNAME) )
+    if ( GetLocalProfileString("Directory", "user", key, _MAX_FNAME) )
     {
         strcpy(m_userDir, key);
     }
 
-    if ( GetProfileString("Directory", "files", key, _MAX_FNAME) )
+    if ( GetLocalProfileString("Directory", "files", key, _MAX_FNAME) )
     {
         strcpy(m_filesDir, key);
     }
 
 
-    if ( GetProfileInt("Setup", "TotoMode", iValue) )
+    if ( GetLocalProfileInt("Setup", "TotoMode", iValue) )
     {
         m_engine->SetTotoMode(iValue);
     }
 
-    if ( GetProfileInt("Setup", "Tooltips", iValue) )
+    if ( GetLocalProfileInt("Setup", "Tooltips", iValue) )
     {
         m_bTooltip = iValue;
     }
 
-    if ( GetProfileInt("Setup", "InterfaceGlint", iValue) )
+    if ( GetLocalProfileInt("Setup", "InterfaceGlint", iValue) )
     {
         m_bGlint = iValue;
     }
 
-    if ( GetProfileInt("Setup", "InterfaceGlint", iValue) )
+    if ( GetLocalProfileInt("Setup", "InterfaceGlint", iValue) )
     {
         m_bRain = iValue;
     }
 
-    if ( GetProfileInt("Setup", "NiceMouse", iValue) )
+    if ( GetLocalProfileInt("Setup", "NiceMouse", iValue) )
     {
         m_engine->SetNiceMouse(iValue);
     }
 
-    if ( GetProfileInt("Setup", "Soluce4", iValue) )
+    if ( GetLocalProfileInt("Setup", "Soluce4", iValue) )
     {
         m_bSoluce4 = iValue;
     }
 
-    if ( GetProfileInt("Setup", "Movies", iValue) )
+    if ( GetLocalProfileInt("Setup", "Movies", iValue) )
     {
         m_bMovies = iValue;
     }
 
-    if ( GetProfileInt("Setup", "NiceReset", iValue) )
+    if ( GetLocalProfileInt("Setup", "NiceReset", iValue) )
     {
         m_bNiceReset = iValue;
     }
 
-    if ( GetProfileInt("Setup", "HimselfDamage", iValue) )
+    if ( GetLocalProfileInt("Setup", "HimselfDamage", iValue) )
     {
         m_bHimselfDamage = iValue;
     }
 
-    if ( GetProfileInt("Setup", "CameraScroll", iValue) )
+    if ( GetLocalProfileInt("Setup", "CameraScroll", iValue) )
     {
         m_bCameraScroll = iValue;
         m_camera->SetCameraScroll(m_bCameraScroll);
     }
 
-    if ( GetProfileInt("Setup", "CameraInvertX", iValue) )
+    if ( GetLocalProfileInt("Setup", "CameraInvertX", iValue) )
     {
         m_bCameraInvertX = iValue;
         m_camera->SetCameraInvertX(m_bCameraInvertX);
     }
 
-    if ( GetProfileInt("Setup", "CameraInvertY", iValue) )
+    if ( GetLocalProfileInt("Setup", "CameraInvertY", iValue) )
     {
         m_bCameraInvertY = iValue;
         m_camera->SetCameraInvertY(m_bCameraInvertY);
     }
 
-    if ( GetProfileInt("Setup", "InterfaceEffect", iValue) )
+    if ( GetLocalProfileInt("Setup", "InterfaceEffect", iValue) )
     {
         m_bEffect = iValue;
     }
 
-    if ( GetProfileInt("Setup", "GroundShadow", iValue) )
+    if ( GetLocalProfileInt("Setup", "GroundShadow", iValue) )
     {
         m_engine->SetShadow(iValue);
     }
 
-    if ( GetProfileInt("Setup", "GroundSpot", iValue) )
+    if ( GetLocalProfileInt("Setup", "GroundSpot", iValue) )
     {
         m_engine->SetGroundSpot(iValue);
     }
 
-    if ( GetProfileInt("Setup", "ObjectDirty", iValue) )
+    if ( GetLocalProfileInt("Setup", "ObjectDirty", iValue) )
     {
         m_engine->SetDirty(iValue);
     }
 
-    if ( GetProfileInt("Setup", "FogMode", iValue) )
+    if ( GetLocalProfileInt("Setup", "FogMode", iValue) )
     {
         m_engine->SetFog(iValue);
         m_camera->SetOverBaseColor(RetColor(RetColor(0.0f)));
     }
 
-    if ( GetProfileInt("Setup", "LensMode", iValue) )
+    if ( GetLocalProfileInt("Setup", "LensMode", iValue) )
     {
         m_engine->SetLensMode(iValue);
     }
 
-    if ( GetProfileInt("Setup", "SkyMode", iValue) )
+    if ( GetLocalProfileInt("Setup", "SkyMode", iValue) )
     {
         m_engine->SetSkyMode(iValue);
     }
 
-    if ( GetProfileInt("Setup", "PlanetMode", iValue) )
+    if ( GetLocalProfileInt("Setup", "PlanetMode", iValue) )
     {
         m_engine->SetPlanetMode(iValue);
     }
 
-    if ( GetProfileInt("Setup", "LightMode", iValue) )
+    if ( GetLocalProfileInt("Setup", "LightMode", iValue) )
     {
         m_engine->SetLightMode(iValue);
     }
 
-    if ( GetProfileInt("Setup", "UseJoystick", iValue) )
+    if ( GetLocalProfileInt("Setup", "UseJoystick", iValue) )
     {
         m_engine->SetJoystick(iValue);
     }
 
-    if ( GetProfileFloat("Setup", "ParticuleDensity", fValue) )
+    if ( GetLocalProfileFloat("Setup", "ParticuleDensity", fValue) )
     {
         m_engine->SetParticuleDensity(fValue);
     }
 
-    if ( GetProfileFloat("Setup", "ClippingDistance", fValue) )
+    if ( GetLocalProfileFloat("Setup", "ClippingDistance", fValue) )
     {
         m_engine->SetClippingDistance(fValue);
     }
 
-    if ( GetProfileFloat("Setup", "ObjectDetail", fValue) )
+    if ( GetLocalProfileFloat("Setup", "ObjectDetail", fValue) )
     {
         m_engine->SetObjectDetail(fValue);
     }
 
-    if ( GetProfileFloat("Setup", "GadgetQuantity", fValue) )
+    if ( GetLocalProfileFloat("Setup", "GadgetQuantity", fValue) )
     {
         m_engine->SetGadgetQuantity(fValue);
     }
 
-    if ( GetProfileInt("Setup", "TextureQuality", iValue) )
+    if ( GetLocalProfileInt("Setup", "TextureQuality", iValue) )
     {
         m_engine->SetTextureQuality(iValue);
     }
 
-    if ( GetProfileInt("Setup", "AudioVolume", iValue) )
+    if ( GetLocalProfileInt("Setup", "AudioVolume", iValue) )
     {
         m_sound->SetAudioVolume(iValue);
     }
 
-    if ( GetProfileInt("Setup", "MidiVolume", iValue) )
+    if ( GetLocalProfileInt("Setup", "MidiVolume", iValue) )
     {
         m_sound->SetMidiVolume(iValue);
     }
 
-    if ( GetProfileInt("Setup", "EditIndentMode", iValue) )
+    if ( GetLocalProfileInt("Setup", "EditIndentMode", iValue) )
     {
         m_engine->SetEditIndentMode(iValue);
     }
 
-    if ( GetProfileInt("Setup", "EditIndentValue", iValue) )
+    if ( GetLocalProfileInt("Setup", "EditIndentValue", iValue) )
     {
         m_engine->SetEditIndentValue(iValue);
     }
 
-    if ( GetProfileString("Setup", "KeyMap", key, 500) )
+    if ( GetLocalProfileString("Setup", "KeyMap", key, 500) )
     {
         p = key;
         for ( i=0 ; i<100 ; i++ )
@@ -5868,19 +5868,19 @@ void CMainDialog::SetupRecall()
 #if _NET
     if ( m_accessEnable )
     {
-        if ( GetProfileInt("Setup", "AccessMission", iValue) )
+        if ( GetLocalProfileInt("Setup", "AccessMission", iValue) )
         {
             m_accessMission = iValue;
         }
 
-        if ( GetProfileInt("Setup", "AccessUser", iValue) )
+        if ( GetLocalProfileInt("Setup", "AccessUser", iValue) )
         {
             m_accessUser = iValue;
         }
     }
 #endif
 
-    if ( GetProfileInt("Setup", "DeleteGamer", iValue) )
+    if ( GetLocalProfileInt("Setup", "DeleteGamer", iValue) )
     {
         m_bDeleteGamer = iValue;
     }
