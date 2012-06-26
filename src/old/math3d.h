@@ -25,24 +25,24 @@
 
 
 // TODO
-void			MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
+void            MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
 
 // TODO
-void			SmoothObject( D3DVERTEX2* pVertices, int nb );
+void            SmoothObject( D3DVERTEX2* pVertices, int nb );
 
 // TODO
-D3DCOLOR		RetColor(float intensity);
+D3DCOLOR        RetColor(float intensity);
 
 // TODO
-D3DCOLOR		RetColor(D3DCOLORVALUE intensity);
+D3DCOLOR        RetColor(D3DCOLORVALUE intensity);
 
 // TODO
 D3DCOLORVALUE RetColor(D3DCOLOR intensity);
 
 // TODO
-void			RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest);
+void            RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest);
 
 // TODO
-void			HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest);
+void            HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest);
 
 

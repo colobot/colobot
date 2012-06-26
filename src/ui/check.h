@@ -29,14 +29,14 @@ class CD3DEngine;
 class CCheck : public CControl
 {
 public:
-	CCheck(CInstanceManager* iMan);
-	virtual ~CCheck();
+    CCheck(CInstanceManager* iMan);
+    virtual ~CCheck();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
 protected:
 

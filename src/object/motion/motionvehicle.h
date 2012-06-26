@@ -26,44 +26,44 @@
 class CMotionVehicle : public CMotion
 {
 public:
-	CMotionVehicle(CInstanceManager* iMan, CObject* object);
-	~CMotionVehicle();
+    CMotionVehicle(CInstanceManager* iMan, CObject* object);
+    ~CMotionVehicle();
 
-	void		DeleteObject(bool bAll=false);
-	bool		Create(Math::Vector pos, float angle, ObjectType type, float power);
-	bool		EventProcess(const Event &event);
+    void        DeleteObject(bool bAll=false);
+    bool        Create(Math::Vector pos, float angle, ObjectType type, float power);
+    bool        EventProcess(const Event &event);
 
-	bool		RetTraceDown();
-	void		SetTraceDown(bool bDown);
-	int			RetTraceColor();
-	void		SetTraceColor(int color);
-	float		RetTraceWidth();
-	void		SetTraceWidth(float width);
-
-protected:
-	void		CreatePhysics(ObjectType type);
-	bool		EventFrame(const Event &event);
-	bool		EventFrameFly(const Event &event);
-	bool		EventFrameInsect(const Event &event);
-	bool		EventFrameCanoni(const Event &event);
-	void		UpdateTrackMapping(float left, float right, ObjectType type);
+    bool        RetTraceDown();
+    void        SetTraceDown(bool bDown);
+    int         RetTraceColor();
+    void        SetTraceColor(int color);
+    float       RetTraceWidth();
+    void        SetTraceWidth(float width);
 
 protected:
-	float		m_wheelTurn[4];
-	float		m_flyPaw[3];
-	float		m_posTrackLeft;
-	float		m_posTrackRight;
-	int			m_partiReactor;
-	float		m_armTimeAbs;
-	float		m_armMember;
-	float		m_canonTime;
-	float		m_lastTimeCanon;
-	Math::Vector	m_wheelLastPos;
-	Math::Vector	m_wheelLastAngle;
-	Math::Vector	m_posKey;
-	bool		m_bFlyFix;
-	bool		m_bTraceDown;
-	int			m_traceColor;
-	float		m_traceWidth;
+    void        CreatePhysics(ObjectType type);
+    bool        EventFrame(const Event &event);
+    bool        EventFrameFly(const Event &event);
+    bool        EventFrameInsect(const Event &event);
+    bool        EventFrameCanoni(const Event &event);
+    void        UpdateTrackMapping(float left, float right, ObjectType type);
+
+protected:
+    float       m_wheelTurn[4];
+    float       m_flyPaw[3];
+    float       m_posTrackLeft;
+    float       m_posTrackRight;
+    int         m_partiReactor;
+    float       m_armTimeAbs;
+    float       m_armMember;
+    float       m_canonTime;
+    float       m_lastTimeCanon;
+    Math::Vector    m_wheelLastPos;
+    Math::Vector    m_wheelLastAngle;
+    Math::Vector    m_posKey;
+    bool        m_bFlyFix;
+    bool        m_bTraceDown;
+    int         m_traceColor;
+    float       m_traceWidth;
 };
 

@@ -29,14 +29,14 @@ class CD3DEngine;
 class CLabel : public CControl
 {
 public:
-	CLabel(CInstanceManager* iMan);
-	virtual ~CLabel();
+    CLabel(CInstanceManager* iMan);
+    virtual ~CLabel();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
 protected:
 

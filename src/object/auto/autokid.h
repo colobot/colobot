@@ -26,22 +26,22 @@
 class CAutoKid : public CAuto
 {
 public:
-	CAutoKid(CInstanceManager* iMan, CObject* object);
-	~CAutoKid();
+    CAutoKid(CInstanceManager* iMan, CObject* object);
+    ~CAutoKid();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
-
-protected:
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
 protected:
-	float		m_speed;
-	float		m_progress;
-	float		m_lastParticule;
-	int			m_soundChannel;
-	bool		m_bSilent;
+
+protected:
+    float       m_speed;
+    float       m_progress;
+    float       m_lastParticule;
+    int         m_soundChannel;
+    bool        m_bSilent;
 };
 

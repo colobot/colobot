@@ -30,24 +30,24 @@
 
 
 
-const float SEARCH_TIME = 30.0f;		// duration of a research
+const float SEARCH_TIME = 30.0f;        // duration of a research
 
 
 
 // Object's constructor.
 
 CAutoResearch::CAutoResearch(CInstanceManager* iMan, CObject* object)
-							 : CAuto(iMan, object)
+                             : CAuto(iMan, object)
 {
-	int		i;
+    int     i;
 
-	for ( i=0 ; i<6 ; i++ )
-	{
-		m_partiStop[i] = -1;
-	}
-	m_channelSound = -1;
+    for ( i=0 ; i<6 ; i++ )
+    {
+        m_partiStop[i] = -1;
+    }
+    m_channelSound = -1;
 
-	Init();
+    Init();
 }
 
 // Object's destructor.
@@ -61,15 +61,15 @@ CAutoResearch::~CAutoResearch()
 
 void CAutoResearch::DeleteObject(bool bAll)
 {
-	if ( m_channelSound != -1 )
-	{
-		m_sound->FlushEnvelope(m_channelSound);
-		m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f, 1.0f, SOPER_STOP);
-		m_channelSound = -1;
-	}
+    if ( m_channelSound != -1 )
+    {
+        m_sound->FlushEnvelope(m_channelSound);
+        m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f, 1.0f, SOPER_STOP);
+        m_channelSound = -1;
+    }
 
-	FireStopUpdate(0.0f, false);
-	CAuto::DeleteObject(bAll);
+    FireStopUpdate(0.0f, false);
+    CAuto::DeleteObject(bAll);
 }
 
 
@@ -77,14 +77,14 @@ void CAutoResearch::DeleteObject(bool bAll)
 
 void CAutoResearch::Init()
 {
-	m_phase    = ALP_WAIT;
-	m_progress = 0.0f;
-	m_speed    = 1.0f/1.0f;
+    m_phase    = ALP_WAIT;
+    m_progress = 0.0f;
+    m_speed    = 1.0f/1.0f;
 
-	m_time = 0.0f;
-	m_timeVirus = 0.0f;
-	m_lastUpdateTime = 0.0f;
-	m_lastParticule = 0.0f;
+    m_time = 0.0f;
+    m_timeVirus = 0.0f;
+    m_lastUpdateTime = 0.0f;
+    m_lastParticule = 0.0f;
 }
 
 
@@ -92,173 +92,173 @@ void CAutoResearch::Init()
 
 bool CAutoResearch::EventProcess(const Event &event)
 {
-	CObject*	power;
-	Math::Vector	pos, speed;
-	Error		message;
-	Math::Point		dim;
-	float		angle, time;
+    CObject*    power;
+    Math::Vector    pos, speed;
+    Error       message;
+    Math::Point     dim;
+    float       angle, time;
 
-	CAuto::EventProcess(event);
+    CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return true;
+    if ( m_engine->RetPause() )  return true;
 
-	if ( event.event == EVENT_UPDINTERFACE )
-	{
-		if ( m_object->RetSelect() )  CreateInterface(true);
-	}
+    if ( event.event == EVENT_UPDINTERFACE )
+    {
+        if ( m_object->RetSelect() )  CreateInterface(true);
+    }
 
-	if ( m_object->RetSelect() &&  // center selected?
-		 (event.event == EVENT_OBJECT_RTANK   ||
-		  event.event == EVENT_OBJECT_RFLY    ||
-		  event.event == EVENT_OBJECT_RTHUMP  ||
-		  event.event == EVENT_OBJECT_RCANON  ||
-		  event.event == EVENT_OBJECT_RTOWER  ||
-		  event.event == EVENT_OBJECT_RPHAZER ||
-		  event.event == EVENT_OBJECT_RSHIELD ||
-		  event.event == EVENT_OBJECT_RATOMIC ) )
-	{
-		if ( m_phase != ALP_WAIT )
-		{
-			return false;
-		}
+    if ( m_object->RetSelect() &&  // center selected?
+         (event.event == EVENT_OBJECT_RTANK   ||
+          event.event == EVENT_OBJECT_RFLY    ||
+          event.event == EVENT_OBJECT_RTHUMP  ||
+          event.event == EVENT_OBJECT_RCANON  ||
+          event.event == EVENT_OBJECT_RTOWER  ||
+          event.event == EVENT_OBJECT_RPHAZER ||
+          event.event == EVENT_OBJECT_RSHIELD ||
+          event.event == EVENT_OBJECT_RATOMIC ) )
+    {
+        if ( m_phase != ALP_WAIT )
+        {
+            return false;
+        }
 
-		m_research = event.event;
+        m_research = event.event;
 
-		if ( TestResearch(m_research) )
-		{
-			m_displayText->DisplayError(ERR_RESEARCH_ALREADY, m_object);
-			return false;
-		}
+        if ( TestResearch(m_research) )
+        {
+            m_displayText->DisplayError(ERR_RESEARCH_ALREADY, m_object);
+            return false;
+        }
 
-		power = m_object->RetPower();
-		if ( power == 0 )
-		{
-			m_displayText->DisplayError(ERR_RESEARCH_POWER, m_object);
-			return false;
-		}
-		if ( power->RetCapacity() > 1.0f )
-		{
-			m_displayText->DisplayError(ERR_RESEARCH_TYPE, m_object);
-			return false;
-		}
-		if ( power->RetEnergy() < 1.0f )
-		{
-			m_displayText->DisplayError(ERR_RESEARCH_ENERGY, m_object);
-			return false;
-		}
+        power = m_object->RetPower();
+        if ( power == 0 )
+        {
+            m_displayText->DisplayError(ERR_RESEARCH_POWER, m_object);
+            return false;
+        }
+        if ( power->RetCapacity() > 1.0f )
+        {
+            m_displayText->DisplayError(ERR_RESEARCH_TYPE, m_object);
+            return false;
+        }
+        if ( power->RetEnergy() < 1.0f )
+        {
+            m_displayText->DisplayError(ERR_RESEARCH_ENERGY, m_object);
+            return false;
+        }
 
-		time = SEARCH_TIME;
-		if ( event.event == EVENT_OBJECT_RTANK   )  time *= 0.3f;
-		if ( event.event == EVENT_OBJECT_RFLY    )  time *= 0.3f;
-		if ( event.event == EVENT_OBJECT_RATOMIC )  time *= 2.0f;
+        time = SEARCH_TIME;
+        if ( event.event == EVENT_OBJECT_RTANK   )  time *= 0.3f;
+        if ( event.event == EVENT_OBJECT_RFLY    )  time *= 0.3f;
+        if ( event.event == EVENT_OBJECT_RATOMIC )  time *= 2.0f;
 
-		SetBusy(true);
-		InitProgressTotal(time);
-		UpdateInterface();
+        SetBusy(true);
+        InitProgressTotal(time);
+        UpdateInterface();
 
-		m_channelSound = m_sound->Play(SOUND_RESEARCH, m_object->RetPosition(0), 0.0f, 1.0f, true);
-		m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,      2.0f, SOPER_CONTINUE);
-		m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, time-4.0f, SOPER_CONTINUE);
-		m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,      2.0f, SOPER_STOP);
+        m_channelSound = m_sound->Play(SOUND_RESEARCH, m_object->RetPosition(0), 0.0f, 1.0f, true);
+        m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,      2.0f, SOPER_CONTINUE);
+        m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, time-4.0f, SOPER_CONTINUE);
+        m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,      2.0f, SOPER_STOP);
 
-		m_phase    = ALP_SEARCH;
-		m_progress = 0.0f;
-		m_speed    = 1.0f/time;
-		return true;
-	}
+        m_phase    = ALP_SEARCH;
+        m_progress = 0.0f;
+        m_speed    = 1.0f/time;
+        return true;
+    }
 
-	if ( event.event != EVENT_FRAME )  return true;
+    if ( event.event != EVENT_FRAME )  return true;
 
-	m_progress += event.rTime*m_speed;
-	m_timeVirus -= event.rTime;
+    m_progress += event.rTime*m_speed;
+    m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminated by a virus?
-	{
-		if ( m_timeVirus <= 0.0f )
-		{
-			m_timeVirus = 0.1f+Math::Rand()*0.3f;
-		}
-		return true;
-	}
+    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    {
+        if ( m_timeVirus <= 0.0f )
+        {
+            m_timeVirus = 0.1f+Math::Rand()*0.3f;
+        }
+        return true;
+    }
 
-	UpdateInterface(event.rTime);
-	EventProgress(event.rTime);
+    UpdateInterface(event.rTime);
+    EventProgress(event.rTime);
 
-	angle = m_time*0.1f;
-	m_object->SetAngleY(1, angle);  // rotates the antenna
+    angle = m_time*0.1f;
+    m_object->SetAngleY(1, angle);  // rotates the antenna
 
-	angle = (30.0f+sinf(m_time*0.3f)*20.0f)*Math::PI/180.0f;
-	m_object->SetAngleZ(2, angle);  // directs the antenna
+    angle = (30.0f+sinf(m_time*0.3f)*20.0f)*Math::PI/180.0f;
+    m_object->SetAngleZ(2, angle);  // directs the antenna
 
-	if ( m_phase == ALP_WAIT )
-	{
-		FireStopUpdate(m_progress, false);  // extinguished
-		return true;
-	}
+    if ( m_phase == ALP_WAIT )
+    {
+        FireStopUpdate(m_progress, false);  // extinguished
+        return true;
+    }
 
-	if ( m_phase == ALP_SEARCH )
-	{
-		FireStopUpdate(m_progress, true);  // flashes
-		if ( m_progress < 1.0f )
-		{
-			power = m_object->RetPower();
-			if ( power == 0 )  // more battery?
-			{
-				SetBusy(false);
-				UpdateInterface();
+    if ( m_phase == ALP_SEARCH )
+    {
+        FireStopUpdate(m_progress, true);  // flashes
+        if ( m_progress < 1.0f )
+        {
+            power = m_object->RetPower();
+            if ( power == 0 )  // more battery?
+            {
+                SetBusy(false);
+                UpdateInterface();
 
-				m_phase    = ALP_WAIT;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/1.0f;
-				return true;
-			}
-			power->SetEnergy(1.0f-m_progress);
+                m_phase    = ALP_WAIT;
+                m_progress = 0.0f;
+                m_speed    = 1.0f/1.0f;
+                return true;
+            }
+            power->SetEnergy(1.0f-m_progress);
 
-			if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
-			{
-				m_lastParticule = m_time;
+            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            {
+                m_lastParticule = m_time;
 
-				pos = m_object->RetPosition(0);
-				pos.x += (Math::Rand()-0.5f)*6.0f;
-				pos.z += (Math::Rand()-0.5f)*6.0f;
-				pos.y += 11.0f;
-				speed.x = (Math::Rand()-0.5f)*2.0f;
-				speed.z = (Math::Rand()-0.5f)*2.0f;
-				speed.y = Math::Rand()*20.0f;
-				dim.x = Math::Rand()*1.0f+1.0f;
-				dim.y = dim.x;
-				m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR);
-			}
-		}
-		else
-		{
-			SetResearch(m_research);  // research done
-			m_displayText->DisplayError(INFO_RESEARCH, m_object);
+                pos = m_object->RetPosition(0);
+                pos.x += (Math::Rand()-0.5f)*6.0f;
+                pos.z += (Math::Rand()-0.5f)*6.0f;
+                pos.y += 11.0f;
+                speed.x = (Math::Rand()-0.5f)*2.0f;
+                speed.z = (Math::Rand()-0.5f)*2.0f;
+                speed.y = Math::Rand()*20.0f;
+                dim.x = Math::Rand()*1.0f+1.0f;
+                dim.y = dim.x;
+                m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR);
+            }
+        }
+        else
+        {
+            SetResearch(m_research);  // research done
+            m_displayText->DisplayError(INFO_RESEARCH, m_object);
 
-			message = ERR_OK;
-			if ( m_research == EVENT_OBJECT_RTANK   )  message = INFO_RESEARCHTANK;
-			if ( m_research == EVENT_OBJECT_RFLY    )  message = INFO_RESEARCHFLY;
-			if ( m_research == EVENT_OBJECT_RTHUMP  )  message = INFO_RESEARCHTHUMP;
-			if ( m_research == EVENT_OBJECT_RCANON  )  message = INFO_RESEARCHCANON;
-			if ( m_research == EVENT_OBJECT_RTOWER  )  message = INFO_RESEARCHTOWER;
-			if ( m_research == EVENT_OBJECT_RPHAZER )  message = INFO_RESEARCHPHAZER;
-			if ( m_research == EVENT_OBJECT_RSHIELD )  message = INFO_RESEARCHSHIELD;
-			if ( m_research == EVENT_OBJECT_RATOMIC )  message = INFO_RESEARCHATOMIC;
-			if ( message != ERR_OK )
-			{
-				m_displayText->DisplayError(message, m_object);
-			}
+            message = ERR_OK;
+            if ( m_research == EVENT_OBJECT_RTANK   )  message = INFO_RESEARCHTANK;
+            if ( m_research == EVENT_OBJECT_RFLY    )  message = INFO_RESEARCHFLY;
+            if ( m_research == EVENT_OBJECT_RTHUMP  )  message = INFO_RESEARCHTHUMP;
+            if ( m_research == EVENT_OBJECT_RCANON  )  message = INFO_RESEARCHCANON;
+            if ( m_research == EVENT_OBJECT_RTOWER  )  message = INFO_RESEARCHTOWER;
+            if ( m_research == EVENT_OBJECT_RPHAZER )  message = INFO_RESEARCHPHAZER;
+            if ( m_research == EVENT_OBJECT_RSHIELD )  message = INFO_RESEARCHSHIELD;
+            if ( m_research == EVENT_OBJECT_RATOMIC )  message = INFO_RESEARCHATOMIC;
+            if ( message != ERR_OK )
+            {
+                m_displayText->DisplayError(message, m_object);
+            }
 
-			SetBusy(false);
-			UpdateInterface();
+            SetBusy(false);
+            UpdateInterface();
 
-			m_phase    = ALP_WAIT;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.0f;
-		}
-	}
+            m_phase    = ALP_WAIT;
+            m_progress = 0.0f;
+            m_speed    = 1.0f/1.0f;
+        }
+    }
 
-	return true;
+    return true;
 }
 
 
@@ -266,33 +266,33 @@ bool CAutoResearch::EventProcess(const Event &event)
 
 Error CAutoResearch::RetError()
 {
-	CObject*	power;
+    CObject*    power;
 
-	if ( m_phase == ALP_SEARCH )
-	{
-		return ERR_OK;
-	}
+    if ( m_phase == ALP_SEARCH )
+    {
+        return ERR_OK;
+    }
 
-	if ( m_object->RetVirusMode() )
-	{
-		return ERR_BAT_VIRUS;
-	}
+    if ( m_object->RetVirusMode() )
+    {
+        return ERR_BAT_VIRUS;
+    }
 
-	power = m_object->RetPower();
-	if ( power == 0 )
-	{
-		return ERR_RESEARCH_POWER;
-	}
-	if ( power != 0 && power->RetCapacity() > 1.0f )
-	{
-		return ERR_RESEARCH_TYPE;
-	}
-	if ( power != 0 && power->RetEnergy() < 1.0f )
-	{
-		return ERR_RESEARCH_ENERGY;
-	}
+    power = m_object->RetPower();
+    if ( power == 0 )
+    {
+        return ERR_RESEARCH_POWER;
+    }
+    if ( power != 0 && power->RetCapacity() > 1.0f )
+    {
+        return ERR_RESEARCH_TYPE;
+    }
+    if ( power != 0 && power->RetEnergy() < 1.0f )
+    {
+        return ERR_RESEARCH_ENERGY;
+    }
 
-	return ERR_OK;
+    return ERR_OK;
 }
 
 
@@ -300,112 +300,112 @@ Error CAutoResearch::RetError()
 
 bool CAutoResearch::CreateInterface(bool bSelect)
 {
-	CWindow*	pw;
-	Math::Point		pos, dim, ddim;
-	float		ox, oy, sx, sy;
+    CWindow*    pw;
+    Math::Point     pos, dim, ddim;
+    float       ox, oy, sx, sy;
 
-	CAuto::CreateInterface(bSelect);
+    CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return true;
+    if ( !bSelect )  return true;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return false;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return false;
 
-	dim.x = 33.0f/640.0f;
-	dim.y = 33.0f/480.0f;
-	ox = 3.0f/640.0f;
-	oy = 3.0f/480.0f;
-	sx = 33.0f/640.0f;
-	sy = 33.0f/480.0f;
+    dim.x = 33.0f/640.0f;
+    dim.y = 33.0f/480.0f;
+    ox = 3.0f/640.0f;
+    oy = 3.0f/480.0f;
+    sx = 33.0f/640.0f;
+    sy = 33.0f/480.0f;
 
-	pos.x = ox+sx*7.0f;
-	pos.y = oy+sy*1.0f;
-	pw->CreateButton(pos, dim, 64+0, EVENT_OBJECT_RTANK);
+    pos.x = ox+sx*7.0f;
+    pos.y = oy+sy*1.0f;
+    pw->CreateButton(pos, dim, 64+0, EVENT_OBJECT_RTANK);
 
-	pos.x = ox+sx*8.0f;
-	pos.y = oy+sy*1.0f;
-	pw->CreateButton(pos, dim, 64+1, EVENT_OBJECT_RFLY);
+    pos.x = ox+sx*8.0f;
+    pos.y = oy+sy*1.0f;
+    pw->CreateButton(pos, dim, 64+1, EVENT_OBJECT_RFLY);
 
-	pos.x = ox+sx*9.0f;
-	pos.y = oy+sy*1.0f;
-	pw->CreateButton(pos, dim, 64+3, EVENT_OBJECT_RCANON);
+    pos.x = ox+sx*9.0f;
+    pos.y = oy+sy*1.0f;
+    pw->CreateButton(pos, dim, 64+3, EVENT_OBJECT_RCANON);
 
-	pos.x = ox+sx*10.0f;
-	pos.y = oy+sy*1.0f;
-	pw->CreateButton(pos, dim, 64+4, EVENT_OBJECT_RTOWER);
+    pos.x = ox+sx*10.0f;
+    pos.y = oy+sy*1.0f;
+    pw->CreateButton(pos, dim, 64+4, EVENT_OBJECT_RTOWER);
 
-	pos.x = ox+sx*7.0f;
-	pos.y = oy+sy*0.0f;
-	pw->CreateButton(pos, dim, 64+7, EVENT_OBJECT_RATOMIC);
+    pos.x = ox+sx*7.0f;
+    pos.y = oy+sy*0.0f;
+    pw->CreateButton(pos, dim, 64+7, EVENT_OBJECT_RATOMIC);
 
-	pos.x = ox+sx*8.0f;
-	pos.y = oy+sy*0.0f;
-	pw->CreateButton(pos, dim, 64+2, EVENT_OBJECT_RTHUMP);
+    pos.x = ox+sx*8.0f;
+    pos.y = oy+sy*0.0f;
+    pw->CreateButton(pos, dim, 64+2, EVENT_OBJECT_RTHUMP);
 
-	pos.x = ox+sx*9.0f;
-	pos.y = oy+sy*0.0f;
-	pw->CreateButton(pos, dim, 64+6, EVENT_OBJECT_RSHIELD);
+    pos.x = ox+sx*9.0f;
+    pos.y = oy+sy*0.0f;
+    pw->CreateButton(pos, dim, 64+6, EVENT_OBJECT_RSHIELD);
 
-	pos.x = ox+sx*10.0f;
-	pos.y = oy+sy*0.0f;
-	pw->CreateButton(pos, dim, 64+5, EVENT_OBJECT_RPHAZER);
+    pos.x = ox+sx*10.0f;
+    pos.y = oy+sy*0.0f;
+    pw->CreateButton(pos, dim, 64+5, EVENT_OBJECT_RPHAZER);
 
-	pos.x = ox+sx*14.5f;
-	pos.y = oy+sy*0;
-	ddim.x = 14.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GENERGY);
+    pos.x = ox+sx*14.5f;
+    pos.y = oy+sy*0;
+    ddim.x = 14.0f/640.0f;
+    ddim.y = 66.0f/480.0f;
+    pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GENERGY);
 
-	pos.x = ox+sx*0.0f;
-	pos.y = oy+sy*0;
-	ddim.x = 66.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGroup(pos, ddim, 102, EVENT_OBJECT_TYPE);
+    pos.x = ox+sx*0.0f;
+    pos.y = oy+sy*0;
+    ddim.x = 66.0f/640.0f;
+    ddim.y = 66.0f/480.0f;
+    pw->CreateGroup(pos, ddim, 102, EVENT_OBJECT_TYPE);
 
-	UpdateInterface();
+    UpdateInterface();
 
-	return true;
+    return true;
 }
 
 // Updates the status of all interface buttons.
 
 void CAutoResearch::UpdateInterface()
 {
-	CWindow*	pw;
+    CWindow*    pw;
 
-	if ( !m_object->RetSelect() )  return;
+    if ( !m_object->RetSelect() )  return;
 
-	CAuto::UpdateInterface();
+    CAuto::UpdateInterface();
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return;
 
-	DeadInterface(pw, EVENT_OBJECT_RTANK,   g_researchEnable&RESEARCH_TANK);
-	DeadInterface(pw, EVENT_OBJECT_RFLY,    g_researchEnable&RESEARCH_FLY);
-	DeadInterface(pw, EVENT_OBJECT_RTHUMP,  g_researchEnable&RESEARCH_THUMP);
-	DeadInterface(pw, EVENT_OBJECT_RCANON,  g_researchEnable&RESEARCH_CANON);
-	DeadInterface(pw, EVENT_OBJECT_RTOWER,  g_researchEnable&RESEARCH_TOWER);
-	DeadInterface(pw, EVENT_OBJECT_RPHAZER, g_researchEnable&RESEARCH_PHAZER);
-	DeadInterface(pw, EVENT_OBJECT_RSHIELD, g_researchEnable&RESEARCH_SHIELD);
-	DeadInterface(pw, EVENT_OBJECT_RATOMIC, g_researchEnable&RESEARCH_ATOMIC);
-	
-	OkayButton(pw, EVENT_OBJECT_RTANK);
-	OkayButton(pw, EVENT_OBJECT_RFLY);
-	OkayButton(pw, EVENT_OBJECT_RTHUMP);
-	OkayButton(pw, EVENT_OBJECT_RCANON);
-	OkayButton(pw, EVENT_OBJECT_RTOWER);
-	OkayButton(pw, EVENT_OBJECT_RPHAZER);
-	OkayButton(pw, EVENT_OBJECT_RSHIELD);
-	OkayButton(pw, EVENT_OBJECT_RATOMIC);
+    DeadInterface(pw, EVENT_OBJECT_RTANK,   g_researchEnable&RESEARCH_TANK);
+    DeadInterface(pw, EVENT_OBJECT_RFLY,    g_researchEnable&RESEARCH_FLY);
+    DeadInterface(pw, EVENT_OBJECT_RTHUMP,  g_researchEnable&RESEARCH_THUMP);
+    DeadInterface(pw, EVENT_OBJECT_RCANON,  g_researchEnable&RESEARCH_CANON);
+    DeadInterface(pw, EVENT_OBJECT_RTOWER,  g_researchEnable&RESEARCH_TOWER);
+    DeadInterface(pw, EVENT_OBJECT_RPHAZER, g_researchEnable&RESEARCH_PHAZER);
+    DeadInterface(pw, EVENT_OBJECT_RSHIELD, g_researchEnable&RESEARCH_SHIELD);
+    DeadInterface(pw, EVENT_OBJECT_RATOMIC, g_researchEnable&RESEARCH_ATOMIC);
+    
+    OkayButton(pw, EVENT_OBJECT_RTANK);
+    OkayButton(pw, EVENT_OBJECT_RFLY);
+    OkayButton(pw, EVENT_OBJECT_RTHUMP);
+    OkayButton(pw, EVENT_OBJECT_RCANON);
+    OkayButton(pw, EVENT_OBJECT_RTOWER);
+    OkayButton(pw, EVENT_OBJECT_RPHAZER);
+    OkayButton(pw, EVENT_OBJECT_RSHIELD);
+    OkayButton(pw, EVENT_OBJECT_RATOMIC);
 
-	VisibleInterface(pw, EVENT_OBJECT_RTANK,   !m_bBusy);
-	VisibleInterface(pw, EVENT_OBJECT_RFLY,    !m_bBusy);
-	VisibleInterface(pw, EVENT_OBJECT_RTHUMP,  !m_bBusy);
-	VisibleInterface(pw, EVENT_OBJECT_RCANON,  !m_bBusy);
-	VisibleInterface(pw, EVENT_OBJECT_RTOWER,  !m_bBusy);
-	VisibleInterface(pw, EVENT_OBJECT_RPHAZER, !m_bBusy);
-	VisibleInterface(pw, EVENT_OBJECT_RSHIELD, !m_bBusy);
-	VisibleInterface(pw, EVENT_OBJECT_RATOMIC, !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RTANK,   !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RFLY,    !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RTHUMP,  !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RCANON,  !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RTOWER,  !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RPHAZER, !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RSHIELD, !m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_RATOMIC, !m_bBusy);
 }
 
 // Updates the state of all buttons on the interface,
@@ -413,44 +413,44 @@ void CAutoResearch::UpdateInterface()
 
 void CAutoResearch::UpdateInterface(float rTime)
 {
-	CWindow*	pw;
-	CGauge*		pg;
-	CObject*	power;
-	float		energy;
+    CWindow*    pw;
+    CGauge*     pg;
+    CObject*    power;
+    float       energy;
 
-	CAuto::UpdateInterface(rTime);
+    CAuto::UpdateInterface(rTime);
 
-	if ( m_time < m_lastUpdateTime+0.1f )  return;
-	m_lastUpdateTime = m_time;
+    if ( m_time < m_lastUpdateTime+0.1f )  return;
+    m_lastUpdateTime = m_time;
 
-	if ( !m_object->RetSelect() )  return;
+    if ( !m_object->RetSelect() )  return;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return;
 
-	pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
-	if ( pg != 0 )
-	{
-		energy = 0.0f;
-		power = m_object->RetPower();
-		if ( power != 0 )
-		{
-			energy = power->RetEnergy();
-		}
-		pg->SetLevel(energy);
-	}
+    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
+    if ( pg != 0 )
+    {
+        energy = 0.0f;
+        power = m_object->RetPower();
+        if ( power != 0 )
+        {
+            energy = power->RetEnergy();
+        }
+        pg->SetLevel(energy);
+    }
 }
 
 // Research shows already performed button.
 
 void CAutoResearch::OkayButton(CWindow *pw, EventMsg event)
 {
-	CControl*	control;
-		
-	control = pw->SearchControl(event);
-	if ( control == 0 )  return;
+    CControl*   control;
+        
+    control = pw->SearchControl(event);
+    if ( control == 0 )  return;
 
-	control->SetState(STATE_OKAY, TestResearch(event));
+    control->SetState(STATE_OKAY, TestResearch(event));
 }
 
 
@@ -458,38 +458,38 @@ void CAutoResearch::OkayButton(CWindow *pw, EventMsg event)
 
 bool CAutoResearch::TestResearch(EventMsg event)
 {
-	if ( event == EVENT_OBJECT_RTANK   )  return (g_researchDone & RESEARCH_TANK  );
-	if ( event == EVENT_OBJECT_RFLY    )  return (g_researchDone & RESEARCH_FLY   );
-	if ( event == EVENT_OBJECT_RTHUMP  )  return (g_researchDone & RESEARCH_THUMP );
-	if ( event == EVENT_OBJECT_RCANON  )  return (g_researchDone & RESEARCH_CANON );
-	if ( event == EVENT_OBJECT_RTOWER  )  return (g_researchDone & RESEARCH_TOWER );
-	if ( event == EVENT_OBJECT_RPHAZER )  return (g_researchDone & RESEARCH_PHAZER  );
-	if ( event == EVENT_OBJECT_RSHIELD )  return (g_researchDone & RESEARCH_SHIELD);
-	if ( event == EVENT_OBJECT_RATOMIC )  return (g_researchDone & RESEARCH_ATOMIC);
+    if ( event == EVENT_OBJECT_RTANK   )  return (g_researchDone & RESEARCH_TANK  );
+    if ( event == EVENT_OBJECT_RFLY    )  return (g_researchDone & RESEARCH_FLY   );
+    if ( event == EVENT_OBJECT_RTHUMP  )  return (g_researchDone & RESEARCH_THUMP );
+    if ( event == EVENT_OBJECT_RCANON  )  return (g_researchDone & RESEARCH_CANON );
+    if ( event == EVENT_OBJECT_RTOWER  )  return (g_researchDone & RESEARCH_TOWER );
+    if ( event == EVENT_OBJECT_RPHAZER )  return (g_researchDone & RESEARCH_PHAZER  );
+    if ( event == EVENT_OBJECT_RSHIELD )  return (g_researchDone & RESEARCH_SHIELD);
+    if ( event == EVENT_OBJECT_RATOMIC )  return (g_researchDone & RESEARCH_ATOMIC);
 
-	return false;
+    return false;
 }
 
 // Indicates a search as made.
 
 void CAutoResearch::SetResearch(EventMsg event)
 {
-	Event	newEvent;
+    Event   newEvent;
 
-	if ( event == EVENT_OBJECT_RTANK   )  g_researchDone |= RESEARCH_TANK;
-	if ( event == EVENT_OBJECT_RFLY    )  g_researchDone |= RESEARCH_FLY;
-	if ( event == EVENT_OBJECT_RTHUMP  )  g_researchDone |= RESEARCH_THUMP;
-	if ( event == EVENT_OBJECT_RCANON  )  g_researchDone |= RESEARCH_CANON;
-	if ( event == EVENT_OBJECT_RTOWER  )  g_researchDone |= RESEARCH_TOWER;
-	if ( event == EVENT_OBJECT_RPHAZER )  g_researchDone |= RESEARCH_PHAZER;
-	if ( event == EVENT_OBJECT_RSHIELD )  g_researchDone |= RESEARCH_SHIELD;
-	if ( event == EVENT_OBJECT_RATOMIC )  g_researchDone |= RESEARCH_ATOMIC;
+    if ( event == EVENT_OBJECT_RTANK   )  g_researchDone |= RESEARCH_TANK;
+    if ( event == EVENT_OBJECT_RFLY    )  g_researchDone |= RESEARCH_FLY;
+    if ( event == EVENT_OBJECT_RTHUMP  )  g_researchDone |= RESEARCH_THUMP;
+    if ( event == EVENT_OBJECT_RCANON  )  g_researchDone |= RESEARCH_CANON;
+    if ( event == EVENT_OBJECT_RTOWER  )  g_researchDone |= RESEARCH_TOWER;
+    if ( event == EVENT_OBJECT_RPHAZER )  g_researchDone |= RESEARCH_PHAZER;
+    if ( event == EVENT_OBJECT_RSHIELD )  g_researchDone |= RESEARCH_SHIELD;
+    if ( event == EVENT_OBJECT_RATOMIC )  g_researchDone |= RESEARCH_ATOMIC;
 
-	m_main->WriteFreeParam();
+    m_main->WriteFreeParam();
 
-	m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
-	m_event->AddEvent(newEvent);
-	UpdateInterface();
+    m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
+    m_event->AddEvent(newEvent);
+    UpdateInterface();
 }
 
 
@@ -497,64 +497,64 @@ void CAutoResearch::SetResearch(EventMsg event)
 
 void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 {
-	Math::Matrix*	mat;
-	Math::Vector	pos, speed;
-	Math::Point		dim;
-	int			i;
+    Math::Matrix*   mat;
+    Math::Vector    pos, speed;
+    Math::Point     dim;
+    int         i;
 
-	static float listpos[12] =
-	{
-		 9.5f,	 0.0f,
-		 4.7f,	 8.2f,
-		-4.7f,	 8.2f,
-		-9.5f,	 0.0f,
-		-4.7f,	-8.2f,
-		 4.7f,	-8.2f,
-	};
+    static float listpos[12] =
+    {
+         9.5f,   0.0f,
+         4.7f,   8.2f,
+        -4.7f,   8.2f,
+        -9.5f,   0.0f,
+        -4.7f,  -8.2f,
+         4.7f,  -8.2f,
+    };
 
-	if ( !bLightOn )  // �teint ?
-	{
-		for ( i=0 ; i<6 ; i++ )
-		{
-			if ( m_partiStop[i] != -1 )
-			{
-				m_particule->DeleteParticule(m_partiStop[i]);
-				m_partiStop[i] = -1;
-			}
-		}
-		return;
-	}
+    if ( !bLightOn )  // �teint ?
+    {
+        for ( i=0 ; i<6 ; i++ )
+        {
+            if ( m_partiStop[i] != -1 )
+            {
+                m_particule->DeleteParticule(m_partiStop[i]);
+                m_partiStop[i] = -1;
+            }
+        }
+        return;
+    }
 
-	mat = m_object->RetWorldMatrix(0);
+    mat = m_object->RetWorldMatrix(0);
 
-	speed = Math::Vector(0.0f, 0.0f, 0.0f);
-	dim.x = 2.0f;
-	dim.y = dim.x;
+    speed = Math::Vector(0.0f, 0.0f, 0.0f);
+    dim.x = 2.0f;
+    dim.y = dim.x;
 
-	for ( i=0 ; i<6 ; i++ )
-	{
-		if ( Math::Mod(progress, 0.025f) < 0.005f )
-		{
-			if ( m_partiStop[i] != -1 )
-			{
-				m_particule->DeleteParticule(m_partiStop[i]);
-				m_partiStop[i] = -1;
-			}
-		}
-		else
-		{
-			if ( m_partiStop[i] == -1 )
-			{
-				pos.x = listpos[i*2+0];
-				pos.y = 11.5f;
-				pos.z = listpos[i*2+1];
-				pos = Math::Transform(*mat, pos);
-				m_partiStop[i] = m_particule->CreateParticule(pos, speed,
-															  dim, PARTISELY,
-															  1.0f, 0.0f, 0.0f);
-			}
-		}
-	}
+    for ( i=0 ; i<6 ; i++ )
+    {
+        if ( Math::Mod(progress, 0.025f) < 0.005f )
+        {
+            if ( m_partiStop[i] != -1 )
+            {
+                m_particule->DeleteParticule(m_partiStop[i]);
+                m_partiStop[i] = -1;
+            }
+        }
+        else
+        {
+            if ( m_partiStop[i] == -1 )
+            {
+                pos.x = listpos[i*2+0];
+                pos.y = 11.5f;
+                pos.z = listpos[i*2+1];
+                pos = Math::Transform(*mat, pos);
+                m_partiStop[i] = m_particule->CreateParticule(pos, speed,
+                                                              dim, PARTISELY,
+                                                              1.0f, 0.0f, 0.0f);
+            }
+        }
+    }
 }
 
 
@@ -562,47 +562,47 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
 
 bool CAutoResearch::Write(char *line)
 {
-	char	name[100];
+    char    name[100];
 
-	if ( m_phase == ALP_WAIT )  return false;
+    if ( m_phase == ALP_WAIT )  return false;
 
-	sprintf(name, " aExist=%d", 1);
-	strcat(line, name);
+    sprintf(name, " aExist=%d", 1);
+    strcat(line, name);
 
-	CAuto::Write(line);
+    CAuto::Write(line);
 
-	sprintf(name, " aPhase=%d", m_phase);
-	strcat(line, name);
+    sprintf(name, " aPhase=%d", m_phase);
+    strcat(line, name);
 
-	sprintf(name, " aProgress=%.2f", m_progress);
-	strcat(line, name);
+    sprintf(name, " aProgress=%.2f", m_progress);
+    strcat(line, name);
 
-	sprintf(name, " aSpeed=%.2f", m_speed);
-	strcat(line, name);
+    sprintf(name, " aSpeed=%.2f", m_speed);
+    strcat(line, name);
 
-	sprintf(name, " aResearch=%d", m_research);
-	strcat(line, name);
+    sprintf(name, " aResearch=%d", m_research);
+    strcat(line, name);
 
-	return true;
+    return true;
 }
 
 // Restores all parameters of the controller.
 
 bool CAutoResearch::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return false;
+    if ( OpInt(line, "aExist", 0) == 0 )  return false;
 
-	CAuto::Read(line);
+    CAuto::Read(line);
 
-	m_phase = (AutoResearchPhase)OpInt(line, "aPhase", ALP_WAIT);
-	m_progress = OpFloat(line, "aProgress", 0.0f);
-	m_speed = OpFloat(line, "aSpeed", 1.0f);
-	m_research = (EventMsg)OpInt(line, "aResearch", 0);
+    m_phase = (AutoResearchPhase)OpInt(line, "aPhase", ALP_WAIT);
+    m_progress = OpFloat(line, "aProgress", 0.0f);
+    m_speed = OpFloat(line, "aSpeed", 1.0f);
+    m_research = (EventMsg)OpInt(line, "aResearch", 0);
 
-	m_lastUpdateTime = 0.0f;
-	m_lastParticule = 0.0f;
-	
-	return true;
+    m_lastUpdateTime = 0.0f;
+    m_lastParticule = 0.0f;
+    
+    return true;
 }
 
 

@@ -27,24 +27,24 @@
 class CTaskAdvance : public CTask
 {
 public:
-	CTaskAdvance(CInstanceManager* iMan, CObject* object);
-	~CTaskAdvance();
+    CTaskAdvance(CInstanceManager* iMan, CObject* object);
+    ~CTaskAdvance();
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	Error	Start(float length);
-	Error	IsEnded();
-
-protected:
+    Error   Start(float length);
+    Error   IsEnded();
 
 protected:
-	float		m_totalLength;
-	float		m_advanceLength;
-	float		m_direction;
-	float		m_timeLimit;
-	Math::Vector	m_startPos;
-	float		m_lastDist;
-	float		m_fixTime;
-	bool		m_bError;
+
+protected:
+    float       m_totalLength;
+    float       m_advanceLength;
+    float       m_direction;
+    float       m_timeLimit;
+    Math::Vector    m_startPos;
+    float       m_lastDist;
+    float       m_fixTime;
+    bool        m_bError;
 };
 

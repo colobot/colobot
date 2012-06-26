@@ -25,46 +25,46 @@
 
 enum MotionTotoAction
 {
-	MT_ERROR	= 0,
-	MT_WARNING	= 1,
-	MT_INFO		= 2,
-	MT_MESSAGE	= 3
+    MT_ERROR    = 0,
+    MT_WARNING  = 1,
+    MT_INFO     = 2,
+    MT_MESSAGE  = 3
 };
 
 
 class CMotionToto : public CMotion
 {
 public:
-	CMotionToto(CInstanceManager* iMan, CObject* object);
-	~CMotionToto();
+    CMotionToto(CInstanceManager* iMan, CObject* object);
+    ~CMotionToto();
 
-	void	DeleteObject(bool bAll=false);
-	bool	Create(Math::Vector pos, float angle, ObjectType type, float power);
-	bool	EventProcess(const Event &event);
-	Error	SetAction(int action, float time=0.2f);
-	void	SetLinkType(ObjectType type);
+    void    DeleteObject(bool bAll=false);
+    bool    Create(Math::Vector pos, float angle, ObjectType type, float power);
+    bool    EventProcess(const Event &event);
+    Error   SetAction(int action, float time=0.2f);
+    void    SetLinkType(ObjectType type);
 
-	void	StartDisplayInfo();
-	void	StopDisplayInfo();
-	void	SetMousePos(Math::Point pos);
-
-protected:
-	bool	EventFrame(const Event &event);
+    void    StartDisplayInfo();
+    void    StopDisplayInfo();
+    void    SetMousePos(Math::Point pos);
 
 protected:
-	float		m_time;
-	float		m_lastMotorParticule;
-	bool		m_bDisplayInfo;
-	bool		m_bQuickPos;
-	bool		m_bStartAction;
-	float		m_speedAction;
-	float		m_clownRadius;
-	float		m_clownDelay;
-	float		m_clownTime;
-	float		m_blinkTime;
-	float		m_blinkProgress;
-	int			m_soundChannel;
-	ObjectType	m_type;
-	Math::Point		m_mousePos;
+    bool    EventFrame(const Event &event);
+
+protected:
+    float       m_time;
+    float       m_lastMotorParticule;
+    bool        m_bDisplayInfo;
+    bool        m_bQuickPos;
+    bool        m_bStartAction;
+    float       m_speedAction;
+    float       m_clownRadius;
+    float       m_clownDelay;
+    float       m_clownTime;
+    float       m_blinkTime;
+    float       m_blinkProgress;
+    int         m_soundChannel;
+    ObjectType  m_type;
+    Math::Point     m_mousePos;
 };
 

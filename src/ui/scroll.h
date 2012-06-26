@@ -33,49 +33,49 @@ const float SCROLL_WIDTH = (15.0f/640.0f);
 class CScroll : public CControl
 {
 public:
-	CScroll(CInstanceManager* iMan);
-	~CScroll();
+    CScroll(CInstanceManager* iMan);
+    ~CScroll();
 
-	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	void		SetPos(Math::Point pos);
-	void		SetDim(Math::Point dim);
+    void        SetPos(Math::Point pos);
+    void        SetDim(Math::Point dim);
 
-	bool		SetState(int state, bool bState);
-	bool		SetState(int state);
-	bool		ClearState(int state);
+    bool        SetState(int state, bool bState);
+    bool        SetState(int state);
+    bool        ClearState(int state);
 
-	bool		EventProcess(const Event &event);
-	void		Draw();
+    bool        EventProcess(const Event &event);
+    void        Draw();
 
-	void		SetVisibleValue(float value);
-	float		RetVisibleValue();
+    void        SetVisibleValue(float value);
+    float       RetVisibleValue();
 
-	void		SetVisibleRatio(float value);
-	float		RetVisibleRatio();
+    void        SetVisibleRatio(float value);
+    float       RetVisibleRatio();
 
-	void		SetArrowStep(float step);
-	float		RetArrowStep();
-
-protected:
-	void		MoveAdjust();
-	void		AdjustGlint();
-	void		DrawVertex(Math::Point pos, Math::Point dim, int icon);
+    void        SetArrowStep(float step);
+    float       RetArrowStep();
 
 protected:
-	CButton*	m_buttonUp;
-	CButton*	m_buttonDown;
+    void        MoveAdjust();
+    void        AdjustGlint();
+    void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
 
-	float		m_visibleValue;
-	float		m_visibleRatio;
-	float		m_step;
+protected:
+    CButton*    m_buttonUp;
+    CButton*    m_buttonDown;
 
-	bool		m_bCapture;
-	Math::Point		m_pressPos;
-	float		m_pressValue;
+    float       m_visibleValue;
+    float       m_visibleRatio;
+    float       m_step;
 
-	EventMsg	m_eventUp;
-	EventMsg	m_eventDown;
+    bool        m_bCapture;
+    Math::Point     m_pressPos;
+    float       m_pressValue;
+
+    EventMsg    m_eventUp;
+    EventMsg    m_eventDown;
 };
 
 

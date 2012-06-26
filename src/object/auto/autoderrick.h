@@ -25,11 +25,11 @@
 
 enum AutoDerrickPhase
 {
-	ADP_WAIT		= 1,
-	ADP_EXCAVATE		= 2,	// down the drill
-	ADP_ASCEND		= 3,	// up the drill
-	ADP_EXPORT		= 4,	// exports matter
-	ADP_ISFREE		= 5,	// expected material loss
+    ADP_WAIT        = 1,
+    ADP_EXCAVATE        = 2,    // down the drill
+    ADP_ASCEND      = 3,    // up the drill
+    ADP_EXPORT      = 4,    // exports matter
+    ADP_ISFREE      = 5,    // expected material loss
 };
 
 
@@ -37,35 +37,35 @@ enum AutoDerrickPhase
 class CAutoDerrick : public CAuto
 {
 public:
-	CAutoDerrick(CInstanceManager* iMan, CObject* object);
-	~CAutoDerrick();
+    CAutoDerrick(CInstanceManager* iMan, CObject* object);
+    ~CAutoDerrick();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	CObject*	SearchFret();
-	bool		SearchFree(Math::Vector pos);
-	void		CreateFret(Math::Vector pos, float angle, ObjectType type, float height);
-	bool		ExistKey();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoDerrickPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastParticule;
-	float				m_lastTrack;
-	Math::Vector			m_fretPos;
-	int					m_soundChannel;
-	bool				m_bSoundFall;
+    CObject*    SearchFret();
+    bool        SearchFree(Math::Vector pos);
+    void        CreateFret(Math::Vector pos, float angle, ObjectType type, float height);
+    bool        ExistKey();
+
+protected:
+    AutoDerrickPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastParticule;
+    float               m_lastTrack;
+    Math::Vector            m_fretPos;
+    int                 m_soundChannel;
+    bool                m_bSoundFall;
 };
 

@@ -25,10 +25,10 @@
 
 enum AutoInfoPhase
 {
-	AIP_WAIT		= 1,
-	AIP_EMETTE		= 2,
-	AIP_RECEIVE		= 3,
-	AIP_ERROR		= 4,
+    AIP_WAIT        = 1,
+    AIP_EMETTE      = 2,
+    AIP_RECEIVE     = 3,
+    AIP_ERROR       = 4,
 };
 
 
@@ -36,33 +36,33 @@ enum AutoInfoPhase
 class CAutoInfo : public CAuto
 {
 public:
-	CAutoInfo(CInstanceManager* iMan, CObject* object);
-	~CAutoInfo();
+    CAutoInfo(CInstanceManager* iMan, CObject* object);
+    ~CAutoInfo();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	void		Start(int param);
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    void        Start(int param);
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	void		UpdateInterface(float rTime);
-	void		UpdateList();
-	void		UpdateListVirus();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoInfoPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	Math::Vector		m_goal;
-	bool			m_bLastVirus;
+    void        UpdateInterface(float rTime);
+    void        UpdateList();
+    void        UpdateListVirus();
+
+protected:
+    AutoInfoPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    Math::Vector        m_goal;
+    bool            m_bLastVirus;
 };
 

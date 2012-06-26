@@ -140,7 +140,7 @@ static HRESULT WINAPI DeviceEnumCallback( TCHAR* strDesc, TCHAR* strName,
         lstrcpyn( pDeviceInfo->strDesc, strName, 39 );
     }
 
-//?	if( strstr(strName, "T&L") != 0 )  return D3DENUMRET_OK;
+//? if( strstr(strName, "T&L") != 0 )  return D3DENUMRET_OK;
 
     // Avoid duplicates: only enum HW devices for secondary DDraw drivers.
     if( NULL != pDeviceInfo->pDriverGUID && false == pDeviceInfo->bHardware )

@@ -26,31 +26,31 @@
 class CAutoStation : public CAuto
 {
 public:
-	CAutoStation(CInstanceManager* iMan, CObject* object);
-	~CAutoStation();
+    CAutoStation(CInstanceManager* iMan, CObject* object);
+    ~CAutoStation();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
-
-protected:
-	void		UpdateInterface(float rTime);
-
-	CObject*	SearchVehicle();
+    bool        CreateInterface(bool bSelect);
 
 protected:
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastUpdateTime;
-	float			m_lastParticule;
-	int				m_soundChannel;
-	Math::Vector		m_fretPos;
-	bool			m_bLastVirus;
-	float			m_energyVirus;
+    void        UpdateInterface(float rTime);
+
+    CObject*    SearchVehicle();
+
+protected:
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastUpdateTime;
+    float           m_lastParticule;
+    int             m_soundChannel;
+    Math::Vector        m_fretPos;
+    bool            m_bLastVirus;
+    float           m_energyVirus;
 };
 

@@ -26,19 +26,19 @@
 class CTaskWait : public CTask
 {
 public:
-	CTaskWait(CInstanceManager* iMan, CObject* object);
-	~CTaskWait();
+    CTaskWait(CInstanceManager* iMan, CObject* object);
+    ~CTaskWait();
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	Error	Start(float time);
-	Error	IsEnded();
-
-protected:
+    Error   Start(float time);
+    Error   IsEnded();
 
 protected:
-	float		m_waitTime;
-	float		m_passTime;
-	bool		m_bEnded;
+
+protected:
+    float       m_waitTime;
+    float       m_passTime;
+    bool        m_bEnded;
 };
 

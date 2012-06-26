@@ -25,13 +25,13 @@
 
 enum AutoPorticoPhase
 {
-	APOP_WAIT		= 1,	// waits
-	APOP_START		= 2,	// start of the action
-	APOP_MOVE		= 3,	// advance
-	APOP_WAIT1		= 4,	// waits
-	APOP_DOWN		= 5,	// down
-	APOP_WAIT2		= 6,	// waits
-	APOP_OPEN		= 7,	// opens
+    APOP_WAIT       = 1,    // waits
+    APOP_START      = 2,    // start of the action
+    APOP_MOVE       = 3,    // advance
+    APOP_WAIT1      = 4,    // waits
+    APOP_DOWN       = 5,    // down
+    APOP_WAIT2      = 6,    // waits
+    APOP_OPEN       = 7,    // opens
 };
 
 
@@ -39,31 +39,31 @@ enum AutoPorticoPhase
 class CAutoPortico : public CAuto
 {
 public:
-	CAutoPortico(CInstanceManager* iMan, CObject* object);
-	~CAutoPortico();
+    CAutoPortico(CInstanceManager* iMan, CObject* object);
+    ~CAutoPortico();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	void		Start(int param);
-	bool		EventProcess(const Event &event);
-	bool		Abort();
-	Error		RetError();
-
-protected:
-	void		UpdateTrackMapping(float left, float right);
+    void        Init();
+    void        Start(int param);
+    bool        EventProcess(const Event &event);
+    bool        Abort();
+    Error       RetError();
 
 protected:
-	AutoPorticoPhase m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_cameraProgress;
-	float			m_cameraSpeed;
-	float			m_lastParticule;
-	Math::Vector		m_finalPos;
-	Math::Vector		m_startPos;
-	float			m_posTrack;
-	int				m_param;
-	int				m_soundChannel;
+    void        UpdateTrackMapping(float left, float right);
+
+protected:
+    AutoPorticoPhase m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_cameraProgress;
+    float           m_cameraSpeed;
+    float           m_lastParticule;
+    Math::Vector        m_finalPos;
+    Math::Vector        m_startPos;
+    float           m_posTrack;
+    int             m_param;
+    int             m_soundChannel;
 };
 

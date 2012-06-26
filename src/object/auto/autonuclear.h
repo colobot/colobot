@@ -25,11 +25,11 @@
 
 enum AutoNuclearPhase
 {
-	ANUP_STOP		= 1,
-	ANUP_WAIT		= 2,
-	ANUP_CLOSE		= 3,
-	ANUP_GENERATE	= 4,
-	ANUP_OPEN		= 5,
+    ANUP_STOP       = 1,
+    ANUP_WAIT       = 2,
+    ANUP_CLOSE      = 3,
+    ANUP_GENERATE   = 4,
+    ANUP_OPEN       = 5,
 };
 
 
@@ -37,32 +37,32 @@ enum AutoNuclearPhase
 class CAutoNuclear : public CAuto
 {
 public:
-	CAutoNuclear(CInstanceManager* iMan, CObject* object);
-	~CAutoNuclear();
+    CAutoNuclear(CInstanceManager* iMan, CObject* object);
+    ~CAutoNuclear();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	CObject*	SearchUranium();
-	bool		SearchVehicle();
-	void		CreatePower();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoNuclearPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastParticule;
-	Math::Vector			m_pos;
-	int					m_channelSound;
+    CObject*    SearchUranium();
+    bool        SearchVehicle();
+    void        CreatePower();
+
+protected:
+    AutoNuclearPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastParticule;
+    Math::Vector            m_pos;
+    int                 m_channelSound;
 };
 

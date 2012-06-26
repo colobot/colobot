@@ -30,52 +30,52 @@ class CButton;
 class CSlider : public CControl
 {
 public:
-	CSlider(CInstanceManager* iMan);
-	~CSlider();
+    CSlider(CInstanceManager* iMan);
+    ~CSlider();
 
-	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	void		SetPos(Math::Point pos);
-	void		SetDim(Math::Point dim);
+    void        SetPos(Math::Point pos);
+    void        SetDim(Math::Point dim);
 
-	bool		SetState(int state, bool bState);
-	bool		SetState(int state);
-	bool		ClearState(int state);
+    bool        SetState(int state, bool bState);
+    bool        SetState(int state);
+    bool        ClearState(int state);
 
-	bool		EventProcess(const Event &event);
-	void		Draw();
+    bool        EventProcess(const Event &event);
+    void        Draw();
 
-	void		SetLimit(float min, float max);
+    void        SetLimit(float min, float max);
 
-	void		SetVisibleValue(float value);
-	float		RetVisibleValue();
+    void        SetVisibleValue(float value);
+    float       RetVisibleValue();
 
-	void		SetArrowStep(float step);
-	float		RetArrowStep();
-
-protected:
-	void		MoveAdjust();
-	void		AdjustGlint();
-	void		DrawVertex(Math::Point pos, Math::Point dim, int icon);
+    void        SetArrowStep(float step);
+    float       RetArrowStep();
 
 protected:
-	CButton*	m_buttonLeft;
-	CButton*	m_buttonRight;
+    void        MoveAdjust();
+    void        AdjustGlint();
+    void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
 
-	float		m_min;
-	float		m_max;
-	float		m_visibleValue;
-	float		m_step;
+protected:
+    CButton*    m_buttonLeft;
+    CButton*    m_buttonRight;
 
-	bool		m_bHoriz;
-	float		m_marginButton;
+    float       m_min;
+    float       m_max;
+    float       m_visibleValue;
+    float       m_step;
 
-	bool		m_bCapture;
-	Math::Point		m_pressPos;
-	float		m_pressValue;
+    bool        m_bHoriz;
+    float       m_marginButton;
 
-	EventMsg	m_eventUp;
-	EventMsg	m_eventDown;
+    bool        m_bCapture;
+    Math::Point     m_pressPos;
+    float       m_pressValue;
+
+    EventMsg    m_eventUp;
+    EventMsg    m_eventDown;
 };
 
 

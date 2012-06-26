@@ -25,8 +25,8 @@
 
 enum AutoNestPhase
 {
-	ANP_WAIT		= 1,
-	ANP_BIRTH		= 2,	// appearance of a ball
+    ANP_WAIT        = 1,
+    ANP_BIRTH       = 2,    // appearance of a ball
 };
 
 
@@ -34,28 +34,28 @@ enum AutoNestPhase
 class CAutoNest : public CAuto
 {
 public:
-	CAutoNest(CInstanceManager* iMan, CObject* object);
-	~CAutoNest();
+    CAutoNest(CInstanceManager* iMan, CObject* object);
+    ~CAutoNest();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	bool		SearchFree(Math::Vector pos);
-	void		CreateFret(Math::Vector pos, float angle, ObjectType type);
-	CObject*	SearchFret();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoNestPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_lastParticule;
-	Math::Vector		m_fretPos;
+    bool        SearchFree(Math::Vector pos);
+    void        CreateFret(Math::Vector pos, float angle, ObjectType type);
+    CObject*    SearchFret();
+
+protected:
+    AutoNestPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_lastParticule;
+    Math::Vector        m_fretPos;
 };
 

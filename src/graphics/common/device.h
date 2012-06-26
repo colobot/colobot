@@ -24,24 +24,24 @@ namespace Gfx {
 
 struct DeviceConfig
 {
-	//! Screen width
-	int width;
-	//! Screen height
-	int height;
-	//! Bits per pixel
-	int bpp;
-	//! Full screen
-	bool fullScreen;
-	//! Resizeable window
-	bool resizeable;
-	//! Hardware acceleration
-	bool hardwareAccel;
-	//! Double buffering
-	bool doubleBuf;
-	//! No window frame (also set with full screen)
-	bool noFrame;
+    //! Screen width
+    int width;
+    //! Screen height
+    int height;
+    //! Bits per pixel
+    int bpp;
+    //! Full screen
+    bool fullScreen;
+    //! Resizeable window
+    bool resizeable;
+    //! Hardware acceleration
+    bool hardwareAccel;
+    //! Double buffering
+    bool doubleBuf;
+    //! No window frame (also set with full screen)
+    bool noFrame;
 
-	DeviceConfig();
+    DeviceConfig();
 };
 
 class CDevice

@@ -42,77 +42,77 @@ class CWater;
 class CScript
 {
 public:
-	CScript(CInstanceManager* iMan, CObject* object, CTaskManager** secondaryTask);
-	~CScript();
+    CScript(CInstanceManager* iMan, CObject* object, CTaskManager** secondaryTask);
+    ~CScript();
 
-	static void	InitFonctions();
+    static void InitFonctions();
 
-	void		PutScript(CEdit* edit, char* name);
-	bool		GetScript(CEdit* edit);
-	bool		RetCompile();
+    void        PutScript(CEdit* edit, char* name);
+    bool        GetScript(CEdit* edit);
+    bool        RetCompile();
 
-	void		GetTitle(char* buffer);
+    void        GetTitle(char* buffer);
 
-	void		SetStepMode(bool bStep);
-	bool		Run();
-	bool		Continue(const Event &event);
-	bool		Step(const Event &event);
-	void		Stop();
-	bool		IsRunning();
-	bool		IsContinue();
-	bool		GetCursor(int &cursor1, int &cursor2);
-	void		UpdateList(CList* list);
-	void		ColorizeScript(CEdit* edit);
-	bool		IntroduceVirus();
+    void        SetStepMode(bool bStep);
+    bool        Run();
+    bool        Continue(const Event &event);
+    bool        Step(const Event &event);
+    void        Stop();
+    bool        IsRunning();
+    bool        IsContinue();
+    bool        GetCursor(int &cursor1, int &cursor2);
+    void        UpdateList(CList* list);
+    void        ColorizeScript(CEdit* edit);
+    bool        IntroduceVirus();
 
-	int			RetError();
-	void		GetError(char* buffer);
+    int         RetError();
+    void        GetError(char* buffer);
 
-	void		New(CEdit* edit, char* name);
-	bool		SendScript(char* text);
-	bool		ReadScript(char* filename);
-	bool		WriteScript(char* filename);
-	bool		ReadStack(FILE *file);
-	bool		WriteStack(FILE *file);
-	bool		Compare(CScript* other);
+    void        New(CEdit* edit, char* name);
+    bool        SendScript(char* text);
+    bool        ReadScript(char* filename);
+    bool        WriteScript(char* filename);
+    bool        ReadStack(FILE *file);
+    bool        WriteStack(FILE *file);
+    bool        Compare(CScript* other);
 
-	void		SetFilename(char *filename);
-	char*		RetFilename();
+    void        SetFilename(char *filename);
+    char*       RetFilename();
 
 protected:
-	bool		IsEmpty();
-	bool		CheckToken();
-	bool		Compile();
+    bool        IsEmpty();
+    bool        CheckToken();
+    bool        Compile();
 
 public:
-	CInstanceManager* m_iMan;
-	CD3DEngine*		m_engine;
-	CInterface*		m_interface;
-	CDisplayText*	m_displayText;
-	CBotProgram*	m_botProg;
-	CRobotMain*		m_main;
-	CTerrain*		m_terrain;
-	CWater*			m_water;
-	CTaskManager*	m_primaryTask;
-	CTaskManager**	m_secondaryTask;
-	CObject*		m_object;
+    CInstanceManager* m_iMan;
+    CD3DEngine*     m_engine;
+    CInterface*     m_interface;
+    CDisplayText*   m_displayText;
+    CBotProgram*    m_botProg;
+    CRobotMain*     m_main;
+    CTerrain*       m_terrain;
+    CWater*         m_water;
+    CTaskManager*   m_primaryTask;
+    CTaskManager**  m_secondaryTask;
+    CObject*        m_object;
 
-	int			m_ipf;			// number of instructions/second
-	int			m_errMode;		// what to do in case of error
-	int			m_len;			// length of the script (without <0>)
-	char*			m_script;		// script ends with <0>
-	bool			m_bRun;			// program during execution?
-	bool			m_bStepMode;		// step by step
-	bool			m_bContinue;		// external function to continue
-	bool			m_bCompile;		// compilation ok?
-	char			m_title[50];		// script title
-	char			m_filename[50];		// file name
-	char			m_token[50];		// missing instruction
-	int			m_error;		// error (0=ok)
-	int			m_cursor1;
-	int			m_cursor2;
-	Event			m_event;
-	float			m_returnValue;
+    int         m_ipf;          // number of instructions/second
+    int         m_errMode;      // what to do in case of error
+    int         m_len;          // length of the script (without <0>)
+    char*           m_script;       // script ends with <0>
+    bool            m_bRun;         // program during execution?
+    bool            m_bStepMode;        // step by step
+    bool            m_bContinue;        // external function to continue
+    bool            m_bCompile;     // compilation ok?
+    char            m_title[50];        // script title
+    char            m_filename[50];     // file name
+    char            m_token[50];        // missing instruction
+    int         m_error;        // error (0=ok)
+    int         m_cursor1;
+    int         m_cursor2;
+    Event           m_event;
+    float           m_returnValue;
 };
 
 

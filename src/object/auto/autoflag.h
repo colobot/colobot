@@ -26,21 +26,21 @@
 class CAutoFlag : public CAuto
 {
 public:
-	CAutoFlag(CInstanceManager* iMan, CObject* object);
-	~CAutoFlag();
+    CAutoFlag(CInstanceManager* iMan, CObject* object);
+    ~CAutoFlag();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	void		Start(int param);
-	bool		EventProcess(const Event &event);
-	Error		RetError();
-
-protected:
+    void        Init();
+    void        Start(int param);
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
 protected:
-	float		m_strong;
-	int			m_param;
-	float		m_progress;
+
+protected:
+    float       m_strong;
+    int         m_param;
+    float       m_progress;
 };
 

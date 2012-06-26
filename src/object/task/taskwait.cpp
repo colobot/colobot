@@ -28,7 +28,7 @@
 // Object's constructor.
 
 CTaskWait::CTaskWait(CInstanceManager* iMan, CObject* object)
-					 : CTask(iMan, object)
+                     : CTask(iMan, object)
 {
 }
 
@@ -43,12 +43,12 @@ CTaskWait::~CTaskWait()
 
 bool CTaskWait::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return true;
-	if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->RetPause() )  return true;
+    if ( event.event != EVENT_FRAME )  return true;
 
-	m_passTime += event.rTime;
-	m_bEnded = (m_passTime >= m_waitTime);
-	return true;
+    m_passTime += event.rTime;
+    m_bEnded = (m_passTime >= m_waitTime);
+    return true;
 }
 
 
@@ -56,19 +56,19 @@ bool CTaskWait::EventProcess(const Event &event)
 
 Error CTaskWait::Start(float time)
 {
-	m_waitTime = time;  // duration to wait
-	m_passTime = 0.0f;  // time elapsed
-	m_bEnded = false;
-	return ERR_OK;
+    m_waitTime = time;  // duration to wait
+    m_passTime = 0.0f;  // time elapsed
+    m_bEnded = false;
+    return ERR_OK;
 }
 
 // Indicates whether the action is finished.
 
 Error CTaskWait::IsEnded()
 {
-	if ( m_engine->RetPause() )  return ERR_CONTINUE;
-	if ( m_bEnded )  return ERR_STOP;
-	return ERR_CONTINUE;
+    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_bEnded )  return ERR_STOP;
+    return ERR_CONTINUE;
 }
 
 

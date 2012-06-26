@@ -35,51 +35,51 @@ class CTerrain;
 class CCamera;
 
 
-const float BLITZPARA = 200.0f;		// radius of lightning protection
+const float BLITZPARA = 200.0f;     // radius of lightning protection
 const short BLITZMAX = 50;
 
 enum BlitzPhase
 {
-	BPH_WAIT,
-	BPH_BLITZ,
+    BPH_WAIT,
+    BPH_BLITZ,
 };
 
 
 class CLightning
 {
 public:
-	CLightning(CInstanceManager* iMan, CEngine* engine);
-	~CLightning();
+    CLightning(CInstanceManager* iMan, CEngine* engine);
+    ~CLightning();
 
-	void		Flush();
-	bool		EventProcess(const Event &event);
-	bool		Create(float sleep, float delay, float magnetic);
-	bool		GetStatus(float &sleep, float &delay, float &magnetic, float &progress);
-	bool		SetStatus(float sleep, float delay, float magnetic, float progress);
-	void		Draw();
-
-protected:
-	bool		EventFrame(const Event &event);
-	CObject*	SearchObject(Math::Vector pos);
+    void        Flush();
+    bool        EventProcess(const Event &event);
+    bool        Create(float sleep, float delay, float magnetic);
+    bool        GetStatus(float &sleep, float &delay, float &magnetic, float &progress);
+    bool        SetStatus(float sleep, float delay, float magnetic, float progress);
+    void        Draw();
 
 protected:
-	CInstanceManager*	m_iMan;
-	CEngine*			m_engine;
-	CTerrain*			m_terrain;
-	CCamera*			m_camera;
-	CSound*				m_sound;
+    bool        EventFrame(const Event &event);
+    CObject*    SearchObject(Math::Vector pos);
 
-	bool			m_bBlitzExist;
-	float			m_sleep;
-	float			m_delay;
-	float			m_magnetic;
-	BlitzPhase		m_phase;
-	float			m_time;
-	float			m_speed;
-	float			m_progress;
-	Math::Vector	m_pos;
-	Math::Point		m_shift[BLITZMAX];
-	float			m_width[BLITZMAX];
+protected:
+    CInstanceManager*   m_iMan;
+    CEngine*            m_engine;
+    CTerrain*           m_terrain;
+    CCamera*            m_camera;
+    CSound*             m_sound;
+
+    bool            m_bBlitzExist;
+    float           m_sleep;
+    float           m_delay;
+    float           m_magnetic;
+    BlitzPhase      m_phase;
+    float           m_time;
+    float           m_speed;
+    float           m_progress;
+    Math::Vector    m_pos;
+    Math::Point     m_shift[BLITZMAX];
+    float           m_width[BLITZMAX];
 };
 
 }; // namespace Gfx

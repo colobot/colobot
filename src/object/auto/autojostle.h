@@ -26,23 +26,23 @@
 class CAutoJostle : public CAuto
 {
 public:
-	CAutoJostle(CInstanceManager* iMan, CObject* object);
-	~CAutoJostle();
+    CAutoJostle(CInstanceManager* iMan, CObject* object);
+    ~CAutoJostle();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	void		Start(int param, float force);
-	bool		EventProcess(const Event &event);
-	Error		IsEnded();
-
-protected:
+    void        Init();
+    void        Start(int param, float force);
+    bool        EventProcess(const Event &event);
+    Error       IsEnded();
 
 protected:
-	float			m_force;
-	float			m_progress;
-	float			m_speed;
-	float			m_lastParticule;
-	Error			m_error;
+
+protected:
+    float           m_force;
+    float           m_progress;
+    float           m_speed;
+    float           m_lastParticule;
+    Error           m_error;
 };
 

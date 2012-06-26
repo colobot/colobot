@@ -39,46 +39,46 @@ class CSound;
 
 enum PhysicsType
 {
-	TYPE_ROLLING	= 1,
-	TYPE_FLYING		= 2,
+    TYPE_ROLLING    = 1,
+    TYPE_FLYING     = 2,
 };
 
 enum PhysicsMode
 {
-	MO_ADVACCEL		= 0,
-	MO_RECACCEL		= 1,
-	MO_STOACCEL		= 2,
-	MO_MOTACCEL		= 3,
-	MO_ADVSPEED		= 4,
-	MO_RECSPEED		= 5,
-	MO_MOTSPEED		= 6,
-	MO_CURSPEED		= 7,
-	MO_TERFORCE		= 8,
-	MO_TERSPEED		= 9,
-	MO_TERSLIDE		= 10,
-	MO_REASPEED		= 11,
+    MO_ADVACCEL     = 0,
+    MO_RECACCEL     = 1,
+    MO_STOACCEL     = 2,
+    MO_MOTACCEL     = 3,
+    MO_ADVSPEED     = 4,
+    MO_RECSPEED     = 5,
+    MO_MOTSPEED     = 6,
+    MO_CURSPEED     = 7,
+    MO_TERFORCE     = 8,
+    MO_TERSPEED     = 9,
+    MO_TERSLIDE     = 10,
+    MO_REASPEED     = 11,
 };
 
 
 struct Motion
 {
-	Math::Vector	advanceAccel;	// acceleration starting (+)
-	Math::Vector	recedeAccel;	// acceleration starting (+)
-	Math::Vector	stopAccel;	// acceleration stoping (+)
-	Math::Vector	motorAccel;	// current acceleration (+/-)
+    Math::Vector    advanceAccel;   // acceleration starting (+)
+    Math::Vector    recedeAccel;    // acceleration starting (+)
+    Math::Vector    stopAccel;  // acceleration stoping (+)
+    Math::Vector    motorAccel; // current acceleration (+/-)
 
-	Math::Vector	advanceSpeed;	// forward speed (+)
-	Math::Vector	recedeSpeed;	// reversing speed (+)
-	Math::Vector	motorSpeed;	// desired speed (+/-)
-	Math::Vector	currentSpeed;	// current speed (+/-)
+    Math::Vector    advanceSpeed;   // forward speed (+)
+    Math::Vector    recedeSpeed;    // reversing speed (+)
+    Math::Vector    motorSpeed; // desired speed (+/-)
+    Math::Vector    currentSpeed;   // current speed (+/-)
 
-	Math::Vector	terrainForce;	// power of resistance of the ground (+)
-	Math::Vector	terrainSpeed;	// speed of the ground (+/-)
-	Math::Vector	terrainSlide;	// limit sliding speed (+)
+    Math::Vector    terrainForce;   // power of resistance of the ground (+)
+    Math::Vector    terrainSpeed;   // speed of the ground (+/-)
+    Math::Vector    terrainSlide;   // limit sliding speed (+)
 
-	Math::Vector	realSpeed;	// real speed(+/-)
+    Math::Vector    realSpeed;  // real speed(+/-)
 
-	Math::Vector	finalInclin;	// final inclination
+    Math::Vector    finalInclin;    // final inclination
 };
 
 
@@ -87,160 +87,160 @@ struct Motion
 class CPhysics
 {
 public:
-	CPhysics(CInstanceManager* iMan, CObject* object);
-	~CPhysics();
+    CPhysics(CInstanceManager* iMan, CObject* object);
+    ~CPhysics();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	void		SetBrain(CBrain* brain);
-	void		SetMotion(CMotion* motion);
+    void        SetBrain(CBrain* brain);
+    void        SetMotion(CMotion* motion);
 
-	void		SetType(PhysicsType type);
-	PhysicsType	RetType();
+    void        SetType(PhysicsType type);
+    PhysicsType RetType();
 
-	bool		Write(char *line);
-	bool		Read(char *line);
+    bool        Write(char *line);
+    bool        Read(char *line);
 
-	void		SetGravity(float value);
-	float		RetGravity();
+    void        SetGravity(float value);
+    float       RetGravity();
 
-	float		RetFloorHeight();
+    float       RetFloorHeight();
 
-	void		SetLinMotion(PhysicsMode mode, Math::Vector value);
-	Math::Vector	RetLinMotion(PhysicsMode mode);
-	void		SetLinMotionX(PhysicsMode mode, float value);
-	void		SetLinMotionY(PhysicsMode mode, float value);
-	void		SetLinMotionZ(PhysicsMode mode, float value);
-	float		RetLinMotionX(PhysicsMode mode);
-	float		RetLinMotionY(PhysicsMode mode);
-	float		RetLinMotionZ(PhysicsMode mode);
+    void        SetLinMotion(PhysicsMode mode, Math::Vector value);
+    Math::Vector    RetLinMotion(PhysicsMode mode);
+    void        SetLinMotionX(PhysicsMode mode, float value);
+    void        SetLinMotionY(PhysicsMode mode, float value);
+    void        SetLinMotionZ(PhysicsMode mode, float value);
+    float       RetLinMotionX(PhysicsMode mode);
+    float       RetLinMotionY(PhysicsMode mode);
+    float       RetLinMotionZ(PhysicsMode mode);
 
-	void		SetCirMotion(PhysicsMode mode, Math::Vector value);
-	Math::Vector	RetCirMotion(PhysicsMode mode);
-	void		SetCirMotionX(PhysicsMode mode, float value);
-	void		SetCirMotionY(PhysicsMode mode, float value);
-	void		SetCirMotionZ(PhysicsMode mode, float value);
-	float		RetCirMotionX(PhysicsMode mode);
-	float		RetCirMotionY(PhysicsMode mode);
-	float		RetCirMotionZ(PhysicsMode mode);
+    void        SetCirMotion(PhysicsMode mode, Math::Vector value);
+    Math::Vector    RetCirMotion(PhysicsMode mode);
+    void        SetCirMotionX(PhysicsMode mode, float value);
+    void        SetCirMotionY(PhysicsMode mode, float value);
+    void        SetCirMotionZ(PhysicsMode mode, float value);
+    float       RetCirMotionX(PhysicsMode mode);
+    float       RetCirMotionY(PhysicsMode mode);
+    float       RetCirMotionZ(PhysicsMode mode);
 
-	float		RetLinStopLength(PhysicsMode sMode=MO_ADVSPEED, PhysicsMode aMode=MO_STOACCEL);
-	float		RetCirStopLength();
-	float		RetLinMaxLength(float dir);
-	float		RetLinTimeLength(float dist, float dir=1.0f);
-	float		RetLinLength(float dist);
+    float       RetLinStopLength(PhysicsMode sMode=MO_ADVSPEED, PhysicsMode aMode=MO_STOACCEL);
+    float       RetCirStopLength();
+    float       RetLinMaxLength(float dir);
+    float       RetLinTimeLength(float dist, float dir=1.0f);
+    float       RetLinLength(float dist);
 
-	void		SetMotor(bool bState);
-	bool		RetMotor();
-	void		SetLand(bool bState);
-	bool		RetLand();
-	void		SetSwim(bool bState);
-	bool		RetSwim();
-	void		SetCollision(bool bCollision);
-	bool		RetCollision();
-	void		SetFreeze(bool bFreeze);
-	bool		RetFreeze();
-	void		SetReactorRange(float range);
-	float		RetReactorRange();
+    void        SetMotor(bool bState);
+    bool        RetMotor();
+    void        SetLand(bool bState);
+    bool        RetLand();
+    void        SetSwim(bool bState);
+    bool        RetSwim();
+    void        SetCollision(bool bCollision);
+    bool        RetCollision();
+    void        SetFreeze(bool bFreeze);
+    bool        RetFreeze();
+    void        SetReactorRange(float range);
+    float       RetReactorRange();
 
-	void		SetMotorSpeed(Math::Vector speed);
-	void		SetMotorSpeedX(float speed);
-	void		SetMotorSpeedY(float speed);
-	void		SetMotorSpeedZ(float speed);
-	Math::Vector	RetMotorSpeed();
-	float		RetMotorSpeedX();
-	float		RetMotorSpeedY();
-	float		RetMotorSpeedZ();
+    void        SetMotorSpeed(Math::Vector speed);
+    void        SetMotorSpeedX(float speed);
+    void        SetMotorSpeedY(float speed);
+    void        SetMotorSpeedZ(float speed);
+    Math::Vector    RetMotorSpeed();
+    float       RetMotorSpeedX();
+    float       RetMotorSpeedY();
+    float       RetMotorSpeedZ();
 
-	void		CreateInterface(bool bSelect);
-	Error		RetError();
-
-protected:
-	bool		EventFrame(const Event &event);
-	void		WaterFrame(float aTime, float rTime);
-	void		SoundMotor(float rTime);
-	void		SoundMotorFull(float rTime, ObjectType type);
-	void		SoundMotorSlow(float rTime, ObjectType type);
-	void		SoundMotorStop(float rTime, ObjectType type);
-	void		SoundReactorFull(float rTime, ObjectType type);
-	void		SoundReactorStop(float rTime, ObjectType type);
-	void		FrameParticule(float aTime, float rTime);
-	void		MotorUpdate(float aTime, float rTime);
-	void		EffectUpdate(float aTime, float rTime);
-	void		UpdateMotionStruct(float rTime, Motion &motion);
-	void		FloorAdapt(float aTime, float rTime, Math::Vector &pos, Math::Vector &angle);
-	void		FloorAngle(const Math::Vector &pos, Math::Vector &angle);
-	int			ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle);
-	bool		JostleObject(CObject* pObj, Math::Vector iPos, float iRad, Math::Vector oPos, float oRad);
-	bool		JostleObject(CObject* pObj, float force);
-	bool		ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
-	int			ExploHimself(ObjectType iType, ObjectType oType, float force);
-
-	void		PowerParticule(float factor, bool bBreak);
-	void		CrashParticule(float crash);
-	void		MotorParticule(float aTime, float rTime);
-	void		WaterParticule(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
-	void		WheelParticule(int color, float width);
+    void        CreateInterface(bool bSelect);
+    Error       RetError();
 
 protected:
-	CInstanceManager* m_iMan;
-	CD3DEngine*	m_engine;
-	CLight*		m_light;
-	CParticule*	m_particule;
-	CTerrain*	m_terrain;
-	CWater*		m_water;
-	CCamera*	m_camera;
-	CObject*	m_object;
-	CBrain*		m_brain;
-	CMotion*	m_motion;
-	CSound*		m_sound;
+    bool        EventFrame(const Event &event);
+    void        WaterFrame(float aTime, float rTime);
+    void        SoundMotor(float rTime);
+    void        SoundMotorFull(float rTime, ObjectType type);
+    void        SoundMotorSlow(float rTime, ObjectType type);
+    void        SoundMotorStop(float rTime, ObjectType type);
+    void        SoundReactorFull(float rTime, ObjectType type);
+    void        SoundReactorStop(float rTime, ObjectType type);
+    void        FrameParticule(float aTime, float rTime);
+    void        MotorUpdate(float aTime, float rTime);
+    void        EffectUpdate(float aTime, float rTime);
+    void        UpdateMotionStruct(float rTime, Motion &motion);
+    void        FloorAdapt(float aTime, float rTime, Math::Vector &pos, Math::Vector &angle);
+    void        FloorAngle(const Math::Vector &pos, Math::Vector &angle);
+    int         ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle);
+    bool        JostleObject(CObject* pObj, Math::Vector iPos, float iRad, Math::Vector oPos, float oRad);
+    bool        JostleObject(CObject* pObj, float force);
+    bool        ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
+    int         ExploHimself(ObjectType iType, ObjectType oType, float force);
 
-	PhysicsType	m_type;			// TYPE_*
-	float		m_gravity;		// force of gravity
-	float		m_time;			// absolute time
-	Math::Vector	m_motorSpeed;		// motor speed (-1..1)
-	Motion		m_linMotion;		// linear motion
-	Motion		m_cirMotion;		// circular motion
-	bool		m_bMotor;
-	bool		m_bLand;
-	bool		m_bSwim;
-	bool		m_bCollision;
-	bool		m_bObstacle;
-	bool		m_bFreeze;
-	int			m_repeatCollision;
-	float		m_linVibrationFactor;
-	float		m_cirVibrationFactor;
-	float		m_inclinaisonFactor;
-	float		m_lastPowerParticule;
-	float		m_lastSlideParticule;
-	float		m_lastMotorParticule;
-	float		m_lastWaterParticule;
-	float		m_lastUnderParticule;
-	float		m_lastPloufParticule;
-	float		m_lastFlameParticule;
-	bool		m_bWheelParticuleBrake;
-	Math::Vector	m_wheelParticulePos[2];
-	float		m_absorbWater;
-	float		m_reactorTemperature;
-	float		m_reactorRange;
-	float		m_timeReactorFail;
-	float		m_timeUnderWater;
-	float		m_lastEnergy;
-	float		m_lastSoundWater;
-	float		m_lastSoundInsect;
-	float		m_restBreakParticule;
-	float		m_floorLevel;		// ground level
-	float		m_floorHeight;		// height above the ground
-	int		m_soundChannel;
-	int		m_soundChannelSlide;
-	float		m_soundTimePshhh;
-	float		m_soundTimeJostle;
-	float		m_soundTimeBoum;
-	bool		m_bSoundSlow;
-	bool		m_bForceUpdate;
-	bool		m_bLowLevel;
+    void        PowerParticule(float factor, bool bBreak);
+    void        CrashParticule(float crash);
+    void        MotorParticule(float aTime, float rTime);
+    void        WaterParticule(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
+    void        WheelParticule(int color, float width);
+
+protected:
+    CInstanceManager* m_iMan;
+    CD3DEngine* m_engine;
+    CLight*     m_light;
+    CParticule* m_particule;
+    CTerrain*   m_terrain;
+    CWater*     m_water;
+    CCamera*    m_camera;
+    CObject*    m_object;
+    CBrain*     m_brain;
+    CMotion*    m_motion;
+    CSound*     m_sound;
+
+    PhysicsType m_type;         // TYPE_*
+    float       m_gravity;      // force of gravity
+    float       m_time;         // absolute time
+    Math::Vector    m_motorSpeed;       // motor speed (-1..1)
+    Motion      m_linMotion;        // linear motion
+    Motion      m_cirMotion;        // circular motion
+    bool        m_bMotor;
+    bool        m_bLand;
+    bool        m_bSwim;
+    bool        m_bCollision;
+    bool        m_bObstacle;
+    bool        m_bFreeze;
+    int         m_repeatCollision;
+    float       m_linVibrationFactor;
+    float       m_cirVibrationFactor;
+    float       m_inclinaisonFactor;
+    float       m_lastPowerParticule;
+    float       m_lastSlideParticule;
+    float       m_lastMotorParticule;
+    float       m_lastWaterParticule;
+    float       m_lastUnderParticule;
+    float       m_lastPloufParticule;
+    float       m_lastFlameParticule;
+    bool        m_bWheelParticuleBrake;
+    Math::Vector    m_wheelParticulePos[2];
+    float       m_absorbWater;
+    float       m_reactorTemperature;
+    float       m_reactorRange;
+    float       m_timeReactorFail;
+    float       m_timeUnderWater;
+    float       m_lastEnergy;
+    float       m_lastSoundWater;
+    float       m_lastSoundInsect;
+    float       m_restBreakParticule;
+    float       m_floorLevel;       // ground level
+    float       m_floorHeight;      // height above the ground
+    int     m_soundChannel;
+    int     m_soundChannelSlide;
+    float       m_soundTimePshhh;
+    float       m_soundTimeJostle;
+    float       m_soundTimeBoum;
+    bool        m_bSoundSlow;
+    bool        m_bForceUpdate;
+    bool        m_bLowLevel;
 };
 
 

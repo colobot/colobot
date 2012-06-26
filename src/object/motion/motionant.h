@@ -25,49 +25,49 @@
 
 enum MotionAntAction
 {
-	MA_MARCH	= 0,
-	MA_STOP		= 1,
-	MA_SPEC		= 2
+    MA_MARCH    = 0,
+    MA_STOP     = 1,
+    MA_SPEC     = 2
 };
 
 enum MotionAntSpecialAction
 {
-	MAS_PREPARE		= 0,
-	MAS_FIRE		= 1,
-	MAS_TERMINATE	= 2,
-	MAS_BURN		= 3,
-	MAS_RUIN		= 4,
-	MAS_BACK1		= 5,
-	MAS_BACK2		= 6,
-	MAS_BACK3		= 7
+    MAS_PREPARE     = 0,
+    MAS_FIRE        = 1,
+    MAS_TERMINATE   = 2,
+    MAS_BURN        = 3,
+    MAS_RUIN        = 4,
+    MAS_BACK1       = 5,
+    MAS_BACK2       = 6,
+    MAS_BACK3       = 7
 };
 
 
 class CMotionAnt : public CMotion
 {
 public:
-	CMotionAnt(CInstanceManager* iMan, CObject* object);
-	~CMotionAnt();
+    CMotionAnt(CInstanceManager* iMan, CObject* object);
+    ~CMotionAnt();
 
-	void	DeleteObject(bool bAll=false);
-	bool	Create(Math::Vector pos, float angle, ObjectType type, float power);
-	bool	EventProcess(const Event &event);
-
-protected:
-	void	CreatePhysics();
-	bool	EventFrame(const Event &event);
+    void    DeleteObject(bool bAll=false);
+    bool    Create(Math::Vector pos, float angle, ObjectType type, float power);
+    bool    EventProcess(const Event &event);
 
 protected:
-	float		m_armMember;
-	float		m_armTimeAbs;
-	float		m_armTimeMarch;
-	float		m_armTimeAction;
-	short		m_armAngles[3*3*3*3*3 + 3*3*3*8];
-	int			m_armTimeIndex;
-	int			m_armPartIndex;
-	int			m_armMemberIndex;
-	int			m_armLastAction;
-	bool		m_bArmStop;
-	float		m_lastParticule;
+    void    CreatePhysics();
+    bool    EventFrame(const Event &event);
+
+protected:
+    float       m_armMember;
+    float       m_armTimeAbs;
+    float       m_armTimeMarch;
+    float       m_armTimeAction;
+    short       m_armAngles[3*3*3*3*3 + 3*3*3*8];
+    int         m_armTimeIndex;
+    int         m_armPartIndex;
+    int         m_armMemberIndex;
+    int         m_armLastAction;
+    bool        m_bArmStop;
+    float       m_lastParticule;
 };
 

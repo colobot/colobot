@@ -24,7 +24,7 @@
 
 
 
-#define ADJUST_ANGLE	false		// true -> adjusts the angles of the members
+#define ADJUST_ANGLE    false       // true -> adjusts the angles of the members
 
 
 #if ADJUST_ANGLE
@@ -37,9 +37,9 @@ static float g_flag3 = 2.00f;
 // Object's constructor.
 
 CAutoFlag::CAutoFlag(CInstanceManager* iMan, CObject* object)
-					 : CAuto(iMan, object)
+                     : CAuto(iMan, object)
 {
-	Init();
+    Init();
 }
 
 // Object's destructor.
@@ -53,7 +53,7 @@ CAutoFlag::~CAutoFlag()
 
 void CAutoFlag::DeleteObject(bool bAll)
 {
-	CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(bAll);
 }
 
 
@@ -61,18 +61,18 @@ void CAutoFlag::DeleteObject(bool bAll)
 
 void CAutoFlag::Init()
 {
-	Math::Vector	wind;
-	float		angle;
+    Math::Vector    wind;
+    float       angle;
 
-	m_time = 0.0f;
-	m_param = 0;
-	m_progress = 0.0f;
+    m_time = 0.0f;
+    m_param = 0;
+    m_progress = 0.0f;
 
-	wind = m_terrain->RetWind();
-	angle = Math::RotateAngle(wind.x, -wind.z);
-	m_object->SetAngleY(0, angle);  // directs the flag in the wind
+    wind = m_terrain->RetWind();
+    angle = Math::RotateAngle(wind.x, -wind.z);
+    m_object->SetAngleY(0, angle);  // directs the flag in the wind
 
-	m_strong = wind.Length();
+    m_strong = wind.Length();
 }
 
 
@@ -80,11 +80,11 @@ void CAutoFlag::Init()
 
 void CAutoFlag::Start(int param)
 {
-	if ( m_param == 0 )
-	{
-		m_param = param;
-		m_progress = 0.0f;
-	}
+    if ( m_param == 0 )
+    {
+        m_param = param;
+        m_progress = 0.0f;
+    }
 }
 
 
@@ -92,63 +92,63 @@ void CAutoFlag::Start(int param)
 
 bool CAutoFlag::EventProcess(const Event &event)
 {
-	float	angle;
-	int		i;
+    float   angle;
+    int     i;
 
-	CAuto::EventProcess(event);
+    CAuto::EventProcess(event);
 
 #if ADJUST_ANGLE
-	if ( event.event == EVENT_KEYDOWN )
-	{
-		if ( event.param == 'E' )  g_flag1 += 0.1f;
-		if ( event.param == 'D' )  g_flag1 -= 0.1f;
-		if ( event.param == 'R' )  g_flag2 += 0.1f;
-		if ( event.param == 'F' )  g_flag2 -= 0.1f;
-		if ( event.param == 'T' )  g_flag3 += 0.1f;
-		if ( event.param == 'G' )  g_flag3 -= 0.1f;
-	}
+    if ( event.event == EVENT_KEYDOWN )
+    {
+        if ( event.param == 'E' )  g_flag1 += 0.1f;
+        if ( event.param == 'D' )  g_flag1 -= 0.1f;
+        if ( event.param == 'R' )  g_flag2 += 0.1f;
+        if ( event.param == 'F' )  g_flag2 -= 0.1f;
+        if ( event.param == 'T' )  g_flag3 += 0.1f;
+        if ( event.param == 'G' )  g_flag3 -= 0.1f;
+    }
 #endif
 
-	if ( m_engine->RetPause() )  return true;
-	if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->RetPause() )  return true;
+    if ( event.event != EVENT_FRAME )  return true;
 
-	if ( m_param == 1 )  // shakes?
-	{
-		m_progress += event.rTime*(1.0f/2.0f);
-		if ( m_progress < 1.0f )
-		{
-			angle = sinf(m_progress*Math::PI*8.0f)*0.3f*(1.0f-m_progress);
-			m_object->SetAngleX(0, angle);
-			angle = sinf(m_progress*Math::PI*4.0f)*0.3f*(1.0f-m_progress);
-			m_object->SetAngleZ(0, angle);
-		}
-		else
-		{
-			m_object->SetAngleX(0, 0.0f);
-			m_object->SetAngleZ(0, 0.0f);
-			m_param = 0;
-			m_progress = 0.0f;
-		}
-	}
+    if ( m_param == 1 )  // shakes?
+    {
+        m_progress += event.rTime*(1.0f/2.0f);
+        if ( m_progress < 1.0f )
+        {
+            angle = sinf(m_progress*Math::PI*8.0f)*0.3f*(1.0f-m_progress);
+            m_object->SetAngleX(0, angle);
+            angle = sinf(m_progress*Math::PI*4.0f)*0.3f*(1.0f-m_progress);
+            m_object->SetAngleZ(0, angle);
+        }
+        else
+        {
+            m_object->SetAngleX(0, 0.0f);
+            m_object->SetAngleZ(0, 0.0f);
+            m_param = 0;
+            m_progress = 0.0f;
+        }
+    }
 
-	if ( m_strong == 0.0f )  return true;  // no wind?
+    if ( m_strong == 0.0f )  return true;  // no wind?
 
-	for ( i=0 ; i<4 ; i++ )
-	{
+    for ( i=0 ; i<4 ; i++ )
+    {
 #if ADJUST_ANGLE
-		angle = sinf(m_time*g_flag1+i*2.0f)*((i+g_flag3)*g_flag2);
+        angle = sinf(m_time*g_flag1+i*2.0f)*((i+g_flag3)*g_flag2);
 #else
-		angle = sinf(m_time*6.0f+i*2.0f)*((i+2.0f)*0.1f);
+        angle = sinf(m_time*6.0f+i*2.0f)*((i+2.0f)*0.1f);
 #endif
-		m_object->SetAngleY(1+i, angle);
-	}
+        m_object->SetAngleY(1+i, angle);
+    }
 
 #if ADJUST_ANGLE
-	char s[100];
-	sprintf(s, "a=%.2f b=%.2f c=%.2f", g_flag1, g_flag2, g_flag3);
-	m_engine->SetInfoText(4, s);
+    char s[100];
+    sprintf(s, "a=%.2f b=%.2f c=%.2f", g_flag1, g_flag2, g_flag3);
+    m_engine->SetInfoText(4, s);
 #endif
-	return true;
+    return true;
 }
 
 
@@ -156,7 +156,7 @@ bool CAutoFlag::EventProcess(const Event &event)
 
 Error CAutoFlag::RetError()
 {
-	return ERR_OK;
+    return ERR_OK;
 }
 
 
