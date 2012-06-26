@@ -79,7 +79,7 @@ This file outlines the most important things for developers.
 
 7. Whitespace rules.
 
-  Please indent with tabs, 1 tab = 4 spaces. This will match the old code.
+  Please indent with spaces, 1 indentation level = 4 spaces. Unix line endings. And don't leave whitespace at the end of lines. Thank you :)
 
 
 
