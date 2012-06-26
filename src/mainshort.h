@@ -17,7 +17,7 @@
 // mainshort.h
 
 #ifndef _MAINSHORT_H_
-#define	_MAINSHORT_H_
+#define _MAINSHORT_H_
 
 
 class CInstanceManager;
@@ -32,29 +32,29 @@ class CObject;
 class CMainShort
 {
 public:
-	CMainShort(CInstanceManager* iMan);
-	~CMainShort();
+    CMainShort(CInstanceManager* iMan);
+    ~CMainShort();
 
-	void		SetMode(BOOL bBuilding);
-	void		FlushShortcuts();
-	BOOL		CreateShortcuts();
-	BOOL		UpdateShortcuts();
-	void		SelectShortcut(EventMsg event);
-	void		SelectNext();
-	CObject*	DetectShort(FPOINT pos);
-	void		SetHilite(CObject* pObj);
-
-protected:
+    void        SetMode(BOOL bBuilding);
+    void        FlushShortcuts();
+    BOOL        CreateShortcuts();
+    BOOL        UpdateShortcuts();
+    void        SelectShortcut(EventMsg event);
+    void        SelectNext();
+    CObject*    DetectShort(FPOINT pos);
+    void        SetHilite(CObject* pObj);
 
 protected:
-	CInstanceManager* m_iMan;
-	CEvent*			m_event;
-	CD3DEngine*		m_engine;
-	CInterface*		m_interface;
-	CRobotMain*		m_main;
 
-	CObject*		m_shortcuts[20];
-	BOOL			m_bBuilding;
+protected:
+    CInstanceManager* m_iMan;
+    CEvent*         m_event;
+    CD3DEngine*     m_engine;
+    CInterface*     m_interface;
+    CRobotMain*     m_main;
+
+    CObject*        m_shortcuts[20];
+    BOOL            m_bBuilding;
 };
 
 

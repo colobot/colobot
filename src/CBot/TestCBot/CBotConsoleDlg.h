@@ -25,12 +25,12 @@
 
 struct ThreadInfo
 {
-  CEdit*		m_pEdit1 ;
-  CEdit*		m_pEditx ;
-  CBotProgram*	m_pProg;
-  CWnd*			m_pWndMessage;
-  BOOL			m_bStop;
-  BOOL			m_bRun;
+  CEdit*        m_pEdit1 ;
+  CEdit*        m_pEditx ;
+  CBotProgram*  m_pProg;
+  CWnd*         m_pWndMessage;
+  BOOL          m_bStop;
+  BOOL          m_bRun;
 };
 
 
@@ -41,42 +41,42 @@ class CBotConsoleDlg : public CDialog
 {
 // Construction
 public:
-	CBotConsoleDlg(CWnd* pParent = NULL);   // standard constructor
+    CBotConsoleDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CBotConsoleDlg)
-	enum { IDD = IDD_CONSOLE };
-	CButton	m_cOK;
-	CEdit	m_Edit2;
-	CEdit	m_Edit1;
-	//}}AFX_DATA
+    //{{AFX_DATA(CBotConsoleDlg)
+    enum { IDD = IDD_CONSOLE };
+    CButton m_cOK;
+    CEdit   m_Edit2;
+    CEdit   m_Edit1;
+    //}}AFX_DATA
 
-	CBotProgram*	m_pProg;
-	ThreadInfo		m_threadinfo;
+    CBotProgram*    m_pProg;
+    ThreadInfo      m_threadinfo;
 
-	CBotStringArray*
-					m_pListe;
-	int				m_code, m_start, m_end;
-	CEdit*			m_pEditx;
+    CBotStringArray*
+                    m_pListe;
+    int             m_code, m_start, m_end;
+    CEdit*          m_pEditx;
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CBotConsoleDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CBotConsoleDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CBotConsoleDlg)
-	virtual void OnOK();
-	virtual void OnCancel();
-	virtual BOOL OnInitDialog();
-	afx_msg LONG EndProg(UINT wparam, LONG lparam) ;
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CBotConsoleDlg)
+    virtual void OnOK();
+    virtual void OnCancel();
+    virtual BOOL OnInitDialog();
+    afx_msg LONG EndProg(UINT wparam, LONG lparam) ;
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

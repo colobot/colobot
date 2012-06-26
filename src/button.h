@@ -17,7 +17,7 @@
 // button.h
 
 #ifndef _BUTTON_H_
-#define	_BUTTON_H_
+#define _BUTTON_H_
 
 
 #include "control.h"
@@ -30,28 +30,28 @@ class CD3DEngine;
 class CButton : public CControl
 {
 public:
-	CButton(CInstanceManager* iMan);
-	virtual ~CButton();
+    CButton(CInstanceManager* iMan);
+    virtual ~CButton();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+    BOOL    Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+    BOOL    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetImmediat(BOOL bRepeat);
-	BOOL	RetImmediat();
+    void    SetImmediat(BOOL bRepeat);
+    BOOL    RetImmediat();
 
-	void	SetRepeat(BOOL bRepeat);
-	BOOL	RetRepeat();
-
-protected:
+    void    SetRepeat(BOOL bRepeat);
+    BOOL    RetRepeat();
 
 protected:
-	BOOL	m_bCapture;
-	BOOL	m_bImmediat;
-	BOOL	m_bRepeat;
-	float	m_repeat;
+
+protected:
+    BOOL    m_bCapture;
+    BOOL    m_bImmediat;
+    BOOL    m_bRepeat;
+    float   m_repeat;
 };
 
 

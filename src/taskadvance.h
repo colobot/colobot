@@ -17,7 +17,7 @@
 // taskadvance.h
 
 #ifndef _TASKADVANCE_H_
-#define	_TASKADVANCE_H_
+#define _TASKADVANCE_H_
 
 
 #include "misc.h"
@@ -34,25 +34,25 @@ class CObject;
 class CTaskAdvance : public CTask
 {
 public:
-	CTaskAdvance(CInstanceManager* iMan, CObject* object);
-	~CTaskAdvance();
+    CTaskAdvance(CInstanceManager* iMan, CObject* object);
+    ~CTaskAdvance();
 
-	BOOL	EventProcess(const Event &event);
+    BOOL    EventProcess(const Event &event);
 
-	Error	Start(float length);
-	Error	IsEnded();
-
-protected:
+    Error   Start(float length);
+    Error   IsEnded();
 
 protected:
-	float		m_totalLength;
-	float		m_advanceLength;
-	float		m_direction;
-	float		m_timeLimit;
-	D3DVECTOR	m_startPos;
-	float		m_lastDist;
-	float		m_fixTime;
-	BOOL		m_bError;
+
+protected:
+    float       m_totalLength;
+    float       m_advanceLength;
+    float       m_direction;
+    float       m_timeLimit;
+    D3DVECTOR   m_startPos;
+    float       m_lastDist;
+    float       m_fixTime;
+    BOOL        m_bError;
 };
 
 

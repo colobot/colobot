@@ -41,16 +41,16 @@
 // Object's constructor.
 
 CAutoRoot::CAutoRoot(CInstanceManager* iMan, CObject* object)
-					 : CAuto(iMan, object)
+                     : CAuto(iMan, object)
 {
-	Init();
+    Init();
 }
 
 // Object's destructor.
 
 CAutoRoot::~CAutoRoot()
 {
-	this->CAuto::~CAuto();
+    this->CAuto::~CAuto();
 }
 
 
@@ -58,7 +58,7 @@ CAutoRoot::~CAutoRoot()
 
 void CAutoRoot::DeleteObject(BOOL bAll)
 {
-	CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(bAll);
 }
 
 
@@ -66,24 +66,24 @@ void CAutoRoot::DeleteObject(BOOL bAll)
 
 void CAutoRoot::Init()
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+    D3DMATRIX*  mat;
+    D3DVECTOR   pos, speed;
+    FPOINT      dim;
 
-	m_time = 0.0f;
-	m_lastParticule = 0.0f;
+    m_time = 0.0f;
+    m_lastParticule = 0.0f;
 
-	mat = m_object->RetWorldMatrix(0);
-	pos = D3DVECTOR(-5.0f, 28.0f, -4.0f);  // peak position
-	pos = Transform(*mat, pos);
-	m_center = pos;
+    mat = m_object->RetWorldMatrix(0);
+    pos = D3DVECTOR(-5.0f, 28.0f, -4.0f);  // peak position
+    pos = Transform(*mat, pos);
+    m_center = pos;
 
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	dim.x = 100.0f;
-	dim.y = dim.x;
-	m_particule->CreateParticule(m_center, speed, dim, PARTISPHERE5, 0.5f, 0.0f, 0.0f);
+    speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+    dim.x = 100.0f;
+    dim.y = dim.x;
+    m_particule->CreateParticule(m_center, speed, dim, PARTISPHERE5, 0.5f, 0.0f, 0.0f);
 
-	m_terrain->AddFlyingLimit(pos, 100.0f, 80.0f, pos.y-60.0f);
+    m_terrain->AddFlyingLimit(pos, 100.0f, 80.0f, pos.y-60.0f);
 }
 
 
@@ -91,35 +91,35 @@ void CAutoRoot::Init()
 
 BOOL CAutoRoot::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, speed;
-	FPOINT		dim;
+    D3DVECTOR   pos, speed;
+    FPOINT      dim;
 
-	CAuto::EventProcess(event);
+    CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+    if ( m_engine->RetPause() )  return TRUE;
+    if ( event.event != EVENT_FRAME )  return TRUE;
 
-	m_object->SetZoomX(1, 1.0f+sinf(m_time*2.0f)*0.2f);
-	m_object->SetZoomY(1, 1.0f+sinf(m_time*2.3f)*0.2f);
-	m_object->SetZoomZ(1, 1.0f+sinf(m_time*2.7f)*0.2f);
+    m_object->SetZoomX(1, 1.0f+sinf(m_time*2.0f)*0.2f);
+    m_object->SetZoomY(1, 1.0f+sinf(m_time*2.3f)*0.2f);
+    m_object->SetZoomZ(1, 1.0f+sinf(m_time*2.7f)*0.2f);
 
-	if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
-	{
-		m_lastParticule = m_time;
+    if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
+    {
+        m_lastParticule = m_time;
 
-		pos = m_center;
-		pos.x += (Rand()-0.5f)*8.0f;
-		pos.z += (Rand()-0.5f)*8.0f;
-		pos.y += 0.0f;
-		speed.x = (Rand()-0.5f)*12.0f;
-		speed.z = (Rand()-0.5f)*12.0f;
-		speed.y = Rand()*12.0f;
-		dim.x = Rand()*6.0f+4.0f;
-		dim.y = dim.x;
-		m_particule->CreateParticule(pos, speed, dim, PARTIROOT, 1.0f, 0.0f, 0.0f);
-	}
+        pos = m_center;
+        pos.x += (Rand()-0.5f)*8.0f;
+        pos.z += (Rand()-0.5f)*8.0f;
+        pos.y += 0.0f;
+        speed.x = (Rand()-0.5f)*12.0f;
+        speed.z = (Rand()-0.5f)*12.0f;
+        speed.y = Rand()*12.0f;
+        dim.x = Rand()*6.0f+4.0f;
+        dim.y = dim.x;
+        m_particule->CreateParticule(pos, speed, dim, PARTIROOT, 1.0f, 0.0f, 0.0f);
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -127,7 +127,7 @@ BOOL CAutoRoot::EventProcess(const Event &event)
 
 Error CAutoRoot::RetError()
 {
-	return ERR_OK;
+    return ERR_OK;
 }
 
 

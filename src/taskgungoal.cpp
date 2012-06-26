@@ -40,9 +40,9 @@
 // Object's constructor.
 
 CTaskGunGoal::CTaskGunGoal(CInstanceManager* iMan, CObject* object)
-						  : CTask(iMan, object)
+                          : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
+    CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -56,34 +56,34 @@ CTaskGunGoal::~CTaskGunGoal()
 
 BOOL CTaskGunGoal::EventProcess(const Event &event)
 {
-	float		dir;
+    float       dir;
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+    if ( m_engine->RetPause() )  return TRUE;
+    if ( event.event != EVENT_FRAME )  return TRUE;
 
-	m_progress += event.rTime*m_speed;
+    m_progress += event.rTime*m_speed;
 
-	if ( m_progress < 1.0f )
-	{
-		dir = m_initialDirV + (m_finalDirV-m_initialDirV)*m_progress;
-	}
-	else
-	{
-		dir = m_finalDirV;
-	}
-	m_object->SetGunGoalV(dir);
+    if ( m_progress < 1.0f )
+    {
+        dir = m_initialDirV + (m_finalDirV-m_initialDirV)*m_progress;
+    }
+    else
+    {
+        dir = m_finalDirV;
+    }
+    m_object->SetGunGoalV(dir);
 
-	if ( m_progress < 1.0f )
-	{
-		dir = m_initialDirH + (m_finalDirH-m_initialDirH)*m_progress;
-	}
-	else
-	{
-		dir = m_finalDirH;
-	}
-	m_object->SetGunGoalH(dir);
+    if ( m_progress < 1.0f )
+    {
+        dir = m_initialDirH + (m_finalDirH-m_initialDirH)*m_progress;
+    }
+    else
+    {
+        dir = m_finalDirH;
+    }
+    m_object->SetGunGoalH(dir);
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -91,71 +91,71 @@ BOOL CTaskGunGoal::EventProcess(const Event &event)
 
 Error CTaskGunGoal::Start(float dirV, float dirH)
 {
-	float	speedV, speedH;
-	int		i;
+    float   speedV, speedH;
+    int     i;
 
-	m_initialDirV = m_object->RetGunGoalV();
-	m_object->SetGunGoalV(dirV);
-	m_finalDirV = m_object->RetGunGoalV();  // possible direction
-	m_object->SetGunGoalV(m_initialDirV);  // gives initial direction
+    m_initialDirV = m_object->RetGunGoalV();
+    m_object->SetGunGoalV(dirV);
+    m_finalDirV = m_object->RetGunGoalV();  // possible direction
+    m_object->SetGunGoalV(m_initialDirV);  // gives initial direction
 
-	if ( m_finalDirV == m_initialDirV )
-	{
-		speedV = 100.0f;
-	}
-	else
-	{
-		speedV = 1.0f/(Abs(m_finalDirV-m_initialDirV)*1.0f);
-	}
+    if ( m_finalDirV == m_initialDirV )
+    {
+        speedV = 100.0f;
+    }
+    else
+    {
+        speedV = 1.0f/(Abs(m_finalDirV-m_initialDirV)*1.0f);
+    }
 
-	m_initialDirH = m_object->RetGunGoalH();
-	m_object->SetGunGoalH(dirH);
-	m_finalDirH = m_object->RetGunGoalH();  // possible direction
-	m_object->SetGunGoalH(m_initialDirH);  // gives initial direction
+    m_initialDirH = m_object->RetGunGoalH();
+    m_object->SetGunGoalH(dirH);
+    m_finalDirH = m_object->RetGunGoalH();  // possible direction
+    m_object->SetGunGoalH(m_initialDirH);  // gives initial direction
 
-	if ( m_finalDirH == m_initialDirH )
-	{
-		speedH = 100.0f;
-	}
-	else
-	{
-		speedH = 1.0f/(Abs(m_finalDirH-m_initialDirH)*1.0f);
-	}
+    if ( m_finalDirH == m_initialDirH )
+    {
+        speedH = 100.0f;
+    }
+    else
+    {
+        speedH = 1.0f/(Abs(m_finalDirH-m_initialDirH)*1.0f);
+    }
 
-	m_speed = Min(speedV, speedH);
+    m_speed = Min(speedV, speedH);
 
-	if ( m_finalDirV != m_initialDirV ||
-		 m_finalDirH != m_initialDirH )
-	{
-		i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.3f, 1.5f, TRUE);
-		m_sound->AddEnvelope(i, 0.3f, 1.5f, 1.0f/m_speed, SOPER_STOP);
-	}
+    if ( m_finalDirV != m_initialDirV ||
+         m_finalDirH != m_initialDirH )
+    {
+        i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.3f, 1.5f, TRUE);
+        m_sound->AddEnvelope(i, 0.3f, 1.5f, 1.0f/m_speed, SOPER_STOP);
+    }
 
-	m_progress = 0.0f;
+    m_progress = 0.0f;
 
-	return ERR_OK;
+    return ERR_OK;
 }
 
 // Indicates whether the action is finished.
 
 Error CTaskGunGoal::IsEnded()
 {
-	if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->RetPause() )  return ERR_CONTINUE;
 
-	if ( m_initialDirV == m_finalDirV &&
-		 m_initialDirH == m_finalDirH )  return ERR_STOP;
-	if ( m_progress < 1.0f )  return ERR_CONTINUE;
+    if ( m_initialDirV == m_finalDirV &&
+         m_initialDirH == m_finalDirH )  return ERR_STOP;
+    if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-	m_object->SetGunGoalV(m_finalDirV);
-	m_object->SetGunGoalH(m_finalDirH);
-	Abort();
-	return ERR_STOP;
+    m_object->SetGunGoalV(m_finalDirV);
+    m_object->SetGunGoalH(m_finalDirH);
+    Abort();
+    return ERR_STOP;
 }
 
 // Suddenly ends the current action.
 
 BOOL CTaskGunGoal::Abort()
 {
-	return TRUE;
+    return TRUE;
 }
 

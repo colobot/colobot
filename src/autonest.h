@@ -17,7 +17,7 @@
 // autonest.h
 
 #ifndef _AUTONEST_H_
-#define	_AUTONEST_H_
+#define _AUTONEST_H_
 
 
 #include "auto.h"
@@ -35,8 +35,8 @@ class CObject;
 
 enum AutoNestPhase
 {
-	ANP_WAIT		= 1,
-	ANP_BIRTH		= 2,	// appearance of a ball
+    ANP_WAIT        = 1,
+    ANP_BIRTH       = 2,    // appearance of a ball
 };
 
 
@@ -44,29 +44,29 @@ enum AutoNestPhase
 class CAutoNest : public CAuto
 {
 public:
-	CAutoNest(CInstanceManager* iMan, CObject* object);
-	~CAutoNest();
+    CAutoNest(CInstanceManager* iMan, CObject* object);
+    ~CAutoNest();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	BOOL		SearchFree(D3DVECTOR pos);
-	void		CreateFret(D3DVECTOR pos, float angle, ObjectType type);
-	CObject*	SearchFret();
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoNestPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_lastParticule;
-	D3DVECTOR		m_fretPos;
+    BOOL        SearchFree(D3DVECTOR pos);
+    void        CreateFret(D3DVECTOR pos, float angle, ObjectType type);
+    CObject*    SearchFret();
+
+protected:
+    AutoNestPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_lastParticule;
+    D3DVECTOR       m_fretPos;
 };
 
 

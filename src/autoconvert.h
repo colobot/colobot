@@ -17,7 +17,7 @@
 // autoconvert.h
 
 #ifndef _AUTOCONVERT_H_
-#define	_AUTOCONVERT_H_
+#define _AUTOCONVERT_H_
 
 
 #include "auto.h"
@@ -35,11 +35,11 @@ class CObject;
 
 enum AutoConvertPhase
 {
-	ACP_STOP		= 1,
-	ACP_WAIT		= 2,
-	ACP_CLOSE		= 3,	// close the cover
-	ACP_ROTATE		= 4,	// turn the cover
-	ACP_OPEN		= 5,	// opens the cover
+    ACP_STOP        = 1,
+    ACP_WAIT        = 2,
+    ACP_CLOSE       = 3,    // close the cover
+    ACP_ROTATE      = 4,    // turn the cover
+    ACP_OPEN        = 5,    // opens the cover
 };
 
 
@@ -47,35 +47,35 @@ enum AutoConvertPhase
 class CAutoConvert : public CAuto
 {
 public:
-	CAutoConvert(CInstanceManager* iMan, CObject* object);
-	~CAutoConvert();
+    CAutoConvert(CInstanceManager* iMan, CObject* object);
+    ~CAutoConvert();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
-	BOOL		Abort();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
+    BOOL        Abort();
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	CObject*	SearchStone(ObjectType type);
-	BOOL		SearchVehicle();
-	void		CreateMetal();
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoConvertPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastParticule;
-	BOOL				m_bResetDelete;
-	BOOL				m_bSoundClose;
-	int					m_soundChannel;
+    CObject*    SearchStone(ObjectType type);
+    BOOL        SearchVehicle();
+    void        CreateMetal();
+
+protected:
+    AutoConvertPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastParticule;
+    BOOL                m_bResetDelete;
+    BOOL                m_bSoundClose;
+    int                 m_soundChannel;
 };
 
 

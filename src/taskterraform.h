@@ -17,7 +17,7 @@
 // taskterraform.h
 
 #ifndef _TASKSTERRAFORM_H_
-#define	_TASKSTERRAFORM_H_
+#define _TASKSTERRAFORM_H_
 
 
 #include "misc.h"
@@ -34,10 +34,10 @@ class CObject;
 
 enum TaskTerraPhase
 {
-	TTP_CHARGE	= 1,	// charge of energy
-	TTP_DOWN	= 2,	// down
-	TTP_TERRA	= 3,	// strike
-	TTP_UP		= 4,	// up
+    TTP_CHARGE  = 1,    // charge of energy
+    TTP_DOWN    = 2,    // down
+    TTP_TERRA   = 3,    // strike
+    TTP_UP      = 4,    // up
 };
 
 
@@ -45,27 +45,27 @@ enum TaskTerraPhase
 class CTaskTerraform : public CTask
 {
 public:
-	CTaskTerraform(CInstanceManager* iMan, CObject* object);
-	~CTaskTerraform();
+    CTaskTerraform(CInstanceManager* iMan, CObject* object);
+    ~CTaskTerraform();
 
-	BOOL		EventProcess(const Event &event);
+    BOOL        EventProcess(const Event &event);
 
-	Error		Start();
-	Error		IsEnded();
-	BOOL		Abort();
-
-protected:
-	BOOL		Terraform();
+    Error       Start();
+    Error       IsEnded();
+    BOOL        Abort();
 
 protected:
-	TaskTerraPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_time;
-	float			m_lastParticule;
-	int				m_soundChannel;
-	BOOL			m_bError;
-	D3DVECTOR		m_terraPos;
+    BOOL        Terraform();
+
+protected:
+    TaskTerraPhase  m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_time;
+    float           m_lastParticule;
+    int             m_soundChannel;
+    BOOL            m_bError;
+    D3DVECTOR       m_terraPos;
 };
 
 

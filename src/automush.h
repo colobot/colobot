@@ -17,7 +17,7 @@
 // automush.h
 
 #ifndef _AUTOMUSH_H_
-#define	_AUTOMUSH_H_
+#define _AUTOMUSH_H_
 
 
 #include "auto.h"
@@ -35,11 +35,11 @@ class CObject;
 
 enum AutoMushPhase
 {
-	AMP_WAIT		= 1,
-	AMP_SNIF		= 2,
-	AMP_ZOOM		= 3,
-	AMP_FIRE		= 4,
-	AMP_SMOKE		= 5,
+    AMP_WAIT        = 1,
+    AMP_SNIF        = 2,
+    AMP_ZOOM        = 3,
+    AMP_FIRE        = 4,
+    AMP_SMOKE       = 5,
 };
 
 
@@ -47,26 +47,26 @@ enum AutoMushPhase
 class CAutoMush : public CAuto
 {
 public:
-	CAutoMush(CInstanceManager* iMan, CObject* object);
-	~CAutoMush();
+    CAutoMush(CInstanceManager* iMan, CObject* object);
+    ~CAutoMush();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	BOOL		SearchTarget();
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoMushPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_lastParticule;
+    BOOL        SearchTarget();
+
+protected:
+    AutoMushPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_lastParticule;
 };
 
 

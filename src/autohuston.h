@@ -17,7 +17,7 @@
 // autohuston.h
 
 #ifndef _AUTOHUSTON_H_
-#define	_AUTOHUSTON_H_
+#define _AUTOHUSTON_H_
 
 
 #include "auto.h"
@@ -35,42 +35,42 @@ class CObject;
 
 typedef struct
 {
-	int				parti;
-	ParticuleType	type;
-	D3DVECTOR		pos;
-	float			dim;
-	float			total;
-	float			off;
+    int             parti;
+    ParticuleType   type;
+    D3DVECTOR       pos;
+    float           dim;
+    float           total;
+    float           off;
 }
 HustonLens;
 
 
-#define HUSTONMAXLENS	20
+#define HUSTONMAXLENS   20
 
 
 class CAutoHuston : public CAuto
 {
 public:
-	CAutoHuston(CInstanceManager* iMan, CObject* object);
-	~CAutoHuston();
+    CAutoHuston(CInstanceManager* iMan, CObject* object);
+    ~CAutoHuston();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	void		Start(int param);
-	BOOL		EventProcess(const Event &event);
-	BOOL		Abort();
-	Error		RetError();
+    void        Init();
+    void        Start(int param);
+    BOOL        EventProcess(const Event &event);
+    BOOL        Abort();
+    Error       RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
-
-protected:
+    BOOL        CreateInterface(BOOL bSelect);
 
 protected:
-	float		m_progress;
-	float		m_speed;
-	HustonLens	m_lens[HUSTONMAXLENS];
-	int			m_lensTotal;
+
+protected:
+    float       m_progress;
+    float       m_speed;
+    HustonLens  m_lens[HUSTONMAXLENS];
+    int         m_lensTotal;
 };
 
 

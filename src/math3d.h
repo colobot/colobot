@@ -17,7 +17,7 @@
 // math3d.h
 
 #ifndef _MATH3D_H_
-#define	_MATH3D_H_
+#define _MATH3D_H_
 
 
 #define STRICT
@@ -25,82 +25,82 @@
 #include <math.h>
 
 
-#define PI				3.14159265358979323846f
-#define CHOUIA			1e-6f
-#define BEAUCOUP		1e6f
+#define PI              3.14159265358979323846f
+#define CHOUIA          1e-6f
+#define BEAUCOUP        1e6f
 
 
 
-BOOL			IsEqual(float a, float b);
+BOOL            IsEqual(float a, float b);
 
-float		Min(float a, float b);
-float		Min(float a, float b, float c);
-float		Min(float a, float b, float c, float d);
-float		Min(float a, float b, float c, float d, float e);
+float       Min(float a, float b);
+float       Min(float a, float b, float c);
+float       Min(float a, float b, float c, float d);
+float       Min(float a, float b, float c, float d, float e);
 
-float		Max(float a, float b);
-float		Max(float a, float b, float c);
-float		Max(float a, float b, float c, float d);
-float		Max(float a, float b, float c, float d, float e);
+float       Max(float a, float b);
+float       Max(float a, float b, float c);
+float       Max(float a, float b, float c, float d);
+float       Max(float a, float b, float c, float d, float e);
 
-float		Norm(float a);
-float		Abs(float a);
-	
-void			Swap(int &a, int &b);
-void			Swap(float &a, float &b);
-void			Swap(FPOINT &a, FPOINT &b);
+float       Norm(float a);
+float       Abs(float a);
 
-float		Mod(float a, float m);
-float		NormAngle(float angle);
-BOOL			TestAngle(float angle, float min, float max);
+void            Swap(int &a, int &b);
+void            Swap(float &a, float &b);
+void            Swap(FPOINT &a, FPOINT &b);
 
-float		Direction(float a, float g);
-FPOINT		RotatePoint(FPOINT center, float angle, FPOINT p);
-FPOINT		RotatePoint(float angle, FPOINT p);
-FPOINT		RotatePoint(float angle, float dist);
-float		RotateAngle(float x, float y);
-float		RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
-float		MidPoint(FPOINT a, FPOINT b, float px);
-D3DVECTOR	SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
-BOOL			IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
-BOOL			Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
-BOOL			IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
-void			RotatePoint(float cx, float cy, float angle, float &px, float &py);
-void			RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
-void			RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
-D3DVECTOR	RotateView(D3DVECTOR center, float angleH, float angleV, float dist);
-D3DVECTOR	LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
-float		Length(FPOINT a, FPOINT b);
-float		Length(float x, float y);
-float		Length(const D3DVECTOR &u);
-float		Length(const D3DVECTOR &a, const D3DVECTOR &b);
-float		Length2d(const D3DVECTOR &a, const D3DVECTOR &b);
-float		Angle( D3DVECTOR u, D3DVECTOR v );
-D3DVECTOR	Cross( D3DVECTOR u, D3DVECTOR v );
-D3DVECTOR	ComputeNormal( D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3 );
-D3DVECTOR	Transform(const D3DMATRIX &m, D3DVECTOR p);
-D3DVECTOR	Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p);
+float       Mod(float a, float m);
+float       NormAngle(float angle);
+BOOL            TestAngle(float angle, float min, float max);
 
-void			MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
-void			SmoothObject( D3DVERTEX2* pVertices, int nb );
-BOOL			LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
-float		DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &c, const D3DVECTOR &p);
-BOOL			IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
-void			MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle);
-void			MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle);
+float       Direction(float a, float g);
+FPOINT      RotatePoint(FPOINT center, float angle, FPOINT p);
+FPOINT      RotatePoint(float angle, FPOINT p);
+FPOINT      RotatePoint(float angle, float dist);
+float       RotateAngle(float x, float y);
+float       RotateAngle(FPOINT center, FPOINT p1, FPOINT p2);
+float       MidPoint(FPOINT a, FPOINT b, float px);
+D3DVECTOR   SegmentDist(const D3DVECTOR &p1, const D3DVECTOR &p2, float dist);
+BOOL            IsInsideTriangle(FPOINT a, FPOINT b, FPOINT c, FPOINT p);
+BOOL            Intersect(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR d, D3DVECTOR e, D3DVECTOR &i);
+BOOL            IntersectY(D3DVECTOR a, D3DVECTOR b, D3DVECTOR c, D3DVECTOR &p);
+void            RotatePoint(float cx, float cy, float angle, float &px, float &py);
+void            RotatePoint(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+void            RotatePoint2(D3DVECTOR center, float angleH, float angleV, D3DVECTOR &p);
+D3DVECTOR   RotateView(D3DVECTOR center, float angleH, float angleV, float dist);
+D3DVECTOR   LookatPoint( D3DVECTOR eye, float angleH, float angleV, float length );
+float       Length(FPOINT a, FPOINT b);
+float       Length(float x, float y);
+float       Length(const D3DVECTOR &u);
+float       Length(const D3DVECTOR &a, const D3DVECTOR &b);
+float       Length2d(const D3DVECTOR &a, const D3DVECTOR &b);
+float       Angle( D3DVECTOR u, D3DVECTOR v );
+D3DVECTOR   Cross( D3DVECTOR u, D3DVECTOR v );
+D3DVECTOR   ComputeNormal( D3DVECTOR p1, D3DVECTOR p2, D3DVECTOR p3 );
+D3DVECTOR   Transform(const D3DMATRIX &m, D3DVECTOR p);
+D3DVECTOR   Projection(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &p);
 
-float		Rand();
-float		Neutral(float value, float dead);
+void            MappingObject( D3DVERTEX2* pVertices, int nb, float scale );
+void            SmoothObject( D3DVERTEX2* pVertices, int nb );
+BOOL            LineFunction(FPOINT p1, FPOINT p2, float &a, float &b);
+float       DistancePlanPoint(const D3DVECTOR &a, const D3DVECTOR &b, const D3DVECTOR &c, const D3DVECTOR &p);
+BOOL            IsSamePlane(D3DVECTOR *plan1, D3DVECTOR *plan2);
+void            MatRotateXZY(D3DMATRIX &mat, D3DVECTOR angle);
+void            MatRotateZXY(D3DMATRIX &mat, D3DVECTOR angle);
 
-float		Prop(int a, int b, float p);
-float		Smooth(float actual, float hope, float time);
-float		Bounce(float progress, float middle=0.3f, float bounce=0.4f);
+float       Rand();
+float       Neutral(float value, float dead);
 
-D3DCOLOR		RetColor(float intensity);
-D3DCOLOR		RetColor(D3DCOLORVALUE intensity);
+float       Prop(int a, int b, float p);
+float       Smooth(float actual, float hope, float time);
+float       Bounce(float progress, float middle=0.3f, float bounce=0.4f);
+
+D3DCOLOR        RetColor(float intensity);
+D3DCOLOR        RetColor(D3DCOLORVALUE intensity);
 D3DCOLORVALUE RetColor(D3DCOLOR intensity);
 
-void			RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest);
-void			HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest);
+void            RGB2HSV(D3DCOLORVALUE src, ColorHSV &dest);
+void            HSV2RGB(ColorHSV src, D3DCOLORVALUE &dest);
 
 #endif //_MATH3D_H_

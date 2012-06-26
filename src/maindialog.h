@@ -17,7 +17,7 @@
 // maindialog.h
 
 #ifndef _MAINDIALOG_H_
-#define	_MAINDIALOG_H_
+#define _MAINDIALOG_H_
 
 #include "struct.h"
 #include "camera.h"
@@ -34,23 +34,23 @@ class CParticule;
 class CSound;
 
 
-#define USERLISTMAX	100
-#define MAXSCENE	1000
+#define USERLISTMAX 100
+#define MAXSCENE    1000
 
 typedef struct
 {
-	char	numTry;
-	char	bPassed;
+    char    numTry;
+    char    bPassed;
 }
 SceneInfo;
 
 typedef struct
 {
-	int		face;			// face
-	int		glasses;		// glasses
-	D3DCOLORVALUE	colorHair;		// hair color
-	D3DCOLORVALUE	colorCombi;		// spacesuit volor
-	D3DCOLORVALUE	colorBand;		// strips color
+    int     face;           // face
+    int     glasses;        // glasses
+    D3DCOLORVALUE   colorHair;      // hair color
+    D3DCOLORVALUE   colorCombi;     // spacesuit volor
+    D3DCOLORVALUE   colorBand;      // strips color
 }
 GamerPerso;
 
@@ -59,197 +59,197 @@ GamerPerso;
 class CMainDialog
 {
 public:
-	CMainDialog(CInstanceManager* iMan);
-	~CMainDialog();
+    CMainDialog(CInstanceManager* iMan);
+    ~CMainDialog();
 
-	BOOL	EventProcess(const Event &event);
-	void	ChangePhase(Phase phase);
+    BOOL    EventProcess(const Event &event);
+    void    ChangePhase(Phase phase);
 
-	void	SetSceneRead(char* name);
-	void	SetStackRead(char* name);
-	void	SetSceneName(char* name);
-	void	SetSceneRank(int rank);
-	char*	RetSceneRead();
-	char*	RetStackRead();
-	char*	RetSceneName();
-	int		RetSceneRank();
-	char*	RetSceneDir();
-	BOOL	RetSceneSoluce();
-	char*	RetSavegameDir();
-	char*	RetPublicDir();
+    void    SetSceneRead(char* name);
+    void    SetStackRead(char* name);
+    void    SetSceneName(char* name);
+    void    SetSceneRank(int rank);
+    char*   RetSceneRead();
+    char*   RetStackRead();
+    char*   RetSceneName();
+    int     RetSceneRank();
+    char*   RetSceneDir();
+    BOOL    RetSceneSoluce();
+    char*   RetSavegameDir();
+    char*   RetPublicDir();
 
-	BOOL	RetTooltip();
-	BOOL	RetGlint();
-	BOOL	RetSoluce4();
-	BOOL	RetMovies();
-	BOOL	RetNiceReset();
-	BOOL	RetHimselfDamage();
+    BOOL    RetTooltip();
+    BOOL    RetGlint();
+    BOOL    RetSoluce4();
+    BOOL    RetMovies();
+    BOOL    RetNiceReset();
+    BOOL    RetHimselfDamage();
 
-	void	SetUserDir(char *base, int rank);
-	void	BuildSceneName(char *filename, char *base, int rank);
-	void	BuildResumeName(char *filename, char *base, int rank);
-	char*	RetFilesDir();
+    void    SetUserDir(char *base, int rank);
+    void    BuildSceneName(char *filename, char *base, int rank);
+    void    BuildResumeName(char *filename, char *base, int rank);
+    char*   RetFilesDir();
 
-	void	StartAbort();
-	void	StartDeleteObject();
-	void	StartDeleteGame(char *gamer);
-	void	StartQuit();
-	void	StartDialog(FPOINT dim, BOOL bFire, BOOL bOK, BOOL bCancel);
-	void	FrameDialog(float rTime);
-	void	StopDialog();
-	BOOL	IsDialog();
+    void    StartAbort();
+    void    StartDeleteObject();
+    void    StartDeleteGame(char *gamer);
+    void    StartQuit();
+    void    StartDialog(FPOINT dim, BOOL bFire, BOOL bOK, BOOL bCancel);
+    void    FrameDialog(float rTime);
+    void    StopDialog();
+    BOOL    IsDialog();
 
-	void	StartSuspend();
-	void	StopSuspend();
+    void    StartSuspend();
+    void    StopSuspend();
 
-	void	SetupMemorize();
-	void	SetupRecall();
+    void    SetupMemorize();
+    void    SetupRecall();
 
-	BOOL	ReadGamerInfo();
-	BOOL	WriteGamerInfo();
-	void	SetGamerInfoTry(int rank, int numTry);
-	int		RetGamerInfoTry(int rank);
-	void	SetGamerInfoPassed(int rank, BOOL bPassed);
-	BOOL	RetGamerInfoPassed(int rank);
-	BOOL	NextMission();
+    BOOL    ReadGamerInfo();
+    BOOL    WriteGamerInfo();
+    void    SetGamerInfoTry(int rank, int numTry);
+    int     RetGamerInfoTry(int rank);
+    void    SetGamerInfoPassed(int rank, BOOL bPassed);
+    BOOL    RetGamerInfoPassed(int rank);
+    BOOL    NextMission();
 
-	void	WriteGamerPerso(char *gamer);
-	void	ReadGamerPerso(char *gamer);
-	void	SetGamerFace(char *gamer, int face);
-	int		RetGamerFace(char *gamer);
-	int		RetGamerFace();
-	int		RetGamerGlasses();
-	BOOL	RetGamerOnlyHead();
-	float	RetPersoAngle();
-	D3DCOLORVALUE RetGamerColorHair();
-	D3DCOLORVALUE RetGamerColorCombi();
-	D3DCOLORVALUE RetGamerColorBand();
+    void    WriteGamerPerso(char *gamer);
+    void    ReadGamerPerso(char *gamer);
+    void    SetGamerFace(char *gamer, int face);
+    int     RetGamerFace(char *gamer);
+    int     RetGamerFace();
+    int     RetGamerGlasses();
+    BOOL    RetGamerOnlyHead();
+    float   RetPersoAngle();
+    D3DCOLORVALUE RetGamerColorHair();
+    D3DCOLORVALUE RetGamerColorCombi();
+    D3DCOLORVALUE RetGamerColorBand();
 
-	void	AllMissionUpdate();
-	void	ShowSoluceUpdate();
-
-protected:
-	void	GlintMove();
-	void	FrameParticule(float rTime);
-	void	NiceParticule(FPOINT mouse, BOOL bPress);
-	void	ReadNameList();
-	void	UpdateNameList();
-	void	UpdateNameEdit();
-	void	UpdateNameControl();
-	void	UpdateNameFace();
-	void	NameSelect();
-	void	NameCreate();
-	void	NameDelete();
-	void	UpdatePerso();
-	void	CameraPerso();
-	void	FixPerso(int rank, int index);
-	void	ColorPerso();
-	void	DefPerso();
-	BOOL	IsIOReadScene();
-	void	IOReadName();
-	void	IOReadList();
-	void	IOUpdateList();
-	void	IODeleteScene();
-	BOOL	IOWriteScene();
-	BOOL	IOReadScene();
-	int		RetChapPassed();
-	void	UpdateSceneChap(int &chap);
-	void	UpdateSceneList(int chap, int &sel);
-	void	UpdateSceneResume(int rank);
-	void	UpdateDisplayDevice();
-	void	UpdateDisplayMode();
-	void	ChangeDisplay();
-	void	UpdateApply();
-	void	UpdateSetupButtons();
-	void	ChangeSetupButtons();
-	void	ChangeSetupQuality(int quality);
-	void	UpdateKey();
-	void	ChangeKey(EventMsg event);
+    void    AllMissionUpdate();
+    void    ShowSoluceUpdate();
 
 protected:
-	CInstanceManager* m_iMan;
-	CRobotMain*		m_main;
-	CEvent*			m_event;
-	CD3DEngine*		m_engine;
-	CInterface*		m_interface;
-	CParticule*		m_particule;
-	CCamera*		m_camera;
-	CSound*			m_sound;
+    void    GlintMove();
+    void    FrameParticule(float rTime);
+    void    NiceParticule(FPOINT mouse, BOOL bPress);
+    void    ReadNameList();
+    void    UpdateNameList();
+    void    UpdateNameEdit();
+    void    UpdateNameControl();
+    void    UpdateNameFace();
+    void    NameSelect();
+    void    NameCreate();
+    void    NameDelete();
+    void    UpdatePerso();
+    void    CameraPerso();
+    void    FixPerso(int rank, int index);
+    void    ColorPerso();
+    void    DefPerso();
+    BOOL    IsIOReadScene();
+    void    IOReadName();
+    void    IOReadList();
+    void    IOUpdateList();
+    void    IODeleteScene();
+    BOOL    IOWriteScene();
+    BOOL    IOReadScene();
+    int     RetChapPassed();
+    void    UpdateSceneChap(int &chap);
+    void    UpdateSceneList(int chap, int &sel);
+    void    UpdateSceneResume(int rank);
+    void    UpdateDisplayDevice();
+    void    UpdateDisplayMode();
+    void    ChangeDisplay();
+    void    UpdateApply();
+    void    UpdateSetupButtons();
+    void    ChangeSetupButtons();
+    void    ChangeSetupQuality(int quality);
+    void    UpdateKey();
+    void    ChangeKey(EventMsg event);
 
-	Phase			m_phase;			// copy of CRobotMain
-	Phase			m_phaseSetup;			// tab selected
-	Phase			m_phaseTerm;			// phase trainer/scene/proto
-	float			m_phaseTime;
+protected:
+    CInstanceManager* m_iMan;
+    CRobotMain*     m_main;
+    CEvent*         m_event;
+    CD3DEngine*     m_engine;
+    CInterface*     m_interface;
+    CParticule*     m_particule;
+    CCamera*        m_camera;
+    CSound*         m_sound;
 
-	GamerPerso		m_perso;			// perso: description
-	GamerPerso		m_persoCopy;			// perso: copy for cancellation
-	int			m_persoTab;			// perso: tab selected
-	float			m_persoAngle;			// perso: angle of presentation
+    Phase           m_phase;            // copy of CRobotMain
+    Phase           m_phaseSetup;           // tab selected
+    Phase           m_phaseTerm;            // phase trainer/scene/proto
+    float           m_phaseTime;
 
-	char			m_sceneDir[_MAX_FNAME];		// scene folder
-	char			m_savegameDir[_MAX_FNAME];	// savegame folder
-	char			m_publicDir[_MAX_FNAME];	// program folder 
-	char			m_userDir[_MAX_FNAME];		// user folder
-	char			m_filesDir[_MAX_FNAME];		// case files 
+    GamerPerso      m_perso;            // perso: description
+    GamerPerso      m_persoCopy;            // perso: copy for cancellation
+    int         m_persoTab;         // perso: tab selected
+    float           m_persoAngle;           // perso: angle of presentation
 
-	int				m_index;		// 0..4
-	int				m_chap[10];		// selected chapter (0..8)
-	int				m_sel[10];		// chosen mission (0..98)
-	int				m_maxList;
-	int				m_accessChap;
-	char			m_sceneRead[100];		// name of the scene to read
-	char			m_stackRead[100];		// name of the scene to read
-	char			m_sceneName[20];		// name of the scene to play
-	int				m_sceneRank;		// rank of the scene to play
-	BOOL			m_bSceneSoluce;			// shows the solution
-	BOOL			m_bSimulSetup;			// adjustment during the game
-	BOOL			m_accessEnable;
-	BOOL			m_accessMission;
-	BOOL			m_accessUser;
-	BOOL			m_bDeleteGamer;
+    char            m_sceneDir[_MAX_FNAME];     // scene folder
+    char            m_savegameDir[_MAX_FNAME];  // savegame folder
+    char            m_publicDir[_MAX_FNAME];    // program folder
+    char            m_userDir[_MAX_FNAME];      // user folder
+    char            m_filesDir[_MAX_FNAME];     // case files
 
-	int				m_userTotal;
-	char			m_userList[USERLISTMAX][100];
+    int             m_index;        // 0..4
+    int             m_chap[10];     // selected chapter (0..8)
+    int             m_sel[10];      // chosen mission (0..98)
+    int             m_maxList;
+    int             m_accessChap;
+    char            m_sceneRead[100];       // name of the scene to read
+    char            m_stackRead[100];       // name of the scene to read
+    char            m_sceneName[20];        // name of the scene to play
+    int             m_sceneRank;        // rank of the scene to play
+    BOOL            m_bSceneSoluce;         // shows the solution
+    BOOL            m_bSimulSetup;          // adjustment during the game
+    BOOL            m_accessEnable;
+    BOOL            m_accessMission;
+    BOOL            m_accessUser;
+    BOOL            m_bDeleteGamer;
 
-	int				m_shotDelay;		// number of frames before copy
-	char			m_shotName[100];		// generate a file name
+    int             m_userTotal;
+    char            m_userList[USERLISTMAX][100];
 
-	int				m_setupSelDevice;
-	int				m_setupSelMode;
-	BOOL			m_setupFull;
+    int             m_shotDelay;        // number of frames before copy
+    char            m_shotName[100];        // generate a file name
 
-	BOOL			m_bTooltip;			// tooltips to be displayed?
-	BOOL			m_bGlint;			// reflections on buttons?
-	BOOL			m_bRain;			// rain in the interface?
-	BOOL			m_bSoluce4;			// solutions in program 4?
-	BOOL			m_bMovies;			// cinematics?
-	BOOL			m_bNiceReset;			// for CTaskReset
-	BOOL			m_bHimselfDamage;		// for shots
-	BOOL			m_bCameraScroll;		// for CCamera
-	BOOL			m_bCameraInvertX;		// for CCamera
-	BOOL			m_bCameraInvertY;		// for CCamera
-	BOOL			m_bEffect;			// for CCamera
+    int             m_setupSelDevice;
+    int             m_setupSelMode;
+    BOOL            m_setupFull;
 
-	FPOINT			m_glintMouse;
-	float			m_glintTime;
+    BOOL            m_bTooltip;         // tooltips to be displayed?
+    BOOL            m_bGlint;           // reflections on buttons?
+    BOOL            m_bRain;            // rain in the interface?
+    BOOL            m_bSoluce4;         // solutions in program 4?
+    BOOL            m_bMovies;          // cinematics?
+    BOOL            m_bNiceReset;           // for CTaskReset
+    BOOL            m_bHimselfDamage;       // for shots
+    BOOL            m_bCameraScroll;        // for CCamera
+    BOOL            m_bCameraInvertX;       // for CCamera
+    BOOL            m_bCameraInvertY;       // for CCamera
+    BOOL            m_bEffect;          // for CCamera
 
-	int				m_loadingCounter;
+    FPOINT          m_glintMouse;
+    float           m_glintTime;
 
-	BOOL			m_bDialog;			// this dialogue?
-	BOOL			m_bDialogFire;			// setting on fire?
-	BOOL			m_bDialogDelete;
-	FPOINT			m_dialogPos;
-	FPOINT			m_dialogDim;
-	float			m_dialogParti;
-	float			m_dialogTime;
-	BOOL			m_bInitPause;
-	CameraType		m_initCamera;
+    int             m_loadingCounter;
 
-	int				m_partiPhase[10];
-	float			m_partiTime[10];
-	FPOINT			m_partiPos[10];
+    BOOL            m_bDialog;          // this dialogue?
+    BOOL            m_bDialogFire;          // setting on fire?
+    BOOL            m_bDialogDelete;
+    FPOINT          m_dialogPos;
+    FPOINT          m_dialogDim;
+    float           m_dialogParti;
+    float           m_dialogTime;
+    BOOL            m_bInitPause;
+    CameraType      m_initCamera;
 
-	SceneInfo		m_sceneInfo[MAXSCENE];
+    int             m_partiPhase[10];
+    float           m_partiTime[10];
+    FPOINT          m_partiPos[10];
+
+    SceneInfo       m_sceneInfo[MAXSCENE];
 };
 
 

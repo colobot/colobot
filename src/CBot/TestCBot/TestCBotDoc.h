@@ -27,47 +27,47 @@
 class CTestCBotDoc : public CDocument
 {
 protected: // create from serialization only
-	CTestCBotDoc();
-	DECLARE_DYNCREATE(CTestCBotDoc)
+    CTestCBotDoc();
+    DECLARE_DYNCREATE(CTestCBotDoc)
 
 // Attributes
 public:
-	CEdit*			m_pEdit;			// pour mémoriser le texte, et l'afficher
-	CBotProgram*	m_pProg;			// le programme compilé
-	CString			m_DocText;
-	CBotStringArray	m_Liste;
-	BOOL			m_bModified;
+    CEdit*          m_pEdit;            // pour mémoriser le texte, et l'afficher
+    CBotProgram*    m_pProg;            // le programme compilé
+    CString         m_DocText;
+    CBotStringArray m_Liste;
+    BOOL            m_bModified;
 
 // Operations
 public:
-	BOOL			Compile();
+    BOOL            Compile();
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTestCBotDoc)
-	public:
-	virtual BOOL OnNewDocument();
-	virtual void Serialize(CArchive& ar);
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CTestCBotDoc)
+    public:
+    virtual BOOL OnNewDocument();
+    virtual void Serialize(CArchive& ar);
+    //}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~CTestCBotDoc();
+    virtual ~CTestCBotDoc();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+    virtual void AssertValid() const;
+    virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
 
 // Generated message map functions
 protected:
-	//{{AFX_MSG(CTestCBotDoc)
-	afx_msg void OnRun();
-	afx_msg void OnChangeEdit1();
-	afx_msg void OnTest();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CTestCBotDoc)
+    afx_msg void OnRun();
+    afx_msg void OnChangeEdit1();
+    afx_msg void OnTest();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 /////////////////////////////////////////////////////////////////////////////

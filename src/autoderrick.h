@@ -17,7 +17,7 @@
 // autoderrick.h
 
 #ifndef _AUTODERRICK_H_
-#define	_AUTODERRICK_H_
+#define _AUTODERRICK_H_
 
 
 #include "object.h"
@@ -36,11 +36,11 @@ class CObject;
 
 enum AutoDerrickPhase
 {
-	ADP_WAIT		= 1,
-	ADP_EXCAVATE		= 2,	// down the drill
-	ADP_ASCEND		= 3,	// up the drill
-	ADP_EXPORT		= 4,	// exports matter
-	ADP_ISFREE		= 5,	// expected material loss
+    ADP_WAIT        = 1,
+    ADP_EXCAVATE        = 2,    // down the drill
+    ADP_ASCEND      = 3,    // up the drill
+    ADP_EXPORT      = 4,    // exports matter
+    ADP_ISFREE      = 5,    // expected material loss
 };
 
 
@@ -48,36 +48,36 @@ enum AutoDerrickPhase
 class CAutoDerrick : public CAuto
 {
 public:
-	CAutoDerrick(CInstanceManager* iMan, CObject* object);
-	~CAutoDerrick();
+    CAutoDerrick(CInstanceManager* iMan, CObject* object);
+    ~CAutoDerrick();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	CObject*	SearchFret();
-	BOOL		SearchFree(D3DVECTOR pos);
-	void		CreateFret(D3DVECTOR pos, float angle, ObjectType type, float height);
-	BOOL		ExistKey();
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoDerrickPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastParticule;
-	float				m_lastTrack;
-	D3DVECTOR			m_fretPos;
-	int					m_soundChannel;
-	BOOL				m_bSoundFall;
+    CObject*    SearchFret();
+    BOOL        SearchFree(D3DVECTOR pos);
+    void        CreateFret(D3DVECTOR pos, float angle, ObjectType type, float height);
+    BOOL        ExistKey();
+
+protected:
+    AutoDerrickPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastParticule;
+    float               m_lastTrack;
+    D3DVECTOR           m_fretPos;
+    int                 m_soundChannel;
+    BOOL                m_bSoundFall;
 };
 
 

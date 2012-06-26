@@ -17,7 +17,7 @@
 // image.h
 
 #ifndef _IMAGE_H_
-#define	_IMAGE_H_
+#define _IMAGE_H_
 
 
 #include "control.h"
@@ -30,22 +30,22 @@ class CD3DEngine;
 class CImage : public CControl
 {
 public:
-	CImage(CInstanceManager* iMan);
-	virtual ~CImage();
+    CImage(CInstanceManager* iMan);
+    virtual ~CImage();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+    BOOL    Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+    BOOL    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetFilenameImage(char *name);
-	char*	RetFilenameImage();
-
-protected:
+    void    SetFilenameImage(char *name);
+    char*   RetFilenameImage();
 
 protected:
-	char	m_filename[100];
+
+protected:
+    char    m_filename[100];
 };
 
 

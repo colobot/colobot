@@ -17,7 +17,7 @@
 // autoresearch.h
 
 #ifndef _AUTORESEARCH_H_
-#define	_AUTORESEARCH_H_
+#define _AUTORESEARCH_H_
 
 
 #include "auto.h"
@@ -35,8 +35,8 @@ class CObject;
 
 enum AutoResearchPhase
 {
-	ALP_WAIT		= 1,
-	ALP_SEARCH		= 2,	// research in progress
+    ALP_WAIT        = 1,
+    ALP_SEARCH      = 2,    // research in progress
 };
 
 
@@ -44,38 +44,38 @@ enum AutoResearchPhase
 class CAutoResearch : public CAuto
 {
 public:
-	CAutoResearch(CInstanceManager* iMan, CObject* object);
-	~CAutoResearch();
+    CAutoResearch(CInstanceManager* iMan, CObject* object);
+    ~CAutoResearch();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	void		UpdateInterface();
-	void		UpdateInterface(float rTime);
-	void		OkayButton(CWindow *pw, EventMsg event);
-	BOOL		TestResearch(EventMsg event);
-	void		SetResearch(EventMsg event);
-	void		FireStopUpdate(float progress, BOOL bLightOn);
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoResearchPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastUpdateTime;
-	float				m_lastParticule;
-	EventMsg			m_research;
-	int					m_partiStop[6];
-	int					m_channelSound;
+    void        UpdateInterface();
+    void        UpdateInterface(float rTime);
+    void        OkayButton(CWindow *pw, EventMsg event);
+    BOOL        TestResearch(EventMsg event);
+    void        SetResearch(EventMsg event);
+    void        FireStopUpdate(float progress, BOOL bLightOn);
+
+protected:
+    AutoResearchPhase   m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastUpdateTime;
+    float               m_lastParticule;
+    EventMsg            m_research;
+    int                 m_partiStop[6];
+    int                 m_channelSound;
 };
 
 

@@ -17,7 +17,7 @@
 // autoflag.h
 
 #ifndef _AUTOFLAG_H_
-#define	_AUTOFLAG_H_
+#define _AUTOFLAG_H_
 
 
 #include "auto.h"
@@ -36,22 +36,22 @@ class CObject;
 class CAutoFlag : public CAuto
 {
 public:
-	CAutoFlag(CInstanceManager* iMan, CObject* object);
-	~CAutoFlag();
+    CAutoFlag(CInstanceManager* iMan, CObject* object);
+    ~CAutoFlag();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	void		Start(int param);
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
-
-protected:
+    void        Init();
+    void        Start(int param);
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
 protected:
-	float		m_strong;
-	int			m_param;
-	float		m_progress;
+
+protected:
+    float       m_strong;
+    int         m_param;
+    float       m_progress;
 };
 
 

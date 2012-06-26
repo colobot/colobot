@@ -20,17 +20,17 @@
 // les divers constructeurs / destructeurs
 CBotIf::CBotIf()
 {
-	m_Condition =
-	m_Block		=
-	m_BlockElse	= NULL;			// NULL pour pouvoir faire delete directement
-	name = "CBotIf";			// debug
+    m_Condition =
+    m_Block     =
+    m_BlockElse = NULL;         // NULL pour pouvoir faire delete directement
+    name = "CBotIf";            // debug
 }
 
 CBotIf::~CBotIf()
 {
-	delete	m_Condition;		// libère la condition
-	delete	m_Block;			// libère le bloc d'instruction1
-	delete	m_BlockElse;		// libère le bloc d'instruction2
+    delete  m_Condition;        // libère la condition
+    delete  m_Block;            // libère le bloc d'instruction1
+    delete  m_BlockElse;        // libère le bloc d'instruction2
 }
 
 // compilation (routine statique)
@@ -38,47 +38,47 @@ CBotIf::~CBotIf()
 
 CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-	CBotToken*	pp = p;							// conserve le ^au token (début instruction)
+    CBotToken*  pp = p;                         // conserve le ^au token (début instruction)
 
-	if (!IsOfType(p, ID_IF)) return NULL;		// ne doit jamais arriver
+    if (!IsOfType(p, ID_IF)) return NULL;       // ne doit jamais arriver
 
-	CBotCStack* pStk = pStack->TokenStack(pp);	// un petit bout de pile svp
+    CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
 
-	CBotIf*	inst = new CBotIf();				// crée l'object
-	inst->SetToken( pp );
+    CBotIf* inst = new CBotIf();                // crée l'object
+    inst->SetToken( pp );
 
-	if ( NULL != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
-	{
-		// la condition existe bel et bien
+    if ( NULL != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
+    {
+        // la condition existe bel et bien
 
-		inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, TRUE );
-		if ( pStk->IsOk() )
-		{
-			// le bloc d'instruction est ok (peut être vide)
+        inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, TRUE );
+        if ( pStk->IsOk() )
+        {
+            // le bloc d'instruction est ok (peut être vide)
 
-			// regarde si l'instruction suivante est le token "else"
-			if (IsOfType(p, ID_ELSE))
-			{
-				// si oui, compile le bloc d'instruction qui suit
-				inst->m_BlockElse = CBotBlock::CompileBlkOrInst( p, pStk, TRUE );
-				if (!pStk->IsOk())
-				{
-					// il n'y a pas de bloc correct après le else
-					// libère l'objet, et transmet l'erreur qui est sur la pile
-					delete inst;
-					return pStack->Return(NULL, pStk);
-				}
-			}
+            // regarde si l'instruction suivante est le token "else"
+            if (IsOfType(p, ID_ELSE))
+            {
+                // si oui, compile le bloc d'instruction qui suit
+                inst->m_BlockElse = CBotBlock::CompileBlkOrInst( p, pStk, TRUE );
+                if (!pStk->IsOk())
+                {
+                    // il n'y a pas de bloc correct après le else
+                    // libère l'objet, et transmet l'erreur qui est sur la pile
+                    delete inst;
+                    return pStack->Return(NULL, pStk);
+                }
+            }
 
-			// rend l'object correct à qui le demande.
-			return pStack->Return(inst, pStk);
-		}
-	}
+            // rend l'object correct à qui le demande.
+            return pStack->Return(inst, pStk);
+        }
+    }
 
-	// erreur, libère l'objet
-	delete inst;
-	// et transmet l'erreur qui se trouve sur la pile.
-	return pStack->Return(NULL, pStk);
+    // erreur, libère l'objet
+    delete inst;
+    // et transmet l'erreur qui se trouve sur la pile.
+    return pStack->Return(NULL, pStk);
 }
 
 
@@ -86,74 +86,74 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 
 BOOL CBotIf :: Execute(CBotStack* &pj)
 {
-	CBotStack* pile = pj->AddStack(this);		// ajoute un élément à la pile
-												// ou le retrouve en cas de reprise
-//	if ( pile == EOX ) return TRUE;
+    CBotStack* pile = pj->AddStack(this);       // ajoute un élément à la pile
+                                                // ou le retrouve en cas de reprise
+//  if ( pile == EOX ) return TRUE;
 
-	if ( pile->IfStep() ) return FALSE;
+    if ( pile->IfStep() ) return FALSE;
 
-	// selon la reprise, on peut être dans l'un des 2 états
-	if( pile->GivState() == 0 )
-	{
-		// évalue la condition
-		if ( !m_Condition->Execute(pile) ) return FALSE;	// interrompu ici ?
+    // selon la reprise, on peut être dans l'un des 2 états
+    if( pile->GivState() == 0 )
+    {
+        // évalue la condition
+        if ( !m_Condition->Execute(pile) ) return FALSE;    // interrompu ici ?
 
-		// termine s'il y a une erreur
-		if ( !pile->IsOk() )
-		{
-			return pj->Return(pile);						// transmet le résultat et libère la pile
-		}
+        // termine s'il y a une erreur
+        if ( !pile->IsOk() )
+        {
+            return pj->Return(pile);                        // transmet le résultat et libère la pile
+        }
 
-		// passe dans le second état
-		if (!pile->SetState(1)) return FALSE;				// prêt pour la suite
-	}
-	
-	// second état, évalue les instructions associées
-	// le résultat de la condition est sur la pile
+        // passe dans le second état
+        if (!pile->SetState(1)) return FALSE;               // prêt pour la suite
+    }
 
-	if ( pile->GivVal() == TRUE )							// condition était vraie ?
-	{
-		if ( m_Block != NULL &&								// bloc peut être absent
-			!m_Block->Execute(pile) ) return FALSE;			// interrompu ici ?
-	}
-	else
-	{
-		if ( m_BlockElse != NULL &&							// s'il existe un bloc alternatif
-			!m_BlockElse->Execute(pile) ) return FALSE;		// interrompu ici
-	}
+    // second état, évalue les instructions associées
+    // le résultat de la condition est sur la pile
 
-	// transmet le résultat et libère la pile
-	return pj->Return(pile);
+    if ( pile->GivVal() == TRUE )                           // condition était vraie ?
+    {
+        if ( m_Block != NULL &&                             // bloc peut être absent
+            !m_Block->Execute(pile) ) return FALSE;         // interrompu ici ?
+    }
+    else
+    {
+        if ( m_BlockElse != NULL &&                         // s'il existe un bloc alternatif
+            !m_BlockElse->Execute(pile) ) return FALSE;     // interrompu ici
+    }
+
+    // transmet le résultat et libère la pile
+    return pj->Return(pile);
 }
 
 
 void CBotIf :: RestoreState(CBotStack* &pj, BOOL bMain)
 {
-	if ( !bMain ) return;
+    if ( !bMain ) return;
 
-	CBotStack* pile = pj->RestoreStack(this);		// ajoute un élément à la pile
-	if ( pile == NULL ) return;
+    CBotStack* pile = pj->RestoreStack(this);       // ajoute un élément à la pile
+    if ( pile == NULL ) return;
 
-	// selon la reprise, on peut être dans l'un des 2 états
-	if( pile->GivState() == 0 )
-	{
-		// évalue la condition
-		m_Condition->RestoreState(pile, bMain);	// interrompu ici !
-		return;
-	}
-	
-	// second état, évalue les instructions associées
-	// le résultat de la condition est sur la pile
+    // selon la reprise, on peut être dans l'un des 2 états
+    if( pile->GivState() == 0 )
+    {
+        // évalue la condition
+        m_Condition->RestoreState(pile, bMain); // interrompu ici !
+        return;
+    }
 
-	if ( pile->GivVal() == TRUE )							// condition était vraie ?
-	{
-		if ( m_Block != NULL )								// bloc peut être absent
-			 m_Block->RestoreState(pile, bMain);			// interrompu ici !
-	}
-	else
-	{
-		if ( m_BlockElse != NULL )							// s'il existe un bloc alternatif
-			 m_BlockElse->RestoreState(pile, bMain);		// interrompu ici !
-	}
+    // second état, évalue les instructions associées
+    // le résultat de la condition est sur la pile
+
+    if ( pile->GivVal() == TRUE )                           // condition était vraie ?
+    {
+        if ( m_Block != NULL )                              // bloc peut être absent
+             m_Block->RestoreState(pile, bMain);            // interrompu ici !
+    }
+    else
+    {
+        if ( m_BlockElse != NULL )                          // s'il existe un bloc alternatif
+             m_BlockElse->RestoreState(pile, bMain);        // interrompu ici !
+    }
 }
 

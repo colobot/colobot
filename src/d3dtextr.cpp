@@ -40,14 +40,14 @@
 //-----------------------------------------------------------------------------
 // Macros, function prototypes and static variable
 //-----------------------------------------------------------------------------
-static TCHAR	g_strTexturePath[512] = _T(""); // Path for files
-static BOOL		g_bDebugMode = FALSE;
+static TCHAR    g_strTexturePath[512] = _T(""); // Path for files
+static BOOL     g_bDebugMode = FALSE;
 
 
 
 void D3DTextr_SetDebugMode(BOOL bDebug)
 {
-	g_bDebugMode = bDebug;
+    g_bDebugMode = bDebug;
 }
 
 
@@ -269,67 +269,67 @@ TextureContainer::~TextureContainer()
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadImageData()
 {
-	TCHAR*		strExtension;
-	TCHAR		strMetaname[256];
-	TCHAR		strFilename[256];
+    TCHAR*      strExtension;
+    TCHAR       strMetaname[256];
+    TCHAR       strFilename[256];
 
-	if ( g_bDebugMode )
-	{
-		if ( _tcsrchr( m_strName, _T('\\') ) == 0 )
-		{
-			lstrcpy( strMetaname, "" );
-			lstrcpy( strFilename, g_strTexturePath );
-			lstrcat( strFilename, m_strName );
-		}
-		else
-		{
-			lstrcpy( strMetaname, "" );
-			lstrcpy( strFilename, m_strName );
-		}
-	}
-	else
-	{
-		if ( _tcsrchr( m_strName, _T('\\') ) == 0 )
-		{
+    if ( g_bDebugMode )
+    {
+        if ( _tcsrchr( m_strName, _T('\\') ) == 0 )
+        {
+            lstrcpy( strMetaname, "" );
+            lstrcpy( strFilename, g_strTexturePath );
+            lstrcat( strFilename, m_strName );
+        }
+        else
+        {
+            lstrcpy( strMetaname, "" );
+            lstrcpy( strFilename, m_strName );
+        }
+    }
+    else
+    {
+        if ( _tcsrchr( m_strName, _T('\\') ) == 0 )
+        {
 #if _SCHOOL
-			lstrcpy( strMetaname, "ceebot1.dat" );
+            lstrcpy( strMetaname, "ceebot1.dat" );
 #else
-			lstrcpy( strMetaname, "colobot1.dat" );
+            lstrcpy( strMetaname, "colobot1.dat" );
 #endif
-			lstrcpy( strFilename, m_strName );
-		}
-		else
-		{
-			lstrcpy( strMetaname, "" );
-			lstrcpy( strFilename, m_strName );
-		}
-	}
+            lstrcpy( strFilename, m_strName );
+        }
+        else
+        {
+            lstrcpy( strMetaname, "" );
+            lstrcpy( strFilename, m_strName );
+        }
+    }
 
-	if ( !g_metafile.IsExist(strMetaname, strFilename) )
-	{
-		return DDERR_NOTFOUND;
-	}
+    if ( !g_metafile.IsExist(strMetaname, strFilename) )
+    {
+        return DDERR_NOTFOUND;
+    }
 
-	// Get the filename extension
-	if ( NULL == ( strExtension = _tcsrchr( m_strName, _T('.') ) ) )
-	{
-		return DDERR_UNSUPPORTED;
-	}
+    // Get the filename extension
+    if ( NULL == ( strExtension = _tcsrchr( m_strName, _T('.') ) ) )
+    {
+        return DDERR_UNSUPPORTED;
+    }
 
-	// Load bitmap files
-	if ( strMetaname[0] == 0 && !lstrcmpi( strExtension, _T(".bmp") ) )
-	{
-		return LoadBitmapFile( strFilename );
-	}
+    // Load bitmap files
+    if ( strMetaname[0] == 0 && !lstrcmpi( strExtension, _T(".bmp") ) )
+    {
+        return LoadBitmapFile( strFilename );
+    }
 
-	// Load targa files
-	if ( !lstrcmpi( strExtension, _T(".tga") ) )
-	{
-		return LoadTargaFile( strMetaname, strFilename );
-	}
+    // Load targa files
+    if ( !lstrcmpi( strExtension, _T(".tga") ) )
+    {
+        return LoadTargaFile( strMetaname, strFilename );
+    }
 
-	// Can add code here to check for other file formats before failing
-	return DDERR_UNSUPPORTED;
+    // Can add code here to check for other file formats before failing
+    return DDERR_UNSUPPORTED;
 }
 
 
@@ -346,7 +346,7 @@ HRESULT TextureContainer::LoadBitmapFile( TCHAR* strPathname )
                                       LR_LOADFROMFILE|LR_CREATEDIBSECTION );
     if( m_hbmBitmap )
         return S_OK;
-    
+
     return DDERR_NOTFOUND;
 }
 
@@ -360,125 +360,125 @@ HRESULT TextureContainer::LoadBitmapFile( TCHAR* strPathname )
 //-----------------------------------------------------------------------------
 HRESULT TextureContainer::LoadTargaFile( TCHAR* strMetaname, TCHAR* strFilename )
 {
-	if( g_metafile.Open(strMetaname, strFilename) != 0 )
-		return E_FAIL;
+    if( g_metafile.Open(strMetaname, strFilename) != 0 )
+        return E_FAIL;
 
-	struct TargaHeader
-	{
-		BYTE IDLength;
-		BYTE ColormapType;
-		BYTE ImageType;
-		BYTE ColormapSpecification[5];
-		WORD XOrigin;
-		WORD YOrigin;
-		WORD ImageWidth;
-		WORD ImageHeight;
-		BYTE PixelDepth;
-		BYTE ImageDescriptor;
-	} tga;
+    struct TargaHeader
+    {
+        BYTE IDLength;
+        BYTE ColormapType;
+        BYTE ImageType;
+        BYTE ColormapSpecification[5];
+        WORD XOrigin;
+        WORD YOrigin;
+        WORD ImageWidth;
+        WORD ImageHeight;
+        BYTE PixelDepth;
+        BYTE ImageDescriptor;
+    } tga;
 
-	g_metafile.Read(&tga, sizeof(TargaHeader));
+    g_metafile.Read(&tga, sizeof(TargaHeader));
 
-	// Only true color, non-mapped images are supported
-	if( ( 0 != tga.ColormapType ) || 
-		( tga.ImageType != 10 && tga.ImageType != 2 ) )
-	{
-		g_metafile.Close();
-		return E_FAIL;
-	}
+    // Only true color, non-mapped images are supported
+    if( ( 0 != tga.ColormapType ) ||
+        ( tga.ImageType != 10 && tga.ImageType != 2 ) )
+    {
+        g_metafile.Close();
+        return E_FAIL;
+    }
 
-	// Skip the ID field. The first byte of the header is the length of this field
-	if( tga.IDLength )
-	{
-		g_metafile.Seek(tga.IDLength);
-	}
+    // Skip the ID field. The first byte of the header is the length of this field
+    if( tga.IDLength )
+    {
+        g_metafile.Seek(tga.IDLength);
+    }
 
-	m_dwWidth	= tga.ImageWidth;
-	m_dwHeight	= tga.ImageHeight;
-	m_dwBPP 	= tga.PixelDepth;
-	m_pRGBAData = new DWORD[m_dwWidth*m_dwHeight];
+    m_dwWidth   = tga.ImageWidth;
+    m_dwHeight  = tga.ImageHeight;
+    m_dwBPP     = tga.PixelDepth;
+    m_pRGBAData = new DWORD[m_dwWidth*m_dwHeight];
 
-	if( m_pRGBAData == NULL )
-	{
-		g_metafile.Close();
-		return E_FAIL;
-	}
+    if( m_pRGBAData == NULL )
+    {
+        g_metafile.Close();
+        return E_FAIL;
+    }
 
-	for( DWORD y=0; y<m_dwHeight; y++ )
-	{
-		DWORD dwOffset = y*m_dwWidth;
+    for( DWORD y=0; y<m_dwHeight; y++ )
+    {
+        DWORD dwOffset = y*m_dwWidth;
 
-		if( 0 == ( tga.ImageDescriptor & 0x0010 ) )
-			dwOffset = (m_dwHeight-y-1)*m_dwWidth;
+        if( 0 == ( tga.ImageDescriptor & 0x0010 ) )
+            dwOffset = (m_dwHeight-y-1)*m_dwWidth;
 
-		for( DWORD x=0; x<m_dwWidth; x )
-		{
-			if( tga.ImageType == 10 )
-			{
-				BYTE PacketInfo = g_metafile.GetByte();
-				WORD PacketType = 0x80 & PacketInfo;
-				WORD PixelCount = ( 0x007f & PacketInfo ) + 1;
+        for( DWORD x=0; x<m_dwWidth; x )
+        {
+            if( tga.ImageType == 10 )
+            {
+                BYTE PacketInfo = g_metafile.GetByte();
+                WORD PacketType = 0x80 & PacketInfo;
+                WORD PixelCount = ( 0x007f & PacketInfo ) + 1;
 
-				if( PacketType )
-				{
-					DWORD b = g_metafile.GetWord();
-					DWORD g = g_metafile.GetWord();
-					DWORD r = g_metafile.GetWord();
-					DWORD a = 0xff;
-					if( m_dwBPP == 32 )
-						a = g_metafile.GetWord();
+                if( PacketType )
+                {
+                    DWORD b = g_metafile.GetWord();
+                    DWORD g = g_metafile.GetWord();
+                    DWORD r = g_metafile.GetWord();
+                    DWORD a = 0xff;
+                    if( m_dwBPP == 32 )
+                        a = g_metafile.GetWord();
 
-					while( PixelCount-- )
-					{
-						m_pRGBAData[dwOffset+x] = (r<<24L)+(g<<16L)+(b<<8L)+(a);
-						x++;
-					}
-				}
-				else
-				{
-					while( PixelCount-- )
-					{
-						BYTE b = g_metafile.GetByte();
-						BYTE g = g_metafile.GetByte();
-						BYTE r = g_metafile.GetByte();
-						BYTE a = 0xff;
-						if( m_dwBPP == 32 )
-							a = g_metafile.GetByte();
+                    while( PixelCount-- )
+                    {
+                        m_pRGBAData[dwOffset+x] = (r<<24L)+(g<<16L)+(b<<8L)+(a);
+                        x++;
+                    }
+                }
+                else
+                {
+                    while( PixelCount-- )
+                    {
+                        BYTE b = g_metafile.GetByte();
+                        BYTE g = g_metafile.GetByte();
+                        BYTE r = g_metafile.GetByte();
+                        BYTE a = 0xff;
+                        if( m_dwBPP == 32 )
+                            a = g_metafile.GetByte();
 
-						m_pRGBAData[dwOffset+x] = (r<<24L)+(g<<16L)+(b<<8L)+(a);
-						x++;
-					}
-				}
-			}
-			else
-			{
-				BYTE b = g_metafile.GetByte();
-				BYTE g = g_metafile.GetByte();
-				BYTE r = g_metafile.GetByte();
-				BYTE a = 0xff;
-				if( m_dwBPP == 32 )
-					a = g_metafile.GetByte();
+                        m_pRGBAData[dwOffset+x] = (r<<24L)+(g<<16L)+(b<<8L)+(a);
+                        x++;
+                    }
+                }
+            }
+            else
+            {
+                BYTE b = g_metafile.GetByte();
+                BYTE g = g_metafile.GetByte();
+                BYTE r = g_metafile.GetByte();
+                BYTE a = 0xff;
+                if( m_dwBPP == 32 )
+                    a = g_metafile.GetByte();
 
-				m_pRGBAData[dwOffset+x] = (r<<24L)+(g<<16L)+(b<<8L)+(a);
-				x++;
-			}
-		}
-	}
+                m_pRGBAData[dwOffset+x] = (r<<24L)+(g<<16L)+(b<<8L)+(a);
+                x++;
+            }
+        }
+    }
 
-	g_metafile.Close();
+    g_metafile.Close();
 
-	// Check for alpha content
-	for( DWORD i=0; i<(m_dwWidth*m_dwHeight); i++ )
-	{
-//? 	if( m_pRGBAData[i] & 0x000000ff != 0xff )
-		if( (m_pRGBAData[i] & 0x000000ff) != 0xff )  // erreur corrig�e !
-		{
-			m_bHasAlpha = TRUE;
-			break;
-		}
-	}
-	
-	return S_OK;
+    // Check for alpha content
+    for( DWORD i=0; i<(m_dwWidth*m_dwHeight); i++ )
+    {
+//?     if( m_pRGBAData[i] & 0x000000ff != 0xff )
+        if( (m_pRGBAData[i] & 0x000000ff) != 0xff )  // erreur corrig�e !
+        {
+            m_bHasAlpha = TRUE;
+            break;
+        }
+    }
+
+    return S_OK;
 }
 
 
@@ -851,7 +851,7 @@ HRESULT TextureContainer::CopyRGBADataToSurface()
             else
                 pDstData16[x] = (WORD)(dr+dg+db+da);
         }
-    
+
         pBytes += ddsd.lPitch;
     }
 
@@ -934,7 +934,7 @@ HRESULT D3DTextr_CreateTextureFromFile( TCHAR* strName, DWORD dwStage,
 // Desc: Creates an empty texture.
 //-----------------------------------------------------------------------------
 HRESULT D3DTextr_CreateEmptyTexture( TCHAR* strName, DWORD dwWidth,
-                                     DWORD dwHeight, DWORD dwStage, 
+                                     DWORD dwHeight, DWORD dwStage,
                                      DWORD dwFlags )
 {
     // Check parameters

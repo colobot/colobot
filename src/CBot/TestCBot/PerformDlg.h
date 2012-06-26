@@ -25,12 +25,12 @@
 
 struct ThreadInfo2
 {
-  CEdit*		m_pEdit ;
-  CEdit*		m_pEdit3 ;
+  CEdit*        m_pEdit ;
+  CEdit*        m_pEdit3 ;
 
-  CBotProgram**	m_pProg;
-  BOOL			m_bStop;
-  int			m_nbscripts;
+  CBotProgram** m_pProg;
+  BOOL          m_bStop;
+  int           m_nbscripts;
 };
 
 
@@ -41,35 +41,35 @@ class CPerformDlg : public CDialog
 {
 // Construction
 public:
-	CPerformDlg(CWnd* pParent = NULL);   // standard constructor
+    CPerformDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CPerformDlg)
-	enum { IDD = IDD_DIALOG1 };
-	CEdit	m_Edit3;
-	CEdit	m_Edit1;
-	//}}AFX_DATA
+    //{{AFX_DATA(CPerformDlg)
+    enum { IDD = IDD_DIALOG1 };
+    CEdit   m_Edit3;
+    CEdit   m_Edit1;
+    //}}AFX_DATA
 
-	CBotProgram*	m_pProg[100];
-	ThreadInfo2		m_threadinfo2;
-	CString			m_Script;
+    CBotProgram*    m_pProg[100];
+    ThreadInfo2     m_threadinfo2;
+    CString         m_Script;
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CPerformDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CPerformDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CPerformDlg)
-	virtual BOOL OnInitDialog();
-	virtual void OnCancel();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CPerformDlg)
+    virtual BOOL OnInitDialog();
+    virtual void OnCancel();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

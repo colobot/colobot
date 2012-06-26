@@ -17,7 +17,7 @@
 // gauge.h
 
 #ifndef _GAUGE_H_
-#define	_GAUGE_H_
+#define _GAUGE_H_
 
 
 #include "control.h"
@@ -30,22 +30,22 @@ class CD3DEngine;
 class CGauge : public CControl
 {
 public:
-	CGauge(CInstanceManager* iMan);
-	virtual ~CGauge();
+    CGauge(CInstanceManager* iMan);
+    virtual ~CGauge();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+    BOOL    Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+    BOOL    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetLevel(float level);
-	float	RetLevel();
-
-protected:
+    void    SetLevel(float level);
+    float   RetLevel();
 
 protected:
-	float	m_level;
+
+protected:
+    float   m_level;
 };
 
 

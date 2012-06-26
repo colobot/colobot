@@ -17,7 +17,7 @@
 // motion.h
 
 #ifndef _MOTION_H_
-#define	_MOTION_H_
+#define _MOTION_H_
 
 
 #include "d3dengine.h"
@@ -40,54 +40,54 @@ class CSound;
 class CMotion
 {
 public:
-	CMotion(CInstanceManager* iMan, CObject* object);
-	virtual ~CMotion();
+    CMotion(CInstanceManager* iMan, CObject* object);
+    virtual ~CMotion();
 
-	void	SetPhysics(CPhysics* physics);
-	void	SetBrain(CBrain* brain);
+    void    SetPhysics(CPhysics* physics);
+    void    SetBrain(CBrain* brain);
 
-	virtual void	DeleteObject(BOOL bAll=FALSE);
-	virtual BOOL	Create(D3DVECTOR pos, float angle, ObjectType type, float power);
-	virtual BOOL	EventProcess(const Event &event);
-	virtual	Error	SetAction(int action, float time=0.2f);
-	virtual int		RetAction();
+    virtual void    DeleteObject(BOOL bAll=FALSE);
+    virtual BOOL    Create(D3DVECTOR pos, float angle, ObjectType type, float power);
+    virtual BOOL    EventProcess(const Event &event);
+    virtual Error   SetAction(int action, float time=0.2f);
+    virtual int     RetAction();
 
-	virtual BOOL	SetParam(int rank, float value);
-	virtual float	RetParam(int rank);
+    virtual BOOL    SetParam(int rank, float value);
+    virtual float   RetParam(int rank);
 
-	virtual BOOL	Write(char *line);
-	virtual BOOL	Read(char *line);
+    virtual BOOL    Write(char *line);
+    virtual BOOL    Read(char *line);
 
-	virtual void		SetLinVibration(D3DVECTOR dir);
-	virtual D3DVECTOR	RetLinVibration();
-	virtual void		SetCirVibration(D3DVECTOR dir);
-	virtual D3DVECTOR	RetCirVibration();
-	virtual void		SetInclinaison(D3DVECTOR dir);
-	virtual D3DVECTOR	RetInclinaison();
-
-protected:
+    virtual void        SetLinVibration(D3DVECTOR dir);
+    virtual D3DVECTOR   RetLinVibration();
+    virtual void        SetCirVibration(D3DVECTOR dir);
+    virtual D3DVECTOR   RetCirVibration();
+    virtual void        SetInclinaison(D3DVECTOR dir);
+    virtual D3DVECTOR   RetInclinaison();
 
 protected:
-	CInstanceManager* m_iMan;
-	CD3DEngine*		m_engine;
-	CLight*			m_light;
-	CParticule*		m_particule;
-	CTerrain*		m_terrain;
-	CWater*			m_water;
-	CCamera*		m_camera;
-	CObject*		m_object;
-	CBrain*			m_brain;
-	CPhysics*		m_physics;
-	CRobotMain*		m_main;
-	CSound*			m_sound;
 
-	int				m_actionType;
-	float			m_actionTime;
-	float			m_progress;
+protected:
+    CInstanceManager* m_iMan;
+    CD3DEngine*     m_engine;
+    CLight*         m_light;
+    CParticule*     m_particule;
+    CTerrain*       m_terrain;
+    CWater*         m_water;
+    CCamera*        m_camera;
+    CObject*        m_object;
+    CBrain*         m_brain;
+    CPhysics*       m_physics;
+    CRobotMain*     m_main;
+    CSound*         m_sound;
 
-	D3DVECTOR		m_linVibration;		// linear vibration
-	D3DVECTOR		m_cirVibration;		// circular vibration
-	D3DVECTOR		m_inclinaison;		// tilt
+    int             m_actionType;
+    float           m_actionTime;
+    float           m_progress;
+
+    D3DVECTOR       m_linVibration;     // linear vibration
+    D3DVECTOR       m_cirVibration;     // circular vibration
+    D3DVECTOR       m_inclinaison;      // tilt
 };
 
 

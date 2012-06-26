@@ -17,7 +17,7 @@
 // taskfire.h
 
 #ifndef _TASKFIRE_H_
-#define	_TASKTIRE_H_
+#define _TASKTIRE_H_
 
 
 #include "misc.h"
@@ -33,28 +33,28 @@ class CObject;
 class CTaskFire : public CTask
 {
 public:
-	CTaskFire(CInstanceManager* iMan, CObject* object);
-	~CTaskFire();
+    CTaskFire(CInstanceManager* iMan, CObject* object);
+    ~CTaskFire();
 
-	BOOL		EventProcess(const Event &event);
+    BOOL        EventProcess(const Event &event);
 
-	Error		Start(float delay);
-	Error		IsEnded();
-	BOOL		Abort();
-
-protected:
+    Error       Start(float delay);
+    Error       IsEnded();
+    BOOL        Abort();
 
 protected:
-	float		m_delay;
-	float		m_progress;
-	BOOL		m_bError;
-	BOOL		m_bRay;
-	BOOL		m_bOrganic;
-	float		m_time;
-	float		m_speed;
-	float		m_lastParticule;
-	float		m_lastSound;
-	int		m_soundChannel;
+
+protected:
+    float       m_delay;
+    float       m_progress;
+    BOOL        m_bError;
+    BOOL        m_bRay;
+    BOOL        m_bOrganic;
+    float       m_time;
+    float       m_speed;
+    float       m_lastParticule;
+    float       m_lastSound;
+    int     m_soundChannel;
 };
 
 

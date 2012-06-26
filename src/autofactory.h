@@ -17,7 +17,7 @@
 // autofactory.h
 
 #ifndef _AUTOFACTORY_H_
-#define	_AUTOFACTORY_H_
+#define _AUTOFACTORY_H_
 
 
 #include "auto.h"
@@ -34,13 +34,13 @@ class CObject;
 
 enum AutoFactoryPhase
 {
-	AFP_WAIT		= 1,	// expected metal
-	AFP_CLOSE_S		= 2,	// closes doors (shift)
-	AFP_CLOSE_T		= 3,	// closes doors (turn)
-	AFP_BUILD		= 4,	// building the vehicle
-	AFP_OPEN_T		= 5,	// opens the doors (turn)
-	AFP_OPEN_S		= 6,	// opens the doors (shift)
-	AFP_ADVANCE		= 7,	// advance at the door
+    AFP_WAIT        = 1,    // expected metal
+    AFP_CLOSE_S     = 2,    // closes doors (shift)
+    AFP_CLOSE_T     = 3,    // closes doors (turn)
+    AFP_BUILD       = 4,    // building the vehicle
+    AFP_OPEN_T      = 5,    // opens the doors (turn)
+    AFP_OPEN_S      = 6,    // opens the doors (shift)
+    AFP_ADVANCE     = 7,    // advance at the door
 };
 
 
@@ -48,37 +48,37 @@ enum AutoFactoryPhase
 class CAutoFactory : public CAuto
 {
 public:
-	CAutoFactory(CInstanceManager* iMan, CObject* object);
-	~CAutoFactory();
+    CAutoFactory(CInstanceManager* iMan, CObject* object);
+    ~CAutoFactory();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
+    void        Init();
+    BOOL        EventProcess(const Event &event);
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	void		UpdateInterface();
-	void		UpdateButton(CWindow *pw, EventMsg event, BOOL bBusy);
-
-	CObject*	SearchFret();
-	BOOL		NearestVehicle();
-	BOOL		CreateVehicle();
-	CObject*	SearchVehicle();
-
-	void		SoundManip(float time, float amplitude, float frequency);
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoFactoryPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_lastParticule;
-	D3DVECTOR			m_fretPos;
-	int					m_channelSound;
+    void        UpdateInterface();
+    void        UpdateButton(CWindow *pw, EventMsg event, BOOL bBusy);
+
+    CObject*    SearchFret();
+    BOOL        NearestVehicle();
+    BOOL        CreateVehicle();
+    CObject*    SearchVehicle();
+
+    void        SoundManip(float time, float amplitude, float frequency);
+
+protected:
+    AutoFactoryPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_lastParticule;
+    D3DVECTOR           m_fretPos;
+    int                 m_channelSound;
 };
 
 

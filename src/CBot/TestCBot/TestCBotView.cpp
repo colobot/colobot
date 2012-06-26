@@ -35,10 +35,10 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CTestCBotView, CView)
 
 BEGIN_MESSAGE_MAP(CTestCBotView, CView)
-	//{{AFX_MSG_MAP(CTestCBotView)
-	ON_WM_SIZE()
-	ON_MESSAGE(WM_ACTWINDOW, ActWindow)
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CTestCBotView)
+    ON_WM_SIZE()
+    ON_MESSAGE(WM_ACTWINDOW, ActWindow)
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -54,7 +54,7 @@ CTestCBotView::~CTestCBotView()
 
 BOOL CTestCBotView::PreCreateWindow(CREATESTRUCT& cs)
 {
-	return CView::PreCreateWindow(cs);
+    return CView::PreCreateWindow(cs);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -62,8 +62,8 @@ BOOL CTestCBotView::PreCreateWindow(CREATESTRUCT& cs)
 
 void CTestCBotView::OnDraw(CDC* pDC)
 {
-	CTestCBotDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
+    CTestCBotDoc* pDoc = GetDocument();
+    ASSERT_VALID(pDoc);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -72,71 +72,71 @@ void CTestCBotView::OnDraw(CDC* pDC)
 #ifdef _DEBUG
 void CTestCBotView::AssertValid() const
 {
-	CView::AssertValid();
+    CView::AssertValid();
 }
 
 void CTestCBotView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+    CView::Dump(dc);
 }
 
 CTestCBotDoc* CTestCBotView::GetDocument() // non-debug version is inline
 {
-	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CTestCBotDoc)));
-	return (CTestCBotDoc*)m_pDocument;
+    ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CTestCBotDoc)));
+    return (CTestCBotDoc*)m_pDocument;
 }
 #endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
 // CTestCBotView message handlers
 
-void CTestCBotView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) 
+void CTestCBotView::OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView)
 {
-	CTestCBotDoc* pDoc = GetDocument();
-//	CTestCBotApp* pApp = (CTestCBotApp*)AfxGetApp();
+    CTestCBotDoc* pDoc = GetDocument();
+//  CTestCBotApp* pApp = (CTestCBotApp*)AfxGetApp();
 
-	if ( pDoc->m_pEdit == NULL)
-	{
-		pDoc->m_pEdit = new CEdit();
-		CRect		rect;
-		GetClientRect( rect );
+    if ( pDoc->m_pEdit == NULL)
+    {
+        pDoc->m_pEdit = new CEdit();
+        CRect       rect;
+        GetClientRect( rect );
 
-		pDoc->m_pEdit->Create( WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE|ES_WANTRETURN|ES_NOHIDESEL|ES_AUTOVSCROLL, 
-						 rect, this, IDC_EDIT1 );
-		pDoc->m_pEdit->SetTabStops(12);
-		pDoc->m_pEdit->SetWindowText(pDoc->m_DocText);
-	}
+        pDoc->m_pEdit->Create( WS_VISIBLE|WS_BORDER|WS_TABSTOP|ES_MULTILINE|ES_WANTRETURN|ES_NOHIDESEL|ES_AUTOVSCROLL,
+                         rect, this, IDC_EDIT1 );
+        pDoc->m_pEdit->SetTabStops(12);
+        pDoc->m_pEdit->SetWindowText(pDoc->m_DocText);
+    }
 
-	if ( !bActivate && !pDoc->Compile() )
-	{
-//		comment faire pour réactiver l'ancien document
-	}
+    if ( !bActivate && !pDoc->Compile() )
+    {
+//      comment faire pour réactiver l'ancien document
+    }
 
-	CView::OnActivateView(bActivate, pActivateView, pDeactiveView);
+    CView::OnActivateView(bActivate, pActivateView, pDeactiveView);
 
-	if ( bActivate ) pDoc->m_pEdit->SetFocus();
+    if ( bActivate ) pDoc->m_pEdit->SetFocus();
 }
 
 
-void CTestCBotView::OnSize(UINT nType, int cx, int cy) 
+void CTestCBotView::OnSize(UINT nType, int cx, int cy)
 {
-	CView::OnSize(nType, cx, cy);
-	
-	CTestCBotDoc* pDoc = GetDocument();
-	if ( pDoc->m_pEdit != NULL )
-	{
-		CRect		rect;
-		GetClientRect( rect );
-		pDoc->m_pEdit->MoveWindow( rect );
-		pDoc->m_pEdit->SetFocus();
-	}	
+    CView::OnSize(nType, cx, cy);
+
+    CTestCBotDoc* pDoc = GetDocument();
+    if ( pDoc->m_pEdit != NULL )
+    {
+        CRect       rect;
+        GetClientRect( rect );
+        pDoc->m_pEdit->MoveWindow( rect );
+        pDoc->m_pEdit->SetFocus();
+    }
 }
-	
+
 
 
 LONG CTestCBotView::ActWindow(UINT wparam, LONG lparam)
 {
-//	GetParentFrame()->SetActiveView( this, TRUE );
-//	CMDIChildWnd::OnMDIActivate(1, this, this)
-	return 0;
+//  GetParentFrame()->SetActiveView( this, TRUE );
+//  CMDIChildWnd::OnMDIActivate(1, this, this)
+    return 0;
 }

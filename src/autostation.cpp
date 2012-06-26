@@ -47,16 +47,16 @@
 // Object's constructor.
 
 CAutoStation::CAutoStation(CInstanceManager* iMan, CObject* object)
-						   : CAuto(iMan, object)
+                           : CAuto(iMan, object)
 {
-	Init();
+    Init();
 }
 
 // Object's destructor.
 
 CAutoStation::~CAutoStation()
 {
-	this->CAuto::~CAuto();
+    this->CAuto::~CAuto();
 }
 
 
@@ -64,13 +64,13 @@ CAutoStation::~CAutoStation()
 
 void CAutoStation::DeleteObject(BOOL bAll)
 {
-	if ( m_soundChannel != -1 )
-	{
-		m_sound->Stop(m_soundChannel);
-		m_soundChannel = -1;
-	}
+    if ( m_soundChannel != -1 )
+    {
+        m_sound->Stop(m_soundChannel);
+        m_soundChannel = -1;
+    }
 
-	CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(bAll);
 }
 
 
@@ -78,14 +78,14 @@ void CAutoStation::DeleteObject(BOOL bAll)
 
 void CAutoStation::Init()
 {
-	m_time = 0.0f;
-	m_timeVirus = 0.0f;
-	m_lastUpdateTime = 0.0f;
-	m_lastParticule = 0.0f;
-	m_soundChannel = -1;
-	m_bLastVirus = FALSE;
+    m_time = 0.0f;
+    m_timeVirus = 0.0f;
+    m_lastUpdateTime = 0.0f;
+    m_lastParticule = 0.0f;
+    m_soundChannel = -1;
+    m_bLastVirus = FALSE;
 
-	CAuto::Init();
+    CAuto::Init();
 }
 
 
@@ -93,159 +93,159 @@ void CAutoStation::Init()
 
 BOOL CAutoStation::EventProcess(const Event &event)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, ppos, speed;
-	FPOINT		dim;
-	CObject*	vehicule;
-	CObject*	power;
-	TerrainRes	res;
-	float		big, energy, used, add, freq;
+    D3DMATRIX*  mat;
+    D3DVECTOR   pos, ppos, speed;
+    FPOINT      dim;
+    CObject*    vehicule;
+    CObject*    power;
+    TerrainRes  res;
+    float       big, energy, used, add, freq;
 
-	CAuto::EventProcess(event);
+    CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+    if ( m_engine->RetPause() )  return TRUE;
+    if ( event.event != EVENT_FRAME )  return TRUE;
 
-	m_timeVirus -= event.rTime;
+    m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminated by a virus?
-	{
-		if ( !m_bLastVirus )
-		{
-			m_bLastVirus = TRUE;
-			m_energyVirus = m_object->RetEnergy();
-		}
+    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    {
+        if ( !m_bLastVirus )
+        {
+            m_bLastVirus = TRUE;
+            m_energyVirus = m_object->RetEnergy();
+        }
 
-		if ( m_timeVirus <= 0.0f )
-		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+        if ( m_timeVirus <= 0.0f )
+        {
+            m_timeVirus = 0.1f+Rand()*0.3f;
 
-			m_object->SetEnergy(Rand());
-		}
-		return TRUE;
-	}
-	else
-	{
-		if ( m_bLastVirus )
-		{
-			m_bLastVirus = FALSE;
-			m_object->SetEnergy(m_energyVirus);
-		}
-	}
+            m_object->SetEnergy(Rand());
+        }
+        return TRUE;
+    }
+    else
+    {
+        if ( m_bLastVirus )
+        {
+            m_bLastVirus = FALSE;
+            m_object->SetEnergy(m_energyVirus);
+        }
+    }
 
-	UpdateInterface(event.rTime);
+    UpdateInterface(event.rTime);
 
-	big = m_object->RetEnergy();
+    big = m_object->RetEnergy();
 
-	res = m_terrain->RetResource(m_object->RetPosition(0));
-	if ( res == TR_POWER )
-	{
-		big += event.rTime*0.01f;  // recharges the large battery
-	}
+    res = m_terrain->RetResource(m_object->RetPosition(0));
+    if ( res == TR_POWER )
+    {
+        big += event.rTime*0.01f;  // recharges the large battery
+    }
 
-	used = big;
-	freq = 1.0f;
-	if ( big > 0.0f )
-	{
-		vehicule = SearchVehicle();
-		if ( vehicule != 0 )
-		{
-			power = vehicule->RetPower();
-			if ( power != 0 && power->RetCapacity() == 1.0f )
-			{
-				energy = power->RetEnergy();
-				add = event.rTime*0.2f;
-				if ( add > big*4.0f )  add = big*4.0f;
-				if ( add > 1.0f-energy )  add = 1.0f-energy;
-				energy += add;  // Charging the battery
-				power->SetEnergy(energy);
-				if ( energy < freq )  freq = energy;
-				big -= add/4.0f;  // discharge the large battery
-			}
+    used = big;
+    freq = 1.0f;
+    if ( big > 0.0f )
+    {
+        vehicule = SearchVehicle();
+        if ( vehicule != 0 )
+        {
+            power = vehicule->RetPower();
+            if ( power != 0 && power->RetCapacity() == 1.0f )
+            {
+                energy = power->RetEnergy();
+                add = event.rTime*0.2f;
+                if ( add > big*4.0f )  add = big*4.0f;
+                if ( add > 1.0f-energy )  add = 1.0f-energy;
+                energy += add;  // Charging the battery
+                power->SetEnergy(energy);
+                if ( energy < freq )  freq = energy;
+                big -= add/4.0f;  // discharge the large battery
+            }
 
-			power = vehicule->RetFret();
-			if ( power != 0 && power->RetType() == OBJECT_POWER )
-			{
-				energy = power->RetEnergy();
-				add = event.rTime*0.2f;
-				if ( add > big*4.0f )  add = big*4.0f;
-				if ( add > 1.0f-energy )  add = 1.0f-energy;
-				energy += add;  // Charging the battery
-				power->SetEnergy(energy);
-				if ( energy < freq )  freq = energy;
-				big -= add/4.0f;  // discharge the large battery
-			}
-		}
-	}
-	used -= big;  // energy used
+            power = vehicule->RetFret();
+            if ( power != 0 && power->RetType() == OBJECT_POWER )
+            {
+                energy = power->RetEnergy();
+                add = event.rTime*0.2f;
+                if ( add > big*4.0f )  add = big*4.0f;
+                if ( add > 1.0f-energy )  add = 1.0f-energy;
+                energy += add;  // Charging the battery
+                power->SetEnergy(energy);
+                if ( energy < freq )  freq = energy;
+                big -= add/4.0f;  // discharge the large battery
+            }
+        }
+    }
+    used -= big;  // energy used
 
-	if ( freq < 1.0f )  // charging in progress?
-	{
-		freq = 1.0f+3.0f*freq;
-		if ( m_soundChannel == -1 )
-		{
-			m_soundChannel = m_sound->Play(SOUND_STATION, m_object->RetPosition(0),
-										   0.3f, freq, TRUE);
-		}
-		m_sound->Frequency(m_soundChannel, freq);
-	}
-	else
-	{
-		if ( m_soundChannel != -1 )
-		{
-			m_sound->Stop(m_soundChannel);
-			m_soundChannel = -1;
-		}
-	}
+    if ( freq < 1.0f )  // charging in progress?
+    {
+        freq = 1.0f+3.0f*freq;
+        if ( m_soundChannel == -1 )
+        {
+            m_soundChannel = m_sound->Play(SOUND_STATION, m_object->RetPosition(0),
+                                           0.3f, freq, TRUE);
+        }
+        m_sound->Frequency(m_soundChannel, freq);
+    }
+    else
+    {
+        if ( m_soundChannel != -1 )
+        {
+            m_sound->Stop(m_soundChannel);
+            m_soundChannel = -1;
+        }
+    }
 
-	if ( used != 0.0f &&
-		 m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
-	{
-		m_lastParticule = m_time;
+    if ( used != 0.0f &&
+         m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+    {
+        m_lastParticule = m_time;
 
-		mat = m_object->RetWorldMatrix(0);
-		pos = D3DVECTOR(-15.0f, 7.0f, 0.0f);  // battery position
-		pos = Transform(*mat, pos);
-		speed.x = (Rand()-0.5f)*20.0f;
-		speed.y = (Rand()-0.5f)*20.0f;
-		speed.z = (Rand()-0.5f)*20.0f;
-		ppos.x = pos.x;
-		ppos.y = pos.y+(Rand()-0.5f)*4.0f;
-		ppos.z = pos.z;
-		dim.x = 1.5f;
-		dim.y = 1.5f;
-		m_particule->CreateParticule(ppos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
+        mat = m_object->RetWorldMatrix(0);
+        pos = D3DVECTOR(-15.0f, 7.0f, 0.0f);  // battery position
+        pos = Transform(*mat, pos);
+        speed.x = (Rand()-0.5f)*20.0f;
+        speed.y = (Rand()-0.5f)*20.0f;
+        speed.z = (Rand()-0.5f)*20.0f;
+        ppos.x = pos.x;
+        ppos.y = pos.y+(Rand()-0.5f)*4.0f;
+        ppos.z = pos.z;
+        dim.x = 1.5f;
+        dim.y = 1.5f;
+        m_particule->CreateParticule(ppos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
 
 #if 0
-		ppos = pos;
-		ppos.y += 1.0f;
-		ppos.x += (Rand()-0.5f)*3.0f;
-		ppos.z += (Rand()-0.5f)*3.0f;
-		speed.x = 0.0f;
-		speed.z = 0.0f;
-		speed.y = 2.5f+Rand()*6.0f;
-		dim.x = Rand()*1.5f+1.0f;
-		dim.y = dim.x;
-		m_particule->CreateParticule(ppos, speed, dim, PARTISMOKE3, 4.0f);
+        ppos = pos;
+        ppos.y += 1.0f;
+        ppos.x += (Rand()-0.5f)*3.0f;
+        ppos.z += (Rand()-0.5f)*3.0f;
+        speed.x = 0.0f;
+        speed.z = 0.0f;
+        speed.y = 2.5f+Rand()*6.0f;
+        dim.x = Rand()*1.5f+1.0f;
+        dim.y = dim.x;
+        m_particule->CreateParticule(ppos, speed, dim, PARTISMOKE3, 4.0f);
 #else
-		ppos = pos;
-		ppos.y += 1.0f;
-		ppos.x += (Rand()-0.5f)*3.0f;
-		ppos.z += (Rand()-0.5f)*3.0f;
-		speed.x = 0.0f;
-		speed.z = 0.0f;
-		speed.y = 2.5f+Rand()*5.0f;
-		dim.x = Rand()*1.0f+0.6f;
-		dim.y = dim.x;
-		m_particule->CreateParticule(ppos, speed, dim, PARTIVAPOR, 3.0f);
+        ppos = pos;
+        ppos.y += 1.0f;
+        ppos.x += (Rand()-0.5f)*3.0f;
+        ppos.z += (Rand()-0.5f)*3.0f;
+        speed.x = 0.0f;
+        speed.z = 0.0f;
+        speed.y = 2.5f+Rand()*5.0f;
+        dim.x = Rand()*1.0f+0.6f;
+        dim.y = dim.x;
+        m_particule->CreateParticule(ppos, speed, dim, PARTIVAPOR, 3.0f);
 #endif
-	}
+    }
 
-	if ( big < 0.0f )  big = 0.0f;
-	if ( big > 1.0f )  big = 1.0f;
-	m_object->SetEnergy(big);  // Shift the large battery
+    if ( big < 0.0f )  big = 0.0f;
+    if ( big > 1.0f )  big = 1.0f;
+    m_object->SetEnergy(big);  // Shift the large battery
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -253,54 +253,54 @@ BOOL CAutoStation::EventProcess(const Event &event)
 
 CObject* CAutoStation::SearchVehicle()
 {
-	CObject*	pObj;
-	D3DVECTOR	sPos, oPos;
-	ObjectType	type;
-	float		dist;
-	int			i;
+    CObject*    pObj;
+    D3DVECTOR   sPos, oPos;
+    ObjectType  type;
+    float       dist;
+    int         i;
 
-	sPos = m_object->RetPosition(0);
+    sPos = m_object->RetPosition(0);
 
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        if ( pObj == 0 )  break;
 
-		type = pObj->RetType();
-		if ( type != OBJECT_HUMAN    &&
-			 type != OBJECT_MOBILEfa &&
-			 type != OBJECT_MOBILEta &&
-			 type != OBJECT_MOBILEwa &&
-			 type != OBJECT_MOBILEia &&
-			 type != OBJECT_MOBILEfc &&
-			 type != OBJECT_MOBILEtc &&
-			 type != OBJECT_MOBILEwc &&
-			 type != OBJECT_MOBILEic &&
-			 type != OBJECT_MOBILEfi &&
-			 type != OBJECT_MOBILEti &&
-			 type != OBJECT_MOBILEwi &&
-			 type != OBJECT_MOBILEii &&
-			 type != OBJECT_MOBILEfs &&
-			 type != OBJECT_MOBILEts &&
-			 type != OBJECT_MOBILEws &&
-			 type != OBJECT_MOBILEis &&
-			 type != OBJECT_MOBILErt &&
-			 type != OBJECT_MOBILErc &&
-			 type != OBJECT_MOBILErr &&
-			 type != OBJECT_MOBILErs &&
-			 type != OBJECT_MOBILEsa &&
-			 type != OBJECT_MOBILEft &&
-			 type != OBJECT_MOBILEtt &&
-			 type != OBJECT_MOBILEwt &&
-			 type != OBJECT_MOBILEit &&
-			 type != OBJECT_MOBILEdr )  continue;
+        type = pObj->RetType();
+        if ( type != OBJECT_HUMAN    &&
+             type != OBJECT_MOBILEfa &&
+             type != OBJECT_MOBILEta &&
+             type != OBJECT_MOBILEwa &&
+             type != OBJECT_MOBILEia &&
+             type != OBJECT_MOBILEfc &&
+             type != OBJECT_MOBILEtc &&
+             type != OBJECT_MOBILEwc &&
+             type != OBJECT_MOBILEic &&
+             type != OBJECT_MOBILEfi &&
+             type != OBJECT_MOBILEti &&
+             type != OBJECT_MOBILEwi &&
+             type != OBJECT_MOBILEii &&
+             type != OBJECT_MOBILEfs &&
+             type != OBJECT_MOBILEts &&
+             type != OBJECT_MOBILEws &&
+             type != OBJECT_MOBILEis &&
+             type != OBJECT_MOBILErt &&
+             type != OBJECT_MOBILErc &&
+             type != OBJECT_MOBILErr &&
+             type != OBJECT_MOBILErs &&
+             type != OBJECT_MOBILEsa &&
+             type != OBJECT_MOBILEft &&
+             type != OBJECT_MOBILEtt &&
+             type != OBJECT_MOBILEwt &&
+             type != OBJECT_MOBILEit &&
+             type != OBJECT_MOBILEdr )  continue;
 
-		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, sPos);
-		if ( dist <= 5.0f )  return pObj;
-	}
+        oPos = pObj->RetPosition(0);
+        dist = Length(oPos, sPos);
+        if ( dist <= 5.0f )  return pObj;
+    }
 
-	return 0;
+    return 0;
 }
 
 
@@ -308,17 +308,17 @@ CObject* CAutoStation::SearchVehicle()
 
 Error CAutoStation::RetError()
 {
-	TerrainRes	res;
+    TerrainRes  res;
 
-	if ( m_object->RetVirusMode() )
-	{
-		return ERR_BAT_VIRUS;
-	}
+    if ( m_object->RetVirusMode() )
+    {
+        return ERR_BAT_VIRUS;
+    }
 
-	res = m_terrain->RetResource(m_object->RetPosition(0));
-	if ( res != TR_POWER )  return ERR_STATION_NULL;
+    res = m_terrain->RetResource(m_object->RetPosition(0));
+    if ( res != TR_POWER )  return ERR_STATION_NULL;
 
-	return ERR_OK;
+    return ERR_OK;
 }
 
 
@@ -326,35 +326,35 @@ Error CAutoStation::RetError()
 
 BOOL CAutoStation::CreateInterface(BOOL bSelect)
 {
-	CWindow*	pw;
-	FPOINT		pos, ddim;
-	float		ox, oy, sx, sy;
+    CWindow*    pw;
+    FPOINT      pos, ddim;
+    float       ox, oy, sx, sy;
 
-	CAuto::CreateInterface(bSelect);
+    CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+    if ( !bSelect )  return TRUE;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return FALSE;
 
-	ox = 3.0f/640.0f;
-	oy = 3.0f/480.0f;
-	sx = 33.0f/640.0f;
-	sy = 33.0f/480.0f;
+    ox = 3.0f/640.0f;
+    oy = 3.0f/480.0f;
+    sx = 33.0f/640.0f;
+    sy = 33.0f/480.0f;
 
-	pos.x = ox+sx*14.5f;
-	pos.y = oy+sy*0;
-	ddim.x = 14.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GENERGY);
+    pos.x = ox+sx*14.5f;
+    pos.y = oy+sy*0;
+    ddim.x = 14.0f/640.0f;
+    ddim.y = 66.0f/480.0f;
+    pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GENERGY);
 
-	pos.x = ox+sx*0.0f;
-	pos.y = oy+sy*0;
-	ddim.x = 66.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGroup(pos, ddim, 104, EVENT_OBJECT_TYPE);
+    pos.x = ox+sx*0.0f;
+    pos.y = oy+sy*0;
+    ddim.x = 66.0f/640.0f;
+    ddim.y = 66.0f/480.0f;
+    pw->CreateGroup(pos, ddim, 104, EVENT_OBJECT_TYPE);
 
-	return TRUE;
+    return TRUE;
 }
 
 // Updates the state of all buttons on the interface,
@@ -362,24 +362,24 @@ BOOL CAutoStation::CreateInterface(BOOL bSelect)
 
 void CAutoStation::UpdateInterface(float rTime)
 {
-	CWindow*	pw;
-	CGauge*		pg;
+    CWindow*    pw;
+    CGauge*     pg;
 
-	CAuto::UpdateInterface(rTime);
+    CAuto::UpdateInterface(rTime);
 
-	if ( m_time < m_lastUpdateTime+0.1f )  return;
-	m_lastUpdateTime = m_time;
+    if ( m_time < m_lastUpdateTime+0.1f )  return;
+    m_lastUpdateTime = m_time;
 
-	if ( !m_object->RetSelect() )  return;
+    if ( !m_object->RetSelect() )  return;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return;
 
-	pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
-	if ( pg != 0 )
-	{
-		pg->SetLevel(m_object->RetEnergy());
-	}
+    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
+    if ( pg != 0 )
+    {
+        pg->SetLevel(m_object->RetEnergy());
+    }
 }
 
 

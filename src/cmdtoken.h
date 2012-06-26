@@ -17,7 +17,7 @@
 // cmdtoken.h
 
 #ifndef _CMDTOKEN_H_
-#define	_CMDTOKEN_H_
+#define _CMDTOKEN_H_
 
 
 #include "d3denum.h"

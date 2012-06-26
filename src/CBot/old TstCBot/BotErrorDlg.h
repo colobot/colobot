@@ -14,35 +14,35 @@ class CBotErrorDlg : public CDialog
 {
 // Construction
 public:
-	CBotErrorDlg(CWnd* pParent = NULL);   // standard constructor
+    CBotErrorDlg(CWnd* pParent = NULL);   // standard constructor
 
 // Dialog Data
-	//{{AFX_DATA(CBotErrorDlg)
-	enum { IDD = IDD_DIALOG1 };
-	CEdit	m_eProgram;
-	CStatic	m_sMessage;
-	CString	m_TextProgram;
-	//}}AFX_DATA
+    //{{AFX_DATA(CBotErrorDlg)
+    enum { IDD = IDD_DIALOG1 };
+    CEdit   m_eProgram;
+    CStatic m_sMessage;
+    CString m_TextProgram;
+    //}}AFX_DATA
 
 
-	CString		m_TextError;
-	int			m_start, m_end;
+    CString     m_TextError;
+    int         m_start, m_end;
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CBotErrorDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CBotErrorDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
 
-	// Generated message map functions
-	//{{AFX_MSG(CBotErrorDlg)
-	virtual BOOL OnInitDialog();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    // Generated message map functions
+    //{{AFX_MSG(CBotErrorDlg)
+    virtual BOOL OnInitDialog();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

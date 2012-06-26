@@ -17,7 +17,7 @@
 // taskshield.h
 
 #ifndef _TASKSHIELD_H_
-#define	_TASKSHIELD_H_
+#define _TASKSHIELD_H_
 
 
 #include "misc.h"
@@ -31,25 +31,25 @@ class CPhysics;
 class CObject;
 
 
-#define RADIUS_SHIELD_MIN	 40.0f		// minimal radius of the protected zone
-#define RADIUS_SHIELD_MAX	100.0f		// maximal radius of the protected zone
+#define RADIUS_SHIELD_MIN    40.0f      // minimal radius of the protected zone
+#define RADIUS_SHIELD_MAX   100.0f      // maximal radius of the protected zone
 
 
 enum TaskShieldPhase
 {
-	TS_UP1		= 1,	// up
-	TS_UP2		= 2,	// up
-	TS_SHIELD	= 3,	// shield deployed
-	TS_SMOKE	= 4,	// smoke
-	TS_DOWN1	= 5,	// down
-	TS_DOWN2	= 6,	// down
+    TS_UP1      = 1,    // up
+    TS_UP2      = 2,    // up
+    TS_SHIELD   = 3,    // shield deployed
+    TS_SMOKE    = 4,    // smoke
+    TS_DOWN1    = 5,    // down
+    TS_DOWN2    = 6,    // down
 };
 
 enum TaskShieldMode
 {
-	TSM_UP		= 1,	// deploys shield
-	TSM_DOWN	= 2,	// returns the shield
-	TSM_UPDATE	= 3,	// radius change
+    TSM_UP      = 1,    // deploys shield
+    TSM_DOWN    = 2,    // returns the shield
+    TSM_UPDATE  = 3,    // radius change
 };
 
 
@@ -57,37 +57,37 @@ enum TaskShieldMode
 class CTaskShield : public CTask
 {
 public:
-	CTaskShield(CInstanceManager* iMan, CObject* object);
-	~CTaskShield();
+    CTaskShield(CInstanceManager* iMan, CObject* object);
+    ~CTaskShield();
 
-	BOOL		EventProcess(const Event &event);
+    BOOL        EventProcess(const Event &event);
 
-	Error		Start(TaskShieldMode mode, float delay);
-	Error		IsEnded();
-	BOOL		IsBusy();
-	BOOL		Abort();
-
-protected:
-	Error		Stop();
-	BOOL		CreateLight(D3DVECTOR pos);
-	void		IncreaseShield();
-	float		RetRadius();
+    Error       Start(TaskShieldMode mode, float delay);
+    Error       IsEnded();
+    BOOL        IsBusy();
+    BOOL        Abort();
 
 protected:
-	TaskShieldPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_time;
-	float			m_delay;
-	float			m_lastParticule;
-	float			m_lastRay;
-	float			m_lastIncrease;
-	float			m_energyUsed;
-	BOOL			m_bError;
-	D3DVECTOR		m_shieldPos;
-	int				m_rankSphere;
-	int				m_soundChannel;
-	int				m_effectLight;
+    Error       Stop();
+    BOOL        CreateLight(D3DVECTOR pos);
+    void        IncreaseShield();
+    float       RetRadius();
+
+protected:
+    TaskShieldPhase m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_time;
+    float           m_delay;
+    float           m_lastParticule;
+    float           m_lastRay;
+    float           m_lastIncrease;
+    float           m_energyUsed;
+    BOOL            m_bError;
+    D3DVECTOR       m_shieldPos;
+    int             m_rankSphere;
+    int             m_soundChannel;
+    int             m_effectLight;
 };
 
 

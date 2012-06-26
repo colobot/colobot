@@ -17,7 +17,7 @@
 // autotower.h
 
 #ifndef _AUTOTOWER_H_
-#define	_AUTOTOWER_H_
+#define _AUTOTOWER_H_
 
 
 #include "auto.h"
@@ -35,11 +35,11 @@ class CObject;
 
 enum AutoTowerPhase
 {
-	ATP_WAIT		= 1,
-	ATP_ZERO		= 2,	// more energy
-	ATP_SEARCH		= 3,	// search a target
-	ATP_TURN		= 4,	// turns to the target
-	ATP_FIRE		= 5,	// shoots on the target
+    ATP_WAIT        = 1,
+    ATP_ZERO        = 2,    // more energy
+    ATP_SEARCH      = 3,    // search a target
+    ATP_TURN        = 4,    // turns to the target
+    ATP_FIRE        = 5,    // shoots on the target
 };
 
 
@@ -47,39 +47,39 @@ enum AutoTowerPhase
 class CAutoTower : public CAuto
 {
 public:
-	CAutoTower(CInstanceManager* iMan, CObject* object);
-	~CAutoTower();
+    CAutoTower(CInstanceManager* iMan, CObject* object);
+    ~CAutoTower();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	void		UpdateInterface(float rTime);
-
-	CObject*	SearchTarget(D3DVECTOR &impact);
-	void		FireStopUpdate(float progress, BOOL bLightOn);
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoTowerPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastUpdateTime;
-	float			m_lastParticule;
-	D3DVECTOR		m_targetPos;
-	float			m_angleYactual;
-	float			m_angleZactual;
-	float			m_angleYfinal;
-	float			m_angleZfinal;
-	int				m_partiStop[4];
+    void        UpdateInterface(float rTime);
+
+    CObject*    SearchTarget(D3DVECTOR &impact);
+    void        FireStopUpdate(float progress, BOOL bLightOn);
+
+protected:
+    AutoTowerPhase  m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastUpdateTime;
+    float           m_lastParticule;
+    D3DVECTOR       m_targetPos;
+    float           m_angleYactual;
+    float           m_angleZactual;
+    float           m_angleYfinal;
+    float           m_angleZfinal;
+    int             m_partiStop[4];
 };
 
 

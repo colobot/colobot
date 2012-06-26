@@ -17,7 +17,7 @@
 // autoradar.h
 
 #ifndef _AUTORADAR_H_
-#define	_AUTORADAR_H_
+#define _AUTORADAR_H_
 
 
 #include "auto.h"
@@ -35,10 +35,10 @@ class CObject;
 
 enum AutoRadarPhase
 {
-	ARAP_WAIT		= 1,	// waiting
-	ARAP_SEARCH		= 2,	// seeking
-	ARAP_SHOW		= 3,	// watching
-	ARAP_SINUS		= 4,	// oscillates
+    ARAP_WAIT       = 1,    // waiting
+    ARAP_SEARCH     = 2,    // seeking
+    ARAP_SHOW       = 3,    // watching
+    ARAP_SINUS      = 4,    // oscillates
 };
 
 
@@ -46,30 +46,30 @@ enum AutoRadarPhase
 class CAutoRadar : public CAuto
 {
 public:
-	CAutoRadar(CInstanceManager* iMan, CObject* object);
-	~CAutoRadar();
+    CAutoRadar(CInstanceManager* iMan, CObject* object);
+    ~CAutoRadar();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	BOOL		CreateInterface(BOOL bSelect);
-	Error		RetError();
-
-protected:
-	void		UpdateInterface();
-	BOOL		SearchEnemy(D3DVECTOR &pos);
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    BOOL        CreateInterface(BOOL bSelect);
+    Error       RetError();
 
 protected:
-	AutoRadarPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_aTime;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	float			m_angle;
-	float			m_start;
-	int				m_totalDetect;
+    void        UpdateInterface();
+    BOOL        SearchEnemy(D3DVECTOR &pos);
+
+protected:
+    AutoRadarPhase  m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_aTime;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    float           m_angle;
+    float           m_start;
+    int             m_totalDetect;
 };
 
 

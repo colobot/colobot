@@ -17,7 +17,7 @@
 // taskgungoal.h
 
 #ifndef _TASKGUNGOAL_H_
-#define	_TASKGUNGOAL_H_
+#define _TASKGUNGOAL_H_
 
 
 #include "misc.h"
@@ -33,24 +33,24 @@ class CObject;
 class CTaskGunGoal : public CTask
 {
 public:
-	CTaskGunGoal(CInstanceManager* iMan, CObject* object);
-	~CTaskGunGoal();
+    CTaskGunGoal(CInstanceManager* iMan, CObject* object);
+    ~CTaskGunGoal();
 
-	BOOL		EventProcess(const Event &event);
+    BOOL        EventProcess(const Event &event);
 
-	Error		Start(float dirV, float dirH);
-	Error		IsEnded();
-	BOOL		Abort();
-
-protected:
+    Error       Start(float dirV, float dirH);
+    Error       IsEnded();
+    BOOL        Abort();
 
 protected:
-	float		m_progress;
-	float		m_speed;
-	float		m_initialDirV;	// initial direction
-	float		m_finalDirV;	// direction to reach
-	float		m_initialDirH;	// initial direction
-	float		m_finalDirH;	// direction to reach
+
+protected:
+    float       m_progress;
+    float       m_speed;
+    float       m_initialDirV;  // initial direction
+    float       m_finalDirV;    // direction to reach
+    float       m_initialDirH;  // initial direction
+    float       m_finalDirH;    // direction to reach
 };
 
 

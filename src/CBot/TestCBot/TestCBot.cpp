@@ -33,12 +33,12 @@ static char THIS_FILE[] = __FILE__;
 // CTestCBotApp
 
 BEGIN_MESSAGE_MAP(CTestCBotApp, CWinApp)
-	//{{AFX_MSG_MAP(CTestCBotApp)
-	ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
-	//}}AFX_MSG_MAP
-	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
+    //{{AFX_MSG_MAP(CTestCBotApp)
+    ON_COMMAND(ID_APP_ABOUT, OnAppAbout)
+    //}}AFX_MSG_MAP
+    // Standard file based document commands
+    ON_COMMAND(ID_FILE_NEW, CWinApp::OnFileNew)
+    ON_COMMAND(ID_FILE_OPEN, CWinApp::OnFileOpen)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -46,9 +46,9 @@ END_MESSAGE_MAP()
 
 CTestCBotApp::CTestCBotApp()
 {
-	m_pConsole   = NULL;
-	m_LastActive = NULL;
-	m_pClassPoint= NULL;
+    m_pConsole   = NULL;
+    m_LastActive = NULL;
+    m_pClassPoint= NULL;
 }
 
 
@@ -72,133 +72,133 @@ static char BASED_CODE szFilename[]   = "File1";
 // routine pour mettre à jour l'instance de la classe Bot courante
 void rMajObject( CBotVar* pThis, void* pUser )
 {
-	if (!pThis->IsElemOfClass("object")) 
-		return ;
-	CBotVar*	pPos = pThis->GivItem("position");
-	CBotVar*	pX = pPos->GivItem("x");
-	CBotVar*	pY = pPos->GivItem("y");
-	CBotVar*	pZ = pPos->GivItem("z");
-//	CBotVar*	pPt = pThis->GivItem("transport");
+    if (!pThis->IsElemOfClass("object"))
+        return ;
+    CBotVar*    pPos = pThis->GivItem("position");
+    CBotVar*    pX = pPos->GivItem("x");
+    CBotVar*    pY = pPos->GivItem("y");
+    CBotVar*    pZ = pPos->GivItem("z");
+//  CBotVar*    pPt = pThis->GivItem("transport");
 
-	CBotString p = pX->GivValString(); 
+    CBotString p = pX->GivValString();
 
-//	pX->SetValFloat( pUser == (void*)1 ? (float)12.5 : (float)44.4 );
-	pZ->SetValFloat( (float)0 );
-	pY->SetValFloat( (float)-3.33 );
-	pX->SetValFloat( pX->GivValFloat() + 10 ) ;
+//  pX->SetValFloat( pUser == (void*)1 ? (float)12.5 : (float)44.4 );
+    pZ->SetValFloat( (float)0 );
+    pY->SetValFloat( (float)-3.33 );
+    pX->SetValFloat( pX->GivValFloat() + 10 ) ;
 
-//	pX = pThis->GivItem( "xx" );
-//	pX->SetValFloat( (float)22 );
+//  pX = pThis->GivItem( "xx" );
+//  pX->SetValFloat( (float)22 );
 
-	// crée une instance sur une classe object
-//	CBotVar* pAutre = CBotVar::Create("autre", CBotTypClass, "object");
-//	pAutre->SetUserPtr( (void*)3 );
-//	pPt->SetPointer( pAutre );
-//	pPt->SetPointer( NULL );
-//	delete pAutre;
+    // crée une instance sur une classe object
+//  CBotVar* pAutre = CBotVar::Create("autre", CBotTypClass, "object");
+//  pAutre->SetUserPtr( (void*)3 );
+//  pPt->SetPointer( pAutre );
+//  pPt->SetPointer( NULL );
+//  delete pAutre;
 }
 
 
 BOOL CTestCBotApp::InitInstance()
 {
 //////////////////////////////////////////////
-//	défini les mots clefs supplémentaires
+//  défini les mots clefs supplémentaires
 // -------------------------------------------
 
-	CBotProgram::Init();
- 
+    CBotProgram::Init();
+
 //////////////////////////////////////////////
-//	défini les fonctions "show()" et "print()"
+//  défini les fonctions "show()" et "print()"
 // -------------------------------------------
 
-	CBotProgram::AddFunction("show", rShow, cShow);
-	CBotProgram::AddFunction("print", rPrint, cPrint);
-	CBotProgram::AddFunction("println", rPrintLn, cPrint);
+    CBotProgram::AddFunction("show", rShow, cShow);
+    CBotProgram::AddFunction("print", rPrint, cPrint);
+    CBotProgram::AddFunction("println", rPrintLn, cPrint);
 
 
 ///////////////////////////////////
 // définie la classe globale CPoint
 // --------------------------------
 
-	m_pClassPoint	= new CBotClass("CPoint", NULL);
-	// ajoute le composant ".x"
-	m_pClassPoint->AddItem("x", CBotTypFloat);
-	// ajoute le composant ".y"
-	m_pClassPoint->AddItem("y", CBotTypFloat);
+    m_pClassPoint   = new CBotClass("CPoint", NULL);
+    // ajoute le composant ".x"
+    m_pClassPoint->AddItem("x", CBotTypFloat);
+    // ajoute le composant ".y"
+    m_pClassPoint->AddItem("y", CBotTypFloat);
 
-	// ajoute le constructeur pour cette classe
-	m_pClassPoint->AddFunction("CPoint", rCPoint, cCPoint);
+    // ajoute le constructeur pour cette classe
+    m_pClassPoint->AddFunction("CPoint", rCPoint, cCPoint);
 
-	m_pClassPointIntr	= new CBotClass("point", NULL, TRUE);
-	// ajoute le composant ".x"
-	m_pClassPointIntr->AddItem("x", CBotTypFloat);
-	// ajoute le composant ".y"
-	m_pClassPointIntr->AddItem("y", CBotTypFloat);
-	// ajoute le composant ".z"
-	m_pClassPointIntr->AddItem("z", CBotTypFloat);
+    m_pClassPointIntr   = new CBotClass("point", NULL, TRUE);
+    // ajoute le composant ".x"
+    m_pClassPointIntr->AddItem("x", CBotTypFloat);
+    // ajoute le composant ".y"
+    m_pClassPointIntr->AddItem("y", CBotTypFloat);
+    // ajoute le composant ".z"
+    m_pClassPointIntr->AddItem("z", CBotTypFloat);
 
-	// ajoute le constructeur pour cette classe
-	m_pClassPointIntr->AddFunction("point", rCPoint, cCPoint);
+    // ajoute le constructeur pour cette classe
+    m_pClassPointIntr->AddFunction("point", rCPoint, cCPoint);
 
-	// défini la classe "object"
-	CBotClass*	pClassObject = new CBotClass( "object", NULL ) ;
-	pClassObject->AddItem( "xx", CBotTypFloat );
-	pClassObject->AddItem( "position", CBotTypResult( CBotTypIntrinsic, "point" ) );
-	pClassObject->AddItem( "transport", CBotTypResult( CBotTypPointer, "object" ) );
-	pClassObject->AddUpdateFunc( rMajObject );
+    // défini la classe "object"
+    CBotClass*  pClassObject = new CBotClass( "object", NULL ) ;
+    pClassObject->AddItem( "xx", CBotTypFloat );
+    pClassObject->AddItem( "position", CBotTypResult( CBotTypIntrinsic, "point" ) );
+    pClassObject->AddItem( "transport", CBotTypResult( CBotTypPointer, "object" ) );
+    pClassObject->AddUpdateFunc( rMajObject );
 
-	InitClassFILE();
-	
-	AfxEnableControlContainer();
+    InitClassFILE();
 
-	// Standard initialization
+    AfxEnableControlContainer();
+
+    // Standard initialization
 
 #ifdef _AFXDLL
-	Enable3dControls();			// Call this when using MFC in a shared DLL
+    Enable3dControls();         // Call this when using MFC in a shared DLL
 #else
-	Enable3dControlsStatic();	// Call this when linking to MFC statically
+    Enable3dControlsStatic();   // Call this when linking to MFC statically
 #endif
 
-	// Change the registry key under which our settings are stored.
-	SetRegistryKey(_T("Local AppWizard-Generated Applications"));
+    // Change the registry key under which our settings are stored.
+    SetRegistryKey(_T("Local AppWizard-Generated Applications"));
 
-	LoadStdProfileSettings();  // Load standard INI file options (including MRU)
+    LoadStdProfileSettings();  // Load standard INI file options (including MRU)
 
-	// Register document templates
+    // Register document templates
 
-	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(
-		IDR_TESTCBTYPE,
-		RUNTIME_CLASS(CTestCBotDoc),
-		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
-		RUNTIME_CLASS(CTestCBotView));
-	AddDocTemplate(pDocTemplate);
+    CMultiDocTemplate* pDocTemplate;
+    pDocTemplate = new CMultiDocTemplate(
+        IDR_TESTCBTYPE,
+        RUNTIME_CLASS(CTestCBotDoc),
+        RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+        RUNTIME_CLASS(CTestCBotView));
+    AddDocTemplate(pDocTemplate);
 
-	// create main MDI Frame window
-	CMainFrame* pMainFrame = new CMainFrame;
-	if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
-		return FALSE;
-	m_pMainWnd = pMainFrame;
+    // create main MDI Frame window
+    CMainFrame* pMainFrame = new CMainFrame;
+    if (!pMainFrame->LoadFrame(IDR_MAINFRAME))
+        return FALSE;
+    m_pMainWnd = pMainFrame;
 
-	// Parse command line for standard shell commands, DDE, file open
-	CCommandLineInfo cmdInfo;
-	ParseCommandLine(cmdInfo);
+    // Parse command line for standard shell commands, DDE, file open
+    CCommandLineInfo cmdInfo;
+    ParseCommandLine(cmdInfo);
 
-	if (m_lpCmdLine[0] == 0)
-	{
-		CString Filename = GetProfileString(szSection, szFilename);
-		if (Filename.IsEmpty()) Filename = "TstCbot.txt";
-		else OpenDocumentFile(Filename);
-	}
-	else
-		// Dispatch commands specified on the command line
-		if (!ProcessShellCommand(cmdInfo))
-			return FALSE;
-	pMainFrame->ShowWindow(m_nCmdShow);
-	pMainFrame->UpdateWindow();
+    if (m_lpCmdLine[0] == 0)
+    {
+        CString Filename = GetProfileString(szSection, szFilename);
+        if (Filename.IsEmpty()) Filename = "TstCbot.txt";
+        else OpenDocumentFile(Filename);
+    }
+    else
+        // Dispatch commands specified on the command line
+        if (!ProcessShellCommand(cmdInfo))
+            return FALSE;
+    pMainFrame->ShowWindow(m_nCmdShow);
+    pMainFrame->UpdateWindow();
 
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -208,60 +208,60 @@ BOOL CTestCBotApp::InitInstance()
 class CAboutDlg : public CDialog
 {
 public:
-	CAboutDlg();
+    CAboutDlg();
 
 // Dialog Data
-	//{{AFX_DATA(CAboutDlg)
-	enum { IDD = IDD_ABOUTBOX };
-	//}}AFX_DATA
+    //{{AFX_DATA(CAboutDlg)
+    enum { IDD = IDD_ABOUTBOX };
+    //}}AFX_DATA
 
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CAboutDlg)
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CAboutDlg)
+    protected:
+    virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+    //}}AFX_VIRTUAL
 
 // Implementation
 protected:
-	//{{AFX_MSG(CAboutDlg)
-		// No message handlers
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CAboutDlg)
+        // No message handlers
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 {
-	//{{AFX_DATA_INIT(CAboutDlg)
-	//}}AFX_DATA_INIT
+    //{{AFX_DATA_INIT(CAboutDlg)
+    //}}AFX_DATA_INIT
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 {
-	CDialog::DoDataExchange(pDX);
-	//{{AFX_DATA_MAP(CAboutDlg)
-	//}}AFX_DATA_MAP
+    CDialog::DoDataExchange(pDX);
+    //{{AFX_DATA_MAP(CAboutDlg)
+    //}}AFX_DATA_MAP
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-	//{{AFX_MSG_MAP(CAboutDlg)
-		// No message handlers
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CAboutDlg)
+        // No message handlers
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 // App command to run the dialog
 void CTestCBotApp::OnAppAbout()
 {
-	CAboutDlg aboutDlg;
-	aboutDlg.DoModal();
+    CAboutDlg aboutDlg;
+    aboutDlg.DoModal();
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // CTestCBotApp commands
 
-int CTestCBotApp::ExitInstance() 
+int CTestCBotApp::ExitInstance()
 {
-	delete	m_pFuncFile;
+    delete  m_pFuncFile;
 
-	CBotProgram::Free();
-	return CWinApp::ExitInstance();
+    CBotProgram::Free();
+    return CWinApp::ExitInstance();
 }

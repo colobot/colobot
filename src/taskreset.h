@@ -17,7 +17,7 @@
 // taskreset.h
 
 #ifndef _TASKRESET_H_
-#define	_TASKRESET_H_
+#define _TASKRESET_H_
 
 
 #include "misc.h"
@@ -34,9 +34,9 @@ class CObject;
 
 enum TaskResetPhase
 {
-	TRSP_ZOUT	= 1,	// disappears
-	TRSP_MOVE	= 2,	// moves
-	TRSP_ZIN	= 3,	// reappears
+    TRSP_ZOUT   = 1,    // disappears
+    TRSP_MOVE   = 2,    // moves
+    TRSP_ZIN    = 3,    // reappears
 };
 
 
@@ -44,29 +44,29 @@ enum TaskResetPhase
 class CTaskReset : public CTask
 {
 public:
-	CTaskReset(CInstanceManager* iMan, CObject* object);
-	~CTaskReset();
+    CTaskReset(CInstanceManager* iMan, CObject* object);
+    ~CTaskReset();
 
-	BOOL	EventProcess(const Event &event);
+    BOOL    EventProcess(const Event &event);
 
-	Error	Start(D3DVECTOR goal, D3DVECTOR angle);
-	Error	IsEnded();
-
-protected:
-	BOOL	SearchVehicle();
+    Error   Start(D3DVECTOR goal, D3DVECTOR angle);
+    Error   IsEnded();
 
 protected:
-	D3DVECTOR		m_begin;
-	D3DVECTOR		m_goal;
-	D3DVECTOR		m_angle;
+    BOOL    SearchVehicle();
 
-	TaskResetPhase	m_phase;
-	BOOL			m_bError;
-	float			m_time;
-	float			m_speed;
-	float			m_progress;
-	float			m_lastParticule;  // time of generation last particle
-	float			m_iAngle;
+protected:
+    D3DVECTOR       m_begin;
+    D3DVECTOR       m_goal;
+    D3DVECTOR       m_angle;
+
+    TaskResetPhase  m_phase;
+    BOOL            m_bError;
+    float           m_time;
+    float           m_speed;
+    float           m_progress;
+    float           m_lastParticule;  // time of generation last particle
+    float           m_iAngle;
 };
 
 

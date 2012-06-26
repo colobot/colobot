@@ -18,8 +18,8 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNCREATE(CTstCBotDoc, CDocument)
 
 BEGIN_MESSAGE_MAP(CTstCBotDoc, CDocument)
-	//{{AFX_MSG_MAP(CTstCBotDoc)
-	//}}AFX_MSG_MAP
+    //{{AFX_MSG_MAP(CTstCBotDoc)
+    //}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ END_MESSAGE_MAP()
 
 CTstCBotDoc::CTstCBotDoc()
 {
-	// TODO: add one-time construction code here
+    // TODO: add one-time construction code here
 
 }
 
@@ -37,13 +37,13 @@ CTstCBotDoc::~CTstCBotDoc()
 
 BOOL CTstCBotDoc::OnNewDocument()
 {
-	if (!CDocument::OnNewDocument())
-		return FALSE;
+    if (!CDocument::OnNewDocument())
+        return FALSE;
 
-	// TODO: add reinitialization code here
-	// (SDI documents will reuse this document)
+    // TODO: add reinitialization code here
+    // (SDI documents will reuse this document)
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -53,14 +53,14 @@ BOOL CTstCBotDoc::OnNewDocument()
 
 void CTstCBotDoc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
-		// TODO: add storing code here
-	}
-	else
-	{
-		// TODO: add loading code here
-	}
+    if (ar.IsStoring())
+    {
+        // TODO: add storing code here
+    }
+    else
+    {
+        // TODO: add loading code here
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -69,12 +69,12 @@ void CTstCBotDoc::Serialize(CArchive& ar)
 #ifdef _DEBUG
 void CTstCBotDoc::AssertValid() const
 {
-	CDocument::AssertValid();
+    CDocument::AssertValid();
 }
 
 void CTstCBotDoc::Dump(CDumpContext& dc) const
 {
-	CDocument::Dump(dc);
+    CDocument::Dump(dc);
 }
 #endif //_DEBUG
 

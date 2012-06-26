@@ -57,40 +57,40 @@
 
 CAuto::CAuto(CInstanceManager* iMan, CObject* object)
 {
-	m_iMan = iMan;
-	m_iMan->AddInstance(CLASS_AUTO, this, 100);
+    m_iMan = iMan;
+    m_iMan->AddInstance(CLASS_AUTO, this, 100);
 
-	m_object      = object;
-	m_event       = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-	m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-	m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
-	m_light       = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-	m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-	m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-	m_cloud       = (CCloud*)m_iMan->SearchInstance(CLASS_CLOUD);
-	m_planet      = (CPlanet*)m_iMan->SearchInstance(CLASS_PLANET);
-	m_blitz       = (CBlitz*)m_iMan->SearchInstance(CLASS_BLITZ);
-	m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-	m_interface   = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-	m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-	m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
-	m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_object      = object;
+    m_event       = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
+    m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
+    m_light       = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
+    m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
+    m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
+    m_cloud       = (CCloud*)m_iMan->SearchInstance(CLASS_CLOUD);
+    m_planet      = (CPlanet*)m_iMan->SearchInstance(CLASS_PLANET);
+    m_blitz       = (CBlitz*)m_iMan->SearchInstance(CLASS_BLITZ);
+    m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
+    m_interface   = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
+    m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
+    m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
+    m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 
-	m_type = m_object->RetType();
-	m_time = 0.0f;
-	m_lastUpdateTime = 0.0f;
-	m_bMotor = FALSE;
-	m_progressTime = 0.0f;
-	m_progressTotal = 1.0f;
+    m_type = m_object->RetType();
+    m_time = 0.0f;
+    m_lastUpdateTime = 0.0f;
+    m_bMotor = FALSE;
+    m_progressTime = 0.0f;
+    m_progressTotal = 1.0f;
 
-	Init();
+    Init();
 }
 
 // Object's destructor.
 
 CAuto::~CAuto()
 {
-	m_iMan->DeleteInstance(CLASS_AUTO, this);
+    m_iMan->DeleteInstance(CLASS_AUTO, this);
 }
 
 
@@ -105,7 +105,7 @@ void CAuto::DeleteObject(BOOL bAll)
 
 void CAuto::Init()
 {
-	m_bBusy = FALSE;
+    m_bBusy = FALSE;
 }
 
 // Starts the object.
@@ -119,21 +119,21 @@ void CAuto::Start(int param)
 
 BOOL CAuto::SetType(ObjectType type)
 {
-	return FALSE;
+    return FALSE;
 }
 
 // Gives a value.
 
 BOOL CAuto::SetValue(int rank, float value)
 {
-	return FALSE;
+    return FALSE;
 }
 
 // Gives the string.
 
 BOOL CAuto::SetString(char *string)
 {
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -141,33 +141,33 @@ BOOL CAuto::SetString(char *string)
 
 BOOL CAuto::EventProcess(const Event &event)
 {
-	if ( event.event == EVENT_FRAME &&
-		 !m_engine->RetPause() )
-	{
-		m_time += event.rTime;
-		UpdateInterface(event.rTime);
-	}
+    if ( event.event == EVENT_FRAME &&
+         !m_engine->RetPause() )
+    {
+        m_time += event.rTime;
+        UpdateInterface(event.rTime);
+    }
 
-	if ( !m_object->RetSelect() )  // robot not selected?
-	{
-		return TRUE;
-	}
+    if ( !m_object->RetSelect() )  // robot not selected?
+    {
+        return TRUE;
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 // Indicates whether the controller has finished its activity.
 
 Error CAuto::IsEnded()
 {
-	return ERR_CONTINUE;
+    return ERR_CONTINUE;
 }
 
 // Stops the controller
 
 BOOL CAuto::Abort()
 {
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -175,176 +175,176 @@ BOOL CAuto::Abort()
 
 BOOL CAuto::CreateInterface(BOOL bSelect)
 {
-	CWindow*	pw;
-	FPOINT		pos, dim, ddim;
-	float		ox, oy, sx, sy;
-	char		name[100];
+    CWindow*    pw;
+    FPOINT      pos, dim, ddim;
+    float       ox, oy, sx, sy;
+    char        name[100];
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw != 0 )
-	{
-		pw->Flush();  // destroys the window buttons
-		m_interface->DeleteControl(EVENT_WINDOW0);  // destroys the window
-	}
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw != 0 )
+    {
+        pw->Flush();  // destroys the window buttons
+        m_interface->DeleteControl(EVENT_WINDOW0);  // destroys the window
+    }
 
-	if ( !bSelect )  return TRUE;
+    if ( !bSelect )  return TRUE;
 
-	pos.x = 0.0f;
-	pos.y = 0.0f;
-	dim.x = 540.0f/640.0f;
-//?	dim.y = 70.0f/480.0f;
-	dim.y = 86.0f/480.0f;
-	m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+    pos.x = 0.0f;
+    pos.y = 0.0f;
+    dim.x = 540.0f/640.0f;
+//? dim.y = 70.0f/480.0f;
+    dim.y = 86.0f/480.0f;
+    m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return FALSE;
 
-	m_object->GetTooltipName(name);
-	pos.x = 0.0f;
-	pos.y = 64.0f/480.0f;
-	ddim.x = 540.0f/640.0f;
-	ddim.y = 16.0f/480.0f;
-	pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, name);
+    m_object->GetTooltipName(name);
+    pos.x = 0.0f;
+    pos.y = 64.0f/480.0f;
+    ddim.x = 540.0f/640.0f;
+    ddim.y = 16.0f/480.0f;
+    pw->CreateLabel(pos, ddim, 0, EVENT_LABEL0, name);
 
-	dim.x = 33.0f/640.0f;
-	dim.y = 33.0f/480.0f;
-	ox = 3.0f/640.0f;
-	oy = 3.0f/480.0f;
-	sx = 33.0f/640.0f;
-	sy = 33.0f/480.0f;
+    dim.x = 33.0f/640.0f;
+    dim.y = 33.0f/480.0f;
+    ox = 3.0f/640.0f;
+    oy = 3.0f/480.0f;
+    sx = 33.0f/640.0f;
+    sy = 33.0f/480.0f;
 
-	pos.x = ox+sx*7.0f;
-	pos.y = oy+sy*0.6f;
-	ddim.x = 160.0f/640.0f;
-	ddim.y =  26.0f/480.0f;
-	pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GPROGRESS);
+    pos.x = ox+sx*7.0f;
+    pos.y = oy+sy*0.6f;
+    ddim.x = 160.0f/640.0f;
+    ddim.y =  26.0f/480.0f;
+    pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GPROGRESS);
 
-	if ( m_type != OBJECT_BASE   &&
-		 m_type != OBJECT_SAFE   &&
-		 m_type != OBJECT_HUSTON )
-	{
-		pos.x = ox+sx*2.1f;
-		pos.y = oy+sy*0;
-		ddim.x = dim.x*0.6f;
-		ddim.y = dim.y*0.6f;
-		pw->CreateButton(pos, ddim, 12, EVENT_OBJECT_DELETE);
-	}
+    if ( m_type != OBJECT_BASE   &&
+         m_type != OBJECT_SAFE   &&
+         m_type != OBJECT_HUSTON )
+    {
+        pos.x = ox+sx*2.1f;
+        pos.y = oy+sy*0;
+        ddim.x = dim.x*0.6f;
+        ddim.y = dim.y*0.6f;
+        pw->CreateButton(pos, ddim, 12, EVENT_OBJECT_DELETE);
+    }
 
 #if 0
-	pos.x = ox+sx*12.4f;
-	pos.y = oy+sy*1;
-	pw->CreateButton(pos, dim, 63, EVENT_OBJECT_BHELP);
+    pos.x = ox+sx*12.4f;
+    pos.y = oy+sy*1;
+    pw->CreateButton(pos, dim, 63, EVENT_OBJECT_BHELP);
 
-	pos.x = ox+sx*12.4f;
-	pos.y = oy+sy*0;
-	pw->CreateButton(pos, dim, 19, EVENT_OBJECT_HELP);
+    pos.x = ox+sx*12.4f;
+    pos.y = oy+sy*0;
+    pw->CreateButton(pos, dim, 19, EVENT_OBJECT_HELP);
 
-	if ( m_main->RetSceneSoluce() )
-	{
-		pos.x = ox+sx*13.4f;
-		pos.y = oy+sy*1;
-		pw->CreateButton(pos, dim, 20, EVENT_OBJECT_SOLUCE);
-	}
+    if ( m_main->RetSceneSoluce() )
+    {
+        pos.x = ox+sx*13.4f;
+        pos.y = oy+sy*1;
+        pw->CreateButton(pos, dim, 20, EVENT_OBJECT_SOLUCE);
+    }
 
-	pos.x = ox+sx*13.4f;
-	pos.y = oy+sy*0;
-	pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
+    pos.x = ox+sx*13.4f;
+    pos.y = oy+sy*0;
+    pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
 #else
-	pos.x = ox+sx*12.3f;
-	pos.y = oy+sy*-0.1f;
-	ddim.x = dim.x*1.0f;
-	ddim.y = dim.y*2.1f;
-	pw->CreateGroup(pos, ddim, 20, EVENT_NULL);  // solid blue background
+    pos.x = ox+sx*12.3f;
+    pos.y = oy+sy*-0.1f;
+    ddim.x = dim.x*1.0f;
+    ddim.y = dim.y*2.1f;
+    pw->CreateGroup(pos, ddim, 20, EVENT_NULL);  // solid blue background
 
-	pos.x = ox+sx*12.3f;
-	pos.y = oy+sy*1;
-	pw->CreateGroup(pos, dim, 19, EVENT_NULL);  // sign SatCom
+    pos.x = ox+sx*12.3f;
+    pos.y = oy+sy*1;
+    pw->CreateGroup(pos, dim, 19, EVENT_NULL);  // sign SatCom
 
-	pos.x = ox+sx*12.4f;
-	pos.y = oy+sy*0.5f;
-	ddim.x = dim.x*0.8f;
-	ddim.y = dim.y*0.5f;
-	pw->CreateButton(pos, ddim, 18, EVENT_OBJECT_BHELP);
-	pos.y = oy+sy*0.0f;
-	pw->CreateButton(pos, ddim, 19, EVENT_OBJECT_HELP);
+    pos.x = ox+sx*12.4f;
+    pos.y = oy+sy*0.5f;
+    ddim.x = dim.x*0.8f;
+    ddim.y = dim.y*0.5f;
+    pw->CreateButton(pos, ddim, 18, EVENT_OBJECT_BHELP);
+    pos.y = oy+sy*0.0f;
+    pw->CreateButton(pos, ddim, 19, EVENT_OBJECT_HELP);
 
-	pos.x = ox+sx*13.4f;
-	pos.y = oy+sy*0;
-	pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
+    pos.x = ox+sx*13.4f;
+    pos.y = oy+sy*0;
+    pw->CreateButton(pos, dim, 10, EVENT_OBJECT_DESELECT);
 #endif
 
-	pos.x = ox+sx*14.9f;
-	pos.y = oy+sy*0;
-	ddim.x = 14.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGauge(pos, ddim, 3, EVENT_OBJECT_GSHIELD);
+    pos.x = ox+sx*14.9f;
+    pos.y = oy+sy*0;
+    ddim.x = 14.0f/640.0f;
+    ddim.y = 66.0f/480.0f;
+    pw->CreateGauge(pos, ddim, 3, EVENT_OBJECT_GSHIELD);
 
-	UpdateInterface();
-	m_lastUpdateTime = 0.0f;
-	UpdateInterface(0.0f);
+    UpdateInterface();
+    m_lastUpdateTime = 0.0f;
+    UpdateInterface(0.0f);
 
-	return TRUE;
+    return TRUE;
 }
 
 // Change the state of a button interface.
 
 void CAuto::CheckInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
-	CControl*	control;
+    CControl*   control;
 
-	control = pw->SearchControl(event);
-	if ( control == 0 )  return;
+    control = pw->SearchControl(event);
+    if ( control == 0 )  return;
 
-	control->SetState(STATE_CHECK, bState);
+    control->SetState(STATE_CHECK, bState);
 }
 
 // Change the state of a button interface.
 
 void CAuto::EnableInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
-	CControl*	control;
-		
-	control = pw->SearchControl(event);
-	if ( control == 0 )  return;
+    CControl*   control;
 
-	control->SetState(STATE_ENABLE, bState);
+    control = pw->SearchControl(event);
+    if ( control == 0 )  return;
+
+    control->SetState(STATE_ENABLE, bState);
 }
 
 // Change the state of a button interface.
 
 void CAuto::VisibleInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
-	CControl*	control;
-		
-	control = pw->SearchControl(event);
-	if ( control == 0 )  return;
+    CControl*   control;
 
-	control->SetState(STATE_VISIBLE, bState);
+    control = pw->SearchControl(event);
+    if ( control == 0 )  return;
+
+    control->SetState(STATE_VISIBLE, bState);
 }
 
 // Change the state of a button interface.
 
 void CAuto::DeadInterface(CWindow *pw, EventMsg event, BOOL bState)
 {
-	CControl*	control;
-		
-	control = pw->SearchControl(event);
-	if ( control == 0 )  return;
+    CControl*   control;
 
-	control->SetState(STATE_DEAD, !bState);
+    control = pw->SearchControl(event);
+    if ( control == 0 )  return;
+
+    control->SetState(STATE_DEAD, !bState);
 }
 
 // Change the state of a button interface.
 
 void CAuto::UpdateInterface()
 {
-	CWindow*	pw;
+    CWindow*    pw;
 
-	if ( !m_object->RetSelect() )  return;
+    if ( !m_object->RetSelect() )  return;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return;
 
-	VisibleInterface(pw, EVENT_OBJECT_GPROGRESS, m_bBusy);
+    VisibleInterface(pw, EVENT_OBJECT_GPROGRESS, m_bBusy);
 }
 
 // Updates the state of all buttons on the interface,
@@ -352,28 +352,28 @@ void CAuto::UpdateInterface()
 
 void CAuto::UpdateInterface(float rTime)
 {
-	CWindow*	pw;
-	CGauge*		pg;
+    CWindow*    pw;
+    CGauge*     pg;
 
-	if ( m_time < m_lastUpdateTime+0.1f )  return;
-	m_lastUpdateTime = m_time;
+    if ( m_time < m_lastUpdateTime+0.1f )  return;
+    m_lastUpdateTime = m_time;
 
-	if ( !m_object->RetSelect() )  return;
+    if ( !m_object->RetSelect() )  return;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return;
 
-	pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GSHIELD);
-	if ( pg != 0 )
-	{
-		pg->SetLevel(m_object->RetShield());
-	}
+    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GSHIELD);
+    if ( pg != 0 )
+    {
+        pg->SetLevel(m_object->RetShield());
+    }
 
-	pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GPROGRESS);
-	if ( pg != 0 )
-	{
-		pg->SetLevel(m_progressTime);
-	}
+    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GPROGRESS);
+    if ( pg != 0 )
+    {
+        pg->SetLevel(m_progressTime);
+    }
 }
 
 
@@ -381,7 +381,7 @@ void CAuto::UpdateInterface(float rTime)
 
 Error CAuto::RetError()
 {
-	return ERR_OK;
+    return ERR_OK;
 }
 
 
@@ -389,23 +389,23 @@ Error CAuto::RetError()
 
 BOOL CAuto::RetBusy()
 {
-	return m_bBusy;
+    return m_bBusy;
 }
 
 void CAuto::SetBusy(BOOL bBusy)
 {
-	m_bBusy = bBusy;
+    m_bBusy = bBusy;
 }
 
 void CAuto::InitProgressTotal(float total)
 {
-	m_progressTime = 0.0f;
-	m_progressTotal = total;
+    m_progressTime = 0.0f;
+    m_progressTotal = total;
 }
 
 void CAuto::EventProgress(float rTime)
 {
-	m_progressTime += rTime/m_progressTotal;
+    m_progressTime += rTime/m_progressTotal;
 }
 
 
@@ -413,12 +413,12 @@ void CAuto::EventProgress(float rTime)
 
 BOOL CAuto::RetMotor()
 {
-	return m_bMotor;
+    return m_bMotor;
 }
 
 void CAuto::SetMotor(BOOL bMotor)
 {
-	m_bMotor = bMotor;
+    m_bMotor = bMotor;
 }
 
 
@@ -426,36 +426,36 @@ void CAuto::SetMotor(BOOL bMotor)
 
 BOOL CAuto::Write(char *line)
 {
-	char	name[100];
+    char    name[100];
 
-	sprintf(name, " aType=%d", m_type);
-	strcat(line, name);
+    sprintf(name, " aType=%d", m_type);
+    strcat(line, name);
 
-	sprintf(name, " aBusy=%d", m_bBusy);
-	strcat(line, name);
+    sprintf(name, " aBusy=%d", m_bBusy);
+    strcat(line, name);
 
-	sprintf(name, " aTime=%.2f", m_time);
-	strcat(line, name);
+    sprintf(name, " aTime=%.2f", m_time);
+    strcat(line, name);
 
-	sprintf(name, " aProgressTime=%.2f", m_progressTime);
-	strcat(line, name);
+    sprintf(name, " aProgressTime=%.2f", m_progressTime);
+    strcat(line, name);
 
-	sprintf(name, " aProgressTotal=%.2f", m_progressTotal);
-	strcat(line, name);
+    sprintf(name, " aProgressTotal=%.2f", m_progressTotal);
+    strcat(line, name);
 
-	return FALSE;
+    return FALSE;
 }
 
 // Return all settings to the controller.
 
 BOOL CAuto::Read(char *line)
 {
-	m_type = (ObjectType)OpInt(line, "aType", OBJECT_NULL);
-	m_bBusy = OpInt(line, "aBusy", 0);
-	m_time = OpFloat(line, "aTime", 0.0f);
-	m_progressTime = OpFloat(line, "aProgressTime", 0.0f);
-	m_progressTotal = OpFloat(line, "aProgressTotal", 0.0f);
+    m_type = (ObjectType)OpInt(line, "aType", OBJECT_NULL);
+    m_bBusy = OpInt(line, "aBusy", 0);
+    m_time = OpFloat(line, "aTime", 0.0f);
+    m_progressTime = OpFloat(line, "aProgressTime", 0.0f);
+    m_progressTotal = OpFloat(line, "aProgressTotal", 0.0f);
 
-	return FALSE;
+    return FALSE;
 }
 

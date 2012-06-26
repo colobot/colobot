@@ -17,7 +17,7 @@
 // list.h
 
 #ifndef _LIST_H_
-#define	_LIST_H_
+#define _LIST_H_
 
 
 #include "control.h"
@@ -29,88 +29,88 @@ class CButton;
 class CScroll;
 
 
-#define LISTMAXDISPLAY	20		// maximum number of visible lines
-#define LISTMAXTOTAL	100		// maximum total number of lines
+#define LISTMAXDISPLAY  20      // maximum number of visible lines
+#define LISTMAXTOTAL    100     // maximum total number of lines
 
 
 
 class CList : public CControl
 {
 public:
-	CList(CInstanceManager* iMan);
-	~CList();
+    CList(CInstanceManager* iMan);
+    ~CList();
 
-	BOOL		Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand);
+    BOOL        Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg, float expand);
 
-	void		SetPos(FPOINT pos);
-	void		SetDim(FPOINT dim);
+    void        SetPos(FPOINT pos);
+    void        SetDim(FPOINT dim);
 
-	BOOL		SetState(int state, BOOL bState);
-	BOOL		SetState(int state);
-	BOOL		ClearState(int state);
+    BOOL        SetState(int state, BOOL bState);
+    BOOL        SetState(int state);
+    BOOL        ClearState(int state);
 
-	BOOL		EventProcess(const Event &event);
-	void		Draw();
+    BOOL        EventProcess(const Event &event);
+    void        Draw();
 
-	void		Flush();
+    void        Flush();
 
-	void		SetTotal(int i);
-	int			RetTotal();
+    void        SetTotal(int i);
+    int         RetTotal();
 
-	void		SetSelect(int i);
-	int			RetSelect();
+    void        SetSelect(int i);
+    int         RetSelect();
 
-	void		SetSelectCap(BOOL bEnable);
-	BOOL		RetSelectCap();
+    void        SetSelectCap(BOOL bEnable);
+    BOOL        RetSelectCap();
 
-	void		SetBlink(BOOL bEnable);
-	BOOL		RetBlink();
+    void        SetBlink(BOOL bEnable);
+    BOOL        RetBlink();
 
-	void		SetName(int i, char* name);
-	char*		RetName(int i);
+    void        SetName(int i, char* name);
+    char*       RetName(int i);
 
-	void		SetCheck(int i, BOOL bMode);
-	BOOL		RetCheck(int i);
+    void        SetCheck(int i, BOOL bMode);
+    BOOL        RetCheck(int i);
 
-	void		SetEnable(int i, BOOL bEnable);
-	BOOL		RetEnable(int i);
+    void        SetEnable(int i, BOOL bEnable);
+    BOOL        RetEnable(int i);
 
-	void		SetTabs(int i, float pos, int justif=1);
-	float		RetTabs(int i);
+    void        SetTabs(int i, float pos, int justif=1);
+    float       RetTabs(int i);
 
-	void		ShowSelect(BOOL bFixed);
+    void        ShowSelect(BOOL bFixed);
 
-	EventMsg	RetEventMsgButton(int i);
-	EventMsg	RetEventMsgScroll();
-
-protected:
-	BOOL		MoveAdjust();
-	void		UpdateButton();
-	void		UpdateScroll();
-	void		MoveScroll();
-	void		DrawCase(char *text, FPOINT pos, float width, int justif);
+    EventMsg    RetEventMsgButton(int i);
+    EventMsg    RetEventMsgScroll();
 
 protected:
-	CButton*	m_button[LISTMAXDISPLAY];
-	CScroll*	m_scroll;
+    BOOL        MoveAdjust();
+    void        UpdateButton();
+    void        UpdateScroll();
+    void        MoveScroll();
+    void        DrawCase(char *text, FPOINT pos, float width, int justif);
 
-	EventMsg	m_eventButton[LISTMAXDISPLAY];
-	EventMsg	m_eventScroll;
+protected:
+    CButton*    m_button[LISTMAXDISPLAY];
+    CScroll*    m_scroll;
 
-	float		m_expand;
-	int			m_totalLine;	// total number of lines
-	int			m_displayLine;	// number of visible lines
-	int			m_selectLine;	// selected line
-	int			m_firstLine;	// first visible line
-	BOOL		m_bBlink;
-	BOOL		m_bSelectCap;
-	float		m_blinkTime;
-	float		m_tabs[10];
-	int			m_justifs[10];
+    EventMsg    m_eventButton[LISTMAXDISPLAY];
+    EventMsg    m_eventScroll;
 
-	char		m_text[LISTMAXTOTAL][100];
-	char		m_check[LISTMAXTOTAL];
-	char		m_enable[LISTMAXTOTAL];
+    float       m_expand;
+    int         m_totalLine;    // total number of lines
+    int         m_displayLine;  // number of visible lines
+    int         m_selectLine;   // selected line
+    int         m_firstLine;    // first visible line
+    BOOL        m_bBlink;
+    BOOL        m_bSelectCap;
+    float       m_blinkTime;
+    float       m_tabs[10];
+    int         m_justifs[10];
+
+    char        m_text[LISTMAXTOTAL][100];
+    char        m_check[LISTMAXTOTAL];
+    char        m_enable[LISTMAXTOTAL];
 };
 
 

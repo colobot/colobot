@@ -17,7 +17,7 @@
 // compass.h
 
 #ifndef _COMPASS_H_
-#define	_COMPASS_H_
+#define _COMPASS_H_
 
 
 #include "control.h"
@@ -30,22 +30,22 @@ class CD3DEngine;
 class CCompass : public CControl
 {
 public:
-	CCompass(CInstanceManager* iMan);
-	virtual ~CCompass();
+    CCompass(CInstanceManager* iMan);
+    virtual ~CCompass();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+    BOOL    Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+    BOOL    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetDirection(float dir);
-	float	RetDirection();
-
-protected:
+    void    SetDirection(float dir);
+    float   RetDirection();
 
 protected:
-	float	m_dir;
+
+protected:
+    float   m_dir;
 };
 
 

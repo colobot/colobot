@@ -26,43 +26,43 @@
 class CTestCBotView : public CView
 {
 protected: // create from serialization only
-	CTestCBotView();
-	DECLARE_DYNCREATE(CTestCBotView)
+    CTestCBotView();
+    DECLARE_DYNCREATE(CTestCBotView)
 
 // Attributes
 public:
-	CTestCBotDoc* GetDocument();
+    CTestCBotDoc* GetDocument();
 
 // Operations
 public:
 
 // Overrides
-	// ClassWizard generated virtual function overrides
-	//{{AFX_VIRTUAL(CTestCBotView)
-	public:
-	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	protected:
-	virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
-	//}}AFX_VIRTUAL
+    // ClassWizard generated virtual function overrides
+    //{{AFX_VIRTUAL(CTestCBotView)
+    public:
+    virtual void OnDraw(CDC* pDC);  // overridden to draw this view
+    virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
+    protected:
+    virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
+    //}}AFX_VIRTUAL
 
 // Implementation
 public:
-	virtual ~CTestCBotView();
+    virtual ~CTestCBotView();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+    virtual void AssertValid() const;
+    virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
 
 // Generated message map functions
 protected:
-	//{{AFX_MSG(CTestCBotView)
-	afx_msg void OnSize(UINT nType, int cx, int cy);
-	afx_msg LONG ActWindow(UINT wparam, LONG lparam) ;
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CTestCBotView)
+    afx_msg void OnSize(UINT nType, int cx, int cy);
+    afx_msg LONG ActWindow(UINT wparam, LONG lparam) ;
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 #ifndef _DEBUG  // debug version in TestCBotView.cpp

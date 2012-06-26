@@ -17,7 +17,7 @@
 // taskrecover.h
 
 #ifndef _TASKSRECOVER_H_
-#define	_TASKSRECOVER_H_
+#define _TASKSRECOVER_H_
 
 
 #include "d3dengine.h"
@@ -33,11 +33,11 @@ class CObject;
 
 enum TaskRecoverPhase
 {
-	TRP_TURN	= 1,	// turns
-	TRP_MOVE	= 2,	// advance
-	TRP_DOWN	= 3,	// descends
-	TRP_OPER	= 4,	// operates
-	TRP_UP		= 5,	// back
+    TRP_TURN    = 1,    // turns
+    TRP_MOVE    = 2,    // advance
+    TRP_DOWN    = 3,    // descends
+    TRP_OPER    = 4,    // operates
+    TRP_UP      = 5,    // back
 };
 
 
@@ -45,30 +45,30 @@ enum TaskRecoverPhase
 class CTaskRecover : public CTask
 {
 public:
-	CTaskRecover(CInstanceManager* iMan, CObject* object);
-	~CTaskRecover();
+    CTaskRecover(CInstanceManager* iMan, CObject* object);
+    ~CTaskRecover();
 
-	BOOL		EventProcess(const Event &event);
+    BOOL        EventProcess(const Event &event);
 
-	Error		Start();
-	Error		IsEnded();
-	BOOL		Abort();
-
-protected:
-	CObject*	SearchRuin();
+    Error       Start();
+    Error       IsEnded();
+    BOOL        Abort();
 
 protected:
-	TaskRecoverPhase m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_time;
-	float			m_angle;
-	float			m_lastParticule;
-	BOOL			m_bError;
-	CObject*		m_ruin;
-	CObject*		m_metal;
-	D3DVECTOR		m_recoverPos;
-	int				m_soundChannel;
+    CObject*    SearchRuin();
+
+protected:
+    TaskRecoverPhase m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_time;
+    float           m_angle;
+    float           m_lastParticule;
+    BOOL            m_bError;
+    CObject*        m_ruin;
+    CObject*        m_metal;
+    D3DVECTOR       m_recoverPos;
+    int             m_soundChannel;
 };
 
 

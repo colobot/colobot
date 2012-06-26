@@ -11,31 +11,31 @@
 
 class CMyThread : public CWinThread
 {
-//	DECLARE_DYNAMIC(CMyThread)
-	DECLARE_DYNCREATE(CMyThread)
+//  DECLARE_DYNAMIC(CMyThread)
+    DECLARE_DYNCREATE(CMyThread)
 
 public:
 
 
 // Constructor
-	CMyThread();
-	virtual BOOL InitInstance();
-	virtual int ExitInstance(); // return app exit code
+    CMyThread();
+    virtual BOOL InitInstance();
+    virtual int ExitInstance(); // return app exit code
 
 // Implementation
 
-	//{{AFX_MSG(CTstCBotApp)
-	afx_msg void OnAppAbout();
-		// NOTE - the ClassWizard will add and remove member functions here.
-		//    DO NOT EDIT what you see in these blocks of generated code !
-	//}}AFX_MSG
+    //{{AFX_MSG(CTstCBotApp)
+    afx_msg void OnAppAbout();
+        // NOTE - the ClassWizard will add and remove member functions here.
+        //    DO NOT EDIT what you see in these blocks of generated code !
+    //}}AFX_MSG
 
 // Generated message map functions
 protected:
-	//{{AFX_MSG(CMainFrame)
-	afx_msg void OnReturn();
-	//}}AFX_MSG
-	DECLARE_MESSAGE_MAP()
+    //{{AFX_MSG(CMainFrame)
+    afx_msg void OnReturn();
+    //}}AFX_MSG
+    DECLARE_MESSAGE_MAP()
 };
 
 //{{AFX_INSERT_LOCATION}}

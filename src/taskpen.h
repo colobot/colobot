@@ -17,7 +17,7 @@
 // taskpen.h
 
 #ifndef _TASKSPEN_H_
-#define	_TASKSPEN_H_
+#define _TASKSPEN_H_
 
 
 #include "d3dengine.h"
@@ -33,9 +33,9 @@ class CObject;
 
 enum TaskPenPhase
 {
-	TPP_UP		= 1,	// rises the pencil
-	TPP_TURN	= 2,	// turns the carousel
-	TPP_DOWN	= 3,	// descends the pencil
+    TPP_UP      = 1,    // rises the pencil
+    TPP_TURN    = 2,    // turns the carousel
+    TPP_DOWN    = 3,    // descends the pencil
 };
 
 
@@ -43,34 +43,34 @@ enum TaskPenPhase
 class CTaskPen : public CTask
 {
 public:
-	CTaskPen(CInstanceManager* iMan, CObject* object);
-	~CTaskPen();
+    CTaskPen(CInstanceManager* iMan, CObject* object);
+    ~CTaskPen();
 
-	BOOL		EventProcess(const Event &event);
+    BOOL        EventProcess(const Event &event);
 
-	Error		Start(BOOL bDown, int color);
-	Error		IsEnded();
-	BOOL		Abort();
-
-protected:
-	void		SoundManip(float time, float amplitude, float frequency);
-	int			AngleToRank(float angle);
-	float		ColorToAngle(int color);
-	int			ColorToRank(int color);
+    Error       Start(BOOL bDown, int color);
+    Error       IsEnded();
+    BOOL        Abort();
 
 protected:
-	BOOL			m_bError;
-	TaskPenPhase	m_phase;
-	float			m_progress;
-	float			m_delay;
-	float			m_time;
-	float			m_lastParticule;
-	D3DVECTOR		m_supportPos;
+    void        SoundManip(float time, float amplitude, float frequency);
+    int         AngleToRank(float angle);
+    float       ColorToAngle(int color);
+    int         ColorToRank(int color);
 
-	float			m_timeUp;
-	float			m_oldAngle;
-	float			m_newAngle;
-	float			m_timeDown;
+protected:
+    BOOL            m_bError;
+    TaskPenPhase    m_phase;
+    float           m_progress;
+    float           m_delay;
+    float           m_time;
+    float           m_lastParticule;
+    D3DVECTOR       m_supportPos;
+
+    float           m_timeUp;
+    float           m_oldAngle;
+    float           m_newAngle;
+    float           m_timeDown;
 };
 
 

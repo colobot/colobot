@@ -17,7 +17,7 @@
 // label.h
 
 #ifndef _LABEL_H_
-#define	_LABEL_H_
+#define _LABEL_H_
 
 
 #include "control.h"
@@ -30,14 +30,14 @@ class CD3DEngine;
 class CLabel : public CControl
 {
 public:
-	CLabel(CInstanceManager* iMan);
-	virtual ~CLabel();
+    CLabel(CInstanceManager* iMan);
+    virtual ~CLabel();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+    BOOL    Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+    BOOL    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
 protected:
 

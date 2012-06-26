@@ -48,14 +48,14 @@
 #endif
 
 
-#define AUDIO_TRACK		13		// total number of audio tracks on the CD
-#define MAX_STEP		0.2f		// maximum time for a step
+#define AUDIO_TRACK     13      // total number of audio tracks on the CD
+#define MAX_STEP        0.2f        // maximum time for a step
 
-#define WINDOW_DX		(640+6)		// dimensions in windowed mode
-#define WINDOW_DY		(480+25)
+#define WINDOW_DX       (640+6)     // dimensions in windowed mode
+#define WINDOW_DY       (480+25)
 
-#define USE_THREAD		FALSE		// TRUE does not work!
-#define TIME_THREAD		0.02f
+#define USE_THREAD      FALSE       // TRUE does not work!
+#define TIME_THREAD     0.02f
 
 
 
@@ -64,9 +64,9 @@
 
 float AxeLimit(float value)
 {
-	if ( value < -1.0f )  value = -1.0f;
-	if ( value >  1.0f )  value =  1.0f;
-	return value;
+    if ( value < -1.0f )  value = -1.0f;
+    if ( value >  1.0f )  value =  1.0f;
+    return value;
 }
 
 
@@ -75,29 +75,29 @@ float AxeLimit(float value)
 
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT )
 {
-	Error	err;
-	char	string[100];
+    Error   err;
+    char    string[100];
 
-	CD3DApplication d3dApp;  // single instance of the application
+    CD3DApplication d3dApp;  // single instance of the application
 
-	err = d3dApp.CheckMistery(strCmdLine);
-	if ( err != ERR_OK )
-	{
-		GetResource(RES_ERR, err, string);
+    err = d3dApp.CheckMistery(strCmdLine);
+    if ( err != ERR_OK )
+    {
+        GetResource(RES_ERR, err, string);
 #if _NEWLOOK
-		MessageBox( NULL, string, _T("CeeBot"), MB_ICONERROR|MB_OK );
+        MessageBox( NULL, string, _T("CeeBot"), MB_ICONERROR|MB_OK );
 #else
-		MessageBox( NULL, string, _T("COLOBOT"), MB_ICONERROR|MB_OK );
+        MessageBox( NULL, string, _T("COLOBOT"), MB_ICONERROR|MB_OK );
 #endif
-		return 0;
-	}
+        return 0;
+    }
 
-	if ( FAILED(d3dApp.Create(hInst, strCmdLine)) )
-	{
-		return 0;
-	}
+    if ( FAILED(d3dApp.Create(hInst, strCmdLine)) )
+    {
+        return 0;
+    }
 
-	return d3dApp.Run();  // execution of all
+    return d3dApp.Run();  // execution of all
 }
 
 
@@ -116,65 +116,65 @@ static CD3DApplication* g_pD3DApp;
 
 CD3DApplication::CD3DApplication()
 {
-	int		i;
+    int     i;
 
-	m_iMan = new(CInstanceManager);
-	m_event = new CEvent(m_iMan);
+    m_iMan = new(CInstanceManager);
+    m_event = new CEvent(m_iMan);
 
-	m_pD3DEngine = 0;
-	m_pRobotMain = 0;
-	m_pSound     = 0;
-	m_pFramework = 0;
-	m_instance   = 0;
-	m_hWnd       = 0;
-	m_pDD        = 0;
-	m_pD3D       = 0;
-	m_pD3DDevice = 0;
+    m_pD3DEngine = 0;
+    m_pRobotMain = 0;
+    m_pSound     = 0;
+    m_pFramework = 0;
+    m_instance   = 0;
+    m_hWnd       = 0;
+    m_pDD        = 0;
+    m_pD3D       = 0;
+    m_pD3DDevice = 0;
 
-	m_CDpath[0] = 0;
+    m_CDpath[0] = 0;
 
-	m_pddsRenderTarget = 0;
-	m_pddsDepthBuffer  = 0;
+    m_pddsRenderTarget = 0;
+    m_pddsDepthBuffer  = 0;
 
-	m_keyState = 0;
-	m_axeKey = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
+    m_keyState = 0;
+    m_axeKey = D3DVECTOR(0.0f, 0.0f, 0.0f);
+    m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
 
-	m_vidMemTotal  = 0;
-	m_bActive      = FALSE;
-	m_bActivateApp = FALSE;
-	m_bReady       = FALSE;
-	m_bJoystick    = FALSE;
-	m_aTime        = 0.0f;
+    m_vidMemTotal  = 0;
+    m_bActive      = FALSE;
+    m_bActivateApp = FALSE;
+    m_bReady       = FALSE;
+    m_bJoystick    = FALSE;
+    m_aTime        = 0.0f;
 
-	for ( i=0 ; i<32 ; i++ )
-	{
-		m_bJoyButton[i] = FALSE;
-	}
+    for ( i=0 ; i<32 ; i++ )
+    {
+        m_bJoyButton[i] = FALSE;
+    }
 
 #if _NEWLOOK
-	m_strWindowTitle  = _T("CeeBot");
+    m_strWindowTitle  = _T("CeeBot");
 #else
-	m_strWindowTitle  = _T("COLOBOT");
+    m_strWindowTitle  = _T("COLOBOT");
 #endif
-	m_bAppUseZBuffer  = TRUE;
-	m_bAppUseStereo   = TRUE;
-	m_bShowStats      = FALSE;
-	m_bDebugMode      = FALSE;
-	m_bAudioState     = TRUE;
-	m_bAudioTrack     = TRUE;
-	m_bNiceMouse      = FALSE;
-	m_bSetupMode      = TRUE;
-	m_fnConfirmDevice = 0;
+    m_bAppUseZBuffer  = TRUE;
+    m_bAppUseStereo   = TRUE;
+    m_bShowStats      = FALSE;
+    m_bDebugMode      = FALSE;
+    m_bAudioState     = TRUE;
+    m_bAudioTrack     = TRUE;
+    m_bNiceMouse      = FALSE;
+    m_bSetupMode      = TRUE;
+    m_fnConfirmDevice = 0;
 
-	ResetKey();
+    ResetKey();
 
-	g_pD3DApp = this;
+    g_pD3DApp = this;
 
-	// Request event sent by Logitech.
-	m_mshMouseWheel = RegisterWindowMessage(MSH_MOUSEWHEEL); 
+    // Request event sent by Logitech.
+    m_mshMouseWheel = RegisterWindowMessage(MSH_MOUSEWHEEL);
 
-	_mkdir("files\\");
+    _mkdir("files\\");
 }
 
 
@@ -182,7 +182,7 @@ CD3DApplication::CD3DApplication()
 
 CD3DApplication::~CD3DApplication()
 {
-	delete m_iMan;
+    delete m_iMan;
 }
 
 
@@ -191,169 +191,169 @@ CD3DApplication::~CD3DApplication()
 
 char* CD3DApplication::RetCDpath()
 {
-	return m_CDpath;
+    return m_CDpath;
 }
 
 // Reads the information in the registry.
 
 Error CD3DApplication::RegQuery()
 {
-	FILE*	file = NULL;
-	HKEY	key;
-	LONG	i;
-	DWORD	type, len;
-	char	filename[100];
+    FILE*   file = NULL;
+    HKEY    key;
+    LONG    i;
+    DWORD   type, len;
+    char    filename[100];
 
 #if _NEWLOOK
  #if _TEEN
-	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\CeeBot-Teen\\Setup",
+    i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\CeeBot-Teen\\Setup",
  #else
-	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\CeeBot-A\\Setup",
+    i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\CeeBot-A\\Setup",
  #endif
 #else
-	i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\Colobot\\Setup",
+    i = RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\Epsitec\\Colobot\\Setup",
 #endif
-					 0, KEY_READ, &key);
-	if ( i != ERROR_SUCCESS )  return ERR_INSTALL;
+                     0, KEY_READ, &key);
+    if ( i != ERROR_SUCCESS )  return ERR_INSTALL;
 
-	type = REG_SZ;
-	len  = sizeof(m_CDpath);
-	i = RegQueryValueEx(key, "CDpath", NULL, &type, (LPBYTE)m_CDpath, &len);
-	if ( i != ERROR_SUCCESS || type != REG_SZ )  return ERR_INSTALL;
+    type = REG_SZ;
+    len  = sizeof(m_CDpath);
+    i = RegQueryValueEx(key, "CDpath", NULL, &type, (LPBYTE)m_CDpath, &len);
+    if ( i != ERROR_SUCCESS || type != REG_SZ )  return ERR_INSTALL;
 
-	filename[0] = m_CDpath[0];
-	filename[1] = ':';
-	filename[2] = '\\';
-	filename[3] = 0;
-	i = GetDriveType(filename);
-	if ( i != DRIVE_CDROM )  return ERR_NOCD;
+    filename[0] = m_CDpath[0];
+    filename[1] = ':';
+    filename[2] = '\\';
+    filename[3] = 0;
+    i = GetDriveType(filename);
+    if ( i != DRIVE_CDROM )  return ERR_NOCD;
 
-	strcat(filename, "install.ini");
-	file = fopen(filename, "rb");  // install.ini file exist?
-	if ( file == NULL )  return ERR_NOCD;
-	fclose(file);
+    strcat(filename, "install.ini");
+    file = fopen(filename, "rb");  // install.ini file exist?
+    if ( file == NULL )  return ERR_NOCD;
+    fclose(file);
 
-	return ERR_OK;
+    return ERR_OK;
 }
 
 // Checks for audio tracks on the CD.
 
 Error CD3DApplication::AudioQuery()
 {
-	MCI_OPEN_PARMS		mciOpenParms;
-	MCI_STATUS_PARMS	mciStatusParms;
-	DWORD				dwReturn;
-	UINT				deviceID;
-	char				device[10];
+    MCI_OPEN_PARMS      mciOpenParms;
+    MCI_STATUS_PARMS    mciStatusParms;
+    DWORD               dwReturn;
+    UINT                deviceID;
+    char                device[10];
 
-	// Open the device by specifying the device and filename.
-	// MCI will attempt to choose the MIDI mapper as the output port.
-	memset(&mciOpenParms, 0, sizeof(MCI_OPEN_PARMS));
-	mciOpenParms.lpstrDeviceType = (LPCTSTR)MCI_DEVTYPE_CD_AUDIO;
-	if ( m_CDpath[0] == 0 )
-	{
-		dwReturn = mciSendCommand(NULL,
-								  MCI_OPEN,
-								  MCI_OPEN_TYPE|MCI_OPEN_TYPE_ID,
-								  (DWORD)(LPVOID)&mciOpenParms);
-	}
-	else
-	{
-		device[0] = m_CDpath[0];
-		device[1] = ':';
-		device[2] = 0;
-		mciOpenParms.lpstrElementName = device;
-		dwReturn = mciSendCommand(NULL,
-								  MCI_OPEN,
-								  MCI_OPEN_TYPE|MCI_OPEN_TYPE_ID|MCI_OPEN_ELEMENT,
-								  (DWORD)(LPVOID)&mciOpenParms);
-	}
-	if ( dwReturn != 0 )
-	{
-		return ERR_NOCD;
-	}
+    // Open the device by specifying the device and filename.
+    // MCI will attempt to choose the MIDI mapper as the output port.
+    memset(&mciOpenParms, 0, sizeof(MCI_OPEN_PARMS));
+    mciOpenParms.lpstrDeviceType = (LPCTSTR)MCI_DEVTYPE_CD_AUDIO;
+    if ( m_CDpath[0] == 0 )
+    {
+        dwReturn = mciSendCommand(NULL,
+                                  MCI_OPEN,
+                                  MCI_OPEN_TYPE|MCI_OPEN_TYPE_ID,
+                                  (DWORD)(LPVOID)&mciOpenParms);
+    }
+    else
+    {
+        device[0] = m_CDpath[0];
+        device[1] = ':';
+        device[2] = 0;
+        mciOpenParms.lpstrElementName = device;
+        dwReturn = mciSendCommand(NULL,
+                                  MCI_OPEN,
+                                  MCI_OPEN_TYPE|MCI_OPEN_TYPE_ID|MCI_OPEN_ELEMENT,
+                                  (DWORD)(LPVOID)&mciOpenParms);
+    }
+    if ( dwReturn != 0 )
+    {
+        return ERR_NOCD;
+    }
 
-	// The device opened successfully; get the device ID.
-	deviceID = mciOpenParms.wDeviceID;
+    // The device opened successfully; get the device ID.
+    deviceID = mciOpenParms.wDeviceID;
 
-	memset(&mciStatusParms, 0, sizeof(MCI_STATUS_PARMS));
-	mciStatusParms.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
-	dwReturn = mciSendCommand(deviceID,
-							  MCI_STATUS,
-							  MCI_WAIT|MCI_STATUS_ITEM,
-							  (DWORD)&mciStatusParms);
-	if ( dwReturn != 0 )
-	{
-		mciSendCommand(deviceID, MCI_CLOSE, 0, NULL);
-		return ERR_NOCD;
-	}
+    memset(&mciStatusParms, 0, sizeof(MCI_STATUS_PARMS));
+    mciStatusParms.dwItem = MCI_STATUS_NUMBER_OF_TRACKS;
+    dwReturn = mciSendCommand(deviceID,
+                              MCI_STATUS,
+                              MCI_WAIT|MCI_STATUS_ITEM,
+                              (DWORD)&mciStatusParms);
+    if ( dwReturn != 0 )
+    {
+        mciSendCommand(deviceID, MCI_CLOSE, 0, NULL);
+        return ERR_NOCD;
+    }
 
-	if ( mciStatusParms.dwReturn != AUDIO_TRACK )
-	{
-		mciSendCommand(deviceID, MCI_CLOSE, 0, NULL);
-		return ERR_NOCD;
-	}
+    if ( mciStatusParms.dwReturn != AUDIO_TRACK )
+    {
+        mciSendCommand(deviceID, MCI_CLOSE, 0, NULL);
+        return ERR_NOCD;
+    }
 
-	mciSendCommand(deviceID, MCI_CLOSE, 0, NULL);
-	return ERR_OK;
+    mciSendCommand(deviceID, MCI_CLOSE, 0, NULL);
+    return ERR_OK;
 }
 
 // Checks for the key.
 
 Error CD3DApplication::CheckMistery(char *strCmdLine)
 {
-	if ( strstr(strCmdLine, "-debug") != 0 )
-	{
-		m_bShowStats = TRUE;
-		SetDebugMode(TRUE);
-	}
+    if ( strstr(strCmdLine, "-debug") != 0 )
+    {
+        m_bShowStats = TRUE;
+        SetDebugMode(TRUE);
+    }
 
-	if ( strstr(strCmdLine, "-audiostate") != 0 )
-	{
-		m_bAudioState = FALSE;
-	}
+    if ( strstr(strCmdLine, "-audiostate") != 0 )
+    {
+        m_bAudioState = FALSE;
+    }
 
-	if ( strstr(strCmdLine, "-audiotrack") != 0 )
-	{
-		m_bAudioTrack = FALSE;
-	}
+    if ( strstr(strCmdLine, "-audiotrack") != 0 )
+    {
+        m_bAudioTrack = FALSE;
+    }
 
-	m_CDpath[0] = 0;
+    m_CDpath[0] = 0;
 #if _FULL
-	if ( strstr(strCmdLine, "-nocd") == 0 && !m_bDebugMode )
-	{
-		Error	err;
+    if ( strstr(strCmdLine, "-nocd") == 0 && !m_bDebugMode )
+    {
+        Error   err;
 
-		err = RegQuery();
-		if ( err != ERR_OK )  return err;
+        err = RegQuery();
+        if ( err != ERR_OK )  return err;
 
-		//?err = AudioQuery();
-		//?if ( err != ERR_OK )  return err;
-	}
+        //?err = AudioQuery();
+        //?if ( err != ERR_OK )  return err;
+    }
 #endif
 #if _SCHOOL & _EDU
-	if ( strstr(strCmdLine, "-nosetup") != 0 )
-	{
-		m_bSetupMode = FALSE;
-	}
-	m_bAudioTrack = FALSE;
+    if ( strstr(strCmdLine, "-nosetup") != 0 )
+    {
+        m_bSetupMode = FALSE;
+    }
+    m_bAudioTrack = FALSE;
 #endif
 #if _SCHOOL & _PERSO
-	Error err = RegQuery();
-	if ( err != ERR_OK )  return err;
-	m_bAudioTrack = FALSE;
+    Error err = RegQuery();
+    if ( err != ERR_OK )  return err;
+    m_bAudioTrack = FALSE;
 #endif
 #if _SCHOOL & _CEEBOTDEMO
-	m_bAudioTrack = FALSE;
+    m_bAudioTrack = FALSE;
 #endif
 #if _NET
-	m_bAudioTrack = FALSE;
+    m_bAudioTrack = FALSE;
 #endif
 #if _DEMO
-	m_bAudioTrack = FALSE;
+    m_bAudioTrack = FALSE;
 #endif
 
-	return ERR_OK;
+    return ERR_OK;
 }
 
 
@@ -361,47 +361,47 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
 
 int CD3DApplication::GetVidMemTotal()
 {
-	return m_vidMemTotal;
+    return m_vidMemTotal;
 }
 
 BOOL CD3DApplication::IsVideo8MB()
 {
-	if ( m_vidMemTotal == 0 )  return FALSE;
-	return (m_vidMemTotal <= 8388608L);  // 8 Mb or less (2 ^ 23)?
+    if ( m_vidMemTotal == 0 )  return FALSE;
+    return (m_vidMemTotal <= 8388608L);  // 8 Mb or less (2 ^ 23)?
 }
 
 BOOL CD3DApplication::IsVideo32MB()
 {
-	if ( m_vidMemTotal == 0 )  return FALSE;
-	return (m_vidMemTotal > 16777216L);  // more than 16 Mb (2 ^ 24)?
+    if ( m_vidMemTotal == 0 )  return FALSE;
+    return (m_vidMemTotal > 16777216L);  // more than 16 Mb (2 ^ 24)?
 }
 
 
 void CD3DApplication::SetShowStat(BOOL bShow)
 {
-	m_bShowStats = bShow;
+    m_bShowStats = bShow;
 }
 
 BOOL CD3DApplication::RetShowStat()
 {
-	return m_bShowStats;
+    return m_bShowStats;
 }
 
 
 void CD3DApplication::SetDebugMode(BOOL bMode)
 {
-	m_bDebugMode = bMode;
-	D3DTextr_SetDebugMode(m_bDebugMode);
+    m_bDebugMode = bMode;
+    D3DTextr_SetDebugMode(m_bDebugMode);
 }
 
 BOOL CD3DApplication::RetDebugMode()
 {
-	return m_bDebugMode;
+    return m_bDebugMode;
 }
 
 BOOL CD3DApplication::RetSetupMode()
 {
-	return m_bSetupMode;
+    return m_bSetupMode;
 }
 
 
@@ -411,41 +411,41 @@ BOOL CD3DApplication::RetSetupMode()
 
 DWORD WINAPI ThreadRoutine(LPVOID)
 {
-	Event	event;
-	float	time;
-	int		ms, start, end, delay;
+    Event   event;
+    float   time;
+    int     ms, start, end, delay;
 
-	ms = (int)(TIME_THREAD*1000.0f);
-	time = 0.0f;
-	while ( TRUE )
-	{
-		start = timeGetTime();
+    ms = (int)(TIME_THREAD*1000.0f);
+    time = 0.0f;
+    while ( TRUE )
+    {
+        start = timeGetTime();
 
-		g_pD3DApp->m_pD3DEngine->FrameMove(TIME_THREAD);
+        g_pD3DApp->m_pD3DEngine->FrameMove(TIME_THREAD);
 
-		ZeroMemory(&event, sizeof(Event));
-		event.event = EVENT_FRAME;
-		event.rTime = TIME_THREAD;
-		event.axeX = AxeLimit(g_pD3DApp->m_axeKey.x + g_pD3DApp->m_axeJoy.x);
-		event.axeY = AxeLimit(g_pD3DApp->m_axeKey.y + g_pD3DApp->m_axeJoy.y);
-		event.axeZ = AxeLimit(g_pD3DApp->m_axeKey.z + g_pD3DApp->m_axeJoy.z);
-		event.keyState = g_pD3DApp->m_keyState;
+        ZeroMemory(&event, sizeof(Event));
+        event.event = EVENT_FRAME;
+        event.rTime = TIME_THREAD;
+        event.axeX = AxeLimit(g_pD3DApp->m_axeKey.x + g_pD3DApp->m_axeJoy.x);
+        event.axeY = AxeLimit(g_pD3DApp->m_axeKey.y + g_pD3DApp->m_axeJoy.y);
+        event.axeZ = AxeLimit(g_pD3DApp->m_axeKey.z + g_pD3DApp->m_axeJoy.z);
+        event.keyState = g_pD3DApp->m_keyState;
 
-		if ( g_pD3DApp->m_pRobotMain != 0 )
-		{
-			g_pD3DApp->m_pRobotMain->EventProcess(event);
-		}
+        if ( g_pD3DApp->m_pRobotMain != 0 )
+        {
+            g_pD3DApp->m_pRobotMain->EventProcess(event);
+        }
 
-		end = timeGetTime();
+        end = timeGetTime();
 
-		delay = ms-(end-start);
-		if ( delay > 0 )
-		{
-			Sleep(delay);  // waiting 20ms-used
-		}
-		time += TIME_THREAD;
-	}
-	return 0;
+        delay = ms-(end-start);
+        if ( delay > 0 )
+        {
+            Sleep(delay);  // waiting 20ms-used
+        }
+        time += TIME_THREAD;
+    }
+    return 0;
 }
 
 
@@ -453,10 +453,10 @@ DWORD WINAPI ThreadRoutine(LPVOID)
 // for some minimum set of capabilities.
 
 HRESULT CD3DApplication::ConfirmDevice( DDCAPS* pddDriverCaps,
-									    D3DDEVICEDESC7* pd3dDeviceDesc )
+                                        D3DDEVICEDESC7* pd3dDeviceDesc )
 {
-//?	if( pd3dDeviceDesc->wMaxVertexBlendMatrices < 2 )
-//?		return E_FAIL;
+//? if( pd3dDeviceDesc->wMaxVertexBlendMatrices < 2 )
+//?     return E_FAIL;
 
     return S_OK;
 }
@@ -465,168 +465,168 @@ HRESULT CD3DApplication::ConfirmDevice( DDCAPS* pddDriverCaps,
 
 HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 {
-	HRESULT hr;
-	char	deviceName[100];
-	char	modeName[100];
-	int		iValue;
-	DWORD	style;
-	BOOL	bFull, b3D;
+    HRESULT hr;
+    char    deviceName[100];
+    char    modeName[100];
+    int     iValue;
+    DWORD   style;
+    BOOL    bFull, b3D;
 
-	m_instance = hInst;
+    m_instance = hInst;
 
-	InitCurrentDirectory();
+    InitCurrentDirectory();
 
-	// Enumerate available D3D devices. The callback is used so the app can
-	// confirm/reject each enumerated device depending on its capabilities.
-	if( FAILED( hr = D3DEnum_EnumerateDevices( m_fnConfirmDevice ) ) )
-	{
-		DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-		return hr;
-	}
+    // Enumerate available D3D devices. The callback is used so the app can
+    // confirm/reject each enumerated device depending on its capabilities.
+    if( FAILED( hr = D3DEnum_EnumerateDevices( m_fnConfirmDevice ) ) )
+    {
+        DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+        return hr;
+    }
 
-	if( FAILED( hr = D3DEnum_SelectDefaultDevice( &m_pDeviceInfo ) ) )
-	{
-		DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-		return hr;
-	}
+    if( FAILED( hr = D3DEnum_SelectDefaultDevice( &m_pDeviceInfo ) ) )
+    {
+        DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+        return hr;
+    }
 
-	if ( !m_bDebugMode )
-	{
-		m_pDeviceInfo->bWindowed = FALSE;  // full screen
-	}
-	if ( GetProfileInt("Device", "FullScreen", bFull) )
-	{
-		m_pDeviceInfo->bWindowed = !bFull;
-	}
+    if ( !m_bDebugMode )
+    {
+        m_pDeviceInfo->bWindowed = FALSE;  // full screen
+    }
+    if ( GetProfileInt("Device", "FullScreen", bFull) )
+    {
+        m_pDeviceInfo->bWindowed = !bFull;
+    }
 
-	// Create the 3D engine.
-	if( (m_pD3DEngine = new CD3DEngine(m_iMan, this)) == NULL )
-	{
-		DisplayFrameworkError( D3DENUMERR_ENGINE, MSGERR_APPMUSTEXIT );
-		return E_OUTOFMEMORY;
-	}
-	SetEngine(m_pD3DEngine);
+    // Create the 3D engine.
+    if( (m_pD3DEngine = new CD3DEngine(m_iMan, this)) == NULL )
+    {
+        DisplayFrameworkError( D3DENUMERR_ENGINE, MSGERR_APPMUSTEXIT );
+        return E_OUTOFMEMORY;
+    }
+    SetEngine(m_pD3DEngine);
 
-	// Initialize the app's custom scene stuff
-	if( FAILED( hr = m_pD3DEngine->OneTimeSceneInit() ) )
-	{
-		DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-		return hr;
-	}
+    // Initialize the app's custom scene stuff
+    if( FAILED( hr = m_pD3DEngine->OneTimeSceneInit() ) )
+    {
+        DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+        return hr;
+    }
 
-	// Create a new CD3DFramework class. This class does all of our D3D
-	// initialization and manages the common D3D objects.
-	if( (m_pFramework = new CD3DFramework7()) == NULL )
-	{
-		DisplayFrameworkError( E_OUTOFMEMORY, MSGERR_APPMUSTEXIT );
-		return E_OUTOFMEMORY;
-	}
+    // Create a new CD3DFramework class. This class does all of our D3D
+    // initialization and manages the common D3D objects.
+    if( (m_pFramework = new CD3DFramework7()) == NULL )
+    {
+        DisplayFrameworkError( E_OUTOFMEMORY, MSGERR_APPMUSTEXIT );
+        return E_OUTOFMEMORY;
+    }
 
-	// Create the sound instance.
-	if( (m_pSound = new CSound(m_iMan)) == NULL )
-	{
-		DisplayFrameworkError( D3DENUMERR_SOUND, MSGERR_APPMUSTEXIT );
-		return E_OUTOFMEMORY;
-	}
+    // Create the sound instance.
+    if( (m_pSound = new CSound(m_iMan)) == NULL )
+    {
+        DisplayFrameworkError( D3DENUMERR_SOUND, MSGERR_APPMUSTEXIT );
+        return E_OUTOFMEMORY;
+    }
 
-	// Create the robot application.
-	if( (m_pRobotMain = new CRobotMain(m_iMan)) == NULL )
-	{
-		DisplayFrameworkError( D3DENUMERR_ROBOT, MSGERR_APPMUSTEXIT );
-		return E_OUTOFMEMORY;
-	}
+    // Create the robot application.
+    if( (m_pRobotMain = new CRobotMain(m_iMan)) == NULL )
+    {
+        DisplayFrameworkError( D3DENUMERR_ROBOT, MSGERR_APPMUSTEXIT );
+        return E_OUTOFMEMORY;
+    }
 
-	// Register the window class
-	WNDCLASS wndClass = { 0, WndProc, 0, 0, hInst,
-						  LoadIcon( hInst, MAKEINTRESOURCE(IDI_MAIN_ICON) ),
-						  LoadCursor( NULL, IDC_ARROW ), 
-						  (HBRUSH)GetStockObject(WHITE_BRUSH),
-						  NULL, _T("D3D Window") };
-	RegisterClass( &wndClass );
+    // Register the window class
+    WNDCLASS wndClass = { 0, WndProc, 0, 0, hInst,
+                          LoadIcon( hInst, MAKEINTRESOURCE(IDI_MAIN_ICON) ),
+                          LoadCursor( NULL, IDC_ARROW ),
+                          (HBRUSH)GetStockObject(WHITE_BRUSH),
+                          NULL, _T("D3D Window") };
+    RegisterClass( &wndClass );
 
-	// Create the render window
-	style = WS_CAPTION|WS_VISIBLE;
-	if ( m_bDebugMode )  style |= WS_SYSMENU;  // close box
-	m_hWnd = CreateWindow( _T("D3D Window"), m_strWindowTitle,
-//?						   WS_OVERLAPPEDWINDOW|WS_VISIBLE,
-						   style, CW_USEDEFAULT, CW_USEDEFAULT,
-						   WINDOW_DX, WINDOW_DY, 0L,
-//?						   LoadMenu( hInst, MAKEINTRESOURCE(IDR_MENU) ), 
-						   NULL,
-						   hInst, 0L );
-	UpdateWindow( m_hWnd );
+    // Create the render window
+    style = WS_CAPTION|WS_VISIBLE;
+    if ( m_bDebugMode )  style |= WS_SYSMENU;  // close box
+    m_hWnd = CreateWindow( _T("D3D Window"), m_strWindowTitle,
+//?                        WS_OVERLAPPEDWINDOW|WS_VISIBLE,
+                           style, CW_USEDEFAULT, CW_USEDEFAULT,
+                           WINDOW_DX, WINDOW_DY, 0L,
+//?                        LoadMenu( hInst, MAKEINTRESOURCE(IDR_MENU) ),
+                           NULL,
+                           hInst, 0L );
+    UpdateWindow( m_hWnd );
 
-	if ( !GetProfileInt("Setup", "Sound3D", b3D) )
-	{
-		b3D = TRUE;
-	}
-	m_pSound->SetDebugMode(m_bDebugMode);
-	m_pSound->Create(m_hWnd, b3D);
-	m_pSound->CacheAll();
-	m_pSound->SetState(m_bAudioState);
-	m_pSound->SetAudioTrack(m_bAudioTrack);
-	m_pSound->SetCDpath(m_CDpath);
+    if ( !GetProfileInt("Setup", "Sound3D", b3D) )
+    {
+        b3D = TRUE;
+    }
+    m_pSound->SetDebugMode(m_bDebugMode);
+    m_pSound->Create(m_hWnd, b3D);
+    m_pSound->CacheAll();
+    m_pSound->SetState(m_bAudioState);
+    m_pSound->SetAudioTrack(m_bAudioTrack);
+    m_pSound->SetCDpath(m_CDpath);
 
-	// Initialize the 3D environment for the app
-	if( FAILED( hr = Initialize3DEnvironment() ) )
-	{
-		DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-		Cleanup3DEnvironment();
-		return E_FAIL;
-	}
+    // Initialize the 3D environment for the app
+    if( FAILED( hr = Initialize3DEnvironment() ) )
+    {
+        DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+        Cleanup3DEnvironment();
+        return E_FAIL;
+    }
 
-	// Change the display device driver.
-	GetProfileString("Device", "Name", deviceName, 100);
-	GetProfileString("Device", "Mode", modeName, 100);
-	GetProfileInt("Device", "FullScreen", bFull);
-	if ( deviceName[0] != 0 && modeName[0] != 0 && bFull )
-	{
-		ChangeDevice(deviceName, modeName, bFull);
-	}
+    // Change the display device driver.
+    GetProfileString("Device", "Name", deviceName, 100);
+    GetProfileString("Device", "Mode", modeName, 100);
+    GetProfileInt("Device", "FullScreen", bFull);
+    if ( deviceName[0] != 0 && modeName[0] != 0 && bFull )
+    {
+        ChangeDevice(deviceName, modeName, bFull);
+    }
 
-	// First execution?
-	if ( !GetProfileInt("Setup", "ObjectDirty", iValue) )
-	{
-		m_pD3DEngine->FirstExecuteAdapt(TRUE);
-	}
+    // First execution?
+    if ( !GetProfileInt("Setup", "ObjectDirty", iValue) )
+    {
+        m_pD3DEngine->FirstExecuteAdapt(TRUE);
+    }
 
-	// Creates the file colobot.ini at the first execution.
-	m_pRobotMain->CreateIni();
+    // Creates the file colobot.ini at the first execution.
+    m_pRobotMain->CreateIni();
 
 #if _DEMO
-	m_pRobotMain->ChangePhase(PHASE_NAME);
+    m_pRobotMain->ChangePhase(PHASE_NAME);
 #else
 #if _NET | _SCHOOL
-	m_pRobotMain->ChangePhase(PHASE_WELCOME2);
+    m_pRobotMain->ChangePhase(PHASE_WELCOME2);
 #else
 #if _FRENCH
-	m_pRobotMain->ChangePhase(PHASE_WELCOME2);
+    m_pRobotMain->ChangePhase(PHASE_WELCOME2);
 #endif
 #if _ENGLISH
-	m_pRobotMain->ChangePhase(PHASE_WELCOME2);
+    m_pRobotMain->ChangePhase(PHASE_WELCOME2);
 #endif
 #if _GERMAN
-	m_pRobotMain->ChangePhase(PHASE_WELCOME2);
+    m_pRobotMain->ChangePhase(PHASE_WELCOME2);
 #endif
 #if _WG
-	m_pRobotMain->ChangePhase(PHASE_WELCOME1);
+    m_pRobotMain->ChangePhase(PHASE_WELCOME1);
 #endif
 #if _POLISH
-	m_pRobotMain->ChangePhase(PHASE_WELCOME1);
+    m_pRobotMain->ChangePhase(PHASE_WELCOME1);
 #endif
 #endif
 #endif
-	m_pD3DEngine->TimeInit();
+    m_pD3DEngine->TimeInit();
 
 #if USE_THREAD
-	m_thread = CreateThread(NULL, 0, ThreadRoutine, this, 0, &m_threadId);
-	SetThreadPriority(m_thread, THREAD_PRIORITY_ABOVE_NORMAL);
+    m_thread = CreateThread(NULL, 0, ThreadRoutine, this, 0, &m_threadId);
+    SetThreadPriority(m_thread, THREAD_PRIORITY_ABOVE_NORMAL);
 #endif
 
-	// The app is ready to go
-	m_bReady = TRUE;
+    // The app is ready to go
+    m_bReady = TRUE;
 
-	return S_OK;
+    return S_OK;
 }
 
 
@@ -634,64 +634,64 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 
 INT CD3DApplication::Run()
 {
-	// Load keyboard accelerators
-	HACCEL hAccel = LoadAccelerators( NULL, MAKEINTRESOURCE(IDR_MAIN_ACCEL) );
+    // Load keyboard accelerators
+    HACCEL hAccel = LoadAccelerators( NULL, MAKEINTRESOURCE(IDR_MAIN_ACCEL) );
 
-	// Now we're ready to recieve and process Windows messages.
-	BOOL bGotMsg;
-	MSG  msg;
-	PeekMessage( &msg, NULL, 0U, 0U, PM_NOREMOVE );
+    // Now we're ready to recieve and process Windows messages.
+    BOOL bGotMsg;
+    MSG  msg;
+    PeekMessage( &msg, NULL, 0U, 0U, PM_NOREMOVE );
 
-	while( WM_QUIT != msg.message  )
-	{
-		// Use PeekMessage() if the app is active, so we can use idle time to
-		// render the scene. Else, use GetMessage() to avoid eating CPU time.
-		if( m_bActive )
-			bGotMsg = PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE );
-		else
-			bGotMsg = GetMessage( &msg, NULL, 0U, 0U );
+    while( WM_QUIT != msg.message  )
+    {
+        // Use PeekMessage() if the app is active, so we can use idle time to
+        // render the scene. Else, use GetMessage() to avoid eating CPU time.
+        if( m_bActive )
+            bGotMsg = PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE );
+        else
+            bGotMsg = GetMessage( &msg, NULL, 0U, 0U );
 
-		if( bGotMsg )
-		{
-			// Translate and dispatch the message
-			if( TranslateAccelerator( m_hWnd, hAccel, &msg ) == 0 )
-			{
-				TranslateMessage( &msg );
-				DispatchMessage( &msg );
-			}
-		}
-		else
-		{
-			// Render a frame during idle time (no messages are waiting)
-			if( m_bActive && m_bReady )
-			{
-				Event	event;
+        if( bGotMsg )
+        {
+            // Translate and dispatch the message
+            if( TranslateAccelerator( m_hWnd, hAccel, &msg ) == 0 )
+            {
+                TranslateMessage( &msg );
+                DispatchMessage( &msg );
+            }
+        }
+        else
+        {
+            // Render a frame during idle time (no messages are waiting)
+            if( m_bActive && m_bReady )
+            {
+                Event   event;
 
-				while ( m_event->GetEvent(event) )
-				{
-					if ( event.event == EVENT_QUIT )
-					{
-//? 					SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
-						m_pSound->StopMusic();
-						Cleanup3DEnvironment();
-						PostQuitMessage(0);
-						return msg.wParam;
-					}
-					m_pRobotMain->EventProcess(event);
-				}
+                while ( m_event->GetEvent(event) )
+                {
+                    if ( event.event == EVENT_QUIT )
+                    {
+//?                     SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
+                        m_pSound->StopMusic();
+                        Cleanup3DEnvironment();
+                        PostQuitMessage(0);
+                        return msg.wParam;
+                    }
+                    m_pRobotMain->EventProcess(event);
+                }
 
-				if ( !RetNiceMouse() )
-				{
-					SetMouseType(m_pD3DEngine->RetMouseType());
-				}
+                if ( !RetNiceMouse() )
+                {
+                    SetMouseType(m_pD3DEngine->RetMouseType());
+                }
 
-				if( FAILED( Render3DEnvironment() ) )
-					DestroyWindow( m_hWnd );
-			}
-		}
-	}
+                if( FAILED( Render3DEnvironment() ) )
+                    DestroyWindow( m_hWnd );
+            }
+        }
+    }
 
-	return msg.wParam;
+    return msg.wParam;
 }
 
 
@@ -702,161 +702,161 @@ INT CD3DApplication::Run()
 
 FPOINT CD3DApplication::ConvPosToInterface(HWND hWnd, LPARAM lParam)
 {
-	POINT	cpos;
-	FPOINT	pos;
-	float	px, py, w, h;
+    POINT   cpos;
+    FPOINT  pos;
+    float   px, py, w, h;
 
-	cpos.x = (short)LOWORD(lParam);
-	cpos.y = (short)HIWORD(lParam);
+    cpos.x = (short)LOWORD(lParam);
+    cpos.y = (short)HIWORD(lParam);
 
-	if ( !m_pDeviceInfo->bWindowed )
-	{
-		ClientToScreen(hWnd, &cpos);
-	}
+    if ( !m_pDeviceInfo->bWindowed )
+    {
+        ClientToScreen(hWnd, &cpos);
+    }
 
-	px = (float)cpos.x;
-	py = (float)cpos.y;
-	w  = (float)m_ddsdRenderTarget.dwWidth;
-	h  = (float)m_ddsdRenderTarget.dwHeight;
+    px = (float)cpos.x;
+    py = (float)cpos.y;
+    w  = (float)m_ddsdRenderTarget.dwWidth;
+    h  = (float)m_ddsdRenderTarget.dwHeight;
 
-	pos.x = px/w;
-	pos.y = 1.0f-py/h;
+    pos.x = px/w;
+    pos.y = 1.0f-py/h;
 
-	return pos;
+    return pos;
 }
 
 // Physically moves the mouse.
 
 void CD3DApplication::SetMousePos(FPOINT pos)
 {
-	POINT	p;
+    POINT   p;
 
-	pos.y = 1.0f-pos.y;
+    pos.y = 1.0f-pos.y;
 
-	pos.x *= m_ddsdRenderTarget.dwWidth;
-	pos.y *= m_ddsdRenderTarget.dwHeight;
+    pos.x *= m_ddsdRenderTarget.dwWidth;
+    pos.y *= m_ddsdRenderTarget.dwHeight;
 
-	p.x = (int)pos.x;
-	p.y = (int)pos.y;
-	ClientToScreen(m_hWnd, &p);
-	
-	SetCursorPos(p.x, p.y);
+    p.x = (int)pos.x;
+    p.y = (int)pos.y;
+    ClientToScreen(m_hWnd, &p);
+
+    SetCursorPos(p.x, p.y);
 }
 
 // Choosing the type of cursor for the mouse.
 
 void CD3DApplication::SetMouseType(D3DMouse type)
 {
-	HCURSOR		hc;
+    HCURSOR     hc;
 
-	if ( type == D3DMOUSEHAND )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORHAND));
-	}
-	else if ( type == D3DMOUSECROSS )
-	{
-		hc = LoadCursor(NULL, IDC_CROSS);
-	}
-	else if ( type == D3DMOUSEEDIT )
-	{
-		hc = LoadCursor(NULL, IDC_IBEAM);
-	}
-	else if ( type == D3DMOUSENO )
-	{
-		hc = LoadCursor(NULL, IDC_NO);
-	}
-	else if ( type == D3DMOUSEMOVE )
-	{
-		hc = LoadCursor(NULL, IDC_SIZEALL);
-	}
-	else if ( type == D3DMOUSEMOVEH )
-	{
-		hc = LoadCursor(NULL, IDC_SIZEWE);
-	}
-	else if ( type == D3DMOUSEMOVEV )
-	{
-		hc = LoadCursor(NULL, IDC_SIZENS);
-	}
-	else if ( type == D3DMOUSEMOVED )
-	{
-		hc = LoadCursor(NULL, IDC_SIZENESW);
-	}
-	else if ( type == D3DMOUSEMOVEI )
-	{
-		hc = LoadCursor(NULL, IDC_SIZENWSE);
-	}
-	else if ( type == D3DMOUSEWAIT )
-	{
-		hc = LoadCursor(NULL, IDC_WAIT);
-	}
-	else if ( type == D3DMOUSESCROLLL )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLL));
-	}
-	else if ( type == D3DMOUSESCROLLR )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLR));
-	}
-	else if ( type == D3DMOUSESCROLLU )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLU));
-	}
-	else if ( type == D3DMOUSESCROLLD )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLD));
-	}
-	else if ( type == D3DMOUSETARGET )
-	{
-		hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORTARGET));
-	}
-	else
-	{
-		hc = LoadCursor(NULL, IDC_ARROW);
-	}
+    if ( type == D3DMOUSEHAND )
+    {
+        hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORHAND));
+    }
+    else if ( type == D3DMOUSECROSS )
+    {
+        hc = LoadCursor(NULL, IDC_CROSS);
+    }
+    else if ( type == D3DMOUSEEDIT )
+    {
+        hc = LoadCursor(NULL, IDC_IBEAM);
+    }
+    else if ( type == D3DMOUSENO )
+    {
+        hc = LoadCursor(NULL, IDC_NO);
+    }
+    else if ( type == D3DMOUSEMOVE )
+    {
+        hc = LoadCursor(NULL, IDC_SIZEALL);
+    }
+    else if ( type == D3DMOUSEMOVEH )
+    {
+        hc = LoadCursor(NULL, IDC_SIZEWE);
+    }
+    else if ( type == D3DMOUSEMOVEV )
+    {
+        hc = LoadCursor(NULL, IDC_SIZENS);
+    }
+    else if ( type == D3DMOUSEMOVED )
+    {
+        hc = LoadCursor(NULL, IDC_SIZENESW);
+    }
+    else if ( type == D3DMOUSEMOVEI )
+    {
+        hc = LoadCursor(NULL, IDC_SIZENWSE);
+    }
+    else if ( type == D3DMOUSEWAIT )
+    {
+        hc = LoadCursor(NULL, IDC_WAIT);
+    }
+    else if ( type == D3DMOUSESCROLLL )
+    {
+        hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLL));
+    }
+    else if ( type == D3DMOUSESCROLLR )
+    {
+        hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLR));
+    }
+    else if ( type == D3DMOUSESCROLLU )
+    {
+        hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLU));
+    }
+    else if ( type == D3DMOUSESCROLLD )
+    {
+        hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORSCROLLD));
+    }
+    else if ( type == D3DMOUSETARGET )
+    {
+        hc = LoadCursor(m_instance, MAKEINTRESOURCE(IDC_CURSORTARGET));
+    }
+    else
+    {
+        hc = LoadCursor(NULL, IDC_ARROW);
+    }
 
-	if ( hc != NULL )
-	{
-		SetCursor(hc);
-	}
+    if ( hc != NULL )
+    {
+        SetCursor(hc);
+    }
 }
 
 // Choice of mode for the mouse.
 
 void CD3DApplication::SetNiceMouse(BOOL bNice)
 {
-	if ( bNice == m_bNiceMouse )  return;
-	m_bNiceMouse = bNice;
+    if ( bNice == m_bNiceMouse )  return;
+    m_bNiceMouse = bNice;
 
-	if ( m_bNiceMouse )
-	{
-		ShowCursor(FALSE);  // hides the ugly windows mouse
-		SetCursor(NULL);
-	}
-	else
-	{
-		ShowCursor(TRUE);  // shows the ugly windows mouse
-		SetCursor(LoadCursor(NULL, IDC_ARROW));
-	}
+    if ( m_bNiceMouse )
+    {
+        ShowCursor(FALSE);  // hides the ugly windows mouse
+        SetCursor(NULL);
+    }
+    else
+    {
+        ShowCursor(TRUE);  // shows the ugly windows mouse
+        SetCursor(LoadCursor(NULL, IDC_ARROW));
+    }
 }
 
 // Whether to use the mouse pretty shaded.
 
 BOOL CD3DApplication::RetNiceMouse()
 {
-	if (  m_pDeviceInfo->bWindowed )  return FALSE;
-	if ( !m_pDeviceInfo->bHardware )  return FALSE;
+    if (  m_pDeviceInfo->bWindowed )  return FALSE;
+    if ( !m_pDeviceInfo->bHardware )  return FALSE;
 
-	return m_bNiceMouse;
+    return m_bNiceMouse;
 }
 
 // Indicates whether it is possible to use the mouse pretty shaded.
 
 BOOL CD3DApplication::RetNiceMouseCap()
 {
-	if (  m_pDeviceInfo->bWindowed )  return FALSE;
-	if ( !m_pDeviceInfo->bHardware )  return FALSE;
+    if (  m_pDeviceInfo->bWindowed )  return FALSE;
+    if ( !m_pDeviceInfo->bHardware )  return FALSE;
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -864,101 +864,101 @@ BOOL CD3DApplication::RetNiceMouseCap()
 
 LRESULT CALLBACK WndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
-	if ( g_pD3DApp != 0 )
-	{
-		Event	event;
-		short	move;
+    if ( g_pD3DApp != 0 )
+    {
+        Event   event;
+        short   move;
 
-		ZeroMemory(&event, sizeof(Event));
+        ZeroMemory(&event, sizeof(Event));
 
 #if 0
-		if ( uMsg == WM_KEYDOWN ||
-			 uMsg == WM_CHAR ||
-			 uMsg == WM_XBUTTONDOWN ||
-			 uMsg == WM_XBUTTONUP )
-		{
-			char s[100];
-			sprintf(s, "event: %d %d %d\n", uMsg, wParam, lParam);
-			OutputDebugString(s);
-		}
+        if ( uMsg == WM_KEYDOWN ||
+             uMsg == WM_CHAR ||
+             uMsg == WM_XBUTTONDOWN ||
+             uMsg == WM_XBUTTONUP )
+        {
+            char s[100];
+            sprintf(s, "event: %d %d %d\n", uMsg, wParam, lParam);
+            OutputDebugString(s);
+        }
 #endif
 
-		if ( uMsg == WM_LBUTTONDOWN )  event.event = EVENT_LBUTTONDOWN;
-		if ( uMsg == WM_RBUTTONDOWN )  event.event = EVENT_RBUTTONDOWN;
-		if ( uMsg == WM_LBUTTONUP   )  event.event = EVENT_LBUTTONUP;
-		if ( uMsg == WM_RBUTTONUP   )  event.event = EVENT_RBUTTONUP;
-		if ( uMsg == WM_MOUSEMOVE   )  event.event = EVENT_MOUSEMOVE;
-		if ( uMsg == WM_KEYDOWN     )  event.event = EVENT_KEYDOWN;
-		if ( uMsg == WM_KEYUP       )  event.event = EVENT_KEYUP;
-		if ( uMsg == WM_CHAR        )  event.event = EVENT_CHAR;
+        if ( uMsg == WM_LBUTTONDOWN )  event.event = EVENT_LBUTTONDOWN;
+        if ( uMsg == WM_RBUTTONDOWN )  event.event = EVENT_RBUTTONDOWN;
+        if ( uMsg == WM_LBUTTONUP   )  event.event = EVENT_LBUTTONUP;
+        if ( uMsg == WM_RBUTTONUP   )  event.event = EVENT_RBUTTONUP;
+        if ( uMsg == WM_MOUSEMOVE   )  event.event = EVENT_MOUSEMOVE;
+        if ( uMsg == WM_KEYDOWN     )  event.event = EVENT_KEYDOWN;
+        if ( uMsg == WM_KEYUP       )  event.event = EVENT_KEYUP;
+        if ( uMsg == WM_CHAR        )  event.event = EVENT_CHAR;
 
-		if ( uMsg == WM_XBUTTONUP )
-		{
-			if ( (wParam>>16) == XBUTTON1 )  event.event = EVENT_HYPER_PREV;
-			if ( (wParam>>16) == XBUTTON2 )  event.event = EVENT_HYPER_NEXT;
-		}
+        if ( uMsg == WM_XBUTTONUP )
+        {
+            if ( (wParam>>16) == XBUTTON1 )  event.event = EVENT_HYPER_PREV;
+            if ( (wParam>>16) == XBUTTON2 )  event.event = EVENT_HYPER_NEXT;
+        }
 
-		event.param = wParam;
-		event.axeX = AxeLimit(g_pD3DApp->m_axeKey.x + g_pD3DApp->m_axeJoy.x);
-		event.axeY = AxeLimit(g_pD3DApp->m_axeKey.y + g_pD3DApp->m_axeJoy.y);
-		event.axeZ = AxeLimit(g_pD3DApp->m_axeKey.z + g_pD3DApp->m_axeJoy.z);
-		event.keyState = g_pD3DApp->m_keyState;
+        event.param = wParam;
+        event.axeX = AxeLimit(g_pD3DApp->m_axeKey.x + g_pD3DApp->m_axeJoy.x);
+        event.axeY = AxeLimit(g_pD3DApp->m_axeKey.y + g_pD3DApp->m_axeJoy.y);
+        event.axeZ = AxeLimit(g_pD3DApp->m_axeKey.z + g_pD3DApp->m_axeJoy.z);
+        event.keyState = g_pD3DApp->m_keyState;
 
-		if ( uMsg == WM_LBUTTONDOWN ||
-			 uMsg == WM_RBUTTONDOWN ||
-			 uMsg == WM_LBUTTONUP   ||
-			 uMsg == WM_RBUTTONUP   ||
-			 uMsg == WM_MOUSEMOVE   )  // mouse event?
-		{
-			event.pos = g_pD3DApp->ConvPosToInterface(hWnd, lParam);
-			g_pD3DApp->m_mousePos = event.pos;
-			g_pD3DApp->m_pD3DEngine->SetMousePos(event.pos);
-		}
+        if ( uMsg == WM_LBUTTONDOWN ||
+             uMsg == WM_RBUTTONDOWN ||
+             uMsg == WM_LBUTTONUP   ||
+             uMsg == WM_RBUTTONUP   ||
+             uMsg == WM_MOUSEMOVE   )  // mouse event?
+        {
+            event.pos = g_pD3DApp->ConvPosToInterface(hWnd, lParam);
+            g_pD3DApp->m_mousePos = event.pos;
+            g_pD3DApp->m_pD3DEngine->SetMousePos(event.pos);
+        }
 
-		if ( uMsg == WM_MOUSEWHEEL )  // mouse wheel?
-		{
-			event.event = EVENT_KEYDOWN;
-			event.pos = g_pD3DApp->m_mousePos;
-			move = HIWORD(wParam);
-			if ( move/WHEEL_DELTA > 0 )  event.param = VK_WHEELUP;
-			if ( move/WHEEL_DELTA < 0 )  event.param = VK_WHEELDOWN;
-		}
-		if ( g_pD3DApp->m_mshMouseWheel != 0 &&
-			 uMsg == g_pD3DApp->m_mshMouseWheel )  // Logitech mouse wheel?
-		{
-			event.event = EVENT_KEYDOWN;
-			event.pos = g_pD3DApp->m_mousePos;
-			move = LOWORD(wParam);
-			if ( move/WHEEL_DELTA > 0 )  event.param = VK_WHEELUP;
-			if ( move/WHEEL_DELTA < 0 )  event.param = VK_WHEELDOWN;
-		}
+        if ( uMsg == WM_MOUSEWHEEL )  // mouse wheel?
+        {
+            event.event = EVENT_KEYDOWN;
+            event.pos = g_pD3DApp->m_mousePos;
+            move = HIWORD(wParam);
+            if ( move/WHEEL_DELTA > 0 )  event.param = VK_WHEELUP;
+            if ( move/WHEEL_DELTA < 0 )  event.param = VK_WHEELDOWN;
+        }
+        if ( g_pD3DApp->m_mshMouseWheel != 0 &&
+             uMsg == g_pD3DApp->m_mshMouseWheel )  // Logitech mouse wheel?
+        {
+            event.event = EVENT_KEYDOWN;
+            event.pos = g_pD3DApp->m_mousePos;
+            move = LOWORD(wParam);
+            if ( move/WHEEL_DELTA > 0 )  event.param = VK_WHEELUP;
+            if ( move/WHEEL_DELTA < 0 )  event.param = VK_WHEELDOWN;
+        }
 
-		if ( event.event == EVENT_KEYDOWN ||
-			 event.event == EVENT_KEYUP   ||
-			 event.event == EVENT_CHAR    )
-		{
-			if ( event.param == 0 )
-			{
-				event.event = EVENT_NULL;
-			}
-		}
+        if ( event.event == EVENT_KEYDOWN ||
+             event.event == EVENT_KEYUP   ||
+             event.event == EVENT_CHAR    )
+        {
+            if ( event.param == 0 )
+            {
+                event.event = EVENT_NULL;
+            }
+        }
 
-		if ( g_pD3DApp->m_pRobotMain != 0 && event.event != 0 )
-		{
-			g_pD3DApp->m_pRobotMain->EventProcess(event);
-//?			if ( !g_pD3DApp->RetNiceMouse() )
-//?			{
-//?				g_pD3DApp->SetMouseType(g_pD3DApp->m_pD3DEngine->RetMouseType());
-//?			}
-		}
-		if ( g_pD3DApp->m_pD3DEngine != 0 )
-		{
-			g_pD3DApp->m_pD3DEngine->MsgProc( hWnd, uMsg, wParam, lParam );
-		}
-		return g_pD3DApp->MsgProc( hWnd, uMsg, wParam, lParam );
-	}
+        if ( g_pD3DApp->m_pRobotMain != 0 && event.event != 0 )
+        {
+            g_pD3DApp->m_pRobotMain->EventProcess(event);
+//?         if ( !g_pD3DApp->RetNiceMouse() )
+//?         {
+//?             g_pD3DApp->SetMouseType(g_pD3DApp->m_pD3DEngine->RetMouseType());
+//?         }
+        }
+        if ( g_pD3DApp->m_pD3DEngine != 0 )
+        {
+            g_pD3DApp->m_pD3DEngine->MsgProc( hWnd, uMsg, wParam, lParam );
+        }
+        return g_pD3DApp->MsgProc( hWnd, uMsg, wParam, lParam );
+    }
 
-	return DefWindowProc( hWnd, uMsg, wParam, lParam );
+    return DefWindowProc( hWnd, uMsg, wParam, lParam );
 }
 
 
@@ -979,77 +979,77 @@ BOOL CALLBACK AboutProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM )
 
 void CD3DApplication::FlushPressKey()
 {
-	m_keyState = 0;
-	m_axeKey = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
+    m_keyState = 0;
+    m_axeKey = D3DVECTOR(0.0f, 0.0f, 0.0f);
+    m_axeJoy = D3DVECTOR(0.0f, 0.0f, 0.0f);
 }
 
 // Resets the default keys.
 
 void CD3DApplication::ResetKey()
 {
-	int		i;
+    int     i;
 
-	for ( i=0 ; i<50 ; i++ )
-	{
-		m_key[i][0] = 0;
-		m_key[i][1] = 0;
-	}
-	m_key[KEYRANK_LEFT   ][0] = VK_LEFT;
-	m_key[KEYRANK_RIGHT  ][0] = VK_RIGHT;
-	m_key[KEYRANK_UP     ][0] = VK_UP;
-	m_key[KEYRANK_DOWN   ][0] = VK_DOWN;
-	m_key[KEYRANK_GUP    ][0] = VK_SHIFT;
-	m_key[KEYRANK_GDOWN  ][0] = VK_CONTROL;
-	m_key[KEYRANK_CAMERA ][0] = VK_SPACE;
-	m_key[KEYRANK_CAMERA ][1] = VK_BUTTON2;
-	m_key[KEYRANK_DESEL  ][0] = VK_NUMPAD0;
-	m_key[KEYRANK_DESEL  ][1] = VK_BUTTON6;
-	m_key[KEYRANK_ACTION ][0] = VK_RETURN;
-	m_key[KEYRANK_ACTION ][1] = VK_BUTTON1;
-	m_key[KEYRANK_NEAR   ][0] = VK_ADD;
-	m_key[KEYRANK_NEAR   ][1] = VK_BUTTON5;
-	m_key[KEYRANK_AWAY   ][0] = VK_SUBTRACT;
-	m_key[KEYRANK_AWAY   ][1] = VK_BUTTON4;
-	m_key[KEYRANK_NEXT   ][0] = VK_TAB;
-	m_key[KEYRANK_NEXT   ][1] = VK_BUTTON3;
-	m_key[KEYRANK_HUMAN  ][0] = VK_HOME;
-	m_key[KEYRANK_HUMAN  ][1] = VK_BUTTON7;
-	m_key[KEYRANK_QUIT   ][0] = VK_ESCAPE;
-	m_key[KEYRANK_HELP   ][0] = VK_F1;
-	m_key[KEYRANK_PROG   ][0] = VK_F2;
-	m_key[KEYRANK_CBOT   ][0] = VK_F3;
-	m_key[KEYRANK_VISIT  ][0] = VK_DECIMAL;
-	m_key[KEYRANK_SPEED10][0] = VK_F4;
-	m_key[KEYRANK_SPEED15][0] = VK_F5;
-	m_key[KEYRANK_SPEED20][0] = VK_F6;
-//	m_key[KEYRANK_SPEED30][0] = VK_F7;
+    for ( i=0 ; i<50 ; i++ )
+    {
+        m_key[i][0] = 0;
+        m_key[i][1] = 0;
+    }
+    m_key[KEYRANK_LEFT   ][0] = VK_LEFT;
+    m_key[KEYRANK_RIGHT  ][0] = VK_RIGHT;
+    m_key[KEYRANK_UP     ][0] = VK_UP;
+    m_key[KEYRANK_DOWN   ][0] = VK_DOWN;
+    m_key[KEYRANK_GUP    ][0] = VK_SHIFT;
+    m_key[KEYRANK_GDOWN  ][0] = VK_CONTROL;
+    m_key[KEYRANK_CAMERA ][0] = VK_SPACE;
+    m_key[KEYRANK_CAMERA ][1] = VK_BUTTON2;
+    m_key[KEYRANK_DESEL  ][0] = VK_NUMPAD0;
+    m_key[KEYRANK_DESEL  ][1] = VK_BUTTON6;
+    m_key[KEYRANK_ACTION ][0] = VK_RETURN;
+    m_key[KEYRANK_ACTION ][1] = VK_BUTTON1;
+    m_key[KEYRANK_NEAR   ][0] = VK_ADD;
+    m_key[KEYRANK_NEAR   ][1] = VK_BUTTON5;
+    m_key[KEYRANK_AWAY   ][0] = VK_SUBTRACT;
+    m_key[KEYRANK_AWAY   ][1] = VK_BUTTON4;
+    m_key[KEYRANK_NEXT   ][0] = VK_TAB;
+    m_key[KEYRANK_NEXT   ][1] = VK_BUTTON3;
+    m_key[KEYRANK_HUMAN  ][0] = VK_HOME;
+    m_key[KEYRANK_HUMAN  ][1] = VK_BUTTON7;
+    m_key[KEYRANK_QUIT   ][0] = VK_ESCAPE;
+    m_key[KEYRANK_HELP   ][0] = VK_F1;
+    m_key[KEYRANK_PROG   ][0] = VK_F2;
+    m_key[KEYRANK_CBOT   ][0] = VK_F3;
+    m_key[KEYRANK_VISIT  ][0] = VK_DECIMAL;
+    m_key[KEYRANK_SPEED10][0] = VK_F4;
+    m_key[KEYRANK_SPEED15][0] = VK_F5;
+    m_key[KEYRANK_SPEED20][0] = VK_F6;
+//  m_key[KEYRANK_SPEED30][0] = VK_F7;
 }
 
 // Modifies a button.
 
 void CD3DApplication::SetKey(int keyRank, int option, int key)
 {
-	if ( keyRank <  0  ||
-		 keyRank >= 50 )  return;
+    if ( keyRank <  0  ||
+         keyRank >= 50 )  return;
 
-	if ( option <  0 ||
-		 option >= 2 )  return;
+    if ( option <  0 ||
+         option >= 2 )  return;
 
-	m_key[keyRank][option] = key;
+    m_key[keyRank][option] = key;
 }
 
 // Gives a hint.
 
 int CD3DApplication::RetKey(int keyRank, int option)
 {
-	if ( keyRank <  0  ||
-		 keyRank >= 50 )  return 0;
+    if ( keyRank <  0  ||
+         keyRank >= 50 )  return 0;
 
-	if ( option <  0 ||
-		 option >= 2 )  return 0;
+    if ( option <  0 ||
+         option >= 2 )  return 0;
 
-	return m_key[keyRank][option];
+    return m_key[keyRank][option];
 }
 
 
@@ -1058,31 +1058,31 @@ int CD3DApplication::RetKey(int keyRank, int option)
 
 void CD3DApplication::SetJoystick(BOOL bEnable)
 {
-	m_bJoystick = bEnable;
+    m_bJoystick = bEnable;
 
-	if ( m_bJoystick )  // joystick ?
-	{
-		if ( !InitDirectInput(m_instance, m_hWnd) )  // initialise joystick
-		{
-			m_bJoystick = FALSE;
-		}
-		else
-		{
-			SetAcquire(TRUE);
-			SetTimer(m_hWnd, 0, 1000/30, NULL);
-		}
-	}
-	else	// keyboard?
-	{
+    if ( m_bJoystick )  // joystick ?
+    {
+        if ( !InitDirectInput(m_instance, m_hWnd) )  // initialise joystick
+        {
+            m_bJoystick = FALSE;
+        }
+        else
+        {
+            SetAcquire(TRUE);
+            SetTimer(m_hWnd, 0, 1000/30, NULL);
+        }
+    }
+    else    // keyboard?
+    {
         KillTimer(m_hWnd, 0);
-		SetAcquire(FALSE);
-		FreeDirectInput();
-	}
+        SetAcquire(FALSE);
+        FreeDirectInput();
+    }
 }
 
 BOOL CD3DApplication::RetJoystick()
 {
-	return m_bJoystick;
+    return m_bJoystick;
 }
 
 
@@ -1091,119 +1091,119 @@ BOOL CD3DApplication::RetJoystick()
 LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
                                   LPARAM lParam )
 {
-    HRESULT		hr;
-	DIJOYSTATE	js;
-	int			i;
+    HRESULT     hr;
+    DIJOYSTATE  js;
+    int         i;
 
-	// The F10 key sends another message to activate
-	// menu in standard Windows applications!
-	if ( uMsg == WM_SYSKEYDOWN && wParam == VK_F10 )
-	{
-		uMsg = WM_KEYDOWN;
-	}
-	if ( uMsg == WM_SYSKEYUP && wParam == VK_F10 )
-	{
-		uMsg = WM_KEYUP;
-	}
+    // The F10 key sends another message to activate
+    // menu in standard Windows applications!
+    if ( uMsg == WM_SYSKEYDOWN && wParam == VK_F10 )
+    {
+        uMsg = WM_KEYDOWN;
+    }
+    if ( uMsg == WM_SYSKEYUP && wParam == VK_F10 )
+    {
+        uMsg = WM_KEYUP;
+    }
 
-	// Mange event "menu" sent by Alt or F10.
-	if ( uMsg == WM_SYSCOMMAND && wParam == SC_KEYMENU )
-	{
-		return 0;
-	}
+    // Mange event "menu" sent by Alt or F10.
+    if ( uMsg == WM_SYSCOMMAND && wParam == SC_KEYMENU )
+    {
+        return 0;
+    }
 
-	if ( uMsg == WM_KEYDOWN || uMsg == WM_KEYUP )
-	{
-		if ( GetKeyState(VK_SHIFT) & 0x8000 )
-		{
-			m_keyState |= KS_SHIFT;
-		}
-		else
-		{
-			m_keyState &= ~KS_SHIFT;
-		}
+    if ( uMsg == WM_KEYDOWN || uMsg == WM_KEYUP )
+    {
+        if ( GetKeyState(VK_SHIFT) & 0x8000 )
+        {
+            m_keyState |= KS_SHIFT;
+        }
+        else
+        {
+            m_keyState &= ~KS_SHIFT;
+        }
 
-		if ( GetKeyState(VK_CONTROL) & 0x8000 )
-		{
-			m_keyState |= KS_CONTROL;
-		}
-		else
-		{
-			m_keyState &= ~KS_CONTROL;
-		}
-	}
+        if ( GetKeyState(VK_CONTROL) & 0x8000 )
+        {
+            m_keyState |= KS_CONTROL;
+        }
+        else
+        {
+            m_keyState &= ~KS_CONTROL;
+        }
+    }
 
-	switch( uMsg )
-	{
-		case WM_KEYDOWN:
-			if ( wParam == m_key[KEYRANK_UP   ][0] )  m_axeKey.y =  1.0f;
-			if ( wParam == m_key[KEYRANK_UP   ][1] )  m_axeKey.y =  1.0f;
-			if ( wParam == m_key[KEYRANK_DOWN ][0] )  m_axeKey.y = -1.0f;
-			if ( wParam == m_key[KEYRANK_DOWN ][1] )  m_axeKey.y = -1.0f;
-			if ( wParam == m_key[KEYRANK_LEFT ][0] )  m_axeKey.x = -1.0f;
-			if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKey.x = -1.0f;
-			if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKey.x =  1.0f;
-			if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKey.x =  1.0f;
-			if ( wParam == m_key[KEYRANK_GUP  ][0] )  m_axeKey.z =  1.0f;
-			if ( wParam == m_key[KEYRANK_GUP  ][1] )  m_axeKey.z =  1.0f;
-			if ( wParam == m_key[KEYRANK_GDOWN][0] )  m_axeKey.z = -1.0f;
-			if ( wParam == m_key[KEYRANK_GDOWN][1] )  m_axeKey.z = -1.0f;
-			if ( wParam == m_key[KEYRANK_NEAR ][0] )  m_keyState |= KS_NUMPLUS;
-			if ( wParam == m_key[KEYRANK_NEAR ][1] )  m_keyState |= KS_NUMPLUS;
-			if ( wParam == m_key[KEYRANK_AWAY ][0] )  m_keyState |= KS_NUMMINUS;
-			if ( wParam == m_key[KEYRANK_AWAY ][1] )  m_keyState |= KS_NUMMINUS;
-			if ( wParam == VK_PRIOR                )  m_keyState |= KS_PAGEUP;
-			if ( wParam == VK_NEXT                 )  m_keyState |= KS_PAGEDOWN;
-//?			if ( wParam == VK_SHIFT                )  m_keyState |= KS_SHIFT;
-//?			if ( wParam == VK_CONTROL              )  m_keyState |= KS_CONTROL;
-			if ( wParam == VK_NUMPAD8              )  m_keyState |= KS_NUMUP;
-			if ( wParam == VK_NUMPAD2              )  m_keyState |= KS_NUMDOWN;
-			if ( wParam == VK_NUMPAD4              )  m_keyState |= KS_NUMLEFT;
-			if ( wParam == VK_NUMPAD6              )  m_keyState |= KS_NUMRIGHT;
-			break;
+    switch( uMsg )
+    {
+        case WM_KEYDOWN:
+            if ( wParam == m_key[KEYRANK_UP   ][0] )  m_axeKey.y =  1.0f;
+            if ( wParam == m_key[KEYRANK_UP   ][1] )  m_axeKey.y =  1.0f;
+            if ( wParam == m_key[KEYRANK_DOWN ][0] )  m_axeKey.y = -1.0f;
+            if ( wParam == m_key[KEYRANK_DOWN ][1] )  m_axeKey.y = -1.0f;
+            if ( wParam == m_key[KEYRANK_LEFT ][0] )  m_axeKey.x = -1.0f;
+            if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKey.x = -1.0f;
+            if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKey.x =  1.0f;
+            if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKey.x =  1.0f;
+            if ( wParam == m_key[KEYRANK_GUP  ][0] )  m_axeKey.z =  1.0f;
+            if ( wParam == m_key[KEYRANK_GUP  ][1] )  m_axeKey.z =  1.0f;
+            if ( wParam == m_key[KEYRANK_GDOWN][0] )  m_axeKey.z = -1.0f;
+            if ( wParam == m_key[KEYRANK_GDOWN][1] )  m_axeKey.z = -1.0f;
+            if ( wParam == m_key[KEYRANK_NEAR ][0] )  m_keyState |= KS_NUMPLUS;
+            if ( wParam == m_key[KEYRANK_NEAR ][1] )  m_keyState |= KS_NUMPLUS;
+            if ( wParam == m_key[KEYRANK_AWAY ][0] )  m_keyState |= KS_NUMMINUS;
+            if ( wParam == m_key[KEYRANK_AWAY ][1] )  m_keyState |= KS_NUMMINUS;
+            if ( wParam == VK_PRIOR                )  m_keyState |= KS_PAGEUP;
+            if ( wParam == VK_NEXT                 )  m_keyState |= KS_PAGEDOWN;
+//?         if ( wParam == VK_SHIFT                )  m_keyState |= KS_SHIFT;
+//?         if ( wParam == VK_CONTROL              )  m_keyState |= KS_CONTROL;
+            if ( wParam == VK_NUMPAD8              )  m_keyState |= KS_NUMUP;
+            if ( wParam == VK_NUMPAD2              )  m_keyState |= KS_NUMDOWN;
+            if ( wParam == VK_NUMPAD4              )  m_keyState |= KS_NUMLEFT;
+            if ( wParam == VK_NUMPAD6              )  m_keyState |= KS_NUMRIGHT;
+            break;
 
-		case WM_KEYUP:
-			if ( wParam == m_key[KEYRANK_UP   ][0] )  m_axeKey.y = 0.0f;
-			if ( wParam == m_key[KEYRANK_UP   ][1] )  m_axeKey.y = 0.0f;
-			if ( wParam == m_key[KEYRANK_DOWN ][0] )  m_axeKey.y = 0.0f;
-			if ( wParam == m_key[KEYRANK_DOWN ][1] )  m_axeKey.y = 0.0f;
-			if ( wParam == m_key[KEYRANK_LEFT ][0] )  m_axeKey.x = 0.0f;
-			if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKey.x = 0.0f;
-			if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKey.x = 0.0f;
-			if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKey.x = 0.0f;
-			if ( wParam == m_key[KEYRANK_GUP  ][0] )  m_axeKey.z = 0.0f;
-			if ( wParam == m_key[KEYRANK_GUP  ][1] )  m_axeKey.z = 0.0f;
-			if ( wParam == m_key[KEYRANK_GDOWN][0] )  m_axeKey.z = 0.0f;
-			if ( wParam == m_key[KEYRANK_GDOWN][1] )  m_axeKey.z = 0.0f;
-			if ( wParam == m_key[KEYRANK_NEAR ][0] )  m_keyState &= ~KS_NUMPLUS;
-			if ( wParam == m_key[KEYRANK_NEAR ][1] )  m_keyState &= ~KS_NUMPLUS;
-			if ( wParam == m_key[KEYRANK_AWAY ][0] )  m_keyState &= ~KS_NUMMINUS;
-			if ( wParam == m_key[KEYRANK_AWAY ][1] )  m_keyState &= ~KS_NUMMINUS;
-			if ( wParam == VK_PRIOR                )  m_keyState &= ~KS_PAGEUP;
-			if ( wParam == VK_NEXT                 )  m_keyState &= ~KS_PAGEDOWN;
-//?			if ( wParam == VK_SHIFT                )  m_keyState &= ~KS_SHIFT;
-//?			if ( wParam == VK_CONTROL              )  m_keyState &= ~KS_CONTROL;
-			if ( wParam == VK_NUMPAD8              )  m_keyState &= ~KS_NUMUP;
-			if ( wParam == VK_NUMPAD2              )  m_keyState &= ~KS_NUMDOWN;
-			if ( wParam == VK_NUMPAD4              )  m_keyState &= ~KS_NUMLEFT;
-			if ( wParam == VK_NUMPAD6              )  m_keyState &= ~KS_NUMRIGHT;
-			break;
+        case WM_KEYUP:
+            if ( wParam == m_key[KEYRANK_UP   ][0] )  m_axeKey.y = 0.0f;
+            if ( wParam == m_key[KEYRANK_UP   ][1] )  m_axeKey.y = 0.0f;
+            if ( wParam == m_key[KEYRANK_DOWN ][0] )  m_axeKey.y = 0.0f;
+            if ( wParam == m_key[KEYRANK_DOWN ][1] )  m_axeKey.y = 0.0f;
+            if ( wParam == m_key[KEYRANK_LEFT ][0] )  m_axeKey.x = 0.0f;
+            if ( wParam == m_key[KEYRANK_LEFT ][1] )  m_axeKey.x = 0.0f;
+            if ( wParam == m_key[KEYRANK_RIGHT][0] )  m_axeKey.x = 0.0f;
+            if ( wParam == m_key[KEYRANK_RIGHT][1] )  m_axeKey.x = 0.0f;
+            if ( wParam == m_key[KEYRANK_GUP  ][0] )  m_axeKey.z = 0.0f;
+            if ( wParam == m_key[KEYRANK_GUP  ][1] )  m_axeKey.z = 0.0f;
+            if ( wParam == m_key[KEYRANK_GDOWN][0] )  m_axeKey.z = 0.0f;
+            if ( wParam == m_key[KEYRANK_GDOWN][1] )  m_axeKey.z = 0.0f;
+            if ( wParam == m_key[KEYRANK_NEAR ][0] )  m_keyState &= ~KS_NUMPLUS;
+            if ( wParam == m_key[KEYRANK_NEAR ][1] )  m_keyState &= ~KS_NUMPLUS;
+            if ( wParam == m_key[KEYRANK_AWAY ][0] )  m_keyState &= ~KS_NUMMINUS;
+            if ( wParam == m_key[KEYRANK_AWAY ][1] )  m_keyState &= ~KS_NUMMINUS;
+            if ( wParam == VK_PRIOR                )  m_keyState &= ~KS_PAGEUP;
+            if ( wParam == VK_NEXT                 )  m_keyState &= ~KS_PAGEDOWN;
+//?         if ( wParam == VK_SHIFT                )  m_keyState &= ~KS_SHIFT;
+//?         if ( wParam == VK_CONTROL              )  m_keyState &= ~KS_CONTROL;
+            if ( wParam == VK_NUMPAD8              )  m_keyState &= ~KS_NUMUP;
+            if ( wParam == VK_NUMPAD2              )  m_keyState &= ~KS_NUMDOWN;
+            if ( wParam == VK_NUMPAD4              )  m_keyState &= ~KS_NUMLEFT;
+            if ( wParam == VK_NUMPAD6              )  m_keyState &= ~KS_NUMRIGHT;
+            break;
 
-		case WM_LBUTTONDOWN:
-			m_keyState |= KS_MLEFT;
-			break;
+        case WM_LBUTTONDOWN:
+            m_keyState |= KS_MLEFT;
+            break;
 
-		case WM_RBUTTONDOWN:
-			m_keyState |= KS_MRIGHT;
-			break;
+        case WM_RBUTTONDOWN:
+            m_keyState |= KS_MRIGHT;
+            break;
 
-		case WM_LBUTTONUP:
-			m_keyState &= ~KS_MLEFT;
-			break;
+        case WM_LBUTTONUP:
+            m_keyState &= ~KS_MLEFT;
+            break;
 
-		case WM_RBUTTONUP:
-			m_keyState &= ~KS_MRIGHT;
-			break;
+        case WM_RBUTTONUP:
+            m_keyState &= ~KS_MRIGHT;
+            break;
 
         case WM_PAINT:
             // Handle paint messages when the app is not ready
@@ -1225,16 +1225,16 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
         case WM_SIZE:
             // Check to see if we are losing our window...
             if( SIZE_MAXHIDE==wParam || SIZE_MINIMIZED==wParam )
-			{
+            {
                 m_bActive = FALSE;
-			}
+            }
             else
-			{
+            {
                 m_bActive = TRUE;
-			}
-//?			char s[100];
-//?			sprintf(s, "WM_SIZE %d %d %d\n", m_bActive, m_bReady, m_pDeviceInfo->bWindowed);
-//?			OutputDebugString(s);
+            }
+//?         char s[100];
+//?         sprintf(s, "WM_SIZE %d %d %d\n", m_bActive, m_bReady, m_pDeviceInfo->bWindowed);
+//?         OutputDebugString(s);
 
             // A new window size will require a new backbuffer
             // size, so the 3D structures must be changed accordingly.
@@ -1242,7 +1242,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
             {
                 m_bReady = FALSE;
 
-//?				OutputDebugString("WM_SIZE Change3DEnvironment\n");
+//?             OutputDebugString("WM_SIZE Change3DEnvironment\n");
                 if( FAILED( hr = Change3DEnvironment() ) )
                     return 0;
 
@@ -1251,67 +1251,67 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
             break;
 
         case WM_TIMER:
-			if ( m_bActivateApp && m_bJoystick )
-			{
+            if ( m_bActivateApp && m_bJoystick )
+            {
                 if ( UpdateInputState(js) )
-				{
-					m_axeJoy.x =  js.lX/1000.0f+js.lRz/1000.0f;  // tourner
-					m_axeJoy.y = -js.lY/1000.0f;  // avancer
-					m_axeJoy.z = -js.rglSlider[0]/1000.0f;  // monter
+                {
+                    m_axeJoy.x =  js.lX/1000.0f+js.lRz/1000.0f;  // tourner
+                    m_axeJoy.y = -js.lY/1000.0f;  // avancer
+                    m_axeJoy.z = -js.rglSlider[0]/1000.0f;  // monter
 
-					m_axeJoy.x = Neutral(m_axeJoy.x, 0.2f);
-					m_axeJoy.y = Neutral(m_axeJoy.y, 0.2f);
-					m_axeJoy.z = Neutral(m_axeJoy.z, 0.2f);
+                    m_axeJoy.x = Neutral(m_axeJoy.x, 0.2f);
+                    m_axeJoy.y = Neutral(m_axeJoy.y, 0.2f);
+                    m_axeJoy.z = Neutral(m_axeJoy.z, 0.2f);
 
-//?					char s[100];
-//?					sprintf(s, "x=%d y=%d z=%  x=%d y=%d z=%d\n", js.lX,js.lY,js.lZ,js.lRx,js.lRy,js.lRz);
-//?					OutputDebugString(s);
+//?                 char s[100];
+//?                 sprintf(s, "x=%d y=%d z=%  x=%d y=%d z=%d\n", js.lX,js.lY,js.lZ,js.lRx,js.lRy,js.lRz);
+//?                 OutputDebugString(s);
 
-					for ( i=0 ; i<32 ; i++ )
-					{
-						if ( js.rgbButtons[i] != 0 && !m_bJoyButton[i] )
-						{
-							m_bJoyButton[i] = TRUE;
-							PostMessage(m_hWnd, WM_KEYDOWN, VK_BUTTON1+i, 0);
-						}
-						if ( js.rgbButtons[i] == 0 && m_bJoyButton[i] )
-						{
-							m_bJoyButton[i] = FALSE;
-							PostMessage(m_hWnd, WM_KEYUP, VK_BUTTON1+i, 0);
-						}
-					}
-				}
-				else
-				{
-					OutputDebugString("UpdateInputState error\n");
-				}
-			}
-			break;
+                    for ( i=0 ; i<32 ; i++ )
+                    {
+                        if ( js.rgbButtons[i] != 0 && !m_bJoyButton[i] )
+                        {
+                            m_bJoyButton[i] = TRUE;
+                            PostMessage(m_hWnd, WM_KEYDOWN, VK_BUTTON1+i, 0);
+                        }
+                        if ( js.rgbButtons[i] == 0 && m_bJoyButton[i] )
+                        {
+                            m_bJoyButton[i] = FALSE;
+                            PostMessage(m_hWnd, WM_KEYUP, VK_BUTTON1+i, 0);
+                        }
+                    }
+                }
+                else
+                {
+                    OutputDebugString("UpdateInputState error\n");
+                }
+            }
+            break;
 
         case WM_ACTIVATE:
             if( LOWORD(wParam) == WA_INACTIVE )
-			{
-				m_bActivateApp = FALSE;
-			}
+            {
+                m_bActivateApp = FALSE;
+            }
             else
-			{
-				m_bActivateApp = TRUE;
-			}
+            {
+                m_bActivateApp = TRUE;
+            }
 
-			if ( m_bActivateApp && m_bJoystick )
-			{
-				SetAcquire(TRUE);  // re-enables the joystick
-			}
-			break;
+            if ( m_bActivateApp && m_bJoystick )
+            {
+                SetAcquire(TRUE);  // re-enables the joystick
+            }
+            break;
 
-		case MM_MCINOTIFY:
-			if ( wParam == MCI_NOTIFY_SUCCESSFUL )
-			{
-				OutputDebugString("Event MM_MCINOTIFY\n");
-				m_pSound->SuspendMusic();
-				m_pSound->RestartMusic();
-			}
-			break;
+        case MM_MCINOTIFY:
+            if ( wParam == MCI_NOTIFY_SUCCESSFUL )
+            {
+                OutputDebugString("Event MM_MCINOTIFY\n");
+                m_pSound->SuspendMusic();
+                m_pSound->RestartMusic();
+            }
+            break;
 
         case WM_SETCURSOR:
             // Prevent a cursor in fullscreen mode
@@ -1332,10 +1332,10 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
 
         case WM_ENTERSIZEMOVE:
             // Halt frame movement while the app is sizing or moving
-			m_pD3DEngine->TimeEnterGel();
+            m_pD3DEngine->TimeEnterGel();
             break;
         case WM_EXITSIZEMOVE:
-			m_pD3DEngine->TimeExitGel();
+            m_pD3DEngine->TimeExitGel();
             break;
 
         case WM_NCHITTEST:
@@ -1422,22 +1422,22 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
             Cleanup3DEnvironment();
             PostQuitMessage(0);
             return 0;
-	}
+    }
 
-	return DefWindowProc( hWnd, uMsg, wParam, lParam );
+    return DefWindowProc( hWnd, uMsg, wParam, lParam );
 }
 
-            
+
 // Enumeration function to report valid pixel formats for z-buffers.
 
 HRESULT WINAPI EnumZBufferFormatsCallback(DDPIXELFORMAT* pddpf,
-										  VOID* pContext)
+                                          VOID* pContext)
 {
     DDPIXELFORMAT* pddpfOut = (DDPIXELFORMAT*)pContext;
 
-	char s[100];
-	sprintf(s, "EnumZBufferFormatsCallback %d\n", pddpf->dwRGBBitCount);
-	OutputDebugString(s);
+    char s[100];
+    sprintf(s, "EnumZBufferFormatsCallback %d\n", pddpf->dwRGBBitCount);
+    OutputDebugString(s);
 
     if( pddpfOut->dwRGBBitCount == pddpf->dwRGBBitCount )
     {
@@ -1483,7 +1483,7 @@ HRESULT CD3DApplication::CreateZBuffer(GUID* pDeviceGUID)
         ddsd.ddpfPixelFormat.dwRGBBitCount = 16;
         m_pD3D->EnumZBufferFormats( *pDeviceGUID, EnumZBufferFormatsCallback,
                                     (VOID*)&ddsd.ddpfPixelFormat );
-            
+
         if( 0 == ddsd.ddpfPixelFormat.dwSize )
         {
             DEBUG_MSG( _T("Device doesn't support requested zbuffer format") );
@@ -1523,11 +1523,11 @@ HRESULT CD3DApplication::CreateZBuffer(GUID* pDeviceGUID)
 
 HRESULT CD3DApplication::Initialize3DEnvironment()
 {
-    HRESULT		hr;
-	DDSCAPS2	ddsCaps2; 
-    DWORD		dwFrameworkFlags = 0L;
-	DWORD		dwTotal; 
-	DWORD		dwFree;
+    HRESULT     hr;
+    DDSCAPS2    ddsCaps2;
+    DWORD       dwFrameworkFlags = 0L;
+    DWORD       dwTotal;
+    DWORD       dwFree;
 
     dwFrameworkFlags |= ( !m_pDeviceInfo->bWindowed ? D3DFW_FULLSCREEN : 0L );
     dwFrameworkFlags |= (  m_pDeviceInfo->bStereo   ? D3DFW_STEREO     : 0L );
@@ -1542,44 +1542,44 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
         m_pD3D       = m_pFramework->GetDirect3D();
         m_pD3DDevice = m_pFramework->GetD3DDevice();
 
-		m_pD3DEngine->SetD3DDevice(m_pD3DDevice);
+        m_pD3DEngine->SetD3DDevice(m_pD3DDevice);
 
-		m_pddsRenderTarget = m_pFramework->GetRenderSurface();
+        m_pddsRenderTarget = m_pFramework->GetRenderSurface();
 
-		m_ddsdRenderTarget.dwSize = sizeof(m_ddsdRenderTarget);
-		m_pddsRenderTarget->GetSurfaceDesc( &m_ddsdRenderTarget );
+        m_ddsdRenderTarget.dwSize = sizeof(m_ddsdRenderTarget);
+        m_pddsRenderTarget->GetSurfaceDesc( &m_ddsdRenderTarget );
 
-		// Request the amount of video memory.
-		ZeroMemory(&ddsCaps2, sizeof(ddsCaps2));
-		ddsCaps2.dwCaps = DDSCAPS_TEXTURE; 
-		dwTotal = 0;
-		hr = m_pDD->GetAvailableVidMem(&ddsCaps2, &dwTotal, &dwFree); 
-		m_vidMemTotal = dwTotal;
+        // Request the amount of video memory.
+        ZeroMemory(&ddsCaps2, sizeof(ddsCaps2));
+        ddsCaps2.dwCaps = DDSCAPS_TEXTURE;
+        dwTotal = 0;
+        hr = m_pDD->GetAvailableVidMem(&ddsCaps2, &dwTotal, &dwFree);
+        m_vidMemTotal = dwTotal;
 
-		// Let the app run its startup code which creates the 3d scene.
-		if( SUCCEEDED( hr = m_pD3DEngine->InitDeviceObjects() ) )
-		{
-//? 		CreateZBuffer(m_pDeviceInfo->pDeviceGUID);
-			return S_OK;
-		}
-		else
-		{
-			DeleteDeviceObjects();
-			m_pFramework->DestroyObjects();
-		}
-	}
+        // Let the app run its startup code which creates the 3d scene.
+        if( SUCCEEDED( hr = m_pD3DEngine->InitDeviceObjects() ) )
+        {
+//?         CreateZBuffer(m_pDeviceInfo->pDeviceGUID);
+            return S_OK;
+        }
+        else
+        {
+            DeleteDeviceObjects();
+            m_pFramework->DestroyObjects();
+        }
+    }
 
-	// If we get here, the first initialization passed failed. If that was with a
-	// hardware device, try again using a software rasterizer instead.
-	if( m_pDeviceInfo->bHardware )
-	{
-		// Try again with a software rasterizer
-		DisplayFrameworkError( hr, MSGWARN_SWITCHEDTOSOFTWARE );
-		D3DEnum_SelectDefaultDevice( &m_pDeviceInfo, D3DENUM_SOFTWAREONLY );
-		return Initialize3DEnvironment();
-	}
- 
-	return hr;
+    // If we get here, the first initialization passed failed. If that was with a
+    // hardware device, try again using a software rasterizer instead.
+    if( m_pDeviceInfo->bHardware )
+    {
+        // Try again with a software rasterizer
+        DisplayFrameworkError( hr, MSGWARN_SWITCHEDTOSOFTWARE );
+        D3DEnum_SelectDefaultDevice( &m_pDeviceInfo, D3DENUM_SOFTWAREONLY );
+        return Initialize3DEnvironment();
+    }
+
+    return hr;
 }
 
 
@@ -1588,90 +1588,90 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 HRESULT CD3DApplication::Change3DEnvironment()
 {
 #if 0
-	HRESULT hr;
-	static BOOL  bOldWindowedState = TRUE;
-	static DWORD dwSavedStyle;
-	static RECT  rcSaved;
+    HRESULT hr;
+    static BOOL  bOldWindowedState = TRUE;
+    static DWORD dwSavedStyle;
+    static RECT  rcSaved;
 
-	// Release all scene objects that will be re-created for the new device
-	DeleteDeviceObjects();
+    // Release all scene objects that will be re-created for the new device
+    DeleteDeviceObjects();
 
-	// Release framework objects, so a new device can be created
-	if( FAILED( hr = m_pFramework->DestroyObjects() ) )
-	{
-		DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-		SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
-		return hr;
-	}
+    // Release framework objects, so a new device can be created
+    if( FAILED( hr = m_pFramework->DestroyObjects() ) )
+    {
+        DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+        SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
+        return hr;
+    }
 
-	// Check if going from fullscreen to windowed mode, or vice versa.
-	if( bOldWindowedState != m_pDeviceInfo->bWindowed )
-	{
-		if( m_pDeviceInfo->bWindowed )
-		{
-			// Coming from fullscreen mode, so restore window properties
-			SetWindowLong( m_hWnd, GWL_STYLE, dwSavedStyle );
-			SetWindowPos( m_hWnd, HWND_NOTOPMOST, rcSaved.left, rcSaved.top,
-						  ( rcSaved.right - rcSaved.left ), 
-						  ( rcSaved.bottom - rcSaved.top ), SWP_SHOWWINDOW );
-		}
-		else
-		{
-			// Going to fullscreen mode, save/set window properties as needed
-			dwSavedStyle = GetWindowLong( m_hWnd, GWL_STYLE );
-			GetWindowRect( m_hWnd, &rcSaved );
-			SetWindowLong( m_hWnd, GWL_STYLE, WS_POPUP|WS_SYSMENU|WS_VISIBLE );
-		}
+    // Check if going from fullscreen to windowed mode, or vice versa.
+    if( bOldWindowedState != m_pDeviceInfo->bWindowed )
+    {
+        if( m_pDeviceInfo->bWindowed )
+        {
+            // Coming from fullscreen mode, so restore window properties
+            SetWindowLong( m_hWnd, GWL_STYLE, dwSavedStyle );
+            SetWindowPos( m_hWnd, HWND_NOTOPMOST, rcSaved.left, rcSaved.top,
+                          ( rcSaved.right - rcSaved.left ),
+                          ( rcSaved.bottom - rcSaved.top ), SWP_SHOWWINDOW );
+        }
+        else
+        {
+            // Going to fullscreen mode, save/set window properties as needed
+            dwSavedStyle = GetWindowLong( m_hWnd, GWL_STYLE );
+            GetWindowRect( m_hWnd, &rcSaved );
+            SetWindowLong( m_hWnd, GWL_STYLE, WS_POPUP|WS_SYSMENU|WS_VISIBLE );
+        }
 
-		bOldWindowedState = m_pDeviceInfo->bWindowed;
-	}
+        bOldWindowedState = m_pDeviceInfo->bWindowed;
+    }
 
-	// Inform the framework class of the driver change. It will internally
-	// re-create valid surfaces, a d3ddevice, etc.
-	if( FAILED( hr = Initialize3DEnvironment() ) )
-	{
-		DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-		SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
-		return hr;
-	}
+    // Inform the framework class of the driver change. It will internally
+    // re-create valid surfaces, a d3ddevice, etc.
+    if( FAILED( hr = Initialize3DEnvironment() ) )
+    {
+        DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+        SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
+        return hr;
+    }
 
-	return S_OK;
+    return S_OK;
 #else
-	HRESULT hr;
+    HRESULT hr;
 
-	// Release all scene objects that will be re-created for the new device
-	DeleteDeviceObjects();
+    // Release all scene objects that will be re-created for the new device
+    DeleteDeviceObjects();
 
-	// Release framework objects, so a new device can be created
-	if( FAILED( hr = m_pFramework->DestroyObjects() ) )
-	{
-		DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-		SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
-		return hr;
-	}
+    // Release framework objects, so a new device can be created
+    if( FAILED( hr = m_pFramework->DestroyObjects() ) )
+    {
+        DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+        SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
+        return hr;
+    }
 
-	if( m_pDeviceInfo->bWindowed )
-	{
-		SetWindowPos(m_hWnd, HWND_NOTOPMOST, 10, 10, WINDOW_DX, WINDOW_DY, SWP_SHOWWINDOW);
-	}
+    if( m_pDeviceInfo->bWindowed )
+    {
+        SetWindowPos(m_hWnd, HWND_NOTOPMOST, 10, 10, WINDOW_DX, WINDOW_DY, SWP_SHOWWINDOW);
+    }
 
-	// Inform the framework class of the driver change. It will internally
-	// re-create valid surfaces, a d3ddevice, etc.
-	if( FAILED( hr = Initialize3DEnvironment() ) )
-	{
-		DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
-		SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
-		return hr;
-	}
+    // Inform the framework class of the driver change. It will internally
+    // re-create valid surfaces, a d3ddevice, etc.
+    if( FAILED( hr = Initialize3DEnvironment() ) )
+    {
+        DisplayFrameworkError( hr, MSGERR_APPMUSTEXIT );
+        SendMessage( m_hWnd, WM_CLOSE, 0, 0 );
+        return hr;
+    }
 
-	m_pD3DEngine->ChangeLOD();
+    m_pD3DEngine->ChangeLOD();
 
-	if( m_pDeviceInfo->bWindowed )
-	{
-		SetNiceMouse(FALSE);  // hides the ugly windows mouse
-	}
+    if( m_pDeviceInfo->bWindowed )
+    {
+        SetNiceMouse(FALSE);  // hides the ugly windows mouse
+    }
 
-	return S_OK;
+    return S_OK;
 #endif
 }
 
@@ -1681,22 +1681,22 @@ HRESULT CD3DApplication::Change3DEnvironment()
 
 void CD3DApplication::StepSimul(float rTime)
 {
-	Event	event;
+    Event   event;
 
-	if ( m_pRobotMain == 0 )  return;
+    if ( m_pRobotMain == 0 )  return;
 
-	ZeroMemory(&event, sizeof(Event));
-	event.event = EVENT_FRAME;  // funny bug release "Maximize speed"!
-	event.rTime = rTime;
-	event.axeX = AxeLimit(m_axeKey.x + m_axeJoy.x);
-	event.axeY = AxeLimit(m_axeKey.y + m_axeJoy.y);
-	event.axeZ = AxeLimit(m_axeKey.z + m_axeJoy.z);
-	event.keyState = m_keyState;
+    ZeroMemory(&event, sizeof(Event));
+    event.event = EVENT_FRAME;  // funny bug release "Maximize speed"!
+    event.rTime = rTime;
+    event.axeX = AxeLimit(m_axeKey.x + m_axeJoy.x);
+    event.axeY = AxeLimit(m_axeKey.y + m_axeJoy.y);
+    event.axeZ = AxeLimit(m_axeKey.z + m_axeJoy.z);
+    event.keyState = m_keyState;
 
 //?char s[100];
 //?sprintf(s, "StepSimul %.3f\n", event.rTime);
 //?OutputDebugString(s);
-	m_pRobotMain->EventProcess(event);
+    m_pRobotMain->EventProcess(event);
 }
 
 
@@ -1705,7 +1705,7 @@ void CD3DApplication::StepSimul(float rTime)
 HRESULT CD3DApplication::Render3DEnvironment()
 {
     HRESULT hr;
-	float	rTime;
+    float   rTime;
 
     // Check the cooperative level before rendering
     if( FAILED( hr = m_pDD->TestCooperativeLevel() ) )
@@ -1714,12 +1714,12 @@ HRESULT CD3DApplication::Render3DEnvironment()
         {
             case DDERR_EXCLUSIVEMODEALREADYSET:
             case DDERR_NOEXCLUSIVEMODE:
-				OutputDebugString("DDERR_EXCLUSIVEMODEALREADYSET\n");
+                OutputDebugString("DDERR_EXCLUSIVEMODEALREADYSET\n");
                 // Do nothing because some other app has exclusive mode
                 return S_OK;
 
             case DDERR_WRONGMODE:
-				OutputDebugString("DDERR_WRONGMODE\n");
+                OutputDebugString("DDERR_WRONGMODE\n");
                 // The display mode changed on us. Resize accordingly
                 if( m_pDeviceInfo->bWindowed )
                     return Change3DEnvironment();
@@ -1728,24 +1728,24 @@ HRESULT CD3DApplication::Render3DEnvironment()
         return hr;
     }
 
-	// Get the relative time, in seconds
-	rTime = m_pD3DEngine->TimeGet();
-	if ( rTime > MAX_STEP )  rTime = MAX_STEP;  // never more than 0.5s!
-	m_aTime += rTime;
+    // Get the relative time, in seconds
+    rTime = m_pD3DEngine->TimeGet();
+    if ( rTime > MAX_STEP )  rTime = MAX_STEP;  // never more than 0.5s!
+    m_aTime += rTime;
 
 #if !USE_THREAD
     if( FAILED( hr = m_pD3DEngine->FrameMove(rTime) ) )
         return hr;
 
     // FrameMove (animate) the scene
-	StepSimul(rTime);
+    StepSimul(rTime);
 #endif
 
-	// Render the scene.
-	if( FAILED( hr = m_pD3DEngine->Render() ) )
-		return hr;
+    // Render the scene.
+    if( FAILED( hr = m_pD3DEngine->Render() ) )
+        return hr;
 
-	DrawSuppl();
+    DrawSuppl();
 
     // Show the frame rate, etc.
     if( m_bShowStats )
@@ -1781,7 +1781,7 @@ VOID CD3DApplication::Cleanup3DEnvironment()
     }
 
     D3DEnum_FreeResources();
-//?	FreeDirectInput();
+//? FreeDirectInput();
 }
 
 // Called when the app is exitting, or the device is being changed,
@@ -1792,7 +1792,7 @@ VOID CD3DApplication::DeleteDeviceObjects()
     if( m_pFramework )
     {
         m_pD3DEngine->DeleteDeviceObjects();
-	    SAFE_RELEASE( m_pddsDepthBuffer );
+        SAFE_RELEASE( m_pddsDepthBuffer );
     }
 }
 
@@ -1817,13 +1817,13 @@ VOID CD3DApplication::Pause( BOOL bPause )
             m_pFramework->FlipToGDISurface( TRUE );
 
         // Stop the scene from animating
-		m_pD3DEngine->TimeEnterGel();
+        m_pD3DEngine->TimeEnterGel();
     }
 
     if( 0 == dwAppPausedCount )
     {
         // Restart the scene
-		m_pD3DEngine->TimeExitGel();
+        m_pD3DEngine->TimeExitGel();
     }
 }
 
@@ -1835,20 +1835,20 @@ VOID CD3DApplication::Pause( BOOL bPause )
 
 LRESULT CD3DApplication::OnQuerySuspend( DWORD dwFlags )
 {
-	OutputDebugString("OnQuerySuspend\n");
+    OutputDebugString("OnQuerySuspend\n");
     Pause(TRUE);
     return TRUE;
 }
 
 
 // Called when the app receives a PBT_APMRESUMESUSPEND message, meaning
-// the computer has just resumed from a suspended state. At this point, 
+// the computer has just resumed from a suspended state. At this point,
 // the app should recover any data, network connections, files, etc..,
 // and resume running from when the app was suspended.
 
 LRESULT CD3DApplication::OnResumeSuspend( DWORD dwData )
 {
-	OutputDebugString("OnResumeSuspend\n");
+    OutputDebugString("OnResumeSuspend\n");
     Pause(FALSE);
     return TRUE;
 }
@@ -1858,93 +1858,93 @@ LRESULT CD3DApplication::OnResumeSuspend( DWORD dwData )
 
 void CD3DApplication::DrawSuppl()
 {
-	HDC			hDC;
-	FPOINT		p1, p2;
-	POINT		list[3];
-	RECT		rect;
-	HPEN		hPen;
-	HGDIOBJ		old;
-	FPOINT		pos;
-	float		d;
-	int			nbOut;
+    HDC         hDC;
+    FPOINT      p1, p2;
+    POINT       list[3];
+    RECT        rect;
+    HPEN        hPen;
+    HGDIOBJ     old;
+    FPOINT      pos;
+    float       d;
+    int         nbOut;
 
-	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return;
+    if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return;
 
-	// Displays the selection rectangle.
-	if ( m_pD3DEngine->GetHilite(p1, p2) )
-	{
-		nbOut = 0;
-		if ( p1.x < 0.0f || p1.x > 1.0f )  nbOut ++;
-		if ( p1.y < 0.0f || p1.y > 1.0f )  nbOut ++;
-		if ( p2.x < 0.0f || p2.x > 1.0f )  nbOut ++;
-		if ( p2.y < 0.0f || p2.y > 1.0f )  nbOut ++;
-		if ( nbOut <= 2 )
-		{
+    // Displays the selection rectangle.
+    if ( m_pD3DEngine->GetHilite(p1, p2) )
+    {
+        nbOut = 0;
+        if ( p1.x < 0.0f || p1.x > 1.0f )  nbOut ++;
+        if ( p1.y < 0.0f || p1.y > 1.0f )  nbOut ++;
+        if ( p2.x < 0.0f || p2.x > 1.0f )  nbOut ++;
+        if ( p2.y < 0.0f || p2.y > 1.0f )  nbOut ++;
+        if ( nbOut <= 2 )
+        {
 #if 0
-			time = Mod(m_aTime, 0.5f);
-			if ( time < 0.25f )  d = time*4.0f;
-			else                 d = (2.0f-time*4.0f);
+            time = Mod(m_aTime, 0.5f);
+            if ( time < 0.25f )  d = time*4.0f;
+            else                 d = (2.0f-time*4.0f);
 #endif
 #if 0
-			time = Mod(m_aTime, 0.5f);
-			if ( time < 0.4f )  d = time/0.4f;
-			else                d = 1.0f-(time-0.4f)/0.1f;
+            time = Mod(m_aTime, 0.5f);
+            if ( time < 0.4f )  d = time/0.4f;
+            else                d = 1.0f-(time-0.4f)/0.1f;
 #endif
 #if 1
-			d = 0.5f+sinf(m_aTime*6.0f)*0.5f;
+            d = 0.5f+sinf(m_aTime*6.0f)*0.5f;
 #endif
-			d *= (p2.x-p1.x)*0.1f;
-			p1.x += d;
-			p1.y += d;
-			p2.x -= d;
-			p2.y -= d;
+            d *= (p2.x-p1.x)*0.1f;
+            p1.x += d;
+            p1.y += d;
+            p2.x -= d;
+            p2.y -= d;
 
-			hPen = CreatePen(PS_SOLID, 1, RGB(255,255,0));  // yellow
-			old = SelectObject(hDC, hPen);
+            hPen = CreatePen(PS_SOLID, 1, RGB(255,255,0));  // yellow
+            old = SelectObject(hDC, hPen);
 
-			rect.left   = (int)(p1.x*m_ddsdRenderTarget.dwWidth);
-			rect.right  = (int)(p2.x*m_ddsdRenderTarget.dwWidth);
-			rect.top    = (int)((1.0f-p2.y)*m_ddsdRenderTarget.dwHeight);
-			rect.bottom = (int)((1.0f-p1.y)*m_ddsdRenderTarget.dwHeight);
+            rect.left   = (int)(p1.x*m_ddsdRenderTarget.dwWidth);
+            rect.right  = (int)(p2.x*m_ddsdRenderTarget.dwWidth);
+            rect.top    = (int)((1.0f-p2.y)*m_ddsdRenderTarget.dwHeight);
+            rect.bottom = (int)((1.0f-p1.y)*m_ddsdRenderTarget.dwHeight);
 
-			list[0].x = rect.left;
-			list[0].y = rect.top+(rect.bottom-rect.top)/5;
-			list[1].x = rect.left;
-			list[1].y = rect.top;
-			list[2].x = rect.left+(rect.right-rect.left)/5;
-			list[2].y = rect.top;
-			Polyline(hDC, list, 3);
+            list[0].x = rect.left;
+            list[0].y = rect.top+(rect.bottom-rect.top)/5;
+            list[1].x = rect.left;
+            list[1].y = rect.top;
+            list[2].x = rect.left+(rect.right-rect.left)/5;
+            list[2].y = rect.top;
+            Polyline(hDC, list, 3);
 
-			list[0].x = rect.right;
-			list[0].y = rect.top+(rect.bottom-rect.top)/5;
-			list[1].x = rect.right;
-			list[1].y = rect.top;
-			list[2].x = rect.right+(rect.left-rect.right)/5;
-			list[2].y = rect.top;
-			Polyline(hDC, list, 3);
+            list[0].x = rect.right;
+            list[0].y = rect.top+(rect.bottom-rect.top)/5;
+            list[1].x = rect.right;
+            list[1].y = rect.top;
+            list[2].x = rect.right+(rect.left-rect.right)/5;
+            list[2].y = rect.top;
+            Polyline(hDC, list, 3);
 
-			list[0].x = rect.left;
-			list[0].y = rect.bottom+(rect.top-rect.bottom)/5;
-			list[1].x = rect.left;
-			list[1].y = rect.bottom;
-			list[2].x = rect.left+(rect.right-rect.left)/5;
-			list[2].y = rect.bottom;
-			Polyline(hDC, list, 3);
+            list[0].x = rect.left;
+            list[0].y = rect.bottom+(rect.top-rect.bottom)/5;
+            list[1].x = rect.left;
+            list[1].y = rect.bottom;
+            list[2].x = rect.left+(rect.right-rect.left)/5;
+            list[2].y = rect.bottom;
+            Polyline(hDC, list, 3);
 
-			list[0].x = rect.right;
-			list[0].y = rect.bottom+(rect.top-rect.bottom)/5;
-			list[1].x = rect.right;
-			list[1].y = rect.bottom;
-			list[2].x = rect.right+(rect.left-rect.right)/5;
-			list[2].y = rect.bottom;
-			Polyline(hDC, list, 3);
+            list[0].x = rect.right;
+            list[0].y = rect.bottom+(rect.top-rect.bottom)/5;
+            list[1].x = rect.right;
+            list[1].y = rect.bottom;
+            list[2].x = rect.right+(rect.left-rect.right)/5;
+            list[2].y = rect.bottom;
+            Polyline(hDC, list, 3);
 
-			if ( old != 0 )  SelectObject(hDC, old);
-			DeleteObject(hPen);
-		}
-	}
+            if ( old != 0 )  SelectObject(hDC, old);
+            DeleteObject(hPen);
+        }
+    }
 
-	m_pddsRenderTarget->ReleaseDC(hDC);
+    m_pddsRenderTarget->ReleaseDC(hDC);
 }
 
 // Shows frame rate and dimensions of the rendering device.
@@ -1967,28 +1967,28 @@ VOID CD3DApplication::ShowStats()
         dwFrames  = 0L;
     }
 
-	int t = m_pD3DEngine->RetStatisticTriangle();
+    int t = m_pD3DEngine->RetStatisticTriangle();
 
     // Setup the text buffer to write out dimensions
     TCHAR buffer[100];
     sprintf( buffer, _T("%7.02f fps T=%d (%dx%dx%d)"), fFPS, t,
-             m_ddsdRenderTarget.dwWidth, m_ddsdRenderTarget.dwHeight, 
+             m_ddsdRenderTarget.dwWidth, m_ddsdRenderTarget.dwHeight,
              m_ddsdRenderTarget.ddpfPixelFormat.dwRGBBitCount );
     OutputText( 400, 2, buffer );
 
-	int	x, y, i;
-	if ( m_pD3DEngine->GetSpriteCoord(x, y) )
-	{
-	    OutputText( x, y, "+" );
-	}
+    int x, y, i;
+    if ( m_pD3DEngine->GetSpriteCoord(x, y) )
+    {
+        OutputText( x, y, "+" );
+    }
 
-	for ( i=0 ; i<10 ; i++ )
-	{
-		char* info = m_pD3DEngine->RetInfoText(i);
-		x = 50;
-		y = m_ddsdRenderTarget.dwHeight-20-i*20;
-		OutputText( x, y, info );
-	}
+    for ( i=0 ; i<10 ; i++ )
+    {
+        char* info = m_pD3DEngine->RetInfoText(i);
+        x = 50;
+        y = m_ddsdRenderTarget.dwHeight-20-i*20;
+        OutputText( x, y, info );
+    }
 }
 
 
@@ -2018,175 +2018,175 @@ VOID CD3DApplication::OutputText( DWORD x, DWORD y, TCHAR* str )
 // members within a BITMAPINFOHEADER structure
 
 PBITMAPINFO CD3DApplication::CreateBitmapInfoStruct(HBITMAP hBmp)
-{ 
-	BITMAP		bmp;
-	PBITMAPINFO	pbmi;
-	WORD		cClrBits;
- 
-	// Retrieve the bitmap's color format, width, and height.
-	if ( !GetObject(hBmp, sizeof(BITMAP), (LPSTR)&bmp) )
-		return 0;
-  
-	// Convert the color format to a count of bits.
-	cClrBits = (WORD)(bmp.bmPlanes * bmp.bmBitsPixel);
- 
-	     if ( cClrBits ==  1 )  cClrBits =  1;
-	else if ( cClrBits <=  4 )  cClrBits =  4;
-	else if ( cClrBits <=  8 )  cClrBits =  8;
-	else if ( cClrBits <= 16 )  cClrBits = 16;
-	else if ( cClrBits <= 24 )  cClrBits = 24;
-	else                        cClrBits = 32;
- 
-	// Allocate memory for the BITMAPINFO structure. (This structure 
-	// contains a BITMAPINFOHEADER structure and an array of RGBQUAD data 
-	// structures.) 
-	if ( cClrBits != 24 )
-	{
-		 pbmi = (PBITMAPINFO)LocalAlloc(LPTR,
-					sizeof(BITMAPINFOHEADER) +
-					sizeof(RGBQUAD) * (2^cClrBits));
-	}
-	// There is no RGBQUAD array for the 24-bit-per-pixel format.
-	else
-	{
-		 pbmi = (PBITMAPINFO)LocalAlloc(LPTR,
-					sizeof(BITMAPINFOHEADER));
-	}
- 
-	// Initialize the fields in the BITMAPINFO structure.
-	pbmi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	pbmi->bmiHeader.biWidth = bmp.bmWidth;
-	pbmi->bmiHeader.biHeight = bmp.bmHeight;
-	pbmi->bmiHeader.biPlanes = bmp.bmPlanes;
-	pbmi->bmiHeader.biBitCount = bmp.bmBitsPixel;
-	if ( cClrBits < 24 )
-		pbmi->bmiHeader.biClrUsed = 2^cClrBits;
-  
-	// If the bitmap is not compressed, set the BI_RGB flag.
- 	pbmi->bmiHeader.biCompression = BI_RGB;
- 
-	// Compute the number of bytes in the array of color
-	// indices and store the result in biSizeImage.
-	pbmi->bmiHeader.biSizeImage = (pbmi->bmiHeader.biWidth + 7) /8
-								  * pbmi->bmiHeader.biHeight
-								  * cClrBits;
- 
-	// Set biClrImportant to 0, indicating that all of the
-	// device colors are important.
-	pbmi->bmiHeader.biClrImportant = 0;
+{
+    BITMAP      bmp;
+    PBITMAPINFO pbmi;
+    WORD        cClrBits;
 
-	return pbmi;
-} 
- 
+    // Retrieve the bitmap's color format, width, and height.
+    if ( !GetObject(hBmp, sizeof(BITMAP), (LPSTR)&bmp) )
+        return 0;
+
+    // Convert the color format to a count of bits.
+    cClrBits = (WORD)(bmp.bmPlanes * bmp.bmBitsPixel);
+
+         if ( cClrBits ==  1 )  cClrBits =  1;
+    else if ( cClrBits <=  4 )  cClrBits =  4;
+    else if ( cClrBits <=  8 )  cClrBits =  8;
+    else if ( cClrBits <= 16 )  cClrBits = 16;
+    else if ( cClrBits <= 24 )  cClrBits = 24;
+    else                        cClrBits = 32;
+
+    // Allocate memory for the BITMAPINFO structure. (This structure
+    // contains a BITMAPINFOHEADER structure and an array of RGBQUAD data
+    // structures.)
+    if ( cClrBits != 24 )
+    {
+         pbmi = (PBITMAPINFO)LocalAlloc(LPTR,
+                    sizeof(BITMAPINFOHEADER) +
+                    sizeof(RGBQUAD) * (2^cClrBits));
+    }
+    // There is no RGBQUAD array for the 24-bit-per-pixel format.
+    else
+    {
+         pbmi = (PBITMAPINFO)LocalAlloc(LPTR,
+                    sizeof(BITMAPINFOHEADER));
+    }
+
+    // Initialize the fields in the BITMAPINFO structure.
+    pbmi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+    pbmi->bmiHeader.biWidth = bmp.bmWidth;
+    pbmi->bmiHeader.biHeight = bmp.bmHeight;
+    pbmi->bmiHeader.biPlanes = bmp.bmPlanes;
+    pbmi->bmiHeader.biBitCount = bmp.bmBitsPixel;
+    if ( cClrBits < 24 )
+        pbmi->bmiHeader.biClrUsed = 2^cClrBits;
+
+    // If the bitmap is not compressed, set the BI_RGB flag.
+    pbmi->bmiHeader.biCompression = BI_RGB;
+
+    // Compute the number of bytes in the array of color
+    // indices and store the result in biSizeImage.
+    pbmi->bmiHeader.biSizeImage = (pbmi->bmiHeader.biWidth + 7) /8
+                                  * pbmi->bmiHeader.biHeight
+                                  * cClrBits;
+
+    // Set biClrImportant to 0, indicating that all of the
+    // device colors are important.
+    pbmi->bmiHeader.biClrImportant = 0;
+
+    return pbmi;
+}
+
 // Defines a function that initializes the remaining structures,
 // retrieves the array of palette indices, opens the file, copies
-// the data, and closes the file. 
+// the data, and closes the file.
 
 BOOL CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
-{ 
-	FILE*				file;		// file handle
-	BITMAPFILEHEADER	hdr;		// bitmap file-header
-	PBITMAPINFOHEADER	pbih;		// bitmap info-header
-	LPBYTE				lpBits;		// memory pointer
-	DWORD				dwTotal;	// total count of bytes
- 
-	pbih = (PBITMAPINFOHEADER)pbi;
-	lpBits = (LPBYTE)GlobalAlloc(GMEM_FIXED, pbih->biSizeImage);
-	if ( !lpBits )  return FALSE;
- 
-	// Retrieve the color table (RGBQUAD array) and the bits
-	// (array of palette indices) from the DIB.
-	if ( !GetDIBits(hDC, hBMP, 0, (WORD)pbih->biHeight,
-					lpBits, pbi, DIB_RGB_COLORS) )
-		return FALSE;
- 
-	// Create the .BMP file.
-	file = fopen(pszFile, "wb");
-	if ( file == NULL )  return FALSE;
- 
-	hdr.bfType = 0x4d42; // 0x42 = "B" 0x4d = "M"
- 
-	// Compute the size of the entire file.
-	hdr.bfSize = (DWORD)(sizeof(BITMAPFILEHEADER) +
-						 pbih->biSize + pbih->biClrUsed
-						 * sizeof(RGBQUAD) + pbih->biSizeImage);
- 
-	hdr.bfReserved1 = 0;
-	hdr.bfReserved2 = 0;
- 
-	// Compute the offset to the array of color indices.
-	hdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) +
-					pbih->biSize + pbih->biClrUsed
-					* sizeof (RGBQUAD);
- 
-	// Copy the BITMAPFILEHEADER into the .BMP file.
-	fwrite(&hdr, sizeof(BITMAPFILEHEADER), 1, file);
- 
-	// Copy the BITMAPINFOHEADER and RGBQUAD array into the file.
-	fwrite(pbih, sizeof(BITMAPINFOHEADER)+pbih->biClrUsed*sizeof(RGBQUAD), 1, file);
- 
-	// Copy the array of color indices into the .BMP file.
-	dwTotal = pbih->biSizeImage;
-	fwrite(lpBits, dwTotal, 1, file);
- 
-	// Close the .BMP file.
-	fclose(file);
- 
-	// Free memory.
-	GlobalFree((HGLOBAL)lpBits);
-	return TRUE;
+{
+    FILE*               file;       // file handle
+    BITMAPFILEHEADER    hdr;        // bitmap file-header
+    PBITMAPINFOHEADER   pbih;       // bitmap info-header
+    LPBYTE              lpBits;     // memory pointer
+    DWORD               dwTotal;    // total count of bytes
+
+    pbih = (PBITMAPINFOHEADER)pbi;
+    lpBits = (LPBYTE)GlobalAlloc(GMEM_FIXED, pbih->biSizeImage);
+    if ( !lpBits )  return FALSE;
+
+    // Retrieve the color table (RGBQUAD array) and the bits
+    // (array of palette indices) from the DIB.
+    if ( !GetDIBits(hDC, hBMP, 0, (WORD)pbih->biHeight,
+                    lpBits, pbi, DIB_RGB_COLORS) )
+        return FALSE;
+
+    // Create the .BMP file.
+    file = fopen(pszFile, "wb");
+    if ( file == NULL )  return FALSE;
+
+    hdr.bfType = 0x4d42; // 0x42 = "B" 0x4d = "M"
+
+    // Compute the size of the entire file.
+    hdr.bfSize = (DWORD)(sizeof(BITMAPFILEHEADER) +
+                         pbih->biSize + pbih->biClrUsed
+                         * sizeof(RGBQUAD) + pbih->biSizeImage);
+
+    hdr.bfReserved1 = 0;
+    hdr.bfReserved2 = 0;
+
+    // Compute the offset to the array of color indices.
+    hdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) +
+                    pbih->biSize + pbih->biClrUsed
+                    * sizeof (RGBQUAD);
+
+    // Copy the BITMAPFILEHEADER into the .BMP file.
+    fwrite(&hdr, sizeof(BITMAPFILEHEADER), 1, file);
+
+    // Copy the BITMAPINFOHEADER and RGBQUAD array into the file.
+    fwrite(pbih, sizeof(BITMAPINFOHEADER)+pbih->biClrUsed*sizeof(RGBQUAD), 1, file);
+
+    // Copy the array of color indices into the .BMP file.
+    dwTotal = pbih->biSizeImage;
+    fwrite(lpBits, dwTotal, 1, file);
+
+    // Close the .BMP file.
+    fclose(file);
+
+    // Free memory.
+    GlobalFree((HGLOBAL)lpBits);
+    return TRUE;
 }
 
 // Write a file. BMP screenshot.
 
 BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 {
-	D3DVIEWPORT7	vp;
-	HDC				hDC;
-	HDC				hDCImage;
-	HBITMAP			hb;
-	PBITMAPINFO		info;
-	int				dx, dy;
+    D3DVIEWPORT7    vp;
+    HDC             hDC;
+    HDC             hDCImage;
+    HBITMAP         hb;
+    PBITMAPINFO     info;
+    int             dx, dy;
 
-	m_pD3DDevice->GetViewport(&vp);
-	dx = vp.dwWidth;
-	dy = vp.dwHeight;
+    m_pD3DDevice->GetViewport(&vp);
+    dx = vp.dwWidth;
+    dy = vp.dwHeight;
 
-	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return FALSE;
+    if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return FALSE;
 
-	hDCImage = CreateCompatibleDC(hDC);
-	if ( hDCImage == 0 )
-	{
-		m_pddsRenderTarget->ReleaseDC(hDC);
-		return FALSE;
-	}
+    hDCImage = CreateCompatibleDC(hDC);
+    if ( hDCImage == 0 )
+    {
+        m_pddsRenderTarget->ReleaseDC(hDC);
+        return FALSE;
+    }
 
-	hb = CreateCompatibleBitmap(hDC, width, height);
-	if ( hb == 0 )
-	{
-		DeleteDC(hDCImage);
-		m_pddsRenderTarget->ReleaseDC(hDC);
-		return FALSE;
-	}
+    hb = CreateCompatibleBitmap(hDC, width, height);
+    if ( hb == 0 )
+    {
+        DeleteDC(hDCImage);
+        m_pddsRenderTarget->ReleaseDC(hDC);
+        return FALSE;
+    }
 
-	SelectObject(hDCImage, hb);
-	StretchBlt(hDCImage, 0, 0, width, height, hDC, 0, 0, dx, dy, SRCCOPY);
+    SelectObject(hDCImage, hb);
+    StretchBlt(hDCImage, 0, 0, width, height, hDC, 0, 0, dx, dy, SRCCOPY);
 
-	info = CreateBitmapInfoStruct(hb);
-	if ( info == 0 )
-	{
-		DeleteObject(hb);
-		DeleteDC(hDCImage);
-		m_pddsRenderTarget->ReleaseDC(hDC);
-		return FALSE;
-	}
+    info = CreateBitmapInfoStruct(hb);
+    if ( info == 0 )
+    {
+        DeleteObject(hb);
+        DeleteDC(hDCImage);
+        m_pddsRenderTarget->ReleaseDC(hDC);
+        return FALSE;
+    }
 
-	CreateBMPFile(filename, info, hb, hDCImage);
+    CreateBMPFile(filename, info, hb, hDCImage);
 
-	DeleteObject(hb);
+    DeleteObject(hb);
     DeleteDC(hDCImage);
-	m_pddsRenderTarget->ReleaseDC(hDC);
-	return TRUE;
+    m_pddsRenderTarget->ReleaseDC(hDC);
+    return TRUE;
 }
 
 
@@ -2194,16 +2194,16 @@ BOOL CD3DApplication::WriteScreenShot(char *filename, int width, int height)
 
 BOOL CD3DApplication::GetRenderDC(HDC &hDC)
 {
-	if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return FALSE;
-	return TRUE;
+    if ( FAILED(m_pddsRenderTarget->GetDC(&hDC)) )  return FALSE;
+    return TRUE;
 }
 
 // Frees the hDC of the rendering surface.
 
 BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
 {
-	m_pddsRenderTarget->ReleaseDC(hDC);
-	return TRUE;
+    m_pddsRenderTarget->ReleaseDC(hDC);
+    return TRUE;
 }
 
 
@@ -2215,127 +2215,127 @@ BOOL CD3DApplication::ReleaseRenderDC(HDC &hDC)
 // buf* --> nom1<0> nom2<0> <0>
 
 BOOL CD3DApplication::EnumDevices(char *bufDevices,  int lenDevices,
-								  char *bufModes,    int lenModes,
-								  int &totalDevices, int &selectDevices,
-								  int &totalModes,   int &selectModes)
+                                  char *bufModes,    int lenModes,
+                                  int &totalDevices, int &selectDevices,
+                                  int &totalModes,   int &selectModes)
 {
-	D3DEnum_DeviceInfo*	pDeviceList;
-	D3DEnum_DeviceInfo*	pDevice;
-	DDSURFACEDESC2*		pddsdMode;
-	DWORD				numDevices, device, mode;
-	int					len;
-	char				text[100];
+    D3DEnum_DeviceInfo* pDeviceList;
+    D3DEnum_DeviceInfo* pDevice;
+    DDSURFACEDESC2*     pddsdMode;
+    DWORD               numDevices, device, mode;
+    int                 len;
+    char                text[100];
 
-	D3DEnum_GetDevices(&pDeviceList, &numDevices);
+    D3DEnum_GetDevices(&pDeviceList, &numDevices);
 
-	selectDevices = -1;
-	selectModes = -1;
-	totalModes = 0;
-	for( device=0 ; device<numDevices ; device++ )
-	{
-		pDevice = &pDeviceList[device];
+    selectDevices = -1;
+    selectModes = -1;
+    totalModes = 0;
+    for( device=0 ; device<numDevices ; device++ )
+    {
+        pDevice = &pDeviceList[device];
 
-		len = strlen(pDevice->strDesc)+1;
-		if ( len >= lenDevices )  break;  // bufDevices full!
-		strcpy(bufDevices, pDevice->strDesc);
-		bufDevices += len;
-		lenDevices -= len;
+        len = strlen(pDevice->strDesc)+1;
+        if ( len >= lenDevices )  break;  // bufDevices full!
+        strcpy(bufDevices, pDevice->strDesc);
+        bufDevices += len;
+        lenDevices -= len;
 
-		if ( pDevice == m_pDeviceInfo )  // select device ?
-		{
-			selectDevices = device;
+        if ( pDevice == m_pDeviceInfo )  // select device ?
+        {
+            selectDevices = device;
 
-			for( mode=0 ; mode<pDevice->dwNumModes ; mode++ )
-			{
-				pddsdMode = &pDevice->pddsdModes[mode];
+            for( mode=0 ; mode<pDevice->dwNumModes ; mode++ )
+            {
+                pddsdMode = &pDevice->pddsdModes[mode];
 
-				sprintf(text, "%ld x %ld x %ld",
-								pddsdMode->dwWidth,
-								pddsdMode->dwHeight,
-								pddsdMode->ddpfPixelFormat.dwRGBBitCount);
+                sprintf(text, "%ld x %ld x %ld",
+                                pddsdMode->dwWidth,
+                                pddsdMode->dwHeight,
+                                pddsdMode->ddpfPixelFormat.dwRGBBitCount);
 
-				len = strlen(text)+1;
-				if ( len >= lenModes )  break;  // bufModes full !
-				strcpy(bufModes, text);
-				bufModes += len;
-				lenModes -= len;
+                len = strlen(text)+1;
+                if ( len >= lenModes )  break;  // bufModes full !
+                strcpy(bufModes, text);
+                bufModes += len;
+                lenModes -= len;
 
-				if ( mode == m_pDeviceInfo->dwCurrentMode )  // select mode ?
-				{
-					selectModes = mode;
-				}
-			}
-			bufModes[0] = 0;
-			totalModes = pDevice->dwNumModes;
-		}
-	}
-	bufDevices[0] = 0;
-	totalDevices = numDevices;
+                if ( mode == m_pDeviceInfo->dwCurrentMode )  // select mode ?
+                {
+                    selectModes = mode;
+                }
+            }
+            bufModes[0] = 0;
+            totalModes = pDevice->dwNumModes;
+        }
+    }
+    bufDevices[0] = 0;
+    totalDevices = numDevices;
 
-	return TRUE;
+    return TRUE;
 }
 
 // Indicates whether it is in full screen mode.
 
 BOOL CD3DApplication::RetFullScreen()
 {
-	return !m_pDeviceInfo->bWindowed;
+    return !m_pDeviceInfo->bWindowed;
 }
 
 // Change the graphics mode.
 
 BOOL CD3DApplication::ChangeDevice(char *deviceName, char *modeName,
-								   BOOL bFull)
+                                   BOOL bFull)
 {
-	D3DEnum_DeviceInfo*	pDeviceList;
-	D3DEnum_DeviceInfo*	pDevice;
-	DDSURFACEDESC2*		pddsdMode;
-	DWORD				numDevices, device, mode;
-	HRESULT				hr;
-	char				text[100];
+    D3DEnum_DeviceInfo* pDeviceList;
+    D3DEnum_DeviceInfo* pDevice;
+    DDSURFACEDESC2*     pddsdMode;
+    DWORD               numDevices, device, mode;
+    HRESULT             hr;
+    char                text[100];
 
-	D3DEnum_GetDevices(&pDeviceList, &numDevices);
+    D3DEnum_GetDevices(&pDeviceList, &numDevices);
 
-	for( device=0 ; device<numDevices ; device++ )
-	{
-		pDevice = &pDeviceList[device];
+    for( device=0 ; device<numDevices ; device++ )
+    {
+        pDevice = &pDeviceList[device];
 
-		if ( strcmp(pDevice->strDesc, deviceName) == 0 )  // device found ?
-		{
-			for( mode=0 ; mode<pDevice->dwNumModes ; mode++ )
-			{
-				pddsdMode = &pDevice->pddsdModes[mode];
+        if ( strcmp(pDevice->strDesc, deviceName) == 0 )  // device found ?
+        {
+            for( mode=0 ; mode<pDevice->dwNumModes ; mode++ )
+            {
+                pddsdMode = &pDevice->pddsdModes[mode];
 
-				sprintf(text, "%ld x %ld x %ld",
-								pddsdMode->dwWidth,
-								pddsdMode->dwHeight,
-								pddsdMode->ddpfPixelFormat.dwRGBBitCount);
+                sprintf(text, "%ld x %ld x %ld",
+                                pddsdMode->dwWidth,
+                                pddsdMode->dwHeight,
+                                pddsdMode->ddpfPixelFormat.dwRGBBitCount);
 
-				if ( strcmp(text, modeName) == 0 )  // mode found ?
-				{
-					m_pDeviceInfo               = pDevice;
-					pDevice->bWindowed          = !bFull;
-					pDevice->dwCurrentMode      = mode;
-					pDevice->ddsdFullscreenMode = pDevice->pddsdModes[mode];
+                if ( strcmp(text, modeName) == 0 )  // mode found ?
+                {
+                    m_pDeviceInfo               = pDevice;
+                    pDevice->bWindowed          = !bFull;
+                    pDevice->dwCurrentMode      = mode;
+                    pDevice->ddsdFullscreenMode = pDevice->pddsdModes[mode];
 
-					m_bReady = FALSE;
+                    m_bReady = FALSE;
 
-					if ( FAILED( hr = Change3DEnvironment() ) )
-					{
-						return FALSE;
-					}
+                    if ( FAILED( hr = Change3DEnvironment() ) )
+                    {
+                        return FALSE;
+                    }
 
-					SetProfileString("Device", "Name", deviceName);
-					SetProfileString("Device", "Mode", modeName);
-					SetProfileInt("Device", "FullScreen", bFull);
-					m_bReady = TRUE;
-					return TRUE;
-				}
-			}
-		}
-	}
+                    SetProfileString("Device", "Name", deviceName);
+                    SetProfileString("Device", "Mode", modeName);
+                    SetProfileInt("Device", "FullScreen", bFull);
+                    m_bReady = TRUE;
+                    return TRUE;
+                }
+            }
+        }
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 
@@ -2390,7 +2390,7 @@ VOID CD3DApplication::DisplayFrameworkError( HRESULT hr, DWORD dwType )
             break;
         case D3DFWERR_NO3DDEVICE:
             lstrcpy( strMsg, _T("Could not create the Direct3DDevice object.") );
-            
+
             if( MSGWARN_SWITCHEDTOSOFTWARE == dwType )
                 lstrcat( strMsg, _T("\nThe 3D hardware chipset may not support"
                                     "\nrendering in the current display mode.") );

@@ -42,9 +42,9 @@
 // Object's constructor.
 
 CTaskTurn::CTaskTurn(CInstanceManager* iMan, CObject* object)
-					 : CTask(iMan, object)
+                     : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
+    CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -58,19 +58,19 @@ CTaskTurn::~CTaskTurn()
 
 BOOL CTaskTurn::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+    if ( m_engine->RetPause() )  return TRUE;
+    if ( event.event != EVENT_FRAME )  return TRUE;
 
-	// Momentarily stationary object (ant on the back)?
-	if ( m_object->RetFixed() )
-	{
-		m_physics->SetMotorSpeedX(0.0f);  // stops the advance
-		m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-		m_bError = TRUE;
-		return TRUE;
-	}
+    // Momentarily stationary object (ant on the back)?
+    if ( m_object->RetFixed() )
+    {
+        m_physics->SetMotorSpeedX(0.0f);  // stops the advance
+        m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
+        m_bError = TRUE;
+        return TRUE;
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -79,69 +79,69 @@ BOOL CTaskTurn::EventProcess(const Event &event)
 
 Error CTaskTurn::Start(float angle)
 {
-	m_startAngle = m_object->RetAngleY(0);
-	m_finalAngle = m_startAngle+angle;
+    m_startAngle = m_object->RetAngleY(0);
+    m_finalAngle = m_startAngle+angle;
 
-	if ( angle < 0.0f )
-	{
-		m_angle = angle+m_physics->RetCirStopLength();
-		m_physics->SetMotorSpeedZ(-1.0f);  // turns left
-		m_bLeft = TRUE;
-	}
-	else
-	{
-		m_angle = angle-m_physics->RetCirStopLength();
-		m_physics->SetMotorSpeedZ(1.0f);  // turns right
-		m_bLeft = FALSE;
-	}
-	m_physics->SetMotorSpeedX(0.0f);
-	m_physics->SetMotorSpeedY(0.0f);
+    if ( angle < 0.0f )
+    {
+        m_angle = angle+m_physics->RetCirStopLength();
+        m_physics->SetMotorSpeedZ(-1.0f);  // turns left
+        m_bLeft = TRUE;
+    }
+    else
+    {
+        m_angle = angle-m_physics->RetCirStopLength();
+        m_physics->SetMotorSpeedZ(1.0f);  // turns right
+        m_bLeft = FALSE;
+    }
+    m_physics->SetMotorSpeedX(0.0f);
+    m_physics->SetMotorSpeedY(0.0f);
 
-	m_bError = FALSE;
-	return ERR_OK;
+    m_bError = FALSE;
+    return ERR_OK;
 }
 
 // Indicates whether the action is finished.
 
 Error CTaskTurn::IsEnded()
 {
-	float	angle;
+    float   angle;
 
-	if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->RetPause() )  return ERR_CONTINUE;
 
-	if ( m_bError )
-	{
-		return ERR_STOP;
-	}
+    if ( m_bError )
+    {
+        return ERR_STOP;
+    }
 
-	angle = m_object->RetAngleY(0);
+    angle = m_object->RetAngleY(0);
 
-	if ( m_bLeft )
-	{
-		if ( angle <= m_startAngle+m_angle )
-		{
-			m_physics->SetMotorSpeedZ(0.0f);
-//?			m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
-			m_physics->SetCirMotionY(MO_CURSPEED, 0.0f);
-//?			m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
-			m_object->SetAngleY(0, m_finalAngle);
-			return ERR_STOP;
-		}
-	}
-	else
-	{
-		if ( angle >= m_startAngle+m_angle )
-		{
-			m_physics->SetMotorSpeedZ(0.0f);
-//?			m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
-			m_physics->SetCirMotionY(MO_CURSPEED, 0.0f);
-//?			m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
-			m_object->SetAngleY(0, m_finalAngle);
-			return ERR_STOP;
-		}
-	}
+    if ( m_bLeft )
+    {
+        if ( angle <= m_startAngle+m_angle )
+        {
+            m_physics->SetMotorSpeedZ(0.0f);
+//?         m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
+            m_physics->SetCirMotionY(MO_CURSPEED, 0.0f);
+//?         m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
+            m_object->SetAngleY(0, m_finalAngle);
+            return ERR_STOP;
+        }
+    }
+    else
+    {
+        if ( angle >= m_startAngle+m_angle )
+        {
+            m_physics->SetMotorSpeedZ(0.0f);
+//?         m_physics->SetCirMotionY(MO_MOTSPEED, 0.0f);
+            m_physics->SetCirMotionY(MO_CURSPEED, 0.0f);
+//?         m_physics->SetCirMotionY(MO_REASPEED, 0.0f);
+            m_object->SetAngleY(0, m_finalAngle);
+            return ERR_STOP;
+        }
+    }
 
-	return ERR_CONTINUE;
+    return ERR_CONTINUE;
 }
 
 

@@ -17,7 +17,7 @@
 // autonuclear.h
 
 #ifndef _AUTONUCLEAR_H_
-#define	_AUTONUCLEAR_H_
+#define _AUTONUCLEAR_H_
 
 
 #include "auto.h"
@@ -35,11 +35,11 @@ class CObject;
 
 enum AutoNuclearPhase
 {
-	ANUP_STOP		= 1,
-	ANUP_WAIT		= 2,
-	ANUP_CLOSE		= 3,
-	ANUP_GENERATE	= 4,
-	ANUP_OPEN		= 5,
+    ANUP_STOP       = 1,
+    ANUP_WAIT       = 2,
+    ANUP_CLOSE      = 3,
+    ANUP_GENERATE   = 4,
+    ANUP_OPEN       = 5,
 };
 
 
@@ -47,33 +47,33 @@ enum AutoNuclearPhase
 class CAutoNuclear : public CAuto
 {
 public:
-	CAutoNuclear(CInstanceManager* iMan, CObject* object);
-	~CAutoNuclear();
+    CAutoNuclear(CInstanceManager* iMan, CObject* object);
+    ~CAutoNuclear();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	CObject*	SearchUranium();
-	BOOL		SearchVehicle();
-	void		CreatePower();
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoNuclearPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastParticule;
-	D3DVECTOR			m_pos;
-	int					m_channelSound;
+    CObject*    SearchUranium();
+    BOOL        SearchVehicle();
+    void        CreatePower();
+
+protected:
+    AutoNuclearPhase    m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastParticule;
+    D3DVECTOR           m_pos;
+    int                 m_channelSound;
 };
 
 

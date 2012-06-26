@@ -30,9 +30,9 @@
 
 // Global variables.
 
-LPDIRECTINPUT7			g_pDI       = NULL;         
-LPDIRECTINPUTDEVICE2	g_pJoystick = NULL;     
-DIDEVCAPS				g_diDevCaps;
+LPDIRECTINPUT7          g_pDI       = NULL;
+LPDIRECTINPUTDEVICE2    g_pJoystick = NULL;
+DIDEVCAPS               g_diDevCaps;
 
 
 
@@ -48,11 +48,11 @@ BOOL CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance,
 
     // Obtain an interface to the enumerated joystick.
     hr = g_pDI->CreateDeviceEx( pdidInstance->guidInstance, IID_IDirectInputDevice2,
-		                        (VOID**)&g_pJoystick, NULL );
+                                (VOID**)&g_pJoystick, NULL );
 
     // If it failed, then we can't use this joystick. (Maybe the user unplugged
     // it while we were in the middle of enumerating it.)
-    if( FAILED(hr) ) 
+    if( FAILED(hr) )
         return DIENUM_CONTINUE;
 
 
@@ -67,14 +67,14 @@ BOOL CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance,
 BOOL CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
                                 VOID* pContext )
 {
-    DIPROPRANGE diprg; 
-    diprg.diph.dwSize       = sizeof(DIPROPRANGE); 
-    diprg.diph.dwHeaderSize = sizeof(DIPROPHEADER); 
-    diprg.diph.dwHow        = DIPH_BYOFFSET; 
+    DIPROPRANGE diprg;
+    diprg.diph.dwSize       = sizeof(DIPROPRANGE);
+    diprg.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+    diprg.diph.dwHow        = DIPH_BYOFFSET;
     diprg.diph.dwObj        = pdidoi->dwOfs; // Specify the enumerated axis
-    diprg.lMin              = -1000; 
-    diprg.lMax              = +1000; 
-    
+    diprg.lMin              = -1000;
+    diprg.lMax              = +1000;
+
     // Set the range for the axis
     if( FAILED( g_pJoystick->SetProperty( DIPROP_RANGE, &diprg.diph ) ) )
         return DIENUM_STOP;
@@ -84,28 +84,28 @@ BOOL CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
     switch( pdidoi->dwOfs )
     {
         case DIJOFS_X:
-			OutputDebugString("EnumAxesCallback -x\n");
+            OutputDebugString("EnumAxesCallback -x\n");
             break;
         case DIJOFS_Y:
-			OutputDebugString("EnumAxesCallback -y\n");
+            OutputDebugString("EnumAxesCallback -y\n");
             break;
         case DIJOFS_Z:
-			OutputDebugString("EnumAxesCallback -z\n");
+            OutputDebugString("EnumAxesCallback -z\n");
             break;
         case DIJOFS_RX:
-			OutputDebugString("EnumAxesCallback -rx\n");
+            OutputDebugString("EnumAxesCallback -rx\n");
             break;
         case DIJOFS_RY:
-			OutputDebugString("EnumAxesCallback -ry\n");
+            OutputDebugString("EnumAxesCallback -ry\n");
             break;
         case DIJOFS_RZ:
-			OutputDebugString("EnumAxesCallback -rz\n");
+            OutputDebugString("EnumAxesCallback -rz\n");
             break;
         case DIJOFS_SLIDER(0):
-			OutputDebugString("EnumAxesCallback -s0\n");
+            OutputDebugString("EnumAxesCallback -s0\n");
             break;
         case DIJOFS_SLIDER(1):
-			OutputDebugString("EnumAxesCallback -s1\n");
+            OutputDebugString("EnumAxesCallback -s1\n");
             break;
     }
 #endif
@@ -126,7 +126,7 @@ BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd)
     hr = DirectInputCreateEx( hInst, DIRECTINPUT_VERSION,IID_IDirectInput7, (LPVOID*)&g_pDI, NULL );
     if( FAILED(hr) )  return FALSE;
 #else
-	return FALSE;
+    return FALSE;
 #endif
 
     // Look for a simple joystick we can use for this sample program.
@@ -137,12 +137,12 @@ BOOL InitDirectInput(HINSTANCE hInst, HWND hWnd)
     // Make sure we got a joystick
     if( NULL == g_pJoystick )
     {
-//?        MessageBox( NULL, "Joystick not found", "DInput Sample", 
+//?        MessageBox( NULL, "Joystick not found", "DInput Sample",
 //?                    MB_ICONERROR | MB_OK );
         return FALSE;
     }
 
-    // Set the data format to "simple joystick" - a predefined data format 
+    // Set the data format to "simple joystick" - a predefined data format
     //
     // A data format specifies which controls on a device we are interested in,
     // and how they should be reported. This tells DInput that we will be
@@ -190,7 +190,7 @@ BOOL UpdateInputState( DIJOYSTATE &js )
 {
     HRESULT     hr;
 
-    if ( g_pJoystick ) 
+    if ( g_pJoystick )
     {
         do
         {
@@ -213,7 +213,7 @@ BOOL UpdateInputState( DIJOYSTATE &js )
         }
         while ( DIERR_INPUTLOST == hr );
         if ( FAILED(hr) )  return FALSE;
-    } 
+    }
     return TRUE;
 }
 
@@ -223,9 +223,9 @@ BOOL UpdateInputState( DIJOYSTATE &js )
 BOOL FreeDirectInput()
 {
     // Unacquire and release any DirectInputDevice objects.
-    if( NULL != g_pJoystick ) 
+    if( NULL != g_pJoystick )
     {
-        // Unacquire the device one last time just in case 
+        // Unacquire the device one last time just in case
         // the app tried to exit while the device is still acquired.
         g_pJoystick->Unacquire();
         g_pJoystick->Release();
@@ -234,7 +234,7 @@ BOOL FreeDirectInput()
 
 
     // Release any DirectInput objects.
-    if( g_pDI ) 
+    if( g_pDI )
     {
         g_pDI->Release();
         g_pDI = NULL;

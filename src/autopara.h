@@ -17,7 +17,7 @@
 // autopara.h
 
 #ifndef _AUTOPARA_H_
-#define	_AUTOPARA_H_
+#define _AUTOPARA_H_
 
 
 #include "auto.h"
@@ -35,9 +35,9 @@ class CObject;
 
 enum AutoParaPhase
 {
-	APAP_WAIT		= 1,
-	APAP_BLITZ		= 2,
-	APAP_CHARGE		= 3,
+    APAP_WAIT       = 1,
+    APAP_BLITZ      = 2,
+    APAP_CHARGE     = 3,
 };
 
 
@@ -45,32 +45,32 @@ enum AutoParaPhase
 class CAutoPara : public CAuto
 {
 public:
-	CAutoPara(CInstanceManager* iMan, CObject* object);
-	~CAutoPara();
+    CAutoPara(CInstanceManager* iMan, CObject* object);
+    ~CAutoPara();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
-	void		StartBlitz();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
+    void        StartBlitz();
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	void		ChargeObject(float rTime);
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoParaPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	D3DVECTOR		m_pos;
-	int				m_channelSound;
+    void        ChargeObject(float rTime);
+
+protected:
+    AutoParaPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    D3DVECTOR       m_pos;
+    int             m_channelSound;
 };
 
 

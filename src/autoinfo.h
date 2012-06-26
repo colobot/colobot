@@ -17,7 +17,7 @@
 // autoinfo.h
 
 #ifndef _AUTOINFO_H_
-#define	_AUTOINFO_H_
+#define _AUTOINFO_H_
 
 
 #include "auto.h"
@@ -35,10 +35,10 @@ class CObject;
 
 enum AutoInfoPhase
 {
-	AIP_WAIT		= 1,
-	AIP_EMETTE		= 2,
-	AIP_RECEIVE		= 3,
-	AIP_ERROR		= 4,
+    AIP_WAIT        = 1,
+    AIP_EMETTE      = 2,
+    AIP_RECEIVE     = 3,
+    AIP_ERROR       = 4,
 };
 
 
@@ -46,34 +46,34 @@ enum AutoInfoPhase
 class CAutoInfo : public CAuto
 {
 public:
-	CAutoInfo(CInstanceManager* iMan, CObject* object);
-	~CAutoInfo();
+    CAutoInfo(CInstanceManager* iMan, CObject* object);
+    ~CAutoInfo();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	void		Start(int param);
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    void        Start(int param);
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	void		UpdateInterface(float rTime);
-	void		UpdateList();
-	void		UpdateListVirus();
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoInfoPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	D3DVECTOR		m_goal;
-	BOOL			m_bLastVirus;
+    void        UpdateInterface(float rTime);
+    void        UpdateList();
+    void        UpdateListVirus();
+
+protected:
+    AutoInfoPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    D3DVECTOR       m_goal;
+    BOOL            m_bLastVirus;
 };
 
 

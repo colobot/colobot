@@ -21,43 +21,43 @@
 
 #include <string.h>
 
-HINSTANCE CBotString::m_hInstance = (HINSTANCE)LoadLibrary("Cbot.dll");	// comment le récupérer autrement ??
+HINSTANCE CBotString::m_hInstance = (HINSTANCE)LoadLibrary("Cbot.dll"); // comment le récupérer autrement ??
 
 
 CBotString::CBotString()
 {
-	m_ptr = NULL;				// chaine vide
-	m_lg  = 0;
+    m_ptr = NULL;               // chaine vide
+    m_lg  = 0;
 }
 
 CBotString::~CBotString()
 {
-	if (m_ptr != NULL) free(m_ptr);
+    if (m_ptr != NULL) free(m_ptr);
 }
 
 
 CBotString::CBotString(const char* p)
 {
-	m_lg = lstrlen( p );
+    m_lg = lstrlen( p );
 
-	m_ptr = NULL;
-	if (m_lg>0)
-	{
-		m_ptr = (char*)malloc(m_lg+1);
-		lstrcpy(m_ptr, p);
-	}
+    m_ptr = NULL;
+    if (m_lg>0)
+    {
+        m_ptr = (char*)malloc(m_lg+1);
+        lstrcpy(m_ptr, p);
+    }
 }
 
 CBotString::CBotString(const CBotString& srcString)
 {
-	m_lg = srcString.m_lg;
+    m_lg = srcString.m_lg;
 
-	m_ptr = NULL;
-	if (m_lg>0)
-	{
-		m_ptr = (char*)malloc(m_lg+1);
-		lstrcpy(m_ptr, srcString.m_ptr);
-	}
+    m_ptr = NULL;
+    if (m_lg>0)
+    {
+        m_ptr = (char*)malloc(m_lg+1);
+        lstrcpy(m_ptr, srcString.m_ptr);
+    }
 }
 
 
@@ -65,379 +65,379 @@ CBotString::CBotString(const CBotString& srcString)
 
 int CBotString::GivLength()
 {
-	if ( m_ptr == NULL ) return 0;
-	return lstrlen( m_ptr ); 
+    if ( m_ptr == NULL ) return 0;
+    return lstrlen( m_ptr );
 }
 
 
 
 CBotString CBotString::Left(int nCount) const
 {
-	char	chaine[2000];
-	
-	int		i;
-	for (i = 0; i < m_lg && i < nCount && i < 1999; i++)
-	{
-		chaine[i] = m_ptr[i];
-	}
-	chaine[i] = 0 ;
+    char    chaine[2000];
 
-	return CBotString( chaine );
+    int     i;
+    for (i = 0; i < m_lg && i < nCount && i < 1999; i++)
+    {
+        chaine[i] = m_ptr[i];
+    }
+    chaine[i] = 0 ;
+
+    return CBotString( chaine );
 }
 
 CBotString CBotString::Right(int nCount) const
 {
-	char	chaine[2000];
-	
-	int		i = m_lg - nCount;
-	if ( i < 0 ) i = 0;
+    char    chaine[2000];
 
-	int j;
-	for ( j = 0 ; i < m_lg && i < 1999; i++)
-	{
-		chaine[j++] = m_ptr[i];
-	}
-	chaine[j] = 0 ;
+    int     i = m_lg - nCount;
+    if ( i < 0 ) i = 0;
 
-	return CBotString( chaine );
+    int j;
+    for ( j = 0 ; i < m_lg && i < 1999; i++)
+    {
+        chaine[j++] = m_ptr[i];
+    }
+    chaine[j] = 0 ;
+
+    return CBotString( chaine );
 }
 
 CBotString CBotString::Mid(int nFirst, int nCount) const
 {
-	char	chaine[2000];
-	
-	int		i;
+    char    chaine[2000];
 
-	for ( i = nFirst; i < m_lg && i < 1999 && i <= nFirst + nCount; i++)
-	{
-		chaine[i] = m_ptr[i];
-	}
-	chaine[i] = 0 ;
+    int     i;
 
-	return CBotString( chaine );
+    for ( i = nFirst; i < m_lg && i < 1999 && i <= nFirst + nCount; i++)
+    {
+        chaine[i] = m_ptr[i];
+    }
+    chaine[i] = 0 ;
+
+    return CBotString( chaine );
 }
 
 CBotString CBotString::Mid(int nFirst) const
 {
-	char	chaine[2000];
-	
-	int		i;
+    char    chaine[2000];
 
-	for ( i = nFirst; i < m_lg && i < 1999 ; i++)
-	{
-		chaine[i] = m_ptr[i];
-	}
-	chaine[i] = 0 ;
+    int     i;
 
-	return CBotString( chaine );
+    for ( i = nFirst; i < m_lg && i < 1999 ; i++)
+    {
+        chaine[i] = m_ptr[i];
+    }
+    chaine[i] = 0 ;
+
+    return CBotString( chaine );
 }
 
 
 int CBotString::Find(const char c)
 {
-	int		i;
-	for (i = 0; i < m_lg; i++)
-	{
-		if (m_ptr[i] == c) return i;
-	}
-	return -1;
+    int     i;
+    for (i = 0; i < m_lg; i++)
+    {
+        if (m_ptr[i] == c) return i;
+    }
+    return -1;
 }
 
 int CBotString::Find(LPCTSTR lpsz)
 {
-	int		i, j;
-	int		l = lstrlen(lpsz);
+    int     i, j;
+    int     l = lstrlen(lpsz);
 
-	for (i = 0; i <= m_lg-l; i++)
-	{
-		for (j = 0; j < l; j++)
-		{
-			if (m_ptr[i+j] != lpsz[j]) goto bad;
-		}
-		return i;
+    for (i = 0; i <= m_lg-l; i++)
+    {
+        for (j = 0; j < l; j++)
+        {
+            if (m_ptr[i+j] != lpsz[j]) goto bad;
+        }
+        return i;
 bad:;
-	}
-	return -1;
+    }
+    return -1;
 }
 
 int CBotString::ReverseFind(const char c)
 {
-	int		i;
-	for (i = m_lg-1; i >= 0; i--)
-	{
-		if (m_ptr[i] == c) return i;
-	}
-	return -1;
+    int     i;
+    for (i = m_lg-1; i >= 0; i--)
+    {
+        if (m_ptr[i] == c) return i;
+    }
+    return -1;
 }
 
 int CBotString::ReverseFind(LPCTSTR lpsz)
 {
-	int		i, j;
-	int		l = lstrlen(lpsz);
+    int     i, j;
+    int     l = lstrlen(lpsz);
 
-	for (i = m_lg-l; i >= 0; i--)
-	{
-		for (j = 0; j < l; j++)
-		{
-			if (m_ptr[i+j] != lpsz[j]) goto bad;
-		}
-		return i;
+    for (i = m_lg-l; i >= 0; i--)
+    {
+        for (j = 0; j < l; j++)
+        {
+            if (m_ptr[i+j] != lpsz[j]) goto bad;
+        }
+        return i;
 bad:;
-	}
-	return -1;
+    }
+    return -1;
 }
 
 CBotString CBotString::Mid(int start, int lg)
 {
-	CBotString	res;
-	if (start >= m_lg) return res;
+    CBotString  res;
+    if (start >= m_lg) return res;
 
-	if ( lg < 0 ) lg = m_lg - start;
+    if ( lg < 0 ) lg = m_lg - start;
 
-	char* p = (char*)malloc(m_lg+1);
-	lstrcpy(p, m_ptr+start);
-	p[lg] = 0;
+    char* p = (char*)malloc(m_lg+1);
+    lstrcpy(p, m_ptr+start);
+    p[lg] = 0;
 
-	res = p;
-	free(p);
-	return res;
+    res = p;
+    free(p);
+    return res;
 }
 
 void CBotString::MakeUpper()
 {
-	int		i;
+    int     i;
 
-	for ( i = 0; i < m_lg && i < 1999 ; i++)
-	{
-		char	c = m_ptr[i];
-		if ( c >= 'a' && c <= 'z' ) m_ptr[i] = c - 'a' + 'A';
-	}
+    for ( i = 0; i < m_lg && i < 1999 ; i++)
+    {
+        char    c = m_ptr[i];
+        if ( c >= 'a' && c <= 'z' ) m_ptr[i] = c - 'a' + 'A';
+    }
 }
 
 void CBotString::MakeLower()
 {
-	int		i;
+    int     i;
 
-	for ( i = 0; i < m_lg && i < 1999 ; i++)
-	{
-		char	c = m_ptr[i];
-		if ( c >= 'A' && c <= 'Z' ) m_ptr[i] = c - 'A' + 'a';
-	}
+    for ( i = 0; i < m_lg && i < 1999 ; i++)
+    {
+        char    c = m_ptr[i];
+        if ( c >= 'A' && c <= 'Z' ) m_ptr[i] = c - 'A' + 'a';
+    }
 }
 
 
 
-#define MAXSTRING	256
+#define MAXSTRING   256
 
 BOOL CBotString::LoadString(UINT id)
 {
-	char	buffer[MAXSTRING];
+    char    buffer[MAXSTRING];
 
-	m_lg = ::LoadString( m_hInstance, id, buffer, MAXSTRING ); 
+    m_lg = ::LoadString( m_hInstance, id, buffer, MAXSTRING );
 
-	if (m_ptr != NULL) free(m_ptr);
+    if (m_ptr != NULL) free(m_ptr);
 
- 	m_ptr = NULL;
-	if (m_lg > 0)
-	{
-		m_ptr = (char*)malloc(m_lg+1);
-		lstrcpy(m_ptr, buffer);
-		return TRUE;
-	}
-	return FALSE;
+    m_ptr = NULL;
+    if (m_lg > 0)
+    {
+        m_ptr = (char*)malloc(m_lg+1);
+        lstrcpy(m_ptr, buffer);
+        return TRUE;
+    }
+    return FALSE;
 }
- 
+
 
 const CBotString& CBotString::operator=(const CBotString& stringSrc)
 {
-	if (m_ptr != NULL) free(m_ptr);
+    if (m_ptr != NULL) free(m_ptr);
 
-	m_lg = stringSrc.m_lg; 
-	m_ptr = NULL;
+    m_lg = stringSrc.m_lg;
+    m_ptr = NULL;
 
-	if (m_lg > 0)
-	{
-		m_ptr = (char*)malloc(m_lg+1);
-		lstrcpy(m_ptr, stringSrc.m_ptr);
-	}
+    if (m_lg > 0)
+    {
+        m_ptr = (char*)malloc(m_lg+1);
+        lstrcpy(m_ptr, stringSrc.m_ptr);
+    }
 
-	return *this;
+    return *this;
 }
 
 CBotString operator+(const CBotString& string, LPCTSTR lpsz)
 {
-	CBotString s ( string );
-	s += lpsz;
-	return s;
+    CBotString s ( string );
+    s += lpsz;
+    return s;
 }
 
 const CBotString& CBotString::operator+(const CBotString& stringSrc)
 {
-	char*	p = (char*)malloc(m_lg+stringSrc.m_lg+1);
+    char*   p = (char*)malloc(m_lg+stringSrc.m_lg+1);
 
-	lstrcpy(p, m_ptr);
-	char*	pp = p + m_lg;
-	lstrcpy(pp, stringSrc.m_ptr);
+    lstrcpy(p, m_ptr);
+    char*   pp = p + m_lg;
+    lstrcpy(pp, stringSrc.m_ptr);
 
-	if (m_ptr != NULL) free(m_ptr);
-	m_ptr = p;
-	m_lg += stringSrc.m_lg;
+    if (m_ptr != NULL) free(m_ptr);
+    m_ptr = p;
+    m_lg += stringSrc.m_lg;
 
-	return *this;
+    return *this;
 }
 
 const CBotString& CBotString::operator=(const char ch)
 {
-	if (m_ptr != NULL) free(m_ptr);
+    if (m_ptr != NULL) free(m_ptr);
 
-	m_lg = 1; 
+    m_lg = 1;
 
-	m_ptr = (char*)malloc(2);
-	m_ptr[0] = ch;
-	m_ptr[1] = 0;
-	
-	return *this;
+    m_ptr = (char*)malloc(2);
+    m_ptr[0] = ch;
+    m_ptr[1] = 0;
+
+    return *this;
 }
 
 const CBotString& CBotString::operator=(const char* pString)
 {
-	if (m_ptr != NULL) free(m_ptr);
-	m_ptr = NULL;
+    if (m_ptr != NULL) free(m_ptr);
+    m_ptr = NULL;
 
-	if ( pString != NULL )
-	{
-		m_lg = lstrlen(pString); 
+    if ( pString != NULL )
+    {
+        m_lg = lstrlen(pString);
 
-		if (m_lg != 0)
-		{
-			m_ptr = (char*)malloc(m_lg+1);
-			lstrcpy(m_ptr, pString);
-		}
-	}
-	
-	return *this;
+        if (m_lg != 0)
+        {
+            m_ptr = (char*)malloc(m_lg+1);
+            lstrcpy(m_ptr, pString);
+        }
+    }
+
+    return *this;
 }
 
 
 const CBotString& CBotString::operator+=(const char ch)
 {
-	char*	p = (char*)malloc(m_lg+2);
+    char*   p = (char*)malloc(m_lg+2);
 
-	if (m_ptr!=NULL) lstrcpy(p, m_ptr);
-	p[m_lg++] = ch;
-	p[m_lg]   = 0;
+    if (m_ptr!=NULL) lstrcpy(p, m_ptr);
+    p[m_lg++] = ch;
+    p[m_lg]   = 0;
 
-	if (m_ptr != NULL) free(m_ptr);
+    if (m_ptr != NULL) free(m_ptr);
 
-	m_ptr = p;
+    m_ptr = p;
 
-	return *this;
+    return *this;
 }
 
 const CBotString& CBotString::operator+=(const CBotString& str)
 {
-	char*	p = (char*)malloc(m_lg+str.m_lg+1);
+    char*   p = (char*)malloc(m_lg+str.m_lg+1);
 
-	lstrcpy(p, m_ptr);
-	char*	pp = p + m_lg;
-	lstrcpy(pp, str.m_ptr);
+    lstrcpy(p, m_ptr);
+    char*   pp = p + m_lg;
+    lstrcpy(pp, str.m_ptr);
 
-	m_lg = m_lg + str.m_lg;
+    m_lg = m_lg + str.m_lg;
 
-	if (m_ptr != NULL) free(m_ptr);
+    if (m_ptr != NULL) free(m_ptr);
 
-	m_ptr = p;
+    m_ptr = p;
 
-	return *this;
+    return *this;
 }
 
 BOOL CBotString::operator==(const CBotString& str)
 {
-	return Compare(str) == 0;
+    return Compare(str) == 0;
 }
 
 BOOL CBotString::operator==(const char* p)
 {
-	return Compare(p) == 0;
+    return Compare(p) == 0;
 }
 
 BOOL CBotString::operator!=(const CBotString& str)
 {
-	return Compare(str) != 0;
+    return Compare(str) != 0;
 }
 
 BOOL CBotString::operator!=(const char* p)
 {
-	return Compare(p) != 0;
+    return Compare(p) != 0;
 }
 
 BOOL CBotString::operator>(const CBotString& str)
 {
-	return Compare(str) > 0;
+    return Compare(str) > 0;
 }
 
 BOOL CBotString::operator>(const char* p)
 {
-	return Compare(p) > 0;
+    return Compare(p) > 0;
 }
 
 BOOL CBotString::operator>=(const CBotString& str)
 {
-	return Compare(str) >= 0;
+    return Compare(str) >= 0;
 }
 
 BOOL CBotString::operator>=(const char* p)
 {
-	return Compare(p) >= 0;
+    return Compare(p) >= 0;
 }
 
 BOOL CBotString::operator<(const CBotString& str)
 {
-	return Compare(str) < 0;
+    return Compare(str) < 0;
 }
 
 BOOL CBotString::operator<(const char* p)
 {
-	return Compare(p) < 0;
+    return Compare(p) < 0;
 }
 
 BOOL CBotString::operator<=(const CBotString& str)
 {
-	return Compare(str) <= 0;
+    return Compare(str) <= 0;
 }
 
 BOOL CBotString::operator<=(const char* p)
 {
-	return Compare(p) <= 0;
+    return Compare(p) <= 0;
 }
 
 BOOL CBotString::IsEmpty() const
 {
-	return (m_lg == 0);
+    return (m_lg == 0);
 }
 
 void CBotString::Empty()
 {
-	if (m_ptr != NULL) free(m_ptr);
-	m_ptr = NULL;
-	m_lg = 0;
+    if (m_ptr != NULL) free(m_ptr);
+    m_ptr = NULL;
+    m_lg = 0;
 }
 
-static char	nilstring[] = {0};
+static char nilstring[] = {0};
 
 CBotString::operator LPCTSTR() const
 {
-	if (this == NULL || m_ptr == NULL) return nilstring;
-	return m_ptr;
+    if (this == NULL || m_ptr == NULL) return nilstring;
+    return m_ptr;
 }
 
 
 int CBotString::Compare(LPCTSTR lpsz) const
 {
-	char*	p = m_ptr;
-	if (lpsz  == NULL) lpsz = nilstring;
-	if (m_ptr == NULL) p = nilstring;
-	return strcmp(p, lpsz);	// wcscmp 
+    char*   p = m_ptr;
+    if (lpsz  == NULL) lpsz = nilstring;
+    if (m_ptr == NULL) p = nilstring;
+    return strcmp(p, lpsz); // wcscmp
 }
 
 
@@ -447,26 +447,26 @@ int CBotString::Compare(LPCTSTR lpsz) const
 
 CBotStringArray::CBotStringArray()
 {
-	m_pData = NULL;
-	m_nSize = m_nMaxSize = 0;
+    m_pData = NULL;
+    m_nSize = m_nMaxSize = 0;
 }
 
 CBotStringArray::~CBotStringArray()
 {
-	SetSize(0);					// détruit les données !
+    SetSize(0);                 // détruit les données !
 }
 
 
 int CBotStringArray::GivSize()
 {
-	return	m_nSize;
+    return  m_nSize;
 }
 
 void CBotStringArray::Add(const CBotString& str)
 {
-	SetSize(m_nSize+1);
+    SetSize(m_nSize+1);
 
-	m_pData[m_nSize-1] = str;
+    m_pData[m_nSize-1] = str;
 }
 
 
@@ -475,45 +475,45 @@ void CBotStringArray::Add(const CBotString& str)
 
 static inline void ConstructElement(CBotString* pNewData)
 {
-	memset(pNewData, 0, sizeof(CBotString));
+    memset(pNewData, 0, sizeof(CBotString));
 }
 
 static inline void DestructElement(CBotString* pOldData)
 {
-	pOldData->~CBotString();
+    pOldData->~CBotString();
 }
 
 static inline void CopyElement(CBotString* pSrc, CBotString* pDest)
 {
-	*pSrc = *pDest;
+    *pSrc = *pDest;
 }
 
 static void ConstructElements(CBotString* pNewData, int nCount)
 {
-	while (nCount--)
-	{
-		ConstructElement(pNewData);
-		pNewData++;
-	}
+    while (nCount--)
+    {
+        ConstructElement(pNewData);
+        pNewData++;
+    }
 }
 
 static void DestructElements(CBotString* pOldData, int nCount)
 {
-	while (nCount--)
-	{
-		DestructElement(pOldData);
-		pOldData++;
-	}
+    while (nCount--)
+    {
+        DestructElement(pOldData);
+        pOldData++;
+    }
 }
 
 static void CopyElements(CBotString* pDest, CBotString* pSrc, int nCount)
 {
-	while (nCount--)
-	{
-		*pDest = *pSrc;
-		++pDest;
-		++pSrc;
-	}
+    while (nCount--)
+    {
+        *pDest = *pSrc;
+        ++pDest;
+        ++pSrc;
+    }
 }
 
 
@@ -522,81 +522,81 @@ static void CopyElements(CBotString* pDest, CBotString* pSrc, int nCount)
 
 void CBotStringArray::SetSize(int nNewSize)
 {
-	if (nNewSize == 0)
-	{
-		// shrink to nothing
+    if (nNewSize == 0)
+    {
+        // shrink to nothing
 
-		DestructElements(m_pData, m_nSize);
-		delete[] (BYTE*)m_pData;
-		m_pData = NULL;
-		m_nSize = m_nMaxSize = 0;
-	}
-	else if (m_pData == NULL)
-	{
-		// create one with exact size
-		m_pData = (CBotString*) new BYTE[nNewSize * sizeof(CBotString)];
+        DestructElements(m_pData, m_nSize);
+        delete[] (BYTE*)m_pData;
+        m_pData = NULL;
+        m_nSize = m_nMaxSize = 0;
+    }
+    else if (m_pData == NULL)
+    {
+        // create one with exact size
+        m_pData = (CBotString*) new BYTE[nNewSize * sizeof(CBotString)];
 
-		ConstructElements(m_pData, nNewSize);
+        ConstructElements(m_pData, nNewSize);
 
-		m_nSize = m_nMaxSize = nNewSize;
-	}
-	else if (nNewSize <= m_nMaxSize)
-	{
-		// it fits
-		if (nNewSize > m_nSize)
-		{
-			// initialize the new elements
+        m_nSize = m_nMaxSize = nNewSize;
+    }
+    else if (nNewSize <= m_nMaxSize)
+    {
+        // it fits
+        if (nNewSize > m_nSize)
+        {
+            // initialize the new elements
 
-			ConstructElements(&m_pData[m_nSize], nNewSize-m_nSize);
+            ConstructElements(&m_pData[m_nSize], nNewSize-m_nSize);
 
-		}
+        }
 
-		else if (m_nSize > nNewSize)  // destroy the old elements
-			DestructElements(&m_pData[nNewSize], m_nSize-nNewSize);
+        else if (m_nSize > nNewSize)  // destroy the old elements
+            DestructElements(&m_pData[nNewSize], m_nSize-nNewSize);
 
-		m_nSize = nNewSize;
-	}
-	else
-	{
-		// otherwise, grow array
-		int nGrowBy;
-		{
-			// heuristically determine growth when nGrowBy == 0
-			//  (this avoids heap fragmentation in many situations)
-			nGrowBy = min(1024, max(4, m_nSize / 8));
-		}
-		int nNewMax;
-		if (nNewSize < m_nMaxSize + nGrowBy)
-			nNewMax = m_nMaxSize + nGrowBy;  // granularity
-		else
-			nNewMax = nNewSize;  // no slush
+        m_nSize = nNewSize;
+    }
+    else
+    {
+        // otherwise, grow array
+        int nGrowBy;
+        {
+            // heuristically determine growth when nGrowBy == 0
+            //  (this avoids heap fragmentation in many situations)
+            nGrowBy = min(1024, max(4, m_nSize / 8));
+        }
+        int nNewMax;
+        if (nNewSize < m_nMaxSize + nGrowBy)
+            nNewMax = m_nMaxSize + nGrowBy;  // granularity
+        else
+            nNewMax = nNewSize;  // no slush
 
-		CBotString* pNewData = (CBotString*) new BYTE[nNewMax * sizeof(CBotString)];
+        CBotString* pNewData = (CBotString*) new BYTE[nNewMax * sizeof(CBotString)];
 
-		// copy new data from old
-		memcpy(pNewData, m_pData, m_nSize * sizeof(CBotString));
+        // copy new data from old
+        memcpy(pNewData, m_pData, m_nSize * sizeof(CBotString));
 
-		// construct remaining elements
-		ConstructElements(&pNewData[m_nSize], nNewSize-m_nSize);
+        // construct remaining elements
+        ConstructElements(&pNewData[m_nSize], nNewSize-m_nSize);
 
 
-		// Ret rid of old stuff (note: no destructors called)
-		delete[] (BYTE*)m_pData;
-		m_pData = pNewData;
-		m_nSize = nNewSize;
-		m_nMaxSize = nNewMax;
-	}
+        // Ret rid of old stuff (note: no destructors called)
+        delete[] (BYTE*)m_pData;
+        m_pData = pNewData;
+        m_nSize = nNewSize;
+        m_nMaxSize = nNewMax;
+    }
 }
 
 
 CBotString& CBotStringArray::operator[](int nIndex)
 {
-	return ElementAt(nIndex);
+    return ElementAt(nIndex);
 }
 
 CBotString& CBotStringArray::ElementAt(int nIndex)
 {
-	return m_pData[nIndex];
+    return m_pData[nIndex];
 }
 
 

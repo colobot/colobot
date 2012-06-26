@@ -17,7 +17,7 @@
 // autodestroyer.h
 
 #ifndef _AUTODESTROYER_H_
-#define	_AUTODESTROYER_H_
+#define _AUTODESTROYER_H_
 
 
 #include "misc.h"
@@ -34,10 +34,10 @@ class CObject;
 
 enum AutoDestroyerPhase
 {
-	ADEP_WAIT		= 1,	// expected metal
-	ADEP_DOWN		= 2,	// down the cover
-	ADEP_REPAIR		= 3,	// built the vehicle
-	ADEP_UP			= 4,	// up the cover
+    ADEP_WAIT       = 1,    // expected metal
+    ADEP_DOWN       = 2,    // down the cover
+    ADEP_REPAIR     = 3,    // built the vehicle
+    ADEP_UP         = 4,    // up the cover
 };
 
 
@@ -45,31 +45,31 @@ enum AutoDestroyerPhase
 class CAutoDestroyer : public CAuto
 {
 public:
-	CAutoDestroyer(CInstanceManager* iMan, CObject* object);
-	~CAutoDestroyer();
+    CAutoDestroyer(CInstanceManager* iMan, CObject* object);
+    ~CAutoDestroyer();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
-	BOOL		CreateInterface(BOOL bSelect);
+    BOOL        CreateInterface(BOOL bSelect);
 
-	BOOL		Write(char *line);
-	BOOL		Read(char *line);
-
-protected:
-	CObject*	SearchPlastic();
-	BOOL		SearchVehicle();
+    BOOL        Write(char *line);
+    BOOL        Read(char *line);
 
 protected:
-	AutoDestroyerPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	BOOL			m_bExplo;
+    CObject*    SearchPlastic();
+    BOOL        SearchVehicle();
+
+protected:
+    AutoDestroyerPhase  m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    BOOL            m_bExplo;
 };
 
 

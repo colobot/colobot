@@ -40,8 +40,8 @@
 
 
 
-#define ZOOM_MIN	1.0f
-#define ZOOM_MAX	16.0f
+#define ZOOM_MIN    1.0f
+#define ZOOM_MAX    16.0f
 
 
 
@@ -49,15 +49,15 @@
 
 CMainMap::CMainMap(CInstanceManager* iMan)
 {
-	m_iMan = iMan;
-	m_iMan->AddInstance(CLASS_MAP, this);
+    m_iMan = iMan;
+    m_iMan->AddInstance(CLASS_MAP, this);
 
-	m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-	m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-	m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
+    m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
+    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
 
-	m_mapMode = 1;
-	m_bFixImage = FALSE;
+    m_mapMode = 1;
+    m_bFixImage = FALSE;
 }
 
 // Destructor of the application card.
@@ -71,299 +71,299 @@ CMainMap::~CMainMap()
 
 void CMainMap::CreateMap()
 {
-	CWindow*	pw;
-	FPOINT		pos, dim;
+    CWindow*    pw;
+    FPOINT      pos, dim;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )
-	{
-		pos.x = 0.0f;
-		pos.y = 0.0f;
-		dim.x = 0.0f;
-		dim.y = 0.0f;
-		pw = m_interface->CreateWindows(pos, dim, 10, EVENT_WINDOW1);
-	}
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )
+    {
+        pos.x = 0.0f;
+        pos.y = 0.0f;
+        dim.x = 0.0f;
+        dim.y = 0.0f;
+        pw = m_interface->CreateWindows(pos, dim, 10, EVENT_WINDOW1);
+    }
 
-	dim.x = 10.0f/640.0f;
-	dim.y = 10.0f/480.0f;
-	pos.x = 10.0f/640.0f;
-	pos.y = 10.0f/480.0f;
-	pw->CreateMap   (pos, dim, 2, EVENT_OBJECT_MAP);
-	pw->CreateSlider(pos, dim, 0, EVENT_OBJECT_MAPZOOM);
+    dim.x = 10.0f/640.0f;
+    dim.y = 10.0f/480.0f;
+    pos.x = 10.0f/640.0f;
+    pos.y = 10.0f/480.0f;
+    pw->CreateMap   (pos, dim, 2, EVENT_OBJECT_MAP);
+    pw->CreateSlider(pos, dim, 0, EVENT_OBJECT_MAPZOOM);
 
-	DimMap();
+    DimMap();
 }
 
 // Indicates whether the mini-map should display a still image.
 
 void CMainMap::SetFixImage(char *filename)
 {
-	CWindow*	pw;
-	CMap*		pm;
+    CWindow*    pw;
+    CMap*       pm;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
 
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm == 0 )  return;
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm == 0 )  return;
 
-	pw->DeleteControl(EVENT_OBJECT_MAPZOOM);
-	m_bFixImage = TRUE;
+    pw->DeleteControl(EVENT_OBJECT_MAPZOOM);
+    m_bFixImage = TRUE;
 
-	pm->SetFixImage(filename);
+    pm->SetFixImage(filename);
 }
 
 // Choosing colors of soil and water for the mini-map.
 
 void CMainMap::FloorColorMap(D3DCOLORVALUE floor, D3DCOLORVALUE water)
 {
-	CWindow*	pw;
-	CMap*		pm;
+    CWindow*    pw;
+    CMap*       pm;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
 
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm != 0 )
-	{
-		pm->SetFloorColor(floor);
-		pm->SetWaterColor(water);
-	}
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm != 0 )
+    {
+        pm->SetFloorColor(floor);
+        pm->SetWaterColor(water);
+    }
 }
 
 // Shows or hides the minimap.
 
 void CMainMap::ShowMap(BOOL bShow)
 {
-	CWindow*	pw;
-	CMap*		pm;
-	CSlider*	ps;
+    CWindow*    pw;
+    CMap*       pm;
+    CSlider*    ps;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
 
-	if ( bShow )
-	{
-		DimMap();
-	}
-	else
-	{
-		pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-		if ( pm != 0 )
-		{
-			pm->ClearState(STATE_VISIBLE);
-		}
+    if ( bShow )
+    {
+        DimMap();
+    }
+    else
+    {
+        pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+        if ( pm != 0 )
+        {
+            pm->ClearState(STATE_VISIBLE);
+        }
 
-		ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-		if ( ps != 0 )
-		{
-			ps->ClearState(STATE_VISIBLE);
-		}
-	}
+        ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+        if ( ps != 0 )
+        {
+            ps->ClearState(STATE_VISIBLE);
+        }
+    }
 }
 
 // Dimensions of the mini-map.
 
 void CMainMap::DimMap()
 {
-	CWindow*	pw;
-	CMap*		pm;
-	CSlider*	ps;
-	FPOINT		pos, dim;
-	float		value;
+    CWindow*    pw;
+    CMap*       pm;
+    CSlider*    ps;
+    FPOINT      pos, dim;
+    float       value;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm == 0 )  return;
 
-	pm->SetState(STATE_VISIBLE, (m_mapMode != 0));
+    pm->SetState(STATE_VISIBLE, (m_mapMode != 0));
 
-	dim.x = 100.0f/640.0f;
-	dim.y = 100.0f/480.0f;
-	pos.x = 540.0f/640.0f;
-	pos.y =   0.0f/480.0f;
-	pm->SetPos(pos);
-	pm->SetDim(dim);
+    dim.x = 100.0f/640.0f;
+    dim.y = 100.0f/480.0f;
+    pos.x = 540.0f/640.0f;
+    pos.y =   0.0f/480.0f;
+    pm->SetPos(pos);
+    pm->SetDim(dim);
 
-	ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-	if ( ps != 0 )
-	{
-		ps->SetState(STATE_VISIBLE, (m_mapMode != 0));
+    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    if ( ps != 0 )
+    {
+        ps->SetState(STATE_VISIBLE, (m_mapMode != 0));
 
-		dim.x = SCROLL_WIDTH;
-		dim.y =  66.0f/480.0f;
-		pos.x = 523.0f/640.0f;
-		pos.y =   3.0f/480.0f;
-		ps->SetPos(pos);
-		ps->SetDim(dim);
+        dim.x = SCROLL_WIDTH;
+        dim.y =  66.0f/480.0f;
+        pos.x = 523.0f/640.0f;
+        pos.y =   3.0f/480.0f;
+        ps->SetPos(pos);
+        ps->SetDim(dim);
 
-		value = pm->RetZoom();
-		value = (value-ZOOM_MIN)/(ZOOM_MAX-ZOOM_MIN);
-		value = powf(value, 0.5f);
-		ps->SetVisibleValue(value);
-		ps->SetArrowStep(0.2f);
-	}
+        value = pm->RetZoom();
+        value = (value-ZOOM_MIN)/(ZOOM_MAX-ZOOM_MIN);
+        value = powf(value, 0.5f);
+        ps->SetVisibleValue(value);
+        ps->SetArrowStep(0.2f);
+    }
 }
 
 // Returns the current zoom of the minimap.
 
 float CMainMap::RetZoomMap()
 {
-	CWindow*	pw;
-	CMap*		pm;
-	CSlider*	ps;
+    CWindow*    pw;
+    CMap*       pm;
+    CSlider*    ps;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return ZOOM_MIN;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return ZOOM_MIN;
 
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm == 0 )  return ZOOM_MIN;
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm == 0 )  return ZOOM_MIN;
 
-	ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-	if ( ps == 0 )  return ZOOM_MIN;
+    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    if ( ps == 0 )  return ZOOM_MIN;
 
-	return pm->RetZoom();
+    return pm->RetZoom();
 }
 
 // Zoom the mini-map of any factor.
 
 void CMainMap::ZoomMap(float zoom)
 {
-	CWindow*	pw;
-	CMap*		pm;
-	CSlider*	ps;
+    CWindow*    pw;
+    CMap*       pm;
+    CSlider*    ps;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm == 0 )  return;
 
-	ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-	if ( ps == 0 )  return;
+    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    if ( ps == 0 )  return;
 
-	if ( zoom < ZOOM_MIN )  zoom = ZOOM_MIN;
-	if ( zoom > ZOOM_MAX )  zoom = ZOOM_MAX;
-	pm->SetZoom(zoom);
+    if ( zoom < ZOOM_MIN )  zoom = ZOOM_MIN;
+    if ( zoom > ZOOM_MAX )  zoom = ZOOM_MAX;
+    pm->SetZoom(zoom);
 
-	DimMap();
+    DimMap();
 }
 
 // The mini-map zoom depending on the slider.
 
 void CMainMap::ZoomMap()
 {
-	CWindow*	pw;
-	CMap*		pm;
-	CSlider*	ps;
-	float		zoom;
+    CWindow*    pw;
+    CMap*       pm;
+    CSlider*    ps;
+    float       zoom;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm == 0 )  return;
 
-	ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-	if ( ps == 0 )  return;
+    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    if ( ps == 0 )  return;
 
-	zoom = ps->RetVisibleValue();
-	zoom = powf(zoom, 2.0f);
-	zoom = ZOOM_MIN+zoom*(ZOOM_MAX-ZOOM_MIN);
-	pm->SetZoom(zoom);
+    zoom = ps->RetVisibleValue();
+    zoom = powf(zoom, 2.0f);
+    zoom = ZOOM_MIN+zoom*(ZOOM_MAX-ZOOM_MIN);
+    pm->SetZoom(zoom);
 
-	DimMap();
+    DimMap();
 }
 
 // Enables or disables the card.
 
 void CMainMap::MapEnable(BOOL bEnable)
 {
-	CWindow*	pw;
-	CMap*		pm;
-	CSlider*	ps;
+    CWindow*    pw;
+    CMap*       pm;
+    CSlider*    ps;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
 
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm != 0 )
-	{
-		pm->SetEnable(bEnable);
-	}
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm != 0 )
+    {
+        pm->SetEnable(bEnable);
+    }
 
-	ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-	if ( ps != 0 )
-	{
-		ps->SetState(STATE_ENABLE, bEnable);
-	}
+    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    if ( ps != 0 )
+    {
+        ps->SetState(STATE_ENABLE, bEnable);
+    }
 }
 
 // Specifies the type of icon for the selected object.
 
 void CMainMap::SetToy(BOOL bToy)
 {
-	CWindow*	pw;
-	CMap*		pm;
+    CWindow*    pw;
+    CMap*       pm;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
 
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm == 0 )  return;
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm == 0 )  return;
 
-	pm->SetToy(bToy);
+    pm->SetToy(bToy);
 }
 
 // Specifies the parameters when using a still image.
 
 void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
-						   int mode, BOOL bDebug)
+                           int mode, BOOL bDebug)
 {
-	CWindow*	pw;
-	CMap*		pm;
+    CWindow*    pw;
+    CMap*       pm;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
 
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm == 0 )  return;
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm == 0 )  return;
 
-	pm->SetZoom(zoom);
-	pm->SetOffset(ox, oy);
-	pm->SetAngle(angle);
-	pm->SetMode(mode);
-	pm->SetDebug(bDebug);
+    pm->SetZoom(zoom);
+    pm->SetOffset(ox, oy);
+    pm->SetAngle(angle);
+    pm->SetMode(mode);
+    pm->SetDebug(bDebug);
 }
 
 // Updates the mini-map following to a change of terrain.
 
 void CMainMap::UpdateMap()
 {
-	CWindow*	pw;
-	CMap*		pm;
+    CWindow*    pw;
+    CMap*       pm;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
 
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm != 0 )
-	{
-		pm->UpdateTerrain();
-	}
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm != 0 )
+    {
+        pm->UpdateTerrain();
+    }
 }
 
 // Indicates if the mini-map is visible.
 
 BOOL CMainMap::RetShowMap()
 {
-	return ( m_mapMode != 0 );
+    return ( m_mapMode != 0 );
 }
 
 // Indicates whether the mini-map displays a still image.
 
 BOOL CMainMap::RetFixImage()
 {
-	return m_bFixImage;
+    return m_bFixImage;
 }
 
 
@@ -371,16 +371,16 @@ BOOL CMainMap::RetFixImage()
 
 CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
 {
-	CWindow*	pw;
-	CMap*		pm;
+    CWindow*    pw;
+    CMap*       pm;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return 0;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return 0;
 
-	bInMap = FALSE;
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm == 0 )  return 0;
-	return pm->DetectObject(pos, bInMap);
+    bInMap = FALSE;
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm == 0 )  return 0;
+    return pm->DetectObject(pos, bInMap);
 }
 
 
@@ -388,17 +388,17 @@ CObject* CMainMap::DetectMap(FPOINT pos, BOOL &bInMap)
 
 void CMainMap::SetHilite(CObject* pObj)
 {
-	CWindow*	pw;
-	CMap*	pm;
+    CWindow*    pw;
+    CMap*   pm;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    if ( pw == 0 )  return;
 
-	pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-	if ( pm != 0 )
-	{
-		pm->SetHilite(pObj);
-	}
+    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    if ( pm != 0 )
+    {
+        pm->SetHilite(pObj);
+    }
 }
 
 

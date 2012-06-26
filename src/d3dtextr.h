@@ -73,7 +73,7 @@ HRESULT D3DTextr_CreateEmptyTexture( TCHAR* strName, DWORD dwWidth,
 HRESULT D3DTextr_DestroyTexture( TCHAR* strName );
 VOID    D3DTextr_SetTexturePath( TCHAR* strTexturePath );
 
-void	D3DTextr_SetDebugMode(BOOL bDebug);
+void    D3DTextr_SetDebugMode(BOOL bDebug);
 
 
 

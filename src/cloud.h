@@ -17,7 +17,7 @@
 // cloud.h
 
 #ifndef _CLOUD_H_
-#define	_CLOUD_H_
+#define _CLOUD_H_
 
 
 #include "struct.h"
@@ -29,13 +29,13 @@ class CTerrain;
 
 
 
-#define MAXCLOUDLINE	100
+#define MAXCLOUDLINE    100
 
 typedef struct
 {
-	short		x, y;		// beginning
-	short		len;		// in length x
-	float		px1, px2, pz;
+    short       x, y;       // beginning
+    short       len;        // in length x
+    float       px1, px2, pz;
 }
 CloudLine;
 
@@ -43,47 +43,47 @@ CloudLine;
 class CCloud
 {
 public:
-	CCloud(CInstanceManager* iMan, CD3DEngine* engine);
-	~CCloud();
+    CCloud(CInstanceManager* iMan, CD3DEngine* engine);
+    ~CCloud();
 
-	BOOL		EventProcess(const Event &event);
-	void		Flush();
-	BOOL		Create(const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level);
-	void		Draw();
+    BOOL        EventProcess(const Event &event);
+    void        Flush();
+    BOOL        Create(const char *filename, D3DCOLORVALUE diffuse, D3DCOLORVALUE ambient, float level);
+    void        Draw();
 
-	BOOL		SetLevel(float level);
-	float		RetLevel();
+    BOOL        SetLevel(float level);
+    float       RetLevel();
 
-	void		SetEnable(BOOL bEnable);
-	BOOL		RetEnable();
-
-protected:
-	BOOL		EventFrame(const Event &event);
-	void		AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep, FPOINT &uv1, FPOINT &uv2);
-	BOOL		CreateLine(int x, int y, int len);
+    void        SetEnable(BOOL bEnable);
+    BOOL        RetEnable();
 
 protected:
-	CInstanceManager*	m_iMan;
-	CD3DEngine*		m_engine;
-	CTerrain*		m_terrain;
+    BOOL        EventFrame(const Event &event);
+    void        AdjustLevel(D3DVECTOR &pos, D3DVECTOR &eye, float deep, FPOINT &uv1, FPOINT &uv2);
+    BOOL        CreateLine(int x, int y, int len);
 
-	char			m_filename[100];
-	float			m_level;		// overall level
-	FPOINT			m_speed;		// feedrate (wind)
-	D3DCOLORVALUE		m_diffuse;		// diffuse color
-	D3DCOLORVALUE		m_ambient;		// ambient color
-	float			m_time;
-	float			m_lastTest;
-	int				m_subdiv;
+protected:
+    CInstanceManager*   m_iMan;
+    CD3DEngine*     m_engine;
+    CTerrain*       m_terrain;
 
-	D3DVECTOR		m_wind;			// wind speed
-	int			m_brick;		// brick mosaic
-	float			m_size;			// size of a brick element
+    char            m_filename[100];
+    float           m_level;        // overall level
+    FPOINT          m_speed;        // feedrate (wind)
+    D3DCOLORVALUE       m_diffuse;      // diffuse color
+    D3DCOLORVALUE       m_ambient;      // ambient color
+    float           m_time;
+    float           m_lastTest;
+    int             m_subdiv;
 
-	int			m_lineUsed;
-	CloudLine		m_line[MAXCLOUDLINE];
+    D3DVECTOR       m_wind;         // wind speed
+    int         m_brick;        // brick mosaic
+    float           m_size;         // size of a brick element
 
-	BOOL			m_bEnable;
+    int         m_lineUsed;
+    CloudLine       m_line[MAXCLOUDLINE];
+
+    BOOL            m_bEnable;
 };
 
 

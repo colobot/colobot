@@ -16,23 +16,23 @@
 
 // language.h
 
-#define _FULL			TRUE		// CoLoBoT
-#define _SCHOOL			FALSE		// CeeBot-A or Teen
-  #define _TEEN			FALSE		// FALSE for CeeBot-A, TRUE for CeeBot-Teen
-  #define _EDU			FALSE
-  #define _PERSO		FALSE
-  #define _CEEBOTDEMO	FALSE
-#define _NET			FALSE
-#define _DEMO			FALSE		// DEMO only CoLoBoT (with _Full = FALSE)!
+#define _FULL           TRUE        // CoLoBoT
+#define _SCHOOL         FALSE       // CeeBot-A or Teen
+  #define _TEEN         FALSE       // FALSE for CeeBot-A, TRUE for CeeBot-Teen
+  #define _EDU          FALSE
+  #define _PERSO        FALSE
+  #define _CEEBOTDEMO   FALSE
+#define _NET            FALSE
+#define _DEMO           FALSE       // DEMO only CoLoBoT (with _Full = FALSE)!
 
-#define _FRENCH			TRUE
-#define _ENGLISH		FALSE
-#define _GERMAN			FALSE
-#define _WG				FALSE
-#define _POLISH			FALSE
+#define _FRENCH         TRUE
+#define _ENGLISH        FALSE
+#define _GERMAN         FALSE
+#define _WG             FALSE
+#define _POLISH         FALSE
 
-#define _NEWLOOK		FALSE		// FALSE for CoLoBoT, TRUE for all CeeBot
-#define _SOUNDTRACKS	FALSE		// always FALSE since InitAudioTrackVolume crop in Vista
+#define _NEWLOOK        FALSE       // FALSE for CoLoBoT, TRUE for all CeeBot
+#define _SOUNDTRACKS    FALSE       // always FALSE since InitAudioTrackVolume crop in Vista
 
 
 // Verifications

@@ -17,7 +17,7 @@
 // planet.h
 
 #ifndef _PLANET_H_
-#define	_PLANET_H_
+#define _PLANET_H_
 
 
 #include "struct.h"
@@ -28,19 +28,19 @@ class CD3DEngine;
 
 
 
-#define MAXPLANET	10
+#define MAXPLANET   10
 
 typedef struct
 {
-	char		bUsed;		// TRUE -> planet exists
-	FPOINT		start;		// initial position in degrees
-	FPOINT		angle;		// current position in degrees
-	float		dim;		// dimensions (0..1)
-	float		speed;		// speed
-	float		dir;		// direction in the sky
-	char		name[20];	// name of the texture
-	FPOINT		uv1, uv2;	// texture mapping
-	char		bTGA;		// texture .TGA
+    char        bUsed;      // TRUE -> planet exists
+    FPOINT      start;      // initial position in degrees
+    FPOINT      angle;      // current position in degrees
+    float       dim;        // dimensions (0..1)
+    float       speed;      // speed
+    float       dir;        // direction in the sky
+    char        name[20];   // name of the texture
+    FPOINT      uv1, uv2;   // texture mapping
+    char        bTGA;       // texture .TGA
 }
 Planet;
 
@@ -50,29 +50,29 @@ Planet;
 class CPlanet
 {
 public:
-	CPlanet(CInstanceManager* iMan, CD3DEngine* engine);
-	~CPlanet();
+    CPlanet(CInstanceManager* iMan, CD3DEngine* engine);
+    ~CPlanet();
 
-	void		Flush();
-	BOOL		EventProcess(const Event &event);
-	BOOL		Create(int mode, FPOINT start, float dim, float speed, float dir, char *name, FPOINT uv1, FPOINT uv2);
-	BOOL		PlanetExist();
-	void		LoadTexture();
-	void		Draw();
-	void		SetMode(int mode);
-	int			RetMode();
-
-protected:
-	BOOL		EventFrame(const Event &event);
+    void        Flush();
+    BOOL        EventProcess(const Event &event);
+    BOOL        Create(int mode, FPOINT start, float dim, float speed, float dir, char *name, FPOINT uv1, FPOINT uv2);
+    BOOL        PlanetExist();
+    void        LoadTexture();
+    void        Draw();
+    void        SetMode(int mode);
+    int         RetMode();
 
 protected:
-	CInstanceManager*	m_iMan;
-	CD3DEngine*			m_engine;
+    BOOL        EventFrame(const Event &event);
 
-	float			m_time;
-	int				m_mode;
-	Planet			m_planet[2][MAXPLANET];
-	BOOL			m_bPlanetExist;
+protected:
+    CInstanceManager*   m_iMan;
+    CD3DEngine*         m_engine;
+
+    float           m_time;
+    int             m_mode;
+    Planet          m_planet[2][MAXPLANET];
+    BOOL            m_bPlanetExist;
 };
 
 

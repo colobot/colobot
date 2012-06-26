@@ -49,17 +49,17 @@
 // Object's constructor.
 
 CAutoPara::CAutoPara(CInstanceManager* iMan, CObject* object)
-						  : CAuto(iMan, object)
+                          : CAuto(iMan, object)
 {
-	m_channelSound = -1;
-	Init();
+    m_channelSound = -1;
+    Init();
 }
 
 // Object's destructor.
 
 CAutoPara::~CAutoPara()
 {
-	this->CAuto::~CAuto();
+    this->CAuto::~CAuto();
 }
 
 
@@ -67,14 +67,14 @@ CAutoPara::~CAutoPara()
 
 void CAutoPara::DeleteObject(BOOL bAll)
 {
-	if ( m_channelSound != -1 )
-	{
-		m_sound->FlushEnvelope(m_channelSound);
-		m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f, 1.0f, SOPER_STOP);
-		m_channelSound = -1;
-	}
+    if ( m_channelSound != -1 )
+    {
+        m_sound->FlushEnvelope(m_channelSound);
+        m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f, 1.0f, SOPER_STOP);
+        m_channelSound = -1;
+    }
 
-	CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(bAll);
 }
 
 
@@ -82,20 +82,20 @@ void CAutoPara::DeleteObject(BOOL bAll)
 
 void CAutoPara::Init()
 {
-	D3DMATRIX*	mat;
+    D3DMATRIX*  mat;
 
-	m_time = 0.0f;
-	m_timeVirus = 0.0f;
-	m_lastParticule = 0.0f;
+    m_time = 0.0f;
+    m_timeVirus = 0.0f;
+    m_lastParticule = 0.0f;
 
-	mat = m_object->RetWorldMatrix(0);
-	m_pos = Transform(*mat, D3DVECTOR(22.0f, 4.0f, 0.0f));
+    mat = m_object->RetWorldMatrix(0);
+    m_pos = Transform(*mat, D3DVECTOR(22.0f, 4.0f, 0.0f));
 
-	m_phase    = APAP_WAIT;  // waiting ...
-	m_progress = 0.0f;
-	m_speed    = 1.0f/1.0f;
+    m_phase    = APAP_WAIT;  // waiting ...
+    m_progress = 0.0f;
+    m_speed    = 1.0f/1.0f;
 
-	CAuto::Init();
+    CAuto::Init();
 }
 
 
@@ -103,9 +103,9 @@ void CAutoPara::Init()
 
 void CAutoPara::StartBlitz()
 {
-	m_phase    = APAP_BLITZ;
-	m_progress = 0.0f;
-	m_speed    = 1.0f/2.0f;
+    m_phase    = APAP_BLITZ;
+    m_progress = 0.0f;
+    m_speed    = 1.0f/2.0f;
 }
 
 
@@ -113,92 +113,92 @@ void CAutoPara::StartBlitz()
 
 BOOL CAutoPara::EventProcess(const Event &event)
 {
-	D3DVECTOR	pos, speed;
-	FPOINT		dim;
-	int			i;
+    D3DVECTOR   pos, speed;
+    FPOINT      dim;
+    int         i;
 
-	CAuto::EventProcess(event);
+    CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+    if ( m_engine->RetPause() )  return TRUE;
+    if ( event.event != EVENT_FRAME )  return TRUE;
 
-	m_progress += event.rTime*m_speed;
-	m_timeVirus -= event.rTime;
+    m_progress += event.rTime*m_speed;
+    m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminated by a virus?
-	{
-		if ( m_timeVirus <= 0.0f )
-		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
-		}
-		return TRUE;
-	}
+    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    {
+        if ( m_timeVirus <= 0.0f )
+        {
+            m_timeVirus = 0.1f+Rand()*0.3f;
+        }
+        return TRUE;
+    }
 
-	EventProgress(event.rTime);
+    EventProgress(event.rTime);
 
-	if ( m_phase == APAP_BLITZ )
-	{
-		if ( m_progress < 1.0f )
-		{
-			if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
-			{
-				m_lastParticule = m_time;
+    if ( m_phase == APAP_BLITZ )
+    {
+        if ( m_progress < 1.0f )
+        {
+            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            {
+                m_lastParticule = m_time;
 
-				for ( i=0 ; i<10 ; i++ )
-				{
-					pos = m_object->RetPosition(0);
-					pos.x += (Rand()-0.5f)*m_progress*40.0f;
-					pos.z += (Rand()-0.5f)*m_progress*40.0f;
-					pos.y += 50.0f-m_progress*50.0f;
-					speed.x = (Rand()-0.5f)*20.0f;
-					speed.z = (Rand()-0.5f)*20.0f;
-					speed.y = 5.0f+Rand()*5.0f;
-					dim.x = 2.0f;
-					dim.y = dim.x;
-					m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 20.0f, 0.5f);
-				}
-			}
-		}
-		else
-		{
-			m_phase    = APAP_CHARGE;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/2.0f;
-		}
-	}
+                for ( i=0 ; i<10 ; i++ )
+                {
+                    pos = m_object->RetPosition(0);
+                    pos.x += (Rand()-0.5f)*m_progress*40.0f;
+                    pos.z += (Rand()-0.5f)*m_progress*40.0f;
+                    pos.y += 50.0f-m_progress*50.0f;
+                    speed.x = (Rand()-0.5f)*20.0f;
+                    speed.z = (Rand()-0.5f)*20.0f;
+                    speed.y = 5.0f+Rand()*5.0f;
+                    dim.x = 2.0f;
+                    dim.y = dim.x;
+                    m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 20.0f, 0.5f);
+                }
+            }
+        }
+        else
+        {
+            m_phase    = APAP_CHARGE;
+            m_progress = 0.0f;
+            m_speed    = 1.0f/2.0f;
+        }
+    }
 
-	if ( m_phase == APAP_CHARGE )
-	{
-		if ( m_progress < 1.0f )
-		{
-			if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
-			{
-				m_lastParticule = m_time;
+    if ( m_phase == APAP_CHARGE )
+    {
+        if ( m_progress < 1.0f )
+        {
+            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            {
+                m_lastParticule = m_time;
 
-				for ( i=0 ; i<2 ; i++ )
-				{
-					pos = m_object->RetPosition(0);
-					pos.y += 16.0f;
-					speed.x = (Rand()-0.5f)*10.0f;
-					speed.z = (Rand()-0.5f)*10.0f;
-					speed.y = -Rand()*30.0f;
-					dim.x = 1.0f;
-					dim.y = dim.x;
-					m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
-				}
-			}
+                for ( i=0 ; i<2 ; i++ )
+                {
+                    pos = m_object->RetPosition(0);
+                    pos.y += 16.0f;
+                    speed.x = (Rand()-0.5f)*10.0f;
+                    speed.z = (Rand()-0.5f)*10.0f;
+                    speed.y = -Rand()*30.0f;
+                    dim.x = 1.0f;
+                    dim.y = dim.x;
+                    m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
+                }
+            }
 
-			ChargeObject(event.rTime);
-		}
-		else
-		{
-			m_phase    = APAP_WAIT;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.0f;
-		}
-	}
+            ChargeObject(event.rTime);
+        }
+        else
+        {
+            m_phase    = APAP_WAIT;
+            m_progress = 0.0f;
+            m_speed    = 1.0f/1.0f;
+        }
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -206,35 +206,35 @@ BOOL CAutoPara::EventProcess(const Event &event)
 
 BOOL CAutoPara::CreateInterface(BOOL bSelect)
 {
-	CWindow*	pw;
-	FPOINT		pos, ddim;
-	float		ox, oy, sx, sy;
+    CWindow*    pw;
+    FPOINT      pos, ddim;
+    float       ox, oy, sx, sy;
 
-	CAuto::CreateInterface(bSelect);
+    CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+    if ( !bSelect )  return TRUE;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return FALSE;
 
-	ox = 3.0f/640.0f;
-	oy = 3.0f/480.0f;
-	sx = 33.0f/640.0f;
-	sy = 33.0f/480.0f;
+    ox = 3.0f/640.0f;
+    oy = 3.0f/480.0f;
+    sx = 33.0f/640.0f;
+    sy = 33.0f/480.0f;
 
-	pos.x = ox+sx*0.0f;
-	pos.y = oy+sy*0;
-	ddim.x = 66.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGroup(pos, ddim, 113, EVENT_OBJECT_TYPE);
+    pos.x = ox+sx*0.0f;
+    pos.y = oy+sy*0;
+    ddim.x = 66.0f/640.0f;
+    ddim.y = 66.0f/480.0f;
+    pw->CreateGroup(pos, ddim, 113, EVENT_OBJECT_TYPE);
 
-	pos.x = ox+sx*10.2f;
-	pos.y = oy+sy*0.5f;
-	ddim.x = 33.0f/640.0f;
-	ddim.y = 33.0f/480.0f;
-	pw->CreateButton(pos, ddim, 41, EVENT_OBJECT_LIMIT);
+    pos.x = ox+sx*10.2f;
+    pos.y = oy+sy*0.5f;
+    ddim.x = 33.0f/640.0f;
+    ddim.y = 33.0f/480.0f;
+    pw->CreateButton(pos, ddim, 41, EVENT_OBJECT_LIMIT);
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -242,11 +242,11 @@ BOOL CAutoPara::CreateInterface(BOOL bSelect)
 
 Error CAutoPara::RetError()
 {
-	if ( m_object->RetVirusMode() )
-	{
-		return ERR_BAT_VIRUS;
-	}
-	return ERR_OK;
+    if ( m_object->RetVirusMode() )
+    {
+        return ERR_BAT_VIRUS;
+    }
+    return ERR_OK;
 }
 
 
@@ -254,49 +254,49 @@ Error CAutoPara::RetError()
 
 void CAutoPara::ChargeObject(float rTime)
 {
-	CObject*	pObj;
-	CObject*	power;
-	D3DVECTOR	sPos, oPos;
-	float		dist, energy;
-	int			i;
+    CObject*    pObj;
+    CObject*    power;
+    D3DVECTOR   sPos, oPos;
+    float       dist, energy;
+    int         i;
 
-	sPos = m_object->RetPosition(0);
+    sPos = m_object->RetPosition(0);
 
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        if ( pObj == 0 )  break;
 
-		oPos = pObj->RetPosition(0);
-		dist = Length(oPos, sPos);
-		if ( dist > 20.0f )  continue;
+        oPos = pObj->RetPosition(0);
+        dist = Length(oPos, sPos);
+        if ( dist > 20.0f )  continue;
 
-		if ( pObj->RetTruck() == 0 && pObj->RetType() == OBJECT_POWER )
-		{
-			energy = pObj->RetEnergy();
-			energy += rTime/2.0f;
-			if ( energy > 1.0f )  energy = 1.0f;
-			pObj->SetEnergy(energy);
-		}
+        if ( pObj->RetTruck() == 0 && pObj->RetType() == OBJECT_POWER )
+        {
+            energy = pObj->RetEnergy();
+            energy += rTime/2.0f;
+            if ( energy > 1.0f )  energy = 1.0f;
+            pObj->SetEnergy(energy);
+        }
 
-		power = pObj->RetPower();
-		if ( power != 0 && power->RetType() == OBJECT_POWER )
-		{
-			energy = power->RetEnergy();
-			energy += rTime/2.0f;
-			if ( energy > 1.0f )  energy = 1.0f;
-			power->SetEnergy(energy);
-		}
+        power = pObj->RetPower();
+        if ( power != 0 && power->RetType() == OBJECT_POWER )
+        {
+            energy = power->RetEnergy();
+            energy += rTime/2.0f;
+            if ( energy > 1.0f )  energy = 1.0f;
+            power->SetEnergy(energy);
+        }
 
-		power = pObj->RetFret();
-		if ( power != 0 && power->RetType() == OBJECT_POWER )
-		{
-			energy = power->RetEnergy();
-			energy += rTime/2.0f;
-			if ( energy > 1.0f )  energy = 1.0f;
-			power->SetEnergy(energy);
-		}
-	}
+        power = pObj->RetFret();
+        if ( power != 0 && power->RetType() == OBJECT_POWER )
+        {
+            energy = power->RetEnergy();
+            energy += rTime/2.0f;
+            if ( energy > 1.0f )  energy = 1.0f;
+            power->SetEnergy(energy);
+        }
+    }
 }
 
 
@@ -304,42 +304,42 @@ void CAutoPara::ChargeObject(float rTime)
 
 BOOL CAutoPara::Write(char *line)
 {
-	char	name[100];
+    char    name[100];
 
-	if ( m_phase == APAP_WAIT )  return FALSE;
+    if ( m_phase == APAP_WAIT )  return FALSE;
 
-	sprintf(name, " aExist=%d", 1);
-	strcat(line, name);
+    sprintf(name, " aExist=%d", 1);
+    strcat(line, name);
 
-	CAuto::Write(line);
+    CAuto::Write(line);
 
-	sprintf(name, " aPhase=%d", m_phase);
-	strcat(line, name);
+    sprintf(name, " aPhase=%d", m_phase);
+    strcat(line, name);
 
-	sprintf(name, " aProgress=%.2f", m_progress);
-	strcat(line, name);
+    sprintf(name, " aProgress=%.2f", m_progress);
+    strcat(line, name);
 
-	sprintf(name, " aSpeed=%.2f", m_speed);
-	strcat(line, name);
+    sprintf(name, " aSpeed=%.2f", m_speed);
+    strcat(line, name);
 
-	return TRUE;
+    return TRUE;
 }
 
 // Restores all parameters of the controller.
 
 BOOL CAutoPara::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+    if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
 
-	CAuto::Read(line);
+    CAuto::Read(line);
 
-	m_phase = (AutoParaPhase)OpInt(line, "aPhase", APAP_WAIT);
-	m_progress = OpFloat(line, "aProgress", 0.0f);
-	m_speed = OpFloat(line, "aSpeed", 1.0f);
+    m_phase = (AutoParaPhase)OpInt(line, "aPhase", APAP_WAIT);
+    m_progress = OpFloat(line, "aProgress", 0.0f);
+    m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-	m_lastParticule = 0.0f;
+    m_lastParticule = 0.0f;
 
-	return TRUE;
+    return TRUE;
 }
 
 

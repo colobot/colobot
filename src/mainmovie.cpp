@@ -45,17 +45,17 @@
 
 CMainMovie::CMainMovie(CInstanceManager* iMan)
 {
-	m_iMan = iMan;
-	m_iMan->AddInstance(CLASS_SHORT, this);
+    m_iMan = iMan;
+    m_iMan->AddInstance(CLASS_SHORT, this);
 
-	m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-	m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-	m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-	m_main      = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-	m_camera    = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-	m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
+    m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
+    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_main      = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
+    m_camera    = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
+    m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 
-	Flush();
+    Flush();
 }
 
 // Destructor of the application card.
@@ -69,7 +69,7 @@ CMainMovie::~CMainMovie()
 
 void CMainMovie::Flush()
 {
-	m_type = MM_NONE;
+    m_type = MM_NONE;
 }
 
 
@@ -77,92 +77,92 @@ void CMainMovie::Flush()
 
 BOOL CMainMovie::Start(MainMovieType type, float time)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos;
-	CObject*	pObj;
-	CMotion*	motion;
+    D3DMATRIX*  mat;
+    D3DVECTOR   pos;
+    CObject*    pObj;
+    CMotion*    motion;
 
-	m_type = type;
-	m_speed = 1.0f/time;
-	m_progress = 0.0f;
+    m_type = type;
+    m_speed = 1.0f/time;
+    m_progress = 0.0f;
 
-	if ( m_type == MM_SATCOMopen )
-	{
-		pObj = m_main->SearchHuman();
-		if ( pObj == 0 )
-		{
-			m_type = MM_NONE;  // it's over!
-			return TRUE;
-		}
+    if ( m_type == MM_SATCOMopen )
+    {
+        pObj = m_main->SearchHuman();
+        if ( pObj == 0 )
+        {
+            m_type = MM_NONE;  // it's over!
+            return TRUE;
+        }
 
-		motion = pObj->RetMotion();
-		if ( motion != 0 )
-		{
-			motion->SetAction(MHS_SATCOM, 0.5f);  // reads the SatCom
-		}
+        motion = pObj->RetMotion();
+        if ( motion != 0 )
+        {
+            motion->SetAction(MHS_SATCOM, 0.5f);  // reads the SatCom
+        }
 
-		m_camera->RetCamera(m_initialEye, m_initialLookat);
-		m_camera->SetType(CAMERA_SCRIPT);
-		m_camera->SetSmooth(CS_HARD);
-		m_camera->SetScriptEye(m_initialEye);
-		m_camera->SetScriptLookat(m_initialLookat);
-		m_camera->FixCamera();
+        m_camera->RetCamera(m_initialEye, m_initialLookat);
+        m_camera->SetType(CAMERA_SCRIPT);
+        m_camera->SetSmooth(CS_HARD);
+        m_camera->SetScriptEye(m_initialEye);
+        m_camera->SetScriptLookat(m_initialLookat);
+        m_camera->FixCamera();
 
-		mat = pObj->RetWorldMatrix(0);
-		m_finalLookat[0] = Transform(*mat, D3DVECTOR( 1.6f, 1.0f, 1.2f));
-		m_finalEye[0]    = Transform(*mat, D3DVECTOR(-1.5f, 5.0f, 3.0f));
-		m_finalLookat[1] = Transform(*mat, D3DVECTOR( 1.6f, 1.0f, 1.2f));
-		m_finalEye[1]    = Transform(*mat, D3DVECTOR( 0.8f, 3.0f, 0.8f));
-	}
+        mat = pObj->RetWorldMatrix(0);
+        m_finalLookat[0] = Transform(*mat, D3DVECTOR( 1.6f, 1.0f, 1.2f));
+        m_finalEye[0]    = Transform(*mat, D3DVECTOR(-1.5f, 5.0f, 3.0f));
+        m_finalLookat[1] = Transform(*mat, D3DVECTOR( 1.6f, 1.0f, 1.2f));
+        m_finalEye[1]    = Transform(*mat, D3DVECTOR( 0.8f, 3.0f, 0.8f));
+    }
 
-	if ( m_type == MM_SATCOMclose )
-	{
-		pObj = m_main->SearchHuman();
-		if ( pObj != 0 )
-		{
-			motion = pObj->RetMotion();
-			if ( motion != 0 )
-			{
-				motion->SetAction(-1);  // finishes reading SatCom
-			}
-		}
+    if ( m_type == MM_SATCOMclose )
+    {
+        pObj = m_main->SearchHuman();
+        if ( pObj != 0 )
+        {
+            motion = pObj->RetMotion();
+            if ( motion != 0 )
+            {
+                motion->SetAction(-1);  // finishes reading SatCom
+            }
+        }
 
-		m_camera->SetType(CAMERA_BACK);
-		m_type = MM_NONE;  // it's already over!
-	}
+        m_camera->SetType(CAMERA_BACK);
+        m_type = MM_NONE;  // it's already over!
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 // Stop a current movie.
 
 BOOL CMainMovie::Stop()
 {
-	CObject*	pObj;
-	CMotion*	motion;
+    CObject*    pObj;
+    CMotion*    motion;
 
-	if ( m_type == MM_SATCOMopen )
-	{
-		pObj = m_main->SearchHuman();
-		if ( pObj != 0 )
-		{
-			motion = pObj->RetMotion();
-			if ( motion != 0 )
-			{
-				motion->SetAction(-1);  // finishes reading SatCom
-			}
-		}
-	}
+    if ( m_type == MM_SATCOMopen )
+    {
+        pObj = m_main->SearchHuman();
+        if ( pObj != 0 )
+        {
+            motion = pObj->RetMotion();
+            if ( motion != 0 )
+            {
+                motion->SetAction(-1);  // finishes reading SatCom
+            }
+        }
+    }
 
-	m_type = MM_NONE;
-	return TRUE;
+    m_type = MM_NONE;
+    return TRUE;
 }
 
 // Indicates whether a film is in progress.
 
 BOOL CMainMovie::IsExist()
 {
-	return (m_type != MM_NONE);
+    return (m_type != MM_NONE);
 }
 
 
@@ -170,65 +170,65 @@ BOOL CMainMovie::IsExist()
 
 BOOL CMainMovie::EventProcess(const Event &event)
 {
-	D3DVECTOR	initialEye, initialLookat, finalEye, finalLookat, eye, lookat;
-	float		progress;
+    D3DVECTOR   initialEye, initialLookat, finalEye, finalLookat, eye, lookat;
+    float       progress;
 
-	if ( m_type == MM_NONE )  return TRUE;
+    if ( m_type == MM_NONE )  return TRUE;
 
-	m_progress += event.rTime*m_speed;
+    m_progress += event.rTime*m_speed;
 
-	if ( m_type == MM_SATCOMopen )
-	{
-		if ( m_progress < 1.0f )
-		{
-			progress = 1.0f-powf(1.0f-m_progress, 3.0f);
+    if ( m_type == MM_SATCOMopen )
+    {
+        if ( m_progress < 1.0f )
+        {
+            progress = 1.0f-powf(1.0f-m_progress, 3.0f);
 
-			if ( progress < 0.6f )
-			{
-				progress = progress/0.6f;
-				initialEye    = m_initialEye;
-				initialLookat = m_initialLookat;
-				finalEye      = m_finalEye[0];
-				finalLookat   = m_finalLookat[0];
-			}
-			else
-			{
-				progress = (progress-0.6f)/0.3f;
-				initialEye    = m_finalEye[0];
-				initialLookat = m_finalLookat[0];
-				finalEye      = m_finalEye[1];
-				finalLookat   = m_finalLookat[1];
-			}
-			if ( progress > 1.0f )  progress = 1.0f;
+            if ( progress < 0.6f )
+            {
+                progress = progress/0.6f;
+                initialEye    = m_initialEye;
+                initialLookat = m_initialLookat;
+                finalEye      = m_finalEye[0];
+                finalLookat   = m_finalLookat[0];
+            }
+            else
+            {
+                progress = (progress-0.6f)/0.3f;
+                initialEye    = m_finalEye[0];
+                initialLookat = m_finalLookat[0];
+                finalEye      = m_finalEye[1];
+                finalLookat   = m_finalLookat[1];
+            }
+            if ( progress > 1.0f )  progress = 1.0f;
 
-			eye = (finalEye-initialEye)*progress+initialEye;
-			lookat = (finalLookat-initialLookat)*progress+initialLookat;
-			m_camera->SetScriptEye(eye);
-			m_camera->SetScriptLookat(lookat);
-//			m_camera->FixCamera();
-		}
-		else
-		{
-			m_stopType = m_type;
-			Flush();
-			return FALSE;
-		}
-	}
+            eye = (finalEye-initialEye)*progress+initialEye;
+            lookat = (finalLookat-initialLookat)*progress+initialLookat;
+            m_camera->SetScriptEye(eye);
+            m_camera->SetScriptLookat(lookat);
+//          m_camera->FixCamera();
+        }
+        else
+        {
+            m_stopType = m_type;
+            Flush();
+            return FALSE;
+        }
+    }
 
-	if ( m_type == MM_SATCOMclose )
-	{
-		if ( m_progress < 1.0f )
-		{
-		}
-		else
-		{
-			m_stopType = m_type;
-			Flush();
-			return FALSE;
-		}
-	}
+    if ( m_type == MM_SATCOMclose )
+    {
+        if ( m_progress < 1.0f )
+        {
+        }
+        else
+        {
+            m_stopType = m_type;
+            Flush();
+            return FALSE;
+        }
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -236,14 +236,14 @@ BOOL CMainMovie::EventProcess(const Event &event)
 
 MainMovieType CMainMovie::RetType()
 {
-	return m_type;
+    return m_type;
 }
 
 // Returns the type of movie stop.
 
 MainMovieType CMainMovie::RetStopType()
 {
-	return m_stopType;
+    return m_stopType;
 }
 
 

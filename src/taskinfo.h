@@ -17,7 +17,7 @@
 // taskinfo.h
 
 #ifndef _TASKINFO_H_
-#define	_TASKINFO_H_
+#define _TASKINFO_H_
 
 
 #include "misc.h"
@@ -34,23 +34,23 @@ class CObject;
 class CTaskInfo : public CTask
 {
 public:
-	CTaskInfo(CInstanceManager* iMan, CObject* object);
-	~CTaskInfo();
+    CTaskInfo(CInstanceManager* iMan, CObject* object);
+    ~CTaskInfo();
 
-	BOOL		EventProcess(const Event &event);
+    BOOL        EventProcess(const Event &event);
 
-	Error		Start(char *name, float value, float power, BOOL bSend);
-	Error		IsEnded();
-	BOOL		Abort();
-
-protected:
-	CObject*	SearchInfo(float power);
+    Error       Start(char *name, float value, float power, BOOL bSend);
+    Error       IsEnded();
+    BOOL        Abort();
 
 protected:
-	float			m_progress;
-	float			m_speed;
-	float			m_time;
-	BOOL			m_bError;
+    CObject*    SearchInfo(float power);
+
+protected:
+    float           m_progress;
+    float           m_speed;
+    float           m_time;
+    BOOL            m_bError;
 };
 
 

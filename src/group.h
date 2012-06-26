@@ -17,7 +17,7 @@
 // group.h
 
 #ifndef _GROUP_H_
-#define	_GROUP_H_
+#define _GROUP_H_
 
 
 #include "control.h"
@@ -30,14 +30,14 @@ class CD3DEngine;
 class CGroup : public CControl
 {
 public:
-	CGroup(CInstanceManager* iMan);
-	virtual ~CGroup();
+    CGroup(CInstanceManager* iMan);
+    virtual ~CGroup();
 
-	BOOL	Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
+    BOOL    Create(FPOINT pos, FPOINT dim, int icon, EventMsg eventMsg);
 
-	BOOL	EventProcess(const Event &event);
+    BOOL    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
 protected:
 

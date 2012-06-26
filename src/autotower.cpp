@@ -46,33 +46,33 @@
 
 
 
-#define TOWER_SCOPE		200.0f		// range of beam
-#define ENERGY_FIRE		0.125f		// energy consumed by fire
+#define TOWER_SCOPE     200.0f      // range of beam
+#define ENERGY_FIRE     0.125f      // energy consumed by fire
 
 
 // Object's constructor.
 
 CAutoTower::CAutoTower(CInstanceManager* iMan, CObject* object)
-					   : CAuto(iMan, object)
+                       : CAuto(iMan, object)
 {
-	int		i;
+    int     i;
 
-	for ( i=0 ; i<4 ; i++ )
-	{
-		m_partiStop[i] = -1;
-	}
+    for ( i=0 ; i<4 ; i++ )
+    {
+        m_partiStop[i] = -1;
+    }
 
-	Init();
-	m_phase = ATP_WAIT;  // paused until the first Init ()
-	m_time = 0.0f;
-	m_lastUpdateTime = 0.0f;
+    Init();
+    m_phase = ATP_WAIT;  // paused until the first Init ()
+    m_time = 0.0f;
+    m_lastUpdateTime = 0.0f;
 }
 
 // Object's destructor.
 
 CAutoTower::~CAutoTower()
 {
-	this->CAuto::~CAuto();
+    this->CAuto::~CAuto();
 }
 
 
@@ -80,8 +80,8 @@ CAutoTower::~CAutoTower()
 
 void CAutoTower::DeleteObject(BOOL bAll)
 {
-	FireStopUpdate(0.0f, FALSE);
-	CAuto::DeleteObject(bAll);
+    FireStopUpdate(0.0f, FALSE);
+    CAuto::DeleteObject(bAll);
 }
 
 
@@ -89,14 +89,14 @@ void CAutoTower::DeleteObject(BOOL bAll)
 
 void CAutoTower::Init()
 {
-	m_phase    = ATP_ZERO;
-	m_progress = 0.0f;
-	m_speed    = 1.0f/1.0f;
+    m_phase    = ATP_ZERO;
+    m_progress = 0.0f;
+    m_speed    = 1.0f/1.0f;
 
-	m_time = 0.0f;
-	m_timeVirus = 0.0f;
-	m_lastUpdateTime = 0.0f;
-	m_lastParticule = 0.0f;
+    m_time = 0.0f;
+    m_timeVirus = 0.0f;
+    m_lastUpdateTime = 0.0f;
+    m_lastParticule = 0.0f;
 }
 
 
@@ -104,172 +104,172 @@ void CAutoTower::Init()
 
 BOOL CAutoTower::EventProcess(const Event &event)
 {
-	CObject*	power;
-	CObject*	target;
-	D3DVECTOR	pos;
-	float		angle, energy, quick;
+    CObject*    power;
+    CObject*    target;
+    D3DVECTOR   pos;
+    float       angle, energy, quick;
 
-	CAuto::EventProcess(event);
+    CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+    if ( m_engine->RetPause() )  return TRUE;
+    if ( event.event != EVENT_FRAME )  return TRUE;
 
-	m_timeVirus -= event.rTime;
+    m_timeVirus -= event.rTime;
 
-	if ( m_object->RetVirusMode() )  // contaminated by a virus?
-	{
-		if ( m_timeVirus <= 0.0f )
-		{
-			m_timeVirus = 0.1f+Rand()*0.3f;
+    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    {
+        if ( m_timeVirus <= 0.0f )
+        {
+            m_timeVirus = 0.1f+Rand()*0.3f;
 
-			angle = m_object->RetAngleY(1);
-			angle += Rand()*0.5f;
-			m_object->SetAngleY(1, angle);
+            angle = m_object->RetAngleY(1);
+            angle += Rand()*0.5f;
+            m_object->SetAngleY(1, angle);
 
-			m_object->SetAngleZ(2, Rand()*0.5f);
-		}
-		return TRUE;
-	}
+            m_object->SetAngleZ(2, Rand()*0.5f);
+        }
+        return TRUE;
+    }
 
-	UpdateInterface(event.rTime);
+    UpdateInterface(event.rTime);
 
-	if ( m_phase == ATP_WAIT )  return TRUE;
+    if ( m_phase == ATP_WAIT )  return TRUE;
 
-	m_progress += event.rTime*m_speed;
+    m_progress += event.rTime*m_speed;
 
-	if ( m_phase == ATP_ZERO )
-	{
-		FireStopUpdate(m_progress, TRUE);  // blinks
-		if ( m_progress < 1.0f )
-		{
-			energy = 0.0f;
-			power = m_object->RetPower();
-			if ( power != 0 )
-			{
-				energy = power->RetEnergy();
-			}
-			if ( energy >= ENERGY_FIRE )
-			{
-				m_phase    = ATP_SEARCH;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/3.0f;
-			}
-		}
-		else
-		{
-			m_phase    = ATP_ZERO;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.0f;
-		}
-	}
+    if ( m_phase == ATP_ZERO )
+    {
+        FireStopUpdate(m_progress, TRUE);  // blinks
+        if ( m_progress < 1.0f )
+        {
+            energy = 0.0f;
+            power = m_object->RetPower();
+            if ( power != 0 )
+            {
+                energy = power->RetEnergy();
+            }
+            if ( energy >= ENERGY_FIRE )
+            {
+                m_phase    = ATP_SEARCH;
+                m_progress = 0.0f;
+                m_speed    = 1.0f/3.0f;
+            }
+        }
+        else
+        {
+            m_phase    = ATP_ZERO;
+            m_progress = 0.0f;
+            m_speed    = 1.0f/1.0f;
+        }
+    }
 
-	if ( m_phase == ATP_SEARCH )
-	{
-		FireStopUpdate(m_progress, FALSE);  // extinguished
-		if ( m_progress < 1.0f )
-		{
-			quick = 1.0f;
-//?			if ( g_researchDone & RESEARCH_QUICK )  quick = 3.0f;
+    if ( m_phase == ATP_SEARCH )
+    {
+        FireStopUpdate(m_progress, FALSE);  // extinguished
+        if ( m_progress < 1.0f )
+        {
+            quick = 1.0f;
+//?         if ( g_researchDone & RESEARCH_QUICK )  quick = 3.0f;
 
-			angle = m_object->RetAngleY(1);
-			angle -= event.rTime*quick*2.0f;
-			m_object->SetAngleY(1, angle);
+            angle = m_object->RetAngleY(1);
+            angle -= event.rTime*quick*2.0f;
+            m_object->SetAngleY(1, angle);
 
-			angle = m_object->RetAngleZ(2);
-			angle += event.rTime*quick*0.5f;
-			if ( angle > 0.0f )  angle = 0.0f;
-			m_object->SetAngleZ(2, angle);
-		}
-		else
-		{
-			energy = 0.0f;
-			power = m_object->RetPower();
-			if ( power != 0 )
-			{
-				energy = power->RetEnergy();
-			}
+            angle = m_object->RetAngleZ(2);
+            angle += event.rTime*quick*0.5f;
+            if ( angle > 0.0f )  angle = 0.0f;
+            m_object->SetAngleZ(2, angle);
+        }
+        else
+        {
+            energy = 0.0f;
+            power = m_object->RetPower();
+            if ( power != 0 )
+            {
+                energy = power->RetEnergy();
+            }
 
-			target = SearchTarget(m_targetPos);
-			if ( energy < ENERGY_FIRE )
-			{
-				m_displayText->DisplayError(ERR_TOWER_ENERGY, m_object);
-			}
-			if ( target == 0 || energy < ENERGY_FIRE )
-			{
-				m_phase    = ATP_ZERO;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/1.0f;
-			}
-			else
-			{
-				pos = m_object->RetPosition(0);
-				pos.y += 24.5f;
-				m_angleYfinal = RotateAngle(m_targetPos.x-pos.x, pos.z-m_targetPos.z);  // CW !
-				m_angleYfinal += PI*2.0f;
-				m_angleYfinal -= m_object->RetAngleY(0);
-				m_angleYactual = NormAngle(m_object->RetAngleY(1));
+            target = SearchTarget(m_targetPos);
+            if ( energy < ENERGY_FIRE )
+            {
+                m_displayText->DisplayError(ERR_TOWER_ENERGY, m_object);
+            }
+            if ( target == 0 || energy < ENERGY_FIRE )
+            {
+                m_phase    = ATP_ZERO;
+                m_progress = 0.0f;
+                m_speed    = 1.0f/1.0f;
+            }
+            else
+            {
+                pos = m_object->RetPosition(0);
+                pos.y += 24.5f;
+                m_angleYfinal = RotateAngle(m_targetPos.x-pos.x, pos.z-m_targetPos.z);  // CW !
+                m_angleYfinal += PI*2.0f;
+                m_angleYfinal -= m_object->RetAngleY(0);
+                m_angleYactual = NormAngle(m_object->RetAngleY(1));
 
-				m_angleZfinal = -PI/2.0f;
-				m_angleZfinal -= RotateAngle(Length2d(m_targetPos, pos), pos.y-m_targetPos.y);  // CW !
-				m_angleZactual = m_object->RetAngleZ(2);
+                m_angleZfinal = -PI/2.0f;
+                m_angleZfinal -= RotateAngle(Length2d(m_targetPos, pos), pos.y-m_targetPos.y);  // CW !
+                m_angleZactual = m_object->RetAngleZ(2);
 
-				m_phase    = ATP_TURN;
-				m_progress = 0.0f;
-				m_speed    = 1.0f/1.0f;
-//?				if ( g_researchDone & RESEARCH_QUICK )  m_speed = 1.0f/0.2f;
-			}
-		}
-	}
+                m_phase    = ATP_TURN;
+                m_progress = 0.0f;
+                m_speed    = 1.0f/1.0f;
+//?             if ( g_researchDone & RESEARCH_QUICK )  m_speed = 1.0f/0.2f;
+            }
+        }
+    }
 
-	if ( m_phase == ATP_TURN )
-	{
-		if ( m_progress < 1.0f )
-		{
-			angle = m_angleYactual+(m_angleYfinal-m_angleYactual)*m_progress;
-			m_object->SetAngleY(1, angle);
+    if ( m_phase == ATP_TURN )
+    {
+        if ( m_progress < 1.0f )
+        {
+            angle = m_angleYactual+(m_angleYfinal-m_angleYactual)*m_progress;
+            m_object->SetAngleY(1, angle);
 
-			angle = m_angleZactual+(m_angleZfinal-m_angleZactual)*m_progress;
-			m_object->SetAngleZ(2, angle);
-		}
-		else
-		{
-			m_object->SetAngleY(1, m_angleYfinal);
-			m_object->SetAngleZ(2, m_angleZfinal);
+            angle = m_angleZactual+(m_angleZfinal-m_angleZactual)*m_progress;
+            m_object->SetAngleZ(2, angle);
+        }
+        else
+        {
+            m_object->SetAngleY(1, m_angleYfinal);
+            m_object->SetAngleZ(2, m_angleZfinal);
 
-			power = m_object->RetPower();
-			if ( power != 0 )
-			{
-				energy = power->RetEnergy();
-				energy -= ENERGY_FIRE/power->RetCapacity();
-				power->SetEnergy(energy);
-			}
+            power = m_object->RetPower();
+            if ( power != 0 )
+            {
+                energy = power->RetEnergy();
+                energy -= ENERGY_FIRE/power->RetCapacity();
+                power->SetEnergy(energy);
+            }
 
-			m_sound->Play(SOUND_GGG, m_object->RetPosition(0));
+            m_sound->Play(SOUND_GGG, m_object->RetPosition(0));
 
-			m_phase    = ATP_FIRE;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.5f;
-		}
-	}
+            m_phase    = ATP_FIRE;
+            m_progress = 0.0f;
+            m_speed    = 1.0f/1.5f;
+        }
+    }
 
-	if ( m_phase == ATP_FIRE )
-	{
-		if ( m_progress == 0.0f )
-		{
-			pos = m_object->RetPosition(0);
-			pos.y += 24.5f;
-			m_particule->CreateRay(pos, m_targetPos, PARTIRAY1,
-								   FPOINT(5.0f, 5.0f), 1.5f);
-		}
-		if ( m_progress >= 1.0f )
-		{
-			m_phase    = ATP_ZERO;
-			m_progress = 0.0f;
-			m_speed    = 1.0f/1.0f;
-		}
-	}
+    if ( m_phase == ATP_FIRE )
+    {
+        if ( m_progress == 0.0f )
+        {
+            pos = m_object->RetPosition(0);
+            pos.y += 24.5f;
+            m_particule->CreateRay(pos, m_targetPos, PARTIRAY1,
+                                   FPOINT(5.0f, 5.0f), 1.5f);
+        }
+        if ( m_progress >= 1.0f )
+        {
+            m_phase    = ATP_ZERO;
+            m_progress = 0.0f;
+            m_speed    = 1.0f/1.0f;
+        }
+    }
 
-	return TRUE;
+    return TRUE;
 }
 
 
@@ -277,55 +277,55 @@ BOOL CAutoTower::EventProcess(const Event &event)
 
 CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 {
-	CObject*	pObj;
-	CObject*	pBest = 0;
-	CPhysics*	physics;
-	D3DVECTOR	iPos, oPos;
-	ObjectType	oType;
-	float		distance, min, radius, speed;
-	int			i;
+    CObject*    pObj;
+    CObject*    pBest = 0;
+    CPhysics*   physics;
+    D3DVECTOR   iPos, oPos;
+    ObjectType  oType;
+    float       distance, min, radius, speed;
+    int         i;
 
-	iPos = m_object->RetPosition(0);
-	min = 1000000.0f;
+    iPos = m_object->RetPosition(0);
+    min = 1000000.0f;
 
-	for ( i=0 ; i<1000000 ; i++ )
-	{
-		pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-		if ( pObj == 0 )  break;
+    for ( i=0 ; i<1000000 ; i++ )
+    {
+        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        if ( pObj == 0 )  break;
 
-		oType = pObj->RetType();
-		if ( oType != OBJECT_MOTHER &&
-			 oType != OBJECT_ANT    &&
-			 oType != OBJECT_SPIDER &&
-			 oType != OBJECT_BEE    &&
-			 oType != OBJECT_WORM   )  continue;
+        oType = pObj->RetType();
+        if ( oType != OBJECT_MOTHER &&
+             oType != OBJECT_ANT    &&
+             oType != OBJECT_SPIDER &&
+             oType != OBJECT_BEE    &&
+             oType != OBJECT_WORM   )  continue;
 
-		if ( !pObj->RetActif() )  continue;  // inactive?
+        if ( !pObj->RetActif() )  continue;  // inactive?
 
-//?		if ( g_researchDone & RESEARCH_QUICK )
-		if ( FALSE )
-		{
-			physics = pObj->RetPhysics();
-			if ( physics != 0 )
-			{
-				speed = Abs(physics->RetLinMotionX(MO_REASPEED));
-				if ( speed > 20.0f )  continue;  // moving too fast?
-			}
-		}
+//?     if ( g_researchDone & RESEARCH_QUICK )
+        if ( FALSE )
+        {
+            physics = pObj->RetPhysics();
+            if ( physics != 0 )
+            {
+                speed = Abs(physics->RetLinMotionX(MO_REASPEED));
+                if ( speed > 20.0f )  continue;  // moving too fast?
+            }
+        }
 
-		if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
-		distance = Length(oPos, iPos);
-		if ( distance > TOWER_SCOPE )  continue;  // too far
-		if ( distance < min )
-		{
-			min = distance;
-			pBest = pObj;
-		}
-	}
-	if ( pBest == 0 )  return 0;
+        if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
+        distance = Length(oPos, iPos);
+        if ( distance > TOWER_SCOPE )  continue;  // too far
+        if ( distance < min )
+        {
+            min = distance;
+            pBest = pObj;
+        }
+    }
+    if ( pBest == 0 )  return 0;
 
-	impact = pBest->RetPosition(0);
-	return pBest;
+    impact = pBest->RetPosition(0);
+    return pBest;
 }
 
 
@@ -333,26 +333,26 @@ CObject* CAutoTower::SearchTarget(D3DVECTOR &impact)
 
 Error CAutoTower::RetError()
 {
-	CObject*	power;
+    CObject*    power;
 
-	if ( m_object->RetVirusMode() )
-	{
-		return ERR_BAT_VIRUS;
-	}
+    if ( m_object->RetVirusMode() )
+    {
+        return ERR_BAT_VIRUS;
+    }
 
-	power = m_object->RetPower();
-	if ( power == 0 )
-	{
-		return ERR_TOWER_POWER;  // no battery
-	}
-	else
-	{
-		if ( power->RetEnergy() < ENERGY_FIRE )
-		{
-			return ERR_TOWER_ENERGY;  // not enough energy
-		}
-	}
-	return ERR_OK;
+    power = m_object->RetPower();
+    if ( power == 0 )
+    {
+        return ERR_TOWER_POWER;  // no battery
+    }
+    else
+    {
+        if ( power->RetEnergy() < ENERGY_FIRE )
+        {
+            return ERR_TOWER_ENERGY;  // not enough energy
+        }
+    }
+    return ERR_OK;
 }
 
 
@@ -360,62 +360,62 @@ Error CAutoTower::RetError()
 
 void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 {
-	D3DMATRIX*	mat;
-	D3DVECTOR	pos, speed;
-	FPOINT		dim;
-	int			i;
+    D3DMATRIX*  mat;
+    D3DVECTOR   pos, speed;
+    FPOINT      dim;
+    int         i;
 
-	static float listpos[8] =
-	{
-		 4.5f,	 0.0f,
-		 0.0f,	 4.5f,
-		-4.5f,	 0.0f,
-		 0.0f,	-4.5f,
-	};
+    static float listpos[8] =
+    {
+         4.5f,   0.0f,
+         0.0f,   4.5f,
+        -4.5f,   0.0f,
+         0.0f,  -4.5f,
+    };
 
-	if ( !bLightOn )  // extinguished?
-	{
-		for ( i=0 ; i<4 ; i++ )
-		{
-			if ( m_partiStop[i] != -1 )
-			{
-				m_particule->DeleteParticule(m_partiStop[i]);
-				m_partiStop[i] = -1;
-			}
-		}
-		return;
-	}
+    if ( !bLightOn )  // extinguished?
+    {
+        for ( i=0 ; i<4 ; i++ )
+        {
+            if ( m_partiStop[i] != -1 )
+            {
+                m_particule->DeleteParticule(m_partiStop[i]);
+                m_partiStop[i] = -1;
+            }
+        }
+        return;
+    }
 
-	mat = m_object->RetWorldMatrix(0);
+    mat = m_object->RetWorldMatrix(0);
 
-	speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
-	dim.x = 2.0f;
-	dim.y = dim.x;
+    speed = D3DVECTOR(0.0f, 0.0f, 0.0f);
+    dim.x = 2.0f;
+    dim.y = dim.x;
 
-	for ( i=0 ; i<4 ; i++ )
-	{
-		if ( Mod(progress+i*0.125f, 0.5f) < 0.2f )
-		{
-			if ( m_partiStop[i] != -1 )
-			{
-				m_particule->DeleteParticule(m_partiStop[i]);
-				m_partiStop[i] = -1;
-			}
-		}
-		else
-		{
-			if ( m_partiStop[i] == -1 )
-			{
-				pos.x = listpos[i*2+0];
-				pos.y = 18.0f;
-				pos.z = listpos[i*2+1];
-				pos = Transform(*mat, pos);
-				m_partiStop[i] = m_particule->CreateParticule(pos, speed,
-															  dim, PARTISELR,
-															  1.0f, 0.0f, 0.0f);
-			}
-		}
-	}
+    for ( i=0 ; i<4 ; i++ )
+    {
+        if ( Mod(progress+i*0.125f, 0.5f) < 0.2f )
+        {
+            if ( m_partiStop[i] != -1 )
+            {
+                m_particule->DeleteParticule(m_partiStop[i]);
+                m_partiStop[i] = -1;
+            }
+        }
+        else
+        {
+            if ( m_partiStop[i] == -1 )
+            {
+                pos.x = listpos[i*2+0];
+                pos.y = 18.0f;
+                pos.z = listpos[i*2+1];
+                pos = Transform(*mat, pos);
+                m_partiStop[i] = m_particule->CreateParticule(pos, speed,
+                                                              dim, PARTISELR,
+                                                              1.0f, 0.0f, 0.0f);
+            }
+        }
+    }
 }
 
 
@@ -423,41 +423,41 @@ void CAutoTower::FireStopUpdate(float progress, BOOL bLightOn)
 
 BOOL CAutoTower::CreateInterface(BOOL bSelect)
 {
-	CWindow*	pw;
-	FPOINT		pos, ddim;
-	float		ox, oy, sx, sy;
+    CWindow*    pw;
+    FPOINT      pos, ddim;
+    float       ox, oy, sx, sy;
 
-	CAuto::CreateInterface(bSelect);
+    CAuto::CreateInterface(bSelect);
 
-	if ( !bSelect )  return TRUE;
+    if ( !bSelect )  return TRUE;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return FALSE;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return FALSE;
 
-	ox = 3.0f/640.0f;
-	oy = 3.0f/480.0f;
-	sx = 33.0f/640.0f;
-	sy = 33.0f/480.0f;
+    ox = 3.0f/640.0f;
+    oy = 3.0f/480.0f;
+    sx = 33.0f/640.0f;
+    sy = 33.0f/480.0f;
 
-	pos.x = ox+sx*14.5f;
-	pos.y = oy+sy*0;
-	ddim.x = 14.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GENERGY);
+    pos.x = ox+sx*14.5f;
+    pos.y = oy+sy*0;
+    ddim.x = 14.0f/640.0f;
+    ddim.y = 66.0f/480.0f;
+    pw->CreateGauge(pos, ddim, 0, EVENT_OBJECT_GENERGY);
 
-	pos.x = ox+sx*0.0f;
-	pos.y = oy+sy*0;
-	ddim.x = 66.0f/640.0f;
-	ddim.y = 66.0f/480.0f;
-	pw->CreateGroup(pos, ddim, 107, EVENT_OBJECT_TYPE);
+    pos.x = ox+sx*0.0f;
+    pos.y = oy+sy*0;
+    ddim.x = 66.0f/640.0f;
+    ddim.y = 66.0f/480.0f;
+    pw->CreateGroup(pos, ddim, 107, EVENT_OBJECT_TYPE);
 
-	pos.x = ox+sx*10.2f;
-	pos.y = oy+sy*0.5f;
-	ddim.x = 33.0f/640.0f;
-	ddim.y = 33.0f/480.0f;
-	pw->CreateButton(pos, ddim, 41, EVENT_OBJECT_LIMIT);
+    pos.x = ox+sx*10.2f;
+    pos.y = oy+sy*0.5f;
+    ddim.x = 33.0f/640.0f;
+    ddim.y = 33.0f/480.0f;
+    pw->CreateButton(pos, ddim, 41, EVENT_OBJECT_LIMIT);
 
-	return TRUE;
+    return TRUE;
 }
 
 // Updates the state of all buttons on the interface,
@@ -465,32 +465,32 @@ BOOL CAutoTower::CreateInterface(BOOL bSelect)
 
 void CAutoTower::UpdateInterface(float rTime)
 {
-	CWindow*	pw;
-	CGauge*		pg;
-	CObject*	power;
-	float		energy;
+    CWindow*    pw;
+    CGauge*     pg;
+    CObject*    power;
+    float       energy;
 
-	CAuto::UpdateInterface(rTime);
+    CAuto::UpdateInterface(rTime);
 
-	if ( m_time < m_lastUpdateTime+0.1f )  return;
-	m_lastUpdateTime = m_time;
+    if ( m_time < m_lastUpdateTime+0.1f )  return;
+    m_lastUpdateTime = m_time;
 
-	if ( !m_object->RetSelect() )  return;
+    if ( !m_object->RetSelect() )  return;
 
-	pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-	if ( pw == 0 )  return;
+    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    if ( pw == 0 )  return;
 
-	pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
-	if ( pg != 0 )
-	{
-		energy = 0.0f;
-		power = m_object->RetPower();
-		if ( power != 0 )
-		{
-			energy = power->RetEnergy();
-		}
-		pg->SetLevel(energy);
-	}
+    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
+    if ( pg != 0 )
+    {
+        energy = 0.0f;
+        power = m_object->RetPower();
+        if ( power != 0 )
+        {
+            energy = power->RetEnergy();
+        }
+        pg->SetLevel(energy);
+    }
 }
 
 
@@ -498,62 +498,62 @@ void CAutoTower::UpdateInterface(float rTime)
 
 BOOL CAutoTower::Write(char *line)
 {
-	char	name[100];
+    char    name[100];
 
-	if ( m_phase == ATP_WAIT )  return FALSE;
+    if ( m_phase == ATP_WAIT )  return FALSE;
 
-	sprintf(name, " aExist=%d", 1);
-	strcat(line, name);
+    sprintf(name, " aExist=%d", 1);
+    strcat(line, name);
 
-	CAuto::Write(line);
+    CAuto::Write(line);
 
-	sprintf(name, " aPhase=%d", m_phase);
-	strcat(line, name);
+    sprintf(name, " aPhase=%d", m_phase);
+    strcat(line, name);
 
-	sprintf(name, " aProgress=%.2f", m_progress);
-	strcat(line, name);
+    sprintf(name, " aProgress=%.2f", m_progress);
+    strcat(line, name);
 
-	sprintf(name, " aSpeed=%.2f", m_speed);
-	strcat(line, name);
+    sprintf(name, " aSpeed=%.2f", m_speed);
+    strcat(line, name);
 
-	sprintf(name, " aTargetPos=%.2f;%.2f;%.2f", m_targetPos.x, m_targetPos.y, m_targetPos.z);
-	strcat(line, name);
+    sprintf(name, " aTargetPos=%.2f;%.2f;%.2f", m_targetPos.x, m_targetPos.y, m_targetPos.z);
+    strcat(line, name);
 
-	sprintf(name, " aAngleYactual=%.2f", m_angleYactual);
-	strcat(line, name);
+    sprintf(name, " aAngleYactual=%.2f", m_angleYactual);
+    strcat(line, name);
 
-	sprintf(name, " aAngleZactual=%.2f", m_angleZactual);
-	strcat(line, name);
+    sprintf(name, " aAngleZactual=%.2f", m_angleZactual);
+    strcat(line, name);
 
-	sprintf(name, " aAngleYfinal=%.2f", m_angleYfinal);
-	strcat(line, name);
+    sprintf(name, " aAngleYfinal=%.2f", m_angleYfinal);
+    strcat(line, name);
 
-	sprintf(name, " aAngleZfinal=%.2f", m_angleZfinal);
-	strcat(line, name);
+    sprintf(name, " aAngleZfinal=%.2f", m_angleZfinal);
+    strcat(line, name);
 
-	return TRUE;
+    return TRUE;
 }
 
 // Restores all parameters of the controller.
 
 BOOL CAutoTower::Read(char *line)
 {
-	if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
+    if ( OpInt(line, "aExist", 0) == 0 )  return FALSE;
 
-	CAuto::Read(line);
+    CAuto::Read(line);
 
-	m_phase = (AutoTowerPhase)OpInt(line, "aPhase", ATP_WAIT);
-	m_progress = OpFloat(line, "aProgress", 0.0f);
-	m_speed = OpFloat(line, "aSpeed", 1.0f);
-	m_targetPos = OpDir(line, "aTargetPos");
-	m_angleYactual = OpFloat(line, "aAngleYactual", 0.0f);
-	m_angleZactual = OpFloat(line, "aAngleZactual", 0.0f);
-	m_angleYfinal = OpFloat(line, "aAngleYfinal", 0.0f);
-	m_angleZfinal = OpFloat(line, "aAngleZfinal", 0.0f);
+    m_phase = (AutoTowerPhase)OpInt(line, "aPhase", ATP_WAIT);
+    m_progress = OpFloat(line, "aProgress", 0.0f);
+    m_speed = OpFloat(line, "aSpeed", 1.0f);
+    m_targetPos = OpDir(line, "aTargetPos");
+    m_angleYactual = OpFloat(line, "aAngleYactual", 0.0f);
+    m_angleZactual = OpFloat(line, "aAngleZactual", 0.0f);
+    m_angleYfinal = OpFloat(line, "aAngleYfinal", 0.0f);
+    m_angleZfinal = OpFloat(line, "aAngleZfinal", 0.0f);
 
-	m_lastUpdateTime = 0.0f;
+    m_lastUpdateTime = 0.0f;
 
-	return TRUE;
+    return TRUE;
 }
 
 

@@ -17,7 +17,7 @@
 // autojostle.h
 
 #ifndef _AUTOJOSTLE_H_
-#define	_AUTOJOSTLE_H_
+#define _AUTOJOSTLE_H_
 
 
 #include "auto.h"
@@ -36,24 +36,24 @@ class CObject;
 class CAutoJostle : public CAuto
 {
 public:
-	CAutoJostle(CInstanceManager* iMan, CObject* object);
-	~CAutoJostle();
+    CAutoJostle(CInstanceManager* iMan, CObject* object);
+    ~CAutoJostle();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	void		Start(int param, float force);
-	BOOL		EventProcess(const Event &event);
-	Error		IsEnded();
-
-protected:
+    void        Init();
+    void        Start(int param, float force);
+    BOOL        EventProcess(const Event &event);
+    Error       IsEnded();
 
 protected:
-	float			m_force;
-	float			m_progress;
-	float			m_speed;
-	float			m_lastParticule;
-	Error			m_error;
+
+protected:
+    float           m_force;
+    float           m_progress;
+    float           m_speed;
+    float           m_lastParticule;
+    Error           m_error;
 };
 
 

@@ -42,9 +42,9 @@
 // Object's constructor.
 
 CTaskAdvance::CTaskAdvance(CInstanceManager* iMan, CObject* object)
-						   : CTask(iMan, object)
+                           : CTask(iMan, object)
 {
-	CTask::CTask(iMan, object);
+    CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
@@ -58,22 +58,22 @@ CTaskAdvance::~CTaskAdvance()
 
 BOOL CTaskAdvance::EventProcess(const Event &event)
 {
-	if ( m_engine->RetPause() )  return TRUE;
-	if ( event.event != EVENT_FRAME )  return TRUE;
+    if ( m_engine->RetPause() )  return TRUE;
+    if ( event.event != EVENT_FRAME )  return TRUE;
 
-	m_fixTime += event.rTime;
+    m_fixTime += event.rTime;
 
-	// Momentarily stationary object (ant on the back)?
-	if ( m_object->RetFixed() )
-	{
-		m_physics->SetMotorSpeedX(0.0f);  // stops the advance
-		m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
-		m_bError = TRUE;
-		return TRUE;
-	}
+    // Momentarily stationary object (ant on the back)?
+    if ( m_object->RetFixed() )
+    {
+        m_physics->SetMotorSpeedX(0.0f);  // stops the advance
+        m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
+        m_bError = TRUE;
+        return TRUE;
+    }
 
-	m_timeLimit -= event.rTime;
-	return TRUE;
+    m_timeLimit -= event.rTime;
+    return TRUE;
 }
 
 
@@ -81,79 +81,79 @@ BOOL CTaskAdvance::EventProcess(const Event &event)
 
 Error CTaskAdvance::Start(float length)
 {
-	m_direction = (length>=0.0f)?1.0f:-1.0f;
-	m_totalLength = Abs(length);
-	m_advanceLength = m_physics->RetLinLength(length);
-	m_startPos = m_object->RetPosition(0);
-	m_lastDist = 0.0f;
-	m_fixTime = 0.0f;
+    m_direction = (length>=0.0f)?1.0f:-1.0f;
+    m_totalLength = Abs(length);
+    m_advanceLength = m_physics->RetLinLength(length);
+    m_startPos = m_object->RetPosition(0);
+    m_lastDist = 0.0f;
+    m_fixTime = 0.0f;
 
-	m_timeLimit = m_physics->RetLinTimeLength(m_totalLength, m_direction)*3.0f;
-	if ( m_timeLimit < 2.0f )  m_timeLimit = 2.0f;
+    m_timeLimit = m_physics->RetLinTimeLength(m_totalLength, m_direction)*3.0f;
+    if ( m_timeLimit < 2.0f )  m_timeLimit = 2.0f;
 
-	m_physics->SetMotorSpeedX(m_direction*1.0f);  // forward/backward
-	m_physics->SetMotorSpeedY(0.0f);
-	m_physics->SetMotorSpeedZ(0.0f);
+    m_physics->SetMotorSpeedX(m_direction*1.0f);  // forward/backward
+    m_physics->SetMotorSpeedY(0.0f);
+    m_physics->SetMotorSpeedZ(0.0f);
 
-	m_bError = FALSE;
-	return ERR_OK;
+    m_bError = FALSE;
+    return ERR_OK;
 }
 
 // Indicates whether the action is finished.
 
 Error CTaskAdvance::IsEnded()
 {
-	D3DVECTOR	pos;
-	float		length;
+    D3DVECTOR   pos;
+    float       length;
 
-	if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->RetPause() )  return ERR_CONTINUE;
 
-	if ( m_bError )
-	{
-		return ERR_STOP;
-	}
+    if ( m_bError )
+    {
+        return ERR_STOP;
+    }
 
-	if ( m_timeLimit < 0.0f )
-	{
-		m_physics->SetMotorSpeedX(0.0f);
-		return ERR_MOVE_IMPOSSIBLE;
-	}
+    if ( m_timeLimit < 0.0f )
+    {
+        m_physics->SetMotorSpeedX(0.0f);
+        return ERR_MOVE_IMPOSSIBLE;
+    }
 
-	pos = m_object->RetPosition(0);
-	length = Length2d(pos, m_startPos);
+    pos = m_object->RetPosition(0);
+    length = Length2d(pos, m_startPos);
 
-	if ( length > m_lastDist )  // forward?
-	{
-		m_fixTime = 0.0f;
-	}
-	else	// still stands?
-	{
-		if ( m_fixTime > 1.0f )  // for more than a second?
-		{
-			m_physics->SetMotorSpeedX(0.0f);
-			return ERR_MOVE_IMPOSSIBLE;
-		}
-	}
-	m_lastDist = length;
+    if ( length > m_lastDist )  // forward?
+    {
+        m_fixTime = 0.0f;
+    }
+    else    // still stands?
+    {
+        if ( m_fixTime > 1.0f )  // for more than a second?
+        {
+            m_physics->SetMotorSpeedX(0.0f);
+            return ERR_MOVE_IMPOSSIBLE;
+        }
+    }
+    m_lastDist = length;
 
-	if ( length >= m_totalLength )
-	{
-		m_physics->SetMotorSpeedX(0.0f);
-		m_physics->SetLinMotionX(MO_CURSPEED, 0.0f);
+    if ( length >= m_totalLength )
+    {
+        m_physics->SetMotorSpeedX(0.0f);
+        m_physics->SetLinMotionX(MO_CURSPEED, 0.0f);
 
-		if ( length != 0.0f )
-		{
-			pos = m_startPos+((pos-m_startPos)*m_totalLength/length);
-			m_object->SetPosition(0, pos);
-		}
-		return ERR_STOP;
-	}
+        if ( length != 0.0f )
+        {
+            pos = m_startPos+((pos-m_startPos)*m_totalLength/length);
+            m_object->SetPosition(0, pos);
+        }
+        return ERR_STOP;
+    }
 
-	if ( length >= m_advanceLength )
-	{
-		m_physics->SetMotorSpeedX(m_direction*0.1f);
-	}
-	return ERR_CONTINUE;
+    if ( length >= m_advanceLength )
+    {
+        m_physics->SetMotorSpeedX(m_direction*0.1f);
+    }
+    return ERR_CONTINUE;
 }
 
 

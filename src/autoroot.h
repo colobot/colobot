@@ -17,7 +17,7 @@
 // autoroot.h
 
 #ifndef _AUTOROOT_H_
-#define	_AUTOROOT_H_
+#define _AUTOROOT_H_
 
 
 #include "auto.h"
@@ -36,20 +36,20 @@ class CObject;
 class CAutoRoot : public CAuto
 {
 public:
-	CAutoRoot(CInstanceManager* iMan, CObject* object);
-	~CAutoRoot();
+    CAutoRoot(CInstanceManager* iMan, CObject* object);
+    ~CAutoRoot();
 
-	void		DeleteObject(BOOL bAll=FALSE);
+    void        DeleteObject(BOOL bAll=FALSE);
 
-	void		Init();
-	BOOL		EventProcess(const Event &event);
-	Error		RetError();
-
-protected:
+    void        Init();
+    BOOL        EventProcess(const Event &event);
+    Error       RetError();
 
 protected:
-	float			m_lastParticule;
-	D3DVECTOR		m_center;
+
+protected:
+    float           m_lastParticule;
+    D3DVECTOR       m_center;
 };
 
 

@@ -17,7 +17,7 @@
 // cbottoken.h
 
 #ifndef _CBOTTOKEN_H_
-#define	_CBOTTOKEN_H_
+#define _CBOTTOKEN_H_
 
 
 #include "object.h"
