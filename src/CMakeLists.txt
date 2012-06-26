@@ -1,132 +1,31 @@
 # CBot shared library is built separately
-add_subdirectory(CBot)
+# add_subdirectory(CBot) -- not yet WinAPI-independent
 
 
-# Source files for old target (dependent on WinAPI & DirectX)
-set(OLD_SOURCES
-old/d3dapp.cpp
-old/joystick.cpp
-old/blitz.cpp
-old/camera.cpp
-old/cloud.cpp
-old/light.cpp
-old/model.cpp
-old/particule.cpp
-old/planet.cpp
-old/pyro.cpp
-old/terrain.cpp
-old/text.cpp
-old/water.cpp
-old/d3dengine.cpp
-old/d3denum.cpp
-old/d3dframe.cpp
-old/d3dtextr.cpp
-old/d3dutil.cpp
-old/d3dmath.cpp
-old/math3d.cpp
-old/modfile.cpp
-old/sound.cpp
-common/event.cpp
-common/iman.cpp
-common/metafile.cpp
-common/misc.cpp
-common/profile.cpp
-common/restext.cpp
-object/auto/auto.cpp
-object/auto/autobase.cpp
-object/auto/autoconvert.cpp
-object/auto/autoderrick.cpp
-object/auto/autodestroyer.cpp
-object/auto/autoegg.cpp
-object/auto/autoenergy.cpp
-object/auto/autofactory.cpp
-object/auto/autoflag.cpp
-object/auto/autohuston.cpp
-object/auto/autoinfo.cpp
-object/auto/autojostle.cpp
-object/auto/autokid.cpp
-object/auto/autolabo.cpp
-object/auto/automush.cpp
-object/auto/autonest.cpp
-object/auto/autonuclear.cpp
-object/auto/autopara.cpp
-object/auto/autoportico.cpp
-object/auto/autoradar.cpp
-object/auto/autorepair.cpp
-object/auto/autoresearch.cpp
-object/auto/autoroot.cpp
-object/auto/autosafe.cpp
-object/auto/autostation.cpp
-object/auto/autotower.cpp
-object/brain.cpp
-object/mainmovie.cpp
-object/motion/motion.cpp
-object/motion/motionant.cpp
-object/motion/motionbee.cpp
-object/motion/motionhuman.cpp
-object/motion/motionmother.cpp
-object/motion/motionspider.cpp
-object/motion/motiontoto.cpp
-object/motion/motionvehicle.cpp
-object/motion/motionworm.cpp
-object/object.cpp
-object/robotmain.cpp
-object/task/task.cpp
-object/task/taskadvance.cpp
-object/task/taskbuild.cpp
-object/task/taskfire.cpp
-object/task/taskfireant.cpp
-object/task/taskflag.cpp
-object/task/taskgoto.cpp
-object/task/taskgungoal.cpp
-object/task/taskinfo.cpp
-object/task/taskmanager.cpp
-object/task/taskmanip.cpp
-object/task/taskpen.cpp
-object/task/taskrecover.cpp
-object/task/taskreset.cpp
-object/task/tasksearch.cpp
-object/task/taskshield.cpp
-object/task/taskspiderexplo.cpp
-object/task/tasktake.cpp
-object/task/taskterraform.cpp
-object/task/taskturn.cpp
-object/task/taskwait.cpp
-physics/physics.cpp
-script/cbottoken.cpp
-script/cmdtoken.cpp
-script/script.cpp
-ui/button.cpp
-ui/check.cpp
-ui/color.cpp
-ui/compass.cpp
-ui/control.cpp
-ui/displayinfo.cpp
-ui/displaytext.cpp
-ui/edit.cpp
-ui/editvalue.cpp
-ui/gauge.cpp
-ui/group.cpp
-ui/image.cpp
-ui/interface.cpp
-ui/key.cpp
-ui/label.cpp
-ui/list.cpp
-ui/maindialog.cpp
-ui/mainmap.cpp
-ui/mainshort.cpp
-ui/map.cpp
-ui/scroll.cpp
-ui/shortcut.cpp
-ui/slider.cpp
-ui/studio.cpp
-ui/target.cpp
-ui/window.cpp
-)
+# Configure options
+option(DEBUG "Enable debug output" ON)
 
-# Source files for new target (dependent on SDL & OpenGL)
+if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
+  set(PLATFORM_WINDOWS 1)
+  set(PLATFORM_LINUX   0)
+  set(PLATFORM_OTHER   0)
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set(PLATFORM_WINDOWS 0)
+  set(PLATFORM_LINUX   1)
+  set(PLATFORM_OTHER   0)
+else()
+  set(PLATFORM_WINDOWS 0)
+  set(PLATFORM_LINUX   0)
+  set(PLATFORM_OTHER   1)
+endif()
+
+# Configure file
+configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
+
+
+# Source files
 # Commented out files are still dependent on DirectX or WinAPI
-set(NEW_SOURCES
+set(SOURCES
 app/app.cpp
 app/main.cpp
 app/system.cpp
@@ -247,51 +146,17 @@ sound/sound.cpp
 # ui/window.cpp
 )
 
-# Change to DirectX SDK directory
-set(DXSDK_DIR "c:/dxsdk")
+set(LIBS
+${SDL_LIBRARY}
+${SDLIMAGE_LIBRARY}
+${OPENGL_LIBRARY}
+#CBot  -- not yet WinAPI-independent
+)
 
-# Configure options
-option(DEBUG "Enable debug output" ON)
+include_directories(. ${CMAKE_CURRENT_BINARY_DIR})
 
-if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
-  set(PLATFORM_WINDOWS 1)
-  set(PLATFORM_LINUX   0)
-  set(PLATFORM_OTHER   0)
-elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-  set(PLATFORM_WINDOWS 0)
-  set(PLATFORM_LINUX   1)
-  set(PLATFORM_OTHER   0)
-else()
-  set(PLATFORM_WINDOWS 0)
-  set(PLATFORM_LINUX   0)
-  set(PLATFORM_OTHER   1)
-endif()
+link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)
 
-# Configure file
-configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
+add_executable(colobot ${SOURCES})
 
-# #defines needed for old target
-add_definitions(-DSTRICT -DD3D_OVERLOADS)
-
-include_directories(${DXSDK_DIR}/include . ${CMAKE_CURRENT_BINARY_DIR})
-
-link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot ${DXSDK_DIR}/lib)
-
-
-# Old target
-set(OLD_LIBS -lkernel32 -luser32 -lgdi32 -lwinspool -lcomdlg32
-    -ladvapi32 -lshell32 -lole32 -loleaut32 -luuid -lodbc32
-    -lodbccp32 -lwinmm
-    ${DXSDK_DIR}/lib/ddraw.lib ${DXSDK_DIR}/lib/dinput.lib ${DXSDK_DIR}/lib/dxguid.lib ${DXSDK_DIR}/lib/d3d8.lib ${DXSDK_DIR}/lib/dsound.lib)
-
-add_executable(colobot_old ${OLD_SOURCES})
-
-target_link_libraries(colobot_old CBot ${OLD_LIBS})
-
-
-# New target
-set(NEW_LIBS ${SDL_LIBRARY} ${SDLIMAGE_LIBRARY} ${OPENGL_LIBRARY})
-
-add_executable(colobot_new ${NEW_SOURCES})
-
-target_link_libraries(colobot_new ${NEW_LIBS})
+target_link_libraries(colobot ${LIBS})
