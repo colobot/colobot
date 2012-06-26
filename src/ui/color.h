@@ -30,27 +30,27 @@ class CD3DEngine;
 class CColor : public CControl
 {
 public:
-	CColor(CInstanceManager* iMan);
-	virtual ~CColor();
+    CColor(CInstanceManager* iMan);
+    virtual ~CColor();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetRepeat(bool bRepeat);
-	bool	RetRepeat();
+    void    SetRepeat(bool bRepeat);
+    bool    RetRepeat();
 
-	void	SetColor(D3DCOLORVALUE color);
-	D3DCOLORVALUE RetColor();
-
-protected:
+    void    SetColor(D3DCOLORVALUE color);
+    D3DCOLORVALUE RetColor();
 
 protected:
-	bool			m_bRepeat;
-	float			m_repeat;
-	D3DCOLORVALUE	m_color;
+
+protected:
+    bool            m_bRepeat;
+    float           m_repeat;
+    D3DCOLORVALUE   m_color;
 };
 
 

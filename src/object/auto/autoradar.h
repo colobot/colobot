@@ -25,10 +25,10 @@
 
 enum AutoRadarPhase
 {
-	ARAP_WAIT		= 1,	// waiting
-	ARAP_SEARCH		= 2,	// seeking
-	ARAP_SHOW		= 3,	// watching
-	ARAP_SINUS		= 4,	// oscillates
+    ARAP_WAIT       = 1,    // waiting
+    ARAP_SEARCH     = 2,    // seeking
+    ARAP_SHOW       = 3,    // watching
+    ARAP_SINUS      = 4,    // oscillates
 };
 
 
@@ -36,29 +36,29 @@ enum AutoRadarPhase
 class CAutoRadar : public CAuto
 {
 public:
-	CAutoRadar(CInstanceManager* iMan, CObject* object);
-	~CAutoRadar();
+    CAutoRadar(CInstanceManager* iMan, CObject* object);
+    ~CAutoRadar();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	bool		CreateInterface(bool bSelect);
-	Error		RetError();
-
-protected:
-	void		UpdateInterface();
-	bool		SearchEnemy(Math::Vector &pos);
+    void        Init();
+    bool        EventProcess(const Event &event);
+    bool        CreateInterface(bool bSelect);
+    Error       RetError();
 
 protected:
-	AutoRadarPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_aTime;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	float			m_angle;
-	float			m_start;
-	int				m_totalDetect;
+    void        UpdateInterface();
+    bool        SearchEnemy(Math::Vector &pos);
+
+protected:
+    AutoRadarPhase  m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_aTime;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    float           m_angle;
+    float           m_start;
+    int             m_totalDetect;
 };
 

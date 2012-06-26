@@ -29,22 +29,22 @@ class CD3DEngine;
 class CGauge : public CControl
 {
 public:
-	CGauge(CInstanceManager* iMan);
-	virtual ~CGauge();
+    CGauge(CInstanceManager* iMan);
+    virtual ~CGauge();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetLevel(float level);
-	float	RetLevel();
-
-protected:
+    void    SetLevel(float level);
+    float   RetLevel();
 
 protected:
-	float	m_level;
+
+protected:
+    float   m_level;
 };
 
 

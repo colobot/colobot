@@ -26,11 +26,11 @@
 
 enum TaskFireAnt
 {
-	TFA_NULL		= 0,	// nothing to do
-	TFA_TURN		= 1,	// turns
-	TFA_PREPARE		= 2,	// prepares shooting position
-	TFA_FIRE		= 3,	// shooting
-	TFA_TERMINATE		= 4,	// ends shooting position
+    TFA_NULL        = 0,    // nothing to do
+    TFA_TURN        = 1,    // turns
+    TFA_PREPARE     = 2,    // prepares shooting position
+    TFA_FIRE        = 3,    // shooting
+    TFA_TERMINATE       = 4,    // ends shooting position
 };
 
 
@@ -38,26 +38,26 @@ enum TaskFireAnt
 class CTaskFireAnt : public CTask
 {
 public:
-	CTaskFireAnt(CInstanceManager* iMan, CObject* object);
-	~CTaskFireAnt();
+    CTaskFireAnt(CInstanceManager* iMan, CObject* object);
+    ~CTaskFireAnt();
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	Error	Start(Math::Vector impact);
-	Error	IsEnded();
-	bool	Abort();
-
-protected:
+    Error   Start(Math::Vector impact);
+    Error   IsEnded();
+    bool    Abort();
 
 protected:
-	Math::Vector	m_impact;
-	TaskFireAnt	m_phase;
-	float		m_progress;
-	float		m_speed;
-	float		m_angle;
-	bool		m_bError;
-	bool		m_bFire;
-	float		m_time;
-	float		m_lastParticule;
+
+protected:
+    Math::Vector    m_impact;
+    TaskFireAnt m_phase;
+    float       m_progress;
+    float       m_speed;
+    float       m_angle;
+    bool        m_bError;
+    bool        m_bFire;
+    float       m_time;
+    float       m_lastParticule;
 };
 

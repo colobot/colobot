@@ -30,52 +30,52 @@ class CInstanceManager;
 
 struct OldModelTriangle1
 {
-	char			bUsed;		// true -> using
-	char			bSelect;	// true -> selected
-	D3DVERTEX		p1;
-	D3DVERTEX		p2;
-	D3DVERTEX		p3;
-	D3DMATERIAL7	material;
-	char			texName[20];
-	float			min;
-	float			max;
-};		// length = 196 bytes
+    char            bUsed;      // true -> using
+    char            bSelect;    // true -> selected
+    D3DVERTEX       p1;
+    D3DVERTEX       p2;
+    D3DVERTEX       p3;
+    D3DMATERIAL7    material;
+    char            texName[20];
+    float           min;
+    float           max;
+};      // length = 196 bytes
 
 struct OldModelTriangle2
 {
-	char			bUsed;		// true -> used
-	char			bSelect;	// true -> selected
-	D3DVERTEX		p1;
-	D3DVERTEX		p2;
-	D3DVERTEX		p3;
-	D3DMATERIAL7	material;
-	char			texName[20];
-	float			min;
-	float			max;
-	long			state;
-	short			reserve1;
-	short			reserve2;
-	short			reserve3;
-	short			reserve4;
+    char            bUsed;      // true -> used
+    char            bSelect;    // true -> selected
+    D3DVERTEX       p1;
+    D3DVERTEX       p2;
+    D3DVERTEX       p3;
+    D3DMATERIAL7    material;
+    char            texName[20];
+    float           min;
+    float           max;
+    long            state;
+    short           reserve1;
+    short           reserve2;
+    short           reserve3;
+    short           reserve4;
 };
 
 struct ModelTriangle
 {
-	char			bUsed;		// true -> used
-	char			bSelect;	// true -> selected
-	D3DVERTEX2		p1;
-	D3DVERTEX2		p2;
-	D3DVERTEX2		p3;
-	D3DMATERIAL7	material;
-	char			texName[20];
-	float			min;
-	float			max;
-	long			state;
-	short			texNum2;
-	short			reserve2;
-	short			reserve3;
-	short			reserve4;
-};		// length = 208 bytes
+    char            bUsed;      // true -> used
+    char            bSelect;    // true -> selected
+    D3DVERTEX2      p1;
+    D3DVERTEX2      p2;
+    D3DVERTEX2      p3;
+    D3DMATERIAL7    material;
+    char            texName[20];
+    float           min;
+    float           max;
+    long            state;
+    short           texNum2;
+    short           reserve2;
+    short           reserve3;
+    short           reserve4;
+};      // length = 208 bytes
 
 
 
@@ -83,33 +83,33 @@ struct ModelTriangle
 class CModFile
 {
 public:
-	CModFile(CInstanceManager* iMan);
-	~CModFile();
+    CModFile(CInstanceManager* iMan);
+    ~CModFile();
 
-	bool			ReadDXF(char *filename, float min, float max);
-	bool			AddModel(char *filename, int first, bool bEdit=false, bool bMeta=true);
-	bool			ReadModel(char *filename, bool bEdit=false, bool bMeta=true);
-	bool			WriteModel(char *filename);
+    bool            ReadDXF(char *filename, float min, float max);
+    bool            AddModel(char *filename, int first, bool bEdit=false, bool bMeta=true);
+    bool            ReadModel(char *filename, bool bEdit=false, bool bMeta=true);
+    bool            WriteModel(char *filename);
 
-	bool			CreateEngineObject(int objRank, int addState=0);
-	void			Mirror();
+    bool            CreateEngineObject(int objRank, int addState=0);
+    void            Mirror();
 
-	void			SetTriangleUsed(int total);
-	int				RetTriangleUsed();
-	int				RetTriangleMax();
-	ModelTriangle*	RetTriangleList();
+    void            SetTriangleUsed(int total);
+    int             RetTriangleUsed();
+    int             RetTriangleMax();
+    ModelTriangle*  RetTriangleList();
 
-	float			RetHeight(Math::Vector pos);
-
-protected:
-	bool			CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max);
+    float           RetHeight(Math::Vector pos);
 
 protected:
-	CInstanceManager* m_iMan;
-	CD3DEngine*		m_engine;
+    bool            CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max);
 
-	ModelTriangle*	m_triangleTable;
-	int				m_triangleUsed;
+protected:
+    CInstanceManager* m_iMan;
+    CD3DEngine*     m_engine;
+
+    ModelTriangle*  m_triangleTable;
+    int             m_triangleUsed;
 };
 
 

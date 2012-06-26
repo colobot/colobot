@@ -38,56 +38,56 @@ const short MAXCLOUDLINE = 100;
 
 struct CloudLine
 {
-	short		x, y;		// beginning
-	short		len;		// in length x
-	float		px1, px2, pz;
+    short       x, y;       // beginning
+    short       len;        // in length x
+    float       px1, px2, pz;
 };
 
 
 class CCloud
 {
 public:
-	CCloud(CInstanceManager* iMan, CEngine* engine);
-	~CCloud();
+    CCloud(CInstanceManager* iMan, CEngine* engine);
+    ~CCloud();
 
-	bool		EventProcess(const Event &event);
-	void		Flush();
-	bool		Create(const char *filename, Gfx::Color diffuse, Gfx::Color ambient, float level);
-	void		Draw();
+    bool        EventProcess(const Event &event);
+    void        Flush();
+    bool        Create(const char *filename, Gfx::Color diffuse, Gfx::Color ambient, float level);
+    void        Draw();
 
-	bool		SetLevel(float level);
-	float		RetLevel();
+    bool        SetLevel(float level);
+    float       RetLevel();
 
-	void		SetEnable(bool bEnable);
-	bool		RetEnable();
-
-protected:
-	bool		EventFrame(const Event &event);
-	void		AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep, Math::Point &uv1, Math::Point &uv2);
-	bool		CreateLine(int x, int y, int len);
+    void        SetEnable(bool bEnable);
+    bool        RetEnable();
 
 protected:
-	CInstanceManager*	m_iMan;
-	CEngine*		m_engine;
-	CTerrain*		m_terrain;
+    bool        EventFrame(const Event &event);
+    void        AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep, Math::Point &uv1, Math::Point &uv2);
+    bool        CreateLine(int x, int y, int len);
 
-	char			m_filename[100];
-	float			m_level;		// overall level
-	Math::Point			m_speed;		// feedrate (wind)
-	Gfx::Color		m_diffuse;		// diffuse color
-	Gfx::Color		m_ambient;		// ambient color
-	float			m_time;
-	float			m_lastTest;
-	int				m_subdiv;
+protected:
+    CInstanceManager*   m_iMan;
+    CEngine*        m_engine;
+    CTerrain*       m_terrain;
 
-	Math::Vector		m_wind;			// wind speed
-	int			m_brick;		// brick mosaic
-	float			m_size;			// size of a brick element
+    char            m_filename[100];
+    float           m_level;        // overall level
+    Math::Point         m_speed;        // feedrate (wind)
+    Gfx::Color      m_diffuse;      // diffuse color
+    Gfx::Color      m_ambient;      // ambient color
+    float           m_time;
+    float           m_lastTest;
+    int             m_subdiv;
 
-	int			m_lineUsed;
-	CloudLine		m_line[MAXCLOUDLINE];
+    Math::Vector        m_wind;         // wind speed
+    int         m_brick;        // brick mosaic
+    float           m_size;         // size of a brick element
 
-	bool			m_bEnable;
+    int         m_lineUsed;
+    CloudLine       m_line[MAXCLOUDLINE];
+
+    bool            m_bEnable;
 };
 
 

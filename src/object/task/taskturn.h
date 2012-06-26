@@ -26,21 +26,21 @@
 class CTaskTurn : public CTask
 {
 public:
-	CTaskTurn(CInstanceManager* iMan, CObject* object);
-	~CTaskTurn();
+    CTaskTurn(CInstanceManager* iMan, CObject* object);
+    ~CTaskTurn();
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	Error	Start(float angle);
-	Error	IsEnded();
-
-protected:
+    Error   Start(float angle);
+    Error   IsEnded();
 
 protected:
-	float		m_angle;
-	float		m_startAngle;
-	float		m_finalAngle;
-	bool		m_bLeft;
-	bool		m_bError;
+
+protected:
+    float       m_angle;
+    float       m_startAngle;
+    float       m_finalAngle;
+    bool        m_bLeft;
+    bool        m_bError;
 };
 

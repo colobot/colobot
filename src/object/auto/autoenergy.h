@@ -25,11 +25,11 @@
 
 enum AutoEnergyPhase
 {
-	AENP_STOP		= 1,
-	AENP_WAIT		= 2,
-	AENP_BLITZ		= 3,
-	AENP_CREATE		= 4,
-	AENP_SMOKE		= 5,
+    AENP_STOP       = 1,
+    AENP_WAIT       = 2,
+    AENP_BLITZ      = 3,
+    AENP_CREATE     = 4,
+    AENP_SMOKE      = 5,
 };
 
 
@@ -37,35 +37,35 @@ enum AutoEnergyPhase
 class CAutoEnergy : public CAuto
 {
 public:
-	CAutoEnergy(CInstanceManager* iMan, CObject* object);
-	~CAutoEnergy();
+    CAutoEnergy(CInstanceManager* iMan, CObject* object);
+    ~CAutoEnergy();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	void		UpdateInterface(float rTime);
-
-	CObject*	SearchMetal();
-	bool		SearchVehicle();
-	void		CreatePower();
-	CObject*	SearchPower();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoEnergyPhase		m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastUpdateTime;
-	float				m_lastParticule;
-	int					m_partiSphere;
+    void        UpdateInterface(float rTime);
+
+    CObject*    SearchMetal();
+    bool        SearchVehicle();
+    void        CreatePower();
+    CObject*    SearchPower();
+
+protected:
+    AutoEnergyPhase     m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastUpdateTime;
+    float               m_lastParticule;
+    int                 m_partiSphere;
 };
 

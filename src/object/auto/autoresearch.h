@@ -25,8 +25,8 @@
 
 enum AutoResearchPhase
 {
-	ALP_WAIT		= 1,
-	ALP_SEARCH		= 2,	// research in progress
+    ALP_WAIT        = 1,
+    ALP_SEARCH      = 2,    // research in progress
 };
 
 
@@ -34,37 +34,37 @@ enum AutoResearchPhase
 class CAutoResearch : public CAuto
 {
 public:
-	CAutoResearch(CInstanceManager* iMan, CObject* object);
-	~CAutoResearch();
+    CAutoResearch(CInstanceManager* iMan, CObject* object);
+    ~CAutoResearch();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	void		UpdateInterface();
-	void		UpdateInterface(float rTime);
-	void		OkayButton(CWindow *pw, EventMsg event);
-	bool		TestResearch(EventMsg event);
-	void		SetResearch(EventMsg event);
-	void		FireStopUpdate(float progress, bool bLightOn);
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoResearchPhase	m_phase;
-	float				m_progress;
-	float				m_speed;
-	float				m_timeVirus;
-	float				m_lastUpdateTime;
-	float				m_lastParticule;
-	EventMsg			m_research;
-	int					m_partiStop[6];
-	int					m_channelSound;
+    void        UpdateInterface();
+    void        UpdateInterface(float rTime);
+    void        OkayButton(CWindow *pw, EventMsg event);
+    bool        TestResearch(EventMsg event);
+    void        SetResearch(EventMsg event);
+    void        FireStopUpdate(float progress, bool bLightOn);
+
+protected:
+    AutoResearchPhase   m_phase;
+    float               m_progress;
+    float               m_speed;
+    float               m_timeVirus;
+    float               m_lastUpdateTime;
+    float               m_lastParticule;
+    EventMsg            m_research;
+    int                 m_partiStop[6];
+    int                 m_channelSound;
 };
 

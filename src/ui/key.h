@@ -29,24 +29,24 @@ class CD3DEngine;
 class CKey : public CControl
 {
 public:
-	CKey(CInstanceManager* iMan);
-	virtual ~CKey();
+    CKey(CInstanceManager* iMan);
+    virtual ~CKey();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetKey(int option, int key);
-	int		RetKey(int option);
-
-protected:
-	bool	TestKey(int key);
+    void    SetKey(int option, int key);
+    int     RetKey(int option);
 
 protected:
-	int		m_key[2];
-	bool	m_bCatch;
+    bool    TestKey(int key);
+
+protected:
+    int     m_key[2];
+    bool    m_bCatch;
 };
 
 

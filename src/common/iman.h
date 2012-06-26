@@ -25,9 +25,9 @@
 
 struct BaseClass
 {
-	int		totalPossible;
-	int		totalUsed;
-	void**	classPointer;
+    int     totalPossible;
+    int     totalUsed;
+    void**  classPointer;
 };
 
 
@@ -35,21 +35,21 @@ struct BaseClass
 class CInstanceManager
 {
 public:
-	CInstanceManager();
-	~CInstanceManager();
+    CInstanceManager();
+    ~CInstanceManager();
 
-	void	Flush();
-	void	Flush(ClassType classType);
-	bool	AddInstance(ClassType classType, void* pointer, int max=1);
-	bool	DeleteInstance(ClassType classType, void* pointer);
-	void*	SearchInstance(ClassType classType, int rank=0);
+    void    Flush();
+    void    Flush(ClassType classType);
+    bool    AddInstance(ClassType classType, void* pointer, int max=1);
+    bool    DeleteInstance(ClassType classType, void* pointer);
+    void*   SearchInstance(ClassType classType, int rank=0);
 
-
-protected:
-	void	Compress(ClassType classType);
 
 protected:
-	BaseClass	m_table[CLASS_MAX];
+    void    Compress(ClassType classType);
+
+protected:
+    BaseClass   m_table[CLASS_MAX];
 };
 
 

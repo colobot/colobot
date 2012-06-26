@@ -35,209 +35,209 @@ namespace Math
 /** \struct Vector math/vector.h
     \brief 3D (3x1) vector
 
-  Represents a universal 3x1 vector that can be used in OpenGL and DirectX engines.
-  Contains the required methods for operating on vectors.
+    Represents a universal 3x1 vector that can be used in OpenGL and DirectX engines.
+    Contains the required methods for operating on vectors.
 
-  All methods are made inline to maximize optimization.
+    All methods are made inline to maximize optimization.
 
-  Unit tests for the structure and related functions are in module: math/test/vector_test.cpp.
+    Unit tests for the structure and related functions are in module: math/test/vector_test.cpp.
 
  */
 struct Vector
 {
-  //! X - 1st coord
-  float x;
-  //! Y - 2nd coord
-  float y;
-  //! Z - 3rd coord
-  float z;
+    //! X - 1st coord
+    float x;
+    //! Y - 2nd coord
+    float y;
+    //! Z - 3rd coord
+    float z;
 
-  //! Creates a zero vector (0, 0, 0)
-  inline Vector()
-  {
-    LoadZero();
-  }
+    //! Creates a zero vector (0, 0, 0)
+    inline Vector()
+    {
+        LoadZero();
+    }
 
-  //! Creates a vector from given values
-  inline explicit Vector(float x, float y, float z)
-  {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-  }
+    //! Creates a vector from given values
+    inline explicit Vector(float x, float y, float z)
+    {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
 
-  //! Loads the zero vector (0, 0, 0)
-  inline void LoadZero()
-  {
-    x = y = z = 0.0f;
-  }
+    //! Loads the zero vector (0, 0, 0)
+    inline void LoadZero()
+    {
+        x = y = z = 0.0f;
+    }
 
-  //! Returns the vector length
-  inline float Length() const
-  {
-    return sqrtf(x*x + y*y + z*z);
-  }
+    //! Returns the vector length
+    inline float Length() const
+    {
+        return sqrtf(x*x + y*y + z*z);
+    }
 
-  //! Normalizes the vector
-  inline void Normalize()
-  {
-    float l = Length();
-    if (IsZero(l))
-      return;
+    //! Normalizes the vector
+    inline void Normalize()
+    {
+        float l = Length();
+        if (IsZero(l))
+            return;
 
-    x /= l;
-    y /= l;
-    z /= l;
-  }
+        x /= l;
+        y /= l;
+        z /= l;
+    }
 
-  //! Calculates the cross product with another vector
-  /** \a right right-hand side vector
-      \returns the cross product*/
-  inline Vector CrossMultiply(const Vector &right) const
-  {
-    float px = y * right.z - z * right.y;
-    float py = z * right.x - x * right.z;
-    float pz = x * right.y - y * right.x;
-    return Vector(px, py, pz);
-  }
+    //! Calculates the cross product with another vector
+    /** \a right right-hand side vector
+            \returns the cross product*/
+    inline Vector CrossMultiply(const Vector &right) const
+    {
+        float px = y * right.z - z * right.y;
+        float py = z * right.x - x * right.z;
+        float pz = x * right.y - y * right.x;
+        return Vector(px, py, pz);
+    }
 
-  //! Calculates the dot product with another vector
-  /** \a right right-hand side vector
-      \returns the dot product */
-  inline float DotMultiply(const Vector &right) const
-  {
-    return x * right.x + y * right.y + z * right.z;
-  }
+    //! Calculates the dot product with another vector
+    /** \a right right-hand side vector
+            \returns the dot product */
+    inline float DotMultiply(const Vector &right) const
+    {
+        return x * right.x + y * right.y + z * right.z;
+    }
 
-  //! Returns the cosine of angle between this and another vector
-  inline float CosAngle(const Vector &right) const
-  {
-    return DotMultiply(right) / (Length() * right.Length());
-  }
+    //! Returns the cosine of angle between this and another vector
+    inline float CosAngle(const Vector &right) const
+    {
+        return DotMultiply(right) / (Length() * right.Length());
+    }
 
-  //! Returns angle (in radians) between this and another vector
-  inline float Angle(const Vector &right) const
-  {
-    return acos(CosAngle(right));
-  }
+    //! Returns angle (in radians) between this and another vector
+    inline float Angle(const Vector &right) const
+    {
+        return acos(CosAngle(right));
+    }
 
 
-  /* Operators */
+    /* Operators */
 
-  //! Returns the inverted vector
-  inline Vector operator-() const
-  {
-    return Vector(-x, -y, -z);
-  }
+    //! Returns the inverted vector
+    inline Vector operator-() const
+    {
+        return Vector(-x, -y, -z);
+    }
 
-  //! Adds the given vector
-  inline const Vector& operator+=(const Vector &right)
-  {
-    x += right.x;
-    y += right.y;
-    z += right.z;
-    return *this;
-  }
+    //! Adds the given vector
+    inline const Vector& operator+=(const Vector &right)
+    {
+        x += right.x;
+        y += right.y;
+        z += right.z;
+        return *this;
+    }
 
-  //! Adds two vectors
-  inline friend const Vector operator+(const Vector &left, const Vector &right)
-  {
-    return Vector(left.x + right.x, left.y + right.y, left.z + right.z);
-  }
+    //! Adds two vectors
+    inline friend const Vector operator+(const Vector &left, const Vector &right)
+    {
+        return Vector(left.x + right.x, left.y + right.y, left.z + right.z);
+    }
 
-  //! Subtracts the given vector
-  inline const Vector& operator-=(const Vector &right)
-  {
-    x -= right.x;
-    y -= right.y;
-    z -= right.z;
-    return *this;
-  }
+    //! Subtracts the given vector
+    inline const Vector& operator-=(const Vector &right)
+    {
+        x -= right.x;
+        y -= right.y;
+        z -= right.z;
+        return *this;
+    }
 
-  //! Subtracts two vectors
-  inline friend const Vector operator-(const Vector &left, const Vector &right)
-  {
-    return Vector(left.x - right.x, left.y - right.y, left.z - right.z);
-  }
+    //! Subtracts two vectors
+    inline friend const Vector operator-(const Vector &left, const Vector &right)
+    {
+        return Vector(left.x - right.x, left.y - right.y, left.z - right.z);
+    }
 
-  //! Multiplies by given scalar
-  inline const Vector& operator*=(const float &right)
-  {
-    x *= right;
-    y *= right;
-    z *= right;
-    return *this;
-  }
+    //! Multiplies by given scalar
+    inline const Vector& operator*=(const float &right)
+    {
+        x *= right;
+        y *= right;
+        z *= right;
+        return *this;
+    }
 
-  //! Multiplies vector by scalar
-  inline friend const Vector operator*(const float &left, const Vector &right)
-  {
-    return Vector(left * right.x, left * right.y, left * right.z);
-  }
+    //! Multiplies vector by scalar
+    inline friend const Vector operator*(const float &left, const Vector &right)
+    {
+        return Vector(left * right.x, left * right.y, left * right.z);
+    }
 
-  //! Multiplies vector by scalar
-  inline friend const Vector operator*(const Vector &left, const float &right)
-  {
-    return Vector(left.x * right, left.y * right, left.z * right);
-  }
+    //! Multiplies vector by scalar
+    inline friend const Vector operator*(const Vector &left, const float &right)
+    {
+        return Vector(left.x * right, left.y * right, left.z * right);
+    }
 
-  //! Divides by given scalar
-  inline const Vector& operator/=(const float &right)
-  {
-    x /= right;
-    y /= right;
-    z /= right;
-    return *this;
-  }
+    //! Divides by given scalar
+    inline const Vector& operator/=(const float &right)
+    {
+        x /= right;
+        y /= right;
+        z /= right;
+        return *this;
+    }
 
-  //! Divides vector by scalar
-  inline friend const Vector operator/(const Vector &left, const float &right)
-  {
-    return Vector(left.x / right, left.y / right, left.z / right);
-  }
+    //! Divides vector by scalar
+    inline friend const Vector operator/(const Vector &left, const float &right)
+    {
+        return Vector(left.x / right, left.y / right, left.z / right);
+    }
 
 }; // struct Point
 
 //! Checks if two vectors are equal within given \a tolerance
 inline bool VectorsEqual(const Vector &a, const Vector &b, float tolerance = TOLERANCE)
 {
-  return IsEqual(a.x, b.x, tolerance)
-      && IsEqual(a.y, b.y, tolerance)
-      && IsEqual(a.z, b.z, tolerance);
+    return IsEqual(a.x, b.x, tolerance)
+            && IsEqual(a.y, b.y, tolerance)
+            && IsEqual(a.z, b.z, tolerance);
 }
 
 //! Convenience function for getting normalized vector
 inline Vector Normalize(const Vector &v)
 {
-  Vector result = v;
-  result.Normalize();
-  return result;
+    Vector result = v;
+    result.Normalize();
+    return result;
 }
 
 //! Convenience function for calculating dot product
 inline float DotProduct(const Vector &left, const Vector &right)
 {
-  return left.DotMultiply(right);
+    return left.DotMultiply(right);
 }
 
 //! Convenience function for calculating cross product
 inline Vector CrossProduct(const Vector &left, const Vector &right)
 {
-  return left.CrossMultiply(right);
+    return left.CrossMultiply(right);
 }
 
 //! Convenience function for calculating angle (in radians) between two vectors
 inline float Angle(const Vector &a, const Vector &b)
 {
-  return a.Angle(b);
+    return a.Angle(b);
 }
 
 //! Returns the distance between the ends of two vectors
 inline float Distance(const Vector &a, const Vector &b)
 {
-  return sqrtf( (a.x-b.x)*(a.x-b.x) +
-                (a.y-b.y)*(a.y-b.y) +
-                (a.z-b.z)*(a.z-b.z) );
+    return sqrtf( (a.x-b.x)*(a.x-b.x) +
+                  (a.y-b.y)*(a.y-b.y) +
+                  (a.z-b.z)*(a.z-b.z) );
 }
 
 /* @} */ // end of group

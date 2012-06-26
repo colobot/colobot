@@ -32,12 +32,12 @@ namespace Gfx {
  */
 struct Material
 {
-	//! Diffuse color
-	Gfx::Color diffuse;
-	//! Ambient color
-	Gfx::Color ambient;
-	//! Specular color
-	Gfx::Color specular;
+    //! Diffuse color
+    Gfx::Color diffuse;
+    //! Ambient color
+    Gfx::Color ambient;
+    //! Specular color
+    Gfx::Color specular;
 };
 
 }; // namespace Gfx

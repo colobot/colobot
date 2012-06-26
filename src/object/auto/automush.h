@@ -25,11 +25,11 @@
 
 enum AutoMushPhase
 {
-	AMP_WAIT		= 1,
-	AMP_SNIF		= 2,
-	AMP_ZOOM		= 3,
-	AMP_FIRE		= 4,
-	AMP_SMOKE		= 5,
+    AMP_WAIT        = 1,
+    AMP_SNIF        = 2,
+    AMP_ZOOM        = 3,
+    AMP_FIRE        = 4,
+    AMP_SMOKE       = 5,
 };
 
 
@@ -37,25 +37,25 @@ enum AutoMushPhase
 class CAutoMush : public CAuto
 {
 public:
-	CAutoMush(CInstanceManager* iMan, CObject* object);
-	~CAutoMush();
+    CAutoMush(CInstanceManager* iMan, CObject* object);
+    ~CAutoMush();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	bool		SearchTarget();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoMushPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_lastParticule;
+    bool        SearchTarget();
+
+protected:
+    AutoMushPhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_lastParticule;
 };
 

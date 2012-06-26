@@ -29,22 +29,22 @@ class CD3DEngine;
 class CImage : public CControl
 {
 public:
-	CImage(CInstanceManager* iMan);
-	virtual ~CImage();
+    CImage(CInstanceManager* iMan);
+    virtual ~CImage();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetFilenameImage(char *name);
-	char*	RetFilenameImage();
-
-protected:
+    void    SetFilenameImage(char *name);
+    char*   RetFilenameImage();
 
 protected:
-	char	m_filename[100];
+
+protected:
+    char    m_filename[100];
 };
 
 

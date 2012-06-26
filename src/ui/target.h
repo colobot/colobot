@@ -30,17 +30,17 @@ class CObject;
 class CTarget : public CControl
 {
 public:
-	CTarget(CInstanceManager* iMan);
-	~CTarget();
+    CTarget(CInstanceManager* iMan);
+    ~CTarget();
 
-	bool		Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool		EventProcess(const Event &event);
-	void		Draw();
-	bool		GetTooltip(Math::Point pos, char* name);
+    bool        EventProcess(const Event &event);
+    void        Draw();
+    bool        GetTooltip(Math::Point pos, char* name);
 
 protected:
-	CObject*	DetectFriendObject(Math::Point pos);
+    CObject*    DetectFriendObject(Math::Point pos);
 
 protected:
 };

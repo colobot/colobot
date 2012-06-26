@@ -25,10 +25,10 @@
 
 enum AutoRepairPhase
 {
-	ARP_WAIT		= 1,	// expected metal
-	ARP_DOWN		= 2,	// down the cover
-	ARP_REPAIR		= 3,	// repair the vehicle
-	ARP_UP			= 4,	// back cover
+    ARP_WAIT        = 1,    // expected metal
+    ARP_DOWN        = 2,    // down the cover
+    ARP_REPAIR      = 3,    // repair the vehicle
+    ARP_UP          = 4,    // back cover
 
 };
 
@@ -37,29 +37,29 @@ enum AutoRepairPhase
 class CAutoRepair : public CAuto
 {
 public:
-	CAutoRepair(CInstanceManager* iMan, CObject* object);
-	~CAutoRepair();
+    CAutoRepair(CInstanceManager* iMan, CObject* object);
+    ~CAutoRepair();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	CObject*	SearchVehicle();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoRepairPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
+    CObject*    SearchVehicle();
+
+protected:
+    AutoRepairPhase m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticule;
 };
 
 

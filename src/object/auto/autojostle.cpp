@@ -25,9 +25,9 @@
 // Object's constructor.
 
 CAutoJostle::CAutoJostle(CInstanceManager* iMan, CObject* object)
-						   : CAuto(iMan, object)
+                           : CAuto(iMan, object)
 {
-	Init();
+    Init();
 }
 
 // Object's destructor.
@@ -41,7 +41,7 @@ CAutoJostle::~CAutoJostle()
 
 void CAutoJostle::DeleteObject(bool bAll)
 {
-	CAuto::DeleteObject(bAll);
+    CAuto::DeleteObject(bAll);
 }
 
 
@@ -49,10 +49,10 @@ void CAutoJostle::DeleteObject(bool bAll)
 
 void CAutoJostle::Init()
 {
-	m_time = 0.0f;
-	m_error = ERR_CONTINUE;
+    m_time = 0.0f;
+    m_error = ERR_CONTINUE;
 
-	CAuto::Init();
+    CAuto::Init();
 }
 
 
@@ -60,23 +60,23 @@ void CAutoJostle::Init()
 
 void CAutoJostle::Start(int param, float force)
 {
-	ObjectType	type;
+    ObjectType  type;
 
-	if ( force < 0.0f )  force = 0.0f;
-	if ( force > 1.0f )  force = 1.0f;
+    if ( force < 0.0f )  force = 0.0f;
+    if ( force > 1.0f )  force = 1.0f;
 
-	m_force = force;
-	m_progress = 0.0f;
-	m_speed = 1.0f/(0.5f+force*1.0f);  // 0.5 .. 1.5
-	m_time = 0.0f;
-	m_error = ERR_CONTINUE;
+    m_force = force;
+    m_progress = 0.0f;
+    m_speed = 1.0f/(0.5f+force*1.0f);  // 0.5 .. 1.5
+    m_time = 0.0f;
+    m_error = ERR_CONTINUE;
 
-	type = m_object->RetType();
-	if ( type >= OBJECT_PLANT5 &&
-		 type <= OBJECT_PLANT7 )  // clover?
-	{
-		m_force *= 3.0f;
-	}
+    type = m_object->RetType();
+    if ( type >= OBJECT_PLANT5 &&
+         type <= OBJECT_PLANT7 )  // clover?
+    {
+        m_force *= 3.0f;
+    }
 }
 
 
@@ -84,51 +84,51 @@ void CAutoJostle::Start(int param, float force)
 
 bool CAutoJostle::EventProcess(const Event &event)
 {
-	Math::Vector	dir;
-	float		factor, angle, zoom;
+    Math::Vector    dir;
+    float       factor, angle, zoom;
 
-	CAuto::EventProcess(event);
+    CAuto::EventProcess(event);
 
-	if ( m_engine->RetPause() )  return true;
-	if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->RetPause() )  return true;
+    if ( event.event != EVENT_FRAME )  return true;
 
-	if ( m_progress < 1.0f )
-	{
-		m_progress += event.rTime*m_speed;
+    if ( m_progress < 1.0f )
+    {
+        m_progress += event.rTime*m_speed;
 
-		if ( m_progress < 0.5f )
-		{
-			factor = m_progress/0.5f;
-		}
-		else
-		{
-			factor = 2.0f-m_progress/0.5f;
-		}
-		factor *= m_force;
+        if ( m_progress < 0.5f )
+        {
+            factor = m_progress/0.5f;
+        }
+        else
+        {
+            factor = 2.0f-m_progress/0.5f;
+        }
+        factor *= m_force;
 
-		dir.x = sinf(m_progress*Math::PI*4.0f);
-		dir.z = cosf(m_progress*Math::PI*4.0f);
+        dir.x = sinf(m_progress*Math::PI*4.0f);
+        dir.z = cosf(m_progress*Math::PI*4.0f);
 
-		angle = sinf(m_time*10.0f)*factor*0.04f;
-		m_object->SetAngleX(0, angle*dir.z);
-		m_object->SetAngleZ(0, angle*dir.x);
+        angle = sinf(m_time*10.0f)*factor*0.04f;
+        m_object->SetAngleX(0, angle*dir.z);
+        m_object->SetAngleZ(0, angle*dir.x);
 
-		zoom = 1.0f+sinf(m_time*8.0f)*factor*0.06f;
-		m_object->SetZoomX(0, zoom);
-		zoom = 1.0f+sinf(m_time*5.0f)*factor*0.06f;
-		m_object->SetZoomY(0, zoom);
-		zoom = 1.0f+sinf(m_time*7.0f)*factor*0.06f;
-		m_object->SetZoomZ(0, zoom);
-	}
-	else
-	{
-		m_object->SetAngleX(0, 0.0f);
-		m_object->SetAngleZ(0, 0.0f);
-		m_object->SetZoom(0, Math::Vector(1.0f, 1.0f, 1.0f));
-		m_error = ERR_STOP;
-	}
+        zoom = 1.0f+sinf(m_time*8.0f)*factor*0.06f;
+        m_object->SetZoomX(0, zoom);
+        zoom = 1.0f+sinf(m_time*5.0f)*factor*0.06f;
+        m_object->SetZoomY(0, zoom);
+        zoom = 1.0f+sinf(m_time*7.0f)*factor*0.06f;
+        m_object->SetZoomZ(0, zoom);
+    }
+    else
+    {
+        m_object->SetAngleX(0, 0.0f);
+        m_object->SetAngleZ(0, 0.0f);
+        m_object->SetZoom(0, Math::Vector(1.0f, 1.0f, 1.0f));
+        m_error = ERR_STOP;
+    }
 
-	return true;
+    return true;
 }
 
 
@@ -136,7 +136,7 @@ bool CAutoJostle::EventProcess(const Event &event)
 
 Error CAutoJostle::IsEnded()
 {
-	return m_error;
+    return m_error;
 }
 
 

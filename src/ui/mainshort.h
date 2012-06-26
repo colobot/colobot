@@ -34,29 +34,29 @@ class CObject;
 class CMainShort
 {
 public:
-	CMainShort(CInstanceManager* iMan);
-	~CMainShort();
+    CMainShort(CInstanceManager* iMan);
+    ~CMainShort();
 
-	void		SetMode(bool bBuilding);
-	void		FlushShortcuts();
-	bool		CreateShortcuts();
-	bool		UpdateShortcuts();
-	void		SelectShortcut(EventMsg event);
-	void		SelectNext();
-	CObject*	DetectShort(Math::Point pos);
-	void		SetHilite(CObject* pObj);
-
-protected:
+    void        SetMode(bool bBuilding);
+    void        FlushShortcuts();
+    bool        CreateShortcuts();
+    bool        UpdateShortcuts();
+    void        SelectShortcut(EventMsg event);
+    void        SelectNext();
+    CObject*    DetectShort(Math::Point pos);
+    void        SetHilite(CObject* pObj);
 
 protected:
-	CInstanceManager* m_iMan;
-	CEvent*			m_event;
-	CD3DEngine*		m_engine;
-	CInterface*		m_interface;
-	CRobotMain*		m_main;
 
-	CObject*		m_shortcuts[20];
-	bool			m_bBuilding;
+protected:
+    CInstanceManager* m_iMan;
+    CEvent*         m_event;
+    CD3DEngine*     m_engine;
+    CInterface*     m_interface;
+    CRobotMain*     m_main;
+
+    CObject*        m_shortcuts[20];
+    bool            m_bBuilding;
 };
 
 

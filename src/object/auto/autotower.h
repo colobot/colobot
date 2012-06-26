@@ -25,11 +25,11 @@
 
 enum AutoTowerPhase
 {
-	ATP_WAIT		= 1,
-	ATP_ZERO		= 2,	// more energy
-	ATP_SEARCH		= 3,	// search a target
-	ATP_TURN		= 4,	// turns to the target
-	ATP_FIRE		= 5,	// shoots on the target
+    ATP_WAIT        = 1,
+    ATP_ZERO        = 2,    // more energy
+    ATP_SEARCH      = 3,    // search a target
+    ATP_TURN        = 4,    // turns to the target
+    ATP_FIRE        = 5,    // shoots on the target
 };
 
 
@@ -37,38 +37,38 @@ enum AutoTowerPhase
 class CAutoTower : public CAuto
 {
 public:
-	CAutoTower(CInstanceManager* iMan, CObject* object);
-	~CAutoTower();
+    CAutoTower(CInstanceManager* iMan, CObject* object);
+    ~CAutoTower();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	void		UpdateInterface(float rTime);
-
-	CObject*	SearchTarget(Math::Vector &impact);
-	void		FireStopUpdate(float progress, bool bLightOn);
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoTowerPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastUpdateTime;
-	float			m_lastParticule;
-	Math::Vector		m_targetPos;
-	float			m_angleYactual;
-	float			m_angleZactual;
-	float			m_angleYfinal;
-	float			m_angleZfinal;
-	int				m_partiStop[4];
+    void        UpdateInterface(float rTime);
+
+    CObject*    SearchTarget(Math::Vector &impact);
+    void        FireStopUpdate(float progress, bool bLightOn);
+
+protected:
+    AutoTowerPhase  m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastUpdateTime;
+    float           m_lastParticule;
+    Math::Vector        m_targetPos;
+    float           m_angleYactual;
+    float           m_angleZactual;
+    float           m_angleYfinal;
+    float           m_angleZfinal;
+    int             m_partiStop[4];
 };
 

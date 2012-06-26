@@ -29,22 +29,22 @@ class CD3DEngine;
 class CCompass : public CControl
 {
 public:
-	CCompass(CInstanceManager* iMan);
-	virtual ~CCompass();
+    CCompass(CInstanceManager* iMan);
+    virtual ~CCompass();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetDirection(float dir);
-	float	RetDirection();
-
-protected:
+    void    SetDirection(float dir);
+    float   RetDirection();
 
 protected:
-	float	m_dir;
+
+protected:
+    float   m_dir;
 };
 
 

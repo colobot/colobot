@@ -26,27 +26,27 @@
 class CTaskFire : public CTask
 {
 public:
-	CTaskFire(CInstanceManager* iMan, CObject* object);
-	~CTaskFire();
+    CTaskFire(CInstanceManager* iMan, CObject* object);
+    ~CTaskFire();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start(float delay);
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
+    Error       Start(float delay);
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	float		m_delay;
-	float		m_progress;
-	bool		m_bError;
-	bool		m_bRay;
-	bool		m_bOrganic;
-	float		m_time;
-	float		m_speed;
-	float		m_lastParticule;
-	float		m_lastSound;
-	int		m_soundChannel;
+
+protected:
+    float       m_delay;
+    float       m_progress;
+    bool        m_bError;
+    bool        m_bRay;
+    bool        m_bOrganic;
+    float       m_time;
+    float       m_speed;
+    float       m_lastParticule;
+    float       m_lastSound;
+    int     m_soundChannel;
 };
 

@@ -26,15 +26,15 @@
 
 enum TaskSearchHand
 {
-	TSH_UP		= 1,	// sensor at the top
-	TSH_DOWN	= 2,	// sensor at the bottom
+    TSH_UP      = 1,    // sensor at the top
+    TSH_DOWN    = 2,    // sensor at the bottom
 };
 
 enum TaskSearchPhase
 {
-	TSP_DOWN	= 1,	// descends
-	TSP_SEARCH	= 2,	// seeks
-	TSP_UP		= 3,	// rises
+    TSP_DOWN    = 1,    // descends
+    TSP_SEARCH  = 2,    // seeks
+    TSP_UP      = 3,    // rises
 };
 
 
@@ -42,29 +42,29 @@ enum TaskSearchPhase
 class CTaskSearch : public CTask
 {
 public:
-	CTaskSearch(CInstanceManager* iMan, CObject* object);
-	~CTaskSearch();
+    CTaskSearch(CInstanceManager* iMan, CObject* object);
+    ~CTaskSearch();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start();
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
-	void	InitAngle();
-	bool	CreateMark();
-	void	DeleteMark(ObjectType type);
+    Error       Start();
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	TaskSearchHand	m_hand;
-	TaskSearchPhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_time;
-	float			m_lastParticule;
-	float			m_initialAngle[3];
-	float			m_finalAngle[3];
-	bool			m_bError;
+    void    InitAngle();
+    bool    CreateMark();
+    void    DeleteMark(ObjectType type);
+
+protected:
+    TaskSearchHand  m_hand;
+    TaskSearchPhase m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_time;
+    float           m_lastParticule;
+    float           m_initialAngle[3];
+    float           m_finalAngle[3];
+    bool            m_bError;
 };
 

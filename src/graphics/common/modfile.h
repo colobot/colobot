@@ -30,85 +30,85 @@ namespace Gfx {
 
 struct OldModelTriangle1
 {
-	char			bUsed;		// TRUE -> using
-	char			bSelect;	// TRUE -> selected
-	Vertex		p1;
-	Vertex		p2;
-	Vertex		p3;
-	Material	material;
-	char			texName[20];
-	float			min;
-	float			max;
-};		// length = 196 bytes
+    char            bUsed;      // TRUE -> using
+    char            bSelect;    // TRUE -> selected
+    Vertex      p1;
+    Vertex      p2;
+    Vertex      p3;
+    Material    material;
+    char            texName[20];
+    float           min;
+    float           max;
+};      // length = 196 bytes
 
 struct OldModelTriangle2
 {
-	char			bUsed;		// TRUE -> used
-	char			bSelect;	// TRUE -> selected
-	Vertex		p1;
-	Vertex		p2;
-	Vertex		p3;
-	Material	material;
-	char			texName[20];
-	float			min;
-	float			max;
-	long			state;
-	short			reserve1;
-	short			reserve2;
-	short			reserve3;
-	short			reserve4;
+    char            bUsed;      // TRUE -> used
+    char            bSelect;    // TRUE -> selected
+    Vertex      p1;
+    Vertex      p2;
+    Vertex      p3;
+    Material    material;
+    char            texName[20];
+    float           min;
+    float           max;
+    long            state;
+    short           reserve1;
+    short           reserve2;
+    short           reserve3;
+    short           reserve4;
 };
 
 struct ModelTriangle
 {
-	char			bUsed;		// TRUE -> used
-	char			bSelect;	// TRUE -> selected
-	VertexTex2		p1;
-	VertexTex2		p2;
-	VertexTex2		p3;
-	Material	material;
-	char			texName[20];
-	float			min;
-	float			max;
-	long			state;
-	short			texNum2;
-	short			reserve2;
-	short			reserve3;
-	short			reserve4;
-};		// length = 208 bytes
+    char            bUsed;      // TRUE -> used
+    char            bSelect;    // TRUE -> selected
+    VertexTex2      p1;
+    VertexTex2      p2;
+    VertexTex2      p3;
+    Material    material;
+    char            texName[20];
+    float           min;
+    float           max;
+    long            state;
+    short           texNum2;
+    short           reserve2;
+    short           reserve3;
+    short           reserve4;
+};      // length = 208 bytes
 
 
 
 
 class CModFile {
 public:
-	CModFile(CInstanceManager* iMan);
-	~CModFile();
+    CModFile(CInstanceManager* iMan);
+    ~CModFile();
 
-	bool			ReadDXF(char *filename, float min, float max);
-	bool			AddModel(char *filename, int first, bool bEdit=false, bool bMeta=true);
-	bool			ReadModel(char *filename, bool bEdit=false, bool bMeta=true);
-	bool			WriteModel(char *filename);
+    bool            ReadDXF(char *filename, float min, float max);
+    bool            AddModel(char *filename, int first, bool bEdit=false, bool bMeta=true);
+    bool            ReadModel(char *filename, bool bEdit=false, bool bMeta=true);
+    bool            WriteModel(char *filename);
 
-	bool			CreateEngineObject(int objRank, int addState=0);
-	void			Mirror();
+    bool            CreateEngineObject(int objRank, int addState=0);
+    void            Mirror();
 
-	void			SetTriangleUsed(int total);
-	int				RetTriangleUsed();
-	int				RetTriangleMax();
-	ModelTriangle*	RetTriangleList();
+    void            SetTriangleUsed(int total);
+    int             RetTriangleUsed();
+    int             RetTriangleMax();
+    ModelTriangle*  RetTriangleList();
 
-	float			RetHeight(Math::Vector pos);
-
-protected:
-	bool			CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max);
+    float           RetHeight(Math::Vector pos);
 
 protected:
-	CInstanceManager* m_iMan;
-	CEngine*		m_engine;
+    bool            CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max);
 
-	ModelTriangle*	m_triangleTable;
-	int				m_triangleUsed;
+protected:
+    CInstanceManager* m_iMan;
+    CEngine*        m_engine;
+
+    ModelTriangle*  m_triangleTable;
+    int             m_triangleUsed;
 };
 
 };

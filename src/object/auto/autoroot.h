@@ -26,19 +26,19 @@
 class CAutoRoot : public CAuto
 {
 public:
-	CAutoRoot(CInstanceManager* iMan, CObject* object);
-	~CAutoRoot();
+    CAutoRoot(CInstanceManager* iMan, CObject* object);
+    ~CAutoRoot();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
-
-protected:
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
 protected:
-	float			m_lastParticule;
-	Math::Vector		m_center;
+
+protected:
+    float           m_lastParticule;
+    Math::Vector        m_center;
 };
 

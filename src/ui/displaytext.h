@@ -33,10 +33,10 @@ class CSound;
 
 enum TextType
 {
-	TT_ERROR	= 1,
-	TT_WARNING	= 2,
-	TT_INFO		= 3,
-	TT_MESSAGE	= 4,
+    TT_ERROR    = 1,
+    TT_WARNING  = 2,
+    TT_INFO     = 3,
+    TT_MESSAGE  = 4,
 };
 
 const int MAXDTLINE = 4;
@@ -45,52 +45,52 @@ const int MAXDTLINE = 4;
 class CDisplayText
 {
 public:
-	CDisplayText(CInstanceManager* iMan);
-	~CDisplayText();
+    CDisplayText(CInstanceManager* iMan);
+    ~CDisplayText();
 
-	void		DeleteObject();
+    void        DeleteObject();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	void		DisplayError(Error err, CObject* pObj, float time=10.0f);
-	void		DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
-	void		DisplayText(char *text, CObject* pObj, float time=10.0f, TextType type=TT_INFO);
-	void		DisplayText(char *text, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f, TextType type=TT_INFO);
-	void		HideText(bool bHide);
-	void		ClearText();
-	bool		ClearLastText();
-	void		SetDelay(float factor);
-	void		SetEnable(bool bEnable);
+    void        DisplayError(Error err, CObject* pObj, float time=10.0f);
+    void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
+    void        DisplayText(char *text, CObject* pObj, float time=10.0f, TextType type=TT_INFO);
+    void        DisplayText(char *text, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f, TextType type=TT_INFO);
+    void        HideText(bool bHide);
+    void        ClearText();
+    bool        ClearLastText();
+    void        SetDelay(float factor);
+    void        SetEnable(bool bEnable);
 
-	Math::Vector	RetVisitGoal(EventMsg event);
-	float		RetVisitDist(EventMsg event);
-	float		RetVisitHeight(EventMsg event);
+    Math::Vector    RetVisitGoal(EventMsg event);
+    float       RetVisitDist(EventMsg event);
+    float       RetVisitHeight(EventMsg event);
 
-	float		RetIdealDist(CObject* pObj);
-	float		RetIdealHeight(CObject* pObj);
+    float       RetIdealDist(CObject* pObj);
+    float       RetIdealHeight(CObject* pObj);
 
-	void		ClearVisit();
-	void		SetVisit(EventMsg event);
-	bool		IsVisit(EventMsg event);
-
-protected:
-	CObject*	SearchToto();
+    void        ClearVisit();
+    void        SetVisit(EventMsg event);
+    bool        IsVisit(EventMsg event);
 
 protected:
-	CInstanceManager* m_iMan;
-	CD3DEngine*		m_engine;
-	CInterface*		m_interface;
-	CSound*			m_sound;
+    CObject*    SearchToto();
 
-	bool			m_bExist[MAXDTLINE];
-	float			m_time[MAXDTLINE];
-	Math::Vector		m_visitGoal[MAXDTLINE];
-	float			m_visitDist[MAXDTLINE];
-	float			m_visitHeight[MAXDTLINE];
+protected:
+    CInstanceManager* m_iMan;
+    CD3DEngine*     m_engine;
+    CInterface*     m_interface;
+    CSound*         m_sound;
 
-	bool			m_bHide;
-	bool			m_bEnable;
-	float			m_delayFactor;
+    bool            m_bExist[MAXDTLINE];
+    float           m_time[MAXDTLINE];
+    Math::Vector        m_visitGoal[MAXDTLINE];
+    float           m_visitDist[MAXDTLINE];
+    float           m_visitHeight[MAXDTLINE];
+
+    bool            m_bHide;
+    bool            m_bEnable;
+    float           m_delayFactor;
 };
 
 
