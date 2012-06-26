@@ -25,8 +25,8 @@
 #define _NET            FALSE
 #define _DEMO           FALSE       // DEMO only CoLoBoT (with _Full = FALSE)!
 
-#define _FRENCH         TRUE
-#define _ENGLISH        FALSE
+#define _FRENCH         FALSE
+#define _ENGLISH        TRUE
 #define _GERMAN         FALSE
 #define _WG             FALSE
 #define _POLISH         FALSE

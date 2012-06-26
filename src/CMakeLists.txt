@@ -123,7 +123,7 @@ window.cpp
 )
 
 # Change to DirectX SDK directory
-set(DXSDK_DIR "c:/dxsdk")
+set(DXSDK_DIR "c:/dev/dxsdk")
 
 include_directories(${DXSDK_DIR}/include)
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot ${DXSDK_DIR}/lib)
