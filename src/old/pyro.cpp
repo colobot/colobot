@@ -488,7 +488,7 @@ bool CPyro::Create(PyroType type, CObject* pObj, float force)
     }
 
     if ( m_type == PT_SHOTW )  return true;
-    
+
     // Generates the triangles of the explosion.
     if ( m_type == PT_FRAGT  ||
          m_type == PT_FRAGO  ||
@@ -1200,7 +1200,7 @@ bool CPyro::EventProcess(const Event &event)
             dim.x = (Math::Rand()*2.5f+2.5f)*(1.0f-m_progress*0.9f);
             dim.y = dim.x;
             pos.y += dim.y;
-            m_particule->CreateParticule(pos, speed, dim, 
+            m_particule->CreateParticule(pos, speed, dim,
                                          (ParticuleType)(PARTILENS1+rand()%4),
                                          Math::Rand()*2.5f+2.5f,
                                          Math::Rand()*5.0f+5.0f, 0.0f);
@@ -1390,7 +1390,7 @@ void CPyro::CutObjectLink(CObject* pObj)
 
 Error CPyro::IsEnded()
 {
-    // Destroys the object that exploded. 
+    // Destroys the object that exploded.
     //It should not be destroyed at the end of the Create,
     //because it is sometimes the object itself that makes the Create:
     //  pyro->Create(PT_FRAGT, this);

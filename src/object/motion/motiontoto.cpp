@@ -605,7 +605,7 @@ bool CMotionToto::EventFrame(const Event &event)
     pos.z += sinf(m_time*Math::PI*2.11f)*(Math::PI/50.0f)+
              sinf(m_time*Math::PI*2.83f)*(Math::PI/70.0f)+
              sinf(m_time*Math::PI*3.09f)*(Math::PI/90.0f);
-    
+
     m_object->SetAngle(4, pos);  // left antenna
     m_object->SetAngle(5, pos);  // left antenna
     m_object->SetAngle(6, pos);  // left antenna
@@ -623,7 +623,7 @@ bool CMotionToto::EventFrame(const Event &event)
     pos.z += sinf(m_time*Math::PI*2.05f)*(Math::PI/50.0f)+
              sinf(m_time*Math::PI*2.38f)*(Math::PI/70.0f)+
              sinf(m_time*Math::PI*2.79f)*(Math::PI/90.0f);
-    
+
     m_object->SetAngle(7, pos);  // right antenna
     m_object->SetAngle(8, pos);  // right antenna
     m_object->SetAngle(9, pos);  // right antenna
@@ -716,7 +716,7 @@ bool CMotionToto::EventFrame(const Event &event)
         m_object->SetAngleX(2, 0.0f);
         m_object->SetAngleX(3, 0.0f);
     }
-    
+
     mat = m_object->RetWorldMatrix(0);  // must be done every time!
 
     // Generates particles.
@@ -741,7 +741,7 @@ bool CMotionToto::EventFrame(const Event &event)
                 speed.y += 5.0f+Math::Rand()*5.0f;
                 speed.x += Math::Rand()*2.0f;
                 speed.z += (Math::Rand()-0.5f)*2.0f;
-                
+
                 pos   = Transform(*mat, pos);
                 speed = Transform(*mat, speed)-pos;
 
@@ -759,7 +759,7 @@ bool CMotionToto::EventFrame(const Event &event)
             speed.y -= (1.5f+Math::Rand()*1.5f) + vibLin.y;
             speed.x += (Math::Rand()-0.5f)*2.0f;
             speed.z += (Math::Rand()-0.5f)*2.0f;
-            
+
 //          mat = m_object->RetWorldMatrix(0);
             pos   = Transform(*mat, pos);
             speed = Transform(*mat, speed)-pos;

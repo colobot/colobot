@@ -2724,28 +2724,28 @@ static int tablePartDr[] =  // drawer.tga
      40, 104,  48, 160,  // bocal
      24, 152,  48, 160,  // bocal fond
       0, 240,  32, 256,  // crayon 1: couleur (22)
-      0, 160,  32, 192,  // crayon 1: dessus 
+      0, 160,  32, 192,  // crayon 1: dessus
       0, 192,  32, 256,  // crayon 1: pointe
      32, 240,  64, 256,  // crayon 2: couleur
-     32, 160,  64, 192,  // crayon 2: dessus 
+     32, 160,  64, 192,  // crayon 2: dessus
      32, 192,  64, 256,  // crayon 2: pointe
      64, 240,  96, 256,  // crayon 3: couleur
-     64, 160,  96, 192,  // crayon 3: dessus 
+     64, 160,  96, 192,  // crayon 3: dessus
      64, 192,  96, 256,  // crayon 3: pointe
      96, 240, 128, 256,  // crayon 4: couleur
-     96, 160, 128, 192,  // crayon 4: dessus 
+     96, 160, 128, 192,  // crayon 4: dessus
      96, 192, 128, 256,  // crayon 4: pointe
     128, 240, 160, 256,  // crayon 5: couleur
-    128, 160, 160, 192,  // crayon 5: dessus 
+    128, 160, 160, 192,  // crayon 5: dessus
     128, 192, 160, 256,  // crayon 5: pointe
     160, 240, 192, 256,  // crayon 6: couleur
-    160, 160, 192, 192,  // crayon 6: dessus 
+    160, 160, 192, 192,  // crayon 6: dessus
     160, 192, 192, 256,  // crayon 6: pointe
     192, 240, 224, 256,  // crayon 7: couleur
-    192, 160, 224, 192,  // crayon 7: dessus 
+    192, 160, 224, 192,  // crayon 7: dessus
     192, 192, 224, 256,  // crayon 7: pointe
     224, 240, 256, 256,  // crayon 8: couleur
-    224, 160, 256, 192,  // crayon 8: dessus 
+    224, 160, 256, 192,  // crayon 8: dessus
     224, 192, 256, 256,  // crayon 8: pointe
     -1
 };

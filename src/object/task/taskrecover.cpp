@@ -189,7 +189,7 @@ Error CTaskRecover::Start()
     if ( power == 0 )  return ERR_RECOVER_ENERGY;
     energy = power->RetEnergy();
     if ( energy < ENERGY_RECOVER/power->RetCapacity()+0.05f )  return ERR_RECOVER_ENERGY;
-    
+
     mat = m_object->RetWorldMatrix(0);
     pos = Math::Vector(RECOVER_DIST, 3.3f, 0.0f);
     pos = Transform(*mat, pos);  // position in front

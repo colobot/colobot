@@ -912,7 +912,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     {
         armAction = MH_MARCHTAKE;  // take walking
     }
-    
+
     if ( m_physics->RetLand() )  // on the ground?
     {
         a = m_object->RetAngleY(0);
@@ -944,7 +944,7 @@ bool CMotionHuman::EventFrame(const Event &event)
         ar = 0.0f;
         af = 0.0f;
     }
-    
+
     for ( i=0 ; i<4 ; i++ )  // 4 members
     {
         if ( m_bArmStop )  // focus?

@@ -28,7 +28,8 @@
 
 
 /**
- * \struct ApplicationPrivate Private data of CApplication class
+ * \struct ApplicationPrivate
+ * \brief Private data of CApplication class
  *
  * Contains SDL-specific variables that should not be visible outside application module.
  */
@@ -389,7 +390,7 @@ void CApplication::ParseEvent()
 
 void CApplication::ProcessEvent(Event event)
 {
-    
+
 }
 
 bool CApplication::Render()

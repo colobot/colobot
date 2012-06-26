@@ -2199,7 +2199,7 @@ void CEdit::Scroll(int pos, bool bAdjustCursor)
             return;
         }
     }
-    
+
     Justif();
 }
 

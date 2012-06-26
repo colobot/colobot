@@ -371,7 +371,7 @@ Error CTaskBuild::Start(ObjectType type)
 
     m_metal->SetLock(true);  // not usable
     m_camera->StartCentering(m_object, Math::PI*0.15f, 99.9f, 0.0f, 1.0f);
-        
+
     m_phase = TBP_TURN;  // rotation necessary preliminary
     m_angleY = oAngle;  // angle was reached
 

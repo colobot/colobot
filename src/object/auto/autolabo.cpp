@@ -511,7 +511,7 @@ void CAutoLabo::UpdateInterface()
 void CAutoLabo::OkayButton(CWindow *pw, EventMsg event)
 {
     CControl*   control;
-        
+
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 

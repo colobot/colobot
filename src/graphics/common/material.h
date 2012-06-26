@@ -22,7 +22,8 @@
 namespace Gfx {
 
 /**
- * \struct Material Material of a surface
+ * \struct Material
+ * \brief Material of a surface
  *
  * This structure was created as analog to DirectX's D3DMATERIAL.
  *

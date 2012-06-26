@@ -859,7 +859,7 @@ bool CBrain::IntroduceVirus()
 }
 
 // Active Virus indicates that the object is contaminated. Unlike ch'tites (??? - Programerus)
-// letters which automatically disappear after a while, 
+// letters which automatically disappear after a while,
 // ActiveVirus does not disappear after you edit the program
 // (Even if the virus is not fixed).
 
@@ -2535,7 +2535,7 @@ void CBrain::CheckInterface(CWindow *pw, EventMsg event, bool bState)
 void CBrain::EnableInterface(CWindow *pw, EventMsg event, bool bState)
 {
     CControl*   control;
-        
+
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
@@ -2547,7 +2547,7 @@ void CBrain::EnableInterface(CWindow *pw, EventMsg event, bool bState)
 void CBrain::DeadInterface(CWindow *pw, EventMsg event, bool bState)
 {
     CControl*   control;
-        
+
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
@@ -2559,7 +2559,7 @@ void CBrain::DeadInterface(CWindow *pw, EventMsg event, bool bState)
 void CBrain::DefaultEnter(CWindow *pw, EventMsg event, bool bState)
 {
     CControl*   control;
-        
+
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 

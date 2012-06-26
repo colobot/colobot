@@ -205,7 +205,7 @@ CD3DEngine::CD3DEngine(CInstanceManager *iMan, CD3DApplication *app)
         m_bForceStateColor = false;
         m_bStateColor = false;
     }
-    
+
     m_blackSrcBlend[0]    = 0;
     m_blackDestBlend[0]   = 0;
     m_whiteSrcBlend[0]    = 0;
@@ -1294,8 +1294,8 @@ int CD3DEngine::RetTotalTriangles(int objRank)
     return m_objectParam[objRank].totalTriangle;
 }
 
-// Return qq triangles of an object. 
-// qq triangles used to extract an object that explodes. 
+// Return qq triangles of an object.
+// qq triangles used to extract an object that explodes.
 // "Percent" is between 0 and 1.
 
 int CD3DEngine::GetTriangles(int objRank, float min, float max,
@@ -1489,7 +1489,7 @@ bool CD3DEngine::ChangeTextureMapping(int objRank,
 //  [p] = distance in the 3D world
 //  [t] = position in the texture (pixels)
 
-//  ^ y         5 
+//  ^ y         5
 //  |   6  o---------o  4
 //  |    /             \
 //  |   o               o
@@ -2166,7 +2166,7 @@ void CD3DEngine::ShadowDelete(int objRank)
     }
 }
 
-// Specifies if the shadow is visible. 
+// Specifies if the shadow is visible.
 // For example, when an object is carried, he has no shadow.
 
 bool CD3DEngine::SetObjectShadowHide(int objRank, bool bHide)
@@ -3632,7 +3632,7 @@ D3DCOLORVALUE GetDot(DDSURFACEDESC2* ddsd, int x, int y)
 //                              0 | 1   2            253 254|255
 //                            |---|---|---|-- ... --|---|---|---|
 //
-// So we draw in 254x254 pixels surfaces. 
+// So we draw in 254x254 pixels surfaces.
 // The pixel margin around it is drawn twice (in two adjacent surfaces),
 // so that the filter produces the same results!
 
@@ -3655,7 +3655,7 @@ void CD3DEngine::RenderGroundSpot()
          m_groundMark.drawPos.z     == m_groundMark.pos.z     &&
          m_groundMark.drawRadius    == m_groundMark.radius    &&
          m_groundMark.drawIntensity == m_groundMark.intensity )  return;
-    
+
     for ( s=0 ; s<16 ; s++ )
     {
         min.x = (s%4)*254.0f-1.0f;  // 1 pixel cover
@@ -3716,7 +3716,7 @@ void CD3DEngine::RenderGroundSpot()
         {
             bSet = true;
         }
-        
+
         if ( bClear || bSet )
         {
             // Load the song.
@@ -4120,7 +4120,7 @@ void CD3DEngine::DrawShadow()
 }
 
 
-// Called ounces per frame, the call is the entry point for 3d rendering. 
+// Called ounces per frame, the call is the entry point for 3d rendering.
 // This function sets up render states, clears the
 // viewport, and renders the scene.
 
@@ -4642,7 +4642,7 @@ void CD3DEngine::DrawBackgroundGradient(D3DCOLOR up, D3DCOLOR down)
     m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, vertex, 4, NULL);
     AddStatisticTriangle(2);
 }
-    
+
 // Draws a portion of the image background.
 
 void CD3DEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, char *name)
@@ -4947,7 +4947,7 @@ bool CD3DEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
             if ( pp.y > max.y )  max.y = pp.y;
         }
     }
-    
+
     if ( min.x ==  1000000.0f ||
          min.y ==  1000000.0f ||
          max.x == -1000000.0f ||
@@ -5034,7 +5034,7 @@ bool CD3DEngine::GetSpriteCoord(int &x, int &y)
     v.y *= vp.dwHeight/2;
     v.x = v.x+vp.dwWidth/2;
     v.y = vp.dwHeight-(v.y+vp.dwHeight/2);
-    
+
     x = (int)v.x;
     y = (int)v.y;
     return true;
@@ -5435,7 +5435,7 @@ float CD3DEngine::RetFocus()
     return m_focus;
 }
 
-// 
+//
 
 void CD3DEngine::UpdateMatProj()
 {
@@ -5544,7 +5544,7 @@ HRESULT CD3DEngine::InitDeviceObjects()
     m_matProjInterface.Set(4, 3,  1.0f);
     m_matProjInterface.Set(3, 4, -1.0f);
     m_matProjInterface.Set(4, 4,  0.0f);
-    
+
     return S_OK;
 }
 
@@ -5576,7 +5576,7 @@ HRESULT CD3DEngine::FinalCleanup()
 }
 
 
-// Overrrides the main WndProc, so the sample can do custom message 
+// Overrrides the main WndProc, so the sample can do custom message
 // handling (e.g. processing mouse, keyboard, or menu commands).
 
 LRESULT CD3DEngine::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam )

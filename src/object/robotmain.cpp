@@ -151,7 +151,7 @@ bool rPoint(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception)
     pX->SetValFloat( var->GivValFloat() );
     var = var->GivNext();
 
-    if ( var == NULL ) 
+    if ( var == NULL )
     {
         Exception = CBotErrLowParam;  return false;
     }
@@ -288,18 +288,18 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     if ( GetProfileFloat("Edit", "WindowPos.y", fValue) )  m_windowPos.y = fValue;
     if ( GetProfileFloat("Edit", "WindowDim.x", fValue) )  m_windowDim.x = fValue;
     if ( GetProfileFloat("Edit", "WindowDim.y", fValue) )  m_windowDim.y = fValue;
-    
+
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
-    
+
     if ( GetProfileInt  ("Edit", "IOPublic", iValue) )  m_IOPublic    = iValue;
     if ( GetProfileFloat("Edit", "IOPos.x",  fValue) )  m_IOPos.x = fValue;
     if ( GetProfileFloat("Edit", "IOPos.y",  fValue) )  m_IOPos.y = fValue;
     if ( GetProfileFloat("Edit", "IODim.x",  fValue) )  m_IODim.x = fValue;
     if ( GetProfileFloat("Edit", "IODim.y",  fValue) )  m_IODim.y = fValue;
-    
+
     m_short->FlushShortcuts();
     InitEye();
 
@@ -5978,10 +5978,10 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
 
     sprintf(line, "Title text=\"%s\"\n", info);
     fputs(line, file);
-    
+
     sprintf(line, "Version maj=%d min=%d\n", 0, 1);
     fputs(line, file);
-    
+
     name = m_dialog->RetSceneName();
     if ( strcmp(name, "user") == 0 )
     {
@@ -6004,7 +6004,7 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
         sprintf(line, "BlitzMode sleep=%.2f delay=%.2f magnetic=%.2f progress=%.2f\n", sleep, delay, magnetic/g_unit, progress);
         fputs(line, file);
     }
-    
+
     objRank = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
@@ -6136,7 +6136,7 @@ CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 #else
     LoadFileScript(pObj, filename, objRank, i);
 #endif
-    
+
     run = OpInt(line, "run", -1);
     if ( run != -1 )
     {

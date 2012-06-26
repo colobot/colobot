@@ -1441,7 +1441,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
         if ( pObj == m_object )  continue;
         if ( pObj->RetTruck() != 0 )  continue;
-        
+
         oPos = pObj->RetPosition(0);
         dist = Math::Distance(oPos, m_goalObject);
         if ( dist <= 1.0f )  continue;
@@ -1601,7 +1601,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
         {
             addi = 2.0f;  // between wasps, do not annoy too much
         }
-        
+
         j = 0;
         while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
         {
@@ -1791,10 +1791,10 @@ Error CTaskGoto::BeamExplore(const Math::Vector &prevPos, const Math::Vector &cu
     Math::Vector    newPos;
     Error       ret;
     int         iDiv, iClear, iLar;
-    
+
     iLar = 0;
     if ( i >= MAXPOINTS )  return ERR_GOTO_ITER;  // too many recursions
-    
+
     if ( m_bmIter[i] == -1 )
     {
         m_bmIter[i] = 0;
@@ -1828,7 +1828,7 @@ Error CTaskGoto::BeamExplore(const Math::Vector &prevPos, const Math::Vector &cu
             }
         }
     }
-    
+
     if ( iLar >= m_bmIter[i] )
     {
         newPos = BeamPoint(curPos, goalPos, 0, step);
@@ -2051,7 +2051,7 @@ void CTaskGoto::BitmapObject()
         if ( pObj == m_object )  continue;
         if ( pObj == m_bmFretObject )  continue;
         if ( pObj->RetTruck() != 0 )  continue;
-    
+
         h = m_terrain->RetFloorLevel(pObj->RetPosition(0), false);
         if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
         {
@@ -2177,7 +2177,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
     {
         aLimit = 60.0f*Math::PI/180.0f;
     }
-    
+
     for ( y=miny ; y<=maxy ; y++ )
     {
         for ( x=minx ; x<=maxx ; x++ )

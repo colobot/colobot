@@ -108,7 +108,7 @@ CTerrain::~CTerrain()
 //  +---+---o---+---+---> x
 //  |   |   |   |   |
 //  |   |   |   |   |
-//  +---+---+---+---+  
+//  +---+---+---+---+
 //  |   |   |   |   |  The land is viewed from above here.
 //  |   |   |   |   |
 //  +---+---+---+---+
@@ -759,7 +759,7 @@ D3DVERTEX2 CTerrain::RetVertex(int x, int y, int step)
 //  |
 //  +-------------------> x
 
-bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank, 
+bool CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
                             const D3DMATERIAL7 &mat,
                             float min, float max)
 {
@@ -1794,7 +1794,7 @@ float CTerrain::RetFloorLevel(const Math::Vector &p, bool bBrut, bool bWater)
     return ps.y;
 }
 
-// Returns the height to the ground. 
+// Returns the height to the ground.
 // This height is positive when you are above the ground.
 
 float CTerrain::RetFloorHeight(const Math::Vector &p, bool bBrut, bool bWater)
