@@ -26,23 +26,23 @@
 class CTaskGunGoal : public CTask
 {
 public:
-	CTaskGunGoal(CInstanceManager* iMan, CObject* object);
-	~CTaskGunGoal();
+    CTaskGunGoal(CInstanceManager* iMan, CObject* object);
+    ~CTaskGunGoal();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start(float dirV, float dirH);
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
+    Error       Start(float dirV, float dirH);
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	float		m_progress;
-	float		m_speed;
-	float		m_initialDirV;	// initial direction
-	float		m_finalDirV;	// direction to reach
-	float		m_initialDirH;	// initial direction
-	float		m_finalDirH;	// direction to reach
+
+protected:
+    float       m_progress;
+    float       m_speed;
+    float       m_initialDirV;  // initial direction
+    float       m_finalDirV;    // direction to reach
+    float       m_initialDirH;  // initial direction
+    float       m_finalDirH;    // direction to reach
 };
 

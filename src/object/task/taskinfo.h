@@ -26,22 +26,22 @@
 class CTaskInfo : public CTask
 {
 public:
-	CTaskInfo(CInstanceManager* iMan, CObject* object);
-	~CTaskInfo();
+    CTaskInfo(CInstanceManager* iMan, CObject* object);
+    ~CTaskInfo();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start(char *name, float value, float power, bool bSend);
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
-	CObject*	SearchInfo(float power);
+    Error       Start(char *name, float value, float power, bool bSend);
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	float			m_progress;
-	float			m_speed;
-	float			m_time;
-	bool			m_bError;
+    CObject*    SearchInfo(float power);
+
+protected:
+    float           m_progress;
+    float           m_speed;
+    float           m_time;
+    bool            m_bError;
 };
 

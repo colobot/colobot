@@ -35,15 +35,15 @@ const short MAXPLANET = 10;
 
 struct Planet
 {
-	char		bUsed;		// TRUE -> planet exists
-	Math::Point		start;		// initial position in degrees
-	Math::Point		angle;		// current position in degrees
-	float		dim;		// dimensions (0..1)
-	float		speed;		// speed
-	float		dir;		// direction in the sky
-	char		name[20];	// name of the texture
-	Math::Point		uv1, uv2;	// texture mapping
-	char		bTGA;		// texture .TGA
+    char        bUsed;      // TRUE -> planet exists
+    Math::Point     start;      // initial position in degrees
+    Math::Point     angle;      // current position in degrees
+    float       dim;        // dimensions (0..1)
+    float       speed;      // speed
+    float       dir;        // direction in the sky
+    char        name[20];   // name of the texture
+    Math::Point     uv1, uv2;   // texture mapping
+    char        bTGA;       // texture .TGA
 };
 
 
@@ -51,29 +51,29 @@ struct Planet
 
 class CPlanet {
 public:
-	CPlanet(CInstanceManager* iMan, CEngine* engine);
-	~CPlanet();
+    CPlanet(CInstanceManager* iMan, CEngine* engine);
+    ~CPlanet();
 
-	void		Flush();
-	bool		EventProcess(const Event &event);
-	bool		Create(int mode, Math::Point start, float dim, float speed, float dir, char *name, Math::Point uv1, Math::Point uv2);
-	bool		PlanetExist();
-	void		LoadTexture();
-	void		Draw();
-	void		SetMode(int mode);
-	int			RetMode();
-
-protected:
-	bool		EventFrame(const Event &event);
+    void        Flush();
+    bool        EventProcess(const Event &event);
+    bool        Create(int mode, Math::Point start, float dim, float speed, float dir, char *name, Math::Point uv1, Math::Point uv2);
+    bool        PlanetExist();
+    void        LoadTexture();
+    void        Draw();
+    void        SetMode(int mode);
+    int         RetMode();
 
 protected:
-	CInstanceManager*	m_iMan;
-	CEngine*		m_engine;
+    bool        EventFrame(const Event &event);
 
-	float			m_time;
-	int				m_mode;
-	Planet			m_planet[2][MAXPLANET];
-	bool			m_bPlanetExist;
+protected:
+    CInstanceManager*   m_iMan;
+    CEngine*        m_engine;
+
+    float           m_time;
+    int             m_mode;
+    Planet          m_planet[2][MAXPLANET];
+    bool            m_bPlanetExist;
 };
 
 

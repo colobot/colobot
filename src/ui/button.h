@@ -29,28 +29,28 @@ class CD3DEngine;
 class CButton : public CControl
 {
 public:
-	CButton(CInstanceManager* iMan);
-	virtual ~CButton();
+    CButton(CInstanceManager* iMan);
+    virtual ~CButton();
 
-	bool	Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	void	Draw();
+    void    Draw();
 
-	void	SetImmediat(bool bRepeat);
-	bool	RetImmediat();
+    void    SetImmediat(bool bRepeat);
+    bool    RetImmediat();
 
-	void	SetRepeat(bool bRepeat);
-	bool	RetRepeat();
-
-protected:
+    void    SetRepeat(bool bRepeat);
+    bool    RetRepeat();
 
 protected:
-	bool	m_bCapture;
-	bool	m_bImmediat;
-	bool	m_bRepeat;
-	float	m_repeat;
+
+protected:
+    bool    m_bCapture;
+    bool    m_bImmediat;
+    bool    m_bRepeat;
+    float   m_repeat;
 };
 
 

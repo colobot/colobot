@@ -31,12 +31,12 @@ namespace Math {
  */
 struct IntPoint
 {
-  //! X coord
-  long x;
-  //! Y coord
-  long y;
+    //! X coord
+    long x;
+    //! Y coord
+    long y;
 
-  IntPoint(long aX = 0, long aY = 0) : x(aX), y(aY) {}
+    IntPoint(long aX = 0, long aY = 0) : x(aX), y(aY) {}
 };
 
 /* @} */ // end of group

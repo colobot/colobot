@@ -25,9 +25,9 @@
 
 enum AutoSafePhase
 {
-	ASAP_WAIT		= 1,
-	ASAP_OPEN		= 2,
-	ASAP_FINISH		= 3,
+    ASAP_WAIT       = 1,
+    ASAP_OPEN       = 2,
+    ASAP_FINISH     = 3,
 };
 
 
@@ -35,40 +35,40 @@ enum AutoSafePhase
 class CAutoSafe : public CAuto
 {
 public:
-	CAutoSafe(CInstanceManager* iMan, CObject* object);
-	~CAutoSafe();
+    CAutoSafe(CInstanceManager* iMan, CObject* object);
+    ~CAutoSafe();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	bool		EventProcess(const Event &event);
-	Error		RetError();
+    void        Init();
+    bool        EventProcess(const Event &event);
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
+    bool        CreateInterface(bool bSelect);
 
-	bool		Write(char *line);
-	bool		Read(char *line);
-
-protected:
-	int			CountKeys();
-	void		LockKeys();
-	void		DownKeys(float progress);
-	void		DeleteKeys();
-	CObject*	SearchVehicle();
+    bool        Write(char *line);
+    bool        Read(char *line);
 
 protected:
-	AutoSafePhase	m_phase;
-	float			m_progress;
-	float			m_speed;
-	float			m_timeVirus;
-	float			m_lastParticule;
-	int				m_channelSound;
-	bool			m_bLock;
-	int				m_countKeys;
-	float			m_actualAngle;
-	float			m_finalAngle;
-	bool			m_bKey[4];
-	Math::Vector		m_keyPos[4];
-	int				m_keyParti[4];
+    int         CountKeys();
+    void        LockKeys();
+    void        DownKeys(float progress);
+    void        DeleteKeys();
+    CObject*    SearchVehicle();
+
+protected:
+    AutoSafePhase   m_phase;
+    float           m_progress;
+    float           m_speed;
+    float           m_timeVirus;
+    float           m_lastParticule;
+    int             m_channelSound;
+    bool            m_bLock;
+    int             m_countKeys;
+    float           m_actualAngle;
+    float           m_finalAngle;
+    bool            m_bKey[4];
+    Math::Vector        m_keyPos[4];
+    int             m_keyParti[4];
 };
 

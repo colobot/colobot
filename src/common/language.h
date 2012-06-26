@@ -19,23 +19,23 @@
 #pragma once
 
 
-#define _FULL			true		// CoLoBoT
-#define _SCHOOL			false		// CeeBot-A or Teen
-  #define _TEEN			false		// false for CeeBot-A, true for CeeBot-Teen
-  #define _EDU			false
-  #define _PERSO		false
-  #define _CEEBOTDEMO	false
-#define _NET			false
-#define _DEMO			false		// DEMO only CoLoBoT (with _Full = false)!
+#define _FULL           true        // CoLoBoT
+#define _SCHOOL         false       // CeeBot-A or Teen
+  #define _TEEN         false       // false for CeeBot-A, true for CeeBot-Teen
+  #define _EDU          false
+  #define _PERSO        false
+  #define _CEEBOTDEMO   false
+#define _NET            false
+#define _DEMO           false       // DEMO only CoLoBoT (with _Full = false)!
 
-#define _FRENCH			true
-#define _ENGLISH		false
-#define _GERMAN			false
-#define _WG				false
-#define _POLISH			false
+#define _FRENCH         true
+#define _ENGLISH        false
+#define _GERMAN         false
+#define _WG             false
+#define _POLISH         false
 
-#define _NEWLOOK		false		// false for CoLoBoT, true for all CeeBot
-#define _SOUNDTRACKS	false		// always false since InitAudioTrackVolume crop in Vista
+#define _NEWLOOK        false       // false for CoLoBoT, true for all CeeBot
+#define _SOUNDTRACKS    false       // always false since InitAudioTrackVolume crop in Vista
 
 
 // Verifications

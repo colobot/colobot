@@ -45,67 +45,67 @@ class CSound;
 class CAuto
 {
 public:
-	CAuto(CInstanceManager* iMan, CObject* object);
-	virtual ~CAuto();
+    CAuto(CInstanceManager* iMan, CObject* object);
+    virtual ~CAuto();
 
-	virtual void	DeleteObject(bool bAll=false);
+    virtual void    DeleteObject(bool bAll=false);
 
-	virtual void	Init();
-	virtual void	Start(int param);
-	virtual bool	EventProcess(const Event &event);
-	virtual Error	IsEnded();
-	virtual bool	Abort();
+    virtual void    Init();
+    virtual void    Start(int param);
+    virtual bool    EventProcess(const Event &event);
+    virtual Error   IsEnded();
+    virtual bool    Abort();
 
-	virtual bool	SetType(ObjectType type);
-	virtual bool	SetValue(int rank, float value);
-	virtual bool	SetString(char *string);
+    virtual bool    SetType(ObjectType type);
+    virtual bool    SetValue(int rank, float value);
+    virtual bool    SetString(char *string);
 
-	virtual bool	CreateInterface(bool bSelect);
-	virtual Error	RetError();
+    virtual bool    CreateInterface(bool bSelect);
+    virtual Error   RetError();
 
-	virtual bool	RetBusy();
-	virtual void	SetBusy(bool bBuse);
-	virtual void	InitProgressTotal(float total);
-	virtual void	EventProgress(float rTime);
+    virtual bool    RetBusy();
+    virtual void    SetBusy(bool bBuse);
+    virtual void    InitProgressTotal(float total);
+    virtual void    EventProgress(float rTime);
 
-	virtual bool	RetMotor();
-	virtual void	SetMotor(bool bMotor);
+    virtual bool    RetMotor();
+    virtual void    SetMotor(bool bMotor);
 
-	virtual bool	Write(char *line);
-	virtual bool	Read(char *line);
-
-protected:
-	void		CheckInterface(CWindow *pw, EventMsg event, bool bState);
-	void		EnableInterface(CWindow *pw, EventMsg event, bool bState);
-	void		VisibleInterface(CWindow *pw, EventMsg event, bool bState);
-	void		DeadInterface(CWindow *pw, EventMsg event, bool bState);
-	void		UpdateInterface();
-	void		UpdateInterface(float rTime);
+    virtual bool    Write(char *line);
+    virtual bool    Read(char *line);
 
 protected:
-	CInstanceManager* m_iMan;
-	CEvent*			m_event;
-	CD3DEngine*		m_engine;
-	CParticule*		m_particule;
-	CLight*			m_light;
-	CTerrain*		m_terrain;
-	CWater*			m_water;
-	CCloud	*		m_cloud;
-	CPlanet	*		m_planet;
-	CBlitz*			m_blitz;
-	CCamera*		m_camera;
-	CInterface*		m_interface;
-	CRobotMain*		m_main;
-	CDisplayText*	m_displayText;
-	CObject*		m_object;
-	CSound*			m_sound;
+    void        CheckInterface(CWindow *pw, EventMsg event, bool bState);
+    void        EnableInterface(CWindow *pw, EventMsg event, bool bState);
+    void        VisibleInterface(CWindow *pw, EventMsg event, bool bState);
+    void        DeadInterface(CWindow *pw, EventMsg event, bool bState);
+    void        UpdateInterface();
+    void        UpdateInterface(float rTime);
 
-	ObjectType	m_type;
-	bool		m_bBusy;
-	bool		m_bMotor;
-	float		m_time;
-	float		m_lastUpdateTime;
-	float		m_progressTime;
-	float		m_progressTotal;
+protected:
+    CInstanceManager* m_iMan;
+    CEvent*         m_event;
+    CD3DEngine*     m_engine;
+    CParticule*     m_particule;
+    CLight*         m_light;
+    CTerrain*       m_terrain;
+    CWater*         m_water;
+    CCloud  *       m_cloud;
+    CPlanet *       m_planet;
+    CBlitz*         m_blitz;
+    CCamera*        m_camera;
+    CInterface*     m_interface;
+    CRobotMain*     m_main;
+    CDisplayText*   m_displayText;
+    CObject*        m_object;
+    CSound*         m_sound;
+
+    ObjectType  m_type;
+    bool        m_bBusy;
+    bool        m_bMotor;
+    float       m_time;
+    float       m_lastUpdateTime;
+    float       m_progressTime;
+    float       m_progressTotal;
 };
 

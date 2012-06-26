@@ -24,13 +24,13 @@
 
 Event::Event()
 {
-	event = EVENT_NULL;
-	param = 0;
-	axeX = 0.0f;
-	axeY = 0.0f;
-	axeZ = 0.0f;
-	keyState = 0;
-	rTime = 0.0f;
+    event = EVENT_NULL;
+    param = 0;
+    axeX = 0.0f;
+    axeY = 0.0f;
+    axeZ = 0.0f;
+    keyState = 0;
+    rTime = 0.0f;
 }
 
 
@@ -38,10 +38,10 @@ Event::Event()
 
 CEvent::CEvent(CInstanceManager* iMan)
 {
-	m_iMan = iMan;
-	m_iMan->AddInstance(CLASS_EVENT, this);
+    m_iMan = iMan;
+    m_iMan->AddInstance(CLASS_EVENT, this);
 
-	Flush();
+    Flush();
 }
 
 // Object's destructor.
@@ -55,42 +55,42 @@ CEvent::~CEvent()
 
 void CEvent::Flush()
 {
-	m_head = 0;
-	m_tail = 0;
-	m_total = 0;
+    m_head = 0;
+    m_tail = 0;
+    m_total = 0;
 }
 
 // Produces an event.
 
 void CEvent::MakeEvent(Event &event, EventMsg msg)
 {
-	memset(&event, 0, sizeof(Event));
-	event.event = msg;
+    memset(&event, 0, sizeof(Event));
+    event.event = msg;
 }
 
 // Adds an event in the FIFO.
 
 bool CEvent::AddEvent(const Event &event)
 {
-	if ( m_total >= MAXEVENT )  return false;
+    if ( m_total >= MAXEVENT )  return false;
 
-	m_fifo[m_head++] = event;
-	if ( m_head >= MAXEVENT )  m_head = 0;
-	m_total ++;
+    m_fifo[m_head++] = event;
+    if ( m_head >= MAXEVENT )  m_head = 0;
+    m_total ++;
 
-	return true;
+    return true;
 }
 
 // Removes an event from the FIFO.
 
 bool CEvent::GetEvent(Event &event)
 {
-	if ( m_head == m_tail )  return false;
+    if ( m_head == m_tail )  return false;
 
-	event = m_fifo[m_tail++];
-	if ( m_tail >= MAXEVENT )  m_tail = 0;
-	m_total --;
+    event = m_fifo[m_tail++];
+    if ( m_tail >= MAXEVENT )  m_tail = 0;
+    m_total --;
 
-	return true;
+    return true;
 }
 

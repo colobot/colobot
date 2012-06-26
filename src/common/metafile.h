@@ -26,17 +26,17 @@ const int METAMAX = 5;
 
 struct MetaHeader
 {
-	char			name[14];	// file name (8.3 max)
-	int			start;		// position from the beginning of the metafile
-	int			len;		// length of the file
+    char            name[14];   // file name (8.3 max)
+    int         start;      // position from the beginning of the metafile
+    int         len;        // length of the file
 };
 
 struct MetaFile
 {
-	char		name[50];	// name of the metafile
-	FILE*		stream;		// channel
-	int		total;		// number of files
-	MetaHeader*	headers;	// headers of files
+    char        name[50];   // name of the metafile
+    FILE*       stream;     // channel
+    int     total;      // number of files
+    MetaHeader* headers;    // headers of files
 };
 
 
@@ -44,31 +44,31 @@ struct MetaFile
 class CMetaFile
 {
 public:
-	CMetaFile();
-	~CMetaFile();
+    CMetaFile();
+    ~CMetaFile();
 
-	bool	IsExist(char *metaname, char *filename);
-	int		Open(char *metaname, char *filename);
-	int		RetLength();
-	int		Seek(int offset);
-	int		Read(void *buffer, int size);
-	int		GetByte();
-	int		GetWord();
-	int		Close();
-	int		MetaClose();
-
-protected:
-	int		MetaOpen(char *metaname);
-	int		MetaSearch(char *metaname);
+    bool    IsExist(char *metaname, char *filename);
+    int     Open(char *metaname, char *filename);
+    int     RetLength();
+    int     Seek(int offset);
+    int     Read(void *buffer, int size);
+    int     GetByte();
+    int     GetWord();
+    int     Close();
+    int     MetaClose();
 
 protected:
-	MetaFile	m_list[METAMAX];		// metafile open
-	bool		m_bOpen;			// open file
-	bool		m_bMeta;			// metafile open
-	FILE*		m_stream;			// channel
-	int		m_start;			// position from the beginning
-	int		m_pos;				// current position
-	int		m_len;				// length of the file
+    int     MetaOpen(char *metaname);
+    int     MetaSearch(char *metaname);
+
+protected:
+    MetaFile    m_list[METAMAX];        // metafile open
+    bool        m_bOpen;            // open file
+    bool        m_bMeta;            // metafile open
+    FILE*       m_stream;           // channel
+    int     m_start;            // position from the beginning
+    int     m_pos;              // current position
+    int     m_len;              // length of the file
 };
 
 

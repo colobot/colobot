@@ -27,26 +27,26 @@
 
 enum TaskManipOrder
 {
-	TMO_AUTO	= 0,	// deposits or takes automatically
-	TMO_GRAB	= 1,	// takes an object
-	TMO_DROP	= 2,	// deposits the object
+    TMO_AUTO    = 0,    // deposits or takes automatically
+    TMO_GRAB    = 1,    // takes an object
+    TMO_DROP    = 2,    // deposits the object
 };
 
 enum TaskManipArm
 {
-	TMA_NEUTRAL	= 1,	// empty arm at rest
-	TMA_STOCK	= 2,	// right arm resting
-	TMA_FFRONT	= 3,	// arm on the ground
-	TMA_FBACK	= 4,	// arm behind the robot
-	TMA_POWER	= 5,	// arm behind the robot
-	TMA_OTHER	= 6,	// arm behind a friend robot
-	TMA_GRAB	= 7,	// takes immediately
+    TMA_NEUTRAL = 1,    // empty arm at rest
+    TMA_STOCK   = 2,    // right arm resting
+    TMA_FFRONT  = 3,    // arm on the ground
+    TMA_FBACK   = 4,    // arm behind the robot
+    TMA_POWER   = 5,    // arm behind the robot
+    TMA_OTHER   = 6,    // arm behind a friend robot
+    TMA_GRAB    = 7,    // takes immediately
 };
 
 enum TaskManipHand
 {
-	TMH_OPEN	= 1,	// open clamp
-	TMH_CLOSE	= 2,	// closed clamp
+    TMH_OPEN    = 1,    // open clamp
+    TMH_CLOSE   = 2,    // closed clamp
 };
 
 
@@ -54,46 +54,46 @@ enum TaskManipHand
 class CTaskManip : public CTask
 {
 public:
-	CTaskManip(CInstanceManager* iMan, CObject* object);
-	~CTaskManip();
+    CTaskManip(CInstanceManager* iMan, CObject* object);
+    ~CTaskManip();
 
-	bool		EventProcess(const Event &event);
+    bool        EventProcess(const Event &event);
 
-	Error		Start(TaskManipOrder order, TaskManipArm arm);
-	Error		IsEnded();
-	bool		Abort();
-
-protected:
-	void		InitAngle();
-	CObject*	SearchTakeUnderObject(Math::Vector &pos, float dLimit);
-	CObject*	SearchTakeFrontObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
-	CObject*	SearchTakeBackObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
-	CObject*	SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height);
-	bool		TruckTakeObject();
-	bool		TruckDeposeObject();
-	bool		IsFreeDeposeObject(Math::Vector pos);
-	void		SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
+    Error       Start(TaskManipOrder order, TaskManipArm arm);
+    Error       IsEnded();
+    bool        Abort();
 
 protected:
-	TaskManipOrder	m_order;
-	TaskManipArm	m_arm;
-	TaskManipHand	m_hand;
-	int				m_step;
-	float			m_speed;
-	float			m_progress;
-	float			m_initialAngle[5];
-	float			m_finalAngle[5];
-	float			m_height;
-	float			m_advanceLength;
-	float			m_energy;
-	bool			m_bError;
-	bool			m_bTurn;
-	bool			m_bSubm;
-	bool			m_bBee;
-	float			m_angle;
-	float			m_move;
-	Math::Vector		m_targetPos;
-	float			m_timeLimit;
-	ObjectType		m_fretType;
+    void        InitAngle();
+    CObject*    SearchTakeUnderObject(Math::Vector &pos, float dLimit);
+    CObject*    SearchTakeFrontObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
+    CObject*    SearchTakeBackObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle);
+    CObject*    SearchOtherObject(bool bAdvance, Math::Vector &pos, float &distance, float &angle, float &height);
+    bool        TruckTakeObject();
+    bool        TruckDeposeObject();
+    bool        IsFreeDeposeObject(Math::Vector pos);
+    void        SoundManip(float time, float amplitude=1.0f, float frequency=1.0f);
+
+protected:
+    TaskManipOrder  m_order;
+    TaskManipArm    m_arm;
+    TaskManipHand   m_hand;
+    int             m_step;
+    float           m_speed;
+    float           m_progress;
+    float           m_initialAngle[5];
+    float           m_finalAngle[5];
+    float           m_height;
+    float           m_advanceLength;
+    float           m_energy;
+    bool            m_bError;
+    bool            m_bTurn;
+    bool            m_bSubm;
+    bool            m_bBee;
+    float           m_angle;
+    float           m_move;
+    Math::Vector        m_targetPos;
+    float           m_timeLimit;
+    ObjectType      m_fretType;
 };
 

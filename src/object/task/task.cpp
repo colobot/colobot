@@ -30,22 +30,22 @@
 
 CTask::CTask(CInstanceManager* iMan, CObject* object)
 {
-	m_iMan = iMan;
+    m_iMan = iMan;
 
-	m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-	m_light       = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-	m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
-	m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-	m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-	m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-	m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-	m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
-	m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_light       = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
+    m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
+    m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
+    m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
+    m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
+    m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
+    m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
+    m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
 
-	m_object      = object;
-	m_physics     = m_object->RetPhysics();
-	m_brain       = m_object->RetBrain();
-	m_motion      = m_object->RetMotion();
+    m_object      = object;
+    m_physics     = m_object->RetPhysics();
+    m_brain       = m_object->RetBrain();
+    m_motion      = m_object->RetMotion();
 }
 
 // Object's destructor.
@@ -59,7 +59,7 @@ CTask::~CTask()
 
 bool CTask::EventProcess(const Event &event)
 {
-	return true;
+    return true;
 }
 
 
@@ -67,7 +67,7 @@ bool CTask::EventProcess(const Event &event)
 
 Error CTask::IsEnded()
 {
-	return ERR_STOP;
+    return ERR_STOP;
 }
 
 
@@ -75,7 +75,7 @@ Error CTask::IsEnded()
 
 bool CTask::IsBusy()
 {
-	return true;
+    return true;
 }
 
 
@@ -83,7 +83,7 @@ bool CTask::IsBusy()
 
 bool CTask::Abort()
 {
-	return true;
+    return true;
 }
 
 

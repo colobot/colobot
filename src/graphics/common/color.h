@@ -23,19 +23,19 @@ namespace Gfx {
 
 struct Color
 {
-	float r, g, b, a;
+    float r, g, b, a;
 
-	Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
-	 : r(aR), g(aG), b(aB), a(aA) {}
+    Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
+     : r(aR), g(aG), b(aB), a(aA) {}
 };
 
 
 struct ColorHSV
 {
-	float h, s, v;
+    float h, s, v;
 
-	ColorHSV(float aH = 0.0f, float aS = 0.0f, float aV = 0.0f)
-	 : h(aH), s(aS), v(aV) {}
+    ColorHSV(float aH = 0.0f, float aS = 0.0f, float aV = 0.0f)
+     : h(aH), s(aS), v(aV) {}
 };
 
 

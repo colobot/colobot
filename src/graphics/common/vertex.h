@@ -36,14 +36,14 @@ namespace Gfx {
  */
 struct Vertex
 {
-	Math::Vector coord;
-	Math::Vector normal;
-	Math::Point texCoord;
+    Math::Vector coord;
+    Math::Vector normal;
+    Math::Point texCoord;
 
-	Vertex(Math::Vector aCoord = Math::Vector(),
-		   Math::Vector aNormal = Math::Vector(),
-		   Math::Point aTexCoord = Math::Point())
-		: coord(aCoord), normal(aNormal), texCoord(aTexCoord) {}
+    Vertex(Math::Vector aCoord = Math::Vector(),
+           Math::Vector aNormal = Math::Vector(),
+           Math::Point aTexCoord = Math::Point())
+        : coord(aCoord), normal(aNormal), texCoord(aTexCoord) {}
 };
 
 /**
@@ -54,13 +54,13 @@ struct Vertex
  */
 struct VertexTex2 : public Gfx::Vertex
 {
-	Math::Point texCoord2;
+    Math::Point texCoord2;
 
-	VertexTex2(Math::Vector aCoord = Math::Vector(),
-			   Math::Vector aNormal = Math::Vector(),
-			   Math::Point aTexCoord = Math::Point(),
-			   Math::Point aTexCoord2 = Math::Point())
-		: Vertex(aCoord, aNormal, aTexCoord), texCoord2(aTexCoord2) {}
+    VertexTex2(Math::Vector aCoord = Math::Vector(),
+               Math::Vector aNormal = Math::Vector(),
+               Math::Point aTexCoord = Math::Point(),
+               Math::Point aTexCoord2 = Math::Point())
+        : Vertex(aCoord, aNormal, aTexCoord), texCoord2(aTexCoord2) {}
 };
 
 }; // namespace Gfx

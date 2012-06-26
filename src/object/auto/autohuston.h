@@ -26,12 +26,12 @@
 
 struct HustonLens
 {
-	int				parti;
-	ParticuleType	type;
-	Math::Vector		pos;
-	float			dim;
-	float			total;
-	float			off;
+    int             parti;
+    ParticuleType   type;
+    Math::Vector        pos;
+    float           dim;
+    float           total;
+    float           off;
 };
 
 
@@ -41,25 +41,25 @@ const int HUSTONMAXLENS = 20;
 class CAutoHuston : public CAuto
 {
 public:
-	CAutoHuston(CInstanceManager* iMan, CObject* object);
-	~CAutoHuston();
+    CAutoHuston(CInstanceManager* iMan, CObject* object);
+    ~CAutoHuston();
 
-	void		DeleteObject(bool bAll=false);
+    void        DeleteObject(bool bAll=false);
 
-	void		Init();
-	void		Start(int param);
-	bool		EventProcess(const Event &event);
-	bool		Abort();
-	Error		RetError();
+    void        Init();
+    void        Start(int param);
+    bool        EventProcess(const Event &event);
+    bool        Abort();
+    Error       RetError();
 
-	bool		CreateInterface(bool bSelect);
-
-protected:
+    bool        CreateInterface(bool bSelect);
 
 protected:
-	float		m_progress;
-	float		m_speed;
-	HustonLens	m_lens[HUSTONMAXLENS];
-	int			m_lensTotal;
+
+protected:
+    float       m_progress;
+    float       m_speed;
+    HustonLens  m_lens[HUSTONMAXLENS];
+    int         m_lensTotal;
 };
 

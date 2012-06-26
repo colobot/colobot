@@ -42,11 +42,11 @@ CD3DFramework7::CD3DFramework7()
      m_dwRenderWidth  = 0L;
      m_dwRenderHeight = 0L;
      
-	 m_pddsFrontBuffer    = NULL;
+     m_pddsFrontBuffer    = NULL;
      m_pddsBackBuffer     = NULL;
      m_pddsBackBufferLeft = NULL;
      
-	 m_pddsZBuffer     = NULL;
+     m_pddsZBuffer     = NULL;
      m_pd3dDevice      = NULL;
      m_pDD             = NULL;
      m_pD3D            = NULL;
@@ -81,9 +81,9 @@ HRESULT CD3DFramework7::DestroyObjects()
     if( m_pDD )
     {
         HRESULT err = m_pDD->SetCooperativeLevel( m_hWnd, DDSCL_NORMAL );
-		char s[100];
-		sprintf(s, "SetCooperativeLevel error=%d\n", err);
-		OutputDebugString(s);
+        char s[100];
+        sprintf(s, "SetCooperativeLevel error=%d\n", err);
+        OutputDebugString(s);
     }
 
     // Do a safe check for releasing the D3DDEVICE. RefCount must be zero.
@@ -130,13 +130,13 @@ HRESULT CD3DFramework7::Initialize( HWND hWnd, GUID* pDriverGUID,
 
     // Setup state for windowed/fullscreen mode
     m_hWnd          = hWnd;
-	m_bIsStereo     = false;
+    m_bIsStereo     = false;
     m_bIsFullscreen = ( dwFlags & D3DFW_FULLSCREEN ) ? true : false;
 
     // Support stereoscopic viewing for fullscreen modes which support it
-	if( ( dwFlags & D3DFW_STEREO ) && ( dwFlags & D3DFW_FULLSCREEN ) )
-		if( pMode->ddsCaps.dwCaps2 & DDSCAPS2_STEREOSURFACELEFT )
-			m_bIsStereo = true;
+    if( ( dwFlags & D3DFW_STEREO ) && ( dwFlags & D3DFW_FULLSCREEN ) )
+        if( pMode->ddsCaps.dwCaps2 & DDSCAPS2_STEREOSURFACELEFT )
+            m_bIsStereo = true;
 
     // Create the D3D rendering environment (surfaces, device, viewport, etc.)
     if( FAILED( hr = CreateEnvironment( pDriverGUID, pDeviceGUID, pMode,
@@ -545,8 +545,8 @@ HRESULT CD3DFramework7::CreateZBuffer( GUID* pDeviceGUID )
 //-----------------------------------------------------------------------------
 HRESULT CD3DFramework7::RestoreSurfaces()
 {
-	// Restore all surfaces (including video memory vertex buffers)
-	m_pDD->RestoreAllSurfaces();
+    // Restore all surfaces (including video memory vertex buffers)
+    m_pDD->RestoreAllSurfaces();
 
     return S_OK;
 }

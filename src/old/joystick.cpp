@@ -29,9 +29,9 @@
 
 // Global variables.
 
-LPDIRECTINPUT7			g_pDI       = NULL;         
-LPDIRECTINPUTDEVICE2	g_pJoystick = NULL;     
-DIDEVCAPS				g_diDevCaps;
+LPDIRECTINPUT7          g_pDI       = NULL;         
+LPDIRECTINPUTDEVICE2    g_pJoystick = NULL;     
+DIDEVCAPS               g_diDevCaps;
 
 
 
@@ -47,7 +47,7 @@ bool CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance,
 
     // Obtain an interface to the enumerated joystick.
     hr = g_pDI->CreateDeviceEx( pdidInstance->guidInstance, IID_IDirectInputDevice2,
-		                        (VOID**)&g_pJoystick, NULL );
+                                (VOID**)&g_pJoystick, NULL );
 
     // If it failed, then we can't use this joystick. (Maybe the user unplugged
     // it while we were in the middle of enumerating it.)
@@ -83,28 +83,28 @@ bool CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
     switch( pdidoi->dwOfs )
     {
         case DIJOFS_X:
-			OutputDebugString("EnumAxesCallback -x\n");
+            OutputDebugString("EnumAxesCallback -x\n");
             break;
         case DIJOFS_Y:
-			OutputDebugString("EnumAxesCallback -y\n");
+            OutputDebugString("EnumAxesCallback -y\n");
             break;
         case DIJOFS_Z:
-			OutputDebugString("EnumAxesCallback -z\n");
+            OutputDebugString("EnumAxesCallback -z\n");
             break;
         case DIJOFS_RX:
-			OutputDebugString("EnumAxesCallback -rx\n");
+            OutputDebugString("EnumAxesCallback -rx\n");
             break;
         case DIJOFS_RY:
-			OutputDebugString("EnumAxesCallback -ry\n");
+            OutputDebugString("EnumAxesCallback -ry\n");
             break;
         case DIJOFS_RZ:
-			OutputDebugString("EnumAxesCallback -rz\n");
+            OutputDebugString("EnumAxesCallback -rz\n");
             break;
         case DIJOFS_SLIDER(0):
-			OutputDebugString("EnumAxesCallback -s0\n");
+            OutputDebugString("EnumAxesCallback -s0\n");
             break;
         case DIJOFS_SLIDER(1):
-			OutputDebugString("EnumAxesCallback -s1\n");
+            OutputDebugString("EnumAxesCallback -s1\n");
             break;
     }
 #endif
@@ -125,7 +125,7 @@ bool InitDirectInput(HINSTANCE hInst, HWND hWnd)
     hr = DirectInputCreateEx( hInst, DIRECTINPUT_VERSION,IID_IDirectInput7, (LPVOID*)&g_pDI, NULL );
     if( FAILED(hr) )  return false;
 #else
-	return false;
+    return false;
 #endif
 
     // Look for a simple joystick we can use for this sample program.

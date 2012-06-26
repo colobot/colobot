@@ -26,9 +26,9 @@
 
 enum TaskResetPhase
 {
-	TRSP_ZOUT	= 1,	// disappears
-	TRSP_MOVE	= 2,	// moves
-	TRSP_ZIN	= 3,	// reappears
+    TRSP_ZOUT   = 1,    // disappears
+    TRSP_MOVE   = 2,    // moves
+    TRSP_ZIN    = 3,    // reappears
 };
 
 
@@ -36,28 +36,28 @@ enum TaskResetPhase
 class CTaskReset : public CTask
 {
 public:
-	CTaskReset(CInstanceManager* iMan, CObject* object);
-	~CTaskReset();
+    CTaskReset(CInstanceManager* iMan, CObject* object);
+    ~CTaskReset();
 
-	bool	EventProcess(const Event &event);
+    bool    EventProcess(const Event &event);
 
-	Error	Start(Math::Vector goal, Math::Vector angle);
-	Error	IsEnded();
-
-protected:
-	bool	SearchVehicle();
+    Error   Start(Math::Vector goal, Math::Vector angle);
+    Error   IsEnded();
 
 protected:
-	Math::Vector		m_begin;
-	Math::Vector		m_goal;
-	Math::Vector		m_angle;
+    bool    SearchVehicle();
 
-	TaskResetPhase	m_phase;
-	bool			m_bError;
-	float			m_time;
-	float			m_speed;
-	float			m_progress;
-	float			m_lastParticule;  // time of generation last particle
-	float			m_iAngle;
+protected:
+    Math::Vector        m_begin;
+    Math::Vector        m_goal;
+    Math::Vector        m_angle;
+
+    TaskResetPhase  m_phase;
+    bool            m_bError;
+    float           m_time;
+    float           m_speed;
+    float           m_progress;
+    float           m_lastParticule;  // time of generation last particle
+    float           m_iAngle;
 };
 
