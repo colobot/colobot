@@ -775,7 +775,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
         m_main->DeselectAll();
     }
     DeleteDeselList(this);
-    
+
     if ( m_botVar != 0 )
     {
         if ( m_type == OBJECT_STONE   ||
@@ -1140,7 +1140,7 @@ bool CObject::Write(char *line)
         else           sprintf(name, ";%.2f", value);
         strcat(line, name);
     }
-    
+
     if ( m_motion != 0 )
     {
         m_motion->Write(line);
@@ -1230,7 +1230,7 @@ bool CObject::Read(char *line)
         if ( value == NAN )  break;
         SetCmdLine(i, value);
     }
-    
+
     if ( m_motion != 0 )
     {
         m_motion->Read(line);
@@ -2417,7 +2417,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         pModFile->CreateEngineObject(rank);
         SetPosition(4, Math::Vector(35.0f, 0.0f, 0.0f));
         SetAngleY(4, -55.0f*Math::PI/180.0f);
-        
+
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEDESCENDANT);
         SetObjectRank(5, rank);
@@ -2444,7 +2444,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         pModFile->CreateEngineObject(rank);
         SetPosition(7, Math::Vector(35.0f, 0.0f, 0.0f));
         SetAngleY(7, 55.0f*Math::PI/180.0f);
-        
+
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEDESCENDANT);
         SetObjectRank(8, rank);
@@ -5554,7 +5554,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         CreateShadowCircle(16.0f, 0.5f);
     }
 
-    if ( type == OBJECT_APOLLO2 )  // jeep 
+    if ( type == OBJECT_APOLLO2 )  // jeep
     {
         rank = m_engine->CreateObject();
         m_engine->SetObjectType(rank, TYPEFIX);  //it is a stationary object

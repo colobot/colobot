@@ -188,7 +188,7 @@ protected:
     char            m_texBaseName[20];
     char            m_texBaseExt[10];
     float           m_defHardness;
-    
+
     TerrainMaterial m_levelMat[MAXMATTERRAIN+1];
     int             m_levelMatTotal;
     int             m_levelMatMax;

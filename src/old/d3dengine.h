@@ -352,7 +352,7 @@ public:
     bool        GroundMarkDelete(int rank);
 
     void        Update();
-    
+
     void        SetViewParams(const Math::Vector &vEyePt, const Math::Vector &vLookatPt, const Math::Vector &vUpVec, FLOAT fEyeDistance);
 
     bool        FreeTexture(char* name);

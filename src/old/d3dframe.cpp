@@ -41,11 +41,11 @@ CD3DFramework7::CD3DFramework7()
      m_bIsStereo      = false;
      m_dwRenderWidth  = 0L;
      m_dwRenderHeight = 0L;
-     
+
      m_pddsFrontBuffer    = NULL;
      m_pddsBackBuffer     = NULL;
      m_pddsBackBufferLeft = NULL;
-     
+
      m_pddsZBuffer     = NULL;
      m_pd3dDevice      = NULL;
      m_pDD             = NULL;
@@ -124,7 +124,7 @@ HRESULT CD3DFramework7::Initialize( HWND hWnd, GUID* pDriverGUID,
     HRESULT hr;
 
     // Check params. Note: A NULL mode is valid for windowed modes only.
-    if( ( NULL==hWnd ) || ( NULL==pDeviceGUID ) || 
+    if( ( NULL==hWnd ) || ( NULL==pDeviceGUID ) ||
         ( NULL==pMode && (dwFlags&D3DFW_FULLSCREEN) ) )
         return E_INVALIDARG;
 
@@ -491,7 +491,7 @@ HRESULT CD3DFramework7::CreateZBuffer( GUID* pDeviceGUID )
         ddsd.ddpfPixelFormat.dwRGBBitCount = 16;
         m_pD3D->EnumZBufferFormats( *pDeviceGUID, EnumZBufferFormatsCallback,
                                     (VOID*)&ddsd.ddpfPixelFormat );
-            
+
         if( 0 == ddsd.ddpfPixelFormat.dwSize )
         {
             DEBUG_MSG( _T("Device doesn't support requested zbuffer format") );

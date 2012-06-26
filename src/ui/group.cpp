@@ -576,7 +576,7 @@ void CGroup::Draw()
         uv2.x -= dp;
         uv2.y -= dp;
         DrawIcon(pos, dim, uv1, uv2);
-        
+
         m_engine->SetTexture("button3.tga");
         m_engine->SetState(D3DSTATENORMAL);
         pos.x +=  8.0f/640.0f;
@@ -607,7 +607,7 @@ void CGroup::Draw()
         uv2.x -= dp;
         uv2.y -= dp;
         DrawIcon(pos, dim, uv1, uv2);
-        
+
         m_engine->SetState(D3DSTATETTb);
         pos.x +=  8.0f/640.0f;
         pos.y +=  8.0f/480.0f;

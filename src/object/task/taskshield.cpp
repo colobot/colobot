@@ -257,7 +257,7 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     if ( power == 0 )  return ERR_SHIELD_ENERGY;
     energy = power->RetEnergy();
     if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
-    
+
     mat = m_object->RetWorldMatrix(0);
     pos = Math::Vector(7.0f, 15.0f, 0.0f);
     pos = Transform(*mat, pos);  // sphere position
