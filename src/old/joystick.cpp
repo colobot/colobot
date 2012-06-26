@@ -29,8 +29,8 @@
 
 // Global variables.
 
-LPDIRECTINPUT7          g_pDI       = NULL;         
-LPDIRECTINPUTDEVICE2    g_pJoystick = NULL;     
+LPDIRECTINPUT7          g_pDI       = NULL;
+LPDIRECTINPUTDEVICE2    g_pJoystick = NULL;
 DIDEVCAPS               g_diDevCaps;
 
 
@@ -51,7 +51,7 @@ bool CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance,
 
     // If it failed, then we can't use this joystick. (Maybe the user unplugged
     // it while we were in the middle of enumerating it.)
-    if( FAILED(hr) ) 
+    if( FAILED(hr) )
         return DIENUM_CONTINUE;
 
 
@@ -66,14 +66,14 @@ bool CALLBACK EnumJoysticksCallback( const DIDEVICEINSTANCE* pdidInstance,
 bool CALLBACK EnumAxesCallback( const DIDEVICEOBJECTINSTANCE* pdidoi,
                                 VOID* pContext )
 {
-    DIPROPRANGE diprg; 
-    diprg.diph.dwSize       = sizeof(DIPROPRANGE); 
-    diprg.diph.dwHeaderSize = sizeof(DIPROPHEADER); 
-    diprg.diph.dwHow        = DIPH_BYOFFSET; 
+    DIPROPRANGE diprg;
+    diprg.diph.dwSize       = sizeof(DIPROPRANGE);
+    diprg.diph.dwHeaderSize = sizeof(DIPROPHEADER);
+    diprg.diph.dwHow        = DIPH_BYOFFSET;
     diprg.diph.dwObj        = pdidoi->dwOfs; // Specify the enumerated axis
-    diprg.lMin              = -1000; 
-    diprg.lMax              = +1000; 
-    
+    diprg.lMin              = -1000;
+    diprg.lMax              = +1000;
+
     // Set the range for the axis
     if( FAILED( g_pJoystick->SetProperty( DIPROP_RANGE, &diprg.diph ) ) )
         return DIENUM_STOP;
@@ -136,12 +136,12 @@ bool InitDirectInput(HINSTANCE hInst, HWND hWnd)
     // Make sure we got a joystick
     if( NULL == g_pJoystick )
     {
-//?        MessageBox( NULL, "Joystick not found", "DInput Sample", 
+//?        MessageBox( NULL, "Joystick not found", "DInput Sample",
 //?                    MB_ICONERROR | MB_OK );
         return false;
     }
 
-    // Set the data format to "simple joystick" - a predefined data format 
+    // Set the data format to "simple joystick" - a predefined data format
     //
     // A data format specifies which controls on a device we are interested in,
     // and how they should be reported. This tells DInput that we will be
@@ -189,7 +189,7 @@ bool UpdateInputState( DIJOYSTATE &js )
 {
     HRESULT     hr;
 
-    if ( g_pJoystick ) 
+    if ( g_pJoystick )
     {
         do
         {
@@ -212,7 +212,7 @@ bool UpdateInputState( DIJOYSTATE &js )
         }
         while ( DIERR_INPUTLOST == hr );
         if ( FAILED(hr) )  return false;
-    } 
+    }
     return true;
 }
 
@@ -222,9 +222,9 @@ bool UpdateInputState( DIJOYSTATE &js )
 bool FreeDirectInput()
 {
     // Unacquire and release any DirectInputDevice objects.
-    if( NULL != g_pJoystick ) 
+    if( NULL != g_pJoystick )
     {
-        // Unacquire the device one last time just in case 
+        // Unacquire the device one last time just in case
         // the app tried to exit while the device is still acquired.
         g_pJoystick->Unacquire();
         g_pJoystick->Release();
@@ -233,7 +233,7 @@ bool FreeDirectInput()
 
 
     // Release any DirectInput objects.
-    if( g_pDI ) 
+    if( g_pDI )
     {
         g_pDI->Release();
         g_pDI = NULL;

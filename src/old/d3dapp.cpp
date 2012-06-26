@@ -170,7 +170,7 @@ CD3DApplication::CD3DApplication()
     g_pD3DApp = this;
 
     // Request event sent by Logitech.
-    m_mshMouseWheel = RegisterWindowMessage(MSH_MOUSEWHEEL); 
+    m_mshMouseWheel = RegisterWindowMessage(MSH_MOUSEWHEEL);
 
     _mkdir("files\\");
 }
@@ -538,7 +538,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
     // Register the window class
     WNDCLASS wndClass = { 0, WndProc, 0, 0, hInst,
                           LoadIcon( hInst, MAKEINTRESOURCE(IDI_MAIN_ICON) ),
-                          LoadCursor( NULL, IDC_ARROW ), 
+                          LoadCursor( NULL, IDC_ARROW ),
                           (HBRUSH)GetStockObject(WHITE_BRUSH),
                           NULL, _T("D3D Window") };
     RegisterClass( &wndClass );
@@ -550,7 +550,7 @@ HRESULT CD3DApplication::Create( HINSTANCE hInst, TCHAR* strCmdLine )
 //?                        WS_OVERLAPPEDWINDOW|WS_VISIBLE,
                            style, CW_USEDEFAULT, CW_USEDEFAULT,
                            WINDOW_DX, WINDOW_DY, 0L,
-//?                        LoadMenu( hInst, MAKEINTRESOURCE(IDR_MENU) ), 
+//?                        LoadMenu( hInst, MAKEINTRESOURCE(IDR_MENU) ),
                            NULL,
                            hInst, 0L );
     UpdateWindow( m_hWnd );
@@ -738,7 +738,7 @@ void CD3DApplication::SetMousePos(Math::Point pos)
     p.x = (int)pos.x;
     p.y = (int)pos.y;
     ClientToScreen(m_hWnd, &p);
-    
+
     SetCursorPos(p.x, p.y);
 }
 
@@ -1426,7 +1426,7 @@ LRESULT CD3DApplication::MsgProc( HWND hWnd, UINT uMsg, WPARAM wParam,
     return DefWindowProc( hWnd, uMsg, wParam, lParam );
 }
 
-            
+
 // Enumeration function to report valid pixel formats for z-buffers.
 
 HRESULT WINAPI EnumZBufferFormatsCallback(DDPIXELFORMAT* pddpf,
@@ -1482,7 +1482,7 @@ HRESULT CD3DApplication::CreateZBuffer(GUID* pDeviceGUID)
         ddsd.ddpfPixelFormat.dwRGBBitCount = 16;
         m_pD3D->EnumZBufferFormats( *pDeviceGUID, EnumZBufferFormatsCallback,
                                     (VOID*)&ddsd.ddpfPixelFormat );
-            
+
         if( 0 == ddsd.ddpfPixelFormat.dwSize )
         {
             DEBUG_MSG( _T("Device doesn't support requested zbuffer format") );
@@ -1523,9 +1523,9 @@ HRESULT CD3DApplication::CreateZBuffer(GUID* pDeviceGUID)
 HRESULT CD3DApplication::Initialize3DEnvironment()
 {
     HRESULT     hr;
-    DDSCAPS2    ddsCaps2; 
+    DDSCAPS2    ddsCaps2;
     DWORD       dwFrameworkFlags = 0L;
-    DWORD       dwTotal; 
+    DWORD       dwTotal;
     DWORD       dwFree;
 
     dwFrameworkFlags |= ( !m_pDeviceInfo->bWindowed ? D3DFW_FULLSCREEN : 0L );
@@ -1550,9 +1550,9 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
 
         // Request the amount of video memory.
         ZeroMemory(&ddsCaps2, sizeof(ddsCaps2));
-        ddsCaps2.dwCaps = DDSCAPS_TEXTURE; 
+        ddsCaps2.dwCaps = DDSCAPS_TEXTURE;
         dwTotal = 0;
-        hr = m_pDD->GetAvailableVidMem(&ddsCaps2, &dwTotal, &dwFree); 
+        hr = m_pDD->GetAvailableVidMem(&ddsCaps2, &dwTotal, &dwFree);
         m_vidMemTotal = dwTotal;
 
         // Let the app run its startup code which creates the 3d scene.
@@ -1577,7 +1577,7 @@ HRESULT CD3DApplication::Initialize3DEnvironment()
         D3DEnum_SelectDefaultDevice( &m_pDeviceInfo, D3DENUM_SOFTWAREONLY );
         return Initialize3DEnvironment();
     }
- 
+
     return hr;
 }
 
@@ -1611,7 +1611,7 @@ HRESULT CD3DApplication::Change3DEnvironment()
             // Coming from fullscreen mode, so restore window properties
             SetWindowLong( m_hWnd, GWL_STYLE, dwSavedStyle );
             SetWindowPos( m_hWnd, HWND_NOTOPMOST, rcSaved.left, rcSaved.top,
-                          ( rcSaved.right - rcSaved.left ), 
+                          ( rcSaved.right - rcSaved.left ),
                           ( rcSaved.bottom - rcSaved.top ), SWP_SHOWWINDOW );
         }
         else
@@ -1841,7 +1841,7 @@ LRESULT CD3DApplication::OnQuerySuspend( DWORD dwFlags )
 
 
 // Called when the app receives a PBT_APMRESUMESUSPEND message, meaning
-// the computer has just resumed from a suspended state. At this point, 
+// the computer has just resumed from a suspended state. At this point,
 // the app should recover any data, network connections, files, etc..,
 // and resume running from when the app was suspended.
 
@@ -1971,7 +1971,7 @@ VOID CD3DApplication::ShowStats()
     // Setup the text buffer to write out dimensions
     TCHAR buffer[100];
     sprintf( buffer, _T("%7.02f fps T=%d (%dx%dx%d)"), fFPS, t,
-             m_ddsdRenderTarget.dwWidth, m_ddsdRenderTarget.dwHeight, 
+             m_ddsdRenderTarget.dwWidth, m_ddsdRenderTarget.dwHeight,
              m_ddsdRenderTarget.ddpfPixelFormat.dwRGBBitCount );
     OutputText( 400, 2, buffer );
 
@@ -2017,28 +2017,28 @@ VOID CD3DApplication::OutputText( DWORD x, DWORD y, TCHAR* str )
 // members within a BITMAPINFOHEADER structure
 
 PBITMAPINFO CD3DApplication::CreateBitmapInfoStruct(HBITMAP hBmp)
-{ 
+{
     BITMAP      bmp;
     PBITMAPINFO pbmi;
     WORD        cClrBits;
- 
+
     // Retrieve the bitmap's color format, width, and height.
     if ( !GetObject(hBmp, sizeof(BITMAP), (LPSTR)&bmp) )
         return 0;
-  
+
     // Convert the color format to a count of bits.
     cClrBits = (WORD)(bmp.bmPlanes * bmp.bmBitsPixel);
- 
+
          if ( cClrBits ==  1 )  cClrBits =  1;
     else if ( cClrBits <=  4 )  cClrBits =  4;
     else if ( cClrBits <=  8 )  cClrBits =  8;
     else if ( cClrBits <= 16 )  cClrBits = 16;
     else if ( cClrBits <= 24 )  cClrBits = 24;
     else                        cClrBits = 32;
- 
-    // Allocate memory for the BITMAPINFO structure. (This structure 
-    // contains a BITMAPINFOHEADER structure and an array of RGBQUAD data 
-    // structures.) 
+
+    // Allocate memory for the BITMAPINFO structure. (This structure
+    // contains a BITMAPINFOHEADER structure and an array of RGBQUAD data
+    // structures.)
     if ( cClrBits != 24 )
     {
          pbmi = (PBITMAPINFO)LocalAlloc(LPTR,
@@ -2051,7 +2051,7 @@ PBITMAPINFO CD3DApplication::CreateBitmapInfoStruct(HBITMAP hBmp)
          pbmi = (PBITMAPINFO)LocalAlloc(LPTR,
                     sizeof(BITMAPINFOHEADER));
     }
- 
+
     // Initialize the fields in the BITMAPINFO structure.
     pbmi->bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
     pbmi->bmiHeader.biWidth = bmp.bmWidth;
@@ -2060,77 +2060,77 @@ PBITMAPINFO CD3DApplication::CreateBitmapInfoStruct(HBITMAP hBmp)
     pbmi->bmiHeader.biBitCount = bmp.bmBitsPixel;
     if ( cClrBits < 24 )
         pbmi->bmiHeader.biClrUsed = 2^cClrBits;
-  
+
     // If the bitmap is not compressed, set the BI_RGB flag.
     pbmi->bmiHeader.biCompression = BI_RGB;
- 
+
     // Compute the number of bytes in the array of color
     // indices and store the result in biSizeImage.
     pbmi->bmiHeader.biSizeImage = (pbmi->bmiHeader.biWidth + 7) /8
                                   * pbmi->bmiHeader.biHeight
                                   * cClrBits;
- 
+
     // Set biClrImportant to 0, indicating that all of the
     // device colors are important.
     pbmi->bmiHeader.biClrImportant = 0;
 
     return pbmi;
-} 
- 
+}
+
 // Defines a function that initializes the remaining structures,
 // retrieves the array of palette indices, opens the file, copies
-// the data, and closes the file. 
+// the data, and closes the file.
 
 bool CD3DApplication::CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC)
-{ 
+{
     FILE*               file;       // file handle
     BITMAPFILEHEADER    hdr;        // bitmap file-header
     PBITMAPINFOHEADER   pbih;       // bitmap info-header
     LPBYTE              lpBits;     // memory pointer
     DWORD               dwTotal;    // total count of bytes
- 
+
     pbih = (PBITMAPINFOHEADER)pbi;
     lpBits = (LPBYTE)GlobalAlloc(GMEM_FIXED, pbih->biSizeImage);
     if ( !lpBits )  return false;
- 
+
     // Retrieve the color table (RGBQUAD array) and the bits
     // (array of palette indices) from the DIB.
     if ( !GetDIBits(hDC, hBMP, 0, (WORD)pbih->biHeight,
                     lpBits, pbi, DIB_RGB_COLORS) )
         return false;
- 
+
     // Create the .BMP file.
     file = fopen(pszFile, "wb");
     if ( file == NULL )  return false;
- 
+
     hdr.bfType = 0x4d42; // 0x42 = "B" 0x4d = "M"
- 
+
     // Compute the size of the entire file.
     hdr.bfSize = (DWORD)(sizeof(BITMAPFILEHEADER) +
                          pbih->biSize + pbih->biClrUsed
                          * sizeof(RGBQUAD) + pbih->biSizeImage);
- 
+
     hdr.bfReserved1 = 0;
     hdr.bfReserved2 = 0;
- 
+
     // Compute the offset to the array of color indices.
     hdr.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) +
                     pbih->biSize + pbih->biClrUsed
                     * sizeof (RGBQUAD);
- 
+
     // Copy the BITMAPFILEHEADER into the .BMP file.
     fwrite(&hdr, sizeof(BITMAPFILEHEADER), 1, file);
- 
+
     // Copy the BITMAPINFOHEADER and RGBQUAD array into the file.
     fwrite(pbih, sizeof(BITMAPINFOHEADER)+pbih->biClrUsed*sizeof(RGBQUAD), 1, file);
- 
+
     // Copy the array of color indices into the .BMP file.
     dwTotal = pbih->biSizeImage;
     fwrite(lpBits, dwTotal, 1, file);
- 
+
     // Close the .BMP file.
     fclose(file);
- 
+
     // Free memory.
     GlobalFree((HGLOBAL)lpBits);
     return true;
@@ -2389,7 +2389,7 @@ VOID CD3DApplication::DisplayFrameworkError( HRESULT hr, DWORD dwType )
             break;
         case D3DFWERR_NO3DDEVICE:
             lstrcpy( strMsg, _T("Could not create the Direct3DDevice object.") );
-            
+
             if( MSGWARN_SWITCHEDTOSOFTWARE == dwType )
                 lstrcat( strMsg, _T("\nThe 3D hardware chipset may not support"
                                     "\nrendering in the current display mode.") );

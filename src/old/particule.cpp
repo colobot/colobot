@@ -1322,7 +1322,7 @@ void CParticule::FrameParticule(float rTime)
                         duration = Math::Rand()*1.0f+1.0f;
                         mass = 0.0f;
                         CreateParticule(pos, speed, dim, PARTIEXPLOG1, duration, mass, 1.0f);
-                        
+
                         pos.y += 1.0f;
                         total = (int)(2.0f*m_engine->RetParticuleDensity());
                         for ( j=0 ; j<total ; j++ )
@@ -1366,7 +1366,7 @@ void CParticule::FrameParticule(float rTime)
                         duration = Math::Rand()*1.0f+1.0f;
                         mass = 0.0f;
                         CreateParticule(pos, speed, dim, PARTIEXPLOG1, duration, mass, 1.0f);
-                        
+
                         pos.y += 1.0f;
                         total = (int)(2.0f*m_engine->RetParticuleDensity());
                         for ( j=0 ; j<total ; j++ )
@@ -3534,7 +3534,7 @@ void CParticule::DrawParticuleSphere(int i)
     // Generate the group of rings for the sphere.
     j = 0;
     for ( ring=0 ; ring<numRings ; ring++ )
-    {    
+    {
         r0   = sinf((ring+0)*deltaRingAngle);
         r1   = sinf((ring+1)*deltaRingAngle);
         v0.y = cosf((ring+0)*deltaRingAngle);
@@ -3562,7 +3562,7 @@ void CParticule::DrawParticuleSphere(int i)
             vertex[j++] = D3DVERTEX2(v1,v1, tu1,tv1);
         }
     }
-    
+
     m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, j, NULL);
     m_engine->AddStatisticTriangle(j);
 
@@ -3680,7 +3680,7 @@ void CParticule::DrawParticuleCylinder(int i)
             vertex[j++] = D3DVERTEX2(v1,v1, tu1,tv1);
         }
     }
-    
+
     m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, j, NULL);
     m_engine->AddStatisticTriangle(j);
 

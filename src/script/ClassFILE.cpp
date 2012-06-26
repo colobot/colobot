@@ -34,7 +34,7 @@ void PrepareFilename(CBotString &filename)
     pos = filename.ReverseFind('\\');
     if ( pos > 0 )
     {
-        filename = filename.Mid(pos+1);  // Remove files with 
+        filename = filename.Mid(pos+1);  // Remove files with
     }
 
     pos = filename.ReverseFind('/');
@@ -57,7 +57,7 @@ void PrepareFilename(CBotString &filename)
 // get the filename as a parameter
 
 // execution
-bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception) 
+bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
     CBotString  mode;
 
@@ -79,7 +79,7 @@ bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exceptio
         if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
 
         // no third parameter
-        if ( pVar->GivNext() != NULL ) { Exception = CBotErrOverParam; return false; } 
+        if ( pVar->GivNext() != NULL ) { Exception = CBotErrOverParam; return false; }
     }
 
     // saves the file name
@@ -238,7 +238,7 @@ CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar)
     return CBotTypResult(CBotTypBoolean);
 }
 
-    
+
 // process FILE :: close
 
 // execeution
@@ -290,7 +290,7 @@ bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
     if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
     FILE* pFile= (FILE*)pVar->GivValInt();
-    
+
     int res = fputs(param+CBotString("\n"), pFile);
 
     // if an error occurs generate an exception

@@ -216,7 +216,7 @@ Error CTaskTerraform::Start()
     if ( power == 0 )  return ERR_TERRA_ENERGY;
     energy = power->RetEnergy();
     if ( energy < ENERGY_TERRA/power->RetCapacity()+0.05f )  return ERR_TERRA_ENERGY;
-    
+
     speed = m_physics->RetMotorSpeed();
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_MANIP_MOTOR;

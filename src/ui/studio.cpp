@@ -498,7 +498,7 @@ void CStudio::SearchToken(CEdit* edit)
         token[i] = text[cursor2+i];
     }
     token[i] = 0;
-    
+
     strcpy(m_helpFilename, RetHelpFilename(token));
     if ( m_helpFilename[0] == 0 )
     {
@@ -1503,7 +1503,7 @@ void CStudio::UpdateDialogPublic()
         sprintf(text, name, dir);
         pl->SetName(text, false);
     }
-}   
+}
 
 // Fills the list with all programs saved.
 

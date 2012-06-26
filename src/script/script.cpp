@@ -1056,7 +1056,7 @@ bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user)
     object->SetActivity(false);
     object->ReadProgram(0, (char*)name);
     object->RunProgram(0);
-    
+
     result->SetValInt(0);  // no error
     return true;
 }
@@ -1759,7 +1759,7 @@ CBotTypResult cSend(CBotVar* &var, void* user)
     if ( var == 0 )  return CBotTypResult(CBotErrLowParam);
     if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GivNext();
-    
+
     if ( var == 0 )  return CBotTypResult(CBotTypFloat);
     if ( var->GivType() > CBotTypDouble )  return CBotTypResult(CBotErrBadNum);
     var = var->GivNext();
@@ -2249,7 +2249,7 @@ bool rMotor(CBotVar* var, CBotVar* result, int& exception, void* user)
     turn = left-right;
     if ( turn < -1.0f )  turn = -1.0f;
     if ( turn >  1.0f )  turn =  1.0f;
-    
+
     if ( pThis->RetFixed() )  // ant on the back?
     {
         speed = 0.0f;
@@ -3568,7 +3568,7 @@ void CScript::New(CEdit* edit, char* name)
     edit->SetCursor(cursor2, cursor1);
     edit->ShowSelect();
     edit->SetFocus(true);
-    
+
     sf = m_main->RetScriptFile();
     if ( sf[0] != 0 )  // Load an empty program specific?
     {
@@ -3730,7 +3730,7 @@ bool CScript::ReadStack(FILE *file)
 
     if ( m_botProg == 0 )  return false;
     if ( !m_botProg->RestoreState(file) )  return false;
-    
+
     m_object->SetRunScript(this);
     m_bRun = true;
     m_bContinue = false;

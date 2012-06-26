@@ -316,7 +316,7 @@ Error CTaskFire::Start(float delay)
     else if ( m_bRay     )  fire = m_delay*ENERGY_FIREr;
     else                    fire = m_delay*ENERGY_FIRE;
     if ( energy < fire/power->RetCapacity()+0.05f )  return ERR_FIRE_ENERGY;
-    
+
     m_speed = 1.0f/m_delay;
     m_progress = 0.0f;
     m_time = 0.0f;

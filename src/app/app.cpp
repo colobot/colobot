@@ -390,7 +390,7 @@ void CApplication::ParseEvent()
 
 void CApplication::ProcessEvent(Event event)
 {
-    
+
 }
 
 bool CApplication::Render()

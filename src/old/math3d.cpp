@@ -420,7 +420,7 @@ FPOINT RotatePoint(float angle, float dist)
 //      |  / |
 //      |/)a |
 //  ----o----o-->
-//      |    x 
+//      |    x
 //      |
 
 float RotateAngle(float x, float y)

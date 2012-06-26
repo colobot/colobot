@@ -99,7 +99,7 @@ bool CMotion::EventProcess(const Event &event)
          m_engine->RetPause() )  return true;
 
     if ( event.event != EVENT_FRAME )  return true;
-    
+
     m_progress += event.rTime*m_actionTime;
     if ( m_progress > 1.0f )  m_progress = 1.0f;  // (*)
 

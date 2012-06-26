@@ -295,7 +295,7 @@ bool InitAudioTrackVolume(int volume)
 CSound::CSound(CInstanceManager* iMan)
 {
     int     i;
-    
+
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_SOUND, this);
 
@@ -428,7 +428,7 @@ bool CSound::Create(HWND hWnd, bool b3D)
 
     if ( m_ctrl3D )
     {
-        hr = primary->QueryInterface( IID_IDirectSound3DListener, 
+        hr = primary->QueryInterface( IID_IDirectSound3DListener,
                                       (VOID**)&m_listener );
         if ( hr != S_OK )
         {
@@ -806,7 +806,7 @@ bool CSound::SearchFreeBuffer(Sound sound, int &channel, bool &bAlreadyLoaded)
 
 // Reads in data from a wave file.
 
-bool CSound::ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size) 
+bool CSound::ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size)
 {
     LPVOID  pData1;
     DWORD   dwData1Size;
@@ -822,13 +822,13 @@ bool CSound::ReadData(LPDIRECTSOUNDBUFFER lpDSB, Sound sound, DWORD size)
     }
 
     // Read in first chunk of data.
-    if ( dwData1Size > 0 ) 
+    if ( dwData1Size > 0 )
     {
         memcpy(pData1, m_files[sound]+sizeof(WaveHeader), dwData1Size);
     }
 
     // Read in second chunk if necessary.
-    if ( dwData2Size > 0 ) 
+    if ( dwData2Size > 0 )
     {
         memcpy(pData2, m_files[sound]+sizeof(WaveHeader)+dwData1Size, dwData2Size);
     }
@@ -853,10 +853,10 @@ bool CSound::CreateSoundBuffer(int channel, DWORD size, DWORD freq,
     DSBUFFERDESC    dsbdesc;
     DS3DBUFFER      bufferParams;  // 3D buffer properties
     HRESULT         hr;
-    
+
     // Set up wave format structure.
     memset( &pcmwf, 0, sizeof(PCMWAVEFORMAT) );
-    pcmwf.wf.wFormatTag      = WAVE_FORMAT_PCM;      
+    pcmwf.wf.wFormatTag      = WAVE_FORMAT_PCM;
     pcmwf.wf.nChannels       = bStereo ? 2 : 1;
     pcmwf.wf.nSamplesPerSec  = freq;
     pcmwf.wf.nBlockAlign     = (WORD)blkAlign;
@@ -864,7 +864,7 @@ bool CSound::CreateSoundBuffer(int channel, DWORD size, DWORD freq,
     pcmwf.wBitsPerSample     = (WORD)bitsPerSample;
 
     // Set up DSBUFFERDESC structure.
-    memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));  // Zero it out. 
+    memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));  // Zero it out.
     dsbdesc.dwSize = sizeof(DSBUFFERDESC);
     if ( m_ctrl3D )
     {
@@ -876,7 +876,7 @@ bool CSound::CreateSoundBuffer(int channel, DWORD size, DWORD freq,
     {
         dsbdesc.dwFlags = DSBCAPS_CTRLVOLUME|DSBCAPS_CTRLPAN|DSBCAPS_CTRLFREQUENCY;
     }
-    dsbdesc.dwBufferBytes = size; 
+    dsbdesc.dwBufferBytes = size;
     dsbdesc.lpwfxFormat   = (LPWAVEFORMATEX)&pcmwf;
 
     hr = m_lpDS->CreateSoundBuffer(&dsbdesc, &m_channel[channel].soundBuffer, NULL);
@@ -886,12 +886,12 @@ bool CSound::CreateSoundBuffer(int channel, DWORD size, DWORD freq,
     {
         hr = m_channel[channel].soundBuffer->QueryInterface
                             (
-                                IID_IDirectSound3DBuffer, 
+                                IID_IDirectSound3DBuffer,
                                 (VOID**)&m_channel[channel].soundBuffer3D
                             );
         if ( hr != DS_OK )  return false;
     }
-    
+
     m_channel[channel].bUsed = true;
     m_channel[channel].bMute = false;
     return true;
@@ -1484,11 +1484,11 @@ bool CSound::PlayMusic(int rank, bool bRepeat)
     // The device opened successfully; get the device ID.
     m_MidiDeviceID = mciOpenParms.wDeviceID;
 
-    // Begin playback. 
+    // Begin playback.
     mciPlayParms.dwCallback = (DWORD)m_hWnd;
     dwReturn = mciSendCommand(m_MidiDeviceID,
                               MCI_PLAY,
-                              MCI_NOTIFY, 
+                              MCI_NOTIFY,
                               (DWORD)(LPVOID)&mciPlayParms);
     if ( dwReturn != 0 )
     {
@@ -1570,7 +1570,7 @@ bool CSound::PlayAudioTrack(int rank)
         mciGetErrorString(dwReturn, filename, 128);
         StopMusic();
         return false;
-    }  
+    }
 
     // Begin playback.
     memset(&mciPlayParms, 0, sizeof(MCI_PLAY_PARMS));

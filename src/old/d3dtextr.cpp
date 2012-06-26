@@ -347,7 +347,7 @@ HRESULT TextureContainer::LoadBitmapFile( TCHAR* strPathname )
                                       LR_LOADFROMFILE|LR_CREATEDIBSECTION );
     if( m_hbmBitmap )
         return S_OK;
-    
+
     return DDERR_NOTFOUND;
 }
 
@@ -381,7 +381,7 @@ HRESULT TextureContainer::LoadTargaFile( TCHAR* strMetaname, TCHAR* strFilename 
     g_metafile.Read(&tga, sizeof(TargaHeader));
 
     // Only true color, non-mapped images are supported
-    if( ( 0 != tga.ColormapType ) || 
+    if( ( 0 != tga.ColormapType ) ||
         ( tga.ImageType != 10 && tga.ImageType != 2 ) )
     {
         g_metafile.Close();
@@ -478,7 +478,7 @@ HRESULT TextureContainer::LoadTargaFile( TCHAR* strMetaname, TCHAR* strFilename 
             break;
         }
     }
-    
+
     return S_OK;
 }
 
@@ -852,7 +852,7 @@ HRESULT TextureContainer::CopyRGBADataToSurface()
             else
                 pDstData16[x] = (WORD)(dr+dg+db+da);
         }
-    
+
         pBytes += ddsd.lPitch;
     }
 
@@ -935,7 +935,7 @@ HRESULT D3DTextr_CreateTextureFromFile( TCHAR* strName, DWORD dwStage,
 // Desc: Creates an empty texture.
 //-----------------------------------------------------------------------------
 HRESULT D3DTextr_CreateEmptyTexture( TCHAR* strName, DWORD dwWidth,
-                                     DWORD dwHeight, DWORD dwStage, 
+                                     DWORD dwHeight, DWORD dwStage,
                                      DWORD dwFlags )
 {
     // Check parameters

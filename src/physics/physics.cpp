@@ -684,7 +684,7 @@ float CPhysics::RetLinStopLength(PhysicsMode sMode, PhysicsMode aMode)
 
 float CPhysics::RetCirStopLength()
 {
-    return m_cirMotion.advanceSpeed.y * m_cirMotion.advanceSpeed.y / 
+    return m_cirMotion.advanceSpeed.y * m_cirMotion.advanceSpeed.y /
            m_cirMotion.stopAccel.y / 2.0f;
 }
 
@@ -1802,7 +1802,7 @@ void CPhysics::WaterFrame(float aTime, float rTime)
             m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
         }
     }
-    
+
     pos = m_object->RetPosition(0);
     if ( pos.y >= m_water->RetLevel(m_object) )  return;  // out of water?
 
@@ -2072,7 +2072,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
                 speed.x -= Math::Rand()*4.0f;
                 speed.y -= Math::Rand()*3.0f;
                 speed.z += (Math::Rand()-0.5f)*6.0f;
-                
+
                 mat = m_object->RetWorldMatrix(0);
                 pos   = Transform(*mat, pos);
                 speed = Transform(*mat, speed)-pos;
@@ -2690,7 +2690,7 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 }
 
 // (*)  Collision has the initial position (iiPos) and the new position (iPos),
-//  the obstacle is not known. We can therefore pass through. 
+//  the obstacle is not known. We can therefore pass through.
 //  This is necessary when barriers found "in" a vehicle, not to block it definitely!
 
 
@@ -3642,7 +3642,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             }
             speed.y -= 0.5f+Math::Rand()*2.0f;
             speed.z += (Math::Rand()-0.5f)*3.0f;
-            
+
             mat = m_object->RetWorldMatrix(0);
             pos   = Transform(*mat, pos);
             speed = Transform(*mat, speed)-pos;
@@ -3864,7 +3864,7 @@ Error CPhysics::RetError()
          type == OBJECT_WORM     ||
          type == OBJECT_APOLLO2  ||
          type == OBJECT_MOBILEdr )  return ERR_OK;
-    
+
     if ( m_brain != 0 && m_brain->RetActiveVirus() )
     {
         return ERR_VEH_VIRUS;
