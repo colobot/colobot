@@ -388,7 +388,7 @@ void CAutoResearch::UpdateInterface()
     DeadInterface(pw, EVENT_OBJECT_RPHAZER, g_researchEnable&RESEARCH_PHAZER);
     DeadInterface(pw, EVENT_OBJECT_RSHIELD, g_researchEnable&RESEARCH_SHIELD);
     DeadInterface(pw, EVENT_OBJECT_RATOMIC, g_researchEnable&RESEARCH_ATOMIC);
-    
+
     OkayButton(pw, EVENT_OBJECT_RTANK);
     OkayButton(pw, EVENT_OBJECT_RFLY);
     OkayButton(pw, EVENT_OBJECT_RTHUMP);
@@ -446,7 +446,7 @@ void CAutoResearch::UpdateInterface(float rTime)
 void CAutoResearch::OkayButton(CWindow *pw, EventMsg event)
 {
     CControl*   control;
-        
+
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
@@ -601,7 +601,7 @@ bool CAutoResearch::Read(char *line)
 
     m_lastUpdateTime = 0.0f;
     m_lastParticule = 0.0f;
-    
+
     return true;
 }
 

@@ -278,7 +278,7 @@ void CAuto::CheckInterface(CWindow *pw, EventMsg event, bool bState)
 void CAuto::EnableInterface(CWindow *pw, EventMsg event, bool bState)
 {
     CControl*   control;
-        
+
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
@@ -290,7 +290,7 @@ void CAuto::EnableInterface(CWindow *pw, EventMsg event, bool bState)
 void CAuto::VisibleInterface(CWindow *pw, EventMsg event, bool bState)
 {
     CControl*   control;
-        
+
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
@@ -302,7 +302,7 @@ void CAuto::VisibleInterface(CWindow *pw, EventMsg event, bool bState)
 void CAuto::DeadInterface(CWindow *pw, EventMsg event, bool bState)
 {
     CControl*   control;
-        
+
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 

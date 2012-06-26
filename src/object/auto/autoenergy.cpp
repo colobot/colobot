@@ -142,7 +142,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
         }
         return true;
     }
-    
+
     UpdateInterface(event.rTime);
     EventProgress(event.rTime);
 
@@ -332,7 +332,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
             m_speed    = 1.0f/5.0f;
         }
     }
-    
+
     if ( m_phase == AENP_SMOKE )
     {
         if ( m_progress < 1.0f )

@@ -83,7 +83,7 @@ static int perso_color[3*10*3] =
      90,  95,  85,  // black
      85,  48,   9,  // brown
      60,   0,  23,  // black
-      0,   0,   0,  // 
+      0,   0,   0,  //
     // spacesuit:
     203, 206, 204,  // dirty white
       0, 205, 203,  // bluish
@@ -94,7 +94,7 @@ static int perso_color[3*10*3] =
       0,  84, 136,  // bluish
      56,  61, 146,  // bluish
      56,  56,  56,  // black
-      0,   0,   0,  // 
+      0,   0,   0,  //
     // strips:
     255, 255, 255,  // white
     255, 255,   0,  // yellow
@@ -105,7 +105,7 @@ static int perso_color[3*10*3] =
       0, 255, 255,  // cyan
       0,   0, 255,  // blue
      70,  51,  84,  // dark
-      0,   0,   0,  // 
+      0,   0,   0,  //
 };
 
 
@@ -187,7 +187,7 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
 
     ZeroMemory(&m_perso, sizeof(GamerPerso));
     DefPerso();
-    
+
     m_bTooltip       = true;
     m_bGlint         = true;
     m_bRain          = true;
@@ -588,7 +588,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.x = 220.0f/640.0f;
         ddim.y = 274.0f/480.0f;
         pw->CreateGroup(pos, ddim, 17, EVENT_NULL);  // frame
-        
+
         pos.x  = 100.0f/640.0f;
         pos.y  = 364.0f/480.0f;
         ddim.x = 210.0f/640.0f;
@@ -890,7 +890,7 @@ void CMainDialog::ChangePhase(Phase phase)
         pli->SetState(STATE_SHADOW);
         UpdateSceneChap(m_chap[m_index]);
         if ( m_phase != PHASE_USER )  pli->SetState(STATE_EXTEND);
-        
+
         // Displays a list of missions:
         pos.x = ox+sx*9.5f;
         pos.y = oy+sy*10.5f;
@@ -925,7 +925,7 @@ void CMainDialog::ChangePhase(Phase phase)
         GetResource(RES_TEXT, RT_PLAY_RESUME, name);
         pl = pw->CreateLabel(pos, ddim, 0, EVENT_LABEL13, name);
         pl->SetJustif(1);
-        
+
         pos.x = ox+sx*3;
         pos.y = oy+sy*3.6f;
         ddim.x = dim.x*13.4f;
@@ -3678,7 +3678,7 @@ void CMainDialog::ReadNameList()
     pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
     if ( pl == 0 )  return;
     pl->Flush();
-    
+
     nbFilenames = 0;
     sprintf(dir, "%s\\*", m_savegameDir);
     hFile = _findfirst(dir, &fBuffer);

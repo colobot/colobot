@@ -431,7 +431,7 @@ void CList::Draw()
             DrawIcon(pos, dim, uv1, uv2);  // ch'tite shadow cute  (?)
         }
     }
-    
+
     for ( i=0 ; i<m_displayLine ; i++ )
     {
         if ( i+m_firstLine >= m_totalLine )  break;

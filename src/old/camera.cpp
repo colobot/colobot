@@ -1438,7 +1438,7 @@ D3DMouse CCamera::RetMouseDef(Math::Point pos)
         {
             m_mouseDirV = 1.0f - (1.0f-pos.y)/m_mouseMarging;
         }
-    
+
         if ( m_type == CAMERA_FREE  ||
              m_type == CAMERA_EDIT  ||
              m_type == CAMERA_BACK  ||
@@ -1455,7 +1455,7 @@ D3DMouse CCamera::RetMouseDef(Math::Point pos)
                 type = D3DMOUSESCROLLL;
             }
         }
-    
+
         if ( m_type == CAMERA_FREE ||
              m_type == CAMERA_EDIT )
         {
@@ -1535,7 +1535,7 @@ bool CCamera::EventFrameFree(const Event &event)
     }
 
     m_terrain->ValidPosition(m_eyePt, 10.0f);
-    
+
     if ( m_terrain->MoveOnFloor(m_eyePt, true) )
     {
         m_eyePt.y += m_heightEye;
@@ -1560,7 +1560,7 @@ bool CCamera::EventFrameFree(const Event &event)
     }
 
     SetViewTime(m_eyePt, vLookatPt, event.rTime);
-    
+
     return true;
 }
 
@@ -1595,7 +1595,7 @@ bool CCamera::EventFrameEdit(const Event &event)
     }
 
     m_terrain->ValidPosition(m_eyePt, 10.0f);
-    
+
     if ( m_terrain->MoveOnFloor(m_eyePt, false) )
     {
         m_eyePt.y += m_editHeight;
@@ -1620,7 +1620,7 @@ bool CCamera::EventFrameEdit(const Event &event)
     }
 
     SetViewTime(m_eyePt, vLookatPt, event.rTime);
-    
+
     return true;
 }
 
@@ -1762,7 +1762,7 @@ bool CCamera::EventFrameBack(const Event &event)
         else                              vLookatPt.y +=  4.0f;
 
         h = -m_cameraObj->RetAngleY(0);  // angle vehicle / building
-        
+
         if ( type == OBJECT_DERRICK  ||
              type == OBJECT_FACTORY  ||
              type == OBJECT_REPAIR   ||
@@ -1909,7 +1909,7 @@ bool CCamera::EventFrameExplo(const Event &event)
     }
 
     m_terrain->ValidPosition(m_eyePt, 10.0f);
-    
+
     if ( m_terrain->MoveOnFloor(m_eyePt, false) )
     {
         m_eyePt.y += m_heightEye;
@@ -1934,7 +1934,7 @@ bool CCamera::EventFrameExplo(const Event &event)
     }
 
     SetViewTime(m_eyePt, vLookatPt, event.rTime);
-    
+
     return true;
 }
 

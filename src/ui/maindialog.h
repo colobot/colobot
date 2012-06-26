@@ -186,9 +186,9 @@ protected:
 
     char            m_sceneDir[_MAX_FNAME];     // scene folder
     char            m_savegameDir[_MAX_FNAME];  // savegame folder
-    char            m_publicDir[_MAX_FNAME];    // program folder 
+    char            m_publicDir[_MAX_FNAME];    // program folder
     char            m_userDir[_MAX_FNAME];      // user folder
-    char            m_filesDir[_MAX_FNAME];     // case files 
+    char            m_filesDir[_MAX_FNAME];     // case files
 
     int             m_index;        // 0..4
     int             m_chap[10];     // selected chapter (0..8)

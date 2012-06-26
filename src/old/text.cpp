@@ -130,7 +130,7 @@ static short table_text_colobot[] =
     218,17, 227,33,     // Y
     227,17, 236,33,     // Z
     236,17, 241,33,     // [
-    241,17, 248,33,     // \ 
+    241,17, 248,33,     // \
     248,17, 252,33,     // ]
     219,0,  229,16,     // ^
     0,  34, 9,  50,     // _
@@ -166,7 +166,7 @@ static short table_text_colobot[] =
     201,34, 203,50,     // |
     203,34, 209,50,     // }
     209,34, 219,50,     // ~
-    219,34, 228,50,     // 
+    219,34, 228,50,     //
 
     219,34, 225,50,     // 128
     219,34, 225,50,
@@ -1223,7 +1223,7 @@ void CText::DimText(char *string, char *format, int len, Math::Point pos,
     start.y -= RetDescent(size, FONT_COLOBOT);
     end.y   += RetAscent(size, FONT_COLOBOT);
 }
-    
+
 // Returns the size of a multi-font text.
 
 void CText::DimText(char *string, char *format, Math::Point pos, int justif,
@@ -1259,7 +1259,7 @@ void CText::DimText(char *string, int len, Math::Point pos, int justif,
     start.y -= RetDescent(size, font);
     end.y   += RetAscent(size, font);
 }
-    
+
 // Returns the size of a text.
 
 void CText::DimText(char *string, Math::Point pos, int justif,
@@ -1291,7 +1291,7 @@ float CText::RetHeight(float size, FontType font)
     return (16.0f/256.0f)*(size/20.0f);
 }
 
-    
+
 // Returns the width of a string of multi-font characters.
 
 float CText::RetStringWidth(char *string, char *format, int len,

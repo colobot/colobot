@@ -43,9 +43,9 @@ VOID D3DMath_MatrixMultiply( D3DMATRIX& q, D3DMATRIX& a, D3DMATRIX& b )
 
     ZeroMemory( pM, sizeof(D3DMATRIX) );
 
-    for( WORD i=0; i<4; i++ ) 
-        for( WORD j=0; j<4; j++ ) 
-            for( WORD k=0; k<4; k++ ) 
+    for( WORD i=0; i<4; i++ )
+        for( WORD j=0; j<4; j++ )
+            for( WORD k=0; k<4; k++ )
                 pM[4*i+j] +=  pA[4*i+k] * pB[4*k+j];
 
     memcpy( &q, pM, sizeof(D3DMATRIX) );
@@ -107,7 +107,7 @@ HRESULT D3DMath_VectorMatrixMultiply( D3DVECTOR& vDest, D3DVECTOR& vSrc,
     FLOAT y = vSrc.x*mat._12 + vSrc.y*mat._22 + vSrc.z* mat._32 + mat._42;
     FLOAT z = vSrc.x*mat._13 + vSrc.y*mat._23 + vSrc.z* mat._33 + mat._43;
     FLOAT w = vSrc.x*mat._14 + vSrc.y*mat._24 + vSrc.z* mat._34 + mat._44;
-    
+
     if( fabs( w ) < g_EPSILON )
         return E_INVALIDARG;
 
@@ -167,7 +167,7 @@ VOID D3DMath_QuaternionFromRotation( FLOAT& x, FLOAT& y, FLOAT& z, FLOAT& w,
 //-----------------------------------------------------------------------------
 VOID D3DMath_RotationFromQuaternion( D3DVECTOR& v, FLOAT& fTheta,
                                      FLOAT x, FLOAT y, FLOAT z, FLOAT w )
-                                      
+
 {
     fTheta = acosf(w) * 2.0f;
     v.x    = x / sinf( fTheta/2.0f );
@@ -184,7 +184,7 @@ VOID D3DMath_RotationFromQuaternion( D3DVECTOR& v, FLOAT& fTheta,
 //-----------------------------------------------------------------------------
 VOID D3DMath_QuaternionFromAngles( FLOAT& x, FLOAT& y, FLOAT& z, FLOAT& w,
                                    FLOAT fYaw, FLOAT fPitch, FLOAT fRoll )
-                                        
+
 {
     FLOAT fSinYaw   = sinf( fYaw/2.0f );
     FLOAT fSinPitch = sinf( fPitch/2.0f );
@@ -212,8 +212,8 @@ VOID D3DMath_MatrixFromQuaternion( D3DMATRIX& mat, FLOAT x, FLOAT y, FLOAT z,
     FLOAT xx = x*x; FLOAT yy = y*y; FLOAT zz = z*z;
     FLOAT xy = x*y; FLOAT xz = x*z; FLOAT yz = y*z;
     FLOAT wx = w*x; FLOAT wy = w*y; FLOAT wz = w*z;
-    
-    mat._11 = 1 - 2 * ( yy + zz ); 
+
+    mat._11 = 1 - 2 * ( yy + zz );
     mat._12 =     2 * ( xy - wz );
     mat._13 =     2 * ( xz + wy );
 
@@ -257,8 +257,8 @@ VOID D3DMath_QuaternionFromMatrix( FLOAT& x, FLOAT& y, FLOAT& z, FLOAT& w,
     FLOAT xx = x*x; FLOAT yy = y*y; FLOAT zz = z*z;
     FLOAT xy = x*y; FLOAT xz = x*z; FLOAT yz = y*z;
     FLOAT wx = w*x; FLOAT wy = w*y; FLOAT wz = w*z;
-    
-    mat._11 = 1 - 2 * ( yy + zz ); 
+
+    mat._11 = 1 - 2 * ( yy + zz );
     mat._12 =     2 * ( xy - wz );
     mat._13 =     2 * ( xz + wy );
 
@@ -311,7 +311,7 @@ VOID D3DMath_QuaternionSlerp( FLOAT& Qx, FLOAT& Qy, FLOAT& Qz, FLOAT& Qw,
     FLOAT fCosTheta = Ax*Bx + Ay*By + Az*Bz + Aw*Bw;
 
     // Check angle to see if quaternions are in opposite hemispheres
-    if( fCosTheta < 0.0f ) 
+    if( fCosTheta < 0.0f )
     {
         // If so, flip one of the quaterions
         fCosTheta = -fCosTheta;
@@ -321,12 +321,12 @@ VOID D3DMath_QuaternionSlerp( FLOAT& Qx, FLOAT& Qy, FLOAT& Qz, FLOAT& Qw,
     // Set factors to do linear interpolation, as a special case where the
     // quaternions are close together.
     FLOAT fBeta = 1.0f - fAlpha;
-    
+
     // If the quaternions aren't close, proceed with spherical interpolation
-    if( 1.0f - fCosTheta > 0.001f ) 
-    {   
+    if( 1.0f - fCosTheta > 0.001f )
+    {
         FLOAT fTheta = acosf( fCosTheta );
-        
+
         fBeta  = sinf( fTheta*fBeta ) / sinf( fTheta);
         fAlpha = sinf( fTheta*fAlpha ) / sinf( fTheta);
     }
