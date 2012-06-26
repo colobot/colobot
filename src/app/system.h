@@ -24,7 +24,8 @@
 
 
 /**
- * \enum SysDialogType Type of system dialog
+ * \enum SysDialogType
+ * \brief Type of system dialog
  */
 enum SystemDialogType
 {
@@ -41,7 +42,8 @@ enum SystemDialogType
 };
 
 /**
- * \enum SysDialogResult Result of system dialog
+ * \enum SysDialogResult
+ * \brief Result of system dialog
  *
  * Means which button was pressed.
  */

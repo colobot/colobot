@@ -25,7 +25,8 @@
 namespace Gfx {
 
 /**
- * \struct Vertex Vertex of a primitive
+ * \struct Vertex
+ * \brief Vertex of a primitive
  *
  * This structure was created as analog to DirectX's D3DVERTEX.
  *
@@ -47,7 +48,8 @@ struct Vertex
 };
 
 /**
- * \struct VertexTex2 Vertex with secondary texture coordinates
+ * \struct VertexTex2
+ * \brief Vertex with secondary texture coordinates
  *
  * In addition to fields from Gfx::Vector, it contains
  * secondary texture coordinates (u2, v2) as Math::Point
