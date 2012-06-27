@@ -21,7 +21,7 @@
 
 #include <string.h>
 
-HINSTANCE CBotString::m_hInstance = (HINSTANCE)LoadLibrary("Cbot.dll"); // comment le récupérer autrement ??
+HINSTANCE CBotString::m_hInstance = (HINSTANCE)LoadLibrary("libCbot.dll"); // comment le récupérer autrement ??
 
 
 CBotString::CBotString()
