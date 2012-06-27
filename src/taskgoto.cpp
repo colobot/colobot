@@ -51,8 +51,6 @@
 CTaskGoto::CTaskGoto(CInstanceManager* iMan, CObject* object)
                      : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
-
     m_bmArray = 0;
 }
 

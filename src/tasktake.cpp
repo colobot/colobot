@@ -51,8 +51,6 @@
 CTaskTake::CTaskTake(CInstanceManager* iMan, CObject* object)
                      : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
-
     m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
 
     m_arm  = TTA_NEUTRAL;

@@ -49,8 +49,6 @@
 CTaskShield::CTaskShield(CInstanceManager* iMan, CObject* object)
                                : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
-
     m_rankSphere = -1;
     m_soundChannel = -1;
     m_effectLight = -1;

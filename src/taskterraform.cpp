@@ -54,7 +54,6 @@
 CTaskTerraform::CTaskTerraform(CInstanceManager* iMan, CObject* object)
                                : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
     m_lastParticule = 0.0f;
     m_soundChannel = -1;
 }

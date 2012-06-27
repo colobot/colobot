@@ -56,8 +56,6 @@ CTaskBuild::CTaskBuild(CInstanceManager* iMan, CObject* object)
 {
     int     i;
 
-    CTask::CTask(iMan, object);
-
     m_type = OBJECT_DERRICK;
     m_time = 0.0f;
     m_soundChannel = -1;

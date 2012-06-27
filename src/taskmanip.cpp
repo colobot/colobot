@@ -59,8 +59,6 @@
 CTaskManip::CTaskManip(CInstanceManager* iMan, CObject* object)
                        : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
-
     m_arm  = TMA_NEUTRAL;
     m_hand = TMH_OPEN;
 }

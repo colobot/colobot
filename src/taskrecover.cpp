@@ -50,8 +50,6 @@
 CTaskRecover::CTaskRecover(CInstanceManager* iMan, CObject* object)
                                : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
-
     m_ruin = 0;
     m_soundChannel = -1;
 }

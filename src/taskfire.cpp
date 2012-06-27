@@ -50,7 +50,6 @@
 CTaskFire::CTaskFire(CInstanceManager* iMan, CObject* object)
                      : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
     m_soundChannel = -1;
 }
 

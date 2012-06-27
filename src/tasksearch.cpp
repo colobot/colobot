@@ -47,8 +47,6 @@
 CTaskSearch::CTaskSearch(CInstanceManager* iMan, CObject* object)
                          : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
-
     m_hand = TSH_UP;
 }
 

@@ -45,8 +45,6 @@
 CTaskSpiderExplo::CTaskSpiderExplo(CInstanceManager* iMan, CObject* object)
                           : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
-
     m_time = 0.0f;
     m_bError = FALSE;
 }

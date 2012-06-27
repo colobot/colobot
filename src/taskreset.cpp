@@ -52,7 +52,6 @@
 CTaskReset::CTaskReset(CInstanceManager* iMan, CObject* object)
                      : CTask(iMan, object)
 {
-    CTask::CTask(iMan, object);
 }
 
 // Object's destructor.
