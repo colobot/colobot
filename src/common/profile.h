@@ -20,11 +20,11 @@
 
 
 extern bool InitCurrentDirectory();
-extern bool SetProfileString(char* section, char* key, char* string);
-extern bool GetProfileString(char* section, char* key, char* buffer, int max);
-extern bool SetProfileInt(char* section, char* key, int value);
-extern bool GetProfileInt(char* section, char* key, int &value);
-extern bool SetProfileFloat(char* section, char* key, float value);
-extern bool GetProfileFloat(char* section, char* key, float &value);
+extern bool SetLocalProfileString(char* section, char* key, char* string);
+extern bool GetLocalProfileString(char* section, char* key, char* buffer, int max);
+extern bool SetLocalProfileInt(char* section, char* key, int value);
+extern bool GetLocalProfileInt(char* section, char* key, int &value);
+extern bool SetLocalProfileFloat(char* section, char* key, float value);
+extern bool GetLocalProfileFloat(char* section, char* key, float &value);
 
 
