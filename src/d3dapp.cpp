@@ -319,7 +319,9 @@ Error CD3DApplication::CheckMistery(char *strCmdLine)
     }
 
     m_CDpath[0] = 0;
-#if _FULL
+// disable -nocd check to run without problems
+#if 0
+//#if _FULL
     if ( strstr(strCmdLine, "-nocd") == 0 && !m_bDebugMode )
     {
         Error   err;
