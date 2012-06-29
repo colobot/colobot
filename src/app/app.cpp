@@ -42,14 +42,14 @@ struct ApplicationPrivate
     //! Joystick
     SDL_Joystick *joystick;
     //! Index of joystick device
-    int joystickDevice;
+    int joystickIndex;
 
     ApplicationPrivate()
     {
         memset(&currentEvent, 0, sizeof(SDL_Event));
         surface = NULL;
         joystick = NULL;
-        joystickDevice = 0;
+        joystickIndex = 0;
     }
 };
 
@@ -60,21 +60,22 @@ CApplication::CApplication()
     m_exitCode = 0;
 
     m_iMan = new CInstanceManager();
-    m_event = new CEvent(m_iMan);
 
-    m_engine = 0;
-    m_robotMain = 0;
-    m_sound     = 0;
+    m_eventQueue = new CEventQueue(m_iMan);
+
+    m_engine    = NULL;
+    m_robotMain = NULL;
+    m_sound     = NULL;
 
     m_keyState = 0;
     m_axeKey = Math::Vector(0.0f, 0.0f, 0.0f);
     m_axeJoy = Math::Vector(0.0f, 0.0f, 0.0f);
 
-    m_vidMemTotal  = 0;
-    m_active      = false;
-    m_activateApp = false;
-    m_ready       = false;
-    m_joystick    = false;
+    m_active          = false;
+    m_activateApp     = false;
+    m_ready           = false;
+    m_joystickEnabled = false;
+
     m_time        = 0.0f;
 
     for (int i = 0; i < 32; i++)
@@ -84,13 +85,8 @@ CApplication::CApplication()
 
     m_windowTitle  = "COLOBOT";
 
-    m_appUseZBuffer  = true;
-    m_appUseStereo   = true;
     m_showStats      = false;
     m_debugMode      = false;
-    m_audioState     = true;
-    m_audioTrack     = true;
-    m_niceMouse      = false;
     m_setupMode      = true;
 
     ResetKey();
@@ -100,6 +96,9 @@ CApplication::~CApplication()
 {
     delete m_private;
     m_private = NULL;
+
+    delete m_eventQueue;
+    m_eventQueue = NULL;
 
     delete m_iMan;
     m_iMan = NULL;
@@ -116,14 +115,6 @@ Error CApplication::ParseArguments(int argc, char *argv[])
             m_showStats = true;
             SetDebugMode(true);
         }
-        else if (arg == "-audiostate")
-        {
-            m_audioState = false;
-        }
-        else if (arg == "-audiotrack")
-        {
-            m_audioTrack = false;
-        }
         // TODO else {} report invalid argument
     }
 
@@ -132,43 +123,32 @@ Error CApplication::ParseArguments(int argc, char *argv[])
 
 bool CApplication::Create()
 {
-/*
-TODO
-    Full screen by default unless in debug mode
-    if (! m_debugMode)
-        m_deviceConfig.fullScreen = true;
-
-    int full = 0;
-    if (GetProfileInt("Device", "FullScreen", full))
-        m_deviceConfig.fullScreen = full == 1;
-*/
-
     // Temporarily -- only in windowed mode
     m_deviceConfig.fullScreen = false;
 
-/*
-TODO
     // Create the 3D engine.
-    m_engine = new CEngine(m_iMan, this);
+    m_engine = new Gfx::CEngine(m_iMan, this);
 
+    /* TODO
     // Initialize the app's custom scene stuff
     if (! m_engine->OneTimeSceneInit())
     {
         SystemDialog(SDT_ERROR, "COLOBOT - Error", m_engine->RetError());
         return false;
-    }
+    }*/
 
-    // Create the sound instance.
+/*    // Create the sound instance.
     m_sound = new CSound(m_iMan);
 
     // Create the robot application.
-    m_robotMain = new CRobotMain(m_iMan);
-*/
+    m_robotMain = new CRobotMain(m_iMan); */
 
 
-    Uint32 initFlags = SDL_INIT_VIDEO;
-    if (m_joystick)
-        initFlags |= SDL_INIT_JOYSTICK;
+
+    /* SDL initialization sequence */
+
+
+    Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK;
 
     if (SDL_Init(initFlags) < 0)
     {
@@ -177,7 +157,7 @@ TODO
     }
 
     const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
-    if (! videoInfo)
+    if (videoInfo == NULL)
     {
         SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL error while getting video info:\n " + std::string(SDL_GetError()) );
         return false;
@@ -219,7 +199,7 @@ TODO
     m_private->surface = SDL_SetVideoMode(m_deviceConfig.width, m_deviceConfig.height,
                                           m_deviceConfig.bpp, videoFlags);
 
-    if (! m_private->surface)
+    if (m_private->surface == NULL)
     {
         SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("SDL error while setting video mode:\n") +
                                                    std::string(SDL_GetError()) );
@@ -228,38 +208,19 @@ TODO
 
     SDL_WM_SetCaption(m_windowTitle.c_str(), m_windowTitle.c_str());
 
+    // Enable translating key codes of key press events to unicode chars
     SDL_EnableUNICODE(1);
 
+    // Enable joystick event generation
+    SDL_JoystickEventState(SDL_ENABLE);
 
-/*
-TODO
 
-    InitJoystick();
+    // For now, enable joystick for testing
+    SetJoystickEnabled(true);
 
-    if ( !GetProfileInt("Setup", "Sound3D", b3D) )
-    {
-        b3D = true;
-    }
-    m_pSound->SetDebugMode(m_bDebugMode);
-    m_pSound->Create(m_hWnd, b3D);
-    m_pSound->CacheAll();
-    m_pSound->SetState(m_bAudioState);
-    m_pSound->SetAudioTrack(m_bAudioTrack);
-    m_pSound->SetCDpath(m_CDpath);
+    // TODO ...
 
-    // First execution?
-    if ( !GetProfileInt("Setup", "ObjectDirty", iValue) )
-    {
-        m_pD3DEngine->FirstExecuteAdapt(true);
-    }
 
-    // Creates the file colobot.ini at the first execution.
-    m_pRobotMain->CreateIni();
-
-    m_pRobotMain->ChangePhase(PHASE_WELCOME2);
-
-    m_engine->TimeInit();
-*/
 
     // The app is ready to go
     m_ready = true;
@@ -269,6 +230,9 @@ TODO
 
 void CApplication::Destroy()
 {
+    delete m_engine;
+    m_engine = NULL;
+
     if (m_private->joystick != NULL)
     {
         SDL_JoystickClose(m_private->joystick);
@@ -281,6 +245,19 @@ void CApplication::Destroy()
     IMG_Quit();
 
     SDL_Quit();
+}
+
+bool CApplication::OpenJoystick()
+{
+    m_private->joystick = SDL_JoystickOpen(m_private->joystickIndex);
+    if (m_private->joystick == NULL)
+        return false;
+}
+
+
+void CApplication::CloseJoystick()
+{
+    SDL_JoystickClose(m_private->joystick);
 }
 
 int CApplication::Run()
@@ -312,20 +289,15 @@ int CApplication::Run()
         if (m_active && m_ready)
         {
             Event event;
-            while (m_event->GetEvent(event))
+            while (m_eventQueue->GetEvent(event))
             {
-                if (event.event == EVENT_QUIT)
+                if (event.type == EVENT_QUIT)
                 {
                     goto end; // exit both loops
                 }
 
                 //m_robotMain->EventProcess(event);
             }
-
-            //if ( !RetNiceMouse())
-            //{
-            //  SetMouseType(m_engine->RetMouseType());
-            //}
 
             // If an error occurs, push quit event to the queue
             if (! Render())
@@ -345,52 +317,135 @@ end:
     return m_exitCode;
 }
 
+//! Translates SDL press state to PressState
+PressState TranslatePressState(unsigned char state)
+{
+    if (state == SDL_PRESSED)
+        return STATE_PRESSED;
+    else
+        return STATE_RELEASED;
+}
+
+/** Conversion of the position of the mouse to the following coordinates:
+
+x: 0=left, 1=right
+
+y: 0=down, 1=up
+*/
+Math::Point CApplication::WindowToInterfaceCoords(int x, int y)
+{
+    return Math::Point((float)x / (float)m_deviceConfig.width,
+                       1.0f - (float)y / (float)m_deviceConfig.height);
+}
+
+
 void CApplication::ParseEvent()
 {
-/*  Event event;
+    Event event;
 
-    if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
+    if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
+              (m_private->currentEvent.type == SDL_KEYUP) )
     {
-        if (m_private->currentEvent.button.button == SDL_BUTTON_LEFT)
-            event.event = EVENT_LBUTTONDOWN;
-        else if (m_private->currentEvent.button.button == SDL_BUTTON_RIGHT)
-            event.event = EVENT_RBUTTONDOWN;
+        if (m_private->currentEvent.type == SDL_KEYDOWN)
+            event.type = EVENT_KEY_DOWN;
+        else
+            event.type = EVENT_KEY_UP;
+
+        event.data.key.key = m_private->currentEvent.key.keysym.sym;
+        event.data.key.mod = m_private->currentEvent.key.keysym.mod;
+        event.data.key.state = TranslatePressState(m_private->currentEvent.key.state);
+        event.data.key.unicode = m_private->currentEvent.key.keysym.unicode;
     }
-    else if (m_private->currentEvent.type == SDL_MOUSEBUTTONUP)
+    else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
+         (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
     {
-        if (m_private->currentEvent.button.button == SDL_BUTTON_LEFT)
-            event.event = EVENT_LBUTTONUP;
-        else if (m_private->currentEvent.button.button == SDL_BUTTON_RIGHT)
-            event.event = EVENT_RBUTTONUP;
+        if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
+            event.type = EVENT_MOUSE_BUTTON_DOWN;
+        else
+            event.type = EVENT_MOUSE_BUTTON_UP;
+
+        event.data.mouseButton.button = m_private->currentEvent.button.button;
+        event.data.mouseButton.state = TranslatePressState(m_private->currentEvent.button.state);
+        event.data.mouseButton.pos = WindowToInterfaceCoords(m_private->currentEvent.button.x, m_private->currentEvent.button.y);
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
-        event.event = EVENT_MOUSEMOVE;
+        event.type = EVENT_MOUSE_MOVE;
+
+        event.data.mouseMove.state = TranslatePressState(m_private->currentEvent.button.state);
+        event.data.mouseMove.pos = WindowToInterfaceCoords(m_private->currentEvent.button.x, m_private->currentEvent.button.y);
     }
-    else if (m_private->currentEvent.type == SDL_KEYDOWN)
+    // TODO: joystick state polling instead of getting events
+    else if (m_private->currentEvent.type == SDL_JOYAXISMOTION)
     {
-        event.event = EVENT_KEYDOWN;
+        event.type = EVENT_JOY_AXIS;
+
+        event.data.joyAxis.axis = m_private->currentEvent.jaxis.axis;
+        event.data.joyAxis.value = m_private->currentEvent.jaxis.value;
     }
-    else if (m_private->currentEvent.type == SDL_KEYUP)
+    else if ( (m_private->currentEvent.type == SDL_JOYBUTTONDOWN) ||
+              (m_private->currentEvent.type == SDL_JOYBUTTONUP) )
     {
-        event.event = EVENT_KEYUP;
+        if (m_private->currentEvent.type == SDL_JOYBUTTONDOWN)
+            event.type = EVENT_JOY_BUTTON_DOWN;
+        else
+            event.type = EVENT_JOY_BUTTON_UP;
+
+        event.data.joyButton.button = m_private->currentEvent.jbutton.button;
+        event.data.joyButton.state = TranslatePressState(m_private->currentEvent.jbutton.state);
     }
 
-    if (m_robotMain != NULL && event.event != EVENT_NULL)
+
+    if (m_robotMain != NULL && event.type != EVENT_NULL)
     {
-        m_robotMain->EventProcess(event);
-    }
-    if (m_engine != NULL)
-    {
-        m_engine->MsgProc( hWnd, uMsg, wParam, lParam );
+        //m_robotMain->EventProcess(event);
     }
 
-    ProcessEvent(event);*/
+    ProcessEvent(event);
 }
 
 void CApplication::ProcessEvent(Event event)
 {
-
+    // Print the events in debug mode to test the code
+    if (m_debugMode)
+    {
+        switch (event.type)
+        {
+            case EVENT_KEY_DOWN:
+            case EVENT_KEY_UP:
+                printf("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
+                printf(" key     = %4x\n", event.data.key.key);
+                printf(" state   = %s\n", (event.data.key.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                printf(" mod     = %4x\n", event.data.key.mod);
+                printf(" unicode = %4x\n", event.data.key.unicode);
+                break;
+            case EVENT_MOUSE_MOVE:
+                printf("EVENT_MOUSE_MOVE:\n");
+                printf(" state  = %s\n", (event.data.mouseMove.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                printf(" pos    = (%f, %f)\n", event.data.mouseMove.pos.x, event.data.mouseMove.pos.y);
+                break;
+            case EVENT_MOUSE_BUTTON_DOWN:
+            case EVENT_MOUSE_BUTTON_UP:
+                printf("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
+                printf(" button = %d\n", event.data.mouseButton.button);
+                printf(" state  = %s\n", (event.data.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                printf(" pos    = (%f, %f)\n", event.data.mouseButton.pos.x, event.data.mouseButton.pos.y);
+                break;
+            case EVENT_JOY_AXIS:
+                printf("EVENT_JOY_AXIS:\n");
+                printf(" axis  = %d\n", event.data.joyAxis.axis);
+                printf(" value = %d\n", event.data.joyAxis.value);
+                break;
+            case EVENT_JOY_BUTTON_DOWN:
+            case EVENT_JOY_BUTTON_UP:
+                printf("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
+                printf(" button = %d\n", event.data.joyButton.button);
+                printf(" state  = %s\n", (event.data.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 bool CApplication::Render()
@@ -405,14 +460,27 @@ bool CApplication::Render()
     return true;
 }
 
+/** Called in to toggle the pause state of the app. */
 void CApplication::Pause(bool pause)
 {
-    // TODO
-}
+    static long appPausedCount = 0L;
 
-void CApplication::SetMousePos(Math::Point pos)
-{
-    // TODO
+    appPausedCount += ( pause ? +1 : -1 );
+    m_ready         = appPausedCount == 0;
+
+    // Handle the first pause request (of many, nestable pause requests)
+    if( pause && ( 1 == appPausedCount ) )
+    {
+        // Stop the scene from animating
+        //m_engine->TimeEnterGel();
+    }
+
+    // Final pause request done
+    if (appPausedCount == 0)
+    {
+        // Restart the scene
+        //m_engine->TimeExitGel();
+    }
 }
 
 void CApplication::StepSimulation(float rTime)
@@ -420,32 +488,29 @@ void CApplication::StepSimulation(float rTime)
     // TODO
 }
 
-void SetShowStat(bool show)
+void CApplication::SetShowStat(bool show)
 {
-    // TODO
+    m_showStats = show;
 }
 
 bool CApplication::RetShowStat()
 {
-    // TODO
-    return false;
+    return m_showStats;
 }
 
 void CApplication::SetDebugMode(bool mode)
 {
-    // TODO
+    m_debugMode = mode;
 }
 
 bool CApplication::RetDebugMode()
 {
-    // TODO
-    return false;
+    return m_debugMode;
 }
 
 bool CApplication::RetSetupMode()
 {
-    // TODO
-    return false;
+    return m_setupMode;
 }
 
 void CApplication::FlushPressKey()
@@ -469,35 +534,36 @@ int CApplication::RetKey(int keyRank, int option)
     return 0;
 }
 
-void CApplication::SetJoystick(bool enable)
+void CApplication::SetMousePos(Math::Point pos)
 {
     // TODO
 }
 
-bool CApplication::RetJoystick()
-{
-    // TODO
-    return false;
-}
-
-void SetMouseType(Gfx::MouseType type)
+void CApplication::SetMouseType(Gfx::MouseType type)
 {
     // TODO
 }
 
-void SetNiceMouse(bool nice)
+void CApplication::SetJoystickEnabled(bool enable)
 {
-    // TODO
+    m_joystickEnabled = enable;
+
+    if (m_joystickEnabled)
+    {
+        if (! OpenJoystick())
+        {
+            m_joystickEnabled = false;
+        }
+    }
+    else
+    {
+        CloseJoystick();
+    }
 }
 
-bool CApplication::RetNiceMouse()
+bool CApplication::RetJoystickEnabled()
 {
-    return false;
-}
-
-bool CApplication::RetNiceMouseCap()
-{
-    return false;
+    return m_joystickEnabled;
 }
 
 bool CApplication::WriteScreenShot(char *filename, int width, int height)

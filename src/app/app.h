@@ -60,6 +60,37 @@ public:
     //! Main event loop
     int         Run();
 
+    //! Enters the pause mode
+    void        Pause(bool pause);
+
+    //! Updates the simulation state
+    void        StepSimulation(float rTime);
+
+    void        SetShowStat(bool show);
+    bool        RetShowStat();
+
+    void        SetDebugMode(bool mode);
+    bool        RetDebugMode();
+
+    bool        RetSetupMode();
+
+    void        SetJoystickEnabled(bool enable);
+    bool        RetJoystickEnabled();
+
+    void        FlushPressKey();
+    void        ResetKey();
+    void        SetKey(int keyRank, int option, int key);
+    int         RetKey(int keyRank, int option);
+
+    void        SetMouseType(Gfx::MouseType type);
+    void        SetMousePos(Math::Point pos);
+
+    //? void        SetNiceMouse(bool nice);
+    //? bool        RetNiceMouse();
+    //? bool        RetNiceMouseCap();
+
+    bool        WriteScreenShot(char *filename, int width, int height);
+
 protected:
     //! Cleans up before exit
     void        Destroy();
@@ -70,34 +101,14 @@ protected:
     //! Renders the image in window
     bool        Render();
 
-public:
-    void        Pause(bool pause);
-    void        StepSimulation(float rTime);
+    //! Opens the joystick device
+    bool OpenJoystick();
+    //! Closes the joystick device
+    void CloseJoystick();
 
-    void        SetMousePos(Math::Point pos);
+    //! Converts window coords to interface coords
+    Math::Point WindowToInterfaceCoords(int x, int y);
 
-    void        SetShowStat(bool show);
-    bool        RetShowStat();
-    void        SetDebugMode(bool mode);
-    bool        RetDebugMode();
-    bool        RetSetupMode();
-
-    void        FlushPressKey();
-    void        ResetKey();
-    void        SetKey(int keyRank, int option, int key);
-    int         RetKey(int keyRank, int option);
-
-    void        SetJoystick(bool enable);
-    bool        RetJoystick();
-
-    void        SetMouseType(Gfx::MouseType type);
-    void        SetNiceMouse(bool nice);
-    bool        RetNiceMouse();
-    bool        RetNiceMouseCap();
-
-    bool        WriteScreenShot(char *filename, int width, int height);
-
-protected:
     //HRESULT       ConfirmDevice( DDCAPS* pddDriverCaps, D3DDEVICEDESC7* pd3dDeviceDesc );
     //HRESULT       Initialize3DEnvironment();
     //HRESULT       Change3DEnvironment();
@@ -113,14 +124,20 @@ protected:
     void        OutputText(long x, long y, char* str);
 
 protected:
+    CInstanceManager*       m_iMan;
     //! Private (SDL-dependent data)
     ApplicationPrivate*     m_private;
-    CInstanceManager*       m_iMan;
+    //! Global event queue
+    CEventQueue*            m_eventQueue;
+    //! Current configuration of display device
     Gfx::DeviceConfig       m_deviceConfig;
+    //! Graphics engine
     Gfx::CEngine*           m_engine;
-    CEvent*                 m_event;
-    CRobotMain*             m_robotMain;
+    //! Sound subsystem
     CSound*                 m_sound;
+    //! Main class of the proper game engine
+    CRobotMain*             m_robotMain;
+
 
     //! Code to return at exit
     int             m_exitCode;
@@ -128,18 +145,21 @@ protected:
     bool            m_active;
     bool            m_activateApp;
     bool            m_ready;
-    bool            m_joystick;
 
-    std::string     m_windowTitle;
-    long            m_vidMemTotal;
-    bool            m_appUseZBuffer;
-    bool            m_appUseStereo;
     bool            m_showStats;
     bool            m_debugMode;
-    bool            m_audioState;
-    bool            m_audioTrack;
-    bool            m_niceMouse;
     bool            m_setupMode;
+
+    bool            m_joystickEnabled;
+
+    std::string     m_windowTitle;
+
+    //? long            m_vidMemTotal;
+    //? bool            m_appUseZBuffer;
+    //? bool            m_appUseStereo;
+    //? bool            m_audioState;
+    //? bool            m_audioTrack;
+    //? bool            m_niceMouse;
 
     int             m_keyState;
     Math::Vector    m_axeKey;
