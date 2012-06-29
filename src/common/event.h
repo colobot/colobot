@@ -19,40 +19,50 @@
 #pragma once
 
 
+#include "common/key.h"
 #include "math/point.h"
 
-
-#if !defined (WM_XBUTTONDOWN)
-#define WM_XBUTTONDOWN      0x020B
-#define WM_XBUTTONUP        0x020C
-#define XBUTTON1            0x0001
-#define XBUTTON2            0x0002
-#endif
-
+#include <string.h>
 
 
 class CInstanceManager;
 
-
-const int MAXEVENT = 100;
-
-// Events.
-
-enum EventMsg
+/**
+  \enum EventType
+  \brief Type of event message
+ */
+enum EventType
 {
+
+// TODO: document the meaning of each value
+
     EVENT_NULL              = 0,
 
-    EVENT_QUIT              = 1,
-    EVENT_FRAME             = 2,
-    EVENT_LBUTTONDOWN       = 3,
-    EVENT_RBUTTONDOWN       = 4,
-    EVENT_LBUTTONUP         = 5,
-    EVENT_RBUTTONUP         = 6,
-    EVENT_MOUSEMOVE         = 7,
-    EVENT_KEYDOWN           = 8,
-    EVENT_KEYUP             = 9,
-    EVENT_CHAR              = 10,
-    EVENT_FOCUS             = 11,
+    //! Event sent on user or system quit request
+     EVENT_QUIT              = 1,
+
+    //? EVENT_FRAME             = 2,
+
+    //! Event sent after pressing a mouse button
+    EVENT_MOUSE_BUTTON_DOWN = 3,
+    //! Event sent after releasing a mouse button
+    EVENT_MOUSE_BUTTON_UP   = 4,
+    //! Event sent after moving the mouse
+    EVENT_MOUSE_MOVE        = 7,
+    //! Event sent after pressing a key
+    EVENT_KEY_DOWN          = 8,
+    //! Event sent after releasing a key
+    EVENT_KEY_UP            = 9,
+
+    //? EVENT_CHAR              = 10,
+    //? EVENT_FOCUS             = 11,
+
+    //! Event sent after moving joystick axes
+    EVENT_JOY_AXIS          = 12,
+    //! Event sent after pressing a joystick button
+    EVENT_JOY_BUTTON_DOWN   = 13,
+    //! Event sent after releasing a joystick button
+    EVENT_JOY_BUTTON_UP     = 14,
 
     EVENT_UPDINTERFACE      = 20,
     EVENT_WIN               = 30,
@@ -525,60 +535,151 @@ enum EventMsg
     EVENT_STUDIO_STEP       = 2053,
 
     EVENT_USER              = 10000,
-    EVENT_FORCE_DWORD       = 0x7fffffff
+    EVENT_FORCE_LONG        = 0x7fffffff
 };
 
+
+/** \enum PressState
+    \brief State of key/mouse button */
+enum PressState
+{
+    STATE_PRESSED,
+    STATE_RELEASED
+};
+
+
+/** \struct KeyEventData
+    \brief Additional data for keyboard event */
+struct KeyEventData
+{
+    //! STATE_PRESSED or STATE_RELEASED */
+    PressState state;
+    //! Key symbol: KEY(...) macro value (from common/key.h)
+    unsigned int key;
+    //! Keyboard modifiers: a bitmask made of KEY_MOD(...) macro values (from common/key.h)
+    unsigned int mod;
+    //! Unicode character
+    unsigned int unicode;
+
+    KeyEventData()
+        : state(STATE_PRESSED), key(0), mod(0), unicode(0) {}
+};
+
+/** \struct MouseMotionEventData
+    \brief Additional data for mouse move event */
+struct MouseMoveEventData
+{
+    //! Current button state
+    unsigned char state;
+    //! Position of mouse in normalized coordinates (0..1)
+    Math::Point pos;
+
+    MouseMoveEventData()
+        : state(STATE_PRESSED) {}
+};
+
+/** \struct MouseButtonEventData
+    \brief Additional data mouse button event */
+struct MouseButtonEventData
+{
+    //! The mouse button index
+    unsigned char button;
+    //! STATE_PRESSED or STATE_RELEASED
+    PressState state;
+    //! Position of mouse in normalized coordinates (0..1)
+    Math::Point pos;
+
+    MouseButtonEventData()
+        : button(0), state(STATE_PRESSED) {}
+};
+
+/** \struct JoyAxisEventData
+    \brief Additional data for joystick axis event */
+struct JoyAxisEventData
+{
+    //! The joystick axis index
+    unsigned char axis;
+    //! The axis value (range: -32768 to 32767)
+    int value;
+
+    JoyAxisEventData()
+        : axis(axis), value(value) {}
+};
+
+/** \struct JoyButtonEventData
+    \brief Joystick button event structure */
+struct JoyButtonEventData
+{
+    //! The joystick button index
+    unsigned char button;
+    //! STATE_PRESSED or STATE_RELEASED
+    PressState state;
+
+    JoyButtonEventData()
+        : button(0), state(STATE_PRESSED) {}
+};
+
+// TODO: JoyHatEventData? JoyBallEventData?
+
+
+/**
+  \struct Event
+  \brief Event sent by system, interface or game
+
+  Event is described by its type (EventType) and the union
+  \a data contains additional data about the event.
+  Different members of the union are filled with different event types.
+  With some events, nothing is filled (it's zeroed out).
+  The union contains roughly the same information as SDL_Event struct
+  but packaged to independent structs and fields.
+ **/
 struct Event
 {
-    EventMsg    event;      // event (EVENT *)
-    long        param;      // parameter
-    Math::Point     pos;        // mouse position (0 .. 1)
-    float       axeX;       // control the X axis (-1 .. 1)
-    float       axeY;       // control of the Y axis (-1 .. 1)
-    float       axeZ;       // control the Z axis (-1 .. 1)
-    short       keyState;   // state of the keyboard (KS_ *)
-    float       rTime;      // relative time
+    //! Type of event (EVENT_*)
+    EventType type;
+    /**
+      \union EventDataUnion
+      \brief Additional data associated with some events
 
-    Event();
+      For the listed event, the given member is filled with data.
+      For other event types, it is filled with zeros.
+     */
+    union EventDataUnion
+    {
+        //! Additional data for EVENT_KEY_DOWN and EVENT_KEY_UP
+        KeyEventData key;
+        //! Additional data for EVENT_MOUSE_BUTTON_DOWN and EVENT_MOUSE_BUTTON_UP
+        MouseButtonEventData mouseButton;
+        //! Additional data for EVENT_MOUSE_MOVE
+        MouseMoveEventData mouseMove;
+        //! Additional data for EVENT_JOY
+        JoyAxisEventData joyAxis;
+        //! Additional data for EVENT_JOY_AXIS
+        JoyButtonEventData joyButton;
+
+        EventDataUnion()
+            { memset(this, 0, sizeof(EventDataUnion)); }
+        ~EventDataUnion()
+            {}
+    } data;
+    //? long         param;      // parameter
+    //? Math::Point  pos;        // mouse position (0 .. 1)
+    //? float        axeX;       // control the X axis (-1 .. 1)
+    //? float        axeY;       // control of the Y axis (-1 .. 1)
+    //? float        axeZ;       // control the Z axis (-1 .. 1)
+    //? short        keyState;   // state of the keyboard (KS_ *)
+    //? float        rTime;      // relative time
+
+    Event(EventType aType = EVENT_NULL) : type(aType) {}
 };
 
 
-const int VK_BUTTON1        = (0x100+1);    // joystick button 1
-const int VK_BUTTON2        = (0x100+2);    // joystick button 2
-const int VK_BUTTON3        = (0x100+3);    // joystick button 3
-const int VK_BUTTON4        = (0x100+4);    // joystick button 4
-const int VK_BUTTON5        = (0x100+5);    // joystick button 5
-const int VK_BUTTON6        = (0x100+6);    // joystick button 6
-const int VK_BUTTON7        = (0x100+7);    // joystick button 7
-const int VK_BUTTON8        = (0x100+8);    // joystick button 8
-const int VK_BUTTON9        = (0x100+9);    // joystick button 9
-const int VK_BUTTON10       = (0x100+10);   // joystick button 10
-const int VK_BUTTON11       = (0x100+11);   // joystick button 11
-const int VK_BUTTON12       = (0x100+12);   // joystick button 12
-const int VK_BUTTON13       = (0x100+13);   // joystick button 13
-const int VK_BUTTON14       = (0x100+14);   // joystick button 14
-const int VK_BUTTON15       = (0x100+15);   // joystick button 15
-const int VK_BUTTON16       = (0x100+16);   // joystick button 16
-const int VK_BUTTON17       = (0x100+17);   // joystick button 17
-const int VK_BUTTON18       = (0x100+18);   // joystick button 18
-const int VK_BUTTON19       = (0x100+19);   // joystick button 19
-const int VK_BUTTON20       = (0x100+20);   // joystick button 20
-const int VK_BUTTON21       = (0x100+21);   // joystick button 21
-const int VK_BUTTON22       = (0x100+22);   // joystick button 22
-const int VK_BUTTON23       = (0x100+23);   // joystick button 23
-const int VK_BUTTON24       = (0x100+24);   // joystick button 24
-const int VK_BUTTON25       = (0x100+25);   // joystick button 25
-const int VK_BUTTON26       = (0x100+26);   // joystick button 26
-const int VK_BUTTON27       = (0x100+27);   // joystick button 27
-const int VK_BUTTON28       = (0x100+28);   // joystick button 28
-const int VK_BUTTON29       = (0x100+29);   // joystick button 29
-const int VK_BUTTON30       = (0x100+30);   // joystick button 30
-const int VK_BUTTON31       = (0x100+31);   // joystick button 31
-const int VK_BUTTON32       = (0x100+32);   // joystick button 32
+/**
+ \enum KeyRank
+ \brief Slots for key assignment of user controls
+ */
 
-const int VK_WHEELUP        = (0x200+1);    // Mousewheel up
-const int VK_WHEELDOWN      = (0x200+2);    // Mousewheel down
-
+// TODO: move to global.h ?
 
 enum KeyRank
 {
@@ -609,25 +710,37 @@ enum KeyRank
 };
 
 
+/**
+  \class CEventQueue
+  \brief Global event queue
 
-class CEvent
+  Provides an interface to a global FIFO queue with events (both system- and user-generated).
+  The queue has a fixed maximum size but it should not be a problem.
+ */
+class CEventQueue
 {
 public:
-    CEvent(CInstanceManager* iMan);
-    ~CEvent();
+    //! Constant maximum size of queue
+    static const int MAX_EVENT_QUEUE = 100;
 
+public:
+    //! Object's constructor
+    CEventQueue(CInstanceManager* iMan);
+    //! Object's destructor
+    ~CEventQueue();
+
+    //! Empties the FIFO of events
     void    Flush();
-    void    MakeEvent(Event &event, EventMsg msg);
+    //! Adds an event to the queue
     bool    AddEvent(const Event &event);
     bool    GetEvent(Event &event);
 
 protected:
     CInstanceManager* m_iMan;
-
-    Event   m_fifo[MAXEVENT];
-    int     m_head;
-    int     m_tail;
-    int     m_total;
+    Event        m_fifo[MAX_EVENT_QUEUE];
+    int          m_head;
+    int          m_tail;
+    int          m_total;
 };
 
 
