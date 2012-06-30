@@ -24,9 +24,6 @@
 
 
 class CInstanceManager;
-class Gfx::CEngine;
-class Gfx::CTerrain;
-class Gfx::CWater;
 class CObject;
 
 namespace Gfx {

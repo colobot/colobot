@@ -25,8 +25,6 @@
 
 class CInstanceManager;
 class CRobotMain;
-class Gfx::CTerrain;
-class Gfx::CWater;
 class CObject;
 
 

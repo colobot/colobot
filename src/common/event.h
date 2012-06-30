@@ -637,31 +637,18 @@ struct Event
 {
     //! Type of event (EVENT_*)
     EventType type;
-    /**
-      \union EventDataUnion
-      \brief Additional data associated with some events
 
-      For the listed event, the given member is filled with data.
-      For other event types, it is filled with zeros.
-     */
-    union EventDataUnion
-    {
-        //! Additional data for EVENT_KEY_DOWN and EVENT_KEY_UP
-        KeyEventData key;
-        //! Additional data for EVENT_MOUSE_BUTTON_DOWN and EVENT_MOUSE_BUTTON_UP
-        MouseButtonEventData mouseButton;
-        //! Additional data for EVENT_MOUSE_MOVE
-        MouseMoveEventData mouseMove;
-        //! Additional data for EVENT_JOY
-        JoyAxisEventData joyAxis;
-        //! Additional data for EVENT_JOY_AXIS
-        JoyButtonEventData joyButton;
+    //! Additional data for EVENT_KEY_DOWN and EVENT_KEY_UP
+    KeyEventData key;
+    //! Additional data for EVENT_MOUSE_BUTTON_DOWN and EVENT_MOUSE_BUTTON_UP
+    MouseButtonEventData mouseButton;
+    //! Additional data for EVENT_MOUSE_MOVE
+    MouseMoveEventData mouseMove;
+    //! Additional data for EVENT_JOY
+    JoyAxisEventData joyAxis;
+    //! Additional data for EVENT_JOY_AXIS
+    JoyButtonEventData joyButton;
 
-        EventDataUnion()
-            { memset(this, 0, sizeof(EventDataUnion)); }
-        ~EventDataUnion()
-            {}
-    } data;
     //? long         param;      // parameter
     //? Math::Point  pos;        // mouse position (0 .. 1)
     //? float        axeX;       // control the X axis (-1 .. 1)
