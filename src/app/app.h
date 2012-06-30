@@ -25,6 +25,7 @@
 #include "graphics/common/engine.h"
 
 #include <string>
+#include <vector>
 
 
 class CInstanceManager;
@@ -39,10 +40,32 @@ struct ApplicationPrivate;
  * \class CApplication
  * \brief Main application
  *
- * This class is responsible for creating and handling main application window,
- * receiving events, etc.
+ * This class is responsible for main application execution, including creating
+ * and handling main application window, receiving events, etc.
  *
- * ...
+ * It is a singleton class with only one instance that can be created.
+ *
+ * Creation of other main objects
+ *
+ * The class creates the only instance of CInstanceManager, CEventQueue, CEngine,
+ * CRobotMain and CSound classes.
+ *
+ * Window management
+ *
+ * The class is responsible for creating app window, setting and changing the video mode,
+ * setting the position of mouse and changing the cursor, grabbing and writing screenshots.
+ *
+ * Events
+ *
+ * Events are taken from SDL event queue and either handled by CApplication or translated
+ * to common events from src/common.h and pushed to global event queue CEventQueue.
+ * Joystick events are generated somewhat differently, by running a separate timer,
+ * polling the device for changes and synthesising events on change. It avoids flooding
+ * the event queue with too many joystick events and the granularity of the timer can be
+ * adjusted.
+ *
+ * The events are further handled in CRobotMain class.
+ *
  */
 class CApplication
 {
@@ -51,6 +74,10 @@ public:
     CApplication();
     //! Destructor
     ~CApplication();
+
+    //! Returns the only CApplication instance
+    static CApplication* RetInstance()
+      { return m_appInstance; }
 
 public:
     //! Parses commandline arguments
@@ -65,6 +92,9 @@ public:
 
     //! Updates the simulation state
     void        StepSimulation(float rTime);
+
+    //! Polls the state of joystick axes and buttons
+    void UpdateJoystick();
 
     void        SetShowStat(bool show);
     bool        RetShowStat();
@@ -124,6 +154,9 @@ protected:
     void        OutputText(long x, long y, char* str);
 
 protected:
+    //! The only instance of CApplication
+    static CApplication*    m_appInstance;
+    //! Instance manager
     CInstanceManager*       m_iMan;
     //! Private (SDL-dependent data)
     ApplicationPrivate*     m_private;
@@ -137,7 +170,6 @@ protected:
     CSound*                 m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
-
 
     //! Code to return at exit
     int             m_exitCode;
@@ -164,9 +196,13 @@ protected:
     int             m_keyState;
     Math::Vector    m_axeKey;
     Math::Vector    m_axeJoy;
-    bool            m_joyButton[32];
     Math::Point     m_mousePos;
     long            m_mouseWheel;
+
+    //! Current state of joystick axes; may be updated from another thread
+    std::vector<int> m_joyAxeState;
+    //! Current state of joystick buttons; may be updated from another thread
+    std::vector<bool> m_joyButtonState;
 
     float           m_time;
     long            m_key[50][2];
