@@ -26,6 +26,8 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
+#include <stdio.h>
+
 
 /**
  * \struct ApplicationPrivate
@@ -252,6 +254,8 @@ bool CApplication::OpenJoystick()
     m_private->joystick = SDL_JoystickOpen(m_private->joystickIndex);
     if (m_private->joystick == NULL)
         return false;
+
+    return true;
 }
 
 
@@ -351,10 +355,10 @@ void CApplication::ParseEvent()
         else
             event.type = EVENT_KEY_UP;
 
-        event.data.key.key = m_private->currentEvent.key.keysym.sym;
-        event.data.key.mod = m_private->currentEvent.key.keysym.mod;
-        event.data.key.state = TranslatePressState(m_private->currentEvent.key.state);
-        event.data.key.unicode = m_private->currentEvent.key.keysym.unicode;
+        event.key.key = m_private->currentEvent.key.keysym.sym;
+        event.key.mod = m_private->currentEvent.key.keysym.mod;
+        event.key.state = TranslatePressState(m_private->currentEvent.key.state);
+        event.key.unicode = m_private->currentEvent.key.keysym.unicode;
     }
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
@@ -364,24 +368,24 @@ void CApplication::ParseEvent()
         else
             event.type = EVENT_MOUSE_BUTTON_UP;
 
-        event.data.mouseButton.button = m_private->currentEvent.button.button;
-        event.data.mouseButton.state = TranslatePressState(m_private->currentEvent.button.state);
-        event.data.mouseButton.pos = WindowToInterfaceCoords(m_private->currentEvent.button.x, m_private->currentEvent.button.y);
+        event.mouseButton.button = m_private->currentEvent.button.button;
+        event.mouseButton.state = TranslatePressState(m_private->currentEvent.button.state);
+        event.mouseButton.pos = WindowToInterfaceCoords(m_private->currentEvent.button.x, m_private->currentEvent.button.y);
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
         event.type = EVENT_MOUSE_MOVE;
 
-        event.data.mouseMove.state = TranslatePressState(m_private->currentEvent.button.state);
-        event.data.mouseMove.pos = WindowToInterfaceCoords(m_private->currentEvent.button.x, m_private->currentEvent.button.y);
+        event.mouseMove.state = TranslatePressState(m_private->currentEvent.button.state);
+        event.mouseMove.pos = WindowToInterfaceCoords(m_private->currentEvent.button.x, m_private->currentEvent.button.y);
     }
     // TODO: joystick state polling instead of getting events
     else if (m_private->currentEvent.type == SDL_JOYAXISMOTION)
     {
         event.type = EVENT_JOY_AXIS;
 
-        event.data.joyAxis.axis = m_private->currentEvent.jaxis.axis;
-        event.data.joyAxis.value = m_private->currentEvent.jaxis.value;
+        event.joyAxis.axis = m_private->currentEvent.jaxis.axis;
+        event.joyAxis.value = m_private->currentEvent.jaxis.value;
     }
     else if ( (m_private->currentEvent.type == SDL_JOYBUTTONDOWN) ||
               (m_private->currentEvent.type == SDL_JOYBUTTONUP) )
@@ -391,8 +395,8 @@ void CApplication::ParseEvent()
         else
             event.type = EVENT_JOY_BUTTON_UP;
 
-        event.data.joyButton.button = m_private->currentEvent.jbutton.button;
-        event.data.joyButton.state = TranslatePressState(m_private->currentEvent.jbutton.state);
+        event.joyButton.button = m_private->currentEvent.jbutton.button;
+        event.joyButton.state = TranslatePressState(m_private->currentEvent.jbutton.state);
     }
 
 
@@ -414,33 +418,33 @@ void CApplication::ProcessEvent(Event event)
             case EVENT_KEY_DOWN:
             case EVENT_KEY_UP:
                 printf("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
-                printf(" key     = %4x\n", event.data.key.key);
-                printf(" state   = %s\n", (event.data.key.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                printf(" mod     = %4x\n", event.data.key.mod);
-                printf(" unicode = %4x\n", event.data.key.unicode);
+                printf(" key     = %4x\n", event.key.key);
+                printf(" state   = %s\n", (event.key.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                printf(" mod     = %4x\n", event.key.mod);
+                printf(" unicode = %4x\n", event.key.unicode);
                 break;
             case EVENT_MOUSE_MOVE:
                 printf("EVENT_MOUSE_MOVE:\n");
-                printf(" state  = %s\n", (event.data.mouseMove.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                printf(" pos    = (%f, %f)\n", event.data.mouseMove.pos.x, event.data.mouseMove.pos.y);
+                printf(" state  = %s\n", (event.mouseMove.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                printf(" pos    = (%f, %f)\n", event.mouseMove.pos.x, event.mouseMove.pos.y);
                 break;
             case EVENT_MOUSE_BUTTON_DOWN:
             case EVENT_MOUSE_BUTTON_UP:
                 printf("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
-                printf(" button = %d\n", event.data.mouseButton.button);
-                printf(" state  = %s\n", (event.data.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                printf(" pos    = (%f, %f)\n", event.data.mouseButton.pos.x, event.data.mouseButton.pos.y);
+                printf(" button = %d\n", event.mouseButton.button);
+                printf(" state  = %s\n", (event.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                printf(" pos    = (%f, %f)\n", event.mouseButton.pos.x, event.mouseButton.pos.y);
                 break;
             case EVENT_JOY_AXIS:
                 printf("EVENT_JOY_AXIS:\n");
-                printf(" axis  = %d\n", event.data.joyAxis.axis);
-                printf(" value = %d\n", event.data.joyAxis.value);
+                printf(" axis  = %d\n", event.joyAxis.axis);
+                printf(" value = %d\n", event.joyAxis.value);
                 break;
             case EVENT_JOY_BUTTON_DOWN:
             case EVENT_JOY_BUTTON_UP:
                 printf("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
-                printf(" button = %d\n", event.data.joyButton.button);
-                printf(" state  = %s\n", (event.data.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                printf(" button = %d\n", event.joyButton.button);
+                printf(" state  = %s\n", (event.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
                 break;
             default:
                 break;
@@ -569,6 +573,7 @@ bool CApplication::RetJoystickEnabled()
 bool CApplication::WriteScreenShot(char *filename, int width, int height)
 {
     // TODO
+    return false;
 }
 
 void CApplication::InitText()

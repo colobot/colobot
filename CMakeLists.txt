@@ -13,8 +13,8 @@ find_package(SDL_image REQUIRED)
 set(CMAKE_BUILD_TYPE debug)
 
 # Global compile flags
-set(CMAKE_CXX_FLAGS_RELEASE "-std=c++11 -O2")
-set(CMAKE_CXX_FLAGS_DEBUG "-std=c++11 -w -g -O0")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2")
+set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -O0")
 
 # Subdirectory with sources
 add_subdirectory(src bin)
