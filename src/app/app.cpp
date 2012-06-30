@@ -29,6 +29,13 @@
 #include <stdio.h>
 
 
+//! Interval of timer called to update joystick state
+const int JOYSTICK_TIMER_INTERVAL = 1000/30;
+
+//! Function called by the timer
+Uint32 JoystickTimerCallback(Uint32 interval, void *);
+
+
 /**
  * \struct ApplicationPrivate
  * \brief Private data of CApplication class
@@ -45,6 +52,8 @@ struct ApplicationPrivate
     SDL_Joystick *joystick;
     //! Index of joystick device
     int joystickIndex;
+    //! Id of joystick timer
+    SDL_TimerID joystickTimer;
 
     ApplicationPrivate()
     {
@@ -52,12 +61,19 @@ struct ApplicationPrivate
         surface = NULL;
         joystick = NULL;
         joystickIndex = 0;
+        joystickTimer = 0;
     }
 };
 
 
+CApplication* CApplication::m_appInstance = NULL;
+
+
 CApplication::CApplication()
 {
+    assert(m_appInstance == NULL);
+    m_appInstance = this;
+
     m_private = new ApplicationPrivate();
     m_exitCode = 0;
 
@@ -79,11 +95,6 @@ CApplication::CApplication()
     m_joystickEnabled = false;
 
     m_time        = 0.0f;
-
-    for (int i = 0; i < 32; i++)
-    {
-        m_joyButton[i] = false;
-    }
 
     m_windowTitle  = "COLOBOT";
 
@@ -150,7 +161,7 @@ bool CApplication::Create()
     /* SDL initialization sequence */
 
 
-    Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK;
+    Uint32 initFlags = SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_TIMER;
 
     if (SDL_Init(initFlags) < 0)
     {
@@ -213,8 +224,8 @@ bool CApplication::Create()
     // Enable translating key codes of key press events to unicode chars
     SDL_EnableUNICODE(1);
 
-    // Enable joystick event generation
-    SDL_JoystickEventState(SDL_ENABLE);
+    // Don't generate joystick events
+    SDL_JoystickEventState(SDL_IGNORE);
 
 
     // For now, enable joystick for testing
@@ -255,13 +266,90 @@ bool CApplication::OpenJoystick()
     if (m_private->joystick == NULL)
         return false;
 
+    // Create the vectors with joystick axis & button states to exactly the required size
+    m_joyAxeState = std::vector<int>(SDL_JoystickNumAxes(m_private->joystick), 0);
+    m_joyButtonState = std::vector<bool>(SDL_JoystickNumButtons(m_private->joystick), false);
+
+    // Create a timer for polling joystick state
+    m_private->joystickTimer = SDL_AddTimer(JOYSTICK_TIMER_INTERVAL, JoystickTimerCallback, NULL);
+
     return true;
 }
 
 
 void CApplication::CloseJoystick()
 {
+    // Timer will remove itself automatically
+
     SDL_JoystickClose(m_private->joystick);
+    m_private->joystick = NULL;
+}
+
+Uint32 JoystickTimerCallback(Uint32 interval, void *)
+{
+    CApplication *app = CApplication::RetInstance();
+    if ((app == NULL) || (! app->RetJoystickEnabled()))
+        return 0; // don't run the timer again
+
+    app->UpdateJoystick();
+
+    return interval; // run for the same interval again
+}
+
+/** Updates the state info in CApplication and on change, creates SDL events and pushes them to SDL event queue.
+    This way, the events get handled properly in the main event loop and besides, SDL_PushEvent() ensures thread-safety. */
+void CApplication::UpdateJoystick()
+{
+    if (! m_joystickEnabled)
+        return;
+
+    SDL_JoystickUpdate();
+
+    for (int axis = 0; axis < (int) m_joyAxeState.size(); ++axis)
+    {
+        int newValue = SDL_JoystickGetAxis(m_private->joystick, axis);
+
+        if (m_joyAxeState[axis] != newValue)
+        {
+            m_joyAxeState[axis] = newValue;
+
+            SDL_Event joyAxisEvent;
+
+            joyAxisEvent.jaxis.type = SDL_JOYAXISMOTION;
+            joyAxisEvent.jaxis.which = 0;
+            joyAxisEvent.jaxis.axis = axis;
+            joyAxisEvent.jaxis.value = newValue;
+
+            SDL_PushEvent(&joyAxisEvent);
+        }
+    }
+
+    for (int button = 0; button < (int) m_joyButtonState.size(); ++button)
+    {
+        bool newValue = SDL_JoystickGetButton(m_private->joystick, button) == 1;
+
+        if (m_joyButtonState[button] != newValue)
+        {
+            m_joyButtonState[button] = newValue;
+
+            SDL_Event joyButtonEvent;
+
+            if (newValue)
+            {
+                joyButtonEvent.jbutton.type = SDL_JOYBUTTONDOWN;
+                joyButtonEvent.jbutton.state = SDL_PRESSED;
+            }
+            else
+            {
+                joyButtonEvent.jbutton.type = SDL_JOYBUTTONUP;
+                joyButtonEvent.jbutton.state = SDL_RELEASED;
+            }
+            joyButtonEvent.jbutton.which = 0;
+            joyButtonEvent.jbutton.button = button;
+
+            SDL_PushEvent(&joyButtonEvent);
+        }
+    }
 }
 
 int CApplication::Run()
@@ -444,7 +532,7 @@ void CApplication::ProcessEvent(Event event)
             case EVENT_JOY_BUTTON_UP:
                 printf("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
                 printf(" button = %d\n", event.joyButton.button);
-                printf(" state  = %s\n", (event.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                printf(" state  = %s\n", (event.joyButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
                 break;
             default:
                 break;
