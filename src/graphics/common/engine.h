@@ -29,10 +29,16 @@
 #include "math/vector.h"
 
 
+#include <string>
+
+
 class CApplication;
 class CInstanceManager;
 class CObject;
+
+namespace Snd {
 class CSound;
+};
 
 
 namespace Gfx {
@@ -117,46 +123,46 @@ enum ShadowType
     SHADOW_WORM = 1
 };
 
-enum RenderState
+enum EngineRenderState
 {
     //! Normal opaque materials
-    RSTATE_NORMAL           = 0,
+    ENG_RSTATE_NORMAL           = 0,
     //! The transparent texture (black = no)
-    RSTATE_TTEXTURE_BLACK   = (1<<0),
+    ENG_RSTATE_TTEXTURE_BLACK   = (1<<0),
     //! The transparent texture (white = no)
-    RSTATE_TTEXTURE_WHITE   = (1<<1),
+    ENG_RSTATE_TTEXTURE_WHITE   = (1<<1),
     //! The transparent diffuse color
-    RSTATE_TDIFFUSE         = (1<<2),
+    ENG_RSTATE_TDIFFUSE         = (1<<2),
     //! Texture wrap
-    RSTATE_WRAP             = (1<<3),
+    ENG_RSTATE_WRAP             = (1<<3),
     //! Texture borders with solid color
-    RSTATE_CLAMP            = (1<<4),
+    ENG_RSTATE_CLAMP            = (1<<4),
     //! Light texture (ambient max)
-    RSTATE_LIGHT            = (1<<5),
+    ENG_RSTATE_LIGHT            = (1<<5),
     //! Double black texturing
-    RSTATE_DUAL_BLACK       = (1<<6),
+    ENG_RSTATE_DUAL_BLACK       = (1<<6),
     //! Double white texturing
-    RSTATE_DUAL_WHITE       = (1<<7),
+    ENG_RSTATE_DUAL_WHITE       = (1<<7),
     //! Part 1 (no change in. MOD!)
-    RSTATE_PART1            = (1<<8),
+    ENG_RSTATE_PART1            = (1<<8),
     //! Part 2
-    RSTATE_PART2            = (1<<9),
+    ENG_RSTATE_PART2            = (1<<9),
     //! Part 3
-    RSTATE_PART3            = (1<<10),
+    ENG_RSTATE_PART3            = (1<<10),
     //! Part 4
-    RSTATE_PART4            = (1<<11),
+    ENG_RSTATE_PART4            = (1<<11),
     //! Double-sided face
-    RSTATE_2FACE            = (1<<12),
+    ENG_RSTATE_2FACE            = (1<<12),
     //! Image using alpha channel
-    RSTATE_ALPHA            = (1<<13),
+    ENG_RSTATE_ALPHA            = (1<<13),
     //! Always use 2nd floor texturing
-    RSTATE_SECOND           = (1<<14),
+    ENG_RSTATE_SECOND           = (1<<14),
     //! Causes the fog
-    RSTATE_FOG              = (1<<15),
+    ENG_RSTATE_FOG              = (1<<15),
     //! The transparent color (black = no)
-    RSTATE_TCOLOR_BLACK     = (1<<16),
+    ENG_RSTATE_TCOLOR_BLACK     = (1<<16),
     //! The transparent color (white = no)
-    RSTATE_TCOLOR_WHITE     = (1<<17)
+    ENG_RSTATE_TCOLOR_WHITE     = (1<<17)
 };
 
 
@@ -288,6 +294,8 @@ class CEngine
 public:
     CEngine(CInstanceManager *iMan, CApplication *app);
     ~CEngine();
+
+    std::string     RetError();
 
     void            SetDevice(Gfx::CDevice *device);
     Gfx::CDevice*   RetDevice();
@@ -439,7 +447,7 @@ public:
     void            RetBackground(char *name, Gfx::Color &up, Gfx::Color &down, Gfx::Color &cloudUp, Gfx::Color &cloudDown, bool &full, bool &quarter);
     void            SetFrontsizeName(char *name);
     void            SetOverFront(bool front);
-    void            SetOverColor(const Gfx::Color &color=Gfx::Color(), int mode=RSTATE_TCOLOR_BLACK);
+    void            SetOverColor(const Gfx::Color &color=Gfx::Color(), int mode=ENG_RSTATE_TCOLOR_BLACK);
 
     void            SetParticuleDensity(float value);
     float           RetParticuleDensity();
@@ -584,18 +592,20 @@ protected:
     void        DrawSprite(Math::Point pos, Math::Point dim, int icon);
 
 protected:
-    CInstanceManager*   m_iMan;
-    CApplication*   m_app;
-    Gfx::CDevice*   m_device;
-    Gfx::CText*         m_text;
-    Gfx::CLight*            m_light;
-    Gfx::CParticle*     m_particule;
-    Gfx::CWater*            m_water;
-    Gfx::CCloud*            m_cloud;
-    Gfx::CLightning*            m_blitz;
-    Gfx::CPlanet*       m_planet;
-    Gfx::CTerrain*      m_terrain;
-    CSound*         m_sound;
+    CInstanceManager* m_iMan;
+    CApplication*    m_app;
+    Gfx::CDevice*    m_device;
+    Gfx::CText*      m_text;
+    Gfx::CLight*     m_light;
+    Gfx::CParticle*  m_particle;
+    Gfx::CWater*     m_water;
+    Gfx::CCloud*     m_cloud;
+    Gfx::CLightning* m_lightning;
+    Gfx::CPlanet*    m_planet;
+    Gfx::CTerrain*   m_terrain;
+    Snd::CSound*     m_sound;
+
+    std::string     m_error;
 
     int             m_blackSrcBlend[2];
     int             m_blackDestBlend[2];

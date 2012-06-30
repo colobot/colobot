@@ -48,7 +48,7 @@ const short MAXWATVAPOR = 10;
 struct WaterVapor
 {
     bool            bUsed;
-    ParticuleType   type;
+    ParticleType   type;
     Math::Vector        pos;
     float           delay;
     float           time;
@@ -96,7 +96,7 @@ protected:
     bool        CreateLine(int x, int y, int len);
 
     void        VaporFlush();
-    bool        VaporCreate(ParticuleType type, Math::Vector pos, float delay);
+    bool        VaporCreate(ParticleType type, Math::Vector pos, float delay);
     void        VaporFrame(int i, float rTime);
 
 protected:

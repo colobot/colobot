@@ -21,7 +21,6 @@
 
 
 #include "common/misc.h"
-#include "graphics/common/device.h"
 #include "graphics/common/engine.h"
 
 #include <string>
@@ -162,8 +161,6 @@ protected:
     ApplicationPrivate*     m_private;
     //! Global event queue
     CEventQueue*            m_eventQueue;
-    //! Current configuration of display device
-    Gfx::DeviceConfig       m_deviceConfig;
     //! Graphics engine
     Gfx::CEngine*           m_engine;
     //! Sound subsystem
