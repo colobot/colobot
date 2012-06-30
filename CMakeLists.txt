@@ -9,6 +9,8 @@ find_package(OpenGL REQUIRED)
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
 
+# TODO: check for SDL version. Should be >= 1.2.10
+
 # Build with debugging symbols
 set(CMAKE_BUILD_TYPE debug)
 

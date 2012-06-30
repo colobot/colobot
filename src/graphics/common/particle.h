@@ -50,7 +50,7 @@ const short SH_MAX = 3;
 // type == 4    ->  text     (white background)
 
 
-enum ParticuleType
+enum ParticleType
 {
     PARTIEXPLOT     = 1,        // technology explosion
     PARTIEXPLOO     = 2,        // organic explosion
@@ -193,20 +193,20 @@ enum ParticuleType
     PARTITRACE19        = 159,      // trace
 };
 
-enum ParticulePhase
+enum ParticlePhase
 {
     PARPHSTART      = 0,
     PARPHEND        = 1,
 };
 
-struct Particule
+struct Particle
 {
     char            bUsed;      // TRUE -> particle used
     char            bRay;       // TRUE -> ray with goal
     unsigned short      uniqueStamp;    // unique mark
     short           sheet;      // sheet (0..n)
-    ParticuleType       type;       // type PARTI*
-    ParticulePhase      phase;      // phase PARPH*
+    ParticleType       type;       // type PARTI*
+    ParticlePhase      phase;      // phase PARPH*
     float           mass;       // mass of the particle (in rebounding)
     float           weight;     // weight of the particle (for noise)
     float           duration;   // length of life
@@ -233,7 +233,7 @@ struct Particule
 struct Track
 {
     char            bUsed;      // TRUE -> drag used
-    char            bDrawParticule;
+    char            bDrawParticle;
     float           step;       // duration of not
     float           last;       // increase last not memorized
     float           intensity;  // intensity at starting (0..1)
@@ -246,7 +246,7 @@ struct Track
 
 struct WheelTrace
 {
-    ParticuleType       type;       // type PARTI*
+    ParticleType       type;       // type PARTI*
     Math::Vector        pos[4];     // rectangle positions
     float           startTime;  // beginning of life
 };
@@ -261,16 +261,16 @@ public:
 
     void        SetGLDevice(CDevice device);
 
-    void        FlushParticule();
-    void        FlushParticule(int sheet);
-    int         CreateParticule(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
-    int         CreateFrag(Math::Vector pos, Math::Vector speed, Triangle *triangle, ParticuleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
-    int         CreatePart(Math::Vector pos, Math::Vector speed, ParticuleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, float windSensitivity=1.0f, int sheet=0);
-    int         CreateRay(Math::Vector pos, Math::Vector goal, ParticuleType type, Math::Point dim, float duration=1.0f, int sheet=0);
-    int         CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticuleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
-    void        CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3, const Math::Vector &p4, ParticuleType type);
-    void        DeleteParticule(ParticuleType type);
-    void        DeleteParticule(int channel);
+    void        FlushParticle();
+    void        FlushParticle(int sheet);
+    int         CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
+    int         CreateFrag(Math::Vector pos, Math::Vector speed, Triangle *triangle, ParticleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
+    int         CreatePart(Math::Vector pos, Math::Vector speed, ParticleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, float windSensitivity=1.0f, int sheet=0);
+    int         CreateRay(Math::Vector pos, Math::Vector goal, ParticleType type, Math::Point dim, float duration=1.0f, int sheet=0);
+    int         CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
+    void        CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3, const Math::Vector &p4, ParticleType type);
+    void        DeleteParticle(ParticleType type);
+    void        DeleteParticle(int channel);
     void        SetObjectLink(int channel, CObject *object);
     void        SetObjectFather(int channel, CObject *object);
     void        SetPosition(int channel, Math::Vector pos);
@@ -279,57 +279,57 @@ public:
     void        SetAngle(int channel, float angle);
     void        SetIntensity(int channel, float intensity);
     void        SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom, float angle, float intensity);
-    void        SetPhase(int channel, ParticulePhase phase, float duration);
+    void        SetPhase(int channel, ParticlePhase phase, float duration);
     bool        GetPosition(int channel, Math::Vector &pos);
 
     Gfx::Color RetFogColor(Math::Vector pos);
 
     void        SetFrameUpdate(int sheet, bool bUpdate);
-    void        FrameParticule(float rTime);
-    void        DrawParticule(int sheet);
+    void        FrameParticle(float rTime);
+    void        DrawParticle(int sheet);
 
     bool        WriteWheelTrace(char *filename, int width, int height, Math::Vector dl, Math::Vector ur);
 
 protected:
     void        DeleteRank(int rank);
     bool        CheckChannel(int &channel);
-    void        DrawParticuleTriangle(int i);
-    void        DrawParticuleNorm(int i);
-    void        DrawParticuleFlat(int i);
-    void        DrawParticuleFog(int i);
-    void        DrawParticuleRay(int i);
-    void        DrawParticuleSphere(int i);
-    void        DrawParticuleCylinder(int i);
-    void        DrawParticuleWheel(int i);
-    CObject*    SearchObjectGun(Math::Vector old, Math::Vector pos, ParticuleType type, CObject *father);
-    CObject*    SearchObjectRay(Math::Vector pos, Math::Vector goal, ParticuleType type, CObject *father);
+    void        DrawParticleTriangle(int i);
+    void        DrawParticleNorm(int i);
+    void        DrawParticleFlat(int i);
+    void        DrawParticleFog(int i);
+    void        DrawParticleRay(int i);
+    void        DrawParticleSphere(int i);
+    void        DrawParticleCylinder(int i);
+    void        DrawParticleWheel(int i);
+    CObject*    SearchObjectGun(Math::Vector old, Math::Vector pos, ParticleType type, CObject *father);
+    CObject*    SearchObjectRay(Math::Vector pos, Math::Vector goal, ParticleType type, CObject *father);
     void        Play(Snd::Sound sound, Math::Vector pos, float amplitude);
     bool        TrackMove(int i, Math::Vector pos, float progress);
-    void        TrackDraw(int i, ParticuleType type);
+    void        TrackDraw(int i, ParticleType type);
 
 protected:
-    CInstanceManager*   m_iMan;
-    CEngine*        m_engine;
-    CDevice*        m_pDevice;
-    CRobotMain*         m_main;
-    CTerrain*       m_terrain;
-    CWater*     m_water;
-    CSound*             m_sound;
+    CInstanceManager* m_iMan;
+    CEngine*     m_engine;
+    CDevice*     m_pDevice;
+    CRobotMain*  m_main;
+    CTerrain*    m_terrain;
+    CWater*      m_water;
+    Snd::CSound* m_sound;
 
-    Particule   m_particule[MAXPARTICULE*MAXPARTITYPE];
-    Gfx::Triangle   m_triangle[MAXPARTICULE];  // triangle if PartiType == 0
-    Track       m_track[MAXTRACK];
-    int         m_wheelTraceTotal;
-    int         m_wheelTraceIndex;
-    WheelTrace  m_wheelTrace[MAXWHEELTRACE];
-    int         m_totalInterface[MAXPARTITYPE][SH_MAX];
-    bool        m_bFrameUpdate[SH_MAX];
-    int         m_fogTotal;
-    int         m_fog[MAXPARTIFOG];
-    int         m_uniqueStamp;
-    int         m_exploGunCounter;
-    float       m_lastTimeGunDel;
-    float       m_absTime;
+    Gfx::Particle m_particule[MAXPARTICULE*MAXPARTITYPE];
+    Gfx::Triangle m_triangle[MAXPARTICULE];  // triangle if PartiType == 0
+    Track         m_track[MAXTRACK];
+    int           m_wheelTraceTotal;
+    int           m_wheelTraceIndex;
+    WheelTrace    m_wheelTrace[MAXWHEELTRACE];
+    int           m_totalInterface[MAXPARTITYPE][SH_MAX];
+    bool          m_bFrameUpdate[SH_MAX];
+    int           m_fogTotal;
+    int           m_fog[MAXPARTIFOG];
+    int           m_uniqueStamp;
+    int           m_exploGunCounter;
+    float         m_lastTimeGunDel;
+    float         m_absTime;
 };
 
 

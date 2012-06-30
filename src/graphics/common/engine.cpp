@@ -35,6 +35,17 @@ Gfx::CEngine::~CEngine()
     // TODO
 }
 
+std::string Gfx::CEngine::RetError()
+{
+    return m_error;
+}
+
+int Gfx::CEngine::OneTimeSceneInit()
+{
+    // TODO
+    return 1;
+}
+
 int Gfx::CEngine::Render()
 {
     /* Just a hello world for now */
@@ -71,3 +82,5 @@ int Gfx::CEngine::Render()
 
     return 1;
 }
+
+

@@ -1,5 +1,4 @@
 // * This file is part of the COLOBOT source code
-// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -15,19 +14,15 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// device.cpp
+// texture.h
 
+#pragma once
 
-#include "graphics/common/device.h"
+namespace Gfx {
 
-
-void Gfx::DeviceConfig::LoadDefault()
+struct Texture
 {
-    width = 800;
-    height = 600;
-    bpp = 32;
-    fullScreen = false;
-    resizeable = false;
-    doubleBuf = true;
-    noFrame = false;
-}
+    // TODO
+};
+
+}; // namespace Gfx

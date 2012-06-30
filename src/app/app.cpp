@@ -21,6 +21,7 @@
 
 #include "app/system.h"
 #include "common/iman.h"
+#include "graphics/opengl/gldevice.h"
 
 
 #include <SDL/SDL.h>
@@ -54,6 +55,8 @@ struct ApplicationPrivate
     int joystickIndex;
     //! Id of joystick timer
     SDL_TimerID joystickTimer;
+    //! Current configuration of OpenGL display device
+    Gfx::GLDeviceConfig deviceConfig;
 
     ApplicationPrivate()
     {
@@ -137,18 +140,18 @@ Error CApplication::ParseArguments(int argc, char *argv[])
 bool CApplication::Create()
 {
     // Temporarily -- only in windowed mode
-    m_deviceConfig.fullScreen = false;
+    m_private->deviceConfig.fullScreen = false;
 
     // Create the 3D engine.
     m_engine = new Gfx::CEngine(m_iMan, this);
 
-    /* TODO
+
     // Initialize the app's custom scene stuff
     if (! m_engine->OneTimeSceneInit())
     {
         SystemDialog(SDT_ERROR, "COLOBOT - Error", m_engine->RetError());
         return false;
-    }*/
+    }
 
 /*    // Create the sound instance.
     m_sound = new CSound(m_iMan);
@@ -178,7 +181,7 @@ bool CApplication::Create()
 
     Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
 
-    if (m_deviceConfig.resizeable)
+    if (m_private->deviceConfig.resizeable)
         videoFlags |= SDL_RESIZABLE;
 
     // Use hardware surface if available
@@ -191,16 +194,25 @@ bool CApplication::Create()
     if (videoInfo->blit_hw)
         videoFlags |= SDL_HWACCEL;
 
-    if (m_deviceConfig.fullScreen)
+    if (m_private->deviceConfig.fullScreen)
         videoFlags |= SDL_FULLSCREEN;
 
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+    // Set OpenGL attributes
 
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_private->deviceConfig.redSize);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_private->deviceConfig.greenSize);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_private->deviceConfig.blueSize);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_private->deviceConfig.alphaSize);
+
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, m_private->deviceConfig.depthSize);
+
+    if (m_private->deviceConfig.doubleBuf)
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    /* If hardware acceleration specifically requested, this will force the hw accel
+       and fail with error if not available */
+    if (m_private->deviceConfig.hardwareAccel)
+        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
     {
@@ -209,8 +221,8 @@ bool CApplication::Create()
         return false;
     }
 
-    m_private->surface = SDL_SetVideoMode(m_deviceConfig.width, m_deviceConfig.height,
-                                          m_deviceConfig.bpp, videoFlags);
+    m_private->surface = SDL_SetVideoMode(m_private->deviceConfig.width, m_private->deviceConfig.height,
+                                          m_private->deviceConfig.bpp, videoFlags);
 
     if (m_private->surface == NULL)
     {
@@ -426,8 +438,8 @@ y: 0=down, 1=up
 */
 Math::Point CApplication::WindowToInterfaceCoords(int x, int y)
 {
-    return Math::Point((float)x / (float)m_deviceConfig.width,
-                       1.0f - (float)y / (float)m_deviceConfig.height);
+    return Math::Point((float)x / (float)m_private->deviceConfig.width,
+                       1.0f - (float)y / (float)m_private->deviceConfig.height);
 }
 
 
@@ -546,7 +558,7 @@ bool CApplication::Render()
     if (! result)
         return false;
 
-    if (m_deviceConfig.doubleBuf)
+    if (m_private->deviceConfig.doubleBuf)
         SDL_GL_SwapBuffers();
 
     return true;

@@ -73,7 +73,7 @@ public:
     CText(CInstanceManager *iMan, Gfx::CEngine* engine);
     ~CText();
 
-    void        SetGLDevice(Gfx::CDevice device);
+    void        SetDevice(Gfx::CDevice *device);
 
     void        DrawText(char *string, char *format, int len, Math::Point pos, float width, int justif, float size, float stretch, int eol);
     void        DrawText(char *string, char *format, Math::Point pos, float width, int justif, float size, float stretch, int eol);
@@ -106,7 +106,7 @@ protected:
 protected:
     CInstanceManager*   m_iMan;
     Gfx::CEngine*       m_engine;
-    Gfx::CDevice        m_pDevice;
+    Gfx::CDevice*       m_device;
 
 };
 
