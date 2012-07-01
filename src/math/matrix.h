@@ -118,6 +118,12 @@ struct Matrix
         /* (4,4) */ m[15] = 1.0f;
     }
 
+    //! Returns the struct cast to \c float* array; use with care!
+    inline float* Array()
+    {
+        return (float*)this;
+    }
+
     //! Transposes the matrix
     inline void Transpose()
     {

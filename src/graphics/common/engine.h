@@ -295,23 +295,35 @@ public:
     CEngine(CInstanceManager *iMan, CApplication *app);
     ~CEngine();
 
-    std::string     RetError();
+    bool            GetWasInit();
+    std::string     GetError();
+
+    bool            BeforeCreateInit();
+    bool            Create();
+    void            Destroy();
 
     void            SetDevice(Gfx::CDevice *device);
-    Gfx::CDevice*   RetDevice();
+    Gfx::CDevice*   GetDevice();
+
+    bool            AfterDeviceSetInit();
+
+
+    bool            Render();
+
+
 
     void            SetTerrain(Gfx::CTerrain* terrain);
 
     bool            WriteProfile();
 
     void            SetPause(bool pause);
-    bool            RetPause();
+    bool            GetPause();
 
     void            SetMovieLock(bool lock);
-    bool            RetMovieLock();
+    bool            GetMovieLock();
 
     void            SetShowStat(bool show);
-    bool            RetShowStat();
+    bool            GetShowStat();
 
     void            SetRenderEnable(bool enable);
 
@@ -319,17 +331,16 @@ public:
     int             InitDeviceObjects();
     int             DeleteDeviceObjects();
     int             RestoreSurfaces();
-    int             Render();
     int             FrameMove(float rTime);
     void            StepSimul(float rTime);
     int             FinalCleanup();
     void            AddStatisticTriangle(int nb);
-    int             RetStatisticTriangle();
+    int             GetStatisticTriangle();
     void            SetHiliteRank(int *rankList);
     bool            GetHilite(Math::Point &p1, Math::Point &p2);
     bool            GetSpriteCoord(int &x, int &y);
     void            SetInfoText(int line, char* text);
-    char    *       RetInfoText(int line);
+    char    *       GetInfoText(int line);
     //LRESULT       MsgProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
     void            FirstExecuteAdapt(bool first);
     //int               GetVidMemTotal();
@@ -337,19 +348,19 @@ public:
     //bool          IsVideo32MB();
 
     bool            EnumDevices(char *bufDevices, int lenDevices, char *bufModes, int lenModes, int &totalDevices, int &selectDevices, int &totalModes, int &selectModes);
-    bool            RetFullScreen();
+    bool            GetFullScreen();
     bool            ChangeDevice(char *device, char *mode, bool full);
 
-    Math::Matrix*   RetMatView();
-    Math::Matrix*   RetMatLeftView();
-    Math::Matrix*   RetMatRightView();
+    Math::Matrix*   GetMatView();
+    Math::Matrix*   GetMatLeftView();
+    Math::Matrix*   GetMatRightView();
 
     void            TimeInit();
     void            TimeEnterGel();
     void            TimeExitGel();
     float           TimeGet();
 
-    int             RetRestCreate();
+    int             GetRestCreate();
     int             CreateObject();
     void            FlushObject();
     bool            DeleteObject(int objRank);
@@ -361,7 +372,7 @@ public:
     Gfx::ObjLevel6* SearchTriangle(int objRank, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max);
     void            ChangeLOD();
     bool            ChangeSecondTexture(int objRank, char* texName2);
-    int             RetTotalTriangles(int objRank);
+    int             GetTotalTriangles(int objRank);
     int             GetTriangles(int objRank, float min, float max, Gfx::Triangle* buffer, int size, float percent);
     bool            GetBBox(int objRank, Math::Vector &min, Math::Vector &max);
     bool            ChangeTextureMapping(int objRank, const Gfx::Material &mat, int state, char* texName1, char* texName2, float min, float max, Gfx::Mapping mode, float au, float bu, float av, float bv);
@@ -369,7 +380,7 @@ public:
     bool            SetObjectTransform(int objRank, const Math::Matrix &transform);
     bool            GetObjectTransform(int objRank, Math::Matrix &transform);
     bool            SetObjectType(int objRank, Gfx::ObjectType type);
-    Gfx::ObjectType RetObjectType(int objRank);
+    Gfx::ObjectType GetObjectType(int objRank);
     bool            SetObjectTransparency(int objRank, float value);
 
     bool            ShadowCreate(int objRank);
@@ -382,7 +393,7 @@ public:
     bool            SetObjectShadowRadius(int objRank, float radius);
     bool            SetObjectShadowIntensity(int objRank, float intensity);
     bool            SetObjectShadowHeight(int objRank, float h);
-    float           RetObjectShadowRadius(int objRank);
+    float           GetObjectShadowRadius(int objRank);
 
     void            GroundSpotFlush();
     int             GroundSpotCreate();
@@ -405,109 +416,109 @@ public:
     bool            LoadAllTexture();
 
     void            SetLimitLOD(int rank, float limit);
-    float           RetLimitLOD(int rank, bool last=false);
+    float           GetLimitLOD(int rank, bool last=false);
 
     void            SetTerrainVision(float vision);
 
     void            SetGroundSpot(bool mode);
-    bool            RetGroundSpot();
+    bool            GetGroundSpot();
     void            SetShadow(bool mode);
-    bool            RetShadow();
+    bool            GetShadow();
     void            SetDirty(bool mode);
-    bool            RetDirty();
+    bool            GetDirty();
     void            SetFog(bool mode);
-    bool            RetFog();
-    bool            RetStateColor();
+    bool            GetFog();
+    bool            GetStateColor();
 
     void            SetSecondTexture(int texNum);
-    int             RetSecondTexture();
+    int             GetSecondTexture();
 
     void            SetRankView(int rank);
-    int             RetRankView();
+    int             GetRankView();
 
     void            SetDrawWorld(bool draw);
     void            SetDrawFront(bool draw);
 
     void            SetAmbiantColor(const Gfx::Color &color, int rank=0);
-    Gfx::Color      RetAmbiantColor(int rank=0);
+    Gfx::Color      GetAmbiantColor(int rank=0);
 
     void            SetWaterAddColor(const Gfx::Color &color);
-    Gfx::Color      RetWaterAddColor();
+    Gfx::Color      GetWaterAddColor();
 
     void            SetFogColor(const Gfx::Color &color, int rank=0);
-    Gfx::Color      RetFogColor(int rank=0);
+    Gfx::Color      GetFogColor(int rank=0);
 
     void            SetDeepView(float length, int rank=0, bool ref=false);
-    float           RetDeepView(int rank=0);
+    float           GetDeepView(int rank=0);
 
     void            SetFogStart(float start, int rank=0);
-    float           RetFogStart(int rank=0);
+    float           GetFogStart(int rank=0);
 
     void            SetBackground(char *name, Gfx::Color up=Gfx::Color(), Gfx::Color down=Gfx::Color(), Gfx::Color cloudUp=Gfx::Color(), Gfx::Color cloudDown=Gfx::Color(), bool full=false, bool quarter=false);
-    void            RetBackground(char *name, Gfx::Color &up, Gfx::Color &down, Gfx::Color &cloudUp, Gfx::Color &cloudDown, bool &full, bool &quarter);
+    void            GetBackground(char *name, Gfx::Color &up, Gfx::Color &down, Gfx::Color &cloudUp, Gfx::Color &cloudDown, bool &full, bool &quarter);
     void            SetFrontsizeName(char *name);
     void            SetOverFront(bool front);
     void            SetOverColor(const Gfx::Color &color=Gfx::Color(), int mode=ENG_RSTATE_TCOLOR_BLACK);
 
     void            SetParticuleDensity(float value);
-    float           RetParticuleDensity();
+    float           GetParticuleDensity();
     float           ParticuleAdapt(float factor);
 
     void            SetClippingDistance(float value);
-    float           RetClippingDistance();
+    float           GetClippingDistance();
 
     void            SetObjectDetail(float value);
-    float           RetObjectDetail();
+    float           GetObjectDetail();
 
     void            SetGadgetQuantity(float value);
-    float           RetGadgetQuantity();
+    float           GetGadgetQuantity();
 
     void            SetTextureQuality(int value);
-    int             RetTextureQuality();
+    int             GetTextureQuality();
 
     void            SetTotoMode(bool present);
-    bool            RetTotoMode();
+    bool            GetTotoMode();
 
     void            SetLensMode(bool present);
-    bool            RetLensMode();
+    bool            GetLensMode();
 
     void            SetWaterMode(bool present);
-    bool            RetWaterMode();
+    bool            GetWaterMode();
 
     void            SetBlitzMode(bool present);
-    bool            RetBlitzMode();
+    bool            GetBlitzMode();
 
     void            SetSkyMode(bool present);
-    bool            RetSkyMode();
+    bool            GetSkyMode();
 
     void            SetBackForce(bool present);
-    bool            RetBackForce();
+    bool            GetBackForce();
 
     void            SetPlanetMode(bool present);
-    bool            RetPlanetMode();
+    bool            GetPlanetMode();
 
     void            SetLightMode(bool present);
-    bool            RetLightMode();
+    bool            GetLightMode();
 
     void            SetEditIndentMode(bool autoIndent);
-    bool            RetEditIndentMode();
+    bool            GetEditIndentMode();
 
     void            SetEditIndentValue(int value);
-    int             RetEditIndentValue();
+    int             GetEditIndentValue();
 
     void            SetSpeed(float speed);
-    float           RetSpeed();
+    float           GetSpeed();
 
     void            SetTracePrecision(float factor);
-    float           RetTracePrecision();
+    float           GetTracePrecision();
 
     void            SetFocus(float focus);
-    float           RetFocus();
-    Math::Vector    RetEyePt();
-    Math::Vector    RetLookatPt();
-    float           RetEyeDirH();
-    float           RetEyeDirV();
-    Math::Point     RetDim();
+    float           GetFocus();
+    Math::Vector    GetEyePt();
+    Math::Vector    GetLookatPt();
+    float           GetEyeDirH();
+    float           GetEyeDirV();
+    Math::Point     GetDim();
     void            UpdateMatProj();
 
     void            ApplyChange();
@@ -515,14 +526,14 @@ public:
     void            FlushPressKey();
     void            ResetKey();
     void            SetKey(int keyRank, int option, int key);
-    int             RetKey(int keyRank, int option);
+    int             GetKey(int keyRank, int option);
 
     void            SetJoystick(bool enable);
-    bool            RetJoystick();
+    bool            GetJoystick();
 
     void            SetDebugMode(bool mode);
-    bool            RetDebugMode();
-    bool            RetSetupMode();
+    bool            GetDebugMode();
+    bool            GetSetupMode();
 
     bool            IsVisiblePoint(const Math::Vector &pos);
 
@@ -533,16 +544,16 @@ public:
 
     void            MoveMousePos(Math::Point pos);
     void            SetMousePos(Math::Point pos);
-    Math::Point     RetMousePos();
+    Math::Point     GetMousePos();
     void            SetMouseType(Gfx::MouseType type);
-    Gfx::MouseType  RetMouseType();
+    Gfx::MouseType  GetMouseType();
     void            SetMouseHide(bool hide);
-    bool            RetMouseHide();
+    bool            GetMouseHide();
     void            SetNiceMouse(bool nice);
-    bool            RetNiceMouse();
-    bool            RetNiceMouseCap();
+    bool            GetNiceMouse();
+    bool            GetNiceMouseCap();
 
-    CText*          RetText();
+    CText*          GetText();
 
     bool            ChangeColor(char *name, Gfx::Color colorRef1, Gfx::Color colorNew1, Gfx::Color colorRef2, Gfx::Color colorNew2, float tolerance1, float tolerance2, Math::Point ts, Math::Point ti, Math::Point *pExclu=0, float shift=0.0f, bool hSV=false);
     bool            OpenImage(char *name);
@@ -605,6 +616,7 @@ protected:
     Gfx::CTerrain*   m_terrain;
     Snd::CSound*     m_sound;
 
+    bool            m_wasInit;
     std::string     m_error;
 
     int             m_blackSrcBlend[2];

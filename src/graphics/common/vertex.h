@@ -19,6 +19,7 @@
 #pragma once
 
 
+#include "graphics/common/color.h"
 #include "math/vector.h"
 #include "math/point.h"
 
@@ -48,21 +49,51 @@ struct Vertex
 };
 
 /**
+ * \struct VertexCol
+ * \brief Vertex with color information
+ *
+ * This structure was created as analog to DirectX's D3DLVERTEX.
+ *
+ * It contains:
+ *  - vertex coordinates (x,y,z) as Math::Vector,
+ *  - RGBA color as Gfx::Color,
+ *  - RGBA specular color as Gfx::Color,
+ *  - texture coordinates (u,v) as Math::Point.
+ */
+struct VertexCol
+{
+    Math::Vector coord;
+    Gfx::Color color;
+    Gfx::Color specular;
+    Math::Point texCoord;
+
+    VertexCol(Math::Vector aCoord = Math::Vector(),
+              Gfx::Color aColor = Gfx::Color(),
+              Gfx::Color aSpecular = Gfx::Color(),
+              Math::Point aTexCoord = Math::Point())
+        : coord(aCoord), color(aColor), specular(aSpecular), texCoord(aTexCoord) {}
+};
+
+
+/**
  * \struct VertexTex2
  * \brief Vertex with secondary texture coordinates
  *
  * In addition to fields from Gfx::Vector, it contains
  * secondary texture coordinates (u2, v2) as Math::Point
  */
-struct VertexTex2 : public Gfx::Vertex
+struct VertexTex2
 {
+    Math::Vector coord;
+    Math::Vector normal;
+    Math::Point texCoord;
     Math::Point texCoord2;
 
     VertexTex2(Math::Vector aCoord = Math::Vector(),
                Math::Vector aNormal = Math::Vector(),
                Math::Point aTexCoord = Math::Point(),
                Math::Point aTexCoord2 = Math::Point())
-        : Vertex(aCoord, aNormal, aTexCoord), texCoord2(aTexCoord2) {}
+        : coord(aCoord), normal(aNormal), texCoord(aTexCoord), texCoord2(aTexCoord2) {}
 };
 
 }; // namespace Gfx

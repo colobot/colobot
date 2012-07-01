@@ -67,6 +67,12 @@ struct Point
         x = y = 0.0f;
     }
 
+    //! Returns the struct cast to \c float* array; use with care!
+    inline float* Array()
+    {
+        return (float*)this;
+    }
+
     //! Returns the distance from (0,0) to the point (x,y)
     inline float Length()
     {

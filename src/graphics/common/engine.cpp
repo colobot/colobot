@@ -19,68 +19,110 @@
 
 #include "graphics/common/engine.h"
 
-#include <GL/gl.h>
-#include <GL/glu.h>
+#include "graphics/common/device.h"
+#include "math/geometry.h"
 
 
-// TODO implementation
 
 Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 {
+    m_iMan   = iMan;
+    m_app    = app;
+    m_device = NULL;
+
+    m_wasInit = false;
+
     // TODO
 }
 
 Gfx::CEngine::~CEngine()
 {
+    m_iMan   = NULL;
+    m_app    = NULL;
+    m_device = NULL;
+
     // TODO
 }
 
-std::string Gfx::CEngine::RetError()
+bool Gfx::CEngine::GetWasInit()
+{
+    return m_wasInit;
+}
+
+std::string Gfx::CEngine::GetError()
 {
     return m_error;
 }
 
-int Gfx::CEngine::OneTimeSceneInit()
+bool Gfx::CEngine::BeforeCreateInit()
 {
     // TODO
-    return 1;
+    return true;
 }
 
-int Gfx::CEngine::Render()
+bool Gfx::CEngine::Create()
 {
-    /* Just a hello world for now */
+    m_wasInit = true;
 
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    glShadeModel(GL_SMOOTH);
-    glDisable(GL_DEPTH_TEST);
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    // TODO
 
+    return true;
+}
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(-10.0f, 10.0f, -10.0f, 10.0f);
+void Gfx::CEngine::Destroy()
+{
+    // TODO
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    m_wasInit = false;
+}
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void Gfx::CEngine::SetDevice(Gfx::CDevice *device)
+{
+    m_device = device;
+}
 
-    //glTranslatef(0.0f, 0.0f, -6.0f);
+Gfx::CDevice* Gfx::CEngine::GetDevice()
+{
+    return m_device;
+}
 
-    glBegin(GL_TRIANGLES);
+bool Gfx::CEngine::AfterDeviceSetInit()
+{
+    m_device->SetClearColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
+
+    // TODO
+
+    return true;
+}
+
+bool Gfx::CEngine::Render()
+{
+    m_device->BeginScene();
+
+    Math::Matrix world;
+    world.LoadIdentity();
+    m_device->SetTransform(Gfx::TRANSFORM_WORLD, world);
+
+    Math::Matrix view;
+    view.LoadIdentity();
+    m_device->SetTransform(Gfx::TRANSFORM_VIEW, view);
+
+    Math::Matrix proj;
+    Math::LoadOrthoProjectionMatrix(proj, -10.0f, 10.0f, -10.0f, 10.0f);
+    m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, proj);
+
+    Gfx::VertexCol vertices[3] =
     {
-        glColor3f(1.0f, 0.0f, 0.0f);
-        glVertex2f(-2.0f, -1.0f);
-        glColor3f(0.0f, 1.0f, 0.0f);
-        glVertex2f(2.0f, -1.0f);
-        glColor3f(0.0f, 0.0f, 1.0f);
-        glVertex2f(0.0f, 1.5f);
-    }
-    glEnd();
+        Gfx::VertexCol(Math::Vector(-2.0f, -1.0f, 0.0f), Gfx::Color(1.0f, 0.0f, 0.0f)),
+        Gfx::VertexCol(Math::Vector( 2.0f, -1.0f, 0.0f), Gfx::Color(0.0f, 1.0f, 0.0f)),
+        Gfx::VertexCol(Math::Vector( 0.0f,  1.5f, 0.0f), Gfx::Color(0.0f, 0.0f, 1.0f))
+    };
 
-    glFlush();
+    m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, vertices, 3);
 
-    return 1;
+    m_device->EndScene();
+
+    return true;
 }
 
 
