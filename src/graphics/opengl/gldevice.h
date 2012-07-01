@@ -21,8 +21,9 @@
 
 #include "graphics/common/device.h"
 
-
+#include <string>
 #include <vector>
+#include <set>
 
 
 namespace Gfx {
@@ -53,6 +54,8 @@ struct GLDeviceConfig : public DeviceConfig
     void LoadDefault();
 };
 
+struct GLDevicePrivate;
+
 /**
   \class CGLDevice
   \brief Implementation of CDevice interface in OpenGL
@@ -70,7 +73,10 @@ public:
     CGLDevice();
     virtual ~CGLDevice();
 
-    virtual void Initialize();
+    virtual bool GetWasInit();
+    virtual std::string GetError();
+
+    virtual bool Create();
     virtual void Destroy();
 
     virtual void BeginScene();
@@ -82,30 +88,67 @@ public:
     virtual const Math::Matrix& GetTransform(Gfx::TransformType type);
     virtual void MultiplyTransform(Gfx::TransformType type, const Math::Matrix &matrix);
 
-    virtual void SetMaterial(const Gfx::Material &material);
+    virtual void SetMaterial(Gfx::Material &material);
     virtual const Gfx::Material& GetMaterial();
 
     virtual int GetMaxLightCount();
-    virtual void SetLight(int index, const Gfx::Light &light);
+    virtual void SetLight(int index, Gfx::Light &light);
     virtual const Gfx::Light& GetLight(int index);
     virtual void SetLightEnabled(int index, bool enabled);
     virtual bool GetLightEnabled(int index);
 
     virtual int GetMaxTextureCount();
-    virtual const Gfx::Texture& GetTexture(int index);
-    virtual void SetTexture(int index, const Gfx::Texture &texture);
+        virtual void SetTexture(int index, Gfx::Texture *texture);
+    virtual Gfx::Texture* GetTexture(int index);
+
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, int vertexCount);
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vertices, int vertexCount);
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices, int vertexCount);
+
 
     virtual void SetRenderState(Gfx::RenderState state, bool enabled);
     virtual bool GetRenderState(Gfx::RenderState state);
 
-    virtual void DrawPrimitive(Gfx::PrimitiveType, Vertex *vertices, int vertexCount);
-    virtual void DrawPrimitive(Gfx::PrimitiveType, VertexTex2 *vertices, int vertexCount);
+    virtual void SetDepthTestFunc(Gfx::CompFunc func);
+    virtual Gfx::CompFunc GetDepthTestFunc();
+
+    virtual void SetDepthBias(float factor);
+    virtual float GetDepthBias();
+
+    virtual void SetAlphaTestFunc(Gfx::CompFunc func, float refValue);
+    virtual void GetAlphaTestFunc(Gfx::CompFunc &func, float &refValue);
+
+    virtual void SetBlendFunc(Gfx::BlendFunc srcBlend, Gfx::BlendFunc dstBlend);
+    virtual void GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstBlend);
+
+    virtual void SetClearColor(Gfx::Color color);
+    virtual Gfx::Color GetClearColor();
+
+    virtual void SetGlobalAmbient(Gfx::Color color);
+    virtual Gfx::Color GetGlobalAmbient();
+
+    virtual void SetFogParams(Gfx::FogMode mode, Gfx::Color color, float start, float end, float density);
+    virtual void GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &start, float &end, float &density);
+
+    virtual void SetCullMode(Gfx::CullMode mode);
+    virtual Gfx::CullMode GetCullMode();
+
+    virtual void SetFillMode(Gfx::FillMode mode) ;
+    virtual Gfx::FillMode GetFillMode();
 
 private:
+    //! Private, OpenGL-specific data
+    GLDevicePrivate* m_private;
+    //! Was initialized?
+    bool m_wasInit;
+    //! Last encountered error
+    std::string m_error;
     //! Current world matrix
     Math::Matrix m_worldMat;
     //! Current view matrix
     Math::Matrix m_viewMat;
+    //! OpenGL modelview matrix = world matrix * view matrix
+    Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
     //! The current material
@@ -115,9 +158,9 @@ private:
     //! Current lights enable status
     std::vector<bool> m_lightsEnabled;
     //! Current textures
-    std::vector<Gfx::Texture> m_textures;
-    //! Current render state
-    unsigned long m_renderState;
+    std::vector<Gfx::Texture*> m_textures;
+    //! Set of all created textures
+    std::set<Gfx::Texture*> m_allTextures;
 };
 
 }; // namespace Gfx

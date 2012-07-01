@@ -35,7 +35,10 @@ int main(int argc, char *argv[])
     }
 
     if (! app.Create())
-        return 0;
+    {
+        app.Destroy(); // ensure a clean exit
+        return 1;
+    }
 
     return app.Run();
 }

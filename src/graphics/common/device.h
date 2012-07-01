@@ -27,6 +27,8 @@
 #include "graphics/common/vertex.h"
 #include "math/matrix.h"
 
+#include <string>
+
 
 namespace Gfx {
 
@@ -60,11 +62,12 @@ struct DeviceConfig
     void LoadDefault();
 };
 
+
 /**
   \enum TransformType
   \brief Type of transformation in rendering pipeline
 
-  Corresponds directly to DirectX's transformation types. Listed are only the used types. */
+  These correspond to DirectX's three transformation matrices. */
 enum TransformType
 {
     TRANSFORM_WORLD,
@@ -74,37 +77,84 @@ enum TransformType
 
 /**
   \enum RenderState
-  \brief Render states that can be enabled/disabled
-
-  Corresponds to DirectX's render states. Listed are only the used modes.
-
-  TODO: replace with functions in CDevice */
+  \brief Render states that can be enabled/disabled */
 enum RenderState
 {
-    RENDER_STATE_ALPHABLENDENABLE,
-    RENDER_STATE_ALPHAFUNC,
-    RENDER_STATE_ALPHAREF,
-    RENDER_STATE_ALPHATESTENABLE,
-    RENDER_STATE_AMBIENT,
-    RENDER_STATE_CULLMODE,
-    RENDER_STATE_DESTBLEND,
-    RENDER_STATE_DITHERENABLE,
-    RENDER_STATE_FILLMODE,
-    RENDER_STATE_FOGCOLOR,
-    RENDER_STATE_FOGENABLE,
-    RENDER_STATE_FOGEND,
-    RENDER_STATE_FOGSTART,
-    RENDER_STATE_FOGVERTEXMODE,
     RENDER_STATE_LIGHTING,
-    RENDER_STATE_SHADEMODE,
-    RENDER_STATE_SPECULARENABLE,
-    RENDER_STATE_SRCBLEND,
-    RENDER_STATE_TEXTUREFACTOR,
-    RENDER_STATE_WRAP,
-    RENDER_STATE_ZBIAS,
-    RENDER_STATE_ZENABLE,
-    RENDER_STATE_ZFUNC,
-    RENDER_STATE_ZWRITEENABLE
+    RENDER_STATE_TEXTURING,
+    RENDER_STATE_BLENDING,
+    RENDER_STATE_FOG,
+    RENDER_STATE_DEPTH_TEST,
+    RENDER_STATE_DEPTH_WRITE,
+    RENDER_STATE_ALPHA_TEST,
+    RENDER_STATE_DITHERING
+};
+
+/**
+  \enum CompFunc
+  \brief Type of function used to compare values */
+enum CompFunc
+{
+    COMP_FUNC_NEVER,
+    COMP_FUNC_LESS,
+    COMP_FUNC_EQUAL,
+    COMP_FUNC_NOTEQUAL,
+    COMP_FUNC_LEQUAL,
+    COMP_FUNC_GREATER,
+    COMP_FUNC_GEQUAL,
+    COMP_FUNC_ALWAYS
+};
+
+/**
+  \enum BlendFunc
+  \brief Type of blending function */
+enum BlendFunc
+{
+    BLEND_ZERO,
+    BLEND_ONE,
+    BLEND_SRC_COLOR,
+    BLEND_INV_SRC_COLOR,
+    BLEND_DST_COLOR,
+    BLEND_INV_DST_COLOR,
+    BLEND_SRC_ALPHA,
+    BLEND_INV_SRC_ALPHA,
+    BLEND_DST_ALPHA,
+    BLEND_INV_DST_ALPHA,
+    BLEND_SRC_ALPHA_SATURATE
+};
+
+/**
+  \enum FogMode
+  \brief Type of fog calculation function */
+enum FogMode
+{
+    FOG_LINEAR,
+    FOG_EXP,
+    FOG_EXP2
+};
+
+/**
+  \enum CullMode
+  \brief Culling mode for polygons */
+enum CullMode
+{
+    //! Cull clockwise side
+    CULL_CW,
+    //! Cull counter-clockwise side
+    CULL_CCW
+};
+
+/**
+  \enum FillMode
+  \brief Polygon fill mode */
+enum FillMode
+{
+    //! Draw only points
+    FILL_POINT,
+    //! Draw only lines
+    FILL_LINES,
+    //! Draw full polygons
+    FILL_FILL
 };
 
 /**
@@ -114,6 +164,7 @@ enum RenderState
   Only these two types are used. */
 enum PrimitiveType
 {
+    PRIMITIVE_LINES,
     PRIMITIVE_TRIANGLES,
     PRIMITIVE_TRIANGLE_STRIP
 };
@@ -132,47 +183,124 @@ enum PrimitiveType
 class CDevice
 {
 public:
+    virtual ~CDevice() {}
+
     //! Initializes the device, setting the initial state
-    virtual void Initialize() = 0;
+    virtual bool Create() = 0;
     //! Destroys the device, releasing every acquired resource
     virtual void Destroy() = 0;
 
-    // TODO: documentation
+    //! Returns whether the device has been initialized
+    virtual bool GetWasInit() = 0;
+    //! Returns the last encountered error
+    virtual std::string GetError() = 0;
 
+    //! Begins drawing the 3D scene
     virtual void BeginScene() = 0;
+    //! Ends drawing the 3D scene
     virtual void EndScene() = 0;
 
+    //! Clears the screen to blank
     virtual void Clear() = 0;
 
+    //! Sets the transform matrix of given type
     virtual void SetTransform(TransformType type, const Math::Matrix &matrix) = 0;
+    //! Returns the current transform matrix of given type
     virtual const Math::Matrix& GetTransform(TransformType type) = 0;
+    //! Multiplies the current transform matrix of given type by given matrix
     virtual void MultiplyTransform(TransformType type, const Math::Matrix &matrix) = 0;
 
-    virtual void SetMaterial(const Gfx::Material &material) = 0;
+    //! Sets the current material
+    virtual void SetMaterial(Gfx::Material &material) = 0;
+    //! Returns the current material
     virtual const Gfx::Material& GetMaterial() = 0;
 
+    //! Returns the maximum number of lights available
     virtual int GetMaxLightCount() = 0;
-    virtual void SetLight(int index, const Gfx::Light &light) = 0;
+    //! Sets the light at given index
+    virtual void SetLight(int index, Gfx::Light &light) = 0;
+    //! Returns the current light at given index
     virtual const Gfx::Light& GetLight(int index) = 0;
+    //! Enables/disables the light at given index
     virtual void SetLightEnabled(int index, bool enabled) = 0;
+    //! Returns the current enable state of light at given index
     virtual bool GetLightEnabled(int index) = 0;
 
+    // TODO:
+    // virtual Gfx::Texture* CreateTexture(CImage *image) = 0;
+    // virtual void DestroyTexture(Gfx::Texture *texture) = 0;
+
+    //! Returns the maximum number of multitexture units
     virtual int GetMaxTextureCount() = 0;
-    virtual const Gfx::Texture& GetTexture(int index) = 0;
-    virtual void SetTexture(int index, const Gfx::Texture &texture) = 0;
+    //! Sets the (multi)texture at given index
+    virtual void SetTexture(int index, Gfx::Texture *texture) = 0;
+    //! Returns the (multi)texture at given index
+    virtual Gfx::Texture* GetTexture(int index) = 0;
 
     // TODO:
     // virtual void GetTextureStageState() = 0;
     // virtual void SetTextureStageState() = 0;
 
-    virtual void SetRenderState(Gfx::RenderState state, bool enabled) = 0;
-    virtual bool GetRenderState(Gfx::RenderState state) = 0;
+    //! Renders primitive composed of vertices with single texture
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::Vertex *vertices, int vertexCount) = 0;
+    //! Renders primitive composed of vertices with color information and single texture
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vertices, int vertexCount) = 0;
+    //! Renders primitive composed of vertices with multitexturing (2 textures)
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexTex2 *vertices, int vertexCount) = 0;
 
     // TODO:
     // virtual void ComputeSphereVisibility() = 0;
 
-    virtual void DrawPrimitive(PrimitiveType, Vertex *vertices, int vertexCount) = 0;
-    virtual void DrawPrimitive(PrimitiveType, VertexTex2 *vertices, int vertexCount) = 0;
+
+    //! Enables/disables the given render state
+    virtual void SetRenderState(Gfx::RenderState state, bool enabled) = 0;
+    //! Returns the current setting of given render state
+    virtual bool GetRenderState(Gfx::RenderState state) = 0;
+
+    //! Sets the function of depth test
+    virtual void SetDepthTestFunc(Gfx::CompFunc func) = 0;
+    //! Returns the current function of depth test
+    virtual Gfx::CompFunc GetDepthTestFunc() = 0;
+
+    //! Sets the depth bias (constant value added to Z-coords)
+    virtual void SetDepthBias(float factor) = 0;
+    //! Returns the current depth bias
+    virtual float GetDepthBias() = 0;
+
+    //! Sets the alpha test function and reference value
+    virtual void SetAlphaTestFunc(Gfx::CompFunc func, float refValue) = 0;
+    //! Returns the current alpha test function and reference value
+    virtual void GetAlphaTestFunc(Gfx::CompFunc &func, float &refValue) = 0;
+
+    //! Sets the blending functions for source and destination operations
+    virtual void SetBlendFunc(Gfx::BlendFunc srcBlend, Gfx::BlendFunc dstBlend) = 0;
+    //! Returns the current blending functions for source and destination operations
+    virtual void GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstBlend) = 0;
+
+    //! Sets the clear color
+    virtual void SetClearColor(Gfx::Color color) = 0;
+    //! Returns the current clear color
+    virtual Gfx::Color GetClearColor() = 0;
+
+    //! Sets the global ambient color
+    virtual void SetGlobalAmbient(Gfx::Color color) = 0;
+    //! Returns the global ambient color
+    virtual Gfx::Color GetGlobalAmbient() = 0;
+
+    //! Sets the fog parameters: mode, color, start distance, end distance and density (for exp models)
+    virtual void SetFogParams(Gfx::FogMode mode, Gfx::Color color, float start, float end, float density) = 0;
+    //! Returns the current fog parameters: mode, color, start distance, end distance and density (for exp models)
+    virtual void GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &start, float &end, float &density) = 0;
+
+    //! Sets the current cull mode
+    virtual void SetCullMode(Gfx::CullMode mode) = 0;
+    //! Returns the current cull mode
+    virtual Gfx::CullMode GetCullMode() = 0;
+
+    //! Sets the current fill mode
+    virtual void SetFillMode(Gfx::FillMode mode) = 0;
+    //! Returns the current fill mode
+    virtual Gfx::FillMode GetFillMode() = 0;
 };
 
 }; // namespace Gfx

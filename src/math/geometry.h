@@ -305,6 +305,24 @@ inline void LoadProjectionMatrix(Matrix &mat, float fov = 1.570795f, float aspec
     /* (3,4) */ mat.m[14] = -q * nearPlane;
 }
 
+//! Loads an othogonal projection matrix
+/** \a left,right coordinates for left and right vertical clipping planes
+    \a bottom,top coordinates for bottom and top horizontal clipping planes
+    \a zNear,zFar distance to nearer and farther depth clipping planes */
+inline void LoadOrthoProjectionMatrix(Matrix &mat, float left, float right, float bottom, float top,
+                                      float zNear = -1.0f, float zFar = 1.0f)
+{
+    mat.LoadIdentity();
+
+    /* (1,1) */ mat.m[0 ] =  2.0f / (right - left);
+    /* (2,2) */ mat.m[5 ] =  2.0f / (top - bottom);
+    /* (3,3) */ mat.m[10] = -2.0f / (zFar - zNear);
+
+    /* (1,4) */ mat.m[12] =  - (right + left) / (right - left);
+    /* (2,4) */ mat.m[12] =  - (top + bottom) / (top - bottom);
+    /* (3,4) */ mat.m[14] =  - (zFar + zNear) / (zFar - zNear);
+}
+
 //! Loads a translation matrix from given vector
 /** \a trans vector of translation*/
 inline void LoadTranslationMatrix(Matrix &mat, const Vector &trans)

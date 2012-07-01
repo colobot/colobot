@@ -85,6 +85,7 @@ CApplication::CApplication()
     m_eventQueue = new CEventQueue(m_iMan);
 
     m_engine    = NULL;
+    m_device    = NULL;
     m_robotMain = NULL;
     m_sound     = NULL;
 
@@ -118,6 +119,8 @@ CApplication::~CApplication()
 
     delete m_iMan;
     m_iMan = NULL;
+
+    m_appInstance = NULL;
 }
 
 Error CApplication::ParseArguments(int argc, char *argv[])
@@ -142,14 +145,14 @@ bool CApplication::Create()
     // Temporarily -- only in windowed mode
     m_private->deviceConfig.fullScreen = false;
 
-    // Create the 3D engine.
+    // Create the 3D engine
     m_engine = new Gfx::CEngine(m_iMan, this);
 
-
-    // Initialize the app's custom scene stuff
-    if (! m_engine->OneTimeSceneInit())
+    // Initialize the app's custom scene stuff, but before initializing the graphics device
+    if (! m_engine->BeforeCreateInit())
     {
-        SystemDialog(SDT_ERROR, "COLOBOT - Error", m_engine->RetError());
+        SystemDialog(SDT_ERROR, "COLOBOT - Error", std::string("Error in CEngine::BeforeCreateInit() :\n") +
+                                                   std::string(m_engine->GetError()) );
         return false;
     }
 
@@ -168,14 +171,16 @@ bool CApplication::Create()
 
     if (SDL_Init(initFlags) < 0)
     {
-        SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL initialization error:\n" +  std::string(SDL_GetError()) );
+        SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL initialization error:\n" +
+                                                    std::string(SDL_GetError()) );
         return false;
     }
 
     const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
     if (videoInfo == NULL)
     {
-        SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL error while getting video info:\n " + std::string(SDL_GetError()) );
+        SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL error while getting video info:\n " +
+                                                    std::string(SDL_GetError()) );
         return false;
     }
 
@@ -243,8 +248,30 @@ bool CApplication::Create()
     // For now, enable joystick for testing
     SetJoystickEnabled(true);
 
-    // TODO ...
 
+    // The video is ready, we can create and initalize the graphics device
+    m_device = new Gfx::CGLDevice();
+    if (! m_device->Create() )
+    {
+        SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CDevice::Create() :\n") +
+                                                   std::string(m_device->GetError()) );
+        return false;
+    }
+
+    m_engine->SetDevice(m_device);
+    if (! m_engine->Create() )
+    {
+        SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CEngine::Create() :\n") +
+                                                   std::string(m_engine->GetError()) );
+        return false;
+    }
+
+    if (! m_engine->AfterDeviceSetInit() )
+    {
+        SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CEngine::AfterDeviceSetInit() :\n") +
+                                                   std::string(m_engine->GetError()) );
+        return false;
+    }
 
 
     // The app is ready to go
@@ -255,8 +282,35 @@ bool CApplication::Create()
 
 void CApplication::Destroy()
 {
-    delete m_engine;
-    m_engine = NULL;
+    /*if (m_robotMain != NULL)
+    {
+        delete m_robotMain;
+        m_robotMain = NULL;
+    }
+
+    if (m_sound != NULL)
+    {
+        delete m_sound;
+        m_sound = NULL;
+    }*/
+
+    if (m_engine != NULL)
+    {
+        if (m_engine->GetWasInit())
+            m_engine->Destroy();
+
+        delete m_engine;
+        m_engine = NULL;
+    }
+
+    if (m_device != NULL)
+    {
+        if (m_device->GetWasInit())
+            m_device->Destroy();
+
+        delete m_device;
+        m_device = NULL;
+    }
 
     if (m_private->joystick != NULL)
     {
@@ -264,8 +318,11 @@ void CApplication::Destroy()
         m_private->joystick = NULL;
     }
 
-    SDL_FreeSurface(m_private->surface);
-    m_private->surface = NULL;
+    if (m_private->surface != NULL)
+    {
+        SDL_FreeSurface(m_private->surface);
+        m_private->surface = NULL;
+    }
 
     IMG_Quit();
 
@@ -299,8 +356,8 @@ void CApplication::CloseJoystick()
 
 Uint32 JoystickTimerCallback(Uint32 interval, void *)
 {
-    CApplication *app = CApplication::RetInstance();
-    if ((app == NULL) || (! app->RetJoystickEnabled()))
+    CApplication *app = CApplication::GetInstance();
+    if ((app == NULL) || (! app->GetJoystickEnabled()))
         return 0; // don't run the timer again
 
     app->UpdateJoystick();
@@ -597,7 +654,7 @@ void CApplication::SetShowStat(bool show)
     m_showStats = show;
 }
 
-bool CApplication::RetShowStat()
+bool CApplication::GetShowStat()
 {
     return m_showStats;
 }
@@ -607,12 +664,12 @@ void CApplication::SetDebugMode(bool mode)
     m_debugMode = mode;
 }
 
-bool CApplication::RetDebugMode()
+bool CApplication::GetDebugMode()
 {
     return m_debugMode;
 }
 
-bool CApplication::RetSetupMode()
+bool CApplication::GetSetupMode()
 {
     return m_setupMode;
 }
@@ -632,7 +689,7 @@ void CApplication::SetKey(int keyRank, int option, int key)
     // TODO
 }
 
-int CApplication::RetKey(int keyRank, int option)
+int CApplication::GetKey(int keyRank, int option)
 {
     // TODO
     return 0;
@@ -665,7 +722,7 @@ void CApplication::SetJoystickEnabled(bool enable)
     }
 }
 
-bool CApplication::RetJoystickEnabled()
+bool CApplication::GetJoystickEnabled()
 {
     return m_joystickEnabled;
 }

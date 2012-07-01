@@ -21,130 +21,83 @@
 #include "math/func.h"
 
 
-// Returns the color corresponding long.
-
-long Gfx::RetColor(float intensity)
+Gfx::ColorHSV Gfx::RGB2HSV(Gfx::Color color)
 {
-  long  color;
+    Gfx::ColorHSV result;
 
-  if ( intensity <= 0.0f )  return 0x00000000;
-  if ( intensity >= 1.0f )  return 0xffffffff;
+    float min = Math::Min(color.r, color.g, color.b);
+    float max = Math::Max(color.r, color.g, color.b);
 
-  color  = (int)(intensity*255.0f)<<24;
-  color |= (int)(intensity*255.0f)<<16;
-  color |= (int)(intensity*255.0f)<<8;
-  color |= (int)(intensity*255.0f);
+    result.v = max;  // intensity
 
-  return color;
-}
-
-// Returns the color corresponding long.
-
-long Gfx::RetColor(Gfx::Color intensity)
-{
-  long  color;
-
-  color  = (int)(intensity.a*255.0f)<<24;
-  color |= (int)(intensity.r*255.0f)<<16;
-  color |= (int)(intensity.g*255.0f)<<8;
-  color |= (int)(intensity.b*255.0f);
-
-  return color;
-}
-
-// Returns the color corresponding Color.
-
-Gfx::Color Gfx::RetColor(long intensity)
-{
-  Gfx::Color color;
-
-  color.r = (float)((intensity>>16)&0xff)/256.0f;
-  color.g = (float)((intensity>>8 )&0xff)/256.0f;
-  color.b = (float)((intensity>>0 )&0xff)/256.0f;
-  color.a = (float)((intensity>>24)&0xff)/256.0f;
-
-  return color;
-}
-
-
-// RGB to HSV conversion.
-
-void Gfx::RGB2HSV(Gfx::Color src, Gfx::ColorHSV &dest)
-{
-  float min, max, delta;
-
-  min = Math::Min(src.r, src.g, src.b);
-  max = Math::Max(src.r, src.g, src.b);
-
-  dest.v = max;  // intensity
-
-  if ( max == 0.0f )
-  {
-    dest.s = 0.0f;  // saturation
-    dest.h = 0.0f;  // undefined color!
-  }
-  else
-  {
-    delta = max-min;
-    dest.s = delta/max;  // saturation
-
-    if ( src.r == max )  // between yellow & magenta
+    if ( max == 0.0f )
     {
-      dest.h = (src.g-src.b)/delta;
+        result.s = 0.0f;  // saturation
+        result.h = 0.0f;  // undefined color!
     }
-    else if ( src.g == max )  // between cyan & yellow
+    else
     {
-      dest.h = 2.0f+(src.b-src.r)/delta;
-    }
-    else  // between magenta & cyan
-    {
-      dest.h = 4.0f+(src.r-src.g)/delta;
+        float delta = max-min;
+        result.s = delta/max;  // saturation
+
+        if ( color.r == max )  // between yellow & magenta
+        {
+        result.h = (color.g-color.b)/delta;
+        }
+        else if ( color.g == max )  // between cyan & yellow
+        {
+        result.h = 2.0f+(color.b-color.r)/delta;
+        }
+        else  // between magenta & cyan
+        {
+        result.h = 4.0f+(color.r-color.g)/delta;
+        }
+
+        result.h *= 60.0f;  // in degrees
+        if ( result.h < 0.0f )  result.h += 360.0f;
+        result.h /= 360.0f;  // 0..1
     }
 
-    dest.h *= 60.0f;  // in degrees
-    if ( dest.h < 0.0f )  dest.h += 360.0f;
-    dest.h /= 360.0f;  // 0..1
-  }
+    return result;
 }
 
-// HSV to RGB conversion.
-
-void Gfx::HSV2RGB(Gfx::ColorHSV src, Gfx::Color &dest)
+Gfx::Color Gfx::HSV2RGB(Gfx::ColorHSV color)
 {
-  int   i;
-  float f,v,p,q,t;
+    Gfx::Color result;
 
-  src.h = Math::Norm(src.h)*360.0f;
-  src.s = Math::Norm(src.s);
-  src.v = Math::Norm(src.v);
+    color.h = Math::Norm(color.h)*360.0f;
+    color.s = Math::Norm(color.s);
+    color.v = Math::Norm(color.v);
 
-  if ( src.s == 0.0f )  // zero saturation?
-  {
-    dest.r = src.v;
-    dest.g = src.v;
-    dest.b = src.v;  // gray
-  }
-  else
-  {
-    if ( src.h == 360.0f )  src.h = 0.0f;
-    src.h /= 60.0f;
-    i = (int)src.h;  // integer part (0 .. 5)
-    f = src.h-i;     // fractional part
-
-    v = src.v;
-    p = src.v*(1.0f-src.s);
-    q = src.v*(1.0f-(src.s*f));
-    t = src.v*(1.0f-(src.s*(1.0f-f)));
-
-    switch (i)
+    if ( color.s == 0.0f )  // zero saturation?
     {
-      case 0:  dest.r=v; dest.g=t; dest.b=p;  break;
-      case 1:  dest.r=q; dest.g=v; dest.b=p;  break;
-      case 2:  dest.r=p; dest.g=v; dest.b=t;  break;
-      case 3:  dest.r=p; dest.g=q; dest.b=v;  break;
-      case 4:  dest.r=t; dest.g=p; dest.b=v;  break;
-      case 5:  dest.r=v; dest.g=p; dest.b=q;  break;
+        result.r = color.v;
+        result.g = color.v;
+        result.b = color.v;  // gray
     }
-  }
+    else
+    {
+        if ( color.h == 360.0f )  color.h = 0.0f;
+        color.h /= 60.0f;
+        int i = (int)color.h;  // integer part (0 .. 5)
+        float f = color.h-i;   // fractional part
+
+        float v = color.v;
+        float p = color.v*(1.0f-color.s);
+        float q = color.v*(1.0f-(color.s*f));
+        float t = color.v*(1.0f-(color.s*(1.0f-f)));
+
+        switch (i)
+        {
+        case 0:  result.r=v; result.g=t; result.b=p;  break;
+        case 1:  result.r=q; result.g=v; result.b=p;  break;
+        case 2:  result.r=p; result.g=v; result.b=t;  break;
+        case 3:  result.r=p; result.g=q; result.b=v;  break;
+        case 4:  result.r=t; result.g=p; result.b=v;  break;
+        case 5:  result.r=v; result.g=p; result.b=q;  break;
+        }
+    }
+
+    return result;
 }
 

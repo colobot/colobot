@@ -20,6 +20,7 @@
 #pragma once
 
 
+#include "graphics/common/engine.h"
 #include "graphics/common/color.h"
 #include "math/vector.h"
 
@@ -30,9 +31,9 @@ namespace Gfx {
  *  \brief Type of light */
 enum LightType
 {
-    LT_Point,
-    LT_Spot,
-    LT_Directional
+    LIGHT_POINT,
+    LIGHT_SPOT,
+    LIGHT_DIRECTIONAL
 };
 
 /**
@@ -46,9 +47,13 @@ enum LightType
 struct Light
 {
     //! Type of light source
-    Gfx::LightType      type;
-    //! Color of light
-    Gfx::Color          color;
+    Gfx::LightType  type;
+    //! Color of ambient light
+    Gfx::Color      ambient;
+    //! Color of diffuse light
+    Gfx::Color      diffuse;
+    //! Color of specular light
+    Gfx::Color      specular;
     //! Position in world space
     Math::Vector    position;
     //! Direction in world space
@@ -57,29 +62,42 @@ struct Light
     float           range;
     //! Falloff
     float           falloff;
+    //! Inner angle of spotlight cone
+    float           theta;
+    //! Outer angle of spotlight cone
+    float           phi;
     //! Constant attenuation
     float           attenuation0;
     //! Linear attenuation
     float           attenuation1;
     //! Quadratic attenuation
     float           attenuation2;
-    //! Inner angle of spotlight cone
-    float           theta;
-    //! Outer angle of spotlight cone
-    float           phi;
 
-    Light() : type(LT_Point), range(0.0f), falloff(0.0f),
-              attenuation0(0.0f), attenuation1(0.0f), attenuation2(0.0f),
-              theta(0.0f), phi(0.0f) {}
+    Light()
+    {
+        type = LIGHT_POINT;
+        range = falloff = theta = phi = attenuation0 = attenuation1 = attenuation2 = 0.0f;
+    }
 };
 
-struct LightProg
+/**
+ * \struct LightProgression
+ * \brief Describes the progression of light parameters change
+ *
+ * TODO documentation
+ */
+struct LightProgression
 {
     float   starting;
     float   ending;
     float   current;
     float   progress;
     float   speed;
+
+    LightProgression()
+    {
+        starting = ending = current = progress = speed = 0.0f;
+    }
 };
 
 /**
@@ -91,23 +109,23 @@ struct LightProg
 struct SceneLight
 {
     //! true -> light exists
-    bool            used;
+    bool used;
     //! true -> light turned on
-    bool            enable;
+    bool enabled;
 
     //! Type of all objects included
-    //D3DTypeObj        incluType;
+    Gfx::ObjectType includeType;
     //! Type of all objects excluded
-    //D3DTypeObj        excluType;
+    Gfx::ObjectType excludeType;
 
     //! Configuration of the light
-    Gfx::Light      light;
+    Gfx::Light light;
 
     //! intensity (0 .. 1)
-    Gfx::LightProg      intensity;
-    Gfx::LightProg      colorRed;
-    Gfx::LightProg      colorGreen;
-    Gfx::LightProg      colorBlue;
+    Gfx::LightProgression intensity;
+    Gfx::LightProgression colorRed;
+    Gfx::LightProgression colorGreen;
+    Gfx::LightProgression colorBlue;
 };
 
 // TODO CLight

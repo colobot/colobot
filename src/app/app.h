@@ -21,6 +21,7 @@
 
 
 #include "common/misc.h"
+#include "graphics/common/device.h"
 #include "graphics/common/engine.h"
 
 #include <string>
@@ -75,7 +76,7 @@ public:
     ~CApplication();
 
     //! Returns the only CApplication instance
-    static CApplication* RetInstance()
+    static CApplication* GetInstance()
       { return m_appInstance; }
 
 public:
@@ -83,6 +84,8 @@ public:
     Error       ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();
+    //! Cleans up before exit
+    void        Destroy();
     //! Main event loop
     int         Run();
 
@@ -96,33 +99,31 @@ public:
     void UpdateJoystick();
 
     void        SetShowStat(bool show);
-    bool        RetShowStat();
+    bool        GetShowStat();
 
     void        SetDebugMode(bool mode);
-    bool        RetDebugMode();
+    bool        GetDebugMode();
 
-    bool        RetSetupMode();
+    bool        GetSetupMode();
 
     void        SetJoystickEnabled(bool enable);
-    bool        RetJoystickEnabled();
+    bool        GetJoystickEnabled();
 
     void        FlushPressKey();
     void        ResetKey();
     void        SetKey(int keyRank, int option, int key);
-    int         RetKey(int keyRank, int option);
+    int         GetKey(int keyRank, int option);
 
     void        SetMouseType(Gfx::MouseType type);
     void        SetMousePos(Math::Point pos);
 
     //? void        SetNiceMouse(bool nice);
-    //? bool        RetNiceMouse();
-    //? bool        RetNiceMouseCap();
+    //? bool        GetNiceMouse();
+    //? bool        GetNiceMouseCap();
 
     bool        WriteScreenShot(char *filename, int width, int height);
 
 protected:
-    //! Cleans up before exit
-    void        Destroy();
     //! Processes an SDL event to Event struct
     void        ParseEvent();
     //! Handles some incoming events
@@ -163,6 +164,8 @@ protected:
     CEventQueue*            m_eventQueue;
     //! Graphics engine
     Gfx::CEngine*           m_engine;
+    //! Graphics device
+    Gfx::CDevice*           m_device;
     //! Sound subsystem
     CSound*                 m_sound;
     //! Main class of the proper game engine

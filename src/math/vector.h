@@ -72,6 +72,12 @@ struct Vector
         x = y = z = 0.0f;
     }
 
+    //! Returns the struct cast to \c float* array; use with care!
+    inline float* Array()
+    {
+        return (float*)this;
+    }
+
     //! Returns the vector length
     inline float Length() const
     {

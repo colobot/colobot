@@ -21,15 +21,28 @@
 
 namespace Gfx {
 
+/**
+  \struct Color
+  \brief RGBA color */
 struct Color
 {
+    //! Red, green, blue and alpha components
     float r, g, b, a;
 
+    //! Constructor; default values are (0,0,0,0) = black
     Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
      : r(aR), g(aG), b(aB), a(aA) {}
+
+    //! Returns the struct cast to \c float* array; use with care!
+    inline float* Array()
+    {
+        return (float*)this;
+    }
 };
 
-
+/**
+  \struct ColorHSV
+  \brief HSV color */
 struct ColorHSV
 {
     float h, s, v;
@@ -38,13 +51,11 @@ struct ColorHSV
      : h(aH), s(aS), v(aV) {}
 };
 
+//! Converts a RGB color to HSV color
+Gfx::ColorHSV RGB2HSV(Gfx::Color color);
 
-long  RetColor(float intensity);
-long  RetColor(Color intensity);
-Color RetColor(long intensity);
-
-void RGB2HSV(Color src, ColorHSV &dest);
-void HSV2RGB(ColorHSV src, Color &dest);
+//! Converts a HSV color to RGB color
+Gfx::Color HSV2RGB(Gfx::ColorHSV color);
 
 }; // namespace Gfx
 
