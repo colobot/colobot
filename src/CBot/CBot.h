@@ -1346,9 +1346,7 @@ public:
 
 	void		SetIdent(long n);
 	
-	static
-	CBotVarClass*
-				CBotVarClass::Find(long id);
+	static CBotVarClass* Find(long id);
 
 
 //	CBotVar*	GivMyThis();
@@ -1599,8 +1597,8 @@ private:
 	CBotToken		m_openblk;
 	CBotToken		m_closeblk;
 public:
-					CBotFunction::CBotFunction();
-					CBotFunction::~CBotFunction();
+					CBotFunction();
+					~CBotFunction();
 	static
 	CBotFunction*	Compile(CBotToken* &p, CBotCStack* pStack, CBotFunction* pFunc, BOOL bLocal = TRUE);
 	static
