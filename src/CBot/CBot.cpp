@@ -13,18 +13,20 @@
 // *
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.///////////////////////////////////////////////////////////////////////
-// compilation des diverses instructions
-// toutes les routines Compile sont statiques
-// et retournent un object selon ce qui a été trouvé comme instruction
+// Compilation of various instructions
+// Compile all routines are static
+// And return an object according to what was found as instruction
 
-// principe de compilation:
-//	les routines Compile retournent un objet de la classe correspondant à l'opération trouvée
-//	il s'agit toujours d'une classe fille de CBotInstr.
-//	( les objets CBotInstr ne sont jamais utilisés directement )
+// Compiler principle:
+// compile the routines return an object of the class corresponding to the operation found
+// This is always a subclass of CBotInstr.
+// (CBotInstr objects are never used directly)
 
-//	si la routine Compile retourne NULL, c'est que l'instruction est fausse
-//	ou incomprise.
-//	L'erreur se trouve alors sur la pile CBotCStack::IsOk() est FALSE
+
+// Compiles if the routine returns NULL is that the statement is false
+// Or misunderstood.
+// The error is then on the stack CBotCStack :: Isok () is FALSE
+
 
 
 #include "CBot.h"
