@@ -20,9 +20,16 @@
 
 namespace Gfx {
 
+/** \struct Texture*/
 struct Texture
 {
-    // TODO
+    //! Whether the texture was loaded
+    bool valid;
+    //! Id of the texture in graphics engine
+    unsigned int id;
+
+    Texture()
+        { valid = false; id = 0; }
 };
 
 }; // namespace Gfx

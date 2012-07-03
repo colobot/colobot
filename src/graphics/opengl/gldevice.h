@@ -97,9 +97,21 @@ public:
     virtual void SetLightEnabled(int index, bool enabled);
     virtual bool GetLightEnabled(int index);
 
+    virtual Gfx::Texture* CreateTexture(CImage *image, bool alpha, bool mipMap);
+    virtual void DestroyTexture(Gfx::Texture *texture);
+    virtual void DestroyAllTextures();
+
     virtual int GetMaxTextureCount();
-        virtual void SetTexture(int index, Gfx::Texture *texture);
+    virtual void SetTexture(int index, Gfx::Texture *texture);
     virtual Gfx::Texture* GetTexture(int index);
+    virtual void SetTextureEnabled(int index, bool enabled);
+    virtual bool GetTextureEnabled(int index);
+
+    virtual void SetTextureParams(int index, const Gfx::TextureParams &params);
+    virtual Gfx::TextureParams GetTextureParams(int index);
+
+    virtual void SetTextureFactor(Gfx::Color &color);
+    virtual Gfx::Color GetTextureFactor();
 
     virtual void DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, int vertexCount);
     virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vertices, int vertexCount);
@@ -133,6 +145,9 @@ public:
     virtual void SetCullMode(Gfx::CullMode mode);
     virtual Gfx::CullMode GetCullMode();
 
+    virtual void SetShadeModel(Gfx::ShadeModel model);
+    virtual Gfx::ShadeModel GetShadeModel();
+
     virtual void SetFillMode(Gfx::FillMode mode) ;
     virtual Gfx::FillMode GetFillMode();
 
@@ -143,6 +158,7 @@ private:
     bool m_wasInit;
     //! Last encountered error
     std::string m_error;
+
     //! Current world matrix
     Math::Matrix m_worldMat;
     //! Current view matrix
@@ -151,16 +167,29 @@ private:
     Math::Matrix m_modelviewMat;
     //! Current projection matrix
     Math::Matrix m_projectionMat;
+
     //! The current material
     Gfx::Material m_material;
+
     //! Current lights
     std::vector<Gfx::Light> m_lights;
     //! Current lights enable status
     std::vector<bool> m_lightsEnabled;
-    //! Current textures
+
+    //! Whether texturing is enabled in general
+    bool m_texturing;
+    //! Current textures; \c NULL value means unassigned
     std::vector<Gfx::Texture*> m_textures;
+    //! Current texture stages enable status
+    std::vector<bool> m_texturesEnabled;
+    //! Current texture params
+    std::vector<Gfx::TextureParams> m_texturesParams;
+
     //! Set of all created textures
     std::set<Gfx::Texture*> m_allTextures;
+
+    //! Restores the state of given texture stage to the previously saved settings
+    void RestoreTextureStage(int index);
 };
 
 }; // namespace Gfx
