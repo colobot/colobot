@@ -8,6 +8,7 @@ project(colobot C CXX)
 find_package(OpenGL REQUIRED)
 find_package(SDL REQUIRED)
 find_package(SDL_image REQUIRED)
+find_package(PNG REQUIRED)
 
 # TODO: check for SDL version. Should be >= 1.2.10
 

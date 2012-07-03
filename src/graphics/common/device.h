@@ -30,6 +30,9 @@
 #include <string>
 
 
+class CImage;
+
+
 namespace Gfx {
 
 /**
@@ -145,6 +148,15 @@ enum CullMode
 };
 
 /**
+  \enum ShadeModel
+  \brief Shade model used in rendering */
+enum ShadeModel
+{
+    SHADE_FLAT,
+    SHADE_SMOOTH
+};
+
+/**
   \enum FillMode
   \brief Polygon fill mode */
 enum FillMode
@@ -168,6 +180,147 @@ enum PrimitiveType
     PRIMITIVE_TRIANGLES,
     PRIMITIVE_TRIANGLE_STRIP
 };
+
+/**
+  \enum TexMinFilter
+  \brief Minification texture filter
+
+  Corresponds to OpenGL modes but should translate to DirectX too. */
+enum TexMinFilter
+{
+    TEX_MIN_FILTER_NEAREST,
+    TEX_MIN_FILTER_LINEAR,
+    TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST,
+    TEX_MIN_FILTER_LINEAR_MIPMAP_NEAREST,
+    TEX_MIN_FILTER_NEAREST_MIPMAP_LINEAR,
+    TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR
+};
+
+/**
+  \enum TexMagFilter
+  \brief Magnification texture filter */
+enum TexMagFilter
+{
+    TEX_MAG_FILTER_NEAREST,
+    TEX_MAG_FILTER_LINEAR
+};
+
+/**
+  \enum TexWrapMode
+  \brief Wrapping mode for texture coords */
+enum TexWrapMode
+{
+    TEX_WRAP_CLAMP,
+    TEX_WRAP_REPEAT
+};
+
+/**
+  \enum TexMixOperation
+  \brief Multitexture mixing operation
+ */
+enum TexMixOperation
+{
+    TEX_MIX_OPER_MODULATE,
+    TEX_MIX_OPER_ADD
+};
+
+/**
+  \enum TexMixArgument
+  \brief Multitexture mixing argument
+  */
+enum TexMixArgument
+{
+    TEX_MIX_ARG_CURRENT,
+    TEX_MIX_ARG_TEXTURE,
+    TEX_MIX_ARG_DIFFUSE,
+    TEX_MIX_ARG_FACTOR
+};
+
+/**
+  \enum TextureParams
+  \brief Parameters for texture creation
+ */
+struct TextureParams
+{
+    //! Minification filter
+    Gfx::TexMinFilter minFilter;
+    //! Magnification filter
+    Gfx::TexMagFilter magFilter;
+    //! Wrap S coord mode
+    Gfx::TexWrapMode wrapS;
+    //! Wrap T coord mode
+    Gfx::TexWrapMode wrapT;
+    //! Mixing operation done on color values
+    Gfx::TexMixOperation colorOperation;
+    //! 1st argument of color operations
+    Gfx::TexMixArgument colorArg1;
+    //! 2nd argument of color operations
+    Gfx::TexMixArgument colorArg2;
+    //! Mixing operation done on alpha values
+    Gfx::TexMixOperation alphaOperation;
+    //! 1st argument of alpha operations
+    Gfx::TexMixArgument alphaArg1;
+    //! 2nd argument of alpha operations
+    Gfx::TexMixArgument alphaArg2;
+
+    //! Constructor; calls LoadDefault()
+    TextureParams()
+        { LoadDefault(); }
+
+    //! Loads the default values
+    void LoadDefault();
+};
+
+/*
+
+Notes for rewriting DirectX code:
+
+>> SetRenderState() translates to many functions depending on param
+
+D3DRENDERSTATE_ALPHABLENDENABLE    -> SetRenderState() with RENDER_STATE_BLENDING
+D3DRENDERSTATE_ALPHAFUNC           -> SetAlphaTestFunc() func
+D3DRENDERSTATE_ALPHAREF            -> SetAlphaTestFunc() ref
+D3DRENDERSTATE_ALPHATESTENABLE     -> SetRenderState() with RENDER_STATE_ALPHA_TEST
+D3DRENDERSTATE_AMBIENT             -> SetGlobalAmbient()
+D3DRENDERSTATE_CULLMODE            -> SetCullMode()
+D3DRENDERSTATE_DESTBLEND           -> SetBlendFunc() dest blending func
+D3DRENDERSTATE_DITHERENABLE        -> SetRenderState() with RENDER_STATE_DITHERING
+D3DRENDERSTATE_FILLMODE            -> SetFillMode()
+D3DRENDERSTATE_FOGCOLOR            -> SetFogParams()
+D3DRENDERSTATE_FOGENABLE           -> SetRenderState() with RENDER_STATE_FOG
+D3DRENDERSTATE_FOGEND              -> SetFogParams()
+D3DRENDERSTATE_FOGSTART            -> SetFogParams()
+D3DRENDERSTATE_FOGVERTEXMODE       -> SetFogParams() fog model
+D3DRENDERSTATE_LIGHTING            -> SetRenderState() with RENDER_STATE_LIGHTING
+D3DRENDERSTATE_SHADEMODE           -> SetShadeModel()
+D3DRENDERSTATE_SPECULARENABLE      -> doesn't matter (always enabled)
+D3DRENDERSTATE_SRCBLEND            -> SetBlendFunc() src blending func
+D3DRENDERSTATE_TEXTUREFACTOR       -> SetTextureFactor()
+D3DRENDERSTATE_ZBIAS               -> SetDepthBias()
+D3DRENDERSTATE_ZENABLE             -> SetRenderState() with RENDER_STATE_DEPTH_TEST
+D3DRENDERSTATE_ZFUNC               -> SetDepthTestFunc()
+D3DRENDERSTATE_ZWRITEENABLE        -> SetRenderState() with RENDER_STATE_DEPTH_WRITE
+
+
+>> SetTextureStageState() translates to SetTextureParams()
+
+Params from enum in struct TextureParams
+  D3DTSS_ADDRESS       -> Gfx::TexWrapMode wrapS, wrapT
+  D3DTSS_ALPHAARG1     -> Gfx::TexMixArgument alphaArg1
+  D3DTSS_ALPHAARG2     -> Gfx::TexMixArgument alphaArg2
+  D3DTSS_ALPHAOP       -> Gfx::TexMixOperation alphaOperation
+  D3DTSS_COLORARG1     -> Gfx::TexMixArgument colorArg1
+  D3DTSS_COLORARG2     -> Gfx::TexMixArgument colorArg2
+  D3DTSS_COLOROP       -> Gfx::TexMixOperation colorOperation
+  D3DTSS_MAGFILTER     -> Gfx::TexMagFilter magFilter
+  D3DTSS_MINFILTER     -> Gfx::TexMinFilter minFilter
+  D3DTSS_TEXCOORDINDEX -> doesn't matter (texture coords are set explicitly by glMultiTexCoordARB*)
+
+Note that D3DTSS_ALPHAOP or D3DTSS_COLOROP set to D3DTOP_DISABLE must translate to disabling the whole texture stage.
+In DirectX, you shouldn't mix enabling one and disabling the other.
+Also, if previous stage is disabled in DirectX, the later ones are disabled, too. In OpenGL, that is not the case.
+
+*/
 
 /**
   \class CDevice
@@ -226,20 +379,33 @@ public:
     //! Returns the current enable state of light at given index
     virtual bool GetLightEnabled(int index) = 0;
 
-    // TODO:
-    // virtual Gfx::Texture* CreateTexture(CImage *image) = 0;
-    // virtual void DestroyTexture(Gfx::Texture *texture) = 0;
+    //! Creates a texture from image; the image can be safely removed after that
+    virtual Gfx::Texture* CreateTexture(CImage *image, bool alpha, bool mipMap) = 0;
+    //! Deletes a given texture, freeing it from video memory
+    virtual void DestroyTexture(Gfx::Texture *texture) = 0;
+    //! Deletes all textures created so far
+    virtual void DestroyAllTextures() = 0;
 
-    //! Returns the maximum number of multitexture units
+    //! Returns the maximum number of multitexture stages
     virtual int GetMaxTextureCount() = 0;
     //! Sets the (multi)texture at given index
     virtual void SetTexture(int index, Gfx::Texture *texture) = 0;
     //! Returns the (multi)texture at given index
     virtual Gfx::Texture* GetTexture(int index) = 0;
+    //! Enables/disables the given texture stage
+    virtual void SetTextureEnabled(int index, bool enabled) = 0;
+    //! Returns the current enable state of given texture stage
+    virtual bool GetTextureEnabled(int index) = 0;
 
-    // TODO:
-    // virtual void GetTextureStageState() = 0;
-    // virtual void SetTextureStageState() = 0;
+    //! Sets the current params of texture with given index
+    virtual void SetTextureParams(int index, const Gfx::TextureParams &params) = 0;
+    //! Returns the current params of texture with given index
+    virtual Gfx::TextureParams GetTextureParams(int index) = 0;
+
+    //! Sets the texture factor to the given color value
+    virtual void SetTextureFactor(Gfx::Color &color) = 0;
+    //! Returns the current texture factor
+    virtual Gfx::Color GetTextureFactor() = 0;
 
     //! Renders primitive composed of vertices with single texture
     virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::Vertex *vertices, int vertexCount) = 0;
@@ -296,6 +462,11 @@ public:
     virtual void SetCullMode(Gfx::CullMode mode) = 0;
     //! Returns the current cull mode
     virtual Gfx::CullMode GetCullMode() = 0;
+
+    //! Sets the shade model
+    virtual void SetShadeModel(Gfx::ShadeModel model) = 0;
+    //! Returns the current shade model
+    virtual Gfx::ShadeModel GetShadeModel() = 0;
 
     //! Sets the current fill mode
     virtual void SetFillMode(Gfx::FillMode mode) = 0;

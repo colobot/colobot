@@ -16,6 +16,7 @@
 
 // gldevice.cpp
 
+#include "common/image.h"
 #include "graphics/opengl/gldevice.h"
 
 #include <GL/gl.h>
@@ -30,21 +31,13 @@ namespace Gfx {
 
 struct GLDevicePrivate
 {
-    void (APIENTRY* glMultiTexCoord1fARB)(GLenum target, GLfloat s);
     void (APIENTRY* glMultiTexCoord2fARB)(GLenum target, GLfloat s, GLfloat t);
-    void (APIENTRY* glMultiTexCoord3fARB)(GLenum target, GLfloat s, GLfloat t, GLfloat r);
-    void (APIENTRY* glMultiTexCoord4fARB)(GLenum target, GLfloat s, GLfloat t, GLfloat r, GLfloat q);
     void (APIENTRY* glActiveTextureARB)(GLenum texture);
-    void (APIENTRY* glClientActiveTextureARB)(GLenum texture);
 
     GLDevicePrivate()
     {
-        glMultiTexCoord1fARB = NULL;
         glMultiTexCoord2fARB = NULL;
-        glMultiTexCoord3fARB = NULL;
-        glMultiTexCoord4fARB = NULL;
         glActiveTextureARB   = NULL;
-        glClientActiveTextureARB = NULL;
     }
 };
 
@@ -71,6 +64,7 @@ Gfx::CGLDevice::CGLDevice()
 {
     m_private = new Gfx::GLDevicePrivate();
     m_wasInit = false;
+    m_texturing = false;
 }
 
 
@@ -92,18 +86,10 @@ std::string Gfx::CGLDevice::GetError()
 
 bool Gfx::CGLDevice::Create()
 {
-    m_wasInit = true;
-
-    // TODO: move to functions?
-    glShadeModel(GL_SMOOTH);
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
-
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
+    /* First check for extensions
+       These should be available in standard OpenGL 1.3
+       But every distribution is different
+       So we're loading them dynamically through SDL_GL_GetProcAddress() */
 
     std::string extensions = std::string( (char*) glGetString(GL_EXTENSIONS));
 
@@ -119,37 +105,58 @@ bool Gfx::CGLDevice::Create()
         return false;
     }
 
+    m_private->glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
+    m_private->glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   SDL_GL_GetProcAddress("glActiveTextureARB");
+
+    if ((m_private->glMultiTexCoord2fARB == NULL) || (m_private->glActiveTextureARB == NULL))
+    {
+        m_error = "Could not load extension functions, even though they seem supported";
+        return false;
+    }
+
+    m_wasInit = true;
+
+    // This is mostly done in all modern hardware by default
+    // DirectX doesn't even allow the option to turn off perspective correction anymore
+    // So turn it on permanently
+    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+    // Set just to be sure
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+
+
+    m_lights        = std::vector<Gfx::Light>(GL_MAX_LIGHTS, Gfx::Light());
+    m_lightsEnabled = std::vector<bool>      (GL_MAX_LIGHTS, false);
+
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &maxTextures);
-    m_textures = std::vector<Gfx::Texture*>(maxTextures, NULL);
 
-    m_lights = std::vector<Gfx::Light>(GL_MAX_LIGHTS, Gfx::Light());
-    m_lightsEnabled = std::vector<bool>(GL_MAX_LIGHTS, false);
-
-    m_private->glMultiTexCoord1fARB = (PFNGLMULTITEXCOORD1FARBPROC) SDL_GL_GetProcAddress("glMultiTexCoord1fARB");
-    m_private->glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
-    m_private->glMultiTexCoord3fARB = (PFNGLMULTITEXCOORD3FARBPROC) SDL_GL_GetProcAddress("glMultiTexCoord3fARB");
-    m_private->glMultiTexCoord4fARB = (PFNGLMULTITEXCOORD4FARBPROC) SDL_GL_GetProcAddress("glMultiTexCoord4fARB");
-    m_private->glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   SDL_GL_GetProcAddress("glActiveTextureARB");
-    m_private->glClientActiveTextureARB = (PFNGLCLIENTACTIVETEXTUREARBPROC) SDL_GL_GetProcAddress("glClientActiveTextureARB");
+    m_textures         = std::vector<Gfx::Texture*>     (maxTextures, NULL);
+    m_texturesEnabled  = std::vector<bool>              (maxTextures, false);
+    m_texturesParams   = std::vector<Gfx::TextureParams>(maxTextures, Gfx::TextureParams());
 
     return true;
 }
 
 void Gfx::CGLDevice::Destroy()
 {
-    m_private->glMultiTexCoord1fARB = NULL;
     m_private->glMultiTexCoord2fARB = NULL;
-    m_private->glMultiTexCoord3fARB = NULL;
-    m_private->glMultiTexCoord4fARB = NULL;
     m_private->glActiveTextureARB   = NULL;
-    m_private->glClientActiveTextureARB = NULL;
 
     // Delete the remaining textures
-    std::set<Gfx::Texture*>::iterator it;
-    for (it = m_allTextures.begin(); it != m_allTextures.end(); ++it)
-        delete *it;
-    m_allTextures.clear();
+    // Should not be strictly necessary, but just in case
+    DestroyAllTextures();
+
+    m_lights.clear();
+    m_lightsEnabled.clear();
+
+    m_textures.clear();
+    m_texturesEnabled.clear();
+    m_texturesParams.clear();
 
     m_wasInit = false;
 }
@@ -177,7 +184,7 @@ void Gfx::CGLDevice::Clear()
 
 void Gfx::CGLDevice::SetTransform(Gfx::TransformType type, const Math::Matrix &matrix)
 {
-    if (type == Gfx::TRANSFORM_WORLD)
+    if      (type == Gfx::TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
         m_modelviewMat = Math::MultiplyMatrices(m_worldMat, m_viewMat);
@@ -205,7 +212,7 @@ void Gfx::CGLDevice::SetTransform(Gfx::TransformType type, const Math::Matrix &m
 
 const Math::Matrix& Gfx::CGLDevice::GetTransform(Gfx::TransformType type)
 {
-    if (type == Gfx::TRANSFORM_WORLD)
+    if      (type == Gfx::TRANSFORM_WORLD)
         return m_worldMat;
     else if (type == Gfx::TRANSFORM_VIEW)
         return m_viewMat;
@@ -219,7 +226,7 @@ const Math::Matrix& Gfx::CGLDevice::GetTransform(Gfx::TransformType type)
 
 void Gfx::CGLDevice::MultiplyTransform(Gfx::TransformType type, const Math::Matrix &matrix)
 {
-    if (type == Gfx::TRANSFORM_WORLD)
+    if      (type == Gfx::TRANSFORM_WORLD)
     {
         m_worldMat = Math::MultiplyMatrices(m_worldMat, matrix);
         m_modelviewMat = Math::MultiplyMatrices(m_worldMat, m_viewMat);
@@ -306,7 +313,7 @@ const Gfx::Light& Gfx::CGLDevice::GetLight(int index)
 void Gfx::CGLDevice::SetLightEnabled(int index, bool enabled)
 {
     assert(index >= 0);
-    assert(index < (int)m_lightsEnabled.size());
+    assert(index < (int)m_lights.size());
 
     m_lightsEnabled[index] = enabled;
 
@@ -321,11 +328,102 @@ bool Gfx::CGLDevice::GetLightEnabled(int index)
     return m_lightsEnabled[index];
 }
 
+Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, bool alpha, bool mipMap)
+{
+    Gfx::Texture *result = new Gfx::Texture();
+
+    // Texturing must be enabled, so enable 1st texture stage
+    m_private->glActiveTextureARB(GL_TEXTURE0_ARB);
+    glEnable(GL_TEXTURE_2D);
+
+    glGenTextures(1, &result->id);
+    glBindTexture(GL_TEXTURE_2D, result->id);
+
+    GLenum sourceFormat = 0;
+    if (alpha)
+        sourceFormat = GL_RGBA;
+    else
+        sourceFormat = GL_RGB;
+
+    ImageData *data = image->GetData();
+    if (data == NULL)
+        return NULL;
+
+    if (mipMap)
+    {
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, data->surface->w,
+                          data->surface->h, sourceFormat, GL_UNSIGNED_BYTE,
+                          data->surface->pixels);
+    }
+    else
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->surface->w, data->surface->h,
+                     0, sourceFormat, GL_UNSIGNED_BYTE, data->surface->pixels);
+    }
+
+    // Restore previous setup of 1st texture stage
+    RestoreTextureStage(0);
+
+    return result;
+}
+
+void Gfx::CGLDevice::DestroyTexture(Gfx::Texture *texture)
+{
+    std::set<Gfx::Texture*>::iterator it = m_allTextures.find(texture);
+    if (it != m_allTextures.end())
+        m_allTextures.erase(it);
+
+    glDeleteTextures(1, &texture->id);
+}
+
+void Gfx::CGLDevice::DestroyAllTextures()
+{
+    std::set<Gfx::Texture*> allCopy = m_allTextures;
+    std::set<Gfx::Texture*>::iterator it;
+    for (it = allCopy.begin(); it != allCopy.end(); ++it)
+    {
+        DestroyTexture(*it);
+        delete *it;
+    }
+}
+
 int Gfx::CGLDevice::GetMaxTextureCount()
 {
     return m_textures.size();
 }
 
+/**
+  If \a texture is \c NULL or invalid, unbinds the given texture.
+  If valid, binds the texture and enables the given texture stage.
+  The setting is remembered, even if texturing is disabled at the moment. */
+void Gfx::CGLDevice::SetTexture(int index, Gfx::Texture *texture)
+{
+    assert(index >= 0);
+    assert(index < (int)m_textures.size());
+
+    // Enable the given texture stage
+    m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+    glEnable(GL_TEXTURE_2D);
+
+    if ((texture == NULL) || (! texture->valid))
+    {
+        glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+        m_textures[index] = NULL;        // remember the changes
+    }
+    else
+    {
+        glBindTexture(GL_TEXTURE_2D, texture->id);        // bind the texture
+        m_textures[index] = texture;                      // remember the changes
+        SetTextureParams(index, m_texturesParams[index]); // texture params need to be re-set for the new texture
+    }
+
+    // Disable the stage if it is set so
+    if ( (! m_texturing) || (! m_texturesEnabled[index]) )
+        glDisable(GL_TEXTURE_2D);
+}
+
+/**
+  Returns the previously assigned texture or \c NULL if the given stage is not enabled. */
 Gfx::Texture* Gfx::CGLDevice::GetTexture(int index)
 {
     assert(index >= 0);
@@ -334,14 +432,224 @@ Gfx::Texture* Gfx::CGLDevice::GetTexture(int index)
     return m_textures[index];
 }
 
-void Gfx::CGLDevice::SetTexture(int index, Gfx::Texture *texture)
+void Gfx::CGLDevice::SetTextureEnabled(int index, bool enabled)
 {
     assert(index >= 0);
     assert(index < (int)m_textures.size());
 
-    m_textures[index] = texture;
+    m_texturesEnabled[index] = enabled;
 
-    // TODO
+    m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+    if (enabled)
+        glEnable(GL_TEXTURE_2D);
+    else
+        glDisable(GL_TEXTURE_2D);
+}
+
+bool Gfx::CGLDevice::GetTextureEnabled(int index)
+{
+    assert(index >= 0);
+    assert(index < (int)m_textures.size());
+
+    return m_texturesEnabled[index];
+}
+
+/**
+  Sets the texture parameters for the given texture stage.
+  If the given texture was not set (bound) yet, nothing happens.
+  The settings are remembered, even if texturing is disabled at the moment. */
+void Gfx::CGLDevice::SetTextureParams(int index, const Gfx::TextureParams &params)
+{
+    assert(index >= 0);
+    assert(index < (int)m_textures.size());
+
+    // Remember the settings
+    m_texturesParams[index] = params;
+
+    // Enable the given stage
+    m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+    glEnable(GL_TEXTURE_2D);
+
+    GLint minF = 0;
+    if      (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST)                minF = GL_NEAREST;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR)                 minF = GL_LINEAR;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST) minF = GL_NEAREST_MIPMAP_NEAREST;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_NEAREST)  minF = GL_LINEAR_MIPMAP_NEAREST;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_LINEAR)  minF = GL_NEAREST_MIPMAP_LINEAR;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR)   minF = GL_LINEAR_MIPMAP_LINEAR;
+    else  assert(false);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minF);
+
+    GLint magF = 0;
+    if      (params.magFilter == Gfx::TEX_MAG_FILTER_NEAREST) magF = GL_NEAREST;
+    else if (params.magFilter == Gfx::TEX_MAG_FILTER_LINEAR)  magF = GL_LINEAR;
+    else  assert(false);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magF);
+
+    if      (params.wrapS == Gfx::TEX_WRAP_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    else if (params.wrapS == Gfx::TEX_WRAP_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    else  assert(false);
+
+    if      (params.wrapT == Gfx::TEX_WRAP_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    else if (params.wrapT == Gfx::TEX_WRAP_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    else  assert(false);
+
+
+    // Selection of operation and arguments
+    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
+
+    // Color operation
+    if      (params.colorOperation == Gfx::TEX_MIX_OPER_MODULATE)
+        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_RGB, GL_MODULATE);
+    else if (params.colorOperation == Gfx::TEX_MIX_OPER_ADD)
+        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_RGB, GL_ADD);
+    else  assert(false);
+
+    // Color arg1
+    if (params.colorArg1 == Gfx::TEX_MIX_ARG_CURRENT)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PREVIOUS); // that's right - stupid D3D enum values
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    }
+    else if (params.colorArg1 == Gfx::TEX_MIX_ARG_TEXTURE)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_TEXTURE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    }
+    else if (params.colorArg1 == Gfx::TEX_MIX_ARG_DIFFUSE)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_RGB, GL_PRIMARY_COLOR); // here as well
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_RGB, GL_SRC_COLOR);
+    }
+    else  assert(false);
+
+    // Color arg2
+    if (params.colorArg2 == Gfx::TEX_MIX_ARG_CURRENT)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PREVIOUS);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    }
+    else if (params.colorArg2 == Gfx::TEX_MIX_ARG_TEXTURE)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_TEXTURE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    }
+    else if (params.colorArg2 == Gfx::TEX_MIX_ARG_DIFFUSE)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_RGB, GL_PRIMARY_COLOR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_RGB, GL_SRC_COLOR);
+    }
+    else  assert(false);
+
+    // Alpha operation
+    if      (params.alphaOperation == Gfx::TEX_MIX_OPER_MODULATE)
+        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_ALPHA, GL_MODULATE);
+    else if (params.alphaOperation == Gfx::TEX_MIX_OPER_ADD)
+        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_ALPHA, GL_ADD);
+    else  assert(false);
+
+    // Alpha arg1
+    if (params.alphaArg1 == Gfx::TEX_MIX_ARG_CURRENT)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PREVIOUS);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+    }
+    else if (params.alphaArg1 == Gfx::TEX_MIX_ARG_TEXTURE)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_TEXTURE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+    }
+    else if (params.alphaArg1 == Gfx::TEX_MIX_ARG_DIFFUSE)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC0_ALPHA, GL_PRIMARY_COLOR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
+    }
+    else  assert(false);
+
+    // Alpha arg2
+    if (params.alphaArg2 == Gfx::TEX_MIX_ARG_CURRENT)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_PREVIOUS);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+    }
+    else if (params.alphaArg2 == Gfx::TEX_MIX_ARG_TEXTURE)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_TEXTURE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+    }
+    else if (params.alphaArg2 == Gfx::TEX_MIX_ARG_DIFFUSE)
+    {
+        glTexEnvi(GL_TEXTURE_ENV, GL_SRC1_ALPHA, GL_PRIMARY_COLOR);
+        glTexEnvi(GL_TEXTURE_ENV, GL_OPERAND1_ALPHA, GL_SRC_ALPHA);
+    }
+    else  assert(false);
+
+    // Disable the stage if it is set so
+    if ( (! m_texturing) || (! m_texturesEnabled[index]) )
+        glDisable(GL_TEXTURE_2D);
+}
+
+Gfx::TextureParams Gfx::CGLDevice::GetTextureParams(int index)
+{
+    assert(index >= 0);
+    assert(index < (int)m_textures.size());
+
+    return m_texturesParams[index];
+}
+
+void Gfx::CGLDevice::SetTextureFactor(Gfx::Color &color)
+{
+    // Needs to be set for all texture stages
+    for (int index = 0; index < (int)m_textures.size(); ++index)
+    {
+        // Activate stage
+        m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+        glEnable(GL_TEXTURE_2D);
+
+        glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color.Array());
+
+        // Disable the stage if it is set so
+        if ( (! m_texturing) || (! m_texturesEnabled[index]) )
+            glDisable(GL_TEXTURE_2D);
+    }
+}
+
+Gfx::Color Gfx::CGLDevice::GetTextureFactor()
+{
+    // Get from 1st stage (should be the same for all stages)
+    m_private->glActiveTextureARB(GL_TEXTURE0_ARB);
+    glEnable(GL_TEXTURE_2D);
+
+    GLfloat color[4] = { 0.0f };
+    glGetTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color);
+
+    // Disable the 1st stage if it is set so
+    if ( (! m_texturing) || (! m_texturesEnabled[0]) )
+        glDisable(GL_TEXTURE_2D);
+
+    return Gfx::Color(color[0], color[1], color[2], color[3]);
+}
+
+void Gfx::CGLDevice::RestoreTextureStage(int index)
+{
+    // Ensure that we're working with the right stage
+    m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+    glEnable(GL_TEXTURE_2D);
+
+    if (m_textures[index] != NULL)
+        glBindTexture(GL_TEXTURE_2D, m_textures[index]->id); // bind to the previous texture
+    else
+        glBindTexture(GL_TEXTURE_2D, 0); // unbind
+
+    // Disable the stage if it is set so
+    if ( (! m_texturing) || (! m_texturesEnabled[index]) )
+        glDisable(GL_TEXTURE_2D);
 }
 
 void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, int vertexCount)
@@ -374,7 +682,7 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vert
 
     for (int i = 0; i < vertexCount; ++i)
     {
-        // TODO: specular?
+        // TODO: specular through EXT_separate_specular_color?
         glColor4fv((GLfloat*)vertices[i].color.Array());
         glTexCoord2fv((GLfloat*)vertices[i].texCoord.Array());
         glVertex3fv((GLfloat*)vertices[i].coord.Array());
@@ -395,8 +703,8 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices
     for (int i = 0; i < vertexCount; ++i)
     {
         glNormal3fv((GLfloat*) vertices[i].normal.Array());
-        // TODO glMultiTexCoord2fARB(GL_TEXTURE0_ARB, vertices[i].texCoord.x, vertices[i].texCoord.y);
-        // TODO glMultiTexCoord2fARB(GL_TEXTURE1_ARB, vertices[i].texCoord2.x, vertices[i].texCoord2.y);
+        m_private->glMultiTexCoord2fARB(GL_TEXTURE0_ARB, vertices[i].texCoord.x, vertices[i].texCoord.y);
+        m_private->glMultiTexCoord2fARB(GL_TEXTURE1_ARB, vertices[i].texCoord2.x, vertices[i].texCoord2.y);
         glVertex3fv((GLfloat*) vertices[i].coord.Array());
     }
 
@@ -412,14 +720,26 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
     }
     else if (state == RENDER_STATE_TEXTURING)
     {
+        m_texturing = enabled;
+
         if (enabled)
         {
-            glEnable(GL_TEXTURE_2D);
-            // TODO multitexture
+            // All enabled multitexture stages have to be enabled
+            for (int index = 0; index < (int)m_textures.size(); ++index)
+            {
+                m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+                if (m_texturesEnabled[index])
+                    glEnable(GL_TEXTURE_2D);
+            }
         }
         else
         {
-            glDisable(GL_TEXTURE_2D);
+            // All multitexture stages have to be disabled
+            for (int index = 0; index < (int)m_textures.size(); ++index)
+            {
+                m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+                glDisable(GL_TEXTURE_2D);
+            }
         }
         return;
     }
@@ -445,12 +765,14 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
 
 bool Gfx::CGLDevice::GetRenderState(Gfx::RenderState state)
 {
+    if (state == RENDER_STATE_TEXTURING)
+        return m_texturing;
+
     GLenum flag = 0;
 
     switch (state)
     {
         case Gfx::RENDER_STATE_DEPTH_WRITE: flag = GL_DEPTH_WRITEMASK; break;
-        case Gfx::RENDER_STATE_TEXTURING:   flag = GL_TEXTURE_2D; break;
         case Gfx::RENDER_STATE_LIGHTING:    flag = GL_DEPTH_WRITEMASK; break;
         case Gfx::RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
         case Gfx::RENDER_STATE_FOG:         flag = GL_FOG; break;
@@ -602,7 +924,7 @@ void Gfx::CGLDevice::SetClearColor(Gfx::Color color)
 
 Gfx::Color Gfx::CGLDevice::GetClearColor()
 {
-    float color[4] = { 0.0f };
+    GLfloat color[4] = { 0.0f };
     glGetFloatv(GL_COLOR_CLEAR_VALUE, color);
     return Gfx::Color(color[0], color[1], color[2], color[3]);
 }
@@ -614,7 +936,7 @@ void Gfx::CGLDevice::SetGlobalAmbient(Gfx::Color color)
 
 Gfx::Color Gfx::CGLDevice::GetGlobalAmbient()
 {
-    float color[4] = { 0.0f };
+    GLfloat color[4] = { 0.0f };
     glGetFloatv(GL_LIGHT_MODEL_AMBIENT, color);
     return Gfx::Color(color[0], color[1], color[2], color[3]);
 }
@@ -662,6 +984,23 @@ Gfx::CullMode Gfx::CGLDevice::GetCullMode()
     return Gfx::CULL_CW;
 }
 
+void Gfx::CGLDevice::SetShadeModel(Gfx::ShadeModel model)
+{
+    if      (model == Gfx::SHADE_FLAT)   glShadeModel(GL_FLAT);
+    else if (model == Gfx::SHADE_SMOOTH) glShadeModel(GL_SMOOTH);
+    else  assert(false);
+}
+
+Gfx::ShadeModel Gfx::CGLDevice::GetShadeModel()
+{
+    GLenum flag = 0;
+    glGetIntegerv(GL_SHADE_MODEL, (GLint*)&flag);
+    if      (flag == GL_FLAT)    return Gfx::SHADE_FLAT;
+    else if (flag == GL_SMOOTH)  return Gfx::SHADE_SMOOTH;
+    else  assert(false);
+    return Gfx::SHADE_FLAT;
+}
+
 void Gfx::CGLDevice::SetFillMode(Gfx::FillMode mode)
 {
     if      (mode == Gfx::FILL_POINT) glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
@@ -677,6 +1016,6 @@ Gfx::FillMode Gfx::CGLDevice::GetFillMode()
     if      (flag == GL_POINT) return Gfx::FILL_POINT;
     else if (flag == GL_LINE)  return Gfx::FILL_LINES;
     else if (flag == GL_FILL)  return Gfx::FILL_FILL;
-    else assert(false);
+    else  assert(false);
     return Gfx::FILL_POINT;
 }

@@ -30,6 +30,7 @@ app/app.cpp
 app/main.cpp
 app/system.cpp
 common/event.cpp
+common/image.cpp
 common/iman.cpp
 # common/metafile.cpp
 # common/misc.cpp
@@ -150,10 +151,16 @@ set(LIBS
 ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${OPENGL_LIBRARY}
+${PNG_LIBRARIES}
 #CBot  -- not yet WinAPI-independent
 )
 
-include_directories(. ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(. ${CMAKE_CURRENT_BINARY_DIR}
+${SDL_INCLUDE_DIR}
+${SDL_IMAGE_INCLUDE_DIR}
+${SDLTTF_INCLUDE_DIR}
+${PNG_INCLUDE_DIRS}
+)
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)
 
