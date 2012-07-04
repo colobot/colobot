@@ -84,10 +84,13 @@ public:
     Error       ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();
-    //! Cleans up before exit
-    void        Destroy();
     //! Main event loop
     int         Run();
+    //! Returns the code to be returned at main() exit
+    int         GetExitCode();
+
+    //! Cleans up before exit
+    void        Destroy();
 
     //! Enters the pause mode
     void        Pause(bool pause);
@@ -96,7 +99,7 @@ public:
     void        StepSimulation(float rTime);
 
     //! Polls the state of joystick axes and buttons
-    void UpdateJoystick();
+    void        UpdateJoystick();
 
     void        SetShowStat(bool show);
     bool        GetShowStat();

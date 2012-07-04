@@ -19,6 +19,7 @@
 
 #include "app/app.h"
 #include "app/system.h"
+#include "common/logger.h"
 #include "common/misc.h"
 #include "common/restext.h"
 
@@ -26,6 +27,10 @@
 //! Entry point to the program
 int main(int argc, char *argv[])
 {
+    CLogger logger; // Create the logger
+
+    logger.Info("Colobot starting\n");
+
     CApplication app; // single instance of the application
 
     Error err = app.ParseArguments(argc, argv);
@@ -34,11 +39,19 @@ int main(int argc, char *argv[])
         SystemDialog(SDT_ERROR, "COLOBOT", "Invalid commandline arguments!\n");
     }
 
+    int code = 0;
+
     if (! app.Create())
     {
         app.Destroy(); // ensure a clean exit
-        return 1;
+        code = app.GetExitCode();
+        logger.Info("Didn't run main loop. Exiting with code %d\n", code);
+        return code;
     }
 
-    return app.Run();
+    code = app.Run();
+
+    logger.Info("Exiting with code %d\n", code);
+    return code;
 }
+

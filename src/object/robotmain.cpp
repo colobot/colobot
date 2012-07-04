@@ -96,7 +96,414 @@ float   g_unit;             // conversion factor
 
 
 
-#include "script/ClassFILE.cpp"
+// Static variables
+
+static CBotClass*   m_pClassFILE;
+static CBotProgram* m_pFuncFile;
+static int          m_CompteurFileOpen = 0;
+static char*        m_filesDir;
+
+
+
+// Prepares a file name.
+
+void PrepareFilename(CBotString &filename)
+{
+    int         pos;
+
+    pos = filename.ReverseFind('\\');
+    if ( pos > 0 )
+    {
+        filename = filename.Mid(pos+1);  // Remove files with
+    }
+
+    pos = filename.ReverseFind('/');
+    if ( pos > 0 )
+    {
+        filename = filename.Mid(pos+1);  // also with /
+    }
+
+    pos = filename.ReverseFind(':');
+    if ( pos > 0 )
+    {
+        filename = filename.Mid(pos+1);  // also removes the drive letter C:
+    }
+
+    filename = CBotString(m_filesDir) + CBotString("\\") + filename;
+}
+
+
+// constructor of the class
+// get the filename as a parameter
+
+// execution
+bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+{
+    CBotString  mode;
+
+    // accepts no parameters
+    if ( pVar == NULL ) return true;
+
+    // must be a character string
+    if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
+
+    CBotString  filename = pVar->GivValString();
+    PrepareFilename(filename);
+
+    // there may be a second parameter
+    pVar = pVar->GivNext();
+    if ( pVar != NULL )
+    {
+        // recover mode
+        mode = pVar->GivValString();
+        if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
+
+        // no third parameter
+        if ( pVar->GivNext() != NULL ) { Exception = CBotErrOverParam; return false; }
+    }
+
+    // saves the file name
+    pVar = pThis->GivItem("filename");
+    pVar->SetValString(filename);
+
+    if ( ! mode.IsEmpty() )
+    {
+        // opens the requested file
+        FILE*   pFile = fopen( filename, mode );
+        if ( pFile == NULL ) { Exception = CBotErrFileOpen; return false; }
+
+        m_CompteurFileOpen ++;
+
+        // save the channel file
+        pVar = pThis->GivItem("handle");
+        pVar->SetValInt((long)pFile);
+    }
+
+    return true;
+}
+
+// compilation
+CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar)
+{
+    // accepts no parameters
+    if ( pVar == NULL ) return CBotTypResult( 0 );
+
+    // must be a character string
+    if ( pVar->GivType() != CBotTypString )
+                        return CBotTypResult( CBotErrBadString );
+
+    // there may be a second parameter
+    pVar = pVar->GivNext();
+    if ( pVar != NULL )
+    {
+        // which must be a string
+        if ( pVar->GivType() != CBotTypString )
+                            return CBotTypResult( CBotErrBadString );
+        // no third parameter
+        if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+    }
+
+    // the result is void (constructor)
+    return CBotTypResult( 0 );
+}
+
+
+// destructor of the class
+
+// execution
+bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+{
+    // retrieve the item "handle"
+    pVar = pThis->GivItem("handle");
+
+    // don't open? no problem :)
+    if ( pVar->GivInit() != IS_DEF) return true;
+
+    FILE* pFile= (FILE*)pVar->GivValInt();
+    fclose(pFile);
+    m_CompteurFileOpen --;
+
+    pVar->SetInit(IS_NAN);
+
+    return true;
+}
+
+
+// process FILE :: open
+// get the r/w mode as a parameter
+
+// execution
+bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+{
+    // there must be a parameter
+    if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
+
+    // which must be a character string
+    if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
+
+    // There may be a second parameter
+    if ( pVar->GivNext() != NULL )
+    {
+        // if the first parameter is the file name
+        CBotString  filename = pVar->GivValString();
+        PrepareFilename(filename);
+
+        // saves the file name
+        CBotVar* pVar2 = pThis->GivItem("filename");
+        pVar2->SetValString(filename);
+
+        // next parameter is the mode
+        pVar = pVar -> GivNext();
+    }
+
+    CBotString  mode = pVar->GivValString();
+    if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
+
+    // no third parameter
+    if ( pVar->GivNext() != NULL ) { Exception = CBotErrOverParam; return false; }
+
+    // retrieve the item "handle"
+    pVar = pThis->GivItem("handle");
+
+    // which must not be initialized
+    if ( pVar->GivInit() == IS_DEF) { Exception = CBotErrFileOpen; return false; }
+
+    // file contains the name
+    pVar = pThis->GivItem("filename");
+    CBotString  filename = pVar->GivValString();
+
+    PrepareFilename(filename);  // if the name was h.filename attribute = "...";
+
+    // opens the requested file
+    FILE*   pFile = fopen( filename, mode );
+    if ( pFile == NULL )
+    {
+        pResult->SetValInt(false);
+        return true;
+    }
+
+    m_CompteurFileOpen ++;
+
+    // Registered the channel file
+    pVar = pThis->GivItem("handle");
+    pVar->SetValInt((long)pFile);
+
+    pResult->SetValInt(true);
+    return true;
+}
+
+// compilation
+CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar)
+{
+    // there must be a parameter
+    if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
+
+    // which must be a string
+    if ( pVar->GivType() != CBotTypString )
+                        return CBotTypResult( CBotErrBadString );
+
+    // there may be a second parameter
+    pVar = pVar->GivNext();
+    if ( pVar != NULL )
+    {
+        // which must be a string
+        if ( pVar->GivType() != CBotTypString )
+                        return CBotTypResult( CBotErrBadString );
+
+        // no third parameter
+        if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+    }
+
+    // the result is bool
+    return CBotTypResult(CBotTypBoolean);
+}
+
+
+// process FILE :: close
+
+// execeution
+bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+{
+    // it shouldn't be any parameters
+    if ( pVar != NULL ) return CBotErrOverParam;
+
+    // retrieve the item "handle"
+    pVar = pThis->GivItem("handle");
+
+    if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+
+    FILE* pFile= (FILE*)pVar->GivValInt();
+    fclose(pFile);
+    m_CompteurFileOpen --;
+
+    pVar->SetInit(IS_NAN);
+
+    return true;
+}
+
+// compilation
+CBotTypResult cfclose (CBotVar* pThis, CBotVar* &pVar)
+{
+    // it shouldn't be any parameters
+    if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
+
+    // function returns a result "void"
+    return CBotTypResult( 0 );
+}
+
+// process FILE :: writeln
+
+// execution
+bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+{
+    // there must be a parameter
+    if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
+
+    // which must be a character string
+    if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
+
+    CBotString param = pVar->GivValString();
+
+    // retrieve the item "handle"
+    pVar = pThis->GivItem("handle");
+
+    if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+
+    FILE* pFile= (FILE*)pVar->GivValInt();
+
+    int res = fputs(param+CBotString("\n"), pFile);
+
+    // if an error occurs generate an exception
+    if ( res < 0 ) { Exception = CBotErrWrite; return false; }
+
+    return true;
+}
+
+// compilation
+CBotTypResult cfwrite (CBotVar* pThis, CBotVar* &pVar)
+{
+    // there must be a parameter
+    if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
+
+    // which must be a character string
+    if ( pVar->GivType() != CBotTypString ) return CBotTypResult( CBotErrBadString );
+
+    // no other parameter
+    if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+
+    // the function returns a void result
+    return CBotTypResult( 0 );
+}
+
+// process FILE :: readln
+
+// execution
+bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+{
+    // it shouldn't be any parameters
+    if ( pVar != NULL ) { Exception = CBotErrOverParam; return false; }
+
+    // retrieve the item "handle"
+    pVar = pThis->GivItem("handle");
+
+    if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+
+    FILE* pFile= (FILE*)pVar->GivValInt();
+
+    char    chaine[2000];
+    int     i;
+    for ( i = 0 ; i < 2000 ; i++ ) chaine[i] = 0;
+
+    fgets(chaine, 1999, pFile);
+
+    for ( i = 0 ; i < 2000 ; i++ ) if (chaine[i] == '\n') chaine[i] = 0;
+
+    // if an error occurs generate an exception
+    if ( ferror(pFile) ) { Exception = CBotErrRead; return false; }
+
+    pResult->SetValString( chaine );
+
+    return true;
+}
+
+// compilation
+CBotTypResult cfread (CBotVar* pThis, CBotVar* &pVar)
+{
+    // it should not be any parameter
+    if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
+
+    // function returns a result "string"
+    return CBotTypResult( CBotTypString );
+}
+// process FILE :: readln
+
+
+// execution
+bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+{
+    // it should not be any parameter
+    if ( pVar != NULL ) { Exception = CBotErrOverParam; return false; }
+
+    // retrieve the item "handle"
+    pVar = pThis->GivItem("handle");
+
+    if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+
+    FILE* pFile= (FILE*)pVar->GivValInt();
+
+    pResult->SetValInt( feof( pFile ) );
+
+    return true;
+}
+
+// compilation
+CBotTypResult cfeof (CBotVar* pThis, CBotVar* &pVar)
+{
+    // it shouldn't be any parameter
+    if ( pVar != NULL ) return CBotTypResult( CBotErrOverParam );
+
+    // the function returns a boolean result
+    return CBotTypResult( CBotTypBoolean );
+}
+
+
+
+
+
+void InitClassFILE()
+{
+// create a class for file management
+// the use is as follows:
+// file canal( "NomFichier.txt" )
+// canal.open( "r" );   // open for read
+// s = canal.readln( ); // reads a line
+// canal.close();   // close the file
+
+    // create the class FILE
+    m_pClassFILE    = new CBotClass("file", NULL);
+    // adds the component ".filename"
+    m_pClassFILE->AddItem("filename", CBotTypString);
+    // adds the component ".handle"
+    m_pClassFILE->AddItem("handle", CBotTypInt, PR_PRIVATE);
+
+    // define a constructor and a destructor
+    m_pClassFILE->AddFunction("file", rfconstruct, cfconstruct );
+    m_pClassFILE->AddFunction("~file", rfdestruct, NULL );
+
+    // end of the methods associated
+    m_pClassFILE->AddFunction("open", rfopen, cfopen );
+    m_pClassFILE->AddFunction("close", rfclose, cfclose );
+    m_pClassFILE->AddFunction("writeln", rfwrite, cfwrite );
+    m_pClassFILE->AddFunction("readln", rfread, cfread );
+    m_pClassFILE->AddFunction("eof", rfeof, cfeof );
+
+    m_pFuncFile = new CBotProgram( );
+    CBotStringArray ListFonctions;
+    m_pFuncFile->Compile( "public file openfile(string name, string mode) {return new file(name, mode);}", ListFonctions);
+    m_pFuncFile->SetIdent(-2);  // restoreState in special identifier for this function
+}
+
+
 
 
 
@@ -283,22 +690,22 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     m_windowPos = Math::Point(0.15f, 0.17f);
     m_windowDim = Math::Point(0.70f, 0.66f);
 
-    if ( GetProfileFloat("Edit", "FontSize",    fValue) )  m_fontSize    = fValue;
-    if ( GetProfileFloat("Edit", "WindowPos.x", fValue) )  m_windowPos.x = fValue;
-    if ( GetProfileFloat("Edit", "WindowPos.y", fValue) )  m_windowPos.y = fValue;
-    if ( GetProfileFloat("Edit", "WindowDim.x", fValue) )  m_windowDim.x = fValue;
-    if ( GetProfileFloat("Edit", "WindowDim.y", fValue) )  m_windowDim.y = fValue;
+    if ( GetLocalProfileFloat("Edit", "FontSize",    fValue) )  m_fontSize    = fValue;
+    if ( GetLocalProfileFloat("Edit", "WindowPos.x", fValue) )  m_windowPos.x = fValue;
+    if ( GetLocalProfileFloat("Edit", "WindowPos.y", fValue) )  m_windowPos.y = fValue;
+    if ( GetLocalProfileFloat("Edit", "WindowDim.x", fValue) )  m_windowDim.x = fValue;
+    if ( GetLocalProfileFloat("Edit", "WindowDim.y", fValue) )  m_windowDim.y = fValue;
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 
-    if ( GetProfileInt  ("Edit", "IOPublic", iValue) )  m_IOPublic    = iValue;
-    if ( GetProfileFloat("Edit", "IOPos.x",  fValue) )  m_IOPos.x = fValue;
-    if ( GetProfileFloat("Edit", "IOPos.y",  fValue) )  m_IOPos.y = fValue;
-    if ( GetProfileFloat("Edit", "IODim.x",  fValue) )  m_IODim.x = fValue;
-    if ( GetProfileFloat("Edit", "IODim.y",  fValue) )  m_IODim.y = fValue;
+    if ( GetLocalProfileInt  ("Edit", "IOPublic", iValue) )  m_IOPublic = iValue;
+    if ( GetLocalProfileFloat("Edit", "IOPos.x",  fValue) )  m_IOPos.x  = fValue;
+    if ( GetLocalProfileFloat("Edit", "IOPos.y",  fValue) )  m_IOPos.y  = fValue;
+    if ( GetLocalProfileFloat("Edit", "IODim.x",  fValue) )  m_IODim.x  = fValue;
+    if ( GetLocalProfileFloat("Edit", "IODim.y",  fValue) )  m_IODim.y  = fValue;
 
     m_short->FlushShortcuts();
     InitEye();
@@ -315,7 +722,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     g_unit = 4.0f;
 
     m_gamerName[0] = 0;
-    GetProfileString("Gamer", "LastName", m_gamerName, 100);
+    GetLocalProfileString("Gamer", "LastName", m_gamerName, 100);
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
     m_dialog->SetupRecall();
@@ -430,7 +837,7 @@ void CRobotMain::CreateIni()
     int     iValue;
 
     // colobot.ini don't exist?
-    if ( !GetProfileInt("Setup", "TotoMode", iValue) )
+    if ( !GetLocalProfileInt("Setup", "TotoMode", iValue) )
     {
         m_dialog->SetupMemorize();
     }
@@ -1801,7 +2208,7 @@ float CRobotMain::RetGameTime()
 void CRobotMain::SetFontSize(float size)
 {
     m_fontSize = size;
-    SetProfileFloat("Edit", "FontSize", m_fontSize);
+    SetLocalProfileFloat("Edit", "FontSize", m_fontSize);
 }
 
 float CRobotMain::RetFontSize()
@@ -1814,8 +2221,8 @@ float CRobotMain::RetFontSize()
 void CRobotMain::SetWindowPos(Math::Point pos)
 {
     m_windowPos = pos;
-    SetProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
-    SetProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
+    SetLocalProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
+    SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
 }
 
 Math::Point CRobotMain::RetWindowPos()
@@ -1826,8 +2233,8 @@ Math::Point CRobotMain::RetWindowPos()
 void CRobotMain::SetWindowDim(Math::Point dim)
 {
     m_windowDim = dim;
-    SetProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
-    SetProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
+    SetLocalProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
+    SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
 }
 
 Math::Point CRobotMain::RetWindowDim()
@@ -1841,7 +2248,7 @@ Math::Point CRobotMain::RetWindowDim()
 void CRobotMain::SetIOPublic(bool bMode)
 {
     m_IOPublic = bMode;
-    SetProfileInt("Edit", "IOPublic", m_IOPublic);
+    SetLocalProfileInt("Edit", "IOPublic", m_IOPublic);
 }
 
 bool CRobotMain::RetIOPublic()
@@ -1852,8 +2259,8 @@ bool CRobotMain::RetIOPublic()
 void CRobotMain::SetIOPos(Math::Point pos)
 {
     m_IOPos = pos;
-    SetProfileFloat("Edit", "IOPos.x", m_IOPos.x);
-    SetProfileFloat("Edit", "IOPos.y", m_IOPos.y);
+    SetLocalProfileFloat("Edit", "IOPos.x", m_IOPos.x);
+    SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y);
 }
 
 Math::Point CRobotMain::RetIOPos()
@@ -1864,8 +2271,8 @@ Math::Point CRobotMain::RetIOPos()
 void CRobotMain::SetIODim(Math::Point dim)
 {
     m_IODim = dim;
-    SetProfileFloat("Edit", "IODim.x", m_IODim.x);
-    SetProfileFloat("Edit", "IODim.y", m_IODim.y);
+    SetLocalProfileFloat("Edit", "IODim.x", m_IODim.x);
+    SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y);
 }
 
 Math::Point CRobotMain::RetIODim()

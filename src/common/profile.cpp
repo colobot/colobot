@@ -42,13 +42,13 @@ bool InitCurrentDirectory()
 }
 
 
-bool SetProfileString(char* section, char* key, char* string)
+bool SetLocalProfileString(char* section, char* key, char* string)
 {
     WritePrivateProfileString(section, key, string, g_filename);
     return true;
 }
 
-bool GetProfileString(char* section, char* key, char* buffer, int max)
+bool GetLocalProfileString(char* section, char* key, char* buffer, int max)
 {
     int     nb;
 
@@ -62,7 +62,7 @@ bool GetProfileString(char* section, char* key, char* buffer, int max)
 }
 
 
-bool SetProfileInt(char* section, char* key, int value)
+bool SetLocalProfileInt(char* section, char* key, int value)
 {
     char    s[20];
 
@@ -71,7 +71,7 @@ bool SetProfileInt(char* section, char* key, int value)
     return true;
 }
 
-bool GetProfileInt(char* section, char* key, int &value)
+bool GetLocalProfileInt(char* section, char* key, int &value)
 {
     char    s[20];
     int     nb;
@@ -87,7 +87,7 @@ bool GetProfileInt(char* section, char* key, int &value)
 }
 
 
-bool SetProfileFloat(char* section, char* key, float value)
+bool SetLocalProfileFloat(char* section, char* key, float value)
 {
     char    s[20];
 
@@ -96,7 +96,7 @@ bool SetProfileFloat(char* section, char* key, float value)
     return true;
 }
 
-bool GetProfileFloat(char* section, char* key, float &value)
+bool GetLocalProfileFloat(char* section, char* key, float &value)
 {
     char    s[20];
     int     nb;

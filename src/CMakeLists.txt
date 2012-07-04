@@ -31,6 +31,7 @@ app/main.cpp
 app/system.cpp
 common/event.cpp
 common/image.cpp
+common/logger.cpp
 common/iman.cpp
 # common/metafile.cpp
 # common/misc.cpp
@@ -118,7 +119,7 @@ graphics/opengl/glengine.cpp
 # script/cbottoken.cpp
 # script/cmdtoken.cpp
 # script/script.cpp
-sound/sound.cpp
+# sound/sound.cpp
 # ui/button.cpp
 # ui/check.cpp
 # ui/color.cpp
