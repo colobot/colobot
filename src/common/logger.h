@@ -21,6 +21,7 @@
 
 #include <string>
 #include <cstdarg>
+#include <cstdio>
 
 #include <common/singleton.h>
 

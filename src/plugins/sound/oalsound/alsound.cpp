@@ -27,13 +27,13 @@
 PLUGIN_INTERFACE(ALSound, CSoundInterface)
 
 
-char* ALSound::pluginName()
+char* ALSound::PluginName()
 {
     return const_cast<char *>("Sound plugin using OpenAL library to play sounds.");
 }
 
 
-int ALSound::pluginVersion()
+int ALSound::PluginVersion()
 {
     return 1;
 }
