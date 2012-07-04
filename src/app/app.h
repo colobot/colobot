@@ -60,6 +60,9 @@ public:
     //! Main event loop
     int         Run();
 
+    //! Returns the code to be returned at main() exit
+    int         GetExitCode();
+
 protected:
     //! Cleans up before exit
     void        Destroy();

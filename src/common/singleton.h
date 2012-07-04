@@ -39,7 +39,7 @@ template<typename T> class CSingleton
         }
 
         static bool IsCreated() {
-            return mInstance != nullptr;
+            return mInstance != NULL; 
         }
 
         CSingleton() {
@@ -48,7 +48,7 @@ template<typename T> class CSingleton
         }
 
         ~CSingleton() {
-            mInstance = nullptr;
+            mInstance = NULL;
         }
 
     private:
