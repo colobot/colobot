@@ -20,6 +20,7 @@
 #include "app/app.h"
 
 #include "app/system.h"
+#include "common/logger.h"
 #include "common/iman.h"
 #include "graphics/opengl/gldevice.h"
 
@@ -153,6 +154,7 @@ bool CApplication::Create()
     {
         SystemDialog(SDT_ERROR, "COLOBOT - Error", std::string("Error in CEngine::BeforeCreateInit() :\n") +
                                                    std::string(m_engine->GetError()) );
+        m_exitCode = 1;
         return false;
     }
 
@@ -173,6 +175,15 @@ bool CApplication::Create()
     {
         SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL initialization error:\n" +
                                                     std::string(SDL_GetError()) );
+        m_exitCode = 2;
+        return false;
+    }
+
+    if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
+    {
+        SystemDialog( SDT_ERROR, "COLOBOT - Error", std::string("SDL_Image initialization error:\n") +
+                                                    std::string(IMG_GetError()) );
+        m_exitCode = 3;
         return false;
     }
 
@@ -181,6 +192,7 @@ bool CApplication::Create()
     {
         SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL error while getting video info:\n " +
                                                     std::string(SDL_GetError()) );
+        m_exitCode = 2;
         return false;
     }
 
@@ -219,13 +231,6 @@ bool CApplication::Create()
     if (m_private->deviceConfig.hardwareAccel)
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
-    {
-        SystemDialog( SDT_ERROR, "COLOBOT - Error", std::string("SDL_Image initialization error:\n") +
-                                                    std::string(IMG_GetError()) );
-        return false;
-    }
-
     m_private->surface = SDL_SetVideoMode(m_private->deviceConfig.width, m_private->deviceConfig.height,
                                           m_private->deviceConfig.bpp, videoFlags);
 
@@ -233,6 +238,7 @@ bool CApplication::Create()
     {
         SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("SDL error while setting video mode:\n") +
                                                    std::string(SDL_GetError()) );
+        m_exitCode = 2;
         return false;
     }
 
@@ -255,6 +261,7 @@ bool CApplication::Create()
     {
         SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CDevice::Create() :\n") +
                                                    std::string(m_device->GetError()) );
+        m_exitCode = 1;
         return false;
     }
 
@@ -263,6 +270,7 @@ bool CApplication::Create()
     {
         SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CEngine::Create() :\n") +
                                                    std::string(m_engine->GetError()) );
+        m_exitCode = 1;
         return false;
     }
 
@@ -270,6 +278,7 @@ bool CApplication::Create()
     {
         SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CEngine::AfterDeviceSetInit() :\n") +
                                                    std::string(m_engine->GetError()) );
+        m_exitCode = 1;
         return false;
     }
 
@@ -478,6 +487,11 @@ end:
     return m_exitCode;
 }
 
+int CApplication::GetExitCode()
+{
+    return m_exitCode;
+}
+
 //! Translates SDL press state to PressState
 PressState TranslatePressState(unsigned char state)
 {
@@ -498,7 +512,6 @@ Math::Point CApplication::WindowToInterfaceCoords(int x, int y)
     return Math::Point((float)x / (float)m_private->deviceConfig.width,
                        1.0f - (float)y / (float)m_private->deviceConfig.height);
 }
-
 
 void CApplication::ParseEvent()
 {
@@ -567,6 +580,7 @@ void CApplication::ParseEvent()
 
 void CApplication::ProcessEvent(Event event)
 {
+    CLogger *l = GetLogger();
     // Print the events in debug mode to test the code
     if (m_debugMode)
     {
@@ -574,34 +588,34 @@ void CApplication::ProcessEvent(Event event)
         {
             case EVENT_KEY_DOWN:
             case EVENT_KEY_UP:
-                printf("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
-                printf(" key     = %4x\n", event.key.key);
-                printf(" state   = %s\n", (event.key.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                printf(" mod     = %4x\n", event.key.mod);
-                printf(" unicode = %4x\n", event.key.unicode);
+                l->Info("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
+                l->Info(" key     = %4x\n", event.key.key);
+                l->Info(" state   = %s\n", (event.key.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                l->Info(" mod     = %4x\n", event.key.mod);
+                l->Info(" unicode = %4x\n", event.key.unicode);
                 break;
             case EVENT_MOUSE_MOVE:
-                printf("EVENT_MOUSE_MOVE:\n");
-                printf(" state  = %s\n", (event.mouseMove.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                printf(" pos    = (%f, %f)\n", event.mouseMove.pos.x, event.mouseMove.pos.y);
+                l->Info("EVENT_MOUSE_MOVE:\n");
+                l->Info(" state  = %s\n", (event.mouseMove.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                l->Info(" pos    = (%f, %f)\n", event.mouseMove.pos.x, event.mouseMove.pos.y);
                 break;
             case EVENT_MOUSE_BUTTON_DOWN:
             case EVENT_MOUSE_BUTTON_UP:
-                printf("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
-                printf(" button = %d\n", event.mouseButton.button);
-                printf(" state  = %s\n", (event.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
-                printf(" pos    = (%f, %f)\n", event.mouseButton.pos.x, event.mouseButton.pos.y);
+                l->Info("EVENT_MOUSE_BUTTON_%s:\n", (event.type == EVENT_MOUSE_BUTTON_DOWN) ? "DOWN" : "UP");
+                l->Info(" button = %d\n", event.mouseButton.button);
+                l->Info(" state  = %s\n", (event.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                l->Info(" pos    = (%f, %f)\n", event.mouseButton.pos.x, event.mouseButton.pos.y);
                 break;
             case EVENT_JOY_AXIS:
-                printf("EVENT_JOY_AXIS:\n");
-                printf(" axis  = %d\n", event.joyAxis.axis);
-                printf(" value = %d\n", event.joyAxis.value);
+                l->Info("EVENT_JOY_AXIS:\n");
+                l->Info(" axis  = %d\n", event.joyAxis.axis);
+                l->Info(" value = %d\n", event.joyAxis.value);
                 break;
             case EVENT_JOY_BUTTON_DOWN:
             case EVENT_JOY_BUTTON_UP:
-                printf("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
-                printf(" button = %d\n", event.joyButton.button);
-                printf(" state  = %s\n", (event.joyButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
+                l->Info("EVENT_JOY_BUTTON_%s:\n", (event.type == EVENT_JOY_BUTTON_DOWN) ? "DOWN" : "UP");
+                l->Info(" button = %d\n", event.joyButton.button);
+                l->Info(" state  = %s\n", (event.joyButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
                 break;
             default:
                 break;

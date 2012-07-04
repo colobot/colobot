@@ -26,6 +26,7 @@
 class CInstanceManager;
 class CRobotMain;
 class CObject;
+class CSound;
 
 
 
@@ -303,7 +304,7 @@ protected:
     void        DrawParticleWheel(int i);
     CObject*    SearchObjectGun(Math::Vector old, Math::Vector pos, ParticleType type, CObject *father);
     CObject*    SearchObjectRay(Math::Vector pos, Math::Vector goal, ParticleType type, CObject *father);
-    void        Play(Snd::Sound sound, Math::Vector pos, float amplitude);
+    void        Play(Sound sound, Math::Vector pos, float amplitude);
     bool        TrackMove(int i, Math::Vector pos, float progress);
     void        TrackDraw(int i, ParticleType type);
 
@@ -314,7 +315,7 @@ protected:
     CRobotMain*  m_main;
     CTerrain*    m_terrain;
     CWater*      m_water;
-    Snd::CSound* m_sound;
+    CSound*      m_sound;
 
     Gfx::Particle m_particule[MAXPARTICULE*MAXPARTITYPE];
     Gfx::Triangle m_triangle[MAXPARTICULE];  // triangle if PartiType == 0

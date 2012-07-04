@@ -1,5 +1,5 @@
 // * This file is part of the COLOBOT source code
-// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -14,17 +14,20 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// profile.h
+// plugin.h
+
 
 #pragma once
 
 
-extern bool InitCurrentDirectory();
-extern bool SetLocalProfileString(char* section, char* key, char* string);
-extern bool GetLocalProfileString(char* section, char* key, char* buffer, int max);
-extern bool SetLocalProfileInt(char* section, char* key, int value);
-extern bool GetLocalProfileInt(char* section, char* key, int &value);
-extern bool SetLocalProfileFloat(char* section, char* key, float value);
-extern bool GetLocalProfileFloat(char* section, char* key, float &value);
+#define PLUGIN_INTERFACE(class_type, interface_type) \
+    extern "C" interface_type* installPlugin() { return (interface_type *)new class_type(); } \
+    extern "C" void uninstallPlugin(class_type *_class) { delete _class; }
 
+
+class CPlugin {
+    public:
+        virtual char* PluginName() = 0;
+        virtual int PluginVersion() = 0;
+};
 
