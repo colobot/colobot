@@ -21,13 +21,13 @@
 
 
 #define PLUGIN_INTERFACE(class_type, interface_type) \
-	extern "C" interface_type* installPlugin() { return (interface_type *)new class_type(); } \
-	extern "C" void uninstallPlugin(class_type *_class) { delete _class; }
+    extern "C" interface_type* installPlugin() { return (interface_type *)new class_type(); } \
+    extern "C" void uninstallPlugin(class_type *_class) { delete _class; }
 
 
 class CPlugin {
-	public:
-		virtual char* pluginName() = 0;
-		virtual int pluginVersion() = 0;
+    public:
+        virtual char* PluginName() = 0;
+        virtual int PluginVersion() = 0;
 };
 

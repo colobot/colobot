@@ -345,6 +345,11 @@ end:
     return m_exitCode;
 }
 
+int CApplication::GetExitCode()
+{
+    return m_exitCode;
+}
+
 void CApplication::ParseEvent()
 {
 /*  Event event;
