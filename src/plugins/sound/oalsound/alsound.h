@@ -74,9 +74,8 @@ class ALSound : public CSoundInterface
         bool IsPlayingMusic();
 
         // plugin interface
-        char* pluginName();
-        int pluginVersion();
-        void pluginInit();
+        char* PluginName();
+        int PluginVersion();
   
     private:
         void CleanUp();
