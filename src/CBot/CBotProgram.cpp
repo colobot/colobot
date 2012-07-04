@@ -62,7 +62,7 @@ CBotProgram::~CBotProgram()
 }
 
 
-BOOL CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, void* pUser )
+bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, void* pUser )
 {
 	int			error = 0;
 	Stop();
@@ -81,7 +81,7 @@ BOOL CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
 
 	// transforme le programme en Tokens
 	CBotToken*	pBaseToken = CBotToken::CompileTokens(program, error);
-	if ( pBaseToken == NULL ) return FALSE;
+	if ( pBaseToken == NULL ) return false;
 
 
 	CBotCStack*	pStack		= new CBotCStack(NULL);
@@ -115,7 +115,7 @@ BOOL CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
 		delete m_Prog;
 		m_Prog = NULL;
 		delete pBaseToken;
-		return FALSE;
+		return false;
 	}
 
 //	CBotFunction*	temp = NULL;
@@ -130,12 +130,12 @@ BOOL CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
 		if ( p->GivType() == ID_CLASS || 
 			( p->GivType() == ID_PUBLIC && p->GivNext()->GivType() == ID_CLASS ))
 		{
-			m_bCompileClass = TRUE;
+			m_bCompileClass = true;
 			CBotClass::Compile(p, pStack);					// complète la définition de la classe
 		}
 		else
 		{
-			m_bCompileClass = FALSE;
+			m_bCompileClass = false;
 			CBotFunction::Compile(p, pStack, next);
 			if (next->IsExtern()) ListFonctions.Add(next->GivName()/* + next->GivParams()*/);
 			next->m_pProg = this;							// garde le pointeur au module
@@ -160,7 +160,7 @@ BOOL CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
 }
 
 
-BOOL CBotProgram::Start(const char* name)
+bool CBotProgram::Start(const char* name)
 {
 #if	STACKMEM
 	m_pStack->Delete();
@@ -179,7 +179,7 @@ BOOL CBotProgram::Start(const char* name)
 	if ( m_pRun == NULL )
 	{
 		m_ErrorCode = TX_NORUN;
-		return FALSE;
+		return false;
 	}
 
 #if	STACKMEM
@@ -190,10 +190,10 @@ BOOL CBotProgram::Start(const char* name)
 
 	m_pStack->SetBotCall(this);						// bases pour les routines
 
-	return TRUE;									// on est prêt pour un Run()
+	return true;									// on est prêt pour un Run()
 }
 
-BOOL CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
+bool CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
 {
 	CBotFunction* p = m_Prog;
 	while (p != NULL)
@@ -202,15 +202,15 @@ BOOL CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet m
 		p = p->m_next;
 	}
 
-	if ( p == NULL ) return FALSE;
+	if ( p == NULL ) return false;
 
 	p->GetPosition(start, stop, modestart, modestop);
-	return TRUE;
+	return true;
 }
 
-BOOL CBotProgram::Run(void* pUser, int timer)
+bool CBotProgram::Run(void* pUser, int timer)
 {
-	BOOL	ok;
+	bool	ok;
 
 	if (m_pStack == NULL || m_pRun == NULL) goto error;
 
@@ -253,7 +253,7 @@ BOOL CBotProgram::Run(void* pUser, int timer)
 		delete m_pStack;
 #endif
 		m_pStack = NULL;
-		return TRUE;								// exécution terminée !!
+		return true;								// exécution terminée !!
 	}
 
 	if ( ok ) m_pRun = NULL;						// plus de fonction en exécution
@@ -261,7 +261,7 @@ BOOL CBotProgram::Run(void* pUser, int timer)
 
 error:
 	m_ErrorCode = TX_NORUN;
-	return TRUE;
+	return true;
 }
 
 void CBotProgram::Stop()
@@ -277,14 +277,14 @@ void CBotProgram::Stop()
 
 
 
-BOOL CBotProgram::GetRunPos(const char* &FunctionName, int &start, int &end)
+bool CBotProgram::GetRunPos(const char* &FunctionName, int &start, int &end)
 {
 	FunctionName = NULL;
 	start = end = 0;
-	if (m_pStack == NULL) return FALSE;
+	if (m_pStack == NULL) return false;
 
 	m_pStack->GetRunPos(FunctionName, start, end);
-	return TRUE;
+	return true;
 }
 
 CBotVar* CBotProgram::GivStackVars(const char* &FunctionName, int level)
@@ -321,7 +321,7 @@ long CBotProgram::GivIdent()
 	return m_Ident;
 }
 
-BOOL CBotProgram::GetError(int& code, int& start, int& end)
+bool CBotProgram::GetError(int& code, int& start, int& end)
 {
 	code  = m_ErrorCode;
 	start = m_ErrorStart;
@@ -329,7 +329,7 @@ BOOL CBotProgram::GetError(int& code, int& start, int& end)
 	return code > 0;
 }
 
-BOOL CBotProgram::GetError(int& code, int& start, int& end, CBotProgram* &pProg)
+bool CBotProgram::GetError(int& code, int& start, int& end, CBotProgram* &pProg)
 {
 	code	= m_ErrorCode;
 	start	= m_ErrorStart;
@@ -358,8 +358,8 @@ CBotFunction* CBotProgram::GivFunctions()
 	return	m_Prog;
 }
 
-BOOL CBotProgram::AddFunction(const char* name, 
-							  BOOL rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
+bool CBotProgram::AddFunction(const char* name, 
+							  bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
 							  CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
 {
 	// mémorise les pointeurs aux deux fonctions
@@ -367,25 +367,25 @@ BOOL CBotProgram::AddFunction(const char* name,
 }
 
 
-BOOL WriteWord(FILE* pf, WORD w)
+bool WriteWord(FILE* pf, unsigned short w)
 {
 	size_t	lg;
 
-	lg = fwrite(&w, sizeof( WORD ), 1, pf );
+	lg = fwrite(&w, sizeof( unsigned short ), 1, pf );
 
 	return (lg == 1);     
 }
 
-BOOL ReadWord(FILE* pf, WORD& w)
+bool ReadWord(FILE* pf, unsigned short& w)
 {
 	size_t	lg;
 
-	lg = fread(&w, sizeof( WORD ), 1, pf );
+	lg = fread(&w, sizeof( unsigned short ), 1, pf );
 
 	return (lg == 1);
 }
 
-BOOL WriteFloat(FILE* pf, float w)
+bool WriteFloat(FILE* pf, float w)
 {
 	size_t	lg;
 
@@ -394,7 +394,7 @@ BOOL WriteFloat(FILE* pf, float w)
 	return (lg == 1);     
 }
 
-BOOL ReadFloat(FILE* pf, float& w)
+bool ReadFloat(FILE* pf, float& w)
 {
 	size_t	lg;
 
@@ -403,7 +403,7 @@ BOOL ReadFloat(FILE* pf, float& w)
 	return (lg == 1);
 }
 
-BOOL WriteLong(FILE* pf, long w)
+bool WriteLong(FILE* pf, long w)
 {
 	size_t	lg;
 
@@ -412,7 +412,7 @@ BOOL WriteLong(FILE* pf, long w)
 	return (lg == 1);     
 }
 
-BOOL ReadLong(FILE* pf, long& w)
+bool ReadLong(FILE* pf, long& w)
 {
 	size_t	lg;
 
@@ -421,24 +421,24 @@ BOOL ReadLong(FILE* pf, long& w)
 	return (lg == 1);
 }
 
-BOOL WriteString(FILE* pf, CBotString s)
+bool WriteString(FILE* pf, CBotString s)
 {
 	size_t	lg1, lg2;
 
 	lg1 = s.GivLength();
-	if (!WriteWord(pf, lg1)) return FALSE;
+	if (!WriteWord(pf, lg1)) return false;
 
 	lg2 = fwrite(s, 1, lg1, pf );
 	return (lg1 == lg2);     
 }
 
-BOOL ReadString(FILE* pf, CBotString& s)
+bool ReadString(FILE* pf, CBotString& s)
 {
-	WORD	w;
+	unsigned short	w;
 	char	buf[1000];
 	size_t	lg1, lg2;
 
-	if (!ReadWord(pf, w)) return FALSE;
+	if (!ReadWord(pf, w)) return false;
 	lg1 = w;
 	lg2 = fread(buf, 1, lg1, pf );
 	buf[lg2] = 0;
@@ -447,29 +447,29 @@ BOOL ReadString(FILE* pf, CBotString& s)
 	return (lg1 == lg2);
 }
 
-BOOL WriteType(FILE* pf, CBotTypResult type)
+bool WriteType(FILE* pf, CBotTypResult type)
 {
 	int	typ = type.GivType();
 	if ( typ == CBotTypIntrinsic ) typ = CBotTypClass;
-	if ( !WriteWord(pf, typ) ) return FALSE;
+	if ( !WriteWord(pf, typ) ) return false;
 	if ( typ == CBotTypClass )
 	{
 		CBotClass* p = type.GivClass();
-		if ( !WriteString(pf, p->GivName()) ) return FALSE;
+		if ( !WriteString(pf, p->GivName()) ) return false;
 	}
 	if ( type.Eq( CBotTypArrayBody ) ||
 		 type.Eq( CBotTypArrayPointer ) )
 	{
-		if ( !WriteWord(pf, type.GivLimite()) ) return FALSE;
-		if ( !WriteType(pf, type.GivTypElem()) ) return FALSE;
+		if ( !WriteWord(pf, type.GivLimite()) ) return false;
+		if ( !WriteType(pf, type.GivTypElem()) ) return false;
 	}
-	return TRUE;
+	return true;
 }
 
-BOOL ReadType(FILE* pf, CBotTypResult& type)
+bool ReadType(FILE* pf, CBotTypResult& type)
 {
-	WORD	w, ww;
-	if ( !ReadWord(pf, w) ) return FALSE;
+	unsigned short	w, ww;
+	if ( !ReadWord(pf, w) ) return false;
 	type.SetType(w);
 
 	if ( type.Eq( CBotTypIntrinsic ) )
@@ -480,7 +480,7 @@ BOOL ReadType(FILE* pf, CBotTypResult& type)
 	if ( type.Eq( CBotTypClass ) )
 	{
 		CBotString	s;
-		if ( !ReadString(pf, s) ) return FALSE;
+		if ( !ReadString(pf, s) ) return false;
 		type = CBotTypResult( w, s );
 	}
 
@@ -488,54 +488,54 @@ BOOL ReadType(FILE* pf, CBotTypResult& type)
 		 type.Eq( CBotTypArrayBody ) )
 	{
 		CBotTypResult	r;
-		if ( !ReadWord(pf, ww) ) return FALSE;
-		if ( !ReadType(pf, r) ) return FALSE;
+		if ( !ReadWord(pf, ww) ) return false;
+		if ( !ReadType(pf, r) ) return false;
 		type = CBotTypResult( w, r );
 		type.SetLimite((short)ww);
 	}
-	return TRUE;
+	return true;
 }
 
 
-BOOL CBotProgram::DefineNum(const char* name, long val)
+bool CBotProgram::DefineNum(const char* name, long val)
 {
 	return CBotToken::DefineNum(name, val);
 }
 
 
-BOOL CBotProgram::SaveState(FILE* pf)
+bool CBotProgram::SaveState(FILE* pf)
 {
-	if (!WriteWord( pf, CBOTVERSION)) return FALSE;
+	if (!WriteWord( pf, CBOTVERSION)) return false;
 
 
 	if ( m_pStack != NULL )
 	{
-		if (!WriteWord( pf, 1)) return FALSE;
-		if (!WriteString( pf, m_pRun->GivName() )) return FALSE;
-		if (!m_pStack->SaveState(pf)) return FALSE;
+		if (!WriteWord( pf, 1)) return false;
+		if (!WriteString( pf, m_pRun->GivName() )) return false;
+		if (!m_pStack->SaveState(pf)) return false;
 	}
 	else 
 	{
-		if (!WriteWord( pf, 0)) return FALSE;
+		if (!WriteWord( pf, 0)) return false;
 	}
-	return TRUE;
+	return true;
 }
 
 
-BOOL CBotProgram::RestoreState(FILE* pf)
+bool CBotProgram::RestoreState(FILE* pf)
 {
-	WORD		w;
-	CBotString	s;
+	unsigned short  w;
+	CBotString      s;
 
 	Stop();
 
-	if (!ReadWord( pf, w )) return FALSE;
-	if ( w != CBOTVERSION ) return FALSE;
+	if (!ReadWord( pf, w )) return false;
+	if ( w != CBOTVERSION ) return false;
 
-	if (!ReadWord( pf, w )) return FALSE;
-	if ( w == 0 ) return TRUE;
+	if (!ReadWord( pf, w )) return false;
+	if ( w == 0 ) return true;
 
-	if (!ReadString( pf, s )) return FALSE;
+	if (!ReadString( pf, s )) return false;
 	Start(s);		// point de reprise
 
 #if	STACKMEM
@@ -547,12 +547,12 @@ BOOL CBotProgram::RestoreState(FILE* pf)
 
 	// récupère la pile depuis l'enregistrement
 	// utilise un pointeur NULL (m_pStack) mais c'est ok comme ça
-	if (!m_pStack->RestoreState(pf, m_pStack)) return FALSE;
+	if (!m_pStack->RestoreState(pf, m_pStack)) return false;
 	m_pStack->SetBotCall(this);						// bases pour les routines
 
 	// rétabli certains états dans la pile selon la structure
 	m_pRun->RestoreState(NULL, m_pStack, m_pInstance);
-	return TRUE;
+	return true;
 }
 
 int CBotProgram::GivVersion()
@@ -566,7 +566,7 @@ int CBotProgram::GivVersion()
 CBotCall* CBotCall::m_ListCalls = NULL;
 	
 CBotCall::CBotCall(const char* name, 
-				   BOOL rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
+				   bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
 				   CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
 {
 	m_name		 = name;
@@ -587,8 +587,8 @@ void CBotCall::Free()
 	delete CBotCall::m_ListCalls;
 }
 
-BOOL CBotCall::AddFunction(const char* name, 
-						   BOOL rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
+bool CBotCall::AddFunction(const char* name, 
+						   bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
 						   CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
 {
 	CBotCall*	p = m_ListCalls;
@@ -616,18 +616,18 @@ BOOL CBotCall::AddFunction(const char* name,
 	if (p) p->m_next = pp;
 	else m_ListCalls = pp;
 
-	return TRUE;
+	return true;
 }
 
 
 // transforme le tableau de pointeurs aux variables
 // en une liste de variables chaînées
-CBotVar* MakeListVars(CBotVar** ppVars, BOOL bSetVal=FALSE)
+CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal=false)
 {
 	int		i = 0;
 	CBotVar*	pVar = NULL;
 
-	while( TRUE )
+	while( true )
 	{
 		ppVars[i];
 		if ( ppVars[i] == NULL ) break;
@@ -686,16 +686,16 @@ void CBotCall::SetPUser(void* pUser)
 	m_pUser = pUser;
 }
 
-int CBotCall::CheckCall(const char* name)
+bool CBotCall::CheckCall(const char* name)
 {
 	CBotCall* p = m_ListCalls;
 
 	while ( p != NULL )
 	{
-		if ( name == p->GivName() ) return TRUE;
+		if ( name == p->GivName() ) return true;
 		p = p->m_next;
 	}
-	return FALSE;
+	return false;
 }
 
 
@@ -746,7 +746,7 @@ fund:
 #if !STACKRUN
 	// fait la liste des paramètres selon le contenu de la pile (pStackVar)
 
-	CBotVar*	pVar = MakeListVars(ppVar, TRUE);
+	CBotVar*	pVar = MakeListVars(ppVar, true);
 	CBotVar*	pVarToDelete = pVar;
 
 	// crée une variable pour le résultat
@@ -759,14 +759,14 @@ fund:
 	if ( pResult != pRes ) delete pRes;	// si résultat différent rendu
 	delete pVarToDelete;
 
-	if (res == FALSE)
+	if (res == false)
 	{
 		if (Exception!=0)
 		{
 			pStack->SetError(Exception, token);
 		}
 		delete pResult;
-		return FALSE;
+		return false;
 	}
 	pStack->SetVar(pResult);
 
@@ -775,16 +775,16 @@ fund:
 		pStack->SetError(TX_NORETVAL, token);
 	}
 	nIdent = pt->m_nFuncIdent;
-	return TRUE;
+	return true;
 
 #else
 
 	CBotStack*	pile = pStack->AddStackEOX(pt);
-	if ( pile == EOX ) return TRUE;
+	if ( pile == EOX ) return true;
 
 	// fait la liste des paramètres selon le contenu de la pile (pStackVar)
 
-	CBotVar*	pVar = MakeListVars(ppVar, TRUE);
+	CBotVar*	pVar = MakeListVars(ppVar, true);
 	CBotVar*	pVarToDelete = pVar;
 
 	// crée une variable pour le résultat
@@ -804,7 +804,7 @@ fund:
 
 #if	STACKRUN
 
-BOOL CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack)
+bool CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack)
 {
 	CBotCall*	pt = m_ListCalls;
 
@@ -817,22 +817,22 @@ BOOL CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBot
 				nIdent = pt->m_nFuncIdent;
 
 				CBotStack*	pile = pStack->RestoreStackEOX(pt);
-				if ( pile == NULL ) return TRUE;
+				if ( pile == NULL ) return true;
 
 				CBotStack*	pile2 = pile->RestoreStack();
-				return TRUE;
+				return true;
 			}
 			pt = pt->m_next;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
-BOOL CBotCall::Run(CBotStack* pStack)
+bool CBotCall::Run(CBotStack* pStack)
 {
 	CBotStack*	pile = pStack->AddStackEOX(this);
-	if ( pile == EOX ) return TRUE;
+	if ( pile == EOX ) return true;
 	CBotVar*	pVar = pile->GivVar();
 
 	CBotStack*	pile2 = pile->AddStack();
@@ -842,20 +842,20 @@ BOOL CBotCall::Run(CBotStack* pStack)
 	int			Exception = 0;
 	int res = m_rExec(pVar, pResult, Exception, pStack->GivPUser());
 
-	if (res == FALSE)
+	if (res == false)
 	{
 		if (Exception!=0)
 		{
 			pStack->SetError(Exception);
 		}
 		if ( pResult != pRes ) delete pResult;	// si résultat différent rendu
-		return FALSE;
+		return false;
 	}
 
 	if ( pResult != NULL ) pStack->SetCopyVar( pResult );
 	if ( pResult != pRes ) delete pResult;	// si résultat différent rendu
 
-	return TRUE;
+	return true;
 }
 
 #endif
@@ -863,7 +863,7 @@ BOOL CBotCall::Run(CBotStack* pStack)
 ///////////////////////////////////////////////////////////////////////////////////////
 
 CBotCallMethode::CBotCallMethode(const char* name, 
-				   BOOL rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception), 
+				   bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception), 
 				   CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar))
 {
 	m_name		 = name;
@@ -893,7 +893,7 @@ CBotTypResult CBotCallMethode::CompileCall(const char* name, CBotVar* pThis,
 	{
 		if ( pt->m_name == name )
 		{
-			CBotVar*	pVar = MakeListVars(ppVar, TRUE);
+			CBotVar*	pVar = MakeListVars(ppVar, true);
 			CBotVar*	pVar2 = pVar;
 			CBotTypResult r = pt->m_rComp(pThis, pVar2);
 			int	ret = r.GivType();
@@ -942,7 +942,7 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
 		{
 			// fait la liste des paramètres selon le contenu de la pile (pStackVar)
 
-			CBotVar*	pVar = MakeListVars(ppVars, TRUE);
+			CBotVar*	pVar = MakeListVars(ppVars, true);
 			CBotVar*	pVarToDelete = pVar;
 
 			// puis appelle la routine externe au module
@@ -951,7 +951,7 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
 			int res = pt->m_rExec(pThis, pVar, pResult, Exception);
 			pStack->SetVar(pResult);
 
-			if (res == FALSE)
+			if (res == false)
 			{
 				if (Exception!=0)
 				{
@@ -959,10 +959,10 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
 					pStack->SetError(Exception, pToken);
 				}
 				delete pVarToDelete;
-				return FALSE;
+				return false;
 			}
 			delete pVarToDelete;
-			return TRUE;
+			return true;
 		}
 		pt = pt->m_next;
 	}
@@ -975,14 +975,14 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
 		{
 			// fait la liste des paramètres selon le contenu de la pile (pStackVar)
 
-			CBotVar*	pVar = MakeListVars(ppVars, TRUE);
+			CBotVar*	pVar = MakeListVars(ppVars, true);
 			CBotVar*	pVarToDelete = pVar;
 
 			int			Exception = 0;
 			int res = pt->m_rExec(pThis, pVar, pResult, Exception);
 			pStack->SetVar(pResult);
 
-			if (res == FALSE)
+			if (res == false)
 			{
 				if (Exception!=0)
 				{
@@ -990,11 +990,11 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
 					pStack->SetError(Exception, pToken);
 				}
 				delete pVarToDelete;
-				return FALSE;
+				return false;
 			}
 			delete pVarToDelete;
 			nIdent = pt->m_nFuncIdent;
-			return TRUE;
+			return true;
 		}
 		pt = pt->m_next;
 	}
@@ -1002,7 +1002,7 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
 	return -1;
 }
 
-BOOL rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
+bool rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
 	if ( pVar == NULL ) return TX_LOWPARAM;
 
@@ -1016,7 +1016,7 @@ BOOL rSizeOf( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 	}
 
 	pResult->SetValInt(i);
-	return TRUE;
+	return true;
 }
 
 CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
@@ -1030,11 +1030,11 @@ CBotTypResult cSizeOf( CBotVar* &pVar, void* pUser )
 
 CBotString CBotProgram::m_DebugVarStr = "";
 
-BOOL rCBotDebug( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
+bool rCBotDebug( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
 	pResult->SetValString( CBotProgram::m_DebugVarStr );
 
-	return TRUE;
+	return true;
 }
 
 CBotTypResult cCBotDebug( CBotVar* &pVar, void* pUser )
@@ -1103,7 +1103,8 @@ void CBotProgram::Init()
 
 	// une fonction juste pour les debug divers
 	CBotProgram::AddFunction("CBOTDEBUGDD", rCBotDebug, cCBotDebug);
-	DeleteFile("CbotDebug.txt");
+    //TODO implement this deletion
+    // DeleteFile("CbotDebug.txt");
 
 }
 

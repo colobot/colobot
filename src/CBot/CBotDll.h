@@ -19,10 +19,10 @@
 
 //#include "stdafx.h"
 
-#include <windows.h>        
+// #include <windows.h>        
 #include <stdio.h>
 
-#define DllExport    __declspec( dllexport )
+// #define DllExport    __declspec( dllexport )
 
 #define	CBOTVERSION	104
 
@@ -93,62 +93,62 @@ private:
 
 public:
 	// divers constructeurs selon les besoins
-	DllExport
+    //DllExport
 				CBotTypResult(int type);
 				// pour les types simples (CBotTypInt à CBotTypString)
-	DllExport
+    //DllExport
 				CBotTypResult(int type, const char* name);
 				// pour les types pointeur et classe intrinsic
-	DllExport
+    //DllExport
 				CBotTypResult(int type, CBotClass* pClass);
 				// idem à partir de l'instance d'une classe
-	DllExport
+    //DllExport
 				CBotTypResult(int type, CBotTypResult elem);
 				// pour les tableaux de variables
 
-	DllExport
+    //DllExport
 				CBotTypResult(const CBotTypResult& typ);
 				// pour les assignations
-	DllExport
+    //DllExport
 				CBotTypResult();
 				// pour par défaut
-	DllExport
+    //DllExport
 				~CBotTypResult();
 
-	DllExport
+    //DllExport
 	int			GivType(int mode = 0) const;
 				// rend le type CBotTyp* du résultat
 
 	void		SetType(int n);
 				// modifie le type
 
-	DllExport
+    //DllExport
 	CBotClass*	GivClass() const;
 				// rend le pointeur à la classe (pour les CBotTypClass, CBotTypPointer)
 
-	DllExport
+    //DllExport
 	int			GivLimite() const;
 				// rend la taille limite du tableau (CBotTypArray)
 
-	DllExport
+    //DllExport
 	void		SetLimite(int n);
 				// fixe une limite au tableau
 
 	void		SetArray(int* max );
 				// idem avec une liste de dimension (tableaux de tableaux)
 
-	DllExport
+    //DllExport
 	CBotTypResult& GivTypElem() const;
 				// rend le type des éléments du tableau (CBotTypArray)
 
-	DllExport
-	BOOL		Compare(const CBotTypResult& typ) const;
+    //DllExport
+	bool		Compare(const CBotTypResult& typ) const;
 				// compare si les types sont compatibles
-	DllExport
-	BOOL		Eq(int type) const;
+    //DllExport
+	bool		Eq(int type) const;
 				// compare le type
 
-	DllExport
+    //DllExport
 	CBotTypResult&
 				operator=(const CBotTypResult& src);
 				// copie un type complet dans un autre
@@ -259,102 +259,102 @@ class CBotString
 private:
 	char*			m_ptr;						// pointeur à la chaine
 	int				m_lg;						// longueur de la chaine
-	static 
-	HINSTANCE		m_hInstance;
+    // static 
+    // HINSTANCE        m_hInstance;
 
 public:
-	DllExport
+    //DllExport
 					CBotString();
-	DllExport
+    //DllExport
 					CBotString(const char* p);
-	DllExport
+    //DllExport
 					CBotString(const CBotString& p);
-	DllExport
+    //DllExport
 					~CBotString();
 
-	DllExport
+    //DllExport
 	void			Empty();
-	DllExport
-	BOOL			IsEmpty() const;
-	DllExport
+    //DllExport
+	bool			IsEmpty() const;
+    //DllExport
 	int				GivLength();
-	DllExport
+    //DllExport
 	int				Find(const char c);
-	DllExport
-	int				Find(LPCTSTR lpsz);
-	DllExport
+    //DllExport
+	int				Find(const char* lpsz);
+    //DllExport
 	int				ReverseFind(const char c);
-	DllExport
-	int				ReverseFind(LPCTSTR lpsz);
-	DllExport
-	BOOL			LoadString(UINT id);
-	DllExport
+    //DllExport
+	int				ReverseFind(const char* lpsz);
+    //DllExport
+	bool			LoadString(unsigned int id);
+    //DllExport
 	CBotString		Mid(int nFirst, int nCount) const;
-	DllExport
+    //DllExport
 	CBotString		Mid(int nFirst) const;
-	DllExport
+    //DllExport
 	CBotString		Left(int nCount) const;
-	DllExport
+    //DllExport
 	CBotString		Right(int nCount) const;
 
-	DllExport
+    //DllExport
 	const CBotString&
 					operator=(const CBotString& stringSrc);
-	DllExport
+    //DllExport
 	const CBotString&
 					operator=(const char ch);
-	DllExport
+    //DllExport
 	const CBotString&
 					operator=(const char* pString);
-	DllExport
+    //DllExport
 	const CBotString&
 					operator+(const CBotString& str);
-	DllExport
+    //DllExport
 	friend CBotString 
-					operator+(const CBotString& string, LPCTSTR lpsz);
+					operator+(const CBotString& string, const char* lpsz);
 
-	DllExport
+    //DllExport
 	const CBotString&
 					operator+=(const char ch);
-	DllExport
+    //DllExport
 	const CBotString& 
 					operator+=(const CBotString& str);
-	DllExport
-	BOOL			operator==(const CBotString& str);
-	DllExport
-	BOOL			operator==(const char* p);
-	DllExport
-	BOOL			operator!=(const CBotString& str);
-	DllExport
-	BOOL			operator!=(const char* p);
-	DllExport
-	BOOL			operator>(const CBotString& str);
-	DllExport
-	BOOL			operator>(const char* p);
-	DllExport
-	BOOL			operator>=(const CBotString& str);
-	DllExport
-	BOOL			operator>=(const char* p);
-	DllExport
-	BOOL			operator<(const CBotString& str);
-	DllExport
-	BOOL			operator<(const char* p);
-	DllExport
-	BOOL			operator<=(const CBotString& str);
-	DllExport
-	BOOL			operator<=(const char* p);
+    //DllExport
+	bool			operator==(const CBotString& str);
+    //DllExport
+	bool			operator==(const char* p);
+    //DllExport
+	bool			operator!=(const CBotString& str);
+    //DllExport
+	bool			operator!=(const char* p);
+    //DllExport
+	bool			operator>(const CBotString& str);
+    //DllExport
+	bool			operator>(const char* p);
+    //DllExport
+	bool			operator>=(const CBotString& str);
+    //DllExport
+	bool			operator>=(const char* p);
+    //DllExport
+	bool			operator<(const CBotString& str);
+    //DllExport
+	bool			operator<(const char* p);
+    //DllExport
+	bool			operator<=(const CBotString& str);
+    //DllExport
+	bool			operator<=(const char* p);
 
-	DllExport
-					operator LPCTSTR() const;           // as a C string
+    //DllExport
+					operator const char*() const;           // as a C string
 
-	int				Compare(LPCTSTR lpsz) const;
+	int				Compare(const char* lpsz) const;
 
-	DllExport
+    //DllExport
 	CBotString		Mid(int start, int lg=-1);
 
-	DllExport
+    //DllExport
 	void			MakeUpper();
-	DllExport
+    //DllExport
 	void			MakeLower();
 };
 
@@ -369,20 +369,20 @@ private:
 	CBotString*		m_pData;					// ^aux données
 
 public:
-	DllExport
+    //DllExport
 					CBotStringArray();
-	DllExport
+    //DllExport
 					~CBotStringArray();
-	DllExport
+    //DllExport
 	void			SetSize(int nb);
-	DllExport
+    //DllExport
 	int				GivSize();
-	DllExport
+    //DllExport
 	void			Add(const CBotString& str);
-	DllExport
+    //DllExport
 	CBotString&		operator[](int nIndex);
 
-	DllExport
+    //DllExport
 	CBotString&		ElementAt(int nIndex);
 };
 
@@ -418,87 +418,87 @@ private:
 public:
 	static
 	CBotString		m_DebugVarStr;	// a fin de debug
-	BOOL			m_bDebugDD;		// idem déclanchable par robot
+	bool			m_bDebugDD;		// idem déclanchable par robot
 
-	BOOL			m_bCompileClass;
+	bool			m_bCompileClass;
 
 public:
-	DllExport
+    //DllExport
 	static
 	void			Init();
 	//				initialise le module (défini les mots clefs pour les erreurs)
 	//				doit être fait une fois (et une seule) au tout début
-	DllExport
+    //DllExport
 	static
 	void			Free();
 	//				libère les zones mémoires statiques
 
-	DllExport
+    //DllExport
 	static
 	int				GivVersion();
 	//				donne la version de la librairie CBOT
 
 
-	DllExport
+    //DllExport
 					CBotProgram();
-	DllExport
+    //DllExport
 					CBotProgram(CBotVar* pInstance);
-	DllExport
+    //DllExport
 					~CBotProgram();
 
-	DllExport
-	BOOL			Compile( const char* program, CBotStringArray& ListFonctions, void* pUser = NULL);
+    //DllExport
+	bool			Compile( const char* program, CBotStringArray& ListFonctions, void* pUser = NULL);
 	//				compile le programme donné en texte
-	//				retourne FALSE s'il y a une erreur à la compilation
+	//				retourne false s'il y a une erreur à la compilation
 	//				voir GetCompileError() pour récupérer l'erreur
 	//				ListFonctions retourne le nom des fonctions déclarées extern
 	//				pUser permet de passer un pointeur pour les routines définies par AddFunction
 
-	DllExport
+    //DllExport
 	void			SetIdent(long n);
 	//				associe un identificateur avec l'instance CBotProgram
 
-	DllExport
+    //DllExport
 	long			GivIdent();
 	//				redonne l'identificateur
 
-	DllExport
+    //DllExport
 	int				GivError();
-	DllExport
-	BOOL			GetError(int& code, int& start, int& end);
-	DllExport
-	BOOL			GetError(int& code, int& start, int& end, CBotProgram* &pProg);
-	//				si TRUE
+    //DllExport
+	bool			GetError(int& code, int& start, int& end);
+    //DllExport
+	bool			GetError(int& code, int& start, int& end, CBotProgram* &pProg);
+	//				si true
 	//				donne l'erreur trouvée à la compilation
 	//				ou à l'exécution
 	//				start et end délimite le bloc où se trouve l'erreur
 	//				pProg permet de savoir dans quel "module" s'est produite l'erreur d'exécution
-	DllExport
+    //DllExport
 	static
 	CBotString		GivErrorText(int code);
 
 
-	DllExport
-	BOOL			Start(const char* name);
+    //DllExport
+	bool			Start(const char* name);
 	//				définie quelle fonction doit être exécutée
-	//				retourne FALSE si la fontion name n'est pas trouvée
+	//				retourne false si la fontion name n'est pas trouvée
 	//				le programme ne fait rien, il faut appeller Run() pour cela
 
-	DllExport
-	BOOL			Run(void* pUser = NULL, int timer = -1);
+    //DllExport
+	bool			Run(void* pUser = NULL, int timer = -1);
 	//				exécute le programme
-	//				retourne FALSE si le programme a été suspendu
-	//				retourne TRUE si le programme s'est terminé avec ou sans erreur
+	//				retourne false si le programme a été suspendu
+	//				retourne true si le programme s'est terminé avec ou sans erreur
 	//				timer = 0 permet de faire une avance pas à pas
 
-	DllExport
-	BOOL			GetRunPos(const char* &FunctionName, int &start, int &end);
+    //DllExport
+	bool			GetRunPos(const char* &FunctionName, int &start, int &end);
 	//				donne la position dans le programme en exécution
-	//				retourne FALSE si on n'est pas en exécution (programme terminé)
+	//				retourne false si on n'est pas en exécution (programme terminé)
 	//				FunctionName est un pointeur rendu sur le nom de la fonction
 	//				start et end la position dans le texte du token en traitement
 
-	DllExport
+    //DllExport
 	CBotVar*		GivStackVars(const char* &FunctionName, int level);
 	//				permet d'obtenir le pointeur aux variables sur la pile d'exécution
 	//				level est un paramètre d'entrée, 0 pour le dernier niveau, -1, -2, etc pour les autres niveau
@@ -507,41 +507,41 @@ public:
 	//				FunctionName donne le nom de la fonction où se trouvent ces variables
 	//				FunctionName == NULL signifiant qu'on est plus dans le programme (selon level)
 
-	DllExport
+    //DllExport
 	void			Stop();
 	//				arrête l'exécution du programme
 	//				quitte donc le mode "suspendu"
 
-	DllExport
+    //DllExport
 	static
 	void			SetTimer(int n);
 	//				défini le nombre de pas (parties d'instructions) à faire
-	//				dans Run() avant de rendre la main "FALSE"
+	//				dans Run() avant de rendre la main "false"
 
-	DllExport
+    //DllExport
 	static
-	BOOL			AddFunction(const char* name, 
-								BOOL rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
+	bool			AddFunction(const char* name, 
+								bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
 								CBotTypResult rCompile (CBotVar* &pVar, void* pUser));
 	//				cet appel permet d'ajouter de manière externe (**)
 	//				une nouvelle fonction utilisable par le programme CBot
 
-	DllExport
+    //DllExport
 	static
-	BOOL			DefineNum(const char* name, long val);
+	bool			DefineNum(const char* name, long val);
 
-	DllExport
-	BOOL			SaveState(FILE* pf);
+    //DllExport
+	bool			SaveState(FILE* pf);
 	//				sauvegarde l'état d'exécution dans le fichier
 	//				le fichier doit avoir été ouvert avec l'appel fopen de cette dll
 	//				sinon le système plante
-	DllExport
-	BOOL			RestoreState(FILE* pf);
+    //DllExport
+	bool			RestoreState(FILE* pf);
 	//				rétablie l'état de l'exécution depuis le fichier
 	//				le programme compilé doit évidemment être identique
 
-	DllExport
-	BOOL			GetPosition(const char* name, int& start, int& stop, 
+    //DllExport
+	bool			GetPosition(const char* name, int& start, int& stop, 
 								CBotGet modestart = GetPosExtern, 
 								CBotGet modestop  = GetPosBloc);
 	//				donne la position d'une routine dans le texte d'origine
@@ -555,13 +555,13 @@ public:
 
 ///////////////////////////////////////////////////////////////////////////////
 // routines pour la gestion d'un fichier (FILE*)
-	DllExport
+    //DllExport
 	FILE*		fOpen(const char* name, const char* mode);
-	DllExport
+    //DllExport
 	int			fClose(FILE* filehandle);
-	DllExport
+    //DllExport
 	size_t		fWrite(const void *buffer, size_t elemsize, size_t length, FILE* filehandle);
-	DllExport
+    //DllExport
 	size_t		fRead(void *buffer, size_t elemsize, size_t length, FILE* filehandle);
 
 
@@ -594,7 +594,7 @@ int	cMoyenne(CBotVar* &pVar, CBotString& ClassName)
 }
 
 
-BOOL rMoyenne(CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool rMoyenne(CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
 	float total = 0;
 	int   nb	  = 0;
@@ -606,7 +606,7 @@ BOOL rMoyenne(CBotVar* pVar, CBotVar* pResult, int& Exception)
 	}
 	pResult->SetValFloat(total/nb);				// retourne la valeur moyenne
 
-	return TRUE;								// opération totalement terminée
+	return true;								// opération totalement terminée
 }
 
 #endif
@@ -645,7 +645,7 @@ protected:
 	int				m_binit;					// pas initialisée ?
 	CBotVarClass*	m_pMyThis;					// ^élément this correspondant
 	void*			m_pUserPtr;					// ^données user s'il y a lieu
-	BOOL			m_bStatic;					// élément static (dans une classe)
+	bool			m_bStatic;					// élément static (dans une classe)
 	int				m_mPrivate;					// élément public, protected ou private ?
 
 	CBotInstr*		m_InitExpr;					// expression pour le contenu initial
@@ -663,17 +663,17 @@ public:
 virtual				~CBotVar( );						// destructeur
 
 
-/*	DllExport
+/*    //DllExport
 	static
 	CBotVar*		Create( const char* name, int type, const char* ClassName = NULL);
 	//				crée une variable selon son type,*/
 
-	DllExport
+    //DllExport
 	static
 	CBotVar*		Create( const char* name, CBotTypResult type);
 	//				idem à partir du type complet
 
-	DllExport
+    //DllExport
 	static
 	CBotVar*		Create( const char* name, CBotClass* pClass);
 	//				idem pour une instance d'une classe connue
@@ -690,51 +690,51 @@ virtual				~CBotVar( );						// destructeur
 	CBotVar*		Create( CBotVar* pVar );
 
 
-	DllExport
+    //DllExport
 	void			SetUserPtr(void* pUser);
 	//				associe un pointeur utilisateur à une instance
 
-	DllExport
+    //DllExport
 	virtual void	SetIdent(long UniqId);
 	//				associe un identificateur unique à une instance
 	//				( c'est à l'utilisateur de s'assurer que l'id est unique)
 
-	DllExport
+    //DllExport
 	void*			GivUserPtr();
 	//				rend le pointeur associé à la variable
 
-	DllExport
+    //DllExport
 	CBotString		GivName();					// le nom de la variable, s'il est connu
 	////////////////////////////////////////////////////////////////////////////////////
 	void			SetName(const char* name);	// change le nom de la variable
 
-	DllExport
+    //DllExport
 	int				GivType(int mode = 0);		// rend le type de base (int) de la variable
 	////////////////////////////////////////////////////////////////////////////////////////
 
-	DllExport
+    //DllExport
 	CBotTypResult	GivTypResult(int mode = 0);	// rend le type complet de la variable
 
 
 	CBotToken*		GivToken();
 	void			SetType(CBotTypResult& type);
 
-	DllExport
+    //DllExport
 	void			SetInit(int bInit);			// met la variable dans l'état IS_UNDEF, IS_DEF, IS_NAN
 
-	DllExport
+    //DllExport
 	int				GivInit();					// donne l'état de la variable
 
-	DllExport
-	void			SetStatic(BOOL bStatic);
-	DllExport
-	BOOL			IsStatic();
+    //DllExport
+	void			SetStatic(bool bStatic);
+    //DllExport
+	bool			IsStatic();
 
-	DllExport
+    //DllExport
 	void			SetPrivate(int mPrivate);
-	DllExport
-	BOOL			IsPrivate(int mode = PR_PROTECT);
-	DllExport
+    //DllExport
+	bool			IsPrivate(int mode = PR_PROTECT);
+    //DllExport
 	int				GivPrivate();
 
 	virtual
@@ -742,55 +742,55 @@ virtual				~CBotVar( );						// destructeur
 
 	void			SetVal(CBotVar* var);		// remprend une valeur
 
-	DllExport
+    //DllExport
 	virtual
 	CBotVar*		GivItem(const char* name);	// rend un élément d'une classe selon son nom (*)
 	virtual
 	CBotVar*		GivItemRef(int nIdent);		// idem à partir du n° ref
 
-	DllExport
+    //DllExport
 	virtual
-	CBotVar*		GivItem(int row, BOOL bGrow = FALSE); 
+	CBotVar*		GivItem(int row, bool bGrow = false); 
 
-	DllExport
+    //DllExport
 	virtual
 	CBotVar*		GivItemList();				// donne la liste des éléments
 
-	DllExport
+    //DllExport
 	CBotVar*		GivStaticVar();				// rend le pointeur à la variable si elle est statique
 
-	DllExport
-	BOOL			IsElemOfClass(const char* name);
+    //DllExport
+	bool			IsElemOfClass(const char* name);
 												// dit si l'élément appartient à la classe "name"
-												// rend TRUE si l'objet est d'une classe fille
+												// rend true si l'objet est d'une classe fille
 
-	DllExport
+    //DllExport
 	CBotVar*		GivNext();					// prochaine variable dans la liste (paramètres)
 	////////////////////////////////////////////////////////////////////////////////////////////
 
 	void			AddNext(CBotVar* pVar);		// ajoute dans une liste
 
 	virtual
-	void			Copy(CBotVar* pSrc, BOOL bName = TRUE);	// fait une copie de la variable
+	void			Copy(CBotVar* pSrc, bool bName = true);	// fait une copie de la variable
 
-	DllExport
+    //DllExport
 	virtual void	SetValInt(int val, const char* name = NULL);
 												// initialise avec une valeur entière (#)
 	/////////////////////////////////////////////////////////////////////////////////
 
-	DllExport
+    //DllExport
 	virtual void	SetValFloat(float val);		// initialise avec une valeur réelle (#)
 	////////////////////////////////////////////////////////////////////////////////
 
-	DllExport
+    //DllExport
 	virtual void	SetValString(const char* p);// initialise avec une valeur chaîne (#)
 	////////////////////////////////////////////////////////////////////////////////
 
-	DllExport
+    //DllExport
 	virtual int		GivValInt();				// demande la valeur entière (#)
 	////////////////////////////////////////////////////////////////////////
 
-	DllExport
+    //DllExport
 	virtual float	GivValFloat();				// demande la valeur réelle (#)
 	///////////////////////////////////////////////////////////////////////
 
@@ -814,12 +814,12 @@ virtual				~CBotVar( );						// destructeur
 	virtual int		Modulo(CBotVar* left, CBotVar* right);	// reste de division
 	virtual void	Power(CBotVar* left, CBotVar* right);	// puissance
 
-	virtual BOOL	Lo(CBotVar* left, CBotVar* right);
-	virtual BOOL	Hi(CBotVar* left, CBotVar* right);
-	virtual BOOL	Ls(CBotVar* left, CBotVar* right);
-	virtual BOOL	Hs(CBotVar* left, CBotVar* right);
-	virtual BOOL	Eq(CBotVar* left, CBotVar* right);
-	virtual BOOL	Ne(CBotVar* left, CBotVar* right);
+	virtual bool	Lo(CBotVar* left, CBotVar* right);
+	virtual bool	Hi(CBotVar* left, CBotVar* right);
+	virtual bool	Ls(CBotVar* left, CBotVar* right);
+	virtual bool	Hs(CBotVar* left, CBotVar* right);
+	virtual bool	Eq(CBotVar* left, CBotVar* right);
+	virtual bool	Ne(CBotVar* left, CBotVar* right);
 
 	virtual void	And(CBotVar* left, CBotVar* right);
 	virtual void	Or(CBotVar* left, CBotVar* right);
@@ -834,19 +834,19 @@ virtual				~CBotVar( );						// destructeur
 	virtual void	Dec();
 
 
-	virtual BOOL	Save0State(FILE* pf);
-	virtual BOOL	Save1State(FILE* pf);
-	static	BOOL	RestoreState(FILE* pf, CBotVar* &pVar);
+	virtual bool	Save0State(FILE* pf);
+	virtual bool	Save1State(FILE* pf);
+	static	bool	RestoreState(FILE* pf, CBotVar* &pVar);
 
-	DllExport
+    //DllExport
 	void			debug();
 
 //	virtual
 //	CBotVar*		GivMyThis();
 
-	DllExport
+    //DllExport
 	virtual
-	void			Maj(void* pUser = NULL, BOOL bContinue = TRUE);
+	void			Maj(void* pUser = NULL, bool bContinue = true);
 
 	void			SetUniqNum(long n);
 	long			GivUniqNum();
@@ -888,7 +888,7 @@ private:
 	CBotString		m_name;			// nom de cette classe-ci
 	int				m_nbVar;		// nombre de variables dans la chaîne
 	CBotVar*		m_pVar;			// contenu de la classe
-	BOOL			m_bIntrinsic;	// classe intrinsèque
+	bool			m_bIntrinsic;	// classe intrinsèque
 	CBotClass*		m_next;			// chaine les classe
 	CBotCallMethode* m_pCalls;		// liste des méthodes définie en externe
 	CBotFunction*	m_pMethod;		// liste des méthodes compilées
@@ -899,37 +899,37 @@ private:
 	CBotProgram*	m_ProgInLock[5];// processus en attente pour synchro
 
 public:
-	BOOL			m_IsDef;		// marque si est définie ou pas encore
+	bool			m_IsDef;		// marque si est définie ou pas encore
 
-	DllExport
+    //DllExport
 					CBotClass( const char* name,
-							   CBotClass* pParent, BOOL bIntrinsic = FALSE );		// constructeur
+							   CBotClass* pParent, bool bIntrinsic = false );		// constructeur
 	//				Dès qu'une classe est créée, elle est connue
 	//				partout dans CBot
 	//				le mode intrinsic donne une classe qui n'est pas gérée par des pointeurs
 
-	DllExport
+    //DllExport
 					~CBotClass( );							// destructeur
 
-	DllExport
-	BOOL			AddFunction(const char* name, 
-								BOOL rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception), 
+    //DllExport
+	bool			AddFunction(const char* name, 
+								bool rExec (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception), 
 								CBotTypResult rCompile (CBotVar* pThis, CBotVar* &pVar));
 	//				cet appel permet d'ajouter de manière externe (**)
 	//				une nouvelle méthode utilisable par les objets de cette classe
 
-	DllExport
-	BOOL			AddUpdateFunc( void rMaj ( CBotVar* pThis, void* pUser ) );
+    //DllExport
+	bool			AddUpdateFunc( void rMaj ( CBotVar* pThis, void* pUser ) );
 	//				défini la routine qui sera appellée pour mettre à jour les élements de la classe
 
-	DllExport
-	BOOL			AddItem(CBotString name, CBotTypResult type, int mPrivate = PR_PUBLIC);
+    //DllExport
+	bool			AddItem(CBotString name, CBotTypResult type, int mPrivate = PR_PUBLIC);
 	//				ajoute un élément à la classe
-//	DllExport
-//	BOOL			AddItem(CBotString name, CBotClass* pClass);
+//    //DllExport
+//	bool			AddItem(CBotString name, CBotClass* pClass);
 	//				idem pour des éléments appartenant à pClass
-	DllExport
-	BOOL			AddItem(CBotVar* pVar);
+    //DllExport
+	bool			AddItem(CBotVar* pVar);
 	//				idem en passant le pointeur à une instance d'une variable
 	//				l'objet est pris tel quel, il ne faut donc pas le détruire
 
@@ -938,20 +938,20 @@ public:
 	// idem en donnant un élément de type CBotVar
 	void			AddNext(CBotClass* pClass);
 
-	DllExport
+    //DllExport
 	CBotString		GivName();					// rend le nom de la classe
-	DllExport
+    //DllExport
 	CBotClass*		GivParent();				// donne la classe père (ou NULL)
 
 	// dit si une classe est dérivée (Extends) d'une autre
-	// rend TRUE aussi si les classes sont identiques
-	DllExport
-	BOOL			IsChildOf(CBotClass* pClass);
+	// rend true aussi si les classes sont identiques
+    //DllExport
+	bool			IsChildOf(CBotClass* pClass);
 
 	static
 	CBotClass*		Find(CBotToken* &pToken);	// trouve une classe d'après son nom
 
-	DllExport
+    //DllExport
 	static
 	CBotClass*		Find(const char* name);
 
@@ -962,7 +962,7 @@ public:
 	CBotTypResult	CompileMethode(const char* name, CBotVar* pThis, CBotVar** ppParams, 
 								   CBotCStack* pStack, long& nIdent);
 
-	BOOL			ExecuteMethode(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppParams, CBotVar* &pResult, CBotStack* &pStack, CBotToken* pToken);
+	bool			ExecuteMethode(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppParams, CBotVar* &pResult, CBotStack* &pStack, CBotToken* pToken);
 	void			RestoreMethode(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppParams, CBotStack* &pStack);
 
 	// compile une classe déclarée par l'utilisateur
@@ -971,27 +971,27 @@ public:
 	static
 	CBotClass*		Compile1(CBotToken* &p, CBotCStack* pStack);
 
-	BOOL			CompileDefItem(CBotToken* &p, CBotCStack* pStack, BOOL bSecond);
+	bool			CompileDefItem(CBotToken* &p, CBotCStack* pStack, bool bSecond);
 	
-	BOOL			IsIntrinsic();
+	bool			IsIntrinsic();
 	void			Purge();
 	static
 	void			Free();
 
-	DllExport
+    //DllExport
 	static
-	BOOL			SaveStaticState(FILE* pf);
+	bool			SaveStaticState(FILE* pf);
 
-	DllExport
+    //DllExport
 	static
-	BOOL			RestoreStaticState(FILE* pf);
+	bool			RestoreStaticState(FILE* pf);
 
-	BOOL			Lock(CBotProgram* p);
+	bool			Lock(CBotProgram* p);
 	void			Unlock();
 	static
 	void			FreeLock(CBotProgram* p);
 
-	BOOL			CheckCall(CBotToken* &pToken, CBotDefParam* pParam);
+	bool			CheckCall(CBotToken* &pToken, CBotDefParam* pParam);
 
 };
 
@@ -1041,7 +1041,7 @@ private:
 	static
 	int				GivKeyWords(const char* w);	// est-ce un mot clef ?
 	static
-	BOOL			GivKeyDefNum(const char* w, CBotToken* &token);
+	bool			GivKeyDefNum(const char* w, CBotToken* &token);
 
 	static
 	void			LoadKeyWords();				// fait la liste des mots clefs
@@ -1054,37 +1054,37 @@ public:
 												// constructeur
 					~CBotToken();				// destructeur
 
-	DllExport
+    //DllExport
 	int				GivType();					// rend le type du token
 
-	DllExport
+    //DllExport
 	CBotString&		GivString();				// rend la chaine correspondant à ce token
 
-	DllExport
+    //DllExport
 	CBotString&		GivSep();					// rend le séparateur suivant le token
 
-	DllExport
+    //DllExport
 	int				GivStart();					// position du début dans le texte
-	DllExport
+    //DllExport
 	int				GivEnd();					// position de fin dans le texte
 
-	DllExport
+    //DllExport
 	CBotToken*		GivNext();					// rend le suivant dans la liste
-	DllExport
+    //DllExport
 	CBotToken*		GivPrev();					// rend le Précédent dans la liste
 
-	DllExport
+    //DllExport
 	static
 	CBotToken*		CompileTokens(const char* p, int& error);
 												// transforme tout le programme
-	DllExport
+    //DllExport
 	static
 	void			Delete(CBotToken* pToken);	// libère la liste
 
 
 	// fonctions non utiles en export
 	static
-	BOOL			DefineNum(const char* name, long val);
+	bool			DefineNum(const char* name, long val);
 	void			SetString(const char* name);
 
 	void			SetPos(int start, int end);
@@ -1092,7 +1092,7 @@ public:
 	void			AddNext(CBotToken* p);		// ajoute un token (une copie)
 
 	static
-	CBotToken*		NextToken(char* &program, int& error, BOOL first = FALSE);
+	CBotToken*		NextToken(char* &program, int& error, bool first = false);
 												// trouve le prochain token
 	const CBotToken&
 					operator=(const CBotToken& src);
@@ -1163,7 +1163,7 @@ public:
 
 // exécute le programme main
 // -------------------------
-	while( FALSE = m_pMonRobot->Execute( "main", pStack ))
+	while( false = m_pMonRobot->Execute( "main", pStack ))
 	{
 		// programme suspendu
 		// on pourrait passer la main à un autre (en sauvegardant pStack pour ce robot-là)
@@ -1174,10 +1174,10 @@ public:
 
 
 // routine implémentant l'instruction GOTO( CPoint pos )
-BOOL rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
+bool rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
 {
 	if (pVar->GivType() != CBotTypeClass ||
-		pVar->IsElemOfClas("CPoint") ) { exception = 6522; return FALSE; )
+		pVar->IsElemOfClas("CPoint") ) { exception = 6522; return false; )
 		// le paramètre n'est pas de la bonne classe ?
 		// NB en fait ce contrôle est déjà fait par la routine pour la compilation
 
@@ -1193,8 +1193,8 @@ BOOL rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
 	ASSERT (temp != NULL && temp->GivType() == CBotTypFloat);
 	m_PosToGo.y = temp->GivValFloat();
 
-	return (m_CurentPos == m_PosToGo);	// rend TRUE si la position est atteinte
-										// rend FALSE s'il faut patienter encore
+	return (m_CurentPos == m_PosToGo);	// rend true si la position est atteinte
+										// rend false s'il faut patienter encore
 }
 
 #endif
