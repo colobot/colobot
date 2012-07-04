@@ -16,6 +16,8 @@
 // gestion de la pile (stack)
 
 #include "CBot.h"
+#include <cstdlib>
+#include <cstring>
 
 
 #define	ITIMER	100
@@ -24,14 +26,14 @@
 // gestion de la pile d'exécution
 ////////////////////////////////////////////////////////////////////////////
 
-int				CBotStack::m_initimer = ITIMER;		// init la variable statique
-int				CBotStack::m_timer = 0;				// init la variable statique
-CBotVar*		CBotStack::m_retvar = NULL;			// init la variable statique
-int				CBotStack::m_error = 0;				// init la variable statique
-int				CBotStack::m_start = 0;				// init la variable statique
-int				CBotStack::m_end   = 0;				// init la variable statique
-CBotString		CBotStack::m_labelBreak="";			// init la variable statique
-void*			CBotStack::m_pUser = NULL;
+int         CBotStack::m_initimer = ITIMER;
+int         CBotStack::m_timer = 0;
+CBotVar*    CBotStack::m_retvar = NULL;
+int         CBotStack::m_error = 0;
+int         CBotStack::m_start = 0;
+int         CBotStack::m_end   = 0;
+CBotString  CBotStack::m_labelBreak="";
+void*       CBotStack::m_pUser = NULL;
 
 #if	STACKMEM
 
@@ -48,7 +50,7 @@ CBotStack* CBotStack::FirstStack()
 	// la vide totalement
 	memset(p, 0, size);
 
-	p-> m_bBlock = TRUE;
+	p-> m_bBlock = true;
 	m_timer = m_initimer;				// met le timer au début
 
 	CBotStack* pp = p;
@@ -56,7 +58,7 @@ CBotStack* CBotStack::FirstStack()
 	int i;
 	for ( i = 0 ; i< 10 ; i++ )
 	{
-		pp->m_bOver = TRUE;
+		pp->m_bOver = true;
 		pp ++;
 	}
 #ifdef	_DEBUG 
@@ -75,8 +77,8 @@ CBotStack* CBotStack::FirstStack()
 
 CBotStack::CBotStack(CBotStack* ppapa)
 {
-	// constructeur doit exister, sinon le destructeur n'est jamais appelé !
-	ASM_TRAP();
+	// constructor must exist or the destructor is never called!
+    ASM_TRAP();
 }
 
 CBotStack::~CBotStack()
@@ -104,7 +106,7 @@ void CBotStack::Delete()
 	delete m_listVar;
 
 	CBotStack*	p = m_prev;
-	BOOL		bOver = m_bOver;
+	bool		bOver = m_bOver;
 #ifdef	_DEBUG
 	int			n = m_index;
 #endif
@@ -122,7 +124,7 @@ void CBotStack::Delete()
 
 
 // routine optimisée
-CBotStack* CBotStack::AddStack(CBotInstr* instr, BOOL bBlock)
+CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
 {
 	if (m_next != NULL) 
 	{
@@ -150,11 +152,11 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, BOOL bBlock)
     p->m_prev		 = this;
     p->m_state		 = 0;
 	p->m_call	     = NULL;
-	p->m_bFunc		 = FALSE;
+	p->m_bFunc		 = false;
 	return	p;
 }
 
-CBotStack* CBotStack::AddStackEOX(CBotCall* instr, BOOL bBlock)
+CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
 {
 	if (m_next != NULL) 
 	{
@@ -171,7 +173,7 @@ CBotStack* CBotStack::AddStackEOX(CBotCall* instr, BOOL bBlock)
 	return	p;
 }
 
-CBotStack* CBotStack::AddStack2(BOOL bBlock)
+CBotStack* CBotStack::AddStack2(bool bBlock)
 {
 	if (m_next2 != NULL) 
 	{
@@ -194,14 +196,14 @@ CBotStack* CBotStack::AddStack2(BOOL bBlock)
 	return	p;
 }
 
-BOOL CBotStack::GivBlock()
+bool CBotStack::GivBlock()
 {
 	return	m_bBlock;
 }
 
-BOOL CBotStack::Return(CBotStack* pfils)
+bool CBotStack::Return(CBotStack* pfils)
 {
-	if ( pfils == this ) return TRUE;	// spécial
+	if ( pfils == this ) return true;	// spécial
 
 	if (m_var != NULL) delete m_var;			// valeur remplacée ?
 	m_var = pfils->m_var;						// résultat transmis
@@ -213,9 +215,9 @@ BOOL CBotStack::Return(CBotStack* pfils)
 	return (m_error == 0);						// interrompu si erreur
 }
 
-BOOL CBotStack::ReturnKeep(CBotStack* pfils)
+bool CBotStack::ReturnKeep(CBotStack* pfils)
 {
-	if ( pfils == this ) return TRUE;	// spécial
+	if ( pfils == this ) return true;	// spécial
 
 	if (m_var != NULL) delete m_var;			// valeur remplacée ?
 	m_var = pfils->m_var;						// résultat transmis
@@ -224,11 +226,11 @@ BOOL CBotStack::ReturnKeep(CBotStack* pfils)
 	return (m_error == 0);						// interrompu si erreur
 }
 
-BOOL CBotStack::StackOver()
+bool CBotStack::StackOver()
 {
-	if (!m_bOver) return FALSE;
+	if (!m_bOver) return false;
 	m_error = TX_STACKOVER;
-	return TRUE;
+	return true;
 }
 
 #else
@@ -239,7 +241,7 @@ CBotStack::CBotStack(CBotStack* ppapa)
     m_next2 = NULL;
     m_prev  = ppapa;
 
-	m_bBlock = (ppapa == NULL) ? TRUE : FALSE;
+	m_bBlock = (ppapa == NULL) ? true : false;
 
     m_state = 0;
 	m_step = 1;
@@ -247,13 +249,13 @@ CBotStack::CBotStack(CBotStack* ppapa)
 	if (ppapa == NULL) m_timer = m_initimer;				// met le timer au début
 
 	m_listVar = NULL;
-	m_bDontDelete = FALSE; 
+	m_bDontDelete = false; 
 	
 	m_var	  = NULL;
 	m_prog	  = NULL;
 	m_instr	  = NULL;
 	m_call	  = NULL;
-	m_bFunc	  = FALSE;
+	m_bFunc	  = false;
 }
 
 // destructeur
@@ -269,7 +271,7 @@ CBotStack::~CBotStack()
 }
 
 // routine à optimiser
-CBotStack* CBotStack::AddStack(CBotInstr* instr, BOOL bBlock)
+CBotStack* CBotStack::AddStack(CBotInstr* instr, bool bBlock)
 {
 	if (m_next != NULL) 
 	{
@@ -284,7 +286,7 @@ CBotStack* CBotStack::AddStack(CBotInstr* instr, BOOL bBlock)
 	return	p;
 }
 
-CBotStack* CBotStack::AddStackEOX(CBotCall* instr, BOOL bBlock)
+CBotStack* CBotStack::AddStackEOX(CBotCall* instr, bool bBlock)
 {
 	if (m_next != NULL) 
 	{
@@ -305,7 +307,7 @@ CBotStack* CBotStack::AddStackEOX(CBotCall* instr, BOOL bBlock)
 	return	p;
 }
 
-CBotStack* CBotStack::AddStack2(BOOL bBlock)
+CBotStack* CBotStack::AddStack2(bool bBlock)
 {
 	if (m_next2 != NULL) 
 	{
@@ -322,9 +324,9 @@ CBotStack* CBotStack::AddStack2(BOOL bBlock)
 	return	p;
 }
 
-BOOL CBotStack::Return(CBotStack* pfils)
+bool CBotStack::Return(CBotStack* pfils)
 {
-	if ( pfils == this ) return TRUE;	// spécial
+	if ( pfils == this ) return true;	// spécial
 
 	if (m_var != NULL) delete m_var;			// valeur remplacée ?
 	m_var = pfils->m_var;						// résultat transmis
@@ -336,9 +338,9 @@ BOOL CBotStack::Return(CBotStack* pfils)
 	return (m_error == 0);						// interrompu si erreur
 }
 
-BOOL CBotStack::StackOver()
+bool CBotStack::StackOver()
 {
-	return FALSE;			// pas de test de débordement dans cette version
+	return false;			// pas de test de débordement dans cette version
 }
 
 #endif
@@ -377,38 +379,38 @@ CBotStack* CBotStack::RestoreStackEOX(CBotCall* instr)
 
 
 // routine pour l'exécution pas à pas
-BOOL CBotStack::IfStep()
+bool CBotStack::IfStep()
 {
-	if ( m_initimer > 0 || m_step++ > 0 ) return FALSE;
-	return TRUE;
+	if ( m_initimer > 0 || m_step++ > 0 ) return false;
+	return true;
 }
 
 
-BOOL CBotStack::BreakReturn(CBotStack* pfils, const char* name)
+bool CBotStack::BreakReturn(CBotStack* pfils, const char* name)
 {
-	if ( m_error>=0 ) return FALSE;				// sortie normale
-	if ( m_error==-3 ) return FALSE;			// sortie normale (return en cours)
+	if ( m_error>=0 ) return false;				// sortie normale
+	if ( m_error==-3 ) return false;			// sortie normale (return en cours)
 
 	if (!m_labelBreak.IsEmpty() && (name[0] == 0 || m_labelBreak != name))
-		return FALSE;							// c'est pas pour moi
+		return false;							// c'est pas pour moi
 
 	m_error = 0;
 	m_labelBreak.Empty();
 	return Return(pfils);
 }
 
-BOOL CBotStack::IfContinue(int state, const char* name)
+bool CBotStack::IfContinue(int state, const char* name)
 {
-	if ( m_error != -2 ) return FALSE;
+	if ( m_error != -2 ) return false;
 
 	if (!m_labelBreak.IsEmpty() && (name == NULL || m_labelBreak != name))
-		return FALSE;							// c'est pas pour moi
+		return false;							// c'est pas pour moi
 
 	m_state = state;							// où reprendre ?
 	m_error = 0;
 	m_labelBreak.Empty();
 	if ( m_next != EOX ) m_next->Delete();			// purge la pile au dessus
-	return TRUE;
+	return true;
 }
 
 void CBotStack::SetBreak(int val, const char* name)
@@ -424,7 +426,7 @@ void CBotStack::SetBreak(int val, const char* name)
 
 // remet sur la pile la valeur calculée par le dernier CBotReturn
 
-BOOL CBotStack::GivRetVar(BOOL bRet)
+bool CBotStack::GivRetVar(bool bRet)
 {
 	if (m_error == -3)
 	{
@@ -432,7 +434,7 @@ BOOL CBotStack::GivRetVar(BOOL bRet)
 		m_var		= m_retvar;
 		m_retvar	= NULL;
 		m_error		= 0;
-		return		TRUE;
+		return		true;
 	}
 	return bRet;						// interrompu par autre chose que return
 }
@@ -469,7 +471,7 @@ void CBotStack::SetType(CBotTypResult& type)
 
 // trouve une variable par son token
 // ce peut être une variable composée avec un point
-CBotVar* CBotStack::FindVar(CBotToken* &pToken, BOOL bUpdate, BOOL bModif)
+CBotVar* CBotStack::FindVar(CBotToken* &pToken, bool bUpdate, bool bModif)
 {
 	CBotStack*	p = this;
 	CBotString	name = pToken->GivString();
@@ -482,7 +484,7 @@ CBotVar* CBotStack::FindVar(CBotToken* &pToken, BOOL bUpdate, BOOL bModif)
 			if (pp->GivName() == name)
 			{
 				if ( bUpdate ) 
-					pp->Maj(m_pUser, FALSE);
+					pp->Maj(m_pUser, false);
 
 				return pp;
 			}
@@ -515,7 +517,7 @@ CBotVar* CBotStack::FindVar(const char* name)
 // retrouve une variable sur la pile selon son numéro d'identification
 // ce qui va plus vite que de comparer les noms.
 
-CBotVar* CBotStack::FindVar(long ident, BOOL bUpdate, BOOL bModif)
+CBotVar* CBotStack::FindVar(long ident, bool bUpdate, bool bModif)
 {
 	CBotStack*	p = this;
 	while (p != NULL)
@@ -526,7 +528,7 @@ CBotVar* CBotStack::FindVar(long ident, BOOL bUpdate, BOOL bModif)
 			if (pp->GivUniqNum() == ident)
 			{
 				if ( bUpdate ) 
-					pp->Maj(m_pUser, FALSE);
+					pp->Maj(m_pUser, false);
 
 				return pp;
 			}
@@ -538,14 +540,14 @@ CBotVar* CBotStack::FindVar(long ident, BOOL bUpdate, BOOL bModif)
 }
 
 
-CBotVar* CBotStack::FindVar(CBotToken& Token, BOOL bUpdate, BOOL bModif)
+CBotVar* CBotStack::FindVar(CBotToken& Token, bool bUpdate, bool bModif)
 {
 	CBotToken*	pt = &Token;
 	return FindVar(pt, bUpdate, bModif);
 }
 
 
-CBotVar* CBotStack::CopyVar(CBotToken& Token, BOOL bUpdate)
+CBotVar* CBotStack::CopyVar(CBotToken& Token, bool bUpdate)
 {
 	CBotVar*	pVar = FindVar( Token, bUpdate );
 
@@ -557,7 +559,7 @@ CBotVar* CBotStack::CopyVar(CBotToken& Token, BOOL bUpdate)
 }
 
  
-BOOL CBotStack::SetState(int n, int limite)
+bool CBotStack::SetState(int n, int limite)
 {
     m_state = n;
 
@@ -565,7 +567,7 @@ BOOL CBotStack::SetState(int n, int limite)
 	return ( m_timer > limite );					// interrompu si timer passé
 }
 
-BOOL CBotStack::IncState(int limite)
+bool CBotStack::IncState(int limite)
 {
 	m_state++;
 
@@ -603,7 +605,7 @@ void CBotStack::SetTimer(int n)
 	m_initimer = n;
 }
 
-BOOL CBotStack::Execute()
+bool CBotStack::Execute()
 {
 	CBotCall*		instr = NULL;						// instruction la plus élevée
 	CBotStack*		pile;
@@ -621,9 +623,9 @@ BOOL CBotStack::Execute()
 		p = p->m_next;
 	}
 
-	if ( instr == NULL ) return TRUE;				// exécution normale demandée
+	if ( instr == NULL ) return true;				// exécution normale demandée
 
-	if (!instr->Run(pile)) return FALSE;			// exécution à partir de là
+	if (!instr->Run(pile)) return false;			// exécution à partir de là
 
 #if	STACKMEM
 	pile->m_next->Delete();
@@ -632,7 +634,7 @@ BOOL CBotStack::Execute()
 #endif
 
 	pile->m_next = EOX;			// spécial pour reprise
-	return TRUE;
+	return true;
 }
 
 // met sur le stack le pointeur à une variable
@@ -711,10 +713,10 @@ void CBotStack::AddVar(CBotVar* pVar)
 void CBotStack::SetBotCall(CBotProgram* p)
 {
 	m_prog  = p;
-	m_bFunc = TRUE;
+	m_bFunc = true;
 }
 
-CBotProgram*  CBotStack::GivBotCall(BOOL bFirst)
+CBotProgram*  CBotStack::GivBotCall(bool bFirst)
 {
 	if ( ! bFirst )	return m_prog;
 	CBotStack*	p = this;
@@ -728,7 +730,7 @@ void* CBotStack::GivPUser()
 }
 
 
-BOOL CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotTypResult& rettype)
+bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotTypResult& rettype)
 {
 	CBotTypResult		res;
 
@@ -750,7 +752,7 @@ BOOL CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBo
 	if (res.GivType() >= 0) return res.GivType();
 
 	SetError(TX_NOCALL, token);
-	return TRUE;
+	return true;
 }
 
 void CBotStack::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar)
@@ -762,17 +764,17 @@ void CBotStack::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar)
 }
 
 
-BOOL SaveVar(FILE* pf, CBotVar* pVar)
+bool SaveVar(FILE* pf, CBotVar* pVar)
 {
-	while ( TRUE )
+	while ( true )
 	{
 		if ( pVar == NULL )
 		{
 			return WriteWord(pf, 0);							// met un terminateur
 		}
 
-		if ( !pVar->Save0State(pf)) return FALSE;				// entête commune
-		if ( !pVar->Save1State(pf) ) return FALSE;				// sauve selon la classe fille
+		if ( !pVar->Save0State(pf)) return false;				// entête commune
+		if ( !pVar->Save1State(pf) ) return false;				// sauve selon la classe fille
 
 		pVar = pVar->GivNext();
 	}
@@ -856,7 +858,7 @@ CBotVar* CBotStack::GivStackVars(const char* &FunctionName, int level)
 	return p->m_listVar;
 }
 
-BOOL CBotStack::SaveState(FILE* pf)
+bool CBotStack::SaveState(FILE* pf)
 {
 	if ( this == NULL )									// fin de l'arbre ?
 	{
@@ -865,33 +867,33 @@ BOOL CBotStack::SaveState(FILE* pf)
 
 	if ( m_next2 != NULL )
 	{
-		if (!WriteWord(pf, 2)) return FALSE;				// une marque de poursuite
-		if (!m_next2->SaveState(pf)) return FALSE;
+		if (!WriteWord(pf, 2)) return false;				// une marque de poursuite
+		if (!m_next2->SaveState(pf)) return false;
 	}
 	else
 	{
-		if (!WriteWord(pf, 1)) return FALSE;				// une marque de poursuite
+		if (!WriteWord(pf, 1)) return false;				// une marque de poursuite
 	}
-	if (!WriteWord(pf, m_bBlock)) return FALSE;			// est-ce un bloc local
-	if (!WriteWord(pf, m_state)) return FALSE;			// dans quel état
-	if (!WriteWord(pf, 0)) return FALSE;				// par compatibilité m_bDontDelete
-	if (!WriteWord(pf, m_step)) return FALSE;			// dans quel état
+	if (!WriteWord(pf, m_bBlock)) return false;			// est-ce un bloc local
+	if (!WriteWord(pf, m_state)) return false;			// dans quel état
+	if (!WriteWord(pf, 0)) return false;				// par compatibilité m_bDontDelete
+	if (!WriteWord(pf, m_step)) return false;			// dans quel état
 	
 	
-	if (!SaveVar(pf, m_var)) return FALSE;			// le résultat courant
-	if (!SaveVar(pf, m_listVar)) return FALSE;		// les variables locales
+	if (!SaveVar(pf, m_var)) return false;			// le résultat courant
+	if (!SaveVar(pf, m_listVar)) return false;		// les variables locales
 
 	return m_next->SaveState(pf);						// enregistre la suite
 }
 
 
-BOOL CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
+bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
 {
-	WORD	w;
+	unsigned short	w;
 
 	pStack = NULL;
-	if (!ReadWord(pf, w)) return FALSE;
-	if ( w == 0 ) return TRUE;
+	if (!ReadWord(pf, w)) return false;
+	if ( w == 0 ) return true;
 
 #if	STACKMEM
 	if ( this == NULL ) pStack = FirstStack();
@@ -902,81 +904,81 @@ BOOL CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
 
 	if ( w == 2 )
 	{
-		if (!pStack->RestoreState(pf, pStack->m_next2)) return FALSE;
+		if (!pStack->RestoreState(pf, pStack->m_next2)) return false;
 	}
 
-	if (!ReadWord(pf, w)) return FALSE;			// est-ce un bloc local
+	if (!ReadWord(pf, w)) return false;			// est-ce un bloc local
 	pStack->m_bBlock = w;
 
-	if (!ReadWord(pf, w)) return FALSE;			// dans quel état j'ère ?
+	if (!ReadWord(pf, w)) return false;			// dans quel état j'ère ?
 	pStack->SetState((short)w);					// dans le bon état
 
-	if (!ReadWord(pf, w)) return FALSE;			// dont delete ?
+	if (!ReadWord(pf, w)) return false;			// dont delete ?
 												// plus utilisé
 
-	if (!ReadWord(pf, w)) return FALSE;			// pas à pas
+	if (!ReadWord(pf, w)) return false;			// pas à pas
 	pStack->m_step = w;
 
-	if (!CBotVar::RestoreState(pf, pStack->m_var)) return FALSE;	// la variable temp
-	if (!CBotVar::RestoreState(pf, pStack->m_listVar)) return FALSE;// les variables locales
+	if (!CBotVar::RestoreState(pf, pStack->m_var)) return false;	// la variable temp
+	if (!CBotVar::RestoreState(pf, pStack->m_listVar)) return false;// les variables locales
 
 	return pStack->RestoreState(pf, pStack->m_next);
 }
 
 
-BOOL CBotVar::Save0State(FILE* pf)
+bool CBotVar::Save0State(FILE* pf)
 {	
-	if (!WriteWord(pf, 100+m_mPrivate))return FALSE;		// variable privée ?
-	if (!WriteWord(pf, m_bStatic))return FALSE;				// variable static ?
-	if (!WriteWord(pf, m_type.GivType()))return FALSE;		// enregiste le type (toujours non nul)
-	if (!WriteWord(pf, m_binit))return FALSE;				// variable définie ?
+	if (!WriteWord(pf, 100+m_mPrivate))return false;		// variable privée ?
+	if (!WriteWord(pf, m_bStatic))return false;				// variable static ?
+	if (!WriteWord(pf, m_type.GivType()))return false;		// enregiste le type (toujours non nul)
+	if (!WriteWord(pf, m_binit))return false;				// variable définie ?
 	return WriteString(pf, m_token->GivString());			// et le nom de la variable
 }
 
-BOOL CBotVarInt::Save0State(FILE* pf)
+bool CBotVarInt::Save0State(FILE* pf)
 {	
 	if ( !m_defnum.IsEmpty() )
 	{
-		if(!WriteWord(pf, 200 )) return FALSE;			// marqueur spécial
-		if(!WriteString(pf, m_defnum)) return FALSE;	// nom de la valeur
+		if(!WriteWord(pf, 200 )) return false;			// marqueur spécial
+		if(!WriteString(pf, m_defnum)) return false;	// nom de la valeur
 	}
 
 	return CBotVar::Save0State(pf);
 }
 
-BOOL CBotVarInt::Save1State(FILE* pf)
+bool CBotVarInt::Save1State(FILE* pf)
 {
 	return WriteWord(pf, m_val);							// la valeur de la variable
 }
 
-BOOL CBotVarBoolean::Save1State(FILE* pf)
+bool CBotVarBoolean::Save1State(FILE* pf)
 {
 	return WriteWord(pf, m_val);							// la valeur de la variable
 }
 
-BOOL CBotVarFloat::Save1State(FILE* pf)
+bool CBotVarFloat::Save1State(FILE* pf)
 {
 	return WriteFloat(pf, m_val);							// la valeur de la variable
 }
 
-BOOL CBotVarString::Save1State(FILE* pf)
+bool CBotVarString::Save1State(FILE* pf)
 {
 	return WriteString(pf, m_val);							// la valeur de la variable
 }
 
 
 
-BOOL CBotVarClass::Save1State(FILE* pf)
+bool CBotVarClass::Save1State(FILE* pf)
 {
-	if ( !WriteType(pf, m_type) ) return FALSE;
-	if ( !WriteLong(pf, m_ItemIdent) ) return FALSE;
+	if ( !WriteType(pf, m_type) ) return false;
+	if ( !WriteLong(pf, m_ItemIdent) ) return false;
 
 	return SaveVar(pf, m_pVar);								// contenu de l'objet
 }
 
-BOOL CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
+bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 {
-	WORD		w, wi, prv, st;
+	unsigned short		w, wi, prv, st;
 	float		ww;
 	CBotString	name, s;
 
@@ -986,31 +988,31 @@ BOOL CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 	CBotVar*	pNew    = NULL;
 	CBotVar*	pPrev	= NULL;
 
-	while ( TRUE )			// recupère toute une liste
+	while ( true )			// recupère toute une liste
 	{
-		if (!ReadWord(pf, w)) return FALSE;						// privé ou type ?
-		if ( w == 0 ) return TRUE;
+		if (!ReadWord(pf, w)) return false;						// privé ou type ?
+		if ( w == 0 ) return true;
 
 		CBotString defnum;
 		if ( w == 200 )
 		{
-			if (!ReadString(pf, defnum)) return FALSE;			// nombre avec un identifiant
-			if (!ReadWord(pf, w)) return FALSE;					// type
+			if (!ReadString(pf, defnum)) return false;			// nombre avec un identifiant
+			if (!ReadWord(pf, w)) return false;					// type
 		}
 
 		prv = 100; st = 0;
 		if ( w >= 100 )
 		{
 			prv = w;
-			if (!ReadWord(pf, st)) return FALSE;				// statique
-			if (!ReadWord(pf, w)) return FALSE;					// type
+			if (!ReadWord(pf, st)) return false;				// statique
+			if (!ReadWord(pf, w)) return false;					// type
 		}
 
 		if ( w == CBotTypClass ) w = CBotTypIntrinsic;			// forcément intrinsèque
 
-		if (!ReadWord(pf, wi)) return FALSE;					// init ?
+		if (!ReadWord(pf, wi)) return false;					// init ?
 
-		if (!ReadString(pf, name)) return FALSE;				// nom de la variable
+		if (!ReadString(pf, name)) return false;				// nom de la variable
 
 		CBotToken token(name, CBotString());
 
@@ -1019,17 +1021,17 @@ BOOL CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 		case CBotTypInt:
 		case CBotTypBoolean:
 			pNew = CBotVar::Create(&token, w);						// crée une variable
-			if (!ReadWord(pf, w)) return FALSE;
+			if (!ReadWord(pf, w)) return false;
 			pNew->SetValInt((short)w, defnum);
 			break;
 		case CBotTypFloat:
 			pNew = CBotVar::Create(&token, w);						// crée une variable
-			if (!ReadFloat(pf, ww)) return FALSE;
+			if (!ReadFloat(pf, ww)) return false;
 			pNew->SetValFloat(ww);
 			break;
 		case CBotTypString:
 			pNew = CBotVar::Create(&token, w);						// crée une variable
-			if (!ReadString(pf, s)) return FALSE;
+			if (!ReadString(pf, s)) return false;
 			pNew->SetValString(s);
 			break;
 
@@ -1039,17 +1041,17 @@ BOOL CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 			{
 				CBotTypResult	r;
 				long			id;
-				if (!ReadType(pf, r))  return FALSE;				// type complet
-				if (!ReadLong(pf, id) ) return FALSE;
+				if (!ReadType(pf, r))  return false;				// type complet
+				if (!ReadLong(pf, id) ) return false;
 
-//				if (!ReadString(pf, s)) return FALSE;
+//				if (!ReadString(pf, s)) return false;
 				{
 					CBotVar* p = NULL;
 					if ( id ) p = CBotVarClass::Find(id) ;
 
 					pNew = new CBotVarClass(&token, r);				// crée directement une instance
 																	// attention cptuse = 0
-					if ( !RestoreState(pf, ((CBotVarClass*)pNew)->m_pVar)) return FALSE;
+					if ( !RestoreState(pf, ((CBotVarClass*)pNew)->m_pVar)) return false;
 					pNew->SetIdent(id);
 
 					if ( p != NULL )
@@ -1063,7 +1065,7 @@ BOOL CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
 		case CBotTypPointer:
 		case CBotTypNullPointer:
-			if (!ReadString(pf, s)) return FALSE;
+			if (!ReadString(pf, s)) return false;
 			{
 				pNew = CBotVar::Create(&token, CBotTypResult(w, s));// crée une variable
 				CBotVarClass* p = NULL;
@@ -1073,7 +1075,7 @@ BOOL CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
 				// restitue une copie de l'instance d'origine
 				CBotVar* pInstance = NULL;
-				if ( !CBotVar::RestoreState( pf, pInstance ) ) return FALSE;
+				if ( !CBotVar::RestoreState( pf, pInstance ) ) return false;
 				((CBotVarPointer*)pNew)->SetPointer( pInstance );			// et pointe dessus
 
 //				if ( p != NULL ) ((CBotVarPointer*)pNew)->SetPointer( p );	// plutôt celui-ci !
@@ -1084,13 +1086,13 @@ BOOL CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 		case CBotTypArrayPointer:
 			{
 				CBotTypResult	r;
-				if (!ReadType(pf, r))  return FALSE;
+				if (!ReadType(pf, r))  return false;
 
 				pNew = CBotVar::Create(&token, r);						// crée une variable
 
 				// restitue une copie de l'instance d'origine
 				CBotVar* pInstance = NULL;
-				if ( !CBotVar::RestoreState( pf, pInstance ) ) return FALSE;
+				if ( !CBotVar::RestoreState( pf, pInstance ) ) return false;
 				((CBotVarPointer*)pNew)->SetPointer( pInstance );			// et pointe dessus
 			}
 			break;
@@ -1106,7 +1108,7 @@ BOOL CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 		pNew->SetPrivate(prv-100);
 		pPrev = pNew;
 	}
-	return TRUE;
+	return true;
 }
 
 
@@ -1133,12 +1135,12 @@ CBotCStack::CBotCStack(CBotCStack* ppapa)
 		m_error = 0;
 		m_start = 0;
 		m_end	= 0;
-		m_bBlock = TRUE;
+		m_bBlock = true;
 	}
 	else
 	{
 		m_start = ppapa->m_start;
-		m_bBlock = FALSE;
+		m_bBlock = false;
 	}
 
 	m_listVar = NULL;
@@ -1156,7 +1158,7 @@ CBotCStack::~CBotCStack()
 }
 
 // utilisé uniquement à la compilation
-CBotCStack* CBotCStack::TokenStack(CBotToken* pToken, BOOL bBlock)
+CBotCStack* CBotCStack::TokenStack(CBotToken* pToken, bool bBlock)
 {
 	if (m_next != NULL) return m_next;			// reprise dans une pile existante
 
@@ -1291,7 +1293,7 @@ CBotVar* CBotCStack::CopyVar(CBotToken& Token)
 	return	pCopy;
 }
 
-BOOL CBotCStack::IsOk()
+bool CBotCStack::IsOk()
 {
     return (m_error == 0);
 }
@@ -1325,15 +1327,15 @@ void CBotCStack::ResetError(int n, int start, int end)
 	m_end	= end;
 }
 
-BOOL CBotCStack::NextToken(CBotToken* &p)
+bool CBotCStack::NextToken(CBotToken* &p)
 {
 	CBotToken*	pp = p;
 
 	p = p->GivNext();
-	if (p!=NULL) return TRUE;
+	if (p!=NULL) return true;
 
 	SetError(TX_ENDOF, pp->GivEnd());
-	return FALSE;
+	return false;
 }
 
 void CBotCStack::SetBotCall(CBotProgram* p)
@@ -1398,7 +1400,7 @@ void CBotCStack::AddVar(CBotVar* pVar)
 
 // test si une variable est déjà définie localement
 
-BOOL CBotCStack::CheckVarLocal(CBotToken* &pToken)
+bool CBotCStack::CheckVarLocal(CBotToken* &pToken)
 {
 	CBotCStack*	p = this;
 	CBotString	name = pToken->GivString();
@@ -1409,13 +1411,13 @@ BOOL CBotCStack::CheckVarLocal(CBotToken* &pToken)
 		while ( pp != NULL)
 		{
 			if (name == pp->GivName())
-				return TRUE;
+				return true;
 			pp = pp->m_next;
 		}
-		if ( p->m_bBlock ) return FALSE;
+		if ( p->m_bBlock ) return false;
 		p = p->m_prev;
 	}
-	return FALSE;
+	return false;
 }
 
 CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nIdent)
@@ -1440,11 +1442,11 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
 
 // test si un nom de procédure est déjà défini quelque part
 
-BOOL CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
+bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 {
 	CBotString	name = pToken->GivString();
 
-	if ( CBotCall::CheckCall(name) ) return TRUE;
+	if ( CBotCall::CheckCall(name) ) return true;
 
 	CBotFunction*	pp = m_prog->GivFunctions();
 	while ( pp != NULL )
@@ -1453,7 +1455,7 @@ BOOL CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 		{
 			// les paramètres sont-ils exactement les mêmes ?
 			if ( pp->CheckParam( pParam ) )
-				return TRUE;
+				return true;
 		}
 		pp = pp->Next();
 	}
@@ -1465,11 +1467,11 @@ BOOL CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 		{
 			// les paramètres sont-ils exactement les mêmes ?
 			if ( pp->CheckParam( pParam ) )
-				return TRUE;
+				return true;
 		}
 		pp = pp->m_nextpublic;
 	}
 
-	return FALSE;
+	return false;
 }
 

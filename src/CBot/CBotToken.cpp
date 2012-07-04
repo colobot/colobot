@@ -22,6 +22,7 @@
 
 
 #include "CBot.h"
+#include <cstdarg>
 
 CBotStringArray CBotToken::m_ListKeyWords;
 int				CBotToken::m_ListIdKeyWords[200];
@@ -188,27 +189,27 @@ void CBotToken::SetPos(int start, int end)
 	m_end	= end;
 }
 
-BOOL CharInList(const char c, const char* list)
+bool CharInList(const char c, const char* list)
 {
 	int		i = 0;
 
-	while (TRUE)
+	while (true)
 	{
-		if (c == list[i++]) return TRUE;
-		if (list[i] == 0) return FALSE;
+		if (c == list[i++]) return true;
+		if (list[i] == 0) return false;
 	}
 }
 
-BOOL Char2InList(const char c, const char cc, const char* list)
+bool Char2InList(const char c, const char cc, const char* list)
 {
 	int		i = 0;
 
-	while (TRUE)
+	while (true)
 	{
 		if (c == list[i++] &&
-			cc == list[i++]) return TRUE;
+			cc == list[i++]) return true;
 
-		if (list[i] == 0) return FALSE;
+		if (list[i] == 0) return false;
 	}
 }
 
@@ -224,12 +225,12 @@ static char*	nch	 = "\"\r\n\t";							// refusé dans les chaines
 // cherche le prochain token dans une phrase
 // ne doit pas commencer par des séparateurs
 // qui sont pris avec le token précédent
-CBotToken*	CBotToken::NextToken(char* &program, int& error, BOOL first)
+CBotToken*	CBotToken::NextToken(char* &program, int& error, bool first)
 {
 	CBotString		mot;				// le mot trouvé
 	CBotString		sep;				// les séparateurs qui le suivent
 	char			c;
-	BOOL			stop = first;
+	bool			stop = first;
 
 	if (*program == 0) return NULL;
 
@@ -262,14 +263,14 @@ CBotToken*	CBotToken::NextToken(char* &program, int& error, BOOL first)
 				mot += c;							// chaîne complète
 				c   = *(program++);					// prochain caractère
 			}
-			stop = TRUE;
+			stop = true;
 		}
 
 		// cas particulier pour les nombres
 		if ( CharInList(mot[0], num ))
 		{
-			BOOL	bdot = FALSE;	// trouvé un point ?
-			BOOL	bexp = FALSE;	// trouvé un exposant ?
+			bool	bdot = false;	// trouvé un point ?
+			bool	bexp = false;	// trouvé un exposant ?
 
 			char*	liste = num;
 			if (mot[0] == '0' && c == 'x')			// valeur hexadécimale ?
@@ -286,10 +287,10 @@ cc:				mot += c;
 			}
 			if ( liste == num )						// pas pour les exadécimaux
 			{
-				if ( !bdot && c == '.' ) { bdot = TRUE; goto cc; }
+				if ( !bdot && c == '.' ) { bdot = true; goto cc; }
 				if ( !bexp && ( c == 'e' || c == 'E' ) )
 				{
-					bexp = TRUE;
+					bexp = true;
 					mot += c;
 					c   = *(program++);					// prochain caractère
 					if ( c == '-' ||
@@ -298,7 +299,7 @@ cc:				mot += c;
 				}
 
 			}
-			stop = TRUE;
+			stop = true;
 		}
 
 		if (CharInList(mot[0], sep3))				// un séparateur opérationnel ?
@@ -310,13 +311,13 @@ cc:				mot += c;
 				c = *(program++);					// prochain caractère
 			}
 
-			stop = TRUE;
+			stop = true;
 		}
 	}
 
 
 
-	while (TRUE)
+	while (true)
 	{
 		if (stop || c == 0 || CharInList(c, sep1))
 		{
@@ -381,7 +382,7 @@ CBotToken* CBotToken::CompileTokens(const char* program, int& error)
 	int				pos = 0;
 
 	error = 0;
-	prv = tokenbase = NextToken(p, error, TRUE);
+	prv = tokenbase = NextToken(p, error, true);
 
 	if (tokenbase == NULL) return NULL;
 
@@ -443,7 +444,7 @@ int CBotToken::GivKeyWords(const char* w)
 	return -1;
 }
 
-BOOL CBotToken::GivKeyDefNum(const char* w, CBotToken* &token)
+bool CBotToken::GivKeyDefNum(const char* w, CBotToken* &token)
 {
 	int		i;
 	int		l = m_ListKeyDefine.GivSize();
@@ -454,11 +455,11 @@ BOOL CBotToken::GivKeyDefNum(const char* w, CBotToken* &token)
 		{
 			token->m_IdKeyWord = m_ListKeyNums[i];
 			token->m_type      = TokenTypDef;
-			return TRUE;
+			return true;
 		}
 	}
 
-	return FALSE;
+	return false;
 }
 
 // reprend la liste des mots clefs dans les ressources
@@ -498,36 +499,36 @@ void CBotToken::LoadKeyWords()
 	}
 }
 
-BOOL CBotToken::DefineNum(const char* name, long val)
+bool CBotToken::DefineNum(const char* name, long val)
 {
 	int		i;
 	int		l = m_ListKeyDefine.GivSize();
 
 	for (i = 0; i < l; i++)
 	{
-		if (m_ListKeyDefine[i] == name) return FALSE;
+		if (m_ListKeyDefine[i] == name) return false;
 	}
-	if ( i == MAXDEFNUM ) return FALSE;
+	if ( i == MAXDEFNUM ) return false;
 
 	m_ListKeyDefine.Add( name );
 	m_ListKeyNums[i] = val;
-	return TRUE;
+	return true;
 }
 
-BOOL IsOfType(CBotToken* &p, int type1, int type2)
+bool IsOfType(CBotToken* &p, int type1, int type2)
 {
 	if (p->GivType() == type1 ||
 		p->GivType() == type2 )
 	{
 		p = p->GivNext();
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 // idem avec un nombre indéfini d'arguments
 // il faut mettre un zéro comme dernier argument
-BOOL IsOfTypeList(CBotToken* &p, int type1, ...)
+bool IsOfTypeList(CBotToken* &p, int type1, ...)
 {
 	int		i = type1;
 	int		max = 20;
@@ -536,18 +537,18 @@ BOOL IsOfTypeList(CBotToken* &p, int type1, ...)
 	va_list marker;
 	va_start( marker, type1 );     /* Initialize variable arguments. */
 
-	while (TRUE)
+	while (true)
 	{
 		if (type == i)
 		{
 			p = p->GivNext();
 			va_end( marker );              /* Reset variable arguments.      */
-			return TRUE;
+			return true;
 		}
 		if (--max == 0 || 0 == (i = va_arg( marker, int)))
 		{
 		   va_end( marker );              /* Reset variable arguments.      */
-		   return FALSE;
+		   return false;
 		}
 	}
 }

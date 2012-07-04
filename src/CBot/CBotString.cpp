@@ -19,9 +19,11 @@
 
 #include "CBot.h"
 
-#include <string.h>
-
-HINSTANCE CBotString::m_hInstance = (HINSTANCE)LoadLibrary("libCbot.dll");	// comment le récupérer autrement ??
+#include <cstdlib>
+#include <cstring>
+#include <algorithm>
+/// TODO need to be implemented to be able to load library 
+// HINSTANCE CBotString::m_hInstance = (HINSTANCE)LoadLibrary("libCbot.dll");   // how to retrieve it otherwise ??
 
 
 CBotString::CBotString()
@@ -38,13 +40,13 @@ CBotString::~CBotString()
 
 CBotString::CBotString(const char* p)
 {
-	m_lg = lstrlen( p );
+	m_lg = strlen( p );
 
 	m_ptr = NULL;
 	if (m_lg>0)
 	{
 		m_ptr = (char*)malloc(m_lg+1);
-		lstrcpy(m_ptr, p);
+		strcpy(m_ptr, p);
 	}
 }
 
@@ -56,7 +58,7 @@ CBotString::CBotString(const CBotString& srcString)
 	if (m_lg>0)
 	{
 		m_ptr = (char*)malloc(m_lg+1);
-		lstrcpy(m_ptr, srcString.m_ptr);
+		strcpy(m_ptr, srcString.m_ptr);
 	}
 }
 
@@ -66,7 +68,7 @@ CBotString::CBotString(const CBotString& srcString)
 int CBotString::GivLength()
 {
 	if ( m_ptr == NULL ) return 0;
-	return lstrlen( m_ptr ); 
+	return strlen( m_ptr ); 
 }
 
 
@@ -143,10 +145,10 @@ int CBotString::Find(const char c)
 	return -1;
 }
 
-int CBotString::Find(LPCTSTR lpsz)
+int CBotString::Find(const char * lpsz)
 {
 	int		i, j;
-	int		l = lstrlen(lpsz);
+	int		l = strlen(lpsz);
 
 	for (i = 0; i <= m_lg-l; i++)
 	{
@@ -170,10 +172,10 @@ int CBotString::ReverseFind(const char c)
 	return -1;
 }
 
-int CBotString::ReverseFind(LPCTSTR lpsz)
+int CBotString::ReverseFind(const char * lpsz)
 {
 	int		i, j;
-	int		l = lstrlen(lpsz);
+	int		l = strlen(lpsz);
 
 	for (i = m_lg-l; i >= 0; i--)
 	{
@@ -195,7 +197,7 @@ CBotString CBotString::Mid(int start, int lg)
 	if ( lg < 0 ) lg = m_lg - start;
 
 	char* p = (char*)malloc(m_lg+1);
-	lstrcpy(p, m_ptr+start);
+	strcpy(p, m_ptr+start);
 	p[lg] = 0;
 
 	res = p;
@@ -229,11 +231,11 @@ void CBotString::MakeLower()
 
 #define MAXSTRING	256
 
-BOOL CBotString::LoadString(UINT id)
+bool CBotString::LoadString(unsigned int id)
 {
 	char	buffer[MAXSTRING];
-
-	m_lg = ::LoadString( m_hInstance, id, buffer, MAXSTRING ); 
+    /// \TODO implement loading strings from resources. Figure out how to do it
+	// m_lg = ::LoadString( m_hInstance, id, buffer, MAXSTRING ); 
 
 	if (m_ptr != NULL) free(m_ptr);
 
@@ -241,10 +243,10 @@ BOOL CBotString::LoadString(UINT id)
 	if (m_lg > 0)
 	{
 		m_ptr = (char*)malloc(m_lg+1);
-		lstrcpy(m_ptr, buffer);
-		return TRUE;
+		strcpy(m_ptr, buffer);
+		return true;
 	}
-	return FALSE;
+	return false;
 }
  
 
@@ -258,13 +260,13 @@ const CBotString& CBotString::operator=(const CBotString& stringSrc)
 	if (m_lg > 0)
 	{
 		m_ptr = (char*)malloc(m_lg+1);
-		lstrcpy(m_ptr, stringSrc.m_ptr);
+		strcpy(m_ptr, stringSrc.m_ptr);
 	}
 
 	return *this;
 }
 
-CBotString operator+(const CBotString& string, LPCTSTR lpsz)
+CBotString operator+(const CBotString& string, const char * lpsz)
 {
 	CBotString s ( string );
 	s += lpsz;
@@ -275,9 +277,9 @@ const CBotString& CBotString::operator+(const CBotString& stringSrc)
 {
 	char*	p = (char*)malloc(m_lg+stringSrc.m_lg+1);
 
-	lstrcpy(p, m_ptr);
+	strcpy(p, m_ptr);
 	char*	pp = p + m_lg;
-	lstrcpy(pp, stringSrc.m_ptr);
+	strcpy(pp, stringSrc.m_ptr);
 
 	if (m_ptr != NULL) free(m_ptr);
 	m_ptr = p;
@@ -306,12 +308,12 @@ const CBotString& CBotString::operator=(const char* pString)
 
 	if ( pString != NULL )
 	{
-		m_lg = lstrlen(pString); 
+		m_lg = strlen(pString); 
 
 		if (m_lg != 0)
 		{
 			m_ptr = (char*)malloc(m_lg+1);
-			lstrcpy(m_ptr, pString);
+			strcpy(m_ptr, pString);
 		}
 	}
 	
@@ -323,7 +325,7 @@ const CBotString& CBotString::operator+=(const char ch)
 {
 	char*	p = (char*)malloc(m_lg+2);
 
-	if (m_ptr!=NULL) lstrcpy(p, m_ptr);
+	if (m_ptr!=NULL) strcpy(p, m_ptr);
 	p[m_lg++] = ch;
 	p[m_lg]   = 0;
 
@@ -338,9 +340,9 @@ const CBotString& CBotString::operator+=(const CBotString& str)
 {
 	char*	p = (char*)malloc(m_lg+str.m_lg+1);
 
-	lstrcpy(p, m_ptr);
+	strcpy(p, m_ptr);
 	char*	pp = p + m_lg;
-	lstrcpy(pp, str.m_ptr);
+	strcpy(pp, str.m_ptr);
 
 	m_lg = m_lg + str.m_lg;
 
@@ -351,67 +353,67 @@ const CBotString& CBotString::operator+=(const CBotString& str)
 	return *this;
 }
 
-BOOL CBotString::operator==(const CBotString& str)
+bool CBotString::operator==(const CBotString& str)
 {
 	return Compare(str) == 0;
 }
 
-BOOL CBotString::operator==(const char* p)
+bool CBotString::operator==(const char* p)
 {
 	return Compare(p) == 0;
 }
 
-BOOL CBotString::operator!=(const CBotString& str)
+bool CBotString::operator!=(const CBotString& str)
 {
 	return Compare(str) != 0;
 }
 
-BOOL CBotString::operator!=(const char* p)
+bool CBotString::operator!=(const char* p)
 {
 	return Compare(p) != 0;
 }
 
-BOOL CBotString::operator>(const CBotString& str)
+bool CBotString::operator>(const CBotString& str)
 {
 	return Compare(str) > 0;
 }
 
-BOOL CBotString::operator>(const char* p)
+bool CBotString::operator>(const char* p)
 {
 	return Compare(p) > 0;
 }
 
-BOOL CBotString::operator>=(const CBotString& str)
+bool CBotString::operator>=(const CBotString& str)
 {
 	return Compare(str) >= 0;
 }
 
-BOOL CBotString::operator>=(const char* p)
+bool CBotString::operator>=(const char* p)
 {
 	return Compare(p) >= 0;
 }
 
-BOOL CBotString::operator<(const CBotString& str)
+bool CBotString::operator<(const CBotString& str)
 {
 	return Compare(str) < 0;
 }
 
-BOOL CBotString::operator<(const char* p)
+bool CBotString::operator<(const char* p)
 {
 	return Compare(p) < 0;
 }
 
-BOOL CBotString::operator<=(const CBotString& str)
+bool CBotString::operator<=(const CBotString& str)
 {
 	return Compare(str) <= 0;
 }
 
-BOOL CBotString::operator<=(const char* p)
+bool CBotString::operator<=(const char* p)
 {
 	return Compare(p) <= 0;
 }
 
-BOOL CBotString::IsEmpty() const
+bool CBotString::IsEmpty() const
 {
 	return (m_lg == 0);
 }
@@ -423,20 +425,20 @@ void CBotString::Empty()
 	m_lg = 0;
 }
 
-static char	nilstring[] = {0};
+static char emptyString[] = {0};
 
-CBotString::operator LPCTSTR() const
+CBotString::operator const char * () const
 {
-	if (this == NULL || m_ptr == NULL) return nilstring;
+	if (this == NULL || m_ptr == NULL) return emptyString;
 	return m_ptr;
 }
 
 
-int CBotString::Compare(LPCTSTR lpsz) const
+int CBotString::Compare(const char * lpsz) const
 {
 	char*	p = m_ptr;
-	if (lpsz  == NULL) lpsz = nilstring;
-	if (m_ptr == NULL) p = nilstring;
+	if (lpsz  == NULL) lpsz = emptyString;
+	if (m_ptr == NULL) p = emptyString;
 	return strcmp(p, lpsz);	// wcscmp 
 }
 
@@ -527,14 +529,14 @@ void CBotStringArray::SetSize(int nNewSize)
 		// shrink to nothing
 
 		DestructElements(m_pData, m_nSize);
-		delete[] (BYTE*)m_pData;
+		delete[] (unsigned char *)m_pData;
 		m_pData = NULL;
 		m_nSize = m_nMaxSize = 0;
 	}
 	else if (m_pData == NULL)
 	{
 		// create one with exact size
-		m_pData = (CBotString*) new BYTE[nNewSize * sizeof(CBotString)];
+		m_pData = (CBotString*) new unsigned char[nNewSize * sizeof(CBotString)];
 
 		ConstructElements(m_pData, nNewSize);
 
@@ -563,7 +565,7 @@ void CBotStringArray::SetSize(int nNewSize)
 		{
 			// heuristically determine growth when nGrowBy == 0
 			//  (this avoids heap fragmentation in many situations)
-			nGrowBy = min(1024, max(4, m_nSize / 8));
+			nGrowBy = std::min(1024, std::max(4, m_nSize / 8));
 		}
 		int nNewMax;
 		if (nNewSize < m_nMaxSize + nGrowBy)
@@ -571,7 +573,7 @@ void CBotStringArray::SetSize(int nNewSize)
 		else
 			nNewMax = nNewSize;  // no slush
 
-		CBotString* pNewData = (CBotString*) new BYTE[nNewMax * sizeof(CBotString)];
+		CBotString* pNewData = (CBotString*) new unsigned char[nNewMax * sizeof(CBotString)];
 
 		// copy new data from old
 		memcpy(pNewData, m_pData, m_nSize * sizeof(CBotString));
@@ -581,7 +583,7 @@ void CBotStringArray::SetSize(int nNewSize)
 
 
 		// Ret rid of old stuff (note: no destructors called)
-		delete[] (BYTE*)m_pData;
+		delete[] (unsigned char *)m_pData;
 		m_pData = pNewData;
 		m_nSize = nNewSize;
 		m_nMaxSize = nNewMax;

@@ -58,7 +58,7 @@ void PrepareFilename(CBotString &filename)  //DD!
 // reçois le nom du fichier en paramètre
 
 // exécution
-BOOL rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception) 
+bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception) 
 {
 	CBotString	mode;
 
@@ -132,7 +132,7 @@ CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar)
 // destructeur de la classe
 
 // exécution
-BOOL rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
 	// récupère l'élément "handle"
 	pVar = pThis->GivItem("handle");
@@ -154,7 +154,7 @@ BOOL rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception
 // reçois le mode r/w en paramètre
 
 // exécution
-BOOL rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
 	// il doit y avoir un paramètre
 	if ( pVar == NULL ) { Exception = CBotErrLowParam; return FALSE; }
@@ -243,7 +243,7 @@ CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar)
 // méthode FILE :: close
 
 // exécution
-BOOL rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
 	// il ne doit pas y avoir de paramètre
 	if ( pVar != NULL ) return CBotErrOverParam;
@@ -275,7 +275,7 @@ CBotTypResult cfclose (CBotVar* pThis, CBotVar* &pVar)
 // méthode FILE :: writeln
 
 // exécution
-BOOL rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
 	// il doit y avoir un paramètre
 	if ( pVar == NULL ) { Exception = CBotErrLowParam; return FALSE; }
@@ -319,7 +319,7 @@ CBotTypResult cfwrite (CBotVar* pThis, CBotVar* &pVar)
 // méthode FILE :: readln
 
 // exécution
-BOOL rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
 	// il ne doit pas y avoir de paramètre
 	if ( pVar != NULL ) { Exception = CBotErrOverParam; return FALSE; }
@@ -360,7 +360,7 @@ CBotTypResult cfread (CBotVar* pThis, CBotVar* &pVar)
 
 
 // exécution
-BOOL rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
+bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
 	// il ne doit pas y avoir de paramètre
 	if ( pVar != NULL ) { Exception = CBotErrOverParam; return FALSE; }
