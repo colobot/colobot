@@ -105,14 +105,14 @@ bool Gfx::CGLDevice::Create()
         return false;
     }
 
-    m_private->glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
+    /*m_private->glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
     m_private->glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   SDL_GL_GetProcAddress("glActiveTextureARB");
 
     if ((m_private->glMultiTexCoord2fARB == NULL) || (m_private->glActiveTextureARB == NULL))
     {
         m_error = "Could not load extension functions, even though they seem supported";
         return false;
-    }
+    }*/
 
     m_wasInit = true;
 
@@ -144,8 +144,8 @@ bool Gfx::CGLDevice::Create()
 
 void Gfx::CGLDevice::Destroy()
 {
-    m_private->glMultiTexCoord2fARB = NULL;
-    m_private->glActiveTextureARB   = NULL;
+    /*m_private->glMultiTexCoord2fARB = NULL;
+    m_private->glActiveTextureARB   = NULL;*/
 
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
@@ -328,41 +328,83 @@ bool Gfx::CGLDevice::GetLightEnabled(int index)
     return m_lightsEnabled[index];
 }
 
-Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, bool alpha, bool mipMap)
+/** If image is invalid, returns NULL.
+    Otherwise, returns pointer to new Gfx::Texture struct.
+    This struct must not be deleted in other way than through DeleteTexture() */
+Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCreateParams &params)
 {
-    Gfx::Texture *result = new Gfx::Texture();
-
-    // Texturing must be enabled, so enable 1st texture stage
-    m_private->glActiveTextureARB(GL_TEXTURE0_ARB);
-    glEnable(GL_TEXTURE_2D);
-
-    glGenTextures(1, &result->id);
-    glBindTexture(GL_TEXTURE_2D, result->id);
-
-    GLenum sourceFormat = 0;
-    if (alpha)
-        sourceFormat = GL_RGBA;
-    else
-        sourceFormat = GL_RGB;
-
     ImageData *data = image->GetData();
     if (data == NULL)
         return NULL;
 
-    if (mipMap)
-    {
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, data->surface->w,
-                          data->surface->h, sourceFormat, GL_UNSIGNED_BYTE,
-                          data->surface->pixels);
-    }
-    else
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->surface->w, data->surface->h,
-                     0, sourceFormat, GL_UNSIGNED_BYTE, data->surface->pixels);
-    }
+    Gfx::Texture *result = new Gfx::Texture();
+    result->valid = true;
 
-    // Restore previous setup of 1st texture stage
-    RestoreTextureStage(0);
+    // Use & enable 1st texture stage
+    glActiveTextureARB(GL_TEXTURE0_ARB);
+    glEnable(GL_TEXTURE_2D);
+
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+    glGenTextures(1, &result->id);
+    glBindTexture(GL_TEXTURE_2D, result->id);
+
+    // Set params
+
+    GLint minF = 0;
+    if      (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST)                minF = GL_NEAREST;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR)                 minF = GL_LINEAR;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST) minF = GL_NEAREST_MIPMAP_NEAREST;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_NEAREST)  minF = GL_LINEAR_MIPMAP_NEAREST;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_LINEAR)  minF = GL_NEAREST_MIPMAP_LINEAR;
+    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR)   minF = GL_LINEAR_MIPMAP_LINEAR;
+    else  assert(false);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minF);
+
+    GLint magF = 0;
+    if      (params.magFilter == Gfx::TEX_MAG_FILTER_NEAREST) magF = GL_NEAREST;
+    else if (params.magFilter == Gfx::TEX_MAG_FILTER_LINEAR)  magF = GL_LINEAR;
+    else  assert(false);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magF);
+
+    if      (params.wrapS == Gfx::TEX_WRAP_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    else if (params.wrapS == Gfx::TEX_WRAP_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    else  assert(false);
+
+    if      (params.wrapT == Gfx::TEX_WRAP_CLAMP)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+    else if (params.wrapT == Gfx::TEX_WRAP_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    else  assert(false);
+
+
+    if (params.mipmap)
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+    else
+        glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
+
+    GLenum sourceFormat = 0;
+    if (params.alpha)
+        sourceFormat = GL_RGBA;
+    else
+        sourceFormat = GL_RGB;
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->surface->w, data->surface->h,
+                 0, sourceFormat, GL_UNSIGNED_BYTE, data->surface->pixels);
+
+
+    // Restore the previous state of 1st stage
+    if (m_textures[0] == NULL)
+        glBindTexture(GL_TEXTURE_2D, 0);
+    else
+        glBindTexture(GL_TEXTURE_2D, m_textures[0]->id);
+
+    if ( (! m_texturing) || (! m_texturesEnabled[0]) )
+        glDisable(GL_TEXTURE_2D);
 
     return result;
 }
@@ -372,6 +414,13 @@ void Gfx::CGLDevice::DestroyTexture(Gfx::Texture *texture)
     std::set<Gfx::Texture*>::iterator it = m_allTextures.find(texture);
     if (it != m_allTextures.end())
         m_allTextures.erase(it);
+
+    // Unbind the texture if in use anywhere
+    for (int index = 0; index < (int)m_textures.size(); ++index)
+    {
+        if (m_textures[index] == texture)
+            SetTexture(index, NULL);
+    }
 
     glDeleteTextures(1, &texture->id);
 }
@@ -402,7 +451,7 @@ void Gfx::CGLDevice::SetTexture(int index, Gfx::Texture *texture)
     assert(index < (int)m_textures.size());
 
     // Enable the given texture stage
-    m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+    glActiveTextureARB(GL_TEXTURE0_ARB + index);
     glEnable(GL_TEXTURE_2D);
 
     if ((texture == NULL) || (! texture->valid))
@@ -439,7 +488,7 @@ void Gfx::CGLDevice::SetTextureEnabled(int index, bool enabled)
 
     m_texturesEnabled[index] = enabled;
 
-    m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+    glActiveTextureARB(GL_TEXTURE0_ARB + index);
     if (enabled)
         glEnable(GL_TEXTURE_2D);
     else
@@ -466,40 +515,16 @@ void Gfx::CGLDevice::SetTextureParams(int index, const Gfx::TextureParams &param
     // Remember the settings
     m_texturesParams[index] = params;
 
+    // Don't actually do anything if texture not set
+    if (m_textures[index] == NULL)
+    {
+        printf("No texture set: %d\n", index);
+        return;
+    }
+
     // Enable the given stage
-    m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+    glActiveTextureARB(GL_TEXTURE0_ARB + index);
     glEnable(GL_TEXTURE_2D);
-
-    GLint minF = 0;
-    if      (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST)                minF = GL_NEAREST;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR)                 minF = GL_LINEAR;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST) minF = GL_NEAREST_MIPMAP_NEAREST;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_NEAREST)  minF = GL_LINEAR_MIPMAP_NEAREST;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_LINEAR)  minF = GL_NEAREST_MIPMAP_LINEAR;
-    else if (params.minFilter == Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR)   minF = GL_LINEAR_MIPMAP_LINEAR;
-    else  assert(false);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minF);
-
-    GLint magF = 0;
-    if      (params.magFilter == Gfx::TEX_MAG_FILTER_NEAREST) magF = GL_NEAREST;
-    else if (params.magFilter == Gfx::TEX_MAG_FILTER_LINEAR)  magF = GL_LINEAR;
-    else  assert(false);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, magF);
-
-    if      (params.wrapS == Gfx::TEX_WRAP_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-    else if (params.wrapS == Gfx::TEX_WRAP_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    else  assert(false);
-
-    if      (params.wrapT == Gfx::TEX_WRAP_CLAMP)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-    else if (params.wrapT == Gfx::TEX_WRAP_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    else  assert(false);
-
 
     // Selection of operation and arguments
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -609,7 +634,7 @@ void Gfx::CGLDevice::SetTextureFactor(Gfx::Color &color)
     for (int index = 0; index < (int)m_textures.size(); ++index)
     {
         // Activate stage
-        m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+        glActiveTextureARB(GL_TEXTURE0_ARB + index);
         glEnable(GL_TEXTURE_2D);
 
         glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, color.Array());
@@ -623,7 +648,7 @@ void Gfx::CGLDevice::SetTextureFactor(Gfx::Color &color)
 Gfx::Color Gfx::CGLDevice::GetTextureFactor()
 {
     // Get from 1st stage (should be the same for all stages)
-    m_private->glActiveTextureARB(GL_TEXTURE0_ARB);
+    glActiveTextureARB(GL_TEXTURE0_ARB);
     glEnable(GL_TEXTURE_2D);
 
     GLfloat color[4] = { 0.0f };
@@ -636,22 +661,6 @@ Gfx::Color Gfx::CGLDevice::GetTextureFactor()
     return Gfx::Color(color[0], color[1], color[2], color[3]);
 }
 
-void Gfx::CGLDevice::RestoreTextureStage(int index)
-{
-    // Ensure that we're working with the right stage
-    m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
-    glEnable(GL_TEXTURE_2D);
-
-    if (m_textures[index] != NULL)
-        glBindTexture(GL_TEXTURE_2D, m_textures[index]->id); // bind to the previous texture
-    else
-        glBindTexture(GL_TEXTURE_2D, 0); // unbind
-
-    // Disable the stage if it is set so
-    if ( (! m_texturing) || (! m_texturesEnabled[index]) )
-        glDisable(GL_TEXTURE_2D);
-}
-
 void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, int vertexCount)
 {
     if (type == Gfx::PRIMITIVE_LINES)
@@ -661,10 +670,12 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, in
     else if (type == Gfx::PRIMITIVE_TRIANGLE_STRIP)
         glBegin(GL_TRIANGLE_STRIP);
 
+    glColor3f(1.0f, 1.0f, 1.0f); // TODO: set global color?
+
     for (int i = 0; i < vertexCount; ++i)
     {
         glNormal3fv((GLfloat*)vertices[i].normal.Array());
-        glTexCoord2fv((GLfloat*)vertices[i].texCoord.Array());
+        glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, (GLfloat*)vertices[i].texCoord.Array());
         glVertex3fv((GLfloat*)vertices[i].coord.Array());
     }
 
@@ -684,7 +695,7 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vert
     {
         // TODO: specular through EXT_separate_specular_color?
         glColor4fv((GLfloat*)vertices[i].color.Array());
-        glTexCoord2fv((GLfloat*)vertices[i].texCoord.Array());
+        glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, (GLfloat*)vertices[i].texCoord.Array());
         glVertex3fv((GLfloat*)vertices[i].coord.Array());
     }
 
@@ -703,8 +714,8 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices
     for (int i = 0; i < vertexCount; ++i)
     {
         glNormal3fv((GLfloat*) vertices[i].normal.Array());
-        m_private->glMultiTexCoord2fARB(GL_TEXTURE0_ARB, vertices[i].texCoord.x, vertices[i].texCoord.y);
-        m_private->glMultiTexCoord2fARB(GL_TEXTURE1_ARB, vertices[i].texCoord2.x, vertices[i].texCoord2.y);
+        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, vertices[i].texCoord.x, vertices[i].texCoord.y);
+        glMultiTexCoord2fARB(GL_TEXTURE1_ARB, vertices[i].texCoord2.x, vertices[i].texCoord2.y);
         glVertex3fv((GLfloat*) vertices[i].coord.Array());
     }
 
@@ -722,25 +733,16 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
     {
         m_texturing = enabled;
 
-        if (enabled)
+        // Enable/disable stages with new setting
+        for (int index = 0; index < (int)m_textures.size(); ++index)
         {
-            // All enabled multitexture stages have to be enabled
-            for (int index = 0; index < (int)m_textures.size(); ++index)
-            {
-                m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
-                if (m_texturesEnabled[index])
-                    glEnable(GL_TEXTURE_2D);
-            }
-        }
-        else
-        {
-            // All multitexture stages have to be disabled
-            for (int index = 0; index < (int)m_textures.size(); ++index)
-            {
-                m_private->glActiveTextureARB(GL_TEXTURE0_ARB + index);
+            glActiveTextureARB(GL_TEXTURE0_ARB + index);
+            if (m_texturing && m_texturesEnabled[index])
+                glEnable(GL_TEXTURE_2D);
+            else
                 glDisable(GL_TEXTURE_2D);
-            }
         }
+
         return;
     }
 

@@ -32,14 +32,20 @@ void Gfx::DeviceConfig::LoadDefault()
     noFrame = false;
 }
 
-void Gfx::TextureParams::LoadDefault()
+void Gfx::TextureCreateParams::LoadDefault()
 {
+    alpha = false;
+    mipmap = false;
+
     minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
     magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
 
     wrapS = Gfx::TEX_WRAP_REPEAT;
     wrapT = Gfx::TEX_WRAP_REPEAT;
+}
 
+void Gfx::TextureParams::LoadDefault()
+{
     colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
     colorArg1 = Gfx::TEX_MIX_ARG_CURRENT;
     colorArg2 = Gfx::TEX_MIX_ARG_TEXTURE;

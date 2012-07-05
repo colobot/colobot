@@ -237,11 +237,15 @@ enum TexMixArgument
 };
 
 /**
-  \enum TextureParams
+  \struct TextureCreateParams
   \brief Parameters for texture creation
- */
-struct TextureParams
+  */
+struct TextureCreateParams
 {
+    //! Whether the texture image contains alpha
+    bool alpha;
+    //! Whether to generate mipmaps
+    bool mipmap;
     //! Minification filter
     Gfx::TexMinFilter minFilter;
     //! Magnification filter
@@ -250,6 +254,21 @@ struct TextureParams
     Gfx::TexWrapMode wrapS;
     //! Wrap T coord mode
     Gfx::TexWrapMode wrapT;
+
+    //! Constructor; calls LoadDefault()
+    TextureCreateParams()
+        { LoadDefault(); }
+
+    //! Loads the default values
+    void LoadDefault();
+};
+
+/**
+  \struct TextureParams
+  \brief Parameters for texture creation
+ */
+struct TextureParams
+{
     //! Mixing operation done on color values
     Gfx::TexMixOperation colorOperation;
     //! 1st argument of color operations
@@ -302,9 +321,9 @@ D3DRENDERSTATE_ZFUNC               -> SetDepthTestFunc()
 D3DRENDERSTATE_ZWRITEENABLE        -> SetRenderState() with RENDER_STATE_DEPTH_WRITE
 
 
->> SetTextureStageState() translates to SetTextureParams()
+>> SetTextureStageState() translates to SetTextureParams() or CreateTexture() for some params
 
-Params from enum in struct TextureParams
+Params from enum in struct TextureCreateParams or TextureParams
   D3DTSS_ADDRESS       -> Gfx::TexWrapMode wrapS, wrapT
   D3DTSS_ALPHAARG1     -> Gfx::TexMixArgument alphaArg1
   D3DTSS_ALPHAARG2     -> Gfx::TexMixArgument alphaArg2
@@ -380,7 +399,7 @@ public:
     virtual bool GetLightEnabled(int index) = 0;
 
     //! Creates a texture from image; the image can be safely removed after that
-    virtual Gfx::Texture* CreateTexture(CImage *image, bool alpha, bool mipMap) = 0;
+    virtual Gfx::Texture* CreateTexture(CImage *image, const Gfx::TextureCreateParams &params) = 0;
     //! Deletes a given texture, freeing it from video memory
     virtual void DestroyTexture(Gfx::Texture *texture) = 0;
     //! Deletes all textures created so far
