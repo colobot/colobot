@@ -97,7 +97,7 @@ public:
     virtual void SetLightEnabled(int index, bool enabled);
     virtual bool GetLightEnabled(int index);
 
-    virtual Gfx::Texture* CreateTexture(CImage *image, bool alpha, bool mipMap);
+    virtual Gfx::Texture* CreateTexture(CImage *image, const Gfx::TextureCreateParams &params);
     virtual void DestroyTexture(Gfx::Texture *texture);
     virtual void DestroyAllTextures();
 
@@ -187,9 +187,6 @@ private:
 
     //! Set of all created textures
     std::set<Gfx::Texture*> m_allTextures;
-
-    //! Restores the state of given texture stage to the previously saved settings
-    void RestoreTextureStage(int index);
 };
 
 }; // namespace Gfx
