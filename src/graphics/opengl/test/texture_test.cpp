@@ -7,11 +7,6 @@
 #include <SDL/SDL_image.h>
 #include <unistd.h>
 
-#include <GL/gl.h>
-
-
-#define DEV 1
-
 
 void Init(Gfx::CGLDevice *device)
 {
@@ -68,8 +63,6 @@ void Render(Gfx::CGLDevice *device)
 {
     device->BeginScene();
 
-    glFlush();
-
     Math::Matrix ortho;
     Math::LoadOrthoProjectionMatrix(ortho, -10, 10, -10, 10);
     device->SetTransform(Gfx::TRANSFORM_PROJECTION, ortho);
@@ -119,172 +112,6 @@ void Render(Gfx::CGLDevice *device)
     device->EndScene();
 }
 
-void InitGL()
-{
-    CImage img1;
-    if (! img1.Load("tex1.png"))
-    {
-        std::string err = img1.GetError();
-        GetLogger()->Error("texture 1 not loaded, error: %d!\n", err.c_str());
-    }
-    CImage img2;
-    if (! img2.Load("tex2.png"))
-    {
-        std::string err = img2.GetError();
-        GetLogger()->Error("texture 2 not loaded, error: %d!\n", err.c_str());
-    }
-
-    unsigned int textureHandle1 = 0;
-
-    glActiveTexture(GL_TEXTURE0_ARB);
-    glEnable(GL_TEXTURE_2D);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-
-    glGenTextures(1, &textureHandle1);
-    glBindTexture(GL_TEXTURE_2D, textureHandle1);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img1.GetData()->surface->w, img1.GetData()->surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, img1.GetData()->surface->pixels);
-
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-
-    glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_RGB, GL_REPLACE);
-    glTexEnvi(GL_TEXTURE_2D, GL_SRC0_RGB, GL_TEXTURE);
-    glTexEnvi(GL_TEXTURE_2D, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_ALPHA, GL_REPLACE);
-    glTexEnvi(GL_TEXTURE_2D, GL_SRC0_ALPHA, GL_TEXTURE);
-    glTexEnvi(GL_TEXTURE_2D, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-
-
-
-    unsigned int textureHandle2 = 0;
-
-    glActiveTexture(GL_TEXTURE1_ARB);
-    glEnable(GL_TEXTURE_2D);
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT,1);
-
-    glGenTextures(1, &textureHandle2);
-    glBindTexture(GL_TEXTURE_2D, textureHandle2);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img2.GetData()->surface->w, img2.GetData()->surface->h, 0, GL_RGBA, GL_UNSIGNED_BYTE, img2.GetData()->surface->pixels);
-
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
-
-    glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_RGB, GL_MODULATE);
-    glTexEnvi(GL_TEXTURE_2D, GL_SRC0_RGB, GL_TEXTURE);
-    glTexEnvi(GL_TEXTURE_2D, GL_OPERAND0_RGB, GL_SRC_COLOR);
-    glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_ALPHA, GL_MODULATE);
-    glTexEnvi(GL_TEXTURE_2D, GL_SRC0_ALPHA, GL_TEXTURE);
-    glTexEnvi(GL_TEXTURE_2D, GL_OPERAND0_ALPHA, GL_SRC_ALPHA);
-
-
-
-    glMatrixMode(GL_PROJECTION);
-    glOrtho(-10.0f, 10.0f, -10.0f, 10.0f, -1.0f, 1.0f);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-}
-
-void RenderGL()
-{
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    glLoadIdentity();
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-
-    glPushMatrix();
-    glTranslatef(-4.0f, 4.0f, 0.0f);
-
-    glActiveTextureARB(GL_TEXTURE0_ARB);
-    glEnable(GL_TEXTURE_2D);
-    glActiveTextureARB(GL_TEXTURE1_ARB);
-    glDisable(GL_TEXTURE_2D);
-
-    glBegin(GL_QUADS);
-    {
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 0.0f, 1.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 0.0f, 1.0f);
-        glVertex2f(-2.0f, -2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 1.0f, 1.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 1.0f, 1.0f);
-        glVertex2f(2.0f, -2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 1.0f, 0.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 1.0f, 0.0f);
-        glVertex2f(2.0f,  2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 0.0f, 0.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 0.0f, 0.0f);
-        glVertex2f(-2.0f,  2.0f);
-    }
-    glEnd();
-
-    glPopMatrix();
-    glPushMatrix();
-    glTranslatef( 4.0f, 4.0f, 0.0f);
-
-    glActiveTextureARB(GL_TEXTURE0_ARB);
-    glDisable(GL_TEXTURE_2D);
-    glActiveTextureARB(GL_TEXTURE1_ARB);
-    glEnable(GL_TEXTURE_2D);
-
-    glBegin(GL_QUADS);
-    {
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 0.0f, 1.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 0.0f, 1.0f);
-        glVertex2f(-2.0f, -2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 1.0f, 1.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 1.0f, 1.0f);
-        glVertex2f(2.0f, -2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 1.0f, 0.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 1.0f, 0.0f);
-        glVertex2f(2.0f,  2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 0.0f, 0.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 0.0f, 0.0f);
-        glVertex2f(-2.0f,  2.0f);
-    }
-    glEnd();
-
-    glPopMatrix();
-    glPushMatrix();
-    glTranslatef( 0.0f, -4.0f, 0.0f);
-
-    glActiveTextureARB(GL_TEXTURE0_ARB);
-    glEnable(GL_TEXTURE_2D);
-    glActiveTextureARB(GL_TEXTURE1_ARB);
-    glEnable(GL_TEXTURE_2D);
-
-    glBegin(GL_QUADS);
-    {
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 0.0f, 1.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 0.0f, 1.0f);
-        glVertex2f(-2.0f, -2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 1.0f, 1.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 1.0f, 1.0f);
-        glVertex2f(2.0f, -2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 1.0f, 0.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 1.0f, 0.0f);
-        glVertex2f(2.0f,  2.0f);
-        glMultiTexCoord2f(GL_TEXTURE0_ARB, 0.0f, 0.0f);
-        glMultiTexCoord2f(GL_TEXTURE1_ARB, 0.0f, 0.0f);
-        glVertex2f(-2.0f,  2.0f);
-    }
-    glEnd();
-
-    glPopMatrix();
-
-    glFlush();
-}
-
-
 int main()
 {
     CLogger();
@@ -322,24 +149,15 @@ int main()
 
     SDL_WM_SetCaption("Texture Test", "Texture Test");
 
-
-    #if DEV
     Gfx::CGLDevice *device = new Gfx::CGLDevice();
     device->Create();
 
     Init(device);
-    #else
-    InitGL();
-    #endif
 
     bool done = false;
     while (! done)
     {
-        #if DEV
         Render(device);
-        #else
-        RenderGL();
-        #endif
 
         SDL_GL_SwapBuffers();
 
@@ -348,12 +166,10 @@ int main()
         if (event.type == SDL_QUIT)
             done = true;
 
-        usleep(50000);
+        usleep(10000);
     }
 
-    #if DEV
     device->Destroy();
-    #endif
 
     SDL_FreeSurface(surface);
 

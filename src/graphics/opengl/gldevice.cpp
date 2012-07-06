@@ -135,7 +135,7 @@ bool Gfx::CGLDevice::Create()
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &maxTextures);
 
-    m_textures         = std::vector<Gfx::Texture*>     (maxTextures, NULL);
+    m_textures         = std::vector<Gfx::Texture*>     (maxTextures, (Gfx::Texture*)(NULL));
     m_texturesEnabled  = std::vector<bool>              (maxTextures, false);
     m_texturesParams   = std::vector<Gfx::TextureParams>(maxTextures, Gfx::TextureParams());
 

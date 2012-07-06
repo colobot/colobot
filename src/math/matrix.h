@@ -388,9 +388,9 @@ inline bool MatricesEqual(const Matrix &m1, const Matrix &m2,
 }
 
 //! Convenience function for getting transposed matrix
-inline Matrix Transpose(const Matrix &m)
+inline Math::Matrix Transpose(const Math::Matrix &m)
 {
-    Matrix result = m;
+    Math::Matrix result = m;
     result.Transpose();
     return result;
 }
@@ -399,7 +399,7 @@ inline Matrix Transpose(const Matrix &m)
 /** \a left left-hand matrix
     \a right right-hand matrix
     \returns multiplied matrices */
-inline Matrix MultiplyMatrices(const Matrix &left, const Matrix &right)
+inline Math::Matrix MultiplyMatrices(const Math::Matrix &left, const Math::Matrix &right)
 {
     return left.Multiply(right);
 }
@@ -413,25 +413,25 @@ inline Matrix MultiplyMatrices(const Matrix &left, const Matrix &right)
 
    The result, a 4x1 vector is then converted to 3x1 by dividing
    x,y,z coords by the fourth coord (w). */
-inline Vector MatrixVectorMultiply(const Matrix &m, const Vector &v, bool wDivide = false)
+inline Math::Vector MatrixVectorMultiply(const Math::Matrix &m, const Math::Vector &v, bool wDivide = false)
 {
     float x = v.x * m.m[0 ] + v.y * m.m[4 ] + v.z * m.m[8 ] + m.m[12];
     float y = v.x * m.m[1 ] + v.y * m.m[5 ] + v.z * m.m[9 ] + m.m[13];
     float z = v.x * m.m[2 ] + v.y * m.m[6 ] + v.z * m.m[10] + m.m[14];
 
     if (!wDivide)
-        return Vector(x, y, z);
+        return Math::Vector(x, y, z);
 
     float w = v.x * m.m[3 ] + v.y * m.m[7 ] + v.z * m.m[11] + m.m[15];
 
     if (IsZero(w))
-        return Vector(x, y, z);
+        return Math::Vector(x, y, z);
 
     x /= w;
     y /= w;
     z /= w;
 
-    return Vector(x, y, z);
+    return Math::Vector(x, y, z);
 }
 
 /* @} */ // end of group

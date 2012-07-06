@@ -1,5 +1,4 @@
 // * This file is part of the COLOBOT source code
-// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -15,19 +14,30 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// device.cpp
+// texture.cpp
+
+#include "graphics/common/texture.h"
 
 
-#include "graphics/common/device.h"
-
-
-void Gfx::DeviceConfig::LoadDefault()
+void Gfx::TextureCreateParams::LoadDefault()
 {
-    width = 800;
-    height = 600;
-    bpp = 32;
-    fullScreen = false;
-    resizeable = false;
-    doubleBuf = true;
-    noFrame = false;
+    alpha = false;
+    mipmap = false;
+
+    minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
+    magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
+
+    wrapS = Gfx::TEX_WRAP_REPEAT;
+    wrapT = Gfx::TEX_WRAP_REPEAT;
+}
+
+void Gfx::TextureParams::LoadDefault()
+{
+    colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
+    colorArg1 = Gfx::TEX_MIX_ARG_CURRENT;
+    colorArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
+
+    alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
+    alphaArg1 = Gfx::TEX_MIX_ARG_CURRENT;
+    alphaArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
 }
