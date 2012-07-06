@@ -34,15 +34,15 @@ namespace Math
 /* @{ */ // start of group
 
 //! Compares \a a and \a b within \a tolerance
-inline bool IsEqual(float a, float b, float tolerance = TOLERANCE)
+inline bool IsEqual(float a, float b, float tolerance = Math::TOLERANCE)
 {
     return fabs(a - b) < tolerance;
 }
 
 //! Compares \a a to zero within \a tolerance
-inline bool IsZero(float a, float tolerance = TOLERANCE)
+inline bool IsZero(float a, float tolerance = Math::TOLERANCE)
 {
-    return IsEqual(a, 0.0f, tolerance);
+    return Math::IsEqual(a, 0.0f, tolerance);
 }
 
 //! Minimum
@@ -59,12 +59,12 @@ inline float Min(float a, float b, float c)
 
 inline float Min(float a, float b, float c, float d)
 {
-    return Min( Min(a, b), Min(c, d) );
+    return Math::Min( Math::Min(a, b), Math::Min(c, d) );
 }
 
 inline float Min(float a, float b, float c, float d, float e)
 {
-    return Min( Min(a, b), Min(c, d), e );
+    return Math::Min( Math::Min(a, b), Math::Min(c, d), e );
 }
 
 //! Maximum
@@ -76,17 +76,17 @@ inline float Max(float a, float b)
 
 inline float Max(float a, float b, float c)
 {
-    return Max( Max(a, b), c );
+    return Math::Max( Math::Max(a, b), c );
 }
 
 inline float Max(float a, float b, float c, float d)
 {
-    return Max( Max(a, b), Max(c, d) );
+    return Math::Max( Math::Max(a, b), Math::Max(c, d) );
 }
 
 inline float Max(float a, float b, float c, float d, float e)
 {
-    return Max( Max(a, b), Max(c, d), e );
+    return Math::Max( Math::Max(a, b), Math::Max(c, d), e );
 }
 
 //! Returns the normalized value (0 .. 1)
@@ -130,7 +130,7 @@ inline float Rand()
 //! Returns a normalized angle, that is in other words between 0 and 2 * PI
 inline float NormAngle(float angle)
 {
-    angle = Mod(angle, PI*2.0f);
+    angle = Math::Mod(angle, PI*2.0f);
     if ( angle < 0.0f )
         return PI*2.0f + angle;
 
@@ -140,9 +140,9 @@ inline float NormAngle(float angle)
 //! Test if a angle is between two terminals
 inline bool TestAngle(float angle, float min, float max)
 {
-    angle = NormAngle(angle);
-    min   = NormAngle(min);
-    max   = NormAngle(max);
+    angle = Math::NormAngle(angle);
+    min   = Math::NormAngle(min);
+    max   = Math::NormAngle(max);
 
     if ( min > max )
         return ( angle <= max || angle >= min );
@@ -163,8 +163,8 @@ inline float PropAngle(int a, int b, float p)
 /** A positive angle is counterclockwise (CCW). */
 inline float Direction(float a, float g)
 {
-    a = NormAngle(a);
-    g = NormAngle(g);
+    a = Math::NormAngle(a);
+    g = Math::NormAngle(g);
 
     if ( a < g )
     {
