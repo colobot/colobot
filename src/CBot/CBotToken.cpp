@@ -464,6 +464,7 @@ bool CBotToken::GivKeyDefNum(const char* w, CBotToken* &token)
 
 // reprend la liste des mots clefs dans les ressources
 
+/// \todo Fixme Figure out how this should work.
 void CBotToken::LoadKeyWords()
 {
 	CBotString		s;
