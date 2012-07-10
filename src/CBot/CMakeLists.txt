@@ -10,7 +10,6 @@ CBotToken.cpp
 CBotTwoOpExpr.cpp
 CBotVar.cpp
 CBotWhile.cpp
-CBot.rc
 )
 
 add_library(CBot SHARED ${SOURCES})

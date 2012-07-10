@@ -13,7 +13,12 @@
 // *
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.//////////////////////////////////////////////////////////////////////
-// gestion de la pile (stack)
+
+/**
+ * \file CBotStack.cpp
+ * \brief Management of the stack
+ */
+
 
 #include "CBot.h"
 #include <cstdlib>
