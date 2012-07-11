@@ -35,10 +35,7 @@
 class CApplication;
 class CInstanceManager;
 class CObject;
-
-namespace Snd {
 class CSound;
-};
 
 
 namespace Gfx {
@@ -614,7 +611,7 @@ protected:
     Gfx::CLightning* m_lightning;
     Gfx::CPlanet*    m_planet;
     Gfx::CTerrain*   m_terrain;
-    Snd::CSound*     m_sound;
+    CSound*          m_sound;
 
     bool            m_wasInit;
     std::string     m_error;
