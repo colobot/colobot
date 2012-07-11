@@ -38,6 +38,7 @@ common/iman.cpp
 # common/modfile.cpp
 # common/profile.cpp
 # common/restext.cpp
+common/stringutils.cpp
 graphics/common/camera.cpp
 graphics/common/cloud.cpp
 graphics/common/color.cpp
@@ -45,8 +46,7 @@ graphics/common/device.cpp
 graphics/common/engine.cpp
 graphics/common/light.cpp
 graphics/common/lightning.cpp
-graphics/common/model.cpp
-graphics/common/modfile.cpp
+graphics/common/modelfile.cpp
 graphics/common/particle.cpp
 graphics/common/planet.cpp
 graphics/common/pyro.cpp

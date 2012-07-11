@@ -94,6 +94,14 @@ struct VertexTex2
                Math::Point aTexCoord = Math::Point(),
                Math::Point aTexCoord2 = Math::Point())
         : coord(aCoord), normal(aNormal), texCoord(aTexCoord), texCoord2(aTexCoord2) {}
+
+    void FromVertex(const Gfx::Vertex &v)
+    {
+        coord = v.coord;
+        normal = v.normal;
+        texCoord = v.texCoord;
+        texCoord2 = Math::Point();
+    }
 };
 
 }; // namespace Gfx
