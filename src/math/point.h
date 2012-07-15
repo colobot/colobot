@@ -24,6 +24,7 @@
 #include "func.h"
 
 #include <cmath>
+#include <sstream>
 
 
 // Math module namespace
@@ -147,6 +148,15 @@ struct Point
         return Point(left.x / right, left.y / right);
     }
 
+
+    //! Returns a string "[x, y]"
+    inline std::string ToString() const
+    {
+        std::stringstream s;
+        s.precision(3);
+        s << "[" << x << ", " << y << "]";
+        return s.str();
+    }
 }; // struct Point
 
 

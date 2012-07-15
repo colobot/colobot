@@ -19,6 +19,9 @@
 #pragma once
 
 
+#include <sstream>
+
+
 namespace Gfx {
 
 /**
@@ -38,6 +41,15 @@ struct Color
     {
         return (float*)this;
     }
+
+    //! Returns a string (r, g, b, a)
+    inline std::string ToString() const
+    {
+        std::stringstream s;
+        s.precision(3);
+        s << "(" << r << ", " << g << ", " << b << ", " << a << ")";
+        return s.str();
+    }
 };
 
 /**
@@ -49,6 +61,15 @@ struct ColorHSV
 
     ColorHSV(float aH = 0.0f, float aS = 0.0f, float aV = 0.0f)
      : h(aH), s(aS), v(aV) {}
+
+     //! Returns a string "(h, s, v)"
+     inline std::string ToString() const
+     {
+        std::stringstream s;
+        s.precision(3);
+        s << "(" << h << ", " << s << ", " << v << ")";
+        return s.str();
+     }
 };
 
 //! Converts a RGB color to HSV color

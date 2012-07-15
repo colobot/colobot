@@ -47,7 +47,7 @@ template<typename T> class CSingleton
             mInstance = static_cast<T *>(this);
         }
 
-        ~CSingleton() {
+        virtual ~CSingleton() {
             mInstance = NULL;
         }
 

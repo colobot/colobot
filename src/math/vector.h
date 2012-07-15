@@ -24,6 +24,7 @@
 #include "func.h"
 
 #include <cmath>
+#include <sstream>
 
 
 // Math module namespace
@@ -200,6 +201,16 @@ struct Vector
     inline friend const Vector operator/(const Vector &left, const float &right)
     {
         return Vector(left.x / right, left.y / right, left.z / right);
+    }
+
+
+    //! Returns a string "[x, y, z]"
+    inline std::string ToString() const
+    {
+        std::stringstream s;
+        s.precision(3);
+        s << "[" << x << ", " << y << ", " << z << "]";
+        return s.str();
     }
 
 }; // struct Point

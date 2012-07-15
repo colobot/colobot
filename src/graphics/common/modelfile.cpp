@@ -21,6 +21,7 @@
 
 #include "common/iman.h"
 #include "common/ioutils.h"
+#include "common/logger.h"
 #include "common/stringutils.h"
 #include "math/geometry.h"
 
@@ -205,8 +206,6 @@ Gfx::Material ReadBinaryMaterial(std::istream &stream)
 
     /* power = */       IOUtils::ReadBinaryFloat(stream);
 
-    /* padding? */      IOUtils::ReadBinary<2, unsigned int>(stream);
-
     return result;
 }
 
@@ -233,8 +232,6 @@ void WriteBinaryMaterial(Gfx::Material material, std::ostream &stream)
     /* emissive.a */  IOUtils::WriteBinaryFloat(0.0f, stream);
 
     /* power */       IOUtils::WriteBinaryFloat(0.0f, stream);
-
-    /* padding? */    IOUtils::WriteBinary<2, unsigned int>(0, stream);
 }
 
 Gfx::ModelTriangle::ModelTriangle()
@@ -390,6 +387,8 @@ bool Gfx::CModelFile::ReadModel(std::istream &stream, bool edit, bool meta)
             t.used     = IOUtils::ReadBinary<1, char>(stream);
             t.selected = IOUtils::ReadBinary<1, char>(stream);
 
+            /* padding */ IOUtils::ReadBinary<2, unsigned int>(stream);
+
             t.p1 = ReadBinaryVertexTex2(stream);
             t.p2 = ReadBinaryVertexTex2(stream);
             t.p3 = ReadBinaryVertexTex2(stream);
@@ -422,15 +421,37 @@ bool Gfx::CModelFile::ReadModel(std::istream &stream, bool edit, bool meta)
             triangle.min = t.min;
             triangle.max = t.max;
             triangle.state = t.state;
-            sprintf(tex2Name, "dirty%.2d.tga", t.texNum2); // hardcoded as in the original code
+
+            if (t.texNum2 != 0)
+                sprintf(tex2Name, "dirty%.2d.tga", t.texNum2); // hardcoded as in the original code
+
             triangle.tex2Name = std::string(tex2Name);
 
             m_triangles.push_back(triangle);
-        }
+       }
     }
 
     for (int i = 0; i < (int) m_triangles.size(); ++i)
+    {
         m_triangles[i].tex1Name = StrUtils::Replace(m_triangles[i].tex1Name, "bmp", "tga");
+
+        GetLogger()->Info("ModelTriangle %d\n", i+1);
+        std::string s1 = m_triangles[i].p1.ToString();
+        GetLogger()->Info(" p1: %s\n", s1.c_str());
+        std::string s2 = m_triangles[i].p2.ToString();
+        GetLogger()->Info(" p2: %s\n", s2.c_str());
+        std::string s3 = m_triangles[i].p3.ToString();
+        GetLogger()->Info(" p3: %s\n", s3.c_str());
+
+        std::string d = m_triangles[i].material.diffuse.ToString();
+        std::string a = m_triangles[i].material.ambient.ToString();
+        std::string s = m_triangles[i].material.specular.ToString();
+        GetLogger()->Info(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
+
+        GetLogger()->Info(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
+        GetLogger()->Info(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
+        GetLogger()->Info(" state: %ld\n", m_triangles[i].state);
+    }
 
     /*
     if (! edit)
@@ -767,6 +788,11 @@ void Gfx::CModelFile::Mirror()
         m_triangles[i].p2.normal.z = -m_triangles[i].p2.normal.z;
         m_triangles[i].p3.normal.z = -m_triangles[i].p3.normal.z;
     }
+}
+
+std::vector<Gfx::ModelTriangle>& Gfx::CModelFile::GetTriangles()
+{
+    return m_triangles;
 }
 
 int Gfx::CModelFile::GetTriangleCount()

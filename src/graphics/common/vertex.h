@@ -23,6 +23,8 @@
 #include "math/vector.h"
 #include "math/point.h"
 
+#include <sstream>
+
 namespace Gfx {
 
 /**
@@ -46,6 +48,17 @@ struct Vertex
            Math::Vector aNormal = Math::Vector(),
            Math::Point aTexCoord = Math::Point())
         : coord(aCoord), normal(aNormal), texCoord(aTexCoord) {}
+
+
+    //! Returns a string "(c: [...], n: [...], tc: [...])"
+    inline std::string ToString() const
+    {
+        std::stringstream s;
+        s.precision(3);
+        s << "(c: " << coord.ToString() << ", n: " << normal.ToString()
+          << ", tc: " << texCoord.ToString() << ")";
+        return s.str();
+    }
 };
 
 /**
@@ -72,6 +85,16 @@ struct VertexCol
               Gfx::Color aSpecular = Gfx::Color(),
               Math::Point aTexCoord = Math::Point())
         : coord(aCoord), color(aColor), specular(aSpecular), texCoord(aTexCoord) {}
+
+    //! Returns a string "(c: [...], col: [...], sp: [...], tc: [...])"
+    inline std::string ToString() const
+    {
+        std::stringstream s;
+        s.precision(3);
+        s << "(c: " << coord.ToString() << ", col: " << color.ToString() << ", sp: "
+          << specular.ToString() << ", tc: " << texCoord.ToString() << ")";
+        return s.str();
+    }
 };
 
 
@@ -95,12 +118,23 @@ struct VertexTex2
                Math::Point aTexCoord2 = Math::Point())
         : coord(aCoord), normal(aNormal), texCoord(aTexCoord), texCoord2(aTexCoord2) {}
 
+    //! Sets the fields from Gfx::Vertex with texCoord2 = (0,0)
     void FromVertex(const Gfx::Vertex &v)
     {
         coord = v.coord;
         normal = v.normal;
         texCoord = v.texCoord;
         texCoord2 = Math::Point();
+    }
+
+    //! Returns a string "(c: [...], n: [...], tc: [...], tc2: [...])"
+    inline std::string ToString() const
+    {
+        std::stringstream s;
+        s.precision(3);
+        s << "(c: " << coord.ToString() << ", n: " << normal.ToString()
+          << ", tc: " << texCoord.ToString() << ", tc2: " << texCoord2.ToString() << ")";
+        return s.str();
     }
 };
 
