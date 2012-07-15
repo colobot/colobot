@@ -170,6 +170,7 @@ int main()
     }
 
     device->Destroy();
+    delete device;
 
     SDL_FreeSurface(surface);
 

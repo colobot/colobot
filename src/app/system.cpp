@@ -21,19 +21,21 @@
 
 #include "common/config.h"
 
+
 #if defined(PLATFORM_WINDOWS)
-#include <windows.h>
+#include "system_windows.h"
+
 #elif defined(PLATFORM_LINUX)
-#include <cstdlib>
+#include "system_linux.h"
+
 #else
-#include <iostream>
+#include "system_other.h"
+
 #endif
 
 
+#include <cassert>
 
-SystemDialogResult SystemDialog_Windows(SystemDialogType type, const std::string& title, const std::string& message);
-SystemDialogResult SystemDialog_Linux(SystemDialogType type, const std::string& title, const std::string& message);
-SystemDialogResult SystemDialog_Other(SystemDialogType type, const std::string& title, const std::string& message);
 
 /**
  * Displays a system dialog with info, error, question etc. message.
@@ -45,209 +47,103 @@ SystemDialogResult SystemDialog_Other(SystemDialogType type, const std::string& 
  */
 SystemDialogResult SystemDialog(SystemDialogType type, const std::string& title, const std::string& message)
 {
-    #if defined(PLATFORM_WINDOWS)
-    return SystemDialog_Windows(type, title, message);
-    #elif defined(PLATFORM_LINUX)
-    return SystemDialog_Linux(type, title, message);
-    #else
-    return SystemDialog_Other(type, title, message);
-    #endif
-}
-
-
-
 #if defined(PLATFORM_WINDOWS)
-
-// Convert a wide Unicode string to an UTF8 string
-std::string UTF8_Encode_Windows(const std::wstring &wstr)
-{
-    int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
-    std::string strTo(size_needed, 0);
-    WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
-    return strTo;
-}
-
-// Convert an UTF8 string to a wide Unicode String
-std::wstring UTF8_Decode_Windows(const std::string &str)
-{
-    int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
-    std::wstring wstrTo(size_needed, 0);
-    MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
-    return wstrTo;
-}
-
-SystemDialogResult SystemDialog_Windows(SystemDialogType type, const std::string& title, const std::string& message)
-{
-    unsigned int windowsType = 0;
-    std::wstring windowsMessage = UTF8_Decode_Windows(message);
-    std::wstring windowsTitle = UTF8_Decode_Windows(title);
-
-    switch (type)
-    {
-        case SDT_INFO:
-        default:
-            windowsType = MB_ICONINFORMATION|MB_OK;
-            break;
-        case SDT_WARNING:
-            windowsType = MB_ICONWARNING|MB_OK;
-            break;
-        case SDT_ERROR:
-            windowsType = MB_ICONERROR|MB_OK;
-            break;
-        case SDT_YES_NO:
-            windowsType = MB_ICONQUESTION|MB_YESNO;
-            break;
-        case SDT_OK_CANCEL:
-            windowsType = MB_ICONWARNING|MB_OKCANCEL;
-            break;
-    }
-
-    switch (MessageBoxW(NULL, windowsMessage.c_str(), windowsTitle.c_str(), windowsType))
-    {
-        case IDOK:
-            return SDR_OK;
-        case IDCANCEL:
-            return SDR_CANCEL;
-        case IDYES:
-            return SDR_YES;
-        case IDNO:
-            return SDR_NO;
-        default:
-            break;
-    }
-
-    return SDR_OK;
-}
-
+    return SystemDialog_Windows(type, title, message);
 #elif defined(PLATFORM_LINUX)
-
-SystemDialogResult SystemDialog_Linux(SystemDialogType type, const std::string& title, const std::string& message)
-{
-    std::string options = "";
-    switch (type)
-    {
-        case SDT_INFO:
-        default:
-            options = "--info";
-            break;
-        case SDT_WARNING:
-            options = "--warning";
-            break;
-        case SDT_ERROR:
-            options = "--error";
-            break;
-        case SDT_YES_NO:
-            options = "--question --ok-label=\"Yes\" --cancel-label=\"No\"";
-            break;
-        case SDT_OK_CANCEL:
-            options = "--question --ok-label=\"OK\" --cancel-label=\"Cancel\"";
-            break;
-    }
-
-    std::string command = "zenity " + options + " --text=\"" + message + "\" --title=\"" + title + "\"";
-    int code = system(command.c_str());
-
-    SystemDialogResult result = SDR_OK;
-    switch (type)
-    {
-        case SDT_YES_NO:
-            result = code ? SDR_NO : SDR_YES;
-            break;
-        case SDT_OK_CANCEL:
-            result = code ? SDR_CANCEL : SDR_OK;
-            break;
-        default:
-            break;
-    }
-
-    return result;
-}
-
+    return SystemDialog_Linux(type, title, message);
 #else
+    return SystemDialog_Other(type, title, message);
+#endif
+}
 
-SystemDialogResult SystemDialog_Other(SystemDialogType type, const std::string& title, const std::string& message)
+SystemTimeStamp* CreateTimeStamp()
 {
-    switch (type)
-    {
-        case SDT_INFO:
-            std::cout << "INFO: ";
-            break;
-        case SDT_WARNING:
-            std::cout << "WARNING:";
-            break;
-        case SDT_ERROR:
-            std::cout << "ERROR: ";
-            break;
-        case SDT_YES_NO:
-        case SDT_OK_CANCEL:
-            std::cout << "QUESTION: ";
-            break;
-    }
+    return new SystemTimeStamp();
+}
 
-    std::cout << message << std::endl;
+void DestroyTimeStamp(SystemTimeStamp *stamp)
+{
+    delete stamp;
+}
 
-    std::string line;
+void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src)
+{
+    *dst = *src;
+}
 
-    SystemDialogResult result = SDR_OK;
+void GetCurrentTimeStamp(SystemTimeStamp *stamp)
+{
+#if defined(PLATFORM_WINDOWS)
+    GetCurrentTimeStamp_Windows(stamp);
+#elif defined(PLATFORM_LINUX)
+    GetCurrentTimeStamp_Linux(stamp);
+#else
+    GetCurrentTimeStamp_Other(stamp);
+#endif
+}
 
-    bool done = false;
-    while (!done)
-    {
-        switch (type)
-        {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
-                std::cout << "Press ENTER to continue";
-                break;
-
-            case SDT_YES_NO:
-                std::cout << "Type 'Y' for Yes or 'N' for No";
-                break;
-
-            case SDT_OK_CANCEL:
-                std::cout << "Type 'O' for OK or 'C' for Cancel";
-                break;
-        }
-
-        std::getline(std::cin, line);
-
-        switch (type)
-        {
-            case SDT_INFO:
-            case SDT_WARNING:
-            case SDT_ERROR:
-                done = true;
-                break;
-
-            case SDT_YES_NO:
-                if (line == "Y" || line == "y")
-                {
-                    result = SDR_YES;
-                    done = true;
-                }
-                else if (line == "N" || line == "n")
-                {
-                    result = SDR_NO;
-                    done = true;
-                }
-                break;
-
-            case SDT_OK_CANCEL:
-                if (line == "O" || line == "o")
-                {
-                    done = true;
-                    result = SDR_OK;
-                }
-                else if (line == "C" || line == "c")
-                {
-                    done = true;
-                    result = SDR_CANCEL;
-                }
-                break;
-        }
-    }
-
+float GetTimeStampResolution(SystemTimeUnit unit)
+{
+    unsigned long long exact = 0;
+#if defined(PLATFORM_WINDOWS)
+    exact = GetTimeStampExactResolution_Windows();
+#elif defined(PLATFORM_LINUX)
+    exact = GetTimeStampExactResolution_Linux();
+#else
+    exact = GetTimeStampExactResolution_Other();
+#endif
+    float result = 0.0f;
+    if (unit == STU_SEC)
+        result = exact * 1e-9;
+    else if (unit == STU_MSEC)
+        result = exact * 1e-6;
+    else if (unit == STU_USEC)
+        result = exact * 1e-3;
+    else
+        assert(false);
     return result;
 }
-#endif // if defined(PLATFORM_WINDOWS)
+
+long long GetTimeStampExactResolution()
+{
+#if defined(PLATFORM_WINDOWS)
+    return GetTimeStampExactResolution_Windows();
+#elif defined(PLATFORM_LINUX)
+    return GetTimeStampExactResolution_Linux();
+#else
+    return GetTimeStampExactResolution_Other();
+#endif
+}
+
+float TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit)
+{
+    long long exact = 0;
+#if defined(PLATFORM_WINDOWS)
+    exact = TimeStampExactDiff_Windows(before, after);
+#elif defined(PLATFORM_LINUX)
+    exact = TimeStampExactDiff_Linux(before, after);
+#else
+    exact = TimeStampExactDiff_Other(before, after);
+#endif
+    float result = 0.0f;
+    if (unit == STU_SEC)
+        result = exact * 1e-9;
+    else if (unit == STU_MSEC)
+        result = exact * 1e-6;
+    else if (unit == STU_USEC)
+        result = exact * 1e-3;
+    else
+        assert(false);
+    return result;
+}
+
+long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after)
+{
+#if defined(PLATFORM_WINDOWS)
+    return TimeStampExactDiff_Windows(before, after);
+#elif defined(PLATFORM_LINUX)
+    return TimeStampExactDiff_Linux(before, after);
+#else
+    return TimeStampExactDiff_Other(before, after);
+#endif
+}

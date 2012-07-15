@@ -91,6 +91,8 @@ public:
 
     //! Returns the number of triangles in model
     int                  GetTriangleCount();
+    //! Returns the triangle vector
+    std::vector<Gfx::ModelTriangle>& GetTriangles();
     //! Returns the height of model -- closest point to X and Z coords of \a pos
     float                GetHeight(Math::Vector pos);
 
@@ -106,7 +108,7 @@ protected:
 
 protected:
     CInstanceManager*    m_iMan;
-    CEngine*             m_engine;
+    Gfx::CEngine*        m_engine;
 
     //! Last error
     std::string m_error;
