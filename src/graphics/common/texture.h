@@ -21,6 +21,17 @@
 namespace Gfx {
 
 /**
+  \enum TexImgFormat
+  \brief Format of image data */
+enum TexImgFormat
+{
+    TEX_IMG_RGB,
+    TEX_IMG_BGR,
+    TEX_IMG_RGBA,
+    TEX_IMG_BGRA
+};
+
+/**
   \enum TexMinFilter
   \brief Minification texture filter
 
@@ -81,10 +92,10 @@ enum TexMixArgument
   */
 struct TextureCreateParams
 {
-    //! Whether the texture image contains alpha
-    bool alpha;
     //! Whether to generate mipmaps
     bool mipmap;
+    //! Format of source image data
+    Gfx::TexImgFormat format;
     //! Minification filter
     Gfx::TexMinFilter minFilter;
     //! Magnification filter
@@ -99,7 +110,17 @@ struct TextureCreateParams
         { LoadDefault(); }
 
     //! Loads the default values
-    void LoadDefault();
+    inline void LoadDefault()
+    {
+        format = Gfx::TEX_IMG_RGB;
+        mipmap = false;
+
+        minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
+        magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
+
+        wrapS = Gfx::TEX_WRAP_REPEAT;
+        wrapT = Gfx::TEX_WRAP_REPEAT;
+    }
 };
 
 /**
@@ -126,7 +147,16 @@ struct TextureParams
         { LoadDefault(); }
 
     //! Loads the default values
-    void LoadDefault();
+    inline void LoadDefault()
+    {
+        colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
+        colorArg1 = Gfx::TEX_MIX_ARG_CURRENT;
+        colorArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
+
+        alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
+        alphaArg1 = Gfx::TEX_MIX_ARG_CURRENT;
+        alphaArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
+    }
 };
 
 /** \struct Texture*/

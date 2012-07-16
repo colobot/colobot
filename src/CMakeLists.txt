@@ -52,7 +52,6 @@ graphics/common/planet.cpp
 graphics/common/pyro.cpp
 graphics/common/terrain.cpp
 graphics/common/text.cpp
-graphics/common/texture.cpp
 graphics/common/water.cpp
 graphics/opengl/gldevice.cpp
 graphics/opengl/glengine.cpp

@@ -66,8 +66,11 @@ void LoadTexture(Gfx::CGLDevice *device, const std::string &name)
     else
     {
         Gfx::TextureCreateParams texCreateParams;
-        texCreateParams.alpha = false;
         texCreateParams.mipmap = true;
+        if (img.GetData()->surface->format->Amask == 0)
+            texCreateParams.format = Gfx::TEX_IMG_BGR;
+        else
+            texCreateParams.format = Gfx::TEX_IMG_BGRA;
         texCreateParams.minFilter = Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
         texCreateParams.magFilter = Gfx::TEX_MAG_FILTER_LINEAR;
         texCreateParams.wrapT = Gfx::TEX_WRAP_CLAMP;

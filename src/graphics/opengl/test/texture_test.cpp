@@ -27,15 +27,15 @@ void Init(Gfx::CGLDevice *device)
     }
 
     Gfx::TextureCreateParams tex1CreateParams;
-    tex1CreateParams.alpha = true;
     tex1CreateParams.mipmap = true;
+    tex1CreateParams.format = Gfx::TEX_IMG_RGBA;
     tex1CreateParams.minFilter = Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
     tex1CreateParams.magFilter = Gfx::TEX_MAG_FILTER_LINEAR;
     tex1CreateParams.wrapT = Gfx::TEX_WRAP_CLAMP;
 
     Gfx::TextureCreateParams tex2CreateParams;
-    tex2CreateParams.alpha = true;
     tex2CreateParams.mipmap = true;
+    tex2CreateParams.format = Gfx::TEX_IMG_RGBA;
     tex2CreateParams.minFilter = Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST;
     tex2CreateParams.magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
     tex2CreateParams.wrapS = Gfx::TEX_WRAP_CLAMP;
