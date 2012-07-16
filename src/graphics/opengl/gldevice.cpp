@@ -393,10 +393,16 @@ Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCre
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
 
     GLenum sourceFormat = 0;
-    if (params.alpha)
-        sourceFormat = GL_RGBA;
-    else
+    if (params.format == Gfx::TEX_IMG_RGB)
         sourceFormat = GL_RGB;
+    else if (params.format == Gfx::TEX_IMG_BGR)
+        sourceFormat = GL_BGR;
+    else if (params.format == Gfx::TEX_IMG_RGBA)
+        sourceFormat = GL_RGBA;
+    else if (params.format == Gfx::TEX_IMG_BGRA)
+        sourceFormat = GL_BGRA;
+    else
+        assert(false);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->surface->w, data->surface->h,
                  0, sourceFormat, GL_UNSIGNED_BYTE, data->surface->pixels);

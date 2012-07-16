@@ -8,6 +8,8 @@ find_package(PNG REQUIRED)
 set(CMAKE_BUILD_TYPE debug)
 set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -O0")
 
+set(ADD_LIBS "")
+
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(PLATFORM_WINDOWS 1)
   set(PLATFORM_LINUX   0)
@@ -16,6 +18,7 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(PLATFORM_WINDOWS 0)
   set(PLATFORM_LINUX   1)
   set(PLATFORM_OTHER   0)
+  set(ADD_LIBS "-lrt")
 else()
   set(PLATFORM_WINDOWS 0)
   set(PLATFORM_LINUX   0)
@@ -28,7 +31,6 @@ configure_file(../../../common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common
 set(TEXTURE_SOURCES
 ../gldevice.cpp
 ../../common/device.cpp
-../../common/texture.cpp
 ../../../common/logger.cpp
 ../../../common/image.cpp
 texture_test.cpp
@@ -38,7 +40,6 @@ set(MODEL_SOURCES
 ../gldevice.cpp
 ../../common/device.cpp
 ../../common/modelfile.cpp
-../../common/texture.cpp
 ../../../common/logger.cpp
 ../../../common/image.cpp
 ../../../common/iman.cpp
@@ -54,6 +55,7 @@ ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${OPENGL_LIBRARY}
 ${PNG_LIBRARIES}
+${ADD_LIBS}
 )
 
 add_executable(texture_test ${TEXTURE_SOURCES})
