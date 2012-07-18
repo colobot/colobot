@@ -5,3 +5,4 @@ Test programs for OpenGL engine:
       second argument is the loaded format (DXF or Colobot .mod files)
     requires ./tex folder (or symlink) with Colobot textures
     viewer is controlled from keyboard - the bindings can be found in code
+  - transform_test -> simple "walk around" test for world & view transformations

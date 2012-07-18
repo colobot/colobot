@@ -179,7 +179,7 @@ void Gfx::CGLDevice::BeginScene()
 
 void Gfx::CGLDevice::EndScene()
 {
-    glFinish();
+    glFlush();
 }
 
 void Gfx::CGLDevice::Clear()
@@ -192,14 +192,14 @@ void Gfx::CGLDevice::SetTransform(Gfx::TransformType type, const Math::Matrix &m
     if      (type == Gfx::TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
-        m_modelviewMat = Math::MultiplyMatrices(m_worldMat, m_viewMat);
+        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(m_modelviewMat.Array());
     }
     else if (type == Gfx::TRANSFORM_VIEW)
     {
         m_viewMat = matrix;
-        m_modelviewMat = Math::MultiplyMatrices(m_worldMat, m_viewMat);
+        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(m_modelviewMat.Array());
     }
@@ -234,14 +234,14 @@ void Gfx::CGLDevice::MultiplyTransform(Gfx::TransformType type, const Math::Matr
     if      (type == Gfx::TRANSFORM_WORLD)
     {
         m_worldMat = Math::MultiplyMatrices(m_worldMat, matrix);
-        m_modelviewMat = Math::MultiplyMatrices(m_worldMat, m_viewMat);
+        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(m_modelviewMat.Array());
     }
     else if (type == Gfx::TRANSFORM_VIEW)
     {
         m_viewMat = Math::MultiplyMatrices(m_viewMat, matrix);
-        m_modelviewMat = Math::MultiplyMatrices(m_worldMat, m_viewMat);
+        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
         glMatrixMode(GL_MODELVIEW);
         glLoadMatrixf(m_modelviewMat.Array());
     }
