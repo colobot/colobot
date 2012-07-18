@@ -48,6 +48,16 @@ set(MODEL_SOURCES
 model_test.cpp
 )
 
+set(TRANSFORM_SOURCES
+../gldevice.cpp
+../../common/device.cpp
+../../../common/logger.cpp
+../../../common/image.cpp
+../../../common/iman.cpp
+../../../app/system.cpp
+transform_test.cpp
+)
+
 include_directories(../../../ ${CMAKE_CURRENT_BINARY_DIR})
 
 set(LIBS
@@ -63,3 +73,6 @@ target_link_libraries(texture_test ${LIBS})
 
 add_executable(model_test ${MODEL_SOURCES})
 target_link_libraries(model_test ${LIBS})
+
+add_executable(transform_test ${TRANSFORM_SOURCES})
+target_link_libraries(transform_test ${LIBS})

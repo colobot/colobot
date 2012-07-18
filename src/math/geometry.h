@@ -284,7 +284,7 @@ inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
 
 //! Loads a perspective projection matrix
 /** \a fov field of view in radians
-    \a aspect aspect ratio (width / height)
+    \a aspect aspect ratio (height / width)
     \a nearPlane distance to near cut plane
     \a farPlane distance to far cut plane */
 inline void LoadProjectionMatrix(Math::Matrix &mat, float fov = 1.570795f, float aspect = 1.0f,
