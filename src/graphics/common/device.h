@@ -181,6 +181,24 @@ enum PrimitiveType
     PRIMITIVE_TRIANGLE_STRIP
 };
 
+/**
+  \enum IntersectPlane
+  \brief Intersection plane of projection volume
+
+  These flags can be OR'd together. */
+enum IntersectPlane
+{
+    INTERSECT_PLANE_LEFT   = 0x01,
+    INTERSECT_PLANE_RIGHT  = 0x02,
+    INTERSECT_PLANE_TOP    = 0x04,
+    INTERSECT_PLANE_BOTTOM = 0x08,
+    INTERSECT_PLANE_FRONT  = 0x10,
+    INTERSECT_PLANE_BACK   = 0x20,
+    INTERSECT_PLANE_ALL = INTERSECT_PLANE_LEFT   | INTERSECT_PLANE_RIGHT  |
+                          INTERSECT_PLANE_TOP    | INTERSECT_PLANE_BOTTOM |
+                          INTERSECT_PLANE_FRONT  | INTERSECT_PLANE_BACK
+};
+
 /*
 
 Notes for rewriting DirectX code:
@@ -324,9 +342,8 @@ public:
     //! Renders primitive composed of vertices with multitexturing (2 textures)
     virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexTex2 *vertices, int vertexCount) = 0;
 
-    // TODO:
-    // virtual void ComputeSphereVisibility() = 0;
-
+    //! Tests whether a sphere intersects the 6 clipping planes of projection volume
+    virtual int ComputeSphereVisibility(Math::Vector center, float radius) = 0;
 
     //! Enables/disables the given render state
     virtual void SetRenderState(Gfx::RenderState state, bool enabled) = 0;
