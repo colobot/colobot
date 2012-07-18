@@ -18,6 +18,7 @@
 
 #include "common/image.h"
 #include "graphics/opengl/gldevice.h"
+#include "math/geometry.h"
 
 #define GL_GLEXT_PROTOTYPES
 
@@ -730,6 +731,87 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices
     }
 
     glEnd();
+}
+
+bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float radius)
+{
+    float distance = (originPlane + Math::DotProduct(normal, center)) / normal.Length();
+
+    if (distance < -radius)
+        return true;
+
+    return false;
+}
+
+/*
+   The implementation of ComputeSphereVisibility is taken from libwine's device.c
+   Copyright of the WINE team, licensed under GNU LGPL v 2.1
+ */
+
+// TODO: testing
+int Gfx::CGLDevice::ComputeSphereVisibility(Math::Vector center, float radius)
+{
+    Math::Matrix m;
+    m.LoadIdentity();
+    m = Math::MultiplyMatrices(m, m_worldMat);
+    m = Math::MultiplyMatrices(m, m_viewMat);
+    m = Math::MultiplyMatrices(m, m_projectionMat);
+
+    Math::Vector vec[6];
+    float originPlane[6];
+
+    // Left plane
+    vec[0].x = m.Get(4, 1) + m.Get(1, 1);
+    vec[0].y = m.Get(4, 2) + m.Get(1, 2);
+    vec[0].z = m.Get(4, 3) + m.Get(1, 3);
+    originPlane[0] = m.Get(4, 4) + m.Get(1, 4);
+
+    // Right plane
+    vec[1].x = m.Get(4, 1) - m.Get(1, 1);
+    vec[1].y = m.Get(4, 2) - m.Get(1, 2);
+    vec[1].z = m.Get(4, 3) - m.Get(1, 3);
+    originPlane[1] = m.Get(4, 4) - m.Get(1, 4);
+
+    // Top plane
+    vec[2].x = m.Get(4, 1) - m.Get(2, 1);
+    vec[2].y = m.Get(4, 2) - m.Get(2, 2);
+    vec[2].z = m.Get(4, 3) - m.Get(2, 3);
+    originPlane[2] = m.Get(4, 4) - m.Get(2, 4);
+
+    // Bottom plane
+    vec[3].x = m.Get(4, 1) + m.Get(2, 1);
+    vec[3].y = m.Get(4, 2) + m.Get(2, 2);
+    vec[3].z = m.Get(4, 3) + m.Get(2, 3);
+    originPlane[3] = m.Get(4, 4) + m.Get(2, 4);
+
+    // Front plane
+    vec[4].x = m.Get(3, 1);
+    vec[4].y = m.Get(3, 2);
+    vec[4].z = m.Get(3, 3);
+    originPlane[4] = m.Get(3, 4);
+
+    // Back plane
+    vec[5].x = m.Get(4, 1) - m.Get(3, 1);
+    vec[5].y = m.Get(4, 2) - m.Get(3, 2);
+    vec[5].z = m.Get(4, 3) - m.Get(3, 3);
+    originPlane[5] = m.Get(4, 4) - m.Get(3, 4);
+
+    int result = 0;
+
+    if (InPlane(vec[0], originPlane[0], center, radius))
+        result |= Gfx::INTERSECT_PLANE_LEFT;
+    if (InPlane(vec[1], originPlane[1], center, radius))
+        result |= Gfx::INTERSECT_PLANE_RIGHT;
+    if (InPlane(vec[2], originPlane[2], center, radius))
+        result |= Gfx::INTERSECT_PLANE_TOP;
+    if (InPlane(vec[3], originPlane[3], center, radius))
+        result |= Gfx::INTERSECT_PLANE_BOTTOM;
+    if (InPlane(vec[4], originPlane[4], center, radius))
+        result |= Gfx::INTERSECT_PLANE_FRONT;
+    if (InPlane(vec[5], originPlane[5], center, radius))
+        result |= Gfx::INTERSECT_PLANE_BACK;
+
+    return result;
 }
 
 void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)

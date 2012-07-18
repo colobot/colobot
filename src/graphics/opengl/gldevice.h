@@ -117,6 +117,7 @@ public:
     virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vertices, int vertexCount);
     virtual void DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices, int vertexCount);
 
+    virtual int ComputeSphereVisibility(Math::Vector center, float radius);
 
     virtual void SetRenderState(Gfx::RenderState state, bool enabled);
     virtual bool GetRenderState(Gfx::RenderState state);

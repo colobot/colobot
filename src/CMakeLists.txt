@@ -5,6 +5,8 @@
 # Configure options
 option(DEBUG "Enable debug output" ON)
 
+set(PLATFORM_LIBS "")
+
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(PLATFORM_WINDOWS 1)
   set(PLATFORM_LINUX   0)
@@ -13,6 +15,8 @@ elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(PLATFORM_WINDOWS 0)
   set(PLATFORM_LINUX   1)
   set(PLATFORM_OTHER   0)
+  # for clock_gettime
+  set(PLATFORM_LIBS "-lrt")
 else()
   set(PLATFORM_WINDOWS 0)
   set(PLATFORM_LINUX   0)
@@ -154,6 +158,7 @@ ${SDLIMAGE_LIBRARY}
 ${OPENGL_LIBRARY}
 ${PNG_LIBRARIES}
 #CBot  -- not yet WinAPI-independent
+${PLATFORM_LIBS}
 )
 
 include_directories(. ${CMAKE_CURRENT_BINARY_DIR}
