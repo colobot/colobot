@@ -14,33 +14,24 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// plugin.h
+// plugininterface.h
 
 
 #pragma once
 
-#include <ltdl.h>
-#include <string>
 
-#include <common/logger.h>
+#define PLUGIN_INTERFACE(class_type) \
+    static class_type* Plugin##class_type; \
+    extern "C" void InstallPluginEntry() { Plugin##class_type = new class_type(); Plugin##class_type->InstallPlugin(); } \
+    extern "C" void UninstallPluginEntry() { Plugin##class_type->UninstallPlugin(); delete Plugin##class_type; } \
+    extern "C" CPluginInterface* GetPluginInterfaceEntry() { return static_cast<CPluginInterface*>(Plugin##class_type); }
 
-#include "plugininterface.h"
 
-
-class CPlugin {
+class CPluginInterface {
     public:
-        CPlugin(std::string filename);
-        
-        char* GetName();
-        int GetVersion();
-        bool UnloadPlugin();
-        bool LoadPlugin();
-        bool IsLoaded();
-        
-
-    private:
-        CPluginInterface* mInterface;
-        std::string mFilename;
-        lt_dlhandle mHandle;
-        bool mLoaded;
+        virtual char* PluginName() = 0;
+        virtual int PluginVersion() = 0;
+        virtual void InstallPlugin() = 0;
+        virtual void UninstallPlugin() = 0;
 };
+

@@ -76,6 +76,8 @@ class ALSound : public CSoundInterface
         // plugin interface
         char* PluginName();
         int PluginVersion();
+        void InstallPlugin();
+        void UninstallPlugin();
   
     private:
         void CleanUp();

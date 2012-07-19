@@ -26,7 +26,7 @@
 
 #include <math/vector.h>
 
-#include <plugins/plugin.h>
+#include <plugins/plugininterface.h>
 
 /*!
  * Maximum possible audio volume
@@ -145,13 +145,10 @@ enum SoundNext
 * @brief Sound plugin interface
 *
 */ 
-class CSoundInterface : public CPlugin
+class CSoundInterface : public CPluginInterface
 {
   public:
-    CSoundInterface() {
-      //CInstanceManager::getInstance().AddInstance(CLASS_SOUND, this);
-      //m_iMan->AddInstance(CLASS_SOUND, this);
-    };
+    CSoundInterface() {};
     virtual ~CSoundInterface() = 0;
 
     /** Function to initialize sound device

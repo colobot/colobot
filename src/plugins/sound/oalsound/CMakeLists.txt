@@ -4,10 +4,9 @@ set(SOURCES
     alsound.cpp
     buffer.cpp
     channel.cpp
-    ../../../common/logger.cpp
 )
 
-SET (CMAKE_CXX_FLAGS "-Wall  -g -std=c++0x")
+SET (CMAKE_CXX_FLAGS "-Wall  -g -std=c++0x -fPIC")
 
 include(FindPkgConfig)
 include(FindOpenAL)

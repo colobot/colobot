@@ -1,6 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
-// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@
 #define MIN(a, b) (a > b ? b : a)
 
 
-PLUGIN_INTERFACE(ALSound, CSoundInterface)
+PLUGIN_INTERFACE(ALSound)
 
 
 char* ALSound::PluginName()
@@ -36,6 +36,19 @@ char* ALSound::PluginName()
 int ALSound::PluginVersion()
 {
     return 1;
+}
+
+
+void ALSound::InstallPlugin()
+{
+    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
+}
+
+
+void ALSound::UninstallPlugin()
+{
+    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
+    CleanUp();
 }
 
 
@@ -58,11 +71,12 @@ void ALSound::CleanUp()
 {
     if (mEnabled) {
         GetLogger()->Info("Unloading files and closing device...\n");
-        mEnabled = false;
+        StopAll();
 
         for (auto item : mSounds)
             delete item.second;
 
+        mEnabled = false;
         alutExit();
     }
 }
