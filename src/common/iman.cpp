@@ -23,6 +23,21 @@
 #include "common/iman.h"
 
 
+template<> CInstanceManager* CSingleton<CInstanceManager>::mInstance = 0;
+
+
+CInstanceManager& CInstanceManager::GetInstance()
+{
+    assert(mInstance);
+    return *mInstance;
+}
+
+
+CInstanceManager* CInstanceManager::GetInstancePointer()
+{
+    assert(mInstance);
+    return mInstance;
+}
 
 
 // Object's constructor.
