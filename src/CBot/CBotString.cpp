@@ -23,7 +23,7 @@
 #include <algorithm>
 
 //Map is filled with id-string pars that are needed for CBot language parsing
-const std::map<EID, const char const *> CBotString::s_keywordString =
+const std::map<EID, char *> CBotString::s_keywordString =
 {
     {ID_IF,         "if"},
     {ID_ELSE,       "else"},
@@ -113,9 +113,9 @@ const std::map<EID, const char const *> CBotString::s_keywordString =
     {ID_MODULO,     "%"},
     {ID_POWER,      "**"},
     {ID_ASSMODULO,  "%="},
+    {ID_SUPER,      "super"},
     {TX_UNDEF,      "undefined"},
-    {TX_NAN,        "not a number"},
-    {ID_SUPER,      "super"}
+    {TX_NAN,        "not a number"}
 };
 
 CBotString::CBotString()

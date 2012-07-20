@@ -13,8 +13,6 @@
 // *
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.//{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by CBot.rc
 #ifndef _RESOURCE_H_
 #define _RESOURCE_H_
 

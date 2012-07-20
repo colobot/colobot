@@ -49,20 +49,17 @@ class CBotCStack;       // stack
 // Variables management
 ////////////////////////////////////////////////////////////////////////
 
-// ces types sont calqués sur les types Java
-// ne pas changer l'ordre de ces types
-
 /** \brief CBotType Defines known types. This types are modeled on Java types. Do not change the order of elements */
 enum CBotType
 {
     CBotTypVoid         = 0,
-    CBotTypByte         = 1,
-    CBotTypShort        = 2,
-    CBotTypChar         = 3,
+    CBotTypByte         = 1,                //n
+    CBotTypShort        = 2,                //n
+    CBotTypChar         = 3,                //n
     CBotTypInt          = 4,
-    CBotTypLong         = 5,
+    CBotTypLong         = 5,                //n
     CBotTypFloat        = 6,
-    CBotTypDouble       = 7,
+    CBotTypDouble       = 7,                //n
     CBotTypBoolean      = 8,
     CBotTypString       = 9,
 
@@ -74,17 +71,72 @@ enum CBotType
     CBotTypClass        = 15,
     CBotTypIntrinsic    = 16                // instance of a class intrinsic
 };
-//n = non encore implémenté
+//n = not implemented yet
 
-// pour SetUserPtr lors de la suppression d'un objet
+// for SetUserPtr when deleting an object
 #define OBJECTDELETED ((void*)-1)
-// valeur mise avant initialisation
+// value set before initialization
 #define OBJECTCREATED ((void*)-2)
 
 
-// classe permettant de définir le type complet d'un résultat
+/** \brief CBotTypResult class to define the complete type of a result*/
 class CBotTypResult
 {
+public:
+    /**
+     * \brief CBotTypResult constructor of an object
+     * \param type type of created result, see CBotType
+     */
+    CBotTypResult(int type);
+
+    /**
+     * \brief CBotTypResult constructor for simple types (CBotTypInt to CBotTypString)
+     * \param type type of created result, see CBotType
+     * \param name
+     */
+    // pour les types simples (CBotTypInt à CBotTypString)
+    CBotTypResult(int type, const char* name);
+    // pour les types pointeur et classe intrinsic
+    CBotTypResult(int type, CBotClass* pClass);
+    // idem à partir de l'instance d'une classe
+    CBotTypResult(int type, CBotTypResult elem);
+    // pour les tableaux de variables
+
+    CBotTypResult(const CBotTypResult& typ);
+    // pour les assignations
+    CBotTypResult();
+    // pour par défaut
+    ~CBotTypResult();
+
+    int            GivType(int mode = 0) const;
+    // rend le type CBotTyp* du résultat
+
+    void        SetType(int n);
+    // modifie le type
+
+    CBotClass*    GivClass() const;
+    // rend le pointeur à la classe (pour les CBotTypClass, CBotTypPointer)
+
+    int            GivLimite() const;
+    // rend la taille limite du tableau (CBotTypArray)
+
+    void        SetLimite(int n);
+    // fixe une limite au tableau
+
+    void        SetArray(int* max );
+    // idem avec une liste de dimension (tableaux de tableaux)
+
+    CBotTypResult& GivTypElem() const;
+    // rend le type des éléments du tableau (CBotTypArray)
+
+    bool        Compare(const CBotTypResult& typ) const;
+    // compare si les types sont compatibles
+    bool        Eq(int type) const;
+    // compare le type
+
+    CBotTypResult&
+        operator=(const CBotTypResult& src);
+    // copie un type complet dans un autre
 private:
     int                m_type;
     CBotTypResult*    m_pNext;    // pour les types de types
@@ -92,53 +144,6 @@ private:
     int                m_limite;    // limitation des tableaux 
     friend class    CBotVarClass;
     friend class    CBotVarPointer;    
-
-public:
-    // divers constructeurs selon les besoins
-                CBotTypResult(int type);
-                // pour les types simples (CBotTypInt à CBotTypString)
-                CBotTypResult(int type, const char* name);
-                // pour les types pointeur et classe intrinsic
-                CBotTypResult(int type, CBotClass* pClass);
-                // idem à partir de l'instance d'une classe
-                CBotTypResult(int type, CBotTypResult elem);
-                // pour les tableaux de variables
-
-                CBotTypResult(const CBotTypResult& typ);
-                // pour les assignations
-                CBotTypResult();
-                // pour par défaut
-                ~CBotTypResult();
-
-    int            GivType(int mode = 0) const;
-                // rend le type CBotTyp* du résultat
-
-    void        SetType(int n);
-                // modifie le type
-
-    CBotClass*    GivClass() const;
-                // rend le pointeur à la classe (pour les CBotTypClass, CBotTypPointer)
-
-    int            GivLimite() const;
-                // rend la taille limite du tableau (CBotTypArray)
-
-    void        SetLimite(int n);
-                // fixe une limite au tableau
-
-    void        SetArray(int* max );
-                // idem avec une liste de dimension (tableaux de tableaux)
-
-    CBotTypResult& GivTypElem() const;
-                // rend le type des éléments du tableau (CBotTypArray)
-
-    bool        Compare(const CBotTypResult& typ) const;
-                // compare si les types sont compatibles
-    bool        Eq(int type) const;
-                // compare le type
-
-    CBotTypResult&
-                operator=(const CBotTypResult& src);
-                // copie un type complet dans un autre
 };
 
 /*
@@ -236,11 +241,12 @@ public:
 
 
 ////////////////////////////////////////////////////////////////////////
-// définie une classe pour l'utilisation des strings
+// 
 // car CString fait partie de MFC pas utilisé ici.
 //
 // ( toutes les fonctions ne sont pas encore implémentées )
 
+/** \brief CBotString Class used to work on strings */
 class CBotString
 {
 public:
@@ -303,7 +309,7 @@ private:
     int m_lg;
 
     /** \brief Keeps the string corresponding to keyword ID */
-    static const std::map<EID, const char const *> s_keywordString;
+    static const std::map<EID, char *> s_keywordString;
 
     /**
      * \brief MapIdToString maps given ID to its string equivalent
