@@ -1379,7 +1379,6 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 	if (IsOfType(p, TokenTypVar))
 	{
 		CBotClass* pPapa = NULL;
-#if		EXTENDS
 		if ( IsOfType( p, ID_EXTENDS ) )
 		{
 			CBotString name = p->GivString();
@@ -1391,7 +1390,6 @@ CBotClass* CBotClass::Compile1(CBotToken* &p, CBotCStack* pStack)
 				return NULL;
 			}
 		}
-#endif
 		CBotClass* classe = (pOld == NULL) ? new CBotClass(name, pPapa) : pOld;
 		classe->Purge();							// vide les anciennes définitions
 		classe->m_IsDef = false;					// définition en cours
@@ -1627,12 +1625,10 @@ CBotClass* CBotClass::Compile(CBotToken* &p, CBotCStack* pStack)
 		// la classe à été créée par Compile1
 		CBotClass* pOld = CBotClass::Find(name);
 
-#if		EXTENDS
 		if ( IsOfType( p, ID_EXTENDS ) )
 		{
 			IsOfType(p, TokenTypVar); // forcément
 		}
-#endif
 		IsOfType( p, ID_OPBLK);	// forcément
 
 		while ( pStack->IsOk() && !IsOfType( p, ID_CLBLK ) )
