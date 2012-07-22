@@ -34,15 +34,15 @@ Math::Vector ROTATION;
 
 const int FRAME_DELAY = 5000;
 
-std::map<std::string, Gfx::Texture*> TEXS;
+std::map<std::string, Gfx::Texture> TEXS;
 
 SystemTimeStamp *PREV_TIME = NULL, *CURR_TIME = NULL;
 
-Gfx::Texture* GetTexture(const std::string &name)
+Gfx::Texture GetTexture(const std::string &name)
 {
-    std::map<std::string, Gfx::Texture*>::iterator it = TEXS.find(name);
+    std::map<std::string, Gfx::Texture>::iterator it = TEXS.find(name);
     if (it == TEXS.end())
-        return NULL;
+        return Gfx::Texture();
 
     return (*it).second;
 }
@@ -52,10 +52,10 @@ void LoadTexture(Gfx::CGLDevice *device, const std::string &name)
     if (name.empty())
         return;
 
-    if (GetTexture(name) != NULL)
-        return;
+    Gfx::Texture tex = GetTexture(name);
 
-    Gfx::Texture *tex = NULL;
+    if (tex.valid)
+        return;
 
     CImage img;
     if (! img.Load(std::string("tex/") + name))
@@ -114,7 +114,7 @@ void Render(Gfx::CGLDevice *device, Gfx::CModelFile *modelFile)
     device->BeginScene();
 
     Math::Matrix persp;
-    Math::LoadProjectionMatrix(persp, Math::PI / 4.0f, (600.0f) / (800.0f), 0.1f, 100.0f);
+    Math::LoadProjectionMatrix(persp, Math::PI / 4.0f, (800.0f) / (600.0f), 0.1f, 100.0f);
     device->SetTransform(Gfx::TRANSFORM_PROJECTION, persp);
 
     Math::Matrix id;

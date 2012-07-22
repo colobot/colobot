@@ -90,6 +90,7 @@ enum RenderState
     RENDER_STATE_DEPTH_TEST,
     RENDER_STATE_DEPTH_WRITE,
     RENDER_STATE_ALPHA_TEST,
+    RENDER_STATE_CULLING,
     RENDER_STATE_DITHERING
 };
 
@@ -292,14 +293,14 @@ public:
     virtual void MultiplyTransform(TransformType type, const Math::Matrix &matrix) = 0;
 
     //! Sets the current material
-    virtual void SetMaterial(Gfx::Material &material) = 0;
+    virtual void SetMaterial(const Gfx::Material &material) = 0;
     //! Returns the current material
     virtual const Gfx::Material& GetMaterial() = 0;
 
     //! Returns the maximum number of lights available
     virtual int GetMaxLightCount() = 0;
     //! Sets the light at given index
-    virtual void SetLight(int index, Gfx::Light &light) = 0;
+    virtual void SetLight(int index, const Gfx::Light &light) = 0;
     //! Returns the current light at given index
     virtual const Gfx::Light& GetLight(int index) = 0;
     //! Enables/disables the light at given index
@@ -308,18 +309,18 @@ public:
     virtual bool GetLightEnabled(int index) = 0;
 
     //! Creates a texture from image; the image can be safely removed after that
-    virtual Gfx::Texture* CreateTexture(CImage *image, const Gfx::TextureCreateParams &params) = 0;
+    virtual Gfx::Texture CreateTexture(CImage *image, const Gfx::TextureCreateParams &params) = 0;
     //! Deletes a given texture, freeing it from video memory
-    virtual void DestroyTexture(Gfx::Texture *texture) = 0;
+    virtual void DestroyTexture(const Gfx::Texture &texture) = 0;
     //! Deletes all textures created so far
     virtual void DestroyAllTextures() = 0;
 
     //! Returns the maximum number of multitexture stages
     virtual int GetMaxTextureCount() = 0;
     //! Sets the (multi)texture at given index
-    virtual void SetTexture(int index, Gfx::Texture *texture) = 0;
+    virtual void SetTexture(int index, const Gfx::Texture &texture) = 0;
     //! Returns the (multi)texture at given index
-    virtual Gfx::Texture* GetTexture(int index) = 0;
+    virtual Gfx::Texture GetTexture(int index) = 0;
     //! Enables/disables the given texture stage
     virtual void SetTextureEnabled(int index, bool enabled) = 0;
     //! Returns the current enable state of given texture stage
@@ -331,7 +332,7 @@ public:
     virtual Gfx::TextureParams GetTextureParams(int index) = 0;
 
     //! Sets the texture factor to the given color value
-    virtual void SetTextureFactor(Gfx::Color &color) = 0;
+    virtual void SetTextureFactor(const Gfx::Color &color) = 0;
     //! Returns the current texture factor
     virtual Gfx::Color GetTextureFactor() = 0;
 
@@ -343,7 +344,7 @@ public:
     virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexTex2 *vertices, int vertexCount) = 0;
 
     //! Tests whether a sphere intersects the 6 clipping planes of projection volume
-    virtual int ComputeSphereVisibility(Math::Vector center, float radius) = 0;
+    virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) = 0;
 
     //! Enables/disables the given render state
     virtual void SetRenderState(Gfx::RenderState state, bool enabled) = 0;
@@ -371,17 +372,17 @@ public:
     virtual void GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstBlend) = 0;
 
     //! Sets the clear color
-    virtual void SetClearColor(Gfx::Color color) = 0;
+    virtual void SetClearColor(const Gfx::Color &color) = 0;
     //! Returns the current clear color
     virtual Gfx::Color GetClearColor() = 0;
 
     //! Sets the global ambient color
-    virtual void SetGlobalAmbient(Gfx::Color color) = 0;
+    virtual void SetGlobalAmbient(const Gfx::Color &color) = 0;
     //! Returns the global ambient color
     virtual Gfx::Color GetGlobalAmbient() = 0;
 
     //! Sets the fog parameters: mode, color, start distance, end distance and density (for exp models)
-    virtual void SetFogParams(Gfx::FogMode mode, Gfx::Color color, float start, float end, float density) = 0;
+    virtual void SetFogParams(Gfx::FogMode mode, const Gfx::Color &color, float start, float end, float density) = 0;
     //! Returns the current fog parameters: mode, color, start distance, end distance and density (for exp models)
     virtual void GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &start, float &end, float &density) = 0;
 

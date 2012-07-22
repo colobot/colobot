@@ -22,6 +22,7 @@
 #include "app/system.h"
 #include "common/logger.h"
 #include "common/iman.h"
+#include "common/image.h"
 #include "graphics/opengl/gldevice.h"
 
 
@@ -29,6 +30,9 @@
 #include <SDL/SDL_image.h>
 
 #include <stdio.h>
+
+
+template<> CApplication* CSingleton<CApplication>::mInstance = NULL;
 
 
 //! Interval of timer called to update joystick state
@@ -70,14 +74,9 @@ struct ApplicationPrivate
 };
 
 
-CApplication* CApplication::m_appInstance = NULL;
-
 
 CApplication::CApplication()
 {
-    assert(m_appInstance == NULL);
-    m_appInstance = this;
-
     m_private = new ApplicationPrivate();
     m_exitCode = 0;
 
@@ -107,6 +106,8 @@ CApplication::CApplication()
     m_debugMode      = false;
     m_setupMode      = true;
 
+    m_dataPath = "./data";
+
     ResetKey();
 }
 
@@ -120,29 +121,49 @@ CApplication::~CApplication()
 
     delete m_iMan;
     m_iMan = NULL;
-
-    m_appInstance = NULL;
 }
 
-Error CApplication::ParseArguments(int argc, char *argv[])
+bool CApplication::ParseArguments(int argc, char *argv[])
 {
+    bool waitDataDir = false;
+
     for (int i = 1; i < argc; ++i)
     {
         std::string arg = argv[i];
+
+        if (waitDataDir)
+        {
+            waitDataDir = false;
+            m_dataPath = arg;
+        }
 
         if (arg == "-debug")
         {
             m_showStats = true;
             SetDebugMode(true);
         }
-        // TODO else {} report invalid argument
+        else if (arg == "-datadir")
+        {
+            waitDataDir = true;
+        }
+        else
+        {
+            m_exitCode = 1;
+            return false;
+        }
     }
 
-    return ERR_OK;
+    // Data dir not given?
+    if (waitDataDir)
+        return false;
+
+    return true;
 }
 
 bool CApplication::Create()
 {
+    // TODO: verify that data directory exists
+
     // Temporarily -- only in windowed mode
     m_private->deviceConfig.fullScreen = false;
 
@@ -365,7 +386,7 @@ void CApplication::CloseJoystick()
 
 Uint32 JoystickTimerCallback(Uint32 interval, void *)
 {
-    CApplication *app = CApplication::GetInstance();
+    CApplication *app = CApplication::GetInstancePointer();
     if ((app == NULL) || (! app->GetJoystickEnabled()))
         return 0; // don't run the timer again
 
@@ -434,43 +455,82 @@ int CApplication::Run()
 {
     m_active = true;
 
-    while (m_private->currentEvent.type != SDL_QUIT)
+    while (true)
     {
         // Use SDL_PeepEvents() if the app is active, so we can use idle time to
         // render the scene. Else, use SDL_PollEvent() to avoid eating CPU time.
         int count = 0;
-        if (m_active)
+
+        // To be sure no old event remains
+        m_private->currentEvent.type = SDL_NOEVENT;
+
+        bool haveEvent = true;
+        while (haveEvent)
         {
-            SDL_PumpEvents();
-            count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_ALLEVENTS);
-        }
-        else
-        {
-            SDL_PollEvent(&m_private->currentEvent);
+            haveEvent = false;
+
+            if (m_active)
+            {
+                SDL_PumpEvents();
+                count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_ALLEVENTS);
+            }
+            else
+            {
+                count = SDL_PollEvent(&m_private->currentEvent);
+            }
+
+            // If received an event
+            if (count > 0)
+            {
+                haveEvent = true;
+
+                Event event = ParseEvent();
+
+                if (event.type == EVENT_QUIT)
+                    goto end; // exit the loop
+
+                if (event.type != EVENT_NULL)
+                {
+                    bool passOn = ProcessEvent(event);
+
+                    if (m_engine != NULL && passOn)
+                        passOn = m_engine->ProcessEvent(event);
+
+                    if (passOn)
+                        m_eventQueue->AddEvent(event);
+                }
+            }
         }
 
-        // If received an event
-        if ((m_active && count > 0) || (!m_active))
-        {
-            ParseEvent();
-        }
-
-        // Render a frame during idle time (no messages are waiting)
+        // Enter game update & frame rendering only if active
         if (m_active && m_ready)
         {
             Event event;
             while (m_eventQueue->GetEvent(event))
             {
                 if (event.type == EVENT_QUIT)
-                {
                     goto end; // exit both loops
+
+                bool passOn = true;
+
+                // Skip system events (they have been processed earlier)
+                if (! event.systemEvent)
+                {
+                    passOn = ProcessEvent(event);
+
+                    if (passOn && m_engine != NULL)
+                        passOn = m_engine->ProcessEvent(event);
                 }
 
-                //m_robotMain->EventProcess(event);
+                /*if (passOn && m_robotMain != NULL)
+                    m_robotMain->ProcessEvent(event); */
             }
 
+            // Update game and render a frame during idle time (no messages are waiting)
+            bool ok = Render();
+
             // If an error occurs, push quit event to the queue
-            if (! Render())
+            if (! ok)
             {
                 SDL_Event quitEvent;
                 memset(&quitEvent, 0, sizeof(SDL_Event));
@@ -481,7 +541,6 @@ int CApplication::Run()
     }
 
 end:
-    //m_sound->StopMusic();
     Destroy();
 
     return m_exitCode;
@@ -501,23 +560,34 @@ PressState TranslatePressState(unsigned char state)
         return STATE_RELEASED;
 }
 
-/** Conversion of the position of the mouse to the following coordinates:
-
-x: 0=left, 1=right
-
-y: 0=down, 1=up
-*/
-Math::Point CApplication::WindowToInterfaceCoords(int x, int y)
+/** Conversion of the position of the mouse from window coords to interface coords:
+     - x: 0=left, 1=right
+     - y: 0=down, 1=up */
+Math::Point CApplication::WindowToInterfaceCoords(Math::IntPoint pos)
 {
-    return Math::Point((float)x / (float)m_private->deviceConfig.width,
-                       1.0f - (float)y / (float)m_private->deviceConfig.height);
+    return Math::Point(       (float)pos.x / (float)m_private->deviceConfig.width,
+                       1.0f - (float)pos.y / (float)m_private->deviceConfig.height);
 }
 
-void CApplication::ParseEvent()
+Math::IntPoint CApplication::InterfaceToWindowCoords(Math::Point pos)
+{
+    return Math::IntPoint((int)(pos.x * m_private->deviceConfig.width),
+                          (int)((1.0f - pos.y) * m_private->deviceConfig.height));
+}
+
+/** The SDL event parsed is stored internally.
+    If event is not available or is not understood, returned event is of type EVENT_NULL. */
+Event CApplication::ParseEvent()
 {
     Event event;
 
-    if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
+    event.systemEvent = true;
+
+    if (m_private->currentEvent.type == SDL_QUIT)
+    {
+        event.type = EVENT_QUIT;
+    }
+    else if ( (m_private->currentEvent.type == SDL_KEYDOWN) ||
               (m_private->currentEvent.type == SDL_KEYUP) )
     {
         if (m_private->currentEvent.type == SDL_KEYDOWN)
@@ -540,16 +610,15 @@ void CApplication::ParseEvent()
 
         event.mouseButton.button = m_private->currentEvent.button.button;
         event.mouseButton.state = TranslatePressState(m_private->currentEvent.button.state);
-        event.mouseButton.pos = WindowToInterfaceCoords(m_private->currentEvent.button.x, m_private->currentEvent.button.y);
+        event.mouseButton.pos = WindowToInterfaceCoords(Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
         event.type = EVENT_MOUSE_MOVE;
 
         event.mouseMove.state = TranslatePressState(m_private->currentEvent.button.state);
-        event.mouseMove.pos = WindowToInterfaceCoords(m_private->currentEvent.button.x, m_private->currentEvent.button.y);
+        event.mouseMove.pos = WindowToInterfaceCoords(Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
     }
-    // TODO: joystick state polling instead of getting events
     else if (m_private->currentEvent.type == SDL_JOYAXISMOTION)
     {
         event.type = EVENT_JOY_AXIS;
@@ -569,16 +638,13 @@ void CApplication::ParseEvent()
         event.joyButton.state = TranslatePressState(m_private->currentEvent.jbutton.state);
     }
 
-
-    if (m_robotMain != NULL && event.type != EVENT_NULL)
-    {
-        //m_robotMain->EventProcess(event);
-    }
-
-    ProcessEvent(event);
+    return event;
 }
 
-void CApplication::ProcessEvent(Event event)
+/** Processes incoming events. It is the first function called after an event is captures.
+    Function returns \c true if the event is to be passed on to other processing functions
+    or \c false if not. */
+bool CApplication::ProcessEvent(const Event &event)
 {
     CLogger *l = GetLogger();
     // Print the events in debug mode to test the code
@@ -621,8 +687,12 @@ void CApplication::ProcessEvent(Event event)
                 break;
         }
     }
+
+    // By default, pass on all events
+    return true;
 }
 
+/** Renders the frame and swaps buffers as necessary. Returns \c false on error. */
 bool CApplication::Render()
 {
     bool result = m_engine->Render();
@@ -709,14 +779,39 @@ int CApplication::GetKey(int keyRank, int option)
     return 0;
 }
 
-void CApplication::SetMousePos(Math::Point pos)
+void CApplication::SetGrabInput(bool grab)
 {
-    // TODO
+    SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
 }
 
-void CApplication::SetMouseType(Gfx::MouseType type)
+bool CApplication::GetGrabInput()
 {
-    // TODO
+    int result = SDL_WM_GrabInput(SDL_GRAB_QUERY);
+    return result == SDL_GRAB_ON;
+}
+
+void CApplication::SetSystemMouseVisible(bool visible)
+{
+    SDL_ShowCursor(visible ? SDL_ENABLE : SDL_DISABLE);
+}
+
+bool CApplication::GetSystemMouseVisibile()
+{
+    int result = SDL_ShowCursor(SDL_QUERY);
+    return result == SDL_ENABLE;
+}
+
+
+void CApplication::SetSystemMousePos(Math::Point pos)
+{
+    Math::IntPoint windowPos = InterfaceToWindowCoords(pos);
+    SDL_WarpMouse(windowPos.x, windowPos.y);
+    m_systemMousePos = pos;
+}
+
+Math::Point CApplication::GetSystemMousePos()
+{
+    return m_systemMousePos;
 }
 
 void CApplication::SetJoystickEnabled(bool enable)
@@ -765,4 +860,9 @@ void CApplication::ShowStats()
 void CApplication::OutputText(long x, long y, char* str)
 {
     // TODO
+}
+
+std::string CApplication::GetDataFilePath(const std::string& dirName, const std::string& fileName)
+{
+    return m_dataPath + "/" + dirName + "/" + fileName;
 }

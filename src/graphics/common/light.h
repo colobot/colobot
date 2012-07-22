@@ -114,9 +114,9 @@ struct SceneLight
     bool enabled;
 
     //! Type of all objects included
-    Gfx::ObjectType includeType;
+    Gfx::EngineObjectType includeType;
     //! Type of all objects excluded
-    Gfx::ObjectType excludeType;
+    Gfx::EngineObjectType excludeType;
 
     //! Configuration of the light
     Gfx::Light light;

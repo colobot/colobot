@@ -36,10 +36,21 @@ struct Color
     Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
      : r(aR), g(aG), b(aB), a(aA) {}
 
+    inline Gfx::Color Inverse() const
+    {
+        return Gfx::Color(1.0f - r, 1.0f - g, 1.0f - b, 1.0f - a);
+    }
+
     //! Returns the struct cast to \c float* array; use with care!
     inline float* Array()
     {
         return (float*)this;
+    }
+
+    //! Returns the struct cast to <tt>const float*</tt> array; use with care!
+    inline const float* Array() const
+    {
+        return (const float*)this;
     }
 
     //! Returns a string (r, g, b, a)
@@ -49,6 +60,11 @@ struct Color
         s.precision(3);
         s << "(" << r << ", " << g << ", " << b << ", " << a << ")";
         return s.str();
+    }
+
+    inline bool operator==(const Gfx::Color &other) const
+    {
+        return r == other.r && g == other.g && b == other.b && a == other.a;
     }
 };
 

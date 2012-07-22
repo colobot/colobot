@@ -141,7 +141,7 @@ class CCamera {
     void        SetCameraInvertY(bool bInvert);
 
     float       RetMotorTurn();
-    Gfx::MouseType  RetMouseDef(Math::Point pos);
+    Gfx::EngineMouseType  RetMouseDef(Math::Point pos);
 
 protected:
     bool        EventMouseMove(const Event &event);

@@ -40,8 +40,8 @@ void Init(Gfx::CGLDevice *device)
     tex2CreateParams.magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
     tex2CreateParams.wrapS = Gfx::TEX_WRAP_CLAMP;
 
-    Gfx::Texture* tex1 = device->CreateTexture(&img1, tex1CreateParams);
-    Gfx::Texture* tex2 = device->CreateTexture(&img2, tex2CreateParams);
+    Gfx::Texture tex1 = device->CreateTexture(&img1, tex1CreateParams);
+    Gfx::Texture tex2 = device->CreateTexture(&img2, tex2CreateParams);
 
     device->SetTexture(0, tex1);
     device->SetTexture(1, tex2);
@@ -75,13 +75,13 @@ void Render(Gfx::CGLDevice *device)
 
     static Gfx::VertexTex2 quad[] =
     {
-        Gfx::VertexTex2(Math::Vector(-2.0f, -2.0f, 0.0f), Math::Vector(), Math::Point(0.0f, 1.0f), Math::Point(0.0f, 1.0f)),
-        Gfx::VertexTex2(Math::Vector( 2.0f, -2.0f, 0.0f), Math::Vector(), Math::Point(1.0f, 1.0f), Math::Point(1.0f, 1.0f)),
-        Gfx::VertexTex2(Math::Vector( 2.0f,  2.0f, 0.0f), Math::Vector(), Math::Point(1.0f, 0.0f), Math::Point(1.0f, 0.0f)),
-
-        Gfx::VertexTex2(Math::Vector( 2.0f,  2.0f, 0.0f), Math::Vector(), Math::Point(1.0f, 0.0f), Math::Point(1.0f, 0.0f)),
         Gfx::VertexTex2(Math::Vector(-2.0f,  2.0f, 0.0f), Math::Vector(), Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f)),
+        Gfx::VertexTex2(Math::Vector( 2.0f,  2.0f, 0.0f), Math::Vector(), Math::Point(1.0f, 0.0f), Math::Point(1.0f, 0.0f)),
+        Gfx::VertexTex2(Math::Vector( 2.0f, -2.0f, 0.0f), Math::Vector(), Math::Point(1.0f, 1.0f), Math::Point(1.0f, 1.0f)),
+
+        Gfx::VertexTex2(Math::Vector( 2.0f, -2.0f, 0.0f), Math::Vector(), Math::Point(1.0f, 1.0f), Math::Point(1.0f, 1.0f)),
         Gfx::VertexTex2(Math::Vector(-2.0f, -2.0f, 0.0f), Math::Vector(), Math::Point(0.0f, 1.0f), Math::Point(0.0f, 1.0f)),
+        Gfx::VertexTex2(Math::Vector(-2.0f,  2.0f, 0.0f), Math::Vector(), Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f)),
     };
 
     Math::Matrix t;

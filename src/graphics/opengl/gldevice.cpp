@@ -30,21 +30,6 @@
 
 #include <assert.h>
 
-namespace Gfx {
-
-struct GLDevicePrivate
-{
-    void (APIENTRY* glMultiTexCoord2fARB)(GLenum target, GLfloat s, GLfloat t);
-    void (APIENTRY* glActiveTextureARB)(GLenum texture);
-
-    GLDevicePrivate()
-    {
-        glMultiTexCoord2fARB = NULL;
-        glActiveTextureARB   = NULL;
-    }
-};
-
-}; // namespace Gfx
 
 
 void Gfx::GLDeviceConfig::LoadDefault()
@@ -65,7 +50,6 @@ void Gfx::GLDeviceConfig::LoadDefault()
 
 Gfx::CGLDevice::CGLDevice()
 {
-    m_private = new Gfx::GLDevicePrivate();
     m_wasInit = false;
     m_texturing = false;
 }
@@ -73,8 +57,6 @@ Gfx::CGLDevice::CGLDevice()
 
 Gfx::CGLDevice::~CGLDevice()
 {
-    delete m_private;
-    m_private = NULL;
 }
 
 bool Gfx::CGLDevice::GetWasInit()
@@ -108,15 +90,6 @@ bool Gfx::CGLDevice::Create()
         return false;
     }
 
-    /*m_private->glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC) SDL_GL_GetProcAddress("glMultiTexCoord2fARB");
-    m_private->glActiveTextureARB   = (PFNGLACTIVETEXTUREARBPROC)   SDL_GL_GetProcAddress("glActiveTextureARB");
-
-    if ((m_private->glMultiTexCoord2fARB == NULL) || (m_private->glActiveTextureARB == NULL))
-    {
-        m_error = "Could not load extension functions, even though they seem supported";
-        return false;
-    }*/
-
     m_wasInit = true;
 
     // This is mostly done in all modern hardware by default
@@ -141,7 +114,7 @@ bool Gfx::CGLDevice::Create()
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS_ARB, &maxTextures);
 
-    m_textures         = std::vector<Gfx::Texture*>     (maxTextures, (Gfx::Texture*)(NULL));
+    m_textures         = std::vector<Gfx::Texture>      (maxTextures, Gfx::Texture());
     m_texturesEnabled  = std::vector<bool>              (maxTextures, false);
     m_texturesParams   = std::vector<Gfx::TextureParams>(maxTextures, Gfx::TextureParams());
 
@@ -150,9 +123,6 @@ bool Gfx::CGLDevice::Create()
 
 void Gfx::CGLDevice::Destroy()
 {
-    /*m_private->glMultiTexCoord2fARB = NULL;
-    m_private->glActiveTextureARB   = NULL;*/
-
     // Delete the remaining textures
     // Should not be strictly necessary, but just in case
     DestroyAllTextures();
@@ -174,8 +144,7 @@ void Gfx::CGLDevice::BeginScene()
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(m_projectionMat.Array());
 
-    glMatrixMode(GL_MODELVIEW);
-    glLoadMatrixf(m_modelviewMat.Array());
+    UpdateModelviewMatrix();
 }
 
 void Gfx::CGLDevice::EndScene()
@@ -193,16 +162,12 @@ void Gfx::CGLDevice::SetTransform(Gfx::TransformType type, const Math::Matrix &m
     if      (type == Gfx::TRANSFORM_WORLD)
     {
         m_worldMat = matrix;
-        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadMatrixf(m_modelviewMat.Array());
+        UpdateModelviewMatrix();
     }
     else if (type == Gfx::TRANSFORM_VIEW)
     {
         m_viewMat = matrix;
-        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadMatrixf(m_modelviewMat.Array());
+        UpdateModelviewMatrix();
     }
     else if (type == Gfx::TRANSFORM_PROJECTION)
     {
@@ -235,16 +200,12 @@ void Gfx::CGLDevice::MultiplyTransform(Gfx::TransformType type, const Math::Matr
     if      (type == Gfx::TRANSFORM_WORLD)
     {
         m_worldMat = Math::MultiplyMatrices(m_worldMat, matrix);
-        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadMatrixf(m_modelviewMat.Array());
+        UpdateModelviewMatrix();
     }
     else if (type == Gfx::TRANSFORM_VIEW)
     {
         m_viewMat = Math::MultiplyMatrices(m_viewMat, matrix);
-        m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadMatrixf(m_modelviewMat.Array());
+        UpdateModelviewMatrix();
     }
     else if (type == Gfx::TRANSFORM_PROJECTION)
     {
@@ -258,7 +219,17 @@ void Gfx::CGLDevice::MultiplyTransform(Gfx::TransformType type, const Math::Matr
     }
 }
 
-void Gfx::CGLDevice::SetMaterial(Gfx::Material &material)
+void Gfx::CGLDevice::UpdateModelviewMatrix()
+{
+    m_modelviewMat = Math::MultiplyMatrices(m_viewMat, m_worldMat);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glScalef(1.0f, 1.0f, -1.0f);
+    glMultMatrixf(m_modelviewMat.Array());
+}
+
+void Gfx::CGLDevice::SetMaterial(const Gfx::Material &material)
 {
     m_material = material;
 
@@ -277,7 +248,7 @@ int Gfx::CGLDevice::GetMaxLightCount()
     return m_lights.size();
 }
 
-void Gfx::CGLDevice::SetLight(int index, Gfx::Light &light)
+void Gfx::CGLDevice::SetLight(int index, const Gfx::Light &light)
 {
     assert(index >= 0);
     assert(index < (int)m_lights.size());
@@ -285,9 +256,9 @@ void Gfx::CGLDevice::SetLight(int index, Gfx::Light &light)
     m_lights[index] = light;
 
     // Indexing from GL_LIGHT0 should always work
-    glLightfv(GL_LIGHT0 + index, GL_AMBIENT,  light.ambient.Array());
-    glLightfv(GL_LIGHT0 + index, GL_DIFFUSE,  light.diffuse.Array());
-    glLightfv(GL_LIGHT0 + index, GL_SPECULAR, light.specular.Array());
+    glLightfv(GL_LIGHT0 + index, GL_AMBIENT,  const_cast<GLfloat*>(light.ambient.Array()));
+    glLightfv(GL_LIGHT0 + index, GL_DIFFUSE,  const_cast<GLfloat*>(light.diffuse.Array()));
+    glLightfv(GL_LIGHT0 + index, GL_SPECULAR, const_cast<GLfloat*>(light.specular.Array()));
 
     GLfloat position[4] = { light.position.x, light.position.y, light.position.z, 0.0f };
     if (light.type == LIGHT_DIRECTIONAL)
@@ -334,17 +305,23 @@ bool Gfx::CGLDevice::GetLightEnabled(int index)
     return m_lightsEnabled[index];
 }
 
-/** If image is invalid, returns NULL.
+/** If image is invalid, returns invalid texture.
     Otherwise, returns pointer to new Gfx::Texture struct.
     This struct must not be deleted in other way than through DeleteTexture() */
-Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCreateParams &params)
+Gfx::Texture Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCreateParams &params)
 {
+    Gfx::Texture result;
+
     ImageData *data = image->GetData();
     if (data == NULL)
-        return NULL;
+    {
+        m_error = "Invalid texture data";
+        return result; // invalid texture
+    }
 
-    Gfx::Texture *result = new Gfx::Texture();
-    result->valid = true;
+    result.valid = true;
+    result.width = data->surface->w;
+    result.height = data->surface->h;
 
     // Use & enable 1st texture stage
     glActiveTextureARB(GL_TEXTURE0_ARB);
@@ -352,8 +329,8 @@ Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCre
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    glGenTextures(1, &result->id);
-    glBindTexture(GL_TEXTURE_2D, result->id);
+    glGenTextures(1, &result.id);
+    glBindTexture(GL_TEXTURE_2D, result.id);
 
     // Set params
 
@@ -395,13 +372,25 @@ Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCre
 
     GLenum sourceFormat = 0;
     if (params.format == Gfx::TEX_IMG_RGB)
+    {
         sourceFormat = GL_RGB;
+        result.alpha = false;
+    }
     else if (params.format == Gfx::TEX_IMG_BGR)
+    {
         sourceFormat = GL_BGR;
+        result.alpha = false;
+    }
     else if (params.format == Gfx::TEX_IMG_RGBA)
+    {
         sourceFormat = GL_RGBA;
+        result.alpha = true;
+    }
     else if (params.format == Gfx::TEX_IMG_BGRA)
+    {
         sourceFormat = GL_BGRA;
+        result.alpha = true;
+    }
     else
         assert(false);
 
@@ -410,10 +399,10 @@ Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCre
 
 
     // Restore the previous state of 1st stage
-    if (m_textures[0] == NULL)
-        glBindTexture(GL_TEXTURE_2D, 0);
+    if (m_textures[0].valid)
+        glBindTexture(GL_TEXTURE_2D, m_textures[0].id);
     else
-        glBindTexture(GL_TEXTURE_2D, m_textures[0]->id);
+        glBindTexture(GL_TEXTURE_2D, 0);
 
     if ( (! m_texturing) || (! m_texturesEnabled[0]) )
         glDisable(GL_TEXTURE_2D);
@@ -421,9 +410,9 @@ Gfx::Texture* Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCre
     return result;
 }
 
-void Gfx::CGLDevice::DestroyTexture(Gfx::Texture *texture)
+void Gfx::CGLDevice::DestroyTexture(const Gfx::Texture &texture)
 {
-    std::set<Gfx::Texture*>::iterator it = m_allTextures.find(texture);
+    std::set<Gfx::Texture>::iterator it = m_allTextures.find(texture);
     if (it != m_allTextures.end())
         m_allTextures.erase(it);
 
@@ -431,21 +420,18 @@ void Gfx::CGLDevice::DestroyTexture(Gfx::Texture *texture)
     for (int index = 0; index < (int)m_textures.size(); ++index)
     {
         if (m_textures[index] == texture)
-            SetTexture(index, NULL);
+            SetTexture(index, Gfx::Texture()); // set to invalid texture
     }
 
-    glDeleteTextures(1, &texture->id);
+    glDeleteTextures(1, &texture.id);
 }
 
 void Gfx::CGLDevice::DestroyAllTextures()
 {
-    std::set<Gfx::Texture*> allCopy = m_allTextures;
-    std::set<Gfx::Texture*>::iterator it;
+    std::set<Gfx::Texture> allCopy = m_allTextures;
+    std::set<Gfx::Texture>::iterator it;
     for (it = allCopy.begin(); it != allCopy.end(); ++it)
-    {
         DestroyTexture(*it);
-        delete *it;
-    }
 }
 
 int Gfx::CGLDevice::GetMaxTextureCount()
@@ -454,10 +440,10 @@ int Gfx::CGLDevice::GetMaxTextureCount()
 }
 
 /**
-  If \a texture is \c NULL or invalid, unbinds the given texture.
+  If \a texture is invalid, unbinds the given texture.
   If valid, binds the texture and enables the given texture stage.
   The setting is remembered, even if texturing is disabled at the moment. */
-void Gfx::CGLDevice::SetTexture(int index, Gfx::Texture *texture)
+void Gfx::CGLDevice::SetTexture(int index, const Gfx::Texture &texture)
 {
     assert(index >= 0);
     assert(index < (int)m_textures.size());
@@ -466,15 +452,15 @@ void Gfx::CGLDevice::SetTexture(int index, Gfx::Texture *texture)
     glActiveTextureARB(GL_TEXTURE0_ARB + index);
     glEnable(GL_TEXTURE_2D);
 
-    if ((texture == NULL) || (! texture->valid))
+    m_textures[index] = texture; // remember the change
+
+    if (! texture.valid)
     {
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
-        m_textures[index] = NULL;        // remember the changes
     }
     else
     {
-        glBindTexture(GL_TEXTURE_2D, texture->id);        // bind the texture
-        m_textures[index] = texture;                      // remember the changes
+        glBindTexture(GL_TEXTURE_2D, texture.id);         // bind the texture
         SetTextureParams(index, m_texturesParams[index]); // texture params need to be re-set for the new texture
     }
 
@@ -484,8 +470,8 @@ void Gfx::CGLDevice::SetTexture(int index, Gfx::Texture *texture)
 }
 
 /**
-  Returns the previously assigned texture or \c NULL if the given stage is not enabled. */
-Gfx::Texture* Gfx::CGLDevice::GetTexture(int index)
+  Returns the previously assigned texture or invalid texture if the given stage is not enabled. */
+Gfx::Texture Gfx::CGLDevice::GetTexture(int index)
 {
     assert(index >= 0);
     assert(index < (int)m_textures.size());
@@ -528,14 +514,14 @@ void Gfx::CGLDevice::SetTextureParams(int index, const Gfx::TextureParams &param
     m_texturesParams[index] = params;
 
     // Don't actually do anything if texture not set
-    if (m_textures[index] == NULL)
+    if (! m_textures[index].valid)
         return;
 
     // Enable the given stage
     glActiveTextureARB(GL_TEXTURE0_ARB + index);
     glEnable(GL_TEXTURE_2D);
 
-    glBindTexture(GL_TEXTURE_2D, m_textures[index]->id);
+    glBindTexture(GL_TEXTURE_2D, m_textures[index].id);
 
     // Selection of operation and arguments
     glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE);
@@ -639,7 +625,7 @@ Gfx::TextureParams Gfx::CGLDevice::GetTextureParams(int index)
     return m_texturesParams[index];
 }
 
-void Gfx::CGLDevice::SetTextureFactor(Gfx::Color &color)
+void Gfx::CGLDevice::SetTextureFactor(const Gfx::Color &color)
 {
     // Needs to be set for all texture stages
     for (int index = 0; index < (int)m_textures.size(); ++index)
@@ -749,7 +735,7 @@ bool InPlane(Math::Vector normal, float originPlane, Math::Vector center, float 
  */
 
 // TODO: testing
-int Gfx::CGLDevice::ComputeSphereVisibility(Math::Vector center, float radius)
+int Gfx::CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float radius)
 {
     Math::Matrix m;
     m.LoadIdentity();
@@ -847,6 +833,7 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
         case Gfx::RENDER_STATE_FOG:         flag = GL_FOG; break;
         case Gfx::RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
         case Gfx::RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
+        case Gfx::RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
         case Gfx::RENDER_STATE_DITHERING:   flag = GL_DITHER; break;
         default: assert(false); break;
     }
@@ -872,6 +859,7 @@ bool Gfx::CGLDevice::GetRenderState(Gfx::RenderState state)
         case Gfx::RENDER_STATE_FOG:         flag = GL_FOG; break;
         case Gfx::RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
         case Gfx::RENDER_STATE_ALPHA_TEST:  flag = GL_ALPHA_TEST; break;
+        case Gfx::RENDER_STATE_CULLING:     flag = GL_CULL_FACE; break;
         case Gfx::RENDER_STATE_DITHERING:   flag = GL_DITHER; break;
         default: assert(false); break;
     }
@@ -1011,7 +999,7 @@ void Gfx::CGLDevice::GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstB
     dstBlend = TranslateGLBlendFunc(dstFlag);
 }
 
-void Gfx::CGLDevice::SetClearColor(Gfx::Color color)
+void Gfx::CGLDevice::SetClearColor(const Gfx::Color &color)
 {
     glClearColor(color.r, color.g, color.b, color.a);
 }
@@ -1023,7 +1011,7 @@ Gfx::Color Gfx::CGLDevice::GetClearColor()
     return Gfx::Color(color[0], color[1], color[2], color[3]);
 }
 
-void Gfx::CGLDevice::SetGlobalAmbient(Gfx::Color color)
+void Gfx::CGLDevice::SetGlobalAmbient(const Gfx::Color &color)
 {
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, color.Array());
 }
@@ -1035,7 +1023,7 @@ Gfx::Color Gfx::CGLDevice::GetGlobalAmbient()
     return Gfx::Color(color[0], color[1], color[2], color[3]);
 }
 
-void Gfx::CGLDevice::SetFogParams(Gfx::FogMode mode, Gfx::Color color, float start, float end, float density)
+void Gfx::CGLDevice::SetFogParams(Gfx::FogMode mode, const Gfx::Color &color, float start, float end, float density)
 {
     if      (mode == Gfx::FOG_LINEAR) glFogi(GL_FOG_MODE, GL_LINEAR);
     else if (mode == Gfx::FOG_EXP)    glFogi(GL_FOG_MODE, GL_EXP);

@@ -166,9 +166,48 @@ struct Texture
     bool valid;
     //! Id of the texture in graphics engine
     unsigned int id;
+    //! Width of texture
+    int width;
+    //! Height of texture
+    int height;
+    //! Whether the texture has alpha channel
+    bool alpha;
 
     Texture()
-        { valid = false; id = 0; }
+    {
+        valid = false;
+        id = 0;
+        width = height = 0;
+        alpha = false;
+    }
+
+    //! Comparator for use in texture maps and sets
+    inline bool operator<(const Gfx::Texture &other) const
+    {
+        // Invalid textures are always "less than" every other texture
+
+        if ( (!valid) && (!other.valid) )
+            return false;
+
+        if (!valid)
+            return true;
+
+        if (!other.valid)
+            return false;
+
+        return id < other.id;
+    }
+
+    //! Comparator
+    inline bool operator==(const Gfx::Texture &other) const
+    {
+        if (valid != other.valid)
+            return false;
+        if ( (!valid) && (!other.valid) )
+            return true;
+
+        return id == other.id;
+    }
 };
 
 }; // namespace Gfx

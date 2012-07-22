@@ -69,10 +69,10 @@ int main(int argc, char *argv[])
 
     CApplication app; // single instance of the application
 
-    Error err = app.ParseArguments(argc, argv);
-    if (err != ERR_OK)
+    if (! app.ParseArguments(argc, argv))
     {
         SystemDialog(SDT_ERROR, "COLOBOT", "Invalid commandline arguments!\n");
+        return app.GetExitCode();
     }
 
     int code = 0;

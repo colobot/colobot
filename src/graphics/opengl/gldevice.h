@@ -88,36 +88,36 @@ public:
     virtual const Math::Matrix& GetTransform(Gfx::TransformType type);
     virtual void MultiplyTransform(Gfx::TransformType type, const Math::Matrix &matrix);
 
-    virtual void SetMaterial(Gfx::Material &material);
+    virtual void SetMaterial(const Gfx::Material &material);
     virtual const Gfx::Material& GetMaterial();
 
     virtual int GetMaxLightCount();
-    virtual void SetLight(int index, Gfx::Light &light);
+    virtual void SetLight(int index, const Gfx::Light &light);
     virtual const Gfx::Light& GetLight(int index);
     virtual void SetLightEnabled(int index, bool enabled);
     virtual bool GetLightEnabled(int index);
 
-    virtual Gfx::Texture* CreateTexture(CImage *image, const Gfx::TextureCreateParams &params);
-    virtual void DestroyTexture(Gfx::Texture *texture);
+    virtual Gfx::Texture CreateTexture(CImage *image, const Gfx::TextureCreateParams &params);
+    virtual void DestroyTexture(const Gfx::Texture &texture);
     virtual void DestroyAllTextures();
 
     virtual int GetMaxTextureCount();
-    virtual void SetTexture(int index, Gfx::Texture *texture);
-    virtual Gfx::Texture* GetTexture(int index);
+    virtual void SetTexture(int index, const Gfx::Texture &texture);
+    virtual Gfx::Texture GetTexture(int index);
     virtual void SetTextureEnabled(int index, bool enabled);
     virtual bool GetTextureEnabled(int index);
 
     virtual void SetTextureParams(int index, const Gfx::TextureParams &params);
     virtual Gfx::TextureParams GetTextureParams(int index);
 
-    virtual void SetTextureFactor(Gfx::Color &color);
+    virtual void SetTextureFactor(const Gfx::Color &color);
     virtual Gfx::Color GetTextureFactor();
 
     virtual void DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, int vertexCount);
     virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vertices, int vertexCount);
     virtual void DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices, int vertexCount);
 
-    virtual int ComputeSphereVisibility(Math::Vector center, float radius);
+    virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
 
     virtual void SetRenderState(Gfx::RenderState state, bool enabled);
     virtual bool GetRenderState(Gfx::RenderState state);
@@ -134,13 +134,13 @@ public:
     virtual void SetBlendFunc(Gfx::BlendFunc srcBlend, Gfx::BlendFunc dstBlend);
     virtual void GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstBlend);
 
-    virtual void SetClearColor(Gfx::Color color);
+    virtual void SetClearColor(const Gfx::Color &color);
     virtual Gfx::Color GetClearColor();
 
-    virtual void SetGlobalAmbient(Gfx::Color color);
+    virtual void SetGlobalAmbient(const Gfx::Color &color);
     virtual Gfx::Color GetGlobalAmbient();
 
-    virtual void SetFogParams(Gfx::FogMode mode, Gfx::Color color, float start, float end, float density);
+    virtual void SetFogParams(Gfx::FogMode mode, const Gfx::Color &color, float start, float end, float density);
     virtual void GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &start, float &end, float &density);
 
     virtual void SetCullMode(Gfx::CullMode mode);
@@ -153,8 +153,9 @@ public:
     virtual Gfx::FillMode GetFillMode();
 
 private:
-    //! Private, OpenGL-specific data
-    GLDevicePrivate* m_private;
+    void UpdateModelviewMatrix();
+
+private:
     //! Was initialized?
     bool m_wasInit;
     //! Last encountered error
@@ -180,14 +181,14 @@ private:
     //! Whether texturing is enabled in general
     bool m_texturing;
     //! Current textures; \c NULL value means unassigned
-    std::vector<Gfx::Texture*> m_textures;
+    std::vector<Gfx::Texture> m_textures;
     //! Current texture stages enable status
     std::vector<bool> m_texturesEnabled;
     //! Current texture params
     std::vector<Gfx::TextureParams> m_texturesParams;
 
     //! Set of all created textures
-    std::set<Gfx::Texture*> m_allTextures;
+    std::set<Gfx::Texture> m_allTextures;
 };
 
 }; // namespace Gfx

@@ -284,26 +284,24 @@ inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
 
 //! Loads a perspective projection matrix
 /** \a fov field of view in radians
-    \a aspect aspect ratio (height / width)
+    \a aspect aspect ratio (width / height)
     \a nearPlane distance to near cut plane
     \a farPlane distance to far cut plane */
-inline void LoadProjectionMatrix(Math::Matrix &mat, float fov = 1.570795f, float aspect = 1.0f,
+inline void LoadProjectionMatrix(Math::Matrix &mat, float fov = Math::PI / 2.0f, float aspect = 1.0f,
                                  float nearPlane = 1.0f, float farPlane = 1000.0f)
 {
     assert(fabs(farPlane - nearPlane) >= 0.01f);
     assert(fabs(sin(fov / 2)) >= 0.01f);
 
-    float w = aspect * (cosf(fov / 2) / sinf(fov / 2));
-    float h = 1.0f   * (cosf(fov / 2) / sinf(fov / 2));
-    float q = farPlane / (farPlane - nearPlane);
+    float f = cosf(fov / 2.0f) / sinf(fov / 2.0f);
 
     mat.LoadZero();
 
-    /* (1,1) */ mat.m[0 ] = w;
-    /* (2,2) */ mat.m[5 ] = h;
-    /* (3,3) */ mat.m[10] = q;
-    /* (4,3) */ mat.m[11] = 1.0f;
-    /* (3,4) */ mat.m[14] = -q * nearPlane;
+    /* (1,1) */ mat.m[0 ] = f / aspect;
+    /* (2,2) */ mat.m[5 ] = f;
+    /* (3,3) */ mat.m[10] = (nearPlane + farPlane) / (nearPlane - farPlane);
+    /* (4,3) */ mat.m[11] = -1.0f;
+    /* (3,4) */ mat.m[14] = (2.0f * farPlane * nearPlane) / (nearPlane - farPlane);
 }
 
 //! Loads an othogonal projection matrix
@@ -320,7 +318,7 @@ inline void LoadOrthoProjectionMatrix(Math::Matrix &mat, float left, float right
     /* (3,3) */ mat.m[10] = -2.0f / (zFar - zNear);
 
     /* (1,4) */ mat.m[12] =  - (right + left) / (right - left);
-    /* (2,4) */ mat.m[12] =  - (top + bottom) / (top - bottom);
+    /* (2,4) */ mat.m[13] =  - (top + bottom) / (top - bottom);
     /* (3,4) */ mat.m[14] =  - (zFar + zNear) / (zFar - zNear);
 }
 

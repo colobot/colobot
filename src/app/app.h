@@ -21,6 +21,7 @@
 
 
 #include "common/misc.h"
+#include "common/singleton.h"
 #include "graphics/common/device.h"
 #include "graphics/common/engine.h"
 
@@ -33,8 +34,8 @@ class CEvent;
 class CRobotMain;
 class CSound;
 
-struct ApplicationPrivate;
 
+struct ApplicationPrivate;
 
 /**
  * \class CApplication
@@ -67,7 +68,7 @@ struct ApplicationPrivate;
  * The events are further handled in CRobotMain class.
  *
  */
-class CApplication
+class CApplication : public CSingleton<CApplication>
 {
 public:
     //! Constructor (can only be called once!)
@@ -75,13 +76,9 @@ public:
     //! Destructor
     ~CApplication();
 
-    //! Returns the only CApplication instance
-    static CApplication* GetInstance()
-      { return m_appInstance; }
-
 public:
     //! Parses commandline arguments
-    Error       ParseArguments(int argc, char *argv[]);
+    bool        ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();
     //! Main event loop
@@ -117,20 +114,31 @@ public:
     void        SetKey(int keyRank, int option, int key);
     int         GetKey(int keyRank, int option);
 
-    void        SetMouseType(Gfx::MouseType type);
-    void        SetMousePos(Math::Point pos);
+    //! Sets the grab mode for input (keyboard & mouse)
+    void        SetGrabInput(bool grab);
+    //! Returns the grab mode
+    bool        GetGrabInput();
 
-    //? void        SetNiceMouse(bool nice);
-    //? bool        GetNiceMouse();
-    //? bool        GetNiceMouseCap();
+    //! Sets the visiblity of system mouse cursor
+    void        SetSystemMouseVisible(bool visible);
+    //! Returns the visiblity of system mouse cursor
+    bool        GetSystemMouseVisibile();
+
+    //! Sets the position of system mouse cursor (in interface coords)
+    void        SetSystemMousePos(Math::Point pos);
+    //! Returns the position of system mouse cursor (in interface coords)
+    Math::Point GetSystemMousePos();
 
     bool        WriteScreenShot(char *filename, int width, int height);
 
+    //! Returns the full path to a file in data directory
+    std::string GetDataFilePath(const std::string &dirName, const std::string &fileName);
+
 protected:
-    //! Processes an SDL event to Event struct
-    void        ParseEvent();
+    //! Processes the captured SDL event to Event struct
+    Event       ParseEvent();
     //! Handles some incoming events
-    void        ProcessEvent(Event event);
+    bool        ProcessEvent(const Event &event);
     //! Renders the image in window
     bool        Render();
 
@@ -140,16 +148,9 @@ protected:
     void CloseJoystick();
 
     //! Converts window coords to interface coords
-    Math::Point WindowToInterfaceCoords(int x, int y);
-
-    //HRESULT       ConfirmDevice( DDCAPS* pddDriverCaps, D3DDEVICEDESC7* pd3dDeviceDesc );
-    //HRESULT       Initialize3DEnvironment();
-    //HRESULT       Change3DEnvironment();
-    //HRESULT       CreateZBuffer(GUID* pDeviceGUID);
-    //HRESULT       Render3DEnvironment();
-    //VOID      Cleanup3DEnvironment();
-    //VOID      DeleteDeviceObjects();
-    //VOID      DisplayFrameworkError( HRESULT, DWORD );
+    Math::Point WindowToInterfaceCoords(Math::IntPoint pos);
+    //! Converts the interface coords to window coords
+    Math::IntPoint InterfaceToWindowCoords(Math::Point pos);
 
     void        InitText();
     void        DrawSuppl();
@@ -157,8 +158,6 @@ protected:
     void        OutputText(long x, long y, char* str);
 
 protected:
-    //! The only instance of CApplication
-    static CApplication*    m_appInstance;
     //! Instance manager
     CInstanceManager*       m_iMan;
     //! Private (SDL-dependent data)
@@ -185,21 +184,16 @@ protected:
     bool            m_debugMode;
     bool            m_setupMode;
 
+    //! Whether joystick is enabled
     bool            m_joystickEnabled;
 
+    //! Text set as window title
     std::string     m_windowTitle;
-
-    //? long            m_vidMemTotal;
-    //? bool            m_appUseZBuffer;
-    //? bool            m_appUseStereo;
-    //? bool            m_audioState;
-    //? bool            m_audioTrack;
-    //? bool            m_niceMouse;
 
     int             m_keyState;
     Math::Vector    m_axeKey;
     Math::Vector    m_axeJoy;
-    Math::Point     m_mousePos;
+    Math::Point     m_systemMousePos;
     long            m_mouseWheel;
 
     //! Current state of joystick axes; may be updated from another thread
@@ -209,5 +203,8 @@ protected:
 
     float           m_time;
     long            m_key[50][2];
+
+    //! Path to directory with data files
+    std::string     m_dataPath;
 };
 
