@@ -27,8 +27,8 @@
 
 // Key symbol defined as concatenation to SDLK_...
 // If need arises, it can be changed to custom function or anything else
-#define KEY(x) SDLK_ # x
+#define KEY(x) SDLK_ ## x
 
 // Key modifier defined as concatenation to KMOD_...
 // If need arises, it can be changed to custom function or anything else
-#define KEY_MOD(x) KMOD_ # x
+#define KEY_MOD(x) KMOD_ ## x

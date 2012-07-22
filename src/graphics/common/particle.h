@@ -265,7 +265,7 @@ public:
     void        FlushParticle();
     void        FlushParticle(int sheet);
     int         CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
-    int         CreateFrag(Math::Vector pos, Math::Vector speed, Triangle *triangle, ParticleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
+    int         CreateFrag(Math::Vector pos, Math::Vector speed, Gfx::EngineTriangle *triangle, ParticleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
     int         CreatePart(Math::Vector pos, Math::Vector speed, ParticleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, float windSensitivity=1.0f, int sheet=0);
     int         CreateRay(Math::Vector pos, Math::Vector goal, ParticleType type, Math::Point dim, float duration=1.0f, int sheet=0);
     int         CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
@@ -318,7 +318,7 @@ protected:
     CSound*      m_sound;
 
     Gfx::Particle m_particule[MAXPARTICULE*MAXPARTITYPE];
-    Gfx::Triangle m_triangle[MAXPARTICULE];  // triangle if PartiType == 0
+    Gfx::EngineTriangle m_triangle[MAXPARTICULE];  // triangle if PartiType == 0
     Track         m_track[MAXTRACK];
     int           m_wheelTraceTotal;
     int           m_wheelTraceIndex;

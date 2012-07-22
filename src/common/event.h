@@ -36,6 +36,7 @@ enum EventType
 
 // TODO: document the meaning of each value
 
+    //! Invalid event / no event
     EVENT_NULL              = 0,
 
     //! Event sent on user or system quit request
@@ -638,6 +639,9 @@ struct Event
     //! Type of event (EVENT_*)
     EventType type;
 
+    //! If true, the event was produced by system (SDL); else, it has come from user interface
+    bool systemEvent;
+
     //! Additional data for EVENT_KEY_DOWN and EVENT_KEY_UP
     KeyEventData key;
     //! Additional data for EVENT_MOUSE_BUTTON_DOWN and EVENT_MOUSE_BUTTON_UP
@@ -657,7 +661,8 @@ struct Event
     //? short        keyState;   // state of the keyboard (KS_ *)
     //? float        rTime;      // relative time
 
-    Event(EventType aType = EVENT_NULL) : type(aType) {}
+    Event(EventType aType = EVENT_NULL)
+        : type(aType), systemEvent(false) {}
 };
 
 
