@@ -337,11 +337,11 @@ public:
     virtual Gfx::Color GetTextureFactor() = 0;
 
     //! Renders primitive composed of vertices with single texture
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::Vertex *vertices, int vertexCount) = 0;
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::Vertex *vertices    , int vertexCount) = 0;
     //! Renders primitive composed of vertices with color information and single texture
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vertices, int vertexCount) = 0;
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexCol *vertices , int vertexCount) = 0;
     //! Renders primitive composed of vertices with multitexturing (2 textures)
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexTex2 *vertices, int vertexCount) = 0;
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexTex2 *vertices, int vertexCount) = 0;
 
     //! Tests whether a sphere intersects the 6 clipping planes of projection volume
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius) = 0;

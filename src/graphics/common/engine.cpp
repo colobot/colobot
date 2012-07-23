@@ -23,6 +23,7 @@
 #include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
+#include "common/logger.h"
 #include "graphics/common/device.h"
 #include "math/geometry.h"
 
@@ -144,6 +145,24 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
     m_updateGeometry = false;
 
+    m_mice[Gfx::ENG_MOUSE_NORM]    = Gfx::EngineMouse( 0,  1, 32, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 1.0f,  1.0f));
+    m_mice[Gfx::ENG_MOUSE_WAIT]    = Gfx::EngineMouse( 2,  3, 33, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 8.0f, 12.0f));
+    m_mice[Gfx::ENG_MOUSE_HAND]    = Gfx::EngineMouse( 4,  5, 34, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 7.0f,  2.0f));
+    m_mice[Gfx::ENG_MOUSE_NO]      = Gfx::EngineMouse( 6,  7, 35, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point(10.0f, 10.0f));
+    m_mice[Gfx::ENG_MOUSE_EDIT]    = Gfx::EngineMouse( 8,  9, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 6.0f, 10.0f));
+    m_mice[Gfx::ENG_MOUSE_CROSS]   = Gfx::EngineMouse(10, 11, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(10.0f, 10.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVEV]   = Gfx::EngineMouse(12, 13, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 5.0f, 11.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVEH]   = Gfx::EngineMouse(14, 15, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(11.0f,  5.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVED]   = Gfx::EngineMouse(16, 17, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  9.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVEI]   = Gfx::EngineMouse(18, 19, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  9.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVE]    = Gfx::EngineMouse(20, 21, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(11.0f, 11.0f));
+    m_mice[Gfx::ENG_MOUSE_TARGET]  = Gfx::EngineMouse(22, 23, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(15.0f, 15.0f));
+    m_mice[Gfx::ENG_MOUSE_SCROLLL] = Gfx::EngineMouse(24, 25, 43, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 2.0f,  9.0f));
+    m_mice[Gfx::ENG_MOUSE_SCROLLR] = Gfx::EngineMouse(26, 27, 44, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(17.0f,  9.0f));
+    m_mice[Gfx::ENG_MOUSE_SCROLLU] = Gfx::EngineMouse(28, 29, 45, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  2.0f));
+    m_mice[Gfx::ENG_MOUSE_SCROLLD] = Gfx::EngineMouse(30, 31, 46, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f, 17.0f));
+
+    m_mouseSize    = Math::Point(0.04f, 0.04f * (800.0f / 600.0f));
     m_mousePos     = Math::Point(0.5f, 0.5f);
     m_mouseType    = Gfx::ENG_MOUSE_NORM;
     m_mouseVisible = false;
@@ -251,30 +270,50 @@ bool Gfx::CEngine::AfterDeviceSetInit()
     return true;
 }
 
-bool Gfx::CEngine::ProcessEvent(const Event &event)
+Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName, const Gfx::TextureCreateParams &params)
 {
-    if (event.type == EVENT_MOUSE_MOVE)
+    CImage img;
+    if (! img.Load(m_app->GetDataFilePath(m_texPath, texName)))
     {
-        m_mousePos = event.mouseMove.pos;
-    }
-    else if (event.type == EVENT_KEY_DOWN)
-    {
-        // !! Debug, to be removed later !!
-
-        if (event.key.key == KEY(F1))
-        {
-            m_mouseVisible = !m_mouseVisible;
-            m_app->SetSystemMouseVisible(! m_app->GetSystemMouseVisibile());
-        }
-        else if (event.key.key == KEY(F2))
-        {
-            int index = (int)m_mouseType;
-            m_mouseType = (Gfx::EngineMouseType)( (index + 1) % Gfx::ENG_MOUSE_COUNT );
-        }
+        std::stringstream str;
+        str << "Couldn't load texture '" << texName << "': " << img.GetError();
+        m_error = str.str();
+        return Gfx::Texture(); // invalid texture
     }
 
-    // By default, pass on all events
-    return true;
+    Gfx::Texture result = m_device->CreateTexture(&img, params);
+
+    if (! result.valid)
+    {
+        std::stringstream str;
+        str << "Couldn't load texture '" << texName << "': " << m_device->GetError();
+        m_error = str.str();
+        return result;
+    }
+
+    m_texNameMap[texName] = result;
+    m_revTexNameMap[result] = texName;
+
+    return result;
+}
+
+Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName)
+{
+    return CreateTexture(texName, m_defaultTexParams);
+}
+
+void Gfx::CEngine::DestroyTexture(const std::string &texName)
+{
+    std::map<std::string, Gfx::Texture>::iterator it = m_texNameMap.find(texName);
+    if (it == m_texNameMap.end())
+        return;
+
+    std::map<Gfx::Texture, std::string>::iterator revIt = m_revTexNameMap.find((*it).second);
+
+    m_device->DestroyTexture((*it).second);
+
+    m_revTexNameMap.erase(revIt);
+    m_texNameMap.erase(it);
 }
 
 void Gfx::CEngine::SetTexture(const std::string &name, int stage)
@@ -307,22 +346,25 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
             state |= Gfx::ENG_RSTATE_TTEXTURE_BLACK;
     }
 
+    // TODO other modes & thorough testing
+
     if (state & Gfx::ENG_RSTATE_TTEXTURE_BLACK)  // The transparent black texture?
     {
         m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
         m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
         m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
 
         m_device->SetBlendFunc(Gfx::BLEND_ONE, Gfx::BLEND_INV_SRC_COLOR);
-
+        m_device->SetTextureEnabled(0, true);
         m_device->SetTextureFactor(color);
 
         Gfx::TextureParams params;
         params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
         params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = Gfx::TEX_MIX_ARG_FACTOR;
-        // TODO: params.alphaOperation = Gfx::TEX_MIX_OPER_DISABLED;
+        params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
         m_device->SetTextureParams(0, params);
     }
     else if (state & Gfx::ENG_RSTATE_TTEXTURE_WHITE)  // The transparent white texture?
@@ -331,88 +373,93 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
         m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
         m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
 
         m_device->SetBlendFunc(Gfx::BLEND_DST_COLOR, Gfx::BLEND_ZERO);
-
+        m_device->SetTextureEnabled(0, true);
         m_device->SetTextureFactor(color.Inverse());
 
         Gfx::TextureParams params;
         params.colorOperation = Gfx::TEX_MIX_OPER_ADD;
         params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = Gfx::TEX_MIX_ARG_FACTOR;
-        // TODO: params.alphaOperation = Gfx::TEX_MIX_OPER_DISABLED;
+        params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
         m_device->SetTextureParams(0, params);
     }
-    // TODO other modes
     else if (state & Gfx::ENG_RSTATE_TCOLOR_BLACK)  // The transparent black color?
     {
-        /*
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_blackSrcBlend[1]);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_blackDestBlend[1]);
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING, true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
 
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, color);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_DISABLE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);*/
+        m_device->SetBlendFunc(Gfx::BLEND_ONE, Gfx::BLEND_INV_SRC_COLOR);
+
+        m_device->SetTextureFactor(color);
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureParams(0, Gfx::TextureParams());
     }
     else if (state & Gfx::ENG_RSTATE_TCOLOR_WHITE)  // The transparent white color?
     {
-        /*m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_whiteSrcBlend[1]);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_whiteDestBlend[1]);
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING, true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
 
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, ~color);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_DISABLE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);*/
+        m_device->SetBlendFunc(Gfx::BLEND_DST_COLOR, Gfx::BLEND_ZERO);
+
+        m_device->SetTextureFactor(color.Inverse());
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureParams(0, Gfx::TextureParams());
     }
     else if (state & Gfx::ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
     {
-        /*m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_diffuseSrcBlend[1]);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_diffuseDestBlend[1]);
+        /*m_device->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
+        m_device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+        m_device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
+        m_device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
+        m_device->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_diffuseSrcBlend[1]);
+        m_device->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_diffuseDestBlend[1]);
 
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);*/
+        m_device->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1);
+        m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        m_device->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);*/
     }
     else if (state & Gfx::ENG_RSTATE_ALPHA)  // image with alpha channel?
     {
-        /*m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, true);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATER);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHAREF,  (DWORD)(128));
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_alphaSrcBlend[1]);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_alphaSrcBlend[1]);
+        /*m_device->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
+        m_device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
+        m_device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
+        m_device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, true);
+        m_device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATER);
+        m_device->SetRenderState(D3DRENDERSTATE_ALPHAREF,  (DWORD)(128));
+        m_device->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_alphaSrcBlend[1]);
+        m_device->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_alphaSrcBlend[1]);
 
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, color);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);*/
+        m_device->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, color);
+        m_device->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+        m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        m_device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+        m_device->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1);
+        m_device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);*/
     }
     else    // normal ?
     {
-        /*m_pD3DDevice->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
-        m_pD3DDevice->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
 
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-        m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);*/
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureParams(0, Gfx::TextureParams());
+
+        /*m_device->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+        m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        m_device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
+        m_device->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);*/
     }
 
     if (state & Gfx::ENG_RSTATE_FOG)
@@ -426,40 +473,39 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
 
     if ( (state & ENG_RSTATE_DUAL_BLACK) && second )
     {
-        /*m_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_MODULATE);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);*/
+        /*m_device->SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_MODULATE);
+        m_device->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        m_device->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
+        m_device->SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
+        m_device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);*/
     }
     else if ( (state & ENG_RSTATE_DUAL_WHITE) && second )
     {
-        /*m_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_ADD);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);*/
+        /*m_device->SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_ADD);
+        m_device->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
+        m_device->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
+        m_device->SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
+        m_device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);*/
     }
     else
     {
-        /*m_pD3DDevice->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);*/
+        m_device->SetTextureEnabled(1, false);
     }
 
     if (state & Gfx::ENG_RSTATE_WRAP)
     {
-        /*m_pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);*/
+        /*m_device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
+        m_device->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);*/
     }
     else if (state & Gfx::ENG_RSTATE_CLAMP)
     {
-        /*m_pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);*/
+        /*m_device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
+        m_device->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);*/
     }
     else
     {
-        /*m_pD3DDevice->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
-        m_pD3DDevice->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);*/
+        /*m_device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
+        m_device->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);*/
     }
 
     if (state & Gfx::ENG_RSTATE_2FACE)
@@ -478,9 +524,38 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
         m_device->SetGlobalAmbient(m_ambientColor[m_rankView]);
 }
 
+bool Gfx::CEngine::ProcessEvent(const Event &event)
+{
+    if (event.type == EVENT_MOUSE_MOVE)
+    {
+        m_mousePos = event.mouseMove.pos;
+    }
+    else if (event.type == EVENT_KEY_DOWN)
+    {
+        // !! Debug, to be removed later !!
+
+        if (event.key.key == KEY(F1))
+        {
+            m_mouseVisible = !m_mouseVisible;
+            m_app->SetSystemMouseVisible(! m_app->GetSystemMouseVisibile());
+        }
+        else if (event.key.key == KEY(F2))
+        {
+            int index = static_cast<int>(m_mouseType);
+            m_mouseType = static_cast<Gfx::EngineMouseType>( (index + 1) % Gfx::ENG_MOUSE_COUNT );
+        }
+    }
+
+    // By default, pass on all events
+    return true;
+}
+
 bool Gfx::CEngine::Render()
 {
     m_statisticTriangle = 0;
+
+    m_lastState = -1;
+    SetState(Gfx::ENG_RSTATE_NORMAL);
 
     m_device->BeginScene();
 
@@ -535,60 +610,11 @@ bool Gfx::CEngine::DrawInterface()
 
 void Gfx::CEngine::DrawMouse()
 {
-    struct EngineMouse
-    {
-        Gfx::EngineMouseType type;
-        int icon1;
-        int icon2;
-        int iconShadow;
-        Gfx::EngineRenderState mode1;
-        Gfx::EngineRenderState mode2;
-        Math::Point hotPoint;
-
-        EngineMouse(Gfx::EngineMouseType = Gfx::ENG_MOUSE_NORM,
-                    int icon1 = -1, int icon2 = -1, int iconShadow = -1,
-                    Gfx::EngineRenderState mode1 = Gfx::ENG_RSTATE_NORMAL,
-                    Gfx::EngineRenderState mode2 = ENG_RSTATE_NORMAL,
-                    Math::Point hotPoint = Math::Point())
-        {
-            this->type = type;
-            this->icon1 = icon1;
-            this->icon2 = icon2;
-            this->iconShadow = iconShadow;
-            this->mode1 = mode1;
-            this->mode2 = mode2;
-            this->hotPoint = hotPoint;
-        }
-    };
-
-    static const EngineMouse MICE[Gfx::ENG_MOUSE_COUNT] =
-    {
-        EngineMouse(Gfx::ENG_MOUSE_NORM,     0,  1, 32, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 1.0f,  1.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_WAIT,     2,  3, 33, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 8.0f, 12.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_HAND,     4,  5, 34, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 7.0f,  2.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_NO,       6,  7, 35, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point(10.0f, 10.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_EDIT,     8,  9, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 6.0f, 10.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_CROSS,   10, 11, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(10.0f, 10.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_MOVEV,   12, 13, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 5.0f, 11.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_MOVEH,   14, 15, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(11.0f,  5.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_MOVED,   16, 17, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  9.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_MOVEI,   18, 19, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  9.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_MOVE,    20, 21, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(11.0f, 11.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_TARGET,  22, 23, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(15.0f, 15.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_SCROLLL, 24, 25, 43, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 2.0f,  9.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_SCROLLR, 26, 27, 44, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(17.0f,  9.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_SCROLLU, 28, 29, 45, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  2.0f)),
-        EngineMouse(Gfx::ENG_MOUSE_SCROLLD, 30, 31, 46, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f, 17.0f))
-    };
-
-    static const Math::Point MOUSE_SIZE(0.05f, 0.05f);
-
     if (! m_mouseVisible)
         return;
 
     if (m_app->GetSystemMouseVisibile())
         return;
-
 
     Gfx::Material material;
     material.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);
@@ -597,32 +623,24 @@ void Gfx::CEngine::DrawMouse()
     SetMaterial(material);
     SetTexture("mouse.png");
 
-    for (int i = 0; i < Gfx::ENG_MOUSE_COUNT; ++i)
-    {
-        if (m_mouseType != MICE[i].type)
-            continue;
+    int index = static_cast<int>(m_mouseType);
 
-        Math::Point pos;
-        pos.x = m_mousePos.x - (MICE[i].hotPoint.x * MOUSE_SIZE.x) / 32.0f;
-        pos.y = m_mousePos.y - ((32.0f - MICE[i].hotPoint.y) * MOUSE_SIZE.y) / 32.0f;
+    Math::Point pos = m_mousePos;
+    pos.x = m_mousePos.x - (m_mice[index].hotPoint.x * m_mouseSize.x) / 32.0f;
+    pos.y = m_mousePos.y - ((32.0f - m_mice[index].hotPoint.y) * m_mouseSize.y) / 32.0f;
 
-        Math::Point shadowPos;
-        shadowPos.x = pos.x+(4.0f/640.0f);
-        shadowPos.y = pos.y-(3.0f/480.0f);
+    Math::Point shadowPos;
+    shadowPos.x = pos.x + (4.0f/800.0f);
+    shadowPos.y = pos.y - (3.0f/600.0f);
 
-        // FIXME: doesn't work yet
+    SetState(Gfx::ENG_RSTATE_TCOLOR_WHITE);
+    DrawMouseSprite(shadowPos, m_mouseSize, m_mice[index].iconShadow);
 
-        SetState(Gfx::ENG_RSTATE_TCOLOR_WHITE);
-        DrawMouseSprite(shadowPos, MOUSE_SIZE, MICE[i].iconShadow);
+    SetState(m_mice[index].mode1);
+    DrawMouseSprite(pos, m_mouseSize, m_mice[index].icon1);
 
-        SetState(MICE[i].mode1);
-        DrawMouseSprite(pos, MOUSE_SIZE, MICE[i].icon1);
-
-        SetState(MICE[i].mode2);
-        DrawMouseSprite(pos, MOUSE_SIZE, MICE[i].icon2);
-
-        break;
-    }
+    SetState(m_mice[index].mode2);
+    DrawMouseSprite(pos, m_mouseSize, m_mice[index].icon2);
 }
 
 void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
@@ -635,8 +653,8 @@ void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
 
     float u1 = (32.0f / 256.0f) * (icon % 8);
     float v1 = (32.0f / 256.0f) * (icon / 8);
-    float u2 = (32.0f / 256.0f) + u1;
-    float v2 = (32.0f / 256.0f) + v1;
+    float u2 = u1 + (32.0f / 256.0f);
+    float v2 = v1 + (32.0f / 256.0f);
 
     float dp = 0.5f / 256.0f;
     u1 += dp;
@@ -649,59 +667,13 @@ void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
     Gfx::Vertex vertex[4] =
     {
         Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v2)),
-        Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v1)),
         Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v2)),
+        Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v1)),
         Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v1))
     };
 
     m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
-}
-
-Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName, const Gfx::TextureCreateParams &params)
-{
-    CImage img;
-    if (! img.Load(m_app->GetDataFilePath(m_texPath, texName)))
-    {
-        std::stringstream str;
-        str << "Couldn't load texture '" << texName << "': " << img.GetError();
-        m_error = str.str();
-        return Gfx::Texture(); // invalid texture
-    }
-
-    Gfx::Texture result = m_device->CreateTexture(&img, params);
-
-    if (! result.valid)
-    {
-        std::stringstream str;
-        str << "Couldn't load texture '" << texName << "': " << m_device->GetError();
-        m_error = str.str();
-        return result;
-    }
-
-    m_texNameMap[texName] = result;
-    m_revTexNameMap[result] = texName;
-
-    return result;
-}
-
-Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName)
-{
-    return CreateTexture(texName, m_defaultTexParams);
-}
-
-void Gfx::CEngine::DestroyTexture(const std::string &texName)
-{
-    std::map<std::string, Gfx::Texture>::iterator it = m_texNameMap.find(texName);
-    if (it == m_texNameMap.end())
-        return;
-
-    std::map<Gfx::Texture, std::string>::iterator revIt = m_revTexNameMap.find((*it).second);
-
-    m_device->DestroyTexture((*it).second);
-
-    m_revTexNameMap.erase(revIt);
-    m_texNameMap.erase(it);
 }
 
 void Gfx::CEngine::SetMouseVisible(bool visible)

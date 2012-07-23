@@ -658,7 +658,7 @@ Gfx::Color Gfx::CGLDevice::GetTextureFactor()
     return Gfx::Color(color[0], color[1], color[2], color[3]);
 }
 
-void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, int vertexCount)
+void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Vertex *vertices, int vertexCount)
 {
     if (type == Gfx::PRIMITIVE_LINES)
         glBegin(GL_LINES);
@@ -671,15 +671,15 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, in
 
     for (int i = 0; i < vertexCount; ++i)
     {
-        glNormal3fv((GLfloat*)vertices[i].normal.Array());
-        glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, (GLfloat*)vertices[i].texCoord.Array());
-        glVertex3fv((GLfloat*)vertices[i].coord.Array());
+        glNormal3fv(const_cast<GLfloat*>(vertices[i].normal.Array()));
+        glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, const_cast<GLfloat*>(vertices[i].texCoord.Array()));
+        glVertex3fv(const_cast<GLfloat*>(vertices[i].coord.Array()));
     }
 
     glEnd();
 }
 
-void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vertices, int vertexCount)
+void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexCol *vertices, int vertexCount)
 {
     if (type == Gfx::PRIMITIVE_LINES)
         glBegin(GL_LINES);
@@ -690,16 +690,16 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vert
 
     for (int i = 0; i < vertexCount; ++i)
     {
-        glColor4fv((GLfloat*)vertices[i].color.Array());
-        glSecondaryColor3fv((GLfloat*)vertices[i].specular.Array());
-        glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, (GLfloat*)vertices[i].texCoord.Array());
-        glVertex3fv((GLfloat*)vertices[i].coord.Array());
+        glColor4fv(const_cast<GLfloat*>(vertices[i].color.Array()));
+        glSecondaryColor3fv(const_cast<GLfloat*>(vertices[i].specular.Array()));
+        glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, const_cast<GLfloat*>(vertices[i].texCoord.Array()));
+        glVertex3fv(const_cast<GLfloat*>(vertices[i].coord.Array()));
     }
 
     glEnd();
 }
 
-void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices, int vertexCount)
+void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const VertexTex2 *vertices, int vertexCount)
 {
     if (type == Gfx::PRIMITIVE_LINES)
         glBegin(GL_LINES);
@@ -708,12 +708,14 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices
     else if (type == Gfx::PRIMITIVE_TRIANGLE_STRIP)
         glBegin(GL_TRIANGLE_STRIP);
 
+    glColor3f(1.0f, 1.0f, 1.0f);
+
     for (int i = 0; i < vertexCount; ++i)
     {
-        glNormal3fv((GLfloat*) vertices[i].normal.Array());
-        glMultiTexCoord2fARB(GL_TEXTURE0_ARB, vertices[i].texCoord.x, vertices[i].texCoord.y);
-        glMultiTexCoord2fARB(GL_TEXTURE1_ARB, vertices[i].texCoord2.x, vertices[i].texCoord2.y);
-        glVertex3fv((GLfloat*) vertices[i].coord.Array());
+        glNormal3fv(const_cast<GLfloat*>(vertices[i].normal.Array()));
+        glMultiTexCoord2fvARB(GL_TEXTURE0_ARB, const_cast<GLfloat*>(vertices[i].texCoord.Array()));
+        glMultiTexCoord2fvARB(GL_TEXTURE1_ARB, const_cast<GLfloat*>(vertices[i].texCoord.Array()));
+        glVertex3fv(const_cast<GLfloat*>(vertices[i].coord.Array()));
     }
 
     glEnd();

@@ -457,27 +457,24 @@ int CApplication::Run()
 
     while (true)
     {
-        // Use SDL_PeepEvents() if the app is active, so we can use idle time to
-        // render the scene. Else, use SDL_PollEvent() to avoid eating CPU time.
-        int count = 0;
-
         // To be sure no old event remains
         m_private->currentEvent.type = SDL_NOEVENT;
+
+        if (m_active)
+            SDL_PumpEvents();
 
         bool haveEvent = true;
         while (haveEvent)
         {
             haveEvent = false;
 
+            int count = 0;
+            // Use SDL_PeepEvents() if the app is active, so we can use idle time to
+            // render the scene. Else, use SDL_PollEvent() to avoid eating CPU time.
             if (m_active)
-            {
-                SDL_PumpEvents();
                 count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_ALLEVENTS);
-            }
             else
-            {
                 count = SDL_PollEvent(&m_private->currentEvent);
-            }
 
             // If received an event
             if (count > 0)

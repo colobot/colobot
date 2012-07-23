@@ -74,6 +74,12 @@ struct Point
         return (float*)this;
     }
 
+    //! Returns the struct cast to <tt>const float*</tt> array; use with care!
+    inline const float* Array() const
+    {
+        return (const float*)this;
+    }
+
     //! Returns the distance from (0,0) to the point (x,y)
     inline float Length()
     {

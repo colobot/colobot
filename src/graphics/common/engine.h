@@ -360,6 +360,7 @@ enum EngineTextureMapping
     ENG_TEX_MAPPING_1Z      = 6
 };
 
+
 /**
   \enum EngineRenderState
   \brief Render state of graphics engine
@@ -408,6 +409,7 @@ enum EngineRenderState
     ENG_RSTATE_TCOLOR_WHITE     = (1<<17)
 };
 
+
 /**
   \enum EngineMouseType
   \brief Type of mouse cursor displayed in-game */
@@ -451,6 +453,39 @@ enum EngineMouseType
     //! Number of items in enum
     ENG_MOUSE_COUNT
 };
+
+/**
+  \struct EngineMouse
+  \brief Information about mouse cursor */
+struct EngineMouse
+{
+    //! Index of texture element for 1st image
+    int icon1;
+    //! Index of texture element for 2nd image
+    int icon2;
+    //! Shadow texture part
+    int iconShadow;
+    //! Mode to render 1st image in
+    Gfx::EngineRenderState mode1;
+    //! Mode to render 2nd image in
+    Gfx::EngineRenderState mode2;
+    //! Hot point
+    Math::Point hotPoint;
+
+    EngineMouse(int icon1 = -1, int icon2 = -1, int iconShadow = -1,
+                Gfx::EngineRenderState mode1 = Gfx::ENG_RSTATE_NORMAL,
+                Gfx::EngineRenderState mode2 = Gfx::ENG_RSTATE_NORMAL,
+                Math::Point hotPoint = Math::Point())
+    {
+        this->icon1      = icon1;
+        this->icon2      = icon2;
+        this->iconShadow = iconShadow;
+        this->mode1      = mode1;
+        this->mode2      = mode2;
+        this->hotPoint   = hotPoint;
+    }
+};
+
 
 /**
   \class CEngine
@@ -934,6 +969,8 @@ protected:
     std::map<std::string, Gfx::Texture> m_texNameMap;
     std::map<Gfx::Texture, std::string> m_revTexNameMap;
 
+    Gfx::EngineMouse     m_mice[Gfx::ENG_MOUSE_COUNT];
+    Math::Point          m_mouseSize;
     Gfx::EngineMouseType m_mouseType;
     Math::Point          m_mousePos;
     bool                 m_mouseVisible;

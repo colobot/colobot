@@ -79,6 +79,12 @@ struct Vector
         return (float*)this;
     }
 
+    //! Returns the struct cast to <tt>const float*</tt> array; use with care!
+    inline const float* Array() const
+    {
+        return (const float*)this;
+    }
+
     //! Returns the vector length
     inline float Length() const
     {
