@@ -113,9 +113,9 @@ public:
     virtual void SetTextureFactor(const Gfx::Color &color);
     virtual Gfx::Color GetTextureFactor();
 
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, Vertex *vertices, int vertexCount);
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, Gfx::VertexCol *vertices, int vertexCount);
-    virtual void DrawPrimitive(Gfx::PrimitiveType type, VertexTex2 *vertices, int vertexCount);
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::Vertex     *vertices, int vertexCount);
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexCol  *vertices, int vertexCount);
+    virtual void DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexTex2 *vertices, int vertexCount);
 
     virtual int ComputeSphereVisibility(const Math::Vector &center, float radius);
 

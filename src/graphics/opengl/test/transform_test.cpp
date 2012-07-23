@@ -38,7 +38,7 @@ void Init(Gfx::CGLDevice *device)
     device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, true);
     device->SetShadeModel(Gfx::SHADE_SMOOTH);
 }
-#include <GL/gl.h>
+
 void Render(Gfx::CGLDevice *device)
 {
     device->BeginScene();
@@ -70,8 +70,6 @@ void Render(Gfx::CGLDevice *device)
     device->SetTransform(Gfx::TRANSFORM_WORLD, worldMat);
 
     Gfx::VertexCol line[2] = { Gfx::VertexCol() };
-
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 
     for (int x = -40; x <= 40; ++x)
     {
