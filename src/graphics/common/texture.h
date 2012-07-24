@@ -25,15 +25,21 @@ namespace Gfx {
   \brief Format of image data */
 enum TexImgFormat
 {
+    //! Try to determine automatically (may not work)
+    TEX_IMG_AUTO,
+    //! RGB triplet, 3 bytes
     TEX_IMG_RGB,
+    //! BGR triplet, 3 bytes
     TEX_IMG_BGR,
+    //! RGBA triplet, 4 bytes
     TEX_IMG_RGBA,
+    //! BGRA triplet, 4 bytes
     TEX_IMG_BGRA
 };
 
 /**
   \enum TexMinFilter
-  \brief Minification texture filter
+  \brief Texture minification filter
 
   Corresponds to OpenGL modes but should translate to DirectX too. */
 enum TexMinFilter
@@ -48,7 +54,7 @@ enum TexMinFilter
 
 /**
   \enum TexMagFilter
-  \brief Magnification texture filter */
+  \brief Texture magnification filter */
 enum TexMagFilter
 {
     TEX_MAG_FILTER_NEAREST,
@@ -66,30 +72,42 @@ enum TexWrapMode
 
 /**
   \enum TexMixOperation
-  \brief Multitexture mixing operation
- */
+  \brief Multitexture mixing operation */
 enum TexMixOperation
 {
+    //! Default operation on default params (modulate on computed & texture)
+    TEX_MIX_OPER_DEFAULT,
+    //! = Arg1
+    TEX_MIX_OPER_REPLACE,
+    //! = Arg1 * Arg2
     TEX_MIX_OPER_MODULATE,
-    TEX_MIX_OPER_ADD
+    //! = Arg1 + Arg2
+    TEX_MIX_OPER_ADD,
+    //! = Arg1 - Arg2
+    TEX_MIX_OPER_SUBTRACT
 };
 
 /**
   \enum TexMixArgument
-  \brief Multitexture mixing argument
-  */
+  \brief Multitexture mixing argument */
 enum TexMixArgument
 {
-    TEX_MIX_ARG_CURRENT,
+    //! Color from current texture
     TEX_MIX_ARG_TEXTURE,
-    TEX_MIX_ARG_DIFFUSE,
+    //! Color computed by previous texture unit (current in DirectX; previous in OpenGL)
+    TEX_MIX_ARG_COMPUTED_COLOR,
+    //! (Source) color of textured fragment (diffuse in DirectX; primary color in OpenGL)
+    TEX_MIX_ARG_SRC_COLOR,
+    //! Constant color (texture factor in DirectX; texture env color in OpenGL)
     TEX_MIX_ARG_FACTOR
 };
 
 /**
   \struct TextureCreateParams
   \brief Parameters for texture creation
-  */
+
+  These params define how particular texture is created and later displayed.
+  They must be specified at texture creation time and cannot be changed later. */
 struct TextureCreateParams
 {
     //! Whether to generate mipmaps
@@ -100,10 +118,6 @@ struct TextureCreateParams
     Gfx::TexMinFilter minFilter;
     //! Magnification filter
     Gfx::TexMagFilter magFilter;
-    //! Wrap S coord mode
-    Gfx::TexWrapMode wrapS;
-    //! Wrap T coord mode
-    Gfx::TexWrapMode wrapT;
 
     //! Constructor; calls LoadDefault()
     TextureCreateParams()
@@ -117,17 +131,16 @@ struct TextureCreateParams
 
         minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
         magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
-
-        wrapS = Gfx::TEX_WRAP_REPEAT;
-        wrapT = Gfx::TEX_WRAP_REPEAT;
     }
 };
 
 /**
-  \struct TextureParams
-  \brief Parameters for texture creation
- */
-struct TextureParams
+  \struct TextureStageParams
+  \brief Parameters for a texture unit
+
+  These params define the behavior of texturing units (stages).
+  They can be changed freely and are feature of graphics engine, not any particular texture. */
+struct TextureStageParams
 {
     //! Mixing operation done on color values
     Gfx::TexMixOperation colorOperation;
@@ -141,30 +154,41 @@ struct TextureParams
     Gfx::TexMixArgument alphaArg1;
     //! 2nd argument of alpha operations
     Gfx::TexMixArgument alphaArg2;
+    //! Wrap mode for 1st tex coord
+    Gfx::TexWrapMode    wrapS;
+    //! Wrap mode for 2nd tex coord
+    Gfx::TexWrapMode    wrapT;
 
     //! Constructor; calls LoadDefault()
-    TextureParams()
+    TextureStageParams()
         { LoadDefault(); }
 
     //! Loads the default values
     inline void LoadDefault()
     {
-        colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        colorArg1 = Gfx::TEX_MIX_ARG_CURRENT;
+        colorOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+        colorArg1 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
         colorArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
 
-        alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        alphaArg1 = Gfx::TEX_MIX_ARG_CURRENT;
+        alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+        alphaArg1 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
         alphaArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
+
+        wrapS = wrapT = Gfx::TEX_WRAP_REPEAT;
     }
 };
 
-/** \struct Texture*/
+/**
+  \struct Texture
+  \brief Info about a texture
+
+  Identifies (through id) a texture created in graphics engine.
+  Also contains some additional data. */
 struct Texture
 {
-    //! Whether the texture was loaded
+    //! Whether the texture (ID) is valid
     bool valid;
-    //! Id of the texture in graphics engine
+    //! ID of the texture in graphics engine
     unsigned int id;
     //! Width of texture
     int width;

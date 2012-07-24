@@ -516,7 +516,6 @@ public:
     bool            GetWasInit();
     std::string     GetError();
 
-    bool            BeforeCreateInit();
     bool            Create();
     void            Destroy();
 
@@ -970,6 +969,7 @@ protected:
     std::map<Gfx::Texture, std::string> m_revTexNameMap;
 
     Gfx::EngineMouse     m_mice[Gfx::ENG_MOUSE_COUNT];
+    Gfx::Texture         m_miceTexture;
     Math::Point          m_mouseSize;
     Gfx::EngineMouseType m_mouseType;
     Math::Point          m_mousePos;

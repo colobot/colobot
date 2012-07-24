@@ -107,8 +107,8 @@ public:
     virtual void SetTextureEnabled(int index, bool enabled);
     virtual bool GetTextureEnabled(int index);
 
-    virtual void SetTextureParams(int index, const Gfx::TextureParams &params);
-    virtual Gfx::TextureParams GetTextureParams(int index);
+    virtual void SetTextureStageParams(int index, const Gfx::TextureStageParams &params);
+    virtual Gfx::TextureStageParams GetTextureStageParams(int index);
 
     virtual void SetTextureFactor(const Gfx::Color &color);
     virtual Gfx::Color GetTextureFactor();
@@ -153,6 +153,7 @@ public:
     virtual Gfx::FillMode GetFillMode();
 
 private:
+    //! Updates internal modelview matrix
     void UpdateModelviewMatrix();
 
 private:
@@ -181,11 +182,11 @@ private:
     //! Whether texturing is enabled in general
     bool m_texturing;
     //! Current textures; \c NULL value means unassigned
-    std::vector<Gfx::Texture> m_textures;
+    std::vector<Gfx::Texture> m_currentTextures;
     //! Current texture stages enable status
     std::vector<bool> m_texturesEnabled;
     //! Current texture params
-    std::vector<Gfx::TextureParams> m_texturesParams;
+    std::vector<Gfx::TextureStageParams> m_textureStageParams;
 
     //! Set of all created textures
     std::set<Gfx::Texture> m_allTextures;

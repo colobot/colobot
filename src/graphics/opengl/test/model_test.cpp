@@ -73,7 +73,6 @@ void LoadTexture(Gfx::CGLDevice *device, const std::string &name)
             texCreateParams.format = Gfx::TEX_IMG_BGRA;
         texCreateParams.minFilter = Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
         texCreateParams.magFilter = Gfx::TEX_MAG_FILTER_LINEAR;
-        texCreateParams.wrapT = Gfx::TEX_WRAP_CLAMP;
 
         tex = device->CreateTexture(&img, texCreateParams);
     }
@@ -138,16 +137,6 @@ void Render(Gfx::CGLDevice *device, Gfx::CModelFile *modelFile)
         device->SetTexture(1, GetTexture(triangles[i].tex2Name));
         device->SetTextureEnabled(0, true);
         device->SetTextureEnabled(1, true);
-
-        Gfx::TextureParams tex1Params;
-        tex1Params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        tex1Params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        device->SetTextureParams(0, tex1Params);
-
-        Gfx::TextureParams tex2Params;
-        tex2Params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        tex2Params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        device->SetTextureParams(1, tex2Params);
 
         device->SetMaterial(triangles[i].material);
 
