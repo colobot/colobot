@@ -62,7 +62,16 @@ struct DeviceConfig
     DeviceConfig() { LoadDefault(); }
 
     //! Loads the default values
-    void LoadDefault();
+    inline void LoadDefault()
+    {
+        width = 800;
+        height = 600;
+        bpp = 32;
+        fullScreen = false;
+        resizeable = false;
+        doubleBuf = true;
+        noFrame = false;
+    }
 };
 
 
@@ -326,10 +335,10 @@ public:
     //! Returns the current enable state of given texture stage
     virtual bool GetTextureEnabled(int index) = 0;
 
-    //! Sets the current params of texture with given index
-    virtual void SetTextureParams(int index, const Gfx::TextureParams &params) = 0;
-    //! Returns the current params of texture with given index
-    virtual Gfx::TextureParams GetTextureParams(int index) = 0;
+    //! Sets the params for texture stage with given index
+    virtual void SetTextureStageParams(int index, const Gfx::TextureStageParams &params) = 0;
+    //! Returns the current params of texture stage with given index
+    virtual Gfx::TextureStageParams GetTextureStageParams(int index) = 0;
 
     //! Sets the texture factor to the given color value
     virtual void SetTextureFactor(const Gfx::Color &color) = 0;

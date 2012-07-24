@@ -10,8 +10,13 @@
 
 void Init(Gfx::CGLDevice *device)
 {
-    device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
     device->SetShadeModel(Gfx::SHADE_SMOOTH);
+
+    device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
+    device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
+
+    device->SetTextureEnabled(0, true);
+    device->SetTextureEnabled(1, true);
 
     CImage img1;
     if (! img1.Load("tex1.png"))
@@ -31,32 +36,18 @@ void Init(Gfx::CGLDevice *device)
     tex1CreateParams.format = Gfx::TEX_IMG_RGBA;
     tex1CreateParams.minFilter = Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
     tex1CreateParams.magFilter = Gfx::TEX_MAG_FILTER_LINEAR;
-    tex1CreateParams.wrapT = Gfx::TEX_WRAP_CLAMP;
 
     Gfx::TextureCreateParams tex2CreateParams;
     tex2CreateParams.mipmap = true;
     tex2CreateParams.format = Gfx::TEX_IMG_RGBA;
     tex2CreateParams.minFilter = Gfx::TEX_MIN_FILTER_NEAREST_MIPMAP_NEAREST;
     tex2CreateParams.magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
-    tex2CreateParams.wrapS = Gfx::TEX_WRAP_CLAMP;
 
     Gfx::Texture tex1 = device->CreateTexture(&img1, tex1CreateParams);
     Gfx::Texture tex2 = device->CreateTexture(&img2, tex2CreateParams);
 
     device->SetTexture(0, tex1);
     device->SetTexture(1, tex2);
-
-    Gfx::TextureParams tex1Params;
-    tex1Params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
-    tex1Params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
-    device->SetTextureParams(0, tex1Params);
-
-    Gfx::TextureParams tex2Params;
-    tex2Params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
-    tex2Params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
-    device->SetTextureParams(1, tex2Params);
-
-    device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
 }
 
 void Render(Gfx::CGLDevice *device)
@@ -84,6 +75,16 @@ void Render(Gfx::CGLDevice *device)
         Gfx::VertexTex2(Math::Vector(-2.0f,  2.0f, 0.0f), Math::Vector(), Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f)),
     };
 
+    Gfx::TextureStageParams tex1StageParams;
+    tex1StageParams.colorOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+    tex1StageParams.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+    device->SetTextureStageParams(0, tex1StageParams);
+
+    Gfx::TextureStageParams tex2StageParams;
+    tex2StageParams.colorOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+    tex2StageParams.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+    device->SetTextureStageParams(1, tex2StageParams);
+
     Math::Matrix t;
     Math::LoadTranslationMatrix(t, Math::Vector(-4.0f, 4.0f, 0.0f));
     device->SetTransform(Gfx::TRANSFORM_VIEW, t);
@@ -101,11 +102,11 @@ void Render(Gfx::CGLDevice *device)
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, quad, 6);
 
-    device->SetTextureEnabled(0, true);
-    device->SetTextureEnabled(1, true);
-
     Math::LoadTranslationMatrix(t, Math::Vector( 0.0f, -4.0f, 0.0f));
     device->SetTransform(Gfx::TRANSFORM_VIEW, t);
+
+    device->SetTextureEnabled(0, true);
+    device->SetTextureEnabled(1, true);
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, quad, 6);
 

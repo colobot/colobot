@@ -52,13 +52,13 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_iMan->AddInstance(CLASS_ENGINE, this);
     m_app = app;
 
-    /*m_light      = new Gfx::CLight(m_iMan, this);
-    m_text       = new Gfx::CText(m_iMan, this);
-    m_particle   = new Gfx::CParticle(m_iMan, this);
-    m_water      = new Gfx::CWater(m_iMan, this);
-    m_cloud      = new Gfx::CCloud(m_iMan, this);
-    m_lightning  = new Gfx::CLightning(m_iMan, this);
-    m_planet     = new Gfx::CPlanet(m_iMan, this);*/
+    m_light      = NULL;
+    m_text       = NULL;
+    m_particle   = NULL;
+    m_water      = NULL;
+    m_cloud      = NULL;
+    m_lightning  = NULL;
+    m_planet     = NULL;
     m_sound      = NULL;
     m_terrain    = NULL;
 
@@ -185,6 +185,43 @@ Gfx::CEngine::~CEngine()
     m_app    = NULL;
     m_device = NULL;
 
+    m_sound = NULL;
+    m_terrain = NULL;
+}
+
+bool Gfx::CEngine::GetWasInit()
+{
+    return m_wasInit;
+}
+
+std::string Gfx::CEngine::GetError()
+{
+    return m_error;
+}
+
+bool Gfx::CEngine::Create()
+{
+    m_wasInit = true;
+
+    /*m_light      = new Gfx::CLight(m_iMan, this);
+    m_text       = new Gfx::CText(m_iMan, this);
+    m_particle   = new Gfx::CParticle(m_iMan, this);
+    m_water      = new Gfx::CWater(m_iMan, this);
+    m_cloud      = new Gfx::CCloud(m_iMan, this);
+    m_lightning  = new Gfx::CLightning(m_iMan, this);
+    m_planet     = new Gfx::CPlanet(m_iMan, this);*/
+
+    m_matWorldInterface.LoadIdentity();
+    m_matViewInterface.LoadIdentity();
+    Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
+
+    return true;
+}
+
+void Gfx::CEngine::Destroy()
+{
+    // TODO
+
     /*delete m_light;
     m_light = NULL;
 
@@ -205,41 +242,6 @@ Gfx::CEngine::~CEngine()
 
     delete m_planet;
     m_planet = NULL;*/
-
-    m_sound = NULL;
-    m_terrain = NULL;
-}
-
-bool Gfx::CEngine::GetWasInit()
-{
-    return m_wasInit;
-}
-
-std::string Gfx::CEngine::GetError()
-{
-    return m_error;
-}
-
-bool Gfx::CEngine::BeforeCreateInit()
-{
-    // TODO
-    return true;
-}
-
-bool Gfx::CEngine::Create()
-{
-    m_wasInit = true;
-
-    m_matWorldInterface.LoadIdentity();
-    m_matViewInterface.LoadIdentity();
-    Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
-
-    return true;
-}
-
-void Gfx::CEngine::Destroy()
-{
-    // TODO
 
     m_wasInit = false;
 }
@@ -265,7 +267,7 @@ bool Gfx::CEngine::AfterDeviceSetInit()
     params.minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
     params.magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
     params.mipmap = false;
-    CreateTexture("mouse.png", params);
+    m_miceTexture = CreateTexture("mouse.png", params);
 
     return true;
 }
@@ -360,12 +362,12 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureFactor(color);
 
-        Gfx::TextureParams params;
+        Gfx::TextureStageParams params;
         params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
         params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = Gfx::TEX_MIX_ARG_FACTOR;
         params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        m_device->SetTextureParams(0, params);
+        m_device->SetTextureStageParams(0, params);
     }
     else if (state & Gfx::ENG_RSTATE_TTEXTURE_WHITE)  // The transparent white texture?
     {
@@ -379,12 +381,12 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureFactor(color.Inverse());
 
-        Gfx::TextureParams params;
+        Gfx::TextureStageParams params;
         params.colorOperation = Gfx::TEX_MIX_OPER_ADD;
         params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = Gfx::TEX_MIX_ARG_FACTOR;
         params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
-        m_device->SetTextureParams(0, params);
+        m_device->SetTextureStageParams(0, params);
     }
     else if (state & Gfx::ENG_RSTATE_TCOLOR_BLACK)  // The transparent black color?
     {
@@ -398,7 +400,7 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
 
         m_device->SetTextureFactor(color);
         m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureParams(0, Gfx::TextureParams());
+        m_device->SetTextureStageParams(0, Gfx::TextureStageParams());
     }
     else if (state & Gfx::ENG_RSTATE_TCOLOR_WHITE)  // The transparent white color?
     {
@@ -412,7 +414,7 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
 
         m_device->SetTextureFactor(color.Inverse());
         m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureParams(0, Gfx::TextureParams());
+        m_device->SetTextureStageParams(0, Gfx::TextureStageParams());
     }
     else if (state & Gfx::ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
     {
@@ -454,7 +456,7 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
         m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
 
         m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureParams(0, Gfx::TextureParams());
+        m_device->SetTextureStageParams(0, Gfx::TextureStageParams());
 
         /*m_device->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
         m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
@@ -620,8 +622,8 @@ void Gfx::CEngine::DrawMouse()
     material.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f);
     material.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
 
-    SetMaterial(material);
-    SetTexture("mouse.png");
+    m_device->SetMaterial(material);
+    m_device->SetTexture(0, m_miceTexture);
 
     int index = static_cast<int>(m_mouseType);
 

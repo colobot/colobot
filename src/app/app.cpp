@@ -170,14 +170,6 @@ bool CApplication::Create()
     // Create the 3D engine
     m_engine = new Gfx::CEngine(m_iMan, this);
 
-    // Initialize the app's custom scene stuff, but before initializing the graphics device
-    if (! m_engine->BeforeCreateInit())
-    {
-        SystemDialog(SDT_ERROR, "COLOBOT - Error", std::string("Error in CEngine::BeforeCreateInit() :\n") +
-                                                   std::string(m_engine->GetError()) );
-        m_exitCode = 1;
-        return false;
-    }
 
 /*    // Create the sound instance.
     m_sound = new CSound(m_iMan);
