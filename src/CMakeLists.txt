@@ -46,7 +46,6 @@ common/stringutils.cpp
 graphics/common/camera.cpp
 graphics/common/cloud.cpp
 graphics/common/color.cpp
-graphics/common/device.cpp
 graphics/common/engine.cpp
 graphics/common/light.cpp
 graphics/common/lightning.cpp
