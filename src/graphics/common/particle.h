@@ -305,7 +305,7 @@ protected:
     void        DrawParticuleWheel(int i);
     CObject*    SearchObjectGun(Math::Vector old, Math::Vector pos, ParticuleType type, CObject *father);
     CObject*    SearchObjectRay(Math::Vector pos, Math::Vector goal, ParticuleType type, CObject *father);
-    void        Play(Snd::Sound sound, Math::Vector pos, float amplitude);
+    void        Play(Sound sound, Math::Vector pos, float amplitude);
     bool        TrackMove(int i, Math::Vector pos, float progress);
     void        TrackDraw(int i, ParticuleType type);
 
