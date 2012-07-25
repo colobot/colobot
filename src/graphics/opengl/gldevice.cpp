@@ -516,19 +516,19 @@ void Gfx::CGLDevice::SetTextureStageParams(int index, const Gfx::TextureStagePar
 
     if (params.colorOperation == Gfx::TEX_MIX_OPER_DEFAULT)
     {
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_RGB, GL_PREVIOUS);
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_RGB, GL_TEXTURE);
-        glTexEnvi(GL_TEXTURE_2D,  GL_COMBINE_RGB, GL_MODULATE);
         goto after_tex_color;
     }
     else if (params.colorOperation == Gfx::TEX_MIX_OPER_REPLACE)
-        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_RGB, GL_REPLACE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_REPLACE);
     else if (params.colorOperation == Gfx::TEX_MIX_OPER_MODULATE)
-        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_RGB, GL_MODULATE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_MODULATE);
     else if (params.colorOperation == Gfx::TEX_MIX_OPER_ADD)
-        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_RGB, GL_ADD);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_ADD);
     else if (params.colorOperation == Gfx::TEX_MIX_OPER_SUBTRACT)
-        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_RGB, GL_SUBTRACT);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_RGB, GL_SUBTRACT);
     else  assert(false);
 
     // Color arg1
@@ -559,19 +559,19 @@ after_tex_color:
     // Alpha operation
     if (params.alphaOperation == Gfx::TEX_MIX_OPER_DEFAULT)
     {
-        glTexEnvi(GL_TEXTURE_2D,  GL_COMBINE_ALPHA, GL_MODULATE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE0_ALPHA, GL_PREVIOUS);
         glTexEnvi(GL_TEXTURE_ENV, GL_SOURCE1_ALPHA, GL_TEXTURE);
         goto after_tex_operations;
     }
     else if (params.colorOperation == Gfx::TEX_MIX_OPER_REPLACE)
-        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_ALPHA, GL_REPLACE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_REPLACE);
     else if (params.alphaOperation == Gfx::TEX_MIX_OPER_MODULATE)
-        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_ALPHA, GL_MODULATE);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_MODULATE);
     else if (params.alphaOperation == Gfx::TEX_MIX_OPER_ADD)
-        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_ALPHA, GL_ADD);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_ADD);
     else if (params.alphaOperation == Gfx::TEX_MIX_OPER_SUBTRACT)
-        glTexEnvi(GL_TEXTURE_2D, GL_COMBINE_ALPHA, GL_SUBTRACT);
+        glTexEnvi(GL_TEXTURE_ENV, GL_COMBINE_ALPHA, GL_SUBTRACT);
     else  assert(false);
 
     // Alpha arg1

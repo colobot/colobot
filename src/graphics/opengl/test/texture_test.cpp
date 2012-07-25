@@ -108,6 +108,16 @@ void Render(Gfx::CGLDevice *device)
     device->SetTextureEnabled(0, true);
     device->SetTextureEnabled(1, true);
 
+    tex1StageParams.colorOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+    tex1StageParams.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+    device->SetTextureStageParams(0, tex1StageParams);
+
+    tex2StageParams.colorOperation = Gfx::TEX_MIX_OPER_ADD;
+    tex2StageParams.colorArg1 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
+    tex2StageParams.colorArg2 = Gfx::TEX_MIX_ARG_TEXTURE;
+    tex2StageParams.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT;
+    device->SetTextureStageParams(1, tex2StageParams);
+
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, quad, 6);
 
     device->EndScene();
