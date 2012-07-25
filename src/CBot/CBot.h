@@ -32,7 +32,7 @@
 
 
 // fix for MSVC instruction __asm int 3 (setting a trap)
-#ifdef __MINGW32__
+#if defined(__MINGW32__) || defined(__GNUC__)
 #define ASM_TRAP()    asm("int $3");
 #else
 #define ASM_TRAP()    __asm int 3;

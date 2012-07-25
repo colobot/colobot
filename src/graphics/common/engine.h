@@ -481,7 +481,7 @@ public:
     void            SetLightMode(bool present);
     bool            RetLightMode();
 
-    void            SetEditIndentMode(bool auto);
+    void            SetEditIndentMode(bool indentAuto);
     bool            RetEditIndentMode();
 
     void            SetEditIndentValue(int value);
