@@ -30,7 +30,6 @@ configure_file(../../../common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common
 
 set(TEXTURE_SOURCES
 ../gldevice.cpp
-../../common/device.cpp
 ../../../common/logger.cpp
 ../../../common/image.cpp
 texture_test.cpp
@@ -38,7 +37,6 @@ texture_test.cpp
 
 set(MODEL_SOURCES
 ../gldevice.cpp
-../../common/device.cpp
 ../../common/modelfile.cpp
 ../../../common/logger.cpp
 ../../../common/image.cpp
@@ -50,7 +48,6 @@ model_test.cpp
 
 set(TRANSFORM_SOURCES
 ../gldevice.cpp
-../../common/device.cpp
 ../../../common/logger.cpp
 ../../../common/image.cpp
 ../../../common/iman.cpp
