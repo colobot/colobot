@@ -95,19 +95,19 @@ static int	ListOp[] =
 	0,
 };
 
-BOOL IsInList( int val, int* list, int& typemasque )
+bool IsInList( int val, int* list, int& typemasque )
 {
-	while (TRUE)
+	while (true)
 	{
-		if ( *list == 0 ) return FALSE;
+		if ( *list == 0 ) return false;
 		typemasque = *list++;
-		if ( *list++ == val ) return TRUE;
+		if ( *list++ == val ) return true;
 	}
 }
 
-BOOL TypeOk( int type, int test )
+bool TypeOk( int type, int test )
 {
-	while (TRUE)
+	while (true)
 	{
 		if ( type == 0 ) return (test & 1);
 		type--; test /= 2;
@@ -279,43 +279,43 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 }
 
 
-BOOL IsNan(CBotVar* left, CBotVar* right, int* err = NULL)
+bool IsNan(CBotVar* left, CBotVar* right, int* err = NULL)
 {
 	if ( left ->GivInit() > IS_DEF || right->GivInit() > IS_DEF )
 	{
 		if ( err != NULL ) *err = TX_OPNAN ;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 
 // fait l'opération sur 2 opérandes
 
-BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
+bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
 {
 	CBotStack* pStk1 = pStack->AddStack(this);	// ajoute un élément à la pile
 												// ou le retrouve en cas de reprise
-//	if ( pStk1 == EOX ) return TRUE;
+//	if ( pStk1 == EOX ) return true;
 
 	// selon la reprise, on peut être dans l'un des 2 états
 
 	if ( pStk1->GivState() == 0 )					// 1er état, évalue l'opérande de gauche
 	{
-		if (!m_leftop->Execute(pStk1) ) return FALSE;	// interrompu ici ?
+		if (!m_leftop->Execute(pStk1) ) return false;	// interrompu ici ?
 
 		// pour les OU et ET logique, n'évalue pas la seconde expression si pas nécessaire
-		if ( (GivTokenType() == ID_LOG_AND || GivTokenType() == ID_TXT_AND ) && pStk1->GivVal() == FALSE )
+		if ( (GivTokenType() == ID_LOG_AND || GivTokenType() == ID_TXT_AND ) && pStk1->GivVal() == false )
 		{
 			CBotVar*	res = CBotVar::Create( (CBotToken*)NULL, CBotTypBoolean);
-			res->SetValInt(FALSE);
+			res->SetValInt(false);
 			pStk1->SetVar(res);
 			return pStack->Return(pStk1);				// transmet le résultat
 		}
-		if ( (GivTokenType() == ID_LOG_OR||GivTokenType() == ID_TXT_OR) && pStk1->GivVal() == TRUE )
+		if ( (GivTokenType() == ID_LOG_OR||GivTokenType() == ID_TXT_OR) && pStk1->GivVal() == true )
 		{
 			CBotVar*	res = CBotVar::Create( (CBotToken*)NULL, CBotTypBoolean);
-			res->SetValInt(TRUE);
+			res->SetValInt(true);
 			pStk1->SetVar(res);
 			return pStack->Return(pStk1);				// transmet le résultat
 		}
@@ -334,7 +334,7 @@ BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 	// 2e état, évalue l'opérande de droite
 	if ( pStk2->GivState() == 0 )
 	{
-		if ( !m_rightop->Execute(pStk2) ) return FALSE;		// interrompu ici ?
+		if ( !m_rightop->Execute(pStk2) ) return false;		// interrompu ici ?
 		pStk2->IncState();
 	}
 
@@ -342,7 +342,7 @@ BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 	CBotTypResult		type2 = pStk2->GivTypResult();
 
 	CBotStack* pStk3 = pStk2->AddStack(this);				// ajoute un élément à la pile
-	if ( pStk3->IfStep() ) return FALSE;					// montre l'opération si step by step
+	if ( pStk3->IfStep() ) return false;					// montre l'opération si step by step
 
 	// crée une variable temporaire pour y mettre le résultat
 	// quel est le type du résultat ?
@@ -475,7 +475,7 @@ BOOL CBotTwoOpExpr::Execute(CBotStack* &pStack)
 	return pStack->Return(pStk2);				// transmet le résultat
 }
 
-void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, BOOL bMain)
+void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
 {
 	if ( !bMain ) return;
 	CBotStack* pStk1 = pStack->RestoreStack(this);	// ajoute un élément à la pile
@@ -501,31 +501,31 @@ void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, BOOL bMain)
 }
 
 
-BOOL CBotLogicExpr::Execute(CBotStack* &pStack)
+bool CBotLogicExpr::Execute(CBotStack* &pStack)
 {
 	CBotStack* pStk1 = pStack->AddStack(this);	// ajoute un élément à la pile
 												// ou le retrouve en cas de reprise
-//	if ( pStk1 == EOX ) return TRUE;
+//	if ( pStk1 == EOX ) return true;
 
 	if ( pStk1->GivState() == 0 )
 	{
-		if ( !m_condition->Execute(pStk1) ) return FALSE;
-		if (!pStk1->SetState(1)) return FALSE;
+		if ( !m_condition->Execute(pStk1) ) return false;
+		if (!pStk1->SetState(1)) return false;
 	}
 
-	if ( pStk1->GivVal() == TRUE )
+	if ( pStk1->GivVal() == true )
 	{
-		if ( !m_op1->Execute(pStk1) ) return FALSE;
+		if ( !m_op1->Execute(pStk1) ) return false;
 	}
 	else
 	{
-		if ( !m_op2->Execute(pStk1) ) return FALSE;
+		if ( !m_op2->Execute(pStk1) ) return false;
 	}
 
 	return pStack->Return(pStk1);					// transmet le résultat
 }
 
-void CBotLogicExpr::RestoreState(CBotStack* &pStack, BOOL bMain)
+void CBotLogicExpr::RestoreState(CBotStack* &pStack, bool bMain)
 {
 	if ( !bMain ) return;
 
@@ -538,7 +538,7 @@ void CBotLogicExpr::RestoreState(CBotStack* &pStack, BOOL bMain)
 		return;
 	}
 
-	if ( pStk1->GivVal() == TRUE )
+	if ( pStk1->GivVal() == true )
 	{
 		m_op1->RestoreState(pStk1, bMain);
 	}
@@ -557,7 +557,7 @@ void t()
 #endif
 
 #if 01
-void t(BOOL t)
+void t(bool t)
 {
 	int	 x;
 	x = 1 + t ? 1 : 3 + 4 * 2 ;
