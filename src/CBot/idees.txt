@@ -1,39 +1,41 @@
-pour la gestion des instances d'une classe.
 
-l'objet créé actuellement avec CBotVar::Create(nom, pClasse)
-est a conserver tel quel, en dehors des vars sur la pile
+for managing instances of a class.
 
-il faut un autre type de variable pour garder les pointeurs
-CBotTypPtClass par exemple
+the object being created with CBotVar :: Create (name, pClasse)
+    is to keep as is, outside the vars on the stack
 
-L'instance de la classe doit avoir un compteur d'utilisation
-qui est le nombre d'objet de classe CBotTypPtClass qui y réfèrent.
-Le compteur est décrémenté lorsque le pointeur est détruit,
-l'objet supprimé lorsqu'il n'y a plus de pointeurs.
+    we need another type of variable to keep the pointers
+    For example CBotTypPtClass
+
+    The instance of the class must have a usage count
+    which is the number of class object to which they refer CBotTypPtClass.
+    The counter is decremented when the pointer is destroyed,
+    be deleted when there is more pointers.
 
 
-Dans le cas des robots, Daniel crée une instance de sa classe "Object"
-et peut retourner des pointeurs à cette instance par des routines genre FindRobot()
+    In the case of robots, Daniel creates an instance of class "Object"
+    and can return pointers to this proceeding by routines such FindRobot ()
 
-Object FindRobot(int n) { }
+    Object FindRobot (int n) {}
 
-pResult dans ce cas est un pointeur CBotTypPtClass
-lorsqu'il a trouvé le robot concerné, il lui faudra faire
+    pResult in this case is a pointer CBotTypPtClass
+    when he found the robot concerned, it must make
 
-pResult->SetPointeur(InstanceDeLaClassObject);
+    pResult-> SetPointeur (InstanceDeLaClassObject);
 
-cette opération incrémente le compteur des références
+    this operation increments the reference
 
---
+    -
 
-lorsque le robot est détruit, l'instance de la classe Object correspondant
-est détruit également.
-s'il reste des pointeurs à cet objet, et l'on risque la planté
+    when the robot is destroyed, the instance of the Object class corresponding
+    is also destroyed.
+    if there are pointers to that object, and we planted the risk
 
-solution 1:
-	garder non pas le pointeur à l'objet directement, mais
-	un index dans une tables de pointeurs
+    Solution 1:
+    not keep the pointer to the object directly, but
+    an index into a table of pointers
 
-solution 2:
-	ne pas détruire l'objet imédiatement lorsqu'il reste des pointeurs
-	mais le marqué comme virtuellement détruit
+    Solution 2:
+    not destroy the object when there imédiatement pointers
+    but marked as virtually destroyed
+

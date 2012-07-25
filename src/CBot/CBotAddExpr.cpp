@@ -93,7 +93,7 @@ CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
 
 // fait l'opération d'addition ou de soustraction
 
-BOOL CBotAddExpr::Execute(CBotStack* &pStack)
+bool CBotAddExpr::Execute(CBotStack* &pStack)
 {
 	CBotStack* pStk1 = pStack->AddStack(this);	// ajoute un élément à la pile
 												// ou le retrouve en cas de reprise
