@@ -155,6 +155,8 @@ public:
 private:
     //! Updates internal modelview matrix
     void UpdateModelviewMatrix();
+    //! Updates position for given light based on transformation matrices
+    void UpdateLightPosition(int index);
 
 private:
     //! Was initialized?
@@ -174,6 +176,8 @@ private:
     //! The current material
     Gfx::Material m_material;
 
+    //! Whether lighting is enabled
+    bool m_lighting;
     //! Current lights
     std::vector<Gfx::Light> m_lights;
     //! Current lights enable status

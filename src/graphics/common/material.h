@@ -19,6 +19,9 @@
 #pragma once
 
 
+#include "graphics/common/color.h"
+
+
 namespace Gfx {
 
 /**
