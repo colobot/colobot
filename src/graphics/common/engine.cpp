@@ -52,7 +52,7 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_iMan->AddInstance(CLASS_ENGINE, this);
     m_app = app;
 
-    m_light      = NULL;
+    m_lightMan      = NULL;
     m_text       = NULL;
     m_particle   = NULL;
     m_water      = NULL;
@@ -203,7 +203,7 @@ bool Gfx::CEngine::Create()
 {
     m_wasInit = true;
 
-    /*m_light      = new Gfx::CLight(m_iMan, this);
+    /*m_lightMan      = new Gfx::CLight(m_iMan, this);
     m_text       = new Gfx::CText(m_iMan, this);
     m_particle   = new Gfx::CParticle(m_iMan, this);
     m_water      = new Gfx::CWater(m_iMan, this);
@@ -222,8 +222,8 @@ void Gfx::CEngine::Destroy()
 {
     // TODO
 
-    /*delete m_light;
-    m_light = NULL;
+    /*delete m_lightMan;
+    m_lightMan = NULL;
 
     delete m_text;
     m_text = NULL;
@@ -676,6 +676,21 @@ void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
 
     m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
+}
+
+bool Gfx::CEngine::GetPause()
+{
+    return m_pause;
+}
+
+Math::Vector Gfx::CEngine::GetLookatPt()
+{
+    return m_lookatPt;
+}
+
+Math::Vector Gfx::CEngine::GetEyePt()
+{
+    return m_eyePt;
 }
 
 void Gfx::CEngine::SetMouseVisible(bool visible)

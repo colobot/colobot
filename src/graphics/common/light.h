@@ -27,8 +27,9 @@
 
 namespace Gfx {
 
-/** \enum LightType
- *  \brief Type of light */
+/**
+  \enum LightType
+  \brief Type of light in 3D scene */
 enum LightType
 {
     LIGHT_POINT,
@@ -37,11 +38,10 @@ enum LightType
 };
 
 /**
- * \struct Light
- * \brief Light
- *
- * This structure was created as analog to DirectX's D3DLIGHT.
- */
+  \struct Light
+  \brief Properties of light in 3D scene
+
+  This structure was created as analog to DirectX's D3DLIGHT. */
 struct Light
 {
     //! Type of light source
@@ -90,99 +90,152 @@ struct Light
 };
 
 /**
- * \struct LightProgression
- * \brief Describes the progression of light parameters change
- *
- * TODO documentation
- */
+  \struct LightProgression
+  \brief Describes the progression of light parameters change */
 struct LightProgression
 {
+    //! Starting value
     float   starting;
+    //! Ending (destination) value
     float   ending;
+    //! Current value
     float   current;
+    //! Progress from start to end
     float   progress;
+    //! Speed of progression
     float   speed;
 
     LightProgression()
     {
         starting = ending = current = progress = speed = 0.0f;
     }
+
+    //! Initializes the progression
+    void Init(float value);
+
+    //! Updates the progression
+    void Update(float rTime);
+
+    //! Sets the new end value (starting is set to current)
+    void SetTarget(float value);
 };
 
 /**
- * \struct DynamicLight
- * \brief Dynamic light in 3D scene
- *
- * TODO documentation
- */
+  \struct DynamicLight
+  \brief Dynamic light in 3D scene
+
+  It is an extension over standard light properties. Added are dynamic progressions for light
+  colors and intensity and types of objects included/excluded in lighting. */
 struct DynamicLight
 {
-    //! true -> light exists
+    //! Whether the light is used
     bool used;
-    //! true -> light turned on
+    //! Whether the light is turned on
     bool enabled;
-
-    //! Type of all objects included
-    Gfx::EngineObjectType includeType;
-    //! Type of all objects excluded
-    Gfx::EngineObjectType excludeType;
 
     //! Configuration of the light
     Gfx::Light light;
 
-    //! intensity (0 .. 1)
+    //! Progression of intensity [0, 1]
     Gfx::LightProgression intensity;
+    //! Progression of red diffuse color
     Gfx::LightProgression colorRed;
+    //! Progression of green diffuse color
     Gfx::LightProgression colorGreen;
+    //! Progression of blue diffuse color
     Gfx::LightProgression colorBlue;
+
+    //! Type of objects included in lighting with this light; if Gfx::ENG_OBJTYPE_NULL is used, it is ignored
+    Gfx::EngineObjectType includeType;
+    //! Type of objects excluded from lighting with this light; if Gfx::ENG_OBJTYPE_NULL is used, it is ignored
+    Gfx::EngineObjectType excludeType;
+
+    DynamicLight();
 };
 
 /**
-  \class CLight
+  \class CLightManager
   \brief Manager for dynamic lights in 3D scene
+
+  (Old CLight class)
+
+  The class is responsible for managing dynamic lights (struct Gfx::DynamicLight) used in 3D scene.
+  The dynamic lights are created, updated and deleted through the class' interface.
+
+  Number of available lights depends on graphics device used. Class allocates vector
+  for the total number of lights, but only some are used.
   */
-class CLight
+class CLightManager
 {
 public:
-    CLight(CInstanceManager *iMan, Gfx::CEngine* engine);
-    virtual ~CLight();
+    //! Constructor
+    CLightManager(CInstanceManager *iMan, Gfx::CEngine* engine);
+    //! Destructor
+    virtual ~CLightManager();
 
+    //! Sets the device to be used
     void            SetDevice(Gfx::CDevice* device);
 
-    void            FlushLight();
+    //! Clears and disables all lights
+    void            FlushLights();
+    //! Creates a new dynamic light and returns its index (lightRank)
     int             CreateLight();
+    //! Deletes and disables the given dynamic light
     bool            DeleteLight(int lightRank);
+    //! Sets the light parameters for dynamic light
     bool            SetLight(int lightRank, const Gfx::Light &light);
+    //! Returns the light parameters for given dynamic light
     bool            GetLight(int lightRank, Gfx::Light &light);
-    bool            LightEnable(int lightRank, bool enable);
+    //! Enables/disables the given dynamic light
+    bool            SetLightEnabled(int lightRank, bool enable);
 
+    //! Sets what objects are included in given dynamic light
     bool            SetLightIncludeType(int lightRank, Gfx::EngineObjectType type);
+    //! Sets what objects are excluded from given dynamic light
     bool            SetLightExcludeType(int lightRank, Gfx::EngineObjectType type);
 
+    //! Sets the position of dynamic light
     bool            SetLightPos(int lightRank, const Math::Vector &pos);
+    //! Returns the position of dynamic light
     Math::Vector    GetLightPos(int lightRank);
 
+    //! Sets the direction of dynamic light
     bool            SetLightDir(int lightRank, const Math::Vector &dir);
+    //! Returns the direction of dynamic light
     Math::Vector    GetLightDir(int lightRank);
 
-    bool            SetLightIntensitySpeed(int lightRank, float speed);
+    //! Sets the destination intensity for dynamic light's intensity progression
     bool            SetLightIntensity(int lightRank, float value);
+    //! Returns the current light intensity
     float           GetLightIntensity(int lightRank);
+    //! Sets the rate of change for dynamic light intensity
+    bool            SetLightIntensitySpeed(int lightRank, float speed);
+
+    //! Adjusts the color of all dynamic lights
     void            AdaptLightColor(const Gfx::Color &color, float factor);
 
-    bool            SetLightColorSpeed(int lightRank, float speed);
+    //! Sets the destination color for dynamic light's color progression
     bool            SetLightColor(int lightRank, const Gfx::Color &color);
+    //! Returns current light color
     Gfx::Color      GetLightColor(int lightRank);
+    //! Sets the rate of change for dynamic light colors (RGB)
+    bool            SetLightColorSpeed(int lightRank, float speed);
 
-    void            FrameLight(float rTime);
-    void            LightUpdate();
-    void            LightUpdate(Gfx::EngineObjectType type);
+    //! Updates progression of dynamic lights
+    void            UpdateProgression(float rTime);
+    //! Updates (recalculates) all dynamic lights
+    void            UpdateLights();
+    //! Enables or disables dynamic lights affecting the given object type
+    void            UpdateLightsEnableState(Gfx::EngineObjectType type);
 
 protected:
     CInstanceManager* m_iMan;
     CEngine*          m_engine;
     CDevice*          m_device;
+
+    //! Current time
     float             m_time;
+    //! List of dynamic lights
     std::vector<Gfx::DynamicLight> m_dynLights;
 };
 

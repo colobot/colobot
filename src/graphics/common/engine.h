@@ -45,7 +45,7 @@ class CSound;
 namespace Gfx {
 
 class CDevice;
-class CLight;
+class CLightManager;
 class CText;
 class CParticle;
 class CWater;
@@ -843,18 +843,18 @@ protected:
     void        UpdateGeometry();
 
 protected:
-    CInstanceManager* m_iMan;
-    CApplication*    m_app;
-    CSound*          m_sound;
-    Gfx::CDevice*    m_device;
-    Gfx::CText*      m_text;
-    Gfx::CLight*     m_light;
-    Gfx::CParticle*  m_particle;
-    Gfx::CWater*     m_water;
-    Gfx::CCloud*     m_cloud;
-    Gfx::CLightning* m_lightning;
-    Gfx::CPlanet*    m_planet;
-    Gfx::CTerrain*   m_terrain;
+    CInstanceManager*   m_iMan;
+    CApplication*       m_app;
+    CSound*             m_sound;
+    Gfx::CDevice*       m_device;
+    Gfx::CText*         m_text;
+    Gfx::CLightManager* m_lightMan;
+    Gfx::CParticle*     m_particle;
+    Gfx::CWater*        m_water;
+    Gfx::CCloud*        m_cloud;
+    Gfx::CLightning*    m_lightning;
+    Gfx::CPlanet*       m_planet;
+    Gfx::CTerrain*      m_terrain;
 
     bool            m_wasInit;
     std::string     m_error;
