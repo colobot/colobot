@@ -41,8 +41,6 @@ enum LightType
  * \brief Light
  *
  * This structure was created as analog to DirectX's D3DLIGHT.
- *
- * It contains analogous fields as the D3DLIGHT struct.
  */
 struct Light
 {
@@ -54,29 +52,40 @@ struct Light
     Gfx::Color      diffuse;
     //! Color of specular light
     Gfx::Color      specular;
-    //! Position in world space
+    //! Position in world space (for point & spot lights)
     Math::Vector    position;
-    //! Direction in world space
+    //! Direction in world space (for directional & spot lights)
     Math::Vector    direction;
-    //! Cutoff range
-    float           range;
-    //! Falloff
-    float           falloff;
-    //! Inner angle of spotlight cone
-    float           theta;
-    //! Outer angle of spotlight cone
-    float           phi;
-    //! Constant attenuation
+    //! Constant attenuation factor
     float           attenuation0;
-    //! Linear attenuation
+    //! Linear attenuation factor
     float           attenuation1;
-    //! Quadratic attenuation
+    //! Quadratic attenuation factor
     float           attenuation2;
+    //! Angle of spotlight cone (0-90 degrees)
+    float           spotAngle;
+    //! Intensity of spotlight (0 = uniform; 128 = most intense)
+    float           spotIntensity;
 
+    //! Constructor; calls LoadDefault()
     Light()
     {
+        LoadDefault();
+    }
+
+    //! Loads default values
+    void LoadDefault()
+    {
         type = LIGHT_POINT;
-        range = falloff = theta = phi = attenuation0 = attenuation1 = attenuation2 = 0.0f;
+        ambient = Gfx::Color(0.4f, 0.4f, 0.4f);
+        diffuse = Gfx::Color(0.8f, 0.8f, 0.8f);
+        specular = Gfx::Color(1.0f, 1.0f, 1.0f);
+        position = Math::Vector(0.0f, 0.0f, 0.0f);
+        direction = Math::Vector(0.0f, 0.0f, 1.0f);
+        attenuation0 = 1.0f;
+        attenuation1 = attenuation2 = 0.0f;
+        spotAngle = 90.0f;
+        spotIntensity = 0.0f;
     }
 };
 
@@ -101,12 +110,12 @@ struct LightProgression
 };
 
 /**
- * \struct SceneLight
+ * \struct DynamicLight
  * \brief Dynamic light in 3D scene
  *
  * TODO documentation
  */
-struct SceneLight
+struct DynamicLight
 {
     //! true -> light exists
     bool used;
@@ -128,6 +137,53 @@ struct SceneLight
     Gfx::LightProgression colorBlue;
 };
 
-// TODO CLight
+/**
+  \class CLight
+  \brief Manager for dynamic lights in 3D scene
+  */
+class CLight
+{
+public:
+    CLight(CInstanceManager *iMan, Gfx::CEngine* engine);
+    virtual ~CLight();
+
+    void            SetDevice(Gfx::CDevice* device);
+
+    void            FlushLight();
+    int             CreateLight();
+    bool            DeleteLight(int lightRank);
+    bool            SetLight(int lightRank, const Gfx::Light &light);
+    bool            GetLight(int lightRank, Gfx::Light &light);
+    bool            LightEnable(int lightRank, bool enable);
+
+    bool            SetLightIncludeType(int lightRank, Gfx::EngineObjectType type);
+    bool            SetLightExcludeType(int lightRank, Gfx::EngineObjectType type);
+
+    bool            SetLightPos(int lightRank, const Math::Vector &pos);
+    Math::Vector    GetLightPos(int lightRank);
+
+    bool            SetLightDir(int lightRank, const Math::Vector &dir);
+    Math::Vector    GetLightDir(int lightRank);
+
+    bool            SetLightIntensitySpeed(int lightRank, float speed);
+    bool            SetLightIntensity(int lightRank, float value);
+    float           GetLightIntensity(int lightRank);
+    void            AdaptLightColor(const Gfx::Color &color, float factor);
+
+    bool            SetLightColorSpeed(int lightRank, float speed);
+    bool            SetLightColor(int lightRank, const Gfx::Color &color);
+    Gfx::Color      GetLightColor(int lightRank);
+
+    void            FrameLight(float rTime);
+    void            LightUpdate();
+    void            LightUpdate(Gfx::EngineObjectType type);
+
+protected:
+    CInstanceManager* m_iMan;
+    CEngine*          m_engine;
+    CDevice*          m_device;
+    float             m_time;
+    std::vector<Gfx::DynamicLight> m_dynLights;
+};
 
 }; // namespace Gfx

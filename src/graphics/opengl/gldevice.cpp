@@ -52,6 +52,7 @@ void Gfx::GLDeviceConfig::LoadDefault()
 Gfx::CGLDevice::CGLDevice()
 {
     m_wasInit = false;
+    m_lighting = false;
     m_texturing = false;
 }
 
@@ -86,6 +87,9 @@ bool Gfx::CGLDevice::Create()
     // To use separate specular color in drawing primitives
     glLightModeli(GL_LIGHT_MODEL_COLOR_CONTROL, GL_SEPARATE_SPECULAR_COLOR);
 
+    // To avoid problems with scaling & lighting
+    glEnable(GL_RESCALE_NORMAL);
+
     // Set just to be sure
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glMatrixMode(GL_PROJECTION);
@@ -100,9 +104,9 @@ bool Gfx::CGLDevice::Create()
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextures);
 
-    m_currentTextures         = std::vector<Gfx::Texture>      (maxTextures, Gfx::Texture());
-    m_texturesEnabled  = std::vector<bool>              (maxTextures, false);
-    m_textureStageParams   = std::vector<Gfx::TextureStageParams>(maxTextures, Gfx::TextureStageParams());
+    m_currentTextures    = std::vector<Gfx::Texture>           (maxTextures, Gfx::Texture());
+    m_texturesEnabled    = std::vector<bool>                   (maxTextures, false);
+    m_textureStageParams = std::vector<Gfx::TextureStageParams>(maxTextures, Gfx::TextureStageParams());
 
     return true;
 }
@@ -213,15 +217,21 @@ void Gfx::CGLDevice::UpdateModelviewMatrix()
     glLoadIdentity();
     glScalef(1.0f, 1.0f, -1.0f);
     glMultMatrixf(m_modelviewMat.Array());
+
+    if (m_lighting)
+    {
+        for (int index = 0; index < (int)m_lights.size(); ++index)
+            UpdateLightPosition(index);
+    }
 }
 
 void Gfx::CGLDevice::SetMaterial(const Gfx::Material &material)
 {
     m_material = material;
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT,  m_material.ambient.Array());
-    glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE,  m_material.diffuse.Array());
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, m_material.specular.Array());
+    glMaterialfv(GL_FRONT, GL_AMBIENT,  m_material.ambient.Array());
+    glMaterialfv(GL_FRONT, GL_DIFFUSE,  m_material.diffuse.Array());
+    glMaterialfv(GL_FRONT, GL_SPECULAR, m_material.specular.Array());
 }
 
 const Gfx::Material& Gfx::CGLDevice::GetMaterial()
@@ -246,23 +256,56 @@ void Gfx::CGLDevice::SetLight(int index, const Gfx::Light &light)
     glLightfv(GL_LIGHT0 + index, GL_DIFFUSE,  const_cast<GLfloat*>(light.diffuse.Array()));
     glLightfv(GL_LIGHT0 + index, GL_SPECULAR, const_cast<GLfloat*>(light.specular.Array()));
 
-    GLfloat position[4] = { light.position.x, light.position.y, light.position.z, 0.0f };
-    if (light.type == LIGHT_DIRECTIONAL)
-        position[3] = 0.0f;
-    else
-        position[3] = 1.0f;
-    glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
-
-    GLfloat direction[4] = { light.direction.x, light.direction.y, light.direction.z, 0.0f };
-    glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
-
-    glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.range);
-
-    // TODO: falloff?, phi?, theta?
-
     glLightf(GL_LIGHT0 + index, GL_CONSTANT_ATTENUATION,  light.attenuation0);
     glLightf(GL_LIGHT0 + index, GL_LINEAR_ATTENUATION,    light.attenuation1);
     glLightf(GL_LIGHT0 + index, GL_QUADRATIC_ATTENUATION, light.attenuation2);
+
+    if (light.type == Gfx::LIGHT_SPOT)
+    {
+        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, light.spotAngle);
+        glLightf(GL_LIGHT0 + index, GL_SPOT_EXPONENT, light.spotIntensity);
+    }
+    else
+    {
+        glLightf(GL_LIGHT0 + index, GL_SPOT_CUTOFF, 180.0f);
+    }
+
+    UpdateLightPosition(index);
+}
+
+void Gfx::CGLDevice::UpdateLightPosition(int index)
+{
+    assert(index >= 0);
+    assert(index < (int)m_lights.size());
+
+    if ((! m_lighting) || (! m_lightsEnabled[index]))
+        return;
+
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+
+    glLoadIdentity();
+    glScalef(1.0f, 1.0f, -1.0f);
+    glMultMatrixf(m_viewMat.Array());
+
+    if (m_lights[index].type == LIGHT_DIRECTIONAL)
+    {
+        GLfloat position[4] = { m_lights[index].direction.x, m_lights[index].direction.y, m_lights[index].direction.z, 0.0f };
+        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+    }
+    else
+    {
+        GLfloat position[4] = { m_lights[index].position.x, m_lights[index].position.y, m_lights[index].position.z, 1.0f };
+        glLightfv(GL_LIGHT0 + index, GL_POSITION, position);
+    }
+
+    if (m_lights[index].type == Gfx::LIGHT_SPOT)
+    {
+        GLfloat direction[4] = { m_lights[index].direction.x, m_lights[index].direction.y, m_lights[index].direction.z, 0.0f };
+        glLightfv(GL_LIGHT0 + index, GL_SPOT_DIRECTION, direction);
+    }
+
+    glPopMatrix();
 }
 
 const Gfx::Light& Gfx::CGLDevice::GetLight(int index)
@@ -803,12 +846,29 @@ int Gfx::CGLDevice::ComputeSphereVisibility(const Math::Vector &center, float ra
 
 void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
 {
-    if (state == RENDER_STATE_DEPTH_WRITE)
+    if (state == Gfx::RENDER_STATE_DEPTH_WRITE)
     {
         glDepthMask(enabled ? GL_TRUE : GL_FALSE);
         return;
     }
-    else if (state == RENDER_STATE_TEXTURING)
+    else if (state == Gfx::RENDER_STATE_LIGHTING)
+    {
+        m_lighting = enabled;
+
+        if (enabled)
+            glEnable(GL_LIGHTING);
+        else
+            glDisable(GL_LIGHTING);
+
+        if (enabled)
+        {
+            for (int index = 0; index < (int)m_lights.size(); ++index)
+                UpdateLightPosition(index);
+        }
+
+        return;
+    }
+    else if (state == Gfx::RENDER_STATE_TEXTURING)
     {
         m_texturing = enabled;
 
@@ -829,7 +889,6 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
 
     switch (state)
     {
-        case Gfx::RENDER_STATE_LIGHTING:    flag = GL_LIGHTING; break;
         case Gfx::RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
         case Gfx::RENDER_STATE_FOG:         flag = GL_FOG; break;
         case Gfx::RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;
@@ -847,7 +906,10 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
 
 bool Gfx::CGLDevice::GetRenderState(Gfx::RenderState state)
 {
-    if (state == RENDER_STATE_TEXTURING)
+    if (state == Gfx::RENDER_STATE_LIGHTING)
+        return m_lighting;
+
+    if (state == Gfx::RENDER_STATE_TEXTURING)
         return m_texturing;
 
     GLenum flag = 0;
@@ -855,7 +917,6 @@ bool Gfx::CGLDevice::GetRenderState(Gfx::RenderState state)
     switch (state)
     {
         case Gfx::RENDER_STATE_DEPTH_WRITE: flag = GL_DEPTH_WRITEMASK; break;
-        case Gfx::RENDER_STATE_LIGHTING:    flag = GL_DEPTH_WRITEMASK; break;
         case Gfx::RENDER_STATE_BLENDING:    flag = GL_BLEND; break;
         case Gfx::RENDER_STATE_FOG:         flag = GL_FOG; break;
         case Gfx::RENDER_STATE_DEPTH_TEST:  flag = GL_DEPTH_TEST; break;

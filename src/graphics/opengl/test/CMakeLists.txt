@@ -55,6 +55,15 @@ set(TRANSFORM_SOURCES
 transform_test.cpp
 )
 
+set(LIGHT_SOURCES
+../gldevice.cpp
+../../../common/logger.cpp
+../../../common/image.cpp
+../../../common/iman.cpp
+../../../app/system.cpp
+light_test.cpp
+)
+
 include_directories(../../../ ${CMAKE_CURRENT_BINARY_DIR})
 
 set(LIBS
@@ -73,3 +82,6 @@ target_link_libraries(model_test ${LIBS})
 
 add_executable(transform_test ${TRANSFORM_SOURCES})
 target_link_libraries(transform_test ${LIBS})
+
+add_executable(light_test ${LIGHT_SOURCES})
+target_link_libraries(light_test ${LIBS})
