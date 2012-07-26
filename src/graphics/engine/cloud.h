@@ -20,7 +20,7 @@
 #pragma once
 
 #include "common/event.h"
-#include "graphics/common/color.h"
+#include "graphics/core/color.h"
 #include "math/point.h"
 #include "math/vector.h"
 

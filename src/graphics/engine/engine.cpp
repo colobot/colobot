@@ -17,14 +17,14 @@
 
 // engine.cpp
 
-#include "graphics/common/engine.h"
+#include "graphics/engine/engine.h"
 
 #include "app/app.h"
 #include "common/iman.h"
 #include "common/image.h"
 #include "common/key.h"
 #include "common/logger.h"
-#include "graphics/common/device.h"
+#include "graphics/core/device.h"
 #include "math/geometry.h"
 
 // Initial size of various vectors

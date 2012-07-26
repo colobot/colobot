@@ -22,8 +22,8 @@
 
 #include "common/misc.h"
 #include "common/singleton.h"
-#include "graphics/common/device.h"
-#include "graphics/common/engine.h"
+#include "graphics/core/device.h"
+#include "graphics/engine/engine.h"
 
 #include <string>
 #include <vector>

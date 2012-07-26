@@ -15,9 +15,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// terrain.cpp
+// cloud.cpp
 
-#include "graphics/common/terrain.h"
+#include "graphics/engine/cloud.h"
 
 
 // TODO implementation

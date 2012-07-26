@@ -2,7 +2,7 @@
 #include "common/logger.h"
 #include "common/image.h"
 #include "common/iman.h"
-#include "graphics/common/modelfile.h"
+#include "graphics/engine/modelfile.h"
 #include "graphics/opengl/gldevice.h"
 #include "math/geometry.h"
 

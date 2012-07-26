@@ -16,7 +16,7 @@
 
 // color.cpp
 
-#include "graphics/common/color.h"
+#include "graphics/core/color.h"
 
 #include "math/func.h"
 

@@ -19,7 +19,7 @@
 #pragma once
 
 
-#include "graphics/common/device.h"
+#include "graphics/core/device.h"
 
 #include <string>
 #include <vector>

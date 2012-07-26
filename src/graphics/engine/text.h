@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include "graphics/common/engine.h"
-#include "graphics/common/device.h"
+#include "graphics/engine/engine.h"
+#include "graphics/core/device.h"
 #include "math/point.h"
 
 

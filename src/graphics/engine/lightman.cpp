@@ -17,10 +17,10 @@
 
 // light.cpp
 
-#include "graphics/common/light.h"
+#include "graphics/engine/lightman.h"
 
 #include "common/iman.h"
-#include "graphics/common/device.h"
+#include "graphics/core/device.h"
 #include "math/geometry.h"
 
 #include <cmath>
