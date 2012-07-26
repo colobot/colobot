@@ -37,7 +37,7 @@ texture_test.cpp
 
 set(MODEL_SOURCES
 ../gldevice.cpp
-../../common/modelfile.cpp
+../../engine/modelfile.cpp
 ../../../common/logger.cpp
 ../../../common/image.cpp
 ../../../common/iman.cpp

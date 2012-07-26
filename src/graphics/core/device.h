@@ -20,11 +20,11 @@
 #pragma once
 
 
-#include "graphics/common/color.h"
-#include "graphics/common/light.h"
-#include "graphics/common/material.h"
-#include "graphics/common/texture.h"
-#include "graphics/common/vertex.h"
+#include "graphics/core/color.h"
+#include "graphics/core/light.h"
+#include "graphics/core/material.h"
+#include "graphics/core/texture.h"
+#include "graphics/core/vertex.h"
 #include "math/matrix.h"
 
 #include <string>

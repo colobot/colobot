@@ -15,9 +15,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// planet.cpp
+// lightning.cpp (aka blitz.cpp)
 
-#include "graphics/common/planet.h"
+#include "graphics/engine/lightning.h"
 
 
 // TODO implementation

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "graphics/common/engine.h"
+#include "graphics/engine/engine.h"
 
 
 class CInstanceManager;

@@ -15,9 +15,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// lightning.cpp (aka blitz.cpp)
+// camera.cpp
 
-#include "graphics/common/lightning.h"
+#include "graphics/engine/camera.h"
 
 
 // TODO implementation

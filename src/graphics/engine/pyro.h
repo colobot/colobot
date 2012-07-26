@@ -20,7 +20,7 @@
 #pragma once
 
 #include "common/misc.h"
-#include "graphics/common/engine.h"
+#include "graphics/engine/engine.h"
 //#include "object/object.h"
 // TEMPORARILY!
 enum ObjectType {};

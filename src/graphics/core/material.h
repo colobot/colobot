@@ -1,5 +1,4 @@
 // * This file is part of the COLOBOT source code
-// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
 // * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -15,9 +14,34 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// particle.cpp (aka particule.cpp)
+// material.h
 
-#include "graphics/common/particle.h"
+#pragma once
 
 
-// TODO implementation
+#include "graphics/core/color.h"
+
+
+namespace Gfx {
+
+/**
+ * \struct Material
+ * \brief Material of a surface
+ *
+ * This structure was created as analog to DirectX's D3DMATERIAL.
+ *
+ * It contains values of 3 material colors: diffuse, ambient and specular.
+ * In D3DMATERIAL there are other fields, but they are not used
+ * by the graphics engine.
+ */
+struct Material
+{
+    //! Diffuse color
+    Gfx::Color diffuse;
+    //! Ambient color
+    Gfx::Color ambient;
+    //! Specular color
+    Gfx::Color specular;
+};
+
+}; // namespace Gfx

@@ -17,9 +17,9 @@
 
 // modelfile.h (aka modfile.h)
 
-#include "graphics/common/engine.h"
-#include "graphics/common/vertex.h"
-#include "graphics/common/material.h"
+#include "graphics/engine/engine.h"
+#include "graphics/core/vertex.h"
+#include "graphics/core/material.h"
 #include "math/vector.h"
 
 #include <string>

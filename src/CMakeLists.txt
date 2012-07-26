@@ -43,19 +43,19 @@ common/iman.cpp
 # common/profile.cpp
 # common/restext.cpp
 common/stringutils.cpp
-graphics/common/camera.cpp
-graphics/common/cloud.cpp
-graphics/common/color.cpp
-graphics/common/engine.cpp
-graphics/common/light.cpp
-graphics/common/lightning.cpp
-graphics/common/modelfile.cpp
-graphics/common/particle.cpp
-graphics/common/planet.cpp
-graphics/common/pyro.cpp
-graphics/common/terrain.cpp
-graphics/common/text.cpp
-graphics/common/water.cpp
+graphics/core/color.cpp
+graphics/engine/camera.cpp
+graphics/engine/cloud.cpp
+graphics/engine/engine.cpp
+graphics/engine/lightman.cpp
+graphics/engine/lightning.cpp
+graphics/engine/modelfile.cpp
+graphics/engine/particle.cpp
+graphics/engine/planet.cpp
+graphics/engine/pyro.cpp
+graphics/engine/terrain.cpp
+graphics/engine/text.cpp
+graphics/engine/water.cpp
 graphics/opengl/gldevice.cpp
 # object/auto/auto.cpp
 # object/auto/autobase.cpp

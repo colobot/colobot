@@ -19,7 +19,7 @@
 #pragma once
 
 
-#include "graphics/common/color.h"
+#include "graphics/core/color.h"
 #include "math/vector.h"
 #include "math/point.h"
 

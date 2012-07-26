@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include "graphics/common/engine.h"
-#include "graphics/common/particle.h"
+#include "graphics/engine/engine.h"
+#include "graphics/engine/particle.h"
 #include "common/event.h"
 
 

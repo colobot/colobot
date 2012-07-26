@@ -15,9 +15,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pyro.cpp
+// particle.cpp (aka particule.cpp)
 
-#include "graphics/common/pyro.h"
+#include "graphics/engine/particle.h"
 
 
 // TODO implementation
