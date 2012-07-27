@@ -37,22 +37,28 @@ Doxygen documentation of Colobot project
 The source code released by Epitec was sparsely documented. This documentation, written from scratch,
 will aim to describe the various components of the code.
 
-Currently, the only documented classes are the ones written from scratch or the old ones rewritten to match the new code.
+Currently, the only documented classes are the ones written from scratch or the old ones rewritten
+to match the new code.
 In time, the documentation will be extended to cover every major part of the code.
 
 \section Structure Code structure
 
-The source code was split from the original all-in-one directory to subdirectories, each containing one major part of the project.
-The current layout is this:
+The source code was split from the original all-in-one directory to subdirectories,
+each containing one major part of the project.
+The current layout is the following:
  - src/CBot - separate library with CBot language
- - src/app - class CApplication and everything concerned with SDL plus other system-dependent code such as displaying a message box, finding files, etc.
+ - src/app - class CApplication and everything concerned with SDL plus other system-dependent
+   code such as displaying a message box, finding files, etc.
  - src/common - shared structs, enums, defines, etc.; should not have any external dependencies
- - src/graphics/common - interface of graphics engine (CEngine) and device (CDevice), without concrete implementation, shared structs such as Vertex, Material, etc., “effects” classes: CCamera, CLight, CParticle that will use the graphics engine interface
- - src/graphics/opengl - concrete implementation of CEngine and CDevice classes in OpenGL: CGLEngine and CGLDevice
+ - src/graphics/core - abstract interface of graphics device (abstract CDevice class)
+   (split from old src/graphics/common)
+ - src/graphics/engine - main graphics engine based on abstract graphics device; is composed
+   of CEngine class and associated classes implementing the 3D engine (split from old src/graphics/common)
+ - src/graphics/opengl - concrete implementation of CDevice class in OpenGL: CGLDevice
  - src/graphics/d3d - in (far) future - perhaps a newer implementation in DirectX (9? 10?)
  - src/math - mathematical structures and functions
- - src/object - non-graphical game engine, that is robots, buildings, etc.; dependent only on interface of graphics engine, not on concrete implementation
- - src/ui - 2D user interface (menu, buttons, check boxes, etc.); also without dependencies to concrete implementation of graphics engine
+ - src/object - non-graphical game engine, that is robots, buildings, etc.
+ - src/ui - 2D user interface (menu, buttons, check boxes, etc.)
  - src/sound - sound and music engine written using fmod library
  - src/physics - physics engine
  - src/script - link with the CBot library
