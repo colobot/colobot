@@ -83,7 +83,7 @@ CBotInstr* CBotCompExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
 // fait l'opération
 
-BOOL CBotCompExpr::Execute(CBotStack* &pStack)
+bool CBotCompExpr::Execute(CBotStack* &pStack)
 {
 	CBotStack* pStk1 = pStack->AddStack(this);
 //	if ( pStk1 == EOX ) return TRUE;
