@@ -28,6 +28,9 @@
 
 #include <plugins/plugin.h>
 
+#include <string>
+
+
 /*!
  * Maximum possible audio volume
  */

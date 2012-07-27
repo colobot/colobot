@@ -1,5 +1,5 @@
 # CBot shared library is built separately
-# add_subdirectory(CBot) -- not yet WinAPI-independent
+add_subdirectory(CBot) 
 
 
 # Configure options
@@ -29,6 +29,7 @@ configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h
 
 # Source files
 # Commented out files are still dependent on DirectX or WinAPI
+
 set(SOURCES
 app/app.cpp
 app/main.cpp
@@ -155,8 +156,8 @@ ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${OPENGL_LIBRARY}
 ${PNG_LIBRARIES}
-#CBot  -- not yet WinAPI-independent
 ${PLATFORM_LIBS}
+CBot
 )
 
 include_directories(. ${CMAKE_CURRENT_BINARY_DIR}
