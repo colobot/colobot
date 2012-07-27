@@ -1,77 +1,88 @@
+EN
+
 How to...
 
-1. Compile the game with MinGW.
+1. Compile the game.
 
-  1. Download and install DirectX 8.1 SDK. It can be difficult to find it now as it is old SDK, but here is a working dowload link:
-     http://dl.dropbox.com/u/32866936/dx81sdk_full.exe
-  2. Download and install MinGW and MSYS:
+ 1.1 Windows:
+
+  1. Download and install MinGW and MSYS:
       http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20111118/
      When installing, select all available components.
-  3. Download and install CMake:
+  2. Download and install CMake:
       http://www.cmake.org/cmake/resources/software.html (the Windows zip file)
      Unpack the contents of the archive to where MinGW is installed (files from bin/ should go into bin/, etc.)
-  4. In the file src/CMakeLists.txt, change "set(DXSDK_DIR "c:/dxsdk") to the directory, where you have DirectX SDK
-     (the slashes must be in this form: /, not \).
-  5. Run MinGW console from the shortcut in menu start.
-  6. Change to the directory where you have the Colobot sources by typing "cd /c/where/the/sources/are"
-  7. Type "cmake -G 'MSYS Makefiles' ."
-  8. Type "make"
-  9. Everything should compile without errors.
+  3. Download the following libraries, installing them in your MinGW directory like with CMake:
+     SDL, SDL_imgage, SDL_ttf, libpng
+  4. Run MinGW console from the shortcut in menu start.
+  5. Change to the directory where you have the Colobot sources by typing "cd /c/where/the/sources/are"
+  6. Type "cmake -G 'MSYS Makefiles' ."
+  7. Type "make"
+  8. Everything should compile without errors.
+
+  Note: you might experience some troubles with OpenGL headers, as Windows (used to?) ship with outdated header files.
+  Download the newest ones from SDK of your graphics card vendor.
+
+ 1.2 Linux:
+
+  Since you're running Linux, you probably know how to do this anyway ;)
+  But just in case, here's what you need:
+    gcc compiler (with gcc-g++), cmake, libraries with header files: SDL, SDL_image, SDL_ttf, libpng
+  Instructions are the same:
+    $ cmake .
+    $ make
+
+ 1.3 Other platforms, compilers, etc.
+
+   We haven't checked other platforms yet but the code isn't particularly tied to any compiler or platform, so in theory it should work.
+   If you can, please try to compile the code on your platform and let us know how it goes.
 
 2. Run the compiled game.
 
-  1. Download and unpack the package with the game data files.
-  2. Copy the compiled files from bin/colobot.exe, bin/CBot/libCBot.dll
-     and from the directory, where MinGW is installed bin/libgcc_s_dw2-1.dll and bin/libstdc++-6.dll
-     to the directory with game data (there should be several files named colobot*.dat).
-  3. Create a shortcut to the colobot.exe executable and add to the executed command " -nocd" option.
-  4. Run the shortcut and enjoy the game.
-
-3. But it's in French! How to change the language?
-
-  1. In the source code, find language.h file and change the line #define FRENCH TRUE to #define FRENCH FALSE and do the reverse
-     on on the language of your choice (English, German or Polish).
-  2. Recompile the game and copy bin/colobot.exe.
-  3. In the directory with game data switch the directories scene, script and help with those from the directory of given language
-    (e.g. english/).
-  4. Run the game.
+  1. Download development data package - make sure you get the latest version as the files will be changed/moved around.
+     Currently the files are hosted at: http://colobot.info/files  (packages are named colobot-data-YYYY-MM-DD.zip)
+  2. Unpack the data package to any place you want.
+  3. Run the game with commandline option "-datadir where_you_put_the_data_dir" and enjoy the game.
 
 
 PL
 
 Jak...
 
-1. Skompilować projekt pod MinGW.
+1. Skompilować grę.
 
-  1. Ściągamy i instalujemy DirectX SDK w wersji 8.1. Może być problem ze znalezieniem linka bo to już stary SDK, ale można ściągnąć stąd:
-     http://dl.dropbox.com/u/32866936/dx81sdk_full.exe
-  2. Ściągamy i instalujemy MinGW i MSYS:
+ 1.1 Windows:
+
+  1. Ściągamy i instalujemy MinGW i MSYS:
      http://sourceforge.net/projects/mingw/files/Installer/mingw-get-inst/mingw-get-inst-20111118/
      Przy instalacji zaznaczamy wszystkie komponenty do instalacji.
-  3. Ściągamy i instalujemy CMake:
+  2. Ściągamy i instalujemy CMake:
      http://www.cmake.org/cmake/resources/software.html (plik zip dla Windowsa)
      Zip rozpakowujemy do katalogu, gdzie zainstalowany jest MinGW (pliki z bin/ mają trafić do bin/ itd.).
-  4. W pliku src/CMakeLists.txt zmieniamy set(DXSDK_DIR "c:/dxsdk") na katalog, gdzie jest zainstalowany DirectX SDK (w wersji 8.1)
-     (slashe mają być właśnie w takiej postaci: / a nie \).
-  5. Uruchamiamy MinGW console ze skrótu w menu start.
-  6. Przechodzimy do katalogu, gdzie są źródła wpisując "cd /c/tam/gdzie/sa/zrodla"
-  7. Wpisujemy "cmake -G 'MSYS Makefiles' ."
-  8. Wpisujemy "make"
-  9. Wszystko powinno się skomplikować bez błędów.
+  3. Ścągamy następujące biblioteki i instalujemy je tam, gdzie MinGW, podobnie jak z CMake:
+     SDL, SDL_image, SDL_ttf, libpng
+  4. Uruchamiamy MinGW console ze skrótu w menu start.
+  5. Przechodzimy do katalogu, gdzie są źródła wpisując "cd /c/tam/gdzie/sa/zrodla"
+  6. Wpisujemy "cmake -G 'MSYS Makefiles' ."
+  7. Wpisujemy "make"
+  8. Wszystko powinno się skomplikować bez błędów.
+
+ 1.2 Linux:
+
+  Skoro już masz Linuksa, to prawdpobodobnie wiesz co robić ;)
+  Ale na wszelki wypadek, potrzebujesz tego:
+    kompilator gcc (razem z gcc-g++), cmake, biblioteki wraz z nagłówkami: SDL, SDL_image, SDL_ttf, libpng
+  Polecenia są takie same:
+    $ cmake .
+    $ make
+
+ 1.3 Inne platformy, kompilatory, etc.
+
+   Nie sprawdzaliśmy jeszcze innych platform, ale kod nie jest jakoś specjalnie związany z danym kompilatorem czy platformą, więc w teorii powinien zadziałać.
+   Jeśli możesz, spróbuj skompilować kod na twojej platformie i daj nam znać jak poszło.
 
 2. Uruchomić skompilowaną grę.
 
-  1. Ściągamy paczkę z plikami danych gry.
-  2. Kopiujemy skompilowane pliki bin/colobot.exe, bin/CBot/libCBot.dll
-     i z katalogu, gdzie jest zainstalowany MinGW bin/libgcc_s_dw2-1.dll i bin/libstdc++-6.dll
-     do katalogu z plikami danych (powinno być tam kilka plików colobot*.dat).
-  3. Tworzymy skrót do colobot.exe, przy czym w wywoływanej komendzie dopisujemy na końcu opcję " -nocd".
-  4. Odpalamy skrót i cieszymy się grą.
-
-3. Ale gra jest po francusku! Jak zmienić język?
-
-  1. W kodzie źródłowym znajdujemy plik language.h i zmieniamy  #define FRENCH TRUE na #define FRENCH FALSE i robimy odwrotnie
-     dla wybranego języka (angielski, niemiecki lub polski).
-  2. Kompilujemy od nowa grę i kopiujemy bin/colobot.exe.
-  3. W katalogu z plikami danych podmieniamy katalogi scene, script i help z tymi z katalogu danego języka (np. english/).
-  4. Odpalamy grę.
+  1. Ściągamy paczkę developerską z plikami danych gry - upewnij się, że jest to najnowsza wersja, bo pliki będą zmieniane/przenoszone.
+  2. Wypakowujemy pliki gdziekolwiek.
+  3. Uruchamiamy grę wraz z opcją "-datadir tam_gdzie_rozpakowałeś_paczkę" i cieszymy się grą.
