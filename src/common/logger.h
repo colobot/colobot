@@ -49,7 +49,7 @@ enum LogType
 *
 * @brief Class for loggin information to file or console
 *
-*/ 
+*/
 class CLogger : public CSingleton<CLogger>
 {
     public:
