@@ -16,9 +16,19 @@
 
 // gldevice.cpp
 
-#include "common/image.h"
 #include "graphics/opengl/gldevice.h"
+
+#include "common/config.h"
+#include "common/image.h"
 #include "math/geometry.h"
+
+
+#if defined(USE_GLEW)
+
+// When using GLEW, only glew.h is needed
+#include <GL/glew.h>
+
+#else
 
 // Should define prototypes of used extensions as OpenGL functions
 #define GL_GLEXT_PROTOTYPES
@@ -27,9 +37,11 @@
 #include <GL/glu.h>
 #include <GL/glext.h>
 
+#endif // if defined(GLEW)
+
 #include <SDL/SDL.h>
 
-#include <assert.h>
+#include <cassert>
 
 
 
@@ -73,9 +85,23 @@ std::string Gfx::CGLDevice::GetError()
 
 bool Gfx::CGLDevice::Create()
 {
-    /* NOTE: extension testing is not done here as the assumed version of OpenGL to be used (1.4+)
-      must already have the required extensions. The used extensions are listed here for reference:
-        GL_ARB_multitexture, GL_EXT_texture_env_combine, GL_EXT_secondary_color */
+#if defined(USE_GLEW)
+    if (glewInit() != GLEW_OK)
+    {
+        m_error = "GLEW initialization failed";
+        return false;
+    }
+
+    if ( (! GLEW_ARB_multitexture) || (! GLEW_EXT_texture_env_combine) || (! GLEW_EXT_secondary_color) )
+    {
+        m_error = "GLEW reports required extensions not supported";
+        return false;
+    }
+
+#endif
+
+    /* NOTE: when not using GLEW, extension testing is not performed, as it is assumed that
+             glext.h is up-to-date and the OpenGL shared library has the required functions present. */
 
     m_wasInit = true;
 

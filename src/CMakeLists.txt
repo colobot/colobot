@@ -11,17 +11,39 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(PLATFORM_WINDOWS 1)
   set(PLATFORM_LINUX   0)
   set(PLATFORM_OTHER   0)
+  # On Windows, GLEW is required
+  if (${USE_GLEW} MATCHES "auto")
+    set(USE_GLEW 1)
+  endif()
 elseif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(PLATFORM_WINDOWS 0)
   set(PLATFORM_LINUX   1)
   set(PLATFORM_OTHER   0)
+  # On Linux, we should be fine without GLEW
+  if (${USE_GLEW} MATCHES "auto")
+    set(USE_GLEW 0)
+  endif()
   # for clock_gettime
   set(PLATFORM_LIBS "-lrt")
 else()
   set(PLATFORM_WINDOWS 0)
   set(PLATFORM_LINUX   0)
   set(PLATFORM_OTHER   1)
+  # Use GLEW to be safe
+  if (${USE_GLEW} MATCHES "auto")
+    set(USE_GLEW 1)
+  endif()
 endif()
+
+set(OPTIONAL_LIBS "")
+set(OPTIONAL_INCLUDE_DIRS "")
+
+if(${USE_GLEW} EQUAL 1)
+  find_package(GLEW REQUIRED)
+  set(OPTIONAL_LIBS ${OPTIONAL_LIBS} ${GLEW_LIBRARY})
+  set(OPTIONAL_INCLUDE_DIRS ${OPTIONAL_INCLUDE_DIRS} ${GLEW_INCLUDE_PATH})
+endif()
+
 
 # Configure file
 configure_file(common/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/common/config.h)
@@ -156,6 +178,7 @@ ${SDL_LIBRARY}
 ${SDLIMAGE_LIBRARY}
 ${OPENGL_LIBRARY}
 ${PNG_LIBRARIES}
+${OPTIONAL_LIBS}
 ${PLATFORM_LIBS}
 CBot
 )
@@ -165,6 +188,7 @@ ${SDL_INCLUDE_DIR}
 ${SDL_IMAGE_INCLUDE_DIR}
 ${SDLTTF_INCLUDE_DIR}
 ${PNG_INCLUDE_DIRS}
+${OPTIONAL_INCLUDE_DIRS}
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)
