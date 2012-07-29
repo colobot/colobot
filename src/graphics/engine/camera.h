@@ -29,210 +29,322 @@ class CObject;
 namespace Gfx {
 
 
+/**
+  \enum CameraType
+  \brief Type of camera */
 enum CameraType
 {
-    CAMERA_NULL     = 0,    // camera undefined
-    CAMERA_FREE     = 1,    // camera free (never in principle)
-    CAMERA_EDIT     = 2,    // camera while editing a program
-    CAMERA_ONBOARD  = 3,    // camera on board a robot
-    CAMERA_BACK     = 4,    // camera behind a robot
-    CAMERA_FIX      = 5,    // static camera following robot
-    CAMERA_EXPLO    = 6,    // camera steady after explosion
-    CAMERA_SCRIPT   = 7,    // camera during a film script
-    CAMERA_INFO     = 8,    // camera for displaying information
-    CAMERA_VISIT    = 9,    // visit instead of an error
-    CAMERA_DIALOG   = 10,   // camera for dialogue
-    CAMERA_PLANE    = 11,   // static camera height
+    //! Undefined
+    CAM_TYPE_NULL     = 0,
+    //! Free camera (? never in principle ?)
+    CAM_TYPE_FREE     = 1,
+    //! Camera while editing a program
+    CAM_TYPE_EDIT     = 2,
+    //! Camera on board a robot
+    CAM_TYPE_ONBOARD  = 3,
+    //! Camera behind a robot
+    CAM_TYPE_BACK     = 4,
+    //! Static camera following robot
+    CAM_TYPE_FIX      = 5,
+    //! Camera steady after explosion
+    CAM_TYPE_EXPLO    = 6,
+    //! Camera during a film script
+    CAM_TYPE_SCRIPT   = 7,
+    //! Camera for displaying information
+    CAM_TYPE_INFO     = 8,
+    //! Visit instead of an error
+    CAM_TYPE_VISIT    = 9,
+    //! Camera for dialog
+    CAM_TYPE_DIALOG   = 10,
+    //! Static camera height
+    CAM_TYPE_PLANE    = 11,
 };
 
 enum CameraSmooth
 {
-    CS_NONE         = 0,    // sharp
-    CS_NORM         = 1,    // normal
-    CS_HARD         = 2,    // hard
-    CS_SPEC         = 3,    // special
+    //! Sharp
+    CAM_SMOOTH_NONE         = 0,
+    //! Normal
+    CAM_SMOOTH_NORM         = 1,
+    //! Hard
+    CAM_SMOOTH_HARD         = 2,
+    //! Special
+    CAM_SMOOTH_SPEC         = 3,
 };
 
 enum CenteringPhase
 {
-    CP_NULL         = 0,
-    CP_START        = 1,
-    CP_WAIT         = 2,
-    CP_STOP         = 3,
+    CAM_PHASE_NULL         = 0,
+    CAM_PHASE_START        = 1,
+    CAM_PHASE_WAIT         = 2,
+    CAM_PHASE_STOP         = 3,
 };
 
 enum CameraEffect
 {
-    CE_NULL         = 0,    // no effect
-    CE_TERRAFORM    = 1,    // digging in
-    CE_CRASH        = 2,    // Vehicle driving is severely
-    CE_EXPLO        = 3,    // explosion
-    CE_SHOT         = 4,    // not mortal shot
-    CE_VIBRATION    = 5,    // vibration during construction
-    CE_PET          = 6,    // spleen reactor
+    //! No effect
+    CAM_EFFECT_NULL         = 0,
+    //! Digging in
+    CAM_EFFECT_TERRAFORM    = 1,
+    //! ? Vehicle driving is severely ?
+    CAM_EFFECT_CRASH        = 2,
+    //! Explosion
+    CAM_EFFECT_EXPLO        = 3,
+    //! ? Not mortal shot ?
+    CAM_EFFECT_SHOT         = 4,
+    //! Vibration during construction
+    CAM_EFFECT_VIBRATION    = 5,
+    //! ? Spleen reactor ?
+    CAM_EFFECT_PET          = 6,
 };
 
-enum OverEffect
+enum CameraOverEffect
 {
-    OE_NULL         = 0,    // no effect
-    OE_BLOOD        = 1,    // flash red
-    OE_FADEINw      = 2,    // white -> nothing
-    OE_FADEOUTw     = 3,    // nothing -> white
-    OE_FADEOUTb     = 4,    // nothing -> blue
-    OE_BLITZ        = 5,    // lightning
+    //! No effect
+    CAM_OVER_EFFECT_NULL           = 0,
+    //! Flash red
+    CAM_OVER_EFFECT_BLOOD          = 1,
+    //! White -> nothing
+    CAM_OVER_EFFECT_FADEIN_WHITE   = 2,
+    //! Nothing -> white
+    CAM_OVER_EFFECT_FADEOUT_WHITE  = 3,
+    //! Nothing -> blue
+    CAM_OVER_EFFECT_FADEOUT_BLACK  = 4,
+    //! Lightning
+    CAM_OVER_EFFECT_LIGHTNING      = 5,
 };
 
 
+/**
+  \class CCamera
+  \brief Camera moving in 3D scene
 
+  ... */
 class CCamera {
 
     public:
     CCamera(CInstanceManager* iMan);
     ~CCamera();
 
+    //! Management of an event
     bool        EventProcess(const Event &event);
 
+    //! Initializes the camera
     void        Init(Math::Vector eye, Math::Vector lookat, float delay);
 
+    //! Sets the object controlling the camera
     void        SetObject(CObject* object);
-    CObject*    RetObject();
+    CObject*    GetObject();
 
-    void        SetType(CameraType type);
-    CameraType  RetType();
+    //! Change the type of camera
+    void            SetType(Gfx::CameraType type);
+    Gfx::CameraType GetType();
 
-    void        SetSmooth(CameraSmooth type);
-    CameraSmooth RetSmoth();
+    //! Management of the smoothing mode
+    void              SetSmooth(CameraSmooth type);
+    Gfx::CameraSmooth GetSmoth();
 
+    //! Management of the setback distance
     void        SetDist(float dist);
-    float       RetDist();
+    float       GetDist();
 
+    //! Manage angle mode Gfx::CAM_TYPE_FIX
     void        SetFixDirection(float angle);
-    float       RetFixDirection();
+    float       GetFixDirection();
 
+    //! Managing the triggering mode of the camera panning
     void        SetRemotePan(float value);
-    float       RetRemotePan();
+    float       GetRemotePan();
 
+    //! Management of the remote zoom (0 .. 1) of the camera
     void        SetRemoteZoom(float value);
-    float       RetRemoteZoom();
+    float       GetRemoteZoom();
 
+    //! Start with a tour round the camera
     void        StartVisit(Math::Vector goal, float dist);
+    //! Circular end of a visit with the camera
     void        StopVisit();
 
-    void        RetCamera(Math::Vector &eye, Math::Vector &lookat);
+    //! Returns the point of view of the camera
+    void        GetCamera(Math::Vector &eye, Math::Vector &lookat);
 
+    //! Specifies a special movement of camera to frame action
     bool        StartCentering(CObject *object, float angleH, float angleV, float dist, float time);
+    //! Ends a special movement of camera to frame action
     bool        StopCentering(CObject *object, float time);
+    //! Stop framing special in the current position
     void        AbortCentering();
 
+    //! Removes the special effect with the camera
     void        FlushEffect();
-    void        StartEffect(CameraEffect effect, Math::Vector pos, float force);
+    //! Starts a special effect with the camera
+    void        StartEffect(Gfx::CameraEffect effect, Math::Vector pos, float force);
 
+    //! Removes the effect of superposition in the foreground
     void        FlushOver();
+    //! Specifies the base color
     void        SetOverBaseColor(Gfx::Color color);
-    void        StartOver(OverEffect effect, Math::Vector pos, float force);
+    void        StartOver(Gfx::CameraOverEffect effect, Math::Vector pos, float force);
 
+    //! Sets the soft movement of the camera
     void        FixCamera();
     void        SetScriptEye(Math::Vector eye);
     void        SetScriptLookat(Math::Vector lookat);
 
-    void        SetEffect(bool bEnable);
-    void        SetCameraScroll(bool bScroll);
-    void        SetCameraInvertX(bool bInvert);
-    void        SetCameraInvertY(bool bInvert);
+    void        SetEffect(bool enable);
+    void        SetCameraScroll(bool scroll);
+    void        SetCameraInvertX(bool invert);
+    void        SetCameraInvertY(bool invert);
 
-    float       RetMotorTurn();
-    Gfx::EngineMouseType  RetMouseDef(Math::Point pos);
+    //! Returns an additional force to turn
+    float       GetMotorTurn();
+    //! Returns the default sprite to use for the mouse
+    Gfx::EngineMouseType GetMouseDef(Math::Point pos);
 
 protected:
+    //! Changes the camera according to the mouse moved
     bool        EventMouseMove(const Event &event);
+    //! Mouse wheel operation
     void        EventMouseWheel(int dir);
+    //! Changes the camera according to the time elapsed
     bool        EventFrame(const Event &event);
+    //! Moves the point of view
     bool        EventFrameFree(const Event &event);
+    //! Moves the point of view
     bool        EventFrameEdit(const Event &event);
+    //! Moves the point of view
     bool        EventFrameDialog(const Event &event);
+    //! Moves the point of view
     bool        EventFrameBack(const Event &event);
+    //! Moves the point of view
     bool        EventFrameFix(const Event &event);
+    //! Moves the point of view
     bool        EventFrameExplo(const Event &event);
+    //! Moves the point of view
     bool        EventFrameOnBoard(const Event &event);
+    //! Moves the point of view
     bool        EventFrameInfo(const Event &event);
+    //! Moves the point of view
     bool        EventFrameVisit(const Event &event);
+    //! Moves the point of view
     bool        EventFrameScript(const Event &event);
 
+    //! Specifies the location and direction of view to the 3D engine
     void        SetViewTime(const Math::Vector &vEyePt, const Math::Vector &vLookatPt, float rTime);
+    //! Avoid the obstacles
     bool        IsCollision(Math::Vector &eye, Math::Vector lookat);
+    //! Avoid the obstacles
     bool        IsCollisionBack(Math::Vector &eye, Math::Vector lookat);
+    //! Avoid the obstacles
     bool        IsCollisionFix(Math::Vector &eye, Math::Vector lookat);
 
-    Math::Vector    ExcludeTerrain(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
-    Math::Vector    ExcludeObject(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
+    //! Adjusts the camera not to enter the ground
+    Math::Vector ExcludeTerrain(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
+    //! Adjusts the camera not to enter an object
+    Math::Vector ExcludeObject(Math::Vector eye, Math::Vector lookat, float &angleH, float &angleV);
 
+    //! Specifies the location and direction of view
     void        SetViewParams(const Math::Vector &eye, const Math::Vector &lookat, const Math::Vector &up);
+    //! Advances the effect of the camera
     void        EffectFrame(const Event &event);
+    //! Advanced overlay effect in the foreground
     void        OverFrame(const Event &event);
 
 protected:
     CInstanceManager* m_iMan;
-    Gfx::CEngine*   m_engine;
-    CTerrain*   m_terrain;
-    CWater*     m_water;
+    Gfx::CEngine*     m_engine;
+    Gfx::CTerrain*    m_terrain;
+    Gfx::CWater*      m_water;
 
-    CameraType  m_type;         // the type of camera (CAMERA *)
-    CameraSmooth    m_smooth;       // type of smoothing
-    CObject*    m_cameraObj;        // object linked to the camera
+    //! The type of camera
+    Gfx::CameraType   m_type;
+    //! Type of smoothing
+    Gfx::CameraSmooth m_smooth;
+    //! Object linked to the camera
+    CObject*          m_cameraObj;
 
-    float       m_eyeDistance;      // distance between the eyes
-    float       m_initDelay;        // time of initial centering
+    //! Distance between the eyes
+    float       m_eyeDistance;
+    //! Time of initial centering
+    float       m_initDelay;
 
-    Math::Vector    m_actualEye;        // current eye
-    Math::Vector    m_actualLookat;     // aim current
-    Math::Vector    m_finalEye;     // final eye
-    Math::Vector    m_finalLookat;      // aim final
-    Math::Vector    m_normEye;      // normal eye
-    Math::Vector    m_normLookat;       // aim normal
+    //! Current eye
+    Math::Vector    m_actualEye;
+    //! Current aim
+    Math::Vector    m_actualLookat;
+    //! Final eye
+    Math::Vector    m_finalEye;
+    //! Final aim
+    Math::Vector    m_finalLookat;
+    //! Normal eye
+    Math::Vector    m_normEye;
+    //! Normal aim
+    Math::Vector    m_normLookat;
+
     float       m_focus;
 
-    bool        m_bRightDown;
+    bool            m_rightDown;
     Math::Point     m_rightPosInit;
     Math::Point     m_rightPosCenter;
     Math::Point     m_rightPosMove;
 
-    Math::Vector    m_eyePt;        // CAMERA_FREE: eye
-    float       m_directionH;       // CAMERA_FREE: horizontal direction
-    float       m_directionV;       // CAMERA_FREE: vertical direction
-    float       m_heightEye;        // CAMERA_FREE: height above the ground
-    float       m_heightLookat;     // CAMERA_FREE: height above the ground
-    float       m_speed;        // CAMERA_FREE: speed of movement
+    //! CAM_TYPE_FREE: eye
+    Math::Vector    m_eyePt;
+    //! CAM_TYPE_FREE: horizontal direction
+    float       m_directionH;
+    //! CAM_TYPE_FREE: vertical direction
+    float       m_directionV;
+    //! CAM_TYPE_FREE: height above the ground
+    float       m_heightEye;
+    //! CAM_TYPE_FREE: height above the ground
+    float       m_heightLookat;
+    //! CAM_TYPE_FREE: speed of movement
+    float       m_speed;
 
-    float       m_backDist;     // CAMERA_BACK: distance
-    float       m_backMin;      // CAMERA_BACK: distance minimal
-    float       m_addDirectionH;    // CAMERA_BACK: additional direction
-    float       m_addDirectionV;    // CAMERA_BACK: additional direction
-    bool        m_bTransparency;
+    //! CAM_TYPE_BACK: distance
+    float       m_backDist;
+    //! CAM_TYPE_BACK: distance minimal
+    float       m_backMin;
+    //! CAM_TYPE_BACK: additional direction
+    float       m_addDirectionH;
+    //! CAM_TYPE_BACK: additional direction
+    float       m_addDirectionV;
+    bool        m_transparency;
 
-    float       m_fixDist;      // CAMERA_FIX: distance
-    float       m_fixDirectionH;    // CAMERA_FIX: direction
-    float       m_fixDirectionV;    // CAMERA_FIX: direction
+    //! CAM_TYPE_FIX: distance
+    float       m_fixDist;
+    //! CAM_TYPE_FIX: direction
+    float       m_fixDirectionH;
+    //! CAM_TYPE_FIX: direction
+    float       m_fixDirectionV;
 
-    Math::Vector    m_visitGoal;        // CAMERA_VISIT: target position
-    float       m_visitDist;        // CAMERA_VISIT: distance
-    float       m_visitTime;        // CAMERA_VISIT: relative time
-    CameraType  m_visitType;        // CAMERA_VISIT: initial type
-    float       m_visitDirectionH;  // CAMERA_VISIT: direction
-    float       m_visitDirectionV;  // CAMERA_VISIT: direction
+    //! CAM_TYPE_VISIT: target position
+    Math::Vector m_visitGoal;
+    //! CAM_TYPE_VISIT: distance
+    float        m_visitDist;
+    //! CAM_TYPE_VISIT: relative time
+    float        m_visitTime;
+    //! CAM_TYPE_VISIT: initial type
+    Gfx::CameraType   m_visitType;
+    //! CAM_TYPE_VISIT: direction
+    float        m_visitDirectionH;
+    //! CAM_TYPE_VISIT: direction
+    float        m_visitDirectionV;
 
-    float       m_editHeight;       // CAMERA_EDIT: height
+    //! CAM_TYPE_EDIT: height
+    float        m_editHeight;
 
-    float       m_remotePan;
-    float       m_remoteZoom;
+    float        m_remotePan;
+    float        m_remoteZoom;
 
-    Math::Point     m_mousePos;
-    float       m_mouseDirH;
-    float       m_mouseDirV;
-    float       m_mouseMarging;
+    Math::Point  m_mousePos;
+    float        m_mouseDirH;
+    float        m_mouseDirV;
+    float        m_mouseMarging;
 
-    float       m_motorTurn;
+    float        m_motorTurn;
 
-    CenteringPhase m_centeringPhase;
+    Gfx::CenteringPhase m_centeringPhase;
     float       m_centeringAngleH;
     float       m_centeringAngleV;
     float       m_centeringDist;
@@ -256,13 +368,17 @@ protected:
     float       m_overFadeIn;
     float       m_overFadeOut;
 
-    Math::Vector    m_scriptEye;
-    Math::Vector    m_scriptLookat;
+    Math::Vector m_scriptEye;
+    Math::Vector m_scriptLookat;
 
-    bool        m_bEffect;      // shocks if explosion?
-    bool        m_bCameraScroll;    // scroll in the edges?
-    bool        m_bCameraInvertX;   // X inversion in the edges?
-    bool        m_bCameraInvertY;   // Y inversion in the edges?
+    //! Shocks if explosion?
+    bool        m_effect;
+    //! Scroll in the edges?
+    bool        m_cameraScroll;
+    //! X inversion in the edges?
+    bool        m_cameraInvertX;
+    //! Y inversion in the edges?
+    bool        m_cameraInvertY;
 
 };
 
