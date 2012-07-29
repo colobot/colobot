@@ -56,19 +56,14 @@ struct ApplicationPrivate
     SDL_Event currentEvent;
     //! Joystick
     SDL_Joystick *joystick;
-    //! Index of joystick device
-    int joystickIndex;
     //! Id of joystick timer
     SDL_TimerID joystickTimer;
-    //! Current configuration of OpenGL display device
-    Gfx::GLDeviceConfig deviceConfig;
 
     ApplicationPrivate()
     {
         memset(&currentEvent, 0, sizeof(SDL_Event));
         surface = NULL;
         joystick = NULL;
-        joystickIndex = 0;
         joystickTimer = 0;
     }
 };
@@ -77,11 +72,8 @@ struct ApplicationPrivate
 
 CApplication::CApplication()
 {
-    m_private = new ApplicationPrivate();
-    m_exitCode = 0;
-
-    m_iMan = new CInstanceManager();
-
+    m_private    = new ApplicationPrivate();
+    m_iMan       = new CInstanceManager();
     m_eventQueue = new CEventQueue(m_iMan);
 
     m_engine    = NULL;
@@ -90,21 +82,16 @@ CApplication::CApplication()
     m_sound     = NULL;
 
     m_keyState = 0;
-    m_axeKey = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_axeJoy = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_axeKey   = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_axeJoy   = Math::Vector(0.0f, 0.0f, 0.0f);
 
-    m_active          = false;
-    m_activateApp     = false;
-    m_ready           = false;
+    m_exitCode  = 0;
+    m_active    = false;
+    m_debugMode = false;
+
+    m_windowTitle = "COLOBOT";
+
     m_joystickEnabled = false;
-
-    m_time        = 0.0f;
-
-    m_windowTitle  = "COLOBOT";
-
-    m_showStats      = false;
-    m_debugMode      = false;
-    m_setupMode      = true;
 
     m_dataPath = "./data";
 
@@ -139,7 +126,6 @@ bool CApplication::ParseArguments(int argc, char *argv[])
 
         if (arg == "-debug")
         {
-            m_showStats = true;
             SetDebugMode(true);
         }
         else if (arg == "-datadir")
@@ -165,7 +151,7 @@ bool CApplication::Create()
     // TODO: verify that data directory exists
 
     // Temporarily -- only in windowed mode
-    m_private->deviceConfig.fullScreen = false;
+    m_deviceConfig.fullScreen = false;
 
     // Create the 3D engine
     m_engine = new Gfx::CEngine(m_iMan, this);
@@ -186,71 +172,30 @@ bool CApplication::Create()
 
     if (SDL_Init(initFlags) < 0)
     {
-        SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL initialization error:\n" +
-                                                    std::string(SDL_GetError()) );
+        SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error",
+                      "SDL initialization error:\n" +
+                      std::string(SDL_GetError()) );
         m_exitCode = 2;
         return false;
     }
 
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
     {
-        SystemDialog( SDT_ERROR, "COLOBOT - Error", std::string("SDL_Image initialization error:\n") +
-                                                    std::string(IMG_GetError()) );
+        SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error",
+                      std::string("SDL_Image initialization error:\n") +
+                      std::string(IMG_GetError()) );
         m_exitCode = 3;
         return false;
     }
 
-    const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
-    if (videoInfo == NULL)
-    {
-        SystemDialog( SDT_ERROR, "COLOBOT - Error", "SDL error while getting video info:\n " +
-                                                    std::string(SDL_GetError()) );
-        m_exitCode = 2;
-        return false;
-    }
-
-    Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
-
-    if (m_private->deviceConfig.resizeable)
-        videoFlags |= SDL_RESIZABLE;
-
-    // Use hardware surface if available
-    if (videoInfo->hw_available)
-        videoFlags |= SDL_HWSURFACE;
-    else
-        videoFlags |= SDL_SWSURFACE;
-
-    // Enable hardware blit if available
-    if (videoInfo->blit_hw)
-        videoFlags |= SDL_HWACCEL;
-
-    if (m_private->deviceConfig.fullScreen)
-        videoFlags |= SDL_FULLSCREEN;
-
-    // Set OpenGL attributes
-
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_private->deviceConfig.redSize);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_private->deviceConfig.greenSize);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_private->deviceConfig.blueSize);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_private->deviceConfig.alphaSize);
-
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, m_private->deviceConfig.depthSize);
-
-    if (m_private->deviceConfig.doubleBuf)
-        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-    /* If hardware acceleration specifically requested, this will force the hw accel
-       and fail with error if not available */
-    if (m_private->deviceConfig.hardwareAccel)
-        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-
-    m_private->surface = SDL_SetVideoMode(m_private->deviceConfig.width, m_private->deviceConfig.height,
-                                          m_private->deviceConfig.bpp, videoFlags);
+    if (! CreateVideoSurface())
+        return false; // dialog is in function
 
     if (m_private->surface == NULL)
     {
-        SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("SDL error while setting video mode:\n") +
-                                                   std::string(SDL_GetError()) );
+        SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
+                      std::string("SDL error while setting video mode:\n") +
+                      std::string(SDL_GetError()) );
         m_exitCode = 2;
         return false;
     }
@@ -269,11 +214,12 @@ bool CApplication::Create()
 
 
     // The video is ready, we can create and initalize the graphics device
-    m_device = new Gfx::CGLDevice();
+    m_device = new Gfx::CGLDevice(m_deviceConfig);
     if (! m_device->Create() )
     {
-        SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CDevice::Create() :\n") +
-                                                   std::string(m_device->GetError()) );
+        SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
+                      std::string("Error in CDevice::Create() :\n") +
+                      std::string(m_device->GetError()) );
         m_exitCode = 1;
         return false;
     }
@@ -281,23 +227,74 @@ bool CApplication::Create()
     m_engine->SetDevice(m_device);
     if (! m_engine->Create() )
     {
-        SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CEngine::Create() :\n") +
-                                                   std::string(m_engine->GetError()) );
+        SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
+                      std::string("Error in CEngine::Create() :\n") +
+                      std::string(m_engine->GetError()) );
         m_exitCode = 1;
         return false;
     }
 
     if (! m_engine->AfterDeviceSetInit() )
     {
-        SystemDialog( SDT_ERROR, "COLOBT - Error", std::string("Error in CEngine::AfterDeviceSetInit() :\n") +
-                                                   std::string(m_engine->GetError()) );
+        SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
+                      std::string("Error in CEngine::AfterDeviceSetInit() :\n") +
+                      std::string(m_engine->GetError()) );
         m_exitCode = 1;
         return false;
     }
 
+    return true;
+}
 
-    // The app is ready to go
-    m_ready = true;
+bool CApplication::CreateVideoSurface()
+{
+    const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
+    if (videoInfo == NULL)
+    {
+        SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error",
+                      std::string("SDL error while getting video info:\n ") +
+                      std::string(SDL_GetError()) );
+        m_exitCode = 2;
+        return false;
+    }
+
+    Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
+
+    // Use hardware surface if available
+    if (videoInfo->hw_available)
+        videoFlags |= SDL_HWSURFACE;
+    else
+        videoFlags |= SDL_SWSURFACE;
+
+    // Enable hardware blit if available
+    if (videoInfo->blit_hw)
+        videoFlags |= SDL_HWACCEL;
+
+    if (m_deviceConfig.fullScreen)
+        videoFlags |= SDL_FULLSCREEN;
+
+    if (m_deviceConfig.resizeable)
+        videoFlags |= SDL_RESIZABLE;
+
+    // Set OpenGL attributes
+
+    SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   m_deviceConfig.redSize);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, m_deviceConfig.greenSize);
+    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  m_deviceConfig.blueSize);
+    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, m_deviceConfig.alphaSize);
+
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, m_deviceConfig.depthSize);
+
+    if (m_deviceConfig.doubleBuf)
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    /* If hardware acceleration specifically requested, this will force the hw accel
+       and fail with error if not available */
+    if (m_deviceConfig.hardwareAccel)
+        SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
+    m_private->surface = SDL_SetVideoMode(m_deviceConfig.size.w, m_deviceConfig.size.h,
+                                          m_deviceConfig.bpp, videoFlags);
 
     return true;
 }
@@ -351,15 +348,73 @@ void CApplication::Destroy()
     SDL_Quit();
 }
 
+bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
+{
+    static bool restore = false;
+
+    m_lastDeviceConfig = m_deviceConfig;
+    m_deviceConfig = newConfig;
+
+
+    SDL_FreeSurface(m_private->surface);
+
+    if (! CreateVideoSurface())
+    {
+        // Fatal error, so post the quit event
+        m_eventQueue->AddEvent(Event(EVENT_QUIT));
+        return false;
+    }
+
+    if (m_private->surface == NULL)
+    {
+        if (! restore)
+        {
+            SystemDialog( SDT_ERROR, "COLOBT - Error",
+                          std::string("SDL error while setting video mode:\n") +
+                          std::string(SDL_GetError()) + std::string("\n") +
+                          std::string("Previous mode will be restored") );
+
+            restore = true;
+            ChangeVideoConfig(m_lastDeviceConfig);
+            return false;
+        }
+        else
+        {
+            restore = false;
+
+            SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
+                          std::string("SDL error while restoring previous video mode:\n") +
+                          std::string(SDL_GetError()) );
+
+
+            // Fatal error, so post the quit event
+            m_eventQueue->AddEvent(Event(EVENT_QUIT));
+            return false;
+        }
+    }
+
+    ( static_cast<Gfx::CGLDevice*>(m_device) )->ConfigChanged(m_deviceConfig);
+
+    m_engine->ResetAfterDeviceChanged();
+
+    return true;
+}
+
 bool CApplication::OpenJoystick()
 {
-    m_private->joystick = SDL_JoystickOpen(m_private->joystickIndex);
+    if ( (m_joystick.index < 0) || (m_joystick.index >= SDL_NumJoysticks()) )
+        return false;
+
+    m_private->joystick = SDL_JoystickOpen(m_joystick.index);
     if (m_private->joystick == NULL)
         return false;
 
+    m_joystick.axisCount   = SDL_JoystickNumAxes(m_private->joystick);
+    m_joystick.buttonCount = SDL_JoystickNumButtons(m_private->joystick);
+
     // Create the vectors with joystick axis & button states to exactly the required size
-    m_joyAxeState = std::vector<int>(SDL_JoystickNumAxes(m_private->joystick), 0);
-    m_joyButtonState = std::vector<bool>(SDL_JoystickNumButtons(m_private->joystick), false);
+    m_joyAxeState = std::vector<int>(m_joystick.axisCount, 0);
+    m_joyButtonState = std::vector<bool>(m_joystick.buttonCount, false);
 
     // Create a timer for polling joystick state
     m_private->joystickTimer = SDL_AddTimer(JOYSTICK_TIMER_INTERVAL, JoystickTimerCallback, NULL);
@@ -367,13 +422,23 @@ bool CApplication::OpenJoystick()
     return true;
 }
 
-
 void CApplication::CloseJoystick()
 {
     // Timer will remove itself automatically
 
     SDL_JoystickClose(m_private->joystick);
     m_private->joystick = NULL;
+}
+
+bool CApplication::ChangeJoystick(const JoystickDevice &newJoystick)
+{
+    if ( (newJoystick.index < 0) || (newJoystick.index >= SDL_NumJoysticks()) )
+        return false;
+
+    if (m_private->joystick != NULL)
+        CloseJoystick();
+
+    return OpenJoystick();
 }
 
 Uint32 JoystickTimerCallback(Uint32 interval, void *)
@@ -452,6 +517,8 @@ int CApplication::Run()
         // To be sure no old event remains
         m_private->currentEvent.type = SDL_NOEVENT;
 
+        // Call SDL_PumpEvents() only once here
+        // (SDL_PeepEvents() doesn't call it)
         if (m_active)
             SDL_PumpEvents();
 
@@ -462,11 +529,11 @@ int CApplication::Run()
 
             int count = 0;
             // Use SDL_PeepEvents() if the app is active, so we can use idle time to
-            // render the scene. Else, use SDL_PollEvent() to avoid eating CPU time.
+            // render the scene. Else, use SDL_WaitEvent() to avoid eating CPU time.
             if (m_active)
                 count = SDL_PeepEvents(&m_private->currentEvent, 1, SDL_GETEVENT, SDL_ALLEVENTS);
             else
-                count = SDL_PollEvent(&m_private->currentEvent);
+                count = SDL_WaitEvent(&m_private->currentEvent);
 
             // If received an event
             if (count > 0)
@@ -492,7 +559,7 @@ int CApplication::Run()
         }
 
         // Enter game update & frame rendering only if active
-        if (m_active && m_ready)
+        if (m_active)
         {
             Event event;
             while (m_eventQueue->GetEvent(event))
@@ -554,14 +621,14 @@ PressState TranslatePressState(unsigned char state)
      - y: 0=down, 1=up */
 Math::Point CApplication::WindowToInterfaceCoords(Math::IntPoint pos)
 {
-    return Math::Point(       (float)pos.x / (float)m_private->deviceConfig.width,
-                       1.0f - (float)pos.y / (float)m_private->deviceConfig.height);
+    return Math::Point(       (float)pos.x / (float)m_deviceConfig.size.w,
+                       1.0f - (float)pos.y / (float)m_deviceConfig.size.h);
 }
 
 Math::IntPoint CApplication::InterfaceToWindowCoords(Math::Point pos)
 {
-    return Math::IntPoint((int)(pos.x * m_private->deviceConfig.width),
-                          (int)((1.0f - pos.y) * m_private->deviceConfig.height));
+    return Math::IntPoint((int)(pos.x * m_deviceConfig.size.w),
+                          (int)((1.0f - pos.y) * m_deviceConfig.size.h));
 }
 
 /** The SDL event parsed is stored internally.
@@ -626,6 +693,19 @@ Event CApplication::ParseEvent()
         event.joyButton.button = m_private->currentEvent.jbutton.button;
         event.joyButton.state = TranslatePressState(m_private->currentEvent.jbutton.state);
     }
+    else if (m_private->currentEvent.type == SDL_ACTIVEEVENT)
+    {
+        event.type = EVENT_ACTIVE;
+
+        if (m_private->currentEvent.active.type & SDL_APPINPUTFOCUS)
+            event.active.flags |= ACTIVE_INPUT;
+        if (m_private->currentEvent.active.type & SDL_APPMOUSEFOCUS)
+            event.active.flags |= ACTIVE_MOUSE;
+        if (m_private->currentEvent.active.type & SDL_APPACTIVE)
+            event.active.flags |= ACTIVE_APP;
+
+        event.active.gain = m_private->currentEvent.active.gain == 1;
+    }
 
     return event;
 }
@@ -636,6 +716,14 @@ Event CApplication::ParseEvent()
 bool CApplication::ProcessEvent(const Event &event)
 {
     CLogger *l = GetLogger();
+
+    if (event.type == EVENT_ACTIVE)
+    {
+        m_active = event.active.gain;
+        if (m_debugMode)
+            l->Info("Focus change: active = %s\n", m_active ? "true" : "false");
+    }
+
     // Print the events in debug mode to test the code
     if (m_debugMode)
     {
@@ -672,6 +760,11 @@ bool CApplication::ProcessEvent(const Event &event)
                 l->Info(" button = %d\n", event.joyButton.button);
                 l->Info(" state  = %s\n", (event.joyButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
                 break;
+            case EVENT_ACTIVE:
+                l->Info("EVENT_ACTIVE:\n");
+                l->Info(" flags = 0x%x\n", event.active.flags);
+                l->Info(" gain  = %s\n", event.active.gain ? "true" : "false");
+                break;
             default:
                 break;
         }
@@ -688,33 +781,10 @@ bool CApplication::Render()
     if (! result)
         return false;
 
-    if (m_private->deviceConfig.doubleBuf)
+    if (m_deviceConfig.doubleBuf)
         SDL_GL_SwapBuffers();
 
     return true;
-}
-
-/** Called in to toggle the pause state of the app. */
-void CApplication::Pause(bool pause)
-{
-    static long appPausedCount = 0L;
-
-    appPausedCount += ( pause ? +1 : -1 );
-    m_ready         = appPausedCount == 0;
-
-    // Handle the first pause request (of many, nestable pause requests)
-    if( pause && ( 1 == appPausedCount ) )
-    {
-        // Stop the scene from animating
-        //m_engine->TimeEnterGel();
-    }
-
-    // Final pause request done
-    if (appPausedCount == 0)
-    {
-        // Restart the scene
-        //m_engine->TimeExitGel();
-    }
 }
 
 void CApplication::StepSimulation(float rTime)
@@ -722,14 +792,47 @@ void CApplication::StepSimulation(float rTime)
     // TODO
 }
 
-void CApplication::SetShowStat(bool show)
+VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntSize> &resolutions,
+                                                      bool fullScreen, bool resizeable)
 {
-    m_showStats = show;
-}
+    resolutions.clear();
 
-bool CApplication::GetShowStat()
-{
-    return m_showStats;
+    const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
+    if (videoInfo == NULL)
+        return VIDEO_QUERY_ERROR;
+
+    Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
+
+    // Use hardware surface if available
+    if (videoInfo->hw_available)
+        videoFlags |= SDL_HWSURFACE;
+    else
+        videoFlags |= SDL_SWSURFACE;
+
+    // Enable hardware blit if available
+    if (videoInfo->blit_hw)
+        videoFlags |= SDL_HWACCEL;
+
+    if (resizeable)
+        videoFlags |= SDL_RESIZABLE;
+
+    if (fullScreen)
+        videoFlags |= SDL_FULLSCREEN;
+
+
+    SDL_Rect **modes = SDL_ListModes(NULL, videoFlags);
+
+    if (modes == (SDL_Rect **)0)
+        return VIDEO_QUERY_NONE; // no modes available
+
+    if (modes == (SDL_Rect **)-1)
+        return VIDEO_QUERY_ALL; // all resolutions are possible
+
+
+    for (int i = 0; modes[i] != NULL; ++i)
+        resolutions.push_back(Math::IntSize(modes[i]->w, modes[i]->h));
+
+    return VIDEO_QUERY_OK;
 }
 
 void CApplication::SetDebugMode(bool mode)
@@ -740,11 +843,6 @@ void CApplication::SetDebugMode(bool mode)
 bool CApplication::GetDebugMode()
 {
     return m_debugMode;
-}
-
-bool CApplication::GetSetupMode()
-{
-    return m_setupMode;
 }
 
 void CApplication::FlushPressKey()
@@ -803,6 +901,28 @@ Math::Point CApplication::GetSystemMousePos()
     return m_systemMousePos;
 }
 
+std::vector<JoystickDevice> CApplication::GetJoystickList()
+{
+    std::vector<JoystickDevice> result;
+
+    int count = SDL_NumJoysticks();
+
+    for (int index = 0; index < count; ++index)
+    {
+        JoystickDevice device;
+        device.index = index;
+        device.name = SDL_JoystickName(index);
+        result.push_back(device);
+    }
+
+    return result;
+}
+
+JoystickDevice CApplication::GetJoystick()
+{
+    return m_joystick;
+}
+
 void CApplication::SetJoystickEnabled(bool enable)
 {
     m_joystickEnabled = enable;
@@ -823,32 +943,6 @@ void CApplication::SetJoystickEnabled(bool enable)
 bool CApplication::GetJoystickEnabled()
 {
     return m_joystickEnabled;
-}
-
-bool CApplication::WriteScreenShot(char *filename, int width, int height)
-{
-    // TODO
-    return false;
-}
-
-void CApplication::InitText()
-{
-    // TODO
-}
-
-void CApplication::DrawSuppl()
-{
-    // TODO
-}
-
-void CApplication::ShowStats()
-{
-    // TODO
-}
-
-void CApplication::OutputText(long x, long y, char* str)
-{
-    // TODO
 }
 
 std::string CApplication::GetDataFilePath(const std::string& dirName, const std::string& fileName)

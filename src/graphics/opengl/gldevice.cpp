@@ -61,8 +61,9 @@ void Gfx::GLDeviceConfig::LoadDefault()
 
 
 
-Gfx::CGLDevice::CGLDevice()
+Gfx::CGLDevice::CGLDevice(const Gfx::GLDeviceConfig &config)
 {
+    m_config = config;
     m_wasInit = false;
     m_lighting = false;
     m_texturing = false;
@@ -86,18 +87,24 @@ std::string Gfx::CGLDevice::GetError()
 bool Gfx::CGLDevice::Create()
 {
 #if defined(USE_GLEW)
-    if (glewInit() != GLEW_OK)
-    {
-        m_error = "GLEW initialization failed";
-        return false;
-    }
+    static bool glewInited = false;
 
-    if ( (! GLEW_ARB_multitexture) || (! GLEW_EXT_texture_env_combine) || (! GLEW_EXT_secondary_color) )
+    if (!glewInited)
     {
-        m_error = "GLEW reports required extensions not supported";
-        return false;
-    }
+        glewInited = true;
 
+        if (glewInit() != GLEW_OK)
+        {
+            m_error = "GLEW initialization failed";
+            return false;
+        }
+
+        if ( (! GLEW_ARB_multitexture) || (! GLEW_EXT_texture_env_combine) || (! GLEW_EXT_secondary_color) )
+        {
+            m_error = "GLEW reports required extensions not supported";
+            return false;
+        }
+    }
 #endif
 
     /* NOTE: when not using GLEW, extension testing is not performed, as it is assumed that
@@ -122,6 +129,8 @@ bool Gfx::CGLDevice::Create()
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    glViewport(0, 0, m_config.size.w, m_config.size.h);
 
 
     m_lights        = std::vector<Gfx::Light>(GL_MAX_LIGHTS, Gfx::Light());
@@ -151,6 +160,17 @@ void Gfx::CGLDevice::Destroy()
     m_textureStageParams.clear();
 
     m_wasInit = false;
+}
+
+void Gfx::CGLDevice::ConfigChanged(const Gfx::GLDeviceConfig& newConfig)
+{
+    m_config = newConfig;
+
+    // Reset state
+    m_lighting = false;
+    m_texturing = false;
+    Destroy();
+    Create();
 }
 
 void Gfx::CGLDevice::BeginScene()
@@ -375,8 +395,8 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCrea
     }
 
     result.valid = true;
-    result.width = data->surface->w;
-    result.height = data->surface->h;
+    result.size.w = data->surface->w;
+    result.size.h = data->surface->h;
 
     // Use & enable 1st texture stage
     glActiveTexture(GL_TEXTURE0);

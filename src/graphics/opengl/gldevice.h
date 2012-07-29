@@ -70,7 +70,7 @@ struct GLDevicePrivate;
 class CGLDevice : public Gfx::CDevice
 {
 public:
-    CGLDevice();
+    CGLDevice(const Gfx::GLDeviceConfig &config);
     virtual ~CGLDevice();
 
     virtual bool GetWasInit();
@@ -78,6 +78,8 @@ public:
 
     virtual bool Create();
     virtual void Destroy();
+
+    void ConfigChanged(const Gfx::GLDeviceConfig &newConfig);
 
     virtual void BeginScene();
     virtual void EndScene();
@@ -159,6 +161,8 @@ private:
     void UpdateLightPosition(int index);
 
 private:
+    //! Current config
+    Gfx::GLDeviceConfig m_config;
     //! Was initialized?
     bool m_wasInit;
     //! Last encountered error

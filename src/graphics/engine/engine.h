@@ -26,6 +26,7 @@
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
 #include "math/intpoint.h"
+#include "math/intsize.h"
 #include "math/matrix.h"
 #include "math/point.h"
 #include "math/vector.h"
@@ -513,21 +514,33 @@ public:
     CEngine(CInstanceManager *iMan, CApplication *app);
     ~CEngine();
 
+    //! Returns whether the device was initialized
     bool            GetWasInit();
+    //! Returns the last error encountered
     std::string     GetError();
 
+    //! Performs the first initialization, before a device was set
     bool            Create();
+    //! Frees all resources before exit
     void            Destroy();
 
+    //! Sets the device to be used
     void            SetDevice(Gfx::CDevice *device);
+    //! Returns the current device
     Gfx::CDevice*   GetDevice();
 
+    //! Performs initialization after a device was created and set
     bool            AfterDeviceSetInit();
+
+    //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
+    void            ResetAfterDeviceChanged();
 
     void            SetTerrain(Gfx::CTerrain* terrain);
 
+    //! Processes incoming event
     bool            ProcessEvent(const Event &event);
 
+    //! Renders a single frame
     bool            Render();
 
 
@@ -859,6 +872,9 @@ protected:
     bool            m_wasInit;
     std::string     m_error;
 
+    //! Whether to show stats (FPS, etc)
+    bool            m_showStats;
+
     int             m_blackSrcBlend[2];
     int             m_blackDestBlend[2];
     int             m_whiteSrcBlend[2];
@@ -887,8 +903,9 @@ protected:
     bool            m_render;
     bool            m_movieLock;
 
-    Math::IntPoint  m_dim;
-    Math::IntPoint  m_lastDim;
+    //! Current size of window
+    Math::IntSize   m_size;
+    Math::IntSize   m_lastSize;
 
     std::vector<Gfx::EngineObjLevel1>  m_objectTree;
     std::vector<Gfx::EngineObject>     m_objects;
