@@ -62,9 +62,6 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_sound      = NULL;
     m_terrain    = NULL;
 
-    m_dim.x = 640;
-    m_dim.y = 480;
-    m_lastDim = m_dim;
     m_focus = 0.75f;
     m_baseTime = 0;
     m_lastTime = 0;
@@ -271,6 +268,12 @@ bool Gfx::CEngine::AfterDeviceSetInit()
 
     return true;
 }
+
+void Gfx::CEngine::ResetAfterDeviceChanged()
+{
+    // TODO
+}
+
 
 Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName, const Gfx::TextureCreateParams &params)
 {
@@ -727,3 +730,14 @@ void Gfx::CEngine::AddStatisticTriangle(int count)
 {
     m_statisticTriangle += count;
 }
+
+void Gfx::CEngine::SetShowStat(bool show)
+{
+    m_showStats = show;
+}
+
+bool Gfx::CEngine::GetShowStat()
+{
+    return m_showStats;
+}
+

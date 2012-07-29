@@ -25,6 +25,7 @@
 #include "graphics/core/material.h"
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
+#include "math/intsize.h"
 #include "math/matrix.h"
 
 #include <string>
@@ -43,10 +44,8 @@ namespace Gfx {
 */
 struct DeviceConfig
 {
-    //! Screen width
-    int width;
-    //! Screen height
-    int height;
+    //! Screen size
+    Math::IntSize size;
     //! Bits per pixel
     int bpp;
     //! Full screen
@@ -64,8 +63,7 @@ struct DeviceConfig
     //! Loads the default values
     inline void LoadDefault()
     {
-        width = 800;
-        height = 600;
+        size = Math::IntSize(800, 600);
         bpp = 32;
         fullScreen = false;
         resizeable = false;

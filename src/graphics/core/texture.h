@@ -18,6 +18,9 @@
 
 #pragma once
 
+#include "math/intsize.h"
+
+
 namespace Gfx {
 
 /**
@@ -190,10 +193,8 @@ struct Texture
     bool valid;
     //! ID of the texture in graphics engine
     unsigned int id;
-    //! Width of texture
-    int width;
-    //! Height of texture
-    int height;
+    //! Size of texture
+    Math::IntSize size;
     //! Whether the texture has alpha channel
     bool alpha;
 
@@ -201,7 +202,6 @@ struct Texture
     {
         valid = false;
         id = 0;
-        width = height = 0;
         alpha = false;
     }
 

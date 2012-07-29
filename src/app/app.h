@@ -24,6 +24,8 @@
 #include "common/singleton.h"
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
+#include "graphics/opengl/gldevice.h"
+#include "math/intsize.h"
 
 #include <string>
 #include <vector>
@@ -33,6 +35,35 @@ class CInstanceManager;
 class CEvent;
 class CRobotMain;
 class CSound;
+
+/**
+  \struct JoystickDevice
+  \brief Information about a joystick device */
+struct JoystickDevice
+{
+    //! Device index (-1 = invalid device)
+    int index;
+    //! Device name
+    std::string name;
+    //! Number of axes (only available after joystick opened)
+    int axisCount;
+    //! Number of buttons (only available after joystick opened)
+    int buttonCount;
+
+    JoystickDevice()
+        : index(-1), axisCount(0), buttonCount(0) {}
+};
+
+/**
+  \enum VideoQueryResult
+  \brief Result of querying for available video resolutions */
+enum VideoQueryResult
+{
+    VIDEO_QUERY_ERROR,
+    VIDEO_QUERY_NONE,
+    VIDEO_QUERY_ALL,
+    VIDEO_QUERY_OK
+};
 
 
 struct ApplicationPrivate;
@@ -46,26 +77,38 @@ struct ApplicationPrivate;
  *
  * It is a singleton class with only one instance that can be created.
  *
- * Creation of other main objects
+ * \section Creation Creation of other main objects
  *
  * The class creates the only instance of CInstanceManager, CEventQueue, CEngine,
  * CRobotMain and CSound classes.
  *
- * Window management
+ * \section Window Window management
  *
  * The class is responsible for creating app window, setting and changing the video mode,
- * setting the position of mouse and changing the cursor, grabbing and writing screenshots.
+ * joystick management, grabbing input and changing the system mouse cursor
+ * position and visibility.
+ * ("System mouse cursor" means the cursor displayed by the OS in constrast to the cursor
+ * displayed by CEngine).
  *
- * Events
+ * \section Events Events
  *
- * Events are taken from SDL event queue and either handled by CApplication or translated
- * to common events from src/common.h and pushed to global event queue CEventQueue.
+ * Events are taken from SDL event queue, translated to common events from src/common.h
+ * and pushed to global event queue CEventQueue.
+ *
  * Joystick events are generated somewhat differently, by running a separate timer,
  * polling the device for changes and synthesising events on change. It avoids flooding
  * the event queue with too many joystick events and the granularity of the timer can be
  * adjusted.
  *
- * The events are further handled in CRobotMain class.
+ * The events are passed to ProcessEvent() of classes in this order: CApplication, CEngine
+ * and CRobotMain. CApplication and CEngine's ProcessEvent() functions return bool, which
+ * means whether to pass the event on, or stop the chain. This is to enable handling some
+ * events which are internal to CApplication or CEngine.
+ *
+ * \section Portability Portability
+ *
+ * Currently, the class only handles OpenGL devices. SDL can be used with DirectX, but
+ * for that to work, video initialization and video setting must be done differently.
  *
  */
 class CApplication : public CSingleton<CApplication>
@@ -89,25 +132,35 @@ public:
     //! Cleans up before exit
     void        Destroy();
 
-    //! Enters the pause mode
-    void        Pause(bool pause);
+    //! Returns a list of possible video modes
+    VideoQueryResult GetVideoResolutionList(std::vector<Math::IntSize> &resolutions,
+                                            bool fullScreen, bool resizeable);
+
+    //! Returns the current video mode
+    Gfx::GLDeviceConfig GetVideoConfig();
+
+    //! Change the video mode to given mode
+    bool        ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig);
 
     //! Updates the simulation state
     void        StepSimulation(float rTime);
 
+    //! Returns a list of available joystick devices
+    std::vector<JoystickDevice> GetJoystickList();
+
+    //! Returns info about the current joystick
+    JoystickDevice GetJoystick();
+
+    //! Change the current joystick device
+    bool        ChangeJoystick(const JoystickDevice &newJoystick);
+
+    //! Enables/disables joystick
+    void        SetJoystickEnabled(bool enable);
+    //! Returns whether joystick is enabled
+    bool        GetJoystickEnabled();
+
     //! Polls the state of joystick axes and buttons
     void        UpdateJoystick();
-
-    void        SetShowStat(bool show);
-    bool        GetShowStat();
-
-    void        SetDebugMode(bool mode);
-    bool        GetDebugMode();
-
-    bool        GetSetupMode();
-
-    void        SetJoystickEnabled(bool enable);
-    bool        GetJoystickEnabled();
 
     void        FlushPressKey();
     void        ResetKey();
@@ -129,12 +182,18 @@ public:
     //! Returns the position of system mouse cursor (in interface coords)
     Math::Point GetSystemMousePos();
 
-    bool        WriteScreenShot(char *filename, int width, int height);
+    //! Enables/disables debug mode (prints more info in logger)
+    void        SetDebugMode(bool mode);
+    //! Returns whether debug mode is enabled
+    bool        GetDebugMode();
 
     //! Returns the full path to a file in data directory
     std::string GetDataFilePath(const std::string &dirName, const std::string &fileName);
 
 protected:
+    //! Creates the window's SDL_Surface
+    bool CreateVideoSurface();
+
     //! Processes the captured SDL event to Event struct
     Event       ParseEvent();
     //! Handles some incoming events
@@ -151,11 +210,6 @@ protected:
     Math::Point WindowToInterfaceCoords(Math::IntPoint pos);
     //! Converts the interface coords to window coords
     Math::IntPoint InterfaceToWindowCoords(Math::Point pos);
-
-    void        InitText();
-    void        DrawSuppl();
-    void        ShowStats();
-    void        OutputText(long x, long y, char* str);
 
 protected:
     //! Instance manager
@@ -175,17 +229,15 @@ protected:
 
     //! Code to return at exit
     int             m_exitCode;
-
+    //! Whether application window is active
     bool            m_active;
-    bool            m_activateApp;
-    bool            m_ready;
-
-    bool            m_showStats;
+    //! Whether debug mode is enabled
     bool            m_debugMode;
-    bool            m_setupMode;
 
-    //! Whether joystick is enabled
-    bool            m_joystickEnabled;
+    //! Current configuration of OpenGL display device
+    Gfx::GLDeviceConfig m_deviceConfig;
+    //! Previous configuration of OpenGL display device
+    Gfx::GLDeviceConfig m_lastDeviceConfig;
 
     //! Text set as window title
     std::string     m_windowTitle;
@@ -196,13 +248,16 @@ protected:
     Math::Point     m_systemMousePos;
     long            m_mouseWheel;
 
+    long            m_key[50][2];
+
+    //! Info about current joystick device
+    JoystickDevice  m_joystick;
+    //! Whether joystick is enabled
+    bool            m_joystickEnabled;
     //! Current state of joystick axes; may be updated from another thread
     std::vector<int> m_joyAxeState;
     //! Current state of joystick buttons; may be updated from another thread
     std::vector<bool> m_joyButtonState;
-
-    float           m_time;
-    long            m_key[50][2];
 
     //! Path to directory with data files
     std::string     m_dataPath;

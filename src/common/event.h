@@ -55,6 +55,9 @@ enum EventType
     //! Event sent after releasing a key
     EVENT_KEY_UP            = 9,
 
+    //! Event sent when application window loses/gains focus
+    EVENT_ACTIVE            = 10,
+
     //? EVENT_CHAR              = 10,
     //? EVENT_FOCUS             = 11,
 
@@ -608,7 +611,7 @@ struct JoyAxisEventData
 };
 
 /** \struct JoyButtonEventData
-    \brief Joystick button event structure */
+    \brief Additional data for joystick button event */
 struct JoyButtonEventData
 {
     //! The joystick button index
@@ -620,7 +623,31 @@ struct JoyButtonEventData
         : button(0), state(STATE_PRESSED) {}
 };
 
-// TODO: JoyHatEventData? JoyBallEventData?
+/** \enum ActiveEventFlags
+    \brief Type of focus gained/lost */
+enum ActiveEventFlags
+{
+    //! Application window focus
+    ACTIVE_APP   = 0x01,
+    //! Input focus
+    ACTIVE_INPUT = 0x02,
+    //! Mouse focus
+    ACTIVE_MOUSE = 0x04
+
+};
+
+/** \struct ActiveEventData
+    \brief Additional data for active event */
+struct ActiveEventData
+{
+    //! Flags (bitmask of enum values ActiveEventFlags)
+    unsigned char flags = 0;
+    //! True if the focus was gained; false otherwise
+    bool gain;
+
+    ActiveEventData()
+        : flags(0), gain(false) {}
+};
 
 
 /**
@@ -652,6 +679,8 @@ struct Event
     JoyAxisEventData joyAxis;
     //! Additional data for EVENT_JOY_AXIS
     JoyButtonEventData joyButton;
+    //! Additional data for EVENT_ACTIVE
+    ActiveEventData active;
 
     //? long         param;      // parameter
     //? Math::Point  pos;        // mouse position (0 .. 1)
