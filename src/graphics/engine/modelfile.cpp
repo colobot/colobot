@@ -246,7 +246,7 @@ Gfx::CModelFile::CModelFile(CInstanceManager* iMan)
 {
     m_iMan = iMan;
 
-    m_engine = (CEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_engine = static_cast<CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
 
     m_triangles.reserve(TRIANGLE_PREALLOCATE_COUNT);
 }
@@ -431,7 +431,7 @@ bool Gfx::CModelFile::ReadModel(std::istream &stream, bool edit, bool meta)
        }
     }
 
-    for (int i = 0; i < (int) m_triangles.size(); ++i)
+    for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
     {
         m_triangles[i].tex1Name = StrUtils::Replace(m_triangles[i].tex1Name, "bmp", "tga");
 
@@ -521,7 +521,7 @@ bool Gfx::CModelFile::WriteModel(std::ostream &stream)
     for (int i = 0; i < 10; ++i)
         IOUtils::WriteBinary<4, int>(header.reserved[i], stream);
 
-    for (int i = 0; i < (int)m_triangles.size(); ++i)
+    for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
     {
         NewModelTriangle t;
 
@@ -701,9 +701,9 @@ bool Gfx::CModelFile::ReadDXF(std::istream &stream, float min, float max)
             faceNum --;
             if ( faceNum >= 0 )
             {
-                assert( (p1-1 >= 0) && (p1-1 < (int)vertices.size() ) );
-                assert( (p2-1 >= 0) && (p2-1 < (int)vertices.size() ) );
-                assert( (p3-1 >= 0) && (p3-1 < (int)vertices.size() ) );
+                assert( (p1-1 >= 0) && (p1-1 < static_cast<int>(vertices.size())) );
+                assert( (p2-1 >= 0) && (p2-1 < static_cast<int>(vertices.size())) );
+                assert( (p3-1 >= 0) && (p3-1 < static_cast<int>(vertices.size())) );
 
                 CreateTriangle(vertices[p3-1], vertices[p2-1], vertices[p1-1], min, max);
                 waitFaceX = true;
@@ -774,7 +774,7 @@ bool Gfx::CModelFile::CreateEngineObject(int objRank, int addState)
 
 void Gfx::CModelFile::Mirror()
 {
-    for (int i = 0; i < (int)m_triangles.size(); i++)
+    for (int i = 0; i < static_cast<int>( m_triangles.size() ); i++)
     {
         Gfx::VertexTex2  t = m_triangles[i].p1;
         m_triangles[i].p1 = m_triangles[i].p2;
@@ -804,7 +804,7 @@ float Gfx::CModelFile::GetHeight(Math::Vector pos)
 {
     float limit = 5.0f;
 
-    for (int i = 0; i < (int)m_triangles.size(); i++)
+    for (int i = 0; i < static_cast<int>( m_triangles.size() ); i++)
     {
         if ( fabs(pos.x - m_triangles[i].p1.coord.x) < limit &&
              fabs(pos.z - m_triangles[i].p1.coord.z) < limit )

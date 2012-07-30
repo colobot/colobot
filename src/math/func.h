@@ -118,13 +118,13 @@ inline void Swap(float &a, float &b)
         Mod(n, 1) = fractional part of n */
 inline float Mod(float a, float m)
 {
-    return a - ((int)(a/m))*m;
+    return a - ( static_cast<int>(a / m) ) * m;
 }
 
 //! Returns a random value between 0 and 1.
 inline float Rand()
 {
-    return (float)rand()/RAND_MAX;
+    return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
 //! Returns a normalized angle, that is in other words between 0 and 2 * PI
@@ -153,10 +153,10 @@ inline bool TestAngle(float angle, float min, float max)
 //! Calculates a value (radians) proportional between a and b (degrees)
 inline float PropAngle(int a, int b, float p)
 {
-    float aa = (float)a * DEG_TO_RAD;
-    float bb = (float)b * DEG_TO_RAD;
+    float aa = static_cast<float>(a) * DEG_TO_RAD;
+    float bb = static_cast<float>(b) * DEG_TO_RAD;
 
-    return aa+p*(bb-aa);
+    return aa + p * (bb - aa);
 }
 
 //! Calculates the angle to rotate the angle \a a to the angle \a g

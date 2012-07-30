@@ -76,13 +76,13 @@ struct Vector
     //! Returns the struct cast to \c float* array; use with care!
     inline float* Array()
     {
-        return (float*)this;
+        return reinterpret_cast<float*>(this);
     }
 
     //! Returns the struct cast to <tt>const float*</tt> array; use with care!
     inline const float* Array() const
     {
-        return (const float*)this;
+        return reinterpret_cast<const float*>(this);
     }
 
     //! Returns the vector length

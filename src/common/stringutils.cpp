@@ -36,7 +36,7 @@ std::string StrUtils::UnicodeCharToUtf8(unsigned int ch)
   std::string result;
   if (ch < 0x0080)
   {
-    result += (char)(ch);
+    result += static_cast<char>(ch);
   }
   else if (ch < 0x0800)
   {
@@ -61,7 +61,7 @@ std::string StrUtils::UnicodeStringToUtf8(const std::wstring &str)
 {
   std::string result;
   for (unsigned int i = 0; i < str.size(); ++i)
-    result += StrUtils::UnicodeCharToUtf8((unsigned int)str[i]);
+    result += StrUtils::UnicodeCharToUtf8(static_cast<unsigned int>(str[i]));
 
   return result;
 }
@@ -75,7 +75,7 @@ unsigned int StrUtils::Utf8CharToUnicode(const std::string &ch)
   if ((ch[0] & 0x80) == 0)
   {
     if (ch.size() == 1)
-      result = (unsigned int)ch[0];
+      result = static_cast<unsigned int>(ch[0]);
   }
   else if ((ch[0] & 0xC0) == 0xC0)
   {
@@ -111,7 +111,7 @@ std::wstring StrUtils::Utf8StringToUnicode(const std::string &str)
       break;
 
     std::string ch = str.substr(pos, len);
-    result += (wchar_t)(StrUtils::Utf8CharToUnicode(ch));
+    result += static_cast<wchar_t>(StrUtils::Utf8CharToUnicode(ch));
     pos += len;
   }
   return result;
