@@ -746,14 +746,24 @@ Gfx::Color Gfx::CGLDevice::GetTextureFactor()
     return Gfx::Color(color[0], color[1], color[2], color[3]);
 }
 
+GLenum TranslateGfxPrimitive(Gfx::PrimitiveType type)
+{
+    GLenum flag = 0;
+    switch (type)
+    {
+        case Gfx::PRIMITIVE_POINTS:         flag = GL_POINTS; break;
+        case Gfx::PRIMITIVE_LINES:          flag = GL_LINES; break;
+        case Gfx::PRIMITIVE_LINE_STRIP:     flag = GL_LINE_STRIP; break;
+        case Gfx::PRIMITIVE_TRIANGLES:      flag = GL_TRIANGLES; break;
+        case Gfx::PRIMITIVE_TRIANGLE_STRIP: flag = GL_TRIANGLE_STRIP; break;
+        default: assert(false); break;
+    }
+    return flag;
+}
+
 void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Vertex *vertices, int vertexCount)
 {
-    if (type == Gfx::PRIMITIVE_LINES)
-        glBegin(GL_LINES);
-    else if (type == Gfx::PRIMITIVE_TRIANGLES)
-        glBegin(GL_TRIANGLES);
-    else if (type == Gfx::PRIMITIVE_TRIANGLE_STRIP)
-        glBegin(GL_TRIANGLE_STRIP);
+    glBegin(TranslateGfxPrimitive(type));
 
     glColor3f(1.0f, 1.0f, 1.0f);
 
@@ -769,12 +779,7 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Vertex *vertic
 
 void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexCol *vertices, int vertexCount)
 {
-    if (type == Gfx::PRIMITIVE_LINES)
-        glBegin(GL_LINES);
-    else if (type == Gfx::PRIMITIVE_TRIANGLES)
-        glBegin(GL_TRIANGLES);
-    else if (type == Gfx::PRIMITIVE_TRIANGLE_STRIP)
-        glBegin(GL_TRIANGLE_STRIP);
+    glBegin(TranslateGfxPrimitive(type));
 
     for (int i = 0; i < vertexCount; ++i)
     {
@@ -789,12 +794,7 @@ void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const Gfx::VertexCol
 
 void Gfx::CGLDevice::DrawPrimitive(Gfx::PrimitiveType type, const VertexTex2 *vertices, int vertexCount)
 {
-    if (type == Gfx::PRIMITIVE_LINES)
-        glBegin(GL_LINES);
-    else if (type == Gfx::PRIMITIVE_TRIANGLES)
-        glBegin(GL_TRIANGLES);
-    else if (type == Gfx::PRIMITIVE_TRIANGLE_STRIP)
-        glBegin(GL_TRIANGLE_STRIP);
+    glBegin(TranslateGfxPrimitive(type));
 
     glColor3f(1.0f, 1.0f, 1.0f);
 

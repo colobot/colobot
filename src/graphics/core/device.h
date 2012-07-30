@@ -179,12 +179,12 @@ enum FillMode
 
 /**
   \enum PrimitiveType
-  \brief Type of primitive to render
-
-  Only these two types are used. */
+  \brief Type of primitive to render */
 enum PrimitiveType
 {
+    PRIMITIVE_POINTS,
     PRIMITIVE_LINES,
+    PRIMITIVE_LINE_STRIP,
     PRIMITIVE_TRIANGLES,
     PRIMITIVE_TRIANGLE_STRIP
 };
