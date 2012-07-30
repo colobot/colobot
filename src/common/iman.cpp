@@ -93,7 +93,7 @@ bool CInstanceManager::AddInstance(ClassType classType, void* pointer, int max)
 
     if ( m_table[classType].classPointer == 0 )
     {
-        m_table[classType].classPointer = (void**)malloc(max*sizeof(void*));
+        m_table[classType].classPointer = static_cast<void**>( malloc(max*sizeof(void*)) );
         m_table[classType].totalPossible = max;
         m_table[classType].totalUsed     = 0;
     }

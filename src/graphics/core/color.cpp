@@ -79,7 +79,7 @@ Gfx::Color Gfx::HSV2RGB(Gfx::ColorHSV color)
     {
         if ( color.h == 360.0f )  color.h = 0.0f;
         color.h /= 60.0f;
-        int i = (int)color.h;  // integer part (0 .. 5)
+        int i = static_cast<int>(color.h);  // integer part (0 .. 5)
         float f = color.h-i;   // fractional part
 
         float v = color.v;

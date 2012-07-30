@@ -121,7 +121,7 @@ struct Matrix
     //! Returns the struct cast to \c float* array; use with care!
     inline float* Array()
     {
-        return (float*)this;
+        return reinterpret_cast<float*>(this);
     }
 
     //! Transposes the matrix

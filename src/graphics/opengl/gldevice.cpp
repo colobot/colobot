@@ -266,7 +266,7 @@ void Gfx::CGLDevice::UpdateModelviewMatrix()
 
     if (m_lighting)
     {
-        for (int index = 0; index < (int)m_lights.size(); ++index)
+        for (int index = 0; index < static_cast<int>( m_lights.size() ); ++index)
             UpdateLightPosition(index);
     }
 }
@@ -293,7 +293,7 @@ int Gfx::CGLDevice::GetMaxLightCount()
 void Gfx::CGLDevice::SetLight(int index, const Gfx::Light &light)
 {
     assert(index >= 0);
-    assert(index < (int)m_lights.size());
+    assert(index < static_cast<int>( m_lights.size() ));
 
     m_lights[index] = light;
 
@@ -322,7 +322,7 @@ void Gfx::CGLDevice::SetLight(int index, const Gfx::Light &light)
 void Gfx::CGLDevice::UpdateLightPosition(int index)
 {
     assert(index >= 0);
-    assert(index < (int)m_lights.size());
+    assert(index < static_cast<int>( m_lights.size() ));
 
     if ((! m_lighting) || (! m_lightsEnabled[index]))
         return;
@@ -357,7 +357,7 @@ void Gfx::CGLDevice::UpdateLightPosition(int index)
 const Gfx::Light& Gfx::CGLDevice::GetLight(int index)
 {
     assert(index >= 0);
-    assert(index < (int)m_lights.size());
+    assert(index < static_cast<int>( m_lights.size() ));
 
     return m_lights[index];
 }
@@ -365,7 +365,7 @@ const Gfx::Light& Gfx::CGLDevice::GetLight(int index)
 void Gfx::CGLDevice::SetLightEnabled(int index, bool enabled)
 {
     assert(index >= 0);
-    assert(index < (int)m_lights.size());
+    assert(index < static_cast<int>( m_lights.size() ));
 
     m_lightsEnabled[index] = enabled;
 
@@ -375,7 +375,7 @@ void Gfx::CGLDevice::SetLightEnabled(int index, bool enabled)
 bool Gfx::CGLDevice::GetLightEnabled(int index)
 {
     assert(index >= 0);
-    assert(index < (int)m_lights.size());
+    assert(index < static_cast<int>( m_lights.size() ));
 
     return m_lightsEnabled[index];
 }
@@ -479,7 +479,7 @@ void Gfx::CGLDevice::DestroyTexture(const Gfx::Texture &texture)
         m_allTextures.erase(it);
 
     // Unbind the texture if in use anywhere
-    for (int index = 0; index < (int)m_currentTextures.size(); ++index)
+    for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
     {
         if (m_currentTextures[index] == texture)
             SetTexture(index, Gfx::Texture()); // set to invalid texture
@@ -508,7 +508,7 @@ int Gfx::CGLDevice::GetMaxTextureCount()
 void Gfx::CGLDevice::SetTexture(int index, const Gfx::Texture &texture)
 {
     assert(index >= 0);
-    assert(index < (int)m_currentTextures.size());
+    assert(index < static_cast<int>( m_currentTextures.size() ));
 
     // Enable the given texture stage
     glActiveTexture(GL_TEXTURE0 + index);
@@ -536,7 +536,7 @@ void Gfx::CGLDevice::SetTexture(int index, const Gfx::Texture &texture)
 Gfx::Texture Gfx::CGLDevice::GetTexture(int index)
 {
     assert(index >= 0);
-    assert(index < (int)m_currentTextures.size());
+    assert(index < static_cast<int>( m_currentTextures.size() ));
 
     return m_currentTextures[index];
 }
@@ -544,7 +544,7 @@ Gfx::Texture Gfx::CGLDevice::GetTexture(int index)
 void Gfx::CGLDevice::SetTextureEnabled(int index, bool enabled)
 {
     assert(index >= 0);
-    assert(index < (int)m_currentTextures.size());
+    assert(index < static_cast<int>( m_currentTextures.size() ));
 
     m_texturesEnabled[index] = enabled;
 
@@ -558,7 +558,7 @@ void Gfx::CGLDevice::SetTextureEnabled(int index, bool enabled)
 bool Gfx::CGLDevice::GetTextureEnabled(int index)
 {
     assert(index >= 0);
-    assert(index < (int)m_currentTextures.size());
+    assert(index < static_cast<int>( m_currentTextures.size() ));
 
     return m_texturesEnabled[index];
 }
@@ -570,7 +570,7 @@ bool Gfx::CGLDevice::GetTextureEnabled(int index)
 void Gfx::CGLDevice::SetTextureStageParams(int index, const Gfx::TextureStageParams &params)
 {
     assert(index >= 0);
-    assert(index < (int)m_currentTextures.size());
+    assert(index < static_cast<int>( m_currentTextures.size() ));
 
     // Remember the settings
     m_textureStageParams[index] = params;
@@ -708,7 +708,7 @@ after_tex_operations:
 Gfx::TextureStageParams Gfx::CGLDevice::GetTextureStageParams(int index)
 {
     assert(index >= 0);
-    assert(index < (int)m_currentTextures.size());
+    assert(index < static_cast<int>( m_currentTextures.size() ));
 
     return m_textureStageParams[index];
 }
@@ -716,7 +716,7 @@ Gfx::TextureStageParams Gfx::CGLDevice::GetTextureStageParams(int index)
 void Gfx::CGLDevice::SetTextureFactor(const Gfx::Color &color)
 {
     // Needs to be set for all texture stages
-    for (int index = 0; index < (int)m_currentTextures.size(); ++index)
+    for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
     {
         // Activate stage
         glActiveTexture(GL_TEXTURE0 + index);
@@ -908,7 +908,7 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
 
         if (enabled)
         {
-            for (int index = 0; index < (int)m_lights.size(); ++index)
+            for (int index = 0; index < static_cast<int>( m_lights.size() ); ++index)
                 UpdateLightPosition(index);
         }
 
@@ -919,7 +919,7 @@ void Gfx::CGLDevice::SetRenderState(Gfx::RenderState state, bool enabled)
         m_texturing = enabled;
 
         // Enable/disable stages with new setting
-        for (int index = 0; index < (int)m_currentTextures.size(); ++index)
+        for (int index = 0; index < static_cast<int>( m_currentTextures.size() ); ++index)
         {
             glActiveTexture(GL_TEXTURE0 + index);
             if (m_texturing && m_texturesEnabled[index])
@@ -1019,9 +1019,9 @@ void Gfx::CGLDevice::SetDepthTestFunc(Gfx::CompFunc func)
 
 Gfx::CompFunc Gfx::CGLDevice::GetDepthTestFunc()
 {
-    GLenum flag = 0;
-    glGetIntegerv(GL_DEPTH_FUNC, (GLint*)&flag);
-    return TranslateGLCompFunc(flag);
+    GLint flag = 0;
+    glGetIntegerv(GL_DEPTH_FUNC, &flag);
+    return TranslateGLCompFunc(static_cast<GLenum>(flag));
 }
 
 void Gfx::CGLDevice::SetDepthBias(float factor)
@@ -1043,11 +1043,11 @@ void Gfx::CGLDevice::SetAlphaTestFunc(Gfx::CompFunc func, float refValue)
 
 void Gfx::CGLDevice::GetAlphaTestFunc(Gfx::CompFunc &func, float &refValue)
 {
-    GLenum flag = 0;
-    glGetIntegerv(GL_ALPHA_TEST_FUNC, (GLint*)&flag);
-    func = TranslateGLCompFunc(flag);
+    GLint flag = 0;
+    glGetIntegerv(GL_ALPHA_TEST_FUNC, &flag);
+    func = TranslateGLCompFunc(static_cast<GLenum>(flag));
 
-    glGetFloatv(GL_ALPHA_TEST_REF, (GLfloat*) &refValue);
+    glGetFloatv(GL_ALPHA_TEST_REF, static_cast<GLfloat*>(&refValue));
 }
 
 Gfx::BlendFunc TranslateGLBlendFunc(GLenum flag)
@@ -1098,13 +1098,13 @@ void Gfx::CGLDevice::SetBlendFunc(Gfx::BlendFunc srcBlend, Gfx::BlendFunc dstBle
 
 void Gfx::CGLDevice::GetBlendFunc(Gfx::BlendFunc &srcBlend, Gfx::BlendFunc &dstBlend)
 {
-    GLenum srcFlag = 0;
-    glGetIntegerv(GL_ALPHA_TEST_FUNC, (GLint*)&srcFlag);
-    srcBlend = TranslateGLBlendFunc(srcFlag);
+    GLint srcFlag = 0;
+    glGetIntegerv(GL_ALPHA_TEST_FUNC, &srcFlag);
+    srcBlend = TranslateGLBlendFunc(static_cast<GLenum>(srcFlag));
 
-    GLenum dstFlag = 0;
-    glGetIntegerv(GL_ALPHA_TEST_FUNC, (GLint*)&dstFlag);
-    dstBlend = TranslateGLBlendFunc(dstFlag);
+    GLint dstFlag = 0;
+    glGetIntegerv(GL_ALPHA_TEST_FUNC, &dstFlag);
+    dstBlend = TranslateGLBlendFunc(static_cast<GLenum>(dstFlag));
 }
 
 void Gfx::CGLDevice::SetClearColor(const Gfx::Color &color)
@@ -1145,16 +1145,16 @@ void Gfx::CGLDevice::SetFogParams(Gfx::FogMode mode, const Gfx::Color &color, fl
 
 void Gfx::CGLDevice::GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &start, float &end, float &density)
 {
-    GLenum flag = 0;
-    glGetIntegerv(GL_FOG_MODE, (GLint*)&flag);
+    GLint flag = 0;
+    glGetIntegerv(GL_FOG_MODE, &flag);
     if      (flag == GL_LINEAR) mode = Gfx::FOG_LINEAR;
     else if (flag == GL_EXP)    mode = Gfx::FOG_EXP;
     else if (flag == GL_EXP2)   mode = Gfx::FOG_EXP2;
     else assert(false);
 
-    glGetFloatv(GL_FOG_START,   (GLfloat*)&start);
-    glGetFloatv(GL_FOG_END,     (GLfloat*)&end);
-    glGetFloatv(GL_FOG_DENSITY, (GLfloat*)&density);
+    glGetFloatv(GL_FOG_START,   static_cast<GLfloat*>(&start));
+    glGetFloatv(GL_FOG_END,     static_cast<GLfloat*>(&end));
+    glGetFloatv(GL_FOG_DENSITY, static_cast<GLfloat*>(&density));
 }
 
 void Gfx::CGLDevice::SetCullMode(Gfx::CullMode mode)
@@ -1166,8 +1166,8 @@ void Gfx::CGLDevice::SetCullMode(Gfx::CullMode mode)
 
 Gfx::CullMode Gfx::CGLDevice::GetCullMode()
 {
-    GLenum flag = 0;
-    glGetIntegerv(GL_CULL_FACE, (GLint*)&flag);
+    GLint flag = 0;
+    glGetIntegerv(GL_CULL_FACE, &flag);
     if      (flag == GL_CW)  return Gfx::CULL_CW;
     else if (flag == GL_CCW) return Gfx::CULL_CCW;
     else assert(false);
@@ -1183,8 +1183,8 @@ void Gfx::CGLDevice::SetShadeModel(Gfx::ShadeModel model)
 
 Gfx::ShadeModel Gfx::CGLDevice::GetShadeModel()
 {
-    GLenum flag = 0;
-    glGetIntegerv(GL_SHADE_MODEL, (GLint*)&flag);
+    GLint flag = 0;
+    glGetIntegerv(GL_SHADE_MODEL, &flag);
     if      (flag == GL_FLAT)    return Gfx::SHADE_FLAT;
     else if (flag == GL_SMOOTH)  return Gfx::SHADE_SMOOTH;
     else  assert(false);
@@ -1201,8 +1201,8 @@ void Gfx::CGLDevice::SetFillMode(Gfx::FillMode mode)
 
 Gfx::FillMode Gfx::CGLDevice::GetFillMode()
 {
-    GLenum flag = 0;
-    glGetIntegerv(GL_POLYGON_MODE, (GLint*)&flag);
+    GLint flag = 0;
+    glGetIntegerv(GL_POLYGON_MODE, &flag);
     if      (flag == GL_POINT) return Gfx::FILL_POINT;
     else if (flag == GL_LINE)  return Gfx::FILL_LINES;
     else if (flag == GL_FILL)  return Gfx::FILL_FILL;

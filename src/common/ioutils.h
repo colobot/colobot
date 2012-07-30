@@ -21,6 +21,7 @@
 
 #include <iostream>
 
+#include <cstring>
 
 namespace IOUtils {
 
@@ -35,7 +36,7 @@ void WriteBinary(T value, std::ostream &ostr)
     for (int i = 0; i < N; ++i)
     {
         unsigned char byte = (value >> (i*8)) & 0xFF;
-        ostr.write((char*)&byte, 1);
+        ostr.write(reinterpret_cast<char*>(&byte), 1);
     }
 }
 
@@ -51,7 +52,7 @@ T ReadBinary(std::istream &istr)
     for (int i = 0; i < N; ++i)
     {
         unsigned char byte = 0;
-        istr.read((char*)&byte, 1);
+        istr.read(reinterpret_cast<char*>(&byte), 1);
         value |= byte << (i*8);
     }
     return value;
@@ -63,8 +64,10 @@ T ReadBinary(std::istream &istr)
   NOTE: code is probably not portable as there are platforms with other float representations. */
 void WriteBinaryFloat(float value, std::ostream &ostr)
 {
-    unsigned int iValue = *( (unsigned int*)( (void*)(&value) ) );
-    IOUtils::WriteBinary<4, unsigned int>(iValue, ostr);
+    union { float fValue; unsigned int iValue; } u;
+    memset(&u, 0, sizeof(u));
+    u.fValue = value;
+    IOUtils::WriteBinary<4, unsigned int>(u.iValue, ostr);
 }
 
 //! Reads a binary 32-bit float from input stream
@@ -73,9 +76,10 @@ void WriteBinaryFloat(float value, std::ostream &ostr)
   NOTE: code is probably not portable as there are platforms with other float representations. */
 float ReadBinaryFloat(std::istream &istr)
 {
-    unsigned int iValue = IOUtils::ReadBinary<4, unsigned int>(istr);
-    float result = *( (float*)( (void*)(&iValue) ) );
-    return result;
+    union { float fValue; unsigned int iValue; } u;
+    memset(&u, 0, sizeof(u));
+    u.iValue = IOUtils::ReadBinary<4, unsigned int>(istr);
+    return u.fValue;
 }
 
 }; // namespace IOUtils

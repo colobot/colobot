@@ -102,7 +102,7 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     info_ptr = png_create_info_struct(png_ptr);
     if (info_ptr == NULL)
     {
-        png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
+        png_destroy_write_struct(&png_ptr, static_cast<png_infopp>(NULL));
         PNG_ERROR = "png_create_info_struct() error!";
         return false;
     }
@@ -123,9 +123,9 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
     png_write_info(png_ptr, info_ptr);
     png_set_packing(png_ptr);
 
-    row_pointers = (png_bytep*) malloc(sizeof(png_bytep)*surf->h);
+    row_pointers = static_cast<png_bytep*>( malloc(sizeof(png_bytep)*surf->h) );
     for (i = 0; i < surf->h; i++)
-        row_pointers[i] = (png_bytep)(Uint8 *)surf->pixels + i*surf->pitch;
+        row_pointers[i] = static_cast<png_bytep>( static_cast<Uint8 *>(surf->pixels) ) + i*surf->pitch;
     png_write_image(png_ptr, row_pointers);
     png_write_end(png_ptr, info_ptr);
 

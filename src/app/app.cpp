@@ -461,7 +461,7 @@ void CApplication::UpdateJoystick()
 
     SDL_JoystickUpdate();
 
-    for (int axis = 0; axis < (int) m_joyAxeState.size(); ++axis)
+    for (int axis = 0; axis < static_cast<int>( m_joyAxeState.size() ); ++axis)
     {
         int newValue = SDL_JoystickGetAxis(m_private->joystick, axis);
 
@@ -480,7 +480,7 @@ void CApplication::UpdateJoystick()
         }
     }
 
-    for (int button = 0; button < (int) m_joyButtonState.size(); ++button)
+    for (int button = 0; button < static_cast<int>( m_joyButtonState.size() ); ++button)
     {
         bool newValue = SDL_JoystickGetButton(m_private->joystick, button) == 1;
 
@@ -621,14 +621,14 @@ PressState TranslatePressState(unsigned char state)
      - y: 0=down, 1=up */
 Math::Point CApplication::WindowToInterfaceCoords(Math::IntPoint pos)
 {
-    return Math::Point(       (float)pos.x / (float)m_deviceConfig.size.w,
-                       1.0f - (float)pos.y / (float)m_deviceConfig.size.h);
+    return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_deviceConfig.size.w),
+                        1.0f - static_cast<float>(pos.y) / static_cast<float>(m_deviceConfig.size.h)  );
 }
 
 Math::IntPoint CApplication::InterfaceToWindowCoords(Math::Point pos)
 {
-    return Math::IntPoint((int)(pos.x * m_deviceConfig.size.w),
-                          (int)((1.0f - pos.y) * m_deviceConfig.size.h));
+    return Math::IntPoint(static_cast<int>(pos.x * m_deviceConfig.size.w),
+                          static_cast<int>((1.0f - pos.y) * m_deviceConfig.size.h));
 }
 
 /** The SDL event parsed is stored internally.
@@ -822,10 +822,10 @@ VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntSize>
 
     SDL_Rect **modes = SDL_ListModes(NULL, videoFlags);
 
-    if (modes == (SDL_Rect **)0)
+    if (modes == reinterpret_cast<SDL_Rect **>(0) )
         return VIDEO_QUERY_NONE; // no modes available
 
-    if (modes == (SDL_Rect **)-1)
+    if (modes == reinterpret_cast<SDL_Rect **>(-1) )
         return VIDEO_QUERY_ALL; // all resolutions are possible
 
 
