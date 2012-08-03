@@ -73,7 +73,6 @@ public:
     CGLDevice(const Gfx::GLDeviceConfig &config);
     virtual ~CGLDevice();
 
-    virtual bool GetWasInit();
     virtual std::string GetError();
 
     virtual bool Create();
@@ -100,11 +99,13 @@ public:
     virtual bool GetLightEnabled(int index);
 
     virtual Gfx::Texture CreateTexture(CImage *image, const Gfx::TextureCreateParams &params);
+    virtual Gfx::Texture CreateTexture(ImageData *data, const Gfx::TextureCreateParams &params);
     virtual void DestroyTexture(const Gfx::Texture &texture);
     virtual void DestroyAllTextures();
 
     virtual int GetMaxTextureCount();
     virtual void SetTexture(int index, const Gfx::Texture &texture);
+    virtual void SetTexture(int index, unsigned int textureId);
     virtual Gfx::Texture GetTexture(int index);
     virtual void SetTextureEnabled(int index, bool enabled);
     virtual bool GetTextureEnabled(int index);
@@ -163,8 +164,6 @@ private:
 private:
     //! Current config
     Gfx::GLDeviceConfig m_config;
-    //! Was initialized?
-    bool m_wasInit;
     //! Last encountered error
     std::string m_error;
 

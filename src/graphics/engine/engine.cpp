@@ -25,6 +25,8 @@
 #include "common/key.h"
 #include "common/logger.h"
 #include "graphics/core/device.h"
+#include "graphics/engine/lightman.h"
+#include "graphics/engine/text.h"
 #include "math/geometry.h"
 
 // Initial size of various vectors
@@ -44,23 +46,21 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 {
     m_iMan   = iMan;
     m_app    = app;
-    m_device = NULL;
-
-    m_wasInit = false;
+    m_device = nullptr;
 
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_ENGINE, this);
     m_app = app;
 
-    m_lightMan      = NULL;
-    m_text       = NULL;
-    m_particle   = NULL;
-    m_water      = NULL;
-    m_cloud      = NULL;
-    m_lightning  = NULL;
-    m_planet     = NULL;
-    m_sound      = NULL;
-    m_terrain    = NULL;
+    m_lightMan      = nullptr;
+    m_text       = nullptr;
+    m_particle   = nullptr;
+    m_water      = nullptr;
+    m_cloud      = nullptr;
+    m_lightning  = nullptr;
+    m_planet     = nullptr;
+    m_sound      = nullptr;
+    m_terrain    = nullptr;
 
     m_focus = 0.75f;
     m_baseTime = 0;
@@ -178,69 +178,17 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
 Gfx::CEngine::~CEngine()
 {
-    m_iMan   = NULL;
-    m_app    = NULL;
-    m_device = NULL;
+    m_iMan   = nullptr;
+    m_app    = nullptr;
+    m_device = nullptr;
 
-    m_sound = NULL;
-    m_terrain = NULL;
-}
-
-bool Gfx::CEngine::GetWasInit()
-{
-    return m_wasInit;
+    m_sound = nullptr;
+    m_terrain = nullptr;
 }
 
 std::string Gfx::CEngine::GetError()
 {
     return m_error;
-}
-
-bool Gfx::CEngine::Create()
-{
-    m_wasInit = true;
-
-    /*m_lightMan      = new Gfx::CLight(m_iMan, this);
-    m_text       = new Gfx::CText(m_iMan, this);
-    m_particle   = new Gfx::CParticle(m_iMan, this);
-    m_water      = new Gfx::CWater(m_iMan, this);
-    m_cloud      = new Gfx::CCloud(m_iMan, this);
-    m_lightning  = new Gfx::CLightning(m_iMan, this);
-    m_planet     = new Gfx::CPlanet(m_iMan, this);*/
-
-    m_matWorldInterface.LoadIdentity();
-    m_matViewInterface.LoadIdentity();
-    Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
-
-    return true;
-}
-
-void Gfx::CEngine::Destroy()
-{
-    // TODO
-
-    /*delete m_lightMan;
-    m_lightMan = NULL;
-
-    delete m_text;
-    m_text = NULL;
-
-    delete m_particle;
-    m_particle = NULL;
-
-    delete m_water;
-    m_water = NULL;
-
-    delete m_cloud;
-    m_cloud = NULL;
-
-    delete m_lightning;
-    m_lightning = NULL;
-
-    delete m_planet;
-    m_planet = NULL;*/
-
-    m_wasInit = false;
 }
 
 void Gfx::CEngine::SetDevice(Gfx::CDevice *device)
@@ -253,8 +201,31 @@ Gfx::CDevice* Gfx::CEngine::GetDevice()
     return m_device;
 }
 
-bool Gfx::CEngine::AfterDeviceSetInit()
+bool Gfx::CEngine::Create()
 {
+    m_size = m_lastSize = m_app->GetVideoConfig().size;
+
+    m_lightMan   = new Gfx::CLightManager(m_iMan, this);
+    m_text       = new Gfx::CText(m_iMan, this);
+    /* TODO:
+    m_particle   = new Gfx::CParticle(m_iMan, this);
+    m_water      = new Gfx::CWater(m_iMan, this);
+    m_cloud      = new Gfx::CCloud(m_iMan, this);
+    m_lightning  = new Gfx::CLightning(m_iMan, this);
+    m_planet     = new Gfx::CPlanet(m_iMan, this);*/
+
+    m_text->SetDevice(m_device);
+    if (! m_text->Create())
+    {
+        m_error = std::string("Error creating CText: ") + m_text->GetError();
+        return false;
+    }
+
+
+    m_matWorldInterface.LoadIdentity();
+    m_matViewInterface.LoadIdentity();
+    Math::LoadOrthoProjectionMatrix(m_matProjInterface, 0.0f, 1.0f, 0.0f, 1.0f, -1.0f, 1.0f);
+
     m_device->SetClearColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
 
     m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
@@ -269,11 +240,37 @@ bool Gfx::CEngine::AfterDeviceSetInit()
     return true;
 }
 
+void Gfx::CEngine::Destroy()
+{
+    m_text->Destroy();
+
+    delete m_lightMan;
+    m_lightMan = nullptr;
+
+    delete m_text;
+    m_text = nullptr;
+
+    /* TODO:
+    delete m_particle;
+    m_particle = nullptr;
+
+    delete m_water;
+    m_water = nullptr;
+
+    delete m_cloud;
+    m_cloud = nullptr;
+
+    delete m_lightning;
+    m_lightning = nullptr;
+
+    delete m_planet;
+    m_planet = nullptr;*/
+}
+
 void Gfx::CEngine::ResetAfterDeviceChanged()
 {
     // TODO
 }
-
 
 Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName, const Gfx::TextureCreateParams &params)
 {
@@ -610,7 +607,36 @@ bool Gfx::CEngine::DrawInterface()
 
     DrawMouse();
 
+    m_text->DrawString("abcdefghijklmnopqrstuvwxyz ąęśćółńż", Gfx::FONT_COLOBOT, 15.0f, Math::Point(0.25f, 0.2f), 1.0f, 0);
+
     return true;
+}
+
+/** Conversion of the position of the mouse from window coords to interface coords:
+     - x: 0=left, 1=right
+     - y: 0=down, 1=up */
+Math::Point Gfx::CEngine::WindowToInterfaceCoords(Math::IntPoint pos)
+{
+    return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_size.w),
+                        1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.h)  );
+}
+
+Math::IntPoint Gfx::CEngine::InterfaceToWindowCoords(Math::Point pos)
+{
+    return Math::IntPoint(static_cast<int>(pos.x * m_size.w),
+                          static_cast<int>((1.0f - pos.y) * m_size.h));
+}
+
+Math::Size Gfx::CEngine::WindowToInterfaceSize(Math::IntSize size)
+{
+    return Math::Size( static_cast<float>(size.w) / static_cast<float>(m_size.w),
+                       static_cast<float>(size.h) / static_cast<float>(m_size.h)  );
+}
+
+Math::IntSize Gfx::CEngine::InterfaceToWindowSize(Math::Size size)
+{
+    return Math::IntSize(static_cast<int>(size.w * m_size.w),
+                         static_cast<int>(size.h * m_size.h));
 }
 
 void Gfx::CEngine::DrawMouse()

@@ -32,6 +32,7 @@
 
 
 class CImage;
+struct ImageData;
 
 
 namespace Gfx {
@@ -279,8 +280,6 @@ public:
     //! Destroys the device, releasing every acquired resource
     virtual void Destroy() = 0;
 
-    //! Returns whether the device has been initialized
-    virtual bool GetWasInit() = 0;
     //! Returns the last encountered error
     virtual std::string GetError() = 0;
 
@@ -317,6 +316,8 @@ public:
 
     //! Creates a texture from image; the image can be safely removed after that
     virtual Gfx::Texture CreateTexture(CImage *image, const Gfx::TextureCreateParams &params) = 0;
+    //! Creates a texture from raw image data; image data can be freed after that
+    virtual Gfx::Texture CreateTexture(ImageData *data, const Gfx::TextureCreateParams &params) = 0;
     //! Deletes a given texture, freeing it from video memory
     virtual void DestroyTexture(const Gfx::Texture &texture) = 0;
     //! Deletes all textures created so far
@@ -324,8 +325,10 @@ public:
 
     //! Returns the maximum number of multitexture stages
     virtual int GetMaxTextureCount() = 0;
-    //! Sets the (multi)texture at given index
+    //! Sets the texture at given texture stage
     virtual void SetTexture(int index, const Gfx::Texture &texture) = 0;
+    //! Sets the texture image by ID at given texture stage
+    virtual void SetTexture(int index, unsigned int textureId) = 0;
     //! Returns the (multi)texture at given index
     virtual Gfx::Texture GetTexture(int index) = 0;
     //! Enables/disables the given texture stage

@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include "math/point.h"
+
+
 // Math module namespace
 namespace Math
 {
@@ -57,6 +60,12 @@ struct Size
     inline void LoadZero()
     {
         w = h = 0.0f;
+    }
+
+    //! Converts Point to Size
+    inline static Math::Size FromPoint(Math::Point p)
+    {
+        return Math::Size(p.x, p.y);
     }
 }; // struct Size
 
