@@ -29,6 +29,7 @@
 #include "math/intsize.h"
 #include "math/matrix.h"
 #include "math/point.h"
+#include "math/size.h"
 #include "math/vector.h"
 
 
@@ -514,23 +515,18 @@ public:
     CEngine(CInstanceManager *iMan, CApplication *app);
     ~CEngine();
 
-    //! Returns whether the device was initialized
-    bool            GetWasInit();
     //! Returns the last error encountered
     std::string     GetError();
-
-    //! Performs the first initialization, before a device was set
-    bool            Create();
-    //! Frees all resources before exit
-    void            Destroy();
 
     //! Sets the device to be used
     void            SetDevice(Gfx::CDevice *device);
     //! Returns the current device
     Gfx::CDevice*   GetDevice();
 
-    //! Performs initialization after a device was created and set
-    bool            AfterDeviceSetInit();
+    //! Performs the initialization; must be called after device was set
+    bool            Create();
+    //! Frees all resources before exit
+    void            Destroy();
 
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     void            ResetAfterDeviceChanged();
@@ -542,6 +538,17 @@ public:
 
     //! Renders a single frame
     bool            Render();
+
+
+    //! Converts window coords to interface coords
+    Math::Point     WindowToInterfaceCoords(Math::IntPoint pos);
+    //! Converts interface coords to window coords
+    Math::IntPoint  InterfaceToWindowCoords(Math::Point pos);
+
+    //! Converts window size to interface size
+    Math::Size      WindowToInterfaceSize(Math::IntSize size);
+    //! Converts interface size to window size
+    Math::IntSize   InterfaceToWindowSize(Math::Size size);
 
 
     bool            WriteProfile();
@@ -769,7 +776,8 @@ public:
     Math::Vector    GetLookatPt();
     float           GetEyeDirH();
     float           GetEyeDirV();
-    Math::Point     GetDim();
+    Math::IntPoint  GetViewportSize();
+    Math::IntPoint  GetLastViewportSize();
     void            UpdateMatProj();
 
     void            ApplyChange();
@@ -903,8 +911,9 @@ protected:
     bool            m_render;
     bool            m_movieLock;
 
-    //! Current size of window
+    //! Current size of viewport
     Math::IntSize   m_size;
+    //! Previous size of viewport
     Math::IntSize   m_lastSize;
 
     std::vector<Gfx::EngineObjLevel1>  m_objectTree;

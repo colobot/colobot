@@ -45,9 +45,9 @@ inline float MidPoint(const Math::Point &a, const Math::Point &b, float px)
     if (IsEqual(a.x, b.x))
     {
         if (a.y < b.y)
-            return HUGE;
+            return Math::HUGE_NUM;
         else
-            return -HUGE;
+            return -Math::HUGE_NUM;
     }
     return (b.y-a.y) * (px-a.x) / (b.x-a.x) + a.y;
 }

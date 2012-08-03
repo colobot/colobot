@@ -25,7 +25,6 @@
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/opengl/gldevice.h"
-#include "math/intsize.h"
 
 #include <string>
 #include <vector>
@@ -205,11 +204,6 @@ protected:
     bool OpenJoystick();
     //! Closes the joystick device
     void CloseJoystick();
-
-    //! Converts window coords to interface coords
-    Math::Point WindowToInterfaceCoords(Math::IntPoint pos);
-    //! Converts the interface coords to window coords
-    Math::IntPoint InterfaceToWindowCoords(Math::Point pos);
 
 protected:
     //! Instance manager

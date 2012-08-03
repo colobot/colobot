@@ -20,6 +20,9 @@
 
 #pragma once
 
+#include "math/intpoint.h"
+
+
 // Math module namespace
 namespace Math
 {
@@ -31,9 +34,9 @@ namespace Math
 struct IntSize
 {
     //! Width
-    int w;
+    long w;
     //! Height
-    int h;
+    long h;
 
     //! Constructs a zero size: (0,0)
     inline IntSize()
@@ -42,7 +45,7 @@ struct IntSize
     }
 
     //! Constructs a size from given dimensions: (w,h)
-    inline explicit IntSize(int w, int h)
+    inline explicit IntSize(long w, long h)
     {
         this->w = w;
         this->h = h;
@@ -52,6 +55,12 @@ struct IntSize
     inline void LoadZero()
     {
         w = h = 0;
+    }
+
+    //! Converts Point to Size
+    inline static Math::IntSize FromIntPoint(Math::IntPoint p)
+    {
+        return Math::IntSize(p.x, p.y);
     }
 }; // struct Size
 

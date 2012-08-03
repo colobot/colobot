@@ -127,6 +127,14 @@ inline float Rand()
     return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
+//! Returns the next nearest power of two to \a x
+inline int NextPowerOfTwo(int x)
+{
+  double logbase2 = log(static_cast<float>(x)) / Math::LOG_2;
+  return static_cast<int>(pow(2, ceil(logbase2)) + 0.5);
+}
+
+
 //! Returns a normalized angle, that is in other words between 0 and 2 * PI
 inline float NormAngle(float angle)
 {
