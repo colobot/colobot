@@ -34,9 +34,9 @@ namespace Math
 struct IntSize
 {
     //! Width
-    long w;
+    int w;
     //! Height
-    long h;
+    int h;
 
     //! Constructs a zero size: (0,0)
     inline IntSize()
@@ -45,7 +45,7 @@ struct IntSize
     }
 
     //! Constructs a size from given dimensions: (w,h)
-    inline explicit IntSize(long w, long h)
+    inline explicit IntSize(int w, int h)
     {
         this->w = w;
         this->h = h;

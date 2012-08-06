@@ -150,118 +150,254 @@ void Gfx::CText::FlushCache()
 }
 
 void Gfx::CText::DrawText(const std::string &text, const std::vector<FontMetaChar> &format,
-                          Math::Point pos, float width, Gfx::JustifyType justify, float size,
-                          float stretch, int eol)
+                          float size, Math::Point pos, float width, Gfx::TextAlign align,
+                          int eol)
 {
-    // TODO
+    float sw = 0.0f;
+
+    if (align == Gfx::TEXT_ALIGN_CENTER)
+    {
+        sw = GetStringWidth(text, format, size);
+        if (sw > width) sw = width;
+        pos.x -= sw / 2.0f;
+    }
+    else if (align == Gfx::TEXT_ALIGN_RIGHT)
+    {
+        sw = GetStringWidth(text, format, size);
+        if (sw > width) sw = width;
+        pos.x -= sw;
+    }
+
+    DrawString(text, format, size, pos, width, eol);
 }
 
 void Gfx::CText::DrawText(const std::string &text, Gfx::FontType font,
-                          Math::Point pos, float width, Gfx::JustifyType justify, float size,
-                          float stretch, int eol)
+                          float size, Math::Point pos, float width, Gfx::TextAlign align,
+                          int eol)
 {
-    // TODO
+    float sw = 0.0f;
+
+    if (align == Gfx::TEXT_ALIGN_CENTER)
+    {
+        sw = GetStringWidth(text, font, size);
+        if (sw > width) sw = width;
+        pos.x -= sw / 2.0f;
+    }
+    else if (align == Gfx::TEXT_ALIGN_RIGHT)
+    {
+        sw = GetStringWidth(text, font, size);
+        if (sw > width) sw = width;
+        pos.x -= sw;
+    }
+
+    DrawString(text, font, size, pos, width, eol);
 }
 
 void Gfx::CText::SizeText(const std::string &text, const std::vector<FontMetaChar> &format,
-                          Math::Point pos, Gfx::JustifyType justify, float size,
+                          float size, Math::Point pos, Gfx::TextAlign align,
                           Math::Point &start, Math::Point &end)
 {
-    // TODO
+    start = end = pos;
+
+    float sw = GetStringWidth(text, format, size);
+    end.x += sw;
+    if (align == Gfx::TEXT_ALIGN_CENTER)
+    {
+        start.x -= sw/2.0f;
+        end.x   -= sw/2.0f;
+    }
+    else if (align == Gfx::TEXT_ALIGN_RIGHT)
+    {
+        start.x -= sw;
+        end.x   -= sw;
+    }
+
+    start.y -= GetDescent(Gfx::FONT_COLOBOT, size);
+    end.y   += GetAscent(Gfx::FONT_COLOBOT, size);
 }
 
 void Gfx::CText::SizeText(const std::string &text, Gfx::FontType font,
-                          Math::Point pos, Gfx::JustifyType justify, float size,
+                          float size, Math::Point pos, Gfx::TextAlign align,
                           Math::Point &start, Math::Point &end)
 {
-    // TODO
+    start = end = pos;
+
+    float sw = GetStringWidth(text, font, size);
+    end.x += sw;
+    if (align == Gfx::TEXT_ALIGN_CENTER)
+    {
+        start.x -= sw/2.0f;
+        end.x   -= sw/2.0f;
+    }
+    else if (align == Gfx::TEXT_ALIGN_RIGHT)
+    {
+        start.x -= sw;
+        end.x   -= sw;
+    }
+
+    start.y -= GetDescent(font, size);
+    end.y   += GetAscent(font, size);
 }
 
 float Gfx::CText::GetAscent(Gfx::FontType font, float size)
 {
-    // TODO
-    return 0.0f;
+    assert(font != Gfx::FONT_BUTTON);
+
+    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    assert(cf != nullptr);
+    Math::IntSize wndSize;
+    wndSize.h = TTF_FontAscent(cf->font);
+    Math::Size ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    return ifSize.h;
 }
 
 float Gfx::CText::GetDescent(Gfx::FontType font, float size)
 {
-    // TODO
-    return 0.0f;
+    assert(font != Gfx::FONT_BUTTON);
+
+    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    assert(cf != nullptr);
+    Math::IntSize wndSize;
+    wndSize.h = TTF_FontDescent(cf->font);
+    Math::Size ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    return ifSize.h;
 }
 
 float Gfx::CText::GetHeight(Gfx::FontType font, float size)
 {
-    // TODO
-    return 0.0f;
+    assert(font != Gfx::FONT_BUTTON);
+
+    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    assert(cf != nullptr);
+    Math::IntSize wndSize;
+    wndSize.h = TTF_FontHeight(cf->font);
+    Math::Size ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    return ifSize.h;
 }
 
 
 float Gfx::CText::GetStringWidth(const std::string &text,
                                  const std::vector<FontMetaChar> &format, float size)
 {
-    // TODO
-    return 0.0f;
+    assert(StrUtils::Utf8StringLength(text) == format.size());
+
+    float width = 0.0f;
+    unsigned int index = 0;
+    unsigned int fmtIndex = 0;
+    while (index < text.length())
+    {
+        Gfx::FontType font = static_cast<Gfx::FontType>(format[fmtIndex] & Gfx::FONT_MASK_FONT);
+
+        Gfx::UTF8Char ch;
+
+        int len = StrUtils::Utf8CharSizeAt(text, index);
+        if (len >= 1)
+            ch.c1 = text[index];
+        if (len >= 2)
+            ch.c2 = text[index+1];
+        if (len >= 3)
+            ch.c3 = text[index+2];
+
+        width += GetCharWidth(ch, font, size, width);
+
+        index += len;
+        fmtIndex++;
+    }
+
+    return width;
 }
 
 float Gfx::CText::GetStringWidth(const std::string &text, Gfx::FontType font, float size)
 {
-    // TODO
-    return 0.0f;
+    assert(font != Gfx::FONT_BUTTON);
+
+    // TODO: special chars?
+
+    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    assert(cf != nullptr);
+    Math::IntSize wndSize;
+    TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.w, &wndSize.h);
+    Math::Size ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    return ifSize.w;
 }
 
-float Gfx::CText::GetCharWidth(int character, Gfx::FontType font, float size, float offset)
+float Gfx::CText::GetCharWidth(Gfx::UTF8Char ch, Gfx::FontType font, float size, float offset)
 {
-    // TODO
-    return 0.0f;
+    // TODO: if (font == Gfx::FONT_BUTTON)
+    if (font == Gfx::FONT_BUTTON) return 0.0f;
+
+    // TODO: special chars?
+    // TODO: tab sizing
+
+    Gfx::CachedFont* cf = GetOrOpenFont(font, size);
+    assert(cf != nullptr);
+
+    Gfx::CharTexture tex;
+    auto it = cf->cache.find(ch);
+    if (it != cf->cache.end())
+        tex = (*it).second;
+    else
+        tex = CreateCharTexture(ch, cf);
+
+    return tex.charSize.w;
 }
 
 
 int Gfx::CText::Justify(const std::string &text, const std::vector<FontMetaChar> &format,
                         float size, float width)
 {
-    // TODO
-    return 0;
+    assert(StrUtils::Utf8StringLength(text) == format.size());
+
+    float pos = 0.0f;
+    int cut = 0;
+    unsigned int index = 0;
+    unsigned int fmtIndex = 0;
+    while (index < text.length())
+    {
+        Gfx::FontType font = static_cast<Gfx::FontType>(format[fmtIndex] & Gfx::FONT_MASK_FONT);
+
+        Gfx::UTF8Char ch;
+
+        int len = StrUtils::Utf8CharSizeAt(text, index);
+        if (len >= 1)
+            ch.c1 = text[index];
+        if (len >= 2)
+            ch.c2 = text[index+1];
+        if (len >= 3)
+            ch.c3 = text[index+2];
+
+        if (font != Gfx::FONT_BUTTON)
+        {
+            if (ch.c1 == '\n')
+                return index+1;
+            if (ch.c1 == ' ')
+                cut = index+1;
+        }
+
+        pos += GetCharWidth(ch, font, size, pos);
+        if (pos > width)
+        {
+            if (cut == 0) return index;
+            else          return cut;
+        }
+
+        index += len;
+        fmtIndex++;
+    }
+
+    return index;
 }
 
 int Gfx::CText::Justify(const std::string &text, Gfx::FontType font, float size, float width)
 {
-    // TODO
-    return 0;
-}
+    assert(font != Gfx::FONT_BUTTON);
 
-int Gfx::CText::Detect(const std::string &text, const std::vector<FontMetaChar> &format,
-                       float size, float offset)
-{
-    // TODO
-    return 0;
-}
-
-int Gfx::CText::Detect(const std::string &text, Gfx::FontType font, float size, float offset)
-{
-    // TODO
-    return 0;
-}
-
-void Gfx::CText::DrawString(const std::string &text, const std::vector<FontMetaChar> &format,
-                           float size, Math::Point pos, float width, int eol)
-{
-    // TODO
-}
-
-void Gfx::CText::DrawString(const std::string &text, Gfx::FontType font,
-                            float size, Math::Point pos, float width, int eol)
-{
-    m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
-    m_device->SetTextureEnabled(0, true);
-
-    m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING, true);
-    m_device->SetBlendFunc(Gfx::BLEND_SRC_ALPHA, Gfx::BLEND_INV_SRC_ALPHA);
-
+    float pos = 0.0f;
+    int cut = 0;
     unsigned int index = 0;
-    Math::Point screenPos = pos;
     while (index < text.length())
     {
-        UTF8Char ch;
+        Gfx::UTF8Char ch;
 
         int len = StrUtils::Utf8CharSizeAt(text, index);
         if (len >= 1)
@@ -273,56 +409,231 @@ void Gfx::CText::DrawString(const std::string &text, Gfx::FontType font,
 
         index += len;
 
-        DrawChar(ch, font, size, screenPos);
+        if (ch.c1 == '\n')
+            return index+1;
+
+        if (ch.c1 == ' ' )
+            cut = index+1;
+
+        pos += GetCharWidth(ch, font, size, pos);
+        if (pos > width)
+        {
+            if (cut == 0) return index;
+            else          return cut;
+        }
+    }
+
+    return index;
+}
+
+int Gfx::CText::Detect(const std::string &text, const std::vector<FontMetaChar> &format,
+                       float size, float offset)
+{
+    assert(StrUtils::Utf8StringLength(text) == format.size());
+
+    float pos = 0.0f;
+    unsigned int index = 0;
+    unsigned int fmtIndex = 0;
+    while (index < text.length())
+    {
+        Gfx::FontType font = static_cast<Gfx::FontType>(format[fmtIndex] & Gfx::FONT_MASK_FONT);
+
+        // TODO: if (font == Gfx::FONT_BUTTON)
+        if (font == Gfx::FONT_BUTTON) continue;
+
+        Gfx::UTF8Char ch;
+
+        int len = StrUtils::Utf8CharSizeAt(text, index);
+        if (len >= 1)
+            ch.c1 = text[index];
+        if (len >= 2)
+            ch.c2 = text[index+1];
+        if (len >= 3)
+            ch.c3 = text[index+2];
+
+        if (ch.c1 == '\n')
+            return index;
+
+        float width = GetCharWidth(ch, font, size, pos);
+        if (offset <= pos + width/2.0f)
+            return index;
+
+        pos += width;
+        index += len;
+        fmtIndex++;
+    }
+
+    return index;
+}
+
+int Gfx::CText::Detect(const std::string &text, Gfx::FontType font, float size, float offset)
+{
+    assert(font != Gfx::FONT_BUTTON);
+
+    float pos = 0.0f;
+    unsigned int index = 0;
+    while (index < text.length())
+    {
+        Gfx::UTF8Char ch;
+
+        int len = StrUtils::Utf8CharSizeAt(text, index);
+        if (len >= 1)
+            ch.c1 = text[index];
+        if (len >= 2)
+            ch.c2 = text[index+1];
+        if (len >= 3)
+            ch.c3 = text[index+2];
+
+        index += len;
+
+        if (ch.c1 == '\n')
+            return index;
+
+        float width = GetCharWidth(ch, font, size, pos);
+        if (offset <= pos + width/2.0f)
+            return index;
+
+        pos += width;
+    }
+
+    return index;
+}
+
+void Gfx::CText::DrawString(const std::string &text, const std::vector<FontMetaChar> &format,
+                           float size, Math::Point pos, float width, int eol)
+{
+    assert(StrUtils::Utf8StringLength(text) == format.size());
+
+    m_engine->SetState(Gfx::ENG_RSTATE_TEXT);
+
+    Gfx::FontType font = Gfx::FONT_COLOBOT;
+    float start = pos.x;
+
+    unsigned int index = 0;
+    unsigned int fmtIndex = 0;
+    while (index < text.length())
+    {
+        font = static_cast<Gfx::FontType>(format[fmtIndex] & Gfx::FONT_MASK_FONT);
+
+        // TODO: if (font == Gfx::FONT_BUTTON)
+        if (font == Gfx::FONT_BUTTON) continue;
+
+        Gfx::UTF8Char ch;
+
+        int len = StrUtils::Utf8CharSizeAt(text, index);
+        if (len >= 1)
+            ch.c1 = text[index];
+        if (len >= 2)
+            ch.c2 = text[index+1];
+        if (len >= 3)
+            ch.c3 = text[index+2];
+
+        float offset = pos.x - start;
+        float cw = GetCharWidth(ch, font, size, offset);
+        if (offset + cw > width)  // exceeds the maximum width?
+        {
+            // TODO: special end-of-line char
+            break;
+        }
+
+        Gfx::FontHighlight hl = static_cast<Gfx::FontHighlight>(format[fmtIndex] & Gfx::FONT_MASK_HIGHLIGHT);
+        if (hl != Gfx::FONT_HIGHLIGHT_NONE)
+        {
+            Math::Size charSize;
+            charSize.w = GetCharWidth(ch, font, size, offset);
+            charSize.h = GetHeight(font, size);
+            DrawHighlight(hl, pos, charSize);
+        }
+
+        DrawChar(ch, font, size, pos);
+
+        index += len;
+        fmtIndex++;
+    }
+
+    // TODO: eol
+}
+
+void Gfx::CText::DrawString(const std::string &text, Gfx::FontType font,
+                            float size, Math::Point pos, float width, int eol)
+{
+    assert(font != Gfx::FONT_BUTTON);
+
+    m_engine->SetState(Gfx::ENG_RSTATE_TEXT);
+
+    unsigned int index = 0;
+    while (index < text.length())
+    {
+        Gfx::UTF8Char ch;
+
+        int len = StrUtils::Utf8CharSizeAt(text, index);
+        if (len >= 1)
+            ch.c1 = text[index];
+        if (len >= 2)
+            ch.c2 = text[index+1];
+        if (len >= 3)
+            ch.c3 = text[index+2];
+
+        index += len;
+
+        DrawChar(ch, font, size, pos);
     }
 }
 
-void Gfx::CText::DrawColor(int color, float size, Math::Point pos, float width)
+void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Size size)
 {
-    // TODO !!!
-    /*
-    float       h, u1, u2, v1, v2, dp;
-    int         icon;
+    // Gradient colors
+    Gfx::Color grad[4];
 
-    int icon = -1;
-    switch (color)
+    // TODO: switch to alpha factors
+
+    switch (hl)
     {
-        case Gfx::FONT_COLOR_LINK:
-            icon = 9;
+        case Gfx::FONT_HIGHLIGHT_LINK:
+            grad[0] = grad[1] = grad[2] = grad[3] = Gfx::Color(0.0f, 0.0f, 1.0f, 0.5f);
             break;
-        case Gfx::FONT_COLOR_TOKEN:
-            icon = 4;
+
+        case Gfx::FONT_HIGHLIGHT_TOKEN:
+            grad[0] = grad[1] = Gfx::Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            grad[2] = grad[3] = Gfx::Color(248.0f / 256.0f, 220.0f / 256.0f, 188.0f / 256.0f, 0.5f);
             break;
-        case Gfx::FONT_COLOR_TYPE:
-            icon = 5;
+
+        case Gfx::FONT_HIGHLIGHT_TYPE:
+            grad[0] = grad[1] = Gfx::Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            grad[2] = grad[3] = Gfx::Color(169.0f / 256.0f, 234.0f / 256.0f, 169.0f / 256.0f, 0.5f);
             break;
+
+        case Gfx::FONT_HIGHLIGHT_CONST:
+            grad[0] = grad[1] = Gfx::Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            grad[2] = grad[3] = Gfx::Color(248.0f / 256.0f, 176.0f / 256.0f, 169.0f / 256.0f, 0.5f);
+            break;
+
+        case Gfx::FONT_HIGHLIGHT_REM:
+            grad[0] = grad[1] = Gfx::Color(248.0f / 256.0f, 248.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            grad[2] = grad[3] = Gfx::Color(248.0f / 256.0f, 169.0f / 256.0f, 248.0f / 256.0f, 0.5f);
+            break;
+
+        case Gfx::FONT_HIGHLIGHT_KEY:
+            grad[0] = grad[1] = grad[2] = grad[3] =
+                Gfx::Color(192.0f / 256.0f, 192.0f / 256.0f, 192.0f / 256.0f, 0.5f);
+            break;
+
+        default:
+            return;
     }
-    icon = -1;
-    if ( color == COLOR_LINK  )  icon =  9;  // blue
-    if ( color == COLOR_TOKEN )  icon =  4;  // orange
-    if ( color == COLOR_TYPE  )  icon =  5;  // green
-    if ( color == COLOR_CONST )  icon =  8;  // red
-    if ( color == COLOR_REM   )  icon =  6;  // magenta
-    if ( color == COLOR_KEY   )  icon = 10;  // gray
 
-    if ( icon == -1 )  return;
-
-    if ( color == COLOR_LINK )
-    {
-        m_engine->SetState(D3DSTATENORMAL);
-    }
-
-    Math::IntSize vsize = m_engine->GetViewportSize();
-    if (vsize.h <= 768.0f)  // 1024x768 or less?
-        h = 1.01f / dim.y;  // 1 pixel
-    else    // more than 1024x768?
-        h = 2.0f / dim.y;  // 2 pixels
+    Math::IntSize vsize = m_engine->GetWindowSize();
+    float h = 0.0f;
+    if (vsize.h <= 768.0f)    // 1024x768 or less?
+        h = 1.01f / vsize.h;  // 1 pixel
+    else                      // more than 1024x768?
+        h = 2.0f / vsize.h;   // 2 pixels
 
     Math::Point p1, p2;
     p1.x = pos.x;
-    p2.x = pos.x + width;
+    p2.x = pos.x + size.w;
 
-    if (color == Gfx::FONT_COLOR_LINK)
+    if (hl == Gfx::FONT_HIGHLIGHT_LINK)
     {
         p1.y = pos.y;
         p2.y = pos.y + h;  // just emphasized
@@ -330,45 +641,38 @@ void Gfx::CText::DrawColor(int color, float size, Math::Point pos, float width)
     else
     {
         p1.y = pos.y;
-        p2.y = pos.y + (16.0f/256.0f)*(size/20.0f);
+        p2.y = pos.y + size.h;
     }
 
-    u1 = (16.0f/256.0f)*(icon%16);
-    v1 = (240.0f/256.0f);
-    u2 = (16.0f/256.0f)+u1;
-    v2 = (16.0f/256.0f)+v1;
+    m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, false);
 
-    dp = 0.5f/256.0f;
-    u1 += dp;
-    v1 += dp;
-    u2 -= dp;
-    v2 -= dp;
-
-    Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
-
-    Gfx::Vertex quad[] =
+    Gfx::VertexCol quad[] =
     {
-        Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2)),
-        Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1)),
-        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2)),
-        Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1)),
+        Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), grad[3]),
+        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[2]),
+        Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), grad[0]),
+        Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), grad[1])
     };
 
     m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
     m_engine->AddStatisticTriangle(2);
 
-    if (color == Gfx::FONT_COLOR_LINK)
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);*/
+    m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
 }
 
-void Gfx::CText::DrawChar(UTF8Char character, Gfx::FontType font, float size, Math::Point &pos)
+void Gfx::CText::DrawChar(Gfx::UTF8Char ch, Gfx::FontType font, float size, Math::Point &pos)
 {
+    // TODO: if (font == Gfx::FONT_BUTTON)
+    if (font == Gfx::FONT_BUTTON) return;
+
+    // TODO: special chars?
+
     CachedFont* cf = GetOrOpenFont(font, size);
 
     if (cf == nullptr)
         return;
 
-    auto it = cf->cache.find(character);
+    auto it = cf->cache.find(ch);
     CharTexture tex;
     if (it != cf->cache.end())
     {
@@ -376,31 +680,32 @@ void Gfx::CText::DrawChar(UTF8Char character, Gfx::FontType font, float size, Ma
     }
     else
     {
-        char str[] = { character.c1, character.c2, character.c3, '\0' };
-        tex = CreateCharTexture(str, cf);
+        tex = CreateCharTexture(ch, cf);
 
         if (tex.id == 0) // invalid
             return;
 
-        cf->cache[character] = tex;
+        cf->cache[ch] = tex;
     }
+
+    m_device->SetRenderState(Gfx::RENDER_STATE_CULLING, false);
+
+    Math::Point p1(pos.x, pos.y + tex.charSize.h - tex.texSize.h);
+    Math::Point p2(pos.x + tex.texSize.w, pos.y + tex.charSize.h);
 
     Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
     Gfx::Vertex quad[4] =
     {
-        Gfx::Vertex(Math::Vector(pos.x, pos.y + tex.charSize.h, 0.0f),
-                    n, Math::Point(0.0f, 0.0f)),
-        Gfx::Vertex(Math::Vector(pos.x, pos.y + tex.charSize.h - tex.texSize.h, 0.0f),
-                    n, Math::Point(0.0f, 1.0f)),
-        Gfx::Vertex(Math::Vector(pos.x + tex.texSize.w, pos.y + tex.charSize.h, 0.0f),
-                    n, Math::Point(1.0f, 0.0f)),
-        Gfx::Vertex(Math::Vector(pos.x + tex.texSize.w, pos.y + tex.charSize.h - tex.texSize.h, 0.0f),
-                    n, Math::Point(1.0f, 1.0f))
+        Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(0.0f, 1.0f)),
+        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(1.0f, 1.0f)),
+        Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(0.0f, 0.0f)),
+        Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(1.0f, 0.0f))
     };
 
     m_device->SetTexture(0, tex.id);
     m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
+    m_engine->AddStatisticTriangle(2);
 
     pos.x += tex.charSize.w;
 }
@@ -446,12 +751,13 @@ Gfx::CachedFont* Gfx::CText::GetOrOpenFont(Gfx::FontType font, float size)
     return m_lastCachedFont;
 }
 
-Gfx::CharTexture Gfx::CText::CreateCharTexture(const char* str, Gfx::CachedFont* font)
+Gfx::CharTexture Gfx::CText::CreateCharTexture(Gfx::UTF8Char ch, Gfx::CachedFont* font)
 {
     CharTexture texture;
 
     SDL_Surface* textSurface = nullptr;
     SDL_Color white = {255, 255, 255, 0};
+    char str[] = { ch.c1, ch.c2, ch.c3, '\0' };
     textSurface = TTF_RenderUTF8_Blended(font->font, str, white);
 
     if (textSurface == nullptr)

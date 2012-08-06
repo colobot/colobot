@@ -32,11 +32,11 @@ namespace Math {
 struct IntPoint
 {
     //! X coord
-    long x;
+    int x;
     //! Y coord
-    long y;
+    int y;
 
-    IntPoint(long aX = 0, long aY = 0) : x(aX), y(aY) {}
+    IntPoint(int aX = 0, int aY = 0) : x(aX), y(aY) {}
 };
 
 /* @} */ // end of group
