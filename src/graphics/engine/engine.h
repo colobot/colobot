@@ -408,7 +408,9 @@ enum EngineRenderState
     //! The transparent color (black = no)
     ENG_RSTATE_TCOLOR_BLACK     = (1<<16),
     //! The transparent color (white = no)
-    ENG_RSTATE_TCOLOR_WHITE     = (1<<17)
+    ENG_RSTATE_TCOLOR_WHITE     = (1<<17),
+    //! Mode for rendering text
+    ENG_RSTATE_TEXT             = (1<<18)
 };
 
 
@@ -776,8 +778,8 @@ public:
     Math::Vector    GetLookatPt();
     float           GetEyeDirH();
     float           GetEyeDirV();
-    Math::IntPoint  GetViewportSize();
-    Math::IntPoint  GetLastViewportSize();
+    Math::IntSize   GetWindowSize();
+    Math::IntSize   GetLastWindowSize();
     void            UpdateMatProj();
 
     void            ApplyChange();

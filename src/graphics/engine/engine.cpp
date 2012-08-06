@@ -447,6 +447,19 @@ void Gfx::CEngine::SetState(int state, Gfx::Color color)
         m_device->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1);
         m_device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);*/
     }
+    else if (state & Gfx::ENG_RSTATE_TEXT)
+    {
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST,  false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
+
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureStageParams(0, Gfx::TextureStageParams());
+
+        m_device->SetBlendFunc(Gfx::BLEND_SRC_ALPHA, Gfx::BLEND_INV_SRC_ALPHA);
+    }
     else    // normal ?
     {
         m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         true);
@@ -607,9 +620,31 @@ bool Gfx::CEngine::DrawInterface()
 
     DrawMouse();
 
-    m_text->DrawString("abcdefghijklmnopqrstuvwxyz ąęśćółńż", Gfx::FONT_COLOBOT, 15.0f, Math::Point(0.25f, 0.2f), 1.0f, 0);
+    std::vector<Gfx::FontMetaChar> format;
+    for (int i = 0; i < 10; ++i)
+        format.push_back(Gfx::FONT_COLOBOT_BOLD | Gfx::FONT_HIGHLIGHT_CONST);
+    for (int i = 0; i < 10; ++i)
+        format.push_back(Gfx::FONT_COLOBOT_ITALIC | Gfx::FONT_HIGHLIGHT_KEY);
+    for (int i = 0; i < 10; ++i)
+        format.push_back(Gfx::FONT_COURIER | Gfx::FONT_HIGHLIGHT_LINK);
+    for (int i = 0; i < 5; ++i)
+        format.push_back(Gfx::FONT_COURIER_BOLD | Gfx::FONT_HIGHLIGHT_REM);
+
+    m_text->DrawText("abcdefghijklmnopqrstuvwxyz ąęśćółńż", Gfx::FONT_COLOBOT, 15.0f, Math::Point(0.25f, 0.2f), 1.0f, Gfx::TEXT_ALIGN_LEFT, 0);
+    float h = m_text->GetHeight(Gfx::FONT_COLOBOT, 15.0f);
+    m_text->DrawText("abcdefghijklmnopqrstuvwxyz ąęśćółńż", format, 13.0f, Math::Point(0.25f, 0.2f - h), 1.0f, Gfx::TEXT_ALIGN_LEFT, 0);
 
     return true;
+}
+
+Math::IntSize Gfx::CEngine::GetWindowSize()
+{
+    return m_size;
+}
+
+Math::IntSize Gfx::CEngine::GetLastWindowSize()
+{
+    return m_lastSize;
 }
 
 /** Conversion of the position of the mouse from window coords to interface coords:
