@@ -12,10 +12,11 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.///////////////////////////////////////////////////////////////////////
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+///////////////////////////////////////////////////////////////////////
 
 // compilation of various instructions
-// compile all routines are static
+// compile all routines as static
 // and return an object according to what was found as instruction
 
 // compiler principle:
@@ -666,7 +667,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
 
         m_typevar.SetArray(max);                                    // store the limitations
 
-        // crée simplement un pointeur null
+        // create simply a NULL pointer
         CBotVar*    var = CBotVar::Create(m_var->GivToken(), m_typevar);
         var->SetPointer(NULL);
         var->SetUniqNum(((CBotLeftExprVar*)m_var)->m_nIdent);
@@ -2065,7 +2066,7 @@ bool CBotPostIncExpr::Execute(CBotStack* &pj)
     if (!((CBotExprVar*)m_Instr)->ExecuteVar(var1, pile2, NULL, true)) return false;
 
     pile1->SetState(1);
-    pile1->SetCopyVar(var1);                                // place le résultat (avant incrémentation);
+    pile1->SetCopyVar(var1);                                // places the result (before incrementation);
 
     CBotStack* pile3 = pile2->AddStack(this); 
     if (pile3->IfStep()) return false;
