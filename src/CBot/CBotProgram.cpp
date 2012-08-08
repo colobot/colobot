@@ -12,8 +12,10 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.//////////////////////////////////////////////////////////////////////
-// gestion de base d'un programme CBot
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+//////////////////////////////////////////////////////////////////////
+// database management of CBoT program
 
 #include "CBot.h"
 #include <stdio.h>
@@ -68,8 +70,8 @@ bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
 	Stop();
 
 //	delete		m_pClass;
-	m_pClass->Purge();		// purge les anciennes définitions des classes
-							// mais sans détruire l'object
+	m_pClass->Purge();		// purge the old definitions of classes
+							// but without destroying the object
 	m_pClass	= NULL;
 	delete		m_Prog;		m_Prog= NULL;
 
@@ -79,21 +81,21 @@ bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
 	if (m_pInstance != NULL && m_pInstance->m_pUserPtr != NULL)
 		pUser = m_pInstance->m_pUserPtr;
 
-	// transforme le programme en Tokens
+	// transforms the program in Tokens
 	CBotToken*	pBaseToken = CBotToken::CompileTokens(program, error);
 	if ( pBaseToken == NULL ) return false;
 
 
 	CBotCStack*	pStack		= new CBotCStack(NULL);
-	CBotToken*	p  = pBaseToken->GivNext();					// saute le 1er token (séparateur)
+	CBotToken*	p  = pBaseToken->GivNext();					// skips the first token (separator)
 
-	pStack->SetBotCall(this);								// défini les routines utilisables
+	pStack->SetBotCall(this);								// defined used routines
 	CBotCall::SetPUser(pUser);
 
-	// fait une première passe rapide juste pour prendre les entêtes de routines et de classes
+	// first made a quick pass just to take the headers of routines and classes
 	while ( pStack->IsOk() && p != NULL && p->GivType() != 0)
 	{
-		if ( IsOfType(p, ID_SEP) ) continue;				// des point-virgules qui trainent
+		if ( IsOfType(p, ID_SEP) ) continue;				// semicolons lurking
 
 		if ( p->GivType() == ID_CLASS || 
 			( p->GivType() == ID_PUBLIC && p->GivNext()->GivType() == ID_CLASS ))
@@ -119,32 +121,32 @@ bool CBotProgram::Compile( const char* program, CBotStringArray& ListFonctions, 
 	}
 
 //	CBotFunction*	temp = NULL;
-	CBotFunction*	next = m_Prog;		// reprend la liste
+	CBotFunction*	next = m_Prog;		// rewind the list
 
-	p  = pBaseToken->GivNext();								// revient au début
+	p  = pBaseToken->GivNext();								// returns to the beginning
 
 	while ( pStack->IsOk() && p != NULL && p->GivType() != 0 )
 	{
-		if ( IsOfType(p, ID_SEP) ) continue;				// des point-virgules qui trainent
+		if ( IsOfType(p, ID_SEP) ) continue;				// semicolons lurking
 
 		if ( p->GivType() == ID_CLASS || 
 			( p->GivType() == ID_PUBLIC && p->GivNext()->GivType() == ID_CLASS ))
 		{
 			m_bCompileClass = true;
-			CBotClass::Compile(p, pStack);					// complète la définition de la classe
+			CBotClass::Compile(p, pStack);					// completes the definition of the class
 		}
 		else
 		{
 			m_bCompileClass = false;
 			CBotFunction::Compile(p, pStack, next);
 			if (next->IsExtern()) ListFonctions.Add(next->GivName()/* + next->GivParams()*/);
-			next->m_pProg = this;							// garde le pointeur au module
+			next->m_pProg = this;							// keeps pointers to the module
 			next = next->Next();
 		}
 	}
 
-//	delete m_Prog;			// la liste de la 1ère passe
-//	m_Prog = temp;			// la liste de la seconde passe
+//	delete m_Prog;			// the list of first pass
+//	m_Prog = temp;			// list of the second pass
 
 	if ( !pStack->IsOk() )
 	{
@@ -185,12 +187,12 @@ bool CBotProgram::Start(const char* name)
 #if	STACKMEM
 	m_pStack = CBotStack::FirstStack();
 #else
-	m_pStack = new CBotStack(NULL);					// crée une pile d'exécution
+	m_pStack = new CBotStack(NULL);					// creates an execution stack
 #endif
 
-	m_pStack->SetBotCall(this);						// bases pour les routines
+	m_pStack->SetBotCall(this);						// bases for routines
 
-	return true;									// on est prêt pour un Run()
+	return true;									// we are ready for Run ()
 }
 
 bool CBotProgram::GetPosition(const char* name, int& start, int& stop, CBotGet modestart, CBotGet modestop)
@@ -218,13 +220,13 @@ bool CBotProgram::Run(void* pUser, int timer)
 	if (m_pInstance != NULL && m_pInstance->m_pUserPtr != NULL)
 		pUser = m_pInstance->m_pUserPtr;
 
-	m_pStack->Reset(pUser);							// vide l'éventuelle erreur précédente, et remet le timer
+	m_pStack->Reset(pUser);							// empty the possible previous error, and resets the timer
 	if ( timer >= 0 ) m_pStack->SetTimer(timer);
 
-	m_pStack->SetBotCall(this);						// bases pour les routines
+	m_pStack->SetBotCall(this);						// bases for routines
 
 #if	STACKRUN
-	// reprend l'exécution sur le haut de la pile
+	// resumes execution on the top of the stack
 	ok = m_pStack->Execute();
 	if ( ok ) 
 	{
@@ -235,7 +237,7 @@ bool CBotProgram::Run(void* pUser, int timer)
 		ppVar[2] = NULL;
 		ok = m_pRun->Execute(ppVar, m_pStack, m_pInstance);
 #else
-		// revient sur l'exécution normale
+		// returns to normal execution
 		ok = m_pRun->Execute(NULL, m_pStack, m_pInstance);
 #endif
 	}
@@ -243,7 +245,7 @@ bool CBotProgram::Run(void* pUser, int timer)
 	ok = m_pRun->Execute(NULL, m_pStack, m_pInstance);
 #endif
 
-	// terminé sur une erreur ?
+	// completed on a mistake?
 	if (!ok && !m_pStack->IsOk())
 	{
 		m_ErrorCode = m_pStack->GivError(m_ErrorStart, m_ErrorEnd);
@@ -253,10 +255,10 @@ bool CBotProgram::Run(void* pUser, int timer)
 		delete m_pStack;
 #endif
 		m_pStack = NULL;
-		return true;								// exécution terminée !!
+		return true;								// execution is finished!
 	}
 
-	if ( ok ) m_pRun = NULL;						// plus de fonction en exécution
+	if ( ok ) m_pRun = NULL;						// more function in execution
 	return ok;
 
 error:
@@ -294,12 +296,6 @@ CBotVar* CBotProgram::GivStackVars(const char* &FunctionName, int level)
 
 	return m_pStack->GivStackVars(FunctionName, level);
 }
-
-
-
-
-
-
 
 void CBotProgram::SetTimer(int n)
 {
@@ -346,7 +342,7 @@ CBotString CBotProgram::GivErrorText(int code)
 	if (TextError.IsEmpty())
 	{
 		char	buf[100];
-		sprintf(buf, "Exception numéro %d.", code);
+		sprintf(buf, "Exception numÃ©ro %d.", code);
 		TextError = buf;
 	}
 	return TextError;
@@ -362,7 +358,7 @@ bool CBotProgram::AddFunction(const char* name,
 							  bool rExec (CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser), 
 							  CBotTypResult rCompile (CBotVar* &pVar, void* pUser))
 {
-	// mémorise les pointeurs aux deux fonctions
+	// stores pointers to the two functions
 	return CBotCall::AddFunction(name, rExec, rCompile);
 }
 
@@ -545,12 +541,12 @@ bool CBotProgram::RestoreState(FILE* pf)
 #endif
 	m_pStack = NULL;
 
-	// récupère la pile depuis l'enregistrement
-	// utilise un pointeur NULL (m_pStack) mais c'est ok comme ça
+	// retrieves the stack from the memory
+	// uses a NULL pointer (m_pStack) but it's ok like that
 	if (!m_pStack->RestoreState(pf, m_pStack)) return false;
-	m_pStack->SetBotCall(this);						// bases pour les routines
+	m_pStack->SetBotCall(this);						// bases for routines
 
-	// rétabli certains états dans la pile selon la structure
+	// restored some states in the stack according to the structure
 	m_pRun->RestoreState(NULL, m_pStack, m_pInstance);
 	return true;
 }
@@ -598,16 +594,16 @@ bool CBotCall::AddFunction(const char* name,
 	{
 		if ( p->GivName() == name )
 		{
-			// libère une fonction qu'on redéfini
+			// frees redefined function
 			if ( pp ) pp->m_next = p->m_next;
 			else	  m_ListCalls = p->m_next;
 			pp = p;
 			p = p->m_next;
-			pp->m_next = NULL;	// ne pas détruire la suite de la liste
+			pp->m_next = NULL;	// not to destroy the following list
 			delete pp;
 			continue;
 		}
-		pp = p;				// pointeur précédent
+		pp = p;				// previous pointer
 		p = p->m_next;
 	}
 
@@ -620,8 +616,8 @@ bool CBotCall::AddFunction(const char* name,
 }
 
 
-// transforme le tableau de pointeurs aux variables
-// en une liste de variables chaînées
+// transforms the array of pointers to variables
+// in a chained list of variables
 CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal=false)
 {
 	int		i = 0;
@@ -637,7 +633,7 @@ CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal=false)
 		else
 			if ( ppVars[i]->GivType() == CBotTypPointer )
 				pp->SetClass( ppVars[i]->GivClass());
-// copier le pointeur selon indirection		
+// copy the pointer according to indirections
 		if (pVar == NULL) pVar = pp;
 		else pVar->AddNext(pp);
 		i++;
@@ -645,8 +641,8 @@ CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal=false)
 	return pVar;
 }
 
-// trouve un appel acceptable selon le nom de la procédure
-// et les paramètres donnés
+// is acceptable by a call procedure name
+// and given parameters
 
 CBotTypResult CBotCall::CompileCall(CBotToken* &p, CBotVar** ppVar, CBotCStack* pStack, long& nIdent)
 {
@@ -663,7 +659,7 @@ CBotTypResult CBotCall::CompileCall(CBotToken* &p, CBotVar** ppVar, CBotCStack* 
 			CBotTypResult r = pt->m_rComp(pVar2, m_pUser);
 			int ret = r.GivType();
 			
-			// si une classe est retournée, c'est en fait un pointeur
+			// if a class is returned, it is actually a pointer
 			if ( ret == CBotTypClass ) r.SetType( ret = CBotTypPointer );
 
 			if ( ret > 20 )
@@ -744,19 +740,19 @@ int CBotCall::DoCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack*
 
 fund:
 #if !STACKRUN
-	// fait la liste des paramètres selon le contenu de la pile (pStackVar)
+	// lists the parameters depending on the contents of the stack (pStackVar)
 
 	CBotVar*	pVar = MakeListVars(ppVar, true);
 	CBotVar*	pVarToDelete = pVar;
 
-	// crée une variable pour le résultat
+	// creates a variable to the result
 	CBotVar*	pResult = rettype.Eq(0) ? NULL : CBotVar::Create("", rettype);
 
 	CBotVar*	pRes = pResult;
 	int			Exception = 0;
 	int res = pt->m_rExec(pVar, pResult, Exception, pStack->GivPUser());
 
-	if ( pResult != pRes ) delete pRes;	// si résultat différent rendu
+	if ( pResult != pRes ) delete pRes;	// different result if made
 	delete pVarToDelete;
 
 	if (res == false)
@@ -782,12 +778,12 @@ fund:
 	CBotStack*	pile = pStack->AddStackEOX(pt);
 	if ( pile == EOX ) return true;
 
-	// fait la liste des paramètres selon le contenu de la pile (pStackVar)
+	// lists the parameters depending on the contents of the stack (pStackVar)
 
 	CBotVar*	pVar = MakeListVars(ppVar, true);
 	CBotVar*	pVarToDelete = pVar;
 
-	// crée une variable pour le résultat
+	// creates a variable to the result
 	CBotVar*	pResult = rettype.Eq(0) ? NULL : CBotVar::Create("", rettype);
 
 	pile->SetVar( pVar );
@@ -795,7 +791,7 @@ fund:
 	CBotStack*	pile2 = pile->AddStack();
 	pile2->SetVar( pResult );
 
-	pile->SetError(0, token);			// pour la position en cas d'erreur + loin
+	pile->SetError(0, token);			// for the position on error + away
 	return pt->Run( pStack );
 
 #endif
@@ -848,12 +844,12 @@ bool CBotCall::Run(CBotStack* pStack)
 		{
 			pStack->SetError(Exception);
 		}
-		if ( pResult != pRes ) delete pResult;	// si résultat différent rendu
+		if ( pResult != pRes ) delete pResult;	// different result if made
 		return false;
 	}
 
 	if ( pResult != NULL ) pStack->SetCopyVar( pResult );
-	if ( pResult != pRes ) delete pResult;	// si résultat différent rendu
+	if ( pResult != pRes ) delete pResult;	// different result if made
 
 	return true;
 }
@@ -879,8 +875,8 @@ CBotCallMethode::~CBotCallMethode()
 	m_next = NULL;
 }
 
-// trouve un appel acceptable selon le nom de la procédure
-// et les paramètres donnés
+// is acceptable by a call procedure name
+// and given parameters
 
 CBotTypResult CBotCallMethode::CompileCall(const char* name, CBotVar* pThis, 
 										   CBotVar** ppVar, CBotCStack* pStack,
@@ -934,18 +930,18 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
 {
 	CBotCallMethode*	pt = this;
 
-	// recherche selon l'identificateur
+	// search by the identifier
 
 	if ( nIdent ) while ( pt != NULL )
 	{
 		if ( pt->m_nFuncIdent == nIdent )
 		{
-			// fait la liste des paramètres selon le contenu de la pile (pStackVar)
+			// lists the parameters depending on the contents of the stack (pStackVar)
 
 			CBotVar*	pVar = MakeListVars(ppVars, true);
 			CBotVar*	pVarToDelete = pVar;
 
-			// puis appelle la routine externe au module
+			// then calls the routine external to the module
 
 			int			Exception = 0;
 			int res = pt->m_rExec(pThis, pVar, pResult, Exception);
@@ -967,13 +963,13 @@ int CBotCallMethode::DoCall(long& nIdent, const char* name, CBotVar* pThis, CBot
 		pt = pt->m_next;
 	}
 
-	// recherche selon le nom
+	// search by name
 
 	while ( pt != NULL )
 	{
 		if ( pt->m_name == name )
 		{
-			// fait la liste des paramètres selon le contenu de la pile (pStackVar)
+			// lists the parameters depending on the contents of the stack (pStackVar)
 
 			CBotVar*	pVar = MakeListVars(ppVars, true);
 			CBotVar*	pVarToDelete = pVar;
@@ -1039,10 +1035,10 @@ bool rCBotDebug( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
 CBotTypResult cCBotDebug( CBotVar* &pVar, void* pUser )
 {
-	// pas de paramètre
+	// no parameter
 	if ( pVar != NULL ) return CBotTypResult( TX_OVERPARAM );
 
-	// la fonction retourne un résultat "string"
+	// function returns a result "string"
 	return CBotTypResult( CBotTypString );
 }
 
@@ -1051,57 +1047,57 @@ CBotTypResult cCBotDebug( CBotVar* &pVar, void* pUser )
 
 void CBotProgram::Init()
 {
-	CBotToken::DefineNum( "CBotErrOpenPar", 5000) ;		// manque la parenthèse ouvrante
-	CBotToken::DefineNum( "CBotErrClosePar", 5001) ;	// manque la parenthèse fermante
-	CBotToken::DefineNum( "CBotErrNotBoolean", 5002) ;	// l'expression doit être un boolean
-	CBotToken::DefineNum( "CBotErrUndefVar", 5003) ;	// variable non déclarée
-	CBotToken::DefineNum( "CBotErrBadLeft", 5004) ;		// assignation impossible ( 5 = ... )
-	CBotToken::DefineNum( "CBotErrNoTerminator", 5005) ;// point-virgule attendu
-	CBotToken::DefineNum( "CBotErrCaseOut", 5006) ;		// case en dehors d'un switch
-	CBotToken::DefineNum( "CBotErrCloseBlock", 5008) ;	// manque " } "
-	CBotToken::DefineNum( "CBotErrElseWhitoutIf", 5009) ;// else sans if correspondant
-	CBotToken::DefineNum( "CBotErrOpenBlock", 5010) ;	// manque " { "
-	CBotToken::DefineNum( "CBotErrBadType1", 5011) ;	// mauvais type pour l'assignation
-	CBotToken::DefineNum( "CBotErrRedefVar", 5012) ;	// redéfinition de la variable
-	CBotToken::DefineNum( "CBotErrBadType2", 5013) ;	// 2 opérandes de type incompatibles
-	CBotToken::DefineNum( "CBotErrUndefCall", 5014) ;	// routine inconnue
-	CBotToken::DefineNum( "CBotErrNoDoubleDots", 5015) ;// " : " attendu
-	CBotToken::DefineNum( "CBotErrBreakOutside", 5017) ;// break en dehors d'une boucle
-	CBotToken::DefineNum( "CBotErrUndefLabel", 5019) ;	// label inconnu
-	CBotToken::DefineNum( "CBotErrLabel", 5018) ;		// label ne peut se mettre ici
-	CBotToken::DefineNum( "CBotErrNoCase", 5020) ;		// manque " case "
-	CBotToken::DefineNum( "CBotErrBadNum", 5021) ;		// nombre attendu
-	CBotToken::DefineNum( "CBotErrVoid", 5022) ;		// " void " pas possible ici
-	CBotToken::DefineNum( "CBotErrNoType", 5023) ;		// déclaration de type attendue
-	CBotToken::DefineNum( "CBotErrNoVar", 5024) ;		// nom de variable attendu
-	CBotToken::DefineNum( "CBotErrNoFunc", 5025) ;		// nom de fonction attendu
-	CBotToken::DefineNum( "CBotErrOverParam", 5026) ;	// trop de paramètres
-	CBotToken::DefineNum( "CBotErrRedefFunc", 5027) ;	// cette fonction existe déjà
-	CBotToken::DefineNum( "CBotErrLowParam", 5028) ;	// pas assez de paramètres
-	CBotToken::DefineNum( "CBotErrBadParam", 5029) ;	// mauvais types de paramètres
-	CBotToken::DefineNum( "CBotErrNbParam", 5030) ;		// mauvais nombre de paramètres
-	CBotToken::DefineNum( "CBotErrUndefItem", 5031) ;	// élément n'existe pas dans la classe
-	CBotToken::DefineNum( "CBotErrUndefClass", 5032) ;	// variable n'est pas une classe
-	CBotToken::DefineNum( "CBotErrNoConstruct", 5033) ;	// pas de constructeur approprié
-	CBotToken::DefineNum( "CBotErrRedefClass", 5034) ;	// classe existe déjà
-	CBotToken::DefineNum( "CBotErrCloseIndex", 5035) ;	// " ] " attendu
-	CBotToken::DefineNum( "CBotErrReserved", 5036) ;	// mot réservé (par un DefineNum)
+	CBotToken::DefineNum( "CBotErrOpenPar", 5000) ;		// missing the opening parenthesis
+	CBotToken::DefineNum( "CBotErrClosePar", 5001) ;	// missing the closing parenthesis
+	CBotToken::DefineNum( "CBotErrNotBoolean", 5002) ;	// expression must be a boolean
+	CBotToken::DefineNum( "CBotErrUndefVar", 5003) ;	// undeclared variable
+	CBotToken::DefineNum( "CBotErrBadLeft", 5004) ;		// impossible assignment (5 = ...)
+	CBotToken::DefineNum( "CBotErrNoTerminator", 5005) ;// semicolon expected
+	CBotToken::DefineNum( "CBotErrCaseOut", 5006) ;		// case outside a switch
+	CBotToken::DefineNum( "CBotErrCloseBlock", 5008) ;	// missing " } "
+	CBotToken::DefineNum( "CBotErrElseWhitoutIf", 5009) ;// else without matching if
+	CBotToken::DefineNum( "CBotErrOpenBlock", 5010) ;	// missing " { "
+	CBotToken::DefineNum( "CBotErrBadType1", 5011) ;	// wrong type for the assignment
+	CBotToken::DefineNum( "CBotErrRedefVar", 5012) ;	// redefinition of the variable
+	CBotToken::DefineNum( "CBotErrBadType2", 5013) ;	// two operands are incompatible
+	CBotToken::DefineNum( "CBotErrUndefCall", 5014) ;	// routine unknown
+	CBotToken::DefineNum( "CBotErrNoDoubleDots", 5015) ;// " : " expected
+	CBotToken::DefineNum( "CBotErrBreakOutside", 5017) ;// break outside of a loop
+	CBotToken::DefineNum( "CBotErrUndefLabel", 5019) ;	// unknown label
+	CBotToken::DefineNum( "CBotErrLabel", 5018) ;		// label can not get here
+	CBotToken::DefineNum( "CBotErrNoCase", 5020) ;		// missing " case "
+	CBotToken::DefineNum( "CBotErrBadNum", 5021) ;		// expected number
+	CBotToken::DefineNum( "CBotErrVoid", 5022) ;		// " void " not possble here
+	CBotToken::DefineNum( "CBotErrNoType", 5023) ;		// type declaration expected
+	CBotToken::DefineNum( "CBotErrNoVar", 5024) ;		// variable name expected
+	CBotToken::DefineNum( "CBotErrNoFunc", 5025) ;		// expected function name
+	CBotToken::DefineNum( "CBotErrOverParam", 5026) ;	// too many parameters
+	CBotToken::DefineNum( "CBotErrRedefFunc", 5027) ;	// this function already exists
+	CBotToken::DefineNum( "CBotErrLowParam", 5028) ;	// not enough parameters
+	CBotToken::DefineNum( "CBotErrBadParam", 5029) ;	// mauvais types de paramÃ¨tres
+	CBotToken::DefineNum( "CBotErrNbParam", 5030) ;		// wrong number of parameters
+	CBotToken::DefineNum( "CBotErrUndefItem", 5031) ;	// element does not exist in the class
+	CBotToken::DefineNum( "CBotErrUndefClass", 5032) ;	// variable is not a class
+	CBotToken::DefineNum( "CBotErrNoConstruct", 5033) ;	// no appropriate constructor
+	CBotToken::DefineNum( "CBotErrRedefClass", 5034) ;	// Class already exists
+	CBotToken::DefineNum( "CBotErrCloseIndex", 5035) ;	// " ] " expected
+	CBotToken::DefineNum( "CBotErrReserved", 5036) ;	// reserved word (for a DefineNum)
 
-// voici la liste des erreurs pouvant être retournées par le module
-// pour l'exécution
+// Here are the list of errors that can be returned by the module
+// for the execution
 
-	CBotToken::DefineNum( "CBotErrZeroDiv", 6000) ;		// division par zéro
-	CBotToken::DefineNum( "CBotErrNotInit", 6001) ;		// variable non initialisée
-	CBotToken::DefineNum( "CBotErrBadThrow", 6002) ;	// throw d'une valeur négative
-	CBotToken::DefineNum( "CBotErrNoRetVal", 6003) ;	// fonction n'a pas retourné de résultat
-	CBotToken::DefineNum( "CBotErrNoRun", 6004) ;		// Run() sans fonction active
-	CBotToken::DefineNum( "CBotErrUndefFunc", 6005) ;	// appel d'une fonction qui n'existe plus
+	CBotToken::DefineNum( "CBotErrZeroDiv", 6000) ;		// division by zero
+	CBotToken::DefineNum( "CBotErrNotInit", 6001) ;		// uninitialized variable
+	CBotToken::DefineNum( "CBotErrBadThrow", 6002) ;	// throw a negative value
+	CBotToken::DefineNum( "CBotErrNoRetVal", 6003) ;	// function did not return results
+	CBotToken::DefineNum( "CBotErrNoRun", 6004) ;		// active Run () without a function
+	CBotToken::DefineNum( "CBotErrUndefFunc", 6005) ;	// Calling a function that no longer exists
 
 	CBotProgram::AddFunction("sizeof", rSizeOf, cSizeOf );
 
 	InitStringFunctions();
 
-	// une fonction juste pour les debug divers
+	// just a function for various debug
 	CBotProgram::AddFunction("CBOTDEBUGDD", rCBotDebug, cCBotDebug);
     //TODO implement this deletion
     // DeleteFile("CbotDebug.txt");
