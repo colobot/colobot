@@ -21,16 +21,16 @@
 // for example
 // int var = 3 * ( pos.y + x )
 // is decomposed into (each line is a token)
-//		int
-//		var
-//		=
-//		3
-//		*
-//		(
-//		pos.y
-//		+
-//		x
-//		)
+//      int
+//      var
+//      =
+//      3
+//      *
+//      (
+//      pos.y
+//      +
+//      x
+//      )
 
 #pragma once
 

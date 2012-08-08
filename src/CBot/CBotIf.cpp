@@ -22,17 +22,17 @@
 // various constructors / destructors
 CBotIf::CBotIf()
 {
-	m_Condition =
-	m_Block		=
-	m_BlockElse	= NULL;			// NULL so that delete is not possible further
-	name = "CBotIf";			// debug
+    m_Condition =
+    m_Block     =
+    m_BlockElse = NULL;         // NULL so that delete is not possible further
+    name = "CBotIf";            // debug
 }
 
 CBotIf::~CBotIf()
 {
-	delete	m_Condition;		// frees the condition
-	delete	m_Block;			// frees the block of instruction1
-	delete	m_BlockElse;		// frees the block of instruction2
+    delete  m_Condition;        // frees the condition
+    delete  m_Block;            // frees the block of instruction1
+    delete  m_BlockElse;        // frees the block of instruction2
 }
 
 // compilation (static routine)
@@ -40,47 +40,47 @@ CBotIf::~CBotIf()
 
 CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-	CBotToken*	pp = p;							// preserves at the ^ token (starting instruction)
+    CBotToken*  pp = p;                         // preserves at the ^ token (starting instruction)
 
-	if (!IsOfType(p, ID_IF)) return NULL;		// should never happen
+    if (!IsOfType(p, ID_IF)) return NULL;       // should never happen
 
-	CBotCStack* pStk = pStack->TokenStack(pp);	// un petit bout de pile svp
+    CBotCStack* pStk = pStack->TokenStack(pp);  // un petit bout de pile svp
 
-	CBotIf*	inst = new CBotIf();				// create the object
-	inst->SetToken( pp );
+    CBotIf* inst = new CBotIf();                // create the object
+    inst->SetToken( pp );
 
-	if ( NULL != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
-	{
-		// the condition does exist
+    if ( NULL != (inst->m_Condition = CBotCondition::Compile( p, pStk )) )
+    {
+        // the condition does exist
 
-		inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, true );
-		if ( pStk->IsOk() )
-		{
-			// the statement block is ok (can be empty)
+        inst->m_Block = CBotBlock::CompileBlkOrInst( p, pStk, true );
+        if ( pStk->IsOk() )
+        {
+            // the statement block is ok (can be empty)
 
-			// see if the next instruction is the token "else"
-			if (IsOfType(p, ID_ELSE))
-			{
-				// if so, compiles the following statement block
-				inst->m_BlockElse = CBotBlock::CompileBlkOrInst( p, pStk, true );
-				if (!pStk->IsOk())
-				{
-					// there is no correct block after the else
-					// frees the object, and transmits the error that is on the stack
-					delete inst;
-					return pStack->Return(NULL, pStk);
-				}
-			}
+            // see if the next instruction is the token "else"
+            if (IsOfType(p, ID_ELSE))
+            {
+                // if so, compiles the following statement block
+                inst->m_BlockElse = CBotBlock::CompileBlkOrInst( p, pStk, true );
+                if (!pStk->IsOk())
+                {
+                    // there is no correct block after the else
+                    // frees the object, and transmits the error that is on the stack
+                    delete inst;
+                    return pStack->Return(NULL, pStk);
+                }
+            }
 
-			// return the corrent object to the application
-			return pStack->Return(inst, pStk);
-		}
-	}
+            // return the corrent object to the application
+            return pStack->Return(inst, pStk);
+        }
+    }
 
-	// error, frees the object
-	delete inst;
-	// and transmits the error that is on the stack.
-	return pStack->Return(NULL, pStk);
+    // error, frees the object
+    delete inst;
+    // and transmits the error that is on the stack.
+    return pStack->Return(NULL, pStk);
 }
 
 
@@ -88,74 +88,74 @@ CBotInstr* CBotIf::Compile(CBotToken* &p, CBotCStack* pStack)
 
 bool CBotIf :: Execute(CBotStack* &pj)
 {
-	CBotStack* pile = pj->AddStack(this);		// adds an item to the stack
-												// or found in case of recovery
-//	if ( pile == EOX ) return true;
+    CBotStack* pile = pj->AddStack(this);       // adds an item to the stack
+                                                // or found in case of recovery
+//  if ( pile == EOX ) return true;
 
-	if ( pile->IfStep() ) return false;
+    if ( pile->IfStep() ) return false;
 
-	// according to recovery, it may be in one of two states
-	if( pile->GivState() == 0 )
-	{
-		// evaluates the condition
-		if ( !m_Condition->Execute(pile) ) return false;	// interrupted here?
+    // according to recovery, it may be in one of two states
+    if( pile->GivState() == 0 )
+    {
+        // evaluates the condition
+        if ( !m_Condition->Execute(pile) ) return false;    // interrupted here?
 
-		// terminates if there is an error
-		if ( !pile->IsOk() )
-		{
-			return pj->Return(pile);						// returns the results and releases the stack
-		}
+        // terminates if there is an error
+        if ( !pile->IsOk() )
+        {
+            return pj->Return(pile);                        // returns the results and releases the stack
+        }
 
-		// passes into the second state
-		if (!pile->SetState(1)) return false;				// ready for further
-	}
-	
-	// second state, evaluates the associated instructions
-	// the result of the condition is on the stack
+        // passes into the second state
+        if (!pile->SetState(1)) return false;               // ready for further
+    }
+    
+    // second state, evaluates the associated instructions
+    // the result of the condition is on the stack
 
-	if ( pile->GivVal() == true )							// condition was true?
-	{
-		if ( m_Block != NULL &&								// block may be absent
-			!m_Block->Execute(pile) ) return false;			// interrupted here?
-	}
-	else
-	{
-		if ( m_BlockElse != NULL &&							// if there is an alternate block
-			!m_BlockElse->Execute(pile) ) return false;	// interrupted here
-	}
+    if ( pile->GivVal() == true )                           // condition was true?
+    {
+        if ( m_Block != NULL &&                             // block may be absent
+            !m_Block->Execute(pile) ) return false;         // interrupted here?
+    }
+    else
+    {
+        if ( m_BlockElse != NULL &&                         // if there is an alternate block
+            !m_BlockElse->Execute(pile) ) return false; // interrupted here
+    }
 
-	// sends the results and releases the stack
-	return pj->Return(pile);
+    // sends the results and releases the stack
+    return pj->Return(pile);
 }
 
 
 void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
 {
-	if ( !bMain ) return;
+    if ( !bMain ) return;
 
-	CBotStack* pile = pj->RestoreStack(this);		// adds an item to the stack
-	if ( pile == NULL ) return;
+    CBotStack* pile = pj->RestoreStack(this);       // adds an item to the stack
+    if ( pile == NULL ) return;
 
-	// according to recovery, it may be in one of two states
-	if( pile->GivState() == 0 )
-	{
-		// evaluates the condition
-		m_Condition->RestoreState(pile, bMain);	// interrupted here!
-		return;
-	}
-	
-	// second state, evaluates the associated instructions
-	// the result of the condition is on the stack
+    // according to recovery, it may be in one of two states
+    if( pile->GivState() == 0 )
+    {
+        // evaluates the condition
+        m_Condition->RestoreState(pile, bMain); // interrupted here!
+        return;
+    }
+    
+    // second state, evaluates the associated instructions
+    // the result of the condition is on the stack
 
-	if ( pile->GivVal() == true )							// condition was true?
-	{
-		if ( m_Block != NULL )								// block may be absent
-			 m_Block->RestoreState(pile, bMain);			// interrupted here!
-	}
-	else
-	{
-		if ( m_BlockElse != NULL )							// if there is an alternate block
-			 m_BlockElse->RestoreState(pile, bMain);		// interrupted here!
-	}
+    if ( pile->GivVal() == true )                           // condition was true?
+    {
+        if ( m_Block != NULL )                              // block may be absent
+             m_Block->RestoreState(pile, bMain);            // interrupted here!
+    }
+    else
+    {
+        if ( m_BlockElse != NULL )                          // if there is an alternate block
+             m_BlockElse->RestoreState(pile, bMain);        // interrupted here!
+    }
 }
 

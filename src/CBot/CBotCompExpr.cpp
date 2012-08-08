@@ -16,7 +16,7 @@
 
 ///////////////////////////////////////////////////
 // expression of type Opérande1 > Opérande2
-//					   Opérande1 != Opérande2
+//                     Opérande1 != Opérande2
 // etc.
 
 #include "CBot.h"
@@ -25,15 +25,15 @@
 
 CBotCompExpr::CBotCompExpr()
 {
-	m_leftop	=
-	m_rightop	= NULL;
-	name = "CBotCompExpr";
+    m_leftop    =
+    m_rightop   = NULL;
+    name = "CBotCompExpr";
 }
 
 CBotCompExpr::~CBotCompExpr()
 {
-	delete	m_leftop;
-	delete	m_rightop;
+    delete  m_leftop;
+    delete  m_rightop;
 }
 
 fichier plus utilise;
@@ -42,44 +42,44 @@ fichier plus utilise;
 
 CBotInstr* CBotCompExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 {
-	CBotCStack* pStk = pStack->AddStack();
+    CBotCStack* pStk = pStack->AddStack();
 
-	CBotInstr*	left = CBotAddExpr::Compile( p, pStk );		// expression A + B left
-	if (left == NULL) return pStack->Return(NULL, pStk);	// error
+    CBotInstr*  left = CBotAddExpr::Compile( p, pStk );     // expression A + B left
+    if (left == NULL) return pStack->Return(NULL, pStk);    // error
 
-	if ( p->GetType() == ID_HI ||
-		 p->GetType() == ID_LO ||
-		 p->GetType() == ID_HS ||
-		 p->GetType() == ID_LS ||
-		 p->GetType() == ID_EQ ||
-		 p->GetType() == ID_NE)								// the various comparisons
-	{
-		CBotCompExpr* inst = new CBotCompExpr();			// element for operation
-		inst->SetToken(p);									// stores the operation
+    if ( p->GetType() == ID_HI ||
+         p->GetType() == ID_LO ||
+         p->GetType() == ID_HS ||
+         p->GetType() == ID_LS ||
+         p->GetType() == ID_EQ ||
+         p->GetType() == ID_NE)                             // the various comparisons
+    {
+        CBotCompExpr* inst = new CBotCompExpr();            // element for operation
+        inst->SetToken(p);                                  // stores the operation
 
-		int			 type1, type2;
-		type1 = pStack->GetType();
+        int          type1, type2;
+        type1 = pStack->GetType();
 
-		p = p->Next();
-		if ( NULL != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )	// expression A + B right
-		{
-			type2 = pStack->GetType();
-			// are the results compatible
-			if ( type1 == type2 )
-			{
-				inst->m_leftop = left;
-				pStk->SetVar(new CBotVar(NULL, CBotTypBoolean));
-															// the result is a boolean
-				return pStack->Return(inst, pStk);
-			}
-		}
+        p = p->Next();
+        if ( NULL != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )  // expression A + B right
+        {
+            type2 = pStack->GetType();
+            // are the results compatible
+            if ( type1 == type2 )
+            {
+                inst->m_leftop = left;
+                pStk->SetVar(new CBotVar(NULL, CBotTypBoolean));
+                                                            // the result is a boolean
+                return pStack->Return(inst, pStk);
+            }
+        }
 
-		delete left;
-		delete inst;
-		return pStack->Return(NULL, pStk);
-	}
+        delete left;
+        delete inst;
+        return pStack->Return(NULL, pStk);
+    }
 
-	return pStack->Return(left, pStk);
+    return pStack->Return(left, pStk);
 }
 
 
@@ -87,47 +87,47 @@ CBotInstr* CBotCompExpr::Compile(CBotToken* &p, CBotCStack* pStack)
 
 bool CBotCompExpr::Execute(CBotStack* &pStack)
 {
-	CBotStack* pStk1 = pStack->AddStack(this);
-//	if ( pStk1 == EOX ) return TRUE;
+    CBotStack* pStk1 = pStack->AddStack(this);
+//  if ( pStk1 == EOX ) return TRUE;
 
-	if ( pStk1->GetState() == 0 && !m_leftop->Execute(pStk1) ) return FALSE; // interrupted here ?
+    if ( pStk1->GetState() == 0 && !m_leftop->Execute(pStk1) ) return FALSE; // interrupted here ?
 
-	pStk1->SetState(1);		// finished
+    pStk1->SetState(1);     // finished
 
-	// requires a little more stack to not touch the result of the left
-	CBotStack* pStk2 = pStk1->AddStack();
+    // requires a little more stack to not touch the result of the left
+    CBotStack* pStk2 = pStk1->AddStack();
 
-	if ( !m_rightop->Execute(pStk2) ) return FALSE; // interrupted here ?
+    if ( !m_rightop->Execute(pStk2) ) return FALSE; // interrupted here ?
 
-	int		type1 = pStk1->GetType();
-	int		type2 = pStk2->GetType();
+    int     type1 = pStk1->GetType();
+    int     type2 = pStk2->GetType();
 
-	CBotVar*	result = new CBotVar( NULL, CBotTypBoolean );
+    CBotVar*    result = new CBotVar( NULL, CBotTypBoolean );
 
-	switch (GetTokenType())
-	{
-	case ID_LO:
-		result->Lo(pStk1->GetVar(), pStk2->GetVar());		// lower
-		break;
-	case ID_HI:
-		result->Hi(pStk1->GetVar(), pStk2->GetVar());		// higher
-		break;
-	case ID_LS:
-		result->Ls(pStk1->GetVar(), pStk2->GetVar());		// lower or equal
-		break;
-	case ID_HS:
-		result->Hs(pStk1->GetVar(), pStk2->GetVar());		// higher of equal
-		break;
-	case ID_EQ:
-		result->Eq(pStk1->GetVar(), pStk2->GetVar());		// equal
-		break;
-	case ID_NE:
-		result->Ne(pStk1->GetVar(), pStk2->GetVar());		// not equal
-		break;
-	}
-	pStk2->SetVar(result);				// puts the result on the stack
+    switch (GetTokenType())
+    {
+    case ID_LO:
+        result->Lo(pStk1->GetVar(), pStk2->GetVar());       // lower
+        break;
+    case ID_HI:
+        result->Hi(pStk1->GetVar(), pStk2->GetVar());       // higher
+        break;
+    case ID_LS:
+        result->Ls(pStk1->GetVar(), pStk2->GetVar());       // lower or equal
+        break;
+    case ID_HS:
+        result->Hs(pStk1->GetVar(), pStk2->GetVar());       // higher of equal
+        break;
+    case ID_EQ:
+        result->Eq(pStk1->GetVar(), pStk2->GetVar());       // equal
+        break;
+    case ID_NE:
+        result->Ne(pStk1->GetVar(), pStk2->GetVar());       // not equal
+        break;
+    }
+    pStk2->SetVar(result);              // puts the result on the stack
 
-	pStk1->Return(pStk2);				// frees the stack
-	return pStack->Return(pStk1);		// transmit the result
+    pStk1->Return(pStk2);               // frees the stack
+    return pStack->Return(pStk1);       // transmit the result
 }
 
