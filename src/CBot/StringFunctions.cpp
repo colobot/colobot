@@ -12,27 +12,29 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.// définition des fonctions sur les chaînes
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+// definition of string functions
 
 
-// donne la longueur d'une chaîne
-// exécution
+// gives the length of a chain
+// execution
 
 bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// pas de second paramètre
+	// no second parameter
 	if ( pVar->GivNext() != NULL ) { ex = TX_OVERPARAM ; return true; }
 
-	// recupére le contenu de la string
+	// get the contents of the string
 	CBotString	s = pVar->GivValString();
 
-	// met la longueur sur la pile
+	// puts the length of the stack
 	pResult->SetValInt( s.GivLength() );
 	return true;
 }
@@ -42,52 +44,52 @@ bool rStrLen( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
 CBotTypResult cIntStr( CBotVar* &pVar, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( TX_BADPARAM );
 
-	// pas de second paramètre
+	// no second parameter
 	if ( pVar->GivNext() != NULL ) return CBotTypResult( TX_OVERPARAM );
 
-	// le résultat final est un nombre entier
+	// the end result is an integer
 	return CBotTypResult( CBotTypInt );
 }
 
 
-// donne la partie gauche d'une chaîne
-// exécution
+// gives the left side of a chain
+// execution
 
 bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// recupére le contenu de la string
+	// get the contents of the string
 	CBotString	s = pVar->GivValString();
 
-	// il faut un second paramètre
+	// it takes a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être un nombre
+	// which must be a number
 	if ( pVar->GivType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
 
-	// récupère ce nombre
+	// retrieves this number
 	int n = pVar->GivValInt();
 
-	// pas de 3e paramètre
+	// no third parameter
 	if ( pVar->GivNext() != NULL ) { ex = TX_OVERPARAM ; return true; }
 
-	// prend la partie intéressante
+	// takes the interesting part
 	s = s.Left( n );
 
-	// la met sur la pile
+	// puts on the stack
 	pResult->SetValString( s );
 	return true;
 }
@@ -97,173 +99,173 @@ bool rStrLeft( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
 CBotTypResult cStrStrInt( CBotVar* &pVar, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( TX_BADSTRING );
 
-	// il faut un second paramètre
+	// it takes a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être un nombre
+	// which must be a number
 	if ( pVar->GivType() > CBotTypDouble )
 						return CBotTypResult( TX_BADNUM );
 
-	// pas de 3e paramètre
+	// no third parameter
 	if ( pVar->GivNext() != NULL ) return CBotTypResult( TX_OVERPARAM );
 
-	// le résultat final est une string
+	// the end result is a string
 	return CBotTypResult( CBotTypString );
 }
 
-// donne la partie droite d'une chaîne
-// exécution
+// gives the right of a string
+// execution
 
 bool rStrRight( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// recupére le contenu de la string
+	// get the contents of the string
 	CBotString	s = pVar->GivValString();
 
-	// il faut un second paramètre
+	// it takes a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être un nombre
+	// which must be a number
 	if ( pVar->GivType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
 
-	// récupère ce nombre
+	// retrieves this number
 	int n = pVar->GivValInt();
 
-	// pas de 3e paramètre
+	// no third parameter
 	if ( pVar->GivNext() != NULL ) { ex = TX_OVERPARAM ; return true; }
 
-	// prend la partie intéressante
+	// takes the interesting part
 	s = s.Right( n );
 
-	// la met sur la pile
+	// puts on the stack
 	pResult->SetValString( s );
 	return true;
 }
 
-// donne la partie centrale d'une chaîne
-// exécution
+// gives the central part of a chain
+// execution
 
 bool rStrMid( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// recupére le contenu de la string
+	// get the contents of the string
 	CBotString	s = pVar->GivValString();
 
-	// il faut un second paramètre
+	// it takes a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être un nombre
+	// which must be a number
 	if ( pVar->GivType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
 
-	// récupère ce nombre
+	// retrieves this number
 	int n = pVar->GivValInt();
 
-	// 3e paramètre optionnel
+	// third parameter optional
 	if ( pVar->GivNext() != NULL )
 	{
 		pVar = pVar->GivNext();
 	
-		// qui doit être un nombre
+		// which must be a number
 		if ( pVar->GivType() > CBotTypDouble ) { ex = TX_BADNUM ; return true; }
 	
-		// récupère ce nombre
+		// retrieves this number
 		int l = pVar->GivValInt();
 
-		// mais pas de 4e paramètre
+		// but no fourth parameter
 		if ( pVar->GivNext() != NULL ){ ex = TX_OVERPARAM ; return true; }
 
-		// prend la partie intéressante
+		// takes the interesting part
 		s = s.Mid( n, l );
 	}
 	else
 	{
-		// prend la partie intéressante
+		// takes the interesting part
 		s = s.Mid( n );
 	}
 
-	// la met sur la pile
+	// puts on the stack
 	pResult->SetValString( s );
 	return true;
 }
 
-// donne la partie centrale d'une chaîne
+// gives the central part of a chain
 // compilation
 
 CBotTypResult cStrStrIntInt( CBotVar* &pVar, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( TX_BADSTRING );
 
-	// il faut un second paramètre
+	// it takes a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être un nombre
+	// which must be a number
 	if ( pVar->GivType() > CBotTypDouble )
 						return CBotTypResult( TX_BADNUM );
 
-	// 3e paramètre optionnel
+	// third parameter optional
 	if ( pVar->GivNext() != NULL )
 	{
 	
 		pVar = pVar->GivNext();
-		// qui doit être un nombre
+		// which must be a number
 		if ( pVar->GivType() > CBotTypDouble )
 							return CBotTypResult( TX_BADNUM );
 
-		// pas de 4e paramètre
+		// no fourth parameter
 		if ( pVar->GivNext() != NULL ) return CBotTypResult( TX_OVERPARAM );
 	}
 
-	// le résultat final est une string
+	// the end result is a string
 	return CBotTypResult( CBotTypString );
 }
 
 
-// donne le nombre contenu dans une chaîne
-// exécution
+// gives the number stored in a string
+// execution
 
 bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// recupére le contenu de la string
+	// get the contents of the string
 	CBotString	s = pVar->GivValString();
 
-	// mais pas de 2e paramètre
+	// but no second parameter
 	if ( pVar->GivNext() != NULL ){ ex = TX_OVERPARAM ; return true; }
 
 	float val = GivNumFloat(s);
 
-	// la met la valeur sur la pile
+	// puts the value on the stack
 	pResult->SetValFloat( val );
 	return true;
 }
@@ -273,49 +275,49 @@ bool rStrVal( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
 CBotTypResult cFloatStr( CBotVar* &pVar, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( TX_BADSTRING );
 
-	// pas de 2e paramètre
+	// no second parameter
 	if ( pVar->GivNext() != NULL ) return CBotTypResult( TX_OVERPARAM );
 
-	// le résultat final est un nombre
+	// the end result is a number
 	return CBotTypResult( CBotTypFloat );
 }
 
 
-// trouve une chaine dans une autre
-// exécution
+// find string in other
+// exÃ©cution
 
 bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// recupére le contenu de la string
+	// get the contents of the string
 	CBotString	s = pVar->GivValString();
 
-	// il faut un second paramètre
+	// it takes a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// récupère ce nombre
+	// retrieves this number
 	CBotString s2 = pVar->GivValString();
 
-	// pas de 3e paramètre
+	// no third parameter
 	if ( pVar->GivNext() != NULL ) { ex = TX_OVERPARAM ; return true; }
 
-	// met le résultat sur la pile
+	// puts the result on the stack
 	int res = s.Find(s2);
 	pResult->SetValInt( res );
 	if ( res < 0 ) pResult->SetInit( IS_NAN );
@@ -327,74 +329,74 @@ bool rStrFind( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
 CBotTypResult cIntStrStr( CBotVar* &pVar, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( TX_BADSTRING );
 
-	// il faut un second paramètre
+	// it takes a second parameter
 	pVar = pVar->GivNext();
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( TX_BADSTRING );
 
-	// pas de 3e paramètre
+	// no third parameter
 	if ( pVar->GivNext() != NULL ) return CBotTypResult( TX_OVERPARAM );
 
-	// le résultat final est un nombre
+	// the end result is a number
 	return CBotTypResult( CBotTypInt );
 }
 
-// donne une chaine en majuscule
-// exécution
+// gives a string to uppercase
+// exÃ©cution
 
 bool rStrUpper( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// recupére le contenu de la string
+	// get the contents of the string
 	CBotString	s = pVar->GivValString();
 
-	// mais pas de 2e paramètre
+	// but no second parameter
 	if ( pVar->GivNext() != NULL ){ ex = TX_OVERPARAM ; return true; }
 
 
 	s.MakeUpper();
 
-	// la met la valeur sur la pile
+	// puts the value on the stack
 	pResult->SetValString( s );
 	return true;
 }
 
-// donne une chaine en minuscules
-// exécution
+// gives a string to lowercase
+// exÃ©cution
 
 bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) { ex = TX_LOWPARAM ; return true; }
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString ) { ex = TX_BADSTRING ; return true; }
 
-	// recupére le contenu de la string
+	// get the contents of the string
 	CBotString	s = pVar->GivValString();
 
-	// mais pas de 2e paramètre
+	// but no second parameter
 	if ( pVar->GivNext() != NULL ){ ex = TX_OVERPARAM ; return true; }
 
 
 	s.MakeLower();
 
-	// la met la valeur sur la pile
+	// puts the value on the stack
 	pResult->SetValString( s );
 	return true;
 }
@@ -404,17 +406,17 @@ bool rStrLower( CBotVar* pVar, CBotVar* pResult, int& ex, void* pUser )
 
 CBotTypResult cStrStr( CBotVar* &pVar, void* pUser )
 {
-	// il faut un paramètre
+	// it takes a parameter
 	if ( pVar == NULL ) return CBotTypResult( TX_LOWPARAM );
 
-	// qui doit être une string
+	// to be a string
 	if ( pVar->GivType() != CBotTypString )
 						return CBotTypResult( TX_BADSTRING );
 
-	// pas de 2e paramètre
+	// no second parameter
 	if ( pVar->GivNext() != NULL ) return CBotTypResult( TX_OVERPARAM );
 
-	// le résultat final est une string
+	// the end result is a string
 	return CBotTypResult( CBotTypString );
 }
 

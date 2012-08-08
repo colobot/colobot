@@ -26,7 +26,7 @@
 	#error include 'stdafx.h' before including this file for PCH
 #endif
 
-#include "resource.h"       // main symbols
+#include "resource.h"       	// main symbols
 //#include "../CbotDll.h"	// librairie CBot
 #include "../Cbot.h"		// complet pour Browse
 
@@ -43,7 +43,7 @@ public:
 	CTestCBotApp();
 
 	CEdit*			m_pConsole;
-	CTestCBotView*	m_LastActive;
+	CTestCBotView*		m_LastActive;
 	CBotClass*		m_pClassPoint;
 	CBotClass*		m_pClassPointIntr;
 
