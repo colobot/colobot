@@ -72,7 +72,7 @@ public:
     CWater(CInstanceManager* iMan, Gfx::CEngine* engine);
     ~CWater();
 
-    void        SetGLDevice(Gfx::CDevice device);
+    void        SetDevice(Gfx::CDevice* device);
     bool        EventProcess(const Event &event);
     void        Flush();
     bool        Create(WaterType type1, WaterType type2, const char *filename, Gfx::Color diffuse, Gfx::Color ambient, float level, float glint, Math::Vector eddy);
@@ -80,11 +80,11 @@ public:
     void        DrawSurf();
 
     bool        SetLevel(float level);
-    float       RetLevel();
-    float       RetLevel(CObject* object);
+    float       GetLevel();
+    float       GetLevel(CObject* object);
 
     void        SetLava(bool bLava);
-    bool        RetLava();
+    bool        GetLava();
 
     void        AdjustEye(Math::Vector &eye);
 
@@ -92,7 +92,7 @@ protected:
     bool        EventFrame(const Event &event);
     void        LavaFrame(float rTime);
     void        AdjustLevel(Math::Vector &pos, Math::Vector &norm, Math::Point &uv1, Math::Point &uv2);
-    bool        RetWater(int x, int y);
+    bool        GetWater(int x, int y);
     bool        CreateLine(int x, int y, int len);
 
     void        VaporFlush();
@@ -101,8 +101,8 @@ protected:
 
 protected:
     CInstanceManager*   m_iMan;
-    CEngine*        m_engine;
-    CDevice*            m_pDevice;
+    CEngine*            m_engine;
+    CDevice*            m_device;
     CTerrain*           m_terrain;
     CParticle*          m_particule;
     CSound*             m_sound;

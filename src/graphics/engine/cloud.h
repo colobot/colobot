@@ -56,10 +56,10 @@ public:
     void        Draw();
 
     bool        SetLevel(float level);
-    float       RetLevel();
+    float       GetLevel();
 
     void        SetEnable(bool bEnable);
-    bool        RetEnable();
+    bool        GetEnable();
 
 protected:
     bool        EventFrame(const Event &event);
