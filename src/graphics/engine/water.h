@@ -19,50 +19,64 @@
 
 #pragma once
 
-#include "graphics/engine/engine.h"
-#include "graphics/engine/particle.h"
 #include "common/event.h"
+#include "graphics/engine/particle.h"
 
 
 class CInstanceManager;
-class CSound;
+class CSoundInterface;
 
 
 namespace Gfx {
 
+class CEngine;
 class CTerrain;
-
-
-const short MAXWATERLINE = 500;
 
 struct WaterLine
 {
-    short       x, y;       // beginning
-    short       len;        // length by x
+    //! Beginning
+    short       x, y;
+    //! Length by x
+    short       len;
     float       px1, px2, pz;
+
+    WaterLine()
+    {
+        x = y = 0;
+        len = 0;
+        px1 = px2 = pz = 0.0f;
+    }
 };
-
-
-const short MAXWATVAPOR = 10;
 
 struct WaterVapor
 {
-    bool            bUsed;
-    ParticleType   type;
-    Math::Vector        pos;
-    float           delay;
-    float           time;
-    float           last;
-};
+    bool              used;
+    Gfx::ParticleType type;
+    Math::Vector      pos;
+    float             delay;
+    float             time;
+    float             last;
 
+    WaterVapor()
+    {
+        used = false;
+        type = Gfx::PARTIWATER;
+        delay = time = last = 0.0f;
+    }
+};
 
 enum WaterType
 {
-    WATER_NULL      = 0,    // no water
-    WATER_TT        = 1,    // transparent texture
-    WATER_TO        = 2,    // opaque texture
-    WATER_CT        = 3,    // transparent color
-    WATER_CO        = 4,    // opaque color
+    //! No water
+    WATER_NULL      = 0,
+    //! Transparent texture
+    WATER_TT        = 1,
+    //! Opaque texture
+    WATER_TO        = 2,
+    //! Transparent color
+    WATER_CT        = 3,
+    //! Opaque color
+    WATER_CO        = 4,
 };
 
 
@@ -74,61 +88,86 @@ public:
 
     void        SetDevice(Gfx::CDevice* device);
     bool        EventProcess(const Event &event);
+    //! Removes all the water
     void        Flush();
-    bool        Create(WaterType type1, WaterType type2, const char *filename, Gfx::Color diffuse, Gfx::Color ambient, float level, float glint, Math::Vector eddy);
+    //! Creates all expanses of water
+    void        Create(WaterType type1, WaterType type2, const std::string& fileName,
+                       Gfx::Color diffuse, Gfx::Color ambient, float level, float glint, Math::Vector eddy);
+    //! Draw the back surface of the water
     void        DrawBack();
+    //! Draws the flat surface of the water
     void        DrawSurf();
 
-    bool        SetLevel(float level);
+    //! Changes the level of the water
+    void        SetLevel(float level);
+    //! Returns the current level of water
     float       GetLevel();
+    //! Returns the current level of water for a given object
     float       GetLevel(CObject* object);
 
-    void        SetLava(bool bLava);
+    //@{
+    //! Management of the mode of lava/water
+    void        SetLava(bool lava);
     bool        GetLava();
+    //@}
 
+    //! Adjusts the eye of the camera, not to be in the water
     void        AdjustEye(Math::Vector &eye);
 
 protected:
+    //! Makes water evolve
     bool        EventFrame(const Event &event);
+    //! Makes evolve the steam jets on the lava
     void        LavaFrame(float rTime);
+    //! Adjusts the position to normal, to imitate reflections on an expanse of water at rest
     void        AdjustLevel(Math::Vector &pos, Math::Vector &norm, Math::Point &uv1, Math::Point &uv2);
+    //! Indicates if there is water in a given position
     bool        GetWater(int x, int y);
-    bool        CreateLine(int x, int y, int len);
+    //! Updates the positions, relative to the ground
+    void        CreateLine(int x, int y, int len);
 
+    //! Removes all the steam jets
     void        VaporFlush();
+    //! Creates a new steam
     bool        VaporCreate(ParticleType type, Math::Vector pos, float delay);
+    //! Makes evolve a steam jet
     void        VaporFrame(int i, float rTime);
 
 protected:
-    CInstanceManager*   m_iMan;
-    CEngine*            m_engine;
-    CDevice*            m_device;
-    CTerrain*           m_terrain;
-    CParticle*          m_particule;
-    CSound*             m_sound;
+    CInstanceManager* m_iMan;
+    Gfx::CEngine*     m_engine;
+    Gfx::CDevice*     m_device;
+    Gfx::CTerrain*    m_terrain;
+    Gfx::CParticle*   m_particule;
+    CSoundInterface*  m_sound;
 
     WaterType       m_type[2];
-    char            m_filename[100];
-    float           m_level;        // overall level
-    float           m_glint;        // amplitude of reflections
-    Math::Vector        m_eddy;         // amplitude of swirls
-    Gfx::Color      m_diffuse;      // diffuse color
-    Gfx::Color      m_ambient;      // ambient color
+    std::string     m_fileName;
+    //! Overall level
+    float           m_level;
+    //! Amplitude of reflections
+    float           m_glint;
+    //! Amplitude of swirls
+    Math::Vector    m_eddy;
+    //! Diffuse color
+    Gfx::Color      m_diffuse;
+    //! Ambient color
+    Gfx::Color      m_ambient;
     float           m_time;
     float           m_lastLava;
-    int         m_subdiv;
+    int             m_subdiv;
 
-    int         m_brick;        // number of brick*mosaics
-    float           m_size;         // size of a item in an brick
+    //! Number of brick*mosaics
+    int             m_brick;
+    //! Size of a item in an brick
+    float           m_size;
 
-    int         m_lineUsed;
-    WaterLine       m_line[MAXWATERLINE];
+    std::vector<WaterLine> m_line;
+    std::vector<WaterVapor> m_vapor;
 
-    WaterVapor      m_vapor[MAXWATVAPOR];
-
-    bool            m_bDraw;
-    bool            m_bLava;
-    long        m_color;
+    bool            m_draw;
+    bool            m_lava;
+    long            m_color;
 };
 
 }; // namespace Gfx
