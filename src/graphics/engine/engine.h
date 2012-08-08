@@ -552,6 +552,7 @@ public:
     //! Converts interface size to window size
     Math::IntSize   InterfaceToWindowSize(Math::Size size);
 
+    std::string     GetTextureDir();
 
     bool            WriteProfile();
 
@@ -606,7 +607,7 @@ public:
     bool            AddSurface(int objRank, Gfx::VertexTex2* vertex, int nb, const Gfx::Material &mat,
                                int state, std::string texName1, std::string texName2,
                                float min, float max, bool globalUpdate);
-    bool            AddQuick(int objRank, Gfx::EngineObjLevel5* buffer,
+    bool            AddQuick(int objRank, const Gfx::EngineObjLevel5& buffer,
                              std::string texName1, std::string texName2,
                              float min, float max, bool globalUpdate);
     Gfx::EngineObjLevel5* SearchTriangle(int objRank, const Gfx::Material &mat,

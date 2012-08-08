@@ -674,6 +674,11 @@ Math::IntSize Gfx::CEngine::InterfaceToWindowSize(Math::Size size)
                          static_cast<int>(size.h * m_size.h));
 }
 
+std::string Gfx::CEngine::GetTextureDir()
+{
+    return m_texPath;
+}
+
 void Gfx::CEngine::DrawMouse()
 {
     if (! m_mouseVisible)

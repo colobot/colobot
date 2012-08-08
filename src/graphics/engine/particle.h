@@ -260,7 +260,7 @@ public:
     CParticle(CInstanceManager* iMan, CEngine* engine);
     ~CParticle();
 
-    void        SetGLDevice(CDevice device);
+    void        SetDevice(CDevice* device);
 
     void        FlushParticle();
     void        FlushParticle(int sheet);
@@ -283,7 +283,7 @@ public:
     void        SetPhase(int channel, ParticlePhase phase, float duration);
     bool        GetPosition(int channel, Math::Vector &pos);
 
-    Gfx::Color RetFogColor(Math::Vector pos);
+    Gfx::Color GetFogColor(Math::Vector pos);
 
     void        SetFrameUpdate(int sheet, bool bUpdate);
     void        FrameParticle(float rTime);
@@ -311,7 +311,7 @@ protected:
 protected:
     CInstanceManager* m_iMan;
     CEngine*     m_engine;
-    CDevice*     m_pDevice;
+    CDevice*     m_device;
     CRobotMain*  m_main;
     CTerrain*    m_terrain;
     CWater*      m_water;
