@@ -16,7 +16,7 @@
 
 ///////////////////////////////////////////////////
 // expressions of type Operand1 + Operand2
-//					   Operand1 - Operand2
+//                     Operand1 - Operand2
 
 #include "CBot.h"
 
@@ -24,15 +24,15 @@
 
 CBotAddExpr::CBotAddExpr()
 {
-	m_leftop	=
-	m_rightop	= NULL;			// NULL to be able to delete without further
-	name = "CBotAddExpr";		// debug
+    m_leftop    =
+    m_rightop   = NULL;         // NULL to be able to delete without further
+    name = "CBotAddExpr";       // debug
 }
 
 CBotAddExpr::~CBotAddExpr()
 {
-	delete	m_leftop;
-	delete	m_rightop;
+    delete  m_leftop;
+    delete  m_rightop;
 }
 
 
@@ -40,54 +40,54 @@ CBotAddExpr::~CBotAddExpr()
 
 CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
 {
-	CBotStack* pStk = pStack->TokenStack();					// one end of stack please
+    CBotStack* pStk = pStack->TokenStack();                 // one end of stack please
 
-	// looking statements that may be suitable to the left of the operation + or -
+    // looking statements that may be suitable to the left of the operation + or -
 
-	CBotInstr*	left = CBotMulExpr::Compile( p, pStk );		// expression A * B left
-	if (left == NULL) return pStack->Return(NULL, pStk);	// if error, transmit
+    CBotInstr*  left = CBotMulExpr::Compile( p, pStk );     // expression A * B left
+    if (left == NULL) return pStack->Return(NULL, pStk);    // if error, transmit
 
-	// do we have the token + or - next?
+    // do we have the token + or - next?
 
-	if ( p->GetType() == ID_ADD ||
-		 p->GetType() == ID_SUB)							// more or less
-	{
-		CBotAddExpr* inst = new CBotAddExpr();				// element for operation
-		inst->SetToken(p);									// stores the operation
+    if ( p->GetType() == ID_ADD ||
+         p->GetType() == ID_SUB)                            // more or less
+    {
+        CBotAddExpr* inst = new CBotAddExpr();              // element for operation
+        inst->SetToken(p);                                  // stores the operation
 
-		int			 type1, type2;
-		type1 = pStack->GetType();							// what kind of the first operand?
+        int          type1, type2;
+        type1 = pStack->GetType();                          // what kind of the first operand?
 
-		p = p->Next();										// skip the token of the operation
+        p = p->Next();                                      // skip the token of the operation
 
-		// looking statements that may be suitable for right
+        // looking statements that may be suitable for right
 
-		if ( NULL != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )	// expression (...) rigth
-		{
-			// there is an acceptable second operand
+        if ( NULL != (inst->m_rightop = CBotAddExpr::Compile( p, pStk )) )  // expression (...) rigth
+        {
+            // there is an acceptable second operand
 
-			type2 = pStack->GetType();						// what kind of results?
+            type2 = pStack->GetType();                      // what kind of results?
 
-			if ( type1 == type2 )							// are the results consistent ?
-			{
-				// ok so, saves the operand in the object
-				inst->m_leftop = left;
-				// and makes the object on demand
-				return pStack->Return(inst, pStk);
-			}
-		}
+            if ( type1 == type2 )                           // are the results consistent ?
+            {
+                // ok so, saves the operand in the object
+                inst->m_leftop = left;
+                // and makes the object on demand
+                return pStack->Return(inst, pStk);
+            }
+        }
 
-		// in case of error, free the elements
-		delete left;
-		delete inst;
-		// and transmits the error that is on the stack
-		return pStack->Return(NULL, pStk);
-	}
+        // in case of error, free the elements
+        delete left;
+        delete inst;
+        // and transmits the error that is on the stack
+        return pStack->Return(NULL, pStk);
+    }
 
-	// if we are not dealing with an operation + or - 
+    // if we are not dealing with an operation + or - 
     // goes to that requested, the operand (left) found
-	// place the object "addition"
-	return pStack->Return(left, pStk);
+    // place the object "addition"
+    return pStack->Return(left, pStk);
 }
 
 
@@ -97,48 +97,48 @@ CBotInstr* CBotAddExpr::Compile(CBotToken* &p, CBotStack* pStack)
 
 bool CBotAddExpr::Execute(CBotStack* &pStack)
 {
-	CBotStack* pStk1 = pStack->AddStack(this);	// adds an item to the stack
-												// or is found in case of recovery
-//	if ( pSk1 == EOX ) return TRUE;
+    CBotStack* pStk1 = pStack->AddStack(this);  // adds an item to the stack
+                                                // or is found in case of recovery
+//  if ( pSk1 == EOX ) return TRUE;
 
 
-	// according to recovery, it may be in one of two states
+    // according to recovery, it may be in one of two states
 
-	if ( pStk1->GetState() == 0 &&				// first state, evaluates the left operand
-		!m_leftop->Execute(pStk1) ) return FALSE; // interrupted here?
+    if ( pStk1->GetState() == 0 &&              // first state, evaluates the left operand
+        !m_leftop->Execute(pStk1) ) return FALSE; // interrupted here?
 
-	// passes to the next step
-	pStk1->SetState(1);							// ready for further
+    // passes to the next step
+    pStk1->SetState(1);                         // ready for further
 
-	// requires a little more stack to not touch the result of the left
-	// which is on the stack, precisely.
+    // requires a little more stack to not touch the result of the left
+    // which is on the stack, precisely.
 
-	CBotStack* pStk2 = pStk1->AddStack();		// adds an item to the stack
-												// or is found in case of recovery
+    CBotStack* pStk2 = pStk1->AddStack();       // adds an item to the stack
+                                                // or is found in case of recovery
 
-	// Second state, evaluates the right operand
-	if ( !m_rightop->Execute(pStk2) ) return FALSE; // interrupted here?
+    // Second state, evaluates the right operand
+    if ( !m_rightop->Execute(pStk2) ) return FALSE; // interrupted here?
 
-	int		type1 = pStk1->GetType();			// what kind of results?
-	int		type2 = pStk2->GetType();
+    int     type1 = pStk1->GetType();           // what kind of results?
+    int     type2 = pStk2->GetType();
 
-	// creates a temporary variable to put the result
-	CBotVar*	result = new CBotVar( NULL, MAX(type1, type2));
+    // creates a temporary variable to put the result
+    CBotVar*    result = new CBotVar( NULL, MAX(type1, type2));
 
-	// is the operation as requested
-	switch (GetTokenType())
-	{
-	case ID_ADD:
-		result->Add(pStk1->GetVar(), pStk2->GetVar());		// addition
-		break;
-	case ID_SUB:
-		result->Sub(pStk1->GetVar(), pStk2->GetVar());		// subtraction
-		break;
-	}
-	pStk2->SetVar(result);						// puts the result on the stack
+    // is the operation as requested
+    switch (GetTokenType())
+    {
+    case ID_ADD:
+        result->Add(pStk1->GetVar(), pStk2->GetVar());      // addition
+        break;
+    case ID_SUB:
+        result->Sub(pStk1->GetVar(), pStk2->GetVar());      // subtraction
+        break;
+    }
+    pStk2->SetVar(result);                      // puts the result on the stack
 
-	pStk1->Return(pStk2);						// frees the stack
-	return pStack->Return(pStk1);				// transmits the result
+    pStk1->Return(pStk2);                       // frees the stack
+    return pStack->Return(pStk1);               // transmits the result
 }
 
 
