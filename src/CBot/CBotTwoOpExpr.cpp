@@ -12,18 +12,20 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.///////////////////////////////////////////////////
-// expression du genre Opérande1 + Opérande2
-//					   Opérande1 > Opérande2
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+///////////////////////////////////////////////////
+// expression of type  OpÃ©rande1 + OpÃ©rande2
+//					   OpÃ©rande1 > OpÃ©rande2
 
 #include "CBot.h"
 
-// divers constructeurs
+// various constructors
 
 CBotTwoOpExpr::CBotTwoOpExpr()
 {
 	m_leftop	=
-	m_rightop	= NULL;			// NULL pour pouvoir faire delete sans autre
+	m_rightop	= NULL;			// NULL to be able to delete without other
 	name = "CBotTwoOpExpr";		// debug
 }
 
@@ -37,7 +39,7 @@ CBotLogicExpr::CBotLogicExpr()
 {
 	m_condition	=
 	m_op1		=
-	m_op2		= NULL;			// NULL pour pouvoir faire delete sans autre
+	m_op2		= NULL;			// NULL to be able to delete without other
 	name = "CBotLogicExpr";		// debug
 }
 
@@ -49,7 +51,7 @@ CBotLogicExpr::~CBotLogicExpr()
 }
 
 
-// type d'opérandes acceptés par les opérations
+// type of operands accepted by operations
 #define		ENTIER		((1<<CBotTypByte)|(1<<CBotTypShort)|(1<<CBotTypChar)|(1<<CBotTypInt)|(1<<CBotTypLong))
 #define		FLOTANT		((1<<CBotTypFloat)|(1<<CBotTypDouble))
 #define		BOOLEEN		(1<<CBotTypBoolean)
@@ -57,9 +59,9 @@ CBotLogicExpr::~CBotLogicExpr()
 #define		POINTER		(1<<CBotTypPointer)
 #define		INSTANCE	(1<<CBotTypClass)
 
-// liste des opérations (précéance)
-//	type acceptable, opérande
-//	le zéro termine un niveau de précéance
+// list of operations (prÃ©cÃ©ance)
+//	acceptable type, operand
+//	zero ends level \TODO prÃ©cÃ©ance
 
 static int	ListOp[] = 
 {
@@ -114,7 +116,7 @@ bool TypeOk( int type, int test )
 	}
 }
 
-// compile une instruction de type A op B
+// compiles a instruction of type A op B
 
 CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOperations)
 {
@@ -122,25 +124,25 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
 	if ( pOperations == NULL ) pOperations = ListOp;
 	int* pOp = pOperations;
-	while ( *pOp++ != 0 );				// suite de la table
+	while ( *pOp++ != 0 );				// follows the table
 
-	CBotCStack* pStk = pStack->TokenStack();					// un bout de pile svp
+	CBotCStack* pStk = pStack->TokenStack();					// one end of stack please
 
-	// cherche des instructions qui peuvent convenir à gauche de l'opération
+	// search the intructions that may be suitable to the left of the operation
 	CBotInstr*	left = (*pOp == 0) ?
-						CBotParExpr::Compile( p, pStk ) :		// expression (...) à gauche
-						CBotTwoOpExpr::Compile( p, pStk, pOp );	// expression A * B à gauche
+						CBotParExpr::Compile( p, pStk ) :		// expression (...) left
+						CBotTwoOpExpr::Compile( p, pStk, pOp );	// expression A * B left
 
-	if (left == NULL) return pStack->Return(NULL, pStk);		// si erreur, la transmet
+	if (left == NULL) return pStack->Return(NULL, pStk);		// if error,  transmit
 
-	// est-ce qu'on a l'opérande prévu ensuite ?
+	// did we expected the operand?
 	int	TypeOp = p->GivType();
 	if ( IsInList( TypeOp, pOperations, typemasque ) )
 	{
 		CBotTypResult	 type1, type2;
-		type1 = pStk->GivTypResult();							// de quel type le premier opérande ?
+		type1 = pStk->GivTypResult();							// what kind of the first operand?
 
-		if ( TypeOp == ID_LOGIC )		// cas spécial pour condition ? op1 : op2 ;
+		if ( TypeOp == ID_LOGIC )		// special case provided for: ? op1: op2;
 		{
 			if ( !type1.Eq(CBotTypBoolean) )
 			{
@@ -150,7 +152,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 			CBotLogicExpr* inst = new CBotLogicExpr();
 			inst->m_condition = left;
 
-			p = p->GivNext();										// saute le token de l'opération 
+			p = p->GivNext();										// skip the token of the operation
 			inst->m_op1 = CBotExpression::Compile(p, pStk);
 			CBotToken* pp = p;
 			if ( inst->m_op1 == NULL || !IsOfType( p, ID_DOTS ) )
@@ -176,39 +178,39 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 				return pStack->Return(NULL, pStk);
 			}
 
-			pStk->SetType(type1);		// le plus grand des 2 types
+			pStk->SetType(type1);		// the greatest of 2 types
 
 			return pStack->Return(inst, pStk);
 		}
 
-		CBotTwoOpExpr* inst = new CBotTwoOpExpr();				// élément pour opération
-		inst->SetToken(p);										// mémorise l'opération
+		CBotTwoOpExpr* inst = new CBotTwoOpExpr();				// element for operation
+		inst->SetToken(p);										// stores the operation
 
 
-		p = p->GivNext();											// saute le token de l'opération 
+		p = p->GivNext();											// skip the token of the operation
 
-		// cherche des instructions qui peuvent convenir à droite
+		// looking statements that may be suitable for right
 
 		if ( NULL != (inst->m_rightop = CBotTwoOpExpr::Compile( p, pStk, pOp )) )
-																// expression (...) à droite
+																// expression (...) right
 		{
-			// il y a un second opérande acceptable
+			// there is an second operand acceptable 
 
-			type2 = pStk->GivTypResult();						// de quel type le résultat ?
+			type2 = pStk->GivTypResult();						// what kind of results?
 
-			// quel est le type du résultat ?
+			// what kind of result?
 			int	TypeRes = MAX( type1.GivType(3), type2.GivType(3) );
 			if ( TypeOp == ID_ADD && type1.Eq(CBotTypString) )
 			{
 				TypeRes = CBotTypString;
-				type2 = type1;	// tout type convertible en chaîne
+				type2 = type1;	// any type convertible chain
 			}
 			else if ( TypeOp == ID_ADD && type2.Eq(CBotTypString) )
 			{
 				TypeRes = CBotTypString;
-				type1 = type2;	// tout type convertible en chaîne
+				type1 = type2;	// any type convertible chain
 			}
-			else if (!TypeOk( TypeRes, typemasque )) type1.SetType(99);// erreur de type
+			else if (!TypeOk( TypeRes, typemasque )) type1.SetType(99);// error of type
 
 			switch ( TypeOp )
 			{
@@ -224,25 +226,25 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 			case ID_LS:
 				TypeRes = CBotTypBoolean;
 			}
-			if ( TypeCompatible (type1, type2, TypeOp ) )				// les résultats sont-ils compatibles
+			if ( TypeCompatible (type1, type2, TypeOp ) )				// the results are compatible
 			{
-				// si ok, enregistre l'opérande dans l'objet
+				// ok so, saves the operand in the object
 				inst->m_leftop = left;
 
-				// spécial pour évaluer les opérations de même niveau de gauche à droite
-				while ( IsInList( p->GivType(), pOperations, typemasque ) ) // même(s) opération(s) suit ?
+				// special for evaluation of the operations of the same level from left to right
+				while ( IsInList( p->GivType(), pOperations, typemasque ) ) // same operation(s) follows?
 				{
 					TypeOp = p->GivType();
-					CBotTwoOpExpr* i = new CBotTwoOpExpr();				// élément pour opération
-					i->SetToken(p);										// mémorise l'opération
-					i->m_leftop = inst;									// opérande de gauche
+					CBotTwoOpExpr* i = new CBotTwoOpExpr();				// element for operation
+					i->SetToken(p);										// stores the operation
+					i->m_leftop = inst;									// left operand
 					type1 = TypeRes;
 
-					p = p->GivNext();										// avance à la suite
+					p = p->GivNext();										// advance after
 					i->m_rightop = CBotTwoOpExpr::Compile( p, pStk, pOp );
 					type2 = pStk->GivTypResult();
 
-					if ( !TypeCompatible (type1, type2, TypeOp) )		// les résultats sont-ils compatibles
+					if ( !TypeCompatible (type1, type2, TypeOp) )		// the results are compatible
 					{
 						pStk->SetError(TX_BAD2TYPE, &i->m_token);
 						delete i;
@@ -256,25 +258,25 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
 
 				CBotTypResult t(type1);
 					t.SetType(TypeRes);
-				// met une variable sur la pile pour avoir le type de résultat
+				// is a variable on the stack for the type of result
 				pStk->SetVar(CBotVar::Create((CBotToken*)NULL, t));
 
-				// et rend l'object à qui l'a demandé
+				// and returns the requested object
 				return pStack->Return(inst, pStk);
 			}
 			pStk->SetError(TX_BAD2TYPE, &inst->m_token);
 		}
 
-		// en cas d'erreur, libère les éléments
+		// in case of error, releases the elements
 		delete left;
 		delete inst;
-		// et transmet l'erreur qui se trouve sur la pile
+		// and transmits the error to the stack
 		return pStack->Return(NULL, pStk);
 	}
 
-	// si on n'a pas affaire à une opération + ou -
-	// rend à qui l'a demandé, l'opérande (de gauche) trouvé
-	// à la place de l'objet "addition"
+	// if we are not dealing with an operation + or -
+	// goes to that requested, the operand (left) found
+	// instead of the object "addition"
 	return pStack->Return(left, pStk);
 }
 
@@ -290,62 +292,62 @@ bool IsNan(CBotVar* left, CBotVar* right, int* err = NULL)
 }
 
 
-// fait l'opération sur 2 opérandes
+// performes the operation on two operands
 
 bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
 {
-	CBotStack* pStk1 = pStack->AddStack(this);	// ajoute un élément à la pile
-												// ou le retrouve en cas de reprise
+	CBotStack* pStk1 = pStack->AddStack(this);	// adds an item to the stack
+												// or return in case of recovery
 //	if ( pStk1 == EOX ) return true;
 
-	// selon la reprise, on peut être dans l'un des 2 états
+	// according to recovery, it may be in one of two states
 
-	if ( pStk1->GivState() == 0 )					// 1er état, évalue l'opérande de gauche
+	if ( pStk1->GivState() == 0 )					// first state, evaluates the left operand
 	{
-		if (!m_leftop->Execute(pStk1) ) return false;	// interrompu ici ?
+		if (!m_leftop->Execute(pStk1) ) return false;	// interrupted here?
 
-		// pour les OU et ET logique, n'évalue pas la seconde expression si pas nécessaire
+		// for OR and AND logic does not evaluate the second expression if not necessary
 		if ( (GivTokenType() == ID_LOG_AND || GivTokenType() == ID_TXT_AND ) && pStk1->GivVal() == false )
 		{
 			CBotVar*	res = CBotVar::Create( (CBotToken*)NULL, CBotTypBoolean);
 			res->SetValInt(false);
 			pStk1->SetVar(res);
-			return pStack->Return(pStk1);				// transmet le résultat
+			return pStack->Return(pStk1);				// transmits the result
 		}
 		if ( (GivTokenType() == ID_LOG_OR||GivTokenType() == ID_TXT_OR) && pStk1->GivVal() == true )
 		{
 			CBotVar*	res = CBotVar::Create( (CBotToken*)NULL, CBotTypBoolean);
 			res->SetValInt(true);
 			pStk1->SetVar(res);
-			return pStack->Return(pStk1);				// transmet le résultat
+			return pStack->Return(pStk1);				// transmits the result
 		}
 
-		// passe à l'étape suivante
-		pStk1->SetState(1);			// prêt pour la suite
+		// passes to the next step
+		pStk1->SetState(1);			// ready for further
 	}
 
 
-	// demande un peu plus de stack pour ne pas toucher le résultat de gauche
-	// qui se trouve sur la pile, justement.
+    // requires a little more stack to avoid touching the result 
+    // of which is left on the stack, precisely
 
-	CBotStack* pStk2 = pStk1->AddStack();				// ajoute un élément à la pile
-														// ou le retrouve en cas de reprise
+	CBotStack* pStk2 = pStk1->AddStack();				// adds an item to the stack
+														// or return in case of recovery
 
-	// 2e état, évalue l'opérande de droite
+	// 2e Ã©tat, Ã©value l'opÃ©rande de droite
 	if ( pStk2->GivState() == 0 )
 	{
-		if ( !m_rightop->Execute(pStk2) ) return false;		// interrompu ici ?
+		if ( !m_rightop->Execute(pStk2) ) return false;		// interrupted here?
 		pStk2->IncState();
 	}
 
-	CBotTypResult		type1 = pStk1->GivTypResult();		// de quels types les résultats ?
+	CBotTypResult		type1 = pStk1->GivTypResult();		// what kind of results?
 	CBotTypResult		type2 = pStk2->GivTypResult();
 
-	CBotStack* pStk3 = pStk2->AddStack(this);				// ajoute un élément à la pile
-	if ( pStk3->IfStep() ) return false;					// montre l'opération si step by step
+	CBotStack* pStk3 = pStk2->AddStack(this);				// adds an item to the stack
+	if ( pStk3->IfStep() ) return false;					// shows the operation if step by step
 
-	// crée une variable temporaire pour y mettre le résultat
-	// quel est le type du résultat ?
+	// creates a temporary variable to put the result
+	// what kind of result?
 	int	TypeRes = MAX(type1.GivType(), type2.GivType());
 
 	if ( GivTokenType() == ID_ADD && type1.Eq(CBotTypString) )
@@ -371,10 +373,10 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
 		TypeRes = MAX(TypeRes, CBotTypFloat);
 	}
 
-	// crée une variable pour le résultat
+	// creates a variable for the result
 	CBotVar*	result = CBotVar::Create( (CBotToken*)NULL, TypeRes);
 
-	// crée une variable pour effectuer le calcul dans le type adapté
+	// creates a variable to perform the calculation in the appropriate type
 	TypeRes = MAX(type1.GivType(), type2.GivType());
 
 	if ( GivTokenType() == ID_ADD && type1.Eq(CBotTypString) )
@@ -389,70 +391,70 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
 	else						   temp = CBotVar::Create( (CBotToken*)NULL, TypeRes );
 
 	int	err = 0;
-	// fait l'opération selon la demande
+	// is a operation according to request
 	CBotVar*	left  = pStk1->GivVar();
 	CBotVar*	right = pStk2->GivVar();
 
 	switch (GivTokenType())
 	{
 	case ID_ADD:
-		if ( !IsNan(left, right, &err) )	result->Add(left , right);		// additionne
+		if ( !IsNan(left, right, &err) )	result->Add(left , right);		// addition
 		break;
 	case ID_SUB:
-		if ( !IsNan(left, right, &err) )	result->Sub(left , right);		// soustrait
+		if ( !IsNan(left, right, &err) )	result->Sub(left , right);		// substraction
 		break;
 	case ID_MUL:
-		if ( !IsNan(left, right, &err) )	result->Mul(left , right);		// multiplie
+		if ( !IsNan(left, right, &err) )	result->Mul(left , right);		// multiplies
 		break;
 	case ID_POWER:
-		if ( !IsNan(left, right, &err) )	result->Power(left , right);	// puissance
+		if ( !IsNan(left, right, &err) )	result->Power(left , right);	// power
 		break;
 	case ID_DIV:
-		if ( !IsNan(left, right, &err) )	err = result->Div(left , right);// divise
+		if ( !IsNan(left, right, &err) )	err = result->Div(left , right);// division
 		break;
 	case ID_MODULO:
-		if ( !IsNan(left, right, &err) )	err = result->Modulo(left , right);// reste de division
+		if ( !IsNan(left, right, &err) )	err = result->Modulo(left , right);// remainder of division
 		break;
 	case ID_LO:
 		if ( !IsNan(left, right, &err) )
-			result->SetValInt(temp->Lo(left , right));	// inférieur
+			result->SetValInt(temp->Lo(left , right));	// lower
 		break;
 	case ID_HI:
 		if ( !IsNan(left, right, &err) )
-			result->SetValInt(temp->Hi(left , right));	// supérieur
+			result->SetValInt(temp->Hi(left , right));	// top
 		break;
 	case ID_LS:
 		if ( !IsNan(left, right, &err) )
-			result->SetValInt(temp->Ls(left , right));	// inférieur ou égal
+			result->SetValInt(temp->Ls(left , right));	// less than or equal
 		break;
 	case ID_HS:
 		if ( !IsNan(left, right, &err) )
-			result->SetValInt(temp->Hs(left , right));	// supérieur ou égal
+			result->SetValInt(temp->Hs(left , right));	// greater than or equal
 		break;
 	case ID_EQ:
 		if ( IsNan(left, right) )
 			result->SetValInt(left->GivInit() ==  right->GivInit()) ;
 		else
-			result->SetValInt(temp->Eq(left , right));	// égal
+			result->SetValInt(temp->Eq(left , right));	// equal
 		break;
 	case ID_NE:
 		if ( IsNan(left, right) )
 			 result->SetValInt(left ->GivInit() !=  right->GivInit()) ;
 		else
-			result->SetValInt(temp->Ne(left , right));	// différent
+			result->SetValInt(temp->Ne(left , right));	// different
 		break;
 	case ID_TXT_AND:
 	case ID_LOG_AND:
 	case ID_AND:
-		if ( !IsNan(left, right, &err) )	result->And(left , right);		// ET
+		if ( !IsNan(left, right, &err) )	result->And(left , right);		// AND
 		break;
 	case ID_TXT_OR:
 	case ID_LOG_OR:
 	case ID_OR:
-		if ( !IsNan(left, right, &err) )	result->Or(left , right);		// OU
+		if ( !IsNan(left, right, &err) )	result->Or(left , right);		// OR
 		break;
 	case ID_XOR:
-		if ( !IsNan(left, right, &err) )	result->XOr(left , right);		// OU exclusif
+		if ( !IsNan(left, right, &err) )	result->XOr(left , right);		// exclusive OR
 		break;
 	case ID_ASR:
 		if ( !IsNan(left, right, &err) )	result->ASR(left , right);
@@ -468,34 +470,34 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
 	}
 	delete temp;
 
-	pStk2->SetVar(result);						// met le résultat sur la pile
-	if ( err ) pStk2->SetError(err, &m_token);	// et l'erreur éventuelle (division par zéro)
+	pStk2->SetVar(result);						// puts the result on the stack
+	if ( err ) pStk2->SetError(err, &m_token);	// and the possible error (division by zero)
 
-//	pStk1->Return(pStk2);						// libère la pile
-	return pStack->Return(pStk2);				// transmet le résultat
+//	pStk1->Return(pStk2);						// releases the stack
+	return pStack->Return(pStk2);				// transmits the result
 }
 
 void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
 {
 	if ( !bMain ) return;
-	CBotStack* pStk1 = pStack->RestoreStack(this);	// ajoute un élément à la pile
+	CBotStack* pStk1 = pStack->RestoreStack(this);	// adds an item to the stack
 	if ( pStk1 == NULL ) return;
 
-	// selon la reprise, on peut être dans l'un des 2 états
+	// according to recovery, it may be in one of two states
 
-	if ( pStk1->GivState() == 0 )					// 1er état, évalue l'opérande de gauche
+	if ( pStk1->GivState() == 0 )					// first state, evaluates the left operand
 	{
-		m_leftop->RestoreState(pStk1, bMain);		// interrompu ici !
+		m_leftop->RestoreState(pStk1, bMain);		// interrupted here!
 		return;
 	}
 
-	CBotStack* pStk2 = pStk1->RestoreStack();			// ajoute un élément à la pile
+	CBotStack* pStk2 = pStk1->RestoreStack();			// adds an item to the stack
 	if ( pStk2 == NULL ) return;
 
-	// 2e état, évalue l'opérande de droite
+	// second state, evaluates the right operand
 	if ( pStk2->GivState() == 0 )
 	{
-		m_rightop->RestoreState(pStk2, bMain);			// interrompu ici !
+		m_rightop->RestoreState(pStk2, bMain);			// interrupted here!
 		return;
 	}
 }
@@ -503,8 +505,8 @@ void CBotTwoOpExpr::RestoreState(CBotStack* &pStack, bool bMain)
 
 bool CBotLogicExpr::Execute(CBotStack* &pStack)
 {
-	CBotStack* pStk1 = pStack->AddStack(this);	// ajoute un élément à la pile
-												// ou le retrouve en cas de reprise
+	CBotStack* pStk1 = pStack->AddStack(this);	// adds an item to the stack
+												// or return in case of recovery
 //	if ( pStk1 == EOX ) return true;
 
 	if ( pStk1->GivState() == 0 )
@@ -522,14 +524,14 @@ bool CBotLogicExpr::Execute(CBotStack* &pStack)
 		if ( !m_op2->Execute(pStk1) ) return false;
 	}
 
-	return pStack->Return(pStk1);					// transmet le résultat
+	return pStack->Return(pStk1);					// transmits the result
 }
 
 void CBotLogicExpr::RestoreState(CBotStack* &pStack, bool bMain)
 {
 	if ( !bMain ) return;
 
-	CBotStack* pStk1 = pStack->RestoreStack(this);	// ajoute un élément à la pile
+	CBotStack* pStk1 = pStack->RestoreStack(this);	// adds an item to the stack
 	if ( pStk1 == NULL ) return;
 
 	if ( pStk1->GivState() == 0 )
