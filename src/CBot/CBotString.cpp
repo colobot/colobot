@@ -70,7 +70,7 @@ const std::map<EID, char *> CBotString::s_keywordString =
     {ID_CLOSEPAR,   ")"},
     {ID_OPBLK,      "{"},
     {ID_CLBLK,      "}"},
-    {ID_SEP,        "},"},
+    {ID_SEP,        ";"},
     {ID_COMMA,      ","},
     {ID_DOTS,       ":"},
     {ID_DOT,        "."},
