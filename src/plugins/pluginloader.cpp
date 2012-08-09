@@ -56,13 +56,13 @@ bool CPluginLoader::UnloadPlugin()
         GetLogger()->Warn("Plugin %s is not loaded.\n");
         return true;
     }
-    
+
     void (*uninstall)() = (void (*)()) lt_dlsym(mHandle, "UninstallPluginEntry");
     if (!uninstall) {
         GetLogger()->Error("Error getting UninstallPluginEntry for plugin %s: %s\n", mFilename.c_str(), lt_dlerror());
         return false;
     }
-    
+
     lt_dlclose(mHandle);
     mLoaded = false;
     return true;
@@ -89,7 +89,7 @@ bool CPluginLoader::LoadPlugin()
         GetLogger()->Error("Error getting GetPluginInterfaceEntry for plugin %s: %s\n", mFilename.c_str(), lt_dlerror());
         return false;
     }
-    
+
     install();
     mInterface = getInterface();
     mLoaded = true;

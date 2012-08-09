@@ -5,7 +5,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -O0 -std=c++11 -rdynamic")
 
 add_executable(plugin_test plugin_test.cpp ../../common/iman.cpp ../../common/logger.cpp ../pluginloader.cpp)
 
-# Change to DirectX SDK directory
 include_directories("../../")
 
 target_link_libraries(plugin_test ltdl)

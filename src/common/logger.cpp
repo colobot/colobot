@@ -21,7 +21,7 @@
 #include <stdio.h>
 
 
-template<> CLogger* CSingleton<CLogger>::mInstance = 0;
+template<> CLogger* CSingleton<CLogger>::mInstance = nullptr;
 
 
 CLogger& CLogger::GetInstance()
