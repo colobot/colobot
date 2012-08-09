@@ -22,6 +22,8 @@
 #include "common/event.h"
 #include "math/point.h"
 
+#include <vector>
+
 
 class CInstanceManager;
 
@@ -30,51 +32,69 @@ namespace Gfx {
 
 class CEngine;
 
-
-const short MAXPLANET = 10;
-
 struct Planet
 {
-    char        bUsed;      // TRUE -> planet exists
-    Math::Point     start;      // initial position in degrees
-    Math::Point     angle;      // current position in degrees
-    float       dim;        // dimensions (0..1)
-    float       speed;      // speed
-    float       dir;        // direction in the sky
-    char        name[20];   // name of the texture
-    Math::Point     uv1, uv2;   // texture mapping
-    char        bTGA;       // texture .TGA
+    //! Initial position in degrees
+    Math::Point     start;
+    //! Current position in degrees
+    Math::Point     angle;
+    //! Dimensions (0..1)
+    float           dim;
+    //! Speed
+    float           speed;
+    //! Direction in the sky
+    float           dir;
+    //! Name of the texture
+    std::string     name;
+    //! Texture mapping
+    Math::Point     uv1, uv2;
+    //! Transparent texture
+    bool            transparent;
+
+    Planet()
+    {
+        dim = speed = dir = 0.0f;
+        transparent = false;
+    }
 };
 
-
-
-
-class CPlanet {
+class CPlanet
+{
 public:
-    CPlanet(CInstanceManager* iMan, CEngine* engine);
+    CPlanet(CInstanceManager* iMan, Gfx::CEngine* engine);
     ~CPlanet();
 
+    //! Removes all the planets
     void        Flush();
+    //! Management of an event
     bool        EventProcess(const Event &event);
-    bool        Create(int mode, Math::Point start, float dim, float speed, float dir, char *name, Math::Point uv1, Math::Point uv2);
+    //! Creates a new planet
+    void        Create(int mode, Math::Point start, float dim, float speed, float dir,
+                       const std::string& name, Math::Point uv1, Math::Point uv2);
+    //! Indicates if there is at least one planet
     bool        PlanetExist();
+    //! Load all the textures for the planets
     void        LoadTexture();
+    //! Draws all the planets
     void        Draw();
+    //@{
+    //! Choice of mode
     void        SetMode(int mode);
-    int         RetMode();
+    int         GetMode();
+    //@}
 
 protected:
+    //! Makes the planets evolve
     bool        EventFrame(const Event &event);
 
 protected:
-    CInstanceManager*   m_iMan;
-    CEngine*        m_engine;
+    CInstanceManager* m_iMan;
+    Gfx::CEngine*     m_engine;
 
-    float           m_time;
-    int             m_mode;
-    Planet          m_planet[2][MAXPLANET];
-    bool            m_bPlanetExist;
+    float                    m_time;
+    int                      m_mode;
+    std::vector<Gfx::Planet> m_planet[2];
+    bool                     m_planetExist;
 };
-
 
 }; // namespace Gfx
