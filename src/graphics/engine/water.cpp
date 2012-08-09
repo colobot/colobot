@@ -66,16 +66,14 @@ Gfx::CWater::~CWater()
 
 bool Gfx::CWater::EventProcess(const Event &event)
 {
-    /* TODO!
     if (event.type == EVENT_FRAME)
         return EventFrame(event);
-*/
+
     return true;
 }
 
 bool Gfx::CWater::EventFrame(const Event &event)
 {
-    /* TODO!
     if (m_engine->GetPause())  return true;
 
     m_time += event.rTime;
@@ -83,7 +81,7 @@ bool Gfx::CWater::EventFrame(const Event &event)
     if (m_type[0] == WATER_NULL)  return true;
 
     if (m_lava)
-        LavaFrame(event.rTime);*/
+        LavaFrame(event.rTime);
 
     return true;
 }

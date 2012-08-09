@@ -353,13 +353,13 @@ protected:
     float       m_centeringTime;
     float       m_centeringProgress;
 
-    CameraEffect m_effectType;
+    Gfx::CameraEffect m_effectType;
     Math::Vector m_effectPos;
     float        m_effectForce;
     float        m_effectProgress;
     Math::Vector m_effectOffset;
 
-    OverEffect  m_overType;
+    Gfx::CameraOverEffect  m_overType;
     float       m_overForce;
     float       m_overTime;
     Gfx::Color  m_overColorBase;

@@ -73,7 +73,7 @@ protected:
     float           m_sleep;
     float           m_delay;
     float           m_magnetic;
-    BlitzPhase      m_phase;
+    Gfx::BlitzPhase m_phase;
     float           m_time;
     float           m_speed;
     float           m_progress;

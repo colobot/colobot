@@ -67,7 +67,7 @@ common/iman.cpp
 # common/restext.cpp
 common/stringutils.cpp
 graphics/core/color.cpp
-# graphics/engine/camera.cpp # new code but depends on other modules
+graphics/engine/camera.cpp
 graphics/engine/cloud.cpp
 graphics/engine/engine.cpp
 graphics/engine/lightman.cpp
