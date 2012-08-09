@@ -18,6 +18,8 @@
 
 #include <common/logger.h>
 
+#include <stdio.h>
+
 
 template<> CLogger* CSingleton<CLogger>::mInstance = 0;
 
@@ -53,7 +55,7 @@ void CLogger::Log(LogType type, const char *str, va_list args)
 {
     if (type < mLogLevel)
         return;
-    
+
     switch (type) {
         case LOG_WARN: fprintf(IsOpened() ? mFile : stderr, "[WARN]: "); break;
         case LOG_INFO: fprintf(IsOpened() ? mFile : stderr, "[INFO]: "); break;

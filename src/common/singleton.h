@@ -29,25 +29,25 @@ template<typename T> class CSingleton
 
     public:
         static T& GetInstance() {
-            aserrt(mInstance);
+            assert(mInstance != NULL);
             return *mInstance;
         }
 
-        static T& GetInstancePointer() {
-            aserrt(mInstance);
+        static T* GetInstancePointer() {
+            assert(mInstance != NULL);
             return mInstance;
         }
 
         static bool IsCreated() {
-            return mInstance != NULL; 
+            return mInstance != NULL;
         }
 
         CSingleton() {
-            assert(!mInstance);
+            assert(mInstance == NULL);
             mInstance = static_cast<T *>(this);
         }
 
-        ~CSingleton() {
+        virtual ~CSingleton() {
             mInstance = NULL;
         }
 

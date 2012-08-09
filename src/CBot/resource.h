@@ -12,101 +12,108 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.//{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
-// Used by CBot.rc
-//
-#define ID_KEYWORDS                     2000
-#define ID_IF                           2000
-#define ID_ELSE                         2001
-#define ID_WHILE                        2002
-#define ID_DO                           2003
-#define ID_FOR                          2004
-#define ID_BREAK                        2005
-#define ID_CONTINUE                     2006
-#define ID_SWITCH                       2007
-#define ID_CASE                         2008
-#define ID_DEFAULT                      2009
-#define ID_TRY                          2010
-#define ID_THROW                        2011
-#define ID_CATCH                        2012
-#define ID_FINALLY                      2013
-#define ID_TXT_AND                      2014
-#define ID_TXT_OR                       2015
-#define ID_TXT_NOT                      2016
-#define ID_RETURN                       2017
-#define ID_CLASS                        2018
-#define ID_EXTENDS                      2019
-#define ID_SYNCHO                       2020
-#define ID_NEW                          2021
-#define ID_PUBLIC                       2022
-#define ID_EXTERN                       2023
-#define ID_FINAL                        2024
-#define ID_STATIC                       2025
-#define ID_PROTECTED                    2026
-#define ID_PRIVATE                      2027
-#define ID_REPEAT                       2028
-#define ID_DEBUGDD                      2099
-#define ID_INT                          2100
-#define ID_FLOAT                        2101
-#define ID_BOOLEAN                      2102
-#define ID_STRING                       2103
-#define ID_VOID                         2104
-#define ID_BOOL                         2105
-#define ID_TRUE                         2200
-#define ID_FALSE                        2201
-#define ID_NULL                         2202
-#define ID_NAN                          2203
-#define ID_OPENPAR                      2300
-#define ID_CLOSEPAR                     2301
-#define ID_OPBLK                        2302
-#define ID_CLBLK                        2303
-#define ID_SEP                          2304
-#define ID_COMMA                        2305
-#define ID_DOTS                         2306
-#define ID_DOT                          2307
-#define ID_OPBRK                        2308
-#define ID_CLBRK                        2309
-#define ID_DBLDOTS                      2310
-#define ID_LOGIC                        2311
-#define ID_ADD                          2312
-#define ID_SUB                          2313
-#define ID_MUL                          2314
-#define ID_DIV                          2315
-#define ID_ASS                          2316
-#define ID_ASSADD                       2317
-#define ID_ASSSUB                       2318
-#define ID_ASSMUL                       2319
-#define ID_ASSDIV                       2320
-#define ID_ASSOR                        2321
-#define ID_ASSAND                       2322
-#define ID_ASSXOR                       2323
-#define ID_ASSSL                        2324
-#define ID_ASSSR                        2325
-#define ID_ASSASR                       2326
-#define ID_SL                           2327
-#define ID_SR                           2328
-#define ID_ASR                          2329
-#define ID_INC                          2330
-#define ID_DEC                          2331
-#define ID_LO                           2332
-#define ID_HI                           2333
-#define ID_LS                           2334
-#define ID_HS                           2335
-#define ID_EQ                           2336
-#define ID_NE                           2337
-#define ID_AND                          2338
-#define ID_XOR                          2339
-#define ID_OR                           2340
-#define ID_LOG_AND                      2341
-#define ID_LOG_OR                       2342
-#define ID_LOG_NOT                      2343
-#define ID_NOT                          2344
-#define ID_MODULO                       2345
-#define ID_POWER                        2346
-#define ID_ASSMODULO                    2347
-#define TX_UNDEF                        4000
-#define TX_NAN                          4001
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
+
+#pragma once
+#ifndef _RESOURCE_H_
+#define _RESOURCE_H_
+
+enum EID
+{
+    ID_IF = 2000,
+    ID_ELSE,
+    ID_WHILE,
+    ID_DO,
+    ID_FOR,
+    ID_BREAK,
+    ID_CONTINUE,
+    ID_SWITCH,
+    ID_CASE,
+    ID_DEFAULT,
+    ID_TRY,
+    ID_THROW,
+    ID_CATCH,
+    ID_FINALLY,
+    ID_TXT_AND,
+    ID_TXT_OR,
+    ID_TXT_NOT,
+    ID_RETURN,
+    ID_CLASS,
+    ID_EXTENDS,
+    ID_SYNCHO,
+    ID_NEW,
+    ID_PUBLIC,
+    ID_EXTERN,
+    ID_FINAL,
+    ID_STATIC,
+    ID_PROTECTED,
+    ID_PRIVATE,
+    ID_REPEAT,
+    ID_DEBUGDD,
+    ID_INT,
+    ID_FLOAT,
+    ID_BOOLEAN,
+    ID_STRING,
+    ID_VOID,
+    ID_BOOL,
+
+    ID_TRUE = 2200,
+    ID_FALSE,
+    ID_NULL,
+    ID_NAN,
+
+    ID_OPENPAR = 2300,
+    ID_CLOSEPAR,
+    ID_OPBLK,
+    ID_CLBLK,
+    ID_SEP,
+    ID_COMMA,
+    ID_DOTS,
+    ID_DOT,
+    ID_OPBRK,
+    ID_CLBRK,
+    ID_DBLDOTS,
+    ID_LOGIC,
+    ID_ADD,
+    ID_SUB,
+    ID_MUL,
+    ID_DIV,
+    ID_ASS,
+    ID_ASSADD,
+    ID_ASSSUB,
+    ID_ASSMUL,
+    ID_ASSDIV,
+    ID_ASSOR,
+    ID_ASSAND,
+    ID_ASSXOR,
+    ID_ASSSL,
+    ID_ASSSR,
+    ID_ASSASR,
+    ID_SL,
+    ID_SR,
+    ID_ASR,
+    ID_INC,
+    ID_DEC,
+    ID_LO,
+    ID_HI,
+    ID_LS,
+    ID_HS,
+    ID_EQ,
+    ID_NE,
+    ID_AND,
+    ID_XOR,
+    ID_OR,
+    ID_LOG_AND,
+    ID_LOG_OR,
+    ID_LOG_NOT,
+    ID_NOT,
+    ID_MODULO,
+    ID_POWER,
+    ID_ASSMODULO,
+    TX_UNDEF = 4000,
+    TX_NAN,
+    ID_SUPER = 6000
+};
 #define TX_OPENPAR                      5000
 #define TX_CLOSEPAR                     5001
 #define TX_NOTBOOL                      5002
@@ -166,15 +173,5 @@
 #define TX_NOTOPEN                      6013
 #define TX_ERRREAD                      6014
 #define TX_ERRWRITE                     6015
-#define ID_SUPER                        62020
 
-// Next default values for new objects
-// 
-#ifdef APSTUDIO_INVOKED
-#ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        101
-#define _APS_NEXT_COMMAND_VALUE         40001
-#define _APS_NEXT_CONTROL_VALUE         1000
-#define _APS_NEXT_SYMED_VALUE           101
-#endif
-#endif
+#endif //_RESOURCE_H_

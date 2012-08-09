@@ -12,26 +12,27 @@
 // * GNU General Public License for more details.
 // *
 // * You should have received a copy of the GNU General Public License
-// * along with this program. If not, see  http://www.gnu.org/licenses/.////////////////////////////////////////////////////////////////////
-// interpréteur pour le language CBot du jeu COLOBOT
+// * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-// un programme écrit est tout d'abord transformé en une liste de tokens
-// avant d'aborder le compilateur proprement dit
-// par exemple 
+// interpreter of the lanuage CBot for game COLOBOT
+// writing a program is first transformed into a list of tokens
+// before tackling the compiler itself
+// for example
 // int var = 3 * ( pos.y + x )
-// est décomposé en (chaque ligne est un token)
-//		int
-//		var
-//		=
-//		3
-//		*
-//		(
-//		pos.y
-//		+
-//		x
-//		)
+// is decomposed into (each line is a token)
+//      int
+//      var
+//      =
+//      3
+//      *
+//      (
+//      pos.y
+//      +
+//      x
+//      )
 
+#pragma once
 
-extern BOOL IsOfType(CBotToken* &p, int type1, int type2 = -1);
-extern BOOL IsOfTypeList(CBotToken* &p, int type1, ...);
+extern bool IsOfType(CBotToken* &p, int type1, int type2 = -1);
+extern bool IsOfTypeList(CBotToken* &p, int type1, ...);

@@ -16,27 +16,12 @@
 
 // event.cpp
 
-#include "common/iman.h"
 #include "common/event.h"
-
-#include <string.h>
-
-
-Event::Event()
-{
-    event = EVENT_NULL;
-    param = 0;
-    axeX = 0.0f;
-    axeY = 0.0f;
-    axeZ = 0.0f;
-    keyState = 0;
-    rTime = 0.0f;
-}
+#include "common/iman.h"
 
 
-// Object's constructor.
 
-CEvent::CEvent(CInstanceManager* iMan)
+CEventQueue::CEventQueue(CInstanceManager* iMan)
 {
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_EVENT, this);
@@ -44,51 +29,38 @@ CEvent::CEvent(CInstanceManager* iMan)
     Flush();
 }
 
-// Object's destructor.
-
-CEvent::~CEvent()
+CEventQueue::~CEventQueue()
 {
 }
 
-
-// Empty the FIFO of events.
-
-void CEvent::Flush()
+void CEventQueue::Flush()
 {
     m_head = 0;
     m_tail = 0;
     m_total = 0;
 }
 
-// Produces an event.
-
-void CEvent::MakeEvent(Event &event, EventMsg msg)
+/** If the maximum size of queue has been reached, returns \c false.
+    Else, adds the event to the queue and returns \c true. */
+bool CEventQueue::AddEvent(const Event &event)
 {
-    memset(&event, 0, sizeof(Event));
-    event.event = msg;
-}
-
-// Adds an event in the FIFO.
-
-bool CEvent::AddEvent(const Event &event)
-{
-    if ( m_total >= MAXEVENT )  return false;
+    if ( m_total >= MAX_EVENT_QUEUE )  return false;
 
     m_fifo[m_head++] = event;
-    if ( m_head >= MAXEVENT )  m_head = 0;
+    if ( m_head >= MAX_EVENT_QUEUE )  m_head = 0;
     m_total ++;
 
     return true;
 }
 
-// Removes an event from the FIFO.
-
-bool CEvent::GetEvent(Event &event)
+/** If the queue is empty, returns \c false.
+    Else, gets the event from the front, puts it into \a event and returns \c true. */
+bool CEventQueue::GetEvent(Event &event)
 {
     if ( m_head == m_tail )  return false;
 
     event = m_fifo[m_tail++];
-    if ( m_tail >= MAXEVENT )  m_tail = 0;
+    if ( m_tail >= MAX_EVENT_QUEUE )  m_tail = 0;
     m_total --;
 
     return true;
