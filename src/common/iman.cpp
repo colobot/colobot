@@ -23,7 +23,7 @@
 #include "common/iman.h"
 
 
-template<> CInstanceManager* CSingleton<CInstanceManager>::mInstance = 0;
+template<> CInstanceManager* CSingleton<CInstanceManager>::mInstance = nullptr;
 
 
 CInstanceManager& CInstanceManager::GetInstance()

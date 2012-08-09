@@ -18,13 +18,32 @@
 
 #pragma once
 
+#include <cstdlib>
 
-extern bool InitCurrentDirectory();
-extern bool SetLocalProfileString(char* section, char* key, char* string);
-extern bool GetLocalProfileString(char* section, char* key, char* buffer, int max);
-extern bool SetLocalProfileInt(char* section, char* key, int value);
-extern bool GetLocalProfileInt(char* section, char* key, int &value);
-extern bool SetLocalProfileFloat(char* section, char* key, float value);
-extern bool GetLocalProfileFloat(char* section, char* key, float &value);
+#include <lib/simpleini/SimpleIni.h>
+
+#include <common/singleton.h>
 
 
+class CProfile : public CSingleton<CProfile>
+{
+    public:
+        CProfile();
+        ~CProfile();
+
+        bool InitCurrentDirectory();
+        bool SetLocalProfileString(std::string section, std::string key, std::string value);
+        bool GetLocalProfileString(std::string section, std::string key, std::string& buffer);
+
+        bool SetLocalProfileInt(std::string section, std::string key, int value);
+        bool GetLocalProfileInt(std::string section, std::string key, int &value);
+
+        bool SetLocalProfileFloat(std::string section, std::string key, float value);
+        bool GetLocalProfileFloat(std::string section, std::string key, float &value);
+
+        static CProfile& GetInstance();
+        static CProfile* GetInstancePointer();
+
+    private:
+        CSimpleIniA *m_ini;
+};
