@@ -5,7 +5,7 @@
 #include <common/logger.h>
 #include <common/iman.h>
 #include <sound/sound.h>
-#include <plugins/plugin.h>
+#include <plugins/pluginloader.h>
 
 
 int main() {
@@ -14,7 +14,7 @@ int main() {
 
     lt_dlinit();
 
-    CPlugin *plugin = new CPlugin("libopenalsound");
+    CPluginLoader *plugin = new CPluginLoader("libopenalsound");
     if (plugin->LoadPlugin()) {
         CSoundInterface *sound = static_cast<CSoundInterface*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_SOUND));
 

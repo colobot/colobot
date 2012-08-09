@@ -14,13 +14,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// plugin.cpp
+// pluginloader.cpp
 
 
-#include "plugin.h"
+#include "pluginloader.h"
 
 
-CPlugin::CPlugin(std::string filename)
+CPluginLoader::CPluginLoader(std::string filename)
 {
     mInterface = nullptr;
     mFilename = filename;
@@ -28,7 +28,7 @@ CPlugin::CPlugin(std::string filename)
 }
 
 
-char* CPlugin::GetName()
+char* CPluginLoader::GetName()
 {
     if (mLoaded)
         return mInterface->PluginName();
@@ -36,7 +36,7 @@ char* CPlugin::GetName()
 }
 
 
-int CPlugin::GetVersion()
+int CPluginLoader::GetVersion()
 {
     if (mLoaded)
         return mInterface->PluginVersion();
@@ -44,13 +44,13 @@ int CPlugin::GetVersion()
 }
 
 
-bool CPlugin::IsLoaded()
+bool CPluginLoader::IsLoaded()
 {
     return mLoaded;
 }
 
 
-bool CPlugin::UnloadPlugin()
+bool CPluginLoader::UnloadPlugin()
 {
     if (!mLoaded) {
         GetLogger()->Warn("Plugin %s is not loaded.\n");
@@ -69,7 +69,7 @@ bool CPlugin::UnloadPlugin()
 }
 
 
-bool CPlugin::LoadPlugin()
+bool CPluginLoader::LoadPlugin()
 {
     mHandle = lt_dlopenext(mFilename.c_str());
     if (!mHandle) {
