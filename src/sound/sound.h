@@ -26,7 +26,7 @@
 
 #include <math/vector.h>
 
-#include <plugins/plugin.h>
+#include <plugins/plugininterface.h>
 
 #include <string>
 
@@ -148,7 +148,7 @@ enum SoundNext
 * @brief Sound plugin interface
 *
 */
-class CSoundInterface : public CPlugin
+class CSoundInterface : public CPluginInterface
 {
   public:
     CSoundInterface() {
