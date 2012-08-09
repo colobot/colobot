@@ -24,6 +24,7 @@
 #include "func.h"
 
 #include <cmath>
+#include <sstream>
 
 
 // Math module namespace
@@ -70,6 +71,18 @@ struct Vector
     inline void LoadZero()
     {
         x = y = z = 0.0f;
+    }
+
+    //! Returns the struct cast to \c float* array; use with care!
+    inline float* Array()
+    {
+        return reinterpret_cast<float*>(this);
+    }
+
+    //! Returns the struct cast to <tt>const float*</tt> array; use with care!
+    inline const float* Array() const
+    {
+        return reinterpret_cast<const float*>(this);
     }
 
     //! Returns the vector length
@@ -196,10 +209,20 @@ struct Vector
         return Vector(left.x / right, left.y / right, left.z / right);
     }
 
+
+    //! Returns a string "[x, y, z]"
+    inline std::string ToString() const
+    {
+        std::stringstream s;
+        s.precision(3);
+        s << "[" << x << ", " << y << ", " << z << "]";
+        return s.str();
+    }
+
 }; // struct Point
 
 //! Checks if two vectors are equal within given \a tolerance
-inline bool VectorsEqual(const Vector &a, const Vector &b, float tolerance = TOLERANCE)
+inline bool VectorsEqual(const Math::Vector &a, const Math::Vector &b, float tolerance = TOLERANCE)
 {
     return IsEqual(a.x, b.x, tolerance)
             && IsEqual(a.y, b.y, tolerance)
@@ -207,7 +230,7 @@ inline bool VectorsEqual(const Vector &a, const Vector &b, float tolerance = TOL
 }
 
 //! Convenience function for getting normalized vector
-inline Vector Normalize(const Vector &v)
+inline Vector Normalize(const Math::Vector &v)
 {
     Vector result = v;
     result.Normalize();
@@ -215,25 +238,25 @@ inline Vector Normalize(const Vector &v)
 }
 
 //! Convenience function for calculating dot product
-inline float DotProduct(const Vector &left, const Vector &right)
+inline float DotProduct(const Math::Vector &left, const Math::Vector &right)
 {
     return left.DotMultiply(right);
 }
 
 //! Convenience function for calculating cross product
-inline Vector CrossProduct(const Vector &left, const Vector &right)
+inline Vector CrossProduct(const Math::Vector &left, const Math::Vector &right)
 {
     return left.CrossMultiply(right);
 }
 
 //! Convenience function for calculating angle (in radians) between two vectors
-inline float Angle(const Vector &a, const Vector &b)
+inline float Angle(const Math::Vector &a, const Math::Vector &b)
 {
     return a.Angle(b);
 }
 
 //! Returns the distance between the ends of two vectors
-inline float Distance(const Vector &a, const Vector &b)
+inline float Distance(const Math::Vector &a, const Math::Vector &b)
 {
     return sqrtf( (a.x-b.x)*(a.x-b.x) +
                   (a.y-b.y)*(a.y-b.y) +

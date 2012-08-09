@@ -24,6 +24,48 @@
 #include "common/restext.h"
 
 
+/* Doxygen main page */
+
+/**
+
+\mainpage
+
+Doxygen documentation of Colobot project
+
+\section Intro Introduction
+
+The source code released by Epitec was sparsely documented. This documentation, written from scratch,
+will aim to describe the various components of the code.
+
+Currently, the only documented classes are the ones written from scratch or the old ones rewritten
+to match the new code.
+In time, the documentation will be extended to cover every major part of the code.
+
+\section Structure Code structure
+
+The source code was split from the original all-in-one directory to subdirectories,
+each containing one major part of the project.
+The current layout is the following:
+ - src/CBot - separate library with CBot language
+ - src/app - class CApplication and everything concerned with SDL plus other system-dependent
+   code such as displaying a message box, finding files, etc.
+ - src/common - shared structs, enums, defines, etc.; should not have any external dependencies
+ - src/graphics/core - abstract interface of graphics device (abstract CDevice class)
+   (split from old src/graphics/common)
+ - src/graphics/engine - main graphics engine based on abstract graphics device; is composed
+   of CEngine class and associated classes implementing the 3D engine (split from old src/graphics/common)
+ - src/graphics/opengl - concrete implementation of CDevice class in OpenGL: CGLDevice
+ - src/graphics/d3d - in (far) future - perhaps a newer implementation in DirectX (9? 10?)
+ - src/math - mathematical structures and functions
+ - src/object - non-graphical game engine, that is robots, buildings, etc.
+ - src/ui - 2D user interface (menu, buttons, check boxes, etc.)
+ - src/sound - sound and music engine written using fmod library
+ - src/physics - physics engine
+ - src/script - link with the CBot library
+ - src/metafile - separate program for packing data files to .dat format
+*/
+
+
 //! Entry point to the program
 int main(int argc, char *argv[])
 {
@@ -33,16 +75,17 @@ int main(int argc, char *argv[])
 
     CApplication app; // single instance of the application
 
-    Error err = app.ParseArguments(argc, argv);
-    if (err != ERR_OK)
+    if (! app.ParseArguments(argc, argv))
     {
         SystemDialog(SDT_ERROR, "COLOBOT", "Invalid commandline arguments!\n");
+        return app.GetExitCode();
     }
 
     int code = 0;
 
     if (! app.Create())
     {
+        app.Destroy(); // ensure a clean exit
         code = app.GetExitCode();
         logger.Info("Didn't run main loop. Exiting with code %d\n", code);
         return code;

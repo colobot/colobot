@@ -23,6 +23,8 @@
 #include <string>
 
 
+/* Dialog utils */
+
 /**
  * \enum SysDialogType
  * \brief Type of system dialog
@@ -57,3 +59,47 @@ enum SystemDialogResult
 
 //! Displays a system dialog
 SystemDialogResult SystemDialog(SystemDialogType, const std::string &title, const std::string &message);
+
+
+/* Time utils */
+
+enum SystemTimeUnit
+{
+    //! seconds
+    STU_SEC,
+    //! milliseconds
+    STU_MSEC,
+    //! microseconds
+    STU_USEC
+};
+
+/* Forward declaration of time stamp struct
+  * SystemTimeStamp should be used in a pointer context.
+  * The implementation details are hidden because of platform dependence. */
+struct SystemTimeStamp;
+
+//! Creates a new time stamp object
+SystemTimeStamp* CreateTimeStamp();
+
+//! Destroys a time stamp object
+void DestroyTimeStamp(SystemTimeStamp *stamp);
+
+//! Copies the time stamp from \a src to \a dst
+void CopyTimeStamp(SystemTimeStamp *dst, SystemTimeStamp *src);
+
+//! Returns a time stamp associated with current time
+void GetCurrentTimeStamp(SystemTimeStamp *stamp);
+
+//! Returns the platform's expected time stamp resolution
+float GetTimeStampResolution(SystemTimeUnit unit = STU_SEC);
+
+//! Returns the platform's exact (in nanosecond units) expected time stamp resolution
+long long GetTimeStampExactResolution();
+
+//! Returns a difference between two timestamps in given time unit
+/** The difference is \a after - \a before. */
+float TimeStampDiff(SystemTimeStamp *before, SystemTimeStamp *after, SystemTimeUnit unit = STU_SEC);
+
+//! Returns the exact (in nanosecond units) difference between two timestamps
+/** The difference is \a after - \a before. */
+long long TimeStampExactDiff(SystemTimeStamp *before, SystemTimeStamp *after);

@@ -26,7 +26,10 @@
 
 #include <math/vector.h>
 
-#include <plugins/plugininterface.h>
+#include <plugins/plugin.h>
+
+#include <string>
+
 
 /*!
  * Maximum possible audio volume
@@ -41,7 +44,7 @@
 **/
 enum Sound
 {
-  SOUND_CLICK  = 0, 
+  SOUND_CLICK  = 0,
   SOUND_BOUM  = 1,
   SOUND_EXPLO  = 2,
   SOUND_FLYh  = 3, /*!< human */
@@ -144,11 +147,14 @@ enum SoundNext
 *
 * @brief Sound plugin interface
 *
-*/ 
-class CSoundInterface : public CPluginInterface
+*/
+class CSoundInterface : public CPlugin
 {
   public:
-    CSoundInterface() {};
+    CSoundInterface() {
+      //CInstanceManager::getInstance().AddInstance(CLASS_SOUND, this);
+      //m_iMan->AddInstance(CLASS_SOUND, this);
+    };
     virtual ~CSoundInterface() = 0;
 
     /** Function to initialize sound device
@@ -225,7 +231,7 @@ class CSoundInterface : public CPluginInterface
      * @param float amplitude - change amplitude of sound before playing
      * @param float frequency - change sound frequency before playing (0.5 octave down, 2.0 octave up)
      * @param bool bLoop - loop sound
-     * @return identifier of channel that sound will be played on 
+     * @return identifier of channel that sound will be played on
      */
     virtual int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) = 0;
 
@@ -313,3 +319,4 @@ class CSoundInterface : public CPluginInterface
      */
     virtual bool IsPlayingMusic() = 0;
 };
+

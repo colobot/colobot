@@ -219,7 +219,7 @@ const int KS_NUMMINUS       = (1<<15);
 
 // Procedures.
 
-extern EventMsg GetUniqueEventMsg();
+extern EventType GetUniqueEventType();
 
 extern char RetNoAccent(char letter);
 extern char RetToUpper(char letter);

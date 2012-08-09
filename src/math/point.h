@@ -24,6 +24,7 @@
 #include "func.h"
 
 #include <cmath>
+#include <sstream>
 
 
 // Math module namespace
@@ -65,6 +66,18 @@ struct Point
     inline void LoadZero()
     {
         x = y = 0.0f;
+    }
+
+    //! Returns the struct cast to \c float* array; use with care!
+    inline float* Array()
+    {
+        return reinterpret_cast<float*>(this);
+    }
+
+    //! Returns the struct cast to <tt>const float*</tt> array; use with care!
+    inline const float* Array() const
+    {
+        return reinterpret_cast<const float*>(this);
     }
 
     //! Returns the distance from (0,0) to the point (x,y)
@@ -141,6 +154,15 @@ struct Point
         return Point(left.x / right, left.y / right);
     }
 
+
+    //! Returns a string "[x, y]"
+    inline std::string ToString() const
+    {
+        std::stringstream s;
+        s.precision(3);
+        s << "[" << x << ", " << y << "]";
+        return s.str();
+    }
 }; // struct Point
 
 
