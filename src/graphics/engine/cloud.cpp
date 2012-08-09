@@ -55,16 +55,14 @@ Gfx::CCloud::~CCloud()
 
 bool Gfx::CCloud::EventProcess(const Event &event)
 {
-    /* TODO!
-    if ( event.event == EVENT_FRAME )
-        return EventFrame(event); */
+    if ( event.type == EVENT_FRAME )
+        return EventFrame(event);
 
     return true;
 }
 
 bool Gfx::CCloud::EventFrame(const Event &event)
 {
-    /* TODO!
     if (m_engine->GetPause()) return true;
 
     m_time += event.rTime;
@@ -73,7 +71,7 @@ bool Gfx::CCloud::EventFrame(const Event &event)
 
     if (m_time - m_lastTest < 0.2f) return true;
 
-    m_lastTest = m_time; */
+    m_lastTest = m_time;
 
     return true;
 }

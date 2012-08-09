@@ -25,8 +25,16 @@
 #include "common/key.h"
 #include "common/logger.h"
 #include "graphics/core/device.h"
+#include "graphics/engine/camera.h"
+#include "graphics/engine/cloud.h"
 #include "graphics/engine/lightman.h"
+#include "graphics/engine/lightning.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/planet.h"
+#include "graphics/engine/pyro.h"
+#include "graphics/engine/terrain.h"
 #include "graphics/engine/text.h"
+#include "graphics/engine/water.h"
 #include "math/geometry.h"
 
 // Initial size of various vectors
@@ -207,12 +215,11 @@ bool Gfx::CEngine::Create()
 
     m_lightMan   = new Gfx::CLightManager(m_iMan, this);
     m_text       = new Gfx::CText(m_iMan, this);
-    /* TODO:
     m_particle   = new Gfx::CParticle(m_iMan, this);
     m_water      = new Gfx::CWater(m_iMan, this);
     m_cloud      = new Gfx::CCloud(m_iMan, this);
     m_lightning  = new Gfx::CLightning(m_iMan, this);
-    m_planet     = new Gfx::CPlanet(m_iMan, this);*/
+    m_planet     = new Gfx::CPlanet(m_iMan, this);
 
     m_text->SetDevice(m_device);
     if (! m_text->Create())
@@ -250,7 +257,6 @@ void Gfx::CEngine::Destroy()
     delete m_text;
     m_text = nullptr;
 
-    /* TODO:
     delete m_particle;
     m_particle = nullptr;
 
@@ -264,7 +270,7 @@ void Gfx::CEngine::Destroy()
     m_lightning = nullptr;
 
     delete m_planet;
-    m_planet = nullptr;*/
+    m_planet = nullptr;
 }
 
 void Gfx::CEngine::ResetAfterDeviceChanged()
@@ -807,3 +813,118 @@ bool Gfx::CEngine::GetShowStat()
     return m_showStats;
 }
 
+void Gfx::CEngine::SetFocus(float focus)
+{
+    m_focus = focus;
+}
+
+
+void Gfx::CEngine::SetOverColor(const Gfx::Color& color, int mode)
+{
+    // TODO!
+}
+
+void Gfx::CEngine::SetFogColor(const Gfx::Color& color, int rank)
+{
+    // TODO!
+}
+
+Gfx::Color Gfx::CEngine::GetFogColor(int rank)
+{
+    // TODO!
+    return Gfx::Color();
+}
+
+void Gfx::CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
+                                 const Math::Vector& upVec, float eyeDistance)
+{
+    // TODO!
+}
+
+void Gfx::CEngine::SetRankView(int rank)
+{
+    m_rankView = rank;
+}
+
+float Gfx::CEngine::GetEyeDirH()
+{
+    return m_eyeDirH;
+}
+
+float Gfx::CEngine::GetEyeDirV()
+{
+    return m_eyeDirV;
+}
+
+float Gfx::CEngine::GetClippingDistance()
+{
+    return m_clippingDistance;
+}
+
+bool Gfx::CEngine::GetGroundSpot()
+{
+    return m_groundSpotVisible;
+}
+
+void Gfx::CEngine::SetTerrain(Gfx::CTerrain* terrain)
+{
+    m_terrain = terrain;
+}
+
+void Gfx::CEngine::SetTerrainVision(float vision)
+{
+    // TODO!
+}
+
+bool Gfx::CEngine::LoadTexture(const std::string& name, int stage)
+{
+    // TODO!
+    return true;
+}
+
+float Gfx::CEngine::ParticleAdapt(float factor)
+{
+    // TODO!
+    return 0.0f;
+}
+
+bool Gfx::CEngine::SetObjectType(int objRank, Gfx::EngineObjectType type)
+{
+    // TODO!
+    return true;
+}
+
+bool Gfx::CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform)
+{
+    // TODO!
+    return true;
+}
+
+int Gfx::CEngine::CreateObject()
+{
+    // TODO!
+    return 0;
+}
+
+bool Gfx::CEngine::DeleteObject(int objRank)
+{
+    // TODO!
+    return true;
+}
+
+int Gfx::CEngine::GroundMarkCreate(Math::Vector pos, float radius, float delay1, float delay2, float delay3, int dx, int dy, char* table)
+{
+    // TODO!
+    return 0;
+}
+
+bool Gfx::CEngine::AddQuick(int objRank, const Gfx::EngineObjLevel5& buffer, std::string texName1, std::string texName2, float min, float max, bool globalUpdate)
+{
+    // TODO!
+    return false;
+}
+
+void Gfx::CEngine::Update()
+{
+    // TODO!
+}

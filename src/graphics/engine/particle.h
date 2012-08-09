@@ -202,26 +202,26 @@ enum ParticlePhase
 
 struct Particle
 {
-    char            bUsed;      // TRUE -> particle used
-    char            bRay;       // TRUE -> ray with goal
-    unsigned short      uniqueStamp;    // unique mark
+    char            used;      // TRUE -> particle used
+    char            ray;       // TRUE -> ray with goal
+    unsigned short  uniqueStamp;    // unique mark
     short           sheet;      // sheet (0..n)
-    ParticleType       type;       // type PARTI*
-    ParticlePhase      phase;      // phase PARPH*
+    ParticleType    type;       // type PARTI*
+    ParticlePhase   phase;      // phase PARPH*
     float           mass;       // mass of the particle (in rebounding)
     float           weight;     // weight of the particle (for noise)
     float           duration;   // length of life
-    Math::Vector        pos;        // absolute position (relative if object links)
-    Math::Vector        goal;       // goal position (if bRay)
-    Math::Vector        speed;      // speed of displacement
+    Math::Vector    pos;        // absolute position (relative if object links)
+    Math::Vector    goal;       // goal position (if ray)
+    Math::Vector    speed;      // speed of displacement
     float           windSensitivity;
     short           bounce;     // number of rebounds
-    Math::Point         dim;        // dimensions of the rectangle
+    Math::Point     dim;        // dimensions of the rectangle
     float           zoom;       // zoom (0..1)
     float           angle;      // angle of rotation
     float           intensity;  // intensity
-    Math::Point             texSup;     // coordinated upper texture
-    Math::Point             texInf;     // coordinated lower texture
+    Math::Point     texSup;     // coordinated upper texture
+    Math::Point     texInf;     // coordinated lower texture
     float           time;       // age of the particle (0..n)
     float           phaseTime;  // age at the beginning of phase
     float           testTime;   // time since last test
@@ -233,22 +233,22 @@ struct Particle
 
 struct Track
 {
-    char            bUsed;      // TRUE -> drag used
-    char            bDrawParticle;
+    char            used;      // TRUE -> drag used
+    char            drawParticle;
     float           step;       // duration of not
     float           last;       // increase last not memorized
     float           intensity;  // intensity at starting (0..1)
     float           width;      // tail width
-    int         used;       // number of positions in "pos"
-    int         head;       // head to write index
-    Math::Vector        pos[MAXTRACKLEN];
+    int             posUsed;    // number of positions in "pos"
+    int             head;       // head to write index
+    Math::Vector    pos[MAXTRACKLEN];
     float           len[MAXTRACKLEN];
 };
 
 struct WheelTrace
 {
-    ParticleType       type;       // type PARTI*
-    Math::Vector        pos[4];     // rectangle positions
+    ParticleType    type;       // type PARTI*
+    Math::Vector    pos[4];     // rectangle positions
     float           startTime;  // beginning of life
 };
 
@@ -257,20 +257,29 @@ struct WheelTrace
 class CParticle
 {
 public:
-    CParticle(CInstanceManager* iMan, CEngine* engine);
+    CParticle(CInstanceManager* iMan, Gfx::CEngine* engine);
     ~CParticle();
 
-    void        SetDevice(CDevice* device);
+    void        SetDevice(Gfx::CDevice* device);
 
     void        FlushParticle();
     void        FlushParticle(int sheet);
-    int         CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
-    int         CreateFrag(Math::Vector pos, Math::Vector speed, Gfx::EngineTriangle *triangle, ParticleType type, float duration=1.0f, float mass=0.0f, float windSensitivity=1.0f, int sheet=0);
-    int         CreatePart(Math::Vector pos, Math::Vector speed, ParticleType type, float duration=1.0f, float mass=0.0f, float weight=0.0f, float windSensitivity=1.0f, int sheet=0);
-    int         CreateRay(Math::Vector pos, Math::Vector goal, ParticleType type, Math::Point dim, float duration=1.0f, int sheet=0);
-    int         CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, ParticleType type, float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
-    void        CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3, const Math::Vector &p4, ParticleType type);
-    void        DeleteParticle(ParticleType type);
+    int         CreateParticle(Math::Vector pos, Math::Vector speed, Math::Point dim,
+                               Gfx::ParticleType type, float duration=1.0f, float mass=0.0f,
+                               float windSensitivity=1.0f, int sheet=0);
+    int         CreateFrag(Math::Vector pos, Math::Vector speed, Gfx::EngineTriangle *triangle,
+                           Gfx::ParticleType type, float duration=1.0f, float mass=0.0f,
+                           float windSensitivity=1.0f, int sheet=0);
+    int         CreatePart(Math::Vector pos, Math::Vector speed, Gfx::ParticleType type,
+                           float duration=1.0f, float mass=0.0f, float weight=0.0f,
+                           float windSensitivity=1.0f, int sheet=0);
+    int         CreateRay(Math::Vector pos, Math::Vector goal, Gfx::ParticleType type, Math::Point dim,
+                          float duration=1.0f, int sheet=0);
+    int         CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, Gfx::ParticleType type,
+                            float duration=1.0f, float mass=0.0f, float length=10.0f, float width=1.0f);
+    void        CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3,
+                                 const Math::Vector &p4, Gfx::ParticleType type);
+    void        DeleteParticle(Gfx::ParticleType type);
     void        DeleteParticle(int channel);
     void        SetObjectLink(int channel, CObject *object);
     void        SetObjectFather(int channel, CObject *object);
@@ -280,12 +289,12 @@ public:
     void        SetAngle(int channel, float angle);
     void        SetIntensity(int channel, float intensity);
     void        SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom, float angle, float intensity);
-    void        SetPhase(int channel, ParticlePhase phase, float duration);
+    void        SetPhase(int channel, Gfx::ParticlePhase phase, float duration);
     bool        GetPosition(int channel, Math::Vector &pos);
 
     Gfx::Color GetFogColor(Math::Vector pos);
 
-    void        SetFrameUpdate(int sheet, bool bUpdate);
+    void        SetFrameUpdate(int sheet, bool update);
     void        FrameParticle(float rTime);
     void        DrawParticle(int sheet);
 
@@ -302,29 +311,29 @@ protected:
     void        DrawParticleSphere(int i);
     void        DrawParticleCylinder(int i);
     void        DrawParticleWheel(int i);
-    CObject*    SearchObjectGun(Math::Vector old, Math::Vector pos, ParticleType type, CObject *father);
-    CObject*    SearchObjectRay(Math::Vector pos, Math::Vector goal, ParticleType type, CObject *father);
+    CObject*    SearchObjectGun(Math::Vector old, Math::Vector pos, Gfx::ParticleType type, CObject *father);
+    CObject*    SearchObjectRay(Math::Vector pos, Math::Vector goal, Gfx::ParticleType type, CObject *father);
     void        Play(Sound sound, Math::Vector pos, float amplitude);
     bool        TrackMove(int i, Math::Vector pos, float progress);
-    void        TrackDraw(int i, ParticleType type);
+    void        TrackDraw(int i, Gfx::ParticleType type);
 
 protected:
     CInstanceManager* m_iMan;
-    CEngine*     m_engine;
-    CDevice*     m_device;
-    CRobotMain*  m_main;
-    CTerrain*    m_terrain;
-    CWater*      m_water;
-    CSound*      m_sound;
+    Gfx::CEngine*     m_engine;
+    Gfx::CDevice*     m_device;
+    Gfx::CTerrain*    m_terrain;
+    Gfx::CWater*      m_water;
+    CRobotMain*       m_main;
+    CSound*           m_sound;
 
     Gfx::Particle m_particule[MAXPARTICULE*MAXPARTITYPE];
     Gfx::EngineTriangle m_triangle[MAXPARTICULE];  // triangle if PartiType == 0
-    Track         m_track[MAXTRACK];
+    Gfx::Track    m_track[MAXTRACK];
     int           m_wheelTraceTotal;
     int           m_wheelTraceIndex;
-    WheelTrace    m_wheelTrace[MAXWHEELTRACE];
+    Gfx::WheelTrace m_wheelTrace[MAXWHEELTRACE];
     int           m_totalInterface[MAXPARTITYPE][SH_MAX];
-    bool          m_bFrameUpdate[SH_MAX];
+    bool          m_frameUpdate[SH_MAX];
     int           m_fogTotal;
     int           m_fog[MAXPARTIFOG];
     int           m_uniqueStamp;

@@ -170,7 +170,10 @@ struct EngineObjLevel5
     Gfx::EngineTriangleType      type;
     std::vector<Gfx::VertexTex2> vertices;
 
-    EngineObjLevel5();
+    EngineObjLevel5()
+    {
+        state = 0;
+    }
 };
 
 /**
@@ -182,7 +185,10 @@ struct EngineObjLevel4
     std::vector<Gfx::EngineObjLevel5>  up;
     Gfx::EngineObjLevel3*              down;
 
-    EngineObjLevel4();
+    EngineObjLevel4()
+    {
+        reserved = 0;
+    }
 };
 
 /**
@@ -195,7 +201,10 @@ struct EngineObjLevel3
     std::vector<Gfx::EngineObjLevel4>  up;
     Gfx::EngineObjLevel2*              down;
 
-    EngineObjLevel3();
+    EngineObjLevel3()
+    {
+        min = max = 0.0f;
+    }
 };
 
 /**
@@ -207,7 +216,10 @@ struct EngineObjLevel2
     std::vector<Gfx::EngineObjLevel3>  up;
     Gfx::EngineObjLevel1*              down;
 
-    EngineObjLevel2();
+    EngineObjLevel2()
+    {
+        objRank = 0;
+    }
 };
 
 /**
@@ -219,7 +231,7 @@ struct EngineObjLevel1
     Gfx::Texture                       tex2;
     std::vector<Gfx::EngineObjLevel2>  up;
 
-    EngineObjLevel1();
+    EngineObjLevel1() {}
 };
 
 /**
