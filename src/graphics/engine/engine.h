@@ -1,5 +1,5 @@
 // * This file is part of the COLOBOT source code
-// * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2001-2008, Daniel ROUX&  EPSITEC SA, www.epsitec.ch
 // * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@
 class CApplication;
 class CInstanceManager;
 class CObject;
-class CSound;
+class CSoundInterface;
 
 
 namespace Gfx {
@@ -310,12 +310,14 @@ struct EngineGroundSpot
   \brief Phase of life of an EngineGroundMark */
 enum EngineGroundMarkPhase
 {
+    //! Null phase
+    ENG_GR_MARK_PHASE_NULL = 0,
     //! Increase
     ENG_GR_MARK_PHASE_INC = 1,
     //! Fixed
     ENG_GR_MARK_PHASE_FIX = 2,
     //! Decrease
-    ENG_GR_MARK_PHASE_DEC = 2
+    ENG_GR_MARK_PHASE_DEC = 3
 };
 
 /**
@@ -526,16 +528,23 @@ struct EngineMouse
 class CEngine
 {
 public:
-    CEngine(CInstanceManager *iMan, CApplication *app);
+    CEngine(CInstanceManager* iMan, CApplication* app);
     ~CEngine();
 
     //! Returns the last error encountered
     std::string     GetError();
 
     //! Sets the device to be used
-    void            SetDevice(Gfx::CDevice *device);
+    void            SetDevice(Gfx::CDevice* device);
     //! Returns the current device
     Gfx::CDevice*   GetDevice();
+
+    //! Sets the terrain object
+    void            SetTerrain(Gfx::CTerrain* terrain);
+
+    //! Returns the text rendering engine
+    CText*          GetText();
+
 
     //! Performs the initialization; must be called after device was set
     bool            Create();
@@ -545,16 +554,68 @@ public:
     //! Resets some states and flushes textures after device was changed (e.g. resoulution changed)
     void            ResetAfterDeviceChanged();
 
-    void            SetTerrain(Gfx::CTerrain* terrain);
+
+    //! Called once per frame, the call is the entry point for rendering
+    void            Render();
+
 
     //! Processes incoming event
-    bool            ProcessEvent(const Event &event);
+    bool            ProcessEvent(const Event& event);
 
-    //! Renders a single frame
-    bool            Render();
+    //! Called once per frame, the call is the entry point for animating the scene
+    void            FrameMove(float rTime);
+    //! Evolved throughout the game
+    void            StepSimulation(float rTime);
 
+    //! Initialize timestamps at the beginning of animation
+    void            TimeInit();
+    //! Suspend animation
+    void            TimeEnterGel();
+    //! Resume animation
+    void            TimeExitGel();
+    //! Returns the relative time since last animation update
+    float           TimeGet();
+
+
+    //! Writes a screenshot containing the current frame
+    bool            WriteScreenShot(const std::string& fileName, int width, int height);
+
+
+    //! Reads settings from INI
+    bool            ReadSettings();
+    //! Writes settings to INI
+    bool            WriteSettings();
+
+    //@{
+    //! Management of game pause mode
+    void            SetPause(bool pause);
+    bool            GetPause();
+    //@}
+
+    //@{
+    //! Management of lock for the duration of movie sequence
+    void            SetMovieLock(bool lock);
+    bool            GetMovieLock();
+    //@}
+
+    //@{
+    //! Management of displaying statistic information
+    void            SetShowStats(bool show);
+    bool            GetShowStats();
+    //@}
+
+    //! Enables/disables rendering
+    void            SetRenderEnable(bool enable);
+
+    //! Returns current size of viewport window
+    Math::IntSize   GetWindowSize();
+    //! Returns the last size of viewport window
+    Math::IntSize   GetLastWindowSize();
 
     //! Converts window coords to interface coords
+    /** Conversion of the position of the mouse from window coords to interface coords:
+     - x: 0=left, 1=right
+     - y: 0=down, 1=up */
     Math::Point     WindowToInterfaceCoords(Math::IntPoint pos);
     //! Converts interface coords to window coords
     Math::IntPoint  InterfaceToWindowCoords(Math::Point pos);
@@ -564,83 +625,51 @@ public:
     //! Converts interface size to window size
     Math::IntSize   InterfaceToWindowSize(Math::Size size);
 
+    //! Returns the name of directory with textures
     std::string     GetTextureDir();
 
-    bool            WriteProfile();
-
-    void            SetPause(bool pause);
-    bool            GetPause();
-
-    void            SetMovieLock(bool lock);
-    bool            GetMovieLock();
-
-    void            SetShowStat(bool show);
-    bool            GetShowStat();
-
-    void            SetRenderEnable(bool enable);
-
-    int             OneTimeSceneInit();
-    int             InitDeviceObjects();
-    int             DeleteDeviceObjects();
-    int             RestoreSurfaces();
-    int             FrameMove(float rTime);
-    void            StepSimulation(float rTime);
-    int             FinalCleanup();
+    //! Increments the triangle counter for the current frame
     void            AddStatisticTriangle(int nb);
+    //! Returns the number of triangles in current frame
     int             GetStatisticTriangle();
-    void            SetHiliteRank(int *rankList);
-    bool            GetHilite(Math::Point &p1, Math::Point &p2);
-    bool            GetSpriteCoord(int &x, int &y);
-    void            SetInfoText(int line, char* text);
-    char*           GetInfoText(int line);
-    void            FirstExecuteAdapt(bool first);
 
-    bool            GetFullScreen();
 
-    Math::Matrix*   GetMatView();
-    Math::Matrix*   GetMatLeftView();
-    Math::Matrix*   GetMatRightView();
+    /* *************** Object management *************** */
 
-    void            TimeInit();
-    void            TimeEnterGel();
-    void            TimeExitGel();
-    float           TimeGet();
-
-    int             GetRestCreate();
     int             CreateObject();
     void            FlushObject();
     bool            DeleteObject(int objRank);
     bool            SetDrawWorld(int objRank, bool draw);
     bool            SetDrawFront(int objRank, bool draw);
 
-    bool            AddTriangle(int objRank, Gfx::VertexTex2* vertex, int nb, const Gfx::Material &mat,
+    bool            AddTriangle(int objRank, Gfx::VertexTex2* vertex, int nb, const Gfx::Material& mat,
                                 int state, std::string texName1, std::string texName2,
                                 float min, float max, bool globalUpdate);
-    bool            AddSurface(int objRank, Gfx::VertexTex2* vertex, int nb, const Gfx::Material &mat,
+    bool            AddSurface(int objRank, Gfx::VertexTex2* vertex, int nb, const Gfx::Material& mat,
                                int state, std::string texName1, std::string texName2,
                                float min, float max, bool globalUpdate);
     bool            AddQuick(int objRank, const Gfx::EngineObjLevel5& buffer,
                              std::string texName1, std::string texName2,
                              float min, float max, bool globalUpdate);
-    Gfx::EngineObjLevel5* SearchTriangle(int objRank, const Gfx::Material &mat,
+    Gfx::EngineObjLevel5* SearchTriangle(int objRank, const Gfx::Material& mat,
                                          int state, std::string texName1, std::string texName2,
                                          float min, float max);
 
     void            ChangeLOD();
-    bool            ChangeSecondTexture(int objRank, char* texName2);
+    bool            ChangeSecondTexture(int objRank, const std::string& texName2);
     int             GetTotalTriangles(int objRank);
     int             GetTriangles(int objRank, float min, float max, Gfx::EngineTriangle* buffer, int size, float percent);
-    bool            GetBBox(int objRank, Math::Vector &min, Math::Vector &max);
-    bool            ChangeTextureMapping(int objRank, const Gfx::Material &mat, int state,
-                                         const std::string &texName1, const std::string &texName2,
+    bool            GetBBox(int objRank, Math::Vector& min, Math::Vector& max);
+    bool            ChangeTextureMapping(int objRank, const Gfx::Material& mat, int state,
+                                         const std::string& texName1, const std::string& texName2,
                                          float min, float max, Gfx::EngineTextureMapping mode,
                                          float au, float bu, float av, float bv);
-    bool            TrackTextureMapping(int objRank, const Gfx::Material &mat, int state,
-                                        const std::string &texName1, const std::string &texName2,
+    bool            TrackTextureMapping(int objRank, const Gfx::Material& mat, int state,
+                                        const std::string& texName1, const std::string& texName2,
                                         float min, float max, Gfx::EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt);
-    bool            SetObjectTransform(int objRank, const Math::Matrix &transform);
-    bool            GetObjectTransform(int objRank, Math::Matrix &transform);
+    bool            SetObjectTransform(int objRank, const Math::Matrix& transform);
+    bool            GetObjectTransform(int objRank, Math::Matrix& transform);
     bool            SetObjectType(int objRank, Gfx::EngineObjectType type);
     Gfx::EngineObjectType GetObjectType(int objRank);
     bool            SetObjectTransparency(int objRank, float value);
@@ -649,20 +678,25 @@ public:
     void            ShadowDelete(int objRank);
     bool            SetObjectShadowHide(int objRank, bool hide);
     bool            SetObjectShadowType(int objRank, Gfx::EngineShadowType type);
-    bool            SetObjectShadowPos(int objRank, const Math::Vector &pos);
-    bool            SetObjectShadowNormal(int objRank, const Math::Vector &n);
+    bool            SetObjectShadowPos(int objRank, const Math::Vector& pos);
+    bool            SetObjectShadowNormal(int objRank, const Math::Vector& n);
     bool            SetObjectShadowAngle(int objRank, float angle);
     bool            SetObjectShadowRadius(int objRank, float radius);
     bool            SetObjectShadowIntensity(int objRank, float intensity);
     bool            SetObjectShadowHeight(int objRank, float h);
     float           GetObjectShadowRadius(int objRank);
 
+    //! Lists the ranks of objects and subobjects selected
+    void            SetHighlightRank(int* rankList);
+    //! Returns the highlighted rectangle
+    bool            GetHighlight(Math::Point& p1, Math::Point& p2);
+
     void            GroundSpotFlush();
     int             GroundSpotCreate();
     void            GroundSpotDelete(int rank);
-    bool            SetObjectGroundSpotPos(int rank, const Math::Vector &pos);
+    bool            SetObjectGroundSpotPos(int rank, const Math::Vector& pos);
     bool            SetObjectGroundSpotRadius(int rank, float radius);
-    bool            SetObjectGroundSpotColor(int rank, const Gfx::Color &color);
+    bool            SetObjectGroundSpotColor(int rank, const Gfx::Color& color);
     bool            SetObjectGroundSpotMinMax(int rank, float min, float max);
     bool            SetObjectGroundSpotSmooth(int rank, float smooth);
 
@@ -671,217 +705,347 @@ public:
                                      int dx, int dy, char* table);
     bool            GroundMarkDelete(int rank);
 
+    //! Updates the state after creating objects
     void            Update();
 
-    void            SetViewParams(const Math::Vector &eyePt, const Math::Vector &lookatPt,
-                                  const Math::Vector &upVec, float eyeDistance);
 
-    Gfx::Texture    CreateTexture(const std::string &texName,
-                                  const Gfx::TextureCreateParams &params);
-    Gfx::Texture    CreateTexture(const std::string &texName);
-    void            DestroyTexture(const std::string &texName);
+    /* *************** Mode setting *************** */
 
-    bool            LoadTexture(const std::string &name, int stage = 0);
+    //! Sets the current rendering state
+    void            SetState(int state, const Gfx::Color& color = Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f));
+
+    //! Sets the current material
+    void            SetMaterial(const Gfx::Material& mat);
+
+    //! Specifies the location and direction of view
+    void            SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
+                                  const Math::Vector& upVec, float eyeDistance);
+
+    Gfx::Texture    CreateTexture(const std::string& texName,
+                                  const Gfx::TextureCreateParams& params);
+    Gfx::Texture    CreateTexture(const std::string& texName);
+    void            DestroyTexture(const std::string& texName);
+    bool            LoadTexture(const std::string& name, int stage = 0);
     bool            LoadAllTextures();
+    bool            SetTexture(const std::string& name, int stage = 0);
 
+    //@{
+    //! Border management (distance limits) depends of the resolution (LOD = level-of-detail)
     void            SetLimitLOD(int rank, float limit);
     float           GetLimitLOD(int rank, bool last=false);
+    //@}
 
+    //! Defines of the distance field of vision
     void            SetTerrainVision(float vision);
 
+    //@{
+    //! Management of camera angle
+    /**
+    0.75 = normal
+    1.50 = wide-angle */
+    void            SetFocus(float focus);
+    float           GetFocus();
+    //@}
+
+    //@{
+    //! Management of the global mode of marking
     void            SetGroundSpot(bool mode);
     bool            GetGroundSpot();
+    //@}
+
+    //@{
+    //! Management of the global mode of shading
     void            SetShadow(bool mode);
     bool            GetShadow();
+    //@}
+
+    //@{
+    //! Management of the global mode of contamination
     void            SetDirty(bool mode);
     bool            GetDirty();
+    //@}
+
+    //@{
+    //! Management of the global mode of horizontal fog patches
     void            SetFog(bool mode);
     bool            GetFog();
+    //@}
+
+    //! Indicates whether it is possible to give a color SetState
     bool            GetStateColor();
 
+    //@{
+    //! Management of the global mode of secondary texturing
     void            SetSecondTexture(int texNum);
     int             GetSecondTexture();
+    //@}
 
+    //@{
+    //! Management of view mode
     void            SetRankView(int rank);
     int             GetRankView();
+    //@}
 
+    //! Whether to draw the world
     void            SetDrawWorld(bool draw);
+
+    //! Whether to draw the world on the interface
     void            SetDrawFront(bool draw);
 
-    void            SetAmbientColor(const Gfx::Color &color, int rank = 0);
+    //@{
+    //! Ambient color management
+    void            SetAmbientColor(const Gfx::Color& color, int rank = 0);
     Gfx::Color      GetAmbientColor(int rank = 0);
+    //@}
 
-    void            SetWaterAddColor(const Gfx::Color &color);
+    //@{
+    //! Color management under water
+    void            SetWaterAddColor(const Gfx::Color& color);
     Gfx::Color      GetWaterAddColor();
+    //@}
 
-    void            SetFogColor(const Gfx::Color &color, int rank = 0);
+    //@{
+    //! Management of the fog color
+    void            SetFogColor(const Gfx::Color& color, int rank = 0);
     Gfx::Color      GetFogColor(int rank = 0);
+    //@}
 
+    //@{
+    //! Management of the depth of field.
+    /** Beyond this distance, nothing is visible.
+        Shortly (according SetFogStart), one enters the fog. */
     void            SetDeepView(float length, int rank = 0, bool ref=false);
     float           GetDeepView(int rank = 0);
+    //@}
 
+
+    //@{
+    //! Management the start of fog.
+    /** With 0.0, the fog from the point of view (fog max).
+        With 1.0, the fog from the depth of field (no fog). */
     void            SetFogStart(float start, int rank = 0);
     float           GetFogStart(int rank = 0);
+    //@}
 
-    void            SetBackground(const std::string &name, Gfx::Color up = Gfx::Color(), Gfx::Color down = Gfx::Color(),
+    //@{
+    //! Management of the background image to use
+    void            SetBackground(const std::string& name, Gfx::Color up = Gfx::Color(), Gfx::Color down = Gfx::Color(),
                                   Gfx::Color cloudUp = Gfx::Color(), Gfx::Color cloudDown = Gfx::Color(),
                                   bool full = false, bool quarter = false);
-    void            GetBackground(const std::string &name, Gfx::Color &up, Gfx::Color &down,
-                                  Gfx::Color &cloudUp, Gfx::Color &cloudDown,
-                                  bool &full, bool &quarter);
-    void            SetFrontsizeName(char *name);
-    void            SetOverFront(bool front);
-    void            SetOverColor(const Gfx::Color &color = Gfx::Color(), int mode = ENG_RSTATE_TCOLOR_BLACK);
+    void            GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& down,
+                                  Gfx::Color& cloudUp, Gfx::Color& cloudDown,
+                                  bool& full, bool& quarter);
+    //@}
 
+    //! Specifies the foreground image
+    void            SetForegroundImageName(const std::string& name);
+    //! Specifies whether to draw the foreground
+    void            SetOverFront(bool front);
+    //! Sets the foreground overlay color
+    void            SetOverColor(const Gfx::Color& color = Gfx::Color(), int mode = ENG_RSTATE_TCOLOR_BLACK);
+
+    //@{
+    //! Management of the particle density
     void            SetParticleDensity(float value);
     float           GetParticleDensity();
+    //@}
+
+    //! Adapts particle factor according to particle density
     float           ParticleAdapt(float factor);
 
+    //@{
+    //! Management of the distance of clipping.
     void            SetClippingDistance(float value);
     float           GetClippingDistance();
+    //@}
 
+    //@{
+    //! Management of objects detals.
     void            SetObjectDetail(float value);
     float           GetObjectDetail();
+    //@}
 
+    //@{
+    //! The amount of management objects gadgets
     void            SetGadgetQuantity(float value);
     float           GetGadgetQuantity();
+    //@}
 
+    //@{
+    //! Management the quality of textures
     void            SetTextureQuality(int value);
     int             GetTextureQuality();
+    //@}
 
+    //@{
+    //! Management mode of toto
     void            SetTotoMode(bool present);
     bool            GetTotoMode();
+    //@}
 
+    //@{
+    //! Management the mode of foreground
     void            SetLensMode(bool present);
     bool            GetLensMode();
+    //@}
 
+    //@{
+    //! Management the mode of water
     void            SetWaterMode(bool present);
     bool            GetWaterMode();
+    //@}
 
     void            SetLightingMode(bool present);
     bool            GetLightingMode();
 
+    //@{
+    //! Management the mode of sky
     void            SetSkyMode(bool present);
     bool            GetSkyMode();
+    //@}
 
+    //@{
+    //! Management the mode of background
     void            SetBackForce(bool present);
     bool            GetBackForce();
+    //@}
 
+    //@{
+    //! Management the mode of planets
     void            SetPlanetMode(bool present);
     bool            GetPlanetMode();
+    //@}
 
+    //@{
+    //! Managing the mode of dynamic lights.
     void            SetLightMode(bool present);
     bool            GetLightMode();
+    //@}
 
+    //@{
+    // TODO: move to more appropriate class ?
+    //! Management of the indentation mode while editing (CEdit)
     void            SetEditIndentMode(bool autoIndent);
     bool            GetEditIndentMode();
+    //@}
 
+    //@{
+    // TODO: move to more appropriate class ?
+    //! Management of tab indent when editing (CEdit)
     void            SetEditIndentValue(int value);
     int             GetEditIndentValue();
+    //@}
 
+    //@{
+    //! Management of game speed
     void            SetSpeed(float speed);
     float           GetSpeed();
 
+    //@{
+    //! Management of precision of robot tracks
     void            SetTracePrecision(float factor);
     float           GetTracePrecision();
+    //@}
 
-    void            SetFocus(float focus);
-    float           GetFocus();
-    Math::Vector    GetEyePt();
-    Math::Vector    GetLookatPt();
-    float           GetEyeDirH();
-    float           GetEyeDirV();
-    Math::IntSize   GetWindowSize();
-    Math::IntSize   GetLastWindowSize();
-    void            UpdateMatProj();
-
-    void            ApplyChange();
-
-    void            FlushPressKey();
-    void            ResetKey();
-    void            SetKey(int keyRank, int option, int key);
-    int             GetKey(int keyRank, int option);
-
-    void            SetJoystick(bool enable);
-    bool            GetJoystick();
-
-    void            SetDebugMode(bool mode);
-    bool            GetDebugMode();
-    bool            GetSetupMode();
-
-    bool            IsVisiblePoint(const Math::Vector &pos);
-
-    int             DetectObject(Math::Point mouse);
-    void            SetState(int state, Gfx::Color color = Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f));
-    void            SetTexture(const std::string &name, int stage = 0);
-    void            SetMaterial(const Gfx::Material &mat);
-
+    //@{
+    //! Management of mouse cursor visibility
     void                 SetMouseVisible(bool show);
     bool                 GetMouseVisible();
+    //@}
+
+    //@{
+    //! Management of mouse cursor position
     void                 SetMousePos(Math::Point pos);
     Math::Point          GetMousePos();
+    //@}
+
+    //@{
+    //! Management of mouse cursor type
     void                 SetMouseType(Gfx::EngineMouseType type);
     Gfx::EngineMouseType GetMouseType();
+    //@}
 
-    CText*          GetText();
+    //! Returns the view matrix
+    const Math::Matrix& GetMatView();
+    //! Returns the camera center point
+    Math::Vector    GetEyePt();
+    //! Returns the camera target point
+    Math::Vector    GetLookatPt();
+    //! Returns the horizontal direction angle of view
+    float           GetEyeDirH();
+    //! Returns the vertical direction angle of view
+    float           GetEyeDirV();
+    //! Indicates whether a point is visible
+    bool            IsVisiblePoint(const Math::Vector& pos);
 
-    bool            ChangeColor(char *name, Gfx::Color colorRef1, Gfx::Color colorNew1,
-                                Gfx::Color colorRef2, Gfx::Color colorNew2,
-                                float tolerance1, float tolerance2,
-                                Math::Point ts, Math::Point ti,
-                                Math::Point *pExclu=0, float shift=0.0f, bool hSV=false);
-    bool            OpenImage(char *name);
-    bool            CopyImage();
-    bool            LoadImage();
-    bool            ScrollImage(int dx, int dy);
-    bool            SetDot(int x, int y, Gfx::Color color);
-    bool            CloseImage();
-    bool            WriteScreenShot(char *filename, int width, int height);
-    //bool      GetRenderDC(HDC &hDC);
-    //bool      ReleaseRenderDC(HDC &hDC);
-    //PBITMAPINFO   CreateBitmapInfoStruct(HBITMAP hBmp);
-    //bool      CreateBMPFile(LPTSTR pszFile, PBITMAPINFO pbi, HBITMAP hBMP, HDC hDC);
+    //! Resets the projection matrix after changes
+    void            UpdateMatProj();
+
+    //! Updates the scene after a change of parameters
+    void            ApplyChange();
 
 protected:
+    //! Prepares the interface for 3D scene
+    void        Draw3DScene();
+    //! Draws the user interface over the scene
+    void        DrawInterface();
 
-    void        SetUp3DView();
-    bool        Draw3DScene();
+    //! Updates the textures used for drawing ground spot
+    void        UpdateGroundSpotTextures();
 
-    void        SetUpInterfaceView();
-    bool        DrawInterface();
-
-    void        DrawGroundSpot();
+    //! Draws shadows
     void        DrawShadow();
+    //! Draws the gradient background
     void        DrawBackground();
-    void        DrawBackgroundGradient(Gfx::Color up, Gfx::Color down);
-    void        DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, char *name);
+    //! Draws the gradient background
+    void        DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color& down);
+    //! Draws a portion of the image background
+    void        DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, const std::string& name);
+    //! Draws the image background
     void        DrawBackgroundImage();
+    //! Draws all the planets
     void        DrawPlanet();
-    void        DrawFrontsize();
+    //! Draws the image foreground
+    void        DrawForegroundImage();
+    //! Draws the foreground color
     void        DrawOverColor();
-    void        DrawHilite();
+    //! Draws the rectangle of the object highlighted
+    void        DrawHighlight();
+    //! Draws the mouse cursor
     void        DrawMouse();
+    //! Draw part of mouse cursor sprite
     void        DrawMouseSprite(Math::Point pos, Math::Point dim, int icon);
 
-    /*
-    Gfx::ObjLevel2* AddLevel1(Gfx::ObjLevel1 *&p1, char* texName1, char* texName2);
-    Gfx::ObjLevel3* AddLevel2(Gfx::ObjLevel2 *&p2, int objRank);
-    Gfx::ObjLevel4* AddLevel3(Gfx::ObjLevel3 *&p3, float min, float max);
-    Gfx::ObjLevel5* AddLevel4(Gfx::ObjLevel4 *&p4, int reserve);
-    Gfx::ObjLevel6* AddLevel5(Gfx::ObjLevel5 *&p5, Gfx::TriangleType type, const Gfx::Material &mat, int state, int nb);*/
-
+    //! Tests whether the given object is visible
     bool        IsVisible(int objRank);
+
+    //! Detects whether an object is affected by the mouse
     bool        DetectBBox(int objRank, Math::Point mouse);
-    bool        GetBBox2D(int objRank, Math::Point &min, Math::Point &max);
-    bool        DetectTriangle(Math::Point mouse, Gfx::VertexTex2 *triangle, int objRank, float &dist);
-    bool        TransformPoint(Math::Vector &p2D, int objRank, Math::Vector p3D);
+
+    //! Compute and return the 2D box on screen of any object
+    bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
+
+    //! Detects the target object that is selected with the mouse
+    /** Returns the rank of the object or -1. */
+    int         DetectObject(Math::Point mouse);
+
+    //! Detects whether the mouse is in a triangle.
+    bool        DetectTriangle(Math::Point mouse, Gfx::VertexTex2* triangle, int objRank, float& dist);
+
+    //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
+    /** The coordinated p2D.z gives the distance. */
+    bool        TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D);
+
+    //! Calculates the distances between the viewpoint and the origin of different objects
     void        ComputeDistance();
+
+    //! Updates all the geometric parameters of objects
     void        UpdateGeometry();
 
 protected:
     CInstanceManager*   m_iMan;
     CApplication*       m_app;
-    CSound*             m_sound;
+    CSoundInterface*    m_sound;
     Gfx::CDevice*       m_device;
     Gfx::CText*         m_text;
     Gfx::CLightManager* m_lightMan;
@@ -892,7 +1056,7 @@ protected:
     Gfx::CPlanet*       m_planet;
     Gfx::CTerrain*      m_terrain;
 
-    bool            m_wasInit;
+    //! Last encountered error
     std::string     m_error;
 
     //! Whether to show stats (FPS, etc)
@@ -926,9 +1090,9 @@ protected:
     bool            m_render;
     bool            m_movieLock;
 
-    //! Current size of viewport
+    //! Current size of viewport window
     Math::IntSize   m_size;
-    //! Previous size of viewport
+    //! Previous size of viewport window
     Math::IntSize   m_lastSize;
 
     std::vector<Gfx::EngineObjLevel1>  m_objectTree;
@@ -950,7 +1114,6 @@ protected:
     Gfx::Color      m_waterAddColor;
     int             m_statisticTriangle;
     bool            m_updateGeometry;
-    //char            m_infoText[10][200];
     int             m_alphaMode;
     bool            m_stateColor;
     bool            m_forceStateColor;
@@ -970,11 +1133,11 @@ protected:
     bool            m_overFront;
     Gfx::Color      m_overColor;
     int             m_overMode;
-    std::string     m_frontsizeName;
+    std::string     m_foregroundImageName;
     bool            m_drawWorld;
     bool            m_drawFront;
     float           m_limitLOD[2];
-    float           m_particuleDensity;
+    float           m_particleDensity;
     float           m_clippingDistance;
     float           m_lastClippingDistance;
     float           m_objectDetail;
@@ -993,10 +1156,10 @@ protected:
     int             m_editIndentValue;
     float           m_tracePrecision;
 
-    int             m_hiliteRank[100];
-    bool            m_hilite;
-    Math::Point     m_hiliteP1;
-    Math::Point     m_hiliteP2;
+    int             m_highlightRank[100];
+    bool            m_highlight;
+    Math::Point     m_highlightP1;
+    Math::Point     m_highlightP2;
 
     int             m_lastState;
     Gfx::Color      m_lastColor;
@@ -1015,12 +1178,6 @@ protected:
     Gfx::EngineMouseType m_mouseType;
     Math::Point          m_mousePos;
     bool                 m_mouseVisible;
-
-    //LPDIRECTDRAWSURFACE7 m_imageSurface;
-    //DDSURFACEDESC2        m_imageDDSD;
-    //WORD*             m_imageCopy;
-    //int                   m_imageDX;
-    //int                   m_imageDY;
 };
 
 }; // namespace Gfx

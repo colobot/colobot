@@ -573,16 +573,7 @@ int CApplication::Run()
             }
 
             // Update game and render a frame during idle time (no messages are waiting)
-            bool ok = Render();
-
-            // If an error occurs, push quit event to the queue
-            if (! ok)
-            {
-                SDL_Event quitEvent;
-                memset(&quitEvent, 0, sizeof(SDL_Event));
-                quitEvent.type = SDL_QUIT;
-                SDL_PushEvent(&quitEvent);
-            }
+            Render();
         }
     }
 
@@ -751,17 +742,13 @@ bool CApplication::ProcessEvent(const Event &event)
     return true;
 }
 
-/** Renders the frame and swaps buffers as necessary. Returns \c false on error. */
-bool CApplication::Render()
+/** Renders the frame and swaps buffers as necessary */
+void CApplication::Render()
 {
-    bool result = m_engine->Render();
-    if (! result)
-        return false;
+    m_engine->Render();
 
     if (m_deviceConfig.doubleBuf)
         SDL_GL_SwapBuffers();
-
-    return true;
 }
 
 void CApplication::StepSimulation(float rTime)
