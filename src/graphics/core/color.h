@@ -18,7 +18,6 @@
 
 #pragma once
 
-
 #include <sstream>
 
 
@@ -65,6 +64,11 @@ struct Color
     inline bool operator==(const Gfx::Color &other) const
     {
         return r == other.r && g == other.g && b == other.b && a == other.a;
+    }
+
+    inline bool operator!=(const Gfx::Color &other) const
+    {
+        return ! this->operator==(other);
     }
 };
 

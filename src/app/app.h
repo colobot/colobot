@@ -198,7 +198,7 @@ protected:
     //! Handles some incoming events
     bool        ProcessEvent(const Event &event);
     //! Renders the image in window
-    bool        Render();
+    void        Render();
 
     //! Opens the joystick device
     bool OpenJoystick();

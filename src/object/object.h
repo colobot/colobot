@@ -25,10 +25,6 @@
 
 
 class CInstanceManager;
-class CLight;
-class CTerrain;
-class CWater;
-class CParticule;
 class CPhysics;
 class CBrain;
 class CMotion;
@@ -37,6 +33,7 @@ class CDisplayText;
 class CRobotMain;
 class CBotVar;
 class CScript;
+
 
 
 
@@ -306,7 +303,7 @@ enum ObjectMaterial
 struct ObjectPart
 {
     char        bUsed;
-    int     object;         // number of the object in CD3DEngine
+    int     object;         // number of the object in CEngine
     int     parentPart;     // number of father part
     int     masterParti;        // master canal of the particle
     Math::Vector    position;
@@ -677,7 +674,7 @@ protected:
     CAuto*          m_auto;
     CDisplayText*   m_displayText;
     CRobotMain*     m_main;
-    CSound*         m_sound;
+    CSoundInterface* m_sound;
     CBotVar*        m_botVar;
     CScript*        m_runScript;
 
