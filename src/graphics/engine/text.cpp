@@ -245,10 +245,10 @@ float Gfx::CText::GetAscent(Gfx::FontType font, float size)
 
     Gfx::CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    Math::IntSize wndSize;
-    wndSize.h = TTF_FontAscent(cf->font);
-    Math::Size ifSize = m_engine->WindowToInterfaceSize(wndSize);
-    return ifSize.h;
+    Math::IntPoint wndSize;
+    wndSize.y = TTF_FontAscent(cf->font);
+    Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    return ifSize.y;
 }
 
 float Gfx::CText::GetDescent(Gfx::FontType font, float size)
@@ -257,10 +257,10 @@ float Gfx::CText::GetDescent(Gfx::FontType font, float size)
 
     Gfx::CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    Math::IntSize wndSize;
-    wndSize.h = TTF_FontDescent(cf->font);
-    Math::Size ifSize = m_engine->WindowToInterfaceSize(wndSize);
-    return ifSize.h;
+    Math::IntPoint wndSize;
+    wndSize.y = TTF_FontDescent(cf->font);
+    Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    return ifSize.y;
 }
 
 float Gfx::CText::GetHeight(Gfx::FontType font, float size)
@@ -269,10 +269,10 @@ float Gfx::CText::GetHeight(Gfx::FontType font, float size)
 
     Gfx::CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    Math::IntSize wndSize;
-    wndSize.h = TTF_FontHeight(cf->font);
-    Math::Size ifSize = m_engine->WindowToInterfaceSize(wndSize);
-    return ifSize.h;
+    Math::IntPoint wndSize;
+    wndSize.y = TTF_FontHeight(cf->font);
+    Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    return ifSize.y;
 }
 
 
@@ -315,10 +315,10 @@ float Gfx::CText::GetStringWidth(const std::string &text, Gfx::FontType font, fl
 
     Gfx::CachedFont* cf = GetOrOpenFont(font, size);
     assert(cf != nullptr);
-    Math::IntSize wndSize;
-    TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.w, &wndSize.h);
-    Math::Size ifSize = m_engine->WindowToInterfaceSize(wndSize);
-    return ifSize.w;
+    Math::IntPoint wndSize;
+    TTF_SizeUTF8(cf->font, text.c_str(), &wndSize.x, &wndSize.y);
+    Math::Point ifSize = m_engine->WindowToInterfaceSize(wndSize);
+    return ifSize.x;
 }
 
 float Gfx::CText::GetCharWidth(Gfx::UTF8Char ch, Gfx::FontType font, float size, float offset)
@@ -339,7 +339,7 @@ float Gfx::CText::GetCharWidth(Gfx::UTF8Char ch, Gfx::FontType font, float size,
     else
         tex = CreateCharTexture(ch, cf);
 
-    return tex.charSize.w;
+    return tex.charSize.x;
 }
 
 
@@ -539,9 +539,9 @@ void Gfx::CText::DrawString(const std::string &text, const std::vector<FontMetaC
         Gfx::FontHighlight hl = static_cast<Gfx::FontHighlight>(format[fmtIndex] & Gfx::FONT_MASK_HIGHLIGHT);
         if (hl != Gfx::FONT_HIGHLIGHT_NONE)
         {
-            Math::Size charSize;
-            charSize.w = GetCharWidth(ch, font, size, offset);
-            charSize.h = GetHeight(font, size);
+            Math::Point charSize;
+            charSize.x = GetCharWidth(ch, font, size, offset);
+            charSize.y = GetHeight(font, size);
             DrawHighlight(hl, pos, charSize);
         }
 
@@ -580,7 +580,7 @@ void Gfx::CText::DrawString(const std::string &text, Gfx::FontType font,
     }
 }
 
-void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Size size)
+void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Point size)
 {
     // Gradient colors
     Gfx::Color grad[4];
@@ -622,16 +622,16 @@ void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Siz
             return;
     }
 
-    Math::IntSize vsize = m_engine->GetWindowSize();
+    Math::IntPoint vsize = m_engine->GetWindowSize();
     float h = 0.0f;
-    if (vsize.h <= 768.0f)    // 1024x768 or less?
-        h = 1.01f / vsize.h;  // 1 pixel
+    if (vsize.y <= 768.0f)    // 1024x768 or less?
+        h = 1.01f / vsize.y;  // 1 pixel
     else                      // more than 1024x768?
-        h = 2.0f / vsize.h;   // 2 pixels
+        h = 2.0f / vsize.y;   // 2 pixels
 
     Math::Point p1, p2;
     p1.x = pos.x;
-    p2.x = pos.x + size.w;
+    p2.x = pos.x + size.x;
 
     if (hl == Gfx::FONT_HIGHLIGHT_LINK)
     {
@@ -641,7 +641,7 @@ void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Siz
     else
     {
         p1.y = pos.y;
-        p2.y = pos.y + size.h;
+        p2.y = pos.y + size.y;
     }
 
     m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, false);
@@ -690,8 +690,8 @@ void Gfx::CText::DrawChar(Gfx::UTF8Char ch, Gfx::FontType font, float size, Math
 
     m_device->SetRenderState(Gfx::RENDER_STATE_CULLING, false);
 
-    Math::Point p1(pos.x, pos.y + tex.charSize.h - tex.texSize.h);
-    Math::Point p2(pos.x + tex.texSize.w, pos.y + tex.charSize.h);
+    Math::Point p1(pos.x, pos.y + tex.charSize.y - tex.texSize.y);
+    Math::Point p2(pos.x + tex.texSize.x, pos.y + tex.charSize.y);
 
     Math::Vector n(0.0f, 0.0f, -1.0f);  // normal
 
@@ -707,7 +707,7 @@ void Gfx::CText::DrawChar(Gfx::UTF8Char ch, Gfx::FontType font, float size, Math
     m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, quad, 4);
     m_engine->AddStatisticTriangle(2);
 
-    pos.x += tex.charSize.w;
+    pos.x += tex.charSize.x;
 }
 
 Gfx::CachedFont* Gfx::CText::GetOrOpenFont(Gfx::FontType font, float size)
@@ -797,8 +797,8 @@ Gfx::CharTexture Gfx::CText::CreateCharTexture(Gfx::UTF8Char ch, Gfx::CachedFont
     }
 
     texture.id = tex.id;
-    texture.texSize =  m_engine->WindowToInterfaceSize(Math::IntSize(textureSurface->w, textureSurface->h));
-    texture.charSize = m_engine->WindowToInterfaceSize(Math::IntSize(textSurface->w, textSurface->h));
+    texture.texSize =  m_engine->WindowToInterfaceSize(Math::IntPoint(textureSurface->w, textureSurface->h));
+    texture.charSize = m_engine->WindowToInterfaceSize(Math::IntPoint(textSurface->w, textSurface->h));
 
     return texture;
 }

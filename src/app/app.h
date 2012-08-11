@@ -132,7 +132,7 @@ public:
     void        Destroy();
 
     //! Returns a list of possible video modes
-    VideoQueryResult GetVideoResolutionList(std::vector<Math::IntSize> &resolutions,
+    VideoQueryResult GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
                                             bool fullScreen, bool resizeable);
 
     //! Returns the current video mode
