@@ -50,7 +50,7 @@ uint ThreadProc(ThreadInfo *info)
 			int level = 0;
 			do
 			{
-				CBotVar* t = info->m_pProg->GivStackVars(FN, level--);
+				CBotVar* t = info->m_pProg->GetStackVars(FN, level--);
 				if ( FN != FunctionName ) break;
 				if ( t != NULL )
 				{
@@ -59,8 +59,8 @@ uint ThreadProc(ThreadInfo *info)
 					{
 						if (s.IsEmpty()) s+= "Stack -> ";
 						else			 s+= " , ";
-						s += t->GivValString();
-						t = t->GivNext();
+						s += t->GetValString();
+						t = t->GetNext();
 					}
 					AfxMessageBox(s);
 				}
@@ -75,7 +75,7 @@ uint ThreadProc(ThreadInfo *info)
 	{
 		std::cout << "\nInterrupt\n";
 	}
-	else if (info->m_pProg->GivError() == 0)
+	else if (info->m_pProg->GetError() == 0)
 	{
 		time(&t1);
 		double prog_time = difftime(t0,t1);
@@ -98,7 +98,7 @@ long CBotConsole::EndProg()
 	if (m_pProg->GetError(m_code, m_start, m_end))
 	{
 		CBotString	TextError;
-		TextError = CBotProgram::GivErrorText(m_code);
+		TextError = CBotProgram::GetErrorText(m_code);
 		std::cout << TextError;
 		return 1;
 	}
@@ -125,7 +125,7 @@ void CBotConsole::OnOK()
 	if ( m_pProg->GetError(err, start, end) )
 	{
 		CBotString	TextError;
-		TextError = CBotProgram::GivErrorText(err);
+		TextError = CBotProgram::GetErrorText(err);
 		std::cout << TextError;
 		return;
 	}
@@ -162,7 +162,7 @@ bool CBotConsole::OnInitDialog()
 //	CDialog::OnInitDialog();
 
 	std::cout << "Following functions are availible:\n";
-	for ( int i = 0; i < m_pListe->GivSize(); i++ )
+	for ( int i = 0; i < m_pListe->GetSize(); i++ )
 	{
 		CBotString x = (*m_pListe)[i] + CBotString("\n");
 		std::cout << x;

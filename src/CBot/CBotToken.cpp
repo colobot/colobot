@@ -123,25 +123,25 @@ const CBotToken& CBotToken::operator=(const CBotToken& src)
 }
 
 
-int CBotToken::GivType()
+int CBotToken::GetType()
 {
     if (this == NULL) return 0;
     if (m_type == TokenTypKeyWord) return m_IdKeyWord;
     return m_type;
 }
 
-long CBotToken::GivIdKey()
+long CBotToken::GetIdKey()
 {
     return m_IdKeyWord;
 }
 
-CBotToken* CBotToken::GivNext()
+CBotToken* CBotToken::GetNext()
 {
     if (this == NULL) return NULL;
     return      m_next;
 }
 
-CBotToken* CBotToken::GivPrev()
+CBotToken* CBotToken::GetPrev()
 {
     if (this == NULL) return NULL;
     return      m_prev;
@@ -159,12 +159,12 @@ void CBotToken::AddNext(CBotToken* p)
 }
 
 
-CBotString& CBotToken::GivString()
+CBotString& CBotToken::GetString()
 {
     return  m_Text;
 }
 
-CBotString& CBotToken::GivSep()
+CBotString& CBotToken::GetSep()
 {
     return  m_Sep;
 }
@@ -175,13 +175,13 @@ void CBotToken::SetString(const char* name)
 }
 
 
-int CBotToken::GivStart()
+int CBotToken::GetStart()
 {
     if (this == NULL) return -1;
     return m_start;
 }
 
-int CBotToken::GivEnd()
+int CBotToken::GetEnd()
 {
     if (this == NULL) return -1;
     return m_end;
@@ -309,7 +309,7 @@ cc:             mot += c;
         if (CharInList(mot[0], sep3))               // an operational separator?
         {
             CBotString  motc = mot;
-            while (motc += c, c != 0 && GivKeyWords(motc)>0)    // operand seeks the longest possible
+            while (motc += c, c != 0 && GetKeyWords(motc)>0)    // operand seeks the longest possible
             {
                 mot += c;                           // build the word
                 c = *(program++);                   // next character
@@ -367,9 +367,9 @@ bis:
             if (mot[0] == '\"')  token->m_type = TokenTypString;
             if (first) token->m_type = 0;
 
-            token->m_IdKeyWord = GivKeyWords(mot);
+            token->m_IdKeyWord = GetKeyWords(mot);
             if (token->m_IdKeyWord > 0) token->m_type = TokenTypKeyWord;
-            else GivKeyDefNum(mot, token) ;         // treats DefineNum
+            else GetKeyDefNum(mot, token) ;         // treats DefineNum
 
             return token;
         }
@@ -391,9 +391,9 @@ CBotToken* CBotToken::CompileTokens(const char* program, int& error)
     if (tokenbase == NULL) return NULL;
 
     tokenbase->m_start  = pos;
-    pos += tokenbase->m_Text.GivLength();
+    pos += tokenbase->m_Text.GetLength();
     tokenbase->m_end    = pos;
-    pos += tokenbase->m_Sep.GivLength();
+    pos += tokenbase->m_Sep.GetLength();
 
     char* pp = p;
     while (NULL != (nxt = NextToken(p, error)))
@@ -403,11 +403,11 @@ CBotToken* CBotToken::CompileTokens(const char* program, int& error)
         prv = nxt;                      // advance
 
         nxt->m_start    = pos;
-/*      pos += nxt->m_Text.GivLength(); // chain may be shorter (BOA deleted)
+/*      pos += nxt->m_Text.GetLength(); // chain may be shorter (BOA deleted)
         nxt->m_end  = pos;
-        pos += nxt->m_Sep.GivLength();*/
+        pos += nxt->m_Sep.GetLength();*/
         pos += (p - pp);                // total size
-        nxt->m_end  = pos - nxt->m_Sep.GivLength();
+        nxt->m_end  = pos - nxt->m_Sep.GetLength();
         pp = p;
     }
 
@@ -429,15 +429,15 @@ void CBotToken::Delete(CBotToken* pToken)
 
 // search if a word is part of the keywords
 
-int CBotToken::GivKeyWords(const char* w)
+int CBotToken::GetKeyWords(const char* w)
 {
     int     i;
-    int     l = m_ListKeyWords.GivSize();
+    int     l = m_ListKeyWords.GetSize();
 
     if (l == 0)
     {
         LoadKeyWords();                         // takes the list for the first time
-        l = m_ListKeyWords.GivSize();
+        l = m_ListKeyWords.GetSize();
     }
 
     for (i = 0; i < l; i++)
@@ -448,10 +448,10 @@ int CBotToken::GivKeyWords(const char* w)
     return -1;
 }
 
-bool CBotToken::GivKeyDefNum(const char* w, CBotToken* &token)
+bool CBotToken::GetKeyDefNum(const char* w, CBotToken* &token)
 {
     int     i;
-    int     l = m_ListKeyDefine.GivSize();
+    int     l = m_ListKeyDefine.GetSize();
 
     for (i = 0; i < l; i++)
     {
@@ -510,7 +510,7 @@ void CBotToken::LoadKeyWords()
 bool CBotToken::DefineNum(const char* name, long val)
 {
     int     i;
-    int     l = m_ListKeyDefine.GivSize();
+    int     l = m_ListKeyDefine.GetSize();
 
     for (i = 0; i < l; i++)
     {
@@ -525,10 +525,10 @@ bool CBotToken::DefineNum(const char* name, long val)
 
 bool IsOfType(CBotToken* &p, int type1, int type2)
 {
-    if (p->GivType() == type1 ||
-        p->GivType() == type2 )
+    if (p->GetType() == type1 ||
+        p->GetType() == type2 )
     {
-        p = p->GivNext();
+        p = p->GetNext();
         return true;
     }
     return false;
@@ -539,7 +539,7 @@ bool IsOfTypeList(CBotToken* &p, int type1, ...)
 {
     int     i = type1;
     int     max = 20;
-    int     type = p->GivType();
+    int     type = p->GetType();
 
     va_list marker;
     va_start( marker, type1 );     /* Initialize variable arguments. */
@@ -548,7 +548,7 @@ bool IsOfTypeList(CBotToken* &p, int type1, ...)
     {
         if (type == i)
         {
-            p = p->GivNext();
+            p = p->GetNext();
             va_end( marker );              /* Reset variable arguments.      */
             return true;
         }

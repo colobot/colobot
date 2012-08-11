@@ -91,21 +91,21 @@ void CAuto::Start(int param)
 }
 
 
-// Give a type.
+// Gete a type.
 
 bool CAuto::SetType(ObjectType type)
 {
     return false;
 }
 
-// Gives a value.
+// Getes a value.
 
 bool CAuto::SetValue(int rank, float value)
 {
     return false;
 }
 
-// Gives the string.
+// Getes the string.
 
 bool CAuto::SetString(char *string)
 {
