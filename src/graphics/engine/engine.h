@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// engine.h
+/**
+ * \file graphics/engine/engine.h
+ * \brief Main graphics engine - Gfx::CEngine class
+ */
 
 #pragma once
 

@@ -1,3 +1,4 @@
-src/script
-
-Contains modules responsible for interfacing with CBot.
+/**
+ * \dir script
+ * \brief Modules responsible for interfacing with CBot
+ */

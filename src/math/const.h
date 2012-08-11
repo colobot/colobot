@@ -14,8 +14,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-/** @defgroup MathConstModule math/const.h
-   Contains the math constants used in math functions.
+/**
+ * \file math/const.h
+ * \brief Constants used in math functions
  */
 
 #pragma once
@@ -26,7 +27,6 @@
 // Math module namespace
 namespace Math
 {
-/* @{ */ // start of group
 
 //! Tolerance level -- minimum accepted float value
 const float TOLERANCE = 1e-6f;
@@ -50,6 +50,5 @@ const float RAD_TO_DEG = 57.29577951308232286465f;
 //! Natural logarithm of 2
 const float LOG_2 = log(2.0f);
 
-/* @} */ // end of group
 }; // namespace Math
 

@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// cloud.h
+/**
+ * \file graphics/engine/cloud.h
+ * \brief Cloud rendering - Gfx::CCloud class
+ */
 
 #pragma once
 

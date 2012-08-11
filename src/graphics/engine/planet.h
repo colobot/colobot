@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// planet.h
+/**
+ * \file graphics/engine/planet.h
+ * \brief Planet rendering - Gfx::CPlanet class
+ */
 
 #pragma once
 

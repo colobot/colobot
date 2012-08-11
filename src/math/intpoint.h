@@ -14,18 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-/** @defgroup MathIntPointModule math/intpoint.h
-   Contains the IntPoint struct.
+/**
+ * \file math/intpoint.h
+ * \brief IntPoint struct
  */
 
 #pragma once
 
 namespace Math {
 
-/* @{ */ // start of group
-
 /**
- * \struct IntPoint 2D Point with integer coords
+ * \struct IntPoint
+ * \brief 2D Point with integer coords
  *
  * Analog of WinAPI's POINT struct.
  */
@@ -38,7 +38,5 @@ struct IntPoint
 
     IntPoint(int aX = 0, int aY = 0) : x(aX), y(aY) {}
 };
-
-/* @} */ // end of group
 
 }; // namespace Math

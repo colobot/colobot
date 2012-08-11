@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// system.h
+/**
+ * \file app/system.h
+ * \brief System functions: time stamps, info dialogs, etc.
+ */
 
 #pragma once
 
@@ -26,7 +29,7 @@
 /* Dialog utils */
 
 /**
- * \enum SysDialogType
+ * \enum SystemDialogType
  * \brief Type of system dialog
  */
 enum SystemDialogType
@@ -44,7 +47,7 @@ enum SystemDialogType
 };
 
 /**
- * \enum SysDialogResult
+ * \enum SystemDialogResult
  * \brief Result of system dialog
  *
  * Means which button was pressed.

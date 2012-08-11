@@ -14,7 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// color.h
+/**
+ * \file graphics/core/color.h
+ * \brief Color structs and related functions
+ */
 
 #pragma once
 

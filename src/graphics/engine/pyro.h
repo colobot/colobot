@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pyro.h
+/**
+ * \file graphics/engine/pyro.h
+ * \brief Fire effect rendering - Gfx::CPyro class
+ */
 
 #pragma once
 
