@@ -14,7 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// gldevice.h
+/**
+ * \file graphics/opengl/gldevice.h
+ * \brief OpenGL implementation - Gfx::CGLDevice class
+ */
 
 #pragma once
 

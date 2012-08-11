@@ -14,7 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// texture.h
+/**
+ * \file graphics/core/texture.h
+ * \brief Texture struct and related enums
+ */
 
 #pragma once
 

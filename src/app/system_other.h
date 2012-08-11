@@ -15,10 +15,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// system_other.h
+/**
+ * \file app/system_other.h
+ * \brief Fallback code for other systems
+ */
 
-/* This header contains fallback code for other platforms for system utils
-   from system.h. There is no separate .cpp module for simplicity.*/
+/* NOTE: code is contained in this header;
+ * there is no separate .cpp module for simplicity */
 
 #include <SDL/SDL.h>
 

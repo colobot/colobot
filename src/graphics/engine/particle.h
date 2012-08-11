@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// particle.h (aka particule.h)
+/**
+ * \file graphics/engine/particle.h
+ * \brief Particle rendering - Gfx::CParticle class (aka particule)
+ */
 
 #pragma once
 

@@ -1,3 +1,4 @@
-src/app
-
-Contains the main class of the application.
+/**
+ * \dir app
+ * Main class of the application and system functions
+ */
