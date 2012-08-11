@@ -122,7 +122,7 @@ bool Gfx::CGLDevice::Create()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glViewport(0, 0, m_config.size.w, m_config.size.h);
+    glViewport(0, 0, m_config.size.x, m_config.size.y);
 
 
     m_lights        = std::vector<Gfx::Light>(GL_MAX_LIGHTS, Gfx::Light());
@@ -390,8 +390,8 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
     Gfx::Texture result;
 
     result.valid = true;
-    result.size.w = data->surface->w;
-    result.size.h = data->surface->h;
+    result.size.x = data->surface->w;
+    result.size.y = data->surface->h;
 
     // Use & enable 1st texture stage
     glActiveTexture(GL_TEXTURE0);

@@ -19,17 +19,15 @@
 
 #pragma once
 
-
+#include "app/system.h"
 #include "common/event.h"
 #include "graphics/core/color.h"
 #include "graphics/core/material.h"
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
 #include "math/intpoint.h"
-#include "math/intsize.h"
 #include "math/matrix.h"
 #include "math/point.h"
-#include "math/size.h"
 #include "math/vector.h"
 
 
@@ -567,15 +565,6 @@ public:
     //! Evolved throughout the game
     void            StepSimulation(float rTime);
 
-    //! Initialize timestamps at the beginning of animation
-    void            TimeInit();
-    //! Suspend animation
-    void            TimeEnterGel();
-    //! Resume animation
-    void            TimeExitGel();
-    //! Returns the relative time since last animation update
-    float           TimeGet();
-
 
     //! Writes a screenshot containing the current frame
     bool            WriteScreenShot(const std::string& fileName, int width, int height);
@@ -608,22 +597,24 @@ public:
     void            SetRenderEnable(bool enable);
 
     //! Returns current size of viewport window
-    Math::IntSize   GetWindowSize();
+    Math::IntPoint   GetWindowSize();
     //! Returns the last size of viewport window
-    Math::IntSize   GetLastWindowSize();
+    Math::IntPoint   GetLastWindowSize();
 
-    //! Converts window coords to interface coords
-    /** Conversion of the position of the mouse from window coords to interface coords:
-     - x: 0=left, 1=right
-     - y: 0=down, 1=up */
+    //@{
+    //! Conversion functions between window and interface coordinates
+    /** Window coordinates are from top-left (0,0) to bottom-right (w,h) - size of window
+        Interface cords are from bottom-left (0,0) to top-right (1,1) - and do not depend on window size */
     Math::Point     WindowToInterfaceCoords(Math::IntPoint pos);
-    //! Converts interface coords to window coords
     Math::IntPoint  InterfaceToWindowCoords(Math::Point pos);
+    //@}
 
-    //! Converts window size to interface size
-    Math::Size      WindowToInterfaceSize(Math::IntSize size);
-    //! Converts interface size to window size
-    Math::IntSize   InterfaceToWindowSize(Math::Size size);
+    //@{
+    //! Conversion functions between window and interface sizes
+    /** Unlike coordinate conversions, this is only scale conversion, not translation and scale. */
+    Math::Point      WindowToInterfaceSize(Math::IntPoint size);
+    Math::IntPoint   InterfaceToWindowSize(Math::Point size);
+    //@}
 
     //! Returns the name of directory with textures
     std::string     GetTextureDir();
@@ -1062,46 +1053,48 @@ protected:
     //! Whether to show stats (FPS, etc)
     bool            m_showStats;
 
-    int             m_blackSrcBlend[2];
-    int             m_blackDestBlend[2];
-    int             m_whiteSrcBlend[2];
-    int             m_whiteDestBlend[2];
-    int             m_diffuseSrcBlend[2];
-    int             m_diffuseDestBlend[2];
-    int             m_alphaSrcBlend[2];
-    int             m_alphaDestBlend[2];
-
-    Math::Matrix    m_matProj;
-    Math::Matrix    m_matLeftView;
-    Math::Matrix    m_matRightView;
-    Math::Matrix    m_matView;
-    float           m_focus;
-
-    Math::Matrix    m_matWorldInterface;
-    Math::Matrix    m_matProjInterface;
-    Math::Matrix    m_matViewInterface;
-
-    long            m_baseTime;
-    long            m_stopTime;
-    float           m_absTime;
-    float           m_lastTime;
+    //! Speed of animation
     float           m_speed;
+    //! Pause mode
     bool            m_pause;
+    //! Rendering enabled?
     bool            m_render;
+    //! Lock for duration of movie?
     bool            m_movieLock;
 
-    //! Current size of viewport window
-    Math::IntSize   m_size;
-    //! Previous size of viewport window
-    Math::IntSize   m_lastSize;
+    //! Projection matrix for 3D scene
+    Math::Matrix    m_matProj;
+    //! View matrix for 3D scene
+    Math::Matrix    m_matView;
+    //! Camera angle for 3D scene
+    float           m_focus;
 
+    //! World matrix for 2D interface
+    Math::Matrix    m_matWorldInterface;
+    //! Projection matrix for 2D interface
+    Math::Matrix    m_matProjInterface;
+    //! View matrix for 2D interface
+    Math::Matrix    m_matViewInterface;
+
+    //! Current size of viewport window
+    Math::IntPoint   m_size;
+    //! Previous size of viewport window
+    Math::IntPoint   m_lastSize;
+
+    //! Root of tree object structure (level 1 list)
     std::vector<Gfx::EngineObjLevel1>  m_objectTree;
+    //! Object parameters
     std::vector<Gfx::EngineObject>     m_objects;
-    std::vector<Gfx::EngineShadow>     m_shadow;
-    std::vector<Gfx::EngineGroundSpot> m_groundSpot;
+    //! Shadow list
+    std::vector<Gfx::EngineShadow>     m_shadows;
+    //! Ground spot list
+    std::vector<Gfx::EngineGroundSpot> m_groundSpots;
+    //! Ground mark
     Gfx::EngineGroundMark              m_groundMark;
 
+    //! Location of camera
     Math::Vector    m_eyePt;
+    //! Camera target
     Math::Vector    m_lookatPt;
     float           m_eyeDirH;
     float           m_eyeDirV;
@@ -1156,28 +1149,47 @@ protected:
     int             m_editIndentValue;
     float           m_tracePrecision;
 
+    //! Ranks of highlighted objects
     int             m_highlightRank[100];
+    //! Highlight visible?
     bool            m_highlight;
+    //@{
+    //! Highlight rectangle points
     Math::Point     m_highlightP1;
     Math::Point     m_highlightP2;
+    //@}
 
-    int             m_lastState;
-    Gfx::Color      m_lastColor;
-    char            m_lastTexture[2][50];
-    Gfx::Material   m_lastMaterial;
-
+    //! Texture directory name
     std::string     m_texPath;
+    //! Default texture create params
     Gfx::TextureCreateParams m_defaultTexParams;
 
+    //! Map of loaded textures (by name)
     std::map<std::string, Gfx::Texture> m_texNameMap;
+    //! Reverse map of loaded textures (by texture)
     std::map<Gfx::Texture, std::string> m_revTexNameMap;
 
+    //! Mouse cursor definitions
     Gfx::EngineMouse     m_mice[Gfx::ENG_MOUSE_COUNT];
+    //! Texture with mouse cursors
     Gfx::Texture         m_miceTexture;
+    //! Size of mouse cursor
     Math::Point          m_mouseSize;
+    //! Type of mouse cursor
     Gfx::EngineMouseType m_mouseType;
+    //! Position of mouse in interface coords
     Math::Point          m_mousePos;
+    //! Is mouse visible?
     bool                 m_mouseVisible;
+
+    //! Last engine render state (-1 at the beginning of frame)
+    int             m_lastState;
+    //! Last color set with render state
+    Gfx::Color      m_lastColor;
+    //! Last texture names for 2 used texture stages
+    std::string     m_lastTexture[2];
+    //! Last material
+    Gfx::Material   m_lastMaterial;
 };
 
 }; // namespace Gfx

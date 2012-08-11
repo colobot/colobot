@@ -20,7 +20,6 @@
 #pragma once
 
 #include "math/point.h"
-#include "math/size.h"
 
 #include <vector>
 #include <map>
@@ -168,8 +167,8 @@ struct UTF8Char
 struct CharTexture
 {
     unsigned int id;
-    Math::Size texSize;
-    Math::Size charSize;
+    Math::Point texSize;
+    Math::Point charSize;
 
     CharTexture() : id(0) {}
 };
@@ -277,7 +276,7 @@ protected:
                            float size, Math::Point pos, float width, int eol);
     void        DrawString(const std::string &text, Gfx::FontType font,
                            float size, Math::Point pos, float width, int eol);
-    void        DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Size size);
+    void        DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Point size);
     void        DrawChar(Gfx::UTF8Char ch, Gfx::FontType font, float size, Math::Point &pos);
 
 protected:

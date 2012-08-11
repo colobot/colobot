@@ -80,9 +80,7 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_terrain    = nullptr;
 
     m_focus = 0.75f;
-    m_baseTime = 0;
-    m_lastTime = 0;
-    m_absTime = 0.0f;
+
     m_rankView = 0;
 
     m_ambientColor[0] = Gfx::Color(0.5f, 0.5f, 0.5f, 0.5f);
@@ -147,15 +145,6 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_forceStateColor = true;
     m_stateColor = false;
 
-    m_blackSrcBlend[0]    = 0;
-    m_blackDestBlend[0]   = 0;
-    m_whiteSrcBlend[0]    = 0;
-    m_whiteDestBlend[0]   = 0;
-    m_diffuseSrcBlend[0]  = 0;
-    m_diffuseDestBlend[0] = 0;
-    m_alphaSrcBlend[0]    = 0;
-    m_alphaDestBlend[0]   = 0;
-
     m_updateGeometry = false;
 
     m_mice[Gfx::ENG_MOUSE_NORM]    = Gfx::EngineMouse( 0,  1, 32, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 1.0f,  1.0f));
@@ -188,8 +177,8 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
     m_objectTree.reserve(LEVEL1_PREALLOCATE_COUNT);
     m_objects.reserve(OBJECT_PREALLOCATE_COUNT);
-    m_shadow.reserve(SHADOW_PREALLOCATE_COUNT);
-    m_groundSpot.reserve(GROUNDSPOT_PREALLOCATE_COUNT);
+    m_shadows.reserve(SHADOW_PREALLOCATE_COUNT);
+    m_groundSpots.reserve(GROUNDSPOT_PREALLOCATE_COUNT);
 }
 
 Gfx::CEngine::~CEngine()
@@ -372,38 +361,6 @@ void Gfx::CEngine::StepSimulation(float rTime)
     m_app->StepSimulation(rTime);
 }
 
-void Gfx::CEngine::TimeInit()
-{
-    /* TODO!
-    m_baseTime = timeGetTime();
-    m_lastTime = 0;
-    m_absTime = 0.0f;*/
-}
-
-void Gfx::CEngine::TimeEnterGel()
-{
-    /* TODO!
-    m_stopTime = timeGetTime();*/
-}
-
-void Gfx::CEngine::TimeExitGel()
-{
-    /* TODO!
-    m_baseTime += timeGetTime() - m_stopTime;*/
-}
-
-float Gfx::CEngine::TimeGet()
-{
-    /* TODO!
-    float aTime = (timeGetTime()-m_baseTime)*0.001f;  // in ms
-    float rTime = (aTime - m_lastTime)*m_speed;
-    m_absTime += rTime;
-    m_lastTime = aTime;
-
-    return rTime;*/
-    return 0.0f;
-}
-
 bool Gfx::CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
     // TODO!
@@ -457,38 +414,38 @@ void Gfx::CEngine::SetRenderEnable(bool enable)
     m_render = enable;
 }
 
-Math::IntSize Gfx::CEngine::GetWindowSize()
+Math::IntPoint Gfx::CEngine::GetWindowSize()
 {
     return m_size;
 }
 
-Math::IntSize Gfx::CEngine::GetLastWindowSize()
+Math::IntPoint Gfx::CEngine::GetLastWindowSize()
 {
     return m_lastSize;
 }
 
 Math::Point Gfx::CEngine::WindowToInterfaceCoords(Math::IntPoint pos)
 {
-    return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_size.w),
-                        1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.h)  );
+    return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_size.x),
+                        1.0f - static_cast<float>(pos.y) / static_cast<float>(m_size.y)  );
 }
 
 Math::IntPoint Gfx::CEngine::InterfaceToWindowCoords(Math::Point pos)
 {
-    return Math::IntPoint(static_cast<int>(pos.x * m_size.w),
-                          static_cast<int>((1.0f - pos.y) * m_size.h));
+    return Math::IntPoint(static_cast<int>(pos.x * m_size.x),
+                          static_cast<int>((1.0f - pos.y) * m_size.y));
 }
 
-Math::Size Gfx::CEngine::WindowToInterfaceSize(Math::IntSize size)
+Math::Point Gfx::CEngine::WindowToInterfaceSize(Math::IntPoint size)
 {
-    return Math::Size( static_cast<float>(size.w) / static_cast<float>(m_size.w),
-                       static_cast<float>(size.h) / static_cast<float>(m_size.h)  );
+    return Math::Point(static_cast<float>(size.x) / static_cast<float>(m_size.x),
+                       static_cast<float>(size.y) / static_cast<float>(m_size.y));
 }
 
-Math::IntSize Gfx::CEngine::InterfaceToWindowSize(Math::Size size)
+Math::IntPoint Gfx::CEngine::InterfaceToWindowSize(Math::Point size)
 {
-    return Math::IntSize(static_cast<int>(size.w * m_size.w),
-                         static_cast<int>(size.h * m_size.h));
+    return Math::IntPoint(static_cast<int>(size.x * m_size.x),
+                         static_cast<int>(size.y * m_size.y));
 }
 
 std::string Gfx::CEngine::GetTextureDir()
@@ -874,7 +831,18 @@ bool Gfx::CEngine::IsVisible(int objRank)
 
 bool Gfx::CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p3D)
 {
-    // TODO!
+    p3D = Math::Transform(m_objects[objRank].transform, p3D);
+    p3D = Math::Transform(m_matView, p3D);
+
+    if (p3D.z < 2.0f)  return false;  // behind?
+
+    p2D.x = (p3D.x/p3D.z)*m_matProj.Get(1,1);
+    p2D.y = (p3D.y/p3D.z)*m_matProj.Get(2,2);
+    p2D.z = p3D.z;
+
+    p2D.x = (p2D.x+1.0f)/2.0f;  // [-1..1] -> [0..1]
+    p2D.y = (p2D.y+1.0f)/2.0f;
+
     return true;
 }
 
@@ -888,13 +856,13 @@ bool Gfx::CEngine::TransformPoint(Math::Vector& p2D, int objRank, Math::Vector p
 
 void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
 {
-    if ( state == m_lastState && color == m_lastColor )
+    if (state == m_lastState && color == m_lastColor)
         return;
 
     m_lastState = state;
     m_lastColor = color;
 
-    if ( m_alphaMode != 1 && (state & Gfx::ENG_RSTATE_ALPHA) )
+    if (m_alphaMode != 1 && (state & Gfx::ENG_RSTATE_ALPHA))
     {
         state &= ~Gfx::ENG_RSTATE_ALPHA;
 
@@ -902,133 +870,150 @@ void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
             state |= Gfx::ENG_RSTATE_TTEXTURE_BLACK;
     }
 
-    // TODO other modes & thorough testing
 
-    if (state & Gfx::ENG_RSTATE_TTEXTURE_BLACK)  // The transparent black texture?
+    if (state & Gfx::ENG_RSTATE_TTEXTURE_BLACK)  // transparent black texture?
     {
         m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
         m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
         m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(Gfx::BLEND_ONE, Gfx::BLEND_INV_SRC_COLOR);
+
         m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
 
-        m_device->SetBlendFunc(Gfx::BLEND_ONE, Gfx::BLEND_INV_SRC_COLOR);
-        m_device->SetTextureEnabled(0, true);
         m_device->SetTextureFactor(color);
 
         Gfx::TextureStageParams params;
         params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
         params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = Gfx::TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
+        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+
+        m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
-    else if (state & Gfx::ENG_RSTATE_TTEXTURE_WHITE)  // The transparent white texture?
+    else if (state & Gfx::ENG_RSTATE_TTEXTURE_WHITE)  // transparent white texture?
     {
         m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
         m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
         m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(Gfx::BLEND_DST_COLOR, Gfx::BLEND_ZERO);
+
         m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
 
-        m_device->SetBlendFunc(Gfx::BLEND_DST_COLOR, Gfx::BLEND_ZERO);
-        m_device->SetTextureEnabled(0, true);
         m_device->SetTextureFactor(color.Inverse());
 
         Gfx::TextureStageParams params;
         params.colorOperation = Gfx::TEX_MIX_OPER_ADD;
         params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
         params.colorArg2 = Gfx::TEX_MIX_ARG_FACTOR;
-        params.alphaOperation = Gfx::TEX_MIX_OPER_MODULATE;
+        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+
+        m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
-    else if (state & Gfx::ENG_RSTATE_TCOLOR_BLACK)  // The transparent black color?
+    else if (state & Gfx::ENG_RSTATE_TCOLOR_BLACK)  // transparent black color?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
         m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING, true);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   false);
 
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(Gfx::BLEND_ONE, Gfx::BLEND_INV_SRC_COLOR);
-
-        m_device->SetTextureFactor(color);
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, Gfx::TextureStageParams());
     }
-    else if (state & Gfx::ENG_RSTATE_TCOLOR_WHITE)  // The transparent white color?
+    else if (state & Gfx::ENG_RSTATE_TCOLOR_WHITE)  // transparent white color?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
         m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING, true);
-        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST, false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   false);
 
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
         m_device->SetBlendFunc(Gfx::BLEND_DST_COLOR, Gfx::BLEND_ZERO);
-
-        m_device->SetTextureFactor(color.Inverse());
-        m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, Gfx::TextureStageParams());
     }
     else if (state & Gfx::ENG_RSTATE_TDIFFUSE)  // diffuse color as transparent?
     {
-        /*m_device->SetRenderState(D3DRENDERSTATE_FOGENABLE, false);
-        m_device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-        m_device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, true);
-        m_device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, false);
-        m_device->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_diffuseSrcBlend[1]);
-        m_device->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_diffuseDestBlend[1]);
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
 
-        m_device->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_SELECTARG1);
-        m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_device->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);*/
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(Gfx::BLEND_SRC_ALPHA, Gfx::BLEND_DST_ALPHA);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+
+        Gfx::TextureStageParams params;
+        params.colorOperation = Gfx::TEX_MIX_OPER_REPLACE;
+        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
+        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
+
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureStageParams(0, params);
+    }
+    else if (state & Gfx::ENG_RSTATE_TEXT)  // font rendering?
+    {
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST,  false); // TODO: depth test setting elsewhere!
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
+        m_device->SetBlendFunc(Gfx::BLEND_SRC_ALPHA, Gfx::BLEND_INV_SRC_ALPHA);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+
+        Gfx::TextureStageParams params;
+        params.colorOperation = Gfx::TEX_MIX_OPER_DEFAULT; // default modulate operation
+        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // default modulate operation
+
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureStageParams(0, params);
     }
     else if (state & Gfx::ENG_RSTATE_ALPHA)  // image with alpha channel?
     {
-        /*m_device->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
-        m_device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, true);
-        m_device->SetRenderState(D3DRENDERSTATE_ALPHABLENDENABLE, false);
-        m_device->SetRenderState(D3DRENDERSTATE_ALPHATESTENABLE, true);
-        m_device->SetRenderState(D3DRENDERSTATE_ALPHAFUNC, D3DCMP_GREATER);
-        m_device->SetRenderState(D3DRENDERSTATE_ALPHAREF,  (DWORD)(128));
-        m_device->SetRenderState(D3DRENDERSTATE_SRCBLEND,  m_alphaSrcBlend[1]);
-        m_device->SetRenderState(D3DRENDERSTATE_DESTBLEND, m_alphaSrcBlend[1]);
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
 
-        m_device->SetRenderState(D3DRENDERSTATE_TEXTUREFACTOR, color);
-        m_device->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
-        m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-        m_device->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_SELECTARG1);
-        m_device->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);*/
-    }
-    else if (state & Gfx::ENG_RSTATE_TEXT)
-    {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST,  false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, true);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  true);
+
+        m_device->SetAlphaTestFunc(Gfx::COMP_FUNC_GREATER, 0.5f);
+
         m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    true);
+
+        m_device->SetTextureFactor(color);
+
+        Gfx::TextureStageParams params;
+        params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
+        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = Gfx::TEX_MIX_ARG_SRC_COLOR;
+        params.alphaOperation = Gfx::TEX_MIX_OPER_REPLACE;
+        params.alphaArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
 
         m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, Gfx::TextureStageParams());
-
-        m_device->SetBlendFunc(Gfx::BLEND_SRC_ALPHA, Gfx::BLEND_INV_SRC_ALPHA);
+        m_device->SetTextureStageParams(0, params);
     }
     else    // normal ?
     {
-        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         true);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, true);
-        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
         m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, true);
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         true);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, true);
+
+        Gfx::TextureStageParams params;
+        params.colorOperation = Gfx::TEX_MIX_OPER_DEFAULT; // default modulate
+        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: replace with src color ?
 
         m_device->SetTextureEnabled(0, true);
-        m_device->SetTextureStageParams(0, Gfx::TextureStageParams());
-
-        /*m_device->SetTextureStageState(0, D3DTSS_COLOROP,   D3DTOP_MODULATE);
-        m_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
-        m_device->SetTextureStageState(0, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);*/
+        m_device->SetTextureStageParams(0, params);
     }
 
     if (state & Gfx::ENG_RSTATE_FOG)
@@ -1040,21 +1025,25 @@ void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
     if ( !m_groundSpotVisible && (state & Gfx::ENG_RSTATE_SECOND) != 0 ) second = false;
     if ( !m_dirty             && (state & Gfx::ENG_RSTATE_SECOND) == 0 ) second = false;
 
-    if ( (state & ENG_RSTATE_DUAL_BLACK) && second )
+    if ((state & ENG_RSTATE_DUAL_BLACK) && second)
     {
-        /*m_device->SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_MODULATE);
-        m_device->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_device->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
-        m_device->SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
-        m_device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);*/
+        Gfx::TextureStageParams params;
+        params.colorOperation = Gfx::TEX_MIX_OPER_MODULATE;
+        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
+        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: ???
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureStageParams(1, params);
     }
-    else if ( (state & ENG_RSTATE_DUAL_WHITE) && second )
+    else if ((state & ENG_RSTATE_DUAL_WHITE) && second)
     {
-        /*m_device->SetTextureStageState(1, D3DTSS_COLOROP,   D3DTOP_ADD);
-        m_device->SetTextureStageState(1, D3DTSS_COLORARG1, D3DTA_TEXTURE);
-        m_device->SetTextureStageState(1, D3DTSS_COLORARG2, D3DTA_CURRENT);
-        m_device->SetTextureStageState(1, D3DTSS_ALPHAOP,   D3DTOP_DISABLE);
-        m_device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);*/
+        Gfx::TextureStageParams params;
+        params.colorOperation = Gfx::TEX_MIX_OPER_ADD;
+        params.colorArg1 = Gfx::TEX_MIX_ARG_TEXTURE;
+        params.colorArg2 = Gfx::TEX_MIX_ARG_COMPUTED_COLOR;
+        params.alphaOperation = Gfx::TEX_MIX_OPER_DEFAULT; // TODO: ???
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureStageParams(1, params);
     }
     else
     {
@@ -1063,18 +1052,25 @@ void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
 
     if (state & Gfx::ENG_RSTATE_WRAP)
     {
-        /*m_device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);
-        m_device->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_WRAP);*/
+        // TODO: separate function for setting wrap mode?
+
+        Gfx::TextureStageParams p1 = m_device->GetTextureStageParams(0);
+        p1.wrapS = p1.wrapT = Gfx::TEX_WRAP_REPEAT;
+        m_device->SetTextureStageParams(0, p1);
+
+        Gfx::TextureStageParams p2 = m_device->GetTextureStageParams(1);
+        p2.wrapS = p2.wrapT = Gfx::TEX_WRAP_REPEAT;
+        m_device->SetTextureStageParams(1, p2);
     }
-    else if (state & Gfx::ENG_RSTATE_CLAMP)
+    else // if (state & Gfx::ENG_RSTATE_CLAMP) or otherwise
     {
-        /*m_device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
-        m_device->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);*/
-    }
-    else
-    {
-        /*m_device->SetTextureStageState(0, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);
-        m_device->SetTextureStageState(1, D3DTSS_ADDRESS, D3DTADDRESS_CLAMP);*/
+        Gfx::TextureStageParams p1 = m_device->GetTextureStageParams(0);
+        p1.wrapS = p1.wrapT = Gfx::TEX_WRAP_CLAMP;
+        m_device->SetTextureStageParams(0, p1);
+
+        Gfx::TextureStageParams p2 = m_device->GetTextureStageParams(1);
+        p2.wrapS = p2.wrapT = Gfx::TEX_WRAP_CLAMP;
+        m_device->SetTextureStageParams(1, p2);
     }
 
     if (state & Gfx::ENG_RSTATE_2FACE)
@@ -1197,13 +1193,13 @@ float Gfx::CEngine::GetLimitLOD(int rank, bool last)
     if (last)
     {
         limit = m_limitLOD[rank];
-        limit *= m_lastSize.w/640.0f;  // limit further if large window!
+        limit *= m_lastSize.x/640.0f;  // limit further if large window!
         limit += m_limitLOD[0]*(m_lastObjectDetail*2.0f);
     }
     else
     {
         limit = m_limitLOD[rank];
-        limit *= m_size.w/640.0f;  // limit further if large window!
+        limit *= m_size.x/640.0f;  // limit further if large window!
         limit += m_limitLOD[0]*(m_objectDetail*2.0f);
     }
 
@@ -1222,7 +1218,7 @@ void Gfx::CEngine::SetFocus(float focus)
     m_focus = focus;
     m_size = m_app->GetVideoConfig().size;
 
-    float aspect = (static_cast<float>(m_size.h)) / m_size.w;
+    float aspect = (static_cast<float>(m_size.y)) / m_size.x;
     Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, m_deepView[0]);
 }
 
@@ -1698,15 +1694,6 @@ void Gfx::CEngine::ApplyChange()
   viewport, and renders the scene. */
 void Gfx::CEngine::Render()
 {
-    /* TODO!
-    D3DObjLevel1*   p1;
-    D3DObjLevel2*   p2;
-    D3DObjLevel3*   p3;
-    D3DObjLevel4*   p4;
-    D3DObjLevel5*   p5;
-    D3DVERTEX2*     pv;
-    int             l1, l2, l3, l4, l5, objRank;*/
-
     if (! m_render) return;
 
     m_statisticTriangle = 0;
@@ -1729,12 +1716,11 @@ void Gfx::CEngine::Render()
 
 
     if (m_drawWorld)
-    {
         Draw3DScene();
-    }
 
 
     DrawInterface();
+
 
     // End the scene
     m_device->EndScene();
@@ -1742,6 +1728,15 @@ void Gfx::CEngine::Render()
 
 void Gfx::CEngine::Draw3DScene()
 {
+        /* TODO!
+    D3DObjLevel1*   p1;
+    D3DObjLevel2*   p2;
+    D3DObjLevel3*   p3;
+    D3DObjLevel4*   p4;
+    D3DObjLevel5*   p5;
+    D3DVERTEX2*     pv;
+    int             l1, l2, l3, l4, l5, objRank;*/
+
     if (m_groundSpotVisible)
         UpdateGroundSpotTextures();
 
@@ -2153,11 +2148,11 @@ void Gfx::CEngine::DrawShadow()
     float endDeepView = m_deepView[m_rankView];
 
     float lastIntensity = -1.0f;
-    for (int i = 0; i < static_cast<int>( m_shadow.size() ); i++)
+    for (int i = 0; i < static_cast<int>( m_shadows.size() ); i++)
     {
-        if (m_shadow[i].hide) continue;
+        if (m_shadows[i].hide) continue;
 
-        Math::Vector pos = m_shadow[i].pos;  // pos = center of the shadow on the ground
+        Math::Vector pos = m_shadows[i].pos;  // pos = center of the shadow on the ground
 
         if (m_eyePt.y == pos.y)  continue;  // camera at the same level?
 
@@ -2169,7 +2164,7 @@ void Gfx::CEngine::DrawShadow()
         if (m_eyePt.y > pos.y)  // camera on?
         {
             float height = m_eyePt.y-pos.y;
-            float h = m_shadow[i].radius;
+            float h = m_shadows[i].radius;
             float max = height*0.5f;
             if ( h > max  )  h = max;
             if ( h > 4.0f )  h = 4.0f;
@@ -2185,7 +2180,7 @@ void Gfx::CEngine::DrawShadow()
         else    // camera underneath?
         {
             float height = pos.y-m_eyePt.y;
-            float h = m_shadow[i].radius;
+            float h = m_shadows[i].radius;
             float max = height*0.1f;
             if ( h > max  )  h = max;
             if ( h > 4.0f )  h = 4.0f;
@@ -2201,20 +2196,20 @@ void Gfx::CEngine::DrawShadow()
 
         // The hFactor decreases the intensity and size increases more
         // the object is high relative to the ground.
-        float hFactor = m_shadow[i].height/20.0f;
+        float hFactor = m_shadows[i].height/20.0f;
         if ( hFactor < 0.0f )  hFactor = 0.0f;
         if ( hFactor > 1.0f )  hFactor = 1.0f;
         hFactor = powf(1.0f-hFactor, 2.0f);
         if ( hFactor < 0.2f )  hFactor = 0.2f;
 
-        float radius = m_shadow[i].radius*1.5f;
+        float radius = m_shadows[i].radius*1.5f;
         radius *= 2.0f-hFactor;  // greater if high
         radius *= 1.0f-d/D;  // smaller if close
 
 
         Math::Vector corner[4];
 
-        if (m_shadow[i].type == Gfx::ENG_SHADOW_NORM)
+        if (m_shadows[i].type == Gfx::ENG_SHADOW_NORM)
         {
             corner[0].x = +radius;
             corner[0].z = +radius;
@@ -2239,27 +2234,27 @@ void Gfx::CEngine::DrawShadow()
         {
             Math::Point rot;
 
-            rot = Math::RotatePoint(-m_shadow[i].angle, Math::Point(radius, radius));
+            rot = Math::RotatePoint(-m_shadows[i].angle, Math::Point(radius, radius));
             corner[0].x = rot.x;
             corner[0].z = rot.y;
             corner[0].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadow[i].angle, Math::Point(-radius, radius));
+            rot = Math::RotatePoint(-m_shadows[i].angle, Math::Point(-radius, radius));
             corner[1].x = rot.x;
             corner[1].z = rot.y;
             corner[1].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadow[i].angle, Math::Point(radius, -radius));
+            rot = Math::RotatePoint(-m_shadows[i].angle, Math::Point(radius, -radius));
             corner[2].x = rot.x;
             corner[2].z = rot.y;
             corner[2].y = 0.0f;
 
-            rot = Math::RotatePoint(-m_shadow[i].angle, Math::Point(-radius, -radius));
+            rot = Math::RotatePoint(-m_shadows[i].angle, Math::Point(-radius, -radius));
             corner[3].x = rot.x;
             corner[3].z = rot.y;
             corner[3].y = 0.0f;
 
-            if (m_shadow[i].type == Gfx::ENG_SHADOW_WORM)
+            if (m_shadows[i].type == Gfx::ENG_SHADOW_WORM)
             {
                 ts.x =  96.0f/256.0f;
                 ti.x = 128.0f/256.0f;
@@ -2271,10 +2266,10 @@ void Gfx::CEngine::DrawShadow()
             }
         }
 
-        corner[0] = Math::CrossProduct(corner[0], m_shadow[i].normal);
-        corner[1] = Math::CrossProduct(corner[1], m_shadow[i].normal);
-        corner[2] = Math::CrossProduct(corner[2], m_shadow[i].normal);
-        corner[3] = Math::CrossProduct(corner[3], m_shadow[i].normal);
+        corner[0] = Math::CrossProduct(corner[0], m_shadows[i].normal);
+        corner[1] = Math::CrossProduct(corner[1], m_shadows[i].normal);
+        corner[2] = Math::CrossProduct(corner[2], m_shadows[i].normal);
+        corner[3] = Math::CrossProduct(corner[3], m_shadows[i].normal);
 
         corner[0] += pos;
         corner[1] += pos;
@@ -2292,7 +2287,7 @@ void Gfx::CEngine::DrawShadow()
             Gfx::Vertex(corner[2], n, Math::Point(ti.x, ti.y))
         };
 
-        float intensity = (0.5f+m_shadow[i].intensity*0.5f)*hFactor;
+        float intensity = (0.5f+m_shadows[i].intensity*0.5f)*hFactor;
 
         // Decreases the intensity of the shade if you're in the area
         // between the beginning and the end of the fog.

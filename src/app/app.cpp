@@ -285,7 +285,7 @@ bool CApplication::CreateVideoSurface()
     if (m_deviceConfig.hardwareAccel)
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    m_private->surface = SDL_SetVideoMode(m_deviceConfig.size.w, m_deviceConfig.size.h,
+    m_private->surface = SDL_SetVideoMode(m_deviceConfig.size.x, m_deviceConfig.size.y,
                                           m_deviceConfig.bpp, videoFlags);
 
     return true;
@@ -761,7 +761,7 @@ Gfx::GLDeviceConfig CApplication::GetVideoConfig()
     return m_deviceConfig;
 }
 
-VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntSize> &resolutions,
+VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
                                                       bool fullScreen, bool resizeable)
 {
     resolutions.clear();
@@ -799,7 +799,7 @@ VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntSize>
 
 
     for (int i = 0; modes[i] != NULL; ++i)
-        resolutions.push_back(Math::IntSize(modes[i]->w, modes[i]->h));
+        resolutions.push_back(Math::IntPoint(modes[i]->w, modes[i]->h));
 
     return VIDEO_QUERY_OK;
 }
