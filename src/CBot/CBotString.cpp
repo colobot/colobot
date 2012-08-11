@@ -138,7 +138,7 @@ CBotString::CBotString(const char* p)
     m_ptr = NULL;
     if (m_lg>0)
     {
-        m_ptr = (char*)malloc(m_lg+1);
+        m_ptr = static_cast<char*>(malloc(m_lg+1));
         strcpy(m_ptr, p);
     }
 }
@@ -150,7 +150,7 @@ CBotString::CBotString(const CBotString& srcString)
     m_ptr = NULL;
     if (m_lg>0)
     {
-        m_ptr = (char*)malloc(m_lg+1);
+        m_ptr = static_cast<char*>(malloc(m_lg+1));
         strcpy(m_ptr, srcString.m_ptr);
     }
 }
@@ -158,7 +158,7 @@ CBotString::CBotString(const CBotString& srcString)
 
 
 
-int CBotString::GivLength()
+int CBotString::GetLength()
 {
     if (m_ptr == NULL) return 0;
     return strlen( m_ptr ); 
@@ -285,7 +285,7 @@ CBotString CBotString::Mid(int start, int lg)
 
     if ( lg < 0 ) lg = m_lg - start;
 
-    char* p = (char*)malloc(m_lg+1);
+    char* p = static_cast<char*>(malloc(m_lg+1));
     strcpy(p, m_ptr+start);
     p[lg] = 0;
 
@@ -322,7 +322,7 @@ bool CBotString::LoadString(unsigned int id)
     m_ptr = NULL;
     if (m_lg > 0)
     {
-        m_ptr = (char*)malloc(m_lg+1);
+        m_ptr = static_cast<char*>(malloc(m_lg+1));
         strcpy(m_ptr, str);
         return true;
     }
@@ -339,7 +339,7 @@ const CBotString& CBotString::operator=(const CBotString& stringSrc)
 
     if (m_lg > 0)
     {
-        m_ptr = (char*)malloc(m_lg+1);
+        m_ptr = static_cast<char*>(malloc(m_lg+1));
         strcpy(m_ptr, stringSrc.m_ptr);
     }
 
@@ -355,7 +355,7 @@ CBotString operator+(const CBotString& string, const char * lpsz)
 
 const CBotString& CBotString::operator+(const CBotString& stringSrc)
 {
-    char* p = (char*)malloc(m_lg+stringSrc.m_lg+1);
+    char* p = static_cast<char*>(malloc(m_lg+stringSrc.m_lg+1));
 
     strcpy(p, m_ptr);
     char* pp = p + m_lg;
@@ -392,7 +392,7 @@ const CBotString& CBotString::operator=(const char* pString)
 
         if (m_lg != 0)
         {
-            m_ptr = (char*)malloc(m_lg+1);
+            m_ptr = static_cast<char*>(malloc(m_lg+1));
             strcpy(m_ptr, pString);
         }
     }
@@ -549,7 +549,7 @@ CBotStringArray::~CBotStringArray()
 }
 
 
-int CBotStringArray::GivSize()
+int CBotStringArray::GetSize()
 {
     return m_nSize;
 }

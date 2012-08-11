@@ -201,7 +201,7 @@ bool CMotion::Read(char *line)
 }
 
 
-// Gives the linear vibration.
+// Getes the linear vibration.
 
 void CMotion::SetLinVibration(Math::Vector dir)
 {
@@ -213,7 +213,7 @@ Math::Vector CMotion::RetLinVibration()
     return m_linVibration;
 }
 
-// Gives the circular vibration.
+// Getes the circular vibration.
 
 void CMotion::SetCirVibration(Math::Vector dir)
 {
@@ -225,7 +225,7 @@ Math::Vector CMotion::RetCirVibration()
     return m_cirVibration;
 }
 
-// Gives the tilt.
+// Getes the tilt.
 
 void CMotion::SetInclinaison(Math::Vector dir)
 {

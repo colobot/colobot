@@ -46,18 +46,18 @@ void CBotDoc::OnRun()
 		delete m_pProg;
 		m_pProg = NULL;
 
-		TextError = CBotProgram::GivErrorText( code );
+		TextError = CBotProgram::GetErrorText( code );
 		std::cout << TextError << std::endl;
 		return;
 	}
 
-	if( m_Liste.GivSize() == 0 )
+	if( m_Liste.GetSize() == 0 )
 	{
 		std::cout << "No function marked \"extern\" !\n";
 		return;
 	}
 
-	for ( int i = 0; i < m_Liste.GivSize(); i++ )
+	for ( int i = 0; i < m_Liste.GetSize(); i++ )
 	{
 		int	start, stop;
 		m_pProg->GetPosition(m_Liste[i], start, stop, GetPosNom, GetPosParam);
@@ -76,7 +76,7 @@ void CBotDoc::OnRun()
 //	{
 //		std::string	TextError;
 //
-//		TextError = m_pProg->GivErrorText( dlg.m_code );
+//		TextError = m_pProg->GetErrorText( dlg.m_code );
 //
 //		std::cout <<TextError;
 //	}
@@ -105,7 +105,7 @@ bool CBotDoc::Compile()
 //		m_pEdit->SetSel( start, end );
 //		m_pEdit->SetFocus();				// higlights part of problem
 
-		TextError = CBotProgram::GivErrorText( code );
+		TextError = CBotProgram::GetErrorText( code );
 		std::cout << TextError ;
 
 		return false;

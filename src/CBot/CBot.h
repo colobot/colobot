@@ -105,18 +105,18 @@ public:
     bool StackOver();
 
     /**
-     * \brief GivError Get error number of the stack
+     * \brief GetError Get error number of the stack
      * \param [out] start beginning of the stack
      * \param [out] end end of stack
      * \return error number
      */
-    int GivError(int& start, int& end);
+    int GetError(int& start, int& end);
 
     /**
-     * \brief GivError Get error number
+     * \brief GetError Get error number
      * \return eror number
      */
-    int GivError();// rend le numéro d'erreur retourné
+    int GetError();// rend le numéro d'erreur retourné
 
     /**
      * \brief Reset Reset error at and set user
@@ -131,18 +131,18 @@ public:
     void SetType(CBotTypResult& type);
 
     /**
-     * \brief GivType Get the type of value on the stack.
+     * \brief GetType Get the type of value on the stack.
      * \param [in] mode Used when getting class type (1 gives pointer, 2 gives intrinsic).
      * \return Type number.
      */
-    int GivType(int mode = 0);
+    int GetType(int mode = 0);
 
     /**
-     * \brief Gives the type of complete value on the stack.
+     * \brief Getes the type of complete value on the stack.
      * \param [in] mode Used when getting class type (1 gives pointer, 2 gives intrinsic).
      * \return  Type of an element.
      */
-    CBotTypResult GivTypResult(int mode = 0);
+    CBotTypResult GetTypResult(int mode = 0);
 
     /**
      * \brief Adds a local variable.
@@ -215,18 +215,18 @@ public:
     bool            IsOk();
 
     bool            SetState(int n, int lim = -10);                        // select a state
-    int                GivState();                                            // in what state am I?
+    int                GetState();                                            // in what state am I?
     bool            IncState(int lim = -10);                            // passes to the next state
     bool            IfStep();                                            // do step by step
     bool            Execute(); 
 
     void            SetVar( CBotVar* var );
     void            SetCopyVar( CBotVar* var );
-    CBotVar*        GivVar();
-    CBotVar*        GivCopyVar();
-    CBotVar*        GivPtVar();
-    bool            GivRetVar(bool bRet);
-    long            GivVal();
+    CBotVar*        GetVar();
+    CBotVar*        GetCopyVar();
+    CBotVar*        GetPtVar();
+    bool            GetRetVar(bool bRet);
+    long            GetVal();
 
     void            SetStartError(int pos);
     void            SetError(int n, CBotToken* token = NULL);
@@ -235,9 +235,9 @@ public:
     void            SetBreak(int val, const char* name);
 
     void            SetBotCall(CBotProgram* p);
-    CBotProgram*    GivBotCall(bool bFirst = false);
-    void*            GivPUser();
-    bool            GivBlock();
+    CBotProgram*    GetBotCall(bool bFirst = false);
+    void*            GetPUser();
+    bool            GetBlock();
 
 
     bool            ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotTypResult& rettype);
@@ -250,7 +250,7 @@ public:
     void            SetTimer(int n);
 
     void            GetRunPos(const char* &FunctionName, int &start, int &end);
-    CBotVar*        GivStackVars(const char* &FunctionName, int level);
+    CBotVar*        GetStackVars(const char* &FunctionName, int level);
 
     int                m_temp;
 
@@ -301,12 +301,12 @@ inline bool CBotStack::IsOk()
     return (m_error == 0);
 }
 
-inline int CBotStack::GivState()
+inline int CBotStack::GetState()
 {
     return m_state;
 }
 
-inline int CBotStack::GivError()
+inline int CBotStack::GetError()
 {
     return m_error;
 }
@@ -343,14 +343,14 @@ public:
                     ~CBotCStack();
 
     bool            IsOk();
-    int                GivError();
-    int                GivError(int& start, int& end);
+    int                GetError();
+    int                GetError(int& start, int& end);
                                                 // gives error number
 
     void            SetType(CBotTypResult& type);// determines the type
-    CBotTypResult    GivTypResult(int mode = 0);    // gives the type of value on the stack
-    int                GivType(int mode = 0);        // gives the type of value on the stack
-    CBotClass*        GivClass();                    // gives the class of the value on the stack
+    CBotTypResult    GetTypResult(int mode = 0);    // gives the type of value on the stack
+    int                GetType(int mode = 0);        // gives the type of value on the stack
+    CBotClass*        GetClass();                    // gives the class of the value on the stack
 
     void            AddVar(CBotVar* p);            // adds a local variable
     CBotVar*        FindVar(CBotToken* &p);        // finds a variable
@@ -364,7 +364,7 @@ public:
     
     void            SetVar( CBotVar* var );
     void            SetCopyVar( CBotVar* var );
-    CBotVar*        GivVar();
+    CBotVar*        GetVar();
 
     void            SetStartError(int pos);
     void            SetError(int n, int pos);
@@ -372,11 +372,11 @@ public:
     void            ResetError(int n, int start, int end);
 
     void            SetRetType(CBotTypResult& type);
-    CBotTypResult    GivRetType();
+    CBotTypResult    GetRetType();
 
 //    void            SetBotCall(CBotFunction* &pFunc);
     void            SetBotCall(CBotProgram* p);
-    CBotProgram*    GivBotCall();
+    CBotProgram*    GetBotCall();
     CBotTypResult    CompileCall(CBotToken* &p, CBotVar** ppVars, long& nIdent);
     bool            CheckCall(CBotToken* &pToken, CBotDefParam* pParam);
 
@@ -454,15 +454,15 @@ public:
     bool        CompCase(CBotStack* &pj, int val);
 
     void        SetToken(CBotToken* p);
-    int            GivTokenType();
-    CBotToken*    GivToken();
+    int            GetTokenType();
+    CBotToken*    GetToken();
 
     void        AddNext(CBotInstr* n);
-    CBotInstr*    GivNext();
+    CBotInstr*    GetNext();
     void        AddNext3(CBotInstr* n);
-    CBotInstr*    GivNext3();
+    CBotInstr*    GetNext3();
     void        AddNext3b(CBotInstr* n);
-    CBotInstr*    GivNext3b();
+    CBotInstr*    GetNext3b();
 
     static
     void        IncLvl(CBotString& label);
@@ -1263,9 +1263,9 @@ public:
 
     void        SetValInt(int val, const char* s = NULL);
     void        SetValFloat(float val);
-    int            GivValInt();
-    float        GivValFloat();
-    CBotString    GivValString();
+    int            GetValInt();
+    float        GetValFloat();
+    CBotString    GetValString();
 
     void        Copy(CBotVar* pSrc, bool bName=true);
 
@@ -1314,9 +1314,9 @@ public:
 
     void        SetValInt(int val, const char* s = NULL);
     void        SetValFloat(float val);
-    int            GivValInt();
-    float        GivValFloat();
-    CBotString    GivValString();
+    int            GetValInt();
+    float        GetValFloat();
+    CBotString    GetValString();
 
     void        Copy(CBotVar* pSrc, bool bName=true);
 
@@ -1354,7 +1354,7 @@ public:
 //                ~CBotVarString();
 
     void        SetValString(const char* p);
-    CBotString    GivValString();
+    CBotString    GetValString();
 
     void        Copy(CBotVar* pSrc, bool bName=true);
 
@@ -1382,9 +1382,9 @@ public:
 
     void        SetValInt(int val, const char* s = NULL);
     void        SetValFloat(float val);
-    int            GivValInt();
-    float        GivValFloat();
-    CBotString    GivValString();
+    int            GetValInt();
+    float        GetValFloat();
+    CBotString    GetValString();
 
     void        Copy(CBotVar* pSrc, bool bName=true);
 
@@ -1426,14 +1426,14 @@ public:
 
     void        Copy(CBotVar* pSrc, bool bName=true);
     void        SetClass(CBotClass* pClass); //, int &nIdent);
-    CBotClass*    GivClass();
-    CBotVar*    GivItem(const char* name);    // return an element of a class according to its name (*)
-    CBotVar*    GivItemRef(int nIdent);
+    CBotClass*    GetClass();
+    CBotVar*    GetItem(const char* name);    // return an element of a class according to its name (*)
+    CBotVar*    GetItemRef(int nIdent);
 
-    CBotVar*    GivItem(int n, bool bExtend);
-    CBotVar*    GivItemList();
+    CBotVar*    GetItem(int n, bool bExtend);
+    CBotVar*    GetItemList();
 
-    CBotString    GivValString();
+    CBotString    GetValString();
 
     bool        Save1State(FILE* pf);
     void        Maj(void* pUser, bool bContinue);
@@ -1442,7 +1442,7 @@ public:
     void        DecrementUse();                // a reference to decrementation
 
     CBotVarClass* 
-                GivPointer();
+                GetPointer();
     void        SetItemList(CBotVar* pVar);
 
     void        SetIdent(long n);
@@ -1450,7 +1450,7 @@ public:
     static CBotVarClass* Find(long id);
 
 
-//    CBotVar*    GivMyThis();
+//    CBotVar*    GetMyThis();
 
     bool        Eq(CBotVar* left, CBotVar* right);
     bool        Ne(CBotVar* left, CBotVar* right);
@@ -1474,18 +1474,18 @@ public:
 
     void        Copy(CBotVar* pSrc, bool bName=true);
     void        SetClass(CBotClass* pClass);
-    CBotClass*    GivClass();
-    CBotVar*    GivItem(const char* name);    // return an element of a class according to its name (*)
-    CBotVar*    GivItemRef(int nIdent);
-    CBotVar*    GivItemList();
+    CBotClass*    GetClass();
+    CBotVar*    GetItem(const char* name);    // return an element of a class according to its name (*)
+    CBotVar*    GetItemRef(int nIdent);
+    CBotVar*    GetItemList();
 
-    CBotString    GivValString();
+    CBotString    GetValString();
     void        SetPointer(CBotVar* p);
     CBotVarClass*
-                GivPointer();
+                GetPointer();
 
     void        SetIdent(long n);            // associates an identification number (unique)
-    long        GivIdent();                    // gives the identification number associated with
+    long        GetIdent();                    // gives the identification number associated with
     void        ConstructorSet();
 
     bool        Save1State(FILE* pf);
@@ -1514,15 +1514,15 @@ public:
 
     void        SetPointer(CBotVar* p);
     CBotVarClass*
-                GivPointer();
+                GetPointer();
     
     void        Copy(CBotVar* pSrc, bool bName=true);
-    CBotVar*    GivItem(int n, bool bGrow=false);    // makes an element according to its numeric index
+    CBotVar*    GetItem(int n, bool bGrow=false);    // makes an element according to its numeric index
                                                 // enlarged the table if necessary if bExtend
-//    CBotVar*    GivItem(const char* name);        // makes a element by  literal index
-    CBotVar*    GivItemList();                    // gives the first item in the list
+//    CBotVar*    GetItem(const char* name);        // makes a element by  literal index
+    CBotVar*    GetItemList();                    // gives the first item in the list
 
-    CBotString    GivValString();                    // gets the contents of the array into a string
+    CBotString    GetValString();                    // gets the contents of the array into a string
 
     bool        Save1State(FILE* pf);
 };
@@ -1544,7 +1544,7 @@ extern bool ReadString(FILE* pf, CBotString& s);
 extern bool WriteType(FILE* pf, CBotTypResult type);
 extern bool ReadType(FILE* pf, CBotTypResult& type);
 
-extern float GivNumFloat( const char* p );
+extern float GetNumFloat( const char* p );
 
 #if    false
 extern void DEBUG( const char* text, int val, CBotStack* pile );
@@ -1596,7 +1596,7 @@ public:
     bool        RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBotStack* pStack);
 #endif
 
-    CBotString    GivName();
+    CBotString    GetName();
     CBotCall*    Next();
     
     static void    SetPUser(void* pUser);
@@ -1629,7 +1629,7 @@ public:
 
     int            DoCall(long& nIdent, const char* name, CBotVar* pThis, CBotVar** ppVars, CBotVar* &pResult, CBotStack* pStack, CBotToken* pFunc);
 
-    CBotString    GivName();
+    CBotString    GetName();
     CBotCallMethode*    Next();
     void        AddNext(CBotCallMethode* p);
     
@@ -1655,11 +1655,11 @@ public:
     void            RestoreState(CBotStack* &pj, bool bMain);
 
     void            AddNext(CBotDefParam* p);
-    int                GivType();
-    CBotTypResult    GivTypResult();
-    CBotDefParam*    GivNext();
+    int                GetType();
+    CBotTypResult    GetTypResult();
+    CBotDefParam*    GetNext();
 
-    CBotString        GivParamString();
+    CBotString        GetParamString();
 };
 
 
@@ -1720,8 +1720,8 @@ public:
     static
     void            AddPublic(CBotFunction* pfunc);
 
-    CBotString        GivName();
-    CBotString        GivParams();
+    CBotString        GetName();
+    CBotString        GetParams();
     bool            IsPublic();
     bool            IsExtern();
     CBotFunction*    Next();

@@ -6,20 +6,20 @@ void rMajObject( CBotVar* pThis, void* pUser )
 {
 	if (!pThis->IsElemOfClass("object"))
 		return ;
-	CBotVar*	pPos = pThis->GivItem("position");
-	CBotVar*	pX = pPos->GivItem("x");
-	CBotVar*	pY = pPos->GivItem("y");
-	CBotVar*	pZ = pPos->GivItem("z");
-//	CBotVar*	pPt = pThis->GivItem("transport");
+	CBotVar*	pPos = pThis->GetItem("position");
+	CBotVar*	pX = pPos->GetItem("x");
+	CBotVar*	pY = pPos->GetItem("y");
+	CBotVar*	pZ = pPos->GetItem("z");
+//	CBotVar*	pPt = pThis->GetItem("transport");
 
-	CBotString p = pX->GivValString();
+	CBotString p = pX->GetValString();
 
 //	pX->SetValFloat( pUser == (void*)1 ? (float)12.5 : (float)44.4 );
 	pZ->SetValFloat( (float)0 );
 	pY->SetValFloat( (float)-3.33 );
-	pX->SetValFloat( pX->GivValFloat() + 10 ) ;
+	pX->SetValFloat( pX->GetValFloat() + 10 ) ;
 
-//	pX = pThis->GivItem( "xx" );
+//	pX = pThis->GetItem( "xx" );
 //	pX->SetValFloat( (float)22 );
 
 	// crée une instance sur une classe object

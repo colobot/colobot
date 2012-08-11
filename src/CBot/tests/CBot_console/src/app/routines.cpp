@@ -33,16 +33,16 @@ bool	rShow( CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser )
 	{
 		string::string	ss;
 
-		ss.LoadString( TX_TYPENAMES + pVar->GivType() );
+		ss.LoadString( TX_TYPENAMES + pVar->GetType() );
 		s += ss + " ";
 
-		ss = pVar->GivName();
+		ss = pVar->GetName();
 		if (ss.IsEmpty()) ss = "<sans nom>";
 		s += ss + " = ";
 
-		s += pVar->GivValString();
+		s += pVar->GetValString();
 		s += "\n";
-		pVar = pVar->GivNext();
+		pVar = pVar->GetNext();
 	}
 
 	AfxMessageBox(s, MB_OK|MB_ICONINFORMATION);
@@ -70,8 +70,8 @@ bool rPrintLn( CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser )
 	while ( pVar != NULL )
 	{
 		if ( !s.empty() ) s += " ";
-		s += pVar->GivValString();
-		pVar = pVar->GivNext();
+		s += pVar->GetValString();
+		pVar = pVar->GetNext();
 	}
 	s += "\n";
 
@@ -85,8 +85,8 @@ bool	rPrint( CBotVar* pVar, CBotVar* pResult, int& Exception, void* pUser )
 	while ( pVar != NULL )
 	{
 		if ( !s.empty() ) s += " ";
-		s += pVar->GivValString();
-		pVar = pVar->GivNext();
+		s += pVar->GetValString();
+		pVar = pVar->GetNext();
 	}
 	s += " ";
 	std::cout << s;
@@ -107,13 +107,13 @@ bool	rCPoint( CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception )
 {
 	if ( pVar == NULL )return true;			// constructor with no parameters is ok
 
-	CBotVar*	pX = pThis->GivItem("x");
-	pX->SetValFloat( pVar->GivValFloat() );
-	pVar	= pVar->GivNext();
+	CBotVar*	pX = pThis->GetItem("x");
+	pX->SetValFloat( pVar->GetValFloat() );
+	pVar	= pVar->GetNext();
 
-	CBotVar*	pY = pThis->GivItem("y");
-	pY->SetValFloat( pVar->GivValFloat() );
-	pVar	= pVar->GivNext();
+	CBotVar*	pY = pThis->GetItem("y");
+	pY->SetValFloat( pVar->GetValFloat() );
+	pVar	= pVar->GetNext();
 
 	return	true;			// pas d'interruption
 }
@@ -124,14 +124,14 @@ CBotTypResult cCPoint( CBotVar* pThis, CBotVar* &pVar)
 	if ( pVar == NULL ) return CBotTypResult(0);
 
 	// numeric type of parameter please
-	if ( pVar->GivType() > CBotTypDouble ) return CBotTypResult(5011);
-	pVar	= pVar->GivNext();
+	if ( pVar->GetType() > CBotTypDouble ) return CBotTypResult(5011);
+	pVar	= pVar->GetNext();
 
 	// there must be a second parameter
 	if ( pVar == NULL ) return 5028;
 	// also numeric
-	if ( pVar->GivType() > CBotTypDouble )return CBotTypResult(5011);
-	pVar	= pVar->GivNext();
+	if ( pVar->GetType() > CBotTypDouble )return CBotTypResult(5011);
+	pVar	= pVar->GetNext();
 
 	// and not more than 2 parameters please
 	if ( pVar != NULL ) return CBotTypResult(5026);
