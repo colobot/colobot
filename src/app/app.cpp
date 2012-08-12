@@ -215,8 +215,7 @@ bool CApplication::Create()
     if (! m_device->Create() )
     {
         SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                      std::string("Error in CDevice::Create() :\n") +
-                      std::string(m_device->GetError()) );
+                      std::string("Error in CDevice::Create()") );
         m_exitCode = 1;
         return false;
     }
@@ -229,8 +228,7 @@ bool CApplication::Create()
     if (! m_engine->Create() )
     {
         SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                      std::string("Error in CEngine::Init() :\n") +
-                      std::string(m_engine->GetError()) );
+                      std::string("Error in CEngine::Init()") );
         m_exitCode = 1;
         return false;
     }
@@ -498,6 +496,14 @@ void CApplication::UpdateJoystick()
     }
 }
 
+void CApplication::UpdateMouse()
+{
+    Math::IntPoint pos;
+    SDL_GetMouseState(&pos.x, &pos.y);
+    m_systemMousePos = m_engine->WindowToInterfaceCoords(pos);
+    m_engine->SetMousePos(m_systemMousePos);
+}
+
 int CApplication::Run()
 {
     m_active = true;
@@ -571,6 +577,10 @@ int CApplication::Run()
                 /*if (passOn && m_robotMain != NULL)
                     m_robotMain->ProcessEvent(event); */
             }
+
+            /* Update mouse position explicitly right before rendering
+             * because mouse events are usually way behind */
+            UpdateMouse();
 
             // Update game and render a frame during idle time (no messages are waiting)
             Render();
@@ -856,7 +866,6 @@ bool CApplication::GetSystemMouseVisibile()
     int result = SDL_ShowCursor(SDL_QUERY);
     return result == SDL_ENABLE;
 }
-
 
 void CApplication::SetSystemMousePos(Math::Point pos)
 {

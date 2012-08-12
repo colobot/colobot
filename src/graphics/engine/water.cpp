@@ -519,10 +519,7 @@ void Gfx::CWater::Create(Gfx::WaterType type1, Gfx::WaterType type2, const std::
     VaporFlush();
 
     if (! m_fileName.empty())
-    {
-        m_engine->LoadTexture(m_fileName, 0);
-        m_engine->LoadTexture(m_fileName, 1);
-    }
+        m_engine->LoadTexture(m_fileName);
 
     if (m_terrain == nullptr)
         m_terrain = static_cast<CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));

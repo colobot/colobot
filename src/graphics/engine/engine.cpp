@@ -115,6 +115,7 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_overColor = 0;
     m_overMode  = ENG_RSTATE_TCOLOR_BLACK;
     m_highlightRank[0] = -1;  // empty list
+    m_highlightTime = 0.0f;
     m_eyePt    = Math::Vector(0.0f, 0.0f, 0.0f);
     m_lookatPt = Math::Vector(0.0f, 0.0f, 1.0f);
     m_drawWorld = true;
@@ -133,7 +134,7 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_lensMode = true;
     m_waterMode = true;
     m_skyMode = true;
-    m_backForce = true;
+    m_backForce = false; // TODO: change to true?
     m_planetMode = true;
     m_lightMode = true;
     m_editIndentMode = true;
@@ -147,22 +148,22 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 
     m_updateGeometry = false;
 
-    m_mice[Gfx::ENG_MOUSE_NORM]    = Gfx::EngineMouse( 0,  1, 32, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 1.0f,  1.0f));
-    m_mice[Gfx::ENG_MOUSE_WAIT]    = Gfx::EngineMouse( 2,  3, 33, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 8.0f, 12.0f));
-    m_mice[Gfx::ENG_MOUSE_HAND]    = Gfx::EngineMouse( 4,  5, 34, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point( 7.0f,  2.0f));
-    m_mice[Gfx::ENG_MOUSE_NO]      = Gfx::EngineMouse( 6,  7, 35, Gfx::ENG_RSTATE_TCOLOR_WHITE, Gfx::ENG_RSTATE_TCOLOR_BLACK, Math::Point(10.0f, 10.0f));
-    m_mice[Gfx::ENG_MOUSE_EDIT]    = Gfx::EngineMouse( 8,  9, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 6.0f, 10.0f));
-    m_mice[Gfx::ENG_MOUSE_CROSS]   = Gfx::EngineMouse(10, 11, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(10.0f, 10.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVEV]   = Gfx::EngineMouse(12, 13, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 5.0f, 11.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVEH]   = Gfx::EngineMouse(14, 15, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(11.0f,  5.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVED]   = Gfx::EngineMouse(16, 17, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  9.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVEI]   = Gfx::EngineMouse(18, 19, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  9.0f));
-    m_mice[Gfx::ENG_MOUSE_MOVE]    = Gfx::EngineMouse(20, 21, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(11.0f, 11.0f));
-    m_mice[Gfx::ENG_MOUSE_TARGET]  = Gfx::EngineMouse(22, 23, -1, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(15.0f, 15.0f));
-    m_mice[Gfx::ENG_MOUSE_SCROLLL] = Gfx::EngineMouse(24, 25, 43, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 2.0f,  9.0f));
-    m_mice[Gfx::ENG_MOUSE_SCROLLR] = Gfx::EngineMouse(26, 27, 44, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point(17.0f,  9.0f));
-    m_mice[Gfx::ENG_MOUSE_SCROLLU] = Gfx::EngineMouse(28, 29, 45, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f,  2.0f));
-    m_mice[Gfx::ENG_MOUSE_SCROLLD] = Gfx::EngineMouse(30, 31, 46, Gfx::ENG_RSTATE_TCOLOR_BLACK, Gfx::ENG_RSTATE_TCOLOR_WHITE, Math::Point( 9.0f, 17.0f));
+    m_mice[Gfx::ENG_MOUSE_NORM]    = Gfx::EngineMouse( 0,  1, 32, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 1.0f,  1.0f));
+    m_mice[Gfx::ENG_MOUSE_WAIT]    = Gfx::EngineMouse( 2,  3, 33, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 8.0f, 12.0f));
+    m_mice[Gfx::ENG_MOUSE_HAND]    = Gfx::EngineMouse( 4,  5, 34, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Math::Point( 7.0f,  2.0f));
+    m_mice[Gfx::ENG_MOUSE_NO]      = Gfx::EngineMouse( 6,  7, 35, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Math::Point(10.0f, 10.0f));
+    m_mice[Gfx::ENG_MOUSE_EDIT]    = Gfx::EngineMouse( 8,  9, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 6.0f, 10.0f));
+    m_mice[Gfx::ENG_MOUSE_CROSS]   = Gfx::EngineMouse(10, 11, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(10.0f, 10.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVEV]   = Gfx::EngineMouse(12, 13, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 5.0f, 11.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVEH]   = Gfx::EngineMouse(14, 15, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f,  5.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVED]   = Gfx::EngineMouse(16, 17, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVEI]   = Gfx::EngineMouse(18, 19, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  9.0f));
+    m_mice[Gfx::ENG_MOUSE_MOVE]    = Gfx::EngineMouse(20, 21, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(11.0f, 11.0f));
+    m_mice[Gfx::ENG_MOUSE_TARGET]  = Gfx::EngineMouse(22, 23, -1, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(15.0f, 15.0f));
+    m_mice[Gfx::ENG_MOUSE_SCROLLL] = Gfx::EngineMouse(24, 25, 43, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 2.0f,  9.0f));
+    m_mice[Gfx::ENG_MOUSE_SCROLLR] = Gfx::EngineMouse(26, 27, 44, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point(17.0f,  9.0f));
+    m_mice[Gfx::ENG_MOUSE_SCROLLU] = Gfx::EngineMouse(28, 29, 45, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f,  2.0f));
+    m_mice[Gfx::ENG_MOUSE_SCROLLD] = Gfx::EngineMouse(30, 31, 46, Gfx::ENG_RSTATE_TTEXTURE_BLACK, Gfx::ENG_RSTATE_TTEXTURE_WHITE, Math::Point( 9.0f, 17.0f));
 
     m_mouseSize    = Math::Point(0.04f, 0.04f * (800.0f / 600.0f));
     m_mousePos     = Math::Point(0.5f, 0.5f);
@@ -170,7 +171,7 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_mouseVisible = false;
 
     m_texPath = "textures/";
-    m_defaultTexParams.format = Gfx::TEX_IMG_RGBA;
+    m_defaultTexParams.format = Gfx::TEX_IMG_RGB;
     m_defaultTexParams.mipmap = true;
     m_defaultTexParams.minFilter = Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
     m_defaultTexParams.magFilter = Gfx::TEX_MAG_FILTER_LINEAR;
@@ -188,11 +189,6 @@ Gfx::CEngine::~CEngine()
     m_device  = nullptr;
     m_sound   = nullptr;
     m_terrain = nullptr;
-}
-
-std::string Gfx::CEngine::GetError()
-{
-    return m_error;
 }
 
 void Gfx::CEngine::SetDevice(Gfx::CDevice *device)
@@ -230,12 +226,12 @@ bool Gfx::CEngine::Create()
     m_text->SetDevice(m_device);
     if (! m_text->Create())
     {
-        m_error = std::string("Error creating CText: ") + m_text->GetError();
+        std::string error = m_text->GetError();
+        GetLogger()->Error("Error creating CText: %s\n", error.c_str());
         return false;
     }
 
     m_device->SetClearColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
     m_device->SetShadeModel(Gfx::SHADE_SMOOTH);
     m_device->SetFillMode(Gfx::FILL_FILL);
 
@@ -289,11 +285,7 @@ void Gfx::CEngine::ResetAfterDeviceChanged()
 
 bool Gfx::CEngine::ProcessEvent(const Event &event)
 {
-    if (event.type == EVENT_MOUSE_MOVE)
-    {
-        m_mousePos = event.mouseMove.pos;
-    }
-    else if (event.type == EVENT_KEY_DOWN)
+    if (event.type == EVENT_KEY_DOWN)
     {
         // !! Debug, to be removed later !!
 
@@ -307,6 +299,37 @@ bool Gfx::CEngine::ProcessEvent(const Event &event)
             int index = static_cast<int>(m_mouseType);
             m_mouseType = static_cast<Gfx::EngineMouseType>( (index + 1) % Gfx::ENG_MOUSE_COUNT );
         }
+        else if (event.key.key == KEY(F3))
+        {
+            m_backgroundQuarter = !m_backgroundQuarter;
+            if (m_backgroundQuarter)
+            {
+                m_backgroundFull = true;
+                m_backgroundName = "geneda.png";
+            }
+            else
+            {
+                m_backgroundFull = false;
+                m_backgroundName = "";
+            }
+        }
+        else if (event.key.key == KEY(F4))
+        {
+            m_backForce = !m_backForce;
+            if (m_backForce)
+            {
+                m_backgroundColorDown = Gfx::Color(0.2f, 0.2f, 0.2f);
+                m_backgroundColorUp = Gfx::Color(0.8f, 0.8f, 0.8f);
+            }
+            else
+            {
+                m_backgroundColorDown = m_backgroundColorUp = Gfx::Color(0.0f, 0.0f, 0.0f);
+            }
+        }
+    }
+    else if (event.type == EVENT_FRAME)
+    {
+        m_highlightTime += event.rTime;
     }
 
     // By default, pass on all events
@@ -954,10 +977,28 @@ void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
         m_device->SetTextureEnabled(0, true);
         m_device->SetTextureStageParams(0, params);
     }
+    else if (state & Gfx::ENG_RSTATE_OPAQUE_TEXTURE) // opaque texture ?
+    {
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
+
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   true);
+        m_device->SetTextureEnabled(0, true);
+        m_device->SetTextureStageParams(0, Gfx::TextureStageParams()); // default operation
+    }
+    else if (state & Gfx::ENG_RSTATE_OPAQUE_COLOR) // opaque color ?
+    {
+        m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_BLENDING,    false);
+        m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING,   false);
+    }
     else if (state & Gfx::ENG_RSTATE_TEXT)  // font rendering?
     {
         m_device->SetRenderState(Gfx::RENDER_STATE_FOG,         false);
-        m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST,  false); // TODO: depth test setting elsewhere!
         m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
         m_device->SetRenderState(Gfx::RENDER_STATE_ALPHA_TEST,  false);
 
@@ -1091,6 +1132,7 @@ void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
 
 void Gfx::CEngine::SetMaterial(const Gfx::Material &mat)
 {
+    m_lastMaterial = mat;
     m_device->SetMaterial(mat);
 }
 
@@ -1112,12 +1154,18 @@ void Gfx::CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& 
 
 Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName, const Gfx::TextureCreateParams &params)
 {
+    if (m_texBlacklist.find(texName) != m_texBlacklist.end())
+        return Gfx::Texture(); // invalid texture
+
+    // TODO: detect alpha channel?
+
     CImage img;
     if (! img.Load(m_app->GetDataFilePath(m_texPath, texName)))
     {
-        std::stringstream str;
-        str << "Couldn't load texture '" << texName << "': " << img.GetError();
-        m_error = str.str();
+        std::string error = img.GetError();
+        GetLogger()->Error("Couldn't load texture '%s': %s\n", texName.c_str(), error.c_str());
+        GetLogger()->Error("Blacklisting texture '%s'\n", texName.c_str());
+        m_texBlacklist.insert(texName);
         return Gfx::Texture(); // invalid texture
     }
 
@@ -1125,9 +1173,10 @@ Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName, const Gfx::
 
     if (! result.valid)
     {
-        std::stringstream str;
-        str << "Couldn't load texture '" << texName << "': " << m_device->GetError();
-        m_error = str.str();
+        std::string error = m_device->GetError();
+        GetLogger()->Error("Couldn't load texture '%s': %s\n", texName.c_str(), error.c_str());
+        GetLogger()->Error("Blacklisting texture '%s'\n", texName.c_str());
+        m_texBlacklist.insert(texName);
         return result;
     }
 
@@ -1156,29 +1205,115 @@ void Gfx::CEngine::DestroyTexture(const std::string &texName)
     m_texNameMap.erase(it);
 }
 
-bool Gfx::CEngine::LoadTexture(const std::string& name, int stage)
+bool Gfx::CEngine::LoadTexture(const std::string& name)
 {
+    if (m_texBlacklist.find(name) != m_texBlacklist.end())
+        return false;
+
     std::map<std::string, Gfx::Texture>::iterator it = m_texNameMap.find(name);
+    if (it != m_texNameMap.end())
+        return true;
+
+    Gfx::Texture tex = CreateTexture(name);
+    return tex.valid;
+}
+
+// TODO: create separate variables for 4 quarter names
+void QuarterName(std::string& buffer, const std::string& name, int quarter)
+{
+    size_t pos = name.find('.');
+    if (pos == std::string::npos)
+    {
+        buffer = name;
+        return;
+    }
+
+    buffer = name.substr(0, pos) + std::string(1, static_cast<char>('a' + quarter)) + name.substr(pos);
+}
+
+bool Gfx::CEngine::LoadAllTextures()
+{
+    LoadTexture("text.png");
+    LoadTexture("mouse.png");
+    LoadTexture("button1.png");
+    LoadTexture("button2.png");
+    LoadTexture("button3.png");
+    LoadTexture("effect00.png");
+    LoadTexture("effect01.png");
+    LoadTexture("effect02.png");
+    LoadTexture("map.png");
+
+    if (! m_backgroundName.empty())
+    {
+        if (m_backgroundQuarter)  // image into 4 pieces?
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                std::string name;
+                QuarterName(name, m_backgroundName, i);
+                LoadTexture(name);
+            }
+        }
+        else
+        {
+            LoadTexture(m_backgroundName);
+        }
+    }
+
+    if (! m_foregroundName.empty())
+        LoadTexture(m_foregroundName);
+
+    m_planet->LoadTexture();
+
+    bool ok = true;
+
+    /* TODO
+    D3DObjLevel1*   p1;
+    D3DObjLevel2*   p2;
+    int             l1;
+    p1 = m_objectPointer;
+    for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+    {
+        p2 = p1->table[l1];
+
+        if ( p2 == 0 || p2->texName1[0] != 0 )
+        {
+            if ( !LoadTexture(p2->texName1) )  ok = false;
+        }
+
+        if ( p2 == 0 || p2->texName2[0] != 0 )
+        {
+            if ( !LoadTexture(p2->texName2) )  ok = false;
+        }
+    }*/
+
+    return ok;
+}
+
+bool Gfx::CEngine::SetTexture(const std::string& name, int stage)
+{
+    auto it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
     {
         m_device->SetTexture(stage, (*it).second);
         return true;
     }
 
-    // TODO if not present...
-    return false;
-}
+    if (! LoadTexture(name))
+    {
+        m_device->SetTexture(stage, 0); // invalid texture
+        return false;
+    }
 
-bool Gfx::CEngine::LoadAllTextures()
-{
-    // TODO!
-    return true;
-}
+    it = m_texNameMap.find(name);
+    if (it != m_texNameMap.end())
+    {
+        m_device->SetTexture(stage, (*it).second);
+        return true;
+    }
 
-bool Gfx::CEngine::SetTexture(const std::string& name, int stage)
-{
-    // TODO!
-    return true;
+    m_device->SetTexture(stage, 0); // invalid texture
+    return false; // should not happen normally
 }
 
 void Gfx::CEngine::SetLimitLOD(int rank, float limit)
@@ -1364,7 +1499,6 @@ float Gfx::CEngine::GetFogStart(int rank)
     return m_fogStart[rank];
 }
 
-
 void Gfx::CEngine::SetBackground(const std::string& name, Gfx::Color up, Gfx::Color down,
                                  Gfx::Color cloudUp, Gfx::Color cloudDown,
                                  bool full, bool quarter)
@@ -1391,12 +1525,12 @@ void Gfx::CEngine::GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& 
     quarter   = m_backgroundQuarter;
 }
 
-void Gfx::CEngine::SetForegroundImageName(const std::string& name)
+void Gfx::CEngine::SetForegroundName(const std::string& name)
 {
-    if (! m_foregroundImageName.empty())
-        DestroyTexture(m_foregroundImageName);
+    if (! m_foregroundName.empty())
+        DestroyTexture(m_foregroundName);
 
-    m_foregroundImageName = name;
+    m_foregroundName = name;
 }
 
 void Gfx::CEngine::SetOverFront(bool front)
@@ -1714,13 +1848,10 @@ void Gfx::CEngine::Render()
     // Begin the scene
     m_device->BeginScene();
 
-
     if (m_drawWorld)
         Draw3DScene();
 
-
     DrawInterface();
-
 
     // End the scene
     m_device->EndScene();
@@ -2113,7 +2244,8 @@ void Gfx::CEngine::DrawInterface()
 
 void Gfx::CEngine::UpdateGroundSpotTextures()
 {
-    // TODO!
+    // TODO the original code modifying the textures is very complex, so stub for now
+    GetLogger()->Info("CEngine::UpdateGroundSpotTextures(): stub!\n");
 }
 
 void Gfx::CEngine::DrawShadow()
@@ -2131,7 +2263,7 @@ void Gfx::CEngine::DrawShadow()
     material.ambient = Gfx::Color(0.5f, 0.5f, 0.5f);
     SetMaterial(material);
 
-    // TODO: wtf?
+    // TODO: create a separate texture
     SetTexture("text.png");
 
     Math::Point ts, ti;
@@ -2310,6 +2442,7 @@ void Gfx::CEngine::DrawShadow()
     m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, true);
 }
 
+// STATUS: TESTED, VERIFIED
 void Gfx::CEngine::DrawBackground()
 {
     if (m_skyMode && m_cloud->GetLevel() != 0.0f)  // clouds ?
@@ -2323,12 +2456,13 @@ void Gfx::CEngine::DrawBackground()
             DrawBackgroundGradient(m_backgroundColorUp, m_backgroundColorDown);
     }
 
-    if (m_backForce || (m_skyMode && m_backgroundName[0] != 0) )
+    if (m_backForce || (m_skyMode && !m_backgroundName.empty()) )
     {
         DrawBackgroundImage();  // image
     }
 }
 
+// STATUS: TESTED
 void Gfx::CEngine::DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color& down)
 {
     Math::Point p1(0.0f, 0.5f);
@@ -2341,12 +2475,7 @@ void Gfx::CEngine::DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color
         Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)
     };
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, false);
-
-    SetState(Gfx::ENG_RSTATE_NORMAL);
+    SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
 
     m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
@@ -2364,6 +2493,7 @@ void Gfx::CEngine::DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color
     AddStatisticTriangle(2);
 }
 
+// Status: PART_TESTED
 void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, const std::string& name)
 {
     Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
@@ -2399,12 +2529,8 @@ void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, co
         v2 = v1+h;
     }
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
-
     SetTexture(name);
-    SetState(Gfx::ENG_RSTATE_WRAP);
+    SetState(Gfx::ENG_RSTATE_OPAQUE_TEXTURE | Gfx::ENG_RSTATE_WRAP);
 
     m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
@@ -2422,18 +2548,7 @@ void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, co
     AddStatisticTriangle(2);
 }
 
-void QuarterName(std::string& buffer, const std::string& name, int quarter)
-{
-    size_t pos = name.find('.');
-    if (pos == std::string::npos)
-    {
-        buffer = name;
-        return;
-    }
-
-    buffer = name.substr(0, pos) + std::string(1, static_cast<char>('a' + quarter)) + name.substr(pos);
-}
-
+// Status: TESTED, VERIFIED
 void Gfx::CEngine::DrawBackgroundImage()
 {
     Math::Point p1, p2;
@@ -2494,9 +2609,10 @@ void Gfx::CEngine::DrawPlanet()
     m_planet->Draw();  // draws the planets
 }
 
+// Status: PART_TESTED
 void Gfx::CEngine::DrawForegroundImage()
 {
-    if (m_foregroundImageName.empty()) return;
+    if (m_foregroundName.empty()) return;
 
     Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
@@ -2518,11 +2634,7 @@ void Gfx::CEngine::DrawForegroundImage()
         Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
     };
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
-    m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false );
-    m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
-
-    SetTexture(m_foregroundImageName);
+    SetTexture(m_foregroundName);
     SetState(Gfx::ENG_RSTATE_CLAMP | Gfx::ENG_RSTATE_TTEXTURE_BLACK);
 
     m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
@@ -2533,6 +2645,7 @@ void Gfx::CEngine::DrawForegroundImage()
     AddStatisticTriangle(2);
 }
 
+// Status: PART_TESTED
 void Gfx::CEngine::DrawOverColor()
 {
     if (! m_stateColor) return;
@@ -2551,12 +2664,13 @@ void Gfx::CEngine::DrawOverColor()
         Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)
     };
 
+    SetState(m_overMode);
+
+    // TODO: set also with m_overMode ?
     m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
     m_device->SetRenderState(Gfx::RENDER_STATE_LIGHTING, false);
     m_device->SetRenderState(Gfx::RENDER_STATE_FOG, false);
     m_device->SetRenderState(Gfx::RENDER_STATE_TEXTURING, false);
-
-    SetState(m_overMode);
 
     m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
     m_device->SetTransform(Gfx::TRANSFORM_PROJECTION, m_matProjInterface);
@@ -2564,16 +2678,17 @@ void Gfx::CEngine::DrawOverColor()
 
     Gfx::VertexCol vertex[4] =
     {
-        Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1],color[2]),
-        Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0],color[2]),
-        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1],color[2]),
-        Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0],color[2])
+        Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color[1], color[2]),
+        Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color[0], color[2]),
+        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color[1], color[2]),
+        Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color[0], color[2])
     };
 
     m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }
 
+// Status: TESTED, VERIFIED
 void Gfx::CEngine::DrawHighlight()
 {
     Math::Point min, max;
@@ -2609,9 +2724,63 @@ void Gfx::CEngine::DrawHighlight()
         m_highlight = true;
     }
 
-    // TODO: draw highlight!
+    if (! m_highlight)
+        return;
+
+    Math::Point p1 = m_highlightP1;
+    Math::Point p2 = m_highlightP2;
+
+    int nbOut = 0;
+    if (p1.x < 0.0f || p1.x > 1.0f) nbOut++;
+    if (p1.y < 0.0f || p1.y > 1.0f) nbOut++;
+    if (p2.x < 0.0f || p2.x > 1.0f) nbOut++;
+    if (p2.y < 0.0f || p2.y > 1.0f) nbOut++;
+    if (nbOut > 2)
+        return;
+
+    SetState(Gfx::ENG_RSTATE_OPAQUE_COLOR);
+
+    float d = 0.5f+sinf(m_highlightTime*6.0f)*0.5f;
+    d *= (p2.x-p1.x)*0.1f;
+    p1.x += d;
+    p1.y += d;
+    p2.x -= d;
+    p2.y -= d;
+
+    Gfx::Color color(1.0f, 1.0f, 0.0f);  // yellow
+
+    Gfx::VertexCol line[3] =
+    {
+        Gfx::VertexCol(Math::Vector(), color),
+        Gfx::VertexCol(Math::Vector(), color),
+        Gfx::VertexCol(Math::Vector(), color)
+    };
+
+    float dx = (p2.x - p1.x) / 5.0f;
+    float dy = (p2.y - p1.y) / 5.0f;
+
+    line[0].coord = Math::Vector(p1.x, p1.y + dy, 0.0f);
+    line[1].coord = Math::Vector(p1.x, p1.y, 0.0f);
+    line[2].coord = Math::Vector(p1.x + dx, p1.y, 0.0f);
+    m_device->DrawPrimitive(Gfx::PRIMITIVE_LINE_STRIP, line, 3);
+
+    line[0].coord = Math::Vector(p2.x - dx, p1.y, 0.0f);
+    line[1].coord = Math::Vector(p2.x, p1.y, 0.0f);
+    line[2].coord = Math::Vector(p2.x, p1.y + dy, 0.0f);
+    m_device->DrawPrimitive(Gfx::PRIMITIVE_LINE_STRIP, line, 3);
+
+    line[0].coord = Math::Vector(p2.x, p2.y - dy, 0.0f);
+    line[1].coord = Math::Vector(p2.x, p2.y, 0.0f);
+    line[2].coord = Math::Vector(p2.x - dx, p2.y, 0.0f);
+    m_device->DrawPrimitive(Gfx::PRIMITIVE_LINE_STRIP, line, 3);
+
+    line[0].coord = Math::Vector(p1.x + dx, p2.y, 0.0f);
+    line[1].coord = Math::Vector(p1.x, p2.y, 0.0f);
+    line[2].coord = Math::Vector(p1.x, p2.y - dy, 0.0f);
+    m_device->DrawPrimitive(Gfx::PRIMITIVE_LINE_STRIP, line, 3);
 }
 
+// Status: TESTED, VERIFIED
 void Gfx::CEngine::DrawMouse()
 {
     if (! m_mouseVisible)
@@ -2647,6 +2816,7 @@ void Gfx::CEngine::DrawMouse()
     DrawMouseSprite(pos, m_mouseSize, m_mice[index].icon2);
 }
 
+// Status: TESTED, VERIFIED
 void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
 {
     if (icon == -1)
@@ -2671,8 +2841,8 @@ void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
     Gfx::Vertex vertex[4] =
     {
         Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), normal, Math::Point(u1, v2)),
-        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v2)),
         Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), normal, Math::Point(u1, v1)),
+        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), normal, Math::Point(u2, v2)),
         Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v1))
     };
 

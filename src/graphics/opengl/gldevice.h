@@ -76,6 +76,8 @@ public:
     CGLDevice(const Gfx::GLDeviceConfig &config);
     virtual ~CGLDevice();
 
+    virtual void DebugHook();
+
     virtual std::string GetError();
 
     virtual bool Create();

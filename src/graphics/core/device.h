@@ -153,9 +153,9 @@ enum FogMode
   \brief Culling mode for polygons */
 enum CullMode
 {
-    //! Cull clockwise side
+    //! Cull clockwise faces
     CULL_CW,
-    //! Cull counter-clockwise side
+    //! Cull counter-clockwise faces
     CULL_CCW
 };
 
@@ -277,6 +277,9 @@ class CDevice
 {
 public:
     virtual ~CDevice() {}
+
+    //! Provides a hook to debug graphics code (implementation-specific)
+    virtual void DebugHook() = 0;
 
     //! Initializes the device, setting the initial state
     virtual bool Create() = 0;

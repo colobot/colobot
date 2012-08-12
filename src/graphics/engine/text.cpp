@@ -649,8 +649,8 @@ void Gfx::CText::DrawHighlight(Gfx::FontHighlight hl, Math::Point pos, Math::Poi
     Gfx::VertexCol quad[] =
     {
         Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), grad[3]),
-        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[2]),
         Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), grad[0]),
+        Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), grad[2]),
         Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), grad[1])
     };
 
@@ -688,8 +688,6 @@ void Gfx::CText::DrawChar(Gfx::UTF8Char ch, Gfx::FontType font, float size, Math
         cf->cache[ch] = tex;
     }
 
-    m_device->SetRenderState(Gfx::RENDER_STATE_CULLING, false);
-
     Math::Point p1(pos.x, pos.y + tex.charSize.y - tex.texSize.y);
     Math::Point p2(pos.x + tex.texSize.x, pos.y + tex.charSize.y);
 
@@ -698,8 +696,8 @@ void Gfx::CText::DrawChar(Gfx::UTF8Char ch, Gfx::FontType font, float size, Math
     Gfx::Vertex quad[4] =
     {
         Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(0.0f, 1.0f)),
-        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(1.0f, 1.0f)),
         Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(0.0f, 0.0f)),
+        Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(1.0f, 1.0f)),
         Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(1.0f, 0.0f))
     };
 
