@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// modelfile.h (aka modfile.h)
+/**
+ * \file graphics/engine/modelfile.h
+ * \brief Model loading - Gfx::CModelFile class (aka modfile)
+ */
 
 #include "graphics/engine/engine.h"
 #include "graphics/core/vertex.h"

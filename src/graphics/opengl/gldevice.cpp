@@ -64,7 +64,6 @@ void Gfx::GLDeviceConfig::LoadDefault()
 Gfx::CGLDevice::CGLDevice(const Gfx::GLDeviceConfig &config)
 {
     m_config = config;
-    m_wasInit = false;
     m_lighting = false;
     m_texturing = false;
 }
@@ -74,9 +73,11 @@ Gfx::CGLDevice::~CGLDevice()
 {
 }
 
-bool Gfx::CGLDevice::GetWasInit()
+void Gfx::CGLDevice::DebugHook()
 {
-    return m_wasInit;
+    /* This function is only called here, so it can be used
+     * as a breakpoint when debugging using gDEBugger */
+    glColor3i(0, 0, 0);
 }
 
 std::string Gfx::CGLDevice::GetError()
@@ -110,8 +111,6 @@ bool Gfx::CGLDevice::Create()
     /* NOTE: when not using GLEW, extension testing is not performed, as it is assumed that
              glext.h is up-to-date and the OpenGL shared library has the required functions present. */
 
-    m_wasInit = true;
-
     // This is mostly done in all modern hardware by default
     // DirectX doesn't even allow the option to turn off perspective correction anymore
     // So turn it on permanently
@@ -130,7 +129,7 @@ bool Gfx::CGLDevice::Create()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    glViewport(0, 0, m_config.size.w, m_config.size.h);
+    glViewport(0, 0, m_config.size.x, m_config.size.y);
 
 
     m_lights        = std::vector<Gfx::Light>(GL_MAX_LIGHTS, Gfx::Light());
@@ -158,8 +157,6 @@ void Gfx::CGLDevice::Destroy()
     m_currentTextures.clear();
     m_texturesEnabled.clear();
     m_textureStageParams.clear();
-
-    m_wasInit = false;
 }
 
 void Gfx::CGLDevice::ConfigChanged(const Gfx::GLDeviceConfig& newConfig)
@@ -385,18 +382,23 @@ bool Gfx::CGLDevice::GetLightEnabled(int index)
     This struct must not be deleted in other way than through DeleteTexture() */
 Gfx::Texture Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCreateParams &params)
 {
-    Gfx::Texture result;
-
     ImageData *data = image->GetData();
     if (data == NULL)
     {
         m_error = "Invalid texture data";
-        return result; // invalid texture
+        return Gfx::Texture(); // invalid texture
     }
 
+    return CreateTexture(data, params);
+}
+
+Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCreateParams &params)
+{
+    Gfx::Texture result;
+
     result.valid = true;
-    result.size.w = data->surface->w;
-    result.size.h = data->surface->h;
+    result.size.x = data->surface->w;
+    result.size.y = data->surface->h;
 
     // Use & enable 1st texture stage
     glActiveTexture(GL_TEXTURE0);
@@ -525,6 +527,24 @@ void Gfx::CGLDevice::SetTexture(int index, const Gfx::Texture &texture)
         glBindTexture(GL_TEXTURE_2D, texture.id);                  // bind the texture
         SetTextureStageParams(index, m_textureStageParams[index]); // texture stage params need to be re-set for the new texture
     }
+
+    // Disable the stage if it is set so
+    if ( (! m_texturing) || (! m_texturesEnabled[index]) )
+        glDisable(GL_TEXTURE_2D);
+}
+
+void Gfx::CGLDevice::SetTexture(int index, unsigned int textureId)
+{
+    assert(index >= 0);
+    assert(index < static_cast<int>( m_currentTextures.size() ));
+
+    // Enable the given texture stage
+    glActiveTexture(GL_TEXTURE0 + index);
+    glEnable(GL_TEXTURE_2D);
+
+    m_currentTextures[index].id = textureId;
+
+    glBindTexture(GL_TEXTURE_2D, textureId);
 
     // Disable the stage if it is set so
     if ( (! m_texturing) || (! m_texturesEnabled[index]) )
@@ -1159,17 +1179,19 @@ void Gfx::CGLDevice::GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &
 
 void Gfx::CGLDevice::SetCullMode(Gfx::CullMode mode)
 {
-    if      (mode == Gfx::CULL_CW)  glCullFace(GL_CW);
-    else if (mode == Gfx::CULL_CCW) glCullFace(GL_CCW);
+    // Cull clockwise back faces, so front face is the opposite
+    // (assuming GL_CULL_FACE is GL_BACK)
+    if      (mode == Gfx::CULL_CW ) glFrontFace(GL_CCW);
+    else if (mode == Gfx::CULL_CCW) glFrontFace(GL_CW);
     else assert(false);
 }
 
 Gfx::CullMode Gfx::CGLDevice::GetCullMode()
 {
     GLint flag = 0;
-    glGetIntegerv(GL_CULL_FACE, &flag);
-    if      (flag == GL_CW)  return Gfx::CULL_CW;
-    else if (flag == GL_CCW) return Gfx::CULL_CCW;
+    glGetIntegerv(GL_FRONT_FACE, &flag);
+    if      (flag == GL_CW)  return Gfx::CULL_CCW;
+    else if (flag == GL_CCW) return Gfx::CULL_CW;
     else assert(false);
     return Gfx::CULL_CW;
 }

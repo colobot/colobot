@@ -17,98 +17,89 @@
 // profile.cpp
 
 
-#include <stdio.h>
-#include <d3d.h>
-#include <stdlib.h>
-
-#include "common/language.h"
-#include "common/struct.h"
-#include "common/profile.h"
+#include <common/profile.h>
 
 
-
-static char g_filename[100];
-
+template<> CProfile* CSingleton<CProfile>::mInstance = nullptr;
 
 
-bool InitCurrentDirectory()
+CProfile::CProfile()
 {
-#if _SCHOOL
-    _fullpath(g_filename, "ceebot.ini", 100);
-#else
-    _fullpath(g_filename, "colobot.ini", 100);
-#endif
-    return true;
+    m_ini = new CSimpleIniA();
+    m_ini->SetUnicode();
+    m_ini->SetMultiKey();
 }
 
 
-bool SetLocalProfileString(char* section, char* key, char* string)
+CProfile::~CProfile()
 {
-    WritePrivateProfileString(section, key, string, g_filename);
-    return true;
+    m_ini->Reset();
+    delete m_ini;
 }
 
-bool GetLocalProfileString(char* section, char* key, char* buffer, int max)
-{
-    int     nb;
 
-    nb = GetPrivateProfileString(section, key, "", buffer, max, g_filename);
-    if ( nb == 0 )
-    {
-        buffer[0] = 0;
-        return false;
+bool CProfile::InitCurrentDirectory()
+{
+    bool result = m_ini->LoadFile("colobot.ini") == SI_OK;
+    return result;
+}
+
+
+bool CProfile::SetLocalProfileString(std::string section, std::string key, std::string value)
+{
+    return (m_ini->SetValue(section.c_str(), key.c_str(), value.c_str()) == SI_OK);
+}
+
+
+bool CProfile::GetLocalProfileString(std::string section, std::string key, std::string &buffer)
+{
+    const char* value = m_ini->GetValue(section.c_str(), key.c_str(), nullptr);
+    if (strlen(value) > 0) {
+        buffer = std::string(value);
+        return true;
     }
+
+    return false;
+}
+
+
+bool CProfile::SetLocalProfileInt(std::string section, std::string key, int value)
+{
+    return (m_ini->SetLongValue(section.c_str(), key.c_str(), value) == SI_OK);
+}
+
+
+bool CProfile::GetLocalProfileInt(std::string section, std::string key, int &value)
+{
+    value = m_ini->GetLongValue(section.c_str(), key.c_str(), 0L);
     return true;
 }
 
 
-bool SetLocalProfileInt(char* section, char* key, int value)
+bool CProfile::SetLocalProfileFloat(std::string section, std::string key, float value)
 {
-    char    s[20];
+    return (m_ini->SetDoubleValue(section.c_str(), key.c_str(), value) == SI_OK);
+}
 
-    sprintf(s, "%d", value);
-    WritePrivateProfileString(section, key, s, g_filename);
+
+bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float &value)
+{
+    value = m_ini->GetDoubleValue(section.c_str(), key.c_str(), 0.0d);
     return true;
 }
 
-bool GetLocalProfileInt(char* section, char* key, int &value)
-{
-    char    s[20];
-    int     nb;
 
-    nb = GetPrivateProfileString(section, key, "", s, 20, g_filename);
-    if ( nb == 0 )
-    {
-        value = 0;
-        return false;
+std::vector< std::string > CProfile::GetLocalProfileSection(std::string section, std::string key)
+{
+    std::vector< std::string > ret_list;
+
+    CSimpleIniA::TNamesDepend values;
+    m_ini->GetAllValues(section.c_str(), key.c_str(), values);
+    values.sort(CSimpleIniA::Entry::LoadOrder());
+
+    for (auto item : values) {
+        ret_list.push_back(item.pItem);
     }
-    sscanf(s, "%d", &value);
-    return true;
+
+    return ret_list;
 }
-
-
-bool SetLocalProfileFloat(char* section, char* key, float value)
-{
-    char    s[20];
-
-    sprintf(s, "%.2f", value);
-    WritePrivateProfileString(section, key, s, g_filename);
-    return true;
-}
-
-bool GetLocalProfileFloat(char* section, char* key, float &value)
-{
-    char    s[20];
-    int     nb;
-
-    nb = GetPrivateProfileString(section, key, "", s, 20, g_filename);
-    if ( nb == 0 )
-    {
-        value = 0.0f;
-        return false;
-    }
-    sscanf(s, "%f", &value);
-    return true;
-}
-
-

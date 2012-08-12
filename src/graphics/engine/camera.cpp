@@ -29,6 +29,66 @@
 #include "physics/physics.h"
 
 
+// TODO temporary stubs for CObject and CPhysics
+
+void CObject::SetTransparency(float)
+{
+}
+
+CObject* CObject::GetFret()
+{
+    return nullptr;
+}
+
+CObject* CObject::GetPower()
+{
+    return nullptr;
+}
+
+CObject* CObject::GetTruck()
+{
+    return nullptr;
+}
+
+ObjectType CObject::GetType()
+{
+    return OBJECT_NULL;
+}
+
+void CObject::SetGunGoalH(float)
+{
+}
+
+void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
+{
+}
+
+float CObject::GetAngleY(int)
+{
+    return 0.0f;
+}
+
+Math::Vector CObject::GetPosition(int)
+{
+    return Math::Vector();
+}
+
+void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
+                              Math::Vector &lookat, Math::Vector &upVec,
+                              Gfx::CameraType type)
+{
+}
+
+CPhysics* CObject::GetPhysics()
+{
+    return nullptr;
+}
+
+bool CPhysics::GetLand()
+{
+    return false;
+}
+
 //! Changes the level of transparency of an object and objects transported (battery & cargo)
 void SetTransparency(CObject* obj, float value)
 {
@@ -332,7 +392,7 @@ void Gfx::CCamera::SetType(CameraType type)
     SetSmooth(Gfx::CAM_SMOOTH_NORM);
 }
 
-CameraType Gfx::CCamera::GetType()
+Gfx::CameraType Gfx::CCamera::GetType()
 {
     return m_type;
 }
@@ -342,7 +402,7 @@ void Gfx::CCamera::SetSmooth(CameraSmooth type)
     m_smooth = type;
 }
 
-CameraSmooth Gfx::CCamera::GetSmoth()
+Gfx::CameraSmooth Gfx::CCamera::GetSmoth()
 {
     return m_smooth;
 }
@@ -692,7 +752,7 @@ void Gfx::CCamera::OverFrame(const Event &event)
         }
         else
         {
-            color = Gfx::Color(0.0f. 0.0f, 0.0f);
+            color = Gfx::Color(0.0f, 0.0f, 0.0f);
         }
         color.a = 0.0f;
         m_engine->SetOverColor(color, m_overMode);
@@ -873,7 +933,7 @@ bool Gfx::CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
 
     for (int i = 0 ;i < 1000000; i++)
     {
-        CObject *obj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        CObject *obj = static_cast<CObject*>( m_iMan->SearchInstance(CLASS_OBJECT, i) );
         if (obj == NULL) break;
 
         if (obj->GetTruck()) continue;  // battery or cargo?
@@ -899,7 +959,7 @@ bool Gfx::CCamera::IsCollisionBack(Math::Vector &eye, Math::Vector lookat)
              iType == OBJECT_SAFE     ||
              iType == OBJECT_HUSTON   )  continue;
 
-        ObjType oType = obj->GetType();
+        ObjectType oType = obj->GetType();
         if ( oType == OBJECT_HUMAN  ||
              oType == OBJECT_TECH   ||
              oType == OBJECT_TOTO   ||
@@ -995,7 +1055,6 @@ bool Gfx::CCamera::EventProcess(const Event &event)
 {
     switch (event.type)
     {
-        // TODO: frame update event
         case EVENT_FRAME:
             EventFrame(event);
             break;
@@ -1004,11 +1063,11 @@ bool Gfx::CCamera::EventProcess(const Event &event)
             EventMouseMove(event);
             break;
 
-        case EVENT_KEY_DOWN:
-            // TODO: mouse wheel event
+        // TODO: mouse wheel event
+        /*case EVENT_KEY_DOWN:
             if ( event.param == VK_WHEELUP   )  EventMouseWheel(+1);
             if ( event.param == VK_WHEELDOWN )  EventMouseWheel(-1);
-            break;
+            break;*/
 
         default:
             break;
@@ -1489,8 +1548,6 @@ bool Gfx::CCamera::EventFrameFix(const Event &event)
 
 bool Gfx::CCamera::EventFrameExplo(const Event &event)
 {
-    float factor = m_heightEye * 0.5f + 30.0f;
-
     if (m_mouseDirH != 0.0f)
         m_directionH -= m_mouseDirH * event.rTime * 0.7f * m_speed;
 
@@ -1526,7 +1583,7 @@ bool Gfx::CCamera::EventFrameOnBoard(const Event &event)
     {
         Math::Vector lookatPt, upVec;
         m_cameraObj->SetViewFromHere(m_eyePt, m_directionH, m_directionV,
-                                     lookatPt, vUpVec, m_type);
+                                     lookatPt, upVec, m_type);
         Math::Vector eye    = m_effectOffset * 0.3f + m_eyePt;
         Math::Vector lookat = m_effectOffset * 0.3f + lookatPt;
 

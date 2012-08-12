@@ -14,8 +14,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-/** @defgroup MathMatrixModule math/matrix.h
-   Contains the Matrix struct and related functions.
+/**
+ * \file math/matrix.h
+ * \brief Matrix struct and related functions
  */
 
 #pragma once
@@ -32,8 +33,6 @@
 namespace Math
 {
 
-/* @{ */ // start of group
-
 /** \struct Matrix math/matrix.h
     \brief 4x4 matrix
 
@@ -42,11 +41,12 @@ namespace Math
 
     The internal representation is a 16-value table in column-major order, thus:
 
-    \verbatim
+\verbatim
 m[0 ] m[4 ] m[8 ] m[12]
 m[1 ] m[5 ] m[9 ] m[13]
 m[2 ] m[6 ] m[10] m[14]
-m[3 ] m[7 ] m[11] m[15] \endverbatim
+m[3 ] m[7 ] m[11] m[15]
+\endverbatim
 
     This representation is native to OpenGL; DirectX requires transposing the matrix.
 
@@ -405,11 +405,15 @@ inline Math::Matrix MultiplyMatrices(const Math::Matrix &left, const Math::Matri
 }
 
 //! Calculates the result of multiplying m * v
-/** The multiplication is performed thus:
-\verbatim [  m.m[0 ] m.m[4 ] m.m[8 ] m.m[12]  ]   [ v.x ]
+/**
+    The multiplication is performed thus:
+
+\verbatim
+[  m.m[0 ] m.m[4 ] m.m[8 ] m.m[12]  ]   [ v.x ]
 [  m.m[1 ] m.m[5 ] m.m[9 ] m.m[13]  ]   [ v.y ]
 [  m.m[2 ] m.m[6 ] m.m[10] m.m[14]  ] * [ v.z ]
-[  m.m[3 ] m.m[7 ] m.m[11] m.m[15]  ]   [  1  ] \endverbatim
+[  m.m[3 ] m.m[7 ] m.m[11] m.m[15]  ]   [  1  ]
+\endverbatim
 
    The result, a 4x1 vector is then converted to 3x1 by dividing
    x,y,z coords by the fourth coord (w). */
@@ -433,7 +437,5 @@ inline Math::Vector MatrixVectorMultiply(const Math::Matrix &m, const Math::Vect
 
     return Math::Vector(x, y, z);
 }
-
-/* @} */ // end of group
 
 }; // namespace Math

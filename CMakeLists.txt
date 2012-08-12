@@ -8,6 +8,7 @@ project(colobot C CXX)
 find_package(OpenGL 1.4 REQUIRED)
 find_package(SDL 1.2.10 REQUIRED)
 find_package(SDL_image 1.2 REQUIRED)
+find_package(SDL_ttf 2.0 REQUIRED)
 find_package(PNG 1.2 REQUIRED)
 
 # GLEW requirement depends on platform
@@ -30,4 +31,4 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
 
 # Subdirectory with sources
-add_subdirectory(src bin)
+add_subdirectory(src bin lib)

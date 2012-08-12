@@ -1,3 +1,4 @@
-src/common
-
-Contains headers and modules with common structs and enums.
+/**
+ * \dir common
+ * \brief Structs and utils shared throughout the application
+ */
