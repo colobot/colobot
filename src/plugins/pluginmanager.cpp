@@ -60,7 +60,7 @@ bool CPluginManager::LoadPlugin(std::string filename)
         loader->SetFilename(dir + "/" + filename);
         result = loader->LoadPlugin();
         if (result) {
-            GetLogger()->Info("Plugin %s (%s) version %0.2f loaded!\n", filename.c_str(), loader->GetName(), loader->GetVersion() / 100.0f);
+            GetLogger()->Info("Plugin %s (%s) version %0.2f loaded!\n", filename.c_str(), loader->GetName().c_str(), loader->GetVersion() / 100.0f);
             m_plugins.push_back(loader);
             break;
         }
@@ -102,13 +102,23 @@ bool CPluginManager::RemoveSearchDirectory(std::string dir)
 
 bool CPluginManager::UnloadAllPlugins()
 {
-    for (CPluginLoader *plugin : m_plugins) {
-        GetLogger()->Info("Trying to unload plugin %s (%s)...\n", plugin->GetFilename().c_str(), plugin->GetName());
-        plugin->UnloadPlugin();
+    bool allOk = true;
+    std::vector<CPluginLoader *>::iterator it;
+    for (it = m_plugins.begin(); it != m_plugins.end(); it++) {
+        CPluginLoader *plugin = *it;
+        bool result;
+
+        GetLogger()->Info("Trying to unload plugin %s (%s)...\n", plugin->GetFilename().c_str(), plugin->GetName().c_str());
+        result = plugin->UnloadPlugin();
+        if (!result) {
+            allOk = false;
+            continue;
+        }
         delete plugin;
+        m_plugins.erase(it);
     }
-    m_plugins.clear();
-    return true;
+
+    return allOk;
 }
 
 

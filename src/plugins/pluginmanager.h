@@ -16,6 +16,10 @@
 
 // pluginmanager.h
 
+/**
+ *  @file plugin/pluginmanager.h
+ *  @brief Plugin manager class.
+ */
 
 #pragma once
 
@@ -31,19 +35,48 @@
 #include "pluginloader.h"
 
 
+/**
+* @class CPluginManager
+*
+* @brief Plugin manager class. Plugin manager can load plugins from colobot.ini or manually specified files.
+*
+*/
 class CPluginManager : public CSingleton<CPluginManager> {
     public:
         CPluginManager();
         ~CPluginManager();
 
+        /** Function loads plugin list and path list from profile file
+         */
         void LoadFromProfile();
 
+        /** Function loads specified plugin
+         * @param std::string plugin filename
+         * @return returns true on success
+         */
         bool LoadPlugin(std::string);
+
+        /** Function unloads specified plugin
+         * @param std::string plugin filename
+         * @return returns true on success
+         */
         bool UnloadPlugin(std::string);
 
+        /** Function adds path to be checked when searching for plugin file. If path was already added it will be ignored
+         * @param std::string plugin search path
+         * @return returns true on success
+         */
         bool AddSearchDirectory(std::string);
+
+        /** Function removes path from list
+         * @param std::string plugin search path
+         * @return returns true on success
+         */
         bool RemoveSearchDirectory(std::string);
 
+        /** Function tries to unload all plugins
+         * @return returns true on success
+         */
         bool UnloadAllPlugins();
 
     private:

@@ -15,10 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// soundinterface.h
+// sound.h
 
 /**
- *  @file sound/soundinterface.h
+ *  @file sound/sound.h
  *  @brief Sound plugin interface
  */
 
@@ -39,7 +39,7 @@
 
 /**
  * \public
- * \enum    Sound   sound/soundinterface.h
+ * \enum    Sound   sound/sound.h
  * \brief   Sound enum representing sound file
 **/
 enum Sound
@@ -131,7 +131,7 @@ enum Sound
 
 /**
  * \public
- * \enum    SoundNext   sound/soundinterface.h
+ * \enum    SoundNext   sound/sound.h
  * \brief   Enum representing operation that will be performend on a sound at given time
 **/
 enum SoundNext

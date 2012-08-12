@@ -15,8 +15,15 @@ int main() {
         GetLogger()->Error("Config not found!\n");
         return 1;
     }
+
     mgr->LoadFromProfile();
     CSoundInterface *sound = static_cast<CSoundInterface*>(CInstanceManager::GetInstancePointer()->SearchInstance(CLASS_SOUND));
+
+    if (!sound) {
+        GetLogger()->Error("Sound not loaded!\n");
+        return 2;
+    }
+
     sound->Create(true);
     mgr->UnloadAllPlugins();
 

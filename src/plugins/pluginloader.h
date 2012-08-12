@@ -16,6 +16,10 @@
 
 // pluginloader.h
 
+/**
+ *  @file plugin/pluginloader.h
+ *  @brief Plugin loader interface
+ */
 
 #pragma once
 
@@ -27,16 +31,52 @@
 #include "plugininterface.h"
 
 
+/**
+* @class CPluginLoader
+*
+* @brief Plugin loader interface. Plugin manager uses this class to load plugins.
+*
+*/
 class CPluginLoader {
     public:
+        /** Class contructor
+         *  @param std::string plugin filename
+         */
         CPluginLoader(std::string);
 
-        char* GetName();
+        /** Function to get plugin name or description
+         *  @return returns plugin name
+         */
+        std::string GetName();
+
+        /** Function to get plugin version
+         *  @return returns plugin version
+         */
         int GetVersion();
+
+        /** Function to unload plugin
+         *  @return returns true on success
+         */
         bool UnloadPlugin();
+
+        /** Function to load plugin
+         *  @return returns true on success
+         */
         bool LoadPlugin();
+
+        /** Function to check if plugin is loaded
+         *  @return returns true if plugin is loaded
+         */
         bool IsLoaded();
+
+        /** Function to set plugin filename
+         *  @return returns true on success. Action can fail if plugin was loaded and cannot be unloaded
+         */
         bool SetFilename(std::string);
+
+        /** Function to get plugin filename
+         *  @return returns plugin filename
+         */
         std::string GetFilename();
 
 
