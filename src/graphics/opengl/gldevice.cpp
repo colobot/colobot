@@ -73,6 +73,13 @@ Gfx::CGLDevice::~CGLDevice()
 {
 }
 
+void Gfx::CGLDevice::DebugHook()
+{
+    /* This function is only called here, so it can be used
+     * as a breakpoint when debugging using gDEBugger */
+    glColor3i(0, 0, 0);
+}
+
 std::string Gfx::CGLDevice::GetError()
 {
     return m_error;
@@ -1172,17 +1179,19 @@ void Gfx::CGLDevice::GetFogParams(Gfx::FogMode &mode, Gfx::Color &color, float &
 
 void Gfx::CGLDevice::SetCullMode(Gfx::CullMode mode)
 {
-    if      (mode == Gfx::CULL_CW)  glCullFace(GL_CW);
-    else if (mode == Gfx::CULL_CCW) glCullFace(GL_CCW);
+    // Cull clockwise back faces, so front face is the opposite
+    // (assuming GL_CULL_FACE is GL_BACK)
+    if      (mode == Gfx::CULL_CW ) glFrontFace(GL_CCW);
+    else if (mode == Gfx::CULL_CCW) glFrontFace(GL_CW);
     else assert(false);
 }
 
 Gfx::CullMode Gfx::CGLDevice::GetCullMode()
 {
     GLint flag = 0;
-    glGetIntegerv(GL_CULL_FACE, &flag);
-    if      (flag == GL_CW)  return Gfx::CULL_CW;
-    else if (flag == GL_CCW) return Gfx::CULL_CCW;
+    glGetIntegerv(GL_FRONT_FACE, &flag);
+    if      (flag == GL_CW)  return Gfx::CULL_CCW;
+    else if (flag == GL_CCW) return Gfx::CULL_CW;
     else assert(false);
     return Gfx::CULL_CW;
 }

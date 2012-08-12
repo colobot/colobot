@@ -164,6 +164,9 @@ public:
     //! Polls the state of joystick axes and buttons
     void        UpdateJoystick();
 
+    //! Updates the mouse position explicitly
+    void        UpdateMouse();
+
     void        FlushPressKey();
     void        ResetKey();
     void        SetKey(int keyRank, int option, int key);

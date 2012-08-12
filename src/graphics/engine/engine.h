@@ -37,6 +37,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <set>
 
 
 class CApplication;
@@ -78,7 +79,7 @@ struct EngineTriangle
     Gfx::VertexTex2     triangle[3];
     //! Material
     Gfx::Material       material;
-    //! Render state (TODO: ?)
+    //! Render state
     int                 state;
     //! 1st texture
     Gfx::Texture        tex1;
@@ -425,7 +426,11 @@ enum EngineRenderState
     //! The transparent color (white = no)
     ENG_RSTATE_TCOLOR_WHITE     = (1<<17),
     //! Mode for rendering text
-    ENG_RSTATE_TEXT             = (1<<18)
+    ENG_RSTATE_TEXT             = (1<<18),
+    //! Only opaque texture, no blending, etc.
+    ENG_RSTATE_OPAQUE_TEXTURE     = (1<<19),
+    //! Only opaque color, no texture, blending, etc.
+    ENG_RSTATE_OPAQUE_COLOR     = (1<<20)
 };
 
 
@@ -531,9 +536,6 @@ class CEngine
 public:
     CEngine(CInstanceManager* iMan, CApplication* app);
     ~CEngine();
-
-    //! Returns the last error encountered
-    std::string     GetError();
 
     //! Sets the device to be used
     void            SetDevice(Gfx::CDevice* device);
@@ -715,12 +717,21 @@ public:
     void            SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
                                   const Math::Vector& upVec, float eyeDistance);
 
+    //! Creates texture with the specified params
     Gfx::Texture    CreateTexture(const std::string& texName,
                                   const Gfx::TextureCreateParams& params);
+    //! Creates texture
     Gfx::Texture    CreateTexture(const std::string& texName);
+
+    //! Destroys texture, unloading it and removing from cache
     void            DestroyTexture(const std::string& texName);
-    bool            LoadTexture(const std::string& name, int stage = 0);
+
+    //! Loads texture, creating it if not already present
+    bool            LoadTexture(const std::string& name);
+    //! Loads all necessary textures
     bool            LoadAllTextures();
+
+    //! Sets texture for given stage; if not present in cache, the texture is loaded
     bool            SetTexture(const std::string& name, int stage = 0);
 
     //@{
@@ -831,8 +842,8 @@ public:
                                   bool& full, bool& quarter);
     //@}
 
-    //! Specifies the foreground image
-    void            SetForegroundImageName(const std::string& name);
+    //! Specifies the name of foreground texture
+    void            SetForegroundName(const std::string& name);
     //! Specifies whether to draw the foreground
     void            SetOverFront(bool front);
     //! Sets the foreground overlay color
@@ -1129,7 +1140,7 @@ protected:
     bool            m_overFront;
     Gfx::Color      m_overColor;
     int             m_overMode;
-    std::string     m_foregroundImageName;
+    std::string     m_foregroundName;
     bool            m_drawWorld;
     bool            m_drawFront;
     float           m_limitLOD[2];
@@ -1156,6 +1167,8 @@ protected:
     int             m_highlightRank[100];
     //! Highlight visible?
     bool            m_highlight;
+    //! Time counter for highlight animation
+    float           m_highlightTime;
     //@{
     //! Highlight rectangle points
     Math::Point     m_highlightP1;
@@ -1171,6 +1184,10 @@ protected:
     std::map<std::string, Gfx::Texture> m_texNameMap;
     //! Reverse map of loaded textures (by texture)
     std::map<Gfx::Texture, std::string> m_revTexNameMap;
+    //! Blacklist map of textures
+    /** Textures on this list were not successful in first loading,
+     *  so are disabled for subsequent load calls. */
+    std::set<std::string> m_texBlacklist;
 
     //! Mouse cursor definitions
     Gfx::EngineMouse     m_mice[Gfx::ENG_MOUSE_COUNT];
