@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// app.h
+/**
+ * \file app/app.h
+ * \brief CApplication class
+ */
 
 #pragma once
 
@@ -25,7 +28,6 @@
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/opengl/gldevice.h"
-#include "math/intsize.h"
 
 #include <string>
 #include <vector>
@@ -133,7 +135,7 @@ public:
     void        Destroy();
 
     //! Returns a list of possible video modes
-    VideoQueryResult GetVideoResolutionList(std::vector<Math::IntSize> &resolutions,
+    VideoQueryResult GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
                                             bool fullScreen, bool resizeable);
 
     //! Returns the current video mode
@@ -161,6 +163,9 @@ public:
 
     //! Polls the state of joystick axes and buttons
     void        UpdateJoystick();
+
+    //! Updates the mouse position explicitly
+    void        UpdateMouse();
 
     void        FlushPressKey();
     void        ResetKey();
@@ -199,17 +204,12 @@ protected:
     //! Handles some incoming events
     bool        ProcessEvent(const Event &event);
     //! Renders the image in window
-    bool        Render();
+    void        Render();
 
     //! Opens the joystick device
     bool OpenJoystick();
     //! Closes the joystick device
     void CloseJoystick();
-
-    //! Converts window coords to interface coords
-    Math::Point WindowToInterfaceCoords(Math::IntPoint pos);
-    //! Converts the interface coords to window coords
-    Math::IntPoint InterfaceToWindowCoords(Math::Point pos);
 
 protected:
     //! Instance manager

@@ -1,3 +1,4 @@
-src/physics
-
-Contains the physics module.
+/**
+ * \dir physics
+ * \brief Physics engine
+ */

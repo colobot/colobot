@@ -14,11 +14,14 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// texture.h
+/**
+ * \file graphics/core/texture.h
+ * \brief Texture struct and related enums
+ */
 
 #pragma once
 
-#include "math/intsize.h"
+#include "math/intpoint.h"
 
 
 namespace Gfx {
@@ -194,7 +197,7 @@ struct Texture
     //! ID of the texture in graphics engine
     unsigned int id;
     //! Size of texture
-    Math::IntSize size;
+    Math::IntPoint size;
     //! Whether the texture has alpha channel
     bool alpha;
 

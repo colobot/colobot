@@ -19,22 +19,26 @@
 #pragma once
 
 
-#include "old/d3dengine.h"
 #include "common/misc.h"
 #include "object/object.h"
+#include "math/vector.h"
 
 
 class CInstanceManager;
-class CD3DEngine;
-class CLight;
-class CParticule;
-class CTerrain;
-class CWater;
 class CCamera;
 class CObject;
 class CBrain;
 class CMotion;
 class CSound;
+
+namespace Gfx
+{
+class CEngine;
+class CLight;
+class CParticule;
+class CTerrain;
+class CWater;
+};
 
 
 enum PhysicsType
@@ -98,64 +102,64 @@ public:
     void        SetMotion(CMotion* motion);
 
     void        SetType(PhysicsType type);
-    PhysicsType RetType();
+    PhysicsType GetType();
 
     bool        Write(char *line);
     bool        Read(char *line);
 
     void        SetGravity(float value);
-    float       RetGravity();
+    float       GetGravity();
 
-    float       RetFloorHeight();
+    float       GetFloorHeight();
 
     void        SetLinMotion(PhysicsMode mode, Math::Vector value);
-    Math::Vector    RetLinMotion(PhysicsMode mode);
+    Math::Vector    GetLinMotion(PhysicsMode mode);
     void        SetLinMotionX(PhysicsMode mode, float value);
     void        SetLinMotionY(PhysicsMode mode, float value);
     void        SetLinMotionZ(PhysicsMode mode, float value);
-    float       RetLinMotionX(PhysicsMode mode);
-    float       RetLinMotionY(PhysicsMode mode);
-    float       RetLinMotionZ(PhysicsMode mode);
+    float       GetLinMotionX(PhysicsMode mode);
+    float       GetLinMotionY(PhysicsMode mode);
+    float       GetLinMotionZ(PhysicsMode mode);
 
     void        SetCirMotion(PhysicsMode mode, Math::Vector value);
-    Math::Vector    RetCirMotion(PhysicsMode mode);
+    Math::Vector    GetCirMotion(PhysicsMode mode);
     void        SetCirMotionX(PhysicsMode mode, float value);
     void        SetCirMotionY(PhysicsMode mode, float value);
     void        SetCirMotionZ(PhysicsMode mode, float value);
-    float       RetCirMotionX(PhysicsMode mode);
-    float       RetCirMotionY(PhysicsMode mode);
-    float       RetCirMotionZ(PhysicsMode mode);
+    float       GetCirMotionX(PhysicsMode mode);
+    float       GetCirMotionY(PhysicsMode mode);
+    float       GetCirMotionZ(PhysicsMode mode);
 
-    float       RetLinStopLength(PhysicsMode sMode=MO_ADVSPEED, PhysicsMode aMode=MO_STOACCEL);
-    float       RetCirStopLength();
-    float       RetLinMaxLength(float dir);
-    float       RetLinTimeLength(float dist, float dir=1.0f);
-    float       RetLinLength(float dist);
+    float       GetLinStopLength(PhysicsMode sMode=MO_ADVSPEED, PhysicsMode aMode=MO_STOACCEL);
+    float       GetCirStopLength();
+    float       GetLinMaxLength(float dir);
+    float       GetLinTimeLength(float dist, float dir=1.0f);
+    float       GetLinLength(float dist);
 
     void        SetMotor(bool bState);
-    bool        RetMotor();
+    bool        GetMotor();
     void        SetLand(bool bState);
-    bool        RetLand();
+    bool        GetLand();
     void        SetSwim(bool bState);
-    bool        RetSwim();
+    bool        GetSwim();
     void        SetCollision(bool bCollision);
-    bool        RetCollision();
+    bool        GetCollision();
     void        SetFreeze(bool bFreeze);
-    bool        RetFreeze();
+    bool        GetFreeze();
     void        SetReactorRange(float range);
-    float       RetReactorRange();
+    float       GetReactorRange();
 
     void        SetMotorSpeed(Math::Vector speed);
     void        SetMotorSpeedX(float speed);
     void        SetMotorSpeedY(float speed);
     void        SetMotorSpeedZ(float speed);
-    Math::Vector    RetMotorSpeed();
-    float       RetMotorSpeedX();
-    float       RetMotorSpeedY();
-    float       RetMotorSpeedZ();
+    Math::Vector    GetMotorSpeed();
+    float       GetMotorSpeedX();
+    float       GetMotorSpeedY();
+    float       GetMotorSpeedZ();
 
     void        CreateInterface(bool bSelect);
-    Error       RetError();
+    Error       GetError();
 
 protected:
     bool        EventFrame(const Event &event);
@@ -186,12 +190,12 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    CD3DEngine* m_engine;
-    CLight*     m_light;
-    CParticule* m_particule;
-    CTerrain*   m_terrain;
-    CWater*     m_water;
-    CCamera*    m_camera;
+    Gfx::CEngine*       m_engine;
+    Gfx::CLightManager* m_lightMan;
+    Gfx::CParticle*     m_particle;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CWater*        m_water;
+    Gfx::CCamera*       m_camera;
     CObject*    m_object;
     CBrain*     m_brain;
     CMotion*    m_motion;
