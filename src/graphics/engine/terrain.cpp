@@ -58,7 +58,7 @@ Gfx::CTerrain::CTerrain(CInstanceManager* iMan)
     m_wind          = Math::Vector(0.0f, 0.0f, 0.0f);
     m_defHardness   = 0.5f;
 
-    m_levelMat.reserve(LEVEL_MAT_PREALLOCATE_COUNT);
+    m_levelMats.reserve(LEVEL_MAT_PREALLOCATE_COUNT);
     m_flyingLimits.reserve(FLYING_LIMIT_PREALLOCATE_COUNT);
     m_buildingLevels.reserve(BUILDING_LEVEL_PREALLOCATE_COUNT);
 }
@@ -174,7 +174,7 @@ bool Gfx::CTerrain::InitTextures(const std::string& baseName, int* table, int dx
 
 void Gfx::CTerrain::LevelFlush()
 {
-    m_levelMat.clear();
+    m_levelMats.clear();
     m_levelMatMax = 0;
     m_levelID = 1000;
     LevelCloseTable();
@@ -200,7 +200,7 @@ void Gfx::CTerrain::LevelMaterial(int id, std::string& baseName, float u, float 
     tm.mat[3]   = left;
     tm.hardness = hardness;
 
-    m_levelMat.push_back(tm);
+    m_levelMats.push_back(tm);
 
     if (m_levelMatMax < up+1   )  m_levelMatMax = up+1;
     if (m_levelMatMax < right+1)  m_levelMatMax = right+1;
@@ -583,10 +583,10 @@ bool Gfx::CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 
             for (int y = 0; y < brick; y += step)
             {
-                Gfx::EngineObjLevel5 buffer;
+                Gfx::EngineObjLevel4 buffer;
                 buffer.vertices.reserve(total);
 
-                buffer.type = Gfx::ENG_TRIANGLE_TYPE_6S;
+                buffer.type = Gfx::ENG_TRIANGLE_TYPE_SURFACE;
                 buffer.material = mat;
 
                 buffer.state = Gfx::ENG_RSTATE_WRAP;
@@ -695,10 +695,10 @@ bool Gfx::CTerrain::CreateMosaic(int ox, int oy, int step, int objRank,
 
 Gfx::TerrainMaterial* Gfx::CTerrain::LevelSearchMat(int id)
 {
-    for (int i = 0; i < static_cast<int>( m_levelMat.size() ); i++)
+    for (int i = 0; i < static_cast<int>( m_levelMats.size() ); i++)
     {
-        if (id == m_levelMat[i].id)
-            return &m_levelMat[i];
+        if (id == m_levelMats[i].id)
+            return &m_levelMats[i];
     }
 
     return nullptr;
@@ -709,7 +709,7 @@ void Gfx::CTerrain::LevelTextureName(int x, int y, std::string& name, Math::Poin
     x /= m_brick/m_subdivMapping;
     y /= m_brick/m_subdivMapping;
 
-    TerrainMaterial* tm = LevelSearchMat(m_levelDot[x+y*m_levelDotSize].id);
+    TerrainMaterial* tm = LevelSearchMat(m_levelDots[x+y*m_levelDotSize].id);
     if (tm == nullptr)
     {
         name = "xxx.png";
@@ -777,16 +777,16 @@ bool Gfx::CTerrain::LevelGetDot(int x, int y, float min, float max, float slope)
 }
 
 
-/** Returns the index within m_levelMat or -1 if there is not.
-   m_levelMat[i].id gives the identifier. */
+/** Returns the index within m_levelMats or -1 if there is not.
+   m_levelMats[i].id gives the identifier. */
 int Gfx::CTerrain::LevelTestMat(char *mat)
 {
-    for (int i = 0; i < static_cast<int>( m_levelMat.size() ); i++)
+    for (int i = 0; i < static_cast<int>( m_levelMats.size() ); i++)
     {
-        if ( m_levelMat[i].mat[0] == mat[0] &&
-             m_levelMat[i].mat[1] == mat[1] &&
-             m_levelMat[i].mat[2] == mat[2] &&
-             m_levelMat[i].mat[3] == mat[3] )  return i;
+        if ( m_levelMats[i].mat[0] == mat[0] &&
+             m_levelMats[i].mat[1] == mat[1] &&
+             m_levelMats[i].mat[2] == mat[2] &&
+             m_levelMats[i].mat[3] == mat[3] )  return i;
     }
 
     return -1;
@@ -804,27 +804,27 @@ void Gfx::CTerrain::LevelSetDot(int x, int y, int id, char *mat)
     {
         int ii = LevelTestMat(mat);
         if (ii == -1)  return;
-        id = m_levelMat[ii].id;  // looking for a id compatible with mat
+        id = m_levelMats[ii].id;  // looking for a id compatible with mat
     }
 
     // Changes the point
-    m_levelDot[x+y*m_levelDotSize].id     = id;
-    m_levelDot[x+y*m_levelDotSize].mat[0] = mat[0];
-    m_levelDot[x+y*m_levelDotSize].mat[1] = mat[1];
-    m_levelDot[x+y*m_levelDotSize].mat[2] = mat[2];
-    m_levelDot[x+y*m_levelDotSize].mat[3] = mat[3];
+    m_levelDots[x+y*m_levelDotSize].id     = id;
+    m_levelDots[x+y*m_levelDotSize].mat[0] = mat[0];
+    m_levelDots[x+y*m_levelDotSize].mat[1] = mat[1];
+    m_levelDots[x+y*m_levelDotSize].mat[2] = mat[2];
+    m_levelDots[x+y*m_levelDotSize].mat[3] = mat[3];
 
     // Changes the lower neighbor
     if ( (x+0) >= 0 && (x+0) < m_levelDotSize &&
          (y-1) >= 0 && (y-1) < m_levelDotSize )
     {
         int i = (x+0)+(y-1)*m_levelDotSize;
-        if (m_levelDot[i].mat[0] != mat[2])
+        if (m_levelDots[i].mat[0] != mat[2])
         {
-            m_levelDot[i].mat[0] = mat[2];
-            int ii = LevelTestMat(m_levelDot[i].mat);
+            m_levelDots[i].mat[0] = mat[2];
+            int ii = LevelTestMat(m_levelDots[i].mat);
             if (ii != -1)
-                m_levelDot[i].id = m_levelMat[ii].id;
+                m_levelDots[i].id = m_levelMats[ii].id;
         }
     }
 
@@ -833,12 +833,12 @@ void Gfx::CTerrain::LevelSetDot(int x, int y, int id, char *mat)
          (y+0) >= 0 && (y+0) < m_levelDotSize )
     {
         int i = (x-1)+(y+0)*m_levelDotSize;
-        if (m_levelDot[i].mat[1] != mat[3])
+        if (m_levelDots[i].mat[1] != mat[3])
         {
-            m_levelDot[i].mat[1] = mat[3];
-            int ii = LevelTestMat(m_levelDot[i].mat);
+            m_levelDots[i].mat[1] = mat[3];
+            int ii = LevelTestMat(m_levelDots[i].mat);
             if (ii != -1)
-                m_levelDot[i].id = m_levelMat[ii].id;
+                m_levelDots[i].id = m_levelMats[ii].id;
         }
     }
 
@@ -847,12 +847,12 @@ void Gfx::CTerrain::LevelSetDot(int x, int y, int id, char *mat)
          (y+1) >= 0 && (y+1) < m_levelDotSize )
     {
         int i = (x+0)+(y+1)*m_levelDotSize;
-        if (m_levelDot[i].mat[2] != mat[0])
+        if (m_levelDots[i].mat[2] != mat[0])
         {
-            m_levelDot[i].mat[2] = mat[0];
-            int ii = LevelTestMat(m_levelDot[i].mat);
+            m_levelDots[i].mat[2] = mat[0];
+            int ii = LevelTestMat(m_levelDots[i].mat);
             if (ii != -1)
-                m_levelDot[i].id = m_levelMat[ii].id;
+                m_levelDots[i].id = m_levelMats[ii].id;
         }
     }
 
@@ -861,12 +861,12 @@ void Gfx::CTerrain::LevelSetDot(int x, int y, int id, char *mat)
          (y+0) >= 0 && (y+0) < m_levelDotSize )
     {
         int i = (x+1)+(y+0)*m_levelDotSize;
-        if ( m_levelDot[i].mat[3] != mat[1] )
+        if ( m_levelDots[i].mat[3] != mat[1] )
         {
-            m_levelDot[i].mat[3] = mat[1];
-            int ii = LevelTestMat(m_levelDot[i].mat);
+            m_levelDots[i].mat[3] = mat[1];
+            int ii = LevelTestMat(m_levelDots[i].mat);
             if (ii != -1)
-                m_levelDot[i].id = m_levelMat[ii].id;
+                m_levelDots[i].id = m_levelMats[ii].id;
         }
     }
 }
@@ -880,9 +880,9 @@ bool Gfx::CTerrain::LevelIfDot(int x, int y, int id, char *mat)
          y-1 >= 0 && y-1 < m_levelDotSize )
     {
         test[0] = mat[2];
-        test[1] = m_levelDot[(x+0)+(y-1)*m_levelDotSize].mat[1];
-        test[2] = m_levelDot[(x+0)+(y-1)*m_levelDotSize].mat[2];
-        test[3] = m_levelDot[(x+0)+(y-1)*m_levelDotSize].mat[3];
+        test[1] = m_levelDots[(x+0)+(y-1)*m_levelDotSize].mat[1];
+        test[2] = m_levelDots[(x+0)+(y-1)*m_levelDotSize].mat[2];
+        test[3] = m_levelDots[(x+0)+(y-1)*m_levelDotSize].mat[3];
 
         if ( LevelTestMat(test) == -1 )  return false;
     }
@@ -891,10 +891,10 @@ bool Gfx::CTerrain::LevelIfDot(int x, int y, int id, char *mat)
     if ( x-1 >= 0 && x-1 < m_levelDotSize &&
          y+0 >= 0 && y+0 < m_levelDotSize )
     {
-        test[0] = m_levelDot[(x-1)+(y+0)*m_levelDotSize].mat[0];
+        test[0] = m_levelDots[(x-1)+(y+0)*m_levelDotSize].mat[0];
         test[1] = mat[3];
-        test[2] = m_levelDot[(x-1)+(y+0)*m_levelDotSize].mat[2];
-        test[3] = m_levelDot[(x-1)+(y+0)*m_levelDotSize].mat[3];
+        test[2] = m_levelDots[(x-1)+(y+0)*m_levelDotSize].mat[2];
+        test[3] = m_levelDots[(x-1)+(y+0)*m_levelDotSize].mat[3];
 
         if ( LevelTestMat(test) == -1 )  return false;
     }
@@ -903,10 +903,10 @@ bool Gfx::CTerrain::LevelIfDot(int x, int y, int id, char *mat)
     if ( x+0 >= 0 && x+0 < m_levelDotSize &&
          y+1 >= 0 && y+1 < m_levelDotSize )
     {
-        test[0] = m_levelDot[(x+0)+(y+1)*m_levelDotSize].mat[0];
-        test[1] = m_levelDot[(x+0)+(y+1)*m_levelDotSize].mat[1];
+        test[0] = m_levelDots[(x+0)+(y+1)*m_levelDotSize].mat[0];
+        test[1] = m_levelDots[(x+0)+(y+1)*m_levelDotSize].mat[1];
         test[2] = mat[0];
-        test[3] = m_levelDot[(x+0)+(y+1)*m_levelDotSize].mat[3];
+        test[3] = m_levelDots[(x+0)+(y+1)*m_levelDotSize].mat[3];
 
         if ( LevelTestMat(test) == -1 )  return false;
     }
@@ -915,9 +915,9 @@ bool Gfx::CTerrain::LevelIfDot(int x, int y, int id, char *mat)
     if ( x+1 >= 0 && x+1 < m_levelDotSize &&
          y+0 >= 0 && y+0 < m_levelDotSize )
     {
-        test[0] = m_levelDot[(x+1)+(y+0)*m_levelDotSize].mat[0];
-        test[1] = m_levelDot[(x+1)+(y+0)*m_levelDotSize].mat[1];
-        test[2] = m_levelDot[(x+1)+(y+0)*m_levelDotSize].mat[2];
+        test[0] = m_levelDots[(x+1)+(y+0)*m_levelDotSize].mat[0];
+        test[1] = m_levelDots[(x+1)+(y+0)*m_levelDotSize].mat[1];
+        test[2] = m_levelDots[(x+1)+(y+0)*m_levelDotSize].mat[2];
         test[3] = mat[1];
 
         if ( LevelTestMat(test) == -1 )  return false;
@@ -1094,10 +1094,10 @@ bool Gfx::CTerrain::LevelInit(int id)
 
     for (int i = 0; i < m_levelDotSize*m_levelDotSize; i++)
     {
-        m_levelDot[i].id = id;
+        m_levelDots[i].id = id;
 
         for (int j = 0; j < 4; j++)
-            m_levelDot[i].mat[j] = tm->mat[j];
+            m_levelDots[i].mat[j] = tm->mat[j];
     }
 
     return true;
@@ -1186,21 +1186,21 @@ bool Gfx::CTerrain::LevelGenerate(int *id, float min, float max,
 void Gfx::CTerrain::LevelOpenTable()
 {
     if (! m_levelText)  return;
-    if (! m_levelDot.empty())  return;  // already allocated
+    if (! m_levelDots.empty())  return;  // already allocated
 
     m_levelDotSize = (m_mosaic*m_brick)/(m_brick/m_subdivMapping)+1;
-    std::vector<Gfx::DotLevel>(m_levelDotSize*m_levelDotSize).swap(m_levelDot);
+    std::vector<Gfx::DotLevel>(m_levelDotSize*m_levelDotSize).swap(m_levelDots);
 
     for (int i = 0; i < m_levelDotSize * m_levelDotSize; i++)
     {
         for (int j = 0; j < 4; j++)
-            m_levelDot[i].mat[j] = 0;
+            m_levelDots[i].mat[j] = 0;
     }
 }
 
 void Gfx::CTerrain::LevelCloseTable()
 {
-    m_levelDot.clear();
+    m_levelDots.clear();
 }
 
 bool Gfx::CTerrain::CreateSquare(bool multiRes, int x, int y)
@@ -1673,7 +1673,7 @@ float Gfx::CTerrain::GetHardness(const Math::Vector &p)
     float factor = GetBuildingFactor(p);
     if (factor != 1.0f) return 1.0f;  // on building
 
-    if (m_levelDot.empty()) return m_defHardness;
+    if (m_levelDots.empty()) return m_defHardness;
 
     float dim = (m_mosaic*m_brick*m_size)/2.0f;
 
@@ -1691,7 +1691,7 @@ float Gfx::CTerrain::GetHardness(const Math::Vector &p)
     if ( x < 0 || x >= m_levelDotSize ||
          y < 0 || y >= m_levelDotSize )  return m_defHardness;
 
-    int id = m_levelDot[x+y*m_levelDotSize].id;
+    int id = m_levelDots[x+y*m_levelDotSize].id;
     TerrainMaterial* tm = LevelSearchMat(id);
     if (tm == nullptr) return m_defHardness;
 
@@ -1729,7 +1729,7 @@ void Gfx::CTerrain::GroundFlat(Math::Vector pos)
         }
     }
 
-    m_engine->GroundMarkCreate(pos, 40.0f, 0.001f, 15.0f, 0.001f, 41, 41, table);
+    m_engine->CreateGroundMark(pos, 40.0f, 0.001f, 15.0f, 0.001f, 41, 41, table);
 }
 
 float Gfx::CTerrain::GetFlatZoneRadius(Math::Vector center, float max)

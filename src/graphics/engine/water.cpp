@@ -20,8 +20,10 @@
 #include "graphics/engine/water.h"
 
 #include "common/iman.h"
+#include "common/logger.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
+#include "object/object.h"
 #include "sound/sound.h"
 
 
@@ -49,9 +51,9 @@ Gfx::CWater::CWater(CInstanceManager* iMan, Gfx::CEngine* engine)
     m_color = 0xffffffff;
     m_subdiv = 4;
 
-    m_line.reserve(WATERLINE_PREALLOCATE_COUNT);
+    m_lines.reserve(WATERLINE_PREALLOCATE_COUNT);
 
-    std::vector<Gfx::WaterVapor>(VAPOR_SIZE).swap(m_vapor);
+    std::vector<Gfx::WaterVapor>(VAPOR_SIZE).swap(m_vapors);
 }
 
 Gfx::CWater::~CWater()
@@ -91,7 +93,7 @@ void Gfx::CWater::LavaFrame(float rTime)
     if (m_particule == nullptr)
         m_particule = static_cast<Gfx::CParticle*>( m_iMan->SearchInstance(CLASS_PARTICULE) );
 
-    for (int i = 0; i < static_cast<int>( m_vapor.size() ); i++)
+    for (int i = 0; i < static_cast<int>( m_vapors.size() ); i++)
         VaporFrame(i, rTime);
 
     if (m_time - m_lastLava >= 0.1f)
@@ -138,26 +140,26 @@ void Gfx::CWater::LavaFrame(float rTime)
 
 void Gfx::CWater::VaporFlush()
 {
-    m_vapor.clear();
+    m_vapors.clear();
 }
 
 bool Gfx::CWater::VaporCreate(Gfx::ParticleType type, Math::Vector pos, float delay)
 {
-    for (int i = 0; i < static_cast<int>( m_vapor.size() ); i++)
+    for (int i = 0; i < static_cast<int>( m_vapors.size() ); i++)
     {
-        if (! m_vapor[i].used)
+        if (! m_vapors[i].used)
         {
-            m_vapor[i].used = true;
-            m_vapor[i].type  = type;
-            m_vapor[i].pos   = pos;
-            m_vapor[i].delay = delay;
-            m_vapor[i].time  = 0.0f;
-            m_vapor[i].last  = 0.0f;
+            m_vapors[i].used = true;
+            m_vapors[i].type  = type;
+            m_vapors[i].pos   = pos;
+            m_vapors[i].delay = delay;
+            m_vapors[i].time  = 0.0f;
+            m_vapors[i].last  = 0.0f;
 
-            if (m_vapor[i].type == PARTIFIRE)
+            if (m_vapors[i].type == PARTIFIRE)
                 m_sound->Play(SOUND_BLUP, pos, 1.0f, 1.0f-Math::Rand()*0.5f);
 
-            if (m_vapor[i].type == PARTIVAPOR)
+            if (m_vapors[i].type == PARTIVAPOR)
                 m_sound->Play(SOUND_PSHHH, pos, 0.3f, 2.0f);
 
             return true;
@@ -169,22 +171,22 @@ bool Gfx::CWater::VaporCreate(Gfx::ParticleType type, Math::Vector pos, float de
 
 void Gfx::CWater::VaporFrame(int i, float rTime)
 {
-    m_vapor[i].time += rTime;
+    m_vapors[i].time += rTime;
 
     if (m_sound == nullptr)
         m_sound = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
 
-    if (m_vapor[i].time <= m_vapor[i].delay)
+    if (m_vapors[i].time <= m_vapors[i].delay)
     {
-        if (m_time-m_vapor[i].last >= m_engine->ParticleAdapt(0.02f))
+        if (m_time-m_vapors[i].last >= m_engine->ParticleAdapt(0.02f))
         {
-            m_vapor[i].last = m_time;
+            m_vapors[i].last = m_time;
 
-            if (m_vapor[i].type == PARTIFIRE)
+            if (m_vapors[i].type == PARTIFIRE)
             {
                 for (int j = 0; j < 10; j++)
                 {
-                    Math::Vector pos = m_vapor[i].pos;
+                    Math::Vector pos = m_vapors[i].pos;
                     pos.x += (Math::Rand()-0.5f)*2.0f;
                     pos.z += (Math::Rand()-0.5f)*2.0f;
                     pos.y -= 1.0f;
@@ -198,9 +200,9 @@ void Gfx::CWater::VaporFrame(int i, float rTime)
                     m_particule->CreateParticle(pos, speed, dim, PARTIERROR, 2.0f, 10.0f);
                 }
             }
-            else if (m_vapor[i].type == PARTIFLAME)
+            else if (m_vapors[i].type == PARTIFLAME)
             {
-                Math::Vector pos = m_vapor[i].pos;
+                Math::Vector pos = m_vapors[i].pos;
                 pos.x += (Math::Rand()-0.5f)*8.0f;
                 pos.z += (Math::Rand()-0.5f)*8.0f;
                 pos.y -= 2.0f;
@@ -215,7 +217,7 @@ void Gfx::CWater::VaporFrame(int i, float rTime)
             }
             else
             {
-                Math::Vector pos = m_vapor[i].pos;
+                Math::Vector pos = m_vapors[i].pos;
                 pos.x += (Math::Rand()-0.5f)*4.0f;
                 pos.z += (Math::Rand()-0.5f)*4.0f;
                 pos.y -= 2.0f;
@@ -232,7 +234,7 @@ void Gfx::CWater::VaporFrame(int i, float rTime)
     }
     else
     {
-        m_vapor[i].used = false;
+        m_vapors[i].used = false;
     }
 }
 
@@ -256,6 +258,7 @@ void Gfx::CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
 /** This surface prevents to see the sky (background) underwater! */
 void Gfx::CWater::DrawBack()
 {
+    GetLogger()->Trace("CWater::DrawBack(): stub!\n");
     /* TODO!
     LPDIRECT3DDEVICE7 device;
     D3DVERTEX2      vertex[4];      // 2 triangles
@@ -336,6 +339,7 @@ void Gfx::CWater::DrawBack()
 
 void Gfx::CWater::DrawSurf()
 {
+    GetLogger()->Trace("CWater::DrawSurf(): stub!\n");
     /* TODO!
     LPDIRECT3DDEVICE7 device;
     D3DVERTEX2*     vertex;     // triangles
@@ -498,7 +502,7 @@ void Gfx::CWater::CreateLine(int x, int y, int len)
     line.px2 = m_size*(line.x+line.len) - offset;
     line.pz  = m_size* line.y - offset;
 
-    m_line.push_back(line);
+    m_lines.push_back(line);
 }
 
 void Gfx::CWater::Create(Gfx::WaterType type1, Gfx::WaterType type2, const std::string& fileName,
@@ -533,7 +537,7 @@ void Gfx::CWater::Create(Gfx::WaterType type1, Gfx::WaterType type2, const std::
     if (m_type[0] == WATER_NULL)
         return;
 
-    m_line.clear();
+    m_lines.clear();
 
     for (int y = 0; y < m_brick; y++)
     {
@@ -586,7 +590,6 @@ float Gfx::CWater::GetLevel()
 
 float Gfx::CWater::GetLevel(CObject* object)
 {
-    /* TODO!
     ObjectType type = object->GetType();
 
     if ( type == OBJECT_HUMAN ||
@@ -625,7 +628,7 @@ float Gfx::CWater::GetLevel(CObject* object)
     {
         return m_level-2.0f;
     }
-*/
+
     return m_level;
 }
 

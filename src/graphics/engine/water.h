@@ -165,8 +165,8 @@ protected:
     //! Size of a item in an brick
     float           m_size;
 
-    std::vector<WaterLine> m_line;
-    std::vector<WaterVapor> m_vapor;
+    std::vector<WaterLine>  m_lines;
+    std::vector<WaterVapor> m_vapors;
 
     bool            m_draw;
     bool            m_lava;

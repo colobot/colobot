@@ -47,9 +47,46 @@ const int GROUNDSPOT_PREALLOCATE_COUNT   = 100;
 const int LEVEL1_PREALLOCATE_COUNT        = 50;
 const int LEVEL2_PREALLOCATE_COUNT        = 100;
 const int LEVEL3_PREALLOCATE_COUNT        = 5;
-const int LEVEL4_PREALLOCATE_COUNT        = 10;
-const int LEVEL5_PREALLOCATE_COUNT        = 100;
-const int LEVEL5_VERTEX_PREALLOCATE_COUNT = 200;
+const int LEVEL4_PREALLOCATE_COUNT        = 100;
+const int LEVEL4_VERTEX_PREALLOCATE_COUNT = 200;
+
+
+Gfx::EngineObjLevel1::EngineObjLevel1(bool used, const std::string& tex1Name, const std::string& tex2Name)
+{
+    this->used = used;
+    this->tex1Name = tex1Name;
+    this->tex2Name = tex2Name;
+
+    next.reserve(LEVEL2_PREALLOCATE_COUNT);
+}
+
+Gfx::EngineObjLevel2::EngineObjLevel2(bool used, int objRank)
+{
+    this->used = used;
+    this->objRank = objRank;
+
+    next.reserve(LEVEL3_PREALLOCATE_COUNT);
+}
+
+Gfx::EngineObjLevel3::EngineObjLevel3(bool used, float min, float max)
+{
+    this->used = used;
+    this->min = min;
+    this->max = max;
+
+    next.reserve(LEVEL4_PREALLOCATE_COUNT);
+}
+
+Gfx::EngineObjLevel4::EngineObjLevel4(bool used, Gfx::EngineTriangleType type, const Gfx::Material& material, int state)
+{
+    this->used = used;
+    this->type = type;
+    this->material = material;
+    this->state = state;
+
+    vertices.reserve(LEVEL4_VERTEX_PREALLOCATE_COUNT);
+}
+
 
 
 // TODO: temporary stub for CInterface
@@ -247,7 +284,7 @@ bool Gfx::CEngine::Create()
     params.minFilter = Gfx::TEX_MIN_FILTER_NEAREST;
     params.magFilter = Gfx::TEX_MAG_FILTER_NEAREST;
     params.mipmap = false;
-    m_miceTexture = CreateTexture("mouse.png", params);
+    m_miceTexture = LoadTexture("mouse.png", params);
 
     return true;
 }
@@ -301,22 +338,13 @@ bool Gfx::CEngine::ProcessEvent(const Event &event)
         }
         else if (event.key.key == KEY(F3))
         {
-            m_backgroundQuarter = !m_backgroundQuarter;
-            if (m_backgroundQuarter)
-            {
-                m_backgroundFull = true;
-                m_backgroundName = "geneda.png";
-            }
-            else
-            {
-                m_backgroundFull = false;
-                m_backgroundName = "";
-            }
+            bool bq = !m_backgroundQuarter;
+            SetBackground(bq ? "geneda.png" : "", Gfx::Color(), Gfx::Color(), Gfx::Color(), Gfx::Color(), true, bq);
         }
         else if (event.key.key == KEY(F4))
         {
-            m_backForce = !m_backForce;
-            if (m_backForce)
+            m_skyMode = !m_skyMode;
+            if (! m_skyMode)
             {
                 m_backgroundColorDown = Gfx::Color(0.2f, 0.2f, 0.2f);
                 m_backgroundColorUp = Gfx::Color(0.8f, 0.8f, 0.8f);
@@ -386,19 +414,20 @@ void Gfx::CEngine::StepSimulation(float rTime)
 
 bool Gfx::CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
 {
-    // TODO!
+    // TODO write screenshot: not very important for now
+    GetLogger()->Trace("CEngine::WriteSceenShot(): stub!\n");
     return true;
 }
 
 bool Gfx::CEngine::ReadSettings()
 {
-    // TODO!
+    // TODO: when INI reading is completed
     return true;
 }
 
 bool Gfx::CEngine::WriteSettings()
 {
-    // TODO!
+    // TODO: when INI writing is completed
     return true;
 }
 
@@ -496,207 +525,898 @@ int Gfx::CEngine::GetStatisticTriangle()
 
 int Gfx::CEngine::CreateObject()
 {
-    // TODO!
-    return 0;
+    int i = 0;
+    for ( ; i < static_cast<int>( m_objects.size() ); i++)
+    {
+        if (! m_objects[i].used)
+        {
+            m_objects[i].LoadDefault();
+            break;
+        }
+    }
+
+    if (i == static_cast<int>( m_objects.size() ))
+        m_objects.push_back(Gfx::EngineObject());
+
+
+    m_objects[i].used = true;
+
+    Math::Matrix mat;
+    mat.LoadIdentity();
+    SetObjectTransform(i, mat);
+
+    m_objects[i].drawWorld = true;
+    m_objects[i].distance = 0.0f;
+    m_objects[i].bboxMin = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_objects[i].bboxMax = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_objects[i].shadowRank = -1;
+
+    return i;
 }
 
 void Gfx::CEngine::FlushObject()
 {
-    // TODO!
+    m_objectTree.clear();
+    m_objects.clear();
+
+    m_shadows.clear();
+
+    FlushGroundSpot();
 }
 
 bool Gfx::CEngine::DeleteObject(int objRank)
 {
-    // TODO!
-    return true;
-}
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
 
-bool Gfx::CEngine::SetDrawWorld(int objRank, bool draw)
-{
-    // TODO!
-    return true;
-}
+    // Delete object's triangles
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
 
-bool Gfx::CEngine::SetDrawFront(int objRank, bool draw)
-{
-    // TODO!
-    return true;
-}
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
 
-bool Gfx::CEngine::AddTriangle(int objRank, Gfx::VertexTex2* vertex, int nb,
-                               const Gfx::Material& mat, int state,
-                               std::string texName1, std::string texName2,
-                               float min, float max, bool globalUpdate)
-{
-    // TODO!
-    return true;
-}
+            if (p2.objRank == objRank)
+            {
+                p2.used = false;
+                p2.next.clear();
+            }
+        }
+    }
 
-bool Gfx::CEngine::AddSurface(int objRank, Gfx::VertexTex2* vertex, int nb,
-                              const Gfx::Material& mat, int state,
-                              std::string texName1, std::string texName2,
-                              float min, float max, bool globalUpdate)
-{
-    // TODO!
-    return true;
-}
+    // Mark object as deleted
+    m_objects[objRank].used = false;
 
-bool Gfx::CEngine::AddQuick(int objRank, const Gfx::EngineObjLevel5& buffer,
-                            std::string texName1, std::string texName2,
-                            float min, float max, bool globalUpdate)
-{
-    // TODO!
-    return true;
-}
+    // Delete associated shadows
+    DeleteShadow(objRank);
 
-Gfx::EngineObjLevel5* Gfx::CEngine::SearchTriangle(int objRank, const Gfx::Material& mat,
-                                                   int state, std::string texName1,
-                                                   std::string texName2, float min, float max)
-{
-    // TODO!
-    return nullptr;
-}
-
-void Gfx::CEngine::ChangeLOD()
-{
-    // TODO!
-}
-
-bool Gfx::CEngine::ChangeSecondTexture(int objRank, const std::string& texName2)
-{
-    // TODO!
-    return true;
-}
-
-int Gfx::CEngine::GetTotalTriangles(int objRank)
-{
-    // TODO!
-    return 0;
-}
-
-int Gfx::CEngine::GetTriangles(int objRank, float min, float max, Gfx::EngineTriangle* buffer, int size, float percent)
-{
-    // TODO!
-    return 0;
-}
-
-bool Gfx::CEngine::GetBBox(int objRank, Math::Vector& min, Math::Vector& max)
-{
-    // TODO!
-    return true;
-}
-
-bool Gfx::CEngine::ChangeTextureMapping(int objRank, const Gfx::Material& mat, int state,
-                                         const std::string& texName1, const std::string& texName2,
-                                         float min, float max, Gfx::EngineTextureMapping mode,
-                                         float au, float bu, float av, float bv)
-{
-    // TODO!
-    return true;
-}
-
-bool Gfx::CEngine::TrackTextureMapping(int objRank, const Gfx::Material& mat, int state,
-                                        const std::string& texName1, const std::string& texName2,
-                                        float min, float max, Gfx::EngineTextureMapping mode,
-                                        float pos, float factor, float tl, float ts, float tt)
-{
-    // TODO!
-    return true;
-}
-
-bool Gfx::CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform)
-{
-    // TODO!
-    return true;
-}
-
-bool Gfx::CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
-{
-    // TODO!
     return true;
 }
 
 bool Gfx::CEngine::SetObjectType(int objRank, Gfx::EngineObjectType type)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    m_objects[objRank].type = type;
     return true;
 }
 
 Gfx::EngineObjectType Gfx::CEngine::GetObjectType(int objRank)
 {
-    // TODO!
-    return Gfx::ENG_OBJTYPE_FIX;
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return Gfx::ENG_OBJTYPE_NULL;
+
+    return m_objects[objRank].type;
+}
+
+
+bool Gfx::CEngine::SetObjectTransform(int objRank, const Math::Matrix& transform)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    m_objects[objRank].transform = transform;
+    return true;
+}
+
+bool Gfx::CEngine::GetObjectTransform(int objRank, Math::Matrix& transform)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    transform = m_objects[objRank].transform;
+    return true;
+}
+
+bool Gfx::CEngine::SetObjectDrawWorld(int objRank, bool draw)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    m_objects[objRank].drawWorld = draw;
+    return true;
+}
+
+bool Gfx::CEngine::SetObjectDrawFront(int objRank, bool draw)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    m_objects[objRank].drawFront = draw;
+    return true;
 }
 
 bool Gfx::CEngine::SetObjectTransparency(int objRank, float value)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    m_objects[objRank].transparency = value;
     return true;
 }
 
-bool Gfx::CEngine::ShadowCreate(int objRank)
+bool Gfx::CEngine::GetObjectBBox(int objRank, Math::Vector& min, Math::Vector& max)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return 0;
+
+    min = m_objects[objRank].bboxMin;
+    max = m_objects[objRank].bboxMax;
     return true;
 }
 
-void Gfx::CEngine::ShadowDelete(int objRank)
+
+int Gfx::CEngine::GetObjectTotalTriangles(int objRank)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return 0;
+
+    return m_objects[objRank].totalTriangles;
+}
+
+
+Gfx::EngineObjLevel1& Gfx::CEngine::AddLevel1(const std::string& tex1Name, const std::string& tex2Name)
+{
+    bool unusedPresent = false;
+    for (int i = 0; i < static_cast<int>( m_objectTree.size() ); i++)
+    {
+        if (! m_objectTree[i].used)
+        {
+            unusedPresent = true;
+            continue;
+        }
+
+        if (m_objectTree[i].tex1Name == tex1Name && m_objectTree[i].tex2Name == tex2Name)
+            return m_objectTree[i];
+    }
+
+    if (unusedPresent)
+    {
+        for (int i = 0; i < static_cast<int>( m_objectTree.size() ); i++)
+        {
+            if (! m_objectTree[i].used)
+            {
+                m_objectTree[i].used = true;
+                m_objectTree[i].tex1Name = tex1Name;
+                m_objectTree[i].tex2Name = tex2Name;
+                return m_objectTree[i];
+            }
+        }
+    }
+
+    m_objectTree.push_back(Gfx::EngineObjLevel1(true, tex1Name, tex2Name));
+    return m_objectTree.back();
+}
+
+Gfx::EngineObjLevel2& Gfx::CEngine::AddLevel2(Gfx::EngineObjLevel1& p1, int objRank)
+{
+    bool unusedPresent = false;
+    for (int i = 0; i < static_cast<int>( p1.next.size() ); i++)
+    {
+        if (! p1.next[i].used)
+        {
+            unusedPresent = true;
+            continue;
+        }
+
+        if (p1.next[i].objRank == objRank)
+            return p1.next[i];
+    }
+
+    if (unusedPresent)
+    {
+        for (int i = 0; i < static_cast<int>( p1.next.size() ); i++)
+        {
+            if (! p1.next[i].used)
+            {
+                p1.next[i].used = true;
+                p1.next[i].objRank = objRank;
+                return p1.next[i];
+            }
+        }
+    }
+
+    p1.next.push_back(Gfx::EngineObjLevel2(true, objRank));
+    return p1.next.back();
+}
+
+Gfx::EngineObjLevel3& Gfx::CEngine::AddLevel3(Gfx::EngineObjLevel2& p2, float min, float max)
+{
+    bool unusedPresent = false;
+    for (int i = 0; i < static_cast<int>( p2.next.size() ); i++)
+    {
+        if (! p2.next[i].used)
+        {
+            unusedPresent = true;
+            continue;
+        }
+
+        if ( (p2.next[i].min == min) && (p2.next[i].max == max) )
+            return p2.next[i];
+    }
+
+    if (unusedPresent)
+    {
+        for (int i = 0; i < static_cast<int>( p2.next.size() ); i++)
+        {
+            if (! p2.next[i].used)
+            {
+                p2.next[i].used = true;
+                p2.next[i].min = min;
+                p2.next[i].max = max;
+                return p2.next[i];
+            }
+        }
+    }
+
+    p2.next.push_back(Gfx::EngineObjLevel3(true, min, max));
+    return p2.next.back();
+}
+
+Gfx::EngineObjLevel4& Gfx::CEngine::AddLevel4(Gfx::EngineObjLevel3& p3, Gfx::EngineTriangleType type,
+                                              const Gfx::Material& material, int state)
+{
+    bool unusedPresent = false;
+    for (int i = 0; i < static_cast<int>( p3.next.size() ); i++)
+    {
+        if (! p3.next[i].used)
+        {
+            unusedPresent = true;
+            continue;
+        }
+
+        if ( (p3.next[i].type == type) && (p3.next[i].material == material) && (p3.next[i].state == state) )
+            return p3.next[i];
+    }
+
+    if (unusedPresent)
+    {
+        for (int i = 0; i < static_cast<int>( p3.next.size() ); i++)
+        {
+            if (! p3.next[i].used)
+            {
+                p3.next[i].used = true;
+                p3.next[i].type = type;
+                p3.next[i].material = material;
+                p3.next[i].state = state;
+                return p3.next[i];
+            }
+        }
+    }
+
+    p3.next.push_back(Gfx::EngineObjLevel4(true, type, material, state));
+    return p3.next.back();
+}
+
+bool Gfx::CEngine::AddTriangles(int objRank, const std::vector<Gfx::VertexTex2>& vertices,
+                                const Gfx::Material& material, int state,
+                                std::string tex1Name, std::string tex2Name,
+                                float min, float max, bool globalUpdate)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    {
+        GetLogger()->Error("AddTriangle(): invalid object rank %d\n", objRank);
+        return false;
+    }
+
+    m_lastSize = m_size;
+    m_lastObjectDetail = m_objectDetail;
+    m_lastClippingDistance = m_clippingDistance;
+
+    Gfx::EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
+    Gfx::EngineObjLevel2& p2 = AddLevel2(p1, objRank);
+    Gfx::EngineObjLevel3& p3 = AddLevel3(p2, min, max);
+    Gfx::EngineObjLevel4& p4 = AddLevel4(p3, Gfx::ENG_TRIANGLE_TYPE_TRIANGLES, material, state);
+
+    p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
+
+    if (globalUpdate)
+    {
+        m_updateGeometry = true;
+    }
+    else
+    {
+        for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
+        {
+            m_objects[objRank].bboxMin.x = Math::Min(vertices[i].coord.x, m_objects[objRank].bboxMin.x);
+            m_objects[objRank].bboxMin.y = Math::Min(vertices[i].coord.y, m_objects[objRank].bboxMin.y);
+            m_objects[objRank].bboxMin.z = Math::Min(vertices[i].coord.z, m_objects[objRank].bboxMin.z);
+            m_objects[objRank].bboxMax.x = Math::Max(vertices[i].coord.x, m_objects[objRank].bboxMax.x);
+            m_objects[objRank].bboxMax.y = Math::Max(vertices[i].coord.y, m_objects[objRank].bboxMax.y);
+            m_objects[objRank].bboxMax.z = Math::Max(vertices[i].coord.z, m_objects[objRank].bboxMax.z);
+        }
+
+        m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
+                                              m_objects[objRank].bboxMax.Length());
+    }
+
+    m_objects[objRank].totalTriangles += vertices.size() / 3;
+
+    return true;
+}
+
+bool Gfx::CEngine::AddSurface(int objRank, const std::vector<Gfx::VertexTex2>& vertices,
+                              const Gfx::Material& material, int state,
+                              std::string tex1Name, std::string tex2Name,
+                              float min, float max, bool globalUpdate)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    {
+        GetLogger()->Error("AddSurface(): invalid object rank %d\n", objRank);
+        return false;
+    }
+
+    m_lastSize = m_size;
+    m_lastObjectDetail = m_objectDetail;
+    m_lastClippingDistance = m_clippingDistance;
+
+    Gfx::EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
+    Gfx::EngineObjLevel2& p2 = AddLevel2(p1, objRank);
+    Gfx::EngineObjLevel3& p3 = AddLevel3(p2, min, max);
+    Gfx::EngineObjLevel4& p4 = AddLevel4(p3, Gfx::ENG_TRIANGLE_TYPE_SURFACE, material, state);
+
+    p4.vertices.insert(p4.vertices.end(), vertices.begin(), vertices.end());
+
+    if (globalUpdate)
+    {
+        m_updateGeometry = true;
+    }
+    else
+    {
+        for (int i = 0; i < static_cast<int>( vertices.size() ); i++)
+        {
+            m_objects[objRank].bboxMin.x = Math::Min(vertices[i].coord.x, m_objects[objRank].bboxMin.x);
+            m_objects[objRank].bboxMin.y = Math::Min(vertices[i].coord.y, m_objects[objRank].bboxMin.y);
+            m_objects[objRank].bboxMin.z = Math::Min(vertices[i].coord.z, m_objects[objRank].bboxMin.z);
+            m_objects[objRank].bboxMax.x = Math::Max(vertices[i].coord.x, m_objects[objRank].bboxMax.x);
+            m_objects[objRank].bboxMax.y = Math::Max(vertices[i].coord.y, m_objects[objRank].bboxMax.y);
+            m_objects[objRank].bboxMax.z = Math::Max(vertices[i].coord.z, m_objects[objRank].bboxMax.z);
+        }
+
+        m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
+                                              m_objects[objRank].bboxMax.Length());
+    }
+
+    m_objects[objRank].totalTriangles += vertices.size() - 2;
+
+    return true;
+}
+
+bool Gfx::CEngine::AddQuick(int objRank, const Gfx::EngineObjLevel4& buffer,
+                            std::string tex1Name, std::string tex2Name,
+                            float min, float max, bool globalUpdate)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    {
+        GetLogger()->Error("AddQuick(): invalid object rank %d\n", objRank);
+        return false;
+    }
+
+    Gfx::EngineObjLevel1& p1 = AddLevel1(tex1Name, tex2Name);
+    Gfx::EngineObjLevel2& p2 = AddLevel2(p1, objRank);
+    Gfx::EngineObjLevel3& p3 = AddLevel3(p2, min, max);
+
+    p3.next.push_back(buffer);
+    p3.next.back().used = true; // ensure that it is used
+
+    if (globalUpdate)
+    {
+        m_updateGeometry = true;
+    }
+    else
+    {
+        for (int i = 0; i < static_cast<int>( buffer.vertices.size() ); i++)
+        {
+            m_objects[objRank].bboxMin.x = Math::Min(buffer.vertices[i].coord.x, m_objects[objRank].bboxMin.x);
+            m_objects[objRank].bboxMin.y = Math::Min(buffer.vertices[i].coord.y, m_objects[objRank].bboxMin.y);
+            m_objects[objRank].bboxMin.z = Math::Min(buffer.vertices[i].coord.z, m_objects[objRank].bboxMin.z);
+            m_objects[objRank].bboxMax.x = Math::Max(buffer.vertices[i].coord.x, m_objects[objRank].bboxMax.x);
+            m_objects[objRank].bboxMax.y = Math::Max(buffer.vertices[i].coord.y, m_objects[objRank].bboxMax.y);
+            m_objects[objRank].bboxMax.z = Math::Max(buffer.vertices[i].coord.z, m_objects[objRank].bboxMax.z);
+        }
+
+        m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
+                                              m_objects[objRank].bboxMax.Length());
+    }
+
+    if (buffer.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+        m_objects[objRank].totalTriangles += buffer.vertices.size() / 3;
+    else // surfaces
+        m_objects[objRank].totalTriangles += buffer.vertices.size() - 2;
+
+    return true;
+}
+
+Gfx::EngineObjLevel4* Gfx::CEngine::FindTriangles(int objRank, const Gfx::Material& material,
+                                                  int state, std::string tex1Name,
+                                                  std::string tex2Name, float min, float max)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    {
+        GetLogger()->Error("FindTriangles(): invalid object rank %d\n", objRank);
+        return nullptr;
+    }
+
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
+
+        if (p1.tex1Name != tex1Name) continue;
+        // TODO: tex2Name compare?
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            if (p2.objRank != objRank) continue;
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                if (! p3.used) continue;
+
+                if (p3.min != min || p3.max != max) continue;
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    if (! p4.used) continue;
+
+                    if ( (p4.state & (~(Gfx::ENG_RSTATE_DUAL_BLACK|Gfx::ENG_RSTATE_DUAL_WHITE))) != state ||
+                         p4.material != material )
+                        continue;
+
+                    return &p4;
+                }
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+int Gfx::CEngine::GetPartialTriangles(int objRank, float min, float max, float percent, int maxCount,
+                                      std::vector<Gfx::EngineTriangle>& triangles)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+    {
+        GetLogger()->Error("GetPartialTriangles(): invalid object rank %d\n", objRank);
+        return 0;
+    }
+
+    int total = m_objects[objRank].totalTriangles;
+    int expectedCount = static_cast<int>(percent * total);
+    triangles.reserve(Math::Min(maxCount, expectedCount));
+
+    int actualCount = 0;
+
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            if (p2.objRank != objRank) continue;
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                if (! p3.used) continue;
+
+                if (p3.min != min || p3.max != max) continue;
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    if (! p4.used) continue;
+
+                    if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                    {
+                        for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 3)
+                        {
+                            if (static_cast<float>(actualCount) / total >= percent)
+                                break;
+
+                            if (actualCount >= maxCount)
+                                break;
+
+                            Gfx::EngineTriangle t;
+                            t.triangle[0] = p4.vertices[i];
+                            t.triangle[1] = p4.vertices[i+1];
+                            t.triangle[2] = p4.vertices[i+2];
+                            t.material = p4.material;
+                            t.state = p4.state;
+                            t.tex1Name = p1.tex1Name;
+                            t.tex2Name = p1.tex2Name;
+
+                            triangles.push_back(t);
+
+                            ++actualCount;
+                        }
+                    }
+                    else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                    {
+                        for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 1)
+                        {
+                            if (static_cast<float>(actualCount) / total >= percent)
+                                break;
+
+                            if (actualCount >= maxCount)
+                                break;
+
+                            Gfx::EngineTriangle t;
+                            t.triangle[0] = p4.vertices[i];
+                            t.triangle[1] = p4.vertices[i+1];
+                            t.triangle[2] = p4.vertices[i+2];
+                            t.material = p4.material;
+                            t.state = p4.state;
+                            t.tex1Name = p1.tex1Name;
+                            t.tex2Name = p1.tex2Name;
+
+                            triangles.push_back(t);
+
+                            ++actualCount;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return actualCount;
+}
+
+void Gfx::CEngine::ChangeLOD()
+{
+    float oldLimit[2] =
+    {
+        GetLimitLOD(0, true),
+        GetLimitLOD(1, true)
+    };
+
+    float newLimit[2] =
+    {
+        GetLimitLOD(0, false),
+        GetLimitLOD(1, false)
+    };
+
+    float oldTerrain = m_terrainVision * m_lastClippingDistance;
+    float newTerrain = m_terrainVision * m_clippingDistance;
+
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                if (! p3.used) continue;
+
+                if ( Math::IsEqual(p3.min, 0.0f       ) &&
+                     Math::IsEqual(p3.max, oldLimit[0]) )
+                {
+                    p3.max = newLimit[0];
+                }
+                else if ( Math::IsEqual(p3.min, oldLimit[0]) &&
+                          Math::IsEqual(p3.max, oldLimit[1]) )
+                {
+                    p3.min = newLimit[0];
+                    p3.max = newLimit[1];
+                }
+                else if ( Math::IsEqual(p3.min, oldLimit[1]) &&
+                          Math::IsEqual(p3.max, 1000000.0f ) )
+                {
+                    p3.min = newLimit[1];
+                }
+                else if ( Math::IsEqual(p3.min, 0.0f      ) &&
+                          Math::IsEqual(p3.max, oldTerrain) )
+                {
+                    p3.max = newTerrain;
+                }
+            }
+        }
+    }
+
+    m_lastSize = m_size;
+    m_lastObjectDetail = m_objectDetail;
+    m_lastClippingDistance = m_clippingDistance;
+}
+
+bool Gfx::CEngine::ChangeSecondTexture(int objRank, const std::string& tex2Name)
+{
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
+
+        if (p1.tex2Name == tex2Name) continue;  // already new
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            if (p2.objRank != objRank) continue;
+
+            Gfx::EngineObjLevel1& newP1 = AddLevel1(p1.tex1Name, tex2Name);
+
+            newP1.next.push_back(Gfx::EngineObjLevel2(true, objRank));
+
+            Gfx::EngineObjLevel2& newP2 = newP1.next.back();
+            newP2.next.swap(p2.next);
+
+            p2.used = false;
+        }
+    }
+    return true;
+}
+
+bool Gfx::CEngine::ChangeTextureMapping(int objRank, const Gfx::Material& mat, int state,
+                                         const std::string& tex1Name, const std::string& tex2Name,
+                                         float min, float max, Gfx::EngineTextureMapping mode,
+                                         float au, float bu, float av, float bv)
+{
+    Gfx::EngineObjLevel4* p4 = FindTriangles(objRank, mat, state, tex1Name, tex2Name, min, max);
+    if (p4 == nullptr)
+        return false;
+
+    int nb = p4->vertices.size();
+
+    if (mode == Gfx::ENG_TEX_MAPPING_X)
+    {
+        for (int i = 0; i < nb; i++)
+        {
+            p4->vertices[i].texCoord.x = p4->vertices[i].coord.z * au + bu;
+            p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * av + bv;
+        }
+    }
+    else if (mode == Gfx::ENG_TEX_MAPPING_Y)
+    {
+        for (int i = 0; i < nb; i++)
+        {
+            p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
+            p4->vertices[i].texCoord.y = p4->vertices[i].coord.z * av + bv;
+        }
+    }
+    else if (mode == Gfx::ENG_TEX_MAPPING_Z)
+    {
+        for (int i = 0; i < nb; i++)
+        {
+            p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
+            p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * av + bv;
+        }
+    }
+    else if (mode == Gfx::ENG_TEX_MAPPING_1X)
+    {
+        for (int i = 0; i < nb; i++)
+        {
+            p4->vertices[i].texCoord.x = p4->vertices[i].coord.x * au + bu;
+        }
+    }
+    else if (mode == Gfx::ENG_TEX_MAPPING_1Y)
+    {
+        for (int i = 0; i < nb; i++)
+        {
+            p4->vertices[i].texCoord.y = p4->vertices[i].coord.y * au + bu;
+        }
+    }
+    else if (mode == Gfx::ENG_TEX_MAPPING_1Z)
+    {
+        for (int i = 0; i < nb; i++)
+        {
+            p4->vertices[i].texCoord.x = p4->vertices[i].coord.z * au + bu;
+        }
+    }
+
+    return true;
+}
+
+bool Gfx::CEngine::TrackTextureMapping(int objRank, const Gfx::Material& mat, int state,
+                                        const std::string& tex1Name, const std::string& tex2Name,
+                                        float min, float max, Gfx::EngineTextureMapping mode,
+                                        float pos, float factor, float tl, float ts, float tt)
+{
+    // TODO track texture mapping: pretty complex code, so leaving it for now
+    GetLogger()->Trace("CEngine::TrackTextureMapping(): stub!\n");
+    return true;
+}
+
+
+bool Gfx::CEngine::CreateShadow(int objRank)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    // Already allocated?
+    if (m_objects[objRank].shadowRank != -1) return true;
+
+    int index = 0;
+    for ( ; index < static_cast<int>( m_shadows.size() ); index++)
+    {
+        if (! m_shadows[index].used)
+        {
+            m_shadows[index].LoadDefault();
+            break;
+        }
+    }
+
+    m_shadows.push_back(Gfx::EngineShadow());
+
+    m_shadows[index].used = true;
+    m_shadows[index].objRank = objRank;
+    m_shadows[index].height = 0.0f;
+
+    m_objects[objRank].shadowRank = index;
+
+    return true;
+}
+
+void Gfx::CEngine::DeleteShadow(int objRank)
+{
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return;
+
+    m_shadows[i].used = false;
+    m_shadows[i].objRank = -1;
+
+    m_objects[objRank].shadowRank = -1;
 }
 
 bool Gfx::CEngine::SetObjectShadowHide(int objRank, bool hide)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return false;
+
+    m_shadows[i].hide = hide;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectShadowType(int objRank, Gfx::EngineShadowType type)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return false;
+
+    m_shadows[i].type = type;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectShadowPos(int objRank, const Math::Vector& pos)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return false;
+
+    m_shadows[i].pos = pos;
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowNormal(int objRank, const Math::Vector& n)
+bool Gfx::CEngine::SetObjectShadowNormal(int objRank, const Math::Vector& normal)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return false;
+
+    m_shadows[i].normal = normal;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectShadowAngle(int objRank, float angle)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return false;
+
+    m_shadows[i].angle = angle;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectShadowRadius(int objRank, float radius)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return false;
+
+    m_shadows[i].radius = radius;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectShadowIntensity(int objRank, float intensity)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return false;
+
+    m_shadows[i].intensity = intensity;
     return true;
 }
 
-bool Gfx::CEngine::SetObjectShadowHeight(int objRank, float h)
+bool Gfx::CEngine::SetObjectShadowHeight(int objRank, float height)
 {
-    // TODO!
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return false;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return false;
+
+    m_shadows[i].height = height;
     return true;
 }
 
 float Gfx::CEngine::GetObjectShadowRadius(int objRank)
 {
-    // TODO!
-    return 0.0f;
+    if ( objRank < 0 || objRank >= static_cast<int>( m_objects.size() ) )
+        return 0.0f;
+
+    int i = m_objects[objRank].shadowRank;
+    if (i == -1)
+        return 0.0f;
+
+    return m_shadows[i].radius;
 }
 
 bool Gfx::CEngine::GetHighlight(Math::Point &p1, Math::Point &p2)
@@ -752,74 +1472,182 @@ bool Gfx::CEngine::GetBBox2D(int objRank, Math::Point &min, Math::Point &max)
     return true;
 }
 
-void Gfx::CEngine::GroundSpotFlush()
+void Gfx::CEngine::FlushGroundSpot()
 {
-    // TODO
+    m_groundSpots.clear();
+    m_firstGroundSpot = true;
+
+    // TODO: blank all shadow textures
 }
 
-int Gfx::CEngine::GroundSpotCreate()
+int Gfx::CEngine::CreateGroundSpot()
 {
-    // TODO!
-    return 0;
+    int index = 0;
+    for ( ; index < static_cast<int>( m_groundSpots.size() ); index++)
+    {
+        if (! m_groundSpots[index].used)
+        {
+            m_groundSpots[index].LoadDefault();
+            break;
+        }
+    }
+
+    m_groundSpots.push_back(Gfx::EngineGroundSpot());
+
+    m_groundSpots[index].used = true;
+    m_groundSpots[index].smooth = 1.0f;
+
+    return index;
 }
 
-void Gfx::CEngine::GroundSpotDelete(int rank)
+void Gfx::CEngine::DeleteGroundSpot(int rank)
 {
-    // TODO!
+    m_groundSpots[rank].used = false;
+    m_groundSpots[rank].pos = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
 bool Gfx::CEngine::SetObjectGroundSpotPos(int rank, const Math::Vector& pos)
 {
-    // TODO!
+    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
+        return 0.0f;
+
+    m_groundSpots[rank].pos = pos;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectGroundSpotRadius(int rank, float radius)
 {
-    // TODO!
+    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
+        return 0.0f;
+
+    m_groundSpots[rank].radius = radius;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectGroundSpotColor(int rank, const Gfx::Color& color)
 {
-    // TODO!
+    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
+        return 0.0f;
+
+    m_groundSpots[rank].color = color;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectGroundSpotMinMax(int rank, float min, float max)
 {
-    // TODO!
+    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
+        return 0.0f;
+
+    m_groundSpots[rank].min = min;
+    m_groundSpots[rank].max = max;
     return true;
 }
 
 bool Gfx::CEngine::SetObjectGroundSpotSmooth(int rank, float smooth)
 {
-    // TODO!
+    if ( rank < 0 || rank >= static_cast<int>( m_groundSpots.size() ) )
+        return 0.0f;
+
+    m_groundSpots[rank].smooth = smooth;
     return true;
 }
 
-int Gfx::CEngine::GroundMarkCreate(Math::Vector pos, float radius,
+void Gfx::CEngine::CreateGroundMark(Math::Vector pos, float radius,
                                    float delay1, float delay2, float delay3,
                                    int dx, int dy, char* table)
 {
-    // TODO!
-    return 0;
+    m_groundMark.LoadDefault();
+
+    m_groundMark.phase     = Gfx::ENG_GR_MARK_PHASE_INC;
+    m_groundMark.delay[0]  = delay1;
+    m_groundMark.delay[1]  = delay2;
+    m_groundMark.delay[2]  = delay3;
+    m_groundMark.pos       = pos;
+    m_groundMark.radius    = radius;
+    m_groundMark.intensity = 0.0f;
+    m_groundMark.dx        = dx;
+    m_groundMark.dy        = dy;
+    m_groundMark.table     = table;
 }
 
-bool Gfx::CEngine::GroundMarkDelete(int rank)
+void Gfx::CEngine::DeleteGroundMark(int rank)
 {
-    // TODO!
-    return true;
+    m_groundMark.LoadDefault();
 }
 
 void Gfx::CEngine::ComputeDistance()
 {
-    // TODO!
+    // TODO: s_resol???
+
+    for (int i = 0; i < static_cast<int>( m_objects.size() ); i++)
+    {
+        if (! m_objects[i].used)
+            continue;
+
+        Math::Vector v;
+        v.x = m_eyePt.x - m_objects[i].transform.Get(1, 4);
+        v.y = m_eyePt.y - m_objects[i].transform.Get(2, 4);
+        v.z = m_eyePt.z - m_objects[i].transform.Get(3, 4);
+        m_objects[i].distance = v.Length();
+    }
 }
 
 void Gfx::CEngine::UpdateGeometry()
 {
-    // TODO!
+    if (! m_updateGeometry)
+        return;
+
+    for (int i = 0; i < static_cast<int>( m_objects.size() ); i++)
+    {
+        m_objects[i].bboxMin.x = 0;
+        m_objects[i].bboxMin.y = 0;
+        m_objects[i].bboxMin.z = 0;
+        m_objects[i].bboxMax.x = 0;
+        m_objects[i].bboxMax.y = 0;
+        m_objects[i].bboxMax.z = 0;
+        m_objects[i].radius = 0;
+    }
+
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                if (! p3.used) continue;
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    if (! p4.used) continue;
+
+                    int objRank = p2.objRank;
+
+                    for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i++)
+                    {
+                            m_objects[objRank].bboxMin.x = Math::Min(p4.vertices[i].coord.x, m_objects[objRank].bboxMin.x);
+                            m_objects[objRank].bboxMin.y = Math::Min(p4.vertices[i].coord.y, m_objects[objRank].bboxMin.y);
+                            m_objects[objRank].bboxMin.z = Math::Min(p4.vertices[i].coord.z, m_objects[objRank].bboxMin.z);
+                            m_objects[objRank].bboxMax.x = Math::Max(p4.vertices[i].coord.x, m_objects[objRank].bboxMax.x);
+                            m_objects[objRank].bboxMax.y = Math::Max(p4.vertices[i].coord.y, m_objects[objRank].bboxMax.y);
+                            m_objects[objRank].bboxMax.z = Math::Max(p4.vertices[i].coord.z, m_objects[objRank].bboxMax.z);
+                    }
+
+                    m_objects[objRank].radius = Math::Max(m_objects[objRank].bboxMin.Length(),
+                                                          m_objects[objRank].bboxMax.Length());
+                }
+            }
+        }
+    }
+
+    m_updateGeometry = false;
 }
 
 void Gfx::CEngine::Update()
@@ -830,25 +1658,147 @@ void Gfx::CEngine::Update()
 
 bool Gfx::CEngine::DetectBBox(int objRank, Math::Point mouse)
 {
-    // TODO!
-    return true;
+    Math::Point min, max;
+    min.x =  1000000.0f;
+    min.y =  1000000.0f;
+    max.x = -1000000.0f;
+    max.y = -1000000.0f;
+
+    for (int i = 0; i < 8; i++)
+    {
+        Math::Vector p;
+
+        if ( i & (1<<0) )  p.x = m_objects[objRank].bboxMin.x;
+        else               p.x = m_objects[objRank].bboxMax.x;
+        if ( i & (1<<1) )  p.y = m_objects[objRank].bboxMin.y;
+        else               p.y = m_objects[objRank].bboxMax.y;
+        if ( i & (1<<2) )  p.z = m_objects[objRank].bboxMin.z;
+        else               p.z = m_objects[objRank].bboxMax.z;
+
+        Math::Vector pp;
+        if ( TransformPoint(pp, objRank, p) )
+        {
+            if (pp.x < min.x) min.x = pp.x;
+            if (pp.x > max.x) max.x = pp.x;
+            if (pp.y < min.y) min.y = pp.y;
+            if (pp.y > max.y) max.y = pp.y;
+        }
+    }
+
+    return ( mouse.x >= min.x &&
+             mouse.x <= max.x &&
+             mouse.y >= min.y &&
+             mouse.y <= max.y );
 }
 
 int Gfx::CEngine::DetectObject(Math::Point mouse)
 {
-    // TODO!
-    return 0;
+    float min = 1000000.0f;
+    int nearest = -1;
+
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            if (m_objects[p2.objRank].type == Gfx::ENG_OBJTYPE_TERRAIN) continue;
+
+            if (! DetectBBox(p2.objRank, mouse)) continue;
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                if (! p3.used) continue;
+
+                if (p3.min != 0.0f) continue;  // LOD B or C?
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    if (! p4.used) continue;
+
+                    if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                    {
+                        for (int i = 0; i < static_cast<int>( p4.vertices.size() ); i += 3)
+                        {
+                            float dist = 0.0f;
+                            if (DetectTriangle(mouse, &p4.vertices[i], p2.objRank, dist) && dist < min)
+                            {
+                                min = dist;
+                                nearest = p2.objRank;
+                            }
+                        }
+                    }
+                    else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                    {
+                        for (int i = 0; i < static_cast<int>( p4.vertices.size() ) - 2; i += 1)
+                        {
+                            float dist = 0.0f;
+                            if (DetectTriangle(mouse, &p4.vertices[i], p2.objRank, dist) && dist < min)
+                            {
+                                min = dist;
+                                nearest = p2.objRank;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return nearest;
 }
 
 bool Gfx::CEngine::DetectTriangle(Math::Point mouse, Gfx::VertexTex2* triangle, int objRank, float& dist)
 {
-    // TODO!
+    Math::Vector p2D[3], p3D;
+
+    for (int i = 0; i < 3; i++)
+    {
+        p3D.x = triangle[i].coord.x;
+        p3D.y = triangle[i].coord.y;
+        p3D.z = triangle[i].coord.z;
+
+        if (! TransformPoint(p2D[i], objRank, p3D))
+            return false;
+    }
+
+    if ( mouse.x < p2D[0].x &&
+         mouse.x < p2D[1].x &&
+         mouse.x < p2D[2].x )  return false;
+    if ( mouse.x > p2D[0].x &&
+         mouse.x > p2D[1].x &&
+         mouse.x > p2D[2].x )  return false;
+    if ( mouse.y < p2D[0].y &&
+         mouse.y < p2D[1].y &&
+         mouse.y < p2D[2].y )  return false;
+    if ( mouse.y > p2D[0].y &&
+         mouse.y > p2D[1].y &&
+         mouse.y > p2D[2].y )  return false;
+
+    Math::Point a, b, c;
+    a.x = p2D[0].x;
+    a.y = p2D[0].y;
+    b.x = p2D[1].x;
+    b.y = p2D[1].y;
+    c.x = p2D[2].x;
+    c.y = p2D[2].y;
+
+    if (! Math::IsInsideTriangle(a, b, c, mouse))
+        return false;
+
+    dist = (p2D[0].z + p2D[1].z + p2D[2].z) / 3.0f;
     return true;
 }
 
 bool Gfx::CEngine::IsVisible(int objRank)
 {
-    // TODO!
+    // TODO: use ComputeSphereVisiblity() after tested OK
     return true;
 }
 
@@ -1130,7 +2080,7 @@ void Gfx::CEngine::SetState(int state, const Gfx::Color& color)
         m_device->SetGlobalAmbient(m_ambientColor[m_rankView]);
 }
 
-void Gfx::CEngine::SetMaterial(const Gfx::Material &mat)
+void Gfx::CEngine::SetMaterial(const Gfx::Material& mat)
 {
     m_lastMaterial = mat;
     m_device->SetMaterial(mat);
@@ -1152,7 +2102,7 @@ void Gfx::CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& 
     m_sound->SetListener(eyePt, lookatPt);
 }
 
-Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName, const Gfx::TextureCreateParams &params)
+Gfx::Texture Gfx::CEngine::CreateTexture(const std::string& texName, const Gfx::TextureCreateParams& params)
 {
     if (m_texBlacklist.find(texName) != m_texBlacklist.end())
         return Gfx::Texture(); // invalid texture
@@ -1169,72 +2119,45 @@ Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName, const Gfx::
         return Gfx::Texture(); // invalid texture
     }
 
-    Gfx::Texture result = m_device->CreateTexture(&img, params);
+    Gfx::Texture tex = m_device->CreateTexture(&img, params);
 
-    if (! result.valid)
+    if (! tex.Valid())
     {
         std::string error = m_device->GetError();
         GetLogger()->Error("Couldn't load texture '%s': %s\n", texName.c_str(), error.c_str());
         GetLogger()->Error("Blacklisting texture '%s'\n", texName.c_str());
         m_texBlacklist.insert(texName);
-        return result;
+        return tex;
     }
 
-    m_texNameMap[texName] = result;
-    m_revTexNameMap[result] = texName;
+    m_texNameMap[texName] = tex;
+    m_revTexNameMap[tex] = texName;
 
-    return result;
+    return tex;
 }
 
-Gfx::Texture Gfx::CEngine::CreateTexture(const std::string &texName)
+Gfx::Texture Gfx::CEngine::LoadTexture(const std::string& name)
 {
-    return CreateTexture(texName, m_defaultTexParams);
+    return LoadTexture(name, m_defaultTexParams);
 }
 
-void Gfx::CEngine::DestroyTexture(const std::string &texName)
-{
-    std::map<std::string, Gfx::Texture>::iterator it = m_texNameMap.find(texName);
-    if (it == m_texNameMap.end())
-        return;
-
-    std::map<Gfx::Texture, std::string>::iterator revIt = m_revTexNameMap.find((*it).second);
-
-    m_device->DestroyTexture((*it).second);
-
-    m_revTexNameMap.erase(revIt);
-    m_texNameMap.erase(it);
-}
-
-bool Gfx::CEngine::LoadTexture(const std::string& name)
+Gfx::Texture Gfx::CEngine::LoadTexture(const std::string& name, const Gfx::TextureCreateParams& params)
 {
     if (m_texBlacklist.find(name) != m_texBlacklist.end())
-        return false;
+        return Gfx::Texture();
 
     std::map<std::string, Gfx::Texture>::iterator it = m_texNameMap.find(name);
     if (it != m_texNameMap.end())
-        return true;
+        return (*it).second;
 
-    Gfx::Texture tex = CreateTexture(name);
-    return tex.valid;
-}
-
-// TODO: create separate variables for 4 quarter names
-void QuarterName(std::string& buffer, const std::string& name, int quarter)
-{
-    size_t pos = name.find('.');
-    if (pos == std::string::npos)
-    {
-        buffer = name;
-        return;
-    }
-
-    buffer = name.substr(0, pos) + std::string(1, static_cast<char>('a' + quarter)) + name.substr(pos);
+    Gfx::Texture tex = CreateTexture(name, params);
+    return tex;
 }
 
 bool Gfx::CEngine::LoadAllTextures()
 {
     LoadTexture("text.png");
-    LoadTexture("mouse.png");
+    m_miceTexture = LoadTexture("mouse.png");
     LoadTexture("button1.png");
     LoadTexture("button2.png");
     LoadTexture("button3.png");
@@ -1243,51 +2166,86 @@ bool Gfx::CEngine::LoadAllTextures()
     LoadTexture("effect02.png");
     LoadTexture("map.png");
 
-    if (! m_backgroundName.empty())
+    if (m_backgroundQuarter)  // image into 4 pieces?
     {
-        if (m_backgroundQuarter)  // image into 4 pieces?
+        if (! m_backgroundName.empty())
         {
             for (int i = 0; i < 4; i++)
-            {
-                std::string name;
-                QuarterName(name, m_backgroundName, i);
-                LoadTexture(name);
-            }
+                m_backgroundQuarterTexs[i] = LoadTexture(m_backgroundQuarterNames[i]);
         }
         else
         {
-            LoadTexture(m_backgroundName);
+            for (int i = 0; i < 4; i++)
+                m_backgroundQuarterTexs[i].SetInvalid();
         }
+    }
+    else
+    {
+        if (! m_backgroundName.empty())
+            m_backgroundFullTex = LoadTexture(m_backgroundName);
+        else
+            m_backgroundFullTex.SetInvalid();
     }
 
     if (! m_foregroundName.empty())
-        LoadTexture(m_foregroundName);
+        m_foregroundTex = LoadTexture(m_foregroundName);
+    else
+        m_foregroundTex.SetInvalid();
 
     m_planet->LoadTexture();
 
     bool ok = true;
 
-    /* TODO
-    D3DObjLevel1*   p1;
-    D3DObjLevel2*   p2;
-    int             l1;
-    p1 = m_objectPointer;
-    for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
     {
-        p2 = p1->table[l1];
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
 
-        if ( p2 == 0 || p2->texName1[0] != 0 )
+        if (! p1.tex1Name.empty())
         {
-            if ( !LoadTexture(p2->texName1) )  ok = false;
+            if (! LoadTexture(p1.tex1Name).Valid())
+                ok = false;
         }
 
-        if ( p2 == 0 || p2->texName2[0] != 0 )
+        if (! p1.tex2Name.empty())
         {
-            if ( !LoadTexture(p2->texName2) )  ok = false;
+            if (! LoadTexture(p1.tex2Name).Valid())
+                ok = false;
         }
-    }*/
+    }
 
     return ok;
+}
+
+void Gfx::CEngine::DeleteTexture(const std::string& texName)
+{
+    auto it = m_texNameMap.find(texName);
+    if (it == m_texNameMap.end())
+        return;
+
+    auto revIt = m_revTexNameMap.find((*it).second);
+
+    m_device->DestroyTexture((*it).second);
+
+    m_revTexNameMap.erase(revIt);
+    m_texNameMap.erase(it);
+}
+
+void Gfx::CEngine::DeleteTexture(const Gfx::Texture& tex)
+{
+    if (! tex.Valid())
+        return;
+
+    auto revIt = m_revTexNameMap.find(tex);
+    if (revIt == m_revTexNameMap.end())
+        return;
+
+    m_device->DestroyTexture(tex);
+
+    auto it = m_texNameMap.find((*revIt).second);
+
+    m_revTexNameMap.erase(revIt);
+    m_texNameMap.erase(it);
 }
 
 bool Gfx::CEngine::SetTexture(const std::string& name, int stage)
@@ -1299,7 +2257,7 @@ bool Gfx::CEngine::SetTexture(const std::string& name, int stage)
         return true;
     }
 
-    if (! LoadTexture(name))
+    if (! LoadTexture(name).Valid())
     {
         m_device->SetTexture(stage, 0); // invalid texture
         return false;
@@ -1314,6 +2272,11 @@ bool Gfx::CEngine::SetTexture(const std::string& name, int stage)
 
     m_device->SetTexture(stage, 0); // invalid texture
     return false; // should not happen normally
+}
+
+void Gfx::CEngine::SetTexture(const Gfx::Texture& tex, int stage)
+{
+    m_device->SetTexture(stage, tex);
 }
 
 void Gfx::CEngine::SetLimitLOD(int rank, float limit)
@@ -1499,10 +2462,31 @@ float Gfx::CEngine::GetFogStart(int rank)
     return m_fogStart[rank];
 }
 
+std::string QuarterName(const std::string& name, int quarter)
+{
+    size_t pos = name.find('.');
+    if (pos == std::string::npos)
+        return name;
+
+    return name.substr(0, pos) + std::string(1, static_cast<char>('a' + quarter)) + name.substr(pos);
+}
+
 void Gfx::CEngine::SetBackground(const std::string& name, Gfx::Color up, Gfx::Color down,
                                  Gfx::Color cloudUp, Gfx::Color cloudDown,
                                  bool full, bool quarter)
 {
+    if (m_backgroundFullTex.Valid())
+    {
+        DeleteTexture(m_backgroundFullTex);
+        m_backgroundFullTex.SetInvalid();
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        DeleteTexture(m_backgroundQuarterTexs[i]);
+        m_backgroundQuarterTexs[i].SetInvalid();
+    }
+
     m_backgroundName      = name;
     m_backgroundColorUp   = up;
     m_backgroundColorDown = down;
@@ -1510,6 +2494,22 @@ void Gfx::CEngine::SetBackground(const std::string& name, Gfx::Color up, Gfx::Co
     m_backgroundCloudDown = cloudDown;
     m_backgroundFull      = full;
     m_backgroundQuarter   = quarter;
+
+    if (! m_backgroundName.empty())
+    {
+        if (m_backgroundQuarter)
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                m_backgroundQuarterNames[i] = QuarterName(name, i);
+                m_backgroundQuarterTexs[i] = LoadTexture(m_backgroundQuarterNames[i]);
+            }
+        }
+        else
+        {
+            m_backgroundFullTex = LoadTexture(m_backgroundName);
+        }
+    }
 }
 
 void Gfx::CEngine::GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& down,
@@ -1527,10 +2527,16 @@ void Gfx::CEngine::GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& 
 
 void Gfx::CEngine::SetForegroundName(const std::string& name)
 {
-    if (! m_foregroundName.empty())
-        DestroyTexture(m_foregroundName);
+    if (m_foregroundTex.Valid())
+    {
+        DeleteTexture(m_foregroundTex);
+        m_foregroundTex.SetInvalid();
+    }
 
     m_foregroundName = name;
+
+    if (! m_foregroundName.empty())
+        m_foregroundTex = LoadTexture(m_foregroundName);
 }
 
 void Gfx::CEngine::SetOverFront(bool front)
@@ -1901,29 +2907,29 @@ void Gfx::CEngine::Draw3DScene()
         {
             p2 = p1->table[l1];
             if ( p2 == 0 )  continue;
-            SetTexture(p2->texName1, 0);
-            SetTexture(p2->texName2, 1);
+            SetTexture(p2->tex1Name, 0);
+            SetTexture(p2->tex2Name, 1);
             for ( l2=0 ; l2<p2->totalUsed ; l2++ )
             {
                 p3 = p2->table[l2];
                 if ( p3 == 0 )  continue;
                 objRank = p3->objRank;
-                if ( m_objectParam[objRank].type != TYPETERRAIN )  continue;
-                if ( !m_objectParam[objRank].bDrawWorld )  continue;
+                if ( m_objects[objRank].type != TYPETERRAIN )  continue;
+                if ( !m_objects[objRank].bDrawWorld )  continue;
 
                 {
-                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objectParam[objRank].transform);
+                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objects[objRank].transform);
                     m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
                 }
 
                 if ( !IsVisible(objRank) )  continue;
-                m_light->LightUpdate(m_objectParam[objRank].type);
+                m_light->LightUpdate(m_objects[objRank].type);
                 for ( l3=0 ; l3<p3->totalUsed ; l3++ )
                 {
                     p4 = p3->table[l3];
                     if ( p4 == 0 )  continue;
-                    if ( m_objectParam[objRank].distance <  p4->min ||
-                            m_objectParam[objRank].distance >= p4->max )  continue;
+                    if ( m_objects[objRank].distance <  p4->min ||
+                            m_objects[objRank].distance >= p4->max )  continue;
                     for ( l4=0 ; l4<p4->totalUsed ; l4++ )
                     {
                         p5 = p4->table[l4];
@@ -1970,29 +2976,29 @@ void Gfx::CEngine::Draw3DScene()
     {
         p2 = p1->table[l1];
         if ( p2 == 0 )  continue;
-        SetTexture(p2->texName1, 0);
-        SetTexture(p2->texName2, 1);
+        SetTexture(p2->tex1Name, 0);
+        SetTexture(p2->tex2Name, 1);
         for ( l2=0 ; l2<p2->totalUsed ; l2++ )
         {
             p3 = p2->table[l2];
             if ( p3 == 0 )  continue;
             objRank = p3->objRank;
-            if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
-            if ( !m_objectParam[objRank].bDrawWorld )  continue;
+            if ( m_bShadow && m_objects[objRank].type == TYPETERRAIN )  continue;
+            if ( !m_objects[objRank].bDrawWorld )  continue;
 
             {
-                D3DMATRIX mat = MAT_TO_D3DMAT(m_objectParam[objRank].transform);
+                D3DMATRIX mat = MAT_TO_D3DMAT(m_objects[objRank].transform);
                 m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
             }
 
             if ( !IsVisible(objRank) )  continue;
-            m_light->LightUpdate(m_objectParam[objRank].type);
+            m_light->LightUpdate(m_objects[objRank].type);
             for ( l3=0 ; l3<p3->totalUsed ; l3++ )
             {
                 p4 = p3->table[l3];
                 if ( p4 == 0 )  continue;
-                if ( m_objectParam[objRank].distance <  p4->min ||
-                        m_objectParam[objRank].distance >= p4->max )  continue;
+                if ( m_objects[objRank].distance <  p4->min ||
+                        m_objects[objRank].distance >= p4->max )  continue;
                 for ( l4=0 ; l4<p4->totalUsed ; l4++ )
                 {
                     p5 = p4->table[l4];
@@ -2002,7 +3008,7 @@ void Gfx::CEngine::Draw3DScene()
                         p6 = p5->table[l5];
                         if ( p6 == 0 )  continue;
                         SetMaterial(p6->material);
-                        if ( m_objectParam[objRank].transparency != 0.0f )  // transparent ?
+                        if ( m_objects[objRank].transparency != 0.0f )  // transparent ?
                         {
                             transparent = true;
                             continue;
@@ -2054,29 +3060,29 @@ void Gfx::CEngine::Draw3DScene()
         {
             p2 = p1->table[l1];
             if ( p2 == 0 )  continue;
-            SetTexture(p2->texName1, 0);
-            SetTexture(p2->texName2, 1);
+            SetTexture(p2->tex1Name, 0);
+            SetTexture(p2->tex2Name, 1);
             for ( l2=0 ; l2<p2->totalUsed ; l2++ )
             {
                 p3 = p2->table[l2];
                 if ( p3 == 0 )  continue;
                 objRank = p3->objRank;
-                if ( m_bShadow && m_objectParam[objRank].type == TYPETERRAIN )  continue;
-                if ( !m_objectParam[objRank].bDrawWorld )  continue;
+                if ( m_bShadow && m_objects[objRank].type == TYPETERRAIN )  continue;
+                if ( !m_objects[objRank].bDrawWorld )  continue;
 
                 {
-                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objectParam[objRank].transform);
+                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objects[objRank].transform);
                     m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
                 }
 
                 if ( !IsVisible(objRank) )  continue;
-                m_light->LightUpdate(m_objectParam[objRank].type);
+                m_light->LightUpdate(m_objects[objRank].type);
                 for ( l3=0 ; l3<p3->totalUsed ; l3++ )
                 {
                     p4 = p3->table[l3];
                     if ( p4 == 0 )  continue;
-                    if ( m_objectParam[objRank].distance <  p4->min ||
-                            m_objectParam[objRank].distance >= p4->max )  continue;
+                    if ( m_objects[objRank].distance <  p4->min ||
+                            m_objects[objRank].distance >= p4->max )  continue;
                     for ( l4=0 ; l4<p4->totalUsed ; l4++ )
                     {
                         p5 = p4->table[l4];
@@ -2086,7 +3092,7 @@ void Gfx::CEngine::Draw3DScene()
                             p6 = p5->table[l5];
                             if ( p6 == 0 )  continue;
                             SetMaterial(p6->material);
-                            if ( m_objectParam[objRank].transparency == 0.0f )  continue;
+                            if ( m_objects[objRank].transparency == 0.0f )  continue;
                             SetState(tState, tColor);
                             if ( p6->type == D3DTYPE6T )
                             {
@@ -2166,28 +3172,28 @@ void Gfx::CEngine::DrawInterface()
             Gfx::EngineObjLevel1* p1 = &m_objectTree[l1];
             p2 = p1->table[l1];
             if ( p2 == 0 )  continue;
-            SetTexture(p2->texName1, 0);
-            SetTexture(p2->texName2, 1);
+            SetTexture(p2->tex1Name, 0);
+            SetTexture(p2->tex2Name, 1);
             for ( l2=0 ; l2<p2->totalUsed ; l2++ )
             {
                 p3 = p2->table[l2];
                 if ( p3 == 0 )  continue;
                 objRank = p3->objRank;
-                if ( !m_objectParam[objRank].bDrawFront )  continue;
+                if ( !m_objects[objRank].bDrawFront )  continue;
 
                 {
-                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objectParam[objRank].transform);
+                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objects[objRank].transform);
                     m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
                 }
 
                 if ( !IsVisible(objRank) )  continue;
-                m_light->LightUpdate(m_objectParam[objRank].type);
+                m_light->LightUpdate(m_objects[objRank].type);
                 for ( l3=0 ; l3<p3->totalUsed ; l3++ )
                 {
                     p4 = p3->table[l3];
                     if ( p4 == 0 )  continue;
-                    if ( m_objectParam[objRank].distance <  p4->min ||
-                         m_objectParam[objRank].distance >= p4->max )  continue;
+                    if ( m_objects[objRank].distance <  p4->min ||
+                         m_objects[objRank].distance >= p4->max )  continue;
                     for ( l4=0 ; l4<p4->totalUsed ; l4++ )
                     {
                         p5 = p4->table[l4];
@@ -2245,7 +3251,7 @@ void Gfx::CEngine::DrawInterface()
 void Gfx::CEngine::UpdateGroundSpotTextures()
 {
     // TODO the original code modifying the textures is very complex, so stub for now
-    GetLogger()->Info("CEngine::UpdateGroundSpotTextures(): stub!\n");
+    GetLogger()->Trace("CEngine::UpdateGroundSpotTextures(): stub!\n");
 }
 
 void Gfx::CEngine::DrawShadow()
@@ -2494,7 +3500,7 @@ void Gfx::CEngine::DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color
 }
 
 // Status: PART_TESTED
-void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, const std::string& name)
+void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, const Gfx::Texture &tex)
 {
     Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
@@ -2529,7 +3535,7 @@ void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, co
         v2 = v1+h;
     }
 
-    SetTexture(name);
+    SetTexture(tex);
     SetState(Gfx::ENG_RSTATE_OPAQUE_TEXTURE | Gfx::ENG_RSTATE_WRAP);
 
     m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
@@ -2560,29 +3566,25 @@ void Gfx::CEngine::DrawBackgroundImage()
         p1.y = 0.5f;
         p2.x = 0.5f;
         p2.y = 1.0f;
-        QuarterName(name, m_backgroundName, 0);
-        DrawBackgroundImageQuarter(p1, p2, name);
+        DrawBackgroundImageQuarter(p1, p2, m_backgroundQuarterTexs[0]);
 
         p1.x = 0.5f;
         p1.y = 0.5f;
         p2.x = 1.0f;
         p2.y = 1.0f;
-        QuarterName(name, m_backgroundName, 1);
-        DrawBackgroundImageQuarter(p1, p2, name);
+        DrawBackgroundImageQuarter(p1, p2, m_backgroundQuarterTexs[1]);
 
         p1.x = 0.0f;
         p1.y = 0.0f;
         p2.x = 0.5f;
         p2.y = 0.5f;
-        QuarterName(name, m_backgroundName, 2);
-        DrawBackgroundImageQuarter(p1, p2, name);
+        DrawBackgroundImageQuarter(p1, p2, m_backgroundQuarterTexs[2]);
 
         p1.x = 0.5f;
         p1.y = 0.0f;
         p2.x = 1.0f;
         p2.y = 0.5f;
-        QuarterName(name, m_backgroundName, 3);
-        DrawBackgroundImageQuarter(p1, p2, name);
+        DrawBackgroundImageQuarter(p1, p2, m_backgroundQuarterTexs[3]);
     }
     else
     {
@@ -2590,7 +3592,7 @@ void Gfx::CEngine::DrawBackgroundImage()
         p1.y = 0.0f;
         p2.x = 1.0f;
         p2.y = 1.0f;
-        DrawBackgroundImageQuarter(p1, p2, m_backgroundName);
+        DrawBackgroundImageQuarter(p1, p2, m_backgroundFullTex);
     }
 }
 
@@ -2634,7 +3636,7 @@ void Gfx::CEngine::DrawForegroundImage()
         Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1))
     };
 
-    SetTexture(m_foregroundName);
+    SetTexture(m_foregroundTex);
     SetState(Gfx::ENG_RSTATE_CLAMP | Gfx::ENG_RSTATE_TTEXTURE_BLACK);
 
     m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);

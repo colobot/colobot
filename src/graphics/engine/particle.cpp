@@ -24,31 +24,31 @@
 
 Gfx::CParticle::CParticle(CInstanceManager* iMan, Gfx::CEngine* engine)
 {
-    GetLogger()->Info("CParticle::CParticle() stub!\n");
+    GetLogger()->Trace("CParticle::CParticle() stub!\n");
     // TODO!
 }
 
 Gfx::CParticle::~CParticle()
 {
-    GetLogger()->Info("CParticle::~CParticle() stub!\n");
+    GetLogger()->Trace("CParticle::~CParticle() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetDevice(Gfx::CDevice* device)
 {
-    GetLogger()->Info("CParticle::SetDevice() stub!\n");
+    GetLogger()->Trace("CParticle::SetDevice() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::FlushParticle()
 {
-    GetLogger()->Info("CParticle::FlushParticle() stub!\n");
+    GetLogger()->Trace("CParticle::FlushParticle() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::FlushParticle(int sheet)
 {
-    GetLogger()->Info("CParticle::FlushParticle() stub!\n");
+    GetLogger()->Trace("CParticle::FlushParticle() stub!\n");
     // TODO!
 }
 
@@ -56,7 +56,7 @@ int Gfx::CParticle::CreateParticle(Math::Vector pos, Math::Vector speed, Math::P
                         Gfx::ParticleType type, float duration, float mass,
                         float windSensitivity, int sheet)
 {
-    GetLogger()->Info("CParticle::CreateParticle() stub!\n");
+    GetLogger()->Trace("CParticle::CreateParticle() stub!\n");
     // TODO!
     return 0;
 }
@@ -65,7 +65,7 @@ int Gfx::CParticle::CreateFrag(Math::Vector pos, Math::Vector speed, Gfx::Engine
                            Gfx::ParticleType type, float duration, float mass,
                            float windSensitivity, int sheet)
 {
-    GetLogger()->Info("CParticle::CreateFrag() stub!\n");
+    GetLogger()->Trace("CParticle::CreateFrag() stub!\n");
     // TODO!
     return 0;
 }
@@ -74,7 +74,7 @@ int Gfx::CParticle::CreatePart(Math::Vector pos, Math::Vector speed, Gfx::Partic
                                float duration, float mass, float weight,
                                float windSensitivity, int sheet)
 {
-    GetLogger()->Info("CParticle::CreatePart() stub!\n");
+    GetLogger()->Trace("CParticle::CreatePart() stub!\n");
     // TODO!
     return 0;
 }
@@ -82,7 +82,7 @@ int Gfx::CParticle::CreatePart(Math::Vector pos, Math::Vector speed, Gfx::Partic
 int Gfx::CParticle::CreateRay(Math::Vector pos, Math::Vector goal, Gfx::ParticleType type, Math::Point dim,
                               float duration, int sheet)
 {
-    GetLogger()->Info("CParticle::CreateRay() stub!\n");
+    GetLogger()->Trace("CParticle::CreateRay() stub!\n");
     // TODO!
     return 0;
 }
@@ -90,7 +90,7 @@ int Gfx::CParticle::CreateRay(Math::Vector pos, Math::Vector goal, Gfx::Particle
 int Gfx::CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Point dim, Gfx::ParticleType type,
                                 float duration, float mass, float length, float width)
 {
-    GetLogger()->Info("CParticle::CreateTrack() stub!\n");
+    GetLogger()->Trace("CParticle::CreateTrack() stub!\n");
     // TODO!
     return 0;
 }
@@ -98,205 +98,205 @@ int Gfx::CParticle::CreateTrack(Math::Vector pos, Math::Vector speed, Math::Poin
 void Gfx::CParticle::CreateWheelTrace(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3,
                                       const Math::Vector &p4, Gfx::ParticleType type)
 {
-    GetLogger()->Info("CParticle::CreateWheelTrace() stub!\n");
+    GetLogger()->Trace("CParticle::CreateWheelTrace() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DeleteParticle(Gfx::ParticleType type)
 {
-    GetLogger()->Info("CParticle::DeleteParticle() stub!\n");
+    GetLogger()->Trace("CParticle::DeleteParticle() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DeleteParticle(int channel)
 {
-    GetLogger()->Info("CParticle::DeleteParticle() stub!\n");
+    GetLogger()->Trace("CParticle::DeleteParticle() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetObjectLink(int channel, CObject *object)
 {
-    GetLogger()->Info("CParticle::SetObjectLink() stub!\n");
+    GetLogger()->Trace("CParticle::SetObjectLink() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetObjectFather(int channel, CObject *object)
 {
-    GetLogger()->Info("CParticle::SetObjectFather() stub!\n");
+    GetLogger()->Trace("CParticle::SetObjectFather() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetPosition(int channel, Math::Vector pos)
 {
-    GetLogger()->Info("CParticle::SetPosition() stub!\n");
+    GetLogger()->Trace("CParticle::SetPosition() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetDimension(int channel, Math::Point dim)
 {
-    GetLogger()->Info("CParticle::SetDimension() stub!\n");
+    GetLogger()->Trace("CParticle::SetDimension() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetZoom(int channel, float zoom)
 {
-    GetLogger()->Info("CParticle::SetZoom() stub!\n");
+    GetLogger()->Trace("CParticle::SetZoom() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetAngle(int channel, float angle)
 {
-    GetLogger()->Info("CParticle::SetAngle() stub!\n");
+    GetLogger()->Trace("CParticle::SetAngle() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetIntensity(int channel, float intensity)
 {
-    GetLogger()->Info("CParticle::SetIntensity() stub!\n");
+    GetLogger()->Trace("CParticle::SetIntensity() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetParam(int channel, Math::Vector pos, Math::Point dim, float zoom, float angle, float intensity)
 {
-    GetLogger()->Info("CParticle::SetParam() stub!\n");
+    GetLogger()->Trace("CParticle::SetParam() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::SetPhase(int channel, Gfx::ParticlePhase phase, float duration)
 {
-    GetLogger()->Info("CParticle::SetPhase() stub!\n");
+    GetLogger()->Trace("CParticle::SetPhase() stub!\n");
     // TODO!
 }
 
 bool Gfx::CParticle::GetPosition(int channel, Math::Vector &pos)
 {
-    GetLogger()->Info("CParticle::GetPosition() stub!\n");
+    GetLogger()->Trace("CParticle::GetPosition() stub!\n");
     // TODO!
     return true;
 }
 
 Gfx::Color Gfx::CParticle::GetFogColor(Math::Vector pos)
 {
-    GetLogger()->Info("CParticle::GetFogColor() stub!\n");
+    GetLogger()->Trace("CParticle::GetFogColor() stub!\n");
     // TODO!
     return Gfx::Color();
 }
 
 void Gfx::CParticle::SetFrameUpdate(int sheet, bool update)
 {
-    GetLogger()->Info("CParticle::SetFrameUpdate() stub!\n");
+    GetLogger()->Trace("CParticle::SetFrameUpdate() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::FrameParticle(float rTime)
 {
-    GetLogger()->Info("CParticle::FrameParticle() stub!\n");
+    GetLogger()->Trace("CParticle::FrameParticle() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DrawParticle(int sheet)
 {
-    GetLogger()->Info("CParticle::DrawParticle() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticle() stub!\n");
     // TODO!
 }
 
 bool Gfx::CParticle::WriteWheelTrace(char *filename, int width, int height, Math::Vector dl, Math::Vector ur)
 {
-    GetLogger()->Info("CParticle::WriteWheelTrace() stub!\n");
+    GetLogger()->Trace("CParticle::WriteWheelTrace() stub!\n");
     // TODO!
     return true;
 }
 
 void Gfx::CParticle::DeleteRank(int rank)
 {
-    GetLogger()->Info("CParticle::DeleteRank() stub!\n");
+    GetLogger()->Trace("CParticle::DeleteRank() stub!\n");
     // TODO!
 }
 
 bool Gfx::CParticle::CheckChannel(int &channel)
 {
-    GetLogger()->Info("CParticle::CheckChannel() stub!\n");
+    GetLogger()->Trace("CParticle::CheckChannel() stub!\n");
     // TODO!
     return true;
 }
 
 void Gfx::CParticle::DrawParticleTriangle(int i)
 {
-    GetLogger()->Info("CParticle::DrawParticleTriangle() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticleTriangle() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DrawParticleNorm(int i)
 {
-    GetLogger()->Info("CParticle::DrawParticleNorm() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticleNorm() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DrawParticleFlat(int i)
 {
-    GetLogger()->Info("CParticle::DrawParticleFlat() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticleFlat() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DrawParticleFog(int i)
 {
-    GetLogger()->Info("CParticle::DrawParticleFog() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticleFog() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DrawParticleRay(int i)
 {
-    GetLogger()->Info("CParticle::DrawParticleRay() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticleRay() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DrawParticleSphere(int i)
 {
-    GetLogger()->Info("CParticle::DrawParticleSphere() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticleSphere() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DrawParticleCylinder(int i)
 {
-    GetLogger()->Info("CParticle::DrawParticleCylinder() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticleCylinder() stub!\n");
     // TODO!
 }
 
 void Gfx::CParticle::DrawParticleWheel(int i)
 {
-    GetLogger()->Info("CParticle::DrawParticleWheel() stub!\n");
+    GetLogger()->Trace("CParticle::DrawParticleWheel() stub!\n");
     // TODO!
 }
 
 CObject* Gfx::CParticle::SearchObjectGun(Math::Vector old, Math::Vector pos, Gfx::ParticleType type, CObject *father)
 {
-    GetLogger()->Info("CParticle::SearchObjectGun() stub!\n");
+    GetLogger()->Trace("CParticle::SearchObjectGun() stub!\n");
     // TODO!
     return nullptr;
 }
 
 CObject* Gfx::CParticle::SearchObjectRay(Math::Vector pos, Math::Vector goal, Gfx::ParticleType type, CObject *father)
 {
-    GetLogger()->Info("CParticle::SearchObjectRay() stub!\n");
+    GetLogger()->Trace("CParticle::SearchObjectRay() stub!\n");
     // TODO!
     return nullptr;
 }
 
 void Gfx::CParticle::Play(Sound sound, Math::Vector pos, float amplitude)
 {
-    GetLogger()->Info("CParticle::Play() stub!\n");
+    GetLogger()->Trace("CParticle::Play() stub!\n");
     // TODO!
 }
 
 bool Gfx::CParticle::TrackMove(int i, Math::Vector pos, float progress)
 {
-    GetLogger()->Info("CParticle::TrackMove() stub!\n");
+    GetLogger()->Trace("CParticle::TrackMove() stub!\n");
     // TODO!
     return true;
 }
 
 void Gfx::CParticle::TrackDraw(int i, Gfx::ParticleType type)
 {
-    GetLogger()->Info("CParticle::TrackDraw() stub!\n");
+    GetLogger()->Trace("CParticle::TrackDraw() stub!\n");
     // TODO!
 }
