@@ -192,9 +192,7 @@ struct TextureStageParams
   Also contains some additional data. */
 struct Texture
 {
-    //! Whether the texture (ID) is valid
-    bool valid;
-    //! ID of the texture in graphics engine
+    //! ID of the texture in graphics engine; 0 = invalid texture
     unsigned int id;
     //! Size of texture
     Math::IntPoint size;
@@ -203,9 +201,20 @@ struct Texture
 
     Texture()
     {
-        valid = false;
         id = 0;
         alpha = false;
+    }
+
+    //! Returns whether the texture is valid (ID != 0)
+    bool Valid() const
+    {
+        return id != 0;
+    }
+
+    //! Sets the ID to invalid value (0)
+    void SetInvalid()
+    {
+        id = 0;
     }
 
     //! Comparator for use in texture maps and sets
@@ -213,13 +222,13 @@ struct Texture
     {
         // Invalid textures are always "less than" every other texture
 
-        if ( (!valid) && (!other.valid) )
+        if ( (! Valid()) && (! other.Valid()) )
             return false;
 
-        if (!valid)
+        if (! Valid())
             return true;
 
-        if (!other.valid)
+        if (! other.Valid())
             return false;
 
         return id < other.id;
@@ -228,9 +237,9 @@ struct Texture
     //! Comparator
     inline bool operator==(const Gfx::Texture &other) const
     {
-        if (valid != other.valid)
+        if (Valid() != other.Valid())
             return false;
-        if ( (!valid) && (!other.valid) )
+        if ( (! Valid()) && (! other.Valid()) )
             return true;
 
         return id == other.id;
