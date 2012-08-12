@@ -722,7 +722,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     g_unit = 4.0f;
 
     m_gamerName[0] = 0;
-    GetLocalProfileString("Gamer", "LastName", m_gamerName, 100);
+    GetProfile()->GetLocalProfileString("Gamer", "LastName", m_gamerName, 100);
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
     m_dialog->SetupRecall();

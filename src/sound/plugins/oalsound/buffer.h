@@ -14,20 +14,35 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// plugin.h
-
+// buffer.h
 
 #pragma once
 
+#include <string>
 
-#define PLUGIN_INTERFACE(class_type, interface_type) \
-    extern "C" interface_type* installPlugin() { return (interface_type *)new class_type(); } \
-    extern "C" void uninstallPlugin(class_type *_class) { delete _class; }
+#include <AL/alut.h>
 
+#include <sound/sound.h>
+#include <common/logger.h>
 
-class CPlugin {
+#include "check.h"
+
+class Buffer
+{
     public:
-        virtual char* PluginName() = 0;
-        virtual int PluginVersion() = 0;
-};
+        Buffer();
+        ~Buffer();
 
+        bool LoadFromFile(std::string, Sound);
+        bool IsLoaded();
+
+        Sound GetSoundType();
+        ALuint GetBuffer();
+        float GetDuration();
+
+    private:
+        ALuint mBuffer;
+        Sound mSound;
+        bool mLoaded;
+        float mDuration;
+};

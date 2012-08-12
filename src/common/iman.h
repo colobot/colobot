@@ -18,8 +18,8 @@
 
 #pragma once
 
-
-#include "common/misc.h"
+#include <common/singleton.h>
+#include <common/misc.h>
 
 
 
@@ -32,7 +32,7 @@ struct BaseClass
 
 
 
-class CInstanceManager
+class CInstanceManager : public CSingleton<CInstanceManager>
 {
 public:
     CInstanceManager();
@@ -44,6 +44,8 @@ public:
     bool    DeleteInstance(ClassType classType, void* pointer);
     void*   SearchInstance(ClassType classType, int rank=0);
 
+    static CInstanceManager& GetInstance();
+    static CInstanceManager* GetInstancePointer();
 
 protected:
     void    Compress(ClassType classType);

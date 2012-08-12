@@ -21,6 +21,7 @@
 
 #include <string>
 #include <cstdarg>
+#include <cstdio>
 
 #include <common/singleton.h>
 
@@ -57,41 +58,38 @@ class CLogger : public CSingleton<CLogger>
         ~CLogger();
 
         /** Write message to console or file
-         * @param const char str - message to write
+         * @param str - message to write
          * @param ... - additional arguments
          */
         void Message(const char *str, ...);
 
         /** Write message to console or file with LOG_INFO level
-         * @param const char str - message to write
+         * @param str - message to write
          * @param ... - additional arguments
          */
         void Info(const char *str, ...);
 
         /** Write message to console or file with LOG_WARN level
-         * @param const char str - message to write
+         * @param str - message to write
          * @param ... - additional arguments
          */
         void Warn(const char *str, ...);
 
         /** Write message to console or file with LOG_ERROR level
-         * @param const char str - message to write
+         * @param str - message to write
          * @param ... - additional arguments
          */
         void Error(const char *str, ...);
 
         /** Set output file to write logs to
-         * @param std::string filename - output file to write to
+         * @param filename - output file to write to
          */
         void SetOutputFile(std::string filename);
 
         /** Set log level. Logs with level below will not be shown
-         * @param LogType level - minimum log level to write
+         * @param level - minimum log level to write
          */
         void SetLogLevel(LogType level);
-
-        static CLogger& GetInstance();
-        static CLogger* GetInstancePointer();
 
     private:
         std::string mFilename;

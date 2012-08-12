@@ -122,6 +122,7 @@ bool CApplication::ParseArguments(int argc, char *argv[])
         {
             waitDataDir = false;
             m_dataPath = arg;
+            continue;
         }
 
         if (arg == "-debug")
@@ -152,10 +153,6 @@ bool CApplication::Create()
 
     // Temporarily -- only in windowed mode
     m_deviceConfig.fullScreen = false;
-
-    // Create the 3D engine
-    m_engine = new Gfx::CEngine(m_iMan, this);
-
 
 /*    // Create the sound instance.
     m_sound = new CSound(m_iMan);
@@ -218,27 +215,20 @@ bool CApplication::Create()
     if (! m_device->Create() )
     {
         SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                      std::string("Error in CDevice::Create() :\n") +
-                      std::string(m_device->GetError()) );
+                      std::string("Error in CDevice::Create()") );
         m_exitCode = 1;
         return false;
     }
 
+    // Create the 3D engine
+    m_engine = new Gfx::CEngine(m_iMan, this);
+
     m_engine->SetDevice(m_device);
+
     if (! m_engine->Create() )
     {
         SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                      std::string("Error in CEngine::Create() :\n") +
-                      std::string(m_engine->GetError()) );
-        m_exitCode = 1;
-        return false;
-    }
-
-    if (! m_engine->AfterDeviceSetInit() )
-    {
-        SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                      std::string("Error in CEngine::AfterDeviceSetInit() :\n") +
-                      std::string(m_engine->GetError()) );
+                      std::string("Error in CEngine::Init()") );
         m_exitCode = 1;
         return false;
     }
@@ -293,7 +283,7 @@ bool CApplication::CreateVideoSurface()
     if (m_deviceConfig.hardwareAccel)
         SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
-    m_private->surface = SDL_SetVideoMode(m_deviceConfig.size.w, m_deviceConfig.size.h,
+    m_private->surface = SDL_SetVideoMode(m_deviceConfig.size.x, m_deviceConfig.size.y,
                                           m_deviceConfig.bpp, videoFlags);
 
     return true;
@@ -315,8 +305,7 @@ void CApplication::Destroy()
 
     if (m_engine != NULL)
     {
-        if (m_engine->GetWasInit())
-            m_engine->Destroy();
+        m_engine->Destroy();
 
         delete m_engine;
         m_engine = NULL;
@@ -324,8 +313,7 @@ void CApplication::Destroy()
 
     if (m_device != NULL)
     {
-        if (m_device->GetWasInit())
-            m_device->Destroy();
+        m_device->Destroy();
 
         delete m_device;
         m_device = NULL;
@@ -508,6 +496,14 @@ void CApplication::UpdateJoystick()
     }
 }
 
+void CApplication::UpdateMouse()
+{
+    Math::IntPoint pos;
+    SDL_GetMouseState(&pos.x, &pos.y);
+    m_systemMousePos = m_engine->WindowToInterfaceCoords(pos);
+    m_engine->SetMousePos(m_systemMousePos);
+}
+
 int CApplication::Run()
 {
     m_active = true;
@@ -582,17 +578,12 @@ int CApplication::Run()
                     m_robotMain->ProcessEvent(event); */
             }
 
-            // Update game and render a frame during idle time (no messages are waiting)
-            bool ok = Render();
+            /* Update mouse position explicitly right before rendering
+             * because mouse events are usually way behind */
+            UpdateMouse();
 
-            // If an error occurs, push quit event to the queue
-            if (! ok)
-            {
-                SDL_Event quitEvent;
-                memset(&quitEvent, 0, sizeof(SDL_Event));
-                quitEvent.type = SDL_QUIT;
-                SDL_PushEvent(&quitEvent);
-            }
+            // Update game and render a frame during idle time (no messages are waiting)
+            Render();
         }
     }
 
@@ -614,21 +605,6 @@ PressState TranslatePressState(unsigned char state)
         return STATE_PRESSED;
     else
         return STATE_RELEASED;
-}
-
-/** Conversion of the position of the mouse from window coords to interface coords:
-     - x: 0=left, 1=right
-     - y: 0=down, 1=up */
-Math::Point CApplication::WindowToInterfaceCoords(Math::IntPoint pos)
-{
-    return Math::Point(        static_cast<float>(pos.x) / static_cast<float>(m_deviceConfig.size.w),
-                        1.0f - static_cast<float>(pos.y) / static_cast<float>(m_deviceConfig.size.h)  );
-}
-
-Math::IntPoint CApplication::InterfaceToWindowCoords(Math::Point pos)
-{
-    return Math::IntPoint(static_cast<int>(pos.x * m_deviceConfig.size.w),
-                          static_cast<int>((1.0f - pos.y) * m_deviceConfig.size.h));
 }
 
 /** The SDL event parsed is stored internally.
@@ -666,14 +642,16 @@ Event CApplication::ParseEvent()
 
         event.mouseButton.button = m_private->currentEvent.button.button;
         event.mouseButton.state = TranslatePressState(m_private->currentEvent.button.state);
-        event.mouseButton.pos = WindowToInterfaceCoords(Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
+        event.mouseButton.pos = m_engine->WindowToInterfaceCoords(
+            Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
         event.type = EVENT_MOUSE_MOVE;
 
         event.mouseMove.state = TranslatePressState(m_private->currentEvent.button.state);
-        event.mouseMove.pos = WindowToInterfaceCoords(Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
+        event.mouseMove.pos = m_engine->WindowToInterfaceCoords(
+            Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
     }
     else if (m_private->currentEvent.type == SDL_JOYAXISMOTION)
     {
@@ -774,17 +752,13 @@ bool CApplication::ProcessEvent(const Event &event)
     return true;
 }
 
-/** Renders the frame and swaps buffers as necessary. Returns \c false on error. */
-bool CApplication::Render()
+/** Renders the frame and swaps buffers as necessary */
+void CApplication::Render()
 {
-    bool result = m_engine->Render();
-    if (! result)
-        return false;
+    m_engine->Render();
 
     if (m_deviceConfig.doubleBuf)
         SDL_GL_SwapBuffers();
-
-    return true;
 }
 
 void CApplication::StepSimulation(float rTime)
@@ -792,7 +766,12 @@ void CApplication::StepSimulation(float rTime)
     // TODO
 }
 
-VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntSize> &resolutions,
+Gfx::GLDeviceConfig CApplication::GetVideoConfig()
+{
+    return m_deviceConfig;
+}
+
+VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntPoint> &resolutions,
                                                       bool fullScreen, bool resizeable)
 {
     resolutions.clear();
@@ -830,7 +809,7 @@ VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntSize>
 
 
     for (int i = 0; modes[i] != NULL; ++i)
-        resolutions.push_back(Math::IntSize(modes[i]->w, modes[i]->h));
+        resolutions.push_back(Math::IntPoint(modes[i]->w, modes[i]->h));
 
     return VIDEO_QUERY_OK;
 }
@@ -888,10 +867,9 @@ bool CApplication::GetSystemMouseVisibile()
     return result == SDL_ENABLE;
 }
 
-
 void CApplication::SetSystemMousePos(Math::Point pos)
 {
-    Math::IntPoint windowPos = InterfaceToWindowCoords(pos);
+    Math::IntPoint windowPos = m_engine->InterfaceToWindowCoords(pos);
     SDL_WarpMouse(windowPos.x, windowPos.y);
     m_systemMousePos = pos;
 }

@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// cloud.h
+/**
+ * \file graphics/engine/cloud.h
+ * \brief Cloud rendering - Gfx::CCloud class
+ */
 
 #pragma once
 
@@ -23,6 +26,9 @@
 #include "graphics/core/color.h"
 #include "math/point.h"
 #include "math/vector.h"
+
+#include <vector>
+#include <string>
 
 
 
@@ -34,13 +40,20 @@ namespace Gfx {
 class CEngine;
 class CTerrain;
 
-const short MAXCLOUDLINE = 100;
-
 struct CloudLine
 {
-    short       x, y;       // beginning
-    short       len;        // in length x
+    //! Beginning
+    short       x, y;
+    //! In length x
+    short       len;
     float       px1, px2, pz;
+
+    CloudLine()
+    {
+        x = y = 0;
+        len = 0;
+        px1 = px2 = pz = 0;
+    }
 };
 
 
@@ -51,43 +64,59 @@ public:
     ~CCloud();
 
     bool        EventProcess(const Event &event);
+    //! Removes all the clouds
     void        Flush();
-    bool        Create(const char *filename, Gfx::Color diffuse, Gfx::Color ambient, float level);
+    //! Creates all areas of cloud
+    void        Create(const std::string& fileName, Gfx::Color diffuse, Gfx::Color ambient, float level);
+    //! Draw the clouds
     void        Draw();
 
-    bool        SetLevel(float level);
-    float       RetLevel();
+    //! Modifies the cloud level
+    void        SetLevel(float level);
+    //! Returns the current level of clouds
+    float       GetLevel();
 
-    void        SetEnable(bool bEnable);
-    bool        RetEnable();
+    //! Activate management of clouds
+    void        SetEnable(bool enable);
+    bool        GetEnable();
 
 protected:
+    //! Makes the clouds evolve
     bool        EventFrame(const Event &event);
-    void        AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep, Math::Point &uv1, Math::Point &uv2);
-    bool        CreateLine(int x, int y, int len);
+    //! Adjusts the position to normal, to imitate the clouds at movement
+    void        AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep,
+                            Math::Point &uv1, Math::Point &uv2);
+    //! Updates the positions, relative to the ground
+    void        CreateLine(int x, int y, int len);
 
 protected:
-    CInstanceManager*   m_iMan;
-    CEngine*        m_engine;
-    CTerrain*       m_terrain;
+    CInstanceManager* m_iMan;
+    Gfx::CEngine*     m_engine;
+    Gfx::CTerrain*    m_terrain;
 
-    char            m_filename[100];
-    float           m_level;        // overall level
-    Math::Point         m_speed;        // feedrate (wind)
-    Gfx::Color      m_diffuse;      // diffuse color
-    Gfx::Color      m_ambient;      // ambient color
+    std::string     m_fileName;
+    //! Overall level
+    float           m_level;
+    //! Feedrate (wind)
+    Math::Point     m_speed;
+    //! Diffuse color
+    Gfx::Color      m_diffuse;
+    //! Ambient color
+    Gfx::Color      m_ambient;
     float           m_time;
     float           m_lastTest;
     int             m_subdiv;
 
-    Math::Vector        m_wind;         // wind speed
-    int         m_brick;        // brick mosaic
-    float           m_size;         // size of a brick element
+    //! Wind speed
+    Math::Vector    m_wind;
+    //! Brick mosaic
+    int             m_brick;
+    //! Size of a brick element
+    float           m_size;
 
-    int         m_lineUsed;
-    CloudLine       m_line[MAXCLOUDLINE];
+    std::vector<Gfx::CloudLine> m_line;
 
-    bool            m_bEnable;
+    bool            m_enable;
 };
 
 

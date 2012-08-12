@@ -15,9 +15,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-/** @defgroup MathGeometryModule math/geometry.h
-   Contains math functions related to 3D geometry calculations,
-   transformations, etc.
+/**
+ * \file math/geometry.h
+ * \brief Math functions related to 3D geometry calculations, transformations, etc.
  */
 
 #pragma once
@@ -36,18 +36,15 @@
 namespace Math
 {
 
-/* @{ */ // start of group
-
-
 //! Returns py up on the line \a a - \a b
 inline float MidPoint(const Math::Point &a, const Math::Point &b, float px)
 {
     if (IsEqual(a.x, b.x))
     {
         if (a.y < b.y)
-            return HUGE;
+            return Math::HUGE_NUM;
         else
-            return -HUGE;
+            return -Math::HUGE_NUM;
     }
     return (b.y-a.y) * (px-a.x) / (b.x-a.x) + a.y;
 }
@@ -565,7 +562,5 @@ inline Math::Vector RotateView(Math::Vector center, float angleH, float angleV, 
 
     return eye+center;
 }
-
-/* @} */ // end of group
 
 }; // namespace Math

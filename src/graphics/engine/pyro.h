@@ -15,15 +15,16 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pyro.h
+/**
+ * \file graphics/engine/pyro.h
+ * \brief Fire effect rendering - Gfx::CPyro class
+ */
 
 #pragma once
 
 #include "common/misc.h"
 #include "graphics/engine/engine.h"
-//#include "object/object.h"
-// TEMPORARILY!
-enum ObjectType {};
+#include "object/object.h"
 
 
 class CInstanceManager;
@@ -90,13 +91,14 @@ struct PyroLightOper
 
 
 
-class CPyro {
+class CPyro
+{
 public:
     CPyro(CInstanceManager* iMan);
     ~CPyro();
 
-    void        DeleteObject(bool bAll=false);
-    bool        Create(PyroType type, CObject* pObj, float force=1.0f);
+    void        DeleteObject(bool all=false);
+    bool        Create(Gfx::PyroType type, CObject* pObj, float force=1.0f);
     bool        EventProcess(const Event &event);
     Error       IsEnded();
     void        CutObjectLink(CObject* pObj);
@@ -104,7 +106,7 @@ public:
 protected:
     void        DisplayError(PyroType type, CObject* pObj);
     bool        CreateLight(Math::Vector pos, float height);
-    void        DeleteObject(bool bPrimary, bool bSecondary);
+    void        DeleteObject(bool primary, bool secondary);
 
     void        CreateTriangle(CObject* pObj, ObjectType oType, int part);
 
@@ -127,21 +129,21 @@ protected:
     void        LightOperFrame(float rTime);
 
 protected:
-    CInstanceManager* m_iMan;
-    CEngine*        m_engine;
-    CTerrain*       m_terrain;
-    CCamera*        m_camera;
-    CParticle*      m_particule;
-    CLight*     m_light;
-    CObject*        m_object;
-    CDisplayText*   m_displayText;
-    CRobotMain*     m_main;
-    CSound*         m_sound;
+    CInstanceManager*    m_iMan;
+    Gfx::CEngine*        m_engine;
+    Gfx::CTerrain*       m_terrain;
+    Gfx::CCamera*        m_camera;
+    Gfx::CParticle*      m_particule;
+    Gfx::CLightManager*  m_lightMan;
+    CObject*             m_object;
+    CDisplayText*        m_displayText;
+    CRobotMain*          m_main;
+    CSound*              m_sound;
 
-    Math::Vector        m_pos;          // center of the effect
-    Math::Vector        m_posPower;     // center of the battery
-    bool            m_bPower;       // battery exists?
-    PyroType        m_type;
+    Math::Vector    m_pos;          // center of the effect
+    Math::Vector    m_posPower;     // center of the battery
+    bool            m_power;       // battery exists?
+    Gfx::PyroType   m_type;
     float           m_force;
     float           m_size;
     float           m_progress;
@@ -153,22 +155,22 @@ protected:
 
     int             m_lightRank;
     int             m_lightOperTotal;
-    PyroLightOper   m_lightOper[10];
+    Gfx::PyroLightOper m_lightOper[10];
     float           m_lightHeight;
 
     ObjectType      m_burnType;
     int             m_burnPartTotal;
-    PyroBurnPart    m_burnPart[10];
+    Gfx::PyroBurnPart m_burnPart[10];
     int             m_burnKeepPart[10];
     float           m_burnFall;
 
     float           m_fallFloor;
     float           m_fallSpeed;
     float           m_fallBulletTime;
-    bool            m_bFallEnding;
+    bool            m_fallEnding;
 
     int             m_crashSphereUsed;  // number of spheres used
-    Math::Vector        m_crashSpherePos[50];
+    Math::Vector    m_crashSpherePos[50];
     float           m_crashSphereRadius[50];
 };
 

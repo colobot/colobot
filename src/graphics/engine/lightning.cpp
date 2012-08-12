@@ -19,5 +19,71 @@
 
 #include "graphics/engine/lightning.h"
 
+#include "common/logger.h"
 
-// TODO implementation
+
+Gfx::CLightning::CLightning(CInstanceManager* iMan, Gfx::CEngine* engine)
+{
+    GetLogger()->Info("CLightning::CLightning() stub!\n");
+    // TODO!
+}
+
+Gfx::CLightning::~CLightning()
+{
+    GetLogger()->Info("CLightning::~CLightning() stub!\n");
+    // TODO!
+}
+
+void Gfx::CLightning::Flush()
+{
+    GetLogger()->Info("CLightning::Flush() stub!\n");
+    // TODO!
+}
+
+bool Gfx::CLightning::EventProcess(const Event &event)
+{
+    GetLogger()->Info("CLightning::EventProcess() stub!\n");
+    // TODO!
+    return true;
+}
+
+bool Gfx::CLightning::Create(float sleep, float delay, float magnetic)
+{
+    GetLogger()->Info("CLightning::Create() stub!\n");
+    // TODO!
+    return true;
+}
+
+bool Gfx::CLightning::GetStatus(float &sleep, float &delay, float &magnetic, float &progress)
+{
+    GetLogger()->Info("CLightning::GetStatus() stub!\n");
+    // TODO!
+    return true;
+}
+
+bool Gfx::CLightning::SetStatus(float sleep, float delay, float magnetic, float progress)
+{
+    GetLogger()->Info("CLightning::SetStatus() stub!\n");
+    // TODO!
+    return true;
+}
+
+void Gfx::CLightning::Draw()
+{
+    GetLogger()->Info("CLightning::Draw() stub!\n");
+    // TODO!
+}
+
+bool Gfx::CLightning::EventFrame(const Event &event)
+{
+    GetLogger()->Info("CLightning::EventFrame() stub!\n");
+    // TODO!
+    return true;
+}
+
+CObject* Gfx::CLightning::SearchObject(Math::Vector pos)
+{
+    GetLogger()->Info("CLightning::SearchObject() stub!\n");
+    // TODO!
+    return nullptr;
+}
