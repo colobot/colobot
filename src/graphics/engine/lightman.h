@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// lightman.h
+/**
+ * \file graphics/engine/lightman.h
+ * \brief Dynamic light manager - Gfx::CLightManager class
+ */
 
 #pragma once
 

@@ -14,8 +14,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see    http://www.gnu.org/licenses/.
 
-/** @defgroup MathPointModule math/point.h
-     Contains the Point struct and related functions.
+/**
+ * \file math/point.h
+ * \brief Point struct and related functions
  */
 
 #pragma once
@@ -30,8 +31,6 @@
 // Math module namespace
 namespace Math
 {
-
-/* @{ */ // start of group
 
 /** \struct Point math/point.h
     \brief 2D point
@@ -187,7 +186,5 @@ inline float Distance(const Point &a, const Point &b)
 {
     return sqrtf((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
 }
-
-/* @} */ // end of group
 
 }; // namespace Math

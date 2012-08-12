@@ -135,15 +135,11 @@ int StrUtils::Utf8CharSizeAt(const std::string &str, unsigned int pos)
 size_t StrUtils::Utf8StringLength(const std::string &str)
 {
   size_t result = 0;
-  for (unsigned int i = 0; i < str.size(); ++i)
+  unsigned int i = 0;
+  while (i < str.size())
   {
-    char ch = str[i];
-    if ((ch & 0x80) == 0)
+      i += Utf8CharSizeAt(str, i);
       ++result;
-    else if ((ch & 0xC0) == 0xC0)
-      result += 2;
-    else
-      result += 3;
   }
   return result;
 }

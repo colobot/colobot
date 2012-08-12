@@ -1,3 +1,4 @@
-src/graphics/d3d
-
-Possible future DirectX implementation of graphics engine
+/**
+ * \dir graphics/d3d
+ * \brief Possible future DirectX implementation of graphics engine
+ */

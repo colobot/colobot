@@ -40,9 +40,10 @@ enum EventType
     EVENT_NULL              = 0,
 
     //! Event sent on user or system quit request
-     EVENT_QUIT              = 1,
+    EVENT_QUIT              = 1,
 
-    //? EVENT_FRAME             = 2,
+    //! Frame update event
+    EVENT_FRAME             = 2,
 
     //! Event sent after pressing a mouse button
     EVENT_MOUSE_BUTTON_DOWN = 3,
@@ -669,29 +670,41 @@ struct Event
     //! If true, the event was produced by system (SDL); else, it has come from user interface
     bool systemEvent;
 
-    //! Additional data for EVENT_KEY_DOWN and EVENT_KEY_UP
-    KeyEventData key;
-    //! Additional data for EVENT_MOUSE_BUTTON_DOWN and EVENT_MOUSE_BUTTON_UP
-    MouseButtonEventData mouseButton;
-    //! Additional data for EVENT_MOUSE_MOVE
-    MouseMoveEventData mouseMove;
-    //! Additional data for EVENT_JOY
-    JoyAxisEventData joyAxis;
-    //! Additional data for EVENT_JOY_AXIS
-    JoyButtonEventData joyButton;
-    //! Additional data for EVENT_ACTIVE
-    ActiveEventData active;
+    union
+    {
+        //! Additional data for EVENT_KEY_DOWN and EVENT_KEY_UP
+        KeyEventData key;
+        //! Additional data for EVENT_MOUSE_BUTTON_DOWN and EVENT_MOUSE_BUTTON_UP
+        MouseButtonEventData mouseButton;
+        //! Additional data for EVENT_MOUSE_MOVE
+        MouseMoveEventData mouseMove;
+        //! Additional data for EVENT_JOY
+        JoyAxisEventData joyAxis;
+        //! Additional data for EVENT_JOY_AXIS
+        JoyButtonEventData joyButton;
+        //! Additional data for EVENT_ACTIVE
+        ActiveEventData active;
+    };
 
-    //? long         param;      // parameter
-    //? Math::Point  pos;        // mouse position (0 .. 1)
-    //? float        axeX;       // control the X axis (-1 .. 1)
-    //? float        axeY;       // control of the Y axis (-1 .. 1)
-    //? float        axeZ;       // control the Z axis (-1 .. 1)
-    //? short        keyState;   // state of the keyboard (KS_ *)
-    //? float        rTime;      // relative time
+    // TODO: refactor/rewrite
+    long         param;      // parameter
+    Math::Point  pos;        // mouse position (0 .. 1)
+    float        axeX;       // control the X axis (-1 .. 1)
+    float        axeY;       // control of the Y axis (-1 .. 1)
+    float        axeZ;       // control the Z axis (-1 .. 1)
+    short        keyState;   // state of the keyboard (KS_ *)
+    float        rTime;      // relative time
 
     Event(EventType aType = EVENT_NULL)
-        : type(aType), systemEvent(false) {}
+    {
+        type = aType;
+        systemEvent = false;
+
+        param = 0;
+        axeX = axeY = axeZ = 0.0f;
+        keyState = 0;
+        rTime = 0.0f;
+    }
 };
 
 

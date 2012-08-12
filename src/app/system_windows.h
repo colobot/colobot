@@ -15,10 +15,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// system_windows.h
+/**
+ * \file app/system_windows.h
+ * \brief Windows-specific implementation of system functions
+ */
 
-/* This header contains Windows-specific code for system utils
-   from system.h. There is no separate .cpp module for simplicity.*/
+/* NOTE: code is contained in this header;
+ * there is no separate .cpp module for simplicity */
 
 #include <windows.h>
 

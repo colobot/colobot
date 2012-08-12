@@ -14,13 +14,12 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-/** @defgroup MathAllModule math/all.h
-   Includes all other math module headers.
+/**
+ * \file math/all.h
+ * \brief Includes all other math module headers
  */
 
 #pragma once
-
-/* @{ */ // start of group
 
 #include "const.h"
 #include "func.h"
@@ -30,5 +29,3 @@
 #include "geometry.h"
 
 #include "conv.h"
-
-/* @} */ // end of group
