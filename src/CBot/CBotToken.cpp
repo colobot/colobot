@@ -217,12 +217,12 @@ bool Char2InList(const char c, const char cc, const char* list)
     }
 }
 
-static char*    sep1 = " \r\n\t,:()[]{}-+*/=;><!~^|&%.";
-static char*    sep2 = " \r\n\t";                           // only separators
-static char*    sep3 = ",:()[]{}-+*/=;<>!~^|&%.";           // operational separators
-static char*    num  = "0123456789";                        // point (single) is tested separately
-static char*    hexnum   = "0123456789ABCDEFabcdef";
-static char*    nch  = "\"\r\n\t";                          // forbidden in chains
+static char    sep1[] = " \r\n\t,:()[]{}-+*/=;><!~^|&%.";
+static char    sep2[] = " \r\n\t";                           // only separators
+static char    sep3[] = ",:()[]{}-+*/=;<>!~^|&%.";           // operational separators
+static char    num[]  = "0123456789";                        // point (single) is tested separately
+static char    hexnum[]   = "0123456789ABCDEFabcdef";
+static char    nch[]  = "\"\r\n\t";                          // forbidden in chains
 
 //static char*  duo  = "+=-=*=/===!=<=>=++--///**/||&&";    // double operators
 
@@ -382,7 +382,7 @@ bis:
 CBotToken* CBotToken::CompileTokens(const char* program, int& error)
 {
     CBotToken       *nxt, *prv, *tokenbase;
-    char*           p = (char*) program;
+    char*           p = const_cast<char*> ( program);
     int             pos = 0;
 
     error = 0;

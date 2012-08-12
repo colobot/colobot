@@ -602,7 +602,7 @@ CBotInstr* CBotInstArray::Compile(CBotToken* &p, CBotCStack* pStack, CBotTypResu
         inst->m_typevar = type;
 
         var->SetUniqNum(
-            ((CBotLeftExprVar*)inst->m_var)->m_nIdent = CBotVar::NextUniqNum());
+            (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);                                            // place it on the stack
 
         if (IsOfType(p, ID_ASS))                                        // with an assignment
@@ -670,7 +670,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
         // create simply a NULL pointer
         CBotVar*    var = CBotVar::Create(m_var->GetToken(), m_typevar);
         var->SetPointer(NULL);
-        var->SetUniqNum(((CBotLeftExprVar*)m_var)->m_nIdent);
+        var->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
         pj->AddVar(var);
 
 #if        STACKMEM
@@ -685,7 +685,7 @@ bool CBotInstArray::Execute(CBotStack* &pj)
     {
         if (m_listass != NULL)                                      // there is the assignment for this table
         {
-            CBotVar* pVar = pj->FindVar(((CBotLeftExprVar*)m_var)->m_nIdent);
+            CBotVar* pVar = pj->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
 
             if (!m_listass->Execute(pile1, pVar)) return false;
         }
@@ -705,7 +705,7 @@ void CBotInstArray::RestoreState(CBotStack* &pj, bool bMain)
     CBotStack*    pile1 = pj;
 
     CBotVar*    var = pj->FindVar(m_var->GetToken()->GetString());
-    if (var != NULL) var->SetUniqNum(((CBotLeftExprVar*)m_var)->m_nIdent);
+    if (var != NULL) var->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
 
     if (bMain)
     {
@@ -970,7 +970,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
 
     if (!cont && !IsOfType(p, ID_INT)) return NULL;
 
-    CBotInt*    inst = (CBotInt*)CompileArray(p, pStack, CBotTypInt);
+    CBotInt*    inst = static_cast<CBotInt*>(CompileArray(p, pStack, CBotTypInt));
     if (inst != NULL || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
@@ -985,7 +985,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
     // determines the expression is valid for the item on the left side
     if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
-        ((CBotLeftExprVar*)inst->m_var)->m_typevar = CBotTypInt;
+        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypInt;
         if (pStk->CheckVarLocal(vartoken))  // redefinition of the variable
         {
             pStk->SetError(TX_REDEFVAR, vartoken);
@@ -1014,7 +1014,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
                     return pStack->Return(inst2, pStk);
                 }
             }
-            inst = (CBotInt*)inst2;
+            inst = static_cast<CBotInt*>(inst2);
             goto suite;     // no assignment, variable already created
         }
 
@@ -1035,7 +1035,7 @@ CBotInstr* CBotInt::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool n
             CBotVar*    var = CBotVar::Create(vartoken, CBotTypInt);// create the variable (evaluated after the assignment)
             var->SetInit(inst->m_expr != NULL);     // if initialized with assignment
             var->SetUniqNum( //set it with a unique number
-                ((CBotLeftExprVar*)inst->m_var)->m_nIdent = CBotVar::NextUniqNum());
+                (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
             pStack->AddVar(var);    // place it on the stack
         }
 
@@ -1128,7 +1128,7 @@ CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
     if (!cont && !IsOfType(p, ID_BOOLEAN, ID_BOOL)) return NULL;
 
-    CBotBoolean*    inst = (CBotBoolean*)CompileArray(p, pStack, CBotTypBoolean);
+    CBotBoolean*    inst = static_cast<CBotBoolean*>(CompileArray(p, pStack, CBotTypBoolean));
     if (inst != NULL || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
@@ -1143,7 +1143,7 @@ CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
     if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
-        ((CBotLeftExprVar*)inst->m_var)->m_typevar = CBotTypBoolean;
+        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypBoolean;
         if (pStk->CheckVarLocal(vartoken))                    // redefinition of the variable
         {
             pStk->SetError(TX_REDEFVAR, vartoken);
@@ -1157,7 +1157,7 @@ CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
             // compiles an array declaration
 
-            inst = (CBotBoolean*)CBotInstArray::Compile(p, pStk, CBotTypBoolean);
+            inst = static_cast<CBotBoolean*>(CBotInstArray::Compile(p, pStk, CBotTypBoolean));
 
             if (!pStk->IsOk() )
             {
@@ -1183,7 +1183,7 @@ CBotInstr* CBotBoolean::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
         var = CBotVar::Create(vartoken, CBotTypBoolean);// create the variable (evaluated after the assignment)
         var->SetInit(inst->m_expr != NULL);
         var->SetUniqNum(
-            ((CBotLeftExprVar*)inst->m_var)->m_nIdent = CBotVar::NextUniqNum());
+            (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
 suite:
         if (IsOfType(p,  ID_COMMA))
@@ -1276,7 +1276,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
 
     if (!cont && !IsOfType(p, ID_FLOAT)) return NULL;
 
-    CBotFloat*    inst = (CBotFloat*)CompileArray(p, pStack, CBotTypFloat);
+    CBotFloat*    inst = static_cast<CBotFloat*>(CompileArray(p, pStack, CBotTypFloat));
     if (inst != NULL || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
@@ -1291,7 +1291,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
 
     if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
-        ((CBotLeftExprVar*)inst->m_var)->m_typevar = CBotTypFloat;
+        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypFloat;
         if (pStk->CheckVarLocal(vartoken))                    // redefinition of a variable
         {
             pStk->SetStartError(vartoken->GetStart());
@@ -1303,7 +1303,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
         {
             delete inst;
             p = vartoken;
-            inst = (CBotFloat*)CBotInstArray::Compile(p, pStk, CBotTypFloat);
+            inst = static_cast<CBotFloat*>(CBotInstArray::Compile(p, pStk, CBotTypFloat));
 
             if (!pStk->IsOk() )
             {
@@ -1329,7 +1329,7 @@ CBotInstr* CBotFloat::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bool
         var = CBotVar::Create(vartoken, CBotTypFloat);
         var->SetInit(inst->m_expr != NULL);
         var->SetUniqNum(
-            ((CBotLeftExprVar*)inst->m_var)->m_nIdent = CBotVar::NextUniqNum());
+            (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
 suite:
         if (IsOfType(p,  ID_COMMA))
@@ -1422,7 +1422,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
     if (!cont && !IsOfType(p, ID_STRING)) return NULL;
 
-    CBotIString*    inst = (CBotIString*)CompileArray(p, pStack, CBotTypString);
+    CBotIString*    inst = static_cast<CBotIString*>(CompileArray(p, pStack, CBotTypString));
     if (inst != NULL || !pStack->IsOk()) return inst;
 
     CBotCStack* pStk = pStack->TokenStack(pp);
@@ -1436,7 +1436,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
 
     if (NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )))
     {
-        ((CBotLeftExprVar*)inst->m_var)->m_typevar = CBotTypString;
+        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = CBotTypString;
         if (pStk->CheckVarLocal(vartoken))
         {
             pStk->SetStartError(vartoken->GetStart());
@@ -1460,7 +1460,7 @@ CBotInstr* CBotIString::Compile(CBotToken* &p, CBotCStack* pStack, bool cont, bo
         CBotVar*    var = CBotVar::Create(vartoken, CBotTypString);
         var->SetInit(inst->m_expr != NULL);
         var->SetUniqNum(
-            ((CBotLeftExprVar*)inst->m_var)->m_nIdent = CBotVar::NextUniqNum());
+            (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
         pStack->AddVar(var);
 
         if (IsOfType(p,  ID_COMMA))
@@ -1657,7 +1657,8 @@ bool CBotExpression::Execute(CBotStack* &pj)
 {
     CBotStack*    pile  = pj->AddStack(this);
 
-    CBotToken*    pToken = m_leftop->GetToken();
+//    CBotToken*    pToken = m_leftop->GetToken();
+    
     CBotVar*    pVar = NULL;
 
     CBotStack*  pile1 = pile;
@@ -1768,8 +1769,8 @@ void CBotExpression::RestoreState(CBotStack* &pj, bool bMain)
 {
     if (bMain)
     {
-        CBotToken*    pToken = m_leftop->GetToken();
-        CBotVar*    pVar = NULL;
+//        CBotToken*    pToken = m_leftop->GetToken();
+//        CBotVar*    pVar = NULL;
 
         CBotStack*    pile  = pj->RestoreStack(this);
         if (pile == NULL) return;
@@ -2063,7 +2064,7 @@ bool CBotPostIncExpr::Execute(CBotStack* &pj)
     CBotVar*    var1 = NULL;
 
     // retrieves the variable fields and indexes according
-    if (!((CBotExprVar*)m_Instr)->ExecuteVar(var1, pile2, NULL, true)) return false;
+    if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, NULL, true)) return false;
 
     pile1->SetState(1);
     pile1->SetCopyVar(var1);                                // places the result (before incrementation);
@@ -2094,7 +2095,7 @@ void CBotPostIncExpr::RestoreState(CBotStack* &pj, bool bMain)
     CBotStack*    pile1 = pj->RestoreStack(this);
     if (pile1 == NULL) return;
 
-    ((CBotExprVar*)m_Instr)->RestoreStateVar(pile1, bMain);
+    (static_cast<CBotExprVar*>(m_Instr))->RestoreStateVar(pile1, bMain);
 
     if (pile1 != NULL) pile1->RestoreStack(this);
 }
@@ -2112,7 +2113,7 @@ bool CBotPreIncExpr::Execute(CBotStack* &pj)
         CBotStack*    pile2 = pile;
         // retrieves the variable fields and indexes according
         // pile2 is modified on return
-        if (!((CBotExprVar*)m_Instr)->ExecuteVar(var1, pile2, NULL, true)) return false;
+        if (!(static_cast<CBotExprVar*>(m_Instr))->ExecuteVar(var1, pile2, NULL, true)) return false;
 
         if (var1->GetInit() == IS_NAN)
         {
@@ -2274,7 +2275,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotCStack* &pile)
     if (pVar->GetType(1) != CBotTypArrayPointer)
         ASM_TRAP();
 
-    pVar = ((CBotVarArray*)pVar)->GetItem(0, false);    // at compile time makes the element [0]
+    pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(0, false);    // at compile time makes the element [0]
     if (pVar == NULL)
     {
         pile->SetError(TX_OUTARRAY, m_token.GetEnd());
@@ -2314,7 +2315,7 @@ bool CBotIndexExpr::ExecuteVar(CBotVar* &pVar, CBotStack* &pile, CBotToken* prev
 
     int n = p->GetValInt();     // position in the table
 
-    pVar = ((CBotVarArray*)pVar)->GetItem(n, bExtend);
+    pVar = (static_cast<CBotVarArray*>(pVar))->GetItem(n, bExtend);
     if (pVar == NULL)
     {
         pile->SetError(TX_OUTARRAY, prevToken);
@@ -2524,7 +2525,7 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
                         i->m_expr = CBotExpression::Compile(p, pStk);
                         inst->AddNext3(i);  // add to the chain
 
-                        var = ((CBotVarArray*)var)->GetItem(0,true);    // gets the component [0]
+                        var = (static_cast<CBotVarArray*>(var))->GetItem(0,true);    // gets the component [0]
 
                         if (i->m_expr == NULL)
                         {
@@ -2577,15 +2578,15 @@ CBotLeftExpr* CBotLeftExpr::Compile(CBotToken* &p, CBotCStack* pStack)
             }
 
 
-            if (pStk->IsOk()) return (CBotLeftExpr*) pStack->Return(inst, pStk);
+            if (pStk->IsOk()) return static_cast<CBotLeftExpr*> (pStack->Return(inst, pStk));
         }
         pStk->SetError(TX_UNDEFVAR, p);
 err:
         delete inst;
-        return (CBotLeftExpr*) pStack->Return(NULL, pStk);
+        return static_cast<CBotLeftExpr*> ( pStack->Return(NULL, pStk));
     }
 
-    return (CBotLeftExpr*) pStack->Return(NULL, pStk);
+    return static_cast<CBotLeftExpr*> ( pStack->Return(NULL, pStk));
 }
 
 // runs, is a variable and assigns the result to the stack
@@ -2768,7 +2769,7 @@ extern float GetNumFloat(const char* p)
     }
 
     if (bNeg) num = -num;
-    return (float)num;
+    return static_cast<float>(num);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -2814,7 +2815,7 @@ CBotInstr* CBotExprNum::Compile(CBotToken* &p, CBotCStack* pStack)
 
     if (pStk->NextToken(p))
     {
-        CBotVar*    var = CBotVar::Create((CBotToken*)NULL, inst->m_numtype);
+        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), inst->m_numtype);
         pStk->SetVar(var);
 
         return pStack->Return(inst, pStk);
@@ -2831,7 +2832,7 @@ bool CBotExprNum::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create((CBotToken*)NULL, m_numtype);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), m_numtype);
 
     CBotString    nombre ;
     if (m_token.GetType() == TokenTypDef)
@@ -2883,7 +2884,7 @@ CBotInstr* CBotExprAlpha::Compile(CBotToken* &p, CBotCStack* pStack)
     inst->SetToken(p);
     p = p->GetNext();
 
-    CBotVar*    var = CBotVar::Create((CBotToken*)NULL, CBotTypString);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypString);
     pStk->SetVar(var);
 
     return pStack->Return(inst, pStk);
@@ -2897,7 +2898,7 @@ bool CBotExprAlpha::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create((CBotToken*)NULL, CBotTypString);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypString);
 
     CBotString    chaine = m_token.GetString();
     chaine = chaine.Mid(1, chaine.GetLength()-2);    // removes the quotes
@@ -2941,7 +2942,7 @@ CBotInstr* CBotExprBool::Compile(CBotToken* &p, CBotCStack* pStack)
         inst->SetToken(p);  // stores the operation false or true
         p = p->GetNext();
 
-        CBotVar*    var = CBotVar::Create((CBotToken*)NULL, CBotTypBoolean);
+        CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypBoolean);
         pStk->SetVar(var);
     }
 
@@ -2956,7 +2957,7 @@ bool CBotExprBool::Execute(CBotStack* &pj)
 
     if (pile->IfStep()) return false;
 
-    CBotVar*    var = CBotVar::Create((CBotToken*)NULL, CBotTypBoolean);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypBoolean);
 
     if (GetTokenType() == ID_TRUE)      var->SetValInt(1);
     else                              var->SetValInt(0);
@@ -2990,7 +2991,7 @@ bool CBotExprNull::Execute(CBotStack* &pj)
     CBotStack*    pile = pj->AddStack(this);
 
     if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create((CBotToken*)NULL, CBotTypNullPointer);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypNullPointer);
 
     var->SetInit(true);         // null pointer valid
     pile->SetVar(var);          // place on the stack
@@ -3022,7 +3023,7 @@ bool CBotExprNan::Execute(CBotStack* &pj)
     CBotStack*    pile = pj->AddStack(this);
 
     if (pile->IfStep()) return false;
-    CBotVar*    var = CBotVar::Create((CBotToken*)NULL, CBotTypInt);
+    CBotVar*    var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypInt);
 
     var->SetInit(IS_NAN);       // nan
     pile->SetVar(var);          // put on the stack
@@ -3051,7 +3052,7 @@ CBotExprVar::~CBotExprVar()
 
 CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
 {
-    CBotToken*    pDebut = p;
+//    CBotToken*    pDebut = p;
     CBotCStack* pStk = pStack->TokenStack();
 
     pStk->SetStartError(p->GetStart());
@@ -3068,7 +3069,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
         if (NULL != (var = pStk->FindVar(p)))   // seek if known variable
         {
             int        ident = var->GetUniqNum();
-            ((CBotExprVar*)inst)->m_nIdent = ident;     // identifies variable by its number
+            (static_cast<CBotExprVar*>(inst))->m_nIdent = ident;     // identifies variable by its number
 
             if (ident > 0 && ident < 9000)
             {
@@ -3085,7 +3086,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
                 ///tests
                 CBotToken token("this");
                 inst->SetToken(&token);
-                ((CBotExprVar*)inst)->m_nIdent = -2;    // identificator for this
+                (static_cast<CBotExprVar*>(inst))->m_nIdent = -2;    // identificator for this
 
                 CBotFieldExpr* i = new CBotFieldExpr();     // new element
                 i->SetToken(p);     // keeps the name of the token
@@ -3105,7 +3106,7 @@ CBotInstr* CBotExprVar::Compile(CBotToken* &p, CBotCStack* pStack, int privat)
                         i->m_expr = CBotExpression::Compile(p, pStk);   // compile the formula
                         inst->AddNext3(i);  // add to the chain
 
-                        var = ((CBotVarArray*)var)->GetItem(0,true);    // gets the component [0]
+                        var = (static_cast<CBotVarArray*>(var))->GetItem(0,true);    // gets the component [0]
 
                         if (i->m_expr == NULL)
                         {
@@ -3202,7 +3203,7 @@ CBotInstr* CBotExprVar::CompileMethode(CBotToken* &p, CBotCStack* pStack)
         // adds the equivalent of this. before
 
         inst->SetToken(&pthis);
-        ((CBotExprVar*)inst)->m_nIdent = -2;    // ident for this
+        (static_cast<CBotExprVar*>(inst))->m_nIdent = -2;    // ident for this
 
         CBotToken* pp = p;
 
@@ -3555,9 +3556,9 @@ void CBotInstrMethode::RestoreStateVar(CBotStack* &pile, bool bMain)
     ppVars[i] = NULL;
 
     CBotClass*    pClass = CBotClass::Find(m_ClassName);
-    CBotVar*    pResult = NULL;
+//    CBotVar*    pResult = NULL;
 
-    CBotVar*    pRes = pResult;
+//    CBotVar*    pRes = pResult;
 
     pClass->RestoreMethode(m_MethodeIdent, m_NomMethod, 
                                  pThis, ppVars, pile2);

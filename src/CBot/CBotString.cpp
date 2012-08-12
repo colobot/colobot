@@ -24,7 +24,7 @@
 #include <algorithm>
 
 //Map is filled with id-string pars that are needed for CBot language parsing
-const std::map<EID, char *> CBotString::s_keywordString =
+const std::map<EID,const char *> CBotString::s_keywordString =
 {
     {ID_IF,         "if"},
     {ID_ELSE,       "else"},
@@ -170,7 +170,7 @@ CBotString CBotString::Left(int nCount) const
 {
     char    chain[2000];
 
-    size_t i;
+    int i;
     for (i = 0; i < m_lg && i < nCount && i < 1999; ++i)
     {
         chain[i] = m_ptr[i];
@@ -187,8 +187,8 @@ CBotString CBotString::Right(int nCount) const
     int i = m_lg - nCount;
     if ( i < 0 ) i = 0;
 
-    size_t j;
-    for (size_t j = 0 ; i < m_lg && i < 1999; ++i)
+    int j;
+    for (int j = 0 ; i < m_lg && i < 1999; ++i)
     {
         chain[j++] = m_ptr[i];
     }
@@ -201,7 +201,7 @@ CBotString CBotString::Mid(int nFirst, int nCount) const
 {
     char chain[2000];
 
-    size_t i;
+    int i;
     for (i = nFirst; i < m_lg && i < 1999 && i <= nFirst + nCount; ++i)
     {
         chain[i] = m_ptr[i];
@@ -215,7 +215,7 @@ CBotString CBotString::Mid(int nFirst) const
 {
     char chain[2000];
 
-    size_t i;
+    int i;
     for (i = nFirst; i < m_lg && i < 1999 ; ++i)
     {
         chain[i] = m_ptr[i];
@@ -228,7 +228,7 @@ CBotString CBotString::Mid(int nFirst) const
 
 int CBotString::Find(const char c)
 {
-    for (size_t i = 0; i < m_lg; ++i)
+    for (int i = 0; i < m_lg; ++i)
     {
         if (m_ptr[i] == c) return i;
     }
@@ -239,9 +239,9 @@ int CBotString::Find(const char * lpsz)
 {
     int l = strlen(lpsz);
 
-    for (size_t i = 0; i <= m_lg-l; ++i)
+    for (size_t i = 0; static_cast<int>(i) <= m_lg-l; ++i)
     {
-        for (size_t j = 0; j < l; ++j)
+        for (size_t j = 0; static_cast<int>(j) < l; ++j)
         {
             if (m_ptr[i+j] != lpsz[j]) goto bad;
         }
@@ -296,7 +296,7 @@ CBotString CBotString::Mid(int start, int lg)
 
 void CBotString::MakeUpper()
 {
-    for (size_t i = 0; i < m_lg && i < 1999 ; ++i)
+    for (size_t i = 0; static_cast<int>(i) < m_lg && static_cast<int>(i) < 1999 ; ++i)
     {
         char c = m_ptr[i];
         if ( c >= 'a' && c <= 'z' ) m_ptr[i] = c - 'a' + 'A';
@@ -305,7 +305,7 @@ void CBotString::MakeUpper()
 
 void CBotString::MakeLower()
 {
-    for (size_t i = 0; i < m_lg && i < 1999 ; ++i)
+    for (size_t i = 0; static_cast<int>(i) < m_lg && static_cast<int>(i) < 1999 ; ++i)
     {
         char    c = m_ptr[i];
         if ( c >= 'A' && c <= 'Z' ) m_ptr[i] = c - 'A' + 'a';
@@ -315,7 +315,7 @@ void CBotString::MakeLower()
 bool CBotString::LoadString(unsigned int id)
 {
     const char * str = NULL;
-    str = MapIdToString((EID)id);
+    str = MapIdToString(static_cast<EID>(id));
     if (m_ptr != NULL) free(m_ptr);
 
     m_lg = strlen(str);
@@ -374,7 +374,7 @@ const CBotString& CBotString::operator=(const char ch)
 
     m_lg = 1; 
 
-    m_ptr = (char*)malloc(2);
+    m_ptr = static_cast<char*>(malloc(2));
     m_ptr[0] = ch;
     m_ptr[1] = 0;
 
@@ -403,7 +403,7 @@ const CBotString& CBotString::operator=(const char* pString)
 
 const CBotString& CBotString::operator+=(const char ch)
 {
-    char* p = (char*)malloc(m_lg+2);
+    char* p = static_cast<char*>(malloc(m_lg+2));
 
     if (m_ptr!=NULL) strcpy(p, m_ptr);
     p[m_lg++] = ch;
@@ -418,7 +418,7 @@ const CBotString& CBotString::operator+=(const char ch)
 
 const CBotString& CBotString::operator+=(const CBotString& str)
 {
-    char* p = (char*)malloc(m_lg+str.m_lg+1);
+    char* p = static_cast<char*>(malloc(m_lg+str.m_lg+1));
 
     strcpy(p, m_ptr);
     char* pp = p + m_lg;
@@ -618,6 +618,7 @@ void CBotStringArray::SetSize(int nNewSize)
         // shrink to nothing
 
         DestructElements(m_pData, m_nSize);
+//        delete[] static_cast<unsigned char *>(m_pData);
         delete[] (unsigned char *)m_pData;
         m_pData = NULL;
         m_nSize = m_nMaxSize = 0;

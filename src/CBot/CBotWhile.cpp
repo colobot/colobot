@@ -1132,7 +1132,7 @@ bool CBotTry :: Execute(CBotStack* &pj)
     // see what it returns
 
     CBotCatch*  pc = m_ListCatch;
-    int state = (short)pile1->GetState();                       // where were we?
+    int state = static_cast<short>(pile1->GetState());                       // where were we?
     val = pile2->GetState();                                    // what error?
     pile0->SetState(1);                                         // marking the GetRunPos
 
@@ -1315,7 +1315,7 @@ bool CBotCatch :: TestCatch(CBotStack* &pile, int val)
 
     if ( val > 0 || pile->GetType() != CBotTypBoolean )
     {
-        CBotVar* var = CBotVar::Create((CBotToken*)NULL, CBotTypBoolean);
+        CBotVar* var = CBotVar::Create(static_cast<CBotToken*>(NULL), CBotTypBoolean);
         var->SetValInt( pile->GetVal() == val );
         pile->SetVar(var);                          // calls on the stack
     }

@@ -259,7 +259,7 @@ CBotInstr* CBotTwoOpExpr::Compile(CBotToken* &p, CBotCStack* pStack, int* pOpera
                 CBotTypResult t(type1);
                     t.SetType(TypeRes);
                 // is a variable on the stack for the type of result
-                pStk->SetVar(CBotVar::Create((CBotToken*)NULL, t));
+                pStk->SetVar(CBotVar::Create(static_cast<CBotToken*>(NULL), t));
 
                 // and returns the requested object
                 return pStack->Return(inst, pStk);
@@ -309,14 +309,14 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
         // for OR and AND logic does not evaluate the second expression if not necessary
         if ( (GetTokenType() == ID_LOG_AND || GetTokenType() == ID_TXT_AND ) && pStk1->GetVal() == false )
         {
-            CBotVar*    res = CBotVar::Create( (CBotToken*)NULL, CBotTypBoolean);
+            CBotVar*    res = CBotVar::Create( static_cast<CBotToken*>(NULL), CBotTypBoolean);
             res->SetValInt(false);
             pStk1->SetVar(res);
             return pStack->Return(pStk1);               // transmits the result
         }
         if ( (GetTokenType() == ID_LOG_OR||GetTokenType() == ID_TXT_OR) && pStk1->GetVal() == true )
         {
-            CBotVar*    res = CBotVar::Create( (CBotToken*)NULL, CBotTypBoolean);
+            CBotVar*    res = CBotVar::Create( static_cast<CBotToken*>(NULL), CBotTypBoolean);
             res->SetValInt(true);
             pStk1->SetVar(res);
             return pStack->Return(pStk1);               // transmits the result
@@ -374,7 +374,7 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     }
 
     // creates a variable for the result
-    CBotVar*    result = CBotVar::Create( (CBotToken*)NULL, TypeRes);
+    CBotVar*    result = CBotVar::Create( static_cast<CBotToken*>(NULL), TypeRes);
 
     // creates a variable to perform the calculation in the appropriate type
     TypeRes = MAX(type1.GetType(), type2.GetType());
@@ -387,8 +387,8 @@ bool CBotTwoOpExpr::Execute(CBotStack* &pStack)
     CBotVar*    temp;
 
     if ( TypeRes == CBotTypPointer ) TypeRes = CBotTypNullPointer;
-    if ( TypeRes == CBotTypClass ) temp = CBotVar::Create( (CBotToken*)NULL, CBotTypResult(CBotTypIntrinsic, type1.GetClass() ) );
-    else                           temp = CBotVar::Create( (CBotToken*)NULL, TypeRes );
+    if ( TypeRes == CBotTypClass ) temp = CBotVar::Create( static_cast<CBotToken*>(NULL), CBotTypResult(CBotTypIntrinsic, type1.GetClass() ) );
+    else                           temp = CBotVar::Create( static_cast<CBotToken*>(NULL), TypeRes );
 
     int err = 0;
     // is a operation according to request
@@ -558,7 +558,7 @@ void t()
 }
 #endif
 
-#if 01
+#if 0
 void t(bool t)
 {
     int  x;

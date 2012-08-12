@@ -487,7 +487,7 @@ bool ReadType(FILE* pf, CBotTypResult& type)
         if ( !ReadWord(pf, ww) ) return false;
         if ( !ReadType(pf, r) ) return false;
         type = CBotTypResult( w, r );
-        type.SetLimite((short)ww);
+        type.SetLimite(static_cast<short>(ww));
     }
     return true;
 }
@@ -625,7 +625,7 @@ CBotVar* MakeListVars(CBotVar** ppVars, bool bSetVal=false)
 
     while( true )
     {
-        ppVars[i];
+//        ppVars[i];
         if ( ppVars[i] == NULL ) break;
 
         CBotVar*    pp = CBotVar::Create(ppVars[i]);
@@ -781,7 +781,7 @@ fund:
     // lists the parameters depending on the contents of the stack (pStackVar)
 
     CBotVar*    pVar = MakeListVars(ppVar, true);
-    CBotVar*    pVarToDelete = pVar;
+//    CBotVar*    pVarToDelete = pVar;
 
     // creates a variable to the result
     CBotVar*    pResult = rettype.Eq(0) ? NULL : CBotVar::Create("", rettype);
@@ -815,7 +815,8 @@ bool CBotCall::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBot
                 CBotStack*  pile = pStack->RestoreStackEOX(pt);
                 if ( pile == NULL ) return true;
 
-                CBotStack*  pile2 = pile->RestoreStack();
+ //               CBotStack*  pile2 = pile->RestoreStack();
+                pile->RestoreStack();
                 return true;
             }
             pt = pt->m_next;

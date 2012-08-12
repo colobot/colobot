@@ -462,7 +462,8 @@ CBotTypResult CBotFunction::CompileCall(const char* name, CBotVar** ppVars, long
     nIdent = 0;
     CBotTypResult   type;
 
-    CBotFunction*   pt = FindLocalOrPublic(nIdent, name, ppVars, type);
+//    CBotFunction*   pt = FindLocalOrPublic(nIdent, name, ppVars, type);
+    FindLocalOrPublic(nIdent, name, ppVars, type);
     return type;
 }
 
@@ -731,7 +732,7 @@ void CBotFunction::RestoreCall(long& nIdent, const char* name, CBotVar** ppVars,
         {
             if ( !pt->m_MasterClass.IsEmpty() )
             {
-                CBotVar* pInstance = m_pProg->m_pInstance;
+//                CBotVar* pInstance = m_pProg->m_pInstance;
                 // make "this" known
                 CBotVar* pThis = pStk1->FindVar("this");
                 pThis->SetInit(2);
@@ -957,7 +958,7 @@ CBotDefParam* CBotDefParam::Compile(CBotToken* &p, CBotCStack* pStack)
             if (list == NULL) list = param;
             else list->AddNext(param);          // added to the list
 
-            CBotClass*  pClass = NULL;//= CBotClass::Find(p);
+//            CBotClass*  pClass = NULL;//= CBotClass::Find(p);
             param->m_typename = p->GetString();
             CBotTypResult type = param->m_type = TypeParam(p, pStack);
 //          if ( type == CBotTypPointer ) type = CBotTypClass;          // we must create a new object
@@ -1036,7 +1037,7 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
                 newvar->SetValInt(ppVars[i]->GetValInt());
                 break;
             case CBotTypIntrinsic:
-                ((CBotVarClass*)newvar)->Copy(ppVars[i], false);
+                (static_cast<CBotVarClass*>(newvar))->Copy(ppVars[i], false);
                 break;
             case CBotTypPointer:
             case CBotTypArrayPointer:
@@ -1059,7 +1060,7 @@ bool CBotDefParam::Execute(CBotVar** ppVars, CBotStack* &pj)
 
 void CBotDefParam::RestoreState(CBotStack* &pj, bool bMain)
 {
-    int             i = 0;
+//    int             i = 0;
     CBotDefParam*   p = this;
 
     while ( p != NULL )
@@ -1287,7 +1288,7 @@ bool CBotInstrCall::Execute(CBotStack* &pj)
     CBotStack*  pile  = pj->AddStack(this);
     if ( pile->StackOver() ) return pj->Return( pile );
 
-    CBotStack*  pile1 = pile;
+//    CBotStack*  pile1 = pile;
 
     int     i = 0;
 
@@ -1324,7 +1325,7 @@ void CBotInstrCall::RestoreState(CBotStack* &pj, bool bMain)
     CBotStack*  pile  = pj->RestoreStack(this);
     if ( pile == NULL ) return;
 
-    CBotStack*  pile1 = pile;
+//    CBotStack*  pile1 = pile;
 
     int         i = 0;
     CBotVar*    ppVars[1000];
