@@ -31,4 +31,4 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
 SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
 
 # Subdirectory with sources
-add_subdirectory(src bin lib)
+add_subdirectory(src bin)
