@@ -114,7 +114,7 @@ protected:
     //! Size of a brick element
     float           m_size;
 
-    std::vector<Gfx::CloudLine> m_line;
+    std::vector<Gfx::CloudLine> m_lines;
 
     bool            m_enable;
 };

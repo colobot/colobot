@@ -51,6 +51,8 @@ struct Planet
     std::string     name;
     //! Texture mapping
     Math::Point     uv1, uv2;
+
+    // TODO: make all textures transparent?
     //! Transparent texture
     bool            transparent;
 

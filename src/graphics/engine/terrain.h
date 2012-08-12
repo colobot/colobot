@@ -273,8 +273,8 @@ protected:
     std::string     m_texBaseExt;
     float           m_defHardness;
 
-    std::vector<TerrainMaterial> m_levelMat;
-    std::vector<Gfx::DotLevel>  m_levelDot;
+    std::vector<TerrainMaterial> m_levelMats;
+    std::vector<Gfx::DotLevel>  m_levelDots;
     int             m_levelMatMax;
     int             m_levelID;
 

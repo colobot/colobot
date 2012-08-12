@@ -788,7 +788,7 @@ Gfx::CharTexture Gfx::CText::CreateCharTexture(Gfx::UTF8Char ch, Gfx::CachedFont
     SDL_FreeSurface(textSurface);
     SDL_FreeSurface(textureSurface);
 
-    if (! tex.valid)
+    if (! tex.Valid())
     {
         m_error = "Texture create error";
         return texture;
