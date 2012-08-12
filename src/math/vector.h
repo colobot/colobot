@@ -14,8 +14,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-/** @defgroup MathVectorModule math/vector.h
-   Contains the Vector struct and related functions.
+/**
+ * \file math/vector.h
+ * \brief Vector struct and related functions
  */
 
 #pragma once
@@ -30,8 +31,6 @@
 // Math module namespace
 namespace Math
 {
-
-/* @{ */ // start of group
 
 /** \struct Vector math/vector.h
     \brief 3D (3x1) vector
@@ -262,7 +261,5 @@ inline float Distance(const Math::Vector &a, const Math::Vector &b)
                   (a.y-b.y)*(a.y-b.y) +
                   (a.z-b.z)*(a.z-b.z) );
 }
-
-/* @} */ // end of group
 
 }; // namespace Math

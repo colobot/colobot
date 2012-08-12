@@ -15,8 +15,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-/** @defgroup MathFuncModule math/func.h
-     Contains common math functions.
+/**
+ * \file math/func.h
+ * \brief Common math functions
  */
 
 #pragma once
@@ -30,8 +31,6 @@
 // Math module namespace
 namespace Math
 {
-
-/* @{ */ // start of group
 
 //! Compares \a a and \a b within \a tolerance
 inline bool IsEqual(float a, float b, float tolerance = Math::TOLERANCE)
@@ -127,6 +126,14 @@ inline float Rand()
     return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
 }
 
+//! Returns the next nearest power of two to \a x
+inline int NextPowerOfTwo(int x)
+{
+  double logbase2 = log(static_cast<float>(x)) / Math::LOG_2;
+  return static_cast<int>(pow(2, ceil(logbase2)) + 0.5);
+}
+
+
 //! Returns a normalized angle, that is in other words between 0 and 2 * PI
 inline float NormAngle(float angle)
 {
@@ -180,11 +187,13 @@ inline float Direction(float a, float g)
 
 //! Managing the dead zone of a joystick.
 /**
-\verbatimin:   -1            0            1
+\verbatim
+in:   -1            0            1
 --|-------|----o----|-------|-->
              <---->
               dead
-out:  -1       0         0       1\endverbatim */
+out:  -1       0         0       1
+\endverbatim */
 inline float Neutral(float value, float dead)
 {
     if ( fabs(value) <= dead )
@@ -218,7 +227,8 @@ inline float Smooth(float actual, float hope, float time)
 
 //! Bounces any movement
 /**
-\verbatimout
+\verbatim
+out
  |
 1+------o-------o---
  |    o | o   o |  | bounce
@@ -227,7 +237,8 @@ inline float Smooth(float actual, float hope, float time)
  | o    |       |
 -o------|-------+----> progress
 0|      |       1
- |<---->|middle\endverbatim */
+ |<---->|middle
+\endverbatim */
 inline float Bounce(float progress, float middle = 0.3f, float bounce = 0.4f)
 {
     if ( progress < middle )
@@ -241,7 +252,5 @@ inline float Bounce(float progress, float middle = 0.3f, float bounce = 0.4f)
         return (1.0f-bounce/2.0f)+sinf((0.5f+progress*2.0f)*PI)*(bounce/2.0f);
     }
 }
-
-/* @} */ // end of group
 
 }; // namespace Math

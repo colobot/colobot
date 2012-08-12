@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// main.cpp
+/**
+ * \file app/main.cpp
+ * \brief Entry point of application - main() function
+ */
 
 #include "app/app.h"
 #include "app/system.h"

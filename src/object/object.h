@@ -19,16 +19,12 @@
 #pragma once
 
 
-#include "old/d3dengine.h"
-#include "old/camera.h"
-#include "old/sound.h"
+#include "graphics/engine/engine.h"
+#include "graphics/engine/camera.h"
+#include "sound/sound.h"
 
 
 class CInstanceManager;
-class CLight;
-class CTerrain;
-class CWater;
-class CParticule;
 class CPhysics;
 class CBrain;
 class CMotion;
@@ -37,6 +33,7 @@ class CDisplayText;
 class CRobotMain;
 class CBotVar;
 class CScript;
+
 
 
 
@@ -306,7 +303,7 @@ enum ObjectMaterial
 struct ObjectPart
 {
     char        bUsed;
-    int     object;         // number of the object in CD3DEngine
+    int     object;         // number of the object in CEngine
     int     parentPart;     // number of father part
     int     masterParti;        // master canal of the particle
     Math::Vector    position;
@@ -377,16 +374,16 @@ public:
     int         CreatePart();
     void        DeletePart(int part);
     void        SetObjectRank(int part, int objRank);
-    int         RetObjectRank(int part);
+    int         GetObjectRank(int part);
     void        SetObjectParent(int part, int parent);
     void        SetType(ObjectType type);
-    ObjectType  RetType();
-    char*       RetName();
+    ObjectType  GetType();
+    char*       GetName();
     void        SetOption(int option);
-    int         RetOption();
+    int         GetOption();
 
     void        SetID(int id);
-    int         RetID();
+    int         GetID();
 
     bool        Write(char *line);
     bool        Read(char *line);
@@ -413,203 +410,205 @@ public:
     bool        WriteProgram(int rank, char* filename);
     bool        RunProgram(int rank);
 
-    int         RetShadowLight();
-    int         RetEffectLight();
+    int         GetShadowLight();
+    int         GetEffectLight();
 
     void        FlushCrashShere();
     int         CreateCrashSphere(Math::Vector pos, float radius, Sound sound, float hardness=0.45f);
-    int         RetCrashSphereTotal();
+    int         GetCrashSphereTotal();
     bool        GetCrashSphere(int rank, Math::Vector &pos, float &radius);
-    float       RetCrashSphereHardness(int rank);
-    Sound       RetCrashSphereSound(int rank);
+    float       GetCrashSphereHardness(int rank);
+    Sound       GetCrashSphereSound(int rank);
     void        DeleteCrashSphere(int rank);
     void        SetGlobalSphere(Math::Vector pos, float radius);
     void        GetGlobalSphere(Math::Vector &pos, float &radius);
     void        SetJotlerSphere(Math::Vector pos, float radius);
     void        GetJotlerSphere(Math::Vector &pos, float &radius);
     void        SetShieldRadius(float radius);
-    float       RetShieldRadius();
+    float       GetShieldRadius();
 
     void        SetFloorHeight(float height);
     void        FloorAdjust();
 
     void        SetLinVibration(Math::Vector dir);
-    Math::Vector    RetLinVibration();
+    Math::Vector    GetLinVibration();
     void        SetCirVibration(Math::Vector dir);
-    Math::Vector    RetCirVibration();
+    Math::Vector    GetCirVibration();
     void        SetInclinaison(Math::Vector dir);
-    Math::Vector    RetInclinaison();
+    Math::Vector    GetInclinaison();
 
     void        SetPosition(int part, const Math::Vector &pos);
-    Math::Vector    RetPosition(int part);
+    Math::Vector    GetPosition(int part);
     void        SetAngle(int part, const Math::Vector &angle);
-    Math::Vector    RetAngle(int part);
+    Math::Vector    GetAngle(int part);
     void        SetAngleY(int part, float angle);
     void        SetAngleX(int part, float angle);
     void        SetAngleZ(int part, float angle);
-    float       RetAngleY(int part);
-    float       RetAngleX(int part);
-    float       RetAngleZ(int part);
+    float       GetAngleY(int part);
+    float       GetAngleX(int part);
+    float       GetAngleZ(int part);
     void        SetZoom(int part, float zoom);
     void        SetZoom(int part, Math::Vector zoom);
-    Math::Vector    RetZoom(int part);
+    Math::Vector    GetZoom(int part);
     void        SetZoomX(int part, float zoom);
-    float       RetZoomX(int part);
+    float       GetZoomX(int part);
     void        SetZoomY(int part, float zoom);
-    float       RetZoomY(int part);
+    float       GetZoomY(int part);
     void        SetZoomZ(int part, float zoom);
-    float       RetZoomZ(int part);
+    float       GetZoomZ(int part);
 
-    float       RetWaterLevel();
+    float       GetWaterLevel();
 
     void        SetTrainer(bool bEnable);
-    bool        RetTrainer();
+    bool        GetTrainer();
 
     void        SetToy(bool bEnable);
-    bool        RetToy();
+    bool        GetToy();
 
     void        SetManual(bool bManual);
-    bool        RetManual();
+    bool        GetManual();
 
     void        SetResetCap(ResetCap cap);
-    ResetCap    RetResetCap();
+    ResetCap    GetResetCap();
     void        SetResetBusy(bool bBusy);
-    bool        RetResetBusy();
+    bool        GetResetBusy();
     void        SetResetPosition(const Math::Vector &pos);
-    Math::Vector    RetResetPosition();
+    Math::Vector    GetResetPosition();
     void        SetResetAngle(const Math::Vector &angle);
-    Math::Vector    RetResetAngle();
+    Math::Vector    GetResetAngle();
     void        SetResetRun(int run);
-    int         RetResetRun();
+    int         GetResetRun();
 
     void        SetMasterParticule(int part, int parti);
-    int         RetMasterParticule(int part);
+    int         GetMasterParticule(int part);
 
     void        SetPower(CObject* power);
-    CObject*    RetPower();
+    CObject*    GetPower();
     void        SetFret(CObject* fret);
-    CObject*    RetFret();
+    CObject*    GetFret();
     void        SetTruck(CObject* truck);
-    CObject*    RetTruck();
+    CObject*    GetTruck();
     void        SetTruckPart(int part);
-    int         RetTruckPart();
+    int         GetTruckPart();
 
     void        InfoFlush();
     void        DeleteInfo(int rank);
     void        SetInfo(int rank, Info info);
-    Info        RetInfo(int rank);
-    int         RetInfoTotal();
-    void        SetInfoReturn(float value);
-    float       RetInfoReturn();
+    Info        GetInfo(int rank);
+    int         GetInfoTotal();
+    void        SetInfoGeturn(float value);
+    float       GetInfoGeturn();
     void        SetInfoUpdate(bool bUpdate);
-    bool        RetInfoUpdate();
+    bool        GetInfoUpdate();
 
     bool        SetCmdLine(int rank, float value);
-    float       RetCmdLine(int rank);
+    float       GetCmdLine(int rank);
 
-    Math::Matrix*   RetRotateMatrix(int part);
-    Math::Matrix*   RetTranslateMatrix(int part);
-    Math::Matrix*   RetTransformMatrix(int part);
-    Math::Matrix*   RetWorldMatrix(int part);
+    Math::Matrix*   GetRotateMatrix(int part);
+    Math::Matrix*   GetTranslateMatrix(int part);
+    Math::Matrix*   GetTransformMatrix(int part);
+    Math::Matrix*   GetWorldMatrix(int part);
 
-    void        SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV, Math::Vector   &lookat, Math::Vector &upVec, CameraType type);
+    void        SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
+                                Math::Vector &lookat, Math::Vector &upVec,
+                                Gfx::CameraType type);
 
     void        SetCharacter(Character* character);
     void        GetCharacter(Character* character);
-    Character*  RetCharacter();
+    Character*  GetCharacter();
 
-    float       RetAbsTime();
+    float       GetAbsTime();
 
     void        SetEnergy(float level);
-    float       RetEnergy();
+    float       GetEnergy();
 
     void        SetCapacity(float capacity);
-    float       RetCapacity();
+    float       GetCapacity();
 
     void        SetShield(float level);
-    float       RetShield();
+    float       GetShield();
 
     void        SetRange(float delay);
-    float       RetRange();
+    float       GetRange();
 
     void        SetTransparency(float value);
-    float       RetTransparency();
+    float       GetTransparency();
 
-    ObjectMaterial RetMaterial();
+    ObjectMaterial GetMaterial();
 
     void        SetGadget(bool bMode);
-    bool        RetGadget();
+    bool        GetGadget();
 
     void        SetFixed(bool bFixed);
-    bool        RetFixed();
+    bool        GetFixed();
 
     void        SetClip(bool bClip);
-    bool        RetClip();
+    bool        GetClip();
 
     bool        JostleObject(float force);
 
     void        StartDetectEffect(CObject *target, bool bFound);
 
     void        SetVirusMode(bool bEnable);
-    bool        RetVirusMode();
-    float       RetVirusTime();
+    bool        GetVirusMode();
+    float       GetVirusTime();
 
-    void        SetCameraType(CameraType type);
-    CameraType  RetCameraType();
+    void        SetCameraType(Gfx::CameraType type);
+    Gfx::CameraType  GetCameraType();
     void        SetCameraDist(float dist);
-    float       RetCameraDist();
+    float       GetCameraDist();
     void        SetCameraLock(bool bLock);
-    bool        RetCameraLock();
+    bool        GetCameraLock();
 
     void        SetHilite(bool bMode);
-    bool        RetHilite();
+    bool        GetHilite();
 
     void        SetSelect(bool bMode, bool bDisplayError=true);
-    bool        RetSelect(bool bReal=false);
+    bool        GetSelect(bool bReal=false);
 
     void        SetSelectable(bool bMode);
-    bool        RetSelectable();
+    bool        GetSelectable();
 
     void        SetActivity(bool bMode);
-    bool        RetActivity();
+    bool        GetActivity();
 
     void        SetVisible(bool bVisible);
-    bool        RetVisible();
+    bool        GetVisible();
 
     void        SetEnable(bool bEnable);
-    bool        RetEnable();
+    bool        GetEnable();
 
     void        SetCheckToken(bool bMode);
-    bool        RetCheckToken();
+    bool        GetCheckToken();
 
     void        SetProxyActivate(bool bActivate);
-    bool        RetProxyActivate();
+    bool        GetProxyActivate();
     void        SetProxyDistance(float distance);
-    float       RetProxyDistance();
+    float       GetProxyDistance();
 
     void        SetMagnifyDamage(float factor);
-    float       RetMagnifyDamage();
+    float       GetMagnifyDamage();
 
     void        SetParam(float value);
-    float       RetParam();
+    float       GetParam();
 
     void        SetExplo(bool bExplo);
-    bool        RetExplo();
+    bool        GetExplo();
     void        SetLock(bool bLock);
-    bool        RetLock();
+    bool        GetLock();
     void        SetCargo(bool bCargo);
-    bool        RetCargo();
+    bool        GetCargo();
     void        SetBurn(bool bBurn);
-    bool        RetBurn();
+    bool        GetBurn();
     void        SetDead(bool bDead);
-    bool        RetDead();
-    bool        RetRuin();
-    bool        RetActif();
+    bool        GetDead();
+    bool        GetRuin();
+    bool        GetActif();
 
     void        SetGunGoalV(float gunGoal);
     void        SetGunGoalH(float gunGoal);
-    float       RetGunGoalV();
-    float       RetGunGoalH();
+    float       GetGunGoalV();
+    float       GetGunGoalH();
 
     bool        StartShowLimit();
     void        StopShowLimit();
@@ -618,16 +617,16 @@ public:
     void        CreateSelectParticule();
 
     void        SetRunScript(CScript* script);
-    CScript*    RetRunScript();
-    CBotVar*    RetBotVar();
-    CPhysics*   RetPhysics();
-    CBrain*     RetBrain();
-    CMotion*    RetMotion();
-    CAuto*      RetAuto();
+    CScript*    GetRunScript();
+    CBotVar*    GetBotVar();
+    CPhysics*   GetPhysics();
+    CBrain*     GetBrain();
+    CMotion*    GetMotion();
+    CAuto*      GetAuto();
     void        SetAuto(CAuto* automat);
 
     void        SetDefRank(int rank);
-    int         RetDefRank();
+    int         GetDefRank();
 
     bool        GetTooltipName(char* name);
 
@@ -635,17 +634,17 @@ public:
     CObject*    SubDeselList();
     void        DeleteDeselList(CObject* pObj);
 
-    bool        CreateShadowCircle(float radius, float intensity, D3DShadowType type=D3DSHADOWNORM);
-    bool        CreateShadowLight(float height, D3DCOLORVALUE color);
-    bool        CreateEffectLight(float height, D3DCOLORVALUE color);
+    bool        CreateShadowCircle(float radius, float intensity, Gfx::EngineShadowType type = Gfx::ENG_SHADOW_NORM);
+    bool        CreateShadowLight(float height, Gfx::Color color);
+    bool        CreateEffectLight(float height, Gfx::Color color);
 
     void        FlatParent();
 
-    bool        RetTraceDown();
+    bool        GetTraceDown();
     void        SetTraceDown(bool bDown);
-    int         RetTraceColor();
+    int         GetTraceColor();
     void        SetTraceColor(int color);
-    float       RetTraceWidth();
+    float       GetTraceWidth();
     void        SetTraceWidth(float width);
 
 protected:
@@ -663,19 +662,19 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    CD3DEngine*     m_engine;
-    CLight*         m_light;
-    CTerrain*       m_terrain;
-    CWater*         m_water;
-    CCamera*        m_camera;
-    CParticule*     m_particule;
+    Gfx::CEngine*        m_engine;
+    Gfx::CLightManager*  m_lightMan;
+    Gfx::CTerrain*       m_terrain;
+    Gfx::CWater*         m_water;
+    Gfx::CCamera*        m_camera;
+    Gfx::CParticle*      m_particle;
     CPhysics*       m_physics;
     CBrain*         m_brain;
     CMotion*        m_motion;
     CAuto*          m_auto;
     CDisplayText*   m_displayText;
     CRobotMain*     m_main;
-    CSound*         m_sound;
+    CSoundInterface* m_sound;
     CBotVar*        m_botVar;
     CScript*        m_runScript;
 
@@ -732,7 +731,7 @@ protected:
     float       m_showLimitRadius;
     float       m_gunGoalV;
     float       m_gunGoalH;
-    CameraType  m_cameraType;
+    Gfx::CameraType  m_cameraType;
     float       m_cameraDist;
     bool        m_bCameraLock;
     int         m_defRank;
@@ -767,7 +766,7 @@ protected:
 
     int         m_infoTotal;
     Info        m_info[OBJECTMAXINFO];
-    float       m_infoReturn;
+    float       m_infoGeturn;
     bool        m_bInfoUpdate;
 
     float       m_cmdLine[OBJECTMAXCMDLINE];

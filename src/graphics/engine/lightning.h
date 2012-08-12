@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// lightning.h (aka blitz.h)
+/**
+ * \file graphics/engine/lightning.h
+ * \brief Lightning rendering - Gfx::CLightning class (aka blitz)
+ */
 
 #pragma once
 
@@ -73,7 +76,7 @@ protected:
     float           m_sleep;
     float           m_delay;
     float           m_magnetic;
-    BlitzPhase      m_phase;
+    Gfx::BlitzPhase m_phase;
     float           m_time;
     float           m_speed;
     float           m_progress;

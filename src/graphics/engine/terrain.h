@@ -15,7 +15,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// terrain.h
+/**
+ * \file graphics/engine/terrain.h
+ * \brief Terrain rendering - Gfx::CTerrain class
+ */
 
 #pragma once
 
@@ -40,56 +43,72 @@ enum TerrainRes
     TR_STONE    = 1,
     TR_URANIUM  = 2,
     TR_POWER    = 3,
-    TR_KEYa     = 4,
-    TR_KEYb     = 5,
-    TR_KEYc     = 6,
-    TR_KEYd     = 7,
+    TR_KEY_A     = 4,
+    TR_KEY_B     = 5,
+    TR_KEY_C     = 6,
+    TR_KEY_D     = 7,
 };
-
-
-const short MAXBUILDINGLEVEL = 100;
 
 struct BuildingLevel
 {
-    Math::Vector    center;
-    float       factor;
-    float       min;
-    float       max;
-    float       level;
-    float       height;
-    float       bboxMinX;
-    float       bboxMaxX;
-    float       bboxMinZ;
-    float       bboxMaxZ;
+    Math::Vector center;
+    float        factor;
+    float        min;
+    float        max;
+    float        level;
+    float        height;
+    float        bboxMinX;
+    float        bboxMaxX;
+    float        bboxMinZ;
+    float        bboxMaxZ;
+
+    BuildingLevel()
+    {
+        factor = min = max = level = height = 0.0f;
+        bboxMinX = bboxMaxX = bboxMinZ = bboxMaxZ = 0.0f;
+    }
 };
-
-
-const short MAXMATTERRAIN = 100;
 
 struct TerrainMaterial
 {
     short       id;
-    char        texName[20];
+    std::string texName;
     float       u,v;
     float       hardness;
     char        mat[4];     // up, right, down, left
+
+    TerrainMaterial()
+    {
+        id = 0;
+        u = v = 0.0f;
+        hardness = 0.0f;
+        mat[0] = mat[1] = mat[2] = mat[3] = 0;
+    }
 };
 
 struct DotLevel
 {
     short       id;
     char        mat[4];     // up, right, down, left
+
+    DotLevel()
+    {
+        id = 0;
+        mat[0] = mat[1] = mat[2] = mat[3] = 0;
+    }
 };
-
-
-const short MAXFLYINGLIMIT = 10;
 
 struct FlyingLimit
 {
-    Math::Vector    center;
-    float       extRadius;
-    float       intRadius;
-    float       maxHeight;
+    Math::Vector center;
+    float        extRadius;
+    float        intRadius;
+    float        maxHeight;
+
+    FlyingLimit()
+    {
+        extRadius = intRadius = maxHeight = 0.0f;
+    }
 };
 
 
@@ -100,72 +119,124 @@ public:
     CTerrain(CInstanceManager* iMan);
     ~CTerrain();
 
-    bool        Generate(int mosaic, int brickP2, float size, float vision, int depth, float hardness);
-    bool        InitTextures(char* baseName, int* table, int dx, int dy);
+    //! Generates a new flat terrain
+    bool        Generate(int mosaic, int brickPow2, float size, float vision, int depth, float hardness);
+    //! Initializes the names of textures to use for the land
+    bool        InitTextures(const std::string& baseName, int* table, int dx, int dy);
+    //! Empties level
     void        LevelFlush();
-    bool        LevelMaterial(int id, char* baseName, float u, float v, int up, int right, int down, int left, float hardness);
+    //! Initializes the names of textures to use for the land
+    void        LevelMaterial(int id, std::string& baseName, float u, float v, int up, int right, int down, int left, float hardness);
+    //! Initializes all the ground with a material
     bool        LevelInit(int id);
+    //! Generates a level in the terrain
     bool        LevelGenerate(int *id, float min, float max, float slope, float freq, Math::Vector center, float radius);
+    //! Initializes a completely flat terrain
     void        FlushRelief();
-    bool        ReliefFromBMP(const char* filename, float scaleRelief, bool adjustBorder);
-    bool        ReliefFromDXF(const char* filename, float scaleRelief);
-    bool        ResFromBMP(const char* filename);
-    bool        CreateObjects(bool bMultiRes);
-    bool        Terraform(const Math::Vector &p1, const Math::Vector &p2, float height);
+    //! Load relief from a PNG file
+    bool        ReliefFromPNG(const std::string& filename, float scaleRelief, bool adjustBorder);
+    //! Load resources from a PNG file
+    bool        ResFromPNG(const std::string& filename);
+    //! Creates all objects of the terrain within the 3D engine
+    bool        CreateObjects(bool multiRes);
+    //! Modifies the terrain's relief
+    bool        Terraform(const Math::Vector& p1, const Math::Vector& p2, float height);
 
-    void        SetWind(Math::Vector speed);
-    Math::Vector    RetWind();
+    //@{
+    //! Management of the wind
+    void         SetWind(Math::Vector speed);
+    Math::Vector GetWind();
+    //@}
 
-    float       RetFineSlope(const Math::Vector &pos);
-    float       RetCoarseSlope(const Math::Vector &pos);
-    bool        GetNormal(Math::Vector &n, const Math::Vector &p);
-    float       RetFloorLevel(const Math::Vector &p, bool bBrut=false, bool bWater=false);
-    float       RetFloorHeight(const Math::Vector &p, bool bBrut=false, bool bWater=false);
-    bool        MoveOnFloor(Math::Vector &p, bool bBrut=false, bool bWater=false);
-    bool        ValidPosition(Math::Vector &p, float marging);
-    TerrainRes  RetResource(const Math::Vector &p);
+    //! Gives the exact slope of the terrain of a place given
+    float       GetFineSlope(const Math::Vector& pos);
+    //! Gives the approximate slope of the terrain of a specific location
+    float       GetCoarseSlope(const Math::Vector& pos);
+    //! Gives the normal vector at the position p (x,-,z) of the ground
+    bool        GetNormal(Math::Vector& n, const Math::Vector &p);
+    //! returns the height of the ground
+    float       GetFloorLevel(const Math::Vector& p, bool brut=false, bool water=false);
+    //! Returns the height to the ground
+    float       GetFloorHeight(const Math::Vector& p, bool brut=false, bool water=false);
+    //! Modifies the coordinate "y" of point "p" to rest on the ground floor
+    bool        MoveOnFloor(Math::Vector& p, bool brut=false, bool water=false);
+    //! Modifies a coordinate so that it is on the ground
+    bool        ValidPosition(Math::Vector& p, float marging);
+    //! Returns the resource type available underground
+    Gfx::TerrainRes GetResource(const Math::Vector& p);
+    //! Adjusts a position so that it does not exceed the boundaries
     void        LimitPos(Math::Vector &pos);
 
+    //! Empty the table of elevations
     void        FlushBuildingLevel();
+    //! Adds a new elevation for a building
     bool        AddBuildingLevel(Math::Vector center, float min, float max, float height, float factor);
+    //! Updates the elevation for a building when it was moved up (after a terraforming)
     bool        UpdateBuildingLevel(Math::Vector center);
+    //! Removes the elevation for a building when it was destroyed
     bool        DeleteBuildingLevel(Math::Vector center);
-    float       RetBuildingFactor(const Math::Vector &p);
-    float       RetHardness(const Math::Vector &p);
+    //! Returns the influence factor whether a position is on a possible rise
+    float       GetBuildingFactor(const Math::Vector& p);
+    float       GetHardness(const Math::Vector& p);
 
-    int         RetMosaic();
-    int         RetBrick();
-    float       RetSize();
-    float       RetScaleRelief();
+    int         GetMosaic();
+    int         GetBrick();
+    float       GetSize();
+    float       GetScaleRelief();
 
+    //! Shows the flat areas on the ground
     void        GroundFlat(Math::Vector pos);
-    float       RetFlatZoneRadius(Math::Vector center, float max);
+    //! Calculates the radius of the largest flat area available
+    float       GetFlatZoneRadius(Math::Vector center, float max);
 
+    //@{
+    //! Management of the global max flying height
     void        SetFlyingMaxHeight(float height);
-    float       RetFlyingMaxHeight();
+    float       GetFlyingMaxHeight();
+    //@}
+    //! Empty the table of flying limits
     void        FlushFlyingLimit();
-    bool        AddFlyingLimit(Math::Vector center, float extRadius, float intRadius, float maxHeight);
-    float       RetFlyingLimit(Math::Vector pos, bool bNoLimit);
+    //! Adds a new flying limit
+    void        AddFlyingLimit(Math::Vector center, float extRadius, float intRadius, float maxHeight);
+    //! Returns the maximum height of flight
+    float       GetFlyingLimit(Math::Vector pos, bool noLimit);
 
 protected:
+    //! Adds a point of elevation in the buffer of relief
     bool        ReliefAddDot(Math::Vector pos, float scaleRelief);
+    //! Adjust the edges of each mosaic to be compatible with all lower resolutions
     void        AdjustRelief();
-    Math::Vector    RetVector(int x, int y);
-    Gfx::VertexTex2 RetVertex(int x, int y, int step);
-    bool        CreateMosaic(int ox, int oy, int step, int objRank, const Gfx::Material &mat, float min, float max);
-    bool        CreateSquare(bool bMultiRes, int x, int y);
+    //! Calculates a vector of the terrain
+    Math::Vector GetVector(int x, int y);
+    //! Calculates a vertex of the terrain
+    Gfx::VertexTex2 GetVertex(int x, int y, int step);
+    //! Creates all objects of a mosaic
+    bool        CreateMosaic(int ox, int oy, int step, int objRank, const Gfx::Material& mat, float min, float max);
+    //! Creates all objects in a mesh square ground
+    bool        CreateSquare(bool multiRes, int x, int y);
 
-    TerrainMaterial* LevelSearchMat(int id);
-    void        LevelTextureName(int x, int y, char *name, Math::Point &uv);
-    float       LevelRetHeight(int x, int y);
+    //! Seeks a materials based on theirs identifier
+    Gfx::TerrainMaterial* LevelSearchMat(int id);
+    //! Chooses texture to use for a given square
+    void        LevelTextureName(int x, int y, std::string& name, Math::Point &uv);
+    //! Returns the height of the terrain
+    float       LevelGetHeight(int x, int y);
+    //! Decide whether a point is using the materials
     bool        LevelGetDot(int x, int y, float min, float max, float slope);
+    //! Seeks if material exists
     int         LevelTestMat(char *mat);
+    //! Modifies the state of a point and its four neighbors, without testing if possible
     void        LevelSetDot(int x, int y, int id, char *mat);
+    //! Tests if a material can give a place, according to its four neighbors. If yes, puts the point.
     bool        LevelIfDot(int x, int y, int id, char *mat);
+    //! Modifies the state of a point
     bool        LevelPutDot(int x, int y, int id);
+    //! Initializes a table with empty levels
     void        LevelOpenTable();
+    //! Closes the level table
     void        LevelCloseTable();
 
+    //! Adjusts a position according to a possible rise
     void        AdjustBuildingLevel(Math::Vector &p);
 
 protected:
@@ -173,39 +244,49 @@ protected:
     CEngine*        m_engine;
     CWater*         m_water;
 
-    int         m_mosaic;       // number of mosaics
-    int         m_brick;        // number of bricks per mosaics
-    float           m_size;         // size of an item in an brick
-    float           m_vision;       // vision before a change of resolution
-    float*          m_relief;       // table of the relief
-    int*            m_texture;      // table of textures
-    int*            m_objRank;      // table of rows of objects
-    bool            m_bMultiText;
-    bool            m_bLevelText;
-    float           m_scaleMapping;     // scale of the mapping
+    //! Number of mosaics
+    int             m_mosaic;
+    //! Number of bricks per mosaics
+    int             m_brick;
+    int             m_levelDotSize;
+    //! Size of an item in a brick
+    float           m_size;
+    //! Vision before a change of resolution
+    float           m_vision;
+    //! Table of the relief
+    std::vector<float> m_relief;
+    //! Table of textures
+    std::vector<int> m_texture;
+    //! Table of rows of objects
+    std::vector<int> m_objRank;
+    //! Table of resources
+    std::vector<unsigned char> m_resources;
+    bool            m_multiText;
+    bool            m_levelText;
+    //! Scale of the mapping
+    float           m_scaleMapping;
     float           m_scaleRelief;
-    int         m_subdivMapping;
-    int         m_depth;        // number of different resolutions (1,2,3,4)
-    char            m_texBaseName[20];
-    char            m_texBaseExt[10];
+    int             m_subdivMapping;
+    //! Number of different resolutions (1,2,3,4)
+    int             m_depth;
+    std::string     m_texBaseName;
+    std::string     m_texBaseExt;
     float           m_defHardness;
 
-    TerrainMaterial m_levelMat[MAXMATTERRAIN+1];
-    int             m_levelMatTotal;
+    std::vector<TerrainMaterial> m_levelMat;
+    std::vector<Gfx::DotLevel>  m_levelDot;
     int             m_levelMatMax;
-    int             m_levelDotSize;
-    DotLevel*       m_levelDot;
     int             m_levelID;
 
-    int             m_buildingUsed;
-    BuildingLevel   m_buildingTable[MAXBUILDINGLEVEL];
+    std::vector<Gfx::BuildingLevel> m_buildingLevels;
 
-    unsigned char*  m_resources;
-    Math::Vector        m_wind;         // wind speed
+    //! Wind speed
+    Math::Vector    m_wind;
 
+    //! Global flying height limit
     float           m_flyingMaxHeight;
-    int             m_flyingLimitTotal;
-    FlyingLimit     m_flyingLimit[MAXFLYINGLIMIT];
+    //! List of local flight limits
+    std::vector<Gfx::FlyingLimit> m_flyingLimits;
 };
 
 }; // namespace Gfx
