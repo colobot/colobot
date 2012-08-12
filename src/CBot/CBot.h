@@ -29,7 +29,7 @@
 #define    STACKMEM    true             /// \def preserve memory for the execution stack
 #define    MAXSTACK    990              /// \def stack size reserved
 
-#define    EOX         (CBotStack*)-1   /// \def tag special condition
+#define    EOX         (reinterpret_cast<CBotStack*>(-1))   /// \def tag special condition
 
 
 // fix for MSVC instruction __asm int 3 (setting a trap)

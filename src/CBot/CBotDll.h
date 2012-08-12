@@ -77,9 +77,10 @@ enum CBotType
 //n = not implemented yet
 
 // for SetUserPtr when deleting an object
-#define OBJECTDELETED ((void*)-1)
+// \TODO define own types to distinct between different states of objects
+#define OBJECTDELETED (reinterpret_cast<void*>(-1))
 // value set before initialization
-#define OBJECTCREATED ((void*)-2)
+#define OBJECTCREATED (reinterpret_cast<void*>(-2))
 
 
 /** \brief CBotTypResult class to define the complete type of a result*/
@@ -314,7 +315,7 @@ private:
     int m_lg;
 
     /** \brief Keeps the string corresponding to keyword ID */
-    static const std::map<EID, char *> s_keywordString;
+    static const std::map<EID,const char *> s_keywordString;
 
     /**
      * \brief MapIdToString maps given ID to its string equivalent

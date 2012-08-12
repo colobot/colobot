@@ -47,7 +47,7 @@ CBotStack* CBotStack::FirstStack()
     size    *= (MAXSTACK+10);
 
     // request a slice of memory for the stack
-    p = (CBotStack*)malloc(size);
+    p = static_cast<CBotStack*>(malloc(size));
 
     // completely empty
     memset(p, 0, size);
@@ -905,7 +905,7 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
     pStack->m_bBlock = w;
 
     if (!ReadWord(pf, w)) return false;            // in what state ?
-    pStack->SetState((short)w);                    // in a good state
+    pStack->SetState(static_cast<short>(w));                    // in a good state
 
     if (!ReadWord(pf, w)) return false;            // dont delete?
                                                 // uses more
@@ -1016,7 +1016,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         case CBotTypBoolean:
             pNew = CBotVar::Create(&token, w);                        // creates a variable
             if (!ReadWord(pf, w)) return false;
-            pNew->SetValInt((short)w, defnum);
+            pNew->SetValInt(static_cast<short>(w), defnum);
             break;
         case CBotTypFloat:
             pNew = CBotVar::Create(&token, w);                        // creates a variable
@@ -1045,7 +1045,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
                     pNew = new CBotVarClass(&token, r);                // directly creates an instance
                                                                     // attention cptuse = 0
-                    if ( !RestoreState(pf, ((CBotVarClass*)pNew)->m_pVar)) return false;
+                    if ( !RestoreState(pf, (static_cast<CBotVarClass*>(pNew))->m_pVar)) return false;
                     pNew->SetIdent(id);
 
                     if ( p != NULL )
@@ -1062,7 +1062,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
             if (!ReadString(pf, s)) return false;
             {
                 pNew = CBotVar::Create(&token, CBotTypResult(w, s));// creates a variable
-                CBotVarClass* p = NULL;
+//                CBotVarClass* p = NULL;
                 long id;
                 ReadLong(pf, id);
 //                if ( id ) p = CBotVarClass::Find(id);        // found the instance (made by RestoreInstance)
@@ -1070,9 +1070,9 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                 // returns a copy of the original instance
                 CBotVar* pInstance = NULL;
                 if ( !CBotVar::RestoreState( pf, pInstance ) ) return false;
-                ((CBotVarPointer*)pNew)->SetPointer( pInstance );            // and point over
+                (static_cast<CBotVarPointer*>(pNew))->SetPointer( pInstance );            // and point over
 
-//                if ( p != NULL ) ((CBotVarPointer*)pNew)->SetPointer( p );    // rather this one
+//                if ( p != NULL ) (static_cast<CBotVarPointer*>(pNew))->SetPointer( p );    // rather this one
 
             }
             break;
@@ -1087,7 +1087,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                 // returns a copy of the original instance
                 CBotVar* pInstance = NULL;
                 if ( !CBotVar::RestoreState( pf, pInstance ) ) return false;
-                ((CBotVarPointer*)pNew)->SetPointer( pInstance );            // and point over
+                (static_cast<CBotVarPointer*>(pNew))->SetPointer( pInstance );            // and point over
             }
             break;
         default:

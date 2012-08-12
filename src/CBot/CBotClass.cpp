@@ -488,7 +488,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 
     bool        bIntrinsic = pClass->IsIntrinsic();
     CBotTypResult type = CBotTypResult( bIntrinsic ? CBotTypIntrinsic : CBotTypPointer, pClass );
-    CBotClassInst*  inst = (CBotClassInst*)CompileArray(p, pStack, type);
+    CBotClassInst*  inst = static_cast<CBotClassInst*>(CompileArray(p, pStack, type));
     if ( inst != NULL || !pStack->IsOk() ) return inst;
 
     CBotCStack* pStk = pStack->TokenStack();
@@ -501,7 +501,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 
     if ( NULL != (inst->m_var = CBotLeftExprVar::Compile( p, pStk )) )
     {
-        ((CBotLeftExprVar*)inst->m_var)->m_typevar = type;
+        (static_cast<CBotLeftExprVar*>(inst->m_var))->m_typevar = type;
         if (pStk->CheckVarLocal(vartoken))                  // redefinition of the variable
         {
             pStk->SetStartError(vartoken->GetStart());
@@ -516,7 +516,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
 
             // compiles declaration an array 
 
-            inst = (CBotClassInst*)CBotInstArray::Compile( p, pStk, type );
+            inst = static_cast<CBotClassInst*>(CBotInstArray::Compile( p, pStk, type ));
 
             if (!pStk->IsOk() )
             {
@@ -531,7 +531,7 @@ CBotInstr* CBotClassInst::Compile(CBotToken* &p, CBotCStack* pStack, CBotClass* 
         var = CBotVar::Create(vartoken->GetString(), type); // creates the instance
 //      var->SetClass(pClass);
         var->SetUniqNum(
-            ((CBotLeftExprVar*)inst->m_var)->m_nIdent = CBotVar::NextUniqNum());
+            (static_cast<CBotLeftExprVar*>(inst->m_var))->m_nIdent = CBotVar::NextUniqNum());
                                                             // its attribute a unique number
         pStack->AddVar(var);                                // placed on the stack
 
@@ -667,12 +667,12 @@ bool CBotClassInst::Execute(CBotStack* &pj)
             pThis = CBotVar::Create(name, CBotTypResult( CBotTypPointer, pClass ));
         }
 
-        pThis->SetUniqNum(((CBotLeftExprVar*)m_var)->m_nIdent); // its attribute as unique number
+        pThis->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent); // its attribute as unique number
         pile->AddVar(pThis);                                    // place on the stack
         pile->IncState();
     }
 
-    if ( pThis == NULL ) pThis = pile->FindVar(((CBotLeftExprVar*)m_var)->m_nIdent);
+    if ( pThis == NULL ) pThis = pile->FindVar((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent);
 
     if ( pile->GetState()<3)
     {
@@ -698,7 +698,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
             else
             {
                 CBotVarClass* pInstance;
-                pInstance = ((CBotVarPointer*)pile->GetVar())->GetPointer();    // value for the assignment
+                pInstance = (static_cast<CBotVarPointer*>(pile->GetVar()))->GetPointer();    // value for the assignment
                 pThis->SetPointer(pInstance);
             }
             pThis->SetInit(true);
@@ -716,7 +716,7 @@ bool CBotClassInst::Execute(CBotStack* &pj)
                 // creates an instance of the requested class
 
                 CBotVarClass* pInstance;
-                pInstance = (CBotVarClass*)CBotVar::Create("", pClass);
+                pInstance = static_cast<CBotVarClass*>(CBotVar::Create("", pClass));
                 pThis->SetPointer(pInstance);
                 delete pInstance;
 
@@ -789,7 +789,7 @@ void CBotClassInst::RestoreState(CBotStack* &pj, bool bMain)
     {
         CBotString  name = m_var->m_token.GetString();
         pThis = pile->FindVar(name);
-        pThis->SetUniqNum(((CBotLeftExprVar*)m_var)->m_nIdent); // its attribute a unique number
+        pThis->SetUniqNum((static_cast<CBotLeftExprVar*>(m_var))->m_nIdent); // its attribute a unique number
     }
 
     CBotToken*  pt = &m_token;
@@ -845,7 +845,7 @@ void CBotClassInst::RestoreState(CBotStack* &pj, bool bMain)
             ppVars[i] = NULL;
 
             // creates a variable for the result
-            CBotVar*    pResult = NULL;     // constructor still void
+//            CBotVar*    pResult = NULL;     // constructor still void
 
             pClass->RestoreMethode(m_nMethodeIdent, pClass->GetName(), pThis, ppVars, pile2);
             return;
