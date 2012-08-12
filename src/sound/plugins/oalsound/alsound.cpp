@@ -41,13 +41,17 @@ int ALSound::PluginVersion()
 
 void ALSound::InstallPlugin()
 {
-    CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
+    auto pointer = CInstanceManager::GetInstancePointer();
+    if (pointer != nullptr)
+        CInstanceManager::GetInstancePointer()->AddInstance(CLASS_SOUND, this);
 }
 
 
 void ALSound::UninstallPlugin()
 {
-    CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
+    auto pointer = CInstanceManager::GetInstancePointer();
+    if (pointer != nullptr)
+        CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
     CleanUp();
 }
 

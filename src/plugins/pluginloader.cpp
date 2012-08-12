@@ -95,3 +95,21 @@ bool CPluginLoader::LoadPlugin()
     mLoaded = true;
     return true;
 }
+
+
+bool CPluginLoader::SetFilename(std::string filename)
+{
+    bool ok = true;
+    if (mLoaded)
+        ok = UnloadPlugin();
+
+    if (ok)
+        mFilename = filename;
+    return ok;
+}
+
+
+std::string CPluginLoader::GetFilename()
+{
+    return mFilename;
+}

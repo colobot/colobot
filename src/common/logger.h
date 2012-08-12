@@ -91,9 +91,6 @@ class CLogger : public CSingleton<CLogger>
          */
         void SetLogLevel(LogType level);
 
-        static CLogger& GetInstance();
-        static CLogger* GetInstancePointer();
-
     private:
         std::string mFilename;
         FILE *mFile;

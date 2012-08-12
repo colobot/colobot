@@ -27,6 +27,7 @@ CProfile::CProfile()
 {
     m_ini = new CSimpleIniA();
     m_ini->SetUnicode();
+    m_ini->SetMultiKey();
 }
 
 
@@ -39,8 +40,8 @@ CProfile::~CProfile()
 
 bool CProfile::InitCurrentDirectory()
 {
-    m_ini->LoadFile("colobot.ini");
-    return true;
+    bool result = m_ini->LoadFile("colobot.ini") == SI_OK;
+    return result;
 }
 
 
@@ -85,4 +86,20 @@ bool CProfile::GetLocalProfileFloat(std::string section, std::string key, float 
 {
     value = m_ini->GetDoubleValue(section.c_str(), key.c_str(), 0.0d);
     return true;
+}
+
+
+std::vector< std::string > CProfile::GetLocalProfileSection(std::string section, std::string key)
+{
+    std::vector< std::string > ret_list;
+
+    CSimpleIniA::TNamesDepend values;
+    m_ini->GetAllValues(section.c_str(), key.c_str(), values);
+    values.sort(CSimpleIniA::Entry::LoadOrder());
+
+    for (auto item : values) {
+        ret_list.push_back(item.pItem);
+    }
+
+    return ret_list;
 }

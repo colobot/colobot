@@ -24,20 +24,6 @@
 template<> CLogger* CSingleton<CLogger>::mInstance = nullptr;
 
 
-CLogger& CLogger::GetInstance()
-{
-    assert(mInstance);
-    return *mInstance;
-}
-
-
-CLogger* CLogger::GetInstancePointer()
-{
-    assert(mInstance);
-    return mInstance;
-}
-
-
 CLogger::CLogger()
 {
     mFile = NULL;

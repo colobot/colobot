@@ -14,35 +14,42 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pluginloader.h
+// pluginmanager.h
 
 
 #pragma once
 
-#include <ltdl.h>
 #include <string>
+#include <set>
+#include <vector>
 
 #include <common/logger.h>
+#include <common/profile.h>
 
-#include "plugininterface.h"
+#include <common/singleton.h>
+
+#include "pluginloader.h"
 
 
-class CPluginLoader {
+class CPluginManager : public CSingleton<CPluginManager> {
     public:
-        CPluginLoader(std::string);
+        CPluginManager();
+        ~CPluginManager();
 
-        char* GetName();
-        int GetVersion();
-        bool UnloadPlugin();
-        bool LoadPlugin();
-        bool IsLoaded();
-        bool SetFilename(std::string);
-        std::string GetFilename();
+        void LoadFromProfile();
 
+        bool LoadPlugin(std::string);
+        bool UnloadPlugin(std::string);
+
+        bool AddSearchDirectory(std::string);
+        bool RemoveSearchDirectory(std::string);
+
+        bool UnloadAllPlugins();
 
     private:
-        CPluginInterface* mInterface;
-        std::string mFilename;
-        lt_dlhandle mHandle;
-        bool mLoaded;
+        bool NameEndsWith(std::string, std::string);
+
+        std::set< std::string > m_folders;
+        std::vector<CPluginLoader *> m_plugins;
 };
+

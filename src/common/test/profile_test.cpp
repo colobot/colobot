@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 using namespace std;
 
@@ -28,6 +29,13 @@ int main()
     profile.GetLocalProfileFloat("test_float", "float_value", float_value);
     if (float_value != 1.5) {
         cout << "GetLocalProfileFloat failed!" << endl;
+        return 1;
+    }
+
+    vector<string> list;
+    list = profile.GetLocalProfileSection("test_multi", "entry");
+    if (list.size() != 5) {
+        cout << "GetLocalProfileSection failed!" << endl;
         return 1;
     }
 
