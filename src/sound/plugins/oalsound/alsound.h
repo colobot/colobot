@@ -74,10 +74,10 @@ class ALSound : public CSoundInterface
         bool IsPlayingMusic();
 
         // plugin interface
-        char* PluginName();
+        std::string PluginName();
         int PluginVersion();
         void InstallPlugin();
-        void UninstallPlugin();
+        bool UninstallPlugin(std::string &);
 
     private:
         void CleanUp();

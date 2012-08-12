@@ -16,22 +16,50 @@
 
 // plugininterface.h
 
+/**
+ *  @file plugin/plugininterface.h
+ *  @brief Generic plugin interface
+ */
 
 #pragma once
 
+#include <string>
 
 #define PLUGIN_INTERFACE(class_type) \
     static class_type* Plugin##class_type; \
     extern "C" void InstallPluginEntry() { Plugin##class_type = new class_type(); Plugin##class_type->InstallPlugin(); } \
-    extern "C" void UninstallPluginEntry() { Plugin##class_type->UninstallPlugin(); delete Plugin##class_type; } \
+    extern "C" bool UninstallPluginEntry(std::string &reason) { bool result = Plugin##class_type->UninstallPlugin(reason); \
+                                                                if (!result) \
+                                                                    return false; \
+                                                                delete Plugin##class_type; \
+                                                                return true; } \
     extern "C" CPluginInterface* GetPluginInterfaceEntry() { return static_cast<CPluginInterface*>(Plugin##class_type); }
 
 
+/**
+* @class CPluginInterface
+*
+* @brief Generic plugin interface. All plugins that will be managed by plugin manager have to derive from this class.
+*
+*/
 class CPluginInterface {
     public:
-        virtual char* PluginName() = 0;
+        /** Function to get plugin name or description
+         *  @return returns plugin name
+         */
+        virtual std::string PluginName() = 0;
+
+        /** Function to get plugin version. 1 means version 0.01, 2 means 0.02 etc.
+         *  @return number indicating plugin version
+         */
         virtual int PluginVersion() = 0;
+
+        /** Function to initialize plugin
+         */
         virtual void InstallPlugin() = 0;
-        virtual void UninstallPlugin() = 0;
+
+        /** Function called before removing plugin
+         */
+        virtual bool UninstallPlugin(std::string &) = 0;
 };
 

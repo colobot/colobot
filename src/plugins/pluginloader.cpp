@@ -28,11 +28,11 @@ CPluginLoader::CPluginLoader(std::string filename)
 }
 
 
-char* CPluginLoader::GetName()
+std::string CPluginLoader::GetName()
 {
     if (mLoaded)
         return mInterface->PluginName();
-    return nullptr;
+    return "(not loaded)";
 }
 
 
@@ -57,9 +57,15 @@ bool CPluginLoader::UnloadPlugin()
         return true;
     }
 
-    void (*uninstall)() = (void (*)()) lt_dlsym(mHandle, "UninstallPluginEntry");
+    bool (*uninstall)(std::string &) = (bool (*)(std::string &)) lt_dlsym(mHandle, "UninstallPluginEntry");
     if (!uninstall) {
         GetLogger()->Error("Error getting UninstallPluginEntry for plugin %s: %s\n", mFilename.c_str(), lt_dlerror());
+        return false;
+    }
+
+    std::string reason;
+    if (!uninstall(reason)) {
+        GetLogger()->Error("Could not unload plugin %s: %s\n", mFilename.c_str(), reason.c_str());
         return false;
     }
 
@@ -71,6 +77,11 @@ bool CPluginLoader::UnloadPlugin()
 
 bool CPluginLoader::LoadPlugin()
 {
+    if (mFilename.length() == 0) {
+        GetLogger()->Warn("No plugin filename specified.\n");
+        return false;
+    }
+
     mHandle = lt_dlopenext(mFilename.c_str());
     if (!mHandle) {
         GetLogger()->Error("Error loading plugin %s: %s\n", mFilename.c_str(), lt_dlerror());

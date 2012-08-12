@@ -27,15 +27,15 @@
 PLUGIN_INTERFACE(ALSound)
 
 
-char* ALSound::PluginName()
+std::string ALSound::PluginName()
 {
-    return const_cast<char *>("Sound plugin using OpenAL library to play sounds.");
+    return "Sound plugin using OpenAL library to play sounds.";
 }
 
 
 int ALSound::PluginVersion()
 {
-    return 1;
+    return 2;
 }
 
 
@@ -47,12 +47,13 @@ void ALSound::InstallPlugin()
 }
 
 
-void ALSound::UninstallPlugin()
+bool ALSound::UninstallPlugin(std::string &reason)
 {
     auto pointer = CInstanceManager::GetInstancePointer();
     if (pointer != nullptr)
         CInstanceManager::GetInstancePointer()->DeleteInstance(CLASS_SOUND, this);
     CleanUp();
+    return true;
 }
 
 
