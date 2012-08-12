@@ -21,8 +21,10 @@
 
 #include "common/iman.h"
 #include "common/logger.h"
+#include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
+#include "math/geometry.h"
 #include "object/object.h"
 #include "sound/sound.h"
 
@@ -258,53 +260,41 @@ void Gfx::CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
 /** This surface prevents to see the sky (background) underwater! */
 void Gfx::CWater::DrawBack()
 {
-    GetLogger()->Trace("CWater::DrawBack(): stub!\n");
-    /* TODO!
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2      vertex[4];      // 2 triangles
-    D3DMATERIAL7    material;
-    Math::Matrix        matrix;
-    Math::Vector        eye, lookat, n, p, p1, p2;
-    Math::Point         uv1, uv2;
-    float           deep, dist;
+    if (! m_draw) return;
+    if (m_type[0] == WATER_NULL) return;
+    if (m_lines.empty()) return;
 
-    if ( !m_bDraw )  return;
-    if ( m_type[0] == WATER_NULL )  return;
-    if ( m_lineUsed == 0 )  return;
+    Math::Vector eye = m_engine->GetEyePt();
+    Math::Vector lookat = m_engine->GetLookatPt();
 
-    eye = m_engine->GetEyePt();
-    lookat = m_engine->GetLookatPt();
-
-    ZeroMemory( &material, sizeof(D3DMATERIAL7) );
+    Gfx::Material material;
     material.diffuse = m_diffuse;
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
 
-    m_engine->SetTexture("", 0);
+    m_engine->SetTexture("", 0); // TODO: disable texturing
 
-    device = m_engine->GetD3DDevice();
-    device->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
-    device->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-    device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
-    m_engine->SetState(D3DSTATENORMAL);
+    Gfx::CDevice* device = m_engine->GetDevice();
 
-    deep = m_engine->GetDeepView(0);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+
+    float deep = m_engine->GetDeepView(0);
     m_engine->SetDeepView(deep*2.0f, 0);
     m_engine->SetFocus(m_engine->GetFocus());
     m_engine->UpdateMatProj();  // twice the depth of view
 
+    Math::Matrix matrix;
     matrix.LoadIdentity();
-    {
-        D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
-        device->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-    }
+    device->SetTransform(Gfx::TRANSFORM_WORLD, matrix);
 
+    Math::Vector p;
     p.x = eye.x;
     p.z = eye.z;
-    dist = Math::DistanceProjected(eye, lookat);
+    float dist = Math::DistanceProjected(eye, lookat);
     p.x = (lookat.x-eye.x)*deep*1.0f/dist + eye.x;
     p.z = (lookat.z-eye.z)*deep*1.0f/dist + eye.z;
 
+    Math::Vector p1, p2;
     p1.x =  (lookat.z-eye.z)*deep*2.0f/dist + p.x;
     p1.z = -(lookat.x-eye.x)*deep*2.0f/dist + p.z;
     p2.x = -(lookat.z-eye.z)*deep*2.0f/dist + p.x;
@@ -313,155 +303,132 @@ void Gfx::CWater::DrawBack()
     p1.y = -50.0f;
     p2.y = m_level;
 
+    Math::Vector n;
     n.x = (lookat.x-eye.x)/dist;
     n.z = (lookat.z-eye.z)/dist;
     n.y = 0.0f;
 
-    uv1.x = uv1.y = 0.0f;
-    uv2.x = uv2.y = 0.0f;
+    Gfx::Vertex vertices[4] =
+    {
+        Gfx::Vertex(Math::Vector(p1.x, p2.y, p1.z), n),
+        Gfx::Vertex(Math::Vector(p1.x, p1.y, p1.z), n),
+        Gfx::Vertex(Math::Vector(p2.x, p2.y, p2.z), n),
+        Gfx::Vertex(Math::Vector(p2.x, p1.y, p2.z), n)
+    };
 
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p2.y, p1.z), n, uv1.x,uv2.y);
-    vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p1.y, p1.z), n, uv1.x,uv1.y);
-    vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p2.y, p2.z), n, uv2.x,uv2.y);
-    vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p1.y, p2.z), n, uv2.x,uv1.y);
-
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
     m_engine->AddStatisticTriangle(2);
 
     m_engine->SetDeepView(deep, 0);
     m_engine->SetFocus(m_engine->GetFocus());
     m_engine->UpdateMatProj();  // gives the initial depth of view
-
-    device->SetRenderState(D3DRENDERSTATE_LIGHTING, true);
-    device->SetRenderState(D3DRENDERSTATE_ZENABLE, true);
-    device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);*/
 }
 
 void Gfx::CWater::DrawSurf()
 {
-    GetLogger()->Trace("CWater::DrawSurf(): stub!\n");
-    /* TODO!
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2*     vertex;     // triangles
-    D3DMATERIAL7    material;
-    Math::Matrix        matrix;
-    Math::Vector        eye, lookat, n, pos, p;
-    Math::Point         uv1, uv2;
-    bool            bUnder;
-    DWORD           flags;
-    float           deep, size, sizez, radius;
-    int             rankview, i, j, u;
-
     if (! m_draw) return;
     if (m_type[0] == Gfx::WATER_NULL) return;
-    if (m_line.empty()) return;
+    if (m_lines.empty()) return;
 
-    vertex = (D3DVERTEX2*)malloc(sizeof(D3DVERTEX2)*(m_brick+2)*2);
+    std::vector<Gfx::VertexTex2> vertices((m_brick+2)*2, Gfx::VertexTex2());
 
-    eye = m_engine->GetEyePt();
-    lookat = m_engine->GetLookatPt();
+    Math::Vector eye = m_engine->GetEyePt();
 
-    rankview = m_engine->GetRankView();
-    bUnder = ( rankview == 1);
+    int rankview = m_engine->GetRankView();
+    bool under = ( rankview == 1);
 
-    device = m_engine->GetD3DDevice();
-    device->SetRenderState(D3DRENDERSTATE_ZWRITEENABLE, false);
+    Gfx::CDevice* device = m_engine->GetDevice();
 
+    Math::Matrix matrix;
     matrix.LoadIdentity();
-    {
-        D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
-        device->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-    }
+    device->SetTransform(Gfx::TRANSFORM_WORLD, matrix);
 
-    ZeroMemory( &material, sizeof(D3DMATERIAL7) );
+    Gfx::Material material;
     material.diffuse = m_diffuse;
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
 
-    m_engine->SetTexture(m_filename, 0);
-    m_engine->SetTexture(m_filename, 1);
+    m_engine->SetTexture(m_fileName, 0);
+    m_engine->SetTexture(m_fileName, 1);
 
-    if ( m_type[rankview] == WATER_TT )
-    {
-        m_engine->SetState(D3DSTATETTb|D3DSTATEDUALw|D3DSTATEWRAP, m_color);
-    }
-    if ( m_type[rankview] == WATER_TO )
-    {
-        m_engine->SetState(D3DSTATENORMAL|D3DSTATEDUALw|D3DSTATEWRAP);
-    }
-    if ( m_type[rankview] == WATER_CT )
-    {
-        m_engine->SetState(D3DSTATETTb);
-    }
-    if ( m_type[rankview] == WATER_CO )
-    {
-        m_engine->SetState(D3DSTATENORMAL);
-    }
-    device->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
+    if (m_type[rankview] == WATER_TT)
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK | Gfx::ENG_RSTATE_DUAL_WHITE | Gfx::ENG_RSTATE_WRAP, m_color);
 
-    size = m_size/2.0f;
-    if ( bUnder )  sizez = -size;
-    else           sizez =  size;
+    else if (m_type[rankview] == WATER_TO)
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL | Gfx::ENG_RSTATE_DUAL_WHITE | Gfx::ENG_RSTATE_WRAP);
 
-    // Draws all the lines.
-    deep = m_engine->GetDeepView(0)*1.5f;
+    else if (m_type[rankview] == WATER_CT)
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
 
-    for ( i=0 ; i<m_lineUsed ; i++ )
+    else if (m_type[rankview] == WATER_CO)
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+
+    device->SetRenderState(Gfx::RENDER_STATE_FOG, true);
+
+    float size = m_size/2.0f;
+    float sizez = 0.0f;
+    if (under) sizez = -size;
+    else       sizez =  size;
+
+    // Draws all the lines
+    float deep = m_engine->GetDeepView(0)*1.5f;
+
+    for (int i = 0; i < static_cast<int>( m_lines.size() ); i++)
     {
+        Math::Vector pos;
         pos.y = m_level;
-        pos.z = m_line[i].pz;
-        pos.x = m_line[i].px1;
+        pos.z = m_lines[i].pz;
+        pos.x = m_lines[i].px1;
 
         // Visible line?
-        p = pos;
-        p.x += size*(m_line[i].len-1);
-        radius = sqrtf(powf(size, 2.0f)+powf(size*m_line[i].len, 2.0f));
+        Math::Vector p = pos;
+        p.x += size*(m_lines[i].len-1);
+        float radius = sqrtf(powf(size, 2.0f)+powf(size*m_lines[i].len, 2.0f));
         if ( Math::Distance(p, eye) > deep+radius )  continue;
 
-        D3DVECTOR pD3D = VEC_TO_D3DVEC(p);
-        device->ComputeSphereVisibility(&pD3D, &radius, 1, 0, &flags);
+        // TODO: ComputeSphereVisibility
 
-        if ( flags & D3DSTATUS_CLIPINTERSECTIONALL )  continue;
+        int vertexIndex = 0;
 
-        u = 0;
+        Math::Point uv1, uv2;
+        Math::Vector n;
+
         p.x = pos.x-size;
         p.z = pos.z-sizez;
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
-        if ( bUnder )  n.y = -n.y;
-        vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
+        if (under) n.y = -n.y;
+        vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
 
         p.x = pos.x-size;
         p.z = pos.z+sizez;
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
-        if ( bUnder )  n.y = -n.y;
-        vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
+        if (under)  n.y = -n.y;
+        vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
 
-        for ( j=0 ; j<m_line[i].len ; j++ )
+        for (int j = 0; j < m_lines[i].len; j++)
         {
             p.x = pos.x+size;
             p.z = pos.z-sizez;
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
-            if ( bUnder )  n.y = -n.y;
-            vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
+            if (under)  n.y = -n.y;
+            vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
 
             p.x = pos.x+size;
             p.z = pos.z+sizez;
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
-            if ( bUnder )  n.y = -n.y;
-            vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
+            if (under)  n.y = -n.y;
+            vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
 
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, u, NULL);
-        m_engine->AddStatisticTriangle(u-2);
+        device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
+        m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
-
-    free(vertex);*/
 }
 
 bool Gfx::CWater::GetWater(int x, int y)

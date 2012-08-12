@@ -946,7 +946,7 @@ bool Gfx::CEngine::AddQuick(int objRank, const Gfx::EngineObjLevel4& buffer,
 
     if (buffer.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
         m_objects[objRank].totalTriangles += buffer.vertices.size() / 3;
-    else // surfaces
+    else if (buffer.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
         m_objects[objRank].totalTriangles += buffer.vertices.size() - 2;
 
     return true;
@@ -2203,13 +2203,15 @@ bool Gfx::CEngine::LoadAllTextures()
 
         if (! p1.tex1Name.empty())
         {
-            if (! LoadTexture(p1.tex1Name).Valid())
+            p1.tex1 = LoadTexture(p1.tex1Name);
+            if (! p1.tex1.Valid())
                 ok = false;
         }
 
         if (! p1.tex2Name.empty())
         {
-            if (! LoadTexture(p1.tex2Name).Valid())
+            p1.tex2 = LoadTexture(p1.tex2Name);
+            if (! p1.tex2.Valid())
                 ok = false;
         }
     }
@@ -2865,15 +2867,6 @@ void Gfx::CEngine::Render()
 
 void Gfx::CEngine::Draw3DScene()
 {
-        /* TODO!
-    D3DObjLevel1*   p1;
-    D3DObjLevel2*   p2;
-    D3DObjLevel3*   p3;
-    D3DObjLevel4*   p4;
-    D3DObjLevel5*   p5;
-    D3DVERTEX2*     pv;
-    int             l1, l2, l3, l4, l5, objRank;*/
-
     if (m_groundSpotVisible)
         UpdateGroundSpotTextures();
 
@@ -2899,144 +2892,144 @@ void Gfx::CEngine::Draw3DScene()
 
     if (m_shadowVisible)
     {
-        // Draw the field
-        // TODO!
-        /*
-        p1 = m_objectPointer;
-        for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+        // Draw the terrain
+
+        for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
         {
-            p2 = p1->table[l1];
-            if ( p2 == 0 )  continue;
-            SetTexture(p2->tex1Name, 0);
-            SetTexture(p2->tex2Name, 1);
-            for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+            Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+            if (! p1.used) continue;
+
+            // Should be loaded by now
+            SetTexture(p1.tex1, 0);
+            SetTexture(p1.tex2, 1);
+
+            for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                p3 = p2->table[l2];
-                if ( p3 == 0 )  continue;
-                objRank = p3->objRank;
-                if ( m_objects[objRank].type != TYPETERRAIN )  continue;
-                if ( !m_objects[objRank].bDrawWorld )  continue;
+                Gfx::EngineObjLevel2& p2 = p1.next[l2];
+                if (! p2.used) continue;
 
-                {
-                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objects[objRank].transform);
-                    m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-                }
+                int objRank = p2.objRank;
+                if (m_objects[objRank].type != Gfx::ENG_OBJTYPE_TERRAIN)
+                    continue;
+                if (! m_objects[objRank].drawWorld)
+                    continue;
 
-                if ( !IsVisible(objRank) )  continue;
-                m_light->LightUpdate(m_objects[objRank].type);
-                for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+                for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    p4 = p3->table[l3];
-                    if ( p4 == 0 )  continue;
-                    if ( m_objects[objRank].distance <  p4->min ||
-                            m_objects[objRank].distance >= p4->max )  continue;
-                    for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+                    Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                    if (! p3.used) continue;
+
+                    if ( m_objects[objRank].distance <  p3.min ||
+                         m_objects[objRank].distance >= p3.max )  continue;
+
+                    for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        p5 = p4->table[l4];
-                        if ( p5 == 0 )  continue;
-                        for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+                        Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                        if (! p4.used) continue;
+
+                        SetMaterial(p4.material);
+                        SetState(p4.state);
+
+                        if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
                         {
-                            p6 = p5->table[l5];
-                            if ( p6 == 0 )  continue;
-                            SetMaterial(p6->material);
-                            SetState(p6->state);
-                            if ( p6->type == D3DTYPE6T )
-                            {
-                                pv = &p6->vertex[0];
-                                m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
-                                                            D3DFVF_VERTEX2,
-                                                            pv, p6->totalUsed,
-                                                            NULL);
-                                m_statisticTriangle += p6->totalUsed/3;
-                            }
-                            if ( p6->type == D3DTYPE6S )
-                            {
-                                pv = &p6->vertex[0];
-                                m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
-                                                            D3DFVF_VERTEX2,
-                                                            pv, p6->totalUsed,
-                                                            NULL);
-                                m_statisticTriangle += p6->totalUsed-2;
-                            }
+                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLES,
+                                                     &p4.vertices[0],
+                                                     p4.vertices.size() );
+                            m_statisticTriangle += p4.vertices.size() / 3;
                         }
-                    }
-                }
-            }
-        }*/
-
-        // Draws the shadows
-        DrawShadow();
-    }
-
-    // Draw objects
-    bool transparent = false;
-    /* TODO!
-    p1 = m_objectPointer;
-    for ( l1=0 ; l1<p1->totalUsed ; l1++ )
-    {
-        p2 = p1->table[l1];
-        if ( p2 == 0 )  continue;
-        SetTexture(p2->tex1Name, 0);
-        SetTexture(p2->tex2Name, 1);
-        for ( l2=0 ; l2<p2->totalUsed ; l2++ )
-        {
-            p3 = p2->table[l2];
-            if ( p3 == 0 )  continue;
-            objRank = p3->objRank;
-            if ( m_bShadow && m_objects[objRank].type == TYPETERRAIN )  continue;
-            if ( !m_objects[objRank].bDrawWorld )  continue;
-
-            {
-                D3DMATRIX mat = MAT_TO_D3DMAT(m_objects[objRank].transform);
-                m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-            }
-
-            if ( !IsVisible(objRank) )  continue;
-            m_light->LightUpdate(m_objects[objRank].type);
-            for ( l3=0 ; l3<p3->totalUsed ; l3++ )
-            {
-                p4 = p3->table[l3];
-                if ( p4 == 0 )  continue;
-                if ( m_objects[objRank].distance <  p4->min ||
-                        m_objects[objRank].distance >= p4->max )  continue;
-                for ( l4=0 ; l4<p4->totalUsed ; l4++ )
-                {
-                    p5 = p4->table[l4];
-                    if ( p5 == 0 )  continue;
-                    for ( l5=0 ; l5<p5->totalUsed ; l5++ )
-                    {
-                        p6 = p5->table[l5];
-                        if ( p6 == 0 )  continue;
-                        SetMaterial(p6->material);
-                        if ( m_objects[objRank].transparency != 0.0f )  // transparent ?
+                        if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
                         {
-                            transparent = true;
-                            continue;
-                        }
-                        SetState(p6->state);
-                        if ( p6->type == D3DTYPE6T )
-                        {
-                            pv = &p6->vertex[0];
-                            m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
-                                                        D3DFVF_VERTEX2,
-                                                        pv, p6->totalUsed,
-                                                        NULL);
-                            m_statisticTriangle += p6->totalUsed/3;
-                        }
-                        if ( p6->type == D3DTYPE6S )
-                        {
-                            pv = &p6->vertex[0];
-                            m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
-                                                        D3DFVF_VERTEX2,
-                                                        pv, p6->totalUsed,
-                                                        NULL);
-                            m_statisticTriangle += p6->totalUsed-2;
+                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLE_STRIP,
+                                                     &p4.vertices[0],
+                                                     p4.vertices.size() );
+                            m_statisticTriangle += p4.vertices.size() - 2;
                         }
                     }
                 }
             }
         }
-    }*/
+
+        // Draws the shadows
+        DrawShadow();
+    }
+
+    // Draw objects (non-terrain)
+
+    bool transparent = false;
+
+    for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
+    {
+        Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+        if (! p1.used) continue;
+
+        // Should be loaded by now
+        SetTexture(p1.tex1, 0);
+        SetTexture(p1.tex2, 1);
+
+        for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
+        {
+            Gfx::EngineObjLevel2& p2 = p1.next[l2];
+            if (! p2.used) continue;
+
+            int objRank = p2.objRank;
+
+            if (m_shadowVisible && m_objects[objRank].type == Gfx::ENG_OBJTYPE_TERRAIN)
+                continue;
+
+            if (! m_objects[objRank].drawWorld)
+                continue;
+
+            m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_objects[objRank].transform);
+
+            if (! IsVisible(objRank))
+                continue;
+
+            m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+
+            for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
+            {
+                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                if (! p3.used) continue;
+
+                if ( m_objects[objRank].distance <  p3.min ||
+                     m_objects[objRank].distance >= p3.max )  continue;
+
+                for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
+                {
+                    Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                    if (! p4.used) continue;
+
+                    if (m_objects[objRank].transparency != 0.0f)  // transparent ?
+                    {
+                        transparent = true;
+                        continue;
+                    }
+
+                    SetMaterial(p4.material);
+                    SetState(p4.state);
+
+                    if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
+                    {
+                        m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLES,
+                                                 &p4.vertices[0],
+                                                 p4.vertices.size() );
+
+                        m_statisticTriangle += p4.vertices.size() / 3;
+                    }
+                    else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                    {
+                        m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLE_STRIP,
+                                                 &p4.vertices[0],
+                                                 p4.vertices.size() );
+
+                        m_statisticTriangle += p4.vertices.size() - 2;
+                    }
+                }
+            }
+        }
+    }
+
+    // Draw transparent objects
 
     if (transparent)
     {
@@ -3053,70 +3046,73 @@ void Gfx::CEngine::Draw3DScene()
             tColor = Gfx::Color(136.0f / 255.0f, 136.0f / 255.0f, 136.0f / 255.0f, 136.0f / 255.0f);
         }
 
-        // Draw transparent objects.
-        /* TODO!
-        p1 = m_objectPointer;
-        for ( l1=0 ; l1<p1->totalUsed ; l1++ )
+        for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
         {
-            p2 = p1->table[l1];
-            if ( p2 == 0 )  continue;
-            SetTexture(p2->tex1Name, 0);
-            SetTexture(p2->tex2Name, 1);
-            for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+            Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+            if (! p1.used) continue;
+
+            // Should be loaded by now
+            SetTexture(p1.tex1, 0);
+            SetTexture(p1.tex2, 1);
+
+            for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                p3 = p2->table[l2];
-                if ( p3 == 0 )  continue;
-                objRank = p3->objRank;
-                if ( m_bShadow && m_objects[objRank].type == TYPETERRAIN )  continue;
-                if ( !m_objects[objRank].bDrawWorld )  continue;
+                Gfx::EngineObjLevel2& p2 = p1.next[l2];
+                if (! p2.used) continue;
 
-                {
-                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objects[objRank].transform);
-                    m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-                }
+                int objRank = p2.objRank;
 
-                if ( !IsVisible(objRank) )  continue;
-                m_light->LightUpdate(m_objects[objRank].type);
-                for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+                if (m_shadowVisible && m_objects[objRank].type == Gfx::ENG_OBJTYPE_TERRAIN)
+                    continue;
+
+                if (! m_objects[objRank].drawWorld)
+                    continue;
+
+                m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_objects[objRank].transform);
+
+                if (! IsVisible(objRank))
+                    continue;
+
+                m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+
+                for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    p4 = p3->table[l3];
-                    if ( p4 == 0 )  continue;
-                    if ( m_objects[objRank].distance <  p4->min ||
-                            m_objects[objRank].distance >= p4->max )  continue;
-                    for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+                    Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                    if (! p3.used) continue;
+
+                    if ( m_objects[objRank].distance <  p3.min ||
+                        m_objects[objRank].distance >= p3.max )  continue;
+
+                    for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        p5 = p4->table[l4];
-                        if ( p5 == 0 )  continue;
-                        for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+                        Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                        if (! p4.used) continue;
+
+                        if (m_objects[objRank].transparency == 0.0f)
+                            continue;
+
+                        SetMaterial(p4.material);
+                        SetState(tState, tColor);
+
+                        if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
                         {
-                            p6 = p5->table[l5];
-                            if ( p6 == 0 )  continue;
-                            SetMaterial(p6->material);
-                            if ( m_objects[objRank].transparency == 0.0f )  continue;
-                            SetState(tState, tColor);
-                            if ( p6->type == D3DTYPE6T )
-                            {
-                                pv = &p6->vertex[0];
-                                m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
-                                                            D3DFVF_VERTEX2,
-                                                            pv, p6->totalUsed,
-                                                            NULL);
-                                m_statisticTriangle += p6->totalUsed/3;
-                            }
-                            if ( p6->type == D3DTYPE6S )
-                            {
-                                pv = &p6->vertex[0];
-                                m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
-                                                            D3DFVF_VERTEX2,
-                                                            pv, p6->totalUsed,
-                                                            NULL);
-                                m_statisticTriangle += p6->totalUsed-2;
-                            }
+                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLES,
+                                                     &p4.vertices[0],
+                                                     p4.vertices.size() );
+
+                            m_statisticTriangle += p4.vertices.size() / 3;
+                        }
+                        else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                        {
+                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLE_STRIP,
+                                                     &p4.vertices[0],
+                                                     p4.vertices.size() );
+                            m_statisticTriangle += p4.vertices.size() - 2;
                         }
                     }
                 }
             }
-        } */
+        }
     }
 
     m_lightMan->UpdateLightsEnableState(Gfx::ENG_OBJTYPE_TERRAIN);
@@ -3165,68 +3161,70 @@ void Gfx::CEngine::DrawInterface()
 
         m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matView);
 
-        // TODO!
-        /*
-        for (int l1 = 0; l1 < m_objectTree.size(); l1++)
+        for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
         {
-            Gfx::EngineObjLevel1* p1 = &m_objectTree[l1];
-            p2 = p1->table[l1];
-            if ( p2 == 0 )  continue;
-            SetTexture(p2->tex1Name, 0);
-            SetTexture(p2->tex2Name, 1);
-            for ( l2=0 ; l2<p2->totalUsed ; l2++ )
+            Gfx::EngineObjLevel1& p1 = m_objectTree[l1];
+            if (! p1.used) continue;
+
+            // Should be loaded by now
+            SetTexture(p1.tex1, 0);
+            SetTexture(p1.tex2, 1);
+
+            for (int l2 = 0; l2 < static_cast<int>( p1.next.size() ); l2++)
             {
-                p3 = p2->table[l2];
-                if ( p3 == 0 )  continue;
-                objRank = p3->objRank;
-                if ( !m_objects[objRank].bDrawFront )  continue;
+                Gfx::EngineObjLevel2& p2 = p1.next[l2];
+                if (! p2.used) continue;
 
-                {
-                    D3DMATRIX mat = MAT_TO_D3DMAT(m_objects[objRank].transform);
-                    m_pD3DDevice->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-                }
+                int objRank = p2.objRank;
 
-                if ( !IsVisible(objRank) )  continue;
-                m_light->LightUpdate(m_objects[objRank].type);
-                for ( l3=0 ; l3<p3->totalUsed ; l3++ )
+                if (m_shadowVisible && m_objects[objRank].type == Gfx::ENG_OBJTYPE_TERRAIN)
+                    continue;
+
+                if (! m_objects[objRank].drawFront)
+                    continue;
+
+                m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_objects[objRank].transform);
+
+                if (! IsVisible(objRank))
+                    continue;
+
+                m_lightMan->UpdateLightsEnableState(m_objects[objRank].type);
+
+                for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    p4 = p3->table[l3];
-                    if ( p4 == 0 )  continue;
-                    if ( m_objects[objRank].distance <  p4->min ||
-                         m_objects[objRank].distance >= p4->max )  continue;
-                    for ( l4=0 ; l4<p4->totalUsed ; l4++ )
+                    Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                    if (! p3.used) continue;
+
+                    if ( m_objects[objRank].distance <  p3.min ||
+                         m_objects[objRank].distance >= p3.max )  continue;
+
+                    for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
-                        p5 = p4->table[l4];
-                        if ( p5 == 0 )  continue;
-                        for ( l5=0 ; l5<p5->totalUsed ; l5++ )
+                        Gfx::EngineObjLevel4& p4 = p3.next[l4];
+                        if (! p4.used) continue;
+
+                        SetMaterial(p4.material);
+                        SetState(p4.state);
+
+                        if (p4.type == Gfx::ENG_TRIANGLE_TYPE_TRIANGLES)
                         {
-                            p6 = p5->table[l5];
-                            if ( p6 == 0 )  continue;
-                            SetMaterial(p6->material);
-                            SetState(p6->state);
-                            if ( p6->type == D3DTYPE6T )
-                            {
-                                pv = &p6->vertex[0];
-                                m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST,
-                                                            D3DFVF_VERTEX2,
-                                                            pv, p6->totalUsed,
-                                                            NULL);
-                                m_statisticTriangle += p6->totalUsed/3;
-                            }
-                            if ( p6->type == D3DTYPE6S )
-                            {
-                                pv = &p6->vertex[0];
-                                m_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,
-                                                            D3DFVF_VERTEX2,
-                                                            pv, p6->totalUsed,
-                                                            NULL);
-                                m_statisticTriangle += p6->totalUsed-2;
-                            }
+                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLES,
+                                                     &p4.vertices[0],
+                                                     p4.vertices.size() );
+
+                            m_statisticTriangle += p4.vertices.size() / 3;
+                        }
+                        else if (p4.type == Gfx::ENG_TRIANGLE_TYPE_SURFACE)
+                        {
+                            m_device->DrawPrimitive( Gfx::PRIMITIVE_TRIANGLE_STRIP,
+                                                     &p4.vertices[0],
+                                                     p4.vertices.size() );
+                            m_statisticTriangle += p4.vertices.size() - 2;
                         }
                     }
                 }
             }
-        }*/
+        }
 
         m_particle->DrawParticle(Gfx::SH_FRONT);  // draws the particles of the 3D world
 
