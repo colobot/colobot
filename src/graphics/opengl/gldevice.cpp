@@ -396,7 +396,6 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
 {
     Gfx::Texture result;
 
-    result.valid = true;
     result.size.x = data->surface->w;
     result.size.y = data->surface->h;
 
@@ -463,7 +462,7 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
 
 
     // Restore the previous state of 1st stage
-    if (m_currentTextures[0].valid)
+    if (m_currentTextures[0].Valid())
         glBindTexture(GL_TEXTURE_2D, m_currentTextures[0].id);
     else
         glBindTexture(GL_TEXTURE_2D, 0);
@@ -518,7 +517,7 @@ void Gfx::CGLDevice::SetTexture(int index, const Gfx::Texture &texture)
 
     m_currentTextures[index] = texture; // remember the change
 
-    if (! texture.valid)
+    if (! texture.Valid())
     {
         glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
     }
@@ -596,7 +595,7 @@ void Gfx::CGLDevice::SetTextureStageParams(int index, const Gfx::TextureStagePar
     m_textureStageParams[index] = params;
 
     // Don't actually do anything if texture not set
-    if (! m_currentTextures[index].valid)
+    if (! m_currentTextures[index].Valid())
         return;
 
     // Enable the given stage

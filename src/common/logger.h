@@ -38,10 +38,12 @@
 **/
 enum LogType
 {
-    LOG_INFO = 1, /*!< lowest level, information */
-    LOG_WARN = 2, /*!< warning */
-    LOG_ERROR = 3, /*!< error */
-    LOG_NONE = 4 /*!< none level, used for custom messages */
+    LOG_TRACE = 1, /*!< lowest level, execution tracing */
+    LOG_DEBUG = 2, /*!< debugging messages */
+    LOG_INFO  = 3, /*!< information */
+    LOG_WARN  = 4, /*!< warning */
+    LOG_ERROR = 5, /*!< error */
+    LOG_NONE  = 6  /*!< none level, used for custom messages */
 };
 
 
@@ -62,6 +64,18 @@ class CLogger : public CSingleton<CLogger>
          * @param ... - additional arguments
          */
         void Message(const char *str, ...);
+
+        /** Write message to console or file with LOG_TRACE level
+         * @param str - message to write
+         * @param ... - additional arguments
+         */
+        void Trace(const char *str, ...);
+
+        /** Write message to console or file with LOG_DEBUG level
+         * @param str - message to write
+         * @param ... - additional arguments
+         */
+        void Debug(const char *str, ...);
 
         /** Write message to console or file with LOG_INFO level
          * @param str - message to write

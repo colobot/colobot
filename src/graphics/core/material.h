@@ -45,6 +45,16 @@ struct Material
     Gfx::Color ambient;
     //! Specular color
     Gfx::Color specular;
+
+    bool operator==(const Gfx::Material &mat) const
+    {
+        return diffuse == mat.diffuse && ambient == mat.ambient && specular == mat.specular;
+    }
+
+    bool operator!=(const Gfx::Material &mat) const
+    {
+        return ! operator==(mat);
+    }
 };
 
 }; // namespace Gfx

@@ -43,13 +43,33 @@ void CLogger::Log(LogType type, const char *str, va_list args)
         return;
 
     switch (type) {
-        case LOG_WARN: fprintf(IsOpened() ? mFile : stderr, "[WARN]: "); break;
-        case LOG_INFO: fprintf(IsOpened() ? mFile : stderr, "[INFO]: "); break;
+        case LOG_TRACE: fprintf(IsOpened() ? mFile : stderr, "[TRACE]: "); break;
+        case LOG_DEBUG: fprintf(IsOpened() ? mFile : stderr, "[DEBUG]: "); break;
+        case LOG_WARN:  fprintf(IsOpened() ? mFile : stderr, "[WARN]: "); break;
+        case LOG_INFO:  fprintf(IsOpened() ? mFile : stderr, "[INFO]: "); break;
         case LOG_ERROR: fprintf(IsOpened() ? mFile : stderr, "[ERROR]: "); break;
         default: break;
     }
 
     vfprintf(IsOpened() ? mFile : stderr, str, args);
+}
+
+
+void CLogger::Trace(const char *str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    Log(LOG_TRACE, str, args);
+    va_end(args);
+}
+
+
+void CLogger::Debug(const char *str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    Log(LOG_DEBUG, str, args);
+    va_end(args);
 }
 
 

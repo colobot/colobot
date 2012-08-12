@@ -43,7 +43,7 @@ Gfx::CCloud::CCloud(CInstanceManager* iMan, Gfx::CEngine* engine)
     m_subdiv = 8;
     m_enable = true;
 
-    m_line.reserve(CLOUD_LINE_PREALLOCATE_COUNT);
+    m_lines.reserve(CLOUD_LINE_PREALLOCATE_COUNT);
 }
 
 Gfx::CCloud::~CCloud()
@@ -107,7 +107,7 @@ void Gfx::CCloud::Draw()
 
     if ( !m_enable )  return;
     if ( m_level == 0.0f )  return;
-    if ( m_lineUsed == 0 )  return;
+    if ( m_linesUsed == 0 )  return;
 
     vertex = (D3DVERTEX2*)malloc(sizeof(D3DVERTEX2)*(m_brick+2)*2);
 
@@ -155,11 +155,11 @@ void Gfx::CCloud::Draw()
     n = Math::Vector(0.0f, -1.0f, 0.0f);
 
     // Draws all the lines.
-    for ( i=0 ; i<m_lineUsed ; i++ )
+    for ( i=0 ; i<m_linesUsed ; i++ )
     {
         pos.y = m_level;
-        pos.z = m_line[i].pz;
-        pos.x = m_line[i].px1;
+        pos.z = m_lines[i].pz;
+        pos.x = m_lines[i].px1;
 
         u = 0;
         p.x = pos.x-size;
@@ -174,7 +174,7 @@ void Gfx::CCloud::Draw()
         AdjustLevel(p, eye, deep, uv1, uv2);
         vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
 
-        for ( j=0 ; j<m_line[i].len ; j++ )
+        for ( j=0 ; j<m_lines[i].len ; j++ )
         {
             p.x = pos.x+size;
             p.z = pos.z+size;
@@ -216,7 +216,7 @@ void Gfx::CCloud::CreateLine(int x, int y, int len)
     line.px2 = m_size*(line.x+line.len) - offset;
     line.pz  = m_size* line.y - offset;
 
-    m_line.push_back(line);
+    m_lines.push_back(line);
 }
 
 void Gfx::CCloud::Create(const std::string& fileName,
@@ -247,7 +247,7 @@ void Gfx::CCloud::Create(const std::string& fileName,
     if (m_level == 0.0f)
         return;
 
-    m_line.clear();
+    m_lines.clear();
     for (int y = 0; y < m_brick; y++)
         CreateLine(0, y, m_brick);
 
