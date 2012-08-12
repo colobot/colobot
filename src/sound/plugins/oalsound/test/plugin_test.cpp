@@ -22,7 +22,7 @@ int main() {
         sound->CacheAll();
         sound->Play((Sound)8);
         sound->Play((Sound)18);
-        
+
         sleep(10);
         /*
         while (1)
@@ -34,7 +34,7 @@ int main() {
         }*/
         plugin->UnloadPlugin();
     }
-    
+
     lt_dlexit();
     return 0;
 }

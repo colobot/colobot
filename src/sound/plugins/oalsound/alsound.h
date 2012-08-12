@@ -78,7 +78,7 @@ class ALSound : public CSoundInterface
         int PluginVersion();
         void InstallPlugin();
         void UninstallPlugin();
-  
+
     private:
         void CleanUp();
         int RetPriority(Sound);

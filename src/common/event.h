@@ -19,8 +19,8 @@
 #pragma once
 
 
-#include "common/key.h"
-#include "math/point.h"
+#include <common/key.h>
+#include <math/point.h>
 
 #include <string.h>
 
