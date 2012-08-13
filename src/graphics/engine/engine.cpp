@@ -2113,8 +2113,7 @@ Gfx::Texture Gfx::CEngine::CreateTexture(const std::string& texName, const Gfx::
     if (! img.Load(m_app->GetDataFilePath(m_texPath, texName)))
     {
         std::string error = img.GetError();
-        GetLogger()->Error("Couldn't load texture '%s': %s\n", texName.c_str(), error.c_str());
-        GetLogger()->Error("Blacklisting texture '%s'\n", texName.c_str());
+        GetLogger()->Error("Couldn't load texture '%s': %s, blacklisting\n", texName.c_str(), error.c_str());
         m_texBlacklist.insert(texName);
         return Gfx::Texture(); // invalid texture
     }
@@ -2123,9 +2122,7 @@ Gfx::Texture Gfx::CEngine::CreateTexture(const std::string& texName, const Gfx::
 
     if (! tex.Valid())
     {
-        std::string error = m_device->GetError();
-        GetLogger()->Error("Couldn't load texture '%s': %s\n", texName.c_str(), error.c_str());
-        GetLogger()->Error("Blacklisting texture '%s'\n", texName.c_str());
+        GetLogger()->Error("Couldn't load texture '%s', blacklisting\n", texName.c_str());
         m_texBlacklist.insert(texName);
         return tex;
     }
