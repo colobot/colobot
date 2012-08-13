@@ -313,7 +313,7 @@ void KeyboardUp(SDLKey key)
 
 void MouseMove(int x, int y)
 {
-    Math::Point currentPos((float)x, (float)y);
+    Math::Point currentPos(static_cast<float>(x), static_cast<float>(y));
 
     static bool first = true;
     if (first || (x < 10) || (y < 10) || (x > 790) || (y > 590))
@@ -326,8 +326,8 @@ void MouseMove(int x, int y)
         return;
     }
 
-    ROTATION.y = ROTATION_BASE.y + ((float) (x - MOUSE_POS_BASE.x) / 800.0f) * Math::PI;
-    ROTATION.x = ROTATION_BASE.x + ((float) (y - MOUSE_POS_BASE.y) / 600.0f) * Math::PI;
+    ROTATION.y = ROTATION_BASE.y + (static_cast<float> (x - MOUSE_POS_BASE.x) / 800.0f) * Math::PI;
+    ROTATION.x = ROTATION_BASE.x + (static_cast<float> (y - MOUSE_POS_BASE.y) / 600.0f) * Math::PI;
 }
 
 int main(int argc, char *argv[])
@@ -378,7 +378,7 @@ int main(int argc, char *argv[])
     //SDL_WM_GrabInput(SDL_GRAB_ON);
     SDL_ShowCursor(SDL_DISABLE);
 
-    Gfx::CGLDevice *device = new Gfx::CGLDevice();
+    Gfx::CGLDevice *device = new Gfx::CGLDevice(Gfx::GLDeviceConfig());
     device->Create();
 
     Init(device);

@@ -723,25 +723,18 @@ bool Gfx::CModelFile::ReadDXF(std::istream &stream, float min, float max)
 
 bool Gfx::CModelFile::CreateEngineObject(int objRank, int addState)
 {
-    /*char    texName1[20];
-    char    texName2[20];
-    int     texNum, i, state;
-
-    for (int i = 0; i < m_trianglesUsed; i++)
+    for (int i = 0; i < static_cast<int>( m_triangles.size() ); i++)
     {
-        if (! m_triangles[i].used)  continue;
+        int state = m_triangles[i].state;
 
-        state = m_triangles[i].state;
-        strcpy(texName1, m_triangles[i].texName);
-        texName2[0] = 0;
+        /* TODO ???
+        if (texName1 == "plant.png")
+            state |= Gfx::ENG_RSTATE_ALPHA;
 
-        if ( strcmp(texName1, "plant.tga") == 0 ) // ???
+        if (m_triangles[i].tex2Name.empty())
         {
-            state |= D3DSTATEALPHA;
-        }
+            int texNum = 0;
 
-        if ( m_triangles[i].texNum2 != 0 )
-        {
             if ( m_triangles[i].texNum2 == 1 )
             {
                 texNum = m_engine->RetSecondTexture();
@@ -760,15 +753,22 @@ bool Gfx::CModelFile::CreateEngineObject(int objRank, int addState)
                 state |= D3DSTATEDUALw;
             }
             sprintf(texName2, "dirty%.2d.tga", texNum); // ???
-        }
+        }*/
 
-        m_engine->AddTriangle(objRank, &m_triangles[i].p1, 3,
-                              m_triangles[i].material,
-                              state + addState,
-                              texName1, texName2,
-                              m_triangles[i].min,
-                              m_triangles[i].max, false);
-    }*/
+        std::vector<Gfx::VertexTex2> vs;
+        vs.push_back(m_triangles[i].p1);
+        vs.push_back(m_triangles[i].p2);
+        vs.push_back(m_triangles[i].p3);
+
+        m_engine->AddTriangles(objRank, vs,
+                               m_triangles[i].material,
+                               state + addState,
+                               m_triangles[i].tex1Name,
+                               m_triangles[i].tex2Name,
+                               m_triangles[i].min,
+                               m_triangles[i].max, false);
+    }
+
     return true;
 }
 

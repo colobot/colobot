@@ -642,7 +642,7 @@ enum ActiveEventFlags
 struct ActiveEventData
 {
     //! Flags (bitmask of enum values ActiveEventFlags)
-    unsigned char flags = 0;
+    unsigned char flags;
     //! True if the focus was gained; false otherwise
     bool gain;
 

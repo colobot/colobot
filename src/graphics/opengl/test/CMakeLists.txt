@@ -6,7 +6,7 @@ find_package(SDL_image REQUIRED)
 find_package(PNG REQUIRED)
 
 set(CMAKE_BUILD_TYPE debug)
-set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -O0")
+set(CMAKE_CXX_FLAGS_DEBUG "-Wall -g -O0 -Wold-style-cast -std=gnu++0x")
 
 set(ADD_LIBS "")
 
@@ -77,8 +77,9 @@ ${ADD_LIBS}
 add_executable(texture_test ${TEXTURE_SOURCES})
 target_link_libraries(texture_test ${LIBS})
 
-add_executable(model_test ${MODEL_SOURCES})
-target_link_libraries(model_test ${LIBS})
+# Temporarily disabling because of dependencies on CEngine et al.
+#add_executable(model_test ${MODEL_SOURCES})
+#target_link_libraries(model_test ${LIBS})
 
 add_executable(transform_test ${TRANSFORM_SOURCES})
 target_link_libraries(transform_test ${LIBS})
