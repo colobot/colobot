@@ -149,6 +149,8 @@ bool CApplication::ParseArguments(int argc, char *argv[])
 
 bool CApplication::Create()
 {
+    GetLogger()->Info("Creating CApplication\n");
+
     // TODO: verify that data directory exists
 
     // Temporarily -- only in windowed mode
@@ -161,6 +163,9 @@ bool CApplication::Create()
     m_robotMain = new CRobotMain(m_iMan); */
 
 
+    std::string standardInfoMessage =
+      "\nPlease see the console output or log file\n"
+      "to get more information on the source of error";
 
     /* SDL initialization sequence */
 
@@ -169,18 +174,18 @@ bool CApplication::Create()
 
     if (SDL_Init(initFlags) < 0)
     {
-        SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error",
-                      "SDL initialization error:\n" +
-                      std::string(SDL_GetError()) );
+        m_errorMessage = std::string("SDL initialization error:\n") +
+                         std::string(SDL_GetError());
+        GetLogger()->Error(m_errorMessage.c_str());
         m_exitCode = 2;
         return false;
     }
 
     if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) == 0)
     {
-        SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error",
-                      std::string("SDL_Image initialization error:\n") +
-                      std::string(IMG_GetError()) );
+        m_errorMessage = std::string("SDL_Image initialization error:\n") +
+                         std::string(IMG_GetError());
+        GetLogger()->Error(m_errorMessage.c_str());
         m_exitCode = 3;
         return false;
     }
@@ -190,10 +195,10 @@ bool CApplication::Create()
 
     if (m_private->surface == NULL)
     {
-        SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                      std::string("SDL error while setting video mode:\n") +
-                      std::string(SDL_GetError()) );
-        m_exitCode = 2;
+        m_errorMessage = std::string("SDL error while setting video mode:\n") +
+                         std::string(SDL_GetError());
+        GetLogger()->Error(m_errorMessage.c_str());
+        m_exitCode = 4;
         return false;
     }
 
@@ -214,9 +219,8 @@ bool CApplication::Create()
     m_device = new Gfx::CGLDevice(m_deviceConfig);
     if (! m_device->Create() )
     {
-        SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                      std::string("Error in CDevice::Create()") );
-        m_exitCode = 1;
+        m_errorMessage = std::string("Error in CDevice::Create()\n") + standardInfoMessage;
+        m_exitCode = 5;
         return false;
     }
 
@@ -227,11 +231,12 @@ bool CApplication::Create()
 
     if (! m_engine->Create() )
     {
-        SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                      std::string("Error in CEngine::Init()") );
-        m_exitCode = 1;
+        m_errorMessage = std::string("Error in CEngine::Init()\n") + standardInfoMessage;
+        m_exitCode = 6;
         return false;
     }
+
+    GetLogger()->Info("CApplication created successfully\n");
 
     return true;
 }
@@ -241,10 +246,10 @@ bool CApplication::CreateVideoSurface()
     const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
     if (videoInfo == NULL)
     {
-        SystemDialog( SDT_ERROR, "COLOBOT - Fatal Error",
-                      std::string("SDL error while getting video info:\n ") +
-                      std::string(SDL_GetError()) );
-        m_exitCode = 2;
+        m_errorMessage = std::string("SDL error while getting video info:\n ") +
+                         std::string(SDL_GetError());
+        GetLogger()->Error(m_errorMessage.c_str());
+        m_exitCode = 7;
         return false;
     }
 
@@ -357,10 +362,11 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
     {
         if (! restore)
         {
-            SystemDialog( SDT_ERROR, "COLOBT - Error",
-                          std::string("SDL error while setting video mode:\n") +
+            std::string error = std::string("SDL error while setting video mode:\n") +
                           std::string(SDL_GetError()) + std::string("\n") +
-                          std::string("Previous mode will be restored") );
+                          std::string("Previous mode will be restored");
+            GetLogger()->Error(error.c_str());
+            SystemDialog( SDT_ERROR, "COLOBT - Error", error);
 
             restore = true;
             ChangeVideoConfig(m_lastDeviceConfig);
@@ -370,9 +376,10 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
         {
             restore = false;
 
-            SystemDialog( SDT_ERROR, "COLOBT - Fatal Error",
-                          std::string("SDL error while restoring previous video mode:\n") +
-                          std::string(SDL_GetError()) );
+            std::string error = std::string("SDL error while restoring previous video mode:\n") +
+                          std::string(SDL_GetError());
+            GetLogger()->Error(error.c_str());
+            SystemDialog( SDT_ERROR, "COLOBT - Fatal Error", error);
 
 
             // Fatal error, so post the quit event
@@ -596,6 +603,11 @@ end:
 int CApplication::GetExitCode()
 {
     return m_exitCode;
+}
+
+const std::string& CApplication::GetErrorMessage()
+{
+    return m_errorMessage;
 }
 
 //! Translates SDL press state to PressState

@@ -286,9 +286,6 @@ public:
     //! Destroys the device, releasing every acquired resource
     virtual void Destroy() = 0;
 
-    //! Returns the last encountered error
-    virtual std::string GetError() = 0;
-
     //! Begins drawing the 3D scene
     virtual void BeginScene() = 0;
     //! Ends drawing the 3D scene

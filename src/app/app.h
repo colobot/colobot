@@ -131,6 +131,9 @@ public:
     //! Returns the code to be returned at main() exit
     int         GetExitCode();
 
+    //! Returns the message of error (set to something if exit code is not 0)
+    const std::string& GetErrorMessage();
+
     //! Cleans up before exit
     void        Destroy();
 
@@ -233,6 +236,9 @@ protected:
     bool            m_active;
     //! Whether debug mode is enabled
     bool            m_debugMode;
+
+    //! Message to be displayed as error to the user
+    std::string     m_errorMessage;
 
     //! Current configuration of OpenGL display device
     Gfx::GLDeviceConfig m_deviceConfig;
