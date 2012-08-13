@@ -95,7 +95,7 @@ bool CBotIf :: Execute(CBotStack* &pj)
     if ( pile->IfStep() ) return false;
 
     // according to recovery, it may be in one of two states
-    if( pile->GivState() == 0 )
+    if( pile->GetState() == 0 )
     {
         // evaluates the condition
         if ( !m_Condition->Execute(pile) ) return false;    // interrupted here?
@@ -113,7 +113,7 @@ bool CBotIf :: Execute(CBotStack* &pj)
     // second state, evaluates the associated instructions
     // the result of the condition is on the stack
 
-    if ( pile->GivVal() == true )                           // condition was true?
+    if ( pile->GetVal() == true )                           // condition was true?
     {
         if ( m_Block != NULL &&                             // block may be absent
             !m_Block->Execute(pile) ) return false;         // interrupted here?
@@ -137,7 +137,7 @@ void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
     if ( pile == NULL ) return;
 
     // according to recovery, it may be in one of two states
-    if( pile->GivState() == 0 )
+    if( pile->GetState() == 0 )
     {
         // evaluates the condition
         m_Condition->RestoreState(pile, bMain); // interrupted here!
@@ -147,7 +147,7 @@ void CBotIf :: RestoreState(CBotStack* &pj, bool bMain)
     // second state, evaluates the associated instructions
     // the result of the condition is on the stack
 
-    if ( pile->GivVal() == true )                           // condition was true?
+    if ( pile->GetVal() == true )                           // condition was true?
     {
         if ( m_Block != NULL )                              // block may be absent
              m_Block->RestoreState(pile, bMain);            // interrupted here!

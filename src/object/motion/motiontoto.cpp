@@ -219,7 +219,7 @@ void CMotionToto::StopDisplayInfo()
     m_bQuickPos = true;
 }
 
-// Gives the position of the mouse.
+// Getes the position of the mouse.
 
 void CMotionToto::SetMousePos(Math::Point pos)
 {

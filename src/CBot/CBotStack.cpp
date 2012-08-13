@@ -47,7 +47,7 @@ CBotStack* CBotStack::FirstStack()
     size    *= (MAXSTACK+10);
 
     // request a slice of memory for the stack
-    p = (CBotStack*)malloc(size);
+    p = static_cast<CBotStack*>(malloc(size));
 
     // completely empty
     memset(p, 0, size);
@@ -198,7 +198,7 @@ CBotStack* CBotStack::AddStack2(bool bBlock)
     return    p;
 }
 
-bool CBotStack::GivBlock()
+bool CBotStack::GetBlock()
 {
     return    m_bBlock;
 }
@@ -428,7 +428,7 @@ void CBotStack::SetBreak(int val, const char* name)
 
 // gives on the stack value calculated by the last CBotReturn
 
-bool CBotStack::GivRetVar(bool bRet)
+bool CBotStack::GetRetVar(bool bRet)
 {
     if (m_error == -3)
     {
@@ -441,7 +441,7 @@ bool CBotStack::GivRetVar(bool bRet)
     return bRet;                        // interrupted by something other than return
 }
 
-int CBotStack::GivError(int& start, int& end)
+int CBotStack::GetError(int& start, int& end)
 {
     start = m_start;
     end      = m_end;
@@ -449,16 +449,16 @@ int CBotStack::GivError(int& start, int& end)
 }
 
 
-int CBotStack::GivType(int mode)
+int CBotStack::GetType(int mode)
 {
     if (m_var == NULL) return -1;
-    return m_var->GivType(mode);
+    return m_var->GetType(mode);
 }
 
-CBotTypResult CBotStack::GivTypResult(int mode)
+CBotTypResult CBotStack::GetTypResult(int mode)
 {
     if (m_var == NULL) return -1;
-    return m_var->GivTypResult(mode);
+    return m_var->GetTypResult(mode);
 }
 
 void CBotStack::SetType(CBotTypResult& type)
@@ -471,14 +471,14 @@ void CBotStack::SetType(CBotTypResult& type)
 CBotVar* CBotStack::FindVar(CBotToken* &pToken, bool bUpdate, bool bModif)
 {
     CBotStack*    p = this;
-    CBotString    name = pToken->GivString();
+    CBotString    name = pToken->GetString();
 
     while (p != NULL)
     {
         CBotVar*    pp = p->m_listVar;
         while ( pp != NULL)
         {
-            if (pp->GivName() == name)
+            if (pp->GetName() == name)
             {
                 if ( bUpdate ) 
                     pp->Maj(m_pUser, false);
@@ -500,7 +500,7 @@ CBotVar* CBotStack::FindVar(const char* name)
         CBotVar*    pp = p->m_listVar;
         while ( pp != NULL)
         {
-            if (pp->GivName() == name)
+            if (pp->GetName() == name)
             {
                 return pp;
             }
@@ -519,7 +519,7 @@ CBotVar* CBotStack::FindVar(long ident, bool bUpdate, bool bModif)
         CBotVar*    pp = p->m_listVar;
         while ( pp != NULL)
         {
-            if (pp->GivUniqNum() == ident)
+            if (pp->GetUniqNum() == ident)
             {
                 if ( bUpdate ) 
                     pp->Maj(m_pUser, false);
@@ -576,8 +576,8 @@ void CBotStack::SetError(int n, CBotToken* token)
     m_error = n;
     if (token != NULL)
     {
-        m_start = token->GivStart();
-        m_end   = token->GivEnd();
+        m_start = token->GetStart();
+        m_end   = token->GetEnd();
     }
 }
 
@@ -590,8 +590,8 @@ void CBotStack::ResetError(int n, int start, int end)
 
 void CBotStack::SetPosError(CBotToken* token)
 {
-    m_start = token->GivStart();
-    m_end   = token->GivEnd();
+    m_start = token->GetStart();
+    m_end   = token->GetEnd();
 }
 
 void CBotStack::SetTimer(int n)
@@ -643,34 +643,34 @@ void CBotStack::SetCopyVar( CBotVar* var )
 {
     if (m_var) delete m_var;    // replacement of a variable
 
-    m_var = CBotVar::Create("", var->GivTypResult(2));
+    m_var = CBotVar::Create("", var->GetTypResult(2));
     m_var->Copy( var );
 }
 
-CBotVar* CBotStack::GivVar()
+CBotVar* CBotStack::GetVar()
 {
     return m_var;
 }
 
-CBotVar* CBotStack::GivPtVar()
+CBotVar* CBotStack::GetPtVar()
 {
     CBotVar*    p = m_var;
     m_var = NULL;                // therefore will not be destroyed
     return p;
 }
 
-CBotVar* CBotStack::GivCopyVar()
+CBotVar* CBotStack::GetCopyVar()
 {
     if (m_var == NULL) return NULL;
-    CBotVar*    v = CBotVar::Create("", m_var->GivType());
+    CBotVar*    v = CBotVar::Create("", m_var->GetType());
     v->Copy( m_var );
     return v;
 }
 
-long CBotStack::GivVal()
+long CBotStack::GetVal()
 {
     if (m_var == NULL) return 0;
-    return m_var->GivValInt();
+    return m_var->GetValInt();
 }
 
 
@@ -693,7 +693,7 @@ void CBotStack::AddVar(CBotVar* pVar)
     *pp = pVar;                    // added after
 
 #ifdef    _DEBUG
-    if ( pVar->GivUniqNum() == 0 ) ASM_TRAP();
+    if ( pVar->GetUniqNum() == 0 ) ASM_TRAP();
 #endif
 }
 
@@ -710,7 +710,7 @@ void CBotStack::SetBotCall(CBotProgram* p)
     m_bFunc = true;
 }
 
-CBotProgram*  CBotStack::GivBotCall(bool bFirst)
+CBotProgram*  CBotStack::GetBotCall(bool bFirst)
 {
     if ( ! bFirst )    return m_prog;
     CBotStack*    p = this;
@@ -718,7 +718,7 @@ CBotProgram*  CBotStack::GivBotCall(bool bFirst)
     return p->m_prog;
 }
 
-void* CBotStack::GivPUser()
+void* CBotStack::GetPUser()
 {
     return m_pUser;
 }
@@ -731,19 +731,19 @@ bool CBotStack::ExecuteCall(long& nIdent, CBotToken* token, CBotVar** ppVar, CBo
     // first looks by the identifier
 
     res = CBotCall::DoCall(nIdent, NULL, ppVar, this, rettype );
-    if (res.GivType() >= 0) return res.GivType();
+    if (res.GetType() >= 0) return res.GetType();
 
-    res = m_prog->GivFunctions()->DoCall(nIdent, NULL, ppVar, this, token );
-    if (res.GivType() >= 0) return res.GivType();
+    res = m_prog->GetFunctions()->DoCall(nIdent, NULL, ppVar, this, token );
+    if (res.GetType() >= 0) return res.GetType();
 
     // if not found (recompile?) seeks by name
 
     nIdent = 0;
     res = CBotCall::DoCall(nIdent, token, ppVar, this, rettype );
-    if (res.GivType() >= 0) return res.GivType();
+    if (res.GetType() >= 0) return res.GetType();
 
-    res = m_prog->GivFunctions()->DoCall(nIdent, token->GivString(), ppVar, this, token );
-    if (res.GivType() >= 0) return res.GivType();
+    res = m_prog->GetFunctions()->DoCall(nIdent, token->GetString(), ppVar, this, token );
+    if (res.GetType() >= 0) return res.GetType();
 
     SetError(TX_NOCALL, token);
     return true;
@@ -754,7 +754,7 @@ void CBotStack::RestoreCall(long& nIdent, CBotToken* token, CBotVar** ppVar)
     if ( m_next == NULL ) return;
 
     if ( !CBotCall::RestoreCall(nIdent, token, ppVar, this) )
-        m_prog->GivFunctions()->RestoreCall(nIdent, token->GivString(), ppVar, this );
+        m_prog->GetFunctions()->RestoreCall(nIdent, token->GetString(), ppVar, this );
 }
 
 
@@ -770,7 +770,7 @@ bool SaveVar(FILE* pf, CBotVar* pVar)
         if ( !pVar->Save0State(pf)) return false;                // common header
         if ( !pVar->Save1State(pf) ) return false;                // saves as the child class
 
-        pVar = pVar->GivNext();
+        pVar = pVar->GetNext();
     }
 }
 
@@ -798,17 +798,17 @@ void CBotStack::GetRunPos(const char* &FunctionName, int &start, int &end)
 
     if ( funct == NULL ) return;
 
-    CBotToken* t = funct->GivToken();
-    FunctionName = t->GivString();
+    CBotToken* t = funct->GetToken();
+    FunctionName = t->GetString();
 
 //    if ( p->m_instr != NULL ) instr = p->m_instr;
 
-    t = instr->GivToken();
-    start = t->GivStart();
-    end      = t->GivEnd();
+    t = instr->GetToken();
+    start = t->GetStart();
+    end      = t->GetEnd();
 }
 
-CBotVar* CBotStack::GivStackVars(const char* &FunctionName, int level)
+CBotVar* CBotStack::GetStackVars(const char* &FunctionName, int level)
 {
     CBotProgram*    prog = m_prog;                        // current program
     FunctionName    = NULL;
@@ -846,8 +846,8 @@ CBotVar* CBotStack::GivStackVars(const char* &FunctionName, int level)
 
     if ( pp == NULL || pp->m_instr == NULL ) return NULL;
 
-    CBotToken* t = pp->m_instr->GivToken();
-    FunctionName = t->GivString();
+    CBotToken* t = pp->m_instr->GetToken();
+    FunctionName = t->GetString();
     
     return p->m_listVar;
 }
@@ -905,7 +905,7 @@ bool CBotStack::RestoreState(FILE* pf, CBotStack* &pStack)
     pStack->m_bBlock = w;
 
     if (!ReadWord(pf, w)) return false;            // in what state ?
-    pStack->SetState((short)w);                    // in a good state
+    pStack->SetState(static_cast<short>(w));                    // in a good state
 
     if (!ReadWord(pf, w)) return false;            // dont delete?
                                                 // uses more
@@ -924,9 +924,9 @@ bool CBotVar::Save0State(FILE* pf)
 {    
     if (!WriteWord(pf, 100+m_mPrivate))return false;        // private variable?
     if (!WriteWord(pf, m_bStatic))return false;                // static variable?
-    if (!WriteWord(pf, m_type.GivType()))return false;        // saves the type (always non-zero)
+    if (!WriteWord(pf, m_type.GetType()))return false;        // saves the type (always non-zero)
     if (!WriteWord(pf, m_binit))return false;                // variable defined?
-    return WriteString(pf, m_token->GivString());            // and variable name
+    return WriteString(pf, m_token->GetString());            // and variable name
 }
 
 bool CBotVarInt::Save0State(FILE* pf)
@@ -1016,7 +1016,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
         case CBotTypBoolean:
             pNew = CBotVar::Create(&token, w);                        // creates a variable
             if (!ReadWord(pf, w)) return false;
-            pNew->SetValInt((short)w, defnum);
+            pNew->SetValInt(static_cast<short>(w), defnum);
             break;
         case CBotTypFloat:
             pNew = CBotVar::Create(&token, w);                        // creates a variable
@@ -1045,7 +1045,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
 
                     pNew = new CBotVarClass(&token, r);                // directly creates an instance
                                                                     // attention cptuse = 0
-                    if ( !RestoreState(pf, ((CBotVarClass*)pNew)->m_pVar)) return false;
+                    if ( !RestoreState(pf, (static_cast<CBotVarClass*>(pNew))->m_pVar)) return false;
                     pNew->SetIdent(id);
 
                     if ( p != NULL )
@@ -1062,7 +1062,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
             if (!ReadString(pf, s)) return false;
             {
                 pNew = CBotVar::Create(&token, CBotTypResult(w, s));// creates a variable
-                CBotVarClass* p = NULL;
+//                CBotVarClass* p = NULL;
                 long id;
                 ReadLong(pf, id);
 //                if ( id ) p = CBotVarClass::Find(id);        // found the instance (made by RestoreInstance)
@@ -1070,9 +1070,9 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                 // returns a copy of the original instance
                 CBotVar* pInstance = NULL;
                 if ( !CBotVar::RestoreState( pf, pInstance ) ) return false;
-                ((CBotVarPointer*)pNew)->SetPointer( pInstance );            // and point over
+                (static_cast<CBotVarPointer*>(pNew))->SetPointer( pInstance );            // and point over
 
-//                if ( p != NULL ) ((CBotVarPointer*)pNew)->SetPointer( p );    // rather this one
+//                if ( p != NULL ) (static_cast<CBotVarPointer*>(pNew))->SetPointer( p );    // rather this one
 
             }
             break;
@@ -1087,7 +1087,7 @@ bool CBotVar::RestoreState(FILE* pf, CBotVar* &pVar)
                 // returns a copy of the original instance
                 CBotVar* pInstance = NULL;
                 if ( !CBotVar::RestoreState( pf, pInstance ) ) return false;
-                ((CBotVarPointer*)pNew)->SetPointer( pInstance );            // and point over
+                (static_cast<CBotVarPointer*>(pNew))->SetPointer( pInstance );            // and point over
             }
             break;
         default:
@@ -1160,7 +1160,7 @@ CBotCStack* CBotCStack::TokenStack(CBotToken* pToken, bool bBlock)
     m_next = p;                                    // channel element
     p->m_bBlock = bBlock;
 
-    if (pToken != NULL) p->SetStartError(pToken->GivStart());
+    if (pToken != NULL) p->SetStartError(pToken->GetStart());
 
     return    p;
 }
@@ -1200,42 +1200,42 @@ CBotFunction* CBotCStack::ReturnFunc(CBotFunction* inst, CBotCStack* pfils)
     return inst;
 }
 
-int CBotCStack::GivError(int& start, int& end)
+int CBotCStack::GetError(int& start, int& end)
 {
     start = m_start;
     end      = m_end;
     return m_error;
 }
 
-int CBotCStack::GivError()
+int CBotCStack::GetError()
 {
     return m_error;
 }
 
 // type of instruction on the stack
-CBotTypResult CBotCStack::GivTypResult(int mode)
+CBotTypResult CBotCStack::GetTypResult(int mode)
 {
     if (m_var == NULL)
         return CBotTypResult(99);
-    return    m_var->GivTypResult(mode);
+    return    m_var->GetTypResult(mode);
 }
 
 // type of instruction on the stack
-int CBotCStack::GivType(int mode)
+int CBotCStack::GetType(int mode)
 {
     if (m_var == NULL)
         return 99;
-    return    m_var->GivType(mode);
+    return    m_var->GetType(mode);
 }
 
 // pointer on the stack is in what class?
-CBotClass* CBotCStack::GivClass()
+CBotClass* CBotCStack::GetClass()
 {
     if ( m_var == NULL )
         return NULL;
-    if ( m_var->GivType(1) != CBotTypPointer ) return NULL;
+    if ( m_var->GetType(1) != CBotTypPointer ) return NULL;
 
-    return m_var->GivClass();
+    return m_var->GetClass();
 }
 
 // type of instruction on the stack
@@ -1252,14 +1252,14 @@ void CBotCStack::SetType(CBotTypResult& type)
 CBotVar* CBotCStack::FindVar(CBotToken* &pToken)
 {
     CBotCStack*    p = this;
-    CBotString    name = pToken->GivString();
+    CBotString    name = pToken->GetString();
 
     while (p != NULL)
     {
         CBotVar*    pp = p->m_listVar;
         while ( pp != NULL)
         {
-            if (name == pp->GivName())
+            if (name == pp->GetName())
             {
                 return pp;
             }
@@ -1282,7 +1282,7 @@ CBotVar* CBotCStack::CopyVar(CBotToken& Token)
 
     if ( pVar == NULL) return NULL;
 
-    CBotVar*    pCopy = CBotVar::Create( "", pVar->GivType() );
+    CBotVar*    pCopy = CBotVar::Create( "", pVar->GetType() );
     pCopy->Copy(pVar);
     return    pCopy;
 }
@@ -1310,8 +1310,8 @@ void CBotCStack::SetError(int n, CBotToken* p)
 {
     if (m_error) return;    // does not change existing error
     m_error = n;
-    m_start    = p->GivStart();
-    m_end    = p->GivEnd();
+    m_start    = p->GetStart();
+    m_end    = p->GetEnd();
 }
 
 void CBotCStack::ResetError(int n, int start, int end)
@@ -1325,10 +1325,10 @@ bool CBotCStack::NextToken(CBotToken* &p)
 {
     CBotToken*    pp = p;
 
-    p = p->GivNext();
+    p = p->GetNext();
     if (p!=NULL) return true;
 
-    SetError(TX_ENDOF, pp->GivEnd());
+    SetError(TX_ENDOF, pp->GetEnd());
     return false;
 }
 
@@ -1337,7 +1337,7 @@ void CBotCStack::SetBotCall(CBotProgram* p)
     m_prog = p;
 }
 
-CBotProgram* CBotCStack::GivBotCall()
+CBotProgram* CBotCStack::GetBotCall()
 {
     return m_prog;
 }
@@ -1347,7 +1347,7 @@ void CBotCStack::SetRetType(CBotTypResult& type)
     m_retTyp = type;
 }
 
-CBotTypResult CBotCStack::GivRetType()
+CBotTypResult CBotCStack::GetRetType()
 {
     return m_retTyp;
 }
@@ -1364,11 +1364,11 @@ void CBotCStack::SetCopyVar( CBotVar* var )
     if (m_var) delete m_var;    // replacement of a variable
 
     if ( var == NULL ) return;
-    m_var = CBotVar::Create("", var->GivTypResult(2));
+    m_var = CBotVar::Create("", var->GetTypResult(2));
     m_var->Copy( var );
 }
 
-CBotVar* CBotCStack::GivVar()
+CBotVar* CBotCStack::GetVar()
 {
     return m_var;
 }
@@ -1388,7 +1388,7 @@ void CBotCStack::AddVar(CBotVar* pVar)
     *pp = pVar;                    // added after
 
 #ifdef    _DEBUG
-    if ( pVar->GivUniqNum() == 0 ) ASM_TRAP();
+    if ( pVar->GetUniqNum() == 0 ) ASM_TRAP();
 #endif
 }
 
@@ -1397,14 +1397,14 @@ void CBotCStack::AddVar(CBotVar* pVar)
 bool CBotCStack::CheckVarLocal(CBotToken* &pToken)
 {
     CBotCStack*    p = this;
-    CBotString    name = pToken->GivString();
+    CBotString    name = pToken->GetString();
 
     while (p != NULL)
     {
         CBotVar*    pp = p->m_listVar;
         while ( pp != NULL)
         {
-            if (name == pp->GivName())
+            if (name == pp->GetName())
                 return true;
             pp = pp->m_next;
         }
@@ -1420,14 +1420,14 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
     CBotTypResult val(-1);
 
     val = CBotCall::CompileCall(p, ppVars, this, nIdent);
-    if (val.GivType() < 0)
+    if (val.GetType() < 0)
     {
-        val = m_prog->GivFunctions()->CompileCall(p->GivString(), ppVars, nIdent);
-        if ( val.GivType() < 0 )
+        val = m_prog->GetFunctions()->CompileCall(p->GetString(), ppVars, nIdent);
+        if ( val.GetType() < 0 )
         {
     //        pVar = NULL;                    // the error is not on a particular parameter
-            SetError( -val.GivType(), p );
-            val.SetType(-val.GivType());
+            SetError( -val.GetType(), p );
+            val.SetType(-val.GetType());
             return val;
         }
     }
@@ -1438,14 +1438,14 @@ CBotTypResult CBotCStack::CompileCall(CBotToken* &p, CBotVar** ppVars, long& nId
 
 bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
 {
-    CBotString    name = pToken->GivString();
+    CBotString    name = pToken->GetString();
 
     if ( CBotCall::CheckCall(name) ) return true;
 
-    CBotFunction*    pp = m_prog->GivFunctions();
+    CBotFunction*    pp = m_prog->GetFunctions();
     while ( pp != NULL )
     {
-        if ( pToken->GivString() == pp->GivName() )
+        if ( pToken->GetString() == pp->GetName() )
         {
             // are parameters exactly the same?
             if ( pp->CheckParam( pParam ) )
@@ -1457,7 +1457,7 @@ bool CBotCStack::CheckCall(CBotToken* &pToken, CBotDefParam* pParam)
     pp = CBotFunction::m_listPublic;
     while ( pp != NULL )
     {
-        if ( pToken->GivString() == pp->GivName() )
+        if ( pToken->GetString() == pp->GetName() )
         {
             // are parameters exactly the same?
             if ( pp->CheckParam( pParam ) )

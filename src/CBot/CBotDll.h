@@ -77,9 +77,10 @@ enum CBotType
 //n = not implemented yet
 
 // for SetUserPtr when deleting an object
-#define OBJECTDELETED ((void*)-1)
+// \TODO define own types to distinct between different states of objects
+#define OBJECTDELETED (reinterpret_cast<void*>(-1))
 // value set before initialization
-#define OBJECTCREATED ((void*)-2)
+#define OBJECTCREATED (reinterpret_cast<void*>(-2))
 
 
 /** \brief CBotTypResult class to define the complete type of a result*/
@@ -111,16 +112,16 @@ public:
     
     ~CBotTypResult();
 
-    int            GivType(int mode = 0) const;
+    int            GetType(int mode = 0) const;
     // returns type CBotType* as a result
 
     void        SetType(int n);
     // modifies a type
 
-    CBotClass*    GivClass() const;
+    CBotClass*    GetClass() const;
     // makes the pointer to the class (for CBotTypClass, CBotTypPointer)
 
-    int            GivLimite() const;
+    int            GetLimite() const;
     // returns limit size of table (CBotTypArray)
 
     void        SetLimite(int n);
@@ -129,7 +130,7 @@ public:
     void        SetArray(int* max );
     // set limits for a list of dimensions (arrays of arrays)
 
-    CBotTypResult& GivTypElem() const;
+    CBotTypResult& GetTypElem() const;
     // returns type of array elements (CBotTypArray)
     // rend le type des éléments du tableau (CBotTypArray)
 
@@ -262,7 +263,7 @@ public:
 
     void       Empty();
     bool       IsEmpty() const;
-    int        GivLength();
+    int        GetLength();
     int        Find(const char c);
     int        Find(const char* lpsz);
     int        ReverseFind(const char c);
@@ -314,7 +315,7 @@ private:
     int m_lg;
 
     /** \brief Keeps the string corresponding to keyword ID */
-    static const std::map<EID, char *> s_keywordString;
+    static const std::map<EID,const char *> s_keywordString;
 
     /**
      * \brief MapIdToString maps given ID to its string equivalent
@@ -338,7 +339,7 @@ public:
                     CBotStringArray();
                     ~CBotStringArray();
     void            SetSize(int nb);
-    int             GivSize();
+    int             GetSize();
     void            Add(const CBotString& str);
     CBotString&        operator[](int nIndex);
 
@@ -388,7 +389,7 @@ public:
     //                frees the static memory areas
 
     static
-    int                GivVersion();
+    int                GetVersion();
     //                gives the version of the library CBOT
 
 
@@ -406,10 +407,10 @@ public:
     void            SetIdent(long n);
     //                associates an identifier with the instance CBotProgram
 
-    long            GivIdent();
+    long            GetIdent();
     //                gives the identifier
 
-    int                GivError();
+    int                GetError();
     bool            GetError(int& code, int& start, int& end);
     bool            GetError(int& code, int& start, int& end, CBotProgram* &pProg);
     //                if true
@@ -417,7 +418,7 @@ public:
     //                or execution
     //                delimits the start and end block where the error
     //                pProg lets you know what "module" has produced runtime error
-    static         CBotString        GivErrorText(int code);
+    static         CBotString        GetErrorText(int code);
 
 
     bool            Start(const char* name);
@@ -437,7 +438,7 @@ public:
     //                FunctionName is a pointer made to the name of the function
     //                start and end position in the text of the token processing
 
-    CBotVar*        GivStackVars(const char* &FunctionName, int level);
+    CBotVar*        GetStackVars(const char* &FunctionName, int level);
     //                provides the pointer to the variables on the execution stack
     //                level is an input parameter,  0 for the last level, -1, -2, etc. for the other levels
     //                the return value (CBotVar *) is a variable list (or NULL)
@@ -480,7 +481,7 @@ public:
     //                see the above modes in CBotGet
 
 
-    CBotFunction*    GivFunctions();
+    CBotFunction*    GetFunctions();
 };
 
 
@@ -513,8 +514,8 @@ int    cMean(CBotVar* &pVar, CBotString& ClassName)
 
     while ( pVar != NULL )
     {
-        if ( pVar->GivType() > CBotTypDouble ) return 6002;        // this is not a number 
-        pVar = pVar -> GivNext();
+        if ( pVar->GetType() > CBotTypDouble ) return 6002;        // this is not a number 
+        pVar = pVar -> GetNext();
     }
 
     return CBotTypFloat;        // the type of the result may depend on the parameters!
@@ -527,8 +528,8 @@ bool rMean(CBotVar* pVar, CBotVar* pResult, int& Exception)
     int   nb      = 0;
     while (pVar != NULL)
     {
-        total += pVar->GivValFloat();
-        pVar = pVar->GivNext();
+        total += pVar->GetValFloat();
+        pVar = pVar->GetNext();
         nb++;
     }
     pResult->SetValFloat(total/nb);                // returns the mean value
@@ -544,7 +545,7 @@ bool rMean(CBotVar* pVar, CBotVar* pResult, int& Exception)
 // may be useful to the outside of the module
 // ( it is currently not expected to be able to create these objects in outer )
 
-// results of GivInit()
+// results of GetInit()
 #define    IS_UNDEF    0        // undefined variable
 #define IS_DEF        1        // variable defined
 #define    IS_NAN        999        // variable defined as not a number
@@ -615,33 +616,33 @@ virtual                ~CBotVar( );                        // destructor
     //                associates a unique identifier to an instance
     //                ( it is used to ensure that the id is unique)
 
-    void*            GivUserPtr();
+    void*            GetUserPtr();
     //                makes the pointer associated with the variable
 
-    CBotString        GivName();                    // the name of the variable, if known
+    CBotString        GetName();                    // the name of the variable, if known
     ////////////////////////////////////////////////////////////////////////////////////
     void            SetName(const char* name);    // changes the name of the variable
 
-    int                GivType(int mode = 0);          // returns the base type (int) of the variable
+    int                GetType(int mode = 0);          // returns the base type (int) of the variable
                                                         // TODO check it    
     ////////////////////////////////////////////////////////////////////////////////////////
 
-    CBotTypResult    GivTypResult(int mode = 0);    // returns the complete type of the variable
+    CBotTypResult    GetTypResult(int mode = 0);    // returns the complete type of the variable
 
 
-    CBotToken*        GivToken();
+    CBotToken*        GetToken();
     void            SetType(CBotTypResult& type);
 
     void            SetInit(int bInit);            // is the variable in the state IS_UNDEF, IS_DEF, IS_NAN
 
-    int                GivInit();                    // gives the state of the variable
+    int                GetInit();                    // gives the state of the variable
 
     void            SetStatic(bool bStatic);
     bool            IsStatic();
 
     void            SetPrivate(int mPrivate);
     bool            IsPrivate(int mode = PR_PROTECT);
-    int                GivPrivate();
+    int                GetPrivate();
 
     virtual
     void            ConstructorSet();
@@ -649,23 +650,23 @@ virtual                ~CBotVar( );                        // destructor
     void            SetVal(CBotVar* var);          // remprend une valeur
                                                     // TODO remprend value
     virtual
-    CBotVar*        GivItem(const char* name);    // returns an element of a class according to its name (*)
+    CBotVar*        GetItem(const char* name);    // returns an element of a class according to its name (*)
     virtual
-    CBotVar*        GivItemRef(int nIdent);        // idem à partir du n° ref
+    CBotVar*        GetItemRef(int nIdent);        // idem à partir du n° ref
                                                     // TODO ditto from ref no.
     virtual
-    CBotVar*        GivItem(int row, bool bGrow = false); 
+    CBotVar*        GetItem(int row, bool bGrow = false); 
 
     virtual
-    CBotVar*        GivItemList();                // lists the elements
+    CBotVar*        GetItemList();                // lists the elements
 
-    CBotVar*        GivStaticVar();                // makes the pointer to the variable if it is static
+    CBotVar*        GetStaticVar();                // makes the pointer to the variable if it is static
 
     bool            IsElemOfClass(const char* name);
                                                 // said if the element belongs to the class "name"
                                                 // makes true if the object is a subclass
 
-    CBotVar*        GivNext();                    // next variable in the list (parameters)
+    CBotVar*        GetNext();                    // next variable in the list (parameters)
     ////////////////////////////////////////////////////////////////////////////////////////////
 
     void            AddNext(CBotVar* pVar);        // added to a list
@@ -683,23 +684,23 @@ virtual                ~CBotVar( );                        // destructor
     virtual void    SetValString(const char* p);// initialized with a string value (#)
     ////////////////////////////////////////////////////////////////////////////////
 
-    virtual int        GivValInt();                // request the full value (#)
+    virtual int        GetValInt();                // request the full value (#)
     ////////////////////////////////////////////////////////////////////////
 
-    virtual float    GivValFloat();                // gets real value (#)
+    virtual float    GetValFloat();                // gets real value (#)
     ///////////////////////////////////////////////////////////////////////
 
     virtual
-    CBotString         GivValString();                // request the string value (#)
+    CBotString         GetValString();                // request the string value (#)
     ///////////////////////////////////////////////////////////////////////
 
     virtual void    SetClass(CBotClass* pClass);
     virtual
-    CBotClass*        GivClass();
+    CBotClass*        GetClass();
 
     virtual void    SetPointer(CBotVar* p);
     virtual
-    CBotVarClass*    GivPointer();
+    CBotVarClass*    GetPointer();
 //    virtual void    SetIndirection(CBotVar* pVar);
 
     virtual void    Add(CBotVar* left, CBotVar* right);    // addition
@@ -736,13 +737,13 @@ virtual                ~CBotVar( );                        // destructor
     void            debug();
 
 //    virtual
-//    CBotVar*        GivMyThis();
+//    CBotVar*        GetMyThis();
 
     virtual
     void            Maj(void* pUser = NULL, bool bContinue = true);
 
     void            SetUniqNum(long n);
-    long            GivUniqNum();
+    long            GetUniqNum();
     static long        NextUniqNum();
 };
 
@@ -751,12 +752,12 @@ virtual                ~CBotVar( );                        // destructor
     can be called  with objects which are respectively integer, real or string
     Always be sure of the type of the variable before calling these methods
 
-    if ( pVar->GivType() == CBotInt() ) pVar->SetValFloat( 3.3 ); // plante !!
+    if ( pVar->GetType() == CBotInt() ) pVar->SetValFloat( 3.3 ); // plante !!
 
-    methods    GivValInt(), GivValFloat() et GivValString()
+    methods    GetValInt(), GetValFloat() et GetValString()
     use value conversions,
-    GivValString() works on numbers (makes the corresponding string)
-    but do not make GivValInt () with a string variable!
+    GetValString() works on numbers (makes the corresponding string)
+    but do not make GetValInt () with a string variable!
 */
 
 
@@ -824,8 +825,8 @@ public:
     // adds an element by giving an element of type CBotVar
     void            AddNext(CBotClass* pClass);
 
-    CBotString        GivName();                    // gives the name of the class
-    CBotClass*        GivParent();                // gives the parent class (or NULL)
+    CBotString        GetName();                    // gives the name of the class
+    CBotClass*        GetParent();                // gives the parent class (or NULL)
 
     // true if a class is derived (Extends) of another
     // return true also if the classes are identical
@@ -837,9 +838,9 @@ public:
     static
     CBotClass*        Find(const char* name);
 
-    CBotVar*        GivVar();                    // return the list of variables
-    CBotVar*        GivItem(const char* name);    // one of the variables according to its name
-    CBotVar*        GivItemRef(int nIdent);
+    CBotVar*        GetVar();                    // return the list of variables
+    CBotVar*        GetItem(const char* name);    // one of the variables according to its name
+    CBotVar*        GetItemRef(int nIdent);
 
     CBotTypResult    CompileMethode(const char* name, CBotVar* pThis, CBotVar** ppParams, 
                                    CBotCStack* pStack, long& nIdent);
@@ -922,9 +923,9 @@ private:
      * \brief Check whether given parameter is a keyword
      */
     static
-    int                GivKeyWords(const char* w);    // is it a keyword?
+    int                GetKeyWords(const char* w);    // is it a keyword?
     static
-    bool            GivKeyDefNum(const char* w, CBotToken* &token);
+    bool            GetKeyDefNum(const char* w, CBotToken* &token);
 
     /**
      * \brief Loads the list of keywords
@@ -948,35 +949,35 @@ public:
     /**
      * \brief Returns the type of token
      */
-    int                GivType();
+    int                GetType();
 
     /**
      * \brief makes the string corresponding to this token
      */
-    CBotString&        GivString();
+    CBotString&        GetString();
 
     /**
      * \brief makes the following separator token
      */
-    CBotString&        GivSep();
+    CBotString&        GetSep();
 
     /**
      * \brief position of the beginning in the text
      */
-    int                GivStart();
+    int                GetStart();
     /**
      * \brief end position in the text
      */
-    int                GivEnd();
+    int                GetEnd();
 
     /**
      * \brief gives the next token in the list
      */
-    CBotToken*        GivNext();
+    CBotToken*        GetNext();
     /**
      * \brief gives the previous token in a list
      */
-    CBotToken*        GivPrev();
+    CBotToken*        GetPrev();
 
     /**
      * \brief transforms the entire program 
@@ -997,7 +998,7 @@ public:
     void            SetString(const char* name);
 
     void            SetPos(int start, int end);
-    long            GivIdKey();
+    long            GetIdKey();
     /**
      * \brief adds a token (a copy)
      */
@@ -1091,7 +1092,7 @@ public:
 // routine that implements the GOTO (CPoint pos)
 bool rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
 {
-    if (pVar->GivType() != CBotTypeClass ||
+    if (pVar->GetType() != CBotTypeClass ||
         pVar->IsElemOfClas("CPoint") ) { exception = 6522; return false; )
         // the parameter is not the right class?
         // in fact the control is done to the routine of compilation
@@ -1100,13 +1101,13 @@ bool rDoGoto( CBotVar* pVar, CBotVar* pResult, int& exception )
 
     // or so
     CBotVar*    temp;
-    temp = pVar->GivItem("x");            // is necessary for the object of type CPoint
-    ASSERT (temp != NULL && temp->GivType() == CBotTypFloat);
-    m_PosToGo.x = temp->GivValFloat();
+    temp = pVar->GetItem("x");            // is necessary for the object of type CPoint
+    ASSERT (temp != NULL && temp->GetType() == CBotTypFloat);
+    m_PosToGo.x = temp->GetValFloat();
 
-    temp = pVar->GivItem("y");            // is necessary for the object of type CPoint
-    ASSERT (temp != NULL && temp->GivType() == CBotTypFloat);
-    m_PosToGo.y = temp->GivValFloat();
+    temp = pVar->GetItem("y");            // is necessary for the object of type CPoint
+    ASSERT (temp != NULL && temp->GetType() == CBotTypFloat);
+    m_PosToGo.y = temp->GetValFloat();
 
     return (m_CurentPos == m_PosToGo);    // makes true if the position is reached
                                         // returns false if one had wait yet

@@ -68,25 +68,25 @@ bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exceptio
     if ( pVar == NULL ) return true;
 
     // must be a string
-    if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
+    if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
 
-    CBotString  filename = pVar->GivValString();
+    CBotString  filename = pVar->GetValString();
     PrepareFilename(filename);  //DR
 
     // there may be a second parameter
-    pVar = pVar->GivNext();
+    pVar = pVar->GetNext();
     if ( pVar != NULL )
     {
         // recovers the mode
-        mode = pVar->GivValString();
+        mode = pVar->GetValString();
         if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
 
         // no third parameter, only two or one possible
-        if ( pVar->GivNext() != NULL ) { Exception = CBotErrOverParam; return false; }
+        if ( pVar->GetNext() != NULL ) { Exception = CBotErrOverParam; return false; }
     }
 
     // save the file name
-    pVar = pThis->GivItem("filename");
+    pVar = pThis->GetItem("filename");
     pVar->SetValString(filename);
 
     if ( ! mode.IsEmpty() )
@@ -98,7 +98,7 @@ bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exceptio
         m_CompteurFileOpen ++;
 
         // save the handle of file
-        pVar = pThis->GivItem("handle");
+        pVar = pThis->GetItem("handle");
         pVar->SetValInt((long)pFile);
     }
 
@@ -112,18 +112,18 @@ CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar)
     if ( pVar == NULL ) return CBotTypResult( 0 );
 
     // must be a string
-    if ( pVar->GivType() != CBotTypString )
+    if ( pVar->GetType() != CBotTypString )
                         return CBotTypResult( CBotErrBadString );
 
     // there may be a second parameter
-    pVar = pVar->GivNext();
+    pVar = pVar->GetNext();
     if ( pVar != NULL )
     {
         // must be a string
-        if ( pVar->GivType() != CBotTypString )
+        if ( pVar->GetType() != CBotTypString )
                             return CBotTypResult( CBotErrBadString );
         // no third parameter
-        if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+        if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
     }
 
     // le r�sultat est de type void (constructeur)
@@ -137,12 +137,12 @@ CBotTypResult cfconstruct (CBotVar* pThis, CBotVar* &pVar)
 bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 {
     // retrieves the element "handle"
-    pVar = pThis->GivItem("handle");
+    pVar = pThis->GetItem("handle");
 
     // not open? no problem
-    if ( pVar->GivInit() != IS_DEF) return true;
+    if ( pVar->GetInit() != IS_DEF) return true;
 
-    FILE* pFile= (FILE*)pVar->GivValInt();
+    FILE* pFile= (FILE*)pVar->GetValInt();
     fclose(pFile);
     m_CompteurFileOpen --;
 
@@ -162,38 +162,38 @@ bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
     if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
 
     // must be a string
-    if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
+    if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
 
     // there may be a second parameter
-    if ( pVar->GivNext() != NULL )
+    if ( pVar->GetNext() != NULL )
     {
         // in this case the first parameter is the file name
-        CBotString  filename = pVar->GivValString();
+        CBotString  filename = pVar->GetValString();
         PrepareFilename(filename);  //DR
 
         // saves the file name
-        CBotVar* pVar2 = pThis->GivItem("filename");
+        CBotVar* pVar2 = pThis->GetItem("filename");
         pVar2->SetValString(filename);
 
         // next parameter is the mode
-        pVar = pVar -> GivNext();
+        pVar = pVar -> GetNext();
     }
 
-    CBotString  mode = pVar->GivValString();
+    CBotString  mode = pVar->GetValString();
     if ( mode != "r" && mode != "w" ) { Exception = CBotErrBadParam; return false; }
 
     // No third parameter
-    if ( pVar->GivNext() != NULL ) { Exception = CBotErrOverParam; return false; }
+    if ( pVar->GetNext() != NULL ) { Exception = CBotErrOverParam; return false; }
 
     // retrieves the element "handle"
-    pVar = pThis->GivItem("handle");
+    pVar = pThis->GetItem("handle");
 
     // which must not be initialized
-    if ( pVar->GivInit() == IS_DEF) { Exception = CBotErrFileOpen; return false; }
+    if ( pVar->GetInit() == IS_DEF) { Exception = CBotErrFileOpen; return false; }
 
     // contains filename
-    pVar = pThis->GivItem("filename");
-    CBotString  filename = pVar->GivValString();
+    pVar = pThis->GetItem("filename");
+    CBotString  filename = pVar->GetValString();
 
     PrepareFilename(filename);  //DD! (if the name was assigned by h.filename = "...";
 
@@ -208,7 +208,7 @@ bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
     m_CompteurFileOpen ++;
 
     // saves the handle of file
-    pVar = pThis->GivItem("handle");
+    pVar = pThis->GetItem("handle");
     pVar->SetValInt((long)pFile);
 
     pResult->SetValInt(true);  //DR
@@ -222,19 +222,19 @@ CBotTypResult cfopen (CBotVar* pThis, CBotVar* &pVar)
     if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
 
     // must be a string
-    if ( pVar->GivType() != CBotTypString )
+    if ( pVar->GetType() != CBotTypString )
                         return CBotTypResult( CBotErrBadString );
 
     // there may be a second parameter
-    pVar = pVar->GivNext();
+    pVar = pVar->GetNext();
     if ( pVar != NULL )
     {
         // must be a string
-        if ( pVar->GivType() != CBotTypString )
+        if ( pVar->GetType() != CBotTypString )
                         return CBotTypResult( CBotErrBadString );
 
         // no third parameter
-        if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+        if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
     }
 
     // the result is of type bool
@@ -251,11 +251,11 @@ bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
     if ( pVar != NULL ) return CBotErrOverParam;
 
     // retrieves the element "handle"
-    pVar = pThis->GivItem("handle");
+    pVar = pThis->GetItem("handle");
 
-    if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+    if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
-    FILE* pFile= (FILE*)pVar->GivValInt();
+    FILE* pFile= (FILE*)pVar->GetValInt();
     fclose(pFile);
     m_CompteurFileOpen --;
 
@@ -283,16 +283,16 @@ bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
     if ( pVar == NULL ) { Exception = CBotErrLowParam; return false; }
 
     // must be a string
-    if ( pVar->GivType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
+    if ( pVar->GetType() != CBotTypString ) { Exception = CBotErrBadString; return false; }
 
-    CBotString param = pVar->GivValString();
+    CBotString param = pVar->GetValString();
 
     //retrieves the element "handle"
-    pVar = pThis->GivItem("handle");
+    pVar = pThis->GetItem("handle");
 
-    if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+    if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
-    FILE* pFile= (FILE*)pVar->GivValInt();
+    FILE* pFile= (FILE*)pVar->GetValInt();
     
     int res = fputs(param+CBotString("\n"), pFile);
 
@@ -309,10 +309,10 @@ CBotTypResult cfwrite (CBotVar* pThis, CBotVar* &pVar)
     if ( pVar == NULL ) return CBotTypResult( CBotErrLowParam );
 
     // must be a string
-    if ( pVar->GivType() != CBotTypString ) return CBotTypResult( CBotErrBadString );
+    if ( pVar->GetType() != CBotTypString ) return CBotTypResult( CBotErrBadString );
 
     // no other parameter
-    if ( pVar->GivNext() != NULL ) return CBotTypResult( CBotErrOverParam );
+    if ( pVar->GetNext() != NULL ) return CBotTypResult( CBotErrOverParam );
 
     // function returns "void" result
     return CBotTypResult( 0 );
@@ -327,11 +327,11 @@ bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
     if ( pVar != NULL ) { Exception = CBotErrOverParam; return false; }
 
     //retrieves the element "handle"
-    pVar = pThis->GivItem("handle");
+    pVar = pThis->GetItem("handle");
 
-    if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+    if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
-    FILE* pFile= (FILE*)pVar->GivValInt();
+    FILE* pFile= (FILE*)pVar->GetValInt();
 
     char    chaine[2000];
     int     i;
@@ -368,11 +368,11 @@ bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
     if ( pVar != NULL ) { Exception = CBotErrOverParam; return false; }
 
     // retrieves the element "handle"
-    pVar = pThis->GivItem("handle");
+    pVar = pThis->GetItem("handle");
 
-    if ( pVar->GivInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
+    if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
-    FILE* pFile= (FILE*)pVar->GivValInt();
+    FILE* pFile= (FILE*)pVar->GetValInt();
 
     pResult->SetValInt( feof( pFile ) );
 

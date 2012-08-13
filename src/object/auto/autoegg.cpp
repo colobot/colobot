@@ -115,7 +115,7 @@ void CAutoEgg::Init()
 }
 
 
-// Gives a value.
+// Getes a value.
 
 bool CAutoEgg::SetType(ObjectType type)
 {
@@ -123,7 +123,7 @@ bool CAutoEgg::SetType(ObjectType type)
     return true;
 }
 
-// Gives a value.
+// Getes a value.
 
 bool CAutoEgg::SetValue(int rank, float value)
 {
@@ -132,7 +132,7 @@ bool CAutoEgg::SetValue(int rank, float value)
     return true;
 }
 
-// Gives the string.
+// Getes the string.
 
 bool CAutoEgg::SetString(char *string)
 {
