@@ -154,12 +154,12 @@ void CBotVarClass::InitCBotVarClass( const CBotToken* name, CBotTypResult& type 
     m_ExPrev  = NULL;
     m_ExClass = this;
 
-    CBotClass* pClass = type.GivClass();
-    CBotClass* pClass2 = pClass->GivParent();
+    CBotClass* pClass = type.GetClass();
+    CBotClass* pClass2 = pClass->GetParent();
     if ( pClass2 != NULL )
     {
         // also creates an instance of the parent class
-        m_pParent = new CBotVarClass(name, CBotTypResult(type.GivType(),pClass2) ); //, nIdent);
+        m_pParent = new CBotVarClass(name, CBotTypResult(type.GetType(),pClass2) ); //, nIdent);
     }
 
     SetClass( pClass ); //, nIdent );
@@ -203,17 +203,17 @@ CBotVar::~CBotVar( )
 
 void CBotVar::debug()
 {
-    const char*    p = (const char*) m_token->GivString();
-    CBotString  s = (const char*) GivValString();
-    const char* v = (const char*) s;
+//    const char*    p = static_cast<const char*>( m_token->GetString());
+    CBotString  s = static_cast<const char*>( GetValString());
+//    const char* v = static_cast<const char*> (s);
 
     if ( m_type.Eq(CBotTypClass) )
     {
-        CBotVar*    pv = ((CBotVarClass*)this)->m_pVar;
+        CBotVar*    pv = (static_cast<CBotVarClass*>(this))->m_pVar;
         while (pv != NULL)
         {
             pv->debug();
-            pv = pv->GivNext();
+            pv = pv->GetNext();
         }
     }
 }
@@ -227,15 +227,15 @@ void CBotVar::SetUserPtr(void* pUser)
 {
     m_pUserPtr = pUser;
     if (m_type.Eq(CBotTypPointer) &&
-        ((CBotVarPointer*)this)->m_pVarClass != NULL )
-        ((CBotVarPointer*)this)->m_pVarClass->SetUserPtr(pUser);
+        (static_cast<CBotVarPointer*>(this))->m_pVarClass != NULL )
+        (static_cast<CBotVarPointer*>(this))->m_pVarClass->SetUserPtr(pUser);
 }
 
 void CBotVar::SetIdent(long n)
 {
     if (m_type.Eq(CBotTypPointer) &&
-        ((CBotVarPointer*)this)->m_pVarClass != NULL )
-        ((CBotVarPointer*)this)->m_pVarClass->SetIdent(n);
+        (static_cast<CBotVarPointer*>(this))->m_pVarClass != NULL )
+        (static_cast<CBotVarPointer*>(this))->m_pVarClass->SetIdent(n);
 }
 
 void CBotVar::SetUniqNum(long n)
@@ -251,13 +251,13 @@ long CBotVar::NextUniqNum()
     return m_identcpt;
 }
 
-long CBotVar::GivUniqNum()
+long CBotVar::GetUniqNum()
 {
     return m_ident;
 }
 
 
-void* CBotVar::GivUserPtr()
+void* CBotVar::GetUserPtr()
 {
     return m_pUserPtr;
 }
@@ -288,7 +288,7 @@ CBotVar* CBotVar::Create(const CBotToken* name, int type )
 
 CBotVar* CBotVar::Create(const CBotToken* name, CBotTypResult type)
 {
-    switch (type.GivType())
+    switch (type.GetType())
     {
     case CBotTypShort:
     case CBotTypInt:
@@ -327,8 +327,8 @@ CBotVar* CBotVar::Create(const CBotToken* name, CBotTypResult type)
             CBotVar*    pv = array;
             while (type.Eq(CBotTypArrayBody))
             {
-                type = type.GivTypElem();
-                pv = ((CBotVarArray*)pv)->GivItem(0, true);            // creates at least the element [0]
+                type = type.GetTypElem();
+                pv = (static_cast<CBotVarArray*>(pv))->GetItem(0, true);            // creates at least the element [0]
             }
 
             return array;
@@ -341,7 +341,7 @@ CBotVar* CBotVar::Create(const CBotToken* name, CBotTypResult type)
 
 CBotVar* CBotVar::Create( CBotVar* pVar )
 {
-    CBotVar*    p = Create(pVar->m_token->GivString(), pVar->GivTypResult(2));
+    CBotVar*    p = Create(pVar->m_token->GetString(), pVar->GetTypResult(2));
     return p;
 }
 
@@ -350,7 +350,7 @@ CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
 {
     CBotToken    name(n);
 
-    switch (type.GivType())
+    switch (type.GetType())
     {
     case CBotTypShort:
     case CBotTypInt:
@@ -365,13 +365,13 @@ CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
     case CBotTypNullPointer:
         {
             CBotVarPointer* p = new CBotVarPointer(&name, type);
-//            p->SetClass(type.GivClass());
+//            p->SetClass(type.GetClass());
             return p;
         }
     case CBotTypIntrinsic:
         {
             CBotVarClass* p = new CBotVarClass(&name, type);
-//            p->SetClass(type.GivClass());
+//            p->SetClass(type.GetClass());
             return p;
         }
 
@@ -382,7 +382,7 @@ CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
             CBotVarClass* instance = new CBotVarClass(&name, type);
             CBotVarPointer* pointer = new CBotVarPointer(&name, type);
             pointer->SetPointer( instance );
-//            pointer->SetClass( type.GivClass() );
+//            pointer->SetClass( type.GetClass() );
             return pointer;
         }
 
@@ -398,8 +398,8 @@ CBotVar* CBotVar::Create( const char* n, CBotTypResult type)
             CBotVar*    pv = array;
             while (type.Eq(CBotTypArrayBody))
             {
-                type = type.GivTypElem();
-                pv = ((CBotVarArray*)pv)->GivItem(0, true);            // creates at least the element [0]
+                type = type.GetTypElem();
+                pv = (static_cast<CBotVarArray*>(pv))->GetItem(0, true);            // creates at least the element [0]
             }
 
             return array;
@@ -439,7 +439,7 @@ CBotVar* CBotVar::Create( const char* name, CBotClass* pClass)
     return        pVar;
 }
 
-CBotTypResult CBotVar::GivTypResult(int mode)
+CBotTypResult CBotVar::GetTypResult(int mode)
 {
     CBotTypResult    r = m_type;
 
@@ -451,13 +451,13 @@ CBotTypResult CBotVar::GivTypResult(int mode)
     return r;
 }
 
-int CBotVar::GivType(int mode)
+int CBotVar::GetType(int mode)
 {
     if ( mode == 1 && m_type.Eq(CBotTypClass) ) 
         return CBotTypPointer;
     if ( mode == 2 && m_type.Eq(CBotTypClass) ) 
         return CBotTypIntrinsic;
-    return m_type.GivType();
+    return m_type.GetType();
 }
 
 void CBotVar::SetType(CBotTypResult& type)
@@ -466,7 +466,7 @@ void CBotVar::SetType(CBotTypResult& type)
 }
 
 
-int CBotVar::GivInit()
+int CBotVar::GetInit()
 {
     if (  m_type.Eq(CBotTypClass) ) return IS_DEF;        // always set!
 
@@ -480,11 +480,11 @@ void CBotVar::SetInit(int bInit)
 
     if ( m_type.Eq(CBotTypPointer) && bInit == 2 )
     {
-        CBotVarClass* instance = GivPointer();
+        CBotVarClass* instance = GetPointer();
         if ( instance == NULL )
         {
             instance = new CBotVarClass(NULL, m_type);
-//            instance->SetClass(((CBotVarPointer*)this)->m_pClass);
+//            instance->SetClass((static_cast<CBotVarPointer*>(this))->m_pClass);
             SetPointer(instance);
         }
         instance->SetInit(1);
@@ -492,19 +492,19 @@ void CBotVar::SetInit(int bInit)
 
     if ( m_type.Eq(CBotTypClass) || m_type.Eq(CBotTypIntrinsic) )
     {
-        CBotVar*    p = ((CBotVarClass*)this)->m_pVar;
+        CBotVar*    p = (static_cast<CBotVarClass*>(this))->m_pVar;
         while( p != NULL )
         {
             p->SetInit( bInit );
-            p->m_pMyThis = (CBotVarClass*)this;
-            p = p->GivNext();
+            p->m_pMyThis = static_cast<CBotVarClass*>(this);
+            p = p->GetNext();
         }
     }
 }
 
-CBotString CBotVar::GivName()
+CBotString CBotVar::GetName()
 {
-    return    m_token->GivString();
+    return    m_token->GetString();
 }
 
 void CBotVar::SetName(const char* name)
@@ -512,30 +512,30 @@ void CBotVar::SetName(const char* name)
     m_token->SetString(name);
 }
 
-CBotToken* CBotVar::GivToken()
+CBotToken* CBotVar::GetToken()
 {
     return    m_token;
 }
 
-CBotVar* CBotVar::GivItem(const char* name)
+CBotVar* CBotVar::GetItem(const char* name)
 {
     ASM_TRAP();
     return NULL;
 }
 
-CBotVar* CBotVar::GivItemRef(int nIdent)
+CBotVar* CBotVar::GetItemRef(int nIdent)
 {
     ASM_TRAP();
     return NULL;
 }
 
-CBotVar* CBotVar::GivItemList()
+CBotVar* CBotVar::GetItemList()
 {
     ASM_TRAP();
     return NULL;
 }
 
-CBotVar* CBotVar::GivItem(int row, bool bGrow)
+CBotVar* CBotVar::GetItem(int row, bool bGrow)
 {
     ASM_TRAP();
     return NULL;
@@ -548,34 +548,34 @@ bool CBotVar::IsElemOfClass(const char* name)
 
     if ( m_type.Eq(CBotTypPointer) )
     {
-        pc = ((CBotVarPointer*)this)->m_pClass;
+        pc = (static_cast<CBotVarPointer*>(this))->m_pClass;
     }
     if ( m_type.Eq(CBotTypClass) )
     {
-        pc = ((CBotVarClass*)this)->m_pClass;
+        pc = (static_cast<CBotVarClass*>(this))->m_pClass;
     }
 
     while ( pc != NULL )
     {
-        if ( pc->GivName() == name ) return true;
-        pc = pc->GivParent();
+        if ( pc->GetName() == name ) return true;
+        pc = pc->GetParent();
     }
 
     return false;
 }
 
 
-CBotVar* CBotVar::GivStaticVar()
+CBotVar* CBotVar::GetStaticVar()
 {
     // makes the pointer to the variable if it is static
     if ( m_bStatic == 0 || m_pMyThis == NULL ) return this;
 
-    CBotClass*    pClass = m_pMyThis->GivClass();
-    return pClass->GivItem( m_token->GivString() );
+    CBotClass*    pClass = m_pMyThis->GetClass();
+    return pClass->GetItem( m_token->GetString() );
 }
 
 
-CBotVar* CBotVar::GivNext()
+CBotVar* CBotVar::GetNext()
 {
     return m_next;
 }
@@ -590,29 +590,29 @@ void CBotVar::AddNext(CBotVar* pVar)
 
 void CBotVar::SetVal(CBotVar* var)
 {
-    switch (/*var->*/GivType())
+    switch (/*var->*/GetType())
     {
     case CBotTypBoolean:
-        SetValInt(var->GivValInt());
+        SetValInt(var->GetValInt());
         break;
     case CBotTypInt:
-        SetValInt(var->GivValInt(), ((CBotVarInt*)var)->m_defnum);
+        SetValInt(var->GetValInt(), (static_cast<CBotVarInt*>(var))->m_defnum);
         break;
     case CBotTypFloat:
-        SetValFloat(var->GivValFloat());
+        SetValFloat(var->GetValFloat());
         break;
     case CBotTypString:
-        SetValString(var->GivValString());
+        SetValString(var->GetValString());
         break;
     case CBotTypPointer:
     case CBotTypNullPointer:
     case CBotTypArrayPointer:
-        SetPointer(var->GivPointer());
+        SetPointer(var->GetPointer());
         break;
     case CBotTypClass:
         {
-            delete ((CBotVarClass*)this)->m_pVar;
-            ((CBotVarClass*)this)->m_pVar = NULL;
+            delete (static_cast<CBotVarClass*>(this))->m_pVar;
+            (static_cast<CBotVarClass*>(this))->m_pVar = NULL;
             Copy(var, false);
         }
         break;
@@ -643,7 +643,7 @@ bool CBotVar::IsPrivate(int mode)
     return m_mPrivate >= mode;
 }
 
-int CBotVar::GivPrivate()
+int CBotVar::GetPrivate()
 {
     return m_mPrivate;
 }
@@ -654,7 +654,7 @@ void CBotVar::SetPointer(CBotVar* pVarClass)
     ASM_TRAP();
 }
 
-CBotVarClass* CBotVar::GivPointer()
+CBotVarClass* CBotVar::GetPointer()
 {
     ASM_TRAP();
     return NULL;
@@ -663,13 +663,13 @@ CBotVarClass* CBotVar::GivPointer()
 // All these functions must be defined in the subclasses
 // derived from class CBotVar
 
-int CBotVar::GivValInt()
+int CBotVar::GetValInt()
 {
     ASM_TRAP();
     return 0;
 }
 
-float CBotVar::GivValFloat()
+float CBotVar::GetValFloat()
 {
     ASM_TRAP();
     return 0;
@@ -812,7 +812,7 @@ void CBotVar::SetValString(const char* p)
     ASM_TRAP();
 }
 
-CBotString CBotVar::GivValString()
+CBotString CBotVar::GetValString()
 {
     ASM_TRAP();
     return CBotString();
@@ -823,7 +823,7 @@ void CBotVar::SetClass(CBotClass* pClass)
     ASM_TRAP();
 }
 
-CBotClass* CBotVar::GivClass()
+CBotClass* CBotVar::GetClass()
 {
     ASM_TRAP();
     return NULL;
@@ -841,7 +841,7 @@ void CBotVar::SetIndirection(CBotVar* pVar)
 // copy a variable in to another
 void CBotVarInt::Copy(CBotVar* pSrc, bool bName)
 {
-    CBotVarInt*    p = (CBotVarInt*)pSrc;
+    CBotVarInt*    p = static_cast<CBotVarInt*>(pSrc);
 
     if ( bName) *m_token    = *p->m_token;
     m_type        = p->m_type;
@@ -870,21 +870,21 @@ void CBotVarInt::SetValInt(int val, const char* defnum)
 
 void CBotVarInt::SetValFloat(float val)
 {
-    m_val = (int)val;
+    m_val = static_cast<int>(val);
     m_binit    = true;
 }
 
-int CBotVarInt::GivValInt()
+int CBotVarInt::GetValInt()
 {
     return    m_val;
 }
 
-float CBotVarInt::GivValFloat()
+float CBotVarInt::GetValFloat()
 {
-    return (float)m_val;
+    return static_cast<float>(m_val);
 }
 
-CBotString CBotVarInt::GivValString()
+CBotString CBotVarInt::GetValString()
 {
     if ( !m_defnum.IsEmpty() ) return m_defnum;
 
@@ -911,22 +911,22 @@ CBotString CBotVarInt::GivValString()
 
 void CBotVarInt::Mul(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() * right->GivValInt();
+    m_val = left->GetValInt() * right->GetValInt();
     m_binit = true;
 }
 
 void CBotVarInt::Power(CBotVar* left, CBotVar* right)
 {
-    m_val = (int) pow( (double) left->GivValInt() , (double) right->GivValInt() );
+    m_val = static_cast<int>( pow( static_cast<double>( left->GetValInt()) , static_cast<double>( left->GetValInt()) ));
     m_binit = true;
 }
 
 int CBotVarInt::Div(CBotVar* left, CBotVar* right)
 {
-    int    r = right->GivValInt();
+    int    r = right->GetValInt();
     if ( r != 0 )
     {
-        m_val = left->GivValInt() / r;
+        m_val = left->GetValInt() / r;
         m_binit = true;
     }
     return ( r == 0 ? TX_DIVZERO : 0 );
@@ -934,10 +934,10 @@ int CBotVarInt::Div(CBotVar* left, CBotVar* right)
 
 int CBotVarInt::Modulo(CBotVar* left, CBotVar* right)
 {
-    int    r = right->GivValInt();
+    int    r = right->GetValInt();
     if ( r != 0 )
     {
-        m_val = left->GivValInt() % r;
+        m_val = left->GetValInt() % r;
         m_binit = true;
     }
     return ( r == 0 ? TX_DIVZERO : 0 );
@@ -945,50 +945,50 @@ int CBotVarInt::Modulo(CBotVar* left, CBotVar* right)
 
 void CBotVarInt::Add(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() + right->GivValInt();
+    m_val = left->GetValInt() + right->GetValInt();
     m_binit = true;
 }
 
 void CBotVarInt::Sub(CBotVar* left, CBotVar* right)
 {
-        m_val = left->GivValInt() - right->GivValInt();
+        m_val = left->GetValInt() - right->GetValInt();
         m_binit = true;
 }
 
 void CBotVarInt::XOr(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() ^ right->GivValInt();
+    m_val = left->GetValInt() ^ right->GetValInt();
     m_binit = true;
 }
 
 void CBotVarInt::And(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() & right->GivValInt();
+    m_val = left->GetValInt() & right->GetValInt();
     m_binit = true;
 }
 
 void CBotVarInt::Or(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() | right->GivValInt();
+    m_val = left->GetValInt() | right->GetValInt();
     m_binit = true;
 }
 
 void CBotVarInt::SL(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() << right->GivValInt();
+    m_val = left->GetValInt() << right->GetValInt();
     m_binit = true;
 }
 
 void CBotVarInt::ASR(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() >> right->GivValInt();
+    m_val = left->GetValInt() >> right->GetValInt();
     m_binit = true;
 }
 
 void CBotVarInt::SR(CBotVar* left, CBotVar* right)
 {
-    int    source = left->GivValInt();
-    int shift  = right->GivValInt();
+    int    source = left->GetValInt();
+    int shift  = right->GetValInt();
     if (shift>=1) source &= 0x7fffffff;
     m_val = source >> shift;
     m_binit = true;
@@ -1018,32 +1018,32 @@ void CBotVarInt::Dec()
 
 bool CBotVarInt::Lo(CBotVar* left, CBotVar* right)
 {
-    return left->GivValInt() < right->GivValInt();
+    return left->GetValInt() < right->GetValInt();
 }
 
 bool CBotVarInt::Hi(CBotVar* left, CBotVar* right)
 {
-    return left->GivValInt() > right->GivValInt();
+    return left->GetValInt() > right->GetValInt();
 }
 
 bool CBotVarInt::Ls(CBotVar* left, CBotVar* right)
 {
-    return left->GivValInt() <= right->GivValInt();
+    return left->GetValInt() <= right->GetValInt();
 }
 
 bool CBotVarInt::Hs(CBotVar* left, CBotVar* right)
 {
-    return left->GivValInt() >= right->GivValInt();
+    return left->GetValInt() >= right->GetValInt();
 }
 
 bool CBotVarInt::Eq(CBotVar* left, CBotVar* right)
 {
-    return left->GivValInt() == right->GivValInt();
+    return left->GetValInt() == right->GetValInt();
 }
 
 bool CBotVarInt::Ne(CBotVar* left, CBotVar* right)
 {
-    return left->GivValInt() != right->GivValInt();
+    return left->GetValInt() != right->GetValInt();
 }
 
 
@@ -1052,7 +1052,7 @@ bool CBotVarInt::Ne(CBotVar* left, CBotVar* right)
 // copy a variable into another
 void CBotVarFloat::Copy(CBotVar* pSrc, bool bName)
 {
-    CBotVarFloat*    p = (CBotVarFloat*)pSrc;
+    CBotVarFloat*    p = static_cast<CBotVarFloat*>(pSrc);
 
     if (bName)     *m_token    = *p->m_token;
     m_type        = p->m_type;
@@ -1072,7 +1072,7 @@ void CBotVarFloat::Copy(CBotVar* pSrc, bool bName)
 
 void CBotVarFloat::SetValInt(int val, const char* s)
 {
-    m_val = (float)val;
+    m_val = static_cast<float>(val);
     m_binit    = true;
 }
 
@@ -1082,17 +1082,17 @@ void CBotVarFloat::SetValFloat(float val)
     m_binit    = true;
 }
 
-int CBotVarFloat::GivValInt()
+int CBotVarFloat::GetValInt()
 {
-    return    (int)m_val;
+    return    static_cast<int>(m_val);
 }
 
-float CBotVarFloat::GivValFloat()
+float CBotVarFloat::GetValFloat()
 {
     return m_val;
 }
 
-CBotString CBotVarFloat::GivValString()
+CBotString CBotVarFloat::GetValString()
 {
     CBotString res;
 
@@ -1117,22 +1117,22 @@ CBotString CBotVarFloat::GivValString()
 
 void CBotVarFloat::Mul(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValFloat() * right->GivValFloat();
+    m_val = left->GetValFloat() * right->GetValFloat();
     m_binit = true;
 }
 
 void CBotVarFloat::Power(CBotVar* left, CBotVar* right)
 {
-    m_val = (float)pow( left->GivValFloat() , right->GivValFloat() );
+    m_val = static_cast<float>(pow( left->GetValFloat() , right->GetValFloat() ));
     m_binit = true;
 }
 
 int CBotVarFloat::Div(CBotVar* left, CBotVar* right)
 {
-    float    r = right->GivValFloat();
+    float    r = right->GetValFloat();
     if ( r != 0 )
     {
-        m_val = left->GivValFloat() / r;
+        m_val = left->GetValFloat() / r;
         m_binit = true;
     }
     return ( r == 0 ? TX_DIVZERO : 0 );
@@ -1140,10 +1140,10 @@ int CBotVarFloat::Div(CBotVar* left, CBotVar* right)
 
 int CBotVarFloat::Modulo(CBotVar* left, CBotVar* right)
 {
-    float    r = right->GivValFloat();
+    float    r = right->GetValFloat();
     if ( r != 0 )
     {
-        m_val = (float)fmod( left->GivValFloat() , r );
+        m_val = static_cast<float>(fmod( left->GetValFloat() , r ));
         m_binit = true;
     }
     return ( r == 0 ? TX_DIVZERO : 0 );
@@ -1151,13 +1151,13 @@ int CBotVarFloat::Modulo(CBotVar* left, CBotVar* right)
 
 void CBotVarFloat::Add(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValFloat() + right->GivValFloat();
+    m_val = left->GetValFloat() + right->GetValFloat();
     m_binit = true;
 }
 
 void CBotVarFloat::Sub(CBotVar* left, CBotVar* right)
 {
-        m_val = left->GivValFloat() - right->GivValFloat();
+        m_val = left->GetValFloat() - right->GetValFloat();
         m_binit = true;
 }
 
@@ -1179,32 +1179,32 @@ void CBotVarFloat::Dec()
 
 bool CBotVarFloat::Lo(CBotVar* left, CBotVar* right)
 {
-    return left->GivValFloat() < right->GivValFloat();
+    return left->GetValFloat() < right->GetValFloat();
 }
 
 bool CBotVarFloat::Hi(CBotVar* left, CBotVar* right)
 {
-    return left->GivValFloat() > right->GivValFloat();
+    return left->GetValFloat() > right->GetValFloat();
 }
 
 bool CBotVarFloat::Ls(CBotVar* left, CBotVar* right)
 {
-    return left->GivValFloat() <= right->GivValFloat();
+    return left->GetValFloat() <= right->GetValFloat();
 }
 
 bool CBotVarFloat::Hs(CBotVar* left, CBotVar* right)
 {
-    return left->GivValFloat() >= right->GivValFloat();
+    return left->GetValFloat() >= right->GetValFloat();
 }
 
 bool CBotVarFloat::Eq(CBotVar* left, CBotVar* right)
 {
-    return left->GivValFloat() == right->GivValFloat();
+    return left->GetValFloat() == right->GetValFloat();
 }
 
 bool CBotVarFloat::Ne(CBotVar* left, CBotVar* right)
 {
-    return left->GivValFloat() != right->GivValFloat();
+    return left->GetValFloat() != right->GetValFloat();
 }
 
 
@@ -1213,7 +1213,7 @@ bool CBotVarFloat::Ne(CBotVar* left, CBotVar* right)
 // copy a variable into another
 void CBotVarBoolean::Copy(CBotVar* pSrc, bool bName)
 {
-    CBotVarBoolean*    p = (CBotVarBoolean*)pSrc;
+    CBotVarBoolean*    p = static_cast<CBotVarBoolean*>(pSrc);
 
     if (bName)    *m_token    = *p->m_token;
     m_type        = p->m_type;
@@ -1233,27 +1233,27 @@ void CBotVarBoolean::Copy(CBotVar* pSrc, bool bName)
 
 void CBotVarBoolean::SetValInt(int val, const char* s)
 {
-    m_val = (bool)val;
+    m_val = static_cast<bool>(val);
     m_binit    = true;
 }
 
 void CBotVarBoolean::SetValFloat(float val)
 {
-    m_val = (bool)val;
+    m_val = static_cast<bool>(val);
     m_binit    = true;
 }
 
-int CBotVarBoolean::GivValInt()
+int CBotVarBoolean::GetValInt()
 {
     return    m_val;
 }
 
-float CBotVarBoolean::GivValFloat()
+float CBotVarBoolean::GetValFloat()
 {
-    return (float)m_val;
+    return static_cast<float>(m_val);
 }
 
-CBotString CBotVarBoolean::GivValString()
+CBotString CBotVarBoolean::GetValString()
 {
     CBotString    ret;
 
@@ -1276,18 +1276,18 @@ CBotString CBotVarBoolean::GivValString()
 
 void CBotVarBoolean::And(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() && right->GivValInt();
+    m_val = left->GetValInt() && right->GetValInt();
     m_binit = true;
 }
 void CBotVarBoolean::Or(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() || right->GivValInt();
+    m_val = left->GetValInt() || right->GetValInt();
     m_binit = true;
 }
 
 void CBotVarBoolean::XOr(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValInt() ^ right->GivValInt();
+    m_val = left->GetValInt() ^ right->GetValInt();
     m_binit = true;
 }
 
@@ -1298,12 +1298,12 @@ void CBotVarBoolean::Not()
 
 bool CBotVarBoolean::Eq(CBotVar* left, CBotVar* right)
 {
-    return left->GivValInt() == right->GivValInt();
+    return left->GetValInt() == right->GetValInt();
 }
 
 bool CBotVarBoolean::Ne(CBotVar* left, CBotVar* right)
 {
-    return left->GivValInt() != right->GivValInt();
+    return left->GetValInt() != right->GetValInt();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -1311,7 +1311,7 @@ bool CBotVarBoolean::Ne(CBotVar* left, CBotVar* right)
 // copy a variable into another
 void CBotVarString::Copy(CBotVar* pSrc, bool bName)
 {
-    CBotVarString*    p = (CBotVarString*)pSrc;
+    CBotVarString*    p = static_cast<CBotVarString*>(pSrc);
 
     if (bName)    *m_token    = *p->m_token;
     m_type        = p->m_type;
@@ -1333,7 +1333,7 @@ void CBotVarString::SetValString(const char* p)
     m_binit    = true;
 }
 
-CBotString CBotVarString::GivValString()
+CBotString CBotVarString::GetValString()
 {
     if ( !m_binit )
     {
@@ -1354,39 +1354,39 @@ CBotString CBotVarString::GivValString()
 
 void CBotVarString::Add(CBotVar* left, CBotVar* right)
 {
-    m_val = left->GivValString() + right->GivValString();
+    m_val = left->GetValString() + right->GetValString();
     m_binit = true;
 }
 
 bool CBotVarString::Eq(CBotVar* left, CBotVar* right)
 {
-    return (left->GivValString() == right->GivValString());
+    return (left->GetValString() == right->GetValString());
 }
 
 bool CBotVarString::Ne(CBotVar* left, CBotVar* right)
 {
-    return (left->GivValString() != right->GivValString());
+    return (left->GetValString() != right->GetValString());
 }
 
 
 bool CBotVarString::Lo(CBotVar* left, CBotVar* right)
 {
-    return (left->GivValString() == right->GivValString());
+    return (left->GetValString() == right->GetValString());
 }
 
 bool CBotVarString::Hi(CBotVar* left, CBotVar* right)
 {
-    return (left->GivValString() == right->GivValString());
+    return (left->GetValString() == right->GetValString());
 }
 
 bool CBotVarString::Ls(CBotVar* left, CBotVar* right)
 {
-    return (left->GivValString() == right->GivValString());
+    return (left->GetValString() == right->GetValString());
 }
 
 bool CBotVarString::Hs(CBotVar* left, CBotVar* right)
 {
-    return (left->GivValString() == right->GivValString());
+    return (left->GetValString() == right->GetValString());
 }
 
 
@@ -1395,12 +1395,12 @@ bool CBotVarString::Hs(CBotVar* left, CBotVar* right)
 // copy a variable into another
 void CBotVarClass::Copy(CBotVar* pSrc, bool bName)
 {
-    pSrc = pSrc->GivPointer();                    // if source given by a pointer
+    pSrc = pSrc->GetPointer();                    // if source given by a pointer
 
-    if ( pSrc->GivType() != CBotTypClass )
+    if ( pSrc->GetType() != CBotTypClass )
         ASM_TRAP();
 
-    CBotVarClass*    p = (CBotVarClass*)pSrc;
+    CBotVarClass*    p = static_cast<CBotVarClass*>(pSrc);
 
     if (bName)    *m_token    = *p->m_token;
 
@@ -1410,7 +1410,7 @@ void CBotVarClass::Copy(CBotVar* pSrc, bool bName)
     m_pClass    = p->m_pClass;
     if ( p->m_pParent )
     {
-        ASM_TRAP();        "que faire du pParent";
+        ASM_TRAP();       // "que faire du pParent";
     }
 
 //    m_next        = NULL;
@@ -1432,7 +1432,7 @@ void CBotVarClass::Copy(CBotVar* pSrc, bool bName)
         if ( m_pVar == NULL ) m_pVar = pn;
         else m_pVar->AddNext(pn);
 
-        pv = pv->GivNext();
+        pv = pv->GetNext();
     }
 }
 
@@ -1461,7 +1461,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 
     if (pClass == NULL) return;
 
-    CBotVar*    pv = pClass->GivVar();                // first on a list
+    CBotVar*    pv = pClass->GetVar();                // first on a list
     while ( pv != NULL )
     {
         // seeks the maximum dimensions of the table
@@ -1475,10 +1475,10 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
             while (p != NULL)
             {
                 while( pile->IsOk() && !p->Execute(pile) ) ;        // calculate size without interruptions
-                CBotVar*    v = pile->GivVar();                        // result
-                max[n] = v->GivValInt();                            // value
+                CBotVar*    v = pile->GetVar();                        // result
+                max[n] = v->GetValInt();                            // value
                 n++;
-                p = p->GivNext3();
+                p = p->GetNext3();
             }
             while (n<100) max[n++] = 0;
 
@@ -1488,7 +1488,7 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 
         CBotVar*    pn = CBotVar::Create( pv );        // a copy
         pn->SetStatic(pv->IsStatic());
-        pn->SetPrivate(pv->GivPrivate());
+        pn->SetPrivate(pv->GetPrivate());
 
         if ( pv->m_InitExpr != NULL )                // expression for initialization?
         {
@@ -1501,22 +1501,22 @@ void CBotVarClass::SetClass(CBotClass* pClass)//, int &nIdent)
 #else
             CBotStack* pile = new CBotStack(NULL);     // an independent stack
             while(!pv->m_InitExpr->Execute(pile));    // evaluates the expression without timer
-            pn->SetVal( pile->GivVar() ) ;
+            pn->SetVal( pile->GetVar() ) ;
             delete pile;
 #endif
         }
 
 //        pn->SetUniqNum(CBotVar::NextUniqNum());        // enumerate elements
-        pn->SetUniqNum(pv->GivUniqNum());    //++nIdent
+        pn->SetUniqNum(pv->GetUniqNum());    //++nIdent
         pn->m_pMyThis = this;
 
         if ( m_pVar == NULL) m_pVar = pn;
         else m_pVar->AddNext( pn );
-        pv = pv->GivNext();
+        pv = pv->GetNext();
     }
 }
 
-CBotClass* CBotVarClass::GivClass()
+CBotClass* CBotVarClass::GetClass()
 {
     return    m_pClass;
 }
@@ -1540,49 +1540,49 @@ void CBotVarClass::Maj(void* pUser, bool bContinu)
     m_pClass->m_rMaj( this, pUser );
 }
 
-CBotVar* CBotVarClass::GivItem(const char* name)
+CBotVar* CBotVarClass::GetItem(const char* name)
 {
     CBotVar*    p = m_pVar;
 
     while ( p != NULL )
     {
-        if ( p->GivName() == name ) return p;
-        p = p->GivNext();
+        if ( p->GetName() == name ) return p;
+        p = p->GetNext();
     }
 
-    if ( m_pParent != NULL ) return m_pParent->GivItem(name);
+    if ( m_pParent != NULL ) return m_pParent->GetItem(name);
     return NULL;
 }
 
-CBotVar* CBotVarClass::GivItemRef(int nIdent)
+CBotVar* CBotVarClass::GetItemRef(int nIdent)
 {
     CBotVar*    p = m_pVar;
 
     while ( p != NULL )
     {
-        if ( p->GivUniqNum() == nIdent ) return p;
-        p = p->GivNext();
+        if ( p->GetUniqNum() == nIdent ) return p;
+        p = p->GetNext();
     }
 
-    if ( m_pParent != NULL ) return m_pParent->GivItemRef(nIdent);
+    if ( m_pParent != NULL ) return m_pParent->GetItemRef(nIdent);
     return NULL;
 }
 
 // for the management of an array
 // bExtend can enlarge the table, but not beyond the threshold size of SetArray ()
 
-CBotVar* CBotVarClass::GivItem(int n, bool bExtend)
+CBotVar* CBotVarClass::GetItem(int n, bool bExtend)
 {
     CBotVar*    p = m_pVar;
 
     if ( n < 0 ) return NULL;
     if ( n > MAXARRAYSIZE ) return NULL;
 
-    if ( m_type.GivLimite() >= 0 && n >= m_type.GivLimite() ) return NULL;
+    if ( m_type.GetLimite() >= 0 && n >= m_type.GetLimite() ) return NULL;
 
     if ( p == NULL && bExtend )
     {
-        p = CBotVar::Create("", m_type.GivTypElem());
+        p = CBotVar::Create("", m_type.GetTypElem());
         m_pVar = p;
     }
 
@@ -1592,7 +1592,7 @@ CBotVar* CBotVarClass::GivItem(int n, bool bExtend)
     {
         if ( p->m_next == NULL )
         {
-            if ( bExtend ) p->m_next = CBotVar::Create("", m_type.GivTypElem());
+            if ( bExtend ) p->m_next = CBotVar::Create("", m_type.GetTypElem());
             if ( p->m_next == NULL ) return NULL;
         }
         p = p->m_next;
@@ -1601,21 +1601,21 @@ CBotVar* CBotVarClass::GivItem(int n, bool bExtend)
     return p;
 }
 
-CBotVar* CBotVarClass::GivItemList()
+CBotVar* CBotVarClass::GetItemList()
 {
     return m_pVar;
 }
 
 
-CBotString CBotVarClass::GivValString()
+CBotString CBotVarClass::GetValString()
 {
-//    if ( m_Indirect != NULL) return m_Indirect->GivValString();
+//    if ( m_Indirect != NULL) return m_Indirect->GetValString();
 
     CBotString    res;
 
     if ( m_pClass != NULL )                        // not used for an array
     {
-        res = m_pClass->GivName() + CBotString("( ");
+        res = m_pClass->GetName() + CBotString("( ");
 
         CBotVarClass*    my = this;
         while ( my != NULL )
@@ -1623,25 +1623,25 @@ CBotString CBotVarClass::GivValString()
             CBotVar*    pv = my->m_pVar;
             while ( pv != NULL )
             {
-                res += pv->GivName() + CBotString("=");
+                res += pv->GetName() + CBotString("=");
 
                 if ( pv->IsStatic() )
                 {
-                    CBotVar* pvv = my->m_pClass->GivItem(pv->GivName());
-                    res += pvv->GivValString();
+                    CBotVar* pvv = my->m_pClass->GetItem(pv->GetName());
+                    res += pvv->GetValString();
                 }
                 else
                 {
-                    res += pv->GivValString();
+                    res += pv->GetValString();
                 }
-                pv = pv->GivNext();
+                pv = pv->GetNext();
                 if ( pv != NULL ) res += ", ";
             }
             my = my->m_pParent;
             if ( my != NULL )
             {
                 res += ") extends ";
-                res += my->m_pClass->GivName();
+                res += my->m_pClass->GetName();
                 res += " (";
             }
         }
@@ -1653,9 +1653,9 @@ CBotString CBotVarClass::GivValString()
         CBotVar*    pv = m_pVar;
         while ( pv != NULL )
         {
-            res += pv->GivValString();
-            if ( pv->GivNext() != NULL ) res += ", ";
-            pv = pv->GivNext();
+            res += pv->GetValString();
+            if ( pv->GetNext() != NULL ) res += ", ";
+            pv = pv->GetNext();
         }
     }
 
@@ -1683,7 +1683,7 @@ void CBotVarClass::DecrementUse()
             // saves the value for return
             int    err, start, end;
             CBotStack*    pile = NULL;
-            err = pile->GivError(start,end);    // stack == NULL it does not bother!
+            err = pile->GetError(start,end);    // stack == NULL it does not bother!
 
             pile = CBotStack::FirstStack();        // clears the error
             CBotVar*    ppVars[1];
@@ -1693,7 +1693,7 @@ void CBotVarClass::DecrementUse()
             pThis->SetPointer(this);
             CBotVar*    pResult = NULL;
 
-            CBotString    nom = "~" + m_pClass->GivName();
+            CBotString    nom = "~" + m_pClass->GetName();
             long        ident = 0;
 
             while ( pile->IsOk() && !m_pClass->ExecuteMethode(ident, nom, pThis, ppVars, pResult, pile, NULL)) ;    // waits for the end
@@ -1709,7 +1709,7 @@ void CBotVarClass::DecrementUse()
     }
 }
 
-CBotVarClass* CBotVarClass::GivPointer()
+CBotVarClass* CBotVarClass::GetPointer()
 {
     return this;
 }
@@ -1732,14 +1732,14 @@ CBotVarClass* CBotVarClass::Find(long id)
 
 bool CBotVarClass::Eq(CBotVar* left, CBotVar* right)
 {
-    CBotVar*    l = left->GivItemList();
-    CBotVar*    r = right->GivItemList();
+    CBotVar*    l = left->GetItemList();
+    CBotVar*    r = right->GetItemList();
 
     while ( l != NULL && r != NULL )
     {
         if ( l->Ne(l, r) ) return false;
-        l = l->GivNext();
-        r = r->GivNext();
+        l = l->GetNext();
+        r = r->GetNext();
     }
 
     // should always arrived simultaneously at the end (same classes)
@@ -1748,14 +1748,14 @@ bool CBotVarClass::Eq(CBotVar* left, CBotVar* right)
 
 bool CBotVarClass::Ne(CBotVar* left, CBotVar* right)
 {
-    CBotVar*    l = left->GivItemList();
-    CBotVar*    r = right->GivItemList();
+    CBotVar*    l = left->GetItemList();
+    CBotVar*    r = right->GetItemList();
 
     while ( l != NULL && r != NULL )
     {
         if ( l->Ne(l, r) ) return true;
-        l = l->GivNext();
-        r = r->GivNext();
+        l = l->GetNext();
+        r = r->GetNext();
     }
 
     // should always arrived simultaneously at the end (same classes)
@@ -1790,14 +1790,14 @@ CBotVarArray::~CBotVarArray()
 // copy a variable into another
 void CBotVarArray::Copy(CBotVar* pSrc, bool bName)
 {
-    if ( pSrc->GivType() != CBotTypArrayPointer )
+    if ( pSrc->GetType() != CBotTypArrayPointer )
         ASM_TRAP();
 
-    CBotVarArray*    p = (CBotVarArray*)pSrc;
+    CBotVarArray*    p = static_cast<CBotVarArray*>(pSrc);
 
     if ( bName) *m_token    = *p->m_token;
     m_type        = p->m_type;
-    m_pInstance = p->GivPointer();
+    m_pInstance = p->GetPointer();
 
     if ( m_pInstance != NULL )
          m_pInstance->IncrementUse();            // a reference increase
@@ -1820,28 +1820,28 @@ void CBotVarArray::SetPointer(CBotVar* pVarClass)
 
     if ( pVarClass != NULL )
     {
-        if ( pVarClass->GivType() == CBotTypArrayPointer )
-             pVarClass = pVarClass->GivPointer();    // the real pointer to the object
+        if ( pVarClass->GetType() == CBotTypArrayPointer )
+             pVarClass = pVarClass->GetPointer();    // the real pointer to the object
 
         if ( !pVarClass->m_type.Eq(CBotTypClass) &&
              !pVarClass->m_type.Eq(CBotTypArrayBody))
             ASM_TRAP();
 
-        ((CBotVarClass*)pVarClass)->IncrementUse();            // incement the reference
+        (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // incement the reference
     }
 
     if ( m_pInstance != NULL ) m_pInstance->DecrementUse();
-    m_pInstance = (CBotVarClass*)pVarClass;
+    m_pInstance = static_cast<CBotVarClass*>(pVarClass);
 }
 
 
-CBotVarClass* CBotVarArray::GivPointer()
+CBotVarClass* CBotVarArray::GetPointer()
 {
     if ( m_pInstance == NULL ) return NULL;
-    return m_pInstance->GivPointer();
+    return m_pInstance->GetPointer();
 }
 
-CBotVar* CBotVarArray::GivItem(int n, bool bExtend)
+CBotVar* CBotVarArray::GetItem(int n, bool bExtend)
 {
     if ( m_pInstance == NULL )
     {
@@ -1851,19 +1851,19 @@ CBotVar* CBotVarArray::GivItem(int n, bool bExtend)
         CBotVarClass* instance = new CBotVarClass(NULL, m_type);
         SetPointer( instance );
     }
-    return m_pInstance->GivItem(n, bExtend);
+    return m_pInstance->GetItem(n, bExtend);
 }
 
-CBotVar* CBotVarArray::GivItemList()
+CBotVar* CBotVarArray::GetItemList()
 {
     if ( m_pInstance == NULL) return NULL;
-    return m_pInstance->GivItemList();
+    return m_pInstance->GetItemList();
 }
 
-CBotString CBotVarArray::GivValString()
+CBotString CBotVarArray::GetValString()
 {
     if ( m_pInstance == NULL ) return ( CBotString( "Null pointer" ) ) ;
-    return m_pInstance->GivValString();
+    return m_pInstance->GetValString();
 }
 
 bool CBotVarArray::Save1State(FILE* pf)
@@ -1896,7 +1896,7 @@ CBotVarPointer::CBotVarPointer(const CBotToken* name, CBotTypResult& type )
     m_pClass    = NULL;
     m_pVarClass = NULL;                                    // will be defined by a SetPointer()
 
-    SetClass(type.GivClass() );
+    SetClass(type.GetClass() );
 }
 
 CBotVarPointer::~CBotVarPointer()
@@ -1913,33 +1913,33 @@ void CBotVarPointer::Maj(void* pUser, bool bContinu)
     if ( m_pVarClass != NULL) m_pVarClass->Maj(pUser, false);
 }
 
-CBotVar* CBotVarPointer::GivItem(const char* name)
+CBotVar* CBotVarPointer::GetItem(const char* name)
 {
     if ( m_pVarClass == NULL)                // no existing instance?
-        return m_pClass->GivItem(name);        // makes the pointer in the class itself
+        return m_pClass->GetItem(name);        // makes the pointer in the class itself
 
-    return m_pVarClass->GivItem(name);
+    return m_pVarClass->GetItem(name);
 }
 
-CBotVar* CBotVarPointer::GivItemRef(int nIdent)
+CBotVar* CBotVarPointer::GetItemRef(int nIdent)
 {
     if ( m_pVarClass == NULL)                // no existing instance?
-        return m_pClass->GivItemRef(nIdent);// makes the pointer to the class itself
+        return m_pClass->GetItemRef(nIdent);// makes the pointer to the class itself
 
-    return m_pVarClass->GivItemRef(nIdent);
+    return m_pVarClass->GetItemRef(nIdent);
 }
 
-CBotVar* CBotVarPointer::GivItemList()
+CBotVar* CBotVarPointer::GetItemList()
 {
     if ( m_pVarClass == NULL) return NULL;
-    return m_pVarClass->GivItemList();
+    return m_pVarClass->GetItemList();
 }
 
-CBotString CBotVarPointer::GivValString()
+CBotString CBotVarPointer::GetValString()
 {
     CBotString    s = "Pointer to ";
     if ( m_pVarClass == NULL ) s = "Null pointer" ;
-    else  s += m_pVarClass->GivValString();
+    else  s += m_pVarClass->GetValString();
     return s;
 }
 
@@ -1960,28 +1960,28 @@ void CBotVarPointer::SetPointer(CBotVar* pVarClass)
 
     if ( pVarClass != NULL )
     {
-        if ( pVarClass->GivType() == CBotTypPointer )
-             pVarClass = pVarClass->GivPointer();    // the real pointer to the object
+        if ( pVarClass->GetType() == CBotTypPointer )
+             pVarClass = pVarClass->GetPointer();    // the real pointer to the object
 
-//        if ( pVarClass->GivType() != CBotTypClass )
+//        if ( pVarClass->GetType() != CBotTypClass )
         if ( !pVarClass->m_type.Eq(CBotTypClass) )
             ASM_TRAP();
 
-        ((CBotVarClass*)pVarClass)->IncrementUse();            // increment the reference
-        m_pClass = ((CBotVarClass*)pVarClass)->m_pClass;
+        (static_cast<CBotVarClass*>(pVarClass))->IncrementUse();            // increment the reference
+        m_pClass = (static_cast<CBotVarClass*>(pVarClass))->m_pClass;
         m_pUserPtr = pVarClass->m_pUserPtr;                    // not really necessary
         m_type = CBotTypResult(CBotTypPointer, m_pClass);    // what kind of a pointer
     }
 
     if ( m_pVarClass != NULL ) m_pVarClass->DecrementUse();
-    m_pVarClass = (CBotVarClass*)pVarClass;
+    m_pVarClass = static_cast<CBotVarClass*>(pVarClass);
 
 }
 
-CBotVarClass* CBotVarPointer::GivPointer()
+CBotVarClass* CBotVarPointer::GetPointer()
 {
     if ( m_pVarClass == NULL ) return NULL;
-    return m_pVarClass->GivPointer();
+    return m_pVarClass->GetPointer();
 }
 
 void CBotVarPointer::SetIdent(long n)
@@ -1990,7 +1990,7 @@ void CBotVarPointer::SetIdent(long n)
     m_pVarClass->SetIdent( n );
 }
 
-long CBotVarPointer::GivIdent()
+long CBotVarPointer::GetIdent()
 {
     if ( m_pVarClass == NULL ) return 0;
     return m_pVarClass->m_ItemIdent;
@@ -2004,9 +2004,9 @@ void CBotVarPointer::SetClass(CBotClass* pClass)
     if ( m_pVarClass != NULL ) m_pVarClass->SetClass(pClass); //, nIdent);
 }
 
-CBotClass* CBotVarPointer::GivClass()
+CBotClass* CBotVarPointer::GetClass()
 {
-    if ( m_pVarClass != NULL ) return m_pVarClass->GivClass();
+    if ( m_pVarClass != NULL ) return m_pVarClass->GetClass();
 
     return    m_pClass;
 }
@@ -2016,32 +2016,32 @@ bool CBotVarPointer::Save1State(FILE* pf)
 {
     if ( m_pClass )
     {
-        if (!WriteString(pf, m_pClass->GivName())) return false;    // name of the class
+        if (!WriteString(pf, m_pClass->GetName())) return false;    // name of the class
     }
     else
     {
         if (!WriteString(pf, "")) return false;
     }
 
-    if (!WriteLong(pf, GivIdent())) return false;        // the unique reference
+    if (!WriteLong(pf, GetIdent())) return false;        // the unique reference
 
     // also saves the proceedings copies  
-    return SaveVar(pf, GivPointer());
+    return SaveVar(pf, GetPointer());
 }
 
 // copy a variable into another
 void CBotVarPointer::Copy(CBotVar* pSrc, bool bName)
 {
-    if ( pSrc->GivType() != CBotTypPointer &&
-         pSrc->GivType() != CBotTypNullPointer)
+    if ( pSrc->GetType() != CBotTypPointer &&
+         pSrc->GetType() != CBotTypNullPointer)
         ASM_TRAP();
 
-    CBotVarPointer*    p = (CBotVarPointer*)pSrc;
+    CBotVarPointer*    p = static_cast<CBotVarPointer*>(pSrc);
 
     if ( bName) *m_token    = *p->m_token;
     m_type        = p->m_type;
 //    m_pVarClass = p->m_pVarClass;
-    m_pVarClass = p->GivPointer();
+    m_pVarClass = p->GetPointer();
 
     if ( m_pVarClass != NULL )
          m_pVarClass->IncrementUse();            // incerement the reference
@@ -2059,23 +2059,23 @@ void CBotVarPointer::Copy(CBotVar* pSrc, bool bName)
 
 bool CBotVarPointer::Eq(CBotVar* left, CBotVar* right)
 {
-    CBotVarClass*    l = left->GivPointer();
-    CBotVarClass*    r = right->GivPointer();
+    CBotVarClass*    l = left->GetPointer();
+    CBotVarClass*    r = right->GetPointer();
 
     if ( l == r ) return true;
-    if ( l == NULL && r->GivUserPtr() == OBJECTDELETED ) return true;
-    if ( r == NULL && l->GivUserPtr() == OBJECTDELETED ) return true;
+    if ( l == NULL && r->GetUserPtr() == OBJECTDELETED ) return true;
+    if ( r == NULL && l->GetUserPtr() == OBJECTDELETED ) return true;
     return false;
 }
 
 bool CBotVarPointer::Ne(CBotVar* left, CBotVar* right)
 {
-    CBotVarClass*    l = left->GivPointer();
-    CBotVarClass*    r = right->GivPointer();
+    CBotVarClass*    l = left->GetPointer();
+    CBotVarClass*    r = right->GetPointer();
 
     if ( l == r ) return false;
-    if ( l == NULL && r->GivUserPtr() == OBJECTDELETED ) return false;
-    if ( r == NULL && l->GivUserPtr() == OBJECTDELETED ) return false;
+    if ( l == NULL && r->GetUserPtr() == OBJECTDELETED ) return false;
+    if ( r == NULL && l->GetUserPtr() == OBJECTDELETED ) return false;
     return true;
 }
 
@@ -2155,7 +2155,7 @@ CBotTypResult::~CBotTypResult()
     delete    m_pNext;
 }
 
-int CBotTypResult::GivType(int mode) const
+int CBotTypResult::GetType(int mode) const
 {
 #ifdef    _DEBUG
     if ( m_type == CBotTypPointer ||
@@ -2177,17 +2177,17 @@ void CBotTypResult::SetType(int n)
     m_type = n;
 }
 
-CBotClass* CBotTypResult::GivClass() const
+CBotClass* CBotTypResult::GetClass() const
 {
     return m_pClass;
 }
 
-CBotTypResult& CBotTypResult::GivTypElem() const
+CBotTypResult& CBotTypResult::GetTypElem() const
 {
     return *m_pNext;
 }
 
-int CBotTypResult::GivLimite() const
+int CBotTypResult::GetLimite() const
 {
     return m_limite;
 }

@@ -131,83 +131,83 @@ void uObject(CBotVar* botThis, void* user)
     physics = object->RetPhysics();
 
     // Updates the object's type.
-    pVar = botThis->GivItemList();  // "category"
+    pVar = botThis->GetItemList();  // "category"
     type = object->RetType();
     pVar->SetValInt(type, object->RetName());
 
     // Updates the position of the object.
-    pVar = pVar->GivNext();  // "position"
+    pVar = pVar->GetNext();  // "position"
     if ( object->RetTruck() == 0 )
     {
         pos = object->RetPosition(0);
         pos.y -= object->RetWaterLevel();  // relative to sea level!
-        pSub = pVar->GivItemList();  // "x"
+        pSub = pVar->GetItemList();  // "x"
         pSub->SetValFloat(pos.x/g_unit);
-        pSub = pSub->GivNext();  // "y"
+        pSub = pSub->GetNext();  // "y"
         pSub->SetValFloat(pos.z/g_unit);
-        pSub = pSub->GivNext();  // "z"
+        pSub = pSub->GetNext();  // "z"
         pSub->SetValFloat(pos.y/g_unit);
     }
     else    // object transported?
     {
-        pSub = pVar->GivItemList();  // "x"
+        pSub = pVar->GetItemList();  // "x"
         pSub->SetInit(IS_NAN);
-        pSub = pSub->GivNext();  // "y"
+        pSub = pSub->GetNext();  // "y"
         pSub->SetInit(IS_NAN);
-        pSub = pSub->GivNext();  // "z"
+        pSub = pSub->GetNext();  // "z"
         pSub->SetInit(IS_NAN);
     }
 
     // Updates the angle.
     pos = object->RetAngle(0);
     pos += object->RetInclinaison();
-    pVar = pVar->GivNext();  // "orientation"
+    pVar = pVar->GetNext();  // "orientation"
     pVar->SetValFloat(360.0f-Math::Mod(pos.y*180.0f/Math::PI, 360.0f));
-    pVar = pVar->GivNext();  // "pitch"
+    pVar = pVar->GetNext();  // "pitch"
     pVar->SetValFloat(pos.z*180.0f/Math::PI);
-    pVar = pVar->GivNext();  // "roll"
+    pVar = pVar->GetNext();  // "roll"
     pVar->SetValFloat(pos.x*180.0f/Math::PI);
 
     // Updates the energy level of the object.
-    pVar = pVar->GivNext();  // "energyLevel"
+    pVar = pVar->GetNext();  // "energyLevel"
     value = object->RetEnergy();
     pVar->SetValFloat(value);
 
     // Updates the shield level of the object.
-    pVar = pVar->GivNext();  // "shieldLevel"
+    pVar = pVar->GetNext();  // "shieldLevel"
     value = object->RetShield();
     pVar->SetValFloat(value);
 
     // Updates the temperature of the reactor.
-    pVar = pVar->GivNext();  // "temperature"
+    pVar = pVar->GetNext();  // "temperature"
     if ( physics == 0 )  value = 0.0f;
     else                 value = 1.0f-physics->RetReactorRange();
     pVar->SetValFloat(value);
 
     // Updates the height above the ground.
-    pVar = pVar->GivNext();  // "altitude"
+    pVar = pVar->GetNext();  // "altitude"
     if ( physics == 0 )  value = 0.0f;
     else                 value = physics->RetFloorHeight();
     pVar->SetValFloat(value/g_unit);
 
     // Updates the lifetime of the object.
-    pVar = pVar->GivNext();  // "lifeTime"
+    pVar = pVar->GetNext();  // "lifeTime"
     value = object->RetAbsTime();
     pVar->SetValFloat(value);
 
     // Updates the material of the object.
-    pVar = pVar->GivNext();  // "material"
+    pVar = pVar->GetNext();  // "material"
     iValue = object->RetMaterial();
     pVar->SetValInt(iValue);
 
     // Updates the type of battery.
-    pVar = pVar->GivNext();  // "energyCell"
+    pVar = pVar->GetNext();  // "energyCell"
     power = object->RetPower();
     if ( power == 0 )  pVar->SetPointer(0);
     else               pVar->SetPointer(power->RetBotVar());
 
     // Updates the transported object's type.
-    pVar = pVar->GivNext();  // "load"
+    pVar = pVar->GetNext();  // "load"
     fret = object->RetFret();
     if ( fret == 0 )  pVar->SetPointer(0);
     else              pVar->SetPointer(fret->RetBotVar());
@@ -1468,7 +1468,7 @@ void CObject::FloorAdjust()
 }
 
 
-// Gives the linear vibration.
+// Getes the linear vibration.
 
 void CObject::SetLinVibration(Math::Vector dir)
 {
@@ -1486,7 +1486,7 @@ Math::Vector CObject::RetLinVibration()
     return m_linVibration;
 }
 
-// Gives the circular vibration.
+// Getes the circular vibration.
 
 void CObject::SetCirVibration(Math::Vector dir)
 {
@@ -1504,7 +1504,7 @@ Math::Vector CObject::RetCirVibration()
     return m_cirVibration;
 }
 
-// Gives the inclination.
+// Getes the inclination.
 
 void CObject::SetInclinaison(Math::Vector dir)
 {
@@ -1523,7 +1523,7 @@ Math::Vector CObject::RetInclinaison()
 }
 
 
-// Gives the position of center of the object.
+// Getes the position of center of the object.
 
 void CObject::SetPosition(int part, const Math::Vector &pos)
 {
@@ -1649,7 +1649,7 @@ Math::Vector CObject::RetPosition(int part)
     return m_objectPart[part].position;
 }
 
-// Gives the rotation around three axis.
+// Getes the rotation around three axis.
 
 void CObject::SetAngle(int part, const Math::Vector &angle)
 {
@@ -1667,7 +1667,7 @@ Math::Vector CObject::RetAngle(int part)
     return m_objectPart[part].angle;
 }
 
-// Gives the rotation about the axis Y.
+// Getes the rotation about the axis Y.
 
 void CObject::SetAngleY(int part, float angle)
 {
@@ -1680,7 +1680,7 @@ void CObject::SetAngleY(int part, float angle)
     }
 }
 
-// Gives the rotation about the axis X.
+// Getes the rotation about the axis X.
 
 void CObject::SetAngleX(int part, float angle)
 {
@@ -1688,7 +1688,7 @@ void CObject::SetAngleX(int part, float angle)
     m_objectPart[part].bRotate = true;  // it will recalculate the matrices
 }
 
-// Gives the rotation about the axis Z.
+// Getes the rotation about the axis Z.
 
 void CObject::SetAngleZ(int part, float angle)
 {
@@ -1712,7 +1712,7 @@ float CObject::RetAngleZ(int part)
 }
 
 
-// Gives the global zoom.
+// Getes the global zoom.
 
 void CObject::SetZoom(int part, float zoom)
 {
@@ -7431,7 +7431,7 @@ void CObject::UpdateSelectParticule()
 }
 
 
-// Gives the pointer to the current script execution.
+// Getes the pointer to the current script execution.
 
 void CObject::SetRunScript(CScript* script)
 {
@@ -7498,7 +7498,7 @@ int  CObject::RetDefRank()
 }
 
 
-// Gives the object name for the tooltip.
+// Getes the object name for the tooltip.
 
 bool CObject::GetTooltipName(char* name)
 {
