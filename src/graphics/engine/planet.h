@@ -35,6 +35,10 @@ namespace Gfx {
 
 class CEngine;
 
+/**
+ * \struct Planet
+ * \brief Planet texture definition
+ */
 struct Planet
 {
     //! Initial position in degrees
@@ -63,6 +67,15 @@ struct Planet
     }
 };
 
+
+/**
+ * \class CPlanet
+ * \brief Planet manager
+ *
+ * Draws the planets orbiting in the sky.
+ *
+ * Planets are drawn in 2D mode, at coordinates calculated from camera position.
+ */
 class CPlanet
 {
 public:

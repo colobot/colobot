@@ -256,7 +256,12 @@ struct WheelTrace
 };
 
 
-
+/**
+ * \class CParticle
+ * \brief Particle engine
+ *
+ * Functions are only stubs for now.
+ */
 class CParticle
 {
 public:
