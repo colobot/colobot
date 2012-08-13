@@ -20,6 +20,7 @@
 
 #include "common/config.h"
 #include "common/image.h"
+#include "common/logger.h"
 #include "math/geometry.h"
 
 
@@ -80,13 +81,10 @@ void Gfx::CGLDevice::DebugHook()
     glColor3i(0, 0, 0);
 }
 
-std::string Gfx::CGLDevice::GetError()
-{
-    return m_error;
-}
-
 bool Gfx::CGLDevice::Create()
 {
+    GetLogger()->Info("Creating CDevice\n");
+
 #if defined(USE_GLEW)
     static bool glewInited = false;
 
@@ -96,13 +94,13 @@ bool Gfx::CGLDevice::Create()
 
         if (glewInit() != GLEW_OK)
         {
-            m_error = "GLEW initialization failed";
+            GetLogger()->Error("GLEW initialization failed\n");
             return false;
         }
 
         if ( (! GLEW_ARB_multitexture) || (! GLEW_EXT_texture_env_combine) || (! GLEW_EXT_secondary_color) )
         {
-            m_error = "GLEW reports required extensions not supported";
+            GetLogger()->Error("GLEW reports required extensions not supported\n");
             return false;
         }
     }
@@ -141,6 +139,8 @@ bool Gfx::CGLDevice::Create()
     m_currentTextures    = std::vector<Gfx::Texture>           (maxTextures, Gfx::Texture());
     m_texturesEnabled    = std::vector<bool>                   (maxTextures, false);
     m_textureStageParams = std::vector<Gfx::TextureStageParams>(maxTextures, Gfx::TextureStageParams());
+
+    GetLogger()->Info("CDevice created successfully\n");
 
     return true;
 }
@@ -385,7 +385,7 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(CImage *image, const Gfx::TextureCrea
     ImageData *data = image->GetData();
     if (data == NULL)
     {
-        m_error = "Invalid texture data";
+        GetLogger()->Error("Invalid texture data\n");
         return Gfx::Texture(); // invalid texture
     }
 
