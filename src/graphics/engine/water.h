@@ -35,12 +35,19 @@ namespace Gfx {
 class CEngine;
 class CTerrain;
 
+/**
+ * \struct WaterLine
+ * \brief Water strip
+ */
 struct WaterLine
 {
-    //! Beginning
+    //@{
+    //! Beginning of line (terrain coordinates)
     short       x, y;
-    //! Length by x
+    //@}
+    //! Length in X direction (terrain coordinates)
     short       len;
+    //! X (1, 2) and Z coordinates (world coordinates)
     float       px1, px2, pz;
 
     WaterLine()
@@ -51,6 +58,10 @@ struct WaterLine
     }
 };
 
+/**
+ * \struct WaterVapor
+ * \brief Water particle effect
+ */
 struct WaterVapor
 {
     bool              used;
@@ -68,6 +79,10 @@ struct WaterVapor
     }
 };
 
+/**
+ * \enum WaterType
+ * \brief Mode of water display
+ */
 enum WaterType
 {
     //! No water
@@ -82,7 +97,19 @@ enum WaterType
     WATER_CO        = 4,
 };
 
-
+/**
+ * \class CWater
+ * \brief Water manager/renderer
+ *
+ * Water is drawn where the terrain is below specified level. The mapping
+ * is based on terrain coordinates - for each "brick" coordinate, the level
+ * of terrain is tested. For every Y coordinate, many lines in X direction
+ * are created (WaterLines).
+ *
+ * There are two parts of drawing process: drawing the background image
+ * blocking the normal sky layer and drawing the surface of water.
+ * The surface is drawn with texture, so with proper texture it can be lava.
+ */
 class CWater
 {
 public:

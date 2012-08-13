@@ -20,6 +20,7 @@
 #include "graphics/engine/cloud.h"
 
 #include "common/iman.h"
+#include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
 #include "math/geometry.h"
@@ -94,112 +95,96 @@ void Gfx::CCloud::AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep,
 
 void Gfx::CCloud::Draw()
 {
-    /* TODO!
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2*     vertex;
-    Math::Matrix*       matView;
-    D3DMATERIAL7    material;
-    Math::Matrix        matrix;
-    Math::Vector        n, pos, p, eye;
-    Math::Point         uv1, uv2;
-    float           iDeep, deep, size, fogStart, fogEnd;
-    int             i, j, u;
+    if (! m_enable) return;
+    if (m_level == 0.0f) return;
+    if (m_lines.empty()) return;
 
-    if ( !m_enable )  return;
-    if ( m_level == 0.0f )  return;
-    if ( m_linesUsed == 0 )  return;
+    std::vector<Gfx::VertexTex2> vertices((m_brick+2)*2, Gfx::VertexTex2());
 
-    vertex = (D3DVERTEX2*)malloc(sizeof(D3DVERTEX2)*(m_brick+2)*2);
-
-    iDeep = m_engine->GetDeepView();
-    deep = (m_brick*m_size)/2.0f;
+    float iDeep = m_engine->GetDeepView();
+    float deep = (m_brick*m_size)/2.0f;
     m_engine->SetDeepView(deep);
     m_engine->SetFocus(m_engine->GetFocus());
     m_engine->UpdateMatProj();  // increases the depth of view
 
-    fogStart = deep*0.15f;
-    fogEnd   = deep*0.24f;
+    float fogStart = deep*0.15f;
+    float fogEnd   = deep*0.24f;
 
-    device = m_engine->GetD3DDevice();
-    device->SetRenderState(D3DRENDERSTATE_AMBIENT, 0x00000000);
-    device->SetRenderState(D3DRENDERSTATE_LIGHTING, false);
-    device->SetRenderState(D3DRENDERSTATE_ZENABLE, false);
-    device->SetRenderState(D3DRENDERSTATE_FOGENABLE, true);
-    device->SetRenderState(D3DRENDERSTATE_FOGSTART, F2DW(fogStart));
-    device->SetRenderState(D3DRENDERSTATE_FOGEND,   F2DW(fogEnd));
+    Gfx::CDevice* device = m_engine->GetDevice();
 
-    matView = m_engine->GetMatView();
-    {
-      D3DMATRIX mat = MAT_TO_D3DMAT(*matView);
-      device->SetTransform(D3DTRANSFORMSTATE_VIEW, &mat);
-    }
+    // TODO: do this better?
+    device->SetFogParams(Gfx::FOG_LINEAR, m_engine->GetFogColor( m_engine->GetRankView() ),
+                        fogStart, fogEnd, 1.0f);
 
-    ZeroMemory( &material, sizeof(D3DMATERIAL7) );
+    device->SetTransform(Gfx::TRANSFORM_VIEW, m_engine->GetMatView());
+
+    Gfx::Material material;
     material.diffuse = m_diffuse;
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
 
-    m_engine->SetTexture(m_filename, 0);
-    m_engine->SetTexture(m_filename, 1);
+    m_engine->SetTexture(m_fileName, 0);
+    m_engine->SetTexture(m_fileName, 1);
 
-    m_engine->SetState(D3DSTATETTb|D3DSTATEFOG|D3DSTATEWRAP);
+    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK | Gfx::ENG_RSTATE_FOG | Gfx::ENG_RSTATE_WRAP);
 
+    Math::Matrix matrix;
     matrix.LoadIdentity();
-    {
-      D3DMATRIX mat = MAT_TO_D3DMAT(matrix);
-      device->SetTransform(D3DTRANSFORMSTATE_WORLD, &mat);
-    }
+    device->SetTransform(Gfx::TRANSFORM_WORLD, matrix);
 
-    size = m_size/2.0f;
-    eye = m_engine->GetEyePt();
-    n = Math::Vector(0.0f, -1.0f, 0.0f);
+    float size = m_size/2.0f;
+    Math::Vector eye = m_engine->GetEyePt();
+    Math::Vector n = Math::Vector(0.0f, -1.0f, 0.0f);
 
-    // Draws all the lines.
-    for ( i=0 ; i<m_linesUsed ; i++ )
+    // Draws all the lines
+    for (int i = 0; i < static_cast<int>( m_lines.size() ); i++)
     {
+        Math::Vector pos;
         pos.y = m_level;
         pos.z = m_lines[i].pz;
         pos.x = m_lines[i].px1;
 
-        u = 0;
+        int vertexIndex = 0;
+
+        Math::Vector p;
+        Math::Point uv1, uv2;
+
         p.x = pos.x-size;
         p.z = pos.z+size;
         p.y = pos.y;
         AdjustLevel(p, eye, deep, uv1, uv2);
-        vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
+        vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
 
         p.x = pos.x-size;
         p.z = pos.z-size;
         p.y = pos.y;
         AdjustLevel(p, eye, deep, uv1, uv2);
-        vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
+        vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
 
-        for ( j=0 ; j<m_lines[i].len ; j++ )
+        for (int j = 0; j < m_lines[i].len; j++)
         {
             p.x = pos.x+size;
             p.z = pos.z+size;
             p.y = pos.y;
             AdjustLevel(p, eye, deep, uv1, uv2);
-            vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
+            vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
 
             p.x = pos.x+size;
             p.z = pos.z-size;
             p.y = pos.y;
             AdjustLevel(p, eye, deep, uv1, uv2);
-            vertex[u++] = D3DVERTEX2(p, n, uv1.x,uv1.y, uv2.x,uv2.y);
+            vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
 
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, u, NULL);
-        m_engine->AddStatisticTriangle(u-2);
+        device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
+        m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
 
     m_engine->SetDeepView(iDeep);
     m_engine->SetFocus(m_engine->GetFocus());
     m_engine->UpdateMatProj();  // gives depth to initial
-
-    free(vertex); */
 }
 
 void Gfx::CCloud::CreateLine(int x, int y, int len)
