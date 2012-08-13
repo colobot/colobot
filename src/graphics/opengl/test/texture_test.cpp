@@ -160,7 +160,7 @@ int main()
 
     SDL_WM_SetCaption("Texture Test", "Texture Test");
 
-    Gfx::CGLDevice *device = new Gfx::CGLDevice();
+    Gfx::CGLDevice *device = new Gfx::CGLDevice(Gfx::GLDeviceConfig());
     device->Create();
 
     Init(device);

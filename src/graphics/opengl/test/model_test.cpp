@@ -54,7 +54,7 @@ void LoadTexture(Gfx::CGLDevice *device, const std::string &name)
 
     Gfx::Texture tex = GetTexture(name);
 
-    if (tex.valid)
+    if (tex.Valid())
         return;
 
     CImage img;
@@ -84,7 +84,7 @@ void Init(Gfx::CGLDevice *device, Gfx::CModelFile *model)
 {
     std::vector<Gfx::ModelTriangle> &triangles = model->GetTriangles();
 
-    for (int i = 0; i < (int) triangles.size(); ++i)
+    for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
         LoadTexture(device, triangles[i].tex1Name);
         LoadTexture(device, triangles[i].tex2Name);
@@ -131,7 +131,7 @@ void Render(Gfx::CGLDevice *device, Gfx::CModelFile *modelFile)
 
     Gfx::VertexTex2 tri[3];
 
-    for (int i = 0; i < (int) triangles.size(); ++i)
+    for (int i = 0; i < static_cast<int>( triangles.size() ); ++i)
     {
         device->SetTexture(0, GetTexture(triangles[i].tex1Name));
         device->SetTexture(1, GetTexture(triangles[i].tex2Name));
@@ -334,7 +334,7 @@ int main(int argc, char *argv[])
 
     SDL_WM_SetCaption("Model Test", "Model Test");
 
-    Gfx::CGLDevice *device = new Gfx::CGLDevice();
+    Gfx::CGLDevice *device = new Gfx::CGLDevice(Gfx::GLDeviceConfig());
     device->Create();
 
     Init(device, modelFile);
