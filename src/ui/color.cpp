@@ -15,14 +15,16 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
+//#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "common/language.h"
-#include "old/math3d.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+#include "graphics/engine/engine.h"
+#include "graphics/core/device.h"
+//#include "common/language.h"
+//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -58,18 +60,18 @@ CColor::~CColor()
 
 // Creates a new button.
 
-bool CColor::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CColor::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
 
     if ( icon == -1 )
     {
         char    name[100];
         char*   p;
 
-        GetResource(RES_EVENT, eventMsg, name);
+        GetResource(RES_EVENT, eventType, name);
         p = strchr(name, '\\');
         if ( p != 0 )  *p = 0;
         SetName(name);
@@ -87,7 +89,7 @@ bool CColor::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME && m_bRepeat )
+    if ( event.type == EVENT_FRAME && m_bRepeat )
     {
         if ( m_repeat != 0.0f )
         {
@@ -97,14 +99,15 @@ bool CColor::EventProcess(const Event &event)
                 m_repeat = DELAY2;
 
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
                 return false;
             }
         }
     }
 
-    if ( event.event == EVENT_LBUTTONDOWN &&
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
+    		event.mouseButton.button == 1 &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
@@ -113,13 +116,13 @@ bool CColor::EventProcess(const Event &event)
             m_repeat = DELAY1;
 
             Event newEvent = event;
-            newEvent.event = m_eventMsg;
+            newEvent.type = m_eventType;
             m_event->AddEvent(newEvent);
             return false;
         }
     }
 
-    if ( event.event == EVENT_LBUTTONUP )
+    if ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == 1)
     {
         m_repeat = 0.0f;
     }
@@ -132,9 +135,9 @@ bool CColor::EventProcess(const Event &event)
 
 void CColor::Draw()
 {
-    LPDIRECT3DDEVICE7 device;
-    D3DLVERTEX  vertex[4];  // 2 triangles
-    D3DCOLOR    color;
+    Gfx::CDevice* device;
+    Gfx::VertexCol  vertex[4];  // 2 triangles
+    Gfx::Color   color;
     Math::Point     p1, p2;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
@@ -145,36 +148,37 @@ void CColor::Draw()
     }
 
     m_engine->SetTexture("button1.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     CControl::Draw();
 
 #if _TEEN
-    color = ::RetColor(m_color);
+//    color = GetColor(m_color);
+    color = GetColor();
 
     m_engine->SetTexture("xxx.tga");  // no texture
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    device = m_engine->RetD3DDevice();
+    device = m_engine->GetDevice();
 
     p1.x = m_pos.x+(4.0f/640.0f);
     p1.y = m_pos.y+(4.0f/480.0f);
     p2.x = m_pos.x+m_dim.x-(4.0f/640.0f);
     p2.y = m_pos.y+m_dim.y-(4.0f/480.0f);
-    vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
-    vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
-    vertex[2] = D3DLVERTEX(D3DVECTOR(p2.x, p1.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
-    vertex[3] = D3DLVERTEX(D3DVECTOR(p2.x, p2.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, vertex, 4, NULL);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
 
     p1.x = m_pos.x+(5.0f/640.0f);
     p1.y = m_pos.y+(5.0f/480.0f);
     p2.x = m_pos.x+m_dim.x-(5.0f/640.0f);
     p2.y = m_pos.y+m_dim.y-(5.0f/480.0f);
-    vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[2] = D3DLVERTEX(D3DVECTOR(p2.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[3] = D3DLVERTEX(D3DVECTOR(p2.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, vertex, 4, NULL);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
 
     m_engine->AddStatisticTriangle(4);
 #else
@@ -183,18 +187,18 @@ void CColor::Draw()
     p2.x = m_pos.x+m_dim.x-(3.0f/640.0f);
     p2.y = m_pos.y+m_dim.y-(3.0f/480.0f);
 
-    color = ::RetColor(m_color);
+    color = GetColor();
 
     m_engine->SetTexture("xxx.tga");  // no texture
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    vertex[0] = D3DLVERTEX(D3DVECTOR(p1.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[1] = D3DLVERTEX(D3DVECTOR(p1.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[2] = D3DLVERTEX(D3DVECTOR(p2.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[3] = D3DLVERTEX(D3DVECTOR(p2.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+    vertex[0] = Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color,0x00000000, Math::Point( 0.0f,0.0f));
+    vertex[1] = Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color,0x00000000, Math::Point(0.0f,0.0f));
+    vertex[2] = Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color,0x00000000, Math::Point(0.0f,0.0f));
+    vertex[3] = Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color,0x00000000, Math::Point(0.0f,0.0f));
 
-    device = m_engine->RetD3DDevice();
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_LVERTEX, vertex, 4, NULL);
+    device = m_engine->GetDevice();
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 #endif
 }
@@ -205,18 +209,18 @@ void CColor::SetRepeat(bool bRepeat)
     m_bRepeat = bRepeat;
 }
 
-bool CColor::RetRepeat()
+bool CColor::GetRepeat()
 {
     return m_bRepeat;
 }
 
 
-void CColor::SetColor(D3DCOLORVALUE color)
+void CColor::SetColor(Gfx::Color color)
 {
     m_color = color;
 }
 
-D3DCOLORVALUE CColor::RetColor()
+Gfx::Color CColor::GetColor()
 {
     return m_color;
 }

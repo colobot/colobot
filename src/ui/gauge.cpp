@@ -17,13 +17,13 @@
 // gauge.cpp
 
 
-#include <windows.h>
+//#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -48,11 +48,11 @@ CGauge::~CGauge()
 
 // Creates a new button.
 
-bool CGauge::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CGauge::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
     return true;
 }
 
@@ -63,12 +63,12 @@ bool CGauge::EventProcess(const Event &event)
 {
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_LBUTTONDOWN )
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN )
     {
         if ( CControl::Detect(event.pos) )
         {
             Event newEvent = event;
-            newEvent.event = m_eventMsg;
+            newEvent.type = m_eventType;
             m_event->AddEvent(newEvent);
             return false;
         }
@@ -88,7 +88,7 @@ void CGauge::Draw()
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     m_engine->SetTexture("button2.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     dp = 0.5f/256.0f;
 
@@ -149,7 +149,7 @@ void CGauge::SetLevel(float level)
     m_level = level;
 }
 
-float CGauge::RetLevel()
+float CGauge::GetLevel()
 {
     return m_level;
 }

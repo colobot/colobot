@@ -15,15 +15,16 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+//#include <windows.h>
+//#include <stdio.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "common/language.h"
-#include "old/math3d.h"
-#include "common/event.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+#include "graphics/engine/engine.h"
+//#include "common/language.h"
+//#include "old/math3d.h"
+//#include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
 #include "common/restext.h"
@@ -55,18 +56,18 @@ CButton::~CButton()
 
 // Creates a new button.
 
-bool CButton::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CButton::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
 
     if ( icon == -1 )
     {
         char    name[100];
         char*   p;
 
-        GetResource(RES_EVENT, eventMsg, name);
+        GetResource(RES_EVENT, eventType, name);
         p = strchr(name, '\\');
         if ( p != 0 )  *p = 0;
         SetName(name);
@@ -85,7 +86,7 @@ bool CButton::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         if ( m_bRepeat && m_repeat != 0.0f )
         {
@@ -95,14 +96,15 @@ bool CButton::EventProcess(const Event &event)
                 m_repeat = DELAY2;
 
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
                 return false;
             }
         }
     }
 
-    if ( event.event == EVENT_LBUTTONDOWN &&
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN  &&
+    	 event.mouseButton.button == 1    &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
@@ -114,25 +116,27 @@ bool CButton::EventProcess(const Event &event)
             if ( m_bImmediat || m_bRepeat )
             {
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
             }
             return false;
         }
     }
 
-    if ( event.event == EVENT_MOUSEMOVE && m_bCapture )
+    if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
     }
 
-    if ( event.event == EVENT_LBUTTONUP && m_bCapture )
+    if ( event.type == EVENT_MOUSE_BUTTON_UP && //left
+    		event.mouseButton.button == 1    &&
+    		m_bCapture )
     {
         if ( CControl::Detect(event.pos) )
         {
             if ( !m_bImmediat && !m_bRepeat )
             {
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
             }
         }
@@ -182,7 +186,7 @@ void CButton::Draw()
          (m_state & STATE_SIMPLY) == 0 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
         dp = 0.5f/256.0f;
 
@@ -225,7 +229,7 @@ void CButton::SetImmediat(bool bImmediat)
     m_bImmediat = bImmediat;
 }
 
-bool CButton::RetImmediat()
+bool CButton::GetImmediat()
 {
     return m_bImmediat;
 }
@@ -239,7 +243,7 @@ void CButton::SetRepeat(bool bRepeat)
     m_bRepeat = bRepeat;
 }
 
-bool CButton::RetRepeat()
+bool CButton::GetRepeat()
 {
     return m_bRepeat;
 }

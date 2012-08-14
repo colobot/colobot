@@ -15,14 +15,16 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
+//#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
+//#include "common/struct.h"
 #include "math/geometry.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
+//#include "old/d3dengine.h"
+#include "graphics/engine/engine.h"
+#include "graphics/core/device.h"
+//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -47,11 +49,11 @@ CCompass::~CCompass()
 
 // Creates a new button.
 
-bool CCompass::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CCompass::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
     return true;
 }
 
@@ -62,12 +64,13 @@ bool CCompass::EventProcess(const Event &event)
 {
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_LBUTTONDOWN )
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
+            event.mouseButton.button == 1)
     {
         if ( CControl::Detect(event.pos) )
         {
             Event newEvent = event;
-            newEvent.event = m_eventMsg;
+            newEvent.type = m_eventType;
             m_event->AddEvent(newEvent);
             return false;
         }
@@ -81,18 +84,18 @@ bool CCompass::EventProcess(const Event &event)
 
 void CCompass::Draw()
 {
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2      vertex[4];  // 2 triangles
-    Math::Point         p1, p2, p3, c, uv1, uv2;
-    Math::Vector        n;
-    float           dp;
+    Gfx::CDevice* device;
+    Gfx::Vertex   vertex[4];  // 2 triangles
+    Math::Point   p1, p2, p3, c, uv1, uv2;
+    Math::Vector  n;
+    float        dp;
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    device = m_engine->RetD3DDevice();
+    device = m_engine->GetDevice();
 
     m_engine->SetTexture("button2.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     p1.x = m_pos.x;
     p1.y = m_pos.y;
@@ -115,12 +118,12 @@ void CCompass::Draw()
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
-    vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
-    vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
-    vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point( uv1.x,uv2.y));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point( uv1.x,uv1.y));
+    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point( uv2.x,uv2.y));
+    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point( uv2.x,uv1.y));
 
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 
     if ( m_state & STATE_ENABLE )
@@ -150,11 +153,11 @@ void CCompass::Draw()
         uv2.x -= dp;
         uv2.y -= dp;
 
-        vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
-        vertex[1] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
-        vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
+        vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point( uv1.x,uv1.y));
+        vertex[1] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point( uv1.x,uv2.y));
+        vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point( uv2.x,uv2.y));
 
-        device->DrawPrimitive(D3DPT_TRIANGLELIST, D3DFVF_VERTEX2, vertex, 3, NULL);
+        device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, vertex, 3);
         m_engine->AddStatisticTriangle(1);
     }
 }

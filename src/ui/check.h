@@ -32,7 +32,7 @@ public:
     CCheck(CInstanceManager* iMan);
     virtual ~CCheck();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     bool    EventProcess(const Event &event);
 

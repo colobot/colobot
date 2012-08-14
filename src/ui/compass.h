@@ -22,7 +22,7 @@
 #include "ui/control.h"
 
 
-class CD3DEngine;
+//class CEngine;
 
 
 
@@ -32,7 +32,7 @@ public:
     CCompass(CInstanceManager* iMan);
     virtual ~CCompass();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     bool    EventProcess(const Event &event);
 

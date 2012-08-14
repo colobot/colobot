@@ -22,7 +22,7 @@
 #include "ui/control.h"
 
 
-class CD3DEngine;
+//class CD3DEngine;
 
 
 
@@ -32,17 +32,17 @@ public:
     CButton(CInstanceManager* iMan);
     virtual ~CButton();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     bool    EventProcess(const Event &event);
 
     void    Draw();
 
     void    SetImmediat(bool bRepeat);
-    bool    RetImmediat();
+    bool    GetImmediat();
 
     void    SetRepeat(bool bRepeat);
-    bool    RetRepeat();
+    bool    GetRepeat();
 
 protected:
 
