@@ -19,16 +19,18 @@
 #pragma once
 
 
-#include "old/text.h"
+//#include "old/text.h"
 #include "common/struct.h"
 #include "common/event.h"
-
+#include "graphics/engine/engine.h"
+#include "graphics/engine/text.h"
+#include "graphics/engine/particle.h"
 
 class CInstanceManager;
 class CEvent;
-class CD3DEngine;
+//class Gfx::CEngine;
 class CRobotMain;
-class CParticule;
+//class Gfx::CParticle;
 class CSound;
 
 
@@ -61,39 +63,39 @@ public:
     CControl(CInstanceManager* iMan);
     virtual ~CControl();
 
-    virtual bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    virtual bool          Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    virtual bool    EventProcess(const Event &event);
+    virtual bool          EventProcess(const Event &event);
 
-    virtual void    SetPos(Math::Point pos);
-    virtual Math::Point RetPos();
-    virtual void    SetDim(Math::Point dim);
-    virtual Math::Point RetDim();
-    virtual bool    SetState(int state, bool bState);
-    virtual bool    SetState(int state);
-    virtual bool    ClearState(int state);
-    virtual bool    TestState(int state);
-    virtual int     RetState();
-    virtual void    SetIcon(int icon);
-    virtual int     RetIcon();
-    virtual void    SetName(char* name, bool bTooltip=true);
-    virtual char*   RetName();
-    virtual void    SetJustif(int mode);
-    virtual int     RetJustif();
-    virtual void    SetFontSize(float size);
-    virtual float   RetFontSize();
-    virtual void    SetFontStretch(float stretch);
-    virtual float   RetFontStretch();
-    virtual void    SetFontType(FontType font);
-    virtual FontType RetFontType();
-    virtual bool    SetTooltip(char* name);
-    virtual bool    GetTooltip(Math::Point pos, char* name);
-    virtual void    SetFocus(bool bFocus);
-    virtual bool    RetFocus();
+    virtual void          SetPos(Math::Point pos);
+    virtual Math::Point   GetPos();
+    virtual void          SetDim(Math::Point dim);
+    virtual Math::Point   GetDim();
+    virtual bool          SetState(int state, bool bState);
+    virtual bool          SetState(int state);
+    virtual bool          ClearState(int state);
+    virtual bool          TestState(int state);
+    virtual int           GetState();
+    virtual void          SetIcon(int icon);
+    virtual int           GetIcon();
+    virtual void          SetName(char* name, bool bTooltip=true);
+    virtual char*         GetName();
+    virtual void          SetTextAlign(Gfx::TextAlign mode);
+    virtual int           GetTextAlign();
+    virtual void          SetFontSize(float size);
+    virtual float         GetFontSize();
+    virtual void          SetFontStretch(float stretch);
+    virtual float         GetFontStretch();
+    virtual void          SetFontType(Gfx::FontType font);
+    virtual Gfx::FontType GetFontType();
+    virtual bool          SetTooltip(char* name);
+    virtual bool          GetTooltip(Math::Point pos, char* name);
+    virtual void          SetFocus(bool bFocus);
+    virtual bool          GetFocus();
 
-    virtual EventMsg RetEventMsg();
+    virtual EventType     GetEventType();
 
-    virtual void    Draw();
+    virtual void          Draw();
 
 protected:
             void    GlintDelete();
@@ -108,31 +110,32 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    CD3DEngine* m_engine;
-    CEvent*     m_event;
-    CRobotMain* m_main;
-    CParticule* m_particule;
-    CSound*     m_sound;
+    Gfx::CEngine*     m_engine;
+    CEventQueue*      m_event;
+    CRobotMain*       m_main;
+    Gfx::CParticle*   m_particle;
+    CSound*           m_sound;
 
-    Math::Point     m_pos;          // corner upper / left
-    Math::Point     m_dim;          // dimensions
-    int     m_icon;
-    EventMsg    m_eventMsg;     // message to send when clicking
-    int     m_state;        // states (STATE_ *)
-    float       m_fontSize;     // size of the button name
-    float       m_fontStretch;      // stretch of the font
-    FontType    m_fontType;     // type of font
-    int     m_justif;       // type of justification (-1,0,1)
-    char        m_name[100];        // name of the button
-    char        m_tooltip[100];     // name of tooltip
-    bool        m_bFocus;
-    bool        m_bCapture;
+    Math::Point       m_pos;          // corner upper / left
+    Math::Point       m_dim;          // dimensions
+    int               m_icon;
+    EventType         m_eventType;     // message to send when clicking
+    int               m_state;        // states (STATE_ *)
+    float             m_fontSize;     // size of the button name
+    float             m_fontStretch;      // stretch of the font
+    Gfx::FontType     m_fontType;     // type of font
+    Gfx::TextAlign    m_textAlign;    //type of alignment //comes in the place of m_justif
+//    int           m_justif;       // type of justification (-1,0,1)
+    char              m_name[100];        // name of the button
+    char              m_tooltip[100];     // name of tooltip
+    bool              m_bFocus;
+    bool              m_bCapture;
 
-    bool        m_bGlint;
-    Math::Point     m_glintCorner1;
-    Math::Point     m_glintCorner2;
-    float       m_glintProgress;
-    Math::Point     m_glintMouse;
+    bool              m_bGlint;
+    Math::Point       m_glintCorner1;
+    Math::Point       m_glintCorner2;
+    float             m_glintProgress;
+    Math::Point       m_glintMouse;
 };
 
 

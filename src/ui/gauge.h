@@ -22,7 +22,7 @@
 #include "ui/control.h"
 
 
-class CD3DEngine;
+//class CD3DEngine;
 
 
 
@@ -32,14 +32,14 @@ public:
     CGauge(CInstanceManager* iMan);
     virtual ~CGauge();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     bool    EventProcess(const Event &event);
 
     void    Draw();
 
     void    SetLevel(float level);
-    float   RetLevel();
+    float   GetLevel();
 
 protected:
 

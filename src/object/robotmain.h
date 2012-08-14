@@ -22,12 +22,14 @@
 #include <stdio.h>
 
 #include "common/misc.h"
-#include "old/d3dengine.h"
+//#include "old/d3dengine.h"
+#include "graphics/engine/engine.h"
 #include "object/object.h"
 #include "object/mainmovie.h"
-#include "old/camera.h"
-#include "old/particule.h"
-
+//#include "old/camera.h"
+#include "graphics/engine/camera.h"
+//#include "old/particule.h"
+#include "graphics/engine/particle.h"
 
 enum Phase
 {
@@ -260,7 +262,7 @@ public:
     void        HideDropZone(CObject* metal);
     void        ShowDropZone(CObject* metal, CObject* truck);
     void        FlushShowLimit(int i);
-    void        SetShowLimit(int i, ParticuleType parti, CObject *pObj, Math::Vector pos, float radius, float duration=SHOWLIMITTIME);
+    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *pObj, Math::Vector pos, float radius, float duration=SHOWLIMITTIME);
     void        AdjustShowLimit(int i, Math::Vector pos);
     void        StartShowLimit();
     void        FrameShowLimit(float rTime);
@@ -287,7 +289,7 @@ public:
     void        IOWriteObject(FILE *file, CObject* pObj, char *cmd);
     CObject*    IOReadObject(char *line, char* filename, int objRank);
 
-    int         CreateSpot(Math::Vector pos, D3DCOLORVALUE color);
+    int         CreateSpot(Math::Vector pos, Gfx::Color color);
 
 protected:
     bool        EventFrame(const Event &event);
@@ -300,7 +302,7 @@ protected:
     void        CreateModel();
     Math::Vector    LookatPoint( Math::Vector eye, float angleH, float angleV, float length );
     CObject*    CreateObject(Math::Vector pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, bool bTrainer=false, bool bToy=false, int option=0);
-    int         CreateLight(Math::Vector direction, D3DCOLORVALUE color);
+    int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);
     void        HiliteFrame(float rTime);
@@ -309,7 +311,7 @@ protected:
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
     void        RemoteCamera(float pan, float zoom, float rTime);
-    void        KeyCamera(EventMsg event, long param);
+    void        KeyCamera(EventType event, long param);
     void        AbortMovie();
     bool        IsSelectable(CObject* pObj);
     void        SelectOneObject(CObject* pObj, bool bDisplayError=true);
@@ -319,7 +321,7 @@ protected:
     void        UpdateInfoText();
     CObject*    SearchObject(ObjectType type);
     CObject*    RetSelect();
-    void        StartDisplayVisit(EventMsg event);
+    void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
     void        ExecuteCmd(char *cmd);
@@ -333,7 +335,7 @@ protected:
     CMainMap*       m_map;
     CEvent*         m_event;
     CD3DEngine*     m_engine;
-    CParticule*     m_particule;
+    Gfx::CParticle*     m_particule;
     CWater*         m_water;
     CCloud*         m_cloud;
     CBlitz*         m_blitz;
@@ -359,7 +361,7 @@ protected:
 
     Phase           m_phase;
     int             m_cameraRank;
-    D3DCOLORVALUE   m_color;
+    Gfx::Color      m_color;
     bool            m_bFreePhoto;
     bool            m_bCmdEdit;
     bool            m_bShowPos;
@@ -420,7 +422,7 @@ protected:
     float           m_cameraPan;
     float           m_cameraZoom;
 
-    EventMsg        m_visitLast;
+    EventType        m_visitLast;
     CObject*        m_visitObject;
     CObject*        m_visitArrow;
     float           m_visitTime;
@@ -446,14 +448,14 @@ protected:
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
-    D3DCOLORVALUE   m_colorRefBot;
-    D3DCOLORVALUE   m_colorNewBot;
-    D3DCOLORVALUE   m_colorRefAlien;
-    D3DCOLORVALUE   m_colorNewAlien;
-    D3DCOLORVALUE   m_colorRefGreen;
-    D3DCOLORVALUE   m_colorNewGreen;
-    D3DCOLORVALUE   m_colorRefWater;
-    D3DCOLORVALUE   m_colorNewWater;
+    Gfx::Color   m_colorRefBot;
+    Gfx::Color   m_colorNewBot;
+    Gfx::Color   m_colorRefAlien;
+    Gfx::Color   m_colorNewAlien;
+    Gfx::Color   m_colorRefGreen;
+    Gfx::Color   m_colorNewGreen;
+    Gfx::Color   m_colorRefWater;
+    Gfx::Color   m_colorNewWater;
     float           m_colorShiftWater;
 };
 

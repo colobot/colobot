@@ -20,10 +20,10 @@
 
 
 #include "ui/control.h"
-#include "old/d3dengine.h"
+//#include "graphics/engine/engine.h"
 
 
-class CD3DEngine;
+//class CEngine;
 
 
 
@@ -33,24 +33,24 @@ public:
     CColor(CInstanceManager* iMan);
     virtual ~CColor();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     bool    EventProcess(const Event &event);
 
     void    Draw();
 
     void    SetRepeat(bool bRepeat);
-    bool    RetRepeat();
+    bool    GetRepeat();
 
-    void    SetColor(D3DCOLORVALUE color);
-    D3DCOLORVALUE RetColor();
-
-protected:
+    void    SetColor(Gfx::Color color);
+    Gfx::Color GetColor();
 
 protected:
-    bool            m_bRepeat;
-    float           m_repeat;
-    D3DCOLORVALUE   m_color;
+
+protected:
+    bool           m_bRepeat;
+    float          m_repeat;
+    Gfx::Color	   m_color;
 };
 
 
