@@ -20,6 +20,8 @@
 
 #include <ui/label.h>
 
+namespace Ui {
+
 
 // Object's constructor.
 
@@ -77,4 +79,6 @@ void CLabel::Draw()
     }
 
     m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
+}
+
 }

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,50 +18,31 @@
 // list.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "ui/button.h"
-#include "ui/scroll.h"
-#include "old/text.h"
-#include "ui/list.h"
+#include <ui/list.h>
 
 
+namespace Ui {
 
 const float MARGING = 4.0f;
 
 
-
 // Object's constructor.
 
-CList::CList(CInstanceManager* iMan) : CControl(iMan)
+CList::CList() : CControl()
 {
-    int     i;
+    for (int i = 0; i < LISTMAXDISPLAY; i++)
+        m_button[i] = nullptr;
 
-    for ( i=0 ; i<LISTMAXDISPLAY ; i++ )
-    {
-        m_button[i] = 0;
-    }
-    m_scroll = 0;
-
-    for ( i=0 ; i<LISTMAXTOTAL ; i++ )
-    {
+    m_scroll = nullptr;
+    for (int i = 0; i < LISTMAXTOTAL; i++) {
         m_text[i][0] = 0;
         m_check[i] = false;
         m_enable[i] = true;
     }
 
-    for ( i=0 ; i<10 ; i++ )
-    {
+    for (int i = 0; i < 10; i++) {
         m_tabs[i] = 0.0f;
-        m_justifs[i] = 1;
+        m_justifs[i] = Gfx::TEXT_ALIGN_CENTER;
     }
 
     m_totalLine = 0;
@@ -76,29 +58,34 @@ CList::CList(CInstanceManager* iMan) : CControl(iMan)
 
 CList::~CList()
 {
-    int     i;
-
-    for ( i=0 ; i<LISTMAXDISPLAY ; i++ )
-    {
-        delete m_button[i];
+    for (int i = 0; i < LISTMAXDISPLAY; i++) {
+        if (m_button[i] != nullptr)
+            delete m_button[i];
     }
-    delete m_scroll;
+
+    if (m_scroll != nullptr)
+        delete m_scroll;
 }
 
 
 // Creates a new list.
 
-bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg,
-                   float expand)
+bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
 {
+    Event event;
     m_expand = expand;
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if (eventMsg == EVENT_NULL) {
+        m_event->GetEvent(event);
+        eventMsg = event.type;
+    }
+
+
     CControl::Create(pos, dim, icon, eventMsg);
 
-    m_scroll = new CScroll(m_iMan);
+    m_scroll = new CScroll();
     m_scroll->Create(pos, dim, 0, EVENT_NULL);
-    m_eventScroll = m_scroll->RetEventMsg();
+    m_eventScroll = m_scroll->GetEventType();
 
     return MoveAdjust();
 }
@@ -107,52 +94,54 @@ bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg
 
 bool CList::MoveAdjust()
 {
-    Math::Point     ipos, idim, ppos, ddim;
-    float       marging, h;
-    int         i;
+    Math::Point ipos, idim, ppos, ddim;
+    float marging, h;
 
-    for ( i=0 ; i<LISTMAXDISPLAY ; i++ )
-    {
-        delete m_button[i];
-        m_button[i] = 0;
+    for (int i = 0; i < LISTMAXDISPLAY; i++) {
+        if (m_button[i] != nullptr) {
+            delete m_button[i];
+            m_button[i] = nullptr;
+        }
     }
 
-    if ( m_icon == 0 )  marging = MARGING;
-    else                marging = 0.0f;
+    if (m_icon == 0)
+        marging = MARGING;
+    else
+        marging = 0.0f;
 
-    ipos.x = m_pos.x+marging/640.f;
-    ipos.y = m_pos.y+marging/480.f;
-    idim.x = m_dim.x-marging*2.0f/640.f;
-    idim.y = m_dim.y-marging*2.0f/480.f;
+    ipos.x = m_pos.x + marging / 640.f;
+    ipos.y = m_pos.y + marging / 480.f;
+    idim.x = m_dim.x - marging * 2.0f / 640.f;
+    idim.y = m_dim.y - marging * 2.0f / 480.f;
 
-    h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType)*m_expand;
+    h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) * m_expand;
 
-    m_displayLine = (int)(idim.y/h);
-    if ( m_displayLine == 0 )  return false;
-    if ( m_displayLine > LISTMAXDISPLAY )  m_displayLine = LISTMAXDISPLAY;
-    idim.y = h*m_displayLine;
-    m_dim.y = idim.y+marging*2.0f/480.f;
+    m_displayLine = static_cast<int>(idim.y / h);
+    if (m_displayLine == 0)
+        return false;
+    if (m_displayLine > LISTMAXDISPLAY)
+        m_displayLine = LISTMAXDISPLAY;
+    idim.y = h * m_displayLine;
+    m_dim.y = idim.y + marging * 2.0f / 480.f;
 
     ppos.x = ipos.x;
-    ppos.y = ipos.y+idim.y-h;
-    ddim.x = idim.x-SCROLL_WIDTH;
+    ppos.y = ipos.y + idim.y - h;
+    ddim.x = idim.x - SCROLL_WIDTH;
     ddim.y = h;
-    for ( i=0 ; i<m_displayLine ; i++ )
-    {
-        m_button[i] = new CButton(m_iMan);
+    for (int i = 0; i < m_displayLine; i++) {
+        m_button[i] = new CButton();
         m_button[i]->Create(ppos, ddim, -1, EVENT_NULL);
-        m_button[i]->SetJustif(1);
+        m_button[i]->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
         m_button[i]->SetState(STATE_SIMPLY);
         m_button[i]->SetFontType(m_fontType);
         m_button[i]->SetFontSize(m_fontSize);
         ppos.y -= h;
 
-        m_eventButton[i] = m_button[i]->RetEventMsg();
+        m_eventButton[i] = m_button[i]->GetEventType();
     }
 
-    if ( m_scroll != 0 )
-    {
-        ppos.x = ipos.x+idim.x-SCROLL_WIDTH;
+    if ( m_scroll != nullptr ) {
+        ppos.x = ipos.x + idim.x - SCROLL_WIDTH;
         ppos.y = ipos.y;
         ddim.x = SCROLL_WIDTH;
         ddim.y = idim.y;
@@ -168,19 +157,22 @@ bool CList::MoveAdjust()
 
 // Returns the message of a button.
 
-EventMsg CList::RetEventMsgButton(int i)
+EventType CList::GetEventMsgButton(int i)
 {
-    if ( i < 0 || i >= m_displayLine )  return EVENT_NULL;
-    if ( m_button[i] == 0 )  return EVENT_NULL;
-    return m_button[i]->RetEventMsg();
+    if (i < 0 || i >= m_displayLine)
+        return EVENT_NULL;
+    if (m_button[i] == nullptr)
+        return EVENT_NULL;
+    return m_button[i]->GetEventType();
 }
 
 // Returns the message from the elevator.
 
-EventMsg CList::RetEventMsgScroll()
+EventType CList::GetEventMsgScroll()
 {
-    if ( m_scroll == 0 )  return EVENT_NULL;
-    return m_scroll->RetEventMsg();
+    if (m_scroll == nullptr)
+        return EVENT_NULL;
+    return m_scroll->GetEventType();
 }
 
 
@@ -188,6 +180,7 @@ void CList::SetPos(Math::Point pos)
 {
     CControl::SetPos(pos);
 }
+
 
 void CList::SetDim(Math::Point dim)
 {
@@ -199,47 +192,43 @@ void CList::SetDim(Math::Point dim)
 
 bool CList::SetState(int state, bool bState)
 {
-    int     i;
-
-    if ( state & STATE_ENABLE )
-    {
-        for ( i=0 ; i<m_displayLine ; i++ )
-        {
-            if ( m_button[i] != 0 )  m_button[i]->SetState(state, bState);
+    if (state & STATE_ENABLE) {
+        for (int i = 0; i < m_displayLine; i++) {
+            if (m_button[i] != nullptr)
+                m_button[i]->SetState(state, bState);
         }
-        if ( m_scroll != 0 )  m_scroll->SetState(state, bState);
+        if (m_scroll != nullptr)
+            m_scroll->SetState(state, bState);
     }
 
     return CControl::SetState(state, bState);
 }
 
+
 bool CList::SetState(int state)
 {
-    int     i;
-
-    if ( state & STATE_ENABLE )
-    {
-        for ( i=0 ; i<m_displayLine ; i++ )
-        {
-            if ( m_button[i] != 0 )  m_button[i]->SetState(state);
+    if (state & STATE_ENABLE) {
+        for (int i = 0; i < m_displayLine; i++) {
+            if (m_button[i] != nullptr)
+                m_button[i]->SetState(state);
         }
-        if ( m_scroll != 0 )  m_scroll->SetState(state);
+        if (m_scroll != nullptr)
+            m_scroll->SetState(state);
     }
 
     return CControl::SetState(state);
 }
 
+
 bool CList::ClearState(int state)
 {
-    int     i;
-
-    if ( state & STATE_ENABLE )
-    {
-        for ( i=0 ; i<m_displayLine ; i++ )
-        {
-            if ( m_button[i] != 0 )  m_button[i]->ClearState(state);
+    if (state & STATE_ENABLE) {
+        for (int i = 0; i < m_displayLine; i++) {
+            if (m_button[i] != nullptr)
+                m_button[i]->ClearState(state);
         }
-        if ( m_scroll != 0 )  m_scroll->ClearState(state);
+        if (m_scroll != nullptr)
+            m_scroll->ClearState(state);
     }
 
     return CControl::ClearState(state);
@@ -250,47 +239,38 @@ bool CList::ClearState(int state)
 
 bool CList::EventProcess(const Event &event)
 {
-    int     i;
-
-    if ( m_bBlink                   &&  // blinks?
-         event.event == EVENT_FRAME )
-    {
+    int i;
+    if (m_bBlink && event.type == EVENT_FRAME) {
         i = m_selectLine-m_firstLine;
 
-        if ( i >= 0 && i < 4  &&
-             m_button[i] != 0 )
-        {
+        if (i >= 0 && i < 4  && m_button[i] != nullptr) {
             m_blinkTime += event.rTime;
-            if ( Math::Mod(m_blinkTime, 0.7f) < 0.3f )
-            {
+            if (Math::Mod(m_blinkTime, 0.7f) < 0.3f) {
                 m_button[i]->ClearState(STATE_ENABLE);
                 m_button[i]->ClearState(STATE_CHECK);
-            }
-            else
-            {
+            } else {
                 m_button[i]->SetState(STATE_ENABLE);
                 m_button[i]->SetState(STATE_CHECK);
             }
         }
     }
 
-    if ( (m_state & STATE_VISIBLE) == 0 )  return true;
-    if ( (m_state & STATE_ENABLE) == 0 )  return true;
+    if ((m_state & STATE_VISIBLE) == 0)
+        return true;
+    if ((m_state & STATE_ENABLE) == 0)
+        return true;
 
-    if ( event.event == EVENT_KEYDOWN &&
-         event.param == VK_WHEELUP    &&
-         Detect(event.pos)            )
-    {
-        if ( m_firstLine > 0 )  m_firstLine --;
+    if (event.type == EVENT_KEY_DOWN && event.mouseButton.button == 5 && Detect(event.pos)) {
+        if (m_firstLine > 0)
+            m_firstLine--;
         UpdateScroll();
         UpdateButton();
         return true;
     }
-    if ( event.event == EVENT_KEYDOWN &&
-         event.param == VK_WHEELDOWN  &&
-         Detect(event.pos)            )
-    {
-        if ( m_firstLine < m_totalLine-m_displayLine )  m_firstLine ++;
+
+    if (event.type == EVENT_KEY_DOWN && event.mouseButton.button == 4 && Detect(event.pos)) {
+        if (m_firstLine < m_totalLine - m_displayLine)
+            m_firstLine++;
         UpdateScroll();
         UpdateButton();
         return true;
@@ -298,46 +278,41 @@ bool CList::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_MOUSEMOVE && Detect(event.pos) )
-    {
-        m_engine->SetMouseType(D3DMOUSENORM);
-        for ( i=0 ; i<m_displayLine ; i++ )
-        {
-            if ( i+m_firstLine >= m_totalLine )  break;
-            if ( m_button[i] != 0 )
-            {
+    if (event.type == EVENT_MOUSE_MOVE && Detect(event.pos)) {
+        m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
+        for (i = 0; i < m_displayLine; i++) {
+            if (i + m_firstLine >= m_totalLine)
+                break;
+            if (m_button[i] != nullptr)
                 m_button[i]->EventProcess(event);
-            }
         }
     }
 
-    if ( m_bSelectCap )
-    {
-        for ( i=0 ; i<m_displayLine ; i++ )
-        {
-            if ( i+m_firstLine >= m_totalLine )  break;
-            if ( m_button[i] != 0 )
-            {
-                if ( !m_button[i]->EventProcess(event) )  return false;
+    if (m_bSelectCap) {
+        for (i = 0; i < m_displayLine; i++) {
+            if (i + m_firstLine >= m_totalLine)
+                break;
 
-                if ( event.event == m_eventButton[i] )
-                {
-                    SetSelect(m_firstLine+i);
+            if (m_button[i] != nullptr) {
+                if (!m_button[i]->EventProcess(event))
+                    return false;
+
+                if (event.type == m_eventButton[i]) {
+                    SetSelect(m_firstLine + i);
 
                     Event newEvent = event;
-                    newEvent.event = m_eventMsg;
+                    newEvent.type = m_eventType;
                     m_event->AddEvent(newEvent);  // selected line changes
                 }
             }
         }
     }
 
-    if ( m_scroll != 0 )
-    {
-        if ( !m_scroll->EventProcess(event) )  return false;
+    if (m_scroll != nullptr) {
+        if (!m_scroll->EventProcess(event))
+            return false;
 
-        if ( event.event == m_eventScroll )
-        {
+        if (event.type == m_eventScroll) {
             MoveScroll();
             UpdateButton();
         }
@@ -353,46 +328,40 @@ void CList::Draw()
 {
     Math::Point uv1, uv2, corner, pos, dim, ppos, ddim;
     float   dp;
-    int     i, j;
+    int     i;
     char    text[100];
     char    *pb, *pe;
 
-    if ( (m_state & STATE_VISIBLE) == 0 )  return;
+    if ((m_state & STATE_VISIBLE) == 0)
+        return;
 
-    if ( m_state & STATE_SHADOW )
-    {
+    if (m_state & STATE_SHADOW)
         DrawShadow(m_pos, m_dim);
-    }
 
-    dp = 0.5f/256.0f;
+    dp = 0.5f / 256.0f;
 
-    if ( m_icon != -1 )
-    {
+    if (m_icon != -1) {
         dim = m_dim;
 
-        if ( m_icon == 0 )
-        {
+        if (m_icon == 0) {
             m_engine->SetTexture("button2.tga");
-            m_engine->SetState(D3DSTATENORMAL);
+            m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-            uv1.x = 128.0f/256.0f;
-            uv1.y =  64.0f/256.0f;  // u-v texture
-            uv2.x = 160.0f/256.0f;
-            uv2.y =  96.0f/256.0f;
-        }
-        else
-        {
+            uv1.x = 128.0f / 256.0f;
+            uv1.y =  64.0f / 256.0f;  // u-v texture
+            uv2.x = 160.0f / 256.0f;
+            uv2.y =  96.0f / 256.0f;
+        } else {
             m_engine->SetTexture("button2.tga");
-            m_engine->SetState(D3DSTATENORMAL);
+            m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-            uv1.x = 132.0f/256.0f;
-            uv1.y =  68.0f/256.0f;  // u-v texture
-            uv2.x = 156.0f/256.0f;
-            uv2.y =  92.0f/256.0f;
+            uv1.x = 132.0f / 256.0f;
+            uv1.y =  68.0f / 256.0f;  // u-v texture
+            uv2.x = 156.0f / 256.0f;
+            uv2.y =  92.0f / 256.0f;
 
-            if ( m_button[0] != 0 )
-            {
-                dim = m_button[0]->RetDim();
+            if (m_button[0] != nullptr) {
+                dim = m_button[0]->GetDim();
                 dim.y *= m_displayLine;  // background sounds spot behind
             }
         }
@@ -402,28 +371,26 @@ void CList::Draw()
         uv2.x -= dp;
         uv2.y -= dp;
 
-        corner.x = 10.0f/640.0f;
-        corner.y = 10.0f/480.0f;
-        DrawIcon(m_pos, dim, uv1, uv2, corner, 8.0f/256.0f);
+        corner.x = 10.0f / 640.0f;
+        corner.y = 10.0f / 480.0f;
+        DrawIcon(m_pos, dim, uv1, uv2, corner, 8.0f / 256.0f);
     }
 
-    if ( m_totalLine < m_displayLine )  // no buttons to the bottom?
-    {
+    if ( m_totalLine < m_displayLine ) { // no buttons to the bottom?
         i = m_totalLine;
-        if ( m_button[i] != 0 )
-        {
-            pos = m_button[i]->RetPos();
-            dim = m_button[i]->RetDim();
-            pos.y += dim.y*1.1f;
+        if ( m_button[i] != 0 ) {
+            pos = m_button[i]->GetPos();
+            dim = m_button[i]->GetDim();
+            pos.y += dim.y * 1.1f;
             dim.y *= 0.4f;
             pos.y -= dim.y;
 
             m_engine->SetTexture("button2.tga");
-            m_engine->SetState(D3DSTATETTw);
-            uv1.x = 120.0f/256.0f;
-            uv1.y =  64.0f/256.0f;
-            uv2.x = 128.0f/256.0f;
-            uv2.y =  48.0f/256.0f;
+            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE); // was D3DSTATETTw
+            uv1.x = 120.0f / 256.0f;
+            uv1.y =  64.0f / 256.0f;
+            uv2.x = 128.0f / 256.0f;
+            uv2.y =  48.0f / 256.0f;
             uv1.x += dp;
             uv1.y -= dp;
             uv2.x -= dp;
@@ -432,108 +399,93 @@ void CList::Draw()
         }
     }
 
-    for ( i=0 ; i<m_displayLine ; i++ )
-    {
-        if ( i+m_firstLine >= m_totalLine )  break;
+    for (i = 0; i < m_displayLine; i++) {
+        if ( i + m_firstLine >= m_totalLine )
+            break;
 
-        if ( m_button[i] != 0 )
-        {
-            if ( !m_bBlink && i+m_firstLine < m_totalLine )
-            {
+        if ( m_button[i] != nullptr ) {
+            if ( !m_bBlink && i + m_firstLine < m_totalLine )
                 m_button[i]->SetState(STATE_ENABLE, m_enable[i+m_firstLine] && (m_state & STATE_ENABLE) );
-            }
+
             m_button[i]->Draw();  // draws a box without text
 
             // draws text in the box
-            pos = m_button[i]->RetPos();
-            dim = m_button[i]->RetDim();
-            if ( m_tabs[0] == 0.0f )
-            {
-                ppos.x = pos.x+dim.y*0.5f;
-                ppos.y = pos.y+dim.y*0.5f;
-                ppos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
+            pos = m_button[i]->GetPos();
+            dim = m_button[i]->GetDim();
+            if ( m_tabs[0] == 0.0f ) {
+                ppos.x = pos.x + dim.y * 0.5f;
+                ppos.y = pos.y + dim.y * 0.5f;
+                ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
                 ddim.x = dim.x-dim.y;
-                DrawCase(m_text[i+m_firstLine], ppos, ddim.x, 1);
-            }
-            else
-            {
-                ppos.x = pos.x+dim.y*0.5f;
-                ppos.y = pos.y+dim.y*0.5f;
-                ppos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
-                pb = m_text[i+m_firstLine];
-                for ( j=0 ; j<10 ; j++ )
-                {
+                DrawCase(m_text[i + m_firstLine], ppos, ddim.x, Gfx::TEXT_ALIGN_CENTER);
+            }  else {
+                ppos.x = pos.x + dim.y * 0.5f;
+                ppos.y = pos.y + dim.y * 0.5f;
+                ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
+                pb = m_text[i + m_firstLine];
+                for (int j = 0; j < 10; j++) {
                     pe = strchr(pb, '\t');
                     if ( pe == 0 )
-                    {
                         strcpy(text, pb);
-                    }
-                    else
-                    {
-                        strncpy(text, pb, pe-pb);
-                        text[pe-pb] = 0;
+                    else {
+                        strncpy(text, pb, pe - pb);
+                        text[pe - pb] = 0;
                     }
                     DrawCase(text, ppos, m_tabs[j], m_justifs[j]);
 
-                    if ( pe == 0 )  break;
+                    if ( pe == 0 )
+                        break;
                     ppos.x += m_tabs[j];
-                    pb = pe+1;
+                    pb = pe + 1;
                 }
             }
 
-            if ( (m_state & STATE_EXTEND) && i < m_totalLine )
-            {
-                pos = m_button[i]->RetPos();
-                dim = m_button[i]->RetDim();
-                pos.x += dim.x-dim.y*0.75f;
-                dim.x = dim.y*0.75f;
-                pos.x += 2.0f/640.0f;
-                pos.y += 2.0f/480.0f;
-                dim.x -= 4.0f/640.0f;
-                dim.y -= 4.0f/480.0f;
+            if ( (m_state & STATE_EXTEND) && i < m_totalLine) {
+                pos = m_button[i]->GetPos();
+                dim = m_button[i]->GetDim();
+                pos.x += dim.x - dim.y * 0.75f;
+                dim.x = dim.y * 0.75f;
+                pos.x += 2.0f / 640.0f;
+                pos.y += 2.0f / 480.0f;
+                dim.x -= 4.0f / 640.0f;
+                dim.y -= 4.0f / 480.0f;
 
-                if ( m_check[i+m_firstLine] )
-                {
+                if ( m_check[i + m_firstLine] ) {
                     m_engine->SetTexture("button1.tga");
-                    m_engine->SetState(D3DSTATENORMAL);
-                    uv1.x = 64.0f/256.0f;
-                    uv1.y =  0.0f/256.0f;
-                    uv2.x = 96.0f/256.0f;
-                    uv2.y = 32.0f/256.0f;
+                    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+                    uv1.x = 64.0f / 256.0f;
+                    uv1.y =  0.0f / 256.0f;
+                    uv2.x = 96.0f / 256.0f;
+                    uv2.y = 32.0f / 256.0f;
                     uv1.x += dp;
                     uv1.y += dp;
                     uv2.x -= dp;
                     uv2.y -= dp;
                     DrawIcon(pos, dim, uv1, uv2);  // square shape
 
-                    m_engine->SetState(D3DSTATETTw);
-                    uv1.x =  0.0f/256.0f;  // v
-                    uv1.y = 64.0f/256.0f;
-                    uv2.x = 32.0f/256.0f;
-                    uv2.y = 96.0f/256.0f;
+                    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE); // was D3DSTATETTw
+                    uv1.x =  0.0f / 256.0f;  // v
+                    uv1.y = 64.0f / 256.0f;
+                    uv2.x = 32.0f / 256.0f;
+                    uv2.y = 96.0f / 256.0f;
                     uv1.x += dp;
                     uv1.y += dp;
                     uv2.x -= dp;
                     uv2.y -= dp;
                     DrawIcon(pos, dim, uv1, uv2);  // draws v
-                }
-                else
-                {
+                } else {
                     m_engine->SetTexture("button1.tga");
-                    m_engine->SetState(D3DSTATETTw);
-                    if ( i+m_firstLine == m_selectLine )
-                    {
-                        uv1.x =224.0f/256.0f;  // <
-                        uv1.y =192.0f/256.0f;
-                        uv2.x =256.0f/256.0f;
-                        uv2.y =224.0f/256.0f;
-                    }
-                    else
-                    {
-                        uv1.x = 96.0f/256.0f;  // x
-                        uv1.y = 32.0f/256.0f;
-                        uv2.x =128.0f/256.0f;
-                        uv2.y = 64.0f/256.0f;
+                    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE); // was D3DSTATETTw
+                    if ( i + m_firstLine == m_selectLine ) {
+                        uv1.x =224.0f / 256.0f;  // <
+                        uv1.y =192.0f / 256.0f;
+                        uv2.x =256.0f / 256.0f;
+                        uv2.y =224.0f / 256.0f;
+                    } else {
+                        uv1.x = 96.0f / 256.0f;  // x
+                        uv1.y = 32.0f / 256.0f;
+                        uv2.x =128.0f / 256.0f;
+                        uv2.y = 64.0f / 256.0f;
                     }
                     uv1.x += dp;
                     uv1.y += dp;
@@ -546,29 +498,18 @@ void CList::Draw()
     }
 
     if ( m_scroll != 0 )
-    {
         m_scroll->Draw();  // draws the lift
-    }
 }
 
 // Displays text in a box.
 
-void CList::DrawCase(char *text, Math::Point pos, float width, int justif)
+void CList::DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif)
 {
-    if ( justif == 1 )
-    {
-        m_engine->RetText()->DrawText(text, pos, width, 1, m_fontSize, m_fontStretch, m_fontType, 0);
-    }
-    else if ( justif == 0 )
-    {
-        pos.x += width/2.0f;
-        m_engine->RetText()->DrawText(text, pos, width, 0, m_fontSize, m_fontStretch, m_fontType, 0);
-    }
+    if (justif == Gfx::TEXT_ALIGN_LEFT)
+        pos.x += width / 2.0f;
     else
-    {
         pos.x += width;
-        m_engine->RetText()->DrawText(text, pos, width, -1, m_fontSize, m_fontStretch, m_fontType, 0);
-    }
+    m_engine->GetText()->DrawText(std::string(text), m_fontType, m_fontSize, pos, width, justif, 0);
 }
 
 
@@ -593,7 +534,7 @@ void CList::SetTotal(int i)
 
 // Returns the total number of lines.
 
-int CList::RetTotal()
+int CList::GetTotal()
 {
     return m_totalLine;
 }
@@ -604,11 +545,8 @@ int CList::RetTotal()
 void CList::SetSelect(int i)
 {
     if ( m_bSelectCap )
-    {
         m_selectLine = i;
-    }
-    else
-    {
+    else {
         m_firstLine = i;
         UpdateScroll();
     }
@@ -618,16 +556,12 @@ void CList::SetSelect(int i)
 
 // Returns the selected line.
 
-int CList::RetSelect()
+int CList::GetSelect()
 {
     if ( m_bSelectCap )
-    {
         return m_selectLine;
-    }
     else
-    {
         return m_firstLine;
-    }
 }
 
 
@@ -638,7 +572,7 @@ void CList::SetSelectCap(bool bEnable)
     m_bSelectCap = bEnable;
 }
 
-bool CList::RetSelectCap()
+bool CList::GetSelectCap()
 {
     return m_bSelectCap;
 }
@@ -648,25 +582,22 @@ bool CList::RetSelectCap()
 
 void CList::SetBlink(bool bEnable)
 {
-    int     i;
+    int i;
 
     m_bBlink = bEnable;
     m_blinkTime = 0.0f;
 
     i = m_selectLine-m_firstLine;
 
-    if ( i >= 0 && i < 4  &&
-         m_button[i] != 0 )
-    {
-        if ( !bEnable )
-        {
+    if (i >= 0 && i < 4  &&  m_button[i] != nullptr) {
+        if ( !bEnable ) {
             m_button[i]->SetState(STATE_CHECK);
             m_button[i]->ClearState(STATE_ENABLE);
         }
     }
 }
 
-bool CList::RetBlink()
+bool CList::GetBlink()
 {
     return m_bBlink;
 }
@@ -676,30 +607,27 @@ bool CList::RetBlink()
 
 void CList::SetName(int i, char* name)
 {
-    if ( i < 0 || i >= LISTMAXTOTAL )  return;
+    if ( i < 0 || i >= LISTMAXTOTAL )
+        return;
 
     if ( i >= m_totalLine )
-    {
         m_totalLine = i+1;  // expands the list
-    }
 
     if ( name[0] == 0 )
-    {
         strcpy(m_text[i], " ");
-    }
     else
-    {
         strcpy(m_text[i], name);
-    }
+
     UpdateButton();
     UpdateScroll();
 }
 
 // Returns the text of a line.
 
-char* CList::RetName(int i)
+char* CList::GetName(int i)
 {
-    if ( i < 0 || i >= m_totalLine )  return 0;
+    if ( i < 0 || i >= m_totalLine )
+        return 0;
 
     return m_text[i];
 }
@@ -709,16 +637,18 @@ char* CList::RetName(int i)
 
 void CList::SetCheck(int i, bool bMode)
 {
-    if ( i < 0 || i >= m_totalLine )  return;
+    if ( i < 0 || i >= m_totalLine )
+        return;
 
     m_check[i] = bMode;
 }
 
 // Returns the bit "check" for a box.
 
-bool CList::RetCheck(int i)
+bool CList::GetCheck(int i)
 {
-    if ( i < 0 || i >= m_totalLine )  return false;
+    if ( i < 0 || i >= m_totalLine )
+        return false;
 
     return m_check[i];
 }
@@ -728,16 +658,18 @@ bool CList::RetCheck(int i)
 
 void CList::SetEnable(int i, bool bMode)
 {
-    if ( i < 0 || i >= m_totalLine )  return;
+    if ( i < 0 || i >= m_totalLine )
+        return;
 
     m_enable[i] = bMode;
 }
 
 // Returns the bit "enable" for a box.
 
-bool CList::RetEnable(int i)
+bool CList::GetEnable(int i)
 {
-    if ( i < 0 || i >= m_totalLine )  return false;
+    if ( i < 0 || i >= m_totalLine )
+        return false;
 
     return m_enable[i];
 }
@@ -745,16 +677,18 @@ bool CList::RetEnable(int i)
 
 // Management of the position of the tabs.
 
-void CList::SetTabs(int i, float pos, int justif)
+void CList::SetTabs(int i, float pos, Gfx::TextAlign justif)
 {
-    if ( i < 0 || i >= 10 )  return;
+    if ( i < 0 || i >= 10 )
+        return;
     m_tabs[i] = pos;
     m_justifs[i] = justif;
 }
 
-float  CList::RetTabs(int i)
+float  CList::GetTabs(int i)
 {
-    if ( i < 0 || i >= 10 )  return 0.0f;
+    if ( i < 0 || i >= 10 )
+        return 0.0f;
     return m_tabs[i];
 }
 
@@ -765,19 +699,20 @@ void CList::ShowSelect(bool bFixed)
 {
     int     sel;
 
-    if ( bFixed &&
-         m_selectLine >= m_firstLine &&
-         m_selectLine <  m_firstLine+m_displayLine )  return;  // all good
+    if ( bFixed && m_selectLine >= m_firstLine && m_selectLine <  m_firstLine+m_displayLine )
+        return;  // all good
 
     sel = m_selectLine;
 
     // Down from 1/2 * h.
-    sel += m_displayLine/2;
-    if ( sel > m_totalLine-1 )  sel = m_totalLine-1;
+    sel += m_displayLine / 2;
+    if ( sel > m_totalLine - 1 )
+        sel = m_totalLine - 1;
 
     // Back to h-1.
-    sel -= m_displayLine-1;
-    if ( sel < 0 )  sel = 0;
+    sel -= m_displayLine - 1;
+    if ( sel < 0 )
+        sel = 0;
 
     m_firstLine = sel;
 
@@ -790,25 +725,22 @@ void CList::ShowSelect(bool bFixed)
 
 void CList::UpdateButton()
 {
-    int     state, i, j;
+    int state, i, j;
 
-    state = CControl::RetState();
+    state = CControl::GetState();
 
     j = m_firstLine;
-    for ( i=0 ; i<m_displayLine ; i++ )
-    {
-        if ( m_button[i] == 0 )  continue;
+    for (i = 0; i < m_displayLine; i++) {
+        if (m_button[i] == nullptr)
+            continue;
 
         m_button[i]->SetState(STATE_CHECK, (j == m_selectLine));
 
-        if ( j < m_totalLine )
-        {
+        if ( j < m_totalLine ) {
 //?         m_button[i]->SetName(m_text[j]);
             m_button[i]->SetName(" ");  // blank button
             m_button[i]->SetState(STATE_ENABLE, (state & STATE_ENABLE));
-        }
-        else
-        {
+        } else {
             m_button[i]->SetName(" ");  // blank button
             m_button[i]->ClearState(STATE_ENABLE);
         }
@@ -820,27 +752,28 @@ void CList::UpdateButton()
 
 void CList::UpdateScroll()
 {
-    float   ratio, value, step;
+    float ratio, value, step;
 
-    if ( m_scroll == 0 )  return;
+    if (m_scroll == nullptr)
+        return;
 
-    if ( m_totalLine <= m_displayLine )
-    {
+    if (m_totalLine <= m_displayLine) {
         ratio = 1.0f;
         value = 0.0f;
         step = 0.0f;
-    }
-    else
-    {
-        ratio = (float)m_displayLine/m_totalLine;
+    } else {
+        ratio = (float)m_displayLine / m_totalLine;
         if ( ratio > 1.0f )  ratio = 1.0f;
 
-        value = (float)m_firstLine/(m_totalLine-m_displayLine);
-        if ( value < 0.0f )  value = 0.0f;
-        if ( value > 1.0f )  value = 1.0f;
+        value = (float)m_firstLine / (m_totalLine - m_displayLine);
+        if ( value < 0.0f )
+            value = 0.0f;
+        if ( value > 1.0f )
+            value = 1.0f;
 
-        step = (float)1.0f/(m_totalLine-m_displayLine);
-        if ( step < 0.0f )  step = 0.0f;
+        step = (float)1.0f/ (m_totalLine - m_displayLine);
+        if ( step < 0.0f )
+            step = 0.0f;
     }
 
     m_scroll->SetVisibleRatio(ratio);
@@ -852,17 +785,21 @@ void CList::UpdateScroll()
 
 void CList::MoveScroll()
 {
-    float   pos;
-    int     n;
+    float pos;
+    int n;
 
-    if ( m_scroll == 0 )  return;
+    if ( m_scroll == 0 )
+        return;
 
-    n = m_totalLine-m_displayLine;
-    pos = m_scroll->RetVisibleValue();
-    pos += m_scroll->RetArrowStep()/2.0f;  // it's magic!
-    m_firstLine = (int)(pos*n);
-    if ( m_firstLine < 0 )  m_firstLine = 0;
-    if ( m_firstLine > n )  m_firstLine = n;
+    n = m_totalLine - m_displayLine;
+    pos = m_scroll->GetVisibleValue();
+    pos += m_scroll->GetArrowStep() / 2.0f;  // it's magic!
+    m_firstLine = (int)(pos * n);
+    if ( m_firstLine < 0 )
+        m_firstLine = 0;
+    if ( m_firstLine > n )
+        m_firstLine = n;
 }
 
 
+}

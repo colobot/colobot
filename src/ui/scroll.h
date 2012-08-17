@@ -46,13 +46,13 @@ class CScroll : public CControl
         void        Draw();
 
         void        SetVisibleValue(float value);
-        float       RetVisibleValue();
+        float       GetVisibleValue();
 
         void        SetVisibleRatio(float value);
-        float       RetVisibleRatio();
+        float       GetVisibleRatio();
 
         void        SetArrowStep(float step);
-        float       RetArrowStep();
+        float       GetArrowStep();
 
     protected:
         void        MoveAdjust();
