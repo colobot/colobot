@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,25 +18,12 @@
 // label.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "old/text.h"
-#include "ui/label.h"
-
-
+#include <ui/label.h>
 
 
 // Object's constructor.
 
-CLabel::CLabel(CInstanceManager* iMan) : CControl(iMan)
+CLabel::CLabel() : CControl()
 {
 }
 
@@ -48,9 +36,14 @@ CLabel::~CLabel()
 
 // Creates a new button.
 
-bool CLabel::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CLabel::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    Event event;
+
+    if (eventMsg == EVENT_NULL) {
+        m_event->GetEvent(event);
+        eventMsg = event.type;
+    }
 
     CControl::Create(pos, dim, icon, eventMsg);
     return true;
@@ -72,22 +65,16 @@ void CLabel::Draw()
 {
     Math::Point pos;
 
-    if ( (m_state & STATE_VISIBLE) == 0 )  return;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return;
 
-    pos.y = m_pos.y+m_dim.y/2.0f;
+    pos.y = m_pos.y + m_dim.y / 2.0f;
 
-    if ( m_justif > 0 )
-    {
-        pos.x = m_pos.x;
+    switch (m_justif) {
+        case Gfx::TEXT_ALIGN_LEFT: pos.x = m_pos.x; break;
+        case Gfx::TEXT_ALIGN_CENTER: pos.x = m_pos.x + m_dim.x / 2.0f; break;
+        case Gfx::TEXT_ALIGN_RIGHT: pos.x = m_pos.x + m_dim.x; break;
     }
-    if ( m_justif == 0 )
-    {
-        pos.x = m_pos.x+m_dim.x/2.0f;
-    }
-    if ( m_justif < 0 )
-    {
-        pos.x = m_pos.x+m_dim.x;
-    }
-    m_engine->RetText()->DrawText(m_name, pos, m_dim.x, m_justif, m_fontSize, m_fontStretch, m_fontType, 0);
+
+    m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, m_justif, 0);
 }
-

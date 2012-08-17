@@ -29,7 +29,7 @@ class CD3DEngine;
 class CGroup : public CControl
 {
 public:
-    CGroup(CInstanceManager* iMan);
+    CGroup();
     virtual ~CGroup();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);

@@ -29,7 +29,7 @@
 class CGauge : public CControl
 {
 public:
-    CGauge(CInstanceManager* iMan);
+    CGauge();
     virtual ~CGauge();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);

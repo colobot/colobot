@@ -19,14 +19,11 @@
 #pragma once
 
 
-#include "common/struct.h"
-#include "ui/control.h"
+#include <common/struct.h>
+#include <common/event.h>
 
-
-class CD3DEngine;
-class CScroll;
-
-
+#include <ui/control.h>
+#include <ui/scroll.h>
 
 const int EDITSTUDIOMAX     = 20000;    // maximum number of characters in CBOT edit
 const int EDITLINEMAX       = 1000;     // maximum total number of lines
@@ -85,10 +82,10 @@ struct HyperHistory
 class CEdit : public CControl
 {
 public:
-    CEdit(CInstanceManager* iMan);
+    CEdit();
     virtual ~CEdit();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
     void        SetPos(Math::Point pos);
     void        SetDim(Math::Point dim);
@@ -145,8 +142,8 @@ public:
 
     void        HyperFlush();
     void        HyperHome(char *filename);
-    bool        HyperTest(EventMsg event);
-    bool        HyperGo(EventMsg event);
+    bool        HyperTest(EventType event);
+    bool        HyperGo(EventType event);
 
     void        SetFontSize(float size);
 

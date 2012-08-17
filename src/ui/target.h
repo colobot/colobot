@@ -19,30 +19,25 @@
 #pragma once
 
 
-#include "ui/control.h"
+#include <ui/control.h>
 
-
-class CD3DEngine;
-class CObject;
-
+#include <common/event.h>
 
 
 class CTarget : public CControl
 {
-public:
-    CTarget(CInstanceManager* iMan);
-    ~CTarget();
+    public:
+        CTarget();
+        ~CTarget();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
-    bool        GetTooltip(Math::Point pos, char* name);
+        bool        EventProcess(const Event &event);
+        void        Draw();
+        bool        GetTooltip(Math::Point pos, char* name);
 
-protected:
-    CObject*    DetectFriendObject(Math::Point pos);
-
-protected:
+    protected:
+        CObject*    DetectFriendObject(Math::Point pos);
 };
 
 

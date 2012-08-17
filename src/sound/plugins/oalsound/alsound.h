@@ -33,7 +33,7 @@
 #include "check.h"
 
 
-class ALSound : public CSoundInterface
+class ALSound : public CSound
 {
     public:
         ALSound();

@@ -26,12 +26,14 @@
 #include "graphics/engine/text.h"
 #include "graphics/engine/particle.h"
 
+#include "sound/sound.h"
+
 class CInstanceManager;
 class CEvent;
 //class Gfx::CEngine;
 class CRobotMain;
 //class Gfx::CParticle;
-class CSound;
+//class CSound;
 
 
 enum ControlState
@@ -60,7 +62,7 @@ enum ControlState
 class CControl
 {
 public:
-    CControl(CInstanceManager* iMan);
+    CControl();
     virtual ~CControl();
 
     virtual bool          Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
@@ -78,8 +80,8 @@ public:
     virtual int           GetState();
     virtual void          SetIcon(int icon);
     virtual int           GetIcon();
-    virtual void          SetName(char* name, bool bTooltip=true);
-    virtual char*         GetName();
+    virtual void          SetName(const char* name, bool bTooltip=true);
+    virtual const char*   GetName();
     virtual void          SetTextAlign(Gfx::TextAlign mode);
     virtual int           GetTextAlign();
     virtual void          SetFontSize(float size);
@@ -88,8 +90,8 @@ public:
     virtual float         GetFontStretch();
     virtual void          SetFontType(Gfx::FontType font);
     virtual Gfx::FontType GetFontType();
-    virtual bool          SetTooltip(char* name);
-    virtual bool          GetTooltip(Math::Point pos, char* name);
+    virtual bool          SetTooltip(const char* name);
+    virtual bool          GetTooltip(Math::Point pos, const char* name);
     virtual void          SetFocus(bool bFocus);
     virtual bool          GetFocus();
 

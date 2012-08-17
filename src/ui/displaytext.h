@@ -45,7 +45,7 @@ const int MAXDTLINE = 4;
 class CDisplayText
 {
 public:
-    CDisplayText(CInstanceManager* iMan);
+    CDisplayText();
     ~CDisplayText();
 
     void        DeleteObject();
