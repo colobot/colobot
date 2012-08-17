@@ -24,6 +24,7 @@
 
 #include <common/event.h>
 
+namespace Ui {
 
 class CLabel : public CControl
 {
@@ -38,3 +39,4 @@ class CLabel : public CControl
 };
 
 
+}
