@@ -37,7 +37,7 @@ class CLight;
 class CDisplayInfo
 {
 public:
-    CDisplayInfo(CInstanceManager* iMan);
+    CDisplayInfo();
     ~CDisplayInfo();
 
     bool        EventProcess(const Event &event);

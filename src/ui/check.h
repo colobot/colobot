@@ -29,7 +29,7 @@ class CD3DEngine;
 class CCheck : public CControl
 {
 public:
-    CCheck(CInstanceManager* iMan);
+    CCheck();
     virtual ~CCheck();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);

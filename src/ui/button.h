@@ -29,7 +29,7 @@
 class CButton : public CControl
 {
 public:
-    CButton(CInstanceManager* iMan);
+    CButton();
     virtual ~CButton();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);

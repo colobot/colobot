@@ -19,8 +19,9 @@
 #pragma once
 
 
-#include "ui/control.h"
+#include <ui/control.h>
 
+#include <common/event.h>
 
 class CD3DEngine;
 
@@ -29,10 +30,10 @@ class CD3DEngine;
 class CImage : public CControl
 {
 public:
-    CImage(CInstanceManager* iMan);
+    CImage();
     virtual ~CImage();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
     bool    EventProcess(const Event &event);
 

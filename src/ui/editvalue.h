@@ -21,6 +21,7 @@
 
 #include "ui/control.h"
 
+#include "common/event.h"
 
 enum EditValueType
 {
@@ -39,10 +40,10 @@ class CButton;
 class CEditValue : public CControl
 {
 public:
-    CEditValue(CInstanceManager* iMan);
+    CEditValue();
     virtual ~CEditValue();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
     void        SetPos(Math::Point pos);
     void        SetDim(Math::Point dim);

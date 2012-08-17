@@ -29,7 +29,7 @@
 class CCompass : public CControl
 {
 public:
-    CCompass(CInstanceManager* iMan);
+    CCompass();
     virtual ~CCompass();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
