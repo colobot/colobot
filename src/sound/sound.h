@@ -143,19 +143,19 @@ enum SoundNext
 
 
 /**
-* @class CSound
+* @class CSoundInterface
 *
 * @brief Sound plugin interface
 *
 */
-class CSound : public CPluginInterface
+class CSoundInterface : public CPluginInterface
 {
   public:
-    CSound() {
+    CSoundInterface() {
       //CInstanceManager::getInstance().AddInstance(CLASS_SOUND, this);
       //m_iMan->AddInstance(CLASS_SOUND, this);
     };
-    virtual ~CSound() = 0;
+    virtual ~CSoundInterface() = 0;
 
     /** Function to initialize sound device
      *  @param bool b3D - enable support for 3D sound
@@ -163,7 +163,7 @@ class CSound : public CPluginInterface
     virtual bool Create(bool b3D) = 0;
 
     /** Function called to cache all sound effect files.
-     *  Function calls \link CSound::Cache() \endlink for each file
+     *  Function calls \link CSoundInterface::Cache() \endlink for each file
      */
     virtual void CacheAll() = 0;
 
