@@ -20,6 +20,8 @@
 
 #include <ui/interface.h>
 
+namespace Ui {
+
 
 CInterface::CInterface()
 {
@@ -336,4 +338,6 @@ void CInterface::Draw()
         if ( m_table[i] != nullptr )
             m_table[i]->Draw();
     }
+}
+
 }

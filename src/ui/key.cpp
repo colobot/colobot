@@ -20,6 +20,7 @@
 
 #include <ui/key.h>
 
+namespace Ui {
 
 void GetKeyName(char *name, int key)
 {
@@ -90,12 +91,9 @@ bool CKey::EventProcess(const Event &event)
     if (event.type == EVENT_MOUSE_BUTTON_DOWN && m_bCatch) {
         m_bCatch = false;
 
-        if ( TestKey(event.param) )  // impossible ?
-        {
+        if ( TestKey(event.param) ) { // impossible ?
             m_sound->Play(SOUND_TZOING);
-        }
-        else
-        {
+        } else {
             if ( event.param == m_key[0] || event.param == m_key[1] ) {
                 m_key[0] = event.param;
                 m_key[1] = 0;
@@ -120,7 +118,7 @@ bool CKey::EventProcess(const Event &event)
 
 bool CKey::TestKey(int key)
 {
-    if ( key == VK_PAUSE ||  key == VK_SNAPSHOT )  return true;  // blocked key
+    if ( key == KEY(PAUSE) || key == KEY(PRINT) )  return true;  // blocked key
 
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 2; j++) {
@@ -237,3 +235,4 @@ int CKey::GetKey(int option)
     return m_key[option];
 }
 
+}

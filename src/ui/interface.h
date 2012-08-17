@@ -49,6 +49,7 @@
 #include <ui/map.h>
 #include <ui/window.h>
 
+namespace Ui {
 
 const int MAXCONTROL = 100;
 
@@ -100,3 +101,4 @@ class CInterface
 };
 
 
+}

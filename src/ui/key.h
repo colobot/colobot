@@ -27,9 +27,11 @@
 #include <common/iman.h>
 #include <common/event.h>
 #include <common/restext.h>
+#include <common/key.h>
 
 #include <app/app.h>
 
+namespace Ui {
 
 class CKey : public CControl
 {
@@ -54,4 +56,6 @@ class CKey : public CControl
         CApplication *m_app;
 };
 
+
+}
 

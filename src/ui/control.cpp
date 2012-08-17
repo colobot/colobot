@@ -51,7 +51,7 @@ CControl::CControl(CInstanceManager* iMan)
     m_event       = static_cast< CEventQueue* > ( m_iMan->SearchInstance(CLASS_EVENT) );
     m_main        = static_cast< CRobotMain* > ( m_iMan->SearchInstance(CLASS_MAIN) );
     m_particle    = static_cast< Gfx::CParticle* > (m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_sound       = static_cast< CSound* > (m_iMan->SearchInstance(CLASS_SOUND));
+    m_sound       = static_cast< CSoundInterface* > (m_iMan->SearchInstance(CLASS_SOUND));
     m_eventType    = EVENT_NULL;
     m_state       = STATE_ENABLE|STATE_VISIBLE|STATE_GLINT;
     m_fontSize    = Gfx::FONT_SIZE_SMALL;

@@ -116,7 +116,7 @@ protected:
     CEventQueue*      m_event;
     CRobotMain*       m_main;
     Gfx::CParticle*   m_particle;
-    CSound*           m_sound;
+    CSoundInterface*  m_sound;
 
     Math::Point       m_pos;          // corner upper / left
     Math::Point       m_dim;          // dimensions
