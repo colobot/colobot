@@ -21,7 +21,7 @@
 //#include <d3d.h>
 
 #include "graphics/core/device.h"
-#include "common/struct.h"
+//#include "common/struct.h"
 //#include "old/d3dengine.h"
 #include "graphics/engine/engine.h"
 #include "common/language.h"
@@ -36,22 +36,23 @@
 //#include "old/text.h"
 #include "graphics/engine/text.h"
 //#include "old/sound.h"
+#include "sound/sound.h"
 #include "ui/control.h"
 
 
 
-
+namespace Ui {
 // Object's constructor.
 
-CControl::CControl(CInstanceManager* iMan)
+CControl::CControl()
 {
-    m_iMan = iMan;
+    m_iMan = CInstanceManager::GetInstancePointer();
 
     m_engine      = static_cast< Gfx::CEngine* > ( m_iMan->SearchInstance(CLASS_ENGINE) );
     m_event       = static_cast< CEventQueue* > ( m_iMan->SearchInstance(CLASS_EVENT) );
     m_main        = static_cast< CRobotMain* > ( m_iMan->SearchInstance(CLASS_MAIN) );
     m_particle    = static_cast< Gfx::CParticle* > (m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_sound       = static_cast< CSound* > (m_iMan->SearchInstance(CLASS_SOUND));
+    m_sound       = static_cast< CSoundInterface* > (m_iMan->SearchInstance(CLASS_SOUND));
     m_eventType    = EVENT_NULL;
     m_state       = STATE_ENABLE|STATE_VISIBLE|STATE_GLINT;
     m_fontSize    = Gfx::FONT_SIZE_SMALL;
@@ -94,7 +95,7 @@ bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType even
     m_eventType = eventType;
 
     pos.x = m_pos.x;
-    pos.y = m_pos.y+m_dim.y;
+    pos.y = m_pos.y + m_dim.y;
     GlintCreate(pos);
 
     GetResource(RES_EVENT, m_eventType, text);
@@ -120,7 +121,7 @@ void CControl::SetPos(Math::Point pos)
     m_pos = pos;
 
     pos.x = m_pos.x;
-    pos.y = m_pos.y+m_dim.y;
+    pos.y = m_pos.y + m_dim.y;
     GlintCreate(pos);
 }
 
@@ -136,7 +137,7 @@ void CControl::SetDim(Math::Point dim)
     m_dim = dim;
 
     pos.x = m_pos.x;
-    pos.y = m_pos.y+m_dim.y;
+    pos.y = m_pos.y + m_dim.y;
     GlintCreate(pos);
 }
 
@@ -411,8 +412,8 @@ void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
 {
     float   offset;
 
-    offset = 8.0f/640.0f;
-    if ( offset > m_dim.x/4.0f)  offset = m_dim.x/4.0f;
+    offset = 8.0f / 640.0f;
+    if ( offset > m_dim.x / 4.0f)  offset = m_dim.x / 4.0f;
 
     if ( bLeft )
     {
@@ -426,17 +427,17 @@ void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
     }
 
     offset = 8.0f/480.0f;
-    if ( offset > m_dim.y/4.0f)  offset = m_dim.y/4.0f;
+    if ( offset > m_dim.y / 4.0f)  offset = m_dim.y / 4.0f;
 
     if ( bUp )
     {
-        m_glintCorner1.y = ref.y-offset;
+        m_glintCorner1.y = ref.y - offset;
         m_glintCorner2.y = ref.y;
     }
     else
     {
         m_glintCorner1.y = ref.y;
-        m_glintCorner2.y = ref.y+offset;
+        m_glintCorner2.y = ref.y + offset;
     }
 
     m_bGlint = true;
@@ -459,12 +460,12 @@ void CControl::GlintFrame(const Event &event)
 
     if ( m_glintProgress >= 2.0f && Detect(m_glintMouse) )
     {
-        pos.x = m_glintCorner1.x + (m_glintCorner2.x-m_glintCorner1.x)*Math::Rand();
-        pos.y = m_glintCorner1.y + (m_glintCorner2.y-m_glintCorner1.y)*Math::Rand();
+        pos.x = m_glintCorner1.x + (m_glintCorner2.x - m_glintCorner1.x) * Math::Rand();
+        pos.y = m_glintCorner1.y + (m_glintCorner2.y - m_glintCorner1.y) * Math::Rand();
         pos.z = 0.0f;
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
-        dim.x = ((15.0f+Math::Rand()*15.0f)/640.0f);
-        dim.y = dim.x/0.75f;
+        dim.x = ((15.0f + Math::Rand() * 15.0f) / 640.0f);
+        dim.y = dim.x / 0.75f;
         m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICONTROL,
                                      1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE );
 
@@ -544,7 +545,7 @@ void CControl::Draw()
     if ( m_name[0] == 0 )  // button without name?
     {
 //?     DrawPart(icon, zoomExt, 0.0f);
-        DrawPart(icon, zoomExt, 8.0f/256.0f);
+        DrawPart(icon, zoomExt, 8.0f / 256.0f);
 
         if ( m_state & STATE_DEAD )  return;
 
@@ -589,23 +590,23 @@ void CControl::Draw()
 //        if ( m_justif < 0 )
         if ( m_textAlign == Gfx::TEXT_ALIGN_LEFT )
         {
-            pos.x = m_pos.x+m_dim.x-m_dim.y*0.5f;
-            pos.y = m_pos.y+m_dim.y*0.5f;
+            pos.x = m_pos.x + m_dim.x - m_dim.y * 0.5f;
+            pos.y = m_pos.y + m_dim.y * 0.5f;
             pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
             m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
         else if ( m_textAlign == Gfx::TEXT_ALIGN_RIGHT )
 //        else if ( m_justif > 0 )
         {
-            pos.x = m_pos.x+m_dim.y*0.5f;
-            pos.y = m_pos.y+m_dim.y*0.5f;
+            pos.x = m_pos.x + m_dim.y * 0.5f;
+            pos.y = m_pos.y + m_dim.y * 0.5f;
             pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
             m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
         else
         {
-            pos.x = m_pos.x+m_dim.x*0.5f;
-            pos.y = m_pos.y+m_dim.y*0.5f;
+            pos.x = m_pos.x + m_dim.x * 0.5f;
+            pos.y = m_pos.y + m_dim.y * 0.5f;
             pos.y -= m_engine->GetText()->GetHeight( m_fontType, m_fontSize)/2.0f;
             m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
@@ -627,26 +628,26 @@ void CControl::DrawPart(int icon, float zoom, float ex)
     if ( (m_state & STATE_CARD ) &&
          (m_state & STATE_CHECK) )
     {
-        p2.y += (2.0f/480.0f);  // a bit above
+        p2.y += (2.0f / 480.0f);  // a bit above
     }
 
-    c.x = (p1.x+p2.x)/2.0f;
-    c.y = (p1.y+p2.y)/2.0f;  // center
+    c.x = (p1.x + p2.x)/2.0f;
+    c.y = (p1.y + p2.y)/2.0f;  // center
 
-    p1.x = (p1.x-c.x)*zoom + c.x;
-    p1.y = (p1.y-c.y)*zoom + c.y;
-    p2.x = (p2.x-c.x)*zoom + c.x;
-    p2.y = (p2.y-c.y)*zoom + c.y;
+    p1.x = (p1.x - c.x) * zoom + c.x;
+    p1.y = (p1.y - c.y) * zoom + c.y;
+    p2.x = (p2.x - c.x) * zoom + c.x;
+    p2.y = (p2.y - c.y) * zoom + c.y;
 
     p2.x -= p1.x;
     p2.y -= p1.y;
 
-    uv1.x = (32.0f/256.0f)*(icon%8);
-    uv1.y = (32.0f/256.0f)*(icon/8);  // uv texture
-    uv2.x = (32.0f/256.0f)+uv1.x;
-    uv2.y = (32.0f/256.0f)+uv1.y;
+    uv1.x = (32.0f / 256.0f) * (icon%8);
+    uv1.y = (32.0f / 256.0f) * (icon/8);  // uv texture
+    uv2.x = (32.0f / 256.0f) + uv1.x;
+    uv2.y = (32.0f / 256.0f) + uv1.y;
 
-    dp = 0.5f/256.0f;
+    dp = 0.5f / 256.0f;
     uv1.x += dp;
     uv1.y += dp;
     uv2.x -= dp;
@@ -689,8 +690,8 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
     {
         if ( dim.x >= dim.y )
         {
-            p3.x = p1.x + ex*dim.y/(uv2.y-uv1.y);
-            p4.x = p2.x - ex*dim.y/(uv2.y-uv1.y);
+            p3.x = p1.x + ex*dim.y / (uv2.y - uv1.y);
+            p4.x = p2.x - ex*dim.y / (uv2.y - uv1.y);
 
             vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,   uv2.y));
             vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,   uv1.y));
@@ -706,17 +707,17 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
         }
         else
         {
-            p3.y = p1.y + ex*dim.x/(uv2.x-uv1.x);
-            p4.y = p2.y - ex*dim.x/(uv2.x-uv1.x);
+            p3.y = p1.y + ex*dim.x / (uv2.x - uv1.x);
+            p4.y = p2.y - ex*dim.x / (uv2.x - uv1.x);
 
-            vertex[0] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,uv2.y   ));
-            vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv2.y   ));
-            vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,uv2.y-ex));
-            vertex[3] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,uv2.y-ex));
-            vertex[4] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,uv1.y+ex));
-            vertex[5] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,uv1.y+ex));
-            vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,uv1.y   ));
-            vertex[7] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv1.y   ));
+            vertex[0] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv2.y     ));
+            vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv2.y     ));
+            vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x, uv2.y - ex));
+            vertex[3] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x, uv2.y - ex));
+            vertex[4] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x, uv1.y + ex));
+            vertex[5] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x, uv1.y + ex));
+            vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x, uv1.y     ));
+            vertex[7] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv1.y     ));
 
             device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
             m_engine->AddStatisticTriangle(6);
@@ -743,8 +744,8 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    if ( corner.x > dim.x/2.0f )  corner.x = dim.x/2.0f;
-    if ( corner.y > dim.y/2.0f )  corner.y = dim.y/2.0f;
+    if ( corner.x > dim.x / 2.0f )  corner.x = dim.x / 2.0f;
+    if ( corner.y > dim.y / 2.0f )  corner.y = dim.y / 2.0f;
 
     p1.x = pos.x;
     p1.y = pos.y;
@@ -756,38 +757,38 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
     p4.y = p2.y - corner.y;
 
     // Bottom horizontal band.
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,   uv2.y   ));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,   uv2.y-ex));
-    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p1.y, 0.0f), n, Math::Point(uv1.x+ex,uv2.y   ));
-    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x+ex,uv2.y-ex));
-    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p1.y, 0.0f), n, Math::Point(uv2.x-ex,uv2.y   ));
-    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p3.y, 0.0f), n, Math::Point(uv2.x-ex,uv2.y-ex));
-    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,   uv2.y   ));
-    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,   uv2.y-ex));
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,      uv2.y     ));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,      uv2.y - ex));
+    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p1.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y     ));
+    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y - ex));
+    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p1.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y     ));
+    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p3.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y - ex));
+    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,      uv2.y     ));
+    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,      uv2.y - ex));
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
     m_engine->AddStatisticTriangle(6);
 
     // Central horizontal band.
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,   uv2.y-ex));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,   uv1.y+ex));
-    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x+ex,uv2.y-ex));
-    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p4.y, 0.0f), n, Math::Point(uv1.x+ex,uv1.y+ex));
-    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p3.y, 0.0f), n, Math::Point(uv2.x-ex,uv2.y-ex));
-    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x-ex,uv1.y+ex));
-    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,   uv2.y-ex));
-    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,   uv1.y+ex));
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,      uv2.y - ex));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,      uv1.y + ex));
+    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y - ex));
+    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p4.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y + ex));
+    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p3.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y - ex));
+    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y + ex));
+    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,      uv2.y - ex));
+    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,      uv1.y + ex));
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
     m_engine->AddStatisticTriangle(6);
 
     // Top horizontal band.
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,   uv1.y+ex));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,   uv1.y   ));
-    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p4.y, 0.0f), n, Math::Point(uv1.x+ex,uv1.y+ex));
-    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p2.y, 0.0f), n, Math::Point(uv1.x+ex,uv1.y   ));
-    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x-ex,uv1.y+ex));
-    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p2.y, 0.0f), n, Math::Point(uv2.x-ex,uv1.y   ));
-    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,   uv1.y+ex));
-    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,   uv1.y   ));
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,      uv1.y + ex));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,      uv1.y   ));
+    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p4.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y + ex));
+    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p2.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y   ));
+    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y + ex));
+    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p2.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y   ));
+    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,      uv1.y + ex));
+    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,      uv1.y   ));
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
     m_engine->AddStatisticTriangle(6);
 }
@@ -799,15 +800,15 @@ void CControl::DrawWarning(Math::Point pos, Math::Point dim)
     Math::Point     uv1, uv2;
     float       dp;
 
-    dp = 0.5f/256.0f;
+    dp = 0.5f / 256.0f;
 
     m_engine->SetTexture("button2.tga");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    uv1.x =  64.0f/256.0f;
-    uv1.y = 208.0f/256.0f;
-    uv2.x = 160.0f/256.0f;
-    uv2.y = 224.0f/256.0f;
+    uv1.x =  64.0f / 256.0f;
+    uv1.y = 208.0f / 256.0f;
+    uv2.x = 160.0f / 256.0f;
+    uv2.y = 224.0f / 256.0f;
 
     uv1.x += dp;
     uv1.y += dp;
@@ -848,25 +849,25 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
     m_engine->SetTexture("button2.tga");
     m_engine->SetState( Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
-    pos.x += deep*0.010f*0.75f;
-    pos.y -= deep*0.015f;
-    dim.x += deep*0.005f*0.75f;
-    dim.y += deep*0.005f;
+    pos.x += deep * 0.010f * 0.75f;
+    pos.y -= deep * 0.015f;
+    dim.x += deep * 0.005f * 0.75f;
+    dim.y += deep * 0.005f;
 
-    uv1.x = 192.0f/256.0f;
-    uv1.y =  32.0f/256.0f;
-    uv2.x = 224.0f/256.0f;
-    uv2.y =  64.0f/256.0f;
+    uv1.x = 192.0f / 256.0f;
+    uv1.y =  32.0f / 256.0f;
+    uv2.x = 224.0f / 256.0f;
+    uv2.y =  64.0f / 256.0f;
 
     uv1.x += dp;
     uv1.y += dp;
     uv2.x -= dp;
     uv2.y -= dp;
 
-    corner.x = 10.0f/640.0f;
-    corner.y = 10.0f/480.0f;
+    corner.x = 10.0f / 640.0f;
+    corner.y = 10.0f / 480.0f;
 
-    DrawIcon(pos, dim, uv1, uv2, corner, 6.0f/256.0f);
+    DrawIcon(pos, dim, uv1, uv2, corner, 6.0f / 256.0f);
 }
 
 
@@ -874,10 +875,10 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 
 bool CControl::Detect(Math::Point pos)
 {
-    return ( pos.x >= m_pos.x         &&
-             pos.x <= m_pos.x+m_dim.x &&
-             pos.y >= m_pos.y         &&
-             pos.y <= m_pos.y+m_dim.y );
+    return ( pos.x >= m_pos.x           &&
+              pos.x <= m_pos.x + m_dim.x &&
+              pos.y >= m_pos.y           &&
+              pos.y <= m_pos.y + m_dim.y );
 }
 
-
+}

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -21,8 +22,9 @@
 
 #include "ui/control.h"
 
-
-class CD3DEngine;
+namespace Gfx{
+class CEngine;
+};
 class CButton;
 
 
@@ -33,7 +35,7 @@ public:
     CSlider(CInstanceManager* iMan);
     ~CSlider();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     void        SetPos(Math::Point pos);
     void        SetDim(Math::Point dim);
@@ -48,10 +50,10 @@ public:
     void        SetLimit(float min, float max);
 
     void        SetVisibleValue(float value);
-    float       RetVisibleValue();
+    float       GetVisibleValue();
 
     void        SetArrowStep(float step);
-    float       RetArrowStep();
+    float       GetArrowStep();
 
 protected:
     void        MoveAdjust();
@@ -74,8 +76,8 @@ protected:
     Math::Point     m_pressPos;
     float       m_pressValue;
 
-    EventMsg    m_eventUp;
-    EventMsg    m_eventDown;
+    EventType    m_eventUp;
+    EventType    m_eventDown;
 };
 
 
