@@ -20,18 +20,18 @@
 
 
 //#include "old/text.h"
-#include "common/struct.h"
-#include "common/event.h"
-#include "graphics/engine/engine.h"
-#include "graphics/engine/text.h"
-#include "graphics/engine/particle.h"
+#include <common/struct.h>
+#include <common/event.h>
 
-#include "sound/sound.h"
+#include <graphics/engine/engine.h>
+#include <graphics/engine/text.h>
+#include <graphics/engine/particle.h>
 
-class CInstanceManager;
-class CEvent;
+#include <sound/sound.h>
+
+// class CEvent;
 //class Gfx::CEngine;
-class CRobotMain;
+// class CRobotMain;
 //class Gfx::CParticle;
 //class CSound;
 
@@ -80,8 +80,8 @@ public:
     virtual int           GetState();
     virtual void          SetIcon(int icon);
     virtual int           GetIcon();
-    virtual void          SetName(const char* name, bool bTooltip=true);
-    virtual const char*   GetName();
+    virtual void          SetName(char* name, bool bTooltip=true);
+    virtual char*   GetName();
     virtual void          SetTextAlign(Gfx::TextAlign mode);
     virtual int           GetTextAlign();
     virtual void          SetFontSize(float size);
@@ -90,8 +90,8 @@ public:
     virtual float         GetFontStretch();
     virtual void          SetFontType(Gfx::FontType font);
     virtual Gfx::FontType GetFontType();
-    virtual bool          SetTooltip(const char* name);
-    virtual bool          GetTooltip(Math::Point pos, const char* name);
+    virtual bool          SetTooltip(char* name);
+    virtual bool          GetTooltip(Math::Point pos, char* name);
     virtual void          SetFocus(bool bFocus);
     virtual bool          GetFocus();
 

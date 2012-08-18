@@ -43,9 +43,9 @@
 
 // Object's constructor.
 
-CControl::CControl(CInstanceManager* iMan)
+CControl::CControl()
 {
-    m_iMan = iMan;
+    m_iMan = CInstanceManager::GetInstancePointer();
 
     m_engine      = static_cast< Gfx::CEngine* > ( m_iMan->SearchInstance(CLASS_ENGINE) );
     m_event       = static_cast< CEventQueue* > ( m_iMan->SearchInstance(CLASS_EVENT) );
