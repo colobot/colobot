@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -24,22 +25,22 @@
 #include "graphics/engine/engine.h"
 //#include "common/language.h"
 //#include "old/math3d.h"
-//#include "common/event.h"
+#include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
 #include "common/restext.h"
 #include "ui/button.h"
 
 
+namespace Ui {
 
 const float DELAY1 = 0.4f;
 const float DELAY2 = 0.1f;
 
 
-
 // Object's constructor.
 
-CButton::CButton(CInstanceManager* iMan) : CControl(iMan)
+CButton::CButton() : CControl()
 {
     m_bCapture = false;
     m_bImmediat = false;
@@ -162,10 +163,10 @@ void CButton::Draw()
 
     if ( m_state & STATE_WARNING )  // shading yellow-black?
     {
-        pos.x = m_pos.x-( 8.0f/640.0f);
-        pos.y = m_pos.y-( 4.0f/480.0f);
-        dim.x = m_dim.x+(16.0f/640.0f);
-        dim.y = m_dim.y+( 8.0f/480.0f);
+        pos.x = m_pos.x - ( 8.0f / 640.0f);
+        pos.y = m_pos.y - ( 4.0f / 480.0f);
+        dim.x = m_dim.x + (16.0f / 640.0f);
+        dim.y = m_dim.y + ( 8.0f / 480.0f);
         if ( m_state & STATE_SHADOW )
         {
             DrawShadow(pos, dim);
@@ -188,17 +189,17 @@ void CButton::Draw()
         m_engine->SetTexture("button2.tga");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-        dp = 0.5f/256.0f;
+        dp = 0.5f / 256.0f;
 
-        uv1.x = 128.0f/256.0f;
-        uv1.y =  96.0f/256.0f;
-        uv2.x = 136.0f/256.0f;
-        uv2.y = 128.0f/256.0f;
+        uv1.x = 128.0f / 256.0f;
+        uv1.y =  96.0f / 256.0f;
+        uv2.x = 136.0f / 256.0f;
+        uv2.y = 128.0f / 256.0f;
 
         if ( (m_state & STATE_ENABLE) == 0 )
         {
-            uv1.x += 16.0f/256.0f;
-            uv2.x += 16.0f/256.0f;
+            uv1.x += 16.0f / 256.0f;
+            uv2.x += 16.0f / 256.0f;
         }
 
         uv1.x += dp;
@@ -206,15 +207,15 @@ void CButton::Draw()
         uv2.x -= dp;
         uv2.y -= dp;
 
-        pos.y = m_pos.y+5.0f/480.0f;
-        dim.y = m_dim.y-10.0f/480.0f;
-        pos.x = m_pos.x+5.0f/640.0f;
-        dim.x = 3.0f/640.0f;
+        pos.y = m_pos.y +  5.0f / 480.0f;
+        dim.y = m_dim.y - 10.0f / 480.0f;
+        pos.x = m_pos.x +  5.0f / 640.0f;
+        dim.x = 3.0f / 640.0f;
         DrawIcon(pos, dim, uv1, uv2, 0.0f);
 
-        uv1.x += 8.0f/256.0f;
-        uv2.x += 8.0f/256.0f;
-        pos.x = m_pos.x+m_dim.x-5.0f/640.0f-3.0f/640.0f;
+        uv1.x += 8.0f / 256.0f;
+        uv2.x += 8.0f / 256.0f;
+        pos.x = m_pos.x + m_dim.x - 5.0f / 640.0f - 3.0f / 640.0f;
         DrawIcon(pos, dim, uv1, uv2, 0.0f);
     }
 #endif
@@ -248,3 +249,4 @@ bool CButton::GetRepeat()
     return m_bRepeat;
 }
 
+}

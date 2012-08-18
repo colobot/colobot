@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@
 
 
 //#include <windows.h>
-#include <stdio.h>
+//#include <stdio.h>
 //#include <d3d.h>
 
 //#include "common/struct.h"
@@ -32,7 +33,7 @@
 #include "ui/color.h"
 
 
-
+namespace Ui {
 const float DELAY1 = 0.4f;
 const float DELAY2 = 0.1f;
 
@@ -40,7 +41,8 @@ const float DELAY2 = 0.1f;
 
 // Object's constructor.
 
-CColor::CColor(CInstanceManager* iMan) : CControl(iMan)
+//CColor::CColor(CInstanceManager* iMan) : CControl(iMan)
+CColor::CColor() : CControl()
 {
     m_bRepeat = false;
     m_repeat = 0.0f;
@@ -160,42 +162,42 @@ void CColor::Draw()
 
     device = m_engine->GetDevice();
 
-    p1.x = m_pos.x+(4.0f/640.0f);
-    p1.y = m_pos.y+(4.0f/480.0f);
-    p2.x = m_pos.x+m_dim.x-(4.0f/640.0f);
-    p2.y = m_pos.y+m_dim.y-(4.0f/480.0f);
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
-    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
-    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), 0x00000000,0x00000000, 0.0f,0.0f);
+    p1.x = m_pos.x + (4.0f / 640.0f);
+    p1.y = m_pos.y + (4.0f / 480.0f);
+    p2.x = m_pos.x + m_dim.x - (4.0f / 640.0f);
+    p2.y = m_pos.y + m_dim.y - (4.0f / 480.0f);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), 0x00000000,0x00000000, Math::Point( 0.0f, 0.0f));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), 0x00000000,0x00000000, Math::Point( 0.0f, 0.0f));
+    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), 0x00000000,0x00000000, Math::Point( 0.0f, 0.0f));
+    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), 0x00000000,0x00000000, Math::Point( 0.0f, 0.0f));
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
 
-    p1.x = m_pos.x+(5.0f/640.0f);
-    p1.y = m_pos.y+(5.0f/480.0f);
-    p2.x = m_pos.x+m_dim.x-(5.0f/640.0f);
-    p2.y = m_pos.y+m_dim.y-(5.0f/480.0f);
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), color,0x00000000, 0.0f,0.0f);
-    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), color,0x00000000, 0.0f,0.0f);
+    p1.x = m_pos.x + (5.0f / 640.0f);
+    p1.y = m_pos.y + (5.0f / 480.0f);
+    p2.x = m_pos.x + m_dim.x - (5.0f / 640.0f);
+    p2.y = m_pos.y + m_dim.y - (5.0f / 480.0f);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), color,0x00000000, Math::Point( 0.0f, 0.0f));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), color,0x00000000, Math::Point( 0.0f, 0.0f));
+    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), color,0x00000000, Math::Point( 0.0f, 0.0f));
+    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), color,0x00000000, Math::Point( 0.0f, 0.0f));
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
 
     m_engine->AddStatisticTriangle(4);
 #else
-    p1.x = m_pos.x+(3.0f/640.0f);
-    p1.y = m_pos.y+(3.0f/480.0f);
-    p2.x = m_pos.x+m_dim.x-(3.0f/640.0f);
-    p2.y = m_pos.y+m_dim.y-(3.0f/480.0f);
+    p1.x = m_pos.x + (3.0f / 640.0f);
+    p1.y = m_pos.y + (3.0f / 480.0f);
+    p2.x = m_pos.x + m_dim.x - (3.0f / 640.0f);
+    p2.y = m_pos.y + m_dim.y - (3.0f / 480.0f);
 
     color = GetColor();
 
     m_engine->SetTexture("xxx.tga");  // no texture
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    vertex[0] = Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color,0x00000000, Math::Point( 0.0f,0.0f));
-    vertex[1] = Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color,0x00000000, Math::Point(0.0f,0.0f));
-    vertex[2] = Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color,0x00000000, Math::Point(0.0f,0.0f));
-    vertex[3] = Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color,0x00000000, Math::Point(0.0f,0.0f));
+    vertex[0] = Gfx::VertexCol(Math::Vector(p1.x, p1.y, 0.0f), color,0x00000000, Math::Point(0.0f, 0.0f));
+    vertex[1] = Gfx::VertexCol(Math::Vector(p1.x, p2.y, 0.0f), color,0x00000000, Math::Point(0.0f, 0.0f));
+    vertex[2] = Gfx::VertexCol(Math::Vector(p2.x, p1.y, 0.0f), color,0x00000000, Math::Point(0.0f, 0.0f));
+    vertex[3] = Gfx::VertexCol(Math::Vector(p2.x, p2.y, 0.0f), color,0x00000000, Math::Point(0.0f, 0.0f));
 
     device = m_engine->GetDevice();
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
@@ -226,3 +228,4 @@ Gfx::Color CColor::GetColor()
 }
 
 
+}

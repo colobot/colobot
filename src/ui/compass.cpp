@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@
 
 
 //#include <windows.h>
-#include <stdio.h>
+//#include <stdio.h>
 //#include <d3d.h>
 
 //#include "common/struct.h"
@@ -32,10 +33,11 @@
 
 
 
-
+namespace Ui {
 // Object's constructor.
 
-CCompass::CCompass(CInstanceManager* iMan) : CControl(iMan)
+//CCompass::CCompass(CInstanceManager* iMan) : CControl(iMan)
+CCompass::CCompass() : CControl()
 {
     m_dir = 0.0f;
 }
@@ -102,15 +104,15 @@ void CCompass::Draw()
     p2.x = m_pos.x + m_dim.x;
     p2.y = m_pos.y + m_dim.y;
 
-    c.x = (p1.x+p2.x)/2.0f;
-    c.y = (p1.y+p2.y)/2.0f;  // center
+    c.x = (p1.x + p2.x) / 2.0f;
+    c.y = (p1.y + p2.y) / 2.0f;  // center
 
-    uv1.x = 64.0f/256.0f;
-    uv1.y = 32.0f/256.0f;
-    uv2.x = 96.0f/256.0f;
-    uv2.y = 64.0f/256.0f;
+    uv1.x = 64.0f / 256.0f;
+    uv1.y = 32.0f / 256.0f;
+    uv2.x = 96.0f / 256.0f;
+    uv2.y = 64.0f / 256.0f;
 
-    dp = 0.5f/256.0f;
+    dp = 0.5f / 256.0f;
     uv1.x += dp;
     uv1.y += dp;
     uv2.x -= dp;
@@ -118,10 +120,10 @@ void CCompass::Draw()
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point( uv1.x,uv2.y));
-    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point( uv1.x,uv1.y));
-    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point( uv2.x,uv2.y));
-    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point( uv2.x,uv1.y));
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv2.y));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv1.y));
+    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv2.y));
+    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x, uv1.y));
 
     device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
@@ -129,33 +131,33 @@ void CCompass::Draw()
     if ( m_state & STATE_ENABLE )
     {
         p1.x = c.x;
-        p1.y = c.y+m_dim.x*0.40f;
+        p1.y = c.y + m_dim.x * 0.40f;
         p1 = Math::RotatePoint(c, m_dir, p1);
-        p1.x = c.x+(p1.x-c.x)*(m_dim.x/m_dim.y);
+        p1.x = c.x + (p1.x - c.x) * (m_dim.x / m_dim.y);
 
-        p2.x = c.x+m_dim.x*0.20f;
-        p2.y = c.y-m_dim.x*0.40f;
+        p2.x = c.x + m_dim.x * 0.20f;
+        p2.y = c.y - m_dim.x * 0.40f;
         p2 = Math::RotatePoint(c, m_dir, p2);
-        p2.x = c.x+(p2.x-c.x)*(m_dim.x/m_dim.y);
+        p2.x = c.x + (p2.x - c.x) * (m_dim.x / m_dim.y);
 
-        p3.x = c.x-m_dim.x*0.20f;
-        p3.y = c.y-m_dim.x*0.40f;
+        p3.x = c.x - m_dim.x * 0.20f;
+        p3.y = c.y - m_dim.x * 0.40f;
         p3 = Math::RotatePoint(c, m_dir, p3);
-        p3.x = c.x+(p3.x-c.x)*(m_dim.x/m_dim.y);
+        p3.x = c.x + (p3.x - c.x) * (m_dim.x / m_dim.y);
 
-        uv1.x =  96.0f/256.0f;
-        uv1.y =  32.0f/256.0f;
-        uv2.x = 104.0f/256.0f;
-        uv2.y =  64.0f/256.0f;
+        uv1.x =  96.0f / 256.0f;
+        uv1.y =  32.0f / 256.0f;
+        uv2.x = 104.0f / 256.0f;
+        uv2.y =  64.0f / 256.0f;
 
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
 
-        vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point( uv1.x,uv1.y));
-        vertex[1] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point( uv1.x,uv2.y));
-        vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point( uv2.x,uv2.y));
+        vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv1.y));
+        vertex[1] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv2.y));
+        vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv2.x, uv2.y));
 
         device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, vertex, 3);
         m_engine->AddStatisticTriangle(1);
@@ -170,9 +172,10 @@ void CCompass::SetDirection(float dir)
     m_dir = dir;
 }
 
-float CCompass::RetDirection()
+float CCompass::GetDirection()
 {
     return m_dir;
 }
 
 
+}

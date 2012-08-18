@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -22,27 +23,29 @@
 #include "ui/control.h"
 //#include "graphics/engine/engine.h"
 
+namespace Gfx{
+class CEngine;
+struct Color;
+}
 
-//class CEngine;
-
-
-
+namespace Ui {
 class CColor : public CControl
 {
 public:
-    CColor(CInstanceManager* iMan);
-    virtual ~CColor();
+//    CColor(CInstanceManager* iMan);
+    CColor();
+    virtual   ~CColor();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool    EventProcess(const Event &event);
+    bool      EventProcess(const Event &event);
 
-    void    Draw();
+    void      Draw();
 
-    void    SetRepeat(bool bRepeat);
-    bool    GetRepeat();
+    void      SetRepeat(bool bRepeat);
+    bool      GetRepeat();
 
-    void    SetColor(Gfx::Color color);
+    void       SetColor(Gfx::Color color);
     Gfx::Color GetColor();
 
 protected:
@@ -54,3 +57,4 @@ protected:
 };
 
 
+}

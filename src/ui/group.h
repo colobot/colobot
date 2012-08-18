@@ -21,15 +21,17 @@
 
 #include "ui/control.h"
 
+namespace Gfx{
+class CEngine;
+};
 
-class CD3DEngine;
-
-
+namespace Ui {
 
 class CGroup : public CControl
 {
 public:
-    CGroup(CInstanceManager* iMan);
+//    CGroup(CInstanceManager* iMan);
+    CGroup();
     virtual ~CGroup();
 
     bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
@@ -44,3 +46,4 @@ protected:
 };
 
 
+}
