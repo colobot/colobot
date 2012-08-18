@@ -25,6 +25,7 @@
 #include <ui/scroll.h>
 
 #include <common/event.h>
+#include <common/misc.h>
 
 #include <graphics/engine/text.h>
 

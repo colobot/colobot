@@ -61,9 +61,9 @@ common/image.cpp
 common/logger.cpp
 common/iman.cpp
 # common/metafile.cpp
-common/misc.cpp
+# common/misc.cpp
 # common/modfile.cpp
-common/profile.cpp
+# common/profile.cpp
 # common/restext.cpp
 common/stringutils.cpp
 graphics/core/color.cpp
@@ -149,7 +149,7 @@ graphics/opengl/gldevice.cpp
 # ui/check.cpp
 # ui/color.cpp
 # ui/compass.cpp
-ui/control.cpp
+# ui/control.cpp
 # ui/displayinfo.cpp
 # ui/displaytext.cpp
 # ui/edit.cpp
@@ -159,7 +159,7 @@ ui/control.cpp
 # ui/image.cpp
 # ui/interface.cpp
 # ui/key.cpp
-ui/label.cpp
+# ui/label.cpp
 # ui/list.cpp
 # ui/maindialog.cpp
 # ui/mainmap.cpp

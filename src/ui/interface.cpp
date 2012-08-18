@@ -72,12 +72,8 @@ template <typename T> inline T* CInterface::CreateControl(Math::Point pos, Math:
 {
     T* pc;
     int index;
-    Event event;
-
-    if (eventMsg == EVENT_NULL) {
-        m_event->GetEvent(event);
-        eventMsg = event.type;
-    }
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
     if ((index = GetNextFreeControl()) < 0)
         return nullptr;
@@ -95,12 +91,8 @@ CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, E
 {
     CWindow* pc;
     int index;
-    Event event;
-
-    if (eventMsg == EVENT_NULL) {
-        m_event->GetEvent(event);
-        eventMsg = event.type;
-    }
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
     switch (eventMsg) {
         case EVENT_WINDOW0: index = 0; break;
@@ -212,12 +204,8 @@ CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventT
 {
     CList* pc;
     int index;
-    Event event;
-
-    if (eventMsg == EVENT_NULL) {
-        m_event->GetEvent(event);
-        eventMsg = event.type;
-    }
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
     if ((index = GetNextFreeControl()) < 0)
         return nullptr;

@@ -59,12 +59,8 @@ CKey::~CKey()
 bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
     char name[100];
-    Event event;
-
-    if (eventMsg == EVENT_NULL) {
-        m_event->GetEvent(event);
-        eventMsg = event.type;
-    }
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
     CControl::Create(pos, dim, icon, eventMsg);
     GetResource(RES_EVENT, eventMsg, name);

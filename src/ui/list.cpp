@@ -42,7 +42,7 @@ CList::CList() : CControl()
 
     for (int i = 0; i < 10; i++) {
         m_tabs[i] = 0.0f;
-        m_justifs[i] = Gfx::TEXT_ALIGN_CENTER;
+        m_justifs[i] = Gfx::TEXT_ALIGN_RIGHT;
     }
 
     m_totalLine = 0;
@@ -72,14 +72,10 @@ CList::~CList()
 
 bool CList::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
 {
-    Event event;
     m_expand = expand;
 
-    if (eventMsg == EVENT_NULL) {
-        m_event->GetEvent(event);
-        eventMsg = event.type;
-    }
-
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
     CControl::Create(pos, dim, icon, eventMsg);
 
@@ -131,7 +127,7 @@ bool CList::MoveAdjust()
     for (int i = 0; i < m_displayLine; i++) {
         m_button[i] = new CButton();
         m_button[i]->Create(ppos, ddim, -1, EVENT_NULL);
-        m_button[i]->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
+        m_button[i]->SetTextAlign(Gfx::TEXT_ALIGN_RIGHT);
         m_button[i]->SetState(STATE_SIMPLY);
         m_button[i]->SetFontType(m_fontType);
         m_button[i]->SetFontSize(m_fontSize);
@@ -417,7 +413,7 @@ void CList::Draw()
                 ppos.y = pos.y + dim.y * 0.5f;
                 ppos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
                 ddim.x = dim.x-dim.y;
-                DrawCase(m_text[i + m_firstLine], ppos, ddim.x, Gfx::TEXT_ALIGN_CENTER);
+                DrawCase(m_text[i + m_firstLine], ppos, ddim.x, Gfx::TEXT_ALIGN_RIGHT);
             }  else {
                 ppos.x = pos.x + dim.y * 0.5f;
                 ppos.y = pos.y + dim.y * 0.5f;
@@ -505,9 +501,9 @@ void CList::Draw()
 
 void CList::DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif)
 {
-    if (justif == Gfx::TEXT_ALIGN_LEFT)
+    if (justif == Gfx::TEXT_ALIGN_CENTER)
         pos.x += width / 2.0f;
-    else
+    else if (justif == Gfx::TEXT_ALIGN_LEFT)
         pos.x += width;
     m_engine->GetText()->DrawText(std::string(text), m_fontType, m_fontSize, pos, width, justif, 0);
 }
