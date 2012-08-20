@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,55 +18,21 @@
 // interface.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+#include <ui/interface.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "ui/control.h"
-#include "ui/button.h"
-#include "ui/color.h"
-#include "ui/check.h"
-#include "ui/key.h"
-#include "ui/group.h"
-#include "ui/image.h"
-#include "ui/label.h"
-#include "ui/edit.h"
-#include "ui/editvalue.h"
-#include "ui/scroll.h"
-#include "ui/slider.h"
-#include "ui/list.h"
-#include "ui/shortcut.h"
-#include "ui/compass.h"
-#include "ui/target.h"
-#include "ui/map.h"
-#include "ui/window.h"
-#include "old/camera.h"
-#include "ui/interface.h"
+namespace Ui {
 
 
-
-
-// Object's constructor.
-
-CInterface::CInterface(CInstanceManager* iMan)
+CInterface::CInterface()
 {
-    int     i;
-
-    m_iMan = iMan;
+    m_iMan = CInstanceManager::GetInstancePointer();
     m_iMan->AddInstance(CLASS_INTERFACE, this);
+    m_event = static_cast<CEventQueue *>( m_iMan->SearchInstance(CLASS_EVENT) );
+    m_engine = static_cast<Gfx::CEngine *>( m_iMan->SearchInstance(CLASS_ENGINE) );
 
-    m_engine = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_camera = 0;
-
-    for ( i=0 ; i<MAXCONTROL ; i++ )
+    for (int i = 0; i < MAXCONTROL; i++ )
     {
-        m_table[i] = 0;
+        m_table[i] = nullptr;
     }
 }
 
@@ -74,6 +41,7 @@ CInterface::CInterface(CInstanceManager* iMan)
 CInterface::~CInterface()
 {
     Flush();
+    m_iMan->DeleteInstance(CLASS_INTERFACE, this);
 }
 
 
@@ -81,424 +49,210 @@ CInterface::~CInterface()
 
 void CInterface::Flush()
 {
-    int     i;
-
-    for ( i=0 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] != 0 )
-        {
+    for (int i = 0; i < MAXCONTROL; i++ ) {
+        if ( m_table[i] != nullptr ) {
             delete m_table[i];
-            m_table[i] = 0;
+            m_table[i] = nullptr;
         }
     }
 }
 
 
+int CInterface::GetNextFreeControl()
+{
+    for (int i = 10; i < MAXCONTROL-1; i++) {
+        if (m_table[i] == nullptr)
+            return i;
+    }
+    return -1;
+}
+
+
+template <typename T> inline T* CInterface::CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
+{
+    T* pc;
+    int index;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
+
+    if ((index = GetNextFreeControl()) < 0)
+        return nullptr;
+
+    m_table[index] = new T();
+    pc = static_cast<T *>(m_table[index]);
+    pc->Create(pos, dim, icon, eventMsg);
+    return pc;
+}
+
+
 // Creates a new button.
 
-CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CWindow* CInterface::CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CWindow*    pc;
-    int         i;
+    CWindow* pc;
+    int index;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    if ( eventMsg == EVENT_WINDOW0 )  {i=0; goto create;}
-    if ( eventMsg == EVENT_WINDOW1 )  {i=1; goto create;}
-    if ( eventMsg == EVENT_WINDOW2 )  {i=2; goto create;}
-    if ( eventMsg == EVENT_WINDOW3 )  {i=3; goto create;}
-    if ( eventMsg == EVENT_WINDOW4 )  {i=4; goto create;}
-    if ( eventMsg == EVENT_WINDOW5 )  {i=5; goto create;}
-    if ( eventMsg == EVENT_WINDOW6 )  {i=6; goto create;}
-    if ( eventMsg == EVENT_WINDOW7 )  {i=7; goto create;}
-    if ( eventMsg == EVENT_WINDOW8 )  {i=8; goto create;}
-    if ( eventMsg == EVENT_WINDOW9 )  {i=9; goto create;}
-
-    if ( eventMsg == EVENT_TOOLTIP )  {i=MAXCONTROL-1; goto create;}
-
-    for ( i=10 ; i<MAXCONTROL-1 ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            create:
-            m_table[i] = new CWindow(m_iMan);
-            pc = (CWindow*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
+    switch (eventMsg) {
+        case EVENT_WINDOW0: index = 0; break;
+        case EVENT_WINDOW1: index = 1; break;
+        case EVENT_WINDOW2: index = 2; break;
+        case EVENT_WINDOW3: index = 3; break;
+        case EVENT_WINDOW4: index = 4; break;
+        case EVENT_WINDOW5: index = 5; break;
+        case EVENT_WINDOW6: index = 6; break;
+        case EVENT_WINDOW7: index = 7; break;
+        case EVENT_WINDOW8: index = 8; break;
+        case EVENT_WINDOW9: index = 9; break;
+        case EVENT_TOOLTIP: index = MAXCONTROL-1; break;
+        default: index = GetNextFreeControl(); break;
     }
-    return 0;
+
+    if (index < 0)
+        return nullptr;
+
+    m_table[index] = new CWindow();
+    pc = static_cast<CWindow *>(m_table[index]);
+    pc->Create(pos, dim, icon, eventMsg);
+    return pc;
 }
 
 // Creates a new button.
 
-CButton* CInterface::CreateButton(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CButton* CInterface::CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CButton*    pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CButton(m_iMan);
-            pc = (CButton*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CButton>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CColor* CInterface::CreateColor(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CColor* CInterface::CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CColor*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CColor(m_iMan);
-            pc = (CColor*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CColor>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CCheck* CInterface::CreateCheck(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CCheck* CInterface::CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CCheck*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CCheck(m_iMan);
-            pc = (CCheck*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CCheck>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CKey* CInterface::CreateKey(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CKey* CInterface::CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CKey*       pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CKey(m_iMan);
-            pc = (CKey*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CKey>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CGroup* CInterface::CreateGroup(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CGroup* CInterface::CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CGroup*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CGroup(m_iMan);
-            pc = (CGroup*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CGroup>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new button.
 
-CImage* CInterface::CreateImage(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CImage* CInterface::CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CImage*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CImage(m_iMan);
-            pc = (CImage*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CImage>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new label.
 
-CLabel* CInterface::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg,
-                             char *name)
+CLabel* CInterface::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, const char *name)
 {
-    CLabel*     pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CLabel(m_iMan);
-            pc = (CLabel*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            pc->SetName(name);
-            return pc;
-        }
-    }
-    return 0;
+    CLabel* pc = CreateControl<CLabel>(pos, dim, icon, eventMsg);
+    if (pc != nullptr)
+        pc->SetName(name);
+    return pc;
 }
 
 // Creates a new pave editable.
 
-CEdit* CInterface::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CEdit* CInterface::CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CEdit*      pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CEdit(m_iMan);
-            pc = (CEdit*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CEdit>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new pave editable.
 
-CEditValue* CInterface::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CEditValue* CInterface::CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CEditValue* pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CEditValue(m_iMan);
-            pc = (CEditValue*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CEditValue>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new lift.
 
-CScroll* CInterface::CreateScroll(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CScroll* CInterface::CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CScroll*    pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CScroll(m_iMan);
-            pc = (CScroll*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CScroll>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new cursor.
 
-CSlider* CInterface::CreateSlider(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CSlider* CInterface::CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CSlider*    pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CSlider(m_iMan);
-            pc = (CSlider*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CSlider>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new list.
 
-CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg,
-                            float expand)
+CList* CInterface::CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand)
 {
-    CList*      pc;
-    int         i;
+    CList* pc;
+    int index;
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ((index = GetNextFreeControl()) < 0)
+        return nullptr;
 
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CList(m_iMan);
-            pc = (CList*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg, expand);
-            return pc;
-        }
-    }
-    return 0;
+    m_table[index] = new CList();
+    pc = static_cast<CList *>(m_table[index]);
+    pc->Create(pos, dim, icon, eventMsg, expand);
+    return pc;
 }
 
 // Creates a new shortcut.
 
-CShortcut* CInterface::CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CShortcut* CInterface::CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CShortcut*  ps;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CShortcut(m_iMan);
-            ps = (CShortcut*)m_table[i];
-            ps->Create(pos, dim, icon, eventMsg);
-            return ps;
-        }
-    }
-    return 0;
+    return CreateControl<CShortcut>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new compass.
 
-CCompass* CInterface::CreateCompass(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CCompass* CInterface::CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CCompass*   pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CCompass(m_iMan);
-            pc = (CCompass*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CCompass>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new target.
 
-CTarget* CInterface::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CTarget* CInterface::CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CTarget*    pc;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CTarget(m_iMan);
-            pc = (CTarget*)m_table[i];
-            pc->Create(pos, dim, icon, eventMsg);
-            return pc;
-        }
-    }
-    return 0;
+    return CreateControl<CTarget>(pos, dim, icon, eventMsg);
 }
 
 // Creates a new map.
 
-CMap* CInterface::CreateMap(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+CMap* CInterface::CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    CMap*       pm;
-    int         i;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-
-    for ( i=10 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] == 0 )
-        {
-            m_table[i] = new CMap(m_iMan);
-            pm = (CMap*)m_table[i];
-            pm->Create(pos, dim, icon, eventMsg);
-            return pm;
-        }
-    }
-    return 0;
+    return CreateControl<CMap>(pos, dim, icon, eventMsg);
 }
 
 // Removes a control.
 
-bool CInterface::DeleteControl(EventMsg eventMsg)
+bool CInterface::DeleteControl(EventType eventMsg)
 {
-    int     i;
-
-    for ( i=0 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] != 0 )
-        {
-            if ( eventMsg == m_table[i]->RetEventMsg() )
-            {
+    for (int i = 0; i < MAXCONTROL; i++) {
+        if ( m_table[i] != nullptr ) {
+            if (eventMsg == m_table[i]->GetEventType()) {
                 delete m_table[i];
-                m_table[i] = 0;
+                m_table[i] = nullptr;
                 return true;
             }
         }
@@ -508,47 +262,32 @@ bool CInterface::DeleteControl(EventMsg eventMsg)
 
 // Gives a control.
 
-CControl* CInterface::SearchControl(EventMsg eventMsg)
+CControl* CInterface::SearchControl(EventType eventMsg)
 {
-    int     i;
-
-    for ( i=0 ; i<MAXCONTROL ; i++ )
-    {
-        if ( m_table[i] != 0 )
-        {
-            if ( eventMsg == m_table[i]->RetEventMsg() )
-            {
+    for (int i = 0; i < MAXCONTROL; i++) {
+        if (m_table[i] != nullptr) {
+            if (eventMsg == m_table[i]->GetEventType())
                 return m_table[i];
-            }
         }
     }
-    return 0;
+    return nullptr;
 }
 
 // Management of an event.
 
 bool CInterface::EventProcess(const Event &event)
 {
-    int     i;
-
-    if ( event.event == EVENT_MOUSEMOVE )
-    {
-        if ( m_camera == 0 )
-        {
-            m_camera = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
+    if (event.type == EVENT_MOUSE_MOVE) {
+        if (m_camera == nullptr) {
+            m_camera = static_cast<Gfx::CCamera *>(m_iMan->SearchInstance(CLASS_CAMERA));
         }
-        m_engine->SetMouseType(m_camera->RetMouseDef(event.pos));
+        m_engine->SetMouseType(m_camera->GetMouseDef(event.pos));
     }
 
-    for ( i=MAXCONTROL-1 ; i>=0 ; i-- )
-    {
-        if ( m_table[i] != 0 &&
-             m_table[i]->TestState(STATE_ENABLE) )
-        {
+    for (int i = MAXCONTROL-1; i >= 0; i--) {
+        if (m_table[i] != nullptr &&  m_table[i]->TestState(STATE_ENABLE)) {
             if ( !m_table[i]->EventProcess(event) )
-            {
                 return false;
-            }
         }
     }
 
@@ -558,18 +297,12 @@ bool CInterface::EventProcess(const Event &event)
 
 // Gives the tooltip binding to the window.
 
-bool CInterface::GetTooltip(Math::Point pos, char* name)
+bool CInterface::GetTooltip(Math::Point pos, const char* name)
 {
-    int     i;
-
-    for ( i=MAXCONTROL-1 ; i>=0 ; i-- )
-    {
-        if ( m_table[i] != 0 )
-        {
-            if ( m_table[i]->GetTooltip(pos, name) )
-            {
+    for (int i = MAXCONTROL-1; i >= 0; i--) {
+        if (m_table[i] != nullptr) {
+            if (m_table[i]->GetTooltip(pos, name))
                 return true;
-            }
         }
     }
     return false;
@@ -580,26 +313,19 @@ bool CInterface::GetTooltip(Math::Point pos, char* name)
 
 void CInterface::Draw()
 {
-    D3DMATERIAL7    material;
-    int             i;
-
-    ZeroMemory( &material, sizeof(D3DMATERIAL7) );
+    /*ZeroMemory( &material, sizeof(D3DMATERIAL7) );
     material.diffuse.r = 1.0f;
     material.diffuse.g = 1.0f;
     material.diffuse.b = 1.0f;
     material.ambient.r = 0.5f;
     material.ambient.g = 0.5f;
     material.ambient.b = 0.5f;
-    m_engine->SetMaterial(material);
+    m_engine->SetMaterial(material);*/
 
-    for ( i=0 ; i<MAXCONTROL ; i++ )
-//? for ( i=MAXCONTROL-1 ; i>=0 ; i-- )
-    {
-        if ( m_table[i] != 0 )
-        {
+    for (int i = 0; i < MAXCONTROL; i++) {
+        if ( m_table[i] != nullptr )
             m_table[i]->Draw();
-        }
     }
 }
 
-
+}

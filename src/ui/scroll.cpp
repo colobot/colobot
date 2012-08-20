@@ -35,7 +35,7 @@
 
 // Object's constructor.
 
-CScroll::CScroll(CInstanceManager* iMan) : CControl(iMan)
+CScroll::CScroll() : CControl()
 {
     m_buttonUp   = 0;
     m_buttonDown = 0;
@@ -106,7 +106,7 @@ void CScroll::MoveAdjust()
             pc = (CButton*)m_buttonUp;
             pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 49, EVENT_NULL);
             pc->SetRepeat(true);
-            m_eventUp = pc->RetEventMsg();
+            m_eventUp = pc->GetEventMsg();
         }
 
         if ( m_buttonDown == 0 )
@@ -115,7 +115,7 @@ void CScroll::MoveAdjust()
             pc = (CButton*)m_buttonDown;
             pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 50, EVENT_NULL);
             pc->SetRepeat(true);
-            m_eventDown = pc->RetEventMsg();
+            m_eventDown = pc->GetEventMsg();
         }
     }
 
@@ -299,7 +299,7 @@ bool CScroll::EventProcess(const Event &event)
          m_buttonUp != 0              )
     {
         Event newEvent = event;
-        newEvent.event = m_buttonUp->RetEventMsg();
+        newEvent.event = m_buttonUp->GetEventMsg();
         m_event->AddEvent(newEvent);
     }
     if ( event.event == EVENT_KEYDOWN &&
@@ -308,7 +308,7 @@ bool CScroll::EventProcess(const Event &event)
          m_buttonDown != 0            )
     {
         Event newEvent = event;
-        newEvent.event = m_buttonDown->RetEventMsg();
+        newEvent.event = m_buttonDown->GetEventMsg();
         m_event->AddEvent(newEvent);
     }
 
@@ -437,7 +437,7 @@ void CScroll::SetVisibleValue(float value)
     AdjustGlint();
 }
 
-float CScroll::RetVisibleValue()
+float CScroll::GetVisibleValue()
 {
     return m_visibleValue;
 }
@@ -451,7 +451,7 @@ void CScroll::SetVisibleRatio(float value)
     AdjustGlint();
 }
 
-float CScroll::RetVisibleRatio()
+float CScroll::GetVisibleRatio()
 {
     return m_visibleRatio;
 }
@@ -462,7 +462,7 @@ void CScroll::SetArrowStep(float step)
     m_step = step;
 }
 
-float CScroll::RetArrowStep()
+float CScroll::GetArrowStep()
 {
     return m_step;
 }
