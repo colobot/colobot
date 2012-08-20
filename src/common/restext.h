@@ -18,11 +18,11 @@
 
 #pragma once
 
-
+//#include "graphics/engine/engine.h"
 #include "common/event.h"
 
 
-class CD3DEngine;
+class Gfx::CEngine;
 
 
 
@@ -32,7 +32,7 @@ class CD3DEngine;
 enum ResType
 {
     RES_TEXT        = 0,    // RT_*
-    RES_EVENT       = 1,    // EVENT_*  (EventMsg)
+    RES_EVENT       = 1,    // EVENT_*  (EventType)
     RES_OBJECT      = 2,    // OBJECT_* (ObjectType)
     RES_ERR         = 3,    // ERR_*    (Error)
     RES_KEY         = 4,    // VK_*     (keys)
@@ -145,10 +145,10 @@ enum ResTextType
 };
 
 
-static CD3DEngine*  g_engine = 0;
+static Gfx::CEngine*     g_engine = 0;
 static char         g_gamerName[100];
 
-extern void     SetEngine(CD3DEngine *engine);
+extern void     SetEngine(Gfx::CEngine *engine);
 extern void     SetGlobalGamerName(char *name);
 extern bool     SearchKey(char *cmd, KeyRank &key);
 extern void     PutKeyName(char* dst, char* src);

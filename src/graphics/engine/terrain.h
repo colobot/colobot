@@ -34,19 +34,31 @@ class CEngine;
 class CWater;
 
 
+//! Limit of slope considered a flat piece of land
 const short FLATLIMIT = (5.0f*Math::PI/180.0f);
 
 
+/**
+ * \enum TerrainRes
+ * \brief Underground resource type
+ */
 enum TerrainRes
 {
-    TR_NULL     = 0,
-    TR_STONE    = 1,
-    TR_URANIUM  = 2,
-    TR_POWER    = 3,
+    //! No resource
+    TR_NULL      = 0,
+    //! Titanium
+    TR_STONE     = 1,
+    //! Uranium
+    TR_URANIUM   = 2,
+    //! Energy
+    TR_POWER     = 3,
+    //! Vault keys
+    //@{
     TR_KEY_A     = 4,
     TR_KEY_B     = 5,
     TR_KEY_C     = 6,
-    TR_KEY_D     = 7,
+    TR_KEY_D     = 7
+    //@}
 };
 
 struct BuildingLevel
@@ -98,6 +110,10 @@ struct DotLevel
     }
 };
 
+/**
+ * \struct FlyingLimit
+ * \brief Spherical limit of flight
+ */
 struct FlyingLimit
 {
     Math::Vector center;
@@ -112,7 +128,22 @@ struct FlyingLimit
 };
 
 
-
+/**
+ * \class CTerrain
+ * \brief Terrain loader/generator and manager
+ *
+ * Terrain is created from relief textures specifying a XY plane with height
+ * values which are then scaled and translated into XZ surface forming the
+ * terrain of game level.
+ *
+ * The class also facilitates creating and searching for flat space expanses
+ * for construction of buildings.
+ *
+ * The terrain also specifies underground resources loaded from texture
+ * and flying limits for the player.
+ *
+ * ...
+ */
 class CTerrain
 {
 public:

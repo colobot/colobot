@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,13 +18,14 @@
 // gauge.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+//#include <windows.h>
+//#include <stdio.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+#include "graphics/engine/engine.h"
+//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -31,10 +33,11 @@
 
 
 
-
+namespace Ui {
 // Object's constructor.
 
-CGauge::CGauge(CInstanceManager* iMan) : CControl(iMan)
+//CGauge::CGauge(CInstanceManager* iMan) : CControl(iMan)
+CGauge::CGauge() : CControl()
 {
     m_level = 0.0f;
 }
@@ -48,11 +51,11 @@ CGauge::~CGauge()
 
 // Creates a new button.
 
-bool CGauge::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CGauge::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
     return true;
 }
 
@@ -63,12 +66,12 @@ bool CGauge::EventProcess(const Event &event)
 {
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_LBUTTONDOWN )
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN )
     {
         if ( CControl::Detect(event.pos) )
         {
             Event newEvent = event;
-            newEvent.event = m_eventMsg;
+            newEvent.type = m_eventType;
             m_event->AddEvent(newEvent);
             return false;
         }
@@ -88,47 +91,47 @@ void CGauge::Draw()
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     m_engine->SetTexture("button2.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     dp = 0.5f/256.0f;
 
     pos = m_pos;
     dim = m_dim;
 
-    uv1.x = 32.0f/256.0f;
-    uv1.y = 32.0f/256.0f;
-    uv2.x = 64.0f/256.0f;
-    uv2.y = 64.0f/256.0f;
+    uv1.x = 32.0f / 256.0f;
+    uv1.y = 32.0f / 256.0f;
+    uv2.x = 64.0f / 256.0f;
+    uv2.y = 64.0f / 256.0f;
 
     uv1.x += dp;
     uv1.y += dp;
     uv2.x -= dp;
     uv2.y -= dp;
 
-    corner.x = 10.0f/640.0f;
-    corner.y = 10.0f/480.0f;
+    corner.x = 10.0f / 640.0f;
+    corner.y = 10.0f / 480.0f;
 
     DrawIcon(pos, dim, uv1, uv2, corner, 8.0f/256.0f);
 
 
-    pos.x += 3.0f/640.0f;
-    pos.y += 3.0f/480.0f;
-    dim.x -= 6.0f/640.0f;
-    dim.y -= 6.0f/480.0f;
+    pos.x += 3.0f / 640.0f;
+    pos.y += 3.0f / 480.0f;
+    dim.x -= 6.0f / 640.0f;
+    dim.y -= 6.0f / 480.0f;
 
     if ( m_dim.x < m_dim.y )  // vertical gauge?
     {
-        uv1.x = (0.0f+m_icon*16.0f)/256.0f;
-        uv2.x = uv1.x+16.0f/256.0f;
-        uv1.y = 128.0f/256.0f+m_level*(64.0f/256.0f);
-        uv2.y = uv1.y+64.0f/256.0f;
+        uv1.x = (0.0f + m_icon * 16.0f) / 256.0f;
+        uv2.x = uv1.x + 16.0f / 256.0f;
+        uv1.y = 128.0f/256.0f + m_level * (64.0f/256.0f);
+        uv2.y = uv1.y + 64.0f/256.0f;
     }
     else    // horizontal gauge?
     {
-        uv1.x = 64.0f/256.0f+(1.0f-m_level)*(64.0f/256.0f);
-        uv2.x = uv1.x+64.0f/256.0f;
-        uv1.y = (128.0f+m_icon*16.0f)/256.0f;
-        uv2.y = uv1.y+16.0f/256.0f;
+        uv1.x = 64.0f/256.0f + (1.0f - m_level) * (64.0f/256.0f);
+        uv2.x = uv1.x + 64.0f/256.0f;
+        uv1.y = (128.0f + m_icon*16.0f) / 256.0f;
+        uv2.y = uv1.y + 16.0f/256.0f;
     }
 
     uv1.x += dp;
@@ -149,9 +152,10 @@ void CGauge::SetLevel(float level)
     m_level = level;
 }
 
-float CGauge::RetLevel()
+float CGauge::GetLevel()
 {
     return m_level;
 }
 
 
+}

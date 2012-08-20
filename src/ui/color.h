@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -20,37 +21,40 @@
 
 
 #include "ui/control.h"
-#include "old/d3dengine.h"
+//#include "graphics/engine/engine.h"
 
+namespace Gfx{
+class CEngine;
+struct Color;
+}
 
-class CD3DEngine;
-
-
-
+namespace Ui {
 class CColor : public CControl
 {
 public:
-    CColor(CInstanceManager* iMan);
-    virtual ~CColor();
+//    CColor(CInstanceManager* iMan);
+    CColor();
+    virtual   ~CColor();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool    EventProcess(const Event &event);
+    bool      EventProcess(const Event &event);
 
-    void    Draw();
+    void      Draw();
 
-    void    SetRepeat(bool bRepeat);
-    bool    RetRepeat();
+    void      SetRepeat(bool bRepeat);
+    bool      GetRepeat();
 
-    void    SetColor(D3DCOLORVALUE color);
-    D3DCOLORVALUE RetColor();
+    void       SetColor(Gfx::Color color);
+    Gfx::Color GetColor();
 
 protected:
 
 protected:
-    bool            m_bRepeat;
-    float           m_repeat;
-    D3DCOLORVALUE   m_color;
+    bool           m_bRepeat;
+    float          m_repeat;
+    Gfx::Color	   m_color;
 };
 
 
+}

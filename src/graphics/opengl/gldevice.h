@@ -78,8 +78,6 @@ public:
 
     virtual void DebugHook();
 
-    virtual std::string GetError();
-
     virtual bool Create();
     virtual void Destroy();
 
@@ -169,8 +167,6 @@ private:
 private:
     //! Current config
     Gfx::GLDeviceConfig m_config;
-    //! Last encountered error
-    std::string m_error;
 
     //! Current world matrix
     Math::Matrix m_worldMat;

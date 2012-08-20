@@ -18,31 +18,28 @@
 
 #pragma once
 
+#include <ui/control.h>
 
-#include "ui/control.h"
-
-
-class CD3DEngine;
-
+#include <common/event.h>
 
 
 class CShortcut : public CControl
 {
-public:
-    CShortcut(CInstanceManager* iMan);
-    ~CShortcut();
+    public:
+        CShortcut();
+        ~CShortcut();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-    bool    EventProcess(const Event &event);
+        bool    EventProcess(const Event &event);
 
-    void    Draw();
+        void    Draw();
 
-protected:
-    void    DrawVertex(int icon, float zoom);
+    protected:
+        void    DrawVertex(int icon, float zoom);
 
-protected:
-    float   m_time;
+    protected:
+        float   m_time;
 };
 
 

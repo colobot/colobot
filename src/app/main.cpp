@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
     if (! app.ParseArguments(argc, argv))
     {
-        SystemDialog(SDT_ERROR, "COLOBOT", "Invalid commandline arguments!\n");
+        SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
         return app.GetExitCode();
     }
 
@@ -90,6 +90,10 @@ int main(int argc, char *argv[])
     {
         app.Destroy(); // ensure a clean exit
         code = app.GetExitCode();
+        if ( code != 0 && !app.GetErrorMessage().empty() )
+        {
+            SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", app.GetErrorMessage());
+        }
         logger.Info("Didn't run main loop. Exiting with code %d\n", code);
         return code;
     }

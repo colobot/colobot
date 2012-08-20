@@ -90,7 +90,12 @@ struct PyroLightOper
 };
 
 
-
+/**
+ * \class CPyro
+ * \brief Fire effect renderer
+ *
+ * Functions are only stubs for now.
+ */
 class CPyro
 {
 public:

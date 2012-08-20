@@ -47,7 +47,12 @@ enum BlitzPhase
     BPH_BLITZ,
 };
 
-
+/**
+ * \class CLightning
+ * \brief Lightning effect renderer
+ *
+ * Functions are only stubs for now.
+ */
 class CLightning
 {
 public:

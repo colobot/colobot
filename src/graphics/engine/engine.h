@@ -539,24 +539,95 @@ struct EngineMouse
 
 
 /**
-  \class CEngine
-  \brief The graphics engine
-
-  This is the main class for graphics engine. It is responsible for drawing the 3D scene,
-  setting various render states, and facilitating the drawing of 2D interface.
-
-  It uses a lower-level CDevice object which is implementation-independent core engine.
-
-  \section Objecs Engine objects
-
-  The 3D scene is composed of objects which are basically collections of triangles forming
-  a surface or simply independent triangles in space. Objects are stored in the engine
-  as a tree structure which is composed of 4 tiers (EngineObjLevel1, EngineObjLevel2 and so on).
-  Each tier stores some data about object triangle, like textures or materials used.
-  Additional information on objects stored are in EngineObject structure.
-  Each object is uniquely identified by its rank.
-
-  ...
+ * \class CEngine
+ * \brief The graphics engine
+ *
+ * This is the main class for graphics engine. It is responsible for drawing the 3D scene,
+ * setting various render states, and facilitating the drawing of 2D interface.
+ *
+ * It uses a lower-level CDevice object which is implementation-independent core engine.
+ *
+ * \section 3DScene 3D Scene
+ *
+ * The 3D scene is drawn with view coordinates set from camera position in 3D space and
+ * a perspective projection matrix. The world matrix depends on the object drawn.
+ * The coordinate system is left-handed: X axis is to the right, Y axis to the top and Z axis
+ * is into the screen (Z = 0 is the sceen surface).
+ *
+ * In general, the 3D scene is composed of the following things:
+ *  - sky background (gradient or texture image)
+ *  - planets orbiting in the sky (drawn by CPlanet)
+ *  - terrain - ground of the game level (part of engine objects)
+ *  - main scene objects - robots, buildings, etc. (engine objects)
+ *  - water/lava (drawn by CWater)
+ *  - cloud layer (drawn by CCloud)
+ *  - fire, lightning and particle effects (CPyro, CLightning and CParticle)
+ *  - foreground image overlaid onto the scene at the end - for example, aiming crosshairs
+ *  - 2D interface controls available in-game
+ *  - mouse cursor
+ *  - animated highlight box of the selected object(s)
+ *
+ * \section 2DInterface 2D Interface
+ *
+ * The 2D interface is drawn in fixed XY coordinates, independent from window size.
+ * Lower-left corner of the screen is (0,0) and upper-right corner is (1,1).
+ * Matrices for world, view and projection are therefore fixed and never change.
+ *
+ * The class tracks the change of window coordinates and conversion functions
+ * between the window and interface coordinates are provided.
+ *
+ * Interface drawing is delegated to CInterface class and particular controls
+ * are instances of CControl class. The source code for these classes is in
+ * src/ui directory.
+ *
+ * \section Objecs Engine Objects
+ *
+ * The 3D scene is composed of objects which are basically collections of triangles forming
+ * a surface or simply independent triangles in space.
+ *
+ * Objects are uniquely identified by object rank obtained at object creation. Creating an
+ * object equals to allocating space for EngineObject structure which holds object parameters.
+ * Object's geometric data is stored in a separate structure - a 4-tier tree which splits
+ * the information of each geometric triangle.
+ *
+ * The 4 tiers contain the following information:
+ *  - level 1 (EngineObjLevel1) - two textures (names and structs) applied to triangles,
+ *  - level 2 (EngineObjLevel2) - object rank
+ *  - level 3 (EngineObjLevel3) - minumum and maximum LOD (=level of detail)
+ *  - level 4 (EngineObjLevel4) - type of object*, material, render state and the actual triangle data
+ *
+ *  NOTE: type of object in this context means only the internal type in 3D engine. It is not related
+ *  to CObject types.
+ *
+ * Such tiered structure complicates loops over all object data, but saves a lot of memory and
+ * optimizes the rendering process (for instance, switching of textures is an expensive operation).
+ *
+ * \section Shadows Shadows
+ *
+ * Each engine object can be associated with a shadow (EngineShadow). Like objects, shadows are
+ * identified by their rank obtained upon creation.
+ *
+ * ...
+ *
+ * \section RenderStates Render States
+ *
+ * Almost every primitive drawn on screen is drawn in state set through EngineRenderState enum.
+ * In some functions, custom modes are still set, using CDevice's SetRenderState. However, it
+ * will be subject to removal in the future. Generally, setting render states should be minimized
+ * to avoid unnecessary overhead.
+ *
+ * Some states are clearly the result of legacy drawing and texturing methods. For example, TTEXTURE
+ * states should really be removed and the textures changed to ones with alpha channel. In the future,
+ * the whole modesetting code will probably be refactored to something more maintainable.
+ *
+ * \section Textures Textures
+ *
+ * Textures are loaded from a texture subdir in data directory. In the old code, textures were identified
+ * by file name and loaded using some D3D util code. With new code and OpenGL backend, this approach is not
+ * efficient - name comparison, etc. takes a lot of time. In the future, textures should be loaded once
+ * at object creation time, and then referenced to as Gfx::Texture structs, or even as unsigned int ID's
+ * which is what OpenGL actually wants. The old method is kept for now, with mapping between texture names
+ * and texture structs but it will also be subject to refactoring in the future.
  */
 class CEngine
 {

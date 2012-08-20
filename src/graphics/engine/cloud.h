@@ -40,12 +40,19 @@ namespace Gfx {
 class CEngine;
 class CTerrain;
 
+/**
+ * \struct CloudLine
+ * \brief Cloud strip
+ */
 struct CloudLine
 {
-    //! Beginning
+    //@{
+    //! Beginning (terrain coordinates)
     short       x, y;
-    //! In length x
+    //@}
+    //! Length in X direction (terrain coordinates)
     short       len;
+    //! X (1, 2) and Z coordinates (world coordinates)
     float       px1, px2, pz;
 
     CloudLine()
@@ -57,6 +64,15 @@ struct CloudLine
 };
 
 
+/**
+ * \class CCloud
+ * \brief Cloud layer renderer
+ *
+ * Renders the cloud layer as fog. Cloud layer is similar to water layer
+ * - it occurs only at specified level of terrain. Cloud map is created
+ * the same way water is created. CloudLine structs are used to specify
+ * lines in X direction in XY terrain coordinates.
+ */
 class CCloud
 {
 public:

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,13 +18,14 @@
 // scroll.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+//#include <windows.h>
+//#include <stdio.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+//#include "old/math3d.h"
+#include "graphics/engine/engine.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -31,11 +33,11 @@
 #include "ui/scroll.h"
 
 
-
+namespace Ui {
 
 // Object's constructor.
 
-CScroll::CScroll(CInstanceManager* iMan) : CControl(iMan)
+CScroll::CScroll() : CControl()
 {
     m_buttonUp   = 0;
     m_buttonDown = 0;
@@ -61,9 +63,9 @@ CScroll::~CScroll()
 
 // Creates a new button.
 
-bool CScroll::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CScroll::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
     CControl::Create(pos, dim, icon, eventMsg);
 
     MoveAdjust();
@@ -102,20 +104,20 @@ void CScroll::MoveAdjust()
     {
         if ( m_buttonUp == 0 )
         {
-            m_buttonUp = new CButton(m_iMan);
+            m_buttonUp = new CButton();
             pc = (CButton*)m_buttonUp;
             pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 49, EVENT_NULL);
             pc->SetRepeat(true);
-            m_eventUp = pc->RetEventMsg();
+            m_eventUp = pc->GetEventType();
         }
 
         if ( m_buttonDown == 0 )
         {
-            m_buttonDown = new CButton(m_iMan);
+            m_buttonDown = new CButton();
             pc = (CButton*)m_buttonDown;
             pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 50, EVENT_NULL);
             pc->SetRepeat(true);
-            m_eventDown = pc->RetEventMsg();
+            m_eventDown = pc->GetEventType();
         }
     }
 
@@ -213,31 +215,32 @@ bool CScroll::EventProcess(const Event &event)
         if ( !m_buttonDown->EventProcess(event) )  return false;
     }
 
-    if ( event.event == m_eventUp && m_step > 0.0f )
+    if ( event.type == m_eventUp && m_step > 0.0f )
     {
         m_visibleValue -= m_step;
         if ( m_visibleValue < 0.0f )  m_visibleValue = 0.0f;
         AdjustGlint();
 
         Event newEvent = event;
-        newEvent.event = m_eventMsg;
+        newEvent.type = m_eventType;
         m_event->AddEvent(newEvent);
     }
 
-    if ( event.event == m_eventDown && m_step > 0.0f )
+    if ( event.type == m_eventDown && m_step > 0.0f )
     {
         m_visibleValue += m_step;
         if ( m_visibleValue > 1.0f )  m_visibleValue = 1.0f;
         AdjustGlint();
 
         Event newEvent = event;
-        newEvent.event = m_eventMsg;
+        newEvent.type = m_eventType;
         m_event->AddEvent(newEvent);
     }
 
     hButton = m_buttonUp?m_dim.x/0.75f:0.0f;
 
-    if ( event.event == EVENT_LBUTTONDOWN &&
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
+            event.mouseButton.button == 1 &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
@@ -258,7 +261,7 @@ bool CScroll::EventProcess(const Event &event)
                 AdjustGlint();
 
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
             }
             m_bCapture = true;
@@ -267,7 +270,7 @@ bool CScroll::EventProcess(const Event &event)
         }
     }
 
-    if ( event.event == EVENT_MOUSEMOVE && m_bCapture )
+    if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
         h = (m_dim.y-hButton*2.0f)*(1.0f-m_visibleRatio);
         if ( h != 0 )
@@ -282,33 +285,35 @@ bool CScroll::EventProcess(const Event &event)
                 AdjustGlint();
 
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
             }
         }
     }
 
-    if ( event.event == EVENT_LBUTTONUP && m_bCapture )
+    if ( event.type == EVENT_MOUSE_BUTTON_UP &&
+            event.mouseButton.button == 1    &&
+            m_bCapture )
     {
         m_bCapture = false;
     }
 
-    if ( event.event == EVENT_KEYDOWN &&
-         event.param == VK_WHEELUP    &&
-         Detect(event.pos)            &&
+    if ( event.type == EVENT_KEY_DOWN   &&
+         event.mouseButton.button == 4  &&
+         Detect(event.pos)              &&
          m_buttonUp != 0              )
     {
         Event newEvent = event;
-        newEvent.event = m_buttonUp->RetEventMsg();
+        newEvent.type = m_buttonUp->GetEventType();
         m_event->AddEvent(newEvent);
     }
-    if ( event.event == EVENT_KEYDOWN &&
-         event.param == VK_WHEELDOWN  &&
-         Detect(event.pos)            &&
+    if ( event.type == EVENT_KEY_DOWN  &&
+         event.mouseButton.button == 5 &&
+         Detect(event.pos)             &&
          m_buttonDown != 0            )
     {
         Event newEvent = event;
-        newEvent.event = m_buttonDown->RetEventMsg();
+        newEvent.type = m_buttonDown->GetEventType();
         m_event->AddEvent(newEvent);
     }
 
@@ -381,7 +386,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     if ( icon == 0 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =   0.0f/256.0f;  // yellow rectangle
         uv1.y =  32.0f/256.0f;
         uv2.x =  32.0f/256.0f;
@@ -391,7 +396,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     else if ( icon == 1 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 128.0f/256.0f;  // gray rectangle
         uv1.y =  32.0f/256.0f;
         uv2.x = 160.0f/256.0f;
@@ -401,7 +406,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     else if ( icon == 2 )
     {
         m_engine->SetTexture("button1.tga");
-        m_engine->SetState(D3DSTATENORMAL);
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x =  64.0f/256.0f;  // blue rectangle
         uv1.y =   0.0f/256.0f;
         uv2.x =  96.0f/256.0f;
@@ -411,7 +416,7 @@ void CScroll::DrawVertex(Math::Point pos, Math::Point dim, int icon)
     else
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 104.0f/256.0f;  // blue line -
         uv1.y =  32.0f/256.0f;
         uv2.x = 128.0f/256.0f;
@@ -437,7 +442,7 @@ void CScroll::SetVisibleValue(float value)
     AdjustGlint();
 }
 
-float CScroll::RetVisibleValue()
+float CScroll::GetVisibleValue()
 {
     return m_visibleValue;
 }
@@ -451,7 +456,7 @@ void CScroll::SetVisibleRatio(float value)
     AdjustGlint();
 }
 
-float CScroll::RetVisibleRatio()
+float CScroll::GetVisibleRatio()
 {
     return m_visibleRatio;
 }
@@ -462,8 +467,9 @@ void CScroll::SetArrowStep(float step)
     m_step = step;
 }
 
-float CScroll::RetArrowStep()
+float CScroll::GetArrowStep()
 {
     return m_step;
 }
 
+}
