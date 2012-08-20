@@ -23,6 +23,7 @@
 
 #include <common/event.h>
 
+namespace Ui {
 
 class CTarget : public CControl
 {
@@ -41,3 +42,4 @@ class CTarget : public CControl
 };
 
 
+}
