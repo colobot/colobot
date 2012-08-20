@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -20,8 +21,9 @@
 
 
 #include <ui/control.h>
-#include <common/event.h>
+//#include <common/event.h>
 
+namespace Ui {
 
 const int MAXWINDOW = 100;
 
@@ -54,38 +56,38 @@ public:
     bool        DeleteControl(EventType eventMsg);
     CControl*   SearchControl(EventType eventMsg);
 
-    EventType    RetEventTypeReduce();
-    EventType    RetEventTypeFull();
-    EventType    RetEventTypeClose();
+    EventType    GetEventTypeReduce();
+    EventType    GetEventTypeFull();
+    EventType    GetEventTypeClose();
 
     void        SetName(char* name);
 
     void        SetTrashEvent(bool bTrash);
-    bool        RetTrashEvent();
+    bool        GetTrashEvent();
 
     void        SetPos(Math::Point pos);
     void        SetDim(Math::Point dim);
 
     void        SetMinDim(Math::Point dim);
     void        SetMaxDim(Math::Point dim);
-    Math::Point     RetMinDim();
-    Math::Point     RetMaxDim();
+    Math::Point     GetMinDim();
+    Math::Point     GetMaxDim();
 
     void        SetMovable(bool bMode);
-    bool        RetMovable();
+    bool        GetMovable();
 
     void        SetRedim(bool bMode);
-    bool        RetRedim();
+    bool        GetRedim();
 
     void        SetClosable(bool bMode);
-    bool        RetClosable();
+    bool        GetClosable();
 
     void        SetMaximized(bool bMaxi);
-    bool        RetMaximized();
+    bool        GetMaximized();
     void        SetMinimized(bool bMini);
-    bool        RetMinimized();
+    bool        GetMinimized();
     void        SetFixed(bool bFix);
-    bool        RetFixed();
+    bool        GetFixed();
 
     bool        GetTooltip(Math::Point pos, char* name);
 
@@ -121,7 +123,8 @@ protected:
     bool        m_bCapture;
     Math::Point     m_pressPos;
     int         m_pressFlags;
-    D3DMouse    m_pressMouse;
+    Gfx::EngineMouseType    m_pressMouse;
 };
 
 
+}
