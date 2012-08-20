@@ -35,6 +35,7 @@
 #include "ui/slider.h"
 
 
+namespace Ui {
 
 const float CURSOR_WIDTH    = (10.0f/640.0f);
 const float HOLE_WIDTH      = (5.0f/480.0f);
@@ -44,7 +45,7 @@ const float HOLE_WIDTH      = (5.0f/480.0f);
 
 // Object's constructor.
 
-CSlider::CSlider(CInstanceManager* iMan) : CControl(iMan)
+CSlider::CSlider() : CControl()
 {
     m_buttonLeft  = 0;
     m_buttonRight = 0;
@@ -118,7 +119,7 @@ void CSlider::MoveAdjust()
 #if 1
         if ( m_buttonLeft == 0 )
         {
-            m_buttonLeft = new CButton(m_iMan);
+            m_buttonLeft = new CButton();
             m_buttonLeft->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), m_bHoriz?55:49, EVENT_NULL);  // </^
             m_buttonLeft->SetRepeat(true);
             if ( m_state & STATE_SHADOW )  m_buttonLeft->SetState(STATE_SHADOW);
@@ -127,7 +128,7 @@ void CSlider::MoveAdjust()
 
         if ( m_buttonRight == 0 )
         {
-            m_buttonRight = new CButton(m_iMan);
+            m_buttonRight = new CButton();
             m_buttonRight->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), m_bHoriz?48:50, EVENT_NULL);  // >/v
             m_buttonRight->SetRepeat(true);
             if ( m_state & STATE_SHADOW )  m_buttonRight->SetState(STATE_SHADOW);
@@ -360,9 +361,9 @@ bool CSlider::EventProcess(const Event &event)
     {
         m_bCapture = false;
     }
-/*/TODO */
+
     if ( event.type == EVENT_KEY_DOWN &&
-         event.param == VK_WHEELUP    &&
+         event.mouseButton.button == 4    &&
          Detect(event.pos)            &&
          m_buttonLeft != 0            )
     {
@@ -370,9 +371,9 @@ bool CSlider::EventProcess(const Event &event)
         newEvent.type = m_buttonLeft->GetEventType();
         m_event->AddEvent(newEvent);
     }
-/*/TODO */
+
     if ( event.type == EVENT_KEY_DOWN &&
-         event.param == VK_WHEELDOWN  &&
+         event.mouseButton.button == 5  &&
          Detect(event.pos)            &&
          m_buttonRight != 0           )
     {
@@ -585,3 +586,4 @@ float CSlider::GetArrowStep()
 }
 
 
+}
