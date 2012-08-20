@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -14,9 +15,13 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// physics.h
-
 #pragma once
+
+/**
+ * \file physics/physics.h
+ * \brief Responsible for physics "and more" in game
+ */
+
 
 
 #include "common/misc.h"
@@ -25,17 +30,17 @@
 
 
 class CInstanceManager;
-class CCamera;
 class CObject;
 class CBrain;
 class CMotion;
-class CSound;
+class CSoundInterface;
 
 namespace Gfx
 {
+class CCamera;
 class CEngine;
 class CLight;
-class CParticule;
+class CParticle;
 class CTerrain;
 class CWater;
 };
@@ -170,7 +175,7 @@ protected:
     void        SoundMotorStop(float rTime, ObjectType type);
     void        SoundReactorFull(float rTime, ObjectType type);
     void        SoundReactorStop(float rTime, ObjectType type);
-    void        FrameParticule(float aTime, float rTime);
+    void        FrameParticle(float aTime, float rTime);
     void        MotorUpdate(float aTime, float rTime);
     void        EffectUpdate(float aTime, float rTime);
     void        UpdateMotionStruct(float rTime, Motion &motion);
@@ -182,24 +187,24 @@ protected:
     bool        ExploOther(ObjectType iType, CObject *pObj, ObjectType oType, float force);
     int         ExploHimself(ObjectType iType, ObjectType oType, float force);
 
-    void        PowerParticule(float factor, bool bBreak);
-    void        CrashParticule(float crash);
-    void        MotorParticule(float aTime, float rTime);
-    void        WaterParticule(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
-    void        WheelParticule(int color, float width);
+    void        PowerParticle(float factor, bool bBreak);
+    void        CrashParticle(float crash);
+    void        MotorParticle(float aTime, float rTime);
+    void        WaterParticle(float aTime, Math::Vector pos, ObjectType type, float floor, float advance, float turn);
+    void        WheelParticle(int color, float width);
 
 protected:
-    CInstanceManager* m_iMan;
+    CInstanceManager*   m_iMan;
     Gfx::CEngine*       m_engine;
     Gfx::CLightManager* m_lightMan;
     Gfx::CParticle*     m_particle;
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
-    CObject*    m_object;
-    CBrain*     m_brain;
-    CMotion*    m_motion;
-    CSound*     m_sound;
+    CObject*            m_object;
+    CBrain*             m_brain;
+    CMotion*            m_motion;
+    CSoundInterface*    m_sound;
 
     PhysicsType m_type;         // TYPE_*
     float       m_gravity;      // force of gravity
@@ -217,15 +222,15 @@ protected:
     float       m_linVibrationFactor;
     float       m_cirVibrationFactor;
     float       m_inclinaisonFactor;
-    float       m_lastPowerParticule;
-    float       m_lastSlideParticule;
-    float       m_lastMotorParticule;
-    float       m_lastWaterParticule;
-    float       m_lastUnderParticule;
-    float       m_lastPloufParticule;
-    float       m_lastFlameParticule;
-    bool        m_bWheelParticuleBrake;
-    Math::Vector    m_wheelParticulePos[2];
+    float       m_lastPowerParticle;
+    float       m_lastSlideParticle;
+    float       m_lastMotorParticle;
+    float       m_lastWaterParticle;
+    float       m_lastUnderParticle;
+    float       m_lastPloufParticle;
+    float       m_lastFlameParticle;
+    bool        m_bWheelParticleBrake;
+    Math::Vector    m_wheelParticlePos[2];
     float       m_absorbWater;
     float       m_reactorTemperature;
     float       m_reactorRange;
@@ -234,7 +239,7 @@ protected:
     float       m_lastEnergy;
     float       m_lastSoundWater;
     float       m_lastSoundInsect;
-    float       m_restBreakParticule;
+    float       m_restBreakParticle;
     float       m_floorLevel;       // ground level
     float       m_floorHeight;      // height above the ground
     int     m_soundChannel;

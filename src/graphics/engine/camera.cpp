@@ -84,11 +84,6 @@ CPhysics* CObject::GetPhysics()
     return nullptr;
 }
 
-bool CPhysics::GetLand()
-{
-    return false;
-}
-
 //! Changes the level of transparency of an object and objects transported (battery & cargo)
 void SetTransparency(CObject* obj, float value)
 {

@@ -140,7 +140,7 @@ graphics/opengl/gldevice.cpp
 # object/task/taskterraform.cpp
 # object/task/taskturn.cpp
 # object/task/taskwait.cpp
-# physics/physics.cpp
+physics/physics.cpp
 # script/cbottoken.cpp
 # script/cmdtoken.cpp
 # script/script.cpp
