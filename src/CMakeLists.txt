@@ -1,5 +1,5 @@
 # CBot shared library is built separately
-add_subdirectory(CBot) 
+add_subdirectory(CBot)
 
 
 # Configure options
@@ -190,6 +190,7 @@ ${SDL_IMAGE_INCLUDE_DIR}
 ${SDLTTF_INCLUDE_DIR}
 ${PNG_INCLUDE_DIRS}
 ${OPTIONAL_INCLUDE_DIRS}
+..
 )
 
 link_directories(${CMAKE_CURRENT_SOURCE_DIR}/CBot)

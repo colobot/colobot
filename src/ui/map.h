@@ -19,16 +19,14 @@
 #pragma once
 
 
-#include "ui/control.h"
-#include "object/object.h"
+#include <ui/control.h>
 
+#include <object/object.h>
 
-class CD3DEngine;
+#include <common/event.h>
+
 class CTerrain;
 class CWater;
-class CRobotMain;
-
-
 
 const int MAPMAXOBJECT = 100;
 
@@ -62,10 +60,10 @@ struct MapObject
 class CMap : public CControl
 {
 public:
-    CMap(CInstanceManager* iMan);
+    CMap();
     ~CMap();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     bool        EventProcess(const Event &event);
     void        Draw();
 

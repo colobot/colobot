@@ -20,11 +20,8 @@
 #pragma once
 
 
-//#include "common/struct.h"
-//#include "graphics/engine/engine.h"
-//#include "graphics/engine/camera.h"
-//#include "graphics/engine/particle.h"
-//#include "old/camera.h"
+#include "common/struct.h"
+#include "old/camera.h"
 
 
 class CInstanceManager;

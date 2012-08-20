@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -19,77 +20,85 @@
 #pragma once
 
 
-#include "common/event.h"
-#include "math/point.h"
+#include <common/event.h>
+#include <common/struct.h>
+#include <common/misc.h>
+#include <common/iman.h>
 
+#include <math/point.h>
 
-class CInstanceManager;
-class CD3DEngine;
-class CControl;
-class CWindow;
-class CButton;
-class CColor;
-class CCheck;
-class CKey;
-class CGroup;
-class CImage;
-class CLabel;
-class CEdit;
-class CEditValue;
-class CScroll;
-class CSlider;
-class CList;
-class CShortcut;
-class CMap;
-class CGauge;
-class CCompass;
-class CTarget;
-class CCamera;
+#include <graphics/engine/camera.h>
+#include <graphics/engine/engine.h>
 
+#include <ui/control.h>
+#include <ui/button.h>
+#include <ui/color.h>
+#include <ui/check.h>
+#include <ui/key.h>
+#include <ui/group.h>
+#include <ui/image.h>
+#include <ui/label.h>
+#include <ui/edit.h>
+#include <ui/editvalue.h>
+#include <ui/scroll.h>
+#include <ui/slider.h>
+#include <ui/list.h>
+#include <ui/shortcut.h>
+#include <ui/compass.h>
+#include <ui/target.h>
+#include <ui/map.h>
+#include <ui/window.h>
+
+namespace Ui {
 
 const int MAXCONTROL = 100;
 
 
 class CInterface
 {
-public:
-    CInterface(CInstanceManager* iMan);
-    ~CInterface();
+    public:
+        CInterface();
+        ~CInterface();
 
-    bool        EventProcess(const Event &event);
-    bool        GetTooltip(Math::Point pos, char* name);
+        bool        EventProcess(const Event &event);
+        bool        GetTooltip(Math::Point pos, const char* name);
 
-    void        Flush();
-    CWindow*    CreateWindows(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CColor*     CreateColor(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CCheck*     CreateCheck(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CKey*       CreateKey(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CGroup*     CreateGroup(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CImage*     CreateImage(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, char *name);
-    CEdit*      CreateEdit(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, float expand=1.2f);
-    CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CCompass*   CreateCompass(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    CMap*       CreateMap(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-    bool        DeleteControl(EventMsg eventMsg);
-    CControl*   SearchControl(EventMsg eventMsg);
+        void        Flush();
+        CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CColor*     CreateColor(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CCheck*     CreateCheck(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CKey*       CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CGroup*     CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CImage*     CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CEdit*      CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CSlider*    CreateSlider(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CShortcut*  CreateShortcut(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CCompass*   CreateCompass(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CTarget*    CreateTarget(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CMap*       CreateMap(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-    void        Draw();
+        CWindow*    CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand=1.2f);
+        CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, const char *name);
 
-protected:
+        bool        DeleteControl(EventType eventMsg);
+        CControl*   SearchControl(EventType eventMsg);
 
-protected:
-    CInstanceManager* m_iMan;
-    CD3DEngine*     m_engine;
-    CCamera*        m_camera;
+        void        Draw();
 
-    CControl*       m_table[MAXCONTROL];
+    protected:
+        int GetNextFreeControl();
+        template <typename T> inline T* CreateControl(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+
+        CInstanceManager* m_iMan;
+        CEventQueue* m_event;
+        Gfx::CEngine* m_engine;
+        Gfx::CCamera* m_camera;
+
+        CControl* m_table[MAXCONTROL];
 };
 
 
+}
