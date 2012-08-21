@@ -156,25 +156,25 @@ public:
     void        ScenePerso();
 
     void        SetMovieLock(bool bLock);
-    bool        RetMovieLock();
-    bool        RetInfoLock();
+    bool        GetMovieLock();
+    bool        GetInfoLock();
     void        SetSatComLock(bool bLock);
-    bool        RetSatComLock();
+    bool        GetSatComLock();
     void        SetEditLock(bool bLock, bool bEdit);
-    bool        RetEditLock();
+    bool        GetEditLock();
     void        SetEditFull(bool bFull);
-    bool        RetEditFull();
-    bool        RetFreePhoto();
+    bool        GetEditFull();
+    bool        GetFreePhoto();
     void        SetFriendAim(bool bFriend);
-    bool        RetFriendAim();
+    bool        GetFriendAim();
 
     void        SetTracePrecision(float factor);
-    float       RetTracePrecision();
+    float       GetTracePrecision();
 
     void        ChangePause(bool bPause);
 
     void        SetSpeed(float speed);
-    float       RetSpeed();
+    float       GetSpeed();
 
     void        UpdateShortcuts();
     void        SelectHuman();
@@ -182,7 +182,7 @@ public:
     CObject*    SearchToto();
     CObject*    SearchNearest(Math::Vector pos, CObject* pExclu);
     bool        SelectObject(CObject* pObj, bool bDisplayError=true);
-    CObject*    RetSelectObject();
+    CObject*    GetSelectObject();
     CObject*    DeselectAll();
     bool        DeleteObject();
 
@@ -190,67 +190,67 @@ public:
     void        ResetCreate();
     Error       CheckEndMission(bool bFrame);
     void        CheckEndMessage(char *message);
-    int         RetObligatoryToken();
-    char*       RetObligatoryToken(int i);
+    int         GetObligatoryToken();
+    char*       GetObligatoryToken(int i);
     int         IsObligatoryToken(char *token);
     bool        IsProhibitedToken(char *token);
     void        UpdateMap();
-    bool        RetShowMap();
+    bool        GetShowMap();
 
-    MainMovieType RetMainMovie();
+    MainMovieType GetMainMovie();
 
     void        FlushDisplayInfo();
     void        StartDisplayInfo(int index, bool bMovie);
     void        StartDisplayInfo(char *filename, int index);
     void        StopDisplayInfo();
-    char*       RetDisplayInfoName(int index);
-    int         RetDisplayInfoPosition(int index);
+    char*       GetDisplayInfoName(int index);
+    int         GetDisplayInfoPosition(int index);
     void        SetDisplayInfoPosition(int index, int pos);
 
     void        StartSuspend();
     void        StopSuspend();
 
-    float       RetGameTime();
+    float       GetGameTime();
 
     void        SetFontSize(float size);
-    float       RetFontSize();
+    float       GetFontSize();
     void        SetWindowPos(Math::Point pos);
-    Math::Point     RetWindowPos();
+    Math::Point     GetWindowPos();
     void        SetWindowDim(Math::Point dim);
-    Math::Point     RetWindowDim();
+    Math::Point     GetWindowDim();
 
     void        SetIOPublic(bool bMode);
-    bool        RetIOPublic();
+    bool        GetIOPublic();
     void        SetIOPos(Math::Point pos);
-    Math::Point     RetIOPos();
+    Math::Point     GetIOPos();
     void        SetIODim(Math::Point dim);
-    Math::Point     RetIODim();
+    Math::Point     GetIODim();
 
-    char*       RetTitle();
-    char*       RetResume();
-    char*       RetScriptName();
-    char*       RetScriptFile();
-    bool        RetTrainerPilot();
-    bool        RetFixScene();
-    bool        RetGlint();
-    bool        RetSoluce4();
-    bool        RetMovies();
-    bool        RetNiceReset();
-    bool        RetHimselfDamage();
-    bool        RetShowSoluce();
-    bool        RetSceneSoluce();
-    bool        RetShowAll();
-    bool        RetCheatRadar();
-    char*       RetSavegameDir();
-    char*       RetPublicDir();
-    char*       RetFilesDir();
+    char*       GetTitle();
+    char*       GetResume();
+    char*       GetScriptName();
+    char*       GetScriptFile();
+    bool        GetTrainerPilot();
+    bool        GetFixScene();
+    bool        GetGlint();
+    bool        GetSoluce4();
+    bool        GetMovies();
+    bool        GetNiceReset();
+    bool        GetHimselfDamage();
+    bool        GetShowSoluce();
+    bool        GetSceneSoluce();
+    bool        GetShowAll();
+    bool        GetCheatRadar();
+    char*       GetSavegameDir();
+    char*       GetPublicDir();
+    char*       GetFilesDir();
 
     void        SetGamerName(char *name);
-    char*       RetGamerName();
-    int         RetGamerFace();
-    int         RetGamerGlasses();
-    bool        RetGamerOnlyHead();
-    float       RetPersoAngle();
+    char*       GetGamerName();
+    int         GetGamerFace();
+    int         GetGamerGlasses();
+    bool        GetGamerOnlyHead();
+    float       GetPersoAngle();
 
     void        StartMusic();
     void        ClearInterface();
@@ -258,7 +258,7 @@ public:
 
     float       SearchNearestObject(Math::Vector center, CObject *exclu);
     bool        FreeSpace(Math::Vector &center, float minRadius, float maxRadius, float space, CObject *exclu);
-    float       RetFlatZoneRadius(Math::Vector center, float maxRadius, CObject *exclu);
+    float       GetFlatZoneRadius(Math::Vector center, float maxRadius, CObject *exclu);
     void        HideDropZone(CObject* metal);
     void        ShowDropZone(CObject* metal, CObject* truck);
     void        FlushShowLimit(int i);
@@ -278,7 +278,7 @@ public:
 
     bool        FlushNewScriptName();
     bool        AddNewScriptName(ObjectType type, char *name);
-    char*       RetNewScriptName(ObjectType type, int rank);
+    char*       GetNewScriptName(ObjectType type, int rank);
 
     void        WriteFreeParam();
     void        ReadFreeParam();
@@ -303,9 +303,9 @@ protected:
     Math::Vector    LookatPoint( Math::Vector eye, float angleH, float angleV, float length );
     CObject*    CreateObject(Math::Vector pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, bool bTrainer=false, bool bToy=false, int option=0);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
-    void        HiliteClear();
-    void        HiliteObject(Math::Point pos);
-    void        HiliteFrame(float rTime);
+    void        HighlightClear();
+    void        HighlightObject(Math::Point pos);
+    void        HighlightFrame(float rTime);
     void        CreateTooltip(Math::Point pos, char* text);
     void        ClearTooltip();
     CObject*    DetectObject(Math::Point pos);
@@ -320,7 +320,7 @@ protected:
     void        DeleteAllObjects();
     void        UpdateInfoText();
     CObject*    SearchObject(ObjectType type);
-    CObject*    RetSelect();
+    CObject*    GetSelect();
     void        StartDisplayVisit(EventType event);
     void        FrameVisit(float rTime);
     void        StopDisplayVisit();
@@ -382,7 +382,7 @@ protected:
     bool            m_bEditLock;        // edition in progress?
     bool            m_bEditFull;        // edition in full screen?
     bool            m_bPause;       // simulation paused
-    bool            m_bHilite;
+    bool            m_bHighlight;
     bool            m_bTrainerPilot;    // remote trainer?
     bool            m_bSuspend;
     bool            m_bFriendAim;
