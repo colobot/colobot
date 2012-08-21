@@ -177,7 +177,7 @@ void CMainMap::DimMap()
         ps->SetPos(pos);
         ps->SetDim(dim);
 
-        value = pm->RetZoom();
+        value = pm->GetZoom();
         value = (value-ZOOM_MIN) / (ZOOM_MAX-ZOOM_MIN);
         value = powf(value, 0.5f);
         ps->SetVisibleValue(value);
@@ -256,7 +256,8 @@ void CMainMap::ZoomMap()
     if (ps == nullptr)
         return;
 
-    zoom = ps->SetVisibleValue();
+
+    zoom = ps->GetVisibleValue();
     zoom = powf(zoom, 2.0f);
     zoom = ZOOM_MIN+zoom*(ZOOM_MAX - ZOOM_MIN);
     pm->SetZoom(zoom);

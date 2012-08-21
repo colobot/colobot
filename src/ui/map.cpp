@@ -223,7 +223,7 @@ void CMap::SetHighlight(CObject* pObj)
     m_highlightRank = -1;
     if ( m_bToy || m_fixImage[0] != 0 )
         return;  // card with still image?
-    if ( pObj == 0 )
+    if ( pObj == nullptr )
         return;
 
     for (int i = 0; i < MAPMAXOBJECT; i++) {
