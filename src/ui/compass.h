@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -21,14 +22,15 @@
 
 #include "ui/control.h"
 
+namespace Gfx {
+class CEngine;
+}
 
-//class CEngine;
-
-
-
+namespace Ui {
 class CCompass : public CControl
 {
 public:
+//    CCompass(CInstanceManager* iMan);
     CCompass();
     virtual ~CCompass();
 
@@ -39,7 +41,7 @@ public:
     void    Draw();
 
     void    SetDirection(float dir);
-    float   RetDirection();
+    float   GetDirection();
 
 protected:
 
@@ -48,3 +50,4 @@ protected:
 };
 
 
+}

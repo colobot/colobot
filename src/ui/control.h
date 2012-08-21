@@ -20,22 +20,23 @@
 
 
 //#include "old/text.h"
-#include <common/struct.h>
-#include <common/event.h>
+#include "graphics/engine/text.h"
+//#include "common/struct.h"
+#include "common/event.h"
 
-#include <graphics/engine/engine.h>
-#include <graphics/engine/text.h>
-#include <graphics/engine/particle.h>
+namespace Gfx {
+class CEngine;
+class CParticle;
+};
 
-#include <sound/sound.h>
-
-// class CEvent;
+class CInstanceManager;
+class CEvent;
 //class Gfx::CEngine;
-// class CRobotMain;
+class CRobotMain;
 //class Gfx::CParticle;
-//class CSound;
+class CSoundInterface;
 
-
+namespace Ui {
 enum ControlState
 {
     STATE_ENABLE    = (1<<0),   // active
@@ -62,7 +63,8 @@ enum ControlState
 class CControl
 {
 public:
-    CControl();
+//    CControl(CInstanceManager* iMan);
+    CControl ();
     virtual ~CControl();
 
     virtual bool          Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
@@ -141,3 +143,4 @@ protected:
 };
 
 
+}

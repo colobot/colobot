@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,12 +18,13 @@
 // displaytext.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+//#include <windows.h>
+//#include <stdio.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+#include "graphics/engine/engine.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/restext.h"
@@ -35,28 +37,31 @@
 #include "ui/label.h"
 #include "ui/window.h"
 #include "ui/group.h"
-#include "old/text.h"
-#include "old/sound.h"
+//#include "old/text.h"
+//#include "old/sound.h"
+//#include "sound/sound.h"
 #include "ui/displaytext.h"
 
 
-
+namespace Ui {
 const float FONTSIZE = 12.0f;
 
 
 
 // Object's constructor.
 
-CDisplayText::CDisplayText(CInstanceManager* iMan)
+//CDisplayText::CDisplayText(CInstanceManager* iMan)
+CDisplayText::CDisplayText()
 {
     int     i;
 
-    m_iMan = iMan;
+//    m_iMan = iMan;
+    m_iMan = CInstanceManager::GetInstancePointer();
     m_iMan->AddInstance(CLASS_DISPLAYTEXT, this);
 
-    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_engine    = (Gfx::CEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
     m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_sound     = (CSoundInterface*)m_iMan->SearchInstance(CLASS_SOUND);
 
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {
@@ -94,9 +99,9 @@ bool CDisplayText::EventProcess(const Event &event)
 {
     int     i;
 
-    if ( m_engine->RetPause() )  return true;
+    if ( m_engine->GetPause() )  return true;
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         for ( i=0 ; i<MAXDTLINE ; i++ )
         {
@@ -124,9 +129,9 @@ void CDisplayText::DisplayError(Error err, CObject* pObj, float time)
 
     if ( pObj == 0 )  return;
 
-    pos = pObj->RetPosition(0);
-    h = RetIdealHeight(pObj);
-    d = RetIdealDist(pObj);
+    pos = pObj->GetPosition(0);
+    h = GetIdealHeight(pObj);
+    d = GetIdealDist(pObj);
     DisplayError(err, pos, h, d, time);
 }
 
@@ -186,9 +191,9 @@ void CDisplayText::DisplayText(char *text, CObject* pObj,
 
     if ( pObj == 0 )  return;
 
-    pos = pObj->RetPosition(0);
-    h = RetIdealHeight(pObj);
-    d = RetIdealDist(pObj);
+    pos = pObj->GetPosition(0);
+    h = GetIdealHeight(pObj);
+    d = GetIdealDist(pObj);
     DisplayText(text, pos, h, d, time, type);
 }
 
@@ -199,10 +204,10 @@ void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
 {
     CObject*    toto;
     CMotion*    motion;
-    CWindow*    pw;
-    CButton*    button;
-    CGroup*     group;
-    CLabel*     label;
+    Ui::CWindow*    pw;
+    Ui::CButton*    button;
+    Ui::CGroup*     group;
+    Ui::CLabel*     label;
     Math::Point     pos, ppos, dim;
     Sound       sound;
     float       hLine, hBox;
@@ -210,7 +215,7 @@ void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
 
     if ( !m_bEnable )  return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if ( pw == 0 )
     {
         pos.x = 0.0f;
@@ -221,12 +226,12 @@ void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
     }
 
     hBox = 0.045f;
-    hLine = m_engine->RetText()->RetHeight(FONTSIZE, FONT_COLOBOT);
+    hLine = m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, FONTSIZE);
 
     nLine = 0;
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {
-        group = (CGroup*)pw->SearchControl(EventMsg(EVENT_DT_GROUP0+i));
+        group = static_cast<CGroup*>(pw->SearchControl(EventType(EVENT_DT_GROUP0+i)));
         if ( group == 0 )  break;
         nLine ++;
     }
@@ -247,13 +252,13 @@ void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
     if ( type == TT_WARNING )  icon = 10;  // blue
     if ( type == TT_INFO    )  icon =  8;  // green
     if ( type == TT_MESSAGE )  icon = 11;  // yellow
-    pw->CreateGroup(pos, dim, icon, EventMsg(EVENT_DT_GROUP0+nLine));
+    pw->CreateGroup(pos, dim, icon, EventType(EVENT_DT_GROUP0+nLine));
 
     pw->SetTrashEvent(false);
 
     ppos = pos;
     ppos.y -= hLine/2.0f;
-    label = pw->CreateLabel(ppos, dim, -1, EventMsg(EVENT_DT_LABEL0+nLine), text);
+    label = pw->CreateLabel(ppos, dim, -1, EventType(EVENT_DT_LABEL0+nLine), text);
     if ( label != 0 )
     {
         label->SetFontSize(FONTSIZE);
@@ -261,7 +266,7 @@ void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
 
     dim.x = dim.y*0.75f;
     pos.x -= dim.x;
-    button = pw->CreateButton(pos, dim, 14, EventMsg(EVENT_DT_VISIT0+nLine));
+    button = pw->CreateButton(pos, dim, 14, EventType(EVENT_DT_VISIT0+nLine));
 
     if ( goal.x == 0.0f &&
          goal.y == 0.0f &&
@@ -279,7 +284,7 @@ void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
     toto = SearchToto();
     if ( toto != 0 )
     {
-        motion = toto->RetMotion();
+        motion = toto->GetMotion();
         if ( motion != 0 )
         {
             if ( type == TT_ERROR )
@@ -324,18 +329,18 @@ void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
 
 void CDisplayText::ClearText()
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     int         i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
 
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {
         if ( pw != 0 )
         {
-            pw->DeleteControl(EventMsg(EVENT_DT_GROUP0+i));
-            pw->DeleteControl(EventMsg(EVENT_DT_LABEL0+i));
-            pw->DeleteControl(EventMsg(EVENT_DT_VISIT0+i));
+            pw->DeleteControl(EventType(EVENT_DT_GROUP0+i));
+            pw->DeleteControl(EventType(EVENT_DT_LABEL0+i));
+            pw->DeleteControl(EventType(EVENT_DT_VISIT0+i));
         }
         m_bExist[i] = false;
         m_visitGoal[i] = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -349,32 +354,32 @@ void CDisplayText::ClearText()
 
 void CDisplayText::HideText(bool bHide)
 {
-    CWindow*    pw;
-    CGroup*     pg;
-    CLabel*     pl;
-    CButton*    pb;
+    Ui::CWindow*    pw;
+    Ui::CGroup*     pg;
+    Ui::CLabel*     pl;
+    Ui::CButton*    pb;
     int         i;
 
     m_bHide = bHide;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if ( pw == 0 )  return;
 
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {
-        pg = (CGroup*)pw->SearchControl(EventMsg(EVENT_DT_GROUP0+i));
+        pg = static_cast<Ui::CGroup*>(pw->SearchControl(EventType(EVENT_DT_GROUP0+i)));
         if ( pg != 0 )
         {
             pg->SetState(STATE_VISIBLE, !bHide);
         }
 
-        pl = (CLabel* )pw->SearchControl(EventMsg(EVENT_DT_LABEL0+i));
+        pl = static_cast<Ui::CLabel*>(pw->SearchControl(EventType(EVENT_DT_LABEL0+i)));
         if ( pl != 0 )
         {
             pl->SetState(STATE_VISIBLE, !bHide);
         }
 
-        pb = (CButton*)pw->SearchControl(EventMsg(EVENT_DT_VISIT0+i));
+        pb = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i)));
         if ( pb != 0 )
         {
             pb->SetState(STATE_VISIBLE, !bHide);
@@ -386,20 +391,20 @@ void CDisplayText::HideText(bool bHide)
 
 bool CDisplayText::ClearLastText()
 {
-    CWindow     *pw;
-    CButton     *pb1, *pb2;
-    CGroup      *pg1, *pg2;
-    CLabel      *pl1, *pl2;
+    Ui::CWindow     *pw;
+    Ui::CButton     *pb1, *pb2;
+    Ui::CGroup      *pg1, *pg2;
+    Ui::CLabel      *pl1, *pl2;
     int         i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if ( pw == 0 )  return false;
 
-    pb2 = (CButton*)pw->SearchControl(EVENT_DT_VISIT0);
+    pb2 = static_cast<CButton*>(pw->SearchControl(EVENT_DT_VISIT0));
     if ( pb2 == 0 )  return false;  // same not of first-line
-    pg2 = (CGroup*)pw->SearchControl(EVENT_DT_GROUP0);
+    pg2 = static_cast<CGroup*>(pw->SearchControl(EVENT_DT_GROUP0));
     if ( pg2 == 0 )  return false;
-    pl2 = (CLabel*)pw->SearchControl(EVENT_DT_LABEL0);
+    pl2 = static_cast<CLabel*>(pw->SearchControl(EVENT_DT_LABEL0));
     if ( pl2 == 0 )  return false;
 
     for ( i=0 ; i<MAXDTLINE-1 ; i++ )
@@ -408,18 +413,18 @@ bool CDisplayText::ClearLastText()
         pg1 = pg2;
         pl1 = pl2;
 
-        pb2 = (CButton*)pw->SearchControl(EventMsg(EVENT_DT_VISIT0+i+1));
+        pb2 = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i+1)));
         if ( pb2 == 0 )  break;
 
-        pg2 = (CGroup*)pw->SearchControl(EventMsg(EVENT_DT_GROUP0+i+1));
+        pg2 = static_cast<CGroup*>(pw->SearchControl(EventType(EVENT_DT_GROUP0+i+1)));
         if ( pg2 == 0 )  break;
 
-        pl2 = (CLabel*)pw->SearchControl(EventMsg(EVENT_DT_LABEL0+i+1));
+        pl2 = static_cast<CLabel*>(pw->SearchControl(EventType(EVENT_DT_LABEL0+i+1)));
         if ( pl2 == 0 )  break;
 
         pb1->SetState(STATE_ENABLE, pb2->TestState(STATE_ENABLE));
-        pg1->SetIcon(pg2->RetIcon());
-        pl1->SetName(pl2->RetName());
+        pg1->SetIcon(pg2->GetIcon());
+        pl1->SetName(pl2->GetName());
 
         m_time[i]        = m_time[i+1];
         m_visitGoal[i]   = m_visitGoal[i+1];
@@ -427,9 +432,9 @@ bool CDisplayText::ClearLastText()
         m_visitHeight[i] = m_visitHeight[i+1];  // shift
     }
 
-    pw->DeleteControl(EventMsg(EVENT_DT_VISIT0+i));
-    pw->DeleteControl(EventMsg(EVENT_DT_GROUP0+i));
-    pw->DeleteControl(EventMsg(EVENT_DT_LABEL0+i));
+    pw->DeleteControl(EventType(EVENT_DT_VISIT0+i));
+    pw->DeleteControl(EventType(EVENT_DT_GROUP0+i));
+    pw->DeleteControl(EventType(EVENT_DT_LABEL0+i));
     m_bExist[i] = false;
     return true;
 }
@@ -453,7 +458,7 @@ void CDisplayText::SetEnable(bool bEnable)
 
 // Returns the goal during a visit.
 
-Math::Vector CDisplayText::RetVisitGoal(EventMsg event)
+Math::Vector CDisplayText::GetVisitGoal(EventType event)
 {
     int     i;
 
@@ -464,7 +469,7 @@ Math::Vector CDisplayText::RetVisitGoal(EventMsg event)
 
 // Returns the distance during a visit.
 
-float CDisplayText::RetVisitDist(EventMsg event)
+float CDisplayText::GetVisitDist(EventType event)
 {
     int     i;
 
@@ -475,7 +480,7 @@ float CDisplayText::RetVisitDist(EventMsg event)
 
 // Returns the height on a visit.
 
-float CDisplayText::RetVisitHeight(EventMsg event)
+float CDisplayText::GetVisitHeight(EventType event)
 {
     int     i;
 
@@ -487,13 +492,13 @@ float CDisplayText::RetVisitHeight(EventMsg event)
 
 // Ranges from ideal visit for a given object.
 
-float CDisplayText::RetIdealDist(CObject* pObj)
+float CDisplayText::GetIdealDist(CObject* pObj)
 {
     ObjectType  type;
 
     if ( pObj == 0 )  return 40.0f;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_PORTICO )  return 200.0f;
     if ( type == OBJECT_BASE    )  return 200.0f;
     if ( type == OBJECT_NUCLEAR )  return 100.0f;
@@ -506,13 +511,13 @@ float CDisplayText::RetIdealDist(CObject* pObj)
 
 // Returns the height of ideal visit for a given object.
 
-float CDisplayText::RetIdealHeight(CObject* pObj)
+float CDisplayText::GetIdealHeight(CObject* pObj)
 {
     ObjectType  type;
 
     if ( pObj == 0 )  return 5.0f;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_DERRICK  )  return 35.0f;
     if ( type == OBJECT_FACTORY  )  return 22.0f;
     if ( type == OBJECT_REPAIR   )  return 30.0f;
@@ -537,16 +542,16 @@ float CDisplayText::RetIdealHeight(CObject* pObj)
 
 void CDisplayText::ClearVisit()
 {
-    CWindow*    pw;
-    CButton*    pb;
+    Ui::CWindow*    pw;
+    Ui::CButton*    pb;
     int         i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if ( pw == 0 )  return;
 
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {
-        pb = (CButton*)pw->SearchControl(EventMsg(EVENT_DT_VISIT0+i));
+        pb = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i)));
         if ( pb == 0 )  break;
         pb->SetIcon(14);  // eyes
     }
@@ -554,38 +559,38 @@ void CDisplayText::ClearVisit()
 
 // Puts a button in "visit".
 
-void CDisplayText::SetVisit(EventMsg event)
+void CDisplayText::SetVisit(EventType event)
 {
-    CWindow*    pw;
-    CButton*    pb;
+    Ui::CWindow*    pw;
+    Ui::CButton*    pb;
     int         i;
 
     i = event-EVENT_DT_VISIT0;
     if ( i < 0 || i >= MAXDTLINE )  return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if ( pw == 0 )  return;
-    pb = (CButton*)pw->SearchControl(EventMsg(EVENT_DT_VISIT0+i));
+    pb = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i)));
     if ( pb == 0 )  return;
     pb->SetIcon(48);  // >
 }
 
 // Indicates whether a button is set to "visit".
 
-bool CDisplayText::IsVisit(EventMsg event)
+bool CDisplayText::IsVisit(EventType event)
 {
-    CWindow*    pw;
-    CButton*    pb;
+    Ui::CWindow*    pw;
+    Ui::CButton*    pb;
     int         i;
 
     i = event-EVENT_DT_VISIT0;
     if ( i < 0 || i >= MAXDTLINE )  return false;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if ( pw == 0 )  return false;
-    pb = (CButton*)pw->SearchControl(EventMsg(EVENT_DT_VISIT0+i));
+    pb = static_cast<CButton*>(pw->SearchControl(EventType(EVENT_DT_VISIT0+i)));
     if ( pb == 0 )  return false;
-    return (pb->RetIcon() == 48);  // > ?
+    return (pb->GetIcon() == 48);  // > ?
 }
 
 
@@ -599,10 +604,10 @@ CObject* CDisplayText::SearchToto()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_TOTO )
         {
             return pObj;
@@ -611,3 +616,4 @@ CObject* CDisplayText::SearchToto()
     return 0;
 }
 
+}

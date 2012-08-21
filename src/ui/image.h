@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -19,28 +20,30 @@
 #pragma once
 
 
-#include <ui/control.h>
+#include "ui/control.h"
 
-#include <common/event.h>
+namespace Gfx{
+class CEngine;
+};
 
-class CD3DEngine;
 
-
+namespace Ui {
 
 class CImage : public CControl
 {
 public:
-    CImage();
+//    CImage(CInstanceManager* iMan);
+    CImage ();
     virtual ~CImage();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     bool    EventProcess(const Event &event);
 
     void    Draw();
 
     void    SetFilenameImage(char *name);
-    char*   RetFilenameImage();
+    char*   GetFilenameImage();
 
 protected:
 
@@ -49,3 +52,4 @@ protected:
 };
 
 
+}

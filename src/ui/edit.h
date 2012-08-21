@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -14,66 +15,99 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// edit.h
+
+/**
+ * \file ui/edit.h
+ * \brief CEdit class
+ */
 
 #pragma once
 
 
-#include <common/struct.h>
-#include <common/event.h>
+//#include "common/struct.h"
+#include "ui/control.h"
 
-#include <ui/control.h>
-#include <ui/scroll.h>
+namespace Gfx{
+class CEngine;
+};
 
-const int EDITSTUDIOMAX     = 20000;    // maximum number of characters in CBOT edit
-const int EDITLINEMAX       = 1000;     // maximum total number of lines
-const int EDITIMAGEMAX      = 50;       // maximum total number of lines with images
-const int EDITLINKMAX       = 100;      // maximum number of links
-const int EDITHISTORYMAX    = 50;       // max number of levels preserves
+namespace Ui {
+class CScroll;
 
-const int EDITUNDOMAX = 20; // max number of successive undo
+
+//! maximum number of characters in CBOT edit
+const int EDITSTUDIOMAX     = 20000;
+//! maximum total number of lines
+const int EDITLINEMAX       = 1000;
+//! maximum total number of lines with images
+const int EDITIMAGEMAX      = 50;
+//! maximum number of links
+const int EDITLINKMAX       = 100;
+//! max number of levels preserves
+const int EDITHISTORYMAX    = 50;
+
+//! max number of successive undo
+const int EDITUNDOMAX = 20;
 
 struct EditUndo
 {
-    char*       text;           // original text
-    int     len;            // length of the text
-    int     cursor1;        // offset cursor
-    int     cursor2;        // offset cursor
-    int     lineFirst;      // the first line displayed.
+    //! original text
+    char*       text;
+    //! length of the text
+    int     len;
+    //! offset cursor
+    int     cursor1;
+    //! offset cursor
+    int     cursor2;
+    //! the first line displayed.
+    int     lineFirst;
 
 };
 
 enum OperUndo
 {
-    OPERUNDO_SPEC   = 0,    // special operation
-    OPERUNDO_INSERT = 1,    // inserting characters
-    OPERUNDO_DELETE = 2,    // deleting characters
+    //! special operation
+    OPERUNDO_SPEC   = 0,
+    //! inserting characters
+    OPERUNDO_INSERT = 1,
+    //! deleting characters
+    OPERUNDO_DELETE = 2,
 };
 
 struct ImageLine
 {
-    char    name[40];       // name of the image (without diagram \)
-    float   offset;         // vertical offset (v texture)
-    float   height;         // height of the part (dv texture)
-    float   width;          // width
+    //! name of the image (without diagram \)
+    char    name[40];
+    //! vertical offset (v texture)
+    float   offset;
+    //! height of the part (dv texture)
+    float   height;
+    //! width
+    float   width;
 };
 
 struct HyperLink
 {
-    char    name[40];       // text file name (without help \)
-    char    marker[20];     // name of the marker
+    //! text file name (without help \)
+    char    name[40];
+    //! name of the marker
+    char    marker[20];
 };
 
 struct HyperMarker
 {
-    char    name[20];       // name of the marker
-    int pos;            // position in the text
+    //! name of the marker
+    char    name[20];
+    //! position in the text
+    int pos;
 };
 
 struct HyperHistory
 {
-    char    filename[50];       // full file name text
-    int firstLine;      // rank of the first displayed line
+    //! full file name text
+    char    filename[50];
+    //! rank of the first displayed line
+    int firstLine;
 };
 
 
@@ -82,10 +116,11 @@ struct HyperHistory
 class CEdit : public CControl
 {
 public:
-    CEdit();
+//    CEdit(CInstanceManager* iMan);
+    CEdit ();
     virtual ~CEdit();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     void        SetPos(Math::Point pos);
     void        SetDim(Math::Point dim);
@@ -95,45 +130,45 @@ public:
 
     void        SetText(char *text, bool bNew=true);
     void        GetText(char *buffer, int max);
-    char*       RetText();
-    int         RetTextLength();
+    char*       GetText();
+    int         GetTextLength();
 
     bool        ReadText(char *filename, int addSize=0);
     bool        WriteText(char *filename);
 
     void        SetMaxChar(int max);
-    int         RetMaxChar();
+    int         GetMaxChar();
 
     void        SetEditCap(bool bMode);
-    bool        RetEditCap();
+    bool        GetEditCap();
 
     void        SetHiliteCap(bool bEnable);
-    bool        RetHiliteCap();
+    bool        GetHiliteCap();
 
     void        SetInsideScroll(bool bInside);
-    bool        RetInsideScroll();
+    bool        GetInsideScroll();
 
     void        SetSoluceMode(bool bSoluce);
-    bool        RetSoluceMode();
+    bool        GetSoluceMode();
 
     void        SetGenericMode(bool bGeneric);
-    bool        RetGenericMode();
+    bool        GetGenericMode();
 
     void        SetAutoIndent(bool bMode);
-    bool        RetAutoIndent();
+    bool        GetAutoIndent();
 
     void        SetCursor(int cursor1, int cursor2);
     void        GetCursor(int &cursor1, int &cursor2);
 
     void        SetFirstLine(int rank);
-    int         RetFirstLine();
+    int         GetFirstLine();
     void        ShowSelect();
 
     void        SetDisplaySpec(bool bDisplay);
-    bool        RetDisplaySpec();
+    bool        GetDisplaySpec();
 
     void        SetMultiFont(bool bMulti);
-    bool        RetMultiFont();
+    bool        GetMultiFont();
 
     bool        Cut();
     bool        Copy();
@@ -186,7 +221,7 @@ protected:
     bool        Shift(bool bLeft);
     bool        MinMaj(bool bMaj);
     void        Justif();
-    int         RetCursorLine(int cursor);
+    int         GetCursorLine(int cursor);
 
     void        UndoFlush();
     void        UndoMemorize(OperUndo oper);
@@ -243,3 +278,4 @@ protected:
 };
 
 
+}
