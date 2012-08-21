@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,13 +18,14 @@
 // image.cpp
 
 
-#include <windows.h>
+//#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+#include "graphics/engine/engine.h"
+//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -32,10 +34,11 @@
 
 
 
-
+namespace Ui {
 // Object's constructor.
 
-CImage::CImage(CInstanceManager* iMan) : CControl(iMan)
+//CImage::CImage(CInstanceManager* iMan) : CControl(iMan)
+CImage::CImage() : CControl()
 {
     m_filename[0] = 0;
 }
@@ -46,25 +49,25 @@ CImage::~CImage()
 {
     if ( m_filename[0] != 0 )
     {
-        m_engine->FreeTexture(m_filename);
+        m_engine->DeleteTexture(m_filename);
     }
 }
 
 
 // Creates a new button.
 
-bool CImage::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CImage::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
 
     if ( icon == -1 )
     {
         char    name[100];
         char*   p;
 
-        GetResource(RES_EVENT, eventMsg, name);
+        GetResource(RES_EVENT, eventType, name);
         p = strchr(name, '\\');
         if ( p != 0 )  *p = 0;
         SetName(name);
@@ -80,13 +83,13 @@ void CImage::SetFilenameImage(char *name)
 {
     if ( m_filename[0] != 0 )
     {
-        m_engine->FreeTexture(m_filename);
+        m_engine->DeleteTexture(m_filename);
     }
 
     strcpy(m_filename, name);
 }
 
-char* CImage::RetFilenameImage()
+char* CImage::GetFilenameImage()
 {
     return m_filename;
 }
@@ -119,17 +122,17 @@ void CImage::Draw()
     if ( m_icon == 0 )  // hollow frame?
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x = 160.0f/256.0f;
-        uv1.y = 192.0f/256.0f;  // u-v texture
-        uv2.x = 192.0f/256.0f;
-        uv2.y = 224.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x = 160.0f / 256.0f;
+        uv1.y = 192.0f / 256.0f;  // u-v texture
+        uv2.x = 192.0f / 256.0f;
+        uv2.y = 224.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-        corner.x = 10.0f/640.0f;
-        corner.y = 10.0f/480.0f;
+        corner.x = 10.0f / 640.0f;
+        corner.y = 10.0f / 480.0f;
         DrawIcon(m_pos, m_dim, uv1, uv2, corner, 8.0f/256.0f);
     }
 
@@ -137,13 +140,13 @@ void CImage::Draw()
     {
         m_engine->LoadTexture(m_filename);
         m_engine->SetTexture(m_filename);
-        m_engine->SetState(D3DSTATENORMAL);
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         pos = m_pos;
         dim = m_dim;
-        pos.x +=  5.0f/640.0f;
-        pos.y +=  5.0f/480.0f;
-        dim.x -= 10.0f/640.0f;
-        dim.y -= 10.0f/480.0f;
+        pos.x +=  5.0f / 640.0f;
+        pos.y +=  5.0f / 480.0f;
+        dim.x -= 10.0f / 640.0f;
+        dim.y -= 10.0f / 480.0f;
         uv1.x = 0.0f;
         uv1.y = 0.0f;
         uv2.x = 1.0f;
@@ -153,3 +156,4 @@ void CImage::Draw()
 }
 
 
+}

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
 
 #include <common/event.h>
 
+namespace Ui {
 
 class CShortcut : public CControl
 {
@@ -29,7 +31,7 @@ class CShortcut : public CControl
         CShortcut();
         ~CShortcut();
 
-        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
         bool    EventProcess(const Event &event);
 
@@ -43,3 +45,4 @@ class CShortcut : public CControl
 };
 
 
+}

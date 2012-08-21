@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -16,10 +17,10 @@
 
 
 //#include <windows.h>
-#include <stdio.h>
+//#include <stdio.h>
 //#include <d3d.h>
 
-#include "common/struct.h"
+//#include "common/struct.h"
 //#include "old/d3dengine.h"
 #include "graphics/engine/engine.h"
 //#include "old/math3d.h"
@@ -28,14 +29,15 @@
 #include "common/iman.h"
 #include "common/restext.h"
 //#include "old/text.h"
+#include "graphics/engine/text.h"
 #include "ui/check.h"
 
 
-
+namespace Ui {
 
 // Object's constructor.
 
-CCheck::CCheck(CInstanceManager* iMan) : CControl(iMan)
+CCheck::CCheck() : CControl()
 {
 }
 
@@ -103,7 +105,7 @@ void CCheck::Draw()
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     iDim = m_dim;
-    m_dim.x = m_dim.y*0.75f;  // square
+    m_dim.x = m_dim.y * 0.75f;  // square
 
     if ( m_state & STATE_SHADOW )
     {
@@ -159,10 +161,10 @@ void CCheck::Draw()
     if ( m_state & STATE_DEAD )  return;
 
     // Draw the name.
-    pos.x = m_pos.x+m_dim.y/0.9f;
-    pos.y = m_pos.y+m_dim.y*0.50f;
+    pos.x = m_pos.x + m_dim.y / 0.9f;
+    pos.y = m_pos.y + m_dim.y * 0.50f;
     pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
     m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
 }
 
-
+}

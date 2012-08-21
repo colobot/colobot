@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -24,19 +25,28 @@
 
 
 class CInstanceManager;
-class CD3DEngine;
+//class CD3DEngine;
 class CEvent;
 class CRobotMain;
-class CCamera;
-class CInterface;
-class CObject;
-class CParticule;
-class CLight;
+//class CCamera;
 
+class CObject;
+//class CLight;
+
+namespace Gfx {
+class CEngine;
+class Camera;
+class Particle;
+class CLight;
+}
+
+namespace Ui {
+class CInterface;
 
 class CDisplayInfo
 {
 public:
+//    CDisplayInfo(CInstanceManager* iMan);
     CDisplayInfo();
     ~CDisplayInfo();
 
@@ -46,7 +56,7 @@ public:
     void        StopDisplayInfo();
 
     void        SetPosition(int pos);
-    int         RetPosition();
+    int         GetPosition();
 
 protected:
     bool        EventFrame(const Event &event);
@@ -61,19 +71,19 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    CD3DEngine* m_engine;
-    CEvent*     m_event;
+    Gfx::CEngine* m_engine;
+    CEventQueue*     m_event;
     CRobotMain* m_main;
-    CCamera*    m_camera;
+    Gfx::CCamera*    m_camera;
     CInterface* m_interface;
-    CParticule* m_particule;
-    CLight*     m_light;
+    Gfx::CParticle* m_particle;
+    Gfx::CLight*     m_light;
 
     bool        m_bInfoMaximized;
     bool        m_bInfoMinimized;
 
     int         m_index;
-    CameraType  m_infoCamera;
+    Gfx::CameraType  m_infoCamera;
     Math::Point     m_infoNormalPos;
     Math::Point     m_infoNormalDim;
     Math::Point     m_infoActualPos;
@@ -88,3 +98,4 @@ protected:
 };
 
 
+}
