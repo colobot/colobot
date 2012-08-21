@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,53 +19,54 @@
 
 #pragma once
 
+#include <graphics/core/color.h>
 
-#include "common/struct.h"
-#include "math/point.h"
+#include <common/struct.h>
+#include <common/event.h>
 
+#include <math/point.h>
 
-class CInstanceManager;
-class CEvent;
-class CD3DEngine;
-class CInterface;
-class CObject;
+#include <object/object.h>
 
+#include <ui/interface.h>
 
+namespace Ui {
 
 class CMainMap
 {
-public:
-    CMainMap(CInstanceManager* iMan);
-    ~CMainMap();
+    public:
+        CMainMap();
+        ~CMainMap();
 
-    void        UpdateMap();
-    void        CreateMap();
-    void        SetFixImage(char *filename);
-    void        FloorColorMap(D3DCOLORVALUE floor, D3DCOLORVALUE water);
-    void        ShowMap(bool bShow);
-    void        DimMap();
-    float       RetZoomMap();
-    void        ZoomMap(float zoom);
-    void        ZoomMap();
-    void        MapEnable(bool bEnable);
-    bool        RetShowMap();
-    bool        RetFixImage();
-    CObject*    DetectMap(Math::Point pos, bool &bInMap);
-    void        SetHilite(CObject* pObj);
-    void        SetToy(bool bToy);
-    void        SetFixParam(float zoom, float ox, float oy, float angle, int mode, bool bDebug);
+        void        UpdateMap();
+        void        CreateMap();
+        void        SetFixImage(const char *filename);
+        void        FloorColorMap(Gfx::Color floor, Gfx::Color water);
+        void        ShowMap(bool bShow);
+        void        DimMap();
+        float       GetZoomMap();
+        void        ZoomMap(float zoom);
+        void        ZoomMap();
+        void        MapEnable(bool bEnable);
+        bool        GetShowMap();
+        bool        GetFixImage();
+        CObject*    DetectMap(Math::Point pos, bool &bInMap);
+        void        SetHighlight(CObject* pObj);
+        void        SetToy(bool bToy);
+        void        SetFixParam(float zoom, float ox, float oy, float angle, int mode, bool bDebug);
 
-protected:
-    void        CenterMap();
+    protected:
+        void        CenterMap();
 
-protected:
-    CInstanceManager* m_iMan;
-    CEvent*         m_event;
-    CD3DEngine*     m_engine;
-    CInterface*     m_interface;
+    protected:
+        CInstanceManager* m_iMan;
+        CEvent*         m_event;
+        CD3DEngine*     m_engine;
+        CInterface*     m_interface;
 
-    int             m_mapMode;
-    bool            m_bFixImage;
+        int             m_mapMode;
+        bool            m_bFixImage;
 };
 
+}
 
