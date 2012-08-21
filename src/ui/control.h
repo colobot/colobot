@@ -80,7 +80,7 @@ public:
     virtual int           GetState();
     virtual void          SetIcon(int icon);
     virtual int           GetIcon();
-    virtual void          SetName(char* name, bool bTooltip=true);
+    virtual void          SetName(const char* name, bool bTooltip=true);
     virtual char*   GetName();
     virtual void          SetTextAlign(Gfx::TextAlign mode);
     virtual int           GetTextAlign();

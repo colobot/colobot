@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,34 +18,18 @@
 // map.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "math/geometry.h"
-#include "old/d3dengine.h"
-#include "common/event.h"
-#include "old/math3d.h"
-#include "old/terrain.h"
-#include "old/water.h"
-#include "object/object.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "object/robotmain.h"
-#include "common/iman.h"
-#include "ui/map.h"
+#include <ui/map.h>
 
 
-
+namespace Ui {
 
 // Object's constructor.
 
-CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
+CMap::CMap() : CControl()
 {
-    m_main    = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-    m_water   = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
+    m_main    = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
+    m_terrain = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+    m_water   = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
 
     m_bEnable  = true;
     m_time     = 0.0f;
@@ -61,9 +46,9 @@ CMap::CMap(CInstanceManager* iMan) : CControl(iMan)
     m_waterColor.g = 0.80f;
     m_waterColor.b = 1.00f;  // blue
 
-    m_half = m_terrain->RetMosaic()*m_terrain->RetBrick()*m_terrain->RetSize()/2.0f;
+    m_half = m_terrain->GetMosaic() * m_terrain->GetBrick() * m_terrain->GetSize() / 2.0f;
 
-    m_hiliteRank = -1;
+    m_highlightRank = -1;
     FlushObject();
 
     m_fixImage[0] = 0;
@@ -81,9 +66,10 @@ CMap::~CMap()
 
 // Creates a new button.
 
-bool CMap::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CMap::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
     CControl::Create(pos, dim, icon, eventMsg);
     return true;
@@ -96,7 +82,7 @@ void CMap::SetOffset(float ox, float oy)
 {
     m_offset.x = ox;
     m_offset.y = oy;
-    m_half = m_terrain->RetMosaic()*m_terrain->RetBrick()*m_terrain->RetSize()/2.0f;
+    m_half = m_terrain->GetMosaic() * m_terrain->GetBrick() * m_terrain->GetSize() / 2.0f;
 }
 
 // Choice of the global angle of rotation.
@@ -131,10 +117,10 @@ void CMap::SetDebug(bool bDebug)
 void CMap::SetZoom(float value)
 {
     m_zoom = value;
-    m_half = m_terrain->RetMosaic()*m_terrain->RetBrick()*m_terrain->RetSize()/2.0f;
+    m_half = m_terrain->GetMosaic() * m_terrain->GetBrick() * m_terrain->GetSize() / 2.0f;
 }
 
-float CMap::RetZoom()
+float CMap::GetZoom()
 {
     return m_zoom;
 }
@@ -149,7 +135,7 @@ void CMap::SetEnable(bool bEnable)
     SetState(STATE_DEAD, !bEnable);
 }
 
-bool CMap::RetEnable()
+bool CMap::GetEnable()
 {
     return m_bEnable;
 }
@@ -157,14 +143,14 @@ bool CMap::RetEnable()
 
 // Choosing the color of the soil.
 
-void CMap::SetFloorColor(D3DCOLORVALUE color)
+void CMap::SetFloorColor(Gfx::Color color)
 {
     m_floorColor = color;
 }
 
 // Choosing the color of the water.
 
-void CMap::SetWaterColor(D3DCOLORVALUE color)
+void CMap::SetWaterColor(Gfx::Color color)
 {
     m_waterColor = color;
 }
@@ -172,14 +158,14 @@ void CMap::SetWaterColor(D3DCOLORVALUE color)
 
 // Specifies a fixed image in place of the drawing of the relief.
 
-void CMap::SetFixImage(char *filename)
+void CMap::SetFixImage(const char *filename)
 {
     strcpy(m_fixImage, filename);
 }
 
 // Whether to use a still image.
 
-bool CMap::RetFixImage()
+bool CMap::GetFixImage()
 {
     return (m_fixImage[0] != 0);
 }
@@ -189,30 +175,24 @@ bool CMap::RetFixImage()
 
 bool CMap::EventProcess(const Event &event)
 {
-    bool    bInMap;
+    bool bInMap;
 
-    if ( (m_state & STATE_VISIBLE) == 0 )  return true;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return true;
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
-    {
+    if ( event.type == EVENT_FRAME )
         m_time += event.rTime;
-    }
 
-    if ( event.event == EVENT_MOUSEMOVE && Detect(event.pos) )
-    {
-        m_engine->SetMouseType(D3DMOUSENORM);
+    if ( event.type == EVENT_MOUSE_MOVE && Detect(event.pos) )  {
+        m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
         if ( DetectObject(event.pos, bInMap) != 0 )
-        {
-            m_engine->SetMouseType(D3DMOUSEHAND);
-        }
+            m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);
     }
 
-    if ( event.event == EVENT_LBUTTONDOWN )
-    {
-        if ( CControl::Detect(event.pos) )
-        {
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == 1 )  {
+        if ( CControl::Detect(event.pos) ) {
             SelectObject(event.pos);
             return false;
         }
@@ -227,7 +207,7 @@ Math::Point CMap::AdjustOffset(Math::Point offset)
 {
     float   limit;
 
-    limit = m_half - m_half/m_zoom;
+    limit = m_half - m_half / m_zoom;
     if ( offset.x < -limit )  offset.x = -limit;
     if ( offset.x >  limit )  offset.x =  limit;
     if ( offset.y < -limit )  offset.y = -limit;
@@ -238,21 +218,20 @@ Math::Point CMap::AdjustOffset(Math::Point offset)
 
 // Indicates the object with the mouse hovers over.
 
-void CMap::SetHilite(CObject* pObj)
+void CMap::SetHighlight(CObject* pObj)
 {
-    int     i;
+    m_highlightRank = -1;
+    if ( m_bToy || m_fixImage[0] != 0 )
+        return;  // card with still image?
+    if ( pObj == 0 )
+        return;
 
-    m_hiliteRank = -1;
-    if ( m_bToy || m_fixImage[0] != 0 )  return;  // card with still image?
-    if ( pObj == 0 )  return;
+    for (int i = 0; i < MAPMAXOBJECT; i++) {
+        if ( !m_map[i].bUsed )
+            continue;
 
-    for ( i=0 ; i<MAPMAXOBJECT ; i++ )
-    {
-        if ( !m_map[i].bUsed )  continue;
-
-        if ( m_map[i].object == pObj )
-        {
-            m_hiliteRank = i;
+        if ( m_map[i].object == pObj ) {
+            m_highlightRank = i;
             break;
         }
     }
@@ -262,39 +241,43 @@ void CMap::SetHilite(CObject* pObj)
 
 CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
 {
-    float       dist, min;
-    int         i, best;
+    float dist, min;
+    int best;
 
     bInMap = false;
-    if ( pos.x < m_pos.x         ||
-         pos.y < m_pos.y         ||
-         pos.x > m_pos.x+m_dim.x ||
-         pos.y > m_pos.y+m_dim.y )  return 0;
+    if ( pos.x < m_pos.x ||
+         pos.y < m_pos.y ||
+         pos.x > m_pos.x + m_dim.x ||
+         pos.y > m_pos.y + m_dim.y )
+        return 0;
 
     bInMap = true;
 
-    pos.x = (pos.x-m_pos.x)/m_dim.x*256.0f;
-    pos.y = (pos.y-m_pos.y)/m_dim.y*256.0f;  // 0..256
-    pos.x = (pos.x-128.0f)*m_half/(m_zoom*128.0f)+m_offset.x;
-    pos.y = (pos.y-128.0f)*m_half/(m_zoom*128.0f)+m_offset.y;
+    pos.x = (pos.x - m_pos.x) / m_dim.x * 256.0f;
+    pos.y = (pos.y - m_pos.y) / m_dim.y * 256.0f;  // 0..256
+    pos.x = (pos.x - 128.0f) * m_half / (m_zoom * 128.0f) + m_offset.x;
+    pos.y = (pos.y - 128.0f) * m_half / (m_zoom * 128.0f) + m_offset.y;
 
     min = 10000.0f;
     best = -1;
-    for ( i=MAPMAXOBJECT-1 ; i>=0 ; i-- )
-    {
-        if ( !m_map[i].bUsed  )  continue;
-        if ( m_map[i].color == MAPCOLOR_BBOX  && !m_bRadar )  continue;
-        if ( m_map[i].color == MAPCOLOR_ALIEN && !m_bRadar )  continue;
+    for (int i = MAPMAXOBJECT - 1; i >= 0; i--) {
+        if ( !m_map[i].bUsed )
+            continue;
+        if ( m_map[i].color == MAPCOLOR_BBOX  && !m_bRadar )
+            continue;
+        if ( m_map[i].color == MAPCOLOR_ALIEN && !m_bRadar )
+            continue;
 
-        dist = Math::Point(m_map[i].pos.x-pos.x, m_map[i].pos.y-pos.y).Length();
-        if ( dist > m_half/m_zoom*8.0f/100.0f )  continue;  // too far?
-        if ( dist < min )
-        {
+        dist = Math::Point(m_map[i].pos.x - pos.x, m_map[i].pos.y - pos.y).Length();
+        if ( dist > m_half / m_zoom * 8.0f / 100.0f )
+            continue;  // too far?
+        if ( dist < min ) {
             min = dist;
             best = i;
         }
     }
-    if ( best == -1 )  return 0;
+    if ( best == -1 )
+        return 0;
     return m_map[best].object;
 }
 
@@ -302,14 +285,12 @@ CObject* CMap::DetectObject(Math::Point pos, bool &bInMap)
 
 void CMap::SelectObject(Math::Point pos)
 {
-    CObject     *pObj;
-    bool        bInMap;
+    CObject *pObj;
+    bool bInMap;
 
     pObj = DetectObject(pos, bInMap);
     if ( pObj != 0 )
-    {
         m_main->SelectObject(pObj);
-    }
 }
 
 
@@ -318,34 +299,31 @@ void CMap::SelectObject(Math::Point pos)
 void CMap::Draw()
 {
     Math::Point     uv1, uv2;
-    int         i;
+    int i;
 
-    if ( (m_state & STATE_VISIBLE) == 0 )  return;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return;
 
     CControl::Draw();  // draws the bottom (button)
 
-    if ( !m_bEnable )  return;
+    if ( !m_bEnable )
+        return;
 
-    if ( m_fixImage[0] == 0 && m_map[MAPMAXOBJECT-1].bUsed )
-    {
-        m_offset = AdjustOffset(m_map[MAPMAXOBJECT-1].pos);
-    }
+    if ( m_fixImage[0] == 0 && m_map[MAPMAXOBJECT - 1].bUsed )
+        m_offset = AdjustOffset(m_map[MAPMAXOBJECT - 1].pos);
 
-    if ( m_fixImage[0] == 0 )  // drawing of the relief?
-    {
+    if ( m_fixImage[0] == 0 ) { // drawing of the relief?
         m_engine->SetTexture("map.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x = 0.5f+(m_offset.x-(m_half/m_zoom))/(m_half*2.0f);
-        uv1.y = 0.5f-(m_offset.y+(m_half/m_zoom))/(m_half*2.0f);
-        uv2.x = 0.5f+(m_offset.x+(m_half/m_zoom))/(m_half*2.0f);
-        uv2.y = 0.5f-(m_offset.y-(m_half/m_zoom))/(m_half*2.0f);
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x = 0.5f + (m_offset.x - (m_half / m_zoom)) / (m_half * 2.0f);
+        uv1.y = 0.5f - (m_offset.y + (m_half / m_zoom)) / (m_half * 2.0f);
+        uv2.x = 0.5f + (m_offset.x + (m_half / m_zoom)) / (m_half * 2.0f);
+        uv2.y = 0.5f - (m_offset.y - (m_half / m_zoom)) / (m_half * 2.0f);
         DrawVertex(uv1, uv2, 0.97f);  // drawing the map
-    }
-    else    // still image?
-    {
+    } else {   // still image?
         m_engine->LoadTexture(m_fixImage);
         m_engine->SetTexture(m_fixImage);
-        m_engine->SetState(D3DSTATENORMAL);
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
         uv1.x = 0.0f;
         uv1.y = 0.0f;
         uv2.x = 1.0f;
@@ -355,33 +333,28 @@ void CMap::Draw()
 
     i = MAPMAXOBJECT-1;
     if ( m_map[i].bUsed )  // selection:
-    {
         DrawFocus(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color);
-    }
 
-    for ( i=0 ; i<m_totalFix ; i++ )  // fixed objects:
-    {
-        if ( i == m_hiliteRank )  continue;
+    for ( i=0 ; i<m_totalFix ; i++ ) {  // fixed objects:
+        if ( i == m_highlightRank )
+            continue;
         DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, false);
     }
 
-    for ( i=MAPMAXOBJECT-2 ; i>m_totalMove ; i-- )  // moving objects:
-    {
-        if ( i == m_hiliteRank )  continue;
+    for ( i=MAPMAXOBJECT-2 ; i>m_totalMove ; i-- ) { // moving objects:
+        if ( i == m_highlightRank )
+            continue;
         DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, false);
     }
 
     i = MAPMAXOBJECT-1;
-    if ( m_map[i].bUsed && i != m_hiliteRank )  // selection:
-    {
+    if ( m_map[i].bUsed && i != m_highlightRank )  // selection:
         DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, true, false);
-    }
 
-    if ( m_hiliteRank != -1 && m_map[m_hiliteRank].bUsed )
-    {
-        i = m_hiliteRank;
+    if ( m_highlightRank != -1 && m_map[m_highlightRank].bUsed ) {
+        i = m_highlightRank;
         DrawObject(m_map[i].pos, m_map[i].dir, m_map[i].type, m_map[i].color, false, true);
-        DrawHilite(m_map[i].pos);
+        DrawHighlight(m_map[i].pos);
     }
 }
 
@@ -392,35 +365,32 @@ Math::Point CMap::MapInter(Math::Point pos, float dir)
     Math::Point p1;
     float   limit;
 
-    p1.x = pos.x+1.0f;
+    p1.x = pos.x + 1.0f;
     p1.y = pos.y;
     p1 = Math::RotatePoint(pos, dir, p1);
 
     p1.x -= pos.x;
     p1.y -= pos.y;
 
-    limit = m_mapPos.x+m_mapDim.x-pos.x;
-    if ( p1.x > limit )  // exceeds the right?
-    {
+    limit = m_mapPos.x + m_mapDim.x - pos.x;
+    if ( p1.x > limit ) { // exceeds the right?
         p1.y = limit*p1.y/p1.x;
         p1.x = limit;
     }
-    limit = m_mapPos.y*0.75f+m_mapDim.y*0.75f-pos.y;
-    if ( p1.y > limit )  // exceeds the top?
-    {
-        p1.x = limit*p1.x/p1.y;
+    limit = m_mapPos.y * 0.75f + m_mapDim.y * 0.75f - pos.y;
+    if ( p1.y > limit ) { // exceeds the top?
+        p1.x = limit * p1.x / p1.y;
         p1.y = limit;
     }
-    limit = m_mapPos.x-pos.x;
-    if ( p1.x < limit )  // exceeds the left?
-    {
-        p1.y = limit*p1.y/p1.x;
+    limit = m_mapPos.x - pos.x;
+    if ( p1.x < limit ) { // exceeds the left?
+        p1.y = limit * p1.y / p1.x;
         p1.x = limit;
     }
-    limit = m_mapPos.y*0.75f-pos.y;
-    if ( p1.y < limit )  // exceeds the bottom?
-    {
-        p1.x = limit*p1.x/p1.y;
+
+    limit = m_mapPos.y * 0.75f - pos.y;
+    if ( p1.y < limit ) { // exceeds the bottom?
+        p1.x = limit * p1.x / p1.y;
         p1.y = limit;
     }
 
@@ -454,7 +424,7 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
     pos.x = m_mapPos.x+m_mapDim.x*pos.x;
     pos.y = m_mapPos.y*0.75f+m_mapDim.y*pos.y*0.75f;
 
-    focus = m_engine->RetFocus();
+    focus = m_engine->GetFocus();
     dir += Math::PI/2.0f;
     aMin = Math::NormAngle(dir-Math::PI/4.0f*focus);
     aMax = Math::NormAngle(dir+Math::PI/4.0f*focus);
@@ -484,7 +454,7 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
     uv2.y = 255.0f/256.0f;
 
     m_engine->SetTexture("button2.tga");
-    m_engine->SetState(D3DSTATETTw);
+    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
     bEnding = false;
     do
@@ -492,7 +462,7 @@ void CMap::DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color
         quart ++;
         aOct = limit[quart%4];
         if ( quart >= 4 )  aOct += Math::PI*2.0f;
-        if ( aOct >= aMax-Math::VERY_SMALL )
+        if ( aOct >= aMax - Math::VERY_SMALL_NUM )
         {
             aOct = aMax;
             bEnding = true;
@@ -544,7 +514,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
         }
 
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         if ( bUp )
         {
             uv1.x = 160.5f/256.0f;  // yellow triangle ^
@@ -687,7 +657,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
         if ( bSelect )
         {
             m_engine->SetTexture("button2.tga");
-            m_engine->SetState(D3DSTATENORMAL);
+            m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
             if ( m_bToy )
             {
                 uv1.x = 164.5f/256.0f;  // black pentagon
@@ -713,7 +683,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
         if ( m_bRadar )
         {
             m_engine->SetTexture("button2.tga");
-            m_engine->SetState(D3DSTATETTw);
+            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
             uv1.x =  64.5f/256.0f;  // blue triangle
             uv1.y = 240.5f/256.0f;
             uv2.x =  79.0f/256.0f;
@@ -733,7 +703,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     if ( color == MAPCOLOR_WAYPOINTb )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 192.5f/256.0f;  // blue cross
         uv1.y = 240.5f/256.0f;
         uv2.x = 207.0f/256.0f;
@@ -743,7 +713,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     if ( color == MAPCOLOR_WAYPOINTr )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 208.5f/256.0f;  // red cross
         uv1.y = 240.5f/256.0f;
         uv2.x = 223.0f/256.0f;
@@ -753,7 +723,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     if ( color == MAPCOLOR_WAYPOINTg )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 224.5f/256.0f;  // green cross
         uv1.y = 240.5f/256.0f;
         uv2.x = 239.0f/256.0f;
@@ -763,7 +733,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     if ( color == MAPCOLOR_WAYPOINTy )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 240.5f/256.0f;  // yellow cross
         uv1.y = 240.5f/256.0f;
         uv2.x = 255.0f/256.0f;
@@ -773,7 +743,7 @@ void CMap::DrawObject(Math::Point pos, float dir, ObjectType type, MapColor colo
     if ( color == MAPCOLOR_WAYPOINTv )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         uv1.x = 192.5f/256.0f;  // violet cross
         uv1.y = 224.5f/256.0f;
         uv2.x = 207.0f/256.0f;
@@ -794,7 +764,7 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
     dp = 0.5f/256.0f;
 
     m_engine->SetTexture("button3.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
     if ( color == MAPCOLOR_MOVE )
     {
         uv1.x = 160.0f/256.0f;  // blue
@@ -877,7 +847,7 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
         if ( type == OBJECT_TEEN34    )  icon = 48;  // stone
         if ( icon == -1 )  return;
 
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         uv1.x = (32.0f/256.0f)*(icon%8);
         uv1.y = (32.0f/256.0f)*(icon/8);
         uv2.x = uv1.x+32.0f/256.0f;
@@ -892,7 +862,7 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
 
 // Draw the object with the mouse hovers over.
 
-void CMap::DrawHilite(Math::Point pos)
+void CMap::DrawHighlight(Math::Point pos)
 {
     Math::Point     dim, uv1, uv2;
     bool        bOut, bUp, bDown, bLeft, bRight;
@@ -916,7 +886,7 @@ void CMap::DrawHilite(Math::Point pos)
     dim.y *= 2.0f+cosf(m_time*8.0f)*0.5f;
 
     m_engine->SetTexture("button2.tga");
-    m_engine->SetState(D3DSTATETTb);
+    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
     uv1.x = 160.5f/256.0f;  // hilite
     uv1.y = 224.5f/256.0f;
     uv2.x = 175.0f/256.0f;
@@ -930,19 +900,19 @@ void CMap::DrawHilite(Math::Point pos)
 
 void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point uv1, Math::Point uv2)
 {
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2  vertex[3];  // 1 triangle
+    Gfx::CDevice* device;
+    Gfx::VertexTex2  vertex[3];  // 1 triangle
     Math::Vector    n;
 
-    device = m_engine->RetD3DDevice();
+    device = m_engine->GetDevice();
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
-    vertex[1] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
-    vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
+    vertex[0] = Gfx::VertexTex2(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
+    vertex[1] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
+    vertex[2] = Gfx::VertexTex2(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
 
-    device->DrawPrimitive(D3DPT_TRIANGLELIST, D3DFVF_VERTEX2, vertex, 3, NULL);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, vertex, 3);
     m_engine->AddStatisticTriangle(1);
 }
 
@@ -950,28 +920,28 @@ void CMap::DrawTriangle(Math::Point p1, Math::Point p2, Math::Point p3, Math::Po
 
 void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point p4, Math::Point p5, Math::Point uv1, Math::Point uv2)
 {
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2  vertex[5];  // 1 pentagon
+    Gfx::CDevice* device;
+    Gfx::VertexTex2  vertex[5];  // 1 pentagon
     Math::Vector    n;
 
-    device = m_engine->RetD3DDevice();
+    device = m_engine->GetDevice();
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
 #if 1
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv1.y);
-    vertex[1] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv1.x,uv2.y);
-    vertex[2] = D3DVERTEX2(Math::Vector(p5.x, p5.y, 0.0f), n, uv2.x,uv2.y);
-    vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv2.x,uv2.y);
-    vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p4.y, 0.0f), n, uv2.x,uv2.y);
+    vertex[0] = Gfx::VertexTex2(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
+    vertex[1] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
+    vertex[2] = Gfx::VertexTex2(Math::Vector(p5.x, p5.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
+    vertex[3] = Gfx::VertexTex2(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
+    vertex[4] = Gfx::VertexTex2(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
 
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 5, NULL);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 5);
 #else
-    vertex[0] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv1.x,uv1.y);
-    vertex[1] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv1.x,uv2.y);
-    vertex[2] = D3DVERTEX2(Math::Vector(p4.x, p4.y, 0.0f), n, uv2.x,uv2.y);
+    vertex[0] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
+    vertex[1] = Gfx::VertexTex2(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
+    vertex[2] = Gfx::VertexTex2(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
 
-    device->DrawPrimitive(D3DPT_TRIANGLELIST, D3DFVF_VERTEX2, vertex, 3, NULL);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLES, vertex, 3);
 #endif
     m_engine->AddStatisticTriangle(3);
 }
@@ -980,12 +950,12 @@ void CMap::DrawPenta(Math::Point p1, Math::Point p2, Math::Point p3, Math::Point
 
 void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 {
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2  vertex[4];  // 2 triangles
+    Gfx::CDevice* device;
+    Gfx::VertexTex2  vertex[4];  // 2 triangles
     Math::Point     p1, p2, c;
     Math::Vector    n;
 
-    device = m_engine->RetD3DDevice();
+    device = m_engine->GetDevice();
 
     p1.x = m_pos.x;
     p1.y = m_pos.y;
@@ -1007,12 +977,12 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
-    vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
-    vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
-    vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
+    vertex[0] = Gfx::VertexTex2(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
+    vertex[1] = Gfx::VertexTex2(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
+    vertex[2] = Gfx::VertexTex2(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
+    vertex[3] = Gfx::VertexTex2(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,uv1.y));
 
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 }
 
@@ -1021,7 +991,7 @@ void CMap::DrawVertex(Math::Point uv1, Math::Point uv2, float zoom)
 
 void CMap::UpdateTerrain()
 {
-    D3DCOLORVALUE   color;
+    Gfx::Color   color;
     Math::Vector        pos;
     float           scale, water, level, intensity;
     int             x, y;
@@ -1029,8 +999,8 @@ void CMap::UpdateTerrain()
     if ( m_fixImage[0] != 0  )  return;  // still image?
     if ( !m_engine->OpenImage("map.tga") )  return;
 
-    scale = m_terrain->RetScaleRelief();
-    water = m_water->RetLevel();
+    scale = m_terrain->GetScaleRelief();
+    water = m_water->GetLevel();
     color.a = 0.0f;
 
     for ( y=0 ; y<256 ; y++ )
@@ -1044,7 +1014,7 @@ void CMap::UpdateTerrain()
             if ( pos.x >= -m_half && pos.x <= m_half &&
                  pos.z >= -m_half && pos.z <= m_half )
             {
-                level = m_terrain->RetFloorLevel(pos, true)/scale;
+                level = m_terrain->GetFloorLevel(pos, true)/scale;
             }
             else
             {
@@ -1080,7 +1050,7 @@ void CMap::UpdateTerrain()
 
 void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
 {
-    D3DCOLORVALUE   color;
+    Gfx::Color   color;
     Math::Vector        pos;
     float           scale, water, level, intensity;
     int             x, y;
@@ -1089,8 +1059,8 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
     if ( !m_engine->OpenImage("map.tga") )  return;
     m_engine->LoadImage();
 
-    scale = m_terrain->RetScaleRelief();
-    water = m_water->RetLevel();
+    scale = m_terrain->GetScaleRelief();
+    water = m_water->GetLevel();
     color.a = 0.0f;
 
     for ( y=by ; y<ey ; y++ )
@@ -1104,7 +1074,7 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
             if ( pos.x >= -m_half && pos.x <= m_half &&
                  pos.z >= -m_half && pos.z <= m_half )
             {
-                level = m_terrain->RetFloorLevel(pos, true)/scale;
+                level = m_terrain->GetFloorLevel(pos, true)/scale;
             }
             else
             {
@@ -1145,7 +1115,7 @@ void CMap::FlushObject()
 
     m_totalFix  = 0;  // object index fixed
     m_totalMove = MAPMAXOBJECT-2;  // moving vehicles index
-    m_bRadar = m_main->RetCheatRadar();  // no radar
+    //m_bRadar = m_main->GetCheatRadar();  // no radar
 
     for ( i=0 ; i<MAPMAXOBJECT ; i++ )
     {
@@ -1166,14 +1136,14 @@ void CMap::UpdateObject(CObject* pObj)
     if ( !m_bEnable )  return;
     if ( m_totalFix >= m_totalMove )  return;  // full table?
 
-    if ( !pObj->RetActif() )  return;
-    if ( !pObj->RetSelectable() )  return;
-    if ( pObj->RetProxyActivate() )  return;
-    if ( pObj->RetTruck() != 0 )  return;
+    if ( !pObj->GetActif() )  return;
+    if ( !pObj->GetSelectable() )  return;
+    if ( pObj->GetProxyActivate() )  return;
+    if ( pObj->GetTruck() != 0 )  return;
 
-    type = pObj->RetType();
-    pos  = pObj->RetPosition(0);
-    dir  = -(pObj->RetAngleY(0)+Math::PI/2.0f);
+    type = pObj->GetType();
+    pos  = pObj->GetPosition(0);
+    dir  = -(pObj->GetAngleY(0)+Math::PI/2.0f);
 
     if ( m_angle != 0.0f )
     {
@@ -1299,7 +1269,7 @@ void CMap::UpdateObject(CObject* pObj)
              color != MAPCOLOR_MOVE )  return;
     }
 
-    if ( pObj->RetSelect() )
+    if ( pObj->GetSelect() )
     {
         m_map[MAPMAXOBJECT-1].type   = type;
         m_map[MAPMAXOBJECT-1].object = pObj;
@@ -1337,3 +1307,4 @@ void CMap::UpdateObject(CObject* pObj)
     }
 }
 
+}
