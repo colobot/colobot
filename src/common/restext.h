@@ -37,14 +37,19 @@ enum ResType
 };
 
 
-static CD3DEngine*  g_engine = 0;
-static char         g_gamerName[100];
-
 extern void     SetEngine(CD3DEngine *engine);
 extern void     SetGlobalGamerName(char *name);
 extern bool     SearchKey(char *cmd, KeyRank &key);
-extern void     PutKeyName(char* dst, char* src);
 extern bool     GetResource(ResType type, int num, char* text);
-extern bool     GetResourceBase(ResType type, int num, char* text);
 
+extern const char * const strings_text[];
+extern const char * const strings_event[];
+extern const char * const strings_object[];
+extern const char * const strings_err[];
+extern const char * const strings_cbot[];
 
+extern const int strings_text_len;
+extern const int strings_event_len;
+extern const int strings_object_len;
+extern const int strings_err_len;
+extern const int strings_cbot_len;
