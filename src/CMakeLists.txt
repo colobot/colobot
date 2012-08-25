@@ -64,7 +64,8 @@ common/iman.cpp
 # common/misc.cpp
 # common/modfile.cpp
 # common/profile.cpp
-# common/restext.cpp
+common/restext.cpp
+common/restext_strings.c
 common/stringutils.cpp
 graphics/core/color.cpp
 graphics/engine/camera.cpp
