@@ -113,7 +113,7 @@ static void PutKeyName(char* dst, const char* src)
             if ( SearchKey(src+s+5, key) )
             {
                 // FIXME: res = g_engine->RetKey(key, 0);
-	        res = 0;
+            res = 0;
                 if ( res != 0 )
                 {
                     if ( GetResource(RES_KEY, res, name) )
@@ -146,33 +146,33 @@ static const char* GetResourceBase(ResType type, int num)
     switch (type)
     {
     case RES_TEXT:
-	assert(num < strings_text_len);
-	str = strings_text[num];
-	break;
+    assert(num < strings_text_len);
+    str = strings_text[num];
+    break;
     case RES_EVENT:
-	assert(num < strings_event_len);
-	str = strings_event[num];
-	break;
+    assert(num < strings_event_len);
+    str = strings_event[num];
+    break;
     case RES_OBJECT:
-	assert(num < strings_object_len);
-	if (num == OBJECT_HUMAN)
-	    return g_gamerName;
-	str = strings_object[num];
-	break;
+    assert(num < strings_object_len);
+    if (num == OBJECT_HUMAN)
+        return g_gamerName;
+    str = strings_object[num];
+    break;
     case RES_ERR:
-	assert(num < strings_err_len);
-	str = strings_err[num];
-	break;
+    assert(num < strings_err_len);
+    str = strings_err[num];
+    break;
     case RES_CBOT:
-	assert(num < strings_cbot_len);
-	str = strings_cbot[num];
-	break;
+    assert(num < strings_cbot_len);
+    str = strings_cbot[num];
+    break;
     case RES_KEY:
-	assert(num < SDLK_LAST);
-	str = SDL_GetKeyName(static_cast<SDLKey>(num));
-	break;
+    assert(num < SDLK_LAST);
+    str = SDL_GetKeyName(static_cast<SDLKey>(num));
+    break;
     default:
-	assert(false);
+    assert(false);
     }
     return gettext(str);
 }
