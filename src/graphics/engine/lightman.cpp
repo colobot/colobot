@@ -65,6 +65,7 @@ void Gfx::LightProgression::SetTarget(float value)
 Gfx::DynamicLight::DynamicLight()
 {
     used = enabled = false;
+    includeType = excludeType = Gfx::ENG_OBJTYPE_NULL;
 }
 
 

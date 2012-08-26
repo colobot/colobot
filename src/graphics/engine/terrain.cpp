@@ -241,8 +241,13 @@ bool Gfx::CTerrain::ResFromPNG(const std::string& fileName)
          (data->surface->format->BytesPerPixel != 3) )
         return false;
 
-    // Assuming the data format is compatible
-    memcpy(&m_resources[0], data->surface->pixels, 3*size*size);
+    unsigned char* pixels = static_cast<unsigned char*>(data->surface->pixels);
+    int pitch = data->surface->pitch;
+
+    for (int y = 0; y < size; y++)
+    {
+        memcpy(&m_resources[3*size*y], &pixels[pitch*y], 3*size);
+    }
 
     return true;
 }
@@ -314,13 +319,14 @@ bool Gfx::CTerrain::ReliefFromPNG(const std::string &fileName, float scaleRelief
         return false;
 
     unsigned char* pixels = static_cast<unsigned char*>(data->surface->pixels);
+    int pitch = data->surface->pitch;
 
     float limit = 0.9f;
     for (int y = 0; y < size; y++)
     {
         for (int x = 0; x < size; x++)
         {
-            float level = (255 - pixels[3*x+3*size*(size-y-1)]) * scaleRelief;
+            float level = (255 - pixels[3*x+pitch*(size-y-1)]) * scaleRelief;
 
             float dist = Math::Max(fabs(static_cast<float>(x-size/2)),
                                    fabs(static_cast<float>(y-size/2)));

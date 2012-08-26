@@ -260,6 +260,8 @@ bool Gfx::CEngine::Create()
     m_lightning  = new Gfx::CLightning(m_iMan, this);
     m_planet     = new Gfx::CPlanet(m_iMan, this);
 
+    m_lightMan->SetDevice(m_device);
+
     m_text->SetDevice(m_device);
     if (! m_text->Create())
     {
@@ -979,7 +981,7 @@ Gfx::EngineObjLevel4* Gfx::CEngine::FindTriangles(int objRank, const Gfx::Materi
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                Gfx::EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if (p3.min != min || p3.max != max) continue;
@@ -1031,7 +1033,7 @@ int Gfx::CEngine::GetPartialTriangles(int objRank, float min, float max, float p
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                Gfx::EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if (p3.min != min || p3.max != max) continue;
@@ -1126,7 +1128,7 @@ void Gfx::CEngine::ChangeLOD()
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                Gfx::EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if ( Math::IsEqual(p3.min, 0.0f       ) &&
@@ -1620,7 +1622,7 @@ void Gfx::CEngine::UpdateGeometry()
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                Gfx::EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
@@ -1712,7 +1714,7 @@ int Gfx::CEngine::DetectObject(Math::Point mouse)
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                Gfx::EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if (p3.min != 0.0f) continue;  // LOD B or C?
@@ -2315,7 +2317,7 @@ void Gfx::CEngine::SetFocus(float focus)
     m_focus = focus;
     m_size = m_app->GetVideoConfig().size;
 
-    float aspect = (static_cast<float>(m_size.y)) / m_size.x;
+    float aspect = (static_cast<float>(m_size.x)) / m_size.y;
     Math::LoadProjectionMatrix(m_matProj, m_focus, aspect, 0.5f, m_deepView[0]);
 }
 
@@ -2889,6 +2891,8 @@ void Gfx::CEngine::Draw3DScene()
 
     if (m_shadowVisible)
     {
+        m_lightMan->UpdateLightsEnableState(Gfx::ENG_OBJTYPE_TERRAIN);
+
         // Draw the terrain
 
         for (int l1 = 0; l1 < static_cast<int>( m_objectTree.size() ); l1++)
@@ -2911,13 +2915,19 @@ void Gfx::CEngine::Draw3DScene()
                 if (! m_objects[objRank].drawWorld)
                     continue;
 
+                m_device->SetTransform(Gfx::TRANSFORM_WORLD, m_objects[objRank].transform);
+
+                if (! IsVisible(objRank))
+                    continue;
+
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                    Gfx::EngineObjLevel3& p3 = p2.next[l3];
                     if (! p3.used) continue;
 
                     if ( m_objects[objRank].distance <  p3.min ||
-                         m_objects[objRank].distance >= p3.max )  continue;
+                         m_objects[objRank].distance >= p3.max )
+                        continue;
 
                     for (int l4 = 0; l4 < static_cast<int>( p3.next.size() ); l4++)
                     {
@@ -2985,7 +2995,7 @@ void Gfx::CEngine::Draw3DScene()
 
             for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
             {
-                Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                Gfx::EngineObjLevel3& p3 = p2.next[l3];
                 if (! p3.used) continue;
 
                 if ( m_objects[objRank].distance <  p3.min ||
@@ -3074,7 +3084,7 @@ void Gfx::CEngine::Draw3DScene()
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                    Gfx::EngineObjLevel3& p3 = p2.next[l3];
                     if (! p3.used) continue;
 
                     if ( m_objects[objRank].distance <  p3.min ||
@@ -3189,7 +3199,7 @@ void Gfx::CEngine::DrawInterface()
 
                 for (int l3 = 0; l3 < static_cast<int>( p2.next.size() ); l3++)
                 {
-                    Gfx::EngineObjLevel3& p3 = p2.next[l1];
+                    Gfx::EngineObjLevel3& p3 = p2.next[l3];
                     if (! p3.used) continue;
 
                     if ( m_objects[objRank].distance <  p3.min ||
