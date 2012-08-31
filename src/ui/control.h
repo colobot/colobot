@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,25 +19,28 @@
 
 #pragma once
 
+#include <string>
 
-//#include "old/text.h"
-#include "graphics/engine/text.h"
-//#include "common/struct.h"
-#include "common/event.h"
+#include <graphics/core/device.h>
+#include <graphics/engine/engine.h>
+#include <graphics/engine/particle.h>
+#include <graphics/engine/text.h>
 
-namespace Gfx {
-class CEngine;
-class CParticle;
-};
+#include <common/language.h>
+#include <common/restext.h>
+#include <common/event.h>
+#include <common/misc.h>
+#include <common/iman.h>
 
-class CInstanceManager;
-class CEvent;
-//class Gfx::CEngine;
-class CRobotMain;
-//class Gfx::CParticle;
-class CSoundInterface;
+#include <object/robotmain.h>
+
+#include <sound/sound.h>
+
+
 
 namespace Ui {
+
+
 enum ControlState
 {
     STATE_ENABLE    = (1<<0),   // active
@@ -82,8 +86,8 @@ public:
     virtual int           GetState();
     virtual void          SetIcon(int icon);
     virtual int           GetIcon();
-    virtual void          SetName(const char* name, bool bTooltip=true);
-    virtual char*   GetName();
+    virtual void          SetName(std::string name, bool bTooltip=true);
+    virtual std::string   GetName();
     virtual void          SetTextAlign(Gfx::TextAlign mode);
     virtual int           GetTextAlign();
     virtual void          SetFontSize(float size);
@@ -92,8 +96,8 @@ public:
     virtual float         GetFontStretch();
     virtual void          SetFontType(Gfx::FontType font);
     virtual Gfx::FontType GetFontType();
-    virtual bool          SetTooltip(char* name);
-    virtual bool          GetTooltip(Math::Point pos, char* name);
+    virtual bool          SetTooltip(std::string name);
+    virtual bool          GetTooltip(Math::Point pos, std::string &name);
     virtual void          SetFocus(bool bFocus);
     virtual bool          GetFocus();
 
@@ -130,8 +134,8 @@ protected:
     Gfx::FontType     m_fontType;     // type of font
     Gfx::TextAlign    m_textAlign;    //type of alignment //comes in the place of m_justif
 //    int           m_justif;       // type of justification (-1,0,1)
-    char              m_name[100];        // name of the button
-    char              m_tooltip[100];     // name of tooltip
+    std::string       m_name;        // name of the button
+    std::string       m_tooltip;     // name of tooltip
     bool              m_bFocus;
     bool              m_bCapture;
 

@@ -19,9 +19,33 @@
 
 #pragma once
 
+#include <string>
 
+#include <common/language.h>
+#include <common/event.h>
+#include <common/misc.h>
+#include <common/restext.h>
+
+#include <ui/button.h>
+#include <ui/color.h>
+#include <ui/check.h>
+#include <ui/key.h>
+#include <ui/group.h>
+#include <ui/image.h>
+#include <ui/label.h>
+#include <ui/edit.h>
+#include <ui/editvalue.h>
+#include <ui/scroll.h>
+#include <ui/slider.h>
+#include <ui/list.h>
+#include <ui/shortcut.h>
+#include <ui/map.h>
+#include <ui/gauge.h>
+#include <ui/compass.h>
+#include <ui/target.h>
 #include <ui/control.h>
-//#include <common/event.h>
+
+#include <graphics/engine/text.h>
 
 namespace Ui {
 
@@ -42,7 +66,7 @@ public:
     CKey*       CreateKey(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CGroup*     CreateGroup(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CImage*     CreateImage(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
-    CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, char *name);
+    CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name);
     CEdit*      CreateEdit(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CEditValue* CreateEditValue(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
     CScroll*    CreateScroll(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
@@ -60,7 +84,7 @@ public:
     EventType    GetEventTypeFull();
     EventType    GetEventTypeClose();
 
-    void        SetName(char* name);
+    void        SetName(std::string name);
 
     void        SetTrashEvent(bool bTrash);
     bool        GetTrashEvent();
@@ -89,7 +113,7 @@ public:
     void        SetFixed(bool bFix);
     bool        GetFixed();
 
-    bool        GetTooltip(Math::Point pos, char* name);
+    bool        GetTooltip(Math::Point pos, std::string &name);
 
     bool        EventProcess(const Event &event);
 

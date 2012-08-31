@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include <string>
 
 #include <ui/control.h>
 
@@ -35,7 +36,7 @@ class CTarget : public CControl
 
         bool        EventProcess(const Event &event);
         void        Draw();
-        bool        GetTooltip(Math::Point pos, char* name);
+        bool        GetTooltip(Math::Point pos, std::string &name);
 
     protected:
         CObject*    DetectFriendObject(Math::Point pos);

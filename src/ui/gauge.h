@@ -19,35 +19,36 @@
 
 #pragma once
 
+#include <graphics/engine/engine.h>
 
-#include "ui/control.h"
+#include <common/event.h>
+#include <common/misc.h>
 
-namespace Gfx{
-class CEngine;
-};
+#include <ui/control.h>
+
 
 namespace Ui {
 
 class CGauge : public CControl
 {
-public:
-//    CGauge(CInstanceManager* iMan);
-    CGauge();
-    virtual ~CGauge();
+    public:
+    //    CGauge(CInstanceManager* iMan);
+        CGauge();
+        virtual ~CGauge();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool    EventProcess(const Event &event);
+        bool    EventProcess(const Event &event);
 
-    void    Draw();
+        void    Draw();
 
-    void    SetLevel(float level);
-    float   GetLevel();
+        void    SetLevel(float level);
+        float   GetLevel();
 
-protected:
+    protected:
 
-protected:
-    float   m_level;
+    protected:
+        float   m_level;
 };
 
 

@@ -137,7 +137,7 @@ bool CTarget::EventProcess(const Event &event)
     {
         if ( CControl::Detect(event.pos) )
         {
-            if ( !m_main->RetFriendAim() )
+            if ( !m_main->GetFriendAim() )
             {
                 Event newEvent = event;
                 newEvent.type = EVENT_OBJECT_FIRE;
@@ -181,7 +181,7 @@ bool CTarget::GetTooltip(Math::Point pos, char* name)
     {
 //?     pObj = DetectFriendObject(pos);
 //?     if ( pObj == 0 )
-        if ( !m_main->RetFriendAim() )
+        if ( !m_main->GetFriendAim() )
         {
             strcpy(name, m_tooltip);
             return true;  // does not detect objects below!
