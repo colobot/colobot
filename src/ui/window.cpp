@@ -18,38 +18,7 @@
 // window.cpp
 
 
-//#include <windows.h>
-//#include <stdio.h>
-//#include <d3d.h>
-
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-#include "common/language.h"
-//#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/restext.h"
-#include "common/iman.h"
-#include "ui/button.h"
-#include "ui/color.h"
-#include "ui/check.h"
-#include "ui/key.h"
-#include "ui/group.h"
-#include "ui/image.h"
-#include "ui/label.h"
-#include "ui/edit.h"
-#include "ui/editvalue.h"
-#include "ui/scroll.h"
-#include "ui/slider.h"
-#include "ui/list.h"
-#include "ui/shortcut.h"
-#include "ui/map.h"
-#include "ui/gauge.h"
-#include "ui/compass.h"
-#include "ui/target.h"
-//#include "old/text.h"
-#include "graphics/engine/text.h"
-#include "ui/window.h"
+#include <ui/window.h>
 
 
 
@@ -280,11 +249,9 @@ CImage* CWindow::CreateImage(Math::Point pos, Math::Point dim, int icon, EventTy
 
 // Creates a new label.
 
-CLabel* CWindow::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg,
-                          char *name)
+CLabel* CWindow::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name)
 {
     CLabel*     pc;
-    char*       p;
     int         i;
 
     if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventType();
@@ -298,22 +265,11 @@ CLabel* CWindow::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventTy
             pc = (CLabel*)m_table[i];
             pc->Create(pos, dim, icon, eventMsg);
 
-            p = strchr(name, '\\');
-            if ( p == 0 )
-            {
+            auto p = name.find("\\");
+            if ( p == std::string::npos )
                 pc->SetName(name);
-            }
             else
-            {
-                char    text[100];
-                strncpy(text, name, 100);
-                text[100-1] = 0;
-                if ( p-name < 100 )
-                {
-                    text[p-name] = 0;  // deletes text after "\\" (tooltip)
-                }
-                pc->SetName(text);
-            }
+                pc->SetName(name.substr(0, p));
             return pc;
         }
     }
@@ -589,7 +545,7 @@ CControl* CWindow::SearchControl(EventType eventMsg)
 
 // Makes the tooltip binds to the window.
 
-bool CWindow::GetTooltip(Math::Point pos, char* name)
+bool CWindow::GetTooltip(Math::Point pos, std::string &name)
 {
     int     i;
 
@@ -622,7 +578,7 @@ bool CWindow::GetTooltip(Math::Point pos, char* name)
 
     if ( Detect(pos) )  // in the window?
     {
-        strcpy(name, m_tooltip);
+        name = m_tooltip;
         return true;
     }
 
@@ -632,7 +588,7 @@ bool CWindow::GetTooltip(Math::Point pos, char* name)
 
 // Specifies the name for the title bar.
 
-void CWindow::SetName(char* name)
+void CWindow::SetName(std::string name)
 {
     CButton*    pc;
     bool        bAdjust;
@@ -659,7 +615,7 @@ void CWindow::SetName(char* name)
 
     bAdjust = false;
 
-    if ( m_name[0] != 0 && m_bRedim )  // title bar exists?
+    if ( m_name.length() > 0 && m_bRedim )  // title bar exists?
     {
         m_buttonReduce = new CButton();
         pc = (CButton*)m_buttonReduce;
@@ -672,7 +628,7 @@ void CWindow::SetName(char* name)
         bAdjust = true;
     }
 
-    if ( m_name[0] != 0 && m_bClosable )  // title bar exists?
+    if ( m_name.length() > 0 && m_bClosable )  // title bar exists?
     {
         m_buttonClose = new CButton();
         pc = (CButton*)m_buttonClose;
@@ -852,13 +808,13 @@ void CWindow::AdjustButtons()
         {
             m_buttonFull->SetIcon(54);
             GetResource(RES_TEXT, RT_WINDOW_STANDARD, res);
-            m_buttonFull->SetTooltip(res);
+            m_buttonFull->SetTooltip(std::string(res));
         }
         else
         {
             m_buttonFull->SetIcon(52);
             GetResource(RES_TEXT, RT_WINDOW_MAXIMIZED, res);
-            m_buttonFull->SetTooltip(res);
+            m_buttonFull->SetTooltip(std::string(res));
         }
     }
 
@@ -868,13 +824,13 @@ void CWindow::AdjustButtons()
         {
             m_buttonReduce->SetIcon(54);
             GetResource(RES_TEXT, RT_WINDOW_STANDARD, res);
-            m_buttonReduce->SetTooltip(res);
+            m_buttonReduce->SetTooltip(std::string(res));
         }
         else
         {
             m_buttonReduce->SetIcon(51);
             GetResource(RES_TEXT, RT_WINDOW_MINIMIZED, res);
-            m_buttonReduce->SetTooltip(res);
+            m_buttonReduce->SetTooltip(std::string(res));
         }
     }
 
@@ -882,7 +838,7 @@ void CWindow::AdjustButtons()
     {
         m_buttonClose->SetIcon(11);  // x
         GetResource(RES_TEXT, RT_WINDOW_CLOSE, res);
-        m_buttonClose->SetTooltip(res);
+        m_buttonClose->SetTooltip(std::string(res));
     }
 }
 
@@ -992,7 +948,7 @@ bool CWindow::EventProcess(const Event &event)
         {
             m_pressMouse = Gfx::ENG_MOUSE_NORM;
 
-            if ( m_name[0] != 0 && m_bMovable &&  // title bar?
+            if ( m_name.length() > 0 && m_bMovable &&  // title bar?
                  Detect(event.pos) )
             {
                 flags = BorderDetect(event.pos);
@@ -1059,7 +1015,7 @@ bool CWindow::EventProcess(const Event &event)
     {
         if ( Detect(event.pos) )
         {
-            if ( m_name[0] != 0 && m_bMovable )  // title bar?
+            if ( m_name.length() > 0 && m_bMovable )  // title bar?
             {
                 m_pressFlags = BorderDetect(event.pos);
                 if ( m_pressFlags != 0 )
@@ -1125,9 +1081,7 @@ bool CWindow::EventProcess(const Event &event)
         m_event->AddEvent(newEvent);
     }
 
-    if ( event.type == EVENT_MOUSE_BUTTON_UP &&
-            event.mouseButton == 1 &&
-            m_bCapture )
+    if ( event.type == EVENT_MOUSE_BUTTON_UP && event.mouseButton.button == 1 && m_bCapture )
     {
         m_bCapture = false;
     }
@@ -1153,7 +1107,7 @@ void CWindow::Draw()
 
     DrawVertex(m_pos, m_dim, m_icon);  // draws the background
 
-    if ( m_name[0] != 0 )  // title bar?
+    if ( m_name.length() > 0 )  // title bar?
     {
         h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
 

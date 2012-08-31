@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <string>
 
 #include <common/event.h>
 #include <common/struct.h>
@@ -61,7 +62,7 @@ class CInterface
         ~CInterface();
 
         bool        EventProcess(const Event &event);
-        bool        GetTooltip(Math::Point pos, const char* name);
+        bool        GetTooltip(Math::Point pos, std::string &name);
 
         void        Flush();
         CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
@@ -81,7 +82,7 @@ class CInterface
 
         CWindow*    CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
         CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand=1.2f);
-        CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, const char *name);
+        CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name);
 
         bool        DeleteControl(EventType eventMsg);
         CControl*   SearchControl(EventType eventMsg);

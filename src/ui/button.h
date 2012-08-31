@@ -20,13 +20,17 @@
 #pragma once
 
 
-#include "ui/control.h"
+#include <ui/control.h>
 
-namespace Gfx{
-class CEngine;
-}
+#include <graphics/engine/engine.h>
+
+#include <common/event.h>
+#include <common/misc.h>
+#include <common/restext.h>
+
 
 namespace Ui {
+
 class CButton : public CControl
 {
 public:
