@@ -114,37 +114,25 @@ Gfx::VertexTex2 ReadTextVertexTex2(const std::string& text)
 
     stream >> what;
     if (what != "c")
-    {
-        GetLogger()->Error("c\n");
         return Gfx::VertexTex2();
-    }
 
     stream >> result.coord.x >> result.coord.y >> result.coord.z;
 
     stream >> what;
     if (what != "n")
-    {
-        GetLogger()->Error("n\n");
         return Gfx::VertexTex2();
-    }
 
     stream >> result.normal.x >> result.normal.y >> result.normal.z;
 
     stream >> what;
     if (what != "t1")
-    {
-        GetLogger()->Error("t1\n");
         return Gfx::VertexTex2();
-    }
 
     stream >> result.texCoord.x >> result.texCoord.y;
 
     stream >> what;
     if (what != "t2")
-    {
-        GetLogger()->Error("t2\n");
         return Gfx::VertexTex2();
-    }
 
     stream >> result.texCoord2.x >> result.texCoord2.y;
 

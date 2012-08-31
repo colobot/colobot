@@ -154,6 +154,7 @@ void PrintStats(const std::map<T, int>& stats, int total)
 int main(int argc, char *argv[])
 {
     CLogger logger;
+    logger.SetLogLevel(LOG_ERROR);
 
     if (!ParseArgs(argc, argv))
     {
