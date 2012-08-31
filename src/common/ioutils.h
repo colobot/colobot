@@ -27,9 +27,10 @@ namespace IOUtils {
 
 //! Writes a binary number to output stream
 /**
-  \c T is a numeric type (int, unsigned int, etc.)
-  \c N is number of bytes
-  Write order is little-endian */
+ * \c T is a numeric type (int, unsigned int, etc.)
+ * \c N is number of bytes
+ * Write order is little-endian
+ */
 template<int N, typename T>
 void WriteBinary(T value, std::ostream &ostr)
 {
@@ -42,9 +43,10 @@ void WriteBinary(T value, std::ostream &ostr)
 
 //! Reads a binary number from input stream
 /**
-  \c T is a numeric type (int, unsigned int, etc.)
-  \c N is number of bytes
-  Read order is little-endian */
+ * \c T is a numeric type (int, unsigned int, etc.)
+ * \c N is number of bytes
+ * Read order is little-endian
+ */
 template<int N, typename T>
 T ReadBinary(std::istream &istr)
 {
@@ -58,10 +60,31 @@ T ReadBinary(std::istream &istr)
     return value;
 }
 
+//! Writes a binary 1-byte boolean
+/**
+ * false is 0; true is 1.
+ */
+void WriteBinaryBool(float value, std::ostream &ostr)
+{
+    unsigned char v = value ? 1 : 0;
+    IOUtils::WriteBinary<1, unsigned char>(v, ostr);
+}
+
+//! Reads a binary 1-byte boolean
+/**
+ * 0 is false; other values are true.
+ */
+bool ReadBinaryBool(std::istream &istr)
+{
+    int v = IOUtils::ReadBinary<1, unsigned char>(istr);
+    return v != 0;
+}
+
 //! Writes a binary 32-bit float to output stream
 /**
-  Write order is little-endian
-  NOTE: code is probably not portable as there are platforms with other float representations. */
+ * Write order is little-endian
+ * NOTE: code is probably not portable as there are platforms with other float representations.
+ */
 void WriteBinaryFloat(float value, std::ostream &ostr)
 {
     union { float fValue; unsigned int iValue; } u;
@@ -72,14 +95,51 @@ void WriteBinaryFloat(float value, std::ostream &ostr)
 
 //! Reads a binary 32-bit float from input stream
 /**
-  Read order is little-endian
-  NOTE: code is probably not portable as there are platforms with other float representations. */
+ * Read order is little-endian
+ * NOTE: code is probably not portable as there are platforms with other float representations.
+ */
 float ReadBinaryFloat(std::istream &istr)
 {
     union { float fValue; unsigned int iValue; } u;
     memset(&u, 0, sizeof(u));
     u.iValue = IOUtils::ReadBinary<4, unsigned int>(istr);
     return u.fValue;
+}
+
+//! Writes a variable binary string to output stream
+/**
+ * The string is written by first writing string length
+ * in \c N byte binary number and then the string bytes.
+ */
+template<int N>
+void WriteBinaryString(const std::string &value, std::ostream &ostr)
+{
+    int length = value.size();
+    WriteBinary<N, int>(length, ostr);
+
+    for (int i = 0; i < length; ++i)
+        ostr.put(value[i]);
+}
+
+//! Reads a variable binary string from output stream
+/**
+ * The string is read by first reading string length
+ * in \c N byte binary number and then the string bytes.
+ */
+template<int N>
+std::string ReadBinaryString(std::istream &istr)
+{
+    int length = ReadBinary<N, int>(istr);
+
+    std::string str;
+    char c = 0;
+    for (int i = 0; i < length; ++i)
+    {
+        istr.read(&c, 1);
+        str += c;
+    }
+
+    return str;
 }
 
 }; // namespace IOUtils

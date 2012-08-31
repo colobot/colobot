@@ -113,6 +113,7 @@ CApplication::~CApplication()
 bool CApplication::ParseArguments(int argc, char *argv[])
 {
     bool waitDataDir = false;
+    bool waitLogLevel = false;
 
     for (int i = 1; i < argc; ++i)
     {
@@ -125,9 +126,33 @@ bool CApplication::ParseArguments(int argc, char *argv[])
             continue;
         }
 
+        if (waitLogLevel)
+        {
+            waitLogLevel = false;
+            if (arg == "trace")
+                GetLogger()->SetLogLevel(LOG_TRACE);
+            else if (arg == "debug")
+                GetLogger()->SetLogLevel(LOG_DEBUG);
+            else if (arg == "info")
+                GetLogger()->SetLogLevel(LOG_INFO);
+            else if (arg == "warn")
+                GetLogger()->SetLogLevel(LOG_WARN);
+            else if (arg == "error")
+                GetLogger()->SetLogLevel(LOG_ERROR);
+            else if (arg == "none")
+                GetLogger()->SetLogLevel(LOG_NONE);
+            else
+                return false;
+            continue;
+        }
+
         if (arg == "-debug")
         {
             SetDebugMode(true);
+        }
+        else if (arg == "-loglevel")
+        {
+            waitLogLevel = true;
         }
         else if (arg == "-datadir")
         {
@@ -140,8 +165,8 @@ bool CApplication::ParseArguments(int argc, char *argv[])
         }
     }
 
-    // Data dir not given?
-    if (waitDataDir)
+    // Args not given?
+    if (waitDataDir || waitLogLevel)
         return false;
 
     return true;

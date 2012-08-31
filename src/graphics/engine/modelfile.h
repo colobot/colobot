@@ -20,7 +20,6 @@
  * \brief Model loading - Gfx::CModelFile class (aka modfile)
  */
 
-#include "graphics/engine/engine.h"
 #include "graphics/core/vertex.h"
 #include "graphics/core/material.h"
 #include "math/vector.h"
@@ -34,6 +33,9 @@ class CInstanceManager;
 
 
 namespace Gfx {
+
+class CEngine;
+
 
 /**
   \struct ModelTriangle
@@ -53,14 +55,21 @@ struct ModelTriangle
     std::string      tex1Name;
     //! Name of 2nd texture
     std::string      tex2Name;
+    //! If true, 2nd texture will be taken from current engine setting
+    bool             variableTex2;
     //! Min LOD threshold
     float            min;
     //! Max LOD threshold
     float            max;
     //! Rendering state to be set
-    long             state;
+    int              state;
 
-    ModelTriangle();
+    ModelTriangle()
+    {
+        variableTex2 = true;
+        min = max = 0.0f;
+        state = 0;
+    }
 };
 
 
@@ -75,27 +84,45 @@ public:
     CModelFile(CInstanceManager* iMan);
     ~CModelFile();
 
-    //! Returns the last error encountered
-    std::string GetError();
+    //! Reads a model in text format from file
+    bool                 ReadTextModel(const std::string &fileName);
+    //! Reads a model in text format from stream
+    bool                 ReadTextModel(std::istream &stream);
+
+    //! Writes the model in text format to a file
+    bool                 WriteTextModel(const std::string &fileName);
+    //! Writes the model in text format to a stream
+    bool                 WriteTextModel(std::ostream &stream);
+
+    //! Reads a model in new binary format from file
+    bool                 ReadBinaryModel(const std::string &fileName);
+    //! Reads a model in new binary format from stream
+    bool                 ReadBinaryModel(std::istream &stream);
+
+    //! Writes the model in binary format to a file
+    bool                 WriteBinaryModel(const std::string &fileName);
+    //! Writes the model in binary format to a stream
+    bool                 WriteBinaryModel(std::ostream &stream);
 
     //! Reads a binary Colobot model from file
-    bool                 ReadModel(const std::string &filename, bool edit = false, bool meta = true);
+    //! @deprecated
+    bool                 ReadModel(const std::string &fileName);
     //! Reads a binary Colobot model from stream
-    bool                 ReadModel(std::istream &stream, bool edit = false, bool meta = true);
+    //! @deprecated
+    bool                 ReadModel(std::istream &stream);
     //! Writes the model to Colobot binary model file
-    bool                 WriteModel(const std::string &filename);
+    //! @deprecated
+    bool                 WriteModel(const std::string &fileName);
     //! Writes the model to Colobot binary model file
+    //! @deprecated
     bool                 WriteModel(std::ostream &stream);
-
-    //! Reads a DXF model from file
-    bool                 ReadDXF(const std::string &filename, float min, float max);
-    //! Reads a DXF model from stream
-    bool                 ReadDXF(std::istream &stream, float min, float max);
 
     //! Returns the number of triangles in model
     int                  GetTriangleCount();
+
     //! Returns the triangle vector
-    std::vector<Gfx::ModelTriangle>& GetTriangles();
+    const std::vector<Gfx::ModelTriangle>& GetTriangles();
+
     //! Returns the height of model -- closest point to X and Z coords of \a pos
     float                GetHeight(Math::Vector pos);
 
@@ -103,7 +130,7 @@ public:
     void                 Mirror();
 
     //! Creates an object in the graphics engine from the model
-    bool                 CreateEngineObject(int objRank, int addState = 0);
+    bool                 CreateEngineObject(int objRank);
 
 protected:
     //! Adds a triangle to the list
@@ -112,9 +139,6 @@ protected:
 protected:
     CInstanceManager*    m_iMan;
     Gfx::CEngine*        m_engine;
-
-    //! Last error
-    std::string m_error;
 
     //! Model triangles
     std::vector<Gfx::ModelTriangle> m_triangles;

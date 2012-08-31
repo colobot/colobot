@@ -1,5 +1,8 @@
 # CBot shared library is built separately
-add_subdirectory(CBot) 
+add_subdirectory(CBot)
+
+# Tools directory is built separately
+add_subdirectory(tools)
 
 
 # Configure options

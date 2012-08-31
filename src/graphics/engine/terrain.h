@@ -157,7 +157,7 @@ public:
     //! Empties level
     void        LevelFlush();
     //! Initializes the names of textures to use for the land
-    void        LevelMaterial(int id, std::string& baseName, float u, float v, int up, int right, int down, int left, float hardness);
+    void        LevelMaterial(int id, const std::string& baseName, float u, float v, int up, int right, int down, int left, float hardness);
     //! Initializes all the ground with a material
     bool        LevelInit(int id);
     //! Generates a level in the terrain

@@ -180,7 +180,7 @@ void Gfx::CTerrain::LevelFlush()
     LevelCloseTable();
 }
 
-void Gfx::CTerrain::LevelMaterial(int id, std::string& baseName, float u, float v,
+void Gfx::CTerrain::LevelMaterial(int id, const std::string& baseName, float u, float v,
                                  int up, int right, int down, int left,
                                  float hardness)
 {
