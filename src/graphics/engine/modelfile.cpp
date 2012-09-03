@@ -144,7 +144,7 @@ void WriteTextVertexTex2(const Gfx::VertexTex2& vertex, std::ostream& stream)
     stream << "c " << vertex.coord.x << " " << vertex.coord.y << " " << vertex.coord.z;
     stream << " n " << vertex.normal.x << " " << vertex.normal.y << " " << vertex.normal.z;
     stream << " t1 " << vertex.texCoord.x << " " << vertex.texCoord.y;
-    stream << " t2 " << vertex.texCoord.x << " " << vertex.texCoord.y;
+    stream << " t2 " << vertex.texCoord2.x << " " << vertex.texCoord2.y;
     stream << std::endl;
 }
 
@@ -809,7 +809,8 @@ bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
                          ReadLineValue<std::string>(stream, "tex2", t.tex2Name) &&
                          ReadLineValue<char>(stream, "var_tex2", varTex2Ch) &&
                          ReadLineValue<float>(stream, "min", t.min) &&
-                         ReadLineValue<float>(stream, "max", t.max);
+                         ReadLineValue<float>(stream, "max", t.max) &&
+                         ReadLineValue<int>(stream, "state", t.state);
 
             if (!triOk || !stream.good())
             {
@@ -834,6 +835,7 @@ bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
             triangle.variableTex2 = t.variableTex2;
             triangle.min = t.min;
             triangle.max = t.max;
+            triangle.state = t.state;
 
             m_triangles.push_back(triangle);
 
@@ -916,6 +918,7 @@ bool Gfx::CModelFile::WriteTextModel(std::ostream& stream)
         t.variableTex2 = m_triangles[i].variableTex2;
         t.min = m_triangles[i].min;
         t.max = m_triangles[i].max;
+        t.state = m_triangles[i].state;
 
         stream << "p1 ";
         WriteTextVertexTex2(t.p1, stream);
@@ -931,6 +934,7 @@ bool Gfx::CModelFile::WriteTextModel(std::ostream& stream)
         stream << "var_tex2 " << (t.variableTex2 ? 'Y' : 'N') << std::endl;
         stream << "min " << t.min << std::endl;
         stream << "max " << t.max << std::endl;
+        stream << "state " << t.state << std::endl;
 
         stream << std::endl;
 
