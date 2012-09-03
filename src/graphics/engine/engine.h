@@ -807,6 +807,9 @@ public:
                                         float min, float max, Gfx::EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt);
 
+    //! Detects the target object that is selected with the mouse
+    /** Returns the rank of the object or -1. */
+    int             DetectObject(Math::Point mouse);
 
     //! Creates a shadow for the given object
     bool            CreateShadow(int objRank);
@@ -1196,10 +1199,6 @@ protected:
 
     //! Compute and return the 2D box on screen of any object
     bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
-
-    //! Detects the target object that is selected with the mouse
-    /** Returns the rank of the object or -1. */
-    int         DetectObject(Math::Point mouse);
 
     //! Detects whether the mouse is in a triangle.
     bool        DetectTriangle(Math::Point mouse, Gfx::VertexTex2* triangle, int objRank, float& dist);
