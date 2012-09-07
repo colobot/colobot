@@ -69,14 +69,14 @@ void CAutoLabo::DeleteObject(bool bAll)
     {
         if ( m_partiRank[i] != -1 )
         {
-            m_particule->DeleteParticule(m_partiRank[i]);
+            m_particle->DeleteParticule(m_partiRank[i]);
             m_partiRank[i] = -1;
         }
     }
 
     if ( m_partiSphere != -1 )
     {
-        m_particule->DeleteParticule(m_partiSphere);
+        m_particle->DeleteParticule(m_partiSphere);
         m_partiSphere = -1;
     }
 
@@ -254,7 +254,7 @@ bool CAutoLabo::EventProcess(const Event &event)
             pos.y += 4.0f;
             for ( i=0 ; i<3 ; i++ )
             {
-                m_partiRank[i] = m_particule->CreateRay(pos, goal,
+                m_partiRank[i] = m_particle->CreateRay(pos, goal,
                                                         PARTIRAY2,
                                                         Math::Point(2.9f, 2.9f),
                                                         LABO_DELAY);
@@ -271,7 +271,7 @@ bool CAutoLabo::EventProcess(const Event &event)
             speed = Math::Vector(0.0f, 0.0f, 0.0f);
             dim.x = 4.0f;
             dim.y = dim.x;
-            m_partiSphere = m_particule->CreateParticule(pos, speed, dim, PARTISPHERE2, LABO_DELAY, 0.0f, 0.0f);
+            m_partiSphere = m_particle->CreateParticle(pos, speed, dim, PARTISPHERE2, LABO_DELAY, 0.0f, 0.0f);
 
             m_phase    = ALAP_ANALYSE;
             m_progress = 0.0f;
@@ -308,7 +308,7 @@ bool CAutoLabo::EventProcess(const Event &event)
                 pos.x += rot.x;
                 pos.z += rot.y;
                 pos.y += 3.0f+4.0f;;
-                m_particule->SetPosition(m_partiRank[i], pos);  // adjusts ray
+                m_particle->SetPosition(m_partiRank[i], pos);  // adjusts ray
 
                 angle += Math::PI*2.0f/3.0f;
             }
@@ -329,7 +329,7 @@ bool CAutoLabo::EventProcess(const Event &event)
                     speed.z = (Math::Rand()-0.5f)*10.0f;
                     dim.x = Math::Rand()*0.4f*m_progress+1.0f;
                     dim.y = dim.x;
-                    m_particule->CreateTrack(pos, speed, dim, PARTITRACK2,
+                    m_particle->CreateTrack(pos, speed, dim, PARTITRACK2,
                                              2.0f+2.0f*m_progress, 10.0f, 1.5f, 1.4f);
                 }
             }

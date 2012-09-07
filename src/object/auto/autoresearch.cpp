@@ -227,7 +227,7 @@ bool CAutoResearch::EventProcess(const Event &event)
                 speed.y = Math::Rand()*20.0f;
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR);
+                m_particle->CreateParticle(pos, speed, dim, PARTIVAPOR);
             }
         }
         else
@@ -518,7 +518,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
         {
             if ( m_partiStop[i] != -1 )
             {
-                m_particule->DeleteParticule(m_partiStop[i]);
+                m_particle->DeleteParticule(m_partiStop[i]);
                 m_partiStop[i] = -1;
             }
         }
@@ -537,7 +537,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
         {
             if ( m_partiStop[i] != -1 )
             {
-                m_particule->DeleteParticule(m_partiStop[i]);
+                m_particle->DeleteParticule(m_partiStop[i]);
                 m_partiStop[i] = -1;
             }
         }
@@ -549,7 +549,7 @@ void CAutoResearch::FireStopUpdate(float progress, bool bLightOn)
                 pos.y = 11.5f;
                 pos.z = listpos[i*2+1];
                 pos = Math::Transform(*mat, pos);
-                m_partiStop[i] = m_particule->CreateParticule(pos, speed,
+                m_partiStop[i] = m_particle->CreateParticle(pos, speed,
                                                               dim, PARTISELY,
                                                               1.0f, 0.0f, 0.0f);
             }

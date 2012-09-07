@@ -26,6 +26,8 @@
 
 namespace Ui {
 
+class CButton;
+
 class CSlider : public CControl
 {
     public:

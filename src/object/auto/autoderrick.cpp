@@ -194,7 +194,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*3.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 2.0f);
         }
 
         if ( m_progress >= 6.0f/16.0f &&  // penetrates into the ground?
@@ -210,7 +210,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             dim.y = dim.x;
             pos.y += dim.y;
             duration = Math::Rand()*2.0f+2.0f;
-            m_particule->CreateTrack(pos, speed, dim, PARTITRACK5,
+            m_particle->CreateTrack(pos, speed, dim, PARTITRACK5,
                                      duration, Math::Rand()*10.0f+15.0f,
                                      duration*0.2f, 1.0f);
         }
@@ -247,7 +247,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*3.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 2.0f);
         }
 
         if ( m_progress <= 4.0f/16.0f &&
@@ -263,7 +263,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             dim.y = dim.x;
             pos.y += dim.y;
             duration = Math::Rand()*2.0f+2.0f;
-            m_particule->CreateTrack(pos, speed, dim, PARTITRACK5,
+            m_particle->CreateTrack(pos, speed, dim, PARTITRACK5,
                                      duration, Math::Rand()*10.0f+15.0f,
                                      duration*0.2f, 1.0f);
         }
@@ -337,7 +337,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 3.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIFIRE, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIFIRE, 1.0f, 0.0f, 0.0f);
             }
             else
             {
@@ -348,7 +348,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
             }
         }
 

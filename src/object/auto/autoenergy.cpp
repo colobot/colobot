@@ -60,7 +60,7 @@ void CAutoEnergy::DeleteObject(bool bAll)
 
     if ( m_partiSphere != -1 )
     {
-        m_particule->DeleteParticule(m_partiSphere);
+        m_particle->DeleteParticule(m_partiSphere);
         m_partiSphere = -1;
     }
 
@@ -137,7 +137,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 speed.y = -7.0f;
                 dim.x = Math::Rand()*0.5f+0.5f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
             }
         }
         return true;
@@ -189,7 +189,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 3.0f;
                 dim.y = dim.x;
-                m_partiSphere = m_particule->CreateParticule(pos, speed, dim, PARTISPHERE1, ENERGY_DELAY, 0.0f, 0.0f);
+                m_partiSphere = m_particle->CreateParticle(pos, speed, dim, PARTISPHERE1, ENERGY_DELAY, 0.0f, 0.0f);
 
                 m_phase    = AENP_CREATE;
                 m_progress = 0.0f;
@@ -227,7 +227,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 speed.y = -7.0f;
                 dim.x = Math::Rand()*0.5f+0.5f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -278,7 +278,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*2.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 1.0f, 0.0f, 0.0f);
 
                 pos = m_object->RetPosition(0);
                 pos.y += 3.0f;
@@ -287,7 +287,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 speed.y = Math::Rand()*20.0f+10.0f;
                 dim.x = Math::Rand()*0.4f+0.4f;
                 dim.y = dim.x;
-                m_particule->CreateTrack(pos, speed, dim, PARTITRACK2, 2.0f, 50.0f, 1.2f, 1.2f);
+                m_particle->CreateTrack(pos, speed, dim, PARTITRACK2, 2.0f, 50.0f, 1.2f, 1.2f);
 
                 pos = m_object->RetPosition(0);
                 pos.y += 10.0f;
@@ -296,7 +296,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 speed.y = -6.0f;
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIFIREZ, 1.0f, 0.0f, 0.0f);
 
                 m_sound->Play(SOUND_ENERGY, m_object->RetPosition(0),
                               1.0f, 1.0f+Math::Rand()*1.5f);
@@ -350,7 +350,7 @@ bool CAutoEnergy::EventProcess(const Event &event)
                 speed.y = 6.0f+Math::Rand()*6.0f;
                 dim.x = Math::Rand()*1.5f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 4.0f);
             }
         }
         else

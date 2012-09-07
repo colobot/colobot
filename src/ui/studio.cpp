@@ -505,7 +505,7 @@ void CStudio::SearchToken(CEdit* edit)
         for ( i=0 ; i<OBJECT_MAX ; i++ )
         {
             type = (ObjectType)i;
-            text = RetObjectName(type);
+            text = GetObjectName(type);
             if ( text[0] != 0 )
             {
                 if ( strcmp(token, text) == 0 )

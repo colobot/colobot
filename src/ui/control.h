@@ -92,7 +92,7 @@ public:
     virtual float         GetFontStretch();
     virtual void          SetFontType(Gfx::FontType font);
     virtual Gfx::FontType GetFontType();
-    virtual bool          SetTooltip(char* name);
+    virtual bool          SetTooltip(const char* name);
     virtual bool          GetTooltip(Math::Point pos, char* name);
     virtual void          SetFocus(bool bFocus);
     virtual bool          GetFocus();

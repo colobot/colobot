@@ -56,9 +56,9 @@ public:
 
 protected:
     void        UpdateInterface();
-    void        OkayButton(CWindow *pw, EventMsg event);
-    bool        TestResearch(EventMsg event);
-    void        SetResearch(EventMsg event);
+    void        OkayButton(CWindow *pw, Event event);
+    bool        TestResearch(Event event);
+    void        SetResearch(Event event);
     void        SoundManip(float time, float amplitude, float frequency);
 
 protected:
@@ -67,7 +67,7 @@ protected:
     float               m_speed;
     float               m_timeVirus;
     float               m_lastParticule;
-    EventMsg            m_research;
+    Event               m_research;
     int                 m_partiRank[3];
     int                 m_partiSphere;
     int                 m_soundChannel;

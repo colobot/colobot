@@ -199,7 +199,7 @@ bool CAutoStation::EventProcess(const Event &event)
         ppos.z = pos.z;
         dim.x = 1.5f;
         dim.y = 1.5f;
-        m_particule->CreateParticule(ppos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(ppos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
 
 #if 0
         ppos = pos;
@@ -211,7 +211,7 @@ bool CAutoStation::EventProcess(const Event &event)
         speed.y = 2.5f+Math::Rand()*6.0f;
         dim.x = Math::Rand()*1.5f+1.0f;
         dim.y = dim.x;
-        m_particule->CreateParticule(ppos, speed, dim, PARTISMOKE3, 4.0f);
+        m_particle->CreateParticle(ppos, speed, dim, PARTISMOKE3, 4.0f);
 #else
         ppos = pos;
         ppos.y += 1.0f;
@@ -222,7 +222,7 @@ bool CAutoStation::EventProcess(const Event &event)
         speed.y = 2.5f+Math::Rand()*5.0f;
         dim.x = Math::Rand()*1.0f+0.6f;
         dim.y = dim.x;
-        m_particule->CreateParticule(ppos, speed, dim, PARTIVAPOR, 3.0f);
+        m_particle->CreateParticle(ppos, speed, dim, PARTIVAPOR, 3.0f);
 #endif
     }
 

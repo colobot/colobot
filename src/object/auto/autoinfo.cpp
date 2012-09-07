@@ -100,7 +100,7 @@ void CAutoInfo::Start(int param)
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
         dim.x = 30.0f;
         dim.y = dim.x;
-        m_particule->CreateParticule(pos, speed, dim, PARTISPHERE4, 1.5f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, speed, dim, PARTISPHERE4, 1.5f, 0.0f, 0.0f);
 
         m_sound->Play(SOUND_LABO, pos, 1.0f, 2.0f);
     }
@@ -111,7 +111,7 @@ void CAutoInfo::Start(int param)
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
         dim.x = 50.0f;
         dim.y = dim.x;
-        m_particule->CreateParticule(pos, speed, dim, PARTISPHERE6, 1.5f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, speed, dim, PARTISPHERE6, 1.5f, 0.0f, 0.0f);
 
         m_sound->Play(SOUND_LABO, pos, 1.0f, 2.0f);
     }
@@ -199,7 +199,7 @@ bool CAutoInfo::EventProcess(const Event &event)
                 dim.x = 0.6f;
                 dim.y = dim.x;
                 duration = Math::Rand()*0.5f+0.5f;
-                m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
+                m_particle->CreateTrack(pos, speed, dim, PARTITRACK6,
                                          duration, 0.0f,
                                          duration*0.9f, 0.7f);
             }
@@ -247,7 +247,7 @@ bool CAutoInfo::EventProcess(const Event &event)
                 dim.x = 0.6f;
                 dim.y = dim.x;
                 duration = Math::Rand()*0.5f+0.5f;
-                m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
+                m_particle->CreateTrack(pos, speed, dim, PARTITRACK6,
                                          duration, 0.0f,
                                          duration*0.9f, 0.7f);
             }
@@ -289,7 +289,7 @@ bool CAutoInfo::EventProcess(const Event &event)
             dim.x = 5.0f+Math::Rand()*5.0f;
             dim.y = dim.x;
             duration = Math::Rand()*0.5f+0.5f;
-            m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 4.0f);
+            m_particle->CreateParticle(pos, speed, dim, PARTISMOKE1, 4.0f);
         }
 
         if ( m_progress < 1.0f )

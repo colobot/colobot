@@ -25,13 +25,15 @@
 
 class CInstanceManager;
 class CEvent;
-class CD3DEngine;
 class CInterface;
 class CRobotMain;
 class CCamera;
-class CSound;
+class CSoundInterface;
 
-
+namespace Gfx
+{
+    class CEngine;
+} /* Gfx */ 
 
 
 enum MainMovieType
@@ -61,17 +63,17 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    CEvent*         m_event;
-    CD3DEngine*     m_engine;
-    CInterface*     m_interface;
-    CRobotMain*     m_main;
-    CCamera*        m_camera;
-    CSound*         m_sound;
+    CEvent*             m_event;
+    Gfx::CEngine*       m_engine;
+    CInterface*         m_interface;
+    CRobotMain*         m_main;
+    CCamera*            m_camera;
+    CSoundInterface*    m_sound;
 
-    MainMovieType   m_type;
-    MainMovieType   m_stopType;
-    float           m_speed;
-    float           m_progress;
+    MainMovieType       m_type;
+    MainMovieType       m_stopType;
+    float               m_speed;
+    float               m_progress;
     Math::Vector        m_initialEye;
     Math::Vector        m_initialLookat;
     Math::Vector        m_finalEye[2];

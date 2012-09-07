@@ -158,7 +158,7 @@ bool CAutoRepair::EventProcess(const Event &event)
                 speed.y = Math::Rand()*15.0f;
                 dim.x = Math::Rand()*6.0f+4.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
             }
         }
         else

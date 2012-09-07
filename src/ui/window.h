@@ -27,6 +27,7 @@ namespace Ui {
 
 const int MAXWINDOW = 100;
 
+class CGauge;
 
 class CWindow : public CControl
 {

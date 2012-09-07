@@ -240,7 +240,7 @@ bool CAutoTower::EventProcess(const Event &event)
         {
             pos = m_object->RetPosition(0);
             pos.y += 24.5f;
-            m_particule->CreateRay(pos, m_targetPos, PARTIRAY1,
+            m_particle->CreateRay(pos, m_targetPos, PARTIRAY1,
                                    Math::Point(5.0f, 5.0f), 1.5f);
         }
         if ( m_progress >= 1.0f )
@@ -361,7 +361,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
         {
             if ( m_partiStop[i] != -1 )
             {
-                m_particule->DeleteParticule(m_partiStop[i]);
+                m_particle->DeleteParticule(m_partiStop[i]);
                 m_partiStop[i] = -1;
             }
         }
@@ -380,7 +380,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
         {
             if ( m_partiStop[i] != -1 )
             {
-                m_particule->DeleteParticule(m_partiStop[i]);
+                m_particle->DeleteParticule(m_partiStop[i]);
                 m_partiStop[i] = -1;
             }
         }
@@ -392,7 +392,8 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
                 pos.y = 18.0f;
                 pos.z = listpos[i*2+1];
                 pos = Transform(*mat, pos);
-                m_partiStop[i] = m_particule->CreateParticule(pos, speed,
+                
+                m_partiStop[i] = m_particle->CreateParticle(pos, speed,
                                                               dim, PARTISELR,
                                                               1.0f, 0.0f, 0.0f);
             }

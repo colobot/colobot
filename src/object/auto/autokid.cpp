@@ -148,7 +148,7 @@ bool CAutoKid::EventProcess(const Event &event)
             speed.z = 0.0f;
             dim.x = 50.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
         }
     }
 
@@ -177,7 +177,7 @@ bool CAutoKid::EventProcess(const Event &event)
             speed.z = 0.0f;
             dim.x = 20.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
         }
     }
 

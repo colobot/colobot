@@ -329,7 +329,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 speed.y = Math::Rand()*12.0f;
                 dim.x = Math::Rand()*12.0f+10.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 #else
                 mat = m_object->RetWorldMatrix(0);
                 pos = Math::Vector(-12.0f, 20.0f, -4.0f);  // position of chimney
@@ -342,7 +342,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 speed.y = 6.0f+Math::Rand()*6.0f;
                 dim.x = Math::Rand()*1.5f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 4.0f);
 #endif
             }
         }
@@ -403,7 +403,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -446,7 +446,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
             }
         }
         else

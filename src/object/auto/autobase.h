@@ -94,19 +94,19 @@ protected:
     float           m_lastMotorParticule;
     float           m_fogStart;
     float           m_deepView;
-    Math::Vector        m_pos;
-    Math::Vector        m_posSound;
-    Math::Vector        m_finalPos;
-    Math::Vector        m_lastPos;
+    Math::Vector    m_pos;
+    Math::Vector    m_posSound;
+    Math::Vector    m_finalPos;
+    Math::Vector    m_lastPos;
     int             m_param;
     int             m_soundChannel;
     int             m_partiChannel[8];
 
     char            m_bgBack[100];
     char            m_bgName[100];
-    D3DCOLOR        m_bgUp;
-    D3DCOLOR        m_bgDown;
-    D3DCOLOR        m_bgCloudUp;
-    D3DCOLOR        m_bgCloudDown;
+    Gfx::Color      m_bgUp;
+    Gfx::Color      m_bgDown;
+    Gfx::Color      m_bgCloudUp;
+    Gfx::Color      m_bgCloudDown;
 };
 

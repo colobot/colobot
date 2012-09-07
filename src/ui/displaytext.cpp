@@ -183,7 +183,7 @@ void CDisplayText::DisplayError(Error err, Math::Vector goal, float height,
 
 // Displays text.
 
-void CDisplayText::DisplayText(char *text, CObject* pObj,
+void CDisplayText::DisplayText(const char *text, CObject* pObj,
                                float time, TextType type)
 {
     Math::Vector    pos;
@@ -199,7 +199,7 @@ void CDisplayText::DisplayText(char *text, CObject* pObj,
 
 // Displays text.
 
-void CDisplayText::DisplayText(char *text, Math::Vector goal, float height,
+void CDisplayText::DisplayText(const char *text, Math::Vector goal, float height,
                                float dist, float time, TextType type)
 {
     CObject*    toto;

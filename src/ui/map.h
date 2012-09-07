@@ -51,7 +51,7 @@ struct MapObject
     CObject*    object;
     MapColor    color;
     ObjectType  type;
-    Math::Point     pos;
+    Math::Point pos;
     float       dir;
 };
 
@@ -85,8 +85,8 @@ public:
     void        SetEnable(bool bEnable);
     bool        RetEnable();
 
-    void        SetFloorColor(D3DCOLORVALUE color);
-    void        SetWaterColor(D3DCOLORVALUE color);
+    void        SetFloorColor(Gfx::Color color);
+    void        SetWaterColor(Gfx::Color color);
 
     void        FlushObject();
     void        UpdateObject(CObject* pObj);
@@ -95,9 +95,9 @@ public:
     void        SetHilite(CObject* pObj);
 
 protected:
-    Math::Point     AdjustOffset(Math::Point offset);
+    Math::Point AdjustOffset(Math::Point offset);
     void        SelectObject(Math::Point pos);
-    Math::Point     MapInter(Math::Point pos, float dir);
+    Math::Point MapInter(Math::Point pos, float dir);
     void        DrawFocus(Math::Point pos, float dir, ObjectType type, MapColor color);
     void        DrawObject(Math::Point pos, float dir, ObjectType type, MapColor color, bool bSelect, bool bHilite);
     void        DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color, ObjectType type, bool bHilite);
@@ -115,16 +115,16 @@ protected:
     float           m_time;
     float           m_half;
     float           m_zoom;
-    Math::Point         m_offset;
+    Math::Point     m_offset;
     float           m_angle;
-    D3DCOLORVALUE   m_floorColor;
-    D3DCOLORVALUE   m_waterColor;
+    Gfx::Color      m_floorColor;
+    Gfx::Color      m_waterColor;
     MapObject       m_map[MAPMAXOBJECT];
     int             m_totalFix;
     int             m_totalMove;
     int             m_hiliteRank;
-    Math::Point         m_mapPos;
-    Math::Point         m_mapDim;
+    Math::Point     m_mapPos;
+    Math::Point     m_mapDim;
     bool            m_bRadar;
     char            m_fixImage[100];
     int             m_mode;

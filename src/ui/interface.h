@@ -30,29 +30,29 @@
 #include <graphics/engine/camera.h>
 #include <graphics/engine/engine.h>
 
-#include <ui/control.h>
-#include <ui/button.h>
-#include <ui/color.h>
-#include <ui/check.h>
-#include <ui/key.h>
-#include <ui/group.h>
-#include <ui/image.h>
-#include <ui/label.h>
-#include <ui/edit.h>
-#include <ui/editvalue.h>
-#include <ui/scroll.h>
-#include <ui/slider.h>
-#include <ui/list.h>
-#include <ui/shortcut.h>
-#include <ui/compass.h>
-#include <ui/target.h>
-#include <ui/map.h>
-#include <ui/window.h>
-
 namespace Ui {
 
 const int MAXCONTROL = 100;
 
+//Forward declaration
+class CButton;
+class CCheck;
+class CColor;
+class CCompass;
+class CControl;
+class CEdit;
+class CEditValue;
+class CGroup;
+class CImage;
+class CKey;
+class CLabel;
+class CList;
+class CMap;
+class CScroll;
+class CShortcut;
+class CSlider;
+class CTarget;
+class CWindow;
 
 class CInterface
 {

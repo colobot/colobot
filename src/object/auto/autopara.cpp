@@ -137,7 +137,7 @@ bool CAutoPara::EventProcess(const Event &event)
                     speed.y = 5.0f+Math::Rand()*5.0f;
                     dim.x = 2.0f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 20.0f, 0.5f);
+                    m_particle->CreateParticle(pos, speed, dim, PARTIBLITZ, 1.0f, 20.0f, 0.5f);
                 }
             }
         }
@@ -166,7 +166,7 @@ bool CAutoPara::EventProcess(const Event &event)
                     speed.y = -Math::Rand()*30.0f;
                     dim.x = 1.0f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
+                    m_particle->CreateParticle(pos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
                 }
             }
 

@@ -381,7 +381,7 @@ void UserDir(bool bUser, char* dir)
 //      def = "abc\"
 // out: buffer = "abc\toto.txt"
 
-void UserDir(char* buffer, char* dir, char* def)
+void UserDir(char* buffer, char* dir, const char* def)
 {
     char    ddir[100];
     char*   add;

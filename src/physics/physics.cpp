@@ -29,10 +29,12 @@
 #include "graphics/engine/water.h"
 #include "graphics/engine/camera.h"
 #include "graphics/engine/pyro.h"
-#include "object/brain.h"
-#include "object/task/task.h"
-// #include "script/cmdtoken.h"
+#include "script/cmdtoken.h"
 #include "physics/physics.h"
+#include "object/brain.h"
+#include "object/motion/motion.h"
+#include "object/motion/motionhuman.h"
+#include "object/task/task.h"
 
 
 
@@ -59,8 +61,7 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
     m_camera    = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
     m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
     m_brain     = 0;
-    ///\TODO Uncomment after change in object/motion
-    // m_motion    = 0;
+    m_motion    = 0;
 
     m_type = TYPE_ROLLING;
     m_gravity = 9.81f;  // default gravity
@@ -142,8 +143,7 @@ void CPhysics::SetBrain(CBrain* brain)
 
 void CPhysics::SetMotion(CMotion* motion)
 {
-    ///\TODO Uncomment after change in object/motion
-    // m_motion = motion;
+    m_motion = motion;
 }
 
 // Management of the type.
@@ -185,14 +185,12 @@ bool CPhysics::Write(char *line)
 
 bool CPhysics::Read(char *line)
 {
-    /// \TODO Need to be uncommented after change in cmdtoken
-    // m_motorSpeed = OpDir(line, "motor");
+    m_motorSpeed = OpDir(line, "motor");
 
     if ( m_type == TYPE_FLYING )
     {
-    /// \TODO Need to be uncommented after change in cmdtoken
-        // SetReactorRange(OpFloat(line, "reactorRange", 0.0f));
-        // SetLand(OpInt(line, "land", 0));
+        SetReactorRange(OpFloat(line, "reactorRange", 0.0f));
+        SetLand(OpInt(line, "land", 0));
     }
 
     return true;
@@ -854,15 +852,14 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     {
         motorSpeed.x = 0.0f;
         motorSpeed.z = 0.0f;
-        ///\TODO Uncomment after change in object/motion
-        // if ( m_motion->GetAction() == MHS_DEADw )  // drowned?
-        // {
-        //     motorSpeed.y = 0.0f;  // this is MHS_DEADw going back
-        // }
-        // else
-        // {
-        //     motorSpeed.y = -1.0f;  // grave
-        // }
+        if ( m_motion->GetAction() == MHS_DEADw )  // drowned?
+        {
+            motorSpeed.y = 0.0f;  // this is MHS_DEADw going back
+        }
+        else
+        {
+            motorSpeed.y = -1.0f;  // grave
+        }
         SetMotor(false);
     }
 
@@ -1054,10 +1051,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
         bOnBoard = true;
     }
 
-    ///\TODO Uncomment after change in object/motion
-    // vibLin = m_motion->GetLinVibration();
-    // vibCir = m_motion->GetCirVibration();
-    // incl   = m_motion->GetInclinaison();
+    vibLin = m_motion->GetLinVibration();
+    vibCir = m_motion->GetCirVibration();
+    incl   = m_motion->GetInclinaison();
 
     if ( type == OBJECT_HUMAN ||  // human?
          type == OBJECT_TECH  )
@@ -1104,10 +1100,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
             vibCir *= m_cirVibrationFactor;
             incl *= m_inclinaisonFactor;
 
-            ///\TODO Uncomment after change in object/motion
-            // m_motion->SetLinVibration(vibLin);
-            // m_motion->SetCirVibration(vibCir);
-            // m_motion->SetInclinaison(incl);
+            m_motion->SetLinVibration(vibLin);
+            m_motion->SetCirVibration(vibCir);
+            m_motion->SetInclinaison(incl);
         }
         else if ( m_bSwim )  // swimming?
         {
@@ -1162,15 +1157,13 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
             vibCir *= m_cirVibrationFactor;
             incl *= m_inclinaisonFactor;
 
-            ///\TODO Uncomment after change in object/motion
-            // m_motion->SetLinVibration(vibLin);
-            // m_motion->SetCirVibration(vibCir);
-            // m_motion->SetInclinaison(incl);
+            m_motion->SetLinVibration(vibLin);
+            m_motion->SetCirVibration(vibCir);
+            m_motion->SetInclinaison(incl);
         }
         else
         {
-            ///\TODO Uncomment after change in object/motion
-            // m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 
 //?         m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 //?         m_motion->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
@@ -1219,8 +1212,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
         vibLin.z = 0.0f;
         vibLin.y = fabs(character->wheelFront*sinf(incl.z))*0.8f +
                    fabs(character->wheelRight*sinf(incl.x))*0.5f;
-        ///\TODO Uncomment after change in object/motion
-        // m_motion->SetLinVibration(vibLin);
+        m_motion->SetLinVibration(vibLin);
     }
 
     if ( type == OBJECT_MOBILEfa ||
@@ -1231,10 +1223,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
     {
         if ( m_bLand )  // on the ground?
         {
-            ///\TODO Uncomment after change in object/motion
-            // m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-            // m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
-            // m_motion->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+            m_motion->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
         }
         else    // in flight?
         {
@@ -1281,10 +1272,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
             vibCir *= m_cirVibrationFactor;
             incl *= m_inclinaisonFactor;
 
-            ///\TODO Uncomment after change in object/motion
-            // m_motion->SetLinVibration(vibLin);
-            // m_motion->SetCirVibration(vibCir);
-            // m_motion->SetInclinaison(incl);
+            m_motion->SetLinVibration(vibLin);
+            m_motion->SetCirVibration(vibCir);
+            m_motion->SetInclinaison(incl);
         }
     }
 
@@ -1334,10 +1324,9 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
             vibCir *= m_cirVibrationFactor;
             incl *= m_inclinaisonFactor;
 
-            ///\TODO Uncomment after change in object/motion
-            // m_motion->SetLinVibration(vibLin);
-            // m_motion->SetCirVibration(vibCir);
-            // m_motion->SetInclinaison(incl);
+            m_motion->SetLinVibration(vibLin);
+            m_motion->SetCirVibration(vibCir);
+            m_motion->SetInclinaison(incl);
         }
     }
 }
@@ -3775,13 +3764,11 @@ void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
 
 void CPhysics::WheelParticle(int color, float width)
 {
-    Character*          character;
     Math::Matrix*       mat;
     Math::Vector        goal1, goal2, wheel1, wheel2;
     Gfx::ParticleType   parti;
     float               dist1, dist2, step;
 
-    character = m_object->GetCharacter();
     mat = m_object->GetWorldMatrix(0);
 
     // Draw a trace on the ground.

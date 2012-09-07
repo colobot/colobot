@@ -218,7 +218,7 @@ bool CAutoConvert::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*2.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -264,7 +264,7 @@ bool CAutoConvert::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*4.0f+3.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
             }
         }
         else

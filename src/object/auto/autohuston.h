@@ -20,18 +20,18 @@
 
 
 #include "object/auto/auto.h"
-#include "old/particule.h"
+#include "graphics/engine/particle.h"
 
 
 
 struct HustonLens
 {
-    int             parti;
-    ParticuleType   type;
+    int                 parti;
+    Gfx::ParticleType   type;
     Math::Vector        pos;
-    float           dim;
-    float           total;
-    float           off;
+    float               dim;
+    float               total;
+    float               off;
 };
 
 

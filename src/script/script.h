@@ -22,20 +22,26 @@
 #include <stdio.h>
 
 #include "common/event.h"
+#include "CBot/CBotDll.h"
 
 
 class CInstanceManager;
-class CD3DEngine;
-class CInterface;
-class CDisplayText;
-class CEdit;
-class CList;
 class CObject;
 class CTaskManager;
-class CBotProgram;
 class CRobotMain;
+
+namespace Ui{
+class CDisplayText;
+class CEdit;
+class CInterface;
+class CList;
+} /* Ui */ 
+
+namespace Gfx {
+class CEngine;
 class CTerrain;
 class CWater;
+} /* Gfx */ 
 
 
 
@@ -47,9 +53,9 @@ public:
 
     static void InitFonctions();
 
-    void        PutScript(CEdit* edit, char* name);
-    bool        GetScript(CEdit* edit);
-    bool        RetCompile();
+    void        PutScript(Ui::CEdit* edit, char* name);
+    bool        GetScript(Ui::CEdit* edit);
+    bool        GetCompile();
 
     void        GetTitle(char* buffer);
 
@@ -61,14 +67,14 @@ public:
     bool        IsRunning();
     bool        IsContinue();
     bool        GetCursor(int &cursor1, int &cursor2);
-    void        UpdateList(CList* list);
-    void        ColorizeScript(CEdit* edit);
+    void        UpdateList(Ui::CList* list);
+    void        ColorizeScript(Ui::CEdit* edit);
     bool        IntroduceVirus();
 
-    int         RetError();
+    int         GetError();
     void        GetError(char* buffer);
 
-    void        New(CEdit* edit, char* name);
+    void        New(Ui::CEdit* edit, char* name);
     bool        SendScript(char* text);
     bool        ReadScript(char* filename);
     bool        WriteScript(char* filename);
@@ -77,42 +83,124 @@ public:
     bool        Compare(CScript* other);
 
     void        SetFilename(char *filename);
-    char*       RetFilename();
+    char*       GetFilename();
 
 protected:
     bool        IsEmpty();
     bool        CheckToken();
     bool        Compile();
 
-public:
-    CInstanceManager* m_iMan;
-    CD3DEngine*     m_engine;
-    CInterface*     m_interface;
-    CDisplayText*   m_displayText;
-    CBotProgram*    m_botProg;
-    CRobotMain*     m_main;
-    CTerrain*       m_terrain;
-    CWater*         m_water;
-    CTaskManager*   m_primaryTask;
-    CTaskManager**  m_secondaryTask;
-    CObject*        m_object;
+private:
 
-    int         m_ipf;          // number of instructions/second
-    int         m_errMode;      // what to do in case of error
-    int         m_len;          // length of the script (without <0>)
-    char*           m_script;       // script ends with <0>
-    bool            m_bRun;         // program during execution?
-    bool            m_bStepMode;        // step by step
-    bool            m_bContinue;        // external function to continue
-    bool            m_bCompile;     // compilation ok?
-    char            m_title[50];        // script title
-    char            m_filename[50];     // file name
-    char            m_token[50];        // missing instruction
-    int         m_error;        // error (0=ok)
-    int         m_cursor1;
-    int         m_cursor2;
-    Event           m_event;
-    float           m_returnValue;
+    static CBotTypResult cNull(CBotVar* &var, void* user);
+    static CBotTypResult cOneFloat(CBotVar* &var, void* user);
+    static CBotTypResult cTwoFloat(CBotVar* &var, void* user);
+    static CBotTypResult cString(CBotVar* &var, void* user);
+    static CBotTypResult cGetObject(CBotVar* &var, void* user);
+    static CBotTypResult cSearch(CBotVar* &var, void* user);
+    static CBotTypResult cRadar(CBotVar* &var, void* user);
+    static CBotTypResult cDetect(CBotVar* &var, void* user);
+    static CBotTypResult cDirection(CBotVar* &var, void* user);
+    static CBotTypResult cProduce(CBotVar* &var, void* user);
+    static CBotTypResult cDistance(CBotVar* &var, void* user);
+    static CBotTypResult cSpace(CBotVar* &var, void* user);
+    static CBotTypResult cFlatGround(CBotVar* &var, void* user);
+    static CBotTypResult cGoto(CBotVar* &var, void* user);
+    static CBotTypResult cGrabDrop(CBotVar* &var, void* user);
+    static CBotTypResult cReceive(CBotVar* &var, void* user);
+    static CBotTypResult cSend(CBotVar* &var, void* user);
+    static CBotTypResult cDeleteInfo(CBotVar* &var, void* user);
+    static CBotTypResult cTestInfo(CBotVar* &var, void* user);
+    static CBotTypResult cShield(CBotVar* &var, void* user);
+    static CBotTypResult cFire(CBotVar* &var, void* user);
+    static CBotTypResult cMotor(CBotVar* &var, void* user);
+    static CBotTypResult cTopo(CBotVar* &var, void* user);
+    static CBotTypResult cMessage(CBotVar* &var, void* user);
+    static CBotTypResult cPenDown(CBotVar* &var, void* user);
+    static CBotTypResult cOnePoint(CBotVar* &var, void* user);
+    static CBotTypResult cPoint(CBotVar* &var, void* user);
+
+
+    static bool rSin(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rCos(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rTan(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rSqrt(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rPow(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rRand(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rAbs(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rGetObject(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rSearch(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rRadar(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDetect(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDirection(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rProduce(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDistance(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDistance2d(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rSpace(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rFlatGround(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rWait(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rMove(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rTurn(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rGoto(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rFind(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rGrab(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDrop(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rSniff(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rReceive(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rSend(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDeleteInfo(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rTestInfo(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rThump(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rRecycle(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rShield(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rFire(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rAim(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rMotor(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rJet(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rTopo(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rMessage(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rCmdline(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rIsMovie(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rErrMode(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rIPF(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rAbsTime(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rDeleteFile(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rPenDown(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rPenUp(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rPenColor(CBotVar* var, CBotVar* result, int& exception, void* user);
+    static bool rPenWidth(CBotVar* var, CBotVar* result, int& exception, void* user);
+
+    static bool     Process(CScript* script, CBotVar* result, int &exception);
+    static CObject* SearchInfo(CScript* script, CObject* object, float power);
+
+    CInstanceManager*   m_iMan;
+    Gfx::CEngine*       m_engine;
+    Ui::CInterface*         m_interface;
+    Ui::CDisplayText*   m_displayText;
+    CBotProgram*        m_botProg;
+    CRobotMain*         m_main;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CWater*        m_water;
+    CTaskManager*       m_primaryTask;
+    CTaskManager**      m_secondaryTask;
+    CObject*            m_object;
+
+    int     m_ipf;          // number of instructions/second
+    int     m_errMode;      // what to do in case of error
+    int     m_len;          // length of the script (without <0>)
+    char*   m_script;       // script ends with <0>
+    bool    m_bRun;         // program during execution?
+    bool    m_bStepMode;        // step by step
+    bool    m_bContinue;        // external function to continue
+    bool    m_bCompile;     // compilation ok?
+    char    m_title[50];        // script title
+    char    m_filename[50];     // file name
+    char    m_token[50];        // missing instruction
+    int     m_error;        // error (0=ok)
+    int     m_cursor1;
+    int     m_cursor2;
+    Event   m_event;
+    float   m_returnValue;
 };
 
 

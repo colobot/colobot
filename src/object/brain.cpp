@@ -15,55 +15,55 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
+// #include <stdio.h>
+// 
 #include "object/brain.h"
-
-#include "CBot/CBotDll.h"
-#include "common/struct.h"
-#include "math/geometry.h"
-#include "math/const.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "common/language.h"
-#include "common/global.h"
-#include "common/event.h"
+// 
+// #include "CBot/CBotDll.h"
+// #include "common/struct.h"
+// #include "math/geometry.h"
+// #include "math/const.h"
+// #include "old/d3dengine.h"
+// #include "old/d3dmath.h"
+// #include "common/language.h"
+// #include "common/global.h"
+// #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
-#include "common/restext.h"
-#include "old/math3d.h"
-#include "object/robotmain.h"
-#include "old/terrain.h"
-#include "old/water.h"
-#include "old/camera.h"
-#include "object/object.h"
-#include "physics/physics.h"
-#include "object/motion/motion.h"
-#include "object/motion/motionspider.h"
-#include "old/pyro.h"
+// #include "common/restext.h"
+// #include "old/math3d.h"
+// #include "object/robotmain.h"
+// #include "old/terrain.h"
+// #include "old/water.h"
+// #include "old/camera.h"
+// #include "object/object.h"
+// #include "physics/physics.h"
+// #include "object/motion/motion.h"
+// #include "object/motion/motionspider.h"
+// #include "old/pyro.h"
 #include "object/task/taskmanager.h"
-#include "object/task/task.h"
-#include "object/task/taskmanip.h"
-#include "object/task/taskflag.h"
-#include "object/task/taskshield.h"
+// #include "object/task/task.h"
+// #include "object/task/taskmanip.h"
+// #include "object/task/taskflag.h"
+// #include "object/task/taskshield.h"
 #include "script/script.h"
-#include "ui/studio.h"
-#include "ui/interface.h"
-#include "ui/button.h"
-#include "ui/color.h"
-#include "ui/edit.h"
-#include "ui/list.h"
-#include "ui/label.h"
-#include "ui/group.h"
-#include "ui/gauge.h"
+// #include "ui/studio.h"
+// #include "ui/interface.h"
+// #include "ui/button.h"
+// #include "ui/color.h"
+// #include "ui/edit.h"
+// #include "ui/list.h"
+// #include "ui/label.h"
+// #include "ui/group.h"
+// #include "ui/gauge.h"
 #include "ui/slider.h"
-#include "ui/compass.h"
-#include "ui/target.h"
+// #include "ui/compass.h"
+// #include "ui/target.h"
 #include "ui/window.h"
-#include "ui/displaytext.h"
-#include "old/text.h"
-#include "old/sound.h"
-#include "old/particule.h"
+// #include "ui/displaytext.h"
+// #include "old/text.h"
+#include "sound/sound.h"
+// #include "old/particule.h"
 #include "script/cmdtoken.h"
 
 
@@ -82,20 +82,21 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
     m_iMan->AddInstance(CLASS_BRAIN, this, 100);
 
     m_object      = object;
-    m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-    m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-    m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-    m_interface   = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
-    m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
-    m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
+    m_engine      = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_terrain     = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+    m_water       = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
+    m_camera      = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_interface   = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
+    m_displayText = static_cast<CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
+    m_main        = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
+    m_sound       = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+    m_particle    = static_cast<CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
     m_physics     = 0;
     m_motion      = 0;
     m_primaryTask = 0;
     m_secondaryTask = 0;
-    m_studio      = 0;
+    // TODO uncoment when ui/studio will be implemented.
+    // m_studio      = 0;
 
     m_program = -1;
     m_bActivity = true;
@@ -142,7 +143,8 @@ CBrain::~CBrain()
 
     delete m_primaryTask;
     delete m_secondaryTask;
-    delete m_studio;
+    // TODO uncoment when ui/studio will be implemented.
+    // delete m_studio;
     delete m_traceRecordBuffer;
     m_iMan->DeleteInstance(CLASS_BRAIN, this);
 }
@@ -169,7 +171,8 @@ void CBrain::DeleteObject(bool bAll)
         }
     }
 
-    if ( m_studio != 0 )  // current edition?
+    // TODO uncoment when ui/studio will be implemented.
+    // if ( m_studio != 0 )  // current edition?
     {
         StopEditScript(true);
     }
@@ -213,13 +216,13 @@ bool CBrain::Read(char *line)
 
 bool CBrain::EventProcess(const Event &event)
 {
-    CWindow*    pw;
-    CControl*   pc;
-    CSlider*    ps;
-    EventMsg    action;
-    ObjectType  type;
-    Error       err;
-    float       axeX, axeY, axeZ, factor;
+    Ui::CWindow*    pw;
+    Ui::CControl*   pc;
+    Ui::CSlider*    ps;
+    Event           action;
+    ObjectType      type;
+    Error           err;
+    float           axeX, axeY, axeZ, factor;
 
     type = m_object->RetType();
 
@@ -240,7 +243,7 @@ bool CBrain::EventProcess(const Event &event)
           event.param == m_engine->RetKey(KEYRANK_ACTION, 1) ) &&
          !m_main->RetEditLock() )
     {
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+        pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
         if ( pw != 0 )
         {
             pc = pw->SearchControl(m_defaultEnter);
@@ -270,10 +273,11 @@ bool CBrain::EventProcess(const Event &event)
         EventFrame(event);
     }
 
+    // TODO uncoment when ui/studio will be implemented.
     if ( m_object->RetSelect() &&  // robot selected?
-         m_studio != 0         )   // current issue?
+         /* m_studio != 0 */         )   // current issue?
     {
-        m_studio->EventProcess(event);
+        // m_studio->EventProcess(event);
 
         if ( action == EVENT_OBJECT_PROGRUN )
         {
@@ -591,10 +595,10 @@ bool CBrain::EventProcess(const Event &event)
 
         if ( action == EVENT_OBJECT_DIMSHIELD )
         {
-            pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+            pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
             if ( pw != 0 )
             {
-                ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_DIMSHIELD);
+                ps = (Ui::CSlider*)pw->SearchControl(EVENT_OBJECT_DIMSHIELD);
                 if ( ps != 0 )
                 {
                     m_object->SetParam((ps->RetVisibleValue()-(RADIUS_SHIELD_MIN/g_unit))/((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
@@ -687,7 +691,7 @@ bool CBrain::EventProcess(const Event &event)
                 TraceRecordStart();
             }
             UpdateInterface();
-            pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+            pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
             if ( pw != 0 )
             {
                 UpdateScript(pw);
@@ -701,7 +705,7 @@ bool CBrain::EventProcess(const Event &event)
                 TraceRecordStop();
             }
             UpdateInterface();
-            pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+            pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
             if ( pw != 0 )
             {
                 UpdateScript(pw);
@@ -765,10 +769,11 @@ bool CBrain::EventFrame(const Event &event)
         m_sound->Position(m_soundChannelAlarm, m_object->RetPosition(0));
     }
 
-    if ( m_studio != 0 )  // �urrent edition?
-    {
-        m_studio->EventProcess(event);
-    }
+    // TODO uncoment when ui/studio will be implemented.
+    // if ( m_studio != 0 )  // current edition?
+    // {
+    //     m_studio->EventProcess(event);
+    // }
 
     UpdateInterface(event.rTime);
 
@@ -891,8 +896,9 @@ void CBrain::StartEditScript(int rank, char* name)
         m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
     }
 
-    m_studio = new CStudio(m_iMan);
-    m_studio->StartEditScript(m_script[rank], name, rank);
+    // TODO uncoment when ui/studio will be implemented.
+    // m_studio = new CStudio(m_iMan);
+    // m_studio->StartEditScript(m_script[rank], name, rank);
 }
 
 // End of editing a program.
@@ -901,10 +907,11 @@ void CBrain::StopEditScript(bool bCancel)
 {
     if ( !bCancel )  SetActiveVirus(false);
 
-    if ( !m_studio->StopEditScript(bCancel) )  return;
+    // TODO uncoment when ui/studio will be implemented.
+    // if ( !m_studio->StopEditScript(bCancel) )  return;
 
-    delete m_studio;
-    m_studio = 0;
+    // delete m_studio;
+    // m_studio = 0;
 
     CreateInterface(true);  // puts the control buttons
 }
@@ -1209,7 +1216,7 @@ void CBrain::GroundFlat()
     speed = Math::Vector(0.0f, 0.0f, 0.0f);
     dim.x = 40.0f;
     dim.y = dim.x;
-    m_particule->CreateParticule(pos, speed, dim, PARTIGFLAT, 1.0f);
+    m_particle->CreateParticle(pos, speed, dim, PARTIGFLAT, 1.0f);
 }
 
 
@@ -1227,17 +1234,17 @@ void CBrain::ColorFlag(int color)
 bool CBrain::CreateInterface(bool bSelect)
 {
     ObjectType  type;
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     CButton*    pb;
     CColor*     pc;
-    CSlider*    ps;
+    Ui::CSlider*    ps;
     CTarget*    pt;
     CLabel*     pl;
     Math::Point     pos, dim, ddim;
     float       ox, oy, sx, sy;
     char        name[100];
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
     if ( pw != 0 )
     {
         pw->Flush();  // destroys the window buttons
@@ -1253,7 +1260,7 @@ bool CBrain::CreateInterface(bool bSelect)
     if ( !m_main->RetShowMap() )  dim.x = 640.0f/640.0f;
     dim.y =  86.0f/480.0f;
     m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
     if ( pw == 0 )  return false;
 
     m_object->GetTooltipName(name);
@@ -1926,7 +1933,7 @@ bool CBrain::CreateInterface(bool bSelect)
 
 void CBrain::UpdateInterface(float rTime)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
 #if _TEEN
     CButton*    pb;
 #endif
@@ -1956,7 +1963,7 @@ void CBrain::UpdateInterface(float rTime)
         return;
     }
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
     if ( pw == 0 )  return;
 
     pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
@@ -2130,9 +2137,9 @@ void CBrain::UpdateInterface(float rTime)
 void CBrain::UpdateInterface()
 {
     ObjectType  type;
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     CButton*    pb;
-    CSlider*    ps;
+    Ui::CSlider*    ps;
 #if _TEEN
     CColor*     pc;
     int         color;
@@ -2142,7 +2149,7 @@ void CBrain::UpdateInterface()
 
     if ( !m_object->RetSelect() )  return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
     if ( pw == 0 )  return;
 
     type = m_object->RetType();
@@ -2235,7 +2242,7 @@ void CBrain::UpdateInterface()
             DefaultEnter   (pw, EVENT_OBJECT_ENDSHIELD, false);
         }
 
-        ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_DIMSHIELD);
+        ps = (Ui::CSlider*)pw->SearchControl(EVENT_OBJECT_DIMSHIELD);
         if ( ps != 0 )
         {
             ps->SetVisibleValue((RADIUS_SHIELD_MIN/g_unit)+m_object->RetParam()*((RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)/g_unit));
@@ -2438,7 +2445,7 @@ void CBrain::UpdateInterface()
 
 // Updates the list of programs.
 
-void CBrain::UpdateScript(CWindow *pw)
+void CBrain::UpdateScript(Ui::CWindow *pw)
 {
     CList*      pl;
     char        name[100];
@@ -2488,10 +2495,10 @@ void CBrain::UpdateScript(CWindow *pw)
 
 int CBrain::RetSelScript()
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     CList*      pl;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
     if ( pw == 0 )  return -1;
 
     pl = (CList*)pw->SearchControl(EVENT_OBJECT_PROGLIST);
@@ -2504,12 +2511,12 @@ int CBrain::RetSelScript()
 
 void CBrain::BlinkScript(bool bEnable)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     CList*      pl;
 
     if ( !m_object->RetSelect() )  return;  // robot not selected?
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = (Ui::CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
     if ( pw == 0 )  return;
 
     pl = (CList*)pw->SearchControl(EVENT_OBJECT_PROGLIST);
@@ -2520,9 +2527,9 @@ void CBrain::BlinkScript(bool bEnable)
 
 // Check the status of a button interface.
 
-void CBrain::CheckInterface(CWindow *pw, EventMsg event, bool bState)
+void CBrain::CheckInterface(Ui::CWindow *pw, EventMsg event, bool bState)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
@@ -2532,9 +2539,9 @@ void CBrain::CheckInterface(CWindow *pw, EventMsg event, bool bState)
 
 // Changes the state of a button interface.
 
-void CBrain::EnableInterface(CWindow *pw, EventMsg event, bool bState)
+void CBrain::EnableInterface(Ui::CWindow *pw, EventMsg event, bool bState)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
@@ -2544,9 +2551,9 @@ void CBrain::EnableInterface(CWindow *pw, EventMsg event, bool bState)
 
 // Changes the state of a button on the interface.
 
-void CBrain::DeadInterface(CWindow *pw, EventMsg event, bool bState)
+void CBrain::DeadInterface(Ui::CWindow *pw, EventMsg event, bool bState)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
@@ -2556,9 +2563,9 @@ void CBrain::DeadInterface(CWindow *pw, EventMsg event, bool bState)
 
 // Change the default input state of a button interface.
 
-void CBrain::DefaultEnter(CWindow *pw, EventMsg event, bool bState)
+void CBrain::DefaultEnter(Ui::CWindow *pw, EventMsg event, bool bState)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
@@ -2708,7 +2715,7 @@ bool CBrain::ReadSoluce(char* filename)
 
 // Load a script with a text file.
 
-bool CBrain::ReadProgram(int rank, char* filename)
+bool CBrain::ReadProgram(int rank, const char* filename)
 {
     if ( m_script[rank] == 0 )
     {

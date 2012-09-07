@@ -150,8 +150,8 @@ bool CAutoMush::EventProcess(const Event &event)
                     speed.y = -(20.0f+Math::Rand()*20.0f);
                     dim.x = 1.0f;
                     dim.y = dim.x;
-                    channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN2, 2.0f, 100.0f, 0.0f);
-                    m_particule->SetObjectFather(channel, m_object);
+                    channel = m_particle->CreateParticle(pos, speed, dim, PARTIGUN2, 2.0f, 100.0f, 0.0f);
+                    m_particle->SetObjectFather(channel, m_object);
                 }
             }
         }
@@ -178,7 +178,7 @@ bool CAutoMush::EventProcess(const Event &event)
                 speed.y = -(0.5f+Math::Rand()*0.5f);
                 dim.x = Math::Rand()*2.5f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 0.0f);
             }
         }
         else

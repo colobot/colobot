@@ -43,7 +43,7 @@ public:
     Error   StartTaskFlag(TaskFlagOrder order, int rank);
     Error   StartTaskBuild(ObjectType type);
     Error   StartTaskSearch();
-    Error   StartTaskInfo(char *name, float value, float power, bool bSend);
+    Error   StartTaskInfo(const char *name, float value, float power, bool bSend);
     Error   StartTaskTerraform();
     Error   StartTaskPen(bool bDown, int color);
     Error   StartTaskRecover();

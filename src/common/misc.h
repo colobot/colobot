@@ -231,7 +231,7 @@ extern bool CopyFileToTemp(char* filename);
 extern bool CopyFileListToTemp(char* filename, int* list, int total);
 extern void AddExt(char* filename, char* ext);
 extern void UserDir(bool bUser, char* dir);
-extern void UserDir(char* buffer, char* dir, char* def);
+extern void UserDir(char* buffer, char* dir, const char* def);
 
 extern char GetLanguageLetter();
 

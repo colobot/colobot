@@ -19,7 +19,7 @@
 #pragma once
 
 
-#include <stdio.h>
+// #include <stdio.h>
 
 #include "common/misc.h"
 #include "common/event.h"
@@ -30,10 +30,6 @@
 
 
 class CInstanceManager;
-class CD3DEngine;
-class CTerrain;
-class CWater;
-class CCamera;
 class CObject;
 class CPhysics;
 class CMotion;
@@ -44,8 +40,18 @@ class CDisplayText;
 class CScript;
 class CRobotMain;
 class CStudio;
-class CSound;
-class CParticule;
+class CSoundInterface;
+class CParticle;
+
+namespace Gfx
+{
+
+class CEngine;
+class CTerrain;
+class CWater;
+class CCamera;
+
+} /* Gfx */ 
 
 
 const int BRAINMAXSCRIPT = 10;
@@ -88,29 +94,29 @@ public:
 
     bool        IsBusy();
     void        SetActivity(bool bMode);
-    bool        RetActivity();
+    bool        GetActivity();
     bool        IsProgram();
     bool        ProgramExist(int rank);
     void        RunProgram(int rank);
     int         FreeProgram();
-    int         RetProgram();
+    int         GetProgram();
     void        StopProgram();
     void        StopTask();
 
     bool        IntroduceVirus();
     void        SetActiveVirus(bool bActive);
-    bool        RetActiveVirus();
+    bool        GetActiveVirus();
 
     void        SetScriptRun(int rank);
-    int         RetScriptRun();
+    int         GetScriptRun();
     void        SetScriptName(int rank, char *name);
-    char*       RetScriptName(int rank);
+    char*       GetScriptName(int rank);
     void        SetSoluceName(char *name);
-    char*       RetSoluceName();
+    char*       GetSoluceName();
 
     bool        ReadSoluce(char* filename);
-    bool        ReadProgram(int rank, char* filename);
-    bool        RetCompile(int rank);
+    bool        ReadProgram(int rank, const char* filename);
+    bool        GetCompile(int rank);
     bool        WriteProgram(int rank, char* filename);
     bool        ReadStack(FILE *file);
     bool        WriteStack(FILE *file);
@@ -144,13 +150,13 @@ protected:
     void        ColorFlag(int color);
 
     void        UpdateScript(CWindow *pw);
-    int         RetSelScript();
+    int         GetSelScript();
     void        BlinkScript(bool bEnable);
 
-    void        CheckInterface(CWindow *pw, EventMsg event, bool bState);
-    void        EnableInterface(CWindow *pw, EventMsg event, bool bState);
-    void        DeadInterface(CWindow *pw, EventMsg event, bool bState);
-    void        DefaultEnter(CWindow *pw, EventMsg event, bool bState=true);
+    void        CheckInterface(CWindow *pw, EventType event, bool bState);
+    void        EnableInterface(CWindow *pw, EventType event, bool bState);
+    void        DeadInterface(CWindow *pw, EventType event, bool bState);
+    void        DefaultEnter(CWindow *pw, EventType event, bool bState=true);
 
     void        TraceRecordStart();
     void        TraceRecordFrame();
@@ -159,60 +165,60 @@ protected:
     bool        TraceRecordPut(char *buffer, int max, TraceOper oper, float param);
 
 protected:
-    CInstanceManager* m_iMan;
-    CD3DEngine*     m_engine;
-    CTerrain*       m_terrain;
-    CWater*         m_water;
-    CCamera*        m_camera;
-    CObject*        m_object;
-    CPhysics*       m_physics;
-    CMotion*        m_motion;
-    CInterface*     m_interface;
-    CDisplayText*   m_displayText;
-    CRobotMain*     m_main;
-    CStudio*        m_studio;
-    CSound*         m_sound;
-    CParticule*     m_particule;
-    CTaskManager*   m_primaryTask;
-    CTaskManager*   m_secondaryTask;
+    CInstanceManager*   m_iMan;
+    Gfx::CEngine*       m_engine;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CWater*        m_water;
+    Gfx::CCamera*       m_camera;
+    CObject*            m_object;
+    CPhysics*           m_physics;
+    CMotion*            m_motion;
+    CInterface*         m_interface;
+    CDisplayText*       m_displayText;
+    CRobotMain*         m_main;
+    CStudio*            m_studio;
+    CSoundInterface*    m_sound;
+    CParticle*          m_particle;
+    CTaskManager*       m_primaryTask;
+    CTaskManager*       m_secondaryTask;
 
-    CScript*    m_script[BRAINMAXSCRIPT];
-    int         m_selScript;        // rank of the selected script
-    int         m_program;      // rank of the executed program / ​​-1
-    bool        m_bActivity;
-    bool        m_bBurn;
-    bool        m_bActiveVirus;
+    CScript*            m_script[BRAINMAXSCRIPT];
+    int                 m_selScript;        // rank of the selected script
+    int                 m_program;      // rank of the executed program / ​​-1
+    bool                m_bActivity;
+    bool                m_bBurn;
+    bool                m_bActiveVirus;
 
-    int         m_scriptRun;
-    char        m_scriptName[BRAINMAXSCRIPT][50];
-    char        m_soluceName[50];
+    int                 m_scriptRun;
+    char                m_scriptName[BRAINMAXSCRIPT][50];
+    char                m_soluceName[50];
 
-    EventMsg    m_buttonAxe;
-    EventMsg    m_manipStyle;
-    EventMsg    m_defaultEnter;
-    EventMsg    m_interfaceEvent[100];
+    EventType           m_buttonAxe;
+    EventType           m_manipStyle;
+    EventType           m_defaultEnter;
+    EventType           m_interfaceEvent[100];
 
-    CObject*    m_antTarget;
-    CObject*    m_beeBullet;
-    float       m_beeBulletSpeed;
-    Math::Vector    m_startPos;
-    float       m_time;
-    float       m_burnTime;
-    float       m_lastUpdateTime;
-    float       m_lastHumanTime;
-    float       m_lastSpiderTime;
-    float       m_lastWormTime;
-    float       m_lastBulletTime;
-    float       m_lastAlarmTime;
-    int         m_soundChannelAlarm;
-    int         m_flagColor;
+    CObject*            m_antTarget;
+    CObject*            m_beeBullet;
+    float               m_beeBulletSpeed;
+    Math::Vector        m_startPos;
+    float               m_time;
+    float               m_burnTime;
+    float               m_lastUpdateTime;
+    float               m_lastHumanTime;
+    float               m_lastSpiderTime;
+    float               m_lastWormTime;
+    float               m_lastBulletTime;
+    float               m_lastAlarmTime;
+    int                 m_soundChannelAlarm;
+    int                 m_flagColor;
 
-    bool        m_bTraceRecord;
-    TraceOper   m_traceOper;
-    Math::Vector    m_tracePos;
-    float       m_traceAngle;
-    int         m_traceColor;
-    int         m_traceRecordIndex;
-    TraceRecord* m_traceRecordBuffer;
+    bool                m_bTraceRecord;
+    TraceOper           m_traceOper;
+    Math::Vector        m_tracePos;
+    float               m_traceAngle;
+    int                 m_traceColor;
+    int                 m_traceRecordIndex;
+    TraceRecord*        m_traceRecordBuffer;
 };
 

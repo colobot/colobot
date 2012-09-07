@@ -298,7 +298,7 @@ Gfx::FontType CControl::GetFontType()
 
 // Specifies the tooltip.
 
-bool CControl::SetTooltip(char* name)
+bool CControl::SetTooltip(const char* name)
 {
     strcpy(m_tooltip, name);
     return true;

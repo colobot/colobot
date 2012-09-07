@@ -54,7 +54,7 @@ public:
 
 protected:
     void        UpdateInterface();
-    void        UpdateButton(CWindow *pw, EventMsg event, bool bBusy);
+    void        UpdateButton(CWindow *pw, Event event, bool bBusy);
 
     CObject*    SearchFret();
     bool        NearestVehicle();

@@ -39,7 +39,7 @@ CAuto::CAuto(CInstanceManager* iMan, CObject* object)
     m_object      = object;
     m_event       = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
     m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
+    m_particle   = (CParticle*)m_iMan->SearchInstance(CLASS_PARTICULE);
     m_light       = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
     m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
     m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);

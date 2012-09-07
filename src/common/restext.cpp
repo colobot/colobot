@@ -115,7 +115,7 @@ void PutKeyName(char* dst, char* src)
         {
             if ( SearchKey(src+s+5, key) )
             {
-//                res = g_engine->GetKey(key, 0); TODO
+                // res = g_engine->GetKey(key, 0); TODO
                 if ( res != 0 )
                 {
                     if ( GetResource(RES_KEY, res, name) )

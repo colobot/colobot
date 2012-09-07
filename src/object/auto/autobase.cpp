@@ -271,28 +271,28 @@ begin:
             dim.y = dim.x;
             pos = Math::Vector(42.0f, -2.0f, 17.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[0] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[0] = m_particle->CreateParticle(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(17.0f, -2.0f, 42.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[1] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[1] = m_particle->CreateParticle(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(42.0f, -2.0f, -17.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[2] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[2] = m_particle->CreateParticle(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(17.0f, -2.0f, -42.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[3] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[3] = m_particle->CreateParticle(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(-42.0f, -2.0f, 17.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[4] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[4] = m_particle->CreateParticle(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(-17.0f, -2.0f, 42.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[5] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[5] = m_particle->CreateParticle(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(-42.0f, -2.0f, -17.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[6] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[6] = m_particle->CreateParticle(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(-17.0f, -2.0f, -42.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[7] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[7] = m_particle->CreateParticle(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
 
             if ( m_soundChannel == -1 )
             {
@@ -410,7 +410,7 @@ begin:
                 dim.y = dim.x;
                 if ( dim.x >= 1.0f )
                 {
-                    m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 2.0f);
+                    m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 2.0f);
                 }
 
                 // Particles are ejected from the jet engine.
@@ -422,7 +422,7 @@ begin:
                 speed.y = -(Math::Rand()*(h+1.0f)*40.0f+(h+1.0f)*40.0f);
                 dim.x = Math::Rand()*2.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
 
                 // Black smoke from the jet engine.
                 if ( m_progress > 0.8f )
@@ -436,7 +436,7 @@ begin:
                     speed.y = 0.0f;
                     dim.x = Math::Rand()*4.0f+4.0f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 2.0f);
+                    m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 2.0f);
                 }
             }
         }
@@ -461,7 +461,7 @@ begin:
                 dim.x = Math::Rand()*10.0f+10.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
             }
 
 //?         m_camera->StartEffect(CE_CRASH, m_pos, 1.0f);
@@ -493,7 +493,7 @@ begin:
                 speed.y = 0.0f;
                 dim.x = Math::Rand()*4.0f+4.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 2.0f);
             }
         }
         else
@@ -555,7 +555,7 @@ begin:
                 dim.x = Math::Rand()*8.0f+8.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
             }
 
             m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, true);
@@ -713,7 +713,7 @@ begin:
                 dim.x = Math::Rand()*3.0f+3.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*1.0f+1.0f;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time);
+                m_particle->CreateParticle(pos, speed, dim, PARTICRASH, time);
             }
             m_sound->Play(SOUND_BOUM, m_object->RetPosition(0));
 
@@ -754,7 +754,7 @@ begin:
                 speed.y = -(Math::Rand()*10.0f+10.0f);
                 dim.x = Math::Rand()*2.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
             }
 
             m_engine->SetFogStart(m_fogStart+(0.9f-m_fogStart)*m_progress);
@@ -813,7 +813,7 @@ begin:
                 dim.y = dim.x;
                 if ( dim.x >= 1.0f )
                 {
-                    m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 2.0f);
+                    m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 2.0f);
                 }
 
                 // Particles are ejected from the reactor.
@@ -826,7 +826,7 @@ begin:
                 time = 2.0f+m_progress*12.0f;
                 dim.x = Math::Rand()*time+time;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
 
                 // Black smoke from the reactor.
                 pos = m_object->RetPosition(0);
@@ -836,7 +836,7 @@ begin:
                 speed.y = 0.0f;
                 dim.x = Math::Rand()*20.0f+20.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 10.0f, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 10.0f, 0.0f, 2.0f);
             }
         }
         else
@@ -902,7 +902,7 @@ begin:
                 dim.x = Math::Rand()*10.0f+10.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
             }
 
             m_phase    = ABP_PORTICO_WAIT2;
@@ -1003,7 +1003,7 @@ begin:
             dim.x = 4.0f+Math::Rand()*4.0f;
             dim.y = dim.x;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTIBASE, 3.0f, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, speed, dim, PARTIBASE, 3.0f, 0.0f, 0.0f);
 
             if ( m_phase == ABP_TRANSIT_MOVE )
             {
@@ -1013,7 +1013,7 @@ begin:
                 pos = Math::Vector(0.0f, 7.0f, 0.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
 
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 4.0f;
@@ -1021,60 +1021,60 @@ begin:
                 pos = Math::Vector(42.0f, 0.0f, 17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(17.0f, 0.0f, 42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(42.0f, 0.0f, -17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(17.0f, 0.0f, -42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(-42.0f, 0.0f, 17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(-17.0f, 0.0f, 42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(-42.0f, 0.0f, -17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(-17.0f, 0.0f, -42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
 
                 pos = Math::Vector(42.0f, -2.0f, 17.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[0], pos);
+                m_particle->SetPosition(m_partiChannel[0], pos);
                 pos = Math::Vector(17.0f, -2.0f, 42.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[1], pos);
+                m_particle->SetPosition(m_partiChannel[1], pos);
                 pos = Math::Vector(42.0f, -2.0f, -17.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[2], pos);
+                m_particle->SetPosition(m_partiChannel[2], pos);
                 pos = Math::Vector(17.0f, -2.0f, -42.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[3], pos);
+                m_particle->SetPosition(m_partiChannel[3], pos);
                 pos = Math::Vector(-42.0f, -2.0f, 17.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[4], pos);
+                m_particle->SetPosition(m_partiChannel[4], pos);
                 pos = Math::Vector(-17.0f, -2.0f, 42.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[5], pos);
+                m_particle->SetPosition(m_partiChannel[5], pos);
                 pos = Math::Vector(-42.0f, -2.0f, -17.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[6], pos);
+                m_particle->SetPosition(m_partiChannel[6], pos);
                 pos = Math::Vector(-17.0f, -2.0f, -42.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[7], pos);
+                m_particle->SetPosition(m_partiChannel[7], pos);
             }
         }
     }

@@ -231,7 +231,7 @@ bool CAutoHuston::EventProcess(const Event &event)
         {
             if ( m_lens[i].parti != -1 )
             {
-                m_particule->DeleteParticule(m_lens[i].parti);
+                m_particle->DeleteParticule(m_lens[i].parti);
                 m_lens[i].parti = -1;
             }
         }
@@ -241,7 +241,7 @@ bool CAutoHuston::EventProcess(const Event &event)
             {
                 dim.x = m_lens[i].dim;
                 dim.y = dim.x;
-                m_lens[i].parti = m_particule->CreateParticule(m_lens[i].pos, speed, dim, m_lens[i].type, 1.0f, 0.0f, 0.0f);
+                m_lens[i].parti = m_particle->CreateParticle(m_lens[i].pos, speed, dim, m_lens[i].type, 1.0f, 0.0f, 0.0f);
             }
         }
     }

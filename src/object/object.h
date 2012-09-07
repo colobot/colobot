@@ -34,7 +34,10 @@ class CRobotMain;
 class CBotVar;
 class CScript;
 
-
+namespace Ui
+{
+class CDisplayText;
+}
 
 
 // The father of all parts must always be the part number zero!
@@ -47,40 +50,40 @@ const int OBJECTMAXCMDLINE      = 20;
 
 enum ObjectType
 {
-    OBJECT_NULL     = 0,    // object destroyed
-    OBJECT_FIX      = 1,    // stationary scenery
-    OBJECT_PORTICO          = 2,    // gantry
-    OBJECT_BASE     = 3,    // great main base
-    OBJECT_DERRICK          = 4,    // derrick set
-    OBJECT_FACTORY          = 5,    // factory set
+    OBJECT_NULL         = 0,    // object destroyed
+    OBJECT_FIX          = 1,    // stationary scenery
+    OBJECT_PORTICO      = 2,    // gantry
+    OBJECT_BASE         = 3,    // great main base
+    OBJECT_DERRICK      = 4,    // derrick set
+    OBJECT_FACTORY      = 5,    // factory set
     OBJECT_STATION      = 6,    // recharging station
     OBJECT_CONVERT      = 7,    // converter station
     OBJECT_REPAIR       = 8,    // reparation
-    OBJECT_TOWER            = 9,    // defense tower
-    OBJECT_NEST     = 10,   // nest
-    OBJECT_RESEARCH         = 11,   // research center
-    OBJECT_RADAR            = 12,   // radar
-    OBJECT_ENERGY           = 13,   // energy factory
-    OBJECT_LABO     = 14,   // analytical laboratory for insect
+    OBJECT_TOWER        = 9,    // defense tower
+    OBJECT_NEST         = 10,   // nest
+    OBJECT_RESEARCH     = 11,   // research center
+    OBJECT_RADAR        = 12,   // radar
+    OBJECT_ENERGY       = 13,   // energy factory
+    OBJECT_LABO         = 14,   // analytical laboratory for insect
     OBJECT_NUCLEAR      = 15,   // nuclear power plant
     OBJECT_START        = 16,   // starting
-    OBJECT_END      = 17,   // finish
-    OBJECT_INFO     = 18,   // information terminal
-    OBJECT_PARA     = 19,   // lightning conductor
+    OBJECT_END          = 17,   // finish
+    OBJECT_INFO         = 18,   // information terminal
+    OBJECT_PARA         = 19,   // lightning conductor
     OBJECT_TARGET1      = 20,   // gate target
     OBJECT_TARGET2      = 21,   // center target
-    OBJECT_SAFE     = 22,   // safe
+    OBJECT_SAFE         = 22,   // safe
     OBJECT_HUSTON       = 23,   // control centre
     OBJECT_DESTROYER    = 24,   // destroyer
-    OBJECT_FRET     = 30,   // transportable
+    OBJECT_FRET         = 30,   // transportable
     OBJECT_STONE        = 31,   // stone
     OBJECT_URANIUM      = 32,   // uranium
     OBJECT_METAL        = 33,   // metal
     OBJECT_POWER        = 34,   // normal battery
-    OBJECT_ATOMIC           = 35,   // atomic battery
-    OBJECT_BULLET           = 36,   // bullet
-    OBJECT_BBOX     = 37,   // black-box
-    OBJECT_TNT      = 38,   // box of TNT
+    OBJECT_ATOMIC       = 35,   // atomic battery
+    OBJECT_BULLET       = 36,   // bullet
+    OBJECT_BBOX         = 37,   // black-box
+    OBJECT_TNT          = 38,   // box of TNT
     OBJECT_SCRAP1       = 40,   // metal waste
     OBJECT_SCRAP2       = 41,   // metal waste
     OBJECT_SCRAP3       = 42,   // metal waste
@@ -88,15 +91,15 @@ enum ObjectType
     OBJECT_SCRAP5       = 44,   // plastic waste
     OBJECT_MARKPOWER    = 50,   // mark underground energy source
     OBJECT_MARKSTONE    = 51,   // mark underground ore
-    OBJECT_MARKURANIUM      = 52,   // mark underground uranium
+    OBJECT_MARKURANIUM  = 52,   // mark underground uranium
     OBJECT_MARKKEYa     = 53,   // mark underground key
     OBJECT_MARKKEYb     = 54,   // mark underground key
     OBJECT_MARKKEYc     = 55,   // mark underground key
     OBJECT_MARKKEYd     = 56,   // mark underground key
-    OBJECT_BOMB     = 60,   // bomb
+    OBJECT_BOMB         = 60,   // bomb
     OBJECT_WINFIRE      = 61,   // fireworks
-    OBJECT_SHOW     = 62,   // shows a place
-    OBJECT_BAG      = 63,   // survival bag
+    OBJECT_SHOW         = 62,   // shows a place
+    OBJECT_BAG          = 63,   // survival bag
     OBJECT_PLANT0       = 70,   // plant 0
     OBJECT_PLANT1       = 71,   // plant 1
     OBJECT_PLANT2       = 72,   // plant 2
@@ -128,69 +131,69 @@ enum ObjectType
     OBJECT_TREE8        = 98,   // tree 8
     OBJECT_TREE9        = 99,   // tree 9
     OBJECT_MOBILEwt     = 100,  // wheel-trainer
-    OBJECT_MOBILEtt         = 101,  // track-trainer
-    OBJECT_MOBILEft         = 102,  // fly-trainer
-    OBJECT_MOBILEit         = 103,  // insect-trainer
-    OBJECT_MOBILEwa         = 110,  // wheel-arm
-    OBJECT_MOBILEta         = 111,  // track-arm
-    OBJECT_MOBILEfa         = 112,  // fly-arm
-    OBJECT_MOBILEia         = 113,  // insect-arm
-    OBJECT_MOBILEwc         = 120,  // wheel-cannon
-    OBJECT_MOBILEtc         = 121,  // track-cannon
-    OBJECT_MOBILEfc         = 122,  // fly-cannon
-    OBJECT_MOBILEic         = 123,  // insect-cannon
-    OBJECT_MOBILEwi         = 130,  // wheel-insect-cannon
-    OBJECT_MOBILEti         = 131,  // track-insect-cannon
-    OBJECT_MOBILEfi         = 132,  // fly-insect-cannon
-    OBJECT_MOBILEii         = 133,  // insect-insect-cannon
-    OBJECT_MOBILEws         = 140,  // wheel-search
-    OBJECT_MOBILEts         = 141,  // track-search
-    OBJECT_MOBILEfs         = 142,  // fly-search
-    OBJECT_MOBILEis         = 143,  // insect-search
-    OBJECT_MOBILErt         = 200,  // roller-terraform
-    OBJECT_MOBILErc         = 201,  // roller-canon
-    OBJECT_MOBILErr         = 202,  // roller-recover
-    OBJECT_MOBILErs         = 203,  // roller-shield
-    OBJECT_MOBILEsa         = 210,  // submarine
-    OBJECT_MOBILEtg         = 211,  // training target
-    OBJECT_MOBILEdr         = 212,  // robot drawing
+    OBJECT_MOBILEtt     = 101,  // track-trainer
+    OBJECT_MOBILEft     = 102,  // fly-trainer
+    OBJECT_MOBILEit     = 103,  // insect-trainer
+    OBJECT_MOBILEwa     = 110,  // wheel-arm
+    OBJECT_MOBILEta     = 111,  // track-arm
+    OBJECT_MOBILEfa     = 112,  // fly-arm
+    OBJECT_MOBILEia     = 113,  // insect-arm
+    OBJECT_MOBILEwc     = 120,  // wheel-cannon
+    OBJECT_MOBILEtc     = 121,  // track-cannon
+    OBJECT_MOBILEfc     = 122,  // fly-cannon
+    OBJECT_MOBILEic     = 123,  // insect-cannon
+    OBJECT_MOBILEwi     = 130,  // wheel-insect-cannon
+    OBJECT_MOBILEti     = 131,  // track-insect-cannon
+    OBJECT_MOBILEfi     = 132,  // fly-insect-cannon
+    OBJECT_MOBILEii     = 133,  // insect-insect-cannon
+    OBJECT_MOBILEws     = 140,  // wheel-search
+    OBJECT_MOBILEts     = 141,  // track-search
+    OBJECT_MOBILEfs     = 142,  // fly-search
+    OBJECT_MOBILEis     = 143,  // insect-search
+    OBJECT_MOBILErt     = 200,  // roller-terraform
+    OBJECT_MOBILErc     = 201,  // roller-canon
+    OBJECT_MOBILErr     = 202,  // roller-recover
+    OBJECT_MOBILErs     = 203,  // roller-shield
+    OBJECT_MOBILEsa     = 210,  // submarine
+    OBJECT_MOBILEtg     = 211,  // training target
+    OBJECT_MOBILEdr     = 212,  // robot drawing
     OBJECT_WAYPOINT     = 250,  // waypoint
     OBJECT_FLAGb        = 260,  // blue flag
     OBJECT_FLAGr        = 261,  // red flag
     OBJECT_FLAGg        = 262,  // green flag
     OBJECT_FLAGy        = 263,  // yellow flag
     OBJECT_FLAGv        = 264,  // violet flag
-    OBJECT_KEYa     = 270,  // key a
-    OBJECT_KEYb     = 271,  // key b
-    OBJECT_KEYc     = 272,  // key c
-    OBJECT_KEYd     = 273,  // key d
-    OBJECT_HUMAN            = 300,  // human
-    OBJECT_TOTO     = 301,  // toto
-    OBJECT_TECH     = 302,  // technician
+    OBJECT_KEYa         = 270,  // key a
+    OBJECT_KEYb         = 271,  // key b
+    OBJECT_KEYc         = 272,  // key c
+    OBJECT_KEYd         = 273,  // key d
+    OBJECT_HUMAN        = 300,  // human
+    OBJECT_TOTO         = 301,  // toto
+    OBJECT_TECH         = 302,  // technician
     OBJECT_BARRIER0     = 400,  // barrier
     OBJECT_BARRIER1     = 401,  // barrier
     OBJECT_BARRIER2     = 402,  // barrier
     OBJECT_BARRIER3     = 403,  // barrier
     OBJECT_BARRIER4     = 404,  // barrier
-    OBJECT_MOTHER           = 500,  // insect queen
-    OBJECT_EGG      = 501,  // egg
-    OBJECT_ANT      = 502,  // ant
-    OBJECT_SPIDER           = 503,  // spider
-    OBJECT_BEE      = 504,  // bee
-    OBJECT_WORM     = 505,  // worm
-    OBJECT_RUINmobilew1     = 600,  // ruin 1
-    OBJECT_RUINmobilew2     = 601,  // ruin 1
-    OBJECT_RUINmobilet1     = 602,  // ruin 2
-    OBJECT_RUINmobilet2     = 603,  // ruin 2
-    OBJECT_RUINmobiler1     = 604,  // ruin 3
-    OBJECT_RUINmobiler2     = 605,  // ruin 3
-    OBJECT_RUINfactory      = 606,  // ruin 4
-    OBJECT_RUINdoor         = 607,  // ruin 5
-    OBJECT_RUINsupport      = 608,  // ruin 6
-    OBJECT_RUINradar        = 609,  // ruin 7
-    OBJECT_RUINconvert      = 610,  // ruin 8
-    OBJECT_RUINbase         = 611,  // ruin 9
-    OBJECT_RUINhead         = 612,  // ruin 10
+    OBJECT_MOTHER       = 500,  // insect queen
+    OBJECT_EGG          = 501,  // egg
+    OBJECT_ANT          = 502,  // ant
+    OBJECT_SPIDER       = 503,  // spider
+    OBJECT_BEE          = 504,  // bee
+    OBJECT_WORM         = 505,  // worm
+    OBJECT_RUINmobilew1 = 600,  // ruin 1
+    OBJECT_RUINmobilew2 = 601,  // ruin 1
+    OBJECT_RUINmobilet1 = 602,  // ruin 2
+    OBJECT_RUINmobilet2 = 603,  // ruin 2
+    OBJECT_RUINmobiler1 = 604,  // ruin 3
+    OBJECT_RUINmobiler2 = 605,  // ruin 3
+    OBJECT_RUINfactory  = 606,  // ruin 4
+    OBJECT_RUINdoor     = 607,  // ruin 5
+    OBJECT_RUINsupport  = 608,  // ruin 6
+    OBJECT_RUINradar    = 609,  // ruin 7
+    OBJECT_RUINconvert  = 610,  // ruin 8
+    OBJECT_RUINbase     = 611,  // ruin 9
+    OBJECT_RUINhead     = 612,  // ruin 10
     OBJECT_TEEN0        = 620,  // toy
     OBJECT_TEEN1        = 621,  // toy
     OBJECT_TEEN2        = 622,  // toy
@@ -201,46 +204,46 @@ enum ObjectType
     OBJECT_TEEN7        = 627,  // toy
     OBJECT_TEEN8        = 628,  // toy
     OBJECT_TEEN9        = 629,  // toy
-    OBJECT_TEEN10           = 630,  // toy
-    OBJECT_TEEN11           = 631,  // toy
-    OBJECT_TEEN12           = 632,  // toy
-    OBJECT_TEEN13           = 633,  // toy
-    OBJECT_TEEN14           = 634,  // toy
-    OBJECT_TEEN15           = 635,  // toy
-    OBJECT_TEEN16           = 636,  // toy
-    OBJECT_TEEN17           = 637,  // toy
-    OBJECT_TEEN18           = 638,  // toy
-    OBJECT_TEEN19           = 639,  // toy
-    OBJECT_TEEN20           = 640,  // toy
-    OBJECT_TEEN21           = 641,  // toy
-    OBJECT_TEEN22           = 642,  // toy
-    OBJECT_TEEN23           = 643,  // toy
-    OBJECT_TEEN24           = 644,  // toy
-    OBJECT_TEEN25           = 645,  // toy
-    OBJECT_TEEN26           = 646,  // toy
-    OBJECT_TEEN27           = 647,  // toy
-    OBJECT_TEEN28           = 648,  // toy
-    OBJECT_TEEN29           = 649,  // toy
-    OBJECT_TEEN30           = 650,  // toy
-    OBJECT_TEEN31           = 651,  // toy
-    OBJECT_TEEN32           = 652,  // toy
-    OBJECT_TEEN33           = 653,  // toy
-    OBJECT_TEEN34           = 654,  // toy
-    OBJECT_TEEN35           = 655,  // toy
-    OBJECT_TEEN36           = 656,  // toy
-    OBJECT_TEEN37           = 657,  // toy
-    OBJECT_TEEN38           = 658,  // toy
-    OBJECT_TEEN39           = 659,  // toy
-    OBJECT_TEEN40           = 660,  // toy
-    OBJECT_TEEN41           = 661,  // toy
-    OBJECT_TEEN42           = 662,  // toy
+    OBJECT_TEEN10       = 630,  // toy
+    OBJECT_TEEN11       = 631,  // toy
+    OBJECT_TEEN12       = 632,  // toy
+    OBJECT_TEEN13       = 633,  // toy
+    OBJECT_TEEN14       = 634,  // toy
+    OBJECT_TEEN15       = 635,  // toy
+    OBJECT_TEEN16       = 636,  // toy
+    OBJECT_TEEN17       = 637,  // toy
+    OBJECT_TEEN18       = 638,  // toy
+    OBJECT_TEEN19       = 639,  // toy
+    OBJECT_TEEN20       = 640,  // toy
+    OBJECT_TEEN21       = 641,  // toy
+    OBJECT_TEEN22       = 642,  // toy
+    OBJECT_TEEN23       = 643,  // toy
+    OBJECT_TEEN24       = 644,  // toy
+    OBJECT_TEEN25       = 645,  // toy
+    OBJECT_TEEN26       = 646,  // toy
+    OBJECT_TEEN27       = 647,  // toy
+    OBJECT_TEEN28       = 648,  // toy
+    OBJECT_TEEN29       = 649,  // toy
+    OBJECT_TEEN30       = 650,  // toy
+    OBJECT_TEEN31       = 651,  // toy
+    OBJECT_TEEN32       = 652,  // toy
+    OBJECT_TEEN33       = 653,  // toy
+    OBJECT_TEEN34       = 654,  // toy
+    OBJECT_TEEN35       = 655,  // toy
+    OBJECT_TEEN36       = 656,  // toy
+    OBJECT_TEEN37       = 657,  // toy
+    OBJECT_TEEN38       = 658,  // toy
+    OBJECT_TEEN39       = 659,  // toy
+    OBJECT_TEEN40       = 660,  // toy
+    OBJECT_TEEN41       = 661,  // toy
+    OBJECT_TEEN42       = 662,  // toy
     OBJECT_TEEN43       = 663,  // toy
-    OBJECT_TEEN44           = 664,  // toy
-    OBJECT_TEEN45           = 665,  // toy
-    OBJECT_TEEN46           = 666,  // toy
-    OBJECT_TEEN47           = 667,  // toy
-    OBJECT_TEEN48           = 668,  // toy
-    OBJECT_TEEN49           = 669,  // toy
+    OBJECT_TEEN44       = 664,  // toy
+    OBJECT_TEEN45       = 665,  // toy
+    OBJECT_TEEN46       = 666,  // toy
+    OBJECT_TEEN47       = 667,  // toy
+    OBJECT_TEEN48       = 668,  // toy
+    OBJECT_TEEN49       = 669,  // toy
     OBJECT_QUARTZ0      = 700,  // crystal 0
     OBJECT_QUARTZ1      = 701,  // crystal 1
     OBJECT_QUARTZ2      = 702,  // crystal 2
@@ -287,72 +290,72 @@ enum ObjectType
     OBJECT_APOLLO4      = 903,  // apollo module
     OBJECT_APOLLO5      = 904,  // apollo antenna
     OBJECT_HOME1        = 910,  // home 1
-    OBJECT_MAX      = 1000,
+    OBJECT_MAX          = 1000,
 };
 
 enum ObjectMaterial
 {
-    OM_METAL        = 0,    // metal
-    OM_PLASTIC      = 1,    // plastic
-    OM_HUMAN        = 2,    // cosmonaut
-    OM_ANIMAL       = 3,    // insect
-    OM_VEGETAL      = 4,    // plant
-    OM_MINERAL      = 5,    // stone
+    OM_METAL   = 0,    // metal
+    OM_PLASTIC = 1,    // plastic
+    OM_HUMAN   = 2,    // cosmonaut
+    OM_ANIMAL  = 3,    // insect
+    OM_VEGETAL = 4,    // plant
+    OM_MINERAL = 5,    // stone
 };
 
 struct ObjectPart
 {
-    char        bUsed;
-    int     object;         // number of the object in CEngine
-    int     parentPart;     // number of father part
-    int     masterParti;        // master canal of the particle
-    Math::Vector    position;
-    Math::Vector    angle;
-    Math::Vector    zoom;
-    char        bTranslate;
-    char        bRotate;
-    char        bZoom;
-    Math::Matrix    matTranslate;
-    Math::Matrix    matRotate;
-    Math::Matrix    matTransform;
-    Math::Matrix    matWorld;
+    char         bUsed;
+    int          object;         // number of the object in CEngine
+    int          parentPart;     // number of father part
+    int          masterParti;        // master canal of the particle
+    Math::Vector position;
+    Math::Vector angle;
+    Math::Vector zoom;
+    char         bTranslate;
+    char         bRotate;
+    char         bZoom;
+    Math::Matrix matTranslate;
+    Math::Matrix matRotate;
+    Math::Matrix matTransform;
+    Math::Matrix matWorld;
 };
 
 struct Character
 {
-    float       wheelFront;     // position X of the front wheels
-    float       wheelBack;      // position X of the back wheels
-    float       wheelLeft;      // position Z of the left wheels
-    float       wheelRight;     // position Z of the right wheels
-    float       height;         // normal height on top of ground
-    Math::Vector    posPower;       // position of the battery
+    float        wheelFront;     // position X of the front wheels
+    float        wheelBack;      // position X of the back wheels
+    float        wheelLeft;      // position Z of the left wheels
+    float        wheelRight;     // position Z of the right wheels
+    float        height;         // normal height on top of ground
+    Math::Vector posPower;       // position of the battery
 };
 
 struct Info
 {
-    char        name[20];       // name of the information
-    float       value;          // value of the information
+    char  name[20];       // name of the information
+    float value;          // value of the information
 };
 
 enum ExploType
 {
-    EXPLO_BOUM      = 1,
-    EXPLO_BURN      = 2,
-    EXPLO_WATER     = 3,
+    EXPLO_BOUM  = 1,
+    EXPLO_BURN  = 2,
+    EXPLO_WATER = 3,
 };
 
 enum ResetCap
 {
-    RESET_NONE      = 0,
-    RESET_MOVE      = 1,
-    RESET_DELETE    = 2,
+    RESET_NONE   = 0,
+    RESET_MOVE   = 1,
+    RESET_DELETE = 2,
 };
 
 enum RadarFilter
 {
-    FILTER_NONE         = 0,
-    FILTER_ONLYLANDING  = 1,
-    FILTER_ONLYFLYING   = 2,
+    FILTER_NONE        = 0,
+    FILTER_ONLYLANDING = 1,
+    FILTER_ONLYFLYING  = 2,
 };
 
 
@@ -406,7 +409,7 @@ public:
     bool        CreateRuin(Math::Vector pos, float angle, float height, ObjectType type);
     bool        CreateApollo(Math::Vector pos, float angle, ObjectType type);
 
-    bool        ReadProgram(int rank, char* filename);
+    bool        ReadProgram(int rank, const char* filename);
     bool        WriteProgram(int rank, char* filename);
     bool        RunProgram(int rank);
 
@@ -479,8 +482,8 @@ public:
     void        SetResetRun(int run);
     int         GetResetRun();
 
-    void        SetMasterParticule(int part, int parti);
-    int         GetMasterParticule(int part);
+    void        SetMasterParticle(int part, int parti);
+    int         GetMasterParticle(int part);
 
     void        SetPower(CObject* power);
     CObject*    GetPower();
@@ -496,8 +499,8 @@ public:
     void        SetInfo(int rank, Info info);
     Info        GetInfo(int rank);
     int         GetInfoTotal();
-    void        SetInfoGeturn(float value);
-    float       GetInfoGeturn();
+    void        SetInfoReturn(float value);
+    float       GetInfoReturn();
     void        SetInfoUpdate(bool bUpdate);
     bool        GetInfoUpdate();
 
@@ -614,7 +617,7 @@ public:
     void        StopShowLimit();
 
     bool        IsProgram();
-    void        CreateSelectParticule();
+    void        CreateSelectParticle();
 
     void        SetRunScript(CScript* script);
     CScript*    GetRunScript();
@@ -658,25 +661,25 @@ protected:
     void        UpdateEnergyMapping();
     bool        UpdateTransformObject(int part, bool bForceUpdate);
     bool        UpdateTransformObject();
-    void        UpdateSelectParticule();
+    void        UpdateSelectParticle();
 
 protected:
-    CInstanceManager* m_iMan;
-    Gfx::CEngine*        m_engine;
-    Gfx::CLightManager*  m_lightMan;
-    Gfx::CTerrain*       m_terrain;
-    Gfx::CWater*         m_water;
-    Gfx::CCamera*        m_camera;
-    Gfx::CParticle*      m_particle;
-    CPhysics*       m_physics;
-    CBrain*         m_brain;
-    CMotion*        m_motion;
-    CAuto*          m_auto;
-    CDisplayText*   m_displayText;
-    CRobotMain*     m_main;
-    CSoundInterface* m_sound;
-    CBotVar*        m_botVar;
-    CScript*        m_runScript;
+    CInstanceManager*   m_iMan;
+    Gfx::CEngine*       m_engine;
+    Gfx::CLightManager* m_lightMan;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CWater*        m_water;
+    Gfx::CCamera*       m_camera;
+    Gfx::CParticle*     m_particle;
+    CPhysics*           m_physics;
+    CBrain*             m_brain;
+    CMotion*            m_motion;
+    CAuto*              m_auto;
+    Ui::CDisplayText*   m_displayText;
+    CRobotMain*         m_main;
+    CSoundInterface*    m_sound;
+    CBotVar*            m_botVar;
+    CScript*            m_runScript;
 
     ObjectType  m_type;             // OBJECT_*
     int     m_id;               // unique identifier
@@ -706,8 +709,8 @@ protected:
     float       m_shotTime;         // time since last shot
     bool        m_bVirusMode;           // virus activated/triggered
     float       m_virusTime;            // lifetime of the virus
-    float       m_lastVirusParticule;
-    float       m_lastParticule;
+    float       m_lastVirusParticle;
+    float       m_lastParticle;
     bool        m_bHilite;
     bool        m_bSelect;          // object selected
     bool        m_bSelectable;          // selectable object
@@ -766,7 +769,7 @@ protected:
 
     int         m_infoTotal;
     Info        m_info[OBJECTMAXINFO];
-    float       m_infoGeturn;
+    float       m_infoReturn;
     bool        m_bInfoUpdate;
 
     float       m_cmdLine[OBJECTMAXCMDLINE];

@@ -199,7 +199,7 @@ bool CAutoSafe::EventProcess(const Event &event)
                     speed.y = Math::Rand()*15.0f;
                     dim.x = Math::Rand()*6.0f+4.0f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+                    m_particle->CreateParticle(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
                 }
 
                 pos = m_object->RetPosition(0);
@@ -210,7 +210,7 @@ bool CAutoSafe::EventProcess(const Event &event)
                 speed.y = Math::Rand()*10.0f;
                 dim.x = Math::Rand()*3.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 1.0f, 0.0f, 0.0f);
 
                 for ( i=0 ; i<4 ; i++ )
                 {
@@ -220,7 +220,7 @@ bool CAutoSafe::EventProcess(const Event &event)
                     speed.y = 1.0f+Math::Rand()*1.0f;
                     dim.x = Math::Rand()*1.5f+1.5f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 0.0f);
+                    m_particle->CreateParticle(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 0.0f);
                 }
             }
         }
@@ -283,7 +283,7 @@ bool CAutoSafe::EventProcess(const Event &event)
         {
             if ( m_keyParti[i] != -1 )
             {
-                m_particule->DeleteParticule(m_keyParti[i]);
+                m_particle->DeleteParticule(m_keyParti[i]);
                 m_keyParti[i] = -1;
             }
         }
@@ -293,7 +293,7 @@ bool CAutoSafe::EventProcess(const Event &event)
             {
                 pos = m_keyPos[i];
                 pos.y += 2.2f;
-                m_keyParti[i] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f, 0.0f);
+                m_keyParti[i] = m_particle->CreateParticle(pos, speed, dim, PARTISELY, 1.0f, 0.0f, 0.0f);
             }
         }
     }
