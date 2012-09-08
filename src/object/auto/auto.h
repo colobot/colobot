@@ -24,28 +24,26 @@
 
 
 class CInstanceManager;
-class CBlitz;
-class CInterface;
 class CRobotMain;
-class CDisplayText;
-class CWindow;
 class CSoundInterface;
 
 namespace Ui {
+class CDisplayText;
 class CInterface;
+class CWindow;
 } /* Ui */ 
 
 namespace Gfx {
 
 class CEngine;
 class CParticle;
-class CLight;
+class CLightManager;
 class CTarrain;
 class CWater;
 class CCloud;
 class CCamera;
 class CPlanet;
-
+class CLightning;
 } /* Gfx */ 
 
 
@@ -82,30 +80,30 @@ public:
     virtual bool    Read(char *line);
 
 protected:
-    void        CheckInterface(CWindow *pw, EventType event, bool bState);
-    void        EnableInterface(CWindow *pw, EventType event, bool bState);
-    void        VisibleInterface(CWindow *pw, EventType event, bool bState);
-    void        DeadInterface(CWindow *pw, EventType event, bool bState);
+    void        CheckInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        EnableInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        VisibleInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        DeadInterface(Ui::CWindow *pw, EventType event, bool bState);
     void        UpdateInterface();
     void        UpdateInterface(float rTime);
 
 protected:
-    CInstanceManager* m_iMan;
-    Event*          m_event;
-    Gfx::CEngine*   m_engine;
-    Gfx::CParticle* m_particle;
-    Gfx::CLight*    m_light;
-    Gfx::CTerrain*  m_terrain;
-    Gfx::CWater*    m_water;
-    Gfx::CCloud  *  m_cloud;
-    Gfx::CPlanet *  m_planet;
-    CBlitz*         m_blitz;
-    Gfx::CCamera*   m_camera;
-    Ui::CInterface* m_interface;
-    CRobotMain*     m_main;
-    CDisplayText*   m_displayText;
-    CObject*        m_object;
-    CSound*         m_sound;
+    CInstanceManager*   m_iMan;
+    CEventQueue*        m_event;
+    Gfx::CEngine*       m_engine;
+    Gfx::CParticle*     m_particle;
+    Gfx::CLightManager* m_lightMan;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CWater*        m_water;
+    Gfx::CCloud  *      m_cloud;
+    Gfx::CPlanet *      m_planet;
+    Gfx::CLightning*    m_lightning;
+    Gfx::CCamera*       m_camera;
+    Ui::CInterface*     m_interface;
+    Ui::CDisplayText*   m_displayText;
+    CRobotMain*         m_main;
+    CObject*            m_object;
+    CSoundInterface*    m_sound;
 
     ObjectType  m_type;
     bool        m_bBusy;
