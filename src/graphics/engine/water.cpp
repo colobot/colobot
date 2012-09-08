@@ -50,7 +50,7 @@ Gfx::CWater::CWater(CInstanceManager* iMan, Gfx::CEngine* engine)
     m_level = 0.0f;
     m_draw = true;
     m_lava = false;
-    m_color = 0xffffffff;
+    m_color = Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f);
     m_subdiv = 4;
 
     m_lines.reserve(WATERLINE_PREALLOCATE_COUNT);
@@ -330,7 +330,7 @@ void Gfx::CWater::DrawSurf()
     if (m_type[0] == Gfx::WATER_NULL) return;
     if (m_lines.empty()) return;
 
-    std::vector<Gfx::VertexTex2> vertices((m_brick+2)*2, Gfx::VertexTex2());
+    std::vector<Gfx::VertexTex2> vertices((m_brickCount+2)*2, Gfx::VertexTex2());
 
     Math::Vector eye = m_engine->GetEyePt();
 
@@ -365,7 +365,7 @@ void Gfx::CWater::DrawSurf()
 
     device->SetRenderState(Gfx::RENDER_STATE_FOG, true);
 
-    float size = m_size/2.0f;
+    float size = m_brickSize/2.0f;
     float sizez = 0.0f;
     if (under) sizez = -size;
     else       sizez =  size;
@@ -436,8 +436,8 @@ bool Gfx::CWater::GetWater(int x, int y)
     x *= m_subdiv;
     y *= m_subdiv;
 
-    float size = m_size/m_subdiv;
-    float offset = m_brick*m_size/2.0f;
+    float size = m_brickSize/m_subdiv;
+    float offset = m_brickCount*m_brickSize/2.0f;
 
     for (int dy = 0; dy <= m_subdiv; dy++)
     {
@@ -463,11 +463,11 @@ void Gfx::CWater::CreateLine(int x, int y, int len)
     line.y   = y;
     line.len = len;
 
-    float  offset = m_brick*m_size/2.0f - m_size/2.0f;
+    float  offset = m_brickCount*m_brickSize/2.0f - m_brickSize/2.0f;
 
-    line.px1 = m_size* line.x - offset;
-    line.px2 = m_size*(line.x+line.len) - offset;
-    line.pz  = m_size* line.y - offset;
+    line.px1 = m_brickSize* line.x - offset;
+    line.px2 = m_brickSize*(line.x+line.len) - offset;
+    line.pz  = m_brickSize* line.y - offset;
 
     m_lines.push_back(line);
 }
@@ -495,21 +495,21 @@ void Gfx::CWater::Create(Gfx::WaterType type1, Gfx::WaterType type2, const std::
     if (m_terrain == nullptr)
         m_terrain = static_cast<CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
 
-    m_brick = m_terrain->GetBrick()*m_terrain->GetMosaic();
-    m_size  = m_terrain->GetSize();
+    m_brickCount = m_terrain->GetBrickCount()*m_terrain->GetMosaicCount();
+    m_brickSize  = m_terrain->GetBrickSize();
 
-    m_brick /= m_subdiv;
-    m_size  *= m_subdiv;
+    m_brickCount /= m_subdiv;
+    m_brickSize  *= m_subdiv;
 
     if (m_type[0] == WATER_NULL)
         return;
 
     m_lines.clear();
 
-    for (int y = 0; y < m_brick; y++)
+    for (int y = 0; y < m_brickCount; y++)
     {
         int len = 0;
-        for (int x = 0; x < m_brick; x++)
+        for (int x = 0; x < m_brickCount; x++)
         {
             if (GetWater(x,y))  // water here?
             {
@@ -530,7 +530,7 @@ void Gfx::CWater::Create(Gfx::WaterType type1, Gfx::WaterType type2, const std::
             }
         }
         if (len != 0)
-            CreateLine(m_brick - len, y, len);
+            CreateLine(m_brickCount - len, y, len);
     }
 }
 

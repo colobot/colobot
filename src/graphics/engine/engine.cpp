@@ -142,14 +142,14 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_eyeDirH           = 0.0f;
     m_eyeDirV           = 0.0f;
     m_backgroundName    = "";  // no background image
-    m_backgroundColorUp   = 0;
-    m_backgroundColorDown = 0;
-    m_backgroundCloudUp   = 0;
-    m_backgroundCloudDown = 0;
+    m_backgroundColorUp   = Gfx::Color();
+    m_backgroundColorDown = Gfx::Color();
+    m_backgroundCloudUp   = Gfx::Color();
+    m_backgroundCloudDown = Gfx::Color();
     m_backgroundFull = false;
     m_backgroundQuarter = false;
     m_overFront = true;
-    m_overColor = 0;
+    m_overColor = Gfx::Color();
     m_overMode  = ENG_RSTATE_TCOLOR_BLACK;
     m_highlightRank[0] = -1;  // empty list
     m_highlightTime = 0.0f;
@@ -2839,7 +2839,7 @@ void Gfx::CEngine::Render()
 
     m_statisticTriangle = 0;
     m_lastState = -1;
-    m_lastColor = 999;
+    m_lastColor = Gfx::Color(-1.0f);
     m_lastMaterial = Gfx::Material();
 
     m_lightMan->UpdateLights();

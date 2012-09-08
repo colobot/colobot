@@ -28,7 +28,8 @@
 
 const int CLOUD_LINE_PREALLOCATE_COUNT = 100;
 
-const int DIMEXPAND = 4;    // extension of the dimensions
+//! Extension of the bricks dimensions
+const int CLOUD_SIZE_EXPAND = 4;
 
 
 Gfx::CCloud::CCloud(CInstanceManager* iMan, Gfx::CEngine* engine)
@@ -99,10 +100,10 @@ void Gfx::CCloud::Draw()
     if (m_level == 0.0f) return;
     if (m_lines.empty()) return;
 
-    std::vector<Gfx::VertexTex2> vertices((m_brick+2)*2, Gfx::VertexTex2());
+    std::vector<Gfx::VertexTex2> vertices((m_brickCount+2)*2, Gfx::VertexTex2());
 
     float iDeep = m_engine->GetDeepView();
-    float deep = (m_brick*m_size)/2.0f;
+    float deep = (m_brickCount*m_brickSize)/2.0f;
     m_engine->SetDeepView(deep);
     m_engine->SetFocus(m_engine->GetFocus());
     m_engine->UpdateMatProj();  // increases the depth of view
@@ -132,7 +133,7 @@ void Gfx::CCloud::Draw()
     matrix.LoadIdentity();
     device->SetTransform(Gfx::TRANSFORM_WORLD, matrix);
 
-    float size = m_size/2.0f;
+    float size = m_brickSize/2.0f;
     Math::Vector eye = m_engine->GetEyePt();
     Math::Vector n = Math::Vector(0.0f, -1.0f, 0.0f);
 
@@ -195,11 +196,11 @@ void Gfx::CCloud::CreateLine(int x, int y, int len)
     line.y   = y;
     line.len = len;
 
-    float offset = m_brick*m_size/2.0f - m_size/2.0f;
+    float offset = m_brickCount*m_brickSize/2.0f - m_brickSize/2.0f;
 
-    line.px1 = m_size* line.x - offset;
-    line.px2 = m_size*(line.x+line.len) - offset;
-    line.pz  = m_size* line.y - offset;
+    line.px1 = m_brickSize* line.x - offset;
+    line.px2 = m_brickSize*(line.x+line.len) - offset;
+    line.pz  = m_brickSize* line.y - offset;
 
     m_lines.push_back(line);
 }
@@ -223,18 +224,18 @@ void Gfx::CCloud::Create(const std::string& fileName,
 
     m_wind = m_terrain->GetWind();
 
-    m_brick = m_terrain->GetBrick()*m_terrain->GetMosaic()*DIMEXPAND;
-    m_size  = m_terrain->GetSize();
+    m_brickCount = m_terrain->GetBrickCount()*m_terrain->GetMosaicCount()*CLOUD_SIZE_EXPAND;
+    m_brickSize  = m_terrain->GetBrickSize();
 
-    m_brick /= m_subdiv*DIMEXPAND;
-    m_size  *= m_subdiv*DIMEXPAND;
+    m_brickCount /= m_subdiv*CLOUD_SIZE_EXPAND;
+    m_brickSize  *= m_subdiv*CLOUD_SIZE_EXPAND;
 
     if (m_level == 0.0f)
         return;
 
     m_lines.clear();
-    for (int y = 0; y < m_brick; y++)
-        CreateLine(0, y, m_brick);
+    for (int y = 0; y < m_brickCount; y++)
+        CreateLine(0, y, m_brickCount);
 
     return;
 }

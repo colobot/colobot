@@ -188,16 +188,16 @@ protected:
     int             m_subdiv;
 
     //! Number of brick*mosaics
-    int             m_brick;
+    int             m_brickCount;
     //! Size of a item in an brick
-    float           m_size;
+    float           m_brickSize;
 
     std::vector<WaterLine>  m_lines;
     std::vector<WaterVapor> m_vapors;
 
     bool            m_draw;
     bool            m_lava;
-    long            m_color;
+    Gfx::Color      m_color;
 };
 
 }; // namespace Gfx

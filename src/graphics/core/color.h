@@ -35,7 +35,7 @@ struct Color
     float r, g, b, a;
 
     //! Constructor; default values are (0,0,0,0) = black
-    Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
+    explicit Color(float aR = 0.0f, float aG = 0.0f, float aB = 0.0f, float aA = 0.0f)
      : r(aR), g(aG), b(aB), a(aA) {}
 
     inline Gfx::Color Inverse() const

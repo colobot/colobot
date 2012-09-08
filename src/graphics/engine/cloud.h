@@ -126,9 +126,9 @@ protected:
     //! Wind speed
     Math::Vector    m_wind;
     //! Brick mosaic
-    int             m_brick;
+    int             m_brickCount;
     //! Size of a brick element
-    float           m_size;
+    float           m_brickSize;
 
     std::vector<Gfx::CloudLine> m_lines;
 

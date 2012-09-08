@@ -35,7 +35,7 @@ class CWater;
 
 
 //! Limit of slope considered a flat piece of land
-const short FLATLIMIT = (5.0f*Math::PI/180.0f);
+const short TERRAIN_FLATLIMIT = (5.0f*Math::PI/180.0f);
 
 
 /**
@@ -61,6 +61,10 @@ enum TerrainRes
     //@}
 };
 
+/**
+ * \struct BuildingLevel
+ * \brief Flat level for building
+ */
 struct BuildingLevel
 {
     Math::Vector center;
@@ -81,29 +85,43 @@ struct BuildingLevel
     }
 };
 
+/**
+ * \struct TerrainMaterial
+ * \brief Material for ground surface
+ */
 struct TerrainMaterial
 {
+    //! Unique ID
     short       id;
+    //! Texture
     std::string texName;
-    float       u,v;
+    //! UV texture coordinates
+    Math::Point uv;
+    //! Terrain hardness (defines e.g. sound of walking)
     float       hardness;
-    char        mat[4];     // up, right, down, left
+    //! IDs of neighbor materials: up, right, down, left
+    char        mat[4];
 
     TerrainMaterial()
     {
         id = 0;
-        u = v = 0.0f;
         hardness = 0.0f;
         mat[0] = mat[1] = mat[2] = mat[3] = 0;
     }
 };
 
-struct DotLevel
+/**
+ * \struct TerrainMaterialPoint
+ * \brief Material used for terrain point
+ */
+struct TerrainMaterialPoint
 {
+    //! ID of material
     short       id;
-    char        mat[4];     // up, right, down, left
+    //! IDs of neighbor materials: up, right, down, left
+    char        mat[4];
 
-    DotLevel()
+    TerrainMaterialPoint()
     {
         id = 0;
         mat[0] = mat[1] = mat[2] = mat[3] = 0;
@@ -132,17 +150,73 @@ struct FlyingLimit
  * \class CTerrain
  * \brief Terrain loader/generator and manager
  *
+ * \section Mapping Terrain mapping
+ *
  * Terrain is created from relief textures specifying a XY plane with height
  * values which are then scaled and translated into XZ surface forming the
  * terrain of game level.
  *
- * The class also facilitates creating and searching for flat space expanses
- * for construction of buildings.
+ * The basic unit of terrain is called "brick", which is two triangles
+ * forming a quad. Bricks have constant size (brick size)
+ * in X and Z direction.
+ * Points forming the bricks correspond one-to-one to relief data points
+ * (pixels in relief image).
  *
- * The terrain also specifies underground resources loaded from texture
- * and flying limits for the player.
+ * Bricks are grouped into "mosaics". Mosaic is a square containing
+ * brickCount x brickCount bricks where brickCount is an even power of 2.
+ * Each mosaic corresponds to one created engine object.
  *
- * ...
+ * The whole terrain is also a square formed by mosaicCount * mosaicCount
+ * of mosaics.
+ *
+ * Image coordinates are converted in the following way to world coordinates
+ * of brick points (Wx, Wy, Wz - world coordinates, Ix, Iy - image coordinates,
+ * Pxy - pixel value at Ix,Iy):
+ *
+ * Wx = (Ix - brickCount*mosaicCount / 2.0f) * brickSize \n
+ * Wz = (Iy - brickCount*mosaicCount / 2.0f) * brickSize \n
+ * Wy = (Pxy / 255.0f) * reliefScale
+ *
+ * To create and initialize a terrain, you must call Generate() as the first function,
+ * setting the number of bricks, mosaics etc.
+ *
+ * \section Materials Materials and textures
+ *
+ * The terrain can be textured in two ways:
+ *  - by applying texture index table
+ *  - by specifying one or more "materials" that cover "material points"
+ *
+ * Textures are applied to subdivisions of mosaics (groups of bricks of size
+ * brickCount / textureSubdivCount).
+ *
+ * \subsection TextureIndexes Texture indexes
+ *
+ * Texture indexes specify the texture for each textured point by concatenating
+ * base name of texture, the index number and texture extension.
+ *
+ * Texture indexes are specified directly in InitTextures().
+ *
+ * \subsection TerrainMaterials Terrain materials
+ *
+ * Terrain materials are more sophisticated system. Each material is a texture,
+ * applied to one area, but specifying also the textures to use on surrounding areas:
+ * left, right, bottom and top.
+ *
+ * You specify one or more terrain materials in AddMaterial() function.
+ * The function will add a material for given circle on the ground, with some
+ * randomized matching of supplied materials and sophisticated logic for ensuring
+ * that borders between neighboring materials follow the specified rules.
+ *
+ * \subsection BuildingLevels Other features
+ *
+ * Terrain can have specified building levels - flat space expanses,
+ * where relief data is specifically adjusted to level space to allow
+ * construction of buildings.
+ *
+ * Undergound resources can be supplied by loading them from image like relief data.
+ *
+ * Terrain also specifies flying limits for player: one global level and possible
+ * additional spherical restrictions.
  */
 class CTerrain
 {
@@ -151,25 +225,32 @@ public:
     ~CTerrain();
 
     //! Generates a new flat terrain
-    bool        Generate(int mosaic, int brickPow2, float size, float vision, int depth, float hardness);
+    bool        Generate(int mosaicCount, int brickCountPow2, float brickSize, float vision, int depth, float hardness);
+
     //! Initializes the names of textures to use for the land
     bool        InitTextures(const std::string& baseName, int* table, int dx, int dy);
-    //! Empties level
-    void        LevelFlush();
-    //! Initializes the names of textures to use for the land
-    void        LevelMaterial(int id, const std::string& baseName, float u, float v, int up, int right, int down, int left, float hardness);
-    //! Initializes all the ground with a material
-    bool        LevelInit(int id);
+
+    //! Clears all terrain materials
+    void        FlushMaterials();
+    //! Adds a terrain material the names of textures to use for the land
+    void        AddMaterial(int id, const std::string& baseName, const Math::Point& uv,
+                            int up, int right, int down, int left, float hardness);
+    //! Initializes all the ground with one material
+    bool        InitMaterials(int id);
     //! Generates a level in the terrain
-    bool        LevelGenerate(int *id, float min, float max, float slope, float freq, Math::Vector center, float radius);
-    //! Initializes a completely flat terrain
+    bool        GenerateMaterials(int *id, float min, float max, float slope, float freq, Math::Vector center, float radius);
+
+    //! Clears the relief data to zero
     void        FlushRelief();
-    //! Load relief from a PNG file
-    bool        ReliefFromPNG(const std::string& filename, float scaleRelief, bool adjustBorder);
-    //! Load resources from a PNG file
-    bool        ResFromPNG(const std::string& filename);
+    //! Load relief from image
+    bool        LoadRelief(const std::string& fileName, float scaleRelief, bool adjustBorder);
+
+    //! Load resources from image
+    bool        LoadResources(const std::string& fileName);
+
     //! Creates all objects of the terrain within the 3D engine
-    bool        CreateObjects(bool multiRes);
+    bool        CreateObjects();
+
     //! Modifies the terrain's relief
     bool        Terraform(const Math::Vector& p1, const Math::Vector& p2, float height);
 
@@ -179,24 +260,24 @@ public:
     Math::Vector GetWind();
     //@}
 
-    //! Gives the exact slope of the terrain of a place given
+    //! Gives the exact slope of the terrain at 2D (XZ) position
     float       GetFineSlope(const Math::Vector& pos);
-    //! Gives the approximate slope of the terrain of a specific location
+    //! Gives the approximate slope of the terrain at 2D (XZ) position
     float       GetCoarseSlope(const Math::Vector& pos);
-    //! Gives the normal vector at the position p (x,-,z) of the ground
+    //! Gives the normal vector at 2D (XZ) position
     bool        GetNormal(Math::Vector& n, const Math::Vector &p);
-    //! returns the height of the ground
-    float       GetFloorLevel(const Math::Vector& p, bool brut=false, bool water=false);
-    //! Returns the height to the ground
-    float       GetFloorHeight(const Math::Vector& p, bool brut=false, bool water=false);
-    //! Modifies the coordinate "y" of point "p" to rest on the ground floor
-    bool        MoveOnFloor(Math::Vector& p, bool brut=false, bool water=false);
-    //! Modifies a coordinate so that it is on the ground
-    bool        ValidPosition(Math::Vector& p, float marging);
-    //! Returns the resource type available underground
-    Gfx::TerrainRes GetResource(const Math::Vector& p);
-    //! Adjusts a position so that it does not exceed the boundaries
-    void        LimitPos(Math::Vector &pos);
+    //! Returns the height of the ground level at 2D (XZ) position
+    float       GetFloorLevel(const Math::Vector& pos, bool brut=false, bool water=false);
+    //! Returns the distance to the ground level from 3D position
+    float       GetHeightToFloor(const Math::Vector& pos, bool brut=false, bool water=false);
+    //! Modifies the Y coordinate of 3D position to rest on the ground floor
+    bool        AdjustToFloor(Math::Vector& pos, bool brut=false, bool water=false);
+    //! Adjusts 3D position so that it is within standard terrain boundaries
+    bool        AdjustToStandardBounds(Math::Vector &pos);
+    //! Adjusts 3D position so that it is within terrain boundaries and the given margin
+    bool        AdjustToBounds(Math::Vector& pos, float margin);
+    //! Returns the resource type available underground at 2D (XZ) position
+    Gfx::TerrainRes GetResource(const Math::Vector& pos);
 
     //! Empty the table of elevations
     void        FlushBuildingLevel();
@@ -207,16 +288,21 @@ public:
     //! Removes the elevation for a building when it was destroyed
     bool        DeleteBuildingLevel(Math::Vector center);
     //! Returns the influence factor whether a position is on a possible rise
-    float       GetBuildingFactor(const Math::Vector& p);
-    float       GetHardness(const Math::Vector& p);
+    float       GetBuildingFactor(const Math::Vector& pos);
+    //! Returns the hardness of the ground in a given place
+    float       GetHardness(const Math::Vector& pos);
 
-    int         GetMosaic();
-    int         GetBrick();
-    float       GetSize();
-    float       GetScaleRelief();
+    //! Returns number of mosaics
+    int         GetMosaicCount();
+    //! Returns number of bricks in mosaic
+    int         GetBrickCount();
+    //! Returns brick size
+    float       GetBrickSize();
+    //! Returns the vertical scale of relief
+    float       GetReliefScale();
 
     //! Shows the flat areas on the ground
-    void        GroundFlat(Math::Vector pos);
+    void        ShowFlatGround(Math::Vector pos);
     //! Calculates the radius of the largest flat area available
     float       GetFlatZoneRadius(Math::Vector center, float max);
 
@@ -234,7 +320,7 @@ public:
 
 protected:
     //! Adds a point of elevation in the buffer of relief
-    bool        ReliefAddDot(Math::Vector pos, float scaleRelief);
+    bool        AddReliefPoint(Math::Vector pos, float scaleRelief);
     //! Adjust the edges of each mosaic to be compatible with all lower resolutions
     void        AdjustRelief();
     //! Calculates a vector of the terrain
@@ -244,28 +330,28 @@ protected:
     //! Creates all objects of a mosaic
     bool        CreateMosaic(int ox, int oy, int step, int objRank, const Gfx::Material& mat, float min, float max);
     //! Creates all objects in a mesh square ground
-    bool        CreateSquare(bool multiRes, int x, int y);
+    bool        CreateSquare(int x, int y);
 
-    //! Seeks a materials based on theirs identifier
-    Gfx::TerrainMaterial* LevelSearchMat(int id);
-    //! Chooses texture to use for a given square
-    void        LevelTextureName(int x, int y, std::string& name, Math::Point &uv);
+    //! Seeks a material based on its ID
+    Gfx::TerrainMaterial* FindMaterial(int id);
+    //! Seeks a material based on neighbor values
+    int         FindMaterialByNeighbors(char *mat);
+    //! Returns the texture name and UV coords to use for a given square
+    void        GetTexture(int x, int y, std::string& name, Math::Point& uv);
     //! Returns the height of the terrain
-    float       LevelGetHeight(int x, int y);
+    float       GetHeight(int x, int y);
     //! Decide whether a point is using the materials
-    bool        LevelGetDot(int x, int y, float min, float max, float slope);
-    //! Seeks if material exists
-    int         LevelTestMat(char *mat);
+    bool        CheckMaterialPoint(int x, int y, float min, float max, float slope);
     //! Modifies the state of a point and its four neighbors, without testing if possible
-    void        LevelSetDot(int x, int y, int id, char *mat);
-    //! Tests if a material can give a place, according to its four neighbors. If yes, puts the point.
-    bool        LevelIfDot(int x, int y, int id, char *mat);
+    void        SetMaterialPoint(int x, int y, int id, char *mat);
     //! Modifies the state of a point
-    bool        LevelPutDot(int x, int y, int id);
-    //! Initializes a table with empty levels
-    void        LevelOpenTable();
-    //! Closes the level table
-    void        LevelCloseTable();
+    bool        ChangeMaterialPoint(int x, int y, int id);
+    //! Tests if a material can give a place, according to its four neighbors. If yes, puts the point.
+    bool        CondChangeMaterialPoint(int x, int y, int id, char *mat);
+    //! Initializes material points array
+    void        InitMaterialPoints();
+    //! Clears the material points
+    void        FlushMaterialPoints();
 
     //! Adjusts a position according to a possible rise
     void        AdjustBuildingLevel(Math::Vector &p);
@@ -275,39 +361,51 @@ protected:
     CEngine*        m_engine;
     CWater*         m_water;
 
-    //! Number of mosaics
-    int             m_mosaic;
-    //! Number of bricks per mosaics
-    int             m_brick;
-    int             m_levelDotSize;
-    //! Size of an item in a brick
-    float           m_size;
-    //! Vision before a change of resolution
-    float           m_vision;
-    //! Table of the relief
+    //! Relief data points
     std::vector<float> m_relief;
-    //! Table of textures
-    std::vector<int> m_texture;
-    //! Table of rows of objects
-    std::vector<int> m_objRank;
-    //! Table of resources
+    //! Resources data
     std::vector<unsigned char> m_resources;
-    bool            m_multiText;
-    bool            m_levelText;
-    //! Scale of the mapping
-    float           m_scaleMapping;
+    //! Texture indices
+    std::vector<int> m_textures;
+    //! Object ranks for mosaic objects
+    std::vector<int> m_objRanks;
+
+    //! Number of mosaics (along one dimension)
+    int             m_mosaicCount;
+    //! Number of bricks per mosaic (along one dimension)
+    int             m_brickCount;
+    //! Number of terrain material dots (along one dimension)
+    int             m_materialPointCount;
+    //! Size of single brick (along X and Z axis)
+    float           m_brickSize;
+    //! Vertical (relief) scale
     float           m_scaleRelief;
-    int             m_subdivMapping;
+    //! Subdivision of material points in mosaic
+    int             m_textureSubdivCount;
     //! Number of different resolutions (1,2,3,4)
     int             m_depth;
-    std::string     m_texBaseName;
-    std::string     m_texBaseExt;
-    float           m_defHardness;
+    //! Scale of texture mapping
+    float           m_textureScale;
+    //! Vision before a change of resolution
+    float           m_vision;
 
-    std::vector<TerrainMaterial> m_levelMats;
-    std::vector<Gfx::DotLevel>  m_levelDots;
-    int             m_levelMatMax;
-    int             m_levelID;
+    //! Base name for single texture
+    std::string     m_texBaseName;
+    //! Extension for single texture
+    std::string     m_texBaseExt;
+    //! Default hardness for level material
+    float           m_defaultHardness;
+
+    //! True if using terrain material mapping
+    bool m_useMaterials;
+    //! Terrain materials
+    std::vector<Gfx::TerrainMaterial> m_materials;
+    //! Material for terrain points
+    std::vector<Gfx::TerrainMaterialPoint>  m_materialPoints;
+    //! Maximum level ID (no ID is >= to this)
+    int             m_maxMaterialID;
+    //! Internal counter for auto generation of material IDs
+    int             m_materialAutoID;
 
     std::vector<Gfx::BuildingLevel> m_buildingLevels;
 

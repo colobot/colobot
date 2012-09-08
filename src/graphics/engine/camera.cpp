@@ -1272,14 +1272,14 @@ bool Gfx::CCamera::EventFrameFree(const Event &event)
             m_heightEye -= event.rTime * factor * m_speed;
     }
 
-    m_terrain->ValidPosition(m_eyePt, 10.0f);
+    m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
-    if (m_terrain->MoveOnFloor(m_eyePt, true))
+    if (m_terrain->AdjustToFloor(m_eyePt, true))
     {
         m_eyePt.y += m_heightEye;
 
         Math::Vector pos = m_eyePt;
-        if (m_terrain->MoveOnFloor(pos, true))
+        if (m_terrain->AdjustToFloor(pos, true))
         {
             pos.y -= 2.0f;
             if (m_eyePt.y < pos.y)
@@ -1290,7 +1290,7 @@ bool Gfx::CCamera::EventFrameFree(const Event &event)
 
     Math::Vector lookatPt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
 
-    if (m_terrain->MoveOnFloor(lookatPt, true))
+    if (m_terrain->AdjustToFloor(lookatPt, true))
         lookatPt.y += m_heightLookat;
 
     SetViewTime(m_eyePt, lookatPt, event.rTime);
@@ -1314,14 +1314,14 @@ bool Gfx::CCamera::EventFrameEdit(const Event &event)
         m_fixDirectionH = Math::NormAngle(m_fixDirectionH);
     }
 
-    m_terrain->ValidPosition(m_eyePt, 10.0f);
+    m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
-    if (m_terrain->MoveOnFloor(m_eyePt, false))
+    if (m_terrain->AdjustToFloor(m_eyePt, false))
     {
         m_eyePt.y += m_editHeight;
 
         Math::Vector pos = m_eyePt;
-        if (m_terrain->MoveOnFloor(pos, false))
+        if (m_terrain->AdjustToFloor(pos, false))
         {
             pos.y += 2.0f;
             if (m_eyePt.y < pos.y)
@@ -1332,7 +1332,7 @@ bool Gfx::CCamera::EventFrameEdit(const Event &event)
 
     Math::Vector lookatPt = Math::LookatPoint( m_eyePt, m_directionH, m_directionV, 50.0f );
 
-    if ( m_terrain->MoveOnFloor(lookatPt, true))
+    if ( m_terrain->AdjustToFloor(lookatPt, true))
         lookatPt.y += m_heightLookat;
 
     SetViewTime(m_eyePt, lookatPt, event.rTime);
@@ -1483,7 +1483,7 @@ bool Gfx::CCamera::EventFrameBack(const Event &event)
         if ( (physics != NULL) && physics->GetLand() )  // ground?
         {
             Math::Vector pos = lookatPt + (lookatPt - m_eyePt);
-            float floor = m_terrain->GetFloorHeight(pos) - 4.0f;
+            float floor = m_terrain->GetHeightToFloor(pos) - 4.0f;
             if (floor > 0.0f)
                 m_eyePt.y += floor;  // shows the descent in front
         }
@@ -1551,14 +1551,14 @@ bool Gfx::CCamera::EventFrameExplo(const Event &event)
     if (m_mouseDirH != 0.0f)
         m_directionH -= m_mouseDirH * event.rTime * 0.7f * m_speed;
 
-    m_terrain->ValidPosition(m_eyePt, 10.0f);
+    m_terrain->AdjustToBounds(m_eyePt, 10.0f);
 
-    if ( m_terrain->MoveOnFloor(m_eyePt, false) )
+    if ( m_terrain->AdjustToFloor(m_eyePt, false) )
     {
         m_eyePt.y += m_heightEye;
 
         Math::Vector pos = m_eyePt;
-        if ( m_terrain->MoveOnFloor(pos, false) )
+        if ( m_terrain->AdjustToFloor(pos, false) )
         {
             pos.y += 2.0f;
             if ( m_eyePt.y < pos.y )
@@ -1569,7 +1569,7 @@ bool Gfx::CCamera::EventFrameExplo(const Event &event)
 
     Math::Vector lookatPt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, 50.0f);
 
-    if (m_terrain->MoveOnFloor(lookatPt, true))
+    if (m_terrain->AdjustToFloor(lookatPt, true))
         lookatPt.y += m_heightLookat;
 
     SetViewTime(m_eyePt, lookatPt, event.rTime);
@@ -1680,7 +1680,7 @@ Math::Vector Gfx::CCamera::ExcludeTerrain(Math::Vector eye, Math::Vector lookat,
                                           float &angleH, float &angleV)
 {
     Math::Vector pos = eye;
-    if (m_terrain->MoveOnFloor(pos))
+    if (m_terrain->AdjustToFloor(pos))
     {
         float dist = Math::DistanceProjected(lookat, pos);
         pos.y += 2.0f+dist*0.1f;

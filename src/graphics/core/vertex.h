@@ -47,9 +47,9 @@ struct Vertex
     Math::Vector normal;
     Math::Point texCoord;
 
-    Vertex(Math::Vector aCoord = Math::Vector(),
-           Math::Vector aNormal = Math::Vector(),
-           Math::Point aTexCoord = Math::Point())
+    explicit Vertex(Math::Vector aCoord = Math::Vector(),
+                    Math::Vector aNormal = Math::Vector(),
+                    Math::Point aTexCoord = Math::Point())
         : coord(aCoord), normal(aNormal), texCoord(aTexCoord) {}
 
 
@@ -83,10 +83,10 @@ struct VertexCol
     Gfx::Color specular;
     Math::Point texCoord;
 
-    VertexCol(Math::Vector aCoord = Math::Vector(),
-              Gfx::Color aColor = Gfx::Color(),
-              Gfx::Color aSpecular = Gfx::Color(),
-              Math::Point aTexCoord = Math::Point())
+    explicit VertexCol(Math::Vector aCoord = Math::Vector(),
+                       Gfx::Color aColor = Gfx::Color(),
+                       Gfx::Color aSpecular = Gfx::Color(),
+                       Math::Point aTexCoord = Math::Point())
         : coord(aCoord), color(aColor), specular(aSpecular), texCoord(aTexCoord) {}
 
     //! Returns a string "(c: [...], col: [...], sp: [...], tc: [...])"
@@ -115,10 +115,10 @@ struct VertexTex2
     Math::Point texCoord;
     Math::Point texCoord2;
 
-    VertexTex2(Math::Vector aCoord = Math::Vector(),
-               Math::Vector aNormal = Math::Vector(),
-               Math::Point aTexCoord = Math::Point(),
-               Math::Point aTexCoord2 = Math::Point())
+    explicit VertexTex2(Math::Vector aCoord = Math::Vector(),
+                        Math::Vector aNormal = Math::Vector(),
+                        Math::Point aTexCoord = Math::Point(),
+                        Math::Point aTexCoord2 = Math::Point())
         : coord(aCoord), normal(aNormal), texCoord(aTexCoord), texCoord2(aTexCoord2) {}
 
     //! Sets the fields from Gfx::Vertex with texCoord2 = (0,0)
