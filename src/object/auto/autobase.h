@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -73,7 +74,7 @@ public:
     void        Start(int param);
     bool        EventProcess(const Event &event);
     bool        Abort();
-    Error       RetError();
+    Error       GetError();
 
     bool        CreateInterface(bool bSelect);
 
@@ -90,8 +91,8 @@ protected:
     bool            m_bOpen;
     float           m_progress;
     float           m_speed;
-    float           m_lastParticule;
-    float           m_lastMotorParticule;
+    float           m_lastParticle;
+    float           m_lastMotorParticle;
     float           m_fogStart;
     float           m_deepView;
     Math::Vector    m_pos;
@@ -102,8 +103,8 @@ protected:
     int             m_soundChannel;
     int             m_partiChannel[8];
 
-    char            m_bgBack[100];
-    char            m_bgName[100];
+    std::string     m_bgBack;
+    std::string     m_bgName;
     Gfx::Color      m_bgUp;
     Gfx::Color      m_bgDown;
     Gfx::Color      m_bgCloudUp;
