@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,7 @@
 #include "object/auto/autoflag.h"
 
 #include "math/geometry.h"
-#include "old/terrain.h"
+#include "graphics/engine/terrain.h"
 
 
 
@@ -68,7 +69,7 @@ void CAutoFlag::Init()
     m_param = 0;
     m_progress = 0.0f;
 
-    wind = m_terrain->RetWind();
+    wind = m_terrain->GetWind();
     angle = Math::RotateAngle(wind.x, -wind.z);
     m_object->SetAngleY(0, angle);  // directs the flag in the wind
 
@@ -98,7 +99,7 @@ bool CAutoFlag::EventProcess(const Event &event)
     CAuto::EventProcess(event);
 
 #if ADJUST_ANGLE
-    if ( event.event == EVENT_KEYDOWN )
+    if ( event.type == EVENT_KEYDOWN )
     {
         if ( event.param == 'E' )  g_flag1 += 0.1f;
         if ( event.param == 'D' )  g_flag1 -= 0.1f;
@@ -109,8 +110,8 @@ bool CAutoFlag::EventProcess(const Event &event)
     }
 #endif
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     if ( m_param == 1 )  // shakes?
     {
@@ -152,9 +153,9 @@ bool CAutoFlag::EventProcess(const Event &event)
 }
 
 
-// Returns an error due the state of the automation
+// Geturns an error due the state of the automation
 
-Error CAutoFlag::RetError()
+Error CAutoFlag::GetError()
 {
     return ERR_OK;
 }

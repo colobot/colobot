@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -19,8 +20,8 @@
 
 #include "object/auto/autokid.h"
 
-#include "old/particule.h"
-#include "old/water.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/water.h"
 
 
 
@@ -62,18 +63,18 @@ void CAutoKid::Init()
 
     m_speed = 1.0f/1.0f;
     m_progress = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     if ( m_type == OBJECT_TEEN36 )  // trunk ?
     {
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
         m_speed = 1.0f/(1.0f+(Math::Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f));
         m_progress = Math::Mod(pos.x/10.0f, 1.0f);
     }
 
     if ( m_type == OBJECT_TEEN37 )  // boat?
     {
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
         m_speed = 1.0f/(1.0f+(Math::Mod(pos.x/10.0f-0.5f, 1.0f)*0.2f))*2.5f;
         m_progress = Math::Mod(pos.x/10.0f, 1.0f);
     }
@@ -82,7 +83,7 @@ void CAutoKid::Init()
     {
         if ( m_soundChannel == -1 )
         {
-//?         m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.5f, true);
+//?         m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 1.0f, 0.5f, true);
             m_bSilent = false;
         }
     }
@@ -100,7 +101,7 @@ bool CAutoKid::EventProcess(const Event &event)
 
     if ( m_soundChannel != -1 )
     {
-        if ( m_engine->RetPause() )
+        if ( m_engine->GetPause() )
         {
             if ( !m_bSilent )
             {
@@ -118,8 +119,8 @@ bool CAutoKid::EventProcess(const Event &event)
         }
     }
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
 
@@ -135,12 +136,12 @@ bool CAutoKid::EventProcess(const Event &event)
         vib.z = sinf(m_progress*0.5f)*0.05f;
         m_object->SetCirVibration(vib);
 
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.15f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.15f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
-            pos = m_object->RetPosition(0);
-            pos.y = m_water->RetLevel()+1.0f;
+            pos = m_object->GetPosition(0);
+            pos.y = m_water->GetLevel()+1.0f;
             pos.x += (Math::Rand()-0.5f)*50.0f;
             pos.z += (Math::Rand()-0.5f)*50.0f;
             speed.y = 0.0f;
@@ -148,7 +149,7 @@ bool CAutoKid::EventProcess(const Event &event)
             speed.z = 0.0f;
             dim.x = 50.0f;
             dim.y = dim.x;
-            m_particle->CreateParticle(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLIC, 3.0f, 0.0f, 0.0f);
         }
     }
 
@@ -164,12 +165,12 @@ bool CAutoKid::EventProcess(const Event &event)
         vib.z = sinf(m_progress*0.5f)*0.15f;
         m_object->SetCirVibration(vib);
 
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.15f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.15f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
-            pos = m_object->RetPosition(0);
-            pos.y = m_water->RetLevel()+1.0f;
+            pos = m_object->GetPosition(0);
+            pos.y = m_water->GetLevel()+1.0f;
             pos.x += (Math::Rand()-0.5f)*20.0f;
             pos.z += (Math::Rand()-0.5f)*20.0f;
             speed.y = 0.0f;
@@ -177,7 +178,7 @@ bool CAutoKid::EventProcess(const Event &event)
             speed.z = 0.0f;
             dim.x = 20.0f;
             dim.y = dim.x;
-            m_particle->CreateParticle(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLIC, 3.0f, 0.0f, 0.0f);
         }
     }
 
@@ -191,9 +192,9 @@ bool CAutoKid::EventProcess(const Event &event)
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoKid::RetError()
+Error CAutoKid::GetError()
 {
     return ERR_OK;
 }

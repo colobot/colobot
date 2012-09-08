@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -90,8 +91,8 @@ void CAutoInfo::Start(int param)
         m_speed = 1.0f/2.0f;
     }
 
-    m_lastParticule = 0;
-    m_goal = m_object->RetPosition(0);
+    m_lastParticle = 0;
+    m_goal = m_object->GetPosition(0);
 
     if ( m_phase == AIP_EMETTE )
     {
@@ -100,7 +101,7 @@ void CAutoInfo::Start(int param)
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
         dim.x = 30.0f;
         dim.y = dim.x;
-        m_particle->CreateParticle(pos, speed, dim, PARTISPHERE4, 1.5f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE4, 1.5f, 0.0f, 0.0f);
 
         m_sound->Play(SOUND_LABO, pos, 1.0f, 2.0f);
     }
@@ -111,7 +112,7 @@ void CAutoInfo::Start(int param)
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
         dim.x = 50.0f;
         dim.y = dim.x;
-        m_particle->CreateParticle(pos, speed, dim, PARTISPHERE6, 1.5f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE6, 1.5f, 0.0f, 0.0f);
 
         m_sound->Play(SOUND_LABO, pos, 1.0f, 2.0f);
     }
@@ -133,18 +134,18 @@ bool CAutoInfo::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
             m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
-            angle = m_object->RetAngleY(1);
+            angle = m_object->GetAngleY(1);
             angle += Math::Rand()*0.3f;
             m_object->SetAngleY(1, angle);
 
@@ -170,7 +171,7 @@ bool CAutoInfo::EventProcess(const Event &event)
         }
         else
         {
-            if ( m_object->RetInfoUpdate() )
+            if ( m_object->GetInfoUpdate() )
             {
                 UpdateList();  // updates the list
             }
@@ -184,9 +185,9 @@ bool CAutoInfo::EventProcess(const Event &event)
     if ( m_phase == AIP_EMETTE )  // instruction "receive" ?
     {
         if ( m_progress < 0.5f &&
-             m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+             m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             for ( i=0 ; i<4 ; i++ )
             {
@@ -199,7 +200,7 @@ bool CAutoInfo::EventProcess(const Event &event)
                 dim.x = 0.6f;
                 dim.y = dim.x;
                 duration = Math::Rand()*0.5f+0.5f;
-                m_particle->CreateTrack(pos, speed, dim, PARTITRACK6,
+                m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK6,
                                          duration, 0.0f,
                                          duration*0.9f, 0.7f);
             }
@@ -230,9 +231,9 @@ bool CAutoInfo::EventProcess(const Event &event)
     if ( m_phase == AIP_RECEIVE )  // instruction "send" ?
     {
         if ( m_progress < 0.5f &&
-             m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+             m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             for ( i=0 ; i<4 ; i++ )
             {
@@ -247,7 +248,7 @@ bool CAutoInfo::EventProcess(const Event &event)
                 dim.x = 0.6f;
                 dim.y = dim.x;
                 duration = Math::Rand()*0.5f+0.5f;
-                m_particle->CreateTrack(pos, speed, dim, PARTITRACK6,
+                m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK6,
                                          duration, 0.0f,
                                          duration*0.9f, 0.7f);
             }
@@ -278,9 +279,9 @@ bool CAutoInfo::EventProcess(const Event &event)
     if ( m_phase == AIP_ERROR )
     {
         if ( m_progress < 0.5f &&
-             m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+             m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             pos = m_goal;
             speed.x = (Math::Rand()-0.5f)*5.0f;
@@ -289,7 +290,7 @@ bool CAutoInfo::EventProcess(const Event &event)
             dim.x = 5.0f+Math::Rand()*5.0f;
             dim.y = dim.x;
             duration = Math::Rand()*0.5f+0.5f;
-            m_particle->CreateParticle(pos, speed, dim, PARTISMOKE1, 4.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE1, 4.0f);
         }
 
         if ( m_progress < 1.0f )
@@ -327,7 +328,7 @@ bool CAutoInfo::EventProcess(const Event &event)
         }
     }
 
-    angle = m_object->RetAngleY(1);
+    angle = m_object->GetAngleY(1);
     angle += rTime*0.5f;
     m_object->SetAngleY(1, angle);
 
@@ -339,11 +340,11 @@ bool CAutoInfo::EventProcess(const Event &event)
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoInfo::RetError()
+Error CAutoInfo::GetError()
 {
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
@@ -356,8 +357,8 @@ Error CAutoInfo::RetError()
 
 bool CAutoInfo::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
-    CList*      pl;
+    Ui::CWindow*    pw;
+    Ui::CList*      pl;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -365,7 +366,7 @@ bool CAutoInfo::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -403,31 +404,31 @@ void CAutoInfo::UpdateInterface(float rTime)
 
 void CAutoInfo::UpdateList()
 {
-    CWindow*    pw;
-    CList*      pl;
+    Ui::CWindow*    pw;
+    Ui::CList*      pl;
     Info        info;
     int         total, i;
     char        text[100];
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-    if ( pw == 0 )  return;
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == nullptr )  return;
 
-    pl = (CList*)pw->SearchControl(EVENT_OBJECT_GINFO);
-    if ( pl == 0 )  return;
+    pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_GINFO));
+    if ( pl == nullptr )  return;
 
     pl->Flush();
-    total = m_object->RetInfoTotal();
+    total = m_object->GetInfoTotal();
     if ( total == 0 )
     {
-        pl->ClearState(STATE_ENABLE);
+        pl->ClearState(Ui::STATE_ENABLE);
     }
     else
     {
-        pl->SetState(STATE_ENABLE);
+        pl->SetState(Ui::STATE_ENABLE);
 
         for ( i=0 ; i<total ; i++ )
         {
-            info = m_object->RetInfo(i);
+            info = m_object->GetInfo(i);
             sprintf(text, "%s = %.2f", info.name, info.value);
             pl->SetName(i, text);
         }
@@ -440,28 +441,28 @@ void CAutoInfo::UpdateList()
 
 void CAutoInfo::UpdateListVirus()
 {
-    CWindow*    pw;
-    CList*      pl;
+    Ui::CWindow*    pw;
+    Ui::CList*      pl;
     int         i, j, max;
     char        text[100];
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    pl = (CList*)pw->SearchControl(EVENT_OBJECT_GINFO);
+    pl = static_cast< Ui::CList* >(pw->SearchControl(EVENT_OBJECT_GINFO));
     if ( pl == 0 )  return;
 
-    pl->SetState(STATE_ENABLE);
+    pl->SetState(Ui::STATE_ENABLE);
 
     pl->Flush();
     for ( i=0 ; i<4 ; i++ )
     {
-        max = (int)(2.0f+Math::Rand()*10.0f);
+        max = static_cast< int >(2.0f+Math::Rand()*10.0f);
         for ( j=0 ; j<max ; j++ )
         {
             do
             {
-                text[j] = ' '+(int)(Math::Rand()*94.0f);
+                text[j] = ' '+static_cast< int >(Math::Rand()*94.0f);
             }
             while ( text[j] == '\\' );
         }
@@ -505,11 +506,11 @@ bool CAutoInfo::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoInfoPhase)OpInt(line, "aPhase", AIP_WAIT);
+    m_phase = static_cast< AutoInfoPhase > (OpInt(line, "aPhase", AIP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }

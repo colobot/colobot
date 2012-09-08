@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -71,7 +72,7 @@ void CAutoJostle::Start(int param, float force)
     m_time = 0.0f;
     m_error = ERR_CONTINUE;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type >= OBJECT_PLANT5 &&
          type <= OBJECT_PLANT7 )  // clover?
     {
@@ -89,8 +90,8 @@ bool CAutoJostle::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     if ( m_progress < 1.0f )
     {

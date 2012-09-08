@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -54,7 +55,7 @@ public:
 
 protected:
     void        UpdateInterface();
-    void        UpdateButton(CWindow *pw, Event event, bool bBusy);
+    void        UpdateButton(Ui::CWindow *pw, EventType event, bool bBusy);
 
     CObject*    SearchFret();
     bool        NearestVehicle();
@@ -67,7 +68,7 @@ protected:
     AutoFactoryPhase    m_phase;
     float               m_progress;
     float               m_speed;
-    float               m_lastParticule;
+    float               m_lastParticle;
     Math::Vector            m_fretPos;
     int                 m_channelSound;
 };
