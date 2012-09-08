@@ -11,12 +11,20 @@ import array
 import os
 import copy
 
+FUZZY_TOLERANCE = 1e-5
+
 class ColobotError(Exception):
     """Exception in I/O operations"""
     def __init__(self, value):
         self.value = value
     def __str__(self):
         return repr(self.value)
+
+def fuzzy_equal_v(v1, v2):
+    for i in range(len(v1)):
+        if abs(v1[i] - v2[i]) > FUZZY_TOLERANCE:
+            return False
+    return True
 
 class ColobotVertex:
     """Vertex as saved in Colobot model file"""
@@ -30,10 +38,10 @@ class ColobotVertex:
         return 1
 
     def __eq__(self, other):
-        return ( self.coord == other.coord and
-                 self.normal == other.normal and
-                 self.t1 == other.t1 and
-                 self.t2 == other.t2 )
+        return fuzzy_equal_v(self.coord, other.coord) and
+               fuzzy_equal_v(self.normal, other.normal) and
+               fuzzy_equal_v(self.t1, other.t1) and
+               fuzzy_equal_v(self.t2, other.t2)
 
 class ColobotMaterial:
     """Material as saved in Colobot model file"""
@@ -48,11 +56,11 @@ class ColobotMaterial:
         return 1
 
     def __eq__(self, other):
-        return ( self.diffuse == other.diffuse and
-                 self.ambient == other.ambient and
-                 self.specular == other.specular and
-                 self.tex1 == other.tex1 and
-                 self.tex2 == other.tex2 )
+        return fuzzy_equal_v(self.diffuse, other.diffuse) and
+               fuzzy_equal_v(self.ambient, other.ambient) and
+               fuzzy_equal_v(self.specular, other.specular) and
+               self.tex1 == other.tex1 and
+               self.tex2 == other.tex2
 
 class ColobotTriangle:
     """Triangle as saved in Colobot model file"""
@@ -283,8 +291,10 @@ def mesh_to_colobot_model(mesh, scene, defaults):
 
             if (len(mesh.data.uv_layers) >= 1):
                 t.p[j].t1 = copy.copy(mesh.data.uv_layers[0].data[loop_index].uv)
+                t.p[j].t1[1] = 1.0 - t.p[j].t1[1]
             if (len(mesh.data.uv_layers) >= 2):
                 t.p[j].t2 = copy.copy(mesh.data.uv_layers[1].data[loop_index].uv)
+                t.p[j].t2[1] = 1.0 - t.p[j].t2[1]
 
             j = j + 1
 
@@ -371,18 +381,24 @@ def colobot_model_to_mesh(model, mesh_name, texture_dir):
             f.vertices[i] = vertex_list.index(t.p[i])
 
     if uv1map:
-        uvlay1 = mesh.tessface_uv_textures.new()
+        uvlay1 = mesh.tessface_uv_textures.new(name='UV_1')
         for i, f in enumerate(uvlay1.data):
-            f.uv1 = model.triangles[i].p[0].t1
-            f.uv2 = model.triangles[i].p[1].t1
-            f.uv3 = model.triangles[i].p[2].t1
+            f.uv1[0] = model.triangles[i].p[0].t1[0]
+            f.uv1[1] = 1.0 - model.triangles[i].p[0].t1[1]
+            f.uv2[0] = model.triangles[i].p[1].t1[0]
+            f.uv2[1] = 1.0 - model.triangles[i].p[1].t1[1]
+            f.uv3[0] = model.triangles[i].p[2].t1[0]
+            f.uv3[1] = 1.0 - model.triangles[i].p[2].t1[1]
 
     if uv2map:
-        uvlay2 = mesh.tessface_uv_textures.new()
-        for i, f in enumerate(uvlay1.data):
-            f.uv1 = model.triangles[i].p[0].t2
-            f.uv2 = model.triangles[i].p[1].t2
-            f.uv3 = model.triangles[i].p[2].t2
+        uvlay2 = mesh.tessface_uv_textures.new(name='UV_2')
+        for i, f in enumerate(uvlay2.data):
+            f.uv1[0] = model.triangles[i].p[0].t2[0]
+            f.uv1[1] = 1.0 - model.triangles[i].p[0].t2[1]
+            f.uv2[0] = model.triangles[i].p[1].t2[0]
+            f.uv2[1] = 1.0 - model.triangles[i].p[1].t2[1]
+            f.uv3[0] = model.triangles[i].p[2].t2[0]
+            f.uv3[1] = 1.0 - model.triangles[i].p[2].t2[1]
 
     def load_tex(name):
         import os
@@ -408,6 +424,7 @@ def colobot_model_to_mesh(model, mesh_name, texture_dir):
             mtex = mesh.materials[i].texture_slots.add()
             mtex.texture = tex1
             mtex.texture_coords = 'UV'
+            mtex.uv_layer = 'UV_1'
             mtex.use_map_color_diffuse = True
 
             for j, face in enumerate(mesh.uv_textures[0].data):
@@ -419,6 +436,7 @@ def colobot_model_to_mesh(model, mesh_name, texture_dir):
             mtex = mesh.materials[i].texture_slots.add()
             mtex.texture = tex2
             mtex.texture_coords = 'UV'
+            mtex.uv_layer = 'UV_2'
             mtex.use_map_color_diffuse = True
 
             for face in mesh.uv_textures[1].data:
