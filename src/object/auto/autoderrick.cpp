@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -20,7 +21,7 @@
 #include "object/auto/autoderrick.h"
 
 #include "common/iman.h"
-#include "old/terrain.h"
+#include "graphics/engine/terrain.h"
 #include "math/geometry.h"
 #include "script/cmdtoken.h"
 #include "ui/interface.h"
@@ -62,7 +63,7 @@ void CAutoDerrick::DeleteObject(bool bAll)
     if ( !bAll )
     {
         fret = SearchFret();
-        if ( fret != 0 && fret->RetLock() )
+        if ( fret != 0 && fret->GetLock() )
         {
             fret->DeleteObject();
             delete fret;
@@ -86,25 +87,25 @@ void CAutoDerrick::Init()
 {
     Math::Matrix*   mat;
     Math::Vector    pos;
-    TerrainRes  res;
+    Gfx::TerrainRes  res;
 
-    pos = m_object->RetPosition(0);
-    res = m_terrain->RetResource(pos);
+    pos = m_object->GetPosition(0);
+    res = m_terrain->GetResource(pos);
 
-    if ( res == TR_STONE   ||
-         res == TR_URANIUM ||
-         res == TR_KEYa    ||
-         res == TR_KEYb    ||
-         res == TR_KEYc    ||
-         res == TR_KEYd    )
+    if ( res == Gfx::TR_STONE   ||
+         res == Gfx::TR_URANIUM ||
+         res == Gfx::TR_KEY_A    ||
+         res == Gfx::TR_KEY_B    ||
+         res == Gfx::TR_KEY_C   ||
+         res == Gfx::TR_KEY_D   )
     {
         m_type = OBJECT_FRET;
-        if ( res == TR_STONE   )  m_type = OBJECT_STONE;
-        if ( res == TR_URANIUM )  m_type = OBJECT_URANIUM;
-        if ( res == TR_KEYa    )  m_type = OBJECT_KEYa;
-        if ( res == TR_KEYb    )  m_type = OBJECT_KEYb;
-        if ( res == TR_KEYc    )  m_type = OBJECT_KEYc;
-        if ( res == TR_KEYd    )  m_type = OBJECT_KEYd;
+        if ( res == Gfx::TR_STONE   )  m_type = OBJECT_STONE;
+        if ( res == Gfx::TR_URANIUM )  m_type = OBJECT_URANIUM;
+        if ( res == Gfx::TR_KEY_A    )  m_type = OBJECT_KEYa;
+        if ( res == Gfx::TR_KEY_B    )  m_type = OBJECT_KEYb;
+        if ( res == Gfx::TR_KEY_C    )  m_type = OBJECT_KEYc;
+        if ( res == Gfx::TR_KEY_D    )  m_type = OBJECT_KEYd;
 
         m_phase    = ADP_EXCAVATE;
         m_progress = 0.0f;
@@ -119,11 +120,11 @@ void CAutoDerrick::Init()
 
     m_time = 0.0f;
     m_timeVirus = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
     m_lastTrack = 0.0f;
 
     pos = Math::Vector(7.0f, 0.0f, 0.0f);
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     pos = Math::Transform(*mat, pos);
     m_terrain->MoveOnFloor(pos);
     m_fretPos = pos;
@@ -141,14 +142,14 @@ bool CAutoDerrick::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_phase == ADP_WAIT )  return true;
 
     m_progress += event.rTime*m_speed;
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
@@ -176,7 +177,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             {
                 factor = 1.0f;
             }
-            m_soundChannel = m_sound->Play(SOUND_DERRICK, m_object->RetPosition(0), 1.0f, 0.5f, true);
+            m_soundChannel = m_sound->Play(SOUND_DERRICK, m_object->GetPosition(0), 1.0f, 0.5f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 4.0f*factor, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.3f, 6.0f*factor, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.5f, 1.0f, SOPER_CONTINUE);
@@ -184,25 +185,25 @@ bool CAutoDerrick::EventProcess(const Event &event)
         }
 
         if ( m_progress >= 6.0f/16.0f &&  // penetrates into the ground?
-             m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+             m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*3.0f+2.0f;
             dim.y = dim.x;
-            m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
         }
 
         if ( m_progress >= 6.0f/16.0f &&  // penetrates into the ground?
-             m_lastTrack+m_engine->ParticuleAdapt(0.5f) <= m_time )
+             m_lastTrack+m_engine->ParticleAdapt(0.5f) <= m_time )
         {
             m_lastTrack = m_time;
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             speed.x = (Math::Rand()-0.5f)*12.0f;
             speed.z = (Math::Rand()-0.5f)*12.0f;
             speed.y = Math::Rand()*10.0f+10.0f;
@@ -210,7 +211,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             dim.y = dim.x;
             pos.y += dim.y;
             duration = Math::Rand()*2.0f+2.0f;
-            m_particle->CreateTrack(pos, speed, dim, PARTITRACK5,
+            m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK5,
                                      duration, Math::Rand()*10.0f+15.0f,
                                      duration*0.2f, 1.0f);
         }
@@ -222,7 +223,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             pos.y = -m_progress*16.0f;
             m_object->SetPosition(1, pos);  // down the drill
 
-            angle = m_object->RetAngleY(1);
+            angle = m_object->GetAngleY(1);
             angle += event.rTime*8.0f;
             m_object->SetAngleY(1, angle);  // rotates the drill
         }
@@ -237,25 +238,25 @@ bool CAutoDerrick::EventProcess(const Event &event)
     if ( m_phase == ADP_ASCEND )
     {
         if ( m_progress <= 7.0f/16.0f &&
-             m_lastParticule+m_engine->ParticuleAdapt(0.1f) <= m_time )
+             m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*3.0f+2.0f;
             dim.y = dim.x;
-            m_particle->CreateParticle(pos, speed, dim, PARTICRASH, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
         }
 
         if ( m_progress <= 4.0f/16.0f &&
-             m_lastTrack+m_engine->ParticuleAdapt(1.0f) <= m_time )
+             m_lastTrack+m_engine->ParticleAdapt(1.0f) <= m_time )
         {
             m_lastTrack = m_time;
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             speed.x = (Math::Rand()-0.5f)*12.0f;
             speed.z = (Math::Rand()-0.5f)*12.0f;
             speed.y = Math::Rand()*10.0f+10.0f;
@@ -263,7 +264,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             dim.y = dim.x;
             pos.y += dim.y;
             duration = Math::Rand()*2.0f+2.0f;
-            m_particle->CreateTrack(pos, speed, dim, PARTITRACK5,
+            m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK5,
                                      duration, Math::Rand()*10.0f+15.0f,
                                      duration*0.2f, 1.0f);
         }
@@ -275,7 +276,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
             pos.y = -(1.0f-m_progress)*16.0f;
             m_object->SetPosition(1, pos);  // back the drill
 
-            angle = m_object->RetAngleY(1);
+            angle = m_object->GetAngleY(1);
             angle -= event.rTime*2.0f;
             m_object->SetAngleY(1, angle);  // rotates the drill
         }
@@ -308,7 +309,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             if ( SearchFree(m_fretPos) )
             {
-                angle = m_object->RetAngleY(0);
+                angle = m_object->GetAngleY(0);
                 CreateFret(m_fretPos, angle, m_type, 16.0f);
             }
             else
@@ -324,31 +325,31 @@ bool CAutoDerrick::EventProcess(const Event &event)
 
         if ( fret != 0 &&
              m_progress <= 0.5f &&
-             m_lastParticule+m_engine->ParticuleAdapt(0.1f) <= m_time )
+             m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             if ( m_progress < 0.3f )
             {
-                pos = fret->RetPosition(0);
+                pos = fret->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += (Math::Rand()-0.5f)*5.0f;
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 3.0f;
                 dim.y = dim.x;
-                m_particle->CreateParticle(pos, speed, dim, PARTIFIRE, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFIRE, 1.0f, 0.0f, 0.0f);
             }
             else
             {
-                pos = fret->RetPosition(0);
+                pos = fret->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += Math::Rand()*2.5f;
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 1.0f;
                 dim.y = dim.x;
-                m_particle->CreateParticle(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 2.0f, 0.0f, 0.0f);
             }
         }
 
@@ -356,7 +357,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
         {
             if ( fret != 0 )
             {
-                pos = fret->RetPosition(0);
+                pos = fret->GetPosition(0);
                 pos.y -= event.rTime*20.0f;  // grave
                 if ( !m_bSoundFall && pos.y < m_fretPos.y )
                 {
@@ -396,7 +397,7 @@ bool CAutoDerrick::EventProcess(const Event &event)
 
 bool CAutoDerrick::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -404,7 +405,7 @@ bool CAutoDerrick::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -455,11 +456,11 @@ bool CAutoDerrick::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoDerrickPhase)OpInt(line, "aPhase", ADP_WAIT);
+    m_phase = static_cast< AutoDerrickPhase >(OpInt(line, "aPhase", ADP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }
@@ -476,13 +477,13 @@ CObject* CAutoDerrick::SearchFret()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
 
         if ( oPos.x == m_fretPos.x &&
              oPos.z == m_fretPos.z )  return pObj;
@@ -503,10 +504,10 @@ bool CAutoDerrick::SearchFree(Math::Vector pos)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_DERRICK )  continue;
 
         j = 0;
@@ -537,12 +538,12 @@ void CAutoDerrick::CreateFret(Math::Vector pos, float angle, ObjectType type,
     }
     fret->SetLock(true);  // object not yet usable
 
-    if ( m_object->RetResetCap() == RESET_MOVE )
+    if ( m_object->GetResetCap() == RESET_MOVE )
     {
         fret->SetResetCap(RESET_DELETE);
     }
 
-    pos = fret->RetPosition(0);
+    pos = fret->GetPosition(0);
     pos.y += height;
     fret->SetPosition(0, pos);
 }
@@ -562,10 +563,10 @@ bool CAutoDerrick::ExistKey()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == m_type )  return true;
     }
 
@@ -573,11 +574,11 @@ bool CAutoDerrick::ExistKey()
 }
 
 
-// Returns an error due the state of the automaton.
+// returns an error due the state of the automaton.
 
-Error CAutoDerrick::RetError()
+Error CAutoDerrick::GetError()
 {
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
