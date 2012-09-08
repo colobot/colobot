@@ -28,7 +28,13 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O2 -Wall -Wold-style-cast -std=gnu++0x")
 set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
 
 # Include cmake directory
-SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${colobot_SOURCE_DIR}/cmake")
+
+enable_testing()
+
+# Google Test library
+set(GTEST_DIR "${colobot_SOURCE_DIR}/lib/gtest")
+add_subdirectory(lib/gtest bin/test)
 
 # Subdirectory with sources
 add_subdirectory(src bin)

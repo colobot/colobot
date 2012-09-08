@@ -44,23 +44,21 @@ const int TRIANGLE_PREALLOCATE_COUNT = 2000;
 
 
 
-Gfx::Vertex ReadBinaryVertex(std::istream& stream)
+bool ReadBinaryVertex(std::istream& stream, Gfx::Vertex& vertex)
 {
-    Gfx::Vertex result;
+    vertex.coord.x     = IOUtils::ReadBinaryFloat(stream);
+    vertex.coord.y     = IOUtils::ReadBinaryFloat(stream);
+    vertex.coord.z     = IOUtils::ReadBinaryFloat(stream);
+    vertex.normal.x    = IOUtils::ReadBinaryFloat(stream);
+    vertex.normal.y    = IOUtils::ReadBinaryFloat(stream);
+    vertex.normal.z    = IOUtils::ReadBinaryFloat(stream);
+    vertex.texCoord.x  = IOUtils::ReadBinaryFloat(stream);
+    vertex.texCoord.y  = IOUtils::ReadBinaryFloat(stream);
 
-    result.coord.x     = IOUtils::ReadBinaryFloat(stream);
-    result.coord.y     = IOUtils::ReadBinaryFloat(stream);
-    result.coord.z     = IOUtils::ReadBinaryFloat(stream);
-    result.normal.x    = IOUtils::ReadBinaryFloat(stream);
-    result.normal.y    = IOUtils::ReadBinaryFloat(stream);
-    result.normal.z    = IOUtils::ReadBinaryFloat(stream);
-    result.texCoord.x  = IOUtils::ReadBinaryFloat(stream);
-    result.texCoord.y  = IOUtils::ReadBinaryFloat(stream);
-
-    return result;
+    return !stream.fail();
 }
 
-void WriteBinaryVertex(Gfx::Vertex vertex, std::ostream& stream)
+bool WriteBinaryVertex(Gfx::Vertex vertex, std::ostream& stream)
 {
     IOUtils::WriteBinaryFloat(vertex.coord.x, stream);
     IOUtils::WriteBinaryFloat(vertex.coord.y, stream);
@@ -70,27 +68,27 @@ void WriteBinaryVertex(Gfx::Vertex vertex, std::ostream& stream)
     IOUtils::WriteBinaryFloat(vertex.normal.z, stream);
     IOUtils::WriteBinaryFloat(vertex.texCoord.x, stream);
     IOUtils::WriteBinaryFloat(vertex.texCoord.y, stream);
+
+    return !stream.fail();
 }
 
-Gfx::VertexTex2 ReadBinaryVertexTex2(std::istream& stream)
+bool ReadBinaryVertexTex2(std::istream& stream, Gfx::VertexTex2& vertex)
 {
-    Gfx::VertexTex2 result;
+    vertex.coord.x     = IOUtils::ReadBinaryFloat(stream);
+    vertex.coord.y     = IOUtils::ReadBinaryFloat(stream);
+    vertex.coord.z     = IOUtils::ReadBinaryFloat(stream);
+    vertex.normal.x    = IOUtils::ReadBinaryFloat(stream);
+    vertex.normal.y    = IOUtils::ReadBinaryFloat(stream);
+    vertex.normal.z    = IOUtils::ReadBinaryFloat(stream);
+    vertex.texCoord.x  = IOUtils::ReadBinaryFloat(stream);
+    vertex.texCoord.y  = IOUtils::ReadBinaryFloat(stream);
+    vertex.texCoord2.x = IOUtils::ReadBinaryFloat(stream);
+    vertex.texCoord2.y = IOUtils::ReadBinaryFloat(stream);
 
-    result.coord.x     = IOUtils::ReadBinaryFloat(stream);
-    result.coord.y     = IOUtils::ReadBinaryFloat(stream);
-    result.coord.z     = IOUtils::ReadBinaryFloat(stream);
-    result.normal.x    = IOUtils::ReadBinaryFloat(stream);
-    result.normal.y    = IOUtils::ReadBinaryFloat(stream);
-    result.normal.z    = IOUtils::ReadBinaryFloat(stream);
-    result.texCoord.x  = IOUtils::ReadBinaryFloat(stream);
-    result.texCoord.y  = IOUtils::ReadBinaryFloat(stream);
-    result.texCoord2.x = IOUtils::ReadBinaryFloat(stream);
-    result.texCoord2.y = IOUtils::ReadBinaryFloat(stream);
-
-    return result;
+    return !stream.fail();
 }
 
-void WriteBinaryVertexTex2(Gfx::VertexTex2 vertex, std::ostream& stream)
+bool WriteBinaryVertexTex2(Gfx::VertexTex2 vertex, std::ostream& stream)
 {
     IOUtils::WriteBinaryFloat(vertex.coord.x, stream);
     IOUtils::WriteBinaryFloat(vertex.coord.y, stream);
@@ -102,82 +100,83 @@ void WriteBinaryVertexTex2(Gfx::VertexTex2 vertex, std::ostream& stream)
     IOUtils::WriteBinaryFloat(vertex.texCoord.y, stream);
     IOUtils::WriteBinaryFloat(vertex.texCoord2.x, stream);
     IOUtils::WriteBinaryFloat(vertex.texCoord2.y, stream);
+
+    return !stream.fail();
 }
 
-Gfx::VertexTex2 ReadTextVertexTex2(const std::string& text)
+bool ReadTextVertexTex2(const std::string& text, Gfx::VertexTex2& vertex)
 {
     std::stringstream stream;
     stream.str(text);
 
-    Gfx::VertexTex2 result;
     std::string what;
 
     stream >> what;
     if (what != "c")
-        return Gfx::VertexTex2();
+        return false;
 
-    stream >> result.coord.x >> result.coord.y >> result.coord.z;
+    stream >> vertex.coord.x >> vertex.coord.y >> vertex.coord.z;
 
     stream >> what;
     if (what != "n")
-        return Gfx::VertexTex2();
+        return false;
 
-    stream >> result.normal.x >> result.normal.y >> result.normal.z;
+    stream >> vertex.normal.x >> vertex.normal.y >> vertex.normal.z;
 
     stream >> what;
     if (what != "t1")
-        return Gfx::VertexTex2();
+        return false;
 
-    stream >> result.texCoord.x >> result.texCoord.y;
+    stream >> vertex.texCoord.x >> vertex.texCoord.y;
 
     stream >> what;
     if (what != "t2")
-        return Gfx::VertexTex2();
+        return false;
 
-    stream >> result.texCoord2.x >> result.texCoord2.y;
+    stream >> vertex.texCoord2.x >> vertex.texCoord2.y;
 
-    return result;
+    return !stream.fail();
 }
 
-void WriteTextVertexTex2(const Gfx::VertexTex2& vertex, std::ostream& stream)
+bool WriteTextVertexTex2(const Gfx::VertexTex2& vertex, std::ostream& stream)
 {
     stream << "c " << vertex.coord.x << " " << vertex.coord.y << " " << vertex.coord.z;
     stream << " n " << vertex.normal.x << " " << vertex.normal.y << " " << vertex.normal.z;
     stream << " t1 " << vertex.texCoord.x << " " << vertex.texCoord.y;
     stream << " t2 " << vertex.texCoord2.x << " " << vertex.texCoord2.y;
     stream << std::endl;
+
+    return !stream.fail();
 }
 
-Gfx::Material ReadBinaryMaterial(std::istream& stream)
+bool ReadBinaryMaterial(std::istream& stream, Gfx::Material& material)
 {
-    Gfx::Material result;
+    material.diffuse.r =  IOUtils::ReadBinaryFloat(stream);
+    material.diffuse.g =  IOUtils::ReadBinaryFloat(stream);
+    material.diffuse.b =  IOUtils::ReadBinaryFloat(stream);
+    material.diffuse.a =  IOUtils::ReadBinaryFloat(stream);
 
-    result.diffuse.r =  IOUtils::ReadBinaryFloat(stream);
-    result.diffuse.g =  IOUtils::ReadBinaryFloat(stream);
-    result.diffuse.b =  IOUtils::ReadBinaryFloat(stream);
-    result.diffuse.a =  IOUtils::ReadBinaryFloat(stream);
+    material.ambient.r =  IOUtils::ReadBinaryFloat(stream);
+    material.ambient.g =  IOUtils::ReadBinaryFloat(stream);
+    material.ambient.b =  IOUtils::ReadBinaryFloat(stream);
+    material.ambient.a =  IOUtils::ReadBinaryFloat(stream);
 
-    result.ambient.r =  IOUtils::ReadBinaryFloat(stream);
-    result.ambient.g =  IOUtils::ReadBinaryFloat(stream);
-    result.ambient.b =  IOUtils::ReadBinaryFloat(stream);
-    result.ambient.a =  IOUtils::ReadBinaryFloat(stream);
+    material.specular.r = IOUtils::ReadBinaryFloat(stream);
+    material.specular.g = IOUtils::ReadBinaryFloat(stream);
+    material.specular.b = IOUtils::ReadBinaryFloat(stream);
+    material.specular.a = IOUtils::ReadBinaryFloat(stream);
 
-    result.specular.r = IOUtils::ReadBinaryFloat(stream);
-    result.specular.g = IOUtils::ReadBinaryFloat(stream);
-    result.specular.b = IOUtils::ReadBinaryFloat(stream);
-    result.specular.a = IOUtils::ReadBinaryFloat(stream);
+    /* emissive.r = */    IOUtils::ReadBinaryFloat(stream);
+    /* emissive.g = */    IOUtils::ReadBinaryFloat(stream);
+    /* emissive.b = */    IOUtils::ReadBinaryFloat(stream);
+    /* emissive.a = */    IOUtils::ReadBinaryFloat(stream);
 
-    /* emissive.r = */  IOUtils::ReadBinaryFloat(stream);
-    /* emissive.g = */  IOUtils::ReadBinaryFloat(stream);
-    /* emissive.b = */  IOUtils::ReadBinaryFloat(stream);
-    /* emissive.a = */  IOUtils::ReadBinaryFloat(stream);
+    /* power = */         IOUtils::ReadBinaryFloat(stream);
 
-    /* power = */       IOUtils::ReadBinaryFloat(stream);
-
-    return result;
+    return !stream.fail();
 }
 
-void WriteBinaryMaterial(const Gfx::Material& material, std::ostream& stream)
+bool WriteBinaryMaterial(const Gfx::Material& material, std::ostream& stream)
 {
     IOUtils::WriteBinaryFloat(material.diffuse.r, stream);
     IOUtils::WriteBinaryFloat(material.diffuse.g, stream);
@@ -200,50 +199,78 @@ void WriteBinaryMaterial(const Gfx::Material& material, std::ostream& stream)
     /* emissive.a */  IOUtils::WriteBinaryFloat(0.0f, stream);
 
     /* power */       IOUtils::WriteBinaryFloat(0.0f, stream);
+
+    return !stream.fail();
 }
 
-Gfx::Material ReadTextMaterial(const std::string& text)
+bool ReadTextMaterial(const std::string& text, Gfx::Material& material)
 {
     std::stringstream stream;
     stream.str(text);
 
-    Gfx::Material result;
     std::string what;
 
     stream >> what;
     if (what != "dif")
-        return Gfx::Material();
+        return false;
 
-    stream >> result.diffuse.r >> result.diffuse.g >> result.diffuse.b >> result.diffuse.a;
+    stream >> material.diffuse.r
+           >> material.diffuse.g
+           >> material.diffuse.b
+           >> material.diffuse.a;
 
     stream >> what;
     if (what != "amb")
-        return Gfx::Material();
+        return false;
 
-    stream >> result.ambient.r >> result.ambient.g >> result.ambient.b >> result.ambient.a;
+    stream >> material.ambient.r
+           >> material.ambient.g
+           >> material.ambient.b
+           >> material.ambient.a;
 
     stream >> what;
     if (what != "spc")
-        return Gfx::Material();
+        return false;
 
-    stream >> result.specular.r >> result.specular.g >> result.specular.b >> result.specular.a;
+    stream >> material.specular.r
+           >> material.specular.g
+           >> material.specular.b
+           >> material.specular.a;
 
-    return result;
+    return !stream.fail();
 }
 
-void WriteTextMaterial(const Gfx::Material& material, std::ostream& stream)
+bool WriteTextMaterial(const Gfx::Material& material, std::ostream& stream)
 {
-    stream << "dif " << material.diffuse.r << " " << material.diffuse.g << " " << material.diffuse.b << " " << material.diffuse.a;
-    stream << " amb " << material.ambient.r << " " << material.ambient.g << " " << material.ambient.b << " " << material.ambient.a;
-    stream << " spc " << material.specular.r << " " << material.specular.g << " " << material.specular.b << " " << material.specular.a << std::endl;
+    stream << "dif " << material.diffuse.r
+           << " " << material.diffuse.g
+           << " " << material.diffuse.b
+           << " " << material.diffuse.a;
+
+    stream << " amb " << material.ambient.r
+           << " " << material.ambient.g
+           << " " << material.ambient.b
+           << " " << material.ambient.a;
+
+    stream << " spc " << material.specular.r
+           << " " << material.specular.g << " "
+           << material.specular.b << " "
+           << material.specular.a;
+
+    stream << std::endl;
+
+    return !stream.fail();
 }
 
 template<typename T>
 bool ReadLineValue(std::istream& stream, const std::string& prefix, T& value)
 {
     std::string line;
-    while (! stream.eof() )
+    while (true)
     {
+        if (stream.eof() || stream.fail())
+            return false;
+
         std::getline(stream, line);
         if (!line.empty() && line[0] != '#')
             break;
@@ -265,8 +292,11 @@ bool ReadLineValue(std::istream& stream, const std::string& prefix, T& value)
 bool ReadLineString(std::istream& stream, const std::string& prefix, std::string& value)
 {
     std::string line;
-    while (! stream.eof() )
+    while (true)
     {
+        if (stream.eof() || stream.fail())
+            return false;
+
         std::getline(stream, line);
         if (!line.empty() && line[0] != '#')
             break;
@@ -280,7 +310,7 @@ bool ReadLineString(std::istream& stream, const std::string& prefix, std::string
     if (what != prefix)
         return false;
 
-    getline(s, value);
+    std::getline(s, value);
 
     return true;
 }
@@ -417,7 +447,7 @@ bool Gfx::CModelFile::ReadModel(const std::string& fileName)
 
     std::ifstream stream;
     stream.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
-    if (! stream.good())
+    if (!stream.good())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -439,7 +469,7 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
         header.reserved[i] = IOUtils::ReadBinary<4, int>(stream);
 
 
-    if (! stream.good())
+    if (!stream.good())
     {
         GetLogger()->Error("Error reading model file header\n");
         return false;
@@ -454,16 +484,16 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
             t.used     = IOUtils::ReadBinary<1, char>(stream);
             t.selected = IOUtils::ReadBinary<1, char>(stream);
 
-            t.p1 = ReadBinaryVertex(stream);
-            t.p2 = ReadBinaryVertex(stream);
-            t.p3 = ReadBinaryVertex(stream);
+            ReadBinaryVertex(stream, t.p1);
+            ReadBinaryVertex(stream, t.p2);
+            ReadBinaryVertex(stream, t.p3);
 
-            t.material = ReadBinaryMaterial(stream);
+            ReadBinaryMaterial(stream, t.material);
             stream.read(t.texName, 20);
             t.min = IOUtils::ReadBinaryFloat(stream);
             t.max = IOUtils::ReadBinaryFloat(stream);
 
-            if (! stream.good())
+            if (stream.fail())
             {
                 GetLogger()->Error("Error reading model data\n");
                 return false;
@@ -490,11 +520,11 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
             t.used     = IOUtils::ReadBinary<1, char>(stream);
             t.selected = IOUtils::ReadBinary<1, char>(stream);
 
-            t.p1 = ReadBinaryVertex(stream);
-            t.p2 = ReadBinaryVertex(stream);
-            t.p3 = ReadBinaryVertex(stream);
+            ReadBinaryVertex(stream, t.p1);
+            ReadBinaryVertex(stream, t.p2);
+            ReadBinaryVertex(stream, t.p3);
 
-            t.material = ReadBinaryMaterial(stream);
+            ReadBinaryMaterial(stream, t.material);
             stream.read(t.texName, 20);
             t.min = IOUtils::ReadBinaryFloat(stream);
             t.max = IOUtils::ReadBinaryFloat(stream);
@@ -505,7 +535,7 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
             t.reserved3 = IOUtils::ReadBinary<2, short>(stream);
             t.reserved4 = IOUtils::ReadBinary<2, short>(stream);
 
-            if (! stream.good())
+            if (stream.fail())
             {
                 GetLogger()->Error("Error reading model data\n");
                 return false;
@@ -535,11 +565,11 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
 
             /* padding */ IOUtils::ReadBinary<2, unsigned int>(stream);
 
-            t.p1 = ReadBinaryVertexTex2(stream);
-            t.p2 = ReadBinaryVertexTex2(stream);
-            t.p3 = ReadBinaryVertexTex2(stream);
+            ReadBinaryVertexTex2(stream, t.p1);
+            ReadBinaryVertexTex2(stream, t.p2);
+            ReadBinaryVertexTex2(stream, t.p3);
 
-            t.material = ReadBinaryMaterial(stream);
+            ReadBinaryMaterial(stream, t.material);
             stream.read(t.texName, 20);
             t.min = IOUtils::ReadBinaryFloat(stream);
             t.max = IOUtils::ReadBinaryFloat(stream);
@@ -550,7 +580,7 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
             t.reserved3 = IOUtils::ReadBinary<2, short>(stream);
             t.reserved4 = IOUtils::ReadBinary<2, short>(stream);
 
-            if (! stream.good())
+            if (stream.fail())
             {
                 GetLogger()->Error("Error reading model data\n");
                 return false;
@@ -597,23 +627,23 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
         m_triangles[i].tex2Name = StrUtils::Replace(m_triangles[i].tex2Name, "bmp", "png");
         m_triangles[i].tex2Name = StrUtils::Replace(m_triangles[i].tex2Name, "tga", "png");
 
-        GetLogger()->Info("ModelTriangle %d\n", i+1);
+        GetLogger()->Trace("ModelTriangle %d\n", i+1);
         std::string s1 = m_triangles[i].p1.ToString();
-        GetLogger()->Info(" p1: %s\n", s1.c_str());
+        GetLogger()->Trace(" p1: %s\n", s1.c_str());
         std::string s2 = m_triangles[i].p2.ToString();
-        GetLogger()->Info(" p2: %s\n", s2.c_str());
+        GetLogger()->Trace(" p2: %s\n", s2.c_str());
         std::string s3 = m_triangles[i].p3.ToString();
-        GetLogger()->Info(" p3: %s\n", s3.c_str());
+        GetLogger()->Trace(" p3: %s\n", s3.c_str());
 
         std::string d = m_triangles[i].material.diffuse.ToString();
         std::string a = m_triangles[i].material.ambient.ToString();
         std::string s = m_triangles[i].material.specular.ToString();
-        GetLogger()->Info(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
+        GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
-        GetLogger()->Info(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(),
+        GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(),
                           m_triangles[i].variableTex2 ? "(variable)" : m_triangles[i].tex2Name.c_str());
-        GetLogger()->Info(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
-        GetLogger()->Info(" state: %ld\n", m_triangles[i].state);
+        GetLogger()->Trace(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
+        GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
     }
 
     return true;
@@ -623,7 +653,7 @@ bool Gfx::CModelFile::WriteModel(const std::string& fileName)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
-    if (! stream.good())
+    if (!stream.good())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -766,7 +796,7 @@ bool Gfx::CModelFile::ReadTextModel(const std::string& fileName)
 {
     std::ifstream stream;
     stream.open(fileName.c_str(), std::ios_base::in);
-    if (! stream.good())
+    if (!stream.good())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -802,9 +832,13 @@ bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
             char varTex2Ch = 0;
 
             bool triOk = ReadLineString(stream, "p1", p1Text) &&
+                         ReadTextVertexTex2(p1Text, t.p1) &&
                          ReadLineString(stream, "p2", p2Text) &&
+                         ReadTextVertexTex2(p2Text, t.p2) &&
                          ReadLineString(stream, "p3", p3Text) &&
+                         ReadTextVertexTex2(p3Text, t.p3) &&
                          ReadLineString(stream, "mat", matText) &&
+                         ReadTextMaterial(matText, t.material) &&
                          ReadLineValue<std::string>(stream, "tex1", t.tex1Name) &&
                          ReadLineValue<std::string>(stream, "tex2", t.tex2Name) &&
                          ReadLineValue<char>(stream, "var_tex2", varTex2Ch) &&
@@ -812,16 +846,12 @@ bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
                          ReadLineValue<float>(stream, "max", t.max) &&
                          ReadLineValue<int>(stream, "state", t.state);
 
-            if (!triOk || !stream.good())
+            if (!triOk || stream.fail())
             {
                 GetLogger()->Error("Error reading model file header\n");
                 return false;
             }
 
-            t.p1 = ReadTextVertexTex2(p1Text);
-            t.p2 = ReadTextVertexTex2(p2Text);
-            t.p3 = ReadTextVertexTex2(p3Text);
-            t.material = ReadTextMaterial(matText);
             t.variableTex2 = varTex2Ch == 'Y';
 
 
@@ -850,22 +880,22 @@ bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
 
     for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
     {
-        GetLogger()->Info("ModelTriangle %d\n", i+1);
+        GetLogger()->Trace("ModelTriangle %d\n", i+1);
         std::string s1 = m_triangles[i].p1.ToString();
-        GetLogger()->Info(" p1: %s\n", s1.c_str());
+        GetLogger()->Trace(" p1: %s\n", s1.c_str());
         std::string s2 = m_triangles[i].p2.ToString();
-        GetLogger()->Info(" p2: %s\n", s2.c_str());
+        GetLogger()->Trace(" p2: %s\n", s2.c_str());
         std::string s3 = m_triangles[i].p3.ToString();
-        GetLogger()->Info(" p3: %s\n", s3.c_str());
+        GetLogger()->Trace(" p3: %s\n", s3.c_str());
 
         std::string d = m_triangles[i].material.diffuse.ToString();
         std::string a = m_triangles[i].material.ambient.ToString();
         std::string s = m_triangles[i].material.specular.ToString();
-        GetLogger()->Info(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
+        GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
-        GetLogger()->Info(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
-        GetLogger()->Info(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
-        GetLogger()->Info(" state: %ld\n", m_triangles[i].state);
+        GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
+        GetLogger()->Trace(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
+        GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
     }
 
     return true;
@@ -875,7 +905,7 @@ bool Gfx::CModelFile::WriteTextModel(const std::string &fileName)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out);
-    if (! stream.good())
+    if (!stream.good())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -938,7 +968,7 @@ bool Gfx::CModelFile::WriteTextModel(std::ostream& stream)
 
         stream << std::endl;
 
-        if (! stream.good())
+        if (stream.fail())
         {
             GetLogger()->Error("Error writing model file\n");
             return false;
@@ -952,7 +982,7 @@ bool Gfx::CModelFile::ReadBinaryModel(const std::string& fileName)
 {
     std::ifstream stream;
     stream.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
-    if (! stream.good())
+    if (!stream.good())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -970,7 +1000,7 @@ bool Gfx::CModelFile::ReadBinaryModel(std::istream& stream)
     header.version        = IOUtils::ReadBinary<4, int>(stream);
     header.totalTriangles = IOUtils::ReadBinary<4, int>(stream);
 
-    if (! stream.good())
+    if (!stream.good())
     {
         GetLogger()->Error("Error reading model file header\n");
         return false;
@@ -983,17 +1013,18 @@ bool Gfx::CModelFile::ReadBinaryModel(std::istream& stream)
         {
             NewModelTriangle1 t;
 
-            t.p1 = ReadBinaryVertexTex2(stream);
-            t.p2 = ReadBinaryVertexTex2(stream);
-            t.p3 = ReadBinaryVertexTex2(stream);
-            t.material = ReadBinaryMaterial(stream);
+            ReadBinaryVertexTex2(stream, t.p1);
+            ReadBinaryVertexTex2(stream, t.p2);
+            ReadBinaryVertexTex2(stream, t.p3);
+            ReadBinaryMaterial(stream, t.material);
             t.tex1Name = IOUtils::ReadBinaryString<1>(stream);
             t.tex2Name = IOUtils::ReadBinaryString<1>(stream);
             t.variableTex2 = IOUtils::ReadBinaryBool(stream);
             t.min = IOUtils::ReadBinaryFloat(stream);
             t.max = IOUtils::ReadBinaryFloat(stream);
+            t.state = IOUtils::ReadBinary<4, unsigned int>(stream);
 
-            if (! stream.good())
+            if (stream.fail())
             {
                 GetLogger()->Error("Error reading model data\n");
                 return false;
@@ -1009,6 +1040,7 @@ bool Gfx::CModelFile::ReadBinaryModel(std::istream& stream)
             triangle.variableTex2 = t.variableTex2;
             triangle.min = t.min;
             triangle.max = t.max;
+            triangle.state = t.state;
 
             m_triangles.push_back(triangle);
         }
@@ -1021,22 +1053,22 @@ bool Gfx::CModelFile::ReadBinaryModel(std::istream& stream)
 
     for (int i = 0; i < static_cast<int>( m_triangles.size() ); ++i)
     {
-        GetLogger()->Info("ModelTriangle %d\n", i+1);
+        GetLogger()->Trace("ModelTriangle %d\n", i+1);
         std::string s1 = m_triangles[i].p1.ToString();
-        GetLogger()->Info(" p1: %s\n", s1.c_str());
+        GetLogger()->Trace(" p1: %s\n", s1.c_str());
         std::string s2 = m_triangles[i].p2.ToString();
-        GetLogger()->Info(" p2: %s\n", s2.c_str());
+        GetLogger()->Trace(" p2: %s\n", s2.c_str());
         std::string s3 = m_triangles[i].p3.ToString();
-        GetLogger()->Info(" p3: %s\n", s3.c_str());
+        GetLogger()->Trace(" p3: %s\n", s3.c_str());
 
         std::string d = m_triangles[i].material.diffuse.ToString();
         std::string a = m_triangles[i].material.ambient.ToString();
         std::string s = m_triangles[i].material.specular.ToString();
-        GetLogger()->Info(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
+        GetLogger()->Trace(" mat: d: %s  a: %s  s: %s\n", d.c_str(), a.c_str(), s.c_str());
 
-        GetLogger()->Info(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
-        GetLogger()->Info(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
-        GetLogger()->Info(" state: %ld\n", m_triangles[i].state);
+        GetLogger()->Trace(" tex1: %s  tex2: %s\n", m_triangles[i].tex1Name.c_str(), m_triangles[i].tex2Name.c_str());
+        GetLogger()->Trace(" min: %.2f  max: %.2f\n", m_triangles[i].min, m_triangles[i].max);
+        GetLogger()->Trace(" state: %ld\n", m_triangles[i].state);
     }
 
     return true;
@@ -1046,7 +1078,7 @@ bool Gfx::CModelFile::WriteBinaryModel(const std::string& fileName)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
-    if (! stream.good())
+    if (!stream.good())
     {
         GetLogger()->Error("Could not open file '%s'\n", fileName.c_str());
         return false;
@@ -1084,6 +1116,7 @@ bool Gfx::CModelFile::WriteBinaryModel(std::ostream& stream)
         t.variableTex2 = m_triangles[i].variableTex2;
         t.min = m_triangles[i].min;
         t.max = m_triangles[i].max;
+        t.state = m_triangles[i].state;
 
         WriteBinaryVertexTex2(t.p1, stream);
         WriteBinaryVertexTex2(t.p2, stream);
@@ -1094,8 +1127,9 @@ bool Gfx::CModelFile::WriteBinaryModel(std::ostream& stream)
         IOUtils::WriteBinaryBool(t.variableTex2, stream);
         IOUtils::WriteBinaryFloat(t.min, stream);
         IOUtils::WriteBinaryFloat(t.max, stream);
+        IOUtils::WriteBinary<4, unsigned int>(t.state, stream);
 
-        if (! stream.good())
+        if (stream.fail())
         {
             GetLogger()->Error("Error writing model file\n");
             return false;

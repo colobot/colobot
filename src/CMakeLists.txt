@@ -4,6 +4,9 @@ add_subdirectory(CBot)
 # Tools directory is built separately
 add_subdirectory(tools)
 
+# Tests
+add_subdirectory(graphics/engine/test)
+
 
 # Configure options
 option(DEBUG "Enable debug output" ON)
