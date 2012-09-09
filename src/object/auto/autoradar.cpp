@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -74,31 +75,31 @@ bool CAutoRadar::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_phase == ARAP_WAIT )  return true;
 
     m_progress += event.rTime*m_speed;
     m_aTime += event.rTime;
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
             m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
-            angle = m_object->RetAngleY(1);
+            angle = m_object->GetAngleY(1);
             angle += (Math::Rand()-0.2f)*0.5f;
             m_object->SetAngleY(1, angle);
 
-            angle = m_object->RetAngleY(2);
+            angle = m_object->GetAngleY(2);
             angle += (Math::Rand()-0.8f)*1.0f;
             m_object->SetAngleY(2, angle);
 
             m_object->SetAngleX(3, (Math::Rand()-0.5f)*0.3f);
 
-            m_totalDetect = (int)(Math::Rand()*10.0f);
+            m_totalDetect = static_cast< int >(Math::Rand()*10.0f);
             UpdateInterface();
         }
         return true;
@@ -109,7 +110,7 @@ bool CAutoRadar::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             speed = Math::Min(10.0f, m_progress*50.0f);
-            angle = m_object->RetAngleY(1);
+            angle = m_object->GetAngleY(1);
             angle += event.rTime*speed;
             m_object->SetAngleY(1, angle);
         }
@@ -123,11 +124,11 @@ bool CAutoRadar::EventProcess(const Event &event)
             }
             else
             {
-                pos = m_object->RetPosition(0);
-                m_start = m_object->RetAngleY(1);
+                pos = m_object->GetPosition(0);
+                m_start = m_object->GetAngleY(1);
                 m_angle = m_start-Math::NormAngle(m_start)+Math::PI*2.0f;
                 m_angle += Math::RotateAngle(pos.x-ePos.x, ePos.z-pos.z);
-                m_angle += Math::PI-m_object->RetAngleY(0);
+                m_angle += Math::PI-m_object->GetAngleY(0);
 
                 m_phase    = ARAP_SHOW;
                 m_progress = 0.0f;
@@ -145,7 +146,7 @@ bool CAutoRadar::EventProcess(const Event &event)
         }
         else
         {
-            m_sound->Play(SOUND_RADAR, m_object->RetPosition(0));
+            m_sound->Play(SOUND_RADAR, m_object->GetPosition(0));
 
             m_phase    = ARAP_SINUS;
             m_progress = 0.0f;
@@ -182,11 +183,11 @@ bool CAutoRadar::EventProcess(const Event &event)
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoRadar::RetError()
+Error CAutoRadar::GetError()
 {
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
@@ -199,7 +200,7 @@ Error CAutoRadar::RetError()
 
 bool CAutoRadar::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, dim, ddim;
     float       ox, oy, sx, sy;
 
@@ -207,7 +208,7 @@ bool CAutoRadar::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -235,21 +236,21 @@ bool CAutoRadar::CreateInterface(bool bSelect)
 
 void CAutoRadar::UpdateInterface()
 {
-    CWindow*    pw;
-    CGauge*     pg;
+    Ui::CWindow*    pw;
+    Ui::CGauge*     pg;
     float       level;
 
-    if ( !m_object->RetSelect() )  return;
+    if ( !m_object->GetSelect() )  return;
 
     CAuto::UpdateInterface();
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GRADAR);
+    pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GRADAR));
     if ( pg != 0 )
     {
-        level = (float)m_totalDetect*(1.0f/8.0f);
+        level = static_cast< float >(m_totalDetect*(1.0f/8.0f));
         if ( level > 1.0f )  level = 1.0f;
         pg->SetLevel(level);
     }
@@ -267,18 +268,18 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
     float       distance, min;
     int         i;
 
-    iPos = m_object->RetPosition(0);
+    iPos = m_object->GetPosition(0);
     min = 1000000.0f;
     m_totalDetect = 0;
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetActif() )  continue;
+        if ( !pObj->GetActif() )  continue;
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
         if ( oType != OBJECT_ANT    &&
              oType != OBJECT_SPIDER &&
              oType != OBJECT_BEE    &&
@@ -287,7 +288,7 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
 
         m_totalDetect ++;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         distance = Math::Distance(oPos, iPos);
         if ( distance < min )
         {
@@ -299,7 +300,7 @@ bool CAutoRadar::SearchEnemy(Math::Vector &pos)
     UpdateInterface();
 
     if ( pBest == 0 )  return false;
-    pos = pBest->RetPosition(0);
+    pos = pBest->GetPosition(0);
     return true;
 }
 

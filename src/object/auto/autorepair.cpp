@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -60,7 +61,7 @@ void CAutoRepair::Init()
 
     m_time     = 0.0f;
     m_timeVirus = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     CAuto::Init();
 }
@@ -77,13 +78,13 @@ bool CAutoRepair::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
@@ -104,7 +105,7 @@ bool CAutoRepair::EventProcess(const Event &event)
             }
             else
             {
-                m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 0.8f);
+                m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 0.8f);
 
                 m_phase    = ARP_DOWN;
                 m_progress = 0.0f;
@@ -123,7 +124,7 @@ bool CAutoRepair::EventProcess(const Event &event)
         else
         {
             m_object->SetAngleZ(1, 0.0f);
-            m_sound->Play(SOUND_REPAIR, m_object->RetPosition(0));
+            m_sound->Play(SOUND_REPAIR, m_object->GetPosition(0));
 
             m_phase    = ARP_REPAIR;
             m_progress = 0.0f;
@@ -135,21 +136,21 @@ bool CAutoRepair::EventProcess(const Event &event)
     {
         vehicule = SearchVehicle();
         if ( m_progress < 1.0f ||
-             (vehicule != 0 && vehicule->RetShield() < 1.0f) )
+             (vehicule != 0 && vehicule->GetShield() < 1.0f) )
         {
             if ( vehicule != 0 )
             {
-                shield = vehicule->RetShield();
+                shield = vehicule->GetShield();
                 shield += event.rTime*0.2f;
                 if ( shield > 1.0f )  shield = 1.0f;
                 vehicule->SetShield(shield);
             }
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y += 1.0f;
@@ -158,12 +159,12 @@ bool CAutoRepair::EventProcess(const Event &event)
                 speed.y = Math::Rand()*15.0f;
                 dim.x = Math::Rand()*6.0f+4.0f;
                 dim.y = dim.x;
-                m_particle->CreateParticle(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLUE, 1.0f, 0.0f, 0.0f);
             }
         }
         else
         {
-            m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 0.8f);
+            m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 0.8f);
 
             m_phase    = ARP_UP;
             m_progress = 0.0f;
@@ -196,7 +197,7 @@ bool CAutoRepair::EventProcess(const Event &event)
 
 bool CAutoRepair::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -204,7 +205,7 @@ bool CAutoRepair::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -233,14 +234,14 @@ CObject* CAutoRepair::SearchVehicle()
     float       dist;
     int         i;
 
-    sPos = m_object->RetPosition(0);
+    sPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
@@ -269,10 +270,10 @@ CObject* CAutoRepair::SearchVehicle()
              type != OBJECT_MOBILEit &&
              type != OBJECT_MOBILEdr )  continue;
 
-        physics = pObj->RetPhysics();
-        if ( physics != 0 && !physics->RetLand() )  continue;  // in flight?
+        physics = pObj->GetPhysics();
+        if ( physics != 0 && !physics->GetLand() )  continue;  // in flight?
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return pObj;
     }
@@ -281,11 +282,11 @@ CObject* CAutoRepair::SearchVehicle()
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoRepair::RetError()
+Error CAutoRepair::GetError()
 {
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
@@ -327,11 +328,11 @@ bool CAutoRepair::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoRepairPhase)OpInt(line, "aPhase", ARP_WAIT);
+    m_phase = static_cast< AutoRepairPhase >(OpInt(line, "aPhase", ARP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }
