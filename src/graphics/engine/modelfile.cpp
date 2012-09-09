@@ -484,6 +484,8 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
             t.used     = IOUtils::ReadBinary<1, char>(stream);
             t.selected = IOUtils::ReadBinary<1, char>(stream);
 
+            /* padding */ IOUtils::ReadBinary<2, unsigned int>(stream);
+
             ReadBinaryVertex(stream, t.p1);
             ReadBinaryVertex(stream, t.p2);
             ReadBinaryVertex(stream, t.p3);
@@ -519,6 +521,8 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
             OldModelTriangle2 t;
             t.used     = IOUtils::ReadBinary<1, char>(stream);
             t.selected = IOUtils::ReadBinary<1, char>(stream);
+
+            /* padding */ IOUtils::ReadBinary<2, unsigned int>(stream);
 
             ReadBinaryVertex(stream, t.p1);
             ReadBinaryVertex(stream, t.p2);
@@ -848,7 +852,7 @@ bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
 
             if (!triOk || stream.fail())
             {
-                GetLogger()->Error("Error reading model file header\n");
+                GetLogger()->Error("Error reading model data\n");
                 return false;
             }
 
