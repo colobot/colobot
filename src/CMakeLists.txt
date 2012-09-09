@@ -64,12 +64,11 @@ app/main.cpp
 app/system.cpp
 common/event.cpp
 common/image.cpp
-common/logger.cpp
 common/iman.cpp
-# common/metafile.cpp
-# common/misc.cpp
-# common/modfile.cpp
-# common/profile.cpp
+common/logger.cpp
+common/metafile.cpp
+common/misc.cpp
+common/profile.cpp
 common/restext.cpp
 common/restext_strings.c
 common/stringutils.cpp
@@ -191,7 +190,10 @@ ${PLATFORM_LIBS}
 CBot
 )
 
-include_directories(. ${CMAKE_CURRENT_BINARY_DIR}
+include_directories(
+.
+..
+${CMAKE_CURRENT_BINARY_DIR}
 ${SDL_INCLUDE_DIR}
 ${SDL_IMAGE_INCLUDE_DIR}
 ${SDLTTF_INCLUDE_DIR}

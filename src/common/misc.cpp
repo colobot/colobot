@@ -17,43 +17,18 @@
 // misc.cpp
 
 
+#include "common/misc.h"
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
-#include <direct.h>
 #include <time.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "old/d3dutil.h"
-#include "common/language.h"
-#include "common/event.h"
-#include "common/misc.h"
 
 
-
-CMetaFile   g_metafile;
-
-static EventMsg     g_uniqueEventMsg = EVENT_USER;
 static bool         g_bUserDir = false;
 static char         g_userDir[100] = "";
-
-
-
-// Gives a single user event.
-
-EventMsg GetUniqueEventMsg()
-{
-    int     i;
-
-    i = (int)g_uniqueEventMsg+1;
-    g_uniqueEventMsg = (EventMsg)i;
-    return g_uniqueEventMsg;
-}
-
 
 
 // Returns a non-accented letter.
@@ -311,7 +286,8 @@ bool CopyFileToTemp(char* filename)
     UserDir(dst, filename, "textures");
     strcpy(g_userDir, save);
 
-    _mkdir("temp");
+    //_mkdir("temp");
+    system("mkdir temp");
     if ( !Xfer(src, dst) )  return false;
 
     strcpy(filename, dst);
@@ -418,24 +394,3 @@ void UserDir(char* buffer, char* dir, char* def)
     }
     *buffer = 0;
 }
-
-
-// Returns the letter corresponding to the language.
-
-char RetLanguageLetter()
-{
-#if _FRENCH
-    return 'F';
-#endif
-#if _ENGLISH
-    return 'E';
-#endif
-#if _GERMAN | _WG
-    return 'D';
-#endif
-#if _POLISH
-    return 'P';
-#endif
-    return 'X';
-}
-

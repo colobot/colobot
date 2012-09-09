@@ -22,8 +22,7 @@
 
 #pragma once
 
-
-#include "common/misc.h"
+#include "common/global.h"
 #include "common/singleton.h"
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
@@ -198,6 +197,12 @@ public:
     //! Returns the full path to a file in data directory
     std::string GetDataFilePath(const std::string &dirName, const std::string &fileName);
 
+    //! Management of language
+    //@{
+    Language    GetLanguage();
+    void        SetLanguage(Language language);
+    //@}
+
 protected:
     //! Creates the window's SDL_Surface
     bool CreateVideoSurface();
@@ -267,5 +272,8 @@ protected:
 
     //! Path to directory with data files
     std::string     m_dataPath;
+
+    //! Application language
+    Language        m_language;
 };
 

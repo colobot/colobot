@@ -14,28 +14,18 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.// restext.cpp
 
-#include <libintl.h>
-#include <SDL/SDL_keyboard.h>
-#include "common/struct.h"
-#include "common/language.h"
-#include "common/misc.h"
-#include "common/event.h"
-#include "object/object.h"
-#include "CBot/resource.h"
 #include "common/restext.h"
 
+#include "common/global.h"
+#include "common/event.h"
+#include "CBot/resource.h"
+#include "object/object.h"
 
-// Gives the pointer to the engine.
+#include <libintl.h>
+#include <SDL/SDL_keyboard.h>
 
-static CD3DEngine*  g_engine;
+
 static char         g_gamerName[100];
-
-void SetEngine(CD3DEngine *engine)
-{
-    g_engine = engine;
-}
-
-// Give the player's name.
 
 void SetGlobalGamerName(char *name)
 {

@@ -32,7 +32,7 @@
 #include <stdio.h>
 
 
-template<> CApplication* CSingleton<CApplication>::mInstance = NULL;
+template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
 
 
 //! Interval of timer called to update joystick state
@@ -62,8 +62,8 @@ struct ApplicationPrivate
     ApplicationPrivate()
     {
         memset(&currentEvent, 0, sizeof(SDL_Event));
-        surface = NULL;
-        joystick = NULL;
+        surface = nullptr;
+        joystick = nullptr;
         joystickTimer = 0;
     }
 };
@@ -76,10 +76,10 @@ CApplication::CApplication()
     m_iMan       = new CInstanceManager();
     m_eventQueue = new CEventQueue(m_iMan);
 
-    m_engine    = NULL;
-    m_device    = NULL;
-    m_robotMain = NULL;
-    m_sound     = NULL;
+    m_engine    = nullptr;
+    m_device    = nullptr;
+    m_robotMain = nullptr;
+    m_sound     = nullptr;
 
     m_keyState = 0;
     m_axeKey   = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -95,19 +95,21 @@ CApplication::CApplication()
 
     m_dataPath = "./data";
 
+    m_language = LANG_ENGLISH;
+
     ResetKey();
 }
 
 CApplication::~CApplication()
 {
     delete m_private;
-    m_private = NULL;
+    m_private = nullptr;
 
     delete m_eventQueue;
-    m_eventQueue = NULL;
+    m_eventQueue = nullptr;
 
     delete m_iMan;
-    m_iMan = NULL;
+    m_iMan = nullptr;
 }
 
 bool CApplication::ParseArguments(int argc, char *argv[])
@@ -218,7 +220,7 @@ bool CApplication::Create()
     if (! CreateVideoSurface())
         return false; // dialog is in function
 
-    if (m_private->surface == NULL)
+    if (m_private->surface == nullptr)
     {
         m_errorMessage = std::string("SDL error while setting video mode:\n") +
                          std::string(SDL_GetError());
@@ -269,7 +271,7 @@ bool CApplication::Create()
 bool CApplication::CreateVideoSurface()
 {
     const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
-    if (videoInfo == NULL)
+    if (videoInfo == nullptr)
     {
         m_errorMessage = std::string("SDL error while getting video info:\n ") +
                          std::string(SDL_GetError());
@@ -321,44 +323,44 @@ bool CApplication::CreateVideoSurface()
 
 void CApplication::Destroy()
 {
-    /*if (m_robotMain != NULL)
+    /*if (m_robotMain != nullptr)
     {
         delete m_robotMain;
-        m_robotMain = NULL;
+        m_robotMain = nullptr;
     }
 
-    if (m_sound != NULL)
+    if (m_sound != nullptr)
     {
         delete m_sound;
-        m_sound = NULL;
+        m_sound = nullptr;
     }*/
 
-    if (m_engine != NULL)
+    if (m_engine != nullptr)
     {
         m_engine->Destroy();
 
         delete m_engine;
-        m_engine = NULL;
+        m_engine = nullptr;
     }
 
-    if (m_device != NULL)
+    if (m_device != nullptr)
     {
         m_device->Destroy();
 
         delete m_device;
-        m_device = NULL;
+        m_device = nullptr;
     }
 
-    if (m_private->joystick != NULL)
+    if (m_private->joystick != nullptr)
     {
         SDL_JoystickClose(m_private->joystick);
-        m_private->joystick = NULL;
+        m_private->joystick = nullptr;
     }
 
-    if (m_private->surface != NULL)
+    if (m_private->surface != nullptr)
     {
         SDL_FreeSurface(m_private->surface);
-        m_private->surface = NULL;
+        m_private->surface = nullptr;
     }
 
     IMG_Quit();
@@ -383,7 +385,7 @@ bool CApplication::ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig)
         return false;
     }
 
-    if (m_private->surface == NULL)
+    if (m_private->surface == nullptr)
     {
         if (! restore)
         {
@@ -426,7 +428,7 @@ bool CApplication::OpenJoystick()
         return false;
 
     m_private->joystick = SDL_JoystickOpen(m_joystick.index);
-    if (m_private->joystick == NULL)
+    if (m_private->joystick == nullptr)
         return false;
 
     m_joystick.axisCount   = SDL_JoystickNumAxes(m_private->joystick);
@@ -437,7 +439,7 @@ bool CApplication::OpenJoystick()
     m_joyButtonState = std::vector<bool>(m_joystick.buttonCount, false);
 
     // Create a timer for polling joystick state
-    m_private->joystickTimer = SDL_AddTimer(JOYSTICK_TIMER_INTERVAL, JoystickTimerCallback, NULL);
+    m_private->joystickTimer = SDL_AddTimer(JOYSTICK_TIMER_INTERVAL, JoystickTimerCallback, nullptr);
 
     return true;
 }
@@ -447,7 +449,7 @@ void CApplication::CloseJoystick()
     // Timer will remove itself automatically
 
     SDL_JoystickClose(m_private->joystick);
-    m_private->joystick = NULL;
+    m_private->joystick = nullptr;
 }
 
 bool CApplication::ChangeJoystick(const JoystickDevice &newJoystick)
@@ -455,7 +457,7 @@ bool CApplication::ChangeJoystick(const JoystickDevice &newJoystick)
     if ( (newJoystick.index < 0) || (newJoystick.index >= SDL_NumJoysticks()) )
         return false;
 
-    if (m_private->joystick != NULL)
+    if (m_private->joystick != nullptr)
         CloseJoystick();
 
     return OpenJoystick();
@@ -464,7 +466,7 @@ bool CApplication::ChangeJoystick(const JoystickDevice &newJoystick)
 Uint32 JoystickTimerCallback(Uint32 interval, void *)
 {
     CApplication *app = CApplication::GetInstancePointer();
-    if ((app == NULL) || (! app->GetJoystickEnabled()))
+    if ((app == nullptr) || (! app->GetJoystickEnabled()))
         return 0; // don't run the timer again
 
     app->UpdateJoystick();
@@ -577,7 +579,7 @@ int CApplication::Run()
                 {
                     bool passOn = ProcessEvent(event);
 
-                    if (m_engine != NULL && passOn)
+                    if (m_engine != nullptr && passOn)
                         passOn = m_engine->ProcessEvent(event);
 
                     if (passOn)
@@ -602,11 +604,11 @@ int CApplication::Run()
                 {
                     passOn = ProcessEvent(event);
 
-                    if (passOn && m_engine != NULL)
+                    if (passOn && m_engine != nullptr)
                         passOn = m_engine->ProcessEvent(event);
                 }
 
-                /*if (passOn && m_robotMain != NULL)
+                /*if (passOn && m_robotMain != nullptr)
                     m_robotMain->ProcessEvent(event); */
             }
 
@@ -814,7 +816,7 @@ VideoQueryResult CApplication::GetVideoResolutionList(std::vector<Math::IntPoint
     resolutions.clear();
 
     const SDL_VideoInfo *videoInfo = SDL_GetVideoInfo();
-    if (videoInfo == NULL)
+    if (videoInfo == nullptr)
         return VIDEO_QUERY_ERROR;
 
     Uint32 videoFlags = SDL_OPENGL | SDL_GL_DOUBLEBUFFER | SDL_HWPALETTE;
@@ -963,4 +965,14 @@ bool CApplication::GetJoystickEnabled()
 std::string CApplication::GetDataFilePath(const std::string& dirName, const std::string& fileName)
 {
     return m_dataPath + "/" + dirName + "/" + fileName;
+}
+
+Language CApplication::GetLanguage()
+{
+    return m_language;
+}
+
+void CApplication::SetLanguage(Language language)
+{
+    m_language = language;
 }

@@ -14,7 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// image.h
+/**
+ * \file common/image.h
+ * \brief Class for loading and saving images
+ */
 
 #pragma once
 

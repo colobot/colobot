@@ -14,30 +14,32 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// restext.h
+/**
+ * \file common/restext.h
+ * \brief Translation and string resource utilities
+ */
 
 #pragma once
 
+#include "common/global.h"
 #include "common/restext_ids.h"
 
 
-
-class CD3DEngine;
-
-// Possible types of the text resources.
-
+/**
+ * \enum ResType
+ * \brief Types of text resources
+ */
 enum ResType
 {
-    RES_TEXT        = 0,    // RT_*
-    RES_EVENT       = 1,    // EVENT_*  (EventMsg)
-    RES_OBJECT      = 2,    // OBJECT_* (ObjectType)
-    RES_ERR         = 3,    // ERR_*    (Error)
-    RES_KEY         = 4,    // VK_*     (keys)
-    RES_CBOT        = 5,    // TX_*     (cbot.dll)
+    RES_TEXT        = 0,    //! < RT_*
+    RES_EVENT       = 1,    //! < EVENT_*  (EventMsg)
+    RES_OBJECT      = 2,    //! < OBJECT_* (ObjectType)
+    RES_ERR         = 3,    //! < ERR_*    (Error)
+    RES_KEY         = 4,    //! < KEY()    (keys)
+    RES_CBOT        = 5,    //! < TX_*     (CBot)
 };
 
 
-extern void     SetEngine(CD3DEngine *engine);
 extern void     SetGlobalGamerName(char *name);
 extern bool     SearchKey(char *cmd, KeyRank &key);
 extern bool     GetResource(ResType type, int num, char* text);

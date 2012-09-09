@@ -14,17 +14,17 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// event.h
+/**
+ * \file common/event.h
+ * \brief Event types, structs and event queue
+ */
 
 #pragma once
 
 
-#include <common/key.h>
-#include <common/event_ids.h>
-#include <math/point.h>
-
-#include <string.h>
-
+#include "common/key.h"
+#include "common/event_ids.h"
+#include "math/point.h"
 
 class CInstanceManager;
 
@@ -193,40 +193,8 @@ struct Event
 };
 
 
-/**
- \enum KeyRank
- \brief Slots for key assignment of user controls
- */
-
-// TODO: move to global.h ?
-
-enum KeyRank
-{
-    KEYRANK_LEFT    = 0,
-    KEYRANK_RIGHT   = 1,
-    KEYRANK_UP      = 2,
-    KEYRANK_DOWN    = 3,
-    KEYRANK_GUP     = 4,
-    KEYRANK_GDOWN   = 5,
-    KEYRANK_CAMERA  = 6,
-    KEYRANK_DESEL   = 7,
-    KEYRANK_ACTION  = 8,
-    KEYRANK_NEAR    = 9,
-    KEYRANK_AWAY    = 10,
-    KEYRANK_NEXT    = 11,
-    KEYRANK_HUMAN   = 12,
-    KEYRANK_QUIT    = 13,
-    KEYRANK_HELP    = 14,
-    KEYRANK_PROG    = 15,
-    KEYRANK_VISIT   = 16,
-    KEYRANK_SPEED10 = 17,
-    KEYRANK_SPEED15 = 18,
-    KEYRANK_SPEED20 = 19,
-    KEYRANK_SPEED30 = 20,
-    KEYRANK_AIMUP   = 21,
-    KEYRANK_AIMDOWN = 22,
-    KEYRANK_CBOT    = 23,
-};
+//! Returns an unique event type (above the standard IDs)
+EventType GetUniqueEventType();
 
 
 /**
@@ -261,5 +229,3 @@ protected:
     int          m_tail;
     int          m_total;
 };
-
-
