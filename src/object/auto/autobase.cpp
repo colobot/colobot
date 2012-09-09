@@ -20,10 +20,10 @@
 #include "object/auto/autobase.h"
 
 #include "common/iman.h"
-#include "old/terrain.h"
-#include "old/cloud.h"
-#include "old/planet.h"
-#include "old/blitz.h"
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/cloud.h"
+#include "graphics/engine/planet.h"
+#include "graphics/engine/lightning.h"
 #include "math/geometry.h"
 #include "object/robotmain.h"
 #include "physics/physics.h"
@@ -50,8 +50,8 @@ const float BASE_TRANSIT_TIME       = 15.0f;    // transit duration
 CAutoBase::CAutoBase(CInstanceManager* iMan, CObject* object)
                      : CAuto(iMan, object)
 {
-    m_fogStart = m_engine->RetFogStart();
-    m_deepView = m_engine->RetDeepView();
+    m_fogStart = m_engine->GetFogStart();
+    m_deepView = m_engine->GetDeepView();
     Init();
     m_phase = ABP_WAIT;
     m_soundChannel = -1;
@@ -85,10 +85,10 @@ void CAutoBase::Init()
 {
     m_bOpen    = false;
     m_time     = 0.0f;
-    m_lastParticule = 0.0f;
-    m_lastMotorParticule = 0.0f;
+    m_lastParticle = 0.0f;
+    m_lastMotorParticle = 0.0f;
 
-    m_pos = m_object->RetPosition(0);
+    m_pos = m_object->GetPosition(0);
     m_lastPos = m_pos;
 
     m_phase    = ABP_WAIT;
@@ -124,10 +124,10 @@ bool CAutoBase::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
+    if ( m_engine->GetPause() )  return true;
 
 begin:
-    iPos = m_object->RetPosition(0);
+    iPos = m_object->GetPosition(0);
 
     if ( m_phase == ABP_START )
     {
@@ -152,17 +152,17 @@ begin:
                 m_object->SetPosition(18+i, Math::Vector(23.5f, 0.0f,  11.5f));
             }
 
-            pObj = m_main->RetSelectObject();
+            pObj = m_main->GetSelectObject();
             m_main->SelectObject(pObj);
             m_camera->SetObject(pObj);
             if ( pObj == 0 )
             {
-                m_camera->SetType(CAMERA_BACK);
+                m_camera->SetType(Gfx::CAM_TYPE_BACK);
             }
             else
             {
-                m_camera->SetType(pObj->RetCameraType());
-                m_camera->SetDist(pObj->RetCameraDist());
+                m_camera->SetType(pObj->GetCameraType());
+                m_camera->SetDist(pObj->GetCameraDist());
             }
 
             m_main->StartMusic();
@@ -193,7 +193,7 @@ begin:
             m_main->SetMovieLock(true);  // blocks everything until the end of the landing
             m_bMotor = true;  // lights the jet engine
 
-            m_camera->SetType(CAMERA_SCRIPT);
+            m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
             pos = m_pos;
             pos.x -= 150.0f;
@@ -202,7 +202,7 @@ begin:
             m_camera->SetScriptEye(pos);
             m_posSound = pos;
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y += 300.0f+50.0f;
             m_camera->SetScriptLookat(pos);
 
@@ -223,7 +223,7 @@ begin:
 
         if ( m_param == PARAM_PORTICO )  // gate on the porch?
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             m_finalPos = pos;
             pos.z += BASE_PORTICO_TIME_MOVE*5.0f;  // back
             pos.y += 10.0f;  // rises (the gate)
@@ -246,7 +246,7 @@ begin:
             m_speed    = 1.0f/BASE_TRANSIT_TIME;
 
             m_object->SetAngleZ(0, -Math::PI/2.0f);
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y += 10000.0f;  // in space
             m_finalPos = pos;
             m_object->SetPosition(0, pos);
@@ -254,7 +254,7 @@ begin:
             m_main->SetMovieLock(true);  // blocks everything until the end of the landing
             m_bMotor = true;  // lights the jet engine
 
-            m_camera->SetType(CAMERA_SCRIPT);
+            m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
             pos.x += 1000.0f;
             pos.z -= 60.0f;
             pos.y += 80.0f;
@@ -265,34 +265,34 @@ begin:
 
             BeginTransit();
 
-            mat = m_object->RetWorldMatrix(0);
+            mat = m_object->GetWorldMatrix(0);
             speed = Math::Vector(0.0f, 0.0f, 0.0f);
             dim.x = 10.0f;
             dim.y = dim.x;
             pos = Math::Vector(42.0f, -2.0f, 17.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[0] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[0] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(17.0f, -2.0f, 42.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[1] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[1] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(42.0f, -2.0f, -17.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[2] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[2] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(17.0f, -2.0f, -42.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[3] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[3] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(-42.0f, -2.0f, 17.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[4] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[4] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(-17.0f, -2.0f, 42.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[5] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[5] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(-42.0f, -2.0f, -17.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[6] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[6] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
             pos = Math::Vector(-17.0f, -2.0f, -42.0f);
             pos = Transform(*mat, pos);
-            m_partiChannel[7] = m_particule->CreateParticule(pos, speed, dim, PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
+            m_partiChannel[7] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTILENS1, BASE_TRANSIT_TIME+1.0f, 0.0f, 0.0f);
 
             if ( m_soundChannel == -1 )
             {
@@ -303,12 +303,12 @@ begin:
         }
     }
 
-    if ( event.event == EVENT_UPDINTERFACE )
+    if ( event.type == EVENT_UPDINTERFACE )
     {
-        if ( m_object->RetSelect() )  CreateInterface(true);
+        if ( m_object->GetSelect() )  CreateInterface(true);
     }
 
-    if ( event.event == EVENT_OBJECT_BTAKEOFF )
+    if ( event.type == EVENT_OBJECT_BTAKEOFF )
     {
         err = CheckCloseDoor();
         if ( err != ERR_OK )
@@ -328,10 +328,10 @@ begin:
         m_main->SetMovieLock(true);  // blocks everything until the end
         m_main->DeselectAll();
 
-        m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
+        newEvent.type = EVENT_UPDINTERFACE;
         m_event->AddEvent(newEvent);
 
-        m_camera->SetType(CAMERA_SCRIPT);
+        m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
         pos = m_pos;
         pos.x -= 110.0f;
@@ -340,7 +340,7 @@ begin:
         m_camera->SetScriptEye(pos);
         m_posSound = pos;
 
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
         pos.y += 50.0f;
         m_camera->SetScriptLookat(pos);
 
@@ -356,7 +356,7 @@ begin:
         return true;
     }
 
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_phase == ABP_WAIT )  return true;
 
     m_progress += event.rTime*m_speed;
@@ -386,15 +386,15 @@ begin:
             pos.y += 10.0f;
             m_camera->SetScriptEye(pos);
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y += 50.0f;
             m_camera->SetScriptLookat(pos);
 
             m_engine->SetFocus(1.0f+(1.0f-m_progress));
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 // Dust thrown to the ground.
                 pos = m_pos;
@@ -410,19 +410,19 @@ begin:
                 dim.y = dim.x;
                 if ( dim.x >= 1.0f )
                 {
-                    m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 2.0f);
+                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 2.0f);
                 }
 
                 // Particles are ejected from the jet engine.
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.y += 6.0f;
-                h = m_terrain->RetFloorHeight(pos)/300.0f;
+                h = m_terrain->GetFloorHeight(pos)/300.0f;
                 speed.x = (Math::Rand()-0.5f)*(80.0f-50.0f*h);
                 speed.z = (Math::Rand()-0.5f)*(80.0f-50.0f*h);
                 speed.y = -(Math::Rand()*(h+1.0f)*40.0f+(h+1.0f)*40.0f);
                 dim.x = Math::Rand()*2.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 2.0f, 10.0f, 2.0f);
 
                 // Black smoke from the jet engine.
                 if ( m_progress > 0.8f )
@@ -436,7 +436,7 @@ begin:
                     speed.y = 0.0f;
                     dim.x = Math::Rand()*4.0f+4.0f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 2.0f);
+                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f, 0.0f, 2.0f);
                 }
             }
         }
@@ -449,7 +449,7 @@ begin:
             MoveCargo();  // all cargo moves
 
             // Impact with the ground.
-            max = (int)(50.0f*m_engine->RetParticuleDensity());
+            max = static_cast<int>(50.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
                 angle = Math::Rand()*(Math::PI*2.0f);
@@ -461,11 +461,11 @@ begin:
                 dim.x = Math::Rand()*10.0f+10.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, time, 0.0f, 2.0f);
             }
 
 //?         m_camera->StartEffect(CE_CRASH, m_pos, 1.0f);
-            m_camera->StartEffect(CE_EXPLO, m_pos, 2.0f);
+            m_camera->StartEffect(Gfx::CAM_EFFECT_EXPLO, m_pos, 2.0f);
             m_engine->SetFocus(1.0f);
             m_sound->Play(SOUND_BOUM, m_posSound, 0.6f, 0.5f);
 
@@ -479,9 +479,9 @@ begin:
     {
         if ( m_progress < 1.0f )
         {
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 // Black smoke from the reactor.
                 pos = m_pos;
@@ -493,7 +493,7 @@ begin:
                 speed.y = 0.0f;
                 dim.x = Math::Rand()*4.0f+4.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f, 0.0f, 2.0f);
             }
         }
         else
@@ -542,7 +542,7 @@ begin:
             }
 
             // Clash the doors with the ground.
-            max = (int)(20.0f*m_engine->RetParticuleDensity());
+            max = static_cast<int>(20.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
                 angle = Math::Rand()*(20.0f*Math::PI/180.0f)-(10.0f*Math::PI/180.0f);
@@ -555,7 +555,7 @@ begin:
                 dim.x = Math::Rand()*8.0f+8.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, time, 0.0f, 2.0f);
             }
 
             m_soundChannel = m_sound->Play(SOUND_MANIP, m_posSound, 0.3f, 1.5f, true);
@@ -622,19 +622,19 @@ begin:
             {
                 m_main->SetMovieLock(false);  // you can play!
 
-                pObj = m_main->RetSelectObject();
+                pObj = m_main->GetSelectObject();
                 m_main->SelectObject(pObj);
                 m_camera->SetObject(pObj);
                 if ( pObj == 0 )
                 {
-                    m_camera->SetType(CAMERA_BACK);
+                    m_camera->SetType(Gfx::CAM_TYPE_BACK);
                 }
                 else
                 {
-                    m_camera->SetType(pObj->RetCameraType());
-                    m_camera->SetDist(pObj->RetCameraDist());
+                    m_camera->SetType(pObj->GetCameraType());
+                    m_camera->SetDist(pObj->GetCameraDist());
                 }
-                m_sound->Play(SOUND_BOUM, m_object->RetPosition(0));
+                m_sound->Play(SOUND_BOUM, m_object->GetPosition(0));
                 m_soundChannel = -1;
 
                 m_engine->SetFogStart(m_fogStart);
@@ -700,7 +700,7 @@ begin:
             m_bMotor = true;  // lights the jet engine
 
             // Shock of the closing doors.
-            max = (int)(20.0f*m_engine->RetParticuleDensity());
+            max = static_cast<int>(20.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
                 angle = Math::Rand()*Math::PI*2.0f;
@@ -713,9 +713,9 @@ begin:
                 dim.x = Math::Rand()*3.0f+3.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*1.0f+1.0f;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, time);
             }
-            m_sound->Play(SOUND_BOUM, m_object->RetPosition(0));
+            m_sound->Play(SOUND_BOUM, m_object->GetPosition(0));
 
             m_soundChannel = -1;
             m_bOpen    = false;
@@ -742,19 +742,19 @@ begin:
             vibCir *= m_progress*1.0f;
             m_object->SetCirVibration(vibCir);
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 // Particles are ejected from the reactor.
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.y += 6.0f;
                 speed.x = (Math::Rand()-0.5f)*160.0f;
                 speed.z = (Math::Rand()-0.5f)*160.0f;
                 speed.y = -(Math::Rand()*10.0f+10.0f);
                 dim.x = Math::Rand()*2.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 2.0f, 10.0f, 2.0f);
             }
 
             m_engine->SetFogStart(m_fogStart+(0.9f-m_fogStart)*m_progress);
@@ -789,15 +789,15 @@ begin:
             pos.y += 10.0f;
             m_camera->SetScriptEye(pos);
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y += 50.0f;
             m_camera->SetScriptLookat(pos);
 
             m_engine->SetFocus(1.0f+m_progress);
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 // Dust thrown to the ground.
                 pos = m_pos;
@@ -813,11 +813,11 @@ begin:
                 dim.y = dim.x;
                 if ( dim.x >= 1.0f )
                 {
-                    m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 2.0f);
+                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 2.0f);
                 }
 
                 // Particles are ejected from the reactor.
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.y += 6.0f;
                 speed.x = (Math::Rand()-0.5f)*40.0f;
                 speed.z = (Math::Rand()-0.5f)*40.0f;
@@ -826,23 +826,23 @@ begin:
                 time = 2.0f+m_progress*12.0f;
                 dim.x = Math::Rand()*time+time;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 2.0f, 10.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 2.0f, 10.0f, 2.0f);
 
                 // Black smoke from the reactor.
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.y += 3.0f;
                 speed.x = (Math::Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
                 speed.z = (Math::Rand()-0.5f)*10.0f*(4.0f-m_progress*3.0f);
                 speed.y = 0.0f;
                 dim.x = Math::Rand()*20.0f+20.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 10.0f, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 10.0f, 0.0f, 2.0f);
             }
         }
         else
         {
             m_soundChannel = -1;
-            m_event->MakeEvent(newEvent, EVENT_WIN);
+            newEvent.type = EVENT_WIN;
             m_event->AddEvent(newEvent);
 
             m_phase    = ABP_WAIT;
@@ -855,7 +855,7 @@ begin:
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.z -= event.rTime*5.0f;
             m_object->SetPosition(0, pos);
             MoveCargo();  // all cargo moves
@@ -882,7 +882,7 @@ begin:
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y -= event.rTime*(10.0f/BASE_PORTICO_TIME_DOWN);
             m_object->SetPosition(0, pos);
             MoveCargo();  // all cargo moves
@@ -890,7 +890,7 @@ begin:
         else
         {
             // Impact with the ground.
-            max = (int)(50.0f*m_engine->RetParticuleDensity());
+            max = static_cast<int>(50.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
                 angle = Math::Rand()*(Math::PI*2.0f);
@@ -902,7 +902,7 @@ begin:
                 dim.x = Math::Rand()*10.0f+10.0f;
                 dim.y = dim.x;
                 time = Math::Rand()*2.0f+1.5f;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, time, 0.0f, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, time, 0.0f, 2.0f);
             }
 
             m_phase    = ABP_PORTICO_WAIT2;
@@ -938,7 +938,7 @@ begin:
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.x += event.rTime*(2000.0f/BASE_TRANSIT_TIME);
             m_object->SetPosition(0, pos);
             pos.x += 60.0f;
@@ -967,11 +967,11 @@ begin:
 
     if ( m_bMotor )
     {
-        if ( m_lastMotorParticule+m_engine->ParticuleAdapt(0.02f) <= m_time )
+        if ( m_lastMotorParticle+m_engine->ParticleAdapt(0.02f) <= m_time )
         {
-            m_lastMotorParticule = m_time;
+            m_lastMotorParticle = m_time;
 
-            mat = m_object->RetWorldMatrix(0);
+            mat = m_object->GetWorldMatrix(0);
 
             if ( event.rTime == 0.0f )
             {
@@ -979,7 +979,7 @@ begin:
             }
             else
             {
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 if ( m_phase == ABP_TRANSIT_MOVE )
                 {
                     vSpeed = (pos.x-iPos.x)/event.rTime;
@@ -1003,7 +1003,7 @@ begin:
             dim.x = 4.0f+Math::Rand()*4.0f;
             dim.y = dim.x;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTIBASE, 3.0f, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBASE, 3.0f, 0.0f, 0.0f);
 
             if ( m_phase == ABP_TRANSIT_MOVE )
             {
@@ -1013,7 +1013,7 @@ begin:
                 pos = Math::Vector(0.0f, 7.0f, 0.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 1.0f, 0.0f, 0.0f);
 
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 4.0f;
@@ -1021,67 +1021,67 @@ begin:
                 pos = Math::Vector(42.0f, 0.0f, 17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(17.0f, 0.0f, 42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(42.0f, 0.0f, -17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(17.0f, 0.0f, -42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(-42.0f, 0.0f, 17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(-17.0f, 0.0f, 42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(-42.0f, 0.0f, -17.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
                 pos = Math::Vector(-17.0f, 0.0f, -42.0f);
                 pos.x += (Math::Rand()-0.5f)*2.0f;  pos.z += (Math::Rand()-0.5f)*2.0f;
                 pos = Transform(*mat, pos);
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 0.5f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 0.5f, 0.0f, 0.0f);
 
                 pos = Math::Vector(42.0f, -2.0f, 17.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[0], pos);
+                m_particle->SetPosition(m_partiChannel[0], pos);
                 pos = Math::Vector(17.0f, -2.0f, 42.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[1], pos);
+                m_particle->SetPosition(m_partiChannel[1], pos);
                 pos = Math::Vector(42.0f, -2.0f, -17.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[2], pos);
+                m_particle->SetPosition(m_partiChannel[2], pos);
                 pos = Math::Vector(17.0f, -2.0f, -42.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[3], pos);
+                m_particle->SetPosition(m_partiChannel[3], pos);
                 pos = Math::Vector(-42.0f, -2.0f, 17.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[4], pos);
+                m_particle->SetPosition(m_partiChannel[4], pos);
                 pos = Math::Vector(-17.0f, -2.0f, 42.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[5], pos);
+                m_particle->SetPosition(m_partiChannel[5], pos);
                 pos = Math::Vector(-42.0f, -2.0f, -17.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[6], pos);
+                m_particle->SetPosition(m_partiChannel[6], pos);
                 pos = Math::Vector(-17.0f, -2.0f, -42.0f);
                 pos = Transform(*mat, pos);
-                m_particule->SetPosition(m_partiChannel[7], pos);
+                m_particle->SetPosition(m_partiChannel[7], pos);
             }
         }
     }
 
     if ( m_soundChannel != -1 )
     {
-        pos = m_engine->RetEyePt();
+        pos = m_engine->GetEyePt();
         m_sound->Position(m_soundChannel, pos);
     }
 
@@ -1154,17 +1154,17 @@ bool CAutoBase::Abort()
 
             m_main->SetMovieLock(false);  // you can play!
 
-            pObj = m_main->RetSelectObject();
+            pObj = m_main->GetSelectObject();
             m_main->SelectObject(pObj);
             m_camera->SetObject(pObj);
             if ( pObj == 0 )
             {
-                m_camera->SetType(CAMERA_BACK);
+                m_camera->SetType(Gfx::CAM_TYPE_BACK);
             }
             else
             {
-                m_camera->SetType(pObj->RetCameraType());
-                m_camera->SetDist(pObj->RetCameraDist());
+                m_camera->SetType(pObj->GetCameraType());
+                m_camera->SetDist(pObj->GetCameraDist());
             }
 
             m_engine->SetFogStart(m_fogStart);
@@ -1175,7 +1175,7 @@ bool CAutoBase::Abort()
              m_phase == ABP_TOWAIT  ||
              m_phase == ABP_TAKEOFF )  // off?
         {
-            m_event->MakeEvent(newEvent, EVENT_WIN);
+            newEvent.type = EVENT_WIN;
             m_event->AddEvent(newEvent);
         }
     }
@@ -1198,9 +1198,9 @@ bool CAutoBase::Abort()
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoBase::RetError()
+Error CAutoBase::GetError()
 {
     return ERR_OK;
 }
@@ -1210,7 +1210,7 @@ Error CAutoBase::RetError()
 
 bool CAutoBase::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, dim, ddim;
     float       ox, oy, sx, sy;
     float       sleep, delay, magnetic, progress;
@@ -1219,8 +1219,8 @@ bool CAutoBase::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-    if ( pw == 0 )  return false;
+    pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == nullptr )  return false;
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
@@ -1240,7 +1240,7 @@ bool CAutoBase::CreateInterface(bool bSelect)
     pos.y = oy+sy*0.25f;
     pw->CreateButton(pos, ddim, 28, EVENT_OBJECT_BTAKEOFF);
 
-    if ( m_blitz->GetStatus(sleep, delay, magnetic, progress) )
+    if ( m_lightning->GetStatus(sleep, delay, magnetic, progress) )
     {
         pos.x = ox+sx*10.2f;
         pos.y = oy+sy*0.5f;
@@ -1264,13 +1264,13 @@ bool CAutoBase::CreateInterface(bool bSelect)
 
 void CAutoBase::UpdateInterface()
 {
-    CWindow*    pw;
+//    Ui::CWindow*    pw;
 
-    if ( !m_object->RetSelect() )  return;
+    if ( !m_object->GetSelect() )  return;
 
     CAuto::UpdateInterface();
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+//    pw = static_cast< Ui::CWindow* >( m_interface->SearchControl(EVENT_WINDOW0));
 }
 
 
@@ -1286,15 +1286,15 @@ void CAutoBase::FreezeCargo(bool bFreeze)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         pObj->SetCargo(false);
 
         if ( pObj == m_object )  continue;  // yourself?
-        if ( pObj->RetTruck() != 0 )  continue;  // transport object?
+        if ( pObj->GetTruck() != 0 )  continue;  // transport object?
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(m_pos, oPos);
         if ( dist < 32.0f )
         {
@@ -1303,7 +1303,7 @@ void CAutoBase::FreezeCargo(bool bFreeze)
                 pObj->SetCargo(true);
             }
 
-            physics = pObj->RetPhysics();
+            physics = pObj->GetPhysics();
             if ( physics != 0 )
             {
                 physics->SetFreeze(bFreeze);
@@ -1320,18 +1320,18 @@ void CAutoBase::MoveCargo()
     Math::Vector    oPos, sPos;
     int         i;
 
-    sPos = m_object->RetPosition(0);
+    sPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast < CObject* > (m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetCargo() )  continue;
+        if ( !pObj->GetCargo() )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         oPos.y = sPos.y+30.0f;
-        oPos.y += pObj->RetCharacter()->height;
+        oPos.y += pObj->GetCharacter()->height;
         oPos.x += sPos.x-m_lastPos.x;
         oPos.z += sPos.z-m_lastPos.z;
         pObj->SetPosition(0, oPos);
@@ -1353,13 +1353,13 @@ Error CAutoBase::CheckCloseDoor()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* > (m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;  // yourself?
-        if ( !pObj->RetActif() )  continue;  // inactive?
+        if ( !pObj->GetActif() )  continue;  // inactive?
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_PORTICO )  continue;
 
         j = 0;
@@ -1391,18 +1391,18 @@ void CAutoBase::BeginTransit()
 
     if ( m_param == PARAM_TRANSIT2 )
     {
-        strcpy(m_bgBack, "back01.tga");  // clouds orange / blue
+        m_bgBack = "back01.tga";  // clouds orange / blue
     }
     else if ( m_param == PARAM_TRANSIT3 )
     {
-        strcpy(m_bgBack, "back22.tga");  // blueberries clouds
+        m_bgBack = "back22.tga";  // blueberries clouds
     }
     else
     {
 #if _DEMO
-        strcpy(m_bgBack, "back46b.tga");  // paintings
+        m_bgBack = "back46b.tga";  // paintings
 #else
-        strcpy(m_bgBack, "back46.tga");  // paintings
+        m_bgBack = "back46.tga";  // paintings
 #endif
     }
 
@@ -1410,8 +1410,8 @@ void CAutoBase::BeginTransit()
     m_engine->SetDeepView(2000.0f);  // we see very far
     m_engine->ApplyChange();
 
-    m_engine->RetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, bFull, bQuarter);
-    m_engine->FreeTexture(m_bgName);
+    m_engine->GetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, bFull, bQuarter);
+    m_engine->DeleteTexture(m_bgName);
 
     m_engine->SetBackground(m_bgBack, 0x00000000, 0x00000000, 0x00000000, 0x00000000);
     m_engine->LoadTexture(m_bgBack);
@@ -1428,7 +1428,7 @@ void CAutoBase::EndTransit()
     m_engine->SetDeepView(m_deepView);  // gives initial depth
     m_engine->ApplyChange();
 
-    m_engine->FreeTexture(m_bgBack);
+    m_engine->DeleteTexture(m_bgBack);
 
     m_engine->SetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown);
     m_engine->LoadTexture(m_bgName);

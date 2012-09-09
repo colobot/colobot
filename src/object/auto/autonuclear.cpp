@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -84,9 +85,9 @@ void CAutoNuclear::Init()
 
     m_time = 0.0f;
     m_timeVirus = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     m_pos = Math::Transform(*mat, Math::Vector(22.0f, 4.0f, 0.0f));
 
     m_phase    = ANUP_WAIT;  // waiting ...
@@ -110,13 +111,13 @@ bool CAutoNuclear::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
@@ -146,7 +147,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
                 InitProgressTotal(1.5f+NUCLEAR_DELAY+1.5f);
                 UpdateInterface();
 
-                m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 1.4f);
+                m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.4f);
 
                 m_phase    = ANUP_CLOSE;
                 m_progress = 0.0f;
@@ -166,8 +167,8 @@ bool CAutoNuclear::EventProcess(const Event &event)
         {
             m_object->SetAngleZ(1, 0.0f);
 
-            mat = m_object->RetWorldMatrix(0);
-            max = (int)(10.0f*m_engine->RetParticuleDensity());
+            mat = m_object->GetWorldMatrix(0);
+            max = static_cast< int >(10.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
                 pos.x = 27.0f;
@@ -179,12 +180,12 @@ bool CAutoNuclear::EventProcess(const Event &event)
                 speed.z = 0.0f;
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH);
             }
 
-            m_sound->Play(SOUND_CLOSE, m_object->RetPosition(0), 1.0f, 1.0f);
+            m_sound->Play(SOUND_CLOSE, m_object->GetPosition(0), 1.0f, 1.0f);
 
-            m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_object->RetPosition(0), 1.0f, 0.1f, true);
+            m_channelSound = m_sound->Play(SOUND_NUCLEAR, m_object->GetPosition(0), 1.0f, 0.1f, true);
             m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, NUCLEAR_DELAY-1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f, 2.0f, SOPER_STOP);
 
@@ -198,11 +199,11 @@ bool CAutoNuclear::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.y += 30.0f;
                 pos.x += (Math::Rand()-0.5f)*6.0f;
                 pos.z += (Math::Rand()-0.5f)*6.0f;
@@ -211,7 +212,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
                 speed.z = 0.0f;
                 dim.x = Math::Rand()*8.0f+8.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH);
 
                 pos = m_pos;
                 speed.x = (Math::Rand()-0.5f)*20.0f;
@@ -219,7 +220,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
                 speed.z = (Math::Rand()-0.5f)*20.0f;
                 dim.x = 2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ, 1.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -234,7 +235,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
 
             CreatePower();  // creates the atomic cell
 
-            max = (int)(20.0f*m_engine->RetParticuleDensity());
+            max = static_cast< int >(20.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
                 pos = m_pos;
@@ -246,10 +247,10 @@ bool CAutoNuclear::EventProcess(const Event &event)
                 speed.z = 0.0f;
                 dim.x = Math::Rand()*2.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, Math::Rand()*5.0f+5.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLUE, Math::Rand()*5.0f+5.0f, 0.0f, 0.0f);
             }
 
-            m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 1.4f);
+            m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.4f);
 
             m_phase    = ANUP_OPEN;
             m_progress = 0.0f;
@@ -287,7 +288,7 @@ bool CAutoNuclear::EventProcess(const Event &event)
 
 bool CAutoNuclear::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -295,7 +296,7 @@ bool CAutoNuclear::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -319,9 +320,9 @@ CObject* CAutoNuclear::SearchUranium()
 {
     CObject*    pObj;
 
-    pObj = m_object->RetPower();
+    pObj = m_object->GetPower();
     if ( pObj == 0 )  return 0;
-    if ( pObj->RetType() == OBJECT_URANIUM )  return pObj;
+    if ( pObj->GetType() == OBJECT_URANIUM )  return pObj;
     return 0;
 }
 
@@ -337,10 +338,10 @@ bool CAutoNuclear::SearchVehicle()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -392,8 +393,8 @@ void CAutoNuclear::CreatePower()
     Math::Vector        pos;
     float           angle;
 
-    pos = m_object->RetPosition(0);
-    angle = m_object->RetAngleY(0);
+    pos = m_object->GetPosition(0);
+    angle = m_object->GetAngleY(0);
 
     power = new CObject(m_iMan);
     if ( !power->CreateResource(pos, angle, OBJECT_ATOMIC) )
@@ -409,28 +410,28 @@ void CAutoNuclear::CreatePower()
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoNuclear::RetError()
+Error CAutoNuclear::GetError()
 {
     CObject*    pObj;
     ObjectType  type;
 //? TerrainRes  res;
 
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
 
-//? res = m_terrain->RetResource(m_object->RetPosition(0));
+//? res = m_terrain->GetResource(m_object->GetPosition(0));
 //? if ( res != TR_POWER )  return ERR_NUCLEAR_NULL;
 
-//? if ( m_object->RetEnergy() < ENERGY_POWER )  return ERR_NUCLEAR_LOW;
+//? if ( m_object->GetEnergy() < ENERGY_POWER )  return ERR_NUCLEAR_LOW;
 
-    pObj = m_object->RetPower();
+    pObj = m_object->GetPower();
     if ( pObj == 0 )  return ERR_NUCLEAR_EMPTY;
-    if ( pObj->RetLock() )  return ERR_OK;
-    type = pObj->RetType();
+    if ( pObj->GetLock() )  return ERR_OK;
+    type = pObj->GetType();
     if ( type == OBJECT_ATOMIC  )  return ERR_OK;
     if ( type != OBJECT_URANIUM )  return ERR_NUCLEAR_BAD;
 
@@ -472,11 +473,11 @@ bool CAutoNuclear::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoNuclearPhase)OpInt(line, "aPhase", ANUP_WAIT);
+    m_phase = static_cast< AutoNuclearPhase >(OpInt(line, "aPhase", ANUP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }

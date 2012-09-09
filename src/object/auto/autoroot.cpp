@@ -19,8 +19,8 @@
 
 #include "object/auto/autoroot.h"
 
-#include "old/particule.h"
-#include "old/terrain.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/terrain.h"
 #include "math/geometry.h"
 
 
@@ -58,9 +58,9 @@ void CAutoRoot::Init()
     Math::Point     dim;
 
     m_time = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     pos = Math::Vector(-5.0f, 28.0f, -4.0f);  // peak position
     pos = Math::Transform(*mat, pos);
     m_center = pos;
@@ -68,7 +68,7 @@ void CAutoRoot::Init()
     speed = Math::Vector(0.0f, 0.0f, 0.0f);
     dim.x = 100.0f;
     dim.y = dim.x;
-    m_particule->CreateParticule(m_center, speed, dim, PARTISPHERE5, 0.5f, 0.0f, 0.0f);
+    m_particle->CreateParticle(m_center, speed, dim, Gfx::PARTISPHERE5, 0.5f, 0.0f, 0.0f);
 
     m_terrain->AddFlyingLimit(pos, 100.0f, 80.0f, pos.y-60.0f);
 }
@@ -83,16 +83,16 @@ bool CAutoRoot::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_object->SetZoomX(1, 1.0f+sinf(m_time*2.0f)*0.2f);
     m_object->SetZoomY(1, 1.0f+sinf(m_time*2.3f)*0.2f);
     m_object->SetZoomZ(1, 1.0f+sinf(m_time*2.7f)*0.2f);
 
-    if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
+    if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
     {
-        m_lastParticule = m_time;
+        m_lastParticle = m_time;
 
         pos = m_center;
         pos.x += (Math::Rand()-0.5f)*8.0f;
@@ -103,16 +103,16 @@ bool CAutoRoot::EventProcess(const Event &event)
         speed.y = Math::Rand()*12.0f;
         dim.x = Math::Rand()*6.0f+4.0f;
         dim.y = dim.x;
-        m_particule->CreateParticule(pos, speed, dim, PARTIROOT, 1.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIROOT, 1.0f, 0.0f, 0.0f);
     }
 
     return true;
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoRoot::RetError()
+Error CAutoRoot::GetError()
 {
     return ERR_OK;
 }

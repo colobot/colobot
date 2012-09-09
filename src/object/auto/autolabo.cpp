@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -69,14 +70,14 @@ void CAutoLabo::DeleteObject(bool bAll)
     {
         if ( m_partiRank[i] != -1 )
         {
-            m_particule->DeleteParticule(m_partiRank[i]);
+            m_particle->DeleteParticle(m_partiRank[i]);
             m_partiRank[i] = -1;
         }
     }
 
     if ( m_partiSphere != -1 )
     {
-        m_particule->DeleteParticule(m_partiSphere);
+        m_particle->DeleteParticle(m_partiSphere);
         m_partiSphere = -1;
     }
 
@@ -97,7 +98,7 @@ void CAutoLabo::Init()
 {
     m_time = 0.0f;
     m_timeVirus = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     m_phase    = ALAP_WAIT;  // waiting ...
     m_progress = 0.0f;
@@ -119,23 +120,23 @@ bool CAutoLabo::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
+    if ( m_engine->GetPause() )  return true;
 
-    if ( event.event == EVENT_UPDINTERFACE )
+    if ( event.type == EVENT_UPDINTERFACE )
     {
-        if ( m_object->RetSelect() )  CreateInterface(true);
+        if ( m_object->GetSelect() )  CreateInterface(true);
     }
 
-    if ( m_object->RetSelect() &&  // center selected?
-         (event.event == EVENT_OBJECT_RiPAW ||
-          event.event == EVENT_OBJECT_RiGUN) )
+    if ( m_object->GetSelect() &&  // center selected?
+         (event.type == EVENT_OBJECT_RiPAW ||
+          event.type == EVENT_OBJECT_RiGUN) )
     {
         if ( m_phase != ALAP_WAIT )
         {
             return false;
         }
 
-        m_research = event.event;
+        m_research = event.type;
 
         if ( TestResearch(m_research) )
         {
@@ -143,13 +144,13 @@ bool CAutoLabo::EventProcess(const Event &event)
             return false;
         }
 
-        power = m_object->RetPower();
+        power = m_object->GetPower();
         if ( power == 0 )
         {
             m_displayText->DisplayError(ERR_LABO_NULL, m_object);
             return false;
         }
-        if ( power->RetType() != OBJECT_BULLET )
+        if ( power->GetType() != OBJECT_BULLET )
         {
             m_displayText->DisplayError(ERR_LABO_BAD, m_object);
             return false;
@@ -168,12 +169,12 @@ bool CAutoLabo::EventProcess(const Event &event)
         return true;
     }
 
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
@@ -247,31 +248,32 @@ bool CAutoLabo::EventProcess(const Event &event)
         {
             m_object->SetAngleZ(1, 0.0f);
 
-            goal = m_object->RetPosition(0);
+            goal = m_object->GetPosition(0);
             goal.y += 3.0f;
             pos = goal;
             pos.x -= 4.0f;
             pos.y += 4.0f;
             for ( i=0 ; i<3 ; i++ )
             {
-                m_partiRank[i] = m_particule->CreateRay(pos, goal,
-                                                        PARTIRAY2,
+                m_partiRank[i] = m_particle->CreateRay(pos, goal,
+                                                        Gfx::PARTIRAY2,
                                                         Math::Point(2.9f, 2.9f),
                                                         LABO_DELAY);
             }
 
-            m_soundChannel = m_sound->Play(SOUND_LABO, m_object->RetPosition(0), 0.0f, 0.25f, true);
+            m_soundChannel = m_sound->Play(SOUND_LABO, m_object->GetPosition(0), 0.0f, 0.25f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.60f, 2.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 2.00f, 8.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.60f, 8.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.25f, 2.0f, SOPER_STOP);
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y += 4.0f;
             speed = Math::Vector(0.0f, 0.0f, 0.0f);
             dim.x = 4.0f;
             dim.y = dim.x;
-            m_partiSphere = m_particule->CreateParticule(pos, speed, dim, PARTISPHERE2, LABO_DELAY, 0.0f, 0.0f);
+            m_partiSphere = m_particle->CreateParticle(pos, speed,
+                    dim, Gfx::PARTISPHERE2, LABO_DELAY, 0.0f, 0.0f);
 
             m_phase    = ALAP_ANALYSE;
             m_progress = 0.0f;
@@ -283,13 +285,13 @@ bool CAutoLabo::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            power = m_object->RetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
                 power->SetZoom(0, 1.0f-m_progress);
             }
 
-            angle = m_object->RetAngleY(2);
+            angle = m_object->GetAngleY(2);
             if ( m_progress < 0.5f )
             {
                 angle -= event.rTime*m_progress*20.0f;
@@ -300,27 +302,27 @@ bool CAutoLabo::EventProcess(const Event &event)
             }
             m_object->SetAngleY(2, angle);  // rotates the analyzer
 
-            angle += m_object->RetAngleY(0);
+            angle += m_object->GetAngleY(0);
             for ( i=0 ; i<3 ; i++ )
             {
                 rot = Math::RotatePoint(-angle, -4.0f);
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.x += rot.x;
                 pos.z += rot.y;
                 pos.y += 3.0f+4.0f;;
-                m_particule->SetPosition(m_partiRank[i], pos);  // adjusts ray
+                m_particle->SetPosition(m_partiRank[i], pos);  // adjusts ray
 
                 angle += Math::PI*2.0f/3.0f;
             }
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 if ( m_progress > 0.25f &&
                      m_progress < 0.80f )
                 {
-                    pos = m_object->RetPosition(0);
+                    pos = m_object->GetPosition(0);
                     pos.y += 3.0f;
                     pos.x += (Math::Rand()-0.5f)*2.0f;
                     pos.z += (Math::Rand()-0.5f)*2.0f;
@@ -329,7 +331,7 @@ bool CAutoLabo::EventProcess(const Event &event)
                     speed.z = (Math::Rand()-0.5f)*10.0f;
                     dim.x = Math::Rand()*0.4f*m_progress+1.0f;
                     dim.y = dim.x;
-                    m_particule->CreateTrack(pos, speed, dim, PARTITRACK2,
+                    m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK2,
                                              2.0f+2.0f*m_progress, 10.0f, 1.5f, 1.4f);
                 }
             }
@@ -338,7 +340,7 @@ bool CAutoLabo::EventProcess(const Event &event)
         {
             SetResearch(m_research);  // research done
 
-            power = m_object->RetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
                 m_object->SetPower(0);
@@ -421,21 +423,21 @@ bool CAutoLabo::EventProcess(const Event &event)
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoLabo::RetError()
+Error CAutoLabo::GetError()
 {
     CObject*    pObj;
     ObjectType  type;
 
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
 
-    pObj = m_object->RetPower();
+    pObj = m_object->GetPower();
     if ( pObj == 0 )  return ERR_LABO_NULL;
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type != OBJECT_BULLET )  return ERR_LABO_BAD;
 
     return ERR_OK;
@@ -446,7 +448,7 @@ Error CAutoLabo::RetError()
 
 bool CAutoLabo::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, dim, ddim;
     float       ox, oy, sx, sy;
 
@@ -454,7 +456,7 @@ bool CAutoLabo::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     dim.x = 33.0f/640.0f;
@@ -487,13 +489,13 @@ bool CAutoLabo::CreateInterface(bool bSelect)
 
 void CAutoLabo::UpdateInterface()
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
 
-    if ( !m_object->RetSelect() )  return;
+    if ( !m_object->GetSelect() )  return;
 
     CAuto::UpdateInterface();
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
     DeadInterface(pw, EVENT_OBJECT_RiPAW, g_researchEnable&RESEARCH_iPAW);
@@ -508,20 +510,20 @@ void CAutoLabo::UpdateInterface()
 
 // Indicates the research conducted for a button.
 
-void CAutoLabo::OkayButton(CWindow *pw, EventMsg event)
+void CAutoLabo::OkayButton(Ui::CWindow *pw, EventType event)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
-    control->SetState(STATE_OKAY, TestResearch(event));
+    control->SetState(Ui::STATE_OKAY, TestResearch(event));
 }
 
 
 // Test whether a search has already been done.
 
-bool CAutoLabo::TestResearch(EventMsg event)
+bool CAutoLabo::TestResearch(EventType event)
 {
     if ( event == EVENT_OBJECT_RiPAW )  return (g_researchDone & RESEARCH_iPAW);
     if ( event == EVENT_OBJECT_RiGUN )  return (g_researchDone & RESEARCH_iGUN);
@@ -531,16 +533,17 @@ bool CAutoLabo::TestResearch(EventMsg event)
 
 // Indicates a search as made.
 
-void CAutoLabo::SetResearch(EventMsg event)
+void CAutoLabo::SetResearch(EventType event)
 {
-    Event   newEvent;
+
 
     if ( event == EVENT_OBJECT_RiPAW )  g_researchDone |= RESEARCH_iPAW;
     if ( event == EVENT_OBJECT_RiGUN )  g_researchDone |= RESEARCH_iGUN;
 
     m_main->WriteFreeParam();
 
-    m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
+    Event   newEvent(EVENT_UPDINTERFACE);
+//    m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
     m_event->AddEvent(newEvent);
     UpdateInterface();
 }
@@ -551,7 +554,7 @@ void CAutoLabo::SoundManip(float time, float amplitude, float frequency)
 {
     int     i;
 
-    i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, true);
+    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
@@ -597,12 +600,12 @@ bool CAutoLabo::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoLaboPhase)OpInt(line, "aPhase", ALAP_WAIT);
+    m_phase = static_cast< AutoLaboPhase >(OpInt(line, "aPhase", ALAP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
-    m_research = (EventMsg)OpInt(line, "aResearch", 0);
+    m_research = static_cast< EventType >(OpInt(line, "aResearch", 0));
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }

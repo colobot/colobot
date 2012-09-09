@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -68,9 +69,9 @@ void CAutoPara::Init()
 
     m_time = 0.0f;
     m_timeVirus = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     m_pos = Math::Transform(*mat, Math::Vector(22.0f, 4.0f, 0.0f));
 
     m_phase    = APAP_WAIT;  // waiting ...
@@ -83,9 +84,9 @@ void CAutoPara::Init()
 
 // Reception of lightning.
 
-void CAutoPara::StartBlitz()
+void CAutoPara::StartLightning()
 {
-    m_phase    = APAP_BLITZ;
+    m_phase    = APAP_LIGHTNING;
     m_progress = 0.0f;
     m_speed    = 1.0f/2.0f;
 }
@@ -101,13 +102,13 @@ bool CAutoPara::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
@@ -118,17 +119,17 @@ bool CAutoPara::EventProcess(const Event &event)
 
     EventProgress(event.rTime);
 
-    if ( m_phase == APAP_BLITZ )
+    if ( m_phase == APAP_LIGHTNING )
     {
         if ( m_progress < 1.0f )
         {
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 for ( i=0 ; i<10 ; i++ )
                 {
-                    pos = m_object->RetPosition(0);
+                    pos = m_object->GetPosition(0);
                     pos.x += (Math::Rand()-0.5f)*m_progress*40.0f;
                     pos.z += (Math::Rand()-0.5f)*m_progress*40.0f;
                     pos.y += 50.0f-m_progress*50.0f;
@@ -137,7 +138,7 @@ bool CAutoPara::EventProcess(const Event &event)
                     speed.y = 5.0f+Math::Rand()*5.0f;
                     dim.x = 2.0f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 20.0f, 0.5f);
+                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ, 1.0f, 20.0f, 0.5f);
                 }
             }
         }
@@ -153,20 +154,20 @@ bool CAutoPara::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 for ( i=0 ; i<2 ; i++ )
                 {
-                    pos = m_object->RetPosition(0);
+                    pos = m_object->GetPosition(0);
                     pos.y += 16.0f;
                     speed.x = (Math::Rand()-0.5f)*10.0f;
                     speed.z = (Math::Rand()-0.5f)*10.0f;
                     speed.y = -Math::Rand()*30.0f;
                     dim.x = 1.0f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
+                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLITZ, 1.0f, 0.0f, 0.0f);
                 }
             }
 
@@ -188,7 +189,7 @@ bool CAutoPara::EventProcess(const Event &event)
 
 bool CAutoPara::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -196,7 +197,7 @@ bool CAutoPara::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -220,11 +221,11 @@ bool CAutoPara::CreateInterface(bool bSelect)
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoPara::RetError()
+Error CAutoPara::GetError()
 {
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
@@ -242,38 +243,38 @@ void CAutoPara::ChargeObject(float rTime)
     float       dist, energy;
     int         i;
 
-    sPos = m_object->RetPosition(0);
+    sPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, sPos);
         if ( dist > 20.0f )  continue;
 
-        if ( pObj->RetTruck() == 0 && pObj->RetType() == OBJECT_POWER )
+        if ( pObj->GetTruck() == 0 && pObj->GetType() == OBJECT_POWER )
         {
-            energy = pObj->RetEnergy();
+            energy = pObj->GetEnergy();
             energy += rTime/2.0f;
             if ( energy > 1.0f )  energy = 1.0f;
             pObj->SetEnergy(energy);
         }
 
-        power = pObj->RetPower();
-        if ( power != 0 && power->RetType() == OBJECT_POWER )
+        power = pObj->GetPower();
+        if ( power != 0 && power->GetType() == OBJECT_POWER )
         {
-            energy = power->RetEnergy();
+            energy = power->GetEnergy();
             energy += rTime/2.0f;
             if ( energy > 1.0f )  energy = 1.0f;
             power->SetEnergy(energy);
         }
 
-        power = pObj->RetFret();
-        if ( power != 0 && power->RetType() == OBJECT_POWER )
+        power = pObj->GetFret();
+        if ( power != 0 && power->GetType() == OBJECT_POWER )
         {
-            energy = power->RetEnergy();
+            energy = power->GetEnergy();
             energy += rTime/2.0f;
             if ( energy > 1.0f )  energy = 1.0f;
             power->SetEnergy(energy);
@@ -315,11 +316,11 @@ bool CAutoPara::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoParaPhase)OpInt(line, "aPhase", APAP_WAIT);
+    m_phase = static_cast< AutoParaPhase >(OpInt(line, "aPhase", APAP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }

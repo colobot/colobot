@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -20,18 +21,18 @@
 
 
 #include "object/auto/auto.h"
-#include "old/particule.h"
+#include "graphics/engine/particle.h"
 
 
 
 struct HustonLens
 {
-    int             parti;
-    ParticuleType   type;
+    int                 parti;
+    Gfx::ParticleType   type;
     Math::Vector        pos;
-    float           dim;
-    float           total;
-    float           off;
+    float               dim;
+    float               total;
+    float               off;
 };
 
 
@@ -50,7 +51,7 @@ public:
     void        Start(int param);
     bool        EventProcess(const Event &event);
     bool        Abort();
-    Error       RetError();
+    Error       GetError();
 
     bool        CreateInterface(bool bSelect);
 

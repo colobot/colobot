@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -20,8 +21,8 @@
 #include "object/auto/autostation.h"
 
 #include "common/iman.h"
-#include "old/particule.h"
-#include "old/terrain.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/terrain.h"
 #include "math/geometry.h"
 #include "ui/interface.h"
 #include "ui/gauge.h"
@@ -66,7 +67,7 @@ void CAutoStation::Init()
     m_time = 0.0f;
     m_timeVirus = 0.0f;
     m_lastUpdateTime = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
     m_soundChannel = -1;
     m_bLastVirus = false;
 
@@ -83,22 +84,22 @@ bool CAutoStation::EventProcess(const Event &event)
     Math::Point     dim;
     CObject*    vehicule;
     CObject*    power;
-    TerrainRes  res;
+    Gfx::TerrainRes  res;
     float       big, energy, used, add, freq;
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( !m_bLastVirus )
         {
             m_bLastVirus = true;
-            m_energyVirus = m_object->RetEnergy();
+            m_energyVirus = m_object->GetEnergy();
         }
 
         if ( m_timeVirus <= 0.0f )
@@ -120,10 +121,10 @@ bool CAutoStation::EventProcess(const Event &event)
 
     UpdateInterface(event.rTime);
 
-    big = m_object->RetEnergy();
+    big = m_object->GetEnergy();
 
-    res = m_terrain->RetResource(m_object->RetPosition(0));
-    if ( res == TR_POWER )
+    res = m_terrain->GetResource(m_object->GetPosition(0));
+    if ( res == Gfx::TR_POWER )
     {
         big += event.rTime*0.01f;  // recharges the large battery
     }
@@ -135,10 +136,10 @@ bool CAutoStation::EventProcess(const Event &event)
         vehicule = SearchVehicle();
         if ( vehicule != 0 )
         {
-            power = vehicule->RetPower();
-            if ( power != 0 && power->RetCapacity() == 1.0f )
+            power = vehicule->GetPower();
+            if ( power != 0 && power->GetCapacity() == 1.0f )
             {
-                energy = power->RetEnergy();
+                energy = power->GetEnergy();
                 add = event.rTime*0.2f;
                 if ( add > big*4.0f )  add = big*4.0f;
                 if ( add > 1.0f-energy )  add = 1.0f-energy;
@@ -148,10 +149,10 @@ bool CAutoStation::EventProcess(const Event &event)
                 big -= add/4.0f;  // discharge the large battery
             }
 
-            power = vehicule->RetFret();
-            if ( power != 0 && power->RetType() == OBJECT_POWER )
+            power = vehicule->GetFret();
+            if ( power != 0 && power->GetType() == OBJECT_POWER )
             {
-                energy = power->RetEnergy();
+                energy = power->GetEnergy();
                 add = event.rTime*0.2f;
                 if ( add > big*4.0f )  add = big*4.0f;
                 if ( add > 1.0f-energy )  add = 1.0f-energy;
@@ -169,7 +170,7 @@ bool CAutoStation::EventProcess(const Event &event)
         freq = 1.0f+3.0f*freq;
         if ( m_soundChannel == -1 )
         {
-            m_soundChannel = m_sound->Play(SOUND_STATION, m_object->RetPosition(0),
+            m_soundChannel = m_sound->Play(SOUND_STATION, m_object->GetPosition(0),
                                            0.3f, freq, true);
         }
         m_sound->Frequency(m_soundChannel, freq);
@@ -184,11 +185,11 @@ bool CAutoStation::EventProcess(const Event &event)
     }
 
     if ( used != 0.0f &&
-         m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+         m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
     {
-        m_lastParticule = m_time;
+        m_lastParticle = m_time;
 
-        mat = m_object->RetWorldMatrix(0);
+        mat = m_object->GetWorldMatrix(0);
         pos = Math::Vector(-15.0f, 7.0f, 0.0f);  // battery position
         pos = Math::Transform(*mat, pos);
         speed.x = (Math::Rand()-0.5f)*20.0f;
@@ -199,7 +200,7 @@ bool CAutoStation::EventProcess(const Event &event)
         ppos.z = pos.z;
         dim.x = 1.5f;
         dim.y = 1.5f;
-        m_particule->CreateParticule(ppos, speed, dim, PARTIBLITZ, 1.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTIBLITZ, 1.0f, 0.0f, 0.0f);
 
 #if 0
         ppos = pos;
@@ -211,7 +212,7 @@ bool CAutoStation::EventProcess(const Event &event)
         speed.y = 2.5f+Math::Rand()*6.0f;
         dim.x = Math::Rand()*1.5f+1.0f;
         dim.y = dim.x;
-        m_particule->CreateParticule(ppos, speed, dim, PARTISMOKE3, 4.0f);
+        m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTISMOKE3, 4.0f);
 #else
         ppos = pos;
         ppos.y += 1.0f;
@@ -222,7 +223,7 @@ bool CAutoStation::EventProcess(const Event &event)
         speed.y = 2.5f+Math::Rand()*5.0f;
         dim.x = Math::Rand()*1.0f+0.6f;
         dim.y = dim.x;
-        m_particule->CreateParticule(ppos, speed, dim, PARTIVAPOR, 3.0f);
+        m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTIVAPOR, 3.0f);
 #endif
     }
 
@@ -244,14 +245,14 @@ CObject* CAutoStation::SearchVehicle()
     float       dist;
     int         i;
 
-    sPos = m_object->RetPosition(0);
+    sPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -280,7 +281,7 @@ CObject* CAutoStation::SearchVehicle()
              type != OBJECT_MOBILEit &&
              type != OBJECT_MOBILEdr )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, sPos);
         if ( dist <= 5.0f )  return pObj;
     }
@@ -289,19 +290,19 @@ CObject* CAutoStation::SearchVehicle()
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoStation::RetError()
+Error CAutoStation::GetError()
 {
-    TerrainRes  res;
+    Gfx::TerrainRes  res;
 
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
 
-    res = m_terrain->RetResource(m_object->RetPosition(0));
-    if ( res != TR_POWER )  return ERR_STATION_NULL;
+    res = m_terrain->GetResource(m_object->GetPosition(0));
+    if ( res != Gfx::TR_POWER )  return ERR_STATION_NULL;
 
     return ERR_OK;
 }
@@ -311,7 +312,7 @@ Error CAutoStation::RetError()
 
 bool CAutoStation::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -319,7 +320,7 @@ bool CAutoStation::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -347,23 +348,23 @@ bool CAutoStation::CreateInterface(bool bSelect)
 
 void CAutoStation::UpdateInterface(float rTime)
 {
-    CWindow*    pw;
-    CGauge*     pg;
+    Ui::CWindow*    pw;
+    Ui::CGauge*     pg;
 
     CAuto::UpdateInterface(rTime);
 
     if ( m_time < m_lastUpdateTime+0.1f )  return;
     m_lastUpdateTime = m_time;
 
-    if ( !m_object->RetSelect() )  return;
+    if ( !m_object->GetSelect() )  return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
+    pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
     if ( pg != 0 )
     {
-        pg->SetLevel(m_object->RetEnergy());
+        pg->SetLevel(m_object->GetEnergy());
     }
 }
 

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -90,7 +91,7 @@ void CAutoPortico::DeleteObject(bool bAll)
 void CAutoPortico::Init()
 {
     m_time = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
     m_posTrack = 0.0f;
 
     m_phase    = APOP_WAIT;
@@ -108,7 +109,7 @@ void CAutoPortico::Start(int param)
 {
     Math::Vector    pos;
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     m_finalPos = pos;
     pos.z += PORTICO_TIME_MOVE*5.0f;  // back to start
     m_object->SetPosition(0, pos);
@@ -140,15 +141,15 @@ bool CAutoPortico::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
+    if ( m_engine->GetPause() )  return true;
 
     if ( m_phase == APOP_START )
     {
         if ( m_param == PARAM_DEPOSE )  // deposits the ship?
         {
-            m_startPos = m_object->RetPosition(0);
+            m_startPos = m_object->GetPosition(0);
 
-            m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->RetPosition(0), 0.0f, 0.3f, true);
+            m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->GetPosition(0), 0.0f, 0.3f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, 0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, PORTICO_TIME_MOVE-0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 0.5f, SOPER_STOP);
@@ -159,7 +160,7 @@ bool CAutoPortico::EventProcess(const Event &event)
 
             m_main->SetMovieLock(true);  // blocks everything until the end of the landing
 
-            m_camera->SetType(CAMERA_SCRIPT);
+            m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
 
             pos = m_startPos;
             pos.x += -100.0f;
@@ -167,7 +168,7 @@ bool CAutoPortico::EventProcess(const Event &event)
             pos.z += -200.0f;
             m_camera->SetScriptEye(pos);
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.x +=   0.0f;
             pos.y +=  10.0f;
             pos.z += -40.0f;
@@ -187,7 +188,7 @@ bool CAutoPortico::EventProcess(const Event &event)
     angle = sinf(m_time*4.0f)*0.3f;
     m_object->SetAngleX(11, angle);
 
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_phase == APOP_WAIT )  return true;
 
     m_progress += event.rTime*m_speed;
@@ -197,7 +198,7 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.z -= event.rTime*5.0f;  // advance
             m_object->SetPosition(0, pos);
 
@@ -216,7 +217,7 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
-            m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, true);
+            m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.5f, 1.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.3f, 0.6f, PORTICO_TIME_DOWN-1.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 1.0f, SOPER_STOP);
@@ -253,12 +254,12 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_progress >= 1.0f )
         {
-            m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.5f, true);
+            m_soundChannel = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.5f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 1.0f, 0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 1.0f, PORTICO_TIME_OPEN/2.0f-0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.5f, 0.5f, SOPER_STOP);
 
-            m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->RetPosition(0), 0.0f, 0.3f, true);
+            m_soundChannel = m_sound->Play(SOUND_MOTORr, m_object->GetPosition(0), 0.0f, 0.3f, true);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, 0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.5f, 0.6f, PORTICO_TIME_OPEN-0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 0.0f, 0.3f, 0.5f, SOPER_STOP);
@@ -273,7 +274,7 @@ bool CAutoPortico::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.z += event.rTime*5.3f;  // back
             m_object->SetPosition(0, pos);
 
@@ -309,7 +310,7 @@ bool CAutoPortico::EventProcess(const Event &event)
             pObj = m_main->SearchHuman();
             m_main->SelectObject(pObj);
             m_camera->SetObject(pObj);
-            m_camera->SetType(CAMERA_BACK);
+            m_camera->SetType(Gfx::CAM_TYPE_BACK);
 
             m_phase    = APOP_WAIT;
             m_progress = 0.0f;
@@ -319,8 +320,8 @@ bool CAutoPortico::EventProcess(const Event &event)
 
     if ( m_soundChannel != -1 )
     {
-//?     m_sound->Position(m_soundChannel, m_object->RetPosition(0));
-        pos = m_engine->RetEyePt();
+//?     m_sound->Position(m_soundChannel, m_object->GetPosition(0));
+        pos = m_engine->GetEyePt();
         m_sound->Position(m_soundChannel, pos);
     }
 
@@ -338,7 +339,7 @@ bool CAutoPortico::EventProcess(const Event &event)
             m_camera->SetScriptEye(pos);
         }
 
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
         pos.x +=   0.0f;
         pos.y +=  10.0f;
         pos.z += -40.0f;
@@ -368,7 +369,7 @@ bool CAutoPortico::Abort()
     pObj = m_main->SearchHuman();
     m_main->SelectObject(pObj);
     m_camera->SetObject(pObj);
-    m_camera->SetType(CAMERA_BACK);
+    m_camera->SetType(Gfx::CAM_TYPE_BACK);
 
     if ( m_soundChannel != -1 )
     {
@@ -385,9 +386,9 @@ bool CAutoPortico::Abort()
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoPortico::RetError()
+Error CAutoPortico::GetError()
 {
     return ERR_OK;
 }
@@ -397,11 +398,11 @@ Error CAutoPortico::RetError()
 
 void CAutoPortico::UpdateTrackMapping(float left, float right)
 {
-    D3DMATERIAL7    mat;
+    Gfx::Material   mat;
     float           limit[2];
     int             rank;
 
-    ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
+    memset( &mat, 0, sizeof(Gfx::Material));
     mat.diffuse.r = 1.0f;
     mat.diffuse.g = 1.0f;
     mat.diffuse.b = 1.0f;  // blank
@@ -409,17 +410,17 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
     mat.ambient.g = 0.5f;
     mat.ambient.b = 0.5f;
 
-    rank = m_object->RetObjectRank(0);
+    rank = m_object->GetObjectRank(0);
 
     limit[0] = 0.0f;
     limit[1] = 1000000.0f;
 
-    m_engine->TrackTextureMapping(rank, mat, D3DSTATEPART1, "lemt.tga", "",
-                                  limit[0], limit[1], D3DMAPPINGX,
+    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART1, "lemt.tga", "",
+                                  limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
                                   right, 8.0f, 8.0f, 192.0f, 256.0f);
 
-    m_engine->TrackTextureMapping(rank, mat, D3DSTATEPART2, "lemt.tga", "",
-                                  limit[0], limit[1], D3DMAPPINGX,
+    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART2, "lemt.tga", "",
+                                  limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
                                   left, 8.0f, 8.0f, 192.0f, 256.0f);
 }
 

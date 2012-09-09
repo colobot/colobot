@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -45,7 +46,7 @@ public:
     void        Start(int param);
     bool        EventProcess(const Event &event);
     Error       IsEnded();
-    Error       RetError();
+    Error       GetError();
 
     bool        SetType(ObjectType type);
     bool        SetValue(int rank, float value);

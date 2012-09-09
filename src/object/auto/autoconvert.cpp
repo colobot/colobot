@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -83,7 +84,7 @@ void CAutoConvert::Init()
     m_speed    = 1.0f/2.0f;
     m_time = 0.0f;
     m_timeVirus = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     CAuto::Init();
 }
@@ -100,13 +101,13 @@ bool CAutoConvert::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
@@ -146,7 +147,7 @@ bool CAutoConvert::EventProcess(const Event &event)
                 InitProgressTotal(3.0f+10.0f+1.5f);
                 UpdateInterface();
 
-                m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 1.0f);
+                m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.0f);
                 m_bSoundClose = false;
 
                 m_phase    = ACP_CLOSE;
@@ -163,7 +164,7 @@ bool CAutoConvert::EventProcess(const Event &event)
             if ( m_progress >= 0.8f && !m_bSoundClose )
             {
                 m_bSoundClose = true;
-                m_sound->Play(SOUND_CLOSE, m_object->RetPosition(0), 1.0f, 0.8f);
+                m_sound->Play(SOUND_CLOSE, m_object->GetPosition(0), 1.0f, 0.8f);
             }
             angle = -Math::PI*0.35f*(1.0f-Math::Bounce(m_progress, 0.85f, 0.05f));
             m_object->SetAngleX(2, angle);
@@ -174,7 +175,7 @@ bool CAutoConvert::EventProcess(const Event &event)
             m_object->SetAngleX(2, 0.0f);
             m_object->SetAngleX(3, 0.0f);
 
-            m_soundChannel = m_sound->Play(SOUND_CONVERT, m_object->RetPosition(0), 0.0f, 0.25f, true);
+            m_soundChannel = m_sound->Play(SOUND_CONVERT, m_object->GetPosition(0), 0.0f, 0.25f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.25f, 0.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.00f, 4.5f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 0.25f, 4.5f, SOPER_CONTINUE);
@@ -202,11 +203,11 @@ bool CAutoConvert::EventProcess(const Event &event)
             m_object->SetAngleY(2, angle);
             m_object->SetAngleY(3, angle+Math::PI);
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 c.x = pos.x;
                 c.y = pos.z;
                 p.x = c.x;
@@ -218,7 +219,7 @@ bool CAutoConvert::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*2.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGAS, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS, 1.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -230,13 +231,13 @@ bool CAutoConvert::EventProcess(const Event &event)
             fret = SearchStone(OBJECT_STONE);
             if ( fret != 0 )
             {
-                m_bResetDelete = ( fret->RetResetCap() != RESET_NONE );
+                m_bResetDelete = ( fret->GetResetCap() != RESET_NONE );
                 fret->DeleteObject();  // destroy the stone
                 delete fret;
             }
 
             CreateMetal();  // Create the metal
-            m_sound->Play(SOUND_OPEN, m_object->RetPosition(0), 1.0f, 1.5f);
+            m_sound->Play(SOUND_OPEN, m_object->GetPosition(0), 1.0f, 1.5f);
 
             m_phase    = ACP_OPEN;
             m_progress = 0.0f;
@@ -253,18 +254,18 @@ bool CAutoConvert::EventProcess(const Event &event)
             m_object->SetAngleX(3, angle);
 
             if ( m_progress < 0.9f &&
-                 m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+                 m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*6.0f;
                 pos.z += (Math::Rand()-0.5f)*6.0f;
                 pos.y += Math::Rand()*4.0f;
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*4.0f+3.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLUE, 1.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -285,11 +286,11 @@ bool CAutoConvert::EventProcess(const Event &event)
     return true;
 }
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoConvert::RetError()
+Error CAutoConvert::GetError()
 {
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
@@ -330,7 +331,7 @@ bool CAutoConvert::Abort()
 
 bool CAutoConvert::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -338,8 +339,8 @@ bool CAutoConvert::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-    if ( pw == 0 )  return false;
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == nullptr )  return false;
 
     ox = 3.0f/640.0f;
     oy = 3.0f/480.0f;
@@ -390,11 +391,11 @@ bool CAutoConvert::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoConvertPhase)OpInt(line, "aPhase", ACP_WAIT);
+    m_phase = static_cast< AutoConvertPhase >(OpInt(line, "aPhase", ACP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }
@@ -410,18 +411,18 @@ CObject* CAutoConvert::SearchStone(ObjectType type)
     float       dist;
     int         i;
 
-    cPos = m_object->RetPosition(0);
+    cPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
         if ( oType != type )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, cPos);
 
         if ( dist <= 5.0f )  return pObj;
@@ -440,14 +441,14 @@ bool CAutoConvert::SearchVehicle()
     float       oRadius, dist;
     int         i;
 
-    cPos = m_object->RetPosition(0);
+    cPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -506,8 +507,8 @@ void CAutoConvert::CreateMetal()
     float           angle;
     CObject*        fret;
 
-    pos = m_object->RetPosition(0);
-    angle = m_object->RetAngleY(0);
+    pos = m_object->GetPosition(0);
+    angle = m_object->GetAngleY(0);
 
     fret = new CObject(m_iMan);
     if ( !fret->CreateResource(pos, angle, OBJECT_METAL) )
