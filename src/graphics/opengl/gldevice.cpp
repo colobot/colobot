@@ -187,6 +187,7 @@ void Gfx::CGLDevice::EndScene()
 
 void Gfx::CGLDevice::Clear()
 {
+    glDepthMask(GL_TRUE);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -453,6 +454,55 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
     {
         sourceFormat = GL_BGRA;
         result.alpha = true;
+    }
+    else if (params.format == Gfx::TEX_IMG_AUTO)
+    {
+        if (data->surface->format->Amask != 0)
+        {
+            if ((data->surface->format->Rmask == 0xFF000000) &&
+                (data->surface->format->Gmask == 0x00FF0000) &&
+                (data->surface->format->Bmask == 0x0000FF00) &&
+                (data->surface->format->Amask == 0x000000FF))
+            {
+                sourceFormat = GL_BGRA;
+                result.alpha = true;
+            }
+            else if ((data->surface->format->Bmask == 0xFF000000) &&
+                     (data->surface->format->Gmask == 0x00FF0000) &&
+                     (data->surface->format->Rmask == 0x0000FF00) &&
+                     (data->surface->format->Amask == 0x000000FF))
+            {
+                sourceFormat = GL_RGBA;
+                result.alpha = true;
+            }
+            else
+            {
+                GetLogger()->Error("Auto texture format failed\n");
+                return Gfx::Texture(); // other format?
+            }
+        }
+        else
+        {
+            if ((data->surface->format->Rmask == 0xFF0000) &&
+                (data->surface->format->Gmask == 0x00FF00) &&
+                (data->surface->format->Bmask == 0x0000FF))
+            {
+                sourceFormat = GL_BGR;
+                result.alpha = false;
+            }
+            else if ((data->surface->format->Bmask == 0xFF0000) &&
+                     (data->surface->format->Gmask == 0x00FF00) &&
+                     (data->surface->format->Rmask == 0x0000FF))
+            {
+                sourceFormat = GL_RGB;
+                result.alpha = false;
+            }
+            else
+            {
+                GetLogger()->Error("Auto texture format failed\n");
+                return Gfx::Texture(); // other format?
+            }
+        }
     }
     else
         assert(false);

@@ -79,29 +79,32 @@ public:
     CCloud(CInstanceManager* iMan, CEngine* engine);
     ~CCloud();
 
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(const Event& event);
     //! Removes all the clouds
     void        Flush();
     //! Creates all areas of cloud
-    void        Create(const std::string& fileName, Gfx::Color diffuse, Gfx::Color ambient, float level);
+    void        Create(const std::string& fileName, const Gfx::Color& diffuse, const Gfx::Color& ambient, float level);
     //! Draw the clouds
     void        Draw();
 
-    //! Modifies the cloud level
+    //! Management of cloud level
+    //@{
     void        SetLevel(float level);
-    //! Returns the current level of clouds
     float       GetLevel();
+    //@}
 
-    //! Activate management of clouds
-    void        SetEnable(bool enable);
-    bool        GetEnable();
+    //! Management of clouds
+    //@{
+    void        SetEnabled(bool enable);
+    bool        GetEnabled();
+    //@}
 
 protected:
     //! Makes the clouds evolve
     bool        EventFrame(const Event &event);
     //! Adjusts the position to normal, to imitate the clouds at movement
-    void        AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep,
-                            Math::Point &uv1, Math::Point &uv2);
+    void        AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
+                            Math::Point& uv1, Math::Point& uv2);
     //! Updates the positions, relative to the ground
     void        CreateLine(int x, int y, int len);
 
@@ -110,9 +113,11 @@ protected:
     Gfx::CEngine*     m_engine;
     Gfx::CTerrain*    m_terrain;
 
-    std::string     m_fileName;
+    bool            m_enabled;
     //! Overall level
     float           m_level;
+    //! Texture
+    std::string     m_fileName;
     //! Feedrate (wind)
     Math::Point     m_speed;
     //! Diffuse color
@@ -131,8 +136,6 @@ protected:
     float           m_brickSize;
 
     std::vector<Gfx::CloudLine> m_lines;
-
-    bool            m_enable;
 };
 
 

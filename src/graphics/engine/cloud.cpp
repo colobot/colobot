@@ -43,7 +43,7 @@ Gfx::CCloud::CCloud(CInstanceManager* iMan, Gfx::CEngine* engine)
     m_level = 0.0f;
     m_wind  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_subdiv = 8;
-    m_enable = true;
+    m_enabled = true;
 
     m_lines.reserve(CLOUD_LINE_PREALLOCATE_COUNT);
 }
@@ -78,8 +78,8 @@ bool Gfx::CCloud::EventFrame(const Event &event)
     return true;
 }
 
-void Gfx::CCloud::AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep,
-                              Math::Point &uv1, Math::Point &uv2)
+void Gfx::CCloud::AdjustLevel(Math::Vector& pos, Math::Vector& eye, float deep,
+                              Math::Point& uv1, Math::Point& uv2)
 {
     uv1.x = (pos.x+20000.0f)/1280.0f;
     uv1.y = (pos.z+20000.0f)/1280.0f;
@@ -96,7 +96,7 @@ void Gfx::CCloud::AdjustLevel(Math::Vector &pos, Math::Vector &eye, float deep,
 
 void Gfx::CCloud::Draw()
 {
-    if (! m_enable) return;
+    if (! m_enabled) return;
     if (m_level == 0.0f) return;
     if (m_lines.empty()) return;
 
@@ -206,7 +206,7 @@ void Gfx::CCloud::CreateLine(int x, int y, int len)
 }
 
 void Gfx::CCloud::Create(const std::string& fileName,
-                         Gfx::Color diffuse, Gfx::Color ambient,
+                         const Gfx::Color& diffuse, const Gfx::Color& ambient,
                          float level)
 {
     m_diffuse  = diffuse;
@@ -258,12 +258,12 @@ float Gfx::CCloud::GetLevel()
     return m_level;
 }
 
-void Gfx::CCloud::SetEnable(bool enable)
+void Gfx::CCloud::SetEnabled(bool enabled)
 {
-    m_enable = enable;
+    m_enabled = enabled;
 }
 
-bool Gfx::CCloud::GetEnable()
+bool Gfx::CCloud::GetEnabled()
 {
-    return m_enable;
+    return m_enabled;
 }

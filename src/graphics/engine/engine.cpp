@@ -208,7 +208,7 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_mouseVisible = false;
 
     m_texPath = "textures/";
-    m_defaultTexParams.format = Gfx::TEX_IMG_RGB;
+    m_defaultTexParams.format = Gfx::TEX_IMG_AUTO;
     m_defaultTexParams.mipmap = true;
     m_defaultTexParams.minFilter = Gfx::TEX_MIN_FILTER_LINEAR_MIPMAP_LINEAR;
     m_defaultTexParams.magFilter = Gfx::TEX_MAG_FILTER_LINEAR;
@@ -2101,7 +2101,8 @@ void Gfx::CEngine::SetViewParams(const Math::Vector& eyePt, const Math::Vector& 
     if (m_sound == nullptr)
         m_sound = static_cast<CSoundInterface*>( m_iMan->SearchInstance(CLASS_SOUND) );
 
-    m_sound->SetListener(eyePt, lookatPt);
+    if (m_sound != nullptr)
+        m_sound->SetListener(eyePt, lookatPt);
 }
 
 Gfx::Texture Gfx::CEngine::CreateTexture(const std::string& texName, const Gfx::TextureCreateParams& params)

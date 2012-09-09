@@ -148,8 +148,6 @@ bool Gfx::CLightManager::DeleteLight(int lightRank)
     return true;
 }
 
-// Specifies a light.
-
 bool Gfx::CLightManager::SetLight(int lightRank, const Gfx::Light &light)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
