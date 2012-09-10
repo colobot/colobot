@@ -124,7 +124,7 @@ graphics/opengl/gldevice.cpp
 # object/motion/motiontoto.cpp
 # object/motion/motionvehicle.cpp
 # object/motion/motionworm.cpp
-object/object.cpp
+# object/object.cpp
 # object/robotmain.cpp
 # object/task/task.cpp
 # object/task/taskadvance.cpp
@@ -147,10 +147,10 @@ object/object.cpp
 # object/task/taskterraform.cpp
 # object/task/taskturn.cpp
 # object/task/taskwait.cpp
-physics/physics.cpp
-script/cbottoken.cpp
-script/cmdtoken.cpp
-script/script.cpp
+# physics/physics.cpp
+# script/cbottoken.cpp
+# script/cmdtoken.cpp
+# script/script.cpp
 # sound/sound.cpp
 # ui/button.cpp
 # ui/check.cpp
