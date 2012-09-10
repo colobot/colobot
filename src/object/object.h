@@ -35,7 +35,10 @@ class CRobotMain;
 class CBotVar;
 class CScript;
 
-
+namespace Ui
+{
+class CDisplayText;
+}
 
 
 // The father of all parts must always be the part number zero!
@@ -46,69 +49,70 @@ const int OBJECTMAXDESELLIST    = 10;
 const int OBJECTMAXINFO         = 10;
 const int OBJECTMAXCMDLINE      = 20;
 
+
 enum ObjectMaterial
 {
-    OM_METAL        = 0,    // metal
-    OM_PLASTIC      = 1,    // plastic
-    OM_HUMAN        = 2,    // cosmonaut
-    OM_ANIMAL       = 3,    // insect
-    OM_VEGETAL      = 4,    // plant
-    OM_MINERAL      = 5,    // stone
+    OM_METAL   = 0,    // metal
+    OM_PLASTIC = 1,    // plastic
+    OM_HUMAN   = 2,    // cosmonaut
+    OM_ANIMAL  = 3,    // insect
+    OM_VEGETAL = 4,    // plant
+    OM_MINERAL = 5,    // stone
 };
 
 struct ObjectPart
 {
-    char        bUsed;
-    int     object;         // number of the object in CEngine
-    int     parentPart;     // number of father part
-    int     masterParti;        // master canal of the particle
-    Math::Vector    position;
-    Math::Vector    angle;
-    Math::Vector    zoom;
-    char        bTranslate;
-    char        bRotate;
-    char        bZoom;
-    Math::Matrix    matTranslate;
-    Math::Matrix    matRotate;
-    Math::Matrix    matTransform;
-    Math::Matrix    matWorld;
+    char         bUsed;
+    int          object;         // number of the object in CEngine
+    int          parentPart;     // number of father part
+    int          masterParti;        // master canal of the particle
+    Math::Vector position;
+    Math::Vector angle;
+    Math::Vector zoom;
+    char         bTranslate;
+    char         bRotate;
+    char         bZoom;
+    Math::Matrix matTranslate;
+    Math::Matrix matRotate;
+    Math::Matrix matTransform;
+    Math::Matrix matWorld;
 };
 
 struct Character
 {
-    float       wheelFront;     // position X of the front wheels
-    float       wheelBack;      // position X of the back wheels
-    float       wheelLeft;      // position Z of the left wheels
-    float       wheelRight;     // position Z of the right wheels
-    float       height;         // normal height on top of ground
-    Math::Vector    posPower;       // position of the battery
+    float        wheelFront;     // position X of the front wheels
+    float        wheelBack;      // position X of the back wheels
+    float        wheelLeft;      // position Z of the left wheels
+    float        wheelRight;     // position Z of the right wheels
+    float        height;         // normal height on top of ground
+    Math::Vector posPower;       // position of the battery
 };
 
 struct Info
 {
-    char        name[20];       // name of the information
-    float       value;          // value of the information
+    char  name[20];       // name of the information
+    float value;          // value of the information
 };
 
 enum ExploType
 {
-    EXPLO_BOUM      = 1,
-    EXPLO_BURN      = 2,
-    EXPLO_WATER     = 3,
+    EXPLO_BOUM  = 1,
+    EXPLO_BURN  = 2,
+    EXPLO_WATER = 3,
 };
 
 enum ResetCap
 {
-    RESET_NONE      = 0,
-    RESET_MOVE      = 1,
-    RESET_DELETE    = 2,
+    RESET_NONE   = 0,
+    RESET_MOVE   = 1,
+    RESET_DELETE = 2,
 };
 
 enum RadarFilter
 {
-    FILTER_NONE         = 0,
-    FILTER_ONLYLANDING  = 1,
-    FILTER_ONLYFLYING   = 2,
+    FILTER_NONE        = 0,
+    FILTER_ONLYLANDING = 1,
+    FILTER_ONLYFLYING  = 2,
 };
 
 
@@ -162,7 +166,7 @@ public:
     bool        CreateRuin(Math::Vector pos, float angle, float height, ObjectType type);
     bool        CreateApollo(Math::Vector pos, float angle, ObjectType type);
 
-    bool        ReadProgram(int rank, char* filename);
+    bool        ReadProgram(int rank, const char* filename);
     bool        WriteProgram(int rank, char* filename);
     bool        RunProgram(int rank);
 
@@ -235,8 +239,8 @@ public:
     void        SetResetRun(int run);
     int         GetResetRun();
 
-    void        SetMasterParticule(int part, int parti);
-    int         GetMasterParticule(int part);
+    void        SetMasterParticle(int part, int parti);
+    int         GetMasterParticle(int part);
 
     void        SetPower(CObject* power);
     CObject*    GetPower();
@@ -252,8 +256,8 @@ public:
     void        SetInfo(int rank, Info info);
     Info        GetInfo(int rank);
     int         GetInfoTotal();
-    void        SetInfoGeturn(float value);
-    float       GetInfoGeturn();
+    void        SetInfoReturn(float value);
+    float       GetInfoReturn();
     void        SetInfoUpdate(bool bUpdate);
     bool        GetInfoUpdate();
 
@@ -370,7 +374,7 @@ public:
     void        StopShowLimit();
 
     bool        IsProgram();
-    void        CreateSelectParticule();
+    void        CreateSelectParticle();
 
     void        SetRunScript(CScript* script);
     CScript*    GetRunScript();
@@ -414,25 +418,25 @@ protected:
     void        UpdateEnergyMapping();
     bool        UpdateTransformObject(int part, bool bForceUpdate);
     bool        UpdateTransformObject();
-    void        UpdateSelectParticule();
+    void        UpdateSelectParticle();
 
 protected:
-    CInstanceManager* m_iMan;
-    Gfx::CEngine*        m_engine;
-    Gfx::CLightManager*  m_lightMan;
-    Gfx::CTerrain*       m_terrain;
-    Gfx::CWater*         m_water;
-    Gfx::CCamera*        m_camera;
-    Gfx::CParticle*      m_particle;
-    CPhysics*       m_physics;
-    CBrain*         m_brain;
-    CMotion*        m_motion;
-    CAuto*          m_auto;
-    CDisplayText*   m_displayText;
-    CRobotMain*     m_main;
-    CSoundInterface* m_sound;
-    CBotVar*        m_botVar;
-    CScript*        m_runScript;
+    CInstanceManager*   m_iMan;
+    Gfx::CEngine*       m_engine;
+    Gfx::CLightManager* m_lightMan;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CWater*        m_water;
+    Gfx::CCamera*       m_camera;
+    Gfx::CParticle*     m_particle;
+    CPhysics*           m_physics;
+    CBrain*             m_brain;
+    CMotion*            m_motion;
+    CAuto*              m_auto;
+    Ui::CDisplayText*   m_displayText;
+    CRobotMain*         m_main;
+    CSoundInterface*    m_sound;
+    CBotVar*            m_botVar;
+    CScript*            m_runScript;
 
     ObjectType  m_type;             // OBJECT_*
     int     m_id;               // unique identifier
@@ -462,8 +466,8 @@ protected:
     float       m_shotTime;         // time since last shot
     bool        m_bVirusMode;           // virus activated/triggered
     float       m_virusTime;            // lifetime of the virus
-    float       m_lastVirusParticule;
-    float       m_lastParticule;
+    float       m_lastVirusParticle;
+    float       m_lastParticle;
     bool        m_bHilite;
     bool        m_bSelect;          // object selected
     bool        m_bSelectable;          // selectable object
@@ -522,7 +526,7 @@ protected:
 
     int         m_infoTotal;
     Info        m_info[OBJECTMAXINFO];
-    float       m_infoGeturn;
+    float       m_infoReturn;
     bool        m_bInfoUpdate;
 
     float       m_cmdLine[OBJECTMAXCMDLINE];

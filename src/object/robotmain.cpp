@@ -615,7 +615,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
     m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
     m_light     = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-    m_particule = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
+    m_particle = (CParticle*)m_iMan->SearchInstance(CLASS_PARTICULE);
     m_water     = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
     m_cloud     = (CCloud*)m_iMan->SearchInstance(CLASS_CLOUD);
     m_blitz     = (CBlitz*)m_iMan->SearchInstance(CLASS_BLITZ);
@@ -740,7 +740,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     for ( i=0 ; i<OBJECT_MAX ; i++ )
     {
         type = (ObjectType)i;
-        token = RetObjectName(type);
+        token = GetObjectName(type);
         if ( token[0] != 0 )
         {
             CBotProgram::DefineNum(token, type);
@@ -913,7 +913,7 @@ void CRobotMain::ChangePhase(Phase phase)
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
     m_light->FlushLight();
-    m_particule->FlushParticule();
+    m_particle->FlushParticule();
     m_water->Flush();
     m_cloud->Flush();
     m_blitz->Flush();
@@ -1323,7 +1323,7 @@ bool CRobotMain::EventProcess(const Event &event)
                 HiliteClear();
                 if ( event.param == VK_F11 )
                 {
-                    m_particule->WriteWheelTrace("Savegame\\t.bmp", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
+                    m_particle->WriteWheelTrace("Savegame\\t.bmp", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
                     return false;
                 }
                 if ( m_bEditLock )  // current edition?
@@ -2374,7 +2374,7 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
     m_visitTime = 0.0;
     m_visitParticule = 0.0f;
 
-    m_particule->DeleteParticule(PARTISHOW);
+    m_particle->DeleteParticule(PARTISHOW);
 
     m_camera->StartVisit(m_displayText->RetVisitGoal(event),
                          m_displayText->RetVisitDist(event));
@@ -2412,7 +2412,7 @@ void CRobotMain::FrameVisit(float rTime)
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
         dim.x = 30.0f;
         dim.y = dim.x;
-        m_particule->CreateParticule(pos, speed, dim, PARTISHOW, 2.0f);
+        m_particle->CreateParticle(pos, speed, dim, PARTISHOW, 2.0f);
     }
 }
 
@@ -2434,7 +2434,7 @@ void CRobotMain::StopDisplayVisit()
     }
 
     // Removes particles "arrows".
-    m_particule->DeleteParticule(PARTISHOW);
+    m_particle->DeleteParticule(PARTISHOW);
 
     m_camera->StopVisit();
     m_displayText->ClearVisit();
@@ -3517,7 +3517,7 @@ bool CRobotMain::EventFrame(const Event &event)
 
         if ( m_engine->RetFog() )
         {
-            m_camera->SetOverBaseColor(m_particule->RetFogColor(m_engine->RetEyePt()));
+            m_camera->SetOverBaseColor(m_particle->RetFogColor(m_engine->RetEyePt()));
         }
     }
     if ( m_phase == PHASE_PERSO ||
@@ -3932,7 +3932,7 @@ void CRobotMain::ScenePerso()
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
     m_light->FlushLight();
-    m_particule->FlushParticule();
+    m_particle->FlushParticule();
     m_iMan->Flush(CLASS_OBJECT);
     m_iMan->Flush(CLASS_PHYSICS);
     m_iMan->Flush(CLASS_BRAIN);
@@ -4615,7 +4615,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
             pos.y += height;
             dim.x = ddim;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
         }
 
         if ( Cmd(line, "CreateLight") && !bResetObject )
@@ -5767,7 +5767,7 @@ void CRobotMain::FlushShowLimit(int i)
     {
         if ( m_showLimit[i].parti[j] == 0 )  continue;
 
-        m_particule->DeleteParticule(m_showLimit[i].parti[j]);
+        m_particle->DeleteParticule(m_showLimit[i].parti[j]);
         m_showLimit[i].parti[j] = 0;
     }
 
@@ -5811,7 +5811,7 @@ void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
 
     for ( j=0 ; j<m_showLimit[i].total ; j++ )
     {
-        m_showLimit[i].parti[j] = m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, parti, duration);
+        m_showLimit[i].parti[j] = m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, parti, duration);
     }
 }
 
@@ -5890,8 +5890,8 @@ void CRobotMain::FrameShowLimit(float rTime)
             m_terrain->MoveOnFloor(pos, true);
             if ( m_showLimit[i].radius <= 50.0f )  pos.y += 0.5f;
             else                                   pos.y += 2.0f;
-            m_particule->SetPosition(m_showLimit[i].parti[j], pos);
-//?         m_particule->SetAngle(m_showLimit[i].parti[j], angle-Math::PI/2.0f);
+            m_particle->SetPosition(m_showLimit[i].parti[j], pos);
+//?         m_particle->SetAngle(m_showLimit[i].parti[j], angle-Math::PI/2.0f);
 
             angle += (2.0f*Math::PI)/m_showLimit[i].total;
         }
@@ -6787,10 +6787,10 @@ void CRobotMain::ResetObject()
     }
 
     // Removes all bullets in progress.
-    m_particule->DeleteParticule(PARTIGUN1);
-    m_particule->DeleteParticule(PARTIGUN2);
-    m_particule->DeleteParticule(PARTIGUN3);
-    m_particule->DeleteParticule(PARTIGUN4);
+    m_particle->DeleteParticule(PARTIGUN1);
+    m_particle->DeleteParticule(PARTIGUN2);
+    m_particle->DeleteParticule(PARTIGUN3);
+    m_particle->DeleteParticule(PARTIGUN4);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
@@ -6869,15 +6869,15 @@ void CRobotMain::ResetCreate()
     SaveAllScript();
 
     // Removes all bullets in progress.
-    m_particule->DeleteParticule(PARTIGUN1);
-    m_particule->DeleteParticule(PARTIGUN2);
-    m_particule->DeleteParticule(PARTIGUN3);
-    m_particule->DeleteParticule(PARTIGUN4);
+    m_particle->DeleteParticule(PARTIGUN1);
+    m_particle->DeleteParticule(PARTIGUN2);
+    m_particle->DeleteParticule(PARTIGUN3);
+    m_particle->DeleteParticule(PARTIGUN4);
 
     DeselectAll();  // removes the control buttons
     DeleteAllObjects();  // removes all the current 3D Scene
 
-    m_particule->FlushParticule();
+    m_particle->FlushParticule();
     m_terrain->FlushBuildingLevel();
     m_iMan->Flush(CLASS_OBJECT);
     m_iMan->Flush(CLASS_PHYSICS);
@@ -7028,7 +7028,7 @@ Error CRobotMain::CheckEndMission(bool bFrame)
 
 // Checks if the mission is finished after displaying a message.
 
-void CRobotMain::CheckEndMessage(char *message)
+void CRobotMain::CheckEndMessage(const char *message)
 {
     int     t;
 
@@ -7062,7 +7062,7 @@ char* CRobotMain::RetObligatoryToken(int i)
 
 // Checks if an instruction is part of the obligatory list.
 
-int CRobotMain::IsObligatoryToken(char *token)
+int CRobotMain::IsObligatoryToken(const char *token)
 {
     int     i;
 
@@ -7078,7 +7078,7 @@ int CRobotMain::IsObligatoryToken(char *token)
 
 // Checks if an instruction is not part of the banned list.
 
-bool CRobotMain::IsProhibitedToken(char *token)
+bool CRobotMain::IsProhibitedToken(const char *token)
 {
     int     i;
 

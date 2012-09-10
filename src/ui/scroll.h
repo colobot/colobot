@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -19,12 +20,13 @@
 #pragma once
 
 
-#include "ui/control.h"
+#include <ui/control.h>
 
+#include <common/event.h>
 
-class CD3DEngine;
+namespace Ui {
+
 class CButton;
-
 
 const float SCROLL_WIDTH = (15.0f/640.0f);
 
@@ -32,50 +34,51 @@ const float SCROLL_WIDTH = (15.0f/640.0f);
 
 class CScroll : public CControl
 {
-public:
-    CScroll(CInstanceManager* iMan);
-    ~CScroll();
+    public:
+        CScroll();
+        ~CScroll();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-    void        SetPos(Math::Point pos);
-    void        SetDim(Math::Point dim);
+        void        SetPos(Math::Point pos);
+        void        SetDim(Math::Point dim);
 
-    bool        SetState(int state, bool bState);
-    bool        SetState(int state);
-    bool        ClearState(int state);
+        bool        SetState(int state, bool bState);
+        bool        SetState(int state);
+        bool        ClearState(int state);
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
+        bool        EventProcess(const Event &event);
+        void        Draw();
 
-    void        SetVisibleValue(float value);
-    float       RetVisibleValue();
+        void        SetVisibleValue(float value);
+        float       GetVisibleValue();
 
-    void        SetVisibleRatio(float value);
-    float       RetVisibleRatio();
+        void        SetVisibleRatio(float value);
+        float       GetVisibleRatio();
 
-    void        SetArrowStep(float step);
-    float       RetArrowStep();
+        void        SetArrowStep(float step);
+        float       GetArrowStep();
 
-protected:
-    void        MoveAdjust();
-    void        AdjustGlint();
-    void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
+    protected:
+        void        MoveAdjust();
+        void        AdjustGlint();
+        void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
 
-protected:
-    CButton*    m_buttonUp;
-    CButton*    m_buttonDown;
+    protected:
+        CButton*    m_buttonUp;
+        CButton*    m_buttonDown;
 
-    float       m_visibleValue;
-    float       m_visibleRatio;
-    float       m_step;
+        float       m_visibleValue;
+        float       m_visibleRatio;
+        float       m_step;
 
-    bool        m_bCapture;
-    Math::Point     m_pressPos;
-    float       m_pressValue;
+        bool        m_bCapture;
+        Math::Point     m_pressPos;
+        float       m_pressValue;
 
-    EventMsg    m_eventUp;
-    EventMsg    m_eventDown;
+        EventType    m_eventUp;
+        EventType    m_eventDown;
 };
 
 
+}

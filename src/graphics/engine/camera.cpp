@@ -28,67 +28,6 @@
 #include "object/object.h"
 #include "physics/physics.h"
 
-
-// TODO temporary stubs for CObject and CPhysics
-
-void CObject::SetTransparency(float)
-{
-}
-
-CObject* CObject::GetFret()
-{
-    return nullptr;
-}
-
-CObject* CObject::GetPower()
-{
-    return nullptr;
-}
-
-CObject* CObject::GetTruck()
-{
-    return nullptr;
-}
-
-ObjectType CObject::GetType()
-{
-    return OBJECT_NULL;
-}
-
-void CObject::SetGunGoalH(float)
-{
-}
-
-void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
-{
-}
-
-float CObject::GetAngleY(int)
-{
-    return 0.0f;
-}
-
-Math::Vector CObject::GetPosition(int)
-{
-    return Math::Vector();
-}
-
-void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
-                              Math::Vector &lookat, Math::Vector &upVec,
-                              Gfx::CameraType type)
-{
-}
-
-CPhysics* CObject::GetPhysics()
-{
-    return nullptr;
-}
-
-bool CPhysics::GetLand()
-{
-    return false;
-}
-
 //! Changes the level of transparency of an object and objects transported (battery & cargo)
 void SetTransparency(CObject* obj, float value)
 {

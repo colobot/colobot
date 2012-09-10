@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,13 +18,13 @@
 // editvalue.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+//#include <windows.h>
+//#include <stdio.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -33,10 +34,11 @@
 
 
 
-
+namespace Ui {
 // Object's constructor.
 
-CEditValue::CEditValue(CInstanceManager* iMan) : CControl(iMan)
+//CEditValue::CEditValue(CInstanceManager* iMan) : CControl(iMan)
+CEditValue::CEditValue() : CControl ()
 {
     m_edit       = 0;
     m_buttonUp   = 0;
@@ -60,28 +62,28 @@ CEditValue::~CEditValue()
 
 // Creates a new button.
 
-bool CEditValue::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CEditValue::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    CEdit*      pe;
-    CButton*    pc;
+    Ui::CEdit*      pe;
+    Ui::CButton*    pc;
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
-    CControl::Create(pos, dim, icon, eventMsg);
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
+    CControl::Create(pos, dim, icon, eventType);
 
     GlintDelete();
 
-    m_edit = new CEdit(m_iMan);
-    pe = (CEdit*)m_edit;
+    m_edit = new Ui::CEdit();
+    pe = static_cast<Ui::CEdit*>(m_edit);
     pe->Create(pos, dim, 0, EVENT_NULL);
     pe->SetMaxChar(4);
 
-    m_buttonUp = new CButton(m_iMan);
-    pc = (CButton*)m_buttonUp;
+    m_buttonUp = new Ui::CButton();
+    pc = static_cast<Ui::CButton*>(m_buttonUp);
     pc->Create(pos, dim, 49, EVENT_NULL);  // ^
     pc->SetRepeat(true);
 
-    m_buttonDown = new CButton(m_iMan);
-    pc = (CButton*)m_buttonDown;
+    m_buttonDown = new Ui::CButton();
+    pc = static_cast<Ui::CButton*>(m_buttonDown);
     pc->Create(pos, dim, 50, EVENT_NULL);  // v
     pc->SetRepeat(true);
 
@@ -151,11 +153,11 @@ bool CEditValue::EventProcess(const Event &event)
 
     if ( m_edit != 0 )
     {
-        if ( m_edit->RetFocus()           &&
-             event.event == EVENT_KEYDOWN &&
-             event.param == VK_RETURN     )
+        if ( m_edit->GetFocus()           &&
+             event.type == EVENT_KEY_DOWN &&
+             event.param == KEY(RETURN)     )
         {
-            value = RetValue();
+            value = GetValue();
             if ( value > m_maxValue )  value = m_maxValue;
             if ( value < m_minValue )  value = m_minValue;
             SetValue(value, true);
@@ -163,19 +165,18 @@ bool CEditValue::EventProcess(const Event &event)
         }
         if ( !m_edit->EventProcess(event) )  return false;
 
-        if ( event.event == m_edit->RetEventMsg() )
+        if ( event.type == m_edit->GetEventType() )
         {
-            Event       newEvent;
-            m_event->MakeEvent(newEvent, m_eventMsg);
+            Event       newEvent(m_eventType);
             m_event->AddEvent(newEvent);
         }
     }
 
     if ( m_buttonUp != 0 )
     {
-        if ( event.event == m_buttonUp->RetEventMsg() )
+        if ( event.type == m_buttonUp->GetEventType() )
         {
-            value = RetValue()+m_stepValue;
+            value = GetValue()+m_stepValue;
             if ( value > m_maxValue )  value = m_maxValue;
             SetValue(value, true);
             HiliteValue(event);
@@ -185,9 +186,9 @@ bool CEditValue::EventProcess(const Event &event)
 
     if ( m_buttonDown != 0 )
     {
-        if ( event.event == m_buttonDown->RetEventMsg() )
+        if ( event.type == m_buttonDown->GetEventType() )
         {
-            value = RetValue()-m_stepValue;
+            value = GetValue()-m_stepValue;
             if ( value < m_minValue )  value = m_minValue;
             SetValue(value, true);
             HiliteValue(event);
@@ -195,20 +196,20 @@ bool CEditValue::EventProcess(const Event &event)
         if ( !m_buttonDown->EventProcess(event) )  return false;
     }
 
-    if ( event.event == EVENT_KEYDOWN &&
-         event.param == VK_WHEELUP    &&
+    if ( event.type == EVENT_KEY_DOWN &&
+         event.mouseButton.button == 4    &&
          Detect(event.pos)            )
     {
-        value = RetValue()+m_stepValue;
+        value = GetValue()+m_stepValue;
         if ( value > m_maxValue )  value = m_maxValue;
         SetValue(value, true);
         HiliteValue(event);
     }
-    if ( event.event == EVENT_KEYDOWN &&
-         event.param == VK_WHEELDOWN  &&
+    if ( event.type == EVENT_KEY_DOWN &&
+         event.mouseButton.button == 5  &&
          Detect(event.pos)            )
     {
-        value = RetValue()-m_stepValue;
+        value = GetValue()-m_stepValue;
         if ( value < m_minValue )  value = m_minValue;
         SetValue(value, true);
         HiliteValue(event);
@@ -226,7 +227,7 @@ void CEditValue::HiliteValue(const Event &event)
 
     if ( m_edit == 0 )  return;
 
-    pos = m_edit->RetTextLength();
+    pos = m_edit->GetTextLength();
     if ( m_type == EVT_100 && pos > 0 )
     {
         pos --;  // not only selects the "%"
@@ -236,8 +237,9 @@ void CEditValue::HiliteValue(const Event &event)
     m_edit->SetFocus(true);
 
     Event newEvent = event;
-    newEvent.event = EVENT_FOCUS;
-    newEvent.param = m_edit->RetEventMsg();
+    newEvent.type = EVENT_ACTIVE;
+    newEvent.active.gain = true; // TODO not much pretty sure about it
+    newEvent.param = m_edit->GetEventType();
     m_event->AddEvent(newEvent);  // defocus the other objects
 }
 
@@ -275,7 +277,7 @@ void CEditValue::SetType(EditValueType type)
     m_type = type;
 }
 
-EditValueType CEditValue::RetType()
+EditValueType CEditValue::GetType()
 {
     return m_type;
 }
@@ -310,15 +312,14 @@ void CEditValue::SetValue(float value, bool bSendMessage)
 
     if ( bSendMessage )
     {
-        Event       newEvent;
-        m_event->MakeEvent(newEvent, m_eventMsg);
+        Event       newEvent(m_eventType);
         m_event->AddEvent(newEvent);
     }
 }
 
 // Return the edited value.
 
-float CEditValue::RetValue()
+float CEditValue::GetValue()
 {
     char    text[100];
     float   value;
@@ -345,7 +346,7 @@ void CEditValue::SetStepValue(float value)
     m_stepValue = value;
 }
 
-float CEditValue::RetStepValue()
+float CEditValue::GetStepValue()
 {
     return m_stepValue;
 }
@@ -358,7 +359,7 @@ void CEditValue::SetMinValue(float value)
     m_minValue = value;
 }
 
-float CEditValue::RetMinValue()
+float CEditValue::GetMinValue()
 {
     return m_minValue;
 }
@@ -371,8 +372,9 @@ void CEditValue::SetMaxValue(float value)
     m_maxValue = value;
 }
 
-float CEditValue::RetMaxValue()
+float CEditValue::GetMaxValue()
 {
     return m_maxValue;
 }
 
+}

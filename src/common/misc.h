@@ -89,9 +89,9 @@ const int KS_NUMMINUS       = (1<<15);
 
 extern EventType GetUniqueEventType();
 
-extern char RetNoAccent(char letter);
-extern char RetToUpper(char letter);
-extern char RetToLower(char letter);
+extern char GetNoAccent(char letter);
+extern char GetToUpper(char letter);
+extern char GetToLower(char letter);
 
 extern void TimeToAscii(time_t time, char *buffer);
 
@@ -99,8 +99,8 @@ extern bool CopyFileToTemp(char* filename);
 extern bool CopyFileListToTemp(char* filename, int* list, int total);
 extern void AddExt(char* filename, char* ext);
 extern void UserDir(bool bUser, char* dir);
-extern void UserDir(char* buffer, char* dir, char* def);
+extern void UserDir(char* buffer, char* dir, const char* def);
 
-extern char RetLanguageLetter();
+extern char GetLanguageLetter();
 
 

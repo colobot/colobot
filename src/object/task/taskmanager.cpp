@@ -136,7 +136,7 @@ Error CTaskManager::StartTaskSearch()
 
 // Reads an information terminal.
 
-Error CTaskManager::StartTaskInfo(char *name, float value, float power, bool bSend)
+Error CTaskManager::StartTaskInfo(const char *name, float value, float power, bool bSend)
 {
     m_task = new CTaskInfo(m_iMan, m_object);
     return ((CTaskInfo*)m_task)->Start(name, value, power, bSend);

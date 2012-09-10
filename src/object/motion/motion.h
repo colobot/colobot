@@ -51,20 +51,20 @@ public:
     virtual bool    Create(Math::Vector pos, float angle, ObjectType type, float power);
     virtual bool    EventProcess(const Event &event);
     virtual Error   SetAction(int action, float time=0.2f);
-    virtual int     RetAction();
+    virtual int     GetAction();
 
     virtual bool    SetParam(int rank, float value);
-    virtual float   RetParam(int rank);
+    virtual float   GetParam(int rank);
 
     virtual bool    Write(char *line);
     virtual bool    Read(char *line);
 
     virtual void        SetLinVibration(Math::Vector dir);
-    virtual Math::Vector    RetLinVibration();
+    virtual Math::Vector    GetLinVibration();
     virtual void        SetCirVibration(Math::Vector dir);
-    virtual Math::Vector    RetCirVibration();
+    virtual Math::Vector    GetCirVibration();
     virtual void        SetInclinaison(Math::Vector dir);
-    virtual Math::Vector    RetInclinaison();
+    virtual Math::Vector    GetInclinaison();
 
 protected:
 

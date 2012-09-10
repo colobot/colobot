@@ -24,19 +24,25 @@
 
 
 class CInstanceManager;
-class CD3DEngine;
-class CLight;
-class CParticule;
-class CTerrain;
-class CWater;
-class CCamera;
 class CBrain;
 class CPhysics;
 class CMotion;
 class CObject;
 class CRobotMain;
+class CSoundInterface;
+
+namespace Ui {
 class CDisplayText;
-class CSound;
+} /* Ui */ 
+
+namespace Gfx {
+class CEngine;
+class CLightManager;
+class CParticle;
+class CTerrain;
+class CWater;
+class CCamera;
+} /* Gfx */ 
 
 
 const float TAKE_DIST       = 6.0f; // distance to an object to pick it
@@ -66,21 +72,19 @@ public:
     virtual bool    Abort();
 
 protected:
-
-protected:
-    CInstanceManager* m_iMan;
-    CD3DEngine*     m_engine;
-    CLight*         m_light;
-    CParticule*     m_particule;
-    CTerrain*       m_terrain;
-    CWater*         m_water;
-    CCamera*        m_camera;
-    CMotion*        m_motion;
-    CBrain*         m_brain;
-    CPhysics*       m_physics;
-    CObject*        m_object;
-    CRobotMain*     m_main;
-    CDisplayText*   m_displayText;
-    CSound*         m_sound;
+    CInstanceManager*   m_iMan;
+    Gfx::CEngine*       m_engine;
+    Gfx::CLightManager* m_lightMan;
+    Gfx::CParticle*     m_particle;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CWater*        m_water;
+    Gfx::CCamera*       m_camera;
+    CMotion*            m_motion;
+    CBrain*             m_brain;
+    CPhysics*           m_physics;
+    CObject*            m_object;
+    CRobotMain*         m_main;
+    Ui::CDisplayText*   m_displayText;
+    CSoundInterface*    m_sound;
 };
 
