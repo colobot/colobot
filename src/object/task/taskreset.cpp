@@ -16,9 +16,6 @@
 
 // taskreset.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskreset.h"
 
 #include "common/iman.h"
@@ -55,8 +52,8 @@ bool CTaskReset::EventProcess(const Event &event)
     Math::Point     dim;
     float       angle, duration;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
     m_time += event.rTime;
@@ -69,9 +66,9 @@ bool CTaskReset::EventProcess(const Event &event)
         m_object->SetAngleY(0, angle);
         m_object->SetZoom(0, 1.0f-m_progress);
 
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             pos = m_begin;
             pos.x += (Math::Rand()-0.5f)*5.0f;
@@ -81,7 +78,7 @@ bool CTaskReset::EventProcess(const Event &event)
             speed.y = 5.0f+Math::Rand()*5.0f;
             dim.x = Math::Rand()*2.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIGLINTb, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINTb, 2.0f);
 
             pos = m_begin;
             speed.x = (Math::Rand()-0.5f)*20.0f;
@@ -94,7 +91,7 @@ bool CTaskReset::EventProcess(const Event &event)
             dim.y = dim.x;
             pos.y += dim.y;
             duration = Math::Rand()*1.5f+1.5f;
-            m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
+            m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK6,
                                      duration, 0.0f,
                                      duration*0.9f, 0.7f);
         }
@@ -105,9 +102,9 @@ bool CTaskReset::EventProcess(const Event &event)
         pos = m_begin+(m_goal-m_begin)*m_progress;
         m_object->SetPosition(0, pos);
 
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             pos.x += (Math::Rand()-0.5f)*5.0f;
             pos.z += (Math::Rand()-0.5f)*5.0f;
@@ -116,7 +113,7 @@ bool CTaskReset::EventProcess(const Event &event)
             speed.y = 2.0f+Math::Rand()*2.0f;
             dim.x = Math::Rand()*2.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIGLINTb, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINTb, 2.0f);
         }
     }
 
@@ -127,9 +124,9 @@ bool CTaskReset::EventProcess(const Event &event)
         m_object->SetAngleY(0, angle);
         m_object->SetZoom(0, m_progress);
 
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             pos = m_goal;
             pos.x += (Math::Rand()-0.5f)*5.0f;
@@ -139,7 +136,7 @@ bool CTaskReset::EventProcess(const Event &event)
             speed.y = 5.0f+Math::Rand()*5.0f;
             dim.x = Math::Rand()*2.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIGLINTb, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINTb, 2.0f);
 
             pos = m_goal;
             speed.x = (Math::Rand()-0.5f)*20.0f;
@@ -150,7 +147,7 @@ bool CTaskReset::EventProcess(const Event &event)
             dim.y = dim.x;
             pos.y += dim.y;
             duration = Math::Rand()*1.5f+1.5f;
-            m_particule->CreateTrack(pos, speed, dim, PARTITRACK6,
+            m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK6,
                                      duration, 0.0f,
                                      duration*0.9f, 0.7f);
         }
@@ -168,24 +165,24 @@ Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
     CObject*    fret;
     int     i;
 
-    fret = m_object->RetFret();
-    if ( fret != 0 && fret->RetResetCap() == RESET_MOVE )
+    fret = m_object->GetFret();
+    if ( fret != 0 && fret->GetResetCap() == RESET_MOVE )
     {
         fret->SetTruck(0);
         m_object->SetFret(0);  // does nothing
     }
 
-    if ( !m_main->RetNiceReset() )  // quick return?
+    if ( !m_main->GetNiceReset() )  // quick return?
     {
         m_object->SetPosition(0, goal);
         m_object->SetAngle(0, angle);
-        m_brain->RunProgram(m_object->RetResetRun());
+        m_brain->RunProgram(m_object->GetResetRun());
 
         m_bError = false;
         return ERR_OK;
     }
 
-    m_begin = m_object->RetPosition(0);
+    m_begin = m_object->GetPosition(0);
     m_goal = goal;
     m_angle = angle;
 
@@ -195,12 +192,12 @@ Error CTaskReset::Start(Math::Vector goal, Math::Vector angle)
         return ERR_RESET_NEAR;
     }
 
-    m_iAngle = m_object->RetAngleY(0);
+    m_iAngle = m_object->GetAngleY(0);
     m_time = 0.0f;
     m_phase = TRSP_ZOUT;
     m_speed = 1.0f/RESET_DELAY_ZOOM;
     m_progress = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     m_object->SetResetBusy(true);
 
@@ -219,12 +216,12 @@ Error CTaskReset::IsEnded()
     float       dist;
     int         i;
 
-    if ( !m_main->RetNiceReset() )  // quick return?
+    if ( !m_main->GetNiceReset() )  // quick return?
     {
         return ERR_STOP;
     }
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
@@ -254,13 +251,13 @@ Error CTaskReset::IsEnded()
     m_object->SetAngle(0, m_angle);
     m_object->SetZoom(0, 1.0f);
 
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power != 0 )
     {
-        power->SetEnergy(power->RetCapacity());  // refueling
+        power->SetEnergy(power->GetCapacity());  // refueling
     }
 
-    m_brain->RunProgram(m_object->RetResetRun());
+    m_brain->RunProgram(m_object->GetResetRun());
     m_object->SetResetBusy(false);
     return ERR_STOP;
 }
@@ -278,12 +275,12 @@ bool CTaskReset::SearchVehicle()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_TECH     &&
              type != OBJECT_MOBILEfa &&

@@ -58,6 +58,6 @@ protected:
     bool        m_bError;
     bool        m_bFire;
     float       m_time;
-    float       m_lastParticule;
+    float       m_lastParticle;
 };
 

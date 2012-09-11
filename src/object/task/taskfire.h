@@ -45,7 +45,7 @@ protected:
     bool        m_bOrganic;
     float       m_time;
     float       m_speed;
-    float       m_lastParticule;
+    float       m_lastParticle;
     float       m_lastSound;
     int     m_soundChannel;
 };

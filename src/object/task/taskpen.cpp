@@ -16,12 +16,9 @@
 
 // taskpen.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskpen.h"
 
-#include "old/particule.h"
+#include "graphics/engine/particle.h"
 #include "math/geometry.h"
 #include "object/object.h"
 
@@ -49,8 +46,8 @@ bool CTaskPen::EventProcess(const Event &event)
     Math::Point     dim;
     int         i;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
     if ( m_delay == 0.0f )
@@ -67,17 +64,17 @@ bool CTaskPen::EventProcess(const Event &event)
 
     if ( m_phase == TPP_UP )  // back the pencil
     {
-        i = AngleToRank(m_object->RetAngleY(1));
-        pos = m_object->RetPosition(10+i);
+        i = AngleToRank(m_object->GetAngleY(1));
+        pos = m_object->GetPosition(10+i);
         pos.y = -3.2f*(1.0f-m_progress);
         m_object->SetPosition(10+i, pos);
     }
 
     if ( m_phase == TPP_TURN )  // turns the carousel?
     {
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             pos = m_supportPos;
             pos.x += (Math::Rand()-0.5f)*5.0f;
@@ -87,7 +84,7 @@ bool CTaskPen::EventProcess(const Event &event)
             speed.y = Math::Rand()*2.0f;
             dim.x = Math::Rand()*1.5f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f);
         }
 
         m_object->SetAngleY(1, m_oldAngle+(m_newAngle-m_oldAngle)*m_progress);
@@ -95,9 +92,9 @@ bool CTaskPen::EventProcess(const Event &event)
 
     if ( m_phase == TPP_DOWN )  // down the pencil?
     {
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             pos = m_supportPos;
             pos.x += (Math::Rand()-0.5f)*5.0f;
@@ -107,11 +104,11 @@ bool CTaskPen::EventProcess(const Event &event)
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*1.0f+1.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIVAPOR, 4.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIVAPOR, 4.0f);
         }
 
-        i = AngleToRank(m_object->RetAngleY(1));
-        pos = m_object->RetPosition(10+i);
+        i = AngleToRank(m_object->GetAngleY(1));
+        pos = m_object->GetPosition(10+i);
         if ( m_timeDown == 0.0f )
         {
             pos.y = 0.0f;
@@ -138,16 +135,16 @@ Error CTaskPen::Start(bool bDown, int color)
 
     m_bError = true;  // operation impossible
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type != OBJECT_MOBILEdr )  return ERR_FIRE_VEH;
 
     m_bError = false;  // ok
 
-    m_oldAngle = m_object->RetAngleY(1);
+    m_oldAngle = m_object->GetAngleY(1);
     m_newAngle = ColorToAngle(color);
 
     i = AngleToRank(m_oldAngle);
-    pos = m_object->RetPosition(10+i);
+    pos = m_object->GetPosition(10+i);
 
     if ( pos.y == 0.0f )  // pencil at the top?
     {
@@ -167,7 +164,7 @@ Error CTaskPen::Start(bool bDown, int color)
         m_timeDown = 0.0f;
     }
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     pos = Math::Vector(-3.0f, 7.0f, 0.0f);
     pos = Math::Transform(*mat, pos);  // position of carousel
     m_supportPos = pos;
@@ -182,7 +179,7 @@ Error CTaskPen::Start(bool bDown, int color)
         SoundManip(m_timeUp, 1.0f, 0.5f);
     }
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
 //? m_camera->StartCentering(m_object, Math::PI*0.60f, 99.9f, 5.0f, 0.5f);
 
@@ -193,7 +190,7 @@ Error CTaskPen::Start(bool bDown, int color)
 
 Error CTaskPen::IsEnded()
 {
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
 
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
@@ -205,7 +202,7 @@ Error CTaskPen::IsEnded()
         m_progress = 0.0f;
         m_delay    = fabs(m_oldAngle-m_newAngle)/Math::PI;
         m_time     = 0.0f;
-        m_lastParticule = 0.0f;
+        m_lastParticle = 0.0f;
         if ( m_delay > 0.0f )
         {
             SoundManip(m_delay, 1.0f, 1.0f);
@@ -220,7 +217,7 @@ Error CTaskPen::IsEnded()
         m_progress = 0.0f;
         m_delay    = m_timeDown;
         m_time     = 0.0f;
-        m_lastParticule = 0.0f;
+        m_lastParticle = 0.0f;
         return ERR_CONTINUE;
     }
 
@@ -243,7 +240,7 @@ void CTaskPen::SoundManip(float time, float amplitude, float frequency)
 {
     int     i;
 
-    i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, true);
+    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
@@ -257,7 +254,7 @@ int CTaskPen::AngleToRank(float angle)
 //? return (int)(angle/(-45.0f*Math::PI/180.0f));
     angle = -angle;
     angle += (45.0f*Math::PI/180.0f)/2.0f;
-    return (int)(angle/(45.0f*Math::PI/180.0f));
+    return static_cast<int>(angle/(45.0f*Math::PI/180.0f));
 }
 
 // Converting a color to the angle of carousel of pencils.

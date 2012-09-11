@@ -56,11 +56,11 @@ protected:
     float           m_speed;
     float           m_time;
     float           m_angle;
-    float           m_lastParticule;
+    float           m_lastParticle;
     bool            m_bError;
     CObject*        m_ruin;
     CObject*        m_metal;
-    Math::Vector        m_recoverPos;
+    Math::Vector    m_recoverPos;
     int             m_soundChannel;
 };
 

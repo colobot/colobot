@@ -16,12 +16,9 @@
 
 // taskfireant.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskfireant.h"
 
-#include "old/particule.h"
+#include "graphics/engine/particle.h"
 #include "math/geometry.h"
 #include "object/motion/motionant.h"
 #include "physics/physics.h"
@@ -51,11 +48,11 @@ bool CTaskFireAnt::EventProcess(const Event &event)
     Math::Vector    dir, vib;
     float       a, g, cirSpeed;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
-    if ( m_object->RetFixed() )  // insect on its back?
+    if ( m_object->GetFixed() )  // insect on its back?
     {
         m_bError = true;
         return false;
@@ -66,7 +63,7 @@ bool CTaskFireAnt::EventProcess(const Event &event)
 
     if ( m_phase == TFA_TURN )  // preliminary rotation?
     {
-        a = m_object->RetAngleY(0);
+        a = m_object->GetAngleY(0);
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*2.0f;
         if ( cirSpeed >  2.0f )  cirSpeed =  2.0f;
@@ -89,24 +86,24 @@ Error CTaskFireAnt::Start(Math::Vector impact)
     m_impact = impact;
 
     m_bError = true;  // operation impossible
-    if ( !m_physics->RetLand() )  return ERR_FIRE_VEH;
+    if ( !m_physics->GetLand() )  return ERR_FIRE_VEH;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type != OBJECT_ANT )  return ERR_FIRE_VEH;
 
     // Insect on its back?
-    if ( m_object->RetFixed() )  return ERR_FIRE_VEH;
+    if ( m_object->GetFixed() )  return ERR_FIRE_VEH;
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     m_angle = Math::RotateAngle(m_impact.x-pos.x, pos.z-m_impact.z);  // CW !
 
     m_phase = TFA_TURN;
     m_speed = 1.0f/1.0f;
     m_progress = 0.0f;
     m_time = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
     m_bError = false;  // ok
     m_bFire = false;  // once!
 
@@ -123,13 +120,13 @@ Error CTaskFireAnt::IsEnded()
     float       angle, dist;
     int         i, channel;
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
-    if ( m_object->RetFixed() )  return ERR_STOP;  // insect on its back?
+    if ( m_object->GetFixed() )  return ERR_STOP;  // insect on its back?
 
     if ( m_phase == TFA_TURN )  // rotation ?
     {
-        angle = m_object->RetAngleY(0);
+        angle = m_object->GetAngleY(0);
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
         if ( !Math::TestAngle(angle, m_angle-Math::PI*0.05f, m_angle+Math::PI*0.05f) )  return ERR_CONTINUE;
 
@@ -164,7 +161,7 @@ Error CTaskFireAnt::IsEnded()
             for ( i=0 ; i<20 ; i++ )
             {
                 pos = Math::Vector(-2.5f, -0.7f, 0.0f);
-                mat = m_object->RetWorldMatrix(2);
+                mat = m_object->GetWorldMatrix(2);
                 pos = Math::Transform(*mat, pos);
                 dist = Math::Distance(pos, m_impact);
                 speed = m_impact-pos;
@@ -173,8 +170,8 @@ Error CTaskFireAnt::IsEnded()
                 speed.z += (Math::Rand()-0.5f)*dist*1.2f;
                 dim.x = 1.0f;
                 dim.y = dim.x;
-                channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN2, 2.0f, 100.0f, 0.0f);
-                m_particule->SetObjectFather(channel, m_object);
+                channel = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGUN2, 2.0f, 100.0f, 0.0f);
+                m_particle->SetObjectFather(channel, m_object);
             }
         }
 

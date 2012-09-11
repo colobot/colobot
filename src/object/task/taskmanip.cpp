@@ -16,14 +16,11 @@
 
 // taskmanip.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskmanip.h"
 
 #include "common/iman.h"
-#include "old/terrain.h"
-#include "old/pyro.h"
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/pyro.h"
 #include "math/geometry.h"
 #include "object/robotmain.h"
 #include "physics/physics.h"
@@ -65,8 +62,8 @@ bool CTaskManip::EventProcess(const Event &event)
     float       angle, a, g, cirSpeed, progress;
     int         i;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
     if ( m_bBee )  // bee?
@@ -76,10 +73,10 @@ bool CTaskManip::EventProcess(const Event &event)
 
     if ( m_bTurn )  // preliminary rotation?
     {
-        a = m_object->RetAngleY(0);
+        a = m_object->GetAngleY(0);
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*1.0f;
-        if ( m_physics->RetType() == TYPE_FLYING )  // flying on the ground?
+        if ( m_physics->GetType() == TYPE_FLYING )  // flying on the ground?
         {
             cirSpeed *= 4.0f;  // more fishing
         }
@@ -107,23 +104,23 @@ bool CTaskManip::EventProcess(const Event &event)
         {
             if ( m_step == 0 )  // fall?
             {
-                pos = m_object->RetPosition(1);
+                pos = m_object->GetPosition(1);
                 pos.y = 3.0f-progress*2.0f;
                 m_object->SetPosition(1, pos);
             }
             if ( m_step == 1 )  // farm?
             {
-                pos = m_object->RetPosition(2);
+                pos = m_object->GetPosition(2);
                 pos.z = -1.5f+progress*0.5f;
                 m_object->SetPosition(2, pos);
 
-                pos = m_object->RetPosition(3);
+                pos = m_object->GetPosition(3);
                 pos.z = 1.5f-progress*0.5f;
                 m_object->SetPosition(3, pos);
             }
             if ( m_step == 2 )  // up?
             {
-                pos = m_object->RetPosition(1);
+                pos = m_object->GetPosition(1);
                 pos.y = 3.0f-(1.0f-progress)*2.0f;
                 m_object->SetPosition(1, pos);
             }
@@ -132,23 +129,23 @@ bool CTaskManip::EventProcess(const Event &event)
         {
             if ( m_step == 0 )  // fall?
             {
-                pos = m_object->RetPosition(1);
+                pos = m_object->GetPosition(1);
                 pos.y = 3.0f-progress*2.0f;
                 m_object->SetPosition(1, pos);
             }
             if ( m_step == 1 )  // farm?
             {
-                pos = m_object->RetPosition(2);
+                pos = m_object->GetPosition(2);
                 pos.z = -1.5f+(1.0f-progress)*0.5f;
                 m_object->SetPosition(2, pos);
 
-                pos = m_object->RetPosition(3);
+                pos = m_object->GetPosition(3);
                 pos.z = 1.5f-(1.0f-progress)*0.5f;
                 m_object->SetPosition(3, pos);
             }
             if ( m_step == 2 )  // up?
             {
-                pos = m_object->RetPosition(1);
+                pos = m_object->GetPosition(1);
                 pos.y = 3.0f-(1.0f-progress)*2.0f;
                 m_object->SetPosition(1, pos);
             }
@@ -238,7 +235,7 @@ void CTaskManip::InitAngle()
 
     for ( i=0 ; i<5 ; i++ )
     {
-        m_initialAngle[i] = m_object->RetAngleZ(i+1);
+        m_initialAngle[i] = m_object->GetAngleZ(i+1);
     }
 
     max = 0.0f;
@@ -250,10 +247,10 @@ void CTaskManip::InitAngle()
     if ( m_speed > 3.0f )  m_speed = 3.0f;  // piano, ma non troppo (?)
 
     energy = 0.0f;
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power != 0 )
     {
-        energy = power->RetEnergy();
+        energy = power->GetEnergy();
     }
 
     if ( energy == 0.0f )
@@ -288,12 +285,12 @@ bool TestFriend(ObjectType oType, ObjectType fType)
 
 Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 {
-    ObjectType  type;
-    CObject     *front, *other, *power;
-    CPyro       *pyro;
-    float       iAngle, dist, len;
-    float       fDist, fAngle, oDist, oAngle, oHeight;
-    Math::Vector    pos, fPos, oPos;
+    ObjectType   type;
+    CObject      *front, *other, *power;
+    Gfx::CPyro   *pyro;
+    float        iAngle, dist, len;
+    float        fDist, fAngle, oDist, oAngle, oHeight;
+    Math::Vector pos, fPos, oPos;
 
     m_arm      = arm;
     m_height   = 0.0f;
@@ -301,7 +298,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
     m_progress = 0.0f;
     m_speed    = 1.0f/1.5f;
 
-    iAngle = m_object->RetAngleY(0);
+    iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
     oAngle = iAngle;
 
@@ -314,12 +311,12 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type == OBJECT_BEE )  // bee?
     {
-        if ( m_object->RetFret() == 0 )
+        if ( m_object->GetFret() == 0 )
         {
-            if ( !m_physics->RetLand() )  return ERR_MANIP_FLY;
+            if ( !m_physics->GetLand() )  return ERR_MANIP_FLY;
 
             other = SearchTakeUnderObject(m_targetPos, MARGIN_BEE);
             if ( other == 0 )  return ERR_MANIP_NIL;
@@ -330,19 +327,19 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         }
         else
         {
-            other = m_object->RetFret();  // other = ball
+            other = m_object->GetFret();  // other = ball
             m_object->SetFret(0);  // lick the ball
             other->SetTruck(0);
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y -= 3.0f;
             other->SetPosition(0, pos);
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y += 2.0f;
             m_object->SetPosition(0, pos);  // against the top of jump
 
-            pyro = new CPyro(m_iMan);
-            pyro->Create(PT_FALL, other);  // the ball falls
+            pyro = new Gfx::CPyro(m_iMan);
+            pyro->Create(Gfx::PT_FALL, other);  // the ball falls
         }
 
         m_bBee = true;
@@ -361,13 +358,13 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
     }
 
     m_energy = 0.0f;
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power != 0 )
     {
-        m_energy = power->RetEnergy();
+        m_energy = power->GetEnergy();
     }
 
-    if ( !m_physics->RetLand() )  return ERR_MANIP_FLY;
+    if ( !m_physics->GetLand() )  return ERR_MANIP_FLY;
 
     if ( type != OBJECT_MOBILEfa &&
          type != OBJECT_MOBILEta &&
@@ -385,7 +382,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
 
     if ( order == TMO_AUTO )
     {
-        if ( m_object->RetFret() == 0 )
+        if ( m_object->GetFret() == 0 )
         {
             m_order = TMO_GRAB;
         }
@@ -399,16 +396,16 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         m_order = order;
     }
 
-    if ( m_order == TMO_GRAB && m_object->RetFret() != 0 )
+    if ( m_order == TMO_GRAB && m_object->GetFret() != 0 )
     {
         return ERR_MANIP_BUSY;
     }
-    if ( m_order == TMO_DROP && m_object->RetFret() == 0 )
+    if ( m_order == TMO_DROP && m_object->GetFret() == 0 )
     {
         return ERR_MANIP_EMPTY;
     }
 
-//? speed = m_physics->RetMotorSpeed();
+//? speed = m_physics->GetMotorSpeed();
 //? if ( speed.x != 0.0f ||
 //?      speed.z != 0.0f )  return ERR_MANIP_MOTOR;
 
@@ -427,7 +424,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
             }
             else if ( other != 0 && oDist < fDist )
             {
-                if ( other->RetPower() == 0 )  return ERR_MANIP_NIL;
+                if ( other->GetPower() == 0 )  return ERR_MANIP_NIL;
                 m_targetPos = oPos;
                 m_angle = oAngle;
                 m_height = oHeight;
@@ -451,7 +448,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         }
         if ( m_arm == TMA_POWER )
         {
-            if ( m_object->RetPower() == 0 )  return ERR_MANIP_NIL;
+            if ( m_object->GetPower() == 0 )  return ERR_MANIP_NIL;
         }
     }
 
@@ -460,7 +457,7 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         if ( m_arm == TMA_FFRONT )
         {
             other = SearchOtherObject(true, oPos, oDist, oAngle, oHeight);
-            if ( other != 0 && other->RetPower() == 0 )
+            if ( other != 0 && other->GetPower() == 0 )
             {
                 m_targetPos = oPos;
                 m_angle = oAngle;
@@ -479,27 +476,27 @@ Error CTaskManip::Start(TaskManipOrder order, TaskManipArm arm)
         }
         if ( m_arm == TMA_POWER )
         {
-            if ( m_object->RetPower() != 0 )  return ERR_MANIP_OCC;
+            if ( m_object->GetPower() != 0 )  return ERR_MANIP_OCC;
         }
     }
 
-    dist = Math::Distance(m_object->RetPosition(0), m_targetPos);
+    dist = Math::Distance(m_object->GetPosition(0), m_targetPos);
     len = dist-TAKE_DIST;
     if ( m_arm == TMA_OTHER ) len -= TAKE_DIST_OTHER;
     if ( len < 0.0f )  len = 0.0f;
     if ( m_arm == TMA_FBACK ) len = -len;
-    m_advanceLength = dist-m_physics->RetLinLength(len);
+    m_advanceLength = dist-m_physics->GetLinLength(len);
     if ( dist <= m_advanceLength+0.2f )  m_move = 0.0f;  // not necessary to advance
 
     if ( m_energy == 0.0f )  m_move = 0.0f;
 
     if ( m_move != 0.0f )  // forward or backward?
     {
-        m_timeLimit = m_physics->RetLinTimeLength(fabs(len))*1.5f;
+        m_timeLimit = m_physics->GetLinTimeLength(fabs(len))*1.5f;
         if ( m_timeLimit < 0.5f )  m_timeLimit = 0.5f;
     }
 
-    if ( m_object->RetFret() == 0 )  // not carrying anything?
+    if ( m_object->GetFret() == 0 )  // not carrying anything?
     {
         m_hand = TMH_OPEN;  // open clamp
     }
@@ -540,7 +537,7 @@ Error CTaskManip::IsEnded()
     float       angle, dist;
     int         i;
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
 
     if ( m_bBee )  // bee?
@@ -550,7 +547,7 @@ Error CTaskManip::IsEnded()
 
     if ( m_bTurn )  // preliminary rotation?
     {
-        angle = m_object->RetAngleY(0);
+        angle = m_object->GetAngleY(0);
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
         if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
@@ -570,7 +567,7 @@ Error CTaskManip::IsEnded()
         if ( m_timeLimit <= 0.0f )
         {
 //OK 1.9
-            dist = Math::Distance(m_object->RetPosition(0), m_targetPos);
+            dist = Math::Distance(m_object->GetPosition(0), m_targetPos);
             if ( dist <= m_advanceLength + 2.0f )
             {
                 m_move = 0.0f;  // advance ended
@@ -588,7 +585,7 @@ Error CTaskManip::IsEnded()
             }
         }
 
-        dist = Math::Distance(m_object->RetPosition(0), m_targetPos);
+        dist = Math::Distance(m_object->GetPosition(0), m_targetPos);
         if ( dist <= m_advanceLength )
         {
             m_move = 0.0f;  // advance ended
@@ -624,7 +621,7 @@ Error CTaskManip::IsEnded()
         {
             if ( m_bSubm )  m_speed = 1.0f/1.5f;
             if ( !TruckTakeObject() &&
-                 m_object->RetFret() == 0 )
+                 m_object->GetFret() == 0 )
             {
                 m_hand = TMH_OPEN;  // reopens the clamp
                 m_arm = TMA_NEUTRAL;
@@ -638,7 +635,7 @@ Error CTaskManip::IsEnded()
                      (m_fretType == OBJECT_POWER  ||
                       m_fretType == OBJECT_ATOMIC ) )
                 {
-                    m_sound->Play(SOUND_POWEROFF, m_object->RetPosition(0));
+                    m_sound->Play(SOUND_POWEROFF, m_object->GetPosition(0));
                 }
                 m_arm = TMA_STOCK;
                 InitAngle();
@@ -653,7 +650,7 @@ Error CTaskManip::IsEnded()
         if ( m_step == 1 )
         {
             if ( m_bSubm )  m_speed = 1.0f/0.7f;
-            fret = m_object->RetFret();
+            fret = m_object->GetFret();
             if ( TruckDeposeObject() )
             {
                 if ( (m_arm == TMA_OTHER ||
@@ -661,7 +658,7 @@ Error CTaskManip::IsEnded()
                      (m_fretType == OBJECT_POWER  ||
                       m_fretType == OBJECT_ATOMIC ) )
                 {
-                    m_sound->Play(SOUND_POWERON, m_object->RetPosition(0));
+                    m_sound->Play(SOUND_POWERON, m_object->GetPosition(0));
                 }
                 if ( fret != 0 && m_fretType == OBJECT_METAL && m_arm == TMA_FFRONT )
                 {
@@ -693,7 +690,7 @@ bool CTaskManip::Abort()
 {
     int     i;
 
-    if ( m_object->RetFret() == 0 )  // not carrying anything?
+    if ( m_object->GetFret() == 0 )  // not carrying anything?
     {
         m_hand = TMH_OPEN;  // open clamp
         m_arm = TMA_NEUTRAL;
@@ -729,16 +726,16 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
     float       min, distance;
     int         i;
 
-    iPos   = m_object->RetPosition(0);
+    iPos   = m_object->GetPosition(0);
 
     min = 1000000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
              type != OBJECT_STONE   &&
@@ -754,11 +751,11 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
              type != OBJECT_KEYd    &&
              type != OBJECT_TNT     )  continue;
 
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
-        if ( pObj->RetLock() )  continue;
-        if ( pObj->RetZoomY(0) != 1.0f )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetLock() )  continue;
+        if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         distance = Math::Distance(oPos, iPos);
         if ( distance <= dLimit &&
              distance < min     )
@@ -769,7 +766,7 @@ CObject* CTaskManip::SearchTakeUnderObject(Math::Vector &pos, float dLimit)
     }
     if ( pBest != 0 )
     {
-        pos = pBest->RetPosition(0);
+        pos = pBest->GetPosition(0);
     }
     return pBest;
 }
@@ -785,8 +782,8 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     float       min, iAngle, bAngle, aLimit, dLimit, f;
     int         i;
 
-    iPos   = m_object->RetPosition(0);
-    iAngle = m_object->RetAngleY(0);
+    iPos   = m_object->GetPosition(0);
+    iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     if ( bAdvance && m_energy > 0.0f )
@@ -806,10 +803,10 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     bAngle = 0.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
              type != OBJECT_STONE   &&
@@ -830,11 +827,11 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
              type != OBJECT_SCRAP4  &&
              type != OBJECT_SCRAP5  )  continue;
 
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
-        if ( pObj->RetLock() )  continue;
-        if ( pObj->RetZoomY(0) != 1.0f )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetLock() )  continue;
+        if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
         f = 1.0f-distance/50.0f;
         if ( f < 0.5f )  f = 0.5f;
@@ -859,7 +856,7 @@ CObject* CTaskManip::SearchTakeFrontObject(bool bAdvance, Math::Vector &pos,
     }
     else
     {
-        pos = pBest->RetPosition(0);
+        pos = pBest->GetPosition(0);
         distance = min;
         angle = bAngle;
     }
@@ -877,8 +874,8 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     float       min, iAngle, bAngle, aLimit, dLimit, f;
     int         i;
 
-    iPos   = m_object->RetPosition(0);
-    iAngle = m_object->RetAngleY(0)+Math::PI;
+    iPos   = m_object->GetPosition(0);
+    iAngle = m_object->GetAngleY(0)+Math::PI;
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     if ( bAdvance && m_energy > 0.0f )
@@ -897,10 +894,10 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     bAngle = 0.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
              type != OBJECT_STONE   &&
@@ -921,11 +918,11 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
              type != OBJECT_SCRAP4  &&
              type != OBJECT_SCRAP5  )  continue;
 
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
-        if ( pObj->RetLock() )  continue;
-        if ( pObj->RetZoomY(0) != 1.0f )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetLock() )  continue;
+        if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         distance = fabs(Math::Distance(oPos, iPos)-TAKE_DIST);
         f = 1.0f-distance/50.0f;
         if ( f < 0.5f )  f = 0.5f;
@@ -950,7 +947,7 @@ CObject* CTaskManip::SearchTakeBackObject(bool bAdvance, Math::Vector &pos,
     }
     else
     {
-        pos = pBest->RetPosition(0);
+        pos = pBest->GetPosition(0);
         distance = min;
         angle = bAngle;
     }
@@ -978,7 +975,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
     if ( m_bSubm )  return 0;  // impossible with the submarine
 
     if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
-    iAngle = m_object->RetAngleY(0);
+    iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     if ( bAdvance && m_energy > 0.0f )
@@ -994,12 +991,12 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;  // yourself?
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
@@ -1032,22 +1029,22 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
              type != OBJECT_LABO     &&
              type != OBJECT_NUCLEAR  )  continue;
 
-        pPower = pObj->RetPower();
+        pPower = pObj->GetPower();
         if ( pPower != 0 )
         {
-            if ( pPower->RetLock() )  continue;
-            if ( pPower->RetZoomY(0) != 1.0f )  continue;
+            if ( pPower->GetLock() )  continue;
+            if ( pPower->GetZoomY(0) != 1.0f )  continue;
 
-            powerType = pPower->RetType();
+            powerType = pPower->GetType();
             if ( powerType == OBJECT_NULL ||
                  powerType == OBJECT_FIX  )  continue;
         }
 
-        mat = pObj->RetWorldMatrix(0);
-        character = pObj->RetCharacter();
+        mat = pObj->GetWorldMatrix(0);
+        character = pObj->GetCharacter();
         oPos = Transform(*mat, character->posPower);
 
-        oAngle = pObj->RetAngleY(0);
+        oAngle = pObj->GetAngleY(0);
         if ( type == OBJECT_TOWER    ||
              type == OBJECT_RESEARCH )
         {
@@ -1080,7 +1077,7 @@ CObject* CTaskManip::SearchOtherObject(bool bAdvance, Math::Vector &pos,
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
             if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
             {
-                character = pObj->RetCharacter();
+                character = pObj->GetCharacter();
                 height = character->posPower.y;
                 pos = oPos;
                 return pObj;
@@ -1105,12 +1102,12 @@ bool CTaskManip::TruckTakeObject()
 
     if ( m_arm == TMA_GRAB )  // takes immediately?
     {
-        fret = m_object->RetFret();
+        fret = m_object->GetFret();
         if ( fret == 0 )  return false;  // nothing to take?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
-        if ( m_object->RetType() == OBJECT_HUMAN ||
-             m_object->RetType() == OBJECT_TECH  )
+        if ( m_object->GetType() == OBJECT_HUMAN ||
+             m_object->GetType() == OBJECT_TECH  )
         {
             fret->SetTruck(m_object);
             fret->SetTruckPart(4);  // takes with the hand
@@ -1150,7 +1147,7 @@ bool CTaskManip::TruckTakeObject()
     {
         fret = SearchTakeFrontObject(false, pos, dist, angle);
         if ( fret == 0 )  return false;  // nothing to take?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
         if ( m_bSubm )
         {
@@ -1182,7 +1179,7 @@ bool CTaskManip::TruckTakeObject()
     {
         fret = SearchTakeBackObject(false, pos, dist, angle);
         if ( fret == 0 )  return false;  // nothing to take?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
         fret->SetTruck(m_object);
         fret->SetTruckPart(3);  // takes with the hand
@@ -1198,9 +1195,9 @@ bool CTaskManip::TruckTakeObject()
 
     if ( m_arm == TMA_POWER )  // takes battery in the back?
     {
-        fret = m_object->RetPower();
+        fret = m_object->GetPower();
         if ( fret == 0 )  return false;  // no battery?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
         pos = Math::Vector(4.7f, 0.0f, 0.0f);  // relative to the hand (lem4)
         fret->SetPosition(0, pos);
@@ -1218,9 +1215,9 @@ bool CTaskManip::TruckTakeObject()
         other = SearchOtherObject(false, pos, dist, angle, m_height);
         if ( other == 0 )  return false;
 
-        fret = other->RetPower();
+        fret = other->GetPower();
         if ( fret == 0 )  return false;  // the other does not have a battery?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
         other->SetPower(0);
         fret->SetTruck(m_object);
@@ -1251,15 +1248,15 @@ bool CTaskManip::TruckDeposeObject()
 
     if ( m_arm == TMA_FFRONT )  // deposits on the ground in front?
     {
-        fret = m_object->RetFret();
+        fret = m_object->GetFret();
         if ( fret == 0 )  return false;  // nothing transported?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
-        mat = fret->RetWorldMatrix(0);
+        mat = fret->GetWorldMatrix(0);
         pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
-        m_terrain->MoveOnFloor(pos);
+        m_terrain->AdjustToFloor(pos);
         fret->SetPosition(0, pos);
-        fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
+        fret->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
         fret->SetAngleX(0, 0.0f);
         fret->SetAngleZ(0, 0.0f);
         fret->FloorAdjust();  // plate well on the ground
@@ -1270,15 +1267,15 @@ bool CTaskManip::TruckDeposeObject()
 
     if ( m_arm == TMA_FBACK )  // deposited on the ground behind?
     {
-        fret = m_object->RetFret();
+        fret = m_object->GetFret();
         if ( fret == 0 )  return false;  // nothing transported?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
-        mat = fret->RetWorldMatrix(0);
+        mat = fret->GetWorldMatrix(0);
         pos = Transform(*mat, Math::Vector(0.0f, 1.0f, 0.0f));
-        m_terrain->MoveOnFloor(pos);
+        m_terrain->AdjustToFloor(pos);
         fret->SetPosition(0, pos);
-        fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
+        fret->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
         fret->SetAngleX(0, 0.0f);
         fret->SetAngleZ(0, 0.0f);
 
@@ -1288,16 +1285,16 @@ bool CTaskManip::TruckDeposeObject()
 
     if ( m_arm == TMA_POWER )  // deposits battery in the back?
     {
-        fret = m_object->RetFret();
+        fret = m_object->GetFret();
         if ( fret == 0 )  return false;  // nothing transported?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
-        if ( m_object->RetPower() != 0 )  return false;
+        if ( m_object->GetPower() != 0 )  return false;
 
         fret->SetTruck(m_object);
         fret->SetTruckPart(0);  // carried by the base
 
-        character = m_object->RetCharacter();
+        character = m_object->GetCharacter();
         fret->SetPosition(0, character->posPower);
         fret->SetAngleY(0, 0.0f);
         fret->SetAngleX(0, 0.0f);
@@ -1312,17 +1309,17 @@ bool CTaskManip::TruckDeposeObject()
         other = SearchOtherObject(false, pos, dist, angle, m_height);
         if ( other == 0 )  return false;
 
-        fret = other->RetPower();
+        fret = other->GetPower();
         if ( fret != 0 )  return false;  // the other already has a battery?
 
-        fret = m_object->RetFret();
+        fret = m_object->GetFret();
         if ( fret == 0 )  return false;
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
         other->SetPower(fret);
         fret->SetTruck(other);
 
-        character = other->RetCharacter();
+        character = other->GetCharacter();
         fret->SetPosition(0, character->posPower);
         fret->SetAngleY(0, 0.0f);
         fret->SetAngleX(0, 0.0f);
@@ -1345,17 +1342,17 @@ bool CTaskManip::IsFreeDeposeObject(Math::Vector pos)
     float       oRadius;
     int         i, j;
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
-        if ( !pObj->RetActif() )  continue;  // inactive?
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
+        if ( !pObj->GetActif() )  continue;  // inactive?
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
 
         j = 0;
         while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
@@ -1375,7 +1372,7 @@ void CTaskManip::SoundManip(float time, float amplitude, float frequency)
 {
     int     i;
 
-    i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, true);
+    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);
