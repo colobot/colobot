@@ -19,83 +19,81 @@
 
 #pragma once
 
+#include <string>
 
-#include "common/struct.h"
-#include "old/camera.h"
+#include "common/event.h"
 
+#include "graphics/engine/camera.h"
 
 class CInstanceManager;
-//class CD3DEngine;
-class CEvent;
 class CRobotMain;
-//class CCamera;
-
 class CObject;
-//class CLight;
+class CEventQueue;
+
+struct Event;
 
 namespace Gfx {
-class CEngine;
-class Camera;
-class Particle;
-class CLight;
+    class CEngine;
+    class CParticle;
+    class CLightManager;
 }
 
 namespace Ui {
-class CInterface;
+    class CInterface;
 
-class CDisplayInfo
-{
-public:
-//    CDisplayInfo(CInstanceManager* iMan);
-    CDisplayInfo();
-    ~CDisplayInfo();
+    class CDisplayInfo
+    {
+    public:
+    //    CDisplayInfo(CInstanceManager* iMan);
+        CDisplayInfo();
+        ~CDisplayInfo();
 
-    bool        EventProcess(const Event &event);
+        bool        EventProcess(const Event &event);
 
-    void        StartDisplayInfo(char *filename, int index, bool bSoluce);
-    void        StopDisplayInfo();
+        void        StartDisplayInfo(std::string filename, int index, bool bSoluce);
+        void        StopDisplayInfo();
 
-    void        SetPosition(int pos);
-    int         GetPosition();
+        void        SetPosition(int pos);
+        int         GetPosition();
 
-protected:
-    bool        EventFrame(const Event &event);
-    void        HyperUpdate();
-    void        AdjustDisplayInfo(Math::Point wpos, Math::Point wdim);
-    void        ChangeIndexButton(int index);
-    void        UpdateIndexButton();
-    void        UpdateCopyButton();
-    void        ViewDisplayInfo();
-    CObject*    SearchToto();
-    void        CreateObjectsFile();
+    protected:
+        bool        EventFrame(const Event &event);
+        void        HyperUpdate();
+        void        AdjustDisplayInfo(Math::Point wpos, Math::Point wdim);
+        void        ChangeIndexButton(int index);
+        void        UpdateIndexButton();
+        void        UpdateCopyButton();
+        void        ViewDisplayInfo();
+        CObject*    SearchToto();
+        void        CreateObjectsFile();
 
-protected:
-    CInstanceManager* m_iMan;
-    Gfx::CEngine* m_engine;
-    CEventQueue*     m_event;
-    CRobotMain* m_main;
-    Gfx::CCamera*    m_camera;
-    CInterface* m_interface;
-    Gfx::CParticle* m_particle;
-    Gfx::CLight*     m_light;
+    protected:
+        CInstanceManager* m_iMan;
+        Gfx::CEngine* m_engine;
+        CEventQueue*     m_event;
+        CRobotMain* m_main;
+        Gfx::CCamera*    m_camera;
+        CInterface* m_interface;
+        Gfx::CParticle* m_particle;
+        Gfx::CLightManager*     m_light;
 
-    bool        m_bInfoMaximized;
-    bool        m_bInfoMinimized;
+        bool        m_bInfoMaximized;
+        bool        m_bInfoMinimized;
 
-    int         m_index;
-    Gfx::CameraType  m_infoCamera;
-    Math::Point     m_infoNormalPos;
-    Math::Point     m_infoNormalDim;
-    Math::Point     m_infoActualPos;
-    Math::Point     m_infoActualDim;
-    Math::Point     m_infoFinalPos;
-    Math::Point     m_infoFinalDim;
-    int         m_lightSuppl;
-    bool        m_bEditLock;
-    bool        m_bInitPause;
-    bool        m_bSoluce;
-    CObject*    m_toto;
-};
+        int         m_index;
+        Gfx::CameraType  m_infoCamera;
+        Math::Point     m_infoNormalPos;
+        Math::Point     m_infoNormalDim;
+        Math::Point     m_infoActualPos;
+        Math::Point     m_infoActualDim;
+        Math::Point     m_infoFinalPos;
+        Math::Point     m_infoFinalDim;
+        int         m_lightSuppl;
+        bool        m_bEditLock;
+        bool        m_bInitPause;
+        bool        m_bSoluce;
+        CObject*    m_toto;
+    };
 
 
 }

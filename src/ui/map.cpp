@@ -18,7 +18,9 @@
 // map.cpp
 
 
-#include <ui/map.h>
+#include "map.h"
+
+
 
 
 namespace Ui {

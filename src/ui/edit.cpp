@@ -18,7 +18,7 @@
 // edit.cpp
 
 
-#include <ui/edit.h>
+#include "edit.h"
 
 namespace Ui {
 
