@@ -140,13 +140,13 @@ object/task/taskmanip.cpp
 object/task/taskpen.cpp
 object/task/taskrecover.cpp
 object/task/taskreset.cpp
-object/task/tasksearch.cpp
-object/task/taskshield.cpp
-object/task/taskspiderexplo.cpp
-object/task/tasktake.cpp
-object/task/taskterraform.cpp
-object/task/taskturn.cpp
-object/task/taskwait.cpp
+# object/task/tasksearch.cpp
+# object/task/taskshield.cpp
+# object/task/taskspiderexplo.cpp
+# object/task/tasktake.cpp
+# object/task/taskterraform.cpp
+# object/task/taskturn.cpp
+# object/task/taskwait.cpp
 physics/physics.cpp
 script/cbottoken.cpp
 script/cmdtoken.cpp
