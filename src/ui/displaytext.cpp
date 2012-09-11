@@ -18,29 +18,26 @@
 // displaytext.cpp
 
 
-//#include <windows.h>
-//#include <stdio.h>
-//#include <d3d.h>
+#include "displaytext.h"
 
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-#include "graphics/engine/engine.h"
+#include "interface.h"
+#include "button.h"
+#include "label.h"
+#include "window.h"
+#include "group.h"
+
 #include "common/event.h"
+#include "common/iman.h"
 #include "common/misc.h"
 #include "common/restext.h"
-#include "common/iman.h"
+
+#include "graphics/engine/engine.h"
+
 #include "object/object.h"
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
-#include "ui/interface.h"
-#include "ui/button.h"
-#include "ui/label.h"
-#include "ui/window.h"
-#include "ui/group.h"
-//#include "old/text.h"
-//#include "old/sound.h"
-//#include "sound/sound.h"
-#include "ui/displaytext.h"
+
+
 
 
 namespace Ui {

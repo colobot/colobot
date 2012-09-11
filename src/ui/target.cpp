@@ -17,21 +17,7 @@
 // target.cpp
 
 
-//#include <windows.h>
-//#include <stdio.h>
-//#include <d3d.h>
-
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-//#include "old/math3d.h"
-#include "graphics/engine/engine.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "object/robotmain.h"
-#include "object/object.h"
-#include "common/restext.h"
-#include "ui/target.h"
+#include <ui/target.h>
 
 
 
@@ -162,7 +148,7 @@ void CTarget::Draw()
 
 // Returns the tooltip.
 
-bool CTarget::GetTooltip(Math::Point pos, char* name)
+bool CTarget::GetTooltip(Math::Point pos, std::string &name)
 {
 #if 0
     if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
@@ -183,7 +169,7 @@ bool CTarget::GetTooltip(Math::Point pos, char* name)
 //?     if ( pObj == 0 )
         if ( !m_main->GetFriendAim() )
         {
-            strcpy(name, m_tooltip);
+             m_tooltip = name;
             return true;  // does not detect objects below!
         }
     }

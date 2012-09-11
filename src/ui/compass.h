@@ -20,34 +20,35 @@
 #pragma once
 
 
-#include "ui/control.h"
+#include "control.h"
 
 namespace Gfx {
-class CEngine;
+    class CEngine;
 }
 
 namespace Ui {
-class CCompass : public CControl
-{
-public:
-//    CCompass(CInstanceManager* iMan);
-    CCompass();
-    virtual ~CCompass();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    class CCompass : public CControl
+    {
+    public:
+    //    CCompass(CInstanceManager* iMan);
+        CCompass();
+        virtual ~CCompass();
 
-    bool    EventProcess(const Event &event);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    void    Draw();
+        bool    EventProcess(const Event &event);
 
-    void    SetDirection(float dir);
-    float   GetDirection();
+        void    Draw();
 
-protected:
+        void    SetDirection(float dir);
+        float   GetDirection();
 
-protected:
-    float   m_dir;
-};
+    protected:
+
+    protected:
+        float   m_dir;
+    };
 
 
 }

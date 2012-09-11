@@ -22,14 +22,19 @@
 
 #include "common/event.h"
 #include "common/misc.h"
+
 #include "sound/sound.h"
-//#include "old/d3dengine.h"
+
 
 
 class CInstanceManager;
 //class CD3DEngine
 class CObject;
 class CSound;
+
+namespace Gfx {
+    class CEngine;
+}
 
 namespace Ui {;
 

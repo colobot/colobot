@@ -25,12 +25,12 @@
 
 // Procedures.
 
-extern char* RetObjectName(ObjectType type);
-extern char* RetObjectAlias(ObjectType type);
-extern char* RetHelpFilename(ObjectType type);
-extern char* RetHelpFilename(const char *token);
+extern char* GetObjectName(ObjectType type);
+extern char* GetObjectAlias(ObjectType type);
+extern char* GetHelpFilename(ObjectType type);
+extern char* GetHelpFilename(const char *token);
 extern bool IsType(const char *token);
 extern bool IsFunction(const char *token);
-extern char* RetHelpText(const char *token);
+extern char* GetHelpText(const char *token);
 
 

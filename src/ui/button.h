@@ -19,43 +19,36 @@
 
 #pragma once
 
-
-#include <ui/control.h>
-
-#include <graphics/engine/engine.h>
-
-#include <common/event.h>
-#include <common/misc.h>
-#include <common/restext.h>
-
+#include "control.h"
 
 namespace Ui {
 
-class CButton : public CControl
-{
-public:
-    CButton();
-    virtual ~CButton();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+    class CButton : public CControl
+    {
+    public:
+        CButton();
+        virtual ~CButton();
 
-    bool    EventProcess(const Event &event);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    void    Draw();
+        bool    EventProcess(const Event &event);
 
-    void    SetImmediat(bool bRepeat);
-    bool    GetImmediat();
+        void    Draw();
 
-    void    SetRepeat(bool bRepeat);
-    bool    GetRepeat();
+        void    SetImmediat(bool bRepeat);
+        bool    GetImmediat();
 
-protected:
+        void    SetRepeat(bool bRepeat);
+        bool    GetRepeat();
 
-protected:
-    bool    m_bCapture;
-    bool    m_bImmediat;
-    bool    m_bRepeat;
-    float   m_repeat;
-};
+    protected:
+
+    protected:
+        bool    m_bCapture;
+        bool    m_bImmediat;
+        bool    m_bRepeat;
+        float   m_repeat;
+    };
 
 }

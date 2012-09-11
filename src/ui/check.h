@@ -19,30 +19,30 @@
 
 #pragma once
 
+#include "control.h"
 
-#include "ui/control.h"
 
 namespace Gfx{
-class CEngine;
+    class CEngine;
 }
 
 namespace Ui {
-class CCheck : public CControl
-{
-public:
-    CCheck();
-    virtual ~CCheck();
+    class CCheck : public CControl
+    {
+    public:
+        CCheck();
+        virtual ~CCheck();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool    EventProcess(const Event &event);
+        bool    EventProcess(const Event &event);
 
-    void    Draw();
+        void    Draw();
 
-protected:
+    protected:
 
-protected:
-};
+    protected:
+    };
 
 }
 

@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <string>
 
 #include <object/object.h>
 
@@ -54,6 +55,8 @@
 #include <ui/window.h>
 #include <ui/interface.h>
 
+#include <app/app.h>
+
 
 namespace Ui {
 
@@ -76,7 +79,7 @@ class CStudio
 
         bool        EventProcess(const Event &event);
 
-        void        StartEditScript(CScript *script, char* name, int rank);
+        void        StartEditScript(CScript *script, std::string name, int rank);
         bool        StopEditScript(bool bCancel);
 
     protected:
@@ -84,7 +87,7 @@ class CStudio
         void        SearchToken(CEdit* edit);
         void        ColorizeScript(CEdit* edit);
         void        AdjustEditScript();
-        void        SetInfoText(char *text, bool bClickable);
+        void        SetInfoText(std::string text, bool bClickable);
         void        ViewEditScript();
         void        UpdateFlux();
         void        UpdateButtons();
@@ -98,7 +101,7 @@ class CStudio
         void        UpdateDialogAction();
         void        UpdateDialogPublic();
         void        UpdateDialogList();
-        void        SearchDirectory(char *dir, bool bCreate);
+        void        SearchDirectory(std::string dir, bool bCreate);
         bool        ReadProgram();
         bool        WriteProgram();
 
@@ -110,9 +113,11 @@ class CStudio
         CCamera*    m_camera;
         CSoundInterface* m_sound;
         CInterface* m_interface;
+        CApplication *m_app;
 
         int         m_rank;
         CScript*    m_script;
+        Gfx::CameraType m_editCamera;
 
         bool        m_bEditMaximized;
         bool        m_bEditMinimized;
@@ -128,7 +133,7 @@ class CStudio
         bool        m_bRunning;
         bool        m_bRealTime;
         bool        m_bInitPause;
-        char        m_helpFilename[100];
+        std::string  m_helpFilename;
 
     StudioDialog m_dialog;
 };
