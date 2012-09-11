@@ -21,8 +21,8 @@
 
 #include "object/motion/motionant.h"
 
-#include "old/modfile.h"
-#include "old/particule.h"
+#include "graphics/engine/modelfile.h"
+#include "graphics/engine/particle.h"
 #include "physics/physics.h"
 
 
@@ -46,7 +46,7 @@ CMotionAnt::CMotionAnt(CInstanceManager* iMan, CObject* object)
     m_armMemberIndex = 0;
     m_armLastAction  = -1;
     m_bArmStop = false;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 }
 
 // Object's destructor.
@@ -68,18 +68,18 @@ void CMotionAnt::DeleteObject(bool bAll)
 bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
                         float power)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 3+18 )  return false;
+//    if ( m_engine->GetRestCreate() < 3+18 )  return false;
 
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     m_object->SetType(type);
 
     // Creates the main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
     pModFile->ReadModel("objects\\ant1.mod");
@@ -95,7 +95,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the head.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     pModFile->ReadModel("objects\\ant2.mod");
@@ -104,7 +104,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the tail.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     pModFile->ReadModel("objects\\ant3.mod");
@@ -113,7 +113,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-back thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -122,7 +122,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-back leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 3);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -131,7 +131,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-back foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -140,7 +140,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-right thighs.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -149,7 +149,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-right legs.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -158,7 +158,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-right foots.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -167,7 +167,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right front thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -176,7 +176,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right front leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 9);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -185,7 +185,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right front foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 10);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -194,7 +194,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-back thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -204,7 +204,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-back leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -214,7 +214,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-back foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(14, rank);
     m_object->SetObjectParent(14, 13);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -224,7 +224,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-left thighs.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(15, rank);
     m_object->SetObjectParent(15, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -234,7 +234,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-left legs.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(16, rank);
     m_object->SetObjectParent(16, 15);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -244,7 +244,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-left foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(17, rank);
     m_object->SetObjectParent(17, 16);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -254,7 +254,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the left front thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(18, rank);
     m_object->SetObjectParent(18, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -264,7 +264,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the left front leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(19, rank);
     m_object->SetObjectParent(19, 18);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -274,7 +274,7 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the left front foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank,Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(20, rank);
     m_object->SetObjectParent(20, 19);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -287,10 +287,10 @@ bool CMotionAnt::Create(Math::Vector pos, float angle, ObjectType type,
     CreatePhysics();
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
 
     delete pModFile;
     return true;
@@ -373,7 +373,7 @@ void CMotionAnt::CreatePhysics()
 
     m_physics->SetType(TYPE_ROLLING);
 
-    character = m_object->RetCharacter();
+    character = m_object->GetCharacter();
     character->wheelFront = 3.0f;
     character->wheelBack  = 3.0f;
     character->wheelLeft  = 5.0f;
@@ -418,12 +418,12 @@ bool CMotionAnt::EventProcess(const Event &event)
 {
     CMotion::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
     }
 
-    if ( event.event == EVENT_KEYDOWN )
+    if ( event.type == EVENT_KEY_DOWN )
     {
 #if ADJUST_ANGLE
         int     i;
@@ -467,11 +467,11 @@ bool CMotionAnt::EventFrame(const Event &event)
     int         i, ii, st, nd, action;
     bool        bStop;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return true;
 
-    s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
-    a = fabs(m_physics->RetCirMotionY(MO_MOTSPEED)*2.0f);
+    s =     m_physics->GetLinMotionX(MO_MOTSPEED)*1.5f;
+    a = fabs(m_physics->GetCirMotionY(MO_MOTSPEED)*2.0f);
 
     if ( s == 0.0f && a != 0.0f )  a *= 1.5f;
 
@@ -495,13 +495,13 @@ bool CMotionAnt::EventFrame(const Event &event)
         m_armMember += a;
     }
 
-    if ( m_object->RetRuin() )  // destroyed?
+    if ( m_object->GetRuin() )  // destroyed?
     {
         m_actionType = MAS_RUIN;
     }
-    if ( m_object->RetBurn() )  // burning?
+    if ( m_object->GetBurn() )  // burning?
     {
-        if ( m_object->RetFixed() )
+        if ( m_object->GetFixed() )
         {
             m_actionType = MAS_BURN;
         }
@@ -526,7 +526,7 @@ bool CMotionAnt::EventFrame(const Event &event)
             else          prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.3f, 1.0f);
             if ( m_bArmStop )
             {
-                prog = (float)m_armTimeIndex/3.0f;
+                prog = static_cast< float >(m_armTimeIndex/3.0f);
             }
             if ( prog < 0.33f )  // t0..t1 ?
             {
@@ -586,32 +586,32 @@ bool CMotionAnt::EventFrame(const Event &event)
 
         if ( i < 3 )  // right leg (1..3) ?
         {
-            m_object->SetAngleX(3+3*i+0, Math::Smooth(m_object->RetAngleX(3+3*i+0), Math::PropAngle(tSt[0], tNd[0], prog), time));
-            m_object->SetAngleY(3+3*i+0, Math::Smooth(m_object->RetAngleY(3+3*i+0), Math::PropAngle(tSt[1], tNd[1], prog), time));
-            m_object->SetAngleZ(3+3*i+0, Math::Smooth(m_object->RetAngleZ(3+3*i+0), Math::PropAngle(tSt[2], tNd[2], prog), time));
-            m_object->SetAngleX(3+3*i+1, Math::Smooth(m_object->RetAngleX(3+3*i+1), Math::PropAngle(tSt[3], tNd[3], prog), time));
-            m_object->SetAngleY(3+3*i+1, Math::Smooth(m_object->RetAngleY(3+3*i+1), Math::PropAngle(tSt[4], tNd[4], prog), time));
-            m_object->SetAngleZ(3+3*i+1, Math::Smooth(m_object->RetAngleZ(3+3*i+1), Math::PropAngle(tSt[5], tNd[5], prog), time));
-            m_object->SetAngleX(3+3*i+2, Math::Smooth(m_object->RetAngleX(3+3*i+2), Math::PropAngle(tSt[6], tNd[6], prog), time));
-            m_object->SetAngleY(3+3*i+2, Math::Smooth(m_object->RetAngleY(3+3*i+2), Math::PropAngle(tSt[7], tNd[7], prog), time));
-            m_object->SetAngleZ(3+3*i+2, Math::Smooth(m_object->RetAngleZ(3+3*i+2), Math::PropAngle(tSt[8], tNd[8], prog), time));
+            m_object->SetAngleX(3+3*i+0, Math::Smooth(m_object->GetAngleX(3+3*i+0), Math::PropAngle(tSt[0], tNd[0], prog), time));
+            m_object->SetAngleY(3+3*i+0, Math::Smooth(m_object->GetAngleY(3+3*i+0), Math::PropAngle(tSt[1], tNd[1], prog), time));
+            m_object->SetAngleZ(3+3*i+0, Math::Smooth(m_object->GetAngleZ(3+3*i+0), Math::PropAngle(tSt[2], tNd[2], prog), time));
+            m_object->SetAngleX(3+3*i+1, Math::Smooth(m_object->GetAngleX(3+3*i+1), Math::PropAngle(tSt[3], tNd[3], prog), time));
+            m_object->SetAngleY(3+3*i+1, Math::Smooth(m_object->GetAngleY(3+3*i+1), Math::PropAngle(tSt[4], tNd[4], prog), time));
+            m_object->SetAngleZ(3+3*i+1, Math::Smooth(m_object->GetAngleZ(3+3*i+1), Math::PropAngle(tSt[5], tNd[5], prog), time));
+            m_object->SetAngleX(3+3*i+2, Math::Smooth(m_object->GetAngleX(3+3*i+2), Math::PropAngle(tSt[6], tNd[6], prog), time));
+            m_object->SetAngleY(3+3*i+2, Math::Smooth(m_object->GetAngleY(3+3*i+2), Math::PropAngle(tSt[7], tNd[7], prog), time));
+            m_object->SetAngleZ(3+3*i+2, Math::Smooth(m_object->GetAngleZ(3+3*i+2), Math::PropAngle(tSt[8], tNd[8], prog), time));
         }
         else    // left leg (4..6) ?
         {
-            m_object->SetAngleX(3+3*i+0, Math::Smooth(m_object->RetAngleX(3+3*i+0), Math::PropAngle(-tSt[0], -tNd[0], prog), time));
-            m_object->SetAngleY(3+3*i+0, Math::Smooth(m_object->RetAngleY(3+3*i+0), Math::PropAngle(-tSt[1], -tNd[1], prog), time));
-            m_object->SetAngleZ(3+3*i+0, Math::Smooth(m_object->RetAngleZ(3+3*i+0), Math::PropAngle( tSt[2],  tNd[2], prog), time));
-            m_object->SetAngleX(3+3*i+1, Math::Smooth(m_object->RetAngleX(3+3*i+1), Math::PropAngle(-tSt[3], -tNd[3], prog), time));
-            m_object->SetAngleY(3+3*i+1, Math::Smooth(m_object->RetAngleY(3+3*i+1), Math::PropAngle(-tSt[4], -tNd[4], prog), time));
-            m_object->SetAngleZ(3+3*i+1, Math::Smooth(m_object->RetAngleZ(3+3*i+1), Math::PropAngle( tSt[5],  tNd[5], prog), time));
-            m_object->SetAngleX(3+3*i+2, Math::Smooth(m_object->RetAngleX(3+3*i+2), Math::PropAngle(-tSt[6], -tNd[6], prog), time));
-            m_object->SetAngleY(3+3*i+2, Math::Smooth(m_object->RetAngleY(3+3*i+2), Math::PropAngle(-tSt[7], -tNd[7], prog), time));
-            m_object->SetAngleZ(3+3*i+2, Math::Smooth(m_object->RetAngleZ(3+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
+            m_object->SetAngleX(3+3*i+0, Math::Smooth(m_object->GetAngleX(3+3*i+0), Math::PropAngle(-tSt[0], -tNd[0], prog), time));
+            m_object->SetAngleY(3+3*i+0, Math::Smooth(m_object->GetAngleY(3+3*i+0), Math::PropAngle(-tSt[1], -tNd[1], prog), time));
+            m_object->SetAngleZ(3+3*i+0, Math::Smooth(m_object->GetAngleZ(3+3*i+0), Math::PropAngle( tSt[2],  tNd[2], prog), time));
+            m_object->SetAngleX(3+3*i+1, Math::Smooth(m_object->GetAngleX(3+3*i+1), Math::PropAngle(-tSt[3], -tNd[3], prog), time));
+            m_object->SetAngleY(3+3*i+1, Math::Smooth(m_object->GetAngleY(3+3*i+1), Math::PropAngle(-tSt[4], -tNd[4], prog), time));
+            m_object->SetAngleZ(3+3*i+1, Math::Smooth(m_object->GetAngleZ(3+3*i+1), Math::PropAngle( tSt[5],  tNd[5], prog), time));
+            m_object->SetAngleX(3+3*i+2, Math::Smooth(m_object->GetAngleX(3+3*i+2), Math::PropAngle(-tSt[6], -tNd[6], prog), time));
+            m_object->SetAngleY(3+3*i+2, Math::Smooth(m_object->GetAngleY(3+3*i+2), Math::PropAngle(-tSt[7], -tNd[7], prog), time));
+            m_object->SetAngleZ(3+3*i+2, Math::Smooth(m_object->GetAngleZ(3+3*i+2), Math::PropAngle( tSt[8],  tNd[8], prog), time));
         }
     }
 
 #if ADJUST_ANGLE
-    if ( m_object->RetSelect() )
+    if ( m_object->GetSelect() )
     {
         char s[100];
         sprintf(s, "A:time=%d Q:part=%d W:member=%d", m_armTimeIndex, m_armPartIndex, m_armMemberIndex);
@@ -664,8 +664,8 @@ bool CMotionAnt::EventFrame(const Event &event)
         SetInclinaison(dir);
 
         time = event.rTime*1.0f;
-        m_object->SetAngleZ(1, Math::Smooth(m_object->RetAngleZ(1), 0.0f, time));  // head
-        m_object->SetAngleZ(2, Math::Smooth(m_object->RetAngleZ(2), 0.0f, time));  // tail
+        m_object->SetAngleZ(1, Math::Smooth(m_object->GetAngleZ(1), 0.0f, time));  // head
+        m_object->SetAngleZ(2, Math::Smooth(m_object->GetAngleZ(2), 0.0f, time));  // tail
     }
     else if ( m_actionType == MAS_RUIN )  // destroyed?
     {
@@ -676,17 +676,17 @@ bool CMotionAnt::EventFrame(const Event &event)
     }
     else if ( m_actionType == MAS_BACK1 )  // starts on the back?
     {
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_armTimeAbs )
         {
-            m_lastParticule = m_armTimeAbs;
+            m_lastParticle = m_armTimeAbs;
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*3.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
+            m_particule->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
         }
 
         if ( m_progress < 0.5f )
@@ -718,13 +718,13 @@ bool CMotionAnt::EventFrame(const Event &event)
     }
     else if ( m_actionType == MAS_BACK2 )  // moves on the back?
     {
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_armTimeAbs )
         {
-            m_lastParticule = m_armTimeAbs;
+            m_lastParticle = m_armTimeAbs;
 
             if ( rand()%10 == 0 )
             {
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*5.0f;
                 pos.z += (Math::Rand()-0.5f)*5.0f;
                 pos.y -= 1.0f;
@@ -733,7 +733,7 @@ bool CMotionAnt::EventFrame(const Event &event)
                 speed.y = Math::Rand()*2.0f;
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
+                m_particule->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
             }
         }
 
@@ -767,17 +767,17 @@ bool CMotionAnt::EventFrame(const Event &event)
     }
     else if ( m_actionType == MAS_BACK3 )  // goes back on the legs?
     {
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_armTimeAbs )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_armTimeAbs )
         {
-            m_lastParticule = m_armTimeAbs;
+            m_lastParticle = m_armTimeAbs;
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             speed.x = (Math::Rand()-0.5f)*10.0f;
             speed.z = (Math::Rand()-0.5f)*10.0f;
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*3.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
+            m_particule->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
         }
 
         if ( m_progress < 0.5f )
