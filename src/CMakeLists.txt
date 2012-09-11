@@ -124,33 +124,33 @@ graphics/opengl/gldevice.cpp
 # object/motion/motiontoto.cpp
 # object/motion/motionvehicle.cpp
 # object/motion/motionworm.cpp
-# object/object.cpp
+object/object.cpp
 # object/robotmain.cpp
-# object/task/task.cpp
-# object/task/taskadvance.cpp
-# object/task/taskbuild.cpp
-# object/task/taskfire.cpp
-# object/task/taskfireant.cpp
-# object/task/taskflag.cpp
-# object/task/taskgoto.cpp
-# object/task/taskgungoal.cpp
-# object/task/taskinfo.cpp
-# object/task/taskmanager.cpp
-# object/task/taskmanip.cpp
-# object/task/taskpen.cpp
-# object/task/taskrecover.cpp
-# object/task/taskreset.cpp
-# object/task/tasksearch.cpp
-# object/task/taskshield.cpp
-# object/task/taskspiderexplo.cpp
-# object/task/tasktake.cpp
-# object/task/taskterraform.cpp
-# object/task/taskturn.cpp
-# object/task/taskwait.cpp
-# physics/physics.cpp
-# script/cbottoken.cpp
-# script/cmdtoken.cpp
-# script/script.cpp
+object/task/task.cpp
+object/task/taskadvance.cpp
+object/task/taskbuild.cpp
+object/task/taskfire.cpp
+object/task/taskfireant.cpp
+object/task/taskflag.cpp
+object/task/taskgoto.cpp
+object/task/taskgungoal.cpp
+object/task/taskinfo.cpp
+object/task/taskmanager.cpp
+object/task/taskmanip.cpp
+object/task/taskpen.cpp
+object/task/taskrecover.cpp
+object/task/taskreset.cpp
+object/task/tasksearch.cpp
+object/task/taskshield.cpp
+object/task/taskspiderexplo.cpp
+object/task/tasktake.cpp
+object/task/taskterraform.cpp
+object/task/taskturn.cpp
+object/task/taskwait.cpp
+physics/physics.cpp
+script/cbottoken.cpp
+script/cmdtoken.cpp
+script/script.cpp
 # sound/sound.cpp
 # ui/button.cpp
 # ui/check.cpp

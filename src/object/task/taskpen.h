@@ -57,8 +57,8 @@ protected:
     float           m_progress;
     float           m_delay;
     float           m_time;
-    float           m_lastParticule;
-    Math::Vector        m_supportPos;
+    float           m_lastParticle;
+    Math::Vector    m_supportPos;
 
     float           m_timeUp;
     float           m_oldAngle;

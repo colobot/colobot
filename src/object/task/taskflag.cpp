@@ -16,15 +16,13 @@
 
 // taskflag.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskflag.h"
 
 #include "math/geometry.h"
 #include "common/iman.h"
-#include "old/water.h"
-#include "old/pyro.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/pyro.h"
+#include "graphics/engine/water.h"
 #include "physics/physics.h"
 #include "object/motion/motionhuman.h"
 
@@ -51,8 +49,8 @@ CTaskFlag::~CTaskFlag()
 bool CTaskFlag::EventProcess(const Event &event)
 {
     if ( m_bError )  return true;
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_time += event.rTime;
 
@@ -72,18 +70,18 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
     m_time = 0.0f;
 
     m_bError = true;  // operation impossible
-    if ( !m_physics->RetLand() )
+    if ( !m_physics->GetLand() )
     {
-        pos = m_object->RetPosition(0);
-        if ( pos.y < m_water->RetLevel() )  return ERR_FLAG_WATER;
+        pos = m_object->GetPosition(0);
+        if ( pos.y < m_water->GetLevel() )  return ERR_FLAG_WATER;
         return ERR_FLAG_FLY;
     }
 
-    speed = m_physics->RetMotorSpeed();
+    speed = m_physics->GetMotorSpeed();
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_FLAG_MOTOR;
 
-    if ( m_object->RetFret() != 0 )  return ERR_FLAG_BUSY;
+    if ( m_object->GetFret() != 0 )  return ERR_FLAG_BUSY;
 
     if ( order == TFL_CREATE )
     {
@@ -109,7 +107,7 @@ Error CTaskFlag::Start(TaskFlagOrder order, int rank)
 
 Error CTaskFlag::IsEnded()
 {
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
 
     if ( m_bError )  return ERR_STOP;
     if ( m_time < 2.0f )  return ERR_CONTINUE;
@@ -143,12 +141,12 @@ CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetEnable() )  continue;
+        if ( !pObj->GetEnable() )  continue;
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
         if ( type == OBJECT_NULL )
         {
             if ( oType != OBJECT_FLAGb &&
@@ -162,7 +160,7 @@ CObject* CTaskFlag::SearchNearest(Math::Vector pos, ObjectType type)
             if ( oType != type )  continue;
         }
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(oPos, pos);
         if ( dist < min )
         {
@@ -185,12 +183,12 @@ int CTaskFlag::CountObject(ObjectType type)
     count = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetEnable() )  continue;
+        if ( !pObj->GetEnable() )  continue;
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
         if ( type == OBJECT_NULL )
         {
             if ( oType != OBJECT_FLAGb &&
@@ -213,13 +211,13 @@ int CTaskFlag::CountObject(ObjectType type)
 
 Error CTaskFlag::CreateFlag(int rank)
 {
-    CObject*    pObj;
-    CObject*    pNew;
-    CPyro*      pyro;
-    Math::Matrix*   mat;
-    Math::Vector    pos;
-    float       dist;
-    int         i;
+    CObject*      pObj;
+    CObject*      pNew;
+    Gfx::CPyro*   pyro;
+    Math::Matrix* mat;
+    Math::Vector  pos;
+    float         dist;
+    int           i;
 
     ObjectType  table[5] =
     {
@@ -230,13 +228,13 @@ Error CTaskFlag::CreateFlag(int rank)
         OBJECT_FLAGv,
     };
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     pos = Transform(*mat, Math::Vector(4.0f, 0.0f, 0.0f));
 
     pObj = SearchNearest(pos, OBJECT_NULL);
     if ( pObj != 0 )
     {
-        dist = Math::Distance(pos, pObj->RetPosition(0));
+        dist = Math::Distance(pos, pObj->GetPosition(0));
         if ( dist < 10.0f )
         {
             return ERR_FLAG_PROXY;
@@ -258,8 +256,8 @@ Error CTaskFlag::CreateFlag(int rank)
     pNew->SetZoom(0, 0.0f);
 
     m_sound->Play(SOUND_WAYPOINT, pos);
-    pyro = new CPyro(m_iMan);
-    pyro->Create(PT_FLCREATE, pNew);
+    pyro = new Gfx::CPyro(m_iMan);
+    pyro->Create(Gfx::PT_FLCREATE, pNew);
 
     return ERR_OK;
 }
@@ -268,13 +266,13 @@ Error CTaskFlag::CreateFlag(int rank)
 
 Error CTaskFlag::DeleteFlag()
 {
-    CObject*    pObj;
-    CPyro*      pyro;
-    Math::Vector    iPos, oPos;
-    float       iAngle, angle, aLimit, dist;
+    CObject*     pObj;
+    Gfx::CPyro*  pyro;
+    Math::Vector iPos, oPos;
+    float        iAngle, angle, aLimit, dist;
 
-    iPos = m_object->RetPosition(0);
-    iAngle = m_object->RetAngleY(0);
+    iPos = m_object->GetPosition(0);
+    iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     pObj = SearchNearest(iPos, OBJECT_NULL);
@@ -282,13 +280,13 @@ Error CTaskFlag::DeleteFlag()
     {
         return ERR_FLAG_DELETE;
     }
-    dist = Math::Distance(iPos, pObj->RetPosition(0));
+    dist = Math::Distance(iPos, pObj->GetPosition(0));
     if ( dist > 10.0f )
     {
         return ERR_FLAG_DELETE;
     }
 
-    oPos = pObj->RetPosition(0);
+    oPos = pObj->GetPosition(0);
     angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
     aLimit = 45.0f*Math::PI/180.0f;
     if ( !Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
@@ -297,8 +295,8 @@ Error CTaskFlag::DeleteFlag()
     }
 
     m_sound->Play(SOUND_WAYPOINT, iPos);
-    pyro = new CPyro(m_iMan);
-    pyro->Create(PT_FLDELETE, pObj);
+    pyro = new Gfx::CPyro(m_iMan);
+    pyro->Create(Gfx::PT_FLDELETE, pObj);
 
     return ERR_OK;
 }

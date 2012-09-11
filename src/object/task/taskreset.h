@@ -57,7 +57,7 @@ protected:
     float           m_time;
     float           m_speed;
     float           m_progress;
-    float           m_lastParticule;  // time of generation last particle
+    float           m_lastParticle;  // time of generation last particle
     float           m_iAngle;
 };
 

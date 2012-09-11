@@ -23,8 +23,8 @@
 
 #include "common/event.h"
 #include "common/iman.h"
-#include "old/terrain.h"
-#include "old/water.h"
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/water.h"
 #include "math/geometry.h"
 #include "physics/physics.h"
 
@@ -59,14 +59,14 @@ bool CTaskGoto::EventProcess(const Event &event)
 {
     Math::Vector    pos, goal;
     Math::Point     rot, repulse;
-    float       a, g, dist, linSpeed, cirSpeed, h, hh, factor, dir;
-    Error       ret;
+    float           a, g, dist, linSpeed, cirSpeed, h, hh, factor, dir;
+    Error           ret;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     // Momentarily stationary object (ant on the back)?
-    if ( m_object->RetFixed() )
+    if ( m_object->GetFixed() )
     {
         m_physics->SetMotorSpeedX(0.0f);  // stops the advance
         m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
@@ -84,7 +84,7 @@ bool CTaskGoto::EventProcess(const Event &event)
     {
         m_leakTime += event.rTime;
 
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
 
         rot.x = m_leakPos.x-pos.x;
         rot.y = m_leakPos.z-pos.z;
@@ -92,7 +92,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         rot.x /= dist;
         rot.y /= dist;
 
-        a = m_object->RetAngleY(0);
+        a = m_object->GetAngleY(0);
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         a = Math::Direction(a, g)*1.0f;
         cirSpeed = a;
@@ -126,10 +126,10 @@ bool CTaskGoto::EventProcess(const Event &event)
         if ( m_bmStep == 0 )
         {
             // Frees the area around the departure.
-            BitmapClearCircle(m_object->RetPosition(0), BM_DIM_STEP*1.8f);
+            BitmapClearCircle(m_object->GetPosition(0), BM_DIM_STEP*1.8f);
         }
 
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
 
         if ( m_bmFretObject == 0 )
         {
@@ -140,44 +140,20 @@ bool CTaskGoto::EventProcess(const Event &event)
         {
             goal = m_goalObject;
             dist = TAKE_DIST+2.0f;
-            if ( m_bmFretObject->RetType() == OBJECT_BASE )  dist = 12.0f;
+            if ( m_bmFretObject->GetType() == OBJECT_BASE )  dist = 12.0f;
         }
 
         ret = BeamSearch(pos, goal, dist);
         if ( ret == ERR_OK )
         {
-#if 0
-            Math::Vector    min, max;
-            min = pos;
-            max = m_goal;
-            if ( min.x > max.x )  Math::Swap(min.x, max.x);
-            if ( min.z > max.z )  Math::Swap(min.z, max.z);
-            min.x -= 50.0f;
-            min.z -= 50.0f;
-            max.x += 50.0f;
-            max.z += 50.0f;
-            BitmapDebug(min, max, m_object->RetPosition(0), m_goal);
-#endif
-            if ( m_physics->RetLand() )  m_phase = TGP_BEAMWCOLD;
+            if ( m_physics->GetLand() )  m_phase = TGP_BEAMWCOLD;
             else                         m_phase = TGP_BEAMGOTO;
             m_bmIndex = 0;
-            m_bmWatchDogPos = m_object->RetPosition(0);
+            m_bmWatchDogPos = m_object->GetPosition(0);
             m_bmWatchDogTime = 0.0f;
         }
         if ( ret == ERR_GOTO_IMPOSSIBLE || ret == ERR_GOTO_ITER )
         {
-#if 0
-            Math::Vector    min, max;
-            min = pos;
-            max = m_goal;
-            if ( min.x > max.x )  Math::Swap(min.x, max.x);
-            if ( min.z > max.z )  Math::Swap(min.z, max.z);
-            min.x -= 50.0f;
-            min.z -= 50.0f;
-            max.x += 50.0f;
-            max.z += 50.0f;
-            BitmapDebug(min, max, m_object->RetPosition(0), m_goal);
-#endif
             m_error = ret;
             return false;
         }
@@ -197,16 +173,16 @@ bool CTaskGoto::EventProcess(const Event &event)
 
     if ( m_phase == TGP_BEAMGOTO )  // goto dot list? (?)
     {
-        if ( m_physics->RetCollision() )  // collision?
+        if ( m_physics->GetCollision() )  // collision?
         {
             m_physics->SetCollision(false);  // there's more
         }
 
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
 
-        if ( m_physics->RetType() == TYPE_FLYING && m_altitude == 0.0f )
+        if ( m_physics->GetType() == TYPE_FLYING && m_altitude == 0.0f )
         {
-            if ( m_physics->RetLand() )
+            if ( m_physics->GetLand() )
             {
                 m_physics->SetMotorSpeedY(0.0f);
             }
@@ -216,21 +192,21 @@ bool CTaskGoto::EventProcess(const Event &event)
             }
         }
 
-        if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
         {
             goal = m_bmPoints[m_bmIndex];
             goal.y = pos.y;
-            h = m_terrain->RetFloorHeight(goal, true, true);
+            h = m_terrain->GetHeightToFloor(goal, true, true);
             dist = Math::DistanceProjected(pos, goal);
             if ( dist != 0.0f )  // anticipates?
             {
-                linSpeed = m_physics->RetLinMotionX(MO_REASPEED);
-                linSpeed /= m_physics->RetLinMotionX(MO_ADVSPEED);
+                linSpeed = m_physics->GetLinMotionX(MO_REASPEED);
+                linSpeed /= m_physics->GetLinMotionX(MO_ADVSPEED);
                 goal.x = pos.x + (goal.x-pos.x)*linSpeed*20.0f/dist;
                 goal.z = pos.z + (goal.z-pos.z)*linSpeed*20.0f/dist;
             }
             goal.y = pos.y;
-            hh = m_terrain->RetFloorHeight(goal, true, true);
+            hh = m_terrain->GetHeightToFloor(goal, true, true);
             h = Math::Min(h, hh);
             linSpeed = 0.0f;
             if ( h < m_altitude-1.0f )
@@ -251,7 +227,7 @@ bool CTaskGoto::EventProcess(const Event &event)
         rot.x /= dist;
         rot.y /= dist;
 
-        a = m_object->RetAngleY(0);
+        a = m_object->GetAngleY(0);
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         cirSpeed = Math::Direction(a, g)*2.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -260,7 +236,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         if ( m_bmIndex == m_bmTotal )  // last point?
         {
-            linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
+            linSpeed = dist/(m_physics->GetLinStopLength()*1.5f);
             if ( linSpeed > 1.0f )  linSpeed = 1.0f;
         }
         else
@@ -316,7 +292,7 @@ bool CTaskGoto::EventProcess(const Event &event)
     {
         if ( m_crashMode == TGC_HALT )
         {
-            if ( m_physics->RetCollision() )  // collision?
+            if ( m_physics->GetCollision() )  // collision?
             {
                 m_physics->SetCollision(false);  // there's more
                 m_error = ERR_STOP;
@@ -324,11 +300,11 @@ bool CTaskGoto::EventProcess(const Event &event)
             }
         }
 
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
 
         if ( m_altitude > 0.0f )
         {
-            h = m_terrain->RetFloorHeight(pos, true, true);
+            h = m_terrain->GetHeightToFloor(pos, true, true);
             linSpeed = 0.0f;
             if ( h < m_altitude )
             {
@@ -343,7 +319,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
         rot.x = m_goal.x-pos.x;
         rot.y = m_goal.z-pos.z;
-        a = m_object->RetAngleY(0);
+        a = m_object->GetAngleY(0);
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         cirSpeed = Math::Direction(a, g)*1.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -355,16 +331,16 @@ bool CTaskGoto::EventProcess(const Event &event)
     }
 
     if ( m_phase != TGP_TURN                 &&
-         m_physics->RetType() == TYPE_FLYING &&
+         m_physics->GetType() == TYPE_FLYING &&
          m_altitude > 0.0f                   )
     {
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
         dist = Math::DistanceProjected(m_goal, pos);
         factor = (dist-20.0f)/20.0f;
         if ( factor < 0.0f )  factor = 0.0f;
         if ( factor > 1.0f )  factor = 1.0f;
 
-        h = m_terrain->RetFloorHeight(m_object->RetPosition(0), true, true);
+        h = m_terrain->GetHeightToFloor(m_object->GetPosition(0), true, true);
         linSpeed = 0.0f;
         if ( h < (m_altitude-0.5f)*factor && factor == 1.0f )
         {
@@ -382,7 +358,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
     if ( m_phase == TGP_ADVANCE )  // going towards the goal?
     {
-        if ( m_physics->RetCollision() )  // collision?
+        if ( m_physics->GetCollision() )  // collision?
         {
             m_physics->SetCollision(false);  // there's more
             m_time = 0.0f;
@@ -391,15 +367,15 @@ bool CTaskGoto::EventProcess(const Event &event)
         }
 
 #if 0
-        pos = m_object->RetPosition(0);
-        a = m_object->RetAngleY(0);
+        pos = m_object->GetPosition(0);
+        a = m_object->GetAngleY(0);
         g = Math::RotateAngle(m_goal.x-pos.x, pos.z-m_goal.z);  // CW !
         cirSpeed = Math::Direction(a, g)*1.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
         if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
         dist = Math::DistanceProjected(m_goal, pos);
-        linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
+        linSpeed = dist/(m_physics->GetLinStopLength()*1.5f);
         if ( linSpeed >  1.0f )  linSpeed =  1.0f;
 
         if ( dist < 20.0f && fabs(cirSpeed) >= 0.5f )
@@ -407,7 +383,7 @@ bool CTaskGoto::EventProcess(const Event &event)
             linSpeed = 0.0f;  // turns first, then advance
         }
 #else
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
 
         rot.x = m_goal.x-pos.x;
         rot.y = m_goal.z-pos.z;
@@ -419,11 +395,11 @@ bool CTaskGoto::EventProcess(const Event &event)
         rot.x += repulse.x*2.0f;
         rot.y += repulse.y*2.0f;
 
-        a = m_object->RetAngleY(0);
+        a = m_object->GetAngleY(0);
         g = Math::RotateAngle(rot.x, -rot.y);  // CW !
         cirSpeed = Math::Direction(a, g)*1.0f;
-//?     if ( m_physics->RetType() == TYPE_FLYING &&
-//?          m_physics->RetLand()                )  // flying on the ground?
+//?     if ( m_physics->GetType() == TYPE_FLYING &&
+//?          m_physics->GetLand()                )  // flying on the ground?
 //?     {
 //?         cirSpeed *= 4.0f;  // more fishing
 //?     }
@@ -431,9 +407,9 @@ bool CTaskGoto::EventProcess(const Event &event)
         if ( cirSpeed < -1.0f )  cirSpeed = -1.0f;
 
         dist = Math::DistanceProjected(m_goal, pos);
-        linSpeed = dist/(m_physics->RetLinStopLength()*1.5f);
-//?     if ( m_physics->RetType() == TYPE_FLYING &&
-//?          m_physics->RetLand()                )  // flying on the ground?
+        linSpeed = dist/(m_physics->GetLinStopLength()*1.5f);
+//?     if ( m_physics->GetType() == TYPE_FLYING &&
+//?          m_physics->GetLand()                )  // flying on the ground?
 //?     {
 //?         linSpeed *= 8.0f;  // more fishing
 //?     }
@@ -455,7 +431,7 @@ bool CTaskGoto::EventProcess(const Event &event)
          m_phase == TGP_CRTURN ||  // turns after collision?
          m_phase == TGP_CLTURN )   // turns after collision?
     {
-        a = m_object->RetAngleY(0);
+        a = m_object->GetAngleY(0);
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*1.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -474,7 +450,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
     if ( m_phase == TGP_CRADVANCE )  // advance after collision?
     {
-        if ( m_physics->RetCollision() )  // collision?
+        if ( m_physics->GetCollision() )  // collision?
         {
             m_physics->SetCollision(false);  // there's more
             m_time = 0.0f;
@@ -486,7 +462,7 @@ bool CTaskGoto::EventProcess(const Event &event)
 
     if ( m_phase == TGP_CLADVANCE )  // advance after collision?
     {
-        if ( m_physics->RetCollision() )  // collision?
+        if ( m_physics->GetCollision() )  // collision?
         {
             m_physics->SetCollision(false);  // there's more
             m_time = 0.0f;
@@ -517,15 +493,15 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
     float       distance, min, radius;
     int         i;
 
-    iPos = m_object->RetPosition(0);
+    iPos = m_object->GetPosition(0);
     min = 1000000.0f;
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
         if ( oType != OBJECT_MOBILEfa &&
              oType != OBJECT_MOBILEta &&
              oType != OBJECT_MOBILEwa &&
@@ -570,7 +546,7 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
              oType != OBJECT_SAFE     &&
              oType != OBJECT_HUSTON   )  continue;
 
-        if ( pObj->RetVirusMode() )  continue;  // object infected?
+        if ( pObj->GetVirusMode() )  continue;  // object infected?
 
         if ( !pObj->GetCrashSphere(0, oPos, radius) )  continue;
         distance = Math::DistanceProjected(oPos, iPos);
@@ -582,7 +558,7 @@ CObject* CTaskGoto::WormSearch(Math::Vector &impact)
     }
     if ( pBest == 0 )  return 0;
 
-    impact = pBest->RetPosition(0);
+    impact = pBest->GetPosition(0);
     return pBest;
 }
 
@@ -603,7 +579,7 @@ void CTaskGoto::WormFrame(float rTime)
         pObj = WormSearch(impact);
         if ( pObj != 0 )
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             dist = Math::Distance(pos, impact);
             if ( dist <= 15.0f )
             {
@@ -627,7 +603,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
     float       dist;
     int         x, y;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
 
     if ( goalMode == TGG_DEFAULT )
     {
@@ -668,7 +644,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
     m_bmFretObject = 0;
     m_bmFinalMove = 0.0f;
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     dist = Math::DistanceProjected(pos, m_goal);
     if ( dist < 10.0f && m_crashMode == TGC_BEAM )
     {
@@ -703,7 +679,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
         target = SearchTarget(goal, 1.0f);
         if ( target != 0 )
         {
-            m_goal = target->RetPosition(0);
+            m_goal = target->GetPosition(0);
             dist = 0.0f;
             if ( !AdjustBuilding(m_goal, 1.0f, dist) )
             {
@@ -722,7 +698,7 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
         target = SearchTarget(goal, 1.0f);
         if ( target != 0 )
         {
-            m_goal = target->RetPosition(0);
+            m_goal = target->GetPosition(0);
             dist = 4.0f;
             if ( AdjustBuilding(m_goal, 1.0f, dist) )
             {
@@ -743,9 +719,9 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
             m_bTake = true;  // object was taken on arrival (final rotation)
         }
 
-        if ( m_physics->RetType() == TYPE_FLYING && m_altitude == 0.0f )
+        if ( m_physics->GetType() == TYPE_FLYING && m_altitude == 0.0f )
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             dist = Math::DistanceProjected(pos, m_goal);
             if ( dist > FLY_DIST_GROUND )  // over 20 meters?
             {
@@ -757,22 +733,10 @@ Error CTaskGoto::Start(Math::Vector goal, float altitude,
 
         if ( m_bmFretObject == 0 )
         {
-            x = (int)((m_goal.x+1600.0f)/BM_DIM_STEP);
-            y = (int)((m_goal.z+1600.0f)/BM_DIM_STEP);
+            x = static_cast<int>((m_goal.x+1600.0f)/BM_DIM_STEP);
+            y = static_cast<int>((m_goal.z+1600.0f)/BM_DIM_STEP);
             if ( BitmapTestDot(0, x, y) )  // arrival occupied?
             {
-#if 0
-                Math::Vector    min, max;
-                min = m_object->RetPosition(0);
-                max = m_goal;
-                if ( min.x > max.x )  Math::Swap(min.x, max.x);
-                if ( min.z > max.z )  Math::Swap(min.z, max.z);
-                min.x -= 50.0f;
-                min.z -= 50.0f;
-                max.x += 50.0f;
-                max.z += 50.0f;
-                BitmapDebug(min, max, m_object->RetPosition(0), m_goal);
-#endif
                 m_error = ERR_GOTO_BUSY;
                 return m_error;
             }
@@ -789,10 +753,10 @@ Error CTaskGoto::IsEnded()
     Math::Vector    pos;
     float       limit, angle, dist, h, level;
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_error != ERR_OK )  return m_error;
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
 
     if ( m_phase == TGP_BEAMLEAK )  // leak?
     {
@@ -814,17 +778,17 @@ Error CTaskGoto::IsEnded()
     if ( m_phase == TGP_BEAMWCOLD )  // expects cool reactor?
     {
         if ( m_altitude != 0.0f &&
-             m_physics->RetReactorRange() < 1.0f )  return ERR_CONTINUE;
+             m_physics->GetReactorRange() < 1.0f )  return ERR_CONTINUE;
         m_phase = TGP_BEAMUP;
     }
 
     if ( m_phase == TGP_BEAMUP )  // off?
     {
-        if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
         {
-            level = m_terrain->RetFloorLevel(pos, true, true);
+            level = m_terrain->GetFloorLevel(pos, true, true);
             h = level+m_altitude-20.0f;
-            limit = m_terrain->RetFlyingMaxHeight();
+            limit = m_terrain->GetFlyingMaxHeight();
             if ( h > limit )  h = limit;
             if ( pos.y < h-1.0f )  return ERR_CONTINUE;
 
@@ -836,7 +800,7 @@ Error CTaskGoto::IsEnded()
     if ( m_phase == TGP_BEAMGOTO )  // goto dot list ?
     {
         if ( m_altitude != 0.0f &&
-             m_physics->RetReactorRange() < 0.1f )  // overheating?
+             m_physics->GetReactorRange() < 0.1f )  // overheating?
         {
             m_physics->SetMotorSpeedX(0.0f);  // stops the advance
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
@@ -845,7 +809,7 @@ Error CTaskGoto::IsEnded()
             return ERR_CONTINUE;
         }
 
-        if ( m_physics->RetLand() )  // on the ground?
+        if ( m_physics->GetLand() )  // on the ground?
         {
             limit = 1.0f;
         }
@@ -873,9 +837,9 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_BEAMDOWN )  // landed?
     {
-        if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
         {
-            if ( !m_physics->RetLand() )  return ERR_CONTINUE;
+            if ( !m_physics->GetLand() )  return ERR_CONTINUE;
             m_physics->SetMotorSpeedY(0.0f);  // stops the descent
 
             m_altitude = 0.0f;
@@ -909,7 +873,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_ADVANCE )  // going towards the goal?
     {
-        if ( m_physics->RetLand() )  limit = 0.1f;  // on the ground
+        if ( m_physics->GetLand() )  limit = 0.1f;  // on the ground
         else                         limit = 1.0f;  // flying
         if ( m_bApprox )  limit = 2.0f;
 
@@ -924,9 +888,9 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_LAND )  // landed?
     {
-        if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
         {
-            if ( !m_physics->RetLand() )  return ERR_CONTINUE;
+            if ( !m_physics->GetLand() )  return ERR_CONTINUE;
             m_physics->SetMotorSpeedY(0.0f);
         }
 
@@ -943,7 +907,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_TURN )  // turns to the object?
     {
-        angle = Math::NormAngle(m_object->RetAngleY(0));
+        angle = Math::NormAngle(m_object->GetAngleY(0));
         limit = 0.02f;
         if ( m_bApprox )  limit = 0.10f;
         if ( fabs(angle-m_angle) < limit )
@@ -951,9 +915,9 @@ Error CTaskGoto::IsEnded()
             m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
             if ( m_bmFinalMove == 0.0f )  return ERR_STOP;
 
-            m_bmFinalPos = m_object->RetPosition(0);
-            m_bmFinalDist = m_physics->RetLinLength(m_bmFinalMove);
-            m_bmTimeLimit = m_physics->RetLinTimeLength(fabs(m_bmFinalMove))*1.5f;
+            m_bmFinalPos = m_object->GetPosition(0);
+            m_bmFinalDist = m_physics->GetLinLength(m_bmFinalMove);
+            m_bmTimeLimit = m_physics->GetLinTimeLength(fabs(m_bmFinalMove))*1.5f;
             if ( m_bmTimeLimit < 0.5f )  m_bmTimeLimit = 0.5f;
             m_phase = TGP_MOVE;
         }
@@ -973,7 +937,7 @@ Error CTaskGoto::IsEnded()
             if ( m_crashMode == TGC_RIGHTLEFT ||
                  m_crashMode == TGC_RIGHT     )  angle =  Math::PI/2.0f;  // 90 deegres to the right
             else                            angle = -Math::PI/2.0f;  // 90 deegres to the left
-            m_angle = Math::NormAngle(m_object->RetAngleY(0)+angle);
+            m_angle = Math::NormAngle(m_object->GetAngleY(0)+angle);
             m_phase = TGP_CRTURN;
 //?         m_phase = TGP_ADVANCE;
         }
@@ -981,7 +945,7 @@ Error CTaskGoto::IsEnded()
 
     if ( m_phase == TGP_CRTURN )  // turns after collision?
     {
-        angle = Math::NormAngle(m_object->RetAngleY(0));
+        angle = Math::NormAngle(m_object->GetAngleY(0));
         limit = 0.1f;
         if ( fabs(angle-m_angle) < limit )
         {
@@ -1007,14 +971,14 @@ Error CTaskGoto::IsEnded()
             if ( m_crashMode == TGC_LEFTRIGHT )  angle =  Math::PI;
             if ( m_crashMode == TGC_RIGHT     )  angle =  Math::PI/2.0f;
             if ( m_crashMode == TGC_LEFT      )  angle = -Math::PI/2.0f;
-            m_angle = Math::NormAngle(m_object->RetAngleY(0)+angle);
+            m_angle = Math::NormAngle(m_object->GetAngleY(0)+angle);
             m_phase = TGP_CLTURN;
         }
     }
 
     if ( m_phase == TGP_CLTURN )  // turns after collision?
     {
-        angle = Math::NormAngle(m_object->RetAngleY(0));
+        angle = Math::NormAngle(m_object->GetAngleY(0));
         limit = 0.1f;
         if ( fabs(angle-m_angle) < limit )
         {
@@ -1042,7 +1006,7 @@ Error CTaskGoto::IsEnded()
             return ERR_STOP;
         }
 
-        dist = Math::Distance(m_bmFinalPos, m_object->RetPosition(0));
+        dist = Math::Distance(m_bmFinalPos, m_object->GetPosition(0));
         if ( dist < m_bmFinalDist )  return ERR_CONTINUE;
         m_physics->SetMotorSpeedX(0.0f);  // stops the advance
         return ERR_STOP;
@@ -1065,13 +1029,13 @@ CObject* CTaskGoto::SearchTarget(Math::Vector pos, float margin)
     min = 1000000.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetActif() )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;  // object transtorted?
+        if ( !pObj->GetActif() )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;  // object transtorted?
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(pos, oPos);
 
         if ( dist <= margin && dist <= min )
@@ -1095,15 +1059,15 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
     Math::Vector    goal;
     float       dist, suppl;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type == OBJECT_BEE  ||
          type == OBJECT_WORM )
     {
-        pos = pObj->RetPosition(0);
+        pos = pObj->GetPosition(0);
         return false;  // single approach
     }
 
-    type = pObj->RetType();
+    type = pObj->GetType();
 
     if ( type == OBJECT_FRET         ||
          type == OBJECT_STONE        ||
@@ -1131,8 +1095,8 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
          type == OBJECT_RUINmobiler1 ||
          type == OBJECT_RUINmobiler2 )
     {
-        pos = m_object->RetPosition(0);
-        goal = pObj->RetPosition(0);
+        pos = m_object->GetPosition(0);
+        goal = pObj->GetPosition(0);
         dist = Math::Distance(goal, pos);
         pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
         return true;  // approach from all sites
@@ -1140,8 +1104,8 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
 
     if ( type == OBJECT_BASE )
     {
-        pos = m_object->RetPosition(0);
-        goal = pObj->RetPosition(0);
+        pos = m_object->GetPosition(0);
+        goal = pObj->GetPosition(0);
         dist = Math::Distance(goal, pos);
         pos = (pos-goal)*(TAKE_DIST+distance)/dist + goal;
         return true;  // approach from all sites
@@ -1175,10 +1139,10 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
          type == OBJECT_MOBILEit ||
          type == OBJECT_MOBILEdr )
     {
-        character = pObj->RetCharacter();
+        character = pObj->GetCharacter();
         pos = character->posPower;
         pos.x -= TAKE_DIST+TAKE_DIST_OTHER+distance;
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos = Transform(*mat, pos);
         return false;  // single approach
     }
@@ -1190,7 +1154,7 @@ bool CTaskGoto::AdjustTarget(CObject* pObj, Math::Vector &pos, float &distance)
         return false;  // single approach
     }
 
-    pos = pObj->RetPosition(0);
+    pos = pObj->GetPosition(0);
     distance = 0.0f;
     return false;  // single approach
 }
@@ -1207,11 +1171,11 @@ bool CTaskGoto::AdjustBuilding(Math::Vector &pos, float margin, float &distance)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetActif() )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
+        if ( !pObj->GetActif() )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
 
         if ( !GetHotPoint(pObj, oPos, false, 0.0f, suppl) )  continue;
         dist = Math::DistanceProjected(pos, oPos);
@@ -1235,11 +1199,11 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     pos = Math::Vector(0.0f, 0.0f, 0.0f);
     suppl = 0.0f;
-    type = pObj->RetType();
+    type = pObj->GetType();
 
     if ( type == OBJECT_DERRICK )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 8.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
@@ -1249,7 +1213,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_CONVERT )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 0.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
@@ -1259,7 +1223,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_RESEARCH )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 10.0f;
         if ( bTake && distance != 0.0f )  suppl = 2.5f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
@@ -1269,7 +1233,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_ENERGY )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 6.0f;
         if ( bTake && distance != 0.0f )  suppl = 6.0f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance;
@@ -1279,7 +1243,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_TOWER )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 5.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
@@ -1289,7 +1253,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_LABO )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 6.0f;
         if ( bTake && distance != 0.0f )  suppl = 6.0f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance;
@@ -1299,7 +1263,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_NUCLEAR )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 22.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+TAKE_DIST_OTHER+distance+suppl;
@@ -1309,7 +1273,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_FACTORY )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 4.0f;
         if ( bTake && distance != 0.0f )  suppl = 6.0f;
         if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
@@ -1319,7 +1283,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_STATION )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 4.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += distance;
@@ -1329,7 +1293,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_REPAIR )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 4.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += distance;
@@ -1339,7 +1303,7 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
 
     if ( type == OBJECT_DESTROYER )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         pos.x += 0.0f;
         if ( bTake && distance != 0.0f )  suppl = 4.0f;
         if ( bTake )  pos.x += TAKE_DIST+distance+suppl;
@@ -1347,9 +1311,9 @@ bool CTaskGoto::GetHotPoint(CObject *pObj, Math::Vector &pos,
         return true;
     }
 
-    if ( type == OBJECT_PARA && m_physics->RetType() == TYPE_FLYING )
+    if ( type == OBJECT_PARA && m_physics->GetType() == TYPE_FLYING )
     {
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         if ( bTake && distance != 0.0f )  suppl = 20.0f;
         if ( bTake )  pos.x += distance+suppl;
         pos = Transform(*mat, pos);
@@ -1370,7 +1334,7 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
     float       iRadius, oRadius, bRadius, dist, min, dir;
     int         i, j;
 
-    if ( !m_physics->RetLand() )  return false;  // in flight?
+    if ( !m_physics->GetLand() )  return false;  // in flight?
 
     m_object->GetCrashSphere(0, iPos, iRadius);
 
@@ -1378,12 +1342,12 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
     bRadius = 0.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
-        if ( !pObj->RetActif() )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
+        if ( !pObj->GetActif() )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
 
         j = 0;
         while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
@@ -1404,7 +1368,7 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
 
     dist = 4.0f;
     dir  = 1.0f;
-    if ( pObstacle->RetType() == OBJECT_FACTORY )
+    if ( pObstacle->GetType() == OBJECT_FACTORY )
     {
         dist = 16.0f;
         dir  = -1.0f;
@@ -1412,7 +1376,7 @@ bool CTaskGoto::LeakSearch(Math::Vector &pos, float &delay)
     }
 
     pos = bPos;
-    delay = m_physics->RetLinTimeLength(dist, dir);
+    delay = m_physics->GetLinTimeLength(dist, dir);
     return true;
 }
 
@@ -1436,18 +1400,18 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, m_goalObject);
         if ( dist <= 1.0f )  continue;
 
         pObj->GetGlobalSphere(oPos, oRadius);
-        oRadius += iRadius+m_physics->RetLinStopLength()*1.1f;
+        oRadius += iRadius+m_physics->GetLinStopLength()*1.1f;
         dist = Math::DistanceProjected(oPos, iPos);
         if ( dist <= oRadius )
         {
@@ -1479,13 +1443,13 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     dir.y = 0.0f;
 
     // The worm goes everywhere and through everything!
-    iType = m_object->RetType();
+    iType = m_object->GetType();
     if ( iType == OBJECT_WORM )  return;
 
     m_object->GetCrashSphere(0, iPos, iRadius);
     gDist = Math::Distance(iPos, m_goal);
 
-    add = m_physics->RetLinStopLength()*1.1f;  // braking distance
+    add = m_physics->GetLinStopLength()*1.1f;  // braking distance
     fac = 2.0f;
 
     if ( iType == OBJECT_MOBILEwa ||
@@ -1513,7 +1477,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
          iType == OBJECT_MOBILEfs ||
          iType == OBJECT_MOBILEft )  // flying?
     {
-        if ( m_physics->RetLand() )
+        if ( m_physics->GetLand() )
         {
             add = 5.0f;
             fac = 1.5f;
@@ -1535,7 +1499,7 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
     }
     if ( iType == OBJECT_BEE )  // wasp?
     {
-        if ( m_physics->RetLand() )
+        if ( m_physics->GetLand() )
         {
             add = 3.0f;
             fac = 1.5f;
@@ -1559,13 +1523,13 @@ void CTaskGoto::ComputeRepulse(Math::Point &dir)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
 
         if ( oType == OBJECT_WORM )  continue;
 
@@ -1651,13 +1615,13 @@ void CTaskGoto::ComputeFlyingRepulse(float &dir)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
 
         if ( oType == OBJECT_WORM )  continue;
 
@@ -1712,7 +1676,7 @@ void CTaskGoto::BeamStart()
     BitmapOpen();
     BitmapObject();
 
-    min = m_object->RetPosition(0);
+    min = m_object->GetPosition(0);
     max = m_goal;
     if ( min.x > max.x )  Math::Swap(min.x, max.x);
     if ( min.z > max.z )  Math::Swap(min.z, max.z);
@@ -1890,84 +1854,6 @@ Math::Vector CTaskGoto::BeamPoint(const Math::Vector &startPoint,
     return resPoint;
 }
 
-// Displays a bitmap part.
-
-void CTaskGoto::BitmapDebug(const Math::Vector &min, const Math::Vector &max,
-                            const Math::Vector &start, const Math::Vector &goal)
-{
-    int     minx, miny, maxx, maxy, x, y, i ,n;
-    char    s[2000];
-
-    minx = (int)((min.x+1600.0f)/BM_DIM_STEP);
-    miny = (int)((min.z+1600.0f)/BM_DIM_STEP);
-    maxx = (int)((max.x+1600.0f)/BM_DIM_STEP);
-    maxy = (int)((max.z+1600.0f)/BM_DIM_STEP);
-
-    if ( minx > maxx )  Math::Swap(minx, maxx);
-    if ( miny > maxy )  Math::Swap(miny, maxy);
-
-    OutputDebugString("Bitmap :\n");
-    for ( y=miny ; y<=maxy ; y++ )
-    {
-        s[0] = 0;
-        for ( x=minx ; x<=maxx ; x++ )
-        {
-            n = -1;
-            for ( i=0 ; i<=m_bmTotal ; i++ )
-            {
-                if ( x == (int)((m_bmPoints[i].x+1600.0f)/BM_DIM_STEP) &&
-                     y == (int)((m_bmPoints[i].z+1600.0f)/BM_DIM_STEP) )
-                {
-                    n = i;
-                    break;
-                }
-            }
-
-            if ( BitmapTestDot(0, x,y) )
-            {
-                strcat(s, "o");
-            }
-            else
-            {
-                if ( BitmapTestDot(1, x,y) )
-                {
-                    strcat(s, "-");
-                }
-                else
-                {
-                    strcat(s, ".");
-                }
-            }
-
-            if ( x == (int)((start.x+1600.0f)/BM_DIM_STEP) &&
-                 y == (int)((start.z+1600.0f)/BM_DIM_STEP) )
-            {
-                strcat(s, "s");
-            }
-            else
-            if ( x == (int)((goal.x+1600.0f)/BM_DIM_STEP) &&
-                 y == (int)((goal.z+1600.0f)/BM_DIM_STEP) )
-            {
-                strcat(s, "g");
-            }
-            else
-            if ( n != -1 )
-            {
-                char ss[2];
-                ss[0] = 'A'+n;
-                ss[1] = 0;
-                strcat(s, ss);
-            }
-            else
-            {
-                strcat(s, " ");
-            }
-        }
-        strcat(s, "\n");
-        OutputDebugString(s);
-    }
-}
-
 // Tests if a path along a straight line is possible.
 
 bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &goal,
@@ -1991,12 +1877,12 @@ bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &go
 
     if ( bSecond )
     {
-        x = (int)((pos.x+1600.0f)/BM_DIM_STEP);
-        y = (int)((pos.z+1600.0f)/BM_DIM_STEP);
+        x = static_cast<int>((pos.x+1600.0f)/BM_DIM_STEP);
+        y = static_cast<int>((pos.z+1600.0f)/BM_DIM_STEP);
         BitmapSetDot(1, x, y);  // puts the flag as the starting point
     }
 
-    max = (int)(dist/step);
+    max = static_cast<int>(dist/step);
     if ( max == 0 )  max = 1;
     distNoB2 = BM_DIM_STEP*sqrtf(2.0f)/sinf(stepAngle);
     for ( i=0 ; i<max ; i++ )
@@ -2011,8 +1897,8 @@ bool CTaskGoto::BitmapTestLine(const Math::Vector &start, const Math::Vector &go
             pos.z += inc.z;
         }
 
-        x = (int)((pos.x+1600.0f)/BM_DIM_STEP);
-        y = (int)((pos.z+1600.0f)/BM_DIM_STEP);
+        x = static_cast<int>((pos.x+1600.0f)/BM_DIM_STEP);
+        y = static_cast<int>((pos.z+1600.0f)/BM_DIM_STEP);
 
         if ( bSecond )
         {
@@ -2043,17 +1929,17 @@ void CTaskGoto::BitmapObject()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
 
         if ( pObj == m_object )  continue;
         if ( pObj == m_bmFretObject )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        h = m_terrain->RetFloorLevel(pObj->RetPosition(0), false);
-        if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )
+        h = m_terrain->GetFloorLevel(pObj->GetPosition(0), false);
+        if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )
         {
             h += m_altitude;
         }
@@ -2061,7 +1947,7 @@ void CTaskGoto::BitmapObject()
         j = 0;
         while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
         {
-            if ( m_physics->RetType() == TYPE_FLYING && m_altitude > 0.0f )  // flying?
+            if ( m_physics->GetType() == TYPE_FLYING && m_altitude > 0.0f )  // flying?
             {
                 if ( oPos.y-oRadius > h+8.0f ||
                      oPos.y+oRadius < h-8.0f )  continue;
@@ -2083,10 +1969,10 @@ void CTaskGoto::BitmapTerrain(const Math::Vector &min, const Math::Vector &max)
 {
     int     minx, miny, maxx, maxy;
 
-    minx = (int)((min.x+1600.0f)/BM_DIM_STEP);
-    miny = (int)((min.z+1600.0f)/BM_DIM_STEP);
-    maxx = (int)((max.x+1600.0f)/BM_DIM_STEP);
-    maxy = (int)((max.z+1600.0f)/BM_DIM_STEP);
+    minx = static_cast<int>((min.x+1600.0f)/BM_DIM_STEP);
+    miny = static_cast<int>((min.z+1600.0f)/BM_DIM_STEP);
+    maxx = static_cast<int>((max.x+1600.0f)/BM_DIM_STEP);
+    maxy = static_cast<int>((max.z+1600.0f)/BM_DIM_STEP);
 
     BitmapTerrain(minx, miny, maxx, maxy);
 }
@@ -2121,7 +2007,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
     bAcceptWater = false;
     bFly = false;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
 
     if ( type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEwc ||
@@ -2190,8 +2076,8 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 
             if ( bFly )  // flying robot?
             {
-                h = m_terrain->RetFloorLevel(p, true);
-                if ( h >= m_terrain->RetFlyingMaxHeight()-5.0f )
+                h = m_terrain->GetFloorLevel(p, true);
+                if ( h >= m_terrain->GetFlyingMaxHeight()-5.0f )
                 {
                     BitmapSetDot(0, x, y);
                 }
@@ -2200,8 +2086,8 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
 
             if ( !bAcceptWater )  // not going underwater?
             {
-                h = m_terrain->RetFloorLevel(p, true);
-                if ( h < m_water->RetLevel()-2.0f )  // under water (*)?
+                h = m_terrain->GetFloorLevel(p, true);
+                if ( h < m_water->GetLevel()-2.0f )  // under water (*)?
                 {
 //?                 BitmapSetDot(0, x, y);
                     BitmapSetCircle(p, BM_DIM_STEP*1.0f);
@@ -2209,7 +2095,7 @@ void CTaskGoto::BitmapTerrain(int minx, int miny, int maxx, int maxy)
                 }
             }
 
-            angle = m_terrain->RetFineSlope(p);
+            angle = m_terrain->GetFineSlope(p);
             if ( angle > aLimit )
             {
                 BitmapSetDot(0, x, y);
@@ -2231,9 +2117,9 @@ bool CTaskGoto::BitmapOpen()
 {
     BitmapClose();
 
-    m_bmSize = (int)(3200.0f/BM_DIM_STEP);
-    m_bmArray = (unsigned char*)malloc(m_bmSize*m_bmSize/8*2);
-    ZeroMemory(m_bmArray, m_bmSize*m_bmSize/8*2);
+    m_bmSize = static_cast<int>(3200.0f/BM_DIM_STEP);
+    m_bmArray = static_cast<unsigned char*>(malloc(m_bmSize*m_bmSize/8*2));
+    memset(m_bmArray, 0, m_bmSize*m_bmSize/8*2);
 
     m_bmOffset = m_bmSize/2;
     m_bmLine = m_bmSize/8;
@@ -2262,15 +2148,15 @@ void CTaskGoto::BitmapSetCircle(const Math::Vector &pos, float radius)
     float   d, r;
     int     cx, cy, ix, iy;
 
-    cx = (int)((pos.x+1600.0f)/BM_DIM_STEP);
-    cy = (int)((pos.z+1600.0f)/BM_DIM_STEP);
+    cx = static_cast<int>((pos.x+1600.0f)/BM_DIM_STEP);
+    cy = static_cast<int>((pos.z+1600.0f)/BM_DIM_STEP);
     r = radius/BM_DIM_STEP;
 
-    for ( iy=cy-(int)r ; iy<=cy+(int)r ; iy++ )
+    for ( iy=cy-static_cast<int>(r) ; iy<=cy+static_cast<int>(r) ; iy++ )
     {
-        for ( ix=cx-(int)r ; ix<=cx+(int)r ; ix++ )
+        for ( ix=cx-static_cast<int>(r) ; ix<=cx+static_cast<int>(r) ; ix++ )
         {
-            d = Math::Point((float)(ix-cx), (float)(iy-cy)).Length();
+            d = Math::Point(static_cast<float>(ix-cx), static_cast<float>(iy-cy)).Length();
             if ( d > r )  continue;
             BitmapSetDot(0, ix, iy);
         }
@@ -2278,21 +2164,21 @@ void CTaskGoto::BitmapSetCircle(const Math::Vector &pos, float radius)
 }
 
 // Removes a circle in the bitmap.
-
+//TODO this method is almost same as above one
 void CTaskGoto::BitmapClearCircle(const Math::Vector &pos, float radius)
 {
     float   d, r;
     int     cx, cy, ix, iy;
 
-    cx = (int)((pos.x+1600.0f)/BM_DIM_STEP);
-    cy = (int)((pos.z+1600.0f)/BM_DIM_STEP);
+    cx = static_cast<int>((pos.x+1600.0f)/BM_DIM_STEP);
+    cy = static_cast<int>((pos.z+1600.0f)/BM_DIM_STEP);
     r = radius/BM_DIM_STEP;
 
-    for ( iy=cy-(int)r ; iy<=cy+(int)r ; iy++ )
+    for ( iy=cy-static_cast<int>(r) ; iy<=cy+static_cast<int>(r) ; iy++ )
     {
-        for ( ix=cx-(int)r ; ix<=cx+(int)r ; ix++ )
+        for ( ix=cx-static_cast<int>(r) ; ix<=cx+static_cast<int>(r) ; ix++ )
         {
-            d = Math::Point((float)(ix-cx), (float)(iy-cy)).Length();
+            d = Math::Point(static_cast<float>(ix-cx), static_cast<float>(iy-cy)).Length();
             if ( d > r )  continue;
             BitmapClearDot(0, ix, iy);
         }
