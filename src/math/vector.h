@@ -32,16 +32,17 @@
 namespace Math
 {
 
-/** \struct Vector math/vector.h
-    \brief 3D (3x1) vector
-
-    Represents a universal 3x1 vector that can be used in OpenGL and DirectX engines.
-    Contains the required methods for operating on vectors.
-
-    All methods are made inline to maximize optimization.
-
-    Unit tests for the structure and related functions are in module: math/test/vector_test.cpp.
-
+/**
+ * \struct Vector
+ * \brief 3D (3x1) vector
+ *
+ * Represents a universal 3x1 vector that can be used in OpenGL and DirectX engines.
+ * Contains the required methods for operating on vectors.
+ *
+ * All methods are made inline to maximize optimization.
+ *
+ * Unit tests for the structure and related functions are in module: math/test/vector_test.cpp.
+ *
  */
 struct Vector
 {
@@ -103,8 +104,10 @@ struct Vector
     }
 
     //! Calculates the cross product with another vector
-    /** \a right right-hand side vector
-            \returns the cross product*/
+    /**
+     * \param right right-hand side vector
+     * \returns the cross product
+     */
     inline Vector CrossMultiply(const Vector &right) const
     {
         float px = y * right.z - z * right.y;
@@ -114,8 +117,10 @@ struct Vector
     }
 
     //! Calculates the dot product with another vector
-    /** \a right right-hand side vector
-            \returns the dot product */
+    /**
+     * \param right right-hand side vector
+     * \returns the dot product
+     */
     inline float DotMultiply(const Vector &right) const
     {
         return x * right.x + y * right.y + z * right.z;
@@ -218,7 +223,7 @@ struct Vector
         return s.str();
     }
 
-}; // struct Point
+}; // struct Vector
 
 //! Checks if two vectors are equal within given \a tolerance
 inline bool VectorsEqual(const Math::Vector &a, const Math::Vector &b, float tolerance = TOLERANCE)

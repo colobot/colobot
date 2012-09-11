@@ -33,13 +33,14 @@
 namespace Math
 {
 
-/** \struct Matrix math/matrix.h
-    \brief 4x4 matrix
-
-    Represents an universal 4x4 matrix that can be used in OpenGL and DirectX engines.
-    Contains the required methods for operating on matrices (inverting, multiplying, etc.).
-
-    The internal representation is a 16-value table in column-major order, thus:
+/**
+ * \struct Matrix math/matrix.h
+ * \brief 4x4 matrix
+ *
+ * Represents an universal 4x4 matrix that can be used in OpenGL and DirectX engines.
+ * Contains the required methods for operating on matrices (inverting, multiplying, etc.).
+ *
+ * The internal representation is a 16-value table in column-major order, thus:
 
 \verbatim
 m[0 ] m[4 ] m[8 ] m[12]
@@ -48,16 +49,16 @@ m[2 ] m[6 ] m[10] m[14]
 m[3 ] m[7 ] m[11] m[15]
 \endverbatim
 
-    This representation is native to OpenGL; DirectX requires transposing the matrix.
-
-    The order of multiplication of matrix and vector is also OpenGL-native
-    (see the function MatrixVectorMultiply).
-
-    All methods are made inline to maximize optimization.
-
-    Unit tests for the structure and related functions are in module: math/test/matrix_test.cpp.
-
- **/
+ * This representation is native to OpenGL; DirectX requires transposing the matrix.
+ *
+ * The order of multiplication of matrix and vector is also OpenGL-native
+ * (see the function MatrixVectorMultiply).
+ *
+ * All methods are made inline to maximize optimization.
+ *
+ * Unit tests for the structure and related functions are in module: math/test/matrix_test.cpp.
+ *
+ */
 struct Matrix
 {
     //! Matrix values in column-major order
@@ -78,8 +79,10 @@ struct Matrix
     }
 
     //! Creates the matrix from 2D array
-    /** The array's first index is row, second is column.
-            \a m array with values */
+    /**
+     * The array's first index is row, second is column.
+     * \param m array with values
+     */
     inline explicit Matrix(const float (&m)[4][4])
     {
         for (int c = 0; c < 4; ++c)
@@ -91,11 +94,23 @@ struct Matrix
         }
     }
 
+    //! Sets value in given row and col
+    /**
+     * \param row row (0 to 3)
+     * \param col column (0 to 3)
+     * \param value value
+     */
     inline void Set(int row, int col, float value)
     {
         m[(col-1)*4+(row-1)] = value;
     }
 
+    //! Returns the value in given row and col
+    /**
+     * \param row row (0 to 3)
+     * \param col column (0 to 3)
+     * \returns value
+     */
     inline float Get(int row, int col)
     {
         return m[(col-1)*4+(row-1)];
@@ -148,9 +163,11 @@ struct Matrix
     }
 
     //! Calculates the cofactor of the matrix
-    /** \a r row (0 to 3)
-        \a c column (0 to 3)
-        \returns the cofactor */
+    /**
+     * \param r  row (0 to 3)
+     * \param c  column (0 to 3)
+     * \returns  the cofactor
+     */
     inline float Cofactor(int r, int c) const
     {
         assert(r >= 0 && r <= 3);
@@ -330,8 +347,10 @@ struct Matrix
     }
 
     //! Calculates the inverse matrix
-    /** The determinant of the matrix must not be zero.
-        \returns the inverted matrix */
+    /**
+     * The determinant of the matrix must not be zero.
+     * \returns the inverted matrix
+     */
     inline Matrix Inverse() const
     {
         float d = Det();
@@ -352,8 +371,10 @@ struct Matrix
     }
 
     //! Calculates the multiplication of this matrix * given matrix
-    /** \a right right-hand matrix
-        \returns multiplication result */
+    /**
+     * \param right right-hand matrix
+     * \returns multiplication result
+     */
     inline Matrix Multiply(const Matrix &right) const
     {
         float result[16] = { 0.0f };

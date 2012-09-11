@@ -51,4 +51,3 @@ const float RAD_TO_DEG = 57.29577951308232286465f;
 const float LOG_2 = log(2.0f);
 
 }; // namespace Math
-

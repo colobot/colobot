@@ -76,9 +76,11 @@ inline bool IsInsideTriangle(Math::Point a, Math::Point b, Math::Point c, Math::
 }
 
 //! Rotates a point around a center
-/** \a center center of rotation
-    \a angle angle is in radians (positive is counterclockwise (CCW) )
-    \a p the point */
+/**
+ * \param center  center of rotation
+ * \param angle   angle [radians] (positive is CCW)
+ * \param p       the point to be rotated
+ */
 inline Math::Point RotatePoint(const Math::Point &center, float angle, const Math::Point &p)
 {
     Math::Point a;
@@ -96,8 +98,10 @@ inline Math::Point RotatePoint(const Math::Point &center, float angle, const Mat
 }
 
 //! Rotates a point around the origin (0,0)
-/** \a angle angle in radians (positive is counterclockwise (CCW) )
-    \a p the point */
+/**
+ * \param angle angle [radians] (positive is CCW)
+ * \param p     the point to be rotated
+ */
 inline Math::Point RotatePoint(float angle, const Math::Point &p)
 {
     float x = p.x*cosf(angle) - p.y*sinf(angle);
@@ -106,9 +110,11 @@ inline Math::Point RotatePoint(float angle, const Math::Point &p)
     return Math::Point(x, y);
 }
 
-//! Rotates a vector (dist, 0).
-/** \a angle angle is in radians (positive is counterclockwise (CCW) )
-    \a dist distance to origin */
+//! Rotates a vector (dist, 0)
+/**
+ * \param angle angle [radians] (positive is CCW)
+ * \param dist  distance to origin
+ */
 inline Math::Point RotatePoint(float angle, float dist)
 {
     float x = dist*cosf(angle);
@@ -117,7 +123,12 @@ inline Math::Point RotatePoint(float angle, float dist)
     return Math::Point(x, y);
 }
 
-//! TODO documentation
+//! Rotates a point around a center on 2D plane
+/**
+ * \param cx,cy  center of rotation
+ * \param angle  angle of rotation [radians] (positive is CCW)
+ * \param px,py  point coordinates to rotate
+ */
 inline void RotatePoint(float cx, float cy, float angle, float &px, float &py)
 {
     float ax, ay;
@@ -132,11 +143,14 @@ inline void RotatePoint(float cx, float cy, float angle, float &px, float &py)
     py = cy+ay;
 }
 
-//! Rotates a point around a center in space.
-/** \a center center of rotation
-    \a angleH,angleV rotation angles in radians (positive is counterclockwise (CCW) ) )
-    \a p the point
-    \returns the rotated point */
+//! Rotates a point around a center in space
+/**
+ * \a angleH is rotation along Y axis (heading) while \a angleV is rotation along X axis (TODO: ?).
+ *
+ * \param center         center of rotation
+ * \param angleH,angleV  rotation angles [radians] (positive is CCW)
+ * \param p              the point to be rotated
+ */
 inline void RotatePoint(const Math::Vector &center, float angleH, float angleV, Math::Vector &p)
 {
     p.x -= center.x;
@@ -151,11 +165,14 @@ inline void RotatePoint(const Math::Vector &center, float angleH, float angleV, 
     p = center + b;
 }
 
-//! Rotates a point around a center in space.
-/** \a center center of rotation
-    \a angleH,angleV rotation angles in radians (positive is counterclockwise (CCW) ) )
-    \a p the point
-    \returns the rotated point */
+//! Rotates a point around a center in space
+/**
+ * The rotation is performed first along Y axis (\a angleH) and then along X axis (\a angleV).
+ *
+ * \param center         center of rotation
+ * \param angleH,angleV  rotation angles [radians] (positive is CCW)
+ * \param p              the point to be rotated
+ */
 inline void RotatePoint2(const Math::Vector center, float angleH, float angleV, Math::Vector &p)
 {
     p.x -= center.x;
@@ -189,10 +206,12 @@ inline float RotateAngle(float x, float y)
         return -atan + 0.5f*PI;
 }
 
-//! Calculates the angle between two points and one center
-/** \a center the center point
-    \a p1,p2 the two points
-    \returns The angle in radians (positive is counterclockwise (CCW) ) */
+//! Calculates the angle between two points and a center
+/**
+ * \param center  the center point
+ * \param p1,p2   the two points
+ * \returns       the angle [radians] (positive is CCW)
+ */
 inline float RotateAngle(const Math::Point &center, const Math::Point &p1, const Math::Point &p2)
 {
     if (PointsEqual(p1, center))
@@ -215,9 +234,11 @@ inline float RotateAngle(const Math::Point &center, const Math::Point &p1, const
 }
 
 //! Loads view matrix from the given vectors
-/** \a from origin
-    \a at view direction
-    \a worldUp up vector */
+/**
+ * \param from     origin
+ * \param at       view direction
+ * \param worldUp  up vector
+ */
 inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
                            const Math::Vector &at, const Math::Vector &worldUp)
 {
@@ -280,10 +301,12 @@ inline void LoadViewMatrix(Math::Matrix &mat, const Math::Vector &from,
 }
 
 //! Loads a perspective projection matrix
-/** \a fov field of view in radians
-    \a aspect aspect ratio (width / height)
-    \a nearPlane distance to near cut plane
-    \a farPlane distance to far cut plane */
+/**
+ * \param fov        field of view in radians
+ * \param aspect     aspect ratio (width / height)
+ * \param nearPlane  distance to near cut plane
+ * \param farPlane   distance to far cut plane
+ */
 inline void LoadProjectionMatrix(Math::Matrix &mat, float fov = Math::PI / 2.0f, float aspect = 1.0f,
                                  float nearPlane = 1.0f, float farPlane = 1000.0f)
 {
@@ -302,9 +325,11 @@ inline void LoadProjectionMatrix(Math::Matrix &mat, float fov = Math::PI / 2.0f,
 }
 
 //! Loads an othogonal projection matrix
-/** \a left,right coordinates for left and right vertical clipping planes
-    \a bottom,top coordinates for bottom and top horizontal clipping planes
-    \a zNear,zFar distance to nearer and farther depth clipping planes */
+/**
+ * \param left,right  coordinates for left and right vertical clipping planes
+ * \param bottom,top  coordinates for bottom and top horizontal clipping planes
+ * \param zNear,zFar  distance to nearer and farther depth clipping planes
+ */
 inline void LoadOrthoProjectionMatrix(Math::Matrix &mat, float left, float right, float bottom, float top,
                                       float zNear = -1.0f, float zFar = 1.0f)
 {
@@ -320,7 +345,10 @@ inline void LoadOrthoProjectionMatrix(Math::Matrix &mat, float left, float right
 }
 
 //! Loads a translation matrix from given vector
-/** \a trans vector of translation*/
+/**
+ * \param mat   result matrix
+ * \param trans vector of translation
+ */
 inline void LoadTranslationMatrix(Math::Matrix &mat, const Math::Vector &trans)
 {
     mat.LoadIdentity();
@@ -330,7 +358,10 @@ inline void LoadTranslationMatrix(Math::Matrix &mat, const Math::Vector &trans)
 }
 
 //! Loads a scaling matrix fom given vector
-/** \a scale vector with scaling factors for X, Y, Z */
+/**
+ * \param mat    result matrix
+ * \param scale  vector with scaling factors for X, Y, Z
+ */
 inline void LoadScaleMatrix(Math::Matrix &mat, const Math::Vector &scale)
 {
     mat.LoadIdentity();
@@ -340,7 +371,10 @@ inline void LoadScaleMatrix(Math::Matrix &mat, const Math::Vector &scale)
 }
 
 //! Loads a rotation matrix along the X axis
-/** \a angle angle in radians */
+/**
+ * \param mat    result matrix
+ * \param angle  angle [radians]
+ */
 inline void LoadRotationXMatrix(Math::Matrix &mat, float angle)
 {
     mat.LoadIdentity();
@@ -351,7 +385,10 @@ inline void LoadRotationXMatrix(Math::Matrix &mat, float angle)
 }
 
 //! Loads a rotation matrix along the Y axis
-/** \a angle angle in radians */
+/**
+ * \param mat    result matrix
+ * \param angle  angle [radians]
+ */
 inline void LoadRotationYMatrix(Math::Matrix &mat, float angle)
 {
     mat.LoadIdentity();
@@ -362,7 +399,10 @@ inline void LoadRotationYMatrix(Math::Matrix &mat, float angle)
 }
 
 //! Loads a rotation matrix along the Z axis
-/** \a angle angle in radians */
+/**
+ * \param mat    result matrix
+ * \param angle  angle [radians]
+ */
 inline void LoadRotationZMatrix(Math::Matrix &mat, float angle)
 {
     mat.LoadIdentity();
@@ -373,8 +413,11 @@ inline void LoadRotationZMatrix(Math::Matrix &mat, float angle)
 }
 
 //! Loads a rotation matrix along the given axis
-/** \a dir axis of rotation
-    \a angle angle in radians */
+/**
+ * \param mat    result matrix
+ * \param dir    axis of rotation
+ * \param angle  angle [radians]
+ */
 inline void LoadRotationMatrix(Math::Matrix &mat, const Math::Vector &dir, float angle)
 {
     float cos = cosf(angle);
@@ -397,28 +440,28 @@ inline void LoadRotationMatrix(Math::Matrix &mat, const Math::Vector &dir, float
 }
 
 //! Calculates the matrix to make three rotations in the order X, Z and Y
-inline void LoadRotationXZYMatrix(Math::Matrix &mat, const Math::Vector &angle)
+inline void LoadRotationXZYMatrix(Math::Matrix &mat, const Math::Vector &angles)
 {
     Math::Matrix temp;
-    LoadRotationXMatrix(temp, angle.x);
+    LoadRotationXMatrix(temp, angles.x);
 
-    LoadRotationZMatrix(mat, angle.z);
+    LoadRotationZMatrix(mat, angles.z);
     mat = Math::MultiplyMatrices(temp, mat);
 
-    LoadRotationYMatrix(temp, angle.y);
+    LoadRotationYMatrix(temp, angles.y);
     mat = Math::MultiplyMatrices(temp, mat);
 }
 
 //! Calculates the matrix to make three rotations in the order Z, X and Y
-inline void LoadRotationZXYMatrix(Math::Matrix &mat, const Math::Vector &angle)
+inline void LoadRotationZXYMatrix(Math::Matrix &mat, const Math::Vector &angles)
 {
     Math::Matrix temp;
-    LoadRotationZMatrix(temp, angle.z);
+    LoadRotationZMatrix(temp, angles.z);
 
-    LoadRotationXMatrix(mat, angle.x);
+    LoadRotationXMatrix(mat, angles.x);
     mat = Math::MultiplyMatrices(temp, mat);
 
-    LoadRotationYMatrix(temp, angle.y);
+    LoadRotationYMatrix(temp, angles.y);
     mat = Math::MultiplyMatrices(temp, mat);
 }
 
@@ -430,7 +473,9 @@ inline float DistanceProjected(const Math::Vector &a, const Math::Vector &b)
 }
 
 //! Returns the normal vector to a plane
-/** \param p1,p2,p3 points defining the plane */
+/**
+ * \param p1,p2,p3 points defining the plane
+ */
 inline Math::Vector NormalToPlane(const Math::Vector &p1, const Math::Vector &p2, const Math::Vector &p3)
 {
     Math::Vector u = p3 - p1;
@@ -440,16 +485,20 @@ inline Math::Vector NormalToPlane(const Math::Vector &p1, const Math::Vector &p2
 }
 
 //! Returns a point on the line \a p1 - \a p2, in \a dist distance from \a p1
-/** \a p1,p2 line start and end
-    \a dist scaling factor from \a p1, relative to distance between \a p1 and \a p2 */
+/**
+ * \param p1,p2  line start and end
+ * \param dist   scaling factor from \a p1, relative to distance between \a p1 and \a p2
+ */
 inline Math::Vector SegmentPoint(const Math::Vector &p1, const Math::Vector &p2, float dist)
 {
     return p1 + (p2 - p1) * dist;
 }
 
 //! Returns the distance between given point and a plane
-/** \param p the point
-    \param a,b,c points defining the plane */
+/**
+ * \param p      the point
+ * \param a,b,c  points defining the plane
+ */
 inline float DistanceToPlane(const Math::Vector &a, const Math::Vector &b,
                              const Math::Vector &c, const Math::Vector &p)
 {
@@ -460,8 +509,10 @@ inline float DistanceToPlane(const Math::Vector &a, const Math::Vector &b,
 }
 
 //! Checks if two planes defined by three points are the same
-/** \a plane1 array of three vectors defining the first plane
-    \a plane2 array of three vectors defining the second plane */
+/**
+ * \param plane1  array of three vectors defining the first plane
+ * \param plane2  array of three vectors defining the second plane
+ */
 inline bool IsSamePlane(const Math::Vector (&plane1)[3], const Math::Vector (&plane2)[3])
 {
     Math::Vector n1 = NormalToPlane(plane1[0], plane1[1], plane1[2]);
@@ -479,7 +530,7 @@ inline bool IsSamePlane(const Math::Vector (&plane1)[3], const Math::Vector (&pl
     return true;
 }
 
-//! Calculates the intersection "i" right "of" the plane "abc".
+//! Calculates the intersection "i" right "of" the plane "abc" (TODO: ?)
 inline bool Intersect(const Math::Vector &a, const Math::Vector &b, const Math::Vector &c,
                       const Math::Vector &d, const Math::Vector &e, Math::Vector &i)
 {
@@ -502,7 +553,7 @@ inline bool Intersect(const Math::Vector &a, const Math::Vector &b, const Math::
 }
 
 //! Calculates the intersection of the straight line passing through p (x, z)
-/** Line is parallel to the y axis, with the plane abc. Returns p.y. */
+/** Line is parallel to the y axis, with the plane abc. Returns p.y. (TODO: ?) */
 inline bool IntersectY(const Math::Vector &a, const Math::Vector &b, const Math::Vector &c, Math::Vector &p)
 {
     float d  = (b.x-a.x)*(c.z-a.z) - (c.x-a.x)*(b.z-a.z);
@@ -528,15 +579,18 @@ inline Math::Vector LookatPoint(const Math::Vector &eye, float angleH, float ang
     return lookat;
 }
 
-//! TODO documentation
+//! Transforms the point \a p by matrix \a m
+/** Is equal to multiplying the matrix by the vector (of course without perspective divide). */
 inline Math::Vector Transform(const Math::Matrix &m, const Math::Vector &p)
 {
     return MatrixVectorMultiply(m, p);
 }
 
-//! Calculates the projection of the point \a p on a straight line \a a to \a b.
-/** \a p point to project
-    \a a,b two ends of the line */
+//! Calculates the projection of the point \a p on a straight line \a a to \a b
+/**
+ * \param point  to project
+ * \param a,b    two ends of the line
+ */
 inline Math::Vector Projection(const Math::Vector &a, const Math::Vector &b, const Math::Vector &p)
 {
     float k = DotProduct(b - a, p - a);

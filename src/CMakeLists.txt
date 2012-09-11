@@ -6,6 +6,7 @@ add_subdirectory(tools)
 
 # Tests
 add_subdirectory(graphics/engine/test)
+add_subdirectory(math/test)
 
 
 # Configure options
