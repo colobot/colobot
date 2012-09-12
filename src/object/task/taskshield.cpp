@@ -16,14 +16,12 @@
 
 // taskshield.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskshield.h"
 
 #include "common/iman.h"
-#include "old/light.h"
-#include "old/particule.h"
+#include "graphics/core/light.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/lightman.h"
 #include "math/geometry.h"
 #include "object/brain.h"
 #include "physics/physics.h"
@@ -56,32 +54,32 @@ CTaskShield::~CTaskShield()
 bool CTaskShield::EventProcess(const Event &event)
 {
     CObject*        power;
-    Math::Matrix*       mat;
-    Math::Matrix        matrix;
-    Math::Vector        pos, speed, goal, angle;
-    D3DCOLORVALUE   color;
-    Math::Point         dim;
+    Math::Matrix*   mat;
+    Math::Matrix    matrix;
+    Math::Vector    pos, speed, goal, angle;
+    Gfx::Color      color;
+    Math::Point     dim;
     float           energy;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
     m_progress += event.rTime*m_speed;  // others advance
     m_time += event.rTime;
     m_delay -= event.rTime;
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     pos = Math::Vector(7.0f, 15.0f, 0.0f);
     pos = Math::Transform(*mat, pos);  // sphere position
     m_shieldPos = pos;
 
     if ( m_rankSphere != -1 )
     {
-        m_particule->SetPosition(m_rankSphere, m_shieldPos);
-        dim.x = RetRadius();
+        m_particle->SetPosition(m_rankSphere, m_shieldPos);
+        dim.x = GetRadius();
         dim.y = dim.x;
-        m_particule->SetDimension(m_rankSphere, dim);
+        m_particle->SetDimension(m_rankSphere, dim);
     }
 
     if ( m_phase == TS_UP1 )
@@ -103,11 +101,11 @@ bool CTaskShield::EventProcess(const Event &event)
     if ( m_phase == TS_SHIELD )
     {
         energy = (1.0f/ENERGY_TIME)*event.rTime;
-        energy *= RetRadius()/RADIUS_SHIELD_MAX;
-        power = m_object->RetPower();
+        energy *= GetRadius()/RADIUS_SHIELD_MAX;
+        power = m_object->GetPower();
         if ( power != 0 )
         {
-            power->SetEnergy(power->RetEnergy()-energy/power->RetCapacity());
+            power->SetEnergy(power->GetEnergy()-energy/power->GetCapacity());
         }
         m_energyUsed += energy;
 
@@ -123,25 +121,25 @@ bool CTaskShield::EventProcess(const Event &event)
         }
 
         pos = m_shieldPos;
-        pos.y += RetRadius()*(2.0f+sinf(m_time*9.0f)*0.2f);
+        pos.y += GetRadius()*(2.0f+sinf(m_time*9.0f)*0.2f);
         if ( m_effectLight == -1 )
         {
             CreateLight(pos);
         }
         else
         {
-            m_light->SetLightPos(m_effectLight, pos);
+            m_lightMan->SetLightPos(m_effectLight, pos);
 
             color.r = 0.0f+sinf(m_time*33.2f)*0.2f;
             color.g = 0.5f+sinf(m_time*20.0f)*0.5f;
             color.b = 0.5f+sinf(m_time*21.3f)*1.0f;
             color.a = 0.0f;
-            m_light->SetLightColor(m_effectLight, color);
+            m_lightMan->SetLightColor(m_effectLight, color);
         }
 
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             pos = m_shieldPos;
             pos.x += (Math::Rand()-0.5f)*5.0f;
@@ -151,23 +149,23 @@ bool CTaskShield::EventProcess(const Event &event)
             speed.y = Math::Rand()*15.0f;
             dim.x = Math::Rand()*6.0f+4.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLUE, 1.0f, 0.0f, 0.0f);
         }
 
-        if ( m_lastRay+m_engine->ParticuleAdapt(0.05f) <= m_time )
+        if ( m_lastRay+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
             m_lastRay = m_time;
 
             pos = m_shieldPos;
-            dim.x = RetRadius()/20.0f;
+            dim.x = GetRadius()/20.0f;
             dim.y = dim.x;
             angle.x = (Math::Rand()-0.5f)*Math::PI*1.2f;
             angle.y = 0.0f;
             angle.z = (Math::Rand()-0.5f)*Math::PI*1.2f;
             Math::LoadRotationXZYMatrix(matrix, angle);
-            goal = Math::Transform(matrix, Math::Vector(0.0f, RetRadius()-dim.x, 0.0f));
+            goal = Math::Transform(matrix, Math::Vector(0.0f, GetRadius()-dim.x, 0.0f));
             goal += pos;
-            m_particule->CreateRay(pos, goal, PARTIRAY2, dim, 0.3f);
+            m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2, dim, 0.3f);
         }
 
         if ( m_lastIncrease+0.2f <= m_time )
@@ -186,9 +184,9 @@ bool CTaskShield::EventProcess(const Event &event)
             m_soundChannel = -1;
         }
 
-        if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+        if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
         {
-            m_lastParticule = m_time;
+            m_lastParticle = m_time;
 
             pos = m_shieldPos;
             pos.x += (Math::Rand()-0.5f)*5.0f;
@@ -198,7 +196,7 @@ bool CTaskShield::EventProcess(const Event &event)
             speed.y = (Math::Rand()-0.5f)*3.0f;
             dim.x = Math::Rand()*1.5f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f);
         }
     }
 
@@ -240,25 +238,25 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
 
     if ( mode == TSM_UPDATE )
     {
-        if ( m_object->RetSelect() )
+        if ( m_object->GetSelect() )
         {
             m_brain->UpdateInterface();
         }
         return ERR_OK;
     }
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type != OBJECT_MOBILErs )  return ERR_SHIELD_VEH;
 
     m_bError = true;  // operation impossible
-    if ( !m_physics->RetLand() )  return ERR_SHIELD_VEH;
+    if ( !m_physics->GetLand() )  return ERR_SHIELD_VEH;
 
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power == 0 )  return ERR_SHIELD_ENERGY;
-    energy = power->RetEnergy();
+    energy = power->GetEnergy();
     if ( energy == 0.0f )  return ERR_SHIELD_ENERGY;
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     pos = Math::Vector(7.0f, 15.0f, 0.0f);
     pos = Transform(*mat, pos);  // sphere position
     m_shieldPos = pos;
@@ -270,18 +268,18 @@ Error CTaskShield::Start(TaskShieldMode mode, float delay)
     m_speed    = 1.0f/1.0f;
     m_time     = 0.0f;
     m_delay    = delay;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
     m_lastRay = 0.0f;
     m_lastIncrease = 0.0f;
     m_energyUsed = 0.0f;
 
     m_bError = false;  // ok
 
-    if ( m_object->RetSelect() )
+    if ( m_object->GetSelect() )
     {
         m_brain->UpdateInterface();
     }
-//? m_camera->StartCentering(m_object, Math::PI*0.85f, -Math::PI*0.15f, RetRadius()+40.0f, 3.0f);
+//? m_camera->StartCentering(m_object, Math::PI*0.85f, -Math::PI*0.15f, GetRadius()+40.0f, 3.0f);
     return ERR_OK;
 }
 
@@ -297,13 +295,13 @@ Error CTaskShield::Stop()
 
         if ( m_rankSphere != -1 )
         {
-            m_particule->SetPhase(m_rankSphere, PARPHEND, 3.0f);
+            m_particle->SetPhase(m_rankSphere, Gfx::PARPHEND, 3.0f);
             m_rankSphere = -1;
         }
 
         if ( m_effectLight != -1 )
         {
-            m_light->DeleteLight(m_effectLight);
+            m_lightMan->DeleteLight(m_effectLight);
             m_effectLight = -1;
         }
 
@@ -316,7 +314,7 @@ Error CTaskShield::Stop()
 
         m_camera->StopCentering(m_object, 4.0f);
 
-        if ( m_object->RetSelect() )
+        if ( m_object->GetSelect() )
         {
             m_brain->UpdateInterface();
         }
@@ -335,21 +333,21 @@ Error CTaskShield::IsEnded()
     Math::Point     dim;
     float       energy;
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
 
     if ( m_phase == TS_SHIELD )
     {
-        m_object->SetShieldRadius(RetRadius());
+        m_object->SetShieldRadius(GetRadius());
 
-        power = m_object->RetPower();
+        power = m_object->GetPower();
         if ( power == 0 )
         {
             energy = 0.0f;
         }
         else
         {
-            energy = power->RetEnergy();
+            energy = power->GetEnergy();
         }
 
         if ( energy == 0.0f || m_delay <= 0.0f )
@@ -383,18 +381,18 @@ Error CTaskShield::IsEnded()
         pos.z = 0.0f;
         m_object->SetPosition(3, pos);
 
-        m_object->SetShieldRadius(RetRadius());
+        m_object->SetShieldRadius(GetRadius());
 
         pos = m_shieldPos;
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
-        dim.x = RetRadius();
+        dim.x = GetRadius();
         dim.y = dim.x;
-        m_rankSphere = m_particule->CreateParticule(pos, speed, dim, PARTISPHERE3, 2.0f, 0.0f, 0.0f);
+        m_rankSphere = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISPHERE3, 2.0f, 0.0f, 0.0f);
 
         m_phase = TS_SHIELD;
         m_speed = 1.0f/999.9f;
 
-        if ( m_object->RetSelect() )
+        if ( m_object->GetSelect() )
         {
             m_brain->UpdateInterface();
         }
@@ -462,13 +460,13 @@ bool CTaskShield::Abort()
 
     if ( m_rankSphere != -1 )
     {
-        m_particule->SetPhase(m_rankSphere, PARPHEND, 3.0f);
+        m_particle->SetPhase(m_rankSphere, Gfx::PARPHEND, 3.0f);
         m_rankSphere = -1;
     }
 
     if ( m_effectLight != -1 )
     {
-        m_light->DeleteLight(m_effectLight);
+        m_lightMan->DeleteLight(m_effectLight);
         m_effectLight = -1;
     }
 
@@ -481,34 +479,32 @@ bool CTaskShield::Abort()
 
 bool CTaskShield::CreateLight(Math::Vector pos)
 {
-    D3DLIGHT7   light;
+    Gfx::Light light;
 
-    if ( !m_engine->RetLightMode() )  return true;
+    if ( !m_engine->GetLightMode() )  return true;
 
-    ZeroMemory( &light, sizeof(light) );
-    light.dltType       = D3DLIGHT_SPOT;
-    light.dcvDiffuse.r  = 0.0f;
-    light.dcvDiffuse.g  = 1.0f;
-    light.dcvDiffuse.b  = 2.0f;
-    light.dvPosition.x  = pos.x;
-    light.dvPosition.y  = pos.y;
-    light.dvPosition.z  = pos.z;
-    light.dvDirection.x =  0.0f;
-    light.dvDirection.y = -1.0f;  // against the bottom
-    light.dvDirection.z =  0.0f;
-    light.dvRange = D3DLIGHT_RANGE_MAX;
-    light.dvFalloff = 1.0f;
-    light.dvAttenuation0 = 1.0f;
-    light.dvAttenuation1 = 0.0f;
-    light.dvAttenuation2 = 0.0f;
-    light.dvTheta = 0.0f;
-    light.dvPhi = Math::PI/4.0f;
+    memset(&light, 0, sizeof(light));
+    light.type       = Gfx::LIGHT_SPOT;
+    light.diffuse.r  = 0.0f;
+    light.diffuse.g  = 1.0f;
+    light.diffuse.b  = 2.0f;
+    light.position.x  = pos.x;
+    light.position.y  = pos.y;
+    light.position.z  = pos.z;
+    light.direction.x =  0.0f;
+    light.direction.y = -1.0f;  // against the bottom
+    light.direction.z =  0.0f;
+    light.spotIntensity = 128;
+    light.attenuation0 = 1.0f;
+    light.attenuation1 = 0.0f;
+    light.attenuation2 = 0.0f;
+    light.spotAngle = 90;
 
-    m_effectLight = m_light->CreateLight();
+    m_effectLight = m_lightMan->CreateLight();
     if ( m_effectLight == -1 )  return false;
 
-    m_light->SetLight(m_effectLight, light);
-    m_light->SetLightIntensity(m_effectLight, 1.0f);
+    m_lightMan->SetLight(m_effectLight, light);
+    m_lightMan->SetLightIntensity(m_effectLight, 1.0f);
 
     return true;
 }
@@ -526,21 +522,21 @@ void CTaskShield::IncreaseShield()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_MOTHER ||
              type == OBJECT_ANT    ||
              type == OBJECT_SPIDER ||
              type == OBJECT_BEE    ||
              type == OBJECT_WORM   )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, m_shieldPos);
-        if ( dist <= RetRadius()+10.0f )
+        if ( dist <= GetRadius()+10.0f )
         {
-            shield = pObj->RetShield();
+            shield = pObj->GetShield();
             shield += 0.1f;
             if ( shield > 1.0f )  shield = 1.0f;
             pObj->SetShield(shield);
@@ -551,9 +547,9 @@ void CTaskShield::IncreaseShield()
 
 // Returns the radius of the shield.
 
-float CTaskShield::RetRadius()
+float CTaskShield::GetRadius()
 {
-    return RADIUS_SHIELD_MIN + (RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)*m_object->RetParam();
+    return RADIUS_SHIELD_MIN + (RADIUS_SHIELD_MAX-RADIUS_SHIELD_MIN)*m_object->GetParam();
 }
 
 
