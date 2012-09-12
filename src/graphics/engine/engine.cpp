@@ -357,21 +357,21 @@ bool Gfx::CEngine::ProcessEvent(const Event &event)
             }
         }
     }
-    else if (event.type == EVENT_FRAME)
-    {
-        m_highlightTime += event.rTime;
-    }
 
     // By default, pass on all events
     return true;
 }
 
-void Gfx::CEngine::FrameMove(float rTime)
+void Gfx::CEngine::FrameUpdate()
 {
+    float rTime = m_app->GetRelTime();
+
     m_lightMan->UpdateProgression(rTime);
     m_particle->FrameParticle(rTime);
     ComputeDistance();
     UpdateGeometry();
+
+    m_highlightTime = m_app->GetAbsTime();
 
     if (m_groundMark.draw)
     {
@@ -402,16 +402,6 @@ void Gfx::CEngine::FrameMove(float rTime)
             }
         }
     }
-
-    if (m_sound == nullptr)
-        m_sound = static_cast<CSoundInterface*>( m_iMan->SearchInstance(CLASS_SOUND) );
-
-    m_sound->FrameMove(rTime);
-}
-
-void Gfx::CEngine::StepSimulation(float rTime)
-{
-    m_app->StepSimulation(rTime);
 }
 
 bool Gfx::CEngine::WriteScreenShot(const std::string& fileName, int width, int height)
@@ -2724,16 +2714,6 @@ void Gfx::CEngine::SetEditIndentValue(int value)
 int Gfx::CEngine::GetEditIndentValue()
 {
     return m_editIndentValue;
-}
-
-void Gfx::CEngine::SetSpeed(float speed)
-{
-    m_speed = speed;
-}
-
-float Gfx::CEngine::GetSpeed()
-{
-    return m_speed;
 }
 
 void Gfx::CEngine::SetTracePrecision(float factor)

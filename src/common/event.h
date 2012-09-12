@@ -171,13 +171,19 @@ struct Event
         ActiveEventData active;
     };
 
-    // TODO: refactor/rewrite
+    // TODO: remove
     long         param;      // parameter
+
+    // TODO: remove?
     Math::Point  pos;        // mouse position (0 .. 1)
+
+    // TODO: ?
     float        axeX;       // control the X axis (-1 .. 1)
     float        axeY;       // control of the Y axis (-1 .. 1)
     float        axeZ;       // control the Z axis (-1 .. 1)
     short        keyState;   // state of the keyboard (KS_ *)
+
+    // TODO: remove in longer term (use CApplication's new time functions instead)
     float        rTime;      // relative time
 
     Event(EventType aType = EVENT_NULL)

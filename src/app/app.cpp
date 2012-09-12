@@ -81,23 +81,47 @@ CApplication::CApplication()
     m_robotMain = nullptr;
     m_sound     = nullptr;
 
-    m_keyState = 0;
-    m_axeKey   = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_axeJoy   = Math::Vector(0.0f, 0.0f, 0.0f);
-
     m_exitCode  = 0;
     m_active    = false;
     m_debugMode = false;
 
     m_windowTitle = "COLOBOT";
 
+    m_simulationSuspended = false;
+
+    m_simulationSpeed = 1.0f;
+
+    m_realAbsTimeBase = 0LL;
+    m_realAbsTime = 0LL;
+    m_realRelTime = 0LL;
+
+    m_absTimeBase = 0LL;
+    m_exactAbsTime = 0LL;
+    m_exactRelTime = 0LL;
+
+    m_absTime = 0.0f;
+    m_relTime = 0.0f;
+
+    m_baseTimeStamp = CreateTimeStamp();
+    m_curTimeStamp = CreateTimeStamp();
+    m_lastTimeStamp = CreateTimeStamp();
+
     m_joystickEnabled = false;
+
+    m_kmodState = 0;
+    m_mouseButtonsState = 0;
+
+    for (int i = 0; i < TRKEY_MAX; ++i)
+        m_trackedKeysState[i] = false;
+
+    m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
 
     m_dataPath = "./data";
 
     m_language = LANG_ENGLISH;
 
-    ResetKey();
+    SetDefaultInputBindings();
 }
 
 CApplication::~CApplication()
@@ -110,6 +134,10 @@ CApplication::~CApplication()
 
     delete m_iMan;
     m_iMan = nullptr;
+
+    DestroyTimeStamp(m_baseTimeStamp);
+    DestroyTimeStamp(m_curTimeStamp);
+    DestroyTimeStamp(m_lastTimeStamp);
 }
 
 bool CApplication::ParseArguments(int argc, char *argv[])
@@ -542,6 +570,10 @@ int CApplication::Run()
 {
     m_active = true;
 
+    GetCurrentTimeStamp(m_baseTimeStamp);
+    GetCurrentTimeStamp(m_lastTimeStamp);
+    GetCurrentTimeStamp(m_curTimeStamp);
+
     while (true)
     {
         // To be sure no old event remains
@@ -618,6 +650,9 @@ int CApplication::Run()
 
             // Update game and render a frame during idle time (no messages are waiting)
             Render();
+
+            // Update simulation state
+            StepSimulation();
         }
     }
 
@@ -737,8 +772,72 @@ bool CApplication::ProcessEvent(const Event &event)
     if (event.type == EVENT_ACTIVE)
     {
         m_active = event.active.gain;
+
         if (m_debugMode)
             l->Info("Focus change: active = %s\n", m_active ? "true" : "false");
+
+        if (m_active)
+            ResumeSimulation();
+        else
+            SuspendSimulation();
+    }
+    else if (event.type == EVENT_KEY_DOWN)
+    {
+        m_kmodState = event.key.mod;
+
+        if ((m_kmodState & KEY_MOD(SHIFT)) != 0)
+            m_trackedKeysState[TRKEY_SHIFT] = true;
+        else if ((m_kmodState & KEY_MOD(CTRL)) != 0)
+            m_trackedKeysState[TRKEY_CONTROL] = true;
+        else if (event.key.key == KEY(KP8))
+            m_trackedKeysState[TRKEY_NUM_UP] = true;
+        else if (event.key.key == KEY(KP2))
+            m_trackedKeysState[TRKEY_NUM_DOWN] = true;
+        else if (event.key.key == KEY(KP4))
+            m_trackedKeysState[TRKEY_NUM_LEFT] = true;
+        else if (event.key.key == KEY(KP6))
+            m_trackedKeysState[TRKEY_NUM_RIGHT] = true;
+        else if (event.key.key == KEY(KP_PLUS))
+            m_trackedKeysState[TRKEY_NUM_PLUS] = true;
+        else if (event.key.key == KEY(KP_MINUS))
+            m_trackedKeysState[TRKEY_NUM_MINUS] = true;
+        else if (event.key.key == KEY(PAGEUP))
+            m_trackedKeysState[TRKEY_PAGE_UP] = true;
+        else if (event.key.key == KEY(PAGEDOWN))
+            m_trackedKeysState[TRKEY_PAGE_DOWN] = true;
+    }
+    else if (event.type == EVENT_KEY_UP)
+    {
+        m_kmodState = event.key.mod;
+
+        if ((m_kmodState & KEY_MOD(SHIFT)) != 0)
+            m_trackedKeysState[TRKEY_SHIFT] = false;
+        else if ((m_kmodState & KEY_MOD(CTRL)) != 0)
+            m_trackedKeysState[TRKEY_CONTROL] = false;
+        else if (event.key.key == KEY(KP8))
+            m_trackedKeysState[TRKEY_NUM_UP] = false;
+        else if (event.key.key == KEY(KP2))
+            m_trackedKeysState[TRKEY_NUM_DOWN] = false;
+        else if (event.key.key == KEY(KP4))
+            m_trackedKeysState[TRKEY_NUM_LEFT] = false;
+        else if (event.key.key == KEY(KP6))
+            m_trackedKeysState[TRKEY_NUM_RIGHT] = false;
+        else if (event.key.key == KEY(KP_PLUS))
+            m_trackedKeysState[TRKEY_NUM_PLUS] = false;
+        else if (event.key.key == KEY(KP_MINUS))
+            m_trackedKeysState[TRKEY_NUM_MINUS] = false;
+        else if (event.key.key == KEY(PAGEUP))
+            m_trackedKeysState[TRKEY_PAGE_UP] = false;
+        else if (event.key.key == KEY(PAGEDOWN))
+            m_trackedKeysState[TRKEY_PAGE_DOWN] = false;
+    }
+    else if (event.type == EVENT_MOUSE_BUTTON_DOWN)
+    {
+        m_mouseButtonsState |= 1 << event.mouseButton.button;
+    }
+    else if (event.type == EVENT_MOUSE_BUTTON_UP)
+    {
+        m_mouseButtonsState &= ~(1 << event.mouseButton.button);
     }
 
     // Print the events in debug mode to test the code
@@ -800,9 +899,101 @@ void CApplication::Render()
         SDL_GL_SwapBuffers();
 }
 
-void CApplication::StepSimulation(float rTime)
+void CApplication::SuspendSimulation()
 {
-    // TODO
+    m_simulationSuspended = true;
+    GetLogger()->Info("Suspend simulation\n");
+}
+
+void CApplication::ResumeSimulation()
+{
+    m_simulationSuspended = false;
+
+    GetCurrentTimeStamp(m_baseTimeStamp);
+    CopyTimeStamp(m_curTimeStamp, m_baseTimeStamp);
+    m_realAbsTimeBase = m_realAbsTime;
+    m_absTimeBase = m_exactAbsTime;
+
+    GetLogger()->Info("Resume simulation\n");
+}
+
+bool CApplication::GetSimulationSuspended()
+{
+    return m_simulationSuspended;
+}
+
+void CApplication::SetSimulationSpeed(float speed)
+{
+    m_simulationSpeed = speed;
+
+    GetCurrentTimeStamp(m_baseTimeStamp);
+    m_realAbsTimeBase = m_realAbsTime;
+    m_absTimeBase = m_exactAbsTime;
+
+    GetLogger()->Info("Simulation speed = %.2f\n", speed);
+}
+
+void CApplication::StepSimulation()
+{
+    if (m_simulationSuspended)
+        return;
+
+    CopyTimeStamp(m_lastTimeStamp, m_curTimeStamp);
+    GetCurrentTimeStamp(m_curTimeStamp);
+
+    long long absDiff = TimeStampExactDiff(m_baseTimeStamp, m_curTimeStamp);
+    m_realAbsTime = m_realAbsTimeBase + absDiff;
+    // m_baseTimeStamp is updated on simulation speed change, so this is OK
+    m_exactAbsTime = m_absTimeBase + m_simulationSpeed * absDiff;
+    m_absTime = (m_absTimeBase + m_simulationSpeed * absDiff) / 1e9f;
+
+    m_realRelTime = TimeStampExactDiff(m_lastTimeStamp, m_curTimeStamp);
+    m_exactRelTime = m_simulationSpeed * m_realRelTime;
+    m_relTime = (m_simulationSpeed * m_realRelTime) / 1e9f;
+
+
+    m_engine->FrameUpdate();
+    //m_sound->FrameMove(m_relTime);
+
+
+    Event frameEvent(EVENT_FRAME);
+    frameEvent.rTime = m_relTime;
+    m_eventQueue->AddEvent(frameEvent);
+}
+
+float CApplication::GetSimulationSpeed()
+{
+    return m_simulationSpeed;
+}
+
+float CApplication::GetAbsTime()
+{
+    return m_absTime;
+}
+
+long long CApplication::GetExactAbsTime()
+{
+    return m_exactAbsTime;
+}
+
+long long CApplication::GetRealAbsTime()
+{
+    return m_realAbsTime;
+}
+
+float CApplication::GetRelTime()
+{
+    return m_relTime;
+}
+
+long long CApplication::GetExactRelTime()
+{
+    return m_exactRelTime;
+}
+
+long long CApplication::GetRealRelTime()
+{
+    return m_realRelTime;
 }
 
 Gfx::GLDeviceConfig CApplication::GetVideoConfig()
@@ -863,25 +1054,79 @@ bool CApplication::GetDebugMode()
     return m_debugMode;
 }
 
-void CApplication::FlushPressKey()
+void CApplication::SetDefaultInputBindings()
 {
-    // TODO
+    for (int i = 0; i < KEYRANK_MAX; i++)
+        m_inputBindings[i].Reset();
+
+    m_inputBindings[KEYRANK_LEFT   ].key  = KEY(LEFT);
+    m_inputBindings[KEYRANK_RIGHT  ].key  = KEY(RIGHT);
+    m_inputBindings[KEYRANK_UP     ].key  = KEY(UP);
+    m_inputBindings[KEYRANK_DOWN   ].key  = KEY(DOWN);
+    m_inputBindings[KEYRANK_GUP    ].kmod = KEY_MOD(SHIFT);
+    m_inputBindings[KEYRANK_GDOWN  ].kmod = KEY_MOD(CTRL);
+    m_inputBindings[KEYRANK_CAMERA ].key  = KEY(SPACE);
+    m_inputBindings[KEYRANK_CAMERA ].joy  = 2;
+    m_inputBindings[KEYRANK_DESEL  ].key  = KEY(KP0);
+    m_inputBindings[KEYRANK_DESEL  ].kmod = 6;
+    m_inputBindings[KEYRANK_ACTION ].key  = KEY(RETURN);
+    m_inputBindings[KEYRANK_ACTION ].joy  = 1;
+    m_inputBindings[KEYRANK_NEAR   ].key  = KEY(KP_PLUS);
+    m_inputBindings[KEYRANK_NEAR   ].joy  = 5;
+    m_inputBindings[KEYRANK_AWAY   ].key  = KEY(KP_MINUS);
+    m_inputBindings[KEYRANK_AWAY   ].joy  = 4;
+    m_inputBindings[KEYRANK_NEXT   ].key  = KEY(TAB);
+    m_inputBindings[KEYRANK_NEXT   ].joy  = 3;
+    m_inputBindings[KEYRANK_HUMAN  ].key  = KEY(HOME);
+    m_inputBindings[KEYRANK_HUMAN  ].joy  = 7;
+    m_inputBindings[KEYRANK_QUIT   ].key  = KEY(ESCAPE);
+    m_inputBindings[KEYRANK_HELP   ].key  = KEY(F1);
+    m_inputBindings[KEYRANK_PROG   ].key  = KEY(F2);
+    m_inputBindings[KEYRANK_CBOT   ].key  = KEY(F3);
+    m_inputBindings[KEYRANK_VISIT  ].key  = KEY(KP_PERIOD);
+    m_inputBindings[KEYRANK_SPEED10].key  = KEY(F4);
+    m_inputBindings[KEYRANK_SPEED15].key  = KEY(F5);
+    m_inputBindings[KEYRANK_SPEED20].key  = KEY(F6);
 }
 
-void CApplication::ResetKey()
+int CApplication::GetKmods()
 {
-    // TODO
+    return m_kmodState;
 }
 
-void CApplication::SetKey(int keyRank, int option, int key)
+bool CApplication::GetKmodState(int kmod)
 {
-    // TODO
+    return (m_kmodState & kmod) != 0;
 }
 
-int CApplication::GetKey(int keyRank, int option)
+bool CApplication::GetTrackedKeyState(TrackedKey key)
 {
-    // TODO
-    return 0;
+    return m_trackedKeysState[key];
+}
+
+bool CApplication::GetMouseButtonState(int index)
+{
+    return (m_mouseButtonsState & (1<<index)) != 0;
+}
+
+void CApplication::ResetKeyStates()
+{
+    for (int i = 0; i < TRKEY_MAX; ++i)
+        m_trackedKeysState[i] = false;
+
+    m_kmodState = 0;
+    m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+}
+
+void CApplication::SetInputBinding(InputSlot slot, const InputBinding& binding)
+{
+    m_inputBindings[slot] = binding;
+}
+
+const InputBinding& CApplication::GetInputBinding(InputSlot slot)
+{
+    return m_inputBindings[slot];
 }
 
 void CApplication::SetGrabInput(bool grab)

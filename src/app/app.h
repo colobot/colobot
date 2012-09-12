@@ -38,8 +38,9 @@ class CRobotMain;
 class CSound;
 
 /**
-  \struct JoystickDevice
-  \brief Information about a joystick device */
+ * \struct JoystickDevice
+ * \brief Information about a joystick device
+ */
 struct JoystickDevice
 {
     //! Device index (-1 = invalid device)
@@ -56,8 +57,9 @@ struct JoystickDevice
 };
 
 /**
-  \enum VideoQueryResult
-  \brief Result of querying for available video resolutions */
+ * \enum VideoQueryResult
+ * \brief Result of querying for available video resolutions
+ */
 enum VideoQueryResult
 {
     VIDEO_QUERY_ERROR,
@@ -66,6 +68,83 @@ enum VideoQueryResult
     VIDEO_QUERY_OK
 };
 
+
+/**
+ * \enum TrackedKeys
+ * \brief Keys (or kmods) whose state (pressed/released) is tracked by CApplication
+ */
+enum TrackedKey
+{
+    TRKEY_SHIFT,
+    TRKEY_CONTROL,
+    TRKEY_NUM_UP,
+    TRKEY_NUM_DOWN,
+    TRKEY_NUM_LEFT,
+    TRKEY_NUM_RIGHT,
+    TRKEY_NUM_PLUS,
+    TRKEY_NUM_MINUS,
+    TRKEY_PAGE_UP,
+    TRKEY_PAGE_DOWN,
+    TRKEY_MAX
+};
+
+/**
+ * \enum InputSlot
+ * \brief Available slots for input bindings
+ */
+enum InputSlot
+{
+    INPUT_SLOT_LEFT    = 0,
+    INPUT_SLOT_RIGHT   = 1,
+    INPUT_SLOT_UP      = 2,
+    INPUT_SLOT_DOWN    = 3,
+    INPUT_SLOT_GUP     = 4,
+    INPUT_SLOT_GDOWN   = 5,
+    INPUT_SLOT_CAMERA  = 6,
+    INPUT_SLOT_DESEL   = 7,
+    INPUT_SLOT_ACTION  = 8,
+    INPUT_SLOT_NEAR    = 9,
+    INPUT_SLOT_AWAY    = 10,
+    INPUT_SLOT_NEXT    = 11,
+    INPUT_SLOT_HUMAN   = 12,
+    INPUT_SLOT_QUIT    = 13,
+    INPUT_SLOT_HELP    = 14,
+    INPUT_SLOT_PROG    = 15,
+    INPUT_SLOT_VISIT   = 16,
+    INPUT_SLOT_SPEED10 = 17,
+    INPUT_SLOT_SPEED15 = 18,
+    INPUT_SLOT_SPEED20 = 19,
+    INPUT_SLOT_SPEED30 = 20,
+    INPUT_SLOT_AIMUP   = 21,
+    INPUT_SLOT_AIMDOWN = 22,
+    INPUT_SLOT_CBOT    = 23,
+
+    INPUT_SLOT_MAX
+};
+
+/**
+ * \struct InputBinding
+ * \brief Settable binding for user input
+ */
+struct InputBinding
+{
+    //! Key
+    int key;
+    //! Key modifier (e.g. shift, control)
+    int kmod;
+    //! Joystick button
+    int joy;
+
+    inline InputBinding()
+    {
+        Reset();
+    }
+
+    inline void Reset()
+    {
+        key = kmod = joy = -1;
+    }
+};
 
 struct ApplicationPrivate;
 
@@ -146,8 +225,37 @@ public:
     //! Change the video mode to given mode
     bool        ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig);
 
+    //! Suspends animation (time will not be updated)
+    void        SuspendSimulation();
+    //! Resumes animation
+    void        ResumeSimulation();
+    //! Returns whether simulation is suspended
+    bool        GetSimulationSuspended();
+
     //! Updates the simulation state
-    void        StepSimulation(float rTime);
+    void        StepSimulation();
+
+    //@{
+    //! Management of simulation speed
+    void            SetSimulationSpeed(float speed);
+    float           GetSimulationSpeed();
+    //@}
+
+    //! Returns the absolute time counter [seconds]
+    float       GetAbsTime();
+    //! Returns the exact absolute time counter [nanoseconds]
+    long long   GetExactAbsTime();
+
+    //! Returns the exact absolute time counter disregarding speed setting [nanoseconds]
+    long long   GetRealAbsTime();
+
+    //! Returns the relative time since last update [seconds]
+    float       GetRelTime();
+    //! Returns the exact realative time since last update [nanoseconds]
+    long long   GetExactRelTime();
+
+    //! Returns the exact relative time since last update disregarding speed setting [nanoseconds]
+    long long   GetRealRelTime();
 
     //! Returns a list of available joystick devices
     std::vector<JoystickDevice> GetJoystickList();
@@ -158,10 +266,11 @@ public:
     //! Change the current joystick device
     bool        ChangeJoystick(const JoystickDevice &newJoystick);
 
-    //! Enables/disables joystick
+    //! Management of joystick enable state
+    //@{
     void        SetJoystickEnabled(bool enable);
-    //! Returns whether joystick is enabled
     bool        GetJoystickEnabled();
+    //@}
 
     //! Polls the state of joystick axes and buttons
     void        UpdateJoystick();
@@ -169,30 +278,56 @@ public:
     //! Updates the mouse position explicitly
     void        UpdateMouse();
 
-    void        FlushPressKey();
-    void        ResetKey();
-    void        SetKey(int keyRank, int option, int key);
-    int         GetKey(int keyRank, int option);
+    //! Returns the current key modifiers
+    int         GetKmods();
+    //! Returns whether the given kmod is active
+    bool        GetKmodState(int kmod);
 
-    //! Sets the grab mode for input (keyboard & mouse)
+    //! Returns whether the tracked key is pressed
+    bool        GetTrackedKeyState(TrackedKey key);
+
+    //! Returns whether the mouse button is pressed
+    bool        GetMouseButtonState(int index);
+
+    //! Resets tracked key states, modifiers and motion vectors
+    void        ResetKeyStates();
+
+
+    // TODO move input binding and motion vectors to CRobotMain
+
+    //! Sets the default input bindings
+    void        SetDefaultInputBindings();
+
+    //! Management of input bindings
+    //@{
+    void        SetInputBinding(InputSlot slot, const InputBinding& binding);
+    const InputBinding& GetInputBinding(InputSlot slot);
+    //@}
+
+
+    //! Management of the grab mode for input (keyboard & mouse)
+    //@{
     void        SetGrabInput(bool grab);
-    //! Returns the grab mode
     bool        GetGrabInput();
+    //@}
 
-    //! Sets the visiblity of system mouse cursor
+    //! Management of the visiblity of system mouse cursor
+    //@{
     void        SetSystemMouseVisible(bool visible);
-    //! Returns the visiblity of system mouse cursor
     bool        GetSystemMouseVisibile();
+    //@}
 
-    //! Sets the position of system mouse cursor (in interface coords)
+    //! Management of the position of system mouse cursor (in interface coords)
+    //@{
     void        SetSystemMousePos(Math::Point pos);
-    //! Returns the position of system mouse cursor (in interface coords)
     Math::Point GetSystemMousePos();
+    //@}
 
-    //! Enables/disables debug mode (prints more info in logger)
+    //! Management of debug mode (prints more info in logger)
+    //@{
     void        SetDebugMode(bool mode);
-    //! Returns whether debug mode is enabled
     bool        GetDebugMode();
+    //@}
 
     //! Returns the full path to a file in data directory
     std::string GetDataFilePath(const std::string &dirName, const std::string &fileName);
@@ -253,13 +388,44 @@ protected:
     //! Text set as window title
     std::string     m_windowTitle;
 
-    int             m_keyState;
-    Math::Vector    m_axeKey;
-    Math::Vector    m_axeJoy;
-    Math::Point     m_systemMousePos;
-    long            m_mouseWheel;
+    //! Animation time stamps, etc.
+    //@{
+    SystemTimeStamp* m_baseTimeStamp;
+    SystemTimeStamp* m_lastTimeStamp;
+    SystemTimeStamp* m_curTimeStamp;
 
-    long            m_key[50][2];
+    long long       m_realAbsTimeBase;
+    long long       m_realAbsTime;
+    long long       m_realRelTime;
+
+    long long       m_absTimeBase;
+    long long       m_exactAbsTime;
+    long long       m_exactRelTime;
+
+    float           m_absTime;
+    float           m_relTime;
+
+    float           m_simulationSpeed;
+    bool            m_simulationSuspended;
+    //@}
+
+    //! Current state of key modifiers (mask of SDLMod)
+    unsigned int    m_kmodState;
+    //! Current state of some tracked keys (mask of TrackedKey)
+    bool            m_trackedKeysState[TRKEY_MAX];
+    //! Current state of mouse buttons (mask of button indexes)
+    unsigned int    m_mouseButtonsState;
+
+    //! Bindings for user inputs
+    InputBinding    m_inputBindings[INPUT_SLOT_MAX];
+
+    //! Motion vector set by keyboard
+    Math::Vector    m_keyMotion;
+    //! Motion vector set by joystick
+    Math::Vector    m_joyMotion;
+
+    //! Current system mouse position
+    Math::Point     m_systemMousePos;
 
     //! Info about current joystick device
     JoystickDevice  m_joystick;

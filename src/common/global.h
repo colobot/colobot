@@ -84,9 +84,8 @@ enum ResearchType
 /**
  * \enum KeyRank
  * \brief Slots for key assignment of user controls
- *
- * TODO: refactor
  */
+// TODO: remove (use the new InputSlot enum from app/app.h)
 enum KeyRank
 {
     KEYRANK_LEFT    = 0,
@@ -113,6 +112,8 @@ enum KeyRank
     KEYRANK_AIMUP   = 21,
     KEYRANK_AIMDOWN = 22,
     KEYRANK_CBOT    = 23,
+
+    KEYRANK_MAX
 };
 
 // TODO: move to CRobotMain

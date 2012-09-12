@@ -22,7 +22,7 @@
 #include <time.h>
 
 
-// TODO: to be removed
+// TODO: to be removed (replaced by TrackedKey enum and mouse states in app.h)
 const int KS_PAGEUP         = (1<<4);
 const int KS_PAGEDOWN       = (1<<5);
 const int KS_SHIFT          = (1<<6);
