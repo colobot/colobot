@@ -17,13 +17,14 @@
 // group.cpp
 
 
-#include <windows.h>
+//#include <windows.h>
 #include <stdio.h>
-#include <d3d.h>
+//#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
+//#include "common/struct.h"
+//#include "old/d3dengine.h"
+#include "graphics/engine/engine.h"
+//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -32,10 +33,11 @@
 
 
 
-
+namespace Ui {
 // Object's constructor.
 
-CGroup::CGroup(CInstanceManager* iMan) : CControl(iMan)
+//CGroup::CGroup(CInstanceManager* iMan) : CControl(iMan)
+CGroup::CGroup() : CControl()
 {
 }
 
@@ -48,18 +50,18 @@ CGroup::~CGroup()
 
 // Creates a new button.
 
-bool CGroup::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CGroup::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
 
     if ( icon == -1 )
     {
         char    name[100];
         char*   p;
 
-        GetResource(RES_EVENT, eventMsg, name);
+        GetResource(RES_EVENT, eventType, name);
         p = strchr(name, '\\');
         if ( p != 0 )  *p = 0;
         SetName(name);
@@ -92,16 +94,16 @@ void CGroup::Draw()
         DrawShadow(m_pos, m_dim);
     }
 
-    dp = 0.5f/256.0f;
+    dp = 0.5f / 256.0f;
 
     if ( m_icon == 0 )  // hollow frame?
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x = 160.0f/256.0f;
-        uv1.y = 192.0f/256.0f;  // u-v texture
-        uv2.x = 192.0f/256.0f;
-        uv2.y = 224.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x = 160.0f / 256.0f;
+        uv1.y = 192.0f / 256.0f;  // u-v texture
+        uv2.x = 192.0f / 256.0f;
+        uv2.y = 224.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -113,11 +115,11 @@ void CGroup::Draw()
     if ( m_icon == 1 )  // orange solid opaque?
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x = 104.0f/256.0f;
-        uv1.y =  48.0f/256.0f;
-        uv2.x = 112.0f/256.0f;
-        uv2.y =  64.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x = 104.0f / 256.0f;
+        uv1.y =  48.0f / 256.0f;
+        uv2.x = 112.0f / 256.0f;
+        uv2.y =  64.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -127,11 +129,11 @@ void CGroup::Draw()
     if ( m_icon == 2 )  // orange degrade -> transparent?
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTw);
-        uv1.x = 112.0f/256.0f;
-        uv1.y =  48.0f/256.0f;
-        uv2.x = 120.0f/256.0f;
-        uv2.y =  64.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        uv1.x = 112.0f / 256.0f;
+        uv1.y =  48.0f / 256.0f;
+        uv2.x = 120.0f / 256.0f;
+        uv2.y =  64.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -141,11 +143,11 @@ void CGroup::Draw()
     if ( m_icon == 3 )  // transparent gradient -> gray?
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTw);
-        uv1.x = 120.0f/256.0f;
-        uv1.y =  48.0f/256.0f;
-        uv2.x = 128.0f/256.0f;
-        uv2.y =  64.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        uv1.x = 120.0f / 256.0f;
+        uv1.y =  48.0f / 256.0f;
+        uv2.x = 128.0f / 256.0f;
+        uv2.y =  64.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -155,11 +157,11 @@ void CGroup::Draw()
     if ( m_icon == 4 )  // degrade blue corner?
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTw);
-        uv1.x = 192.0f/256.0f;
-        uv1.y = 128.0f/256.0f;
-        uv2.x = 224.0f/256.0f;
-        uv2.y = 160.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        uv1.x = 192.0f / 256.0f;
+        uv1.y = 128.0f / 256.0f;
+        uv2.x = 224.0f / 256.0f;
+        uv2.y = 160.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -169,11 +171,11 @@ void CGroup::Draw()
     if ( m_icon == 5 )  // degrade orange corner?
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTw);
-        uv1.x = 224.0f/256.0f;
-        uv1.y = 128.0f/256.0f;
-        uv2.x = 256.0f/256.0f;
-        uv2.y = 160.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        uv1.x = 224.0f / 256.0f;
+        uv1.y = 128.0f / 256.0f;
+        uv2.x = 256.0f / 256.0f;
+        uv2.y = 160.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -183,27 +185,27 @@ void CGroup::Draw()
     if ( m_icon == 6 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
-        uv1.x =   0.0f/256.0f;  // brown transparent
-        uv1.y =  75.0f/256.0f;
-        uv2.x =  64.0f/256.0f;
-        uv2.y = 128.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        uv1.x =   0.0f / 256.0f;  // brown transparent
+        uv1.y =  75.0f / 256.0f;
+        uv2.x =  64.0f / 256.0f;
+        uv2.y = 128.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-        corner.x = 4.0f/640.0f;
-        corner.y = 4.0f/480.0f;
+        corner.x = 4.0f / 640.0f;
+        corner.y = 4.0f / 480.0f;
         DrawIcon(m_pos, m_dim, uv1, uv2, corner, 8.0f/256.0f);
     }
     if ( m_icon == 7 )
     {
         m_engine->SetTexture("button1.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x =  64.0f/256.0f;
-        uv1.y =   0.0f/256.0f;
-        uv2.x =  96.0f/256.0f;
-        uv2.y =  32.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x =  64.0f / 256.0f;
+        uv1.y =   0.0f / 256.0f;
+        uv2.x =  96.0f / 256.0f;
+        uv2.y =  32.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -213,11 +215,11 @@ void CGroup::Draw()
     if ( m_icon == 8 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
-        uv1.x =  64.0f/256.0f;  // green transparent
-        uv1.y = 160.0f/256.0f;
-        uv2.x = 160.0f/256.0f;
-        uv2.y = 176.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        uv1.x =  64.0f / 256.0f;  // green transparent
+        uv1.y = 160.0f / 256.0f;
+        uv2.x = 160.0f / 256.0f;
+        uv2.y = 176.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -227,8 +229,8 @@ void CGroup::Draw()
     if ( m_icon == 9 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
-        uv1.x =  64.0f/256.0f;  // red transparent
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        uv1.x =  64.0f / 256.0f;  // red transparent
         uv1.y = 176.0f/256.0f;
         uv2.x = 160.0f/256.0f;
         uv2.y = 192.0f/256.0f;
@@ -241,11 +243,11 @@ void CGroup::Draw()
     if ( m_icon == 10 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
-        uv1.x =  64.0f/256.0f;  // blue transparent
-        uv1.y = 192.0f/256.0f;
-        uv2.x = 160.0f/256.0f;
-        uv2.y = 208.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        uv1.x =  64.0f / 256.0f;  // blue transparent
+        uv1.y = 192.0f / 256.0f;
+        uv2.x = 160.0f / 256.0f;
+        uv2.y = 208.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -255,11 +257,11 @@ void CGroup::Draw()
     if ( m_icon == 11 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTb);
-        uv1.x =  64.0f/256.0f;  // yellow transparent
-        uv1.y = 224.0f/256.0f;
-        uv2.x = 160.0f/256.0f;
-        uv2.y = 240.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        uv1.x =  64.0f / 256.0f;  // yellow transparent
+        uv1.y = 224.0f / 256.0f;
+        uv2.x = 160.0f / 256.0f;
+        uv2.y = 240.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -268,17 +270,17 @@ void CGroup::Draw()
     }
     if ( m_icon == 12 )  // viewfinder cross?
     {
-        dim.x = m_dim.x/2.0f;
-        dim.y = m_dim.y/2.0f;
+        dim.x = m_dim.x / 2.0f;
+        dim.y = m_dim.y / 2.0f;
 
         m_engine->SetTexture("mouse.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/300.0f;
         pos.y = m_pos.y+m_dim.y/300.0f+dim.y;
-        uv1.x =   0.5f/256.0f;
-        uv1.y = 192.5f/256.0f;
-        uv2.x =  63.5f/256.0f;
-        uv2.y = 255.5f/256.0f;
+        uv1.x =   0.5f / 256.0f;
+        uv1.y = 192.5f / 256.0f;
+        uv2.x =  63.5f / 256.0f;
+        uv2.y = 255.5f / 256.0f;
         DrawIcon(pos, dim, uv1, uv2);  // ul
         pos.x += dim.x;
         Math::Swap(uv1.x, uv2.x);
@@ -290,13 +292,13 @@ void CGroup::Draw()
         Math::Swap(uv1.x, uv2.x);
         DrawIcon(pos, dim, uv1, uv2);  // dl
 
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         pos.x = m_pos.x+m_dim.x/300.0f;
         pos.y = m_pos.y-m_dim.y/300.0f+dim.y;
-        uv1.x =  64.5f/256.0f;
-        uv1.y = 192.5f/256.0f;
-        uv2.x = 127.5f/256.0f;
-        uv2.y = 255.5f/256.0f;
+        uv1.x =  64.5f / 256.0f;
+        uv1.y = 192.5f / 256.0f;
+        uv2.x = 127.5f / 256.0f;
+        uv2.y = 255.5f / 256.0f;
         DrawIcon(pos, dim, uv1, uv2);  // ul
         pos.x += dim.x;
         Math::Swap(uv1.x, uv2.x);
@@ -311,111 +313,111 @@ void CGroup::Draw()
     if ( m_icon == 13 )  // corner upper / left?
     {
         m_engine->SetTexture("mouse.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/150.0f;
         pos.y = m_pos.y+m_dim.y/150.0f;
-        uv1.x = 128.5f/256.0f;
-        uv1.y = 192.5f/256.0f;
-        uv2.x = 191.5f/256.0f;
-        uv2.y = 255.5f/256.0f;
+        uv1.x = 128.5f / 256.0f;
+        uv1.y = 192.5f / 256.0f;
+        uv2.x = 191.5f / 256.0f;
+        uv2.y = 255.5f / 256.0f;
         DrawIcon(pos, m_dim, uv1, uv2);
 
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         pos.x = m_pos.x+m_dim.x/150.0f;
         pos.y = m_pos.y-m_dim.y/150.0f;
-        uv1.x = 192.5f/256.0f;
-        uv1.y = 192.5f/256.0f;
-        uv2.x = 255.5f/256.0f;
-        uv2.y = 255.5f/256.0f;
+        uv1.x = 192.5f / 256.0f;
+        uv1.y = 192.5f / 256.0f;
+        uv2.x = 255.5f / 256.0f;
+        uv2.y = 255.5f / 256.0f;
         DrawIcon(pos, m_dim, uv1, uv2);
     }
     if ( m_icon == 14 )  // corner upper / right?
     {
         m_engine->SetTexture("mouse.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/150.0f;
         pos.y = m_pos.y+m_dim.y/150.0f;
-        uv2.x = 128.5f/256.0f;
-        uv1.y = 192.5f/256.0f;
-        uv1.x = 191.5f/256.0f;
-        uv2.y = 255.5f/256.0f;
+        uv2.x = 128.5f / 256.0f;
+        uv1.y = 192.5f / 256.0f;
+        uv1.x = 191.5f / 256.0f;
+        uv2.y = 255.5f / 256.0f;
         DrawIcon(pos, m_dim, uv1, uv2);
 
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         pos.x = m_pos.x+m_dim.x/150.0f;
         pos.y = m_pos.y-m_dim.y/150.0f;
-        uv2.x = 192.5f/256.0f;
-        uv1.y = 192.5f/256.0f;
-        uv1.x = 255.5f/256.0f;
-        uv2.y = 255.5f/256.0f;
+        uv2.x = 192.5f / 256.0f;
+        uv1.y = 192.5f / 256.0f;
+        uv1.x = 255.5f / 256.0f;
+        uv2.y = 255.5f / 256.0f;
         DrawIcon(pos, m_dim, uv1, uv2);
     }
     if ( m_icon == 15 )  // corner lower / left?
     {
         m_engine->SetTexture("mouse.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/150.0f;
         pos.y = m_pos.y+m_dim.y/150.0f;
-        uv1.x = 128.5f/256.0f;
-        uv2.y = 192.5f/256.0f;
-        uv2.x = 191.5f/256.0f;
-        uv1.y = 255.5f/256.0f;
+        uv1.x = 128.5f / 256.0f;
+        uv2.y = 192.5f / 256.0f;
+        uv2.x = 191.5f / 256.0f;
+        uv1.y = 255.5f / 256.0f;
         DrawIcon(pos, m_dim, uv1, uv2);
 
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         pos.x = m_pos.x+m_dim.x/150.0f;
         pos.y = m_pos.y-m_dim.y/150.0f;
-        uv1.x = 192.5f/256.0f;
-        uv2.y = 192.5f/256.0f;
-        uv2.x = 255.5f/256.0f;
-        uv1.y = 255.5f/256.0f;
+        uv1.x = 192.5f / 256.0f;
+        uv2.y = 192.5f / 256.0f;
+        uv2.x = 255.5f / 256.0f;
+        uv1.y = 255.5f / 256.0f;
         DrawIcon(pos, m_dim, uv1, uv2);
     }
     if ( m_icon == 16 )  // corner lower / left?
     {
         m_engine->SetTexture("mouse.tga");
-        m_engine->SetState(D3DSTATETTb);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
         pos.x = m_pos.x-m_dim.x/150.0f;
         pos.y = m_pos.y+m_dim.y/150.0f;
-        uv2.x = 128.5f/256.0f;
-        uv2.y = 192.5f/256.0f;
-        uv1.x = 191.5f/256.0f;
-        uv1.y = 255.5f/256.0f;
+        uv2.x = 128.5f / 256.0f;
+        uv2.y = 192.5f / 256.0f;
+        uv1.x = 191.5f / 256.0f;
+        uv1.y = 255.5f / 256.0f;
         DrawIcon(pos, m_dim, uv1, uv2);
 
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         pos.x = m_pos.x+m_dim.x/150.0f;
         pos.y = m_pos.y-m_dim.y/150.0f;
-        uv2.x = 192.5f/256.0f;
-        uv2.y = 192.5f/256.0f;
-        uv1.x = 255.5f/256.0f;
-        uv1.y = 255.5f/256.0f;
+        uv2.x = 192.5f / 256.0f;
+        uv2.y = 192.5f / 256.0f;
+        uv1.x = 255.5f / 256.0f;
+        uv1.y = 255.5f / 256.0f;
         DrawIcon(pos, m_dim, uv1, uv2);
     }
     if ( m_icon == 17 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x =   0.0f/256.0f;  // blue frame
-        uv1.y =  75.0f/256.0f;
-        uv2.x =  64.0f/256.0f;
-        uv2.y = 128.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x =   0.0f / 256.0f;  // blue frame
+        uv1.y =  75.0f / 256.0f;
+        uv2.x =  64.0f / 256.0f;
+        uv2.y = 128.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-        corner.x = 6.0f/640.0f;
-        corner.y = 6.0f/480.0f;
+        corner.x = 6.0f / 640.0f;
+        corner.y = 6.0f / 480.0f;
         DrawIcon(m_pos, m_dim, uv1, uv2, corner, 2.0f/256.0f);
     }
     if ( m_icon == 18 )  // arrow> for SatCom?
     {
         m_engine->SetTexture("button1.tga");
-        m_engine->SetState(D3DSTATETTw);
-        uv1.x =   0.0f/256.0f;  // >
-        uv1.y = 192.0f/256.0f;
-        uv2.x =  32.0f/256.0f;
-        uv2.y = 224.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        uv1.x =   0.0f / 256.0f;   // >
+        uv1.y = 192.0f / 256.0f;
+        uv2.x =  32.0f / 256.0f;
+        uv2.y = 224.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -425,11 +427,11 @@ void CGroup::Draw()
     if ( m_icon == 19 )  // SatCom symbol?
     {
         m_engine->SetTexture("button1.tga");
-        m_engine->SetState(D3DSTATETTw);
-        uv1.x = 224.0f/256.0f;  // SatCom symbol
-        uv1.y = 224.0f/256.0f;
-        uv2.x = 256.0f/256.0f;
-        uv2.y = 256.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        uv1.x = 224.0f / 256.0f;  // SatCom symbol
+        uv1.y = 224.0f / 256.0f;
+        uv2.x = 256.0f / 256.0f;
+        uv2.y = 256.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -439,11 +441,11 @@ void CGroup::Draw()
     if ( m_icon == 20 )  // solid blue background?
     {
         m_engine->SetTexture("button1.tga");
-        m_engine->SetState(D3DSTATETTw);
-        uv1.x = 224.0f/256.0f;
-        uv1.y =  32.0f/256.0f;
-        uv2.x = 256.0f/256.0f;
-        uv2.y =  64.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        uv1.x = 224.0f / 256.0f;
+        uv1.y =  32.0f / 256.0f;
+        uv2.x = 256.0f / 256.0f;
+        uv2.y =  64.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -453,11 +455,11 @@ void CGroup::Draw()
     if ( m_icon == 21 )  // stand-by symbol?
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTw);
-        uv1.x = 160.0f/256.0f;
-        uv1.y =  32.0f/256.0f;
-        uv2.x = 192.0f/256.0f;
-        uv2.y =  64.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
+        uv1.x = 160.0f / 256.0f;
+        uv1.y =  32.0f / 256.0f;
+        uv2.x = 192.0f / 256.0f;
+        uv2.y =  64.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -467,92 +469,92 @@ void CGroup::Draw()
     if ( m_icon == 22 )
     {
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x =  64.0f/256.0f;  // opaque yellow
-        uv1.y = 224.0f/256.0f;
-        uv2.x = 160.0f/256.0f;
-        uv2.y = 240.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x =  64.0f / 256.0f;  // opaque yellow
+        uv1.y = 224.0f / 256.0f;
+        uv2.x = 160.0f / 256.0f;
+        uv2.y = 240.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-        corner.x = 5.0f/640.0f;
-        corner.y = 5.0f/480.0f;
+        corner.x = 5.0f / 640.0f;
+        corner.y = 5.0f / 480.0f;
         DrawIcon(m_pos, m_dim, uv1, uv2, corner, 3.0f/256.0f);
     }
 
     if ( m_icon == 23 )
     {
         m_engine->SetTexture("button3.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x =  64.0f/256.0f;  // yellow
-        uv1.y = 192.0f/256.0f;
-        uv2.x =  80.0f/256.0f;
-        uv2.y = 208.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x =  64.0f / 256.0f;  // yellow
+        uv1.y = 192.0f / 256.0f;
+        uv2.x =  80.0f / 256.0f;
+        uv2.y = 208.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-        corner.x = 4.0f/640.0f;
-        corner.y = 4.0f/480.0f;
+        corner.x = 4.0f / 640.0f;
+        corner.y = 4.0f / 480.0f;
         DrawIcon(m_pos, m_dim, uv1, uv2, corner, 2.0f/256.0f);
     }
     if ( m_icon == 24 )
     {
         m_engine->SetTexture("button3.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x =  80.0f/256.0f;  // orange
-        uv1.y = 192.0f/256.0f;
-        uv2.x =  96.0f/256.0f;
-        uv2.y = 208.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x =  80.0f / 256.0f;  // orange
+        uv1.y = 192.0f / 256.0f;
+        uv2.x =  96.0f / 256.0f;
+        uv2.y = 208.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-        corner.x = 4.0f/640.0f;
-        corner.y = 4.0f/480.0f;
+        corner.x = 4.0f / 640.0f;
+        corner.y = 4.0f / 480.0f;
         DrawIcon(m_pos, m_dim, uv1, uv2, corner, 2.0f/256.0f);
     }
     if ( m_icon == 25 )
     {
         m_engine->SetTexture("button3.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x =  64.0f/256.0f;  // orange
-        uv1.y = 208.0f/256.0f;
-        uv2.x =  80.0f/256.0f;
-        uv2.y = 224.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x =  64.0f / 256.0f;  // orange
+        uv1.y = 208.0f / 256.0f;
+        uv2.x =  80.0f / 256.0f;
+        uv2.y = 224.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-        corner.x = 4.0f/640.0f;
-        corner.y = 4.0f/480.0f;
+        corner.x = 4.0f / 640.0f;
+        corner.y = 4.0f / 480.0f;
         DrawIcon(m_pos, m_dim, uv1, uv2, corner, 2.0f/256.0f);
     }
     if ( m_icon == 26 )
     {
         m_engine->SetTexture("button3.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x =  80.0f/256.0f;  // red
-        uv1.y = 208.0f/256.0f;
-        uv2.x =  96.0f/256.0f;
-        uv2.y = 224.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x =  80.0f / 256.0f;   // red
+        uv1.y = 208.0f / 256.0f;
+        uv2.x =  96.0f / 256.0f;
+        uv2.y = 224.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
         uv2.y -= dp;
-        corner.x = 4.0f/640.0f;
-        corner.y = 4.0f/480.0f;
+        corner.x = 4.0f / 640.0f;
+        corner.y = 4.0f / 480.0f;
         DrawIcon(m_pos, m_dim, uv1, uv2, corner, 2.0f/256.0f);
     }
     if ( m_icon == 27 )
     {
         m_engine->SetTexture("button3.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x =  32.0f/256.0f;
-        uv1.y =   0.0f/256.0f;
-        uv2.x =  64.0f/256.0f;
-        uv2.y =  32.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x =  32.0f / 256.0f;
+        uv1.y =   0.0f / 256.0f;
+        uv2.x =  64.0f / 256.0f;
+        uv2.y =  32.0f / 256.0f;
         uv1.x += dp;
         uv1.y += dp;
         uv2.x -= dp;
@@ -566,9 +568,9 @@ void CGroup::Draw()
         dim = m_dim;
 
         m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        uv1.x = 32.0f/256.0f;
-        uv1.y = 32.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        uv1.x = 32.0f / 256.0f;
+        uv1.y = 32.0f / 256.0f;
         uv2.x = uv1.x+32.0f/256.0f;
         uv2.y = uv1.y+32.0f/256.0f;
         uv1.x += dp;
@@ -578,13 +580,13 @@ void CGroup::Draw()
         DrawIcon(pos, dim, uv1, uv2);
 
         m_engine->SetTexture("button3.tga");
-        m_engine->SetState(D3DSTATENORMAL);
-        pos.x +=  8.0f/640.0f;
-        pos.y +=  8.0f/480.0f;
-        dim.x -= 16.0f/640.0f;
-        dim.y -= 16.0f/480.0f;
-        uv1.x = 32.0f/256.0f;
-        uv1.y =  0.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        pos.x +=  8.0f / 640.0f;
+        pos.y +=  8.0f / 480.0f;
+        dim.x -= 16.0f / 640.0f;
+        dim.y -= 16.0f / 480.0f;
+        uv1.x = 32.0f / 256.0f;
+        uv1.y =  0.0f / 256.0f;
         uv2.x = uv1.x+32.0f/256.0f;
         uv2.y = uv1.y+32.0f/256.0f;
         uv1.x += dp;
@@ -593,13 +595,13 @@ void CGroup::Draw()
         uv2.y -= dp;
         DrawIcon(pos, dim, uv1, uv2);
 
-        m_engine->SetState(D3DSTATENORMAL);
-        pos.x += 2.0f/640.0f;
-        pos.y += 2.0f/480.0f;
-        dim.x -= 4.0f/640.0f;
-        dim.y -= 4.0f/480.0f;
-        uv1.x = 0.0f/256.0f;
-        uv1.y = 0.0f/256.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        pos.x += 2.0f / 640.0f;
+        pos.y += 2.0f / 480.0f;
+        dim.x -= 4.0f / 640.0f;
+        dim.y -= 4.0f / 480.0f;
+        uv1.x = 0.0f / 256.0f;
+        uv1.y = 0.0f / 256.0f;
         uv2.x = uv1.x+32.0f/256.0f;
         uv2.y = uv1.y+32.0f/256.0f;
         uv1.x += dp;
@@ -608,11 +610,11 @@ void CGroup::Draw()
         uv2.y -= dp;
         DrawIcon(pos, dim, uv1, uv2);
 
-        m_engine->SetState(D3DSTATETTb);
-        pos.x +=  8.0f/640.0f;
-        pos.y +=  8.0f/480.0f;
-        dim.x -= 16.0f/640.0f;
-        dim.y -= 16.0f/480.0f;
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        pos.x +=  8.0f / 640.0f;
+        pos.y +=  8.0f / 480.0f;
+        dim.x -= 16.0f / 640.0f;
+        dim.y -= 16.0f / 480.0f;
         if ( m_icon == 100 )  icon = 43;  // base ?
         if ( m_icon == 101 )  icon = 32;  // factory ?
         if ( m_icon == 102 )  icon = 35;  // research ?
@@ -642,3 +644,4 @@ void CGroup::Draw()
 }
 
 
+}

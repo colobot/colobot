@@ -17,16 +17,7 @@
 // maindialog.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <time.h>
-#include <direct.h>
-#include <io.h>
-#include <d3d.h>
-
 #include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
 #include "common/global.h"
 #include "common/language.h"
 #include "common/event.h"
@@ -34,8 +25,6 @@
 #include "common/profile.h"
 #include "common/iman.h"
 #include "common/restext.h"
-#include "old/math3d.h"
-#include "old/particule.h"
 #include "ui/interface.h"
 #include "ui/button.h"
 #include "ui/color.h"
@@ -50,9 +39,6 @@
 #include "ui/window.h"
 #include "ui/edit.h"
 #include "ui/editvalue.h"
-#include "old/text.h"
-#include "old/camera.h"
-#include "old/sound.h"
 #include "script/cmdtoken.h"
 #include "object/robotmain.h"
 #include "ui/maindialog.h"

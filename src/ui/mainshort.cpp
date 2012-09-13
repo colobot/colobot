@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,36 +18,21 @@
 // mainshort.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+#include <ui/mainshort.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "common/global.h"
-#include "common/event.h"
-#include "common/iman.h"
-#include "object/object.h"
-#include "ui/interface.h"
-#include "ui/map.h"
-#include "ui/button.h"
-#include "object/robotmain.h"
-#include "ui/mainshort.h"
-
-
-
+namespace Ui {
 
 // Constructor of the application card.
 
-CMainShort::CMainShort(CInstanceManager* iMan)
+CMainShort::CMainShort()
 {
-    m_iMan = iMan;
+    m_iMan = CInstanceManager::GetInstancePointer();
     m_iMan->AddInstance(CLASS_SHORT, this);
 
-    m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_main      = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
+    m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
+    m_event     = static_cast<CEvent*>(m_iMan->SearchInstance(CLASS_EVENT));
+    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_main      = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
 
     FlushShortcuts();
 }
@@ -78,7 +64,7 @@ void CMainShort::FlushShortcuts()
     }
 }
 
-static EventMsg table_sc_em[20] =
+static EventType table_sc_em[20] =
 {
     EVENT_OBJECT_SHORTCUT00,
     EVENT_OBJECT_SHORTCUT01,
@@ -113,13 +99,13 @@ bool CMainShort::CreateShortcuts()
     int         i, rank, icon;
     char        name[100];
 
-    if ( m_main->RetFixScene() )  return false;
+    if ( m_main->GetFixScene() )  return false;
 
     m_interface->DeleteControl(EVENT_OBJECT_MOVIELOCK);
     m_interface->DeleteControl(EVENT_OBJECT_EDITLOCK);
     for ( i=0 ; i<20 ; i++ )
     {
-        if ( i != 0 && m_shortcuts[i] == 0 )  continue;
+        if ( i != 0 && m_shortcuts[i] == nullptr )  continue;
 
         m_interface->DeleteControl(table_sc_em[i]);
         m_shortcuts[i] = 0;
@@ -130,15 +116,15 @@ bool CMainShort::CreateShortcuts()
     pos.x =  4.0f/640.0f;
     pos.y = (480.0f-32.0f)/480.0f;
 
-    if ( m_main->RetMovieLock() &&
-        !m_main->RetEditLock()  )  // hangs during film?
+    if ( m_main->GetMovieLock() &&
+        !m_main->GetEditLock()  )  // hangs during film?
     {
         m_interface->CreateShortcut(pos, dim, 7, EVENT_OBJECT_MOVIELOCK);
         return true;
     }
-    if ( !m_main->RetFreePhoto() &&
-         (m_main->RetEditLock() ||
-          m_engine->RetPause()) )  // hangs during edition?
+    if ( !m_main->GetFreePhoto() &&
+         (m_main->GetEditLock() ||
+          m_engine->GetPause()) )  // hangs during edition?
     {
         m_interface->CreateShortcut(pos, dim, 6, EVENT_OBJECT_EDITLOCK);
         return true;
@@ -154,13 +140,13 @@ bool CMainShort::CreateShortcuts()
     for ( i=0 ; i<1000000 ; i++ )
     {
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        if ( pObj == nullptr )  break;
 
-        if ( !pObj->RetActif() )  continue;
-        if ( !pObj->RetSelectable() )  continue;
-        if ( pObj->RetProxyActivate() )  continue;
+        if ( !pObj->GetActif() )  continue;
+        if ( !pObj->GetSelectable() )  continue;
+        if ( pObj->GetProxyActivate() )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         icon = -1;
         if ( m_bBuilding )
         {
@@ -243,12 +229,12 @@ bool CMainShort::UpdateShortcuts()
 
     for ( i=0 ; i<20 ; i++ )
     {
-        if ( m_shortcuts[i] == 0 )  continue;
+        if ( m_shortcuts[i] == nullptr )  continue;
 
         pc = m_interface->SearchControl(table_sc_em[i]);
-        if ( pc != 0 )
+        if ( pc != nullptr )
         {
-            pc->SetState(STATE_CHECK, m_shortcuts[i]->RetSelect());
+            pc->SetState(STATE_CHECK, m_shortcuts[i]->GetSelect());
             pc->SetState(STATE_RUN, m_shortcuts[i]->IsProgram());
         }
     }
@@ -257,7 +243,7 @@ bool CMainShort::UpdateShortcuts()
 
 // Selects an object through a shortcut.
 
-void CMainShort::SelectShortcut(EventMsg event)
+void CMainShort::SelectShortcut(EventType event)
 {
     int     i;
 
@@ -265,7 +251,7 @@ void CMainShort::SelectShortcut(EventMsg event)
     {
         if ( event == table_sc_em[i] )
         {
-            if ( i != 0 && m_shortcuts[i] == 0 )  continue;
+            if ( i != 0 && m_shortcuts[i] == nullptr )  continue;
 
             if ( i == 0 )  // buildings <-> vehicles?
             {
@@ -289,9 +275,9 @@ void CMainShort::SelectNext()
     CObject*    pPrev;
     int         i;
 
-    if ( m_main->RetMovieLock() ||
-         m_main->RetEditLock()  ||
-         m_engine->RetPause()   )  return;
+    if ( m_main->GetMovieLock() ||
+         m_main->GetEditLock()  ||
+         m_engine->GetPause()   )  return;
 
     pPrev = m_main->DeselectAll();
 
@@ -299,12 +285,12 @@ void CMainShort::SelectNext()
     {
         if ( m_shortcuts[i] == pPrev )
         {
-            if ( m_shortcuts[++i] == 0 )  i = 1;
+            if ( m_shortcuts[++i] == nullptr )  i = 1;
             break;
         }
     }
 
-    if ( i == 20 || m_shortcuts[i] == 0 )
+    if ( i == 20 || m_shortcuts[i] == nullptr )
     {
         m_main->SelectHuman();
     }
@@ -325,13 +311,13 @@ CObject* CMainShort::DetectShort(Math::Point pos)
 
     for ( i=0 ; i<20 ; i++ )
     {
-        if ( m_shortcuts[i] == 0 )  continue;
+        if ( m_shortcuts[i] == nullptr )  continue;
 
         pc = m_interface->SearchControl(table_sc_em[i]);
         if ( pc != 0 )
         {
-            cpos = pc->RetPos();
-            cdim = pc->RetDim();
+            cpos = pc->GetPos();
+            cdim = pc->GetDim();
 
             if ( pos.x >= cpos.x        &&
                  pos.x <= cpos.x+cdim.x &&
@@ -347,17 +333,17 @@ CObject* CMainShort::DetectShort(Math::Point pos)
 
 // Reports the object with the mouse hovers over.
 
-void CMainShort::SetHilite(CObject* pObj)
+void CMainShort::SetHighlight(CObject* pObj)
 {
     CControl*   pc;
     int         i;
 
     for ( i=0 ; i<20 ; i++ )
     {
-        if ( m_shortcuts[i] == 0 )  continue;
+        if ( m_shortcuts[i] == nullptr )  continue;
 
         pc = m_interface->SearchControl(table_sc_em[i]);
-        if ( pc == 0 )  continue;
+        if ( pc == nullptr )  continue;
 
         if ( m_shortcuts[i] == pObj )
         {
@@ -370,5 +356,7 @@ void CMainShort::SetHilite(CObject* pObj)
             pc->ClearState(STATE_FRAME);
         }
     }
+}
+
 }
 

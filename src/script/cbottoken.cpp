@@ -33,7 +33,7 @@
 
 // Seeking the name of an object.
 
-char* RetObjectName(ObjectType type)
+char* GetObjectName(ObjectType type)
 {
     if ( type == OBJECT_PORTICO     )  return "Portico";
     if ( type == OBJECT_BASE        )  return "SpaceShip";
@@ -126,7 +126,7 @@ char* RetObjectName(ObjectType type)
 // Seeking the name of a secondary object.
 // (because Otto thinks that Germans do not like nuclear power)
 
-char* RetObjectAlias(ObjectType type)
+char* GetObjectAlias(ObjectType type)
 {
     if ( type == OBJECT_NUCLEAR     )  return "FuelCellPlant";
     if ( type == OBJECT_URANIUM     )  return "PlatinumOre";
@@ -139,7 +139,7 @@ char* RetObjectAlias(ObjectType type)
 
 // Returns the help file to use for the object.
 
-char* RetHelpFilename(ObjectType type)
+char* GetHelpFilename(ObjectType type)
 {
     if ( type == OBJECT_BASE        )  return "help\\object\\base.txt";
     if ( type == OBJECT_DERRICK     )  return "help\\object\\derrick.txt";
@@ -224,7 +224,7 @@ char* RetHelpFilename(ObjectType type)
 
 // Returns the help file to use for instruction.
 
-char* RetHelpFilename(const char *token)
+char* GetHelpFilename(const char *token)
 {
     if ( strcmp(token, "if"            ) == 0 )  return "help\\cbot\\if.txt";
     if ( strcmp(token, "else"          ) == 0 )  return "help\\cbot\\if.txt";
@@ -436,7 +436,7 @@ bool IsFunction(const char *token)
 
 // Returns using a compact instruction.
 
-char* RetHelpText(const char *token)
+char* GetHelpText(const char *token)
 {
     if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { bloc }";
     if ( strcmp(token, "else"      ) == 0 )  return "else { bloc }";

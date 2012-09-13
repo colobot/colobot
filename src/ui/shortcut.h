@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,31 +19,30 @@
 
 #pragma once
 
+#include <ui/control.h>
 
-#include "ui/control.h"
+#include <common/event.h>
 
-
-class CD3DEngine;
-
-
+namespace Ui {
 
 class CShortcut : public CControl
 {
-public:
-    CShortcut(CInstanceManager* iMan);
-    ~CShortcut();
+    public:
+        CShortcut();
+        ~CShortcut();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool    EventProcess(const Event &event);
+        bool    EventProcess(const Event &event);
 
-    void    Draw();
+        void    Draw();
 
-protected:
-    void    DrawVertex(int icon, float zoom);
+    protected:
+        void    DrawVertex(int icon, float zoom);
 
-protected:
-    float   m_time;
+    protected:
+        float   m_time;
 };
 
 
+}
