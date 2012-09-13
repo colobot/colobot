@@ -26,8 +26,6 @@ enum Error
     ERR_CONTINUE        = 2,        // continues
     ERR_STOP        = 3,        // stops
     ERR_CMD         = 4,        // unknown command
-    ERR_INSTALL     = 20,       // incorrectly installed program
-    ERR_NOCD        = 21,       // CD not found
     ERR_MANIP_VEH       = 100,      // inappropriate vehicle
     ERR_MANIP_FLY       = 101,      // impossible in flight
     ERR_MANIP_BUSY      = 102,      // taking: hands already occupied

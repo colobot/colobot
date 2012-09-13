@@ -29,7 +29,10 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 
-#include <stdio.h>
+#include <fstream>
+
+#include <stdlib.h>
+#include <libintl.h>
 
 
 template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
@@ -144,6 +147,7 @@ bool CApplication::ParseArguments(int argc, char *argv[])
 {
     bool waitDataDir = false;
     bool waitLogLevel = false;
+    bool waitLanguage = false;
 
     for (int i = 1; i < argc; ++i)
     {
@@ -153,6 +157,7 @@ bool CApplication::ParseArguments(int argc, char *argv[])
         {
             waitDataDir = false;
             m_dataPath = arg;
+            GetLogger()->Info("Using custom data dir: '%s'\n", m_dataPath.c_str());
             continue;
         }
 
@@ -176,6 +181,22 @@ bool CApplication::ParseArguments(int argc, char *argv[])
             continue;
         }
 
+        if (waitLanguage)
+        {
+            waitLanguage = false;
+            if (arg == "en")
+                m_language = LANG_ENGLISH;
+            else if (arg == "de")
+                m_language = LANG_GERMAN;
+            else if (arg == "fr")
+                m_language = LANG_FRENCH;
+            else if (arg == "pl")
+                m_language = LANG_POLISH;
+            else
+                return false;
+            continue;
+        }
+
         if (arg == "-debug")
         {
             SetDebugMode(true);
@@ -188,6 +209,21 @@ bool CApplication::ParseArguments(int argc, char *argv[])
         {
             waitDataDir = true;
         }
+        else if (arg == "-language")
+        {
+            waitLanguage = true;
+        }
+        else if (arg == "-help")
+        {
+            GetLogger()->Message("COLOBOT\n");
+            GetLogger()->Message("\n");
+            GetLogger()->Message("List of available options:\n");
+            GetLogger()->Message("  -help            this help\n");
+            GetLogger()->Message("  -datadir path    set custom data directory path\n");
+            GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
+            GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
+            GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
+        }
         else
         {
             m_exitCode = 1;
@@ -196,7 +232,7 @@ bool CApplication::ParseArguments(int argc, char *argv[])
     }
 
     // Args not given?
-    if (waitDataDir || waitLogLevel)
+    if (waitDataDir || waitLogLevel || waitLanguage)
         return false;
 
     return true;
@@ -206,7 +242,50 @@ bool CApplication::Create()
 {
     GetLogger()->Info("Creating CApplication\n");
 
-    // TODO: verify that data directory exists
+    // I know, a primitive way to check for dir, but works
+    std::string readmePath = m_dataPath + "/README.txt";
+    std::ifstream testReadme;
+    testReadme.open(readmePath.c_str(), std::ios_base::in);
+    if (!testReadme.good())
+    {
+        GetLogger()->Error("Could not open test file in data dir: '%s'\n", readmePath.c_str());
+        m_errorMessage = std::string("Could not read from data directory:\n") +
+                         std::string("'") + m_dataPath + std::string("'\n") +
+                         std::string("Please check your installation, or supply a valid data directory by -datadir option.");
+        m_exitCode = 1;
+        return false;
+    }
+
+    /* Gettext initialization */
+
+    std::string locale = "C";
+    switch (m_language)
+    {
+        case LANG_ENGLISH:
+            locale = "en_US.utf8";
+            break;
+
+        case LANG_GERMAN:
+            locale = "de_DE.utf8";
+            break;
+
+        case LANG_FRENCH:
+            locale = "fr_FR.utf8";
+            break;
+
+        case LANG_POLISH:
+            locale = "pl_PL.utf8";
+            break;
+    }
+
+    setlocale(LC_ALL, locale.c_str());
+
+    std::string trPath = m_dataPath + std::string("/i18n");
+    bindtextdomain("colobot", trPath.c_str());
+    bind_textdomain_codeset("colobot", "UTF-8");
+    textdomain("colobot");
+
+    GetLogger()->Debug("Testing gettext translation: '%s'\n", gettext("Colobot rules!"));
 
     // Temporarily -- only in windowed mode
     m_deviceConfig.fullScreen = false;
@@ -771,15 +850,18 @@ bool CApplication::ProcessEvent(const Event &event)
 
     if (event.type == EVENT_ACTIVE)
     {
-        m_active = event.active.gain;
-
         if (m_debugMode)
-            l->Info("Focus change: active = %s\n", m_active ? "true" : "false");
+            l->Info("Focus change: active = %s\n", event.active.gain ? "true" : "false");
 
-        if (m_active)
-            ResumeSimulation();
-        else
-            SuspendSimulation();
+        if (m_active != event.active.gain)
+        {
+            m_active = event.active.gain;
+
+            if (m_active)
+                ResumeSimulation();
+            else
+                SuspendSimulation();
+        }
     }
     else if (event.type == EVENT_KEY_DOWN)
     {

@@ -1,29 +1,17 @@
-msgid "1.18 /e"
-msgstr "Wersja 1.18 /pl"
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Language: pl_PL\n"
+"X-Source-Language: en_US\n"
 
-msgid "CeeBot-A 1.18"
-msgstr "CeeBot-A 1.18"
+msgid "Colobot rules!"
+msgstr "Colobot rządzi!"
 
-msgid "CeeBot-Teen EDU 1.18"
-msgstr "CeeBot-Teen EDU 1.18"
-
-msgid "CeeBot-A EDU 1.18"
-msgstr "CeeBot-A EDU 1.18"
-
-msgid "CeeBot-Teen PERSO 1.18"
-msgstr "CeeBot-Teen PERSO 1.18"
-
-msgid "CeeBot-A PERSO 1.18"
-msgstr "CeeBot-A PERSO 1.18"
-
-msgid "CeeBot-Teen DEMO 1.18"
-msgstr "CeeBot-Teen DEMO 1.18"
-
-msgid "CeeBot-A DEMO 1.18"
-msgstr "CeeBot-A DEMO 1.18"
-
-msgid "Demo 1.18 /e"
-msgstr "Demo 1.18 /pl"
+msgid "Colobot Gold"
+msgstr "Colobot Gold"
 
 msgid "SatCom"
 msgstr "SatCom"
@@ -54,9 +42,6 @@ msgstr "Nowy ..."
 
 msgid " or "
 msgstr " lub "
-
-msgid "CeeBot"
-msgstr "CeeBot"
 
 msgid "COLOBOT"
 msgstr "COLOBOT"
@@ -154,12 +139,6 @@ msgstr "Kolor skafandra:"
 msgid "Strip color:"
 msgstr "Kolor pasków:"
 
-msgid "Do you want to quit CeeBot ?"
-msgstr "Czy na pewno chcesz opuścić grę CeeBot?"
-
-msgid "Quit\\Quit CeeBot"
-msgstr "Zakończ\\Kończy grę CeeBot"
-
 msgid "Do you want to quit COLOBOT ?"
 msgstr "Czy na pewno chcesz opuścić grę COLOBOT?"
 
@@ -223,8 +202,12 @@ msgstr "\\c; (brak)\\n;\n"
 msgid "\\b;Error\n"
 msgstr "\\b;Błąd\n"
 
-msgid "The list is only available if a \\l;radar station\\u object\\radar; is working.\n"
-msgstr "Lista jest dostępna jedynie gdy działa \\l;stacja radarowa\\u object\\radar;.\n"
+msgid ""
+"The list is only available if a \\l;radar station\\u object\\radar; is "
+"working.\n"
+msgstr ""
+"Lista jest dostępna jedynie gdy działa \\l;stacja radarowa\\u "
+"object\\radar;.\n"
 
 msgid "Open"
 msgstr "Otwórz"
@@ -303,9 +286,6 @@ msgstr "Zapisz\\Zapisuje bieżącą misję"
 
 msgid "Load\\Load a saved mission"
 msgstr "Wczytaj\\Wczytuje zapisaną misję"
-
-msgid "\\Return to CeeBot"
-msgstr "\\Powróć do gry CeeBot"
 
 msgid "\\Return to COLOBOT"
 msgstr "\\Powróć do gry COLOBOT"
@@ -404,7 +384,9 @@ msgid "Friendly fire\\Your shooting can damage your own objects "
 msgstr "Przyjacielski ogień\\Własne strzały uszkadzają Twoje obiekty"
 
 msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr "Przewijanie\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego krawędzi"
+msgstr ""
+"Przewijanie\\Ekran jest przewijany gdy mysz dotknie prawej lub lewej jego "
+"krawędzi"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Odwrócenie myszy X\\Odwrócenie kierunków przewijania w poziomie"
@@ -422,7 +404,9 @@ msgid "Automatic indent\\When program editing"
 msgstr "Automatyczne wcięcia\\Automatyczne wcięcia podczas edycji programu"
 
 msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
-msgstr "Duże wcięcie\\2 lub 4 spacje wcięcia na każdy poziom zdefiniowany przez klamry"
+msgstr ""
+"Duże wcięcie\\2 lub 4 spacje wcięcia na każdy poziom zdefiniowany przez "
+"klamry"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
 msgstr "Accčs aux solutions\\Programme \"4: Solution\" dans les exercices"
@@ -454,8 +438,11 @@ msgstr "Zmień kamerę\\Przełącza pomiędzy kamerą pokładową i śledzącą"
 msgid "Previous object\\Selects the previous object"
 msgstr "Poprzedni obiekt\\Zaznacz poprzedni obiekt"
 
-msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
-msgstr "Standardowa akcja\\Standardowa akcja robota (podnieś/upuść, strzelaj, szukaj, itp.)"
+msgid ""
+"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr ""
+"Standardowa akcja\\Standardowa akcja robota (podnieś/upuść, strzelaj, "
+"szukaj, itp.)"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera bliżej\\Przybliża kamerę"
@@ -479,10 +466,12 @@ msgid "Programming help\\Gives more detailed help with programming"
 msgstr "Podręcznik programowania\\Dostarcza szczegółową pomoc w programowaniu"
 
 msgid "Key word help\\More detailed help about key words"
-msgstr "Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
+msgstr ""
+"Pomoc dot. słów kluczowych\\Dokładniejsza pomoc na temat słów kluczowych"
 
 msgid "Origin of last message\\Shows where the last message was sent from"
-msgstr "Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia wiadomość"
+msgstr ""
+"Miejsce nadania wiadomości\\Pokazuje skąd została wysłana ostatnia wiadomość"
 
 msgid "Speed 1.0x\\Normal speed"
 msgstr "Prędkość 1,0x\\Prędkość normalna"
@@ -506,13 +495,15 @@ msgid "3D sound\\3D positioning of the sound"
 msgstr "Dźwięk 3D\\Przestrzenne pozycjonowanie dźwięków"
 
 msgid "Lowest\\Minimum graphic quality (highest frame rate)"
-msgstr "Najniższa\\Minimalna jakość grafiki (najwyższa częstotliwość odświeżania)"
+msgstr ""
+"Najniższa\\Minimalna jakość grafiki (najwyższa częstotliwość odświeżania)"
 
 msgid "Normal\\Normal graphic quality"
 msgstr "Normalna\\Normalna jakość grafiki"
 
 msgid "Highest\\Highest graphic quality (lowest frame rate)"
-msgstr "Najwyższa\\Maksymalna jakość grafiki (najniższa częstotliwość odświeżania)"
+msgstr ""
+"Najwyższa\\Maksymalna jakość grafiki (najniższa częstotliwość odświeżania)"
 
 msgid "Mute\\No sound"
 msgstr "Cisza\\Brak dźwięków"
@@ -523,8 +514,11 @@ msgstr "Normalne\\Normalna głośność dźwięków"
 msgid "Use a joystick\\Joystick or keyboard"
 msgstr "Używaj joysticka\\Joystick lub klawiatura"
 
-msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
-msgstr "Dostęp do rozwiązania\\Pokazuje rozwiązanie (szczegółowe instrukcje dotyczące misji)"
+msgid ""
+"Access to solution\\Shows the solution (detailed instructions for missions)"
+msgstr ""
+"Dostęp do rozwiązania\\Pokazuje rozwiązanie (szczegółowe instrukcje "
+"dotyczące misji)"
 
 msgid "\\New player name"
 msgstr "\\Nowe imię gracza"
@@ -1312,22 +1306,6 @@ msgstr "Błąd"
 msgid "Unknown command"
 msgstr "Nieznane polecenie"
 
-msgid "CeeBot not installed."
-msgstr "Gra CeeBot nie jest zainstalowana."
-
-msgid ""
-"Please insert the CeeBot CD\n"
-"and re-run the game."
-msgstr "Włóż dysk CD z grą CeeBot\ni uruchom grę jeszcze raz."
-
-msgid "COLOBOT not installed."
-msgstr "Gra COLOBOT nie jest zainstalowana."
-
-msgid ""
-"Please insert the COLOBOT CD\n"
-"and re-run the game."
-msgstr "Włóż dysk CD z grą COLOBOT\ni uruchom grę jeszcze raz."
-
 msgid "Inappropriate bot"
 msgstr "Nieodpowiedni robot"
 
@@ -1490,7 +1468,8 @@ msgstr "Za blisko istniejącej flagi"
 msgid "No flag nearby"
 msgstr "Nie ma flagi w pobliżu"
 
-msgid "The mission is not accomplished yet (press \\key help; for more details)"
+msgid ""
+"The mission is not accomplished yet (press \\key help; for more details)"
 msgstr "Misja nie jest wypełniona (naciśnij \\key help; aby uzyskać szczegóły)"
 
 msgid "Bot destroyed"
@@ -1590,7 +1569,8 @@ msgid "Spider fatally wounded"
 msgstr "Pająk śmiertelnie raniony"
 
 msgid "Press \\key help; to read instructions on your SatCom"
-msgstr "Naciśnij klawisz \\key help; aby wyświetlić rozkazy na przekaźniku SatCom"
+msgstr ""
+"Naciśnij klawisz \\key help; aby wyświetlić rozkazy na przekaźniku SatCom"
 
 msgid "Opening bracket missing"
 msgstr "Brak nawiasu otwierającego"
@@ -1638,7 +1618,7 @@ msgid "Unknown function"
 msgstr "Funkcja nieznana"
 
 msgid "Sign \" : \" missing"
-msgstr "Brak znaku \" : "
+msgstr "Brak znaku \" :\""
 
 msgid "Keyword \"while\" missing"
 msgstr "Brak kluczowego słowa \"while"

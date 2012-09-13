@@ -1,29 +1,17 @@
-msgid "1.18 /e"
-msgstr "1.18 /f"
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Language: fr_FR\n"
+"X-Source-Language: en_US\n"
 
-msgid "CeeBot-A 1.18"
-msgstr "CeeBot-A 1.18"
+msgid "Colobot rules!"
+msgstr "Colobot est super!"
 
-msgid "CeeBot-Teen EDU 1.18"
-msgstr "CeeBot-Teen EDU 1.18"
-
-msgid "CeeBot-A EDU 1.18"
-msgstr "CeeBot-A EDU 1.18"
-
-msgid "CeeBot-Teen PERSO 1.18"
-msgstr "CeeBot-Teen PERSO 1.18"
-
-msgid "CeeBot-A PERSO 1.18"
-msgstr "CeeBot-A PERSO 1.18"
-
-msgid "CeeBot-Teen DEMO 1.18"
-msgstr "CeeBot-Teen DEMO 1.18"
-
-msgid "CeeBot-A DEMO 1.18"
-msgstr "CeeBot-A DEMO 1.18"
-
-msgid "Demo 1.18 /e"
-msgstr "Demo 1.18 /f"
+msgid "Colobot Gold"
+msgstr "Colobot Gold"
 
 msgid "SatCom"
 msgstr "SatCom"
@@ -54,9 +42,6 @@ msgstr "Nouveau ..."
 
 msgid " or "
 msgstr " ou "
-
-msgid "CeeBot"
-msgstr "CeeBot"
 
 msgid "COLOBOT"
 msgstr "COLOBOT"
@@ -154,12 +139,6 @@ msgstr "Couleur de la combinaison :"
 msgid "Strip color:"
 msgstr "Couleur des bandes :"
 
-msgid "Do you want to quit CeeBot ?"
-msgstr "Voulez-vous quitter CeeBot ?"
-
-msgid "Quit\\Quit CeeBot"
-msgstr "Quitter\\Quitter CeeBot"
-
 msgid "Do you want to quit COLOBOT ?"
 msgstr "Voulez-vous quitter COLOBOT ?"
 
@@ -223,8 +202,10 @@ msgstr "\\c; (aucun)\\n;\n"
 msgid "\\b;Error\n"
 msgstr "\\b;Erreur\n"
 
-msgid "The list is only available if a \\l;radar station\\u object\\radar; is working.\n"
-msgstr "Liste non disponible sans \\l;radar\\u object\\radar; !\n"
+msgid ""
+"The list is only available if a \\l;radar station\\u object\\radar; is "
+"working.\n"
+msgstr "Liste non disponible sans \\l;radar\\u object\\radar;.\n"
 
 msgid "Open"
 msgstr "Ouvrir"
@@ -304,9 +285,6 @@ msgstr "Enregistrer\\Enregistrer la mission en cours"
 msgid "Load\\Load a saved mission"
 msgstr "Charger\\Charger une mission enregistrée"
 
-msgid "\\Return to CeeBot"
-msgstr "\\Retourner dans CeeBot"
-
 msgid "\\Return to COLOBOT"
 msgstr "\\Retourner dans COLOBOT"
 
@@ -314,7 +292,7 @@ msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Retour  \\Retour au niveau précédent"
 
 msgid "Play\\Start mission!"
-msgstr "Jouer ...\\Démarrer l'action"
+msgstr "Jouer ...\\Démarrer l'action!"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Affichage\\Pilote et résolution d'affichage"
@@ -404,13 +382,17 @@ msgid "Friendly fire\\Your shooting can damage your own objects "
 msgstr "Dégâts ŕ soi-męme\\Vos tirs infligent des dommages ŕ vos unités"
 
 msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr "Défilement dans les bords\\Défilement lorsque la souris touches les bords gauche ou droite"
+msgstr ""
+"Défilement dans les bords\\Défilement lorsque la souris touches les bords "
+"gauche ou droite"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
-msgstr "Inversion souris X\\Inversion de la rotation lorsque la souris touche un bord"
+msgstr ""
+"Inversion souris X\\Inversion de la rotation lorsque la souris touche un bord"
 
 msgid "Mouse inversion Y\\Inversion of the scrolling direction on the Y axis"
-msgstr "Inversion souris Y\\Inversion de la rotation lorsque la souris touche un bord"
+msgstr ""
+"Inversion souris Y\\Inversion de la rotation lorsque la souris touche un bord"
 
 msgid "Quake at explosions\\The screen shakes at explosions"
 msgstr "Secousses lors d'explosions\\L'écran vibre lors d'une explosion"
@@ -454,7 +436,8 @@ msgstr "Changement de caméra\\Autre de point de vue"
 msgid "Previous object\\Selects the previous object"
 msgstr "Sélection précédente\\Sélectionne l'objet précédent"
 
-msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgid ""
+"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
 msgstr "Action standard\\Action du bouton avec le cadre rouge"
 
 msgid "Camera closer\\Moves the camera forward"
@@ -523,7 +506,8 @@ msgstr "Normal\\Niveaux normaux"
 msgid "Use a joystick\\Joystick or keyboard"
 msgstr "Utilise un joystick\\Joystick ou clavier"
 
-msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
+msgid ""
+"Access to solution\\Shows the solution (detailed instructions for missions)"
 msgstr "Accčs ŕ la solution\\Donne la solution"
 
 msgid "\\New player name"
@@ -1312,22 +1296,6 @@ msgstr "Erreur"
 msgid "Unknown command"
 msgstr "Commande inconnue"
 
-msgid "CeeBot not installed."
-msgstr "CeeBot n'est pas installé."
-
-msgid ""
-"Please insert the CeeBot CD\n"
-"and re-run the game."
-msgstr "Veuillez mettre le CD de CeeBot\net relancer le jeu."
-
-msgid "COLOBOT not installed."
-msgstr "COLOBOT n'est pas installé."
-
-msgid ""
-"Please insert the COLOBOT CD\n"
-"and re-run the game."
-msgstr "Veuillez mettre le CD de COLOBOT\net relancer le jeu."
-
 msgid "Inappropriate bot"
 msgstr "Robot inadapté"
 
@@ -1490,8 +1458,10 @@ msgstr "Trop proche d'un drapeau existant"
 msgid "No flag nearby"
 msgstr "Aucun drapeau ŕ proximité"
 
-msgid "The mission is not accomplished yet (press \\key help; for more details)"
-msgstr "La misssion n'est pas terminée (appuyez sur \\key help; pour plus de détails)"
+msgid ""
+"The mission is not accomplished yet (press \\key help; for more details)"
+msgstr ""
+"La misssion n'est pas terminée (appuyez sur \\key help; pour plus de détails)"
 
 msgid "Bot destroyed"
 msgstr "Robot détruit"
@@ -1521,7 +1491,8 @@ msgid "Plans for tracked robots available "
 msgstr "Fabrication d'un robot ŕ chenilles possible"
 
 msgid "You can fly with the keys (\\key gup;) and (\\key gdown;)"
-msgstr "Il est possible de voler avec les touches (\\key gup;) et (\\key gdown;)"
+msgstr ""
+"Il est possible de voler avec les touches (\\key gup;) et (\\key gdown;)"
 
 msgid "Plans for thumper available"
 msgstr "Fabrication d'un robot secoueur possible"
@@ -1647,7 +1618,9 @@ msgid "Instruction \"break\" outside a loop"
 msgstr "Instruction \"break\" en dehors d'une boucle"
 
 msgid "A label must be followed by \"for\", \"while\", \"do\" or \"switch\""
-msgstr "Un label ne peut se placer que devant un \"for\", un \"while\", un \"do\" ou un \"switch\""
+msgstr ""
+"Un label ne peut se placer que devant un \"for\", un \"while\", un \"do\" ou "
+"un \"switch\""
 
 msgid "This label does not exist"
 msgstr "Cette étiquette n'existe pas"
