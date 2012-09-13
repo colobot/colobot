@@ -87,32 +87,32 @@ graphics/engine/terrain.cpp
 graphics/engine/text.cpp
 graphics/engine/water.cpp
 graphics/opengl/gldevice.cpp
-# object/auto/auto.cpp
-# object/auto/autobase.cpp
-# object/auto/autoconvert.cpp
-# object/auto/autoderrick.cpp
-# object/auto/autodestroyer.cpp
-# object/auto/autoegg.cpp
-# object/auto/autoenergy.cpp
-# object/auto/autofactory.cpp
-# object/auto/autoflag.cpp
-# object/auto/autohuston.cpp
-# object/auto/autoinfo.cpp
-# object/auto/autojostle.cpp
-# object/auto/autokid.cpp
-# object/auto/autolabo.cpp
-# object/auto/automush.cpp
-# object/auto/autonest.cpp
-# object/auto/autonuclear.cpp
-# object/auto/autopara.cpp
-# object/auto/autoportico.cpp
-# object/auto/autoradar.cpp
-# object/auto/autorepair.cpp
-# object/auto/autoresearch.cpp
-# object/auto/autoroot.cpp
-# object/auto/autosafe.cpp
-# object/auto/autostation.cpp
-# object/auto/autotower.cpp
+object/auto/auto.cpp
+object/auto/autobase.cpp
+object/auto/autoconvert.cpp
+object/auto/autoderrick.cpp
+object/auto/autodestroyer.cpp
+object/auto/autoegg.cpp
+object/auto/autoenergy.cpp
+object/auto/autofactory.cpp
+object/auto/autoflag.cpp
+object/auto/autohuston.cpp
+object/auto/autoinfo.cpp
+object/auto/autojostle.cpp
+object/auto/autokid.cpp
+object/auto/autolabo.cpp
+object/auto/automush.cpp
+object/auto/autonest.cpp
+object/auto/autonuclear.cpp
+object/auto/autopara.cpp
+object/auto/autoportico.cpp
+object/auto/autoradar.cpp
+object/auto/autorepair.cpp
+object/auto/autoresearch.cpp
+object/auto/autoroot.cpp
+object/auto/autosafe.cpp
+object/auto/autostation.cpp
+object/auto/autotower.cpp
 # object/brain.cpp
 # object/mainmovie.cpp
 object/motion/motion.cpp

@@ -197,7 +197,7 @@ begin:
 
             pos = m_pos;
             pos.x -= 150.0f;
-            m_terrain->MoveOnFloor(pos);
+            m_terrain->AdjustToFloor(pos);
             pos.y += 10.0f;
             m_camera->SetScriptEye(pos);
             m_posSound = pos;
@@ -335,7 +335,7 @@ begin:
 
         pos = m_pos;
         pos.x -= 110.0f;
-        m_terrain->MoveOnFloor(pos);
+        m_terrain->AdjustToFloor(pos);
         pos.y += 10.0f;
         m_camera->SetScriptEye(pos);
         m_posSound = pos;
@@ -382,7 +382,7 @@ begin:
 
             pos = m_pos;
             pos.x -= 150.0f;
-            m_terrain->MoveOnFloor(pos);
+            m_terrain->AdjustToFloor(pos);
             pos.y += 10.0f;
             m_camera->SetScriptEye(pos);
 
@@ -416,7 +416,7 @@ begin:
                 // Particles are ejected from the jet engine.
                 pos = m_object->GetPosition(0);
                 pos.y += 6.0f;
-                h = m_terrain->GetFloorHeight(pos)/300.0f;
+                h = m_terrain->GetHeightToFloor(pos)/300.0f;
                 speed.x = (Math::Rand()-0.5f)*(80.0f-50.0f*h);
                 speed.z = (Math::Rand()-0.5f)*(80.0f-50.0f*h);
                 speed.y = -(Math::Rand()*(h+1.0f)*40.0f+(h+1.0f)*40.0f);
@@ -526,7 +526,7 @@ begin:
                 pos = m_pos;
                 pos.x += p.x;
                 pos.z += p.y;
-                m_terrain->MoveOnFloor(pos);
+                m_terrain->AdjustToFloor(pos);
                 pos.y += 10.0f;
                 pos.y += m_progress*40.0f;
                 m_camera->SetScriptEye(pos);
@@ -588,7 +588,7 @@ begin:
                 pos = m_pos;
                 pos.x += p.x;
                 pos.z += p.y;
-                m_terrain->MoveOnFloor(pos);
+                m_terrain->AdjustToFloor(pos);
                 pos.y += 10.0f;
                 pos.y += m_progress*40.0f;
                 m_camera->SetScriptEye(pos);
@@ -785,7 +785,7 @@ begin:
 
             pos = m_pos;
             pos.x -= 110.0f+m_progress*250.0f;
-            m_terrain->MoveOnFloor(pos);
+            m_terrain->AdjustToFloor(pos);
             pos.y += 10.0f;
             m_camera->SetScriptEye(pos);
 
@@ -1413,10 +1413,13 @@ void CAutoBase::BeginTransit()
     m_engine->GetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown, bFull, bQuarter);
     m_engine->DeleteTexture(m_bgName);
 
-    m_engine->SetBackground(m_bgBack, 0x00000000, 0x00000000, 0x00000000, 0x00000000);
+    m_engine->SetBackground(m_bgBack, Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+            Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+            Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
+            Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->LoadTexture(m_bgBack);
 
-    m_cloud->SetEnable(false);  // cache clouds
+    m_cloud->SetEnabled(false);  // cache clouds
     m_planet->SetMode(1);
 }
 
@@ -1433,7 +1436,7 @@ void CAutoBase::EndTransit()
     m_engine->SetBackground(m_bgName, m_bgUp, m_bgDown, m_bgCloudUp, m_bgCloudDown);
     m_engine->LoadTexture(m_bgName);
 
-    m_cloud->SetEnable(true);  // gives the clouds
+    m_cloud->SetEnabled(true);  // gives the clouds
     m_planet->SetMode(0);
 
     m_main->StartMusic();

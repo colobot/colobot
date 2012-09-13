@@ -126,7 +126,7 @@ void CAutoDerrick::Init()
     pos = Math::Vector(7.0f, 0.0f, 0.0f);
     mat = m_object->GetWorldMatrix(0);
     pos = Math::Transform(*mat, pos);
-    m_terrain->MoveOnFloor(pos);
+    m_terrain->AdjustToFloor(pos);
     m_fretPos = pos;
 }
 
