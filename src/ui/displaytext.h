@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -21,15 +22,23 @@
 
 #include "common/event.h"
 #include "common/misc.h"
-#include "old/d3dengine.h"
+
+#include "sound/sound.h"
+
 
 
 class CInstanceManager;
-class CD3DEngine;
-class CInterface;
+//class CD3DEngine
 class CObject;
 class CSound;
 
+namespace Gfx {
+    class CEngine;
+}
+
+namespace Ui {;
+
+class CInterface;
 
 enum TextType
 {
@@ -45,7 +54,8 @@ const int MAXDTLINE = 4;
 class CDisplayText
 {
 public:
-    CDisplayText(CInstanceManager* iMan);
+//    CDisplayText(CInstanceManager* iMan);
+    CDisplayText();
     ~CDisplayText();
 
     void        DeleteObject();
@@ -62,25 +72,25 @@ public:
     void        SetDelay(float factor);
     void        SetEnable(bool bEnable);
 
-    Math::Vector    RetVisitGoal(EventMsg event);
-    float       RetVisitDist(EventMsg event);
-    float       RetVisitHeight(EventMsg event);
+    Math::Vector    GetVisitGoal(EventType event);
+    float       GetVisitDist(EventType event);
+    float       GetVisitHeight(EventType event);
 
-    float       RetIdealDist(CObject* pObj);
-    float       RetIdealHeight(CObject* pObj);
+    float       GetIdealDist(CObject* pObj);
+    float       GetIdealHeight(CObject* pObj);
 
     void        ClearVisit();
-    void        SetVisit(EventMsg event);
-    bool        IsVisit(EventMsg event);
+    void        SetVisit(EventType event);
+    bool        IsVisit(EventType event);
 
 protected:
     CObject*    SearchToto();
 
 protected:
     CInstanceManager* m_iMan;
-    CD3DEngine*     m_engine;
-    CInterface*     m_interface;
-    CSound*         m_sound;
+    Gfx::CEngine*     m_engine;
+    Ui::CInterface*     m_interface;
+    CSoundInterface*         m_sound;
 
     bool            m_bExist[MAXDTLINE];
     float           m_time[MAXDTLINE];
@@ -94,3 +104,4 @@ protected:
 };
 
 
+}

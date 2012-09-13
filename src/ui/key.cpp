@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,54 +18,33 @@
 // key.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+#include <ui/key.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "common/restext.h"
-#include "old/sound.h"
-#include "old/text.h"
-#include "ui/key.h"
-
-
-
-
-// Constructs the name of a button.
+namespace Ui {
 
 void GetKeyName(char *name, int key)
 {
-    if ( !GetResource(RES_KEY, key, name) )
-    {
-        if ( (key >= '0' && key <= '9') ||
-             (key >= 'A' && key <= 'Z') ||
-             (key >= 'a' && key <= 'z') )
-        {
+    if ( !GetResource(RES_KEY, key, name) ) {
+        if (isalnum(key)) {
             name[0] = key;
             name[1] = 0;
         }
-        else
-        {
+        else {
             sprintf(name, "Code %d", key);
         }
     }
 }
 
 
-
-
 // Object's constructor.
 
-CKey::CKey(CInstanceManager* iMan) : CControl(iMan)
+CKey::CKey() : CControl()
 {
     m_key[0] = 0;
     m_key[1] = 0;
     m_bCatch = false;
+
+    m_app = CApplication::GetInstancePointer();
 }
 
 // Object's destructor.
@@ -76,19 +56,15 @@ CKey::~CKey()
 
 // Creates a new button.
 
-bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg)
 {
-    char    name[100];
-    char*   p;
-
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    char name[100];
+    if (eventMsg == EVENT_NULL)
+        eventMsg = GetUniqueEventType();
 
     CControl::Create(pos, dim, icon, eventMsg);
-
     GetResource(RES_EVENT, eventMsg, name);
-    p = strchr(name, '\\');
-    if ( p != 0 )  *p = 0;
-    SetName(name);
+    SetName(std::string(name));
 
     return true;
 }
@@ -98,47 +74,33 @@ bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
 
 bool CKey::EventProcess(const Event &event)
 {
-    if ( m_state & STATE_DEAD )  return true;
+    if (m_state & STATE_DEAD)
+        return true;
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_LBUTTONDOWN )
-    {
-        if ( Detect(event.pos) )
-        {
-            m_bCatch = true;
-        }
-        else
-        {
-            m_bCatch = false;
-        }
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN) {
+        if (event.mouseButton.button == 1) // left
+            m_bCatch = Detect(event.pos);
     }
 
-    if ( event.event == EVENT_KEYDOWN && m_bCatch )
-    {
+    if (event.type == EVENT_MOUSE_BUTTON_DOWN && m_bCatch) {
         m_bCatch = false;
 
-        if ( TestKey(event.param) )  // impossible ?
-        {
+        if ( TestKey(event.param) ) { // impossible ?
             m_sound->Play(SOUND_TZOING);
-        }
-        else
-        {
-            if ( event.param == m_key[0] ||
-                 event.param == m_key[1] )
-            {
+        } else {
+            if ( event.param == m_key[0] || event.param == m_key[1] ) {
                 m_key[0] = event.param;
                 m_key[1] = 0;
-            }
-            else
-            {
+            } else {
                 m_key[1] = m_key[0];
                 m_key[0] = event.param;
             }
             m_sound->Play(SOUND_CLICK);
 
             Event newEvent = event;
-            newEvent.event = m_eventMsg;
+            newEvent.type = m_eventType;
             m_event->AddEvent(newEvent);
         }
         return false;
@@ -152,25 +114,17 @@ bool CKey::EventProcess(const Event &event)
 
 bool CKey::TestKey(int key)
 {
-    int     i, j;
+    if ( key == KEY(PAUSE) || key == KEY(PRINT) )  return true;  // blocked key
 
-    if ( key == VK_PAUSE    ||
-         key == VK_SNAPSHOT )  return true;  // blocked key
-
-    for ( i=0 ; i<20 ; i++ )
-    {
-        for ( j=0 ; j<2 ; j++ )
-        {
-            if ( key == m_engine->RetKey(i, j) )  // key used?
-            {
-                m_engine->SetKey(i, j, 0);  // nothing!
-            }
+    for (int i = 0; i < 20; i++) {
+        for (int j = 0; j < 2; j++) {
+            if (key == m_app->GetKey(i, j) )  // key used?
+                m_app->SetKey(i, j, 0);  // nothing!
         }
 
-        if ( m_engine->RetKey(i, 0) == 0 )  // first free option?
-        {
-            m_engine->SetKey(i, 0, m_engine->RetKey(i, 1));  // shift
-            m_engine->SetKey(i, 1, 0);
+        if ( m_app->GetKey(i, 0) == 0 ) { // first free option?
+            m_app->SetKey(i, 0, m_app->GetKey(i, 1));  // shift
+            m_app->SetKey(i, 1, 0);
         }
     }
 
@@ -182,107 +136,99 @@ bool CKey::TestKey(int key)
 
 void CKey::Draw()
 {
-    Math::Point     iDim, pos;
-    float       zoomExt, zoomInt, h;
-    int         icon;
-    char        text[100];
+    Math::Point iDim, pos;
+    float zoomExt, zoomInt, h;
+    int icon;
+    char text[100];
 
-    if ( (m_state & STATE_VISIBLE) == 0 )  return;
+    if ( (m_state & STATE_VISIBLE) == 0 )
+        return;
 
     iDim = m_dim;
     m_dim.x = 200.0f/640.0f;
 
     if ( m_state & STATE_SHADOW )
-    {
         DrawShadow(m_pos, m_dim);
-    }
+
 
     m_engine->SetTexture("button1.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL); // was D3DSTATENORMAL
 
     zoomExt = 1.00f;
     zoomInt = 0.95f;
 
     icon = 2;
-    if ( m_key[0] == 0 &&
-         m_key[1] == 0 )  // no shortcut?
-    {
+    if ( m_key[0] == 0 && m_key[1] == 0 )  // no shortcut?
         icon = 3;
-    }
-    if ( m_state & STATE_DEFAULT )
-    {
+
+    if ( m_state & STATE_DEFAULT ) {
         DrawPart(23, 1.3f, 0.0f);
 
         zoomExt *= 1.15f;
         zoomInt *= 1.15f;
     }
+
     if ( m_state & STATE_HILIGHT )
-    {
         icon = 1;
-    }
+
     if ( m_state & STATE_CHECK )
-    {
         icon = 0;
-    }
-    if ( m_state & STATE_PRESS )
-    {
+
+    if ( m_state & STATE_PRESS ) {
         icon = 3;
         zoomInt *= 0.9f;
     }
-    if ( (m_state & STATE_ENABLE) == 0 )
-    {
-        icon = 7;
-    }
-    if ( m_state & STATE_DEAD )
-    {
-        icon = 17;
-    }
-    if ( m_bCatch )
-    {
-        icon = 23;
-    }
-    DrawPart(icon, zoomExt, 8.0f/256.0f);  // draws the button
 
-    h = m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
+    if ( (m_state & STATE_ENABLE) == 0 )
+        icon = 7;
+
+    if ( m_state & STATE_DEAD )
+        icon = 17;
+
+    if ( m_bCatch )
+        icon = 23;
+
+    DrawPart(icon, zoomExt, 8.0f / 256.0f);  // draws the button
+
+    h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize) / 2.0f;
 
     GetKeyName(text, m_key[0]);
-    if ( m_key[1] != 0 )
-    {
+    if ( m_key[1] != 0 ) {
         GetResource(RES_TEXT, RT_KEY_OR, text+strlen(text));
         GetKeyName(text+strlen(text), m_key[1]);
     }
 
-    pos.x = m_pos.x+m_dim.x*0.5f;
-    pos.y = m_pos.y+m_dim.y*0.5f;
+    pos.x = m_pos.x + m_dim.x * 0.5f;
+    pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;
-    m_engine->RetText()->DrawText(text, pos, m_dim.x, 0, m_fontSize, m_fontStretch, m_fontType, 0);
+    m_engine->GetText()->DrawText(std::string(text), m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_CENTER, 0);
 
     m_dim = iDim;
 
-    if ( m_state & STATE_DEAD )  return;
+    if ( m_state & STATE_DEAD )
+        return;
 
     // Draws the name.
-    pos.x = m_pos.x+(214.0f/640.0f);
-    pos.y = m_pos.y+m_dim.y*0.5f;
+    pos.x = m_pos.x + (214.0f / 640.0f);
+    pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;
-    m_engine->RetText()->DrawText(m_name, pos, m_dim.x, 1, m_fontSize, m_fontStretch, m_fontType, 0);
+    m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_RIGHT, 0);
 }
 
 
 
 void CKey::SetKey(int option, int key)
 {
-    if ( option < 0 ||
-         option > 1 )  return;
+    if ( option < 0 || option > 1 )  return;
 
     m_key[option] = key;
 }
 
-int CKey::RetKey(int option)
+int CKey::GetKey(int option)
 {
-    if ( option < 0 ||
-         option > 1 )  return 0;
+    if ( option < 0 || option > 1 )  return 0;
 
     return m_key[option];
 }
 
+}

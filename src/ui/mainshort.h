@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,45 +19,45 @@
 
 #pragma once
 
+#include <ui/interface.h>
 
-#include "common/event.h"
-#include "math/point.h"
+#include <common/event.h>
 
+#include <math/point.h>
 
-class CInstanceManager;
-class CD3DEngine;
-class CInterface;
-class CRobotMain;
-class CObject;
+#include <object/object.h>
 
+#include <graphics/engine/engine.h>
+
+namespace Ui {
 
 
 class CMainShort
 {
-public:
-    CMainShort(CInstanceManager* iMan);
-    ~CMainShort();
+    public:
+        CMainShort();
+        ~CMainShort();
 
-    void        SetMode(bool bBuilding);
-    void        FlushShortcuts();
-    bool        CreateShortcuts();
-    bool        UpdateShortcuts();
-    void        SelectShortcut(EventMsg event);
-    void        SelectNext();
-    CObject*    DetectShort(Math::Point pos);
-    void        SetHilite(CObject* pObj);
+        void        SetMode(bool bBuilding);
+        void        FlushShortcuts();
+        bool        CreateShortcuts();
+        bool        UpdateShortcuts();
+        void        SelectShortcut(EventType event);
+        void        SelectNext();
+        CObject*    DetectShort(Math::Point pos);
+        void        SetHighlight(CObject* pObj);
 
-protected:
+    protected:
 
-protected:
-    CInstanceManager* m_iMan;
-    CEvent*         m_event;
-    CD3DEngine*     m_engine;
-    CInterface*     m_interface;
-    CRobotMain*     m_main;
+    protected:
+        CInstanceManager* m_iMan;
+        CEvent*         m_event;
+        Gfx::CEngine*     m_engine;
+        CInterface*     m_interface;
+        CRobotMain*     m_main;
 
-    CObject*        m_shortcuts[20];
-    bool            m_bBuilding;
+        CObject*        m_shortcuts[20];
+        bool            m_bBuilding;
 };
 
-
+}

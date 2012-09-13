@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,35 +19,43 @@
 
 #pragma once
 
+#include <cctype>
+#include <string>
 
-#include "ui/control.h"
+#include <ui/control.h>
 
+#include <common/iman.h>
+#include <common/event.h>
+#include <common/restext.h>
+#include <common/key.h>
 
-class CD3DEngine;
+#include <app/app.h>
 
-
+namespace Ui {
 
 class CKey : public CControl
 {
-public:
-    CKey(CInstanceManager* iMan);
-    virtual ~CKey();
+    public:
+        CKey();
+        virtual ~CKey();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        bool    EventProcess(const Event &event);
 
-    bool    EventProcess(const Event &event);
+        void    Draw();
 
-    void    Draw();
+        void    SetKey(int option, int key);
+        int     GetKey(int option);
 
-    void    SetKey(int option, int key);
-    int     RetKey(int option);
+    protected:
+        bool    TestKey(int key);
 
-protected:
-    bool    TestKey(int key);
+        int     m_key[2];
+        bool    m_bCatch;
 
-protected:
-    int     m_key[2];
-    bool    m_bCatch;
+        CApplication *m_app;
 };
 
+
+}
 
