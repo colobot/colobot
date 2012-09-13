@@ -27,11 +27,11 @@ class CInstanceManager;
 class CEvent;
 class CInterface;
 class CRobotMain;
-class CCamera;
 class CSoundInterface;
 
 namespace Gfx
 {
+    class CCamera;
     class CEngine;
 } /* Gfx */ 
 
@@ -56,8 +56,8 @@ public:
     bool            Stop();
     bool            IsExist();
     bool            EventProcess(const Event &event);
-    MainMovieType   RetType();
-    MainMovieType   RetStopType();
+    MainMovieType   GetType();
+    MainMovieType   GetStopType();
 
 protected:
 
@@ -67,7 +67,7 @@ protected:
     Gfx::CEngine*       m_engine;
     CInterface*         m_interface;
     CRobotMain*         m_main;
-    CCamera*            m_camera;
+    Gfx::CCamera*       m_camera;
     CSoundInterface*    m_sound;
 
     MainMovieType       m_type;

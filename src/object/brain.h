@@ -21,8 +21,9 @@
 
 // #include <stdio.h>
 
-#include "common/misc.h"
 #include "common/event.h"
+#include "common/misc.h"
+
 #include "object/object.h"
 #include "object/task/taskmanip.h"
 #include "object/task/taskflag.h"
@@ -34,23 +35,23 @@ class CObject;
 class CPhysics;
 class CMotion;
 class CTaskManager;
+class CScript;
+class CRobotMain;
+class CSoundInterface;
+
+namespace Ui {
+class CStudio;
 class CInterface;
 class CWindow;
 class CDisplayText;
-class CScript;
-class CRobotMain;
-class CStudio;
-class CSoundInterface;
-class CParticle;
+}
 
-namespace Gfx
-{
-
+namespace Gfx {
 class CEngine;
 class CTerrain;
 class CWater;
 class CCamera;
-
+class CParticle;
 } /* Gfx */ 
 
 
@@ -149,14 +150,14 @@ protected:
     void        GroundFlat();
     void        ColorFlag(int color);
 
-    void        UpdateScript(CWindow *pw);
+    void        UpdateScript(Ui::CWindow *pw);
     int         GetSelScript();
     void        BlinkScript(bool bEnable);
 
-    void        CheckInterface(CWindow *pw, EventType event, bool bState);
-    void        EnableInterface(CWindow *pw, EventType event, bool bState);
-    void        DeadInterface(CWindow *pw, EventType event, bool bState);
-    void        DefaultEnter(CWindow *pw, EventType event, bool bState=true);
+    void        CheckInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        EnableInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        DeadInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        DefaultEnter(Ui::CWindow *pw, EventType event, bool bState=true);
 
     void        TraceRecordStart();
     void        TraceRecordFrame();
@@ -170,15 +171,16 @@ protected:
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;
+    Gfx::CParticle*     m_particle;
     CObject*            m_object;
     CPhysics*           m_physics;
     CMotion*            m_motion;
-    CInterface*         m_interface;
-    CDisplayText*       m_displayText;
+    Ui::CInterface*     m_interface;
+    Ui::CDisplayText*   m_displayText;
     CRobotMain*         m_main;
     CStudio*            m_studio;
     CSoundInterface*    m_sound;
-    CParticle*          m_particle;
+
     CTaskManager*       m_primaryTask;
     CTaskManager*       m_secondaryTask;
 
