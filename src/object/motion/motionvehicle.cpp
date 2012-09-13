@@ -21,9 +21,9 @@
 
 #include "object/motion/motionvehicle.h"
 
-#include "old/modfile.h"
-#include "old/particule.h"
-#include "old/terrain.h"
+#include "graphics/engine/modelfile.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/terrain.h"
 #include "math/geometry.h"
 #include "object/brain.h"
 #include "physics/physics.h"
@@ -78,7 +78,7 @@ void CMotionVehicle::DeleteObject(bool bAll)
 {
     if ( m_partiReactor != -1 )
     {
-        m_particule->DeleteParticule(m_partiReactor);
+        m_particle->DeleteParticle(m_partiReactor);
         m_partiReactor = -1;
     }
 }
@@ -89,21 +89,21 @@ void CMotionVehicle::DeleteObject(bool bAll)
 bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
                             float power)
 {
-    CModFile*       pModFile;
+    Gfx::CModelFile*       pModFile;
     CObject*        pPower;
     int             rank, i, j, parent;
-    D3DCOLORVALUE   color;
+    Gfx::Color      color;
     char            name[50];
 
-    if ( m_engine->RetRestCreate() < 1+5+18+1 )  return false;
+//    if ( m_engine->GetRestCreate() < 1+5+18+1 )  return false;
 
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     m_object->SetType(type);
 
     // Creates the main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
     if ( type == OBJECT_MOBILEfa ||
@@ -125,7 +125,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
          type == OBJECT_MOBILEwi ||
          type == OBJECT_MOBILEws )
     {
-        if ( m_object->RetTrainer() )
+        if ( m_object->GetTrainer() )
         {
             pModFile->ReadModel("objects\\lem1wt.mod");
         }
@@ -222,7 +222,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the arm.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\lem2.mod");
@@ -232,7 +232,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the forearm.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\lem3.mod");
@@ -242,7 +242,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the hand.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
         pModFile->ReadModel("objects\\lem4.mod");
@@ -253,7 +253,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the close clamp.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(4, rank);
         m_object->SetObjectParent(4, 3);
         pModFile->ReadModel("objects\\lem5.mod");
@@ -263,7 +263,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the remote clamp.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(5, rank);
         m_object->SetObjectParent(5, 3);
         pModFile->ReadModel("objects\\lem6.mod");
@@ -279,7 +279,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the arm.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\lem2.mod");
@@ -289,7 +289,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the forearm.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\lem3.mod");
@@ -299,7 +299,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the sensor.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
         pModFile->ReadModel("objects\\lem4s.mod");
@@ -315,7 +315,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the cannon.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\canon.mod");
@@ -332,7 +332,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the insect cannon.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\canoni1.mod");
@@ -341,7 +341,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetAngleZ(1, 0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\canoni2.mod");
@@ -358,7 +358,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the right-back wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\lem2w.mod");
@@ -367,7 +367,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left-back wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         pModFile->ReadModel("objects\\lem2w.mod");
@@ -377,7 +377,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the right-front wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
         pModFile->ReadModel("objects\\lem2w.mod");
@@ -386,7 +386,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left-front wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
         pModFile->ReadModel("objects\\lem2w.mod");
@@ -399,7 +399,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the right-back wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\lem2w.mod");
@@ -408,7 +408,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left-back wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         pModFile->ReadModel("objects\\lem2w.mod");
@@ -418,7 +418,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the right-front wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
         pModFile->ReadModel("objects\\lem2w.mod");
@@ -427,7 +427,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left-front wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
         pModFile->ReadModel("objects\\lem2w.mod");
@@ -443,7 +443,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the right caterpillar.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\lem2t.mod");
@@ -452,7 +452,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left caterpillar.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         pModFile->ReadModel("objects\\lem3t.mod");
@@ -467,7 +467,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the right caterpillar.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\roller2.mod");
@@ -476,7 +476,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left caterpillar.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         pModFile->ReadModel("objects\\roller3.mod");
@@ -488,7 +488,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the right caterpillar.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\subm4.mod");
@@ -497,7 +497,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left caterpillar.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         pModFile->ReadModel("objects\\subm5.mod");
@@ -509,7 +509,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the right caterpillar.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\drawer2.mod");
@@ -518,7 +518,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left caterpillar.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         pModFile->ReadModel("objects\\drawer3.mod");
@@ -534,7 +534,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the front foot.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\lem2f.mod");
@@ -543,7 +543,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the right-back foot.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         pModFile->ReadModel("objects\\lem2f.mod");
@@ -553,7 +553,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left-back foot.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
         pModFile->ReadModel("objects\\lem2f.mod");
@@ -591,7 +591,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
                 // Creates the right leg.
                 rank = m_engine->CreateObject();
-                m_engine->SetObjectType(rank, TYPEDESCENDANT);
+                m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
                 m_object->SetObjectRank(6+i*3+j, rank);
                 if ( j == 0 )  parent = 0;
                 else           parent = 6+i*3+j-1;
@@ -605,7 +605,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
                 // Creates the left leg.
                 rank = m_engine->CreateObject();
-                m_engine->SetObjectType(rank, TYPEDESCENDANT);
+                m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
                 m_object->SetObjectRank(15+i*3+j, rank);
                 if ( j == 0 )  parent = 0;
                 else           parent = 15+i*3+j-1;
@@ -625,7 +625,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the holder.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\roller2t.mod");
@@ -635,7 +635,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the pestle.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
         pModFile->ReadModel("objects\\roller3t.mod");
@@ -648,7 +648,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the holder.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\roller2c.mod");
@@ -658,7 +658,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the cannon.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
         pModFile->ReadModel("objects\\roller3p.mod");
@@ -671,7 +671,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the holder.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\recover1.mod");
@@ -680,7 +680,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the right arm.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\recover2.mod");
@@ -690,7 +690,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the right forearm.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
         pModFile->ReadModel("objects\\recover3.mod");
@@ -700,7 +700,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left arm.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(4, rank);
         m_object->SetObjectParent(4, 1);
         pModFile->ReadModel("objects\\recover2.mod");
@@ -711,7 +711,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left forearm.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(5, rank);
         m_object->SetObjectParent(5, 4);
         pModFile->ReadModel("objects\\recover3.mod");
@@ -725,7 +725,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the holder.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\roller2s.mod");
@@ -735,7 +735,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the intermediate piston.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\roller3s.mod");
@@ -745,7 +745,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the piston with the sphere.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 2);
         pModFile->ReadModel("objects\\roller4s.mod");
@@ -758,7 +758,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the holder.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\subm2.mod");
@@ -767,7 +767,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the right tong.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\subm3.mod");
@@ -776,7 +776,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the left tong.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(3, rank);
         m_object->SetObjectParent(3, 1);
         pModFile->ReadModel("objects\\subm3.mod");
@@ -789,7 +789,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the carousel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\drawer4.mod");
@@ -797,10 +797,10 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPosition(1, Math::Vector(-3.0f, 3.0f, 0.0f));
 
         // Creates the key.
-        if ( m_object->RetToy() )
+        if ( m_object->GetToy() )
         {
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(2, rank);
             m_object->SetObjectParent(2, 0);
             pModFile->ReadModel("objects\\drawer5.mod");
@@ -814,7 +814,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         for ( i=0 ; i<8 ; i++ )
         {
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(10+i, rank);
             m_object->SetObjectParent(10+i, 1);
             sprintf(name, "objects\\drawer%d.mod", 10+i);
@@ -828,10 +828,10 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     if ( type == OBJECT_MOBILEwt )
     {
         // Creates the key.
-        if ( m_object->RetToy() )
+        if ( m_object->GetToy() )
         {
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             m_object->SetObjectRank(2, rank);
             m_object->SetObjectParent(2, 0);
             pModFile->ReadModel("objects\\drawer5.mod");
@@ -846,7 +846,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
     {
         // Creates the accessories.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(1, rank);
         m_object->SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
@@ -856,7 +856,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetAngleZ(1,   45.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2, rank);
         m_object->SetObjectParent(2, 0);
         pModFile->ReadModel("objects\\apolloj3.mod");  // camera
@@ -866,7 +866,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates the wheels.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(6, rank);
         m_object->SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
@@ -874,7 +874,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPosition(6, Math::Vector(-5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(7, rank);
         m_object->SetObjectParent(7, 0);
         pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
@@ -882,7 +882,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPosition(7, Math::Vector(-5.75f, 1.65f, 5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(8, rank);
         m_object->SetObjectParent(8, 0);
         pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
@@ -890,7 +890,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPosition(8, Math::Vector(5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(9, rank);
         m_object->SetObjectParent(9, 0);
         pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
@@ -899,7 +899,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
 
         // Creates mud guards.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(10, rank);
         m_object->SetObjectParent(10, 0);
         pModFile->ReadModel("objects\\apolloj6.mod");  // wheel
@@ -907,7 +907,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPosition(10, Math::Vector(-5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(11, rank);
         m_object->SetObjectParent(11, 0);
         pModFile->ReadModel("objects\\apolloj6.mod");  // wheel
@@ -915,7 +915,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPosition(11, Math::Vector(-5.75f, 1.65f, 5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(12, rank);
         m_object->SetObjectParent(12, 0);
         pModFile->ReadModel("objects\\apolloj5.mod");  // wheel
@@ -923,7 +923,7 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         m_object->SetPosition(12, Math::Vector(5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(13, rank);
         m_object->SetObjectParent(13, 0);
         pModFile->ReadModel("objects\\apolloj5.mod");  // wheel
@@ -1035,14 +1035,14 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         pPower->SetType(power<=1.0f?OBJECT_POWER:OBJECT_ATOMIC);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         pPower->SetObjectRank(0, rank);
 
         if ( power <= 1.0f )  pModFile->ReadModel("objects\\power.mod");
         else                  pModFile->ReadModel("objects\\atomic.mod");
         pModFile->CreateEngineObject(rank);
 
-        pPower->SetPosition(0, m_object->RetCharacter()->posPower);
+        pPower->SetPosition(0, m_object->GetCharacter()->posPower);
         pPower->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
         pPower->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
 
@@ -1053,10 +1053,10 @@ bool CMotionVehicle::Create(Math::Vector pos, float angle, ObjectType type,
         else                  pPower->SetEnergy(power/100.0f);
     }
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     m_object->SetPosition(0, pos);  //to display the shadows immediately
 
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
 
     delete pModFile;
     return true;
@@ -1068,7 +1068,7 @@ void CMotionVehicle::CreatePhysics(ObjectType type)
 {
     Character*  character;
 
-    character = m_object->RetCharacter();
+    character = m_object->GetCharacter();
 
     if ( type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEwc ||
@@ -1352,12 +1352,12 @@ bool CMotionVehicle::EventProcess(const Event &event)
 {
     CMotion::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
     }
 
-    if ( event.event == EVENT_KEYDOWN )
+    if ( event.type == EVENT_KEY_DOWN )
     {
     }
 
@@ -1375,10 +1375,10 @@ bool CMotionVehicle::EventFrame(const Event &event)
     float       s, a, speedBL, speedBR, speedFL, speedFR, h, a1, a2;
     float       back, front, dist, radius, limit[2];
 
-    if ( m_engine->RetPause() )  return true;
-    if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return true;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
 
     if ( type == OBJECT_MOBILEwa ||
          type == OBJECT_MOBILEwc ||
@@ -1388,8 +1388,8 @@ bool CMotionVehicle::EventFrame(const Event &event)
          type == OBJECT_MOBILEtg ||
          type == OBJECT_APOLLO2  )  // wheels?
     {
-        s = m_physics->RetLinMotionX(MO_MOTSPEED)*1.0f;
-        a = m_physics->RetCirMotionY(MO_MOTSPEED)*3.0f;
+        s = m_physics->GetLinMotionX(MO_MOTSPEED)*1.0f;
+        a = m_physics->GetCirMotionY(MO_MOTSPEED)*3.0f;
 
         if ( type == OBJECT_APOLLO2 )  s *= 0.5f;
 
@@ -1398,10 +1398,10 @@ bool CMotionVehicle::EventFrame(const Event &event)
         speedFR = -s+a;
         speedFL =  s+a;
 
-        m_object->SetAngleZ(6, m_object->RetAngleZ(6)+event.rTime*speedBR);  // turning the wheels
-        m_object->SetAngleZ(7, m_object->RetAngleZ(7)+event.rTime*speedBL);
-        m_object->SetAngleZ(8, m_object->RetAngleZ(8)+event.rTime*speedFR);
-        m_object->SetAngleZ(9, m_object->RetAngleZ(9)+event.rTime*speedFL);
+        m_object->SetAngleZ(6, m_object->GetAngleZ(6)+event.rTime*speedBR);  // turning the wheels
+        m_object->SetAngleZ(7, m_object->GetAngleZ(7)+event.rTime*speedBL);
+        m_object->SetAngleZ(8, m_object->GetAngleZ(8)+event.rTime*speedFR);
+        m_object->SetAngleZ(9, m_object->GetAngleZ(9)+event.rTime*speedFL);
 
         if ( s > 0.0f )
         {
@@ -1424,21 +1424,21 @@ bool CMotionVehicle::EventFrame(const Event &event)
             m_wheelTurn[2] = -fabs(a)*0.05f;
             m_wheelTurn[3] =  fabs(a)*0.05f+Math::PI;
         }
-        m_object->SetAngleY(6, m_object->RetAngleY(6)+(m_wheelTurn[0]-m_object->RetAngleY(6))*event.rTime*8.0f);
-        m_object->SetAngleY(7, m_object->RetAngleY(7)+(m_wheelTurn[1]-m_object->RetAngleY(7))*event.rTime*8.0f);
-        m_object->SetAngleY(8, m_object->RetAngleY(8)+(m_wheelTurn[2]-m_object->RetAngleY(8))*event.rTime*8.0f);
-        m_object->SetAngleY(9, m_object->RetAngleY(9)+(m_wheelTurn[3]-m_object->RetAngleY(9))*event.rTime*8.0f);
+        m_object->SetAngleY(6, m_object->GetAngleY(6)+(m_wheelTurn[0]-m_object->GetAngleY(6))*event.rTime*8.0f);
+        m_object->SetAngleY(7, m_object->GetAngleY(7)+(m_wheelTurn[1]-m_object->GetAngleY(7))*event.rTime*8.0f);
+        m_object->SetAngleY(8, m_object->GetAngleY(8)+(m_wheelTurn[2]-m_object->GetAngleY(8))*event.rTime*8.0f);
+        m_object->SetAngleY(9, m_object->GetAngleY(9)+(m_wheelTurn[3]-m_object->GetAngleY(9))*event.rTime*8.0f);
 
         if ( type == OBJECT_APOLLO2 )
         {
-            m_object->SetAngleY(10, m_object->RetAngleY(6)+(m_wheelTurn[0]-m_object->RetAngleY(6))*event.rTime*8.0f);
-            m_object->SetAngleY(11, m_object->RetAngleY(7)+(m_wheelTurn[1]-m_object->RetAngleY(7))*event.rTime*8.0f+Math::PI);
-            m_object->SetAngleY(12, m_object->RetAngleY(8)+(m_wheelTurn[2]-m_object->RetAngleY(8))*event.rTime*8.0f);
-            m_object->SetAngleY(13, m_object->RetAngleY(9)+(m_wheelTurn[3]-m_object->RetAngleY(9))*event.rTime*8.0f+Math::PI);
+            m_object->SetAngleY(10, m_object->GetAngleY(6)+(m_wheelTurn[0]-m_object->GetAngleY(6))*event.rTime*8.0f);
+            m_object->SetAngleY(11, m_object->GetAngleY(7)+(m_wheelTurn[1]-m_object->GetAngleY(7))*event.rTime*8.0f+Math::PI);
+            m_object->SetAngleY(12, m_object->GetAngleY(8)+(m_wheelTurn[2]-m_object->GetAngleY(8))*event.rTime*8.0f);
+            m_object->SetAngleY(13, m_object->GetAngleY(9)+(m_wheelTurn[3]-m_object->GetAngleY(9))*event.rTime*8.0f+Math::PI);
         }
 
-        pos = m_object->RetPosition(0);
-        angle = m_object->RetAngle(0);
+        pos = m_object->GetPosition(0);
+        angle = m_object->GetAngle(0);
         if ( pos.x   != m_wheelLastPos.x   ||
              pos.y   != m_wheelLastPos.y   ||
              pos.z   != m_wheelLastPos.z   ||
@@ -1471,16 +1471,16 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 radius =  1.0f;
             }
 
-            if ( Math::Distance(pos, m_engine->RetEyePt()) < 50.0f )  // suspension?
+            if ( Math::Distance(pos, m_engine->GetEyePt()) < 50.0f )  // suspension?
             {
-                character = m_object->RetCharacter();
-                mat = m_object->RetWorldMatrix(0);
+                character = m_object->GetCharacter();
+                mat = m_object->GetWorldMatrix(0);
 
                 pos.x = -character->wheelBack;  // right back wheel
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
                 pos = Math::Transform(*mat, pos);
-                h = m_terrain->RetFloorHeight(pos);
+                h = m_terrain->GetHeightToFloor(pos);
                 if ( h >  0.5f )  h =  0.5f;
                 if ( h < -0.5f )  h = -0.5f;
                 pos.x =  back;
@@ -1493,7 +1493,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
                 pos = Math::Transform(*mat, pos);
-                h = m_terrain->RetFloorHeight(pos);
+                h = m_terrain->GetHeightToFloor(pos);
                 if ( h >  0.5f )  h =  0.5f;
                 if ( h < -0.5f )  h = -0.5f;
                 pos.x =  back;
@@ -1506,7 +1506,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
                 pos = Math::Transform(*mat, pos);
-                h = m_terrain->RetFloorHeight(pos);
+                h = m_terrain->GetHeightToFloor(pos);
                 if ( h >  0.5f )  h =  0.5f;
                 if ( h < -0.5f )  h = -0.5f;
                 pos.x =  front;
@@ -1519,7 +1519,7 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
                 pos = Math::Transform(*mat, pos);
-                h = m_terrain->RetFloorHeight(pos);
+                h = m_terrain->GetHeightToFloor(pos);
                 if ( h >  0.5f )  h =  0.5f;
                 if ( h < -0.5f )  h = -0.5f;
                 pos.x =  front;
@@ -1557,16 +1557,16 @@ bool CMotionVehicle::EventFrame(const Event &event)
          type == OBJECT_MOBILEsa ||
          type == OBJECT_MOBILEdr )  // caterpillars?
     {
-        s = m_physics->RetLinMotionX(MO_MOTSPEED)*0.7f;
-        a = m_physics->RetCirMotionY(MO_MOTSPEED)*2.5f;
+        s = m_physics->GetLinMotionX(MO_MOTSPEED)*0.7f;
+        a = m_physics->GetCirMotionY(MO_MOTSPEED)*2.5f;
 
         m_posTrackLeft  += event.rTime*(s+a);
         m_posTrackRight += event.rTime*(s-a);
 
         UpdateTrackMapping(m_posTrackLeft, m_posTrackRight, type);
 
-        pos = m_object->RetPosition(0);
-        angle = m_object->RetAngle(0);
+        pos = m_object->GetPosition(0);
+        angle = m_object->GetAngle(0);
         if ( pos.x   != m_wheelLastPos.x   ||
              pos.y   != m_wheelLastPos.y   ||
              pos.z   != m_wheelLastPos.z   ||
@@ -1601,22 +1601,22 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 limit[1] = -10.0f*Math::PI/180.0f;
             }
 
-            if ( Math::Distance(pos, m_engine->RetEyePt()) < 50.0f )  // suspension?
+            if ( Math::Distance(pos, m_engine->GetEyePt()) < 50.0f )  // suspension?
             {
-                character = m_object->RetCharacter();
-                mat = m_object->RetWorldMatrix(0);
+                character = m_object->GetCharacter();
+                mat = m_object->GetWorldMatrix(0);
 
                 pos.x =  character->wheelFront;  // right front wheel
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
                 pos = Transform(*mat, pos);
-                a1 = atanf(m_terrain->RetFloorHeight(pos)/character->wheelFront);
+                a1 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelFront);
 
                 pos.x = -character->wheelBack;  // right back wheel
                 pos.z = -character->wheelRight;
                 pos.y =  0.0f;
                 pos = Transform(*mat, pos);
-                a2 = atanf(m_terrain->RetFloorHeight(pos)/character->wheelBack);
+                a2 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelBack);
 
                 a = (a2-a1)/2.0f;
                 if ( a > limit[0] )  a = limit[0];
@@ -1627,13 +1627,13 @@ bool CMotionVehicle::EventFrame(const Event &event)
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
                 pos = Transform(*mat, pos);
-                a1 = atanf(m_terrain->RetFloorHeight(pos)/character->wheelFront);
+                a1 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelFront);
 
                 pos.x = -character->wheelBack;  // left back wheel
                 pos.z =  character->wheelLeft;
                 pos.y =  0.0f;
                 pos = Transform(*mat, pos);
-                a2 = atanf(m_terrain->RetFloorHeight(pos)/character->wheelBack);
+                a2 = atanf(m_terrain->GetHeightToFloor(pos)/character->wheelBack);
 
                 a = (a2-a1)/2.0f;
                 if ( a > limit[0] )  a = limit[0];
@@ -1652,16 +1652,16 @@ bool CMotionVehicle::EventFrame(const Event &event)
          type == OBJECT_MOBILEdr )  // toy is key?
     {
         pos = m_posKey;
-        if ( m_object->RetSelect() &&
-             m_camera->RetType() == CAMERA_ONBOARD )
+        if ( m_object->GetSelect() &&
+             m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD )
         {
             pos.y += 10.0f;  // out of sight!
         }
         m_object->SetPosition(2, pos);
 
-        s  = -fabs(m_physics->RetLinMotionX(MO_MOTSPEED)*0.1f);
-        s += -fabs(m_physics->RetCirMotionY(MO_MOTSPEED)*1.5f);
-        m_object->SetAngleY(2, m_object->RetAngleY(2)+event.rTime*s);  // turns the key
+        s  = -fabs(m_physics->GetLinMotionX(MO_MOTSPEED)*0.1f);
+        s += -fabs(m_physics->GetCirMotionY(MO_MOTSPEED)*1.5f);
+        m_object->SetAngleY(2, m_object->GetAngleY(2)+event.rTime*s);  // turns the key
     }
 
     if ( type == OBJECT_MOBILEfa ||
@@ -1701,8 +1701,8 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
     float       hope[3], actual, final, h, a;
     int         i;
 
-    pos = m_object->RetPosition(0);
-    angle = m_object->RetAngle(0);
+    pos = m_object->GetPosition(0);
+    angle = m_object->GetAngle(0);
     if ( m_bFlyFix                     &&
          pos.x   == m_wheelLastPos.x   &&
          pos.y   == m_wheelLastPos.y   &&
@@ -1714,16 +1714,16 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
     m_wheelLastPos = pos;
     m_wheelLastAngle = angle;
 
-    if ( m_physics->RetLand() )  // on the ground?
+    if ( m_physics->GetLand() )  // on the ground?
     {
-        mat = m_object->RetWorldMatrix(0);
+        mat = m_object->GetWorldMatrix(0);
         paw[0] = Transform(*mat, Math::Vector( 4.2f, 0.0f,  0.0f));  // front
         paw[1] = Transform(*mat, Math::Vector(-3.0f, 0.0f, -3.7f));  // right back
         paw[2] = Transform(*mat, Math::Vector(-3.0f, 0.0f,  3.7f));  // left back
 
         for ( i=0 ; i<3 ; i++ )
         {
-            h = m_terrain->RetFloorHeight(paw[i]);
+            h = m_terrain->GetHeightToFloor(paw[i]);
             a = -atanf(h*0.5f);
             if ( a >  Math::PI*0.2f )  a =  Math::PI*0.2f;
             if ( a < -Math::PI*0.2f )  a = -Math::PI*0.2f;
@@ -1740,7 +1740,7 @@ bool CMotionVehicle::EventFrameFly(const Event &event)
     m_bFlyFix = true;
     for ( i=0 ; i<3 ; i++ )
     {
-        actual = m_object->RetAngleZ(6+i);
+        actual = m_object->GetAngleZ(6+i);
         final = Math::Smooth(actual, hope[i], event.rTime*5.0f);
         if ( final != actual )
         {
@@ -1782,14 +1782,14 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
     };
 
     bOnBoard = false;
-    if ( m_object->RetSelect() &&
-         m_camera->RetType() == CAMERA_ONBOARD )
+    if ( m_object->GetSelect() &&
+         m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD )
     {
         bOnBoard = true;
     }
 
-    s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
-    a = fabs(m_physics->RetCirMotionY(MO_MOTSPEED)*2.0f);
+    s =     m_physics->GetLinMotionX(MO_MOTSPEED)*1.5f;
+    a = fabs(m_physics->GetCirMotionY(MO_MOTSPEED)*2.0f);
 
     if ( s == 0.0f && a != 0.0f )  a *= 1.5f;
 
@@ -1812,7 +1812,7 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
         m_armMember += a;
     }
 
-    if ( m_object->RetRuin() )  // burn or explode?
+    if ( m_object->GetRuin() )  // burn or explode?
     {
         action = 3;
     }
@@ -1856,27 +1856,27 @@ bool CMotionVehicle::EventFrameInsect(const Event &event)
 
         if ( i < 3 )  // right leg (1..3) ?
         {
-            m_object->SetAngleX(6+3*i+0, Math::Smooth(m_object->RetAngleX(6+3*i+0), Math::PropAngle(table[st+ 0], table[nd+ 0], prog), time));
-            m_object->SetAngleY(6+3*i+0, Math::Smooth(m_object->RetAngleY(6+3*i+0), Math::PropAngle(table[st+ 1], table[nd+ 1], prog), time));
-            m_object->SetAngleZ(6+3*i+0, Math::Smooth(m_object->RetAngleZ(6+3*i+0), Math::PropAngle(table[st+ 2], table[nd+ 2], prog), time));
-            m_object->SetAngleX(6+3*i+1, Math::Smooth(m_object->RetAngleX(6+3*i+1), Math::PropAngle(table[st+ 9], table[nd+ 9], prog), time));
-            m_object->SetAngleY(6+3*i+1, Math::Smooth(m_object->RetAngleY(6+3*i+1), Math::PropAngle(table[st+10], table[nd+10], prog), time));
-            m_object->SetAngleZ(6+3*i+1, Math::Smooth(m_object->RetAngleZ(6+3*i+1), Math::PropAngle(table[st+11], table[nd+11], prog), time));
-            m_object->SetAngleX(6+3*i+2, Math::Smooth(m_object->RetAngleX(6+3*i+2), Math::PropAngle(table[st+18], table[nd+18], prog), time));
-            m_object->SetAngleY(6+3*i+2, Math::Smooth(m_object->RetAngleY(6+3*i+2), Math::PropAngle(table[st+19], table[nd+19], prog), time));
-            m_object->SetAngleZ(6+3*i+2, Math::Smooth(m_object->RetAngleZ(6+3*i+2), Math::PropAngle(table[st+20], table[nd+20], prog), time));
+            m_object->SetAngleX(6+3*i+0, Math::Smooth(m_object->GetAngleX(6+3*i+0), Math::PropAngle(table[st+ 0], table[nd+ 0], prog), time));
+            m_object->SetAngleY(6+3*i+0, Math::Smooth(m_object->GetAngleY(6+3*i+0), Math::PropAngle(table[st+ 1], table[nd+ 1], prog), time));
+            m_object->SetAngleZ(6+3*i+0, Math::Smooth(m_object->GetAngleZ(6+3*i+0), Math::PropAngle(table[st+ 2], table[nd+ 2], prog), time));
+            m_object->SetAngleX(6+3*i+1, Math::Smooth(m_object->GetAngleX(6+3*i+1), Math::PropAngle(table[st+ 9], table[nd+ 9], prog), time));
+            m_object->SetAngleY(6+3*i+1, Math::Smooth(m_object->GetAngleY(6+3*i+1), Math::PropAngle(table[st+10], table[nd+10], prog), time));
+            m_object->SetAngleZ(6+3*i+1, Math::Smooth(m_object->GetAngleZ(6+3*i+1), Math::PropAngle(table[st+11], table[nd+11], prog), time));
+            m_object->SetAngleX(6+3*i+2, Math::Smooth(m_object->GetAngleX(6+3*i+2), Math::PropAngle(table[st+18], table[nd+18], prog), time));
+            m_object->SetAngleY(6+3*i+2, Math::Smooth(m_object->GetAngleY(6+3*i+2), Math::PropAngle(table[st+19], table[nd+19], prog), time));
+            m_object->SetAngleZ(6+3*i+2, Math::Smooth(m_object->GetAngleZ(6+3*i+2), Math::PropAngle(table[st+20], table[nd+20], prog), time));
         }
         else    // left leg (4..6) ?
         {
-            m_object->SetAngleX(6+3*i+0, Math::Smooth(m_object->RetAngleX(6+3*i+0), Math::PropAngle(-table[st+ 0], -table[nd+ 0], prog), time));
-            m_object->SetAngleY(6+3*i+0, Math::Smooth(m_object->RetAngleY(6+3*i+0), Math::PropAngle(-table[st+ 1], -table[nd+ 1], prog), time));
-            m_object->SetAngleZ(6+3*i+0, Math::Smooth(m_object->RetAngleZ(6+3*i+0), Math::PropAngle( table[st+ 2],  table[nd+ 2], prog), time));
-            m_object->SetAngleX(6+3*i+1, Math::Smooth(m_object->RetAngleX(6+3*i+1), Math::PropAngle(-table[st+ 9], -table[nd+ 9], prog), time));
-            m_object->SetAngleY(6+3*i+1, Math::Smooth(m_object->RetAngleY(6+3*i+1), Math::PropAngle(-table[st+10], -table[nd+10], prog), time));
-            m_object->SetAngleZ(6+3*i+1, Math::Smooth(m_object->RetAngleZ(6+3*i+1), Math::PropAngle( table[st+11],  table[nd+11], prog), time));
-            m_object->SetAngleX(6+3*i+2, Math::Smooth(m_object->RetAngleX(6+3*i+2), Math::PropAngle(-table[st+18], -table[nd+18], prog), time));
-            m_object->SetAngleY(6+3*i+2, Math::Smooth(m_object->RetAngleY(6+3*i+2), Math::PropAngle(-table[st+19], -table[nd+19], prog), time));
-            m_object->SetAngleZ(6+3*i+2, Math::Smooth(m_object->RetAngleZ(6+3*i+2), Math::PropAngle( table[st+20],  table[nd+20], prog), time));
+            m_object->SetAngleX(6+3*i+0, Math::Smooth(m_object->GetAngleX(6+3*i+0), Math::PropAngle(-table[st+ 0], -table[nd+ 0], prog), time));
+            m_object->SetAngleY(6+3*i+0, Math::Smooth(m_object->GetAngleY(6+3*i+0), Math::PropAngle(-table[st+ 1], -table[nd+ 1], prog), time));
+            m_object->SetAngleZ(6+3*i+0, Math::Smooth(m_object->GetAngleZ(6+3*i+0), Math::PropAngle( table[st+ 2],  table[nd+ 2], prog), time));
+            m_object->SetAngleX(6+3*i+1, Math::Smooth(m_object->GetAngleX(6+3*i+1), Math::PropAngle(-table[st+ 9], -table[nd+ 9], prog), time));
+            m_object->SetAngleY(6+3*i+1, Math::Smooth(m_object->GetAngleY(6+3*i+1), Math::PropAngle(-table[st+10], -table[nd+10], prog), time));
+            m_object->SetAngleZ(6+3*i+1, Math::Smooth(m_object->GetAngleZ(6+3*i+1), Math::PropAngle( table[st+11],  table[nd+11], prog), time));
+            m_object->SetAngleX(6+3*i+2, Math::Smooth(m_object->GetAngleX(6+3*i+2), Math::PropAngle(-table[st+18], -table[nd+18], prog), time));
+            m_object->SetAngleY(6+3*i+2, Math::Smooth(m_object->GetAngleY(6+3*i+2), Math::PropAngle(-table[st+19], -table[nd+19], prog), time));
+            m_object->SetAngleZ(6+3*i+2, Math::Smooth(m_object->GetAngleZ(6+3*i+2), Math::PropAngle( table[st+20],  table[nd+20], prog), time));
         }
     }
 
@@ -1916,20 +1916,20 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
 
     m_canonTime += event.rTime;
 
-    if ( m_object->RetSelect() &&
-         m_camera->RetType() == CAMERA_ONBOARD )
+    if ( m_object->GetSelect() &&
+         m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD )
     {
         bOnBoard = true;
     }
 
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power == 0 )
     {
         energy = 0.0f;
     }
     else
     {
-        energy = power->RetEnergy();
+        energy = power->GetEnergy();
     }
     if ( energy == 0.0f )  return true;
 
@@ -1961,13 +1961,13 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
     {
         m_lastTimeCanon = m_engine->ParticuleAdapt(0.5f+Math::Rand()*0.5f);
 
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
         pos.y += 8.0f;
         speed.y = 7.0f+Math::Rand()*3.0f;
         speed.x = (Math::Rand()-0.5f)*2.0f;
         speed.z = 2.0f+Math::Rand()*2.0f;
         if ( Math::Rand() < 0.5f )  speed.z = -speed.z;
-        mat = m_object->RetRotateMatrix(0);
+        mat = m_object->GetRotateMatrix(0);
         speed = Transform(*mat, speed);
         dim.x = Math::Rand()*0.1f+0.1f;
         if ( bOnBoard )  dim.x *= 0.4f;
@@ -1984,11 +1984,11 @@ bool CMotionVehicle::EventFrameCanoni(const Event &event)
 
 void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type)
 {
-    D3DMATERIAL7    mat;
+    Gfx::Material    mat;
     float           limit[4];
     int             rRank, lRank, i;
 
-    ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
+    memset( &mat, 0, sizeof(Gfx::Material) );
     mat.diffuse.r = 1.0f;
     mat.diffuse.g = 1.0f;
     mat.diffuse.b = 1.0f;  // white
@@ -1996,8 +1996,8 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
     mat.ambient.g = 0.5f;
     mat.ambient.b = 0.5f;
 
-    rRank = m_object->RetObjectRank(6);
-    lRank = m_object->RetObjectRank(7);
+    rRank = m_object->GetObjectRank(6);
+    lRank = m_object->GetObjectRank(7);
 
 
     if ( type == OBJECT_MOBILEdr )
@@ -2005,31 +2005,31 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
         limit[0] = 0.0f;
         limit[1] = 1000000.0f;
         limit[2] = limit[1];
-        limit[3] = m_engine->RetLimitLOD(1);
+        limit[3] = m_engine->GetLimitLOD(1);
 
-        m_engine->TrackTextureMapping(rRank, mat, D3DSTATEPART1, "drawer.tga", "",
-                                      limit[0], limit[1], D3DMAPPINGX,
+        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "drawer.tga", "",
+                                      limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-        m_engine->TrackTextureMapping(lRank, mat, D3DSTATEPART2, "drawer.tga", "",
-                                      limit[0], limit[1], D3DMAPPINGX,
+        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "drawer.tga", "",
+                                      limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
     else
     {
         limit[0] = 0.0f;
-        limit[1] = m_engine->RetLimitLOD(0);
+        limit[1] = m_engine->GetLimitLOD(0);
         limit[2] = limit[1];
-        limit[3] = m_engine->RetLimitLOD(1);
+        limit[3] = m_engine->GetLimitLOD(1);
 
         for ( i=0 ; i<2 ; i++ )
         {
-            m_engine->TrackTextureMapping(rRank, mat, D3DSTATEPART1, "lemt.tga", "",
-                                          limit[i*2+0], limit[i*2+1], D3DMAPPINGX,
+            m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "lemt.tga", "",
+                                          limit[i*2+0], limit[i*2+1], Gfx::ENG_TEX_MAPPING_X,
                                           right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-            m_engine->TrackTextureMapping(lRank, mat, D3DSTATEPART2, "lemt.tga", "",
-                                          limit[i*2+0], limit[i*2+1], D3DMAPPINGX,
+            m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "lemt.tga", "",
+                                          limit[i*2+0], limit[i*2+1], Gfx::ENG_TEX_MAPPING_X,
                                           left, 1.0f, 8.0f, 192.0f, 256.0f);
         }
     }
@@ -2040,7 +2040,7 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 
 // State management of the pencil drawing robot.
 
-bool CMotionVehicle::RetTraceDown()
+bool CMotionVehicle::GetTraceDown()
 {
     return m_bTraceDown;
 }
@@ -2050,7 +2050,7 @@ void CMotionVehicle::SetTraceDown(bool bDown)
     m_bTraceDown = bDown;
 }
 
-int CMotionVehicle::RetTraceColor()
+int CMotionVehicle::GetTraceColor()
 {
     return m_traceColor;
 }
@@ -2060,7 +2060,7 @@ void CMotionVehicle::SetTraceColor(int color)
     m_traceColor = color;
 }
 
-float CMotionVehicle::RetTraceWidth()
+float CMotionVehicle::GetTraceWidth()
 {
     return m_traceWidth;
 }

@@ -36,7 +36,7 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
 
     m_engine    = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
     m_light     = static_cast< Gfx::CLight* >(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_particule = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_particle = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
     m_terrain   = static_cast< Gfx::CTerrain* >(m_iMan->SearchInstance(CLASS_TERRAIN));
     m_water     = static_cast< Gfx::CWater* >(m_iMan->SearchInstance(CLASS_WATER));
     m_camera    = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));

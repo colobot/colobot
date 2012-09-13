@@ -76,7 +76,7 @@ protected:
     CInstanceManager*   m_iMan;
     Gfx::CEngine*       m_engine;
     Gfx::CLight*        m_light;
-    Gfx::CParticle*     m_particule;
+    Gfx::CParticle*     m_particle;
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
     Gfx::CCamera*       m_camera;

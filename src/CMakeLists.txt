@@ -115,15 +115,15 @@ graphics/opengl/gldevice.cpp
 # object/auto/autotower.cpp
 # object/brain.cpp
 # object/mainmovie.cpp
-# object/motion/motion.cpp
-# object/motion/motionant.cpp
-# object/motion/motionbee.cpp
-# object/motion/motionhuman.cpp
-# object/motion/motionmother.cpp
-# object/motion/motionspider.cpp
-# object/motion/motiontoto.cpp
-# object/motion/motionvehicle.cpp
-# object/motion/motionworm.cpp
+object/motion/motion.cpp
+object/motion/motionant.cpp
+object/motion/motionbee.cpp
+object/motion/motionhuman.cpp
+object/motion/motionmother.cpp
+object/motion/motionspider.cpp
+object/motion/motiontoto.cpp
+object/motion/motionvehicle.cpp
+object/motion/motionworm.cpp
 object/object.cpp
 # object/robotmain.cpp
 object/task/task.cpp

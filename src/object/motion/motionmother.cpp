@@ -21,7 +21,7 @@
 
 #include "object/motion/motionmother.h"
 
-#include "old/modfile.h"
+#include "graphics/engine/modelfile.h"
 #include "physics/physics.h"
 
 
@@ -67,18 +67,18 @@ void CMotionMother::DeleteObject(bool bAll)
 bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
                           float power)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 2+12+6 )  return false;
+//    if ( m_engine->GetRestCreate() < 2+12+6 )  return false;
 
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     m_object->SetType(type);
 
     // Creates main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
     pModFile->ReadModel("objects\\mother1.mod");
@@ -94,7 +94,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the head.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     pModFile->ReadModel("objects\\mother2.mod");
@@ -103,7 +103,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-back leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     pModFile->ReadModel("objects\\mother3.mod");
@@ -112,7 +112,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-back foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 2);
     pModFile->ReadModel("objects\\mother4.mod");
@@ -121,7 +121,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a middle-right leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 0);
     pModFile->ReadModel("objects\\mother3.mod");
@@ -130,7 +130,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a middle-right foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
     pModFile->ReadModel("objects\\mother4.mod");
@@ -139,7 +139,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-front leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 0);
     pModFile->ReadModel("objects\\mother3.mod");
@@ -148,7 +148,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-front foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
     pModFile->ReadModel("objects\\mother4.mod");
@@ -157,7 +157,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-back leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 0);
     pModFile->ReadModel("objects\\mother3.mod");
@@ -167,7 +167,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-back foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
     pModFile->ReadModel("objects\\mother4.mod");
@@ -176,7 +176,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a middle-left leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 0);
     pModFile->ReadModel("objects\\mother3.mod");
@@ -186,7 +186,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a middle-left foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 10);
     pModFile->ReadModel("objects\\mother4.mod");
@@ -195,7 +195,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-front leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 0);
     pModFile->ReadModel("objects\\mother3.mod");
@@ -205,7 +205,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-front foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
     pModFile->ReadModel("objects\\mother4.mod");
@@ -214,7 +214,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right antenna.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(14, rank);
     m_object->SetObjectParent(14, 1);
     pModFile->ReadModel("objects\\mother5.mod");
@@ -222,7 +222,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetPosition(14, Math::Vector(6.0f, 1.0f, -2.5f));
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(15, rank);
     m_object->SetObjectParent(15, 14);
     pModFile->ReadModel("objects\\mother6.mod");
@@ -231,7 +231,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the left antenna.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(16, rank);
     m_object->SetObjectParent(16, 1);
     pModFile->ReadModel("objects\\mother5.mod");
@@ -239,7 +239,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetPosition(16, Math::Vector(6.0f, 1.0f, 2.5f));
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(17, rank);
     m_object->SetObjectParent(17, 16);
     pModFile->ReadModel("objects\\mother6.mod");
@@ -248,7 +248,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right claw.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(18, rank);
     m_object->SetObjectParent(18, 1);
     pModFile->ReadModel("objects\\mother7.mod");
@@ -258,7 +258,7 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the left claw.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(19, rank);
     m_object->SetObjectParent(19, 1);
     pModFile->ReadModel("objects\\mother7.mod");
@@ -272,10 +272,10 @@ bool CMotionMother::Create(Math::Vector pos, float angle, ObjectType type,
     CreatePhysics();
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
 
     delete pModFile;
     return true;
@@ -306,7 +306,7 @@ void CMotionMother::CreatePhysics()
 
     m_physics->SetType(TYPE_ROLLING);
 
-    character = m_object->RetCharacter();
+    character = m_object->GetCharacter();
     character->wheelFront = 10.0f;
     character->wheelBack  = 10.0f;
     character->wheelLeft  = 20.0f;
@@ -343,12 +343,12 @@ bool CMotionMother::EventProcess(const Event &event)
 {
     CMotion::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
     }
 
-    if ( event.event == EVENT_KEYDOWN )
+    if ( event.type == EVENT_KEY_DOWN )
     {
 #if ADJUST_ANGLE
         int     i;
@@ -390,11 +390,11 @@ bool CMotionMother::EventFrame(const Event &event)
     int         i, st, nd;
     bool        bStop;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return true;
 
-    s =     m_physics->RetLinMotionX(MO_MOTSPEED)*1.5f;
-    a = fabs(m_physics->RetCirMotionY(MO_MOTSPEED)*26.0f);
+    s =     m_physics->GetLinMotionX(MO_MOTSPEED)*1.5f;
+    a = fabs(m_physics->GetCirMotionY(MO_MOTSPEED)*26.0f);
 
     if ( s == 0.0f && a != 0.0f )  a *= 1.5f;
 
@@ -418,7 +418,7 @@ bool CMotionMother::EventFrame(const Event &event)
         else          prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.3f, 1.0f);
         if ( m_bArmStop )
         {
-            prog = (float)m_armTimeIndex/3.0f;
+            prog = static_cast< float >(m_armTimeIndex/3.0f);
         }
         if ( prog < 0.33f )  // t0..t1 ?
         {
@@ -461,7 +461,7 @@ bool CMotionMother::EventFrame(const Event &event)
     }
 
 #if ADJUST_ANGLE
-    if ( m_object->RetSelect() )
+    if ( m_object->GetSelect() )
     {
         char s[100];
         sprintf(s, "A:time=%d Q:part=%d W:member=%d", m_armTimeIndex, m_armPartIndex, m_armMemberIndex);
@@ -469,7 +469,7 @@ bool CMotionMother::EventFrame(const Event &event)
     }
 #endif
 
-    if ( !bStop && !m_object->RetRuin() )
+    if ( !bStop && !m_object->GetRuin() )
     {
         a = Math::Mod(m_armTimeMarch, 1.0f);
         if ( a < 0.5f )  a = -1.0f+4.0f*a;  // -1..1

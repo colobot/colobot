@@ -22,9 +22,9 @@
 #include "object/motion/motiontoto.h"
 
 #include "math/geometry.h"
-#include "old/terrain.h"
-#include "old/water.h"
-#include "old/modfile.h"
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/water.h"
+#include "graphics/engine/modelfile.h"
 #include "object/robotmain.h"
 
 
@@ -49,7 +49,7 @@ CMotionToto::CMotionToto(CInstanceManager* iMan, CObject* object)
     m_clownTime   = 0.0f;
     m_blinkTime   = 0.0f;
     m_blinkProgress = -1.0f;
-    m_lastMotorParticule = 0.0f;
+    m_lastMotorParticle = 0.0f;
     m_type = OBJECT_NULL;
     m_mousePos = Math::Point(0.0f, 0.0f);
 }
@@ -78,18 +78,18 @@ void CMotionToto::DeleteObject(bool bAll)
 bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
                          float power)
 {
-    CModFile*       pModFile;
+    Gfx::CModelFile*       pModFile;
     int             rank;
 
-    if ( m_engine->RetRestCreate() < 10 )  return false;
+//    if ( m_engine->GetRestCreate() < 10 )  return false;
 
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     m_object->SetType(type);
 
     // Creates the head.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
     pModFile->ReadModel("objects\\toto1.mod");
     pModFile->CreateEngineObject(rank);
@@ -98,7 +98,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates mouth.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     pModFile->ReadModel("objects\\toto2.mod");
@@ -107,7 +107,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the left eye.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     pModFile->ReadModel("objects\\toto3.mod");
@@ -118,7 +118,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right eye.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
     pModFile->ReadModel("objects\\toto3.mod");
@@ -128,7 +128,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates left antenna.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 0);
     pModFile->ReadModel("objects\\toto4.mod");
@@ -137,7 +137,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetAngleX(4, 30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
     pModFile->ReadModel("objects\\toto4.mod");
@@ -146,7 +146,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetAngleX(5, 30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 5);
     pModFile->ReadModel("objects\\toto5.mod");
@@ -156,7 +156,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates right antenna.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 0);
     pModFile->ReadModel("objects\\toto4.mod");
@@ -165,7 +165,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetAngleX(7, -30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
     pModFile->ReadModel("objects\\toto4.mod");
@@ -174,7 +174,7 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetAngleX(8, -30.0f*Math::PI/180.0f);
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 8);
     pModFile->ReadModel("objects\\toto5.mod");
@@ -185,10 +185,10 @@ bool CMotionToto::Create(Math::Vector pos, float angle, ObjectType type,
     m_object->SetZoom(0, 0.5f);  // is little
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
 
     delete pModFile;
     return true;
@@ -233,7 +233,7 @@ bool CMotionToto::EventProcess(const Event &event)
 {
     CMotion::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
     }
@@ -249,15 +249,15 @@ bool CMotionToto::EventFrame(const Event &event)
     Math::Vector        eye, lookat, dir, perp, nPos, aPos, pos, speed;
     Math::Vector        vibLin, vibCir, dirSpeed, aAntenna;
     Math::Point         dim;
-    POINT           wDim;
-    ParticuleType   type;
+    Math::IntPoint           wDim;
+    Gfx::ParticleType   type;
     float           progress, focus, distance, shift, verti, level, zoom;
     float           aAngle, nAngle, mAngle, angle, linSpeed, cirSpeed;
     int             sheet, i, r;
     bool            bHidden;
 
-    if ( m_engine->RetPause() &&
-         !m_main->RetInfoLock() )  return true;
+    if ( m_engine->GetPause() &&
+         !m_main->GetInfoLock() )  return true;
 
     if ( m_bDisplayInfo )  // "looks" mouse?
     {
@@ -267,13 +267,13 @@ bool CMotionToto::EventFrame(const Event &event)
     {
         bHidden = false;
 
-        if ( m_main->RetMovieLock() )  // current movie?
+        if ( m_main->GetMovieLock() )  // current movie?
         {
             bHidden = true;
         }
-        if ( !m_engine->RetTotoMode() )
+        if ( !m_engine->GetTotoMode() )
         {
-            if ( !m_main->RetEditLock() )  // current edition?
+            if ( !m_main->GetEditLock() )  // current edition?
             {
                 bHidden = true;
             }
@@ -282,8 +282,8 @@ bool CMotionToto::EventFrame(const Event &event)
 
     if ( bHidden )
     {
-        nPos = m_object->RetPosition(0);
-        m_terrain->MoveOnFloor(nPos, true);
+        nPos = m_object->GetPosition(0);
+        m_terrain->AdjustToFloor(nPos, true);
         nPos.y -= 100.0f;  // hidden under the ground!
         m_object->SetPosition(0, nPos);
         return true;
@@ -319,9 +319,9 @@ bool CMotionToto::EventFrame(const Event &event)
         m_clownDelay = 0.0f;
     }
 
-    focus  = m_engine->RetFocus();
-    eye    = m_engine->RetEyePt();
-    lookat = m_engine->RetLookatPt();
+    focus  = m_engine->GetFocus();
+    eye    = m_engine->GetEyePt();
+    lookat = m_engine->GetLookatPt();
 
     vibLin   = Math::Vector(0.0f, 0.0f, 0.0f);
     vibCir   = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -331,8 +331,8 @@ bool CMotionToto::EventFrame(const Event &event)
     // Calculates the new position.
     if ( m_bDisplayInfo )
     {
-        wDim = m_engine->RetDim();
-        nPos.x = -4.0f*((float)wDim.x/(float)wDim.y)/(640.0f/480.0f);
+        wDim = m_engine->GetWindowSize();
+        nPos.x = -4.0f*(static_cast< float >(wDim.x)/static_cast< float >(wDim.y))/(640.0f/480.0f);
         nPos.y = -0.5f;
         nPos.z =  7.0f;  // in the left margin
 
@@ -394,8 +394,8 @@ bool CMotionToto::EventFrame(const Event &event)
                     m_clownRadius = 0.0f;
                     m_clownDelay  = 2.0f+Math::Rand()*2.0f;
                 }
-                pos = m_object->RetPosition(0);
-                if ( pos.y < m_water->RetLevel() )  // underwater?
+                pos = m_object->GetPosition(0);
+                if ( pos.y < m_water->GetLevel() )  // underwater?
                 {
                     m_clownRadius /= 1.5f;
                     m_clownDelay  *= 2.0f;
@@ -432,7 +432,7 @@ bool CMotionToto::EventFrame(const Event &event)
         }
         else
         {
-            aPos = m_object->RetPosition(0);
+            aPos = m_object->GetPosition(0);
             if ( m_actionType == -1 )
             {
                 level = 4.0f;
@@ -468,7 +468,7 @@ bool CMotionToto::EventFrame(const Event &event)
     }
     level = Math::Min(linSpeed*0.1f, 1.0f);
     nAngle = nAngle*(1.0f-level) + mAngle*level;
-    aAngle = Math::NormAngle(m_object->RetAngleY(0));
+    aAngle = Math::NormAngle(m_object->GetAngleY(0));
 
     if ( nAngle < aAngle )
     {
@@ -579,7 +579,7 @@ bool CMotionToto::EventFrame(const Event &event)
     else
     {
         nPos.y += vibLin.y;
-        level = m_terrain->RetFloorLevel(nPos);
+        level = m_terrain->GetFloorLevel(nPos);
         if ( nPos.y < level+2.0f )
         {
             nPos.y = level+2.0f;  // just above the ground
@@ -717,19 +717,19 @@ bool CMotionToto::EventFrame(const Event &event)
         m_object->SetAngleX(3, 0.0f);
     }
 
-    mat = m_object->RetWorldMatrix(0);  // must be done every time!
+    mat = m_object->GetWorldMatrix(0);  // must be done every time!
 
     // Generates particles.
-    if ( m_time-m_lastMotorParticule >= m_engine->ParticuleAdapt(0.05f) )
+    if ( m_time-m_lastMotorParticle >= m_engine->ParticleAdapt(0.05f) )
     {
-        m_lastMotorParticule = m_time;
+        m_lastMotorParticle = m_time;
 
-        if ( m_bDisplayInfo )  sheet = SH_FRONT;
-        else                   sheet = SH_WORLD;
+        if ( m_bDisplayInfo )  sheet = Gfx::SH_FRONT;
+        else                   sheet = Gfx::SH_WORLD;
 
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
         if ( !m_bDisplayInfo             &&
-             pos.y < m_water->RetLevel() )  // underwater?
+             pos.y < m_water->GetLevel() )  // underwater?
         {
             float t = Math::Mod(m_time, 3.5f);
             if ( t >= 2.2f || ( t >= 1.2f && t <= 1.4f ) )  // breathe?
@@ -747,7 +747,7 @@ bool CMotionToto::EventFrame(const Event &event)
 
                 dim.x = 0.12f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
             }
         }
         else    // out of water?
@@ -760,13 +760,13 @@ bool CMotionToto::EventFrame(const Event &event)
             speed.x += (Math::Rand()-0.5f)*2.0f;
             speed.z += (Math::Rand()-0.5f)*2.0f;
 
-//          mat = m_object->RetWorldMatrix(0);
+//          mat = m_object->GetWorldMatrix(0);
             pos   = Transform(*mat, pos);
             speed = Transform(*mat, speed)-pos;
 
             dim.x = (Math::Rand()*0.4f+0.4f)*(1.0f+Math::Min(linSpeed*0.1f, 5.0f));
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTITOTO, 1.0f+Math::Rand()*1.0f, 0.0f, 1.0f, sheet);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTITOTO, 1.0f+Math::Rand()*1.0f, 0.0f, 1.0f, sheet);
         }
 
         if ( m_actionType != -1  &&  // current action?
@@ -779,21 +779,21 @@ bool CMotionToto::EventFrame(const Event &event)
             speed = Math::Vector(0.0f, 0.0f, 0.0f);
             dim.x = (Math::Rand()*0.3f+0.3f);
             dim.y = dim.x;
-            if ( m_actionType == MT_ERROR   )  type = PARTIERROR;
-            if ( m_actionType == MT_WARNING )  type = PARTIWARNING;
-            if ( m_actionType == MT_INFO    )  type = PARTIINFO;
-            if ( m_actionType == MT_MESSAGE )  type = PARTIWARNING;
-            m_particule->CreateParticule(pos, speed, dim, type, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, sheet);
+            if ( m_actionType == MT_ERROR   )  type = Gfx::PARTIERROR;
+            if ( m_actionType == MT_WARNING )  type = Gfx::PARTIWARNING;
+            if ( m_actionType == MT_INFO    )  type = Gfx::PARTIINFO;
+            if ( m_actionType == MT_MESSAGE )  type = Gfx::PARTIWARNING;
+            m_particle->CreateParticle(pos, speed, dim, type, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, sheet);
 
             pos.x = 0.50f+(Math::Rand()-0.5f)*0.80f;
             pos.y = 0.86f+(Math::Rand()-0.5f)*0.08f;
             pos.z = 0.00f;
             dim.x = (Math::Rand()*0.04f+0.04f);
             dim.y = dim.x/0.75f;
-            m_particule->CreateParticule(pos, speed, dim, type, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, SH_INTERFACE);
+            m_particle->CreateParticle(pos, speed, dim, type, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, Gfx::SH_INTERFACE);
         }
 
-//?     if ( m_bDisplayInfo && m_main->RetGlint() )
+//?     if ( m_bDisplayInfo && m_main->GetGlint() )
         if ( false )
         {
             pos.x = (Math::Rand()-0.5f)*1.4f;
@@ -803,7 +803,7 @@ bool CMotionToto::EventFrame(const Event &event)
             speed = Math::Vector(0.0f, 0.0f, 0.0f);
             dim.x = (Math::Rand()*0.5f+0.5f);
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, sheet);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIERROR, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, sheet);
 
             for ( i=0 ; i<10 ; i++ )
             {
@@ -817,7 +817,7 @@ bool CMotionToto::EventFrame(const Event &event)
                 else                pos.y = 0.92f;  // on the upper edge
                 dim.x = (Math::Rand()*0.02f+0.02f);
                 dim.y = dim.x/0.75f;
-                m_particule->CreateParticule(pos, speed, dim, PARTIERROR, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, SH_INTERFACE);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIERROR, 0.5f+Math::Rand()*0.5f, 0.0f, 1.0f, Gfx::SH_INTERFACE);
             }
         }
     }
@@ -825,7 +825,7 @@ bool CMotionToto::EventFrame(const Event &event)
     // Move the sound.
     if ( m_soundChannel != -1 )
     {
-        if ( !m_sound->Position(m_soundChannel, m_object->RetPosition(0)) )
+        if ( !m_sound->Position(m_soundChannel, m_object->GetPosition(0)) )
         {
             m_soundChannel = -1;
         }
@@ -853,7 +853,7 @@ Error CMotionToto::SetAction(int action, float time)
 
     if ( sound != SOUND_CLICK )
     {
-        m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0));
+        m_soundChannel = m_sound->Play(sound, m_object->GetPosition(0));
     }
 
     return ERR_OK;

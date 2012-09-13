@@ -686,7 +686,7 @@ bool CMotionAnt::EventFrame(const Event &event)
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*3.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
         }
 
         if ( m_progress < 0.5f )
@@ -733,7 +733,7 @@ bool CMotionAnt::EventFrame(const Event &event)
                 speed.y = Math::Rand()*2.0f;
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
             }
         }
 
@@ -777,7 +777,7 @@ bool CMotionAnt::EventFrame(const Event &event)
             speed.y = Math::Rand()*5.0f;
             dim.x = Math::Rand()*3.0f+2.0f;
             dim.y = dim.x;
-            m_particule->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
         }
 
         if ( m_progress < 0.5f )

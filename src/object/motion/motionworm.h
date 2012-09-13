@@ -34,7 +34,7 @@ public:
     bool    EventProcess(const Event &event);
 
     bool    SetParam(int rank, float value);
-    float   RetParam(int rank);
+    float   GetParam(int rank);
 
 protected:
     void    CreatePhysics();
@@ -57,6 +57,6 @@ protected:
     int         m_specAction;
     float       m_specTime;
     bool        m_bArmStop;
-    float       m_lastParticule;
+    float       m_lastParticle;
 };
 
