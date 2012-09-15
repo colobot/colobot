@@ -54,9 +54,9 @@ protected:
     float           m_progress;
     float           m_speed;
     float           m_time;
-    float           m_lastParticule;
+    float           m_lastParticle;
     int             m_soundChannel;
     bool            m_bError;
-    Math::Vector        m_terraPos;
+    Math::Vector    m_terraPos;
 };
 

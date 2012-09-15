@@ -34,14 +34,14 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_MOTION, this, 100);
 
-    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_light     = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-    m_particule = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
-    m_terrain   = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-    m_water     = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-    m_camera    = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-    m_main      = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_engine    = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_light     = static_cast< Gfx::CLight* >(m_iMan->SearchInstance(CLASS_LIGHT));
+    m_particle = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_terrain   = static_cast< Gfx::CTerrain* >(m_iMan->SearchInstance(CLASS_TERRAIN));
+    m_water     = static_cast< Gfx::CWater* >(m_iMan->SearchInstance(CLASS_WATER));
+    m_camera    = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_main      = static_cast< CRobotMain* >(m_iMan->SearchInstance(CLASS_MAIN));
+    m_sound     = static_cast< CSoundInterface* >(m_iMan->SearchInstance(CLASS_SOUND));
 
     m_object    = object;
     m_physics   = 0;
@@ -98,7 +98,7 @@ bool CMotion::EventProcess(const Event &event)
     if ( m_object->GetType() != OBJECT_TOTO &&
          m_engine->GetPause() )  return true;
 
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_actionTime;
     if ( m_progress > 1.0f )  m_progress = 1.0f;  // (*)

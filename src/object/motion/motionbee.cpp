@@ -21,7 +21,7 @@
 
 #include "object/motion/motionbee.h"
 
-#include "old/modfile.h"
+#include "graphics/engine/modelfile.h"
 #include "physics/physics.h"
 
 
@@ -66,18 +66,18 @@ void CMotionBee::DeleteObject(bool bAll)
 bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
                         float power)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 3+18+2 )  return false;
+//    if ( m_engine->GetRestCreate() < 3+18+2 )  return false;
 
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     m_object->SetType(type);
 
     // Creates main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
 
     pModFile->ReadModel("objects\\bee1.mod");
@@ -93,7 +93,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the head.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     pModFile->ReadModel("objects\\bee2.mod");
@@ -102,7 +102,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the tail.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2, rank);
     m_object->SetObjectParent(2, 0);
     pModFile->ReadModel("objects\\bee3.mod");
@@ -111,7 +111,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-back thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(3, rank);
     m_object->SetObjectParent(3, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -120,7 +120,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-back leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(4, rank);
     m_object->SetObjectParent(4, 3);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -129,7 +129,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a right-back foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(5, rank);
     m_object->SetObjectParent(5, 4);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -138,7 +138,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-right thighs.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(6, rank);
     m_object->SetObjectParent(6, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -147,7 +147,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-right legs.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(7, rank);
     m_object->SetObjectParent(7, 6);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -156,7 +156,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-right feet.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(8, rank);
     m_object->SetObjectParent(8, 7);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -165,7 +165,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right front thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(9, rank);
     m_object->SetObjectParent(9, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -174,7 +174,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right front leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(10, rank);
     m_object->SetObjectParent(10, 9);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -183,7 +183,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right front foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(11, rank);
     m_object->SetObjectParent(11, 10);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -192,7 +192,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-back thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(12, rank);
     m_object->SetObjectParent(12, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -202,7 +202,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-back leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(13, rank);
     m_object->SetObjectParent(13, 12);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -211,7 +211,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates a left-back foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(14, rank);
     m_object->SetObjectParent(14, 13);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -220,7 +220,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-left thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(15, rank);
     m_object->SetObjectParent(15, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -230,7 +230,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-left legs.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(16, rank);
     m_object->SetObjectParent(16, 15);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -239,7 +239,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates two middle-left feet.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(17, rank);
     m_object->SetObjectParent(17, 16);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -248,7 +248,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates front-left thigh.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(18, rank);
     m_object->SetObjectParent(18, 0);
     pModFile->ReadModel("objects\\ant4.mod");
@@ -258,7 +258,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates front-left leg.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(19, rank);
     m_object->SetObjectParent(19, 18);
     pModFile->ReadModel("objects\\ant5.mod");
@@ -267,7 +267,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates front-left foot.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(20, rank);
     m_object->SetObjectParent(20, 19);
     pModFile->ReadModel("objects\\ant6.mod");
@@ -276,7 +276,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the right wing.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(21, rank);
     m_object->SetObjectParent(21, 0);
     pModFile->ReadModel("objects\\bee7.mod");
@@ -285,7 +285,7 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the left wing.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(22, rank);
     m_object->SetObjectParent(22, 0);
     pModFile->ReadModel("objects\\bee7.mod");
@@ -298,10 +298,10 @@ bool CMotionBee::Create(Math::Vector pos, float angle, ObjectType type,
     CreatePhysics();
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
 
     delete pModFile;
     return true;
@@ -348,7 +348,7 @@ void CMotionBee::CreatePhysics()
 
     m_physics->SetType(TYPE_FLYING);
 
-    character = m_object->RetCharacter();
+    character = m_object->GetCharacter();
     character->wheelFront = 3.0f;
     character->wheelBack  = 3.0f;
     character->wheelLeft  = 5.0f;
@@ -394,12 +394,12 @@ bool CMotionBee::EventProcess(const Event &event)
 {
     CMotion::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
     }
 
-    if ( event.event == EVENT_KEYDOWN )
+    if ( event.type == EVENT_KEY_DOWN )
     {
 #if ADJUST_ANGLE
         int     i;
@@ -441,11 +441,11 @@ bool CMotionBee::EventFrame(const Event &event)
     int             action, i, st, nd;
     bool            bStop;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return true;
 
-    s =     m_physics->RetLinMotionX(MO_MOTSPEED)*0.30f;
-    a = fabs(m_physics->RetCirMotionY(MO_MOTSPEED)*2.00f);
+    s =     m_physics->GetLinMotionX(MO_MOTSPEED)*0.30f;
+    a = fabs(m_physics->GetCirMotionY(MO_MOTSPEED)*2.00f);
 
     if ( s == 0.0f && a != 0.0f )  a *= 1.5f;
 
@@ -454,7 +454,7 @@ bool CMotionBee::EventFrame(const Event &event)
     m_armMember += (s+a)*event.rTime*0.15f;
 
     bStop = ( a == 0.0f && s == 0.0f );  // stopped?
-    if ( !m_physics->RetLand() )  bStop = true;
+    if ( !m_physics->GetLand() )  bStop = true;
 
     if ( bStop )
     {
@@ -467,13 +467,13 @@ bool CMotionBee::EventFrame(const Event &event)
     action = MB_MARCH;  // flying
 
     m_actionType = -1;
-    if ( m_object->RetFret() != 0 )  m_actionType = MBS_HOLD;  // carries the ball
+    if ( m_object->GetFret() != 0 )  m_actionType = MBS_HOLD;  // carries the ball
 
-    if ( m_object->RetRuin() )  // destroyed?
+    if ( m_object->GetRuin() )  // destroyed?
     {
         m_actionType = MBS_RUIN;
     }
-    if ( m_object->RetBurn() )  // burning?
+    if ( m_object->GetBurn() )  // burning?
     {
         m_actionType = MBS_BURN;
     }
@@ -491,7 +491,7 @@ bool CMotionBee::EventFrame(const Event &event)
             else          prog = Math::Mod(m_armMember+(2.0f-(i%3))*0.33f+0.3f, 1.0f);
             if ( m_bArmStop )
             {
-                prog = (float)m_armTimeIndex/3.0f;
+                prog = static_cast< float >(m_armTimeIndex/3.0f);
             }
             if ( prog < 0.33f )  // t0..t1 ?
             {
@@ -542,7 +542,7 @@ bool CMotionBee::EventFrame(const Event &event)
     }
 
 #if ADJUST_ANGLE
-    if ( m_object->RetSelect() )
+    if ( m_object->GetSelect() )
     {
         char s[100];
         sprintf(s, "A:time=%d Q:part=%d W:member=%d", m_armTimeIndex, m_armPartIndex, m_armMemberIndex);
@@ -550,12 +550,12 @@ bool CMotionBee::EventFrame(const Event &event)
     }
 #endif
 
-    if ( m_physics->RetLand() )  // on the ground?
+    if ( m_physics->GetLand() )  // on the ground?
     {
-        if ( m_object->RetRuin() )
+        if ( m_object->GetRuin() )
         {
         }
-        else if ( bStop || m_object->RetBurn() )
+        else if ( bStop || m_object->GetBurn() )
         {
             m_object->SetAngleZ(2, sinf(m_armTimeAbs*1.7f)*0.15f+0.35f);  // tail
         }
@@ -595,7 +595,7 @@ bool CMotionBee::EventFrame(const Event &event)
         }
     }
 
-    if ( m_physics->RetLand() )
+    if ( m_physics->GetLand() )
     {
         if ( bStop )  prog = 0.05f;
         else          prog = 0.15f;
@@ -628,7 +628,7 @@ bool CMotionBee::EventFrame(const Event &event)
     m_object->SetAngleY(1, sinf(m_armTimeAbs*2.1f)*0.50f);  // head
 
 #if 0
-    h = m_terrain->RetFloorHeight(RetPosition(0));
+    h = m_terrain->GetFloorHeight(GetPosition(0));
     radius = 4.0f+h/4.0f;
     color.r = 0.3f+h/80.0f;
     color.g = color.r;

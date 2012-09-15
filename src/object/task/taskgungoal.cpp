@@ -16,9 +16,6 @@
 
 // taskgungoal.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskgungoal.h"
 
 #include "object/object.h"
@@ -46,8 +43,8 @@ bool CTaskGunGoal::EventProcess(const Event &event)
 {
     float       dir;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
 
@@ -82,9 +79,9 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
     float   speedV, speedH;
     int     i;
 
-    m_initialDirV = m_object->RetGunGoalV();
+    m_initialDirV = m_object->GetGunGoalV();
     m_object->SetGunGoalV(dirV);
-    m_finalDirV = m_object->RetGunGoalV();  // possible direction
+    m_finalDirV = m_object->GetGunGoalV();  // possible direction
     m_object->SetGunGoalV(m_initialDirV);  // gives initial direction
 
     if ( m_finalDirV == m_initialDirV )
@@ -96,9 +93,9 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
         speedV = 1.0f/(fabs(m_finalDirV-m_initialDirV)*1.0f);
     }
 
-    m_initialDirH = m_object->RetGunGoalH();
+    m_initialDirH = m_object->GetGunGoalH();
     m_object->SetGunGoalH(dirH);
-    m_finalDirH = m_object->RetGunGoalH();  // possible direction
+    m_finalDirH = m_object->GetGunGoalH();  // possible direction
     m_object->SetGunGoalH(m_initialDirH);  // gives initial direction
 
     if ( m_finalDirH == m_initialDirH )
@@ -115,7 +112,7 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
     if ( m_finalDirV != m_initialDirV ||
          m_finalDirH != m_initialDirH )
     {
-        i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.3f, 1.5f, true);
+        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.3f, 1.5f, true);
         m_sound->AddEnvelope(i, 0.3f, 1.5f, 1.0f/m_speed, SOPER_STOP);
     }
 
@@ -128,7 +125,7 @@ Error CTaskGunGoal::Start(float dirV, float dirH)
 
 Error CTaskGunGoal::IsEnded()
 {
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
 
     if ( m_initialDirV == m_finalDirV &&
          m_initialDirH == m_finalDirH )  return ERR_STOP;

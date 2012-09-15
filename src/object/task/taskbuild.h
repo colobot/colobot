@@ -63,23 +63,23 @@ protected:
     void        DeleteMark(Math::Vector pos, float radius);
 
 protected:
-    ObjectType      m_type;         // type of construction
-    CObject*        m_metal;        // transforms metal object
-    CObject*        m_power;        // the vehicle battery
-    CObject*        m_building;     // building built
-    TaskBuildPhase      m_phase;        // phase of the operation
-    bool            m_bError;       // true -> operation impossible
-    bool            m_bBuild;       // true -> building built
-    bool            m_bBlack;       // true -> lights black -> white
-    float           m_time;         // absolute time
-    float           m_lastParticule;    // time of generation last particle
-    float           m_progress;     // progression (0..1)
-    float           m_speed;        // speed of progression
-    float           m_angleY;       // rotation angle of the vehicle
-    float           m_angleZ;       // angle of rotation of the gun
-    Math::Vector        m_buildingPos;      // initial position of the building
-    float           m_buildingHeight;   // height of the building
-    int         m_lightRank[TBMAXLIGHT];// lights for the effects
-    int         m_soundChannel;
+    ObjectType      m_type;                  // type of construction
+    CObject*        m_metal;                 // transforms metal object
+    CObject*        m_power;                 // the vehicle battery
+    CObject*        m_building;              // building built
+    TaskBuildPhase  m_phase;                 // phase of the operation
+    bool            m_bError;                // true -> operation impossible
+    bool            m_bBuild;                // true -> building built
+    bool            m_bBlack;                // true -> lights black -> white
+    float           m_time;                  // absolute time
+    float           m_lastParticle;          // time of generation last particle
+    float           m_progress;              // progression (0..1)
+    float           m_speed;                 // speed of progression
+    float           m_angleY;                // rotation angle of the vehicle
+    float           m_angleZ;                // angle of rotation of the gun
+    Math::Vector    m_buildingPos;           // initial position of the building
+    float           m_buildingHeight;        // height of the building
+    int             m_lightRank[TBMAXLIGHT]; // lights for the effects
+    int             m_soundChannel;
 };
 

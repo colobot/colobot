@@ -66,6 +66,7 @@ struct Light
     float           attenuation2;
     //! Angle of spotlight cone (0-90 degrees)
     float           spotAngle;
+
     //! Intensity of spotlight (0 = uniform; 128 = most intense)
     float           spotIntensity;
 

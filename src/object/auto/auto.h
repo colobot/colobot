@@ -95,8 +95,8 @@ protected:
     Gfx::CLightManager* m_lightMan;
     Gfx::CTerrain*      m_terrain;
     Gfx::CWater*        m_water;
-    Gfx::CCloud  *      m_cloud;
-    Gfx::CPlanet *      m_planet;
+    Gfx::CCloud*        m_cloud;
+    Gfx::CPlanet*       m_planet;
     Gfx::CLightning*    m_lightning;
     Gfx::CCamera*       m_camera;
     Ui::CInterface*     m_interface;

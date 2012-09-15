@@ -76,7 +76,7 @@ void CAutoNest::Init()
     m_lastParticle = 0.0f;
 
     pos = m_object->GetPosition(0);
-    m_terrain->MoveOnFloor(pos);
+    m_terrain->AdjustToFloor(pos);
     m_fretPos = pos;
 }
 

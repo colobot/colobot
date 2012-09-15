@@ -17,67 +17,65 @@
 // robotmain.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+#include "object/robotmain.h"
 
 #include "CBot/CBotDll.h"
-#include "common/struct.h"
-#include "math/const.h"
-#include "math/geometry.h"
-#include "math/conv.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "common/language.h"
-#include "common/global.h"
+
+#include "app/app.h"
 #include "common/event.h"
+#include "common/global.h"
+#include "common/iman.h"
 #include "common/misc.h"
 #include "common/profile.h"
-#include "common/iman.h"
 #include "common/restext.h"
-#include "old/math3d.h"
-#include "old/light.h"
-#include "old/particule.h"
-#include "old/terrain.h"
-#include "old/water.h"
-#include "old/cloud.h"
-#include "old/blitz.h"
-#include "old/planet.h"
-#include "object/object.h"
-#include "object/motion/motion.h"
-#include "object/motion/motiontoto.h"
-#include "object/motion/motionhuman.h"
-#include "physics/physics.h"
-#include "object/brain.h"
-#include "old/pyro.h"
-#include "old/modfile.h"
-#include "old/model.h"
-#include "old/camera.h"
-#include "object/task/task.h"
-#include "object/task/taskmanip.h"
-#include "object/task/taskbuild.h"
+#include "graphics/engine/camera.h"
+#include "graphics/engine/cloud.h"
+#include "graphics/engine/engine.h"
+#include "graphics/engine/lightman.h"
+#include "graphics/engine/lightning.h"
+#include "graphics/engine/modelfile.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/planet.h"
+#include "graphics/engine/pyro.h"
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/text.h"
+#include "graphics/engine/water.h"
+#include "math/const.h"
+#include "math/geometry.h"
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
-#include "ui/displayinfo.h"
-#include "ui/interface.h"
-#include "ui/shortcut.h"
-#include "ui/map.h"
-#include "ui/label.h"
-#include "ui/button.h"
-#include "ui/slider.h"
-#include "ui/window.h"
-#include "ui/edit.h"
-#include "ui/displaytext.h"
-#include "old/text.h"
-#include "old/sound.h"
+#include "object/brain.h"
+#include "object/mainmovie.h"
+#include "object/motion/motion.h"
+#include "object/motion/motionhuman.h"
+#include "object/motion/motiontoto.h"
+#include "object/object.h"
+#include "object/task/task.h"
+#include "object/task/taskbuild.h"
+#include "object/task/taskmanip.h"
+#include "physics/physics.h"
 #include "script/cbottoken.h"
 #include "script/cmdtoken.h"
-#include "object/mainmovie.h"
-#include "ui/maindialog.h"
-#include "ui/mainshort.h"
-#include "ui/mainmap.h"
 #include "script/script.h"
-#include "object/robotmain.h"
+#include "sound/sound.h"
+#include "ui/button.h"
+#include "ui/displayinfo.h"
+#include "ui/displaytext.h"
+#include "ui/edit.h"
+#include "ui/interface.h"
+#include "ui/label.h"
+#include "ui/maindialog.h"
+#include "ui/mainmap.h"
+#include "ui/mainshort.h"
+#include "ui/map.h"
+#include "ui/shortcut.h"
+#include "ui/slider.h"
+#include "ui/window.h"
+
+
+
+// TODO: remove once using std::string
+const int MAX_FNAME = 255;
 
 
 
@@ -109,9 +107,7 @@ static char*        m_filesDir;
 
 void PrepareFilename(CBotString &filename)
 {
-    int         pos;
-
-    pos = filename.ReverseFind('\\');
+    int pos = filename.ReverseFind('\\');
     if ( pos > 0 )
     {
         filename = filename.Mid(pos+1);  // Remove files with
@@ -600,38 +596,33 @@ bool rPoint(CBotVar* pThis, CBotVar* var, CBotVar* pResult, int& Exception)
 
 
 
-// Constructor of robot application.
-
-CRobotMain::CRobotMain(CInstanceManager* iMan)
+//! Constructor of robot application
+CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
 {
-    ObjectType  type;
-    float       fValue;
-    int         iValue, i;
-    char*       token;
-
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_MAIN, this);
 
-    m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_light     = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-    m_particle = (CParticle*)m_iMan->SearchInstance(CLASS_PARTICULE);
-    m_water     = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-    m_cloud     = (CCloud*)m_iMan->SearchInstance(CLASS_CLOUD);
-    m_blitz     = (CBlitz*)m_iMan->SearchInstance(CLASS_BLITZ);
-    m_planet    = (CPlanet*)m_iMan->SearchInstance(CLASS_PLANET);
-    m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_app = app;
 
-    m_interface   = new CInterface(m_iMan);
-    m_terrain     = new CTerrain(m_iMan);
-    m_model       = new CModel(m_iMan);
-    m_camera      = new CCamera(m_iMan);
-    m_displayText = new CDisplayText(m_iMan);
+    m_eventQueue     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
+    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_lightMan  = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
+    m_particle  = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_water     = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
+    m_cloud     = static_cast<Gfx::CCloud*>(m_iMan->SearchInstance(CLASS_CLOUD));
+    m_lightning = static_cast<Gfx::CLightning*>(m_iMan->SearchInstance(CLASS_BLITZ));
+    m_planet    = static_cast<Gfx::CPlanet*>(m_iMan->SearchInstance(CLASS_PLANET));
+    m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+
+    m_interface   = new Ui::CInterface();
+    m_terrain     = new Gfx::CTerrain(m_iMan);
+    m_camera      = new Gfx::CCamera(m_iMan);
+    m_displayText = new Ui::CDisplayText();
     m_movie       = new CMainMovie(m_iMan);
-    m_dialog      = new CMainDialog(m_iMan);
-    m_short       = new CMainShort(m_iMan);
-    m_map         = new CMainMap(m_iMan);
-    m_displayInfo = 0;
+    m_dialog      = new Ui::CMainDialog(m_iMan);
+    m_short       = new Ui::CMainShort();
+    m_map         = new Ui::CMainMap();
+    m_displayInfo = nullptr;
 
     m_engine->SetTerrain(m_terrain);
     m_filesDir = m_dialog->GetFilesDir();
@@ -646,32 +637,32 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     m_visitObject = 0;
     m_visitArrow  = 0;
     m_audioTrack  = 0;
-    m_bAudioRepeat = true;
+    m_audioRepeat = true;
     m_delayWriteMessage = 0;
     m_selectObject = 0;
     m_infoUsed     = 0;
 
-    m_bBeginSatCom  = false;
-    m_bMovieLock    = false;
-    m_bSatComLock   = false;
-    m_bEditLock     = false;
-    m_bEditFull     = false;
-    m_bPause        = false;
-    m_bHighlight       = false;
-    m_bFreePhoto    = false;
-    m_bShowPos      = false;
-    m_bSelectInsect = false;
-    m_bShowSoluce   = false;
-    m_bShowAll      = false;
-    m_bCheatRadar   = false;
-    m_bFixScene     = false;
-    m_bTrainerPilot = false;
-    m_bSuspend      = false;
-    m_bFriendAim    = false;
-    m_bResetCreate  = false;
-    m_bShortCut     = true;
+    m_beginSatCom  = false;
+    m_movieLock    = false;
+    m_satComLock   = false;
+    m_editLock     = false;
+    m_editFull     = false;
+    m_pause        = false;
+    m_hilite       = false;
+    m_freePhoto    = false;
+    m_showPos      = false;
+    m_selectInsect = false;
+    m_showSoluce   = false;
+    m_showAll      = false;
+    m_cheatRadar   = false;
+    m_fixScene     = false;
+    m_trainerPilot = false;
+    m_suspend      = false;
+    m_friendAim    = false;
+    m_resetCreate  = false;
+    m_shortCut     = true;
 
-    m_engine->SetMovieLock(m_bMovieLock);
+    m_engine->SetMovieLock(m_movieLock);
 
     m_movie->Flush();
     m_movieInfoIndex = -1;
@@ -682,7 +673,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
 
     m_endingWinRank   = 0;
     m_endingLostRank  = 0;
-    m_bWinTerminate   = false;
+    m_winTerminate   = false;
 
     FlushDisplayInfo();
 
@@ -690,22 +681,27 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     m_windowPos = Math::Point(0.15f, 0.17f);
     m_windowDim = Math::Point(0.70f, 0.66f);
 
-    if ( GetLocalProfileFloat("Edit", "FontSize",    fValue) )  m_fontSize    = fValue;
-    if ( GetLocalProfileFloat("Edit", "WindowPos.x", fValue) )  m_windowPos.x = fValue;
-    if ( GetLocalProfileFloat("Edit", "WindowPos.y", fValue) )  m_windowPos.y = fValue;
-    if ( GetLocalProfileFloat("Edit", "WindowDim.x", fValue) )  m_windowDim.x = fValue;
-    if ( GetLocalProfileFloat("Edit", "WindowDim.y", fValue) )  m_windowDim.y = fValue;
+    float fValue;
+    int iValue;
+
+    /* TODO: profile
+    if (GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
+    if (GetLocalProfileFloat("Edit", "WindowPos.x", fValue)) m_windowPos.x = fValue;
+    if (GetLocalProfileFloat("Edit", "WindowPos.y", fValue)) m_windowPos.y = fValue;
+    if (GetLocalProfileFloat("Edit", "WindowDim.x", fValue)) m_windowDim.x = fValue;
+    if (GetLocalProfileFloat("Edit", "WindowDim.y", fValue)) m_windowDim.y = fValue; */
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
     m_IOPos.x = (1.0f-m_IODim.x)/2.0f;  // in the middle
     m_IOPos.y = (1.0f-m_IODim.y)/2.0f;
 
-    if ( GetLocalProfileInt  ("Edit", "IOPublic", iValue) )  m_IOPublic = iValue;
-    if ( GetLocalProfileFloat("Edit", "IOPos.x",  fValue) )  m_IOPos.x  = fValue;
-    if ( GetLocalProfileFloat("Edit", "IOPos.y",  fValue) )  m_IOPos.y  = fValue;
-    if ( GetLocalProfileFloat("Edit", "IODim.x",  fValue) )  m_IODim.x  = fValue;
-    if ( GetLocalProfileFloat("Edit", "IODim.y",  fValue) )  m_IODim.y  = fValue;
+    /* TODO: profile
+    if (GetLocalProfileInt  ("Edit", "IOPublic", iValue)) m_IOPublic = iValue;
+    if (GetLocalProfileFloat("Edit", "IOPos.x",  fValue)) m_IOPos.x  = fValue;
+    if (GetLocalProfileFloat("Edit", "IOPos.y",  fValue)) m_IOPos.y  = fValue;
+    if (GetLocalProfileFloat("Edit", "IODim.x",  fValue)) m_IODim.x  = fValue;
+    if (GetLocalProfileFloat("Edit", "IODim.y",  fValue)) m_IODim.y  = fValue; */
 
     m_short->FlushShortcuts();
     InitEye();
@@ -722,14 +718,15 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     g_unit = 4.0f;
 
     m_gamerName[0] = 0;
-    GetProfile()->GetLocalProfileString("Gamer", "LastName", m_gamerName, 100);
+    /* TODO: profile
+    GetLocalProfileString("Gamer", "LastName", m_gamerName, 100); */
     SetGlobalGamerName(m_gamerName);
     ReadFreeParam();
     m_dialog->SetupRecall();
 
-    for ( i=0 ; i<MAXSHOWLIMIT ; i++ )
+    for (int i = 0; i < MAXSHOWLIMIT; i++)
     {
-        m_showLimit[i].bUsed = false;
+        m_showLimit[i].used = false;
         m_showLimit[i].total = 0;
         m_showLimit[i].link = 0;
     }
@@ -737,19 +734,16 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     CBotProgram::SetTimer(100);
     CBotProgram::Init();
 
-    for ( i=0 ; i<OBJECT_MAX ; i++ )
+    for (int i = 0; i < OBJECT_MAX; i++)
     {
-        type = (ObjectType)i;
-        token = GetObjectName(type);
-        if ( token[0] != 0 )
-        {
+        ObjectType type = (ObjectType)i;
+        const char* token = GetObjectName(type);
+        if (token[0] != 0)
             CBotProgram::DefineNum(token, type);
-        }
-        token = RetObjectAlias(type);
-        if ( token[0] != 0 )
-        {
+
+        token = GetObjectAlias(type);
+        if (token[0] != 0)
             CBotProgram::DefineNum(token, type);
-        }
     }
 
     CBotProgram::DefineNum("White",      0);
@@ -778,17 +772,18 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     CBotProgram::DefineNum("Behind",     TMA_FBACK);
     CBotProgram::DefineNum("EnergyCell", TMA_POWER);
 
-    CBotProgram::DefineNum("DisplayError",   TT_ERROR);
-    CBotProgram::DefineNum("DisplayWarning", TT_WARNING);
-    CBotProgram::DefineNum("DisplayInfo",    TT_INFO);
-    CBotProgram::DefineNum("DisplayMessage", TT_MESSAGE);
+    CBotProgram::DefineNum("DisplayError",   Ui::TT_ERROR);
+    CBotProgram::DefineNum("DisplayWarning", Ui::TT_WARNING);
+    CBotProgram::DefineNum("DisplayInfo",    Ui::TT_INFO);
+    CBotProgram::DefineNum("DisplayMessage", Ui::TT_MESSAGE);
 
     CBotProgram::DefineNum("FilterNone",        FILTER_NONE);
     CBotProgram::DefineNum("FilterOnlyLanding", FILTER_ONLYLANDING);
     CBotProgram::DefineNum("FilterOnlyFliying", FILTER_ONLYFLYING);
 
-    // Add the class Point.
     CBotClass* bc;
+
+    // Add the class Point.
     bc = new CBotClass("point", NULL, true);  // intrinsic class
     bc->AddItem("x", CBotTypFloat);
     bc->AddItem("y", CBotTypFloat);
@@ -817,8 +812,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     CScript::InitFonctions();
 }
 
-// Destructor of robot application.
-
+//! Destructor of robot application
 CRobotMain::~CRobotMain()
 {
     delete m_movie;
@@ -826,59 +820,47 @@ CRobotMain::~CRobotMain()
     delete m_short;
     delete m_map;
     delete m_terrain;
-    delete m_model;
+
+    m_iMan = nullptr;
+    m_app = nullptr;
 }
 
 
-// Creates the file colobot.ini at the first time.
-
+//! Creates the file colobot.ini at the first time
 void CRobotMain::CreateIni()
 {
-    int     iValue;
-
-    // colobot.ini don't exist?
-    if ( !GetLocalProfileInt("Setup", "TotoMode", iValue) )
-    {
-        m_dialog->SetupMemorize();
-    }
+    /* TODO: profile
+    int iValue;
+    // colobot.ini doesn't exist?
+    if (!GetLocalProfileInt("Setup", "TotoMode", iValue))
+        m_dialog->SetupMemorize();*/
 }
 
 
-// Changes phase.
-
+//! Changes phase
 void CRobotMain::ChangePhase(Phase phase)
 {
-    CEdit*          pe;
-    CButton*        pb;
-    D3DCOLORVALUE   color;
-    Math::Point         pos, dim, ddim;
-    float           ox, oy, sx, sy;
-    char*           read;
-    int             rank, numTry;
-    bool            bLoading;
-
-    if ( m_phase == PHASE_SIMUL )  // ends a simulation?
+    if (m_phase == PHASE_SIMUL)  // ends a simulation?
     {
         SaveAllScript();
         m_sound->StopMusic();
         m_camera->SetObject(0);
 
-#if _SCHOOL
+/* TODO: #if _SCHOOL
         if ( true )
-#else
-        if ( m_gameTime > 10.0f )  // did you play at least 10 seconds?
-#endif
+#else*/
+        if (m_gameTime > 10.0f)  // did you play at least 10 seconds?
         {
-            rank = m_dialog->GetSceneRank();
-            numTry = m_dialog->GetGamerInfoTry(rank);
+            int rank = m_dialog->GetSceneRank();
+            int numTry = m_dialog->GetGamerInfoTry(rank);
             m_dialog->SetGamerInfoTry(rank, numTry+1);
             m_dialog->WriteGamerInfo();
         }
     }
 
-    if ( phase == PHASE_WIN )  // wins a simulation?
+    if (phase == PHASE_WIN)  // wins a simulation?
     {
-        rank = m_dialog->GetSceneRank();
+        int rank = m_dialog->GetSceneRank();
         m_dialog->SetGamerInfoPassed(rank, true);
         m_dialog->NextMission();  // passes to the next mission
         m_dialog->WriteGamerInfo();
@@ -889,186 +871,119 @@ void CRobotMain::ChangePhase(Phase phase)
     m_phase        = phase;
     m_winDelay     = 0.0f;
     m_lostDelay    = 0.0f;
-    m_bBeginSatCom = false;
-    m_bMovieLock   = false;
-    m_bSatComLock  = false;
-    m_bEditLock    = false;
-    m_bFreePhoto   = false;
-    m_bResetCreate = false;
+    m_beginSatCom = false;
+    m_movieLock   = false;
+    m_satComLock  = false;
+    m_editLock    = false;
+    m_freePhoto   = false;
+    m_resetCreate = false;
 
-    m_engine->SetMovieLock(m_bMovieLock);
+    m_engine->SetMovieLock(m_movieLock);
     ChangePause(false);
     FlushDisplayInfo();
     m_engine->SetRankView(0);
     m_engine->FlushObject();
-    color.r = color.g = color.b = color.a = 0.0f;
-    m_engine->SetWaterAddColor(color);
+    m_engine->SetWaterAddColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
     m_engine->SetBackground("");
     m_engine->SetBackForce(false);
-    m_engine->SetFrontsizeName("");
+    m_engine->SetForegroundName("");
     m_engine->SetOverColor();
-    m_engine->GroundMarkDelete(0);
+    m_engine->DeleteGroundMark(0);
     SetSpeed(1.0f);
     m_terrain->SetWind(Math::Vector(0.0f, 0.0f, 0.0f));
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
-    m_light->FlushLight();
-    m_particle->FlushParticule();
+    m_lightMan->FlushLights();
+    m_particle->FlushParticle();
     m_water->Flush();
     m_cloud->Flush();
-    m_blitz->Flush();
+    m_lightning->Flush();
     m_planet->Flush();
     m_iMan->Flush(CLASS_OBJECT);
     m_iMan->Flush(CLASS_PHYSICS);
     m_iMan->Flush(CLASS_BRAIN);
     m_iMan->Flush(CLASS_PYRO);
-    m_model->StopUserAction();
     m_interface->Flush();
     ClearInterface();
     FlushNewScriptName();
     m_sound->SetListener(Math::Vector(0.0f, 0.0f, 0.0f), Math::Vector(0.0f, 0.0f, 1.0f));
-    m_camera->SetType(CAMERA_DIALOG);
+    m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
     m_movie->Flush();
     m_movieInfoIndex = -1;
     m_cameraPan  = 0.0f;
     m_cameraZoom = 0.0f;
-    m_bShortCut = true;
+    m_shortCut = true;
+
+    Math::Point dim, pos;
 
     // Creates and hide the command console.
     dim.x = 200.0f/640.0f;
     dim.y =  18.0f/480.0f;
     pos.x =  50.0f/640.0f;
     pos.y = 452.0f/480.0f;
-    pe = m_interface->CreateEdit(pos, dim, 0, EVENT_CMD);
-    if ( pe == 0 )  return;
-    pe->ClearState(STATE_VISIBLE);
-    m_bCmdEdit = false;  // hidden for now
+    Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->CreateEdit(pos, dim, 0, EVENT_CMD));
+    if (pe == nullptr) return;
+    pe->ClearState(Ui::STATE_VISIBLE);
+    m_cmdEdit = false;  // hidden for now
 
     // Creates the speedometer.
-#if _TEEN
+/* TODO: #if _TEEN
     dim.x =  30.0f/640.0f;
     dim.y =  20.0f/480.0f;
     pos.x =   4.0f/640.0f;
     pos.y = 454.0f/480.0f;
-#else
+#else*/
     dim.x =  30.0f/640.0f;
     dim.y =  20.0f/480.0f;
     pos.x =   4.0f/640.0f;
     pos.y = 426.0f/480.0f;
-#endif
-    pb = m_interface->CreateButton(pos, dim, 0, EVENT_SPEED);
-    if ( pb == 0 )  return;
-    pb->SetState(STATE_SIMPLY);
-    pb->ClearState(STATE_VISIBLE);
+
+    Ui::CButton* pb = m_interface->CreateButton(pos, dim, 0, EVENT_SPEED);
+    if (pb == nullptr) return;
+    pb->SetState(Ui::STATE_SIMPLY);
+    pb->ClearState(Ui::STATE_VISIBLE);
 
     m_dialog->ChangePhase(m_phase);
 
     dim.x = 32.0f/640.0f;
     dim.y = 32.0f/480.0f;
-    ox = 3.0f/640.0f;
-    oy = 3.0f/480.0f;
-    sx = (32.0f+2.0f)/640.0f;
-    sy = (32.0f+2.0f)/480.0f;
+    float ox = 3.0f/640.0f;
+    float oy = 3.0f/480.0f;
+    float sx = (32.0f+2.0f)/640.0f;
+    float sy = (32.0f+2.0f)/480.0f;
 
-    if ( m_phase != PHASE_PERSO )
+    if (m_phase != PHASE_PERSO)
     {
         m_engine->SetDrawWorld(true);
         m_engine->SetDrawFront(false);
-        m_bFixScene = false;
+        m_fixScene = false;
     }
 
-    if ( m_phase == PHASE_INIT )
+    if (m_phase == PHASE_INIT)
     {
-#if _NEWLOOK
-        m_engine->FreeTexture("generna.tga");
-        m_engine->FreeTexture("genernb.tga");
-        m_engine->FreeTexture("genernc.tga");
-        m_engine->FreeTexture("genernd.tga");
-#else
-#if _FRENCH
-#if _DEMO
-        m_engine->FreeTexture("genedfa.tga");
-        m_engine->FreeTexture("genedfb.tga");
-        m_engine->FreeTexture("genedfc.tga");
-        m_engine->FreeTexture("genedfd.tga");
-#else
-        m_engine->FreeTexture("generfa.tga");
-        m_engine->FreeTexture("generfb.tga");
-        m_engine->FreeTexture("generfc.tga");
-        m_engine->FreeTexture("generfd.tga");
-#endif
-#endif
-#if _ENGLISH
-#if _DEMO
-        m_engine->FreeTexture("genedea.tga");
-        m_engine->FreeTexture("genedeb.tga");
-        m_engine->FreeTexture("genedec.tga");
-        m_engine->FreeTexture("geneded.tga");
-#else
-        m_engine->FreeTexture("generea.tga");
-        m_engine->FreeTexture("genereb.tga");
-        m_engine->FreeTexture("generec.tga");
-        m_engine->FreeTexture("genered.tga");
-#endif
-#endif
-#if _GERMAN
-#if _DEMO
-        m_engine->FreeTexture("genedda.tga");
-        m_engine->FreeTexture("geneddb.tga");
-        m_engine->FreeTexture("geneddc.tga");
-        m_engine->FreeTexture("geneddd.tga");
-#else
-        m_engine->FreeTexture("generea.tga");
-        m_engine->FreeTexture("genereb.tga");
-        m_engine->FreeTexture("generec.tga");
-        m_engine->FreeTexture("genered.tga");
-#endif
-#endif
-#if _WG
-#if _DEMO
-        m_engine->FreeTexture("genedda.tga");
-        m_engine->FreeTexture("geneddb.tga");
-        m_engine->FreeTexture("geneddc.tga");
-        m_engine->FreeTexture("geneddd.tga");
-#else
-        m_engine->FreeTexture("generda.tga");
-        m_engine->FreeTexture("generdb.tga");
-        m_engine->FreeTexture("generdc.tga");
-        m_engine->FreeTexture("generdd.tga");
-#endif
-#endif
-#if _POLISH
-#if _DEMO
-        m_engine->FreeTexture("genedpa.tga");
-        m_engine->FreeTexture("genedpb.tga");
-        m_engine->FreeTexture("genedpc.tga");
-        m_engine->FreeTexture("genedpd.tga");
-#else
-        m_engine->FreeTexture("generpa.tga");
-        m_engine->FreeTexture("generpb.tga");
-        m_engine->FreeTexture("generpc.tga");
-        m_engine->FreeTexture("generpd.tga");
-#endif
-#endif
-#endif
+        // TODO: replace with new textures once done
+        m_engine->DeleteTexture("generna.png");
+        m_engine->DeleteTexture("genernb.png");
+        m_engine->DeleteTexture("genernc.png");
+        m_engine->DeleteTexture("genernd.png");
     }
 
-    if ( m_phase == PHASE_SIMUL )
+    if (m_phase == PHASE_SIMUL)
     {
-        m_engine->FreeTexture("inter01a.tga");
-        m_engine->FreeTexture("inter01b.tga");
-        m_engine->FreeTexture("inter01c.tga");
-        m_engine->FreeTexture("inter01d.tga");
+        m_engine->DeleteTexture("inter01a.png");
+        m_engine->DeleteTexture("inter01b.png");
+        m_engine->DeleteTexture("inter01c.png");
+        m_engine->DeleteTexture("inter01d.png");
 
-        read = m_dialog->GetSceneRead();
-        bLoading = (read[0] != 0);
+        char* read = m_dialog->GetSceneRead();
+        bool loading = (read[0] != 0);
 
         m_map->CreateMap();
         CreateScene(m_dialog->GetSceneSoluce(), false, false);  // interactive scene
-        if ( m_bMapImage )
-        {
+        if (m_mapImage)
             m_map->SetFixImage(m_mapFilename);
-        }
+
+        Math::Point ddim;
 
         pos.x = 620.0f/640.0f;
         pos.y = 460.0f/480.0f;
@@ -1076,58 +991,57 @@ void CRobotMain::ChangePhase(Phase phase)
         ddim.y = 20.0f/480.0f;
         m_interface->CreateButton(pos, ddim, 11, EVENT_BUTTON_QUIT);
 
-        if ( m_bImmediatSatCom && !bLoading        &&
-             m_infoFilename[SATCOM_HUSTON][0] != 0 )
-        {
+        if (m_immediatSatCom && !loading  &&
+            m_infoFilename[SATCOM_HUSTON][0] != 0)
             StartDisplayInfo(SATCOM_HUSTON, false);  // shows the instructions
-        }
 
         m_sound->StopMusic();
-        if ( !m_bBase || bLoading )  StartMusic();
+        if (!m_base || loading) StartMusic();
     }
 
-    if ( m_phase == PHASE_WIN )
+    if (m_phase == PHASE_WIN)
     {
-        if ( m_endingWinRank == -1 )
+        if (m_endingWinRank == -1)
         {
             ChangePhase(PHASE_TERM);
         }
         else
         {
-#if _TEEN
-            m_bWinTerminate = (m_endingWinRank == 900);
+/* TODO: #if _TEEN
+            m_winTerminate = (m_endingWinRank == 900);
             m_dialog->SetSceneName("teenw");
-#else
-            m_bWinTerminate = (m_endingWinRank == 904);
+#else*/
+            m_winTerminate = (m_endingWinRank == 904);
             m_dialog->SetSceneName("win");
-#endif
+
             m_dialog->SetSceneRank(m_endingWinRank);
             CreateScene(false, true, false);  // sets scene
 
             pos.x = ox+sx*1;  pos.y = oy+sy*1;
+            Math::Point ddim;
             ddim.x = dim.x*2;  ddim.y = dim.y*2;
             m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
 
-            if ( m_bWinTerminate )
+            if (m_winTerminate)
             {
-#if _TEEN
+/* TODO: #if _TEEN
                 pos.x = ox+sx*3;  pos.y = oy+sy*1;
                 ddim.x = dim.x*15;  ddim.y = dim.y*2;
                 pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
                 pe->SetFontType(FONT_COLOBOT);
                 pe->SetEditCap(false);
-                pe->SetHighlightCap(false);
+                pe->SetHiliteCap(false);
                 pe->ReadText("help\\teenw.txt");
-#else
+#else*/
+
                 pos.x = ox+sx*3;  pos.y = oy+sy*0.2f;
                 ddim.x = dim.x*15;  ddim.y = dim.y*3.0f;
                 pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
                 pe->SetGenericMode(true);
-                pe->SetFontType(FONT_COLOBOT);
+                pe->SetFontType(Gfx::FONT_COLOBOT);
                 pe->SetEditCap(false);
-                pe->SetHighlightCap(false);
+                pe->SetHiliteCap(false);
                 pe->ReadText("help\\win.txt");
-#endif
             }
             else
             {
@@ -1138,20 +1052,21 @@ void CRobotMain::ChangePhase(Phase phase)
         StartMusic();
     }
 
-    if ( m_phase == PHASE_LOST )
+    if (m_phase == PHASE_LOST)
     {
-        if ( m_endingLostRank == -1 )
+        if (m_endingLostRank == -1)
         {
             ChangePhase(PHASE_TERM);
         }
         else
         {
-            m_bWinTerminate = false;
+            m_winTerminate = false;
             m_dialog->SetSceneName("lost");
             m_dialog->SetSceneRank(m_endingLostRank);
             CreateScene(false, true, false);  // sets scene
 
             pos.x = ox+sx*1;  pos.y = oy+sy*1;
+            Math::Point ddim;
             ddim.x = dim.x*2;  ddim.y = dim.y*2;
             m_interface->CreateButton(pos, ddim, 16, EVENT_BUTTON_OK);
             m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f), 15.0f, 60.0f, 1000.0f);
@@ -1160,49 +1075,32 @@ void CRobotMain::ChangePhase(Phase phase)
         StartMusic();
     }
 
-    if ( m_phase == PHASE_MODEL )
-    {
-        pos.x = ox+sx*0;  pos.y = oy+sy*0;
-        m_interface->CreateButton(pos, dim, 11, EVENT_BUTTON_CANCEL);
-
-        CreateModel();
-    }
-
-    if ( m_phase == PHASE_LOADING )
-    {
-        m_engine->SetMouseHide(true);
-    }
+    if (m_phase == PHASE_LOADING)
+        m_engine->SetMouseVisible(false);
     else
-    {
-        m_engine->SetMouseHide(false);
-    }
+        m_engine->SetMouseVisible(true);
 
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
 }
 
 
-// Processes an event.
-
+//! Processes an event
 bool CRobotMain::EventProcess(const Event &event)
 {
-    CEdit*          pe;
-    CObject*        pObj;
-    Event           newEvent;
-    MainMovieType   type;
-    int             i;
+    // TODO: rewrite key handling to input bindings
 
-    if ( event.event == EVENT_FRAME )
+    if (event.type == EVENT_FRAME)
     {
-        if ( !m_movie->EventProcess(event) )  // end of the movie?
+        if (!m_movie->EventProcess(event))  // end of the movie?
         {
-            type = m_movie->GetStopType();
-            if ( type == MM_SATCOMopen )
+            MainMovieType type = m_movie->GetStopType();
+            if (type == MM_SATCOMopen)
             {
                 ChangePause(false);
                 SelectObject(m_infoObject, false);  // hands over the command buttons
-                m_map->ShowMap(m_bMapShow);
+                m_map->ShowMap(m_mapShow);
                 m_displayText->HideText(false);
-                i = m_movieInfoIndex;
+                int i = m_movieInfoIndex;
                 StartDisplayInfo(m_movieInfoIndex, false);
                 m_movieInfoIndex = i;
             }
@@ -1213,301 +1111,266 @@ bool CRobotMain::EventProcess(const Event &event)
         RemoteCamera(m_cameraPan, m_cameraZoom, event.rTime);
 
         m_interface->EventProcess(event);
-        if ( m_displayInfo != 0 )  // current edition?
-        {
+        if (m_displayInfo != nullptr)  // current edition?
             m_displayInfo->EventProcess(event);
-        }
+
         return EventFrame(event);
     }
 
     // Management of the console.
-#if 0
-    if ( m_phase != PHASE_NAME &&
-         !m_movie->IsExist()   &&
-         event.event == EVENT_KEYDOWN &&
-         event.param == VK_PAUSE &&
-         (event.keyState&KS_CONTROL) != 0 )
-#else
-    if ( m_phase != PHASE_NAME &&
-         !m_movie->IsExist()   &&
-         event.event == EVENT_KEYDOWN &&
-         event.param == VK_CANCEL )  // Ctrl+Pause ?
-#endif
+    if (m_phase != PHASE_NAME &&
+        !m_movie->IsExist()   &&
+        event.type == EVENT_KEY_DOWN &&
+        event.key.key == KEY(PAUSE))  // Pause ?
     {
-        pe = (CEdit*)m_interface->SearchControl(EVENT_CMD);
-        if ( pe == 0 )  return false;
-        pe->SetState(STATE_VISIBLE);
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        if (pe == nullptr) return false;
+        pe->SetState(Ui::STATE_VISIBLE);
         pe->SetFocus(true);
-        if ( m_phase == PHASE_SIMUL )  ChangePause(true);
-        m_bCmdEdit = true;
+        if (m_phase == PHASE_SIMUL) ChangePause(true);
+        m_cmdEdit = true;
         return false;
     }
-    if ( event.event == EVENT_KEYDOWN &&
-         event.param == VK_RETURN && m_bCmdEdit )
+    if (event.type == EVENT_KEY_DOWN &&
+        event.key.key == KEY(RETURN) && m_cmdEdit)
     {
-        char    cmd[50];
-        pe = (CEdit*)m_interface->SearchControl(EVENT_CMD);
-        if ( pe == 0 )  return false;
+        char cmd[50];
+        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        if (pe == nullptr) return false;
         pe->GetText(cmd, 50);
         pe->SetText("");
-        pe->ClearState(STATE_VISIBLE);
-        if ( m_phase == PHASE_SIMUL )  ChangePause(false);
+        pe->ClearState(Ui::STATE_VISIBLE);
+        if (m_phase == PHASE_SIMUL) ChangePause(false);
         ExecuteCmd(cmd);
-        m_bCmdEdit = false;
+        m_cmdEdit = false;
         return false;
     }
 
     // Management of the speed change.
-    if ( event.event == EVENT_SPEED )
-    {
+    if (event.type == EVENT_SPEED)
         SetSpeed(1.0f);
-    }
 
-    if ( !m_dialog->EventProcess(event) )
+    if (!m_dialog->EventProcess(event))
     {
-        if ( event.event == EVENT_MOUSEMOVE )
+        if (event.type == EVENT_MOUSE_MOVE)
         {
             m_lastMousePos = event.pos;
-            HighlightObject(event.pos);
+            HiliteObject(event.pos);
         }
         return false;
     }
 
-    if ( !m_displayText->EventProcess(event) )
-    {
+    if (!m_displayText->EventProcess(event))
         return false;
-    }
 
-    if ( event.event == EVENT_MOUSEMOVE )
+    if (event.type == EVENT_MOUSE_MOVE)
     {
         m_lastMousePos = event.pos;
-        HighlightObject(event.pos);
+        HiliteObject(event.pos);
     }
 
-    if ( m_displayInfo != 0 )  // current info?
+    if (m_displayInfo != nullptr)  // current info?
     {
         m_displayInfo->EventProcess(event);
 
-        if ( event.event == EVENT_KEYDOWN )
+        if (event.type == EVENT_KEY_DOWN)
         {
-            if ( event.param == m_engine->GetKey(KEYRANK_HELP, 0) ||
-                 event.param == m_engine->GetKey(KEYRANK_HELP, 1) ||
-                 event.param == m_engine->GetKey(KEYRANK_PROG, 0) ||
-                 event.param == m_engine->GetKey(KEYRANK_PROG, 1) ||
-                 event.param == VK_ESCAPE )
+            if (event.key.key == m_app->GetKey(KEYRANK_HELP, 0) ||
+                event.key.key == m_app->GetKey(KEYRANK_HELP, 1) ||
+                event.key.key == m_app->GetKey(KEYRANK_PROG, 0) ||
+                event.key.key == m_app->GetKey(KEYRANK_PROG, 1) ||
+                event.key.key == KEY(ESCAPE))
             {
                 StopDisplayInfo();
             }
         }
-        if ( event.event == EVENT_OBJECT_INFOOK )
-        {
+
+        if (event.type == EVENT_OBJECT_INFOOK)
             StopDisplayInfo();
-        }
+
         return false;
     }
 
+    CObject* obj;
+
     // Simulation phase of the game
-    if ( m_phase == PHASE_SIMUL )
+    if (m_phase == PHASE_SIMUL)
     {
         UpdateInfoText();
 
-        if ( !m_bEditFull )
-        {
+        if (!m_editFull)
             m_camera->EventProcess(event);
-        }
 
-        switch( event.event )
+        switch (event.type)
         {
-            case EVENT_KEYDOWN:
-                KeyCamera(event.event, event.param);
-                HighlightClear();
-                if ( event.param == VK_F11 )
+            case EVENT_KEY_DOWN:
+                KeyCamera(event.type, event.key.key);
+                HiliteClear();
+                if (event.key.key == KEY(F11))
                 {
-                    m_particle->WriteWheelTrace("Savegame\\t.bmp", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
+                    m_particle->WriteWheelTrace("Savegame\\t.png", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
                     return false;
                 }
-                if ( m_bEditLock )  // current edition?
+                if (m_editLock)  // current edition?
                 {
-                    if ( event.param == m_engine->GetKey(KEYRANK_HELP, 0) ||
-                         event.param == m_engine->GetKey(KEYRANK_HELP, 1) )
+                    if (event.key.key == m_app->GetKey(KEYRANK_HELP, 0) ||
+                        event.key.key == m_app->GetKey(KEYRANK_HELP, 1))
                     {
                         StartDisplayInfo(SATCOM_HUSTON, false);
                         return false;
                     }
-                    if ( event.param == m_engine->GetKey(KEYRANK_PROG, 0) ||
-                         event.param == m_engine->GetKey(KEYRANK_PROG, 1) )
+                    if (event.key.key == m_app->GetKey(KEYRANK_PROG, 0) ||
+                        event.key.key == m_app->GetKey(KEYRANK_PROG, 1))
                     {
                         StartDisplayInfo(SATCOM_PROG, false);
                         return false;
                     }
                     break;
                 }
-                if ( m_bMovieLock )  // current movie?
+                if (m_movieLock)  // current movie?
                 {
-                    if ( event.param == m_engine->GetKey(KEYRANK_QUIT, 0) ||
-                         event.param == m_engine->GetKey(KEYRANK_QUIT, 1) ||
-                         event.param == VK_ESCAPE )
+                    if (event.key.key == m_app->GetKey(KEYRANK_QUIT, 0) ||
+                        event.key.key == m_app->GetKey(KEYRANK_QUIT, 1) ||
+                        event.key.key == KEY(ESCAPE))
                     {
                         AbortMovie();
                     }
                     return false;
                 }
-                if ( m_camera->GetType() == CAMERA_VISIT )
+                if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
                 {
-                    if ( event.param == m_engine->GetKey(KEYRANK_VISIT, 0) ||
-                         event.param == m_engine->GetKey(KEYRANK_VISIT, 1) )
+                    if (event.key.key == m_app->GetKey(KEYRANK_VISIT, 0) ||
+                        event.key.key == m_app->GetKey(KEYRANK_VISIT, 1))
                     {
                         StartDisplayVisit(EVENT_NULL);
                     }
-                    if ( event.param == m_engine->GetKey(KEYRANK_QUIT, 0) ||
-                         event.param == m_engine->GetKey(KEYRANK_QUIT, 1) ||
-                         event.param == VK_ESCAPE )
+                    if (event.key.key == m_app->GetKey(KEYRANK_QUIT, 0) ||
+                        event.key.key == m_app->GetKey(KEYRANK_QUIT, 1) ||
+                        event.key.key == KEY(ESCAPE))
                     {
                         StopDisplayVisit();
                     }
                     return false;
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_QUIT, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_QUIT, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_QUIT, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_QUIT, 1))
                 {
-                    if ( m_movie->IsExist() )
-                    {
+                    if (m_movie->IsExist())
                         StartDisplayInfo(SATCOM_HUSTON, false);
-                    }
-                    else if ( m_winDelay > 0.0f )
-                    {
+                    else if (m_winDelay > 0.0f)
                         ChangePhase(PHASE_WIN);
-                    }
-                    else if ( m_lostDelay > 0.0f )
-                    {
+                    else if (m_lostDelay > 0.0f)
                         ChangePhase(PHASE_LOST);
-                    }
                     else
-                    {
                         m_dialog->StartAbort();  // do you want to leave?
-                    }
                 }
-                if ( event.param == VK_PAUSE )
+                if (event.key.key == KEY(PAUSE))
                 {
-                    if ( !m_bMovieLock && !m_bEditLock && !m_bCmdEdit &&
-                         m_camera->GetType() != CAMERA_VISIT &&
-                         !m_movie->IsExist() )
+                    if (!m_movieLock && !m_editLock && !m_cmdEdit &&
+                        m_camera->GetType() != Gfx::CAM_TYPE_VISIT &&
+                        !m_movie->IsExist())
                     {
                         ChangePause(!m_engine->GetPause());
                     }
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_CAMERA, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_CAMERA, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_CAMERA, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_CAMERA, 1))
                 {
                     ChangeCamera();
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_DESEL, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_DESEL, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_DESEL, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_DESEL, 1))
                 {
-                    if ( m_bShortCut )
-                    {
+                    if (m_shortCut)
                         DeselectObject();
-                    }
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_HUMAN, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_HUMAN, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_HUMAN, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_HUMAN, 1))
                 {
                     SelectHuman();
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_NEXT, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_NEXT, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_NEXT, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_NEXT, 1))
                 {
-                    if ( m_bShortCut )
-                    {
+                    if (m_shortCut)
                         m_short->SelectNext();
-                    }
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_HELP, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_HELP, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_HELP, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_HELP, 1))
                 {
                     StartDisplayInfo(SATCOM_HUSTON, true);
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_PROG, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_PROG, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_PROG, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_PROG, 1))
                 {
                     StartDisplayInfo(SATCOM_PROG, true);
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_VISIT, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_VISIT, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_VISIT, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_VISIT, 1))
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_SPEED10, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_SPEED10, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_SPEED10, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_SPEED10, 1))
                 {
                     SetSpeed(1.0f);
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_SPEED15, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_SPEED15, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_SPEED15, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_SPEED15, 1))
                 {
                     SetSpeed(1.5f);
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_SPEED20, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_SPEED20, 1) )
+                if (event.key.key == m_app->GetKey(KEYRANK_SPEED20, 0) ||
+                    event.key.key == m_app->GetKey(KEYRANK_SPEED20, 1))
                 {
                     SetSpeed(2.0f);
                 }
-                if ( event.param == m_engine->GetKey(KEYRANK_SPEED30, 0) ||
-                     event.param == m_engine->GetKey(KEYRANK_SPEED30, 1) )
-                {
-                    SetSpeed(3.0f);
-                }
                 break;
 
-            case EVENT_KEYUP:
-                KeyCamera(event.event, event.param);
+            case EVENT_KEY_UP:
+                KeyCamera(event.type, event.key.key);
                 break;
 
-            case EVENT_LBUTTONDOWN:
-                pObj = DetectObject(event.pos);
-                if ( !m_bShortCut )  pObj = 0;
-                if ( pObj != 0 && pObj->GetType() == OBJECT_TOTO )
+            case EVENT_MOUSE_BUTTON_DOWN:
+                if (event.mouseButton.button != 1) // only left mouse button
+                    break;
+
+                obj = DetectObject(event.pos);
+                if (!m_shortCut) obj = nullptr;
+                if (obj != nullptr && obj->GetType() == OBJECT_TOTO)
                 {
-                    if ( m_displayInfo != 0 )  // current info?
+                    if (m_displayInfo != nullptr)  // current info?
                     {
                         StopDisplayInfo();
                     }
                     else
                     {
-                        if ( !m_bEditLock )
-                        {
+                        if (!m_editLock)
                             StartDisplayInfo(SATCOM_HUSTON, true);
-                        }
                     }
                 }
                 else
-                {
-                    SelectObject(pObj);
-                }
+                    SelectObject(obj);
                 break;
 
-            case EVENT_LBUTTONUP:
+            case EVENT_MOUSE_BUTTON_UP:
+                if (event.mouseButton.button != 1) // only left mouse button
+                    break;
+
                 m_cameraPan  = 0.0f;
                 m_cameraZoom = 0.0f;
                 break;
 
             case EVENT_BUTTON_QUIT:
-                if ( m_movie->IsExist() )
-                {
+                if (m_movie->IsExist())
                     StartDisplayInfo(SATCOM_HUSTON, false);
-                }
-                else if ( m_winDelay > 0.0f )
-                {
+                else if (m_winDelay > 0.0f)
                     ChangePhase(PHASE_WIN);
-                }
-                else if ( m_lostDelay > 0.0f )
-                {
+                else if (m_lostDelay > 0.0f)
+
                     ChangePhase(PHASE_LOST);
-                }
                 else
-                {
                     m_dialog->StartAbort();  // do you want to leave?
-                }
                 break;
 
             case EVENT_OBJECT_LIMIT:
@@ -1515,10 +1378,8 @@ bool CRobotMain::EventProcess(const Event &event)
                 break;
 
             case EVENT_OBJECT_DESELECT:
-                if ( m_bShortCut )
-                {
+                if (m_shortCut)
                     DeselectObject();
-                }
                 break;
 
             case EVENT_OBJECT_HELP:
@@ -1563,7 +1424,7 @@ bool CRobotMain::EventProcess(const Event &event)
             case EVENT_DT_VISIT2:
             case EVENT_DT_VISIT3:
             case EVENT_DT_VISIT4:
-                StartDisplayVisit(event.event);
+                StartDisplayVisit(event.type);
                 break;
 
             case EVENT_DT_END:
@@ -1590,7 +1451,7 @@ bool CRobotMain::EventProcess(const Event &event)
             case EVENT_OBJECT_SHORTCUT17:
             case EVENT_OBJECT_SHORTCUT18:
             case EVENT_OBJECT_SHORTCUT19:
-                m_short->SelectShortcut(event.event);
+                m_short->SelectShortcut(event.type);
                 break;
 
             case EVENT_OBJECT_MOVIELOCK:
@@ -1604,74 +1465,46 @@ bool CRobotMain::EventProcess(const Event &event)
             case EVENT_LOST:
                 ChangePhase(PHASE_LOST);
                 break;
+
+            default:
+                break;
         }
 
         EventObject(event);
         return false;
     }
 
-    if ( m_phase == PHASE_PERSO )
-    {
+    if (m_phase == PHASE_PERSO)
         EventObject(event);
-    }
 
-    if ( m_phase == PHASE_WIN  ||
-         m_phase == PHASE_LOST )
+    if (m_phase == PHASE_WIN  ||
+        m_phase == PHASE_LOST)
     {
         EventObject(event);
 
-        switch( event.event )
+        switch (event.type)
         {
-            case EVENT_KEYDOWN:
-                if ( event.param == VK_ESCAPE ||
-                     event.param == VK_RETURN )
+            case EVENT_KEY_DOWN:
+                if (event.key.key == KEY(ESCAPE) ||
+                    event.key.key == KEY(RETURN))
                 {
-                    if ( m_bWinTerminate )
-                    {
+                    if (m_winTerminate)
                         ChangePhase(PHASE_INIT);
-                    }
                     else
-                    {
                         ChangePhase(PHASE_TERM);
-                    }
                 }
                 break;
 
             case EVENT_BUTTON_OK:
-                if ( m_bWinTerminate )
-                {
+                if (m_winTerminate)
                     ChangePhase(PHASE_INIT);
-                }
                 else
-                {
                     ChangePhase(PHASE_TERM);
-                }
+                break;
+
+            default:
                 break;
         }
-    }
-
-    if ( m_phase == PHASE_MODEL )
-    {
-        switch( event.event )
-        {
-            case EVENT_KEYDOWN:
-                if ( event.param == VK_ESCAPE )
-                {
-                    ChangePhase(PHASE_INIT);
-                }
-                if ( event.param == VK_HOME )
-                {
-                    InitEye();
-                }
-                break;
-
-            case EVENT_BUTTON_CANCEL:
-                ChangePhase(PHASE_INIT);
-                break;
-        }
-
-        m_model->EventProcess(event);
-        return false;
     }
 
     return true;
@@ -1679,84 +1512,69 @@ bool CRobotMain::EventProcess(const Event &event)
 
 
 
-// Executes a command.
-
+//! Executes a command
 void CRobotMain::ExecuteCmd(char *cmd)
 {
-    if ( cmd[0] == 0 )  return;
+    if (cmd[0] == 0) return;
 
-    if ( m_phase == PHASE_SIMUL )
+    if (m_phase == PHASE_SIMUL)
     {
-        if ( strcmp(cmd, "winmission") == 0 )
-        {
-            Event       newEvent;
-            m_event->MakeEvent(newEvent, EVENT_WIN);
-            m_event->AddEvent(newEvent);
-        }
+        if (strcmp(cmd, "winmission") == 0)
+            m_eventQueue->AddEvent(Event(EVENT_WIN));
 
-        if ( strcmp(cmd, "lostmission") == 0 )
-        {
-            Event       newEvent;
-            m_event->MakeEvent(newEvent, EVENT_LOST);
-            m_event->AddEvent(newEvent);
-        }
+        if (strcmp(cmd, "lostmission") == 0)
+            m_eventQueue->AddEvent(Event(EVENT_LOST));
 
-        if ( strcmp(cmd, "trainerpilot") == 0 )
+        if (strcmp(cmd, "trainerpilot") == 0)
         {
-            m_bTrainerPilot = !m_bTrainerPilot;
+            m_trainerPilot = !m_trainerPilot;
             return;
         }
 
-        if ( strcmp(cmd, "fly") == 0 )
+        if (strcmp(cmd, "fly") == 0)
         {
-            Event   newEvent;
-
             g_researchDone |= RESEARCH_FLY;
 
-            m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
-            m_event->AddEvent(newEvent);
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             return;
         }
 
-        if ( strcmp(cmd, "allresearch") == 0 )
+        if (strcmp(cmd, "allresearch") == 0)
         {
-            Event   newEvent;
-
             g_researchDone = -1;  // all research are done
 
-            m_event->MakeEvent(newEvent, EVENT_UPDINTERFACE);
-            m_event->AddEvent(newEvent);
+            m_eventQueue->AddEvent(Event(EVENT_UPDINTERFACE));
             return;
         }
 
-        if ( strcmp(cmd, "nolimit") == 0 )
+        if (strcmp(cmd, "nolimit") == 0)
         {
             m_terrain->SetFlyingMaxHeight(280.0f);
             return;
         }
 
-        if ( strcmp(cmd, "photo1") == 0 )
+        if (strcmp(cmd, "photo1") == 0)
         {
-            m_bFreePhoto = !m_bFreePhoto;
-            if ( m_bFreePhoto )
+            m_freePhoto = !m_freePhoto;
+            if (m_freePhoto)
             {
-                m_camera->SetType(CAMERA_FREE);
+                m_camera->SetType(Gfx::CAM_TYPE_FREE);
                 ChangePause(true);
             }
             else
             {
-                m_camera->SetType(CAMERA_BACK);
+                m_camera->SetType(Gfx::CAM_TYPE_BACK);
                 ChangePause(false);
             }
             return;
         }
 
-        if ( strcmp(cmd, "photo2") == 0 )
+        if (strcmp(cmd, "photo2") == 0)
         {
-            m_bFreePhoto = !m_bFreePhoto;
-            if ( m_bFreePhoto )
+            m_freePhoto = !m_freePhoto;
+            if (m_freePhoto)
             {
-                m_camera->SetType(CAMERA_FREE);
+                m_camera->SetType(Gfx::CAM_TYPE_FREE);
                 ChangePause(true);
                 DeselectAll();  // removes the control buttons
                 m_map->ShowMap(false);
@@ -1764,246 +1582,202 @@ void CRobotMain::ExecuteCmd(char *cmd)
             }
             else
             {
-                m_camera->SetType(CAMERA_BACK);
+                m_camera->SetType(Gfx::CAM_TYPE_BACK);
                 ChangePause(false);
-                m_map->ShowMap(m_bMapShow);
+                m_map->ShowMap(m_mapShow);
                 m_displayText->HideText(false);
             }
             return;
         }
 
-        if ( strcmp(cmd, "noclip") == 0 )
+        if (strcmp(cmd, "noclip") == 0)
         {
-            CObject*    object;
-
-            object = RetSelect();
-            if ( object != 0 )
-            {
+            CObject* object = GetSelect();
+            if (object != nullptr)
                 object->SetClip(false);
-            }
             return;
         }
 
-        if ( strcmp(cmd, "clip") == 0 )
+        if (strcmp(cmd, "clip") == 0)
         {
-            CObject*    object;
-
-            object = RetSelect();
-            if ( object != 0 )
-            {
+            CObject* object = GetSelect();
+            if (object != nullptr)
                 object->SetClip(true);
-            }
             return;
         }
 
-        if ( strcmp(cmd, "addhusky") == 0 )
+        if (strcmp(cmd, "addhusky") == 0)
         {
-            CObject*    object;
-
-            object = RetSelect();
-            if ( object != 0 )
-            {
+            CObject* object = GetSelect();
+            if (object != nullptr)
                 object->SetMagnifyDamage(object->GetMagnifyDamage()*0.1f);
-            }
             return;
         }
 
-        if ( strcmp(cmd, "addfreezer") == 0 )
+        if (strcmp(cmd, "addfreezer") == 0)
         {
-            CObject*    object;
-
-            object = RetSelect();
-            if ( object != 0 )
-            {
+            CObject* object = GetSelect();
+            if (object != nullptr)
                 object->SetRange(object->GetRange()*10.0f);
-            }
             return;
         }
 
-        if ( strcmp(cmd, "fullpower") == 0 )
+        if (strcmp(cmd, "fullpower") == 0)
         {
-            CObject*    object;
-            CObject*    power;
-            CPhysics*   physics;
-
-            object = RetSelect();
-            if ( object != 0 )
+            CObject* object = GetSelect();
+            if (object != nullptr)
             {
-                power = object->GetPower();
-                if ( power != 0 )
-                {
+                CObject* power = object->GetPower();
+                if (power != nullptr)
                     power->SetEnergy(1.0f);
-                }
+
                 object->SetShield(1.0f);
-                physics = object->GetPhysics();
-                if ( physics != 0 )
-                {
+                CPhysics* physics = object->GetPhysics();
+                if (physics != nullptr)
                     physics->SetReactorRange(1.0f);
-                }
             }
             return;
         }
 
-        if ( strcmp(cmd, "fullenergy") == 0 )
+        if (strcmp(cmd, "fullenergy") == 0)
         {
-            CObject*    object;
-            CObject*    power;
-
-            object = RetSelect();
-            if ( object != 0 )
+            CObject* object = GetSelect();
+            if (object != nullptr)
             {
-                power = object->GetPower();
-                if ( power != 0 )
-                {
+                CObject* power = object->GetPower();
+                if (power != nullptr)
                     power->SetEnergy(1.0f);
-                }
             }
             return;
         }
 
-        if ( strcmp(cmd, "fullshield") == 0 )
+        if (strcmp(cmd, "fullshield") == 0)
         {
-            CObject*    object;
-
-            object = RetSelect();
-            if ( object != 0 )
-            {
+            CObject* object = GetSelect();
+            if (object != nullptr)
                 object->SetShield(1.0f);
-            }
             return;
         }
 
-        if ( strcmp(cmd, "fullrange") == 0 )
+        if (strcmp(cmd, "fullrange") == 0)
         {
-            CObject*    object;
-            CPhysics*   physics;
-
-            object = RetSelect();
-            if ( object != 0 )
+            CObject* object = GetSelect();
+            if (object != nullptr)
             {
-                physics = object->GetPhysics();
-                if ( physics != 0 )
-                {
+                CPhysics* physics = object->GetPhysics();
+                if (physics != nullptr)
                     physics->SetReactorRange(1.0f);
-                }
             }
             return;
         }
     }
 
-    if ( strcmp(cmd, "debugmode") == 0 )
+    if (strcmp(cmd, "debugmode") == 0)
     {
-        m_engine->SetDebugMode(!m_engine->GetDebugMode());
+        m_app->SetDebugMode(!m_app->GetDebugMode());
         return;
     }
 
-    if ( strcmp(cmd, "showstat") == 0 )
+    if (strcmp(cmd, "showstat") == 0)
     {
-        m_engine->SetShowStat(!m_engine->GetShowStat());
+        m_engine->SetShowStats(!m_engine->GetShowStats());
         return;
     }
 
-    if ( strcmp(cmd, "invshadow") == 0 )
+    if (strcmp(cmd, "invshadow") == 0)
     {
         m_engine->SetShadow(!m_engine->GetShadow());
         return;
     }
 
-    if ( strcmp(cmd, "invdirty") == 0 )
+    if (strcmp(cmd, "invdirty") == 0)
     {
         m_engine->SetDirty(!m_engine->GetDirty());
         return;
     }
 
-    if ( strcmp(cmd, "invfog") == 0 )
+    if (strcmp(cmd, "invfog") == 0)
     {
         m_engine->SetFog(!m_engine->GetFog());
         return;
     }
 
-    if ( strcmp(cmd, "invlens") == 0 )
+    if (strcmp(cmd, "invlens") == 0)
     {
         m_engine->SetLensMode(!m_engine->GetLensMode());
         return;
     }
 
-    if ( strcmp(cmd, "invwater") == 0 )
+    if (strcmp(cmd, "invwater") == 0)
     {
         m_engine->SetWaterMode(!m_engine->GetWaterMode());
         return;
     }
 
-    if ( strcmp(cmd, "invsky") == 0 )
+    if (strcmp(cmd, "invsky") == 0)
     {
         m_engine->SetSkyMode(!m_engine->GetSkyMode());
         return;
     }
 
-    if ( strcmp(cmd, "invplanet") == 0 )
+    if (strcmp(cmd, "invplanet") == 0)
     {
         m_engine->SetPlanetMode(!m_engine->GetPlanetMode());
         return;
     }
 
-    if ( strcmp(cmd, "showpos") == 0 )
+    if (strcmp(cmd, "showpos") == 0)
     {
-        m_bShowPos = !m_bShowPos;
+        m_showPos = !m_showPos;
         return;
     }
 
-    if ( strcmp(cmd, "selectinsect") == 0 )
+    if (strcmp(cmd, "selectinsect") == 0)
     {
-        m_bSelectInsect = !m_bSelectInsect;
+        m_selectInsect = !m_selectInsect;
         return;
     }
 
-    if ( strcmp(cmd, "showsoluce") == 0 )
+    if (strcmp(cmd, "showsoluce") == 0)
     {
-        m_bShowSoluce = !m_bShowSoluce;
+        m_showSoluce = !m_showSoluce;
         m_dialog->ShowSoluceUpdate();
         return;
     }
 
-#if _TEEN
-    if ( strcmp(cmd, "allteens") == 0 )
-#else
-    if ( strcmp(cmd, "allmission") == 0 )
-#endif
+/* TODO: #if _TEEN
+    if (strcmp(cmd, "allteens") == 0)
+#else*/
+    if (strcmp(cmd, "allmission") == 0)
     {
-        m_bShowAll = !m_bShowAll;
+        m_showAll = !m_showAll;
         m_dialog->AllMissionUpdate();
         return;
     }
 
-    if ( strcmp(cmd, "invradar") == 0 )
+    if (strcmp(cmd, "invradar") == 0)
     {
-        m_bCheatRadar = !m_bCheatRadar;
+        m_cheatRadar = !m_cheatRadar;
         return;
     }
 
-    if ( m_phase == PHASE_SIMUL )
-    {
+    if (m_phase == PHASE_SIMUL)
         m_displayText->DisplayError(ERR_CMD, Math::Vector(0.0f,0.0f,0.0f));
-    }
 }
 
 
 
-// Returns the type of current movie.
-
+//! Returns the type of current movie
 MainMovieType CRobotMain::GetMainMovie()
 {
     return m_movie->GetType();
 }
 
 
-// Clears the display of instructions.
-
+//! Clears the display of instructions
 void CRobotMain::FlushDisplayInfo()
 {
-    int     i;
-
-    for ( i=0 ; i<SATCOM_MAX ; i++ )
+    for (int i = 0; i < SATCOM_MAX; i++)
     {
         m_infoFilename[i][0] = 0;
         m_infoPos[i] = 0;
@@ -2012,190 +1786,151 @@ void CRobotMain::FlushDisplayInfo()
     m_infoIndex = 0;
 }
 
-// Beginning of the displaying of instructions.
-// index: SATCOM_*
-
-void CRobotMain::StartDisplayInfo(int index, bool bMovie)
+//! Beginning of the displaying of instructions.
+//! index: SATCOM_*
+void CRobotMain::StartDisplayInfo(int index, bool movie)
 {
-    CObject*    pObj;
-    CMotion*    motion;
-    bool        bHuman;
+    if (m_cmdEdit || m_satComLock) return;
 
-    if ( m_bCmdEdit || m_bSatComLock )  return;
+    CObject* obj = GetSelect();
+    bool human = obj != nullptr && obj->GetType() == OBJECT_HUMAN;
 
-    pObj = RetSelect();
-    bHuman = ( pObj != 0 && pObj->GetType() == OBJECT_HUMAN );
-
-    if ( !m_bEditLock && bMovie && !m_movie->IsExist() && bHuman )
+    if (!m_editLock && movie && !m_movie->IsExist() && human)
     {
-        motion = pObj->GetMotion();
-        if ( motion != 0 && motion->GetAction() == -1 )
+        CMotion* motion = obj->GetMotion();
+        if (motion != nullptr && motion->GetAction() == -1)
         {
             m_movieInfoIndex = index;
             m_movie->Start(MM_SATCOMopen, 2.5f);
             ChangePause(true);
-//?         m_map->ShowMap(false);
             m_infoObject = DeselectAll();  // removes the control buttons
             m_displayText->HideText(true);
             return;
         }
     }
 
-    if ( m_movie->IsExist() )
+    if (m_movie->IsExist())
     {
         m_movie->Stop();
         ChangePause(false);
         SelectObject(m_infoObject, false);  // hands over the command buttons
-//?     m_map->ShowMap(m_bMapShow);
         m_displayText->HideText(false);
     }
 
     StartDisplayInfo(m_infoFilename[index], index);
 }
 
-// Beginning of the displaying of instructions.
-
+//! Beginning of the displaying of instructions
 void CRobotMain::StartDisplayInfo(char *filename, int index)
 {
-    CButton*    pb;
-    bool        bSoluce;
-
-    if ( m_bCmdEdit )  return;
+    if (m_cmdEdit) return;
 
     m_movieInfoIndex = -1;
     ClearInterface();  // removes setting evidence and tooltip
 
-    if ( !m_bEditLock )
+    if (!m_editLock)
     {
-//?     m_map->ShowMap(false);
         m_infoObject = DeselectAll();  // removes the control buttons
         m_displayText->HideText(true);
         m_sound->MuteAll(true);
     }
 
-    pb = (CButton*)m_interface->SearchControl(EVENT_BUTTON_QUIT);
-    if ( pb != 0 )
+    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    if (pb != nullptr)
     {
-        pb->ClearState(STATE_VISIBLE);
+        pb->ClearState(Ui::STATE_VISIBLE);
     }
 
-    bSoluce = m_dialog->GetSceneSoluce();
+    bool soluce = m_dialog->GetSceneSoluce();
 
-    m_displayInfo = new CDisplayInfo(m_iMan);
-    m_displayInfo->StartDisplayInfo(filename, index, bSoluce);
+    m_displayInfo = new Ui::CDisplayInfo();
+    m_displayInfo->StartDisplayInfo(filename, index, soluce);
 
     m_infoIndex = index;
-    if ( index != -1 )
-    {
+    if (index != -1)
         m_displayInfo->SetPosition(m_infoPos[index]);
-    }
 }
 
-// End of displaying of instructions.
-
+//! End of displaying of instructions
 void CRobotMain::StopDisplayInfo()
 {
-    CButton*    pb;
-
-    if ( m_movieInfoIndex != -1 )  // film to read the SatCom?
-    {
+    if (m_movieInfoIndex != -1)  // film to read the SatCom?
         m_movie->Start(MM_SATCOMclose, 2.0f);
-    }
 
-    if ( m_infoIndex != -1 )
-    {
+    if (m_infoIndex != -1)
         m_infoPos[m_infoIndex] = m_displayInfo->GetPosition();
-    }
+
     m_displayInfo->StopDisplayInfo();
 
     delete m_displayInfo;
-    m_displayInfo = 0;
+    m_displayInfo = nullptr;
 
-    if ( !m_bEditLock )
+    if (!m_editLock)
     {
-        pb = (CButton*)m_interface->SearchControl(EVENT_BUTTON_QUIT);
-        if ( pb != 0 )
-        {
-            pb->SetState(STATE_VISIBLE);
-        }
+        Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+        if (pb != nullptr)
+            pb->SetState(Ui::STATE_VISIBLE);
 
         SelectObject(m_infoObject, false);  // gives the command buttons
-//?     m_map->ShowMap(m_bMapShow);
         m_displayText->HideText(false);
 
         m_sound->MuteAll(false);
     }
 
-    if ( m_infoUsed == 0 )
-    {
+    if (m_infoUsed == 0)
         m_displayText->ClearText();  // removes message "see SatCom ..."
-    }
     m_infoUsed ++;
 }
 
-// Returns the name of the text display.
-
+//! Returns the name of the text display
 char* CRobotMain::GetDisplayInfoName(int index)
 {
     return m_infoFilename[index];
 }
 
-// Returns the name of the text display.
-
+//! Returns the name of the text display
 int CRobotMain::GetDisplayInfoPosition(int index)
 {
     return m_infoPos[index];
 }
 
-// Returns the name of the text display.
-
+//! Returns the name of the text display
 void CRobotMain::SetDisplayInfoPosition(int index, int pos)
 {
     m_infoPos[index] = pos;
 }
 
 
-// Beginning of a dialogue during the game,
-
+//! Beginning of a dialogue during the game
 void CRobotMain::StartSuspend()
 {
-    CButton*    pb;
-
     m_map->ShowMap(false);
     m_infoObject = DeselectAll();  // removes the control buttons
     m_displayText->HideText(true);
 
-    pb = (CButton*)m_interface->SearchControl(EVENT_BUTTON_QUIT);
-    if ( pb != 0 )
-    {
-        pb->ClearState(STATE_VISIBLE);
-    }
+    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    if (pb != nullptr)
+        pb->ClearState(Ui::STATE_VISIBLE);
 
-    m_bSuspend = true;
+    m_suspend = true;
 }
 
-// End of dialogue during the game,
-
+//! End of dialogue during the game
 void CRobotMain::StopSuspend()
 {
-    CButton*    pb;
-
-    pb = (CButton*)m_interface->SearchControl(EVENT_BUTTON_QUIT);
-    if ( pb != 0 )
-    {
-        pb->SetState(STATE_VISIBLE);
-    }
+    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    if (pb != nullptr)
+        pb->SetState(Ui::STATE_VISIBLE);
 
     SelectObject(m_infoObject, false);  // gives the command buttons
-    m_map->ShowMap(m_bMapShow);
+    m_map->ShowMap(m_mapShow);
     m_displayText->HideText(false);
 
-    m_bSuspend = false;
+    m_suspend = false;
 }
 
 
-// Returns the absolute time of the game
-
+//! Returns the absolute time of the game
 float CRobotMain::GetGameTime()
 {
     return m_gameTime;
@@ -2203,12 +1938,12 @@ float CRobotMain::GetGameTime()
 
 
 
-// Managing the size of the default fonts.
-
+//! Managing the size of the default fonts
 void CRobotMain::SetFontSize(float size)
 {
     m_fontSize = size;
-    SetLocalProfileFloat("Edit", "FontSize", m_fontSize);
+    /* TODO: profile
+    SetLocalProfileFloat("Edit", "FontSize", m_fontSize); */
 }
 
 float CRobotMain::GetFontSize()
@@ -2216,13 +1951,13 @@ float CRobotMain::GetFontSize()
     return m_fontSize;
 }
 
-// Managing the size of the default window.
-
+//! Managing the size of the default window
 void CRobotMain::SetWindowPos(Math::Point pos)
 {
     m_windowPos = pos;
+    /* TODO: profile
     SetLocalProfileFloat("Edit", "WindowPos.x", m_windowPos.x);
-    SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
+    SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y); */
 }
 
 Math::Point CRobotMain::GetWindowPos()
@@ -2233,8 +1968,9 @@ Math::Point CRobotMain::GetWindowPos()
 void CRobotMain::SetWindowDim(Math::Point dim)
 {
     m_windowDim = dim;
+    /* TODO: profile
     SetLocalProfileFloat("Edit", "WindowDim.x", m_windowDim.x);
-    SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
+    SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y); */
 }
 
 Math::Point CRobotMain::GetWindowDim()
@@ -2243,12 +1979,12 @@ Math::Point CRobotMain::GetWindowDim()
 }
 
 
-// Managing windows open/save.
-
-void CRobotMain::SetIOPublic(bool bMode)
+//! Managing windows open/save
+void CRobotMain::SetIOPublic(bool mode)
 {
-    m_IOPublic = bMode;
-    SetLocalProfileInt("Edit", "IOPublic", m_IOPublic);
+    m_IOPublic = mode;
+    /* TODO: profile
+    SetLocalProfileInt("Edit", "IOPublic", m_IOPublic); */
 }
 
 bool CRobotMain::GetIOPublic()
@@ -2259,8 +1995,9 @@ bool CRobotMain::GetIOPublic()
 void CRobotMain::SetIOPos(Math::Point pos)
 {
     m_IOPos = pos;
+    /* TODO: profile
     SetLocalProfileFloat("Edit", "IOPos.x", m_IOPos.x);
-    SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y);
+    SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y); */
 }
 
 Math::Point CRobotMain::GetIOPos()
@@ -2271,8 +2008,9 @@ Math::Point CRobotMain::GetIOPos()
 void CRobotMain::SetIODim(Math::Point dim)
 {
     m_IODim = dim;
+    /* TODO: profile
     SetLocalProfileFloat("Edit", "IODim.x", m_IODim.x);
-    SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y);
+    SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y); */
 }
 
 Math::Point CRobotMain::GetIODim()
@@ -2282,51 +2020,40 @@ Math::Point CRobotMain::GetIODim()
 
 
 
-// Start of the visit instead of an error.
-
-void CRobotMain::StartDisplayVisit(EventMsg event)
+//! Start of the visit instead of an error
+void CRobotMain::StartDisplayVisit(EventType event)
 {
-    CWindow*    pw;
-    CButton*    button;
-    CGroup*     group;
-    Math::Vector    goal;
-    Math::Point     pos, dim;
-    int         i, j;
+    if (m_editLock) return;
 
-    if ( m_bEditLock )  return;
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
+    if (pw == nullptr) return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
-    if ( pw == 0 )  return;
-
-    if ( event == EVENT_NULL )  // visit by keyboard shortcut?
+    if (event == EVENT_NULL)  // visit by keyboard shortcut?
     {
-        if ( m_visitLast != EVENT_NULL )  // already a current visit?
-        {
+        int i;
+        if (m_visitLast != EVENT_NULL)  // already a current visit?
             i = m_visitLast-EVENT_DT_VISIT0;
-        }
         else
-        {
-            i = MAXDTLINE;
-        }
+            i = Ui::MAXDTLINE;
 
         // Seeks the last.
-        for ( j=0 ; j<MAXDTLINE ; j++ )
+        for (int j = 0; j < Ui::MAXDTLINE; j++)
         {
             i --;
-            if ( i < 0 )  i = MAXDTLINE-1;
+            if (i < 0) i = Ui::MAXDTLINE-1;
 
-            button = (CButton*)pw->SearchControl(EventMsg(EVENT_DT_VISIT0+i));
-            if ( button == 0 || !button->TestState(STATE_ENABLE) )  continue;
+            Ui::CButton* button = static_cast<Ui::CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_VISIT0+i)));
+            if (button == nullptr || !button->TestState(Ui::STATE_ENABLE)) continue;
 
-            group = (CGroup*)pw->SearchControl(EventMsg(EVENT_DT_GROUP0+i));
-            if ( group != 0 )
+            Ui::CGroup* group = static_cast<Ui::CGroup*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_GROUP0+i)));
+            if (group != nullptr)
             {
-                event = EventMsg(EVENT_DT_VISIT0+i);
+                event = static_cast<EventType>(EVENT_DT_VISIT0+i);
                 break;
             }
         }
     }
-    if ( event == EVENT_NULL )
+    if (event == EVENT_NULL)
     {
         m_sound->Play(SOUND_TZOING);  // nothing to do!
         return;
@@ -2336,7 +2063,7 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
 
     ClearInterface();  // removes setting evidence and tooltip
 
-    if ( m_camera->GetType() == CAMERA_VISIT )  // already a current visit?
+    if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)  // already a current visit?
     {
         m_camera->StopVisit();
         m_displayText->ClearVisit();
@@ -2347,8 +2074,9 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
     }
 
     // Creates the "continue" button.
-    if ( m_interface->SearchControl(EVENT_DT_END) == 0 )
+    if (m_interface->SearchControl(EVENT_DT_END) == 0)
     {
+        Math::Point pos, dim;
         pos.x = 10.0f/640.0f;
         pos.y = 10.0f/480.0f;
         dim.x = 50.0f/640.0f;
@@ -2357,13 +2085,14 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
     }
 
     // Creates the arrow to show the place.
-    if ( m_visitArrow != 0 )
+    if (m_visitArrow != 0)
     {
         m_visitArrow->DeleteObject();
         delete m_visitArrow;
         m_visitArrow = 0;
     }
-    goal = m_displayText->GetVisitGoal(event);
+
+    Math::Vector goal = m_displayText->GetVisitGoal(event);
     m_visitArrow = CreateObject(goal, 0.0f, 1.0f, 10.0f, OBJECT_SHOW, false, false, 0);
 
     m_visitPos = m_visitArrow->GetPosition(0);
@@ -2372,9 +2101,9 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
     m_visitArrow->SetPosition(0, m_visitPosArrow);
 
     m_visitTime = 0.0;
-    m_visitParticule = 0.0f;
+    m_visitParticle = 0.0f;
 
-    m_particle->DeleteParticule(PARTISHOW);
+    m_particle->DeleteParticle(Gfx::PARTISHOW);
 
     m_camera->StartVisit(m_displayText->GetVisitGoal(event),
                          m_displayText->GetVisitDist(event));
@@ -2382,42 +2111,37 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
     ChangePause(true);
 }
 
-// Move the arrow to visit.
-
+//! Move the arrow to visit
 void CRobotMain::FrameVisit(float rTime)
 {
-    Math::Vector    pos, speed;
-    Math::Point     dim;
-    float       level;
-
-    if ( m_visitArrow == 0 )  return;
+    if (m_visitArrow == 0) return;
 
     // Moves the arrow.
     m_visitTime += rTime;
 
-    pos = m_visitPosArrow;
+    Math::Vector pos = m_visitPosArrow;
     pos.y += 1.5f+sinf(m_visitTime*4.0f)*4.0f;
     m_visitArrow->SetPosition(0, pos);
     m_visitArrow->SetAngleY(0, m_visitTime*2.0f);
 
     // Manages the particles "arrows".
-    m_visitParticule -= rTime;
-    if ( m_visitParticule <= 0.0f )
+    m_visitParticle -= rTime;
+    if (m_visitParticle <= 0.0f)
     {
-        m_visitParticule = 1.5f;
+        m_visitParticle = 1.5f;
 
         pos = m_visitPos;
-        level = m_terrain->GetFloorLevel(pos)+2.0f;
-        if ( pos.y < level )  pos.y = level;  // not below the ground
-        speed = Math::Vector(0.0f, 0.0f, 0.0f);
+        float level = m_terrain->GetFloorLevel(pos)+2.0f;
+        if (pos.y < level) pos.y = level;  // not below the ground
+        Math::Vector speed(0.0f, 0.0f, 0.0f);
+        Math::Point dim;
         dim.x = 30.0f;
         dim.y = dim.x;
-        m_particle->CreateParticle(pos, speed, dim, PARTISHOW, 2.0f);
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISHOW, 2.0f);
     }
 }
 
-// End of the visit instead of an error.
-
+//! End of the visit instead of an error
 void CRobotMain::StopDisplayVisit()
 {
     m_visitLast = EVENT_NULL;
@@ -2426,20 +2150,20 @@ void CRobotMain::StopDisplayVisit()
     m_interface->DeleteControl(EVENT_DT_END);
 
     // Removes the arrow.
-    if ( m_visitArrow != 0 )
+    if (m_visitArrow != nullptr)
     {
         m_visitArrow->DeleteObject();
         delete m_visitArrow;
-        m_visitArrow = 0;
+        m_visitArrow = nullptr;
     }
 
     // Removes particles "arrows".
-    m_particle->DeleteParticule(PARTISHOW);
+    m_particle->DeleteParticle(Gfx::PARTISHOW);
 
     m_camera->StopVisit();
     m_displayText->ClearVisit();
     ChangePause(false);
-    if ( m_visitObject != 0 )
+    if (m_visitObject != 0)
     {
         SelectObject(m_visitObject, false);  // gives the command buttons
         m_visitObject = 0;
@@ -2448,53 +2172,41 @@ void CRobotMain::StopDisplayVisit()
 
 
 
-// Updates all the shortcuts.
-
+//! Updates all the shortcuts
 void CRobotMain::UpdateShortcuts()
 {
     m_short->UpdateShortcuts();
 }
 
-// Returns the object that default was select after the creation of a scene.
-
+//! Returns the object that default was select after the creation of a scene
 CObject* CRobotMain::GetSelectObject()
 {
-    if ( m_selectObject != 0 )  return m_selectObject;
+    if (m_selectObject != nullptr) return m_selectObject;
     return SearchHuman();
 }
 
-// Deselects everything, and returns the object that was selected.
-
+//! Deselects everything, and returns the object that was selected
 CObject* CRobotMain::DeselectAll()
 {
-    CObject*    pObj;
-    CObject*    pPrev;
-    int         i;
-
-    pPrev = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    CObject* prev = nullptr;
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( pObj->GetSelect() )  pPrev = pObj;
-        pObj->SetSelect(false);
+        if (obj->GetSelect()) prev = obj;
+        obj->SetSelect(false);
     }
-    return pPrev;
+    return prev;
 }
 
-// Selects an object, without attending to deselect the rest.
-
-void CRobotMain::SelectOneObject(CObject* pObj, bool bDisplayError)
+//! Selects an object, without attending to deselect the rest
+void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
 {
-    ObjectType      type;
-    CObject*        toto;
-    CMotionToto*    mt;
+    obj->SetSelect(true, displayError);
+    m_camera->SetObject(obj);
 
-    pObj->SetSelect(true, bDisplayError);
-    m_camera->SetObject(pObj);
-
-    type = pObj->GetType();
+    ObjectType type = obj->GetType();
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEta ||
@@ -2524,271 +2236,205 @@ void CRobotMain::SelectOneObject(CObject* pObj, bool bDisplayError)
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
-        m_camera->SetType(pObj->GetCameraType());
-        m_camera->SetDist(pObj->GetCameraDist());
+        m_camera->SetType(obj->GetCameraType());
+        m_camera->SetDist(obj->GetCameraDist());
     }
     else
     {
-        m_camera->SetType(CAMERA_BACK);
+        m_camera->SetType(Gfx::CAM_TYPE_BACK);
     }
 
-    toto = SearchToto();
-    if ( toto != 0 )
+    CObject* toto = SearchToto();
+    if (toto != nullptr)
     {
-        mt = (CMotionToto*)toto->GetMotion();
-        if ( mt != 0 )
-        {
+        CMotionToto* mt = dynamic_cast<CMotionToto*>(toto->GetMotion());
+        if (mt != nullptr)
             mt->SetLinkType(type);
-        }
     }
 }
 
-// Selects the object aimed by the mouse.
-
-bool CRobotMain::SelectObject(CObject* pObj, bool bDisplayError)
+//! Selects the object aimed by the mouse
+bool CRobotMain::SelectObject(CObject* obj, bool displayError)
 {
-    CObject*    pPrev;
-
-    if ( m_camera->GetType() == CAMERA_VISIT )
-    {
+    if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
         StopDisplayVisit();
-    }
 
-    if ( m_bMovieLock || m_bEditLock || m_bPause )  return false;
-    if ( m_movie->IsExist() )  return false;
-    if ( pObj == 0 || !IsSelectable(pObj) )  return false;
+    if (m_movieLock || m_editLock || m_pause) return false;
+    if (m_movie->IsExist()) return false;
+    if (obj == nullptr || !IsSelectable(obj)) return false;
 
-    pPrev = DeselectAll();
+    CObject* prev = DeselectAll();
 
-    if ( pPrev != 0 && pPrev != pObj )
-    {
-        pObj->AddDeselList(pPrev);
-    }
+    if (prev != nullptr && prev != obj)
+       obj->AddDeselList(prev);
 
-    SelectOneObject(pObj, bDisplayError);
+    SelectOneObject(obj, displayError);
     m_short->UpdateShortcuts();
     return true;
 }
 
-// Deselects the selected object.
-
+//! Deselects the selected object
 bool CRobotMain::DeselectObject()
 {
-    CObject*    pObj;
-    CObject*    pPrev;
+    CObject* obj = nullptr;
+    CObject* prev = DeselectAll();
 
-    pPrev = DeselectAll();
-
-    if ( pPrev == 0 )
-    {
-        pObj = SearchHuman();
-    }
+    if (prev == nullptr)
+        obj = SearchHuman();
     else
-    {
-        pObj = pPrev->SubDeselList();
-    }
-    if ( pObj == 0 )
-    {
-        pObj = SearchHuman();
-    }
+        obj = prev->SubDeselList();
 
-    if ( pObj != 0 )
-    {
-        SelectOneObject(pObj);
-    }
+    if (obj == nullptr)
+        obj = SearchHuman();
+
+    if (obj != nullptr)
+        SelectOneObject(obj);
     else
-    {
-        m_camera->SetType(CAMERA_FREE);
-    }
+        m_camera->SetType(Gfx::CAM_TYPE_FREE);
 
     m_short->UpdateShortcuts();
     return true;
 }
 
-// Quickly removes all objects.
-
+//! Quickly removes all objects
 void CRobotMain::DeleteAllObjects()
 {
-    CPyro*      pyro;
-    CObject*    pObj;
-    int         i;
-
     // Removes all pyrotechnic effects in progress.
-    while ( true )
+    while (true)
     {
-        pyro = (CPyro*)m_iMan->SearchInstance(CLASS_PYRO, 0);
-        if ( pyro == 0 )  break;
+        Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(m_iMan->SearchInstance(CLASS_PYRO, 0));
+        if (pyro == nullptr) break;
 
         pyro->DeleteObject();
         delete pyro;
     }
 
     // Removes the arrow.
-    if ( m_visitArrow != 0 )
+    if (m_visitArrow != nullptr)
     {
         m_visitArrow->DeleteObject();
         delete m_visitArrow;
-        m_visitArrow = 0;
+        m_visitArrow = nullptr;
     }
 
-    for ( i=0 ; i<MAXSHOWLIMIT ; i++ )
-    {
+    for (int i = 0; i < MAXSHOWLIMIT; i++)
         FlushShowLimit(i);
-    }
 
-    while ( true )
+    while (true)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, 0);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, 0));
+        if (obj == nullptr) break;
 
-        pObj->DeleteObject(true);  // destroys rapidly
-        delete pObj;
+        obj->DeleteObject(true);  // destroys rapidly
+        delete obj;
     }
 }
 
-// Selects the human.
-
+//! Selects the human
 void CRobotMain::SelectHuman()
 {
     SelectObject(SearchHuman());
 }
 
-// Returns the object human.
-
+//! Returns the object human
 CObject* CRobotMain::SearchHuman()
 {
-    ObjectType  type;
-    CObject*    pObj;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == 0)  break;
 
-        type = pObj->GetType();
-        if ( type == OBJECT_HUMAN )
-        {
-            return pObj;
-        }
+        ObjectType type = obj->GetType();
+        if (type == OBJECT_HUMAN)
+            return obj;
     }
     return 0;
 }
 
-// Returns the object toto.
-
+//! Returns the object toto
 CObject* CRobotMain::SearchToto()
 {
-    ObjectType  type;
-    CObject*    pObj;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        type = pObj->GetType();
-        if ( type == OBJECT_TOTO )
-        {
-            return pObj;
-        }
+        ObjectType type = obj->GetType();
+        if (type == OBJECT_TOTO)
+            return obj;
     }
-    return 0;
+    return nullptr;
 }
 
-// Returns the nearest selectable object from a given position.
-
-CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* pExclu)
+//! Returns the nearest selectable object from a given position
+CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* exclu)
 {
-    ObjectType  type;
-    CObject     *pObj, *pBest;
-    Math::Vector    oPos;
-    float       min, dist;
-    int         i;
-
-    min = 100000.0f;
-    pBest = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    float min = 100000.0f;
+    CObject* best = 0;
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( pObj == pExclu )  continue;
-        if ( !IsSelectable(pObj) )  continue;
+        if (obj == exclu) continue;
+        if (!IsSelectable(obj)) continue;
 
-        type = pObj->GetType();
-        if ( type == OBJECT_TOTO )  continue;
+        ObjectType type = obj->GetType();
+        if (type == OBJECT_TOTO) continue;
 
-        oPos = pObj->GetPosition(0);
-        dist = Math::DistanceProjected(oPos, pos);
-        if ( dist < min )
+        Math::Vector oPos = obj->GetPosition(0);
+        float dist = Math::DistanceProjected(oPos, pos);
+        if (dist < min)
         {
             min = dist;
-            pBest = pObj;
+            best = obj;
         }
     }
-    return pBest;
+    return best;
 }
 
-// Returns the selected object.
-
+//! Returns the selected object
 CObject* CRobotMain::GetSelect()
 {
-    CObject*    pObj;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( pObj->GetSelect() )
-        {
-            return pObj;
-        }
+        if (obj->GetSelect())
+            return obj;
     }
-    return 0;
+    return nullptr;
 }
 
 CObject* CRobotMain::SearchObject(ObjectType type)
 {
-    CObject*    pObj;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( pObj->GetType() == type )
-        {
-            return pObj;
-        }
+        if (obj->GetType() == type)
+            return obj;
     }
-    return 0;
+    return nullptr;
 }
 
-// Detects the object aimed by the mouse.
-
+//! Detects the object aimed by the mouse
 CObject* CRobotMain::DetectObject(Math::Point pos)
 {
-    ObjectType  type;
-    CObject     *pObj, *pTarget;
-    int         objRank, i, j, rank;
+    int objRank = m_engine->DetectObject(pos);
 
-    objRank = m_engine->DetectObject(pos);
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( !pObj->GetActif() )  continue;
-        if ( pObj->GetProxyActivate() )  continue;
+        if (!obj->GetActif()) continue;
+        if (obj->GetProxyActivate()) continue;
 
-        pTarget = 0;
-        type = pObj->GetType();
+        CObject* target = nullptr;
+        ObjectType type = obj->GetType();
         if ( type == OBJECT_PORTICO      ||
              type == OBJECT_BASE         ||
              type == OBJECT_DERRICK      ||
@@ -2896,40 +2542,37 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
              type == OBJECT_APOLLO4      ||
              type == OBJECT_APOLLO5      )
         {
-            pTarget = pObj;
+            target = obj;
         }
-        else if ( (type == OBJECT_POWER  ||
-                  type == OBJECT_ATOMIC ) &&
-             pObj->GetTruck() != 0 )  // battery used?
+        else if ((type == OBJECT_POWER ||
+                  type == OBJECT_ATOMIC) &&
+                 obj->GetTruck() != nullptr)  // battery used?
         {
-            pTarget = pObj->GetTruck();
+            target = obj->GetTruck();
         }
-        else if ( type == OBJECT_POWER  ||
-                  type == OBJECT_ATOMIC )
+        else if (type == OBJECT_POWER ||
+                 type == OBJECT_ATOMIC)
         {
-            pTarget = pObj;
+            target = obj;
         }
 
-        for ( j=0 ; j<OBJECTMAXPART ; j++ )
+        for (int j = 0; j < OBJECTMAXPART; j++)
         {
-            rank = pObj->GetObjectRank(j);
-            if ( rank == -1 )  continue;
-            if ( rank != objRank )  continue;
-            return pTarget;
+            int rank = obj->GetObjectRank(j);
+            if (rank == -1) continue;
+            if (rank != objRank) continue;
+            return target;
         }
     }
     return 0;
 }
 
-// Indicates whether an object is selectable.
-
-bool CRobotMain::IsSelectable(CObject* pObj)
+//! Indicates whether an object is selectable
+bool CRobotMain::IsSelectable(CObject* obj)
 {
-    ObjectType  type;
+    if (!obj->GetSelectable()) return false;
 
-    if ( !pObj->GetSelectable() )  return false;
-
-    type = pObj->GetType();
+    ObjectType type = obj->GetType();
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_TOTO     ||
          type == OBJECT_MOBILEfa ||
@@ -2980,7 +2623,7 @@ bool CRobotMain::IsSelectable(CObject* pObj)
         return true;
     }
 
-    if ( m_bSelectInsect )
+    if (m_selectInsect)
     {
         if ( type == OBJECT_MOTHER   ||
              type == OBJECT_ANT      ||
@@ -2997,151 +2640,138 @@ bool CRobotMain::IsSelectable(CObject* pObj)
 }
 
 
-// Deletes the selected object.
-
+//! Deletes the selected object
 bool CRobotMain::DeleteObject()
 {
-    CObject*    pObj;
-    CPyro*      pyro;
+    CObject* obj = GetSelect();
+    if (obj == nullptr) return false;
 
-    pObj = RetSelect();
-    if ( pObj == 0 )  return false;
+    Gfx::CPyro* pyro = new Gfx::CPyro(m_iMan);
+    pyro->Create(Gfx::PT_FRAGT, obj);
 
-    pyro = new CPyro(m_iMan);
-    pyro->Create(PT_FRAGT, pObj);
-
-    pObj->SetSelect(false);  // deselects the object
-    m_camera->SetType(CAMERA_EXPLO);
+    obj->SetSelect(false);  // deselects the object
+    m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
     DeselectAll();
-    pObj->DeleteDeselList(pObj);
+    obj->DeleteDeselList(obj);
 
     return true;
 }
 
 
-// Removes setting evidence of the object with the mouse hovers over.
-
-void CRobotMain::HighlightClear()
+//! Removes setting evidence of the object with the mouse hovers over
+void CRobotMain::HiliteClear()
 {
-    CObject*    pObj;
-    int         i;
-
     ClearTooltip();
     m_tooltipName[0] = 0;  // really removes the tooltip
 
-    if ( !m_bHighlight )  return;
+    if (!m_hilite) return;
 
-    i = -1;
-    m_engine->SetHighlightRank(&i);  // nothing more selected
+    int rank = -1;
+    m_engine->SetHighlightRank(&rank);  // nothing more selected
 
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        pObj->SetHighlight(false);
+        obj->SetHilite(false);
         m_map->SetHighlight(0);
         m_short->SetHighlight(0);
     }
 
-    m_bHighlight = false;
+    m_hilite = false;
 }
 
-// Highlights the object with the mouse hovers over.
-
-void CRobotMain::HighlightObject(Math::Point pos)
+//! Highlights the object with the mouse hovers over
+void CRobotMain::HiliteObject(Math::Point pos)
 {
-    CObject*    pObj;
-    char        name[100];
-    bool        bInMap;
-
-    if ( m_bFixScene && m_phase != PHASE_PERSO )  return;
-    if ( m_bMovieLock )  return;
-    if ( m_movie->IsExist() )  return;
-    if ( m_engine->GetMouseHide() )  return;
+    if (m_fixScene && m_phase != PHASE_PERSO) return;
+    if (m_movieLock) return;
+    if (m_movie->IsExist()) return;
+    if (!m_engine->GetMouseVisible()) return;
 
     ClearInterface();  // removes setting evidence and tooltip
 
-    pObj = m_short->DetectShort(pos);
+    CObject* obj = m_short->DetectShort(pos);
 
-    if ( m_dialog->GetTooltip() && m_interface->GetTooltip(pos, name) )
+    char name[100];
+
+    if (m_dialog->GetTooltip() && m_interface->GetTooltip(pos, name))
     {
         m_tooltipPos = pos;
         strcpy(m_tooltipName, name);
         m_tooltipTime = 0.0f;
-        if ( pObj == 0 )  return;
+        if (obj == nullptr) return;
     }
 
-    if ( m_bSuspend )  return;
+    if (m_suspend) return;
 
-    if ( pObj == 0 )
+    if (obj == nullptr)
     {
-        pObj = m_map->DetectMap(pos, bInMap);
-        if ( pObj == 0 )
+        bool inMap;
+        obj = m_map->DetectMap(pos, inMap);
+        if (obj == nullptr)
         {
-            if ( bInMap )  return;
+            if (inMap)  return;
 
-            pObj = DetectObject(pos);
+            obj = DetectObject(pos);
 
-            if ( m_camera->GetType() == CAMERA_ONBOARD &&
-                 m_camera->GetObject() == pObj )
-            {
+            if (m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD &&
+                m_camera->GetObject() == obj)
                 return;
-            }
         }
     }
 
-    if ( pObj != 0 )
+    if (obj != nullptr)
     {
-        if ( m_dialog->GetTooltip() && pObj->GetTooltipName(name) )
+        if (m_dialog->GetTooltip() && obj->GetTooltipName(name))
         {
             m_tooltipPos = pos;
             strcpy(m_tooltipName, name);
             m_tooltipTime = 0.0f;
         }
 
-        if ( IsSelectable(pObj) )
+        if (IsSelectable(obj))
         {
-            pObj->SetHighlight(true);
-            m_map->SetHighlight(pObj);
-            m_short->SetHighlight(pObj);
-            m_bHighlight = true;
+            obj->SetHilite(true);
+            m_map->SetHilite(obj);
+            m_short->SetHilite(obj);
+            m_hilite = true;
         }
     }
 }
 
-// Highlights the object with the mouse hovers over.
-
-void CRobotMain::HighlightFrame(float rTime)
+//! Highlights the object with the mouse hovers over
+void CRobotMain::HiliteFrame(float rTime)
 {
-    if ( m_bFixScene && m_phase != PHASE_PERSO )  return;
-    if ( m_bMovieLock )  return;
-    if ( m_movie->IsExist() )  return;
+    if (m_fixScene && m_phase != PHASE_PERSO) return;
+    if (m_movieLock) return;
+    if (m_movie->IsExist()) return;
 
     m_tooltipTime += rTime;
 
     ClearTooltip();
 
-    if ( m_tooltipTime >= 0.2f &&
-         m_tooltipName[0] != 0 )
+    if (m_tooltipTime >= 0.2f &&
+        m_tooltipName[0] != 0)
     {
         CreateTooltip(m_tooltipPos, m_tooltipName);
     }
 }
 
-// Creates a tooltip.
-
+//! Creates a tooltip
 void CRobotMain::CreateTooltip(Math::Point pos, char* text)
 {
-    CWindow*    pw;
-    Math::Point     start, end, dim, offset, corner;
-
+    Math::Point corner;
     corner.x = pos.x+0.022f;
     corner.y = pos.y-0.052f;
 
-    m_engine->GetText()->DimText(text, corner, 1,
-                                 SMALLFONT, NORMSTRETCH, FONT_COLOBOT,
-                                 start, end);
+    Math::Point start, end;
+
+    m_engine->GetText()->SizeText(text, Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL,
+                                  corner, Gfx::TEXT_ALIGN_LEFT,
+                                  start, end);
+
     start.x -= 0.010f;
     start.y -= 0.002f;
     end.x   += 0.010f;
@@ -3149,13 +2779,16 @@ void CRobotMain::CreateTooltip(Math::Point pos, char* text)
 
     pos.x = start.x;
     pos.y = start.y;
+
+    Math::Point dim;
     dim.x = end.x-start.x;
     dim.y = end.y-start.y;
 
+    Math::Point offset;
     offset.x = 0.0f;
     offset.y = 0.0f;
-    if ( pos.x+dim.x > 1.0f )  offset.x = 1.0f-(pos.x+dim.x);
-    if ( pos.y       < 0.0f )  offset.y = -pos.y;
+    if (pos.x+dim.x > 1.0f) offset.x = 1.0f-(pos.x+dim.x);
+    if (pos.y       < 0.0f) offset.y = -pos.y;
 
     corner.x += offset.x;
     corner.y += offset.y;
@@ -3164,62 +2797,51 @@ void CRobotMain::CreateTooltip(Math::Point pos, char* text)
 
     m_interface->CreateWindows(pos, dim, 1, EVENT_TOOLTIP);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_TOOLTIP);
-    if ( pw != 0 )
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_TOOLTIP));
+    if (pw != nullptr)
     {
-        pw->SetState(STATE_SHADOW);
+        pw->SetState(Ui::STATE_SHADOW);
         pw->SetTrashEvent(false);
 
-        pos.y -= m_engine->GetText()->GetHeight(SMALLFONT, FONT_COLOBOT)/2.0f;
+        pos.y -= m_engine->GetText()->GetHeight(Gfx::FONT_COLOBOT, Gfx::FONT_SIZE_SMALL) / 2.0f;
         pw->CreateLabel(pos, dim, -1, EVENT_LABEL2, text);
     }
 }
 
-// Clears the previous tooltip.
-
+//! Clears the previous tooltip
 void CRobotMain::ClearTooltip()
 {
     m_interface->DeleteControl(EVENT_TOOLTIP);
 }
 
 
-// Displays help for an object.
-
+//! Displays help for an object
 void CRobotMain::HelpObject()
 {
-    CObject*    pObj;
-    char*       filename;
+    CObject* obj = GetSelect();
+    if (obj == nullptr) return;
 
-    pObj = RetSelect();
-    if ( pObj == 0 )  return;
-
-    filename = RetHelpFilename(pObj->GetType());
-    if ( filename[0] == 0 )  return;
+    char* filename = GetHelpFilename(obj->GetType());
+    if (filename[0] == 0) return;
 
     StartDisplayInfo(filename, -1);
 }
 
 
-// Change the mode of the camera.
-
+//! Change the mode of the camera
 void CRobotMain::ChangeCamera()
 {
-    CObject*    pObj;
-    ObjectType  oType;
-    CameraType  type;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( pObj->GetSelect() )
+        if (obj->GetSelect())
         {
-            if ( pObj->GetCameraLock() )  return;
+            if (obj->GetCameraLock()) return;
 
-            oType = pObj->GetType();
-            type = pObj->GetCameraType();
+            ObjectType oType = obj->GetType();
+            Gfx::CameraType type = obj->GetCameraType();
 
             if ( oType != OBJECT_MOBILEfa &&
                  oType != OBJECT_MOBILEta &&
@@ -3250,115 +2872,111 @@ void CRobotMain::ChangeCamera()
                  oType != OBJECT_MOBILEdr &&
                  oType != OBJECT_APOLLO2  )  return;
 
-            if ( oType == OBJECT_MOBILEdr )  // designer?
+            if (oType == OBJECT_MOBILEdr)  // designer?
             {
-                     if ( type == CAMERA_PLANE   )  type = CAMERA_BACK;
-                else if ( type == CAMERA_BACK    )  type = CAMERA_PLANE;
+                     if (type == Gfx::CAM_TYPE_PLANE  )  type = Gfx::CAM_TYPE_BACK;
+                else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_PLANE;
             }
-            else if ( pObj->GetTrainer() )  // trainer?
+            else if (obj->GetTrainer())  // trainer?
             {
-                     if ( type == CAMERA_ONBOARD )  type = CAMERA_FIX;
-                else if ( type == CAMERA_FIX     )  type = CAMERA_PLANE;
-                else if ( type == CAMERA_PLANE   )  type = CAMERA_BACK;
-                else if ( type == CAMERA_BACK    )  type = CAMERA_ONBOARD;
+                     if (type == Gfx::CAM_TYPE_ONBOARD)  type = Gfx::CAM_TYPE_FIX;
+                else if (type == Gfx::CAM_TYPE_FIX    )  type = Gfx::CAM_TYPE_PLANE;
+                else if (type == Gfx::CAM_TYPE_PLANE  )  type = Gfx::CAM_TYPE_BACK;
+                else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_ONBOARD;
             }
             else
             {
-                     if ( type == CAMERA_ONBOARD )  type = CAMERA_BACK;
-                else if ( type == CAMERA_BACK    )  type = CAMERA_ONBOARD;
+                     if (type == Gfx::CAM_TYPE_ONBOARD)  type = Gfx::CAM_TYPE_BACK;
+                else if (type == Gfx::CAM_TYPE_BACK   )  type = Gfx::CAM_TYPE_ONBOARD;
             }
 
-            pObj->SetCameraType(type);
+            obj->SetCameraType(type);
             m_camera->SetType(type);
         }
     }
 }
 
-// Remote control the camera using the arrow keys.
-
-void CRobotMain::KeyCamera(EventMsg event, long param)
+//! Remote control the camera using the arrow keys
+void CRobotMain::KeyCamera(EventType type, long key)
 {
-    CObject*    pObj;
+    // TODO: rewrite key handling to input bindings
 
-    if ( event == EVENT_KEYUP )
+    if (type == EVENT_KEY_UP)
     {
-        if ( param == m_engine->GetKey(KEYRANK_LEFT, 0) ||
-             param == m_engine->GetKey(KEYRANK_LEFT, 1) )
+        if (key == m_app->GetKey(KEYRANK_LEFT, 0) ||
+            key == m_app->GetKey(KEYRANK_LEFT, 1))
         {
             m_cameraPan = 0.0f;
         }
 
-        if ( param == m_engine->GetKey(KEYRANK_RIGHT, 0) ||
-             param == m_engine->GetKey(KEYRANK_RIGHT, 1) )
+        if (key == m_app->GetKey(KEYRANK_RIGHT, 0) ||
+            key == m_app->GetKey(KEYRANK_RIGHT, 1))
         {
             m_cameraPan = 0.0f;
         }
 
-        if ( param == m_engine->GetKey(KEYRANK_UP, 0) ||
-             param == m_engine->GetKey(KEYRANK_UP, 1) )
+        if (key == m_app->GetKey(KEYRANK_UP, 0) ||
+            key == m_app->GetKey(KEYRANK_UP, 1))
         {
             m_cameraZoom = 0.0f;
         }
 
-        if ( param == m_engine->GetKey(KEYRANK_DOWN, 0) ||
-             param == m_engine->GetKey(KEYRANK_DOWN, 1) )
+        if (key == m_app->GetKey(KEYRANK_DOWN, 0) ||
+            key == m_app->GetKey(KEYRANK_DOWN, 1))
         {
             m_cameraZoom = 0.0f;
         }
     }
 
-    if ( m_phase != PHASE_SIMUL )  return;
-    if ( m_bEditLock )  return;  // current edition?
-    if ( m_bTrainerPilot )  return;
+    if (m_phase != PHASE_SIMUL) return;
+    if (m_editLock) return;  // current edition?
+    if (m_trainerPilot) return;
 
-    pObj = RetSelect();
-    if ( pObj == 0 )  return;
-    if ( !pObj->GetTrainer() )  return;
+    CObject* obj = GetSelect();
+    if (obj == nullptr) return;
+    if (!obj->GetTrainer()) return;
 
-    if ( event == EVENT_KEYDOWN )
+    if (type == EVENT_KEY_DOWN)
     {
-        if ( param == m_engine->GetKey(KEYRANK_LEFT, 0) ||
-             param == m_engine->GetKey(KEYRANK_LEFT, 1) )
+        if (key == m_app->GetKey(KEYRANK_LEFT, 0) ||
+            key == m_app->GetKey(KEYRANK_LEFT, 1))
         {
             m_cameraPan = -1.0f;
         }
 
-        if ( param == m_engine->GetKey(KEYRANK_RIGHT, 0) ||
-             param == m_engine->GetKey(KEYRANK_RIGHT, 1) )
+        if (key == m_app->GetKey(KEYRANK_RIGHT, 0) ||
+            key == m_app->GetKey(KEYRANK_RIGHT, 1))
         {
             m_cameraPan = 1.0f;
         }
 
-        if ( param == m_engine->GetKey(KEYRANK_UP, 0) ||
-             param == m_engine->GetKey(KEYRANK_UP, 1) )
+        if (key == m_app->GetKey(KEYRANK_UP, 0) ||
+            key == m_app->GetKey(KEYRANK_UP, 1))
         {
             m_cameraZoom = -1.0f;
         }
 
-        if ( param == m_engine->GetKey(KEYRANK_DOWN, 0) ||
-             param == m_engine->GetKey(KEYRANK_DOWN, 1) )
+        if (key == m_app->GetKey(KEYRANK_DOWN, 0) ||
+            key == m_app->GetKey(KEYRANK_DOWN, 1))
         {
             m_cameraZoom = 1.0f;
         }
     }
 }
 
-// Panned with the camera if a button is pressed.
-
+//! Panned with the camera if a button is pressed
 void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
 {
-    float   value;
-
-    if ( pan != 0.0f )
+    if (pan != 0.0f)
     {
-        value = m_camera->GetRemotePan();
+        float value = m_camera->GetRemotePan();
         value += pan*rTime*1.5f;
         m_camera->SetRemotePan(value);
     }
 
-    if ( zoom != 0.0f )
+    if (zoom != 0.0f)
     {
-        value = m_camera->GetRemoteZoom();
+        float value = m_camera->GetRemoteZoom();
         value += zoom*rTime*0.3f;
         m_camera->SetRemoteZoom(value);
     }
@@ -3366,199 +2984,155 @@ void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
 
 
 
-// Cancels the current movie.
-
+//! Cancels the current movie
 void CRobotMain::AbortMovie()
 {
-    CObject*    pObj;
-    CAuto*      automat;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        automat = pObj->GetAuto();
-        if ( automat != 0 )
-        {
+        CAuto* automat = obj->GetAuto();
+        if (automat != 0)
             automat->Abort();
-        }
     }
 
-    m_engine->SetMouseHide(false);
+    m_engine->SetMouseVisible(true);
 }
 
 
 
-// Updates the text information.
-
+//! Updates the text information
 void CRobotMain::UpdateInfoText()
 {
-    CObject*    pObj;
-    Math::Vector    pos;
-    char        info[100];
-
-    if ( m_bShowPos )
+    if (m_showPos)
     {
-        pObj = RetSelect();
-        if ( pObj != 0 )
+        CObject* obj = GetSelect();
+        if (obj != nullptr)
         {
-            pos = pObj->GetPosition(0);
+            Math::Vector pos = obj->GetPosition(0);
+            char info[100];
             sprintf(info, "Pos = %.2f ; %.2f", pos.x/g_unit, pos.z/g_unit);
-            m_engine->SetInfoText(4, info);
+            //TODO: m_engine->SetInfoText(4, info);
         }
     }
 }
 
 
-// Initializes the view.
-
+//! Initializes the view
 void CRobotMain::InitEye()
 {
-    if ( m_phase == PHASE_SIMUL )
-    {
+    if (m_phase == PHASE_SIMUL)
         m_camera->Init(Math::Vector( 0.0f, 10.0f, 0.0f),
                        Math::Vector(10.0f,  5.0f, 0.0f), 0.0f);
-    }
-
-    if ( m_phase == PHASE_MODEL )
-    {
-        m_model->InitView();
-    }
 }
 
-// Advances the entire scene.
-
+//! Advances the entire scene
 bool CRobotMain::EventFrame(const Event &event)
 {
-    ObjectType  type;
-    CObject     *pObj, *toto;
-    CPyro*      pPyro;
-    CWindow*    pw;
-    CMap*       pm;
-    int         i;
-
     m_time += event.rTime;
-    if ( !m_bMovieLock ) m_gameTime += event.rTime;
+    if (!m_movieLock) m_gameTime += event.rTime;
 
-    if ( !m_bImmediatSatCom && !m_bBeginSatCom &&
-         m_gameTime > 0.1f && m_phase == PHASE_SIMUL )
+    if (!m_immediatSatCom && !m_beginSatCom &&
+         m_gameTime > 0.1f && m_phase == PHASE_SIMUL)
     {
         m_displayText->DisplayError(INFO_BEGINSATCOM, Math::Vector(0.0f,0.0f,0.0f));
-        m_bBeginSatCom = true;  // message appears
+        m_beginSatCom = true;  // message appears
     }
 
     m_water->EventProcess(event);
     m_cloud->EventProcess(event);
-    m_blitz->EventProcess(event);
+    m_lightning->EventProcess(event);
     m_planet->EventProcess(event);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )
+    Ui::CMap* pm = nullptr;
+    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
+    if (pw == nullptr)
     {
-        pm = 0;
+        pm = nullptr;
     }
     else
     {
-        pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-        if ( pm != 0 )  pm->FlushObject();
+        pm = static_cast<Ui::CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
+        if (pm != nullptr) pm->FlushObject();
     }
 
-    toto = 0;
-    if ( !m_bFreePhoto )
+    CObject* toto = nullptr;
+    if (!m_freePhoto)
     {
         // Advances all the robots, but not toto.
-        for ( i=0 ; i<1000000 ; i++ )
+        for (int i = 0; i < 1000000; i++)
         {
-            pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-            if ( pObj == 0 )  break;
-            if ( pm != 0 )  pm->UpdateObject(pObj);
-            if ( pObj->GetTruck() != 0 )  continue;
-            type = pObj->GetType();
-            if ( type == OBJECT_TOTO )
-            {
-                toto = pObj;
-            }
+            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
+            if (pm != nullptr) pm->UpdateObject(obj);
+            if (obj->GetTruck() != nullptr)  continue;
+            ObjectType type = obj->GetType();
+            if (type == OBJECT_TOTO)
+                toto = obj;
             else
-            {
-                pObj->EventProcess(event);
-            }
+                obj->EventProcess(event);
         }
         // Advances all objects transported by robots.
-        for ( i=0 ; i<1000000 ; i++ )
+        for (int i = 0; i < 1000000; i++)
         {
-            pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-            if ( pObj == 0 )  break;
-            if ( pObj->GetTruck() == 0 )  continue;
-            pObj->EventProcess(event);
+            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
+            if (obj->GetTruck() == nullptr) continue;
+            obj->EventProcess(event);
         }
 
         // Advances pyrotechnic effects.
-        for ( i=0 ; i<1000000 ; i++ )
+        for (int i = 0; i < 1000000; i++)
         {
-            pPyro = (CPyro*)m_iMan->SearchInstance(CLASS_PYRO, i);
-            if ( pPyro == 0 )  break;
+            Gfx::CPyro* pyro = static_cast<Gfx::CPyro*>(m_iMan->SearchInstance(CLASS_PYRO, i));
+            if (pyro == nullptr) break;
 
-            pPyro->EventProcess(event);
-            if ( pPyro->IsEnded() != ERR_CONTINUE )
+            pyro->EventProcess(event);
+            if (pyro->IsEnded() != ERR_CONTINUE)
             {
-                pPyro->DeleteObject();
-                delete pPyro;
+                pyro->DeleteObject();
+                delete pyro;
             }
         }
     }
 
     // The camera follows the object, because its position
-    // may depend on the selected object (CAMERA_ONBOARD or CAMERA_BACK).
-    if ( m_phase == PHASE_SIMUL && !m_bEditFull )
+    // may depend on the selected object (Gfx::CAM_TYPE_ONBOARD or Gfx::CAM_TYPE_BACK).
+    if (m_phase == PHASE_SIMUL && !m_editFull)
     {
         m_camera->EventProcess(event);
 
-        if ( m_engine->GetFog() )
-        {
-            m_camera->SetOverBaseColor(m_particule->GetFogColor(m_engine->GetEyePt()));
-        }
+        if (m_engine->GetFog())
+            m_camera->SetOverBaseColor(m_particle->GetFogColor(m_engine->GetEyePt()));
     }
-    if ( m_phase == PHASE_PERSO ||
-         m_phase == PHASE_WIN   ||
-         m_phase == PHASE_LOST  )
+    if (m_phase == PHASE_PERSO ||
+        m_phase == PHASE_WIN   ||
+        m_phase == PHASE_LOST)
     {
         m_camera->EventProcess(event);
     }
 
     // Advances toto following the camera, because its position depends on the camera.
-    if ( toto != 0 )
-    {
+    if (toto != nullptr)
         toto->EventProcess(event);
-    }
 
-    // Advances model.
-    if ( m_phase == PHASE_MODEL )
-    {
-        m_model->ViewMove(event, 2.0f);
-        m_model->UpdateView();
-        m_model->EventProcess(event);
-    }
-
-    HighlightFrame(event.rTime);
+    HiliteFrame(event.rTime);
 
     // Moves the film indicator.
-    if ( m_bMovieLock && !m_bEditLock )  // movie in progress?
+    if (m_movieLock && !m_editLock)  // movie in progress?
     {
-        CControl*   pc;
-        Math::Point     pos, dim;
-        float       zoom;
-
-        pc = m_interface->SearchControl(EVENT_OBJECT_MOVIELOCK);
-        if ( pc != 0 )
+        Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_MOVIELOCK);
+        if (pc != nullptr)
         {
+            Math::Point pos, dim;
+
             dim.x = 32.0f/640.0f;
             dim.y = 32.0f/480.0f;
             pos.x = 20.0f/640.0f;
             pos.y = (480.0f-24.0f)/480.0f;
 
-            zoom = 1.0f+sinf(m_time*6.0f)*0.1f;  // 0.9 .. 1.1
+            float zoom = 1.0f+sinf(m_time*6.0f)*0.1f;  // 0.9 .. 1.1
             dim.x *= zoom;
             dim.y *= zoom;
             pos.x -= dim.x/2.0f;
@@ -3570,16 +3144,14 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     // Moves edition indicator.
-    if ( m_bEditLock || m_bPause )  // edition in progress?
+    if (m_editLock || m_pause)  // edition in progress?
     {
-        CControl*   pc;
-        Math::Point     pos, dim;
-        float       zoom;
-
-        pc = m_interface->SearchControl(EVENT_OBJECT_EDITLOCK);
-        if ( pc != 0 )
+        Ui::CControl* pc = m_interface->SearchControl(EVENT_OBJECT_EDITLOCK);
+        if (pc != nullptr)
         {
-            if ( m_bEditFull || m_bEditLock )
+            Math::Point pos, dim;
+
+            if (m_editFull || m_editLock)
             {
                 dim.x = 10.0f/640.0f;
                 dim.y = 10.0f/480.0f;
@@ -3593,7 +3165,7 @@ bool CRobotMain::EventFrame(const Event &event)
                 pos.x = 20.0f/640.0f;
                 pos.y = (480.0f-24.0f)/480.0f;
 
-                zoom = 1.0f+sinf(m_time*6.0f)*0.1f;  // 0.9 .. 1.1
+                float zoom = 1.0f+sinf(m_time*6.0f)*0.1f;  // 0.9 .. 1.1
                 dim.x *= zoom;
                 dim.y *= zoom;
                 pos.x -= dim.x/2.0f;
@@ -3605,107 +3177,84 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     // Will move the arrow to visit.
-    if ( m_camera->GetType() == CAMERA_VISIT )
-    {
+    if (m_camera->GetType() == Gfx::CAM_TYPE_VISIT)
         FrameVisit(event.rTime);
-    }
 
     // Moves the boundaries.
     FrameShowLimit(event.rTime);
 
-    if ( m_phase == PHASE_SIMUL )
+    if (m_phase == PHASE_SIMUL)
     {
-        if ( !m_bEditLock && m_checkEndTime+1.0f < m_time )
+        if (!m_editLock && m_checkEndTime+1.0f < m_time)
         {
             m_checkEndTime = m_time;
             CheckEndMission(true);
         }
 
-        if ( m_winDelay > 0.0f && !m_bEditLock )
+        if (m_winDelay > 0.0f && !m_editLock)
         {
             m_winDelay -= event.rTime;
-            if ( m_winDelay <= 0.0f )
+            if (m_winDelay <= 0.0f)
             {
-                if ( m_bMovieLock )
-                {
+                if (m_movieLock)
                     m_winDelay = 1.0f;
-                }
                 else
-                {
-                    Event       newEvent;
-                    m_event->MakeEvent(newEvent, EVENT_WIN);
-                    m_event->AddEvent(newEvent);
-                }
+                    m_eventQueue->AddEvent(Event(EVENT_WIN));
             }
         }
 
-        if ( m_lostDelay > 0.0f && !m_bEditLock )
+        if (m_lostDelay > 0.0f && !m_editLock)
         {
             m_lostDelay -= event.rTime;
-            if ( m_lostDelay <= 0.0f )
+            if (m_lostDelay <= 0.0f)
             {
-                if ( m_bMovieLock )
-                {
+                if (m_movieLock)
                     m_winDelay = 1.0f;
-                }
                 else
-                {
-                    Event       newEvent;
-                    m_event->MakeEvent(newEvent, EVENT_LOST);
-                    m_event->AddEvent(newEvent);
-                }
+                    m_eventQueue->AddEvent(Event(EVENT_LOST));
             }
         }
     }
 
-    if ( m_delayWriteMessage > 0 )
+    if (m_delayWriteMessage > 0)
     {
         m_delayWriteMessage --;
-        if ( m_delayWriteMessage == 0 )
+        if (m_delayWriteMessage == 0)
         {
             m_displayText->DisplayError(INFO_WRITEOK, Math::Vector(0.0f,0.0f,0.0f));
         }
     }
 
-    return S_OK;
+    return true;
 }
 
-// Makes the event for all robots.
-
+//! Makes the event for all robots
 bool CRobotMain::EventObject(const Event &event)
 {
-    CObject*    pObj;
-    int         i;
+    if (m_freePhoto) return true;
 
-    if ( m_bFreePhoto )  return S_OK;
+    m_resetCreate = false;
 
-    m_bResetCreate = false;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        pObj->EventProcess(event);
+        obj->EventProcess(event);
     }
 
-    if ( m_bResetCreate )
-    {
+    if (m_resetCreate)
         ResetCreate();
-    }
 
-    return S_OK;
+    return true;
 }
 
 
-// Calculates the point of arrival of the camera.
-
+//! Calculates the point of arrival of the camera
 Math::Vector CRobotMain::LookatPoint(Math::Vector eye, float angleH, float angleV,
                                   float length)
 {
-    Math::Vector    lookat;
-
-    lookat = eye;
+    Math::Vector lookat = eye;
     lookat.z += length;
 
     RotatePoint(eye, angleH, angleV, lookat);
@@ -3716,49 +3265,42 @@ Math::Vector CRobotMain::LookatPoint(Math::Vector eye, float angleH, float angle
 
 char* SkipNum(char *p)
 {
-    while ( *p == ' ' || *p == '.' || *p == '-' || (*p >= '0' && *p <= '9') )
+    while (*p == ' ' || *p == '.' || *p == '-' || (*p >= '0' && *p <= '9'))
     {
         p++;
     }
     return p;
 }
 
-// Conversion of units.
-
+//! Conversion of units
 void CRobotMain::Convert()
 {
-    FILE*           file = NULL;
-    FILE*           fileNew = NULL;
-    char            line[500];
-    char            lineNew[500];
-    char            s[200];
-    char*           base;
-    char*           p;
-    int             rank;
-    Math::Vector        pos;
-    float           value;
+    char* base = m_dialog->GetSceneName();
+    int rank = m_dialog->GetSceneRank();
 
-    base = m_dialog->GetSceneName();
-    rank = m_dialog->GetSceneRank();
+    char line[500];
 
     m_dialog->BuildSceneName(line, base, rank);
-    file = fopen(line, "r");
-    if ( file == NULL )  return;
+    FILE* file = fopen(line, "r");
+    if (file == NULL) return;
 
     strcpy(line+strlen(line)-4, ".new");
-    fileNew = fopen(line, "w");
-    if ( fileNew == NULL )  return;
+    FILE* fileNew = fopen(line, "w");
+    if (fileNew == NULL) return;
 
-    while ( fgets(line, 500, file) != NULL )
+    char lineNew[500];
+    char s[200];
+
+    while (fgets(line, 500, file) != NULL)
     {
         strcpy(lineNew, line);
 
-        if ( Cmd(line, "DeepView") )
+        if (Cmd(line, "DeepView"))
         {
-            p = strstr(line, "air=");
-            if ( p != 0 )
+            char* p = strstr(line, "air=");
+            if (p != 0)
             {
-                value = OpFloat(line, "air", 500.0f);
+                float value = OpFloat(line, "air", 500.0f);
                 value /= g_unit;
                 p[0] = 0;
                 p = SkipNum(p+4);
@@ -3772,9 +3314,9 @@ void CRobotMain::Convert()
             strcpy(line, lineNew);
 
             p = strstr(line, "water=");
-            if ( p != 0 )
+            if (p != 0)
             {
-                value = OpFloat(line, "water", 100.0f);
+                float value = OpFloat(line, "water", 100.0f);
                 value /= g_unit;
                 p[0] = 0;
                 p = SkipNum(p+6);
@@ -3788,12 +3330,12 @@ void CRobotMain::Convert()
             strcpy(line, lineNew);
         }
 
-        if ( Cmd(line, "TerrainGenerate") )
+        if (Cmd(line, "TerrainGenerate"))
         {
-            p = strstr(line, "vision=");
-            if ( p != 0 )
+            char* p = strstr(line, "vision=");
+            if (p != 0)
             {
-                value = OpFloat(line, "vision", 500.0f);
+                float value = OpFloat(line, "vision", 500.0f);
                 value /= g_unit;
                 p[0] = 0;
                 p = SkipNum(p+7);
@@ -3806,13 +3348,13 @@ void CRobotMain::Convert()
             }
         }
 
-        if ( Cmd(line, "CreateObject") ||
-             Cmd(line, "CreateSpot")   )
+        if (Cmd(line, "CreateObject") ||
+            Cmd(line, "CreateSpot"))
         {
-            p = strstr(line, "pos=");
-            if ( p != 0 )
+            char* p = strstr(line, "pos=");
+            if (p != 0)
             {
-                pos = OpPos(line, "pos");
+                Math::Vector pos = OpPos(line, "pos");
                 pos.x /= g_unit;
                 pos.y /= g_unit;
                 pos.z /= g_unit;
@@ -3831,12 +3373,12 @@ void CRobotMain::Convert()
             }
         }
 
-        if ( Cmd(line, "EndMissionTake") )
+        if (Cmd(line, "EndMissionTake"))
         {
-            p = strstr(line, "pos=");
-            if ( p != 0 )
+            char* p = strstr(line, "pos=");
+            if (p != 0)
             {
-                pos = OpPos(line, "pos");
+                Math::Vector pos = OpPos(line, "pos");
                 pos.x /= g_unit;
                 pos.y /= g_unit;
                 pos.z /= g_unit;
@@ -3856,9 +3398,9 @@ void CRobotMain::Convert()
             strcpy(line, lineNew);
 
             p = strstr(line, "dist=");
-            if ( p != 0 )
+            if (p != 0)
             {
-                value = OpFloat(line, "dist", 32.0f);
+                float value = OpFloat(line, "dist", 32.0f);
                 value /= g_unit;
                 p[0] = 0;
                 p = SkipNum(p+5);
@@ -3872,12 +3414,12 @@ void CRobotMain::Convert()
             strcpy(line, lineNew);
         }
 
-        if ( Cmd(line, "Camera") )
+        if (Cmd(line, "Camera"))
         {
-            p = strstr(line, "pos=");
-            if ( p != 0 )
+            char* p = strstr(line, "pos=");
+            if (p != 0)
             {
-                pos = OpPos(line, "pos");
+                Math::Vector pos = OpPos(line, "pos");
                 pos.x /= g_unit;
                 pos.y /= g_unit;
                 pos.z /= g_unit;
@@ -3897,9 +3439,9 @@ void CRobotMain::Convert()
             strcpy(line, lineNew);
 
             p = strstr(line, "h=");
-            if ( p != 0 )
+            if (p != 0)
             {
-                value = OpFloat(line, "h", 32.0f);
+                float value = OpFloat(line, "h", 32.0f);
                 value /= g_unit;
                 p[0] = 0;
                 p = SkipNum(p+2);
@@ -3920,19 +3462,16 @@ void CRobotMain::Convert()
     fclose(file);
 }
 
-// Load the scene for the character.
-
+//! Load the scene for the character
 void CRobotMain::ScenePerso()
 {
-    CObject*    pObj;
-
     DeleteAllObjects();  // removes all the current 3D Scene
     m_engine->FlushObject();
     m_terrain->FlushRelief();  // all flat
     m_terrain->FlushBuildingLevel();
     m_terrain->FlushFlyingLimit();
-    m_light->FlushLight();
-    m_particle->FlushParticule();
+    m_lightMan->FlushLights();
+    m_particle->FlushParticle();
     m_iMan->Flush(CLASS_OBJECT);
     m_iMan->Flush(CLASS_PHYSICS);
     m_iMan->Flush(CLASS_BRAIN);
@@ -3944,66 +3483,44 @@ void CRobotMain::ScenePerso()
 
     m_engine->SetDrawWorld(false);  // does not draw anything on the interface
     m_engine->SetDrawFront(true);  // draws on the human interface
-    pObj = SearchHuman();
-    if ( pObj != 0 )
+    CObject* obj = SearchHuman();
+    if (obj != nullptr)
     {
-        CMotionHuman*   mh;
+        obj->SetDrawFront(true);  // draws the interface
 
-        pObj->SetDrawFront(true);  // draws the interface
-
-        mh = (CMotionHuman*)pObj->GetMotion();
-        if ( mh != 0 )
-        {
+        CMotionHuman* mh = (CMotionHuman*)obj->GetMotion();
+        if (mh != nullptr)
             mh->StartDisplayPerso();
-        }
     }
 }
 
-// Creates the whole stage.
-
-void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
+//! Creates the whole scene
+void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
 {
-    CObject*        pObj;
-    CObject*        pSel;
-    CMotion*        motion;
-    FILE*           file = NULL;
-    char            line[500];
-    char            name[200];
-    char            dir[100];
-    char            op[100];
-    char*           read;
-    char*           stack;
-    char*           base;
-    D3DCOLORVALUE   color;
-    Math::Vector        pos;
-    int             rank, obj, i, rankObj, rankGadget;
-
-//? Convert();
-
-    base  = m_dialog->GetSceneName();
-    rank  = m_dialog->GetSceneRank();
-    read  = m_dialog->GetSceneRead();
-    stack = m_dialog->GetStackRead();
+    char* base  = m_dialog->GetSceneName();
+    int   rank  = m_dialog->GetSceneRank();
+    char* read  = m_dialog->GetSceneRead();
+    char* stack = m_dialog->GetStackRead();
     m_dialog->SetUserDir(base, rank);
 
-    m_bFixScene = bFixScene;
+    m_fixScene = fixScene;
 
     g_id = 0;
-    m_bBase = false;
+    m_base = false;
 
-    if ( !bResetObject )
+    if (!resetObject)
     {
         g_build = 0;
         g_researchDone = 0;  // no research done
         g_researchEnable = 0;
 
         FlushDisplayInfo();
-        m_terrain->LevelFlush();
+        m_terrain->FlushMaterials();
         m_audioTrack = 0;
-        m_bAudioRepeat = true;
+        m_audioRepeat = true;
         m_displayText->SetDelay(1.0f);
         m_displayText->SetEnable(true);
-        m_bImmediatSatCom = false;
+        m_immediatSatCom = false;
         m_endingWinRank   = 0;
         m_endingLostRank  = 0;
         m_endTakeTotal = 0;
@@ -4012,8 +3529,8 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
         m_endTakeLostDelay = 2.0f;
         m_obligatoryTotal = 0;
         m_prohibitedTotal = 0;
-        m_bMapShow = true;
-        m_bMapImage = false;
+        m_mapShow = true;
+        m_mapImage = false;
         m_mapFilename[0] = 0;
 
         m_colorRefBot.r =  10.0f/256.0f;
@@ -4046,159 +3563,143 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
         m_scriptFile[0] = 0;
     }
 
+    char line[500];
+    char name[200];
+    char dir[100];
+    char op[100];
+
     m_dialog->BuildSceneName(line, base, rank);
-    file = fopen(line, "r");
-    if ( file == NULL )  return;
+    FILE* file = fopen(line, "r");
+    if (file == NULL) return;
 
-    rankObj = 0;
-    rankGadget = 0;
-    pSel = 0;
+    int rankObj = 0;
+    int rankGadget = 0;
+    CObject* sel = 0;
 
-    while ( fgets(line, 500, file) != NULL )
+    while (fgets(line, 500, file) != NULL)
     {
-        for ( i=0 ; i<500 ; i++ )
+        for (int i = 0; i < 500; i++)
         {
-            if ( line[i] == '\t' )  line[i] = ' ';  // replace tab by space
-            if ( line[i] == '/' && line[i+1] == '/' )
+            if (line[i] == '\t' ) line[i] = ' ';  // replace tab by space
+            if (line[i] == '/' && line[i+1] == '/')
             {
                 line[i] = 0;
                 break;
             }
         }
 
-        sprintf(op, "Title.%c", RetLanguageLetter());
-        if ( Cmd(line, op) && !bResetObject )
-        {
+        sprintf(op, "Title.%c", GetLanguageLetter());
+        if (Cmd(line, op) && !resetObject)
             OpString(line, "text", m_title);
-        }
 
-        sprintf(op, "Resume.%c", RetLanguageLetter());
-        if ( Cmd(line, op) && !bResetObject )
-        {
+        sprintf(op, "Resume.%c", GetLanguageLetter());
+        if (Cmd(line, op) && !resetObject)
             OpString(line, "text", m_resume);
-        }
 
-        sprintf(op, "ScriptName.%c", RetLanguageLetter());
-        if ( Cmd(line, op) && !bResetObject )
-        {
+        sprintf(op, "ScriptName.%c", GetLanguageLetter());
+        if (Cmd(line, op) && !resetObject)
             OpString(line, "text", m_scriptName);
-        }
 
-        if ( Cmd(line, "ScriptFile") && !bResetObject )
-        {
+        if (Cmd(line, "ScriptFile") && !resetObject)
             OpString(line, "name", m_scriptFile);
-        }
 
-        if ( Cmd(line, "Instructions") && !bResetObject )
+        if (Cmd(line, "Instructions") && !resetObject)
         {
             OpString(line, "name", name);
-//?         sprintf(m_infoFilename[SATCOM_HUSTON], "help\\%s", name);
             UserDir(m_infoFilename[SATCOM_HUSTON], name, "help");
 
-            m_bImmediatSatCom = OpInt(line, "immediat", 0);
+            m_immediatSatCom = OpInt(line, "immediat", 0);
         }
 
-        if ( Cmd(line, "Satellite") && !bResetObject )
+        if (Cmd(line, "Satellite") && !resetObject)
         {
             OpString(line, "name", name);
-//?         sprintf(m_infoFilename[SATCOM_SAT], "help\\%s", name);
             UserDir(m_infoFilename[SATCOM_SAT], name, "help");
         }
 
-        if ( Cmd(line, "Loading") && !bResetObject )
+        if (Cmd(line, "Loading") && !resetObject)
         {
             OpString(line, "name", name);
-//?         sprintf(m_infoFilename[SATCOM_LOADING], "help\\%s", name);
             UserDir(m_infoFilename[SATCOM_LOADING], name, "help");
         }
 
-        if ( Cmd(line, "HelpFile") && !bResetObject )
+        if (Cmd(line, "HelpFile") && !resetObject)
         {
             OpString(line, "name", name);
-//?         sprintf(m_infoFilename[SATCOM_PROG], "help\\%s", name);
             UserDir(m_infoFilename[SATCOM_PROG], name, "help");
         }
-        if ( Cmd(line, "SoluceFile") && !bResetObject )
+        if (Cmd(line, "SoluceFile") && !resetObject)
         {
             OpString(line, "name", name);
-//?         sprintf(m_infoFilename[SATCOM_SOLUCE], "help\\%s", name);
             UserDir(m_infoFilename[SATCOM_SOLUCE], name, "help");
         }
 
-        if ( Cmd(line, "EndingFile") && !bResetObject )
+        if (Cmd(line, "EndingFile") && !resetObject)
         {
             m_endingWinRank  = OpInt(line, "win",  0);
             m_endingLostRank = OpInt(line, "lost", 0);
         }
 
-        if ( Cmd(line, "MessageDelay") && !bResetObject )
+        if (Cmd(line, "MessageDelay") && !resetObject)
         {
             m_displayText->SetDelay(OpFloat(line, "factor", 1.0f));
         }
 
-        if ( Cmd(line, "Audio") && !bResetObject )
+        if (Cmd(line, "Audio") && !resetObject)
         {
             m_audioTrack = OpInt(line, "track", 0);
-            m_bAudioRepeat = OpInt(line, "repeat", 1);
+            m_audioRepeat = OpInt(line, "repeat", 1);
         }
 
-        if ( Cmd(line, "AmbiantColor") && !bResetObject )
+        if (Cmd(line, "AmbientColor") && !resetObject)
         {
-            m_engine->SetAmbiantColor(OpColor(line, "air",   0x88888888), 0);
-            m_engine->SetAmbiantColor(OpColor(line, "water", 0x88888888), 1);
+            m_engine->SetAmbientColor(OpColor(line, "air",   Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
+            m_engine->SetAmbientColor(OpColor(line, "water", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
         }
 
-        if ( Cmd(line, "FogColor") && !bResetObject )
+        if (Cmd(line, "FogColor") && !resetObject)
         {
-            m_engine->SetFogColor(OpColor(line, "air",   0x88888888), 0);
-            m_engine->SetFogColor(OpColor(line, "water", 0x88888888), 1);
+            m_engine->SetFogColor(OpColor(line, "air",   Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 0);
+            m_engine->SetFogColor(OpColor(line, "water", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)), 1);
         }
 
-        if ( Cmd(line, "VehicleColor") && !bResetObject )
-        {
-            m_colorNewBot = RetColor(OpColor(line, "color", 0x88888888));
-        }
+        if (Cmd(line, "VehicleColor") && !resetObject)
+            m_colorNewBot = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
 
-        if ( Cmd(line, "InsectColor") && !bResetObject )
-        {
-            m_colorNewAlien = RetColor(OpColor(line, "color", 0x88888888));
-        }
+        if (Cmd(line, "InsectColor") && !resetObject)
+            m_colorNewAlien = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
 
-        if ( Cmd(line, "GreeneryColor") && !bResetObject )
-        {
-            m_colorNewGreen = RetColor(OpColor(line, "color", 0x88888888));
-        }
+        if (Cmd(line, "GreeneryColor") && !resetObject)
+            m_colorNewGreen = OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f));
 
-        if ( Cmd(line, "DeepView") && !bResetObject )
+        if (Cmd(line, "DeepView") && !resetObject)
         {
             m_engine->SetDeepView(OpFloat(line, "air",   500.0f)*UNIT, 0, true);
             m_engine->SetDeepView(OpFloat(line, "water", 100.0f)*UNIT, 1, true);
         }
 
-        if ( Cmd(line, "FogStart") && !bResetObject )
+        if (Cmd(line, "FogStart") && !resetObject)
         {
             m_engine->SetFogStart(OpFloat(line, "air",   0.5f), 0);
             m_engine->SetFogStart(OpFloat(line, "water", 0.5f), 1);
         }
 
-        if ( Cmd(line, "SecondTexture") && !bResetObject )
-        {
+        if (Cmd(line, "SecondTexture") && !resetObject)
             m_engine->SetSecondTexture(OpInt(line, "rank", 1));
-        }
 
-        if ( Cmd(line, "Background") && !bResetObject )
+        if (Cmd(line, "Background") && !resetObject)
         {
             OpString(line, "image", name);
             UserDir(dir, name, "");
             m_engine->SetBackground(dir,
-                                    OpColor(line, "up",        0x00000000),
-                                    OpColor(line, "down",      0x00000000),
-                                    OpColor(line, "cloudUp",   0x00000000),
-                                    OpColor(line, "cloudDown", 0x00000000),
+                                    OpColor(line, "up",        Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                    OpColor(line, "down",      Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                    OpColor(line, "cloudUp",   Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
+                                    OpColor(line, "cloudDown", Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)),
                                     OpInt(line, "full", 0));
         }
 
-        if ( Cmd(line, "Planet") && !bResetObject )
+        if (Cmd(line, "Planet") && !resetObject)
         {
             Math::Vector    ppos, uv1, uv2;
 
@@ -4217,21 +3718,21 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                              Math::Point(uv2.x, uv2.z));
         }
 
-        if ( Cmd(line, "FrontsizeName") && !bResetObject )
+        if (Cmd(line, "FrontsizeName") && !resetObject)
         {
             OpString(line, "image", name);
             UserDir(dir, name, "");
-            m_engine->SetFrontsizeName(dir);
+            m_engine->SetForegroundName(dir);
         }
 
-        if ( Cmd(line, "Global") && !bResetObject )
+        if (Cmd(line, "Global") && !resetObject)
         {
             g_unit = OpFloat(line, "unitScale", 4.0f);
             m_engine->SetTracePrecision(OpFloat(line, "traceQuality", 1.0f));
-            m_bShortCut = OpInt(line, "shortcut", 1);
+            m_shortCut = OpInt(line, "shortcut", 1);
         }
 
-        if ( Cmd(line, "TerrainGenerate") && !bResetObject )
+        if (Cmd(line, "TerrainGenerate") && !resetObject)
         {
             m_terrain->Generate(OpInt(line, "mosaic", 20),
                                 OpInt(line, "brick", 3),
@@ -4241,182 +3742,138 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                                 OpFloat(line, "hard", 0.5f));
         }
 
-        if ( Cmd(line, "TerrainWind") && !bResetObject )
-        {
+        if (Cmd(line, "TerrainWind") && !resetObject)
             m_terrain->SetWind(OpPos(line, "speed"));
-        }
 
-        if ( Cmd(line, "TerrainRelief") && !bResetObject )
+        if (Cmd(line, "TerrainRelief") && !resetObject)
         {
             OpString(line, "image", name);
             UserDir(dir, name, "textures");
-            m_terrain->ReliefFromBMP(dir, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
+            m_terrain->LoadRelief(dir, OpFloat(line, "factor", 1.0f), OpInt(line, "border", 1));
         }
 
-        if ( Cmd(line, "TerrainReliefDXF") && !bResetObject )
+        if (Cmd(line, "TerrainResource") && !resetObject)
         {
             OpString(line, "image", name);
             UserDir(dir, name, "textures");
-            m_terrain->ReliefFromDXF(dir, OpFloat(line, "factor", 1.0f));
+            m_terrain->LoadResources(dir);
         }
 
-        if ( Cmd(line, "TerrainResource") && !bResetObject )
-        {
-            OpString(line, "image", name);
-            UserDir(dir, name, "textures");
-            m_terrain->ResFromBMP(dir);
-        }
-
-        if ( Cmd(line, "TerrainWater") && !bResetObject )
+        if (Cmd(line, "TerrainWater") && !resetObject)
         {
             OpString(line, "image", name);
             UserDir(dir, name, "");
+            Math::Vector pos;
             pos.x = OpFloat(line, "moveX", 0.0f);
             pos.y = OpFloat(line, "moveY", 0.0f);
             pos.z = pos.x;
-            m_water->Create(OpTypeWater(line, "air",   WATER_TT),
-                            OpTypeWater(line, "water", WATER_TT),
+            m_water->Create(OpTypeWater(line, "air",   Gfx::WATER_TT),
+                            OpTypeWater(line, "water", Gfx::WATER_TT),
                             dir,
-                            RetColor(OpColor(line, "diffuse", 0xffffffff)),
-                            RetColor(OpColor(line, "ambiant", 0xffffffff)),
+                            OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            OpColor(line, "ambiant", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
                             OpFloat(line, "level", 100.0f)*UNIT,
                             OpFloat(line, "glint", 1.0f),
                             pos);
-            m_colorNewWater = RetColor(OpColor(line, "color", RetColor(m_colorRefWater)));
+            m_colorNewWater = OpColor(line, "color", m_colorRefWater);
             m_colorShiftWater = OpFloat(line, "brightness", 0.0f);
         }
 
-        if ( Cmd(line, "TerrainLava") && !bResetObject )
-        {
+        if (Cmd(line, "TerrainLava") && !resetObject)
             m_water->SetLava(OpInt(line, "mode", 0));
-        }
 
-        if ( Cmd(line, "TerrainCloud") && !bResetObject )
+        if (Cmd(line, "TerrainCloud") && !resetObject)
         {
             OpString(line, "image", name);
             UserDir(dir, name, "");
             m_cloud->Create(dir,
-                            RetColor(OpColor(line, "diffuse", 0xffffffff)),
-                            RetColor(OpColor(line, "ambiant", 0xffffffff)),
-                            OpFloat(line, "level", 500.0f)*UNIT);
+                            OpColor(line, "diffuse", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            OpColor(line, "ambiant", Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f)),
+                            OpFloat(line, "level", 500.0f) * UNIT);
         }
 
-        if ( Cmd(line, "TerrainBlitz") && !bResetObject )
+        if (Cmd(line, "TerrainBlitz") && !resetObject)
         {
-            m_blitz->Create(OpFloat(line, "sleep", 0.0f),
+            m_lightning->Create(OpFloat(line, "sleep", 0.0f),
                             OpFloat(line, "delay", 3.0f),
-                            OpFloat(line, "magnetic", 50.0f)*UNIT);
+                            OpFloat(line, "magnetic", 50.0f) * UNIT);
         }
 
-        if ( Cmd(line, "TerrainInitTextures") && !bResetObject )
+        if (Cmd(line, "TerrainInitTextures") && !resetObject)
         {
-            int     dx, dy, tt[100];
-            char*   op;
-
             OpString(line, "image", name);
-            AddExt(name, ".tga");
-            dx = OpInt(line, "dx", 1);
-            dy = OpInt(line, "dy", 1);
-            op = SearchOp(line, "table");
-            for ( i=0 ; i<dx*dy ; i++ )
-            {
+            AddExt(name, ".png");
+            int dx = OpInt(line, "dx", 1);
+            int dy = OpInt(line, "dy", 1);
+            char* op = SearchOp(line, "table");
+            int tt[100];
+            for (int i = 0; i < dx*dy; i++)
                 tt[i] = GetInt(op, i, 0);
-            }
 
-            if ( strstr(name, "%user%") != 0 )
-            {
+            if (strstr(name, "%user%") != 0)
                 CopyFileListToTemp(name, tt, dx*dy);
-            }
 
             m_terrain->InitTextures(name, tt, dx, dy);
         }
 
-        if ( Cmd(line, "TerrainInit") && !bResetObject )
-        {
-            m_terrain->LevelInit(OpInt(line, "id", 1));
-        }
+        if (Cmd(line, "TerrainInit") && !resetObject)
+            m_terrain->InitMaterials(OpInt(line, "id", 1));
 
-        if ( Cmd(line, "TerrainMaterial") && !bResetObject )
+        if (Cmd(line, "TerrainMaterial") && !resetObject)
         {
             OpString(line, "image", name);
-            AddExt(name, ".tga");
-            if ( strstr(name, "%user%") != 0 )
-            {
+            AddExt(name, ".png");
+            if (strstr(name, "%user%") != 0)
                 CopyFileToTemp(name);
-            }
 
-            m_terrain->LevelMaterial(OpInt(line, "id", 0),
-                                     name,
-                                     OpFloat(line, "u", 0.0f),
-                                     OpFloat(line, "v", 0.0f),
-                                     OpInt(line, "up",    1),
-                                     OpInt(line, "right", 1),
-                                     OpInt(line, "down",  1),
-                                     OpInt(line, "left",  1),
-                                     OpFloat(line, "hard", 0.5f));
+            m_terrain->AddMaterial(OpInt(line, "id", 0),
+                                   name,
+                                   Math::Point(OpFloat(line, "u", 0.0f),
+                                               OpFloat(line, "v", 0.0f)),
+                                   OpInt(line, "up",    1),
+                                   OpInt(line, "right", 1),
+                                   OpInt(line, "down",  1),
+                                   OpInt(line, "left",  1),
+                                   OpFloat(line, "hard", 0.5f));
         }
 
-        if ( Cmd(line, "TerrainLevel") && !bResetObject )
+        if (Cmd(line, "TerrainLevel") && !resetObject)
         {
-            int     id[50];
-            char*   op;
-
-            op = SearchOp(line, "id");
-            i = 0;
-            while ( true )
+            char* op = SearchOp(line, "id");
+            int id[50];
+            int i = 0;
+            while (i < 50)
             {
                 id[i] = GetInt(op, i, 0);
-                if ( id[i++] == 0 )  break;
+                if (id[i++] == 0) break;
             }
 
-            m_terrain->LevelGenerate(id,
-                                     OpFloat(line, "min", 0.0f)*UNIT,
-                                     OpFloat(line, "max", 100.0f)*UNIT,
-                                     OpFloat(line, "slope", 5.0f),
-                                     OpFloat(line, "freq", 100.0f),
-                                     OpPos(line, "center")*g_unit,
-                                     OpFloat(line, "radius", 0.0f)*g_unit);
+            m_terrain->GenerateMaterials(id,
+                                         OpFloat(line, "min", 0.0f)*UNIT,
+                                         OpFloat(line, "max", 100.0f)*UNIT,
+                                         OpFloat(line, "slope", 5.0f),
+                                         OpFloat(line, "freq", 100.0f),
+                                         OpPos(line, "center")*g_unit,
+                                         OpFloat(line, "radius", 0.0f)*g_unit);
         }
 
-        if ( Cmd(line, "TerrainCreate") && !bResetObject )
-        {
-            m_terrain->CreateObjects(true);
-        }
+        if (Cmd(line, "TerrainCreate") && !resetObject)
+            m_terrain->CreateObjects();
 
-        if ( Cmd(line, "BeginObject") )
+        if (Cmd(line, "BeginObject"))
         {
             InitEye();
             SetMovieLock(false);
-            if ( !m_bFixScene )
-            {
-//?             CreateObject(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f, 0.0f, OBJECT_TOTO);
-            }
 
-            if ( read[0] != 0 )  // loading file ?
-            {
-                pSel = IOReadScene(read, stack);
-            }
+            if (read[0] != 0)  // loading file ?
+                sel = IOReadScene(read, stack);
         }
 
-        if ( Cmd(line, "CreateObject") && read[0] == 0 )
+        if (Cmd(line, "CreateObject") && read[0] == 0)
         {
-            CObject*    pObj;
-            CBrain*     pBrain;
-            CAuto*      pAuto;
-            CPyro*      pyro;
-            ObjectType  type;
-            PyroType    pType;
-            CameraType  cType;
-            Info        info;
-            float       dir;
-            char        op[20];
-            char        text[100];
-            char*       p;
-            int         run, gadget;
+            ObjectType type = OpTypeObject(line, "type", OBJECT_NULL);
 
-            type = OpTypeObject(line, "type", OBJECT_NULL);
-
-            gadget = OpInt(line, "gadget", -1);
+            int gadget = OpInt(line, "gadget", -1);
             if ( gadget == -1 )
             {
                 gadget = 0;
@@ -4445,270 +3902,238 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                     }
                 }
             }
-            if ( gadget != 0 )  // is this a gadget?
+            if (gadget != 0)  // is this a gadget?
             {
-                if ( !TestGadgetQuantity(rankGadget++) )  continue;
+                if (!TestGadgetQuantity(rankGadget++)) continue;
             }
 
-            pos = OpPos(line, "pos")*g_unit;
-            dir = OpFloat(line, "dir", 0.0f)*Math::PI;
-            pObj = CreateObject(pos, dir,
-                                OpFloat(line, "z", 1.0f),
-                                OpFloat(line, "h", 0.0f),
-                                type,
-                                OpFloat(line, "power", 1.0f),
-                                OpInt(line, "trainer", 0),
-                                OpInt(line, "toy", 0),
-                                OpInt(line, "option", 0));
+            Math::Vector pos = OpPos(line, "pos")*g_unit;
+            float dir = OpFloat(line, "dir", 0.0f)*Math::PI;
+            CObject* obj = CreateObject(pos, dir,
+                                        OpFloat(line, "z", 1.0f),
+                                        OpFloat(line, "h", 0.0f),
+                                        type,
+                                        OpFloat(line, "power", 1.0f),
+                                        OpInt(line, "trainer", 0),
+                                        OpInt(line, "toy", 0),
+                                        OpInt(line, "option", 0));
 
-            if ( pObj != 0 )
+            if (obj != nullptr)
             {
-                pObj->SetDefRank(rankObj);
+                obj->SetDefRank(rankObj);
 
-                if ( type == OBJECT_BASE )  m_bBase = true;
+                if (type == OBJECT_BASE) m_base = true;
 
-                cType = OpCamera(line, "camera");
-                if ( cType != CAMERA_NULL )
+                Gfx::CameraType cType = OpCamera(line, "camera");
+                if (cType != Gfx::CAM_TYPE_NULL)
+                    obj->SetCameraType(cType);
+
+                obj->SetCameraDist(OpFloat(line, "cameraDist", 50.0f));
+                obj->SetCameraLock(OpInt(line, "cameraLock", 0));
+
+                Gfx::PyroType pType = OpPyro(line, "pyro");
+                if (pType != Gfx::PT_NULL)
                 {
-                    pObj->SetCameraType(cType);
-                }
-                pObj->SetCameraDist(OpFloat(line, "cameraDist", 50.0f));
-                pObj->SetCameraLock(OpInt(line, "cameraLock", 0));
-
-                pType = OpPyro(line, "pyro");
-                if ( pType != PT_NULL )
-                {
-                    pyro = new CPyro(m_iMan);
-                    pyro->Create(pType, pObj);
+                    Gfx::CPyro* pyro = new Gfx::CPyro(m_iMan);
+                    pyro->Create(pType, obj);
                 }
 
                 // Puts information in terminal (OBJECT_INFO).
-                for ( i=0 ; i<OBJECTMAXINFO ; i++ )
+                for (int i = 0; i < OBJECTMAXINFO; i++)
                 {
                     sprintf(op, "info%d", i+1);
+                    char text[100];
                     OpString(line, op, text);
-                    if ( text[0] == 0 )  break;
-                    p = strchr(text, '=');
-                    if ( p == 0 )  break;
+                    if (text[0] == 0)  break;
+                    char* p = strchr(text, '=');
+                    if (p == 0) break;
                     *p = 0;
+                    Info info;
                     strcpy(info.name, text);
                     sscanf(p+1, "%f", &info.value);
-                    pObj->SetInfo(i, info);
+                    obj->SetInfo(i, info);
                 }
 
                 // Sets the parameters of the command line.
-                p = SearchOp(line, "cmdline");
-                for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
+                char* p = SearchOp(line, "cmdline");
+                for (int i = 0; i < OBJECTMAXCMDLINE; i++)
                 {
-                    float   value;
-                    value = GetFloat(p, i, NAN);
-                    if ( value == NAN )  break;
-                    pObj->SetCmdLine(i, value);
+                    float value = GetFloat(p, i, NAN);
+                    if (value == NAN) break;
+                    obj->SetCmdLine(i, value);
                 }
 
-                if ( OpInt(line, "select", 0) == 1 )
+                if (OpInt(line, "select", 0) == 1)
                 {
-                    pSel = pObj;
+                    sel = obj;
                 }
 
-                pObj->SetSelectable(OpInt(line, "selectable", 1));
-                pObj->SetEnable(OpInt(line, "enable", 1));
-                pObj->SetProxyActivate(OpInt(line, "proxyActivate", 0));
-                pObj->SetProxyDistance(OpFloat(line, "proxyDistance", 15.0f)*g_unit);
-                pObj->SetRange(OpFloat(line, "range", 30.0f));
-                pObj->SetShield(OpFloat(line, "shield", 1.0f));
-                pObj->SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
-                pObj->SetClip(OpInt(line, "clip", 1));
-                pObj->SetCheckToken(OpInt(line, "checkToken", 1));
-                pObj->SetManual(OpInt(line, "manual", 0));
+                obj->SetSelectable(OpInt(line, "selectable", 1));
+                obj->SetEnable(OpInt(line, "enable", 1));
+                obj->SetProxyActivate(OpInt(line, "proxyActivate", 0));
+                obj->SetProxyDistance(OpFloat(line, "proxyDistance", 15.0f)*g_unit);
+                obj->SetRange(OpFloat(line, "range", 30.0f));
+                obj->SetShield(OpFloat(line, "shield", 1.0f));
+                obj->SetMagnifyDamage(OpFloat(line, "magnifyDamage", 1.0f));
+                obj->SetClip(OpInt(line, "clip", 1));
+                obj->SetCheckToken(OpInt(line, "checkToken", 1));
+                obj->SetManual(OpInt(line, "manual", 0));
 
-                motion = pObj->GetMotion();
-                if ( motion != 0 )
+                CMotion* motion = obj->GetMotion();
+                if (motion != nullptr)
                 {
                     p = SearchOp(line, "param");
-                    for ( i=0 ; i<10 ; i++ )
+                    for (int i = 0; i < 10; i++)
                     {
                         float   value;
                         value = GetFloat(p, i, NAN);
-                        if ( value == NAN )  break;
+                        if (value == NAN) break;
                         motion->SetParam(i, value);
                     }
                 }
 
-                run = -1;
-                pBrain = pObj->GetBrain();
-                if ( pBrain != 0 )
+                int run = -1;
+                CBrain* brain = obj->GetBrain();
+                if (brain != nullptr)
                 {
-                    for ( i=0 ; i<10 ; i++ )
+                    for (int i = 0; i < 10; i++)
                     {
                         sprintf(op, "script%d", i+1);  // script1..script10
                         OpString(line, op, name);
-#if _SCHOOL
+/* TODO: #if _SCHOOL
                         if ( !m_dialog->GetSoluce4() && i == 3 )  continue;
-#endif
-                        if ( name[0] != 0 )
-                        {
-                            pBrain->SetScriptName(i, name);
-                        }
+#endif*/
+                        if (name[0] != 0)
+                            brain->SetScriptName(i, name);
+
                     }
 
-                    i = OpInt(line, "run", 0);
-                    if ( i != 0 )
+                    int i = OpInt(line, "run", 0);
+                    if (i != 0)
                     {
                         run = i-1;
-                        pBrain->SetScriptRun(run);
+                        brain->SetScriptRun(run);
                     }
                 }
-                pAuto = pObj->GetAuto();
-                if ( pAuto != 0 )
+                CAuto* automat = obj->GetAuto();
+                if (automat != nullptr)
                 {
                     type = OpTypeObject(line, "autoType", OBJECT_NULL);
-                    pAuto->SetType(type);
-                    for ( i=0 ; i<5 ; i++ )
+                    automat->SetType(type);
+                    for (int i = 0; i < 5; i++)
                     {
                         sprintf(op, "autoValue%d", i+1);  // autoValue1..autoValue5
-                        pAuto->SetValue(i, OpFloat(line, op, 0.0f));
+                        automat->SetValue(i, OpFloat(line, op, 0.0f));
                     }
                     OpString(line, "autoString", name);
-                    pAuto->SetString(name);
+                    automat->SetString(name);
 
-                    i = OpInt(line, "run", -1);
-                    if ( i != -1 )
+                    int i = OpInt(line, "run", -1);
+                    if (i != -1)
                     {
-                        if ( i != PARAM_FIXSCENE &&
-                             !m_dialog->GetMovies() )  i = 0;
-                        pAuto->Start(i);  // starts the film
+                        if (i != PARAM_FIXSCENE &&
+                            !m_dialog->GetMovies()) i = 0;
+                        automat->Start(i);  // starts the film
                     }
                 }
 
                 OpString(line, "soluce", name);
-                if ( bSoluce && pBrain != 0 && name[0] != 0 )
-                {
-                    pBrain->SetSoluceName(name);
-                }
+                if (soluce && brain != 0 && name[0] != 0)
+                    brain->SetSoluceName(name);
 
-                pObj->SetResetPosition(pObj->GetPosition(0));
-                pObj->SetResetAngle(pObj->GetAngle(0));
-                pObj->SetResetRun(run);
+                obj->SetResetPosition(obj->GetPosition(0));
+                obj->SetResetAngle(obj->GetAngle(0));
+                obj->SetResetRun(run);
 
-                if ( OpInt(line, "reset", 0) == 1 )
-                {
-                    pObj->SetResetCap(RESET_MOVE);
-                }
+                if (OpInt(line, "reset", 0) == 1)
+                    obj->SetResetCap(RESET_MOVE);
             }
 
             rankObj ++;
         }
 
-        if ( Cmd(line, "CreateFog") && !bResetObject )
+        if (Cmd(line, "CreateFog") && !resetObject)
         {
-            ParticuleType   type;
-            Math::Point         dim;
-            float           height, ddim, delay;
-
-            type = (ParticuleType)(PARTIFOG0+OpInt(line, "type", 0));
-            pos = OpPos(line, "pos")*g_unit;
-            height = OpFloat(line, "height", 1.0f)*g_unit;
-            ddim = OpFloat(line, "dim", 50.0f)*g_unit;
-            delay = OpFloat(line, "delay", 2.0f);
-            m_terrain->MoveOnFloor(pos);
+            Gfx::ParticleType type = static_cast<Gfx::ParticleType>((Gfx::PARTIFOG0+OpInt(line, "type", 0)));
+            Math::Vector pos = OpPos(line, "pos")*g_unit;
+            float height = OpFloat(line, "height", 1.0f)*g_unit;
+            float ddim = OpFloat(line, "dim", 50.0f)*g_unit;
+            float delay = OpFloat(line, "delay", 2.0f);
+            m_terrain->AdjustToFloor(pos);
             pos.y += height;
+            Math::Point dim;
             dim.x = ddim;
             dim.y = dim.x;
             m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, type, delay, 0.0f, 0.0f);
         }
 
-        if ( Cmd(line, "CreateLight") && !bResetObject )
+        if (Cmd(line, "CreateLight") && !resetObject)
         {
-            D3DTypeObj  type;
+            Gfx::EngineObjectType  type;
 
-            color.r = 0.5f;
-            color.g = 0.5f;
-            color.b = 0.5f;
-            color.a = 1.0f;
-            obj = CreateLight(OpDir(line, "dir"),
-                              OpColorValue(line, "color", color));
+            int lightRank = CreateLight(OpDir(line, "dir"),
+                                        OpColor(line, "color", Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
 
-            type = OpTypeTerrain(line, "type", TYPENULL);
-            if ( type == TYPETERRAIN )
-            {
-                m_light->SetLightIncluType(obj, TYPETERRAIN);
-            }
-            if ( type == TYPEQUARTZ )
-            {
-                m_light->SetLightIncluType(obj, TYPEQUARTZ);
-            }
-            if ( type == TYPEMETAL )
-            {
-                m_light->SetLightIncluType(obj, TYPEMETAL);
-            }
-            if ( type == TYPEFIX )
-            {
-                m_light->SetLightExcluType(obj, TYPETERRAIN);
-            }
+            type = OpTypeTerrain(line, "type", Gfx::ENG_OBJTYPE_NULL);
+            if (type == Gfx::ENG_OBJTYPE_TERRAIN)
+                m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
+
+            if (type == Gfx::ENG_OBJTYPE_QUARTZ)
+                m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_QUARTZ);
+
+            if (type == Gfx::ENG_OBJTYPE_METAL)
+                m_lightMan->SetLightIncludeType(lightRank, Gfx::ENG_OBJTYPE_METAL);
+
+            if (type == Gfx::ENG_OBJTYPE_FIX)
+                m_lightMan->SetLightExcludeType(lightRank, Gfx::ENG_OBJTYPE_TERRAIN);
         }
-        if ( Cmd(line, "CreateSpot") && !bResetObject )
+        if (Cmd(line, "CreateSpot") && !resetObject)
         {
-            D3DTypeObj  type;
+            Gfx::EngineObjectType  type;
 
-            color.r = 0.5f;
-            color.g = 0.5f;
-            color.b = 0.5f;
-            color.a = 1.0f;
-            obj = CreateSpot(OpDir(line, "pos")*g_unit,
-                             OpColorValue(line, "color", color));
+            int rankLight = CreateSpot(OpDir(line, "pos")*g_unit,
+                                       OpColor(line, "color", Gfx::Color(0.5f, 0.5f, 0.5f, 1.0f)));
 
-            type = OpTypeTerrain(line, "type", TYPENULL);
-            if ( type == TYPETERRAIN )
-            {
-                m_light->SetLightIncluType(obj, TYPETERRAIN);
-            }
-            if ( type == TYPEQUARTZ )
-            {
-                m_light->SetLightIncluType(obj, TYPEQUARTZ);
-            }
-            if ( type == TYPEMETAL )
-            {
-                m_light->SetLightIncluType(obj, TYPEMETAL);
-            }
-            if ( type == TYPEFIX )
-            {
-                m_light->SetLightExcluType(obj, TYPETERRAIN);
-            }
+            type = OpTypeTerrain(line, "type", Gfx::ENG_OBJTYPE_NULL);
+            if (type == Gfx::ENG_OBJTYPE_TERRAIN)
+                m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
+
+            if (type == Gfx::ENG_OBJTYPE_QUARTZ)
+                m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_QUARTZ);
+
+            if (type == Gfx::ENG_OBJTYPE_METAL)
+                m_lightMan->SetLightIncludeType(rankLight, Gfx::ENG_OBJTYPE_METAL);
+
+            if (type == Gfx::ENG_OBJTYPE_FIX)
+                m_lightMan->SetLightExcludeType(rankLight, Gfx::ENG_OBJTYPE_TERRAIN);
         }
 
-        if ( Cmd(line, "GroundSpot") && !bResetObject )
+        if (Cmd(line, "GroundSpot") && !resetObject)
         {
-            rank = m_engine->GroundSpotCreate();
-            if ( rank != -1 )
+            rank = m_engine->CreateGroundSpot();
+            if (rank != -1)
             {
                 m_engine->SetObjectGroundSpotPos(rank, OpPos(line, "pos")*g_unit);
                 m_engine->SetObjectGroundSpotRadius(rank, OpFloat(line, "radius", 10.0f)*g_unit);
-                m_engine->SetObjectGroundSpotColor(rank, RetColor(OpColor(line, "color", 0x88888888)));
+                m_engine->SetObjectGroundSpotColor(rank, OpColor(line, "color", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
                 m_engine->SetObjectGroundSpotSmooth(rank, OpFloat(line, "smooth", 1.0f));
                 m_engine->SetObjectGroundSpotMinMax(rank, OpFloat(line, "min", 0.0f)*g_unit,
                                                           OpFloat(line, "max", 0.0f)*g_unit);
             }
         }
 
-        if ( Cmd(line, "WaterColor") && !bResetObject )
-        {
-            color.r = 0.0f;
-            color.g = 0.0f;
-            color.b = 0.0f;
-            color.a = 1.0f;
-            m_engine->SetWaterAddColor(OpColorValue(line, "color", color));
-        }
+        if (Cmd(line, "WaterColor") && !resetObject)
+            m_engine->SetWaterAddColor(OpColor(line, "color", Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f)));
 
-        if ( Cmd(line, "MapColor") && !bResetObject )
+        if (Cmd(line, "MapColor") && !resetObject)
         {
-            m_map->FloorColorMap(RetColor(OpColor(line, "floor", 0x88888888)),
-                                 RetColor(OpColor(line, "water", 0x88888888)));
-            m_bMapShow = OpInt(line, "show", 1);
-            m_map->ShowMap(m_bMapShow);
+            m_map->FloorColorMap(OpColor(line, "floor", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)),
+                                 OpColor(line, "water", Gfx::Color(0.533f, 0.533f, 0.533f, 0.533f)));
+            m_mapShow = OpInt(line, "show", 1);
+            m_map->ShowMap(m_mapShow);
             m_map->SetToy(OpInt(line, "toyIcon", 0));
-            m_bMapImage = OpInt(line, "image", 0);
-            if ( m_bMapImage )
+            m_mapImage = OpInt(line, "image", 0);
+            if (m_mapImage)
             {
                 Math::Vector    offset;
                 OpString(line, "filename", m_mapFilename);
@@ -4720,17 +4145,17 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                                    OpInt(line, "debug", 0));
             }
         }
-        if ( Cmd(line, "MapZoom") && !bResetObject )
+        if (Cmd(line, "MapZoom") && !resetObject)
         {
             m_map->ZoomMap(OpFloat(line, "factor", 2.0f));
             m_map->MapEnable(OpInt(line, "enable", 1));
         }
 
-        if ( Cmd(line, "MaxFlyingHeight") && !bResetObject )
+        if (Cmd(line, "MaxFlyingHeight") && !resetObject)
         {
             m_terrain->SetFlyingMaxHeight(OpFloat(line, "max", 280.0f)*g_unit);
         }
-        if ( Cmd(line, "AddFlyingHeight") && !bResetObject )
+        if (Cmd(line, "AddFlyingHeight") && !resetObject)
         {
             m_terrain->AddFlyingLimit(OpPos(line, "center")*g_unit,
                                       OpFloat(line, "extRadius", 20.0f)*g_unit,
@@ -4738,23 +4163,22 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                                       OpFloat(line, "maxHeight", 200.0f));
         }
 
-        if ( Cmd(line, "Camera") )
+        if (Cmd(line, "Camera"))
         {
             m_camera->Init(OpDir(line, "eye")*g_unit,
                            OpDir(line, "lookat")*g_unit,
-                           bResetObject?0.0f:OpFloat(line, "delay", 0.0f));
+                           resetObject?0.0f:OpFloat(line, "delay", 0.0f));
 
-            if ( OpInt(line, "fadeIn", 0) == 1 )
-            {
-                m_camera->StartOver(OE_FADEINw, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
-            }
+            if (OpInt(line, "fadeIn", 0) == 1)
+                m_camera->StartOver(Gfx::CAM_OVER_EFFECT_FADEIN_WHITE, Math::Vector(0.0f, 0.0f, 0.0f), 1.0f);
+
             m_camera->SetFixDirection(OpFloat(line, "fixDirection", 0.25f)*Math::PI);
         }
 
-        if ( Cmd(line, "EndMissionTake") && !bResetObject )
+        if (Cmd(line, "EndMissionTake") && !resetObject)
         {
-            i = m_endTakeTotal;
-            if ( i < 10 )
+            int i = m_endTakeTotal;
+            if (i < 10)
             {
                 m_endTake[i].pos  = OpPos(line, "pos")*g_unit;
                 m_endTake[i].dist = OpFloat(line, "dist", 8.0f)*g_unit;
@@ -4762,56 +4186,51 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                 m_endTake[i].min  = OpInt(line, "min", 1);
                 m_endTake[i].max  = OpInt(line, "max", 9999);
                 m_endTake[i].lost = OpInt(line, "lost", -1);
-                m_endTake[i].bImmediat = OpInt(line, "immediat", 0);
+                m_endTake[i].immediat = OpInt(line, "immediat", 0);
                 OpString(line, "message", m_endTake[i].message);
                 m_endTakeTotal ++;
             }
         }
-        if ( Cmd(line, "EndMissionDelay") && !bResetObject )
+        if (Cmd(line, "EndMissionDelay") && !resetObject)
         {
             m_endTakeWinDelay  = OpFloat(line, "win",  2.0f);
             m_endTakeLostDelay = OpFloat(line, "lost", 2.0f);
         }
-        if ( Cmd(line, "EndMissionResearch") && !bResetObject )
+        if (Cmd(line, "EndMissionResearch") && !resetObject)
         {
             m_endTakeResearch |= OpResearch(line, "type");
         }
 
-        if ( Cmd(line, "ObligatoryToken") && !bResetObject )
+        if (Cmd(line, "ObligatoryToken") && !resetObject)
         {
-            i = m_obligatoryTotal;
-            if ( i < 100 )
+            int i = m_obligatoryTotal;
+            if (i < 100)
             {
                 OpString(line, "text", m_obligatoryToken[i]);
                 m_obligatoryTotal ++;
             }
         }
 
-        if ( Cmd(line, "ProhibitedToken") && !bResetObject )
+        if (Cmd(line, "ProhibitedToken") && !resetObject)
         {
-            i = m_prohibitedTotal;
-            if ( i < 100 )
+            int i = m_prohibitedTotal;
+            if (i < 100)
             {
                 OpString(line, "text", m_prohibitedToken[i]);
                 m_prohibitedTotal ++;
             }
         }
 
-        if ( Cmd(line, "EnableBuild") && !bResetObject )
-        {
+        if (Cmd(line, "EnableBuild") && !resetObject)
             g_build |= OpBuild(line, "type");
-        }
 
-        if ( Cmd(line, "EnableResearch") && !bResetObject )
-        {
+        if (Cmd(line, "EnableResearch") && !resetObject)
             g_researchEnable |= OpResearch(line, "type");
-        }
-        if ( Cmd(line, "DoneResearch") && read[0] == 0 && !bResetObject )  // not loading file?
-        {
-            g_researchDone |= OpResearch(line, "type");
-        }
 
-        if ( Cmd(line, "NewScript") && !bResetObject )
+        if (Cmd(line, "DoneResearch") && read[0] == 0 && !resetObject)  // not loading file?
+            g_researchDone |= OpResearch(line, "type");
+
+        if (Cmd(line, "NewScript") && !resetObject)
         {
             OpString(line, "name", name);
             AddNewScriptName(OpTypeObject(line, "type", OBJECT_NULL), name);
@@ -4820,16 +4239,13 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 
     fclose(file);
 
-    if ( read[0] == 0 )
-    {
-        CompileScript(bSoluce);  // compiles all scripts
-    }
+    if (read[0] == 0)
+        CompileScript(soluce);  // compiles all scripts
 
-    if ( strcmp(base, "scene") == 0 && !bResetObject )  // mission?
-    {
+    if (strcmp(base, "scene") == 0 && !resetObject)  // mission?
         WriteFreeParam();
-    }
-    if ( strcmp(base, "free") == 0 && !bResetObject )  // free play?
+
+    if (strcmp(base, "free") == 0 && !resetObject)  // free play?
     {
         g_researchDone = m_freeResearch;
 
@@ -4841,7 +4257,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
         g_build |= BUILD_FLAG;
     }
 
-    if ( !bResetObject )
+    if (!resetObject)
     {
         ChangeColor();  // changes the colors of texture
         m_short->SetMode(false);  // vehicles?
@@ -4849,70 +4265,64 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 
     CreateShortcuts();
     m_map->UpdateMap();
-    m_engine->TimeInit();
-    m_engine->FlushPressKey();
+    // TODO: m_engine->TimeInit(); ??
+    m_app->FlushPressKey();
     m_time = 0.0f;
     m_gameTime = 0.0f;
     m_checkEndTime = 0.0f;
     m_infoUsed = 0;
 
-    m_selectObject = pSel;
+    m_selectObject = sel;
 
-    if ( !m_bBase     &&  // no main base?
-         !m_bFixScene )   // interractive scene?
+    if (!m_base     &&  // no main base?
+        !m_fixScene)    // interractive scene?
     {
-        if ( pSel == 0 )
-        {
-            pObj = SearchHuman();
-        }
+        CObject* obj;
+        if (sel == nullptr)
+            obj = SearchHuman();
         else
+            obj = sel;
+
+        if (obj != nullptr)
         {
-            pObj = pSel;
+            SelectObject(obj);
+            m_camera->SetObject(obj);
+            m_camera->SetType(obj->GetCameraType());
         }
-        if ( pObj != 0 )
-        {
-            SelectObject(pObj);
-            m_camera->SetObject(pObj);
-//?         m_camera->SetType(CAMERA_BACK);
-            m_camera->SetType(pObj->GetCameraType());
-        }
-    }
-    if ( m_bFixScene )
-    {
-        m_camera->SetType(CAMERA_SCRIPT);
     }
 
-    if ( read[0] != 0 && pSel != 0 )  // loading file?
+    if (m_fixScene)
+        m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+
+    if (read[0] != 0 && sel != 0)  // loading file?
     {
-        pos = pSel->GetPosition(0);
+        Math::Vector pos = sel->GetPosition(0);
         m_camera->Init(pos, pos, 0.0f);
         m_camera->FixCamera();
 
-        SelectObject(pSel);
-        m_camera->SetObject(pSel);
+        SelectObject(sel);
+        m_camera->SetObject(sel);
 
-        m_bBeginSatCom = true;  // message already displayed
+        m_beginSatCom = true;  // message already displayed
     }
     m_dialog->SetSceneRead("");
     m_dialog->SetStackRead("");
 }
 
-// Creates an object of decoration mobile or stationary.
-
+//! Creates an object of decoration mobile or stationary
 CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, float height,
                                   ObjectType type, float power,
-                                  bool bTrainer, bool bToy,
+                                  bool trainer, bool toy,
                                   int option)
 {
-    CObject*    pObject = 0;
-    CAuto*      automat;
+    CObject* object = nullptr;
 
-    if ( type == OBJECT_NULL )  return 0;
+    if ( type == OBJECT_NULL ) return nullptr;
 
     if ( type == OBJECT_HUMAN ||
          type == OBJECT_TECH  )
     {
-        bTrainer = false;  // necessarily
+        trainer = false;  // necessarily
     }
 
     if ( type == OBJECT_PORTICO  ||
@@ -4939,11 +4349,11 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_START    ||
          type == OBJECT_END      )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateBuilding(pos, angle, height, type, power);
+        object = new CObject(m_iMan);
+        object->CreateBuilding(pos, angle, height, type, power);
 
-        automat = pObject->GetAuto();
-        if ( automat != 0 )
+        CAuto* automat = object->GetAuto();
+        if (automat != nullptr)
         {
             automat->Init();
         }
@@ -4981,8 +4391,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_MARKKEYd    ||
          type == OBJECT_EGG         )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateResource(pos, angle, type, power);
+        object = new CObject(m_iMan);
+        object->CreateResource(pos, angle, type, power);
     }
     else
     if ( type == OBJECT_FLAGb ||
@@ -4991,8 +4401,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_FLAGy ||
          type == OBJECT_FLAGv )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateFlag(pos, angle, type);
+        object = new CObject(m_iMan);
+        object->CreateFlag(pos, angle, type);
     }
     else
     if ( type == OBJECT_BARRIER0 ||
@@ -5001,8 +4411,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_BARRIER3 ||
          type == OBJECT_BARRIER4 )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateBarrier(pos, angle, height, type);
+        object = new CObject(m_iMan);
+        object->CreateBarrier(pos, angle, height, type);
     }
     else
     if ( type == OBJECT_PLANT0  ||
@@ -5036,8 +4446,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_TREE8   ||
          type == OBJECT_TREE9   )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreatePlant(pos, angle, height, type);
+        object = new CObject(m_iMan);
+        object->CreatePlant(pos, angle, height, type);
     }
     else
     if ( type == OBJECT_MUSHROOM0 ||
@@ -5051,8 +4461,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_MUSHROOM8 ||
          type == OBJECT_MUSHROOM9 )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateMushroom(pos, angle, height, type);
+        object = new CObject(m_iMan);
+        object->CreateMushroom(pos, angle, height, type);
     }
     else
     if ( type == OBJECT_TEEN0  ||
@@ -5106,9 +4516,9 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_TEEN48 ||
          type == OBJECT_TEEN49 )
     {
-        pObject = new CObject(m_iMan);
-        pObject->SetOption(option);
-        pObject->CreateTeen(pos, angle, zoom, height, type);
+        object = new CObject(m_iMan);
+        object->SetOption(option);
+        object->CreateTeen(pos, angle, zoom, height, type);
     }
     else
     if ( type == OBJECT_QUARTZ0 ||
@@ -5122,8 +4532,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_QUARTZ8 ||
          type == OBJECT_QUARTZ9 )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateQuartz(pos, angle, height, type);
+        object = new CObject(m_iMan);
+        object->CreateQuartz(pos, angle, height, type);
     }
     else
     if ( type == OBJECT_ROOT0 ||
@@ -5137,14 +4547,14 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_ROOT8 ||
          type == OBJECT_ROOT9 )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateRoot(pos, angle, height, type);
+        object = new CObject(m_iMan);
+        object->CreateRoot(pos, angle, height, type);
     }
     else
     if ( type == OBJECT_HOME1 )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateHome(pos, angle, height, type);
+        object = new CObject(m_iMan);
+        object->CreateHome(pos, angle, height, type);
     }
     else
     if ( type == OBJECT_RUINmobilew1 ||
@@ -5161,8 +4571,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_RUINbase     ||
          type == OBJECT_RUINhead     )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateRuin(pos, angle, height, type);
+        object = new CObject(m_iMan);
+        object->CreateRuin(pos, angle, height, type);
     }
     else
     if ( type == OBJECT_APOLLO1 ||
@@ -5170,8 +4580,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_APOLLO4 ||
          type == OBJECT_APOLLO5 )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateApollo(pos, angle, type);
+        object = new CObject(m_iMan);
+        object->CreateApollo(pos, angle, type);
     }
     else
     if ( type == OBJECT_MOTHER ||
@@ -5180,8 +4590,8 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_BEE    ||
          type == OBJECT_WORM   )
     {
-        pObject = new CObject(m_iMan);
-        pObject->CreateInsect(pos, angle, type);  // no eggs
+        object = new CObject(m_iMan);
+        object->CreateInsect(pos, angle, type);  // no eggs
     }
     else
     if ( type == OBJECT_HUMAN    ||
@@ -5216,150 +4626,72 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
-        pObject = new CObject(m_iMan);
-        pObject->SetOption(option);
-        pObject->CreateVehicle(pos, angle, type, power, bTrainer, bToy);
+        object = new CObject(m_iMan);
+        object->SetOption(option);
+        object->CreateVehicle(pos, angle, type, power, trainer, toy);
     }
 
-    if ( m_bFixScene && type == OBJECT_HUMAN )
+    if (m_fixScene && type == OBJECT_HUMAN)
     {
-        CMotion*    motion;
-
-        motion = pObject->GetMotion();
-        if ( m_phase == PHASE_WIN  )  motion->SetAction(MHS_WIN,  0.4f);
-        if ( m_phase == PHASE_LOST )  motion->SetAction(MHS_LOST, 0.5f);
+        CMotion* motion = object->GetMotion();
+        if (m_phase == PHASE_WIN ) motion->SetAction(MHS_WIN,  0.4f);
+        if (m_phase == PHASE_LOST) motion->SetAction(MHS_LOST, 0.5f);
     }
 
-    return pObject;
+    return object;
 }
 
-
-// Creates the editable model.
-
-void CRobotMain::CreateModel()
+//! Creates a directional light
+int CRobotMain::CreateLight(Math::Vector direction, Gfx::Color color)
 {
-    Math::Vector        direction;
-    D3DCOLORVALUE   color;
-
-    m_engine->SetAmbiantColor(0xC0C0C0C0);  // gray
-    m_engine->SetBackground("", 0x80808080, 0x80808080, 0x80808080, 0x80808080);
-    m_engine->SetFogColor(0x80808080);
-    m_engine->SetDeepView(500.0f, 0);
-    m_engine->SetDeepView(100.0f, 1);
-    m_engine->SetFogStart(0.5f);
-
-    m_model->StartUserAction();
-
-    direction = Math::Vector(1.0f, -1.0f, 1.0f);
-    color.r = 0.7f;
-    color.g = 0.7f;
-    color.b = 0.7f;  // white
-    CreateLight(direction, color);
-
-    direction = Math::Vector(-1.0f, -1.0f, 1.0f);
-    color.r = 0.7f;
-    color.g = 0.7f;
-    color.b = 0.7f;  // white
-    CreateLight(direction, color);
-
-    direction = Math::Vector(1.0f, -1.0f, -1.0f);
-    color.r = 0.7f;
-    color.g = 0.7f;
-    color.b = 0.7f;  // white
-    CreateLight(direction, color);
-
-    direction = Math::Vector(-1.0f, -1.0f, -1.0f);
-    color.r = 0.7f;
-    color.g = 0.7f;
-    color.b = 0.7f;  // white
-    CreateLight(direction, color);
-
-    direction = Math::Vector(0.0f, 1.0f, 0.0f);
-    color.r = 0.7f;
-    color.g = 0.7f;
-    color.b = 0.7f;  // white
-    CreateLight(direction, color);
-
-    InitEye();
-
-    m_engine->TimeInit();
-    m_time = 0.0f;
-    m_gameTime = 0.0f;
-    m_checkEndTime = 0.0f;
-}
-
-
-// Creates a directional light.
-
-int CRobotMain::CreateLight(Math::Vector direction, D3DCOLORVALUE color)
-{
-    D3DLIGHT7   light;
-    int         obj;
-
-    if ( direction.x == 0.0f &&
-         direction.y == 0.0f &&
-         direction.z == 0.0f )
+    if (direction.x == 0.0f &&
+        direction.y == 0.0f &&
+        direction.z == 0.0f)
     {
         direction.y = -1.0f;
     }
 
-    ZeroMemory(&light, sizeof(D3DLIGHT7));
-    light.dltType      = D3DLIGHT_DIRECTIONAL;
-    light.dcvDiffuse.r = color.r;
-    light.dcvDiffuse.g = color.g;
-    light.dcvDiffuse.b = color.b;
-    light.dvDirection  = VEC_TO_D3DVEC(direction);
-    obj = m_light->CreateLight();
-    m_light->SetLight(obj, light);
+    Gfx::Light light;
+    light.type = Gfx::LIGHT_DIRECTIONAL;
+    light.diffuse = color;
+    light.direction  = direction;
+    int obj = m_lightMan->CreateLight();
+    m_lightMan->SetLight(obj, light);
 
     return obj;
 }
 
-// Creates a light spot.
-
-int CRobotMain::CreateSpot(Math::Vector pos, D3DCOLORVALUE color)
+//! Creates a light spot
+int CRobotMain::CreateSpot(Math::Vector pos, Gfx::Color color)
 {
-    D3DLIGHT7   light;
-    int         obj;
-
-    if ( !m_engine->GetLightMode() )  return -1;
+    if (!m_engine->GetLightMode()) return -1;
 
     pos.y += m_terrain->GetFloorLevel(pos);
 
-    ZeroMemory(&light, sizeof(D3DLIGHT7));
-    light.dltType        = D3DLIGHT_SPOT;
-    light.dcvDiffuse.r   = color.r;
-    light.dcvDiffuse.g   = color.g;
-    light.dcvDiffuse.b   = color.b;
-    light.dvPosition     = VEC_TO_D3DVEC(pos);
-    light.dvDirection    = D3DVECTOR(0.0f, -1.0f, 0.0f);
-    light.dvRange        = D3DLIGHT_RANGE_MAX;
-    light.dvFalloff      = 1.0f;
-    light.dvTheta        = 10.0f*Math::PI/180.0f;
-    light.dvPhi          = 90.0f*Math::PI/180.0f;
-    light.dvAttenuation0 = 2.0f;
-    light.dvAttenuation1 = 0.0f;
-    light.dvAttenuation2 = 0.0f;
-    obj = m_light->CreateLight();
-    m_light->SetLight(obj, light);
+    Gfx::Light light;
+    light.type          = Gfx::LIGHT_SPOT;
+    light.diffuse       = color;
+    light.position      = pos;
+    light.direction     = Math::Vector(0.0f, -1.0f, 0.0f);
+    light.spotIntensity = 1.0f;
+    light.spotAngle     = 90.0f*Math::PI/180.0f;
+    light.attenuation0  = 2.0f;
+    light.attenuation1  = 0.0f;
+    light.attenuation2  = 0.0f;
+    int obj = m_lightMan->CreateLight();
+    m_lightMan->SetLight(obj, light);
 
     return obj;
 }
 
 
-// Change the colors and textures.
-
+//! Change the colors and textures
 void CRobotMain::ChangeColor()
 {
-    D3DCOLORVALUE   colorRef1, colorNew1, colorRef2, colorNew2;
-    Math::Point         ts, ti;
-    Math::Point         exclu[6];
-    char            name[100];
-    int             face;
-    float           tolerance;
+    Math::Point ts = Math::Point(0.0f, 0.0f);
+    Math::Point ti = Math::Point(1.0f, 1.0f);  // the entire image
 
-    ts = Math::Point(0.0f, 0.0f);
-    ti = Math::Point(1.0f, 1.0f);  // the entire image
+    Gfx::Color colorRef1, colorNew1, colorRef2, colorNew2;
 
     colorRef1.a = 0.0f;
     colorRef2.a = 0.0f;
@@ -5372,37 +4704,41 @@ void CRobotMain::ChangeColor()
     colorRef2.g = 132.0f/256.0f;
     colorRef2.b =   1.0f/256.0f;  // orange
     colorNew2 = m_dialog->GetGamerColorBand();
+
+    Math::Point exclu[6];
     exclu[0] = Math::Point(192.0f/256.0f,   0.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f,  64.0f/256.0f);  // crystals + cylinders
     exclu[2] = Math::Point(208.0f/256.0f, 224.0f/256.0f);
     exclu[3] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom screen
     exclu[4] = Math::Point(0.0f, 0.0f);
     exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeColor("human.tga", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
+    // TODO: m_engine->ChangeColor("human.png", colorRef1, colorNew1, colorRef2, colorNew2, 0.30f, 0.01f, ts, ti, exclu);
 
-    face = RetGamerFace();
-    if ( face == 0 )  // normal?
+    float tolerance;
+
+    int face = GetGamerFace();
+    if (face == 0)  // normal?
     {
         colorRef1.r =  90.0f/256.0f;
         colorRef1.g =  95.0f/256.0f;
         colorRef1.b =  85.0f/256.0f;  // black
         tolerance = 0.15f;
     }
-    if ( face == 1 )  // bald?
+    if (face == 1)  // bald?
     {
         colorRef1.r =  74.0f/256.0f;
         colorRef1.g =  58.0f/256.0f;
         colorRef1.b =  46.0f/256.0f;  // brown
         tolerance = 0.20f;
     }
-    if ( face == 2 )  // carlos?
+    if (face == 2)  // carlos?
     {
         colorRef1.r =  70.0f/256.0f;
         colorRef1.g =  40.0f/256.0f;
         colorRef1.b =   8.0f/256.0f;  // brown
         tolerance = 0.30f;
     }
-    if ( face == 3 )  // blonde?
+    if (face == 3)  // blonde?
     {
         colorRef1.r =  74.0f/256.0f;
         colorRef1.g =  16.0f/256.0f;
@@ -5416,12 +4752,14 @@ void CRobotMain::ChangeColor()
     colorNew2.r = 0.0f;
     colorNew2.g = 0.0f;
     colorNew2.b = 0.0f;
-    sprintf(name, "face%.2d.tga", face+1);
+
+    char name[100];
+    sprintf(name, "face%.2d.png", face+1);
     exclu[0] = Math::Point(105.0f/256.0f, 47.0f/166.0f);
     exclu[1] = Math::Point(153.0f/256.0f, 79.0f/166.0f);  // blue canister
     exclu[2] = Math::Point(0.0f, 0.0f);
     exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeColor(name, colorRef1, colorNew1, colorRef2, colorNew2, tolerance, 0.00f, ts, ti, exclu);
+    // TODO: m_engine->ChangeColor(name, colorRef1, colorNew1, colorRef2, colorNew2, tolerance, 0.00f, ts, ti, exclu);
 
     colorRef2.r = 0.0f;
     colorRef2.g = 0.0f;
@@ -5430,19 +4768,19 @@ void CRobotMain::ChangeColor()
     colorNew2.g = 0.0f;
     colorNew2.b = 0.0f;
 
-    m_engine->ChangeColor("base1.tga",   m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeColor("convert.tga", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeColor("derrick.tga", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeColor("factory.tga", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeColor("lemt.tga",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeColor("roller.tga",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
-    m_engine->ChangeColor("search.tga",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    // TODO: m_engine->ChangeColor("base1.png",   m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    // TODO: m_engine->ChangeColor("convert.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    // TODO: m_engine->ChangeColor("derrick.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    // TODO: m_engine->ChangeColor("factory.png", m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    // TODO: m_engine->ChangeColor("lemt.png",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    // TODO: m_engine->ChangeColor("roller.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
+    // TODO: m_engine->ChangeColor("search.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, 0, 0, true);
 
     exclu[0] = Math::Point(  0.0f/256.0f, 160.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // pencils
     exclu[2] = Math::Point(0.0f, 0.0f);
     exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeColor("drawer.tga",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+    // TODO: m_engine->ChangeColor("drawer.png",  m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
 
     exclu[0] = Math::Point(237.0f/256.0f, 176.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f, 220.0f/256.0f);  // blue canister
@@ -5450,35 +4788,31 @@ void CRobotMain::ChangeColor()
     exclu[3] = Math::Point(130.0f/256.0f, 214.0f/256.0f);  // safe location
     exclu[4] = Math::Point(0.0f, 0.0f);
     exclu[5] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeColor("subm.tga",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
+    // TODO: m_engine->ChangeColor("subm.png",    m_colorRefBot, m_colorNewBot, colorRef2, colorNew2, 0.10f, -1.0f, ts, ti, exclu, 0, true);
 
     exclu[0] = Math::Point(128.0f/256.0f, 160.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f, 256.0f/256.0f);  // SatCom
     exclu[2] = Math::Point(0.0f, 0.0f);
     exclu[3] = Math::Point(0.0f, 0.0f);  // terminator
-    m_engine->ChangeColor("ant.tga",     m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
-    m_engine->ChangeColor("mother.tga",  m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
+    // TODO: m_engine->ChangeColor("ant.png",     m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti, exclu);
+    // TODO: m_engine->ChangeColor("mother.png",  m_colorRefAlien, m_colorNewAlien, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
-    m_engine->ChangeColor("plant.tga",   m_colorRefGreen, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
+    // TODO: m_engine->ChangeColor("plant.png",   m_colorRefGreen, m_colorNewGreen, colorRef2, colorNew2, 0.50f, -1.0f, ts, ti);
 
     // PARTIPLOUF0 and PARTIDROP :
     ts = Math::Point(0.500f, 0.500f);
     ti = Math::Point(0.875f, 0.750f);
-    m_engine->ChangeColor("effect00.tga", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    // TODO: m_engine->ChangeColor("effect00.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 
     // PARTIFLIC :
     ts = Math::Point(0.00f, 0.75f);
     ti = Math::Point(0.25f, 1.00f);
-    m_engine->ChangeColor("effect02.tga", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
+    // TODO: m_engine->ChangeColor("effect02.png", m_colorRefWater, m_colorNewWater, colorRef2, colorNew2, 0.20f, -1.0f, ts, ti, 0, m_colorShiftWater, true);
 }
 
-// Updates the number of unnecessary objects.
-
+//! Updates the number of unnecessary objects
 bool CRobotMain::TestGadgetQuantity(int rank)
 {
-    float       percent;
-    int         *table;
-
     static int table10[10] = {0,1,0,0,0,0,0,0,0,0};
     static int table20[10] = {0,1,0,0,0,1,0,0,0,0};
     static int table30[10] = {0,1,0,1,0,1,0,0,0,0};
@@ -5489,109 +4823,102 @@ bool CRobotMain::TestGadgetQuantity(int rank)
     static int table80[10] = {0,1,1,1,1,1,0,1,1,1};
     static int table90[10] = {0,1,1,1,1,1,1,1,1,1};
 
-    percent = m_engine->GetGadgetQuantity();
-    if ( percent == 0.0f )  return false;
-    if ( percent == 1.0f )  return true;
+    float percent = m_engine->GetGadgetQuantity();
+    if (percent == 0.0f) return false;
+    if (percent == 1.0f) return true;
 
-         if ( percent <= 0.15f )  table = table10;
-    else if ( percent <= 0.25f )  table = table20;
-    else if ( percent <= 0.35f )  table = table30;
-    else if ( percent <= 0.45f )  table = table40;
-    else if ( percent <= 0.55f )  table = table50;
-    else if ( percent <= 0.65f )  table = table60;
-    else if ( percent <= 0.75f )  table = table70;
-    else if ( percent <= 0.85f )  table = table80;
-    else                          table = table90;
+    int *table;
+         if (percent <= 0.15f) table = table10;
+    else if (percent <= 0.25f) table = table20;
+    else if (percent <= 0.35f) table = table30;
+    else if (percent <= 0.45f) table = table40;
+    else if (percent <= 0.55f) table = table50;
+    else if (percent <= 0.65f) table = table60;
+    else if (percent <= 0.75f) table = table70;
+    else if (percent <= 0.85f) table = table80;
+    else                       table = table90;
 
     return table[rank%10];
 }
 
 
 
-// Calculates the distance to the nearest object.
-
+//! Calculates the distance to the nearest object
 float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
 {
-    CObject*    pObj;
-    ObjectType  type;
-    Math::Vector    oPos;
-    float       min, dist, oRadius;
-    int         i, j;
-
-    min = 100000.0f;
-    for ( i=0 ; i<1000000 ; i++ )
+    float min = 100000.0f;
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr)  break;
 
-        if ( !pObj->GetActif() )  continue;  // inactive?
-        if ( pObj->GetTruck() != 0 )  continue;  // object carries?
-        if ( pObj == exclu )  continue;
+        if (!obj->GetActif()) continue;  // inactive?
+        if (obj->GetTruck() != nullptr) continue;  // object carries?
+        if (obj == exclu)  continue;
 
-        type = pObj->GetType();
+        ObjectType type = obj->GetType();
 
-        if ( type == OBJECT_BASE )
+        if (type == OBJECT_BASE)
         {
-            oPos = pObj->GetPosition(0);
-            if ( oPos.x != center.x ||
-                 oPos.z != center.z )
+            Math::Vector oPos = obj->GetPosition(0);
+            if (oPos.x != center.x ||
+                oPos.z != center.z)
             {
-                dist = Math::Distance(center, oPos)-80.0f;
-                if ( dist < 0.0f )  dist = 0.0f;
+                float dist = Math::Distance(center, oPos)-80.0f;
+                if (dist < 0.0f) dist = 0.0f;
                 min = Math::Min(min, dist);
                 continue;
             }
         }
 
-        if ( type == OBJECT_STATION   ||
-             type == OBJECT_REPAIR    ||
-             type == OBJECT_DESTROYER )
+        if (type == OBJECT_STATION   ||
+            type == OBJECT_REPAIR    ||
+            type == OBJECT_DESTROYER)
         {
-            oPos = pObj->GetPosition(0);
-            dist = Math::Distance(center, oPos)-8.0f;
-            if ( dist < 0.0f )  dist = 0.0f;
+            Math::Vector oPos = obj->GetPosition(0);
+            float dist = Math::Distance(center, oPos)-8.0f;
+            if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
         }
 
-        j = 0;
-        while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+        int j = 0;
+        Math::Vector oPos;
+        float oRadius;
+        while (obj->GetCrashSphere(j++, oPos, oRadius))
         {
-            dist = Math::Distance(center, oPos)-oRadius;
-            if ( dist < 0.0f )  dist = 0.0f;
+            float dist = Math::Distance(center, oPos)-oRadius;
+            if (dist < 0.0f) dist = 0.0f;
             min = Math::Min(min, dist);
         }
     }
     return min;
 }
 
-// Calculates a free space.
-
+//! Calculates a free space
 bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadius,
                            float space, CObject *exclu)
 {
-    Math::Vector    pos;
-    Math::Point     p;
-    float       radius, ia, angle, dist, flat;
-
-    if ( minRadius < maxRadius )  // from internal to external?
+    if (minRadius < maxRadius)  // from internal to external?
     {
-        for ( radius=minRadius ; radius<=maxRadius ; radius+=space )
+        for (float radius = minRadius; radius <= maxRadius; radius += space)
         {
-            ia = space/radius;
-            for ( angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
+            float ia = space/radius;
+            for (float angle = 0.0f; angle < Math::PI*2.0f; angle += ia)
             {
+                Math::Point p;
                 p.x = center.x+radius;
                 p.y = center.z;
                 p = Math::RotatePoint(Math::Point(center.x, center.z), angle, p);
+                Math::Vector pos;
                 pos.x = p.x;
                 pos.z = p.y;
                 pos.y = 0.0f;
-                m_terrain->MoveOnFloor(pos, true);
-                dist = SearchNearestObject(pos, exclu);
-                if ( dist >= space )
+                m_terrain->AdjustToFloor(pos, true);
+                float dist = SearchNearestObject(pos, exclu);
+                if (dist >= space)
                 {
-                    flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
-                    if ( flat >= dist/2.0f )
+                    float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
+                    if (flat >= dist/2.0f)
                     {
                         center = pos;
                         return true;
@@ -5602,23 +4929,25 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
     }
     else    // from external to internal?
     {
-        for ( radius=maxRadius ; radius>=minRadius ; radius-=space )
+        for (float radius=maxRadius; radius >= minRadius; radius -= space)
         {
-            ia = space/radius;
-            for ( angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
+            float ia = space/radius;
+            for (float angle=0.0f ; angle<Math::PI*2.0f ; angle+=ia )
             {
+                Math::Point p;
                 p.x = center.x+radius;
                 p.y = center.z;
                 p = Math::RotatePoint(Math::Point(center.x, center.z), angle, p);
+                Math::Vector pos;
                 pos.x = p.x;
                 pos.z = p.y;
                 pos.y = 0.0f;
-                m_terrain->MoveOnFloor(pos, true);
-                dist = SearchNearestObject(pos, exclu);
-                if ( dist >= space )
+                m_terrain->AdjustToFloor(pos, true);
+                float dist = SearchNearestObject(pos, exclu);
+                if (dist >= space)
                 {
-                    flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
-                    if ( flat >= dist/2.0f )
+                    float flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
+                    if (flat >= dist/2.0f)
                     {
                         center = pos;
                         return true;
@@ -5630,79 +4959,71 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
     return false;
 }
 
-// Calculates the maximum radius of a free space.
-
+//! Calculates the maximum radius of a free space
 float CRobotMain::GetFlatZoneRadius(Math::Vector center, float maxRadius,
                                     CObject *exclu)
 {
-    float   dist;
-
-    dist = SearchNearestObject(center, exclu);
-    if ( dist == 0.0f )  return 0.0f;
-    if ( dist < maxRadius )
-    {
+    float dist = SearchNearestObject(center, exclu);
+    if (dist == 0.0f) return 0.0f;
+    if (dist < maxRadius)
         maxRadius = dist;
-    }
+
     return m_terrain->GetFlatZoneRadius(center, maxRadius);
 }
 
 
-// Hides buildable area when a cube of metal is taken up.
-
+//! Hides buildable area when a cube of metal is taken up
 void CRobotMain::HideDropZone(CObject* metal)
 {
-    if ( m_showLimit[1].bUsed         &&
-         m_showLimit[1].link == metal )
+    if (m_showLimit[1].used         &&
+        m_showLimit[1].link == metal)
     {
         FlushShowLimit(1);
     }
 
-    if ( m_showLimit[2].bUsed         &&
-         m_showLimit[2].link == metal )
+    if (m_showLimit[2].used         &&
+        m_showLimit[2].link == metal)
     {
         FlushShowLimit(2);
     }
 }
 
-// Shows the buildable area when a cube of metal is deposited.
-
+//! Shows the buildable area when a cube of metal is deposited
 void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 {
-    CObject*    pObj;
-    ObjectType  type;
-    Math::Vector    center, oPos;
-    float       oMax, tMax, dist, oRadius, radius;
-    int         i, j;
+    if (metal == nullptr) return;
 
-    if ( metal == 0 )  return;
-
-    center = metal->GetPosition(0);
+    Math::Vector center = metal->GetPosition(0);
 
     // Calculates the maximum radius possible depending on other items.
-    oMax = 30.0f;  // radius to build the biggest building
-    for ( i=0 ; i<1000000 ; i++ )
+    float oMax = 30.0f;  // radius to build the biggest building
+    float tMax;
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( !pObj->GetActif() )  continue;  // inactive?
-        if ( pObj->GetTruck() != 0 )  continue;  // object carried?
-        if ( pObj == metal )  continue;
-        if ( pObj == truck )  continue;
+        if (!obj->GetActif()) continue;  // inactive?
+        if (obj->GetTruck() != nullptr) continue;  // object carried?
+        if (obj == metal) continue;
+        if (obj == truck) continue;
 
-        type = pObj->GetType();
-        if ( type == OBJECT_BASE )
+        Math::Vector oPos;
+        float oRadius;
+
+        ObjectType type = obj->GetType();
+        if (type == OBJECT_BASE)
         {
-            oPos = pObj->GetPosition(0);
-            dist = Math::Distance(center, oPos)-80.0f;
+            oPos = obj->GetPosition(0);
+            float dist = Math::Distance(center, oPos)-80.0f;
             oMax = Math::Min(oMax, dist);
         }
         else
         {
-            j = 0;
-            while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+            int j = 0;
+            while (obj->GetCrashSphere(j++, oPos, oRadius))
             {
-                dist = Math::Distance(center, oPos)-oRadius;
+                float dist = Math::Distance(center, oPos)-oRadius;
                 oMax = Math::Min(oMax, dist);
             }
         }
@@ -5726,70 +5047,58 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
              type == OBJECT_SAFE     ||
              type == OBJECT_HUSTON   )  // building?
         {
-            j = 0;
-            while ( pObj->GetCrashSphere(j++, oPos, oRadius) )
+            int j = 0;
+            while (obj->GetCrashSphere(j++, oPos, oRadius))
             {
-                dist = Math::Distance(center, oPos)-oRadius-BUILDMARGIN;
+                float dist = Math::Distance(center, oPos)-oRadius-BUILDMARGIN;
                 oMax = Math::Min(oMax, dist);
             }
         }
     }
 
     // Calculates the maximum possible radius depending on terrain.
-    if ( oMax >= 2.0f )
-    {
+    if (oMax >= 2.0f)
         tMax = m_terrain->GetFlatZoneRadius(center, 30.0f);
-    }
     else
-    {
         tMax = 0.0f;
-    }
 
-    radius = Math::Min(oMax, tMax);
-    if ( radius >= 2.0f )
-    {
-        SetShowLimit(1, PARTILIMIT2, metal, center, radius, 10.0f);
-    }
+    float radius = Math::Min(oMax, tMax);
+    if (radius >= 2.0f)
+        SetShowLimit(1, Gfx::PARTILIMIT2, metal, center, radius, 10.0f);
 }
 
-// Erases the boundaries shown.
-
+//! Erases the boundaries shown
 void CRobotMain::FlushShowLimit(int i)
 {
-    int     j;
-
-    if ( m_showLimit[i].link != 0 )
+    if (m_showLimit[i].link != 0)
     {
         m_showLimit[i].link->StopShowLimit();
     }
 
-    for ( j=0 ; j<m_showLimit[i].total ; j++ )
+    for (int j = 0; j < m_showLimit[i].total; j++)
     {
-        if ( m_showLimit[i].parti[j] == 0 )  continue;
+        if (m_showLimit[i].parti[j] == 0) continue;
 
-        m_particle->DeleteParticule(m_showLimit[i].parti[j]);
+        m_particle->DeleteParticle(m_showLimit[i].parti[j]);
         m_showLimit[i].parti[j] = 0;
     }
 
     m_showLimit[i].total = 0;
     m_showLimit[i].link = 0;
-    m_showLimit[i].bUsed = false;
+    m_showLimit[i].used = false;
 }
 
-// Specifies the boundaries to show.
-
-void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
+//! Specifies the boundaries to show
+void CRobotMain::SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj,
                               Math::Vector pos, float radius, float duration)
 {
-    Math::Point dim;
-    float   dist;
-    int     j;
-
     FlushShowLimit(i);  // erases the current boundaries
 
-    if ( radius <= 0.0f )  return;
+    if (radius <= 0.0f) return;
 
-    if ( radius <= 50.0f )
+    Math::Point dim;
+    float dist;
+    if (radius <= 50.0f)
     {
         dim = Math::Point(0.3f, 0.3f);
         dist = 2.5f;
@@ -5800,98 +5109,85 @@ void CRobotMain::SetShowLimit(int i, ParticuleType parti, CObject *pObj,
         dist = 10.0f;
     }
 
-    m_showLimit[i].bUsed = true;
-    m_showLimit[i].link = pObj;
+    m_showLimit[i].used = true;
+    m_showLimit[i].link = obj;
     m_showLimit[i].pos = pos;
     m_showLimit[i].radius = radius;
     m_showLimit[i].duration = duration;
     m_showLimit[i].total = (int)((radius*2.0f*Math::PI)/dist);
-    if ( m_showLimit[i].total > MAXSHOWPARTI )  m_showLimit[i].total = MAXSHOWPARTI;
+    if (m_showLimit[i].total > MAXSHOWPARTI) m_showLimit[i].total = MAXSHOWPARTI;
     m_showLimit[i].time = 0.0f;
 
-    for ( j=0 ; j<m_showLimit[i].total ; j++ )
+    for (int j = 0; j < m_showLimit[i].total; j++)
     {
         m_showLimit[i].parti[j] = m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, parti, duration);
     }
 }
 
-// Adjusts the boundaries to show.
-
+//! Adjusts the boundaries to show
 void CRobotMain::AdjustShowLimit(int i, Math::Vector pos)
 {
     m_showLimit[i].pos = pos;
 }
 
-// Mount the boundaries of the selected object.
-
+//! Mount the boundaries of the selected object
 void CRobotMain::StartShowLimit()
 {
-    CObject*    pObj;
+    CObject* obj = GetSelect();
+    if (obj == nullptr) return;
 
-    pObj = RetSelect();
-    if ( pObj == 0 )  return;
-
-    pObj->StartShowLimit();
+    obj->StartShowLimit();
 }
 
-// Advances the boundaries shown.
-
+//! Advances the boundaries shown
 void CRobotMain::FrameShowLimit(float rTime)
 {
-    Math::Vector    pos;
-    Math::Point     center, rotate;
-    float       angle, factor, speed;
-    int         i, j;
+    if (m_engine->GetPause()) return;
 
-    if ( m_engine->GetPause() )  return;
-
-    for ( i=0 ; i<MAXSHOWLIMIT ; i++ )
+    for (int i = 0; i < MAXSHOWLIMIT; i++)
     {
-        if ( !m_showLimit[i].bUsed )  continue;
+        if (!m_showLimit[i].used) continue;
 
         m_showLimit[i].time += rTime;
 
-        if ( m_showLimit[i].time >= m_showLimit[i].duration )
+        if (m_showLimit[i].time >= m_showLimit[i].duration)
         {
             FlushShowLimit(i);
             continue;
         }
 
-        if ( m_showLimit[i].time < 1.0f )
-        {
+        float factor;
+        if (m_showLimit[i].time < 1.0f)
             factor = m_showLimit[i].time;
-        }
-        else if ( m_showLimit[i].time > m_showLimit[i].duration-1.0f )
-        {
+        else if (m_showLimit[i].time > m_showLimit[i].duration-1.0f)
             factor = m_showLimit[i].duration-m_showLimit[i].time;
-        }
         else
-        {
             factor = 1.0f;
-        }
 
-        speed = 0.4f-m_showLimit[i].radius*0.001f;
-        if ( speed < 0.1f )  speed = 0.1f;
-        angle = m_showLimit[i].time*speed;
+        float speed = 0.4f-m_showLimit[i].radius*0.001f;
+        if (speed < 0.1f) speed = 0.1f;
+        float angle = m_showLimit[i].time*speed;
 
-        for ( j=0 ; j<m_showLimit[i].total ; j++ )
+        for (int j = 0; j < m_showLimit[i].total; j++)
         {
-            if ( m_showLimit[i].parti[j] == 0 )  continue;
+            if (m_showLimit[i].parti[j] == 0) continue;
 
+            Math::Point center;
             center.x = m_showLimit[i].pos.x;
             center.y = m_showLimit[i].pos.z;
+            Math::Point rotate;
             rotate.x = center.x+m_showLimit[i].radius*factor;
             rotate.y = center.y;
             rotate = Math::RotatePoint(center, angle, rotate);
 
+            Math::Vector pos;
             pos.x = rotate.x;
             pos.z = rotate.y;
             pos.y = 0.0f;
-            m_terrain->MoveOnFloor(pos, true);
-            if ( m_showLimit[i].radius <= 50.0f )  pos.y += 0.5f;
-            else                                   pos.y += 2.0f;
+            m_terrain->AdjustToFloor(pos, true);
+            if (m_showLimit[i].radius <= 50.0f) pos.y += 0.5f;
+            else                                pos.y += 2.0f;
             m_particle->SetPosition(m_showLimit[i].parti[j], pos);
-//?         m_particle->SetAngle(m_showLimit[i].parti[j], angle-Math::PI/2.0f);
 
             angle += (2.0f*Math::PI)/m_showLimit[i].total;
         }
@@ -5900,77 +5196,72 @@ void CRobotMain::FrameShowLimit(float rTime)
 
 
 
-// Returns a pointer to the last backslash in a filename.
-
+//! Returns a pointer to the last backslash in a filename.
 char* SearchLastDir(char *filename)
 {
-    char*   p = filename;
+    char* p = filename;
 
-    while ( *p++ != 0 );
+    while (*p++ != 0);
     p --;  // ^on the zero terminator
 
-    while ( p != filename )
+    while (p != filename)
     {
-        if ( *(--p) == '\\' )  return p;
+        if (*(--p) == '\\') return p;
     }
     return 0;
 }
 
 
-// Compiles all scripts of robots.
-
-void CRobotMain::CompileScript(bool bSoluce)
+//! Compiles all scripts of robots
+void CRobotMain::CompileScript(bool soluce)
 {
-    CObject*    pObj;
-    CBrain*     brain;
-    int         i, j, nbError, lastError, run;
-    char*       name;
+    int nbError = 0;
+    int lastError = 0;
 
-    nbError = 0;
     do
     {
         lastError = nbError;
         nbError = 0;
-        for ( i=0 ; i<1000000 ; i++ )
+        for (int i = 0; i < 1000000; i++)
         {
-            pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-            if ( pObj == 0 )  break;
-            if ( pObj->GetTruck() != 0 )  continue;
+            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
+            if (obj->GetTruck() != nullptr) continue;
 
-            brain = pObj->GetBrain();
-            if ( brain == 0 )  continue;
+            CBrain* brain = obj->GetBrain();
+            if (brain == nullptr) continue;
 
-            for ( j=0 ; j<10 ; j++ )
+            for (int j = 0; j < 10; j++)
             {
-                if ( brain->GetCompile(j) )  continue;
+                if (brain->GetCompile(j)) continue;
 
-                name = brain->GetScriptName(j);
-                if ( name[0] != 0 )
+                char* name = brain->GetScriptName(j);
+                if (name[0] != 0)
                 {
                     brain->ReadProgram(j, name);
-                    if ( !brain->GetCompile(j) )  nbError++;
+                    if (!brain->GetCompile(j)) nbError++;
                 }
             }
 
-            LoadOneScript(pObj, nbError);
+            LoadOneScript(obj, nbError);
         }
     }
-    while ( nbError > 0 && nbError != lastError );
+    while (nbError > 0 && nbError != lastError);
 
     // Load all solutions.
-    if ( bSoluce )
+    if (soluce)
     {
-        for ( i=0 ; i<1000000 ; i++ )
+        for (int i = 0; i < 1000000; i++)
         {
-            pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-            if ( pObj == 0 )  break;
-            if ( pObj->GetTruck() != 0 )  continue;
+            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == 0)  break;
+            if (obj->GetTruck() != 0)  continue;
 
-            brain = pObj->GetBrain();
-            if ( brain == 0 )  continue;
+            CBrain* brain = obj->GetBrain();
+            if (brain == 0)  continue;
 
-            name = brain->GetSoluceName();
-            if ( name[0] != 0 )
+            char* name = brain->GetSoluceName();
+            if (name[0] != 0)
             {
                 brain->ReadSoluce(name);  // load solution
             }
@@ -5978,241 +5269,191 @@ void CRobotMain::CompileScript(bool bSoluce)
     }
 
     // Start all programs according to the command "run".
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
-        if ( pObj->GetTruck() != 0 )  continue;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
+        if (obj->GetTruck() != nullptr) continue;
 
-        brain = pObj->GetBrain();
-        if ( brain == 0 )  continue;
+        CBrain* brain = obj->GetBrain();
+        if (brain == nullptr)  continue;
 
-        run = brain->GetScriptRun();
-        if ( run != -1 )
+        int run = brain->GetScriptRun();
+        if (run != -1)
         {
             brain->RunProgram(run);  // starts the program
         }
     }
 }
 
-// Load all programs of the robot.
-
-void CRobotMain::LoadOneScript(CObject *pObj, int &nbError)
+//! Load all programs of the robot
+void CRobotMain::LoadOneScript(CObject *obj, int &nbError)
 {
-    ObjectType  type;
-    CBrain*     brain;
-    char        filename[_MAX_FNAME];
-    char*       name;
-    int         rank, i, objRank;
+    CBrain* brain = obj->GetBrain();
+    if (brain == nullptr) return;
 
-    brain = pObj->GetBrain();
-    if ( brain == 0 )  return;
+    if (!IsSelectable(obj)) return;
 
-    if ( !IsSelectable(pObj) )  return;
+    ObjectType type = obj->GetType();
+    if (type == OBJECT_HUMAN) return;
 
-    type = pObj->GetType();
-    if ( type == OBJECT_HUMAN )  return;
+    int objRank = obj->GetDefRank();
+    if (objRank == -1) return;
 
-    objRank = pObj->GetDefRank();
-    if ( objRank == -1 )  return;
+    char* name = m_dialog->GetSceneName();
+    int rank = m_dialog->GetSceneRank();
 
-    name = m_dialog->GetSceneName();
-    rank = m_dialog->GetSceneRank();
-
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
-        if ( brain->GetCompile(i) )  continue;
-//?     if ( brain->ProgramExist(i) )  continue;
+        if (brain->GetCompile(i)) continue;
 
+        char filename[MAX_FNAME];
         sprintf(filename, "%s\\%s\\%c%.3d%.3d%.1d.txt",
-                    RetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
         brain->ReadProgram(i, filename);
-        if ( !brain->GetCompile(i) )  nbError++;
+        if (!brain->GetCompile(i)) nbError++;
     }
 }
 
-// Load all programs of the robot.
-
-void CRobotMain::LoadFileScript(CObject *pObj, char* filename, int objRank,
+//! Load all programs of the robot
+void CRobotMain::LoadFileScript(CObject *obj, char* filename, int objRank,
                                 int &nbError)
 {
-    ObjectType  type;
-    CBrain*     brain;
-    char        fn[_MAX_FNAME];
-    char*       ldir;
-    char*       name;
-    int         rank, i;
+    if (objRank == -1) return;
 
-    if ( objRank == -1 )  return;
+    CBrain* brain = obj->GetBrain();
+    if (brain == nullptr) return;
 
-    brain = pObj->GetBrain();
-    if ( brain == 0 )  return;
+    ObjectType type = obj->GetType();
+    if (type == OBJECT_HUMAN) return;
 
-    type = pObj->GetType();
-    if ( type == OBJECT_HUMAN )  return;
+    char* name = m_dialog->GetSceneName();
+    int rank = m_dialog->GetSceneRank();
 
-    name = m_dialog->GetSceneName();
-    rank = m_dialog->GetSceneRank();
-
+    char fn[MAX_FNAME];
     strcpy(fn, filename);
-    ldir = SearchLastDir(fn);
-    if ( ldir == 0 )  return;
+    char* ldir = SearchLastDir(fn);
+    if (ldir == 0) return;
 
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
-        if ( brain->GetCompile(i) )  continue;
-//?     if ( brain->ProgramExist(i) )  continue;
+        if (brain->GetCompile(i)) continue;
 
         sprintf(ldir, "\\prog%.3d%.1d.txt", objRank, i);
         brain->ReadProgram(i, fn);
-        if ( !brain->GetCompile(i) )  nbError++;
+        if (!brain->GetCompile(i)) nbError++;
     }
 }
 
-// Saves all programs of all the robots.
-
+//! Saves all programs of all the robots
 void CRobotMain::SaveAllScript()
 {
-    CObject*    pObj;
-    int         i;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        SaveOneScript(pObj);
+        SaveOneScript(obj);
     }
 }
 
-// Saves all programs of the robot.
-// If a program does not exist, the corresponding file is destroyed.
-
-void CRobotMain::SaveOneScript(CObject *pObj)
+//! Saves all programs of the robot.
+//! If a program does not exist, the corresponding file is destroyed.
+void CRobotMain::SaveOneScript(CObject *obj)
 {
-    ObjectType  type;
-    CBrain*     brain;
-    char        filename[_MAX_FNAME];
-    char*       name;
-    int         rank, i, objRank;
+    CBrain* brain = obj->GetBrain();
+    if (brain == nullptr) return;
 
-    brain = pObj->GetBrain();
-    if ( brain == 0 )  return;
+    if (!IsSelectable(obj)) return;
 
-    if ( !IsSelectable(pObj) )  return;
+    ObjectType type = obj->GetType();
+    if (type == OBJECT_HUMAN) return;
 
-    type = pObj->GetType();
-    if ( type == OBJECT_HUMAN )  return;
+    int objRank = obj->GetDefRank();
+    if (objRank == -1) return;
 
-    objRank = pObj->GetDefRank();
-    if ( objRank == -1 )  return;
+    char* name = m_dialog->GetSceneName();
+    int rank = m_dialog->GetSceneRank();
 
-    name = m_dialog->GetSceneName();
-    rank = m_dialog->GetSceneRank();
-
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
+        char filename[MAX_FNAME];
         sprintf(filename, "%s\\%s\\%c%.3d%.3d%.1d.txt",
-                    RetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
+                    GetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
         brain->WriteProgram(i, filename);
     }
 }
 
-// Saves all programs of the robot.
-// If a program does not exist, the corresponding file is destroyed.
-
-void CRobotMain::SaveFileScript(CObject *pObj, char* filename, int objRank)
+//! Saves all programs of the robot.
+//! If a program does not exist, the corresponding file is destroyed.
+void CRobotMain::SaveFileScript(CObject *obj, char* filename, int objRank)
 {
-    ObjectType  type;
-    CBrain*     brain;
-    char        fn[_MAX_FNAME];
-    char*       ldir;
-    char*       name;
-    int         rank, i;
+    if (objRank == -1) return;
 
-    if ( objRank == -1 )  return;
+    CBrain* brain = obj->GetBrain();
+    if (brain == nullptr) return;
 
-    brain = pObj->GetBrain();
-    if ( brain == 0 )  return;
+    ObjectType type = obj->GetType();
+    if (type == OBJECT_HUMAN) return;
 
-    type = pObj->GetType();
-    if ( type == OBJECT_HUMAN )  return;
-
-    name = m_dialog->GetSceneName();
-    rank = m_dialog->GetSceneRank();
-
+    char fn[MAX_FNAME];
     strcpy(fn, filename);
-    ldir = SearchLastDir(fn);
-    if ( ldir == 0 )  return;
+    char* ldir = SearchLastDir(fn);
+    if (ldir == 0) return;
 
-    for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
+    for (int i = 0; i < BRAINMAXSCRIPT; i++)
     {
         sprintf(ldir, "\\prog%.3d%.1d.txt", objRank, i);
         brain->WriteProgram(i, fn);
     }
 }
 
-// Saves the stack of the program in execution of a robot.
-
-bool CRobotMain::SaveFileStack(CObject *pObj, FILE *file, int objRank)
+//! Saves the stack of the program in execution of a robot
+bool CRobotMain::SaveFileStack(CObject *obj, FILE *file, int objRank)
 {
-    ObjectType  type;
-    CBrain*     brain;
+    if (objRank == -1) return true;
 
-    if ( objRank == -1 )  return true;
+    CBrain* brain = obj->GetBrain();
+    if (brain == nullptr) return true;
 
-    brain = pObj->GetBrain();
-    if ( brain == 0 )  return true;
-
-    type = pObj->GetType();
-    if ( type == OBJECT_HUMAN )  return true;
+    ObjectType type = obj->GetType();
+    if (type == OBJECT_HUMAN) return true;
 
     return brain->WriteStack(file);
 }
 
-// Resumes the execution stack of the program in a robot.
-
-bool CRobotMain::ReadFileStack(CObject *pObj, FILE *file, int objRank)
+//! Resumes the execution stack of the program in a robot
+bool CRobotMain::ReadFileStack(CObject *obj, FILE *file, int objRank)
 {
-    ObjectType  type;
-    CBrain*     brain;
+    if (objRank == -1) return true;
 
-    if ( objRank == -1 )  return true;
+    CBrain* brain = obj->GetBrain();
+    if (brain == nullptr) return true;
 
-    brain = pObj->GetBrain();
-    if ( brain == 0 )  return true;
-
-    type = pObj->GetType();
-    if ( type == OBJECT_HUMAN )  return true;
+    ObjectType type = obj->GetType();
+    if (type == OBJECT_HUMAN) return true;
 
     return brain->ReadStack(file);
 }
 
 
-// Empty the list.
-
+//! Empty the list
 bool CRobotMain::FlushNewScriptName()
 {
-    int     i;
+    for (int i = 0; i < MAXNEWSCRIPTNAME; i++)
+        m_newScriptName[i].used = false;
 
-    for ( i=0 ; i<MAXNEWSCRIPTNAME ; i++ )
-    {
-        m_newScriptName[i].bUsed = false;
-    }
     return true;
 }
 
-// Adds a script name.
-
+//! Adds a script name
 bool CRobotMain::AddNewScriptName(ObjectType type, char *name)
 {
-    int     i;
-
-    for ( i=0 ; i<MAXNEWSCRIPTNAME ; i++ )
+    for (int i = 0; i < MAXNEWSCRIPTNAME; i++)
     {
-        if ( !m_newScriptName[i].bUsed )
+        if (!m_newScriptName[i].used)
         {
-            m_newScriptName[i].bUsed = true;
+            m_newScriptName[i].used = true;
             m_newScriptName[i].type = type;
             strcpy(m_newScriptName[i].name, name);
             return true;
@@ -6221,20 +5462,17 @@ bool CRobotMain::AddNewScriptName(ObjectType type, char *name)
     return false;
 }
 
-// Seeks a script name for a given type.
-
+//! Seeks a script name for a given type
 char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
 {
-    int     i;
-
-    for ( i=0 ; i<MAXNEWSCRIPTNAME ; i++ )
+    for (int i = 0; i < MAXNEWSCRIPTNAME; i++)
     {
-        if ( m_newScriptName[i].bUsed &&
-             (m_newScriptName[i].type == type        ||
-              m_newScriptName[i].type == OBJECT_NULL ) )
+        if (m_newScriptName[i].used &&
+            (m_newScriptName[i].type == type        ||
+             m_newScriptName[i].type == OBJECT_NULL))
         {
-            if ( rank == 0 )  return m_newScriptName[i].name;
-            else              rank --;
+            if (rank == 0) return m_newScriptName[i].name;
+            else           rank --;
         }
     }
 
@@ -6242,122 +5480,108 @@ char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
 }
 
 
-// Seeks if an object occupies in a spot, to prevent a backup of the game.
-
+//! Seeks if an object occupies in a spot, to prevent a backup of the game
 bool CRobotMain::IsBusy()
 {
-    CObject*    pObj;
-    CBrain*     pBrain;
-//? CAuto*      pAuto;
-    int         i;
+    if (m_CompteurFileOpen > 0) return true;
 
-    if ( m_CompteurFileOpen > 0 )  return true;
-
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        pBrain = pObj->GetBrain();
-        if ( pBrain != 0 )
+        CBrain* brain = obj->GetBrain();
+        if (brain != nullptr)
         {
-            if ( pBrain->IsBusy() )  return true;
+            if (brain->IsBusy()) return true;
         }
-
-//?     pAuto = pObj->GetAuto();
-//?     if ( pAuto != 0 )
-//?     {
-//?         if ( pAuto->GetBusy() )  return true;
-//?     }
     }
     return false;
 }
 
-// Writes an object into the backup file.
-
-void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
+//! Writes an object into the backup file
+void CRobotMain::IOWriteObject(FILE *file, CObject* obj, char *cmd)
 {
-    Math::Vector    pos;
-    CBrain*     pBrain;
-    char        line[3000];
-    char        name[100];
-    int         run, i;
+    if (obj->GetType() == OBJECT_FIX) return;
 
-    if ( pObj->GetType() == OBJECT_FIX  )  return;
+    char line[3000];
+    char name[100];
 
     strcpy(line, cmd);
 
-    sprintf(name, " type=%s", GetTypeObject(pObj->GetType()));
+    sprintf(name, " type=%s", GetTypeObject(obj->GetType()));
     strcat(line, name);
 
-    sprintf(name, " id=%d", pObj->GetID());
+    sprintf(name, " id=%d", obj->GetID());
     strcat(line, name);
 
-    pos = pObj->GetPosition(0)/g_unit;
+    Math::Vector pos;
+
+    pos = obj->GetPosition(0)/g_unit;
     sprintf(name, " pos=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
     strcat(line, name);
 
-    pos = pObj->GetAngle(0)/(Math::PI/180.0f);
+    pos = obj->GetAngle(0)/(Math::PI/180.0f);
     sprintf(name, " angle=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
     strcat(line, name);
 
-    pos = pObj->GetZoom(0);
+    pos = obj->GetZoom(0);
     sprintf(name, " zoom=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
     strcat(line, name);
 
-    for ( i=1 ; i<OBJECTMAXPART ; i++ )
+    for (int i = 1; i < OBJECTMAXPART; i++)
     {
-        if ( pObj->GetObjectRank(i) == -1 )  continue;
+        if (obj->GetObjectRank(i) == -1) continue;
 
-        pos = pObj->GetPosition(i);
-        if ( pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f )
+        pos = obj->GetPosition(i);
+        if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
         {
             pos /= g_unit;
             sprintf(name, " p%d=%.2f;%.2f;%.2f", i, pos.x, pos.y, pos.z);
             strcat(line, name);
         }
 
-        pos = pObj->GetAngle(i);
-        if ( pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f )
+        pos = obj->GetAngle(i);
+        if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
         {
             pos /= (Math::PI/180.0f);
             sprintf(name, " a%d=%.2f;%.2f;%.2f", i, pos.x, pos.y, pos.z);
             strcat(line, name);
         }
 
-        pos = pObj->GetZoom(i);
-        if ( pos.x != 1.0f || pos.y != 1.0f || pos.z != 1.0f )
+        pos = obj->GetZoom(i);
+        if (pos.x != 1.0f || pos.y != 1.0f || pos.z != 1.0f)
         {
             sprintf(name, " z%d=%.2f;%.2f;%.2f", i, pos.x, pos.y, pos.z);
             strcat(line, name);
         }
     }
 
-    sprintf(name, " trainer=%d", pObj->GetTrainer());
+    sprintf(name, " trainer=%d", obj->GetTrainer());
     strcat(line, name);
 
-    sprintf(name, " option=%d", pObj->GetOption());
+    sprintf(name, " option=%d", obj->GetOption());
     strcat(line, name);
 
-    if ( pObj == m_infoObject )  // selects object?
+    if (obj == m_infoObject)  // selects object?
     {
         sprintf(name, " select=1");
         strcat(line, name);
     }
 
-    pObj->Write(line);
+    obj->Write(line);
 
-    if ( pObj->GetType() == OBJECT_BASE )
+    if (obj->GetType() == OBJECT_BASE)
     {
         sprintf(name, " run=3");  // stops and open (PARAM_FIXSCENE)
         strcat(line, name);
     }
 
-    pBrain = pObj->GetBrain();
-    if ( pBrain != 0 )
+    CBrain* brain = obj->GetBrain();
+    if (brain != nullptr)
     {
-        run = pBrain->GetProgram();
-        if ( run != -1 )
+        int run = brain->GetProgram();
+        if (run != -1)
         {
             sprintf(name, " run=%d", run+1);
             strcat(line, name);
@@ -6368,20 +5592,13 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
     fputs(line, file);
 }
 
-// Saves the current game.
-
+//! Saves the current game
 bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
 {
-    FILE*       file;
-    char        line[500];
-    char*       name;
-    CObject     *pObj, *pPower, *pFret;
-    float       sleep, delay, magnetic, progress;
-    int         i, objRank;
-    long        version;
+    FILE* file = fopen(filename, "w");
+    if (file == NULL)  return false;
 
-    file = fopen(filename, "w");
-    if ( file == NULL )  return false;
+    char line[500];
 
     sprintf(line, "Title text=\"%s\"\n", info);
     fputs(line, file);
@@ -6389,8 +5606,8 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
     sprintf(line, "Version maj=%d min=%d\n", 0, 1);
     fputs(line, file);
 
-    name = m_dialog->GetSceneName();
-    if ( strcmp(name, "user") == 0 )
+    char* name = m_dialog->GetSceneName();
+    if (strcmp(name, "user") == 0)
     {
         sprintf(line, "Mission base=\"%s\" rank=%.3d dir=\"%s\"\n", name, m_dialog->GetSceneRank(), m_dialog->GetSceneDir());
     }
@@ -6406,67 +5623,64 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
     sprintf(line, "DoneResearch bits=%d\n", g_researchDone);
     fputs(line, file);
 
-    if ( m_blitz->GetStatus(sleep, delay, magnetic, progress) )
+    float sleep, delay, magnetic, progress;
+    if (m_lightning->GetStatus(sleep, delay, magnetic, progress))
     {
         sprintf(line, "BlitzMode sleep=%.2f delay=%.2f magnetic=%.2f progress=%.2f\n", sleep, delay, magnetic/g_unit, progress);
         fputs(line, file);
     }
 
-    objRank = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    int objRank = 0;
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( pObj->GetType() == OBJECT_TOTO )  continue;
-        if ( pObj->GetType() == OBJECT_FIX  )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-        if ( pObj->GetBurn() )  continue;
-        if ( pObj->GetDead() )  continue;
-        if ( pObj->GetExplo() )  continue;
+        if (obj->GetType() == OBJECT_TOTO) continue;
+        if (obj->GetType() == OBJECT_FIX) continue;
+        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetBurn()) continue;
+        if (obj->GetDead()) continue;
+        if (obj->GetExplo()) continue;
 
-        pPower = pObj->GetPower();
-        pFret  = pObj->GetFret();
+        CObject* power = obj->GetPower();
+        CObject* fret  = obj->GetFret();
 
-        if ( pFret != 0 )  // object transported?
-        {
-            IOWriteObject(file, pFret, "CreateFret");
-        }
+        if (fret != nullptr)  // object transported?
+            IOWriteObject(file, fret, "CreateFret");
 
-        if ( pPower != 0 )  // battery transported?
-        {
-            IOWriteObject(file, pPower, "CreatePower");
-        }
+        if (power != nullptr)  // battery transported?
+            IOWriteObject(file, power, "CreatePower");
 
-        IOWriteObject(file, pObj, "CreateObject");
+        IOWriteObject(file, obj, "CreateObject");
 
-        SaveFileScript(pObj, filename, objRank++);
+        SaveFileScript(obj, filename, objRank++);
     }
     fclose(file);
 
 #if CBOT_STACK
     // Writes the file of stacks of execution.
     file = fOpen(filecbot, "wb");
-    if ( file == NULL )  return false;
+    if (file == NULL) return false;
 
-    version = 1;
+    long version = 1;
     fWrite(&version, sizeof(long), 1, file);  // version of COLOBOT
     version = CBotProgram::GetVersion();
     fWrite(&version, sizeof(long), 1, file);  // version of CBOT
 
     objRank = 0;
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        if ( pObj->GetType() == OBJECT_TOTO )  continue;
-        if ( pObj->GetType() == OBJECT_FIX  )  continue;
-        if ( pObj->GetTruck() != 0 )  continue;
-        if ( pObj->GetBurn() )  continue;
-        if ( pObj->GetDead() )  continue;
+        if (obj->GetType() == OBJECT_TOTO) continue;
+        if (obj->GetType() == OBJECT_FIX) continue;
+        if (obj->GetTruck() != nullptr) continue;
+        if (obj->GetBurn()) continue;
+        if (obj->GetDead()) continue;
 
-        if ( !SaveFileStack(pObj, file, objRank++) )  break;
+        if (!SaveFileStack(obj, file, objRank++))  break;
     }
     CBotClass::SaveStaticState(file);
     fClose(file);
@@ -6476,232 +5690,205 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
     return true;
 }
 
-// Resumes the game.
-
+//! Resumes the game
 CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 {
-    CObject*    pObj;
-//? CBrain*     pBrain;
-    CAuto*      pAuto;
-    Math::Vector    pos, dir, zoom;
-    ObjectType  type;
-    int         id, run, trainer, toy, option, i;
-    char        op[10];
+    Math::Vector pos  = OpDir(line, "pos")*g_unit;
+    Math::Vector dir  = OpDir(line, "angle")*(Math::PI/180.0f);
+    Math::Vector zoom = OpDir(line, "zoom");
 
-    pos  = OpDir(line, "pos")*g_unit;
-    dir  = OpDir(line, "angle")*(Math::PI/180.0f);
-    zoom = OpDir(line, "zoom");
-    type = OpTypeObject(line, "type", OBJECT_NULL);
-    id = OpInt(line, "id", 0);
-    if ( type == OBJECT_NULL )  return 0;
-    trainer = OpInt(line, "trainer", 0);
-    toy = OpInt(line, "toy", 0);
-    option = OpInt(line, "option", 0);
-    pObj = CreateObject(pos, dir.y, 1.0f, 0.0f, type, 0.0f, trainer, toy, option);
-    pObj->SetDefRank(objRank);
-    pObj->SetPosition(0, pos);
-    pObj->SetAngle(0, dir);
-    pObj->SetID(id);
-    if ( g_id < id )  g_id = id;
+    ObjectType type = OpTypeObject(line, "type", OBJECT_NULL);
+    int id = OpInt(line, "id", 0);
+    if (type == OBJECT_NULL)
+        return nullptr;
 
-    if ( zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f )
+    int trainer = OpInt(line, "trainer", 0);
+    int toy = OpInt(line, "toy", 0);
+    int option = OpInt(line, "option", 0);
+
+    CObject* obj = CreateObject(pos, dir.y, 1.0f, 0.0f, type, 0.0f, trainer, toy, option);
+    obj->SetDefRank(objRank);
+    obj->SetPosition(0, pos);
+    obj->SetAngle(0, dir);
+    obj->SetID(id);
+    if (g_id < id) g_id = id;
+
+    if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
+        obj->SetZoom(0, zoom);
+
+    for (int i = 1; i < OBJECTMAXPART; i++)
     {
-        pObj->SetZoom(0, zoom);
-    }
+        if (obj->GetObjectRank(i) == -1) continue;
 
-    for ( i=1 ; i<OBJECTMAXPART ; i++ )
-    {
-        if ( pObj->GetObjectRank(i) == -1 )  continue;
-
+        char op[10];
         sprintf(op, "p%d", i);
-        pos  = OpDir(line, op);
-        if ( pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f )
+        pos = OpDir(line, op);
+        if (pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f)
         {
-            pObj->SetPosition(i, pos*g_unit);
+            obj->SetPosition(i, pos*g_unit);
         }
 
         sprintf(op, "a%d", i);
-        dir  = OpDir(line, op);
-        if ( dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f )
+        dir = OpDir(line, op);
+        if (dir.x != 0.0f || dir.y != 0.0f || dir.z != 0.0f)
         {
-            pObj->SetAngle(i, dir*(Math::PI/180.0f));
+            obj->SetAngle(i, dir*(Math::PI/180.0f));
         }
 
         sprintf(op, "z%d", i);
         zoom = OpDir(line, op);
-        if ( zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f )
+        if (zoom.x != 0.0f || zoom.y != 0.0f || zoom.z != 0.0f)
         {
-            pObj->SetZoom(i, zoom);
+            obj->SetZoom(i, zoom);
         }
     }
 
-    if ( type == OBJECT_BASE )  m_bBase = true;
+    if (type == OBJECT_BASE) m_base = true;
 
-    pObj->Read(line);
+    obj->Read(line);
 
 #if CBOT_STACK
 #else
-    LoadFileScript(pObj, filename, objRank, i);
+    LoadFileScript(obj, filename, objRank, i);
 #endif
 
-    run = OpInt(line, "run", -1);
-    if ( run != -1 )
+    int run = OpInt(line, "run", -1);
+    if (run != -1)
     {
 #if CBOT_STACK
 #else
-        pBrain = pObj->GetBrain();
-        if ( pBrain != 0 )
-        {
-            pBrain->RunProgram(run-1);  // starts the program
-        }
+        CBrain* brain = obj->GetBrain();
+        if (brain != nullptr)
+            brain->RunProgram(run-1);  // starts the program
 #endif
 
-        pAuto = pObj->GetAuto();
-        if ( pAuto != 0 )
-        {
-            pAuto->Start(run);  // starts the film
-        }
+        CAuto* automat = obj->GetAuto();
+        if (automat != nullptr)
+            automat->Start(run);  // starts the film
     }
 
-    return pObj;
+    return obj;
 }
 
-// Resumes some part of the game.
-
+//! Resumes some part of the game
 CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
 {
-    FILE*       file;
-    CObject     *pObj, *pPower, *pFret, *pSel;
-    char        line[3000];
-    float       sleep, delay, progress, magnetic;
-    int         i, objRank, nbError, lastError;
-    long        version;
+    m_base = false;
 
-    m_bBase = false;
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) return 0;
 
-    file = fopen(filename, "r");
-    if ( file == NULL )  return 0;
-
-    pFret   = 0;
-    pPower  = 0;
-    pSel    = 0;
-    objRank = 0;
-    while ( fgets(line, 3000, file) != NULL )
+    CObject* fret   = nullptr;
+    CObject* power  = nullptr;
+    CObject* sel    = nullptr;
+    int objRank = 0;
+    char line[3000];
+    while (fgets(line, 3000, file) != NULL)
     {
-        for ( i=0 ; i<3000 ; i++ )
+        for (int i = 0; i < 3000; i++)
         {
-            if ( line[i] == '\t' )  line[i] = ' ';  // replace tab by space
-            if ( line[i] == '/' && line[i+1] == '/' )
+            if (line[i] == '\t') line[i] = ' ';  // replace tab by space
+            if (line[i] == '/' && line[i+1] == '/')
             {
                 line[i] = 0;
                 break;
             }
         }
 
-        if ( Cmd(line, "Map") )
-        {
+        if (Cmd(line, "Map"))
             m_map->ZoomMap(OpFloat(line, "zoom", 1.0f));
-        }
 
-        if ( Cmd(line, "DoneResearch") )
-        {
+        if (Cmd(line, "DoneResearch"))
             g_researchDone = OpInt(line, "bits", 0);
+
+        if (Cmd(line, "BlitzMode"))
+        {
+            float sleep = OpFloat(line, "sleep", 0.0f);
+            float delay = OpFloat(line, "delay", 3.0f);
+            float magnetic = OpFloat(line, "magnetic", 50.0f)*g_unit;
+            float progress = OpFloat(line, "progress", 0.0f);
+            m_lightning->SetStatus(sleep, delay, magnetic, progress);
         }
 
-        if ( Cmd(line, "BlitzMode") )
-        {
-            sleep = OpFloat(line, "sleep", 0.0f);
-            delay = OpFloat(line, "delay", 3.0f);
-            magnetic = OpFloat(line, "magnetic", 50.0f)*g_unit;
-            progress = OpFloat(line, "progress", 0.0f);
-            m_blitz->SetStatus(sleep, delay, magnetic, progress);
-        }
+        if (Cmd(line, "CreateFret"))
+            fret = IOReadObject(line, filename, -1);
 
-        if ( Cmd(line, "CreateFret") )
-        {
-            pFret = IOReadObject(line, filename, -1);
-        }
+        if (Cmd(line, "CreatePower"))
+            power = IOReadObject(line, filename, -1);
 
-        if ( Cmd(line, "CreatePower") )
+        if (Cmd(line, "CreateObject"))
         {
-            pPower = IOReadObject(line, filename, -1);
-        }
+            CObject* obj = IOReadObject(line, filename, objRank++);
 
-        if ( Cmd(line, "CreateObject") )
-        {
-            pObj = IOReadObject(line, filename, objRank++);
+            if (OpInt(line, "select", 0))
+                sel = obj;
 
-            if ( OpInt(line, "select", 0) )
+            if (fret != nullptr)
             {
-                pSel = pObj;
-            }
-
-            if ( pFret != 0 )
-            {
-                CTaskManip* task;
-
-                pObj->SetFret(pFret);
-                task = new CTaskManip(m_iMan, pObj);
+                obj->SetFret(fret);
+                CTaskManip* task = new CTaskManip(m_iMan, obj);
                 task->Start(TMO_AUTO, TMA_GRAB);  // holds the object!
                 delete task;
             }
 
-            if ( pPower != 0 )
+            if (power != nullptr)
             {
-                pObj->SetPower(pPower);
-                pPower->SetTruck(pObj);
+                obj->SetPower(power);
+                power->SetTruck(obj);
             }
 
-            pFret  = 0;
-            pPower = 0;
+            fret  = nullptr;
+            power = nullptr;
         }
     }
     fclose(file);
 
 #if CBOT_STACK
     // Compiles scripts.
-    nbError = 0;
+    int nbError = 0;
+    int lastError = 0;
     do
     {
         lastError = nbError;
         nbError = 0;
-        for ( i=0 ; i<1000000 ; i++ )
+        for (int i = 0; i < 1000000; i++)
         {
-            pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-            if ( pObj == 0 )  break;
-            if ( pObj->GetTruck() != 0 )  continue;
+            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
+            if (obj->GetTruck() != nullptr) continue;
 
-            objRank = pObj->GetDefRank();
-            if ( objRank == -1 )  continue;
+            objRank = obj->GetDefRank();
+            if (objRank == -1) continue;
 
-            LoadFileScript(pObj, filename, objRank, nbError);
+            LoadFileScript(obj, filename, objRank, nbError);
         }
     }
-    while ( nbError > 0 && nbError != lastError );
+    while (nbError > 0 && nbError != lastError);
 
     // Reads the file of stacks of execution.
     file = fOpen(filecbot, "rb");
-    if ( file != NULL )
+    if (file != NULL)
     {
+        long version;
         fRead(&version, sizeof(long), 1, file);  // version of COLOBOT
-        if ( version == 1 )
+        if (version == 1)
         {
             fRead(&version, sizeof(long), 1, file);  // version of CBOT
-            if ( version == CBotProgram::GetVersion() )
+            if (version == CBotProgram::GetVersion())
             {
                 objRank = 0;
-                for ( i=0 ; i<1000000 ; i++ )
+                for (int i = 0; i < 1000000; i++)
                 {
-                    pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-                    if ( pObj == 0 )  break;
+                    CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+                    if (obj == nullptr) break;
 
-                    if ( pObj->GetType() == OBJECT_TOTO )  continue;
-                    if ( pObj->GetType() == OBJECT_FIX  )  continue;
-                    if ( pObj->GetTruck() != 0 )  continue;
-                    if ( pObj->GetBurn() )  continue;
-                    if ( pObj->GetDead() )  continue;
+                    if (obj->GetType() == OBJECT_TOTO) continue;
+                    if (obj->GetType() == OBJECT_FIX) continue;
+                    if (obj->GetTruck() != nullptr) continue;
+                    if (obj->GetBurn()) continue;
+                    if (obj->GetDead()) continue;
 
-                    if ( !ReadFileStack(pObj, file, objRank++) )  break;
+                    if (!ReadFileStack(obj, file, objRank++)) break;
                 }
             }
         }
@@ -6710,66 +5897,58 @@ CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
     }
 #endif
 
-    return pSel;
+    return sel;
 }
 
 
-// Writes the global parameters for free play.
-
+//! Writes the global parameters for free play
 void CRobotMain::WriteFreeParam()
 {
-    FILE*   file;
-    char    filename[_MAX_FNAME];
-    char    line[100];
-
     m_freeResearch |= g_researchDone;
     m_freeBuild    |= g_build;
 
-    if ( m_gamerName[0] == 0 )  return;
+    if (m_gamerName[0] == 0) return;
 
-    sprintf(filename, "%s\\%s\\research.gam", RetSavegameDir(), m_gamerName);
-    file = fopen(filename, "w");
-    if ( file == NULL )  return;
+    char filename[MAX_FNAME];
+    sprintf(filename, "%s\\%s\\research.gam", GetSavegameDir(), m_gamerName);
+    FILE* file = fopen(filename, "w");
+    if (file == NULL) return;
 
+    char line[100];
     sprintf(line, "research=%d build=%d\n", m_freeResearch, m_freeBuild);
     fputs(line, file);
     fclose(file);
 }
 
-// Reads the global parameters for free play.
-
+//! Reads the global parameters for free play
 void CRobotMain::ReadFreeParam()
 {
-    FILE*   file;
-    char    filename[_MAX_FNAME];
-    char    line[100];
-
     m_freeResearch = 0;
     m_freeBuild    = 0;
 
-    if ( m_gamerName[0] == 0 )  return;
+    if (m_gamerName[0] == 0) return;
 
-    sprintf(filename, "%s\\%s\\research.gam", RetSavegameDir(), m_gamerName);
-    file = fopen(filename, "r");
-    if ( file == NULL )  return;
+    char filename[MAX_FNAME];
+    sprintf(filename, "%s\\%s\\research.gam", GetSavegameDir(), m_gamerName);
+    FILE* file = fopen(filename, "r");
+    if (file == NULL)  return;
 
-    if ( fgets(line, 100, file) != NULL )
-    {
+    char line[100];
+    if (fgets(line, 100, file) != NULL)
         sscanf(line, "research=%d build=%d\n", &m_freeResearch, &m_freeBuild);
-    }
 
     fclose(file);
 }
 
 
-// Resets all objects to their original position.
-
+//! Resets all objects to their original position
 void CRobotMain::ResetObject()
 {
+// TODO: ?
 #if 0
-    CObject*    pObj;
-    CObject*    pTruck;
-    CAuto*      pAuto;
+    CObject*    obj;
+    CObject*    truck;
+    CAuto*      objAuto;
     CBrain*     brain;
     CPyro*      pyro;
     ResetCap    cap;
@@ -6787,179 +5966,166 @@ void CRobotMain::ResetObject()
     }
 
     // Removes all bullets in progress.
-    m_particle->DeleteParticule(PARTIGUN1);
-    m_particle->DeleteParticule(PARTIGUN2);
-    m_particle->DeleteParticule(PARTIGUN3);
-    m_particle->DeleteParticule(PARTIGUN4);
+    m_particle->DeleteParticle(PARTIGUN1);
+    m_particle->DeleteParticle(PARTIGUN2);
+    m_particle->DeleteParticle(PARTIGUN3);
+    m_particle->DeleteParticle(PARTIGUN4);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if ( obj == 0 )  break;
 
-        cap = pObj->GetResetCap();
+        cap = obj->GetResetCap();
         if ( cap == RESET_NONE )  continue;
 
         if ( cap == RESET_DELETE )
         {
-            pTruck = pObj->GetTruck();
-            if ( pTruck != 0 )
+            truck = obj->GetTruck();
+            if ( truck != 0 )
             {
-                pTruck->SetFret(0);
-                pObj->SetTruck(0);
+                truck->SetFret(0);
+                obj->SetTruck(0);
             }
-            pObj->DeleteObject();
-            delete pObj;
+            obj->DeleteObject();
+            delete obj;
             i --;
             continue;
         }
 
-        pAuto = pObj->GetAuto();
-        if ( pAuto != 0 )
+        objAuto = obj->GetAuto();
+        if ( objAuto != 0 )
         {
-            pAuto->Abort();
+            objAuto->Abort();
         }
 
-        if ( pObj->GetEnable() )  // object still active?
+        if ( obj->GetEnable() )  // object still active?
         {
-            brain = pObj->GetBrain();
+            brain = obj->GetBrain();
             if ( brain != 0 )
             {
-                pos   = pObj->GetResetPosition();
-                angle = pObj->GetResetAngle();
+                pos   = obj->GetResetPosition();
+                angle = obj->GetResetAngle();
 
-                if ( pos   == pObj->GetPosition(0) &&
-                     angle == pObj->GetAngle(0)    )  continue;
+                if ( pos   == obj->GetPosition(0) &&
+                     angle == obj->GetAngle(0)    )  continue;
                 brain->StartTaskReset(pos, angle);
                 continue;
             }
         }
 
-        pObj->SetEnable(true);  // active again
+        obj->SetEnable(true);  // active again
 
-        pos   = pObj->GetResetPosition();
-        angle = pObj->GetResetAngle();
+        pos   = obj->GetResetPosition();
+        angle = obj->GetResetAngle();
 
-        if ( pos   == pObj->GetPosition(0) &&
-             angle == pObj->GetAngle(0)    )  continue;
+        if ( pos   == obj->GetPosition(0) &&
+             angle == obj->GetAngle(0)    )  continue;
 
         pyro = new CPyro(m_iMan);
-        pyro->Create(PT_RESET, pObj);
+        pyro->Create(PT_RESET, obj);
 
-        brain = pObj->GetBrain();
+        brain = obj->GetBrain();
         if ( brain != 0 )
         {
-            brain->RunProgram(pObj->GetResetRun());
+            brain->RunProgram(obj->GetResetRun());
         }
     }
 #else
-    m_bResetCreate = true;
+    m_resetCreate = true;
 #endif
 }
 
-// Resets all objects to their original position.
-
+//! Resets all objects to their original position
 void CRobotMain::ResetCreate()
 {
-    CObject*    pObj;
-    CPyro*      pyro;
-    ResetCap    cap;
-    int         i;
-
     SaveAllScript();
 
     // Removes all bullets in progress.
-    m_particle->DeleteParticule(PARTIGUN1);
-    m_particle->DeleteParticule(PARTIGUN2);
-    m_particle->DeleteParticule(PARTIGUN3);
-    m_particle->DeleteParticule(PARTIGUN4);
+    m_particle->DeleteParticle(Gfx::PARTIGUN1);
+    m_particle->DeleteParticle(Gfx::PARTIGUN2);
+    m_particle->DeleteParticle(Gfx::PARTIGUN3);
+    m_particle->DeleteParticle(Gfx::PARTIGUN4);
 
     DeselectAll();  // removes the control buttons
     DeleteAllObjects();  // removes all the current 3D Scene
 
-    m_particle->FlushParticule();
+    m_particle->FlushParticle();
     m_terrain->FlushBuildingLevel();
     m_iMan->Flush(CLASS_OBJECT);
     m_iMan->Flush(CLASS_PHYSICS);
     m_iMan->Flush(CLASS_BRAIN);
     m_iMan->Flush(CLASS_PYRO);
-    m_camera->SetType(CAMERA_DIALOG);
+    m_camera->SetType(Gfx::CAM_TYPE_DIALOG);
 
     CreateScene(m_dialog->GetSceneSoluce(), false, true);
 
-    if ( !RetNiceReset() )  return;
+    if (!GetNiceReset()) return;
 
-    for ( i=0 ; i<1000000 ; i++ )
+    for (int i = 0; i < 1000000; i++)
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-        if ( pObj == 0 )  break;
+        CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+        if (obj == nullptr) break;
 
-        cap = pObj->GetResetCap();
-        if ( cap == RESET_NONE )  continue;
+        ResetCap cap = obj->GetResetCap();
+        if (cap == RESET_NONE) continue;
 
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_RESET, pObj);
+        Gfx::CPyro* pyro = new Gfx::CPyro(m_iMan);
+        pyro->Create(Gfx::PT_RESET, obj);
     }
 }
 
-// Checks if the mission is over.
-
-Error CRobotMain::CheckEndMission(bool bFrame)
+//! Checks if the mission is over
+Error CRobotMain::CheckEndMission(bool frame)
 {
-    CObject*    pObj;
-    Math::Vector    bPos, oPos;
-    ObjectType  type;
-    int         t, i, nb;
-
-    for ( t=0 ; t<m_endTakeTotal ; t++ )
+    for (int t = 0; t < m_endTakeTotal; t++)
     {
-        if ( m_endTake[t].message[0] != 0 )  continue;
+        if (m_endTake[t].message[0] != 0) continue;
 
-        bPos = m_endTake[t].pos;
+        Math::Vector bPos = m_endTake[t].pos;
         bPos.y = 0.0f;
 
-        nb = 0;
-        for ( i=0 ; i<1000000 ; i++ )
+        Math::Vector oPos;
+
+        int nb = 0;
+        for (int i = 0; i < 1000000; i++)
         {
-            pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
-            if ( pObj == 0 )  break;
+            CObject* obj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
+            if (obj == nullptr) break;
 
-            // Do not use RetActif () because an invisible worm (underground)
+            // Do not use GetActif () because an invisible worm (underground)
             // should be regarded as existing here!
-            if ( pObj->GetLock() )  continue;
-            if ( pObj->GetRuin() )  continue;
-            if ( !pObj->GetEnable() )  continue;
+            if (obj->GetLock()) continue;
+            if (obj->GetRuin()) continue;
+            if (!obj->GetEnable()) continue;
 
-            type = pObj->GetType();
-            if ( type == OBJECT_SCRAP2 ||
-                 type == OBJECT_SCRAP3 ||
-                 type == OBJECT_SCRAP4 ||
-                 type == OBJECT_SCRAP5 )  // wastes?
+            ObjectType type = obj->GetType();
+            if (type == OBJECT_SCRAP2 ||
+                type == OBJECT_SCRAP3 ||
+                type == OBJECT_SCRAP4 ||
+                type == OBJECT_SCRAP5)  // wastes?
             {
                 type = OBJECT_SCRAP1;
             }
-            if ( type != m_endTake[t].type )  continue;
 
-            if ( pObj->GetTruck() == 0 )
-            {
-                oPos = pObj->GetPosition(0);
-            }
+            if (type != m_endTake[t].type)  continue;
+
+            if (obj->GetTruck() == 0)
+                oPos = obj->GetPosition(0);
             else
-            {
-                oPos = pObj->GetTruck()->GetPosition(0);
-            }
+                oPos = obj->GetTruck()->GetPosition(0);
+
             oPos.y = 0.0f;
-            if ( Math::DistanceProjected(oPos, bPos) <= m_endTake[t].dist )
-            {
+
+            if (Math::DistanceProjected(oPos, bPos) <= m_endTake[t].dist)
                 nb ++;
-            }
         }
 
-        if ( nb <= m_endTake[t].lost )
+        if (nb <= m_endTake[t].lost)
         {
-            if ( m_endTake[t].type == OBJECT_HUMAN )
+            if (m_endTake[t].type == OBJECT_HUMAN)
             {
-                if ( m_lostDelay == 0.0f )
+                if (m_lostDelay == 0.0f)
                 {
                     m_lostDelay = 0.1f;  // lost immediately
                     m_winDelay  = 0.0f;
@@ -6969,7 +6135,7 @@ Error CRobotMain::CheckEndMission(bool bFrame)
             }
             else
             {
-                if ( m_lostDelay == 0.0f )
+                if (m_lostDelay == 0.0f)
                 {
                     m_displayText->DisplayError(INFO_LOST, Math::Vector(0.0f,0.0f,0.0f));
                     m_lostDelay = m_endTakeLostDelay;  // lost in 6 seconds
@@ -6979,15 +6145,15 @@ Error CRobotMain::CheckEndMission(bool bFrame)
                 return INFO_LOST;
             }
         }
-        if ( nb < m_endTake[t].min ||
-             nb > m_endTake[t].max )
+        if (nb < m_endTake[t].min ||
+            nb > m_endTake[t].max)
         {
             m_displayText->SetEnable(true);
             return ERR_MISSION_NOTERM;
         }
-        if ( m_endTake[t].bImmediat )
+        if (m_endTake[t].immediat)
         {
-            if ( m_winDelay == 0.0f )
+            if (m_winDelay == 0.0f)
             {
                 m_winDelay  = m_endTakeWinDelay;  // wins in x seconds
                 m_lostDelay = 0.0f;
@@ -6997,16 +6163,16 @@ Error CRobotMain::CheckEndMission(bool bFrame)
         }
     }
 
-    if ( m_endTakeResearch != 0 )
+    if (m_endTakeResearch != 0)
     {
-        if ( m_endTakeResearch != (m_endTakeResearch&g_researchDone) )
+        if (m_endTakeResearch != (m_endTakeResearch&g_researchDone))
         {
             m_displayText->SetEnable(true);
             return ERR_MISSION_NOTERM;
         }
     }
 
-    if ( m_endTakeWinDelay == -1.0f )
+    if (m_endTakeWinDelay == -1.0f)
     {
         m_winDelay  = 1.0f;  // wins in one second
         m_lostDelay = 0.0f;
@@ -7014,9 +6180,9 @@ Error CRobotMain::CheckEndMission(bool bFrame)
         return ERR_OK;  // mission ended
     }
 
-    if ( bFrame && m_bBase )  return ERR_MISSION_NOTERM;
+    if (frame && m_base) return ERR_MISSION_NOTERM;
 
-    if ( m_winDelay == 0.0f )
+    if (m_winDelay == 0.0f)
     {
         m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
         m_winDelay  = m_endTakeWinDelay;  // wins in two seconds
@@ -7026,17 +6192,14 @@ Error CRobotMain::CheckEndMission(bool bFrame)
     return ERR_OK;  // mission ended
 }
 
-// Checks if the mission is finished after displaying a message.
-
-void CRobotMain::CheckEndMessage(const char *message)
+//! Checks if the mission is finished after displaying a message
+void CRobotMain::CheckEndMessage(char *message)
 {
-    int     t;
-
-    for ( t=0 ; t<m_endTakeTotal ; t++ )
+    for (int t = 0; t < m_endTakeTotal; t++)
     {
-        if ( m_endTake[t].message[0] == 0 )  continue;
+        if (m_endTake[t].message[0] == 0) continue;
 
-        if ( strcmp(m_endTake[t].message, message) == 0 )
+        if (strcmp(m_endTake[t].message, message) == 0)
         {
             m_displayText->DisplayError(INFO_WIN, Math::Vector(0.0f,0.0f,0.0f));
             m_winDelay  = m_endTakeWinDelay;  // wins in 2 seconds
@@ -7046,65 +6209,51 @@ void CRobotMain::CheckEndMessage(const char *message)
 }
 
 
-// Returns the number of instructions required.
-
+//! Returns the number of instructions required
 int CRobotMain::GetObligatoryToken()
 {
     return m_obligatoryTotal;
 }
 
-// Returns the name of a required instruction.
-
+//! Returns the name of a required instruction
 char* CRobotMain::GetObligatoryToken(int i)
 {
     return m_obligatoryToken[i];
 }
 
-// Checks if an instruction is part of the obligatory list.
-
-int CRobotMain::IsObligatoryToken(const char *token)
+//! Checks if an instruction is part of the obligatory list
+int CRobotMain::IsObligatoryToken(char *token)
 {
-    int     i;
-
-    for ( i=0 ; i<m_obligatoryTotal ; i++ )
+    for (int i = 0; i < m_obligatoryTotal; i++)
     {
-        if ( strcmp(token, m_obligatoryToken[i]) == 0 )
-        {
+        if (strcmp(token, m_obligatoryToken[i]) == 0)
             return i;
-        }
     }
     return -1;
 }
 
-// Checks if an instruction is not part of the banned list.
-
-bool CRobotMain::IsProhibitedToken(const char *token)
+//! Checks if an instruction is not part of the banned list
+bool CRobotMain::IsProhibitedToken(char *token)
 {
-    int     i;
-
-    for ( i=0 ; i<m_prohibitedTotal ; i++ )
+    for (int i = 0; i < m_prohibitedTotal; i++)
     {
-        if ( strcmp(token, m_prohibitedToken[i]) == 0 )
-        {
+        if (strcmp(token, m_prohibitedToken[i]) == 0)
             return false;
-        }
     }
     return true;
 }
 
 
-// Indicates whether it is possible to control a driving robot.
-
+//! Indicates whether it is possible to control a driving robot
 bool CRobotMain::GetTrainerPilot()
 {
-    return m_bTrainerPilot;
+    return m_trainerPilot;
 }
 
-// Indicates whether the scene is fixed, without interaction.
-
+//! Indicates whether the scene is fixed, without interaction
 bool CRobotMain::GetFixScene()
 {
-    return m_bFixScene;
+    return m_fixScene;
 }
 
 
@@ -7156,23 +6305,23 @@ bool CRobotMain::GetHimselfDamage()
 
 bool CRobotMain::GetShowSoluce()
 {
-    return m_bShowSoluce;
+    return m_showSoluce;
 }
 
 bool CRobotMain::GetSceneSoluce()
 {
-    if ( m_infoFilename[SATCOM_SOLUCE][0] == 0 )  return false;
+    if (m_infoFilename[SATCOM_SOLUCE][0] == 0) return false;
     return m_dialog->GetSceneSoluce();
 }
 
 bool CRobotMain::GetShowAll()
 {
-    return m_bShowAll;
+    return m_showAll;
 }
 
 bool CRobotMain::GetCheatRadar()
 {
-    return m_bCheatRadar;
+    return m_cheatRadar;
 }
 
 char* CRobotMain::GetSavegameDir()
@@ -7191,8 +6340,7 @@ char* CRobotMain::GetFilesDir()
 }
 
 
-// Change the player's name.
-
+//! Change the player's name
 void CRobotMain::SetGamerName(char *name)
 {
     strcpy(m_gamerName, name);
@@ -7200,77 +6348,68 @@ void CRobotMain::SetGamerName(char *name)
     ReadFreeParam();
 }
 
-// Getes the player's name.
-
+//! Getes the player's name
 char* CRobotMain::GetGamerName()
 {
     return m_gamerName;
 }
 
 
-// Returns the representation to use for the player.
-
+//! Returns the representation to use for the player
 int CRobotMain::GetGamerFace()
 {
     return m_dialog->GetGamerFace();
 }
 
-// Returns the representation to use for the player.
-
+//! Returns the representation to use for the player
 int CRobotMain::GetGamerGlasses()
 {
     return m_dialog->GetGamerGlasses();
 }
 
-// Returns the mode with just the head.
-
+//! Returns the mode with just the head
 bool CRobotMain::GetGamerOnlyHead()
 {
     return m_dialog->GetGamerOnlyHead();
 }
 
-// Returns the angle of presentation.
-
+//! Returns the angle of presentation
 float CRobotMain::GetPersoAngle()
 {
     return m_dialog->GetPersoAngle();
 }
 
 
-// Changes on the pause mode.
-
-void CRobotMain::ChangePause(bool bPause)
+//! Changes on the pause mode
+void CRobotMain::ChangePause(bool pause)
 {
-    m_bPause = bPause;
-    m_engine->SetPause(m_bPause);
+    m_pause = pause;
+    m_engine->SetPause(m_pause);
 
-    m_sound->MuteAll(m_bPause);
+    m_sound->MuteAll(m_pause);
     CreateShortcuts();
-    if ( m_bPause )  HighlightClear();
+    if (m_pause) HiliteClear();
 }
 
 
-// Changes game speed
-
+//! Changes game speed
 void CRobotMain::SetSpeed(float speed)
 {
-    CButton*    pb;
-    char        text[10];
+    // TODO: m_app->SetSimulationSpeed(speed);
 
-    m_engine->SetSpeed(speed);
-
-    pb = (CButton*)m_interface->SearchControl(EVENT_SPEED);
-    if ( pb != 0 )
+    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_SPEED));
+    if (pb != nullptr)
     {
-        if ( speed == 1.0f )
+        if (speed == 1.0f)
         {
-            pb->ClearState(STATE_VISIBLE);
+            pb->ClearState(Ui::STATE_VISIBLE);
         }
         else
         {
+            char text[10];
             sprintf(text, "x%.1f", speed);
             pb->SetName(text);
-            pb->SetState(STATE_VISIBLE);
+            pb->SetState(Ui::STATE_VISIBLE);
         }
     }
 }
@@ -7281,131 +6420,116 @@ float CRobotMain::GetSpeed()
 }
 
 
-// Creates interface shortcuts to the units.
-
+//! Creates interface shortcuts to the units
 bool CRobotMain::CreateShortcuts()
 {
-    if ( m_phase != PHASE_SIMUL )  return false;
-    if ( !m_bShortCut )  return false;
+    if (m_phase != PHASE_SIMUL) return false;
+    if (!m_shortCut) return false;
     return m_short->CreateShortcuts();
 }
 
-// Updates the map.
-
+//! Updates the map
 void CRobotMain::UpdateMap()
 {
     m_map->UpdateMap();
 }
 
-// Indicates whether the mini-map is visible.
-
+//! Indicates whether the mini-map is visible
 bool CRobotMain::GetShowMap()
 {
-    return m_map->GetShowMap() && m_bMapShow;
+    return m_map->GetShowMap() && m_mapShow;
 }
 
 
-// Management of the lock mode for movies.
-
-void CRobotMain::SetMovieLock(bool bLock)
+//! Management of the lock mode for movies
+void CRobotMain::SetMovieLock(bool lock)
 {
-    m_bMovieLock = bLock;
-    m_engine->SetMovieLock(m_bMovieLock);
+    m_movieLock = lock;
+    m_engine->SetMovieLock(m_movieLock);
 
     CreateShortcuts();
-    m_map->ShowMap(!m_bMovieLock && m_bMapShow);
-    if ( m_bMovieLock )  HighlightClear();
-    m_engine->SetMouseHide(m_bMovieLock);
+    m_map->ShowMap(!m_movieLock && m_mapShow);
+    if (m_movieLock) HiliteClear();
+    m_engine->SetMouseVisible(! m_movieLock);
 }
 
 bool CRobotMain::GetMovieLock()
 {
-    return m_bMovieLock;
+    return m_movieLock;
 }
 
 bool CRobotMain::GetInfoLock()
 {
-    return ( m_displayInfo != 0 );  // info in progress?
+    return m_displayInfo != nullptr;  // info in progress?
 }
 
-// Management of the blocking of the call of SatCom.
-
-void CRobotMain::SetSatComLock(bool bLock)
+//! Management of the blocking of the call of SatCom
+void CRobotMain::SetSatComLock(bool lock)
 {
-    m_bSatComLock = bLock;
+    m_satComLock = lock;
 }
 
 bool CRobotMain::GetSatComLock()
 {
-    return m_bSatComLock;
+    return m_satComLock;
 }
 
-// Management of the lock mode for the edition.
-
-void CRobotMain::SetEditLock(bool bLock, bool bEdit)
+//! Management of the lock mode for the edition
+void CRobotMain::SetEditLock(bool lock, bool edit)
 {
-    m_bEditLock = bLock;
+    m_editLock = lock;
 
     CreateShortcuts();
 
     // Do not remove the card if it contains a still image.
-    if ( !bLock || !m_map->GetFixImage() )
-    {
-        m_map->ShowMap(!m_bEditLock && m_bMapShow);
-    }
+    if (!lock || !m_map->GetFixImage())
+        m_map->ShowMap(!m_editLock && m_mapShow);
 
-    m_displayText->HideText(bLock);
-    m_engine->FlushPressKey();
+    m_displayText->HideText(lock);
+    m_app->FlushPressKey();
 
-    if ( m_bEditLock )
-    {
-        HighlightClear();
-    }
+    if (m_editLock)
+        HiliteClear();
     else
-    {
-        m_bEditFull = false;
-    }
+        m_editFull = false;
 }
 
 bool CRobotMain::GetEditLock()
 {
-    return m_bEditLock;
+    return m_editLock;
 }
 
-// Management of the fullscreen mode during editing.
-
-void CRobotMain::SetEditFull(bool bFull)
+//! Management of the fullscreen mode during editing
+void CRobotMain::SetEditFull(bool full)
 {
-    m_bEditFull = bFull;
+    m_editFull = full;
 }
 
 bool CRobotMain::GetEditFull()
 {
-    return m_bEditFull;
+    return m_editFull;
 }
 
 
 bool CRobotMain::GetFreePhoto()
 {
-    return m_bFreePhoto;
+    return m_freePhoto;
 }
 
 
-// Indicates whether mouse is on an friend object, on which we should not shoot.
-
-void CRobotMain::SetFriendAim(bool bFriend)
+//! Indicates whether mouse is on an friend object, on which we should not shoot
+void CRobotMain::SetFriendAim(bool friendAim)
 {
-    m_bFriendAim = bFriend;
+    m_friendAim = friendAim;
 }
 
 bool CRobotMain::GetFriendAim()
 {
-    return m_bFriendAim;
+    return m_friendAim;
 }
 
 
-// Management of the precision of drawing the ground.
-
+//! Management of the precision of drawing the ground
 void CRobotMain::SetTracePrecision(float factor)
 {
     m_engine->SetTracePrecision(factor);
@@ -7417,23 +6541,19 @@ float CRobotMain::GetTracePrecision()
 }
 
 
-// Starts music with a mission.
-
+//! Starts music with a mission
 void CRobotMain::StartMusic()
 {
-    if ( m_audioTrack != 0 )
+    if (m_audioTrack != 0)
     {
         m_sound->StopMusic();
-        m_sound->PlayMusic(m_audioTrack, m_bAudioRepeat);
+        m_sound->PlayMusic(m_audioTrack, m_audioRepeat);
     }
 }
 
-// Removes hilite and tooltip.
-
+//! Removes hilite and tooltip
 void CRobotMain::ClearInterface()
 {
-    HighlightClear();  // removes setting evidence
+    HiliteClear();  // removes setting evidence
     m_tooltipName[0] = 0;  // really removes the tooltip
 }
-
-

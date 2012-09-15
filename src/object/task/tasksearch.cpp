@@ -16,15 +16,12 @@
 
 // tasksearch.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/tasksearch.h"
 
 #include "math/geometry.h"
 #include "common/iman.h"
-#include "old/particule.h"
-#include "old/terrain.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/terrain.h"
 #include "physics/physics.h"
 #include "ui/displaytext.h"
 
@@ -56,8 +53,8 @@ bool CTaskSearch::EventProcess(const Event &event)
     float       angle;
     int         i;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
     m_progress += event.rTime*m_speed;  // others advance
@@ -75,11 +72,11 @@ bool CTaskSearch::EventProcess(const Event &event)
     }
 
     if ( m_phase == TSP_SEARCH &&
-         m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+         m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
     {
-        m_lastParticule = m_time;
+        m_lastParticle = m_time;
 
-        mat = m_object->RetWorldMatrix(0);
+        mat = m_object->GetWorldMatrix(0);
         pos = Math::Vector(6.5f, 0.2f, 0.0f);
         pos = Math::Transform(*mat, pos);  // sensor position
 
@@ -88,7 +85,7 @@ bool CTaskSearch::EventProcess(const Event &event)
         speed.y = 0.0f;
         dim.x = Math::Rand()*1.0f+1.0f;
         dim.y = dim.x;
-        m_particule->CreateParticule(pos, speed, dim, PARTIGAS);
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGAS);
     }
 
     return true;
@@ -116,7 +113,7 @@ void CTaskSearch::InitAngle()
 
     for ( i=0 ; i<3 ; i++ )
     {
-        m_initialAngle[i] = m_object->RetAngleZ(i+1);
+        m_initialAngle[i] = m_object->GetAngleZ(i+1);
     }
 }
 
@@ -130,13 +127,13 @@ Error CTaskSearch::Start()
     int         i;
 
     m_bError = true;
-    if ( !m_physics->RetLand() )  return ERR_SEARCH_FLY;
+    if ( !m_physics->GetLand() )  return ERR_SEARCH_FLY;
 
-    speed = m_physics->RetMotorSpeed();
+    speed = m_physics->GetMotorSpeed();
     if ( speed.x != 0.0f ||
          speed.z != 0.0f )  return ERR_SEARCH_MOTOR;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type != OBJECT_MOBILEfs &&
          type != OBJECT_MOBILEts &&
          type != OBJECT_MOBILEws &&
@@ -147,14 +144,14 @@ Error CTaskSearch::Start()
     m_progress = 0.0f;
     m_speed    = 1.0f/1.0f;
     m_time     = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     InitAngle();
     m_bError = false;  // ok
 
     m_camera->StartCentering(m_object, Math::PI*0.50f, 99.9f, 0.0f, 1.0f);
 
-    i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, true);
+    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f, true);
     m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.9f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_STOP);
@@ -170,7 +167,7 @@ Error CTaskSearch::IsEnded()
 {
     int     i;
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
 
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
@@ -187,7 +184,7 @@ Error CTaskSearch::IsEnded()
 
     if ( m_phase == TSP_DOWN )
     {
-        m_sound->Play(SOUND_REPAIR, m_object->RetPosition(0));
+        m_sound->Play(SOUND_REPAIR, m_object->GetPosition(0));
 
         m_phase = TSP_SEARCH;
         m_speed = 1.0f/4.0f;
@@ -201,7 +198,7 @@ Error CTaskSearch::IsEnded()
         m_hand  = TSH_UP;
         InitAngle();
 
-        i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f, true);
+        i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f, true);
         m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.1f, SOPER_CONTINUE);
         m_sound->AddEnvelope(i, 0.5f, 1.0f, 0.9f, SOPER_CONTINUE);
         m_sound->AddEnvelope(i, 0.0f, 0.3f, 0.1f, SOPER_STOP);
@@ -229,52 +226,52 @@ bool CTaskSearch::Abort()
 
 bool CTaskSearch::CreateMark()
 {
-    CObject*    fret;
-    ObjectType  type;
+    CObject*        fret;
+    ObjectType      type;
     Math::Matrix*   mat;
     Math::Vector    pos;
-    TerrainRes  res;
-    Error       info;
+    Gfx::TerrainRes res;
+    Error           info;
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     pos = Math::Vector(7.5f, 0.0f, 0.0f);
     pos = Math::Transform(*mat, pos);  // sensor position
 
-    res = m_terrain->RetResource(pos);
-    if ( res == TR_NULL )  return false;
+    res = m_terrain->GetResource(pos);
+    if ( res == Gfx::TR_NULL )  return false;
 
     type = OBJECT_NULL;
-    if ( res == TR_STONE )
+    if ( res == Gfx::TR_STONE )
     {
         type = OBJECT_MARKSTONE;
         info = INFO_MARKSTONE;
     }
-    if ( res == TR_URANIUM )
+    if ( res == Gfx::TR_URANIUM )
     {
         type = OBJECT_MARKURANIUM;
         info = INFO_MARKURANIUM;
     }
-    if ( res == TR_POWER )
+    if ( res == Gfx::TR_POWER )
     {
         type = OBJECT_MARKPOWER;
         info = INFO_MARKPOWER;
     }
-    if ( res == TR_KEYa )
+    if ( res == Gfx::TR_KEY_A )
     {
         type = OBJECT_MARKKEYa;
         info = INFO_MARKKEYa;
     }
-    if ( res == TR_KEYb )
+    if ( res == Gfx::TR_KEY_B )
     {
         type = OBJECT_MARKKEYb;
         info = INFO_MARKKEYb;
     }
-    if ( res == TR_KEYc )
+    if ( res == Gfx::TR_KEY_C )
     {
         type = OBJECT_MARKKEYc;
         info = INFO_MARKKEYc;
     }
-    if ( res == TR_KEYd )
+    if ( res == Gfx::TR_KEY_D )
     {
         type = OBJECT_MARKKEYd;
         info = INFO_MARKKEYd;
@@ -306,10 +303,10 @@ void CTaskSearch::DeleteMark(ObjectType type)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( type == pObj->RetType() )
+        if ( type == pObj->GetType() )
         {
             pObj->DeleteObject();  // removes the mark
             delete pObj;

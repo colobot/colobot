@@ -16,14 +16,9 @@
 
 // taskwait.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskwait.h"
 
-#include "old/d3dengine.h"
-
-
+#include "graphics/engine/engine.h"
 
 // Object's constructor.
 
@@ -43,8 +38,8 @@ CTaskWait::~CTaskWait()
 
 bool CTaskWait::EventProcess(const Event &event)
 {
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_passTime += event.rTime;
     m_bEnded = (m_passTime >= m_waitTime);
@@ -66,7 +61,7 @@ Error CTaskWait::Start(float time)
 
 Error CTaskWait::IsEnded()
 {
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bEnded )  return ERR_STOP;
     return ERR_CONTINUE;
 }

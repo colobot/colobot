@@ -63,7 +63,7 @@ protected:
     Error       Stop();
     bool        CreateLight(Math::Vector pos);
     void        IncreaseShield();
-    float       RetRadius();
+    float       GetRadius();
 
 protected:
     TaskShieldPhase m_phase;
@@ -71,12 +71,12 @@ protected:
     float           m_speed;
     float           m_time;
     float           m_delay;
-    float           m_lastParticule;
+    float           m_lastParticle;
     float           m_lastRay;
     float           m_lastIncrease;
     float           m_energyUsed;
     bool            m_bError;
-    Math::Vector        m_shieldPos;
+    Math::Vector    m_shieldPos;
     int             m_rankSphere;
     int             m_soundChannel;
     int             m_effectLight;

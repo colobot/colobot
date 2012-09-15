@@ -62,7 +62,7 @@ protected:
     float           m_progress;
     float           m_speed;
     float           m_time;
-    float           m_lastParticule;
+    float           m_lastParticle;
     float           m_initialAngle[3];
     float           m_finalAngle[3];
     bool            m_bError;

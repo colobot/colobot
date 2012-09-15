@@ -37,12 +37,10 @@ CMainMovie::CMainMovie(CInstanceManager* iMan)
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_SHORT, this);
 
-    m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_main      = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_camera    = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-    m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_engine    = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_main      = static_cast< CRobotMain* >(m_iMan->SearchInstance(CLASS_MAIN));
+    m_camera    = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_sound     = static_cast< CSoundInterface* >(m_iMan->SearchInstance(CLASS_SOUND));
 
     Flush();
 }
@@ -84,20 +82,20 @@ bool CMainMovie::Start(MainMovieType type, float time)
             return true;
         }
 
-        motion = pObj->RetMotion();
+        motion = pObj->GetMotion();
         if ( motion != 0 )
         {
             motion->SetAction(MHS_SATCOM, 0.5f);  // reads the SatCom
         }
 
-        m_camera->RetCamera(m_initialEye, m_initialLookat);
-        m_camera->SetType(CAMERA_SCRIPT);
-        m_camera->SetSmooth(CS_HARD);
+        m_camera->GetCamera(m_initialEye, m_initialLookat);
+        m_camera->SetType(Gfx::CAM_TYPE_SCRIPT);
+        m_camera->SetSmooth(Gfx::CAM_SMOOTH_HARD);
         m_camera->SetScriptEye(m_initialEye);
         m_camera->SetScriptLookat(m_initialLookat);
         m_camera->FixCamera();
 
-        mat = pObj->RetWorldMatrix(0);
+        mat = pObj->GetWorldMatrix(0);
         m_finalLookat[0] = Math::Transform(*mat, Math::Vector( 1.6f, 1.0f, 1.2f));
         m_finalEye[0]    = Math::Transform(*mat, Math::Vector(-1.5f, 5.0f, 3.0f));
         m_finalLookat[1] = Math::Transform(*mat, Math::Vector( 1.6f, 1.0f, 1.2f));
@@ -109,14 +107,14 @@ bool CMainMovie::Start(MainMovieType type, float time)
         pObj = m_main->SearchHuman();
         if ( pObj != 0 )
         {
-            motion = pObj->RetMotion();
+            motion = pObj->GetMotion();
             if ( motion != 0 )
             {
                 motion->SetAction(-1);  // finishes reading SatCom
             }
         }
 
-        m_camera->SetType(CAMERA_BACK);
+        m_camera->SetType(Gfx::CAM_TYPE_BACK);
         m_type = MM_NONE;  // it's already over!
     }
 
@@ -135,7 +133,7 @@ bool CMainMovie::Stop()
         pObj = m_main->SearchHuman();
         if ( pObj != 0 )
         {
-            motion = pObj->RetMotion();
+            motion = pObj->GetMotion();
             if ( motion != 0 )
             {
                 motion->SetAction(-1);  // finishes reading SatCom
@@ -221,16 +219,16 @@ bool CMainMovie::EventProcess(const Event &event)
 }
 
 
-// Returns the type of the current movie.
+// Geturns the type of the current movie.
 
-MainMovieType CMainMovie::RetType()
+MainMovieType CMainMovie::GetType()
 {
     return m_type;
 }
 
-// Returns the type of movie stop.
+// Geturns the type of movie stop.
 
-MainMovieType CMainMovie::RetStopType()
+MainMovieType CMainMovie::GetStopType()
 {
     return m_stopType;
 }

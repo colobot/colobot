@@ -59,7 +59,8 @@ protected:
     bool        IsFreeDeposeObject(Math::Vector pos);
 
 protected:
-    CTerrain*       m_terrain;
+    //TODO this is same member as in base class, probable should be deleted
+    Gfx::CTerrain*  m_terrain;
 
     TaskTakeOrder   m_order;
     TaskTakeArm     m_arm;

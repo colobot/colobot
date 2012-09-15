@@ -16,12 +16,9 @@
 
 // taskspiderexplo.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskspiderexplo.h"
 
-#include "old/pyro.h"
+#include "graphics/engine/pyro.h"
 #include "object/motion/motionspider.h"
 #include "physics/physics.h"
 
@@ -48,11 +45,11 @@ CTaskSpiderExplo::~CTaskSpiderExplo()
 
 bool CTaskSpiderExplo::EventProcess(const Event &event)
 {
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     // Momentarily stationary object (ant on the back)?
-    if ( m_object->RetFixed() )
+    if ( m_object->GetFixed() )
     {
         m_bError = true;
         return true;
@@ -82,9 +79,9 @@ Error CTaskSpiderExplo::Start()
 
 Error CTaskSpiderExplo::IsEnded()
 {
-    CPyro*      pyro;
+    Gfx::CPyro* pyro;
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
 
     if ( m_bError )
     {
@@ -94,8 +91,8 @@ Error CTaskSpiderExplo::IsEnded()
 
     if ( m_time < 1.0f )  return ERR_CONTINUE;
 
-    pyro = new CPyro(m_iMan);
-    pyro->Create(PT_SPIDER, m_object);  // the spider explodes (suicide)
+    pyro = new Gfx::CPyro(m_iMan);
+    pyro->Create(Gfx::PT_SPIDER, m_object);  // the spider explodes (suicide)
 
     Abort();
     return ERR_STOP;
