@@ -16,8 +16,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autoderrick.h"
 
 #include "common/iman.h"
@@ -28,7 +26,8 @@
 #include "ui/window.h"
 #include "ui/displaytext.h"
 
-
+#include <stdio.h>
+#include <string.h>
 
 
 const float DERRICK_DELAY   = 10.0f;    // duration of the extraction

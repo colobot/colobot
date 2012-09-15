@@ -15,10 +15,11 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include "common/global.h"
 #include "script/cmdtoken.h"
 
+#include "common/global.h"
 
+#include <string.h>
 
 
 

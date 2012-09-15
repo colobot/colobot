@@ -17,13 +17,15 @@
 
 
 
-#include "button.h"
+#include "ui/button.h"
 
-#include <common/event.h>
-#include <common/misc.h>
-#include <common/restext.h>
+#include "common/event.h"
+#include "common/misc.h"
+#include "common/restext.h"
 
-#include <graphics/engine/engine.h>
+#include "graphics/engine/engine.h"
+
+#include <string.h>
 
 
 namespace Ui {

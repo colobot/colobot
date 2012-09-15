@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "control.h"
+#include "ui/control.h"
 
 
 namespace Gfx{

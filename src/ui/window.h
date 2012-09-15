@@ -21,7 +21,6 @@
 
 #include <string>
 
-#include <common/language.h>
 #include <common/event.h>
 #include <common/misc.h>
 #include <common/restext.h>

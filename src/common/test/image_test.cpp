@@ -22,6 +22,29 @@ int main(int argc, char *argv[])
         printf("Error loading '%s': %s\n", err.c_str());
         return 1;
     }
+    Gfx::Color color;
+    std::string str;
+
+    color = image.GetPixel(Math::IntPoint(0, 0));
+    str = color.ToString();
+    printf("pixel @ (0,0): %s\n", str.c_str());
+
+    color = image.GetPixel(Math::IntPoint(0, 1));
+    str = color.ToString();
+    printf("pixel @ (0,1): %s\n", str.c_str());
+
+    color = image.GetPixel(Math::IntPoint(1, 0));
+    str = color.ToString();
+    printf("pixel @ (1,0): %s\n", str.c_str());
+
+    color = image.GetPixel(Math::IntPoint(1, 1));
+    str = color.ToString();
+    printf("pixel @ (1,1): %s\n", str.c_str());
+
+    image.SetPixel(Math::IntPoint(0, 0), Gfx::Color(0.1f, 0.2f, 0.3f, 0.0f));
+    image.SetPixel(Math::IntPoint(1, 0), Gfx::Color(0.3f, 0.2f, 0.1f, 1.0f));
+    image.SetPixel(Math::IntPoint(0, 1), Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f));
+    image.SetPixel(Math::IntPoint(1, 1), Gfx::Color(0.0f, 0.0f, 0.0f, 1.0f));
 
     if (! image.SavePNG(argv[2]))
     {

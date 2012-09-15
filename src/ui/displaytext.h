@@ -21,7 +21,7 @@
 
 
 #include "common/event.h"
-#include "common/misc.h"
+#include "common/global.h"
 
 #include "sound/sound.h"
 
@@ -64,8 +64,8 @@ public:
 
     void        DisplayError(Error err, CObject* pObj, float time=10.0f);
     void        DisplayError(Error err, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f);
-    void        DisplayText(char *text, CObject* pObj, float time=10.0f, TextType type=TT_INFO);
-    void        DisplayText(char *text, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f, TextType type=TT_INFO);
+    void        DisplayText(const char *text, CObject* pObj, float time=10.0f, TextType type=TT_INFO);
+    void        DisplayText(const char *text, Math::Vector goal, float height=15.0f, float dist=60.0f, float time=10.0f, TextType type=TT_INFO);
     void        HideText(bool bHide);
     void        ClearText();
     bool        ClearLastText();

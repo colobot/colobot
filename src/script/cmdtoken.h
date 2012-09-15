@@ -18,10 +18,6 @@
 
 #pragma once
 
-
-// #include "old/d3denum.h"
-// #include "old/d3dengine.h"
-// #include "object/object.h"
 #include "graphics/engine/water.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/pyro.h"

@@ -16,12 +16,12 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autoflag.h"
 
 #include "math/geometry.h"
 #include "graphics/engine/terrain.h"
+
+#include <stdio.h>
 
 
 

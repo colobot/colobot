@@ -2760,7 +2760,7 @@ void CRobotMain::HiliteFrame(float rTime)
 }
 
 //! Creates a tooltip
-void CRobotMain::CreateTooltip(Math::Point pos, char* text)
+void CRobotMain::CreateTooltip(Math::Point pos, const char* text)
 {
     Math::Point corner;
     corner.x = pos.x+0.022f;
@@ -6193,7 +6193,7 @@ Error CRobotMain::CheckEndMission(bool frame)
 }
 
 //! Checks if the mission is finished after displaying a message
-void CRobotMain::CheckEndMessage(char *message)
+void CRobotMain::CheckEndMessage(const char* message)
 {
     for (int t = 0; t < m_endTakeTotal; t++)
     {
@@ -6222,7 +6222,7 @@ char* CRobotMain::GetObligatoryToken(int i)
 }
 
 //! Checks if an instruction is part of the obligatory list
-int CRobotMain::IsObligatoryToken(char *token)
+int CRobotMain::IsObligatoryToken(const char* token)
 {
     for (int i = 0; i < m_obligatoryTotal; i++)
     {
@@ -6233,7 +6233,7 @@ int CRobotMain::IsObligatoryToken(char *token)
 }
 
 //! Checks if an instruction is not part of the banned list
-bool CRobotMain::IsProhibitedToken(char *token)
+bool CRobotMain::IsProhibitedToken(const char* token)
 {
     for (int i = 0; i < m_prohibitedTotal; i++)
     {

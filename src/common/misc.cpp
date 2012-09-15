@@ -17,51 +17,25 @@
 // misc.cpp
 
 
+#include "common/misc.h"
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
-//#include <direct.h>
 #include <time.h>
-//#include <d3d.h>
-
-#include "common/struct.h"
-//#include "old/d3dengine.h"
-#include "graphics/engine/engine.h"
-//#include "old/d3dmath.h"
-//#include "math/math.h"
-//#include "old/d3dutil.h"
-#include "common/language.h"
-#include "common/event.h"
-#include "common/misc.h"
 
 
-
-CMetaFile   g_metafile;
-
-static EventType    g_uniqueEventType = EVENT_USER;
 static bool         g_bUserDir = false;
 static char         g_userDir[100] = "";
-
-
-
-// Gives a single user event.
-
-EventType GetUniqueEventType()
-{
-    int     i;
-
-    i = static_cast <int> (g_uniqueEventType+1);
-    g_uniqueEventType = static_cast<EventType>(i);
-    return g_uniqueEventType;
-}
-
 
 
 // Returns a non-accented letter.
 
 char GetNoAccent(char letter)
 {
+    /*
     if ( letter < 0 )
     {
         if ( letter == '�' ||
@@ -125,7 +99,7 @@ char GetNoAccent(char letter)
         if ( letter == '�' )  return 'C';
 
         if ( letter == '�' )  return 'N';
-    }
+    }*/
 
     return letter;
 }
@@ -134,7 +108,7 @@ char GetNoAccent(char letter)
 
 char GetToUpper(char letter)
 {
-    if ( letter < 0 )
+    /*if ( letter < 0 )
     {
         if ( letter == '�' )  return '�';
         if ( letter == '�' )  return '�';
@@ -166,7 +140,7 @@ char GetToUpper(char letter)
         if ( letter == '�' )  return '�';
 
         if ( letter == '�' )  return '�';
-    }
+    }*/
 
     return toupper(letter);
 }
@@ -175,7 +149,7 @@ char GetToUpper(char letter)
 
 char GetToLower(char letter)
 {
-    if ( letter < 0 )
+    /*if ( letter < 0 )
     {
         if ( letter == '�' )  return '�';
         if ( letter == '�' )  return '�';
@@ -207,7 +181,7 @@ char GetToLower(char letter)
         if ( letter == '�' )  return '�';
 
         if ( letter == '�' )  return '�';
-    }
+    }*/
 
     return tolower(letter);
 }
@@ -224,6 +198,7 @@ void GimeToAscii(time_t time, char *buffer)
     year = when.tm_year+1900;
     if ( year < 2000 )  year -= 1900;
     else                year -= 2000;
+/* TODO
 #if _FRENCH
     sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
                     when.tm_mday, when.tm_mon+1, year,
@@ -234,7 +209,7 @@ void GimeToAscii(time_t time, char *buffer)
                     when.tm_mday, when.tm_mon+1, year,
                     when.tm_hour, when.tm_min);
 #endif
-#if _ENGLISH
+#if _ENGLISH*/
     char        format[10];
     int         hour;
 
@@ -253,12 +228,12 @@ void GimeToAscii(time_t time, char *buffer)
     sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d %s",
                     when.tm_mon+1, when.tm_mday, year,
                     hour, when.tm_min, format);
-#endif
+/*#endif
 #if _POLISH
     sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
                     when.tm_mday, when.tm_mon+1, year,
                     when.tm_hour, when.tm_min);
-#endif
+#endif*/
 }
 
 
@@ -313,7 +288,9 @@ bool CopyFileToTemp(char* filename)
     UserDir(dst, filename, "textures");
     strcpy(g_userDir, save);
 
-//    _mkdir("temp"); TODO
+    //_mkdir("temp");
+    system("mkdir temp");
+
     if ( !Xfer(src, dst) )  return false;
 
     strcpy(filename, dst);
@@ -384,7 +361,7 @@ void UserDir(bool bUser, char* dir)
 void UserDir(char* buffer, const char* dir, const char* def)
 {
     char    ddir[100];
-    char*   add;
+    const char*   add;
 
     if ( strstr(dir, "\\") == 0 && def[0] != 0 )
     {
@@ -420,24 +397,3 @@ void UserDir(char* buffer, const char* dir, const char* def)
     }
     *buffer = 0;
 }
-
-
-// Returns the letter corresponding to the language.
-
-char RetLanguageLetter()
-{
-#if _FRENCH
-    return 'F';
-#endif
-#if _ENGLISH
-    return 'E';
-#endif
-#if _GERMAN | _WG
-    return 'D';
-#endif
-#if _POLISH
-    return 'P';
-#endif
-    return 'X';
-}
-

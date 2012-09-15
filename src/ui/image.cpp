@@ -18,20 +18,16 @@
 // image.cpp
 
 
-//#include <windows.h>
 #include <stdio.h>
-//#include <d3d.h>
 
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
 #include "graphics/engine/engine.h"
-//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
 #include "common/restext.h"
 #include "ui/image.h"
 
+#include <string.h>
 
 
 namespace Ui {

@@ -1,29 +1,17 @@
-msgid "1.18 /e"
-msgstr "1.18 /d"
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: de_DE\n"
+"X-Source-Language: en_US\n"
 
-msgid "CeeBot-A 1.18"
-msgstr "CeeBot-A 1.18"
+msgid "Colobot rules!"
+msgstr "Colobot ist wunderbar!"
 
-msgid "CeeBot-Teen EDU 1.18"
-msgstr "CeeBot-Teen EDU 1.18"
-
-msgid "CeeBot-A EDU 1.18"
-msgstr "CeeBot-A EDU 1.18"
-
-msgid "CeeBot-Teen PERSO 1.18"
-msgstr "CeeBot-Teen PERSO 1.18"
-
-msgid "CeeBot-A PERSO 1.18"
-msgstr "CeeBot-A PERSO 1.18"
-
-msgid "CeeBot-Teen DEMO 1.18"
-msgstr "CeeBot-Teen DEMO 1.18"
-
-msgid "CeeBot-A DEMO 1.18"
-msgstr "CeeBot-A DEMO 1.18"
-
-msgid "Demo 1.18 /e"
-msgstr "Demo 1.18 /d"
+msgid "Colobot Gold"
+msgstr "Colobot Gold"
 
 msgid "SatCom"
 msgstr "SatCom"
@@ -54,9 +42,6 @@ msgstr "Neu ..."
 
 msgid " or "
 msgstr " oder "
-
-msgid "CeeBot"
-msgstr "CeeBot"
 
 msgid "COLOBOT"
 msgstr "COLOBOT"
@@ -154,12 +139,6 @@ msgstr "Farbe des Anzugs:"
 msgid "Strip color:"
 msgstr "Farbe der Streifen:"
 
-msgid "Do you want to quit CeeBot ?"
-msgstr "Wollen Sie CeeBot schließen ?"
-
-msgid "Quit\\Quit CeeBot"
-msgstr "Schließen\\CeeBot schließen"
-
 msgid "Do you want to quit COLOBOT ?"
 msgstr "Wollen Sie COLOBOT schließen ?"
 
@@ -223,8 +202,10 @@ msgstr "\\c; (keine)\\n;\n"
 msgid "\\b;Error\n"
 msgstr "\\b;Fehler\n"
 
-msgid "The list is only available if a \\l;radar station\\u object\\radar; is working.\n"
-msgstr "Die Liste ist ohne \\l;Radar\\u object\\radar; nicht verfügbar !\n"
+msgid ""
+"The list is only available if a \\l;radar station\\u object\\radar; is "
+"working.\n"
+msgstr "Die Liste ist ohne \\l;Radar\\u object\\radar; nicht verfügbar.\n"
 
 msgid "Open"
 msgstr "Öffnen"
@@ -266,7 +247,7 @@ msgid "Next"
 msgstr "Nächster"
 
 msgid "Previous"
-msgstr "Vorherg."
+msgstr "Vorherg"
 
 msgid "Menu (\\key quit;)"
 msgstr "Menü (\\key quit;)"
@@ -304,9 +285,6 @@ msgstr "Speichern\\Aktuelle Mission speichern"
 msgid "Load\\Load a saved mission"
 msgstr "Laden\\Eine gespeicherte Mission öffnen"
 
-msgid "\\Return to CeeBot"
-msgstr "\\Zurück zu CeeBot"
-
 msgid "\\Return to COLOBOT"
 msgstr "\\Zurück zu COLOBOT"
 
@@ -314,7 +292,7 @@ msgid "<<  Back  \\Back to the previous screen"
 msgstr "<<  Zurück  \\Zurück zum Hauptmenü"
 
 msgid "Play\\Start mission!"
-msgstr "Spielen ...\\Los geht's"
+msgstr "Spielen ...\\Los geht's!"
 
 msgid "Device\\Driver and resolution settings"
 msgstr "Bildschirm\\Driver und Bildschirmauflösung"
@@ -401,10 +379,11 @@ msgid "Exit film\\Film at the exit of exercises"
 msgstr "Zurücksetzen \\Kleine Show beim Zurücksetzen in den Übungen"
 
 msgid "Friendly fire\\Your shooting can damage your own objects "
-msgstr "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt."
+msgstr "Eigenbeschuss\\Ihre Einheiten werden von Ihren Waffen beschädigt"
 
 msgid "Scrolling\\Scrolling when the mouse touches right or left border"
-msgstr "Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
+msgstr ""
+"Kameradrehung mit der Maus\\Die Kamera dreht wenn die Maus den Rand erreicht"
 
 msgid "Mouse inversion X\\Inversion of the scrolling direction on the X axis"
 msgstr "Umkehr X\\Umkehr der Kameradrehung X-Achse"
@@ -425,7 +404,8 @@ msgid "Big indent\\Indent 2 or 4 spaces per level defined by braces"
 msgstr "Einrücken mit 4 Leerstellen\\Einrücken mit 2 oder 4 Leerstellen"
 
 msgid "Access to solutions\\Show program \"4: Solution\" in the exercises"
-msgstr "Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
+msgstr ""
+"Lösung zugänglich\\Die Lösung ist im Programmslot \"4: Lösung\" zugänglich"
 
 msgid "Standard controls\\Standard key functions"
 msgstr "Alles zurücksetzen\\Standarddefinition aller Tasten"
@@ -454,8 +434,9 @@ msgstr "Andere Kamera\\Sichtpunkt einstellen"
 msgid "Previous object\\Selects the previous object"
 msgstr "Vorherg. Auswahl\\Das vorhergehende Objekt auswählen"
 
-msgid "Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
-msgstr "Standardhandlung\\Führt die Standardhandlung des Roboters aus."
+msgid ""
+"Standard action\\Standard action of the bot (take/grab, shoot, sniff, etc)"
+msgstr "Standardhandlung\\Führt die Standardhandlung des Roboters aus"
 
 msgid "Camera closer\\Moves the camera forward"
 msgstr "Kamera näher\\Bewegung der Kamera vorwärts"
@@ -523,7 +504,8 @@ msgstr "Normal\\Normale Lautstärke"
 msgid "Use a joystick\\Joystick or keyboard"
 msgstr "Joystick\\Joystick oder Tastatur"
 
-msgid "Access to solution\\Shows the solution (detailed instructions for missions)"
+msgid ""
+"Access to solution\\Shows the solution (detailed instructions for missions)"
 msgstr "Zeigt die Lösung\\Zeigt nach 3mal Scheitern die Lösung"
 
 msgid "\\New player name"
@@ -1312,22 +1294,6 @@ msgstr "Fehler"
 msgid "Unknown command"
 msgstr "Befehl unbekannt"
 
-msgid "CeeBot not installed."
-msgstr "CeeBot wurde nicht installiert."
-
-msgid ""
-"Please insert the CeeBot CD\n"
-"and re-run the game."
-msgstr "Legen Sie die CeeBot-CD ein\nund starten Sie das Spiel neu."
-
-msgid "COLOBOT not installed."
-msgstr "COLOBOT wurde nicht installiert."
-
-msgid ""
-"Please insert the COLOBOT CD\n"
-"and re-run the game."
-msgstr "Legen Sie die COLOBOT-CD ein\nund starten Sie das Spiel neu."
-
 msgid "Inappropriate bot"
 msgstr "Roboter ungeeignet"
 
@@ -1490,8 +1456,11 @@ msgstr "Zu nahe an einer anderen Fahne"
 msgid "No flag nearby"
 msgstr "Keine Fahne in Reichweite"
 
-msgid "The mission is not accomplished yet (press \\key help; for more details)"
-msgstr "Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere Informationen)"
+msgid ""
+"The mission is not accomplished yet (press \\key help; for more details)"
+msgstr ""
+"Mission noch nicht beendet (Drücken Sie auf \\key help; für weitere "
+"Informationen)"
 
 msgid "Bot destroyed"
 msgstr "Roboter zerstört"
@@ -1647,7 +1616,9 @@ msgid "Instruction \"break\" outside a loop"
 msgstr "Anweisung \"break\" außerhalb einer Schleife"
 
 msgid "A label must be followed by \"for\", \"while\", \"do\" or \"switch\""
-msgstr "Ein Label kann nur vor den Anweisungen \"for\", \"while\", \"do\" oder \"switch\" vorkommen"
+msgstr ""
+"Ein Label kann nur vor den Anweisungen \"for\", \"while\", \"do\" oder "
+"\"switch\" vorkommen"
 
 msgid "This label does not exist"
 msgstr "Dieses Label existiert nicht"

@@ -76,8 +76,8 @@ public:
 
     void        New(Ui::CEdit* edit, char* name);
     bool        SendScript(char* text);
-    bool        ReadScript(char* filename);
-    bool        WriteScript(char* filename);
+    bool        ReadScript(const char* filename);
+    bool        WriteScript(const char* filename);
     bool        ReadStack(FILE *file);
     bool        WriteStack(FILE *file);
     bool        Compare(CScript* other);

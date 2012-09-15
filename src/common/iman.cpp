@@ -16,11 +16,9 @@
 
 // iman.cpp
 
-
-#include <stdio.h>
-
-#include "common/struct.h"
 #include "common/iman.h"
+
+#include <cassert>
 
 
 template<> CInstanceManager* CSingleton<CInstanceManager>::mInstance = nullptr;
@@ -39,139 +37,91 @@ CInstanceManager* CInstanceManager::GetInstancePointer()
     return mInstance;
 }
 
-
-// Object's constructor.
-
 CInstanceManager::CInstanceManager()
 {
-    int     i;
-
-    for ( i=0 ; i<CLASS_MAX ; i++ )
+    for (int i = 0; i < CLASS_MAX; i++)
     {
-        m_table[i].totalPossible = 0;
-        m_table[i].totalUsed     = 0;
-        m_table[i].classPointer  = 0;
+        m_table[i].maxCount  = 0;
+        m_table[i].usedCount = 0;
+        m_table[i].instances = nullptr;
     }
 }
-
-// Object's destructor.
 
 CInstanceManager::~CInstanceManager()
 {
-    int     i;
-
-    for ( i=0 ; i<CLASS_MAX ; i++ )
-    {
-        if ( m_table[i].classPointer != 0 )
-        {
-            free(m_table[i].classPointer);
-        }
-    }
+    Flush();
 }
-
-
-// Empty the list of all classes.
 
 void CInstanceManager::Flush()
 {
-    int     i;
-
-    for ( i=0 ; i<CLASS_MAX ; i++ )
+    for (int i = 0; i < CLASS_MAX; i++)
     {
-        if ( m_table[i].classPointer != 0 )
-        {
-            free(m_table[i].classPointer);
-        }
-        m_table[i].classPointer = 0;
+        if (m_table[i].instances != nullptr)
+            delete[] m_table[i].instances;
+
+        m_table[i].instances = nullptr;
     }
 }
 
-// Empty all instances of a given class.
-
-void CInstanceManager::Flush(ClassType classType)
+void CInstanceManager::Flush(ManagedClassType classType)
 {
-    if ( classType < 0 || classType >= CLASS_MAX )  return;
-    if ( m_table[classType].classPointer == 0 )  return;
+    if (classType < 0 || classType >= CLASS_MAX) return;
+    if (m_table[classType].instances == nullptr) return;
 
-    free(m_table[classType].classPointer);
-    m_table[classType].classPointer = 0;
+    delete[] m_table[classType].instances;
+    m_table[classType].instances = nullptr;
 }
 
-
-// Adds a new instance of a class.
-
-bool CInstanceManager::AddInstance(ClassType classType, void* pointer, int max)
+bool CInstanceManager::AddInstance(ManagedClassType classType, void* instance, int max)
 {
-    int     i;
+    if (classType < 0 || classType >= CLASS_MAX) return false;
 
-    if ( classType < 0 || classType >= CLASS_MAX )  return false;
-
-    if ( m_table[classType].classPointer == 0 )
+    if (m_table[classType].instances == nullptr)
     {
-        m_table[classType].classPointer = static_cast<void**>( malloc(max*sizeof(void*)) );
-        m_table[classType].totalPossible = max;
-        m_table[classType].totalUsed     = 0;
+        m_table[classType].instances = new void*[max];
+        m_table[classType].maxCount  = max;
+        m_table[classType].usedCount = 0;
     }
 
-    if ( m_table[classType].totalUsed >= m_table[classType].totalPossible )  return false;
+    if (m_table[classType].usedCount >= m_table[classType].maxCount) return false;
 
-    i = m_table[classType].totalUsed++;
-    m_table[classType].classPointer[i] = pointer;
+    int i = m_table[classType].usedCount++;
+    m_table[classType].instances[i] = instance;
     return true;
 }
 
-// Deletes an instance of a class.
-
-bool CInstanceManager::DeleteInstance(ClassType classType, void* pointer)
+bool CInstanceManager::DeleteInstance(ManagedClassType classType, void* instance)
 {
-    int     i;
+    if (classType < 0 || classType >= CLASS_MAX) return false;
 
-    if ( classType < 0 || classType >= CLASS_MAX )  return false;
-
-    for ( i=0 ; i<m_table[classType].totalUsed ; i++ )
+    for (int i = 0; i < m_table[classType].usedCount; i++)
     {
-        if ( m_table[classType].classPointer[i] == pointer )
-        {
-            m_table[classType].classPointer[i] = 0;
-        }
+        if (m_table[classType].instances[i] == instance)
+            m_table[classType].instances[i] = nullptr;
     }
 
     Compress(classType);
     return true;
 }
 
-// Seeking an existing instance. Returns 0 if it does not exist.
-// Must be super fast!
-
-void* CInstanceManager::SearchInstance(ClassType classType, int rank)
+void* CInstanceManager::SearchInstance(ManagedClassType classType, int rank)
 {
-#if _DEBUG
-    if ( classType < 0 || classType >= CLASS_MAX )  return 0;
-    if ( m_table[classType].classPointer == 0 )  return 0;
-#endif
-    if ( rank >= m_table[classType].totalUsed )  return 0;
+    if (classType < 0 || classType >= CLASS_MAX) return nullptr;
+    if (m_table[classType].instances == nullptr) return nullptr;
+    if (rank >= m_table[classType].usedCount) return nullptr;
 
-    return m_table[classType].classPointer[rank];
+    return m_table[classType].instances[rank];
 }
 
-
-// Fills holes in a table.
-
-void CInstanceManager::Compress(ClassType classType)
+void CInstanceManager::Compress(ManagedClassType classType)
 {
-    int     i, j;
+    if (classType < 0 || classType >= CLASS_MAX) return;
 
-    if ( classType < 0 || classType >= CLASS_MAX )  return;
-
-    j = 0;
-    for ( i=0 ; i<m_table[classType].totalUsed ; i++ )
+    int j = 0;
+    for (int i = 0; i < m_table[classType].usedCount; i++)
     {
-        if ( m_table[classType].classPointer[i] != 0 )
-        {
-            m_table[classType].classPointer[j++] = m_table[classType].classPointer[i];
-        }
+        if (m_table[classType].instances[i] != nullptr)
+            m_table[classType].instances[j++] = m_table[classType].instances[i];
     }
-    m_table[classType].totalUsed = j;
+    m_table[classType].usedCount = j;
 }
-
-

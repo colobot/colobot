@@ -17,21 +17,15 @@
 
 // shortcut.cpp
 
+#include "ui/shortcut.h"
 
-//#include <windows.h>
-//#include <stdio.h>
-//#include <d3d.h>
-#include <math.h>
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-//#include "old/math3d.h"
-#include "graphics/engine/engine.h"
-#include "graphics/core/device.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
-#include "ui/shortcut.h"
+#include "graphics/engine/engine.h"
+#include "graphics/core/device.h"
 
+#include <math.h>
 
 namespace Ui {
 

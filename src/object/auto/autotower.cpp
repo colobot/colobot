@@ -16,8 +16,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autotower.h"
 
 #include "common/iman.h"
@@ -28,6 +26,9 @@
 #include "ui/displaytext.h"
 #include "ui/window.h"
 #include "ui/gauge.h"
+
+#include <stdio.h>
+#include <string.h>
 
 
 const float TOWER_SCOPE     = 200.0f;   // range of beam

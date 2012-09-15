@@ -16,8 +16,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autostation.h"
 
 #include "common/iman.h"
@@ -28,7 +26,7 @@
 #include "ui/gauge.h"
 #include "ui/window.h"
 
-
+#include <stdio.h>
 
 
 // Object's constructor.

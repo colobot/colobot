@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "ui/control.h"
 
-#include "control.h"
 
 namespace Gfx{
     class CEngine;

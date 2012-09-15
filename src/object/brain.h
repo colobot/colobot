@@ -18,9 +18,6 @@
 
 #pragma once
 
-
-// #include <stdio.h>
-
 #include "common/event.h"
 #include "common/misc.h"
 

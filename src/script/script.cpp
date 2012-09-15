@@ -18,37 +18,27 @@
 
 
 #include "script/script.h"
-// #include <windows.h>
-#include <stdio.h>
-// #include <d3d.h>
-// 
-#include "math/vector.h"
-// #include "common/struct.h"
-#include "math/geometry.h"
-// #include "old/d3dengine.h"
-// #include "old/d3dmath.h"
+
 #include "common/global.h"
-// #include "common/event.h"
-// #include "common/misc.h"
 #include "common/iman.h"
 #include "common/restext.h"
-// #include "old/math3d.h"
-#include "object/robotmain.h"
 #include "graphics/engine/terrain.h"
 #include "graphics/engine/water.h"
 #include "graphics/engine/text.h"
+#include "math/geometry.h"
+#include "math/vector.h"
 #include "object/object.h"
+#include "object/robotmain.h"
+#include "object/task/taskmanager.h"
 #include "physics/physics.h"
+#include "script/cbottoken.h"
 #include "ui/interface.h"
 #include "ui/edit.h"
 #include "ui/list.h"
 #include "ui/displaytext.h"
-#include "object/task/taskmanager.h"
-// #include "object/task/task.h"
-// #include "object/task/taskmanip.h"
-// #include "object/task/taskgoto.h"
-// #include "object/task/taskshield.h"
-#include "script/cbottoken.h"
+
+
+#include <stdio.h>
 
 
 
@@ -3101,7 +3091,7 @@ bool CScript::Step(const Event &event)
     if ( !m_bStepMode )  return false;
 
     m_engine->SetPause(false);
-    m_engine->StepSimulation(0.01f);  // advance of 10ms
+    // TODO: m_app StepSimulation??? m_engine->StepSimulation(0.01f);  // advance of 10ms
     m_engine->SetPause(true);
 
     m_event = event;
@@ -3650,7 +3640,7 @@ bool CScript::SendScript(char* text)
 
 // Reads a script as a text file.
 
-bool CScript::ReadScript(char* filename)
+bool CScript::ReadScript(const char* filename)
 {
     FILE*       file;
     Ui::CEdit*  edit;
@@ -3685,7 +3675,7 @@ bool CScript::ReadScript(char* filename)
 
 // Writes a script as a text file.
 
-bool CScript::WriteScript(char* filename)
+bool CScript::WriteScript(const char* filename)
 {
     Ui::CEdit*  edit;
     char        name[100];

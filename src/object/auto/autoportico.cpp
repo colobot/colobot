@@ -16,14 +16,13 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autoportico.h"
 
 
 #include "object/robotmain.h"
 
-
+#include <stdio.h>
+#include <string.h>
 
 
 const int PARAM_DEPOSE = 2;     // run=2 -> deposits the spaceship

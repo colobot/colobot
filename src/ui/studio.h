@@ -29,7 +29,6 @@
 #include <graphics/engine/camera.h>
 
 #include <common/event.h>
-#include <common/struct.h>
 #include <common/misc.h>
 #include <common/iman.h>
 
@@ -110,7 +109,7 @@ class CStudio
         Gfx::CEngine* m_engine;
         CEventQueue*     m_event;
         CRobotMain* m_main;
-        CCamera*    m_camera;
+        Gfx::CCamera*    m_camera;
         CSoundInterface* m_sound;
         CInterface* m_interface;
         CApplication *m_app;
@@ -122,7 +121,6 @@ class CStudio
         bool        m_bEditMaximized;
         bool        m_bEditMinimized;
 
-        CameraType  m_editCamera;
         Math::Point     m_editActualPos;
         Math::Point     m_editActualDim;
         Math::Point     m_editFinalPos;

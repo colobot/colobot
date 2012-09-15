@@ -7,6 +7,8 @@ include_directories("../../")
 include_directories("../../../")
 
 add_executable(image_test ../image.cpp image_test.cpp)
+target_link_libraries(image_test -lpng -lSDL -lSDL_image)
+
 add_executable(profile_test ../profile.cpp profile_test.cpp)
 
 add_test(profile_test ./profile_test)

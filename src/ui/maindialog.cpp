@@ -17,9 +17,7 @@
 // maindialog.cpp
 
 
-#include "common/struct.h"
 #include "common/global.h"
-#include "common/language.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/profile.h"

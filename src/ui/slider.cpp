@@ -17,22 +17,16 @@
 
 // slider.cpp
 
+#include "ui/slider.h"
 
-//#include <windows.h>
-#include <stdio.h>
-//#include <d3d.h>
-
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-//#include "old/math3d.h"
-#include "graphics/engine/engine.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
-//#include "old/text.h"
+#include "graphics/engine/engine.h"
 #include "graphics/engine/text.h"
 #include "ui/button.h"
-#include "ui/slider.h"
+
+#include <stdio.h>
 
 
 namespace Ui {

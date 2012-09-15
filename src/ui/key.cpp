@@ -20,6 +20,8 @@
 
 #include <ui/key.h>
 
+#include <string.h>
+
 namespace Ui {
 
 void GetKeyName(char *name, int key)
@@ -116,6 +118,7 @@ bool CKey::TestKey(int key)
 {
     if ( key == KEY(PAUSE) || key == KEY(PRINT) )  return true;  // blocked key
 
+    /* TODO: input bindings
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 2; j++) {
             if (key == m_app->GetKey(i, j) )  // key used?
@@ -126,7 +129,7 @@ bool CKey::TestKey(int key)
             m_app->SetKey(i, 0, m_app->GetKey(i, 1));  // shift
             m_app->SetKey(i, 1, 0);
         }
-    }
+    }*/
 
     return false;  // not used
 }

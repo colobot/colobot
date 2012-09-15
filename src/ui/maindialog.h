@@ -19,7 +19,6 @@
 #pragma once
 
 
-#include "common/struct.h"
 #include "object/robotmain.h"
 
 

@@ -22,7 +22,6 @@
 #include <string>
 
 #include <common/event.h>
-#include <common/struct.h>
 #include <common/misc.h>
 #include <common/iman.h>
 

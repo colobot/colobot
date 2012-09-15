@@ -17,20 +17,14 @@
 
 // scroll.cpp
 
+#include "ui/scroll.h"
 
-//#include <windows.h>
-//#include <stdio.h>
-//#include <d3d.h>
-
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-//#include "old/math3d.h"
-#include "graphics/engine/engine.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
+#include "graphics/engine/engine.h"
 #include "ui/button.h"
-#include "ui/scroll.h"
+
 
 
 namespace Ui {

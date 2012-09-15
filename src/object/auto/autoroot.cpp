@@ -15,15 +15,13 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autoroot.h"
 
 #include "graphics/engine/particle.h"
 #include "graphics/engine/terrain.h"
 #include "math/geometry.h"
 
-
+#include <stdio.h>
 
 
 // Object's constructor.

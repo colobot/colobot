@@ -22,7 +22,6 @@
 //#include <stdio.h>
 //#include <d3d.h>
 
-//#include "common/struct.h"
 //#include "old/d3dengine.h"
 //#include "old/math3d.h"
 #include "common/event.h"

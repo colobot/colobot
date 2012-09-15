@@ -15,57 +15,23 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-// #include <stdio.h>
-// 
 #include "object/brain.h"
-// 
-// #include "CBot/CBotDll.h"
-// #include "common/struct.h"
-// #include "math/geometry.h"
-// #include "math/const.h"
-// #include "old/d3dengine.h"
-// #include "old/d3dmath.h"
-// #include "common/language.h"
-// #include "common/global.h"
-// #include "common/event.h"
+
 #include "common/misc.h"
 #include "common/iman.h"
-// #include "common/restext.h"
-// #include "old/math3d.h"
-// #include "object/robotmain.h"
 #include "graphics/core/color.h"
 #include "graphics/engine/terrain.h"
-// #include "old/water.h"
-// #include "old/camera.h"
-// #include "object/object.h"
-// #include "physics/physics.h"
-// #include "object/motion/motion.h"
-// #include "object/motion/motionspider.h"
-// #include "old/pyro.h"
+#include "object/motion/motion.h"
 #include "object/task/taskmanager.h"
-// #include "object/task/task.h"
-// #include "object/task/taskmanip.h"
-// #include "object/task/taskflag.h"
-// #include "object/task/taskshield.h"
-#include "script/script.h"
-// #include "ui/studio.h"
-#include "ui/interface.h"
-// #include "ui/button.h"
-// #include "ui/color.h"
-// #include "ui/edit.h"
-// #include "ui/list.h"
-// #include "ui/label.h"
-// #include "ui/group.h"
-// #include "ui/gauge.h"
-#include "ui/slider.h"
-// #include "ui/compass.h"
-// #include "ui/target.h"
-#include "ui/window.h"
-// #include "ui/displaytext.h"
-// #include "old/text.h"
-#include "sound/sound.h"
-// #include "old/particule.h"
+#include "physics/physics.h"
 #include "script/cmdtoken.h"
+#include "script/script.h"
+#include "sound/sound.h"
+#include "ui/displaytext.h"
+#include "ui/interface.h"
+#include "ui/slider.h"
+#include "ui/studio.h"
+#include "ui/window.h"
 
 
 
@@ -96,8 +62,7 @@ CBrain::CBrain(CInstanceManager* iMan, CObject* object)
     m_motion      = 0;
     m_primaryTask = 0;
     m_secondaryTask = 0;
-    // TODO uncoment when ui/studio will be implemented.
-    // m_studio      = 0;
+    m_studio      = 0;
 
     m_program = -1;
     m_bActivity = true;
@@ -144,8 +109,7 @@ CBrain::~CBrain()
 
     delete m_primaryTask;
     delete m_secondaryTask;
-    // TODO uncoment when ui/studio will be implemented.
-    // delete m_studio;
+    delete m_studio;
     delete m_traceRecordBuffer;
     m_iMan->DeleteInstance(CLASS_BRAIN, this);
 }
@@ -172,8 +136,7 @@ void CBrain::DeleteObject(bool bAll)
         }
     }
 
-    // TODO uncoment when ui/studio will be implemented.
-    // if ( m_studio != 0 )  // current edition?
+    if ( m_studio != 0 )  // current edition?
     {
         StopEditScript(true);
     }
@@ -239,9 +202,12 @@ bool CBrain::EventProcess(const Event &event)
 
     action = EVENT_NULL;
 
+    CApplication* app = CApplication::GetInstancePointer();
+
     if ( event.type == EVENT_KEY_DOWN &&
-         (event.param == m_engine->GetKey(KEYRANK_ACTION, 0) ||
-          event.param == m_engine->GetKey(KEYRANK_ACTION, 1) ) &&
+         (event.key.key == app->GetInputBinding(INPUT_SLOT_ACTION).key
+          /* TODO joystick input binding
+           event.param == app->GetInputBinding(INPUT_SLOT_ACTION).joy*/ ) &&
          !m_main->GetEditLock() )
     {
         pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
@@ -250,7 +216,7 @@ bool CBrain::EventProcess(const Event &event)
             pc = pw->SearchControl(m_defaultEnter);
             if ( pc != 0 )
             {
-                if ( pc->TestState(STATE_ENABLE) )
+                if ( pc->TestState(Ui::STATE_ENABLE) )
                 {
                     action = m_defaultEnter;
                 }
@@ -274,9 +240,8 @@ bool CBrain::EventProcess(const Event &event)
         EventFrame(event);
     }
 
-    // TODO uncoment when ui/studio will be implemented.
     if ( m_object->GetSelect() &&  // robot selected?
-         /* m_studio != 0 */         )   // current issue?
+         m_studio != 0          )   // current issue?
     {
         // m_studio->EventProcess(event);
 
@@ -394,8 +359,7 @@ bool CBrain::EventProcess(const Event &event)
     {
         m_buttonAxe = action;
     }
-    if ( action == EVENT_LBUTTONUP ||
-         action == EVENT_RBUTTONUP )
+    if ( action == EVENT_MOUSE_BUTTON_UP )
     {
         m_buttonAxe = EVENT_NULL;
     }
@@ -770,11 +734,10 @@ bool CBrain::EventFrame(const Event &event)
         m_sound->Position(m_soundChannelAlarm, m_object->GetPosition(0));
     }
 
-    // TODO uncoment when ui/studio will be implemented.
-    // if ( m_studio != 0 )  // current edition?
-    // {
-    //     m_studio->EventProcess(event);
-    // }
+    if ( m_studio != 0 )  // current edition?
+    {
+        m_studio->EventProcess(event);
+    }
 
     UpdateInterface(event.rTime);
 
@@ -826,7 +789,7 @@ void CBrain::StopProgram()
 
     UpdateInterface();
     m_main->UpdateShortcuts();
-    m_object->CreateSelectParticule();
+    m_object->CreateSelectParticle();
 }
 
 // Stops the current task.
@@ -897,9 +860,8 @@ void CBrain::StartEditScript(int rank, char* name)
         m_script[rank] = new CScript(m_iMan, m_object, &m_secondaryTask);
     }
 
-    // TODO uncoment when ui/studio will be implemented.
-    // m_studio = new CStudio(m_iMan);
-    // m_studio->StartEditScript(m_script[rank], name, rank);
+    m_studio = new Ui::CStudio();
+    m_studio->StartEditScript(m_script[rank], name, rank);
 }
 
 // End of editing a program.
@@ -908,11 +870,10 @@ void CBrain::StopEditScript(bool bCancel)
 {
     if ( !bCancel )  SetActiveVirus(false);
 
-    // TODO uncoment when ui/studio will be implemented.
-    // if ( !m_studio->StopEditScript(bCancel) )  return;
+    if ( !m_studio->StopEditScript(bCancel) )  return;
 
-    // delete m_studio;
-    // m_studio = 0;
+    delete m_studio;
+    m_studio = 0;
 
     CreateInterface(true);  // puts the control buttons
 }
@@ -1506,19 +1467,19 @@ bool CBrain::CreateInterface(bool bSelect)
             pos.x = ox+sx*10.1f;
             pos.y = oy+sy*2.0f-ddim.y;
             pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORb);
-            pc->SetColor(GetColor(Gfx::Color(0.28f, 0.56f, 1.0f, 0.0f)));
+            pc->SetColor(Gfx::Color(0.28f, 0.56f, 1.0f, 0.0f));
             pos.x += ddim.x;
             pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORr);
-            pc->SetColor(GetColor(Gfx::Color(1.0f, 0.0f, 0.0f, 0.0f);
+            pc->SetColor(Gfx::Color(1.0f, 0.0f, 0.0f, 0.0f));
             pos.x += ddim.x;
             pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORg);
-            pc->SetColor(GetColor(Gfx::Color(0.0f, 0.8f, 0.0f, 0.0f)));
+            pc->SetColor(Gfx::Color(0.0f, 0.8f, 0.0f, 0.0f));
             pos.x += ddim.x;
             pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORy);
-            pc->SetColor(GetColor(Gfx::Color(1.0f, 0.93f, 0.0f, 0.0f); //0x00ffec00
+            pc->SetColor(Gfx::Color(1.0f, 0.93f, 0.0f, 0.0f)); //0x00ffec00
             pos.x += ddim.x;
             pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_FCOLORv);
-            pc->SetColor(GetColor(Gfx::Color(0.82f, 0.004f, 0.99f, 0.0f); //0x00d101fe
+            pc->SetColor(Gfx::Color(0.82f, 0.004f, 0.99f, 0.0f)); //0x00d101fe
         }
     }
 
@@ -1577,7 +1538,7 @@ bool CBrain::CreateInterface(bool bSelect)
         ddim.x = dim.x*0.5f;
         ddim.y = dim.y*2.0f;
         ps = pw->CreateSlider(pos, ddim, 0, EVENT_OBJECT_DIMSHIELD);
-        ps->SetState(STATE_VALUE);
+        ps->SetState(Ui::STATE_VALUE);
         ps->SetLimit((RADIUS_SHIELD_MIN/g_unit), (RADIUS_SHIELD_MAX/g_unit));
         ps->SetArrowStep(1.0f);
     }
@@ -1628,35 +1589,35 @@ bool CBrain::CreateInterface(bool bSelect)
         pos.x = ox+sx*10.15f;
         pos.y = oy+sy*1.50f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN1);  // black
-        pc->SetColor(GetColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f)));
+        pc->SetColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f));
         pos.x = ox+sx*10.65f;
         pos.y = oy+sy*1.25f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN2);  // yellow
-        pc->SetColor(GetColor(Gfx::Color(1.0f, 1.0f, 0.0f, 0.0f )));
+        pc->SetColor(Gfx::Color(1.0f, 1.0f, 0.0f, 0.0f ));
         pos.x = ox+sx*10.90f;
         pos.y = oy+sy*0.75f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN3);  // orange
-        pc->SetColor(GetColor(Gfx::Color(1.0f, 0.53f, 0x00, 0x00)));
+        pc->SetColor(Gfx::Color(1.0f, 0.53f, 0x00, 0x00));
         pos.x = ox+sx*10.65f;
         pos.y = oy+sy*0.25f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN4);  // red
-        pc->SetColor(GetColor(Gfx::Color(1.0f, 0.0f, 0.0f, 0.0f)));
+        pc->SetColor(Gfx::Color(1.0f, 0.0f, 0.0f, 0.0f));
         pos.x = ox+sx*10.15f;
         pos.y = oy+sy*0.00f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN5);  // violet
-        pc->SetColor(GetColor(Gfx::Color(1.0f, 0.0f, 1.0f 0.0f )));
+        pc->SetColor(Gfx::Color(1.0f, 0.0f, 1.0f, 0.0f));
         pos.x = ox+sx*9.65f;
         pos.y = oy+sy*0.25f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN6);  // blue
-        pc->SetColor(GetColor(Gfx::Color(0.0f, 0.4f, 1.0f, 0.0f)));//0x000066ff));
+        pc->SetColor(Gfx::Color(0.0f, 0.4f, 1.0f, 0.0f));//0x000066ff));
         pos.x = ox+sx*9.40f;
         pos.y = oy+sy*0.75f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN7);  // green
-        pc->SetColor(GetColor(Gfx::Color(0.0f, 0.0f, 0.8f, 0.0f)));//0x0000cc00));
+        pc->SetColor(Gfx::Color(0.0f, 0.0f, 0.8f, 0.0f));//0x0000cc00));
         pos.x = ox+sx*9.65f;
         pos.y = oy+sy*1.25f;
         pc = pw->CreateColor(pos, ddim, -1, EVENT_OBJECT_PEN8);  // brown
-        pc->SetColor(GetColor(Gfx::Color(0.53f, 0.27f, 0.0f, 0.0f)));//0x00884400));
+        pc->SetColor(Gfx::Color(0.53f, 0.27f, 0.0f, 0.0f));//0x00884400));
 
         pos.x = ox+sx*6.9f;
         pos.y = oy+sy*1.2f;
@@ -1869,7 +1830,7 @@ bool CBrain::CreateInterface(bool bSelect)
         pc = (CCompass*)pw->SearchControl(EVENT_OBJECT_COMPASS);
         if ( pc != 0 )
         {
-            pc->SetState(STATE_VISIBLE, m_main->GetShowMap());
+            pc->SetState(Ui::STATE_VISIBLE, m_main->GetShowMap());
         }
     }
 #endif
@@ -1895,7 +1856,7 @@ bool CBrain::CreateInterface(bool bSelect)
         ddim.x = 600.0f/640.0f;
         ddim.y = 340.0f/480.0f;
         pt = pw->CreateTarget(pos, ddim, 0, EVENT_OBJECT_TARGET);
-        pt->ClearState(STATE_GLINT);
+        pt->ClearState(Ui::STATE_GLINT);
     }
 
     ddim.x = 64.0f/640.0f;
@@ -1935,14 +1896,14 @@ bool CBrain::CreateInterface(bool bSelect)
 void CBrain::UpdateInterface(float rTime)
 {
     Ui::CWindow*    pw;
-#if _TEEN
-    CButton*    pb;
-#endif
-    CGauge*     pg;
-    CCompass*   pc;
-    CGroup*     pgr;
-    CTarget*    ptg;
-    CObject*    power;
+/* TODO: #if _TEEN
+    Ui::CButton*    pb;
+#endif*/
+    Ui::CGauge*     pg;
+    Ui::CCompass*   pc;
+    Ui::CGroup*     pgr;
+    Ui::CTarget*    ptg;
+    CObject*        power;
     Math::Vector    pos, hPos;
     Math::Point     ppos;
     float       energy, limit, angle, range;
@@ -2045,7 +2006,7 @@ void CBrain::UpdateInterface(float rTime)
         angle = -(m_object->GetAngleY(0)+Math::PI/2.0f);
         pc->SetDirection(angle);
 
-        pc->SetState(STATE_VISIBLE, m_main->GetShowMap());
+        pc->SetState(Ui::STATE_VISIBLE, m_main->GetShowMap());
     }
 
 #if _TEEN
@@ -2054,16 +2015,16 @@ void CBrain::UpdateInterface(float rTime)
     {
         if ( m_bTraceRecord && Math::Mod(m_time, 0.4f) >= 0.2f )
         {
-            pb->SetState(STATE_CHECK);
+            pb->SetState(Ui::STATE_CHECK);
         }
         else
         {
-            pb->ClearState(STATE_CHECK);
+            pb->ClearState(Ui::STATE_CHECK);
         }
     }
 #endif
 
-    bOnBoard = m_camera->GetType() == CAMERA_ONBOARD;
+    bOnBoard = m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD;
 
     pgr = static_cast< Ui::CGroup* >(pw->SearchControl(EVENT_OBJECT_CROSSHAIR));
     if ( pgr != 0 )
@@ -2087,11 +2048,11 @@ void CBrain::UpdateInterface(float rTime)
             ppos.y += m_object->GetGunGoalV()/1.3f;
             pgr->SetPos(ppos);
 #endif
-            pgr->SetState(STATE_VISIBLE, !m_main->GetFriendAim());
+            pgr->SetState(Ui::STATE_VISIBLE, !m_main->GetFriendAim());
         }
         else
         {
-            pgr->ClearState(STATE_VISIBLE);
+            pgr->ClearState(Ui::STATE_VISIBLE);
         }
     }
 
@@ -2100,36 +2061,36 @@ void CBrain::UpdateInterface(float rTime)
     {
         if ( bOnBoard )
         {
-            ptg->SetState(STATE_VISIBLE);
+            ptg->SetState(Ui::STATE_VISIBLE);
         }
         else
         {
-            ptg->ClearState(STATE_VISIBLE);
+            ptg->ClearState(Ui::STATE_VISIBLE);
         }
     }
 
     pgr = static_cast< Ui::CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERul));
     if ( pgr != 0 )
     {
-        pgr->SetState(STATE_VISIBLE, bOnBoard);
+        pgr->SetState(Ui::STATE_VISIBLE, bOnBoard);
     }
 
     pgr = static_cast< Ui::CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERur));
     if ( pgr != 0 )
     {
-        pgr->SetState(STATE_VISIBLE, bOnBoard);
+        pgr->SetState(Ui::STATE_VISIBLE, bOnBoard);
     }
 
     pgr = static_cast< Ui::CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERdl));
     if ( pgr != 0 )
     {
-        pgr->SetState(STATE_VISIBLE, bOnBoard);
+        pgr->SetState(Ui::STATE_VISIBLE, bOnBoard);
     }
 
     pgr = static_cast< Ui::CGroup* >(pw->SearchControl(EVENT_OBJECT_CORNERdr));
     if ( pgr != 0 )
     {
-        pgr->SetState(STATE_VISIBLE, bOnBoard);
+        pgr->SetState(Ui::STATE_VISIBLE, bOnBoard);
     }
 }
 
@@ -2213,7 +2174,7 @@ void CBrain::UpdateInterface()
     pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_GFLAT));
     if ( pb != 0 )
     {
-        pb->SetState(STATE_VISIBLE, m_engine->GetGroundSpot());
+        pb->SetState(Ui::STATE_VISIBLE, m_engine->GetGroundSpot());
     }
 
     if ( type == OBJECT_HUMAN ||  // builder?
@@ -2347,49 +2308,49 @@ void CBrain::UpdateInterface()
         pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
         if ( pb != 0 )
         {
-            pb->ClearState(STATE_CHECK);
+            pb->ClearState(Ui::STATE_CHECK);
         }
 
         color = m_object->GetTraceColor();
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
         if ( pc != 0 )
         {
-            pc->SetState(STATE_CHECK, color==1);
+            pc->SetState(Ui::STATE_CHECK, color==1);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN2));
         if ( pc != 0 )
         {
-            pc->SetState(STATE_CHECK, color==8);
+            pc->SetState(Ui::STATE_CHECK, color==8);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN3));
         if ( pc != 0 )
         {
-            pc->SetState(STATE_CHECK, color==7);
+            pc->SetState(Ui::STATE_CHECK, color==7);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN4));
         if ( pc != 0 )
         {
-            pc->SetState(STATE_CHECK, color==4);
+            pc->SetState(Ui::STATE_CHECK, color==4);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN5));
         if ( pc != 0 )
         {
-            pc->SetState(STATE_CHECK, color==6);
+            pc->SetState(Ui::STATE_CHECK, color==6);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN6));
         if ( pc != 0 )
         {
-            pc->SetState(STATE_CHECK, color==14);
+            pc->SetState(Ui::STATE_CHECK, color==14);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN7));
         if ( pc != 0 )
         {
-            pc->SetState(STATE_CHECK, color==12);
+            pc->SetState(Ui::STATE_CHECK, color==12);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN8));
         if ( pc != 0 )
         {
-            pc->SetState(STATE_CHECK, color==10);
+            pc->SetState(Ui::STATE_CHECK, color==10);
         }
     }
     else
@@ -2397,48 +2358,48 @@ void CBrain::UpdateInterface()
         pb = static_cast< Ui::CButton* >(pw->SearchControl(EVENT_OBJECT_PEN0));
         if ( pb != 0 )
         {
-            pb->SetState(STATE_CHECK);
+            pb->SetState(Ui::STATE_CHECK);
         }
 
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN1));
         if ( pc != 0 )
         {
-            pc->ClearState(STATE_CHECK);
+            pc->ClearState(Ui::STATE_CHECK);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN2));
         if ( pc != 0 )
         {
-            pc->ClearState(STATE_CHECK);
+            pc->ClearState(Ui::STATE_CHECK);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN3));
         if ( pc != 0 )
         {
-            pc->ClearState(STATE_CHECK);
+            pc->ClearState(Ui::STATE_CHECK);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN4));
         if ( pc != 0 )
         {
-            pc->ClearState(STATE_CHECK);
+            pc->ClearState(Ui::STATE_CHECK);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN5));
         if ( pc != 0 )
         {
-            pc->ClearState(STATE_CHECK);
+            pc->ClearState(Ui::STATE_CHECK);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN6));
         if ( pc != 0 )
         {
-            pc->ClearState(STATE_CHECK);
+            pc->ClearState(Ui::STATE_CHECK);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN7));
         if ( pc != 0 )
         {
-            pc->ClearState(STATE_CHECK);
+            pc->ClearState(Ui::STATE_CHECK);
         }
         pc = static_cast< Ui::CColor* >(pw->SearchControl(EVENT_OBJECT_PEN8));
         if ( pc != 0 )
         {
-            pc->ClearState(STATE_CHECK);
+            pc->ClearState(Ui::STATE_CHECK);
         }
     }
 #endif
@@ -2535,7 +2496,7 @@ void CBrain::CheckInterface(Ui::CWindow *pw, EventType event, bool bState)
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
-    control->SetState(STATE_CHECK, bState);
+    control->SetState(Ui::STATE_CHECK, bState);
 }
 
 // Changes the state of a button interface.
@@ -2547,7 +2508,7 @@ void CBrain::EnableInterface(Ui::CWindow *pw, EventType event, bool bState)
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
-    control->SetState(STATE_ENABLE, bState);
+    control->SetState(Ui::STATE_ENABLE, bState);
 }
 
 // Changes the state of a button on the interface.
@@ -2559,7 +2520,7 @@ void CBrain::DeadInterface(Ui::CWindow *pw, EventType event, bool bState)
     control = pw->SearchControl(event);
     if ( control == 0 )  return;
 
-    control->SetState(STATE_DEAD, !bState);
+    control->SetState(Ui::STATE_DEAD, !bState);
 }
 
 // Change the default input state of a button interface.
@@ -2573,12 +2534,12 @@ void CBrain::DefaultEnter(Ui::CWindow *pw, EventType event, bool bState)
 
     if ( bState )
     {
-        control->SetState(STATE_DEFAULT);
+        control->SetState(Ui::STATE_DEFAULT);
         m_defaultEnter = event;
     }
     else
     {
-        control->ClearState(STATE_DEFAULT);
+        control->ClearState(Ui::STATE_DEFAULT);
     }
 }
 

@@ -28,7 +28,6 @@
 #include "window.h"
 
 #include "common/iman.h"
-#include "common/language.h"
 #include "common/misc.h"
 #include "common/restext.h"
 
@@ -44,7 +43,7 @@
 
 #include "script/cbottoken.h"
 
-
+#include <string.h>
 
 
 namespace Ui {

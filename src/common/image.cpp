@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
+
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <png.h>
@@ -88,21 +90,21 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
 
     /* Opening output file */
     fp = fopen(filename, "wb");
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         PNG_ERROR = std::string("Could not open file '") + std::string(filename) + std::string("' for saving");
         return false;
     }
 
     /* Initializing png structures and callbacks */
-    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, PNGUserError, NULL);
-    if (png_ptr == NULL)
+    png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, PNGUserError, nullptr);
+    if (png_ptr == nullptr)
         return false;
 
     info_ptr = png_create_info_struct(png_ptr);
-    if (info_ptr == NULL)
+    if (info_ptr == nullptr)
     {
-        png_destroy_write_struct(&png_ptr, static_cast<png_infopp>(NULL));
+        png_destroy_write_struct(&png_ptr, static_cast<png_infopp>(nullptr));
         PNG_ERROR = "png_create_info_struct() error!";
         return false;
     }
@@ -142,7 +144,7 @@ bool PNGSaveSurface(const char *filename, SDL_Surface *surf)
 
 CImage::CImage()
 {
-    m_data = NULL;
+    m_data = nullptr;
 }
 
 CImage::~CImage()
@@ -150,28 +152,140 @@ CImage::~CImage()
     Free();
 }
 
-bool CImage::IsEmpty()
+bool CImage::IsEmpty() const
 {
-    return m_data == NULL;
+    return m_data == nullptr;
 }
 
 void CImage::Free()
 {
-    if (m_data != NULL)
+    if (m_data != nullptr)
     {
-        if (m_data->surface != NULL)
+        if (m_data->surface != nullptr)
         {
             SDL_FreeSurface(m_data->surface);
-            m_data->surface = NULL;
+            m_data->surface = nullptr;
         }
         delete m_data;
-        m_data = NULL;
+        m_data = nullptr;
     }
 }
 
 ImageData* CImage::GetData()
 {
     return m_data;
+}
+
+Math::IntPoint CImage::GetSize() const
+{
+    if (m_data == nullptr)
+        return Math::IntPoint();
+
+    return Math::IntPoint(m_data->surface->w, m_data->surface->h);
+}
+
+/**
+ * Image must be valid and pixel coords in valid range.
+ *
+ * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
+ * \returns color
+ */
+Gfx::Color CImage::GetPixel(Math::IntPoint pixel)
+{
+    assert(m_data != nullptr);
+    assert(pixel.x >= 0 || pixel.x <= m_data->surface->w);
+    assert(pixel.y >= 0 || pixel.y <= m_data->surface->h);
+
+    int bpp = m_data->surface->format->BytesPerPixel;
+    int index = pixel.y * m_data->surface->pitch + pixel.x * bpp;
+    Uint8* p = &static_cast<Uint8*>(m_data->surface->pixels)[index];
+
+    Uint32 u = 0;
+    switch (bpp)
+    {
+        case 1:
+            u = *p;
+            break;
+
+        case 2:
+            u = *reinterpret_cast<Uint16*>(p);
+            break;
+
+        case 3:
+            if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+                u = (p[0] << 16) | (p[1] << 8) | p[2];
+            else
+                u = p[0] | (p[1] << 8) | (p[2] << 16);
+            break;
+
+        case 4:
+            u = *reinterpret_cast<Uint32*>(p);
+            break;
+
+        default:
+            assert(false);
+    }
+
+    Uint8 r = 0, g = 0, b = 0, a = 0;
+    SDL_GetRGBA(u, m_data->surface->format, &r, &g, &b, &a);
+
+    return Gfx::Color(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+}
+
+/**
+ * Image must be valid and pixel coords in valid range.
+ *
+ * \param pixel pixel coords (range x: 0..width-1 y: 0..height-1)
+ * \param color color
+ */
+void CImage::SetPixel(Math::IntPoint pixel, Gfx::Color color)
+{
+    assert(m_data != nullptr);
+    assert(pixel.x >= 0 || pixel.x <= m_data->surface->w);
+    assert(pixel.y >= 0 || pixel.y <= m_data->surface->h);
+
+    int bpp = m_data->surface->format->BytesPerPixel;
+    int index = pixel.y * m_data->surface->pitch + pixel.x * bpp;
+    Uint8* p = &static_cast<Uint8*>(m_data->surface->pixels)[index];
+
+    Uint8 r = static_cast<Uint8>(color.r * 255.0f);
+    Uint8 g = static_cast<Uint8>(color.g * 255.0f);
+    Uint8 b = static_cast<Uint8>(color.b * 255.0f);
+    Uint8 a = static_cast<Uint8>(color.a * 255.0f);
+    Uint32 u = SDL_MapRGBA(m_data->surface->format, r, g, b, a);
+
+    switch(bpp)
+    {
+        case 1:
+            *p = u;
+            break;
+
+        case 2:
+            *reinterpret_cast<Uint16*>(p) = u;
+            break;
+
+        case 3:
+            if (SDL_BYTEORDER == SDL_BIG_ENDIAN)
+            {
+                p[0] = (u >> 16) & 0xFF;
+                p[1] = (u >> 8) & 0xFF;
+                p[2] = u & 0xFF;
+            }
+            else
+            {
+                p[0] = u & 0xFF;
+                p[1] = (u >> 8) & 0xFF;
+                p[2] = (u >> 16) & 0xFF;
+            }
+            break;
+
+        case 4:
+            *reinterpret_cast<Uint32*>(p) = u;
+            break;
+
+        default:
+            assert(false);
+    }
 }
 
 std::string CImage::GetError()
@@ -189,10 +303,10 @@ bool CImage::Load(const std::string& fileName)
     m_error = "";
 
     m_data->surface = IMG_Load(fileName.c_str());
-    if (m_data->surface == NULL)
+    if (m_data->surface == nullptr)
     {
         delete m_data;
-        m_data = NULL;
+        m_data = nullptr;
 
         m_error = std::string(IMG_GetError());
         return false;

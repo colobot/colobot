@@ -16,13 +16,12 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autokid.h"
 
 #include "graphics/engine/particle.h"
 #include "graphics/engine/water.h"
 
+#include <stdio.h>
 
 
 // Object's constructor.

@@ -14,21 +14,19 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// logger.h
+/**
+ *  \file common/logger.h
+ *  \brief Class for logging information to file or console
+ */
 
 
 #pragma once
 
+#include "common/singleton.h"
+
 #include <string>
 #include <cstdarg>
 #include <cstdio>
-
-#include <common/singleton.h>
-
-/**
- *  @file common/logger.h
- *  @brief Class for loggin information to file or console
- */
 
 
 /**

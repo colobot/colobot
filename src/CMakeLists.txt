@@ -1,14 +1,12 @@
 # CBot shared library is built separately
 add_subdirectory(CBot)
-<<<<<<< HEAD
 
 # Tools directory is built separately
 add_subdirectory(tools)
 
 # Tests
 add_subdirectory(graphics/engine/test)
-=======
->>>>>>> dev-ui
+add_subdirectory(math/test)
 
 
 # Configure options
@@ -67,12 +65,11 @@ app/main.cpp
 app/system.cpp
 common/event.cpp
 common/image.cpp
-common/logger.cpp
 common/iman.cpp
-# common/metafile.cpp
-# common/misc.cpp
-# common/modfile.cpp
-# common/profile.cpp
+common/logger.cpp
+common/metafile.cpp
+common/misc.cpp
+common/profile.cpp
 common/restext.cpp
 common/restext_strings.c
 common/stringutils.cpp
@@ -116,8 +113,8 @@ object/auto/autoroot.cpp
 object/auto/autosafe.cpp
 object/auto/autostation.cpp
 object/auto/autotower.cpp
-# object/brain.cpp
-# object/mainmovie.cpp
+object/brain.cpp
+object/mainmovie.cpp
 object/motion/motion.cpp
 object/motion/motionant.cpp
 object/motion/motionbee.cpp
@@ -154,33 +151,32 @@ physics/physics.cpp
 script/cbottoken.cpp
 script/cmdtoken.cpp
 script/script.cpp
-# sound/sound.cpp
-# ui/button.cpp
-# ui/check.cpp
-# ui/color.cpp
-# ui/compass.cpp
+ui/button.cpp
+ui/check.cpp
+ui/color.cpp
+ui/compass.cpp
 ui/control.cpp
-# ui/displayinfo.cpp
-# ui/displaytext.cpp
+ui/displayinfo.cpp
+ui/displaytext.cpp
 ui/edit.cpp
-# ui/editvalue.cpp
-# ui/gauge.cpp
-# ui/group.cpp
-# ui/image.cpp
-# ui/interface.cpp
-# ui/key.cpp
-# ui/label.cpp
-# ui/list.cpp
+ui/editvalue.cpp
+ui/gauge.cpp
+ui/group.cpp
+ui/image.cpp
+ui/interface.cpp
+ui/key.cpp
+ui/label.cpp
+ui/list.cpp
 # ui/maindialog.cpp
-# ui/mainmap.cpp
-# ui/mainshort.cpp
-# ui/map.cpp
-# ui/scroll.cpp
-# ui/shortcut.cpp
-# ui/slider.cpp
+ui/mainmap.cpp
+ui/mainshort.cpp
+ui/map.cpp
+ui/scroll.cpp
+ui/shortcut.cpp
+ui/slider.cpp
 # ui/studio.cpp
-# ui/target.cpp
-# ui/window.cpp
+ui/target.cpp
+ui/window.cpp
 )
 
 set(LIBS
@@ -194,7 +190,10 @@ ${PLATFORM_LIBS}
 CBot
 )
 
-include_directories(. ${CMAKE_CURRENT_BINARY_DIR}
+include_directories(
+.
+..
+${CMAKE_CURRENT_BINARY_DIR}
 ${SDL_INCLUDE_DIR}
 ${SDL_IMAGE_INCLUDE_DIR}
 ${SDLTTF_INCLUDE_DIR}

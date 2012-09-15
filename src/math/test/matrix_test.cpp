@@ -26,13 +26,13 @@
 #include "../func.h"
 #include "../matrix.h"
 
-#include <cstdio>
+#include "gtest/gtest.h"
 
-using namespace std;
 
 const float TEST_TOLERANCE = 1e-6;
 
-int TestTranspose()
+
+TEST(MatrixTest, TransposeTest)
 {
     const Math::Matrix mat(
         (float[4][4])
@@ -56,16 +56,10 @@ int TestTranspose()
 
     Math::Matrix transpose = Math::Transpose(mat);
 
-    if (! Math::MatricesEqual(transpose, expectedTranspose, TEST_TOLERANCE))
-    {
-        fprintf(stderr, "Transpose mismatch!\n");
-        return __LINE__;
-    }
-
-    return 0;
+    EXPECT_TRUE(Math::MatricesEqual(transpose, expectedTranspose, TEST_TOLERANCE));
 }
 
-int TestCofactor()
+TEST(MatrixTest, CofactorTest)
 {
     const Math::Matrix mat1(
         (float[4][4])
@@ -93,12 +87,7 @@ int TestCofactor()
         {
             float ret = mat1.Cofactor(r, c);
             float exp = expectedCofactors1.m[4*c+r];
-            if (! Math::IsEqual(ret, exp, TEST_TOLERANCE))
-            {
-                fprintf(stderr, "Cofactors 1 mismatch!\n");
-                fprintf(stderr, "r=%d, c=%d, %f (returned) != %f (expected)\n", r, c, ret, exp);
-                return __LINE__;
-            }
+            EXPECT_TRUE(Math::IsEqual(ret, exp, TEST_TOLERANCE));
         }
     }
 
@@ -129,19 +118,12 @@ int TestCofactor()
         {
             float ret = mat2.Cofactor(r, c);
             float exp = expectedCofactors2.m[4*c+r];
-            if (! Math::IsEqual(ret, exp, TEST_TOLERANCE))
-            {
-                fprintf(stderr, "Cofactors 2 mismatch!\n");
-                fprintf(stderr, "r=%d, c=%d, %f (returned) != %f (expected)\n", r, c, ret, exp);
-                return __LINE__;
-            }
+            EXPECT_TRUE(Math::IsEqual(ret, exp, TEST_TOLERANCE));
         }
     }
-
-    return 0;
 }
 
-int TestDet()
+TEST(MatrixTest, DetTest)
 {
     const Math::Matrix mat1(
         (float[4][4])
@@ -156,12 +138,7 @@ int TestDet()
     const float expectedDet1 = 4.07415413729671;
 
     float ret1 = mat1.Det();
-    if (! Math::IsEqual(ret1, expectedDet1, TEST_TOLERANCE))
-    {
-        fprintf(stderr, "Det mismatch!\n");
-        fprintf(stderr, "%f (returned) != %f (expected)\n", ret1, expectedDet1);
-        return __LINE__;
-    }
+    EXPECT_TRUE(Math::IsEqual(ret1, expectedDet1, TEST_TOLERANCE));
 
     const Math::Matrix mat2(
         (float[4][4])
@@ -176,17 +153,10 @@ int TestDet()
     const float expectedDet2 = -6.35122307880942;
 
     float ret2 = mat2.Det();
-    if (! Math::IsEqual(ret2, expectedDet2, TEST_TOLERANCE))
-    {
-        fprintf(stderr, "Det mismatch!\n");
-        fprintf(stderr, "%f (returned) != %f (expected)\n", ret2, expectedDet2);
-        return __LINE__;
-    }
-
-    return 0;
+    EXPECT_TRUE(Math::IsEqual(ret2, expectedDet2, TEST_TOLERANCE));
 }
 
-int TestInverse()
+TEST(MatrixTest, InverseTest)
 {
     const Math::Matrix mat1(
         (float[4][4])
@@ -210,11 +180,7 @@ int TestInverse()
 
     Math::Matrix inverse1 = mat1.Inverse();
 
-    if (! Math::MatricesEqual(inverse1, expectedInverse1, TEST_TOLERANCE))
-    {
-        fprintf(stderr, "Inverse 1 mismatch!\n");
-        return __LINE__;
-    }
+    EXPECT_TRUE(Math::MatricesEqual(inverse1, expectedInverse1, TEST_TOLERANCE));
 
     const Math::Matrix mat2(
         (float[4][4])
@@ -238,16 +204,10 @@ int TestInverse()
 
     Math::Matrix inverse2 = mat2.Inverse();
 
-    if (! Math::MatricesEqual(inverse2, expectedInverse2, TEST_TOLERANCE))
-    {
-        fprintf(stderr, "Inverse 2 mismatch!\n");
-        return __LINE__;
-    }
-
-    return 0;
+    EXPECT_TRUE(Math::MatricesEqual(inverse2, expectedInverse2, TEST_TOLERANCE));
 }
 
-int TestMultiply()
+TEST(MatrixTest, MultiplyTest)
 {
     const Math::Matrix mat1A(
         (float[4][4])
@@ -280,11 +240,7 @@ int TestMultiply()
     );
 
     Math::Matrix multiply1 = Math::MultiplyMatrices(mat1A, mat1B);
-    if (! Math::MatricesEqual(multiply1, expectedMultiply1, TEST_TOLERANCE ) )
-    {
-        fprintf(stderr, "Multiply 1 mismath!\n");
-        return __LINE__;
-    }
+    EXPECT_TRUE(Math::MatricesEqual(multiply1, expectedMultiply1, TEST_TOLERANCE));
 
     const Math::Matrix mat2A(
         (float[4][4])
@@ -317,16 +273,10 @@ int TestMultiply()
     );
 
     Math::Matrix multiply2 = Math::MultiplyMatrices(mat2A, mat2B);
-    if (! Math::MatricesEqual(multiply2, expectedMultiply2, TEST_TOLERANCE ) )
-    {
-        fprintf(stderr, "Multiply 2 mismath!\n");
-        return __LINE__;
-    }
-
-    return 0;
+    EXPECT_TRUE(Math::MatricesEqual(multiply2, expectedMultiply2, TEST_TOLERANCE));
 }
 
-int TestMultiplyVector()
+TEST(MatrixTest, MultiplyVectorTest)
 {
     const Math::Matrix mat1(
         (float[4][4])
@@ -343,11 +293,7 @@ int TestMultiplyVector()
     const Math::Vector expectedMultiply1(0.608932463260470, -1.356893266403749, 3.457156276255142);
 
     Math::Vector multiply1 = Math::MatrixVectorMultiply(mat1, vec1, false);
-    if (! Math::VectorsEqual(multiply1, expectedMultiply1, TEST_TOLERANCE ) )
-    {
-        fprintf(stderr, "Multiply vector 1 mismath!\n");
-        return __LINE__;
-    }
+    EXPECT_TRUE(Math::VectorsEqual(multiply1, expectedMultiply1, TEST_TOLERANCE));
 
     const Math::Matrix mat2(
         (float[4][4])
@@ -364,39 +310,13 @@ int TestMultiplyVector()
     const Math::Vector expectedMultiply2(0.2816820577317669, 0.0334468811767428, 0.1996974284970455);
 
     Math::Vector multiply2 = Math::MatrixVectorMultiply(mat2, vec2, true);
-    if (! Math::VectorsEqual(multiply2, expectedMultiply2, TEST_TOLERANCE ) )
-    {
-        fprintf(stderr, "Multiply vector 2 mismath!\n");
-        return __LINE__;
-    }
-
-    return 0;
+    EXPECT_TRUE(Math::VectorsEqual(multiply2, expectedMultiply2, TEST_TOLERANCE));
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    // Functions to test
-    int (*TESTS[])() =
-    {
-        TestTranspose,
-        TestCofactor,
-        TestDet,
-        TestInverse,
-        TestMultiply,
-        TestMultiplyVector
-    };
-    const int TESTS_SIZE = sizeof(TESTS) / sizeof(*TESTS);
+    ::testing::InitGoogleTest(&argc, argv);
 
-    int result = 0;
-    for (int i = 0; i < TESTS_SIZE; ++i)
-    {
-        result = TESTS[i]();
-        if (result != 0)
-            return result;
-    }
-
-    fprintf(stderr, "All tests successful\n");
-
-    return 0;
+    return RUN_ALL_TESTS();
 }
 

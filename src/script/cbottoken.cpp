@@ -15,20 +15,11 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-// #include <windows.h>
-// #include <stdio.h>
-// #include <d3d.h>
-// 
-// #include "common/struct.h"
-// #include "old/d3dengine.h"
-// #include "old/d3dmath.h"
-// #include "common/language.h"
-// #include "common/global.h"
-// #include "common/event.h"
+#include "script/cbottoken.h"
+
 #include "object/object.h"
-// #include "script/cbottoken.h"
 
-
+#include <string.h>
 
 
 // Seeking the name of an object.

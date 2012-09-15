@@ -19,16 +19,12 @@
 
 #pragma once
 
-#include <graphics/core/color.h>
+#include "common/event.h"
+#include "graphics/core/color.h"
+#include "math/point.h"
+#include "object/object.h"
+#include "ui/interface.h"
 
-#include <common/struct.h>
-#include <common/event.h>
-
-#include <math/point.h>
-
-#include <object/object.h>
-
-#include <ui/interface.h>
 
 namespace Ui {
 
@@ -60,8 +56,8 @@ class CMainMap
 
     protected:
         CInstanceManager* m_iMan;
-        CEvent*         m_event;
-        CD3DEngine*     m_engine;
+        CEventQueue*    m_event;
+        Gfx::CEngine*   m_engine;
         CInterface*     m_interface;
 
         int             m_mapMode;

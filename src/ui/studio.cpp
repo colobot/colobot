@@ -22,6 +22,10 @@
 
 #include <script/cbottoken.h>
 
+
+const int MAX_FNAME = 255;
+
+
 namespace Ui {
 
 
@@ -36,7 +40,7 @@ CStudio::CStudio()
     m_event     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
     m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
     m_main      = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
-    m_camera    = static_cast<CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_camera    = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
     m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
     m_app = CApplication::GetInstancePointer();
 
@@ -537,7 +541,7 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     m_bInitPause = m_engine->GetPause();
     m_main->SetSpeed(1.0f);
     m_editCamera = m_camera->GetType();
-    m_camera->SetType(CAM_TYPE_EDIT);
+    m_camera->SetType(Gfx::CAM_TYPE_EDIT);
 
     m_bRunning = m_script->IsRunning();
     m_bRealTime = m_bRunning;
@@ -1447,8 +1451,8 @@ void CStudio::UpdateDialogPublic()
     CCheck*     pc;
     CLabel*     pl;
     char        name[100];
-    char        dir[_MAX_FNAME];
-    char        text[_MAX_FNAME+100];
+    char        dir[MAX_FNAME];
+    char        text[MAX_FNAME+100];
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
     if ( pw == nullptr )  return;
@@ -1486,8 +1490,8 @@ void CStudio::UpdateDialogList()
     struct _finddata_t  fileBuffer;
     struct _finddata_t* listBuffer;
     bool                bDo;
-    char                dir[_MAX_FNAME];
-    char                temp[_MAX_FNAME];
+    char                dir[MAX_FNAME];
+    char                temp[MAX_FNAME];
     int                 nbFilenames, i;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);

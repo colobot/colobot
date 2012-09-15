@@ -17,14 +17,13 @@
 // motion.cpp
 
 
-#include <stdio.h>
-
 #include "object/motion/motion.h"
 
 #include "common/iman.h"
 #include "script/cmdtoken.h"
 
-
+#include <stdio.h>
+#include <string.h>
 
 
 // Object's constructor.

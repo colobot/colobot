@@ -28,6 +28,7 @@
 #include "math/geometry.h"
 #include "physics/physics.h"
 
+#include <string.h>
 
 
 const float FLY_DIST_GROUND = 80.0f;    // minimum distance to remain on the ground

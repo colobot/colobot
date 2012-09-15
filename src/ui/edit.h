@@ -30,7 +30,6 @@
 #include <graphics/engine/engine.h>
 #include <graphics/engine/text.h>
 
-#include <common/language.h>
 #include <common/event.h>
 #include <common/misc.h>
 #include <common/iman.h>

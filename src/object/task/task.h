@@ -19,7 +19,8 @@
 #pragma once
 
 
-#include "common/misc.h"
+#include "common/event.h"
+#include "common/global.h"
 #include "math/const.h"
 
 

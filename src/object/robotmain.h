@@ -189,11 +189,11 @@ public:
     void        ResetObject();
     void        ResetCreate();
     Error       CheckEndMission(bool frame);
-    void        CheckEndMessage(char *message);
+    void        CheckEndMessage(const char* message);
     int         GetObligatoryToken();
     char*       GetObligatoryToken(int i);
-    int         IsObligatoryToken(char *token);
-    bool        IsProhibitedToken(char *token);
+    int         IsObligatoryToken(const char* token);
+    bool        IsProhibitedToken(const char* token);
     void        UpdateMap();
     bool        GetShowMap();
 

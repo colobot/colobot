@@ -20,6 +20,8 @@
 
 #include "edit.h"
 
+#include <string.h>
+
 namespace Ui {
 
 const float MARGX           = (5.0f/640.0f);
@@ -1778,7 +1780,8 @@ bool CEdit::ReadText(const char *filename, int addSize)
             {
                 if ( SearchKey(buffer+i+5, key) )
                 {
-                    res = m_app->GetKey(key, 0);  // TODO
+                    res = 0;
+                    //res = m_app->GetInputBinding(key).key;  // TODO input bindings
                     if ( res != 0 )
                     {
                         if ( GetResource(RES_KEY, res, iName) )
@@ -1797,7 +1800,8 @@ bool CEdit::ReadText(const char *filename, int addSize)
                             m_format[j] = font;
                             j ++;
 
-                            res = m_app->GetKey(key, 1); // TODO
+                            // res = m_app->GetInputBinding(key).joy; // TODO input bindings
+                            res = 0;
                             if ( res != 0 )
                             {
                                 if ( GetResource(RES_KEY, res, iName) )

@@ -20,7 +20,7 @@
 
 
 #include "common/event.h"
-#include "common/misc.h"
+#include "common/global.h"
 #include "object/object.h"
 
 

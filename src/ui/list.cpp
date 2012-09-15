@@ -20,6 +20,7 @@
 
 #include <ui/list.h>
 
+#include <string.h>
 
 namespace Ui {
 

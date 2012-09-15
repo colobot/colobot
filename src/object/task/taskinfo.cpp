@@ -22,7 +22,7 @@
 #include "graphics/engine/particle.h"
 #include "object/auto/autoinfo.h"
 
-
+#include <string.h>
 
 
 

@@ -664,9 +664,7 @@ public:
     bool            ProcessEvent(const Event& event);
 
     //! Called once per frame, the call is the entry point for animating the scene
-    void            FrameMove(float rTime);
-    //! Evolved throughout the game
-    void            StepSimulation(float rTime);
+    void            FrameUpdate();
 
 
     //! Writes a screenshot containing the current frame
@@ -1097,11 +1095,6 @@ public:
     void            SetEditIndentValue(int value);
     int             GetEditIndentValue();
     //@}
-
-    //@{
-    //! Management of game speed
-    void            SetSpeed(float speed);
-    float           GetSpeed();
 
     //@{
     //! Management of precision of robot tracks

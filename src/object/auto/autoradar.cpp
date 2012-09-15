@@ -16,8 +16,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autoradar.h"
 
 #include "common/iman.h"
@@ -25,6 +23,8 @@
 #include "ui/interface.h"
 #include "ui/window.h"
 #include "ui/gauge.h"
+
+#include <stdio.h>
 
 
 // Object's constructor.

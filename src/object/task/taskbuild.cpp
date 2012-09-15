@@ -31,6 +31,8 @@
 #include "physics/physics.h"
 #include "ui/displaytext.h"
 
+#include <string.h>
+
 // Object's constructor.
 
 CTaskBuild::CTaskBuild(CInstanceManager* iMan, CObject* object)

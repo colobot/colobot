@@ -17,8 +17,6 @@
 // motionvehicle.cpp
 
 
-#include <stdio.h>
-
 #include "object/motion/motionvehicle.h"
 
 #include "graphics/engine/modelfile.h"
@@ -28,6 +26,8 @@
 #include "object/brain.h"
 #include "physics/physics.h"
 
+#include <stdio.h>
+#include <string.h>
 
 
 

@@ -36,8 +36,8 @@ CMainMap::CMainMap()
     m_iMan->AddInstance(CLASS_MAP, this);
 
     m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_event     = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_event     = (CEventQueue*)m_iMan->SearchInstance(CLASS_EVENT);
+    m_engine    = (Gfx::CEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
 
     m_mapMode = 1;
     m_bFixImage = false;

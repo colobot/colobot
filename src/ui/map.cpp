@@ -20,7 +20,7 @@
 
 #include "map.h"
 
-
+#include <string.h>
 
 
 namespace Ui {
@@ -48,7 +48,7 @@ CMap::CMap() : CControl()
     m_waterColor.g = 0.80f;
     m_waterColor.b = 1.00f;  // blue
 
-    m_half = m_terrain->GetMosaic() * m_terrain->GetBrick() * m_terrain->GetSize() / 2.0f;
+    m_half = m_terrain->GetMosaicCount() * m_terrain->GetBrickCount() * m_terrain->GetBrickSize() / 2.0f;
 
     m_highlightRank = -1;
     FlushObject();
@@ -84,7 +84,7 @@ void CMap::SetOffset(float ox, float oy)
 {
     m_offset.x = ox;
     m_offset.y = oy;
-    m_half = m_terrain->GetMosaic() * m_terrain->GetBrick() * m_terrain->GetSize() / 2.0f;
+    m_half = m_terrain->GetMosaicCount() * m_terrain->GetBrickCount() * m_terrain->GetBrickSize() / 2.0f;
 }
 
 // Choice of the global angle of rotation.
@@ -119,7 +119,7 @@ void CMap::SetDebug(bool bDebug)
 void CMap::SetZoom(float value)
 {
     m_zoom = value;
-    m_half = m_terrain->GetMosaic() * m_terrain->GetBrick() * m_terrain->GetSize() / 2.0f;
+    m_half = m_terrain->GetMosaicCount() * m_terrain->GetBrickCount() * m_terrain->GetBrickSize() / 2.0f;
 }
 
 float CMap::GetZoom()
@@ -999,9 +999,13 @@ void CMap::UpdateTerrain()
     int             x, y;
 
     if ( m_fixImage[0] != 0  )  return;  // still image?
-    if ( !m_engine->OpenImage("map.tga") )  return;
 
-    scale = m_terrain->GetScaleRelief();
+    // TODO: map texture manipulation
+    return;
+
+    // if ( !m_engine->OpenImage("map.tga") )  return;
+
+    scale = m_terrain->GetReliefScale();
     water = m_water->GetLevel();
     color.a = 0.0f;
 
@@ -1040,12 +1044,12 @@ void CMap::UpdateTerrain()
                 color.b = m_waterColor.b + (intensity-0.5f);
             }
 
-            m_engine->SetDot(x, y, color);
+            //m_engine->SetDot(x, y, color);
         }
     }
 
-    m_engine->CopyImage();  // copy the ground drawing
-    m_engine->CloseImage();
+    //m_engine->CopyImage();  // copy the ground drawing
+    //m_engine->CloseImage();
 }
 
 // Updates the field in the map.
@@ -1058,10 +1062,14 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
     int             x, y;
 
     if ( m_fixImage[0] != 0  )  return;  // still image?
-    if ( !m_engine->OpenImage("map.tga") )  return;
-    m_engine->LoadImage();
 
-    scale = m_terrain->GetScaleRelief();
+    // TODO: map texture manipulation
+    return;
+
+    //if ( !m_engine->OpenImage("map.tga") )  return;
+    //m_engine->LoadImage();
+
+    scale = m_terrain->GetReliefScale();
     water = m_water->GetLevel();
     color.a = 0.0f;
 
@@ -1100,12 +1108,12 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
                 color.b = m_waterColor.b + (intensity-0.5f);
             }
 
-            m_engine->SetDot(x, y, color);
+            //m_engine->SetDot(x, y, color);
         }
     }
 
-    m_engine->CopyImage();  // copy the ground drawing
-    m_engine->CloseImage();
+    //m_engine->CopyImage();  // copy the ground drawing
+    //m_engine->CloseImage();
 }
 
 

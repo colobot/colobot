@@ -16,16 +16,17 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include "check.h"
+#include "ui/check.h"
 
-#include <common/event.h>
-#include <common/iman.h>
-#include <common/misc.h>
-#include <common/restext.h>
+#include "common/event.h"
+#include "common/iman.h"
+#include "common/misc.h"
+#include "common/restext.h"
 
-#include <graphics/engine/engine.h>
-#include <graphics/engine/text.h>
+#include "graphics/engine/engine.h"
+#include "graphics/engine/text.h"
 
+#include <string.h>
 
 
 namespace Ui {
