@@ -18,15 +18,13 @@
 
 #pragma once
 
-
-#include <stdio.h>
-
+#include "common/global.h"
 #include "common/misc.h"
-#include "graphics/engine/engine.h"
+#include "graphics/engine/particle.h"
 #include "object/object.h"
 #include "object/mainmovie.h"
-#include "graphics/engine/camera.h"
-#include "graphics/engine/particle.h"
+
+#include <stdio.h>
 
 enum Phase
 {
@@ -68,36 +66,41 @@ enum Phase
 
 
 class CInstanceManager;
+class CEventQueue;
+class CSoundInterface;
+
+namespace Gfx
+{
+class CEngine;
+class CLightManager;
+class CWater;
+class CCloud;
+class CLightning;
+class CPlanet;
+class CTerrain;
+};
+
+namespace Ui
+{
 class CMainDialog;
 class CMainShort;
 class CMainMap;
-class CEvent;
-class CD3DEngine;
-class CLight;
-class CWater;
-class CCloud;
-class CBlitz;
-class CPlanet;
-class CTerrain;
-class CModel;
 class CInterface;
-class CWindow;
-class CControl;
 class CDisplayText;
 class CDisplayInfo;
-class CSoundInterface;
+};
 
 
 struct EndTake
 {
-    Math::Vector    pos;
-    float       dist;
-    ObjectType  type;
-    int         min;        // wins if>
-    int         max;        // wins if <
-    int         lost;       // lost if <=
-    bool        bImmediat;
-    char        message[100];
+    Math::Vector  pos;
+    float         dist;
+    ObjectType    type;
+    int           min;        // wins if>
+    int           max;        // wins if <
+    int           lost;       // lost if <=
+    bool          immediat;
+    char          message[100];
 };
 
 
@@ -105,7 +108,7 @@ const int MAXNEWSCRIPTNAME = 20;
 
 struct NewScriptName
 {
-    bool        bUsed;
+    bool        used;
     ObjectType  type;
     char        name[40];
 };
@@ -117,8 +120,8 @@ const float SHOWLIMITTIME   = 20.0f;
 
 struct ShowLimit
 {
-    bool            bUsed;
-    Math::Vector        pos;
+    bool            used;
+    Math::Vector    pos;
     float           radius;
     int             total;
     int             parti[MAXSHOWPARTI];
@@ -141,7 +144,7 @@ const int SATCOM_MAX        = 6;
 class CRobotMain
 {
 public:
-    CRobotMain(CInstanceManager* iMan);
+    CRobotMain(CInstanceManager* iMan, CApplication* app);
     ~CRobotMain();
 
     void        CreateIni();
@@ -152,23 +155,23 @@ public:
     bool        CreateShortcuts();
     void        ScenePerso();
 
-    void        SetMovieLock(bool bLock);
+    void        SetMovieLock(bool lock);
     bool        GetMovieLock();
     bool        GetInfoLock();
-    void        SetSatComLock(bool bLock);
+    void        SetSatComLock(bool lock);
     bool        GetSatComLock();
-    void        SetEditLock(bool bLock, bool bEdit);
+    void        SetEditLock(bool lock, bool edit);
     bool        GetEditLock();
-    void        SetEditFull(bool bFull);
+    void        SetEditFull(bool full);
     bool        GetEditFull();
     bool        GetFreePhoto();
-    void        SetFriendAim(bool bFriend);
+    void        SetFriendAim(bool friendAim);
     bool        GetFriendAim();
 
     void        SetTracePrecision(float factor);
     float       GetTracePrecision();
 
-    void        ChangePause(bool bPause);
+    void        ChangePause(bool pause);
 
     void        SetSpeed(float speed);
     float       GetSpeed();
@@ -178,26 +181,26 @@ public:
     CObject*    SearchHuman();
     CObject*    SearchToto();
     CObject*    SearchNearest(Math::Vector pos, CObject* pExclu);
-    bool        SelectObject(CObject* pObj, bool bDisplayError=true);
+    bool        SelectObject(CObject* pObj, bool displayError=true);
     CObject*    GetSelectObject();
     CObject*    DeselectAll();
     bool        DeleteObject();
 
     void        ResetObject();
     void        ResetCreate();
-    Error       CheckEndMission(bool bFrame);
-    void        CheckEndMessage(const char *message);
+    Error       CheckEndMission(bool frame);
+    void        CheckEndMessage(char *message);
     int         GetObligatoryToken();
     char*       GetObligatoryToken(int i);
-    int         IsObligatoryToken(const char *token);
-    bool        IsProhibitedToken(const char *token);
+    int         IsObligatoryToken(char *token);
+    bool        IsProhibitedToken(char *token);
     void        UpdateMap();
     bool        GetShowMap();
 
     MainMovieType GetMainMovie();
 
     void        FlushDisplayInfo();
-    void        StartDisplayInfo(int index, bool bMovie);
+    void        StartDisplayInfo(int index, bool movie);
     void        StartDisplayInfo(char *filename, int index);
     void        StopDisplayInfo();
     char*       GetDisplayInfoName(int index);
@@ -216,7 +219,7 @@ public:
     void        SetWindowDim(Math::Point dim);
     Math::Point     GetWindowDim();
 
-    void        SetIOPublic(bool bMode);
+    void        SetIOPublic(bool mode);
     bool        GetIOPublic();
     void        SetIOPos(Math::Point pos);
     Math::Point     GetIOPos();
@@ -259,14 +262,15 @@ public:
     void        HideDropZone(CObject* metal);
     void        ShowDropZone(CObject* metal, CObject* truck);
     void        FlushShowLimit(int i);
-    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *pObj, Math::Vector pos, float radius, float duration=SHOWLIMITTIME);
+    void        SetShowLimit(int i, Gfx::ParticleType parti, CObject *pObj, Math::Vector pos,
+                             float radius, float duration=SHOWLIMITTIME);
     void        AdjustShowLimit(int i, Math::Vector pos);
     void        StartShowLimit();
     void        FrameShowLimit(float rTime);
 
-    void        CompileScript(bool bSoluce);
-    void        LoadOneScript(CObject *pObj, int &nbError);
-    void        LoadFileScript(CObject *pObj, char* filename, int objRank, int &nbError);
+    void        CompileScript(bool soluce);
+    void        LoadOneScript(CObject *pObj, int &nerror);
+    void        LoadFileScript(CObject *pObj, char* filename, int objRank, int &nerror);
     void        SaveAllScript();
     void        SaveOneScript(CObject *pObj);
     void        SaveFileScript(CObject *pObj, char* filename, int objRank);
@@ -294,11 +298,13 @@ protected:
     void        InitEye();
 
     void        Convert();
-    void        CreateScene(bool bSoluce, bool bFixScene, bool bResetObject);
+    void        CreateScene(bool soluce, bool fixScene, bool resetObject);
 
     void        CreateModel();
-    Math::Vector    LookatPoint( Math::Vector eye, float angleH, float angleV, float length );
-    CObject*    CreateObject(Math::Vector pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, bool bTrainer=false, bool bToy=false, int option=0);
+    Math::Vector LookatPoint(Math::Vector eye, float angleH, float angleV, float length);
+    CObject*    CreateObject(Math::Vector pos, float angle, float zoom,
+                             float height, ObjectType type, float power=1.0f,
+                             bool trainer=false, bool toy=false, int option=0);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);
@@ -308,10 +314,10 @@ protected:
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
     void        RemoteCamera(float pan, float zoom, float rTime);
-    void        KeyCamera(EventType event, long param);
+    void        KeyCamera(EventType event, long key);
     void        AbortMovie();
     bool        IsSelectable(CObject* pObj);
-    void        SelectOneObject(CObject* pObj, bool bDisplayError=true);
+    void        SelectOneObject(CObject* pObj, bool displayError=true);
     void        HelpObject();
     bool        DeselectObject();
     void        DeleteAllObjects();
@@ -325,70 +331,70 @@ protected:
     bool        TestGadgetQuantity(int rank);
 
 protected:
-    CInstanceManager* m_iMan;
-    CMainMovie*     m_movie;
-    CMainDialog*    m_dialog;
-    CMainShort*     m_short;
-    CMainMap*       m_map;
-    CEvent*         m_event;
-    CD3DEngine*     m_engine;
+    CInstanceManager*   m_iMan;
+    CApplication*       m_app;
+    CEventQueue*        m_eventQueue;
+    CMainMovie*         m_movie;
+    Gfx::CEngine*       m_engine;
     Gfx::CParticle*     m_particle;
-    CWater*         m_water;
-    CCloud*         m_cloud;
-    CBlitz*         m_blitz;
-    CPlanet*        m_planet;
-    CLight*         m_light;
-    CTerrain*       m_terrain;
-    CModel*         m_model;
-    CInterface*     m_interface;
-    CCamera*        m_camera;
-    CDisplayText*   m_displayText;
-    CDisplayInfo*   m_displayInfo;
-    CSound*         m_sound;
+    Gfx::CWater*        m_water;
+    Gfx::CCloud*        m_cloud;
+    Gfx::CLightning*    m_lightning;
+    Gfx::CPlanet*       m_planet;
+    Gfx::CLightManager* m_lightMan;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CCamera*       m_camera;
+    Ui::CMainDialog*    m_dialog;
+    Ui::CMainShort*     m_short;
+    Ui::CMainMap*       m_map;
+    Ui::CInterface*     m_interface;
+    Ui::CDisplayText*   m_displayText;
+    Ui::CDisplayInfo*   m_displayInfo;
+    CSoundInterface*    m_sound;
 
     float           m_time;
     float           m_gameTime;
     float           m_checkEndTime;
     float           m_winDelay;
     float           m_lostDelay;
-    bool            m_bFixScene;        // scene fixed, no interraction
-    bool            m_bBase;        // OBJECT_BASE exists in mission
-    Math::Point         m_lastMousePos;
+    bool            m_fixScene;        // scene fixed, no interraction
+    bool            m_base;        // OBJECT_BASE exists in mission
+    Math::Point     m_lastMousePos;
     CObject*        m_selectObject;
 
     Phase           m_phase;
     int             m_cameraRank;
     Gfx::Color      m_color;
-    bool            m_bFreePhoto;
-    bool            m_bCmdEdit;
-    bool            m_bShowPos;
-    bool            m_bSelectInsect;
-    bool            m_bShowSoluce;
-    bool            m_bShowAll;
-    bool            m_bCheatRadar;
-    bool            m_bAudioRepeat;
-    bool            m_bShortCut;
+    bool            m_freePhoto;
+    bool            m_cmdEdit;
+    bool            m_showPos;
+    bool            m_selectInsect;
+    bool            m_showSoluce;
+    bool            m_showAll;
+    bool            m_cheatRadar;
+    bool            m_audioRepeat;
+    bool            m_shortCut;
     int             m_audioTrack;
     int             m_delayWriteMessage;
     int             m_movieInfoIndex;
 
-    bool            m_bImmediatSatCom;  // SatCom immediately?
-    bool            m_bBeginSatCom;     // messages SatCom poster?
-    bool            m_bMovieLock;       // movie in progress?
-    bool            m_bSatComLock;      // call of SatCom is possible?
-    bool            m_bEditLock;        // edition in progress?
-    bool            m_bEditFull;        // edition in full screen?
-    bool            m_bPause;       // simulation paused
-    bool            m_bHilite;
-    bool            m_bTrainerPilot;    // remote trainer?
-    bool            m_bSuspend;
-    bool            m_bFriendAim;
-    bool            m_bResetCreate;
-    bool            m_bMapShow;
-    bool            m_bMapImage;
+    bool            m_immediatSatCom;  // SatCom immediately?
+    bool            m_beginSatCom;     // messages SatCom poster?
+    bool            m_movieLock;       // movie in progress?
+    bool            m_satComLock;      // call of SatCom is possible?
+    bool            m_editLock;        // edition in progress?
+    bool            m_editFull;        // edition in full screen?
+    bool            m_pause;       // simulation paused
+    bool            m_hilite;
+    bool            m_trainerPilot;    // remote trainer?
+    bool            m_suspend;
+    bool            m_friendAim;
+    bool            m_resetCreate;
+    bool            m_mapShow;
+    bool            m_mapImage;
     char            m_mapFilename[100];
 
-    Math::Point         m_tooltipPos;
+    Math::Point     m_tooltipPos;
     char            m_tooltipName[100];
     float           m_tooltipTime;
 
@@ -404,28 +410,28 @@ protected:
     char            m_scriptFile[100];
     int             m_endingWinRank;
     int             m_endingLostRank;
-    bool            m_bWinTerminate;
+    bool            m_winTerminate;
 
     float           m_fontSize;
-    Math::Point         m_windowPos;
-    Math::Point         m_windowDim;
+    Math::Point     m_windowPos;
+    Math::Point     m_windowDim;
 
     bool            m_IOPublic;
-    Math::Point         m_IOPos;
-    Math::Point         m_IODim;
+    Math::Point     m_IOPos;
+    Math::Point     m_IODim;
 
     NewScriptName   m_newScriptName[MAXNEWSCRIPTNAME];
 
     float           m_cameraPan;
     float           m_cameraZoom;
 
-    EventType        m_visitLast;
+    EventType       m_visitLast;
     CObject*        m_visitObject;
     CObject*        m_visitArrow;
     float           m_visitTime;
-    float           m_visitParticule;
-    Math::Vector        m_visitPos;
-    Math::Vector        m_visitPosArrow;
+    float           m_visitParticle;
+    Math::Vector    m_visitPos;
+    Math::Vector    m_visitPosArrow;
 
     int             m_endTakeTotal;
     EndTake         m_endTake[10];
@@ -445,14 +451,14 @@ protected:
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
-    Gfx::Color   m_colorRefBot;
-    Gfx::Color   m_colorNewBot;
-    Gfx::Color   m_colorRefAlien;
-    Gfx::Color   m_colorNewAlien;
-    Gfx::Color   m_colorRefGreen;
-    Gfx::Color   m_colorNewGreen;
-    Gfx::Color   m_colorRefWater;
-    Gfx::Color   m_colorNewWater;
+    Gfx::Color      m_colorRefBot;
+    Gfx::Color      m_colorNewBot;
+    Gfx::Color      m_colorRefAlien;
+    Gfx::Color      m_colorNewAlien;
+    Gfx::Color      m_colorRefGreen;
+    Gfx::Color      m_colorNewGreen;
+    Gfx::Color      m_colorRefWater;
+    Gfx::Color      m_colorNewWater;
     float           m_colorShiftWater;
 };
 

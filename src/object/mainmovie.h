@@ -24,8 +24,6 @@
 
 
 class CInstanceManager;
-class CEvent;
-class CInterface;
 class CRobotMain;
 class CSoundInterface;
 
@@ -33,8 +31,7 @@ namespace Gfx
 {
     class CCamera;
     class CEngine;
-} /* Gfx */ 
-
+};
 
 enum MainMovieType
 {
@@ -62,10 +59,8 @@ public:
 protected:
 
 protected:
-    CInstanceManager* m_iMan;
-    CEvent*             m_event;
+    CInstanceManager*   m_iMan;
     Gfx::CEngine*       m_engine;
-    CInterface*         m_interface;
     CRobotMain*         m_main;
     Gfx::CCamera*       m_camera;
     CSoundInterface*    m_sound;

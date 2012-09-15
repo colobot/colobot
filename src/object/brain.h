@@ -178,7 +178,7 @@ protected:
     Ui::CInterface*     m_interface;
     Ui::CDisplayText*   m_displayText;
     CRobotMain*         m_main;
-    CStudio*            m_studio;
+    Ui::CStudio*        m_studio;
     CSoundInterface*    m_sound;
 
     CTaskManager*       m_primaryTask;
