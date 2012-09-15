@@ -64,7 +64,7 @@ bool CKey::Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg
 
     CControl::Create(pos, dim, icon, eventMsg);
     GetResource(RES_EVENT, eventMsg, name);
-    SetName(name);
+    SetName(std::string(name));
 
     return true;
 }

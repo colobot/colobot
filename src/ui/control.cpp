@@ -16,29 +16,7 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-//#include <windows.h>
-#include <stdio.h>
-//#include <d3d.h>
-
-#include "graphics/core/device.h"
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-#include "graphics/engine/engine.h"
-#include "common/language.h"
-#include "common/restext.h"
-//#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "object/robotmain.h"
-//#include "old/particule.h"
-#include "graphics/engine/particle.h"
-#include "common/iman.h"
-//#include "old/text.h"
-#include "graphics/engine/text.h"
-//#include "old/sound.h"
-#include "sound/sound.h"
-#include "ui/control.h"
-
+#include "control.h"
 
 
 namespace Ui {
@@ -60,8 +38,6 @@ CControl::CControl()
     m_fontType    = Gfx::FONT_COLOBOT;
     m_textAlign   = Gfx::TEXT_ALIGN_CENTER; //instead m_justify
 //    m_justif      = 0;
-    m_name[0]     = 0;
-    m_tooltip[0]  = 0;
     m_bFocus      = false;
     m_bCapture    = false;
 
@@ -84,10 +60,11 @@ CControl::~CControl()
 
 bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    char    text[100];
-    char*   p;
+    char text[100];
+    std::string str_text;
 
-    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
+    if ( eventType == EVENT_NULL )
+        eventType = GetUniqueEventType();
 
     m_pos = pos;
     m_dim = dim;
@@ -99,17 +76,13 @@ bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType even
     GlintCreate(pos);
 
     GetResource(RES_EVENT, m_eventType, text);
-    p = strchr(text, '\\');
-    if ( p == 0 )
-    {
+    str_text = std::string(text);
+    auto p = str_text.find("\\");
+    if ( p == std::string::npos )  {
         if ( icon != -1 )
-        {
-            strcpy(m_tooltip, text);
-        }
-    }
-    else
-    {
-        strcpy(m_tooltip, p+1);  // text after "\\"
+            m_tooltip = str_text;
+    } else {
+        m_tooltip = str_text.substr(p + 1);
     }
 
     return true;
@@ -202,41 +175,21 @@ int CControl::GetIcon()
 
 // Management of the button name.
 
-void CControl::SetName(char* name, bool bTooltip)
+void CControl::SetName(std::string name, bool bTooltip)
 {
-    char*   p;
-
-    if ( bTooltip )
-    {
-        p = strchr(name, '\\');
-        if ( p == 0 )
-        {
-            strncpy(m_name, name, 100);
-            m_name[100-1] = 0;
+    if ( bTooltip ) {
+        auto p = name.find("\\");
+        if ( p == std::string::npos )
+            m_name = name;
+        else {
+            m_tooltip = name.substr(p + 1);
+            m_name = name.substr(0, p);
         }
-        else
-        {
-            char    buffer[100];
-
-            strncpy(m_tooltip, p+1, 100);  // text after "\\"
-            m_tooltip[100-1] = 0;
-
-            strncpy(buffer, name, 100);
-            buffer[100-1] = 0;
-            p = strchr(buffer, '\\');
-            if ( p != 0 )  *p = 0;
-            strncpy(m_name, buffer, 100);
-            m_name[100-1] = 0;
-        }
-    }
-    else
-    {
-        strncpy(m_name, name, 100);
-        m_name[100-1] = 0;
-    }
+    } else
+        m_name = name;
 }
 
-char* CControl::GetName()
+std::string CControl::GetName()
 {
     return m_name;
 }
@@ -298,21 +251,21 @@ Gfx::FontType CControl::GetFontType()
 
 // Specifies the tooltip.
 
-bool CControl::SetTooltip(const char* name)
+bool CControl::SetTooltip(std::string name)
 {
-    strcpy(m_tooltip, name);
+    m_tooltip = name;
     return true;
 }
 
-bool CControl::GetTooltip(Math::Point pos, char* name)
+bool CControl::GetTooltip(Math::Point pos, std::string &name)
 {
-    if ( m_tooltip[0] == 0 )  return false;
-    if ( (m_state & STATE_VISIBLE) == 0 )  return false;
+    if ( m_tooltip.length() == 0 ) return false;
+    if ( (m_state & STATE_VISIBLE) == 0 ) return false;
     if ( (m_state & STATE_ENABLE) == 0 )  return false;
     if ( m_state & STATE_DEAD )  return false;
     if ( !Detect(pos) )  return false;
 
-    strcpy(name, m_tooltip);
+    name = m_tooltip;
     return true;
 }
 
@@ -454,7 +407,7 @@ void CControl::GlintFrame(const Event &event)
          (m_state & STATE_ENABLE ) == 0 ||
          (m_state & STATE_VISIBLE) == 0 )  return;
 
-    if ( !m_main->RetGlint() )  return;
+    if ( !m_main->GetGlint() )  return;
 
     m_glintProgress += event.rTime;
 

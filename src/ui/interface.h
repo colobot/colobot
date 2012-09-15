@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include <string>
 
 #include <common/event.h>
 #include <common/struct.h>
@@ -30,29 +31,29 @@
 #include <graphics/engine/camera.h>
 #include <graphics/engine/engine.h>
 
+#include <ui/control.h>
+#include <ui/button.h>
+#include <ui/color.h>
+#include <ui/check.h>
+#include <ui/key.h>
+#include <ui/group.h>
+#include <ui/image.h>
+#include <ui/label.h>
+#include <ui/edit.h>
+#include <ui/editvalue.h>
+#include <ui/scroll.h>
+#include <ui/slider.h>
+#include <ui/list.h>
+#include <ui/shortcut.h>
+#include <ui/compass.h>
+#include <ui/target.h>
+#include <ui/map.h>
+#include <ui/window.h>
+
 namespace Ui {
 
 const int MAXCONTROL = 100;
 
-//Forward declaration
-class CButton;
-class CCheck;
-class CColor;
-class CCompass;
-class CControl;
-class CEdit;
-class CEditValue;
-class CGroup;
-class CImage;
-class CKey;
-class CLabel;
-class CList;
-class CMap;
-class CScroll;
-class CShortcut;
-class CSlider;
-class CTarget;
-class CWindow;
 
 class CInterface
 {
@@ -61,7 +62,7 @@ class CInterface
         ~CInterface();
 
         bool        EventProcess(const Event &event);
-        bool        GetTooltip(Math::Point pos, const char* name);
+        bool        GetTooltip(Math::Point pos, std::string &name);
 
         void        Flush();
         CButton*    CreateButton(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
@@ -81,7 +82,7 @@ class CInterface
 
         CWindow*    CreateWindows(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
         CList*      CreateList(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand=1.2f);
-        CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, const char *name);
+        CLabel*     CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name);
 
         bool        DeleteControl(EventType eventMsg);
         CControl*   SearchControl(EventType eventMsg);

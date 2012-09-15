@@ -1,11 +1,14 @@
 # CBot shared library is built separately
 add_subdirectory(CBot)
+<<<<<<< HEAD
 
 # Tools directory is built separately
 add_subdirectory(tools)
 
 # Tests
 add_subdirectory(graphics/engine/test)
+=======
+>>>>>>> dev-ui
 
 
 # Configure options
@@ -156,10 +159,10 @@ graphics/opengl/gldevice.cpp
 # ui/check.cpp
 # ui/color.cpp
 # ui/compass.cpp
-# ui/control.cpp
+ui/control.cpp
 # ui/displayinfo.cpp
 # ui/displaytext.cpp
-# ui/edit.cpp
+ui/edit.cpp
 # ui/editvalue.cpp
 # ui/gauge.cpp
 # ui/group.cpp

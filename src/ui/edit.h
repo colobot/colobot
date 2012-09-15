@@ -24,15 +24,26 @@
 #pragma once
 
 
-//#include "common/struct.h"
-#include "ui/control.h"
+#include <ui/control.h>
+#include <ui/scroll.h>
 
-namespace Gfx{
-class CEngine;
-};
+#include <graphics/engine/engine.h>
+#include <graphics/engine/text.h>
+
+#include <common/language.h>
+#include <common/event.h>
+#include <common/misc.h>
+#include <common/iman.h>
+#include <common/restext.h>
+
+#include <app/app.h>
+
+#include <vector>
+
+
 
 namespace Ui {
-class CScroll;
+
 
 
 //! maximum number of characters in CBOT edit
@@ -128,13 +139,13 @@ public:
     bool        EventProcess(const Event &event);
     void        Draw();
 
-    void        SetText(char *text, bool bNew=true);
+    void        SetText(const char *text, bool bNew=true);
     void        GetText(char *buffer, int max);
     char*       GetText();
     int         GetTextLength();
 
-    bool        ReadText(char *filename, int addSize=0);
-    bool        WriteText(char *filename);
+    bool        ReadText(const char *filename, int addSize=0);
+    bool        WriteText(const char *filename);
 
     void        SetMaxChar(int max);
     int         GetMaxChar();
@@ -176,7 +187,7 @@ public:
     bool        Undo();
 
     void        HyperFlush();
-    void        HyperHome(char *filename);
+    void        HyperHome(const char *filename);
     bool        HyperTest(EventType event);
     bool        HyperGo(EventType event);
 
@@ -195,15 +206,15 @@ protected:
     int         MouseDetect(Math::Point mouse);
     void        MoveAdjust();
 
-    void        HyperJump(char *name, char *marker);
-    bool        HyperAdd(char *filename, int firstLine);
+    void        HyperJump(const char *name, const char *marker);
+    bool        HyperAdd(const char *filename, int firstLine);
 
-    void        DrawImage(Math::Point pos, char *name, float width, float offset, float height, int nbLine);
+    void        DrawImage(Math::Point pos, const char *name, float width, float offset, float height, int nbLine);
     void        DrawBack(Math::Point pos, Math::Point dim);
     void        DrawPart(Math::Point pos, Math::Point dim, int icon);
 
     void        FreeImage();
-    void        LoadImage(char *name);
+    void        LoadImage(const char *name);
     void        Scroll(int pos, bool bAdjustCursor);
     void        Scroll();
     void        MoveChar(int move, bool bWord, bool bSelect);
@@ -232,10 +243,11 @@ protected:
 
     int     m_maxChar;          // max length of the buffer m_text
     char*       m_text;             // text (without zero terminator)
-    char*       m_format;           // format characters
+    std::vector<Gfx::FontMetaChar> m_format;           // format characters
     int     m_len;              // length used in m_text
     int     m_cursor1;          // offset cursor
     int     m_cursor2;          // offset cursor
+    CApplication *m_app;
 
     bool        m_bMulti;           // true -> multi-line
     bool        m_bEdit;            // true -> editable

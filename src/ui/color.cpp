@@ -16,21 +16,15 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-//#include <windows.h>
-//#include <stdio.h>
-//#include <d3d.h>
+#include "color.h"
 
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-#include "graphics/engine/engine.h"
-#include "graphics/core/device.h"
-//#include "common/language.h"
-//#include "old/math3d.h"
 #include "common/event.h"
-#include "common/misc.h"
 #include "common/iman.h"
+#include "common/misc.h"
 #include "common/restext.h"
-#include "ui/color.h"
+
+#include "graphics/core/device.h"
+#include "graphics/engine/engine.h"
 
 
 namespace Ui {

@@ -19,39 +19,36 @@
 
 #pragma once
 
-
-#include "ui/control.h"
-
-namespace Gfx{
-class CEngine;
-}
+#include "control.h"
 
 namespace Ui {
-class CButton : public CControl
-{
-public:
-    CButton();
-    virtual ~CButton();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool    EventProcess(const Event &event);
+    class CButton : public CControl
+    {
+    public:
+        CButton();
+        virtual ~CButton();
 
-    void    Draw();
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    void    SetImmediat(bool bRepeat);
-    bool    GetImmediat();
+        bool    EventProcess(const Event &event);
 
-    void    SetRepeat(bool bRepeat);
-    bool    GetRepeat();
+        void    Draw();
 
-protected:
+        void    SetImmediat(bool bRepeat);
+        bool    GetImmediat();
 
-protected:
-    bool    m_bCapture;
-    bool    m_bImmediat;
-    bool    m_bRepeat;
-    float   m_repeat;
-};
+        void    SetRepeat(bool bRepeat);
+        bool    GetRepeat();
+
+    protected:
+
+    protected:
+        bool    m_bCapture;
+        bool    m_bImmediat;
+        bool    m_bRepeat;
+        float   m_repeat;
+    };
 
 }

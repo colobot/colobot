@@ -25,10 +25,10 @@
 
 // Procedures.
 
-extern const char* GetObjectName(ObjectType type);
-extern const char* GetObjectAlias(ObjectType type);
-extern const char* GetHelpFilename(ObjectType type);
-extern const char* GetHelpFilename(const char *token);
+extern char* GetObjectName(ObjectType type);
+extern char* GetObjectAlias(ObjectType type);
+extern char* GetHelpFilename(ObjectType type);
+extern char* GetHelpFilename(const char *token);
 extern bool IsType(const char *token);
 extern bool IsFunction(const char *token);
 extern char* GetHelpText(const char *token);

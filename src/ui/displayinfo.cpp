@@ -18,37 +18,32 @@
 // displayinfo.cpp
 
 
-//#include <windows.h>
-//#include <stdio.h>
-//#include <d3d.h>
+#include "displayinfo.h"
 
-//#include "common/struct.h"
-//#include "old/d3dengine.h"
-//#include "old/d3dmath.h"
-#include "graphics/engine/engine.h"
-#include "common/language.h"
-#include "common/event.h"
-#include "common/misc.h"
+#include "interface.h"
+#include "button.h"
+#include "slider.h"
+#include "edit.h"
+#include "group.h"
+#include "window.h"
+
 #include "common/iman.h"
+#include "common/language.h"
+#include "common/misc.h"
 #include "common/restext.h"
-//#include "old/math3d.h"
-#include "object/robotmain.h"
-//#include "old/camera.h"
+
+#include "graphics/core/light.h"
+#include "graphics/engine/engine.h"
+#include "graphics/engine/lightman.h"
+#include "graphics/engine/particle.h"
+
 #include "object/object.h"
+#include "object/robotmain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motiontoto.h"
-#include "ui/interface.h"
-#include "ui/button.h"
-#include "ui/slider.h"
-#include "ui/edit.h"
-#include "ui/group.h"
-#include "ui/window.h"
-//#include "old/particule.h"
-#include "graphics/engine/particle.h"
-//#include "old/light.h"
-//#include "old/text.h"
+
 #include "script/cbottoken.h"
-#include "ui/displayinfo.h"
+
 
 
 
@@ -67,7 +62,7 @@ CDisplayInfo::CDisplayInfo()
     m_main      = static_cast <CRobotMain*> (m_iMan->SearchInstance(CLASS_MAIN));
     m_camera    = static_cast <Gfx::CCamera*> (m_iMan->SearchInstance(CLASS_CAMERA));
     m_particle = static_cast <Gfx::CParticle*> (m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_light     = static_cast <Gfx::CLight*> (m_iMan->SearchInstance(CLASS_LIGHT));
+    m_light     = static_cast <Gfx::CLightManager*> (m_iMan->SearchInstance(CLASS_LIGHT));
 
     m_bInfoMaximized = true;
     m_bInfoMinimized = false;
@@ -338,9 +333,9 @@ void CDisplayInfo::HyperUpdate()
 
 // Beginning of the display of information.
 
-void CDisplayInfo::StartDisplayInfo(char *filename, int index, bool bSoluce)
+void CDisplayInfo::StartDisplayInfo(std::string filename, int index, bool bSoluce)
 {
-    Gfx::CLight       light;
+    Gfx::Light         light;
     Math::Point         pos, dim;
     Ui::CWindow*        pw;
     Ui::CEdit*          edit;
@@ -389,8 +384,8 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, bool bSoluce)
     edit->SetMaxChar(10000);
     edit->SetFontType(Gfx::FONT_COLOBOT);
     edit->SetSoluceMode(bSoluce);
-    edit->ReadText(filename);
-    edit->HyperHome(filename);
+    edit->ReadText(filename.c_str());
+    edit->HyperHome(filename.c_str());
     edit->SetEditCap(false);  // just to see!
     edit->SetHiliteCap(false);
     edit->SetFocus(true);
@@ -435,7 +430,7 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, bool bSoluce)
     button->SetState(STATE_SHADOW);
     slider = pw->CreateSlider(pos, dim, 0, EVENT_STUDIO_SIZE);
     slider->SetState(STATE_SHADOW);
-    slider->SetVisibleValue((m_main->RetFontSize()-9.0f)/6.0f);
+    slider->SetVisibleValue((m_main->GetFontSize()-9.0f)/6.0f);
     button = pw->CreateButton(pos, dim, 61, EVENT_HYPER_COPY);
     button->SetState(STATE_SHADOW);
     HyperUpdate();
@@ -464,16 +459,14 @@ void CDisplayInfo::StartDisplayInfo(char *filename, int index, bool bSoluce)
             toto->StartDisplayInfo();
         }
     }
-// TODO
-    ZeroMemory(&light, sizeof(light));
-    light.dltType      = D3DLIGHT_DIRECTIONAL;
-    light.dcvDiffuse.r = 1.0f;
-    light.dcvDiffuse.g = 1.0f;
-    light.dcvDiffuse.b = 1.0f;
-    light.dvDirection  = D3DVECTOR(1.0f, 0.0f, 1.0f);
+
+    light.type    = Gfx::LIGHT_DIRECTIONAL;
+    light.diffuse = Gfx::Color(1.0f, 0.1f, 0.1f);
+    light.direction  = Math::Vector(1.0f, 0.0f, 1.0f);
+
     m_lightSuppl = m_light->CreateLight();
     m_light->SetLight(m_lightSuppl, light);
-    m_light->SetLightExcluType(m_lightSuppl, TYPETERRAIN);
+    m_light->SetLightExcludeType(m_lightSuppl, Gfx::ENG_OBJTYPE_TERRAIN);
 }
 
 // Repositions all controls editing.
@@ -719,7 +712,7 @@ void CDisplayInfo::UpdateIndexButton()
     if ( button != 0 )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_HUSTON);
-        filename = m_main->RetDisplayInfoName(SATCOM_HUSTON);
+        filename = m_main->GetDisplayInfoName(SATCOM_HUSTON);
         button->SetState(STATE_VISIBLE, filename[0]!=0);
     }
 
@@ -727,7 +720,7 @@ void CDisplayInfo::UpdateIndexButton()
     if ( button != 0 )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_SAT);
-        filename = m_main->RetDisplayInfoName(SATCOM_SAT);
+        filename = m_main->GetDisplayInfoName(SATCOM_SAT);
         button->SetState(STATE_VISIBLE, filename[0]!=0);
     }
 
@@ -735,7 +728,7 @@ void CDisplayInfo::UpdateIndexButton()
 //? if ( button != 0 )
 //? {
 //?     button->SetState(STATE_CHECK, m_index==SATCOM_OBJECT);
-//?     filename = m_main->RetDisplayInfoName(SATCOM_OBJECT);
+//?     filename = m_main->GetDisplayInfoName(SATCOM_OBJECT);
 //?     button->SetState(STATE_VISIBLE, filename[0]!=0);
 //? }
 
@@ -744,7 +737,7 @@ void CDisplayInfo::UpdateIndexButton()
     if ( button != 0 )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_LOADING);
-        loading = m_main->RetDisplayInfoName(SATCOM_LOADING);
+        loading = m_main->GetDisplayInfoName(SATCOM_LOADING);
         button->SetState(STATE_VISIBLE, loading[0]!=0);
     }
 
@@ -752,7 +745,7 @@ void CDisplayInfo::UpdateIndexButton()
     if ( button != 0 )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_PROG);
-        filename = m_main->RetDisplayInfoName(SATCOM_PROG);
+        filename = m_main->GetDisplayInfoName(SATCOM_PROG);
         button->SetState(STATE_VISIBLE, filename[0]!=0 && (m_index==SATCOM_LOADING||m_index==SATCOM_PROG||(loading!=0&&loading[0]==0)));
     }
 
@@ -760,7 +753,7 @@ void CDisplayInfo::UpdateIndexButton()
     if ( button != 0 )
     {
         button->SetState(STATE_CHECK, m_index==SATCOM_SOLUCE);
-        filename = m_main->RetDisplayInfoName(SATCOM_SOLUCE);
+        filename = m_main->GetDisplayInfoName(SATCOM_SOLUCE);
         button->SetState(STATE_VISIBLE, filename[0]!=0 && m_bSoluce);
     }
 
@@ -858,12 +851,12 @@ void CDisplayInfo::StopDisplayInfo()
     m_engine->SetDrawWorld(true);  // draws all on the interface
     m_engine->SetDrawFront(false);  // draws nothing on the interface
     m_particle->SetFrameUpdate(Gfx::SH_WORLD, true);
-    m_particle->FlushParticule(Gfx::SH_FRONT);
-    m_particle->FlushParticule(Gfx::SH_INTERFACE);
+    m_particle->FlushParticle(Gfx::SH_FRONT);
+    m_particle->FlushParticle(Gfx::SH_INTERFACE);
 
     if ( m_toto != 0 )
     {
-        toto = (CMotionToto*)m_toto->GetMotion();
+        toto = static_cast<CMotionToto*>(m_toto->GetMotion());
         if ( toto != 0 )
         {
             toto->StopDisplayInfo();
@@ -915,7 +908,7 @@ void CDisplayInfo::ViewDisplayInfo()
 {
     Ui::CWindow*    pw;
     Ui::CEdit*      edit;
-    Math::Point       dim;
+    Math::IntPoint       dim;
 
     pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
     if ( pw == 0 )  return;
@@ -923,7 +916,7 @@ void CDisplayInfo::ViewDisplayInfo()
     edit = static_cast<Ui::CEdit*>(pw->SearchControl(EVENT_EDIT1));
     if ( edit == 0 )  return;
 
-    dim = m_engine->GetDim();
+    dim = m_engine->GetWindowSize();
     edit->SetFontSize(m_main->GetFontSize()/(dim.x / 640.0f));
 }
 

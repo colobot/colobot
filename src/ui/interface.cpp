@@ -162,7 +162,7 @@ CImage* CInterface::CreateImage(Math::Point pos, Math::Point dim, int icon, Even
 
 // Creates a new label.
 
-CLabel* CInterface::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, const char *name)
+CLabel* CInterface::CreateLabel(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, std::string name)
 {
     CLabel* pc = CreateControl<CLabel>(pos, dim, icon, eventMsg);
     if (pc != nullptr)
@@ -297,7 +297,7 @@ bool CInterface::EventProcess(const Event &event)
 
 // Gives the tooltip binding to the window.
 
-bool CInterface::GetTooltip(Math::Point pos, const char* name)
+bool CInterface::GetTooltip(Math::Point pos, std::string &name)
 {
     for (int i = MAXCONTROL-1; i >= 0; i--) {
         if (m_table[i] != nullptr) {

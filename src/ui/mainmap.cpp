@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,37 +18,21 @@
 // mainmap.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+#include <ui/mainmap.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "common/global.h"
-#include "common/event.h"
-#include "common/iman.h"
-#include "ui/interface.h"
-#include "ui/map.h"
-#include "ui/image.h"
-#include "ui/group.h"
-#include "ui/slider.h"
-#include "ui/scroll.h"
-#include "ui/window.h"
-#include "ui/mainmap.h"
 
+namespace Ui {
 
 
 const float ZOOM_MIN = 1.0f;
 const float ZOOM_MAX = 16.0f;
 
 
-
 // Constructor of the application card.
 
-CMainMap::CMainMap(CInstanceManager* iMan)
+CMainMap::CMainMap()
 {
-    m_iMan = iMan;
+    m_iMan = CInstanceManager::GetInstancePointer();
     m_iMan->AddInstance(CLASS_MAP, this);
 
     m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
@@ -73,8 +58,7 @@ void CMainMap::CreateMap()
     Math::Point     pos, dim;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )
-    {
+    if (pw == nullptr) {
         pos.x = 0.0f;
         pos.y = 0.0f;
         dim.x = 0.0f;
@@ -82,10 +66,10 @@ void CMainMap::CreateMap()
         pw = m_interface->CreateWindows(pos, dim, 10, EVENT_WINDOW1);
     }
 
-    dim.x = 10.0f/640.0f;
-    dim.y = 10.0f/480.0f;
-    pos.x = 10.0f/640.0f;
-    pos.y = 10.0f/480.0f;
+    dim.x = 10.0f / 640.0f;
+    dim.y = 10.0f / 480.0f;
+    pos.x = 10.0f / 640.0f;
+    pos.y = 10.0f / 480.0f;
     pw->CreateMap   (pos, dim, 2, EVENT_OBJECT_MAP);
     pw->CreateSlider(pos, dim, 0, EVENT_OBJECT_MAPZOOM);
 
@@ -94,16 +78,18 @@ void CMainMap::CreateMap()
 
 // Indicates whether the mini-map should display a still image.
 
-void CMainMap::SetFixImage(char *filename)
+void CMainMap::SetFixImage(const char *filename)
 {
     CWindow*    pw;
     CMap*       pm;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
 
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm == 0 )  return;
+    if (pm == nullptr)
+        return;
 
     pw->DeleteControl(EVENT_OBJECT_MAPZOOM);
     m_bFixImage = true;
@@ -113,17 +99,17 @@ void CMainMap::SetFixImage(char *filename)
 
 // Choosing colors of soil and water for the mini-map.
 
-void CMainMap::FloorColorMap(D3DCOLORVALUE floor, D3DCOLORVALUE water)
+void CMainMap::FloorColorMap(Gfx::Color floor, Gfx::Color water)
 {
     CWindow*    pw;
     CMap*       pm;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
 
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm != 0 )
-    {
+    if (pm != nullptr) {
         pm->SetFloorColor(floor);
         pm->SetWaterColor(water);
     }
@@ -138,25 +124,19 @@ void CMainMap::ShowMap(bool bShow)
     CSlider*    ps;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
 
-    if ( bShow )
-    {
+    if (bShow) {
         DimMap();
-    }
-    else
-    {
+    } else {
         pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-        if ( pm != 0 )
-        {
+        if (pm != nullptr)
             pm->ClearState(STATE_VISIBLE);
-        }
 
         ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-        if ( ps != 0 )
-        {
+        if (ps != nullptr)
             ps->ClearState(STATE_VISIBLE);
-        }
     }
 }
 
@@ -171,9 +151,11 @@ void CMainMap::DimMap()
     float       value;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm == 0 )  return;
+    if (pm == nullptr)
+        return;
 
     pm->SetState(STATE_VISIBLE, (m_mapMode != 0));
 
@@ -185,19 +167,18 @@ void CMainMap::DimMap()
     pm->SetDim(dim);
 
     ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-    if ( ps != 0 )
-    {
+    if (ps != nullptr) {
         ps->SetState(STATE_VISIBLE, (m_mapMode != 0));
 
         dim.x = SCROLL_WIDTH;
-        dim.y =  66.0f/480.0f;
-        pos.x = 523.0f/640.0f;
-        pos.y =   3.0f/480.0f;
+        dim.y =  66.0f / 480.0f;
+        pos.x = 523.0f / 640.0f;
+        pos.y =   3.0f / 480.0f;
         ps->SetPos(pos);
         ps->SetDim(dim);
 
-        value = pm->RetZoom();
-        value = (value-ZOOM_MIN)/(ZOOM_MAX-ZOOM_MIN);
+        value = pm->GetZoom();
+        value = (value-ZOOM_MIN) / (ZOOM_MAX-ZOOM_MIN);
         value = powf(value, 0.5f);
         ps->SetVisibleValue(value);
         ps->SetArrowStep(0.2f);
@@ -206,22 +187,25 @@ void CMainMap::DimMap()
 
 // Returns the current zoom of the minimap.
 
-float CMainMap::RetZoomMap()
+float CMainMap::GetZoomMap()
 {
     CWindow*    pw;
     CMap*       pm;
     CSlider*    ps;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return ZOOM_MIN;
+    if (pw == nullptr)
+        return ZOOM_MIN;
 
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm == 0 )  return ZOOM_MIN;
+    if (pm == nullptr)
+        return ZOOM_MIN;
 
     ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-    if ( ps == 0 )  return ZOOM_MIN;
+    if (ps == nullptr)
+        return ZOOM_MIN;
 
-    return pm->RetZoom();
+    return pm->GetZoom();
 }
 
 // Zoom the mini-map of any factor.
@@ -233,15 +217,20 @@ void CMainMap::ZoomMap(float zoom)
     CSlider*    ps;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm == 0 )  return;
+    if (pm == nullptr)
+        return;
 
     ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-    if ( ps == 0 )  return;
+    if (ps == nullptr)
+        return;
 
-    if ( zoom < ZOOM_MIN )  zoom = ZOOM_MIN;
-    if ( zoom > ZOOM_MAX )  zoom = ZOOM_MAX;
+    if (zoom < ZOOM_MIN)
+        zoom = ZOOM_MIN;
+    if (zoom > ZOOM_MAX)
+        zoom = ZOOM_MAX;
     pm->SetZoom(zoom);
 
     DimMap();
@@ -257,16 +246,20 @@ void CMainMap::ZoomMap()
     float       zoom;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm == 0 )  return;
+    if (pm == nullptr)
+        return;
 
     ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-    if ( ps == 0 )  return;
+    if (ps == nullptr)
+        return;
 
-    zoom = ps->RetVisibleValue();
+
+    zoom = ps->GetVisibleValue();
     zoom = powf(zoom, 2.0f);
-    zoom = ZOOM_MIN+zoom*(ZOOM_MAX-ZOOM_MIN);
+    zoom = ZOOM_MIN+zoom*(ZOOM_MAX - ZOOM_MIN);
     pm->SetZoom(zoom);
 
     DimMap();
@@ -281,19 +274,16 @@ void CMainMap::MapEnable(bool bEnable)
     CSlider*    ps;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
 
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm != 0 )
-    {
+    if (pm != nullptr)
         pm->SetEnable(bEnable);
-    }
 
     ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
-    if ( ps != 0 )
-    {
+    if (ps != nullptr)
         ps->SetState(STATE_ENABLE, bEnable);
-    }
 }
 
 // Specifies the type of icon for the selected object.
@@ -304,10 +294,12 @@ void CMainMap::SetToy(bool bToy)
     CMap*       pm;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
 
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm == 0 )  return;
+    if (pm == nullptr)
+        return;
 
     pm->SetToy(bToy);
 }
@@ -321,10 +313,12 @@ void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
     CMap*       pm;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
 
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm == 0 )  return;
+    if (pm == nullptr)
+        return;
 
     pm->SetZoom(zoom);
     pm->SetOffset(ox, oy);
@@ -341,25 +335,24 @@ void CMainMap::UpdateMap()
     CMap*       pm;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
 
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm != 0 )
-    {
+    if (pm != nullptr)
         pm->UpdateTerrain();
-    }
 }
 
 // Indicates if the mini-map is visible.
 
-bool CMainMap::RetShowMap()
+bool CMainMap::GetShowMap()
 {
     return ( m_mapMode != 0 );
 }
 
 // Indicates whether the mini-map displays a still image.
 
-bool CMainMap::RetFixImage()
+bool CMainMap::GetFixImage()
 {
     return m_bFixImage;
 }
@@ -373,30 +366,32 @@ CObject* CMainMap::DetectMap(Math::Point pos, bool &bInMap)
     CMap*       pm;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return 0;
+    if (pw == nullptr)
+        return 0;
 
     bInMap = false;
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm == 0 )  return 0;
+    if (pm == nullptr)
+        return 0;
     return pm->DetectObject(pos, bInMap);
 }
 
 
 // Indicates the object with the mouse hovers over.
 
-void CMainMap::SetHilite(CObject* pObj)
+void CMainMap::SetHighlight(CObject* pObj)
 {
-    CWindow*    pw;
+    CWindow* pw;
     CMap*   pm;
 
     pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
-    if ( pw == 0 )  return;
+    if (pw == nullptr)
+        return;
 
     pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
-    if ( pm != 0 )
-    {
-        pm->SetHilite(pObj);
-    }
+    if (pm != nullptr)
+        pm->SetHighlight(pObj);
 }
 
 
+}

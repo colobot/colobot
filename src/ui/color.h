@@ -20,41 +20,40 @@
 #pragma once
 
 
-#include "ui/control.h"
-//#include "graphics/engine/engine.h"
+#include "control.h"
 
 namespace Gfx{
-class CEngine;
-struct Color;
+    class CEngine;
+    struct Color;
 }
 
 namespace Ui {
-class CColor : public CControl
-{
-public:
-//    CColor(CInstanceManager* iMan);
-    CColor();
-    virtual   ~CColor();
+    class CColor : public CControl
+    {
+    public:
+    //    CColor(CInstanceManager* iMan);
+        CColor();
+        virtual   ~CColor();
 
-    bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+        bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool      EventProcess(const Event &event);
+        bool      EventProcess(const Event &event);
 
-    void      Draw();
+        void      Draw();
 
-    void      SetRepeat(bool bRepeat);
-    bool      GetRepeat();
+        void      SetRepeat(bool bRepeat);
+        bool      GetRepeat();
 
-    void       SetColor(Gfx::Color color);
-    Gfx::Color GetColor();
+        void       SetColor(Gfx::Color color);
+        Gfx::Color GetColor();
 
-protected:
+    protected:
 
-protected:
-    bool           m_bRepeat;
-    float          m_repeat;
-    Gfx::Color	   m_color;
-};
+    protected:
+        bool           m_bRepeat;
+        float          m_repeat;
+        Gfx::Color	   m_color;
+    };
 
 
 }

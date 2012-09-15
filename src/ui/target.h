@@ -18,10 +18,20 @@
 
 #pragma once
 
+#include <string>
 
 #include <ui/control.h>
 
+#include <common/misc.h>
+#include <common/iman.h>
+#include <common/restext.h>
 #include <common/event.h>
+
+#include <graphics/engine/engine.h>
+
+#include <object/robotmain.h>
+#include <object/object.h>
+
 
 namespace Ui {
 
@@ -35,7 +45,7 @@ class CTarget : public CControl
 
         bool        EventProcess(const Event &event);
         void        Draw();
-        bool        GetTooltip(Math::Point pos, char* name);
+        bool        GetTooltip(Math::Point pos, std::string &name);
 
     protected:
         CObject*    DetectFriendObject(Math::Point pos);

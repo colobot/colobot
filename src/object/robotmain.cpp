@@ -634,7 +634,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     m_displayInfo = 0;
 
     m_engine->SetTerrain(m_terrain);
-    m_filesDir = m_dialog->RetFilesDir();
+    m_filesDir = m_dialog->GetFilesDir();
 
     m_time = 0.0f;
     m_gameTime = 0.0f;
@@ -657,7 +657,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan)
     m_bEditLock     = false;
     m_bEditFull     = false;
     m_bPause        = false;
-    m_bHilite       = false;
+    m_bHighlight       = false;
     m_bFreePhoto    = false;
     m_bShowPos      = false;
     m_bSelectInsect = false;
@@ -869,8 +869,8 @@ void CRobotMain::ChangePhase(Phase phase)
         if ( m_gameTime > 10.0f )  // did you play at least 10 seconds?
 #endif
         {
-            rank = m_dialog->RetSceneRank();
-            numTry = m_dialog->RetGamerInfoTry(rank);
+            rank = m_dialog->GetSceneRank();
+            numTry = m_dialog->GetGamerInfoTry(rank);
             m_dialog->SetGamerInfoTry(rank, numTry+1);
             m_dialog->WriteGamerInfo();
         }
@@ -878,7 +878,7 @@ void CRobotMain::ChangePhase(Phase phase)
 
     if ( phase == PHASE_WIN )  // wins a simulation?
     {
-        rank = m_dialog->RetSceneRank();
+        rank = m_dialog->GetSceneRank();
         m_dialog->SetGamerInfoPassed(rank, true);
         m_dialog->NextMission();  // passes to the next mission
         m_dialog->WriteGamerInfo();
@@ -1060,11 +1060,11 @@ void CRobotMain::ChangePhase(Phase phase)
         m_engine->FreeTexture("inter01c.tga");
         m_engine->FreeTexture("inter01d.tga");
 
-        read = m_dialog->RetSceneRead();
+        read = m_dialog->GetSceneRead();
         bLoading = (read[0] != 0);
 
         m_map->CreateMap();
-        CreateScene(m_dialog->RetSceneSoluce(), false, false);  // interactive scene
+        CreateScene(m_dialog->GetSceneSoluce(), false, false);  // interactive scene
         if ( m_bMapImage )
         {
             m_map->SetFixImage(m_mapFilename);
@@ -1116,7 +1116,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 pe = m_interface->CreateEdit(pos, ddim, 0, EVENT_EDIT0);
                 pe->SetFontType(FONT_COLOBOT);
                 pe->SetEditCap(false);
-                pe->SetHiliteCap(false);
+                pe->SetHighlightCap(false);
                 pe->ReadText("help\\teenw.txt");
 #else
                 pos.x = ox+sx*3;  pos.y = oy+sy*0.2f;
@@ -1125,7 +1125,7 @@ void CRobotMain::ChangePhase(Phase phase)
                 pe->SetGenericMode(true);
                 pe->SetFontType(FONT_COLOBOT);
                 pe->SetEditCap(false);
-                pe->SetHiliteCap(false);
+                pe->SetHighlightCap(false);
                 pe->ReadText("help\\win.txt");
 #endif
             }
@@ -1195,7 +1195,7 @@ bool CRobotMain::EventProcess(const Event &event)
     {
         if ( !m_movie->EventProcess(event) )  // end of the movie?
         {
-            type = m_movie->RetStopType();
+            type = m_movie->GetStopType();
             if ( type == MM_SATCOMopen )
             {
                 ChangePause(false);
@@ -1268,7 +1268,7 @@ bool CRobotMain::EventProcess(const Event &event)
         if ( event.event == EVENT_MOUSEMOVE )
         {
             m_lastMousePos = event.pos;
-            HiliteObject(event.pos);
+            HighlightObject(event.pos);
         }
         return false;
     }
@@ -1281,7 +1281,7 @@ bool CRobotMain::EventProcess(const Event &event)
     if ( event.event == EVENT_MOUSEMOVE )
     {
         m_lastMousePos = event.pos;
-        HiliteObject(event.pos);
+        HighlightObject(event.pos);
     }
 
     if ( m_displayInfo != 0 )  // current info?
@@ -1290,10 +1290,10 @@ bool CRobotMain::EventProcess(const Event &event)
 
         if ( event.event == EVENT_KEYDOWN )
         {
-            if ( event.param == m_engine->RetKey(KEYRANK_HELP, 0) ||
-                 event.param == m_engine->RetKey(KEYRANK_HELP, 1) ||
-                 event.param == m_engine->RetKey(KEYRANK_PROG, 0) ||
-                 event.param == m_engine->RetKey(KEYRANK_PROG, 1) ||
+            if ( event.param == m_engine->GetKey(KEYRANK_HELP, 0) ||
+                 event.param == m_engine->GetKey(KEYRANK_HELP, 1) ||
+                 event.param == m_engine->GetKey(KEYRANK_PROG, 0) ||
+                 event.param == m_engine->GetKey(KEYRANK_PROG, 1) ||
                  event.param == VK_ESCAPE )
             {
                 StopDisplayInfo();
@@ -1320,7 +1320,7 @@ bool CRobotMain::EventProcess(const Event &event)
         {
             case EVENT_KEYDOWN:
                 KeyCamera(event.event, event.param);
-                HiliteClear();
+                HighlightClear();
                 if ( event.param == VK_F11 )
                 {
                     m_particle->WriteWheelTrace("Savegame\\t.bmp", 256, 256, Math::Vector(16.0f, 0.0f, -368.0f), Math::Vector(140.0f, 0.0f, -248.0f));
@@ -1328,14 +1328,14 @@ bool CRobotMain::EventProcess(const Event &event)
                 }
                 if ( m_bEditLock )  // current edition?
                 {
-                    if ( event.param == m_engine->RetKey(KEYRANK_HELP, 0) ||
-                         event.param == m_engine->RetKey(KEYRANK_HELP, 1) )
+                    if ( event.param == m_engine->GetKey(KEYRANK_HELP, 0) ||
+                         event.param == m_engine->GetKey(KEYRANK_HELP, 1) )
                     {
                         StartDisplayInfo(SATCOM_HUSTON, false);
                         return false;
                     }
-                    if ( event.param == m_engine->RetKey(KEYRANK_PROG, 0) ||
-                         event.param == m_engine->RetKey(KEYRANK_PROG, 1) )
+                    if ( event.param == m_engine->GetKey(KEYRANK_PROG, 0) ||
+                         event.param == m_engine->GetKey(KEYRANK_PROG, 1) )
                     {
                         StartDisplayInfo(SATCOM_PROG, false);
                         return false;
@@ -1344,31 +1344,31 @@ bool CRobotMain::EventProcess(const Event &event)
                 }
                 if ( m_bMovieLock )  // current movie?
                 {
-                    if ( event.param == m_engine->RetKey(KEYRANK_QUIT, 0) ||
-                         event.param == m_engine->RetKey(KEYRANK_QUIT, 1) ||
+                    if ( event.param == m_engine->GetKey(KEYRANK_QUIT, 0) ||
+                         event.param == m_engine->GetKey(KEYRANK_QUIT, 1) ||
                          event.param == VK_ESCAPE )
                     {
                         AbortMovie();
                     }
                     return false;
                 }
-                if ( m_camera->RetType() == CAMERA_VISIT )
+                if ( m_camera->GetType() == CAMERA_VISIT )
                 {
-                    if ( event.param == m_engine->RetKey(KEYRANK_VISIT, 0) ||
-                         event.param == m_engine->RetKey(KEYRANK_VISIT, 1) )
+                    if ( event.param == m_engine->GetKey(KEYRANK_VISIT, 0) ||
+                         event.param == m_engine->GetKey(KEYRANK_VISIT, 1) )
                     {
                         StartDisplayVisit(EVENT_NULL);
                     }
-                    if ( event.param == m_engine->RetKey(KEYRANK_QUIT, 0) ||
-                         event.param == m_engine->RetKey(KEYRANK_QUIT, 1) ||
+                    if ( event.param == m_engine->GetKey(KEYRANK_QUIT, 0) ||
+                         event.param == m_engine->GetKey(KEYRANK_QUIT, 1) ||
                          event.param == VK_ESCAPE )
                     {
                         StopDisplayVisit();
                     }
                     return false;
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_QUIT, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_QUIT, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_QUIT, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_QUIT, 1) )
                 {
                     if ( m_movie->IsExist() )
                     {
@@ -1390,70 +1390,70 @@ bool CRobotMain::EventProcess(const Event &event)
                 if ( event.param == VK_PAUSE )
                 {
                     if ( !m_bMovieLock && !m_bEditLock && !m_bCmdEdit &&
-                         m_camera->RetType() != CAMERA_VISIT &&
+                         m_camera->GetType() != CAMERA_VISIT &&
                          !m_movie->IsExist() )
                     {
-                        ChangePause(!m_engine->RetPause());
+                        ChangePause(!m_engine->GetPause());
                     }
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_CAMERA, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_CAMERA, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_CAMERA, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_CAMERA, 1) )
                 {
                     ChangeCamera();
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_DESEL, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_DESEL, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_DESEL, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_DESEL, 1) )
                 {
                     if ( m_bShortCut )
                     {
                         DeselectObject();
                     }
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_HUMAN, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_HUMAN, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_HUMAN, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_HUMAN, 1) )
                 {
                     SelectHuman();
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_NEXT, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_NEXT, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_NEXT, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_NEXT, 1) )
                 {
                     if ( m_bShortCut )
                     {
                         m_short->SelectNext();
                     }
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_HELP, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_HELP, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_HELP, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_HELP, 1) )
                 {
                     StartDisplayInfo(SATCOM_HUSTON, true);
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_PROG, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_PROG, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_PROG, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_PROG, 1) )
                 {
                     StartDisplayInfo(SATCOM_PROG, true);
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_VISIT, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_VISIT, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_VISIT, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_VISIT, 1) )
                 {
                     StartDisplayVisit(EVENT_NULL);
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_SPEED10, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_SPEED10, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_SPEED10, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_SPEED10, 1) )
                 {
                     SetSpeed(1.0f);
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_SPEED15, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_SPEED15, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_SPEED15, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_SPEED15, 1) )
                 {
                     SetSpeed(1.5f);
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_SPEED20, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_SPEED20, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_SPEED20, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_SPEED20, 1) )
                 {
                     SetSpeed(2.0f);
                 }
-                if ( event.param == m_engine->RetKey(KEYRANK_SPEED30, 0) ||
-                     event.param == m_engine->RetKey(KEYRANK_SPEED30, 1) )
+                if ( event.param == m_engine->GetKey(KEYRANK_SPEED30, 0) ||
+                     event.param == m_engine->GetKey(KEYRANK_SPEED30, 1) )
                 {
                     SetSpeed(3.0f);
                 }
@@ -1466,7 +1466,7 @@ bool CRobotMain::EventProcess(const Event &event)
             case EVENT_LBUTTONDOWN:
                 pObj = DetectObject(event.pos);
                 if ( !m_bShortCut )  pObj = 0;
-                if ( pObj != 0 && pObj->RetType() == OBJECT_TOTO )
+                if ( pObj != 0 && pObj->GetType() == OBJECT_TOTO )
                 {
                     if ( m_displayInfo != 0 )  // current info?
                     {
@@ -1803,7 +1803,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             object = RetSelect();
             if ( object != 0 )
             {
-                object->SetMagnifyDamage(object->RetMagnifyDamage()*0.1f);
+                object->SetMagnifyDamage(object->GetMagnifyDamage()*0.1f);
             }
             return;
         }
@@ -1815,7 +1815,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             object = RetSelect();
             if ( object != 0 )
             {
-                object->SetRange(object->RetRange()*10.0f);
+                object->SetRange(object->GetRange()*10.0f);
             }
             return;
         }
@@ -1829,13 +1829,13 @@ void CRobotMain::ExecuteCmd(char *cmd)
             object = RetSelect();
             if ( object != 0 )
             {
-                power = object->RetPower();
+                power = object->GetPower();
                 if ( power != 0 )
                 {
                     power->SetEnergy(1.0f);
                 }
                 object->SetShield(1.0f);
-                physics = object->RetPhysics();
+                physics = object->GetPhysics();
                 if ( physics != 0 )
                 {
                     physics->SetReactorRange(1.0f);
@@ -1852,7 +1852,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             object = RetSelect();
             if ( object != 0 )
             {
-                power = object->RetPower();
+                power = object->GetPower();
                 if ( power != 0 )
                 {
                     power->SetEnergy(1.0f);
@@ -1881,7 +1881,7 @@ void CRobotMain::ExecuteCmd(char *cmd)
             object = RetSelect();
             if ( object != 0 )
             {
-                physics = object->RetPhysics();
+                physics = object->GetPhysics();
                 if ( physics != 0 )
                 {
                     physics->SetReactorRange(1.0f);
@@ -1893,55 +1893,55 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
     if ( strcmp(cmd, "debugmode") == 0 )
     {
-        m_engine->SetDebugMode(!m_engine->RetDebugMode());
+        m_engine->SetDebugMode(!m_engine->GetDebugMode());
         return;
     }
 
     if ( strcmp(cmd, "showstat") == 0 )
     {
-        m_engine->SetShowStat(!m_engine->RetShowStat());
+        m_engine->SetShowStat(!m_engine->GetShowStat());
         return;
     }
 
     if ( strcmp(cmd, "invshadow") == 0 )
     {
-        m_engine->SetShadow(!m_engine->RetShadow());
+        m_engine->SetShadow(!m_engine->GetShadow());
         return;
     }
 
     if ( strcmp(cmd, "invdirty") == 0 )
     {
-        m_engine->SetDirty(!m_engine->RetDirty());
+        m_engine->SetDirty(!m_engine->GetDirty());
         return;
     }
 
     if ( strcmp(cmd, "invfog") == 0 )
     {
-        m_engine->SetFog(!m_engine->RetFog());
+        m_engine->SetFog(!m_engine->GetFog());
         return;
     }
 
     if ( strcmp(cmd, "invlens") == 0 )
     {
-        m_engine->SetLensMode(!m_engine->RetLensMode());
+        m_engine->SetLensMode(!m_engine->GetLensMode());
         return;
     }
 
     if ( strcmp(cmd, "invwater") == 0 )
     {
-        m_engine->SetWaterMode(!m_engine->RetWaterMode());
+        m_engine->SetWaterMode(!m_engine->GetWaterMode());
         return;
     }
 
     if ( strcmp(cmd, "invsky") == 0 )
     {
-        m_engine->SetSkyMode(!m_engine->RetSkyMode());
+        m_engine->SetSkyMode(!m_engine->GetSkyMode());
         return;
     }
 
     if ( strcmp(cmd, "invplanet") == 0 )
     {
-        m_engine->SetPlanetMode(!m_engine->RetPlanetMode());
+        m_engine->SetPlanetMode(!m_engine->GetPlanetMode());
         return;
     }
 
@@ -1991,9 +1991,9 @@ void CRobotMain::ExecuteCmd(char *cmd)
 
 // Returns the type of current movie.
 
-MainMovieType CRobotMain::RetMainMovie()
+MainMovieType CRobotMain::GetMainMovie()
 {
-    return m_movie->RetType();
+    return m_movie->GetType();
 }
 
 
@@ -2024,12 +2024,12 @@ void CRobotMain::StartDisplayInfo(int index, bool bMovie)
     if ( m_bCmdEdit || m_bSatComLock )  return;
 
     pObj = RetSelect();
-    bHuman = ( pObj != 0 && pObj->RetType() == OBJECT_HUMAN );
+    bHuman = ( pObj != 0 && pObj->GetType() == OBJECT_HUMAN );
 
     if ( !m_bEditLock && bMovie && !m_movie->IsExist() && bHuman )
     {
-        motion = pObj->RetMotion();
-        if ( motion != 0 && motion->RetAction() == -1 )
+        motion = pObj->GetMotion();
+        if ( motion != 0 && motion->GetAction() == -1 )
         {
             m_movieInfoIndex = index;
             m_movie->Start(MM_SATCOMopen, 2.5f);
@@ -2079,7 +2079,7 @@ void CRobotMain::StartDisplayInfo(char *filename, int index)
         pb->ClearState(STATE_VISIBLE);
     }
 
-    bSoluce = m_dialog->RetSceneSoluce();
+    bSoluce = m_dialog->GetSceneSoluce();
 
     m_displayInfo = new CDisplayInfo(m_iMan);
     m_displayInfo->StartDisplayInfo(filename, index, bSoluce);
@@ -2104,7 +2104,7 @@ void CRobotMain::StopDisplayInfo()
 
     if ( m_infoIndex != -1 )
     {
-        m_infoPos[m_infoIndex] = m_displayInfo->RetPosition();
+        m_infoPos[m_infoIndex] = m_displayInfo->GetPosition();
     }
     m_displayInfo->StopDisplayInfo();
 
@@ -2135,14 +2135,14 @@ void CRobotMain::StopDisplayInfo()
 
 // Returns the name of the text display.
 
-char* CRobotMain::RetDisplayInfoName(int index)
+char* CRobotMain::GetDisplayInfoName(int index)
 {
     return m_infoFilename[index];
 }
 
 // Returns the name of the text display.
 
-int CRobotMain::RetDisplayInfoPosition(int index)
+int CRobotMain::GetDisplayInfoPosition(int index)
 {
     return m_infoPos[index];
 }
@@ -2196,7 +2196,7 @@ void CRobotMain::StopSuspend()
 
 // Returns the absolute time of the game
 
-float CRobotMain::RetGameTime()
+float CRobotMain::GetGameTime()
 {
     return m_gameTime;
 }
@@ -2211,7 +2211,7 @@ void CRobotMain::SetFontSize(float size)
     SetLocalProfileFloat("Edit", "FontSize", m_fontSize);
 }
 
-float CRobotMain::RetFontSize()
+float CRobotMain::GetFontSize()
 {
     return m_fontSize;
 }
@@ -2225,7 +2225,7 @@ void CRobotMain::SetWindowPos(Math::Point pos)
     SetLocalProfileFloat("Edit", "WindowPos.y", m_windowPos.y);
 }
 
-Math::Point CRobotMain::RetWindowPos()
+Math::Point CRobotMain::GetWindowPos()
 {
     return m_windowPos;
 }
@@ -2237,7 +2237,7 @@ void CRobotMain::SetWindowDim(Math::Point dim)
     SetLocalProfileFloat("Edit", "WindowDim.y", m_windowDim.y);
 }
 
-Math::Point CRobotMain::RetWindowDim()
+Math::Point CRobotMain::GetWindowDim()
 {
     return m_windowDim;
 }
@@ -2251,7 +2251,7 @@ void CRobotMain::SetIOPublic(bool bMode)
     SetLocalProfileInt("Edit", "IOPublic", m_IOPublic);
 }
 
-bool CRobotMain::RetIOPublic()
+bool CRobotMain::GetIOPublic()
 {
     return m_IOPublic;
 }
@@ -2263,7 +2263,7 @@ void CRobotMain::SetIOPos(Math::Point pos)
     SetLocalProfileFloat("Edit", "IOPos.y", m_IOPos.y);
 }
 
-Math::Point CRobotMain::RetIOPos()
+Math::Point CRobotMain::GetIOPos()
 {
     return m_IOPos;
 }
@@ -2275,7 +2275,7 @@ void CRobotMain::SetIODim(Math::Point dim)
     SetLocalProfileFloat("Edit", "IODim.y", m_IODim.y);
 }
 
-Math::Point CRobotMain::RetIODim()
+Math::Point CRobotMain::GetIODim()
 {
     return m_IODim;
 }
@@ -2336,7 +2336,7 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
 
     ClearInterface();  // removes setting evidence and tooltip
 
-    if ( m_camera->RetType() == CAMERA_VISIT )  // already a current visit?
+    if ( m_camera->GetType() == CAMERA_VISIT )  // already a current visit?
     {
         m_camera->StopVisit();
         m_displayText->ClearVisit();
@@ -2363,12 +2363,12 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
         delete m_visitArrow;
         m_visitArrow = 0;
     }
-    goal = m_displayText->RetVisitGoal(event);
+    goal = m_displayText->GetVisitGoal(event);
     m_visitArrow = CreateObject(goal, 0.0f, 1.0f, 10.0f, OBJECT_SHOW, false, false, 0);
 
-    m_visitPos = m_visitArrow->RetPosition(0);
+    m_visitPos = m_visitArrow->GetPosition(0);
     m_visitPosArrow = m_visitPos;
-    m_visitPosArrow.y += m_displayText->RetVisitHeight(event);
+    m_visitPosArrow.y += m_displayText->GetVisitHeight(event);
     m_visitArrow->SetPosition(0, m_visitPosArrow);
 
     m_visitTime = 0.0;
@@ -2376,8 +2376,8 @@ void CRobotMain::StartDisplayVisit(EventMsg event)
 
     m_particle->DeleteParticule(PARTISHOW);
 
-    m_camera->StartVisit(m_displayText->RetVisitGoal(event),
-                         m_displayText->RetVisitDist(event));
+    m_camera->StartVisit(m_displayText->GetVisitGoal(event),
+                         m_displayText->GetVisitDist(event));
     m_displayText->SetVisit(event);
     ChangePause(true);
 }
@@ -2407,7 +2407,7 @@ void CRobotMain::FrameVisit(float rTime)
         m_visitParticule = 1.5f;
 
         pos = m_visitPos;
-        level = m_terrain->RetFloorLevel(pos)+2.0f;
+        level = m_terrain->GetFloorLevel(pos)+2.0f;
         if ( pos.y < level )  pos.y = level;  // not below the ground
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
         dim.x = 30.0f;
@@ -2457,7 +2457,7 @@ void CRobotMain::UpdateShortcuts()
 
 // Returns the object that default was select after the creation of a scene.
 
-CObject* CRobotMain::RetSelectObject()
+CObject* CRobotMain::GetSelectObject()
 {
     if ( m_selectObject != 0 )  return m_selectObject;
     return SearchHuman();
@@ -2477,7 +2477,7 @@ CObject* CRobotMain::DeselectAll()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( pObj->RetSelect() )  pPrev = pObj;
+        if ( pObj->GetSelect() )  pPrev = pObj;
         pObj->SetSelect(false);
     }
     return pPrev;
@@ -2494,7 +2494,7 @@ void CRobotMain::SelectOneObject(CObject* pObj, bool bDisplayError)
     pObj->SetSelect(true, bDisplayError);
     m_camera->SetObject(pObj);
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEta ||
@@ -2524,8 +2524,8 @@ void CRobotMain::SelectOneObject(CObject* pObj, bool bDisplayError)
          type == OBJECT_MOBILEdr ||
          type == OBJECT_APOLLO2  )
     {
-        m_camera->SetType(pObj->RetCameraType());
-        m_camera->SetDist(pObj->RetCameraDist());
+        m_camera->SetType(pObj->GetCameraType());
+        m_camera->SetDist(pObj->GetCameraDist());
     }
     else
     {
@@ -2535,7 +2535,7 @@ void CRobotMain::SelectOneObject(CObject* pObj, bool bDisplayError)
     toto = SearchToto();
     if ( toto != 0 )
     {
-        mt = (CMotionToto*)toto->RetMotion();
+        mt = (CMotionToto*)toto->GetMotion();
         if ( mt != 0 )
         {
             mt->SetLinkType(type);
@@ -2549,7 +2549,7 @@ bool CRobotMain::SelectObject(CObject* pObj, bool bDisplayError)
 {
     CObject*    pPrev;
 
-    if ( m_camera->RetType() == CAMERA_VISIT )
+    if ( m_camera->GetType() == CAMERA_VISIT )
     {
         StopDisplayVisit();
     }
@@ -2666,7 +2666,7 @@ CObject* CRobotMain::SearchHuman()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_HUMAN )
         {
             return pObj;
@@ -2688,7 +2688,7 @@ CObject* CRobotMain::SearchToto()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_TOTO )
         {
             return pObj;
@@ -2717,10 +2717,10 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* pExclu)
         if ( pObj == pExclu )  continue;
         if ( !IsSelectable(pObj) )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_TOTO )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(oPos, pos);
         if ( dist < min )
         {
@@ -2733,7 +2733,7 @@ CObject* CRobotMain::SearchNearest(Math::Vector pos, CObject* pExclu)
 
 // Returns the selected object.
 
-CObject* CRobotMain::RetSelect()
+CObject* CRobotMain::GetSelect()
 {
     CObject*    pObj;
     int         i;
@@ -2743,7 +2743,7 @@ CObject* CRobotMain::RetSelect()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( pObj->RetSelect() )
+        if ( pObj->GetSelect() )
         {
             return pObj;
         }
@@ -2761,7 +2761,7 @@ CObject* CRobotMain::SearchObject(ObjectType type)
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( pObj->RetType() == type )
+        if ( pObj->GetType() == type )
         {
             return pObj;
         }
@@ -2784,11 +2784,11 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetActif() )  continue;
-        if ( pObj->RetProxyActivate() )  continue;
+        if ( !pObj->GetActif() )  continue;
+        if ( pObj->GetProxyActivate() )  continue;
 
         pTarget = 0;
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_PORTICO      ||
              type == OBJECT_BASE         ||
              type == OBJECT_DERRICK      ||
@@ -2900,9 +2900,9 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
         }
         else if ( (type == OBJECT_POWER  ||
                   type == OBJECT_ATOMIC ) &&
-             pObj->RetTruck() != 0 )  // battery used?
+             pObj->GetTruck() != 0 )  // battery used?
         {
-            pTarget = pObj->RetTruck();
+            pTarget = pObj->GetTruck();
         }
         else if ( type == OBJECT_POWER  ||
                   type == OBJECT_ATOMIC )
@@ -2912,7 +2912,7 @@ CObject* CRobotMain::DetectObject(Math::Point pos)
 
         for ( j=0 ; j<OBJECTMAXPART ; j++ )
         {
-            rank = pObj->RetObjectRank(j);
+            rank = pObj->GetObjectRank(j);
             if ( rank == -1 )  continue;
             if ( rank != objRank )  continue;
             return pTarget;
@@ -2927,9 +2927,9 @@ bool CRobotMain::IsSelectable(CObject* pObj)
 {
     ObjectType  type;
 
-    if ( !pObj->RetSelectable() )  return false;
+    if ( !pObj->GetSelectable() )  return false;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_TOTO     ||
          type == OBJECT_MOBILEfa ||
@@ -3021,7 +3021,7 @@ bool CRobotMain::DeleteObject()
 
 // Removes setting evidence of the object with the mouse hovers over.
 
-void CRobotMain::HiliteClear()
+void CRobotMain::HighlightClear()
 {
     CObject*    pObj;
     int         i;
@@ -3029,27 +3029,27 @@ void CRobotMain::HiliteClear()
     ClearTooltip();
     m_tooltipName[0] = 0;  // really removes the tooltip
 
-    if ( !m_bHilite )  return;
+    if ( !m_bHighlight )  return;
 
     i = -1;
-    m_engine->SetHiliteRank(&i);  // nothing more selected
+    m_engine->SetHighlightRank(&i);  // nothing more selected
 
     for ( i=0 ; i<1000000 ; i++ )
     {
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        pObj->SetHilite(false);
-        m_map->SetHilite(0);
-        m_short->SetHilite(0);
+        pObj->SetHighlight(false);
+        m_map->SetHighlight(0);
+        m_short->SetHighlight(0);
     }
 
-    m_bHilite = false;
+    m_bHighlight = false;
 }
 
 // Highlights the object with the mouse hovers over.
 
-void CRobotMain::HiliteObject(Math::Point pos)
+void CRobotMain::HighlightObject(Math::Point pos)
 {
     CObject*    pObj;
     char        name[100];
@@ -3058,13 +3058,13 @@ void CRobotMain::HiliteObject(Math::Point pos)
     if ( m_bFixScene && m_phase != PHASE_PERSO )  return;
     if ( m_bMovieLock )  return;
     if ( m_movie->IsExist() )  return;
-    if ( m_engine->RetMouseHide() )  return;
+    if ( m_engine->GetMouseHide() )  return;
 
     ClearInterface();  // removes setting evidence and tooltip
 
     pObj = m_short->DetectShort(pos);
 
-    if ( m_dialog->RetTooltip() && m_interface->GetTooltip(pos, name) )
+    if ( m_dialog->GetTooltip() && m_interface->GetTooltip(pos, name) )
     {
         m_tooltipPos = pos;
         strcpy(m_tooltipName, name);
@@ -3083,8 +3083,8 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
             pObj = DetectObject(pos);
 
-            if ( m_camera->RetType() == CAMERA_ONBOARD &&
-                 m_camera->RetObject() == pObj )
+            if ( m_camera->GetType() == CAMERA_ONBOARD &&
+                 m_camera->GetObject() == pObj )
             {
                 return;
             }
@@ -3093,7 +3093,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
     if ( pObj != 0 )
     {
-        if ( m_dialog->RetTooltip() && pObj->GetTooltipName(name) )
+        if ( m_dialog->GetTooltip() && pObj->GetTooltipName(name) )
         {
             m_tooltipPos = pos;
             strcpy(m_tooltipName, name);
@@ -3102,17 +3102,17 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
         if ( IsSelectable(pObj) )
         {
-            pObj->SetHilite(true);
-            m_map->SetHilite(pObj);
-            m_short->SetHilite(pObj);
-            m_bHilite = true;
+            pObj->SetHighlight(true);
+            m_map->SetHighlight(pObj);
+            m_short->SetHighlight(pObj);
+            m_bHighlight = true;
         }
     }
 }
 
 // Highlights the object with the mouse hovers over.
 
-void CRobotMain::HiliteFrame(float rTime)
+void CRobotMain::HighlightFrame(float rTime)
 {
     if ( m_bFixScene && m_phase != PHASE_PERSO )  return;
     if ( m_bMovieLock )  return;
@@ -3139,7 +3139,7 @@ void CRobotMain::CreateTooltip(Math::Point pos, char* text)
     corner.x = pos.x+0.022f;
     corner.y = pos.y-0.052f;
 
-    m_engine->RetText()->DimText(text, corner, 1,
+    m_engine->GetText()->DimText(text, corner, 1,
                                  SMALLFONT, NORMSTRETCH, FONT_COLOBOT,
                                  start, end);
     start.x -= 0.010f;
@@ -3170,7 +3170,7 @@ void CRobotMain::CreateTooltip(Math::Point pos, char* text)
         pw->SetState(STATE_SHADOW);
         pw->SetTrashEvent(false);
 
-        pos.y -= m_engine->RetText()->RetHeight(SMALLFONT, FONT_COLOBOT)/2.0f;
+        pos.y -= m_engine->GetText()->GetHeight(SMALLFONT, FONT_COLOBOT)/2.0f;
         pw->CreateLabel(pos, dim, -1, EVENT_LABEL2, text);
     }
 }
@@ -3193,7 +3193,7 @@ void CRobotMain::HelpObject()
     pObj = RetSelect();
     if ( pObj == 0 )  return;
 
-    filename = RetHelpFilename(pObj->RetType());
+    filename = RetHelpFilename(pObj->GetType());
     if ( filename[0] == 0 )  return;
 
     StartDisplayInfo(filename, -1);
@@ -3214,12 +3214,12 @@ void CRobotMain::ChangeCamera()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( pObj->RetSelect() )
+        if ( pObj->GetSelect() )
         {
-            if ( pObj->RetCameraLock() )  return;
+            if ( pObj->GetCameraLock() )  return;
 
-            oType = pObj->RetType();
-            type = pObj->RetCameraType();
+            oType = pObj->GetType();
+            type = pObj->GetCameraType();
 
             if ( oType != OBJECT_MOBILEfa &&
                  oType != OBJECT_MOBILEta &&
@@ -3255,7 +3255,7 @@ void CRobotMain::ChangeCamera()
                      if ( type == CAMERA_PLANE   )  type = CAMERA_BACK;
                 else if ( type == CAMERA_BACK    )  type = CAMERA_PLANE;
             }
-            else if ( pObj->RetTrainer() )  // trainer?
+            else if ( pObj->GetTrainer() )  // trainer?
             {
                      if ( type == CAMERA_ONBOARD )  type = CAMERA_FIX;
                 else if ( type == CAMERA_FIX     )  type = CAMERA_PLANE;
@@ -3282,26 +3282,26 @@ void CRobotMain::KeyCamera(EventMsg event, long param)
 
     if ( event == EVENT_KEYUP )
     {
-        if ( param == m_engine->RetKey(KEYRANK_LEFT, 0) ||
-             param == m_engine->RetKey(KEYRANK_LEFT, 1) )
+        if ( param == m_engine->GetKey(KEYRANK_LEFT, 0) ||
+             param == m_engine->GetKey(KEYRANK_LEFT, 1) )
         {
             m_cameraPan = 0.0f;
         }
 
-        if ( param == m_engine->RetKey(KEYRANK_RIGHT, 0) ||
-             param == m_engine->RetKey(KEYRANK_RIGHT, 1) )
+        if ( param == m_engine->GetKey(KEYRANK_RIGHT, 0) ||
+             param == m_engine->GetKey(KEYRANK_RIGHT, 1) )
         {
             m_cameraPan = 0.0f;
         }
 
-        if ( param == m_engine->RetKey(KEYRANK_UP, 0) ||
-             param == m_engine->RetKey(KEYRANK_UP, 1) )
+        if ( param == m_engine->GetKey(KEYRANK_UP, 0) ||
+             param == m_engine->GetKey(KEYRANK_UP, 1) )
         {
             m_cameraZoom = 0.0f;
         }
 
-        if ( param == m_engine->RetKey(KEYRANK_DOWN, 0) ||
-             param == m_engine->RetKey(KEYRANK_DOWN, 1) )
+        if ( param == m_engine->GetKey(KEYRANK_DOWN, 0) ||
+             param == m_engine->GetKey(KEYRANK_DOWN, 1) )
         {
             m_cameraZoom = 0.0f;
         }
@@ -3313,30 +3313,30 @@ void CRobotMain::KeyCamera(EventMsg event, long param)
 
     pObj = RetSelect();
     if ( pObj == 0 )  return;
-    if ( !pObj->RetTrainer() )  return;
+    if ( !pObj->GetTrainer() )  return;
 
     if ( event == EVENT_KEYDOWN )
     {
-        if ( param == m_engine->RetKey(KEYRANK_LEFT, 0) ||
-             param == m_engine->RetKey(KEYRANK_LEFT, 1) )
+        if ( param == m_engine->GetKey(KEYRANK_LEFT, 0) ||
+             param == m_engine->GetKey(KEYRANK_LEFT, 1) )
         {
             m_cameraPan = -1.0f;
         }
 
-        if ( param == m_engine->RetKey(KEYRANK_RIGHT, 0) ||
-             param == m_engine->RetKey(KEYRANK_RIGHT, 1) )
+        if ( param == m_engine->GetKey(KEYRANK_RIGHT, 0) ||
+             param == m_engine->GetKey(KEYRANK_RIGHT, 1) )
         {
             m_cameraPan = 1.0f;
         }
 
-        if ( param == m_engine->RetKey(KEYRANK_UP, 0) ||
-             param == m_engine->RetKey(KEYRANK_UP, 1) )
+        if ( param == m_engine->GetKey(KEYRANK_UP, 0) ||
+             param == m_engine->GetKey(KEYRANK_UP, 1) )
         {
             m_cameraZoom = -1.0f;
         }
 
-        if ( param == m_engine->RetKey(KEYRANK_DOWN, 0) ||
-             param == m_engine->RetKey(KEYRANK_DOWN, 1) )
+        if ( param == m_engine->GetKey(KEYRANK_DOWN, 0) ||
+             param == m_engine->GetKey(KEYRANK_DOWN, 1) )
         {
             m_cameraZoom = 1.0f;
         }
@@ -3351,14 +3351,14 @@ void CRobotMain::RemoteCamera(float pan, float zoom, float rTime)
 
     if ( pan != 0.0f )
     {
-        value = m_camera->RetRemotePan();
+        value = m_camera->GetRemotePan();
         value += pan*rTime*1.5f;
         m_camera->SetRemotePan(value);
     }
 
     if ( zoom != 0.0f )
     {
-        value = m_camera->RetRemoteZoom();
+        value = m_camera->GetRemoteZoom();
         value += zoom*rTime*0.3f;
         m_camera->SetRemoteZoom(value);
     }
@@ -3379,7 +3379,7 @@ void CRobotMain::AbortMovie()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        automat = pObj->RetAuto();
+        automat = pObj->GetAuto();
         if ( automat != 0 )
         {
             automat->Abort();
@@ -3404,7 +3404,7 @@ void CRobotMain::UpdateInfoText()
         pObj = RetSelect();
         if ( pObj != 0 )
         {
-            pos = pObj->RetPosition(0);
+            pos = pObj->GetPosition(0);
             sprintf(info, "Pos = %.2f ; %.2f", pos.x/g_unit, pos.z/g_unit);
             m_engine->SetInfoText(4, info);
         }
@@ -3474,8 +3474,8 @@ bool CRobotMain::EventFrame(const Event &event)
             pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
             if ( pObj == 0 )  break;
             if ( pm != 0 )  pm->UpdateObject(pObj);
-            if ( pObj->RetTruck() != 0 )  continue;
-            type = pObj->RetType();
+            if ( pObj->GetTruck() != 0 )  continue;
+            type = pObj->GetType();
             if ( type == OBJECT_TOTO )
             {
                 toto = pObj;
@@ -3490,7 +3490,7 @@ bool CRobotMain::EventFrame(const Event &event)
         {
             pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
             if ( pObj == 0 )  break;
-            if ( pObj->RetTruck() == 0 )  continue;
+            if ( pObj->GetTruck() == 0 )  continue;
             pObj->EventProcess(event);
         }
 
@@ -3515,9 +3515,9 @@ bool CRobotMain::EventFrame(const Event &event)
     {
         m_camera->EventProcess(event);
 
-        if ( m_engine->RetFog() )
+        if ( m_engine->GetFog() )
         {
-            m_camera->SetOverBaseColor(m_particle->RetFogColor(m_engine->RetEyePt()));
+            m_camera->SetOverBaseColor(m_particule->GetFogColor(m_engine->GetEyePt()));
         }
     }
     if ( m_phase == PHASE_PERSO ||
@@ -3541,7 +3541,7 @@ bool CRobotMain::EventFrame(const Event &event)
         m_model->EventProcess(event);
     }
 
-    HiliteFrame(event.rTime);
+    HighlightFrame(event.rTime);
 
     // Moves the film indicator.
     if ( m_bMovieLock && !m_bEditLock )  // movie in progress?
@@ -3605,7 +3605,7 @@ bool CRobotMain::EventFrame(const Event &event)
     }
 
     // Will move the arrow to visit.
-    if ( m_camera->RetType() == CAMERA_VISIT )
+    if ( m_camera->GetType() == CAMERA_VISIT )
     {
         FrameVisit(event.rTime);
     }
@@ -3738,8 +3738,8 @@ void CRobotMain::Convert()
     Math::Vector        pos;
     float           value;
 
-    base = m_dialog->RetSceneName();
-    rank = m_dialog->RetSceneRank();
+    base = m_dialog->GetSceneName();
+    rank = m_dialog->GetSceneRank();
 
     m_dialog->BuildSceneName(line, base, rank);
     file = fopen(line, "r");
@@ -3951,7 +3951,7 @@ void CRobotMain::ScenePerso()
 
         pObj->SetDrawFront(true);  // draws the interface
 
-        mh = (CMotionHuman*)pObj->RetMotion();
+        mh = (CMotionHuman*)pObj->GetMotion();
         if ( mh != 0 )
         {
             mh->StartDisplayPerso();
@@ -3980,10 +3980,10 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 
 //? Convert();
 
-    base  = m_dialog->RetSceneName();
-    rank  = m_dialog->RetSceneRank();
-    read  = m_dialog->RetSceneRead();
-    stack = m_dialog->RetStackRead();
+    base  = m_dialog->GetSceneName();
+    rank  = m_dialog->GetSceneRank();
+    read  = m_dialog->GetSceneRead();
+    stack = m_dialog->GetStackRead();
     m_dialog->SetUserDir(base, rank);
 
     m_bFixScene = bFixScene;
@@ -4522,7 +4522,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                 pObj->SetCheckToken(OpInt(line, "checkToken", 1));
                 pObj->SetManual(OpInt(line, "manual", 0));
 
-                motion = pObj->RetMotion();
+                motion = pObj->GetMotion();
                 if ( motion != 0 )
                 {
                     p = SearchOp(line, "param");
@@ -4536,7 +4536,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                 }
 
                 run = -1;
-                pBrain = pObj->RetBrain();
+                pBrain = pObj->GetBrain();
                 if ( pBrain != 0 )
                 {
                     for ( i=0 ; i<10 ; i++ )
@@ -4544,7 +4544,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                         sprintf(op, "script%d", i+1);  // script1..script10
                         OpString(line, op, name);
 #if _SCHOOL
-                        if ( !m_dialog->RetSoluce4() && i == 3 )  continue;
+                        if ( !m_dialog->GetSoluce4() && i == 3 )  continue;
 #endif
                         if ( name[0] != 0 )
                         {
@@ -4559,7 +4559,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                         pBrain->SetScriptRun(run);
                     }
                 }
-                pAuto = pObj->RetAuto();
+                pAuto = pObj->GetAuto();
                 if ( pAuto != 0 )
                 {
                     type = OpTypeObject(line, "autoType", OBJECT_NULL);
@@ -4576,7 +4576,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                     if ( i != -1 )
                     {
                         if ( i != PARAM_FIXSCENE &&
-                             !m_dialog->RetMovies() )  i = 0;
+                             !m_dialog->GetMovies() )  i = 0;
                         pAuto->Start(i);  // starts the film
                     }
                 }
@@ -4587,8 +4587,8 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
                     pBrain->SetSoluceName(name);
                 }
 
-                pObj->SetResetPosition(pObj->RetPosition(0));
-                pObj->SetResetAngle(pObj->RetAngle(0));
+                pObj->SetResetPosition(pObj->GetPosition(0));
+                pObj->SetResetAngle(pObj->GetAngle(0));
                 pObj->SetResetRun(run);
 
                 if ( OpInt(line, "reset", 0) == 1 )
@@ -4874,7 +4874,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
             SelectObject(pObj);
             m_camera->SetObject(pObj);
 //?         m_camera->SetType(CAMERA_BACK);
-            m_camera->SetType(pObj->RetCameraType());
+            m_camera->SetType(pObj->GetCameraType());
         }
     }
     if ( m_bFixScene )
@@ -4884,7 +4884,7 @@ void CRobotMain::CreateScene(bool bSoluce, bool bFixScene, bool bResetObject)
 
     if ( read[0] != 0 && pSel != 0 )  // loading file?
     {
-        pos = pSel->RetPosition(0);
+        pos = pSel->GetPosition(0);
         m_camera->Init(pos, pos, 0.0f);
         m_camera->FixCamera();
 
@@ -4942,7 +4942,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
         pObject = new CObject(m_iMan);
         pObject->CreateBuilding(pos, angle, height, type, power);
 
-        automat = pObject->RetAuto();
+        automat = pObject->GetAuto();
         if ( automat != 0 )
         {
             automat->Init();
@@ -5225,7 +5225,7 @@ CObject* CRobotMain::CreateObject(Math::Vector pos, float angle, float zoom, flo
     {
         CMotion*    motion;
 
-        motion = pObject->RetMotion();
+        motion = pObject->GetMotion();
         if ( m_phase == PHASE_WIN  )  motion->SetAction(MHS_WIN,  0.4f);
         if ( m_phase == PHASE_LOST )  motion->SetAction(MHS_LOST, 0.5f);
     }
@@ -5322,9 +5322,9 @@ int CRobotMain::CreateSpot(Math::Vector pos, D3DCOLORVALUE color)
     D3DLIGHT7   light;
     int         obj;
 
-    if ( !m_engine->RetLightMode() )  return -1;
+    if ( !m_engine->GetLightMode() )  return -1;
 
-    pos.y += m_terrain->RetFloorLevel(pos);
+    pos.y += m_terrain->GetFloorLevel(pos);
 
     ZeroMemory(&light, sizeof(D3DLIGHT7));
     light.dltType        = D3DLIGHT_SPOT;
@@ -5367,11 +5367,11 @@ void CRobotMain::ChangeColor()
     colorRef1.r = 206.0f/256.0f;
     colorRef1.g = 206.0f/256.0f;
     colorRef1.b = 204.0f/256.0f;  // ~white
-    colorNew1 = m_dialog->RetGamerColorCombi();
+    colorNew1 = m_dialog->GetGamerColorCombi();
     colorRef2.r = 255.0f/256.0f;
     colorRef2.g = 132.0f/256.0f;
     colorRef2.b =   1.0f/256.0f;  // orange
-    colorNew2 = m_dialog->RetGamerColorBand();
+    colorNew2 = m_dialog->GetGamerColorBand();
     exclu[0] = Math::Point(192.0f/256.0f,   0.0f/256.0f);
     exclu[1] = Math::Point(256.0f/256.0f,  64.0f/256.0f);  // crystals + cylinders
     exclu[2] = Math::Point(208.0f/256.0f, 224.0f/256.0f);
@@ -5409,7 +5409,7 @@ void CRobotMain::ChangeColor()
         colorRef1.b =   0.0f/256.0f;  // yellow
         tolerance = 0.20f;
     }
-    colorNew1 = m_dialog->RetGamerColorHair();
+    colorNew1 = m_dialog->GetGamerColorHair();
     colorRef2.r = 0.0f;
     colorRef2.g = 0.0f;
     colorRef2.b = 0.0f;
@@ -5489,7 +5489,7 @@ bool CRobotMain::TestGadgetQuantity(int rank)
     static int table80[10] = {0,1,1,1,1,1,0,1,1,1};
     static int table90[10] = {0,1,1,1,1,1,1,1,1,1};
 
-    percent = m_engine->RetGadgetQuantity();
+    percent = m_engine->GetGadgetQuantity();
     if ( percent == 0.0f )  return false;
     if ( percent == 1.0f )  return true;
 
@@ -5524,15 +5524,15 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetActif() )  continue;  // inactive?
-        if ( pObj->RetTruck() != 0 )  continue;  // object carries?
+        if ( !pObj->GetActif() )  continue;  // inactive?
+        if ( pObj->GetTruck() != 0 )  continue;  // object carries?
         if ( pObj == exclu )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
 
         if ( type == OBJECT_BASE )
         {
-            oPos = pObj->RetPosition(0);
+            oPos = pObj->GetPosition(0);
             if ( oPos.x != center.x ||
                  oPos.z != center.z )
             {
@@ -5547,7 +5547,7 @@ float CRobotMain::SearchNearestObject(Math::Vector center, CObject *exclu)
              type == OBJECT_REPAIR    ||
              type == OBJECT_DESTROYER )
         {
-            oPos = pObj->RetPosition(0);
+            oPos = pObj->GetPosition(0);
             dist = Math::Distance(center, oPos)-8.0f;
             if ( dist < 0.0f )  dist = 0.0f;
             min = Math::Min(min, dist);
@@ -5590,7 +5590,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
                 dist = SearchNearestObject(pos, exclu);
                 if ( dist >= space )
                 {
-                    flat = m_terrain->RetFlatZoneRadius(pos, dist/2.0f);
+                    flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
                     if ( flat >= dist/2.0f )
                     {
                         center = pos;
@@ -5617,7 +5617,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
                 dist = SearchNearestObject(pos, exclu);
                 if ( dist >= space )
                 {
-                    flat = m_terrain->RetFlatZoneRadius(pos, dist/2.0f);
+                    flat = m_terrain->GetFlatZoneRadius(pos, dist/2.0f);
                     if ( flat >= dist/2.0f )
                     {
                         center = pos;
@@ -5632,7 +5632,7 @@ bool CRobotMain::FreeSpace(Math::Vector &center, float minRadius, float maxRadiu
 
 // Calculates the maximum radius of a free space.
 
-float CRobotMain::RetFlatZoneRadius(Math::Vector center, float maxRadius,
+float CRobotMain::GetFlatZoneRadius(Math::Vector center, float maxRadius,
                                     CObject *exclu)
 {
     float   dist;
@@ -5643,7 +5643,7 @@ float CRobotMain::RetFlatZoneRadius(Math::Vector center, float maxRadius,
     {
         maxRadius = dist;
     }
-    return m_terrain->RetFlatZoneRadius(center, maxRadius);
+    return m_terrain->GetFlatZoneRadius(center, maxRadius);
 }
 
 
@@ -5676,7 +5676,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
 
     if ( metal == 0 )  return;
 
-    center = metal->RetPosition(0);
+    center = metal->GetPosition(0);
 
     // Calculates the maximum radius possible depending on other items.
     oMax = 30.0f;  // radius to build the biggest building
@@ -5685,15 +5685,15 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetActif() )  continue;  // inactive?
-        if ( pObj->RetTruck() != 0 )  continue;  // object carried?
+        if ( !pObj->GetActif() )  continue;  // inactive?
+        if ( pObj->GetTruck() != 0 )  continue;  // object carried?
         if ( pObj == metal )  continue;
         if ( pObj == truck )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_BASE )
         {
-            oPos = pObj->RetPosition(0);
+            oPos = pObj->GetPosition(0);
             dist = Math::Distance(center, oPos)-80.0f;
             oMax = Math::Min(oMax, dist);
         }
@@ -5738,7 +5738,7 @@ void CRobotMain::ShowDropZone(CObject* metal, CObject* truck)
     // Calculates the maximum possible radius depending on terrain.
     if ( oMax >= 2.0f )
     {
-        tMax = m_terrain->RetFlatZoneRadius(center, 30.0f);
+        tMax = m_terrain->GetFlatZoneRadius(center, 30.0f);
     }
     else
     {
@@ -5843,7 +5843,7 @@ void CRobotMain::FrameShowLimit(float rTime)
     float       angle, factor, speed;
     int         i, j;
 
-    if ( m_engine->RetPause() )  return;
+    if ( m_engine->GetPause() )  return;
 
     for ( i=0 ; i<MAXSHOWLIMIT ; i++ )
     {
@@ -5935,20 +5935,20 @@ void CRobotMain::CompileScript(bool bSoluce)
         {
             pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
             if ( pObj == 0 )  break;
-            if ( pObj->RetTruck() != 0 )  continue;
+            if ( pObj->GetTruck() != 0 )  continue;
 
-            brain = pObj->RetBrain();
+            brain = pObj->GetBrain();
             if ( brain == 0 )  continue;
 
             for ( j=0 ; j<10 ; j++ )
             {
-                if ( brain->RetCompile(j) )  continue;
+                if ( brain->GetCompile(j) )  continue;
 
-                name = brain->RetScriptName(j);
+                name = brain->GetScriptName(j);
                 if ( name[0] != 0 )
                 {
                     brain->ReadProgram(j, name);
-                    if ( !brain->RetCompile(j) )  nbError++;
+                    if ( !brain->GetCompile(j) )  nbError++;
                 }
             }
 
@@ -5964,12 +5964,12 @@ void CRobotMain::CompileScript(bool bSoluce)
         {
             pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
             if ( pObj == 0 )  break;
-            if ( pObj->RetTruck() != 0 )  continue;
+            if ( pObj->GetTruck() != 0 )  continue;
 
-            brain = pObj->RetBrain();
+            brain = pObj->GetBrain();
             if ( brain == 0 )  continue;
 
-            name = brain->RetSoluceName();
+            name = brain->GetSoluceName();
             if ( name[0] != 0 )
             {
                 brain->ReadSoluce(name);  // load solution
@@ -5982,12 +5982,12 @@ void CRobotMain::CompileScript(bool bSoluce)
     {
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        brain = pObj->RetBrain();
+        brain = pObj->GetBrain();
         if ( brain == 0 )  continue;
 
-        run = brain->RetScriptRun();
+        run = brain->GetScriptRun();
         if ( run != -1 )
         {
             brain->RunProgram(run);  // starts the program
@@ -6005,29 +6005,29 @@ void CRobotMain::LoadOneScript(CObject *pObj, int &nbError)
     char*       name;
     int         rank, i, objRank;
 
-    brain = pObj->RetBrain();
+    brain = pObj->GetBrain();
     if ( brain == 0 )  return;
 
     if ( !IsSelectable(pObj) )  return;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_HUMAN )  return;
 
-    objRank = pObj->RetDefRank();
+    objRank = pObj->GetDefRank();
     if ( objRank == -1 )  return;
 
-    name = m_dialog->RetSceneName();
-    rank = m_dialog->RetSceneRank();
+    name = m_dialog->GetSceneName();
+    rank = m_dialog->GetSceneRank();
 
     for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
-        if ( brain->RetCompile(i) )  continue;
+        if ( brain->GetCompile(i) )  continue;
 //?     if ( brain->ProgramExist(i) )  continue;
 
         sprintf(filename, "%s\\%s\\%c%.3d%.3d%.1d.txt",
                     RetSavegameDir(), m_gamerName, name[0], rank, objRank, i);
         brain->ReadProgram(i, filename);
-        if ( !brain->RetCompile(i) )  nbError++;
+        if ( !brain->GetCompile(i) )  nbError++;
     }
 }
 
@@ -6045,14 +6045,14 @@ void CRobotMain::LoadFileScript(CObject *pObj, char* filename, int objRank,
 
     if ( objRank == -1 )  return;
 
-    brain = pObj->RetBrain();
+    brain = pObj->GetBrain();
     if ( brain == 0 )  return;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_HUMAN )  return;
 
-    name = m_dialog->RetSceneName();
-    rank = m_dialog->RetSceneRank();
+    name = m_dialog->GetSceneName();
+    rank = m_dialog->GetSceneRank();
 
     strcpy(fn, filename);
     ldir = SearchLastDir(fn);
@@ -6060,12 +6060,12 @@ void CRobotMain::LoadFileScript(CObject *pObj, char* filename, int objRank,
 
     for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
-        if ( brain->RetCompile(i) )  continue;
+        if ( brain->GetCompile(i) )  continue;
 //?     if ( brain->ProgramExist(i) )  continue;
 
         sprintf(ldir, "\\prog%.3d%.1d.txt", objRank, i);
         brain->ReadProgram(i, fn);
-        if ( !brain->RetCompile(i) )  nbError++;
+        if ( !brain->GetCompile(i) )  nbError++;
     }
 }
 
@@ -6096,19 +6096,19 @@ void CRobotMain::SaveOneScript(CObject *pObj)
     char*       name;
     int         rank, i, objRank;
 
-    brain = pObj->RetBrain();
+    brain = pObj->GetBrain();
     if ( brain == 0 )  return;
 
     if ( !IsSelectable(pObj) )  return;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_HUMAN )  return;
 
-    objRank = pObj->RetDefRank();
+    objRank = pObj->GetDefRank();
     if ( objRank == -1 )  return;
 
-    name = m_dialog->RetSceneName();
-    rank = m_dialog->RetSceneRank();
+    name = m_dialog->GetSceneName();
+    rank = m_dialog->GetSceneRank();
 
     for ( i=0 ; i<BRAINMAXSCRIPT ; i++ )
     {
@@ -6132,14 +6132,14 @@ void CRobotMain::SaveFileScript(CObject *pObj, char* filename, int objRank)
 
     if ( objRank == -1 )  return;
 
-    brain = pObj->RetBrain();
+    brain = pObj->GetBrain();
     if ( brain == 0 )  return;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_HUMAN )  return;
 
-    name = m_dialog->RetSceneName();
-    rank = m_dialog->RetSceneRank();
+    name = m_dialog->GetSceneName();
+    rank = m_dialog->GetSceneRank();
 
     strcpy(fn, filename);
     ldir = SearchLastDir(fn);
@@ -6161,10 +6161,10 @@ bool CRobotMain::SaveFileStack(CObject *pObj, FILE *file, int objRank)
 
     if ( objRank == -1 )  return true;
 
-    brain = pObj->RetBrain();
+    brain = pObj->GetBrain();
     if ( brain == 0 )  return true;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_HUMAN )  return true;
 
     return brain->WriteStack(file);
@@ -6179,10 +6179,10 @@ bool CRobotMain::ReadFileStack(CObject *pObj, FILE *file, int objRank)
 
     if ( objRank == -1 )  return true;
 
-    brain = pObj->RetBrain();
+    brain = pObj->GetBrain();
     if ( brain == 0 )  return true;
 
-    type = pObj->RetType();
+    type = pObj->GetType();
     if ( type == OBJECT_HUMAN )  return true;
 
     return brain->ReadStack(file);
@@ -6223,7 +6223,7 @@ bool CRobotMain::AddNewScriptName(ObjectType type, char *name)
 
 // Seeks a script name for a given type.
 
-char*  CRobotMain::RetNewScriptName(ObjectType type, int rank)
+char*  CRobotMain::GetNewScriptName(ObjectType type, int rank)
 {
     int     i;
 
@@ -6258,16 +6258,16 @@ bool CRobotMain::IsBusy()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        pBrain = pObj->RetBrain();
+        pBrain = pObj->GetBrain();
         if ( pBrain != 0 )
         {
             if ( pBrain->IsBusy() )  return true;
         }
 
-//?     pAuto = pObj->RetAuto();
+//?     pAuto = pObj->GetAuto();
 //?     if ( pAuto != 0 )
 //?     {
-//?         if ( pAuto->RetBusy() )  return true;
+//?         if ( pAuto->GetBusy() )  return true;
 //?     }
     }
     return false;
@@ -6283,33 +6283,33 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
     char        name[100];
     int         run, i;
 
-    if ( pObj->RetType() == OBJECT_FIX  )  return;
+    if ( pObj->GetType() == OBJECT_FIX  )  return;
 
     strcpy(line, cmd);
 
-    sprintf(name, " type=%s", GetTypeObject(pObj->RetType()));
+    sprintf(name, " type=%s", GetTypeObject(pObj->GetType()));
     strcat(line, name);
 
-    sprintf(name, " id=%d", pObj->RetID());
+    sprintf(name, " id=%d", pObj->GetID());
     strcat(line, name);
 
-    pos = pObj->RetPosition(0)/g_unit;
+    pos = pObj->GetPosition(0)/g_unit;
     sprintf(name, " pos=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
     strcat(line, name);
 
-    pos = pObj->RetAngle(0)/(Math::PI/180.0f);
+    pos = pObj->GetAngle(0)/(Math::PI/180.0f);
     sprintf(name, " angle=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
     strcat(line, name);
 
-    pos = pObj->RetZoom(0);
+    pos = pObj->GetZoom(0);
     sprintf(name, " zoom=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
     strcat(line, name);
 
     for ( i=1 ; i<OBJECTMAXPART ; i++ )
     {
-        if ( pObj->RetObjectRank(i) == -1 )  continue;
+        if ( pObj->GetObjectRank(i) == -1 )  continue;
 
-        pos = pObj->RetPosition(i);
+        pos = pObj->GetPosition(i);
         if ( pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f )
         {
             pos /= g_unit;
@@ -6317,7 +6317,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
             strcat(line, name);
         }
 
-        pos = pObj->RetAngle(i);
+        pos = pObj->GetAngle(i);
         if ( pos.x != 0.0f || pos.y != 0.0f || pos.z != 0.0f )
         {
             pos /= (Math::PI/180.0f);
@@ -6325,7 +6325,7 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
             strcat(line, name);
         }
 
-        pos = pObj->RetZoom(i);
+        pos = pObj->GetZoom(i);
         if ( pos.x != 1.0f || pos.y != 1.0f || pos.z != 1.0f )
         {
             sprintf(name, " z%d=%.2f;%.2f;%.2f", i, pos.x, pos.y, pos.z);
@@ -6333,10 +6333,10 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
         }
     }
 
-    sprintf(name, " trainer=%d", pObj->RetTrainer());
+    sprintf(name, " trainer=%d", pObj->GetTrainer());
     strcat(line, name);
 
-    sprintf(name, " option=%d", pObj->RetOption());
+    sprintf(name, " option=%d", pObj->GetOption());
     strcat(line, name);
 
     if ( pObj == m_infoObject )  // selects object?
@@ -6347,16 +6347,16 @@ void CRobotMain::IOWriteObject(FILE *file, CObject* pObj, char *cmd)
 
     pObj->Write(line);
 
-    if ( pObj->RetType() == OBJECT_BASE )
+    if ( pObj->GetType() == OBJECT_BASE )
     {
         sprintf(name, " run=3");  // stops and open (PARAM_FIXSCENE)
         strcat(line, name);
     }
 
-    pBrain = pObj->RetBrain();
+    pBrain = pObj->GetBrain();
     if ( pBrain != 0 )
     {
-        run = pBrain->RetProgram();
+        run = pBrain->GetProgram();
         if ( run != -1 )
         {
             sprintf(name, " run=%d", run+1);
@@ -6389,18 +6389,18 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
     sprintf(line, "Version maj=%d min=%d\n", 0, 1);
     fputs(line, file);
 
-    name = m_dialog->RetSceneName();
+    name = m_dialog->GetSceneName();
     if ( strcmp(name, "user") == 0 )
     {
-        sprintf(line, "Mission base=\"%s\" rank=%.3d dir=\"%s\"\n", name, m_dialog->RetSceneRank(), m_dialog->RetSceneDir());
+        sprintf(line, "Mission base=\"%s\" rank=%.3d dir=\"%s\"\n", name, m_dialog->GetSceneRank(), m_dialog->GetSceneDir());
     }
     else
     {
-        sprintf(line, "Mission base=\"%s\" rank=%.3d\n", name, m_dialog->RetSceneRank());
+        sprintf(line, "Mission base=\"%s\" rank=%.3d\n", name, m_dialog->GetSceneRank());
     }
     fputs(line, file);
 
-    sprintf(line, "Map zoom=%.2f\n", m_map->RetZoomMap());
+    sprintf(line, "Map zoom=%.2f\n", m_map->GetZoomMap());
     fputs(line, file);
 
     sprintf(line, "DoneResearch bits=%d\n", g_researchDone);
@@ -6418,15 +6418,15 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( pObj->RetType() == OBJECT_TOTO )  continue;
-        if ( pObj->RetType() == OBJECT_FIX  )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
-        if ( pObj->RetBurn() )  continue;
-        if ( pObj->RetDead() )  continue;
-        if ( pObj->RetExplo() )  continue;
+        if ( pObj->GetType() == OBJECT_TOTO )  continue;
+        if ( pObj->GetType() == OBJECT_FIX  )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
+        if ( pObj->GetBurn() )  continue;
+        if ( pObj->GetDead() )  continue;
+        if ( pObj->GetExplo() )  continue;
 
-        pPower = pObj->RetPower();
-        pFret  = pObj->RetFret();
+        pPower = pObj->GetPower();
+        pFret  = pObj->GetFret();
 
         if ( pFret != 0 )  // object transported?
         {
@@ -6460,11 +6460,11 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        if ( pObj->RetType() == OBJECT_TOTO )  continue;
-        if ( pObj->RetType() == OBJECT_FIX  )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
-        if ( pObj->RetBurn() )  continue;
-        if ( pObj->RetDead() )  continue;
+        if ( pObj->GetType() == OBJECT_TOTO )  continue;
+        if ( pObj->GetType() == OBJECT_FIX  )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
+        if ( pObj->GetBurn() )  continue;
+        if ( pObj->GetDead() )  continue;
 
         if ( !SaveFileStack(pObj, file, objRank++) )  break;
     }
@@ -6511,7 +6511,7 @@ CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
 
     for ( i=1 ; i<OBJECTMAXPART ; i++ )
     {
-        if ( pObj->RetObjectRank(i) == -1 )  continue;
+        if ( pObj->GetObjectRank(i) == -1 )  continue;
 
         sprintf(op, "p%d", i);
         pos  = OpDir(line, op);
@@ -6549,14 +6549,14 @@ CObject* CRobotMain::IOReadObject(char *line, char* filename, int objRank)
     {
 #if CBOT_STACK
 #else
-        pBrain = pObj->RetBrain();
+        pBrain = pObj->GetBrain();
         if ( pBrain != 0 )
         {
             pBrain->RunProgram(run-1);  // starts the program
         }
 #endif
 
-        pAuto = pObj->RetAuto();
+        pAuto = pObj->GetAuto();
         if ( pAuto != 0 )
         {
             pAuto->Start(run);  // starts the film
@@ -6669,9 +6669,9 @@ CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
         {
             pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
             if ( pObj == 0 )  break;
-            if ( pObj->RetTruck() != 0 )  continue;
+            if ( pObj->GetTruck() != 0 )  continue;
 
-            objRank = pObj->RetDefRank();
+            objRank = pObj->GetDefRank();
             if ( objRank == -1 )  continue;
 
             LoadFileScript(pObj, filename, objRank, nbError);
@@ -6695,11 +6695,11 @@ CObject* CRobotMain::IOReadScene(char *filename, char *filecbot)
                     pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
                     if ( pObj == 0 )  break;
 
-                    if ( pObj->RetType() == OBJECT_TOTO )  continue;
-                    if ( pObj->RetType() == OBJECT_FIX  )  continue;
-                    if ( pObj->RetTruck() != 0 )  continue;
-                    if ( pObj->RetBurn() )  continue;
-                    if ( pObj->RetDead() )  continue;
+                    if ( pObj->GetType() == OBJECT_TOTO )  continue;
+                    if ( pObj->GetType() == OBJECT_FIX  )  continue;
+                    if ( pObj->GetTruck() != 0 )  continue;
+                    if ( pObj->GetBurn() )  continue;
+                    if ( pObj->GetDead() )  continue;
 
                     if ( !ReadFileStack(pObj, file, objRank++) )  break;
                 }
@@ -6797,12 +6797,12 @@ void CRobotMain::ResetObject()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        cap = pObj->RetResetCap();
+        cap = pObj->GetResetCap();
         if ( cap == RESET_NONE )  continue;
 
         if ( cap == RESET_DELETE )
         {
-            pTruck = pObj->RetTruck();
+            pTruck = pObj->GetTruck();
             if ( pTruck != 0 )
             {
                 pTruck->SetFret(0);
@@ -6814,22 +6814,22 @@ void CRobotMain::ResetObject()
             continue;
         }
 
-        pAuto = pObj->RetAuto();
+        pAuto = pObj->GetAuto();
         if ( pAuto != 0 )
         {
             pAuto->Abort();
         }
 
-        if ( pObj->RetEnable() )  // object still active?
+        if ( pObj->GetEnable() )  // object still active?
         {
-            brain = pObj->RetBrain();
+            brain = pObj->GetBrain();
             if ( brain != 0 )
             {
-                pos   = pObj->RetResetPosition();
-                angle = pObj->RetResetAngle();
+                pos   = pObj->GetResetPosition();
+                angle = pObj->GetResetAngle();
 
-                if ( pos   == pObj->RetPosition(0) &&
-                     angle == pObj->RetAngle(0)    )  continue;
+                if ( pos   == pObj->GetPosition(0) &&
+                     angle == pObj->GetAngle(0)    )  continue;
                 brain->StartTaskReset(pos, angle);
                 continue;
             }
@@ -6837,19 +6837,19 @@ void CRobotMain::ResetObject()
 
         pObj->SetEnable(true);  // active again
 
-        pos   = pObj->RetResetPosition();
-        angle = pObj->RetResetAngle();
+        pos   = pObj->GetResetPosition();
+        angle = pObj->GetResetAngle();
 
-        if ( pos   == pObj->RetPosition(0) &&
-             angle == pObj->RetAngle(0)    )  continue;
+        if ( pos   == pObj->GetPosition(0) &&
+             angle == pObj->GetAngle(0)    )  continue;
 
         pyro = new CPyro(m_iMan);
         pyro->Create(PT_RESET, pObj);
 
-        brain = pObj->RetBrain();
+        brain = pObj->GetBrain();
         if ( brain != 0 )
         {
-            brain->RunProgram(pObj->RetResetRun());
+            brain->RunProgram(pObj->GetResetRun());
         }
     }
 #else
@@ -6885,7 +6885,7 @@ void CRobotMain::ResetCreate()
     m_iMan->Flush(CLASS_PYRO);
     m_camera->SetType(CAMERA_DIALOG);
 
-    CreateScene(m_dialog->RetSceneSoluce(), false, true);
+    CreateScene(m_dialog->GetSceneSoluce(), false, true);
 
     if ( !RetNiceReset() )  return;
 
@@ -6894,7 +6894,7 @@ void CRobotMain::ResetCreate()
         pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
         if ( pObj == 0 )  break;
 
-        cap = pObj->RetResetCap();
+        cap = pObj->GetResetCap();
         if ( cap == RESET_NONE )  continue;
 
         pyro = new CPyro(m_iMan);
@@ -6926,11 +6926,11 @@ Error CRobotMain::CheckEndMission(bool bFrame)
 
             // Do not use RetActif () because an invisible worm (underground)
             // should be regarded as existing here!
-            if ( pObj->RetLock() )  continue;
-            if ( pObj->RetRuin() )  continue;
-            if ( !pObj->RetEnable() )  continue;
+            if ( pObj->GetLock() )  continue;
+            if ( pObj->GetRuin() )  continue;
+            if ( !pObj->GetEnable() )  continue;
 
-            type = pObj->RetType();
+            type = pObj->GetType();
             if ( type == OBJECT_SCRAP2 ||
                  type == OBJECT_SCRAP3 ||
                  type == OBJECT_SCRAP4 ||
@@ -6940,13 +6940,13 @@ Error CRobotMain::CheckEndMission(bool bFrame)
             }
             if ( type != m_endTake[t].type )  continue;
 
-            if ( pObj->RetTruck() == 0 )
+            if ( pObj->GetTruck() == 0 )
             {
-                oPos = pObj->RetPosition(0);
+                oPos = pObj->GetPosition(0);
             }
             else
             {
-                oPos = pObj->RetTruck()->RetPosition(0);
+                oPos = pObj->GetTruck()->GetPosition(0);
             }
             oPos.y = 0.0f;
             if ( Math::DistanceProjected(oPos, bPos) <= m_endTake[t].dist )
@@ -7048,14 +7048,14 @@ void CRobotMain::CheckEndMessage(const char *message)
 
 // Returns the number of instructions required.
 
-int CRobotMain::RetObligatoryToken()
+int CRobotMain::GetObligatoryToken()
 {
     return m_obligatoryTotal;
 }
 
 // Returns the name of a required instruction.
 
-char* CRobotMain::RetObligatoryToken(int i)
+char* CRobotMain::GetObligatoryToken(int i)
 {
     return m_obligatoryToken[i];
 }
@@ -7095,99 +7095,99 @@ bool CRobotMain::IsProhibitedToken(const char *token)
 
 // Indicates whether it is possible to control a driving robot.
 
-bool CRobotMain::RetTrainerPilot()
+bool CRobotMain::GetTrainerPilot()
 {
     return m_bTrainerPilot;
 }
 
 // Indicates whether the scene is fixed, without interaction.
 
-bool CRobotMain::RetFixScene()
+bool CRobotMain::GetFixScene()
 {
     return m_bFixScene;
 }
 
 
-char* CRobotMain::RetTitle()
+char* CRobotMain::GetTitle()
 {
     return m_title;
 }
 
-char* CRobotMain::RetResume()
+char* CRobotMain::GetResume()
 {
     return m_resume;
 }
 
-char* CRobotMain::RetScriptName()
+char* CRobotMain::GetScriptName()
 {
     return m_scriptName;
 }
 
-char* CRobotMain::RetScriptFile()
+char* CRobotMain::GetScriptFile()
 {
     return m_scriptFile;
 }
 
 
-bool CRobotMain::RetGlint()
+bool CRobotMain::GetGlint()
 {
-    return m_dialog->RetGlint();
+    return m_dialog->GetGlint();
 }
 
-bool CRobotMain::RetSoluce4()
+bool CRobotMain::GetSoluce4()
 {
-    return m_dialog->RetSoluce4();
+    return m_dialog->GetSoluce4();
 }
 
-bool CRobotMain::RetMovies()
+bool CRobotMain::GetMovies()
 {
-    return m_dialog->RetMovies();
+    return m_dialog->GetMovies();
 }
 
-bool CRobotMain::RetNiceReset()
+bool CRobotMain::GetNiceReset()
 {
-    return m_dialog->RetNiceReset();
+    return m_dialog->GetNiceReset();
 }
 
-bool CRobotMain::RetHimselfDamage()
+bool CRobotMain::GetHimselfDamage()
 {
-    return m_dialog->RetHimselfDamage();
+    return m_dialog->GetHimselfDamage();
 }
 
-bool CRobotMain::RetShowSoluce()
+bool CRobotMain::GetShowSoluce()
 {
     return m_bShowSoluce;
 }
 
-bool CRobotMain::RetSceneSoluce()
+bool CRobotMain::GetSceneSoluce()
 {
     if ( m_infoFilename[SATCOM_SOLUCE][0] == 0 )  return false;
-    return m_dialog->RetSceneSoluce();
+    return m_dialog->GetSceneSoluce();
 }
 
-bool CRobotMain::RetShowAll()
+bool CRobotMain::GetShowAll()
 {
     return m_bShowAll;
 }
 
-bool CRobotMain::RetCheatRadar()
+bool CRobotMain::GetCheatRadar()
 {
     return m_bCheatRadar;
 }
 
-char* CRobotMain::RetSavegameDir()
+char* CRobotMain::GetSavegameDir()
 {
-    return m_dialog->RetSavegameDir();
+    return m_dialog->GetSavegameDir();
 }
 
-char* CRobotMain::RetPublicDir()
+char* CRobotMain::GetPublicDir()
 {
-    return m_dialog->RetPublicDir();
+    return m_dialog->GetPublicDir();
 }
 
-char* CRobotMain::RetFilesDir()
+char* CRobotMain::GetFilesDir()
 {
-    return m_dialog->RetFilesDir();
+    return m_dialog->GetFilesDir();
 }
 
 
@@ -7202,7 +7202,7 @@ void CRobotMain::SetGamerName(char *name)
 
 // Getes the player's name.
 
-char* CRobotMain::RetGamerName()
+char* CRobotMain::GetGamerName()
 {
     return m_gamerName;
 }
@@ -7210,30 +7210,30 @@ char* CRobotMain::RetGamerName()
 
 // Returns the representation to use for the player.
 
-int CRobotMain::RetGamerFace()
+int CRobotMain::GetGamerFace()
 {
-    return m_dialog->RetGamerFace();
+    return m_dialog->GetGamerFace();
 }
 
 // Returns the representation to use for the player.
 
-int CRobotMain::RetGamerGlasses()
+int CRobotMain::GetGamerGlasses()
 {
-    return m_dialog->RetGamerGlasses();
+    return m_dialog->GetGamerGlasses();
 }
 
 // Returns the mode with just the head.
 
-bool CRobotMain::RetGamerOnlyHead()
+bool CRobotMain::GetGamerOnlyHead()
 {
-    return m_dialog->RetGamerOnlyHead();
+    return m_dialog->GetGamerOnlyHead();
 }
 
 // Returns the angle of presentation.
 
-float CRobotMain::RetPersoAngle()
+float CRobotMain::GetPersoAngle()
 {
-    return m_dialog->RetPersoAngle();
+    return m_dialog->GetPersoAngle();
 }
 
 
@@ -7246,7 +7246,7 @@ void CRobotMain::ChangePause(bool bPause)
 
     m_sound->MuteAll(m_bPause);
     CreateShortcuts();
-    if ( m_bPause )  HiliteClear();
+    if ( m_bPause )  HighlightClear();
 }
 
 
@@ -7275,9 +7275,9 @@ void CRobotMain::SetSpeed(float speed)
     }
 }
 
-float CRobotMain::RetSpeed()
+float CRobotMain::GetSpeed()
 {
-    return m_engine->RetSpeed();
+    return m_engine->GetSpeed();
 }
 
 
@@ -7299,9 +7299,9 @@ void CRobotMain::UpdateMap()
 
 // Indicates whether the mini-map is visible.
 
-bool CRobotMain::RetShowMap()
+bool CRobotMain::GetShowMap()
 {
-    return m_map->RetShowMap() && m_bMapShow;
+    return m_map->GetShowMap() && m_bMapShow;
 }
 
 
@@ -7314,16 +7314,16 @@ void CRobotMain::SetMovieLock(bool bLock)
 
     CreateShortcuts();
     m_map->ShowMap(!m_bMovieLock && m_bMapShow);
-    if ( m_bMovieLock )  HiliteClear();
+    if ( m_bMovieLock )  HighlightClear();
     m_engine->SetMouseHide(m_bMovieLock);
 }
 
-bool CRobotMain::RetMovieLock()
+bool CRobotMain::GetMovieLock()
 {
     return m_bMovieLock;
 }
 
-bool CRobotMain::RetInfoLock()
+bool CRobotMain::GetInfoLock()
 {
     return ( m_displayInfo != 0 );  // info in progress?
 }
@@ -7335,7 +7335,7 @@ void CRobotMain::SetSatComLock(bool bLock)
     m_bSatComLock = bLock;
 }
 
-bool CRobotMain::RetSatComLock()
+bool CRobotMain::GetSatComLock()
 {
     return m_bSatComLock;
 }
@@ -7349,7 +7349,7 @@ void CRobotMain::SetEditLock(bool bLock, bool bEdit)
     CreateShortcuts();
 
     // Do not remove the card if it contains a still image.
-    if ( !bLock || !m_map->RetFixImage() )
+    if ( !bLock || !m_map->GetFixImage() )
     {
         m_map->ShowMap(!m_bEditLock && m_bMapShow);
     }
@@ -7359,7 +7359,7 @@ void CRobotMain::SetEditLock(bool bLock, bool bEdit)
 
     if ( m_bEditLock )
     {
-        HiliteClear();
+        HighlightClear();
     }
     else
     {
@@ -7367,7 +7367,7 @@ void CRobotMain::SetEditLock(bool bLock, bool bEdit)
     }
 }
 
-bool CRobotMain::RetEditLock()
+bool CRobotMain::GetEditLock()
 {
     return m_bEditLock;
 }
@@ -7379,13 +7379,13 @@ void CRobotMain::SetEditFull(bool bFull)
     m_bEditFull = bFull;
 }
 
-bool CRobotMain::RetEditFull()
+bool CRobotMain::GetEditFull()
 {
     return m_bEditFull;
 }
 
 
-bool CRobotMain::RetFreePhoto()
+bool CRobotMain::GetFreePhoto()
 {
     return m_bFreePhoto;
 }
@@ -7398,7 +7398,7 @@ void CRobotMain::SetFriendAim(bool bFriend)
     m_bFriendAim = bFriend;
 }
 
-bool CRobotMain::RetFriendAim()
+bool CRobotMain::GetFriendAim()
 {
     return m_bFriendAim;
 }
@@ -7411,9 +7411,9 @@ void CRobotMain::SetTracePrecision(float factor)
     m_engine->SetTracePrecision(factor);
 }
 
-float CRobotMain::RetTracePrecision()
+float CRobotMain::GetTracePrecision()
 {
-    return m_engine->RetTracePrecision();
+    return m_engine->GetTracePrecision();
 }
 
 
@@ -7432,7 +7432,7 @@ void CRobotMain::StartMusic()
 
 void CRobotMain::ClearInterface()
 {
-    HiliteClear();  // removes setting evidence
+    HighlightClear();  // removes setting evidence
     m_tooltipName[0] = 0;  // really removes the tooltip
 }
 

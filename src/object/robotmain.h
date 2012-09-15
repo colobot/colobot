@@ -300,9 +300,9 @@ protected:
     Math::Vector    LookatPoint( Math::Vector eye, float angleH, float angleV, float length );
     CObject*    CreateObject(Math::Vector pos, float angle, float zoom, float height, ObjectType type, float power=1.0f, bool bTrainer=false, bool bToy=false, int option=0);
     int         CreateLight(Math::Vector direction, Gfx::Color color);
-    void        HiliteClear();
-    void        HiliteObject(Math::Point pos);
-    void        HiliteFrame(float rTime);
+    void        HighlightClear();
+    void        HighlightObject(Math::Point pos);
+    void        HighlightFrame(float rTime);
     void        CreateTooltip(Math::Point pos, char* text);
     void        ClearTooltip();
     CObject*    DetectObject(Math::Point pos);
@@ -379,7 +379,7 @@ protected:
     bool            m_bEditLock;        // edition in progress?
     bool            m_bEditFull;        // edition in full screen?
     bool            m_bPause;       // simulation paused
-    bool            m_bHilite;
+    bool            m_bHighlight;
     bool            m_bTrainerPilot;    // remote trainer?
     bool            m_bSuspend;
     bool            m_bFriendAim;
