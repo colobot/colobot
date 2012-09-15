@@ -18,46 +18,28 @@
 // studio.h
 
 #pragma once
+#include "common/event.h"
+
+#include "graphics/engine/camera.h"
+
 
 #include <string>
 
-#include <object/object.h>
+class CEventQueue;
+class CInstanceManager;
+class CRobotMain;
+class CScript;
+class CSoundInterface;
 
-#include <script/script.h>
-
-#include <graphics/engine/engine.h>
-#include <graphics/engine/camera.h>
-
-#include <common/event.h>
-#include <common/misc.h>
-#include <common/iman.h>
-
-#include <sound/sound.h>
-
-#include <ui/control.h>
-#include <ui/button.h>
-#include <ui/color.h>
-#include <ui/check.h>
-#include <ui/key.h>
-#include <ui/group.h>
-#include <ui/image.h>
-#include <ui/label.h>
-#include <ui/edit.h>
-#include <ui/editvalue.h>
-#include <ui/scroll.h>
-#include <ui/slider.h>
-#include <ui/list.h>
-#include <ui/shortcut.h>
-#include <ui/compass.h>
-#include <ui/target.h>
-#include <ui/map.h>
-#include <ui/window.h>
-#include <ui/interface.h>
-
-#include <app/app.h>
-
+namespace Gfx {
+class CEngine;
+class CCamera;
+};
 
 namespace Ui {
+
+class CEdit;
+class CInterface;
 
 enum StudioDialog
 {
@@ -100,7 +82,7 @@ class CStudio
         void        UpdateDialogAction();
         void        UpdateDialogPublic();
         void        UpdateDialogList();
-        void        SearchDirectory(std::string dir, bool bCreate);
+        void        SearchDirectory(char* dir, bool bCreate);
         bool        ReadProgram();
         bool        WriteProgram();
 
