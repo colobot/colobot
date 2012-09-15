@@ -125,7 +125,7 @@ object/motion/motiontoto.cpp
 object/motion/motionvehicle.cpp
 object/motion/motionworm.cpp
 object/object.cpp
-# object/robotmain.cpp
+object/robotmain.cpp
 object/task/task.cpp
 object/task/taskadvance.cpp
 object/task/taskbuild.cpp
@@ -167,7 +167,7 @@ ui/interface.cpp
 ui/key.cpp
 ui/label.cpp
 ui/list.cpp
-# ui/maindialog.cpp
+ui/maindialog.cpp
 ui/mainmap.cpp
 ui/mainshort.cpp
 ui/map.cpp

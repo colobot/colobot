@@ -189,7 +189,7 @@ char GetToLower(char letter)
 
 // Converting time to string.
 
-void GimeToAscii(time_t time, char *buffer)
+void TimeToAscii(time_t time, char *buffer)
 {
     struct tm   when;
     int         year;

@@ -19,21 +19,31 @@
 #pragma once
 
 
+#include "graphics/core/color.h"
 #include "object/robotmain.h"
 
-
 class CInstanceManager;
-class CEvent;
-class CD3DEngine;
+class CEventQueue;
+class CSoundInterface;
+
+namespace Gfx
+{
+class CEngine;
+class CParticle;
+};
+
+namespace Ui
+{
+
 class CInterface;
 class CWindow;
 class CControl;
-class CParticule;
-class CSound;
 
 
 const int USERLISTMAX = 100;
 const int MAXSCENE = 1000;
+
+const int MAX_FNAME = 255; // TODO: remove after rewrite to std::string
 
 struct SceneInfo
 {
@@ -45,9 +55,9 @@ struct GamerPerso
 {
     int     face;           // face
     int     glasses;        // glasses
-    D3DCOLORVALUE   colorHair;      // hair color
-    D3DCOLORVALUE   colorCombi;     // spacesuit volor
-    D3DCOLORVALUE   colorBand;      // strips color
+    Gfx::Color   colorHair;      // hair color
+    Gfx::Color   colorCombi;     // spacesuit volor
+    Gfx::Color   colorBand;      // strips color
 };
 
 
@@ -65,26 +75,26 @@ public:
     void    SetStackRead(char* name);
     void    SetSceneName(char* name);
     void    SetSceneRank(int rank);
-    char*   RetSceneRead();
-    char*   RetStackRead();
-    char*   RetSceneName();
-    int     RetSceneRank();
-    char*   RetSceneDir();
-    bool    RetSceneSoluce();
-    char*   RetSavegameDir();
-    char*   RetPublicDir();
+    char*   GetSceneRead();
+    char*   GetStackRead();
+    char*   GetSceneName();
+    int     GetSceneRank();
+    char*   GetSceneDir();
+    bool    GetSceneSoluce();
+    char*   GetSavegameDir();
+    char*   GetPublicDir();
 
-    bool    RetTooltip();
-    bool    RetGlint();
-    bool    RetSoluce4();
-    bool    RetMovies();
-    bool    RetNiceReset();
-    bool    RetHimselfDamage();
+    bool    GetTooltip();
+    bool    GetGlint();
+    bool    GetSoluce4();
+    bool    GetMovies();
+    bool    GetNiceReset();
+    bool    GetHimselfDamage();
 
     void    SetUserDir(char *base, int rank);
     void    BuildSceneName(char *filename, char *base, int rank);
     void    BuildResumeName(char *filename, char *base, int rank);
-    char*   RetFilesDir();
+    char*   GetFilesDir();
 
     void    StartAbort();
     void    StartDeleteObject();
@@ -104,30 +114,30 @@ public:
     bool    ReadGamerInfo();
     bool    WriteGamerInfo();
     void    SetGamerInfoTry(int rank, int numTry);
-    int     RetGamerInfoTry(int rank);
+    int     GetGamerInfoTry(int rank);
     void    SetGamerInfoPassed(int rank, bool bPassed);
-    bool    RetGamerInfoPassed(int rank);
+    bool    GetGamerInfoPassed(int rank);
     bool    NextMission();
 
     void    WriteGamerPerso(char *gamer);
     void    ReadGamerPerso(char *gamer);
     void    SetGamerFace(char *gamer, int face);
-    int     RetGamerFace(char *gamer);
-    int     RetGamerFace();
-    int     RetGamerGlasses();
-    bool    RetGamerOnlyHead();
-    float   RetPersoAngle();
-    D3DCOLORVALUE RetGamerColorHair();
-    D3DCOLORVALUE RetGamerColorCombi();
-    D3DCOLORVALUE RetGamerColorBand();
+    int     GetGamerFace(char *gamer);
+    int     GetGamerFace();
+    int     GetGamerGlasses();
+    bool    GetGamerOnlyHead();
+    float   GetPersoAngle();
+    Gfx::Color GetGamerColorHair();
+    Gfx::Color GetGamerColorCombi();
+    Gfx::Color GetGamerColorBand();
 
     void    AllMissionUpdate();
     void    ShowSoluceUpdate();
 
 protected:
     void    GlintMove();
-    void    FrameParticule(float rTime);
-    void    NiceParticule(Math::Point mouse, bool bPress);
+    void    FrameParticle(float rTime);
+    void    NiceParticle(Math::Point mouse, bool bPress);
     void    ReadNameList();
     void    UpdateNameList();
     void    UpdateNameEdit();
@@ -148,7 +158,7 @@ protected:
     void    IODeleteScene();
     bool    IOWriteScene();
     bool    IOReadScene();
-    int     RetChapPassed();
+    int     GetChapPassed();
     void    UpdateSceneChap(int &chap);
     void    UpdateSceneList(int chap, int &sel);
     void    UpdateSceneResume(int rank);
@@ -160,17 +170,18 @@ protected:
     void    ChangeSetupButtons();
     void    ChangeSetupQuality(int quality);
     void    UpdateKey();
-    void    ChangeKey(EventMsg event);
+    void    ChangeKey(EventType event);
 
 protected:
     CInstanceManager* m_iMan;
-    CRobotMain*     m_main;
-    CEvent*         m_event;
-    CD3DEngine*     m_engine;
-    CInterface*     m_interface;
-    CParticule*     m_particule;
-    CCamera*        m_camera;
-    CSound*         m_sound;
+    CApplication*     m_app;
+    CRobotMain*       m_main;
+    CEventQueue*      m_eventQueue;
+    Gfx::CEngine*     m_engine;
+    CInterface*       m_interface;
+    Gfx::CParticle*   m_particle;
+    Gfx::CCamera*     m_camera;
+    CSoundInterface*  m_sound;
 
     Phase           m_phase;            // copy of CRobotMain
     Phase           m_phaseSetup;           // tab selected
@@ -182,11 +193,11 @@ protected:
     int         m_persoTab;         // perso: tab selected
     float           m_persoAngle;           // perso: angle of presentation
 
-    char            m_sceneDir[_MAX_FNAME];     // scene folder
-    char            m_savegameDir[_MAX_FNAME];  // savegame folder
-    char            m_publicDir[_MAX_FNAME];    // program folder
-    char            m_userDir[_MAX_FNAME];      // user folder
-    char            m_filesDir[_MAX_FNAME];     // case files
+    char            m_sceneDir[MAX_FNAME];     // scene folder
+    char            m_savegameDir[MAX_FNAME];  // savegame folder
+    char            m_publicDir[MAX_FNAME];    // program folder
+    char            m_userDir[MAX_FNAME];      // user folder
+    char            m_filesDir[MAX_FNAME];     // case files
 
     int             m_index;        // 0..4
     int             m_chap[10];     // selected chapter (0..8)
@@ -239,7 +250,7 @@ protected:
     float           m_dialogParti;
     float           m_dialogTime;
     bool            m_bInitPause;
-    CameraType      m_initCamera;
+    Gfx::CameraType      m_initCamera;
 
     int             m_partiPhase[10];
     float           m_partiTime[10];
@@ -248,4 +259,4 @@ protected:
     SceneInfo       m_sceneInfo[MAXSCENE];
 };
 
-
+} // namespace Ui

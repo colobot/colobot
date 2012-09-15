@@ -175,45 +175,45 @@ class CSoundInterface : public CPluginInterface
      */
     virtual bool Cache(Sound bSound, std::string bFile) = 0;
 
-    /** Return if plugin is enabled
+    /** Geturn if plugin is enabled
      *  @return return true if plugin is enabled
      */
-    virtual bool RetEnable() = 0;
+    virtual bool GetEnable() = 0;
 
     /** Change sound mode to 2D/3D
      * @param bool bMode - true to enable 3D sound
      */
     virtual void SetSound3D(bool bMode) = 0;
 
-    /** Return if we use 3D sound
+    /** Geturn if we use 3D sound
      * @return true if we have 3D sound enabled
      */
-    virtual bool RetSound3D() = 0;
+    virtual bool GetSound3D() = 0;
 
-    /** Return if we have 3D sound capable card
+    /** Geturn if we have 3D sound capable card
      * @return true for 3D sound support
      */
-    virtual bool RetSound3DCap() = 0;
+    virtual bool GetSound3DCap() = 0;
 
     /** Change global sound volume
      * @param int volume - range from 0 to MAXVOLUME
      */
     virtual void SetAudioVolume(int volume) = 0;
 
-    /** Return global sound volume
+    /** Geturn global sound volume
      * @return global volume as int in range from 0 to MAXVOLUME
      */
-    virtual int RetAudioVolume() = 0;
+    virtual int GetAudioVolume() = 0;
 
     /** Set music volume
      * @param int volume - range from 0 to MAXVOLUME
      */
     virtual void SetMusicVolume(int volume) = 0;
 
-    /** Return music volume
+    /** Geturn music volume
      * @return music volume as int in range from 0 to MAXVOLUME
      */
-    virtual int RetMusicVolume() = 0;
+    virtual int GetMusicVolume() = 0;
 
     /** Set listener position
      * @param Math::Vector eye - position of listener
