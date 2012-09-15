@@ -309,7 +309,7 @@ protected:
     void        HiliteClear();
     void        HiliteObject(Math::Point pos);
     void        HiliteFrame(float rTime);
-    void        CreateTooltip(Math::Point pos, char* text);
+    void        CreateTooltip(Math::Point pos, const char* text);
     void        ClearTooltip();
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
