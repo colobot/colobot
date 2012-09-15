@@ -43,7 +43,7 @@ enum ResType
 // TODO: move to CRobotMain
 
 extern void     SetGlobalGamerName(char *name);
-extern bool     SearchKey(char *cmd, KeyRank &key);
+extern bool     SearchKey(const char *cmd, KeyRank &key);
 extern bool     GetResource(ResType type, int num, char* text);
 
 extern const char * const strings_text[];

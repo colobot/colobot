@@ -35,7 +35,7 @@
 class CInstanceManager;
 class CEvent;
 class CRobotMain;
-class CSound;
+class CSoundInterface;
 
 /**
  * \struct JoystickDevice
@@ -366,7 +366,7 @@ protected:
     //! Graphics device
     Gfx::CDevice*           m_device;
     //! Sound subsystem
-    CSound*                 m_sound;
+    CSoundInterface*                 m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
 

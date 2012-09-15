@@ -44,7 +44,7 @@
 **/
 enum Sound
 {
-  SOUND_CLICK  = 0,
+  SOUND_CLICK = 0,
   SOUND_BOUM  = 1,
   SOUND_EXPLO  = 2,
   SOUND_FLYh  = 3, /*!< human */
@@ -151,21 +151,21 @@ enum SoundNext
 class CSoundInterface : public CPluginInterface
 {
   public:
-    CSoundInterface() {
+    inline CSoundInterface() {
       //CInstanceManager::getInstance().AddInstance(CLASS_SOUND, this);
       //m_iMan->AddInstance(CLASS_SOUND, this);
     };
-    virtual ~CSoundInterface() = 0;
+    inline ~CSoundInterface() {};
 
     /** Function to initialize sound device
      *  @param bool b3D - enable support for 3D sound
      */
-    virtual bool Create(bool b3D) = 0;
+    inline bool Create(bool b3D) { return true; };
 
     /** Function called to cache all sound effect files.
      *  Function calls \link CSoundInterface::Cache() \endlink for each file
      */
-    virtual void CacheAll() = 0;
+    inline void CacheAll() {};
 
     /** Function called to cache sound effect file.
      *  This function is called by plugin interface for each file.
@@ -173,58 +173,58 @@ class CSoundInterface : public CPluginInterface
      * @param std::string bFile - file to load
      * @return return true on success
      */
-    virtual bool Cache(Sound bSound, std::string bFile) = 0;
+    inline bool Cache(Sound bSound, std::string bFile) { return true; };
 
     /** Geturn if plugin is enabled
      *  @return return true if plugin is enabled
      */
-    virtual bool GetEnable() = 0;
+    inline bool GetEnable() {return true;};
 
     /** Change sound mode to 2D/3D
      * @param bool bMode - true to enable 3D sound
      */
-    virtual void SetSound3D(bool bMode) = 0;
+    inline void SetSound3D(bool bMode) {};
 
     /** Geturn if we use 3D sound
      * @return true if we have 3D sound enabled
      */
-    virtual bool GetSound3D() = 0;
+    inline bool GetSound3D() {return true;};
 
     /** Geturn if we have 3D sound capable card
      * @return true for 3D sound support
      */
-    virtual bool GetSound3DCap() = 0;
+    inline bool GetSound3DCap() {return true;};
 
     /** Change global sound volume
      * @param int volume - range from 0 to MAXVOLUME
      */
-    virtual void SetAudioVolume(int volume) = 0;
+    inline void SetAudioVolume(int volume) {};
 
     /** Geturn global sound volume
      * @return global volume as int in range from 0 to MAXVOLUME
      */
-    virtual int GetAudioVolume() = 0;
+    inline int GetAudioVolume() {return 0;};
 
     /** Set music volume
      * @param int volume - range from 0 to MAXVOLUME
      */
-    virtual void SetMusicVolume(int volume) = 0;
+    inline void SetMusicVolume(int volume) {};
 
     /** Geturn music volume
      * @return music volume as int in range from 0 to MAXVOLUME
      */
-    virtual int GetMusicVolume() = 0;
+    inline int GetMusicVolume() {return 0;};
 
     /** Set listener position
      * @param Math::Vector eye - position of listener
      * @param Math::Vector lookat - direction listener is looking at
      */
-    virtual void SetListener(Math::Vector eye, Math::Vector lookat) = 0;
+    inline void SetListener(Math::Vector eye, Math::Vector lookat) {};
 
     /** Update data each frame
      * @param float rTime - time since last update
      */
-    virtual void FrameMove(float rTime) = 0;
+    inline void FrameMove(float rTime) {};
 
     /** Play specific sound
      * @param Sound sound - sound to play
@@ -233,7 +233,7 @@ class CSoundInterface : public CPluginInterface
      * @param bool bLoop - loop sound
      * @return identifier of channel that sound will be played on
      */
-    virtual int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) = 0;
+    inline int Play(Sound sound, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) {return 0;};
 
     /** Play specific sound
      * @param Sound sound - sound to play
@@ -243,13 +243,13 @@ class CSoundInterface : public CPluginInterface
      * @param bool bLoop - loop sound
      * @return identifier of channel that sound will be played on
      */
-    virtual int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) = 0;
+    inline int Play(Sound sound, Math::Vector pos, float amplitude=1.0f, float frequency=1.0f, bool bLoop = false) {return 0;};
 
     /** Remove all operations that would be made on sound in channel.
      * @param int channel - channel to work on
      * @return return true on success
      */
-    virtual bool FlushEnvelope(int channel) = 0;
+    inline bool FlushEnvelope(int channel) {return true;};
 
     /** Add envelope to sound. Envelope is a operatino that will be performend on sound in future like changing frequency
      * @param int channel - channel to work on
@@ -259,64 +259,64 @@ class CSoundInterface : public CPluginInterface
      * @param SoundNext oper - operation to perform
      * @return return true on success
      */
-    virtual bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) = 0;
+    inline bool AddEnvelope(int channel, float amplitude, float frequency, float time, SoundNext oper) {return true;};
 
     /** Set sound position in space
      * @param int channel - channel to work on
      * @param Math::Vector pos - new positino of a sound
      * @return return true on success
      */
-    virtual bool Position(int channel, Math::Vector pos) = 0;
+    inline bool Position(int channel, Math::Vector pos) {return true;};
 
     /** Set sound frequency
      * @param int channel - channel to work on
      * @param float frequency - change sound frequency
      * @return return true on success
      */
-    virtual bool Frequency(int channel, float frequency) = 0;
+    inline bool Frequency(int channel, float frequency) {return true;};
 
     /** Stop playing sound
      * @param int channel - channel to work on
      * @return return true on success
      */
-    virtual bool Stop(int channel) = 0;
+    inline bool Stop(int channel) {return true;};
 
     /** Stop playing all sounds
      * @return return true on success
      */
-    virtual bool StopAll() = 0;
+    inline bool StopAll() {return true;};
 
     /** Mute/unmute all sounds
      * @param bool bMute
      * @return return true on success
      */
-    virtual bool MuteAll(bool bMute) = 0;
+    inline bool MuteAll(bool bMute) {return true;};
 
     /** Start playing music
      * @param int rank - track number
      * @param bool bRepeat - repeat playing
      * @return return true on success
      */
-    virtual bool PlayMusic(int rank, bool bRepeat) = 0;
+    inline bool PlayMusic(int rank, bool bRepeat) {return true;};
 
     /** Restart music
      * @return return true on success
      */
-    virtual bool RestartMusic() = 0;
+    inline bool RestartMusic() {return true;};
 
     /** Susspend paying music
      * @return return true on success
      */
-    virtual void SuspendMusic() = 0;
+    inline void SuspendMusic() {};
 
     /** Stop playing music
      * @return return true on success
      */
-    virtual void StopMusic() = 0;
+    inline void StopMusic() {};
 
     /** Check if music if playing
      * @return return true if music is playing
      */
-    virtual bool IsPlayingMusic() = 0;
+    inline bool IsPlayingMusic() {return true;};
 };
 

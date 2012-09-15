@@ -24,6 +24,7 @@
 #include "common/iman.h"
 #include "common/image.h"
 #include "graphics/opengl/gldevice.h"
+#include "object/robotmain.h"
 
 
 #include <SDL/SDL.h>
@@ -290,11 +291,8 @@ bool CApplication::Create()
     // Temporarily -- only in windowed mode
     m_deviceConfig.fullScreen = false;
 
-/*    // Create the sound instance.
-    m_sound = new CSound(m_iMan);
-
-    // Create the robot application.
-    m_robotMain = new CRobotMain(m_iMan); */
+    // Create the sound instance.
+    m_sound = new CSoundInterface();
 
 
     std::string standardInfoMessage =
@@ -370,6 +368,9 @@ bool CApplication::Create()
         return false;
     }
 
+    // Create the robot application.
+    m_robotMain = new CRobotMain(m_iMan, this);
+
     GetLogger()->Info("CApplication created successfully\n");
 
     return true;
@@ -430,7 +431,7 @@ bool CApplication::CreateVideoSurface()
 
 void CApplication::Destroy()
 {
-    /*if (m_robotMain != nullptr)
+    if (m_robotMain != nullptr)
     {
         delete m_robotMain;
         m_robotMain = nullptr;
@@ -440,7 +441,7 @@ void CApplication::Destroy()
     {
         delete m_sound;
         m_sound = nullptr;
-    }*/
+    }
 
     if (m_engine != nullptr)
     {
@@ -719,8 +720,8 @@ int CApplication::Run()
                         passOn = m_engine->ProcessEvent(event);
                 }
 
-                /*if (passOn && m_robotMain != nullptr)
-                    m_robotMain->ProcessEvent(event); */
+                if (passOn && m_robotMain != nullptr)
+                    m_robotMain->EventProcess(event);
             }
 
             /* Update mouse position explicitly right before rendering
@@ -1035,7 +1036,7 @@ void CApplication::StepSimulation()
 
 
     m_engine->FrameUpdate();
-    //m_sound->FrameMove(m_relTime);
+    m_sound->FrameMove(m_relTime);
 
 
     Event frameEvent(EVENT_FRAME);
