@@ -56,7 +56,7 @@ const int KEY_TOTAL = 13;       // total number of keys redefinable
 #else*/
 const int KEY_TOTAL = 21;       // total number of keys redefinable
 
-const int WELCOME_LENGTH = 6.0f;
+const int WELCOME_LENGTH = 2.0f;
 
 
 

@@ -642,6 +642,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     m_selectObject = 0;
     m_infoUsed     = 0;
 
+    m_immediatSatCom = false;
     m_beginSatCom  = false;
     m_movieLock    = false;
     m_satComLock   = false;
@@ -815,11 +816,32 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
 //! Destructor of robot application
 CRobotMain::~CRobotMain()
 {
-    delete m_movie;
-    delete m_dialog;
-    delete m_short;
-    delete m_map;
+    delete m_displayText;
+    m_displayText = nullptr;
+
+    delete m_interface;
+    m_interface = nullptr;
+
     delete m_terrain;
+    m_terrain = nullptr;
+
+    delete m_camera;
+    m_camera = nullptr;
+
+    delete m_displayText;
+    m_displayText = nullptr;
+
+    delete m_movie;
+    m_movie = nullptr;
+
+    delete m_dialog;
+    m_dialog = nullptr;
+
+    delete m_short;
+    m_short = nullptr;
+
+    delete m_map;
+    m_map = nullptr;
 
     m_iMan = nullptr;
     m_app = nullptr;
@@ -2707,7 +2729,7 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
     if (obj == nullptr)
     {
-        bool inMap;
+        bool inMap = false;
         obj = m_map->DetectMap(pos, inMap);
         if (obj == nullptr)
         {

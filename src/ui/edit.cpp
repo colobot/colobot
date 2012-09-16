@@ -79,9 +79,12 @@ CEdit::CEdit () : CControl ()
     int     i;
 
     m_maxChar = 100;
-    m_text = new char[sizeof(char)*(m_maxChar+1)];
+    m_text = new char[m_maxChar+1];
+    memset(m_text, 0, m_maxChar+1);
     m_len = 0;
     m_app = CApplication::GetInstancePointer();
+
+    memset(m_lineOffset, 0, sizeof(int) * EDITLINEMAX);
 
     m_fontType = Gfx::FONT_COURIER;
     m_scroll        = 0;
@@ -102,7 +105,7 @@ CEdit::CEdit () : CControl ()
 
     for ( i=0 ; i<EDITUNDOMAX ; i++ )
     {
-        m_undo[i].text = 0;
+        m_undo[i].text = nullptr;
     }
     m_bUndoForce = true;
     m_undoOper = OPERUNDO_SPEC;
@@ -119,10 +122,17 @@ CEdit::~CEdit()
     for ( i=0 ; i<EDITUNDOMAX ; i++ )
     {
         delete m_undo[i].text;
+        m_undo[i].text = nullptr;
     }
 
-    delete m_text;
+    if (m_text != nullptr)
+    {
+        delete[] m_text;
+        m_text = nullptr;
+    }
+
     delete m_scroll;
+    m_scroll = nullptr;
 }
 
 
@@ -1472,9 +1482,16 @@ bool CEdit::ReadText(const char *filename, int addSize)
     m_cursor2 = 0;
 
     FreeImage();
-    delete m_text;
-    m_text = new char[sizeof(char)*(m_maxChar+1)];
-    buffer = new char[sizeof(char)*(m_maxChar+1)];
+
+    if (m_text != nullptr)
+        delete m_text;
+
+    m_text = new char[m_maxChar+1];
+    memset(m_text, 0, m_maxChar+1);
+
+    buffer = new char[m_maxChar+1];
+    memset(buffer, 0, m_maxChar+1);
+
     fread(buffer, 1, len, file);
 
     if ( m_format.size() > 0 )
@@ -1934,15 +1951,18 @@ bool CEdit::WriteText(const char *filename)
 
 void CEdit::SetMaxChar(int max)
 {
-    m_maxChar = max;
     FreeImage();
-    delete m_text;
-    m_text = (char*)malloc(sizeof(char)*(m_maxChar+1));
 
-    if ( m_format.size() > 0 )
-    {
+    if (m_text != nullptr)
+        delete[] m_text;
+
+    m_maxChar = max;
+
+    m_text = new char[m_maxChar+1];
+    memset(m_text, 0, m_maxChar+1);
+
+    if (m_format.size() > 0)
         m_format.clear();
-    }
 
     m_len = 0;
     m_cursor1 = 0;
@@ -3062,8 +3082,9 @@ void CEdit::Justif()
         if ( m_format.size() == 0 )
         {
             // TODO check if good
+            
             i += m_engine->GetText()->Justify(m_text+i, m_fontType,
-                                             m_fontSize, width);
+                                              m_fontSize, width);
         }
         else
         {
@@ -3208,7 +3229,7 @@ void CEdit::UndoFlush()
     for ( i=0 ; i<EDITUNDOMAX ; i++ )
     {
         delete m_undo[i].text;
-        m_undo[i].text = 0;
+        m_undo[i].text = nullptr;
     }
 
     m_bUndoForce = true;
@@ -3230,6 +3251,7 @@ void CEdit::UndoMemorize(OperUndo oper)
     m_undoOper = oper;
 
     delete m_undo[EDITUNDOMAX-1].text;
+    m_undo[EDITUNDOMAX-1].text = nullptr;
 
     for ( i=EDITUNDOMAX-1 ; i>=1 ; i-- )
     {
@@ -3238,7 +3260,7 @@ void CEdit::UndoMemorize(OperUndo oper)
 
     len = m_len;
     if ( len == 0 )  len ++;
-    m_undo[0].text = (char*)malloc(sizeof(char)*(len+1));
+    m_undo[0].text = new char[len+1];
     memcpy(m_undo[0].text, m_text, m_len);
     m_undo[0].len = m_len;
 
@@ -3253,7 +3275,7 @@ bool CEdit::UndoRecall()
 {
     int     i;
 
-    if ( m_undo[0].text == 0 )  return false;
+    if ( m_undo[0].text == nullptr )  return false;
 
     m_len = m_undo[0].len;
     memcpy(m_text, m_undo[0].text, m_len);
@@ -3266,7 +3288,7 @@ bool CEdit::UndoRecall()
     {
         m_undo[i] = m_undo[i+1];
     }
-    m_undo[EDITUNDOMAX-1].text = 0;
+    m_undo[EDITUNDOMAX-1].text = nullptr;
 
     m_bUndoForce = true;
     Justif();

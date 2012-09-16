@@ -224,6 +224,7 @@ bool CApplication::ParseArguments(int argc, char *argv[])
             GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
             GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
             GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
+            return true;
         }
         else
         {

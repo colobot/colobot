@@ -29,6 +29,7 @@ CInterface::CInterface()
     m_iMan->AddInstance(CLASS_INTERFACE, this);
     m_event = static_cast<CEventQueue *>( m_iMan->SearchInstance(CLASS_EVENT) );
     m_engine = static_cast<Gfx::CEngine *>( m_iMan->SearchInstance(CLASS_ENGINE) );
+    m_camera = nullptr;
 
     for (int i = 0; i < MAXCONTROL; i++ )
     {
