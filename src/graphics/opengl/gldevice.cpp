@@ -129,9 +129,11 @@ bool Gfx::CGLDevice::Create()
 
     glViewport(0, 0, m_config.size.x, m_config.size.y);
 
+    int numLights = 0;
+    glGetIntegerv(GL_MAX_LIGHTS, &numLights);
 
-    m_lights        = std::vector<Gfx::Light>(GL_MAX_LIGHTS, Gfx::Light());
-    m_lightsEnabled = std::vector<bool>      (GL_MAX_LIGHTS, false);
+    m_lights        = std::vector<Gfx::Light>(numLights, Gfx::Light());
+    m_lightsEnabled = std::vector<bool>      (numLights, false);
 
     int maxTextures = 0;
     glGetIntegerv(GL_MAX_TEXTURE_UNITS, &maxTextures);
