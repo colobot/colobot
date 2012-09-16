@@ -18,6 +18,7 @@
 
 #include "common/global.h"
 #include "common/event.h"
+#include "common/logger.h"
 #include "CBot/resource.h"
 #include "object/object.h"
 
@@ -140,7 +141,12 @@ static const char* GetResourceBase(ResType type, int num)
     str = strings_text[num];
     break;
     case RES_EVENT:
-    assert(num < strings_event_len);
+    // assert(num < strings_event_len);
+    if (num >= strings_event_len)
+    {
+        GetLogger()->Error("GetResource invalid event num: %d\n", num);
+        return "";
+    }
     str = strings_event[num];
     break;
     case RES_OBJECT:

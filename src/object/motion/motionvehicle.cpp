@@ -2007,11 +2007,11 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
         limit[2] = limit[1];
         limit[3] = m_engine->GetLimitLOD(1);
 
-        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "drawer.tga", "",
+        m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "drawer.png", "",
                                       limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
                                       right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "drawer.tga", "",
+        m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "drawer.png", "",
                                       limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
                                       left, 1.0f, 8.0f, 192.0f, 256.0f);
     }
@@ -2024,11 +2024,11 @@ void CMotionVehicle::UpdateTrackMapping(float left, float right, ObjectType type
 
         for ( i=0 ; i<2 ; i++ )
         {
-            m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "lemt.tga", "",
+            m_engine->TrackTextureMapping(rRank, mat, Gfx::ENG_RSTATE_PART1, "lemt.png", "",
                                           limit[i*2+0], limit[i*2+1], Gfx::ENG_TEX_MAPPING_X,
                                           right, 1.0f, 8.0f, 192.0f, 256.0f);
 
-            m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "lemt.tga", "",
+            m_engine->TrackTextureMapping(lRank, mat, Gfx::ENG_RSTATE_PART2, "lemt.png", "",
                                           limit[i*2+0], limit[i*2+1], Gfx::ENG_TEX_MAPPING_X,
                                           left, 1.0f, 8.0f, 192.0f, 256.0f);
         }

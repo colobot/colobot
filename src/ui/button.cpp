@@ -101,7 +101,7 @@ bool CButton::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN  &&
-    	 event.mouseButton.button == 1    &&
+         event.mouseButton.button == 1    &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
@@ -125,8 +125,8 @@ bool CButton::EventProcess(const Event &event)
     }
 
     if ( event.type == EVENT_MOUSE_BUTTON_UP && //left
-    		event.mouseButton.button == 1    &&
-    		m_bCapture )
+         event.mouseButton.button == 1    &&
+         m_bCapture )
     {
         if ( CControl::Detect(event.pos) )
         {
@@ -182,7 +182,7 @@ void CButton::Draw()
          (m_state & STATE_CARD  ) == 0 &&
          (m_state & STATE_SIMPLY) == 0 )
     {
-        m_engine->SetTexture("button2.tga");
+        m_engine->SetTexture("button2.png");
         m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
         dp = 0.5f / 256.0f;

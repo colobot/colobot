@@ -89,7 +89,7 @@ void CCompass::Draw()
 
     device = m_engine->GetDevice();
 
-    m_engine->SetTexture("button2.tga");
+    m_engine->SetTexture("button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     p1.x = m_pos.x;

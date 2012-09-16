@@ -2207,7 +2207,7 @@ bool CMainDialog::EventProcess(const Event &event)
         return false;
     }
 
-    if ( m_engine->GetMouseVisible() &&
+    if ( /*TODO: m_engine->GetMouseVisible() &&*/
          !m_interface->EventProcess(event) )
     {
         return false;

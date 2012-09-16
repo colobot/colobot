@@ -78,7 +78,7 @@ void CGauge::Draw()
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    m_engine->SetTexture("button2.tga");
+    m_engine->SetTexture("button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     dp = 0.5f/256.0f;

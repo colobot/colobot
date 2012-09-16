@@ -341,7 +341,7 @@ void CList::Draw()
         dim = m_dim;
 
         if (m_icon == 0) {
-            m_engine->SetTexture("button2.tga");
+            m_engine->SetTexture("button2.png");
             m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
             uv1.x = 128.0f / 256.0f;
@@ -349,7 +349,7 @@ void CList::Draw()
             uv2.x = 160.0f / 256.0f;
             uv2.y =  96.0f / 256.0f;
         } else {
-            m_engine->SetTexture("button2.tga");
+            m_engine->SetTexture("button2.png");
             m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
             uv1.x = 132.0f / 256.0f;
@@ -382,7 +382,7 @@ void CList::Draw()
             dim.y *= 0.4f;
             pos.y -= dim.y;
 
-            m_engine->SetTexture("button2.tga");
+            m_engine->SetTexture("button2.png");
             m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE); // was D3DSTATETTw
             uv1.x = 120.0f / 256.0f;
             uv1.y =  64.0f / 256.0f;
@@ -448,7 +448,7 @@ void CList::Draw()
                 dim.y -= 4.0f / 480.0f;
 
                 if ( m_check[i + m_firstLine] ) {
-                    m_engine->SetTexture("button1.tga");
+                    m_engine->SetTexture("button1.png");
                     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
                     uv1.x = 64.0f / 256.0f;
                     uv1.y =  0.0f / 256.0f;
@@ -471,7 +471,7 @@ void CList::Draw()
                     uv2.y -= dp;
                     DrawIcon(pos, dim, uv1, uv2);  // draws v
                 } else {
-                    m_engine->SetTexture("button1.tga");
+                    m_engine->SetTexture("button1.png");
                     m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE); // was D3DSTATETTw
                     if ( i + m_firstLine == m_selectLine ) {
                         uv1.x =224.0f / 256.0f;  // <

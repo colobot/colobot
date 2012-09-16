@@ -1391,18 +1391,18 @@ void CAutoBase::BeginTransit()
 
     if ( m_param == PARAM_TRANSIT2 )
     {
-        m_bgBack = "back01.tga";  // clouds orange / blue
+        m_bgBack = "back01.png";  // clouds orange / blue
     }
     else if ( m_param == PARAM_TRANSIT3 )
     {
-        m_bgBack = "back22.tga";  // blueberries clouds
+        m_bgBack = "back22.png";  // blueberries clouds
     }
     else
     {
 #if _DEMO
-        m_bgBack = "back46b.tga";  // paintings
+        m_bgBack = "back46b.png";  // paintings
 #else
-        m_bgBack = "back46.tga";  // paintings
+        m_bgBack = "back46.png";  // paintings
 #endif
     }
 

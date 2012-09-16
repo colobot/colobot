@@ -154,7 +154,7 @@ void CKey::Draw()
         DrawShadow(m_pos, m_dim);
 
 
-    m_engine->SetTexture("button1.tga");
+    m_engine->SetTexture("button1.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL); // was D3DSTATENORMAL
 
     zoomExt = 1.00f;

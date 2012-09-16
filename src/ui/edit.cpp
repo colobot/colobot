@@ -1131,9 +1131,9 @@ void CEdit::DrawImage(Math::Point pos, const char *name, float width,
     float       dp;
     char        filename[100];
 
-//? sprintf(filename, "diagram\\%s.bmp", name);
+//? sprintf(filename, "diagram\\%s.png", name);
     UserDir(filename, name, "diagram");
-    strcat(filename, ".bmp");
+    strcat(filename, ".png");
 
     m_engine->SetTexture(filename);
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
@@ -1163,7 +1163,7 @@ void CEdit::DrawBack(Math::Point pos, Math::Point dim)
 
     if ( m_bGeneric )  return;
 
-    m_engine->SetTexture("button2.tga");
+    m_engine->SetTexture("button2.png");
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     if ( m_bMulti )
@@ -1214,9 +1214,9 @@ void CEdit::DrawPart(Math::Point pos, Math::Point dim, int icon)
     float       dp;
 
 #if _POLISH
-    m_engine->SetTexture("textp.tga");
+    m_engine->SetTexture("textp.png");
 #else
-    m_engine->SetTexture("text.tga");
+    m_engine->SetTexture("text.png");
 #endif
     m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
@@ -1426,9 +1426,9 @@ void CEdit::FreeImage()
 
     for ( i=0 ; i<m_imageTotal ; i++ )
     {
-//?     sprintf(filename, "diagram\\%s.bmp", m_image[i].name);
+//?     sprintf(filename, "diagram\\%s.png", m_image[i].name);
         UserDir(filename, m_image[i].name, "diagram");
-        strcat(filename, ".bmp");
+        strcat(filename, ".png");
         m_engine->DeleteTexture(filename);
     }
 }
@@ -1439,9 +1439,9 @@ void CEdit::LoadImage(const char *name)
 {
     char    filename[100];
 
-//? sprintf(filename, "diagram\\%s.bmp", name);
+//? sprintf(filename, "diagram\\%s.png", name);
     UserDir(filename, name, "diagram");
-    strcat(filename, ".bmp");
+    strcat(filename, ".png");
     m_engine->LoadTexture(filename);
 }
 

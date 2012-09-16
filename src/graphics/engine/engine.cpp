@@ -37,6 +37,7 @@
 #include "graphics/engine/water.h"
 #include "math/geometry.h"
 #include "sound/sound.h"
+#include "ui/interface.h"
 
 
 // Initial size of various vectors
@@ -86,15 +87,6 @@ Gfx::EngineObjLevel4::EngineObjLevel4(bool used, Gfx::EngineTriangleType type, c
 
     vertices.reserve(LEVEL4_VERTEX_PREALLOCATE_COUNT);
 }
-
-
-
-// TODO: temporary stub for CInterface
-class CInterface
-{
-public:
-    void Draw() {}
-};
 
 Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
 {
@@ -3124,7 +3116,7 @@ void Gfx::CEngine::DrawInterface()
     m_device->SetTransform(Gfx::TRANSFORM_WORLD,      m_matWorldInterface);
 
     // Draw the entire interface
-    CInterface* interface = static_cast<CInterface*>( m_iMan->SearchInstance(CLASS_INTERFACE) );
+    Ui::CInterface* interface = static_cast<Ui::CInterface*>( m_iMan->SearchInstance(CLASS_INTERFACE) );
     if (interface != nullptr)
         interface->Draw();
 
@@ -3834,6 +3826,8 @@ void Gfx::CEngine::DrawMouseSprite(Math::Point pos, Math::Point size, int icon)
         Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), normal, Math::Point(u2, v1))
     };
 
+    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_TEST, false);
+    m_device->SetRenderState(Gfx::RENDER_STATE_DEPTH_WRITE, false);
     m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
 }

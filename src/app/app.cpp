@@ -371,6 +371,8 @@ bool CApplication::Create()
     // Create the robot application.
     m_robotMain = new CRobotMain(m_iMan, this);
 
+    m_robotMain->ChangePhase(PHASE_WELCOME1);
+
     GetLogger()->Info("CApplication created successfully\n");
 
     return true;
@@ -854,7 +856,7 @@ bool CApplication::ProcessEvent(const Event &event)
         if (m_debugMode)
             l->Info("Focus change: active = %s\n", event.active.gain ? "true" : "false");
 
-        if (m_active != event.active.gain)
+        /*if (m_active != event.active.gain)
         {
             m_active = event.active.gain;
 
@@ -862,7 +864,7 @@ bool CApplication::ProcessEvent(const Event &event)
                 ResumeSimulation();
             else
                 SuspendSimulation();
-        }
+        }*/
     }
     else if (event.type == EVENT_KEY_DOWN)
     {

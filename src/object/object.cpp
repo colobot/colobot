@@ -6062,7 +6062,7 @@ void CObject::UpdateEnergyMapping()
     for ( j=0 ; j<3 ; j++ )
     {
         m_engine->ChangeTextureMapping(m_objectPart[0].object,
-                                       mat, Gfx::ENG_RSTATE_PART3, "lemt.tga", "",
+                                       mat, Gfx::ENG_RSTATE_PART3, "lemt.png", "",
                                        limit[j*2+0], limit[j*2+1], Gfx::ENG_TEX_MAPPING_1Y,
                                        au, bu, 1.0f, 0.0f);
     }

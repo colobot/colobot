@@ -414,11 +414,11 @@ void CAutoPortico::UpdateTrackMapping(float left, float right)
     limit[0] = 0.0f;
     limit[1] = 1000000.0f;
 
-    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART1, "lemt.tga", "",
+    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART1, "lemt.png", "",
                                   limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
                                   right, 8.0f, 8.0f, 192.0f, 256.0f);
 
-    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART2, "lemt.tga", "",
+    m_engine->TrackTextureMapping(rank, mat, Gfx::ENG_RSTATE_PART2, "lemt.png", "",
                                   limit[0], limit[1], Gfx::ENG_TEX_MAPPING_X,
                                   left, 8.0f, 8.0f, 192.0f, 256.0f);
 }
