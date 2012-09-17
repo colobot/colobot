@@ -118,7 +118,7 @@ enum KeyRank
 
 // TODO: move to CRobotMain
 extern long     g_id;                   // unique identifier
-extern long     g_build;                // constructible buildings
-extern long     g_researchDone;         // research done
+extern int      g_build;                // constructible buildings
+extern int      g_researchDone;         // research done
 extern long     g_researchEnable;       // research available
 extern float    g_unit;                 // conversion factor

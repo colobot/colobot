@@ -34,7 +34,7 @@ static unsigned char table_codec[23] =
 
 void Codec(void* buffer, int len, int start)
 {
-    unsigned char *b = (unsigned char*)buffer;
+    unsigned char *b = static_cast<unsigned char*>(buffer);
     int     i;
 
     for ( i=0 ; i<len ; i++ )
@@ -350,7 +350,7 @@ int CMetaFile::MetaOpen(char *metaname)
             strcpy(m_list[i].name, metaname);  // memorized the name
 
             fread(&m_list[i].total, sizeof(int), 1, m_list[i].stream);
-            m_list[i].headers = (MetaHeader*)malloc(sizeof(MetaHeader)*m_list[i].total);
+            m_list[i].headers = static_cast<MetaHeader*>(malloc(sizeof(MetaHeader)*m_list[i].total));
 
             offset = 4;
             for ( j=0 ; j<m_list[i].total ; j++ )

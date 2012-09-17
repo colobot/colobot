@@ -710,7 +710,7 @@ bool CMotionHuman::EventFrame(const Event &event)
     float       tSt[9], tNd[9];
     float       aa, bb, shield, deadFactor, level;
     int         i, ii, st, nd, action, legAction, armAction;
-    bool        bOnBoard, bSwim, bStop;
+    bool        bOnBoard, bSwim;
 
     if ( m_engine->GetPause() )
     {
@@ -837,7 +837,6 @@ bool CMotionHuman::EventFrame(const Event &event)
         m_armTimeSwim += Math::Min(Math::Max(s,a,3.0f),15.0f)*event.rTime*0.05f;
     }
 
-    bStop = ( s == 0.0f );  // stop?
     prog = 0.0f;
 
     if ( m_physics->GetLand() )  // on the ground?

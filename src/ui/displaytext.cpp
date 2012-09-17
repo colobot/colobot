@@ -55,9 +55,9 @@ CDisplayText::CDisplayText()
     m_iMan = CInstanceManager::GetInstancePointer();
     m_iMan->AddInstance(CLASS_DISPLAYTEXT, this);
 
-    m_engine    = (Gfx::CEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_sound     = (CSoundInterface*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
+    m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
 
     for ( i=0 ; i<MAXDTLINE ; i++ )
     {

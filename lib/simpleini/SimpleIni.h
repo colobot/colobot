@@ -422,7 +422,7 @@ public:
         }
         bool ConvertToStore(const SI_CHAR * a_pszString) {
             size_t uLen = SizeToStore(a_pszString);
-            if (uLen == (size_t)(-1)) {
+            if (uLen == static_cast<size_t>(-1)) {
                 return false;
             }
             while (uLen > m_scratch.size()) {
@@ -1360,7 +1360,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadFile(
     }
     fseek(a_fpFile, 0, SEEK_SET);
     size_t uRead = fread(pData, sizeof(char), lSize, a_fpFile);
-    if (uRead != (size_t) lSize) {
+    if (uRead != static_cast<size_t>(lSize)) {
         delete[] pData;
         return SI_FILE;
     }
@@ -1394,7 +1394,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadData(
 
     // determine the length of the converted data
     size_t uLen = converter.SizeFromStore(a_pData, a_uDataLen);
-    if (uLen == (size_t)(-1)) {
+    if (uLen == static_cast<size_t>(-1)) {
         return SI_FAIL;
     }
 
@@ -1753,7 +1753,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::LoadMultiLineText(
 
         // move this line down to the location that it should be if necessary
         if (pDataLine < pCurrLine) {
-            size_t nLen = (size_t) (a_pData - pCurrLine);
+            size_t nLen = static_cast<size_t> (a_pData - pCurrLine);
             memmove(pDataLine, pCurrLine, nLen * sizeof(SI_CHAR));
             pDataLine[nLen] = '\0';
         }
@@ -1816,10 +1816,10 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::CopyString(
 {
     size_t uLen = 0;
     if (sizeof(SI_CHAR) == sizeof(char)) {
-        uLen = strlen((const char *)a_pString);
+        uLen = strlen(static_cast<const char *>(a_pString));
     }
     else if (sizeof(SI_CHAR) == sizeof(wchar_t)) {
-        uLen = wcslen((const wchar_t *)a_pString);
+        uLen = wcslen(reinterpret_cast<const wchar_t *>(a_pString));
     }
     else {
         for ( ; a_pString[uLen]; ++uLen) /*loop*/ ;
@@ -2225,7 +2225,7 @@ CSimpleIniTempl<SI_CHAR,SI_STRLESS,SI_CONVERTER>::GetSectionSize(
     // if multi-key isn't permitted then the section size is
     // the number of keys that we have.
     if (!m_bAllowMultiKey || section.empty()) {
-        return (int) section.size();
+        return static_cast<int> (section.size());
     }
 
     // otherwise we need to count them
@@ -2626,7 +2626,7 @@ struct SI_GenericCase {
     bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
         long cmp;
         for ( ;*pLeft && *pRight; ++pLeft, ++pRight) {
-            cmp = (long) *pLeft - (long) *pRight;
+            cmp = static_cast<long> (*pLeft) - static_cast<long> (*pRight);
             if (cmp != 0) {
                 return cmp < 0;
             }
@@ -2649,7 +2649,7 @@ struct SI_GenericNoCase {
     bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
         long cmp;
         for ( ;*pLeft && *pRight; ++pLeft, ++pRight) {
-            cmp = (long) locase(*pLeft) - (long) locase(*pRight);
+            cmp = static_cast<long> (locase(*pLeft)) - static_cast<long> (locase(*pRight));
             if (cmp != 0) {
                 return cmp < 0;
             }
@@ -2741,7 +2741,7 @@ public:
         const SI_CHAR * a_pInputData)
     {
         // ASCII/MBCS/UTF-8 needs no conversion
-        return strlen((const char *)a_pInputData) + 1;
+        return strlen(static_cast<const char *>(a_pInputData)) + 1;
     }
 
     /** Convert the input string to the storage format of this data.
@@ -2763,7 +2763,7 @@ public:
         size_t          a_uOutputDataSize)
     {
         // calc input string length (SI_CHAR type and size independent)
-        size_t uInputLen = strlen((const char *)a_pInputData) + 1;
+        size_t uInputLen = strlen(static_cast<const char *>(a_pInputData)) + 1;
         if (uInputLen > a_uOutputDataSize) {
             return false;
         }
@@ -3195,12 +3195,12 @@ template<class SI_CHAR>
 struct SI_NoCase {
     bool operator()(const SI_CHAR * pLeft, const SI_CHAR * pRight) const {
         if (sizeof(SI_CHAR) == sizeof(char)) {
-            return _mbsicmp((const unsigned char *)pLeft,
-                (const unsigned char *)pRight) < 0;
+            return _mbsicmp(reinterpret_cast<const unsigned char *>(pLeft),
+                reinterpret_cast<const unsigned char *>(pRight)) < 0;
         }
         if (sizeof(SI_CHAR) == sizeof(wchar_t)) {
-            return _wcsicmp((const wchar_t *)pLeft,
-                (const wchar_t *)pRight) < 0;
+            return _wcsicmp(reinterpret_cast<const wchar_t *>(pLeft),
+                reinterpret_cast<const wchar_t *>(pRight)) < 0;
         }
         return SI_GenericNoCase<SI_CHAR>()(pLeft, pRight);
     }
@@ -3251,9 +3251,9 @@ public:
 
         int retval = MultiByteToWideChar(
             m_uCodePage, 0,
-            a_pInputData, (int) a_uInputDataLen,
+            a_pInputData, static_cast<int> (a_uInputDataLen),
             0, 0);
-        return (size_t)(retval > 0 ? retval : -1);
+        return static_cast<size_t>(retval > 0 ? retval : -1);
     }
 
     /** Convert the input string from the storage format to SI_CHAR.
@@ -3277,8 +3277,8 @@ public:
     {
         int nSize = MultiByteToWideChar(
             m_uCodePage, 0,
-            a_pInputData, (int) a_uInputDataLen,
-            (wchar_t *) a_pOutputData, (int) a_uOutputDataSize);
+            a_pInputData, static_cast<int> (a_uInputDataLen),
+            static_cast<wchar_t *> (a_pOutputData), static_cast<int> (a_uOutputDataSize));
         return (nSize > 0);
     }
 
@@ -3297,9 +3297,9 @@ public:
     {
         int retval = WideCharToMultiByte(
             m_uCodePage, 0,
-            (const wchar_t *) a_pInputData, -1,
+            static_cast<const wchar_t *> (a_pInputData), -1,
             0, 0, 0, 0);
-        return (size_t) (retval > 0 ? retval : -1);
+        return static_cast<size_t> (retval > 0 ? retval : -1);
     }
 
     /** Convert the input string to the storage format of this data.
@@ -3322,8 +3322,8 @@ public:
     {
         int retval = WideCharToMultiByte(
             m_uCodePage, 0,
-            (const wchar_t *) a_pInputData, -1,
-            a_pOutputData, (int) a_uOutputDataSize, 0, 0);
+            static_cast<const wchar_t *> (a_pInputData), -1,
+            a_pOutputData, static_cast<int> (a_uOutputDataSize), 0, 0);
         return retval > 0;
     }
 };

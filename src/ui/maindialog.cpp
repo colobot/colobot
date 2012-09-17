@@ -6575,7 +6575,7 @@ bool CMainDialog::IsDialog()
 
 // Specifies the name of the scene to read.
 
-void CMainDialog::SetSceneRead(char* name)
+void CMainDialog::SetSceneRead(const char* name)
 {
     strcpy(m_sceneRead, name);
 }
@@ -6589,7 +6589,7 @@ char* CMainDialog::GetSceneRead()
 
 // Specifies the name of the scene to read.
 
-void CMainDialog::SetStackRead(char* name)
+void CMainDialog::SetStackRead(const char* name)
 {
     strcpy(m_stackRead, name);
 }
@@ -6603,7 +6603,7 @@ char* CMainDialog::GetStackRead()
 
 // Specifies the name of the chosen to play scene.
 
-void CMainDialog::SetSceneName(char* name)
+void CMainDialog::SetSceneName(const char* name)
 {
     strcpy(m_sceneName, name);
 }

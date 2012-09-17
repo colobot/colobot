@@ -661,6 +661,7 @@ bool CScript::rRadar(CBotVar* var, CBotVar* result, int& exception, void* user)
         }
 
         a = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
+        //TODO uninitialized variable
         if ( Math::TestAngle(a, iAngle-focus/2.0f, iAngle+focus/2.0f) )
         {
             if ( (sens >= 0.0f && d < best) ||

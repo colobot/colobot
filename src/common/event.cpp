@@ -24,8 +24,8 @@ static EventType g_uniqueEventType = EVENT_USER;
 
 EventType GetUniqueEventType()
 {
-    int i = (int)g_uniqueEventType+1;
-    g_uniqueEventType = (EventType)i;
+    int i = static_cast<int>(g_uniqueEventType+1);
+    g_uniqueEventType = static_cast<EventType>(i);
     return g_uniqueEventType;
 }
 

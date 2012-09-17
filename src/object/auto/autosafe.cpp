@@ -414,9 +414,9 @@ int CAutoSafe::CountKeys()
         pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->GetType();
         if ( pObj->GetTruck() != 0 )  continue;
 
+        oType = pObj->GetType();
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
              oType != OBJECT_KEYc &&
@@ -588,7 +588,6 @@ CObject* CAutoSafe::SearchVehicle()
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  oType;
     float       dist;
     int         i;
 
@@ -599,7 +598,6 @@ CObject* CAutoSafe::SearchVehicle()
         pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->GetType();
         if ( pObj == m_object )  continue;
         if ( pObj->GetTruck() != 0 )  continue;
 

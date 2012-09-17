@@ -139,7 +139,7 @@ bool CMainShort::CreateShortcuts()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == nullptr )  break;
 
         if ( !pObj->GetActif() )  continue;

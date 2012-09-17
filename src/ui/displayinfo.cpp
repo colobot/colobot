@@ -232,7 +232,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
                 m_bInfoMaximized = false;
             }
 //?         m_main->SetEditFull(m_bInfoMaximized);
-            pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW4);
+            pw = dynamic_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
             if ( pw != 0 )
             {
                 pw->SetMaximized(m_bInfoMaximized);
@@ -834,7 +834,7 @@ void CDisplayInfo::StopDisplayInfo()
 
     if ( m_bEditLock )  // editing running program?
     {
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
+        pw = dynamic_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
         if ( pw != 0 )
         {
             pw->SetState(STATE_ENABLE);  // CStudio operating
@@ -929,7 +929,7 @@ CObject* CDisplayInfo::SearchToto()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         type = pObj->GetType();
@@ -991,7 +991,7 @@ void ObjectWrite(FILE* file, ObjectList list[], int i)
     strcat(line, res);
 
     strcat(line, "\\u ");
-    p = GetHelpFilename(list[i].type);
+    p = const_cast<char*>(GetHelpFilename(list[i].type));
     if ( p[0] == 0 )  return;
     strcat(line, p+5);  // skip "help\"
     p = strstr(line, ".txt");
@@ -1019,7 +1019,7 @@ void CDisplayInfo::CreateObjectsFile()
     bRadar = false;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( !pObj->GetActif() )  continue;

@@ -87,8 +87,8 @@ const float UNIT = 4.0f;
 // Global variables.
 
 long    g_id;               // unique identifier
-long    g_build;            // constructible buildings
-long    g_researchDone;         // research done
+int     g_build;            // constructible buildings
+int     g_researchDone;         // research done
 long    g_researchEnable;       // research available
 float   g_unit;             // conversion factor
 
@@ -172,7 +172,7 @@ bool rfconstruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exceptio
 
         // save the channel file
         pVar = pThis->GetItem("handle");
-        pVar->SetValInt((long)pFile);
+        pVar->SetValInt(reinterpret_cast<long>(pFile));
     }
 
     return true;
@@ -215,7 +215,7 @@ bool rfdestruct (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception
     // don't open? no problem :)
     if ( pVar->GetInit() != IS_DEF) return true;
 
-    FILE* pFile= (FILE*)pVar->GetValInt();
+    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
     fclose(pFile);
     m_CompteurFileOpen --;
 
@@ -282,7 +282,7 @@ bool rfopen (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 
     // Registered the channel file
     pVar = pThis->GetItem("handle");
-    pVar->SetValInt((long)pFile);
+    pVar->SetValInt(reinterpret_cast<long>(pFile));
 
     pResult->SetValInt(true);
     return true;
@@ -328,7 +328,7 @@ bool rfclose (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
-    FILE* pFile= (FILE*)pVar->GetValInt();
+    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
     fclose(pFile);
     m_CompteurFileOpen --;
 
@@ -365,7 +365,7 @@ bool rfwrite (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
-    FILE* pFile= (FILE*)pVar->GetValInt();
+    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
 
     int res = fputs(param+CBotString("\n"), pFile);
 
@@ -404,7 +404,7 @@ bool rfread (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
-    FILE* pFile= (FILE*)pVar->GetValInt();
+    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
 
     char    chaine[2000];
     int     i;
@@ -445,7 +445,7 @@ bool rfeof (CBotVar* pThis, CBotVar* pVar, CBotVar* pResult, int& Exception)
 
     if ( pVar->GetInit() != IS_DEF) { Exception = CBotErrNotOpen; return false; }
 
-    FILE* pFile= (FILE*)pVar->GetValInt();
+    FILE* pFile= reinterpret_cast<FILE*>(pVar->GetValInt());
 
     pResult->SetValInt( feof( pFile ) );
 
@@ -604,15 +604,15 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
 
     m_app = app;
 
-    m_eventQueue     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
-    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
-    m_lightMan  = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
-    m_particle  = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
-    m_water     = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
-    m_cloud     = static_cast<Gfx::CCloud*>(m_iMan->SearchInstance(CLASS_CLOUD));
-    m_lightning = static_cast<Gfx::CLightning*>(m_iMan->SearchInstance(CLASS_BLITZ));
-    m_planet    = static_cast<Gfx::CPlanet*>(m_iMan->SearchInstance(CLASS_PLANET));
-    m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
+    m_eventQueue = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
+    m_engine     = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_lightMan   = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
+    m_particle   = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_water      = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
+    m_cloud      = static_cast<Gfx::CCloud*>(m_iMan->SearchInstance(CLASS_CLOUD));
+    m_lightning  = static_cast<Gfx::CLightning*>(m_iMan->SearchInstance(CLASS_BLITZ));
+    m_planet     = static_cast<Gfx::CPlanet*>(m_iMan->SearchInstance(CLASS_PLANET));
+    m_sound      = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
 
     m_interface   = new Ui::CInterface();
     m_terrain     = new Gfx::CTerrain(m_iMan);
@@ -682,15 +682,15 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     m_windowPos = Math::Point(0.15f, 0.17f);
     m_windowDim = Math::Point(0.70f, 0.66f);
 
-    float fValue;
-    int iValue;
+    // TODO: profile
+    // float fValue;
+    // int iValue;
 
-    /* TODO: profile
-    if (GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
-    if (GetLocalProfileFloat("Edit", "WindowPos.x", fValue)) m_windowPos.x = fValue;
-    if (GetLocalProfileFloat("Edit", "WindowPos.y", fValue)) m_windowPos.y = fValue;
-    if (GetLocalProfileFloat("Edit", "WindowDim.x", fValue)) m_windowDim.x = fValue;
-    if (GetLocalProfileFloat("Edit", "WindowDim.y", fValue)) m_windowDim.y = fValue; */
+    // if (GetLocalProfileFloat("Edit", "FontSize",    fValue)) m_fontSize    = fValue;
+    // if (GetLocalProfileFloat("Edit", "WindowPos.x", fValue)) m_windowPos.x = fValue;
+    // if (GetLocalProfileFloat("Edit", "WindowPos.y", fValue)) m_windowPos.y = fValue;
+    // if (GetLocalProfileFloat("Edit", "WindowDim.x", fValue)) m_windowDim.x = fValue;
+    // if (GetLocalProfileFloat("Edit", "WindowDim.y", fValue)) m_windowDim.y = fValue;
 
     m_IOPublic = false;
     m_IODim = Math::Point(320.0f/640.0f, (121.0f+18.0f*8)/480.0f);
@@ -737,7 +737,7 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
 
     for (int i = 0; i < OBJECT_MAX; i++)
     {
-        ObjectType type = (ObjectType)i;
+        ObjectType type = static_cast<ObjectType>(i);
         const char* token = GetObjectName(type);
         if (token[0] != 0)
             CBotProgram::DefineNum(token, type);
@@ -943,7 +943,7 @@ void CRobotMain::ChangePhase(Phase phase)
     dim.y =  18.0f/480.0f;
     pos.x =  50.0f/640.0f;
     pos.y = 452.0f/480.0f;
-    Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->CreateEdit(pos, dim, 0, EVENT_CMD));
+    Ui::CEdit* pe = dynamic_cast<Ui::CEdit*>(m_interface->CreateEdit(pos, dim, 0, EVENT_CMD));
     if (pe == nullptr) return;
     pe->ClearState(Ui::STATE_VISIBLE);
     m_cmdEdit = false;  // hidden for now
@@ -1145,7 +1145,7 @@ bool CRobotMain::EventProcess(const Event &event)
         event.type == EVENT_KEY_DOWN &&
         event.key.key == KEY(PAUSE))  // Pause ?
     {
-        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        Ui::CEdit* pe = dynamic_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
         pe->SetState(Ui::STATE_VISIBLE);
         pe->SetFocus(true);
@@ -1157,7 +1157,7 @@ bool CRobotMain::EventProcess(const Event &event)
         event.key.key == KEY(RETURN) && m_cmdEdit)
     {
         char cmd[50];
-        Ui::CEdit* pe = static_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
+        Ui::CEdit* pe = dynamic_cast<Ui::CEdit*>(m_interface->SearchControl(EVENT_CMD));
         if (pe == nullptr) return false;
         pe->GetText(cmd, 50);
         pe->SetText("");
@@ -1843,7 +1843,7 @@ void CRobotMain::StartDisplayInfo(int index, bool movie)
 }
 
 //! Beginning of the displaying of instructions
-void CRobotMain::StartDisplayInfo(char *filename, int index)
+void CRobotMain::StartDisplayInfo(const char *filename, int index)
 {
     if (m_cmdEdit) return;
 
@@ -1857,7 +1857,7 @@ void CRobotMain::StartDisplayInfo(char *filename, int index)
         m_sound->MuteAll(true);
     }
 
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
     if (pb != nullptr)
     {
         pb->ClearState(Ui::STATE_VISIBLE);
@@ -1889,7 +1889,7 @@ void CRobotMain::StopDisplayInfo()
 
     if (!m_editLock)
     {
-        Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+        Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
         if (pb != nullptr)
             pb->SetState(Ui::STATE_VISIBLE);
 
@@ -1930,7 +1930,7 @@ void CRobotMain::StartSuspend()
     m_infoObject = DeselectAll();  // removes the control buttons
     m_displayText->HideText(true);
 
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
     if (pb != nullptr)
         pb->ClearState(Ui::STATE_VISIBLE);
 
@@ -1940,7 +1940,7 @@ void CRobotMain::StartSuspend()
 //! End of dialogue during the game
 void CRobotMain::StopSuspend()
 {
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
+    Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
     if (pb != nullptr)
         pb->SetState(Ui::STATE_VISIBLE);
 
@@ -2047,7 +2047,7 @@ void CRobotMain::StartDisplayVisit(EventType event)
 {
     if (m_editLock) return;
 
-    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
+    Ui::CWindow* pw = dynamic_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if (pw == nullptr) return;
 
     if (event == EVENT_NULL)  // visit by keyboard shortcut?
@@ -2064,10 +2064,10 @@ void CRobotMain::StartDisplayVisit(EventType event)
             i --;
             if (i < 0) i = Ui::MAXDTLINE-1;
 
-            Ui::CButton* button = static_cast<Ui::CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_VISIT0+i)));
+            Ui::CButton* button = dynamic_cast<Ui::CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_VISIT0+i)));
             if (button == nullptr || !button->TestState(Ui::STATE_ENABLE)) continue;
 
-            Ui::CGroup* group = static_cast<Ui::CGroup*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_GROUP0+i)));
+            Ui::CGroup* group = dynamic_cast<Ui::CGroup*>(pw->SearchControl(static_cast<EventType>(EVENT_DT_GROUP0+i)));
             if (group != nullptr)
             {
                 event = static_cast<EventType>(EVENT_DT_VISIT0+i);
@@ -2819,7 +2819,7 @@ void CRobotMain::CreateTooltip(Math::Point pos, const char* text)
 
     m_interface->CreateWindows(pos, dim, 1, EVENT_TOOLTIP);
 
-    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_TOOLTIP));
+    Ui::CWindow* pw = dynamic_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_TOOLTIP));
     if (pw != nullptr)
     {
         pw->SetState(Ui::STATE_SHADOW);
@@ -2843,7 +2843,7 @@ void CRobotMain::HelpObject()
     CObject* obj = GetSelect();
     if (obj == nullptr) return;
 
-    char* filename = GetHelpFilename(obj->GetType());
+    const char* filename = GetHelpFilename(obj->GetType());
     if (filename[0] == 0) return;
 
     StartDisplayInfo(filename, -1);
@@ -2919,7 +2919,7 @@ void CRobotMain::ChangeCamera()
 }
 
 //! Remote control the camera using the arrow keys
-void CRobotMain::KeyCamera(EventType type, long key)
+void CRobotMain::KeyCamera(EventType type, unsigned int key)
 {
     // TODO: rewrite key handling to input bindings
 
@@ -3068,14 +3068,14 @@ bool CRobotMain::EventFrame(const Event &event)
     m_planet->EventProcess(event);
 
     Ui::CMap* pm = nullptr;
-    Ui::CWindow* pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
+    Ui::CWindow* pw = dynamic_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
     {
         pm = nullptr;
     }
     else
     {
-        pm = static_cast<Ui::CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
+        pm = dynamic_cast<Ui::CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
         if (pm != nullptr) pm->FlushObject();
     }
 
@@ -3510,7 +3510,7 @@ void CRobotMain::ScenePerso()
     {
         obj->SetDrawFront(true);  // draws the interface
 
-        CMotionHuman* mh = (CMotionHuman*)obj->GetMotion();
+        CMotionHuman* mh = static_cast<CMotionHuman*>(obj->GetMotion());
         if (mh != nullptr)
             mh->StartDisplayPerso();
     }
@@ -5137,7 +5137,7 @@ void CRobotMain::SetShowLimit(int i, Gfx::ParticleType parti, CObject *obj,
     m_showLimit[i].pos = pos;
     m_showLimit[i].radius = radius;
     m_showLimit[i].duration = duration;
-    m_showLimit[i].total = (int)((radius*2.0f*Math::PI)/dist);
+    m_showLimit[i].total = static_cast<int>((radius*2.0f*Math::PI)/dist);
     if (m_showLimit[i].total > MAXSHOWPARTI) m_showLimit[i].total = MAXSHOWPARTI;
     m_showLimit[i].time = 0.0f;
 
@@ -5350,8 +5350,6 @@ void CRobotMain::LoadFileScript(CObject *obj, char* filename, int objRank,
     ObjectType type = obj->GetType();
     if (type == OBJECT_HUMAN) return;
 
-    char* name = m_dialog->GetSceneName();
-    int rank = m_dialog->GetSceneRank();
 
     char fn[MAX_FNAME];
     strcpy(fn, filename);
@@ -5523,7 +5521,7 @@ bool CRobotMain::IsBusy()
 }
 
 //! Writes an object into the backup file
-void CRobotMain::IOWriteObject(FILE *file, CObject* obj, char *cmd)
+void CRobotMain::IOWriteObject(FILE *file, CObject* obj, const char *cmd)
 {
     if (obj->GetType() == OBJECT_FIX) return;
 
@@ -5643,7 +5641,7 @@ bool CRobotMain::IOWriteScene(char *filename, char *filecbot, char *info)
     sprintf(line, "Map zoom=%.2f\n", m_map->GetZoomMap());
     fputs(line, file);
 
-    sprintf(line, "DoneResearch bits=%d\n", g_researchDone);
+    sprintf(line, "DoneResearch bits=%d\n", static_cast<int>(g_researchDone));
     fputs(line, file);
 
     float sleep, delay, magnetic, progress;
@@ -5981,7 +5979,7 @@ void CRobotMain::ResetObject()
     // Removes all pyrotechnic effects in progress.
     while ( true )
     {
-        pyro = (CPyro*)m_iMan->SearchInstance(CLASS_PYRO, 0);
+        pyro = static_cast<CPyro*>(m_iMan->SearchInstance(CLASS_PYRO, 0));
         if ( pyro == 0 )  break;
 
         pyro->DeleteObject();
@@ -6420,7 +6418,7 @@ void CRobotMain::SetSpeed(float speed)
 {
     // TODO: m_app->SetSimulationSpeed(speed);
 
-    Ui::CButton* pb = static_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_SPEED));
+    Ui::CButton* pb = dynamic_cast<Ui::CButton*>(m_interface->SearchControl(EVENT_SPEED));
     if (pb != nullptr)
     {
         if (speed == 1.0f)

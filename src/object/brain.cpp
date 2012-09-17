@@ -2789,7 +2789,7 @@ void CBrain::TraceRecordStart()
     }
 
     delete m_traceRecordBuffer;
-    m_traceRecordBuffer = (TraceRecord*)malloc(sizeof(TraceRecord)*MAXTRACERECORD);
+    m_traceRecordBuffer = static_cast<TraceRecord*>(malloc(sizeof(TraceRecord)*MAXTRACERECORD));
     m_traceRecordIndex = 0;
 }
 
@@ -2836,7 +2836,7 @@ void CBrain::TraceRecordFrame()
 
         if ( color != m_traceColor )
         {
-            TraceRecordOper(TO_PEN, (float)color);
+            TraceRecordOper(TO_PEN, static_cast<float>(color));
         }
 
         m_traceOper = oper;
@@ -2858,7 +2858,7 @@ void CBrain::TraceRecordStop()
     if ( m_traceRecordBuffer == 0 )  return;
 
     max = 10000;
-    buffer = (char*)malloc(max);
+    buffer = static_cast<char*>(malloc(max));
     *buffer = 0;
     strncat(buffer, "extern void object::AutoDraw()\n{\n", max-1);
 
@@ -2944,14 +2944,14 @@ bool CBrain::TraceRecordPut(char *buffer, int max, TraceOper oper, float param)
     if ( oper == TO_TURN )
     {
         param = -param*180.0f/Math::PI;
-        sprintf(line, "\tturn(%d);\n", (int)param);
+        sprintf(line, "\tturn(%d);\n", static_cast<int>(param));
 //?     sprintf(line, "\tturn(%.1f);\n", param);
         strncat(buffer, line, max-1);
     }
 
     if ( oper == TO_PEN )
     {
-        color = (int)param;
+        color = static_cast<int>(param);
         if ( color == -1 )  strncat(buffer, "\tpenup();\n",         max-1);
         if ( color ==  1 )  strncat(buffer, "\tpendown(Black);\n",  max-1);
         if ( color ==  8 )  strncat(buffer, "\tpendown(Yellow);\n", max-1);

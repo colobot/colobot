@@ -258,7 +258,7 @@ bool Xfer(char* src, char* dst)
         return false;
     }
 
-    buffer = (char*)malloc(10000);
+    buffer = static_cast<char*>(malloc(10000));
 
     while ( true )
     {
@@ -338,7 +338,7 @@ bool CopyFileListToTemp(char* filename, int* list, int total)
 
 // Adds an extension to file, if doesn't already one.
 
-void AddExt(char* filename, char* ext)
+void AddExt(char* filename, const char* ext)
 {
     if ( strchr(filename, '.') != 0 )  return;  // already an extension?
     strcat(filename, ext);

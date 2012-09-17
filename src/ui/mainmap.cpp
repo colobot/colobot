@@ -35,8 +35,8 @@ CMainMap::CMainMap()
     m_iMan = CInstanceManager::GetInstancePointer();
     m_iMan->AddInstance(CLASS_MAP, this);
 
-    m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_event     = (CEventQueue*)m_iMan->SearchInstance(CLASS_EVENT);
+    m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
+    m_event     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
     m_engine    = (Gfx::CEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
 
     m_mapMode = 1;
@@ -57,7 +57,7 @@ void CMainMap::CreateMap()
     CWindow*    pw;
     Math::Point     pos, dim;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr) {
         pos.x = 0.0f;
         pos.y = 0.0f;
@@ -83,11 +83,11 @@ void CMainMap::SetFixImage(const char *filename)
     CWindow*    pw;
     CMap*       pm;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
 
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
         return;
 
@@ -104,11 +104,11 @@ void CMainMap::FloorColorMap(Gfx::Color floor, Gfx::Color water)
     CWindow*    pw;
     CMap*       pm;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
 
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm != nullptr) {
         pm->SetFloorColor(floor);
         pm->SetWaterColor(water);
@@ -123,18 +123,18 @@ void CMainMap::ShowMap(bool bShow)
     CMap*       pm;
     CSlider*    ps;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
 
     if (bShow) {
         DimMap();
     } else {
-        pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+        pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
         if (pm != nullptr)
             pm->ClearState(STATE_VISIBLE);
 
-        ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+        ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
         if (ps != nullptr)
             ps->ClearState(STATE_VISIBLE);
     }
@@ -150,10 +150,10 @@ void CMainMap::DimMap()
     Math::Point     pos, dim;
     float       value;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
         return;
 
@@ -166,7 +166,7 @@ void CMainMap::DimMap()
     pm->SetPos(pos);
     pm->SetDim(dim);
 
-    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
     if (ps != nullptr) {
         ps->SetState(STATE_VISIBLE, (m_mapMode != 0));
 
@@ -193,15 +193,15 @@ float CMainMap::GetZoomMap()
     CMap*       pm;
     CSlider*    ps;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return ZOOM_MIN;
 
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
         return ZOOM_MIN;
 
-    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
     if (ps == nullptr)
         return ZOOM_MIN;
 
@@ -216,14 +216,14 @@ void CMainMap::ZoomMap(float zoom)
     CMap*       pm;
     CSlider*    ps;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
         return;
 
-    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
     if (ps == nullptr)
         return;
 
@@ -245,14 +245,14 @@ void CMainMap::ZoomMap()
     CSlider*    ps;
     float       zoom;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
         return;
 
-    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
     if (ps == nullptr)
         return;
 
@@ -273,15 +273,15 @@ void CMainMap::MapEnable(bool bEnable)
     CMap*       pm;
     CSlider*    ps;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
 
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm != nullptr)
         pm->SetEnable(bEnable);
 
-    ps = (CSlider*)pw->SearchControl(EVENT_OBJECT_MAPZOOM);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_OBJECT_MAPZOOM));
     if (ps != nullptr)
         ps->SetState(STATE_ENABLE, bEnable);
 }
@@ -293,11 +293,11 @@ void CMainMap::SetToy(bool bToy)
     CWindow*    pw;
     CMap*       pm;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
 
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
         return;
 
@@ -312,11 +312,11 @@ void CMainMap::SetFixParam(float zoom, float ox, float oy, float angle,
     CWindow*    pw;
     CMap*       pm;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
 
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
         return;
 
@@ -334,11 +334,11 @@ void CMainMap::UpdateMap()
     CWindow*    pw;
     CMap*       pm;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
 
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm != nullptr)
         pm->UpdateTerrain();
 }
@@ -365,12 +365,12 @@ CObject* CMainMap::DetectMap(Math::Point pos, bool &bInMap)
     CWindow*    pw;
     CMap*       pm;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return 0;
 
     bInMap = false;
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm == nullptr)
         return 0;
     return pm->DetectObject(pos, bInMap);
@@ -384,11 +384,11 @@ void CMainMap::SetHighlight(CObject* pObj)
     CWindow* pw;
     CMap*   pm;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if (pw == nullptr)
         return;
 
-    pm = (CMap*)pw->SearchControl(EVENT_OBJECT_MAP);
+    pm = static_cast<CMap*>(pw->SearchControl(EVENT_OBJECT_MAP));
     if (pm != nullptr)
         pm->SetHighlight(pObj);
 }

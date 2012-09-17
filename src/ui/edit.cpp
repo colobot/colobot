@@ -466,7 +466,7 @@ bool CEdit::EventProcess(const Event &event)
     {
         if ( event.param >= ' ' && event.param <= 255 )
         {
-            Insert((char)event.param);
+            Insert(static_cast<char>(event.param));
             SendModifEvent();
             return true;
         }
@@ -581,7 +581,7 @@ void CEdit::MouseDoubleClick(Math::Point mouse)
 
         while ( i > 0 )
         {
-            character = (unsigned char)m_text[i-1];
+            character = static_cast<unsigned char>(m_text[i-1]);
             if ( !IsWord(character) )  break;
             i --;
         }
@@ -589,7 +589,7 @@ void CEdit::MouseDoubleClick(Math::Point mouse)
 
         while ( i < m_len )
         {
-            character = (unsigned char)m_text[i];
+            character = static_cast<unsigned char>(m_text[i]);
             if ( !IsWord(character) )  break;
             i ++;
         }
@@ -1651,12 +1651,12 @@ bool CEdit::ReadText(const char *filename, int addSize)
                 for ( iCount=0 ; iCount<iLines ; iCount++ )
                 {
                     strcpy(m_image[iIndex].name, iName);
-                    m_image[iIndex].offset = (float)iCount/iLines;
+                    m_image[iIndex].offset = static_cast<float>(iCount/iLines);
                     m_image[iIndex].height = 1.0f/iLines;
                     m_image[iIndex].width = iWidth*0.75f;
 
-                    m_text[j] = (char)(iIndex++);  // as an index into m_image
-                    m_format[j] = (unsigned char)Gfx::FONT_MASK_IMAGE;
+                    m_text[j] = static_cast<char>(iIndex++);  // as an index into m_image
+                    m_format[j] = static_cast<unsigned char>(Gfx::FONT_MASK_IMAGE);
                     j ++;
                 }
             }
@@ -2179,7 +2179,7 @@ void CEdit::Scroll()
     {
         value = m_scroll->GetVisibleValue();
         value *= m_lineTotal-m_lineVisible;
-        Scroll((int)(value+0.5f), true);
+        Scroll(static_cast<int>(value+0.5f), true);
     }
 }
 
@@ -2293,19 +2293,19 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
         {
             while ( m_cursor1 > 0 )
             {
-                character = (unsigned char)m_text[m_cursor1-1];
+                character = static_cast<unsigned char>(m_text[m_cursor1-1]);
                 if ( !IsSpace(character) )  break;
                 m_cursor1 --;
             }
 
             if ( m_cursor1 > 0 )
             {
-                character = (unsigned char)m_text[m_cursor1-1];
+                character = static_cast<unsigned char>(m_text[m_cursor1-1]);
                 if ( IsSpace(character) )
                 {
                     while ( m_cursor1 > 0 )
                     {
-                        character = (unsigned char)m_text[m_cursor1-1];
+                        character = static_cast<unsigned char>(m_text[m_cursor1-1]);
                         if ( !IsSpace(character) )  break;
                         m_cursor1 --;
                     }
@@ -2314,7 +2314,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
                 {
                     while ( m_cursor1 > 0 )
                     {
-                        character = (unsigned char)m_text[m_cursor1-1];
+                        character = static_cast<unsigned char>(m_text[m_cursor1-1]);
                         if ( !IsWord(character) )  break;
                         m_cursor1 --;
                     }
@@ -2323,7 +2323,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
                 {
                     while ( m_cursor1 > 0 )
                     {
-                        character = (unsigned char)m_text[m_cursor1-1];
+                        character = static_cast<unsigned char>(m_text[m_cursor1-1]);
                         if ( !IsSep(character) )  break;
                         m_cursor1 --;
                     }
@@ -2343,12 +2343,12 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
         {
             if ( m_cursor1 < m_len )
             {
-                character = (unsigned char)m_text[m_cursor1];
+                character = static_cast<unsigned char>(m_text[m_cursor1]);
                 if ( IsSpace(character) )
                 {
                     while ( m_cursor1 < m_len )
                     {
-                        character = (unsigned char)m_text[m_cursor1];
+                        character = static_cast<unsigned char>(m_text[m_cursor1]);
                         if ( !IsSpace(character) )  break;
                         m_cursor1 ++;
                     }
@@ -2357,7 +2357,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
                 {
                     while ( m_cursor1 < m_len )
                     {
-                        character = (unsigned char)m_text[m_cursor1];
+                        character = static_cast<unsigned char>(m_text[m_cursor1]);
                         if ( !IsWord(character) )  break;
                         m_cursor1 ++;
                     }
@@ -2366,7 +2366,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
                 {
                     while ( m_cursor1 < m_len )
                     {
-                        character = (unsigned char)m_text[m_cursor1];
+                        character = static_cast<unsigned char>(m_text[m_cursor1]);
                         if ( !IsSep(character) )  break;
                         m_cursor1 ++;
                     }
@@ -2375,7 +2375,7 @@ void CEdit::MoveChar(int move, bool bWord, bool bSelect)
 
             while ( m_cursor1 < m_len )
             {
-                character = (unsigned char)m_text[m_cursor1];
+                character = static_cast<unsigned char>(m_text[m_cursor1]);
                 if ( !IsSpace(character) )  break;
                 m_cursor1 ++;
             }
@@ -3034,7 +3034,7 @@ bool CEdit::MinMaj(bool bMaj)
 
     for ( i=c1 ; i<c2 ; i++ )
     {
-        character = (unsigned char)m_text[i];
+        character = static_cast<unsigned char>(m_text[i]);
         if ( bMaj )  character = GetToUpper(character);
         else         character = GetToLower(character);
         m_text[i] = character;

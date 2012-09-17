@@ -71,9 +71,9 @@ public:
     bool    EventProcess(const Event &event);
     void    ChangePhase(Phase phase);
 
-    void    SetSceneRead(char* name);
-    void    SetStackRead(char* name);
-    void    SetSceneName(char* name);
+    void    SetSceneRead(const char* name);
+    void    SetStackRead(const char* name);
+    void    SetSceneName(const char* name);
     void    SetSceneRank(int rank);
     char*   GetSceneRead();
     char*   GetStackRead();

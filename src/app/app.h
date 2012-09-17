@@ -129,11 +129,11 @@ enum InputSlot
 struct InputBinding
 {
     //! Key
-    int key;
+    unsigned int key;
     //! Key modifier (e.g. shift, control)
-    int kmod;
+    unsigned int kmod;
     //! Joystick button
-    int joy;
+    unsigned int joy;
 
     inline InputBinding()
     {
@@ -142,7 +142,7 @@ struct InputBinding
 
     inline void Reset()
     {
-        key = kmod = joy = -1;
+        key = kmod = joy = static_cast<unsigned int>(-1);
     }
 };
 

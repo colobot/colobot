@@ -759,16 +759,16 @@ void CList::UpdateScroll()
         value = 0.0f;
         step = 0.0f;
     } else {
-        ratio = (float)m_displayLine / m_totalLine;
+        ratio = static_cast<float>m_displayLine / m_totalLine;
         if ( ratio > 1.0f )  ratio = 1.0f;
 
-        value = (float)m_firstLine / (m_totalLine - m_displayLine);
+        value = static_cast<float>m_firstLine / (m_totalLine - m_displayLine);
         if ( value < 0.0f )
             value = 0.0f;
         if ( value > 1.0f )
             value = 1.0f;
 
-        step = (float)1.0f/ (m_totalLine - m_displayLine);
+        step = static_cast<float>1.0f/ (m_totalLine - m_displayLine);
         if ( step < 0.0f )
             step = 0.0f;
     }
@@ -791,7 +791,7 @@ void CList::MoveScroll()
     n = m_totalLine - m_displayLine;
     pos = m_scroll->GetVisibleValue();
     pos += m_scroll->GetArrowStep() / 2.0f;  // it's magic!
-    m_firstLine = (int)(pos * n);
+    m_firstLine = static_cast<int>(pos * n);
     if ( m_firstLine < 0 )
         m_firstLine = 0;
     if ( m_firstLine > n )

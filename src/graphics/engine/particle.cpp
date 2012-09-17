@@ -200,7 +200,7 @@ void Gfx::CParticle::DrawParticle(int sheet)
     // TODO!
 }
 
-bool Gfx::CParticle::WriteWheelTrace(char *filename, int width, int height, Math::Vector dl, Math::Vector ur)
+bool Gfx::CParticle::WriteWheelTrace(const char *filename, int width, int height, Math::Vector dl, Math::Vector ur)
 {
     GetLogger()->Trace("CParticle::WriteWheelTrace() stub!\n");
     // TODO!

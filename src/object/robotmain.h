@@ -201,7 +201,7 @@ public:
 
     void        FlushDisplayInfo();
     void        StartDisplayInfo(int index, bool movie);
-    void        StartDisplayInfo(char *filename, int index);
+    void        StartDisplayInfo(const char *filename, int index);
     void        StopDisplayInfo();
     char*       GetDisplayInfoName(int index);
     int         GetDisplayInfoPosition(int index);
@@ -287,7 +287,7 @@ public:
     bool        IsBusy();
     bool        IOWriteScene(char *filename, char *filecbot, char *info);
     CObject*    IOReadScene(char *filename, char *filecbot);
-    void        IOWriteObject(FILE *file, CObject* pObj, char *cmd);
+    void        IOWriteObject(FILE *file, CObject* pObj, const char *cmd);
     CObject*    IOReadObject(char *line, char* filename, int objRank);
 
     int         CreateSpot(Math::Vector pos, Gfx::Color color);
@@ -314,7 +314,7 @@ protected:
     CObject*    DetectObject(Math::Point pos);
     void        ChangeCamera();
     void        RemoteCamera(float pan, float zoom, float rTime);
-    void        KeyCamera(EventType event, long key);
+    void        KeyCamera(EventType event, unsigned int key);
     void        AbortMovie();
     bool        IsSelectable(CObject* pObj);
     void        SelectOneObject(CObject* pObj, bool displayError=true);
@@ -446,8 +446,8 @@ protected:
 
     char            m_gamerName[100];
 
-    long            m_freeBuild;        // constructible buildings
-    long            m_freeResearch;     // researches possible
+    int             m_freeBuild;        // constructible buildings
+    int             m_freeResearch;     // researches possible
 
     ShowLimit       m_showLimit[MAXSHOWLIMIT];
 
