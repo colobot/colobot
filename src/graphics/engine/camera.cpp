@@ -202,12 +202,12 @@ void Gfx::CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
 }
 
 
-void Gfx::CCamera::SetObject(CObject* object)
+void Gfx::CCamera::SetControllingObject(CObject* object)
 {
     m_cameraObj = object;
 }
 
-CObject* Gfx::CCamera::GetObject()
+CObject* Gfx::CCamera::GetControllingObject()
 {
     return m_cameraObj;
 }

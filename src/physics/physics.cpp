@@ -18,6 +18,7 @@
 
 
 #include <cstring>
+#include <cstdio>
 
 #include "math/geometry.h"
 #include "graphics/engine/engine.h"

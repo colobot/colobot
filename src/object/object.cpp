@@ -382,9 +382,9 @@ void CObject::DeleteObject(bool bAll)
         m_botVar->SetUserPtr(OBJECTDELETED);
     }
 
-    if ( m_camera->GetObject() == this )
+    if ( m_camera->GetControllingObject() == this )
     {
-        m_camera->SetObject(0);
+        m_camera->SetControllingObject(0);
     }
 
     for ( i=0 ; i<1000000 ; i++ )
@@ -403,17 +403,17 @@ void CObject::DeleteObject(bool bAll)
               type == Gfx::CAM_TYPE_FIX    ||
               type == Gfx::CAM_TYPE_EXPLO  ||
               type == Gfx::CAM_TYPE_ONBOARD) &&
-             m_camera->GetObject() == this )
+             m_camera->GetControllingObject() == this )
         {
             pObj = m_main->SearchNearest(GetPosition(0), this);
             if ( pObj == 0 )
             {
-                m_camera->SetObject(0);
+                m_camera->SetControllingObject(0);
                 m_camera->SetType(Gfx::CAM_TYPE_FREE);
             }
             else
             {
-                m_camera->SetObject(pObj);
+                m_camera->SetControllingObject(pObj);
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
             }
         }

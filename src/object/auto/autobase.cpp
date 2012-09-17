@@ -154,7 +154,7 @@ begin:
 
             pObj = m_main->GetSelectObject();
             m_main->SelectObject(pObj);
-            m_camera->SetObject(pObj);
+            m_camera->SetControllingObject(pObj);
             if ( pObj == 0 )
             {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);
@@ -624,7 +624,7 @@ begin:
 
                 pObj = m_main->GetSelectObject();
                 m_main->SelectObject(pObj);
-                m_camera->SetObject(pObj);
+                m_camera->SetControllingObject(pObj);
                 if ( pObj == 0 )
                 {
                     m_camera->SetType(Gfx::CAM_TYPE_BACK);
@@ -1156,7 +1156,7 @@ bool CAutoBase::Abort()
 
             pObj = m_main->GetSelectObject();
             m_main->SelectObject(pObj);
-            m_camera->SetObject(pObj);
+            m_camera->SetControllingObject(pObj);
             if ( pObj == 0 )
             {
                 m_camera->SetType(Gfx::CAM_TYPE_BACK);

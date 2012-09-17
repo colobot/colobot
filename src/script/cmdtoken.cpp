@@ -20,6 +20,7 @@
 #include "common/global.h"
 
 #include <string.h>
+#include <cstdio>
 
 
 
@@ -816,7 +817,7 @@ float OpFloat(char *line, const char *op, float def)
 
 // Returns a string.
 
-void OpString(char *line, char *op, char *buffer)
+void OpString(char *line, const char *op, char *buffer)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )
@@ -831,7 +832,7 @@ void OpString(char *line, char *op, char *buffer)
 
 // Returns the type of an object.
 
-ObjectType OpTypeObject(char *line, char *op, ObjectType def)
+ObjectType OpTypeObject(char *line, const char *op, ObjectType def)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;
@@ -840,7 +841,7 @@ ObjectType OpTypeObject(char *line, char *op, ObjectType def)
 
 // Returns the type of a water.
 
-Gfx::WaterType OpTypeWater(char *line, char *op, Gfx::WaterType def)
+Gfx::WaterType OpTypeWater(char *line, const char *op, Gfx::WaterType def)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;
@@ -849,7 +850,7 @@ Gfx::WaterType OpTypeWater(char *line, char *op, Gfx::WaterType def)
 
 // Returns the type of a terrain.
 
-Gfx::EngineObjectType OpTypeTerrain(char *line, char *op, Gfx::EngineObjectType def)
+Gfx::EngineObjectType OpTypeTerrain(char *line, const char *op, Gfx::EngineObjectType def)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;
@@ -858,7 +859,7 @@ Gfx::EngineObjectType OpTypeTerrain(char *line, char *op, Gfx::EngineObjectType 
 
 // Returns the type of research.
 
-int OpResearch(char *line, char *op)
+int OpResearch(char *line, const char *op)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return 0;
@@ -867,7 +868,7 @@ int OpResearch(char *line, char *op)
 
 // Returns the type of pyrotechnic effect.
 
-Gfx::PyroType OpPyro(char *line, char *op)
+Gfx::PyroType OpPyro(char *line, const char *op)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return Gfx::PT_NULL;
@@ -885,7 +886,7 @@ Gfx::CameraType OpCamera(char *line, const char *op)
 
 // Returns the type of a building.
 
-int OpBuild(char *line, char *op)
+int OpBuild(char *line, const char *op)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return 0;
@@ -894,7 +895,7 @@ int OpBuild(char *line, char *op)
 
 // Returns a position in the XZ plane (top view).
 
-Math::Vector OpPos(char *line, char *op)
+Math::Vector OpPos(char *line, const char *op)
 {
     Math::Vector    pos;
 
@@ -929,7 +930,7 @@ Math::Vector OpDir(char *line, const char *op)
 }
 
 // Reads a color (-1 .. 1).
-Gfx::Color  OpColor(char *line, char *op, Gfx::Color def)
+Gfx::Color  OpColor(char *line, const char *op, Gfx::Color def)
 {
     Gfx::Color color;
 

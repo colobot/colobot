@@ -136,8 +136,8 @@ class CCamera {
     void        Init(Math::Vector eye, Math::Vector lookat, float delay);
 
     //! Sets the object controlling the camera
-    void        SetObject(CObject* object);
-    CObject*    GetObject();
+    void        SetControllingObject(CObject* object);
+    CObject*    GetControllingObject();
 
     //! Change the type of camera
     void            SetType(Gfx::CameraType type);

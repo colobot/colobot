@@ -44,15 +44,15 @@ extern const char* GetCamera(Gfx::CameraType type);
 
 extern int OpInt(char *line, const char *op, int def);
 extern float OpFloat(char *line, const char *op, float def);
-extern void OpString(char *line, char *op, char *buffer);
-extern ObjectType OpTypeObject(char *line, char *op, ObjectType def);
-extern Gfx::WaterType OpTypeWater(char *line, char *op, Gfx::WaterType def);
-extern Gfx::EngineObjectType OpTypeTerrain(char *line, char *op, Gfx::EngineObjectType def);
-extern int OpResearch(char *line, char *op);
-extern Gfx::PyroType OpPyro(char *line, char *op);
+extern void OpString(char *line, const char *op, char *buffer);
+extern ObjectType OpTypeObject(char *line, const char *op, ObjectType def);
+extern Gfx::WaterType OpTypeWater(char *line, const char *op, Gfx::WaterType def);
+extern Gfx::EngineObjectType OpTypeTerrain(char *line, const char *op, Gfx::EngineObjectType def);
+extern int OpResearch(char *line, const char *op);
+extern Gfx::PyroType OpPyro(char *line, const char *op);
 extern Gfx::CameraType OpCamera(char *line, const char *op);
-extern int OpBuild(char *line, char *op);
-extern Math::Vector OpPos(char *line, char *op);
+extern int OpBuild(char *line, const char *op);
+extern Math::Vector OpPos(char *line, const char *op);
 extern Math::Vector OpDir(char *line, const char *op);
-extern Gfx::Color OpColor(char *line, char *op, Gfx::Color def);
+extern Gfx::Color OpColor(char *line, const char *op, Gfx::Color def);
 

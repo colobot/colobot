@@ -18,6 +18,7 @@ if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
   set(PLATFORM_WINDOWS 1)
   set(PLATFORM_LINUX   0)
   set(PLATFORM_OTHER   0)
+  set(PLATFORM_LIBS "-lintl")
   # On Windows, GLEW is required
   if (${USE_GLEW} MATCHES "auto")
     set(USE_GLEW 1)

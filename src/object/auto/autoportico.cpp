@@ -308,7 +308,7 @@ bool CAutoPortico::EventProcess(const Event &event)
 
             pObj = m_main->SearchHuman();
             m_main->SelectObject(pObj);
-            m_camera->SetObject(pObj);
+            m_camera->SetControllingObject(pObj);
             m_camera->SetType(Gfx::CAM_TYPE_BACK);
 
             m_phase    = APOP_WAIT;
@@ -367,7 +367,7 @@ bool CAutoPortico::Abort()
 
     pObj = m_main->SearchHuman();
     m_main->SelectObject(pObj);
-    m_camera->SetObject(pObj);
+    m_camera->SetControllingObject(pObj);
     m_camera->SetType(Gfx::CAM_TYPE_BACK);
 
     if ( m_soundChannel != -1 )

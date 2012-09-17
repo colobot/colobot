@@ -866,7 +866,7 @@ void CRobotMain::ChangePhase(Phase phase)
     {
         SaveAllScript();
         m_sound->StopMusic();
-        m_camera->SetObject(0);
+        m_camera->SetControllingObject(0);
 
 /* TODO: #if _SCHOOL
         if ( true )
@@ -2226,7 +2226,7 @@ CObject* CRobotMain::DeselectAll()
 void CRobotMain::SelectOneObject(CObject* obj, bool displayError)
 {
     obj->SetSelect(true, displayError);
-    m_camera->SetObject(obj);
+    m_camera->SetControllingObject(obj);
 
     ObjectType type = obj->GetType();
     if ( type == OBJECT_HUMAN    ||
@@ -2737,8 +2737,8 @@ void CRobotMain::HiliteObject(Math::Point pos)
 
             obj = DetectObject(pos);
 
-            if (m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD &&
-                m_camera->GetObject() == obj)
+            if ((m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD) &&
+                (m_camera->GetControllingObject() == obj))
                 return;
         }
     }
@@ -4309,7 +4309,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         if (obj != nullptr)
         {
             SelectObject(obj);
-            m_camera->SetObject(obj);
+            m_camera->SetControllingObject(obj);
             m_camera->SetType(obj->GetCameraType());
         }
     }
@@ -4324,7 +4324,7 @@ void CRobotMain::CreateScene(bool soluce, bool fixScene, bool resetObject)
         m_camera->FixCamera();
 
         SelectObject(sel);
-        m_camera->SetObject(sel);
+        m_camera->SetControllingObject(sel);
 
         m_beginSatCom = true;  // message already displayed
     }
