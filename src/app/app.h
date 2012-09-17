@@ -146,6 +146,17 @@ struct InputBinding
     }
 };
 
+/**
+ * \enum ParseArgsStatus
+ * \brief State of parsing commandline arguments
+ */
+enum ParseArgsStatus
+{
+    PARSE_ARGS_OK   = 1, //! < all ok
+    PARSE_ARGS_FAIL = 2, //! < invalid syntax
+    PARSE_ARGS_HELP = 3  //! < -help requested
+};
+
 struct ApplicationPrivate;
 
 /**
@@ -201,7 +212,7 @@ public:
 
 public:
     //! Parses commandline arguments
-    bool        ParseArguments(int argc, char *argv[]);
+    ParseArgsStatus ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();
     //! Main event loop

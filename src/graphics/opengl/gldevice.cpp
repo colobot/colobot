@@ -436,7 +436,10 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
     else
         glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_FALSE);
 
+
+    bool convert = false;
     GLenum sourceFormat = 0;
+
     if (params.format == Gfx::TEX_IMG_RGB)
     {
         sourceFormat = GL_RGB;
@@ -461,26 +464,26 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
     {
         if (data->surface->format->Amask != 0)
         {
-            if ((data->surface->format->Rmask == 0xFF000000) &&
-                (data->surface->format->Gmask == 0x00FF0000) &&
-                (data->surface->format->Bmask == 0x0000FF00) &&
-                (data->surface->format->Amask == 0x000000FF))
+            if ((data->surface->format->Amask == 0xFF000000) &&
+                (data->surface->format->Rmask == 0x00FF0000) &&
+                (data->surface->format->Gmask == 0x0000FF00) &&
+                (data->surface->format->Bmask == 0x000000FF))
             {
                 sourceFormat = GL_BGRA;
                 result.alpha = true;
             }
-            else if ((data->surface->format->Bmask == 0xFF000000) &&
-                     (data->surface->format->Gmask == 0x00FF0000) &&
-                     (data->surface->format->Rmask == 0x0000FF00) &&
-                     (data->surface->format->Amask == 0x000000FF))
+            else if ((data->surface->format->Amask == 0xFF000000) &&
+                     (data->surface->format->Bmask == 0x00FF0000) &&
+                     (data->surface->format->Gmask == 0x0000FF00) &&
+                     (data->surface->format->Rmask == 0x000000FF))
             {
                 sourceFormat = GL_RGBA;
                 result.alpha = true;
             }
             else
             {
-                GetLogger()->Error("Auto texture format failed\n");
-                return Gfx::Texture(); // other format?
+                sourceFormat = GL_RGBA;
+                convert = true;
             }
         }
         else
@@ -501,16 +504,43 @@ Gfx::Texture Gfx::CGLDevice::CreateTexture(ImageData *data, const Gfx::TextureCr
             }
             else
             {
-                GetLogger()->Error("Auto texture format failed\n");
-                return Gfx::Texture(); // other format?
+                sourceFormat = GL_RGBA;
+                convert = true;
             }
         }
     }
     else
         assert(false);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data->surface->w, data->surface->h,
-                 0, sourceFormat, GL_UNSIGNED_BYTE, data->surface->pixels);
+    SDL_Surface* actualSurface = data->surface;
+    SDL_Surface* convertedSurface = nullptr;
+
+    if (convert)
+    {
+        SDL_PixelFormat format;
+        format.BytesPerPixel = 4;
+        format.BitsPerPixel = 32;
+        format.alpha = 0;
+        format.colorkey = 0;
+        format.Aloss = format.Bloss = format.Gloss = format.Rloss = 0;
+        format.Amask = 0xFF000000;
+        format.Ashift = 24;
+        format.Bmask = 0x00FF0000;
+        format.Bshift = 16;
+        format.Gmask = 0x0000FF00;
+        format.Gshift = 8;
+        format.Rmask = 0x000000FF;
+        format.Rshift = 0;
+        format.palette = nullptr;
+        convertedSurface = SDL_ConvertSurface(data->surface, &format, SDL_SWSURFACE);
+        if (convertedSurface != nullptr)
+            actualSurface = convertedSurface;
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, actualSurface->w, actualSurface->h,
+                 0, sourceFormat, GL_UNSIGNED_BYTE, actualSurface->pixels);
+
+    SDL_FreeSurface(convertedSurface);
 
 
     // Restore the previous state of 1st stage

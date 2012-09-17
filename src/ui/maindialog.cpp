@@ -56,7 +56,7 @@ const int KEY_TOTAL = 13;       // total number of keys redefinable
 #else*/
 const int KEY_TOTAL = 21;       // total number of keys redefinable
 
-const int WELCOME_LENGTH = 2.0f;
+const float WELCOME_LENGTH = 2.0f;
 
 
 
@@ -413,12 +413,12 @@ void CMainDialog::ChangePhase(Phase phase)
         pl->SetFontType(Gfx::FONT_COURIER);
         pl->SetFontSize(8.0f);
 
-        m_engine->SetBackground("inter01.png",
+        m_engine->SetBackground("interface.png",
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, true);
+                                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
 
@@ -535,12 +535,12 @@ void CMainDialog::ChangePhase(Phase phase)
         UpdateNameControl();
         UpdateNameFace();
 
-        m_engine->SetBackground("inter01.png",
+        m_engine->SetBackground("interface.png",
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, true);
+                                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
 
@@ -987,12 +987,12 @@ void CMainDialog::ChangePhase(Phase phase)
         pb = pw->CreateButton(pos, ddim, -1, EVENT_INTERFACE_BACK);
         pb->SetState(STATE_SHADOW);
 
-        m_engine->SetBackground("inter01.png",
+        m_engine->SetBackground("interface.png",
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, true);
+                                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
 
@@ -1186,12 +1186,12 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( !m_bSimulSetup )
         {
-            m_engine->SetBackground("inter01.png",
+            m_engine->SetBackground("interface.png",
                                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    true, true);
+                                    true, Math::Point(1.0f, 768.0f / 1024.0f));
             m_engine->SetBackForce(true);
         }
     }
@@ -1728,12 +1728,12 @@ void CMainDialog::ChangePhase(Phase phase)
 
         if ( m_phase == PHASE_READ )
         {
-            m_engine->SetBackground("inter01.png",
+            m_engine->SetBackground("interface.png",
                                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                     Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                    true, true);
+                                    true, Math::Point(1.0f, 768.0f / 1024.0f));
             m_engine->SetBackForce(true);
         }
     }
@@ -1778,12 +1778,12 @@ void CMainDialog::ChangePhase(Phase phase)
         pl->SetFontSize(12.0f);
         pl->SetTextAlign(Gfx::TEXT_ALIGN_CENTER);
 
-        m_engine->SetBackground("inter01.png",
+        m_engine->SetBackground("interface.png",
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, true);
+                                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
 
         m_loadingCounter = 1;  // enough time to display!
@@ -1808,7 +1808,7 @@ void CMainDialog::ChangePhase(Phase phase)
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, false);
+                                true, Math::Point(861.0f / 1024.0f, 646.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME2 )
@@ -1830,7 +1830,7 @@ void CMainDialog::ChangePhase(Phase phase)
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, false);
+                                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
         m_engine->SetBackForce(true);
     }
     if ( m_phase == PHASE_WELCOME3 )
@@ -1844,12 +1844,12 @@ void CMainDialog::ChangePhase(Phase phase)
         m_engine->SetOverColor(Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f), Gfx::ENG_RSTATE_TCOLOR_WHITE); // TODO: color ok?
         m_engine->SetOverFront(true);
 
-        m_engine->SetBackground("epsitece.png",
+        m_engine->SetBackground("epsitec.png",
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, false);
+                                true, Math::Point(640.0f / 1024.0f, 480.0f / 512.0f));
         m_engine->SetBackForce(true);
     }
 
@@ -1980,12 +1980,12 @@ void CMainDialog::ChangePhase(Phase phase)
         pb->SetState(STATE_SHADOW);
 // #endif
 
-        m_engine->SetBackground("genere.png",
+        m_engine->SetBackground("generic.png",
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
                                 Gfx::Color(0.0f, 0.0f, 0.0f, 0.0f),
-                                true, true);
+                                true, Math::Point(1.0f, 768.0f / 1024.0f));
         m_engine->SetBackForce(true);
     }
 
