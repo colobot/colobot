@@ -452,5 +452,9 @@ protected:
 
     //! Application language
     Language        m_language;
+
+private:
+    //! Set locale, needed for putenv/setenv
+    std::string m_locale;
 };
 

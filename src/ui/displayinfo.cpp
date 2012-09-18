@@ -18,14 +18,14 @@
 // displayinfo.cpp
 
 
-#include "displayinfo.h"
+#include "ui/displayinfo.h"
 
-#include "interface.h"
-#include "button.h"
-#include "slider.h"
-#include "edit.h"
-#include "group.h"
-#include "window.h"
+#include "ui/interface.h"
+#include "ui/button.h"
+#include "ui/slider.h"
+#include "ui/edit.h"
+#include "ui/group.h"
+#include "ui/window.h"
 
 #include "common/iman.h"
 #include "common/misc.h"

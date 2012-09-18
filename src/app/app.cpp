@@ -261,6 +261,7 @@ bool CApplication::Create()
 
     /* Gettext initialization */
 
+    m_locale = "LANGUAGE=";
     std::string locale = "C";
     switch (m_language)
     {
@@ -281,7 +282,8 @@ bool CApplication::Create()
             break;
     }
 
-    setenv("LANGUAGE", locale.c_str(), 1);
+    m_locale += locale;
+    putenv(m_locale.c_str());
     setlocale(LC_ALL, locale.c_str());
 
     std::string trPath = m_dataPath + std::string("/i18n");

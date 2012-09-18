@@ -18,7 +18,7 @@
 // map.cpp
 
 
-#include "map.h"
+#include "ui/map.h"
 
 #include <string.h>
 

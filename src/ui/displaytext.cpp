@@ -18,13 +18,13 @@
 // displaytext.cpp
 
 
-#include "displaytext.h"
+#include "ui/displaytext.h"
 
-#include "interface.h"
-#include "button.h"
-#include "label.h"
-#include "window.h"
-#include "group.h"
+#include "ui/interface.h"
+#include "ui/button.h"
+#include "ui/label.h"
+#include "ui/window.h"
+#include "ui/group.h"
 
 #include "common/event.h"
 #include "common/iman.h"

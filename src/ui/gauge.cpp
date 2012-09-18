@@ -18,7 +18,7 @@
 // gauge.cpp
 
 
-#include <ui/gauge.h>
+#include "ui/gauge.h"
 
 
 namespace Ui {

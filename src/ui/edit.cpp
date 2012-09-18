@@ -18,7 +18,7 @@
 // edit.cpp
 
 
-#include "edit.h"
+#include "ui/edit.h"
 
 #include <string.h>
 

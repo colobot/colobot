@@ -21,30 +21,30 @@
 
 #include <string>
 
-#include <common/event.h>
-#include <common/misc.h>
-#include <common/restext.h>
+#include "common/event.h"
+#include "common/misc.h"
+#include "common/restext.h"
 
-#include <ui/button.h>
-#include <ui/color.h>
-#include <ui/check.h>
-#include <ui/key.h>
-#include <ui/group.h>
-#include <ui/image.h>
-#include <ui/label.h>
-#include <ui/edit.h>
-#include <ui/editvalue.h>
-#include <ui/scroll.h>
-#include <ui/slider.h>
-#include <ui/list.h>
-#include <ui/shortcut.h>
-#include <ui/map.h>
-#include <ui/gauge.h>
-#include <ui/compass.h>
-#include <ui/target.h>
-#include <ui/control.h>
+#include "ui/button.h"
+#include "ui/color.h"
+#include "ui/check.h"
+#include "ui/key.h"
+#include "ui/group.h"
+#include "ui/image.h"
+#include "ui/label.h"
+#include "ui/edit.h"
+#include "ui/editvalue.h"
+#include "ui/scroll.h"
+#include "ui/slider.h"
+#include "ui/list.h"
+#include "ui/shortcut.h"
+#include "ui/map.h"
+#include "ui/gauge.h"
+#include "ui/compass.h"
+#include "ui/target.h"
+#include "ui/control.h"
 
-#include <graphics/engine/text.h>
+#include "graphics/engine/text.h"
 
 namespace Ui {
 

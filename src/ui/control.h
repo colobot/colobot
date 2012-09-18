@@ -21,19 +21,19 @@
 
 #include <string>
 
-#include <common/event.h>
-#include <common/iman.h>
-#include <common/misc.h>
-#include <common/restext.h>
+#include "common/event.h"
+#include "common/iman.h"
+#include "common/misc.h"
+#include "common/restext.h"
 
-#include <graphics/core/device.h>
-#include <graphics/engine/engine.h>
-#include <graphics/engine/particle.h>
-#include <graphics/engine/text.h>
+#include "graphics/core/device.h"
+#include "graphics/engine/engine.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/text.h"
 
-#include <object/robotmain.h>
+#include "object/robotmain.h"
 
-#include <sound/sound.h>
+#include "sound/sound.h"
 
 
 

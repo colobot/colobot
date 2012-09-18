@@ -18,7 +18,6 @@
 // image.cpp
 
 
-#include <stdio.h>
 
 #include "graphics/engine/engine.h"
 #include "common/event.h"
@@ -28,6 +27,7 @@
 #include "ui/image.h"
 
 #include <string.h>
+#include <stdio.h>
 
 
 namespace Ui {

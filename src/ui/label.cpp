@@ -18,7 +18,7 @@
 // label.cpp
 
 
-#include <ui/label.h>
+#include "ui/label.h"
 
 namespace Ui {
 

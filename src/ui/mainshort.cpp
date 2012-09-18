@@ -18,7 +18,7 @@
 // mainshort.cpp
 
 
-#include <ui/mainshort.h>
+#include "ui/mainshort.h"
 
 namespace Ui {
 
