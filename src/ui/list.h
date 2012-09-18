@@ -78,7 +78,7 @@ class CList : public CControl
         void        SetEnable(int i, bool bEnable);
         bool        GetEnable(int i);
 
-        void        SetTabs(int i, float pos, Gfx::TextAlign justif=Gfx::TEXT_ALIGN_CENTER);
+        void        SetTabs(int i, float pos, Gfx::TextAlign justif=Gfx::TEXT_ALIGN_LEFT);
         float       GetTabs(int i);
 
         void        ShowSelect(bool bFixed);
