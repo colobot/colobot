@@ -144,7 +144,7 @@ CApplication::~CApplication()
     DestroyTimeStamp(m_lastTimeStamp);
 }
 
-bool CApplication::ParseArguments(int argc, char *argv[])
+ParseArgsStatus CApplication::ParseArguments(int argc, char *argv[])
 {
     bool waitDataDir = false;
     bool waitLogLevel = false;
@@ -178,7 +178,7 @@ bool CApplication::ParseArguments(int argc, char *argv[])
             else if (arg == "none")
                 GetLogger()->SetLogLevel(LOG_NONE);
             else
-                return false;
+                return PARSE_ARGS_FAIL;
             continue;
         }
 
@@ -194,7 +194,7 @@ bool CApplication::ParseArguments(int argc, char *argv[])
             else if (arg == "pl")
                 m_language = LANG_POLISH;
             else
-                return false;
+                return PARSE_ARGS_FAIL;
             continue;
         }
 
@@ -216,7 +216,8 @@ bool CApplication::ParseArguments(int argc, char *argv[])
         }
         else if (arg == "-help")
         {
-            GetLogger()->Message("COLOBOT\n");
+            GetLogger()->Message("\n");
+            GetLogger()->Message("COLOBOT GOLD pre-alpha\n");
             GetLogger()->Message("\n");
             GetLogger()->Message("List of available options:\n");
             GetLogger()->Message("  -help            this help\n");
@@ -224,20 +225,20 @@ bool CApplication::ParseArguments(int argc, char *argv[])
             GetLogger()->Message("  -debug           enable debug mode (more info printed in logs)\n");
             GetLogger()->Message("  -loglevel level  set log level to level (one of: trace, debug, info, warn, error, none)\n");
             GetLogger()->Message("  -language lang   set language (one of: en, de, fr, pl)\n");
-            return true;
+            return PARSE_ARGS_HELP;
         }
         else
         {
             m_exitCode = 1;
-            return false;
+            return PARSE_ARGS_FAIL;
         }
     }
 
     // Args not given?
     if (waitDataDir || waitLogLevel || waitLanguage)
-        return false;
+        return PARSE_ARGS_FAIL;
 
-    return true;
+    return PARSE_ARGS_OK;
 }
 
 bool CApplication::Create()
@@ -280,6 +281,7 @@ bool CApplication::Create()
             break;
     }
 
+    setenv("LANGUAGE", locale.c_str(), 1);
     setlocale(LC_ALL, locale.c_str());
 
     std::string trPath = m_dataPath + std::string("/i18n");

@@ -471,7 +471,7 @@ void CSlider::Draw()
         h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
         pos.x = m_pos.x+m_dim.x+(10.0f/640.0f);
         pos.y = m_pos.y+(m_dim.y-h)/2.0f;
-        m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_RIGHT, 0);
+        m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
     }
     else
     {

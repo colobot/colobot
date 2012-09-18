@@ -215,7 +215,7 @@ void CKey::Draw()
     pos.x = m_pos.x + (214.0f / 640.0f);
     pos.y = m_pos.y + m_dim.y * 0.5f;
     pos.y -= h;
-    m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_RIGHT, 0);
+    m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, 0);
 }
 
 

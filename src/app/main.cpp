@@ -78,9 +78,14 @@ int main(int argc, char *argv[])
 
     CApplication app; // single instance of the application
 
-    if (! app.ParseArguments(argc, argv))
+    ParseArgsStatus status = app.ParseArguments(argc, argv);
+    if (status == PARSE_ARGS_FAIL)
     {
         SystemDialog(SDT_ERROR, "COLOBOT - Fatal Error", "Invalid commandline arguments!\n");
+        return app.GetExitCode();
+    }
+    else if (status == PARSE_ARGS_HELP)
+    {
         return app.GetExitCode();
     }
 

@@ -139,7 +139,7 @@ Gfx::CEngine::CEngine(CInstanceManager *iMan, CApplication *app)
     m_backgroundCloudUp   = Gfx::Color();
     m_backgroundCloudDown = Gfx::Color();
     m_backgroundFull = false;
-    m_backgroundQuarter = false;
+    m_backgroundScale = Math::Point(1.0f, 1.0f);
     m_overFront = true;
     m_overColor = Gfx::Color();
     m_overMode  = ENG_RSTATE_TCOLOR_BLACK;
@@ -329,24 +329,6 @@ bool Gfx::CEngine::ProcessEvent(const Event &event)
         {
             int index = static_cast<int>(m_mouseType);
             m_mouseType = static_cast<Gfx::EngineMouseType>( (index + 1) % Gfx::ENG_MOUSE_COUNT );
-        }
-        else if (event.key.key == KEY(F3))
-        {
-            bool bq = !m_backgroundQuarter;
-            SetBackground(bq ? "geneda.png" : "", Gfx::Color(), Gfx::Color(), Gfx::Color(), Gfx::Color(), true, bq);
-        }
-        else if (event.key.key == KEY(F4))
-        {
-            m_skyMode = !m_skyMode;
-            if (! m_skyMode)
-            {
-                m_backgroundColorDown = Gfx::Color(0.2f, 0.2f, 0.2f);
-                m_backgroundColorUp = Gfx::Color(0.8f, 0.8f, 0.8f);
-            }
-            else
-            {
-                m_backgroundColorDown = m_backgroundColorUp = Gfx::Color(0.0f, 0.0f, 0.0f);
-            }
         }
     }
 
@@ -2148,26 +2130,10 @@ bool Gfx::CEngine::LoadAllTextures()
     LoadTexture("effect02.png");
     LoadTexture("map.png");
 
-    if (m_backgroundQuarter)  // image into 4 pieces?
-    {
-        if (! m_backgroundName.empty())
-        {
-            for (int i = 0; i < 4; i++)
-                m_backgroundQuarterTexs[i] = LoadTexture(m_backgroundQuarterNames[i]);
-        }
-        else
-        {
-            for (int i = 0; i < 4; i++)
-                m_backgroundQuarterTexs[i].SetInvalid();
-        }
-    }
+    if (! m_backgroundName.empty())
+        m_backgroundTex = LoadTexture(m_backgroundName);
     else
-    {
-        if (! m_backgroundName.empty())
-            m_backgroundFullTex = LoadTexture(m_backgroundName);
-        else
-            m_backgroundFullTex.SetInvalid();
-    }
+        m_backgroundTex.SetInvalid();
 
     if (! m_foregroundName.empty())
         m_foregroundTex = LoadTexture(m_foregroundName);
@@ -2446,29 +2412,14 @@ float Gfx::CEngine::GetFogStart(int rank)
     return m_fogStart[rank];
 }
 
-std::string QuarterName(const std::string& name, int quarter)
-{
-    size_t pos = name.find('.');
-    if (pos == std::string::npos)
-        return name;
-
-    return name.substr(0, pos) + std::string(1, static_cast<char>('a' + quarter)) + name.substr(pos);
-}
-
 void Gfx::CEngine::SetBackground(const std::string& name, Gfx::Color up, Gfx::Color down,
                                  Gfx::Color cloudUp, Gfx::Color cloudDown,
-                                 bool full, bool quarter)
+                                 bool full, Math::Point scale)
 {
-    if (m_backgroundFullTex.Valid())
+    if (m_backgroundTex.Valid())
     {
-        DeleteTexture(m_backgroundFullTex);
-        m_backgroundFullTex.SetInvalid();
-    }
-
-    for (int i = 0; i < 4; i++)
-    {
-        DeleteTexture(m_backgroundQuarterTexs[i]);
-        m_backgroundQuarterTexs[i].SetInvalid();
+        DeleteTexture(m_backgroundTex);
+        m_backgroundTex.SetInvalid();
     }
 
     m_backgroundName      = name;
@@ -2477,28 +2428,15 @@ void Gfx::CEngine::SetBackground(const std::string& name, Gfx::Color up, Gfx::Co
     m_backgroundCloudUp   = cloudUp;
     m_backgroundCloudDown = cloudDown;
     m_backgroundFull      = full;
-    m_backgroundQuarter   = quarter;
+    m_backgroundScale     = scale;
 
     if (! m_backgroundName.empty())
-    {
-        if (m_backgroundQuarter)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                m_backgroundQuarterNames[i] = QuarterName(name, i);
-                m_backgroundQuarterTexs[i] = LoadTexture(m_backgroundQuarterNames[i]);
-            }
-        }
-        else
-        {
-            m_backgroundFullTex = LoadTexture(m_backgroundName);
-        }
-    }
+        m_backgroundTex = LoadTexture(m_backgroundName);
 }
 
 void Gfx::CEngine::GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& down,
                                  Gfx::Color& cloudUp, Gfx::Color& cloudDown,
-                                 bool &full, bool &quarter)
+                                 bool &full, Math::Point& scale)
 {
     name      = m_backgroundName;
     up        = m_backgroundColorUp;
@@ -2506,7 +2444,7 @@ void Gfx::CEngine::GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& 
     cloudUp   = m_backgroundCloudUp;
     cloudDown = m_backgroundCloudDown;
     full      = m_backgroundFull;
-    quarter   = m_backgroundQuarter;
+    scale     = m_backgroundScale;
 }
 
 void Gfx::CEngine::SetForegroundName(const std::string& name)
@@ -3477,10 +3415,16 @@ void Gfx::CEngine::DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color
     AddStatisticTriangle(2);
 }
 
-// Status: PART_TESTED
-void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, const Gfx::Texture &tex)
+// Status: TESTED, VERIFIED
+void Gfx::CEngine::DrawBackgroundImage()
 {
-    Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
+    Math::Point p1, p2;
+    p1.x = 0.0f;
+    p1.y = 0.0f;
+    p2.x = 1.0f;
+    p2.y = 1.0f;
+
+Math::Vector n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
     float u1, u2, v1, v2;
     if (m_backgroundFull)
@@ -3489,14 +3433,6 @@ void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, co
         v1 = 0.0f;
         u2 = 1.0f;
         v2 = 1.0f;
-
-        if (m_backgroundQuarter)
-        {
-            u1 += 0.5f/512.0f;
-            v1 += 0.5f/384.0f;
-            u2 -= 0.5f/512.0f;
-            v2 -= 0.5f/384.0f;
-        }
     }
     else
     {
@@ -3513,7 +3449,10 @@ void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, co
         v2 = v1+h;
     }
 
-    SetTexture(tex);
+    u2 *= m_backgroundScale.x;
+    v2 *= m_backgroundScale.y;
+
+    SetTexture(m_backgroundTex);
     SetState(Gfx::ENG_RSTATE_OPAQUE_TEXTURE | Gfx::ENG_RSTATE_WRAP);
 
     m_device->SetTransform(Gfx::TRANSFORM_VIEW, m_matViewInterface);
@@ -3530,48 +3469,6 @@ void Gfx::CEngine::DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, co
 
     m_device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     AddStatisticTriangle(2);
-}
-
-// Status: TESTED, VERIFIED
-void Gfx::CEngine::DrawBackgroundImage()
-{
-    Math::Point p1, p2;
-    std::string name;
-
-    if (m_backgroundQuarter)
-    {
-        p1.x = 0.0f;
-        p1.y = 0.5f;
-        p2.x = 0.5f;
-        p2.y = 1.0f;
-        DrawBackgroundImageQuarter(p1, p2, m_backgroundQuarterTexs[0]);
-
-        p1.x = 0.5f;
-        p1.y = 0.5f;
-        p2.x = 1.0f;
-        p2.y = 1.0f;
-        DrawBackgroundImageQuarter(p1, p2, m_backgroundQuarterTexs[1]);
-
-        p1.x = 0.0f;
-        p1.y = 0.0f;
-        p2.x = 0.5f;
-        p2.y = 0.5f;
-        DrawBackgroundImageQuarter(p1, p2, m_backgroundQuarterTexs[2]);
-
-        p1.x = 0.5f;
-        p1.y = 0.0f;
-        p2.x = 1.0f;
-        p2.y = 0.5f;
-        DrawBackgroundImageQuarter(p1, p2, m_backgroundQuarterTexs[3]);
-    }
-    else
-    {
-        p1.x = 0.0f;
-        p1.y = 0.0f;
-        p2.x = 1.0f;
-        p2.y = 1.0f;
-        DrawBackgroundImageQuarter(p1, p2, m_backgroundFullTex);
-    }
 }
 
 void Gfx::CEngine::DrawPlanet()

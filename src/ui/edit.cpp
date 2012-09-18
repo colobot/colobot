@@ -941,7 +941,7 @@ void CEdit::Draw()
             for ( j=0 ; j<m_lineIndent[i] ; j++ )
             {
                 char s = '\t';  // line | dotted
-                m_engine->GetText()->DrawText(&s, m_fontType, m_fontSize, pos, 1.0f, Gfx::TEXT_ALIGN_RIGHT, 0);
+                m_engine->GetText()->DrawText(&s, m_fontType, m_fontSize, pos, 1.0f, Gfx::TEXT_ALIGN_LEFT, 0);
                 pos.x += indentLength;
             }
         }
@@ -1063,7 +1063,7 @@ void CEdit::Draw()
         if ( !m_bMulti || !m_bDisplaySpec )  eol = 0;
         if ( m_format.size() == 0 )
         {
-            m_engine->GetText()->DrawText(std::string(m_text+beg), m_fontType, size, ppos, m_dim.x, Gfx::TEXT_ALIGN_RIGHT, eol);
+            m_engine->GetText()->DrawText(std::string(m_text+beg), m_fontType, size, ppos, m_dim.x, Gfx::TEXT_ALIGN_LEFT, eol);
         }
         else
         {
@@ -1072,7 +1072,7 @@ void CEdit::Draw()
                                           size,
                                           ppos,
                                           m_dim.x,
-                                          Gfx::TEXT_ALIGN_RIGHT,
+                                          Gfx::TEXT_ALIGN_LEFT,
                                           eol);
         }
 
@@ -1104,14 +1104,14 @@ void CEdit::Draw()
                 if ( m_format.size() == 0 )
                 {
                     m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]), m_fontType,
-                                                 size, pos, Gfx::TEXT_ALIGN_RIGHT,
+                                                 size, pos, Gfx::TEXT_ALIGN_LEFT,
                                                  start, end);
                 }
                 else
                 {
                     m_engine->GetText()->SizeText(std::string(m_text+m_lineOffset[i]),
                                                   std::vector<Gfx::FontMetaChar>(m_format.begin()+m_lineOffset[i], m_format.end()),
-                                                 size, pos, Gfx::TEXT_ALIGN_RIGHT,
+                                                 size, pos, Gfx::TEXT_ALIGN_LEFT,
                                                  start, end);
                 }
 

@@ -69,9 +69,9 @@ void CLabel::Draw()
     pos.y = m_pos.y + m_dim.y / 2.0f;
 
     switch (m_textAlign) {
-        case Gfx::TEXT_ALIGN_RIGHT: pos.x = m_pos.x; break;
+        case Gfx::TEXT_ALIGN_LEFT: pos.x = m_pos.x; break;
         case Gfx::TEXT_ALIGN_CENTER: pos.x = m_pos.x + m_dim.x / 2.0f; break;
-        case Gfx::TEXT_ALIGN_LEFT: pos.x = m_pos.x + m_dim.x; break;
+        case Gfx::TEXT_ALIGN_RIGHT: pos.x = m_pos.x + m_dim.x; break;
     }
 
     m_engine->GetText()->DrawText(std::string(m_name), m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);

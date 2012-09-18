@@ -1085,14 +1085,14 @@ void CStudio::StartDialog(StudioDialog type)
     {
         GetResource(RES_TEXT, RT_IO_LIST, name);
         pla = pw->CreateLabel(pos, dim, 0, EVENT_DIALOG_LABEL1, name);
-        pla->SetTextAlign(Gfx::TEXT_ALIGN_RIGHT);
+        pla->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
         pli = pw->CreateList(pos, dim, 0, EVENT_DIALOG_LIST);
         pli->SetState(STATE_SHADOW);
 
         GetResource(RES_TEXT, RT_IO_NAME, name);
         pla = pw->CreateLabel(pos, dim, 0, EVENT_DIALOG_LABEL2, name);
-        pla->SetTextAlign(Gfx::TEXT_ALIGN_RIGHT);
+        pla->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
         pe = pw->CreateEdit(pos, dim, 0, EVENT_DIALOG_EDIT);
         pe->SetState(STATE_SHADOW);
@@ -1103,7 +1103,7 @@ void CStudio::StartDialog(StudioDialog type)
 
         GetResource(RES_TEXT, RT_IO_DIR, name);
         pla = pw->CreateLabel(pos, dim, 0, EVENT_DIALOG_LABEL3, name);
-        pla->SetTextAlign(Gfx::TEXT_ALIGN_RIGHT);
+        pla->SetTextAlign(Gfx::TEXT_ALIGN_LEFT);
 
         pc = pw->CreateCheck(pos, dim, 0, EVENT_DIALOG_CHECK1);
         GetResource(RES_TEXT, RT_IO_PRIVATE, name);
@@ -1228,7 +1228,7 @@ void CStudio::AdjustDialog()
             pli->SetPos(ppos);
             pli->SetDim(ddim);
             pli->SetTabs(0, ddim.x-(50.0f+130.0f+16.0f)/640.0f);
-            pli->SetTabs(1,  50.0f/640.0f, Gfx::TEXT_ALIGN_LEFT);
+            pli->SetTabs(1,  50.0f/640.0f, Gfx::TEXT_ALIGN_RIGHT);
             pli->SetTabs(2, 130.0f/640.0f);
 //?         pli->ShowSelect();
         }
