@@ -6362,7 +6362,7 @@ char* CRobotMain::GetFilesDir()
 
 
 //! Change the player's name
-void CRobotMain::SetGamerName(char *name)
+void CRobotMain::SetGamerName(const char *name)
 {
     strcpy(m_gamerName, name);
     SetGlobalGamerName(m_gamerName);

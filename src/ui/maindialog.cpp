@@ -138,13 +138,13 @@ CMainDialog::CMainDialog(CInstanceManager* iMan)
 
     m_app = CApplication::GetInstancePointer();
 
-    m_main      = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_interface = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_eventQueue     = (CEventQueue*)m_iMan->SearchInstance(CLASS_EVENT);
-    m_engine    = (Gfx::CEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_particle = (Gfx::CParticle*)m_iMan->SearchInstance(CLASS_PARTICULE);
-    m_camera    = (Gfx::CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-    m_sound     = (CSoundInterface*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_main       = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
+    m_interface  = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
+    m_eventQueue = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
+    m_engine     = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_particle   = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_camera     = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_sound      = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
 
     m_phase        = PHASE_NAME;
     m_phaseSetup   = PHASE_SETUPg;
@@ -652,7 +652,7 @@ void CMainDialog::ChangePhase(Phase phase)
         for ( i=0 ; i<6 ; i++ )
         {
             int ti[6] = {11, 179, 180, 181, 182, 183};
-            pb = pw->CreateButton(pos, ddim, ti[i], (EventType)(EVENT_INTERFACE_PGLASS0+i));
+            pb = pw->CreateButton(pos, ddim, ti[i], static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i));
             pb->SetState(STATE_SHADOW);
             pos.x += (30.0f+2.8f)/640.0f;
         }
@@ -673,7 +673,7 @@ void CMainDialog::ChangePhase(Phase phase)
             pos.x  = 340.0f/640.0f;
             for ( i=0 ; i<3 ; i++ )
             {
-                pco = pw->CreateColor(pos, ddim, -1, (EventType)(EVENT_INTERFACE_PC0a+j*3+i));
+                pco = pw->CreateColor(pos, ddim, -1, static_cast<EventType>(EVENT_INTERFACE_PC0a+j*3+i));
                 pco->SetState(STATE_SHADOW);
                 pos.x += 20.0f/640.0f;
             }
@@ -686,7 +686,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y =  18.0f/480.0f;
         for ( i=0 ; i<3 ; i++ )
         {
-            psl = pw->CreateSlider(pos, ddim, 0, (EventType)(EVENT_INTERFACE_PCRa+i));
+            psl = pw->CreateSlider(pos, ddim, 0, static_cast<EventType>(EVENT_INTERFACE_PCRa+i));
             psl->SetState(STATE_SHADOW);
             psl->SetLimit(0.0f, 255.0f);
             psl->SetArrowStep(16.0f);
@@ -709,7 +709,7 @@ void CMainDialog::ChangePhase(Phase phase)
             pos.x  = 340.0f/640.0f;
             for ( i=0 ; i<3 ; i++ )
             {
-                pco = pw->CreateColor(pos, ddim, -1, (EventType)(EVENT_INTERFACE_PC0b+j*3+i));
+                pco = pw->CreateColor(pos, ddim, -1, static_cast<EventType>(EVENT_INTERFACE_PC0b+j*3+i));
                 pco->SetState(STATE_SHADOW);
                 pos.x += 20.0f/640.0f;
             }
@@ -722,7 +722,7 @@ void CMainDialog::ChangePhase(Phase phase)
         ddim.y =  18.0f/480.0f;
         for ( i=0 ; i<3 ; i++ )
         {
-            psl = pw->CreateSlider(pos, ddim, 0, (EventType)(EVENT_INTERFACE_PCRb+i));
+            psl = pw->CreateSlider(pos, ddim, 0, static_cast<EventType>(EVENT_INTERFACE_PCRb+i));
             psl->SetState(STATE_SHADOW);
             psl->SetLimit(0.0f, 255.0f);
             psl->SetArrowStep(16.0f);
@@ -1497,8 +1497,8 @@ void CMainDialog::ChangePhase(Phase phase)
         pos.x = 510.0f/640.0f;
         pos.y = 168.0f/480.0f;
         ps = pw->CreateScroll(pos, ddim, -1, EVENT_INTERFACE_KSCROLL);
-        ps->SetVisibleRatio((float)KEY_VISIBLE/KEY_TOTAL);
-        ps->SetArrowStep(1.0f/((float)KEY_TOTAL-KEY_VISIBLE));
+        ps->SetVisibleRatio(static_cast<float>(KEY_VISIBLE/KEY_TOTAL));
+        ps->SetArrowStep(1.0f/(static_cast<float>(KEY_TOTAL-KEY_VISIBLE)));
         UpdateKey();
 
         ddim.x = dim.x*6;
@@ -2285,9 +2285,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 }
                 if ( event.param == KEY(ESCAPE) )
                 {
-                    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+                    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
                     if ( pw == 0 )  break;
-                    pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_NCANCEL);
+                    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NCANCEL));
                     if ( pb == 0 )  break;
                     if ( pb->TestState(STATE_ENABLE) )
                     {
@@ -2319,9 +2319,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_NDELETE:
-                pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+                pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
                 if ( pw == 0 )  break;
-                pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
+                pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
                 if ( pl == 0 )  break;
                 StartDeleteGame(pl->GetName(pl->GetSelect()));
                 break;
@@ -2466,7 +2466,7 @@ bool CMainDialog::EventProcess(const Event &event)
          m_phase == PHASE_USER    ||
          m_phase == PHASE_PROTO   )
     {
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
@@ -2489,7 +2489,7 @@ bool CMainDialog::EventProcess(const Event &event)
         switch( event.type )
         {
             case EVENT_INTERFACE_CHAP:
-                pl = (CList*)pw->SearchControl(EVENT_INTERFACE_CHAP);
+                pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
                 if ( pl == 0 )  break;
                 m_chap[m_index] = pl->GetSelect();
                 UpdateSceneList(m_chap[m_index], m_sel[m_index]);
@@ -2497,14 +2497,14 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_LIST:
-                pl = (CList*)pw->SearchControl(EVENT_INTERFACE_LIST);
+                pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
                 if ( pl == 0 )  break;
                 m_sel[m_index] = pl->GetSelect();
                 UpdateSceneResume((m_chap[m_index]+1)*100+(m_sel[m_index]+1));
                 break;
 
             case EVENT_INTERFACE_SOLUCE:
-                pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_SOLUCE);
+                pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
                 if ( pb == 0 )  break;
                 m_bSceneSoluce = !m_bSceneSoluce;
                 pb->SetState(STATE_CHECK, m_bSceneSoluce);
@@ -2538,7 +2538,7 @@ bool CMainDialog::EventProcess(const Event &event)
          m_phase == PHASE_SETUPc ||
          m_phase == PHASE_SETUPs )
     {
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
@@ -2584,7 +2584,7 @@ bool CMainDialog::EventProcess(const Event &event)
          m_phase == PHASE_SETUPcs ||
          m_phase == PHASE_SETUPss )
     {
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
@@ -2637,11 +2637,11 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_FULL:
-                pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+                pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
                 if ( pw == 0 )  break;
-                pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_FULL);
+                pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
                 if ( pc == 0 )  break;
-                pl = (CList*)pw->SearchControl(EVENT_LIST2);
+                pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
                 if ( pl == 0 )  break;
                 if ( pc->TestState(STATE_CHECK) )
                 {
@@ -2657,9 +2657,9 @@ bool CMainDialog::EventProcess(const Event &event)
                 break;
 
             case EVENT_INTERFACE_APPLY:
-                pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+                pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
                 if ( pw == 0 )  break;
-                pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_APPLY);
+                pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_APPLY));
                 if ( pb == 0 )  break;
                 pb->ClearState(STATE_PRESS);
                 pb->ClearState(STATE_HILIGHT);
@@ -2953,7 +2953,7 @@ bool CMainDialog::EventProcess(const Event &event)
 
     if ( m_phase == PHASE_READ )
     {
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
@@ -2986,7 +2986,7 @@ bool CMainDialog::EventProcess(const Event &event)
     if ( m_phase == PHASE_WRITEs ||
          m_phase == PHASE_READs  )
     {
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return false;
 
         if ( event.type == pw->GetEventTypeClose() ||
@@ -3095,12 +3095,12 @@ void CMainDialog::GlintMove()
 
     if ( m_phase == PHASE_SIMUL )  return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
     if ( m_phase == PHASE_INIT )
     {
-        pg = (CGroup*)pw->SearchControl(EVENT_INTERFACE_GLINTl);
+        pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
         {
             zoom.x = sinf(m_glintTime*0.23f);
@@ -3114,7 +3114,7 @@ void CMainDialog::GlintMove()
             pg->SetDim(dim);
         }
 
-        pg = (CGroup*)pw->SearchControl(EVENT_INTERFACE_GLINTr);
+        pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTr));
         if ( pg != 0 )
         {
             zoom.x = sinf(m_glintTime*0.21f);
@@ -3137,7 +3137,7 @@ void CMainDialog::GlintMove()
          m_phase == PHASE_USER    ||
          m_phase == PHASE_PROTO   )
     {
-        pg = (CGroup*)pw->SearchControl(EVENT_INTERFACE_GLINTl);
+        pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
         {
             zoom.x = sinf(m_glintTime*0.22f);
@@ -3151,7 +3151,7 @@ void CMainDialog::GlintMove()
             pg->SetDim(dim);
         }
 
-        pg = (CGroup*)pw->SearchControl(EVENT_INTERFACE_GLINTr);
+        pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTr));
         if ( pg != 0 )
         {
             zoom.x = sinf(m_glintTime*0.19f);
@@ -3177,7 +3177,7 @@ void CMainDialog::GlintMove()
          m_phase == PHASE_SETUPcs ||
          m_phase == PHASE_SETUPss )
     {
-        pg = (CGroup*)pw->SearchControl(EVENT_INTERFACE_GLINTu);
+        pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTu));
         if ( pg != 0 )
         {
             zoom.y = sinf(m_glintTime*0.27f);
@@ -3190,7 +3190,7 @@ void CMainDialog::GlintMove()
             pg->SetDim(dim);
         }
 
-        pg = (CGroup*)pw->SearchControl(EVENT_INTERFACE_GLINTr);
+        pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTr));
         if ( pg != 0 )
         {
             zoom.x = sinf(m_glintTime*0.29f);
@@ -3210,7 +3210,7 @@ void CMainDialog::GlintMove()
          m_phase == PHASE_WRITEs ||
          m_phase == PHASE_READs  )
     {
-        pg = (CGroup*)pw->SearchControl(EVENT_INTERFACE_GLINTl);
+        pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTl));
         if ( pg != 0 )
         {
             zoom.x = sinf(m_glintTime*0.22f);
@@ -3224,7 +3224,7 @@ void CMainDialog::GlintMove()
             pg->SetDim(dim);
         }
 
-        pg = (CGroup*)pw->SearchControl(EVENT_INTERFACE_GLINTr);
+        pg = static_cast<CGroup*>(pw->SearchControl(EVENT_INTERFACE_GLINTr));
         if ( pg != 0 )
         {
             zoom.x = sinf(m_glintTime*0.19f);
@@ -3380,8 +3380,8 @@ void CMainDialog::FrameParticle(float rTime)
         return;
     }
 
-    nParti = (int)(*pParti++);
-    nGlint = (int)(*pGlint++);
+    nParti = static_cast<int>(*pParti++);
+    nGlint = static_cast<int>(*pGlint++);
 
     for ( i=0 ; i<10 ; i++ )
     {
@@ -3398,7 +3398,7 @@ void CMainDialog::FrameParticle(float rTime)
                     m_partiPos[i].x = pParti[ii*5+0]/640.0f;
                     m_partiPos[i].y = (480.0f-pParti[ii*5+1])/480.0f;
                     m_partiTime[i] = pParti[ii*5+2]+Math::Rand()*pParti[ii*5+3];
-                    m_partiPhase[i] = (int)pParti[ii*5+4];
+                    m_partiPhase[i] = static_cast<int>(pParti[ii*5+4]);
                     if ( m_partiPhase[i] == 3 )
                     {
                         m_sound->Play(SOUND_PSHHH, SoundPos(m_partiPos[i]), 0.3f+Math::Rand()*0.3f);
@@ -3498,7 +3498,7 @@ void CMainDialog::FrameParticle(float rTime)
                     dim.x = 0.01f+Math::Rand()*0.01f;
                     dim.y = dim.x/0.75f;
                     m_particle->CreateParticle(pos, speed, dim,
-                                                 (Gfx::ParticleType)(Gfx::PARTILENS1+rand()%3),
+                                                 static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
                                                  Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
                                                  Gfx::SH_INTERFACE);
                 }
@@ -3595,7 +3595,7 @@ void CMainDialog::NiceParticle(Math::Point mouse, bool bPress)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-                                     (Gfx::ParticleType)(Gfx::PARTILENS1+rand()%3),
+                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
                                      Math::Rand()*0.5f+0.5f, 2.0f, 0.0f,
                                      Gfx::SH_INTERFACE);
     }
@@ -3663,9 +3663,9 @@ void CMainDialog::ReadNameList()
     char                filenames[MAX_FNAME][100];
     int                 nbFilenames, i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == 0 )  return;
     pl->Flush();
 
@@ -3720,11 +3720,11 @@ void CMainDialog::UpdateNameControl()
     char*       gamer;
     int         total, sel;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == 0 )  return;
-    pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_NEDIT);
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == 0 )  return;
 
     gamer = m_main->GetGamerName();
@@ -3732,25 +3732,25 @@ void CMainDialog::UpdateNameControl()
     sel   = pl->GetSelect();
     pe->GetText(name, 100);
 
-    pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_NCANCEL);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NCANCEL));
     if ( pb != 0 )
     {
         pb->SetState(STATE_ENABLE, gamer[0]!=0);
     }
 
-    pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_NDELETE);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NDELETE));
     if ( pb != 0 )
     {
         pb->SetState(STATE_ENABLE, total>0 && sel!=-1);
     }
 
-    pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_NOK);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_NOK));
     if ( pb != 0 )
     {
         pb->SetState(STATE_ENABLE, name[0]!=0 || sel!=-1);
     }
 
-    pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_PERSO);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PERSO));
     if ( pb != 0 )
     {
         pb->SetState(STATE_ENABLE, name[0]!=0 || sel!=-1);
@@ -3765,18 +3765,17 @@ void CMainDialog::UpdateNameList()
     CList*      pl;
     CEdit*      pe;
     char        name[100];
-    int         total, sel, i;
+    int         total, i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == 0 )  return;
-    pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_NEDIT);
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == 0 )  return;
 
     pe->GetText(name, 100);
     total = pl->GetTotal();
-    sel   = pl->GetSelect();
 
     for ( i=0 ; i<total ; i++ )
     {
@@ -3802,11 +3801,11 @@ void CMainDialog::UpdateNameEdit()
     char*       name;
     int         sel;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == 0 )  return;
-    pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_NEDIT);
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == 0 )  return;
 
     sel = pl->GetSelect();
@@ -3834,9 +3833,9 @@ void CMainDialog::UpdateNameFace()
     char*       name;
     int         sel;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == 0 )  return;
 
     sel = pl->GetSelect();
@@ -3856,11 +3855,11 @@ void CMainDialog::NameSelect()
     char        name[100];
     int         sel;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == 0 )  return;
-    pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_NEDIT);
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == 0 )  return;
 
     pe->GetText(name, 100);
@@ -3892,9 +3891,9 @@ void CMainDialog::NameCreate()
     char        c;
     int         len, i, j;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_NEDIT);
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_NEDIT));
     if ( pe == 0 )  return;
 
     pe->GetText(name, 100);
@@ -3995,9 +3994,9 @@ void CMainDialog::NameDelete()
     char*       gamer;
     char        dir[100];
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_NLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_NLIST));
     if ( pl == 0 )  return;
 
     sel = pl->GetSelect();
@@ -4048,21 +4047,21 @@ void CMainDialog::UpdatePerso()
     char            name[100];
     int             i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_PHEAD);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PHEAD));
     if ( pb != 0 )
     {
         pb->SetState(STATE_CHECK, m_persoTab==0);
     }
-    pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_PBODY);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_PBODY));
     if ( pb != 0 )
     {
         pb->SetState(STATE_CHECK, m_persoTab==1);
     }
 
-    pl = (CLabel*)pw->SearchControl(EVENT_LABEL11);
+    pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL11));
     if ( pl != 0 )
     {
         if ( m_persoTab == 0 )
@@ -4077,7 +4076,7 @@ void CMainDialog::UpdatePerso()
         }
     }
 
-    pl = (CLabel*)pw->SearchControl(EVENT_LABEL12);
+    pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL12));
     if ( pl != 0 )
     {
         if ( m_persoTab == 0 )
@@ -4092,7 +4091,7 @@ void CMainDialog::UpdatePerso()
         }
     }
 
-    pl = (CLabel*)pw->SearchControl(EVENT_LABEL13);
+    pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL13));
     if ( pl != 0 )
     {
         if ( m_persoTab == 0 )  GetResource(RES_TEXT, RT_PERSO_HAIR, name);
@@ -4100,7 +4099,7 @@ void CMainDialog::UpdatePerso()
         pl->SetName(name);
     }
 
-    pl = (CLabel*)pw->SearchControl(EVENT_LABEL14);
+    pl = static_cast<CLabel*>(pw->SearchControl(EVENT_LABEL14));
     if ( pl != 0 )
     {
         if ( m_persoTab == 0 )
@@ -4117,7 +4116,7 @@ void CMainDialog::UpdatePerso()
 
     for ( i=0 ; i<4 ; i++ )
     {
-        pb = (CButton*)pw->SearchControl((EventType)(EVENT_INTERFACE_PFACE1+i));
+        pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PFACE1+i)));
         if ( pb == 0 )  break;
         pb->SetState(STATE_VISIBLE, m_persoTab==0);
         pb->SetState(STATE_CHECK, i==m_perso.face);
@@ -4125,7 +4124,7 @@ void CMainDialog::UpdatePerso()
 
     for ( i=0 ; i<10 ; i++ )
     {
-        pb = (CButton*)pw->SearchControl((EventType)(EVENT_INTERFACE_PGLASS0+i));
+        pb = static_cast<CButton*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PGLASS0+i)));
         if ( pb == 0 )  break;
         pb->SetState(STATE_VISIBLE, m_persoTab==0);
         pb->SetState(STATE_CHECK, i==m_perso.glasses);
@@ -4133,7 +4132,7 @@ void CMainDialog::UpdatePerso()
 
     for ( i=0 ; i<3*3 ; i++ )
     {
-        pc = (CColor*)pw->SearchControl((EventType)(EVENT_INTERFACE_PC0a+i));
+        pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0a+i)));
         if ( pc == 0 )  break;
         if ( m_persoTab == 0 )
         {
@@ -4150,7 +4149,7 @@ void CMainDialog::UpdatePerso()
             pc->SetState(STATE_CHECK, EqColor(color, m_perso.colorCombi));
         }
 
-        pc = (CColor*)pw->SearchControl((EventType)(EVENT_INTERFACE_PC0b+i));
+        pc = static_cast<CColor*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PC0b+i)));
         if ( pc == 0 )  break;
         color.r = perso_color[3*10*2*m_persoTab+3*i+0]/255.0f;
         color.g = perso_color[3*10*2*m_persoTab+3*i+1]/255.0f;
@@ -4162,7 +4161,7 @@ void CMainDialog::UpdatePerso()
 
     for ( i=0 ; i<3 ; i++ )
     {
-        ps = (CSlider*)pw->SearchControl((EventType)(EVENT_INTERFACE_PCRa+i));
+        ps = static_cast<CSlider*>(pw->SearchControl(static_cast<EventType>(EVENT_INTERFACE_PCRa+i)));
         if ( ps == 0 )  break;
         ps->SetState(STATE_VISIBLE, m_persoTab==1);
     }
@@ -4170,21 +4169,21 @@ void CMainDialog::UpdatePerso()
     if ( m_persoTab == 1 )
     {
         color = m_perso.colorCombi;
-        ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCRa);
+        ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRa));
         if ( ps != 0 )  ps->SetVisibleValue(color.r*255.0f);
-        ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCGa);
+        ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGa));
         if ( ps != 0 )  ps->SetVisibleValue(color.g*255.0f);
-        ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCBa);
+        ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBa));
         if ( ps != 0 )  ps->SetVisibleValue(color.b*255.0f);
     }
 
     if ( m_persoTab == 0 )  color = m_perso.colorHair;
     else                    color = m_perso.colorBand;
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCRb);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
     if ( ps != 0 )  ps->SetVisibleValue(color.r*255.0f);
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCGb);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGb));
     if ( ps != 0 )  ps->SetVisibleValue(color.g*255.0f);
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCBb);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBb));
     if ( ps != 0 )  ps->SetVisibleValue(color.b*255.0f);
 }
 
@@ -4247,24 +4246,24 @@ void CMainDialog::ColorPerso()
     CSlider*        ps;
     Gfx::Color   color;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
     color.a = 0.0f;
 
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCRa);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRa));
     if ( ps != 0 )  color.r = ps->GetVisibleValue()/255.0f;
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCGa);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGa));
     if ( ps != 0 )  color.g = ps->GetVisibleValue()/255.0f;
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCBa);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBa));
     if ( ps != 0 )  color.b = ps->GetVisibleValue()/255.0f;
     if ( m_persoTab == 1 )  m_perso.colorCombi = color;
 
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCRb);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCRb));
     if ( ps != 0 )  color.r = ps->GetVisibleValue()/255.0f;
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCGb);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCGb));
     if ( ps != 0 )  color.g = ps->GetVisibleValue()/255.0f;
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_PCBb);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_PCBb));
     if ( ps != 0 )  color.b = ps->GetVisibleValue()/255.0f;
     if ( m_persoTab == 0 )  m_perso.colorHair = color;
     else                    m_perso.colorBand = color;
@@ -4345,9 +4344,9 @@ void CMainDialog::IOReadName()
     time_t      now;
     int         i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_IONAME);
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
     if ( pe == 0 )  return;
 
     sprintf(resume, "%s %d", m_sceneName, m_chap[m_index]+1);
@@ -4398,9 +4397,9 @@ void CMainDialog::IOReadList()
     char        name[100];
     int         i, j;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_IOLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
     if ( pl == 0 )  return;
 
     pl->Flush();
@@ -4411,7 +4410,6 @@ void CMainDialog::IOReadList()
         file = fopen(filename, "r");
         if ( file == NULL )  break;
 
-        strcmp(name, filename);  // default name
         while ( fgets(line, 500, file) != NULL )
         {
             for ( i=0 ; i<500 ; i++ )
@@ -4459,11 +4457,11 @@ void CMainDialog::IOUpdateList()
     char        filename[100];
     int         sel, max;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_IOLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
     if ( pl == 0 )  return;
-    pi = (CImage*)pw->SearchControl(EVENT_INTERFACE_IOIMAGE);
+    pi = static_cast<CImage*>(pw->SearchControl(EVENT_INTERFACE_IOIMAGE));
     if ( pi == 0 )  return;
 
     sel = pl->GetSelect();
@@ -4483,7 +4481,7 @@ void CMainDialog::IOUpdateList()
             pi->SetFilenameImage("");
         }
 
-        pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_IODELETE);
+        pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_IODELETE));
         if ( pb != 0 )
         {
             pb->SetState(STATE_ENABLE, sel < max-1);
@@ -4507,9 +4505,9 @@ void CMainDialog::IODeleteScene()
     //struct _finddata_t  fBuffer;
     int                 sel, max, i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_IOLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
     if ( pl == 0 )  return;
 
     sel = pl->GetSelect();
@@ -4566,11 +4564,11 @@ bool CMainDialog::IOWriteScene()
     char        info[100];
     int         sel;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return false;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_IOLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
     if ( pl == 0 )  return false;
-    pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_IONAME);
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_IONAME));
     if ( pe == 0 )  return false;
 
     sel = pl->GetSelect();
@@ -4606,9 +4604,9 @@ bool CMainDialog::IOReadScene()
     char        dir[100];
     int         sel, i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return false;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_IOLIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_IOLIST));
     if ( pl == 0 )  return false;
 
     sel = pl->GetSelect();
@@ -4719,9 +4717,9 @@ void CMainDialog::UpdateSceneChap(int &chap)
     int         i, j;
     bool        bPassed, bDo;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_CHAP);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_CHAP));
     if ( pl == 0 )  return;
 
     pl->Flush();
@@ -4889,9 +4887,9 @@ void CMainDialog::UpdateSceneList(int chap, int &sel)
     int         i, j;
     bool        bPassed;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_INTERFACE_LIST);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_INTERFACE_LIST));
     if ( pl == 0 )  return;
 
     pl->Flush();
@@ -4997,11 +4995,11 @@ void CMainDialog::ShowSoluceUpdate()
     {
         m_bSceneSoluce = false;
 
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
         if ( pw == 0 )  return;
-        pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_RESUME);
+        pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_RESUME));
         if ( pe == 0 )  return;
-        pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_SOLUCE);
+        pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
         if ( pc == 0 )  return;
 
         if ( m_main->GetShowSoluce() )
@@ -5034,11 +5032,11 @@ void CMainDialog::UpdateSceneResume(int rank)
     int         i, numTry;
     bool        bPassed, bVisible;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pe = (CEdit*)pw->SearchControl(EVENT_INTERFACE_RESUME);
+    pe = static_cast<CEdit*>(pw->SearchControl(EVENT_INTERFACE_RESUME));
     if ( pe == 0 )  return;
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_SOLUCE);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE));
 
     if ( pc == 0 )
     {
@@ -5098,9 +5096,9 @@ void CMainDialog::UpdateDisplayDevice()
     char        bufModes[5000];
     int         i, j, totalDevices, selectDevices, totalModes, selectModes;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_LIST1);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
     if ( pl == 0 )  return;
     pl->Flush();
 
@@ -5135,9 +5133,9 @@ void CMainDialog::UpdateDisplayMode()
     char        bufModes[5000];
     int         i, j, totalDevices, selectDevices, totalModes, selectModes;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
-    pl = (CList*)pw->SearchControl(EVENT_LIST2);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
     pl->Flush();
 
@@ -5173,20 +5171,20 @@ void CMainDialog::ChangeDisplay()
     char*       mode;
     bool        bFull;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    pl = (CList*)pw->SearchControl(EVENT_LIST1);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
     if ( pl == 0 )  return;
     m_setupSelDevice = pl->GetSelect();
     device = pl->GetName(m_setupSelDevice);
 
-    pl = (CList*)pw->SearchControl(EVENT_LIST2);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
     m_setupSelMode = pl->GetSelect();
     mode = pl->GetName(m_setupSelMode);
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_FULL);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     if ( pc == 0 )  return;
     bFull = pc->TestState(STATE_CHECK);
     m_setupFull = bFull;
@@ -5214,21 +5212,21 @@ void CMainDialog::UpdateApply()
     int         sel1, sel2;
     bool        bFull;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    pb = (CButton*)pw->SearchControl(EVENT_INTERFACE_APPLY);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_INTERFACE_APPLY));
     if ( pb == 0 )  return;
 
-    pl = (CList*)pw->SearchControl(EVENT_LIST1);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST1));
     if ( pl == 0 )  return;
     sel1 = pl->GetSelect();
 
-    pl = (CList*)pw->SearchControl(EVENT_LIST2);
+    pl = static_cast<CList*>(pw->SearchControl(EVENT_LIST2));
     if ( pl == 0 )  return;
     sel2 = pl->GetSelect();
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_FULL);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FULL));
     bFull = pc->TestState(STATE_CHECK);
 
     if ( sel1 == m_setupSelDevice &&
@@ -5253,34 +5251,34 @@ void CMainDialog::UpdateSetupButtons()
     CSlider*    ps;
     float       value;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_TOTO);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOTO));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetTotoMode());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_TOOLTIP);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_TOOLTIP));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bTooltip);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_GLINT);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GLINT));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bGlint);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_RAIN);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_RAIN));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bRain);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_MOUSE);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOUSE));
     if ( pc != 0 )
     {
         /* TODO: nice mouse?
@@ -5288,163 +5286,163 @@ void CMainDialog::UpdateSetupButtons()
         pc->SetState(STATE_ENABLE, m_engine->GetNiceMouseCap());*/
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_EDITMODE);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITMODE));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentMode());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_EDITVALUE);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EDITVALUE));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetEditIndentValue()>2);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_SOLUCE4);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOLUCE4));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bSoluce4);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_MOVIES);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_MOVIES));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bMovies);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_NICERST);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_NICERST));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bNiceReset);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_HIMSELF);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_HIMSELF));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bHimselfDamage);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_SCROLL);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SCROLL));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bCameraScroll);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_INVERTX);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTX));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bCameraInvertX);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_INVERTY);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_INVERTY));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bCameraInvertY);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_EFFECT);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_EFFECT));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_bEffect);
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_SHADOW);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SHADOW));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetShadow());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_GROUND);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_GROUND));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetGroundSpot());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_DIRTY);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_DIRTY));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetDirty());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_FOG);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_FOG));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetFog());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_LENS);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LENS));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetLensMode());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_SKY);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SKY));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetSkyMode());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_PLANET);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_PLANET));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetPlanetMode());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_LIGHT);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_LIGHT));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_engine->GetLightMode());
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_JOYSTICK);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_JOYSTICK));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_app->GetJoystickEnabled());
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_PARTI);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_PARTI));
     if ( pv != 0 )
     {
         value = m_engine->GetParticleDensity();
         pv->SetValue(value);
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_CLIP);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_CLIP));
     if ( pv != 0 )
     {
         value = m_engine->GetClippingDistance();
         pv->SetValue(value);
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_DETAIL);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_DETAIL));
     if ( pv != 0 )
     {
         value = m_engine->GetObjectDetail();
         pv->SetValue(value);
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_GADGET);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_GADGET));
     if ( pv != 0 )
     {
         value = m_engine->GetGadgetQuantity();
         pv->SetValue(value);
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_TEXTURE);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE));
     if ( pv != 0 )
     {
-        value = (float)m_engine->GetTextureQuality();
+        value = static_cast<float>(m_engine->GetTextureQuality());
         pv->SetValue(value);
     }
 
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_VOLSOUND);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLSOUND));
     if ( ps != 0 )
     {
-        value = (float)m_sound->GetAudioVolume();
+        value = static_cast<float>(m_sound->GetAudioVolume());
         ps->SetVisibleValue(value);
     }
 
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_VOLMUSIC);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLMUSIC));
     if ( ps != 0 )
     {
         /* TODO: midi volume
@@ -5452,7 +5450,7 @@ void CMainDialog::UpdateSetupButtons()
         ps->SetVisibleValue(value);*/
     }
 
-    pc = (CCheck*)pw->SearchControl(EVENT_INTERFACE_SOUND3D);
+    pc = static_cast<CCheck*>(pw->SearchControl(EVENT_INTERFACE_SOUND3D));
     if ( pc != 0 )
     {
         pc->SetState(STATE_CHECK, m_sound->GetSound3D());
@@ -5469,52 +5467,52 @@ void CMainDialog::ChangeSetupButtons()
     CSlider*    ps;
     float       value;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_PARTI);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_PARTI));
     if ( pv != 0 )
     {
         value = pv->GetValue();
         m_engine->SetParticleDensity(value);
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_CLIP);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_CLIP));
     if ( pv != 0 )
     {
         value = pv->GetValue();
         m_engine->SetClippingDistance(value);
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_DETAIL);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_DETAIL));
     if ( pv != 0 )
     {
         value = pv->GetValue();
         m_engine->SetObjectDetail(value);
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_GADGET);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_GADGET));
     if ( pv != 0 )
     {
         value = pv->GetValue();
         m_engine->SetGadgetQuantity(value);
     }
 
-    pv = (CEditValue*)pw->SearchControl(EVENT_INTERFACE_TEXTURE);
+    pv = static_cast<CEditValue*>(pw->SearchControl(EVENT_INTERFACE_TEXTURE));
     if ( pv != 0 )
     {
         value = pv->GetValue();
-        m_engine->SetTextureQuality((int)value);
+        m_engine->SetTextureQuality(static_cast<int>(value));
     }
 
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_VOLSOUND);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLSOUND));
     if ( ps != 0 )
     {
         value = ps->GetVisibleValue();
-        m_sound->SetAudioVolume((int)value);
+        m_sound->SetAudioVolume(static_cast<int>(value));
     }
 
-    ps = (CSlider*)pw->SearchControl(EVENT_INTERFACE_VOLMUSIC);
+    ps = static_cast<CSlider*>(pw->SearchControl(EVENT_INTERFACE_VOLMUSIC));
     if ( ps != 0 )
     {
         /*
@@ -6047,13 +6045,13 @@ void CMainDialog::UpdateKey()
     Math::Point     pos, dim;
     int         first, i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    ps = (CScroll*)pw->SearchControl(EVENT_INTERFACE_KSCROLL);
+    ps = static_cast<CScroll*>(pw->SearchControl(EVENT_INTERFACE_KSCROLL));
     if ( ps == 0 )  return;
 
-    first = (int)(ps->GetVisibleValue()*(KEY_TOTAL-KEY_VISIBLE));
+    first = static_cast<int>(ps->GetVisibleValue()*(KEY_TOTAL-KEY_VISIBLE));
 
     for ( i=0 ; i<KEY_TOTAL ; i++ )
     {
@@ -6067,7 +6065,7 @@ void CMainDialog::UpdateKey()
     for ( i=0 ; i<KEY_VISIBLE ; i++ )
     {
         pw->CreateKey(pos, dim, -1, key_event[first+i]);
-        pk = (CKey*)pw->SearchControl(key_event[first+i]);
+        pk = static_cast<CKey*>(pw->SearchControl(key_event[first+i]));
         if ( pk == 0 )  break;
         /* TODO: set input bindings
         pk->SetKey(0, m_engine->GetKey(key_table[first+i], 0));
@@ -6085,17 +6083,17 @@ void CMainDialog::ChangeKey(EventType event)
     CKey*       pk;
     int         i;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw == 0 )  return;
 
-    ps = (CScroll*)pw->SearchControl(EVENT_INTERFACE_KSCROLL);
+    ps = static_cast<CScroll*>(pw->SearchControl(EVENT_INTERFACE_KSCROLL));
     if ( ps == 0 )  return;
 
     for ( i=0 ; i<KEY_TOTAL ; i++ )
     {
         if ( key_event[i] == event )
         {
-            pk = (CKey*)pw->SearchControl(key_event[i]);
+            pk = static_cast<CKey*>(pw->SearchControl(key_event[i]));
             if ( pk == 0 )  break;
             /* TODO: set key binding
             m_engine->SetKey(key_table[i], 0, pk->GetKey(0));
@@ -6118,7 +6116,7 @@ void CMainDialog::StartAbort()
     StartDialog(Math::Point(0.3f, 0.8f), true, false, false);
     m_bDialogDelete = false;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == 0 )  return;
 
     pos.x = 0.35f;
@@ -6201,7 +6199,7 @@ void CMainDialog::StartDeleteObject()
     StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
     m_bDialogDelete = true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == 0 )  return;
 
     pos.x = 0.00f;
@@ -6211,13 +6209,13 @@ void CMainDialog::StartDeleteObject()
     GetResource(RES_TEXT, RT_DIALOG_DELOBJ, name);
     pw->CreateLabel(pos, dim, -1, EVENT_DIALOG_LABEL, name);
 
-    pb = (CButton*)pw->SearchControl(EVENT_DIALOG_OK);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
     if ( pb == 0 )  return;
     GetResource(RES_TEXT, RT_DIALOG_YESDEL, name);
     pb->SetName(name);
     pb->SetState(STATE_WARNING);
 
-    pb = (CButton*)pw->SearchControl(EVENT_DIALOG_CANCEL);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_CANCEL));
     if ( pb == 0 )  return;
     GetResource(RES_TEXT, RT_DIALOG_NODEL, name);
     pb->SetName(name);
@@ -6236,7 +6234,7 @@ void CMainDialog::StartDeleteGame(char *gamer)
     StartDialog(Math::Point(0.7f, 0.3f), false, true, true);
     m_bDialogDelete = true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == 0 )  return;
 
     pos.x = 0.00f;
@@ -6247,13 +6245,13 @@ void CMainDialog::StartDeleteGame(char *gamer)
     sprintf(text, name, gamer);
     pw->CreateLabel(pos, dim, -1, EVENT_DIALOG_LABEL, text);
 
-    pb = (CButton*)pw->SearchControl(EVENT_DIALOG_OK);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
     if ( pb == 0 )  return;
     GetResource(RES_TEXT, RT_DIALOG_YESDEL, name);
     pb->SetName(name);
     pb->SetState(STATE_WARNING);
 
-    pb = (CButton*)pw->SearchControl(EVENT_DIALOG_CANCEL);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_CANCEL));
     if ( pb == 0 )  return;
     GetResource(RES_TEXT, RT_DIALOG_NODEL, name);
     pb->SetName(name);
@@ -6270,7 +6268,7 @@ void CMainDialog::StartQuit()
 
     StartDialog(Math::Point(0.6f, 0.3f), false, true, true);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
     if ( pw == 0 )  return;
 
     pos.x = 0.00f;
@@ -6280,13 +6278,13 @@ void CMainDialog::StartQuit()
     GetResource(RES_TEXT, RT_DIALOG_QUIT, name);
     pw->CreateLabel(pos, dim, -1, EVENT_DIALOG_LABEL, name);
 
-    pb = (CButton*)pw->SearchControl(EVENT_DIALOG_OK);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_OK));
     if ( pb == 0 )  return;
     GetResource(RES_TEXT, RT_DIALOG_YESQUIT, name);
     pb->SetName(name);
     pb->SetState(STATE_WARNING);
 
-    pb = (CButton*)pw->SearchControl(EVENT_DIALOG_CANCEL);
+    pb = static_cast<CButton*>(pw->SearchControl(EVENT_DIALOG_CANCEL));
     if ( pb == 0 )  return;
     GetResource(RES_TEXT, RT_DIALOG_NOQUIT, name);
     pb->SetName(name);
@@ -6303,34 +6301,34 @@ void CMainDialog::StartDialog(Math::Point dim, bool bFire, bool bOK, bool bCance
 
     StartSuspend();
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW4);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW6);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW7);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW8);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW8));
     if ( pw != 0 )  pw->ClearState(STATE_ENABLE);
 
-    pb = (CButton*)m_interface->SearchControl(EVENT_BUTTON_QUIT);
+    pb = static_cast<CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
     if ( pb != 0 )
     {
         pb->ClearState(STATE_VISIBLE);
@@ -6394,7 +6392,7 @@ void CMainDialog::FrameDialog(float rTime)
     m_dialogTime += rTime;
     if ( m_dialogTime < 1.0f )
     {
-        pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW9);
+        pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW9));
         if ( pw != 0 )
         {
             if ( m_dialogTime < 0.50f )
@@ -6444,7 +6442,7 @@ void CMainDialog::FrameDialog(float rTime)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-                                     (Gfx::ParticleType)(Gfx::PARTILENS1+rand()%3),
+                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
                                      1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
 
         // Top.
@@ -6455,7 +6453,7 @@ void CMainDialog::FrameDialog(float rTime)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-                                     (Gfx::ParticleType)(Gfx::PARTILENS1+rand()%3),
+                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
                                      1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
 
         // Left.
@@ -6466,7 +6464,7 @@ void CMainDialog::FrameDialog(float rTime)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-                                     (Gfx::ParticleType)(Gfx::PARTILENS1+rand()%3),
+                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
                                      1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
 
         // Right.
@@ -6477,7 +6475,7 @@ void CMainDialog::FrameDialog(float rTime)
         dim.x = 0.01f+Math::Rand()*0.01f;
         dim.y = dim.x/0.75f;
         m_particle->CreateParticle(pos, speed, dim,
-                                     (Gfx::ParticleType)(Gfx::PARTILENS1+rand()%3),
+                                     static_cast<Gfx::ParticleType>(Gfx::PARTILENS1+rand()%3),
                                      1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE);
     }
 }
@@ -6489,34 +6487,34 @@ void CMainDialog::StopDialog()
     CWindow*    pw;
     CButton*    pb;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW1);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW1));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW2);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW2));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW3);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW3));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW4);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW4));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW5);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW5));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW6);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW6));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW7);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW7));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW8);
+    pw = static_cast<CWindow*>(m_interface->SearchControl(EVENT_WINDOW8));
     if ( pw != 0 )  pw->SetState(STATE_ENABLE);
 
-    pb = (CButton*)m_interface->SearchControl(EVENT_BUTTON_QUIT);
+    pb = static_cast<CButton*>(m_interface->SearchControl(EVENT_BUTTON_QUIT));
     if ( pb != 0 )
     {
         pb->SetState(STATE_VISIBLE);

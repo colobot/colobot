@@ -2755,7 +2755,7 @@ CScript::~CScript()
 
 // Gives the script editable block of text.
 
-void CScript::PutScript(Ui::CEdit* edit, char* name)
+void CScript::PutScript(Ui::CEdit* edit, const char* name)
 {
     if ( m_script == 0 )
     {
@@ -3517,7 +3517,7 @@ void CScript::GetError(char* buffer)
 
 // New program.
 
-void CScript::New(Ui::CEdit* edit, char* name)
+void CScript::New(Ui::CEdit* edit, const char* name)
 {
     FILE    *file = NULL;
     char    res[100];

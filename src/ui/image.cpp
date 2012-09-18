@@ -75,7 +75,7 @@ bool CImage::Create(Math::Point pos, Math::Point dim, int icon, EventType eventT
 
 // Specifies the name of the image display.
 
-void CImage::SetFilenameImage(char *name)
+void CImage::SetFilenameImage(const char *name)
 {
     if ( m_filename[0] != 0 )
     {

@@ -53,7 +53,7 @@ public:
 
     static void InitFonctions();
 
-    void        PutScript(Ui::CEdit* edit, char* name);
+    void        PutScript(Ui::CEdit* edit, const char* name);
     bool        GetScript(Ui::CEdit* edit);
     bool        GetCompile();
 
@@ -74,7 +74,7 @@ public:
     int         GetError();
     void        GetError(char* buffer);
 
-    void        New(Ui::CEdit* edit, char* name);
+    void        New(Ui::CEdit* edit, const char* name);
     bool        SendScript(char* text);
     bool        ReadScript(const char* filename);
     bool        WriteScript(const char* filename);

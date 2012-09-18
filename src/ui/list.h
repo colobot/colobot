@@ -69,7 +69,7 @@ class CList : public CControl
         void        SetBlink(bool bEnable);
         bool        GetBlink();
 
-        void        SetName(int i, char* name);
+        void        SetName(int i, const char* name);
         char*       GetName(int i);
 
         void        SetCheck(int i, bool bMode);

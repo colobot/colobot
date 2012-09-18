@@ -75,15 +75,13 @@ protected:
     void        MoveAdjust();
     void        HiliteValue(const Event &event);
 
-protected:
     Ui::CEdit*      m_edit;
     Ui::CButton*    m_buttonUp;
     Ui::CButton*    m_buttonDown;
-
-    EditValueType m_type;
-    float       m_stepValue;
-    float       m_minValue;
-    float       m_maxValue;
+    EditValueType   m_type;
+    float           m_stepValue;
+    float           m_minValue;
+    float           m_maxValue;
 };
 
 

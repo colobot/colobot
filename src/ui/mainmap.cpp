@@ -18,7 +18,7 @@
 // mainmap.cpp
 
 
-#include <ui/mainmap.h>
+#include "ui/mainmap.h"
 
 
 namespace Ui {
@@ -37,7 +37,7 @@ CMainMap::CMainMap()
 
     m_interface = static_cast<CInterface*>(m_iMan->SearchInstance(CLASS_INTERFACE));
     m_event     = static_cast<CEventQueue*>(m_iMan->SearchInstance(CLASS_EVENT));
-    m_engine    = (Gfx::CEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
+    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
 
     m_mapMode = 1;
     m_bFixImage = false;

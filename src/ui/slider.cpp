@@ -467,7 +467,7 @@ void CSlider::Draw()
 
     if ( m_bHoriz )
     {
-        sprintf(text, "%d", (int)(m_min+m_visibleValue*(m_max-m_min)));
+        sprintf(text, "%d", static_cast<int>(m_min+m_visibleValue*(m_max-m_min)));
         h = m_engine->GetText()->GetHeight(m_fontType, m_fontSize);
         pos.x = m_pos.x+m_dim.x+(10.0f/640.0f);
         pos.y = m_pos.y+(m_dim.y-h)/2.0f;
@@ -483,7 +483,7 @@ void CSlider::Draw()
             pos.y += (h-CURSOR_WIDTH)*m_visibleValue;
             dim.x = 50.0f/640.0f;
             dim.y = 16.0f/480.0f;
-            sprintf(text, "%d", (int)(m_min+(m_visibleValue*(m_max-m_min))));
+            sprintf(text, "%d", static_cast<int>(m_min+(m_visibleValue*(m_max-m_min))));
             m_engine->GetText()->DrawText(text, m_fontType, m_fontSize, pos, dim.x, Gfx::TEXT_ALIGN_RIGHT, 0);
         }
     }

@@ -245,7 +245,7 @@ public:
     char*       GetPublicDir();
     char*       GetFilesDir();
 
-    void        SetGamerName(char *name);
+    void        SetGamerName(const char *name);
     char*       GetGamerName();
     int         GetGamerFace();
     int         GetGamerGlasses();

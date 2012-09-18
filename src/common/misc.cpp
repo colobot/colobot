@@ -347,7 +347,7 @@ void AddExt(char* filename, const char* ext)
 
 // Specifies the user folder.
 
-void UserDir(bool bUser, char* dir)
+void UserDir(bool bUser, const char* dir)
 {
     g_bUserDir = bUser;
     strcpy(g_userDir, dir);

@@ -99,7 +99,7 @@ void CScroll::MoveAdjust()
         if ( m_buttonUp == 0 )
         {
             m_buttonUp = new CButton();
-            pc = (CButton*)m_buttonUp;
+            pc = m_buttonUp;
             pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 49, EVENT_NULL);
             pc->SetRepeat(true);
             m_eventUp = pc->GetEventType();
@@ -108,7 +108,7 @@ void CScroll::MoveAdjust()
         if ( m_buttonDown == 0 )
         {
             m_buttonDown = new CButton();
-            pc = (CButton*)m_buttonDown;
+            pc = m_buttonDown;
             pc->Create(Math::Point(0.0f, 0.0f), Math::Point(0.0f, 0.0f), 50, EVENT_NULL);
             pc->SetRepeat(true);
             m_eventDown = pc->GetEventType();
@@ -345,7 +345,7 @@ void CScroll::Draw()
         dim.y *= m_visibleRatio;
         DrawVertex(pos, dim, 2);
 
-        n = (int)(dim.y*0.8f/0.012f);
+        n = static_cast<int>(dim.y*0.8f/0.012f);
         if ( n < 1 )  n = 1;
         if ( n > 5 )  n = 5;
 

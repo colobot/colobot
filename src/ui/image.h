@@ -42,7 +42,7 @@ public:
 
     void    Draw();
 
-    void    SetFilenameImage(char *name);
+    void    SetFilenameImage(const char *name);
     char*   GetFilenameImage();
 
 protected:

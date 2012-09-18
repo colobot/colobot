@@ -18,12 +18,6 @@
 // editvalue.cpp
 
 
-//#include <windows.h>
-//#include <stdio.h>
-//#include <d3d.h>
-
-//#include "old/d3dengine.h"
-//#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
@@ -294,7 +288,7 @@ void CEditValue::SetValue(float value, bool bSendMessage)
 
     if ( m_type == EVT_INT )
     {
-        sprintf(text, "%d", (int)value);
+        sprintf(text, "%d", static_cast<int>(value));
     }
 
     if ( m_type == EVT_FLOAT )
@@ -304,7 +298,7 @@ void CEditValue::SetValue(float value, bool bSendMessage)
 
     if ( m_type == EVT_100 )
     {
-        sprintf(text, "%d%%", (int)(value*100.0f));
+        sprintf(text, "%d%%", static_cast<int>(value*100.0f));
     }
 
     m_edit->SetText(text);
@@ -321,19 +315,19 @@ void CEditValue::SetValue(float value, bool bSendMessage)
 float CEditValue::GetValue()
 {
     char    text[100];
-    float   value;
+    float   value = 0.0f;
 
-    if ( m_edit == 0 )  0.0f;
-
-    m_edit->GetText(text, 100);
-    sscanf(text, "%f", &value);
-
-    if ( m_type == EVT_100 )
+    if ( m_edit != 0 )
     {
-        value = (value+0.5f)/100.0f;
-        if ( value < 0.01f )  value = 0.0f;  // less than 1%?
-    }
+        m_edit->GetText(text, 100);
+        sscanf(text, "%f", &value);
 
+        if ( m_type == EVT_100 )
+        {
+            value = (value+0.5f)/100.0f;
+            if ( value < 0.01f )  value = 0.0f;  // less than 1%?
+        }
+    }
     return value;
 }
 

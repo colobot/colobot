@@ -602,7 +602,7 @@ bool CList::GetBlink()
 
 // Specifies the text of a line.
 
-void CList::SetName(int i, char* name)
+void CList::SetName(int i, const char* name)
 {
     if ( i < 0 || i >= LISTMAXTOTAL )
         return;
@@ -759,16 +759,16 @@ void CList::UpdateScroll()
         value = 0.0f;
         step = 0.0f;
     } else {
-        ratio = static_cast<float>m_displayLine / m_totalLine;
+        ratio = static_cast<float>(m_displayLine) / m_totalLine;
         if ( ratio > 1.0f )  ratio = 1.0f;
 
-        value = static_cast<float>m_firstLine / (m_totalLine - m_displayLine);
+        value = static_cast<float>(m_firstLine) / (m_totalLine - m_displayLine);
         if ( value < 0.0f )
             value = 0.0f;
         if ( value > 1.0f )
             value = 1.0f;
 
-        step = static_cast<float>1.0f/ (m_totalLine - m_displayLine);
+        step = static_cast<float>(1.0f)/ (m_totalLine - m_displayLine);
         if ( step < 0.0f )
             step = 0.0f;
     }

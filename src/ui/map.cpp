@@ -866,19 +866,12 @@ void CMap::DrawObjectIcon(Math::Point pos, Math::Point dim, MapColor color,
 
 void CMap::DrawHighlight(Math::Point pos)
 {
-    Math::Point     dim, uv1, uv2;
-    bool        bOut, bUp, bDown, bLeft, bRight;
+    Math::Point dim, uv1, uv2;
 
     if ( m_bToy || m_fixImage[0] != 0 )  return;  // map with still image?
 
     pos.x = (pos.x-m_offset.x)*(m_zoom*0.5f)/m_half+0.5f;
     pos.y = (pos.y-m_offset.y)*(m_zoom*0.5f)/m_half+0.5f;
-
-    bOut = bUp = bDown = bLeft = bRight = false;
-    if ( pos.x < 0.06f )  { pos.x = 0.02f;  bOut = bLeft  = true; }
-    if ( pos.y < 0.06f )  { pos.y = 0.02f;  bOut = bDown  = true; }
-    if ( pos.x > 0.94f )  { pos.x = 0.98f;  bOut = bRight = true; }
-    if ( pos.y > 0.94f )  { pos.y = 0.98f;  bOut = bUp    = true; }
 
     pos.x = m_mapPos.x+m_mapDim.x*pos.x;
     pos.y = m_mapPos.y+m_mapDim.y*pos.y;
@@ -1013,8 +1006,8 @@ void CMap::UpdateTerrain()
     {
         for ( x=0 ; x<256 ; x++ )
         {
-            pos.x =  ((float)x-128.0f)*m_half/128.0f;
-            pos.z = -((float)y-128.0f)*m_half/128.0f;
+            pos.x =  (static_cast<float>(x)-128.0f)*m_half/128.0f;
+            pos.z = -(static_cast<float>(y)-128.0f)*m_half/128.0f;
             pos.y = 0.0f;
 
             if ( pos.x >= -m_half && pos.x <= m_half &&
@@ -1077,8 +1070,8 @@ void CMap::UpdateTerrain(int bx, int by, int ex, int ey)
     {
         for ( x=bx ; x<ex ; x++ )
         {
-            pos.x =  ((float)x-128.0f)*m_half/128.0f;
-            pos.z = -((float)y-128.0f)*m_half/128.0f;
+            pos.x =  (static_cast<float>(x)-128.0f)*m_half/128.0f;
+            pos.z = -(static_cast<float>(y)-128.0f)*m_half/128.0f;
             pos.y = 0.0f;
 
             if ( pos.x >= -m_half && pos.x <= m_half &&

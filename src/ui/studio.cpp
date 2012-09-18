@@ -507,7 +507,7 @@ void CStudio::SearchToken(CEdit* edit)
         for ( i=0 ; i<OBJECT_MAX ; i++ )
         {
             type = static_cast< ObjectType >(i);
-            text = GetObjectName(type);
+            text = const_cast<char *>(GetObjectName(type));
             if ( text[0] != 0 )
             {
                 if ( strcmp(token, text) == 0 )
@@ -517,7 +517,7 @@ void CStudio::SearchToken(CEdit* edit)
                     return;
                 }
             }
-            text = GetObjectAlias(type);
+            text = const_cast<char *>(GetObjectAlias(type));
             if ( text[0] != 0 )
             {
                 if ( strcmp(token, text) == 0 )
@@ -530,7 +530,7 @@ void CStudio::SearchToken(CEdit* edit)
         }
     }
 
-    text = GetHelpText(token);
+    text = const_cast<char *>(GetHelpText(token));
     if ( text[0] == 0 && m_helpFilename.length() > 0 )
     {
         SetInfoText(std::string(token), true);
@@ -606,11 +606,8 @@ void CStudio::StartEditScript(CScript *script, std::string name, int rank)
     edit->SetFontStretch(0.7f);
     edit->SetDisplaySpec(true);
     edit->SetAutoIndent(m_engine->GetEditIndentMode());
-    // TODO replace to PutScript after change to std::string
-    char* tmp;
-    strcpy(tmp, name.c_str());
-//    m_script->PutScript(edit, name);
-    m_script->PutScript(edit, tmp);
+
+    m_script->PutScript(edit, name.c_str());
     ColorizeScript(edit);
 
     ViewEditScript();
@@ -908,9 +905,7 @@ void CStudio::SetInfoText(std::string text, bool bClickable)
     if ( list == 0 )  return;
 
     list->Flush();  // just text
-    char* tmp;
-    strcpy(tmp,text.c_str());
-    list->SetName(0, tmp); // TODO
+    list->SetName(0, text.c_str());
 
     if ( text[0] == 0 )  bClickable = false;
     list->SetSelectCap(bClickable);
@@ -1224,7 +1219,7 @@ void CStudio::AdjustDialog()
             pla->SetDim(ddim);
         }
 
-        nli = (int)((wdim.y-120.0f/480.0f)/(18.0f/480.0f));
+        nli = static_cast<int>((wdim.y-120.0f/480.0f)/(18.0f/480.0f));
         ddim.y = nli*18.0f/480.0f+9.0f/480.0f;
         ppos.y = wpos.y+wdim.y-48.0f/480.0f-ddim.y;
         pli = static_cast< CList* >(pw->SearchControl(EVENT_DIALOG_LIST));
