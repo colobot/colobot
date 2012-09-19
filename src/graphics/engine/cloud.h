@@ -17,13 +17,16 @@
 
 /**
  * \file graphics/engine/cloud.h
- * \brief Cloud rendering - Gfx::CCloud class
+ * \brief Cloud rendering - CCloud class
  */
 
 #pragma once
 
+
 #include "common/event.h"
+
 #include "graphics/core/color.h"
+
 #include "math/point.h"
 #include "math/vector.h"
 
@@ -31,10 +34,10 @@
 #include <string>
 
 
-
 class CInstanceManager;
 
 
+// Graphics module namespace
 namespace Gfx {
 
 class CEngine;
@@ -83,7 +86,7 @@ public:
     //! Removes all the clouds
     void        Flush();
     //! Creates all areas of cloud
-    void        Create(const std::string& fileName, const Gfx::Color& diffuse, const Gfx::Color& ambient, float level);
+    void        Create(const std::string& fileName, const Color& diffuse, const Color& ambient, float level);
     //! Draw the clouds
     void        Draw();
 
@@ -110,8 +113,8 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    Gfx::CEngine*     m_engine;
-    Gfx::CTerrain*    m_terrain;
+    CEngine*          m_engine;
+    CTerrain*         m_terrain;
 
     bool            m_enabled;
     //! Overall level
@@ -121,9 +124,9 @@ protected:
     //! Feedrate (wind)
     Math::Point     m_speed;
     //! Diffuse color
-    Gfx::Color      m_diffuse;
+    Color           m_diffuse;
     //! Ambient color
-    Gfx::Color      m_ambient;
+    Color           m_ambient;
     float           m_time;
     float           m_lastTest;
     int             m_subdiv;
@@ -135,8 +138,8 @@ protected:
     //! Size of a brick element
     float           m_brickSize;
 
-    std::vector<Gfx::CloudLine> m_lines;
+    std::vector<CloudLine> m_lines;
 };
 
 
-}; // namespace Gfx
+} // namespace Gfx

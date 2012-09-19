@@ -17,14 +17,17 @@
 
 /**
  * \file graphics/engine/pyro.h
- * \brief Fire effect rendering - Gfx::CPyro class
+ * \brief Fire effect rendering - CPyro class
  */
 
 #pragma once
 
+
 #include "common/event.h"
 #include "common/global.h"
+
 #include "graphics/engine/engine.h"
+
 #include "object/object.h"
 
 
@@ -32,9 +35,10 @@ class CInstanceManager;
 class CObject;
 class CDisplayText;
 class CRobotMain;
-class CSound;
+class CSoundInterface;
 
 
+// Graphics module namespace
 namespace Gfx {
 
 class CEngine;
@@ -87,7 +91,7 @@ struct PyroLightOper
 {
     float           progress;
     float           intensity;
-    Gfx::Color      color;
+    Color      color;
 };
 
 
@@ -104,7 +108,7 @@ public:
     ~CPyro();
 
     void        DeleteObject(bool all=false);
-    bool        Create(Gfx::PyroType type, CObject* pObj, float force=1.0f);
+    bool        Create(PyroType type, CObject* pObj, float force=1.0f);
     bool        EventProcess(const Event &event);
     Error       IsEnded();
     void        CutObjectLink(CObject* pObj);
@@ -136,20 +140,20 @@ protected:
 
 protected:
     CInstanceManager*    m_iMan;
-    Gfx::CEngine*        m_engine;
-    Gfx::CTerrain*       m_terrain;
-    Gfx::CCamera*        m_camera;
-    Gfx::CParticle*      m_particule;
-    Gfx::CLightManager*  m_lightMan;
+    CEngine*        m_engine;
+    CTerrain*       m_terrain;
+    CCamera*        m_camera;
+    CParticle*      m_particule;
+    CLightManager*  m_lightMan;
     CObject*             m_object;
     CDisplayText*        m_displayText;
     CRobotMain*          m_main;
-    CSound*              m_sound;
+    CSoundInterface*     m_sound;
 
     Math::Vector    m_pos;          // center of the effect
     Math::Vector    m_posPower;     // center of the battery
     bool            m_power;       // battery exists?
-    Gfx::PyroType   m_type;
+    PyroType   m_type;
     float           m_force;
     float           m_size;
     float           m_progress;
@@ -161,12 +165,12 @@ protected:
 
     int             m_lightRank;
     int             m_lightOperTotal;
-    Gfx::PyroLightOper m_lightOper[10];
+    PyroLightOper m_lightOper[10];
     float           m_lightHeight;
 
     ObjectType      m_burnType;
     int             m_burnPartTotal;
-    Gfx::PyroBurnPart m_burnPart[10];
+    PyroBurnPart m_burnPart[10];
     int             m_burnKeepPart[10];
     float           m_burnFall;
 
@@ -180,4 +184,5 @@ protected:
     float           m_crashSphereRadius[50];
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

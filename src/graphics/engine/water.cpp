@@ -15,18 +15,25 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// water.cpp
 
 #include "graphics/engine/water.h"
 
 #include "common/iman.h"
 #include "common/logger.h"
+
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
 #include "graphics/engine/terrain.h"
+
 #include "math/geometry.h"
+
 #include "object/object.h"
+
 #include "sound/sound.h"
+
+
+// Graphics module namespace
+namespace Gfx {
 
 
 const int WATERLINE_PREALLOCATE_COUNT = 500;
@@ -35,7 +42,7 @@ const int WATERLINE_PREALLOCATE_COUNT = 500;
 const int VAPOR_SIZE = 10;
 
 
-Gfx::CWater::CWater(CInstanceManager* iMan, Gfx::CEngine* engine)
+CWater::CWater(CInstanceManager* iMan, CEngine* engine)
 {
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_WATER, this);
@@ -50,15 +57,15 @@ Gfx::CWater::CWater(CInstanceManager* iMan, Gfx::CEngine* engine)
     m_level = 0.0f;
     m_draw = true;
     m_lava = false;
-    m_color = Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f);
+    m_color = Color(1.0f, 1.0f, 1.0f, 1.0f);
     m_subdiv = 4;
 
     m_lines.reserve(WATERLINE_PREALLOCATE_COUNT);
 
-    std::vector<Gfx::WaterVapor>(VAPOR_SIZE).swap(m_vapors);
+    std::vector<WaterVapor>(VAPOR_SIZE).swap(m_vapors);
 }
 
-Gfx::CWater::~CWater()
+CWater::~CWater()
 {
     m_iMan = nullptr;
     m_engine = nullptr;
@@ -68,7 +75,7 @@ Gfx::CWater::~CWater()
 }
 
 
-bool Gfx::CWater::EventProcess(const Event &event)
+bool CWater::EventProcess(const Event &event)
 {
     if (event.type == EVENT_FRAME)
         return EventFrame(event);
@@ -76,7 +83,7 @@ bool Gfx::CWater::EventProcess(const Event &event)
     return true;
 }
 
-bool Gfx::CWater::EventFrame(const Event &event)
+bool CWater::EventFrame(const Event &event)
 {
     if (m_engine->GetPause())  return true;
 
@@ -90,10 +97,10 @@ bool Gfx::CWater::EventFrame(const Event &event)
     return true;
 }
 
-void Gfx::CWater::LavaFrame(float rTime)
+void CWater::LavaFrame(float rTime)
 {
     if (m_particule == nullptr)
-        m_particule = static_cast<Gfx::CParticle*>( m_iMan->SearchInstance(CLASS_PARTICULE) );
+        m_particule = static_cast<CParticle*>( m_iMan->SearchInstance(CLASS_PARTICULE) );
 
     for (int i = 0; i < static_cast<int>( m_vapors.size() ); i++)
         VaporFrame(i, rTime);
@@ -123,29 +130,29 @@ void Gfx::CWater::LavaFrame(float rTime)
             level = Math::Rand();
             if (level < 0.8f)
             {
-                if ( VaporCreate(Gfx::PARTIFIRE, pos, 0.02f+Math::Rand()*0.06f) )
+                if ( VaporCreate(PARTIFIRE, pos, 0.02f+Math::Rand()*0.06f) )
                     m_lastLava = m_time;
             }
             else if (level < 0.9f)
             {
-                if ( VaporCreate(Gfx::PARTIFLAME, pos, 0.5f+Math::Rand()*3.0f) )
+                if ( VaporCreate(PARTIFLAME, pos, 0.5f+Math::Rand()*3.0f) )
                     m_lastLava = m_time;
             }
             else
             {
-                if ( VaporCreate(Gfx::PARTIVAPOR, pos, 0.2f+Math::Rand()*2.0f) )
+                if ( VaporCreate(PARTIVAPOR, pos, 0.2f+Math::Rand()*2.0f) )
                     m_lastLava = m_time;
             }
         }
     }
 }
 
-void Gfx::CWater::VaporFlush()
+void CWater::VaporFlush()
 {
     m_vapors.clear();
 }
 
-bool Gfx::CWater::VaporCreate(Gfx::ParticleType type, Math::Vector pos, float delay)
+bool CWater::VaporCreate(ParticleType type, Math::Vector pos, float delay)
 {
     for (int i = 0; i < static_cast<int>( m_vapors.size() ); i++)
     {
@@ -171,7 +178,7 @@ bool Gfx::CWater::VaporCreate(Gfx::ParticleType type, Math::Vector pos, float de
     return false;
 }
 
-void Gfx::CWater::VaporFrame(int i, float rTime)
+void CWater::VaporFrame(int i, float rTime)
 {
     m_vapors[i].time += rTime;
 
@@ -240,7 +247,7 @@ void Gfx::CWater::VaporFrame(int i, float rTime)
     }
 }
 
-void Gfx::CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
+void CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
                               Math::Point &uv1, Math::Point &uv2)
 {
     float t1 = m_time*1.5f + pos.x*0.1f * pos.z*0.2f;
@@ -258,7 +265,7 @@ void Gfx::CWater::AdjustLevel(Math::Vector &pos, Math::Vector &norm,
 }
 
 /** This surface prevents to see the sky (background) underwater! */
-void Gfx::CWater::DrawBack()
+void CWater::DrawBack()
 {
     if (! m_draw) return;
     if (m_type[0] == WATER_NULL) return;
@@ -267,16 +274,16 @@ void Gfx::CWater::DrawBack()
     Math::Vector eye = m_engine->GetEyePt();
     Math::Vector lookat = m_engine->GetLookatPt();
 
-    Gfx::Material material;
+    Material material;
     material.diffuse = m_diffuse;
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
 
     m_engine->SetTexture("", 0); // TODO: disable texturing
 
-    Gfx::CDevice* device = m_engine->GetDevice();
+    CDevice* device = m_engine->GetDevice();
 
-    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+    m_engine->SetState(ENG_RSTATE_NORMAL);
 
     float deep = m_engine->GetDeepView(0);
     m_engine->SetDeepView(deep*2.0f, 0);
@@ -285,7 +292,7 @@ void Gfx::CWater::DrawBack()
 
     Math::Matrix matrix;
     matrix.LoadIdentity();
-    device->SetTransform(Gfx::TRANSFORM_WORLD, matrix);
+    device->SetTransform(TRANSFORM_WORLD, matrix);
 
     Math::Vector p;
     p.x = eye.x;
@@ -308,15 +315,15 @@ void Gfx::CWater::DrawBack()
     n.z = (lookat.z-eye.z)/dist;
     n.y = 0.0f;
 
-    Gfx::Vertex vertices[4] =
+    Vertex vertices[4] =
     {
-        Gfx::Vertex(Math::Vector(p1.x, p2.y, p1.z), n),
-        Gfx::Vertex(Math::Vector(p1.x, p1.y, p1.z), n),
-        Gfx::Vertex(Math::Vector(p2.x, p2.y, p2.z), n),
-        Gfx::Vertex(Math::Vector(p2.x, p1.y, p2.z), n)
+        Vertex(Math::Vector(p1.x, p2.y, p1.z), n),
+        Vertex(Math::Vector(p1.x, p1.y, p1.z), n),
+        Vertex(Math::Vector(p2.x, p2.y, p2.z), n),
+        Vertex(Math::Vector(p2.x, p1.y, p2.z), n)
     };
 
-    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
+    device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, vertices, 4);
     m_engine->AddStatisticTriangle(2);
 
     m_engine->SetDeepView(deep, 0);
@@ -324,26 +331,26 @@ void Gfx::CWater::DrawBack()
     m_engine->UpdateMatProj();  // gives the initial depth of view
 }
 
-void Gfx::CWater::DrawSurf()
+void CWater::DrawSurf()
 {
     if (! m_draw) return;
-    if (m_type[0] == Gfx::WATER_NULL) return;
+    if (m_type[0] == WATER_NULL) return;
     if (m_lines.empty()) return;
 
-    std::vector<Gfx::VertexTex2> vertices((m_brickCount+2)*2, Gfx::VertexTex2());
+    std::vector<VertexTex2> vertices((m_brickCount+2)*2, VertexTex2());
 
     Math::Vector eye = m_engine->GetEyePt();
 
     int rankview = m_engine->GetRankView();
     bool under = ( rankview == 1);
 
-    Gfx::CDevice* device = m_engine->GetDevice();
+    CDevice* device = m_engine->GetDevice();
 
     Math::Matrix matrix;
     matrix.LoadIdentity();
-    device->SetTransform(Gfx::TRANSFORM_WORLD, matrix);
+    device->SetTransform(TRANSFORM_WORLD, matrix);
 
-    Gfx::Material material;
+    Material material;
     material.diffuse = m_diffuse;
     material.ambient = m_ambient;
     m_engine->SetMaterial(material);
@@ -352,18 +359,18 @@ void Gfx::CWater::DrawSurf()
     m_engine->SetTexture(m_fileName, 1);
 
     if (m_type[rankview] == WATER_TT)
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK | Gfx::ENG_RSTATE_DUAL_WHITE | Gfx::ENG_RSTATE_WRAP, m_color);
+        m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK | ENG_RSTATE_DUAL_WHITE | ENG_RSTATE_WRAP, m_color);
 
     else if (m_type[rankview] == WATER_TO)
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL | Gfx::ENG_RSTATE_DUAL_WHITE | Gfx::ENG_RSTATE_WRAP);
+        m_engine->SetState(ENG_RSTATE_NORMAL | ENG_RSTATE_DUAL_WHITE | ENG_RSTATE_WRAP);
 
     else if (m_type[rankview] == WATER_CT)
-        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
+        m_engine->SetState(ENG_RSTATE_TTEXTURE_BLACK);
 
     else if (m_type[rankview] == WATER_CO)
-        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
+        m_engine->SetState(ENG_RSTATE_NORMAL);
 
-    device->SetRenderState(Gfx::RENDER_STATE_FOG, true);
+    device->SetRenderState(RENDER_STATE_FOG, true);
 
     float size = m_brickSize/2.0f;
     float sizez = 0.0f;
@@ -398,14 +405,14 @@ void Gfx::CWater::DrawSurf()
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under) n.y = -n.y;
-        vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
 
         p.x = pos.x-size;
         p.z = pos.z+sizez;
         p.y = pos.y;
         AdjustLevel(p, n, uv1, uv2);
         if (under)  n.y = -n.y;
-        vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
+        vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
 
         for (int j = 0; j < m_lines[i].len; j++)
         {
@@ -414,24 +421,24 @@ void Gfx::CWater::DrawSurf()
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
 
             p.x = pos.x+size;
             p.z = pos.z+sizez;
             p.y = pos.y;
             AdjustLevel(p, n, uv1, uv2);
             if (under)  n.y = -n.y;
-            vertices[vertexIndex++] = Gfx::VertexTex2(p, n, uv1, uv2);
+            vertices[vertexIndex++] = VertexTex2(p, n, uv1, uv2);
 
             pos.x += size*2.0f;
         }
 
-        device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
+        device->DrawPrimitive(PRIMITIVE_TRIANGLE_STRIP, &vertices[0], vertexIndex);
         m_engine->AddStatisticTriangle(vertexIndex - 2);
     }
 }
 
-bool Gfx::CWater::GetWater(int x, int y)
+bool CWater::GetWater(int x, int y)
 {
     x *= m_subdiv;
     y *= m_subdiv;
@@ -455,9 +462,9 @@ bool Gfx::CWater::GetWater(int x, int y)
     return false;
 }
 
-void Gfx::CWater::CreateLine(int x, int y, int len)
+void CWater::CreateLine(int x, int y, int len)
 {
-    Gfx::WaterLine line;
+    WaterLine line;
 
     line.x   = x;
     line.y   = y;
@@ -472,8 +479,8 @@ void Gfx::CWater::CreateLine(int x, int y, int len)
     m_lines.push_back(line);
 }
 
-void Gfx::CWater::Create(Gfx::WaterType type1, Gfx::WaterType type2, const std::string& fileName,
-                         Gfx::Color diffuse, Gfx::Color ambient,
+void CWater::Create(WaterType type1, WaterType type2, const std::string& fileName,
+                         Color diffuse, Color ambient,
                          float level, float glint, Math::Vector eddy)
 {
     m_type[0]  = type1;
@@ -534,15 +541,15 @@ void Gfx::CWater::Create(Gfx::WaterType type1, Gfx::WaterType type2, const std::
     }
 }
 
-void Gfx::CWater::Flush()
+void CWater::Flush()
 {
-    m_type[0] = Gfx::WATER_NULL;
-    m_type[1] = Gfx::WATER_NULL;
+    m_type[0] = WATER_NULL;
+    m_type[1] = WATER_NULL;
     m_level = 0.0f;
     m_lava = false;
 }
 
-void Gfx::CWater::SetLevel(float level)
+void CWater::SetLevel(float level)
 {
     m_level = level;
 
@@ -550,12 +557,12 @@ void Gfx::CWater::SetLevel(float level)
            m_level, m_glint, m_eddy);
 }
 
-float Gfx::CWater::GetLevel()
+float CWater::GetLevel()
 {
     return m_level;
 }
 
-float Gfx::CWater::GetLevel(CObject* object)
+float CWater::GetLevel(CObject* object)
 {
     ObjectType type = object->GetType();
 
@@ -599,17 +606,17 @@ float Gfx::CWater::GetLevel(CObject* object)
     return m_level;
 }
 
-void Gfx::CWater::SetLava(bool lava)
+void CWater::SetLava(bool lava)
 {
     m_lava = lava;
 }
 
-bool Gfx::CWater::GetLava()
+bool CWater::GetLava()
 {
     return m_lava;
 }
 
-void Gfx::CWater::AdjustEye(Math::Vector &eye)
+void CWater::AdjustEye(Math::Vector &eye)
 {
     if (m_lava)
     {
@@ -624,3 +631,5 @@ void Gfx::CWater::AdjustEye(Math::Vector &eye)
     }
 }
 
+
+} // namespace Gfx

@@ -15,75 +15,81 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// lightning.cpp (aka blitz.cpp)
 
 #include "graphics/engine/lightning.h"
 
 #include "common/logger.h"
 
 
-Gfx::CLightning::CLightning(CInstanceManager* iMan, Gfx::CEngine* engine)
+// Graphics module namespace
+namespace Gfx {
+
+
+CLightning::CLightning(CInstanceManager* iMan, CEngine* engine)
 {
     GetLogger()->Trace("CLightning::CLightning() stub!\n");
     // TODO!
 }
 
-Gfx::CLightning::~CLightning()
+CLightning::~CLightning()
 {
     GetLogger()->Trace("CLightning::~CLightning() stub!\n");
     // TODO!
 }
 
-void Gfx::CLightning::Flush()
+void CLightning::Flush()
 {
     GetLogger()->Trace("CLightning::Flush() stub!\n");
     // TODO!
 }
 
-bool Gfx::CLightning::EventProcess(const Event &event)
+bool CLightning::EventProcess(const Event &event)
 {
     GetLogger()->Trace("CLightning::EventProcess() stub!\n");
     // TODO!
     return true;
 }
 
-bool Gfx::CLightning::Create(float sleep, float delay, float magnetic)
+bool CLightning::Create(float sleep, float delay, float magnetic)
 {
     GetLogger()->Trace("CLightning::Create() stub!\n");
     // TODO!
     return true;
 }
 
-bool Gfx::CLightning::GetStatus(float &sleep, float &delay, float &magnetic, float &progress)
+bool CLightning::GetStatus(float &sleep, float &delay, float &magnetic, float &progress)
 {
     GetLogger()->Trace("CLightning::GetStatus() stub!\n");
     // TODO!
     return true;
 }
 
-bool Gfx::CLightning::SetStatus(float sleep, float delay, float magnetic, float progress)
+bool CLightning::SetStatus(float sleep, float delay, float magnetic, float progress)
 {
     GetLogger()->Trace("CLightning::SetStatus() stub!\n");
     // TODO!
     return true;
 }
 
-void Gfx::CLightning::Draw()
+void CLightning::Draw()
 {
     GetLogger()->Trace("CLightning::Draw() stub!\n");
     // TODO!
 }
 
-bool Gfx::CLightning::EventFrame(const Event &event)
+bool CLightning::EventFrame(const Event &event)
 {
     GetLogger()->Trace("CLightning::EventFrame() stub!\n");
     // TODO!
     return true;
 }
 
-CObject* Gfx::CLightning::SearchObject(Math::Vector pos)
+CObject* CLightning::SearchObject(Math::Vector pos)
 {
     GetLogger()->Trace("CLightning::SearchObject() stub!\n");
     // TODO!
     return nullptr;
 }
+
+
+} // namespace Gfx

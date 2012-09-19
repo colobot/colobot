@@ -15,18 +15,23 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// light.cpp
 
 #include "graphics/engine/lightman.h"
 
 #include "common/iman.h"
+
 #include "graphics/core/device.h"
+
 #include "math/geometry.h"
+
 
 #include <cmath>
 
 
-void Gfx::LightProgression::Init(float value)
+namespace Gfx {
+
+
+void LightProgression::Init(float value)
 {
     starting = value;
     ending   = value;
@@ -35,7 +40,7 @@ void Gfx::LightProgression::Init(float value)
     speed    = 100.0f;
 }
 
-void Gfx::LightProgression::Update(float rTime)
+void LightProgression::Update(float rTime)
 {
     if (speed < 100.0f)
     {
@@ -54,7 +59,7 @@ void Gfx::LightProgression::Update(float rTime)
     }
 }
 
-void Gfx::LightProgression::SetTarget(float value)
+void LightProgression::SetTarget(float value)
 {
     starting = current;
     ending   = value;
@@ -62,15 +67,15 @@ void Gfx::LightProgression::SetTarget(float value)
 }
 
 
-Gfx::DynamicLight::DynamicLight()
+DynamicLight::DynamicLight()
 {
     used = enabled = false;
-    includeType = excludeType = Gfx::ENG_OBJTYPE_NULL;
+    includeType = excludeType = ENG_OBJTYPE_NULL;
 }
 
 
 
-Gfx::CLightManager::CLightManager(CInstanceManager* iMan, Gfx::CEngine* engine)
+CLightManager::CLightManager(CInstanceManager* iMan, CEngine* engine)
 {
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_LIGHT, this);
@@ -81,7 +86,7 @@ Gfx::CLightManager::CLightManager(CInstanceManager* iMan, Gfx::CEngine* engine)
     m_time = 0.0f;
 }
 
-Gfx::CLightManager::~CLightManager()
+CLightManager::~CLightManager()
 {
     m_iMan->DeleteInstance(CLASS_LIGHT, this);
 
@@ -90,14 +95,14 @@ Gfx::CLightManager::~CLightManager()
     m_engine = NULL;
 }
 
-void Gfx::CLightManager::SetDevice(Gfx::CDevice* device)
+void CLightManager::SetDevice(CDevice* device)
 {
     m_device = device;
 
-    m_dynLights = std::vector<Gfx::DynamicLight>(m_device->GetMaxLightCount(), Gfx::DynamicLight());
+    m_dynLights = std::vector<DynamicLight>(m_device->GetMaxLightCount(), DynamicLight());
 }
 
-void Gfx::CLightManager::FlushLights()
+void CLightManager::FlushLights()
 {
     for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
     {
@@ -107,22 +112,22 @@ void Gfx::CLightManager::FlushLights()
 }
 
 /** Returns the index of light created or -1 if all lights are used. */
-int Gfx::CLightManager::CreateLight()
+int CLightManager::CreateLight()
 {
     for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
     {
         if (m_dynLights[i].used) continue;
 
-        m_dynLights[i] = Gfx::DynamicLight();
+        m_dynLights[i] = DynamicLight();
 
         m_dynLights[i].used    = true;
         m_dynLights[i].enabled = true;
 
-        m_dynLights[i].includeType = Gfx::ENG_OBJTYPE_NULL;
-        m_dynLights[i].excludeType = Gfx::ENG_OBJTYPE_NULL;
+        m_dynLights[i].includeType = ENG_OBJTYPE_NULL;
+        m_dynLights[i].excludeType = ENG_OBJTYPE_NULL;
 
-        m_dynLights[i].light.type      = Gfx::LIGHT_DIRECTIONAL;
-        m_dynLights[i].light.diffuse   = Gfx::Color(0.5f, 0.5f, 0.5f);
+        m_dynLights[i].light.type      = LIGHT_DIRECTIONAL;
+        m_dynLights[i].light.diffuse   = Color(0.5f, 0.5f, 0.5f);
         m_dynLights[i].light.position  = Math::Vector(-100.0f,  100.0f, -100.0f);
         m_dynLights[i].light.direction = Math::Vector( 1.0f, -1.0f,  1.0f);
 
@@ -137,7 +142,7 @@ int Gfx::CLightManager::CreateLight()
     return -1;
 }
 
-bool Gfx::CLightManager::DeleteLight(int lightRank)
+bool CLightManager::DeleteLight(int lightRank)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -148,7 +153,7 @@ bool Gfx::CLightManager::DeleteLight(int lightRank)
     return true;
 }
 
-bool Gfx::CLightManager::SetLight(int lightRank, const Gfx::Light &light)
+bool CLightManager::SetLight(int lightRank, const Light &light)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -162,7 +167,7 @@ bool Gfx::CLightManager::SetLight(int lightRank, const Gfx::Light &light)
     return true;
 }
 
-bool Gfx::CLightManager::GetLight(int lightRank, Gfx::Light &light)
+bool CLightManager::GetLight(int lightRank, Light &light)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -171,7 +176,7 @@ bool Gfx::CLightManager::GetLight(int lightRank, Gfx::Light &light)
     return true;
 }
 
-bool Gfx::CLightManager::SetLightEnabled(int lightRank, bool enabled)
+bool CLightManager::SetLightEnabled(int lightRank, bool enabled)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -180,7 +185,7 @@ bool Gfx::CLightManager::SetLightEnabled(int lightRank, bool enabled)
     return true;
 }
 
-bool Gfx::CLightManager::SetLightIncludeType(int lightRank, Gfx::EngineObjectType type)
+bool CLightManager::SetLightIncludeType(int lightRank, EngineObjectType type)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -189,7 +194,7 @@ bool Gfx::CLightManager::SetLightIncludeType(int lightRank, Gfx::EngineObjectTyp
     return true;
 }
 
-bool Gfx::CLightManager::SetLightExcludeType(int lightRank, Gfx::EngineObjectType type)
+bool CLightManager::SetLightExcludeType(int lightRank, EngineObjectType type)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -198,7 +203,7 @@ bool Gfx::CLightManager::SetLightExcludeType(int lightRank, Gfx::EngineObjectTyp
     return true;
 }
 
-bool Gfx::CLightManager::SetLightPos(int lightRank, const Math::Vector &pos)
+bool CLightManager::SetLightPos(int lightRank, const Math::Vector &pos)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -207,7 +212,7 @@ bool Gfx::CLightManager::SetLightPos(int lightRank, const Math::Vector &pos)
     return true;
 }
 
-Math::Vector Gfx::CLightManager::GetLightPos(int lightRank)
+Math::Vector CLightManager::GetLightPos(int lightRank)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return Math::Vector(0.0f, 0.0f, 0.0f);
@@ -215,7 +220,7 @@ Math::Vector Gfx::CLightManager::GetLightPos(int lightRank)
     return m_dynLights[lightRank].light.position;
 }
 
-bool Gfx::CLightManager::SetLightDir(int lightRank, const Math::Vector &dir)
+bool CLightManager::SetLightDir(int lightRank, const Math::Vector &dir)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -224,7 +229,7 @@ bool Gfx::CLightManager::SetLightDir(int lightRank, const Math::Vector &dir)
     return true;
 }
 
-Math::Vector Gfx::CLightManager::GetLightDir(int lightRank)
+Math::Vector CLightManager::GetLightDir(int lightRank)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return Math::Vector(0.0f, 0.0f, 0.0f);
@@ -232,7 +237,7 @@ Math::Vector Gfx::CLightManager::GetLightDir(int lightRank)
     return m_dynLights[lightRank].light.direction;
 }
 
-bool Gfx::CLightManager::SetLightIntensitySpeed(int lightRank, float speed)
+bool CLightManager::SetLightIntensitySpeed(int lightRank, float speed)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -241,7 +246,7 @@ bool Gfx::CLightManager::SetLightIntensitySpeed(int lightRank, float speed)
     return true;
 }
 
-bool Gfx::CLightManager::SetLightIntensity(int lightRank, float value)
+bool CLightManager::SetLightIntensity(int lightRank, float value)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -250,7 +255,7 @@ bool Gfx::CLightManager::SetLightIntensity(int lightRank, float value)
     return true;
 }
 
-float Gfx::CLightManager::GetLightIntensity(int lightRank)
+float CLightManager::GetLightIntensity(int lightRank)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return 0.0f;
@@ -259,7 +264,7 @@ float Gfx::CLightManager::GetLightIntensity(int lightRank)
 }
 
 
-bool Gfx::CLightManager::SetLightColorSpeed(int lightRank, float speed)
+bool CLightManager::SetLightColorSpeed(int lightRank, float speed)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -270,7 +275,7 @@ bool Gfx::CLightManager::SetLightColorSpeed(int lightRank, float speed)
     return true;
 }
 
-bool Gfx::CLightManager::SetLightColor(int lightRank, const Gfx::Color &color)
+bool CLightManager::SetLightColor(int lightRank, const Color &color)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
         return false;
@@ -281,26 +286,26 @@ bool Gfx::CLightManager::SetLightColor(int lightRank, const Gfx::Color &color)
     return true;
 }
 
-Gfx::Color Gfx::CLightManager::GetLightColor(int lightRank)
+Color CLightManager::GetLightColor(int lightRank)
 {
     if ( (lightRank < 0) || (lightRank >= static_cast<int>( m_dynLights.size() )) )
-        return Gfx::Color(0.5f, 0.5f, 0.5f, 0.5f);
+        return Color(0.5f, 0.5f, 0.5f, 0.5f);
 
-    Gfx::Color color;
+    Color color;
     color.r = m_dynLights[lightRank].colorRed.current;
     color.g = m_dynLights[lightRank].colorGreen.current;
     color.b = m_dynLights[lightRank].colorBlue.current;
     return color;
 }
 
-void Gfx::CLightManager::AdaptLightColor(const Gfx::Color &color, float factor)
+void CLightManager::AdaptLightColor(const Color &color, float factor)
 {
     for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
     {
         if (! m_dynLights[i].used)
             continue;
 
-        Gfx::Color value;
+        Color value;
         value.r = m_dynLights[i].colorRed.current;
         value.g = m_dynLights[i].colorGreen.current;
         value.b = m_dynLights[i].colorBlue.current;
@@ -317,7 +322,7 @@ void Gfx::CLightManager::AdaptLightColor(const Gfx::Color &color, float factor)
     UpdateLights();
 }
 
-void Gfx::CLightManager::UpdateProgression(float rTime)
+void CLightManager::UpdateProgression(float rTime)
 {
     if (m_engine->GetPause())
         return;
@@ -334,14 +339,14 @@ void Gfx::CLightManager::UpdateProgression(float rTime)
         m_dynLights[i].colorGreen.Update(rTime);
         m_dynLights[i].colorBlue.Update(rTime);
 
-        if (m_dynLights[i].includeType == Gfx::ENG_OBJTYPE_QUARTZ)
+        if (m_dynLights[i].includeType == ENG_OBJTYPE_QUARTZ)
         {
             m_dynLights[i].light.direction.x = sinf(1.0f * (m_time + i*Math::PI*0.5f));
             m_dynLights[i].light.direction.z = cosf(1.1f * (m_time + i*Math::PI*0.5f));
             m_dynLights[i].light.direction.y = -1.0f + 0.5f * cosf((m_time + i*Math::PI*0.5f)*2.7f);
         }
 
-        if (m_dynLights[i].includeType == Gfx::ENG_OBJTYPE_METAL)
+        if (m_dynLights[i].includeType == ENG_OBJTYPE_METAL)
         {
             Math::Vector dir = m_engine->GetEyePt() - m_engine->GetLookatPt();
             float angle = Math::RotateAngle(dir.x, dir.z);
@@ -353,7 +358,7 @@ void Gfx::CLightManager::UpdateProgression(float rTime)
 }
 
 
-void Gfx::CLightManager::UpdateLights()
+void CLightManager::UpdateLights()
 {
     for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
     {
@@ -389,7 +394,7 @@ void Gfx::CLightManager::UpdateLights()
     }
 }
 
-void Gfx::CLightManager::UpdateLightsEnableState(Gfx::EngineObjectType type)
+void CLightManager::UpdateLightsEnableState(EngineObjectType type)
 {
     for (int i = 0; i < static_cast<int>( m_dynLights.size() ); i++)
     {
@@ -400,16 +405,19 @@ void Gfx::CLightManager::UpdateLightsEnableState(Gfx::EngineObjectType type)
         if (m_dynLights[i].intensity.current == 0.0f)
             continue;
 
-        if (m_dynLights[i].includeType != Gfx::ENG_OBJTYPE_NULL)
+        if (m_dynLights[i].includeType != ENG_OBJTYPE_NULL)
         {
             bool enabled = (m_dynLights[i].includeType == type);
             m_device->SetLightEnabled(i, enabled);
         }
 
-        if (m_dynLights[i].excludeType != Gfx::ENG_OBJTYPE_NULL)
+        if (m_dynLights[i].excludeType != ENG_OBJTYPE_NULL)
         {
             bool enabled = (m_dynLights[i].excludeType != type);
             m_device->SetLightEnabled(i, enabled);
         }
     }
 }
+
+
+} // namespace Gfx

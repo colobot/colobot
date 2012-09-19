@@ -15,165 +15,171 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// pyro.cpp
 
 #include "graphics/engine/pyro.h"
 
 #include "common/logger.h"
 
 
-Gfx::CPyro::CPyro(CInstanceManager* iMan)
+// Graphics module namespace
+namespace Gfx {
+
+
+CPyro::CPyro(CInstanceManager* iMan)
 {
     GetLogger()->Trace("CParticle::CPyro() stub!\n");
     // TODO!
 }
 
-Gfx::CPyro::~CPyro()
+CPyro::~CPyro()
 {
     GetLogger()->Trace("CPyro::~CPyro() stub!");
     // TODO!
 }
 
-void Gfx::CPyro::DeleteObject(bool all)
+void CPyro::DeleteObject(bool all)
 {
     GetLogger()->Trace("CPyro::DeleteObject() stub!");
     // TODO!
 }
 
-bool Gfx::CPyro::Create(Gfx::PyroType type, CObject* pObj, float force)
+bool CPyro::Create(PyroType type, CObject* pObj, float force)
 {
     GetLogger()->Trace("CPyro::Create() stub!");
     // TODO!
     return true;
 }
 
-bool Gfx::CPyro::EventProcess(const Event &event)
+bool CPyro::EventProcess(const Event &event)
 {
     GetLogger()->Trace("CPyro::EventProcess() stub!\n");
     // TODO!
     return true;
 }
 
-Error Gfx::CPyro::IsEnded()
+Error CPyro::IsEnded()
 {
     GetLogger()->Trace("CPyro::IsEnded() stub!\n");
     // TODO!
     return ERR_OK;
 }
 
-void Gfx::CPyro::CutObjectLink(CObject* pObj)
+void CPyro::CutObjectLink(CObject* pObj)
 {
     GetLogger()->Trace("CPyro::CutObjectLink() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::DisplayError(PyroType type, CObject* pObj)
+void CPyro::DisplayError(PyroType type, CObject* pObj)
 {
     GetLogger()->Trace("CPyro::DisplayError() stub!\n");
     // TODO!
 }
 
-bool Gfx::CPyro::CreateLight(Math::Vector pos, float height)
+bool CPyro::CreateLight(Math::Vector pos, float height)
 {
     GetLogger()->Trace("CPyro::CreateLight() stub!\n");
     // TODO!
     return true;
 }
 
-void Gfx::CPyro::DeleteObject(bool primary, bool secondary)
+void CPyro::DeleteObject(bool primary, bool secondary)
 {
     GetLogger()->Trace("CPyro::DeleteObject() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
+void CPyro::CreateTriangle(CObject* pObj, ObjectType oType, int part)
 {
     GetLogger()->Trace("CPyro::CreateTriangle() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::ExploStart()
+void CPyro::ExploStart()
 {
     GetLogger()->Trace("CPyro::ExploStart() stub!\n");
     // TODO!
 }
-void Gfx::CPyro::ExploTerminate()
+void CPyro::ExploTerminate()
 {
     GetLogger()->Trace("CPyro::ExploTerminate() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::BurnStart()
+void CPyro::BurnStart()
 {
     GetLogger()->Trace("CPyro::BurnStart() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::BurnAddPart(int part, Math::Vector pos, Math::Vector angle)
+void CPyro::BurnAddPart(int part, Math::Vector pos, Math::Vector angle)
 {
     GetLogger()->Trace("CPyro::BurnAddPart() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::BurnProgress()
+void CPyro::BurnProgress()
 {
     GetLogger()->Trace("CPyro::BurnProgress() stub!\n");
     // TODO!
 }
 
-bool Gfx::CPyro::BurnIsKeepPart(int part)
+bool CPyro::BurnIsKeepPart(int part)
 {
     GetLogger()->Trace("CPyro::BurnIsKeepPart() stub!\n");
     // TODO!
     return true;
 }
 
-void Gfx::CPyro::BurnTerminate()
+void CPyro::BurnTerminate()
 {
     GetLogger()->Trace("CPyro::BurnTerminate() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::FallStart()
+void CPyro::FallStart()
 {
     GetLogger()->Trace("CPyro::FallStart() stub!\n");
     // TODO!
 }
 
-CObject* Gfx::CPyro::FallSearchBeeExplo()
+CObject* CPyro::FallSearchBeeExplo()
 {
     GetLogger()->Trace("CPyro::FallSearchBeeExplo() stub!\n");
     // TODO!
     return nullptr;
 }
 
-void Gfx::CPyro::FallProgress(float rTime)
+void CPyro::FallProgress(float rTime)
 {
     GetLogger()->Trace("CPyro::FallProgress() stub!\n");
     // TODO!
 }
 
-Error Gfx::CPyro::FallIsEnded()
+Error CPyro::FallIsEnded()
 {
     GetLogger()->Trace("CPyro::FallIsEnded() stub!\n");
     // TODO!
     return ERR_OK;
 }
 
-void Gfx::CPyro::LightOperFlush()
+void CPyro::LightOperFlush()
 {
     GetLogger()->Trace("CPyro::LightOperFlush() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::LightOperAdd(float progress, float intensity, float r, float g, float b)
+void CPyro::LightOperAdd(float progress, float intensity, float r, float g, float b)
 {
     GetLogger()->Trace("CPyro::LightOperAdd() stub!\n");
     // TODO!
 }
 
-void Gfx::CPyro::LightOperFrame(float rTime)
+void CPyro::LightOperFrame(float rTime)
 {
     GetLogger()->Trace("CPyro::LightOperFrame() stub!\n");
     // TODO!
 }
+
+
+} // namespace Gfx

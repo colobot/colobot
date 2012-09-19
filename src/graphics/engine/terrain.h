@@ -17,10 +17,11 @@
 
 /**
  * \file graphics/engine/terrain.h
- * \brief Terrain rendering - Gfx::CTerrain class
+ * \brief Terrain rendering - CTerrain class
  */
 
 #pragma once
+
 
 #include "graphics/engine/engine.h"
 
@@ -28,6 +29,7 @@
 class CInstanceManager;
 
 
+// Graphics module namespace
 namespace Gfx {
 
 class CEngine;
@@ -277,7 +279,7 @@ public:
     //! Adjusts 3D position so that it is within terrain boundaries and the given margin
     bool        AdjustToBounds(Math::Vector& pos, float margin);
     //! Returns the resource type available underground at 2D (XZ) position
-    Gfx::TerrainRes GetResource(const Math::Vector& pos);
+    TerrainRes GetResource(const Math::Vector& pos);
 
     //! Empty the table of elevations
     void        FlushBuildingLevel();
@@ -326,14 +328,14 @@ protected:
     //! Calculates a vector of the terrain
     Math::Vector GetVector(int x, int y);
     //! Calculates a vertex of the terrain
-    Gfx::VertexTex2 GetVertex(int x, int y, int step);
+    VertexTex2 GetVertex(int x, int y, int step);
     //! Creates all objects of a mosaic
-    bool        CreateMosaic(int ox, int oy, int step, int objRank, const Gfx::Material& mat, float min, float max);
+    bool        CreateMosaic(int ox, int oy, int step, int objRank, const Material& mat, float min, float max);
     //! Creates all objects in a mesh square ground
     bool        CreateSquare(int x, int y);
 
     //! Seeks a material based on its ID
-    Gfx::TerrainMaterial* FindMaterial(int id);
+    TerrainMaterial* FindMaterial(int id);
     //! Seeks a material based on neighbor values
     int         FindMaterialByNeighbors(char *mat);
     //! Returns the texture name and UV coords to use for a given square
@@ -399,15 +401,15 @@ protected:
     //! True if using terrain material mapping
     bool m_useMaterials;
     //! Terrain materials
-    std::vector<Gfx::TerrainMaterial> m_materials;
+    std::vector<TerrainMaterial> m_materials;
     //! Material for terrain points
-    std::vector<Gfx::TerrainMaterialPoint>  m_materialPoints;
+    std::vector<TerrainMaterialPoint>  m_materialPoints;
     //! Maximum level ID (no ID is >= to this)
     int             m_maxMaterialID;
     //! Internal counter for auto generation of material IDs
     int             m_materialAutoID;
 
-    std::vector<Gfx::BuildingLevel> m_buildingLevels;
+    std::vector<BuildingLevel> m_buildingLevels;
 
     //! Wind speed
     Math::Vector    m_wind;
@@ -415,7 +417,8 @@ protected:
     //! Global flying height limit
     float           m_flyingMaxHeight;
     //! List of local flight limits
-    std::vector<Gfx::FlyingLimit> m_flyingLimits;
+    std::vector<FlyingLimit> m_flyingLimits;
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

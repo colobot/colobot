@@ -24,14 +24,17 @@
 
 
 #include "graphics/core/color.h"
+
 #include "math/vector.h"
 
 
+// Graphics module namespace
 namespace Gfx {
 
 /**
-  \enum LightType
-  \brief Type of light in 3D scene */
+ * \enum LightType
+ * \brief Type of light in 3D scene
+ */
 enum LightType
 {
     LIGHT_POINT,
@@ -40,20 +43,21 @@ enum LightType
 };
 
 /**
-  \struct Light
-  \brief Properties of light in 3D scene
-
-  This structure was created as analog to DirectX's D3DLIGHT. */
+ * \struct Light
+ * \brief Properties of light in 3D scene
+ *
+ * This structure was created as analog to DirectX's D3DLIGHT.
+ */
 struct Light
 {
     //! Type of light source
-    Gfx::LightType  type;
+    LightType  type;
     //! Color of ambient light
-    Gfx::Color      ambient;
+    Color      ambient;
     //! Color of diffuse light
-    Gfx::Color      diffuse;
+    Color      diffuse;
     //! Color of specular light
-    Gfx::Color      specular;
+    Color      specular;
     //! Position in world space (for point & spot lights)
     Math::Vector    position;
     //! Direction in world space (for directional & spot lights)
@@ -80,9 +84,9 @@ struct Light
     void LoadDefault()
     {
         type = LIGHT_POINT;
-        ambient = Gfx::Color(0.4f, 0.4f, 0.4f);
-        diffuse = Gfx::Color(0.8f, 0.8f, 0.8f);
-        specular = Gfx::Color(1.0f, 1.0f, 1.0f);
+        ambient = Color(0.4f, 0.4f, 0.4f);
+        diffuse = Color(0.8f, 0.8f, 0.8f);
+        specular = Color(1.0f, 1.0f, 1.0f);
         position = Math::Vector(0.0f, 0.0f, 0.0f);
         direction = Math::Vector(0.0f, 0.0f, 1.0f);
         attenuation0 = 1.0f;
@@ -92,4 +96,5 @@ struct Light
     }
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

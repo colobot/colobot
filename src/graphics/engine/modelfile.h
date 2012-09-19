@@ -17,11 +17,15 @@
 
 /**
  * \file graphics/engine/modelfile.h
- * \brief Model loading - Gfx::CModelFile class (aka modfile)
+ * \brief Model loading - CModelFile class (aka modfile)
  */
+
+#pragma once
+
 
 #include "graphics/core/vertex.h"
 #include "graphics/core/material.h"
+
 #include "math/vector.h"
 
 #include <string>
@@ -32,6 +36,7 @@
 class CInstanceManager;
 
 
+// Graphics module namespace
 namespace Gfx {
 
 class CEngine;
@@ -44,13 +49,13 @@ class CEngine;
 struct ModelTriangle
 {
     //! 1st vertex
-    Gfx::VertexTex2  p1;
+    VertexTex2  p1;
     //! 2nd vertex
-    Gfx::VertexTex2  p2;
+    VertexTex2  p2;
     //! 3rd vertex
-    Gfx::VertexTex2  p3;
+    VertexTex2  p3;
     //! Material
-    Gfx::Material    material;
+    Material    material;
     //! Name of 1st texture
     std::string      tex1Name;
     //! Name of 2nd texture
@@ -121,7 +126,7 @@ public:
     int                  GetTriangleCount();
 
     //! Returns the triangle vector
-    const std::vector<Gfx::ModelTriangle>& GetTriangles();
+    const std::vector<ModelTriangle>& GetTriangles();
 
     //! Returns the height of model -- closest point to X and Z coords of \a pos
     float                GetHeight(Math::Vector pos);
@@ -138,10 +143,10 @@ protected:
 
 protected:
     CInstanceManager*    m_iMan;
-    Gfx::CEngine*        m_engine;
+    CEngine*        m_engine;
 
     //! Model triangles
-    std::vector<Gfx::ModelTriangle> m_triangles;
+    std::vector<ModelTriangle> m_triangles;
 };
 
 }; // namespace Gfx

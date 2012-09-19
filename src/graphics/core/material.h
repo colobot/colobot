@@ -25,6 +25,7 @@
 #include "graphics/core/color.h"
 
 
+// Graphics module namespace
 namespace Gfx {
 
 /**
@@ -40,21 +41,22 @@ namespace Gfx {
 struct Material
 {
     //! Diffuse color
-    Gfx::Color diffuse;
+    Color diffuse;
     //! Ambient color
-    Gfx::Color ambient;
+    Color ambient;
     //! Specular color
-    Gfx::Color specular;
+    Color specular;
 
-    bool operator==(const Gfx::Material &mat) const
+    bool operator==(const Material &mat) const
     {
         return diffuse == mat.diffuse && ambient == mat.ambient && specular == mat.specular;
     }
 
-    bool operator!=(const Gfx::Material &mat) const
+    bool operator!=(const Material &mat) const
     {
         return ! operator==(mat);
     }
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

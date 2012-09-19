@@ -21,12 +21,13 @@
 
 #pragma once
 
+
 #include <cmath>
 
 
 // Math module namespace
-namespace Math
-{
+namespace Math {
+
 
 //! Tolerance level -- minimum accepted float value
 const float TOLERANCE = 1e-6f;
@@ -50,4 +51,5 @@ const float RAD_TO_DEG = 57.29577951308232286465f;
 //! Natural logarithm of 2
 const float LOG_2 = log(2.0f);
 
-}; // namespace Math
+
+} // namespace Math

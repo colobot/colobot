@@ -17,17 +17,21 @@
 
 /**
  * \file graphics/engine/engine.h
- * \brief Main graphics engine - Gfx::CEngine class
+ * \brief Main graphics engine - CEngine class
  */
 
 #pragma once
 
+
 #include "app/system.h"
+
 #include "common/event.h"
+
 #include "graphics/core/color.h"
 #include "graphics/core/material.h"
 #include "graphics/core/texture.h"
 #include "graphics/core/vertex.h"
+
 #include "math/intpoint.h"
 #include "math/matrix.h"
 #include "math/point.h"
@@ -46,6 +50,7 @@ class CObject;
 class CSoundInterface;
 
 
+// Graphics module namespace
 namespace Gfx {
 
 class CDevice;
@@ -60,11 +65,12 @@ class CTerrain;
 
 
 /**
-  \enum EngineRenderState
-  \brief Render state of graphics engine
-
-  States are used for settings certain modes, for instance texturing and blending.
-  The enum is a bitmask and some of the states can be OR'd together. */
+ * \enum EngineRenderState
+ * \brief Render state of graphics engine
+ *
+ * States are used for settings certain modes, for instance texturing and blending.
+ * The enum is a bitmask and some of the states can be OR'd together.
+ */
 enum EngineRenderState
 {
     //! Normal opaque materials
@@ -115,8 +121,9 @@ enum EngineRenderState
 
 
 /**
-  \enum EngineTriangleType
-  \brief Type of triangles drawn for engine objects */
+ * \enum EngineTriangleType
+ * \brief Type of triangles drawn for engine objects
+ */
 enum EngineTriangleType
 {
     //! Triangles
@@ -126,14 +133,15 @@ enum EngineTriangleType
 };
 
 /**
-  \struct EngineTriangle
-  \brief A triangle drawn by the graphics engine */
+ * \struct EngineTriangle
+ * \brief A triangle drawn by the graphics engine
+ */
 struct EngineTriangle
 {
     //! Triangle vertices
-    Gfx::VertexTex2     triangle[3];
+    VertexTex2     triangle[3];
     //! Material
-    Gfx::Material       material;
+    Material       material;
     //! Render state
     int                 state;
     //! 1st texture
@@ -143,7 +151,7 @@ struct EngineTriangle
 
     EngineTriangle()
     {
-        state = Gfx::ENG_RSTATE_NORMAL;
+        state = ENG_RSTATE_NORMAL;
     }
 };
 
@@ -169,8 +177,9 @@ enum EngineObjectType
 };
 
 /**
-  \struct EngineObject
-  \brief Object drawn by the graphics engine */
+ * \struct EngineObject
+ * \brief Object drawn by the graphics engine
+ */
 struct EngineObject
 {
     //! If true, object is valid in objects vector
@@ -184,7 +193,7 @@ struct EngineObject
     //! Number of triangles
     int                    totalTriangles;
     //! Type of object
-    Gfx::EngineObjectType  type;
+    EngineObjectType  type;
     //! Transformation matrix
     Math::Matrix           transform;
     //! Distance to object from eye point
@@ -214,7 +223,7 @@ struct EngineObject
         drawWorld = false;
         drawFront = false;
         totalTriangles = 0;
-        type = Gfx::ENG_OBJTYPE_NULL;
+        type = ENG_OBJTYPE_NULL;
         transform.LoadIdentity();
         bboxMax.LoadZero();
         bboxMin.LoadZero();
@@ -231,66 +240,71 @@ struct EngineObjLevel3;
 struct EngineObjLevel4;
 
 /**
-  \struct EngineObjLevel4
-  \brief Tier 4 of object tree */
+ * \struct EngineObjLevel4
+ * \brief Tier 4 of object tree
+ */
 struct EngineObjLevel4
 {
     bool                         used;
-    Gfx::EngineTriangleType      type;
-    Gfx::Material                material;
+    EngineTriangleType      type;
+    Material                material;
     int                          state;
-    std::vector<Gfx::VertexTex2> vertices;
+    std::vector<VertexTex2> vertices;
 
     EngineObjLevel4(bool used = false,
-                    Gfx::EngineTriangleType type = Gfx::ENG_TRIANGLE_TYPE_TRIANGLES,
-                    const Gfx::Material& material = Gfx::Material(),
-                    int state = Gfx::ENG_RSTATE_NORMAL);
+                    EngineTriangleType type = ENG_TRIANGLE_TYPE_TRIANGLES,
+                    const Material& material = Material(),
+                    int state = ENG_RSTATE_NORMAL);
 };
 
 /**
-  \struct EngineObjLevel3
-  \brief Tier 3 of object tree */
+ * \struct EngineObjLevel3
+ * \brief Tier 3 of object tree
+ */
 struct EngineObjLevel3
 {
     bool                               used;
     float                              min;
     float                              max;
-    std::vector<Gfx::EngineObjLevel4>  next;
+    std::vector<EngineObjLevel4>  next;
 
     EngineObjLevel3(bool used = false, float min = 0.0f, float max = 0.0f);
 };
 
 /**
-  \struct EngineObjLevel2
-  \brief Tier 2 of object tree */
+ * \struct EngineObjLevel2
+ * \brief Tier 2 of object tree
+ */
 struct EngineObjLevel2
 {
     bool                               used;
     int                                objRank;
-    std::vector<Gfx::EngineObjLevel3>  next;
+    std::vector<EngineObjLevel3>  next;
 
     EngineObjLevel2(bool used = false, int objRank = -1);
 };
 
 /**
-  \struct EngineObjLevel1
-  \brief Tier 1 of object tree */
+ * \struct EngineObjLevel1
+ * \brief Tier 1 of object tree
+ */
 struct EngineObjLevel1
 {
     bool                               used;
     std::string                        tex1Name;
-    Gfx::Texture                       tex1;
+    Texture                       tex1;
     std::string                        tex2Name;
-    Gfx::Texture                       tex2;
-    std::vector<Gfx::EngineObjLevel2>  next;
+    Texture                       tex2;
+    std::vector<EngineObjLevel2>  next;
 
     EngineObjLevel1(bool used = false, const std::string& tex1Name = "",
                     const std::string& tex2Name = "");
 };
 
 /**
-  \struct EngineShadowType
-  \brief Type of shadow drawn by the graphics engine */
+ * \struct EngineShadowType
+ * \brief Type of shadow drawn by the graphics engine
+ */
 enum EngineShadowType
 {
     //! Normal shadow
@@ -300,8 +314,9 @@ enum EngineShadowType
 };
 
 /**
-  \struct EngineShadow
-  \brief Shadow drawn by the graphics engine */
+ * \struct EngineShadow
+ * \brief Shadow drawn by the graphics engine
+ */
 struct EngineShadow
 {
     //! If true, shadow is valid
@@ -311,7 +326,7 @@ struct EngineShadow
     //! Rank of the associated object
     int                 objRank;
     //! Type of shadow
-    Gfx::EngineShadowType type;
+    EngineShadowType type;
     //! Position of the shadow
     Math::Vector        pos;
     //! Normal to the terrain
@@ -335,7 +350,7 @@ struct EngineShadow
         used = false;
         hide = false;
         objRank = 0;
-        type = Gfx::ENG_SHADOW_NORM;
+        type = ENG_SHADOW_NORM;
         pos.LoadZero();
         normal.LoadZero();
         angle = radius = intensity = height = 0.0f;
@@ -343,14 +358,15 @@ struct EngineShadow
 };
 
 /**
-  \struct EngineGroundSpot
-  \brief A spot (large shadow) drawn on the ground by the graphics engine */
+ * \struct EngineGroundSpot
+ * \brief A spot (large shadow) drawn on the ground by the graphics engine
+ */
 struct EngineGroundSpot
 {
     //! If true, ground spot is valid
     bool            used;
     //! Color of the shadow
-    Gfx::Color      color;
+    Color      color;
     //! Min altitude
     float           min;
     //! Max altitude
@@ -374,7 +390,7 @@ struct EngineGroundSpot
     void LoadDefault()
     {
         used = false;
-        color = Gfx::Color();
+        color = Color();
         pos.LoadZero();
         drawPos.LoadZero();
         min = max = smooth = radius = drawRadius = 0.0f;
@@ -382,8 +398,9 @@ struct EngineGroundSpot
 };
 
 /**
-  \enum EngineGroundMarkPhase
-  \brief Phase of life of an EngineGroundMark */
+ * \enum EngineGroundMarkPhase
+ * \brief Phase of life of an EngineGroundMark
+ */
 enum EngineGroundMarkPhase
 {
     //! Null phase
@@ -397,14 +414,15 @@ enum EngineGroundMarkPhase
 };
 
 /**
-  \struct EngineGroundMark
-  \brief A mark on ground drawn by the graphics engine */
+ * \struct EngineGroundMark
+ * \brief A mark on ground drawn by the graphics engine
+ */
 struct EngineGroundMark
 {
     //! If true, draw mark
     bool                        draw;
     //! Phase of life
-    Gfx::EngineGroundMarkPhase  phase;
+    EngineGroundMarkPhase  phase;
     //! Times for 3 life phases
     float                       delay[3];
     //! Fixed time
@@ -447,8 +465,8 @@ struct EngineGroundMark
 };
 
 /**
-  \enum EngineTextureMapping
-  \brief Type of texture mapping
+ * \enum EngineTextureMapping
+ * \brief Type of texture mapping
  */
 enum EngineTextureMapping
 {
@@ -462,8 +480,9 @@ enum EngineTextureMapping
 
 
 /**
-  \enum EngineMouseType
-  \brief Type of mouse cursor displayed in-game */
+ * \enum EngineMouseType
+ * \brief Type of mouse cursor displayed in-game
+ */
 enum EngineMouseType
 {
     //! Normal cursor (arrow)
@@ -506,8 +525,9 @@ enum EngineMouseType
 };
 
 /**
-  \struct EngineMouse
-  \brief Information about mouse cursor */
+ * \struct EngineMouse
+ * \brief Information about mouse cursor
+ */
 struct EngineMouse
 {
     //! Index of texture element for 1st image
@@ -517,15 +537,15 @@ struct EngineMouse
     //! Shadow texture part
     int iconShadow;
     //! Mode to render 1st image in
-    Gfx::EngineRenderState mode1;
+    EngineRenderState mode1;
     //! Mode to render 2nd image in
-    Gfx::EngineRenderState mode2;
+    EngineRenderState mode2;
     //! Hot point
     Math::Point hotPoint;
 
     EngineMouse(int icon1 = -1, int icon2 = -1, int iconShadow = -1,
-                Gfx::EngineRenderState mode1 = Gfx::ENG_RSTATE_NORMAL,
-                Gfx::EngineRenderState mode2 = Gfx::ENG_RSTATE_NORMAL,
+                EngineRenderState mode1 = ENG_RSTATE_NORMAL,
+                EngineRenderState mode2 = ENG_RSTATE_NORMAL,
                 Math::Point hotPoint = Math::Point())
     {
         this->icon1      = icon1;
@@ -625,7 +645,7 @@ struct EngineMouse
  * Textures are loaded from a texture subdir in data directory. In the old code, textures were identified
  * by file name and loaded using some D3D util code. With new code and OpenGL backend, this approach is not
  * efficient - name comparison, etc. takes a lot of time. In the future, textures should be loaded once
- * at object creation time, and then referenced to as Gfx::Texture structs, or even as unsigned int ID's
+ * at object creation time, and then referenced to as Texture structs, or even as unsigned int ID's
  * which is what OpenGL actually wants. The old method is kept for now, with mapping between texture names
  * and texture structs but it will also be subject to refactoring in the future.
  */
@@ -636,12 +656,12 @@ public:
     ~CEngine();
 
     //! Sets the device to be used
-    void            SetDevice(Gfx::CDevice* device);
+    void            SetDevice(CDevice* device);
     //! Returns the current device
-    Gfx::CDevice*   GetDevice();
+    CDevice*   GetDevice();
 
     //! Sets the terrain object
-    void            SetTerrain(Gfx::CTerrain* terrain);
+    void            SetTerrain(CTerrain* terrain);
 
     //! Returns the text rendering engine
     CText*          GetText();
@@ -737,8 +757,8 @@ public:
 
     //@{
     //! Management of engine object type
-    bool            SetObjectType(int objRank, Gfx::EngineObjectType type);
-    Gfx::EngineObjectType GetObjectType(int objRank);
+    bool            SetObjectType(int objRank, EngineObjectType type);
+    EngineObjectType GetObjectType(int objRank);
     //@}
 
     //@{
@@ -762,30 +782,30 @@ public:
     int             GetObjectTotalTriangles(int objRank);
 
     //! Adds triangles to given object with the specified params
-    bool            AddTriangles(int objRank, const std::vector<Gfx::VertexTex2>& vertices,
-                                 const Gfx::Material& material, int state,
+    bool            AddTriangles(int objRank, const std::vector<VertexTex2>& vertices,
+                                 const Material& material, int state,
                                  std::string tex1Name, std::string tex2Name,
                                  float min, float max, bool globalUpdate);
 
     //! Adds a surface to given object with the specified params
-    bool            AddSurface(int objRank, const std::vector<Gfx::VertexTex2>& vertices,
-                               const Gfx::Material& material, int state,
+    bool            AddSurface(int objRank, const std::vector<VertexTex2>& vertices,
+                               const Material& material, int state,
                                std::string tex1Name, std::string tex2Name,
                                float min, float max, bool globalUpdate);
 
     //! Adds a tier 4 engine object directly
-    bool            AddQuick(int objRank, const Gfx::EngineObjLevel4& buffer,
+    bool            AddQuick(int objRank, const EngineObjLevel4& buffer,
                              std::string tex1Name, std::string tex2Name,
                              float min, float max, bool globalUpdate);
 
     //! Returns the first found tier 4 engine object for the given params or nullptr if not found
-    Gfx::EngineObjLevel4* FindTriangles(int objRank, const Gfx::Material& material,
+    EngineObjLevel4* FindTriangles(int objRank, const Material& material,
                                         int state, std::string tex1Name, std::string tex2Name,
                                         float min, float max);
 
     //! Returns a partial list of triangles for given object
     int             GetPartialTriangles(int objRank, float min, float max, float percent, int maxCount,
-                                        std::vector<Gfx::EngineTriangle>& triangles);
+                                        std::vector<EngineTriangle>& triangles);
 
     //! Updates LOD after parameter or resolution change
     void            ChangeLOD();
@@ -794,15 +814,15 @@ public:
     bool            ChangeSecondTexture(int objRank, const std::string& tex2Name);
 
     //! Changes (recalculates) texture mapping for given object
-    bool            ChangeTextureMapping(int objRank, const Gfx::Material& mat, int state,
+    bool            ChangeTextureMapping(int objRank, const Material& mat, int state,
                                          const std::string& tex1Name, const std::string& tex2Name,
-                                         float min, float max, Gfx::EngineTextureMapping mode,
+                                         float min, float max, EngineTextureMapping mode,
                                          float au, float bu, float av, float bv);
 
     //! Changes texture mapping for robot tracks
-    bool            TrackTextureMapping(int objRank, const Gfx::Material& mat, int state,
+    bool            TrackTextureMapping(int objRank, const Material& mat, int state,
                                         const std::string& tex1Name, const std::string& tex2Name,
-                                        float min, float max, Gfx::EngineTextureMapping mode,
+                                        float min, float max, EngineTextureMapping mode,
                                         float pos, float factor, float tl, float ts, float tt);
 
     //! Detects the target object that is selected with the mouse
@@ -817,7 +837,7 @@ public:
     //@{
     //! Management of different shadow params
     bool            SetObjectShadowHide(int objRank, bool hide);
-    bool            SetObjectShadowType(int objRank, Gfx::EngineShadowType type);
+    bool            SetObjectShadowType(int objRank, EngineShadowType type);
     bool            SetObjectShadowPos(int objRank, const Math::Vector& pos);
     bool            SetObjectShadowNormal(int objRank, const Math::Vector& normal);
     bool            SetObjectShadowAngle(int objRank, float angle);
@@ -843,7 +863,7 @@ public:
     //! Management of different ground spot params
     bool            SetObjectGroundSpotPos(int rank, const Math::Vector& pos);
     bool            SetObjectGroundSpotRadius(int rank, float radius);
-    bool            SetObjectGroundSpotColor(int rank, const Gfx::Color& color);
+    bool            SetObjectGroundSpotColor(int rank, const Color& color);
     bool            SetObjectGroundSpotMinMax(int rank, float min, float max);
     bool            SetObjectGroundSpotSmooth(int rank, float smooth);
     //@}
@@ -862,19 +882,19 @@ public:
     /* *************** Mode setting *************** */
 
     //! Sets the current rendering state
-    void            SetState(int state, const Gfx::Color& color = Gfx::Color(1.0f, 1.0f, 1.0f, 1.0f));
+    void            SetState(int state, const Color& color = Color(1.0f, 1.0f, 1.0f, 1.0f));
 
     //! Sets the current material
-    void            SetMaterial(const Gfx::Material& mat);
+    void            SetMaterial(const Material& mat);
 
     //! Specifies the location and direction of view
     void            SetViewParams(const Math::Vector& eyePt, const Math::Vector& lookatPt,
                                   const Math::Vector& upVec, float eyeDistance);
 
     //! Loads texture, creating it if not already present
-    Gfx::Texture    LoadTexture(const std::string& name);
+    Texture    LoadTexture(const std::string& name);
     //! Loads texture, creating it with given params if not already present
-    Gfx::Texture    LoadTexture(const std::string& name, const Gfx::TextureCreateParams& params);
+    Texture    LoadTexture(const std::string& name, const TextureCreateParams& params);
     //! Loads all necessary textures
     bool            LoadAllTextures();
 
@@ -882,12 +902,12 @@ public:
     /** If loading fails, returns false. */
     bool            SetTexture(const std::string& name, int stage = 0);
     //! Sets texture for given stage
-    void            SetTexture(const Gfx::Texture& tex, int stage = 0);
+    void            SetTexture(const Texture& tex, int stage = 0);
 
     //! Deletes the given texture, unloading it and removing from cache
     void            DeleteTexture(const std::string& name);
     //! Deletes the given texture, unloading it and removing from cache
-    void            DeleteTexture(const Gfx::Texture& tex);
+    void            DeleteTexture(const Texture& tex);
 
     //@{
     //! Border management (distance limits) depends of the resolution (LOD = level-of-detail)
@@ -954,20 +974,20 @@ public:
 
     //@{
     //! Ambient color management
-    void            SetAmbientColor(const Gfx::Color& color, int rank = 0);
-    Gfx::Color      GetAmbientColor(int rank = 0);
+    void            SetAmbientColor(const Color& color, int rank = 0);
+    Color      GetAmbientColor(int rank = 0);
     //@}
 
     //@{
     //! Color management under water
-    void            SetWaterAddColor(const Gfx::Color& color);
-    Gfx::Color      GetWaterAddColor();
+    void            SetWaterAddColor(const Color& color);
+    Color      GetWaterAddColor();
     //@}
 
     //@{
     //! Management of the fog color
-    void            SetFogColor(const Gfx::Color& color, int rank = 0);
-    Gfx::Color      GetFogColor(int rank = 0);
+    void            SetFogColor(const Color& color, int rank = 0);
+    Color      GetFogColor(int rank = 0);
     //@}
 
     //@{
@@ -989,11 +1009,11 @@ public:
 
     //@{
     //! Management of the background image to use
-    void            SetBackground(const std::string& name, Gfx::Color up = Gfx::Color(), Gfx::Color down = Gfx::Color(),
-                                  Gfx::Color cloudUp = Gfx::Color(), Gfx::Color cloudDown = Gfx::Color(),
+    void            SetBackground(const std::string& name, Color up = Color(), Color down = Color(),
+                                  Color cloudUp = Color(), Color cloudDown = Color(),
                                   bool full = false, Math::Point scale = Math::Point(1.0f, 1.0f));
-    void            GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& down,
-                                  Gfx::Color& cloudUp, Gfx::Color& cloudDown,
+    void            GetBackground(std::string& name, Color& up, Color& down,
+                                  Color& cloudUp, Color& cloudDown,
                                   bool& full, Math::Point& scale);
     //@}
 
@@ -1002,7 +1022,7 @@ public:
     //! Specifies whether to draw the foreground
     void            SetOverFront(bool front);
     //! Sets the foreground overlay color
-    void            SetOverColor(const Gfx::Color& color = Gfx::Color(), int mode = ENG_RSTATE_TCOLOR_BLACK);
+    void            SetOverColor(const Color& color = Color(), int mode = ENG_RSTATE_TCOLOR_BLACK);
 
     //@{
     //! Management of the particle density
@@ -1116,8 +1136,8 @@ public:
 
     //@{
     //! Management of mouse cursor type
-    void                 SetMouseType(Gfx::EngineMouseType type);
-    Gfx::EngineMouseType GetMouseType();
+    void                 SetMouseType(EngineMouseType type);
+    EngineMouseType GetMouseType();
     //@}
 
     //! Returns the view matrix
@@ -1153,7 +1173,7 @@ protected:
     //! Draws the gradient background
     void        DrawBackground();
     //! Draws the gradient background
-    void        DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color& down);
+    void        DrawBackgroundGradient(const Color& up, const Color& down);
     //! Draws the image background
     void        DrawBackgroundImage();
     //! Draws all the planets
@@ -1170,17 +1190,17 @@ protected:
     void        DrawMouseSprite(Math::Point pos, Math::Point dim, int icon);
 
     //! Creates new tier 1 object
-    Gfx::EngineObjLevel1& AddLevel1(const std::string& tex1Name, const std::string& tex2Name);
+    EngineObjLevel1& AddLevel1(const std::string& tex1Name, const std::string& tex2Name);
     //! Creates a new tier 2 object
-    Gfx::EngineObjLevel2& AddLevel2(Gfx::EngineObjLevel1 &p1, int objRank);
+    EngineObjLevel2& AddLevel2(EngineObjLevel1 &p1, int objRank);
     //! Creates a new tier 3 object
-    Gfx::EngineObjLevel3& AddLevel3(Gfx::EngineObjLevel2 &p2, float min, float max);
+    EngineObjLevel3& AddLevel3(EngineObjLevel2 &p2, float min, float max);
     //! Creates a new tier 4 object
-    Gfx::EngineObjLevel4& AddLevel4(Gfx::EngineObjLevel3 &p3, Gfx::EngineTriangleType type,
-                                    const Gfx::Material& mat, int state);
+    EngineObjLevel4& AddLevel4(EngineObjLevel3 &p3, EngineTriangleType type,
+                                    const Material& mat, int state);
 
     //! Create texture and add it to cache
-    Gfx::Texture CreateTexture(const std::string &texName, const Gfx::TextureCreateParams &params);
+    Texture CreateTexture(const std::string &texName, const TextureCreateParams &params);
 
     //! Tests whether the given object is visible
     bool        IsVisible(int objRank);
@@ -1192,7 +1212,7 @@ protected:
     bool        GetBBox2D(int objRank, Math::Point& min, Math::Point& max);
 
     //! Detects whether the mouse is in a triangle.
-    bool        DetectTriangle(Math::Point mouse, Gfx::VertexTex2* triangle, int objRank, float& dist);
+    bool        DetectTriangle(Math::Point mouse, VertexTex2* triangle, int objRank, float& dist);
 
     //! Transforms a 3D point (x, y, z) in 2D space (x, y, -) of the window
     /** The coordinated p2D.z gives the distance. */
@@ -1208,15 +1228,15 @@ protected:
     CInstanceManager*   m_iMan;
     CApplication*       m_app;
     CSoundInterface*    m_sound;
-    Gfx::CDevice*       m_device;
-    Gfx::CText*         m_text;
-    Gfx::CLightManager* m_lightMan;
-    Gfx::CParticle*     m_particle;
-    Gfx::CWater*        m_water;
-    Gfx::CCloud*        m_cloud;
-    Gfx::CLightning*    m_lightning;
-    Gfx::CPlanet*       m_planet;
-    Gfx::CTerrain*      m_terrain;
+    CDevice*       m_device;
+    CText*         m_text;
+    CLightManager* m_lightMan;
+    CParticle*     m_particle;
+    CWater*        m_water;
+    CCloud*        m_cloud;
+    CLightning*    m_lightning;
+    CPlanet*       m_planet;
+    CTerrain*      m_terrain;
 
     //! Last encountered error
     std::string     m_error;
@@ -1253,15 +1273,15 @@ protected:
     Math::IntPoint   m_lastSize;
 
     //! Root of tree object structure (level 1 list)
-    std::vector<Gfx::EngineObjLevel1>  m_objectTree;
+    std::vector<EngineObjLevel1>  m_objectTree;
     //! Object parameters
-    std::vector<Gfx::EngineObject>     m_objects;
+    std::vector<EngineObject>     m_objects;
     //! Shadow list
-    std::vector<Gfx::EngineShadow>     m_shadows;
+    std::vector<EngineShadow>     m_shadows;
     //! Ground spot list
-    std::vector<Gfx::EngineGroundSpot> m_groundSpots;
+    std::vector<EngineGroundSpot> m_groundSpots;
     //! Ground mark
-    Gfx::EngineGroundMark              m_groundMark;
+    EngineGroundMark              m_groundMark;
 
     //! Location of camera
     Math::Vector    m_eyePt;
@@ -1270,12 +1290,12 @@ protected:
     float           m_eyeDirH;
     float           m_eyeDirV;
     int             m_rankView;
-    Gfx::Color      m_ambientColor[2];
-    Gfx::Color      m_backColor[2];
-    Gfx::Color      m_fogColor[2];
+    Color      m_ambientColor[2];
+    Color      m_backColor[2];
+    Color      m_fogColor[2];
     float           m_deepView[2];
     float           m_fogStart[2];
-    Gfx::Color      m_waterAddColor;
+    Color      m_waterAddColor;
     int             m_statisticTriangle;
     bool            m_updateGeometry;
     int             m_alphaMode;
@@ -1290,16 +1310,16 @@ protected:
     bool            m_backgroundFull;
     Math::Point     m_backgroundScale;
     std::string     m_backgroundName;
-    Gfx::Texture    m_backgroundTex;
-    Gfx::Color      m_backgroundColorUp;
-    Gfx::Color      m_backgroundColorDown;
-    Gfx::Color      m_backgroundCloudUp;
-    Gfx::Color      m_backgroundCloudDown;
+    Texture    m_backgroundTex;
+    Color      m_backgroundColorUp;
+    Color      m_backgroundColorDown;
+    Color      m_backgroundCloudUp;
+    Color      m_backgroundCloudDown;
     bool            m_overFront;
-    Gfx::Color      m_overColor;
+    Color      m_overColor;
     int             m_overMode;
     std::string     m_foregroundName;
-    Gfx::Texture    m_foregroundTex;
+    Texture    m_foregroundTex;
     bool            m_drawWorld;
     bool            m_drawFront;
     float           m_limitLOD[2];
@@ -1337,25 +1357,25 @@ protected:
     //! Texture directory name
     std::string     m_texPath;
     //! Default texture create params
-    Gfx::TextureCreateParams m_defaultTexParams;
+    TextureCreateParams m_defaultTexParams;
 
     //! Map of loaded textures (by name)
-    std::map<std::string, Gfx::Texture> m_texNameMap;
+    std::map<std::string, Texture> m_texNameMap;
     //! Reverse map of loaded textures (by texture)
-    std::map<Gfx::Texture, std::string> m_revTexNameMap;
+    std::map<Texture, std::string> m_revTexNameMap;
     //! Blacklist map of textures
     /** Textures on this list were not successful in first loading,
      *  so are disabled for subsequent load calls. */
     std::set<std::string> m_texBlacklist;
 
     //! Mouse cursor definitions
-    Gfx::EngineMouse     m_mice[Gfx::ENG_MOUSE_COUNT];
+    EngineMouse     m_mice[ENG_MOUSE_COUNT];
     //! Texture with mouse cursors
-    Gfx::Texture         m_miceTexture;
+    Texture         m_miceTexture;
     //! Size of mouse cursor
     Math::Point          m_mouseSize;
     //! Type of mouse cursor
-    Gfx::EngineMouseType m_mouseType;
+    EngineMouseType m_mouseType;
     //! Position of mouse in interface coords
     Math::Point          m_mousePos;
     //! Is mouse visible?
@@ -1364,11 +1384,12 @@ protected:
     //! Last engine render state (-1 at the beginning of frame)
     int             m_lastState;
     //! Last color set with render state
-    Gfx::Color      m_lastColor;
+    Color      m_lastColor;
     //! Last texture names for 2 used texture stages
     std::string     m_lastTexture[2];
     //! Last material
-    Gfx::Material   m_lastMaterial;
+    Material   m_lastMaterial;
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

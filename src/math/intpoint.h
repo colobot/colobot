@@ -21,6 +21,8 @@
 
 #pragma once
 
+
+// Math module namespace
 namespace Math {
 
 /**
@@ -39,4 +41,5 @@ struct IntPoint
     IntPoint(int aX = 0, int aY = 0) : x(aX), y(aY) {}
 };
 
-}; // namespace Math
+
+} // namespace Math

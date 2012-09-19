@@ -17,12 +17,14 @@
 
 /**
  * \file graphics/engine/planet.h
- * \brief Planet rendering - Gfx::CPlanet class
+ * \brief Planet rendering - CPlanet class
  */
 
 #pragma once
 
+
 #include "common/event.h"
+
 #include "math/point.h"
 
 #include <vector>
@@ -31,6 +33,7 @@
 class CInstanceManager;
 
 
+// Graphics module namespace
 namespace Gfx {
 
 class CEngine;
@@ -79,7 +82,7 @@ struct Planet
 class CPlanet
 {
 public:
-    CPlanet(CInstanceManager* iMan, Gfx::CEngine* engine);
+    CPlanet(CInstanceManager* iMan, CEngine* engine);
     ~CPlanet();
 
     //! Removes all the planets
@@ -107,12 +110,13 @@ protected:
 
 protected:
     CInstanceManager* m_iMan;
-    Gfx::CEngine*     m_engine;
+    CEngine*     m_engine;
 
     float                    m_time;
     int                      m_mode;
-    std::vector<Gfx::Planet> m_planet[2];
+    std::vector<Planet> m_planet[2];
     bool                     m_planetExist;
 };
 
-}; // namespace Gfx
+
+} // namespace Gfx

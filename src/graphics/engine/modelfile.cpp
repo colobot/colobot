@@ -15,7 +15,6 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// modelfile.cpp (aka modfile.cpp)
 
 #include "graphics/engine/modelfile.h"
 
@@ -23,10 +22,13 @@
 #include "common/ioutils.h"
 #include "common/logger.h"
 #include "common/stringutils.h"
+
 #include "graphics/engine/engine.h"
+
 #include "math/geometry.h"
 
-#include <string.h>
+
+#include <cstring>
 
 #include <fstream>
 #include <sstream>
@@ -39,12 +41,16 @@
  */
 
 
+// Graphics module namespace
+namespace Gfx {
+
+
 //! How big the triangle vector is by default
 const int TRIANGLE_PREALLOCATE_COUNT = 2000;
 
 
 
-bool ReadBinaryVertex(std::istream& stream, Gfx::Vertex& vertex)
+bool ReadBinaryVertex(std::istream& stream, Vertex& vertex)
 {
     vertex.coord.x     = IOUtils::ReadBinaryFloat(stream);
     vertex.coord.y     = IOUtils::ReadBinaryFloat(stream);
@@ -58,7 +64,7 @@ bool ReadBinaryVertex(std::istream& stream, Gfx::Vertex& vertex)
     return !stream.fail();
 }
 
-bool WriteBinaryVertex(Gfx::Vertex vertex, std::ostream& stream)
+bool WriteBinaryVertex(Vertex vertex, std::ostream& stream)
 {
     IOUtils::WriteBinaryFloat(vertex.coord.x, stream);
     IOUtils::WriteBinaryFloat(vertex.coord.y, stream);
@@ -72,7 +78,7 @@ bool WriteBinaryVertex(Gfx::Vertex vertex, std::ostream& stream)
     return !stream.fail();
 }
 
-bool ReadBinaryVertexTex2(std::istream& stream, Gfx::VertexTex2& vertex)
+bool ReadBinaryVertexTex2(std::istream& stream, VertexTex2& vertex)
 {
     vertex.coord.x     = IOUtils::ReadBinaryFloat(stream);
     vertex.coord.y     = IOUtils::ReadBinaryFloat(stream);
@@ -88,7 +94,7 @@ bool ReadBinaryVertexTex2(std::istream& stream, Gfx::VertexTex2& vertex)
     return !stream.fail();
 }
 
-bool WriteBinaryVertexTex2(Gfx::VertexTex2 vertex, std::ostream& stream)
+bool WriteBinaryVertexTex2(VertexTex2 vertex, std::ostream& stream)
 {
     IOUtils::WriteBinaryFloat(vertex.coord.x, stream);
     IOUtils::WriteBinaryFloat(vertex.coord.y, stream);
@@ -104,7 +110,7 @@ bool WriteBinaryVertexTex2(Gfx::VertexTex2 vertex, std::ostream& stream)
     return !stream.fail();
 }
 
-bool ReadTextVertexTex2(const std::string& text, Gfx::VertexTex2& vertex)
+bool ReadTextVertexTex2(const std::string& text, VertexTex2& vertex)
 {
     std::stringstream stream;
     stream.str(text);
@@ -138,7 +144,7 @@ bool ReadTextVertexTex2(const std::string& text, Gfx::VertexTex2& vertex)
     return !stream.fail();
 }
 
-bool WriteTextVertexTex2(const Gfx::VertexTex2& vertex, std::ostream& stream)
+bool WriteTextVertexTex2(const VertexTex2& vertex, std::ostream& stream)
 {
     stream << "c " << vertex.coord.x << " " << vertex.coord.y << " " << vertex.coord.z;
     stream << " n " << vertex.normal.x << " " << vertex.normal.y << " " << vertex.normal.z;
@@ -149,7 +155,7 @@ bool WriteTextVertexTex2(const Gfx::VertexTex2& vertex, std::ostream& stream)
     return !stream.fail();
 }
 
-bool ReadBinaryMaterial(std::istream& stream, Gfx::Material& material)
+bool ReadBinaryMaterial(std::istream& stream, Material& material)
 {
     material.diffuse.r =  IOUtils::ReadBinaryFloat(stream);
     material.diffuse.g =  IOUtils::ReadBinaryFloat(stream);
@@ -176,7 +182,7 @@ bool ReadBinaryMaterial(std::istream& stream, Gfx::Material& material)
     return !stream.fail();
 }
 
-bool WriteBinaryMaterial(const Gfx::Material& material, std::ostream& stream)
+bool WriteBinaryMaterial(const Material& material, std::ostream& stream)
 {
     IOUtils::WriteBinaryFloat(material.diffuse.r, stream);
     IOUtils::WriteBinaryFloat(material.diffuse.g, stream);
@@ -203,7 +209,7 @@ bool WriteBinaryMaterial(const Gfx::Material& material, std::ostream& stream)
     return !stream.fail();
 }
 
-bool ReadTextMaterial(const std::string& text, Gfx::Material& material)
+bool ReadTextMaterial(const std::string& text, Material& material)
 {
     std::stringstream stream;
     stream.str(text);
@@ -240,7 +246,7 @@ bool ReadTextMaterial(const std::string& text, Gfx::Material& material)
     return !stream.fail();
 }
 
-bool WriteTextMaterial(const Gfx::Material& material, std::ostream& stream)
+bool WriteTextMaterial(const Material& material, std::ostream& stream)
 {
     stream << "dif " << material.diffuse.r
            << " " << material.diffuse.g
@@ -316,7 +322,7 @@ bool ReadLineString(std::istream& stream, const std::string& prefix, std::string
 }
 
 
-Gfx::CModelFile::CModelFile(CInstanceManager* iMan)
+CModelFile::CModelFile(CInstanceManager* iMan)
 {
     m_iMan = iMan;
 
@@ -327,7 +333,7 @@ Gfx::CModelFile::CModelFile(CInstanceManager* iMan)
     m_triangles.reserve(TRIANGLE_PREALLOCATE_COUNT);
 }
 
-Gfx::CModelFile::~CModelFile()
+CModelFile::~CModelFile()
 {
 }
 
@@ -370,10 +376,10 @@ struct OldModelTriangle1
 {
     char            used;
     char            selected;
-    Gfx::Vertex     p1;
-    Gfx::Vertex     p2;
-    Gfx::Vertex     p3;
-    Gfx::Material   material;
+    Vertex     p1;
+    Vertex     p2;
+    Vertex     p3;
+    Material   material;
     char            texName[20];
     float           min;
     float           max;
@@ -394,10 +400,10 @@ struct OldModelTriangle2
 {
     char            used;
     char            selected;
-    Gfx::Vertex     p1;
-    Gfx::Vertex     p2;
-    Gfx::Vertex     p3;
-    Gfx::Material   material;
+    Vertex     p1;
+    Vertex     p2;
+    Vertex     p3;
+    Material   material;
     char            texName[20];
     float           min;
     float           max;
@@ -422,10 +428,10 @@ struct OldModelTriangle3
 {
     char            used;
     char            selected;
-    Gfx::VertexTex2 p1;
-    Gfx::VertexTex2 p2;
-    Gfx::VertexTex2 p3;
-    Gfx::Material   material;
+    VertexTex2 p1;
+    VertexTex2 p2;
+    VertexTex2 p3;
+    Material   material;
     char            texName[20];
     float           min;
     float           max;
@@ -441,7 +447,7 @@ struct OldModelTriangle3
     }
 };
 
-bool Gfx::CModelFile::ReadModel(const std::string& fileName)
+bool CModelFile::ReadModel(const std::string& fileName)
 {
     m_triangles.clear();
 
@@ -456,7 +462,7 @@ bool Gfx::CModelFile::ReadModel(const std::string& fileName)
     return ReadModel(stream);
 }
 
-bool Gfx::CModelFile::ReadModel(std::istream& stream)
+bool CModelFile::ReadModel(std::istream& stream)
 {
     m_triangles.clear();
 
@@ -501,7 +507,7 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
                 return false;
             }
 
-            Gfx::ModelTriangle triangle;
+            ModelTriangle triangle;
             triangle.p1.FromVertex(t.p1);
             triangle.p2.FromVertex(t.p2);
             triangle.p3.FromVertex(t.p3);
@@ -545,7 +551,7 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
                 return false;
             }
 
-            Gfx::ModelTriangle triangle;
+            ModelTriangle triangle;
             triangle.p1.FromVertex(t.p1);
             triangle.p2.FromVertex(t.p2);
             triangle.p3.FromVertex(t.p3);
@@ -590,7 +596,7 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
                 return false;
             }
 
-            Gfx::ModelTriangle triangle;
+            ModelTriangle triangle;
             triangle.p1 = t.p1;
             triangle.p2 = t.p2;
             triangle.p3 = t.p3;
@@ -603,15 +609,15 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
             triangle.variableTex2 = t.texNum2 == 1;
 
             if (triangle.tex1Name == "plant.png")
-                triangle.state |= Gfx::ENG_RSTATE_ALPHA;
+                triangle.state |= ENG_RSTATE_ALPHA;
 
             if (!triangle.variableTex2 && t.texNum2 != 0)
             {
                 if (t.texNum2 >= 1 && t.texNum2 <= 10)
-                    triangle.state |= Gfx::ENG_RSTATE_DUAL_BLACK;
+                    triangle.state |= ENG_RSTATE_DUAL_BLACK;
 
                 if (t.texNum2 >= 11 && t.texNum2 <= 20)
-                    triangle.state |= Gfx::ENG_RSTATE_DUAL_WHITE;
+                    triangle.state |= ENG_RSTATE_DUAL_WHITE;
 
                 char tex2Name[20] = { 0 };
                 sprintf(tex2Name, "dirty%.2d.png", t.texNum2); // hardcoded as in original code
@@ -653,7 +659,7 @@ bool Gfx::CModelFile::ReadModel(std::istream& stream)
     return true;
 }
 
-bool Gfx::CModelFile::WriteModel(const std::string& fileName)
+bool CModelFile::WriteModel(const std::string& fileName)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
@@ -666,7 +672,7 @@ bool Gfx::CModelFile::WriteModel(const std::string& fileName)
     return WriteModel(stream);
 }
 
-bool Gfx::CModelFile::WriteModel(std::ostream& stream)
+bool CModelFile::WriteModel(std::ostream& stream)
 {
     if (m_triangles.size() == 0)
     {
@@ -767,13 +773,13 @@ struct NewModelHeader
 struct NewModelTriangle1
 {
     //! 1st vertex
-    Gfx::VertexTex2  p1;
+    VertexTex2  p1;
     //! 2nd vertex
-    Gfx::VertexTex2  p2;
+    VertexTex2  p2;
     //! 3rd vertex
-    Gfx::VertexTex2  p3;
+    VertexTex2  p3;
     //! Material
-    Gfx::Material    material;
+    Material    material;
     //! Name of 1st texture
     std::string      tex1Name;
     //! Name of 2nd texture
@@ -796,7 +802,7 @@ struct NewModelTriangle1
 };
 
 
-bool Gfx::CModelFile::ReadTextModel(const std::string& fileName)
+bool CModelFile::ReadTextModel(const std::string& fileName)
 {
     std::ifstream stream;
     stream.open(fileName.c_str(), std::ios_base::in);
@@ -809,7 +815,7 @@ bool Gfx::CModelFile::ReadTextModel(const std::string& fileName)
     return ReadTextModel(stream);
 }
 
-bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
+bool CModelFile::ReadTextModel(std::istream& stream)
 {
     m_triangles.clear();
 
@@ -859,7 +865,7 @@ bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
             t.variableTex2 = varTex2Ch == 'Y';
 
 
-            Gfx::ModelTriangle triangle;
+            ModelTriangle triangle;
             triangle.p1 = t.p1;
             triangle.p2 = t.p2;
             triangle.p3 = t.p3;
@@ -905,7 +911,7 @@ bool Gfx::CModelFile::ReadTextModel(std::istream& stream)
     return true;
 }
 
-bool Gfx::CModelFile::WriteTextModel(const std::string &fileName)
+bool CModelFile::WriteTextModel(const std::string &fileName)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out);
@@ -918,7 +924,7 @@ bool Gfx::CModelFile::WriteTextModel(const std::string &fileName)
     return WriteTextModel(stream);
 }
 
-bool Gfx::CModelFile::WriteTextModel(std::ostream& stream)
+bool CModelFile::WriteTextModel(std::ostream& stream)
 {
     if (m_triangles.size() == 0)
     {
@@ -982,7 +988,7 @@ bool Gfx::CModelFile::WriteTextModel(std::ostream& stream)
     return true;
 }
 
-bool Gfx::CModelFile::ReadBinaryModel(const std::string& fileName)
+bool CModelFile::ReadBinaryModel(const std::string& fileName)
 {
     std::ifstream stream;
     stream.open(fileName.c_str(), std::ios_base::in | std::ios_base::binary);
@@ -995,7 +1001,7 @@ bool Gfx::CModelFile::ReadBinaryModel(const std::string& fileName)
     return ReadBinaryModel(stream);
 }
 
-bool Gfx::CModelFile::ReadBinaryModel(std::istream& stream)
+bool CModelFile::ReadBinaryModel(std::istream& stream)
 {
     m_triangles.clear();
 
@@ -1034,7 +1040,7 @@ bool Gfx::CModelFile::ReadBinaryModel(std::istream& stream)
                 return false;
             }
 
-            Gfx::ModelTriangle triangle;
+            ModelTriangle triangle;
             triangle.p1 = t.p1;
             triangle.p2 = t.p2;
             triangle.p3 = t.p3;
@@ -1078,7 +1084,7 @@ bool Gfx::CModelFile::ReadBinaryModel(std::istream& stream)
     return true;
 }
 
-bool Gfx::CModelFile::WriteBinaryModel(const std::string& fileName)
+bool CModelFile::WriteBinaryModel(const std::string& fileName)
 {
     std::ofstream stream;
     stream.open(fileName.c_str(), std::ios_base::out | std::ios_base::binary);
@@ -1091,7 +1097,7 @@ bool Gfx::CModelFile::WriteBinaryModel(const std::string& fileName)
     return WriteBinaryModel(stream);
 }
 
-bool Gfx::CModelFile::WriteBinaryModel(std::ostream& stream)
+bool CModelFile::WriteBinaryModel(std::ostream& stream)
 {
     if (m_triangles.size() == 0)
     {
@@ -1150,9 +1156,9 @@ bool Gfx::CModelFile::WriteBinaryModel(std::ostream& stream)
 
 #ifndef MODELFILE_NO_ENGINE
 
-bool Gfx::CModelFile::CreateEngineObject(int objRank)
+bool CModelFile::CreateEngineObject(int objRank)
 {
-    std::vector<Gfx::VertexTex2> vs(3, Gfx::VertexTex2());
+    std::vector<VertexTex2> vs(3, VertexTex2());
 
     float limit[2];
     limit[0] = m_engine->GetLimitLOD(0);  // frontier AB as config
@@ -1188,10 +1194,10 @@ bool Gfx::CModelFile::CreateEngineObject(int objRank)
             int texNum = m_engine->GetSecondTexture();
 
             if (texNum >= 1 && texNum <= 10)
-                state |= Gfx::ENG_RSTATE_DUAL_BLACK;
+                state |= ENG_RSTATE_DUAL_BLACK;
 
             if (texNum >= 11 && texNum <= 20)
-                state |= Gfx::ENG_RSTATE_DUAL_WHITE;
+                state |= ENG_RSTATE_DUAL_WHITE;
 
             char name[20] = { 0 };
             sprintf(name, "dirty%.2d.png", texNum);
@@ -1217,11 +1223,11 @@ bool Gfx::CModelFile::CreateEngineObject(int objRank)
 
 #endif
 
-void Gfx::CModelFile::Mirror()
+void CModelFile::Mirror()
 {
     for (int i = 0; i < static_cast<int>( m_triangles.size() ); i++)
     {
-        Gfx::VertexTex2  t = m_triangles[i].p1;
+        VertexTex2  t = m_triangles[i].p1;
         m_triangles[i].p1 = m_triangles[i].p2;
         m_triangles[i].p2 = t;
 
@@ -1235,17 +1241,17 @@ void Gfx::CModelFile::Mirror()
     }
 }
 
-const std::vector<Gfx::ModelTriangle>& Gfx::CModelFile::GetTriangles()
+const std::vector<ModelTriangle>& CModelFile::GetTriangles()
 {
     return m_triangles;
 }
 
-int Gfx::CModelFile::GetTriangleCount()
+int CModelFile::GetTriangleCount()
 {
     return m_triangles.size();
 }
 
-float Gfx::CModelFile::GetHeight(Math::Vector pos)
+float CModelFile::GetHeight(Math::Vector pos)
 {
     float limit = 5.0f;
 
@@ -1267,20 +1273,23 @@ float Gfx::CModelFile::GetHeight(Math::Vector pos)
     return 0.0f;
 }
 
-void Gfx::CModelFile::CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max)
+void CModelFile::CreateTriangle(Math::Vector p1, Math::Vector p2, Math::Vector p3, float min, float max)
 {
-    Gfx::ModelTriangle triangle;
+    ModelTriangle triangle;
 
     Math::Vector n = Math::NormalToPlane(p3, p2, p1);
-    triangle.p1 = Gfx::VertexTex2(p1, n);
-    triangle.p2 = Gfx::VertexTex2(p2, n);
-    triangle.p3 = Gfx::VertexTex2(p3, n);
+    triangle.p1 = VertexTex2(p1, n);
+    triangle.p2 = VertexTex2(p2, n);
+    triangle.p3 = VertexTex2(p3, n);
 
-    triangle.material.diffuse = Gfx::Color(1.0f, 1.0f, 1.0f, 0.0f);
-    triangle.material.ambient = Gfx::Color(0.5f, 0.5f, 0.5f, 0.0f);
+    triangle.material.diffuse = Color(1.0f, 1.0f, 1.0f, 0.0f);
+    triangle.material.ambient = Color(0.5f, 0.5f, 0.5f, 0.0f);
 
     triangle.min = min;
     triangle.max = max;
 
     m_triangles.push_back(triangle);
 }
+
+
+} // namespace Gfx

@@ -5,6 +5,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -Wold-style-cast -std=gnu++0x")
 
 include_directories(
 .
+../..
 ../../..
 ${GTEST_DIR}/include
 )

@@ -21,16 +21,18 @@
 
 #pragma once
 
-#include "const.h"
-#include "func.h"
+
+#include "math/const.h"
+#include "math/func.h"
+
 
 #include <cmath>
 #include <sstream>
 
 
 // Math module namespace
-namespace Math
-{
+namespace Math {
+
 
 /**
  * \struct Point
@@ -187,4 +189,5 @@ inline float Distance(const Point &a, const Point &b)
     return sqrtf((a.x-b.x)*(a.x-b.x) + (a.y-b.y)*(a.y-b.y));
 }
 
-}; // namespace Math
+
+} // namespace Math
