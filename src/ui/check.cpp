@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,26 +16,24 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "common/restext.h"
-#include "old/text.h"
 #include "ui/check.h"
 
+#include "common/event.h"
+#include "common/iman.h"
+#include "common/misc.h"
+#include "common/restext.h"
+
+#include "graphics/engine/engine.h"
+#include "graphics/engine/text.h"
+
+#include <string.h>
 
 
+namespace Ui {
 
 // Object's constructor.
 
-CCheck::CCheck(CInstanceManager* iMan) : CControl(iMan)
+CCheck::CCheck() : CControl()
 {
 }
 
@@ -47,16 +46,16 @@ CCheck::~CCheck()
 
 // Creates a new button.
 
-bool CCheck::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CCheck::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
     char    name[100];
     char*   p;
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
 
-    GetResource(RES_EVENT, eventMsg, name);
+    GetResource(RES_EVENT, eventType, name);
     p = strchr(name, '\\');
     if ( p != 0 )  *p = 0;
     SetName(name);
@@ -73,14 +72,15 @@ bool CCheck::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_LBUTTONDOWN &&
-         (m_state & STATE_VISIBLE)        &&
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
+            event.mouseButton.button == 1      &&
+         (m_state & STATE_VISIBLE)             &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             Event newEvent = event;
-            newEvent.event = m_eventMsg;
+            newEvent.type = m_eventType;
             m_event->AddEvent(newEvent);
             return false;
         }
@@ -101,15 +101,15 @@ void CCheck::Draw()
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
     iDim = m_dim;
-    m_dim.x = m_dim.y*0.75f;  // square
+    m_dim.x = m_dim.y * 0.75f;  // square
 
     if ( m_state & STATE_SHADOW )
     {
         DrawShadow(m_pos, m_dim);
     }
 
-    m_engine->SetTexture("button1.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetTexture("button1.png");
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     zoomExt = 1.00f;
     zoomInt = 0.95f;
@@ -143,7 +143,7 @@ void CCheck::Draw()
 
     if ( (m_state & STATE_DEAD) == 0 )
     {
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
         if ( m_state & STATE_CHECK )
         {
@@ -157,10 +157,10 @@ void CCheck::Draw()
     if ( m_state & STATE_DEAD )  return;
 
     // Draw the name.
-    pos.x = m_pos.x+m_dim.y/0.9f;
-    pos.y = m_pos.y+m_dim.y*0.50f;
-    pos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
-    m_engine->RetText()->DrawText(m_name, pos, m_dim.x, 1, m_fontSize, m_fontStretch, m_fontType, 0);
+    pos.x = m_pos.x + m_dim.y / 0.9f;
+    pos.y = m_pos.y + m_dim.y * 0.50f;
+    pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
+    m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
 }
 
-
+}

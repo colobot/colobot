@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,39 +19,41 @@
 
 #pragma once
 
-
 #include "ui/control.h"
-#include "old/d3dengine.h"
 
 
-class CD3DEngine;
+namespace Gfx{
+    class CEngine;
+    struct Color;
+}
+
+namespace Ui {
+    class CColor : public CControl
+    {
+    public:
+    //    CColor(CInstanceManager* iMan);
+        CColor();
+        virtual   ~CColor();
+
+        bool      Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
+
+        bool      EventProcess(const Event &event);
+
+        void      Draw();
+
+        void      SetRepeat(bool bRepeat);
+        bool      GetRepeat();
+
+        void       SetColor(Gfx::Color color);
+        Gfx::Color GetColor();
+
+    protected:
+
+    protected:
+        bool           m_bRepeat;
+        float          m_repeat;
+        Gfx::Color	   m_color;
+    };
 
 
-
-class CColor : public CControl
-{
-public:
-    CColor(CInstanceManager* iMan);
-    virtual ~CColor();
-
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
-
-    bool    EventProcess(const Event &event);
-
-    void    Draw();
-
-    void    SetRepeat(bool bRepeat);
-    bool    RetRepeat();
-
-    void    SetColor(D3DCOLORVALUE color);
-    D3DCOLORVALUE RetColor();
-
-protected:
-
-protected:
-    bool            m_bRepeat;
-    float           m_repeat;
-    D3DCOLORVALUE   m_color;
-};
-
-
+}

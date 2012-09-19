@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -47,7 +48,7 @@ public:
 
     void        Init();
     bool        EventProcess(const Event &event);
-    Error       RetError();
+    Error       GetError();
 
     bool        CreateInterface(bool bSelect);
 
@@ -56,9 +57,9 @@ public:
 
 protected:
     void        UpdateInterface();
-    void        OkayButton(CWindow *pw, EventMsg event);
-    bool        TestResearch(EventMsg event);
-    void        SetResearch(EventMsg event);
+    void        OkayButton(Ui::CWindow *pw, EventType event);
+    bool        TestResearch(EventType event);
+    void        SetResearch(EventType event);
     void        SoundManip(float time, float amplitude, float frequency);
 
 protected:
@@ -66,8 +67,8 @@ protected:
     float               m_progress;
     float               m_speed;
     float               m_timeVirus;
-    float               m_lastParticule;
-    EventMsg            m_research;
+    float               m_lastParticle;
+    EventType               m_research;
     int                 m_partiRank[3];
     int                 m_partiSphere;
     int                 m_soundChannel;

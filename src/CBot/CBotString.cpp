@@ -597,18 +597,6 @@ static void DestructElements(CBotString* pOldData, int nCount)
     }
 }
 
-static void CopyElements(CBotString* pDest, CBotString* pSrc, int nCount)
-{
-    while (nCount--)
-    {
-        *pDest = *pSrc;
-        ++pDest;
-        ++pSrc;
-    }
-}
-
-
-
 // set the array size
 
 void CBotStringArray::SetSize(int nNewSize)
@@ -618,15 +606,14 @@ void CBotStringArray::SetSize(int nNewSize)
         // shrink to nothing
 
         DestructElements(m_pData, m_nSize);
-//        delete[] static_cast<unsigned char *>(m_pData);
-        delete[] (unsigned char *)m_pData;
+        delete[] reinterpret_cast<unsigned char *>(m_pData);
         m_pData = NULL;
         m_nSize = m_nMaxSize = 0;
     }
     else if (m_pData == NULL)
     {
         // create one with exact size
-        m_pData = (CBotString*) new unsigned char[nNewSize * sizeof(CBotString)];
+        m_pData = reinterpret_cast<CBotString*> (new unsigned char[nNewSize * sizeof(CBotString)]);
 
         ConstructElements(m_pData, nNewSize);
 
@@ -663,7 +650,7 @@ void CBotStringArray::SetSize(int nNewSize)
         else
             nNewMax = nNewSize;  // no slush
 
-        CBotString* pNewData = (CBotString*) new unsigned char[nNewMax * sizeof(CBotString)];
+        CBotString* pNewData = reinterpret_cast<CBotString*> (new unsigned char[nNewMax * sizeof(CBotString)]);
 
         // copy new data from old
         memcpy(pNewData, m_pData, m_nSize * sizeof(CBotString));
@@ -673,7 +660,7 @@ void CBotStringArray::SetSize(int nNewSize)
 
 
         // Get rid of old stuff (note: no destructors called)
-        delete[] (unsigned char *)m_pData;
+        delete[] reinterpret_cast<unsigned char *>(m_pData);
         m_pData = pNewData;
         m_nSize = nNewSize;
         m_nMaxSize = nNewMax;

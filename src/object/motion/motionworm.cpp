@@ -21,9 +21,9 @@
 
 #include "object/motion/motionworm.h"
 
-#include "old/modfile.h"
-#include "old/particule.h"
-#include "old/terrain.h"
+#include "graphics/engine/modelfile.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/terrain.h"
 #include "math/geometry.h"
 #include "physics/physics.h"
 
@@ -55,7 +55,7 @@ CMotionWorm::CMotionWorm(CInstanceManager* iMan, CObject* object)
     m_armCirSpeed    = 0.0f;
     m_armLastAction  = -1;
     m_specAction     = -1;
-    m_lastParticule  = 0.0f;
+    m_lastParticle  = 0.0f;
     m_bArmStop = false;
 }
 
@@ -78,19 +78,19 @@ void CMotionWorm::DeleteObject(bool bAll)
 bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
                          float power)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank, i;
     float       px;
 
-    if ( m_engine->RetRestCreate() < 2+WORM_PART+1 )  return false;
+//    if ( m_engine->GetRestCreate() < 2+WORM_PART+1 )  return false;
 
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     m_object->SetType(type);
 
     // Creates the main base.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEVEHICULE);  // this is a moving object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_VEHICULE);  // this is a moving object
     m_object->SetObjectRank(0, rank);
     pModFile->ReadModel("objects\\worm0.mod");  // there is no purpose!
     pModFile->CreateEngineObject(rank);
@@ -105,7 +105,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the head.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(1, rank);
     m_object->SetObjectParent(1, 0);
     pModFile->ReadModel("objects\\worm1.mod");
@@ -117,7 +117,7 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
     for ( i=0 ; i<WORM_PART ; i++ )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         m_object->SetObjectRank(2+i, rank);
         m_object->SetObjectParent(2+i, 0);
         pModFile->ReadModel("objects\\worm2.mod");
@@ -128,22 +128,22 @@ bool CMotionWorm::Create(Math::Vector pos, float angle, ObjectType type,
 
     // Creates the tail.
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEDESCENDANT);
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
     m_object->SetObjectRank(2+WORM_PART, rank);
     m_object->SetObjectParent(2+WORM_PART, 0);
     pModFile->ReadModel("objects\\worm3.mod");
     pModFile->CreateEngineObject(rank);
     m_object->SetPosition(2+WORM_PART, Math::Vector(px, 0.0f, 0.0f));
 
-    m_object->CreateShadowCircle(0.0f, 1.0f, D3DSHADOWWORM);
+    m_object->CreateShadowCircle(0.0f, 1.0f, Gfx::ENG_SHADOW_WORM);
 
     CreatePhysics();
     m_object->SetFloorHeight(0.0f);
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     m_object->SetPosition(0, pos);  // to display the shadows immediately
 
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
 
     delete pModFile;
     return true;
@@ -157,7 +157,7 @@ void CMotionWorm::CreatePhysics()
 
     m_physics->SetType(TYPE_ROLLING);
 
-    character = m_object->RetCharacter();
+    character = m_object->GetCharacter();
     character->wheelFront = 10.0f;
     character->wheelBack  = 10.0f;
     character->wheelLeft  =  2.0f;
@@ -203,7 +203,7 @@ bool CMotionWorm::SetParam(int rank, float value)
     return false;
 }
 
-float CMotionWorm::RetParam(int rank)
+float CMotionWorm::GetParam(int rank)
 {
     if ( rank == 0 )  return m_timeDown;
     if ( rank == 1 )  return m_timeUp;
@@ -218,12 +218,12 @@ bool CMotionWorm::EventProcess(const Event &event)
 {
     CMotion::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
     }
 
-    if ( event.event == EVENT_KEYDOWN )
+    if ( event.type == EVENT_KEY_DOWN )
     {
     }
 
@@ -241,10 +241,10 @@ bool CMotionWorm::EventFrame(const Event &event)
     float       floor, a, s, px, curve, phase, h, zoom, radius;
     int         i, under;
 
-    if ( m_engine->RetPause() )  return true;
+    if ( m_engine->GetPause() )  return true;
 
-    s = m_physics->RetLinMotionX(MO_MOTSPEED)/m_physics->RetLinMotionX(MO_ADVSPEED);
-    a = m_physics->RetCirMotionY(MO_MOTSPEED)/m_physics->RetCirMotionY(MO_ADVSPEED);
+    s = m_physics->GetLinMotionX(MO_MOTSPEED)/m_physics->GetLinMotionX(MO_ADVSPEED);
+    a = m_physics->GetCirMotionY(MO_MOTSPEED)/m_physics->GetCirMotionY(MO_ADVSPEED);
 
     if ( s == 0.0f && a != 0.0f )  s = a;
 
@@ -275,7 +275,7 @@ bool CMotionWorm::EventFrame(const Event &event)
         {
             h = 0.0f;
         }
-        if ( m_object->RetBurn() )  // is burning?
+        if ( m_object->GetBurn() )  // is burning?
         {
             h = 0.0f;  // remains on earth
         }
@@ -284,12 +284,12 @@ bool CMotionWorm::EventFrame(const Event &event)
     }
     m_object->SetVisible(under!=WORM_PART+2);
 
-    if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return true;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return true;
 
-    pos = m_object->RetPosition(0);
-    floor = m_terrain->RetFloorLevel(pos, true);
+    pos = m_object->GetPosition(0);
+    floor = m_terrain->GetFloorLevel(pos, true);
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
 
     px = 1.0f+WORM_PART/2;
     for ( i=0 ; i<WORM_PART+2 ; i++ )
@@ -298,14 +298,14 @@ bool CMotionWorm::EventFrame(const Event &event)
         radius = radius*1.3f-0.3f;
         if ( radius < 0.0f )  radius = 0.0f;
         radius *= 5.0f;
-        m_engine->SetObjectShadowRadius(m_object->RetObjectRank(0), radius);
+        m_engine->SetObjectShadowRadius(m_object->GetObjectRank(0), radius);
 
         pos.x = px+       sinf(m_armTimeMarch*4.0f+0.5f*i)*0.6f;
         pos.y = height[i]+sinf(m_armTimeMarch*4.0f+0.5f*i)*0.2f*m_armLinSpeed;
         pos.y +=          sinf(m_armTimeAbs  *1.3f+0.2f*i)*0.1f;
         pos.z =           sinf(m_armTimeAbs  *2.0f+0.7f*i)*0.2f;
 
-        curve = ((float)i-(WORM_PART+2)/2)*m_armCirSpeed*0.1f;
+        curve = (static_cast< float >(i) -(WORM_PART+2)/2)*m_armCirSpeed*0.1f;
         center.x = 0.0f;
         center.y = 0.0f;
         pp.x = pos.x;
@@ -315,7 +315,7 @@ bool CMotionWorm::EventFrame(const Event &event)
         pos.z = pp.y;
 
         p = Transform(*mat, pos);
-        pos.y += m_terrain->RetFloorLevel(p, true)-floor;
+        pos.y += m_terrain->GetFloorLevel(p, true)-floor;
         m_object->SetPosition(i+1, pos);
 
         zoom = Math::Mod(m_armTimeAbs*0.5f+100.0f-i*0.1f, 2.0f);
@@ -326,9 +326,9 @@ bool CMotionWorm::EventFrame(const Event &event)
         m_object->SetZoomZ(i+1, zoom);
 
         if ( height[i] >= -1.0f && height[i] < -0.2f &&
-             m_lastParticule+m_engine->ParticuleAdapt(0.2f) <= m_armTimeMarch )
+             m_lastParticle+m_engine->ParticleAdapt(0.2f) <= m_armTimeMarch )
         {
-            m_lastParticule = m_armTimeMarch;
+            m_lastParticle = m_armTimeMarch;
 
             pos = p;
             pos.y += -height[i];
@@ -337,7 +337,7 @@ bool CMotionWorm::EventFrame(const Event &event)
             speed = Math::Vector(0.0f, 0.0f, 0.0f);
             dim.x = Math::Rand()*2.0f+1.5f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
         }
 
         px -= 1.0f;
@@ -345,8 +345,8 @@ bool CMotionWorm::EventFrame(const Event &event)
 
     for ( i=0 ; i<WORM_PART+1 ; i++ )
     {
-        pos  = m_object->RetPosition(i+2);
-        pos -= m_object->RetPosition(i+1);
+        pos  = m_object->GetPosition(i+2);
+        pos -= m_object->GetPosition(i+1);
 
         angle.z = -Math::RotateAngle(Math::Point(pos.x, pos.z).Length(), pos.y);
         angle.y = Math::PI-Math::RotateAngle(pos.x, pos.z);

@@ -28,67 +28,6 @@
 #include "object/object.h"
 #include "physics/physics.h"
 
-
-// TODO temporary stubs for CObject and CPhysics
-
-void CObject::SetTransparency(float)
-{
-}
-
-CObject* CObject::GetFret()
-{
-    return nullptr;
-}
-
-CObject* CObject::GetPower()
-{
-    return nullptr;
-}
-
-CObject* CObject::GetTruck()
-{
-    return nullptr;
-}
-
-ObjectType CObject::GetType()
-{
-    return OBJECT_NULL;
-}
-
-void CObject::SetGunGoalH(float)
-{
-}
-
-void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
-{
-}
-
-float CObject::GetAngleY(int)
-{
-    return 0.0f;
-}
-
-Math::Vector CObject::GetPosition(int)
-{
-    return Math::Vector();
-}
-
-void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
-                              Math::Vector &lookat, Math::Vector &upVec,
-                              Gfx::CameraType type)
-{
-}
-
-CPhysics* CObject::GetPhysics()
-{
-    return nullptr;
-}
-
-bool CPhysics::GetLand()
-{
-    return false;
-}
-
 //! Changes the level of transparency of an object and objects transported (battery & cargo)
 void SetTransparency(CObject* obj, float value)
 {
@@ -263,12 +202,12 @@ void Gfx::CCamera::Init(Math::Vector eye, Math::Vector lookat, float delay)
 }
 
 
-void Gfx::CCamera::SetObject(CObject* object)
+void Gfx::CCamera::SetControllingObject(CObject* object)
 {
     m_cameraObj = object;
 }
 
-CObject* Gfx::CCamera::GetObject()
+CObject* Gfx::CCamera::GetControllingObject()
 {
     return m_cameraObj;
 }
@@ -1063,11 +1002,9 @@ bool Gfx::CCamera::EventProcess(const Event &event)
             EventMouseMove(event);
             break;
 
-        // TODO: mouse wheel event
-        /*case EVENT_KEY_DOWN:
-            if ( event.param == VK_WHEELUP   )  EventMouseWheel(+1);
-            if ( event.param == VK_WHEELDOWN )  EventMouseWheel(-1);
-            break;*/
+        case EVENT_MOUSE_WHEEL:
+            EventMouseWheel(event.mouseWheel.dir);
+            break;
 
         default:
             break;
@@ -1081,17 +1018,17 @@ bool Gfx::CCamera::EventMouseMove(const Event &event)
     return true;
 }
 
-void Gfx::CCamera::EventMouseWheel(int dir)
+void Gfx::CCamera::EventMouseWheel(WheelDirection dir)
 {
     if (m_type == Gfx::CAM_TYPE_BACK)
     {
-        if (dir > 0)
+        if (dir == WHEEL_UP)
         {
             m_backDist -= 8.0f;
             if (m_backDist < m_backMin)
                 m_backDist = m_backMin;
         }
-        if (dir < 0)
+        else if (dir == WHEEL_DOWN)
         {
             m_backDist += 8.0f;
             if (m_backDist > 200.0f)
@@ -1102,13 +1039,13 @@ void Gfx::CCamera::EventMouseWheel(int dir)
     if ( m_type == Gfx::CAM_TYPE_FIX   ||
          m_type == Gfx::CAM_TYPE_PLANE )
     {
-        if (dir > 0)
+        if (dir == WHEEL_UP)
         {
             m_fixDist -= 8.0f;
             if (m_fixDist < 10.0f)
                 m_fixDist = 10.0f;
         }
-        if (dir < 0)
+        else if (dir == WHEEL_DOWN)
         {
             m_fixDist += 8.0f;
             if (m_fixDist > 200.0f)
@@ -1118,13 +1055,13 @@ void Gfx::CCamera::EventMouseWheel(int dir)
 
     if ( m_type == Gfx::CAM_TYPE_VISIT )
     {
-        if (dir > 0)
+        if (dir == WHEEL_UP)
         {
             m_visitDist -= 8.0f;
             if (m_visitDist < 20.0f)
                 m_visitDist = 20.0f;
         }
-        if (dir < 0)
+        else if (dir == WHEEL_DOWN)
         {
             m_visitDist += 8.0f;
             if (m_visitDist > 200.0f)
@@ -1245,19 +1182,19 @@ bool Gfx::CCamera::EventFrameFree(const Event &event)
         m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, m_mouseDirV * event.rTime * factor * m_speed);
 
     // Up/Down
-    m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, event.axeY * event.rTime * factor * m_speed);
+    m_eyePt = Math::LookatPoint(m_eyePt, m_directionH, m_directionV, event.motionInput.y * event.rTime * factor * m_speed);
 
     // Left/Right
     if ( event.keyState & KS_CONTROL )
     {
-        if ( event.axeX < 0.0f )
-            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH + Math::PI / 2.0f, m_directionV, -event.axeX * event.rTime * factor * m_speed);
-        if ( event.axeX > 0.0f )
-            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH - Math::PI / 2.0f, m_directionV,  event.axeX * event.rTime * factor * m_speed);
+        if ( event.motionInput.x < 0.0f )
+            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH + Math::PI / 2.0f, m_directionV, -event.motionInput.x * event.rTime * factor * m_speed);
+        if ( event.motionInput.x > 0.0f )
+            m_eyePt = Math::LookatPoint(m_eyePt, m_directionH - Math::PI / 2.0f, m_directionV,  event.motionInput.x * event.rTime * factor * m_speed);
     }
     else
     {
-        m_directionH -= event.axeX * event.rTime * 0.7f * m_speed;
+        m_directionH -= event.motionInput.x * event.rTime * 0.7f * m_speed;
     }
 
     // PageUp/PageDown
@@ -1719,3 +1656,4 @@ Math::Vector Gfx::CCamera::ExcludeObject(Math::Vector eye, Math::Vector lookat,
 
     return eye;*/
 }
+

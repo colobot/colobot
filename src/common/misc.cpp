@@ -17,195 +17,171 @@
 // misc.cpp
 
 
+#include "common/misc.h"
+
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include <ctype.h>
-#include <direct.h>
 #include <time.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "old/d3dutil.h"
-#include "common/language.h"
-#include "common/event.h"
-#include "common/misc.h"
 
 
-
-CMetaFile   g_metafile;
-
-static EventMsg     g_uniqueEventMsg = EVENT_USER;
 static bool         g_bUserDir = false;
 static char         g_userDir[100] = "";
 
 
-
-// Gives a single user event.
-
-EventMsg GetUniqueEventMsg()
-{
-    int     i;
-
-    i = (int)g_uniqueEventMsg+1;
-    g_uniqueEventMsg = (EventMsg)i;
-    return g_uniqueEventMsg;
-}
-
-
-
 // Returns a non-accented letter.
 
-char RetNoAccent(char letter)
+char GetNoAccent(char letter)
 {
+    /*
     if ( letter < 0 )
     {
-        if ( letter == 'á' ||
-             letter == 'à' ||
-             letter == 'â' ||
-             letter == 'ä' ||
-             letter == 'ã' )  return 'a';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'a';
 
-        if ( letter == 'é' ||
-             letter == 'è' ||
-             letter == 'ê' ||
-             letter == 'ë' )  return 'e';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'e';
 
-        if ( letter == 'í' ||
-             letter == 'ì' ||
-             letter == 'î' ||
-             letter == 'ï' )  return 'i';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'i';
 
-        if ( letter == 'ó' ||
-             letter == 'ò' ||
-             letter == 'ô' ||
-             letter == 'ö' ||
-             letter == 'õ' )  return 'o';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'o';
 
-        if ( letter == 'ú' ||
-             letter == 'ù' ||
-             letter == 'û' ||
-             letter == 'ü' )  return 'u';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'u';
 
-        if ( letter == 'ç' )  return 'c';
+        if ( letter == 'ï¿½' )  return 'c';
 
-        if ( letter == 'ñ' )  return 'n';
+        if ( letter == 'ï¿½' )  return 'n';
 
-        if ( letter == 'Á' ||
-             letter == 'À' ||
-             letter == 'Â' ||
-             letter == 'Ä' ||
-             letter == 'Ã' )  return 'A';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'A';
 
-        if ( letter == 'É' ||
-             letter == 'È' ||
-             letter == 'Ê' ||
-             letter == 'Ë' )  return 'E';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'E';
 
-        if ( letter == 'Í' ||
-             letter == 'Ì' ||
-             letter == 'Î' ||
-             letter == 'Ï' )  return 'I';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'I';
 
-        if ( letter == 'Ó' ||
-             letter == 'Ò' ||
-             letter == 'Ô' ||
-             letter == 'Ö' ||
-             letter == 'Õ' )  return 'O';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'O';
 
-        if ( letter == 'Ú' ||
-             letter == 'Ù' ||
-             letter == 'Û' ||
-             letter == 'Ü' )  return 'U';
+        if ( letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' ||
+             letter == 'ï¿½' )  return 'U';
 
-        if ( letter == 'Ç' )  return 'C';
+        if ( letter == 'ï¿½' )  return 'C';
 
-        if ( letter == 'Ñ' )  return 'N';
-    }
+        if ( letter == 'ï¿½' )  return 'N';
+    }*/
 
     return letter;
 }
 
 // Returns an uppercase letter.
 
-char RetToUpper(char letter)
+char GetToUpper(char letter)
 {
-    if ( letter < 0 )
+    /*if ( letter < 0 )
     {
-        if ( letter == 'á' )  return 'Á';
-        if ( letter == 'à' )  return 'À';
-        if ( letter == 'â' )  return 'Â';
-        if ( letter == 'ä' )  return 'Ä';
-        if ( letter == 'ã' )  return 'Ã';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'é' )  return 'É';
-        if ( letter == 'è' )  return 'È';
-        if ( letter == 'ê' )  return 'Ê';
-        if ( letter == 'ë' )  return 'Ë';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'í' )  return 'Í';
-        if ( letter == 'ì' )  return 'Ì';
-        if ( letter == 'î' )  return 'Î';
-        if ( letter == 'ï' )  return 'Ï';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'ó' )  return 'Ó';
-        if ( letter == 'ò' )  return 'Ò';
-        if ( letter == 'ô' )  return 'Ô';
-        if ( letter == 'ö' )  return 'Ö';
-        if ( letter == 'õ' )  return 'Õ';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'ú' )  return 'Ú';
-        if ( letter == 'ù' )  return 'Ù';
-        if ( letter == 'û' )  return 'Û';
-        if ( letter == 'ü' )  return 'Ü';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'ç' )  return 'Ç';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'ñ' )  return 'Ñ';
-    }
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+    }*/
 
     return toupper(letter);
 }
 
 // Returns a lowercase letter.
 
-char RetToLower(char letter)
+char GetToLower(char letter)
 {
-    if ( letter < 0 )
+    /*if ( letter < 0 )
     {
-        if ( letter == 'Á' )  return 'á';
-        if ( letter == 'À' )  return 'à';
-        if ( letter == 'Â' )  return 'â';
-        if ( letter == 'Ä' )  return 'ä';
-        if ( letter == 'Ã' )  return 'ã';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'É' )  return 'é';
-        if ( letter == 'È' )  return 'è';
-        if ( letter == 'Ê' )  return 'ê';
-        if ( letter == 'Ë' )  return 'ë';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'Í' )  return 'í';
-        if ( letter == 'Ì' )  return 'ì';
-        if ( letter == 'Î' )  return 'î';
-        if ( letter == 'Ï' )  return 'ï';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'Ó' )  return 'ó';
-        if ( letter == 'Ò' )  return 'ò';
-        if ( letter == 'Ô' )  return 'ô';
-        if ( letter == 'Ö' )  return 'ö';
-        if ( letter == 'Õ' )  return 'õ';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'Ú' )  return 'ú';
-        if ( letter == 'Ù' )  return 'ù';
-        if ( letter == 'Û' )  return 'û';
-        if ( letter == 'Ü' )  return 'ü';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'Ç' )  return 'ç';
+        if ( letter == 'ï¿½' )  return 'ï¿½';
 
-        if ( letter == 'Ñ' )  return 'ñ';
-    }
+        if ( letter == 'ï¿½' )  return 'ï¿½';
+    }*/
 
     return tolower(letter);
 }
@@ -222,6 +198,7 @@ void TimeToAscii(time_t time, char *buffer)
     year = when.tm_year+1900;
     if ( year < 2000 )  year -= 1900;
     else                year -= 2000;
+/* TODO
 #if _FRENCH
     sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
                     when.tm_mday, when.tm_mon+1, year,
@@ -232,7 +209,7 @@ void TimeToAscii(time_t time, char *buffer)
                     when.tm_mday, when.tm_mon+1, year,
                     when.tm_hour, when.tm_min);
 #endif
-#if _ENGLISH
+#if _ENGLISH*/
     char        format[10];
     int         hour;
 
@@ -251,12 +228,12 @@ void TimeToAscii(time_t time, char *buffer)
     sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d %s",
                     when.tm_mon+1, when.tm_mday, year,
                     hour, when.tm_min, format);
-#endif
+/*#endif
 #if _POLISH
     sprintf(buffer, "%.2d.%.2d.%.2d %.2d:%.2d",
                     when.tm_mday, when.tm_mon+1, year,
                     when.tm_hour, when.tm_min);
-#endif
+#endif*/
 }
 
 
@@ -281,7 +258,7 @@ bool Xfer(char* src, char* dst)
         return false;
     }
 
-    buffer = (char*)malloc(10000);
+    buffer = static_cast<char*>(malloc(10000));
 
     while ( true )
     {
@@ -311,7 +288,9 @@ bool CopyFileToTemp(char* filename)
     UserDir(dst, filename, "textures");
     strcpy(g_userDir, save);
 
-    _mkdir("temp");
+    //_mkdir("temp");
+    system("mkdir temp");
+
     if ( !Xfer(src, dst) )  return false;
 
     strcpy(filename, dst);
@@ -359,7 +338,7 @@ bool CopyFileListToTemp(char* filename, int* list, int total)
 
 // Adds an extension to file, if doesn't already one.
 
-void AddExt(char* filename, char* ext)
+void AddExt(char* filename, const char* ext)
 {
     if ( strchr(filename, '.') != 0 )  return;  // already an extension?
     strcat(filename, ext);
@@ -368,7 +347,7 @@ void AddExt(char* filename, char* ext)
 
 // Specifies the user folder.
 
-void UserDir(bool bUser, char* dir)
+void UserDir(bool bUser, const char* dir)
 {
     g_bUserDir = bUser;
     strcpy(g_userDir, dir);
@@ -379,10 +358,10 @@ void UserDir(bool bUser, char* dir)
 //      def = "abc\"
 // out: buffer = "abc\toto.txt"
 
-void UserDir(char* buffer, char* dir, char* def)
+void UserDir(char* buffer, const char* dir, const char* def)
 {
     char    ddir[100];
-    char*   add;
+    const char*   add;
 
     if ( strstr(dir, "\\") == 0 && def[0] != 0 )
     {
@@ -418,24 +397,3 @@ void UserDir(char* buffer, char* dir, char* def)
     }
     *buffer = 0;
 }
-
-
-// Returns the letter corresponding to the language.
-
-char RetLanguageLetter()
-{
-#if _FRENCH
-    return 'F';
-#endif
-#if _ENGLISH
-    return 'E';
-#endif
-#if _GERMAN | _WG
-    return 'D';
-#endif
-#if _POLISH
-    return 'P';
-#endif
-    return 'X';
-}
-

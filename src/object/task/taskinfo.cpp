@@ -16,16 +16,13 @@
 
 // taskinfo.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskinfo.h"
 
 #include "common/iman.h"
-#include "old/particule.h"
+#include "graphics/engine/particle.h"
 #include "object/auto/autoinfo.h"
 
-
+#include <string.h>
 
 
 
@@ -47,8 +44,8 @@ CTaskInfo::~CTaskInfo()
 
 bool CTaskInfo::EventProcess(const Event &event)
 {
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
     m_progress += event.rTime*m_speed;  // other advance
@@ -60,7 +57,7 @@ bool CTaskInfo::EventProcess(const Event &event)
 
 // Assigns the goal was achieved.
 
-Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
+Error CTaskInfo::Start(const char *name, float value, float power, bool bSend)
 {
     CObject*    pInfo;
     CAutoInfo*  pAuto;
@@ -77,7 +74,7 @@ Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
         return ERR_INFO_NULL;
     }
 
-    pAuto = (CAutoInfo*)pInfo->RetAuto();
+    pAuto = static_cast<CAutoInfo*>(pInfo->GetAuto());
     if ( pAuto == 0 )
     {
         return ERR_INFO_NULL;
@@ -86,10 +83,10 @@ Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
     op = 1;  // transmission impossible
     if ( bSend )  // send?
     {
-        total = pInfo->RetInfoTotal();
+        total = pInfo->GetInfoTotal();
         for ( i=0 ; i<total ; i++ )
         {
-            info = pInfo->RetInfo(i);
+            info = pInfo->GetInfo(i);
             if ( strcmp(info.name, name) == 0 )
             {
                 info.value = value;
@@ -114,10 +111,10 @@ Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
     }
     else    // receive?
     {
-        total = pInfo->RetInfoTotal();
+        total = pInfo->GetInfoTotal();
         for ( i=0 ; i<total ; i++ )
         {
-            info = pInfo->RetInfo(i);
+            info = pInfo->GetInfo(i);
             if ( strcmp(info.name, name) == 0 )
             {
                 m_object->SetInfoReturn(info.value);
@@ -134,19 +131,19 @@ Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
 
     if ( op == 0 )  // transmission?
     {
-        pos = pInfo->RetPosition(0);
+        pos = pInfo->GetPosition(0);
         pos.y += 9.5f;
-        goal = m_object->RetPosition(0);
+        goal = m_object->GetPosition(0);
         goal.y += 4.0f;
-        m_particule->CreateRay(pos, goal, PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
+        m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
     }
     if ( op == 2 )  // reception?
     {
-        goal = pInfo->RetPosition(0);
+        goal = pInfo->GetPosition(0);
         goal.y += 9.5f;
-        pos = m_object->RetPosition(0);
+        pos = m_object->GetPosition(0);
         pos.y += 4.0f;
-        m_particule->CreateRay(pos, goal, PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
+        m_particle->CreateRay(pos, goal, Gfx::PARTIRAY3, Math::Point(2.0f, 2.0f), 1.0f);
     }
 
     m_progress = 0.0f;
@@ -162,7 +159,7 @@ Error CTaskInfo::Start(char *name, float value, float power, bool bSend)
 
 Error CTaskInfo::IsEnded()
 {
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
 
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
@@ -184,27 +181,27 @@ bool CTaskInfo::Abort()
 
 CObject* CTaskInfo::SearchInfo(float power)
 {
-    CObject     *pObj, *pBest;
-    Math::Vector    iPos, oPos;
-    ObjectType  type;
-    float       dist, min;
-    int         i;
+    CObject      *pObj, *pBest;
+    Math::Vector iPos, oPos;
+    ObjectType   type;
+    float        dist, min;
+    int          i;
 
-    iPos = m_object->RetPosition(0);
+    iPos = m_object->GetPosition(0);
 
     min = 100000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_INFO )  continue;
 
-        if ( !pObj->RetActif() )  continue;
+        if ( !pObj->GetActif() )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, iPos);
         if ( dist > power )  continue;  // too far?
         if ( dist < min )

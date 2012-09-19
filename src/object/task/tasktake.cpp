@@ -16,14 +16,11 @@
 
 // tasktake.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/tasktake.h"
 
 #include "common/iman.h"
-#include "old/terrain.h"
-#include "old/water.h"
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/water.h"
 #include "math/geometry.h"
 #include "object/motion/motionhuman.h"
 #include "object/robotmain.h"
@@ -37,7 +34,7 @@
 CTaskTake::CTaskTake(CInstanceManager* iMan, CObject* object)
                      : CTask(iMan, object)
 {
-    m_terrain = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
+    m_terrain = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
 
     m_arm  = TTA_NEUTRAL;
 }
@@ -55,13 +52,13 @@ bool CTaskTake::EventProcess(const Event &event)
 {
     float       a, g, cirSpeed;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
     if ( m_bTurn )  // preliminary rotation?
     {
-        a = m_object->RetAngleY(0);
+        a = m_object->GetAngleY(0);
         g = m_angle;
         cirSpeed = Math::Direction(a, g)*2.0f;
         if ( cirSpeed >  1.0f )  cirSpeed =  1.0f;
@@ -92,26 +89,26 @@ Error CTaskTake::Start()
     m_step     = 0;
     m_progress = 0.0f;
 
-    iAngle = m_object->RetAngleY(0);
+    iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
     oAngle = iAngle;
 
     m_bError = true;  // operation impossible
-    if ( !m_physics->RetLand() )
+    if ( !m_physics->GetLand() )
     {
-        pos = m_object->RetPosition(0);
-        h = m_water->RetLevel(m_object);
+        pos = m_object->GetPosition(0);
+        h = m_water->GetLevel(m_object);
         if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
         return ERR_MANIP_FLY;
     }
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type != OBJECT_HUMAN &&
          type != OBJECT_TECH  )  return ERR_MANIP_VEH;
 
     m_physics->SetMotorSpeed(Math::Vector(0.0f, 0.0f, 0.0f));
 
-    if ( m_object->RetFret() == 0 )
+    if ( m_object->GetFret() == 0 )
     {
         m_order = TTO_TAKE;
     }
@@ -122,14 +119,14 @@ Error CTaskTake::Start()
 
     if ( m_order == TTO_TAKE )
     {
-        pos = m_object->RetPosition(0);
-        h = m_water->RetLevel(m_object);
+        pos = m_object->GetPosition(0);
+        h = m_water->GetLevel(m_object);
         if ( pos.y < h )  return ERR_MANIP_WATER;  // impossible under water
 
         other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
-        if ( other != 0 && other->RetPower() != 0 )
+        if ( other != 0 && other->GetPower() != 0 )
         {
-            type = other->RetPower()->RetType();
+            type = other->GetPower()->GetType();
             if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
             if ( type != OBJECT_FRET    &&
                  type != OBJECT_STONE   &&
@@ -150,7 +147,7 @@ Error CTaskTake::Start()
         {
             other = SearchTakeObject(oAngle, 1.5f, Math::PI*0.45f);
             if ( other == 0 )  return ERR_MANIP_NIL;
-            type = other->RetType();
+            type = other->GetType();
             if ( type == OBJECT_URANIUM )  return ERR_MANIP_RADIO;
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, 99.9f, 0.0f, 0.8f);
             m_arm = TTA_FFRONT;
@@ -160,12 +157,12 @@ Error CTaskTake::Start()
 
     if ( m_order == TTO_DEPOSE )
     {
-//?     speed = m_physics->RetMotorSpeed();
+//?     speed = m_physics->GetMotorSpeed();
 //?     if ( speed.x != 0.0f ||
 //?          speed.z != 0.0f )  return ERR_MANIP_MOTOR;
 
         other = SearchFriendObject(oAngle, 1.5f, Math::PI*0.50f);
-        if ( other != 0 && other->RetPower() == 0 )
+        if ( other != 0 && other->GetPower() == 0 )
         {
 //?         m_camera->StartCentering(m_object, Math::PI*0.3f, -Math::PI*0.1f, 0.0f, 0.8f);
             m_arm = TTA_FRIEND;
@@ -194,12 +191,12 @@ Error CTaskTake::IsEnded()
     CObject*    fret;
     float       angle;
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
 
     if ( m_bTurn )  // preliminary rotation?
     {
-        angle = m_object->RetAngleY(0);
+        angle = m_object->GetAngleY(0);
         angle = Math::NormAngle(angle);  // 0..2*Math::PI
 
         if ( Math::TestAngle(angle, m_angle-Math::PI*0.01f, m_angle+Math::PI*0.01f) )
@@ -243,7 +240,7 @@ Error CTaskTake::IsEnded()
                      (m_fretType == OBJECT_POWER  ||
                       m_fretType == OBJECT_ATOMIC ) )
                 {
-                    m_sound->Play(SOUND_POWEROFF, m_object->RetPosition(0));
+                    m_sound->Play(SOUND_POWEROFF, m_object->GetPosition(0));
                 }
             }
             m_motion->SetAction(MHS_UPRIGHT, 0.4f);  // gets up
@@ -258,13 +255,13 @@ Error CTaskTake::IsEnded()
     {
         if ( m_step == 1 )
         {
-            fret = m_object->RetFret();
+            fret = m_object->GetFret();
             TruckDeposeObject();
             if ( m_arm == TTA_FRIEND &&
                  (m_fretType == OBJECT_POWER  ||
                   m_fretType == OBJECT_ATOMIC ) )
             {
-                m_sound->Play(SOUND_POWERON, m_object->RetPosition(0));
+                m_sound->Play(SOUND_POWERON, m_object->GetPosition(0));
             }
             if ( fret != 0 && m_fretType == OBJECT_METAL && m_arm == TTA_FFRONT )
             {
@@ -304,8 +301,8 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     float       min, iAngle, bAngle, a, distance;
     int         i;
 
-    iPos   = m_object->RetPosition(0);
-    iAngle = m_object->RetAngleY(0);
+    iPos   = m_object->GetPosition(0);
+    iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     min = 1000000.0f;
@@ -313,10 +310,10 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
     bAngle = 0.0f;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
 
         if ( type != OBJECT_FRET    &&
              type != OBJECT_STONE   &&
@@ -332,11 +329,11 @@ CObject* CTaskTake::SearchTakeObject(float &angle,
              type != OBJECT_KEYd    &&
              type != OBJECT_TNT     )  continue;
 
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
-        if ( pObj->RetLock() )  continue;
-        if ( pObj->RetZoomY(0) != 1.0f )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( pObj->GetLock() )  continue;
+        if ( pObj->GetZoomY(0) != 1.0f )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         distance = Math::Distance(oPos, iPos);
         if ( distance >= 4.0f-dLimit &&
              distance <= 4.0f+dLimit )
@@ -374,17 +371,17 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
     int         i;
 
     if ( !m_object->GetCrashSphere(0, iPos, iRad) )  return 0;
-    iAngle = m_object->RetAngleY(0);
+    iAngle = m_object->GetAngleY(0);
     iAngle = Math::NormAngle(iAngle);  // 0..2*Math::PI
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;  // yourself?
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
@@ -417,19 +414,19 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
              type != OBJECT_LABO     &&
              type != OBJECT_NUCLEAR  )  continue;
 
-        pPower = pObj->RetPower();
+        pPower = pObj->GetPower();
         if ( pPower != 0 )
         {
-            if ( pPower->RetLock() )  continue;
-            if ( pPower->RetZoomY(0) != 1.0f )  continue;
+            if ( pPower->GetLock() )  continue;
+            if ( pPower->GetZoomY(0) != 1.0f )  continue;
 
-            powerType = pPower->RetType();
+            powerType = pPower->GetType();
             if ( powerType == OBJECT_NULL ||
                  powerType == OBJECT_FIX  )  continue;
         }
 
-        mat = pObj->RetWorldMatrix(0);
-        character = pObj->RetCharacter();
+        mat = pObj->GetWorldMatrix(0);
+        character = pObj->GetCharacter();
         oPos = Transform(*mat, character->posPower);
 
         distance = fabs(Math::Distance(oPos, iPos) - (iRad+1.0f));
@@ -438,7 +435,7 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
             angle = Math::RotateAngle(oPos.x-iPos.x, iPos.z-oPos.z);  // CW !
             if ( Math::TestAngle(angle, iAngle-aLimit, iAngle+aLimit) )
             {
-                character = pObj->RetCharacter();
+                character = pObj->GetCharacter();
                 m_height = character->posPower.y;
                 return pObj;
             }
@@ -452,17 +449,17 @@ CObject* CTaskTake::SearchFriendObject(float &angle,
 
 bool CTaskTake::TruckTakeObject()
 {
-    CObject*    fret;
-    CObject*    other;
-    Math::Matrix    matRotate;
-    float       angle;
+    CObject*     fret;
+    CObject*     other;
+    Math::Matrix matRotate;
+    float        angle;
 
     if ( m_arm == TTA_FFRONT )  // takes on the ground in front?
     {
 //?     fret = SearchTakeObject(angle, 1.5f, Math::PI*0.04f);
         fret = SearchTakeObject(angle, 1.5f, Math::PI*0.15f);  //OK 1.9
         if ( fret == 0 )  return false;  // rien � prendre ?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
         fret->SetTruck(m_object);
         fret->SetTruckPart(4);  // takes with the hand
@@ -481,9 +478,9 @@ bool CTaskTake::TruckTakeObject()
         other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
         if ( other == 0 )  return false;
 
-        fret = other->RetPower();
+        fret = other->GetPower();
         if ( fret == 0 )  return false;  // the other does not have a battery?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
         other->SetPower(0);
         fret->SetTruck(m_object);
@@ -514,15 +511,15 @@ bool CTaskTake::TruckDeposeObject()
 
     if ( m_arm == TTA_FFRONT )  // deposes on the ground in front?
     {
-        fret = m_object->RetFret();
+        fret = m_object->GetFret();
         if ( fret == 0 )  return false;  // does nothing?
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
-        mat = fret->RetWorldMatrix(0);
+        mat = fret->GetWorldMatrix(0);
         pos = Transform(*mat, Math::Vector(-0.5f, 1.0f, 0.0f));
-        m_terrain->MoveOnFloor(pos);
+        m_terrain->AdjustToFloor(pos);
         fret->SetPosition(0, pos);
-        fret->SetAngleY(0, m_object->RetAngleY(0)+Math::PI/2.0f);
+        fret->SetAngleY(0, m_object->GetAngleY(0)+Math::PI/2.0f);
         fret->SetAngleX(0, 0.0f);
         fret->SetAngleZ(0, 0.0f);
         fret->FloorAdjust();  // plate well on the ground
@@ -536,17 +533,17 @@ bool CTaskTake::TruckDeposeObject()
         other = SearchFriendObject(angle, 1.5f, Math::PI*0.04f);
         if ( other == 0 )  return false;
 
-        fret = other->RetPower();
+        fret = other->GetPower();
         if ( fret != 0 )  return false;  // the other already has a battery?
 
-        fret = m_object->RetFret();
+        fret = m_object->GetFret();
         if ( fret == 0 )  return false;
-        m_fretType = fret->RetType();
+        m_fretType = fret->GetType();
 
         other->SetPower(fret);
         fret->SetTruck(other);
 
-        character = other->RetCharacter();
+        character = other->GetCharacter();
         fret->SetPosition(0, character->posPower);
         fret->SetAngleY(0, 0.0f);
         fret->SetAngleX(0, 0.0f);
@@ -569,17 +566,17 @@ bool CTaskTake::IsFreeDeposeObject(Math::Vector pos)
     float       oRadius;
     int         i, j;
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     iPos = Transform(*mat, pos);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;
-        if ( !pObj->RetActif() )  continue;  // inactive?
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
+        if ( !pObj->GetActif() )  continue;  // inactive?
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
 
         j = 0;
         while ( pObj->GetCrashSphere(j++, oPos, oRadius) )

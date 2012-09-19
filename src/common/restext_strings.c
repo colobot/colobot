@@ -22,36 +22,8 @@
 
 const char * const strings_text[] =
 {
-#if _FULL
-    [RT_VERSION_ID]       = "1.18 /e",
-#endif
-#if _NET
-    [RT_VERSION_ID]       = "CeeBot-A 1.18",
-#endif
-#if _SCHOOL & _EDU
-#if _TEEN
-    [RT_VERSION_ID]       = "CeeBot-Teen EDU 1.18",
-#else
-    [RT_VERSION_ID]       = "CeeBot-A EDU 1.18",
-#endif
-#endif
-#if _SCHOOL & _PERSO
-#if _TEEN
-    [RT_VERSION_ID]       = "CeeBot-Teen PERSO 1.18",
-#else
-    [RT_VERSION_ID]       = "CeeBot-A PERSO 1.18",
-#endif
-#endif
-#if _SCHOOL & _CEEBOTDEMO
-#if _TEEN
-    [RT_VERSION_ID]       = "CeeBot-Teen DEMO 1.18",
-#else
-    [RT_VERSION_ID]       = "CeeBot-A DEMO 1.18",
-#endif
-#endif
-#if _DEMO
-    [RT_VERSION_ID]       = "Demo 1.18 /e",
-#endif
+    [RT_VERSION_ID]       = "Colobot Gold",
+
     [RT_DISINFO_TITLE]    = "SatCom",
     [RT_WINDOW_MAXIMIZED] = "Maximize",
     [RT_WINDOW_MINIMIZED] = "Minimize",
@@ -64,13 +36,8 @@ const char * const strings_text[] =
     [RT_IO_NEW]           = "New ...",
     [RT_KEY_OR]           = " or ",
 
-#if _NEWLOOK
-    [RT_TITLE_BASE]       = "CeeBot",
-    [RT_TITLE_INIT]       = "CeeBot",
-#else
     [RT_TITLE_BASE]       = "COLOBOT",
     [RT_TITLE_INIT]       = "COLOBOT",
-#endif
     [RT_TITLE_TRAINER]    = "Programming exercises",
     [RT_TITLE_DEFI]       = "Challenges",
     [RT_TITLE_MISSION]    = "Missions",
@@ -111,15 +78,9 @@ const char * const strings_text[] =
     [RT_PERSO_COMBI]      = "Suit color:",
     [RT_PERSO_BAND]       = "Strip color:",
 
-#if _NEWLOOK
-    [RT_DIALOG_QUIT]      = "Do you want to quit CeeBot ?",
-    [RT_DIALOG_TITLE]     = "CeeBot",
-    [RT_DIALOG_YESQUIT]   = "Quit\\Quit CeeBot",
-#else
     [RT_DIALOG_QUIT]      = "Do you want to quit COLOBOT ?",
     [RT_DIALOG_TITLE]     = "COLOBOT",
     [RT_DIALOG_YESQUIT]   = "Quit\\Quit COLOBOT",
-#endif
     [RT_DIALOG_ABORT]     = "Quit the mission?",
     [RT_DIALOG_YES]       = "Abort\\Abort the current mission",
     [RT_DIALOG_NO]        = "Continue\\Continue the current mission",
@@ -182,13 +143,8 @@ const char * const strings_event[] =
     [EVENT_INTERFACE_AGAIN]     = "Restart\\Restart the mission from the beginning",
     [EVENT_INTERFACE_WRITE]     = "Save\\Save the current mission ",
     [EVENT_INTERFACE_READ]      = "Load\\Load a saved mission",
-#if _NEWLOOK
-    [EVENT_INTERFACE_ABORT]     = "\\Return to CeeBot",
-    [EVENT_INTERFACE_QUIT]      = "Quit\\Quit CeeBot",
-#else
     [EVENT_INTERFACE_ABORT]     = "\\Return to COLOBOT",
     [EVENT_INTERFACE_QUIT]      = "Quit\\Quit COLOBOT",
-#endif
     [EVENT_INTERFACE_BACK]      = "<<  Back  \\Back to the previous screen",
     [EVENT_INTERFACE_PLAY]      = "Play\\Start mission!",
     [EVENT_INTERFACE_SETUPd]    = "Device\\Driver and resolution settings",
@@ -432,11 +388,7 @@ const char * const strings_event[] =
     [EVENT_HYPER_SIZE4]         = "Size 4",
     [EVENT_HYPER_SIZE5]         = "Size 5",
     [EVENT_SATCOM_HUSTON]       = "Instructions from Houston",
-#if _TEEN
-    [EVENT_SATCOM_SAT]          = "Dictionnary",
-#else
     [EVENT_SATCOM_SAT]          = "Satellite report",
-#endif
     [EVENT_SATCOM_LOADING]      = "Programs dispatched by Houston",
     [EVENT_SATCOM_OBJECT]       = "List of objects",
     [EVENT_SATCOM_PROG]         = "Programming help",
@@ -475,11 +427,7 @@ const char * const strings_object[] =
     [OBJECT_RESEARCH]     = "Research center",
     [OBJECT_RADAR]        = "Radar station",
     [OBJECT_INFO]         = "Information exchange post",
-#if _TEEN
-    [OBJECT_ENERGY]       = "Disintegrator",
-#else
     [OBJECT_ENERGY]       = "Power cell factory",
-#endif
     [OBJECT_LABO]         = "Autolab",
     [OBJECT_NUCLEAR]      = "Nuclear power station",
     [OBJECT_PARA]         = "Lightning conductor",
@@ -574,13 +522,6 @@ const char * const strings_object[] =
 const char * const strings_err[] =
 {
     [ERR_CMD]             = "Unknown command",
-#if _NEWLOOK
-    [ERR_INSTALL]         = "CeeBot not installed.",
-    [ERR_NOCD]            = "Please insert the CeeBot CD\nand re-run the game.",
-#else
-    [ERR_INSTALL]         = "COLOBOT not installed.",
-    [ERR_NOCD]            = "Please insert the COLOBOT CD\nand re-run the game.",
-#endif
     [ERR_MANIP_VEH]       = "Inappropriate bot",
     [ERR_MANIP_FLY]       = "Impossible when flying",
     [ERR_MANIP_BUSY]      = "Already carrying something",

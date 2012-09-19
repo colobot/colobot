@@ -14,28 +14,20 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.// restext.cpp
 
-#include <libintl.h>
-#include <SDL/SDL_keyboard.h>
-#include "common/struct.h"
-#include "common/language.h"
-#include "common/misc.h"
-#include "common/event.h"
-#include "object/object.h"
-#include "CBot/resource.h"
 #include "common/restext.h"
 
+#include "common/global.h"
+#include "common/event.h"
+#include "common/logger.h"
+#include "CBot/resource.h"
+#include "object/object.h"
+#include "object/robotmain.h"
 
-// Gives the pointer to the engine.
+#include <libintl.h>
+#include <SDL/SDL_keyboard.h>
 
-static CD3DEngine*  g_engine;
+
 static char         g_gamerName[100];
-
-void SetEngine(CD3DEngine *engine)
-{
-    g_engine = engine;
-}
-
-// Give the player's name.
 
 void SetGlobalGamerName(char *name)
 {
@@ -46,39 +38,38 @@ void SetGlobalGamerName(char *name)
 
 struct KeyDesc
 {
-    KeyRank     key;
+    InputSlot   key;
     char        name[20];
 };
 
 static KeyDesc keyTable[22] =
 {
-    { KEYRANK_LEFT,     "left;"    },
-    { KEYRANK_RIGHT,    "right;"   },
-    { KEYRANK_UP,       "up;"      },
-    { KEYRANK_DOWN,     "down;"    },
-    { KEYRANK_GUP,      "gup;"     },
-    { KEYRANK_GDOWN,    "gdown;"   },
-    { KEYRANK_CAMERA,   "camera;"  },
-    { KEYRANK_DESEL,    "desel;"   },
-    { KEYRANK_ACTION,   "action;"  },
-    { KEYRANK_NEAR,     "near;"    },
-    { KEYRANK_AWAY,     "away;"    },
-    { KEYRANK_NEXT,     "next;"    },
-    { KEYRANK_HUMAN,    "human;"   },
-    { KEYRANK_QUIT,     "quit;"    },
-    { KEYRANK_HELP,     "help;"    },
-    { KEYRANK_PROG,     "prog;"    },
-    { KEYRANK_CBOT,     "cbot;"    },
-    { KEYRANK_VISIT,    "visit;"   },
-    { KEYRANK_SPEED10,  "speed10;" },
-    { KEYRANK_SPEED15,  "speed15;" },
-    { KEYRANK_SPEED20,  "speed20;" },
-    { KEYRANK_SPEED30,  "speed30;" },
+    { INPUT_SLOT_LEFT,     "left;"    },
+    { INPUT_SLOT_RIGHT,    "right;"   },
+    { INPUT_SLOT_UP,       "up;"      },
+    { INPUT_SLOT_DOWN,     "down;"    },
+    { INPUT_SLOT_GUP,      "gup;"     },
+    { INPUT_SLOT_GDOWN,    "gdown;"   },
+    { INPUT_SLOT_CAMERA,   "camera;"  },
+    { INPUT_SLOT_DESEL,    "desel;"   },
+    { INPUT_SLOT_ACTION,   "action;"  },
+    { INPUT_SLOT_NEAR,     "near;"    },
+    { INPUT_SLOT_AWAY,     "away;"    },
+    { INPUT_SLOT_NEXT,     "next;"    },
+    { INPUT_SLOT_HUMAN,    "human;"   },
+    { INPUT_SLOT_QUIT,     "quit;"    },
+    { INPUT_SLOT_HELP,     "help;"    },
+    { INPUT_SLOT_PROG,     "prog;"    },
+    { INPUT_SLOT_CBOT,     "cbot;"    },
+    { INPUT_SLOT_VISIT,    "visit;"   },
+    { INPUT_SLOT_SPEED10,  "speed10;" },
+    { INPUT_SLOT_SPEED15,  "speed15;" },
+    { INPUT_SLOT_SPEED20,  "speed20;" }
 };
 
 // Seeks a key.
 
-bool SearchKey(const char *cmd, KeyRank &key)
+bool SearchKey(const char *cmd, InputSlot &key)
 {
     int     i;
 
@@ -97,9 +88,10 @@ bool SearchKey(const char *cmd, KeyRank &key)
 
 static void PutKeyName(char* dst, const char* src)
 {
-    KeyRank key;
+    InputSlot key;
     char    name[50];
-    int     s, d, n, res;
+    int     s, d, n;
+    unsigned int res;
 
     s = d = 0;
     while ( src[s] != 0 )
@@ -112,9 +104,8 @@ static void PutKeyName(char* dst, const char* src)
         {
             if ( SearchKey(src+s+5, key) )
             {
-                // FIXME: res = g_engine->RetKey(key, 0);
-            res = 0;
-                if ( res != 0 )
+                res = CRobotMain::GetInstancePointer()->GetInputBinding(key).key;
+                if (res != KEY_INVALID)
                 {
                     if ( GetResource(RES_KEY, res, name) )
                     {
@@ -150,7 +141,12 @@ static const char* GetResourceBase(ResType type, int num)
     str = strings_text[num];
     break;
     case RES_EVENT:
-    assert(num < strings_event_len);
+    // assert(num < strings_event_len);
+    if (num >= strings_event_len)
+    {
+        GetLogger()->Warn("GetResource invalid event num: %d\n", num);
+        return "";
+    }
     str = strings_event[num];
     break;
     case RES_OBJECT:
@@ -169,6 +165,7 @@ static const char* GetResourceBase(ResType type, int num)
     break;
     case RES_KEY:
     assert(num < SDLK_LAST);
+    // TODO: virtual keys
     str = SDL_GetKeyName(static_cast<SDLKey>(num));
     break;
     default:

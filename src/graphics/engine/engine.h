@@ -664,9 +664,7 @@ public:
     bool            ProcessEvent(const Event& event);
 
     //! Called once per frame, the call is the entry point for animating the scene
-    void            FrameMove(float rTime);
-    //! Evolved throughout the game
-    void            StepSimulation(float rTime);
+    void            FrameUpdate();
 
 
     //! Writes a screenshot containing the current frame
@@ -993,10 +991,10 @@ public:
     //! Management of the background image to use
     void            SetBackground(const std::string& name, Gfx::Color up = Gfx::Color(), Gfx::Color down = Gfx::Color(),
                                   Gfx::Color cloudUp = Gfx::Color(), Gfx::Color cloudDown = Gfx::Color(),
-                                  bool full = false, bool quarter = false);
+                                  bool full = false, Math::Point scale = Math::Point(1.0f, 1.0f));
     void            GetBackground(std::string& name, Gfx::Color& up, Gfx::Color& down,
                                   Gfx::Color& cloudUp, Gfx::Color& cloudDown,
-                                  bool& full, bool& quarter);
+                                  bool& full, Math::Point& scale);
     //@}
 
     //! Specifies the name of foreground texture
@@ -1099,11 +1097,6 @@ public:
     //@}
 
     //@{
-    //! Management of game speed
-    void            SetSpeed(float speed);
-    float           GetSpeed();
-
-    //@{
     //! Management of precision of robot tracks
     void            SetTracePrecision(float factor);
     float           GetTracePrecision();
@@ -1161,8 +1154,6 @@ protected:
     void        DrawBackground();
     //! Draws the gradient background
     void        DrawBackgroundGradient(const Gfx::Color& up, const Gfx::Color& down);
-    //! Draws a portion of the image background
-    void        DrawBackgroundImageQuarter(Math::Point p1, Math::Point p2, const Gfx::Texture &tex);
     //! Draws the image background
     void        DrawBackgroundImage();
     //! Draws all the planets
@@ -1297,11 +1288,9 @@ protected:
     bool            m_firstGroundSpot;
     int             m_secondTexNum;
     bool            m_backgroundFull;
-    bool            m_backgroundQuarter;
+    Math::Point     m_backgroundScale;
     std::string     m_backgroundName;
-    std::string     m_backgroundQuarterNames[4];
-    Gfx::Texture    m_backgroundFullTex;
-    Gfx::Texture    m_backgroundQuarterTexs[4];
+    Gfx::Texture    m_backgroundTex;
     Gfx::Color      m_backgroundColorUp;
     Gfx::Color      m_backgroundColorDown;
     Gfx::Color      m_backgroundCloudUp;

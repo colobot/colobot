@@ -31,7 +31,7 @@ public:
 
     bool        EventProcess(const Event &event);
 
-    Error       Start(char *name, float value, float power, bool bSend);
+    Error       Start(const char *name, float value, float power, bool bSend);
     Error       IsEnded();
     bool        Abort();
 

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,15 +16,14 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autonest.h"
 
 #include "common/iman.h"
-#include "old/terrain.h"
+#include "graphics/engine/terrain.h"
 #include "script/cmdtoken.h"
 
-
+#include <stdio.h>
+#include <string.h>
 
 
 // Object's constructor.
@@ -72,10 +72,10 @@ void CAutoNest::Init()
     m_speed    = 1.0f/4.0f;
 
     m_time     = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
-    pos = m_object->RetPosition(0);
-    m_terrain->MoveOnFloor(pos);
+    pos = m_object->GetPosition(0);
+    m_terrain->AdjustToFloor(pos);
     m_fretPos = pos;
 }
 
@@ -88,8 +88,8 @@ bool CAutoNest::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
 
@@ -154,10 +154,10 @@ bool CAutoNest::SearchFree(Math::Vector pos)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_NEST )  continue;
 
         j = 0;
@@ -199,15 +199,15 @@ CObject* CAutoNest::SearchFret()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetLock() )  continue;
+        if ( !pObj->GetLock() )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_BULLET )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         if ( oPos.x == m_fretPos.x &&
              oPos.z == m_fretPos.z )
         {
@@ -219,9 +219,9 @@ CObject* CAutoNest::SearchFret()
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoNest::RetError()
+Error CAutoNest::GetError()
 {
     return ERR_OK;
 }
@@ -263,11 +263,11 @@ bool CAutoNest::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoNestPhase)OpInt(line, "aPhase", ANP_WAIT);
+    m_phase = static_cast< AutoNestPhase >(OpInt(line, "aPhase", ANP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }

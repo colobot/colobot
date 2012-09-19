@@ -32,14 +32,14 @@
 namespace Math
 {
 
-/** \struct Point math/point.h
-    \brief 2D point
-
-    Represents a 2D point (x, y).
-    Contains the required methods for operating on points.
-
-    All methods are made inline to maximize optimization.
-
+/**
+ * \struct Point
+ * \brief 2D point
+ *
+ * Represents a 2D point (x, y).
+ * Contains the required methods for operating on points.
+ *
+ * All methods are made inline to maximize optimization.
  */
 struct Point
 {

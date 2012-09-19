@@ -20,52 +20,40 @@
 
 #include "../func.h"
 #include "../geometry.h"
-#include "../conv.h"
-#include "../../old/math3d.h"
-#include "../../old/d3dutil.h"
 
-#include <d3d.h>
-#include <cstdio>
+#include "gtest/gtest.h"
 
-using namespace std;
 
 const float TEST_TOLERANCE = 1e-5;
 
 
 // Test for rewritten function RotateAngle()
-int TestRotateAngle()
+TEST(GeometryTest, RotateAngleTest)
 {
-    if (! Math::IsEqual(Math::RotateAngle(0.0f, 0.0f), 0.0f, TEST_TOLERANCE))
-        return __LINE__;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(0.0f, 0.0f), 0.0f, TEST_TOLERANCE));
 
-    if (! Math::IsEqual(Math::RotateAngle(1.0f, 0.0f), 0.0f, TEST_TOLERANCE))
-        return __LINE__;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(1.0f, 0.0f), 0.0f, TEST_TOLERANCE));
 
-    if (! Math::IsEqual(Math::RotateAngle(1.0f, 1.0f), 0.25f * Math::PI, TEST_TOLERANCE))
-        return __LINE__;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(1.0f, 1.0f), 0.25f * Math::PI, TEST_TOLERANCE));
 
-    if (! Math::IsEqual(Math::RotateAngle(0.0f, 2.0f), 0.5f * Math::PI, TEST_TOLERANCE))
-        return __LINE__;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(0.0f, 2.0f), 0.5f * Math::PI, TEST_TOLERANCE));
 
-    if (! Math::IsEqual(Math::RotateAngle(-0.5f, 0.5f), 0.75f * Math::PI, TEST_TOLERANCE))
-        return __LINE__;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(-0.5f, 0.5f), 0.75f * Math::PI, TEST_TOLERANCE));
 
-    if (! Math::IsEqual(Math::RotateAngle(-1.0f, 0.0f), Math::PI, TEST_TOLERANCE))
-        return __LINE__;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(-1.0f, 0.0f), Math::PI, TEST_TOLERANCE));
 
-    if (! Math::IsEqual(Math::RotateAngle(-1.0f, -1.0f), 1.25f * Math::PI, TEST_TOLERANCE))
-        return __LINE__;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(-1.0f, -1.0f), 1.25f * Math::PI, TEST_TOLERANCE));
 
-    if (! Math::IsEqual(Math::RotateAngle(0.0f, -2.0f), 1.5f * Math::PI, TEST_TOLERANCE))
-        return __LINE__;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(0.0f, -2.0f), 1.5f * Math::PI, TEST_TOLERANCE));
 
-    if (! Math::IsEqual(Math::RotateAngle(1.0f, -1.0f), 1.75f * Math::PI, TEST_TOLERANCE))
-        return __LINE__;
-
-    return 0;
+    EXPECT_TRUE(Math::IsEqual(Math::RotateAngle(1.0f, -1.0f), 1.75f * Math::PI, TEST_TOLERANCE));
 }
 
 // Tests for other altered, complex or uncertain functions
+
+/*
+
+  TODO: write meaningful tests with proper test values
 
 int TestAngle()
 {
@@ -360,42 +348,12 @@ int TestTransform()
     return 0;
 }
 
-int main()
+*/
+
+
+int main(int argc, char* argv[])
 {
-    // Functions to test
-    int (*TESTS[])() =
-    {
-        TestRotateAngle,
-        TestAngle,
-        TestRotateView,
-        TestLookatPoint,
-        TestProjection,
-        TestLoadViewMatrix,
-        TestLoadProjectionMatrix,
-        TestLoadTranslationMatrix,
-        TestLoadScaleMatrix,
-        TestLoadRotationXMatrix,
-        TestLoadRotationYMatrix,
-        TestLoadRotationZMatrix,
-        TestLoadRotationMatrix,
-        TestLoadRotationXZYMatrix,
-        TestLoadRotationZXYMatrix,
-        TestTransform
-    };
-    const int TESTS_SIZE = sizeof(TESTS) / sizeof(*TESTS);
+    ::testing::InitGoogleTest(&argc, argv);
 
-    int result = 0;
-    for (int i = 0; i < TESTS_SIZE; ++i)
-    {
-        result = TESTS[i]();
-        if (result != 0)
-        {
-            fprintf(stderr, "Test function %d failed at line %d\n", i+1, result);
-            return result;
-        }
-    }
-
-    fprintf(stderr, "All tests successful\n");
-
-    return 0;
+    return RUN_ALL_TESTS();
 }

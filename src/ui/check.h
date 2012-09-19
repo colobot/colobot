@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,29 +19,30 @@
 
 #pragma once
 
-
 #include "ui/control.h"
 
 
-class CD3DEngine;
+namespace Gfx{
+    class CEngine;
+}
 
+namespace Ui {
+    class CCheck : public CControl
+    {
+    public:
+        CCheck();
+        virtual ~CCheck();
 
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-class CCheck : public CControl
-{
-public:
-    CCheck(CInstanceManager* iMan);
-    virtual ~CCheck();
+        bool    EventProcess(const Event &event);
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        void    Draw();
 
-    bool    EventProcess(const Event &event);
+    protected:
 
-    void    Draw();
+    protected:
+    };
 
-protected:
-
-protected:
-};
-
+}
 

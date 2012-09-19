@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -20,13 +21,16 @@
 
 
 #include "ui/control.h"
+#include "ui/button.h"
+#include "ui/scroll.h"
+
 #include "common/event.h"
+#include "common/misc.h"
+
+#include "graphics/engine/text.h"
 
 
-class CD3DEngine;
-class CButton;
-class CScroll;
-
+namespace Ui {
 
 const int LISTMAXDISPLAY = 20;  // maximum number of visible lines
 const int LISTMAXTOTAL   = 100; // maximum total number of lines
@@ -35,81 +39,83 @@ const int LISTMAXTOTAL   = 100; // maximum total number of lines
 
 class CList : public CControl
 {
-public:
-    CList(CInstanceManager* iMan);
-    ~CList();
+    public:
+        CList();
+        ~CList();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg, float expand);
+        bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg, float expand);
 
-    void        SetPos(Math::Point pos);
-    void        SetDim(Math::Point dim);
+        void        SetPos(Math::Point pos);
+        void        SetDim(Math::Point dim);
 
-    bool        SetState(int state, bool bState);
-    bool        SetState(int state);
-    bool        ClearState(int state);
+        bool        SetState(int state, bool bState);
+        bool        SetState(int state);
+        bool        ClearState(int state);
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
+        bool        EventProcess(const Event &event);
+        void        Draw();
 
-    void        Flush();
+        void        Flush();
 
-    void        SetTotal(int i);
-    int         RetTotal();
+        void        SetTotal(int i);
+        int         GetTotal();
 
-    void        SetSelect(int i);
-    int         RetSelect();
+        void        SetSelect(int i);
+        int         GetSelect();
 
-    void        SetSelectCap(bool bEnable);
-    bool        RetSelectCap();
+        void        SetSelectCap(bool bEnable);
+        bool        GetSelectCap();
 
-    void        SetBlink(bool bEnable);
-    bool        RetBlink();
+        void        SetBlink(bool bEnable);
+        bool        GetBlink();
 
-    void        SetName(int i, char* name);
-    char*       RetName(int i);
+        void        SetName(int i, const char* name);
+        char*       GetName(int i);
 
-    void        SetCheck(int i, bool bMode);
-    bool        RetCheck(int i);
+        void        SetCheck(int i, bool bMode);
+        bool        GetCheck(int i);
 
-    void        SetEnable(int i, bool bEnable);
-    bool        RetEnable(int i);
+        void        SetEnable(int i, bool bEnable);
+        bool        GetEnable(int i);
 
-    void        SetTabs(int i, float pos, int justif=1);
-    float       RetTabs(int i);
+        void        SetTabs(int i, float pos, Gfx::TextAlign justif=Gfx::TEXT_ALIGN_LEFT);
+        float       GetTabs(int i);
 
-    void        ShowSelect(bool bFixed);
+        void        ShowSelect(bool bFixed);
 
-    EventMsg    RetEventMsgButton(int i);
-    EventMsg    RetEventMsgScroll();
+        EventType    GetEventMsgButton(int i);
+        EventType    GetEventMsgScroll();
 
-protected:
-    bool        MoveAdjust();
-    void        UpdateButton();
-    void        UpdateScroll();
-    void        MoveScroll();
-    void        DrawCase(char *text, Math::Point pos, float width, int justif);
+    protected:
+        bool        MoveAdjust();
+        void        UpdateButton();
+        void        UpdateScroll();
+        void        MoveScroll();
+        void        DrawCase(char *text, Math::Point pos, float width, Gfx::TextAlign justif);
 
-protected:
-    CButton*    m_button[LISTMAXDISPLAY];
-    CScroll*    m_scroll;
+    protected:
+        CButton*    m_button[LISTMAXDISPLAY];
+        CScroll*    m_scroll;
 
-    EventMsg    m_eventButton[LISTMAXDISPLAY];
-    EventMsg    m_eventScroll;
+        EventType    m_eventButton[LISTMAXDISPLAY];
+        EventType    m_eventScroll;
 
-    float       m_expand;
-    int         m_totalLine;    // total number of lines
-    int         m_displayLine;  // number of visible lines
-    int         m_selectLine;   // selected line
-    int         m_firstLine;    // first visible line
-    bool        m_bBlink;
-    bool        m_bSelectCap;
-    float       m_blinkTime;
-    float       m_tabs[10];
-    int         m_justifs[10];
+        float       m_expand;
+        int         m_totalLine;    // total number of lines
+        int         m_displayLine;  // number of visible lines
+        int         m_selectLine;   // selected line
+        int         m_firstLine;    // first visible line
+        bool        m_bBlink;
+        bool        m_bSelectCap;
+        float       m_blinkTime;
+        float       m_tabs[10];
+        Gfx::TextAlign m_justifs[10];
 
-    char        m_text[LISTMAXTOTAL][100];
-    char        m_check[LISTMAXTOTAL];
-    char        m_enable[LISTMAXTOTAL];
+        char        m_text[LISTMAXTOTAL][100];
+        char        m_check[LISTMAXTOTAL];
+        char        m_enable[LISTMAXTOTAL];
 };
 
+
+}
 

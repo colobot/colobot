@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,33 +19,37 @@
 
 #pragma once
 
+#include "graphics/engine/engine.h"
+
+#include "common/event.h"
+#include "common/misc.h"
 
 #include "ui/control.h"
 
 
-class CD3DEngine;
-
-
+namespace Ui {
 
 class CGauge : public CControl
 {
-public:
-    CGauge(CInstanceManager* iMan);
-    virtual ~CGauge();
+    public:
+    //    CGauge(CInstanceManager* iMan);
+        CGauge();
+        virtual ~CGauge();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool    EventProcess(const Event &event);
+        bool    EventProcess(const Event &event);
 
-    void    Draw();
+        void    Draw();
 
-    void    SetLevel(float level);
-    float   RetLevel();
+        void    SetLevel(float level);
+        float   GetLevel();
 
-protected:
+    protected:
 
-protected:
-    float   m_level;
+    protected:
+        float   m_level;
 };
 
 
+}

@@ -16,12 +16,9 @@
 
 // taskturn.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskturn.h"
 
-#include "old/terrain.h"
+#include "graphics/engine/terrain.h"
 #include "physics/physics.h"
 
 
@@ -45,11 +42,11 @@ CTaskTurn::~CTaskTurn()
 
 bool CTaskTurn::EventProcess(const Event &event)
 {
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     // Momentarily stationary object (ant on the back)?
-    if ( m_object->RetFixed() )
+    if ( m_object->GetFixed() )
     {
         m_physics->SetMotorSpeedX(0.0f);  // stops the advance
         m_physics->SetMotorSpeedZ(0.0f);  // stops the rotation
@@ -66,18 +63,18 @@ bool CTaskTurn::EventProcess(const Event &event)
 
 Error CTaskTurn::Start(float angle)
 {
-    m_startAngle = m_object->RetAngleY(0);
+    m_startAngle = m_object->GetAngleY(0);
     m_finalAngle = m_startAngle+angle;
 
     if ( angle < 0.0f )
     {
-        m_angle = angle+m_physics->RetCirStopLength();
+        m_angle = angle+m_physics->GetCirStopLength();
         m_physics->SetMotorSpeedZ(-1.0f);  // turns left
         m_bLeft = true;
     }
     else
     {
-        m_angle = angle-m_physics->RetCirStopLength();
+        m_angle = angle-m_physics->GetCirStopLength();
         m_physics->SetMotorSpeedZ(1.0f);  // turns right
         m_bLeft = false;
     }
@@ -94,14 +91,14 @@ Error CTaskTurn::IsEnded()
 {
     float   angle;
 
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
 
     if ( m_bError )
     {
         return ERR_STOP;
     }
 
-    angle = m_object->RetAngleY(0);
+    angle = m_object->GetAngleY(0);
 
     if ( m_bLeft )
     {

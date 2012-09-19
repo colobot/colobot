@@ -47,19 +47,19 @@ class CPluginInterface {
         /** Function to get plugin name or description
          *  @return returns plugin name
          */
-        virtual std::string PluginName() = 0;
+        inline std::string PluginName() { return "abc"; };
 
         /** Function to get plugin version. 1 means version 0.01, 2 means 0.02 etc.
          *  @return number indicating plugin version
          */
-        virtual int PluginVersion() = 0;
+        inline int PluginVersion() { return 0; };
 
         /** Function to initialize plugin
          */
-        virtual void InstallPlugin() = 0;
+        inline void InstallPlugin() {};
 
         /** Function called before removing plugin
          */
-        virtual bool UninstallPlugin(std::string &) = 0;
+        inline bool UninstallPlugin(std::string &) { return true; };
 };
 

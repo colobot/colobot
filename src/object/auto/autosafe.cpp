@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,8 +16,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autosafe.h"
 
 #include "common/iman.h"
@@ -25,6 +24,9 @@
 #include "script/cmdtoken.h"
 #include "ui/interface.h"
 #include "ui/window.h"
+
+#include <stdio.h>
+#include <string.h>
 
 
 const float OPEN_DELAY  = 8.0f; // duration of opening
@@ -44,7 +46,7 @@ CAutoSafe::CAutoSafe(CInstanceManager* iMan, CObject* object)
     }
 
     m_bLock = false;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
     m_channelSound = -1;
     Init();
 }
@@ -86,7 +88,7 @@ void CAutoSafe::Init()
 {
     m_time = 0.0f;
     m_timeVirus = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     m_countKeys   = 0;
     m_actualAngle = 0.0f;
@@ -111,13 +113,13 @@ bool CAutoSafe::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
@@ -158,7 +160,7 @@ bool CAutoSafe::EventProcess(const Event &event)
                 {
                     LockKeys();
 
-                    m_channelSound = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.25f, true);
+                    m_channelSound = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 1.0f, 0.25f, true);
                     m_sound->AddEnvelope(m_channelSound, 1.0f, 2.00f, OPEN_DELAY, SOPER_STOP);
 
                     m_phase    = ASAP_OPEN;
@@ -168,7 +170,7 @@ bool CAutoSafe::EventProcess(const Event &event)
                 }
                 else
                 {
-                    m_channelSound = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 1.0f, 0.25f, true);
+                    m_channelSound = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 1.0f, 0.25f, true);
                     m_sound->AddEnvelope(m_channelSound, 1.0f, 0.35f, 0.5f, SOPER_STOP);
                 }
             }
@@ -185,13 +187,13 @@ bool CAutoSafe::EventProcess(const Event &event)
         {
             DownKeys(m_progress);
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 for ( i=0 ; i<10 ; i++ )
                 {
-                    pos = m_object->RetPosition(0);
+                    pos = m_object->GetPosition(0);
                     pos.x += (Math::Rand()-0.5f)*10.0f;
                     pos.z += (Math::Rand()-0.5f)*10.0f;
                     speed.x = (Math::Rand()-0.5f)*4.0f;
@@ -199,10 +201,10 @@ bool CAutoSafe::EventProcess(const Event &event)
                     speed.y = Math::Rand()*15.0f;
                     dim.x = Math::Rand()*6.0f+4.0f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBLUE, 1.0f, 0.0f, 0.0f);
                 }
 
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*10.0f;
                 pos.z += (Math::Rand()-0.5f)*10.0f;
                 speed.x = (Math::Rand()-0.5f)*4.0f;
@@ -210,7 +212,7 @@ bool CAutoSafe::EventProcess(const Event &event)
                 speed.y = Math::Rand()*10.0f;
                 dim.x = Math::Rand()*3.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 1.0f, 0.0f, 0.0f);
 
                 for ( i=0 ; i<4 ; i++ )
                 {
@@ -220,7 +222,7 @@ bool CAutoSafe::EventProcess(const Event &event)
                     speed.y = 1.0f+Math::Rand()*1.0f;
                     dim.x = Math::Rand()*1.5f+1.5f;
                     dim.y = dim.x;
-                    m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 0.0f);
+                    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f, 0.0f, 0.0f);
                 }
             }
         }
@@ -238,7 +240,7 @@ bool CAutoSafe::EventProcess(const Event &event)
             m_object->FlushCrashShere();
             m_object->SetGlobalSphere(Math::Vector(0.0f, 0.0f, 0.0f), 0.0f);
 
-            m_sound->Play(SOUND_FINDING, m_object->RetPosition(0));
+            m_sound->Play(SOUND_FINDING, m_object->GetPosition(0));
 
             m_phase    = ASAP_FINISH;
             m_progress = 0.0f;
@@ -283,7 +285,7 @@ bool CAutoSafe::EventProcess(const Event &event)
         {
             if ( m_keyParti[i] != -1 )
             {
-                m_particule->DeleteParticule(m_keyParti[i]);
+                m_particle->DeleteParticle(m_keyParti[i]);
                 m_keyParti[i] = -1;
             }
         }
@@ -293,7 +295,7 @@ bool CAutoSafe::EventProcess(const Event &event)
             {
                 pos = m_keyPos[i];
                 pos.y += 2.2f;
-                m_keyParti[i] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f, 0.0f);
+                m_keyParti[i] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
             }
         }
     }
@@ -306,7 +308,7 @@ bool CAutoSafe::EventProcess(const Event &event)
 
 bool CAutoSafe::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -314,7 +316,7 @@ bool CAutoSafe::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -332,11 +334,11 @@ bool CAutoSafe::CreateInterface(bool bSelect)
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoSafe::RetError()
+Error CAutoSafe::GetError()
 {
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
@@ -377,11 +379,11 @@ bool CAutoSafe::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoSafePhase)OpInt(line, "aPhase", ASAP_WAIT);
+    m_phase = static_cast< AutoSafePhase >(OpInt(line, "aPhase", ASAP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }
@@ -398,8 +400,8 @@ int CAutoSafe::CountKeys()
     float       dist, angle, limit, cAngle, oAngle;
     int         i, index;
 
-    cPos   = m_object->RetPosition(0);
-    cAngle = m_object->RetAngleY(0);
+    cPos   = m_object->GetPosition(0);
+    cAngle = m_object->GetAngleY(0);
 
     for ( index=0 ; index<4 ; index++ )
     {
@@ -409,18 +411,18 @@ int CAutoSafe::CountKeys()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->RetType();
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
+        oType = pObj->GetType();
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
@@ -482,22 +484,22 @@ void CAutoSafe::LockKeys()
     float       dist;
     int         i;
 
-    cPos = m_object->RetPosition(0);
+    cPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->RetType();
-        if ( pObj->RetTruck() != 0 )  continue;
+        oType = pObj->GetType();
+        if ( pObj->GetTruck() != 0 )  continue;
 
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
@@ -515,22 +517,22 @@ void CAutoSafe::DownKeys(float progress)
     float       dist;
     int         i;
 
-    cPos = m_object->RetPosition(0);
+    cPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->RetType();
-        if ( pObj->RetTruck() != 0 )  continue;
+        oType = pObj->GetType();
+        if ( pObj->GetTruck() != 0 )  continue;
 
         if ( oType != OBJECT_KEYa &&
              oType != OBJECT_KEYb &&
              oType != OBJECT_KEYc &&
              oType != OBJECT_KEYd )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(oPos, cPos);
         if ( dist > 20.0f )  continue;
 
@@ -550,25 +552,25 @@ void CAutoSafe::DeleteKeys()
     int         i;
     bool        bDelete;
 
-    cPos = m_object->RetPosition(0);
+    cPos = m_object->GetPosition(0);
 
     do
     {
         bDelete = false;
         for ( i=0 ; i<1000000 ; i++ )
         {
-            pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+            pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
             if ( pObj == 0 )  break;
 
-            oType = pObj->RetType();
-            if ( pObj->RetTruck() != 0 )  continue;
+            oType = pObj->GetType();
+            if ( pObj->GetTruck() != 0 )  continue;
 
             if ( oType != OBJECT_KEYa &&
                  oType != OBJECT_KEYb &&
                  oType != OBJECT_KEYc &&
                  oType != OBJECT_KEYd )  continue;
 
-            oPos = pObj->RetPosition(0);
+            oPos = pObj->GetPosition(0);
             dist = Math::DistanceProjected(oPos, cPos);
             if ( dist > 20.0f )  continue;
 
@@ -586,22 +588,20 @@ CObject* CAutoSafe::SearchVehicle()
 {
     CObject*    pObj;
     Math::Vector    cPos, oPos;
-    ObjectType  oType;
     float       dist;
     int         i;
 
-    cPos = m_object->RetPosition(0);
+    cPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->RetType();
         if ( pObj == m_object )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(oPos, cPos);
         if ( dist <= 4.0f )  return pObj;
     }

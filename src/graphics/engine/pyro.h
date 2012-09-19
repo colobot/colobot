@@ -22,7 +22,8 @@
 
 #pragma once
 
-#include "common/misc.h"
+#include "common/event.h"
+#include "common/global.h"
 #include "graphics/engine/engine.h"
 #include "object/object.h"
 

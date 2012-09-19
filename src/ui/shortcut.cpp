@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -16,25 +17,22 @@
 
 // shortcut.cpp
 
+#include "ui/shortcut.h"
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
 #include "common/event.h"
 #include "common/misc.h"
 #include "common/iman.h"
-#include "ui/shortcut.h"
+#include "graphics/engine/engine.h"
+#include "graphics/core/device.h"
 
+#include <math.h>
 
-
+namespace Ui {
 
 // Object's constructor.
 
-CShortcut::CShortcut(CInstanceManager* iMan) : CControl(iMan)
+//CShortcut::CShortcut(CInstanceManager* iMan) : CControl(iMan)
+CShortcut::CShortcut() : CControl()
 {
     m_time = 0.0f;
 }
@@ -48,11 +46,11 @@ CShortcut::~CShortcut()
 
 // Creates a new button.
 
-bool CShortcut::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CShortcut::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
     return true;
 }
 
@@ -63,17 +61,18 @@ bool CShortcut::EventProcess(const Event &event)
 {
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         m_time += event.rTime;
     }
 
-    if ( event.event == EVENT_LBUTTONDOWN )
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN  &&
+            event.mouseButton.button == 1)
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             Event newEvent = event;
-            newEvent.event = m_eventMsg;
+            newEvent.type = m_eventType;
             m_event->AddEvent(newEvent);
             return false;
         }
@@ -92,24 +91,24 @@ void CShortcut::Draw()
 
     icon = 0;
     zoom = 0.8f;
-    mode = D3DSTATETTw;
+    mode = Gfx::ENG_RSTATE_TTEXTURE_WHITE;
     if ( m_state & STATE_HILIGHT )
     {
         icon = 4;
         zoom = 0.9f;
-        mode = D3DSTATENORMAL;
+        mode = Gfx::ENG_RSTATE_NORMAL;
     }
     if ( m_state & STATE_CHECK )
     {
         icon = 1;
         zoom = 0.8f;
-        mode = D3DSTATENORMAL;
+        mode = Gfx::ENG_RSTATE_NORMAL;
     }
     if ( m_state & STATE_PRESS )
     {
         icon = 1;
         zoom = 1.0f;
-        mode = D3DSTATENORMAL;
+        mode = Gfx::ENG_RSTATE_NORMAL;
     }
     if ( m_icon == 6 || m_icon == 7 )  // pause or film?
     {
@@ -117,7 +116,7 @@ void CShortcut::Draw()
         zoom = 1.0f;
     }
 
-    m_engine->SetTexture("button3.tga");
+    m_engine->SetTexture("button3.png");
 
     if ( icon != -1 )
     {
@@ -125,7 +124,7 @@ void CShortcut::Draw()
         DrawVertex(icon, 0.95f);
     }
 
-    m_engine->SetState(D3DSTATETTb);
+    m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_BLACK);
     DrawVertex(m_icon, zoom);
 
     if ( m_state & STATE_FRAME )
@@ -133,8 +132,8 @@ void CShortcut::Draw()
         Math::Point p1, p2, c, uv1, uv2;
         float   zoom, dp;
 
-        m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetTexture("button2.png");
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
         zoom = 0.9f+sinf(m_time*8.0f)*0.1f;
 
@@ -173,8 +172,8 @@ void CShortcut::Draw()
         Math::Point uv1, uv2;
         float   dp;
 
-        m_engine->SetTexture("button3.tga");
-        m_engine->SetState(D3DSTATETTw);
+        m_engine->SetTexture("button3.png");
+        m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
         uv1.x = 160.0f/256.0f;
         uv1.y =   0.0f/256.0f;
@@ -195,13 +194,13 @@ void CShortcut::Draw()
 
 void CShortcut::DrawVertex(int icon, float zoom)
 {
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2  vertex[4];  // 2 triangles
+    Gfx::CDevice* device;
+    Gfx::Vertex  vertex[4];  // 2 triangles
     Math::Point     p1, p2, c;
     Math::Vector    n;
     float       u1, u2, v1, v2, dp;
 
-    device = m_engine->RetD3DDevice();
+    device = m_engine->GetDevice();
 
     p1.x = m_pos.x;
     p1.y = m_pos.y;
@@ -230,12 +229,13 @@ void CShortcut::DrawVertex(int icon, float zoom)
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, u1,v2);
-    vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, u1,v1);
-    vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, u2,v2);
-    vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, u2,v1);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(u1, v2));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(u1, v1));
+    vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(u2, v2));
+    vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(u2, v1));
 
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
     m_engine->AddStatisticTriangle(2);
 }
 
+}

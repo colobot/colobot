@@ -15,25 +15,16 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "common/language.h"
-#include "common/global.h"
-#include "common/event.h"
-#include "object/object.h"
 #include "script/cbottoken.h"
 
+#include "object/object.h"
 
+#include <string.h>
 
 
 // Seeking the name of an object.
 
-char* RetObjectName(ObjectType type)
+const char* GetObjectName(ObjectType type)
 {
     if ( type == OBJECT_PORTICO     )  return "Portico";
     if ( type == OBJECT_BASE        )  return "SpaceShip";
@@ -126,7 +117,7 @@ char* RetObjectName(ObjectType type)
 // Seeking the name of a secondary object.
 // (because Otto thinks that Germans do not like nuclear power)
 
-char* RetObjectAlias(ObjectType type)
+const char* GetObjectAlias(ObjectType type)
 {
     if ( type == OBJECT_NUCLEAR     )  return "FuelCellPlant";
     if ( type == OBJECT_URANIUM     )  return "PlatinumOre";
@@ -139,7 +130,7 @@ char* RetObjectAlias(ObjectType type)
 
 // Returns the help file to use for the object.
 
-char* RetHelpFilename(ObjectType type)
+const char* GetHelpFilename(ObjectType type)
 {
     if ( type == OBJECT_BASE        )  return "help\\object\\base.txt";
     if ( type == OBJECT_DERRICK     )  return "help\\object\\derrick.txt";
@@ -224,7 +215,7 @@ char* RetHelpFilename(ObjectType type)
 
 // Returns the help file to use for instruction.
 
-char* RetHelpFilename(const char *token)
+const char* GetHelpFilename(const char *token)
 {
     if ( strcmp(token, "if"            ) == 0 )  return "help\\cbot\\if.txt";
     if ( strcmp(token, "else"          ) == 0 )  return "help\\cbot\\if.txt";
@@ -436,7 +427,7 @@ bool IsFunction(const char *token)
 
 // Returns using a compact instruction.
 
-char* RetHelpText(const char *token)
+const char* GetHelpText(const char *token)
 {
     if ( strcmp(token, "if"        ) == 0 )  return "if ( condition ) { bloc }";
     if ( strcmp(token, "else"      ) == 0 )  return "else { bloc }";

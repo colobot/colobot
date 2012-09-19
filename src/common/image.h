@@ -14,10 +14,15 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// image.h
+/**
+ * \file common/image.h
+ * \brief Class for loading and saving images
+ */
 
 #pragma once
 
+#include "graphics/core/color.h"
+#include "math/intpoint.h"
 
 #include <stddef.h>
 #include <string>
@@ -61,11 +66,20 @@ public:
     //! Frees the allocated image data
     void Free();
 
-    //! Returns whether the image is empty (has NULL data)
-    bool IsEmpty();
+    //! Returns whether the image is empty (has null data)
+    bool IsEmpty() const;
 
-    //! Returns the image data; if empty - returns NULL
+    //! Returns the image data; if empty - returns nullptr
     ImageData* GetData();
+
+    //! Returns the image size
+    Math::IntPoint GetSize() const;
+
+    //! Sets the color at given pixel
+    void SetPixel(Math::IntPoint pixel, Gfx::Color color);
+
+    //! Returns the color at given pixel
+    Gfx::Color GetPixel(Math::IntPoint pixel);
 
     //! Loads an image from the specified file
     bool Load(const std::string &fileName);

@@ -16,12 +16,9 @@
 
 // taskfire.cpp
 
-
-#include <stdio.h>
-
 #include "object/task/taskfire.h"
 
-#include "old/particule.h"
+#include "graphics/engine/particle.h"
 #include "math/geometry.h"
 #include "physics/physics.h"
 
@@ -66,32 +63,32 @@ bool CTaskFire::EventProcess(const Event &event)
     float       energy, fire;
     int         i, channel;
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_bError )  return false;
 
     m_time += event.rTime;
     m_lastSound -= event.rTime;
     m_progress += event.rTime*m_speed;
 
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power != 0 )
     {
-        energy = power->RetEnergy();
+        energy = power->GetEnergy();
              if ( m_bOrganic )  fire = ENERGY_FIREi;
         else if ( m_bRay     )  fire = ENERGY_FIREr;
         else                    fire = ENERGY_FIRE;
-        energy -= event.rTime*fire/power->RetCapacity();
+        energy -= event.rTime*fire/power->GetCapacity();
         power->SetEnergy(energy);
     }
 
-    if ( m_lastParticule+0.05f <= m_time )
+    if ( m_lastParticle+0.05f <= m_time )
     {
-        m_lastParticule = m_time;
+        m_lastParticle = m_time;
 
         if ( m_bOrganic )
         {
-            mat = m_object->RetWorldMatrix(1);  // insect-cannon
+            mat = m_object->GetWorldMatrix(1);  // insect-cannon
 
             for ( i=0 ; i<6 ; i++ )
             {
@@ -100,10 +97,10 @@ bool CTaskFire::EventProcess(const Event &event)
 
                 speed = Math::Vector(200.0f, 0.0f, 0.0f);
 
-                physics = m_object->RetPhysics();
+                physics = m_object->GetPhysics();
                 if ( physics != 0 )
                 {
-                    speed += physics->RetLinMotion(MO_REASPEED);
+                    speed += physics->GetLinMotion(MO_REASPEED);
                 }
 
                 speed.x += (Math::Rand()-0.5f)*10.0f;
@@ -115,13 +112,13 @@ bool CTaskFire::EventProcess(const Event &event)
                 dim.x = Math::Rand()*0.5f+0.5f;
                 dim.y = dim.x;
 
-                channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN4, 0.8f, 0.0f, 0.0f);
-                m_particule->SetObjectFather(channel, m_object);
+                channel = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGUN4, 0.8f, 0.0f, 0.0f);
+                m_particle->SetObjectFather(channel, m_object);
             }
         }
         else if ( m_bRay )
         {
-            mat = m_object->RetWorldMatrix(2);  // cannon
+            mat = m_object->GetWorldMatrix(2);  // cannon
 
             for ( i=0 ; i<4 ; i++ )
             {
@@ -139,9 +136,9 @@ bool CTaskFire::EventProcess(const Event &event)
 
                 dim.x = 1.0f;
                 dim.y = dim.x;
-                channel = m_particule->CreateTrack(pos, speed, dim, PARTITRACK11,
+                channel = m_particle->CreateTrack(pos, speed, dim, Gfx::PARTITRACK11,
                                                    2.0f, 200.0f, 0.5f, 1.0f);
-                m_particule->SetObjectFather(channel, m_object);
+                m_particle->SetObjectFather(channel, m_object);
 
                 speed = Math::Vector(5.0f, 0.0f, 0.0f);
                 speed.x += (Math::Rand()-0.5f)*1.0f;
@@ -153,20 +150,20 @@ bool CTaskFire::EventProcess(const Event &event)
 
                 dim.x = 2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 2.0f, 0.0f, 0.5f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE2, 2.0f, 0.0f, 0.5f);
             }
         }
         else
         {
-            type = m_object->RetType();
+            type = m_object->GetType();
 
             if ( type == OBJECT_MOBILErc )
             {
-                mat = m_object->RetWorldMatrix(2);  // cannon
+                mat = m_object->GetWorldMatrix(2);  // cannon
             }
             else
             {
-                mat = m_object->RetWorldMatrix(1);  // cannon
+                mat = m_object->GetWorldMatrix(1);  // cannon
             }
 
             for ( i=0 ; i<3 ; i++ )
@@ -185,10 +182,10 @@ bool CTaskFire::EventProcess(const Event &event)
 
                 speed = Math::Vector(200.0f, 0.0f, 0.0f);
 
-                physics = m_object->RetPhysics();
+                physics = m_object->GetPhysics();
                 if ( physics != 0 )
                 {
-                    speed += physics->RetLinMotion(MO_REASPEED);
+                    speed += physics->GetLinMotion(MO_REASPEED);
                 }
 
                 speed.x += (Math::Rand()-0.5f)*3.0f;
@@ -200,8 +197,8 @@ bool CTaskFire::EventProcess(const Event &event)
                 dim.x = Math::Rand()*0.7f+0.7f;
                 dim.y = dim.x;
 
-                channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN1, 0.8f, 0.0f, 0.0f);
-                m_particule->SetObjectFather(channel, m_object);
+                channel = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGUN1, 0.8f, 0.0f, 0.0f);
+                m_particle->SetObjectFather(channel, m_object);
             }
 
             if ( type != OBJECT_MOBILErc &&
@@ -222,8 +219,8 @@ bool CTaskFire::EventProcess(const Event &event)
                 dim.x = Math::Rand()*1.2f+1.2f;
                 dim.y = dim.x;
 
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.0f);
-//?             m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 4.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 0.0f);
+//?             m_particle->CreateParticle(pos, speed, dim, PARTISMOKE2, 4.0f, 0.0f, 0.0f);
             }
         }
 
@@ -256,7 +253,7 @@ bool CTaskFire::EventProcess(const Event &event)
     if ( m_bRay && m_lastSound <= 0.0f )
     {
         m_lastSound = Math::Rand()*0.4f+0.4f;
-        m_sound->Play(SOUND_FIREp, m_object->RetPosition(0));
+        m_sound->Play(SOUND_FIREp, m_object->GetPosition(0));
     }
 
     return true;
@@ -274,7 +271,7 @@ Error CTaskFire::Start(float delay)
 
     m_bError = true;  // operation impossible
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type != OBJECT_MOBILEfc &&
          type != OBJECT_MOBILEtc &&
          type != OBJECT_MOBILEwc &&
@@ -285,9 +282,9 @@ Error CTaskFire::Start(float delay)
          type != OBJECT_MOBILEii &&
          type != OBJECT_MOBILErc )  return ERR_FIRE_VEH;
 
-//? if ( !m_physics->RetLand() )  return ERR_FIRE_FLY;
+//? if ( !m_physics->GetLand() )  return ERR_FIRE_FLY;
 
-    speed = m_physics->RetMotorSpeed();
+    speed = m_physics->GetMotorSpeed();
 //? if ( speed.x != 0.0f ||
 //?      speed.z != 0.0f )  return ERR_FIRE_MOTOR;
 
@@ -309,18 +306,18 @@ Error CTaskFire::Start(float delay)
     }
     m_delay = delay;
 
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power == 0 )  return ERR_FIRE_ENERGY;
-    energy = power->RetEnergy();
+    energy = power->GetEnergy();
          if ( m_bOrganic )  fire = m_delay*ENERGY_FIREi;
     else if ( m_bRay     )  fire = m_delay*ENERGY_FIREr;
     else                    fire = m_delay*ENERGY_FIRE;
-    if ( energy < fire/power->RetCapacity()+0.05f )  return ERR_FIRE_ENERGY;
+    if ( energy < fire/power->GetCapacity()+0.05f )  return ERR_FIRE_ENERGY;
 
     m_speed = 1.0f/m_delay;
     m_progress = 0.0f;
     m_time = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
     m_lastSound = 0.0f;
     m_bError = false;  // ok
 
@@ -328,7 +325,7 @@ Error CTaskFire::Start(float delay)
 
     if ( m_bOrganic )
     {
-        m_soundChannel = m_sound->Play(SOUND_FIREi, m_object->RetPosition(0), 1.0f, 1.0f, true);
+        m_soundChannel = m_sound->Play(SOUND_FIREi, m_object->GetPosition(0), 1.0f, 1.0f, true);
         if ( m_soundChannel != -1 )
         {
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, m_delay, SOPER_CONTINUE);
@@ -340,7 +337,7 @@ Error CTaskFire::Start(float delay)
     }
     else
     {
-        m_soundChannel = m_sound->Play(SOUND_FIRE, m_object->RetPosition(0), 1.0f, 1.0f, true);
+        m_soundChannel = m_sound->Play(SOUND_FIRE, m_object->GetPosition(0), 1.0f, 1.0f, true);
         if ( m_soundChannel != -1 )
         {
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, m_delay, SOPER_CONTINUE);
@@ -355,7 +352,7 @@ Error CTaskFire::Start(float delay)
 
 Error CTaskFire::IsEnded()
 {
-    if ( m_engine->RetPause() )  return ERR_CONTINUE;
+    if ( m_engine->GetPause() )  return ERR_CONTINUE;
     if ( m_bError )  return ERR_STOP;
     if ( m_progress < 1.0f )  return ERR_CONTINUE;
 

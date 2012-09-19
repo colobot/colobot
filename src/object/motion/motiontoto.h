@@ -53,7 +53,7 @@ protected:
 
 protected:
     float       m_time;
-    float       m_lastMotorParticule;
+    float       m_lastMotorParticle;
     bool        m_bDisplayInfo;
     bool        m_bQuickPos;
     bool        m_bStartAction;

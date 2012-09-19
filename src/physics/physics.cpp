@@ -17,35 +17,25 @@
 // physics.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
+#include <cstring>
+#include <cstdio>
 
-#include "common/struct.h"
-#include "math/const.h"
 #include "math/geometry.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "common/language.h"
+#include "graphics/engine/engine.h"
 #include "common/global.h"
 #include "common/event.h"
-#include "common/misc.h"
 #include "common/iman.h"
-#include "old/math3d.h"
-#include "old/light.h"
-#include "old/particule.h"
-#include "old/terrain.h"
-#include "old/water.h"
-#include "old/camera.h"
-#include "object/object.h"
-#include "old/pyro.h"
+#include "graphics/engine/lightman.h"
+#include "graphics/engine/terrain.h"
+#include "graphics/engine/water.h"
+#include "graphics/engine/camera.h"
+#include "graphics/engine/pyro.h"
+#include "script/cmdtoken.h"
+#include "physics/physics.h"
 #include "object/brain.h"
 #include "object/motion/motion.h"
 #include "object/motion/motionhuman.h"
-#include "old/sound.h"
 #include "object/task/task.h"
-#include "script/cmdtoken.h"
-#include "physics/physics.h"
 
 
 
@@ -64,13 +54,13 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
     m_iMan->AddInstance(CLASS_PHYSICS, this, 100);
 
     m_object    = object;
-    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_light     = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-    m_particule = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
-    m_terrain   = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-    m_water     = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-    m_camera    = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-    m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_engine    = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_lightMan  = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
+    m_particle  = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_terrain   = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+    m_water     = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
+    m_camera    = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_sound     = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
     m_brain     = 0;
     m_motion    = 0;
 
@@ -88,14 +78,14 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
     m_linVibrationFactor = 1.0f;
     m_cirVibrationFactor = 1.0f;
     m_inclinaisonFactor  = 1.0f;
-    m_lastPowerParticule = 0.0f;
-    m_lastSlideParticule = 0.0f;
-    m_lastMotorParticule = 0.0f;
-    m_lastWaterParticule = 0.0f;
-    m_lastUnderParticule = 0.0f;
-    m_lastPloufParticule = 0.0f;
-    m_lastFlameParticule = 0.0f;
-    m_bWheelParticuleBrake = false;
+    m_lastPowerParticle = 0.0f;
+    m_lastSlideParticle = 0.0f;
+    m_lastMotorParticle = 0.0f;
+    m_lastWaterParticle = 0.0f;
+    m_lastUnderParticle = 0.0f;
+    m_lastPloufParticle = 0.0f;
+    m_lastFlameParticle = 0.0f;
+    m_bWheelParticleBrake = false;
     m_absorbWater        = 0.0f;
     m_reactorTemperature = 0.0f;
     m_reactorRange       = 1.0f;
@@ -103,7 +93,7 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
     m_lastEnergy = 0.0f;
     m_lastSoundWater = 0.0f;
     m_lastSoundInsect = 0.0f;
-    m_restBreakParticule = 0.0f;
+    m_restBreakParticle = 0.0f;
     m_floorHeight = 0.0f;
     m_soundChannel = -1;
     m_soundChannelSlide = -1;
@@ -115,8 +105,8 @@ CPhysics::CPhysics(CInstanceManager* iMan, CObject* object)
     m_bForceUpdate = true;
     m_bLowLevel = false;
 
-    ZeroMemory(&m_linMotion, sizeof(Motion));
-    ZeroMemory(&m_cirMotion, sizeof(Motion));
+    memset(&m_linMotion, 0, sizeof(Motion));
+    memset(&m_cirMotion, 0,sizeof(Motion));
 }
 
 // Object's destructor.
@@ -164,7 +154,7 @@ void CPhysics::SetType(PhysicsType type)
     m_type = type;
 }
 
-PhysicsType CPhysics::RetType()
+PhysicsType CPhysics::GetType()
 {
     return m_type;
 }
@@ -182,10 +172,10 @@ bool CPhysics::Write(char *line)
 
     if ( m_type == TYPE_FLYING )
     {
-        sprintf(name, " reactorRange=%.2f", RetReactorRange());
+        sprintf(name, " reactorRange=%.2f", GetReactorRange());
         strcat(line, name);
 
-        sprintf(name, " land=%d", RetLand());
+        sprintf(name, " land=%d", GetLand());
         strcat(line, name);
     }
 
@@ -216,7 +206,7 @@ void CPhysics::SetGravity(float value)
     m_gravity = value;
 }
 
-float CPhysics::RetGravity()
+float CPhysics::GetGravity()
 {
     return m_gravity;
 }
@@ -224,7 +214,7 @@ float CPhysics::RetGravity()
 
 // Returns the height above the ground.
 
-float CPhysics::RetFloorHeight()
+float CPhysics::GetFloorHeight()
 {
     return m_floorHeight;
 }
@@ -238,15 +228,15 @@ void CPhysics::SetMotor(bool bState)
 
     m_bMotor = bState;
 
-    light = m_object->RetShadowLight();
+    light = m_object->GetShadowLight();
     if ( light != -1 )
     {
-        m_light->SetLightIntensity(light, m_bMotor?1.0f:0.0f);
-        m_light->SetLightIntensitySpeed(light, 3.0f);
+        m_lightMan->SetLightIntensity(light, m_bMotor?1.0f:0.0f);
+        m_lightMan->SetLightIntensitySpeed(light, 3.0f);
     }
 }
 
-bool CPhysics::RetMotor()
+bool CPhysics::GetMotor()
 {
     return m_bMotor;
 }
@@ -260,7 +250,7 @@ void CPhysics::SetLand(bool bState)
     SetMotor(!bState);  // lights if you leave the reactor in flight
 }
 
-bool CPhysics::RetLand()
+bool CPhysics::GetLand()
 {
     return m_bLand;
 }
@@ -277,7 +267,7 @@ void CPhysics::SetSwim(bool bState)
     m_bSwim = bState;
 }
 
-bool CPhysics::RetSwim()
+bool CPhysics::GetSwim()
 {
     return m_bSwim;
 }
@@ -290,7 +280,7 @@ void CPhysics::SetCollision(bool bCollision)
     m_bCollision = bCollision;
 }
 
-bool CPhysics::RetCollision()
+bool CPhysics::GetCollision()
 {
     return m_bCollision;
 }
@@ -303,7 +293,7 @@ void CPhysics::SetFreeze(bool bFreeze)
     m_bFreeze = bFreeze;
 }
 
-bool CPhysics::RetFreeze()
+bool CPhysics::GetFreeze()
 {
     return m_bFreeze;
 }
@@ -316,7 +306,7 @@ void CPhysics::SetReactorRange(float range)
     m_reactorRange = range;
 }
 
-float CPhysics::RetReactorRange()
+float CPhysics::GetReactorRange()
 {
     return m_reactorRange;
 }
@@ -359,22 +349,22 @@ void CPhysics::SetMotorSpeedZ(float speed)
     m_motorSpeed.z = speed;
 }
 
-Math::Vector CPhysics::RetMotorSpeed()
+Math::Vector CPhysics::GetMotorSpeed()
 {
     return m_motorSpeed;
 }
 
-float CPhysics::RetMotorSpeedX()
+float CPhysics::GetMotorSpeedX()
 {
     return m_motorSpeed.x;
 }
 
-float CPhysics::RetMotorSpeedY()
+float CPhysics::GetMotorSpeedY()
 {
     return m_motorSpeed.y;
 }
 
-float CPhysics::RetMotorSpeedZ()
+float CPhysics::GetMotorSpeedZ()
 {
     return m_motorSpeed.z;
 }
@@ -399,7 +389,7 @@ void CPhysics::SetLinMotion(PhysicsMode mode, Math::Vector value)
     if ( mode == MO_REASPEED )  m_linMotion.realSpeed     = value;
 }
 
-Math::Vector CPhysics::RetLinMotion(PhysicsMode mode)
+Math::Vector CPhysics::GetLinMotion(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_linMotion.advanceAccel;
     if ( mode == MO_RECACCEL )  return m_linMotion.recedeAccel;
@@ -432,7 +422,7 @@ void CPhysics::SetLinMotionX(PhysicsMode mode, float value)
     if ( mode == MO_REASPEED )  m_linMotion.realSpeed.x     = value;
 }
 
-float CPhysics::RetLinMotionX(PhysicsMode mode)
+float CPhysics::GetLinMotionX(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_linMotion.advanceAccel.x;
     if ( mode == MO_RECACCEL )  return m_linMotion.recedeAccel.x;
@@ -467,7 +457,7 @@ void CPhysics::SetLinMotionY(PhysicsMode mode, float value)
     if ( mode == MO_REASPEED )  m_linMotion.realSpeed.y     = value;
 }
 
-float CPhysics::RetLinMotionY(PhysicsMode mode)
+float CPhysics::GetLinMotionY(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_linMotion.advanceAccel.y;
     if ( mode == MO_RECACCEL )  return m_linMotion.recedeAccel.y;
@@ -502,7 +492,7 @@ void CPhysics::SetLinMotionZ(PhysicsMode mode, float value)
     if ( mode == MO_REASPEED )  m_linMotion.realSpeed.z     = value;
 }
 
-float CPhysics::RetLinMotionZ(PhysicsMode mode)
+float CPhysics::GetLinMotionZ(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_linMotion.advanceAccel.z;
     if ( mode == MO_RECACCEL )  return m_linMotion.recedeAccel.z;
@@ -537,7 +527,7 @@ void CPhysics::SetCirMotion(PhysicsMode mode, Math::Vector value)
     if ( mode == MO_REASPEED )  m_cirMotion.realSpeed     = value;
 }
 
-Math::Vector CPhysics::RetCirMotion(PhysicsMode mode)
+Math::Vector CPhysics::GetCirMotion(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_cirMotion.advanceAccel;
     if ( mode == MO_RECACCEL )  return m_cirMotion.recedeAccel;
@@ -570,7 +560,7 @@ void CPhysics::SetCirMotionX(PhysicsMode mode, float value)
     if ( mode == MO_REASPEED )  m_cirMotion.realSpeed.x     = value;
 }
 
-float CPhysics::RetCirMotionX(PhysicsMode mode)
+float CPhysics::GetCirMotionX(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_cirMotion.advanceAccel.x;
     if ( mode == MO_RECACCEL )  return m_cirMotion.recedeAccel.x;
@@ -605,7 +595,7 @@ void CPhysics::SetCirMotionY(PhysicsMode mode, float value)
     if ( mode == MO_REASPEED )  m_cirMotion.realSpeed.y     = value;
 }
 
-float CPhysics::RetCirMotionY(PhysicsMode mode)
+float CPhysics::GetCirMotionY(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_cirMotion.advanceAccel.y;
     if ( mode == MO_RECACCEL )  return m_cirMotion.recedeAccel.y;
@@ -640,7 +630,7 @@ void CPhysics::SetCirMotionZ(PhysicsMode mode, float value)
     if ( mode == MO_REASPEED )  m_cirMotion.realSpeed.z     = value;
 }
 
-float CPhysics::RetCirMotionZ(PhysicsMode mode)
+float CPhysics::GetCirMotionZ(PhysicsMode mode)
 {
     if ( mode == MO_ADVACCEL )  return m_cirMotion.advanceAccel.z;
     if ( mode == MO_RECACCEL )  return m_cirMotion.recedeAccel.z;
@@ -664,12 +654,12 @@ float CPhysics::RetCirMotionZ(PhysicsMode mode)
 //  d = -----
 //       2a
 
-float CPhysics::RetLinStopLength(PhysicsMode sMode, PhysicsMode aMode)
+float CPhysics::GetLinStopLength(PhysicsMode sMode, PhysicsMode aMode)
 {
     float       speed, accel;
 
-    speed = RetLinMotionX(sMode);  // MO_ADVSPEED/MO_RECSPEED
-    accel = RetLinMotionX(aMode);  // MO_ADVACCEL/MO_RECACCEL/MO_STOACCEL
+    speed = GetLinMotionX(sMode);  // MO_ADVSPEED/MO_RECSPEED
+    accel = GetLinMotionX(aMode);  // MO_ADVACCEL/MO_RECACCEL/MO_STOACCEL
 
     if ( m_type == TYPE_FLYING && m_bLand )  // flying on the ground?
     {
@@ -682,7 +672,7 @@ float CPhysics::RetLinStopLength(PhysicsMode sMode, PhysicsMode aMode)
 
 // Returns the angle of circular braking.
 
-float CPhysics::RetCirStopLength()
+float CPhysics::GetCirStopLength()
 {
     return m_cirMotion.advanceSpeed.y * m_cirMotion.advanceSpeed.y /
            m_cirMotion.stopAccel.y / 2.0f;
@@ -690,7 +680,7 @@ float CPhysics::RetCirStopLength()
 
 // Returns the length advanced into a second, on the ground, maximum speed.
 
-float CPhysics::RetLinMaxLength(float dir)
+float CPhysics::GetLinMaxLength(float dir)
 {
     float       dist;
 
@@ -707,36 +697,36 @@ float CPhysics::RetLinMaxLength(float dir)
 
 // Returns the time needed to travel some distance.
 
-float CPhysics::RetLinTimeLength(float dist, float dir)
+float CPhysics::GetLinTimeLength(float dist, float dir)
 {
     float       accel, decel, dps;
 
     if ( dir > 0.0f )
     {
-        accel = RetLinStopLength(MO_ADVSPEED, MO_ADVACCEL);
-        decel = RetLinStopLength(MO_ADVSPEED, MO_STOACCEL);
+        accel = GetLinStopLength(MO_ADVSPEED, MO_ADVACCEL);
+        decel = GetLinStopLength(MO_ADVSPEED, MO_STOACCEL);
     }
     else
     {
-        accel = RetLinStopLength(MO_RECSPEED, MO_RECACCEL);
-        decel = RetLinStopLength(MO_RECSPEED, MO_STOACCEL);
+        accel = GetLinStopLength(MO_RECSPEED, MO_RECACCEL);
+        decel = GetLinStopLength(MO_RECSPEED, MO_STOACCEL);
     }
 
-    dps = RetLinMaxLength(dir);
+    dps = GetLinMaxLength(dir);
 
     return (dist+accel+decel)/dps;
 }
 
 // Returns the length for a forward travel some distance, taking into account the accelerations / decelerations.
 
-float CPhysics::RetLinLength(float dist)
+float CPhysics::GetLinLength(float dist)
 {
     float   accDist, desDist;
 
     if ( dist > 0.0f )
     {
-        accDist = RetLinStopLength(MO_ADVSPEED, MO_ADVACCEL);
-        desDist = RetLinStopLength(MO_ADVSPEED, MO_STOACCEL);
+        accDist = GetLinStopLength(MO_ADVSPEED, MO_ADVACCEL);
+        desDist = GetLinStopLength(MO_ADVSPEED, MO_STOACCEL);
 
         if ( dist > accDist+desDist )
         {
@@ -749,8 +739,8 @@ float CPhysics::RetLinLength(float dist)
     else
     {
         dist = -dist;
-        accDist = RetLinStopLength(MO_RECSPEED, MO_RECACCEL);
-        desDist = RetLinStopLength(MO_RECSPEED, MO_STOACCEL);
+        accDist = GetLinStopLength(MO_RECSPEED, MO_RECACCEL);
+        desDist = GetLinStopLength(MO_RECSPEED, MO_STOACCEL);
 
         if ( dist > accDist+desDist )
         {
@@ -768,14 +758,14 @@ float CPhysics::RetLinLength(float dist)
 
 bool CPhysics::EventProcess(const Event &event)
 {
-    if ( !m_object->RetEnable() )  return true;
+    if ( !m_object->GetEnable() )  return true;
 
     if ( m_brain != 0 )
     {
         m_brain->EventProcess(event);
     }
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
     }
@@ -792,7 +782,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     Math::Vector    pos, motorSpeed;
     float       energy, speed, factor, h;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
 
     motorSpeed = m_motorSpeed;
 
@@ -810,8 +800,8 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
               type == OBJECT_TECH  )
     {
         power = 0;
-        if ( m_object->RetFret() != 0 &&  // carries something?
-             !m_object->RetCargo() )
+        if ( m_object->GetFret() != 0 &&  // carries something?
+             !m_object->GetCargo() )
         {
             motorSpeed.x *= 0.7f;  // forward more slowly
             motorSpeed.z *= 0.5f;
@@ -825,7 +815,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
                 motorSpeed.z *= 0.5f;
                 motorSpeed.y *= 0.5f;
 
-                if ( m_object->RetFret() != 0 )  // carries something?
+                if ( m_object->GetFret() != 0 )  // carries something?
                 {
                     motorSpeed.x *= 0.2f;
                     motorSpeed.z *= 0.9f;
@@ -842,8 +832,8 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     }
     else
     {
-        power = m_object->RetPower();  // searches for the object battery uses
-        if ( power == 0 || power->RetEnergy() == 0.0f )  // no battery or flat?
+        power = m_object->GetPower();  // searches for the object battery uses
+        if ( power == 0 || power->GetEnergy() == 0.0f )  // no battery or flat?
         {
             motorSpeed.x =  0.0f;
             motorSpeed.z =  0.0f;
@@ -859,11 +849,11 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
     }
 
-    if ( m_object->RetDead() )  // dead man?
+    if ( m_object->GetDead() )  // dead man?
     {
         motorSpeed.x = 0.0f;
         motorSpeed.z = 0.0f;
-        if ( m_motion->RetAction() == MHS_DEADw )  // drowned?
+        if ( m_motion->GetAction() == MHS_DEADw )  // drowned?
         {
             motorSpeed.y = 0.0f;  // this is MHS_DEADw going back
         }
@@ -876,9 +866,9 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
 
     if ( m_type == TYPE_FLYING && !m_bLand && motorSpeed.y > 0.0f )
     {
-        pos = m_object->RetPosition(0);
-        h = m_terrain->RetFlyingLimit(pos, type==OBJECT_BEE);
-        h += m_object->RetCharacter()->height;
+        pos = m_object->GetPosition(0);
+        h = m_terrain->GetFlyingLimit(pos, type==OBJECT_BEE);
+        h += m_object->GetCharacter()->height;
         if ( pos.y > h-40.0f )  // almost at the top?
         {
             factor = 1.0f-(pos.y-(h-40.0f))/40.0f;
@@ -889,7 +879,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
     }
 
     if ( type != OBJECT_BEE &&
-         m_object->RetRange() > 0.0f )  // limited flight range?
+         m_object->GetRange() > 0.0f )  // limited flight range?
     {
         if ( m_bLand || m_bSwim || m_bObstacle )  // on the ground or in the water?
         {
@@ -900,9 +890,9 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
             if ( m_reactorRange > 1.0f )
             {
                 m_reactorRange = 1.0f;
-                if ( m_bLowLevel && m_object->RetSelect() )  // beep cool?
+                if ( m_bLowLevel && m_object->GetSelect() )  // beep cool?
                 {
-                    m_sound->Play(SOUND_INFO, m_object->RetPosition(0), 1.0f, 2.0f);
+                    m_sound->Play(SOUND_INFO, m_object->GetPosition(0), 1.0f, 2.0f);
                     m_bLowLevel = false;
                 }
             }
@@ -910,7 +900,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
         else    // in flight?
         {
-            m_reactorRange -= rTime*(1.0f/m_object->RetRange());
+            m_reactorRange -= rTime*(1.0f/m_object->GetRange());
             if ( m_reactorRange < 0.0f )  m_reactorRange = 0.0f;
             if ( m_reactorRange < 0.5f )  m_bLowLevel = true;
         }
@@ -921,7 +911,7 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         }
     }
 
-//? MotorParticule(aTime);
+//? MotorParticle(aTime);
 
     // Forward/backward.
     if ( motorSpeed.x > 0.0f )
@@ -991,9 +981,9 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
         m_linMotion.motorAccel.x = m_linMotion.stopAccel.x*factor;
         m_cirMotion.motorAccel.y = m_cirMotion.stopAccel.y*factor;
 
-        pos = m_object->RetPosition(0);
-        h = m_terrain->RetFlyingLimit(pos, type==OBJECT_BEE);
-        h += m_object->RetCharacter()->height;
+        pos = m_object->GetPosition(0);
+        h = m_terrain->GetFlyingLimit(pos, type==OBJECT_BEE);
+        h += m_object->GetCharacter()->height;
         if ( motorSpeed.y > 0.0f && m_reactorRange > 0.1f && pos.y < h )
         {
             m_bLand = false;  // take off
@@ -1024,9 +1014,9 @@ void CPhysics::MotorUpdate(float aTime, float rTime)
              type == OBJECT_MOBILEic ||
              type == OBJECT_MOBILEii )  factor = 0.5f;
 
-        factor /= power->RetCapacity();
+        factor /= power->GetCapacity();
 
-        energy = power->RetEnergy();
+        energy = power->GetEnergy();
         energy -= fabs(motorSpeed.x)*rTime*factor*0.005f;
         energy -= fabs(motorSpeed.z)*rTime*factor*0.005f;
 
@@ -1050,21 +1040,21 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
     ObjectType  type;
     bool        bOnBoard;
 
-    if ( !m_engine->IsVisiblePoint(m_object->RetPosition(0)) )  return;
+    if ( !m_engine->IsVisiblePoint(m_object->GetPosition(0)) )  return;
 
-    type = m_object->RetType();
-    character = m_object->RetCharacter();
+    type = m_object->GetType();
+    character = m_object->GetCharacter();
 
     bOnBoard = false;
-    if ( m_object->RetSelect() &&
-         m_camera->RetType() == CAMERA_ONBOARD )
+    if ( m_object->GetSelect() &&
+         m_camera->GetType() == Gfx::CAM_TYPE_ONBOARD )
     {
         bOnBoard = true;
     }
 
-    vibLin = m_motion->RetLinVibration();
-    vibCir = m_motion->RetCirVibration();
-    incl   = m_motion->RetInclinaison();
+    vibLin = m_motion->GetLinVibration();
+    vibCir = m_motion->GetCirVibration();
+    incl   = m_motion->GetInclinaison();
 
     if ( type == OBJECT_HUMAN ||  // human?
          type == OBJECT_TECH  )
@@ -1175,6 +1165,7 @@ void CPhysics::EffectUpdate(float aTime, float rTime)
         else
         {
             m_motion->SetLinVibration(Math::Vector(0.0f, 0.0f, 0.0f));
+
 //?         m_motion->SetCirVibration(Math::Vector(0.0f, 0.0f, 0.0f));
 //?         m_motion->SetInclinaison(Math::Vector(0.0f, 0.0f, 0.0f));
         }
@@ -1475,24 +1466,24 @@ bool CPhysics::EventFrame(const Event &event)
     float       h, w;
     int         i;
 
-    if ( m_engine->RetPause() )  return true;
+    if ( m_engine->GetPause() )  return true;
 
     m_time += event.rTime;
     m_timeUnderWater += event.rTime;
     m_soundTimeJostle += event.rTime;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
 
-    FrameParticule(m_time, event.rTime);
+    FrameParticle(m_time, event.rTime);
     MotorUpdate(m_time, event.rTime);
     EffectUpdate(m_time, event.rTime);
     WaterFrame(m_time, event.rTime);
 
-    iPos   = pos   = m_object->RetPosition(0);
-    iAngle = angle = m_object->RetAngle(0);
+    iPos   = pos   = m_object->GetPosition(0);
+    iAngle = angle = m_object->GetAngle(0);
 
     // Accelerate is the descent, brake is the ascent.
-    if ( m_bFreeze || m_object->RetDead() )
+    if ( m_bFreeze || m_object->GetDead() )
     {
         m_linMotion.terrainSpeed.x = 0.0f;
         m_linMotion.terrainSpeed.z = 0.0f;
@@ -1501,7 +1492,7 @@ bool CPhysics::EventFrame(const Event &event)
     else
     {
         tAngle = angle;
-        h = m_terrain->RetBuildingFactor(pos);
+        h = m_terrain->GetBuildingFactor(pos);
         if ( type == OBJECT_HUMAN ||
              type == OBJECT_TECH  )
         {
@@ -1512,7 +1503,7 @@ bool CPhysics::EventFrame(const Event &event)
             FloorAngle(pos, tAngle);  // calculates the angle with the ground
         }
 #if 1
-        if ( pos.y < m_water->RetLevel(m_object) )  // underwater?
+        if ( pos.y < m_water->GetLevel(m_object) )  // underwater?
         {
             h *= 0.5f;
         }
@@ -1535,7 +1526,7 @@ bool CPhysics::EventFrame(const Event &event)
     if ( type == OBJECT_BEE && !m_bLand )
     {
         h = m_floorLevel;  // ground level
-        w = m_water->RetLevel(m_object);
+        w = m_water->GetLevel(m_object);
         if ( h < w )  h = w;
         h = pos.y-h-10.0f;  // maximum height (*)
         if ( h < 0.0f )  h = 0.0f;
@@ -1554,12 +1545,12 @@ bool CPhysics::EventFrame(const Event &event)
     newpos = Transform(matRotate, newpos);
     newpos += pos;
 
-    m_terrain->LimitPos(newpos);
+    m_terrain->AdjustToStandardBounds(newpos);
 
     if ( m_type == TYPE_FLYING && !m_bLand )
     {
-        h = m_terrain->RetFlyingLimit(newpos, type==OBJECT_BEE);
-        h += m_object->RetCharacter()->height;
+        h = m_terrain->GetFlyingLimit(newpos, type==OBJECT_BEE);
+        h += m_object->GetCharacter()->height;
         if ( newpos.y > h )  newpos.y = h;
     }
 
@@ -1604,7 +1595,7 @@ bool CPhysics::EventFrame(const Event &event)
         m_object->SetPosition(0, newpos);
     }
 
-    MotorParticule(m_time, event.rTime);
+    MotorParticle(m_time, event.rTime);
     SoundMotor(event.rTime);
 
     m_bForceUpdate = false;
@@ -1621,33 +1612,33 @@ void CPhysics::SoundMotor(float rTime)
     float       energy;
 
     m_lastSoundInsect -= rTime;
-    type = m_object->RetType();
+    type = m_object->GetType();
 
     if ( type == OBJECT_MOTHER )
     {
-        if ( m_lastSoundInsect <= 0.0f && m_object->RetActif() )
+        if ( m_lastSoundInsect <= 0.0f && m_object->GetActif() )
         {
-            m_sound->Play(SOUND_INSECTm, m_object->RetPosition(0));
+            m_sound->Play(SOUND_INSECTm, m_object->GetPosition(0));
             if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
             else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
         }
     }
     else if ( type == OBJECT_ANT )
     {
-        if ( m_object->RetBurn()  ||
-             m_object->RetFixed() )
+        if ( m_object->GetBurn()  ||
+             m_object->GetFixed() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTa, m_object->RetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
+                m_sound->Play(SOUND_INSECTa, m_object->GetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
                 m_lastSoundInsect = 0.4f+Math::Rand()*0.6f;
             }
         }
-        else if ( m_object->RetActif() )
+        else if ( m_object->GetActif() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTa, m_object->RetPosition(0));
+                m_sound->Play(SOUND_INSECTa, m_object->GetPosition(0));
                 if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
@@ -1655,60 +1646,60 @@ void CPhysics::SoundMotor(float rTime)
     }
     else if ( type == OBJECT_BEE )
     {
-        if ( m_object->RetActif() )
+        if ( m_object->GetActif() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTb, m_object->RetPosition(0));
+                m_sound->Play(SOUND_INSECTb, m_object->GetPosition(0));
                 if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
         }
-        else if ( m_object->RetBurn() )
+        else if ( m_object->GetBurn() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTb, m_object->RetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
+                m_sound->Play(SOUND_INSECTb, m_object->GetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
                 m_lastSoundInsect = 0.3f+Math::Rand()*0.5f;
             }
         }
     }
     else if ( type == OBJECT_WORM )
     {
-        if ( m_object->RetActif() )
+        if ( m_object->GetActif() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTw, m_object->RetPosition(0));
+                m_sound->Play(SOUND_INSECTw, m_object->GetPosition(0));
                 if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
         }
-        else if ( m_object->RetBurn() )
+        else if ( m_object->GetBurn() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTw, m_object->RetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
+                m_sound->Play(SOUND_INSECTw, m_object->GetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
                 m_lastSoundInsect = 0.2f+Math::Rand()*0.2f;
             }
         }
     }
     else if ( type == OBJECT_SPIDER )
     {
-        if ( m_object->RetBurn()  ||
-             m_object->RetFixed() )
+        if ( m_object->GetBurn()  ||
+             m_object->GetFixed() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTs, m_object->RetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
+                m_sound->Play(SOUND_INSECTs, m_object->GetPosition(0), 1.0f, 1.5f+Math::Rand()*0.5f);
                 m_lastSoundInsect = 0.4f+Math::Rand()*0.6f;
             }
         }
-        else if ( m_object->RetActif() )
+        else if ( m_object->GetActif() )
         {
             if ( m_lastSoundInsect <= 0.0f )
             {
-                m_sound->Play(SOUND_INSECTs, m_object->RetPosition(0));
+                m_sound->Play(SOUND_INSECTs, m_object->GetPosition(0));
                 if ( m_bMotor )  m_lastSoundInsect = 0.4f+Math::Rand()*2.5f;
                 else             m_lastSoundInsect = 1.5f+Math::Rand()*4.0f;
             }
@@ -1718,20 +1709,20 @@ void CPhysics::SoundMotor(float rTime)
     {
         if ( m_type == TYPE_ROLLING )
         {
-            if ( m_bMotor && m_object->RetActif() )
+            if ( m_bMotor && m_object->GetActif() )
             {
                 SoundMotorFull(rTime, type);  // full diet
             }
             else
             {
                 energy = 0.0f;
-                power = m_object->RetPower();
+                power = m_object->GetPower();
                 if ( power != 0 )
                 {
-                    energy = power->RetEnergy();
+                    energy = power->GetEnergy();
                 }
 
-                if ( m_object->RetSelect() &&
+                if ( m_object->GetSelect() &&
                      energy != 0.0f        )
                 {
                     SoundMotorSlow(rTime, type);  // in slow motion
@@ -1746,7 +1737,7 @@ void CPhysics::SoundMotor(float rTime)
         if ( m_type == TYPE_FLYING )
         {
             if ( m_bMotor && !m_bSwim &&
-                 m_object->RetActif() && !m_object->RetDead() )
+                 m_object->GetActif() && !m_object->GetDead() )
             {
                 SoundReactorFull(rTime, type);  // full diet
             }
@@ -1767,20 +1758,20 @@ void CPhysics::WaterFrame(float aTime, float rTime)
     Math::Point     dim;
     float       level;
 
-    level = m_water->RetLevel();
+    level = m_water->GetLevel();
     if ( level == 0.0f )  return;  // no water?
-    if ( m_object->RetTruck() != 0 )  return;  // object transported?
+    if ( m_object->GetTruck() != 0 )  return;  // object transported?
 
     // Management of flames into the lava.
-    pos = m_object->RetPosition(0);
-    if ( m_water->RetLava() &&
-         pos.y-m_object->RetCharacter()->height <= level )
+    pos = m_object->GetPosition(0);
+    if ( m_water->GetLava() &&
+         pos.y-m_object->GetCharacter()->height <= level )
     {
-        if ( m_lastFlameParticule+m_engine->ParticuleAdapt(0.05f) <= aTime )
+        if ( m_lastFlameParticle+m_engine->ParticleAdapt(0.05f) <= aTime )
         {
-            m_lastFlameParticule = aTime;
+            m_lastFlameParticle = aTime;
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.x += (Math::Rand()-0.5f)*3.0f;
             pos.z += (Math::Rand()-0.5f)*3.0f;
             speed.x = 0.0f;
@@ -1788,9 +1779,9 @@ void CPhysics::WaterFrame(float aTime, float rTime)
             speed.y = Math::Rand()*5.0f+3.0f;
             dim.x = Math::Rand()*2.0f+1.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTIFLAME, 2.0f, 0.0f, 0.2f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLAME, 2.0f, 0.0f, 0.2f);
 
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y -= 2.0f;
             pos.x += (Math::Rand()-0.5f)*5.0f;
             pos.z += (Math::Rand()-0.5f)*5.0f;
@@ -1799,23 +1790,23 @@ void CPhysics::WaterFrame(float aTime, float rTime)
             speed.y = 6.0f+Math::Rand()*6.0f+6.0f;
             dim.x = Math::Rand()*1.5f+1.0f+3.0f;
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f);
         }
     }
 
-    pos = m_object->RetPosition(0);
-    if ( pos.y >= m_water->RetLevel(m_object) )  return;  // out of water?
+    pos = m_object->GetPosition(0);
+    if ( pos.y >= m_water->GetLevel(m_object) )  return;  // out of water?
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type == OBJECT_TOTO )  return;
     if ( type == OBJECT_NULL )  return;
 
-    if ( !m_object->RetActif() )  return;
-    if ( m_object->RetResetBusy() )  return;  // reset in progress?
+    if ( !m_object->GetActif() )  return;
+    if ( m_object->GetResetBusy() )  return;  // reset in progress?
 
-    if ( m_water->RetLava()      ||
+    if ( m_water->GetLava()      ||
          (type == OBJECT_HUMAN   &&
-          m_object->RetOption() != 0 ) ||  // human without a helmet?
+          m_object->GetOption() != 0 ) ||  // human without a helmet?
          type == OBJECT_MOBILEfa ||
          type == OBJECT_MOBILEta ||
          type == OBJECT_MOBILEwa ||
@@ -1861,13 +1852,13 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
     {
         if ( m_soundChannel == -1 )
         {
-            m_soundChannel = m_sound->Play(SOUND_MOTORi, m_object->RetPosition(0), 0.0f, 1.0f, true);
+            m_soundChannel = m_sound->Play(SOUND_MOTORi, m_object->GetPosition(0), 0.0f, 1.0f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 0.2f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
         }
         else
         {
-            m_sound->Position(m_soundChannel, m_object->RetPosition(0));
+            m_sound->Position(m_soundChannel, m_object->GetPosition(0));
         }
 
         freq = 1.0f+m_linMotion.terrainSpeed.x/50.0f;
@@ -1921,7 +1912,7 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
         time = 0.3f;
     }
 
-    if ( m_object->RetToy() )
+    if ( m_object->GetToy() )
     {
         sound = SOUND_MOTORd;
         amplitude = 1.0f;
@@ -1930,17 +1921,17 @@ void CPhysics::SoundMotorFull(float rTime, ObjectType type)
 
     freq = 0.75f+(fabs(m_motorSpeed.x)+fabs(m_motorSpeed.z))*0.25f;
     if ( freq > 1.0f )  freq = 1.0f;
-    if ( m_object->RetToy() )  freq = 1.0f;
+    if ( m_object->GetToy() )  freq = 1.0f;
 
     if ( m_soundChannel == -1 )
     {
-        m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 0.5f, true);
+        m_soundChannel = m_sound->Play(sound, m_object->GetPosition(0), 0.0f, 0.5f, true);
         m_sound->AddEnvelope(m_soundChannel, amplitude, freq, time, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, amplitude, freq, 1.0f, SOPER_LOOP);
     }
     else
     {
-        m_sound->Position(m_soundChannel, m_object->RetPosition(0));
+        m_sound->Position(m_soundChannel, m_object->GetPosition(0));
 
         if ( m_bSoundSlow )  // in slow motion?
         {
@@ -2020,7 +2011,7 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
         amplitude = 0.3f;
     }
 
-    if ( m_object->RetToy() )
+    if ( m_object->GetToy() )
     {
         sound = SOUND_MOTORd;
         amplitude = 0.0f;
@@ -2028,13 +2019,13 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
 
     if ( m_soundChannel == -1 )
     {
-        m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 0.25f, true);
+        m_soundChannel = m_sound->Play(sound, m_object->GetPosition(0), 0.0f, 0.25f, true);
         m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 0.2f, SOPER_CONTINUE);
         m_sound->AddEnvelope(m_soundChannel, amplitude, 0.5f, 1.0f, SOPER_LOOP);
     }
     else
     {
-        m_sound->Position(m_soundChannel, m_object->RetPosition(0));
+        m_sound->Position(m_soundChannel, m_object->GetPosition(0));
 
         if ( !m_bSoundSlow )  // full power?
         {
@@ -2056,12 +2047,12 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
         {
             amplitude = 0.5f-m_soundTimePshhh*0.08f;
             if ( amplitude > 1.0f )  amplitude = 1.0f;
-//?         m_sound->Play(SOUND_PSHHH, m_object->RetPosition(0), amplitude);
-            m_sound->Play(SOUND_PSHHH, m_object->RetPosition(0), 1.0f);
+//?         m_sound->Play(SOUND_PSHHH, m_object->GetPosition(0), amplitude);
+            m_sound->Play(SOUND_PSHHH, m_object->GetPosition(0), 1.0f);
 
             m_soundTimePshhh = 4.0f+4.0f*Math::Rand();
 
-            max = (int)(10.0f*m_engine->RetParticuleDensity());
+            max = static_cast<int>(10.0f*m_engine->GetParticleDensity());
             for ( i=0 ; i<max ; i++ )
             {
                 pos = Math::Vector(-5.0f, 2.0f, 0.0f);
@@ -2073,14 +2064,14 @@ void CPhysics::SoundMotorSlow(float rTime, ObjectType type)
                 speed.y -= Math::Rand()*3.0f;
                 speed.z += (Math::Rand()-0.5f)*6.0f;
 
-                mat = m_object->RetWorldMatrix(0);
+                mat = m_object->GetWorldMatrix(0);
                 pos   = Transform(*mat, pos);
                 speed = Transform(*mat, speed)-pos;
 
                 dim.x = Math::Rand()*1.0f+1.0f;
                 dim.y = dim.x;
 
-                m_particule->CreateParticule(pos, speed, dim, PARTIMOTOR, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIMOTOR, 2.0f);
             }
         }
     }
@@ -2146,13 +2137,13 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
                 sound = SOUND_FLY;
             }
 
-            m_soundChannel = m_sound->Play(sound, m_object->RetPosition(0), 0.0f, 1.0f, true);
+            m_soundChannel = m_sound->Play(sound, m_object->GetPosition(0), 0.0f, 1.0f, true);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 0.6f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_soundChannel, 1.0f, 1.0f, 1.0f, SOPER_LOOP);
         }
         else
         {
-            m_sound->Position(m_soundChannel, m_object->RetPosition(0));
+            m_sound->Position(m_soundChannel, m_object->GetPosition(0));
         }
 
         freq = 1.0f + m_linMotion.realSpeed.y/100.0f;
@@ -2171,13 +2162,13 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
         if ( m_timeReactorFail <= m_time )
         {
             freq = 1.0f+Math::Rand()*0.5f;
-            m_sound->Play(SOUND_FLYf, m_object->RetPosition(0), 1.0f, freq);
-            m_camera->StartEffect(CE_PET, m_object->RetPosition(0), 1.0f);
+            m_sound->Play(SOUND_FLYf, m_object->GetPosition(0), 1.0f, freq);
+            m_camera->StartEffect(Gfx::CAM_EFFECT_PET, m_object->GetPosition(0), 1.0f);
 
             for ( i=0 ; i<5 ; i++ )
             {
-                if ( m_object->RetType() == OBJECT_HUMAN ||
-                     m_object->RetType() == OBJECT_TECH  )
+                if ( m_object->GetType() == OBJECT_HUMAN ||
+                     m_object->GetType() == OBJECT_TECH  )
                 {
                     pos = Math::Vector(-1.6f, -0.5f, 0.0f);
                 }
@@ -2187,22 +2178,22 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
                 }
                 pos.x += (Math::Rand()-0.5f)*2.0f;
                 pos.z += (Math::Rand()-0.5f)*2.0f;
-                mat = m_object->RetWorldMatrix(0);
+                mat = m_object->GetWorldMatrix(0);
                 pos = Transform(*mat, pos);
                 speed.x = (Math::Rand()-0.5f)*5.0f;
                 speed.z = (Math::Rand()-0.5f)*5.0f;
                 speed.y = -(4.0f+Math::Rand()*4.0f);
                 dim.x = (2.0f+Math::Rand()*1.0f);
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 2.0f, 0.0f, 0.1f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE1, 2.0f, 0.0f, 0.1f);
             }
 
             m_timeReactorFail = m_time+0.10f+Math::Rand()*0.30f;
         }
         else
         {
-            if ( m_object->RetType() == OBJECT_HUMAN ||
-                 m_object->RetType() == OBJECT_TECH  )
+            if ( m_object->GetType() == OBJECT_HUMAN ||
+                 m_object->GetType() == OBJECT_TECH  )
             {
                 pos = Math::Vector(-1.6f, -0.5f, 0.0f);
             }
@@ -2212,14 +2203,14 @@ void CPhysics::SoundReactorFull(float rTime, ObjectType type)
             }
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            mat = m_object->RetWorldMatrix(0);
+            mat = m_object->GetWorldMatrix(0);
             pos = Transform(*mat, pos);
             speed.x = (Math::Rand()-0.5f)*2.0f;
             speed.z = (Math::Rand()-0.5f)*2.0f;
             speed.y = -(4.0f+Math::Rand()*4.0f);
             dim.x = (0.7f+Math::Rand()*0.4f);
             dim.y = dim.x;
-            m_particule->CreateParticule(pos, speed, dim, PARTISMOKE1, 2.0f, 0.0f, 0.1f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE1, 2.0f, 0.0f, 0.1f);
         }
     }
 
@@ -2233,10 +2224,10 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
     float       energy;
 
     energy = 0.0f;
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power != 0 )
     {
-        energy = power->RetEnergy();
+        energy = power->GetEnergy();
     }
 
     if ( m_soundChannel != -1 )  // engine is running?
@@ -2264,11 +2255,11 @@ void CPhysics::SoundReactorStop(float rTime, ObjectType type)
         {
             if ( m_soundChannelSlide == -1 )
             {
-                m_soundChannelSlide = m_sound->Play(SOUND_SLIDE, m_object->RetPosition(0), 0.0f, 1.0f, true);
+                m_soundChannelSlide = m_sound->Play(SOUND_SLIDE, m_object->GetPosition(0), 0.0f, 1.0f, true);
                 m_sound->AddEnvelope(m_soundChannelSlide, 0.5f, 1.0f, 0.3f, SOPER_CONTINUE);
                 m_sound->AddEnvelope(m_soundChannelSlide, 0.5f, 1.0f, 1.0f, SOPER_LOOP);
             }
-            m_sound->Position(m_soundChannelSlide, m_object->RetPosition(0));
+            m_sound->Position(m_soundChannelSlide, m_object->GetPosition(0));
         }
         else
         {
@@ -2293,21 +2284,20 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
     Math::Vector    norm;
     Math::Matrix    matRotate;
     float       level, h, f, a1, volume, freq, force;
-    bool        bOldSwim, bSlopingTerrain;
+    bool        bSlopingTerrain;
 
-    type = m_object->RetType();
-    character = m_object->RetCharacter();
+    type = m_object->GetType();
+    character = m_object->GetCharacter();
 
-    level = m_water->RetLevel(m_object);
-    bOldSwim = m_bSwim;
+    level = m_water->GetLevel(m_object);
     SetSwim( pos.y < level );
 
-    m_floorLevel = m_terrain->RetFloorLevel(pos);  // height above the ground
+    m_floorLevel = m_terrain->GetFloorLevel(pos);  // height above the ground
     h = pos.y-m_floorLevel;
     h -= character->height;
     m_floorHeight = h;
 
-    WaterParticule(aTime, pos, type, m_floorLevel,
+    WaterParticle(aTime, pos, type, m_floorLevel,
                    fabs(m_linMotion.realSpeed.x),
                    fabs(m_cirMotion.realSpeed.y*15.0f));
 
@@ -2342,13 +2332,13 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
                     {
                         volume = fabs(m_linMotion.realSpeed.x*0.02f)+
                                  fabs(m_linMotion.realSpeed.y*0.02f);
-                        freq = 0.5f+m_terrain->RetHardness(pos)*2.5f;
+                        freq = 0.5f+m_terrain->GetHardness(pos)*2.5f;
                         m_sound->Play(SOUND_BOUM, pos, volume, freq);
 
                         m_soundTimeBoum = aTime;
                     }
 
-//?                 pos = m_object->RetPosition(0);  // gives position before collision
+//?                 pos = m_object->GetPosition(0);  // gives position before collision
                 }
             }
         }
@@ -2358,7 +2348,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
             if ( !m_bLand )  // in flight?
             {
                 volume = fabs(m_linMotion.realSpeed.y*0.02f);
-                freq = 0.5f+m_terrain->RetHardness(pos)*2.5f;
+                freq = 0.5f+m_terrain->GetHardness(pos)*2.5f;
                 m_sound->Play(SOUND_BOUM, pos, volume, freq);
             }
 
@@ -2370,7 +2360,7 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
             if ( h < 0.0f )
             {
                 f = fabs(m_linMotion.currentSpeed.y/m_linMotion.advanceSpeed.y);
-                CrashParticule(f);
+                CrashParticle(f);
             }
             m_linMotion.currentSpeed.y = 0.0f;
             m_inclinaisonFactor  = 1.0f/LANDING_SPEED;  // slips a little to the ground
@@ -2422,13 +2412,13 @@ void CPhysics::FloorAdapt(float aTime, float rTime,
 
     if ( m_floorHeight == 0.0f )  // ground plate?
     {
-        if ( m_object->RetTraceDown() )
+        if ( m_object->GetTraceDown() )
         {
-            WheelParticule(m_object->RetTraceColor(), m_object->RetTraceWidth()*g_unit);
+            WheelParticle(m_object->GetTraceColor(), m_object->GetTraceWidth()*g_unit);
         }
         else
         {
-            WheelParticule(-1, 0.0f);
+            WheelParticle(-1, 0.0f);
         }
     }
 
@@ -2463,29 +2453,29 @@ void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
     Math::Vector    pw, norm;
     float       a1, a2;
 
-    character = m_object->RetCharacter();
+    character = m_object->GetCharacter();
 
     pw.x = pos.x+character->wheelFront*cosf(angle.y+Math::PI*0.0f);
     pw.y = pos.y;
     pw.z = pos.z-character->wheelFront*sinf(angle.y+Math::PI*0.0f);
-    a1 = atanf(m_terrain->RetFloorHeight(pw)/character->wheelFront);
+    a1 = atanf(m_terrain->GetHeightToFloor(pw)/character->wheelFront);
 
     pw.x = pos.x+character->wheelBack*cosf(angle.y+Math::PI*1.0f);
     pw.y = pos.y;
     pw.z = pos.z-character->wheelBack*sinf(angle.y+Math::PI*1.0f);
-    a2 = atanf(m_terrain->RetFloorHeight(pw)/character->wheelBack);
+    a2 = atanf(m_terrain->GetHeightToFloor(pw)/character->wheelBack);
 
     angle.z = (a2-a1)/2.0f;
 
     pw.x = pos.x+character->wheelLeft*cosf(angle.y+Math::PI*0.5f)*cosf(angle.z);
     pw.y = pos.y;
     pw.z = pos.z-character->wheelLeft*sinf(angle.y+Math::PI*0.5f)*cosf(angle.z);
-    a1 = atanf(m_terrain->RetFloorHeight(pw)/character->wheelLeft);
+    a1 = atanf(m_terrain->GetHeightToFloor(pw)/character->wheelLeft);
 
     pw.x = pos.x+character->wheelRight*cosf(angle.y+Math::PI*1.5f)*cosf(angle.z);
     pw.y = pos.y;
     pw.z = pos.z-character->wheelRight*sinf(angle.y+Math::PI*1.5f)*cosf(angle.z);
-    a2 = atanf(m_terrain->RetFloorHeight(pw)/character->wheelRight);
+    a2 = atanf(m_terrain->GetHeightToFloor(pw)/character->wheelRight);
 
     angle.x = (a2-a1)/2.0f;
 }
@@ -2498,37 +2488,37 @@ void CPhysics::FloorAngle(const Math::Vector &pos, Math::Vector &angle)
 
 int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 {
-    CObject*    pObj;
-    CPyro*      pyro;
-    CPhysics*   ph;
+    CObject*        pObj;
+    Gfx::CPyro*     pyro;
+    CPhysics*       ph;
     Math::Matrix    matRotate;
     Math::Vector    iPos, oPos, iiPos, oAngle, oSpeed;
-    Sound       sound;
-    float       iRad, oRad, distance, force, volume;
-    int         i, j, colType;
-    ObjectType  iType, oType;
+    Sound           sound;
+    float           iRad, oRad, distance, force, volume;
+    int             i, j, colType;
+    ObjectType      iType, oType;
 
-    if ( m_object->RetRuin() )  return 0;  // is burning or exploding?
-    if ( !m_object->RetClip() )  return 0;
+    if ( m_object->GetRuin() )  return 0;  // is burning or exploding?
+    if ( !m_object->GetClip() )  return 0;
 
     // iiPos = sphere center is the old position.
     // iPos  = sphere center has the new position.
     m_object->GetCrashSphere(0, iiPos, iRad);
-    iPos = iiPos + (pos - m_object->RetPosition(0));
-    iType = m_object->RetType();
+    iPos = iiPos + (pos - m_object->GetPosition(0));
+    iType = m_object->GetType();
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         if ( pObj == m_object )  continue;  // yourself?
-        if ( pObj->RetTruck() != 0 )  continue;  // object transported?
-        if ( !pObj->RetEnable() )  continue;  // inactive?
-        if ( pObj->RetRuin() )  continue;  // is burning or exploding?
-        if ( pObj->RetDead() )  continue;  // dead man?
+        if ( pObj->GetTruck() != 0 )  continue;  // object transported?
+        if ( !pObj->GetEnable() )  continue;  // inactive?
+        if ( pObj->GetRuin() )  continue;  // is burning or exploding?
+        if ( pObj->GetDead() )  continue;  // dead man?
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
         if ( oType == OBJECT_NULL                             )  continue;
         if ( oType == OBJECT_TOTO                             )  continue;
 //?     if ( iType == OBJECT_BEE    && oType == OBJECT_BEE    )  continue;
@@ -2571,34 +2561,34 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
 
 #if _TEEN
         if ( oType == OBJECT_WAYPOINT &&
-             pObj->RetEnable()        &&
-            !m_object->RetResetBusy() )  // driving vehicle?
+             pObj->GetEnable()        &&
+            !m_object->GetResetBusy() )  // driving vehicle?
 #else
         if ( oType == OBJECT_WAYPOINT &&
-             pObj->RetEnable()        &&
-            !m_object->RetResetBusy() &&
-             m_object->RetTrainer()   )  // driving vehicle?
+             pObj->GetEnable()        &&
+            !m_object->GetResetBusy() &&
+             m_object->GetTrainer()   )  // driving vehicle?
 #endif
         {
-            oPos = pObj->RetPosition(0);
+            oPos = pObj->GetPosition(0);
             distance = Math::DistanceProjected(oPos, iPos);
             if ( distance < 4.0f )
             {
-                m_sound->Play(SOUND_WAYPOINT, m_object->RetPosition(0));
-                pyro = new CPyro(m_iMan);
-                pyro->Create(PT_WPCHECK, pObj);
+                m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(0));
+                pyro = new Gfx::CPyro(m_iMan);
+                pyro->Create(Gfx::PT_WPCHECK, pObj);
             }
         }
 
         if ( oType == OBJECT_TARGET2 )
         {
-            oPos = pObj->RetPosition(0);
+            oPos = pObj->GetPosition(0);
             distance = Math::Distance(oPos, iPos);
             if ( distance < 10.0f*1.5f )
             {
-                m_sound->Play(SOUND_WAYPOINT, m_object->RetPosition(0));
-                pyro = new CPyro(m_iMan);
-                pyro->Create(PT_WPCHECK, pObj);
+                m_sound->Play(SOUND_WAYPOINT, m_object->GetPosition(0));
+                pyro = new Gfx::CPyro(m_iMan);
+                pyro->Create(Gfx::PT_WPCHECK, pObj);
             }
         }
 
@@ -2620,11 +2610,11 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     m_bCollision = true;
                     m_bObstacle = true;
 
-                    sound = pObj->RetCrashSphereSound(j-1);
+                    sound = pObj->GetCrashSphereSound(j-1);
                     if ( sound != SOUND_CLICK )
                     {
                         force = fabs(m_linMotion.realSpeed.x);
-                        force *= pObj->RetCrashSphereHardness(j-1)*2.0f;
+                        force *= pObj->GetCrashSphereHardness(j-1)*2.0f;
                         if ( ExploOther(iType, pObj, oType, force) )  continue;
                         colType = ExploHimself(iType, oType, force);
                         if ( colType == 2 )  return 2;  // destroyed?
@@ -2632,16 +2622,16 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                     }
 
                     force = m_linMotion.realSpeed.Length();
-                    force *= pObj->RetCrashSphereHardness(j-1);
+                    force *= pObj->GetCrashSphereHardness(j-1);
                     volume = fabs(force*0.05f);
                     if ( volume > 1.0f )  volume = 1.0f;
                     if ( sound != SOUND_CLICK )
                     {
-                        m_sound->Play(sound, m_object->RetPosition(0), volume);
+                        m_sound->Play(sound, m_object->GetPosition(0), volume);
                     }
                     if ( iType == OBJECT_HUMAN && volume > 0.5f )
                     {
-                        m_sound->Play(SOUND_AIE, m_object->RetPosition(0), volume);
+                        m_sound->Play(SOUND_AIE, m_object->GetPosition(0), volume);
                     }
 
                     if ( m_repeatCollision > 0 )
@@ -2663,14 +2653,14 @@ int CPhysics::ObjectAdapt(const Math::Vector &pos, const Math::Vector &angle)
                         m_linMotion.currentSpeed.y = 0.0f;
                     }
 
-                    ph = pObj->RetPhysics();
+                    ph = pObj->GetPhysics();
                     if ( ph != 0 )
                     {
-                        oAngle = pObj->RetAngle(0);
+                        oAngle = pObj->GetAngle(0);
                         oSpeed = Normalize(oPos-iPos)*force;
                         Math::LoadRotationXZYMatrix(matRotate, -oAngle);
                         oSpeed = Transform(matRotate, oSpeed);
-                        if ( ph->RetType() == TYPE_ROLLING )
+                        if ( ph->GetType() == TYPE_ROLLING )
                         {
                             oSpeed.y = 0.0f;
                         }
@@ -2737,7 +2727,7 @@ bool CPhysics::JostleObject(CObject* pObj, float force)
     if ( m_soundTimeJostle >= 0.20f )
     {
         m_soundTimeJostle = 0.0f;
-        m_sound->Play(SOUND_JOSTLE, pObj->RetPosition(0), force);
+        m_sound->Play(SOUND_JOSTLE, pObj->GetPosition(0), force);
     }
 
     return pObj->JostleObject(force);
@@ -2749,9 +2739,9 @@ bool CPhysics::JostleObject(CObject* pObj, float force)
 bool CPhysics::ExploOther(ObjectType iType,
                           CObject *pObj, ObjectType oType, float force)
 {
-    CPyro*      pyro;
+    Gfx::CPyro* pyro;
 
-    if ( !pObj->RetEnable() )  return true;
+    if ( !pObj->GetEnable() )  return true;
 
     JostleObject(pObj, 1.0f);  // shakes the object
 
@@ -2759,24 +2749,24 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_FRET  ||
           oType == OBJECT_METAL ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_EXPLOT, pObj);  // total destruction
+        pyro = new Gfx::CPyro(m_iMan);
+        pyro->Create(Gfx::PT_EXPLOT, pObj);  // total destruction
     }
 
     if ( force > 50.0f &&
          (oType == OBJECT_POWER   ||
           oType == OBJECT_ATOMIC  ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_FRAGT, pObj);  // total destruction
+        pyro = new Gfx::CPyro(m_iMan);
+        pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     if ( force > 25.0f &&
          (oType == OBJECT_STONE   ||
           oType == OBJECT_URANIUM ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_FRAGT, pObj);  // total destruction
+        pyro = new Gfx::CPyro(m_iMan);
+        pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     if ( force > 25.0f &&
@@ -2836,15 +2826,15 @@ bool CPhysics::ExploOther(ObjectType iType,
          (oType == OBJECT_MOBILEtg ||
           oType == OBJECT_TNT      ) )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_FRAGT, pObj);  // total destruction
+        pyro = new Gfx::CPyro(m_iMan);
+        pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     if ( force > 0.0f &&
          oType == OBJECT_BOMB )
     {
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_FRAGT, pObj);  // total destruction
+        pyro = new Gfx::CPyro(m_iMan);
+        pyro->Create(Gfx::PT_FRAGT, pObj);  // total destruction
     }
 
     return false;
@@ -2857,16 +2847,16 @@ bool CPhysics::ExploOther(ObjectType iType,
 
 int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 {
-    PyroType    type;
-    CPyro*      pyro;
+    Gfx::PyroType    type;
+    Gfx::CPyro*      pyro;
 
     if ( force > 10.0f &&
          (oType == OBJECT_TNT      ||
           oType == OBJECT_MOBILEtg ) )
     {
-        if ( iType == OBJECT_HUMAN )  type = PT_DEADG;
-        else                          type = PT_EXPLOT;
-        pyro = new CPyro(m_iMan);
+        if ( iType == OBJECT_HUMAN )  type = Gfx::PT_DEADG;
+        else                          type = Gfx::PT_EXPLOT;
+        pyro = new Gfx::CPyro(m_iMan);
         pyro->Create(type, m_object);  // total destruction
         return 2;
     }
@@ -2876,19 +2866,19 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
     {
         if ( iType == OBJECT_HUMAN )
         {
-            type = PT_DEADG;
+            type = Gfx::PT_DEADG;
         }
         else if ( iType == OBJECT_ANT    ||
                   iType == OBJECT_SPIDER ||
                   iType == OBJECT_BEE    )
         {
-            type = PT_EXPLOO;
+            type = Gfx::PT_EXPLOO;
         }
         else
         {
-            type = PT_EXPLOT;
+            type = Gfx::PT_EXPLOT;
         }
-        pyro = new CPyro(m_iMan);
+        pyro = new Gfx::CPyro(m_iMan);
         pyro->Create(type, m_object);  // total destruction
         return 2;
     }
@@ -2980,7 +2970,7 @@ int CPhysics::ExploHimself(ObjectType iType, ObjectType oType, float force)
 
 // Makes the particles evolve.
 
-void CPhysics::FrameParticule(float aTime, float rTime)
+void CPhysics::FrameParticle(float aTime, float rTime)
 {
     Math::Vector    pos;
     CObject*    power;
@@ -2988,61 +2978,61 @@ void CPhysics::FrameParticule(float aTime, float rTime)
     int         effectLight;
     bool        bFlash;
 
-    m_restBreakParticule -= rTime;
-    if ( aTime-m_lastPowerParticule < m_engine->ParticuleAdapt(0.05f) )  return;
-    m_lastPowerParticule = aTime;
+    m_restBreakParticle -= rTime;
+    if ( aTime-m_lastPowerParticle < m_engine->ParticleAdapt(0.05f) )  return;
+    m_lastPowerParticle = aTime;
 
     bFlash = false;
 
     energy = 0.0f;
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power != 0 )
     {
-        energy = power->RetEnergy();
+        energy = power->GetEnergy();
     }
 
     if ( energy != m_lastEnergy )  // change the energy level?
     {
         if ( energy > m_lastEnergy )  // recharge?
         {
-            PowerParticule(1.0f, false);
+            PowerParticle(1.0f, false);
             bFlash = true;
         }
 
         if ( energy == 0.0f || m_lastEnergy == 0.0f )
         {
-            m_restBreakParticule = 2.5f;  // particles for 2.5s
+            m_restBreakParticle = 2.5f;  // particles for 2.5s
         }
 
         m_lastEnergy = energy;
     }
 
-    if ( m_restBreakParticule > 0.0f )
+    if ( m_restBreakParticle > 0.0f )
     {
-        PowerParticule(m_restBreakParticule/2.5f, (energy == 0));
+        PowerParticle(m_restBreakParticle/2.5f, (energy == 0));
         bFlash = true;
     }
 
-    effectLight = m_object->RetEffectLight();
+    effectLight = m_object->GetEffectLight();
     if ( effectLight != -1 )
     {
         if ( bFlash )
         {
             intensity = 0.0f;
             if ( Math::Rand() < 0.5f )  intensity = 1.0f;
-            m_light->SetLightIntensity(effectLight, intensity);
-            m_light->SetLightIntensitySpeed(effectLight, 10000.0f);
+            m_lightMan->SetLightIntensity(effectLight, intensity);
+            m_lightMan->SetLightIntensitySpeed(effectLight, 10000.0f);
         }
         else
         {
-            m_light->SetLightIntensity(effectLight, 0.0f);
+            m_lightMan->SetLightIntensity(effectLight, 0.0f);
         }
     }
 }
 
 // Generates some particles after a recharge.
 
-void CPhysics::PowerParticule(float factor, bool bBreak)
+void CPhysics::PowerParticle(float factor, bool bBreak)
 {
     Character*  character;
     CObject*    fret;
@@ -3052,15 +3042,15 @@ void CPhysics::PowerParticule(float factor, bool bBreak)
     bool        bCarryPower;
 
     bCarryPower = false;
-    fret = m_object->RetFret();
-    if ( fret != 0 && fret->RetType() == OBJECT_POWER &&
-         m_object->RetAngleZ(1) == ARM_STOCK_ANGLE1 )
+    fret = m_object->GetFret();
+    if ( fret != 0 && fret->GetType() == OBJECT_POWER &&
+         m_object->GetAngleZ(1) == ARM_STOCK_ANGLE1 )
     {
         bCarryPower = true;  // carries a battery
     }
 
-    mat = m_object->RetWorldMatrix(0);
-    character = m_object->RetCharacter();
+    mat = m_object->GetWorldMatrix(0);
+    character = m_object->GetCharacter();
 
     pos = character->posPower;
     pos.x -= 0.3f;
@@ -3078,7 +3068,7 @@ void CPhysics::PowerParticule(float factor, bool bBreak)
     dim.x = 1.0f*factor;
     dim.y = 1.0f*factor;
 
-    m_particule->CreateParticule(ppos, speed, dim, PARTIBLITZ, 0.5f, 0.0f, 0.0f);
+    m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTIBLITZ, 0.5f, 0.0f, 0.0f);
 
     if ( bCarryPower )  // carry a battery?
     {
@@ -3096,27 +3086,27 @@ void CPhysics::PowerParticule(float factor, bool bBreak)
         dim.x = 1.0f*factor;
         dim.y = 1.0f*factor;
 
-        m_particule->CreateParticule(ppos, speed, dim, PARTIBLITZ, 0.5f, 0.0f, 0.0f);
+        m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTIBLITZ, 0.5f, 0.0f, 0.0f);
     }
 }
 
 // Generates some particles after a fall.
 // crash: 0=super soft, 1=big crash
 
-void CPhysics::CrashParticule(float crash)
+void CPhysics::CrashParticle(float crash)
 {
     Math::Vector    pos, ppos, speed;
     Math::Point     dim;
-    float       len;
-    int         i, max;
+    float           len;
+    int             i, max;
 
     if ( crash < 0.2f )  return;
 
-    pos = m_object->RetPosition(0);
-    m_camera->StartEffect(CE_CRASH, pos, crash);
+    pos = m_object->GetPosition(0);
+    m_camera->StartEffect(Gfx::CAM_EFFECT_CRASH, pos, crash);
 
 //? max = (int)(crash*50.0f);
-    max = (int)(crash*10.0f*m_engine->RetParticuleDensity());
+    max = static_cast<int>(crash*10.0f*m_engine->GetParticleDensity());
 
     for ( i=0 ; i<max ; i++ )
     {
@@ -3130,13 +3120,13 @@ void CPhysics::CrashParticule(float crash)
         speed.y = -2.0f;
         dim.x = 2.0f+crash*5.0f*len;
         dim.y = dim.x;
-        m_particule->CreateParticule(ppos, speed, dim, PARTICRASH, 2.0f);
+        m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTICRASH, 2.0f);
     }
 }
 
 // Generates some exhaust gas particle.
 
-void CPhysics::MotorParticule(float aTime, float rTime)
+void CPhysics::MotorParticle(float aTime, float rTime)
 {
     Math::Matrix*   mat;
     Math::Vector    pos, speed;
@@ -3146,9 +3136,9 @@ void CPhysics::MotorParticule(float aTime, float rTime)
     float       h, a, delay, level;
     int         r, i, nb;
 
-    if ( m_object->RetToy() )  return;
+    if ( m_object->GetToy() )  return;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
 
     if ( type == OBJECT_MOBILEia ||
          type == OBJECT_MOBILEic ||
@@ -3166,14 +3156,14 @@ void CPhysics::MotorParticule(float aTime, float rTime)
     else                         delay = 8.0f;
     if ( m_bSwim && m_timeUnderWater < delay )  // bubbles when entering water?
     {
-        if ( aTime-m_lastUnderParticule >= m_engine->ParticuleAdapt(0.05f) )
+        if ( aTime-m_lastUnderParticle >= m_engine->ParticleAdapt(0.05f) )
         {
-            m_lastUnderParticule = aTime;
+            m_lastUnderParticle = aTime;
 
-            nb = (int)(20.0f-(20.0f/delay)*m_timeUnderWater);
+            nb = static_cast<int>(20.0f-(20.0f/delay)*m_timeUnderWater);
             for ( i=0 ; i<nb ; i++ )
             {
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.x += (Math::Rand()-0.5f)*4.0f;
                 pos.y += (Math::Rand()-0.5f)*4.0f;
                 pos.z += (Math::Rand()-0.5f)*4.0f;
@@ -3182,13 +3172,13 @@ void CPhysics::MotorParticule(float aTime, float rTime)
                 speed.z = (Math::Rand()-0.5f)*0.2f;
                 dim.x = 0.06f+Math::Rand()*0.10f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
             }
         }
     }
 
-    level = m_water->RetLevel();
-    pos = m_object->RetPosition(0);
+    level = m_water->GetLevel();
+    pos = m_object->GetPosition(0);
     if ( type == OBJECT_HUMAN )  pos.y -= 2.0f;
     if ( pos.y < level )  // underwater?
     {
@@ -3203,16 +3193,16 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
     if ( pos.y >= level       &&
          m_absorbWater > 0.0f &&
-         !m_water->RetLava()  )  // drops on leaving the water?
+         !m_water->GetLava()  )  // drops on leaving the water?
     {
-        if ( aTime-m_lastUnderParticule >= m_engine->ParticuleAdapt(0.05f) )
+        if ( aTime-m_lastUnderParticle >= m_engine->ParticleAdapt(0.05f) )
         {
-            m_lastUnderParticule = aTime;
+            m_lastUnderParticle = aTime;
 
-            nb = (int)(8.0f*m_absorbWater);
+            nb = static_cast<int>(8.0f*m_absorbWater);
             for ( i=0 ; i<nb ; i++ )
             {
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 if ( type == OBJECT_HUMAN )  pos.y -= Math::Rand()*2.0f;
                 else                         pos.y += Math::Rand()*2.0f;
                 pos.x += (Math::Rand()-0.5f)*2.0f;
@@ -3222,7 +3212,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
                 speed.z = 0.0f;
                 dim.x = 0.2f;
                 dim.y = 0.2f;
-                m_particule->CreateParticule(pos, speed, dim, PARTIWATER, 2.0f, 0.0f, 1.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIWATER, 2.0f, 0.0f, 1.0f);
             }
         }
     }
@@ -3231,18 +3221,18 @@ void CPhysics::MotorParticule(float aTime, float rTime)
          type == OBJECT_TECH  )
     {
         if ( m_bLand &&
-             aTime-m_lastSlideParticule >= m_engine->ParticuleAdapt(0.05f) )
+             aTime-m_lastSlideParticle >= m_engine->ParticleAdapt(0.05f) )
         {
             h = Math::Max(fabs(m_linMotion.terrainSpeed.x),
                     fabs(m_linMotion.terrainSpeed.z));
             if ( h > m_linMotion.terrainSlide.x+0.5f &&
                  m_linMotion.motorSpeed.x == 0.0f )  // slides a stop?
             {
-                m_lastSlideParticule = aTime;
+                m_lastSlideParticle = aTime;
 
-                mat = m_object->RetWorldMatrix(0);
+                mat = m_object->GetWorldMatrix(0);
                 pos.x = (Math::Rand()-0.5f)*1.0f;
-                pos.y = -m_object->RetCharacter()->height;
+                pos.y = -m_object->GetCharacter()->height;
                 pos.z = Math::Rand()*0.4f+1.0f;
                 if ( rand()%2 == 0 )  pos.z = -pos.z;
                 pos = Transform(*mat, pos);
@@ -3250,7 +3240,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 2.5f )  dim.x = 2.5f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.2f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 0.2f);
             }
         }
     }
@@ -3260,14 +3250,14 @@ void CPhysics::MotorParticule(float aTime, float rTime)
          type == OBJECT_MOBILEti ||
          type == OBJECT_MOBILEts )  // caterpillars?
     {
-        if ( aTime-m_lastSlideParticule >= m_engine->ParticuleAdapt(0.05f) )
+        if ( aTime-m_lastSlideParticle >= m_engine->ParticleAdapt(0.05f) )
         {
             h = fabs(m_linMotion.motorSpeed.x-m_linMotion.realSpeed.x);
             if ( h > 5.0f )
             {
-                m_lastSlideParticule = aTime;
+                m_lastSlideParticle = aTime;
 
-                mat = m_object->RetWorldMatrix(0);
+                mat = m_object->GetWorldMatrix(0);
                 pos.x = (Math::Rand()-0.5f)*8.0f;
                 pos.y = 0.0f;
                 pos.z = Math::Rand()*2.0f+3.0f;
@@ -3277,7 +3267,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 3.0f )  dim.x = 3.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.2f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 0.2f);
             }
         }
     }
@@ -3287,14 +3277,14 @@ void CPhysics::MotorParticule(float aTime, float rTime)
          type == OBJECT_MOBILErr ||
          type == OBJECT_MOBILErs )  // large caterpillars?
     {
-        if ( aTime-m_lastSlideParticule >= m_engine->ParticuleAdapt(0.05f) )
+        if ( aTime-m_lastSlideParticle >= m_engine->ParticleAdapt(0.05f) )
         {
             h = fabs(m_linMotion.motorSpeed.x-m_linMotion.realSpeed.x);
             if ( h > 5.0f )
             {
-                m_lastSlideParticule = aTime;
+                m_lastSlideParticle = aTime;
 
-                mat = m_object->RetWorldMatrix(0);
+                mat = m_object->GetWorldMatrix(0);
                 pos.x = (Math::Rand()-0.5f)*9.0f;
                 pos.y = 0.0f;
                 pos.z = Math::Rand()*3.0f+3.0f;
@@ -3304,7 +3294,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
                 dim.x = Math::Rand()*(h-5.0f)/2.0f+1.0f;
                 if ( dim.x > 3.0f )  dim.x = 3.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f, 0.0f, 0.2f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f, 0.0f, 0.2f);
             }
         }
     }
@@ -3323,11 +3313,11 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             }
 
             if ( m_reactorTemperature == 0.0f ||
-                 aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.05f) )  return;
-            m_lastMotorParticule = aTime;
+                 aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.05f) )  return;
+            m_lastMotorParticle = aTime;
 
             pos = Math::Vector(-1.6f, -0.5f, 0.0f);
-            mat = m_object->RetWorldMatrix(0);
+            mat = m_object->GetWorldMatrix(0);
             pos = Transform(*mat, pos);
 
             speed.x = (Math::Rand()-0.5f)*0.6f;
@@ -3337,7 +3327,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             dim.x = (1.0f+Math::Rand()*0.5f)*(0.2f+m_reactorTemperature*0.8f);
             dim.y = dim.x;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTISMOKE2, 3.0f, 0.0f, 0.1f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE2, 3.0f, 0.0f, 0.1f);
         }
         else    // in flight?
         {
@@ -3352,14 +3342,14 @@ void CPhysics::MotorParticule(float aTime, float rTime)
                 }
             }
 
-            if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.02f) )  return;
-            m_lastMotorParticule = aTime;
+            if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.02f) )  return;
+            m_lastMotorParticle = aTime;
 
             pos = Math::Vector(-1.6f, -1.0f, 0.0f);
             pos.x += (Math::Rand()-0.5f)*3.0f;
             pos.y += (Math::Rand()-0.5f)*1.5f;
             pos.z += (Math::Rand()-0.5f)*3.0f;
-            mat = m_object->RetWorldMatrix(0);
+            mat = m_object->GetWorldMatrix(0);
             pos = Transform(*mat, pos);
 
             h = m_floorHeight;
@@ -3377,7 +3367,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             dim.x = 0.12f;
             dim.y = 0.12f;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTISCRAPS, 2.0f, 10.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS, 2.0f, 10.0f);
 
 #if 1
             pos = Math::Vector(-1.6f, -0.5f, 0.0f);
@@ -3396,7 +3386,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             {
                 speed.y += m_linMotion.realSpeed.y*1.2f;
             }
-            a = m_object->RetAngleY(0);
+            a = m_object->GetAngleY(0);
             p.x = speed.x;
             p.y = speed.z;
             p = Math::RotatePoint(-a, p);
@@ -3406,7 +3396,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             dim.x = 0.4f+Math::Rand()*0.2f;
             dim.y = dim.x;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTIEJECT, 0.3f, 10.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIEJECT, 0.3f, 10.0f);
 #endif
         }
     }
@@ -3431,8 +3421,8 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
                 if ( h < 3.0f )  return;
 
-                if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.2f) )  return;
-                m_lastMotorParticule = aTime;
+                if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.2f) )  return;
+                m_lastMotorParticle = aTime;
 
                 r = rand()%3;
                 if ( r == 0 )  pos = Math::Vector(-3.0f, 0.0f, -4.0f);
@@ -3441,20 +3431,20 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
                 pos.x += (Math::Rand()-0.5f)*2.0f;
                 pos.z += (Math::Rand()-0.5f)*2.0f;
-                mat = m_object->RetWorldMatrix(0);
+                mat = m_object->GetWorldMatrix(0);
                 pos = Transform(*mat, pos);
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = Math::Rand()*h/5.0f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTICRASH, 2.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICRASH, 2.0f);
             }
             else    // glide with small reactors in skates?
             {
                 if ( m_linMotion.realSpeed.x == 0.0f &&
                      m_cirMotion.realSpeed.y == 0.0f )  return;
 
-                if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.02f) )  return;
-                m_lastMotorParticule = aTime;
+                if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.02f) )  return;
+                m_lastMotorParticle = aTime;
 
                 r = rand()%3;
                 if ( r == 0 )  pos = Math::Vector(-3.0f, 0.0f, -4.0f);
@@ -3463,26 +3453,26 @@ void CPhysics::MotorParticule(float aTime, float rTime)
 
                 pos.x += (Math::Rand()-0.5f)*1.0f;
                 pos.z += (Math::Rand()-0.5f)*1.0f;
-                mat = m_object->RetWorldMatrix(0);
+                mat = m_object->GetWorldMatrix(0);
                 pos = Transform(*mat, pos);
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIEJECT);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIEJECT);
             }
         }
         else    // in flight?
         {
             if ( !m_bMotor || m_reactorRange == 0.0f )  return;
 
-            if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.02f) )  return;
-            m_lastMotorParticule = aTime;
+            if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.02f) )  return;
+            m_lastMotorParticle = aTime;
 
             pos = Math::Vector(0.0f, -1.0f, 0.0f);
             pos.x += (Math::Rand()-0.5f)*6.0f;
             pos.y += (Math::Rand()-0.5f)*3.0f;
             pos.z += (Math::Rand()-0.5f)*6.0f;
-            mat = m_object->RetWorldMatrix(0);
+            mat = m_object->GetWorldMatrix(0);
             pos = Transform(*mat, pos);
 
             h = m_floorHeight;
@@ -3500,7 +3490,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             dim.x = 0.2f;
             dim.y = 0.2f;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTISCRAPS, 2.0f, 10.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISCRAPS, 2.0f, 10.0f);
 
 #if 1
             pos = Math::Vector(0.0f, 1.0f, 0.0f);
@@ -3519,7 +3509,7 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             {
                 speed.y += m_linMotion.realSpeed.y*1.2f;
             }
-            a = m_object->RetAngleY(0);
+            a = m_object->GetAngleY(0);
             p.x = speed.x;
             p.y = speed.z;
             p = Math::RotatePoint(-a, p);
@@ -3529,23 +3519,23 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             dim.x = 0.7f+Math::Rand()*0.6f;
             dim.y = dim.x;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTIEJECT, 0.5f, 10.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIEJECT, 0.5f, 10.0f);
 #endif
         }
     }
 
     if ( (type == OBJECT_HUMAN || type == OBJECT_TECH) && m_bSwim )
     {
-        if ( !m_object->RetDead() )
+        if ( !m_object->GetDead() )
         {
             h = Math::Mod(aTime, 5.0f);
             if ( h < 3.5f && ( h < 1.5f || h > 1.6f ) )  return;
         }
-        if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.06f) )  return;
-        m_lastMotorParticule = aTime;
+        if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.06f) )  return;
+        m_lastMotorParticle = aTime;
 
         pos = Math::Vector(0.0f, 3.0f, 0.0f);
-        mat = m_object->RetWorldMatrix(0);
+        mat = m_object->GetWorldMatrix(0);
         pos = Transform(*mat, pos);
         pos.x += (Math::Rand()-0.5f)*1.0f;
         pos.z += (Math::Rand()-0.5f)*1.0f;
@@ -3554,12 +3544,12 @@ void CPhysics::MotorParticule(float aTime, float rTime)
         speed.z = (Math::Rand()-0.5f)*0.2f;
         dim.x = 0.2f;
         dim.y = 0.2f;
-        m_particule->CreateParticule(pos, speed, dim, PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
 
         if ( aTime-m_lastSoundWater > 1.5f )
         {
             m_lastSoundWater = aTime;
-            m_sound->Play(SOUND_BLUP, m_object->RetPosition(0), 0.5f+Math::Rand()*0.5f);
+            m_sound->Play(SOUND_BLUP, m_object->GetPosition(0), 0.5f+Math::Rand()*0.5f);
         }
     }
 
@@ -3567,11 +3557,11 @@ void CPhysics::MotorParticule(float aTime, float rTime)
     {
         h = Math::Mod(aTime, 3.0f);
         if ( h < 1.5f && ( h < 0.5f || h > 0.9f ) )  return;
-        if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.06f) )  return;
-        m_lastMotorParticule = aTime;
+        if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.06f) )  return;
+        m_lastMotorParticle = aTime;
 
         pos = Math::Vector(0.0f, 3.0f, 0.0f);
-        mat = m_object->RetWorldMatrix(0);
+        mat = m_object->GetWorldMatrix(0);
         pos = Transform(*mat, pos);
         pos.x += (Math::Rand()-0.5f)*1.0f;
         pos.z += (Math::Rand()-0.5f)*1.0f;
@@ -3580,12 +3570,12 @@ void CPhysics::MotorParticule(float aTime, float rTime)
         speed.z = (Math::Rand()-0.5f)*0.2f;
         dim.x = 0.2f;
         dim.y = 0.2f;
-        m_particule->CreateParticule(pos, speed, dim, PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIBUBBLE, 3.0f, 0.0f, 0.0f);
 
         if ( aTime-m_lastSoundWater > 1.5f )
         {
             m_lastSoundWater = aTime;
-            m_sound->Play(SOUND_BLUP, m_object->RetPosition(0), 0.5f+Math::Rand()*0.5f);
+            m_sound->Play(SOUND_BLUP, m_object->GetPosition(0), 0.5f+Math::Rand()*0.5f);
         }
     }
 
@@ -3600,13 +3590,13 @@ void CPhysics::MotorParticule(float aTime, float rTime)
         {
             if ( !m_bMotor )  return;
 
-            if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.1f) )  return;
-            m_lastMotorParticule = aTime;
+            if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.1f) )  return;
+            m_lastMotorParticle = aTime;
 
             pos = Math::Vector(-2.5f, 10.3f, -1.3f);
             pos.x += (Math::Rand()-0.5f)*1.0f;
             pos.z += (Math::Rand()-0.5f)*1.0f;
-            mat = m_object->RetWorldMatrix(0);
+            mat = m_object->GetWorldMatrix(0);
             pos   = Transform(*mat, pos);
 
             speed.x = (Math::Rand()-0.5f)*2.0f;
@@ -3616,14 +3606,14 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             dim.x = Math::Rand()*0.6f+0.4f;
             dim.y = dim.x;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTIMOTOR, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIMOTOR, 2.0f);
         }
         else
         {
             if ( !m_bMotor )  return;
 
-            if ( aTime-m_lastMotorParticule < m_engine->ParticuleAdapt(0.05f) )  return;
-            m_lastMotorParticule = aTime;
+            if ( aTime-m_lastMotorParticle < m_engine->ParticleAdapt(0.05f) )  return;
+            m_lastMotorParticle = aTime;
 
             pos = Math::Vector(-3.4f, 1.8f, 0.5f);
 
@@ -3643,21 +3633,21 @@ void CPhysics::MotorParticule(float aTime, float rTime)
             speed.y -= 0.5f+Math::Rand()*2.0f;
             speed.z += (Math::Rand()-0.5f)*3.0f;
 
-            mat = m_object->RetWorldMatrix(0);
+            mat = m_object->GetWorldMatrix(0);
             pos   = Transform(*mat, pos);
             speed = Transform(*mat, speed)-pos;
 
             dim.x = Math::Rand()*0.4f+0.3f;
             dim.y = dim.x;
 
-            m_particule->CreateParticule(pos, speed, dim, PARTIMOTOR, 2.0f);
+            m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIMOTOR, 2.0f);
         }
     }
 }
 
 // Generates some particles after falling into the water.
 
-void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
+void CPhysics::WaterParticle(float aTime, Math::Vector pos, ObjectType type,
                               float floor, float advance, float turn)
 {
     Math::Vector    ppos, speed;
@@ -3665,7 +3655,7 @@ void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
     float       delay, level, min, max, force, volume, diam;
     int         i, nb;
 
-    level = m_water->RetLevel();
+    level = m_water->GetLevel();
     if ( floor >= level )  return;
 
     if ( type == OBJECT_HUMAN ||
@@ -3684,9 +3674,9 @@ void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
 
     // Management of the particle "splash".
     if ( m_linMotion.realSpeed.y < -10.0f   &&
-         aTime-m_lastPloufParticule >= 1.0f )
+         aTime-m_lastPloufParticle >= 1.0f )
     {
-        m_lastPloufParticule = aTime;
+        m_lastPloufParticle = aTime;
 
         force = -m_linMotion.realSpeed.y/20.0f;  // power according to speed drops
         if ( type == OBJECT_HUMAN ||
@@ -3700,14 +3690,14 @@ void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
             force *= 1.3f;  // a robot is heavier
         }
 
-        pos = m_object->RetPosition(0);
-        pos.y = m_water->RetLevel()-1.0f;
+        pos = m_object->GetPosition(0);
+        pos.y = m_water->GetLevel()-1.0f;
         dim.x = 2.0f*force;  // height
         dim.y = diam;  // diameter
-        m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, PARTIPLOUF0, 1.4f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), dim, Gfx::PARTIPLOUF0, 1.4f, 0.0f, 0.0f);
 
         force = (0.5f+force*0.5f);
-        nb = (int)(force*50.0f*m_engine->RetParticuleDensity());
+        nb = static_cast<int>(force*50.0f*m_engine->GetParticleDensity());
         for ( i=0 ; i<nb ; i++ )
         {
             ppos = pos;
@@ -3719,7 +3709,7 @@ void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
             speed.y = 6.0f+Math::Rand()*6.0f*force;
             dim.x = 0.5f;
             dim.y = dim.x;
-            m_particule->CreateParticule(ppos, speed, dim, PARTIDROP, 2.0f, 20.0f, 0.2f);
+            m_particle->CreateParticle(ppos, speed, dim, Gfx::PARTIDROP, 2.0f, 20.0f, 0.2f);
         }
 
         volume = fabs(m_linMotion.realSpeed.y*0.02f);
@@ -3728,7 +3718,7 @@ void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
     }
 
     // Management particles "cop".
-    if ( m_water->RetLava() )  return;
+    if ( m_water->GetLava() )  return;
 
     if ( advance == 0.0f && turn == 0.0f )
     {
@@ -3743,15 +3733,15 @@ void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
     {
         delay = 0.06f;
     }
-    m_engine->ParticuleAdapt(delay);
+    m_engine->ParticleAdapt(delay);
 
-    if ( aTime-m_lastWaterParticule < delay )  return;
-    m_lastWaterParticule = aTime;
+    if ( aTime-m_lastWaterParticle < delay )  return;
+    m_lastWaterParticle = aTime;
 
     force = (advance+turn)*0.16f;
     if ( force < 0.001f )  return;
 
-    pos = m_object->RetPosition(0);
+    pos = m_object->GetPosition(0);
     pos.y = level+0.1f;
     if ( advance == 0 )
     {
@@ -3768,29 +3758,27 @@ void CPhysics::WaterParticule(float aTime, Math::Vector pos, ObjectType type,
     speed.z = 0.0f;
     dim.x = Math::Min(Math::Rand()*force+force+1.0f, 10.0f);
     dim.y = dim.x;
-    m_particule->CreateParticule(pos, speed, dim, PARTIFLIC, 3.0f, 0.0f, 0.0f);
+    m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIFLIC, 3.0f, 0.0f, 0.0f);
 }
 
 // Creates the trace under the robot.
 
-void CPhysics::WheelParticule(int color, float width)
+void CPhysics::WheelParticle(int color, float width)
 {
-    Character*      character;
     Math::Matrix*       mat;
     Math::Vector        goal1, goal2, wheel1, wheel2;
-    ParticuleType   parti;
-    float           dist1, dist2, step;
+    Gfx::ParticleType   parti;
+    float               dist1, dist2, step;
 
-    character = m_object->RetCharacter();
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
 
     // Draw a trace on the ground.
     if ( color >= 0 && color <= 17 )
     {
-        parti = (ParticuleType)(PARTITRACE0+color);
+        parti = static_cast<Gfx::ParticleType>(Gfx::PARTITRACE0+color);
         step = 2.0f;
         if ( color >= 16 )  step = 4.0f;  // arrow?
-        step /= m_engine->RetTracePrecision();
+        step /= m_engine->GetTracePrecision();
 
         goal1.x = step/2.0f;
         goal1.y = 0.0f;
@@ -3802,36 +3790,36 @@ void CPhysics::WheelParticule(int color, float width)
         goal2.z = width/2.0f;
         goal2 = Transform(*mat, goal2);
 
-        if ( !m_bWheelParticuleBrake )
+        if ( !m_bWheelParticleBrake )
         {
-            m_wheelParticulePos[0] = goal1;
-            m_wheelParticulePos[1] = goal2;
+            m_wheelParticlePos[0] = goal1;
+            m_wheelParticlePos[1] = goal2;
         }
 
         while ( true )
         {
-            dist1 = Math::Distance(m_wheelParticulePos[0], goal1);
+            dist1 = Math::Distance(m_wheelParticlePos[0], goal1);
             if ( dist1 < step )  break;
-            dist2 = Math::Distance(m_wheelParticulePos[1], goal2);
-            wheel1 = Math::SegmentPoint(m_wheelParticulePos[0], goal1, step);
-            wheel2 = Math::SegmentPoint(m_wheelParticulePos[1], goal2, step*dist2/dist1);
+            dist2 = Math::Distance(m_wheelParticlePos[1], goal2);
+            wheel1 = Math::SegmentPoint(m_wheelParticlePos[0], goal1, step);
+            wheel2 = Math::SegmentPoint(m_wheelParticlePos[1], goal2, step*dist2/dist1);
             if ( m_linMotion.realSpeed.x >= 0.0f )
             {
-                m_particule->CreateWheelTrace(m_wheelParticulePos[0], m_wheelParticulePos[1], wheel1, wheel2, parti);
+                m_particle->CreateWheelTrace(m_wheelParticlePos[0], m_wheelParticlePos[1], wheel1, wheel2, parti);
             }
             else
             {
-                m_particule->CreateWheelTrace(m_wheelParticulePos[1], m_wheelParticulePos[0], wheel2, wheel1, parti);
+                m_particle->CreateWheelTrace(m_wheelParticlePos[1], m_wheelParticlePos[0], wheel2, wheel1, parti);
             }
-            m_wheelParticulePos[0] = wheel1;
-            m_wheelParticulePos[1] = wheel2;
+            m_wheelParticlePos[0] = wheel1;
+            m_wheelParticlePos[1] = wheel2;
         }
 
-        m_bWheelParticuleBrake = true;
+        m_bWheelParticleBrake = true;
     }
     else
     {
-        m_bWheelParticuleBrake = false;
+        m_bWheelParticleBrake = false;
     }
 }
 
@@ -3849,12 +3837,12 @@ void CPhysics::CreateInterface(bool bSelect)
 
 // Returns an error related to the general state.
 
-Error CPhysics::RetError()
+Error CPhysics::GetError()
 {
     ObjectType  type;
     CObject*    power;
 
-    type = m_object->RetType();
+    type = m_object->GetType();
     if ( type == OBJECT_HUMAN    ||
          type == OBJECT_TECH     ||
          type == OBJECT_MOTHER   ||
@@ -3865,19 +3853,19 @@ Error CPhysics::RetError()
          type == OBJECT_APOLLO2  ||
          type == OBJECT_MOBILEdr )  return ERR_OK;
 
-    if ( m_brain != 0 && m_brain->RetActiveVirus() )
+    if ( m_brain != 0 && m_brain->GetActiveVirus() )
     {
         return ERR_VEH_VIRUS;
     }
 
-    power = m_object->RetPower();  // searches for the object battery used
+    power = m_object->GetPower();  // searches for the object battery used
     if ( power == 0 )
     {
         return ERR_VEH_POWER;
     }
     else
     {
-        if ( power->RetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
+        if ( power->GetEnergy() == 0.0f )  return ERR_VEH_ENERGY;
     }
 
     return ERR_OK;

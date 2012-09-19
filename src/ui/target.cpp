@@ -17,27 +17,14 @@
 // target.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "object/robotmain.h"
-#include "object/object.h"
-#include "common/restext.h"
 #include "ui/target.h"
 
 
 
-
+namespace Ui {
 // Object's constructor.
 
-CTarget::CTarget(CInstanceManager* iMan) : CControl(iMan)
+CTarget::CTarget() : CControl()
 {
 }
 
@@ -50,11 +37,11 @@ CTarget::~CTarget()
 
 // Creates a new button.
 
-bool CTarget::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CTarget::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
 
     return true;
 }
@@ -70,26 +57,27 @@ bool CTarget::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_MOUSEMOVE )
+    if ( event.type == EVENT_MOUSE_MOVE )
     {
         if ( CControl::Detect(event.pos) )
         {
-            m_engine->SetMouseType(D3DMOUSETARGET);
+            m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
             Event newEvent = event;
-            newEvent.event = m_eventMsg;
+            newEvent.type = m_eventType;
             m_event->AddEvent(newEvent);
             return false;
         }
     }
 
-    if ( event.event == EVENT_LBUTTONDOWN &&
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
+            event.mouseButton.button == 1 &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
         if ( CControl::Detect(event.pos) )
         {
             Event newEvent = event;
-            newEvent.event = EVENT_OBJECT_FIRE;
+            newEvent.type = EVENT_OBJECT_FIRE;
             m_event->AddEvent(newEvent);
             return false;
         }
@@ -104,40 +92,41 @@ bool CTarget::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_MOUSEMOVE )
+    if ( event.type == EVENT_MOUSE_MOVE )
     {
         m_main->SetFriendAim(false);
 
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseMove.pos) )
         {
-            pObj = DetectFriendObject(event.pos);
+            pObj = DetectFriendObject(event.mouseMove.pos);
             if ( pObj == 0 )
             {
-                m_engine->SetMouseType(D3DMOUSETARGET);
+                m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
 
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
                 return false;
             }
             else
             {
                 m_main->SetFriendAim(true);
-                m_engine->SetMouseType(D3DMOUSENORM);
+                m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
             }
         }
     }
 
-    if ( event.event == EVENT_LBUTTONDOWN &&
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN &&
+          event.mouseButton.button == 1   &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
-            if ( !m_main->RetFriendAim() )
+            if ( !m_main->GetFriendAim() )
             {
                 Event newEvent = event;
-                newEvent.event = EVENT_OBJECT_FIRE;
+                newEvent.type = EVENT_OBJECT_FIRE;
                 m_event->AddEvent(newEvent);
                 return false;
             }
@@ -159,7 +148,7 @@ void CTarget::Draw()
 
 // Returns the tooltip.
 
-bool CTarget::GetTooltip(Math::Point pos, char* name)
+bool CTarget::GetTooltip(Math::Point pos, std::string &name)
 {
 #if 0
     if ( (m_state&STATE_VISIBLE) && Detect(pos) )  // in the window?
@@ -178,9 +167,9 @@ bool CTarget::GetTooltip(Math::Point pos, char* name)
     {
 //?     pObj = DetectFriendObject(pos);
 //?     if ( pObj == 0 )
-        if ( !m_main->RetFriendAim() )
+        if ( !m_main->GetFriendAim() )
         {
-            strcpy(name, m_tooltip);
+             m_tooltip = name;
             return true;  // does not detect objects below!
         }
     }
@@ -202,15 +191,15 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetActif() )  continue;
-        if ( pObj->RetProxyActivate() )  continue;
-        if ( pObj->RetSelect() )  continue;
+        if ( !pObj->GetActif() )  continue;
+        if ( pObj->GetProxyActivate() )  continue;
+        if ( pObj->GetSelect() )  continue;
 
         pTarget = 0;
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type == OBJECT_DERRICK      ||
              type == OBJECT_FACTORY      ||
              type == OBJECT_REPAIR       ||
@@ -261,10 +250,10 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
         }
         else if ( (type == OBJECT_POWER  ||
                   type == OBJECT_ATOMIC ) &&
-             pObj->RetTruck() != 0 )  // battery used?
+             pObj->GetTruck() != 0 )  // battery used?
         {
-            pTarget = pObj->RetTruck();
-            if ( pTarget->RetType() == OBJECT_MOBILEtg )
+            pTarget = pObj->GetTruck();
+            if ( pTarget->GetType() == OBJECT_MOBILEtg )
             {
                 pTarget = 0;
             }
@@ -272,7 +261,7 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
 
         for ( j=0 ; j<OBJECTMAXPART ; j++ )
         {
-            rank = pObj->RetObjectRank(j);
+            rank = pObj->GetObjectRank(j);
             if ( rank == -1 )  continue;
             if ( rank != objRank )  continue;
             return pTarget;
@@ -281,3 +270,4 @@ CObject* CTarget::DetectFriendObject(Math::Point pos)
     return 0;
 }
 
+}

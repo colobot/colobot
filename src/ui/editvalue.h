@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,12 @@
 #include "ui/control.h"
 
 
+namespace Gfx{
+class CEngine;
+}
+
+namespace Ui {
+
 enum EditValueType
 {
     EVT_INT     = 1,    // integer
@@ -29,8 +36,6 @@ enum EditValueType
     EVT_100     = 3,    // percent (0 .. 1)
 };
 
-
-class CD3DEngine;
 class CEdit;
 class CButton;
 
@@ -39,10 +44,11 @@ class CButton;
 class CEditValue : public CControl
 {
 public:
-    CEditValue(CInstanceManager* iMan);
+//    CEditValue(CInstanceManager* iMan);
+    CEditValue();
     virtual ~CEditValue();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+    bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
     void        SetPos(Math::Point pos);
     void        SetDim(Math::Point dim);
@@ -51,33 +57,32 @@ public:
     void        Draw();
 
     void        SetType(EditValueType type);
-    EditValueType RetType();
+    EditValueType GetType();
 
     void        SetValue(float value, bool bSendMessage=false);
-    float       RetValue();
+    float       GetValue();
 
     void        SetStepValue(float value);
-    float       RetStepValue();
+    float       GetStepValue();
 
     void        SetMinValue(float value);
-    float       RetMinValue();
+    float       GetMinValue();
 
     void        SetMaxValue(float value);
-    float       RetMaxValue();
+    float       GetMaxValue();
 
 protected:
     void        MoveAdjust();
     void        HiliteValue(const Event &event);
 
-protected:
-    CEdit*      m_edit;
-    CButton*    m_buttonUp;
-    CButton*    m_buttonDown;
-
-    EditValueType m_type;
-    float       m_stepValue;
-    float       m_minValue;
-    float       m_maxValue;
+    Ui::CEdit*      m_edit;
+    Ui::CButton*    m_buttonUp;
+    Ui::CButton*    m_buttonDown;
+    EditValueType   m_type;
+    float           m_stepValue;
+    float           m_minValue;
+    float           m_maxValue;
 };
 
 
+}

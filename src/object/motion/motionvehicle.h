@@ -33,11 +33,11 @@ public:
     bool        Create(Math::Vector pos, float angle, ObjectType type, float power);
     bool        EventProcess(const Event &event);
 
-    bool        RetTraceDown();
+    bool        GetTraceDown();
     void        SetTraceDown(bool bDown);
-    int         RetTraceColor();
+    int         GetTraceColor();
     void        SetTraceColor(int color);
-    float       RetTraceWidth();
+    float       GetTraceWidth();
     void        SetTraceWidth(float width);
 
 protected:

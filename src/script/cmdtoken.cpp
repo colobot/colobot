@@ -15,23 +15,12 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "common/language.h"
-#include "common/global.h"
-#include "common/event.h"
-#include "old/water.h"
-#include "old/pyro.h"
-#include "old/camera.h"
-#include "object/object.h"
 #include "script/cmdtoken.h"
 
+#include "common/global.h"
 
+#include <string.h>
+#include <cstdio>
 
 
 
@@ -48,7 +37,7 @@ char* SkipSpace(char *line)
 
 // Checks if a line contains a command.
 
-bool Cmd(char *line, char *token)
+bool Cmd(char *line, const char *token)
 {
     char*   p;
 
@@ -59,7 +48,7 @@ bool Cmd(char *line, char *token)
 
 // Seeking an operator.
 
-char* SearchOp(char *line, char *op)
+char* SearchOp(char *line, const char *op)
 {
     char    opeq[50];
     char*   p;
@@ -418,7 +407,7 @@ ObjectType GetTypeObject(char *line, int rank, ObjectType def)
 
 // Returns the name of an object type.
 
-char* GetTypeObject(ObjectType type)
+const char* GetTypeObject(ObjectType type)
 {
     if ( type == OBJECT_PORTICO      )  return "Portico";
     if ( type == OBJECT_BASE         )  return "SpaceShip";
@@ -663,35 +652,35 @@ char* GetTypeObject(ObjectType type)
 
 // Returns the type of water.
 
-WaterType GetTypeWater(char *line, int rank, WaterType def)
+Gfx::WaterType GetTypeWater(char *line, int rank, Gfx::WaterType def)
 {
     char*   p;
 
     p = SearchArg(line, rank);
     if ( *p == 0 )  return def;
 
-    if ( Cmd(p, "NULL" ) )  return WATER_NULL;
-    if ( Cmd(p, "TT"   ) )  return WATER_TT;
-    if ( Cmd(p, "TO"   ) )  return WATER_TO;
-    if ( Cmd(p, "CT"   ) )  return WATER_CT;
-    if ( Cmd(p, "CO"   ) )  return WATER_CO;
+    if ( Cmd(p, "NULL" ) )  return Gfx::WATER_NULL;
+    if ( Cmd(p, "TT"   ) )  return Gfx::WATER_TT;
+    if ( Cmd(p, "TO"   ) )  return Gfx::WATER_TO;
+    if ( Cmd(p, "CT"   ) )  return Gfx::WATER_CT;
+    if ( Cmd(p, "CO"   ) )  return Gfx::WATER_CO;
 
     return def;
 }
 
 // Returns the type of terrain.
 
-D3DTypeObj GetTypeTerrain(char *line, int rank, D3DTypeObj def)
+Gfx::EngineObjectType GetTypeTerrain(char *line, int rank, Gfx::EngineObjectType def)
 {
     char*   p;
 
     p = SearchArg(line, rank);
     if ( *p == 0 )  return def;
 
-    if ( Cmd(p, "Terrain" ) )  return TYPETERRAIN;
-    if ( Cmd(p, "Object"  ) )  return TYPEFIX;
-    if ( Cmd(p, "Quartz"  ) )  return TYPEQUARTZ;
-    if ( Cmd(p, "Metal"   ) )  return TYPEMETAL;
+    if ( Cmd(p, "Terrain" ) )  return Gfx::ENG_OBJTYPE_TERRAIN;
+    if ( Cmd(p, "Object"  ) )  return Gfx::ENG_OBJTYPE_FIX;
+    if ( Cmd(p, "Quartz"  ) )  return Gfx::ENG_OBJTYPE_QUARTZ;
+    if ( Cmd(p, "Metal"   ) )  return Gfx::ENG_OBJTYPE_METAL;
 
     return def;
 }
@@ -753,64 +742,64 @@ int GetResearch(char *line, int rank)
 
 // Returns the type of pyrotechnic effect.
 
-PyroType GetPyro(char *line, int rank)
+Gfx::PyroType GetPyro(char *line, int rank)
 {
     char*   p;
 
     p = SearchArg(line, rank);
-    if ( *p == 0 )  return PT_NULL;
+    if ( *p == 0 )  return Gfx::PT_NULL;
 
-    if ( Cmd(p, "FRAGt"  ) )  return PT_FRAGT;
-    if ( Cmd(p, "FRAGo"  ) )  return PT_FRAGO;
-    if ( Cmd(p, "FRAGw"  ) )  return PT_FRAGW;
-    if ( Cmd(p, "EXPLOt" ) )  return PT_EXPLOT;
-    if ( Cmd(p, "EXPLOo" ) )  return PT_EXPLOO;
-    if ( Cmd(p, "EXPLOw" ) )  return PT_EXPLOW;
-    if ( Cmd(p, "SHOTt"  ) )  return PT_SHOTT;
-    if ( Cmd(p, "SHOTh"  ) )  return PT_SHOTH;
-    if ( Cmd(p, "SHOTm"  ) )  return PT_SHOTM;
-    if ( Cmd(p, "SHOTw"  ) )  return PT_SHOTW;
-    if ( Cmd(p, "EGG"    ) )  return PT_EGG;
-    if ( Cmd(p, "BURNt"  ) )  return PT_BURNT;
-    if ( Cmd(p, "BURNo"  ) )  return PT_BURNO;
-    if ( Cmd(p, "SPIDER" ) )  return PT_SPIDER;
-    if ( Cmd(p, "FALL"   ) )  return PT_FALL;
-    if ( Cmd(p, "RESET"  ) )  return PT_RESET;
-    if ( Cmd(p, "WIN"    ) )  return PT_WIN;
-    if ( Cmd(p, "LOST"   ) )  return PT_LOST;
+    if ( Cmd(p, "FRAGt"  ) )  return Gfx::PT_FRAGT;
+    if ( Cmd(p, "FRAGo"  ) )  return Gfx::PT_FRAGO;
+    if ( Cmd(p, "FRAGw"  ) )  return Gfx::PT_FRAGW;
+    if ( Cmd(p, "EXPLOt" ) )  return Gfx::PT_EXPLOT;
+    if ( Cmd(p, "EXPLOo" ) )  return Gfx::PT_EXPLOO;
+    if ( Cmd(p, "EXPLOw" ) )  return Gfx::PT_EXPLOW;
+    if ( Cmd(p, "SHOTt"  ) )  return Gfx::PT_SHOTT;
+    if ( Cmd(p, "SHOTh"  ) )  return Gfx::PT_SHOTH;
+    if ( Cmd(p, "SHOTm"  ) )  return Gfx::PT_SHOTM;
+    if ( Cmd(p, "SHOTw"  ) )  return Gfx::PT_SHOTW;
+    if ( Cmd(p, "EGG"    ) )  return Gfx::PT_EGG;
+    if ( Cmd(p, "BURNt"  ) )  return Gfx::PT_BURNT;
+    if ( Cmd(p, "BURNo"  ) )  return Gfx::PT_BURNO;
+    if ( Cmd(p, "SPIDER" ) )  return Gfx::PT_SPIDER;
+    if ( Cmd(p, "FALL"   ) )  return Gfx::PT_FALL;
+    if ( Cmd(p, "RESET"  ) )  return Gfx::PT_RESET;
+    if ( Cmd(p, "WIN"    ) )  return Gfx::PT_WIN;
+    if ( Cmd(p, "LOST"   ) )  return Gfx::PT_LOST;
 
-    return PT_NULL;
+    return Gfx::PT_NULL;
 }
 
 // Returns the type of camera.
 
-CameraType GetCamera(char *line, int rank)
+Gfx::CameraType GetCamera(char *line, int rank)
 {
     char*   p;
 
     p = SearchArg(line, rank);
-    if ( *p == 0 )  return CAMERA_NULL;
+    if ( *p == 0 )  return Gfx::CAM_TYPE_NULL;
 
-    if ( Cmd(p, "BACK"    ) )  return CAMERA_BACK;
-    if ( Cmd(p, "PLANE"   ) )  return CAMERA_PLANE;
-    if ( Cmd(p, "ONBOARD" ) )  return CAMERA_ONBOARD;
-    if ( Cmd(p, "FIX"     ) )  return CAMERA_FIX;
+    if ( Cmd(p, "BACK"    ) )  return Gfx::CAM_TYPE_BACK;
+    if ( Cmd(p, "PLANE"   ) )  return Gfx::CAM_TYPE_PLANE;
+    if ( Cmd(p, "ONBOARD" ) )  return Gfx::CAM_TYPE_ONBOARD;
+    if ( Cmd(p, "FIX"     ) )  return Gfx::CAM_TYPE_FIX;
 
-    return CAMERA_NULL;
+    return Gfx::CAM_TYPE_NULL;
 }
 
 // Returns the name of a camera.
 
-char* GetCamera(CameraType type)
+const char* GetCamera(Gfx::CameraType type)
 {
-    if ( type == CAMERA_ONBOARD )  return "ONBOARD";
-    if ( type == CAMERA_FIX     )  return "FIX";
+    if ( type == Gfx::CAM_TYPE_ONBOARD )  return "ONBOARD";
+    if ( type == Gfx::CAM_TYPE_FIX     )  return "FIX";
     return "BACK";
 }
 
 // Returns an integer.
 
-int OpInt(char *line, char *op, int def)
+int OpInt(char *line, const char *op, int def)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;
@@ -819,7 +808,7 @@ int OpInt(char *line, char *op, int def)
 
 // Returns a float number.
 
-float OpFloat(char *line, char *op, float def)
+float OpFloat(char *line, const char *op, float def)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;
@@ -828,7 +817,7 @@ float OpFloat(char *line, char *op, float def)
 
 // Returns a string.
 
-void OpString(char *line, char *op, char *buffer)
+void OpString(char *line, const char *op, char *buffer)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )
@@ -843,7 +832,7 @@ void OpString(char *line, char *op, char *buffer)
 
 // Returns the type of an object.
 
-ObjectType OpTypeObject(char *line, char *op, ObjectType def)
+ObjectType OpTypeObject(char *line, const char *op, ObjectType def)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;
@@ -852,7 +841,7 @@ ObjectType OpTypeObject(char *line, char *op, ObjectType def)
 
 // Returns the type of a water.
 
-WaterType OpTypeWater(char *line, char *op, WaterType def)
+Gfx::WaterType OpTypeWater(char *line, const char *op, Gfx::WaterType def)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;
@@ -861,7 +850,7 @@ WaterType OpTypeWater(char *line, char *op, WaterType def)
 
 // Returns the type of a terrain.
 
-D3DTypeObj OpTypeTerrain(char *line, char *op, D3DTypeObj def)
+Gfx::EngineObjectType OpTypeTerrain(char *line, const char *op, Gfx::EngineObjectType def)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;
@@ -870,7 +859,7 @@ D3DTypeObj OpTypeTerrain(char *line, char *op, D3DTypeObj def)
 
 // Returns the type of research.
 
-int OpResearch(char *line, char *op)
+int OpResearch(char *line, const char *op)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return 0;
@@ -879,25 +868,25 @@ int OpResearch(char *line, char *op)
 
 // Returns the type of pyrotechnic effect.
 
-PyroType OpPyro(char *line, char *op)
+Gfx::PyroType OpPyro(char *line, const char *op)
 {
     line = SearchOp(line, op);
-    if ( *line == 0 )  return PT_NULL;
+    if ( *line == 0 )  return Gfx::PT_NULL;
     return GetPyro(line, 0);
 }
 
 // Returns the type of camera.
 
-CameraType OpCamera(char *line, char *op)
+Gfx::CameraType OpCamera(char *line, const char *op)
 {
     line = SearchOp(line, op);
-    if ( *line == 0 )  return CAMERA_NULL;
+    if ( *line == 0 )  return Gfx::CAM_TYPE_NULL;
     return GetCamera(line, 0);
 }
 
 // Returns the type of a building.
 
-int OpBuild(char *line, char *op)
+int OpBuild(char *line, const char *op)
 {
     line = SearchOp(line, op);
     if ( *line == 0 )  return 0;
@@ -906,7 +895,7 @@ int OpBuild(char *line, char *op)
 
 // Returns a position in the XZ plane (top view).
 
-Math::Vector OpPos(char *line, char *op)
+Math::Vector OpPos(char *line, const char *op)
 {
     Math::Vector    pos;
 
@@ -924,7 +913,7 @@ Math::Vector OpPos(char *line, char *op)
 
 // Returns a direction.
 
-Math::Vector OpDir(char *line, char *op)
+Math::Vector OpDir(char *line, const char *op)
 {
     Math::Vector    dir;
 
@@ -940,28 +929,10 @@ Math::Vector OpDir(char *line, char *op)
     return dir;
 }
 
-// Reads a color (0 .. 255).
-
-D3DCOLOR OpColor(char *line, char *op, D3DCOLOR def)
-{
-    D3DCOLOR    color;
-
-    line = SearchOp(line, op);
-    if ( *line == 0 )  return def;
-
-    color = 0;
-    color |= (GetInt(line, 0, 0)&0xff)<<16;  // r
-    color |= (GetInt(line, 1, 0)&0xff)<<8;   // g
-    color |= (GetInt(line, 2, 0)&0xff)<<0;   // b
-    color |= (GetInt(line, 3, 0)&0xff)<<24;  // a
-    return color;
-}
-
 // Reads a color (-1 .. 1).
-
-D3DCOLORVALUE OpColorValue(char *line, char *op, D3DCOLORVALUE def)
+Gfx::Color  OpColor(char *line, const char *op, Gfx::Color def)
 {
-    D3DCOLORVALUE   color;
+    Gfx::Color color;
 
     line = SearchOp(line, op);
     if ( *line == 0 )  return def;

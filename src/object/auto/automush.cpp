@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,14 +16,14 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/automush.h"
 
 #include "common/iman.h"
 #include "script/cmdtoken.h"
 
 
+#include <stdio.h>
+#include <string.h>
 
 
 // Object's constructor.
@@ -57,7 +58,7 @@ void CAutoMush::Init()
     m_speed    = 1.0f/4.0f;
 
     m_time     = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 }
 
 
@@ -72,8 +73,8 @@ bool CAutoMush::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
 
@@ -122,7 +123,7 @@ bool CAutoMush::EventProcess(const Event &event)
         }
         else
         {
-            m_sound->Play(SOUND_MUSHROOM, m_object->RetPosition(0));
+            m_sound->Play(SOUND_MUSHROOM, m_object->GetPosition(0));
 
             m_phase    = AMP_FIRE;
             m_progress = 0.0f;
@@ -137,21 +138,21 @@ bool CAutoMush::EventProcess(const Event &event)
             factor = 1.0f-m_progress;
             size = 1.0f+(1.0f-m_progress)*0.3f;
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 for ( i=0 ; i<10 ; i++ )
                 {
-                    pos = m_object->RetPosition(0);
+                    pos = m_object->GetPosition(0);
                     pos.y += 5.0f;
                     speed.x = (Math::Rand()-0.5f)*200.0f;
                     speed.z = (Math::Rand()-0.5f)*200.0f;
                     speed.y = -(20.0f+Math::Rand()*20.0f);
                     dim.x = 1.0f;
                     dim.y = dim.x;
-                    channel = m_particule->CreateParticule(pos, speed, dim, PARTIGUN2, 2.0f, 100.0f, 0.0f);
-                    m_particule->SetObjectFather(channel, m_object);
+                    channel = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGUN2, 2.0f, 100.0f, 0.0f);
+                    m_particle->SetObjectFather(channel, m_object);
                 }
             }
         }
@@ -167,18 +168,18 @@ bool CAutoMush::EventProcess(const Event &event)
     {
         if ( m_progress < 1.0f )
         {
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.10f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.10f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.y += 5.0f;
                 speed.x = (Math::Rand()-0.5f)*4.0f;
                 speed.z = (Math::Rand()-0.5f)*4.0f;
                 speed.y = -(0.5f+Math::Rand()*0.5f);
                 dim.x = Math::Rand()*2.5f+2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -226,16 +227,16 @@ bool CAutoMush::SearchTarget()
     float       dist;
     int         i;
 
-    iPos = m_object->RetPosition(0);
+    iPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( pObj->RetLock() )  continue;
+        if ( pObj->GetLock() )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
              type != OBJECT_MOBILEwa &&
@@ -279,7 +280,7 @@ bool CAutoMush::SearchTarget()
              type != OBJECT_PARA     &&
              type != OBJECT_HUMAN    )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, iPos);
         if ( dist < 50.0f )  return true;
     }
@@ -288,9 +289,9 @@ bool CAutoMush::SearchTarget()
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoMush::RetError()
+Error CAutoMush::GetError()
 {
     return ERR_OK;
 }
@@ -332,11 +333,11 @@ bool CAutoMush::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoMushPhase)OpInt(line, "aPhase", AMP_WAIT);
+    m_phase = static_cast< AutoMushPhase >(OpInt(line, "aPhase", AMP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     return true;
 }

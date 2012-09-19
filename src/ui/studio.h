@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -17,24 +18,28 @@
 // studio.h
 
 #pragma once
+#include "common/event.h"
+
+#include "graphics/engine/camera.h"
 
 
-#include "object/object.h"
-#include "script/script.h"
+#include <string>
 
-
+class CEventQueue;
 class CInstanceManager;
-class CD3DEngine;
-class CEvent;
 class CRobotMain;
-class CCamera;
-class CSound;
-class CInterface;
 class CScript;
-class CList;
+class CSoundInterface;
+
+namespace Gfx {
+class CEngine;
+class CCamera;
+};
+
+namespace Ui {
+
 class CEdit;
-
-
+class CInterface;
 
 enum StudioDialog
 {
@@ -49,67 +54,70 @@ enum StudioDialog
 
 class CStudio
 {
-public:
-    CStudio(CInstanceManager* iMan);
-    ~CStudio();
+    public:
+        CStudio();
+        ~CStudio();
 
-    bool        EventProcess(const Event &event);
+        bool        EventProcess(const Event &event);
 
-    void        StartEditScript(CScript *script, char* name, int rank);
-    bool        StopEditScript(bool bCancel);
+        void        StartEditScript(CScript *script, std::string name, int rank);
+        bool        StopEditScript(bool bCancel);
 
-protected:
-    bool        EventFrame(const Event &event);
-    void        SearchToken(CEdit* edit);
-    void        ColorizeScript(CEdit* edit);
-    void        AdjustEditScript();
-    void        SetInfoText(char *text, bool bClickable);
-    void        ViewEditScript();
-    void        UpdateFlux();
-    void        UpdateButtons();
+    protected:
+        bool        EventFrame(const Event &event);
+        void        SearchToken(CEdit* edit);
+        void        ColorizeScript(CEdit* edit);
+        void        AdjustEditScript();
+        void        SetInfoText(std::string text, bool bClickable);
+        void        ViewEditScript();
+        void        UpdateFlux();
+        void        UpdateButtons();
 
-    void        StartDialog(StudioDialog type);
-    void        StopDialog();
-    void        AdjustDialog();
-    bool        EventDialog(const Event &event);
-    void        UpdateChangeList();
-    void        UpdateChangeEdit();
-    void        UpdateDialogAction();
-    void        UpdateDialogPublic();
-    void        UpdateDialogList();
-    void        SearchDirectory(char *dir, bool bCreate);
-    bool        ReadProgram();
-    bool        WriteProgram();
+        void        StartDialog(StudioDialog type);
+        void        StopDialog();
+        void        AdjustDialog();
+        bool        EventDialog(const Event &event);
+        void        UpdateChangeList();
+        void        UpdateChangeEdit();
+        void        UpdateDialogAction();
+        void        UpdateDialogPublic();
+        void        UpdateDialogList();
+        void        SearchDirectory(char* dir, bool bCreate);
+        bool        ReadProgram();
+        bool        WriteProgram();
 
-protected:
-    CInstanceManager* m_iMan;
-    CD3DEngine* m_engine;
-    CEvent*     m_event;
-    CRobotMain* m_main;
-    CCamera*    m_camera;
-    CSound*     m_sound;
-    CInterface* m_interface;
+    protected:
+        CInstanceManager* m_iMan;
+        Gfx::CEngine* m_engine;
+        CEventQueue*     m_event;
+        CRobotMain* m_main;
+        Gfx::CCamera*    m_camera;
+        CSoundInterface* m_sound;
+        CInterface* m_interface;
+        CApplication *m_app;
 
-    int         m_rank;
-    CScript*    m_script;
+        int         m_rank;
+        CScript*    m_script;
+        Gfx::CameraType m_editCamera;
 
-    bool        m_bEditMaximized;
-    bool        m_bEditMinimized;
+        bool        m_bEditMaximized;
+        bool        m_bEditMinimized;
 
-    CameraType  m_editCamera;
-    Math::Point     m_editActualPos;
-    Math::Point     m_editActualDim;
-    Math::Point     m_editFinalPos;
-    Math::Point     m_editFinalDim;
+        Math::Point     m_editActualPos;
+        Math::Point     m_editActualDim;
+        Math::Point     m_editFinalPos;
+        Math::Point     m_editFinalDim;
 
-    float       m_time;
-    float       m_fixInfoTextTime;
-    bool        m_bRunning;
-    bool        m_bRealTime;
-    bool        m_bInitPause;
-    char        m_helpFilename[100];
+        float       m_time;
+        float       m_fixInfoTextTime;
+        bool        m_bRunning;
+        bool        m_bRealTime;
+        bool        m_bInitPause;
+        std::string  m_helpFilename;
 
     StudioDialog m_dialog;
 };
 
+
+}
 

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -21,26 +22,22 @@
 
 #include "ui/control.h"
 
+#include "common/event.h"
+#include "common/misc.h"
 
-class CD3DEngine;
-
-
+namespace Ui {
 
 class CLabel : public CControl
 {
-public:
-    CLabel(CInstanceManager* iMan);
-    virtual ~CLabel();
+    public:
+        CLabel();
+        virtual ~CLabel();
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
+        bool    EventProcess(const Event &event);
 
-    bool    EventProcess(const Event &event);
-
-    void    Draw();
-
-protected:
-
-protected:
+        void    Draw();
 };
 
 
+}

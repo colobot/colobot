@@ -18,31 +18,38 @@
 
 #pragma once
 
+#include <string>
 
 #include "ui/control.h"
 
+#include "common/misc.h"
+#include "common/iman.h"
+#include "common/restext.h"
+#include "common/event.h"
 
-class CD3DEngine;
-class CObject;
+#include "graphics/engine/engine.h"
+
+#include "object/robotmain.h"
+#include "object/object.h"
 
 
+namespace Ui {
 
 class CTarget : public CControl
 {
-public:
-    CTarget(CInstanceManager* iMan);
-    ~CTarget();
+    public:
+        CTarget();
+        ~CTarget();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
-    bool        GetTooltip(Math::Point pos, char* name);
+        bool        EventProcess(const Event &event);
+        void        Draw();
+        bool        GetTooltip(Math::Point pos, std::string &name);
 
-protected:
-    CObject*    DetectFriendObject(Math::Point pos);
-
-protected:
+    protected:
+        CObject*    DetectFriendObject(Math::Point pos);
 };
 
 
+}

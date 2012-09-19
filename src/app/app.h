@@ -22,8 +22,7 @@
 
 #pragma once
 
-
-#include "common/misc.h"
+#include "common/global.h"
 #include "common/singleton.h"
 #include "graphics/core/device.h"
 #include "graphics/engine/engine.h"
@@ -36,11 +35,12 @@
 class CInstanceManager;
 class CEvent;
 class CRobotMain;
-class CSound;
+class CSoundInterface;
 
 /**
-  \struct JoystickDevice
-  \brief Information about a joystick device */
+ * \struct JoystickDevice
+ * \brief Information about a joystick device
+ */
 struct JoystickDevice
 {
     //! Device index (-1 = invalid device)
@@ -57,8 +57,9 @@ struct JoystickDevice
 };
 
 /**
-  \enum VideoQueryResult
-  \brief Result of querying for available video resolutions */
+ * \enum VideoQueryResult
+ * \brief Result of querying for available video resolutions
+ */
 enum VideoQueryResult
 {
     VIDEO_QUERY_ERROR,
@@ -67,6 +68,35 @@ enum VideoQueryResult
     VIDEO_QUERY_OK
 };
 
+
+/**
+ * \enum TrackedKeys
+ * \brief Keys (or kmods) whose state (pressed/released) is tracked by CApplication
+ */
+enum TrackedKey
+{
+    TRKEY_SHIFT     = (1<<0),
+    TRKEY_CONTROL   = (1<<1),
+    TRKEY_NUM_UP    = (1<<2),
+    TRKEY_NUM_DOWN  = (1<<3),
+    TRKEY_NUM_LEFT  = (1<<4),
+    TRKEY_NUM_RIGHT = (1<<5),
+    TRKEY_NUM_PLUS  = (1<<6),
+    TRKEY_NUM_MINUS = (1<<7),
+    TRKEY_PAGE_UP   = (1<<8),
+    TRKEY_PAGE_DOWN = (1<<9)
+};
+
+/**
+ * \enum ParseArgsStatus
+ * \brief State of parsing commandline arguments
+ */
+enum ParseArgsStatus
+{
+    PARSE_ARGS_OK   = 1, //! < all ok
+    PARSE_ARGS_FAIL = 2, //! < invalid syntax
+    PARSE_ARGS_HELP = 3  //! < -help requested
+};
 
 struct ApplicationPrivate;
 
@@ -82,7 +112,7 @@ struct ApplicationPrivate;
  * \section Creation Creation of other main objects
  *
  * The class creates the only instance of CInstanceManager, CEventQueue, CEngine,
- * CRobotMain and CSound classes.
+ * CRobotMain and CSoundInterface classes.
  *
  * \section Window Window management
  *
@@ -123,7 +153,7 @@ public:
 
 public:
     //! Parses commandline arguments
-    bool        ParseArguments(int argc, char *argv[]);
+    ParseArgsStatus ParseArguments(int argc, char *argv[]);
     //! Initializes the application
     bool        Create();
     //! Main event loop
@@ -147,8 +177,37 @@ public:
     //! Change the video mode to given mode
     bool        ChangeVideoConfig(const Gfx::GLDeviceConfig &newConfig);
 
+    //! Suspends animation (time will not be updated)
+    void        SuspendSimulation();
+    //! Resumes animation
+    void        ResumeSimulation();
+    //! Returns whether simulation is suspended
+    bool        GetSimulationSuspended();
+
     //! Updates the simulation state
-    void        StepSimulation(float rTime);
+    void        StepSimulation();
+
+    //@{
+    //! Management of simulation speed
+    void            SetSimulationSpeed(float speed);
+    float           GetSimulationSpeed();
+    //@}
+
+    //! Returns the absolute time counter [seconds]
+    float       GetAbsTime();
+    //! Returns the exact absolute time counter [nanoseconds]
+    long long   GetExactAbsTime();
+
+    //! Returns the exact absolute time counter disregarding speed setting [nanoseconds]
+    long long   GetRealAbsTime();
+
+    //! Returns the relative time since last update [seconds]
+    float       GetRelTime();
+    //! Returns the exact realative time since last update [nanoseconds]
+    long long   GetExactRelTime();
+
+    //! Returns the exact relative time since last update disregarding speed setting [nanoseconds]
+    long long   GetRealRelTime();
 
     //! Returns a list of available joystick devices
     std::vector<JoystickDevice> GetJoystickList();
@@ -159,10 +218,11 @@ public:
     //! Change the current joystick device
     bool        ChangeJoystick(const JoystickDevice &newJoystick);
 
-    //! Enables/disables joystick
+    //! Management of joystick enable state
+    //@{
     void        SetJoystickEnabled(bool enable);
-    //! Returns whether joystick is enabled
     bool        GetJoystickEnabled();
+    //@}
 
     //! Polls the state of joystick axes and buttons
     void        UpdateJoystick();
@@ -170,33 +230,52 @@ public:
     //! Updates the mouse position explicitly
     void        UpdateMouse();
 
-    void        FlushPressKey();
-    void        ResetKey();
-    void        SetKey(int keyRank, int option, int key);
-    int         GetKey(int keyRank, int option);
+    //! Returns the current key modifiers
+    int         GetKmods();
+    //! Returns whether the given kmod is active
+    bool        GetKmodState(int kmod);
 
-    //! Sets the grab mode for input (keyboard & mouse)
+    //! Returns whether the tracked key is pressed
+    bool        GetTrackedKeyState(TrackedKey key);
+
+    //! Returns whether the mouse button is pressed
+    bool        GetMouseButtonState(int index);
+
+    //! Resets tracked key states and modifiers
+    void        ResetKeyStates();
+
+    //! Management of the grab mode for input (keyboard & mouse)
+    //@{
     void        SetGrabInput(bool grab);
-    //! Returns the grab mode
     bool        GetGrabInput();
+    //@}
 
-    //! Sets the visiblity of system mouse cursor
+    //! Management of the visiblity of system mouse cursor
+    //@{
     void        SetSystemMouseVisible(bool visible);
-    //! Returns the visiblity of system mouse cursor
     bool        GetSystemMouseVisibile();
+    //@}
 
-    //! Sets the position of system mouse cursor (in interface coords)
+    //! Management of the position of system mouse cursor (in interface coords)
+    //@{
     void        SetSystemMousePos(Math::Point pos);
-    //! Returns the position of system mouse cursor (in interface coords)
     Math::Point GetSystemMousePos();
+    //@}
 
-    //! Enables/disables debug mode (prints more info in logger)
+    //! Management of debug mode (prints more info in logger)
+    //@{
     void        SetDebugMode(bool mode);
-    //! Returns whether debug mode is enabled
     bool        GetDebugMode();
+    //@}
 
     //! Returns the full path to a file in data directory
     std::string GetDataFilePath(const std::string &dirName, const std::string &fileName);
+
+    //! Management of language
+    //@{
+    Language    GetLanguage();
+    void        SetLanguage(Language language);
+    //@}
 
 protected:
     //! Creates the window's SDL_Surface
@@ -204,8 +283,10 @@ protected:
 
     //! Processes the captured SDL event to Event struct
     Event       ParseEvent();
+    //! If applicable, creates a virtual event to match the changed state as of new event
+    Event       CreateVirtualEvent(const Event& sourceEvent);
     //! Handles some incoming events
-    bool        ProcessEvent(const Event &event);
+    bool        ProcessEvent(Event &event);
     //! Renders the image in window
     void        Render();
 
@@ -226,7 +307,7 @@ protected:
     //! Graphics device
     Gfx::CDevice*           m_device;
     //! Sound subsystem
-    CSound*                 m_sound;
+    CSoundInterface*        m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
 
@@ -248,13 +329,36 @@ protected:
     //! Text set as window title
     std::string     m_windowTitle;
 
-    int             m_keyState;
-    Math::Vector    m_axeKey;
-    Math::Vector    m_axeJoy;
-    Math::Point     m_systemMousePos;
-    long            m_mouseWheel;
+    //! Animation time stamps, etc.
+    //@{
+    SystemTimeStamp* m_baseTimeStamp;
+    SystemTimeStamp* m_lastTimeStamp;
+    SystemTimeStamp* m_curTimeStamp;
 
-    long            m_key[50][2];
+    long long       m_realAbsTimeBase;
+    long long       m_realAbsTime;
+    long long       m_realRelTime;
+
+    long long       m_absTimeBase;
+    long long       m_exactAbsTime;
+    long long       m_exactRelTime;
+
+    float           m_absTime;
+    float           m_relTime;
+
+    float           m_simulationSpeed;
+    bool            m_simulationSuspended;
+    //@}
+
+    //! Current state of key modifiers (mask of SDLMod)
+    unsigned int    m_kmodState;
+    //! Current state of some tracked keys (mask of TrackedKey)
+    unsigned int    m_trackedKeys;
+    //! Current state of mouse buttons (mask of button indexes)
+    unsigned int    m_mouseButtonsState;
+
+    //! Current system mouse position
+    Math::Point     m_systemMousePos;
 
     //! Info about current joystick device
     JoystickDevice  m_joystick;
@@ -267,5 +371,8 @@ protected:
 
     //! Path to directory with data files
     std::string     m_dataPath;
+
+    //! Application language
+    Language        m_language;
 };
 

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -44,7 +45,7 @@ public:
 
     void        Init();
     bool        EventProcess(const Event &event);
-    Error       RetError();
+    Error       GetError();
 
     bool        CreateInterface(bool bSelect);
 
@@ -61,7 +62,7 @@ protected:
     float               m_progress;
     float               m_speed;
     float               m_timeVirus;
-    float               m_lastParticule;
+    float               m_lastParticle;
     Math::Vector            m_pos;
     int                 m_channelSound;
 };

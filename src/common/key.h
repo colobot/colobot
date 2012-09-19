@@ -29,6 +29,32 @@
 // If need arises, it can be changed to custom function or anything else
 #define KEY(x) SDLK_ ## x
 
+
 // Key modifier defined as concatenation to KMOD_...
 // If need arises, it can be changed to custom function or anything else
 #define KEY_MOD(x) KMOD_ ## x
+
+/**
+ * \enum VirtualKmod
+ * \brief Virtual key codes generated on kmod presses
+ *
+ * These are provided here because left and right pair of keys generate different codes.
+ */
+enum VirtualKmod
+{
+    VIRTUAL_KMOD_CTRL  = SDLK_LAST + 100, //! < control (left or right)
+    VIRTUAL_KMOD_SHIFT = SDLK_LAST + 101, //! < shift (left or right)
+    VIRTUAL_KMOD_ALT   = SDLK_LAST + 102, //! < alt (left or right)
+    VIRTUAL_KMOD_META  = SDLK_LAST + 103  //! < win key (left or right)
+};
+
+// Just syntax sugar
+// So it is the same as other macros
+#define VIRTUAL_KMOD(x) VIRTUAL_KMOD_ ## x
+
+// Virtual key code generated on joystick button presses
+// num is number of joystick button
+#define VIRTUAL_JOY(num) (SDLK_LAST + 200 + num)
+
+//! Special value for invalid key bindings
+const unsigned int KEY_INVALID = SDLK_LAST + 1000;

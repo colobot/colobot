@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -20,62 +21,62 @@
 
 
 #include "ui/control.h"
+#include "common/event.h"
 
+namespace Ui {
 
-class CD3DEngine;
 class CButton;
-
-
 
 class CSlider : public CControl
 {
-public:
-    CSlider(CInstanceManager* iMan);
-    ~CSlider();
+    public:
+        CSlider();
+        ~CSlider();
 
-    bool        Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool        Create(Math::Point pos, Math::Point dim, int icon, EventType eventMsg);
 
-    void        SetPos(Math::Point pos);
-    void        SetDim(Math::Point dim);
+        void        SetPos(Math::Point pos);
+        void        SetDim(Math::Point dim);
 
-    bool        SetState(int state, bool bState);
-    bool        SetState(int state);
-    bool        ClearState(int state);
+        bool        SetState(int state, bool bState);
+        bool        SetState(int state);
+        bool        ClearState(int state);
 
-    bool        EventProcess(const Event &event);
-    void        Draw();
+        bool        EventProcess(const Event &event);
+        void        Draw();
 
-    void        SetLimit(float min, float max);
+        void        SetLimit(float min, float max);
 
-    void        SetVisibleValue(float value);
-    float       RetVisibleValue();
+        void        SetVisibleValue(float value);
+        float       GetVisibleValue();
 
-    void        SetArrowStep(float step);
-    float       RetArrowStep();
+        void        SetArrowStep(float step);
+        float       GetArrowStep();
 
-protected:
-    void        MoveAdjust();
-    void        AdjustGlint();
-    void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
+    protected:
+        void        MoveAdjust();
+        void        AdjustGlint();
+        void        DrawVertex(Math::Point pos, Math::Point dim, int icon);
 
-protected:
-    CButton*    m_buttonLeft;
-    CButton*    m_buttonRight;
+    protected:
+        CButton*    m_buttonLeft;
+        CButton*    m_buttonRight;
 
-    float       m_min;
-    float       m_max;
-    float       m_visibleValue;
-    float       m_step;
+        float       m_min;
+        float       m_max;
+        float       m_visibleValue;
+        float       m_step;
 
-    bool        m_bHoriz;
-    float       m_marginButton;
+        bool        m_bHoriz;
+        float       m_marginButton;
 
-    bool        m_bCapture;
-    Math::Point     m_pressPos;
-    float       m_pressValue;
+        bool        m_bCapture;
+        Math::Point     m_pressPos;
+        float       m_pressValue;
 
-    EventMsg    m_eventUp;
-    EventMsg    m_eventDown;
+        EventType    m_eventUp;
+        EventType    m_eventDown;
 };
 
 
+}

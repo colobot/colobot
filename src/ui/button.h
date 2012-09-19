@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -18,39 +19,37 @@
 
 #pragma once
 
-
 #include "ui/control.h"
 
 
-class CD3DEngine;
+namespace Ui {
 
 
+    class CButton : public CControl
+    {
+    public:
+        CButton();
+        virtual ~CButton();
 
-class CButton : public CControl
-{
-public:
-    CButton(CInstanceManager* iMan);
-    virtual ~CButton();
+        bool    Create(Math::Point pos, Math::Point dim, int icon, EventType eventType);
 
-    bool    Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg);
+        bool    EventProcess(const Event &event);
 
-    bool    EventProcess(const Event &event);
+        void    Draw();
 
-    void    Draw();
+        void    SetImmediat(bool bRepeat);
+        bool    GetImmediat();
 
-    void    SetImmediat(bool bRepeat);
-    bool    RetImmediat();
+        void    SetRepeat(bool bRepeat);
+        bool    GetRepeat();
 
-    void    SetRepeat(bool bRepeat);
-    bool    RetRepeat();
+    protected:
 
-protected:
+    protected:
+        bool    m_bCapture;
+        bool    m_bImmediat;
+        bool    m_bRepeat;
+        float   m_repeat;
+    };
 
-protected:
-    bool    m_bCapture;
-    bool    m_bImmediat;
-    bool    m_bRepeat;
-    float   m_repeat;
-};
-
-
+}

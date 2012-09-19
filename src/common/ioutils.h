@@ -14,7 +14,10 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// ioutils.h
+/**
+ * \file ioutils.h
+ * \brief Functions for binary I/O
+ */
 
 #pragma once
 

@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,8 +16,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autofactory.h"
 
 #include "common/global.h"
@@ -29,7 +28,8 @@
 #include "ui/window.h"
 #include "ui/displaytext.h"
 
-
+#include <stdio.h>
+#include <string.h>
 
 
 
@@ -95,9 +95,9 @@ void CAutoFactory::Init()
     m_speed    = 1.0f/2.0f;
 
     m_time = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
-    m_fretPos = m_object->RetPosition(0);
+    m_fretPos = m_object->GetPosition(0);
 
     CAuto::Init();
 }
@@ -119,37 +119,37 @@ bool CAutoFactory::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
+    if ( m_engine->GetPause() )  return true;
 
-    if ( m_object->RetSelect() )  // factory selected?
+    if ( m_object->GetSelect() )  // factory selected?
     {
-        if ( event.event == EVENT_UPDINTERFACE )
+        if ( event.type == EVENT_UPDINTERFACE )
         {
             CreateInterface(true);
         }
 
         type = OBJECT_NULL;
-        if ( event.event == EVENT_OBJECT_FACTORYwa )  type = OBJECT_MOBILEwa;
-        if ( event.event == EVENT_OBJECT_FACTORYta )  type = OBJECT_MOBILEta;
-        if ( event.event == EVENT_OBJECT_FACTORYfa )  type = OBJECT_MOBILEfa;
-        if ( event.event == EVENT_OBJECT_FACTORYia )  type = OBJECT_MOBILEia;
-        if ( event.event == EVENT_OBJECT_FACTORYws )  type = OBJECT_MOBILEws;
-        if ( event.event == EVENT_OBJECT_FACTORYts )  type = OBJECT_MOBILEts;
-        if ( event.event == EVENT_OBJECT_FACTORYfs )  type = OBJECT_MOBILEfs;
-        if ( event.event == EVENT_OBJECT_FACTORYis )  type = OBJECT_MOBILEis;
-        if ( event.event == EVENT_OBJECT_FACTORYwc )  type = OBJECT_MOBILEwc;
-        if ( event.event == EVENT_OBJECT_FACTORYtc )  type = OBJECT_MOBILEtc;
-        if ( event.event == EVENT_OBJECT_FACTORYfc )  type = OBJECT_MOBILEfc;
-        if ( event.event == EVENT_OBJECT_FACTORYic )  type = OBJECT_MOBILEic;
-        if ( event.event == EVENT_OBJECT_FACTORYwi )  type = OBJECT_MOBILEwi;
-        if ( event.event == EVENT_OBJECT_FACTORYti )  type = OBJECT_MOBILEti;
-        if ( event.event == EVENT_OBJECT_FACTORYfi )  type = OBJECT_MOBILEfi;
-        if ( event.event == EVENT_OBJECT_FACTORYii )  type = OBJECT_MOBILEii;
-        if ( event.event == EVENT_OBJECT_FACTORYrt )  type = OBJECT_MOBILErt;
-        if ( event.event == EVENT_OBJECT_FACTORYrc )  type = OBJECT_MOBILErc;
-        if ( event.event == EVENT_OBJECT_FACTORYrr )  type = OBJECT_MOBILErr;
-        if ( event.event == EVENT_OBJECT_FACTORYrs )  type = OBJECT_MOBILErs;
-        if ( event.event == EVENT_OBJECT_FACTORYsa )  type = OBJECT_MOBILEsa;
+        if ( event.type == EVENT_OBJECT_FACTORYwa )  type = OBJECT_MOBILEwa;
+        if ( event.type == EVENT_OBJECT_FACTORYta )  type = OBJECT_MOBILEta;
+        if ( event.type == EVENT_OBJECT_FACTORYfa )  type = OBJECT_MOBILEfa;
+        if ( event.type == EVENT_OBJECT_FACTORYia )  type = OBJECT_MOBILEia;
+        if ( event.type == EVENT_OBJECT_FACTORYws )  type = OBJECT_MOBILEws;
+        if ( event.type == EVENT_OBJECT_FACTORYts )  type = OBJECT_MOBILEts;
+        if ( event.type == EVENT_OBJECT_FACTORYfs )  type = OBJECT_MOBILEfs;
+        if ( event.type == EVENT_OBJECT_FACTORYis )  type = OBJECT_MOBILEis;
+        if ( event.type == EVENT_OBJECT_FACTORYwc )  type = OBJECT_MOBILEwc;
+        if ( event.type == EVENT_OBJECT_FACTORYtc )  type = OBJECT_MOBILEtc;
+        if ( event.type == EVENT_OBJECT_FACTORYfc )  type = OBJECT_MOBILEfc;
+        if ( event.type == EVENT_OBJECT_FACTORYic )  type = OBJECT_MOBILEic;
+        if ( event.type == EVENT_OBJECT_FACTORYwi )  type = OBJECT_MOBILEwi;
+        if ( event.type == EVENT_OBJECT_FACTORYti )  type = OBJECT_MOBILEti;
+        if ( event.type == EVENT_OBJECT_FACTORYfi )  type = OBJECT_MOBILEfi;
+        if ( event.type == EVENT_OBJECT_FACTORYii )  type = OBJECT_MOBILEii;
+        if ( event.type == EVENT_OBJECT_FACTORYrt )  type = OBJECT_MOBILErt;
+        if ( event.type == EVENT_OBJECT_FACTORYrc )  type = OBJECT_MOBILErc;
+        if ( event.type == EVENT_OBJECT_FACTORYrr )  type = OBJECT_MOBILErr;
+        if ( event.type == EVENT_OBJECT_FACTORYrs )  type = OBJECT_MOBILErs;
+        if ( event.type == EVENT_OBJECT_FACTORYsa )  type = OBJECT_MOBILEsa;
 
         if ( type != OBJECT_NULL )
         {
@@ -186,7 +186,7 @@ bool CAutoFactory::EventProcess(const Event &event)
         }
     }
 
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_speed;
     EventProgress(event.rTime);
@@ -249,7 +249,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 m_object->SetAngleZ(10+i, 0.0f);
             }
 
-            m_channelSound = m_sound->Play(SOUND_FACTORY, m_object->RetPosition(0), 0.0f, 1.0f, true);
+            m_channelSound = m_sound->Play(SOUND_FACTORY, m_object->GetPosition(0), 0.0f, 1.0f, true);
             m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f,  2.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_channelSound, 1.0f, 1.0f, 11.0f, SOPER_CONTINUE);
             m_sound->AddEnvelope(m_channelSound, 0.0f, 1.0f,  2.0f, SOPER_STOP);
@@ -300,7 +300,7 @@ bool CAutoFactory::EventProcess(const Event &event)
             {
                 prog = 1.0f-m_progress;
             }
-            angle = powf(prog*10.0f, 2.0f)+m_object->RetAngleY(0);
+            angle = powf(prog*10.0f, 2.0f)+m_object->GetAngleY(0);
 
             vehicle = SearchVehicle();
             if ( vehicle != 0 )
@@ -315,9 +315,9 @@ bool CAutoFactory::EventProcess(const Event &event)
                 fret->SetZoom(0, 1.0f-m_progress);
             }
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.05f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.05f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
 #if 0
                 pos = m_fretPos;
@@ -329,9 +329,9 @@ bool CAutoFactory::EventProcess(const Event &event)
                 speed.y = Math::Rand()*12.0f;
                 dim.x = Math::Rand()*12.0f+10.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, PARTIBLUE, 1.0f, 0.0f, 0.0f);
 #else
-                mat = m_object->RetWorldMatrix(0);
+                mat = m_object->GetWorldMatrix(0);
                 pos = Math::Vector(-12.0f, 20.0f, -4.0f);  // position of chimney
                 pos = Math::Transform(*mat, pos);
                 pos.y += 2.0f;
@@ -342,7 +342,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 speed.y = 6.0f+Math::Rand()*6.0f;
                 dim.x = Math::Rand()*1.5f+1.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTISMOKE3, 4.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISMOKE3, 4.0f);
 #endif
             }
         }
@@ -361,15 +361,15 @@ bool CAutoFactory::EventProcess(const Event &event)
             vehicle = SearchVehicle();
             if ( vehicle != 0 )
             {
-                physics = vehicle->RetPhysics();
+                physics = vehicle->GetPhysics();
                 if ( physics != 0 )
                 {
                     physics->SetFreeze(false);  // can move
                 }
 
                 vehicle->SetLock(false);  // vehicle useable
-//?             vehicle->RetPhysics()->RetBrain()->StartTaskAdvance(16.0f);
-                vehicle->SetAngleY(0, m_object->RetAngleY(0)+Math::PI);
+//?             vehicle->GetPhysics()->GetBrain()->StartTaskAdvance(16.0f);
+                vehicle->SetAngleY(0, m_object->GetAngleY(0)+Math::PI);
                 vehicle->SetZoom(0, 1.0f);
             }
 
@@ -392,9 +392,9 @@ bool CAutoFactory::EventProcess(const Event &event)
                 m_object->SetAngleZ(10+i, -angle);
             }
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.1f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 pos = m_fretPos;
                 pos.x += (Math::Rand()-0.5f)*10.0f;
@@ -403,7 +403,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 2.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -435,9 +435,9 @@ bool CAutoFactory::EventProcess(const Event &event)
                 m_object->SetZoomZ(10+i, zoom);
             }
 
-            if ( m_lastParticule+m_engine->ParticuleAdapt(0.1f) <= m_time )
+            if ( m_lastParticle+m_engine->ParticleAdapt(0.1f) <= m_time )
             {
-                m_lastParticule = m_time;
+                m_lastParticle = m_time;
 
                 pos = m_fretPos;
                 pos.x += (Math::Rand()-0.5f)*10.0f;
@@ -446,7 +446,7 @@ bool CAutoFactory::EventProcess(const Event &event)
                 speed = Math::Vector(0.0f, 0.0f, 0.0f);
                 dim.x = 2.0f;
                 dim.y = dim.x;
-                m_particule->CreateParticule(pos, speed, dim, PARTIGLINT, 2.0f, 0.0f, 0.0f);
+                m_particle->CreateParticle(pos, speed, dim, Gfx::PARTIGLINT, 2.0f, 0.0f, 0.0f);
             }
         }
         else
@@ -503,12 +503,12 @@ bool CAutoFactory::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoFactoryPhase)OpInt(line, "aPhase", AFP_WAIT);
+    m_phase = static_cast< AutoFactoryPhase >(OpInt(line, "aPhase", AFP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
 
-    m_lastParticule = 0.0f;
-    m_fretPos = m_object->RetPosition(0);
+    m_lastParticle = 0.0f;
+    m_fretPos = m_object->GetPosition(0);
 
     return true;
 }
@@ -526,14 +526,14 @@ CObject* CAutoFactory::SearchFret()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_METAL )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, m_fretPos);
 
         if ( dist < 8.0f )  return pObj;
@@ -552,14 +552,14 @@ bool CAutoFactory::NearestVehicle()
     float       oRadius, dist;
     int         i;
 
-    cPos = m_object->RetPosition(0);
+    cPos = m_object->GetPosition(0);
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_HUMAN    &&
              type != OBJECT_MOBILEfa &&
              type != OBJECT_MOBILEta &&
@@ -616,9 +616,9 @@ bool CAutoFactory::CreateVehicle()
     char*       name;
     int         i;
 
-    angle = m_object->RetAngleY(0);
+    angle = m_object->GetAngleY(0);
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
     if ( m_type == OBJECT_MOBILErt ||
          m_type == OBJECT_MOBILErc ||
          m_type == OBJECT_MOBILErr ||
@@ -643,7 +643,7 @@ bool CAutoFactory::CreateVehicle()
     vehicle->SetLock(true);  // not usable
     vehicle->SetRange(30.0f);
 
-    physics = vehicle->RetPhysics();
+    physics = vehicle->GetPhysics();
     if ( physics != 0 )
     {
         physics->SetFreeze(true);  // it doesn't move
@@ -651,7 +651,7 @@ bool CAutoFactory::CreateVehicle()
 
     for ( i=0 ; i<10 ; i++ )
     {
-        name = m_main->RetNewScriptName(m_type, i);
+        name = m_main->GetNewScriptName(m_type, i);
         if ( name == 0 )  break;
         vehicle->ReadProgram(i, name);
     }
@@ -671,16 +671,16 @@ CObject* CAutoFactory::SearchVehicle()
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( !pObj->RetLock() )  continue;
+        if ( !pObj->GetLock() )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != m_type )  continue;
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::Distance(oPos, m_fretPos);
 
         if ( dist < 8.0f )  return pObj;
@@ -694,7 +694,7 @@ CObject* CAutoFactory::SearchVehicle()
 
 bool CAutoFactory::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, dim, ddim;
     float       ox, oy, sx, sy;
 
@@ -702,8 +702,8 @@ bool CAutoFactory::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-    if ( pw == 0 )  return false;
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == nullptr )  return false;
 
     dim.x = 33.0f/640.0f;
     dim.y = 33.0f/480.0f;
@@ -786,13 +786,13 @@ bool CAutoFactory::CreateInterface(bool bSelect)
 
 void CAutoFactory::UpdateInterface()
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
 
-    if ( !m_object->RetSelect() )  return;
+    if ( !m_object->GetSelect() )  return;
 
     CAuto::UpdateInterface();
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
 
     UpdateButton(pw, EVENT_OBJECT_FACTORYwa, m_bBusy);
     UpdateButton(pw, EVENT_OBJECT_FACTORYta, m_bBusy);
@@ -819,7 +819,7 @@ void CAutoFactory::UpdateInterface()
 
 // Updates the status of one interface button.
 
-void CAutoFactory::UpdateButton(CWindow *pw, EventMsg event, bool bBusy)
+void CAutoFactory::UpdateButton(Ui::CWindow *pw, EventType event, bool bBusy)
 {
     bool        bEnable = true;
 
@@ -933,7 +933,7 @@ void CAutoFactory::SoundManip(float time, float amplitude, float frequency)
 {
     int     i;
 
-    i = m_sound->Play(SOUND_MANIP, m_object->RetPosition(0), 0.0f, 0.3f*frequency, true);
+    i = m_sound->Play(SOUND_MANIP, m_object->GetPosition(0), 0.0f, 0.3f*frequency, true);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, 0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.5f*amplitude, 1.0f*frequency, time-0.1f, SOPER_CONTINUE);
     m_sound->AddEnvelope(i, 0.0f, 0.3f*frequency, 0.1f, SOPER_STOP);

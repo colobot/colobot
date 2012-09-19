@@ -17,14 +17,13 @@
 // motion.cpp
 
 
-#include <stdio.h>
-
 #include "object/motion/motion.h"
 
 #include "common/iman.h"
 #include "script/cmdtoken.h"
 
-
+#include <stdio.h>
+#include <string.h>
 
 
 // Object's constructor.
@@ -34,14 +33,14 @@ CMotion::CMotion(CInstanceManager* iMan, CObject* object)
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_MOTION, this, 100);
 
-    m_engine    = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_light     = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-    m_particule = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
-    m_terrain   = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-    m_water     = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-    m_camera    = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-    m_main      = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_sound     = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_engine    = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_light     = static_cast< Gfx::CLight* >(m_iMan->SearchInstance(CLASS_LIGHT));
+    m_particle = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_terrain   = static_cast< Gfx::CTerrain* >(m_iMan->SearchInstance(CLASS_TERRAIN));
+    m_water     = static_cast< Gfx::CWater* >(m_iMan->SearchInstance(CLASS_WATER));
+    m_camera    = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_main      = static_cast< CRobotMain* >(m_iMan->SearchInstance(CLASS_MAIN));
+    m_sound     = static_cast< CSoundInterface* >(m_iMan->SearchInstance(CLASS_SOUND));
 
     m_object    = object;
     m_physics   = 0;
@@ -95,16 +94,16 @@ bool CMotion::EventProcess(const Event &event)
     Math::Vector    pos, dir;
     float       time;
 
-    if ( m_object->RetType() != OBJECT_TOTO &&
-         m_engine->RetPause() )  return true;
+    if ( m_object->GetType() != OBJECT_TOTO &&
+         m_engine->GetPause() )  return true;
 
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_progress += event.rTime*m_actionTime;
     if ( m_progress > 1.0f )  m_progress = 1.0f;  // (*)
 
-    pos = m_object->RetPosition(0);
-    if ( pos.y < m_water->RetLevel(m_object) )  // underwater?
+    pos = m_object->GetPosition(0);
+    if ( pos.y < m_water->GetLevel(m_object) )  // underwater?
     {
         time = event.rTime*3.0f;  // everything is slower
     }
@@ -113,19 +112,19 @@ bool CMotion::EventProcess(const Event &event)
         time = event.rTime*10.0f;
     }
 
-    dir = m_object->RetLinVibration();
+    dir = m_object->GetLinVibration();
     dir.x = Math::Smooth(dir.x, m_linVibration.x, time);
     dir.y = Math::Smooth(dir.y, m_linVibration.y, time);
     dir.z = Math::Smooth(dir.z, m_linVibration.z, time);
     m_object->SetLinVibration(dir);
 
-    dir = m_object->RetCirVibration();
+    dir = m_object->GetCirVibration();
     dir.x = Math::Smooth(dir.x, m_cirVibration.x, time);
     dir.y = Math::Smooth(dir.y, m_cirVibration.y, time);
     dir.z = Math::Smooth(dir.z, m_cirVibration.z, time);
     m_object->SetCirVibration(dir);
 
-    dir = m_object->RetInclinaison();
+    dir = m_object->GetInclinaison();
     dir.x = Math::Smooth(dir.x, m_inclinaison.x, time);
     dir.y = Math::Smooth(dir.y, m_inclinaison.y, time);
     dir.z = Math::Smooth(dir.z, m_inclinaison.z, time);
@@ -148,9 +147,9 @@ Error CMotion::SetAction(int action, float time)
     return ERR_OK;
 }
 
-// Returns the current action.
+// Geturns the current action.
 
-int CMotion::RetAction()
+int CMotion::GetAction()
 {
     return m_actionType;
 }
@@ -163,7 +162,7 @@ bool CMotion::SetParam(int rank, float value)
     return false;
 }
 
-float CMotion::RetParam(int rank)
+float CMotion::GetParam(int rank)
 {
     return 0.0f;
 }
@@ -208,7 +207,7 @@ void CMotion::SetLinVibration(Math::Vector dir)
     m_linVibration = dir;
 }
 
-Math::Vector CMotion::RetLinVibration()
+Math::Vector CMotion::GetLinVibration()
 {
     return m_linVibration;
 }
@@ -220,7 +219,7 @@ void CMotion::SetCirVibration(Math::Vector dir)
     m_cirVibration = dir;
 }
 
-Math::Vector CMotion::RetCirVibration()
+Math::Vector CMotion::GetCirVibration()
 {
     return m_cirVibration;
 }
@@ -232,7 +231,7 @@ void CMotion::SetInclinaison(Math::Vector dir)
     m_inclinaison = dir;
 }
 
-Math::Vector CMotion::RetInclinaison()
+Math::Vector CMotion::GetInclinaison()
 {
     return m_inclinaison;
 }

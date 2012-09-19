@@ -22,55 +22,7 @@
 #include <time.h>
 
 
-#include "common/metafile.h"
-#include "common/event.h"
-#include "common/error_ids.h"
-
-
-extern CMetaFile    g_metafile;
-
-
-
-// Existing classes.
-
-enum ClassType
-{
-    CLASS_EVENT         = 1,
-    CLASS_INTERFACE     = 2,
-    CLASS_MAIN          = 3,
-    CLASS_ENGINE        = 4,
-    CLASS_TERRAIN       = 5,
-    CLASS_OBJECT        = 6,
-    CLASS_PHYSICS       = 7,
-    CLASS_BRAIN         = 8,
-    CLASS_CAMERA        = 9,
-    CLASS_LIGHT         = 10,
-    CLASS_PARTICULE     = 11,
-    CLASS_AUTO          = 12,
-    CLASS_DISPLAYTEXT   = 13,
-    CLASS_PYRO          = 14,
-    CLASS_SCRIPT        = 15,
-    CLASS_TEXT          = 16,
-    CLASS_STUDIO        = 17,
-    CLASS_WATER         = 18,
-    CLASS_CLOUD         = 19,
-    CLASS_MOTION        = 20,
-    CLASS_SOUND         = 21,
-    CLASS_PLANET        = 22,
-    CLASS_TASKMANAGER   = 23,
-    CLASS_DIALOG        = 24,
-    CLASS_MAP           = 25,
-    CLASS_SHORT         = 26,
-    CLASS_BLITZ         = 27,
-};
-
-const int CLASS_MAX = 30;
-
-
-
-
-// Keyboard state.
-
+// TODO: to be removed (replaced by TrackedKey enum and mouse states in app.h)
 const int KS_PAGEUP         = (1<<4);
 const int KS_PAGEDOWN       = (1<<5);
 const int KS_SHIFT          = (1<<6);
@@ -84,23 +36,16 @@ const int KS_NUMRIGHT       = (1<<13);
 const int KS_NUMPLUS        = (1<<14);
 const int KS_NUMMINUS       = (1<<15);
 
+// TODO: rewrite/refactor or remove
 
-// Procedures.
-
-extern EventType GetUniqueEventType();
-
-extern char RetNoAccent(char letter);
-extern char RetToUpper(char letter);
-extern char RetToLower(char letter);
+extern char GetNoAccent(char letter);
+extern char GetToUpper(char letter);
+extern char GetToLower(char letter);
 
 extern void TimeToAscii(time_t time, char *buffer);
 
 extern bool CopyFileToTemp(char* filename);
 extern bool CopyFileListToTemp(char* filename, int* list, int total);
-extern void AddExt(char* filename, char* ext);
-extern void UserDir(bool bUser, char* dir);
-extern void UserDir(char* buffer, char* dir, char* def);
-
-extern char RetLanguageLetter();
-
-
+extern void AddExt(char* filename, const char* ext);
+extern void UserDir(bool bUser, const char* dir);
+extern void UserDir(char* buffer, const char* dir, const char* def);

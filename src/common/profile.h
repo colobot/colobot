@@ -14,22 +14,19 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
-// profile.h
+/**
+ * \file common/profile.h
+ * \brief Class for loading profile (currently for loading ini config file)
+ */
 
 #pragma once
 
-#include <cstdlib>
+#include "lib/simpleini/SimpleIni.h"
+
+#include "common/singleton.h"
+
+#include <string>
 #include <vector>
-#include <utility>
-
-#include <lib/simpleini/SimpleIni.h>
-
-#include <common/singleton.h>
-
-/**
- *  @file common/profile.h
- *  @brief Class for loading profile (currently for loading ini config file)
- */
 
 
 /**

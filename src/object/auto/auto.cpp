@@ -15,8 +15,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/auto.h"
 
 
@@ -26,7 +24,8 @@
 #include "ui/gauge.h"
 #include "ui/window.h"
 
-
+#include <stdio.h>
+#include <string.h>
 
 
 // Object's constructor.
@@ -37,22 +36,22 @@ CAuto::CAuto(CInstanceManager* iMan, CObject* object)
     m_iMan->AddInstance(CLASS_AUTO, this, 100);
 
     m_object      = object;
-    m_event       = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-    m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
-    m_light       = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-    m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-    m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-    m_cloud       = (CCloud*)m_iMan->SearchInstance(CLASS_CLOUD);
-    m_planet      = (CPlanet*)m_iMan->SearchInstance(CLASS_PLANET);
-    m_blitz       = (CBlitz*)m_iMan->SearchInstance(CLASS_BLITZ);
-    m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-    m_interface   = (CInterface*)m_iMan->SearchInstance(CLASS_INTERFACE);
-    m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
-    m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_event       = static_cast< CEventQueue* >(m_iMan->SearchInstance(CLASS_EVENT));
+    m_engine      = static_cast< Gfx::CEngine* >(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_particle    = static_cast< Gfx::CParticle* >(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_lightMan    = static_cast< Gfx::CLightManager* >(m_iMan->SearchInstance(CLASS_LIGHT));
+    m_terrain     = static_cast< Gfx::CTerrain* >(m_iMan->SearchInstance(CLASS_TERRAIN));
+    m_water       = static_cast< Gfx::CWater* >(m_iMan->SearchInstance(CLASS_WATER));
+    m_cloud       = static_cast< Gfx::CCloud* >(m_iMan->SearchInstance(CLASS_CLOUD));
+    m_planet      = static_cast< Gfx::CPlanet* >(m_iMan->SearchInstance(CLASS_PLANET));
+    m_lightning   = static_cast< Gfx::CLightning* >(m_iMan->SearchInstance(CLASS_BLITZ));
+    m_camera      = static_cast< Gfx::CCamera* >(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_interface   = static_cast< Ui::CInterface* >(m_iMan->SearchInstance(CLASS_INTERFACE));
+    m_main        = static_cast< CRobotMain* >(m_iMan->SearchInstance(CLASS_MAIN));
+    m_displayText = static_cast< Ui::CDisplayText* >(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
+    m_sound       = static_cast< CSoundInterface* >(m_iMan->SearchInstance(CLASS_SOUND));
 
-    m_type = m_object->RetType();
+    m_type = m_object->GetType();
     m_time = 0.0f;
     m_lastUpdateTime = 0.0f;
     m_bMotor = false;
@@ -117,14 +116,14 @@ bool CAuto::SetString(char *string)
 
 bool CAuto::EventProcess(const Event &event)
 {
-    if ( event.event == EVENT_FRAME &&
-         !m_engine->RetPause() )
+    if ( event.type == EVENT_FRAME &&
+         !m_engine->GetPause() )
     {
         m_time += event.rTime;
         UpdateInterface(event.rTime);
     }
 
-    if ( !m_object->RetSelect() )  // robot not selected?
+    if ( !m_object->GetSelect() )  // robot not selected?
     {
         return true;
     }
@@ -151,13 +150,13 @@ bool CAuto::Abort()
 
 bool CAuto::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, dim, ddim;
     float       ox, oy, sx, sy;
     char        name[100];
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-    if ( pw != 0 )
+    pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw != nullptr )
     {
         pw->Flush();  // destroys the window buttons
         m_interface->DeleteControl(EVENT_WINDOW0);  // destroys the window
@@ -171,7 +170,7 @@ bool CAuto::CreateInterface(bool bSelect)
 //? dim.y = 70.0f/480.0f;
     dim.y = 86.0f/480.0f;
     m_interface->CreateWindows(pos, dim, 3, EVENT_WINDOW0);
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     m_object->GetTooltipName(name);
@@ -214,7 +213,7 @@ bool CAuto::CreateInterface(bool bSelect)
     pos.y = oy+sy*0;
     pw->CreateButton(pos, dim, 19, EVENT_OBJECT_HELP);
 
-    if ( m_main->RetSceneSoluce() )
+    if ( m_main->GetSceneSoluce() )
     {
         pos.x = ox+sx*13.4f;
         pos.y = oy+sy*1;
@@ -263,62 +262,62 @@ bool CAuto::CreateInterface(bool bSelect)
 
 // Change the state of a button interface.
 
-void CAuto::CheckInterface(CWindow *pw, EventMsg event, bool bState)
+void CAuto::CheckInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
-    control->SetState(STATE_CHECK, bState);
+    control->SetState(Ui::STATE_CHECK, bState);
 }
 
 // Change the state of a button interface.
 
-void CAuto::EnableInterface(CWindow *pw, EventMsg event, bool bState)
+void CAuto::EnableInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
-    control->SetState(STATE_ENABLE, bState);
+    control->SetState(Ui::STATE_ENABLE, bState);
 }
 
 // Change the state of a button interface.
 
-void CAuto::VisibleInterface(CWindow *pw, EventMsg event, bool bState)
+void CAuto::VisibleInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
-    control->SetState(STATE_VISIBLE, bState);
+    control->SetState(Ui::STATE_VISIBLE, bState);
 }
 
 // Change the state of a button interface.
 
-void CAuto::DeadInterface(CWindow *pw, EventMsg event, bool bState)
+void CAuto::DeadInterface(Ui::CWindow *pw, EventType event, bool bState)
 {
-    CControl*   control;
+    Ui::CControl*   control;
 
     control = pw->SearchControl(event);
-    if ( control == 0 )  return;
+    if ( control == nullptr )  return;
 
-    control->SetState(STATE_DEAD, !bState);
+    control->SetState(Ui::STATE_DEAD, !bState);
 }
 
 // Change the state of a button interface.
 
 void CAuto::UpdateInterface()
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
 
-    if ( !m_object->RetSelect() )  return;
+    if ( !m_object->GetSelect() )  return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-    if ( pw == 0 )  return;
+    pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == nullptr )  return;
 
     VisibleInterface(pw, EVENT_OBJECT_GPROGRESS, m_bBusy);
 }
@@ -328,34 +327,34 @@ void CAuto::UpdateInterface()
 
 void CAuto::UpdateInterface(float rTime)
 {
-    CWindow*    pw;
-    CGauge*     pg;
+    Ui::CWindow*    pw;
+    Ui::CGauge*     pg;
 
     if ( m_time < m_lastUpdateTime+0.1f )  return;
     m_lastUpdateTime = m_time;
 
-    if ( !m_object->RetSelect() )  return;
+    if ( !m_object->GetSelect() )  return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
-    if ( pw == 0 )  return;
+    pw = static_cast<Ui::CWindow*>(m_interface->SearchControl(EVENT_WINDOW0));
+    if ( pw == nullptr )  return;
 
-    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GSHIELD);
-    if ( pg != 0 )
+    pg = static_cast<Ui::CGauge*>(pw->SearchControl(EVENT_OBJECT_GSHIELD));
+    if ( pg != nullptr )
     {
-        pg->SetLevel(m_object->RetShield());
+        pg->SetLevel(m_object->GetShield());
     }
 
-    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GPROGRESS);
-    if ( pg != 0 )
+    pg = static_cast<Ui::CGauge*>(pw->SearchControl(EVENT_OBJECT_GPROGRESS));
+    if ( pg != nullptr )
     {
         pg->SetLevel(m_progressTime);
     }
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAuto::RetError()
+Error CAuto::GetError()
 {
     return ERR_OK;
 }
@@ -363,7 +362,7 @@ Error CAuto::RetError()
 
 // Management of the occupation.
 
-bool CAuto::RetBusy()
+bool CAuto::GetBusy()
 {
     return m_bBusy;
 }
@@ -387,7 +386,7 @@ void CAuto::EventProgress(float rTime)
 
 // Engine management.
 
-bool CAuto::RetMotor()
+bool CAuto::GetMotor()
 {
     return m_bMotor;
 }
@@ -422,11 +421,11 @@ bool CAuto::Write(char *line)
     return false;
 }
 
-// Return all settings to the controller.
+// Geturn all settings to the controller.
 
 bool CAuto::Read(char *line)
 {
-    m_type = (ObjectType)OpInt(line, "aType", OBJECT_NULL);
+    m_type = static_cast<ObjectType>(OpInt(line, "aType", OBJECT_NULL));
     m_bBusy = OpInt(line, "aBusy", 0);
     m_time = OpFloat(line, "aTime", 0.0f);
     m_progressTime = OpFloat(line, "aProgressTime", 0.0f);

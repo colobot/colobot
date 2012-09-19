@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,8 +16,6 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autotower.h"
 
 #include "common/iman.h"
@@ -27,6 +26,9 @@
 #include "ui/displaytext.h"
 #include "ui/window.h"
 #include "ui/gauge.h"
+
+#include <stdio.h>
+#include <string.h>
 
 
 const float TOWER_SCOPE     = 200.0f;   // range of beam
@@ -78,7 +80,7 @@ void CAutoTower::Init()
     m_time = 0.0f;
     m_timeVirus = 0.0f;
     m_lastUpdateTime = 0.0f;
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 }
 
 
@@ -93,18 +95,18 @@ bool CAutoTower::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( m_engine->GetPause() )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
 
     m_timeVirus -= event.rTime;
 
-    if ( m_object->RetVirusMode() )  // contaminated by a virus?
+    if ( m_object->GetVirusMode() )  // contaminated by a virus?
     {
         if ( m_timeVirus <= 0.0f )
         {
             m_timeVirus = 0.1f+Math::Rand()*0.3f;
 
-            angle = m_object->RetAngleY(1);
+            angle = m_object->GetAngleY(1);
             angle += Math::Rand()*0.5f;
             m_object->SetAngleY(1, angle);
 
@@ -125,10 +127,10 @@ bool CAutoTower::EventProcess(const Event &event)
         if ( m_progress < 1.0f )
         {
             energy = 0.0f;
-            power = m_object->RetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
-                energy = power->RetEnergy();
+                energy = power->GetEnergy();
             }
             if ( energy >= ENERGY_FIRE )
             {
@@ -153,11 +155,11 @@ bool CAutoTower::EventProcess(const Event &event)
             quick = 1.0f;
 //?         if ( g_researchDone & RESEARCH_QUICK )  quick = 3.0f;
 
-            angle = m_object->RetAngleY(1);
+            angle = m_object->GetAngleY(1);
             angle -= event.rTime*quick*2.0f;
             m_object->SetAngleY(1, angle);
 
-            angle = m_object->RetAngleZ(2);
+            angle = m_object->GetAngleZ(2);
             angle += event.rTime*quick*0.5f;
             if ( angle > 0.0f )  angle = 0.0f;
             m_object->SetAngleZ(2, angle);
@@ -165,10 +167,10 @@ bool CAutoTower::EventProcess(const Event &event)
         else
         {
             energy = 0.0f;
-            power = m_object->RetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
-                energy = power->RetEnergy();
+                energy = power->GetEnergy();
             }
 
             target = SearchTarget(m_targetPos);
@@ -184,16 +186,16 @@ bool CAutoTower::EventProcess(const Event &event)
             }
             else
             {
-                pos = m_object->RetPosition(0);
+                pos = m_object->GetPosition(0);
                 pos.y += 24.5f;
                 m_angleYfinal = Math::RotateAngle(m_targetPos.x-pos.x, pos.z-m_targetPos.z);  // CW !
                 m_angleYfinal += Math::PI*2.0f;
-                m_angleYfinal -= m_object->RetAngleY(0);
-                m_angleYactual = Math::NormAngle(m_object->RetAngleY(1));
+                m_angleYfinal -= m_object->GetAngleY(0);
+                m_angleYactual = Math::NormAngle(m_object->GetAngleY(1));
 
                 m_angleZfinal = -Math::PI/2.0f;
                 m_angleZfinal -= Math::RotateAngle(Math::DistanceProjected(m_targetPos, pos), pos.y-m_targetPos.y);  // CW !
-                m_angleZactual = m_object->RetAngleZ(2);
+                m_angleZactual = m_object->GetAngleZ(2);
 
                 m_phase    = ATP_TURN;
                 m_progress = 0.0f;
@@ -218,15 +220,15 @@ bool CAutoTower::EventProcess(const Event &event)
             m_object->SetAngleY(1, m_angleYfinal);
             m_object->SetAngleZ(2, m_angleZfinal);
 
-            power = m_object->RetPower();
+            power = m_object->GetPower();
             if ( power != 0 )
             {
-                energy = power->RetEnergy();
-                energy -= ENERGY_FIRE/power->RetCapacity();
+                energy = power->GetEnergy();
+                energy -= ENERGY_FIRE/power->GetCapacity();
                 power->SetEnergy(energy);
             }
 
-            m_sound->Play(SOUND_GGG, m_object->RetPosition(0));
+            m_sound->Play(SOUND_GGG, m_object->GetPosition(0));
 
             m_phase    = ATP_FIRE;
             m_progress = 0.0f;
@@ -238,9 +240,9 @@ bool CAutoTower::EventProcess(const Event &event)
     {
         if ( m_progress == 0.0f )
         {
-            pos = m_object->RetPosition(0);
+            pos = m_object->GetPosition(0);
             pos.y += 24.5f;
-            m_particule->CreateRay(pos, m_targetPos, PARTIRAY1,
+            m_particle->CreateRay(pos, m_targetPos, Gfx::PARTIRAY1,
                                    Math::Point(5.0f, 5.0f), 1.5f);
         }
         if ( m_progress >= 1.0f )
@@ -267,30 +269,30 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
     float       distance, min, radius, speed;
     int         i;
 
-    iPos = m_object->RetPosition(0);
+    iPos = m_object->GetPosition(0);
     min = 1000000.0f;
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        oType = pObj->RetType();
+        oType = pObj->GetType();
         if ( oType != OBJECT_MOTHER &&
              oType != OBJECT_ANT    &&
              oType != OBJECT_SPIDER &&
              oType != OBJECT_BEE    &&
              oType != OBJECT_WORM   )  continue;
 
-        if ( !pObj->RetActif() )  continue;  // inactive?
+        if ( !pObj->GetActif() )  continue;  // inactive?
 
 //?     if ( g_researchDone & RESEARCH_QUICK )
         if ( false )
         {
-            physics = pObj->RetPhysics();
+            physics = pObj->GetPhysics();
             if ( physics != 0 )
             {
-                speed = fabs(physics->RetLinMotionX(MO_REASPEED));
+                speed = fabs(physics->GetLinMotionX(MO_REASPEED));
                 if ( speed > 20.0f )  continue;  // moving too fast?
             }
         }
@@ -306,30 +308,30 @@ CObject* CAutoTower::SearchTarget(Math::Vector &impact)
     }
     if ( pBest == 0 )  return 0;
 
-    impact = pBest->RetPosition(0);
+    impact = pBest->GetPosition(0);
     return pBest;
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoTower::RetError()
+Error CAutoTower::GetError()
 {
     CObject*    power;
 
-    if ( m_object->RetVirusMode() )
+    if ( m_object->GetVirusMode() )
     {
         return ERR_BAT_VIRUS;
     }
 
-    power = m_object->RetPower();
+    power = m_object->GetPower();
     if ( power == 0 )
     {
         return ERR_TOWER_POWER;  // no battery
     }
     else
     {
-        if ( power->RetEnergy() < ENERGY_FIRE )
+        if ( power->GetEnergy() < ENERGY_FIRE )
         {
             return ERR_TOWER_ENERGY;  // not enough energy
         }
@@ -361,14 +363,14 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
         {
             if ( m_partiStop[i] != -1 )
             {
-                m_particule->DeleteParticule(m_partiStop[i]);
+                m_particle->DeleteParticle(m_partiStop[i]);
                 m_partiStop[i] = -1;
             }
         }
         return;
     }
 
-    mat = m_object->RetWorldMatrix(0);
+    mat = m_object->GetWorldMatrix(0);
 
     speed = Math::Vector(0.0f, 0.0f, 0.0f);
     dim.x = 2.0f;
@@ -380,7 +382,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
         {
             if ( m_partiStop[i] != -1 )
             {
-                m_particule->DeleteParticule(m_partiStop[i]);
+                m_particle->DeleteParticle(m_partiStop[i]);
                 m_partiStop[i] = -1;
             }
         }
@@ -392,8 +394,9 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
                 pos.y = 18.0f;
                 pos.z = listpos[i*2+1];
                 pos = Transform(*mat, pos);
-                m_partiStop[i] = m_particule->CreateParticule(pos, speed,
-                                                              dim, PARTISELR,
+                
+                m_partiStop[i] = m_particle->CreateParticle(pos, speed,
+                                                              dim, Gfx::PARTISELR,
                                                               1.0f, 0.0f, 0.0f);
             }
         }
@@ -405,7 +408,7 @@ void CAutoTower::FireStopUpdate(float progress, bool bLightOn)
 
 bool CAutoTower::CreateInterface(bool bSelect)
 {
-    CWindow*    pw;
+    Ui::CWindow*    pw;
     Math::Point     pos, ddim;
     float       ox, oy, sx, sy;
 
@@ -413,7 +416,7 @@ bool CAutoTower::CreateInterface(bool bSelect)
 
     if ( !bSelect )  return true;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return false;
 
     ox = 3.0f/640.0f;
@@ -447,8 +450,8 @@ bool CAutoTower::CreateInterface(bool bSelect)
 
 void CAutoTower::UpdateInterface(float rTime)
 {
-    CWindow*    pw;
-    CGauge*     pg;
+    Ui::CWindow*    pw;
+    Ui::CGauge*     pg;
     CObject*    power;
     float       energy;
 
@@ -457,19 +460,19 @@ void CAutoTower::UpdateInterface(float rTime)
     if ( m_time < m_lastUpdateTime+0.1f )  return;
     m_lastUpdateTime = m_time;
 
-    if ( !m_object->RetSelect() )  return;
+    if ( !m_object->GetSelect() )  return;
 
-    pw = (CWindow*)m_interface->SearchControl(EVENT_WINDOW0);
+    pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));
     if ( pw == 0 )  return;
 
-    pg = (CGauge*)pw->SearchControl(EVENT_OBJECT_GENERGY);
+    pg = static_cast< Ui::CGauge* >(pw->SearchControl(EVENT_OBJECT_GENERGY));
     if ( pg != 0 )
     {
         energy = 0.0f;
-        power = m_object->RetPower();
+        power = m_object->GetPower();
         if ( power != 0 )
         {
-            energy = power->RetEnergy();
+            energy = power->GetEnergy();
         }
         pg->SetLevel(energy);
     }
@@ -524,7 +527,7 @@ bool CAutoTower::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoTowerPhase)OpInt(line, "aPhase", ATP_WAIT);
+    m_phase = static_cast< AutoTowerPhase >(OpInt(line, "aPhase", ATP_WAIT));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
     m_targetPos = OpDir(line, "aTargetPos");

@@ -19,27 +19,32 @@
 #pragma once
 
 
-#include "common/misc.h"
+#include "common/global.h"
 #include "object/object.h"
 
 
 class CInstanceManager;
-class CD3DEngine;
-class CParticule;
-class CLight;
-class CTerrain;
+class CRobotMain;
+class CSoundInterface;
+
+namespace Ui {
+class CDisplayText;
+class CInterface;
+class CWindow;
+} /* Ui */ 
+
+namespace Gfx {
+
+class CEngine;
+class CParticle;
+class CLightManager;
+class CTarrain;
 class CWater;
 class CCloud;
-class CPlanet;
-class CBlitz;
 class CCamera;
-class CInterface;
-class CRobotMain;
-class CDisplayText;
-class CWindow;
-class CSound;
-
-
+class CPlanet;
+class CLightning;
+} /* Gfx */ 
 
 
 class CAuto
@@ -61,44 +66,44 @@ public:
     virtual bool    SetString(char *string);
 
     virtual bool    CreateInterface(bool bSelect);
-    virtual Error   RetError();
+    virtual Error   GetError();
 
-    virtual bool    RetBusy();
+    virtual bool    GetBusy();
     virtual void    SetBusy(bool bBuse);
     virtual void    InitProgressTotal(float total);
     virtual void    EventProgress(float rTime);
 
-    virtual bool    RetMotor();
+    virtual bool    GetMotor();
     virtual void    SetMotor(bool bMotor);
 
     virtual bool    Write(char *line);
     virtual bool    Read(char *line);
 
 protected:
-    void        CheckInterface(CWindow *pw, EventMsg event, bool bState);
-    void        EnableInterface(CWindow *pw, EventMsg event, bool bState);
-    void        VisibleInterface(CWindow *pw, EventMsg event, bool bState);
-    void        DeadInterface(CWindow *pw, EventMsg event, bool bState);
+    void        CheckInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        EnableInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        VisibleInterface(Ui::CWindow *pw, EventType event, bool bState);
+    void        DeadInterface(Ui::CWindow *pw, EventType event, bool bState);
     void        UpdateInterface();
     void        UpdateInterface(float rTime);
 
 protected:
-    CInstanceManager* m_iMan;
-    CEvent*         m_event;
-    CD3DEngine*     m_engine;
-    CParticule*     m_particule;
-    CLight*         m_light;
-    CTerrain*       m_terrain;
-    CWater*         m_water;
-    CCloud  *       m_cloud;
-    CPlanet *       m_planet;
-    CBlitz*         m_blitz;
-    CCamera*        m_camera;
-    CInterface*     m_interface;
-    CRobotMain*     m_main;
-    CDisplayText*   m_displayText;
-    CObject*        m_object;
-    CSound*         m_sound;
+    CInstanceManager*   m_iMan;
+    CEventQueue*        m_event;
+    Gfx::CEngine*       m_engine;
+    Gfx::CParticle*     m_particle;
+    Gfx::CLightManager* m_lightMan;
+    Gfx::CTerrain*      m_terrain;
+    Gfx::CWater*        m_water;
+    Gfx::CCloud*        m_cloud;
+    Gfx::CPlanet*       m_planet;
+    Gfx::CLightning*    m_lightning;
+    Gfx::CCamera*       m_camera;
+    Ui::CInterface*     m_interface;
+    Ui::CDisplayText*   m_displayText;
+    CRobotMain*         m_main;
+    CObject*            m_object;
+    CSoundInterface*    m_sound;
 
     ObjectType  m_type;
     bool        m_bBusy;

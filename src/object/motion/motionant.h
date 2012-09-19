@@ -68,6 +68,6 @@ protected:
     int         m_armMemberIndex;
     int         m_armLastAction;
     bool        m_bArmStop;
-    float       m_lastParticule;
+    float       m_lastParticle;
 };
 

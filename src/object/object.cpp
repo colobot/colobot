@@ -17,76 +17,74 @@
 // object.cpp
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
+//---------CBot
 #include "CBot/CBotDll.h"
-#include "common/struct.h"
-#include "math/const.h"
-#include "math/geometry.h"
-#include "old/d3dengine.h"
-#include "old/d3dmath.h"
-#include "old/d3dutil.h"
+
+//---------Common
 #include "common/global.h"
-#include "common/event.h"
-#include "common/misc.h"
 #include "common/iman.h"
 #include "common/restext.h"
-#include "old/math3d.h"
-#include "object/mainmovie.h"
-#include "object/robotmain.h"
-#include "old/light.h"
-#include "old/terrain.h"
-#include "old/water.h"
-#include "old/blitz.h"
-#include "old/camera.h"
-#include "old/particule.h"
-#include "physics/physics.h"
-#include "object/brain.h"
-#include "object/motion/motion.h"
-#include "object/motion/motionhuman.h"
-#include "object/motion/motiontoto.h"
-#include "object/motion/motionvehicle.h"
-#include "object/motion/motionmother.h"
-#include "object/motion/motionant.h"
-#include "object/motion/motionspider.h"
-#include "object/motion/motionbee.h"
-#include "object/motion/motionworm.h"
-#include "old/modfile.h"
+
+//---------Graphic
+#include "graphics/engine/lightman.h"
+#include "graphics/engine/lightning.h"
+#include "graphics/engine/modelfile.h"
+#include "graphics/engine/particle.h"
+#include "graphics/engine/pyro.h"
+#include "graphics/engine/terrain.h"
+
+//---------Math
+#include "math/geometry.h"
+
+//---------Object
 #include "object/auto/auto.h"
 #include "object/auto/autobase.h"
-#include "object/auto/autoportico.h"
-#include "object/auto/autoderrick.h"
-#include "object/auto/autofactory.h"
-#include "object/auto/autorepair.h"
-#include "object/auto/autodestroyer.h"
-#include "object/auto/autostation.h"
-#include "object/auto/autoenergy.h"
 #include "object/auto/autoconvert.h"
-#include "object/auto/autotower.h"
-#include "object/auto/autoresearch.h"
-#include "object/auto/autolabo.h"
-#include "object/auto/autonuclear.h"
-#include "object/auto/autoradar.h"
+#include "object/auto/autoderrick.h"
+#include "object/auto/autodestroyer.h"
 #include "object/auto/autoegg.h"
-#include "object/auto/autonest.h"
-#include "object/auto/autoroot.h"
+#include "object/auto/autoenergy.h"
+#include "object/auto/autofactory.h"
 #include "object/auto/autoflag.h"
+#include "object/auto/autohuston.h"
 #include "object/auto/autoinfo.h"
 #include "object/auto/autojostle.h"
-#include "object/auto/autopara.h"
-#include "object/auto/autosafe.h"
-#include "object/auto/autohuston.h"
-#include "object/auto/automush.h"
 #include "object/auto/autokid.h"
-#include "object/task/task.h"
-#include "old/pyro.h"
-#include "ui/displaytext.h"
-#include "script/cmdtoken.h"
-#include "script/cbottoken.h"
-#include "old/sound.h"
+#include "object/auto/autolabo.h"
+#include "object/auto/automush.h"
+#include "object/auto/autonest.h"
+#include "object/auto/autonuclear.h"
+#include "object/auto/autopara.h"
+#include "object/auto/autoportico.h"
+#include "object/auto/autoradar.h"
+#include "object/auto/autorepair.h"
+#include "object/auto/autoresearch.h"
+#include "object/auto/autoroot.h"
+#include "object/auto/autosafe.h"
+#include "object/auto/autostation.h"
+#include "object/auto/autotower.h"
+#include "object/brain.h"
+#include "object/motion/motion.h"
+#include "object/motion/motionant.h"
+#include "object/motion/motionbee.h"
+#include "object/motion/motionhuman.h"
+#include "object/motion/motionmother.h"
+#include "object/motion/motionspider.h"
+#include "object/motion/motiontoto.h"
+#include "object/motion/motionvehicle.h"
+#include "object/motion/motionworm.h"
 #include "object/object.h"
+#include "object/robotmain.h"
+
+//---------Physics
+#include "physics/physics.h"
+
+//---------Script
+#include "script/cbottoken.h"
+#include "script/cmdtoken.h"
+
+//---------Ui
+#include "ui/displaytext.h"
 
 
 
@@ -116,7 +114,7 @@ static float debug_arm3 = 0.0f;
 
 void uObject(CBotVar* botThis, void* user)
 {
-    CObject*    object = (CObject*)user;
+    CObject*    object = static_cast<CObject*>(user);
     CObject*    power;
     CObject*    fret;
     CPhysics*   physics;
@@ -128,19 +126,19 @@ void uObject(CBotVar* botThis, void* user)
 
     if ( object == 0 )  return;
 
-    physics = object->RetPhysics();
+    physics = object->GetPhysics();
 
     // Updates the object's type.
     pVar = botThis->GetItemList();  // "category"
-    type = object->RetType();
-    pVar->SetValInt(type, object->RetName());
+    type = object->GetType();
+    pVar->SetValInt(type, object->GetName());
 
     // Updates the position of the object.
     pVar = pVar->GetNext();  // "position"
-    if ( object->RetTruck() == 0 )
+    if ( object->GetTruck() == 0 )
     {
-        pos = object->RetPosition(0);
-        pos.y -= object->RetWaterLevel();  // relative to sea level!
+        pos = object->GetPosition(0);
+        pos.y -= object->GetWaterLevel();  // relative to sea level!
         pSub = pVar->GetItemList();  // "x"
         pSub->SetValFloat(pos.x/g_unit);
         pSub = pSub->GetNext();  // "y"
@@ -159,8 +157,8 @@ void uObject(CBotVar* botThis, void* user)
     }
 
     // Updates the angle.
-    pos = object->RetAngle(0);
-    pos += object->RetInclinaison();
+    pos = object->GetAngle(0);
+    pos += object->GetInclinaison();
     pVar = pVar->GetNext();  // "orientation"
     pVar->SetValFloat(360.0f-Math::Mod(pos.y*180.0f/Math::PI, 360.0f));
     pVar = pVar->GetNext();  // "pitch"
@@ -170,47 +168,47 @@ void uObject(CBotVar* botThis, void* user)
 
     // Updates the energy level of the object.
     pVar = pVar->GetNext();  // "energyLevel"
-    value = object->RetEnergy();
+    value = object->GetEnergy();
     pVar->SetValFloat(value);
 
     // Updates the shield level of the object.
     pVar = pVar->GetNext();  // "shieldLevel"
-    value = object->RetShield();
+    value = object->GetShield();
     pVar->SetValFloat(value);
 
     // Updates the temperature of the reactor.
     pVar = pVar->GetNext();  // "temperature"
     if ( physics == 0 )  value = 0.0f;
-    else                 value = 1.0f-physics->RetReactorRange();
+    else                 value = 1.0f-physics->GetReactorRange();
     pVar->SetValFloat(value);
 
     // Updates the height above the ground.
     pVar = pVar->GetNext();  // "altitude"
     if ( physics == 0 )  value = 0.0f;
-    else                 value = physics->RetFloorHeight();
+    else                 value = physics->GetFloorHeight();
     pVar->SetValFloat(value/g_unit);
 
     // Updates the lifetime of the object.
     pVar = pVar->GetNext();  // "lifeTime"
-    value = object->RetAbsTime();
+    value = object->GetAbsTime();
     pVar->SetValFloat(value);
 
     // Updates the material of the object.
     pVar = pVar->GetNext();  // "material"
-    iValue = object->RetMaterial();
+    iValue = object->GetMaterial();
     pVar->SetValInt(iValue);
 
     // Updates the type of battery.
     pVar = pVar->GetNext();  // "energyCell"
-    power = object->RetPower();
+    power = object->GetPower();
     if ( power == 0 )  pVar->SetPointer(0);
-    else               pVar->SetPointer(power->RetBotVar());
+    else               pVar->SetPointer(power->GetBotVar());
 
     // Updates the transported object's type.
     pVar = pVar->GetNext();  // "load"
-    fret = object->RetFret();
+    fret = object->GetFret();
     if ( fret == 0 )  pVar->SetPointer(0);
-    else              pVar->SetPointer(fret->RetBotVar());
+    else              pVar->SetPointer(fret->GetBotVar());
 }
 
 
@@ -225,15 +223,15 @@ CObject::CObject(CInstanceManager* iMan)
     m_iMan = iMan;
     m_iMan->AddInstance(CLASS_OBJECT, this, 500);
 
-    m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_light       = (CLight*)m_iMan->SearchInstance(CLASS_LIGHT);
-    m_terrain     = (CTerrain*)m_iMan->SearchInstance(CLASS_TERRAIN);
-    m_water       = (CWater*)m_iMan->SearchInstance(CLASS_WATER);
-    m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
-    m_camera      = (CCamera*)m_iMan->SearchInstance(CLASS_CAMERA);
-    m_displayText = (CDisplayText*)m_iMan->SearchInstance(CLASS_DISPLAYTEXT);
-    m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
+    m_engine      = static_cast<Gfx::CEngine*>(m_iMan->SearchInstance(CLASS_ENGINE));
+    m_lightMan    = static_cast<Gfx::CLightManager*>(m_iMan->SearchInstance(CLASS_LIGHT));
+    m_terrain     = static_cast<Gfx::CTerrain*>(m_iMan->SearchInstance(CLASS_TERRAIN));
+    m_water       = static_cast<Gfx::CWater*>(m_iMan->SearchInstance(CLASS_WATER));
+    m_particle    = static_cast<Gfx::CParticle*>(m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_camera      = static_cast<Gfx::CCamera*>(m_iMan->SearchInstance(CLASS_CAMERA));
+    m_displayText = static_cast<Ui::CDisplayText*>(m_iMan->SearchInstance(CLASS_DISPLAYTEXT));
+    m_main        = static_cast<CRobotMain*>(m_iMan->SearchInstance(CLASS_MAIN));
+    m_sound       = static_cast<CSoundInterface*>(m_iMan->SearchInstance(CLASS_SOUND));
     m_physics     = 0;
     m_brain       = 0;
     m_motion      = 0;
@@ -250,7 +248,7 @@ CObject::CObject(CInstanceManager* iMan)
     m_linVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_cirVibration  = Math::Vector(0.0f, 0.0f, 0.0f);
     m_inclinaison   = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_lastParticule = 0.0f;
+    m_lastParticle = 0.0f;
 
     m_power = 0;
     m_fret  = 0;
@@ -281,7 +279,7 @@ CObject::CObject(CInstanceManager* iMan)
     m_shotTime = 0.0f;
     m_bVirusMode = false;
     m_virusTime = 0.0f;
-    m_lastVirusParticule = 0.0f;
+    m_lastVirusParticle = 0.0f;
     m_totalDesectList = 0;
     m_bLock  = false;
     m_bExplo = false;
@@ -297,7 +295,7 @@ CObject::CObject(CInstanceManager* iMan)
     m_proxyDistance = 60.0f;
     m_param = 0.0f;
 
-    ZeroMemory(&m_character, sizeof(Character));
+    memset(&m_character, 0, sizeof(m_character));
     m_character.wheelFront = 1.0f;
     m_character.wheelBack  = 1.0f;
     m_character.wheelLeft  = 1.0f;
@@ -309,7 +307,7 @@ CObject::CObject(CInstanceManager* iMan)
     m_resetAngle    = Math::Vector(0.0f, 0.0f, 0.0f);
     m_resetRun      = -1;
 
-    m_cameraType = CAMERA_BACK;
+    m_cameraType = Gfx::CAM_TYPE_BACK;
     m_cameraDist = 50.0f;
     m_bCameraLock = false;
 
@@ -376,7 +374,7 @@ CObject::~CObject()
 void CObject::DeleteObject(bool bAll)
 {
     CObject*    pObj;
-    CPyro*      pPyro;
+    Gfx::CPyro* pPyro;
     int         i;
 
     if ( m_botVar != 0 )
@@ -384,14 +382,14 @@ void CObject::DeleteObject(bool bAll)
         m_botVar->SetUserPtr(OBJECTDELETED);
     }
 
-    if ( m_camera->RetObject() == this )
+    if ( m_camera->GetControllingObject() == this )
     {
-        m_camera->SetObject(0);
+        m_camera->SetControllingObject(0);
     }
 
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast<CObject*>(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
         pObj->DeleteDeselList(this);
@@ -400,29 +398,29 @@ void CObject::DeleteObject(bool bAll)
     if ( !bAll )
     {
 #if 0
-        type = m_camera->RetType();
-        if ( (type == CAMERA_BACK   ||
-              type == CAMERA_FIX    ||
-              type == CAMERA_EXPLO  ||
-              type == CAMERA_ONBOARD) &&
-             m_camera->RetObject() == this )
+        type = m_camera->GetType();
+        if ( (type == Gfx::CAM_TYPE_BACK   ||
+              type == Gfx::CAM_TYPE_FIX    ||
+              type == Gfx::CAM_TYPE_EXPLO  ||
+              type == Gfx::CAM_TYPE_ONBOARD) &&
+             m_camera->GetControllingObject() == this )
         {
-            pObj = m_main->SearchNearest(RetPosition(0), this);
+            pObj = m_main->SearchNearest(GetPosition(0), this);
             if ( pObj == 0 )
             {
-                m_camera->SetObject(0);
-                m_camera->SetType(CAMERA_FREE);
+                m_camera->SetControllingObject(0);
+                m_camera->SetType(Gfx::CAM_TYPE_FREE);
             }
             else
             {
-                m_camera->SetObject(pObj);
-                m_camera->SetType(CAMERA_BACK);
+                m_camera->SetControllingObject(pObj);
+                m_camera->SetType(Gfx::CAM_TYPE_BACK);
             }
         }
 #endif
         for ( i=0 ; i<1000000 ; i++ )
         {
-            pPyro = (CPyro*)m_iMan->SearchInstance(CLASS_PYRO, i);
+            pPyro = static_cast<Gfx::CPyro*>(m_iMan->SearchInstance(CLASS_PYRO, i));
             if ( pPyro == 0 )  break;
 
             pPyro->CutObjectLink(this);  // the object no longer exists
@@ -453,7 +451,7 @@ void CObject::DeleteObject(bool bAll)
              m_type == OBJECT_START    ||
              m_type == OBJECT_END      )  // building?
         {
-            m_terrain->DeleteBuildingLevel(RetPosition(0));  // flattens the field
+            m_terrain->DeleteBuildingLevel(GetPosition(0));  // flattens the field
         }
     }
 
@@ -461,19 +459,19 @@ void CObject::DeleteObject(bool bAll)
 
     if ( m_partiReactor != -1 )
     {
-        m_particule->DeleteParticule(m_partiReactor);
+        m_particle->DeleteParticle(m_partiReactor);
         m_partiReactor = -1;
     }
 
     if ( m_shadowLight != -1 )
     {
-        m_light->DeleteLight(m_shadowLight);
+        m_lightMan->DeleteLight(m_shadowLight);
         m_shadowLight = -1;
     }
 
     if ( m_effectLight != -1 )
     {
-        m_light->DeleteLight(m_effectLight);
+        m_lightMan->DeleteLight(m_effectLight);
         m_effectLight = -1;
     }
 
@@ -506,7 +504,7 @@ void CObject::DeleteObject(bool bAll)
 
             if ( m_objectPart[i].masterParti != -1 )
             {
-                m_particule->DeleteParticule(m_objectPart[i].masterParti);
+                m_particle->DeleteParticle(m_objectPart[i].masterParti);
                 m_objectPart[i].masterParti = -1;
             }
         }
@@ -569,8 +567,8 @@ void CObject::Simplify()
 
 bool CObject::ExploObject(ExploType type, float force, float decay)
 {
-    PyroType    pyroType;
-    CPyro*      pyro;
+    Gfx::PyroType    pyroType;
+    Gfx::CPyro*      pyro;
     float       loss, shield;
 
     if ( type == EXPLO_BURN )
@@ -627,7 +625,7 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
     loss *= decay;
 
     // Decreases the power of the shield.
-    shield = RetShield();
+    shield = GetShield();
     shield -= loss;
     if ( shield < 0.0f )  shield = 0.0f;
     SetShield(shield);
@@ -638,26 +636,26 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
         {
             if ( m_type == OBJECT_HUMAN )
             {
-                pyroType = PT_SHOTH;
+                pyroType = Gfx::PT_SHOTH;
             }
             else
             {
-                pyroType = PT_SHOTW;
+                pyroType = Gfx::PT_SHOTW;
             }
         }
         else
         {
             if ( m_type == OBJECT_HUMAN )
             {
-                pyroType = PT_SHOTH;
+                pyroType = Gfx::PT_SHOTH;
             }
             else if ( m_type == OBJECT_MOTHER )
             {
-                pyroType = PT_SHOTM;
+                pyroType = Gfx::PT_SHOTM;
             }
             else
             {
-                pyroType = PT_SHOTT;
+                pyroType = Gfx::PT_SHOTT;
             }
         }
     }
@@ -672,16 +670,16 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
                  m_type == OBJECT_WORM   ||
                  m_type == OBJECT_BULLET )
             {
-                pyroType = PT_BURNO;
+                pyroType = Gfx::PT_BURNO;
                 SetBurn(true);
             }
             else if ( m_type == OBJECT_HUMAN )
             {
-                pyroType = PT_DEADG;
+                pyroType = Gfx::PT_DEADG;
             }
             else
             {
-                pyroType = PT_BURNT;
+                pyroType = Gfx::PT_BURNT;
                 SetBurn(true);
             }
             SetVirusMode(false);
@@ -690,11 +688,11 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
         {
             if ( m_type == OBJECT_HUMAN )
             {
-                pyroType = PT_DEADW;
+                pyroType = Gfx::PT_DEADW;
             }
             else
             {
-                pyroType = PT_FRAGW;
+                pyroType = Gfx::PT_FRAGW;
             }
         }
         else    // explosion?
@@ -704,17 +702,17 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
                  m_type == OBJECT_BEE    ||
                  m_type == OBJECT_WORM   )
             {
-                pyroType = PT_EXPLOO;
+                pyroType = Gfx::PT_EXPLOO;
             }
             else if ( m_type == OBJECT_MOTHER ||
                       m_type == OBJECT_NEST   ||
                       m_type == OBJECT_BULLET )
             {
-                pyroType = PT_FRAGO;
+                pyroType = Gfx::PT_FRAGO;
             }
             else if ( m_type == OBJECT_HUMAN )
             {
-                pyroType = PT_DEADG;
+                pyroType = Gfx::PT_DEADG;
             }
             else if ( m_type == OBJECT_BASE     ||
                       m_type == OBJECT_DERRICK  ||
@@ -737,24 +735,24 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
                       m_type == OBJECT_START    ||
                       m_type == OBJECT_END      )  // building?
             {
-                pyroType = PT_FRAGT;
+                pyroType = Gfx::PT_FRAGT;
             }
             else if ( m_type == OBJECT_MOBILEtg ||
                       m_type == OBJECT_TEEN28    ||  // cylinder?
                       m_type == OBJECT_TEEN31    )   // basket?
             {
-                pyroType = PT_FRAGT;
+                pyroType = Gfx::PT_FRAGT;
             }
             else
             {
-                pyroType = PT_EXPLOT;
+                pyroType = Gfx::PT_EXPLOT;
             }
         }
 
         loss = 1.0f;
     }
 
-    pyro = new CPyro(m_iMan);
+    pyro = new Gfx::CPyro(m_iMan);
     pyro->Create(pyroType, this, loss);
 
     if ( shield == 0.0f )  // dead?
@@ -768,10 +766,10 @@ bool CObject::ExploObject(ExploType type, float force, float decay)
 
     if ( shield > 0.0f )  return false;  // not dead yet
 
-    if ( RetSelect() )
+    if ( GetSelect() )
     {
         SetSelect(false);  // deselects the object
-        m_camera->SetType(CAMERA_EXPLO);
+        m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
         m_main->DeselectAll();
     }
     DeleteDeselList(this);
@@ -830,7 +828,7 @@ void CObject::InitPart(int part)
 }
 
 // Creates a new part, and returns its number.
-// Returns -1 on error.
+// Geturns -1 on error.
 
 int CObject::CreatePart()
 {
@@ -855,7 +853,7 @@ void CObject::DeletePart(int part)
 
     if ( m_objectPart[part].masterParti != -1 )
     {
-        m_particule->DeleteParticule(m_objectPart[part].masterParti);
+        m_particle->DeleteParticle(m_objectPart[part].masterParti);
         m_objectPart[part].masterParti = -1;
     }
 
@@ -891,9 +889,9 @@ void CObject::SetObjectRank(int part, int objRank)
     m_objectPart[part].object = objRank;
 }
 
-// Returns the number of part.
+// Geturns the number of part.
 
-int CObject::RetObjectRank(int part)
+int CObject::GetObjectRank(int part)
 {
     if ( !m_objectPart[part].bUsed )  return -1;
     return m_objectPart[part].object;
@@ -914,7 +912,7 @@ void CObject::SetObjectParent(int part, int parent)
 void CObject::SetType(ObjectType type)
 {
     m_type = type;
-    strcpy(m_name, RetObjectName(m_type));
+    strcpy(m_name, GetObjectName(m_type));
 
     if ( m_type == OBJECT_MOBILErs )
     {
@@ -940,16 +938,16 @@ void CObject::SetType(ObjectType type)
          m_type == OBJECT_MOBILEii ||
          m_type == OBJECT_MOBILErc )  // cannon vehicle?
     {
-        m_cameraType = CAMERA_ONBOARD;
+        m_cameraType = Gfx::CAM_TYPE_ONBOARD;
     }
 }
 
-ObjectType CObject::RetType()
+ObjectType CObject::GetType()
 {
     return m_type;
 }
 
-char* CObject::RetName()
+char* CObject::GetName()
 {
     return m_name;
 }
@@ -962,7 +960,7 @@ void CObject::SetOption(int option)
     m_option = option;
 }
 
-int CObject::RetOption()
+int CObject::GetOption()
 {
     return m_option;
 }
@@ -980,7 +978,7 @@ void CObject::SetID(int id)
     }
 }
 
-int CObject::RetID()
+int CObject::GetID()
 {
     return m_id;
 }
@@ -996,115 +994,115 @@ bool CObject::Write(char *line)
     float       value;
     int         i;
 
-    sprintf(name, " camera=%s", GetCamera(RetCameraType()));
+    sprintf(name, " camera=%s", GetCamera(GetCameraType()));
     strcat(line, name);
 
-    if ( RetCameraLock() != 0 )
+    if ( GetCameraLock() != 0 )
     {
-        sprintf(name, " cameraLock=%d", RetCameraLock());
+        sprintf(name, " cameraLock=%d", GetCameraLock());
         strcat(line, name);
     }
 
-    if ( RetEnergy() != 0.0f )
+    if ( GetEnergy() != 0.0f )
     {
-        sprintf(name, " energy=%.2f", RetEnergy());
+        sprintf(name, " energy=%.2f", GetEnergy());
         strcat(line, name);
     }
 
-    if ( RetCapacity() != 1.0f )
+    if ( GetCapacity() != 1.0f )
     {
-        sprintf(name, " capacity=%.2f", RetCapacity());
+        sprintf(name, " capacity=%.2f", GetCapacity());
         strcat(line, name);
     }
 
-    if ( RetShield() != 1.0f )
+    if ( GetShield() != 1.0f )
     {
-        sprintf(name, " shield=%.2f", RetShield());
+        sprintf(name, " shield=%.2f", GetShield());
         strcat(line, name);
     }
 
-    if ( RetRange() != 1.0f )
+    if ( GetRange() != 1.0f )
     {
-        sprintf(name, " range=%.2f", RetRange());
+        sprintf(name, " range=%.2f", GetRange());
         strcat(line, name);
     }
 
-    if ( RetSelectable() != 1 )
+    if ( GetSelectable() != 1 )
     {
-        sprintf(name, " selectable=%d", RetSelectable());
+        sprintf(name, " selectable=%d", GetSelectable());
         strcat(line, name);
     }
 
-    if ( RetEnable() != 1 )
+    if ( GetEnable() != 1 )
     {
-        sprintf(name, " enable=%d", RetEnable());
+        sprintf(name, " enable=%d", GetEnable());
         strcat(line, name);
     }
 
-    if ( RetFixed() != 0 )
+    if ( GetFixed() != 0 )
     {
-        sprintf(name, " fixed=%d", RetFixed());
+        sprintf(name, " fixed=%d", GetFixed());
         strcat(line, name);
     }
 
-    if ( RetClip() != 1 )
+    if ( GetClip() != 1 )
     {
-        sprintf(name, " clip=%d", RetClip());
+        sprintf(name, " clip=%d", GetClip());
         strcat(line, name);
     }
 
-    if ( RetLock() != 0 )
+    if ( GetLock() != 0 )
     {
-        sprintf(name, " lock=%d", RetLock());
+        sprintf(name, " lock=%d", GetLock());
         strcat(line, name);
     }
 
-    if ( RetProxyActivate() != 0 )
+    if ( GetProxyActivate() != 0 )
     {
-        sprintf(name, " proxyActivate=%d", RetProxyActivate());
+        sprintf(name, " proxyActivate=%d", GetProxyActivate());
         strcat(line, name);
 
-        sprintf(name, " proxyDistance=%.2f", RetProxyDistance()/g_unit);
+        sprintf(name, " proxyDistance=%.2f", GetProxyDistance()/g_unit);
         strcat(line, name);
     }
 
-    if ( RetMagnifyDamage() != 1.0f )
+    if ( GetMagnifyDamage() != 1.0f )
     {
-        sprintf(name, " magnifyDamage=%.2f", RetMagnifyDamage());
+        sprintf(name, " magnifyDamage=%.2f", GetMagnifyDamage());
         strcat(line, name);
     }
 
-    if ( RetGunGoalV() != 0.0f )
+    if ( GetGunGoalV() != 0.0f )
     {
-        sprintf(name, " aimV=%.2f", RetGunGoalV());
+        sprintf(name, " aimV=%.2f", GetGunGoalV());
         strcat(line, name);
     }
-    if ( RetGunGoalH() != 0.0f )
+    if ( GetGunGoalH() != 0.0f )
     {
-        sprintf(name, " aimH=%.2f", RetGunGoalH());
-        strcat(line, name);
-    }
-
-    if ( RetParam() != 0.0f )
-    {
-        sprintf(name, " param=%.2f", RetParam());
+        sprintf(name, " aimH=%.2f", GetGunGoalH());
         strcat(line, name);
     }
 
-    if ( RetResetCap() != 0 )
+    if ( GetParam() != 0.0f )
     {
-        sprintf(name, " resetCap=%d", RetResetCap());
+        sprintf(name, " param=%.2f", GetParam());
+        strcat(line, name);
+    }
+
+    if ( GetResetCap() != 0 )
+    {
+        sprintf(name, " resetCap=%d", GetResetCap());
         strcat(line, name);
 
-        pos = RetResetPosition()/g_unit;
+        pos = GetResetPosition()/g_unit;
         sprintf(name, " resetPos=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
         strcat(line, name);
 
-        pos = RetResetAngle()/(Math::PI/180.0f);
+        pos = GetResetAngle()/(Math::PI/180.0f);
         sprintf(name, " resetAngle=%.2f;%.2f;%.2f", pos.x, pos.y, pos.z);
         strcat(line, name);
 
-        sprintf(name, " resetRun=%d", RetResetRun());
+        sprintf(name, " resetRun=%d", GetResetRun());
         strcat(line, name);
     }
 
@@ -1123,7 +1121,7 @@ bool CObject::Write(char *line)
     // Puts information in terminal (OBJECT_INFO).
     for ( i=0 ; i<m_infoTotal ; i++ )
     {
-        info = RetInfo(i);
+        info = GetInfo(i);
         if ( info.name[0] == 0 )  break;
 
         sprintf(name, " info%d=\"%s=%.2f\"", i+1, info.name, info.value);
@@ -1133,7 +1131,7 @@ bool CObject::Write(char *line)
     // Sets the parameters of the command line.
     for ( i=0 ; i<OBJECTMAXCMDLINE ; i++ )
     {
-        value = RetCmdLine(i);
+        value = GetCmdLine(i);
         if ( value == NAN )  break;
 
         if ( i == 0 )  sprintf(name, " cmdline=%.2f", value);
@@ -1164,21 +1162,21 @@ bool CObject::Write(char *line)
     return true;
 }
 
-// Returns all parameters of the object.
+// Geturns all parameters of the object.
 
 bool CObject::Read(char *line)
 {
     Math::Vector    pos, dir;
-    Info        info;
-    CameraType  cType;
-    char        op[20];
-    char        text[100];
-    char*       p;
-    float       value;
-    int         i;
+    Info            info;
+    Gfx::CameraType cType;
+    char            op[20];
+    char            text[100];
+    char*           p;
+    float           value;
+    int             i;
 
     cType = OpCamera(line, "camera");
-    if ( cType != CAMERA_NULL )
+    if ( cType != Gfx::CAM_TYPE_NULL )
     {
         SetCameraType(cType);
     }
@@ -1200,7 +1198,7 @@ bool CObject::Read(char *line)
     SetGunGoalV(OpFloat(line, "aimV", 0.0f));
     SetGunGoalH(OpFloat(line, "aimH", 0.0f));
     SetParam(OpFloat(line, "param", 0.0f));
-    SetResetCap((ResetCap)OpInt(line, "resetCap", 0));
+    SetResetCap(static_cast<ResetCap>(OpInt(line, "resetCap", 0)));
     SetResetPosition(OpDir(line, "resetPos")*g_unit);
     SetResetAngle(OpDir(line, "resetAngle")*(Math::PI/180.0f));
     SetResetRun(OpInt(line, "resetRun", 0));
@@ -1291,7 +1289,7 @@ int CObject::CreateCrashSphere(Math::Vector pos, float radius, Sound sound,
 
     if ( m_crashSphereUsed >= MAXCRASHSPHERE )  return -1;
 
-    zoom = RetZoomX(0);
+    zoom = GetZoomX(0);
     m_crashSpherePos[m_crashSphereUsed] = pos;
     m_crashSphereRadius[m_crashSphereUsed] = radius*zoom;
     m_crashSphereHardness[m_crashSphereUsed] = hardness;
@@ -1299,14 +1297,14 @@ int CObject::CreateCrashSphere(Math::Vector pos, float radius, Sound sound,
     return m_crashSphereUsed++;
 }
 
-// Returns the number of spheres.
+// Geturns the number of spheres.
 
-int CObject::RetCrashSphereTotal()
+int CObject::GetCrashSphereTotal()
 {
     return m_crashSphereUsed;
 }
 
-// Returns a sphere for collisions.
+// Geturns a sphere for collisions.
 // The position is absolute in the world.
 
 bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
@@ -1318,7 +1316,7 @@ bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
         return false;
     }
 
-    // Returns to the sphere collisions,
+    // Geturns to the sphere collisions,
     // which ignores the inclination of the vehicle.
     // This is necessary to collisions with vehicles,
     // so as not to reflect SetInclinaison, for example.
@@ -1342,16 +1340,16 @@ bool CObject::GetCrashSphere(int rank, Math::Vector &pos, float &radius)
     return true;
 }
 
-// Returns the hardness of a sphere.
+// Geturns the hardness of a sphere.
 
-Sound CObject::RetCrashSphereSound(int rank)
+Sound CObject::GetCrashSphereSound(int rank)
 {
     return m_crashSphereSound[rank];
 }
 
-// Returns the hardness of a sphere.
+// Geturns the hardness of a sphere.
 
-float CObject::RetCrashSphereHardness(int rank)
+float CObject::GetCrashSphereHardness(int rank)
 {
     return m_crashSphereHardness[rank];
 }
@@ -1378,12 +1376,12 @@ void CObject::SetGlobalSphere(Math::Vector pos, float radius)
 {
     float   zoom;
 
-    zoom = RetZoomX(0);
+    zoom = GetZoomX(0);
     m_globalSpherePos    = pos;
     m_globalSphereRadius = radius*zoom;
 }
 
-// Returns the global sphere, in the world.
+// Geturns the global sphere, in the world.
 
 void CObject::GetGlobalSphere(Math::Vector &pos, float &radius)
 {
@@ -1416,9 +1414,9 @@ void CObject::SetShieldRadius(float radius)
     m_shieldRadius = radius;
 }
 
-// Returns the radius of the shield.
+// Geturns the radius of the shield.
 
-float CObject::RetShieldRadius()
+float CObject::GetShieldRadius()
 {
     return m_shieldRadius;
 }
@@ -1431,7 +1429,7 @@ void CObject::SetFloorHeight(float height)
     Math::Vector    pos;
 
     pos = m_objectPart[0].position;
-    m_terrain->MoveOnFloor(pos);
+    m_terrain->AdjustToFloor(pos);
 
     if ( m_physics != 0 )
     {
@@ -1451,7 +1449,7 @@ void CObject::FloorAdjust()
     Math::Point         nn;
     float           a;
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     if ( m_terrain->GetNormal(n, pos) )
     {
 #if 0
@@ -1459,7 +1457,7 @@ void CObject::FloorAdjust()
         SetAngleZ(0, -sinf(n.x));
         SetAngleY(0, 0.0f);
 #else
-        a = RetAngleY(0);
+        a = GetAngleY(0);
         nn = Math::RotatePoint(-a, Math::Point(n.z, n.x));
         SetAngleX(0,  sinf(nn.x));
         SetAngleZ(0, -sinf(nn.y));
@@ -1481,7 +1479,7 @@ void CObject::SetLinVibration(Math::Vector dir)
     }
 }
 
-Math::Vector CObject::RetLinVibration()
+Math::Vector CObject::GetLinVibration()
 {
     return m_linVibration;
 }
@@ -1499,7 +1497,7 @@ void CObject::SetCirVibration(Math::Vector dir)
     }
 }
 
-Math::Vector CObject::RetCirVibration()
+Math::Vector CObject::GetCirVibration()
 {
     return m_cirVibration;
 }
@@ -1517,7 +1515,7 @@ void CObject::SetInclinaison(Math::Vector dir)
     }
 }
 
-Math::Vector CObject::RetInclinaison()
+Math::Vector CObject::GetInclinaison()
 {
     return m_inclinaison;
 }
@@ -1539,10 +1537,10 @@ void CObject::SetPosition(int part, const Math::Vector &pos)
         rank = m_objectPart[0].object;
 
         shPos = pos;
-        m_terrain->MoveOnFloor(shPos, true);
+        m_terrain->AdjustToFloor(shPos, true);
         m_engine->SetObjectShadowPos(rank, shPos);
 
-        if ( m_physics != 0 && m_physics->RetType() == TYPE_FLYING )
+        if ( m_physics != 0 && m_physics->GetType() == TYPE_FLYING )
         {
             height = pos.y-shPos.y;
         }
@@ -1554,7 +1552,7 @@ void CObject::SetPosition(int part, const Math::Vector &pos)
 
         // Calculating the normal to the ground in nine strategic locations,
         // then perform a weighted average (the dots in the center are more important).
-        radius = m_engine->RetObjectShadowRadius(rank);
+        radius = m_engine->GetObjectShadowRadius(rank);
         i = 0;
 
         m_terrain->GetNormal(norm, pos);
@@ -1619,7 +1617,7 @@ void CObject::SetPosition(int part, const Math::Vector &pos)
         {
             norm += n[j];
         }
-        norm /= (float)i;  // average vector
+        norm /= static_cast<float>(i);  // average vector
 
         m_engine->SetObjectShadowNormal(rank, norm);
 
@@ -1627,14 +1625,14 @@ void CObject::SetPosition(int part, const Math::Vector &pos)
         {
             shPos = pos;
             shPos.y += m_shadowHeight;
-            m_light->SetLightPos(m_shadowLight, shPos);
+            m_lightMan->SetLightPos(m_shadowLight, shPos);
         }
 
         if ( m_effectLight != -1 )
         {
             shPos = pos;
             shPos.y += m_effectHeight;
-            m_light->SetLightPos(m_effectLight, shPos);
+            m_lightMan->SetLightPos(m_effectLight, shPos);
         }
 
         if ( m_bShowLimit )
@@ -1644,7 +1642,7 @@ void CObject::SetPosition(int part, const Math::Vector &pos)
     }
 }
 
-Math::Vector CObject::RetPosition(int part)
+Math::Vector CObject::GetPosition(int part)
 {
     return m_objectPart[part].position;
 }
@@ -1662,7 +1660,7 @@ void CObject::SetAngle(int part, const Math::Vector &angle)
     }
 }
 
-Math::Vector CObject::RetAngle(int part)
+Math::Vector CObject::GetAngle(int part)
 {
     return m_objectPart[part].angle;
 }
@@ -1696,17 +1694,17 @@ void CObject::SetAngleZ(int part, float angle)
     m_objectPart[part].bRotate = true;  //it will recalculate the matrices
 }
 
-float CObject::RetAngleY(int part)
+float CObject::GetAngleY(int part)
 {
     return m_objectPart[part].angle.y;
 }
 
-float CObject::RetAngleX(int part)
+float CObject::GetAngleX(int part)
 {
     return m_objectPart[part].angle.x;
 }
 
-float CObject::RetAngleZ(int part)
+float CObject::GetAngleZ(int part)
 {
     return m_objectPart[part].angle.z;
 }
@@ -1736,7 +1734,7 @@ void CObject::SetZoom(int part, Math::Vector zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-Math::Vector CObject::RetZoom(int part)
+Math::Vector CObject::GetZoom(int part)
 {
     return m_objectPart[part].zoom;
 }
@@ -1771,27 +1769,27 @@ void CObject::SetZoomZ(int part, float zoom)
                                  m_objectPart[part].zoom.z != 1.0f );
 }
 
-float CObject::RetZoomX(int part)
+float CObject::GetZoomX(int part)
 {
     return m_objectPart[part].zoom.x;
 }
 
-float CObject::RetZoomY(int part)
+float CObject::GetZoomY(int part)
 {
     return m_objectPart[part].zoom.y;
 }
 
-float CObject::RetZoomZ(int part)
+float CObject::GetZoomZ(int part)
 {
     return m_objectPart[part].zoom.z;
 }
 
 
-// Returns the water level.
+// Geturns the water level.
 
-float CObject::RetWaterLevel()
+float CObject::GetWaterLevel()
 {
-    return m_water->RetLevel();
+    return m_water->GetLevel();
 }
 
 
@@ -1801,11 +1799,11 @@ void CObject::SetTrainer(bool bEnable)
 
     if ( m_bTrainer )  // training?
     {
-        m_cameraType = CAMERA_FIX;
+        m_cameraType = Gfx::CAM_TYPE_FIX;
     }
 }
 
-bool CObject::RetTrainer()
+bool CObject::GetTrainer()
 {
     return m_bTrainer;
 }
@@ -1815,7 +1813,7 @@ void CObject::SetToy(bool bEnable)
     m_bToy = bEnable;
 }
 
-bool CObject::RetToy()
+bool CObject::GetToy()
 {
     return m_bToy;
 }
@@ -1825,7 +1823,7 @@ void CObject::SetManual(bool bManual)
     m_bManual = bManual;
 }
 
-bool CObject::RetManual()
+bool CObject::GetManual()
 {
     return m_bManual;
 }
@@ -1835,7 +1833,7 @@ void CObject::SetResetCap(ResetCap cap)
     m_resetCap = cap;
 }
 
-ResetCap CObject::RetResetCap()
+ResetCap CObject::GetResetCap()
 {
     return m_resetCap;
 }
@@ -1845,7 +1843,7 @@ void CObject::SetResetBusy(bool bBusy)
     m_bResetBusy = bBusy;
 }
 
-bool CObject::RetResetBusy()
+bool CObject::GetResetBusy()
 {
     return m_bResetBusy;
 }
@@ -1855,7 +1853,7 @@ void CObject::SetResetPosition(const Math::Vector &pos)
     m_resetPosition = pos;
 }
 
-Math::Vector CObject::RetResetPosition()
+Math::Vector CObject::GetResetPosition()
 {
     return m_resetPosition;
 }
@@ -1865,12 +1863,12 @@ void CObject::SetResetAngle(const Math::Vector &angle)
     m_resetAngle = angle;
 }
 
-Math::Vector CObject::RetResetAngle()
+Math::Vector CObject::GetResetAngle()
 {
     return m_resetAngle;
 }
 
-int CObject::RetResetRun()
+int CObject::GetResetRun()
 {
     return m_resetRun;
 }
@@ -1883,12 +1881,12 @@ void CObject::SetResetRun(int run)
 
 // Management of the particle master.
 
-void CObject::SetMasterParticule(int part, int parti)
+void CObject::SetMasterParticle(int part, int parti)
 {
     m_objectPart[part].masterParti = parti;
 }
 
-int CObject::RetMasterParticule(int part)
+int CObject::GetMasterParticle(int part)
 {
     return m_objectPart[part].masterParti;
 }
@@ -1901,7 +1899,7 @@ void CObject::SetPower(CObject* power)
     m_power = power;
 }
 
-CObject* CObject::RetPower()
+CObject* CObject::GetPower()
 {
     return m_power;
 }
@@ -1913,7 +1911,7 @@ void CObject::SetFret(CObject* fret)
     m_fret = fret;
 }
 
-CObject* CObject::RetFret()
+CObject* CObject::GetFret()
 {
     return m_fret;
 }
@@ -1928,7 +1926,7 @@ void CObject::SetTruck(CObject* truck)
     m_engine->SetObjectShadowHide(m_objectPart[0].object, (m_truck != 0));
 }
 
-CObject* CObject::RetTruck()
+CObject* CObject::GetTruck()
 {
     return m_truck;
 }
@@ -1940,7 +1938,7 @@ void CObject::SetTruckPart(int part)
     m_truckLink = part;
 }
 
-int CObject::RetTruckPart()
+int CObject::GetTruckPart()
 {
     return m_truckLink;
 }
@@ -1977,13 +1975,13 @@ void CObject::SetInfo(int rank, Info info)
     m_bInfoUpdate = true;
 }
 
-Info CObject::RetInfo(int rank)
+Info CObject::GetInfo(int rank)
 {
     if ( rank < 0 || rank >= OBJECTMAXINFO )  rank = 0;
     return m_info[rank];
 }
 
-int CObject::RetInfoTotal()
+int CObject::GetInfoTotal()
 {
     return m_infoTotal;
 }
@@ -1993,7 +1991,7 @@ void CObject::SetInfoReturn(float value)
     m_infoReturn = value;
 }
 
-float CObject::RetInfoReturn()
+float CObject::GetInfoReturn()
 {
     return m_infoReturn;
 }
@@ -2003,7 +2001,7 @@ void CObject::SetInfoUpdate(bool bUpdate)
     m_bInfoUpdate = bUpdate;
 }
 
-bool CObject::RetInfoUpdate()
+bool CObject::GetInfoUpdate()
 {
     return m_bInfoUpdate;
 }
@@ -2016,31 +2014,31 @@ bool CObject::SetCmdLine(int rank, float value)
     return true;
 }
 
-float CObject::RetCmdLine(int rank)
+float CObject::GetCmdLine(int rank)
 {
     if ( rank < 0 || rank >= OBJECTMAXCMDLINE )  return 0.0f;
     return m_cmdLine[rank];
 }
 
 
-// Returns matrices of an object portion.
+// Geturns matrices of an object portion.
 
-Math::Matrix* CObject::RetRotateMatrix(int part)
+Math::Matrix* CObject::GetRotateMatrix(int part)
 {
     return &m_objectPart[part].matRotate;
 }
 
-Math::Matrix* CObject::RetTranslateMatrix(int part)
+Math::Matrix* CObject::GetTranslateMatrix(int part)
 {
     return &m_objectPart[part].matTranslate;
 }
 
-Math::Matrix* CObject::RetTransformMatrix(int part)
+Math::Matrix* CObject::GetTransformMatrix(int part)
 {
     return &m_objectPart[part].matTransform;
 }
 
-Math::Matrix* CObject::RetWorldMatrix(int part)
+Math::Matrix* CObject::GetWorldMatrix(int part)
 {
     if ( m_objectPart[0].bTranslate ||
          m_objectPart[0].bRotate    )
@@ -2062,7 +2060,7 @@ void CObject::SetDrawWorld(bool bDraw)
     {
         if ( m_objectPart[i].bUsed )
         {
-            m_engine->SetDrawWorld(m_objectPart[i].object, bDraw);
+            m_engine->SetObjectDrawWorld(m_objectPart[i].object, bDraw);
         }
     }
 }
@@ -2077,7 +2075,7 @@ void CObject::SetDrawFront(bool bDraw)
     {
         if ( m_objectPart[i].bUsed )
         {
-            m_engine->SetDrawFront(m_objectPart[i].object, bDraw);
+            m_engine->SetObjectDrawFront(m_objectPart[i].object, bDraw);
         }
     }
 }
@@ -2242,94 +2240,93 @@ bool CObject::CreateInsect(Math::Vector pos, float angle, ObjectType type)
 
 // Creates shade under a vehicle as a negative light.
 
-bool CObject::CreateShadowLight(float height, D3DCOLORVALUE color)
+bool CObject::CreateShadowLight(float height, Gfx::Color color)
 {
-    D3DLIGHT7   light;
+    Gfx::Light   light;
     Math::Vector    pos;
 
-    if ( !m_engine->RetLightMode() )  return true;
+    if ( !m_engine->GetLightMode() )  return true;
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     m_shadowHeight = height;
 
-    ZeroMemory( &light, sizeof(light) );
-    light.dltType       = D3DLIGHT_SPOT;
-    light.dcvDiffuse.r  = color.r;
-    light.dcvDiffuse.g  = color.g;
-    light.dcvDiffuse.b  = color.b;
-    light.dvPosition.x  = pos.x;
-    light.dvPosition.y  = pos.y+height;
-    light.dvPosition.z  = pos.z;
-    light.dvDirection.x =  0.0f;
-    light.dvDirection.y = -1.0f;  // against the bottom
-    light.dvDirection.z =  0.0f;
-    light.dvRange = D3DLIGHT_RANGE_MAX;
-    light.dvFalloff = 1.0f;
-    light.dvAttenuation0 = 1.0f;
-    light.dvAttenuation1 = 0.0f;
-    light.dvAttenuation2 = 0.0f;
-    light.dvTheta = 0.0f;
-    light.dvPhi = Math::PI/4.0f;
+    light.type          = Gfx::LIGHT_SPOT;
+    light.diffuse.r     = color.r;
+    light.diffuse.g     = color.g;
+    light.diffuse.b     = color.b;
+    light.position.x    = pos.x;
+    light.position.y    = pos.y+height;
+    light.position.z    = pos.z;
+    light.direction.x   =  0.0f;
+    light.direction.y   = -1.0f;  // against the bottom
+    light.direction.z   =  0.0f;
+    //TODO Is this value correct
+    light.spotIntensity = 128;
+    light.attenuation0  = 1.0f;
+    light.attenuation1  = 0.0f;
+    light.attenuation2  = 0.0f;
+    //TODO Is this value correct
+    light.spotAngle = 90;
 
-    m_shadowLight = m_light->CreateLight();
+    m_shadowLight = m_lightMan->CreateLight();
     if ( m_shadowLight == -1 )  return false;
 
-    m_light->SetLight(m_shadowLight, light);
+    m_lightMan->SetLight(m_shadowLight, light);
 
     // Only illuminates the objects on the ground.
-    m_light->SetLightIncluType(m_shadowLight, TYPETERRAIN);
+    m_lightMan->SetLightIncludeType(m_shadowLight, Gfx::ENG_OBJTYPE_TERRAIN);
 
     return true;
 }
 
-// Returns the number of negative light shade.
+// Geturns the number of negative light shade.
 
-int CObject::RetShadowLight()
+int CObject::GetShadowLight()
 {
     return m_shadowLight;
 }
 
 // Creates light for the effects of a vehicle.
 
-bool CObject::CreateEffectLight(float height, D3DCOLORVALUE color)
+bool CObject::CreateEffectLight(float height, Gfx::Color color)
 {
-    D3DLIGHT7   light;
+    Gfx::Light   light;
 
-    if ( !m_engine->RetLightMode() )  return true;
+    if ( !m_engine->GetLightMode() )  return true;
 
     m_effectHeight = height;
 
-    ZeroMemory( &light, sizeof(light) );
-    light.dltType       = D3DLIGHT_SPOT;
-    light.dcvDiffuse.r  = color.r;
-    light.dcvDiffuse.g  = color.g;
-    light.dcvDiffuse.b  = color.b;
-    light.dvPosition.x  =  0.0f;
-    light.dvPosition.y  =  0.0f+height;
-    light.dvPosition.z  =  0.0f;
-    light.dvDirection.x =  0.0f;
-    light.dvDirection.y = -1.0f;  // against the bottom
-    light.dvDirection.z =  0.0f;
-    light.dvRange = D3DLIGHT_RANGE_MAX;
-    light.dvFalloff = 1.0f;
-    light.dvAttenuation0 = 1.0f;
-    light.dvAttenuation1 = 0.0f;
-    light.dvAttenuation2 = 0.0f;
-    light.dvTheta = 0.0f;
-    light.dvPhi = Math::PI/4.0f;
+    memset( &light, 0, sizeof(light) );
+    light.type       = Gfx::LIGHT_SPOT;
+    light.diffuse.r  = color.r;
+    light.diffuse.g  = color.g;
+    light.diffuse.b  = color.b;
+    light.position.x  =  0.0f;
+    light.position.y  =  0.0f+height;
+    light.position.z  =  0.0f;
+    light.direction.x =  0.0f;
+    light.direction.y = -1.0f;  // against the bottom
+    light.direction.z =  0.0f;
+    //TODO Is this value correct
+    light.spotIntensity = 1.0f;
+    light.attenuation0 = 1.0f;
+    light.attenuation1 = 0.0f;
+    light.attenuation2 = 0.0f;
+    //TODO Is this value correct
+    light.spotAngle = 90;
 
-    m_effectLight = m_light->CreateLight();
+    m_effectLight = m_lightMan->CreateLight();
     if ( m_effectLight == -1 )  return false;
 
-    m_light->SetLight(m_effectLight, light);
-    m_light->SetLightIntensity(m_effectLight, 0.0f);
+    m_lightMan->SetLight(m_effectLight, light);
+    m_lightMan->SetLightIntensity(m_effectLight, 0.0f);
 
     return true;
 }
 
-// Returns the number of light effects.
+// Geturns the number of light effects.
 
-int CObject::RetEffectLight()
+int CObject::GetEffectLight()
 {
     return m_effectLight;
 }
@@ -2337,15 +2334,15 @@ int CObject::RetEffectLight()
 // Creates the circular shadow underneath a vehicle.
 
 bool CObject::CreateShadowCircle(float radius, float intensity,
-                                 D3DShadowType type)
+                                 Gfx::EngineShadowType type)
 {
     float   zoom;
 
     if ( intensity == 0.0f )  return true;
 
-    zoom = RetZoomX(0);
+    zoom = GetZoomX(0);
 
-    m_engine->ShadowCreate(m_objectPart[0].object);
+    m_engine->CreateShadow(m_objectPart[0].object);
 
     m_engine->SetObjectShadowRadius(m_objectPart[0].object, radius*zoom);
     m_engine->SetObjectShadowIntensity(m_objectPart[0].object, intensity);
@@ -2361,18 +2358,16 @@ bool CObject::CreateShadowCircle(float radius, float intensity,
 bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
                              ObjectType type, float power)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     Math::Point     p;
     int         rank, i;
 
-    if ( m_engine->RetRestCreate() < 20 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
     SetObjectRank(0, rank);
 
     if ( m_type == OBJECT_PORTICO )
@@ -2384,7 +2379,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\portico2.mod");
@@ -2392,7 +2387,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetPosition(1, Math::Vector(0.0f, 67.0f, 0.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\portico3.mod");
@@ -2401,7 +2396,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleY(2, 45.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 2);
         pModFile->ReadModel("objects\\portico4.mod");
@@ -2410,7 +2405,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleY(3, -60.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(4, rank);
         SetObjectParent(4, 3);
         pModFile->ReadModel("objects\\portico5.mod");
@@ -2419,7 +2414,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleY(4, -55.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(5, rank);
         SetObjectParent(5, 1);
         pModFile->ReadModel("objects\\portico3.mod");
@@ -2428,7 +2423,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleY(5, -45.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(6, rank);
         SetObjectParent(6, 5);
         pModFile->ReadModel("objects\\portico4.mod");
@@ -2437,7 +2432,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleY(6, 60.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(7, rank);
         SetObjectParent(7, 6);
         pModFile->ReadModel("objects\\portico5.mod");
@@ -2446,7 +2441,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleY(7, 55.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(8, rank);
         SetObjectParent(8, 0);
         pModFile->ReadModel("objects\\portico6.mod");
@@ -2456,7 +2451,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetZoom(8, 2.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(9, rank);
         SetObjectParent(9, 8);
         pModFile->ReadModel("objects\\portico7.mod");
@@ -2464,7 +2459,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetPosition(9, Math::Vector(0.0f, 4.5f, 1.9f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(10, rank);
         SetObjectParent(10, 0);
         pModFile->ReadModel("objects\\portico6.mod");
@@ -2474,7 +2469,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetZoom(10, 2.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(11, rank);
         SetObjectParent(11, 10);
         pModFile->ReadModel("objects\\portico7.mod");
@@ -2508,7 +2503,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         for ( i=0 ; i<8 ; i++ )
         {
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(1+i, rank);
             SetObjectParent(1+i, 0);
             pModFile->ReadModel("objects\\base2.mod");
@@ -2519,7 +2514,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             SetAngleZ(1+i, Math::PI/2.0f);
 
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(10+i, rank);
             SetObjectParent(10+i, 1+i);
             pModFile->ReadModel("objects\\base4.mod");
@@ -2527,7 +2522,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             SetPosition(10+i, Math::Vector(23.5f, 0.0f, 7.0f));
 
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(18+i, rank);
             SetObjectParent(18+i, 1+i);
             pModFile->ReadModel("objects\\base4.mod");
@@ -2537,7 +2532,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         }
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(9, rank);
         SetObjectParent(9, 0);
         pModFile->ReadModel("objects\\base3.mod");  // central pillar
@@ -2578,7 +2573,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\derrick2.mod");
@@ -2603,7 +2598,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\search2.mod");
@@ -2611,7 +2606,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetPosition(1, Math::Vector(0.0f, 13.0f, 0.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\search3.mod");
@@ -2638,7 +2633,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\radar2.mod");
@@ -2646,7 +2641,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetPosition(1, Math::Vector(0.0f, 5.0f, 0.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 0);
         pModFile->ReadModel("objects\\radar3.mod");
@@ -2655,7 +2650,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleY(2, -Math::PI/2.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 2);
         pModFile->ReadModel("objects\\radar4.mod");
@@ -2678,7 +2673,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\info2.mod");
@@ -2688,7 +2683,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         for ( i=0 ; i<3 ; i++ )
         {
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(2+i*2, rank);
             SetObjectParent(2+i*2, 1);
             pModFile->ReadModel("objects\\info3.mod");
@@ -2696,7 +2691,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             SetPosition(2+i*2, Math::Vector(0.0f, 4.5f, 0.0f));
 
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(3+i*2, rank);
             SetObjectParent(3+i*2, 2+i*2);
             pModFile->ReadModel("objects\\radar4.mod");
@@ -2741,7 +2736,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\labo2.mod");
@@ -2750,7 +2745,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleZ(1, Math::PI/2.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\labo3.mod");
@@ -2758,7 +2753,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetPosition(2, Math::Vector(9.0f, -1.0f, 0.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 2);
         pModFile->ReadModel("objects\\labo4.mod");
@@ -2767,7 +2762,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleZ(3, 80.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(4, rank);
         SetObjectParent(4, 2);
         pModFile->ReadModel("objects\\labo4.mod");
@@ -2777,7 +2772,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleY(4, Math::PI*2.0f/3.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(5, rank);
         SetObjectParent(5, 2);
         pModFile->ReadModel("objects\\labo4.mod");
@@ -2809,7 +2804,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         for ( i=0 ; i<9 ; i++ )
         {
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(1+i, rank);
             SetObjectParent(1+i, 0);
             pModFile->ReadModel("objects\\factory2.mod");
@@ -2819,7 +2814,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
             SetZoomZ(1+i, 0.30f);
 
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(10+i, rank);
             SetObjectParent(10+i, 0);
             pModFile->ReadModel("objects\\factory2.mod");
@@ -2832,7 +2827,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 
         for ( i=0 ; i<2 ; i++ )
         {
-            float s = (float)(i*2-1);
+            float s = static_cast<float>(i*2-1);
             CreateCrashSphere(Math::Vector(-10.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
             CreateCrashSphere(Math::Vector( -3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
             CreateCrashSphere(Math::Vector(  3.0f,  2.0f, 11.0f*s), 4.0f, SOUND_BOUMm, 0.45f);
@@ -2867,7 +2862,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\repair2.mod");
@@ -2893,7 +2888,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\destroy2.mod");
@@ -2936,7 +2931,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\convert2.mod");
@@ -2944,7 +2939,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetPosition(1, Math::Vector(0.0f, 14.0f, 0.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 0);
         pModFile->ReadModel("objects\\convert3.mod");
@@ -2953,7 +2948,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleX(2, -Math::PI*0.35f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 0);
         pModFile->ReadModel("objects\\convert3.mod");
@@ -2980,7 +2975,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\roller2c.mod");
@@ -2989,7 +2984,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetAngleZ(1, Math::PI/2.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\roller3c.mod");
@@ -3006,7 +3001,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         m_character.posPower = Math::Vector(5.0f, 3.0f, 0.0f);
 
         CreateShadowCircle(6.0f, 1.0f);
-        m_showLimitRadius = BLITZPARA;
+        m_showLimitRadius = Gfx::BLITZPARA;
     }
 
     if ( m_type == OBJECT_NUCLEAR )
@@ -3018,7 +3013,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\nuclear2.mod");
@@ -3059,7 +3054,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetGlobalSphere(Math::Vector(0.0f, 10.0f, 0.0f), 20.0f);
 
         CreateShadowCircle(21.0f, 1.0f);
-        m_showLimitRadius = BLITZPARA;
+        m_showLimitRadius = Gfx::BLITZPARA;
     }
 
     if ( m_type == OBJECT_SAFE )
@@ -3071,7 +3066,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\safe2.mod");
@@ -3079,7 +3074,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetZoom(1, 1.05f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 0);
         pModFile->ReadModel("objects\\safe3.mod");
@@ -3103,7 +3098,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\huston2.mod");
@@ -3113,7 +3108,7 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         SetZoom(1, 3.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\huston3.mod");
@@ -3223,14 +3218,14 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
         pPower->SetType(power<=1.0f?OBJECT_POWER:OBJECT_ATOMIC);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         pPower->SetObjectRank(0, rank);
 
         if ( power <= 1.0f )  pModFile->ReadModel("objects\\power.mod");
         else                  pModFile->ReadModel("objects\\atomic.mod");
         pModFile->CreateEngineObject(rank);
 
-        pPower->SetPosition(0, RetCharacter()->posPower);
+        pPower->SetPosition(0, GetCharacter()->posPower);
         pPower->CreateCrashSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
         pPower->SetGlobalSphere(Math::Vector(0.0f, 1.0f, 0.0f), 1.5f);
 
@@ -3242,12 +3237,12 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
     }
 #endif
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);  // to display the shadows immediately
 
     CreateOtherObject(type);
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
 
     delete pModFile;
     return true;
@@ -3258,22 +3253,17 @@ bool CObject::CreateBuilding(Math::Vector pos, float angle, float height,
 bool CObject::CreateResource(Math::Vector pos, float angle, ObjectType type,
                              float power)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     char        name[50];
     int         rank;
     float       radius, height;
 
-    if ( type != OBJECT_SHOW )
-    {
-        if ( m_engine->RetRestCreate() < 1 )  return false;
-    }
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
     SetObjectRank(0, rank);
     SetEnergy(power);
 
@@ -3363,10 +3353,10 @@ bool CObject::CreateResource(Math::Vector pos, float angle, ObjectType type,
 
     SetFloorHeight(0.0f);
     CreateOtherObject(type);
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
     FloorAdjust();
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);  // to display the shadows immediately
 
@@ -3378,13 +3368,11 @@ bool CObject::CreateResource(Math::Vector pos, float angle, ObjectType type,
 
 bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     char        name[50];
     int         rank, i;
 
-    if ( m_engine->RetRestCreate() < 1+4 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
@@ -3396,7 +3384,7 @@ bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
     if ( type == OBJECT_FLAGv )  strcpy(name, "objects\\flag1v.mod");
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
     SetObjectRank(0, rank);
     pModFile->ReadModel(name);
     pModFile->CreateEngineObject(rank);
@@ -3413,7 +3401,7 @@ bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
     for ( i=0 ; i<4 ; i++ )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1+i, rank);
         SetObjectParent(1+i, i);
         pModFile->ReadModel(name);
@@ -3427,10 +3415,10 @@ bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
 
     SetFloorHeight(0.0f);
     CreateOtherObject(type);
-    m_engine->LoadAllTexture();
+    m_engine->LoadAllTextures();
     FloorAdjust();
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     delete pModFile;
@@ -3442,19 +3430,17 @@ bool CObject::CreateFlag(Math::Vector pos, float angle, ObjectType type)
 bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
                             ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 1 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     if ( type == OBJECT_BARRIER0 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\barrier0.mod");
         pModFile->CreateEngineObject(rank);
@@ -3465,13 +3451,13 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
         CreateCrashSphere(Math::Vector( 0.0f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(6.0f, 0.5f, D3DSHADOWWORM);
+        CreateShadowCircle(6.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_BARRIER1 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\barrier1.mod");
         pModFile->CreateEngineObject(rank);
@@ -3484,13 +3470,13 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
         CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(12.0f, 0.5f, D3DSHADOWWORM);
+        CreateShadowCircle(12.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_BARRIER2 )  // cardboard?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\barrier2.mod");
         pModFile->CreateEngineObject(rank);
@@ -3503,13 +3489,13 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
         CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(12.0f, 0.8f, D3DSHADOWWORM);
+        CreateShadowCircle(12.0f, 0.8f, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_BARRIER3 )  // match + straw?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\barrier3.mod");
         pModFile->CreateEngineObject(rank);
@@ -3522,17 +3508,17 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
         CreateCrashSphere(Math::Vector(-3.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector(-8.5f, 3.0f, 0.0f), 0.7f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(10.0f, 0.5f, D3DSHADOWWORM);
+        CreateShadowCircle(10.0f, 0.5f, Gfx::ENG_SHADOW_WORM);
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     SetFloorHeight(0.0f);
     CreateOtherObject(type);
     FloorAdjust();
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);
 
@@ -3545,12 +3531,10 @@ bool CObject::CreateBarrier(Math::Vector pos, float angle, float height,
 bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
                           ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 1 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
@@ -3561,7 +3545,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
          type == OBJECT_PLANT4 )  // standard?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         if ( type == OBJECT_PLANT0 )  pModFile->ReadModel("objects\\plant0.mod");
         if ( type == OBJECT_PLANT1 )  pModFile->ReadModel("objects\\plant1.mod");
@@ -3586,7 +3570,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
          type == OBJECT_PLANT7 )  // clover?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         if ( type == OBJECT_PLANT5 )  pModFile->ReadModel("objects\\plant5.mod");
         if ( type == OBJECT_PLANT6 )  pModFile->ReadModel("objects\\plant6.mod");
@@ -3605,7 +3589,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
          type == OBJECT_PLANT9 )  // squash?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         if ( type == OBJECT_PLANT8 )  pModFile->ReadModel("objects\\plant8.mod");
         if ( type == OBJECT_PLANT9 )  pModFile->ReadModel("objects\\plant9.mod");
@@ -3626,7 +3610,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
          type == OBJECT_PLANT14 )  // succulent?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         if ( type == OBJECT_PLANT10 )  pModFile->ReadModel("objects\\plant10.mod");
         if ( type == OBJECT_PLANT11 )  pModFile->ReadModel("objects\\plant11.mod");
@@ -3651,7 +3635,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
          type == OBJECT_PLANT19 )  // fern?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         if ( type == OBJECT_PLANT15 )  pModFile->ReadModel("objects\\plant15.mod");
         if ( type == OBJECT_PLANT16 )  pModFile->ReadModel("objects\\plant16.mod");
@@ -3675,7 +3659,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_TREE0 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\tree0.mod");
         pModFile->CreateEngineObject(rank);
@@ -3693,7 +3677,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_TREE1 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\tree1.mod");
         pModFile->CreateEngineObject(rank);
@@ -3712,7 +3696,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_TREE2 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\tree2.mod");
         pModFile->CreateEngineObject(rank);
@@ -3731,7 +3715,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_TREE3 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\tree3.mod");
         pModFile->CreateEngineObject(rank);
@@ -3749,7 +3733,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_TREE4 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\tree4.mod");
         pModFile->CreateEngineObject(rank);
@@ -3766,7 +3750,7 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_TREE5 )  // giant tree (for the world "teen")
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\tree5.mod");
         pModFile->CreateEngineObject(rank);
@@ -3780,13 +3764,13 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
         CreateShadowCircle(50.0f, 0.5f);
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     SetFloorHeight(0.0f);
     CreateOtherObject(type);
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);
 
@@ -3799,19 +3783,17 @@ bool CObject::CreatePlant(Math::Vector pos, float angle, float height,
 bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
                              ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 1 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     if ( type == OBJECT_MUSHROOM1 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\mush1.mod");
         pModFile->CreateEngineObject(rank);
@@ -3828,7 +3810,7 @@ bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_MUSHROOM2 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\mush2.mod");
         pModFile->CreateEngineObject(rank);
@@ -3842,13 +3824,13 @@ bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
         CreateShadowCircle(5.0f, 0.5f);
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     SetFloorHeight(0.0f);
     CreateOtherObject(type);
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);
 
@@ -3861,16 +3843,14 @@ bool CObject::CreateMushroom(Math::Vector pos, float angle, float height,
 bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height,
                          ObjectType type)
 {
-    CModFile*       pModFile;
+    Gfx::CModelFile*    pModFile;
     Math::Matrix*       mat;
-    D3DCOLORVALUE   color;
-    int             rank;
-    float           fShadow;
-    bool            bFloorAdjust = true;
+    Gfx::Color          color;
+    int                 rank;
+    float               fShadow;
+    bool                bFloorAdjust = true;
 
-    if ( m_engine->RetRestCreate() < 1 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
@@ -3879,7 +3859,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN0 )  // orange pencil lg=10
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen0.mod");
         pModFile->CreateEngineObject(rank);
@@ -3893,13 +3873,13 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         CreateCrashSphere(Math::Vector(-2.5f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector(-5.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(5.0f, 0.8f*fShadow, D3DSHADOWWORM);
+        CreateShadowCircle(5.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_TEEN1 )  // blue pencil lg=14
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen1.mod");
         pModFile->CreateEngineObject(rank);
@@ -3915,13 +3895,13 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         CreateCrashSphere(Math::Vector(-4.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector(-6.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(6.0f, 0.8f*fShadow, D3DSHADOWWORM);
+        CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_TEEN2 )  // red pencil lg=16
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen2.mod");
         pModFile->CreateEngineObject(rank);
@@ -3937,14 +3917,14 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         CreateCrashSphere(Math::Vector(-4.7f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector(-7.0f, 1.0f, 0.0f), 1.0f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(6.0f, 0.8f*fShadow, D3DSHADOWWORM);
+        CreateShadowCircle(6.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_TEEN3 )  // jar with pencils
     {
         rank = m_engine->CreateObject();
-//?     m_engine->SetObjectType(rank, TYPEFIX);
-        m_engine->SetObjectType(rank, TYPEMETAL);
+//?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen3.mod");
         pModFile->CreateEngineObject(rank);
@@ -3960,7 +3940,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN4 )  // scissors
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen4.mod");
         pModFile->CreateEngineObject(rank);
@@ -3976,13 +3956,13 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         CreateCrashSphere(Math::Vector( 8.0f, 1.0f, 2.2f), 2.3f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector( 9.4f, 1.0f,-2.0f), 2.0f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(10.0f, 0.5f*fShadow, D3DSHADOWWORM);
+        CreateShadowCircle(10.0f, 0.5f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_TEEN5 )  // CD
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen5.mod");
         pModFile->CreateEngineObject(rank);
@@ -3999,7 +3979,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN6 )  // book 1
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen6.mod");
         pModFile->CreateEngineObject(rank);
@@ -4020,7 +4000,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN7 )  // book 2
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen7.mod");
         pModFile->CreateEngineObject(rank);
@@ -4041,7 +4021,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN8 )  // a stack of books 1
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen8.mod");
         pModFile->CreateEngineObject(rank);
@@ -4063,7 +4043,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN9 )  // a stack of books 2
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen9.mod");
         pModFile->CreateEngineObject(rank);
@@ -4085,7 +4065,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN10 )  // bookcase
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen10.mod");
         pModFile->CreateEngineObject(rank);
@@ -4111,7 +4091,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN11 )  // lamp
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen11.mod");
         pModFile->CreateEngineObject(rank);
@@ -4120,9 +4100,9 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         SetFloorHeight(0.0f);
         SetZoom(0, zoom);
 
-        mat = RetWorldMatrix(0);
+        mat = GetWorldMatrix(0);
         pos = Math::Transform(*mat, Math::Vector(-56.0f, 22.0f, 0.0f));
-        m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(20.0f, 20.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(20.0f, 20.0f), Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
 
         pos = Math::Transform(*mat, Math::Vector(-65.0f, 40.0f, 0.0f));
         color.r = 4.0f;
@@ -4135,8 +4115,8 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN12 )  // coke
     {
         rank = m_engine->CreateObject();
-//?     m_engine->SetObjectType(rank, TYPEFIX);
-        m_engine->SetObjectType(rank, TYPEMETAL);
+//?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen12.mod");
         pModFile->CreateEngineObject(rank);
@@ -4152,7 +4132,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN13 )  // cardboard farm
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen13.mod");
         pModFile->CreateEngineObject(rank);
@@ -4177,7 +4157,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN14 )  // open box
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen14.mod");
         pModFile->CreateEngineObject(rank);
@@ -4202,7 +4182,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN15 )  // stack of cartons
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen15.mod");
         pModFile->CreateEngineObject(rank);
@@ -4227,7 +4207,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN16 )  // watering can
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen16.mod");
         pModFile->CreateEngineObject(rank);
@@ -4245,7 +4225,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN17 )  // wheel |
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen17.mod");
         pModFile->CreateEngineObject(rank);
@@ -4261,7 +4241,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN18 )  // wheel /
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen18.mod");
         pModFile->CreateEngineObject(rank);
@@ -4277,7 +4257,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN19 )  // wheel =
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen19.mod");
         pModFile->CreateEngineObject(rank);
@@ -4293,7 +4273,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN20 )  // wall with shelf
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen20.mod");
         pModFile->CreateEngineObject(rank);
@@ -4314,7 +4294,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN21 )  // wall with window
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen21.mod");
         pModFile->CreateEngineObject(rank);
@@ -4326,7 +4306,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN22 )  // wall with door and shelf
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen22.mod");
         pModFile->CreateEngineObject(rank);
@@ -4343,7 +4323,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN23 )  // skateboard on wheels
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen23.mod");
         pModFile->CreateEngineObject(rank);
@@ -4364,13 +4344,13 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         CreateCrashSphere(Math::Vector( 23.0f, 2.0f, 0.0f), 3.0f, SOUND_BOUMm, 0.45f);
         CreateCrashSphere(Math::Vector( 23.0f, 2.0f,-7.0f), 3.0f, SOUND_BOUMm, 0.45f);
 
-        CreateShadowCircle(35.0f, 0.8f*fShadow, D3DSHADOWWORM);
+        CreateShadowCircle(35.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_TEEN24 )  // skate /
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen24.mod");
         pModFile->CreateEngineObject(rank);
@@ -4386,7 +4366,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN25 )  // skate /
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen25.mod");
         pModFile->CreateEngineObject(rank);
@@ -4402,7 +4382,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN26 )  // ceiling lamp
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen26.mod");
         pModFile->CreateEngineObject(rank);
@@ -4411,9 +4391,9 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         SetZoom(0, zoom);
         SetFloorHeight(0.0f);
 
-        mat = RetWorldMatrix(0);
+        mat = GetWorldMatrix(0);
         pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
-        m_particule->CreateParticule(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(100.0f, 100.0f), PARTISELY, 1.0f, 0.0f, 0.0f);
+        m_particle->CreateParticle(pos, Math::Vector(0.0f, 0.0f, 0.0f), Math::Point(100.0f, 100.0f), Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
 
         pos = Math::Transform(*mat, Math::Vector(0.0f, 50.0f, 0.0f));
         color.r = 4.0f;
@@ -4426,7 +4406,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN27 )  // large plant?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen27.mod");
         pModFile->CreateEngineObject(rank);
@@ -4441,8 +4421,8 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN28 )  // bottle?
     {
         rank = m_engine->CreateObject();
-//?     m_engine->SetObjectType(rank, TYPEFIX);
-        m_engine->SetObjectType(rank, TYPEMETAL);
+//?     m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_METAL);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen28.mod");
         pModFile->CreateEngineObject(rank);
@@ -4457,7 +4437,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN29 )  // bridge?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen29.mod");
         pModFile->CreateEngineObject(rank);
@@ -4470,7 +4450,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN30 )  // jump?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen30.mod");
         pModFile->CreateEngineObject(rank);
@@ -4486,7 +4466,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN31 )  // basket?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen31.mod");
         pModFile->CreateEngineObject(rank);
@@ -4505,7 +4485,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN32 )  // chair?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen32.mod");
         pModFile->CreateEngineObject(rank);
@@ -4524,7 +4504,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN33 )  // panel?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen33.mod");
         pModFile->CreateEngineObject(rank);
@@ -4539,7 +4519,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN34 )  // stone?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen34.mod");
         pModFile->CreateEngineObject(rank);
@@ -4554,7 +4534,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN35 )  // pipe?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen35.mod");
         pModFile->CreateEngineObject(rank);
@@ -4567,13 +4547,13 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         CreateCrashSphere(Math::Vector(  0.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
         CreateCrashSphere(Math::Vector( 20.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
         CreateCrashSphere(Math::Vector( 40.0f, 5.0f, 0.0f), 10.0f, SOUND_BOUM, 0.10f);
-        CreateShadowCircle(40.0f, 0.8f*fShadow, D3DSHADOWWORM);
+        CreateShadowCircle(40.0f, 0.8f*fShadow, Gfx::ENG_SHADOW_WORM);
     }
 
     if ( type == OBJECT_TEEN36 )  // trunk?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen36.mod");
         pModFile->CreateEngineObject(rank);
@@ -4586,7 +4566,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN37 )  // boat?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen37.mod");
         pModFile->CreateEngineObject(rank);
@@ -4599,7 +4579,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN38 )  // fan?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen38a.mod");
         pModFile->CreateEngineObject(rank);
@@ -4608,7 +4588,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         SetZoom(0, zoom);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\teen38b.mod");  // engine
@@ -4616,7 +4596,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         SetPosition(1, Math::Vector(0.0f, 30.0f, 0.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 1);
         pModFile->ReadModel("objects\\teen38c.mod");  // propeller
@@ -4631,7 +4611,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN39 )  // potted plant?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen39.mod");
         pModFile->CreateEngineObject(rank);
@@ -4647,7 +4627,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN40 )  // balloon?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen40.mod");
         pModFile->CreateEngineObject(rank);
@@ -4663,7 +4643,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN41 )  // fence?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen41.mod");
         pModFile->CreateEngineObject(rank);
@@ -4675,7 +4655,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN42 )  // clover?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen42.mod");
         pModFile->CreateEngineObject(rank);
@@ -4690,7 +4670,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN43 )  // clover?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen43.mod");
         pModFile->CreateEngineObject(rank);
@@ -4705,7 +4685,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
     if ( type == OBJECT_TEEN44 )  // car?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\teen44.mod");
         pModFile->CreateEngineObject(rank);
@@ -4718,7 +4698,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
         CreateShadowCircle(55.0f, 1.0f*fShadow);
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     if ( bFloorAdjust )
@@ -4729,7 +4709,7 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
 
     CreateOtherObject(type);
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);
 
@@ -4742,20 +4722,18 @@ bool CObject::CreateTeen(Math::Vector pos, float angle, float zoom, float height
 bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
                            ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     float       radius;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 1 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     if ( type == OBJECT_QUARTZ0 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEQUARTZ);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\quartz0.mod");
         pModFile->CreateEngineObject(rank);
@@ -4770,7 +4748,7 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_QUARTZ1 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEQUARTZ);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\quartz1.mod");
         pModFile->CreateEngineObject(rank);
@@ -4785,7 +4763,7 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_QUARTZ2 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEQUARTZ);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\quartz2.mod");
         pModFile->CreateEngineObject(rank);
@@ -4800,7 +4778,7 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_QUARTZ3 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEQUARTZ);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_QUARTZ);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\quartz3.mod");
         pModFile->CreateEngineObject(rank);
@@ -4813,13 +4791,13 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
         CreateShadowCircle(10.0f, 0.5f);
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     SetFloorHeight(0.0f);
     CreateOtherObject(type);
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);
 
@@ -4843,8 +4821,8 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
         pos.y += 16.0f;
         radius = 8.0f;
     }
-    m_particule->CreateParticule(pos, pos, Math::Point(2.0f, 2.0f), PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
-    m_particule->CreateParticule(pos, pos, Math::Point(2.0f, 2.0f), PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
+    m_particle->CreateParticle(pos, pos, Math::Point(2.0f, 2.0f), Gfx::PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
+    m_particle->CreateParticle(pos, pos, Math::Point(2.0f, 2.0f), Gfx::PARTIQUARTZ, 0.7f+Math::Rand()*0.7f, radius, 0.0f);
 
     delete pModFile;
     return true;
@@ -4855,19 +4833,17 @@ bool CObject::CreateQuartz(Math::Vector pos, float angle, float height,
 bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
                          ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 1 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     if ( type == OBJECT_ROOT0 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\root0.mod");
         pModFile->CreateEngineObject(rank);
@@ -4889,7 +4865,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_ROOT1 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\root1.mod");
         pModFile->CreateEngineObject(rank);
@@ -4911,7 +4887,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_ROOT2 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\root2.mod");
         pModFile->CreateEngineObject(rank);
@@ -4932,7 +4908,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_ROOT3 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\root3.mod");
         pModFile->CreateEngineObject(rank);
@@ -4955,7 +4931,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_ROOT4 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\root4.mod");
         pModFile->CreateEngineObject(rank);
@@ -4980,7 +4956,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
     if ( type == OBJECT_ROOT5 )  // gravity root ?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\root4.mod");
         pModFile->CreateEngineObject(rank);
@@ -4989,7 +4965,7 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         SetZoom(0, 2.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\root5.mod");
@@ -5013,13 +4989,13 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
         CreateShadowCircle(30.0f, 0.5f);
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     SetFloorHeight(0.0f);
     CreateOtherObject(type);
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);
 
@@ -5032,19 +5008,17 @@ bool CObject::CreateRoot(Math::Vector pos, float angle, float height,
 bool CObject::CreateHome(Math::Vector pos, float angle, float height,
                          ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 1 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     if ( type == OBJECT_HOME1 )
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\home1.mod");
         pModFile->CreateEngineObject(rank);
@@ -5057,13 +5031,13 @@ bool CObject::CreateHome(Math::Vector pos, float angle, float height,
         CreateShadowCircle(16.0f, 0.5f);
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     SetFloorHeight(0.0f);
     CreateOtherObject(type);
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);
 
@@ -5076,18 +5050,16 @@ bool CObject::CreateHome(Math::Vector pos, float angle, float height,
 bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
                          ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     char        name[50];
     int         rank;
 
-    if ( m_engine->RetRestCreate() < 1+4 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     rank = m_engine->CreateObject();
-    m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
+    m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
     SetObjectRank(0, rank);
 
     name[0] = 0;
@@ -5115,7 +5087,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
     {
         // Creates the right-back wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(6, rank);
         SetObjectParent(6, 0);
 
@@ -5127,7 +5099,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
 
         // Creates the left-back wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(7, rank);
         SetObjectParent(7, 0);
 
@@ -5140,7 +5112,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
 
         // Creates the right-front wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(8, rank);
         SetObjectParent(8, 0);
 
@@ -5152,7 +5124,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
 
         // Creates the left-front wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(9, rank);
         SetObjectParent(9, 0);
 
@@ -5173,7 +5145,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
     {
         // Creates the left-back wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(7, rank);
         SetObjectParent(7, 0);
 
@@ -5186,7 +5158,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
 
         // Creates the left-front wheel.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(9, rank);
         SetObjectParent(9, 0);
 
@@ -5207,7 +5179,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
     {
         // Creates the cannon.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
 
@@ -5339,7 +5311,7 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         CreateShadowCircle(30.0f, 1.0f);
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  //to display the shadows immediately
 
     SetFloorHeight(0.0f);
@@ -5352,145 +5324,145 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
         FloorAdjust();
     }
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     pos.y += height;
     SetPosition(0, pos);  //to display the shadows immediately
 
     if ( type == OBJECT_RUINmobilew1 )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y -= 0.5f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)-0.1f;
+        angle = GetAngleX(0)-0.1f;
         SetAngleX(0, angle);
     }
 
     if ( type == OBJECT_RUINmobilew2 )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y -= 1.5f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)-0.9f;
+        angle = GetAngleX(0)-0.9f;
         SetAngleX(0, angle);
 
-        angle = RetAngleZ(0)-0.1f;
+        angle = GetAngleZ(0)-0.1f;
         SetAngleZ(0, angle);
     }
 
     if ( type == OBJECT_RUINmobilet1 )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y -= 0.9f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)-0.3f;
+        angle = GetAngleX(0)-0.3f;
         SetAngleX(0, angle);
     }
 
     if ( type == OBJECT_RUINmobilet2 )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y -= 1.5f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)-0.3f;
+        angle = GetAngleX(0)-0.3f;
         SetAngleX(0, angle);
 
-        angle = RetAngleZ(0)+0.8f;
+        angle = GetAngleZ(0)+0.8f;
         SetAngleZ(0, angle);
     }
 
     if ( type == OBJECT_RUINmobiler1 )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y += 4.0f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)-Math::PI*0.6f;
+        angle = GetAngleX(0)-Math::PI*0.6f;
         SetAngleX(0, angle);
 
-        angle = RetAngleZ(0)-0.2f;
+        angle = GetAngleZ(0)-0.2f;
         SetAngleZ(0, angle);
     }
 
     if ( type == OBJECT_RUINmobiler2 )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y += 2.0f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)-0.1f;
+        angle = GetAngleX(0)-0.1f;
         SetAngleX(0, angle);
 
-        angle = RetAngleZ(0)-0.3f;
+        angle = GetAngleZ(0)-0.3f;
         SetAngleZ(0, angle);
     }
 
     if ( type == OBJECT_RUINdoor )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y -= 0.5f;
         SetPosition(0, pos);
 
-        angle = RetAngleZ(0)-0.1f;
+        angle = GetAngleZ(0)-0.1f;
         SetAngleZ(0, angle);
     }
 
     if ( type == OBJECT_RUINsupport )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y += 0.5f;
         SetPosition(0, pos);
 
-//?     angle = RetAngleY(0)+0.1f;
+//?     angle = GetAngleY(0)+0.1f;
 //?     SetAngleY(0, angle);
 
-        angle = RetAngleX(0)+0.1f;
+        angle = GetAngleX(0)+0.1f;
         SetAngleX(0, angle);
 
-        angle = RetAngleZ(0)+0.1f;
+        angle = GetAngleZ(0)+0.1f;
         SetAngleZ(0, angle);
     }
 
     if ( type == OBJECT_RUINradar )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y -= 0.5f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)+0.15f;
+        angle = GetAngleX(0)+0.15f;
         SetAngleX(0, angle);
 
-        angle = RetAngleZ(0)+0.1f;
+        angle = GetAngleZ(0)+0.1f;
         SetAngleZ(0, angle);
     }
 
     if ( type == OBJECT_RUINconvert )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y -= 1.0f;
         SetPosition(0, pos);
     }
 
     if ( type == OBJECT_RUINbase )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y -= 1.0f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)+0.15f;
+        angle = GetAngleX(0)+0.15f;
         SetAngleX(0, angle);
     }
 
     if ( type == OBJECT_RUINhead )
     {
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.y += 8.0f;
         SetPosition(0, pos);
 
-        angle = RetAngleX(0)+Math::PI*0.4f;
+        angle = GetAngleX(0)+Math::PI*0.4f;
         SetAngleX(0, angle);
     }
 
@@ -5502,19 +5474,17 @@ bool CObject::CreateRuin(Math::Vector pos, float angle, float height,
 
 bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
 {
-    CModFile*   pModFile;
+    Gfx::CModelFile*   pModFile;
     int         rank, i;
 
-    if ( m_engine->RetRestCreate() < 6 )  return false;
-
-    pModFile = new CModFile(m_iMan);
+    pModFile = new Gfx::CModelFile(m_iMan);
 
     SetType(type);
 
     if ( type == OBJECT_APOLLO1 )  // LEM ?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\apollol1.mod");
         pModFile->CreateEngineObject(rank);
@@ -5526,7 +5496,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         for ( i=0 ; i<4 ; i++ )  // creates feet
         {
             rank = m_engine->CreateObject();
-            m_engine->SetObjectType(rank, TYPEDESCENDANT);
+            m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
             SetObjectRank(i+1, rank);
             SetObjectParent(i+1, 0);
             pModFile->ReadModel("objects\\apollol2.mod");
@@ -5535,7 +5505,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         }
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(5, rank);
         SetObjectParent(5, 0);
         pModFile->ReadModel("objects\\apollol3.mod");  // ladder
@@ -5557,7 +5527,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
     if ( type == OBJECT_APOLLO2 )  // jeep
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);  //it is a stationary object
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  //it is a stationary object
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\apolloj1.mod");
         pModFile->CreateEngineObject(rank);
@@ -5567,7 +5537,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
 
         // Wheels.
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
@@ -5575,7 +5545,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         SetPosition(1, Math::Vector(-5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(2, rank);
         SetObjectParent(2, 0);
         pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
@@ -5583,7 +5553,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         SetPosition(2, Math::Vector(-5.75f, 1.65f, 5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(3, rank);
         SetObjectParent(3, 0);
         pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
@@ -5591,7 +5561,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         SetPosition(3, Math::Vector(5.75f, 1.65f, -5.0f));
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(4, rank);
         SetObjectParent(4, 0);
         pModFile->ReadModel("objects\\apolloj4.mod");  // wheel
@@ -5600,7 +5570,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
 
         // Accessories:
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(5, rank);
         SetObjectParent(5, 0);
         pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
@@ -5610,7 +5580,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         SetAngleZ(5,   45.0f*Math::PI/180.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(6, rank);
         SetObjectParent(6, 0);
         pModFile->ReadModel("objects\\apolloj3.mod");  // camera
@@ -5630,7 +5600,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
     if ( type == OBJECT_APOLLO3 )  // flag?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\apollof.mod");
         pModFile->CreateEngineObject(rank);
@@ -5645,7 +5615,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
     if ( type == OBJECT_APOLLO4 )  // module?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\apollom.mod");
         pModFile->CreateEngineObject(rank);
@@ -5662,7 +5632,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
     if ( type == OBJECT_APOLLO5 )  // antenna?
     {
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEFIX);  // it is a stationary object
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_FIX);  // it is a stationary object
         SetObjectRank(0, rank);
         pModFile->ReadModel("objects\\apolloa.mod");
         pModFile->CreateEngineObject(rank);
@@ -5671,7 +5641,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
         SetFloorHeight(0.0f);
 
         rank = m_engine->CreateObject();
-        m_engine->SetObjectType(rank, TYPEDESCENDANT);
+        m_engine->SetObjectType(rank, Gfx::ENG_OBJTYPE_DESCENDANT);
         SetObjectRank(1, rank);
         SetObjectParent(1, 0);
         pModFile->ReadModel("objects\\apolloj2.mod");  // antenna
@@ -5686,7 +5656,7 @@ bool CObject::CreateApollo(Math::Vector pos, float angle, ObjectType type)
 
     CreateOtherObject(type);
 
-    pos = RetPosition(0);
+    pos = GetPosition(0);
     SetPosition(0, pos);  // to display the shadows immediately
 
     delete pModFile;
@@ -5804,7 +5774,7 @@ void CObject::CreateOtherObject(ObjectType type)
 
 // Reads a program.
 
-bool CObject::ReadProgram(int rank, char* filename)
+bool CObject::ReadProgram(int rank, const char* filename)
 {
     if ( m_brain != 0 )
     {
@@ -5845,7 +5815,7 @@ bool CObject::RunProgram(int rank)
 
 
 // Calculates the matrix for transforming the object.
-// Returns true if the matrix has changed.
+// Geturns true if the matrix has changed.
 // The rotations occur in the order Y, Z and X.
 
 bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
@@ -5916,7 +5886,7 @@ bool CObject::UpdateTransformObject(int part, bool bForceUpdate)
         if ( part == 0 && m_truck != 0 )  // transported by a truck?
         {
             Math::Matrix*   matWorldTruck;
-            matWorldTruck = m_truck->RetWorldMatrix(m_truckLink);
+            matWorldTruck = m_truck->GetWorldMatrix(m_truckLink);
             m_objectPart[part].matWorld = Math::MultiplyMatrices(*matWorldTruck,
                                                                  m_objectPart[part].matTransform);
         }
@@ -6043,7 +6013,7 @@ void CObject::FlatParent()
 
 void CObject::UpdateEnergyMapping()
 {
-    D3DMATERIAL7    mat;
+    Gfx::Material   mat;
     float           a, b, i, s, au, bu;
     float           limit[6];
     int             j;
@@ -6051,7 +6021,7 @@ void CObject::UpdateEnergyMapping()
     if ( fabs(m_energy-m_lastEnergy) < 0.01f )  return;
     m_lastEnergy = m_energy;
 
-    ZeroMemory( &mat, sizeof(D3DMATERIAL7) );
+    memset(&mat, 0, sizeof(mat));
     mat.diffuse.r = 1.0f;
     mat.diffuse.g = 1.0f;
     mat.diffuse.b = 1.0f;  // white
@@ -6083,17 +6053,17 @@ void CObject::UpdateEnergyMapping()
     bu = s-b*(s-i)/(b-a);
 
     limit[0] = 0.0f;
-    limit[1] = m_engine->RetLimitLOD(0);
+    limit[1] = m_engine->GetLimitLOD(0);
     limit[2] = limit[1];
-    limit[3] = m_engine->RetLimitLOD(1);
+    limit[3] = m_engine->GetLimitLOD(1);
     limit[4] = limit[3];
     limit[5] = 1000000.0f;
 
     for ( j=0 ; j<3 ; j++ )
     {
         m_engine->ChangeTextureMapping(m_objectPart[0].object,
-                                       mat, D3DSTATEPART3, "lemt.tga", "",
-                                       limit[j*2+0], limit[j*2+1], D3DMAPPING1Y,
+                                       mat, Gfx::ENG_RSTATE_PART3, "lemt.png", "",
+                                       limit[j*2+0], limit[j*2+1], Gfx::ENG_TEX_MAPPING_1Y,
                                        au, bu, 1.0f, 0.0f);
     }
 }
@@ -6103,7 +6073,7 @@ void CObject::UpdateEnergyMapping()
 
 bool CObject::EventProcess(const Event &event)
 {
-    if ( event.event == EVENT_KEYDOWN )
+    if ( event.type == EVENT_KEY_DOWN )
     {
 #if ADJUST_ONBOARD
         if ( m_bSelect )
@@ -6147,12 +6117,12 @@ bool CObject::EventProcess(const Event &event)
     {
         if ( !m_physics->EventProcess(event) )  // object destroyed?
         {
-            if ( RetSelect()             &&
+            if ( GetSelect()             &&
                  m_type != OBJECT_ANT    &&
                  m_type != OBJECT_SPIDER &&
                  m_type != OBJECT_BEE    )
             {
-                if ( !m_bDead )  m_camera->SetType(CAMERA_EXPLO);
+                if ( !m_bDead )  m_camera->SetType(Gfx::CAM_TYPE_EXPLO);
                 m_main->DeselectAll();
             }
             return false;
@@ -6163,7 +6133,7 @@ bool CObject::EventProcess(const Event &event)
     {
         m_auto->EventProcess(event);
 
-        if ( event.event == EVENT_FRAME &&
+        if ( event.type == EVENT_FRAME &&
              m_auto->IsEnded() != ERR_CONTINUE )
         {
             m_auto->DeleteObject();
@@ -6177,7 +6147,7 @@ bool CObject::EventProcess(const Event &event)
         m_motion->EventProcess(event);
     }
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         return EventFrame(event);
     }
@@ -6190,13 +6160,13 @@ bool CObject::EventProcess(const Event &event)
 
 bool CObject::EventFrame(const Event &event)
 {
-    if ( m_type == OBJECT_HUMAN && m_main->RetMainMovie() == MM_SATCOMopen )
+    if ( m_type == OBJECT_HUMAN && m_main->GetMainMovie() == MM_SATCOMopen )
     {
         UpdateTransformObject();
         return true;
     }
 
-    if ( m_type != OBJECT_SHOW && m_engine->RetPause() )  return true;
+    if ( m_type != OBJECT_SHOW && m_engine->GetPause() )  return true;
 
     m_aTime += event.rTime;
     m_shotTime += event.rTime;
@@ -6206,23 +6176,23 @@ bool CObject::EventFrame(const Event &event)
 
     UpdateMapping();
     UpdateTransformObject();
-    UpdateSelectParticule();
+    UpdateSelectParticle();
 
     if ( m_bProxyActivate )  // active if it is near?
     {
-        CPyro*      pyro;
+        Gfx::CPyro*      pyro;
         Math::Vector    eye;
         float       dist;
 
-        eye = m_engine->RetLookatPt();
-        dist = Math::Distance(eye, RetPosition(0));
+        eye = m_engine->GetLookatPt();
+        dist = Math::Distance(eye, GetPosition(0));
         if ( dist < m_proxyDistance )
         {
             m_bProxyActivate = false;
             m_main->CreateShortcuts();
             m_sound->Play(SOUND_FINDING);
-            pyro = new CPyro(m_iMan);
-            pyro->Create(PT_FINDING, this, 0.0f);
+            pyro = new Gfx::CPyro(m_iMan);
+            pyro->Create(Gfx::PT_FINDING, this, 0.0f);
             m_displayText->DisplayError(INFO_FINDING, this);
         }
     }
@@ -6248,10 +6218,10 @@ void CObject::UpdateMapping()
 
 void CObject::VirusFrame(float rTime)
 {
-    ParticuleType   type;
+    Gfx::ParticleType   type;
     Math::Vector        pos, speed;
     Math::Point         dim;
-    int             r;
+    int                 r;
 
     if ( !m_bVirusMode )  return;  // healthy object?
 
@@ -6261,23 +6231,23 @@ void CObject::VirusFrame(float rTime)
         m_bVirusMode = false;  // the virus is no longer active
     }
 
-    if ( m_lastVirusParticule+m_engine->ParticuleAdapt(0.2f) <= m_aTime )
+    if ( m_lastVirusParticle+m_engine->ParticleAdapt(0.2f) <= m_aTime )
     {
-        m_lastVirusParticule = m_aTime;
+        m_lastVirusParticle = m_aTime;
 
         r = rand()%10;
-        if ( r == 0 )  type = PARTIVIRUS1;
-        if ( r == 1 )  type = PARTIVIRUS2;
-        if ( r == 2 )  type = PARTIVIRUS3;
-        if ( r == 3 )  type = PARTIVIRUS4;
-        if ( r == 4 )  type = PARTIVIRUS5;
-        if ( r == 5 )  type = PARTIVIRUS6;
-        if ( r == 6 )  type = PARTIVIRUS7;
-        if ( r == 7 )  type = PARTIVIRUS8;
-        if ( r == 8 )  type = PARTIVIRUS9;
-        if ( r == 9 )  type = PARTIVIRUS10;
+        if ( r == 0 )  type = Gfx::PARTIVIRUS1;
+        if ( r == 1 )  type = Gfx::PARTIVIRUS2;
+        if ( r == 2 )  type = Gfx::PARTIVIRUS3;
+        if ( r == 3 )  type = Gfx::PARTIVIRUS4;
+        if ( r == 4 )  type = Gfx::PARTIVIRUS5;
+        if ( r == 5 )  type = Gfx::PARTIVIRUS6;
+        if ( r == 6 )  type = Gfx::PARTIVIRUS7;
+        if ( r == 7 )  type = Gfx::PARTIVIRUS8;
+        if ( r == 8 )  type = Gfx::PARTIVIRUS9;
+        if ( r == 9 )  type = Gfx::PARTIVIRUS10;
 
-        pos = RetPosition(0);
+        pos = GetPosition(0);
         pos.x += (Math::Rand()-0.5f)*10.0f;
         pos.z += (Math::Rand()-0.5f)*10.0f;
         speed.x = (Math::Rand()-0.5f)*2.0f;
@@ -6286,7 +6256,7 @@ void CObject::VirusFrame(float rTime)
         dim.x = Math::Rand()*0.3f+0.3f;
         dim.y = dim.x;
 
-        m_particule->CreateParticule(pos, speed, dim, type, 3.0f);
+        m_particle->CreateParticle(pos, speed, dim, type, 3.0f);
     }
 }
 
@@ -6304,7 +6274,7 @@ void CObject::PartiFrame(float rTime)
         channel = m_objectPart[i].masterParti;
         if ( channel == -1 )  continue;
 
-        if ( !m_particule->GetPosition(channel, pos) )
+        if ( !m_particle->GetPosition(channel, pos) )
         {
             m_objectPart[i].masterParti = -1;  // particle no longer exists!
             continue;
@@ -6322,7 +6292,7 @@ void CObject::PartiFrame(float rTime)
             case 4:  factor = Math::Vector( 0.4f, 0.1f,-0.7f); break;
         }
 
-        angle = RetAngle(i);
+        angle = GetAngle(i);
         angle += rTime*Math::PI*factor;
         SetAngle(i, angle);
     }
@@ -6334,7 +6304,7 @@ void CObject::PartiFrame(float rTime)
 
 void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
                               Math::Vector  &lookat, Math::Vector &upVec,
-                              CameraType type)
+                              Gfx::CameraType type)
 {
     float   speed;
     int     part;
@@ -6429,7 +6399,7 @@ void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
     m_engine->SetInfoText(4, s);
 #endif
 
-    if ( type == CAMERA_BACK )
+    if ( type == Gfx::CAM_TYPE_BACK )
     {
         eye.x -= 20.0f;
         eye.y +=  1.0f;
@@ -6446,20 +6416,20 @@ void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
     upVec = Math::Vector(0.0f, 1.0f, 0.0f);
     if ( m_physics != 0 )
     {
-        if ( m_physics->RetLand() )  // on ground?
+        if ( m_physics->GetLand() )  // on ground?
         {
-            speed = m_physics->RetLinMotionX(MO_REASPEED);
+            speed = m_physics->GetLinMotionX(MO_REASPEED);
             lookat.y -= speed*0.002f;
 
-            speed = m_physics->RetCirMotionY(MO_REASPEED);
+            speed = m_physics->GetCirMotionY(MO_REASPEED);
             upVec.z -= speed*0.04f;
         }
         else    // in flight?
         {
-            speed = m_physics->RetLinMotionX(MO_REASPEED);
+            speed = m_physics->GetLinMotionX(MO_REASPEED);
             lookat.y += speed*0.002f;
 
-            speed = m_physics->RetCirMotionY(MO_REASPEED);
+            speed = m_physics->GetCirMotionY(MO_REASPEED);
             upVec.z += speed*0.08f;
         }
     }
@@ -6475,23 +6445,23 @@ void CObject::SetViewFromHere(Math::Vector &eye, float &dirH, float &dirV,
 
 void CObject::SetCharacter(Character* character)
 {
-    CopyMemory(&m_character, character, sizeof(Character));
+    memcpy(&m_character, character, sizeof(m_character));
 }
 
 void CObject::GetCharacter(Character* character)
 {
-    CopyMemory(character, &m_character, sizeof(Character));
+    memcpy(character, &m_character, sizeof(character));
 }
 
-Character* CObject::RetCharacter()
+Character* CObject::GetCharacter()
 {
     return &m_character;
 }
 
 
-// Returns the absolute time.
+// Geturns the absolute time.
 
-float CObject::RetAbsTime()
+float CObject::GetAbsTime()
 {
     return m_aTime;
 }
@@ -6507,7 +6477,7 @@ void CObject::SetEnergy(float level)
     m_energy = level;
 }
 
-float CObject::RetEnergy()
+float CObject::GetEnergy()
 {
     if ( m_type != OBJECT_POWER   &&
          m_type != OBJECT_ATOMIC  &&
@@ -6526,7 +6496,7 @@ void CObject::SetCapacity(float capacity)
     m_capacity = capacity;
 }
 
-float CObject::RetCapacity()
+float CObject::GetCapacity()
 {
     return m_capacity;
 }
@@ -6539,7 +6509,7 @@ void CObject::SetShield(float level)
     m_shield = level;
 }
 
-float CObject::RetShield()
+float CObject::GetShield()
 {
     if ( m_type == OBJECT_FRET     ||
          m_type == OBJECT_STONE    ||
@@ -6582,7 +6552,7 @@ void CObject::SetRange(float delay)
     m_range = delay;
 }
 
-float CObject::RetRange()
+float CObject::GetRange()
 {
     return m_range;
 }
@@ -6610,7 +6580,7 @@ void CObject::SetTransparency(float value)
     }
 }
 
-float CObject::RetTransparency()
+float CObject::GetTransparency()
 {
     return m_transparency;
 }
@@ -6618,7 +6588,7 @@ float CObject::RetTransparency()
 
 // Management of the object matter.
 
-ObjectMaterial CObject::RetMaterial()
+ObjectMaterial CObject::GetMaterial()
 {
     if ( m_type == OBJECT_HUMAN )
     {
@@ -6642,7 +6612,7 @@ void CObject::SetGadget(bool bMode)
     m_bGadget = bMode;
 }
 
-bool CObject::RetGadget()
+bool CObject::GetGadget()
 {
     return m_bGadget;
 }
@@ -6655,7 +6625,7 @@ void CObject::SetFixed(bool bFixed)
     m_bFixed = bFixed;
 }
 
-bool CObject::RetFixed()
+bool CObject::GetFixed()
 {
     return m_bFixed;
 }
@@ -6668,7 +6638,7 @@ void CObject::SetClip(bool bClip)
     m_bClip = bClip;
 }
 
-bool CObject::RetClip()
+bool CObject::GetClip()
 {
     return m_bClip;
 }
@@ -6696,7 +6666,7 @@ bool CObject::JostleObject(float force)
         if ( m_auto != 0 )  return false;
 
         m_auto = new CAutoJostle(m_iMan, this);
-        pa = (CAutoJostle*)m_auto;
+        pa = static_cast<CAutoJostle*>(m_auto);
         pa->Start(0, force);
     }
 
@@ -6712,7 +6682,7 @@ void CObject::StartDetectEffect(CObject *target, bool bFound)
     Math::Vector    pos, goal;
     Math::Point     dim;
 
-    mat = RetWorldMatrix(0);
+    mat = GetWorldMatrix(0);
     pos = Math::Transform(*mat, Math::Vector(2.0f, 3.0f, 0.0f));
 
     if ( target == 0 )
@@ -6721,24 +6691,24 @@ void CObject::StartDetectEffect(CObject *target, bool bFound)
     }
     else
     {
-        goal = target->RetPosition(0);
+        goal = target->GetPosition(0);
         goal.y += 3.0f;
         goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-3.0f);
     }
 
     dim.x = 3.0f;
     dim.y = dim.x;
-    m_particule->CreateRay(pos, goal, PARTIRAY2, dim, 0.2f);
+    m_particle->CreateRay(pos, goal, Gfx::PARTIRAY2, dim, 0.2f);
 
     if ( target != 0 )
     {
-        goal = target->RetPosition(0);
+        goal = target->GetPosition(0);
         goal.y += 3.0f;
         goal = Math::SegmentPoint(pos, goal, Math::Distance(pos, goal)-1.0f);
         dim.x = 6.0f;
         dim.y = dim.x;
-        m_particule->CreateParticule(goal, Math::Vector(0.0f, 0.0f, 0.0f), dim,
-                                     bFound?PARTIGLINT:PARTIGLINTr, 0.5f);
+        m_particle->CreateParticle(goal, Math::Vector(0.0f, 0.0f, 0.0f), dim,
+                                     bFound?Gfx::PARTIGLINT:Gfx::PARTIGLINTr, 0.5f);
     }
 
     m_sound->Play(bFound?SOUND_BUILD:SOUND_RECOVER);
@@ -6761,12 +6731,12 @@ void CObject::SetVirusMode(bool bEnable)
     }
 }
 
-bool CObject::RetVirusMode()
+bool CObject::GetVirusMode()
 {
     return m_bVirusMode;
 }
 
-float CObject::RetVirusTime()
+float CObject::GetVirusTime()
 {
     return m_virusTime;
 }
@@ -6774,12 +6744,12 @@ float CObject::RetVirusTime()
 
 // Management mode of the camera.
 
-void CObject::SetCameraType(CameraType type)
+void CObject::SetCameraType(Gfx::CameraType type)
 {
     m_cameraType = type;
 }
 
-CameraType CObject::RetCameraType()
+Gfx::CameraType CObject::GetCameraType()
 {
     return m_cameraType;
 }
@@ -6789,7 +6759,7 @@ void CObject::SetCameraDist(float dist)
     m_cameraDist = dist;
 }
 
-float CObject::RetCameraDist()
+float CObject::GetCameraDist()
 {
     return m_cameraDist;
 }
@@ -6799,7 +6769,7 @@ void CObject::SetCameraLock(bool bLock)
     m_bCameraLock = bLock;
 }
 
-bool CObject::RetCameraLock()
+bool CObject::GetCameraLock()
 {
     return m_bCameraLock;
 }
@@ -6827,11 +6797,11 @@ void CObject::SetHilite(bool bMode)
         }
         list[j] = -1;  // terminate
 
-        m_engine->SetHiliteRank(list);  // gives the list of selected parts
+        m_engine->SetHighlightRank(list);  // gives the list of selected parts
     }
 }
 
-bool CObject::RetHilite()
+bool CObject::GetHilite()
 {
     return m_bHilite;
 }
@@ -6855,7 +6825,7 @@ void CObject::SetSelect(bool bMode, bool bDisplayError)
         m_auto->CreateInterface(m_bSelect);
     }
 
-    CreateSelectParticule();  // creates / removes particles
+    CreateSelectParticle();  // creates / removes particles
 
     if ( !m_bSelect )
     {
@@ -6866,11 +6836,11 @@ void CObject::SetSelect(bool bMode, bool bDisplayError)
     err = ERR_OK;
     if ( m_physics != 0 )
     {
-        err = m_physics->RetError();
+        err = m_physics->GetError();
     }
     if ( m_auto != 0 )
     {
-        err = m_auto->RetError();
+        err = m_auto->GetError();
     }
     if ( err != ERR_OK && bDisplayError )
     {
@@ -6880,9 +6850,9 @@ void CObject::SetSelect(bool bMode, bool bDisplayError)
 
 // Indicates whether the object is selected or not.
 
-bool CObject::RetSelect(bool bReal)
+bool CObject::GetSelect(bool bReal)
 {
-    if ( !bReal && m_main->RetFixScene() )  return false;
+    if ( !bReal && m_main->GetFixScene() )  return false;
     return m_bSelect;
 }
 
@@ -6896,7 +6866,7 @@ void CObject::SetSelectable(bool bMode)
 
 // Indicates whether the object is selecionnable or not.
 
-bool CObject::RetSelectable()
+bool CObject::GetSelectable()
 {
     return m_bSelectable;
 }
@@ -6912,11 +6882,11 @@ void CObject::SetActivity(bool bMode)
     }
 }
 
-bool CObject::RetActivity()
+bool CObject::GetActivity()
 {
     if ( m_brain != 0 )
     {
-        return m_brain->RetActivity();
+        return m_brain->GetActivity();
     }
     return false;
 }
@@ -6931,7 +6901,7 @@ void CObject::SetCheckToken(bool bMode)
 
 // Indicates if necessary to check the tokens of the object.
 
-bool CObject::RetCheckToken()
+bool CObject::GetCheckToken()
 {
     return m_bCheckToken;
 }
@@ -6946,7 +6916,7 @@ void CObject::SetVisible(bool bVisible)
     m_bVisible = bVisible;
 }
 
-bool CObject::RetVisible()
+bool CObject::GetVisible()
 {
     return m_bVisible;
 }
@@ -6962,7 +6932,7 @@ void CObject::SetEnable(bool bEnable)
     m_bEnable = bEnable;
 }
 
-bool CObject::RetEnable()
+bool CObject::GetEnable()
 {
     return m_bEnable;
 }
@@ -6975,7 +6945,7 @@ void CObject::SetProxyActivate(bool bActivate)
     m_bProxyActivate = bActivate;
 }
 
-bool CObject::RetProxyActivate()
+bool CObject::GetProxyActivate()
 {
     return m_bProxyActivate;
 }
@@ -6985,7 +6955,7 @@ void CObject::SetProxyDistance(float distance)
     m_proxyDistance = distance;
 }
 
-float CObject::RetProxyDistance()
+float CObject::GetProxyDistance()
 {
     return m_proxyDistance;
 }
@@ -6998,7 +6968,7 @@ void CObject::SetMagnifyDamage(float factor)
     m_magnifyDamage = factor;
 }
 
-float CObject::RetMagnifyDamage()
+float CObject::GetMagnifyDamage()
 {
     return m_magnifyDamage;
 }
@@ -7011,7 +6981,7 @@ void CObject::SetParam(float value)
     m_param = value;
 }
 
-float CObject::RetParam()
+float CObject::GetParam()
 {
     return m_param;
 }
@@ -7026,7 +6996,7 @@ void CObject::SetLock(bool bLock)
     m_bLock = bLock;
 }
 
-bool CObject::RetLock()
+bool CObject::GetLock()
 {
     return m_bLock;
 }
@@ -7039,7 +7009,7 @@ void CObject::SetExplo(bool bExplo)
     m_bExplo = bExplo;
 }
 
-bool CObject::RetExplo()
+bool CObject::GetExplo()
 {
     return m_bExplo;
 }
@@ -7052,7 +7022,7 @@ void CObject::SetCargo(bool bCargo)
     m_bCargo = bCargo;
 }
 
-bool CObject::RetCargo()
+bool CObject::GetCargo()
 {
     return m_bCargo;
 }
@@ -7071,7 +7041,7 @@ void CObject::SetBurn(bool bBurn)
 //? }
 }
 
-bool CObject::RetBurn()
+bool CObject::GetBurn()
 {
     return m_bBurn;
 }
@@ -7092,17 +7062,17 @@ void CObject::SetDead(bool bDead)
 //? }
 }
 
-bool CObject::RetDead()
+bool CObject::GetDead()
 {
     return m_bDead;
 }
 
-bool CObject::RetRuin()
+bool CObject::GetRuin()
 {
     return m_bBurn|m_bFlat;
 }
 
-bool CObject::RetActif()
+bool CObject::GetActif()
 {
     return !m_bLock && !m_bBurn && !m_bFlat && m_bVisible && m_bEnable;
 }
@@ -7178,12 +7148,12 @@ void CObject::SetGunGoalH(float gunGoal)
     m_gunGoalH = gunGoal;
 }
 
-float CObject::RetGunGoalV()
+float CObject::GetGunGoalV()
 {
     return m_gunGoalV;
 }
 
-float CObject::RetGunGoalH()
+float CObject::GetGunGoalH()
 {
     return m_gunGoalH;
 }
@@ -7196,7 +7166,7 @@ bool CObject::StartShowLimit()
 {
     if ( m_showLimitRadius == 0.0f )  return false;
 
-    m_main->SetShowLimit(0, PARTILIMIT1, this, RetPosition(0), m_showLimitRadius);
+    m_main->SetShowLimit(0, Gfx::PARTILIMIT1, this, GetPosition(0), m_showLimitRadius);
     m_bShowLimit = true;
     return true;
 }
@@ -7219,7 +7189,7 @@ bool CObject::IsProgram()
 
 // Creates or removes particles associated to the object.
 
-void CObject::CreateSelectParticule()
+void CObject::CreateSelectParticle()
 {
     Math::Vector    pos, speed;
     Math::Point     dim;
@@ -7230,7 +7200,7 @@ void CObject::CreateSelectParticule()
     {
         if ( m_partiSel[i] != -1 )
         {
-            m_particule->DeleteParticule(m_partiSel[i]);
+            m_particle->DeleteParticle(m_partiSel[i]);
             m_partiSel[i] = -1;
         }
     }
@@ -7270,18 +7240,18 @@ void CObject::CreateSelectParticule()
             speed = Math::Vector(0.0f, 0.0f, 0.0f);
             dim.x = 0.0f;
             dim.y = 0.0f;
-            m_partiSel[0] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f, 0.0f);
-            m_partiSel[1] = m_particule->CreateParticule(pos, speed, dim, PARTISELY, 1.0f, 0.0f, 0.0f);
-            m_partiSel[2] = m_particule->CreateParticule(pos, speed, dim, PARTISELR, 1.0f, 0.0f, 0.0f);
-            m_partiSel[3] = m_particule->CreateParticule(pos, speed, dim, PARTISELR, 1.0f, 0.0f, 0.0f);
-            UpdateSelectParticule();
+            m_partiSel[0] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
+            m_partiSel[1] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISELY, 1.0f, 0.0f, 0.0f);
+            m_partiSel[2] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISELR, 1.0f, 0.0f, 0.0f);
+            m_partiSel[3] = m_particle->CreateParticle(pos, speed, dim, Gfx::PARTISELR, 1.0f, 0.0f, 0.0f);
+            UpdateSelectParticle();
         }
     }
 }
 
 // Updates the particles associated to the object.
 
-void CObject::UpdateSelectParticule()
+void CObject::UpdateSelectParticle()
 {
     Math::Vector    pos[4];
     Math::Point     dim[4];
@@ -7405,7 +7375,7 @@ void CObject::UpdateSelectParticule()
         pos[3] = Math::Vector(-5.3f, 2.7f, -1.8f);
     }
 
-    angle = RetAngleY(0)/Math::PI;
+    angle = GetAngleY(0)/Math::PI;
 
     zoom[0] = 1.0f;
     zoom[1] = 1.0f;
@@ -7426,7 +7396,7 @@ void CObject::UpdateSelectParticule()
     {
         pos[i] = Math::Transform(m_objectPart[0].matWorld, pos[i]);
         dim[i].y = dim[i].x;
-        m_particule->SetParam(m_partiSel[i], pos[i], dim[i], zoom[i], angle, 1.0f);
+        m_particle->SetParam(m_partiSel[i], pos[i], dim[i], zoom[i], angle, 1.0f);
     }
 }
 
@@ -7438,42 +7408,42 @@ void CObject::SetRunScript(CScript* script)
     m_runScript = script;
 }
 
-CScript* CObject::RetRunScript()
+CScript* CObject::GetRunScript()
 {
     return m_runScript;
 }
 
-// Returns the variables of "this" for CBOT.
+// Geturns the variables of "this" for CBOT.
 
-CBotVar* CObject::RetBotVar()
+CBotVar* CObject::GetBotVar()
 {
     return m_botVar;
 }
 
-// Returns the physics associated to the object.
+// Geturns the physics associated to the object.
 
-CPhysics* CObject::RetPhysics()
+CPhysics* CObject::GetPhysics()
 {
     return m_physics;
 }
 
-// Returns the brain associated to the object.
+// Geturns the brain associated to the object.
 
-CBrain* CObject::RetBrain()
+CBrain* CObject::GetBrain()
 {
     return m_brain;
 }
 
-// Returns the movement associated to the object.
+// Geturns the movement associated to the object.
 
-CMotion* CObject::RetMotion()
+CMotion* CObject::GetMotion()
 {
     return m_motion;
 }
 
-// Returns the controller associated to the object.
+// Geturns the controller associated to the object.
 
-CAuto* CObject::RetAuto()
+CAuto* CObject::GetAuto()
 {
     return m_auto;
 }
@@ -7492,7 +7462,7 @@ void CObject::SetDefRank(int rank)
     m_defRank = rank;
 }
 
-int  CObject::RetDefRank()
+int  CObject::GetDefRank()
 {
     return m_defRank;
 }
@@ -7555,51 +7525,51 @@ void CObject::DeleteDeselList(CObject* pObj)
 
 // Management of the state of the pencil drawing robot.
 
-bool CObject::RetTraceDown()
+bool CObject::GetTraceDown()
 {
     CMotionVehicle* mv;
     if ( m_motion == 0 )  return false;
-    mv = (CMotionVehicle*)m_motion;
-    return mv->RetTraceDown();
+    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    return mv->GetTraceDown();
 }
 
 void CObject::SetTraceDown(bool bDown)
 {
     CMotionVehicle* mv;
     if ( m_motion == 0 )  return;
-    mv = (CMotionVehicle*)m_motion;
+    mv = dynamic_cast<CMotionVehicle*>(m_motion);
     mv->SetTraceDown(bDown);
 }
 
-int CObject::RetTraceColor()
+int CObject::GetTraceColor()
 {
     CMotionVehicle* mv;
     if ( m_motion == 0 )  return 0;
-    mv = (CMotionVehicle*)m_motion;
-    return mv->RetTraceColor();
+    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    return mv->GetTraceColor();
 }
 
 void CObject::SetTraceColor(int color)
 {
     CMotionVehicle* mv;
     if ( m_motion == 0 )  return;
-    mv = (CMotionVehicle*)m_motion;
+    mv = dynamic_cast<CMotionVehicle*>(m_motion);
     mv->SetTraceColor(color);
 }
 
-float CObject::RetTraceWidth()
+float CObject::GetTraceWidth()
 {
     CMotionVehicle* mv;
     if ( m_motion == 0 )  return 0.0f;
-    mv = (CMotionVehicle*)m_motion;
-    return mv->RetTraceWidth();
+    mv = dynamic_cast<CMotionVehicle*>(m_motion);
+    return mv->GetTraceWidth();
 }
 
 void CObject::SetTraceWidth(float width)
 {
     CMotionVehicle* mv;
     if ( m_motion == 0 )  return;
-    mv = (CMotionVehicle*)m_motion;
+    mv = dynamic_cast<CMotionVehicle*>(m_motion);
     mv->SetTraceWidth(width);
 }
 

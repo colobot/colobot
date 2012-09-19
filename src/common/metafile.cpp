@@ -16,17 +16,15 @@
 
 // metafile.cpp
 
-
-#include <windows.h>
-#include <stdio.h>
-
-#include "common/language.h"
 #include "common/metafile.h"
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 
 
-#if _FULL | _NET
+//#if _FULL | _NET
 static unsigned char table_codec[23] =
 {
     0x85, 0x91, 0x73, 0xcf, 0xa2, 0xbb, 0xf4, 0x77,
@@ -36,7 +34,7 @@ static unsigned char table_codec[23] =
 
 void Codec(void* buffer, int len, int start)
 {
-    unsigned char *b = (unsigned char*)buffer;
+    unsigned char *b = static_cast<unsigned char*>(buffer);
     int     i;
 
     for ( i=0 ; i<len ; i++ )
@@ -44,9 +42,9 @@ void Codec(void* buffer, int len, int start)
         b[i] ^= table_codec[(start++)%23];
     }
 }
-#endif
+//#endif
 
-#if _SCHOOL
+/*#if _SCHOOL
 #if _CEEBOTDEMO
 static unsigned char table_codec[136] =
 {
@@ -99,9 +97,9 @@ void Codec(void* buffer, int len, int start)
     }
 }
 #endif
-#endif
+#endif*/
 
-#if _DEMO
+/*#if _DEMO
 static unsigned char table_codec[27] =
 {
     0x85, 0x91, 0x77, 0xcf, 0xa3, 0xbb, 0xf4, 0x77,
@@ -120,7 +118,7 @@ void Codec(void* buffer, int len, int start)
         b[i] ^= table_codec[(start++)%27];
     }
 }
-#endif
+#endif*/
 
 
 
@@ -286,7 +284,7 @@ int CMetaFile::Read(void *buffer, int size)
 
 int CMetaFile::GetByte()
 {
-    BYTE    b;
+    int    b;
 
     if ( !m_bOpen )  return 1;
 
@@ -303,7 +301,7 @@ int CMetaFile::GetByte()
 
 int CMetaFile::GetWord()
 {
-    WORD    w;
+    int    w;
 
     if ( !m_bOpen )  return 1;
 
@@ -352,7 +350,7 @@ int CMetaFile::MetaOpen(char *metaname)
             strcpy(m_list[i].name, metaname);  // memorized the name
 
             fread(&m_list[i].total, sizeof(int), 1, m_list[i].stream);
-            m_list[i].headers = (MetaHeader*)malloc(sizeof(MetaHeader)*m_list[i].total);
+            m_list[i].headers = static_cast<MetaHeader*>(malloc(sizeof(MetaHeader)*m_list[i].total));
 
             offset = 4;
             for ( j=0 ; j<m_list[i].total ; j++ )

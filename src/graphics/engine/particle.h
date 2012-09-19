@@ -306,7 +306,7 @@ public:
     void        FrameParticle(float rTime);
     void        DrawParticle(int sheet);
 
-    bool        WriteWheelTrace(char *filename, int width, int height, Math::Vector dl, Math::Vector ur);
+    bool        WriteWheelTrace(const char *filename, int width, int height, Math::Vector dl, Math::Vector ur);
 
 protected:
     void        DeleteRank(int rank);

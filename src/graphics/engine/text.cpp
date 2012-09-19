@@ -785,18 +785,20 @@ Gfx::CharTexture Gfx::CText::CreateCharTexture(Gfx::UTF8Char ch, Gfx::CachedFont
 
     data.surface = nullptr;
 
-    SDL_FreeSurface(textSurface);
-    SDL_FreeSurface(textureSurface);
-
     if (! tex.Valid())
     {
         m_error = "Texture create error";
         return texture;
     }
+    else
+    {
+        texture.id = tex.id;
+        texture.texSize =  m_engine->WindowToInterfaceSize(Math::IntPoint(textureSurface->w, textureSurface->h));
+        texture.charSize = m_engine->WindowToInterfaceSize(Math::IntPoint(textSurface->w, textSurface->h));
+    }
 
-    texture.id = tex.id;
-    texture.texSize =  m_engine->WindowToInterfaceSize(Math::IntPoint(textureSurface->w, textureSurface->h));
-    texture.charSize = m_engine->WindowToInterfaceSize(Math::IntPoint(textSurface->w, textSurface->h));
+    SDL_FreeSurface(textSurface);
+    SDL_FreeSurface(textureSurface);
 
     return texture;
 }

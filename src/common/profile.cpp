@@ -17,7 +17,10 @@
 // profile.cpp
 
 
-#include <common/profile.h>
+#include "common/profile.h"
+
+#include <utility>
+#include <cstring>
 
 
 template<> CProfile* CSingleton<CProfile>::mInstance = nullptr;

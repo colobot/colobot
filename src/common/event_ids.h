@@ -14,6 +14,9 @@
 // * You should have received a copy of the GNU General Public License
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
+
+// TODO: move to event.h after restext rewrite
+
 #pragma once
 
 /**
@@ -38,6 +41,8 @@ enum EventType
     EVENT_MOUSE_BUTTON_DOWN = 3,
     //! Event sent after releasing a mouse button
     EVENT_MOUSE_BUTTON_UP   = 4,
+    //! Event sent after moving mouse wheel up or down
+    EVENT_MOUSE_WHEEL       = 5,
     //! Event sent after moving the mouse
     EVENT_MOUSE_MOVE        = 7,
     //! Event sent after pressing a key
@@ -47,9 +52,6 @@ enum EventType
 
     //! Event sent when application window loses/gains focus
     EVENT_ACTIVE            = 10,
-
-    //? EVENT_CHAR              = 10,
-    //? EVENT_FOCUS             = 11,
 
     //! Event sent after moving joystick axes
     EVENT_JOY_AXIS          = 12,

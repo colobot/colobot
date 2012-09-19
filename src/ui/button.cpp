@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,30 +16,27 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
 
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "common/language.h"
-#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "common/restext.h"
 #include "ui/button.h"
 
+#include "common/event.h"
+#include "common/misc.h"
+#include "common/restext.h"
 
+#include "graphics/engine/engine.h"
+
+#include <string.h>
+
+
+namespace Ui {
 
 const float DELAY1 = 0.4f;
 const float DELAY2 = 0.1f;
 
 
-
 // Object's constructor.
 
-CButton::CButton(CInstanceManager* iMan) : CControl(iMan)
+CButton::CButton() : CControl()
 {
     m_bCapture = false;
     m_bImmediat = false;
@@ -55,18 +53,18 @@ CButton::~CButton()
 
 // Creates a new button.
 
-bool CButton::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CButton::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )  eventType = GetUniqueEventType();
 
-    CControl::Create(pos, dim, icon, eventMsg);
+    CControl::Create(pos, dim, icon, eventType);
 
     if ( icon == -1 )
     {
         char    name[100];
         char*   p;
 
-        GetResource(RES_EVENT, eventMsg, name);
+        GetResource(RES_EVENT, eventType, name);
         p = strchr(name, '\\');
         if ( p != 0 )  *p = 0;
         SetName(name);
@@ -85,7 +83,7 @@ bool CButton::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if ( event.event == EVENT_FRAME )
+    if ( event.type == EVENT_FRAME )
     {
         if ( m_bRepeat && m_repeat != 0.0f )
         {
@@ -95,18 +93,19 @@ bool CButton::EventProcess(const Event &event)
                 m_repeat = DELAY2;
 
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
                 return false;
             }
         }
     }
 
-    if ( event.event == EVENT_LBUTTONDOWN &&
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN  &&
+         event.mouseButton.button == 1    &&
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             m_bCapture = true;
             m_repeat = DELAY1;
@@ -114,25 +113,27 @@ bool CButton::EventProcess(const Event &event)
             if ( m_bImmediat || m_bRepeat )
             {
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
             }
             return false;
         }
     }
 
-    if ( event.event == EVENT_MOUSEMOVE && m_bCapture )
+    if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
     }
 
-    if ( event.event == EVENT_LBUTTONUP && m_bCapture )
+    if ( event.type == EVENT_MOUSE_BUTTON_UP && //left
+         event.mouseButton.button == 1    &&
+         m_bCapture )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             if ( !m_bImmediat && !m_bRepeat )
             {
                 Event newEvent = event;
-                newEvent.event = m_eventMsg;
+                newEvent.type = m_eventType;
                 m_event->AddEvent(newEvent);
             }
         }
@@ -158,10 +159,10 @@ void CButton::Draw()
 
     if ( m_state & STATE_WARNING )  // shading yellow-black?
     {
-        pos.x = m_pos.x-( 8.0f/640.0f);
-        pos.y = m_pos.y-( 4.0f/480.0f);
-        dim.x = m_dim.x+(16.0f/640.0f);
-        dim.y = m_dim.y+( 8.0f/480.0f);
+        pos.x = m_pos.x - ( 8.0f / 640.0f);
+        pos.y = m_pos.y - ( 4.0f / 480.0f);
+        dim.x = m_dim.x + (16.0f / 640.0f);
+        dim.y = m_dim.y + ( 8.0f / 480.0f);
         if ( m_state & STATE_SHADOW )
         {
             DrawShadow(pos, dim);
@@ -181,20 +182,20 @@ void CButton::Draw()
          (m_state & STATE_CARD  ) == 0 &&
          (m_state & STATE_SIMPLY) == 0 )
     {
-        m_engine->SetTexture("button2.tga");
-        m_engine->SetState(D3DSTATENORMAL);
+        m_engine->SetTexture("button2.png");
+        m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-        dp = 0.5f/256.0f;
+        dp = 0.5f / 256.0f;
 
-        uv1.x = 128.0f/256.0f;
-        uv1.y =  96.0f/256.0f;
-        uv2.x = 136.0f/256.0f;
-        uv2.y = 128.0f/256.0f;
+        uv1.x = 128.0f / 256.0f;
+        uv1.y =  96.0f / 256.0f;
+        uv2.x = 136.0f / 256.0f;
+        uv2.y = 128.0f / 256.0f;
 
         if ( (m_state & STATE_ENABLE) == 0 )
         {
-            uv1.x += 16.0f/256.0f;
-            uv2.x += 16.0f/256.0f;
+            uv1.x += 16.0f / 256.0f;
+            uv2.x += 16.0f / 256.0f;
         }
 
         uv1.x += dp;
@@ -202,15 +203,15 @@ void CButton::Draw()
         uv2.x -= dp;
         uv2.y -= dp;
 
-        pos.y = m_pos.y+5.0f/480.0f;
-        dim.y = m_dim.y-10.0f/480.0f;
-        pos.x = m_pos.x+5.0f/640.0f;
-        dim.x = 3.0f/640.0f;
+        pos.y = m_pos.y +  5.0f / 480.0f;
+        dim.y = m_dim.y - 10.0f / 480.0f;
+        pos.x = m_pos.x +  5.0f / 640.0f;
+        dim.x = 3.0f / 640.0f;
         DrawIcon(pos, dim, uv1, uv2, 0.0f);
 
-        uv1.x += 8.0f/256.0f;
-        uv2.x += 8.0f/256.0f;
-        pos.x = m_pos.x+m_dim.x-5.0f/640.0f-3.0f/640.0f;
+        uv1.x += 8.0f / 256.0f;
+        uv2.x += 8.0f / 256.0f;
+        pos.x = m_pos.x + m_dim.x - 5.0f / 640.0f - 3.0f / 640.0f;
         DrawIcon(pos, dim, uv1, uv2, 0.0f);
     }
 #endif
@@ -225,7 +226,7 @@ void CButton::SetImmediat(bool bImmediat)
     m_bImmediat = bImmediat;
 }
 
-bool CButton::RetImmediat()
+bool CButton::GetImmediat()
 {
     return m_bImmediat;
 }
@@ -239,8 +240,9 @@ void CButton::SetRepeat(bool bRepeat)
     m_bRepeat = bRepeat;
 }
 
-bool CButton::RetRepeat()
+bool CButton::GetRepeat()
 {
     return m_bRepeat;
 }
 
+}

@@ -1,6 +1,7 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
-// *
+// * Copyright (C) 2012, Polish Portal of Colobot (PPC)
+//
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
 // * the Free Software Foundation, either version 3 of the License, or
@@ -15,47 +16,28 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <windows.h>
-#include <stdio.h>
-#include <d3d.h>
-
-#include "common/struct.h"
-#include "old/d3dengine.h"
-#include "common/language.h"
-#include "common/restext.h"
-#include "old/math3d.h"
-#include "common/event.h"
-#include "common/misc.h"
-#include "object/robotmain.h"
-#include "old/particule.h"
-#include "common/misc.h"
-#include "common/iman.h"
-#include "old/text.h"
-#include "old/sound.h"
 #include "ui/control.h"
 
 
-
-
+namespace Ui {
 // Object's constructor.
 
-CControl::CControl(CInstanceManager* iMan)
+CControl::CControl()
 {
-    m_iMan = iMan;
+    m_iMan = CInstanceManager::GetInstancePointer();
 
-    m_engine      = (CD3DEngine*)m_iMan->SearchInstance(CLASS_ENGINE);
-    m_event       = (CEvent*)m_iMan->SearchInstance(CLASS_EVENT);
-    m_main        = (CRobotMain*)m_iMan->SearchInstance(CLASS_MAIN);
-    m_particule   = (CParticule*)m_iMan->SearchInstance(CLASS_PARTICULE);
-    m_sound       = (CSound*)m_iMan->SearchInstance(CLASS_SOUND);
-    m_eventMsg    = EVENT_NULL;
+    m_engine      = static_cast< Gfx::CEngine* > ( m_iMan->SearchInstance(CLASS_ENGINE) );
+    m_event       = static_cast< CEventQueue* > ( m_iMan->SearchInstance(CLASS_EVENT) );
+    m_main        = static_cast< CRobotMain* > ( m_iMan->SearchInstance(CLASS_MAIN) );
+    m_particle    = static_cast< Gfx::CParticle* > (m_iMan->SearchInstance(CLASS_PARTICULE));
+    m_sound       = static_cast< CSoundInterface* > (m_iMan->SearchInstance(CLASS_SOUND));
+    m_eventType    = EVENT_NULL;
     m_state       = STATE_ENABLE|STATE_VISIBLE|STATE_GLINT;
-    m_fontSize    = SMALLFONT;
-    m_fontStretch = NORMSTRETCH;
-    m_fontType    = FONT_COLOBOT;
-    m_justif      = 0;
-    m_name[0]     = 0;
-    m_tooltip[0]  = 0;
+    m_fontSize    = Gfx::FONT_SIZE_SMALL;
+//    m_fontStretch = Gfx::FONT_NORM_STRETCH; //there is font stretching no more master
+    m_fontType    = Gfx::FONT_COLOBOT;
+    m_textAlign   = Gfx::TEXT_ALIGN_CENTER; //instead m_justify
+//    m_justif      = 0;
     m_bFocus      = false;
     m_bCapture    = false;
 
@@ -76,34 +58,31 @@ CControl::~CControl()
 // Creates a new button.
 //  pos: [0..1]
 
-bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventMsg eventMsg)
+bool CControl::Create(Math::Point pos, Math::Point dim, int icon, EventType eventType)
 {
-    char    text[100];
-    char*   p;
+    char text[100];
+    std::string str_text;
 
-    if ( eventMsg == EVENT_NULL )  eventMsg = GetUniqueEventMsg();
+    if ( eventType == EVENT_NULL )
+        eventType = GetUniqueEventType();
 
     m_pos = pos;
     m_dim = dim;
     m_icon = icon;
-    m_eventMsg = eventMsg;
+    m_eventType = eventType;
 
     pos.x = m_pos.x;
-    pos.y = m_pos.y+m_dim.y;
+    pos.y = m_pos.y + m_dim.y;
     GlintCreate(pos);
 
-    GetResource(RES_EVENT, m_eventMsg, text);
-    p = strchr(text, '\\');
-    if ( p == 0 )
-    {
+    GetResource(RES_EVENT, m_eventType, text);
+    str_text = std::string(text);
+    auto p = str_text.find("\\");
+    if ( p == std::string::npos )  {
         if ( icon != -1 )
-        {
-            strcpy(m_tooltip, text);
-        }
-    }
-    else
-    {
-        strcpy(m_tooltip, p+1);  // text after "\\"
+            m_tooltip = str_text;
+    } else {
+        m_tooltip = str_text.substr(p + 1);
     }
 
     return true;
@@ -115,11 +94,11 @@ void CControl::SetPos(Math::Point pos)
     m_pos = pos;
 
     pos.x = m_pos.x;
-    pos.y = m_pos.y+m_dim.y;
+    pos.y = m_pos.y + m_dim.y;
     GlintCreate(pos);
 }
 
-Math::Point CControl::RetPos()
+Math::Point CControl::GetPos()
 {
     return m_pos;
 }
@@ -131,11 +110,11 @@ void CControl::SetDim(Math::Point dim)
     m_dim = dim;
 
     pos.x = m_pos.x;
-    pos.y = m_pos.y+m_dim.y;
+    pos.y = m_pos.y + m_dim.y;
     GlintCreate(pos);
 }
 
-Math::Point CControl::RetDim()
+Math::Point CControl::GetDim()
 {
     return m_dim;
 }
@@ -175,7 +154,7 @@ bool CControl::TestState(int state)
 
 // Returns all attributes of state.
 
-int CControl::RetState()
+int CControl::GetState()
 {
     return m_state;
 }
@@ -188,7 +167,7 @@ void CControl::SetIcon(int icon)
     m_icon = icon;
 }
 
-int CControl::RetIcon()
+int CControl::GetIcon()
 {
     return m_icon;
 }
@@ -196,41 +175,21 @@ int CControl::RetIcon()
 
 // Management of the button name.
 
-void CControl::SetName(char* name, bool bTooltip)
+void CControl::SetName(std::string name, bool bTooltip)
 {
-    char*   p;
-
-    if ( bTooltip )
-    {
-        p = strchr(name, '\\');
-        if ( p == 0 )
-        {
-            strncpy(m_name, name, 100);
-            m_name[100-1] = 0;
+    if ( bTooltip ) {
+        auto p = name.find("\\");
+        if ( p == std::string::npos )
+            m_name = name;
+        else {
+            m_tooltip = name.substr(p + 1);
+            m_name = name.substr(0, p);
         }
-        else
-        {
-            char    buffer[100];
-
-            strncpy(m_tooltip, p+1, 100);  // text after "\\"
-            m_tooltip[100-1] = 0;
-
-            strncpy(buffer, name, 100);
-            buffer[100-1] = 0;
-            p = strchr(buffer, '\\');
-            if ( p != 0 )  *p = 0;
-            strncpy(m_name, buffer, 100);
-            m_name[100-1] = 0;
-        }
-    }
-    else
-    {
-        strncpy(m_name, name, 100);
-        m_name[100-1] = 0;
-    }
+    } else
+        m_name = name;
 }
 
-char* CControl::RetName()
+std::string CControl::GetName()
 {
     return m_name;
 }
@@ -238,14 +197,16 @@ char* CControl::RetName()
 
 // Management of the mode of justification (-1,0,1).
 
-void CControl::SetJustif(int mode)
+void CControl::SetTextAlign(Gfx::TextAlign mode)
 {
-    m_justif = mode;
+	m_textAlign = mode;
+//    m_justif = mode;
 }
 
-int CControl::RetJustif()
+int CControl::GetTextAlign()
 {
-    return m_justif;
+	return m_textAlign;
+//    return m_justif;
 }
 
 
@@ -256,7 +217,7 @@ void CControl::SetFontSize(float size)
     m_fontSize = size;
 }
 
-float CControl::RetFontSize()
+float CControl::GetFontSize()
 {
     return m_fontSize;
 }
@@ -269,7 +230,7 @@ void CControl::SetFontStretch(float stretch)
     m_fontStretch = stretch;
 }
 
-float CControl::RetFontStretch()
+float CControl::GetFontStretch()
 {
     return m_fontStretch;
 }
@@ -277,12 +238,12 @@ float CControl::RetFontStretch()
 
 // Choice of the font.
 
-void CControl::SetFontType(FontType font)
+void CControl::SetFontType(Gfx::FontType font)
 {
     m_fontType = font;
 }
 
-FontType CControl::RetFontType()
+Gfx::FontType CControl::GetFontType()
 {
     return m_fontType;
 }
@@ -290,21 +251,21 @@ FontType CControl::RetFontType()
 
 // Specifies the tooltip.
 
-bool CControl::SetTooltip(char* name)
+bool CControl::SetTooltip(std::string name)
 {
-    strcpy(m_tooltip, name);
+    m_tooltip = name;
     return true;
 }
 
-bool CControl::GetTooltip(Math::Point pos, char* name)
+bool CControl::GetTooltip(Math::Point pos, std::string &name)
 {
-    if ( m_tooltip[0] == 0 )  return false;
-    if ( (m_state & STATE_VISIBLE) == 0 )  return false;
+    if ( m_tooltip.length() == 0 ) return false;
+    if ( (m_state & STATE_VISIBLE) == 0 ) return false;
     if ( (m_state & STATE_ENABLE) == 0 )  return false;
     if ( m_state & STATE_DEAD )  return false;
     if ( !Detect(pos) )  return false;
 
-    strcpy(name, m_tooltip);
+    name = m_tooltip;
     return true;
 }
 
@@ -316,7 +277,7 @@ void CControl::SetFocus(bool bFocus)
     m_bFocus = bFocus;
 }
 
-bool CControl::RetFocus()
+bool CControl::GetFocus()
 {
     return m_bFocus;
 }
@@ -324,9 +285,9 @@ bool CControl::RetFocus()
 
 // Returns the event associated with the control.
 
-EventMsg CControl::RetEventMsg()
+EventType CControl::GetEventType()
 {
-    return m_eventMsg;
+    return m_eventType;
 }
 
 
@@ -336,21 +297,21 @@ bool CControl::EventProcess(const Event &event)
 {
     if ( m_state & STATE_DEAD )  return true;
 
-    if ( event.event == EVENT_FRAME && m_bGlint )
+    if ( event.type == EVENT_FRAME && m_bGlint )
     {
         GlintFrame(event);
     }
 
-    if ( event.event == EVENT_MOUSEMOVE )
+    if ( event.type == EVENT_MOUSE_MOVE )
     {
-        m_glintMouse = event.pos;
+        m_glintMouse = event.mouseMove.pos;
 
-        if ( Detect(event.pos) )
+        if ( Detect(event.mouseMove.pos) )
         {
             if ( (m_state & STATE_VISIBLE) &&
                  (m_state & STATE_ENABLE ) )
             {
-                m_engine->SetMouseType(D3DMOUSEHAND);
+                m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);
             }
             SetState(STATE_HILIGHT);
         }
@@ -360,18 +321,18 @@ bool CControl::EventProcess(const Event &event)
         }
     }
 
-    if ( event.event == EVENT_LBUTTONDOWN )
+    if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == 1)
     {
-        if ( Detect(event.pos) )
+        if ( Detect(event.mouseButton.pos) )
         {
             m_bCapture = true;
             SetState(STATE_PRESS);
         }
     }
 
-    if ( event.event == EVENT_MOUSEMOVE && m_bCapture )
+    if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
-        if ( Detect(event.pos) )
+        if ( Detect(event.mouseMove.pos) )
         {
             SetState(STATE_PRESS);
         }
@@ -381,7 +342,7 @@ bool CControl::EventProcess(const Event &event)
         }
     }
 
-    if ( event.event == EVENT_LBUTTONUP && m_bCapture )
+    if ( event.type == EVENT_MOUSE_BUTTON_UP && m_bCapture && event.mouseButton.button == 1)
     {
         m_bCapture = false;
         ClearState(STATE_PRESS);
@@ -404,8 +365,8 @@ void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
 {
     float   offset;
 
-    offset = 8.0f/640.0f;
-    if ( offset > m_dim.x/4.0f)  offset = m_dim.x/4.0f;
+    offset = 8.0f / 640.0f;
+    if ( offset > m_dim.x / 4.0f)  offset = m_dim.x / 4.0f;
 
     if ( bLeft )
     {
@@ -419,17 +380,17 @@ void CControl::GlintCreate(Math::Point ref, bool bLeft, bool bUp)
     }
 
     offset = 8.0f/480.0f;
-    if ( offset > m_dim.y/4.0f)  offset = m_dim.y/4.0f;
+    if ( offset > m_dim.y / 4.0f)  offset = m_dim.y / 4.0f;
 
     if ( bUp )
     {
-        m_glintCorner1.y = ref.y-offset;
+        m_glintCorner1.y = ref.y - offset;
         m_glintCorner2.y = ref.y;
     }
     else
     {
         m_glintCorner1.y = ref.y;
-        m_glintCorner2.y = ref.y+offset;
+        m_glintCorner2.y = ref.y + offset;
     }
 
     m_bGlint = true;
@@ -446,20 +407,20 @@ void CControl::GlintFrame(const Event &event)
          (m_state & STATE_ENABLE ) == 0 ||
          (m_state & STATE_VISIBLE) == 0 )  return;
 
-    if ( !m_main->RetGlint() )  return;
+    if ( !m_main->GetGlint() )  return;
 
     m_glintProgress += event.rTime;
 
     if ( m_glintProgress >= 2.0f && Detect(m_glintMouse) )
     {
-        pos.x = m_glintCorner1.x + (m_glintCorner2.x-m_glintCorner1.x)*Math::Rand();
-        pos.y = m_glintCorner1.y + (m_glintCorner2.y-m_glintCorner1.y)*Math::Rand();
+        pos.x = m_glintCorner1.x + (m_glintCorner2.x - m_glintCorner1.x) * Math::Rand();
+        pos.y = m_glintCorner1.y + (m_glintCorner2.y - m_glintCorner1.y) * Math::Rand();
         pos.z = 0.0f;
         speed = Math::Vector(0.0f, 0.0f, 0.0f);
-        dim.x = ((15.0f+Math::Rand()*15.0f)/640.0f);
-        dim.y = dim.x/0.75f;
-        m_particule->CreateParticule(pos, speed, dim, PARTICONTROL,
-                                     1.0f, 0.0f, 0.0f, SH_INTERFACE);
+        dim.x = ((15.0f + Math::Rand() * 15.0f) / 640.0f);
+        dim.y = dim.x / 0.75f;
+        m_particle->CreateParticle(pos, speed, dim, Gfx::PARTICONTROL,
+                                     1.0f, 0.0f, 0.0f, Gfx::SH_INTERFACE );
 
         m_glintProgress = 0.0f;
     }
@@ -476,8 +437,8 @@ void CControl::Draw()
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return;
 
-    m_engine->SetTexture("button1.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetTexture("button1.png");
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
     zoomExt = 1.00f;
     zoomInt = 0.95f;
@@ -530,14 +491,14 @@ void CControl::Draw()
 
     if ( m_state & STATE_OKAY )
     {
-        m_engine->SetTexture("button3.tga");
+        m_engine->SetTexture("button3.png");
         icon = 3;  // yellow with green point pressed
     }
 
     if ( m_name[0] == 0 )  // button without name?
     {
 //?     DrawPart(icon, zoomExt, 0.0f);
-        DrawPart(icon, zoomExt, 8.0f/256.0f);
+        DrawPart(icon, zoomExt, 8.0f / 256.0f);
 
         if ( m_state & STATE_DEAD )  return;
 
@@ -546,27 +507,27 @@ void CControl::Draw()
         {
             icon -= 192;
 #if _POLISH
-            m_engine->SetTexture("textp.tga");
+            m_engine->SetTexture("textp.png");
 #else
-            m_engine->SetTexture("text.tga");
+            m_engine->SetTexture("text.png");
 #endif
-            m_engine->SetState(D3DSTATETTw);
+            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else if ( icon >= 128 )
         {
             icon -= 128;
-            m_engine->SetTexture("button3.tga");
-            m_engine->SetState(D3DSTATETTw);
+            m_engine->SetTexture("button3.png");
+            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else if ( icon >= 64 )
         {
             icon -= 64;
-            m_engine->SetTexture("button2.tga");
-            m_engine->SetState(D3DSTATETTw);
+            m_engine->SetTexture("button2.png");
+            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         else
         {
-            m_engine->SetState(D3DSTATETTw);
+            m_engine->SetState(Gfx::ENG_RSTATE_TTEXTURE_WHITE);
         }
         if ( icon != -1 )
         {
@@ -579,26 +540,28 @@ void CControl::Draw()
 
         if ( m_state & STATE_DEAD )  return;
 
-        if ( m_justif < 0 )
+//        if ( m_justif < 0 )
+        if ( m_textAlign == Gfx::TEXT_ALIGN_LEFT )
         {
-            pos.x = m_pos.x+m_dim.x-m_dim.y*0.5f;
-            pos.y = m_pos.y+m_dim.y*0.5f;
-            pos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2;
-            m_engine->RetText()->DrawText(m_name, pos, m_dim.x, m_justif, m_fontSize, m_fontStretch, m_fontType, 0);
+            pos.x = m_pos.x + m_dim.x - m_dim.y * 0.5f;
+            pos.y = m_pos.y + m_dim.y * 0.5f;
+            pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
+            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
-        else if ( m_justif > 0 )
+        else if ( m_textAlign == Gfx::TEXT_ALIGN_RIGHT )
+//        else if ( m_justif > 0 )
         {
-            pos.x = m_pos.x+m_dim.y*0.5f;
-            pos.y = m_pos.y+m_dim.y*0.5f;
-            pos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
-            m_engine->RetText()->DrawText(m_name, pos, m_dim.x, m_justif, m_fontSize, m_fontStretch, m_fontType, 0);
+            pos.x = m_pos.x + m_dim.y * 0.5f;
+            pos.y = m_pos.y + m_dim.y * 0.5f;
+            pos.y -= m_engine->GetText()->GetHeight(m_fontType, m_fontSize)/2.0f;
+            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
         else
         {
-            pos.x = m_pos.x+m_dim.x*0.5f;
-            pos.y = m_pos.y+m_dim.y*0.5f;
-            pos.y -= m_engine->RetText()->RetHeight(m_fontSize, m_fontType)/2.0f;
-            m_engine->RetText()->DrawText(m_name, pos, m_dim.x, m_justif, m_fontSize, m_fontStretch, m_fontType, 0);
+            pos.x = m_pos.x + m_dim.x * 0.5f;
+            pos.y = m_pos.y + m_dim.y * 0.5f;
+            pos.y -= m_engine->GetText()->GetHeight( m_fontType, m_fontSize)/2.0f;
+            m_engine->GetText()->DrawText(m_name, m_fontType, m_fontSize, pos, m_dim.x, m_textAlign, 0);
         }
     }
 }
@@ -618,26 +581,26 @@ void CControl::DrawPart(int icon, float zoom, float ex)
     if ( (m_state & STATE_CARD ) &&
          (m_state & STATE_CHECK) )
     {
-        p2.y += (2.0f/480.0f);  // a bit above
+        p2.y += (2.0f / 480.0f);  // a bit above
     }
 
-    c.x = (p1.x+p2.x)/2.0f;
-    c.y = (p1.y+p2.y)/2.0f;  // center
+    c.x = (p1.x + p2.x)/2.0f;
+    c.y = (p1.y + p2.y)/2.0f;  // center
 
-    p1.x = (p1.x-c.x)*zoom + c.x;
-    p1.y = (p1.y-c.y)*zoom + c.y;
-    p2.x = (p2.x-c.x)*zoom + c.x;
-    p2.y = (p2.y-c.y)*zoom + c.y;
+    p1.x = (p1.x - c.x) * zoom + c.x;
+    p1.y = (p1.y - c.y) * zoom + c.y;
+    p2.x = (p2.x - c.x) * zoom + c.x;
+    p2.y = (p2.y - c.y) * zoom + c.y;
 
     p2.x -= p1.x;
     p2.y -= p1.y;
 
-    uv1.x = (32.0f/256.0f)*(icon%8);
-    uv1.y = (32.0f/256.0f)*(icon/8);  // uv texture
-    uv2.x = (32.0f/256.0f)+uv1.x;
-    uv2.y = (32.0f/256.0f)+uv1.y;
+    uv1.x = (32.0f / 256.0f) * (icon%8);
+    uv1.y = (32.0f / 256.0f) * (icon/8);  // uv texture
+    uv2.x = (32.0f / 256.0f) + uv1.x;
+    uv2.y = (32.0f / 256.0f) + uv1.y;
 
-    dp = 0.5f/256.0f;
+    dp = 0.5f / 256.0f;
     uv1.x += dp;
     uv1.y += dp;
     uv2.x -= dp;
@@ -652,12 +615,12 @@ void CControl::DrawPart(int icon, float zoom, float ex)
 void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2,
                         float ex)
 {
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2  vertex[8];  // 6 triangles
+    Gfx::CDevice*   device;
+    Gfx::Vertex     vertex[8];  // 6 triangles
     Math::Point     p1, p2, p3, p4;
     Math::Vector    n;
 
-    device = m_engine->RetD3DDevice();
+    device = m_engine->GetDevice();
 
     p1.x = pos.x;
     p1.y = pos.y;
@@ -668,48 +631,48 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 
     if ( ex == 0.0f )  // one piece?
     {
-        vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y);
-        vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y);
-        vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y);
-        vertex[3] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y);
+        vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,uv2.y));
+        vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,uv1.y));
+        vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,uv2.y));
+        vertex[3] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,uv1.y));
 
-        device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 4, NULL);
+        device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 4);
         m_engine->AddStatisticTriangle(2);
     }
     else    // 3 pieces?
     {
         if ( dim.x >= dim.y )
         {
-            p3.x = p1.x + ex*dim.y/(uv2.y-uv1.y);
-            p4.x = p2.x - ex*dim.y/(uv2.y-uv1.y);
+            p3.x = p1.x + ex*dim.y / (uv2.y - uv1.y);
+            p4.x = p2.x - ex*dim.y / (uv2.y - uv1.y);
 
-            vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,   uv2.y);
-            vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,   uv1.y);
-            vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p1.y, 0.0f), n, uv1.x+ex,uv2.y);
-            vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p2.y, 0.0f), n, uv1.x+ex,uv1.y);
-            vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p1.y, 0.0f), n, uv2.x-ex,uv2.y);
-            vertex[5] = D3DVERTEX2(Math::Vector(p4.x, p2.y, 0.0f), n, uv2.x-ex,uv1.y);
-            vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,   uv2.y);
-            vertex[7] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,   uv1.y);
+            vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,   uv2.y));
+            vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,   uv1.y));
+            vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p1.y, 0.0f), n, Math::Point(uv1.x+ex,uv2.y));
+            vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p2.y, 0.0f), n, Math::Point(uv1.x+ex,uv1.y));
+            vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p1.y, 0.0f), n, Math::Point(uv2.x-ex,uv2.y));
+            vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p2.y, 0.0f), n, Math::Point(uv2.x-ex,uv1.y));
+            vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,   uv2.y));
+            vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,   uv1.y));
 
-            device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
+            device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
             m_engine->AddStatisticTriangle(6);
         }
         else
         {
-            p3.y = p1.y + ex*dim.x/(uv2.x-uv1.x);
-            p4.y = p2.y - ex*dim.x/(uv2.x-uv1.x);
+            p3.y = p1.y + ex*dim.x / (uv2.x - uv1.x);
+            p4.y = p2.y - ex*dim.x / (uv2.x - uv1.x);
 
-            vertex[0] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,uv2.y   );
-            vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,uv2.y   );
-            vertex[2] = D3DVERTEX2(Math::Vector(p2.x, p3.y, 0.0f), n, uv2.x,uv2.y-ex);
-            vertex[3] = D3DVERTEX2(Math::Vector(p1.x, p3.y, 0.0f), n, uv1.x,uv2.y-ex);
-            vertex[4] = D3DVERTEX2(Math::Vector(p2.x, p4.y, 0.0f), n, uv2.x,uv1.y+ex);
-            vertex[5] = D3DVERTEX2(Math::Vector(p1.x, p4.y, 0.0f), n, uv1.x,uv1.y+ex);
-            vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,uv1.y   );
-            vertex[7] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,uv1.y   );
+            vertex[0] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x, uv2.y     ));
+            vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x, uv2.y     ));
+            vertex[2] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x, uv2.y - ex));
+            vertex[3] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x, uv2.y - ex));
+            vertex[4] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x, uv1.y + ex));
+            vertex[5] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x, uv1.y + ex));
+            vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x, uv1.y     ));
+            vertex[7] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x, uv1.y     ));
 
-            device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
+            device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
             m_engine->AddStatisticTriangle(6);
         }
     }
@@ -720,12 +683,12 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math::Point uv2,
                         Math::Point corner, float ex)
 {
-    LPDIRECT3DDEVICE7 device;
-    D3DVERTEX2  vertex[8];  // 6 triangles
+    Gfx::CDevice* device;
+    Gfx::Vertex    vertex[8];  // 6 triangles
     Math::Point     p1, p2, p3, p4;
     Math::Vector    n;
 
-    device = m_engine->RetD3DDevice();
+    device = m_engine->GetDevice();
 
     p1.x = pos.x;
     p1.y = pos.y;
@@ -734,8 +697,8 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
 
     n = Math::Vector(0.0f, 0.0f, -1.0f);  // normal
 
-    if ( corner.x > dim.x/2.0f )  corner.x = dim.x/2.0f;
-    if ( corner.y > dim.y/2.0f )  corner.y = dim.y/2.0f;
+    if ( corner.x > dim.x / 2.0f )  corner.x = dim.x / 2.0f;
+    if ( corner.y > dim.y / 2.0f )  corner.y = dim.y / 2.0f;
 
     p1.x = pos.x;
     p1.y = pos.y;
@@ -747,39 +710,39 @@ void CControl::DrawIcon(Math::Point pos, Math::Point dim, Math::Point uv1, Math:
     p4.y = p2.y - corner.y;
 
     // Bottom horizontal band.
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p1.y, 0.0f), n, uv1.x,   uv2.y   );
-    vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
-    vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p1.y, 0.0f), n, uv1.x+ex,uv2.y   );
-    vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv1.x+ex,uv2.y-ex);
-    vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p1.y, 0.0f), n, uv2.x-ex,uv2.y   );
-    vertex[5] = D3DVERTEX2(Math::Vector(p4.x, p3.y, 0.0f), n, uv2.x-ex,uv2.y-ex);
-    vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p1.y, 0.0f), n, uv2.x,   uv2.y   );
-    vertex[7] = D3DVERTEX2(Math::Vector(p2.x, p3.y, 0.0f), n, uv2.x,   uv2.y-ex);
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p1.y, 0.0f), n, Math::Point(uv1.x,      uv2.y     ));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,      uv2.y - ex));
+    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p1.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y     ));
+    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y - ex));
+    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p1.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y     ));
+    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p3.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y - ex));
+    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p1.y, 0.0f), n, Math::Point(uv2.x,      uv2.y     ));
+    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,      uv2.y - ex));
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
     m_engine->AddStatisticTriangle(6);
 
     // Central horizontal band.
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p3.y, 0.0f), n, uv1.x,   uv2.y-ex);
-    vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
-    vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p3.y, 0.0f), n, uv1.x+ex,uv2.y-ex);
-    vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p4.y, 0.0f), n, uv1.x+ex,uv1.y+ex);
-    vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p3.y, 0.0f), n, uv2.x-ex,uv2.y-ex);
-    vertex[5] = D3DVERTEX2(Math::Vector(p4.x, p4.y, 0.0f), n, uv2.x-ex,uv1.y+ex);
-    vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p3.y, 0.0f), n, uv2.x,   uv2.y-ex);
-    vertex[7] = D3DVERTEX2(Math::Vector(p2.x, p4.y, 0.0f), n, uv2.x,   uv1.y+ex);
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p3.y, 0.0f), n, Math::Point(uv1.x,      uv2.y - ex));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,      uv1.y + ex));
+    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p3.y, 0.0f), n, Math::Point(uv1.x + ex, uv2.y - ex));
+    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p4.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y + ex));
+    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p3.y, 0.0f), n, Math::Point(uv2.x - ex, uv2.y - ex));
+    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y + ex));
+    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p3.y, 0.0f), n, Math::Point(uv2.x,      uv2.y - ex));
+    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,      uv1.y + ex));
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
     m_engine->AddStatisticTriangle(6);
 
     // Top horizontal band.
-    vertex[0] = D3DVERTEX2(Math::Vector(p1.x, p4.y, 0.0f), n, uv1.x,   uv1.y+ex);
-    vertex[1] = D3DVERTEX2(Math::Vector(p1.x, p2.y, 0.0f), n, uv1.x,   uv1.y   );
-    vertex[2] = D3DVERTEX2(Math::Vector(p3.x, p4.y, 0.0f), n, uv1.x+ex,uv1.y+ex);
-    vertex[3] = D3DVERTEX2(Math::Vector(p3.x, p2.y, 0.0f), n, uv1.x+ex,uv1.y   );
-    vertex[4] = D3DVERTEX2(Math::Vector(p4.x, p4.y, 0.0f), n, uv2.x-ex,uv1.y+ex);
-    vertex[5] = D3DVERTEX2(Math::Vector(p4.x, p2.y, 0.0f), n, uv2.x-ex,uv1.y   );
-    vertex[6] = D3DVERTEX2(Math::Vector(p2.x, p4.y, 0.0f), n, uv2.x,   uv1.y+ex);
-    vertex[7] = D3DVERTEX2(Math::Vector(p2.x, p2.y, 0.0f), n, uv2.x,   uv1.y   );
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, D3DFVF_VERTEX2, vertex, 8, NULL);
+    vertex[0] = Gfx::Vertex(Math::Vector(p1.x, p4.y, 0.0f), n, Math::Point(uv1.x,      uv1.y + ex));
+    vertex[1] = Gfx::Vertex(Math::Vector(p1.x, p2.y, 0.0f), n, Math::Point(uv1.x,      uv1.y   ));
+    vertex[2] = Gfx::Vertex(Math::Vector(p3.x, p4.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y + ex));
+    vertex[3] = Gfx::Vertex(Math::Vector(p3.x, p2.y, 0.0f), n, Math::Point(uv1.x + ex, uv1.y   ));
+    vertex[4] = Gfx::Vertex(Math::Vector(p4.x, p4.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y + ex));
+    vertex[5] = Gfx::Vertex(Math::Vector(p4.x, p2.y, 0.0f), n, Math::Point(uv2.x - ex, uv1.y   ));
+    vertex[6] = Gfx::Vertex(Math::Vector(p2.x, p4.y, 0.0f), n, Math::Point(uv2.x,      uv1.y + ex));
+    vertex[7] = Gfx::Vertex(Math::Vector(p2.x, p2.y, 0.0f), n, Math::Point(uv2.x,      uv1.y   ));
+    device->DrawPrimitive(Gfx::PRIMITIVE_TRIANGLE_STRIP, vertex, 8);
     m_engine->AddStatisticTriangle(6);
 }
 
@@ -790,15 +753,15 @@ void CControl::DrawWarning(Math::Point pos, Math::Point dim)
     Math::Point     uv1, uv2;
     float       dp;
 
-    dp = 0.5f/256.0f;
+    dp = 0.5f / 256.0f;
 
-    m_engine->SetTexture("button2.tga");
-    m_engine->SetState(D3DSTATENORMAL);
+    m_engine->SetTexture("button2.png");
+    m_engine->SetState(Gfx::ENG_RSTATE_NORMAL);
 
-    uv1.x =  64.0f/256.0f;
-    uv1.y = 208.0f/256.0f;
-    uv2.x = 160.0f/256.0f;
-    uv2.y = 224.0f/256.0f;
+    uv1.x =  64.0f / 256.0f;
+    uv1.y = 208.0f / 256.0f;
+    uv2.x = 160.0f / 256.0f;
+    uv2.y = 224.0f / 256.0f;
 
     uv1.x += dp;
     uv1.y += dp;
@@ -836,28 +799,28 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 
     dp = 0.5f/256.0f;
 
-    m_engine->SetTexture("button2.tga");
-    m_engine->SetState(D3DSTATETTw);
+    m_engine->SetTexture("button2.png");
+    m_engine->SetState( Gfx::ENG_RSTATE_TTEXTURE_WHITE);
 
-    pos.x += deep*0.010f*0.75f;
-    pos.y -= deep*0.015f;
-    dim.x += deep*0.005f*0.75f;
-    dim.y += deep*0.005f;
+    pos.x += deep * 0.010f * 0.75f;
+    pos.y -= deep * 0.015f;
+    dim.x += deep * 0.005f * 0.75f;
+    dim.y += deep * 0.005f;
 
-    uv1.x = 192.0f/256.0f;
-    uv1.y =  32.0f/256.0f;
-    uv2.x = 224.0f/256.0f;
-    uv2.y =  64.0f/256.0f;
+    uv1.x = 192.0f / 256.0f;
+    uv1.y =  32.0f / 256.0f;
+    uv2.x = 224.0f / 256.0f;
+    uv2.y =  64.0f / 256.0f;
 
     uv1.x += dp;
     uv1.y += dp;
     uv2.x -= dp;
     uv2.y -= dp;
 
-    corner.x = 10.0f/640.0f;
-    corner.y = 10.0f/480.0f;
+    corner.x = 10.0f / 640.0f;
+    corner.y = 10.0f / 480.0f;
 
-    DrawIcon(pos, dim, uv1, uv2, corner, 6.0f/256.0f);
+    DrawIcon(pos, dim, uv1, uv2, corner, 6.0f / 256.0f);
 }
 
 
@@ -865,10 +828,10 @@ void CControl::DrawShadow(Math::Point pos, Math::Point dim, float deep)
 
 bool CControl::Detect(Math::Point pos)
 {
-    return ( pos.x >= m_pos.x         &&
-             pos.x <= m_pos.x+m_dim.x &&
-             pos.y >= m_pos.y         &&
-             pos.y <= m_pos.y+m_dim.y );
+    return ( pos.x >= m_pos.x           &&
+              pos.x <= m_pos.x + m_dim.x &&
+              pos.y >= m_pos.y           &&
+              pos.y <= m_pos.y + m_dim.y );
 }
 
-
+}

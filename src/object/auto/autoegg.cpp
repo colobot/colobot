@@ -1,5 +1,6 @@
 // * This file is part of the COLOBOT source code
 // * Copyright (C) 2001-2008, Daniel ROUX & EPSITEC SA, www.epsitec.ch
+// * Copyright (C) 2012 Polish Portal of Colobot (PPC)
 // *
 // * This program is free software: you can redistribute it and/or modify
 // * it under the terms of the GNU General Public License as published by
@@ -15,15 +16,14 @@
 // * along with this program. If not, see  http://www.gnu.org/licenses/.
 
 
-#include <stdio.h>
-
 #include "object/auto/autoegg.h"
 
 #include "math/geometry.h"
 #include "common/iman.h"
 #include "script/cmdtoken.h"
 
-
+#include <stdio.h>
+#include <string.h>
 
 
 // Object's constructor.
@@ -61,8 +61,8 @@ void CAutoEgg::DeleteObject(bool bAll)
         if ( alien != 0 )
         {
             // Probably the intended action
-            // Original code: ( alien->RetZoom(0) == 1.0f )
-            if ( alien->RetZoomY(0) == 1.0f )
+            // Original code: ( alien->GetZoom(0) == 1.0f )
+            if ( alien->GetZoomY(0) == 1.0f )
             {
                 alien->SetLock(false);
                 alien->SetActivity(true);  // the insect is active
@@ -98,7 +98,7 @@ void CAutoEgg::Init()
     m_speed    = 1.0f/5.0f;
     m_time     = 0.0f;
 
-    m_type = alien->RetType();
+    m_type = alien->GetType();
 
     if ( m_type == OBJECT_ANT    ||
          m_type == OBJECT_SPIDER ||
@@ -164,9 +164,9 @@ bool CAutoEgg::EventProcess(const Event &event)
 
     CAuto::EventProcess(event);
 
-    if ( m_engine->RetPause() )  return true;
+    if ( m_engine->GetPause() )  return true;
 
-    if ( event.event != EVENT_FRAME )  return true;
+    if ( event.type != EVENT_FRAME )  return true;
     if ( m_phase == AEP_NULL )  return true;
 
     if ( m_phase == AEP_DELAY )
@@ -175,7 +175,7 @@ bool CAutoEgg::EventProcess(const Event &event)
         if ( m_progress < 1.0f )  return true;
 
         alien = new CObject(m_iMan);
-        if ( !alien->CreateInsect(m_object->RetPosition(0), m_object->RetAngleY(0), m_type) )
+        if ( !alien->CreateInsect(m_object->GetPosition(0), m_object->GetAngleY(0), m_type) )
         {
             delete alien;
             m_phase    = AEP_DELAY;
@@ -213,7 +213,7 @@ bool CAutoEgg::EventProcess(const Event &event)
 Error CAutoEgg::IsEnded()
 {
     CObject*    alien;
-    CPyro*      pyro;
+    Gfx::CPyro*      pyro;
 
     if ( m_phase == AEP_DELAY )
     {
@@ -236,8 +236,8 @@ Error CAutoEgg::IsEnded()
     {
         if ( m_progress < 1.0f )  return ERR_CONTINUE;
 
-        pyro = new CPyro(m_iMan);
-        pyro->Create(PT_EGG, m_object);  // exploding egg
+        pyro = new Gfx::CPyro(m_iMan);
+        pyro->Create(Gfx::PT_EGG, m_object);  // exploding egg
 
         alien->SetZoom(0, 1.0f);  // this is a big boy now
 
@@ -258,9 +258,9 @@ Error CAutoEgg::IsEnded()
 }
 
 
-// Returns an error due the state of the automation.
+// Geturns an error due the state of the automation.
 
-Error CAutoEgg::RetError()
+Error CAutoEgg::GetError()
 {
     return ERR_OK;
 }
@@ -277,23 +277,23 @@ CObject* CAutoEgg::SearchAlien()
     float       dist, min;
     int         i;
 
-    cPos = m_object->RetPosition(0);
+    cPos = m_object->GetPosition(0);
     min = 100000.0f;
     pBest = 0;
     for ( i=0 ; i<1000000 ; i++ )
     {
-        pObj = (CObject*)m_iMan->SearchInstance(CLASS_OBJECT, i);
+        pObj = static_cast< CObject* >(m_iMan->SearchInstance(CLASS_OBJECT, i));
         if ( pObj == 0 )  break;
 
-        if ( pObj->RetTruck() != 0 )  continue;
+        if ( pObj->GetTruck() != 0 )  continue;
 
-        type = pObj->RetType();
+        type = pObj->GetType();
         if ( type != OBJECT_ANT    &&
              type != OBJECT_BEE    &&
              type != OBJECT_SPIDER &&
              type != OBJECT_WORM   )  continue;
 
-        oPos = pObj->RetPosition(0);
+        oPos = pObj->GetPosition(0);
         dist = Math::DistanceProjected(oPos, cPos);
         if ( dist < 8.0f && dist < min )
         {
@@ -347,7 +347,7 @@ bool CAutoEgg::Read(char *line)
 
     CAuto::Read(line);
 
-    m_phase = (AutoEggPhase)OpInt(line, "aPhase", AEP_NULL);
+    m_phase = static_cast< AutoEggPhase >(OpInt(line, "aPhase", AEP_NULL));
     m_progress = OpFloat(line, "aProgress", 0.0f);
     m_speed = OpFloat(line, "aSpeed", 1.0f);
     m_type = OpTypeObject(line, "aParamType", OBJECT_NULL);
