@@ -75,75 +75,16 @@ enum VideoQueryResult
  */
 enum TrackedKey
 {
-    TRKEY_SHIFT,
-    TRKEY_CONTROL,
-    TRKEY_NUM_UP,
-    TRKEY_NUM_DOWN,
-    TRKEY_NUM_LEFT,
-    TRKEY_NUM_RIGHT,
-    TRKEY_NUM_PLUS,
-    TRKEY_NUM_MINUS,
-    TRKEY_PAGE_UP,
-    TRKEY_PAGE_DOWN,
-    TRKEY_MAX
-};
-
-/**
- * \enum InputSlot
- * \brief Available slots for input bindings
- */
-enum InputSlot
-{
-    INPUT_SLOT_LEFT    = 0,
-    INPUT_SLOT_RIGHT   = 1,
-    INPUT_SLOT_UP      = 2,
-    INPUT_SLOT_DOWN    = 3,
-    INPUT_SLOT_GUP     = 4,
-    INPUT_SLOT_GDOWN   = 5,
-    INPUT_SLOT_CAMERA  = 6,
-    INPUT_SLOT_DESEL   = 7,
-    INPUT_SLOT_ACTION  = 8,
-    INPUT_SLOT_NEAR    = 9,
-    INPUT_SLOT_AWAY    = 10,
-    INPUT_SLOT_NEXT    = 11,
-    INPUT_SLOT_HUMAN   = 12,
-    INPUT_SLOT_QUIT    = 13,
-    INPUT_SLOT_HELP    = 14,
-    INPUT_SLOT_PROG    = 15,
-    INPUT_SLOT_VISIT   = 16,
-    INPUT_SLOT_SPEED10 = 17,
-    INPUT_SLOT_SPEED15 = 18,
-    INPUT_SLOT_SPEED20 = 19,
-    INPUT_SLOT_SPEED30 = 20,
-    INPUT_SLOT_AIMUP   = 21,
-    INPUT_SLOT_AIMDOWN = 22,
-    INPUT_SLOT_CBOT    = 23,
-
-    INPUT_SLOT_MAX
-};
-
-/**
- * \struct InputBinding
- * \brief Settable binding for user input
- */
-struct InputBinding
-{
-    //! Key
-    unsigned int key;
-    //! Key modifier (e.g. shift, control)
-    unsigned int kmod;
-    //! Joystick button
-    unsigned int joy;
-
-    inline InputBinding()
-    {
-        Reset();
-    }
-
-    inline void Reset()
-    {
-        key = kmod = joy = static_cast<unsigned int>(-1);
-    }
+    TRKEY_SHIFT     = (1<<0),
+    TRKEY_CONTROL   = (1<<1),
+    TRKEY_NUM_UP    = (1<<2),
+    TRKEY_NUM_DOWN  = (1<<3),
+    TRKEY_NUM_LEFT  = (1<<4),
+    TRKEY_NUM_RIGHT = (1<<5),
+    TRKEY_NUM_PLUS  = (1<<6),
+    TRKEY_NUM_MINUS = (1<<7),
+    TRKEY_PAGE_UP   = (1<<8),
+    TRKEY_PAGE_DOWN = (1<<9)
 };
 
 /**
@@ -303,19 +244,6 @@ public:
     //! Resets tracked key states, modifiers and motion vectors
     void        ResetKeyStates();
 
-
-    // TODO move input binding and motion vectors to CRobotMain
-
-    //! Sets the default input bindings
-    void        SetDefaultInputBindings();
-
-    //! Management of input bindings
-    //@{
-    void        SetInputBinding(InputSlot slot, const InputBinding& binding);
-    const InputBinding& GetInputBinding(InputSlot slot);
-    //@}
-
-
     //! Management of the grab mode for input (keyboard & mouse)
     //@{
     void        SetGrabInput(bool grab);
@@ -355,8 +283,10 @@ protected:
 
     //! Processes the captured SDL event to Event struct
     Event       ParseEvent();
+    //! If applicable, creates a virtual event to match the changed state as of new event
+    Event       CreateVirtualEvent(const Event& sourceEvent);
     //! Handles some incoming events
-    bool        ProcessEvent(const Event &event);
+    bool        ProcessEvent(Event &event);
     //! Renders the image in window
     void        Render();
 
@@ -423,12 +353,9 @@ protected:
     //! Current state of key modifiers (mask of SDLMod)
     unsigned int    m_kmodState;
     //! Current state of some tracked keys (mask of TrackedKey)
-    bool            m_trackedKeysState[TRKEY_MAX];
+    unsigned int    m_trackedKeys;
     //! Current state of mouse buttons (mask of button indexes)
     unsigned int    m_mouseButtonsState;
-
-    //! Bindings for user inputs
-    InputBinding    m_inputBindings[INPUT_SLOT_MAX];
 
     //! Motion vector set by keyboard
     Math::Vector    m_keyMotion;
@@ -452,9 +379,5 @@ protected:
 
     //! Application language
     Language        m_language;
-
-private:
-    //! Set locale, needed for putenv/setenv
-    std::string m_locale;
 };
 

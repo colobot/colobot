@@ -184,7 +184,6 @@ void Gfx::CGLDevice::BeginScene()
 
 void Gfx::CGLDevice::EndScene()
 {
-    glFlush();
 }
 
 void Gfx::CGLDevice::Clear()

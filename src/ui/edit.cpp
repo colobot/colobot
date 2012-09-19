@@ -82,7 +82,6 @@ CEdit::CEdit () : CControl ()
     m_text = new char[m_maxChar+1];
     memset(m_text, 0, m_maxChar+1);
     m_len = 0;
-    m_app = CApplication::GetInstancePointer();
 
     memset(m_lineOffset, 0, sizeof(int) * EDITLINEMAX);
 
@@ -1465,7 +1464,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
     char        iName[50];
     char        text[50];
     float       iWidth;
-    KeyRank     key;
+    InputSlot   slot;
     bool        bInSoluce, bBOL;
 
     if ( filename[0] == 0 )  return false;
@@ -1795,10 +1794,10 @@ bool CEdit::ReadText(const char *filename, int addSize)
         {
             if ( m_bSoluce || !bInSoluce )
             {
-                if ( SearchKey(buffer+i+5, key) )
+                if ( SearchKey(buffer+i+5, slot) )
                 {
-                    res = 0;
-                    //res = m_app->GetInputBinding(key).key;  // TODO input bindings
+                    CRobotMain* main = CRobotMain::GetInstancePointer();
+                    res = main->GetInputBinding(slot).key;
                     if ( res != 0 )
                     {
                         if ( GetResource(RES_KEY, res, iName) )
@@ -1817,8 +1816,7 @@ bool CEdit::ReadText(const char *filename, int addSize)
                             m_format[j] = font;
                             j ++;
 
-                            // res = m_app->GetInputBinding(key).joy; // TODO input bindings
-                            res = 0;
+                            res = main->GetInputBinding(slot).joy;
                             if ( res != 0 )
                             {
                                 if ( GetResource(RES_KEY, res, iName) )

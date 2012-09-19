@@ -23,6 +23,7 @@
 #include "common/logger.h"
 #include "common/iman.h"
 #include "common/image.h"
+#include "common/key.h"
 #include "graphics/opengl/gldevice.h"
 #include "object/robotmain.h"
 
@@ -37,6 +38,9 @@
 
 
 template<> CApplication* CSingleton<CApplication>::mInstance = nullptr;
+
+//! Static buffer for putenv locale
+static char S_LANGUAGE[50] = { 0 };
 
 
 //! Interval of timer called to update joystick state
@@ -114,9 +118,7 @@ CApplication::CApplication()
 
     m_kmodState = 0;
     m_mouseButtonsState = 0;
-
-    for (int i = 0; i < TRKEY_MAX; ++i)
-        m_trackedKeysState[i] = false;
+    m_trackedKeys = 0;
 
     m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
@@ -124,8 +126,6 @@ CApplication::CApplication()
     m_dataPath = "./data";
 
     m_language = LANG_ENGLISH;
-
-    SetDefaultInputBindings();
 }
 
 CApplication::~CApplication()
@@ -261,7 +261,6 @@ bool CApplication::Create()
 
     /* Gettext initialization */
 
-    m_locale = "LANGUAGE=";
     std::string locale = "C";
     switch (m_language)
     {
@@ -282,8 +281,10 @@ bool CApplication::Create()
             break;
     }
 
-    m_locale += locale;
-    putenv(m_locale.c_str());
+    std::string langStr = "LANGUAGE=";
+    langStr += locale;
+    strcpy(S_LANGUAGE, langStr.c_str());
+    putenv(S_LANGUAGE);
     setlocale(LC_ALL, locale.c_str());
 
     std::string trPath = m_dataPath + std::string("/i18n");
@@ -704,6 +705,18 @@ int CApplication::Run()
                     if (passOn)
                         m_eventQueue->AddEvent(event);
                 }
+
+                Event virtualEvent = CreateVirtualEvent(event);
+                if (virtualEvent.type != EVENT_NULL)
+                {
+                    bool passOn = ProcessEvent(virtualEvent);
+
+                    if (m_engine != nullptr && passOn)
+                        passOn = m_engine->ProcessEvent(virtualEvent);
+
+                    if (passOn)
+                        m_eventQueue->AddEvent(virtualEvent);
+                }
             }
         }
 
@@ -788,6 +801,7 @@ Event CApplication::ParseEvent()
         else
             event.type = EVENT_KEY_UP;
 
+        event.key.virt = false;
         event.key.key = m_private->currentEvent.key.keysym.sym;
         event.key.mod = m_private->currentEvent.key.keysym.mod;
         event.key.state = TranslatePressState(m_private->currentEvent.key.state);
@@ -849,12 +863,22 @@ Event CApplication::ParseEvent()
     return event;
 }
 
-/** Processes incoming events. It is the first function called after an event is captures.
-    Function returns \c true if the event is to be passed on to other processing functions
-    or \c false if not. */
-bool CApplication::ProcessEvent(const Event &event)
+/**
+ * Processes incoming events. It is the first function called after an event is captured.
+ * Event is modified, updating its tracked keys state and mouse position to current values.
+ * Function returns \c true if the event is to be passed on to other processing functions
+ * or \c false if not. */
+bool CApplication::ProcessEvent(Event &event)
 {
     CLogger *l = GetLogger();
+
+    event.trackedKeys = m_trackedKeys;
+    if (GetSystemMouseVisibile())
+        event.mousePos = m_systemMousePos;
+    else
+        event.mousePos = m_engine->GetMousePos();
+
+    // TODO: mouse pos
 
     if (event.type == EVENT_ACTIVE)
     {
@@ -876,50 +900,50 @@ bool CApplication::ProcessEvent(const Event &event)
         m_kmodState = event.key.mod;
 
         if ((m_kmodState & KEY_MOD(SHIFT)) != 0)
-            m_trackedKeysState[TRKEY_SHIFT] = true;
+            m_trackedKeys |= TRKEY_SHIFT;
         else if ((m_kmodState & KEY_MOD(CTRL)) != 0)
-            m_trackedKeysState[TRKEY_CONTROL] = true;
+            m_trackedKeys |= TRKEY_CONTROL;
         else if (event.key.key == KEY(KP8))
-            m_trackedKeysState[TRKEY_NUM_UP] = true;
+            m_trackedKeys |= TRKEY_NUM_UP;
         else if (event.key.key == KEY(KP2))
-            m_trackedKeysState[TRKEY_NUM_DOWN] = true;
+            m_trackedKeys |= TRKEY_NUM_DOWN;
         else if (event.key.key == KEY(KP4))
-            m_trackedKeysState[TRKEY_NUM_LEFT] = true;
+            m_trackedKeys |= TRKEY_NUM_LEFT;
         else if (event.key.key == KEY(KP6))
-            m_trackedKeysState[TRKEY_NUM_RIGHT] = true;
+            m_trackedKeys |= TRKEY_NUM_RIGHT;
         else if (event.key.key == KEY(KP_PLUS))
-            m_trackedKeysState[TRKEY_NUM_PLUS] = true;
+            m_trackedKeys |= TRKEY_NUM_PLUS;
         else if (event.key.key == KEY(KP_MINUS))
-            m_trackedKeysState[TRKEY_NUM_MINUS] = true;
+            m_trackedKeys |= TRKEY_NUM_MINUS;
         else if (event.key.key == KEY(PAGEUP))
-            m_trackedKeysState[TRKEY_PAGE_UP] = true;
+            m_trackedKeys |= TRKEY_PAGE_UP;
         else if (event.key.key == KEY(PAGEDOWN))
-            m_trackedKeysState[TRKEY_PAGE_DOWN] = true;
+            m_trackedKeys |= TRKEY_PAGE_DOWN;
     }
     else if (event.type == EVENT_KEY_UP)
     {
         m_kmodState = event.key.mod;
 
         if ((m_kmodState & KEY_MOD(SHIFT)) != 0)
-            m_trackedKeysState[TRKEY_SHIFT] = false;
+            m_trackedKeys &= ~TRKEY_SHIFT;
         else if ((m_kmodState & KEY_MOD(CTRL)) != 0)
-            m_trackedKeysState[TRKEY_CONTROL] = false;
+            m_trackedKeys &= ~TRKEY_CONTROL;
         else if (event.key.key == KEY(KP8))
-            m_trackedKeysState[TRKEY_NUM_UP] = false;
+            m_trackedKeys &= ~TRKEY_NUM_UP;
         else if (event.key.key == KEY(KP2))
-            m_trackedKeysState[TRKEY_NUM_DOWN] = false;
+            m_trackedKeys &= ~TRKEY_NUM_DOWN;
         else if (event.key.key == KEY(KP4))
-            m_trackedKeysState[TRKEY_NUM_LEFT] = false;
+            m_trackedKeys &= ~TRKEY_NUM_LEFT;
         else if (event.key.key == KEY(KP6))
-            m_trackedKeysState[TRKEY_NUM_RIGHT] = false;
+            m_trackedKeys &= ~TRKEY_NUM_RIGHT;
         else if (event.key.key == KEY(KP_PLUS))
-            m_trackedKeysState[TRKEY_NUM_PLUS] = false;
+            m_trackedKeys &= ~TRKEY_NUM_PLUS;
         else if (event.key.key == KEY(KP_MINUS))
-            m_trackedKeysState[TRKEY_NUM_MINUS] = false;
+            m_trackedKeys &= ~TRKEY_NUM_MINUS;
         else if (event.key.key == KEY(PAGEUP))
-            m_trackedKeysState[TRKEY_PAGE_UP] = false;
+            m_trackedKeys &= ~TRKEY_PAGE_UP;
         else if (event.key.key == KEY(PAGEDOWN))
-            m_trackedKeysState[TRKEY_PAGE_DOWN] = false;
+            m_trackedKeys &= ~TRKEY_PAGE_DOWN;
     }
     else if (event.type == EVENT_MOUSE_BUTTON_DOWN)
     {
@@ -938,6 +962,7 @@ bool CApplication::ProcessEvent(const Event &event)
             case EVENT_KEY_DOWN:
             case EVENT_KEY_UP:
                 l->Info("EVENT_KEY_%s:\n", (event.type == EVENT_KEY_DOWN) ? "DOWN" : "UP");
+                l->Info(" virt    = %s\n", (event.key.virt) ? "true" : "false");
                 l->Info(" key     = %4x\n", event.key.key);
                 l->Info(" state   = %s\n", (event.key.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
                 l->Info(" mod     = %4x\n", event.key.mod);
@@ -978,6 +1003,48 @@ bool CApplication::ProcessEvent(const Event &event)
 
     // By default, pass on all events
     return true;
+}
+
+
+Event CApplication::CreateVirtualEvent(const Event& sourceEvent)
+{
+    Event virtualEvent;
+    virtualEvent.systemEvent = true;
+
+    if ((sourceEvent.type == EVENT_KEY_DOWN) || (sourceEvent.type == EVENT_KEY_UP))
+    {
+        virtualEvent.type = sourceEvent.type;
+        virtualEvent.key = sourceEvent.key;
+        virtualEvent.key.virt = true;
+
+        if (sourceEvent.key.key == KEY(LCTRL) || sourceEvent.key.key == KEY(RCTRL))
+            virtualEvent.key.key = VIRTUAL_KMOD(CTRL);
+        else if (sourceEvent.key.key == KEY(LSHIFT) || sourceEvent.key.key == KEY(RSHIFT))
+            virtualEvent.key.key = VIRTUAL_KMOD(SHIFT);
+        else if (sourceEvent.key.key == KEY(LALT) || sourceEvent.key.key == KEY(RALT))
+            virtualEvent.key.key = VIRTUAL_KMOD(ALT);
+        else if (sourceEvent.key.key == KEY(LMETA) || sourceEvent.key.key == KEY(RMETA))
+            virtualEvent.key.key = VIRTUAL_KMOD(META);
+        else
+            virtualEvent.type = EVENT_NULL;
+    }
+    else if ((sourceEvent.type == EVENT_JOY_BUTTON_DOWN) || (sourceEvent.type == EVENT_JOY_BUTTON_UP))
+    {
+        if (sourceEvent.type == EVENT_JOY_BUTTON_DOWN)
+            virtualEvent.type = EVENT_KEY_DOWN;
+        else
+            virtualEvent.type = EVENT_KEY_UP;
+        virtualEvent.key.virt = true;
+        virtualEvent.key.key = VIRTUAL_JOY(sourceEvent.joyButton.button);
+        virtualEvent.key.mod = 0;
+        virtualEvent.key.unicode = 0;
+    }
+    else
+    {
+        virtualEvent.type = EVENT_NULL;
+    }
+
+    return virtualEvent;
 }
 
 /** Renders the frame and swaps buffers as necessary */
@@ -1144,41 +1211,6 @@ bool CApplication::GetDebugMode()
     return m_debugMode;
 }
 
-void CApplication::SetDefaultInputBindings()
-{
-    for (int i = 0; i < KEYRANK_MAX; i++)
-        m_inputBindings[i].Reset();
-
-    m_inputBindings[KEYRANK_LEFT   ].key  = KEY(LEFT);
-    m_inputBindings[KEYRANK_RIGHT  ].key  = KEY(RIGHT);
-    m_inputBindings[KEYRANK_UP     ].key  = KEY(UP);
-    m_inputBindings[KEYRANK_DOWN   ].key  = KEY(DOWN);
-    m_inputBindings[KEYRANK_GUP    ].kmod = KEY_MOD(SHIFT);
-    m_inputBindings[KEYRANK_GDOWN  ].kmod = KEY_MOD(CTRL);
-    m_inputBindings[KEYRANK_CAMERA ].key  = KEY(SPACE);
-    m_inputBindings[KEYRANK_CAMERA ].joy  = 2;
-    m_inputBindings[KEYRANK_DESEL  ].key  = KEY(KP0);
-    m_inputBindings[KEYRANK_DESEL  ].kmod = 6;
-    m_inputBindings[KEYRANK_ACTION ].key  = KEY(RETURN);
-    m_inputBindings[KEYRANK_ACTION ].joy  = 1;
-    m_inputBindings[KEYRANK_NEAR   ].key  = KEY(KP_PLUS);
-    m_inputBindings[KEYRANK_NEAR   ].joy  = 5;
-    m_inputBindings[KEYRANK_AWAY   ].key  = KEY(KP_MINUS);
-    m_inputBindings[KEYRANK_AWAY   ].joy  = 4;
-    m_inputBindings[KEYRANK_NEXT   ].key  = KEY(TAB);
-    m_inputBindings[KEYRANK_NEXT   ].joy  = 3;
-    m_inputBindings[KEYRANK_HUMAN  ].key  = KEY(HOME);
-    m_inputBindings[KEYRANK_HUMAN  ].joy  = 7;
-    m_inputBindings[KEYRANK_QUIT   ].key  = KEY(ESCAPE);
-    m_inputBindings[KEYRANK_HELP   ].key  = KEY(F1);
-    m_inputBindings[KEYRANK_PROG   ].key  = KEY(F2);
-    m_inputBindings[KEYRANK_CBOT   ].key  = KEY(F3);
-    m_inputBindings[KEYRANK_VISIT  ].key  = KEY(KP_PERIOD);
-    m_inputBindings[KEYRANK_SPEED10].key  = KEY(F4);
-    m_inputBindings[KEYRANK_SPEED15].key  = KEY(F5);
-    m_inputBindings[KEYRANK_SPEED20].key  = KEY(F6);
-}
-
 int CApplication::GetKmods()
 {
     return m_kmodState;
@@ -1191,7 +1223,7 @@ bool CApplication::GetKmodState(int kmod)
 
 bool CApplication::GetTrackedKeyState(TrackedKey key)
 {
-    return m_trackedKeysState[key];
+    return (m_trackedKeys & key) != 0;
 }
 
 bool CApplication::GetMouseButtonState(int index)
@@ -1201,22 +1233,10 @@ bool CApplication::GetMouseButtonState(int index)
 
 void CApplication::ResetKeyStates()
 {
-    for (int i = 0; i < TRKEY_MAX; ++i)
-        m_trackedKeysState[i] = false;
-
+    m_trackedKeys = 0;
     m_kmodState = 0;
     m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
     m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
-}
-
-void CApplication::SetInputBinding(InputSlot slot, const InputBinding& binding)
-{
-    m_inputBindings[slot] = binding;
-}
-
-const InputBinding& CApplication::GetInputBinding(InputSlot slot)
-{
-    return m_inputBindings[slot];
 }
 
 void CApplication::SetGrabInput(bool grab)

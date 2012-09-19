@@ -202,12 +202,9 @@ bool CBrain::EventProcess(const Event &event)
 
     action = EVENT_NULL;
 
-    CApplication* app = CApplication::GetInstancePointer();
-
     if ( event.type == EVENT_KEY_DOWN &&
-         (event.key.key == app->GetInputBinding(INPUT_SLOT_ACTION).key
-          /* TODO joystick input binding
-           event.param == app->GetInputBinding(INPUT_SLOT_ACTION).joy*/ ) &&
+         (event.key.key == m_main->GetInputBinding(INPUT_SLOT_ACTION).key ||
+          event.key.key == m_main->GetInputBinding(INPUT_SLOT_ACTION).joy ) &&
          !m_main->GetEditLock() )
     {
         pw = static_cast< Ui::CWindow* >(m_interface->SearchControl(EVENT_WINDOW0));

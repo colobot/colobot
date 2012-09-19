@@ -19,8 +19,10 @@
 #pragma once
 
 #include "common/global.h"
-#include "common/misc.h"
+#include "common/singleton.h"
+
 #include "graphics/engine/particle.h"
+
 #include "object/object.h"
 #include "object/mainmovie.h"
 
@@ -140,14 +142,37 @@ const int SATCOM_SOLUCE     = 5;
 const int SATCOM_MAX        = 6;
 
 
+/**
+ * \enum InputBinding
+ * \brief Binding for input slot
+ */
+struct InputBinding
+{
+    //! Keyboard binding code (can be regular or virtual)
+    unsigned int key;
+    //! Joystick binding code (virtual)
+    unsigned int joy;
 
-class CRobotMain
+    InputBinding() : key(KEY_INVALID), joy(KEY_INVALID) {}
+};
+
+
+class CRobotMain : public CSingleton<CRobotMain>
 {
 public:
     CRobotMain(CInstanceManager* iMan, CApplication* app);
     ~CRobotMain();
 
     void        CreateIni();
+
+    //! Sets the default input bindings
+    void        SetDefaultInputBindings();
+
+    //! Management of input bindings
+    //@{
+    void        SetInputBinding(InputSlot slot, InputBinding binding);
+    const InputBinding& GetInputBinding(InputSlot slot);
+    //@}
 
     void        ChangePhase(Phase phase);
     bool        EventProcess(const Event &event);
@@ -351,6 +376,9 @@ protected:
     Ui::CDisplayText*   m_displayText;
     Ui::CDisplayInfo*   m_displayInfo;
     CSoundInterface*    m_sound;
+
+    //! Bindings for user inputs
+    InputBinding    m_inputBindings[INPUT_SLOT_MAX];
 
     float           m_time;
     float           m_gameTime;

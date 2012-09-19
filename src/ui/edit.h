@@ -35,8 +35,6 @@
 #include "common/iman.h"
 #include "common/restext.h"
 
-#include "app/app.h"
-
 #include <vector>
 
 
@@ -246,7 +244,6 @@ protected:
     int     m_len;              // length used in m_text
     int     m_cursor1;          // offset cursor
     int     m_cursor2;          // offset cursor
-    CApplication *m_app;
 
     bool        m_bMulti;           // true -> multi-line
     bool        m_bEdit;            // true -> editable

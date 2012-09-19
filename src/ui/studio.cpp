@@ -241,8 +241,8 @@ bool CStudio::EventProcess(const Event &event)
 
     if ( event.type == EVENT_KEY_DOWN )
     {
-        if (  event.key.key == m_app->GetInputBinding(INPUT_SLOT_CBOT).key // ||
-            /*TODO event.param == m_app->GetKey(KEYRANK_CBOT, 1)*/ )
+        if (  event.key.key == m_main->GetInputBinding(INPUT_SLOT_CBOT).key ||
+              event.param == m_main->GetInputBinding(INPUT_SLOT_CBOT).joy )
         {
             if ( m_helpFilename.length() > 0 )
             {
