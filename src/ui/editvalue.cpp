@@ -189,9 +189,9 @@ bool CEditValue::EventProcess(const Event &event)
         if ( !m_buttonDown->EventProcess(event) )  return false;
     }
 
-    if ( event.type == EVENT_KEY_DOWN &&
-         event.mouseButton.button == 4    &&
-         Detect(event.pos)            )
+    if (event.type == EVENT_MOUSE_WHEEL &&
+        event.mouseWheel.dir == WHEEL_UP &&
+        Detect(event.mouseWheel.pos))
     {
         value = GetValue()+m_stepValue;
         if ( value > m_maxValue )  value = m_maxValue;
@@ -199,8 +199,8 @@ bool CEditValue::EventProcess(const Event &event)
         HiliteValue(event);
     }
     if ( event.type == EVENT_KEY_DOWN &&
-         event.mouseButton.button == 5  &&
-         Detect(event.pos)            )
+         event.mouseWheel.dir == WHEEL_DOWN &&
+         Detect(event.mouseWheel.pos))
     {
         value = GetValue()-m_stepValue;
         if ( value < m_minValue )  value = m_minValue;

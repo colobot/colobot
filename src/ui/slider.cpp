@@ -356,20 +356,20 @@ bool CSlider::EventProcess(const Event &event)
         m_bCapture = false;
     }
 
-    if ( event.type == EVENT_KEY_DOWN &&
-         event.mouseButton.button == 4    &&
-         Detect(event.pos)            &&
-         m_buttonLeft != 0            )
+    if (event.type == EVENT_MOUSE_WHEEL &&
+        event.mouseWheel.dir == WHEEL_UP &&
+        Detect(event.mouseWheel.pos) &&
+        m_buttonLeft != 0)
     {
         Event newEvent = event;
         newEvent.type = m_buttonLeft->GetEventType();
         m_event->AddEvent(newEvent);
     }
 
-    if ( event.type == EVENT_KEY_DOWN &&
-         event.mouseButton.button == 5  &&
-         Detect(event.pos)            &&
-         m_buttonRight != 0           )
+    if (event.type == EVENT_MOUSE_WHEEL &&
+        event.mouseButton.button == WHEEL_DOWN &&
+        Detect(event.mouseWheel.pos) &&
+        m_buttonRight != 0)
     {
         Event newEvent = event;
         newEvent.type = m_buttonRight->GetEventType();

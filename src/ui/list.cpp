@@ -257,7 +257,7 @@ bool CList::EventProcess(const Event &event)
     if ((m_state & STATE_ENABLE) == 0)
         return true;
 
-    if (event.type == EVENT_KEY_DOWN && event.mouseButton.button == 5 && Detect(event.pos)) {
+    if (event.type == EVENT_MOUSE_WHEEL && event.mouseWheel.dir == WHEEL_UP && Detect(event.mouseWheel.pos)) {
         if (m_firstLine > 0)
             m_firstLine--;
         UpdateScroll();
@@ -265,7 +265,7 @@ bool CList::EventProcess(const Event &event)
         return true;
     }
 
-    if (event.type == EVENT_KEY_DOWN && event.mouseButton.button == 4 && Detect(event.pos)) {
+    if (event.type == EVENT_MOUSE_WHEEL && event.mouseWheel.dir == WHEEL_DOWN && Detect(event.mouseWheel.pos)) {
         if (m_firstLine < m_totalLine - m_displayLine)
             m_firstLine++;
         UpdateScroll();

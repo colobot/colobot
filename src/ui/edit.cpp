@@ -238,16 +238,16 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( (m_state & STATE_VISIBLE) == 0 )  return true;
 
-    if ( event.type == EVENT_KEY_DOWN  &&
-         event.mouseButton.button == 5 &&
+    if (event.type == EVENT_MOUSE_WHEEL &&
+        event.mouseWheel.dir == WHEEL_UP &&
          Detect(event.pos)            )
     {
         Scroll(m_lineFirst-3, true);
         return true;
     }
-    if ( event.type == EVENT_KEY_DOWN      &&
-            event.mouseButton.button == 4  && // TODO
-         Detect(event.pos)            )
+    if (event.type == EVENT_KEY_DOWN  &&
+        event.mouseWheel.dir == WHEEL_DOWN  &&
+        Detect(event.mouseWheel.pos)            )
     {
         Scroll(m_lineFirst+3, true);
         return true;

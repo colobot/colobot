@@ -292,19 +292,19 @@ bool CScroll::EventProcess(const Event &event)
         m_bCapture = false;
     }
 
-    if ( event.type == EVENT_KEY_DOWN   &&
-         event.mouseButton.button == 4  &&
-         Detect(event.pos)              &&
-         m_buttonUp != 0              )
+    if (event.type == EVENT_MOUSE_WHEEL &&
+        event.mouseWheel.dir == WHEEL_UP &&
+        Detect(event.mouseWheel.pos) &&
+        m_buttonUp != 0)
     {
         Event newEvent = event;
         newEvent.type = m_buttonUp->GetEventType();
         m_event->AddEvent(newEvent);
     }
-    if ( event.type == EVENT_KEY_DOWN  &&
-         event.mouseButton.button == 5 &&
-         Detect(event.pos)             &&
-         m_buttonDown != 0            )
+    if (event.type == EVENT_MOUSE_WHEEL &&
+        event.mouseWheel.dir == WHEEL_DOWN &&
+        Detect(event.mouseWheel.pos) &&
+        m_buttonDown != 0)
     {
         Event newEvent = event;
         newEvent.type = m_buttonDown->GetEventType();
