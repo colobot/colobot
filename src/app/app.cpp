@@ -120,9 +120,6 @@ CApplication::CApplication()
     m_mouseButtonsState = 0;
     m_trackedKeys = 0;
 
-    m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
-
     m_dataPath = "./data";
 
     m_language = LANG_ENGLISH;
@@ -439,6 +436,8 @@ bool CApplication::CreateVideoSurface()
 
 void CApplication::Destroy()
 {
+    m_joystickEnabled = false;
+
     if (m_robotMain != nullptr)
     {
         delete m_robotMain;
@@ -810,15 +809,32 @@ Event CApplication::ParseEvent()
     else if ( (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) ||
          (m_private->currentEvent.type == SDL_MOUSEBUTTONUP) )
     {
-        if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
-            event.type = EVENT_MOUSE_BUTTON_DOWN;
+        if ((m_private->currentEvent.button.button == SDL_BUTTON_WHEELUP) ||
+            (m_private->currentEvent.button.button == SDL_BUTTON_WHEELDOWN))
+        {
+            if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN) // ignore the following up event
+            {
+                event.type = EVENT_MOUSE_WHEEL;
+                if (m_private->currentEvent.button.button == SDL_BUTTON_WHEELDOWN)
+                    event.mouseWheel.dir = WHEEL_DOWN;
+                else
+                    event.mouseWheel.dir = WHEEL_UP;
+                event.mouseWheel.pos = m_engine->WindowToInterfaceCoords(
+                Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
+            }
+        }
         else
-            event.type = EVENT_MOUSE_BUTTON_UP;
+        {
+            if (m_private->currentEvent.type == SDL_MOUSEBUTTONDOWN)
+                event.type = EVENT_MOUSE_BUTTON_DOWN;
+            else
+                event.type = EVENT_MOUSE_BUTTON_UP;
 
-        event.mouseButton.button = m_private->currentEvent.button.button;
-        event.mouseButton.state = TranslatePressState(m_private->currentEvent.button.state);
-        event.mouseButton.pos = m_engine->WindowToInterfaceCoords(
-            Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
+            event.mouseButton.button = m_private->currentEvent.button.button;
+            event.mouseButton.state = TranslatePressState(m_private->currentEvent.button.state);
+            event.mouseButton.pos = m_engine->WindowToInterfaceCoords(
+                Math::IntPoint(m_private->currentEvent.button.x, m_private->currentEvent.button.y));
+        }
     }
     else if (m_private->currentEvent.type == SDL_MOUSEMOTION)
     {
@@ -877,8 +893,6 @@ bool CApplication::ProcessEvent(Event &event)
         event.mousePos = m_systemMousePos;
     else
         event.mousePos = m_engine->GetMousePos();
-
-    // TODO: mouse pos
 
     if (event.type == EVENT_ACTIVE)
     {
@@ -979,6 +993,11 @@ bool CApplication::ProcessEvent(Event &event)
                 l->Info(" button = %d\n", event.mouseButton.button);
                 l->Info(" state  = %s\n", (event.mouseButton.state == STATE_PRESSED) ? "STATE_PRESSED" : "STATE_RELEASED");
                 l->Info(" pos    = (%f, %f)\n", event.mouseButton.pos.x, event.mouseButton.pos.y);
+                break;
+            case EVENT_MOUSE_WHEEL:
+                l->Info("EVENT_MOUSE_WHEEL:\n");
+                l->Info(" dir = %s\n", (event.mouseWheel.dir == WHEEL_DOWN) ? "WHEEL_DOWN" : "WHEEL_UP");
+                l->Info(" pos = (%f, %f)\n", event.mouseWheel.pos.x, event.mouseWheel.pos.y);
                 break;
             case EVENT_JOY_AXIS:
                 l->Info("EVENT_JOY_AXIS:\n");
@@ -1235,8 +1254,7 @@ void CApplication::ResetKeyStates()
 {
     m_trackedKeys = 0;
     m_kmodState = 0;
-    m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
-    m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_robotMain->ResetKeyStates();
 }
 
 void CApplication::SetGrabInput(bool grab)

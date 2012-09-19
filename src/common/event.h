@@ -25,12 +25,15 @@
 #include "common/key.h"
 #include "common/event_ids.h"
 #include "math/point.h"
+#include "math/vector.h"
 
 class CInstanceManager;
 
 
-/** \enum PressState
-    \brief State of key/mouse button */
+/**
+ * \enum PressState
+ * \brief State of key/mouse button
+ */
 enum PressState
 {
     STATE_PRESSED,
@@ -38,8 +41,10 @@ enum PressState
 };
 
 
-/** \struct KeyEventData
-    \brief Additional data for keyboard event */
+/**
+ * \struct KeyEventData
+ * \brief Additional data for keyboard event
+ */
 struct KeyEventData
 {
     //! STATE_PRESSED or STATE_RELEASED */
@@ -52,9 +57,6 @@ struct KeyEventData
     unsigned int mod;
     //! Unicode character
     unsigned int unicode;
-
-    KeyEventData()
-        : state(STATE_PRESSED), virt(false), key(0), mod(0), unicode(0) {}
 };
 
 /** \struct MouseMotionEventData
@@ -65,13 +67,12 @@ struct MouseMoveEventData
     PressState state;
     //! Position of mouse in normalized coordinates (0..1)
     Math::Point pos;
-
-    MouseMoveEventData()
-        : state(STATE_PRESSED) {}
 };
 
-/** \struct MouseButtonEventData
-    \brief Additional data mouse button event */
+/**
+ * \struct MouseButtonEventData
+ * \brief Additional data mouse button event
+ */
 struct MouseButtonEventData
 {
     //! The mouse button index
@@ -80,39 +81,58 @@ struct MouseButtonEventData
     PressState state;
     //! Position of mouse in normalized coordinates (0..1)
     Math::Point pos;
-
-    MouseButtonEventData()
-        : button(0), state(STATE_PRESSED) {}
 };
 
-/** \struct JoyAxisEventData
-    \brief Additional data for joystick axis event */
+/**
+ * \enum WheelDirection
+ * \brief Direction of mouse wheel movement
+ */
+enum WheelDirection
+{
+    WHEEL_UP,
+    WHEEL_DOWN
+};
+
+/**
+ * \enum MouseWheelEventData
+ * \brief Additional data for mouse wheel event.
+ */
+struct MouseWheelEventData
+{
+    //! Wheel direction
+    WheelDirection dir;
+    //! Position of mouse in normalized coordinates (0..1)
+    Math::Point pos;
+};
+
+/**
+ * \struct JoyAxisEventData
+ * \brief Additional data for joystick axis event
+ */
 struct JoyAxisEventData
 {
     //! The joystick axis index
     unsigned char axis;
     //! The axis value (range: -32768 to 32767)
     int value;
-
-    JoyAxisEventData()
-        : axis(axis), value(value) {}
 };
 
-/** \struct JoyButtonEventData
-    \brief Additional data for joystick button event */
+/**
+ * \struct JoyButtonEventData
+ * \brief Additional data for joystick button event
+ */
 struct JoyButtonEventData
 {
     //! The joystick button index
     unsigned char button;
     //! STATE_PRESSED or STATE_RELEASED
     PressState state;
-
-    JoyButtonEventData()
-        : button(0), state(STATE_PRESSED) {}
 };
 
-/** \enum ActiveEventFlags
-    \brief Type of focus gained/lost */
+/**
+ * \enum ActiveEventFlags
+ * \brief Type of focus gained/lost
+ */
 enum ActiveEventFlags
 {
     //! Application window focus
@@ -124,30 +144,29 @@ enum ActiveEventFlags
 
 };
 
-/** \struct ActiveEventData
-    \brief Additional data for active event */
+/**
+ * \struct ActiveEventData
+ * \brief Additional data for active event
+ */
 struct ActiveEventData
 {
     //! Flags (bitmask of enum values ActiveEventFlags)
     unsigned char flags;
     //! True if the focus was gained; false otherwise
     bool gain;
-
-    ActiveEventData()
-        : flags(0), gain(false) {}
 };
 
 
 /**
-  \struct Event
-  \brief Event sent by system, interface or game
-
-  Event is described by its type (EventType) and the union
-  \a data contains additional data about the event.
-  Different members of the union are filled with different event types.
-  With some events, nothing is filled (it's zeroed out).
-  The union contains roughly the same information as SDL_Event struct
-  but packaged to independent structs and fields.
+ * \struct Event
+ * \brief Event sent by system, interface or game
+ *
+ * Event is described by its type (EventType) and the union
+ * \a data contains additional data about the event.
+ * Different members of the union are filled with different event types.
+ * With some events, nothing is filled (it's zeroed out).
+ * The union contains roughly the same information as SDL_Event struct
+ * but packaged to independent structs and fields.
  **/
 struct Event
 {
@@ -165,6 +184,8 @@ struct Event
         MouseButtonEventData mouseButton;
         //! Additional data for EVENT_MOUSE_MOVE
         MouseMoveEventData mouseMove;
+        //! Additional data for EVENT_MOUSE_WHEEL
+        MouseWheelEventData mouseWheel;
         //! Additional data for EVENT_JOY
         JoyAxisEventData joyAxis;
         //! Additional data for EVENT_JOY_AXIS
@@ -179,6 +200,9 @@ struct Event
     //! Mouse position is provided also for other types of events besides mouse events
     Math::Point  mousePos;
 
+    //! Motion vector set by keyboard or joystick
+    Math::Vector motionInput;
+
     // TODO: remove and replace references with trackedKeys
     short        keyState;
 
@@ -187,11 +211,6 @@ struct Event
 
     // TODO: remove
     long         param;      // parameter
-
-    // TODO: ?
-    float        axeX;       // control the X axis (-1 .. 1)
-    float        axeY;       // control of the Y axis (-1 .. 1)
-    float        axeZ;       // control the Z axis (-1 .. 1)
 
     // TODO: remove in longer term (use CApplication's new time functions instead)
     float        rTime;      // relative time
@@ -203,7 +222,6 @@ struct Event
         trackedKeys = 0;
 
         param = 0;
-        axeX = axeY = axeZ = 0.0f;
         rTime = 0.0f;
     }
 };
@@ -214,11 +232,11 @@ EventType GetUniqueEventType();
 
 
 /**
-  \class CEventQueue
-  \brief Global event queue
-
-  Provides an interface to a global FIFO queue with events (both system- and user-generated).
-  The queue has a fixed maximum size but it should not be a problem.
+ * \class CEventQueue
+ * \brief Global event queue
+ *
+ * Provides an interface to a global FIFO queue with events (both system- and user-generated).
+ * The queue has a fixed maximum size but it should not be a problem.
  */
 class CEventQueue
 {

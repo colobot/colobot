@@ -267,4 +267,14 @@ inline float Distance(const Math::Vector &a, const Math::Vector &b)
                   (a.z-b.z)*(a.z-b.z) );
 }
 
+//! Clamps the vector \a vec to range between \a min and \a max
+inline Vector Clamp(const Vector &vec, const Vector &min, const Vector &max)
+{
+    Vector clamped;
+    clamped.x = Min(Max(min.x, vec.x), max.x);
+    clamped.y = Min(Max(min.y, vec.y), max.y);
+    clamped.z = Min(Max(min.z, vec.z), max.z);
+    return clamped;
+}
+
 }; // namespace Math

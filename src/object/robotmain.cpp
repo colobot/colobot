@@ -678,6 +678,9 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     m_endingLostRank  = 0;
     m_winTerminate   = false;
 
+    m_joystickDeadzone = 0.2f;
+    SetDefaultInputBindings();
+
     FlushDisplayInfo();
 
     m_fontSize  = 9.0f;
@@ -813,8 +816,6 @@ CRobotMain::CRobotMain(CInstanceManager* iMan, CApplication* app)
     InitClassFILE();
 
     CScript::InitFonctions();
-
-    SetDefaultInputBindings();
 }
 
 //! Destructor of robot application
@@ -869,6 +870,12 @@ void CRobotMain::SetDefaultInputBindings()
         m_inputBindings[i].key = m_inputBindings[i].joy = KEY_INVALID;
     }
 
+    for (int i = 0; i < JOY_AXIS_SLOT_MAX; i++)
+    {
+        m_joyAxisBindings[i].axis = AXIS_INVALID;
+        m_joyAxisBindings[i].invert = false;
+    }
+
     m_inputBindings[INPUT_SLOT_LEFT   ].key  = KEY(LEFT);
     m_inputBindings[INPUT_SLOT_RIGHT  ].key  = KEY(RIGHT);
     m_inputBindings[INPUT_SLOT_UP     ].key  = KEY(UP);
@@ -897,6 +904,10 @@ void CRobotMain::SetDefaultInputBindings()
     m_inputBindings[INPUT_SLOT_SPEED10].key  = KEY(F4);
     m_inputBindings[INPUT_SLOT_SPEED15].key  = KEY(F5);
     m_inputBindings[INPUT_SLOT_SPEED20].key  = KEY(F6);
+
+    m_joyAxisBindings[JOY_AXIS_SLOT_X].axis = 0;
+    m_joyAxisBindings[JOY_AXIS_SLOT_Y].axis = 1;
+    m_joyAxisBindings[JOY_AXIS_SLOT_Z].axis = 2;
 }
 
 void CRobotMain::SetInputBinding(InputSlot slot, InputBinding binding)
@@ -911,6 +922,36 @@ const InputBinding& CRobotMain::GetInputBinding(InputSlot slot)
     unsigned int index = static_cast<unsigned int>(slot);
     assert(index >= 0 && index < INPUT_SLOT_MAX);
     return m_inputBindings[index];
+}
+
+void CRobotMain::SetJoyAxisBinding(JoyAxisSlot slot, JoyAxisBinding binding)
+{
+    unsigned int index = static_cast<unsigned int>(slot);
+    assert(index >= 0 && index < JOY_AXIS_SLOT_MAX);
+    m_joyAxisBindings[index] = binding;
+}
+
+const JoyAxisBinding& CRobotMain::GetJoyAxisBinding(JoyAxisSlot slot)
+{
+    unsigned int index = static_cast<unsigned int>(slot);
+    assert(index >= 0 && index < JOY_AXIS_SLOT_MAX);
+    return m_joyAxisBindings[index];
+}
+
+void CRobotMain::SetJoystickDeadzone(float zone)
+{
+    m_joystickDeadzone = zone;
+}
+
+float CRobotMain::GetJoystickDeadzone()
+{
+    return m_joystickDeadzone;
+}
+
+void CRobotMain::ResetKeyStates()
+{
+    m_keyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
+    m_joyMotion = Math::Vector(0.0f, 0.0f, 0.0f);
 }
 
 //! Changes phase
@@ -1159,10 +1200,69 @@ void CRobotMain::ChangePhase(Phase phase)
     m_engine->LoadAllTextures();
 }
 
-
 //! Processes an event
-bool CRobotMain::EventProcess(const Event &event)
+bool CRobotMain::EventProcess(Event &event)
 {
+    /* Motion vector management */
+
+    if (event.type == EVENT_KEY_DOWN)
+    {
+        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).key)  m_keyMotion.y =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).joy)  m_keyMotion.y =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).key)  m_keyMotion.y = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).joy)  m_keyMotion.y = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).key)  m_keyMotion.x = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).joy)  m_keyMotion.x = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).key)  m_keyMotion.x =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).joy)  m_keyMotion.x =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).key)  m_keyMotion.z =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).joy)  m_keyMotion.z =  1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).key)  m_keyMotion.z = -1.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).joy)  m_keyMotion.z = -1.0f;
+    }
+    else if (event.type == EVENT_KEY_UP)
+    {
+        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).key)  m_keyMotion.y =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_UP   ).joy)  m_keyMotion.y =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).key)  m_keyMotion.y =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_DOWN ).joy)  m_keyMotion.y =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).key)  m_keyMotion.x =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_LEFT ).joy)  m_keyMotion.x =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).key)  m_keyMotion.x =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_RIGHT).joy)  m_keyMotion.x =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).key)  m_keyMotion.z =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GUP  ).joy)  m_keyMotion.z =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).key)  m_keyMotion.z =  0.0f;
+        if (event.key.key == GetInputBinding(INPUT_SLOT_GDOWN).joy)  m_keyMotion.z =  0.0f;
+    }
+    else if (event.type == EVENT_JOY_AXIS)
+    {
+        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_X).axis)
+        {
+            m_joyMotion.x = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_X).invert)
+                m_joyMotion.x *= -1.0f;
+        }
+
+        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Y).axis)
+        {
+            m_joyMotion.y = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_Y).invert)
+                m_joyMotion.y *= -1.0f;
+        }
+
+        if (event.joyAxis.axis == GetJoyAxisBinding(JOY_AXIS_SLOT_Z).axis)
+        {
+            m_joyMotion.z = Math::Neutral(event.joyAxis.value / 32768.0f, m_joystickDeadzone);
+            if (GetJoyAxisBinding(JOY_AXIS_SLOT_Z).invert)
+                m_joyMotion.z *= -1.0f;
+        }
+    }
+
+    event.motionInput = Math::Clamp(m_joyMotion + m_keyMotion, Math::Vector(-1.0f, -1.0f, -1.0f), Math::Vector(1.0f, 1.0f, 1.0f));
+
+
+
     if (event.type == EVENT_FRAME)
     {
         if (!m_movie->EventProcess(event))  // end of the movie?

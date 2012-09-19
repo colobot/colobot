@@ -112,7 +112,7 @@ struct ApplicationPrivate;
  * \section Creation Creation of other main objects
  *
  * The class creates the only instance of CInstanceManager, CEventQueue, CEngine,
- * CRobotMain and CSound classes.
+ * CRobotMain and CSoundInterface classes.
  *
  * \section Window Window management
  *
@@ -241,7 +241,7 @@ public:
     //! Returns whether the mouse button is pressed
     bool        GetMouseButtonState(int index);
 
-    //! Resets tracked key states, modifiers and motion vectors
+    //! Resets tracked key states and modifiers
     void        ResetKeyStates();
 
     //! Management of the grab mode for input (keyboard & mouse)
@@ -307,7 +307,7 @@ protected:
     //! Graphics device
     Gfx::CDevice*           m_device;
     //! Sound subsystem
-    CSoundInterface*                 m_sound;
+    CSoundInterface*        m_sound;
     //! Main class of the proper game engine
     CRobotMain*             m_robotMain;
 
@@ -356,11 +356,6 @@ protected:
     unsigned int    m_trackedKeys;
     //! Current state of mouse buttons (mask of button indexes)
     unsigned int    m_mouseButtonsState;
-
-    //! Motion vector set by keyboard
-    Math::Vector    m_keyMotion;
-    //! Motion vector set by joystick
-    Math::Vector    m_joyMotion;
 
     //! Current system mouse position
     Math::Point     m_systemMousePos;

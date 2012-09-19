@@ -143,7 +143,7 @@ const int SATCOM_MAX        = 6;
 
 
 /**
- * \enum InputBinding
+ * \struct InputBinding
  * \brief Binding for input slot
  */
 struct InputBinding
@@ -156,6 +156,20 @@ struct InputBinding
     InputBinding() : key(KEY_INVALID), joy(KEY_INVALID) {}
 };
 
+/**
+ * \struct JoyAxisBinding
+ * \brief Binding for joystick axis
+ */
+struct JoyAxisBinding
+{
+    //! Axis index or AXIS_INVALID
+    int axis;
+    //! True to invert axis value
+    bool invert;
+};
+
+//! Invalid value for axis binding (no axis assigned)
+const int AXIS_INVALID = -1;
 
 class CRobotMain : public CSingleton<CRobotMain>
 {
@@ -165,7 +179,7 @@ public:
 
     void        CreateIni();
 
-    //! Sets the default input bindings
+    //! Sets the default input bindings (key and axes)
     void        SetDefaultInputBindings();
 
     //! Management of input bindings
@@ -174,8 +188,23 @@ public:
     const InputBinding& GetInputBinding(InputSlot slot);
     //@}
 
+    //! Management of joystick axis bindings
+    //@{
+    void        SetJoyAxisBinding(JoyAxisSlot slot, JoyAxisBinding binding);
+    const JoyAxisBinding& GetJoyAxisBinding(JoyAxisSlot slot);
+    //@}
+
+    //! Management of joystick deadzone
+    //@{
+    void        SetJoystickDeadzone(float zone);
+    float       GetJoystickDeadzone();
+    //@}
+
+    //! Resets tracked key states (motion vectors)
+    void        ResetKeyStates();
+
     void        ChangePhase(Phase phase);
-    bool        EventProcess(const Event &event);
+    bool        EventProcess(Event &event);
 
     bool        CreateShortcuts();
     void        ScenePerso();
@@ -379,6 +408,13 @@ protected:
 
     //! Bindings for user inputs
     InputBinding    m_inputBindings[INPUT_SLOT_MAX];
+    JoyAxisBinding  m_joyAxisBindings[JOY_AXIS_SLOT_MAX];
+    float           m_joystickDeadzone;
+    //! Motion vector set by keyboard or joystick buttons
+    Math::Vector    m_keyMotion;
+    //! Motion vector set by joystick axes
+    Math::Vector    m_joyMotion;
+
 
     float           m_time;
     float           m_gameTime;

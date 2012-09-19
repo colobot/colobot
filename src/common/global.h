@@ -115,6 +115,20 @@ enum InputSlot
     INPUT_SLOT_MAX
 };
 
+/**
+ * \enum JoyAxisSlot
+ * \brief Slots for joystick axes inputs
+ */
+enum JoyAxisSlot
+{
+    JOY_AXIS_SLOT_X,
+    JOY_AXIS_SLOT_Y,
+    JOY_AXIS_SLOT_Z,
+
+    JOY_AXIS_SLOT_MAX
+};
+
+
 // TODO: move to CRobotMain
 extern long     g_id;                   // unique identifier
 extern int      g_build;                // constructible buildings

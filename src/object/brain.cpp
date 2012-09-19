@@ -361,9 +361,9 @@ bool CBrain::EventProcess(const Event &event)
         m_buttonAxe = EVENT_NULL;
     }
 
-    axeX = event.axeX;
-    axeY = event.axeY;
-    axeZ = event.axeZ;
+    axeX = event.motionInput.x;
+    axeY = event.motionInput.y;
+    axeZ = event.motionInput.z;
 
     if ( !m_main->GetTrainerPilot() &&
          m_object->GetTrainer()     )  // drive vehicle?
