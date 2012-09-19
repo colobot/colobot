@@ -109,7 +109,7 @@ bool CColor::EventProcess(const Event &event)
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             m_repeat = DELAY1;
 

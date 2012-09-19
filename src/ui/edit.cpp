@@ -17,7 +17,7 @@
 
 // edit.cpp
 
-
+#include "app/app.h"
 #include "ui/edit.h"
 
 #include <string.h>
@@ -263,8 +263,8 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE )
     {
-        if ( Detect(event.pos) &&
-             event.pos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
+        if ( Detect(event.mouseMove.pos) &&
+             event.mouseMove.pos.x < m_pos.x+m_dim.x-(m_bMulti?MARGX+SCROLL_WIDTH:0.0f) )
         {
             if ( m_bEdit )
             {
@@ -272,7 +272,7 @@ bool CEdit::EventProcess(const Event &event)
             }
             else
             {
-                if ( IsLinkPos(event.pos) )
+                if ( IsLinkPos(event.mouseMove.pos) )
                 {
                     m_engine->SetMouseType(Gfx::ENG_MOUSE_HAND);
                 }
@@ -297,100 +297,100 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_KEY_DOWN && m_bFocus )
     {
-        bShift   = (event.keyState&KS_SHIFT);
-        bControl = (event.keyState&KS_CONTROL);
+        bShift   = ( (event.trackedKeys & TRKEY_SHIFT) != 0 );
+        bControl = ( (event.trackedKeys & TRKEY_CONTROL) != 0);
 
-        if ( (event.param == 'X'       && !bShift &&  bControl) ||
-             (event.param == KEY(DELETE) &&  bShift && !bControl) )
+        if ( (event.key.unicode == 'X'       && !bShift &&  bControl) ||
+             (event.key.key   == KEY(DELETE) &&  bShift && !bControl) )
         {
             Cut();
             return true;
         }
-        if ( (event.param == 'C'       && !bShift &&  bControl) ||
-             (event.param == KEY(INSERT) && !bShift &&  bControl) )
+        if ( (event.key.unicode == 'C'       && !bShift &&  bControl) ||
+             (event.key.key == KEY(INSERT) && !bShift &&  bControl) )
         {
             Copy();
             return true;
         }
-        if ( (event.param == 'V'       && !bShift &&  bControl) ||
+        if ( (event.key.unicode == 'V'       && !bShift &&  bControl) ||
              (event.param == KEY(INSERT) &&  bShift && !bControl) )
         {
             Paste();
             return true;
         }
 
-        if ( event.param == 'A' && !bShift && bControl )
+        if ( event.key.unicode == 'A' && !bShift && bControl )
         {
             SetCursor(999999, 0);
             return true;
         }
 
-        if ( event.param == 'O' && !bShift && bControl )
+        if ( event.key.unicode == 'O' && !bShift && bControl )
         {
             Event   newEvent(EVENT_STUDIO_OPEN);
 //            m_event->NewEvent(newEvent, EVENT_STUDIO_OPEN);
             m_event->AddEvent(newEvent);
         }
-        if ( event.param == 'S' && !bShift && bControl )
+        if ( event.key.unicode == 'S' && !bShift && bControl )
         {
             Event   newEvent( EVENT_STUDIO_SAVE );
 //            m_event->MakeEvent(newEvent, EVENT_STUDIO_SAVE);
             m_event->AddEvent(newEvent);
         }
 
-        if ( event.param == 'Z' && !bShift && bControl )
+        if ( event.key.unicode == 'Z' && !bShift && bControl )
         {
             Undo();
             return true;
         }
 
-        if ( event.param == 'U' && !bShift && bControl )
+        if ( event.key.unicode == 'U' && !bShift && bControl )
         {
             if ( MinMaj(false) )  return true;
         }
-        if ( event.param == 'U' && bShift && bControl )
+        if ( event.key.unicode == 'U' && bShift && bControl )
         {
             if ( MinMaj(true) )  return true;
         }
 
-        if ( event.param == KEY(TAB) && !bShift && !bControl && !m_bAutoIndent )
+        if ( event.key.key == KEY(TAB) && !bShift && !bControl && !m_bAutoIndent )
         {
             if ( Shift(false) )  return true;
         }
-        if ( event.param == KEY(TAB) && bShift && !bControl && !m_bAutoIndent )
+        if ( event.key.key == KEY(TAB) && bShift && !bControl && !m_bAutoIndent )
         {
             if ( Shift(true) )  return true;
         }
 
         if ( m_bEdit )
         {
-            if ( event.param == KEY(LEFT) )
+            if ( event.key.key == KEY(LEFT) )
             {
                 MoveChar(-1, bControl, bShift);
                 return true;
             }
-            if ( event.param == KEY(RIGHT) )
+            if ( event.key.key == KEY(RIGHT) )
             {
                 MoveChar(1, bControl, bShift);
                 return true;
             }
-            if ( event.param == KEY(UP) )
+            if ( event.key.key == KEY(UP) )
             {
                 MoveLine(-1, bControl, bShift);
                 return true;
             }
-            if ( event.param == KEY(DOWN) )
+            if ( event.key.key == KEY(DOWN) )
             {
                 MoveLine(1, bControl, bShift);
                 return true;
             }
 
-            if ( event.param == KEY(PAGEUP) )  // PageUp ?
+            if ( event.key.key == KEY(PAGEUP) )  // PageUp ?
             {
                 MoveLine(-(m_lineVisible-1), bControl, bShift);
                 return true;
             }
-            if ( event.param == KEY(PAGEDOWN) )  // PageDown ?
+            if ( event.key.key == KEY(PAGEDOWN) )  // PageDown ?
             {
                 MoveLine(m_lineVisible-1, bControl, bShift);
                 return true;
@@ -398,62 +398,62 @@ bool CEdit::EventProcess(const Event &event)
         }
         else
         {
-            if ( event.param == KEY(LEFT) ||
-                 event.param == KEY(UP)   )
+            if ( event.key.key == KEY(LEFT) ||
+                 event.key.key == KEY(UP)   )
             {
                 Scroll(m_lineFirst-1, true);
                 return true;
             }
-            if ( event.param == KEY(RIGHT) ||
-                 event.param == KEY(DOWN)  )
+            if ( event.key.key == KEY(RIGHT) ||
+                 event.key.key == KEY(DOWN)  )
             {
                 Scroll(m_lineFirst+1, true);
                 return true;
             }
 
-            if ( event.param == KEY(PAGEUP) )  // PageUp ?
+            if ( event.key.key == KEY(PAGEUP) )  // PageUp ?
             {
                 Scroll(m_lineFirst-(m_lineVisible-1), true);
                 return true;
             }
-            if ( event.param == KEY(PAGEDOWN) )  // PageDown ?
+            if ( event.key.key == KEY(PAGEDOWN) )  // PageDown ?
             {
                 Scroll(m_lineFirst+(m_lineVisible-1), true);
                 return true;
             }
         }
 
-        if ( event.param == KEY(HOME) )
+        if ( event.key.key == KEY(HOME) )
         {
             MoveHome(bControl, bShift);
             return true;
         }
-        if ( event.param == KEY(END) )
+        if ( event.key.key == KEY(END) )
         {
             MoveEnd(bControl, bShift);
             return true;
         }
 
-        if ( event.param == KEY(BACKSPACE) )  // backspace ( <- ) ?
+        if ( event.key.key == KEY(BACKSPACE) )  // backspace ( <- ) ?
         {
             Delete(-1);
             SendModifEvent();
             return true;
         }
-        if ( event.param == KEY(DELETE) )
+        if ( event.key.key == KEY(DELETE) )
         {
             Delete(1);
             SendModifEvent();
             return true;
         }
 
-        if ( event.param == KEY(RETURN) )
+        if ( event.key.key == KEY(RETURN) )
         {
             Insert('\n');
             SendModifEvent();
             return true;
         }
-        if ( event.param == KEY(TAB) )
+        if ( event.key.key == KEY(TAB) )
         {
             Insert('\t');
             SendModifEvent();
@@ -463,9 +463,9 @@ bool CEdit::EventProcess(const Event &event)
 
     if ( event.type == EVENT_ACTIVE && m_bFocus )
     {
-        if ( event.param >= ' ' && event.param <= 255 )
+        if ( event.key.key >= ' ' && event.key.key <= 255 )
         {
-            Insert(static_cast<char>(event.param));
+            Insert(static_cast<char>(event.key.key));
             SendModifEvent();
             return true;
         }

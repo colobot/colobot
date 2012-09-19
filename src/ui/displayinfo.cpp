@@ -103,7 +103,7 @@ bool CDisplayInfo::EventProcess(const Event &event)
             toto = static_cast<CMotionToto*>(m_toto->GetMotion());
             if ( toto != 0 )
             {
-                toto->SetMousePos(event.pos);
+                toto->SetMousePos(event.mouseMove.pos);
             }
         }
     }

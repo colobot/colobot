@@ -105,7 +105,7 @@ bool CButton::EventProcess(const Event &event)
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             m_bCapture = true;
             m_repeat = DELAY1;
@@ -128,7 +128,7 @@ bool CButton::EventProcess(const Event &event)
          event.mouseButton.button == 1    &&
          m_bCapture )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             if ( !m_bImmediat && !m_bRepeat )
             {

@@ -238,17 +238,17 @@ bool CScroll::EventProcess(const Event &event)
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             pos.y = m_pos.y+hButton;
             dim.y = m_dim.y-hButton*2.0f;
             pos.y += dim.y*(1.0f-m_visibleRatio)*(1.0f-m_visibleValue);
             dim.y *= m_visibleRatio;
-            if ( event.pos.y < pos.y       ||
-                 event.pos.y > pos.y+dim.y )  // click outside cabin?
+            if ( event.mouseButton.pos.y < pos.y       ||
+                 event.mouseButton.pos.y > pos.y+dim.y )  // click outside cabin?
             {
                 h = (m_dim.y-hButton*2.0f)*(1.0f-m_visibleRatio);
-                value = 1.0f-(event.pos.y-(m_pos.y+hButton+dim.y*0.5f))/h;
+                value = 1.0f-(event.mouseButton.pos.y-(m_pos.y+hButton+dim.y*0.5f))/h;
                 if ( value < 0.0f )  value = 0.0f;
                 if ( value > 1.0f )  value = 1.0f;
                 m_visibleValue = value;
@@ -259,7 +259,7 @@ bool CScroll::EventProcess(const Event &event)
                 m_event->AddEvent(newEvent);
             }
             m_bCapture = true;
-            m_pressPos = event.pos;
+            m_pressPos = event.mouseButton.pos;
             m_pressValue = m_visibleValue;
         }
     }
@@ -269,7 +269,7 @@ bool CScroll::EventProcess(const Event &event)
         h = (m_dim.y-hButton*2.0f)*(1.0f-m_visibleRatio);
         if ( h != 0 )
         {
-            value = m_pressValue - (event.pos.y-m_pressPos.y)/h;
+            value = m_pressValue - (event.mouseMove.pos.y-m_pressPos.y)/h;
             if ( value < 0.0f )  value = 0.0f;
             if ( value > 1.0f )  value = 1.0f;
 

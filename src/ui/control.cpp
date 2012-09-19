@@ -323,7 +323,7 @@ bool CControl::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN && event.mouseButton.button == 1)
     {
-        if ( Detect(event.pos) )
+        if ( Detect(event.mouseButton.pos) )
         {
             m_bCapture = true;
             SetState(STATE_PRESS);
@@ -332,7 +332,7 @@ bool CControl::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_MOVE && m_bCapture )
     {
-        if ( Detect(event.pos) )
+        if ( Detect(event.mouseMove.pos) )
         {
             SetState(STATE_PRESS);
         }

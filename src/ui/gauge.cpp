@@ -56,7 +56,7 @@ bool CGauge::EventProcess(const Event &event)
 
     if ( event.type == EVENT_MOUSE_BUTTON_DOWN )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             Event newEvent = event;
             newEvent.type = m_eventType;

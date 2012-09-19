@@ -282,7 +282,7 @@ bool CInterface::EventProcess(const Event &event)
         if (m_camera == nullptr) {
             m_camera = static_cast<Gfx::CCamera *>(m_iMan->SearchInstance(CLASS_CAMERA));
         }
-        m_engine->SetMouseType(m_camera->GetMouseDef(event.pos));
+        m_engine->SetMouseType(m_camera->GetMouseDef(event.mouseMove.pos));
     }
 
     for (int i = MAXCONTROL-1; i >= 0; i--) {

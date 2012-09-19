@@ -96,9 +96,9 @@ bool CTarget::EventProcess(const Event &event)
     {
         m_main->SetFriendAim(false);
 
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseMove.pos) )
         {
-            pObj = DetectFriendObject(event.pos);
+            pObj = DetectFriendObject(event.mouseMove.pos);
             if ( pObj == 0 )
             {
                 m_engine->SetMouseType(Gfx::ENG_MOUSE_TARGET);
@@ -121,7 +121,7 @@ bool CTarget::EventProcess(const Event &event)
          (m_state & STATE_VISIBLE)        &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             if ( !m_main->GetFriendAim() )
             {

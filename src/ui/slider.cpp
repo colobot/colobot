@@ -288,20 +288,20 @@ bool CSlider::EventProcess(const Event &event)
          (m_state & STATE_VISIBLE)             &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             if ( m_bHoriz )
             {
                 pos.x = m_pos.x+m_marginButton;
                 dim.x = m_dim.x-m_marginButton*2.0f;
-                value = (event.pos.x-pos.x-CURSOR_WIDTH/2.0f);
+                value = (event.mouseButton.pos.x-pos.x-CURSOR_WIDTH/2.0f);
                 value /= (dim.x-CURSOR_WIDTH);
             }
             else
             {
                 pos.y = m_pos.y+m_marginButton;
                 dim.y = m_dim.y-m_marginButton*2.0f;
-                value = (event.pos.y-pos.y-CURSOR_WIDTH/2.0f);
+                value = (event.mouseButton.pos.y-pos.y-CURSOR_WIDTH/2.0f);
                 value /= (dim.y-CURSOR_WIDTH);
             }
             if ( value < 0.0f )  value = 0.0f;
@@ -314,7 +314,7 @@ bool CSlider::EventProcess(const Event &event)
             m_event->AddEvent(newEvent);
 
             m_bCapture = true;
-            m_pressPos = event.pos;
+            m_pressPos = event.mouseButton.pos;
             m_pressValue = m_visibleValue;
         }
     }
@@ -325,14 +325,14 @@ bool CSlider::EventProcess(const Event &event)
         {
             pos.x = m_pos.x+m_marginButton;
             dim.x = m_dim.x-m_marginButton*2.0f;
-            value = (event.pos.x-pos.x-CURSOR_WIDTH/2.0f);
+            value = (event.mouseMove.pos.x-pos.x-CURSOR_WIDTH/2.0f);
             value /= (dim.x-CURSOR_WIDTH);
         }
         else
         {
             pos.y = m_pos.y+m_marginButton;
             dim.y = m_dim.y-m_marginButton*2.0f;
-            value = (event.pos.y-pos.y-CURSOR_WIDTH/2.0f);
+            value = (event.mouseMove.pos.y-pos.y-CURSOR_WIDTH/2.0f);
             value /= (dim.y-CURSOR_WIDTH);
         }
         if ( value < 0.0f )  value = 0.0f;

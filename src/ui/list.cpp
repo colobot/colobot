@@ -275,7 +275,7 @@ bool CList::EventProcess(const Event &event)
 
     CControl::EventProcess(event);
 
-    if (event.type == EVENT_MOUSE_MOVE && Detect(event.pos)) {
+    if (event.type == EVENT_MOUSE_MOVE && Detect(event.mouseMove.pos)) {
         m_engine->SetMouseType(Gfx::ENG_MOUSE_NORM);
         for (i = 0; i < m_displayLine; i++) {
             if (i + m_firstLine >= m_totalLine)

@@ -148,7 +148,7 @@ bool CEditValue::EventProcess(const Event &event)
     {
         if ( m_edit->GetFocus()           &&
              event.type == EVENT_KEY_DOWN &&
-             event.param == KEY(RETURN)     )
+             event.key.key == KEY(RETURN)     )
         {
             value = GetValue();
             if ( value > m_maxValue )  value = m_maxValue;

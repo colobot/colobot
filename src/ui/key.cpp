@@ -83,17 +83,17 @@ bool CKey::EventProcess(const Event &event)
 
     if (event.type == EVENT_MOUSE_BUTTON_DOWN) {
         if (event.mouseButton.button == 1) // left
-            m_bCatch = Detect(event.pos);
+            m_bCatch = Detect(event.mouseButton.pos);
     }
 
-    if (event.type == EVENT_MOUSE_BUTTON_DOWN && m_bCatch) {
+    if (event.type == EVENT_KEY_DOWN && m_bCatch) {
         m_bCatch = false;
 
-        if ( TestKey(event.param) ) { // impossible ?
+        if ( TestKey(event.key.key) ) { // impossible ?
             m_sound->Play(SOUND_TZOING);
         } else {
-            if ( event.param == m_key[0] || event.param == m_key[1] ) {
-                m_key[0] = event.param;
+            if ( event.key.key == m_key[0] || event.key.key == m_key[1] ) {
+                m_key[0] = event.key.key;
                 m_key[1] = 0;
             } else {
                 m_key[1] = m_key[0];
@@ -118,7 +118,7 @@ bool CKey::TestKey(int key)
 {
     if ( key == KEY(PAUSE) || key == KEY(PRINT) )  return true;  // blocked key
 
-    /* TODO: input bindings
+    /* TODO: input bindings 
     for (int i = 0; i < 20; i++) {
         for (int j = 0; j < 2; j++) {
             if (key == m_app->GetKey(i, j) )  // key used?
@@ -129,7 +129,7 @@ bool CKey::TestKey(int key)
             m_app->SetKey(i, 0, m_app->GetKey(i, 1));  // shift
             m_app->SetKey(i, 1, 0);
         }
-    }*/
+    } */
 
     return false;  // not used
 }

@@ -77,7 +77,7 @@ bool CCheck::EventProcess(const Event &event)
          (m_state & STATE_VISIBLE)             &&
          (m_state & STATE_ENABLE)         )
     {
-        if ( CControl::Detect(event.pos) )
+        if ( CControl::Detect(event.mouseButton.pos) )
         {
             Event newEvent = event;
             newEvent.type = m_eventType;
